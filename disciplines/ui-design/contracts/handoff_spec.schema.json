@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "promenaut/ui-design/handoff_spec",
+  "title": "handoff_spec",
+  "description": "Output of the Handoff spoke. Developer-ready specification + Code Connect mapping + prototype.",
+  "type": "object",
+  "required": ["run_id", "screens", "code_connect", "prototype", "review_summary"],
+  "additionalProperties": false,
+  "properties": {
+    "run_id": { "type": "string" },
+    "screens": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "layout", "components", "responsive"],
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string" },
+          "layout": { "type": "string", "description": "grid/auto-layout description in tokens" },
+          "components": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["component", "props", "states"],
+              "additionalProperties": false,
+              "properties": {
+                "component": { "type": "string" },
+                "props": { "type": "object", "additionalProperties": true },
+                "states": { "type": "array", "items": { "type": "string" } },
+                "interaction_notes": { "type": "string" },
+                "edge_cases": { "type": "array", "items": { "type": "string" } }
+              }
+            }
+          },
+          "responsive": { "type": "string", "description": "breakpoint behaviour" }
+        }
+      }
+    },
+    "code_connect": {
+      "type": "array",
+      "description": "Figma component -> code component mappings",
+      "items": {
+        "type": "object",
+        "required": ["figma_component", "code_component"],
+        "additionalProperties": false,
+        "properties": {
+          "figma_component": { "type": "string" },
+          "code_component": { "type": "string" }
+        }
+      }
+    },
+    "prototype": {
+      "type": "object",
+      "required": ["fidelity", "ref"],
+      "additionalProperties": false,
+      "properties": {
+        "fidelity": { "enum": ["react", "figma-make"] },
+        "ref": { "type": "string" }
+      }
+    },
+    "review_summary": {
+      "type": "object",
+      "description": "rolled-up gate results for audit",
+      "required": ["craft_pass", "a11y_pass"],
+      "additionalProperties": false,
+      "properties": {
+        "craft_pass": { "type": "boolean" },
+        "a11y_pass": { "type": "boolean" },
+        "heuristic_open_issues": { "type": "integer" },
+        "waivers": { "type": "integer" }
+      }
+    }
+  }
+}

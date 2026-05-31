@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "promenaut/ui-design/a11y_review",
+  "title": "a11y_review",
+  "description": "Output of the Accessibility reviewer. Each finding is audit-grade: cites WCAG SC and EN 301 549 clause.",
+  "type": "object",
+  "required": ["run_id", "wcag_version", "pass", "findings"],
+  "additionalProperties": false,
+  "properties": {
+    "run_id": { "type": "string" },
+    "wcag_version": { "enum": ["2.1-AA", "2.2-AA"], "description": "configurable; default 2.2-AA" },
+    "pass": { "type": "boolean", "description": "false if any non-waived AA failure exists" },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["sc", "component", "issue", "severity"],
+        "additionalProperties": false,
+        "properties": {
+          "sc": { "type": "string", "description": "WCAG success criterion, e.g. 1.4.3 Contrast (Minimum)" },
+          "en301549_clause": { "type": "string", "description": "e.g. 9.1.4.3" },
+          "component": { "type": "string" },
+          "issue": { "type": "string" },
+          "severity": { "enum": ["minor","serious","critical"] },
+          "remediation": { "type": "string" },
+          "waiver": {
+            "type": "object",
+            "description": "set only at taste gate by a human, with a reason",
+            "additionalProperties": false,
+            "properties": {
+              "approved_by": { "type": "string" },
+              "reason": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

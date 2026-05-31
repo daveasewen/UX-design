@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "promenaut/knowledge/compliance_rule",
+  "title": "compliance_rule",
+  "description": "One node/edge-set in the compliance graph: a checkable rule linking a WCAG SC to components, an automated check, severity and legal source.",
+  "type": "object",
+  "required": ["id", "sc", "title", "level", "applies_to", "check", "severity", "sources"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string" },
+    "sc": { "type": "string", "description": "WCAG success criterion, e.g. 1.4.3" },
+    "title": { "type": "string" },
+    "level": { "enum": ["A", "AA", "AAA"] },
+    "wcag_versions": { "type": "array", "items": { "enum": ["2.0", "2.1", "2.2"] } },
+    "applies_to": {
+      "type": "array",
+      "description": "component categories or specific components this rule governs (graph edges)",
+      "items": { "type": "string" }
+    },
+    "check": {
+      "type": "object",
+      "required": ["type", "description"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "enum": ["automated", "semi-automated", "manual"] },
+        "description": { "type": "string" },
+        "threshold": { "type": "string" }
+      }
+    },
+    "severity": { "enum": ["minor", "serious", "critical"] },
+    "sources": {
+      "type": "object",
+      "required": ["wcag_url"],
+      "additionalProperties": false,
+      "properties": {
+        "wcag_url": { "type": "string" },
+        "en301549_clause": { "type": "string" },
+        "internal_policy_ref": { "type": "string" }
+      }
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "promenaut/ui-design/craft_review",
+  "title": "craft_review",
+  "description": "Output of the Critic (craft gate). The orchestrator routes on `pass`.",
+  "type": "object",
+  "required": ["run_id", "pass", "score", "violations", "recommendations"],
+  "additionalProperties": false,
+  "properties": {
+    "run_id": { "type": "string" },
+    "pass": { "type": "boolean" },
+    "score": { "type": "number", "minimum": 0, "maximum": 1 },
+    "violations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["kind", "detail", "component"],
+        "additionalProperties": false,
+        "properties": {
+          "kind": { "enum": ["invented-component","invented-variant","hardcoded-value","anti-pattern","missing-state","contract"] },
+          "detail": { "type": "string" },
+          "component": { "type": "string" },
+          "severity": { "enum": ["low","medium","high","blocker"] }
+        }
+      }
+    },
+    "recommendations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["issue", "suggestion"],
+        "additionalProperties": false,
+        "properties": {
+          "issue": { "type": "string" },
+          "suggestion": { "type": "string" },
+          "location": { "type": "string" }
+        }
+      }
+    }
+  }
+}

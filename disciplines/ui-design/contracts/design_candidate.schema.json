@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "promenaut/ui-design/design_candidate",
+  "title": "design_candidate",
+  "description": "Output of the Generator spoke. A component-level design built only from canon components and tokens.",
+  "type": "object",
+  "required": ["run_id", "brief_ref", "screens", "prototype"],
+  "additionalProperties": false,
+  "properties": {
+    "run_id": { "type": "string" },
+    "brief_ref": { "type": "string", "description": "pointer to the approved brief" },
+    "flow_spec_ref": { "type": "string" },
+    "screens": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name", "instances"],
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string" },
+          "instances": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["component", "variant", "states", "tokens"],
+              "additionalProperties": false,
+              "properties": {
+                "component": { "type": "string", "description": "must exist in knowledge/components" },
+                "variant": { "type": "string" },
+                "states": {
+                  "type": "array",
+                  "items": { "enum": ["default","hover","pressed","focus","disabled","loading","error","empty"] }
+                },
+                "tokens": {
+                  "type": "object",
+                  "description": "token bindings by intent name, e.g. {\"background\":\"color.action.primary\"}",
+                  "additionalProperties": { "type": "string" }
+                },
+                "provenance": { "type": "string", "description": "Figma node id or canon ref" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "prototype": {
+      "type": "object",
+      "required": ["fidelity", "ref"],
+      "additionalProperties": false,
+      "properties": {
+        "fidelity": { "enum": ["react", "figma-make"] },
+        "ref": { "type": "string" }
+      }
+    },
+    "open_gaps": {
+      "type": "array",
+      "description": "needed patterns absent from canon — raised, never improvised",
+      "items": { "type": "string" }
+    }
+  }
+}

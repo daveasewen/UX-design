@@ -1,0 +1,46 @@
+{
+  "name": "Button",
+  "category": "atom",
+  "purpose": "Interactive trigger for a single decisive action. The most common interactive primitive — use exactly one primary per intent. Variant signals hierarchy.",
+  "props": [
+    { "name": "variant", "type": "enum", "values": ["primary", "secondary", "minimal", "destructive"], "default": "secondary" },
+    { "name": "size", "type": "enum", "values": ["sm", "md", "lg"], "default": "md" },
+    { "name": "state", "type": "enum", "values": ["default", "hover", "pressed", "focus", "disabled", "loading"], "default": "default" }
+  ],
+  "variants": [
+    { "name": "primary", "use": "the single most important action on a view" },
+    { "name": "secondary", "use": "supporting actions alongside a primary" },
+    { "name": "minimal", "use": "low-emphasis actions inside dense contexts" },
+    { "name": "destructive", "use": "irreversible actions; always paired with confirm" }
+  ],
+  "tokens": {
+    "background": "color.action.primary",
+    "text": "color.text.on-primary",
+    "spacing": "spacing.button",
+    "radius": "radius.none"
+  },
+  "relationships": {
+    "livesInside": ["Form", "Dialog", "Toolbar", "Card"],
+    "mustNotNeighbour": ["Button.primary (a second primary)"],
+    "commonPatterns": ["dialog confirm/cancel", "form submit", "toolbar action"]
+  },
+  "accessibility": {
+    "role": "button",
+    "keyboard": "Enter and Space activate; reachable in tab order",
+    "focus": "visible focus ring; never remove outline without replacement",
+    "screenReader": "accessible name from label or aria-label; loading state announced",
+    "relatedSC": ["2.1.1 Keyboard", "2.4.7 Focus Visible", "1.4.3 Contrast (Minimum)", "2.5.8 Target Size (Minimum)"]
+  },
+  "antiPatterns": [
+    "two primary buttons side by side",
+    "buttons used for navigation (use a link)",
+    "destructive variant without a confirm step",
+    "removing the focus ring",
+    "hard-coded colour instead of token binding"
+  ],
+  "provenance": {
+    "source": "both",
+    "figma_node": "SYNTHETIC:0:0",
+    "code_path": "ui-next/components/Button/Button.tsx"
+  }
+}

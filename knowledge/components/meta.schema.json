@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "promenaut/knowledge/component_meta",
+  "title": "component_meta",
+  "description": "One node in the component graph. The machine-readable layer that lets agents use the component without guessing. Edges are expressed via `relationships`.",
+  "type": "object",
+  "required": ["name", "category", "purpose", "props", "variants", "tokens", "relationships", "accessibility", "antiPatterns", "provenance"],
+  "additionalProperties": false,
+  "properties": {
+    "name": { "type": "string" },
+    "category": { "enum": ["atom", "molecule", "organism", "template", "page"] },
+    "purpose": { "type": "string", "description": "what it is for, in English the agent can reason about" },
+    "props": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "type"],
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string" },
+          "type": { "type": "string" },
+          "values": { "type": "array", "items": { "type": "string" } },
+          "default": {}
+        }
+      }
+    },
+    "variants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "use"],
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string" },
+          "use": { "type": "string", "description": "one-line reason this variant exists" }
+        }
+      }
+    },
+    "tokens": {
+      "type": "object",
+      "description": "token bindings by intent",
+      "additionalProperties": { "type": "string" }
+    },
+    "relationships": {
+      "type": "object",
+      "description": "graph edges",
+      "additionalProperties": false,
+      "properties": {
+        "livesInside": { "type": "array", "items": { "type": "string" } },
+        "mustNotNeighbour": { "type": "array", "items": { "type": "string" } },
+        "commonPatterns": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "accessibility": {
+      "type": "object",
+      "description": "how the component behaves for AT",
+      "additionalProperties": false,
+      "properties": {
+        "role": { "type": "string" },
+        "keyboard": { "type": "string" },
+        "focus": { "type": "string" },
+        "screenReader": { "type": "string" },
+        "relatedSC": { "type": "array", "items": { "type": "string" }, "description": "WCAG SCs this component must satisfy" }
+      }
+    },
+    "antiPatterns": {
+      "type": "array",
+      "description": "explicit 'never do this' rules — the most load-bearing field",
+      "items": { "type": "string" }
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["source"],
+      "additionalProperties": false,
+      "properties": {
+        "source": { "enum": ["figma", "code", "both"] },
+        "figma_node": { "type": "string" },
+        "code_path": { "type": "string" }
+      }
+    }
+  }
+}
