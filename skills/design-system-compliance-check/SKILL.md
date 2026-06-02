@@ -10,12 +10,12 @@ the primary failure mode of agentic design — *inventing* components and varian
 
 ## Inputs
 - A `design_candidate` (see `disciplines/ui-design/contracts/design_candidate.schema.json`).
-- The component graph (`knowledge/components/*.meta.json`) and tokens.
+- The component graph (`knowledge/components/*.meta.json`) and the token store (`knowledge/tokens/`).
 
 ## Procedure
 1. For each component instance, confirm `component` **exists** in canon. If not → violation `invented-component` (severity blocker).
 2. Confirm `variant` is a defined variant. If not → `invented-variant` (blocker).
-3. Confirm every visual value is a **token binding**, not a literal hex/px → else `hardcoded-value`.
+3. Confirm every visual value is a **token binding**, not a literal hex/px → else `hardcoded-value`. Then confirm each bound token **exists** in the token store (`knowledge/tokens/`) → else `invented-token` (severity blocker). A plausible-looking token name that isn't defined is as dangerous as an invented component.
 4. Check the instance against the component's `antiPatterns` and `relationships.mustNotNeighbour` → `anti-pattern`.
 5. Confirm required `states` are covered for interactive components → `missing-state`.
 6. Validate the candidate against its JSON Schema → `contract` violation on failure.

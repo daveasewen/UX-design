@@ -1,0 +1,42 @@
+{
+  "run_id": "dryrun-001",
+  "pass": false,
+  "score": 0.4,
+  "violations": [
+    {
+      "kind": "hardcoded-value",
+      "detail": "background bound to literal \"#DB0011\"",
+      "component": "Button",
+      "severity": "high"
+    },
+    {
+      "kind": "invented-token",
+      "detail": "background bound to \"color.surface.muted\" \u2014 not in token store",
+      "component": "Button",
+      "severity": "blocker"
+    },
+    {
+      "kind": "anti-pattern",
+      "detail": "two primary buttons side by side (mustNotNeighbour)",
+      "component": "Button",
+      "severity": "blocker"
+    }
+  ],
+  "recommendations": [
+    {
+      "issue": "two primaries",
+      "suggestion": "demote cancel to variant=secondary",
+      "location": "instance[1]"
+    },
+    {
+      "issue": "hardcoded background",
+      "suggestion": "bind to color.action.primary",
+      "location": "instance[0].tokens.background"
+    },
+    {
+      "issue": "invented token color.surface.muted",
+      "suggestion": "use color.surface.default",
+      "location": "instance[1].tokens.background"
+    }
+  ]
+}

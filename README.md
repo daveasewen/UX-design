@@ -40,10 +40,13 @@ for the full findings, recommendations, and proposed architecture.
 │   ├── errors.md              ← error taxonomy + recovery
 │   └── hitl.md                ← human-in-the-loop gates
 ├── disciplines/
-│   ├── ux-ui/                 ← the working pipeline (Dave's part)
-│   ├── research/              ← skeleton spec
-│   ├── cx/                    ← skeleton spec
-│   └── copywriting/           ← skeleton spec
+│   ├── ux-design/             ← working pipeline (Define → Develop)
+│   ├── ui-design/             ← working pipeline (Develop → Deliver, Dave's part)
+│   ├── ux-research/           ← skeleton spec
+│   ├── cx-research/           ← skeleton spec
+│   ├── cx-design/             ← skeleton spec (cross-cutting)
+│   ├── ux-copy/               ← skeleton spec
+│   └── inputs/                ← BA/PO cross-cutting inputs
 ├── knowledge/                 ← design-system canon, tokens, component metadata
 └── skills/                    ← portable Agent Skills (SKILL.md folders)
 ```

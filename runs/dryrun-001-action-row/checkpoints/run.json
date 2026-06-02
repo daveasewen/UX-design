@@ -1,0 +1,55 @@
+{
+  "run_id": "dryrun-001",
+  "created": "2026-06-02T15:30:43",
+  "token_store_loaded": [
+    "color.action.primary",
+    "color.surface.default",
+    "color.surface.subtle",
+    "color.text.default",
+    "color.text.on-primary",
+    "color.text.subtle",
+    "radius.none",
+    "spacing.button"
+  ],
+  "steps": [
+    {
+      "step": "framing",
+      "gate": "A (HITL)",
+      "out": "00-brief.json"
+    },
+    {
+      "step": "generator.v1",
+      "out": "01-design_candidate.v1.json"
+    },
+    {
+      "step": "critic.v1",
+      "gate": "craft",
+      "result": "fail",
+      "out": "02-craft_review.v1.json"
+    },
+    {
+      "step": "generator.v2",
+      "out": "03-design_candidate.v2.json"
+    },
+    {
+      "step": "critic.v2",
+      "gate": "craft",
+      "result": "pass",
+      "out": "04-craft_review.v2.json"
+    },
+    {
+      "step": "heuristic||a11y||brand",
+      "gate": "taste (HITL)",
+      "out": [
+        "05",
+        "06",
+        "07"
+      ]
+    },
+    {
+      "step": "handoff",
+      "gate": "B (HITL)",
+      "out": "08-handoff_spec.json"
+    }
+  ]
+}

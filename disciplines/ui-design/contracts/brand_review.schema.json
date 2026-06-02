@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "promenaut/ui-design/brand_review",
+  "title": "brand_review",
+  "description": "Output of the Brand reviewer. Checks against a named brand/experience profile (e.g. the GTB Swiss system). Runs in parallel; joins at the taste gate.",
+  "type": "object",
+  "required": ["run_id", "pass", "checks"],
+  "additionalProperties": false,
+  "properties": {
+    "run_id": { "type": "string" },
+    "profile": { "type": "string", "description": "brand profile applied, e.g. 'GTB Swiss'" },
+    "pass": { "type": "boolean", "description": "false if any check fails; soft signal — the taste gate is the human arbiter" },
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["principle", "result"],
+        "additionalProperties": false,
+        "properties": {
+          "principle": { "type": "string", "description": "brand principle, e.g. 'red as accent only'" },
+          "result": { "enum": ["pass", "fail", "na"] },
+          "note": { "type": "string" },
+          "severity": { "enum": ["minor", "serious", "critical"] }
+        }
+      }
+    }
+  }
+}

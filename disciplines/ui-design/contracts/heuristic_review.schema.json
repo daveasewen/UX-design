@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "promenaut/ui-design/heuristic_review",
+  "title": "heuristic_review",
+  "description": "Output of the Heuristic reviewer. Nielsen's 10 heuristics, each issue severity-rated 0-4. Runs in parallel; joins at the taste gate.",
+  "type": "object",
+  "required": ["run_id", "findings"],
+  "additionalProperties": false,
+  "properties": {
+    "run_id": { "type": "string" },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["heuristic", "issue", "severity", "recommendation"],
+        "additionalProperties": false,
+        "properties": {
+          "heuristic": { "type": "string", "description": "e.g. 'H1 Visibility of system status'" },
+          "issue": { "type": "string" },
+          "location": { "type": "string" },
+          "severity": { "type": "integer", "minimum": 0, "maximum": 4, "description": "0 not a problem … 4 catastrophe" },
+          "recommendation": { "type": "string" }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "description": "rolled-up counts to prioritise the taste-gate conversation",
+      "additionalProperties": true
+    }
+  }
+}

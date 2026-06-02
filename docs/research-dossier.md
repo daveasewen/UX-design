@@ -286,7 +286,7 @@ config value so the same harness can target 2.1 or 2.2 per client.
 discipline-specific **pipelines** that plug into it.
 
 ```
-HARNESS (reusable)                         DISCIPLINE PIPELINE (e.g. ux-ui)
+HARNESS (reusable)                         DISCIPLINE PIPELINE (e.g. ui-design)
 ┌─────────────────────────────┐            ┌──────────────────────────────┐
 │ Orchestrator                │            │ Spokes (single-responsibility)│
 │  · state · routing          │◀──status──▶│  Framing → Generator →        │
@@ -305,13 +305,14 @@ HARNESS (reusable)                         DISCIPLINE PIPELINE (e.g. ux-ui)
                                             └──────────────────────────────┘
 ```
 
-**Full process skeleton** (specced, not all built now): `research/`, `ux-ui/`
-(working), `cx/`, `copywriting/` — each is a thin pipeline definition over the
-same harness, with its own spokes, gates and contracts. This is the "template
-for other parts of the process" you wanted.
+**Full process skeleton** (specced, not all built now): `ux-design/` + `ui-design/`
+(working), with `ux-research/`, `cx-research/`, `cx-design/`, `ux-copy/` as
+skeletons — each is a thin pipeline definition over the same harness, with its own
+spokes, gates and contracts. This is the "template for other parts of the process"
+you wanted.
 
 **What we build first (this/next session, on this machine, with synthetic +
-public data):** the `harness/` spec, the `ux-ui/` pipeline definition, the
+public data):** the `harness/` spec, the `ux-design/` + `ui-design/` pipeline definitions, the
 component-metadata + compliance-graph schemas, the root `AGENTS.md`, and 1–2
 Skills (e.g. `design-system-compliance-check`, `heuristic-review`) — all
 dry-runnable without company assets. **What waits for the agency machine:**
@@ -339,14 +340,18 @@ promenaut-design-workflow/
 │       ├── memory.md               # persona/learning store + drift audit
 │       └── checkpoints.md
 ├── disciplines/
-│   ├── ux-ui/                      # WORKING
+│   ├── ux-design/                  # WORKING (Define → Develop)
+│   │   └── pipeline.md
+│   ├── ui-design/                  # WORKING (Develop → Deliver)
 │   │   ├── AGENTS.md               # local overrides
 │   │   ├── pipeline.md
-│   │   ├── spokes/                 # framing, generator, critic, a11y, …
+│   │   ├── spokes.md               # framing, generator, critic, a11y, …
 │   │   └── contracts/              # *.schema.json typed I/O
-│   ├── research/  (skeleton)
-│   ├── cx/        (skeleton)
-│   └── copywriting/ (skeleton)
+│   ├── ux-research/   (skeleton)
+│   ├── cx-research/   (skeleton)
+│   ├── cx-design/     (skeleton)
+│   ├── ux-copy/       (skeleton)
+│   └── inputs/        # BA/PO cross-cutting inputs
 ├── knowledge/                      # built on the agency machine
 │   ├── components/                 # <component>/meta.json (the component KG)
 │   ├── tokens/                     # DTCG token store
@@ -374,14 +379,14 @@ Carried forward (some echo HDS's own open questions, which transfer directly):
 4. **Execution runtime on Promenaut** — do they expose an orchestrator we target, or do we ship a portable runtime? (Affects how thin the orchestrator spec must be.)
 5. **Prototype fidelity target** — production-grade React from the real library, or standards-compliant Figma Make as the fallback? (You prefer usable code; confirm per client.)
 6. **WCAG target per client** — 2.2 AA default, 2.1 AA where contractually pinned.
-7. **How much of `research/`, `cx/`, `copywriting/` to skeleton now** vs after the UX pipeline proves the harness.
+7. **How much of `ux-research/`, `cx-research/`, `cx-design/`, `ux-copy/` to skeleton now** vs after the UX pipeline proves the harness.
 
 ---
 
 ## 12. Recommended next steps
 
 1. **Confirm** the architecture (§9), repo structure (§10), and the open questions (§11).
-2. **Scaffold the repo** here with the harness spec, the `ux-ui` pipeline definition, contracts/schemas, root `AGENTS.md`, and 1–2 Skills — all dry-runnable with synthetic data.
+2. **Scaffold the repo** here with the harness spec, the `ux-design` + `ui-design` pipeline definitions, contracts/schemas, root `AGENTS.md`, and 1–2 Skills — all dry-runnable with synthetic data.
 3. **Dry-run** the UX build-&-review pipeline end-to-end on a synthetic component set + public standards to validate the contracts and gates.
 4. **On the agency machine (Monday):** ingest the real design system, Figma library and React components into `knowledge/`; wire Figma MCP + Code Connect; re-run the pipeline against real assets.
 5. **Hand to Promenaut:** the repo is already in their likely-native (Claude) idiom and conforms to open standards, so handoff is a pull, not a port.

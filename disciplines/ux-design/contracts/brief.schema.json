@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "promenaut/ux-design/brief",
+  "title": "brief",
+  "description": "Output of the Framing spoke (ux-design). Approved at Gate A before structure work. Consumed by ui-design's Generator via brief_ref.",
+  "type": "object",
+  "required": ["run_id", "title", "problem", "success_criteria"],
+  "additionalProperties": false,
+  "properties": {
+    "run_id": { "type": "string" },
+    "title": { "type": "string" },
+    "problem": { "type": "string", "description": "the user/business problem this design solves" },
+    "success_criteria": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" },
+      "description": "measurable or checkable conditions for done; reused at the final gate"
+    },
+    "scope": { "type": "string", "description": "explicit in/out of scope for this run" },
+    "constraints": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "BA/PO process, data or regulatory constraints carried into generation"
+    },
+    "requirements_ref": { "type": "string", "description": "pointer to upstream requirements (ux-research / BA)" }
+  }
+}
