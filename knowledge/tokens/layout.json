@@ -1,0 +1,77 @@
+{
+  "$description": "Layout foundations — web breakpoints, responsive grid and scales. Ingested from HSBC Common Toolkit 'Gaps and edits' branch (fileKey Cgbtrmfp15ruNFkIAClpkI), page 'Breakpoints, grids and scales', web guide node 13967:90189. DTCG-flavoured. NOTE: this branch states scales are applied differently from the base Common Toolkit — see _INGEST-NOTES.md.",
+  "breakpoint": {
+    "xs": { "$value": "320px", "$type": "dimension", "$description": "Extra Small (fluid). Range 320–479px. Uses scale-1." },
+    "s":  { "$value": "480px", "$type": "dimension", "$description": "Small (fluid). Range 480–759px. Uses scale-1." },
+    "ms": { "$value": "760px", "$type": "dimension", "$description": "Medium Small (fluid). Range 760–959px. Uses scale-2." },
+    "m":  { "$value": "960px", "$type": "dimension", "$description": "Medium (fluid). Range 960–1279px. Uses scale-2." },
+    "l":  { "$value": "1280px", "$type": "dimension", "$description": "Large (fluid). Range 1280–1599px. Uses scale-3. Content width fixed at 1280px; outer space grows; backgrounds/images may flow wider." },
+    "xl": { "$value": "1600px", "$type": "dimension", "$description": "Extra Large. 1600px+. Uses scale-3. Marketing sites only — confirm with design lead. Main layout fixes at 1600; masthead/footer stay fluid past 1600." }
+  },
+  "grid": {
+    "main": {
+      "$description": "Main content area, masthead and footer. Columns are fluid; gutter and margin are fixed per breakpoint. The source table gives one 'margins and gutters' figure per breakpoint, so margin and gutter share the same value in the main layout. Margin and gutter are kept as SEPARATE tokens here because the margin values are expected to change (per Dave).",
+      "columns": { "$value": 12, "$type": "number" },
+      "gutter": {
+        "xs": { "$value": "16px", "$type": "dimension" },
+        "s":  { "$value": "16px", "$type": "dimension" },
+        "ms": { "$value": "20px", "$type": "dimension" },
+        "m":  { "$value": "20px", "$type": "dimension" },
+        "l":  { "$value": "40px", "$type": "dimension" },
+        "xl": { "$value": "40px", "$type": "dimension" }
+      },
+      "margin": {
+        "xs": { "$value": "16px", "$type": "dimension" },
+        "s":  { "$value": "16px", "$type": "dimension" },
+        "ms": { "$value": "20px", "$type": "dimension" },
+        "m":  { "$value": "20px", "$type": "dimension" },
+        "l":  { "$value": "40px", "$type": "dimension", "$description": "Minimum margin; on Large the content width fixes at 1280px and outer space grows beyond this margin." },
+        "xl": { "$value": "40px", "$type": "dimension", "$description": "Main layout fixes at 1600px; masthead/footer stay fluid past 1600px." }
+      }
+    },
+    "flyout": {
+      "$description": "Masthead flyout — fewer columns and an explicit margin/gutter split in the source.",
+      "columns": { "$value": 4, "$type": "number" },
+      "gutter": {
+        "xs": { "$value": "16px", "$type": "dimension" },
+        "s":  { "$value": "16px", "$type": "dimension" },
+        "ms": { "$value": "20px", "$type": "dimension" },
+        "m":  { "$value": "20px", "$type": "dimension" },
+        "l":  { "$value": "0px",  "$type": "dimension" },
+        "xl": { "$value": "0px",  "$type": "dimension" }
+      },
+      "margin": {
+        "xs": { "$value": "0px",  "$type": "dimension" },
+        "s":  { "$value": "0px",  "$type": "dimension" },
+        "ms": { "$value": "0px",  "$type": "dimension" },
+        "m":  { "$value": "0px",  "$type": "dimension" },
+        "l":  { "$value": "40px", "$type": "dimension" },
+        "xl": { "$value": "40px", "$type": "dimension" }
+      }
+    }
+  },
+  "scale": {
+    "scale-1": { "$value": ["xs", "s"], "$type": "other", "$description": "Font + space scale applied at XS and S breakpoints." },
+    "scale-2": { "$value": ["ms", "m"], "$type": "other", "$description": "Font + space scale applied at MS and M breakpoints." },
+    "scale-3": { "$value": ["l", "xl"], "$type": "other", "$description": "Font + space scale applied at L and XL breakpoints." }
+  },
+  "layout": {
+    "web": {
+      "gutter": { "$value": "40px", "$type": "dimension", "$description": "layout/web/gutter variable (largest-breakpoint gutter)." },
+      "margin": { "$value": "16px", "$type": "dimension", "$description": "layout/web/margin variable (base/default web margin; per-breakpoint margins are in grid.main.margin / grid.flyout.margin)." }
+    }
+  },
+  "gap": {
+    "responsive": {
+      "content": {
+        "xsmall":  { "$value": "12px", "$type": "dimension" },
+        "small":   { "$value": "8px",  "$type": "dimension" },
+        "xxlarge": { "$value": "32px", "$type": "dimension" }
+      }
+    },
+    "fixed": {
+      "content":    { "small":  { "$value": "8px",  "$type": "dimension" } },
+      "subsection": { "xsmall": { "$value": "24px", "$type": "dimension" } }
+    }
+  }
+}
