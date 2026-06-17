@@ -1,0 +1,75 @@
+{
+  "name": "Cards",
+  "category": "molecule",
+  "purpose": "A family of container components that group related content (and optionally an action) into a bordered surface. Five types covering interactive and static use, with and without imagery.",
+  "$family": "This file covers the whole Card family; each type is a separate Figma component.",
+  "props": [
+    { "name": "type", "type": "enum", "values": ["actions", "basic", "basic-non-interactive", "image-with-border", "image-without-border"], "default": "basic" },
+    { "name": "state", "type": "enum", "values": ["default", "hover", "pressed"], "default": "default", "$note": "Interactive types only (basic, actions). Non-interactive/image-static types are default-only." },
+    { "name": "content", "type": "enum", "values": ["iconTitleDescription", "iconDescription", "iconTitle", "titleDescription", "title"], "default": "titleDescription", "$note": "Content combinations seen on actions/basic cards." }
+  ],
+  "variants": [
+    { "name": "actions", "use": "Card presenting an item with an action affordance (chevron). Content combos: icon/title/description in various pairings. Static surface (background/default)." },
+    { "name": "basic", "use": "Interactive card (default/hover/pressed). Background shifts via tertiary/background tints on interaction." },
+    { "name": "basic-non-interactive", "use": "Static version of basic — no hover/pressed; background/default." },
+    { "name": "image-with-border", "use": "Card with an image plus headline (font-3) and optional headline link; bordered. Responsive image scales (3/5/6/7/8/9)." },
+    { "name": "image-without-border", "use": "Image card without a border; responsive image scales." }
+  ],
+  "tokens": {
+    "common": {
+      "border": "border/subtle",
+      "border-width": "border-width/small",
+      "padding": "padding/responsive/medium (16) + padding/fixed/medium (16); large 20 on image cards",
+      "title": "text/default @ font-5/medium",
+      "description": "font-5/light (font-6/light on actions cards)",
+      "icon": "icon/default",
+      "link-arrow-colour": "color/primary",
+      "arrow-icon-size": "icon/arrow/font-5 (and font-3 on headline cards)",
+      "arrow-padding": "padding/arrow/font-5 (and font-3)"
+    },
+    "actions": { "background": "background/default" },
+    "basic": {
+      "background-default": "tertiary/background/default",
+      "background-hover": "tertiary/background/hover",
+      "background-pressed": "tertiary/background/pressed",
+      "text-reverse-on-pressed": "text/reverse + icon/default-reverse",
+      "depricate": "tertiary/text/default (depricate)"
+    },
+    "basic-non-interactive": { "background": "background/default" },
+    "image-with-border": { "background": "background/default", "headline": "font-3/regular" },
+    "image-without-border": { "background": "background/default (expected — not exhaustively queried)" }
+  },
+  "relationships": {
+    "livesInside": ["Page", "Grid", "List", "Carousel", "Dashboard"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["card grid", "content teaser linking to detail", "selectable option card"]
+  },
+  "accessibility": {
+    "interactive": "REVIEW (inferred): an interactive card should be a single focusable control (or have one clear primary link); avoid nested interactive elements that create multiple tab stops with unclear order",
+    "focus": "Visible focus state on interactive cards (basic/actions); use native focus",
+    "pressedContrast": "On pressed, basic card background goes #767676 and text/icon flip to reverse — ensure contrast holds",
+    "relatedSC": ["2.1.1 Keyboard", "2.4.7 Focus Visible", "1.4.3 Contrast (Minimum)", "1.4.11 Non-text Contrast"]
+  },
+  "antiPatterns": [
+    "REVIEW (inferred): nesting multiple independent links/buttons inside an interactive (basic) card",
+    "REVIEW (inferred): using an interactive card style for non-interactive content (use basic-non-interactive)",
+    "Leaving Card Basic bound to tertiary/text/default (depricate) — rebind to text/default"
+  ],
+  "tokenValidation": {
+    "date": "2026-06-17",
+    "against": "token store re-based on Figma native variable export",
+    "result": "PASS — 4 of 5 types clean; 1 deprecated binding on Card Basic",
+    "depricateUsage": {
+      "tokens": [ { "token": "tertiary/text/default (depricate)", "usedBy": "Card Basic (interactive)", "value": "#545454", "rebind": "text/default (#333333 — value change, confirm)" } ],
+      "note": "Recurring deprecated token — also used by Button tertiary/quaternary. Interactive cards use tertiary/background/* for state tints (like quaternary buttons); static/image cards use background/default and are clean.",
+      "auditedNodes": ["Card Basic 2298:52812", "Card Actions 2298:53366", "Card Basic non-interactive 796:79732", "Card Image with border 862:21004"],
+      "notQueried": ["Card Image without border 257:77227 — expected clean (static image card)"]
+    },
+    "ignored": "specs/* annotation scaffolding."
+  },
+  "provenance": {
+    "source": "figma",
+    "figma_node": "Cgbtrmfp15ruNFkIAClpkI:2298:53278",
+    "code_path": ""
+  }
+}

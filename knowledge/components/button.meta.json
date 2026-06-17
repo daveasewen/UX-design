@@ -1,0 +1,100 @@
+{
+  "name": "Button",
+  "category": "atom",
+  "purpose": "A control that triggers an action. Four emphasis levels form a hierarchy — primary (highest emphasis, the main action), secondary, tertiary (outlined), and quaternary (lowest emphasis / borderless). Available on-light and on-dark, in a default and a Large size.",
+  "props": [
+    { "name": "type", "type": "enum", "values": ["primary", "secondary", "tertiary", "quaternary"], "default": "primary" },
+    { "name": "state", "type": "enum", "values": ["default", "hover", "pressed", "disabled", "processing", "success"], "default": "default", "$note": "processing + success seen on primary (rag/success); confirm which states apply to each type." },
+    { "name": "size", "type": "enum", "values": ["default", "large"], "default": "default", "$note": "default height 44px; 'Large' variant exists for primary (and likely all types) — confirm Large height." },
+    { "name": "surface", "type": "enum", "values": ["on-light", "on-dark"], "default": "on-light" }
+  ],
+  "variants": [
+    { "name": "primary", "use": "Highest-emphasis main action. Solid brand-red fill." },
+    { "name": "secondary", "use": "Alternative action. Solid black/near-black fill." },
+    { "name": "tertiary", "use": "Lower-emphasis action. Outlined (border) on a white fill." },
+    { "name": "quaternary", "use": "Lowest-emphasis / borderless (ghost) action; shares tertiary background tints on hover/press." }
+  ],
+  "tokens": {
+    "type-style": "font-5/medium (16px medium)",
+    "font-family": "typography/font-family/default",
+    "primary": {
+      "label": "text/reverse", "icon": "icon/default-reverse",
+      "background-default": "primary/background/default",
+      "background-hover": "primary/background/hover",
+      "background-pressed": "primary/background/pressed",
+      "background-disabled": "primary/background/disabled",
+      "success": "rag/success",
+      "depricate (on-light)": "interactive (depricate)/on-light/surface/brand-1/default"
+    },
+    "secondary": {
+      "label": "text/reverse", "icon": "icon/default-reverse",
+      "background-default": "secondary/background/default",
+      "background-hover": "secondary/background/hover",
+      "background-pressed": "secondary/background/pressed",
+      "background-disabled": "secondary/background/disabled"
+    },
+    "tertiary": {
+      "label": "text/default", "label-disabled": "text/disabled",
+      "icon": "icon/default", "icon-disabled": "icon/disabled",
+      "border-default": "tertiary/border/default", "border-disabled": "tertiary/border/disabled",
+      "background-default": "tertiary/background/default",
+      "background-hover": "tertiary/background/hover",
+      "background-pressed": "tertiary/background/pressed",
+      "background-disabled": "tertiary/background/disabled",
+      "depricate": "tertiary/text/default (depricate)"
+    },
+    "quaternary": {
+      "label": "text/default", "label-disabled": "text/disabled",
+      "icon": "icon/default", "icon-disabled": "icon/disabled",
+      "background-hover": "tertiary/background/hover",
+      "background-pressed": "tertiary/background/pressed",
+      "depricate": "tertiary/text/default (depricate)"
+    }
+  },
+  "relationships": {
+    "livesInside": ["Form", "Card", "Dialog/Modal", "Page header", "Toolbar", "Banner"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["primary + secondary action pair", "form submit", "dialog confirm/cancel"]
+  },
+  "accessibility": {
+    "role": "button (or link styled as button when it navigates)",
+    "keyboard": "Reachable in tab order; Enter/Space activate",
+    "focus": "Visible focus outline; use default native focus states",
+    "states": "Disabled state must be programmatically exposed; processing/loading should announce status",
+    "relatedSC": ["2.1.1 Keyboard", "2.4.7 Focus Visible", "1.4.3 Contrast (Minimum)", "1.4.11 Non-text Contrast", "2.5.5 Target Size", "4.1.2 Name, Role, Value"]
+  },
+  "antiPatterns": [
+    "Using more than one primary button in a single context (dilutes the action hierarchy)",
+    "REVIEW (inferred): using a tertiary/quaternary button for the main action where a primary is expected",
+    "REVIEW (inferred): relying on the deprecated on-dark surface tokens long-term (see tokenValidation — on-dark needs migration)"
+  ],
+  "tokenValidation": {
+    "date": "2026-06-17",
+    "against": "token store re-based on Figma native variable export",
+    "result": "PASS (values resolve) — on-light mostly migrated; ON-DARK heavily deprecated",
+    "depricateUsage": {
+      "on-light": [
+        { "token": "interactive (depricate)/on-light/surface/brand-1/default", "usedBy": "primary", "value": "#DB0011", "rebind": "primary/background/default (identical value — clean rebind)" },
+        { "token": "tertiary/text/default (depricate)", "usedBy": "tertiary, quaternary", "value": "#545454", "rebind": "text/default (#333333) — NOTE value changes 545454→333333; confirm intended" }
+      ],
+      "on-dark": {
+        "summary": "On-dark Button primary (641:103685) is almost entirely bound to deprecated tokens — every surface state via interactive (depricate)/on-dark/surface/brand-1/{default,hover,pressed,disabled,processing}, plus text/icon on-dark(depricate) hover/disabled/processing and a couple of on-light(depricate) pressed tokens, and rag (depricate)/success. Only text/reverse + icon/default-reverse are live.",
+        "tokens": [
+          "interactive (depricate)/on-dark/surface/brand-1/default|hover|pressed|disabled|processing",
+          "text/on-dark (depricate)/hover, text/on-dark (depricate)/disabled-2",
+          "icon/on-dark (depricate)/hover, /disabled-2, /processing",
+          "text/on-light (depricate)/pressed, icon/on-light (depricate)/pressed-1",
+          "rag/icon (depricate)/success/icon, rag/surface (depricate)/success/default-1"
+        ],
+        "migrationPath": "The live primary/background/* and rag/success tokens are MODE-AWARE (carry both light & dark values), so on-dark buttons should be rebound to the SAME semantic tokens as on-light (primary/background/*, text/reverse, rag/success) rather than the separate deprecated on-dark surface set. This is the single biggest deprecated-token cluster found so far — escalate as a button-dark migration task before bulk-delete.",
+        "auditedNodes": ["On Light primary 86:274, secondary 96:357, tertiary 97:684, quaternary 211:79907", "On Dark primary 641:103685 (representative — tertiary/quaternary on-dark likely similar, not exhaustively queried)"]
+      }
+    },
+    "ignored": "specs/* (specs-surface-white/dark, specs-component-stroke #7B61FF) are Figma annotation scaffolding."
+  },
+  "provenance": {
+    "source": "figma",
+    "figma_node": "Cgbtrmfp15ruNFkIAClpkI:64:90",
+    "code_path": ""
+  }
+}
