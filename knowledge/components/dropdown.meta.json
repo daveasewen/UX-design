@@ -1,0 +1,81 @@
+{
+  "name": "Dropdown",
+  "category": "molecule",
+  "purpose": "Lets a user choose one or more options from a list. Comes in a non-native (custom, fully styled) family and a native (browser select) family. The trigger opens a list; items can be single-select, filterable single-select, or multi-select.",
+  "props": [
+    { "name": "family", "type": "enum", "values": ["non-native", "native"], "default": "non-native", "$note": "non-native = custom styled menu; native = OS/browser select control." },
+    { "name": "selection", "type": "enum", "values": ["single-select", "filterable-single-select", "multi-select"], "default": "single-select", "$note": "filterable + multi-select are non-native only." },
+    { "name": "open", "type": "boolean", "values": ["false", "true"], "default": "false" },
+    { "name": "state", "type": "enum", "values": ["default", "hover", "active", "active-message", "completed", "disabled", "error"], "default": "default" },
+    { "name": "itemSelection", "type": "enum", "values": ["unselected", "selected"], "default": "unselected", "$note": "list-item level" },
+    { "name": "itemState", "type": "enum", "values": ["default", "hover", "pressed"], "default": "default", "$note": "list-item level" }
+  ],
+  "variants": [
+    { "name": "single-select (non-native)", "use": "Custom dropdown, one option." },
+    { "name": "filterable single-select (non-native)", "use": "Custom dropdown with a filter/search field; adds an 'active message' state." },
+    { "name": "multi-select (non-native)", "use": "Custom dropdown, multiple options (checkbox-style list items)." },
+    { "name": "native", "use": "Browser-native select; fewer states (default/hover/completed/disabled/error)." }
+  ],
+  "tokens": {
+    "trigger-text": "text/default",
+    "type": "font-5 (medium label / light value); native menu items font-6/regular",
+    "icon": "icon/default",
+    "icon-reverse": "icon/default-reverse",
+    "field-background": "form/background/default (transparent #ffffff00), hover form/background/hover, pressed form/background/pressed",
+    "field-border": "form/border/default (#767676), active form/border/active (#000000), disabled form/border/disabled (#d7d8d6)",
+    "menu-surface": "background/default",
+    "menu-elevation": "elevation/functional (drop shadow blur 16)",
+    "menu-dividers": "divider/border/section, divider/border/subsection",
+    "scrollbar": "scrollbar/background, scrollbar/foreground",
+    "disabled-text": "text/disabled",
+    "disabled-icon": "icon/disabled",
+    "error": "rag/error (and an inner-shadow 'bottom stroke' for the error field)",
+    "list-item": "form/background/default|hover|pressed, text/default, text/reverse (on pressed), icon/default"
+  },
+  "relationships": {
+    "livesInside": ["Form", "Filter bar", "Toolbar", "Dialog"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["form field select", "filter control", "multi-select facet list"]
+  },
+  "accessibility": {
+    "keyboard": "REVIEW (inferred): full keyboard operation — open/close, arrow navigation, type-ahead, Enter/Escape; native family inherits browser behaviour",
+    "roles": "REVIEW (inferred): non-native must implement combobox/listbox semantics (aria-expanded, aria-activedescendant, option roles, aria-selected); prefer native where possible for robustness",
+    "states": "Disabled and error states exposed programmatically; error not conveyed by colour/inner-shadow alone — pair with a message (the 'active message'/error message states exist)",
+    "targetArea": "List items 44px tall (meets target size)",
+    "relatedSC": ["1.3.1", "1.4.1 Use of Color", "1.4.11 Non-text Contrast", "2.1.1 Keyboard", "4.1.2 Name, Role, Value"]
+  },
+  "antiPatterns": [
+    "REVIEW (inferred): using a non-native dropdown without full combobox keyboard/ARIA support where native would be more robust",
+    "Conveying error via the red bottom-stroke alone without an error message",
+    "Leaving the trigger bound to deprecated interactive/* surface & border tokens — migrate to the form/* family (see tokenValidation)"
+  ],
+  "tokenValidation": {
+    "date": "2026-06-17",
+    "against": "token store re-based on Figma native variable export",
+    "result": "PASS (values resolve) — significant deprecated usage on the triggers; the live form/* family is the migration target",
+    "depricateUsage": {
+      "summary": "Non-native trigger uses form/* for most states but still binds a few deprecated tokens; the NATIVE trigger is less migrated and binds interactive (depricate)/* surface+border heavily. List items are clean.",
+      "tokens": [
+        { "token": "interactive (depricate)/on-light/border/active/default", "value": "#000000", "rebind": "form/border/active" },
+        { "token": "interactive (depricate)/on-light/border/high-contrast/default", "value": "#767676", "rebind": "form/border/default" },
+        { "token": "interactive (depricate)/on-light/border/low-contrast/disabled", "value": "#d7d8d6", "rebind": "form/border/disabled" },
+        { "token": "interactive (depricate)/on-light/surface/primary/hover", "value": "#f3f3f3", "rebind": "form/background/hover" },
+        { "token": "interactive (depricate)/on-light/surface/primary/default", "value": "#ffffff", "rebind": "background/default (or form surface)" },
+        { "token": "icon/on-light (depricate)/hover-1 (depricate)", "value": "#333333", "rebind": "icon/default" },
+        { "token": "rag/border (depricate)/error/default", "value": "#a8000b", "rebind": "rag/error" },
+        { "token": "non-interactive (depricate)/surface/neutral-6", "value": "#767676", "rebind": "REVIEW (form/border/default or scrollbar/foreground — same value)" },
+        { "token": "non-interactive (depricate)/surface/neutral-1", "value": "#f3f3f3", "rebind": "REVIEW (form/background/hover — same value)" }
+      ],
+      "migrationPath": "Most have clean form/* (or rag/error, icon/default) rebinds — migrate the dropdown triggers, especially the NATIVE family, onto the form/* token set. Only the two non-interactive surface neutrals need a confirmed target.",
+      "auditedNodes": ["Dropdown single-select non-native 157:4858", "Dropdown native 2462:78456", ".Single-select items 160:6091 (clean)"],
+      "notExhaustive": "Filterable single-select and multi-select triggers not individually queried — expected similar to single-select non-native."
+    },
+    "newTokenGroupsSeen": ["form/* (field bg/border)", "scrollbar/*", "elevation/functional (menu shadow)"],
+    "ignored": "specs/* annotation scaffolding."
+  },
+  "provenance": {
+    "source": "figma",
+    "figma_node": "Cgbtrmfp15ruNFkIAClpkI:45024:56778",
+    "code_path": ""
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "name": "Input fields",
+  "category": "molecule",
+  "purpose": "Text-entry form controls and their label. Family: single-line input (standard + large), multi-line input, date-picker input (with calendar day cells, nav arrows, and a modal/dropdown calendar), and the input label. Full state set: default, hover, active, completed, disabled, error.",
+  "$family": "Covers the Input fields section; each is a separate Figma component.",
+  "props": [
+    { "name": "type", "type": "enum", "values": ["single-line", "single-line-large", "multi-line", "date-picker", "input-label"], "default": "single-line" },
+    { "name": "state", "type": "enum", "values": ["default", "hover", "active", "completed", "disabled", "error"], "default": "default", "$note": "Date-picker input adds a 'date picker' (open) state. Input label: default/disabled only." },
+    { "name": "dateCellState", "type": "enum", "values": ["unselected", "hover", "pressed", "selected", "disabled", "unavailable"], "default": "unselected", "$note": ".Date calendar day cell." }
+  ],
+  "variants": [
+    { "name": "single-line", "use": "Standard one-line text field (default + Large size)." },
+    { "name": "multi-line", "use": "Multi-line textarea; same states." },
+    { "name": "date-picker", "use": "Input that opens a calendar (modal on small screens / dropdown on web). Includes .Date day cells, .Arrow month nav, and the calendar overlay (elevation/functional shadow)." },
+    { "name": "input-label", "use": "Field label above an input; default/disabled." }
+  ],
+  "tokens": {
+    "input-text": "text/default @ font-5/medium (value) / font-5/light (placeholder); helper/error text font-7",
+    "label": "text/default (input label); disabled text/disabled",
+    "icon": "icon/default; disabled icon/disabled; reverse icon/default-reverse",
+    "field-background": "form/background/default (transparent #ffffff00), hover form/background/hover (#f3f3f3), pressed form/background/pressed (#767676 — date cell)",
+    "field-border": "form/border/default (#767676), active form/border/active (#000000), disabled form/border/disabled (#d7d8d6)",
+    "active-underline (DEPRECATED effect)": "bottom-stroke inner-shadow using interactive (depricate)/on-light/border/active/default",
+    "error-underline (DEPRECATED effect)": "bottom-stroke inner-shadow using rag/border (depricate)/error/default",
+    "error": "rag/error",
+    "calendar-overlay": "background/default + elevation/functional (drop shadow blur 16) + divider/border/subsection",
+    "date-cell": "form/background/* states, form/border/active (selected), text/default, text/reverse (selected), text/disabled"
+  },
+  "relationships": {
+    "livesInside": ["Form", "Field set", "Dialog", "Filter"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["labelled text field with helper/error", "date entry with calendar", "multi-line comment/notes"]
+  },
+  "accessibility": {
+    "label": "Every input needs a programmatic label (input-label component); placeholder is not a label",
+    "error": "Error state must pair the red bottom-stroke with a text error message (font-7) and aria-describedby / aria-invalid — not colour alone",
+    "focus": "Visible focus; active state shows a stronger bottom stroke",
+    "datePicker": "REVIEW (inferred): calendar must be keyboard-navigable (arrow keys, Esc), day cells expose selected/disabled/unavailable states to AT",
+    "targetArea": "Date cells/arrows 40px+; ensure ≥44px hit target where possible",
+    "relatedSC": ["1.3.1", "1.3.5 Identify Input Purpose", "1.4.1 Use of Color", "3.3.1 Error Identification", "3.3.2 Labels or Instructions", "4.1.2", "2.1.1 Keyboard"]
+  },
+  "antiPatterns": [
+    "Using placeholder text as the only label",
+    "Showing the error bottom-stroke without an accompanying error message",
+    "Leaving the active/error bottom-stroke effects bound to the deprecated tokens — rebind to form/border/active and rag/error (see tokenValidation)"
+  ],
+  "tokenValidation": {
+    "date": "2026-06-17",
+    "against": "token store re-based on Figma native variable export",
+    "result": "PASS — migrated to form/*; 2 deprecated effect colours (clean rebinds); calendar cell clean",
+    "depricateUsage": {
+      "tokens": [
+        { "token": "interactive (depricate)/on-light/border/active/default", "value": "#000000", "usedBy": "active bottom-stroke effect (single/multi/date inputs)", "rebind": "form/border/active" },
+        { "token": "rag/border (depricate)/error/default", "value": "#A8000B", "usedBy": "error bottom-stroke effect", "rebind": "rag/error" }
+      ],
+      "note": "Same pattern as Dropdown: the field chrome uses live form/* but the active + error 'bottom stroke' inner-shadow effects still reference deprecated border tokens. Both are clean value-identical rebinds. .Date calendar cell is fully migrated (clean).",
+      "auditedNodes": ["Input Field 2298:166741", "Date picker input field 818:123202", ".Date 512:17414 (clean)"],
+      "notExhaustive": "Input Field Large, Multi-line, and Input label not individually queried — expected same pattern (Large/multi-line = same effects; label likely clean)."
+    },
+    "ignored": "specs/* annotation scaffolding."
+  },
+  "provenance": {
+    "source": "figma",
+    "figma_node": "Cgbtrmfp15ruNFkIAClpkI:45011:112934",
+    "code_path": ""
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "name": "List items",
+  "category": "molecule",
+  "purpose": "Lists display a series of related points together in a structured, easily readable way. Covers the tappable list-row family (Account, Badge, Item, Review, Review Detail, Transaction) plus typeset bullet/ordered/custom lists. Interactive rows share the state set default / hover (web) / pressed / disabled / processing and a visual option of icon / avatar / image.",
+  "$family": "Covers the 'List items' canvas (page title 'Lists'); each row type is a separate Figma component.",
+  "props": [
+    { "name": "type", "type": "enum", "values": ["account", "badge", "item", "review", "review-detail", "transaction", "bullets"], "default": "item" },
+    { "name": "state", "type": "enum", "values": ["default", "hover", "pressed", "disabled", "processing"], "default": "default", "$note": "hover labelled 'hover (web)'. Bullets list has no interactive state." },
+    { "name": "visual", "type": "enum", "values": ["icon", "avatar", "image"], "default": "icon", "$note": "Badge, Item, Transaction offer a leading visual." },
+    { "name": "detail", "type": "enum", "values": ["tag", "status"], "default": "tag", "$note": "List Transaction only." },
+    { "name": "bulletType", "type": "enum", "values": ["bullet", "ordered", "custom"], "default": "bullet", "$note": "Bullets list only." }
+  ],
+  "variants": [
+    { "name": "account", "use": "Account row (e.g. balance), font-3 amount + font-5/6 labels. MIGRATED to tertiary/background/* row states." },
+    { "name": "badge", "use": "Row with a leading badge/visual. Least-migrated row — still on deprecated surface/border tokens." },
+    { "name": "item", "use": "Base list item (icon/avatar/image). Most-deprecated row, incl on-dark surface/border blockers." },
+    { "name": "review", "use": "Compact review row. Mostly migrated (tertiary/background/*); one deprecated pressed surface." },
+    { "name": "review-detail", "use": "Review row with extra detail line. CLEAN." },
+    { "name": "transaction", "use": "Transaction row with tag or status detail; uses rag/success(+tint) for status. Deprecated surface set." },
+    { "name": "bullets", "use": "Typeset unordered / ordered / custom lists. CLEAN. Bullets/numbers use the SAME font as the text; rag/success for custom tick." }
+  ],
+  "tokens": {
+    "row-surface (LIVE)": "tertiary/background/default #ffffff, hover #f3f3f3, pressed #767676, disabled #ffffff (Account, Review, Review Detail)",
+    "row-surface (DEPRECATED, value-identical)": "interactive (depricate)/on-light/surface/primary/default|hover|pressed|disabled — same #fff/#f3f3f3/#767676/#fff → rebind to tertiary/background/* (Item, Badge, Transaction)",
+    "text": "text/default #333333 @ font-5 medium (title) / font-5 light (supporting); font-3 medium (account amount); font-6/7; text/reverse on pressed; text/disabled #d7d8d6",
+    "icon": "icon/default #333333; icon/default-reverse (pressed); icon/disabled #d7d8d6",
+    "divider": "divider/border/section #d7d8d6",
+    "image": "image/opacity/default 100, image/opacity/disabled 20",
+    "transaction-status": "rag/success #00847f + rag/success-tint #e5f2f2",
+    "badge-accent": "color/primary #db0011 (PRIMITIVE)",
+    "bullets": "text/default; bullets/numbers use same font as text; custom tick rag/success; grey-1 #f3f3f3 (primitive)",
+    "padding": "padding/responsive/medium 16"
+  },
+  "relationships": {
+    "livesInside": ["List", "Account summary", "Transaction history", "Settings", "Search results"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["tappable account/transaction row", "settings list", "review summary", "bulleted/numbered body list"]
+  },
+  "accessibility": {
+    "semantics": "Typeset lists must use real <ul>/<ol>/<li> semantics (1.3.1); interactive rows expose role/label and state (disabled, processing)",
+    "states": "default/hover(web)/pressed/disabled/processing must each be perceivable; pressed flips to dark surface + reverse text — ensure contrast holds",
+    "processing": "REVIEW (inferred): processing state should announce status (aria-live/aria-busy)",
+    "targetArea": "Rows must meet 44px touch target",
+    "bulletsCopy": "Lead-in sentence ends with a colon; if items complete it, don't capitalise the first letter and use no end punctuation; ordered lists must never complete a lead-in sentence",
+    "relatedSC": ["1.3.1 Info and Relationships", "4.1.2 Name Role Value", "4.1.3 Status Messages", "1.4.3 Contrast", "2.5.5 Target Size"]
+  },
+  "antiPatterns": [
+    "Using decorative shapes or alternative colours for bullets/numbers — use the same font/colour as the text",
+    "Letting an ordered list complete a lead-in sentence",
+    "Capitalising / adding end punctuation to items that complete a lead-in sentence",
+    "Leaving rows bound to the deprecated surface/primary + non-interactive neutral tokens — migrate to tertiary/background/* (see tokenValidation)"
+  ],
+  "tokenValidation": {
+    "date": "2026-06-18",
+    "against": "token store re-based on Figma native variable export",
+    "result": "PASS — bullets/Account/Review Detail clean; Review near-clean; Item/Badge/Transaction carry deprecated tokens. KEY: two row-surface conventions exist (live tertiary/background/* vs deprecated interactive/surface/primary/*) with value-identical colours = clean migration path.",
+    "primitiveBinding": "List Badge binds primitive color/primary (#db0011) directly + bullets bind colour/neutral/grey-1 primitive — same primitive-leak flag as Badge/Hero/Links.",
+    "depricateUsage": {
+      "cleanRebinds": [
+        { "token": "interactive (depricate)/on-light/surface/primary/default", "value": "#FFFFFF", "rebind": "tertiary/background/default (list-row context; value-identical)" },
+        { "token": "interactive (depricate)/on-light/surface/primary/hover", "value": "#F3F3F3", "rebind": "tertiary/background/hover" },
+        { "token": "interactive (depricate)/on-light/surface/primary/pressed", "value": "#767676", "rebind": "tertiary/background/pressed" },
+        { "token": "interactive (depricate)/on-light/surface/primary/disabled", "value": "#FFFFFF", "rebind": "tertiary/background/disabled" },
+        { "token": "text/on-light (depricate)/hover (depricate)", "value": "#333333", "rebind": "text/default" },
+        { "token": "icon/on-light (depricate)/hover-1 (depricate)", "value": "#333333", "rebind": "icon/default" },
+        { "token": "text/on-dark (depricate)/pressed (depricate)", "value": "#FFFFFF", "rebind": "text/reverse" },
+        { "token": "icon/on-dark (depricate)/pressed (depricate)", "value": "#FFFFFF", "rebind": "icon/default-reverse" },
+        { "token": "tertiary/text/default (depricate)", "value": "#545454", "rebind": "text/default (#333333 — value change, confirm; same flag as Button/Cards)" }
+      ],
+      "blockersNoEquivalent": [
+        { "token": "non-interactive (depricate)/surface/neutral-1", "value": "#F3F3F3", "usedBy": "Badge/Item/Transaction secondary surface", "rebind": "REVIEW — no live subtle-surface (Avatar/Headers gap family)" },
+        { "token": "non-interactive (depricate)/surface/neutral-2", "value": "#EDEDED", "usedBy": "Transaction surface", "rebind": "REVIEW — no live subtle-surface" },
+        { "token": "non-interactive (depricate)/border/on-light/neutral-2", "value": "#EDEDED", "usedBy": "Badge/Item/Transaction border", "rebind": "divider/border/subsection (confirm, as Headers Display)" },
+        { "token": "non-interactive (depricate)/surface/black", "value": "#000000", "usedBy": "Item on-dark surface", "rebind": "REVIEW — no live on-dark surface (Avatar/Hero gap)" },
+        { "token": "non-interactive (depricate)/border/on-light/neutral-6", "value": "#767676", "usedBy": "Item on-dark border", "rebind": "REVIEW — no live (Avatar on-dark border blocker)" }
+      ],
+      "perType": "account=clean; review-detail=clean; bullets=clean; review=1 (pressed surface, clean); badge≈7; item≈12 (incl on-dark blockers); transaction≈8.",
+      "auditedNodes": ["List Account 2298:124258", "List Badge 1436:78335", "List bullets 15093:83701", "List Item 2298:135252", "List Review 1502:75413", "List Review Detail 1503:74533", "List Transaction 1508:76284"]
+    },
+    "ignored": "specs/* annotation scaffolding."
+  },
+  "provenance": {
+    "source": "figma",
+    "figma_node": "Cgbtrmfp15ruNFkIAClpkI:45129:305498",
+    "code_path": ""
+  }
+}
