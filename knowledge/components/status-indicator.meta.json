@@ -1,0 +1,54 @@
+{
+  "name": "Status indicator",
+  "category": "atom",
+  "$platform": "mobile app",
+  "purpose": "A small coloured dot + label giving a visual cue of a background update or state change, making the user aware of relevant activity. RAG-coded across approved / cancelled / declined / pending, with a disabled (muted) variant.",
+  "props": [
+    { "name": "variant", "type": "enum", "values": ["approved", "cancelled", "declined", "pending"], "default": "pending" },
+    { "name": "state", "type": "enum", "values": ["default", "disabled"], "default": "default" }
+  ],
+  "tokens": {
+    "approved": "rag/success (#00847f)",
+    "declined": "rag/error (#a8000b)",
+    "pending": "rag/warning (#ffbb33)",
+    "cancelled": "rag/neutral (#767676)",
+    "label": "text/default (#333) @ font-6/regular",
+    "disabled-label": "text/disabled (#d7d8d6)",
+    "disabled-dot": "rag/success-tint / rag/error-tint / rag/warning-tint for approved/declined/pending; cancelled disabled uses non-interactive (depricate)/surface/neutral-3 (no rag/neutral-tint exists — see tokenValidation)"
+  },
+  "relationships": {
+    "livesInside": ["List item", "Card", "Transaction row", "Detail screen"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["status dot + label on a row", "transaction/application status"]
+  },
+  "accessibility": {
+    "useOfColour": "Status MUST NOT be conveyed by the dot colour alone — the text label (approved/cancelled/declined/pending) carries the meaning (1.4.1)",
+    "announce": "Background status changes should be announced to AT (aria-live) since the component signals updates",
+    "contrast": "Dot + label must meet non-text/text contrast; the amber 'pending' needs care on light surfaces",
+    "relatedSC": ["1.4.1 Use of Color", "4.1.3 Status Messages", "1.4.3 Contrast", "1.4.11 Non-text Contrast"]
+  },
+  "antiPatterns": [
+    "Relying on the dot colour alone without the text label",
+    "Using status indicators for interactive actions (they are non-interactive cues)",
+    "Leaving the cancelled-disabled dot on the deprecated neutral-3 token — the real fix is to add a rag/neutral-tint (see tokenValidation)"
+  ],
+  "tokenValidation": {
+    "date": "2026-06-18",
+    "against": "token store re-based on Figma native variable export",
+    "result": "PASS — default state fully CLEAN on rag/*; disabled carries 1 deprecated token due to a missing rag/neutral-tint.",
+    "newTokenSeen": "rag/neutral (#767676) — confirmed in store; the cancelled/neutral status colour. First component to surface it in the audit.",
+    "depricateUsage": {
+      "tokens": [
+        { "token": "non-interactive (depricate)/surface/neutral-3", "value": "#D7D8D6", "usedBy": "cancelled-disabled dot tint", "rebind": "REVIEW — no rag/neutral-tint exists. Approved/declined/pending disabled use rag/*-tint; cancelled has no tint sibling, so it falls back to neutral-3. PROPER FIX: add a rag/neutral-tint token, then rebind." }
+      ],
+      "tokenGap": "The rag/* tint set is missing rag/neutral-tint (rag/neutral has no tint sibling). Adding it would make the disabled cancelled status fully live and remove the last deprecated binding here.",
+      "auditedNodes": ["Status Indicator 2298:164360 (clean)", "Status Indicator disabled 1397:73993"]
+    },
+    "ignored": "specs/* annotation scaffolding."
+  },
+  "provenance": {
+    "source": "figma",
+    "figma_node": "Cgbtrmfp15ruNFkIAClpkI:2298:164342",
+    "code_path": ""
+  }
+}

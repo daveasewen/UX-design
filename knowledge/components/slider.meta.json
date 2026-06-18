@@ -1,0 +1,59 @@
+{
+  "name": "Slider",
+  "category": "molecule",
+  "purpose": "Lets users select a value (single) or a range (double) by sliding a handle along a predefined numerical track. Optional tick markers and value labels.",
+  "props": [
+    { "name": "type", "type": "enum", "values": ["single", "double"], "default": "single", "$note": "Single = one handle/value; double = two handles for a range." },
+    { "name": "value", "type": "enum", "values": ["default", "half", "full"], "default": "default", "$note": "Track fill position (single shows default/half/full; double shows default/half)." },
+    { "name": "handleState", "type": "enum", "values": ["default", "hover", "pressed"], "default": "default" }
+  ],
+  "variants": [
+    { "name": "single", "use": "One handle selecting a single value along the track." },
+    { "name": "double", "use": "Two handles selecting a min/max range." }
+  ],
+  "tokens": {
+    "track-filled": "scrollbar/foreground (#767676) — REUSE of the scrollbar token for the filled portion",
+    "track-unfilled": "scrollbar/background (#ededed)",
+    "handle": "background/default (#fff fill) + border/subtle (#d7d8d6 border); hover tertiary/background/hover (#f3f3f3), pressed tertiary/background/pressed (#767676)",
+    "value-label": "text/default (#333) @ font-5/regular",
+    "tick-marker (DEPRECATED)": "non-interactive (depricate)/border/on-light/neutral-6 (#767676) → REVIEW (rebind form/border/default | scrollbar/foreground — both #767676)"
+  },
+  "relationships": {
+    "livesInside": ["Form", "Filter panel", "Settings"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["single-value slider", "min/max range slider", "slider with tick markers + value labels"]
+  },
+  "accessibility": {
+    "role": "Use role=slider (single) / two thumbs for range, each with aria-valuemin/max/now and an accessible name",
+    "keyboard": "Arrow keys adjust value (Home/End to min/max); range thumbs must not cross without feedback",
+    "valueText": "Expose aria-valuetext for non-numeric / formatted values; visible value label should reflect current value",
+    "useOfColour": "Filled vs unfilled track must be distinguishable beyond colour (the handle position conveys value)",
+    "targetArea": "Handle hit target min 44px even if the visual thumb is smaller",
+    "relatedSC": ["4.1.2 Name Role Value", "2.1.1 Keyboard", "1.4.1 Use of Color", "2.5.5 Target Size"]
+  },
+  "antiPatterns": [
+    "Handle hit target smaller than 44px",
+    "No keyboard operation (arrow keys) for value adjustment",
+    "REVIEW (inferred): using a slider where precise numeric entry is required (pair with an input)",
+    "Leaving the tick marker on the deprecated neutral-6 border token (see tokenValidation)"
+  ],
+  "tokenValidation": {
+    "date": "2026-06-18",
+    "against": "token store re-based on Figma native variable export",
+    "result": "PASS — handle + single/double tracks CLEAN; only the tick marker carries 1 deprecated token.",
+    "tokenReuse": "The slider TRACK reuses scrollbar/foreground (filled) + scrollbar/background (unfilled) rather than a dedicated slider/track token — worth noting for a future semantic 'slider/*' group.",
+    "depricateUsage": {
+      "tokens": [
+        { "token": "non-interactive (depricate)/border/on-light/neutral-6", "value": "#767676", "usedBy": "Slider tick marker line", "rebind": "REVIEW — form/border/default | scrollbar/foreground (both #767676); replacement-map lists neutral-6 as review (mode-aware on dark)" }
+      ],
+      "note": "Handle (background/default + border/subtle + tertiary/background hover/pressed) and tracks (scrollbar/*) are fully live. Only the 1px tick marker still binds the deprecated neutral-6 border. Same neutral-6 token also used by On-Dark Divider (section) — a mode-aware divider/border rebind may suit both.",
+      "auditedNodes": ["Slider single 460:15294 (clean)", "Slider double 1842:89632", ".Slider handle 456:17053 (clean)", "Slider marker 470:15395"]
+    },
+    "ignored": "specs/* annotation scaffolding."
+  },
+  "provenance": {
+    "source": "figma",
+    "figma_node": "Cgbtrmfp15ruNFkIAClpkI:455:16797",
+    "code_path": ""
+  }
+}

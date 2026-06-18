@@ -1,0 +1,71 @@
+{
+  "name": "Tabs",
+  "category": "molecule",
+  "purpose": "Let users switch between peer views/panels within the same context. A horizontal tab bar with a selected indicator, a bottom track, and an overflow dropdown when tabs exceed the available width.",
+  "props": [
+    { "name": "tabState", "type": "enum", "values": ["unselected", "unselected-hover", "unselected-pressed", "selected-first", "selected-middle", "selected-last"], "default": "unselected" },
+    { "name": "track", "type": "enum", "values": ["flat", "elevated"], "default": "flat", "$note": ".Tab track elevation=false/true (adds elevation/functional shadow)." },
+    { "name": "overflow", "type": "boolean", "values": ["false", "true"], "default": "false", "$note": "Overflow dropdown (with menu items) when tabs don't fit." },
+    { "name": "label", "type": "boolean", "values": ["false", "true"], "default": "true", "$note": "Tabs can be label or icon-only." }
+  ],
+  "subComponents": {
+    "tab-items": { "node": "631:24258", "use": "Individual tab; unselected/hover/pressed + selected first/middle/last; selected shows a brand-red indicator." },
+    "tab-track": { "node": "632:23687", "use": "Bottom rule under the tabs; elevation variant casts a shadow." },
+    "overflow-dropdown": { "node": "2378:85846", "use": "Trigger that reveals hidden tabs in a menu." },
+    "tab-dropdown-items": { "node": "1922:86768", "use": "Overflow menu items (default/hover/pressed/selected)." }
+  },
+  "tokens": {
+    "tab-text": "text/default (#333) @ font-5/medium; selected/pressed text/reverse",
+    "tab-surface": "tertiary/background/default #fff / hover #f3f3f3 / pressed #767676",
+    "selected-indicator": "color/primary (#db0011 PRIMITIVE) — see tokenValidation (should be tabs/active)",
+    "track": "divider/border/section (#d7d8d6); elevated adds elevation/functional",
+    "overflow-trigger": "tertiary/background/* + form/border/active (#000) + divider/border/subsection + elevation/functional",
+    "overflow-items": "background/default + tertiary/background/hover|pressed + text/default"
+  },
+  "relationships": {
+    "livesInside": ["Page", "Card", "Section header", "App screen"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["view switcher tab bar", "tabs with overflow menu"]
+  },
+  "accessibility": {
+    "semantics": "Use role=tablist / tab / tabpanel with aria-selected and roving tabindex; arrow keys move between tabs",
+    "selected": "Selected tab must not rely on the red indicator colour alone — expose aria-selected (1.4.1)",
+    "overflow": "Overflow dropdown must be keyboard-operable and announce hidden tabs",
+    "targetArea": "Tabs min 44px target",
+    "relatedSC": ["1.3.1", "4.1.2 Name Role Value", "2.1.1 Keyboard", "1.4.1 Use of Color", "2.5.5 Target Size"]
+  },
+  "antiPatterns": [
+    "Indicating the active tab by the red underline colour alone (add aria-selected)",
+    "Using tabs for sequential steps (use a progress tracker / wizard)",
+    "Binding the selected indicator to the color/primary primitive instead of the mode-aware tabs/active token (loses dark mode — see tokenValidation)"
+  ],
+  "tokenValidation": {
+    "date": "2026-06-18",
+    "against": "token store re-based on Figma native variable export",
+    "result": "WIRING ISSUE — values resolve, but the component is NOT using its dedicated tabs/* semantic group. A mode-aware tabs/* group exists in the variables yet the component binds primitives + tertiary/* + a deprecated token, so it will NOT pick up dark-mode values.",
+    "tabsGroupMismatch": {
+      "note": "A full mode-aware tabs/* token group exists but is unused by this component:",
+      "shouldRewire": [
+        { "boundTo": "color/primary (#db0011 primitive, no dark value)", "shouldBe": "tabs/active (light #db0011 / dark #fff)" },
+        { "boundTo": "divider/border/section (track)", "shouldBe": "tabs/standard-border (mode-aware #d7d8d6/#fff)" },
+        { "boundTo": "form/border/active (#000, overflow border)", "shouldBe": "tabs/overflow-border (mode-aware #000/#fff)" },
+        { "boundTo": "tertiary/background/* + interactive(depricate)/surface/primary (#fff surfaces)", "shouldBe": "tabs/background + tabs/overflow-background" }
+      ],
+      "impact": "Tabs render correctly in light mode but lose the dark-mode swaps the tabs/* tokens carry."
+    },
+    "depricateUsage": {
+      "tokens": [
+        { "token": "interactive (depricate)/on-light/surface/primary/default", "value": "#FFFFFF", "usedBy": "tab item + overflow trigger surface", "rebind": "tabs/background (preferred) | background/default" },
+        { "token": "interactive (depricate)/on-light/surface/primary/hover", "value": "#F3F3F3", "usedBy": "overflow trigger hover", "rebind": "tabs/background hover | form/background/hover" }
+      ],
+      "note": "Beyond the 2 deprecated tokens, the bigger fix is rewiring to the tabs/* group (above). Tab track + overflow menu items are otherwise clean.",
+      "auditedNodes": [".Tab items 631:24258", ".Tab track 632:23687 (clean)", ".Tab dropdown items 1922:86768 (clean)", ".Dropdown overflow trigger 2378:85846"]
+    },
+    "ignored": "specs/* annotation scaffolding."
+  },
+  "provenance": {
+    "source": "figma",
+    "figma_node": "Cgbtrmfp15ruNFkIAClpkI:629:23608",
+    "code_path": ""
+  }
+}

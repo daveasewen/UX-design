@@ -1,0 +1,83 @@
+{
+  "name": "Selection controls",
+  "category": "molecule",
+  "purpose": "Controls for choosing options: Checkbox (incl. indeterminate), Radio button, Chips (toggle / single-select / multi-select / delete) and Switch. Each available with a label. (The page also has selectable List/Card variants that compose these controls onto List items / Cards.)",
+  "$family": "Covers the 'Selection controls' canvas: Checkbox, Radio buttons, Chips, Switch (+ List/Card 'select' compositions of existing components).",
+  "props": [
+    { "name": "control", "type": "enum", "values": ["checkbox", "radio", "chip", "switch"], "default": "checkbox" },
+    { "name": "state", "type": "enum", "values": ["default", "hover", "pressed", "selected", "disabled", "error"], "default": "default" },
+    { "name": "checkboxKind", "type": "enum", "values": ["checked", "indeterminate"], "default": "checked", "$note": "Checkbox supports an indeterminate (mixed) state." },
+    { "name": "chipType", "type": "enum", "values": ["toggle", "single-selection", "multiple-selection", "delete"], "default": "toggle" },
+    { "name": "label", "type": "boolean", "values": ["false", "true"], "default": "true" }
+  ],
+  "variants": [
+    { "name": "checkbox", "use": "Square box; checked/indeterminate fill with reverse check glyph. Supports error + disabled. CLEAN (form/*)." },
+    { "name": "radio", "use": "Circular single-choice control. CLEAN (form/* + border-width small/medium)." },
+    { "name": "chip", "use": "Pill toggle/selection/delete. Selected state = dark fill (deprecated active-surface set)." },
+    { "name": "switch", "use": "On/off toggle. On-track dark, off-track white; disabled track greys (deprecated)." }
+  ],
+  "tokens": {
+    "box/control-surface": "form/background/default (transparent) / hover #f3f3f3 / pressed #767676",
+    "box/control-border": "form/border/default #767676 / active #000 / pressed #767676 / disabled #d7d8d6",
+    "check-radio-glyph": "icon/default-reverse (#fff on filled) / icon/default; disabled icon/disabled",
+    "label": "text/default @ font-5 medium (checkbox/radio) / font-6 medium (chip); disabled text/disabled",
+    "error": "rag/error (#a8000b)",
+    "chip/switch selected-surface (DEPRECATED)": "interactive (depricate)/on-light/surface/active/default #000 (selected) / hover #333 / pressed #767676 → rebind tertiary/background/active + /pressed",
+    "chip/switch off+delete-surface (DEPRECATED)": "interactive (depricate)/on-light/surface/primary/default #fff / hover #f3f3f3 / pressed #767676 / disabled #fff → background/default + form/background/*",
+    "chip-delete border (DEPRECATED)": "interactive (depricate)/on-light/border/high-contrast/default+hover #767676 → form/border/default",
+    "on-dark glyph/text (DEPRECATED)": "icon/text on-dark (depricate)/hover+pressed #fff → icon/default-reverse + text/reverse",
+    "switch disabled track (DEPRECATED)": "non-interactive (depricate)/surface/neutral-2 #ededed + neutral-3 #d7d8d6 → no live equivalent"
+  },
+  "relationships": {
+    "livesInside": ["Form", "Field set", "Filter bar (chips)", "Settings (switch)", "List/Card select"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["checkbox/radio group", "filter chips", "on/off setting toggle", "selectable list/card"]
+  },
+  "accessibility": {
+    "semantics": "Use native input semantics (checkbox/radio/switch) with a programmatic label; group radios/checkboxes in a fieldset/role=group with a legend",
+    "indeterminate": "Checkbox indeterminate must expose aria-checked='mixed'",
+    "switch": "Switch should use role=switch with aria-checked; on/off must not be conveyed by colour/position alone — provide a label",
+    "error": "Error state pairs rag/error with a text message + aria-invalid, not colour alone (1.4.1)",
+    "focus": "Visible focus outline; controls and their labels are both click targets (44px)",
+    "relatedSC": ["1.3.1", "4.1.2 Name Role Value", "3.3.1 Error Identification", "1.4.1 Use of Color", "2.4.7 Focus Visible", "2.5.5 Target Size"]
+  },
+  "antiPatterns": [
+    "Conveying selected/on by colour alone without a label or check/thumb position",
+    "Checkbox/radio without an associated label or group legend",
+    "Leaving chip-selected / switch-on surfaces on the deprecated active-surface tokens — rebind to tertiary/background/active (see tokenValidation)"
+  ],
+  "tokenValidation": {
+    "date": "2026-06-18",
+    "against": "token store re-based on Figma native variable export",
+    "result": "PASS (values resolve) — Checkbox + Radio CLEAN (form/*); Chips + Switch carry deprecated tokens. NEW recurring token: interactive (depricate)/on-light/surface/active/* = the selected/'on' dark fill.",
+    "depricateUsage": {
+      "tokens": [
+        { "token": "interactive (depricate)/on-light/surface/active/default", "value": "#000000", "usedBy": "Chip toggle SELECTED fill + Switch ON track", "rebind": "tertiary/background/active (identical #000)" },
+        { "token": "interactive (depricate)/on-light/surface/active/hover", "value": "#333333", "usedBy": "Chip selected hover", "rebind": "REVIEW — no clean live #333 surface" },
+        { "token": "interactive (depricate)/on-light/surface/active/pressed", "value": "#767676", "usedBy": "Chip selected pressed", "rebind": "tertiary/background/pressed" },
+        { "token": "interactive (depricate)/on-light/surface/primary/default", "value": "#FFFFFF", "usedBy": "Chip delete + Switch OFF surface", "rebind": "background/default" },
+        { "token": "interactive (depricate)/on-light/surface/primary/hover", "value": "#F3F3F3", "usedBy": "Chip delete hover", "rebind": "form/background/hover" },
+        { "token": "interactive (depricate)/on-light/surface/primary/pressed", "value": "#767676", "usedBy": "Chip delete pressed", "rebind": "form/background/pressed | tertiary/background/pressed" },
+        { "token": "interactive (depricate)/on-light/surface/primary/disabled", "value": "#FFFFFF", "usedBy": "Switch OFF disabled", "rebind": "background/default" },
+        { "token": "interactive (depricate)/on-light/border/high-contrast/default", "value": "#767676", "usedBy": "Chip delete border", "rebind": "form/border/default" },
+        { "token": "interactive (depricate)/on-light/border/high-contrast/hover", "value": "#767676", "usedBy": "Chip delete border hover", "rebind": "form/border/default" },
+        { "token": "text/on-dark (depricate)/hover (depricate)", "value": "#FFFFFF", "usedBy": "Chip selected label hover", "rebind": "text/reverse" },
+        { "token": "icon/on-dark (depricate)/hover (depricate)", "value": "#FFFFFF", "usedBy": "Chip selected icon hover", "rebind": "icon/default-reverse" },
+        { "token": "text/on-dark (depricate)/pressed (depricate)", "value": "#FFFFFF", "usedBy": "Chip/Switch pressed label", "rebind": "text/reverse" },
+        { "token": "icon/on-dark (depricate)/pressed (depricate)", "value": "#FFFFFF", "usedBy": "Chip/Switch pressed icon", "rebind": "icon/default-reverse" }
+      ],
+      "blockersNoEquivalent": [
+        { "token": "non-interactive (depricate)/surface/neutral-2", "value": "#EDEDED", "usedBy": "Switch disabled track", "rebind": "REVIEW — no live subtle-surface" },
+        { "token": "non-interactive (depricate)/surface/neutral-3", "value": "#D7D8D6", "usedBy": "Switch disabled track", "rebind": "REVIEW — no live subtle-surface" }
+      ],
+      "note": "NEW recurring token group: interactive (depricate)/on-light/surface/active/* is the SELECTED/'on' dark fill (#000/#333/#767676) — best live target is tertiary/background/active (+ /pressed). Checkbox + Radio are fully migrated to form/*. Switch disabled track hits the no-equivalent subtle-surface blocker (neutral-2/3) seen across Avatar/Headers/List/Nav/Quick-actions.",
+      "auditedNodes": ["Checkbox 811:68448 (clean)", "Radio button 1533:80165 (clean)", "Chip toggle 1719:84595", "Chip delete 1738:86848", "Switch 1503:74680"]
+    },
+    "ignored": "specs/* annotation scaffolding."
+  },
+  "provenance": {
+    "source": "figma",
+    "figma_node": "Cgbtrmfp15ruNFkIAClpkI:45105:252063",
+    "code_path": ""
+  }
+}

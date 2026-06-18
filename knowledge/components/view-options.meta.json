@@ -1,0 +1,61 @@
+{
+  "name": "View options",
+  "category": "molecule",
+  "$family": "Part of 'View controls' (the sort-options sibling is guidance-only → guidelines/view-controls-sort.md).",
+  "purpose": "A view control that lets users select different presentation formats of the same content (e.g. list vs grid). A segmented toggle of label-buttons or icon-buttons; the active format is the selected segment.",
+  "props": [
+    { "name": "type", "type": "enum", "values": ["label", "icon"], "default": "icon", "$note": "Label segments (text) or icon-only segments." },
+    { "name": "state", "type": "enum", "values": ["default", "hover", "pressed", "selected"], "default": "default", "$note": "Per-segment; the chosen format is 'selected'." }
+  ],
+  "variants": [
+    { "name": "label", "use": "Text segments (e.g. 'List' / 'Grid')." },
+    { "name": "icon", "use": "Icon-only segments (44px) for the same formats." }
+  ],
+  "tokens": {
+    "segment-surface": "tertiary/background/default #fff / hover #f3f3f3 / pressed+selected tertiary/background/pressed #767676",
+    "label-text": "text/default (#333) @ font-5/medium; selected/pressed tertiary/text/pressed (#fff)",
+    "icon": "icon/default (#333); selected/pressed icon is reverse",
+    "segment-border (DEPRECATED)": "interactive (depricate)/on-light/border/high-contrast/default+hover+pressed (#767676) → form/border/default",
+    "selected-icon (DEPRECATED)": "icon/on-dark (depricate)/pressed (depricate) (#fff) → icon/default-reverse",
+    "radius": "border-radius/default (0 — square segments)"
+  },
+  "relationships": {
+    "livesInside": ["List / grid header", "Toolbar", "Search results"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["list/grid view toggle", "segmented presentation switch"]
+  },
+  "accessibility": {
+    "role": "Expose as a single-select group (radiogroup or toggle-button group with aria-pressed); only one format active at a time",
+    "selected": "Selected segment must not be conveyed by the dark fill alone — expose aria-pressed/aria-checked (1.4.1)",
+    "iconOnly": "Icon-only segments need accessible names (e.g. 'List view', 'Grid view')",
+    "targetArea": "Segments 44px target",
+    "relatedSC": ["4.1.2 Name Role Value", "1.4.1 Use of Color", "2.5.5 Target Size", "2.1.1 Keyboard"]
+  },
+  "antiPatterns": [
+    "Conveying the active view by the dark fill alone (add aria-pressed/checked)",
+    "Icon-only segments without accessible names",
+    "Allowing multiple segments selected (it's single-select)",
+    "Leaving the segment border + selected icon on the deprecated tokens — rebind to form/border/default + icon/default-reverse (see tokenValidation)"
+  ],
+  "tokenValidation": {
+    "date": "2026-06-18",
+    "against": "token store re-based on Figma native variable export",
+    "result": "PASS — segment surfaces/text migrated to tertiary/*; 2 deprecated tokens (clean rebinds).",
+    "depricateUsage": {
+      "tokens": [
+        { "token": "interactive (depricate)/on-light/border/high-contrast/default", "value": "#767676", "usedBy": "segment border (default/hover/pressed)", "rebind": "form/border/default" },
+        { "token": "interactive (depricate)/on-light/border/high-contrast/hover", "value": "#767676", "usedBy": "segment border hover", "rebind": "form/border/default" },
+        { "token": "interactive (depricate)/on-light/border/high-contrast/pressed", "value": "#767676", "usedBy": "segment border pressed", "rebind": "form/border/default" },
+        { "token": "icon/on-dark (depricate)/pressed (depricate)", "value": "#FFFFFF", "usedBy": "selected/pressed icon (reverse on dark fill)", "rebind": "icon/default-reverse" }
+      ],
+      "note": "Segment surfaces use the live tertiary/background/* state set (selected = pressed #767676 dark fill + tertiary/text/pressed reverse). Only the border (high-contrast depricate) + the reverse icon on the selected segment are deprecated — both clean rebinds (form/border/default, icon/default-reverse). Same border pattern as Dropdown-native / Chip-delete / Pagination.",
+      "auditedNodes": [".View options label 1973:87027", ".View options icon 2235:90340"]
+    },
+    "ignored": "specs/* annotation scaffolding."
+  },
+  "provenance": {
+    "source": "figma",
+    "figma_node": "Cgbtrmfp15ruNFkIAClpkI:437:13740",
+    "code_path": ""
+  }
+}

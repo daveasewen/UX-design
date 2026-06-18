@@ -1,0 +1,55 @@
+{
+  "name": "Table",
+  "category": "organism",
+  "$platform": "browser",
+  "purpose": "Data tables let users scan, analyse and compare data. Header / sub-header / data cells arranged with a first-row header, a first-column header, or both; cells can be left- or right-aligned (right for numeric).",
+  "props": [
+    { "name": "headerType", "type": "enum", "values": ["first-row", "first-column", "first-row-and-column"], "default": "first-row" },
+    { "name": "orientation", "type": "enum", "values": ["horizontal", "vertical"], "default": "horizontal" },
+    { "name": "cellAlign", "type": "enum", "values": ["left", "right"], "default": "left", "$note": "Right-aligned for numeric columns." }
+  ],
+  "subComponents": {
+    "header": { "node": "2147:126475", "use": "Column/row header cell — table/header/background (#ededed) + text/default font-5 medium." },
+    "sub-header": { "node": "395:74064", "use": "Secondary header on table/column/background (#f3f3f3) + font-5 light." },
+    "data-cell": { "node": "2147:126472", "use": "Data cell — background/default (#fff) + text/default font-5 light; right-aligned variant for numbers." }
+  },
+  "tokens": {
+    "header-fill": "table/header/background (#ededed)",
+    "row-header/column-fill": "table/column/background (#f3f3f3)",
+    "data-cell-fill": "background/default (#ffffff)",
+    "cell-border": "table/border (#d7d8d6)",
+    "header-text": "text/default (#333) @ font-5/medium",
+    "data-text": "text/default (#333) @ font-5/light"
+  },
+  "relationships": {
+    "livesInside": ["Page", "Report", "Dashboard", "Detail view"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["data table with header row", "comparison matrix (row + column headers)", "numeric table with right-aligned cells"]
+  },
+  "accessibility": {
+    "semantics": "Use real <table> with <th scope='col'/'row'> for headers; both-header tables set scope appropriately so screen readers associate cells with their row+column headers (1.3.1)",
+    "alignment": "Right-align numeric columns for scanning; keep header alignment consistent with its column",
+    "caption": "Provide a <caption> or accessible name describing the table's purpose",
+    "responsive": "REVIEW (inferred): on small screens tables should scroll horizontally or reflow without losing header association",
+    "relatedSC": ["1.3.1 Info and Relationships", "1.3.2 Meaningful Sequence", "1.4.10 Reflow"]
+  },
+  "antiPatterns": [
+    "Using a table for layout rather than tabular data",
+    "Omitting scope on header cells (breaks header/data association for AT)",
+    "Left-aligning numeric data (harder to compare)"
+  ],
+  "tokenValidation": {
+    "date": "2026-06-18",
+    "against": "token store re-based on Figma native variable export",
+    "result": "PASS — CLEAN, no deprecated tokens.",
+    "newTokenGroupSeen": "table/* — dedicated table tokens: table/header/background (#ededed), table/column/background (#f3f3f3), table/border (#d7d8d6). First component to use them; data cells use background/default + text/default.",
+    "depricateUsage": { "tokens": [], "note": "None. Fully on table/* + background/default + text/default." },
+    "auditedNodes": [".Table header 2147:126475", ".Table data cell 2147:126472", ".Table sub-header 395:74064"],
+    "ignored": "specs/* annotation scaffolding."
+  },
+  "provenance": {
+    "source": "figma",
+    "figma_node": "Cgbtrmfp15ruNFkIAClpkI:547:22693",
+    "code_path": ""
+  }
+}
