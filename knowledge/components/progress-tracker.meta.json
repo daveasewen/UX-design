@@ -1,0 +1,42 @@
+{
+  "name": "Progress tracker",
+  "category": "molecule",
+  "purpose": "Shows users how far they are through a multi-step process by filling a segmented track and labelling the current step (e.g. 'Step 2 of 4').",
+  "props": [
+    { "name": "totalSteps", "type": "enum", "values": ["2", "3", "4", "5"], "default": "3" },
+    { "name": "currentStep", "type": "number", "default": 1, "$note": "1…totalSteps; segments up to the current step use progress/complete, the rest progress/incomplete." }
+  ],
+  "tokens": {
+    "track-complete": "progress/complete (#db0011 — brand red, completed segments)",
+    "track-incomplete": "progress/incomplete (#ededed — remaining segments)",
+    "label": "text/default (#333333) @ font-5/medium (step) + font-5/light"
+  },
+  "relationships": {
+    "livesInside": ["Multi-step form", "Wizard / flow", "Onboarding", "Checkout"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["step counter with segmented bar", "multi-step form header"]
+  },
+  "accessibility": {
+    "status": "Expose as a progress indicator with an accessible name and current/total (role=progressbar with aria-valuenow/valuemin/valuemax, or descriptive text 'Step 2 of 4')",
+    "useOfColour": "The red/grey fill must not be the only cue — pair with the step text label (1.4.1)",
+    "announce": "REVIEW (inferred): step changes should be announced (aria-live) as the user advances",
+    "relatedSC": ["1.3.1 Info and Relationships", "1.4.1 Use of Color", "4.1.3 Status Messages"]
+  },
+  "antiPatterns": [
+    "Showing progress by the bar fill alone without a 'Step X of Y' label",
+    "REVIEW (inferred): using a progress tracker for an unknown number of steps (use an indeterminate loading indicator instead)"
+  ],
+  "tokenValidation": {
+    "date": "2026-06-18",
+    "against": "token store re-based on Figma native variable export",
+    "result": "PASS — CLEAN, no deprecated tokens. Uses the dedicated progress/* pair + text/default.",
+    "depricateUsage": { "tokens": [], "note": "None. progress/complete (#db0011) + progress/incomplete (#ededed) are live semantic tokens." },
+    "auditedNodes": ["Progress tracker 270:8555", ".Progress track 269:10956"],
+    "ignored": "specs/* annotation scaffolding."
+  },
+  "provenance": {
+    "source": "figma",
+    "figma_node": "Cgbtrmfp15ruNFkIAClpkI:267:10760",
+    "code_path": ""
+  }
+}
