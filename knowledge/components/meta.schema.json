@@ -1,11 +1,18 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "promenaut/knowledge/component_meta",
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "component_meta",
-  "description": "One node in the component graph. The machine-readable layer that lets agents use the component without guessing. Edges are expressed via `relationships`.",
+  "description": "One node in the component graph. The machine-readable layer that lets agents use the component without guessing. Edges are expressed via `relationships`. Reconciled 2026-06-18 to the authored canon: load-bearing fields (name/category/purpose/props/tokens/relationships/accessibility/antiPatterns/tokenValidation/provenance) are required and typed; `accessibility` is an open map of guidance strings (relatedSC is the typed array exception); `tokens` values may be a string or a nested object; `tokenValidation` is an open audit log; `$`-prefixed annotation keys are allowed anywhere.",
   "type": "object",
-  "required": ["name", "category", "purpose", "props", "variants", "tokens", "relationships", "accessibility", "antiPatterns", "provenance"],
-  "additionalProperties": false,
+  "required": ["name", "category", "purpose", "props", "tokens", "relationships", "accessibility", "antiPatterns", "tokenValidation", "provenance"],
+  "definitions": {
+    "tokenBinding": {
+      "description": "a token binding: either a prose string naming the bound token(s), or a nested group of bindings",
+      "oneOf": [
+        { "type": "string" },
+        { "type": "object", "additionalProperties": { "$ref": "#/definitions/tokenBinding" } }
+      ]
+    }
+  },
   "properties": {
     "name": { "type": "string" },
     "category": { "enum": ["atom", "molecule", "organism", "template", "page"] },
@@ -15,6 +22,7 @@
       "items": {
         "type": "object",
         "required": ["name", "type"],
+        "patternProperties": { "^\\$": {} },
         "additionalProperties": false,
         "properties": {
           "name": { "type": "string" },
@@ -26,9 +34,11 @@
     },
     "variants": {
       "type": "array",
+      "description": "optional — not every component has named variants",
       "items": {
         "type": "object",
         "required": ["name", "use"],
+        "patternProperties": { "^\\$": {} },
         "additionalProperties": false,
         "properties": {
           "name": { "type": "string" },
@@ -38,8 +48,8 @@
     },
     "tokens": {
       "type": "object",
-      "description": "token bindings by intent",
-      "additionalProperties": { "type": "string" }
+      "description": "token bindings by intent; value is a prose string or a nested group",
+      "additionalProperties": { "$ref": "#/definitions/tokenBinding" }
     },
     "relationships": {
       "type": "object",
@@ -48,35 +58,48 @@
       "properties": {
         "livesInside": { "type": "array", "items": { "type": "string" } },
         "mustNotNeighbour": { "type": "array", "items": { "type": "string" } },
-        "commonPatterns": { "type": "array", "items": { "type": "string" } }
+        "commonPatterns": { "type": "array", "items": { "type": "string" } },
+        "triggeredBy": { "type": "array", "items": { "type": "string" }, "description": "elements that activate this component (e.g. a tooltip's trigger)" }
       }
     },
     "accessibility": {
       "type": "object",
-      "description": "how the component behaves for AT",
-      "additionalProperties": false,
+      "description": "how the component behaves for AT. An open map of named guidance strings; relatedSC is the typed array of WCAG SCs this component must satisfy.",
+      "required": ["relatedSC"],
       "properties": {
-        "role": { "type": "string" },
-        "keyboard": { "type": "string" },
-        "focus": { "type": "string" },
-        "screenReader": { "type": "string" },
-        "relatedSC": { "type": "array", "items": { "type": "string" }, "description": "WCAG SCs this component must satisfy" }
-      }
+        "relatedSC": { "type": "array", "items": { "type": "string" }, "description": "WCAG 2.2 SCs this component must satisfy (validated by _build_integrity.py)" }
+      },
+      "patternProperties": { "^\\$": {} },
+      "additionalProperties": { "type": "string" }
     },
     "antiPatterns": {
       "type": "array",
-      "description": "explicit 'never do this' rules — the most load-bearing field",
+      "description": "explicit 'never do this' rules — the most load-bearing field. Prefix a string with REVIEW to mark it review-tier (see _CONFIDENCE.md).",
       "items": { "type": "string" }
+    },
+    "tokenValidation": {
+      "type": "object",
+      "description": "audit log of this component's tokens against the store (deprecated-token usage, rebind targets, ignored primitives). Open shape.",
+      "required": ["date", "against", "result"],
+      "additionalProperties": true
     },
     "provenance": {
       "type": "object",
       "required": ["source"],
+      "patternProperties": { "^\\$": {} },
       "additionalProperties": false,
       "properties": {
         "source": { "enum": ["figma", "code", "both"] },
         "figma_node": { "type": "string" },
         "code_path": { "type": "string" }
       }
-    }
-  }
+    },
+    "subComponents": { "description": "optional breakdown of internal parts", "type": ["object", "array"] },
+    "behaviour": { "description": "optional behavioural notes", "type": ["object", "array", "string"] },
+    "usage": { "description": "optional usage notes", "type": ["object", "array", "string"] },
+    "build": { "description": "optional build/implementation notes", "type": ["object", "array", "string"] },
+    "graphicIndicator": { "description": "optional graphic/indicator notes", "type": ["object", "array", "string"] }
+  },
+  "patternProperties": { "^\\$": {} },
+  "additionalProperties": false
 }

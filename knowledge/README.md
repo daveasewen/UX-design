@@ -1,37 +1,102 @@
-# Knowledge (canon) — schemas here, real data on the agency machine
+# Knowledge base — Promenaut design-to-code canon
 
-This folder holds the **authoritative knowledge** the pipelines query. Committed
-to Git: the **schemas** and **synthetic examples** (safe to author at home).
-Added on the **agency machine**: the **populated stores** ingested from the real
-design system, Figma library and React components.
+The authoritative, portable knowledge the Promenaut pipeline queries to use the **HSBC Common Toolkit** design system correctly — built from the Figma library ("Gaps and edits" branch, fileKey `Cgbtrmfp15ruNFkIAClpkI`) and the design standards on create.hsbc.
 
-## Layout
+It has two halves: **authored canon** (hand-curated, the source of truth) and **derived views** (generated from the canon, never edited by hand). Everything regenerates and self-validates from one command: `python3 knowledge/_build_all.py`.
+
+## Architecture — five layers, representation per stage
+
+Each kind of knowledge is stored in the representation that suits how it's queried:
+
+| Layer | Representation | Lives in | How the pipeline uses it |
+|---|---|---|---|
+| **Components** | Component graph — one `*.meta.json` node per component (props, variants, token bindings, relationships, anti-patterns, a11y, token-validation, provenance) | `components/` (32 metas) | Look up a component's contract before generating code; traverse `relationships` edges |
+| **Tokens** | DTCG-style store with intent descriptions; semantic tokens carry `light`+`dark` modes | `tokens/` (7 stores) | Resolve a binding to a value; check dark-mode coverage; drive the Sutherland migration |
+| **Compliance** | Knowledge graph — rule → component → check → WCAG SC → EN 301 549 clause | `compliance/` (31 rules) | Given a component, list its WCAG 2.2 AA obligations + automatable checks |
+| **Guidelines** | RAG over Markdown (brand, voice, patterns, platform, a11y) | `guidelines/` (23 docs) | Retrieve prose guidance at generation time |
+| **Live Figma / code** | MCP at runtime — **not stored here** | — | Pull current nodes/variables/code on demand |
+
+create.hsbc is **not** a runtime dependency: its content is captured into `guidelines/` as the RAG layer, and reference URLs in the docs are provenance only.
+
+## Authored canon (source of truth — edit these)
 
 ```
-knowledge/
-├── components/      # component graph — one *.meta.json per component (a lightweight KG)
-│   ├── meta.schema.json
-│   └── EXAMPLE-button.meta.json   (synthetic)
-├── tokens/          # DTCG-style token store + intent descriptions
-│   └── README.md
-├── compliance/      # compliance graph — rule → component → check → SC → clause
-│   ├── rule.schema.json
-│   └── EXAMPLE-contrast-rule.json (synthetic)
-└── guidelines/      # prose canon for RAG (brand, voice, patterns)
-    └── README.md
+components/
+  meta.schema.json              # contract for a component node (reconciled to the canon 2026-06-18)
+  <component>.meta.json          # 32 component nodes
+  _ACCESSIBILITY-CONFORMANCE.md  # WCAG 2.2 AA basis + 2.2-new SC mapping
+tokens/
+  colour.json semantic-colour.json elevation.json layout.json
+  spacing.json typography.json icon-scale.json
+  _manifests/                    # depricate→canonical replacement map, Sutherland diffs
+  _INGEST-NOTES.md               # per-page ingest findings
+  README.md
+compliance/
+  rule.schema.json               # contract for a rule node
+  README.md
+guidelines/
+  *.md (23)                      # the RAG corpus
+  README.md
+_CONFIDENCE.md                   # confidence vocabulary: asserted | inferred | review
 ```
 
-## Per-stage representation (see `harness/state/canon.md`)
+## Derived views (generated — do not hand-edit)
 
-- **Component library → component graph** (structured metadata; relationships + anti-patterns).
-- **Tokens → DTCG JSON** with intent descriptions.
-- **Compliance → knowledge graph** (audit-grade, multi-hop).
-- **Guidelines → RAG over Markdown.**
-- **Live Figma/code → MCP at runtime** (not stored here).
+Run the generator (or `_build_all.py`) instead of editing these:
 
-## Ingestion (agency machine)
+```
+compliance/rules/*.json          # ← _build_compliance_kg.py   (31 rule files)
+compliance/graph-index.json      # ← _build_compliance_kg.py   (by_sc + by_component)
+tokens/_blast-radius.json        # ← _build_blast_radius.py     (token → components + god-nodes)
+_GRAPH-REPORT.md                 # ← _build_blast_radius.py     (health dashboard)
+_XREF-INDEX.json / .md           # ← _build_xref_index.py       (per-component hub, all layers)
+_REVIEW-QUEUE.json / .md         # ← _build_review_queue.py     (confidence-tagged worklist)
+_DARK-MODE-AUDIT.json / .md      # ← _build_dark_mode_audit.py  (primitive-leak report)
+_INTEGRITY-REPORT.md             # ← _build_integrity.py        (the CI gate)
+```
 
-Ingestion scripts read the real assets (Figma via MCP/Code Connect; the React
-library via source) and emit records conforming to the schemas here. The
-schemas are the contract; the home-machine synthetic examples let the pipeline
-dry-run without any real data.
+## Build — one command, dependency-ordered, self-gating
+
+```
+python3 knowledge/_build_all.py
+```
+
+Runs the six generators in order (later ones read earlier outputs):
+
+1. **compliance KG** — rules + graph index from each meta's `relatedSC`.
+2. **blast-radius + graph report** — token → component reverse index; god-nodes.
+3. **cross-reference index** — joins tokens · god-nodes · SCs · guidelines · anti-patterns · deprecated bindings into one hub per component. *(needs 1 + 2)*
+4. **review queue** — every non-asserted assertion, tiered (see `_CONFIDENCE.md`).
+5. **dark-mode audit** — components binding raw primitives that can't re-theme. *(needs 2)*
+6. **integrity lint** — schema-validates every meta, checks SC/rebind/guideline references resolve. **Exits non-zero on any error**, so this is the single command to trust the base after editing.
+
+Always regenerate after editing a meta, a token, or the compliance/guideline maps — the derived views are only as fresh as the last build.
+
+## Multi-hop traversal (start points)
+
+Quickest path is the query harness (joins all indexes live):
+
+```
+python3 knowledge/query.py "Tabs"            # full component hub
+python3 knowledge/query.py --token text/default   # blast radius
+python3 knowledge/query.py --sc 2.4.11       # SC + rule + components
+python3 knowledge/query.py --leaks           # dark-mode primitive leaks
+python3 knowledge/query.py --list            # all components
+```
+
+Or read the indexes directly:
+
+- **Component → everything:** `_XREF-INDEX.json` `components["Modals"]`.
+- **Token → components affected:** `tokens/_blast-radius.json` (`ranking` / `by_component`).
+- **WCAG SC → components:** `compliance/graph-index.json` `by_sc`.
+- **What needs human verification:** `_REVIEW-QUEUE.md` (🔴 review / 🟡 inferred).
+- **Dark-mode defects:** `_DARK-MODE-AUDIT.md`.
+- **Migration coupling:** components sharing a `god_nodes_touched` entry in the xref move together — rebind/test as a set.
+
+## Conformance basis
+
+Accessibility is graded against **WCAG 2.2 AA** — the bar set by HSBC's digital accessibility framework (Group Digital Experience and Accessibility). See `guidelines/digital-accessibility-standards.md` and `components/_ACCESSIBILITY-CONFORMANCE.md`.
+
+## Parked
+
+The **Sutherland** token migration (Sutherland = the HSBC React library; its tokens become canon) is on hold until its JSON lands (~late June / early July 2026). When it arrives: import as modes → rebind in-use deprecated tokens (worklist in `_REVIEW-QUEUE.md` + `tokens/_manifests/`) → re-verify zero references → delete. The blast-radius, review queue, and dark-mode audit are the safety tooling for that rebind.

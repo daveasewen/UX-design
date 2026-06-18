@@ -1,0 +1,354 @@
+{
+  "$description": "Dark-mode coverage audit. LEAK = component binds a raw colour primitive directly (no dark value -> cannot re-theme). flat_semantics = semantic tokens whose dark==light (often intentional, listed for confirmation). Derived from tokens/_blast-radius.json + the colour stores. Regenerate via _build_dark_mode_audit.py.",
+  "generated": "2026-06-18",
+  "totals": {
+    "components": 32,
+    "clean": 25,
+    "leaking": 7,
+    "semantic_colour_tokens": 111,
+    "flat_semantics": 43,
+    "primitives": 124
+  },
+  "leak_index": {
+    "color/primary": [
+      "Badge",
+      "Cards",
+      "Hero",
+      "Links",
+      "List items",
+      "Navigations",
+      "Tabs"
+    ],
+    "color/grey/transparent/white-75": [
+      "Hero"
+    ],
+    "color/black": [
+      "Navigations"
+    ],
+    "color/white": [
+      "Navigations"
+    ]
+  },
+  "components": {
+    "Accordion": {
+      "status": "clean",
+      "leaks": [],
+      "flat_semantics": [],
+      "colour_token_count": 6,
+      "self_flagged": null
+    },
+    "Avatar": {
+      "status": "clean",
+      "leaks": [],
+      "flat_semantics": [
+        "icon/default-reverse",
+        "image/opacity/default",
+        "image/opacity/disabled",
+        "text/reverse"
+      ],
+      "colour_token_count": 8,
+      "self_flagged": null
+    },
+    "Badge": {
+      "status": "LEAK",
+      "leaks": [
+        "color/primary"
+      ],
+      "flat_semantics": [
+        "text/reverse"
+      ],
+      "colour_token_count": 3,
+      "self_flagged": "The badge fill binds the PRIMITIVE color/primary (#DB0011) directly rather than a semantic token (e.g. a primary/background/* ). Flag for Dave — consider a semantic alias."
+    },
+    "Breadcrumbs": {
+      "status": "clean",
+      "leaks": [],
+      "flat_semantics": [],
+      "colour_token_count": 1,
+      "self_flagged": null
+    },
+    "Button": {
+      "status": "clean",
+      "leaks": [],
+      "flat_semantics": [
+        "icon/default-reverse",
+        "rag/success",
+        "tertiary/background/default",
+        "tertiary/background/disabled",
+        "text/reverse"
+      ],
+      "colour_token_count": 21,
+      "self_flagged": null
+    },
+    "Cards": {
+      "status": "LEAK",
+      "leaks": [
+        "color/primary"
+      ],
+      "flat_semantics": [
+        "icon/default-reverse",
+        "tertiary/background/default",
+        "text/reverse"
+      ],
+      "colour_token_count": 10,
+      "self_flagged": null
+    },
+    "Countdown timer": {
+      "status": "clean",
+      "leaks": [],
+      "flat_semantics": [],
+      "colour_token_count": 3,
+      "self_flagged": null
+    },
+    "Divider": {
+      "status": "clean",
+      "leaks": [],
+      "flat_semantics": [],
+      "colour_token_count": 4,
+      "self_flagged": null
+    },
+    "Dropdown": {
+      "status": "clean",
+      "leaks": [],
+      "flat_semantics": [
+        "icon/default-reverse",
+        "rag/error",
+        "text/reverse"
+      ],
+      "colour_token_count": 19,
+      "self_flagged": null
+    },
+    "Headers": {
+      "status": "clean",
+      "leaks": [],
+      "flat_semantics": [],
+      "colour_token_count": 2,
+      "self_flagged": null
+    },
+    "Hero": {
+      "status": "LEAK",
+      "leaks": [
+        "color/grey/transparent/white-75",
+        "color/primary"
+      ],
+      "flat_semantics": [
+        "icon/default-reverse",
+        "text/reverse"
+      ],
+      "colour_token_count": 8,
+      "self_flagged": null
+    },
+    "Input fields": {
+      "status": "clean",
+      "leaks": [],
+      "flat_semantics": [
+        "icon/default-reverse",
+        "rag/error",
+        "text/reverse"
+      ],
+      "colour_token_count": 16,
+      "self_flagged": null
+    },
+    "Links": {
+      "status": "LEAK",
+      "leaks": [
+        "color/primary"
+      ],
+      "flat_semantics": [
+        "icon/default-reverse",
+        "text/reverse"
+      ],
+      "colour_token_count": 7,
+      "self_flagged": "Arrow link's arrow icon binds the PRIMITIVE color/primary (#db0011) directly rather than a semantic icon token — same pattern flagged on Badge surface and Hero arrow/CTA. Consider a semantic 'icon/brand' token."
+    },
+    "List items": {
+      "status": "LEAK",
+      "leaks": [
+        "color/primary"
+      ],
+      "flat_semantics": [
+        "icon/default-reverse",
+        "image/opacity/default",
+        "image/opacity/disabled",
+        "rag/success",
+        "tertiary/background/default",
+        "text/reverse"
+      ],
+      "colour_token_count": 13,
+      "self_flagged": "List Badge binds primitive color/primary (#db0011) directly + bullets bind colour/neutral/grey-1 primitive — same primitive-leak flag as Badge/Hero/Links."
+    },
+    "Loading indicator": {
+      "status": "clean",
+      "leaks": [],
+      "flat_semantics": [
+        "icon/default-reverse",
+        "text/reverse"
+      ],
+      "colour_token_count": 4,
+      "self_flagged": null
+    },
+    "Modals": {
+      "status": "clean",
+      "leaks": [],
+      "flat_semantics": [
+        "icon/default-reverse",
+        "overlay/version1",
+        "text/reverse"
+      ],
+      "colour_token_count": 9,
+      "self_flagged": "Section tint binds primitive colour/neutral/grey-1 (#f3f3f3) directly — same primitive-leak flag noted on List/Badge/Hero."
+    },
+    "Navigations": {
+      "status": "LEAK",
+      "leaks": [
+        "color/black",
+        "color/primary",
+        "color/white"
+      ],
+      "flat_semantics": [
+        "overlay/version1"
+      ],
+      "colour_token_count": 13,
+      "self_flagged": null
+    },
+    "Notifications": {
+      "status": "clean",
+      "leaks": [],
+      "flat_semantics": [
+        "icon/default-reverse",
+        "rag/error",
+        "rag/information",
+        "rag/success",
+        "rag/text/on-dark",
+        "rag/text/on-light",
+        "rag/warning"
+      ],
+      "colour_token_count": 14,
+      "self_flagged": null
+    },
+    "Pagination": {
+      "status": "clean",
+      "leaks": [],
+      "flat_semantics": [],
+      "colour_token_count": 12,
+      "self_flagged": null
+    },
+    "Progress tracker": {
+      "status": "clean",
+      "leaks": [],
+      "flat_semantics": [],
+      "colour_token_count": 3,
+      "self_flagged": null
+    },
+    "Quick actions": {
+      "status": "clean",
+      "leaks": [],
+      "flat_semantics": [],
+      "colour_token_count": 3,
+      "self_flagged": null
+    },
+    "Reorder": {
+      "status": "clean",
+      "leaks": [],
+      "flat_semantics": [
+        "rag/success"
+      ],
+      "colour_token_count": 3,
+      "self_flagged": null
+    },
+    "Search field": {
+      "status": "clean",
+      "leaks": [],
+      "flat_semantics": [
+        "tertiary/background/default",
+        "text/reverse"
+      ],
+      "colour_token_count": 13,
+      "self_flagged": null
+    },
+    "Selection controls": {
+      "status": "clean",
+      "leaks": [],
+      "flat_semantics": [
+        "icon/default-reverse",
+        "rag/error",
+        "text/reverse"
+      ],
+      "colour_token_count": 11,
+      "self_flagged": null
+    },
+    "Slider": {
+      "status": "clean",
+      "leaks": [],
+      "flat_semantics": [],
+      "colour_token_count": 8,
+      "self_flagged": null
+    },
+    "Status indicator": {
+      "status": "clean",
+      "leaks": [],
+      "flat_semantics": [
+        "rag/error",
+        "rag/success",
+        "rag/warning"
+      ],
+      "colour_token_count": 9,
+      "self_flagged": "rag/neutral (#767676) — confirmed in store; the cancelled/neutral status colour. First component to surface it in the audit."
+    },
+    "Table": {
+      "status": "clean",
+      "leaks": [],
+      "flat_semantics": [],
+      "colour_token_count": 5,
+      "self_flagged": null
+    },
+    "Tabs": {
+      "status": "LEAK",
+      "leaks": [
+        "color/primary"
+      ],
+      "flat_semantics": [
+        "tertiary/background/default",
+        "text/reverse"
+      ],
+      "colour_token_count": 11,
+      "self_flagged": null
+    },
+    "Tags": {
+      "status": "clean",
+      "leaks": [],
+      "flat_semantics": [
+        "text/reverse"
+      ],
+      "colour_token_count": 2,
+      "self_flagged": null
+    },
+    "Tooltip": {
+      "status": "clean",
+      "leaks": [],
+      "flat_semantics": [],
+      "colour_token_count": 4,
+      "self_flagged": null
+    },
+    "Video player": {
+      "status": "clean",
+      "leaks": [],
+      "flat_semantics": [
+        "icon/default-reverse"
+      ],
+      "colour_token_count": 4,
+      "self_flagged": null
+    },
+    "View options": {
+      "status": "clean",
+      "leaks": [],
+      "flat_semantics": [
+        "icon/default-reverse",
+        "tertiary/background/default",
+        "tertiary/text/pressed"
+      ],
+      "colour_token_count": 7,
+      "self_flagged": null
+    }
+  }
+}
