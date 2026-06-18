@@ -4,6 +4,8 @@ Design tokens in **DTCG** JSON (W3C Design Tokens Community Group format), each
 with an **intent description** ("when to use"). Tokens are load-bearing in an
 agentic system — the agent reasons in token intent, not raw values.
 
+> **⚠️ Open token gaps & wiring issues:** see [`_manifests/_DESIGN-SYSTEM-GAPS.md`](_manifests/_DESIGN-SYSTEM-GAPS.md) — the prioritised list (P1–P5) of missing tokens (subtle-surface family, `rag/neutral-tint`), namespace questions (`interactive/on-light/*`), and components wired to the wrong tokens (Tabs, `color/primary` primitive leaks), distilled from the full component-ingest sweep. Per-token rebinds are in `_manifests/depricate-replacement-map.json`; per-page findings in `_INGEST-NOTES.md`.
+
 ## Rules
 
 - Name by **intent, not implementation**: `color.action.primary`, `emphasis`, `subtle` — not `blue-1`, `primary`, `tertiary`.

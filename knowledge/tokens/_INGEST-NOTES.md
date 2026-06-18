@@ -2,6 +2,8 @@
 
 Running record of issues found while ingesting the HSBC Common Toolkit **"Gaps and edits"** branch (Figma fileKey `Cgbtrmfp15ruNFkIAClpkI`) into the DTCG token store. Each item is for Dave to confirm; nothing is edited in Figma without sign-off.
 
+> **Component sweep complete.** The cross-cutting findings are consolidated and prioritised in [`_manifests/_DESIGN-SYSTEM-GAPS.md`](_manifests/_DESIGN-SYSTEM-GAPS.md) — start there for the actionable summary; the per-page entries below are the underlying detail.
+
 ## Breakpoints, grids and scales (page `471:15986`, web guide `13967:90189`)
 
 1. **Deprecated duplicate border token.** ✅ DONE — Dave deleted `non-interactive (depricate)/border/on-light/neutral-3`. Canon never included it.
