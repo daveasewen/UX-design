@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Input fields — A/B fitness showcase</title>
+<!--
+  Side-by-side fitness test for the Input fields component.
+  LEFT  (Route A): unconstrained, portfolio-grade — full craft, real dark mode,
+                   considered geometry. Fills every gap the KB leaves.
+  RIGHT (Route B): built FAITHFULLY from the knowledge base only — every colour is
+                   the resolved value of the token input-fields.meta.json binds
+                   (semantic-colour.json, light/dark). Geometry invented (no
+                   dimensions block). In dark mode it reveals the form/* defect.
+  Toggle the theme (top right) to watch Route B break while Route A holds.
+-->
+<style>
+  :root{
+    color-scheme: light dark;
+    --font: "Univers Next for HSBC", "Helvetica Neue", Arial, Helvetica, sans-serif;
+    --brand: #DB0011;
+    --r: 0;                         /* angular brand — square corners */
+    --ease: 200ms cubic-bezier(.4,0,.2,1);
+  }
+
+  /* ============ THEME (drives the whole page + both columns) ============ */
+  body[data-theme="light"]{
+    --page:#f4f4f5; --ink:#1b1b1d; --muted:#6a6a70; --hair:#e3e3e6;
+    --card:#ffffff; --card-edge:#e7e7ea;
+
+    /* Route A — designed token set (light) */
+    --a-surface:#ffffff; --a-label:#5b5b5b; --a-value:#1b1b1d; --a-ph:#9a9aa0;
+    --a-border:#bdbdc2; --a-border-hover:#7a7a80; --a-accent:#000000;
+    --a-focus:#005fcc; --a-error:#c0001a; --a-ok:#0f7a3d; --a-disabled:#b9b9be;
+
+    /* Route B — KB token values (semantic-colour.json · light) */
+    --b-page:#ffffff;
+    --b-value:#333333;            /* text/default */
+    --b-disabled:#D7D8D6;         /* text/disabled */
+    --b-field-bg:#ffffff00;       /* form/background/default (transparent) */
+    --b-field-bg-hover:#F3F3F3;   /* form/background/hover */
+    --b-border:#767676;           /* form/border/default */
+    --b-border-active:#000000;    /* form/border/active */
+    --b-border-disabled:#D7D8D6;  /* form/border/disabled */
+    --b-error:#A8000B;            /* rag/error */
+    --b-focus:#305A85;            /* focus/ring */
+  }
+  body[data-theme="dark"]{
+    --page:#0b0b0c; --ink:#f3f3f4; --muted:#9a9aa0; --hair:#262629;
+    --card:#141416; --card-edge:#27272b;
+
+    /* Route A — designed token set (dark): a real raised field surface */
+    --a-surface:#1a1a1d; --a-label:#a9a9ad; --a-value:#ffffff; --a-ph:#6f6f76;
+    --a-border:#3a3a3f; --a-border-hover:#5a5a61; --a-accent:#ffffff;
+    --a-focus:#4d9fff; --a-error:#ff5d63; --a-ok:#4ccb81; --a-disabled:#3a3a3f;
+
+    /* Route B — KB token values (semantic-colour.json · dark) — all form/* go flat #FFFFFF */
+    --b-page:#000000;             /* background/default */
+    --b-value:#FFFFFF;            /* text/default  → white text … */
+    --b-disabled:#767676;         /* text/disabled */
+    --b-field-bg:#FFFFFF;         /* form/background/default → OPAQUE WHITE (alpha lost) … on which white text is invisible */
+    --b-field-bg-hover:#FFFFFF;   /* form/background/hover */
+    --b-border:#FFFFFF;           /* form/border/default */
+    --b-border-active:#FFFFFF;    /* form/border/active */
+    --b-border-disabled:#FFFFFF;  /* form/border/disabled */
+    --b-error:#DB0011;            /* rag/error */
+    --b-focus:#4587A7;            /* focus/ring */
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:var(--font); background:var(--page); color:var(--ink);
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    transition:background var(--ease), color var(--ease);
+    padding:40px clamp(20px,5vw,64px);
+  }
+  header{display:flex; align-items:flex-start; justify-content:space-between; gap:24px; margin-bottom:32px;}
+  h1{font-size:22px; line-height:1.2; margin:0 0 6px; letter-spacing:-.01em;}
+  header p{margin:0; color:var(--muted); font-size:14px; line-height:1.55; max-width:62ch;}
+  .toggle{
+    flex:none; appearance:none; cursor:pointer; font:inherit; font-size:13px; font-weight:600;
+    color:var(--ink); background:var(--card); border:1px solid var(--card-edge);
+    padding:9px 14px; border-radius:999px; display:inline-flex; gap:8px; align-items:center;
+    transition:background var(--ease), border-color var(--ease);
+  }
+  .toggle:hover{border-color:var(--muted);}
+
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:24px;}
+  @media (max-width:880px){ .grid{grid-template-columns:1fr;} }
+
+  .col{
+    background:var(--card); border:1px solid var(--card-edge); border-radius:14px;
+    padding:26px 26px 30px; transition:background var(--ease), border-color var(--ease);
+  }
+  .col > .tag{display:inline-flex; align-items:center; gap:8px; font-size:11px; font-weight:700;
+    letter-spacing:.08em; text-transform:uppercase; padding:5px 10px; border-radius:999px; margin-bottom:4px;}
+  .col.a .tag{background:rgba(0,95,204,.12); color:#3b82f6;}
+  .col.b .tag{background:rgba(219,0,17,.12); color:#e0566b;}
+  .col h2{font-size:15px; margin:12px 0 2px;}
+  .col .lede{font-size:13px; color:var(--muted); margin:0 0 22px; line-height:1.5;}
+
+  .fields{display:flex; flex-direction:column; gap:22px;}
+  .field label{display:block; font-size:13px; font-weight:600; margin-bottom:8px; letter-spacing:.005em;}
+  .field .help{font-size:12px; line-height:1.4; margin:7px 0 0;}
+  .field .state{font-size:10px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; opacity:.5; margin-top:8px; display:block;}
+
+  /* ---------- Route A : portfolio-grade input ---------- */
+  .a label{color:var(--a-label);}
+  .a .control{position:relative;}
+  .a input{
+    width:100%; height:52px; padding:0 26px 0 2px; font:500 16px/52px var(--font);
+    color:var(--a-value); background:var(--a-surface); border:0;
+    border-bottom:1.5px solid var(--a-border); border-radius:0; outline:none;
+    transition:border-color var(--ease), background var(--ease);
+  }
+  .a input::placeholder{color:var(--a-ph); font-weight:400;}
+  .a input:hover{border-bottom-color:var(--a-border-hover);}
+  /* underline carries VALIDATION STATE (persistent for ok/error) */
+  .a .control::after{content:""; position:absolute; left:0; bottom:0; height:3px; width:100%;
+    background:var(--a-accent); transform:scaleX(0); transform-origin:left; transition:transform var(--ease), background var(--ease);}
+  /* FOCUS = keyboard only (:focus-visible), thick underline in the field's OWN colour (no blue) */
+  .a input:focus-visible{ outline:none; box-shadow: inset 0 -3px 0 var(--a-accent); }
+  .a .help{color:var(--muted);}
+  /* states */
+  .a .field.is-ok .control::after{background:var(--a-ok); transform:scaleX(1);}
+  .a .field.is-ok .help{color:var(--a-ok);}
+  .a .field.is-error input{border-bottom-color:var(--a-error);}
+  .a .field.is-error .control::after{background:var(--a-error); transform:scaleX(1);}
+  .a .field.is-error .help{color:var(--a-error);}
+  .a .field.is-disabled input{color:var(--a-disabled); border-bottom-style:dashed; cursor:not-allowed;}
+  .a .field.is-disabled label{color:var(--a-disabled);}
+  .a .ic{position:absolute; right:2px; top:50%; transform:translateY(-50%); display:flex; align-items:center;}
+  .a .ic svg{display:block;}
+
+  /* ---------- Route B : faithful to the KB ---------- */
+  .b label{color:var(--b-value);}
+  .b .control{position:relative;}
+  .b input{
+    width:100%; height:48px;            /* INVENTED — meta has no dimensions */
+    padding:0 2px; font:500 16px/48px var(--font);
+    color:var(--b-value); background:var(--b-field-bg);
+    border:0; border-bottom:1px solid var(--b-border); border-radius:0; outline:none;
+  }
+  .b input::placeholder{color:var(--b-value); opacity:.55; font-weight:300;} /* font-weight/light */
+  .b input:hover{background:var(--b-field-bg-hover);}
+  /* keyboard-only focus, field's own active colour (no blue ring) — matches the captured input pattern */
+  .b input:focus-visible{outline:none; box-shadow: inset 0 -3px 0 var(--b-border-active);}
+  .b .help{color:var(--b-value); opacity:.7;}
+  .b .field.is-error input{border-bottom:2px solid var(--b-error);}
+  .b .field.is-error .help{color:var(--b-error); opacity:1;}
+  .b .field.is-disabled input{border-bottom-color:var(--b-border-disabled); color:var(--b-disabled);}
+  .b .field.is-disabled label{color:var(--b-disabled);}
+
+  /* ---------- verdict footer ---------- */
+  .verdict{margin-top:28px; background:var(--card); border:1px solid var(--card-edge); border-radius:14px; padding:22px 26px;}
+  .verdict h3{margin:0 0 12px; font-size:14px;}
+  .verdict ul{margin:0; padding:0; list-style:none; display:grid; gap:10px;}
+  .verdict li{font-size:13px; line-height:1.5; padding-left:24px; position:relative; color:var(--ink);}
+  .verdict li b{font-weight:600;}
+  .verdict li::before{position:absolute; left:0; top:0; font-weight:700;}
+  .verdict li.win::before{content:"✓"; color:#2ea043;}
+  .verdict li.gap::before{content:"~"; color:#d29922;}
+  .verdict li.bad::before{content:"✕"; color:#e5534b;}
+  .hint{font-size:12px; color:var(--muted); margin:14px 0 0;}
+</style>
+</head>
+<body data-theme="light">
+
+  <header>
+    <div>
+      <h1>Input fields — fitness test, side by side</h1>
+      <p>Same component, two builds. <b>Route A</b> is the unconstrained quality ceiling. <b>Route B</b> is built faithfully from the knowledge base — its colours are the exact values of the tokens the meta binds. Flip the theme to dark and watch Route B break: the KB's <code>form/*</code> tokens all resolve to white, so the field becomes a solid white box with invisible white text.</p>
+    </div>
+    <button class="toggle" id="themeToggle" type="button">◐ <span>Dark mode</span></button>
+  </header>
+
+  <div class="grid">
+    <!-- ===================== ROUTE A ===================== -->
+    <section class="col a">
+      <span class="tag">Route A · unconstrained ceiling</span>
+      <h2>What a finished field looks like</h2>
+      <p class="lede">Considered geometry, real dark mode, animated focus underline, proper states.</p>
+      <div class="fields">
+        <div class="field">
+          <label for="a1">Email address</label>
+          <div class="control"><input id="a1" type="email" placeholder="name@example.com"></div>
+          <p class="help">We'll only use this to contact you.</p>
+          <span class="state">default</span>
+        </div>
+        <div class="field is-ok">
+          <label for="a2">Email address</label>
+          <div class="control"><input id="a2" type="email" value="jordan.lee@hsbc.com"><span class="ic" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="9" r="9" fill="#00847F"/><path d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z" fill="white"/></svg></span></div>
+          <p class="help">Looks good.</p>
+          <span class="state">completed</span>
+        </div>
+        <div class="field is-error">
+          <label for="a3">Email address</label>
+          <div class="control"><input id="a3" type="email" value="not-an-email"><span class="ic" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.30911 1.68194L0.109113 15.7999C-0.199887 16.3319 0.184113 16.9999 0.800113 16.9999H17.2001C17.8161 16.9999 18.2001 16.3319 17.8911 15.7999L9.69111 1.68194C9.38311 1.15094 8.61711 1.15094 8.30911 1.68194Z" fill="#A8000B"/><path d="M9.9001 5H8.1001V11H9.9001V5Z" fill="white"/><path d="M9 14.8259C9.69036 14.8259 10.25 14.2663 10.25 13.5759C10.25 12.8856 9.69036 12.3259 9 12.3259C8.30964 12.3259 7.75 12.8856 7.75 13.5759C7.75 14.2663 8.30964 14.8259 9 14.8259Z" fill="white"/></svg></span></div>
+          <p class="help">Enter a valid email address.</p>
+          <span class="state">error</span>
+        </div>
+        <div class="field is-disabled">
+          <label for="a4">Email address</label>
+          <div class="control"><input id="a4" type="email" placeholder="name@example.com" disabled></div>
+          <p class="help">This field is unavailable.</p>
+          <span class="state">disabled</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== ROUTE B ===================== -->
+    <section class="col b">
+      <span class="tag">Route B · from the knowledge base</span>
+      <h2>What the KB actually produces</h2>
+      <p class="lede">Colours = resolved token values. Geometry invented (no dimensions block). Focus ring pulled off the shelf.</p>
+      <div class="fields">
+        <div class="field">
+          <label for="b1">Email address</label>
+          <div class="control"><input id="b1" type="email" placeholder="name@example.com"></div>
+          <p class="help">We'll only use this to contact you.</p>
+          <span class="state">default</span>
+        </div>
+        <div class="field">
+          <label for="b2">Email address</label>
+          <div class="control"><input id="b2" type="email" value="jordan.lee@hsbc.com"></div>
+          <p class="help">Completed — no distinct token in the KB.</p>
+          <span class="state">completed</span>
+        </div>
+        <div class="field is-error">
+          <label for="b3">Email address</label>
+          <div class="control"><input id="b3" type="email" value="not-an-email"></div>
+          <p class="help">Enter a valid email address.</p>
+          <span class="state">error · rag/error</span>
+        </div>
+        <div class="field is-disabled">
+          <label for="b4">Email address</label>
+          <div class="control"><input id="b4" type="email" placeholder="name@example.com" disabled></div>
+          <p class="help">This field is unavailable.</p>
+          <span class="state">disabled</span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="verdict">
+    <h3>What the side-by-side shows</h3>
+    <ul>
+      <li class="win"><b>Focus generalised.</b> Route B's focus ring is the new <code>focus/ring</code> standard pulled straight off the shelf — no invention, unlike Tabs. The systemic fix paid off on a second component.</li>
+      <li class="gap"><b>Geometry didn't.</b> Every Route B size (height, padding, underline) is still a guess — Input fields' meta has no <code>dimensions</code> block. The schema slot exists; the data doesn't. Next: a per-component adoption pass.</li>
+      <li class="bad"><b>Dark mode is broken.</b> All <code>form/*</code> tokens resolve to <code>#FFFFFF</code> in dark, and <code>form/background/default</code> loses its alpha (transparent → opaque white), so the field is a white box with invisible white text. <code>form/*</code> is the next reconciliation target — and the contrast gate is currently blind to surface/border tokens, so it wouldn't catch this.</li>
+    </ul>
+    <p class="hint">Toggle the theme above to see it. Route A stays legible in both; Route B collapses in dark.</p>
+  </div>
+
+<script>
+  const btn = document.getElementById('themeToggle');
+  const label = btn.querySelector('span');
+  btn.addEventListener('click', () => {
+    const dark = document.body.getAttribute('data-theme') === 'dark';
+    document.body.setAttribute('data-theme', dark ? 'light' : 'dark');
+    label.textContent = dark ? 'Dark mode' : 'Light mode';
+  });
+</script>
+</body>
+</html>

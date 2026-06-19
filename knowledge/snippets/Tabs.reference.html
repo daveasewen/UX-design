@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tabs — reference implementation (gated)</title>
+<!--
+  CANONICAL REFERENCE IMPLEMENTATION for the Tabs component.
+  This is an AUTHORED artifact (option 3: gated snippet), not generated. Its colour
+  values are the resolved values of the canonical tabs/* token group; the embedded
+  #token-manifest below maps every CSS var to its token, and _validate_snippets.py
+  fails the build if any value drifts from the store, if required ARIA is missing,
+  or if a declared contrast pair falls below threshold. Edit tokens in the store,
+  not here — then update these values and let the gate confirm they match.
+-->
+<style>
+  :root{
+    --font: "Univers Next for HSBC", "Helvetica Neue", Arial, Helvetica, sans-serif;
+    --fs:16px; --lh:24px; --weight:500;            /* font-5 / font-weight medium */
+    /* geometry — from Tabs.meta dimensions (captured) */
+    --tab-h:48px; --tab-pad-x:20px; --tab-gap:4px; --indicator-h:3px; --track-h:1px;
+    --move:220ms cubic-bezier(.4,0,.2,1);           /* motion/duration/standard + easing/standard */
+    --fade:140ms ease;                              /* motion/duration/fade */
+  }
+  /* ---- canonical token values (semantic-colour.json) ---- */
+  [data-theme="light"]{
+    --tabs-active:#DB0011;              /* tabs/active */
+    --tabs-background:#FFFFFF;          /* tabs/background */
+    --tabs-standard-border:#D7D8D6;     /* tabs/standard-border */
+    --tabs-overflow-border:#000000;     /* tabs/overflow-border */
+    --tabs-overflow-background:#FFFFFF; /* tabs/overflow-background */
+    --text-default:#333333;            /* text/default */
+    --text-reverse:#FFFFFF;            /* text/reverse */
+    --tertiary-hover:#F3F3F3;          /* tertiary/background/hover */
+    --tertiary-pressed:#767676;        /* tertiary/background/pressed */
+    --focus-ring:#305A85;              /* focus/ring */
+    --page:#FFFFFF;                    /* background/default */
+  }
+  [data-theme="dark"]{
+    --tabs-active:#DB0011;             /* tabs/active */
+    --tabs-background:#1D1D1D;         /* tabs/background */
+    --tabs-standard-border:#474747;    /* tabs/standard-border */
+    --tabs-overflow-border:#474747;    /* tabs/overflow-border */
+    --tabs-overflow-background:#1D1D1D;/* tabs/overflow-background */
+    --text-default:#FFFFFF;           /* text/default */
+    --text-reverse:#FFFFFF;           /* text/reverse */
+    --tertiary-hover:#474747;         /* tertiary/background/hover */
+    --tertiary-pressed:#1D1D1D;       /* tertiary/background/pressed */
+    --focus-ring:#4587A7;             /* focus/ring */
+    --page:#000000;                   /* background/default */
+  }
+
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; font-family:var(--font); font-size:var(--fs); line-height:var(--lh);
+    background:var(--page); color:var(--text-default);
+    -webkit-font-smoothing:antialiased; transition:background var(--fade), color var(--fade);}
+  .demo-controls{margin-bottom:1.75rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 14px; border-radius:0; cursor:pointer;
+    border:1px solid var(--tabs-standard-border); background:var(--tabs-background); color:var(--text-default);}
+
+  .tabs{max-width:640px;}
+  .tablist{position:relative; display:flex; gap:var(--tab-gap);
+    background:var(--tabs-background); border-bottom:var(--track-h) solid var(--tabs-standard-border);}
+  .tab{position:relative; appearance:none; border:0; background:transparent; border-radius:0;
+    font:inherit; font-weight:var(--weight); color:var(--text-default); opacity:.75;
+    height:var(--tab-h); padding:0 var(--tab-pad-x); display:inline-flex; align-items:center; gap:8px;
+    cursor:pointer; white-space:nowrap; transition:opacity var(--fade), background var(--fade);}
+  .tab:hover{background:var(--tertiary-hover); opacity:1;}
+  .tab:active{background:var(--tertiary-pressed); color:var(--text-reverse);}
+  .tab[aria-selected="true"]{opacity:1;}                 /* selection = colour+indicator, weight constant (no width jump) */
+  .tab:disabled{opacity:.35; cursor:not-allowed;}
+  /* focus: keyboard only, ring pattern (focus distinct from the red selected indicator) */
+  .tab:focus-visible{outline:2px solid var(--focus-ring); outline-offset:-3px;}
+
+  .indicator{position:absolute; bottom:calc(-1 * var(--track-h)); height:var(--indicator-h);
+    background:var(--tabs-active); border-radius:0;
+    transition:left var(--move), width var(--move); will-change:left,width;}
+  @media (prefers-reduced-motion: reduce){ .indicator{transition:none;} .panel{animation:none !important;} }
+
+  .overflow{position:relative; margin-left:auto;}
+  .overflow__trigger{appearance:none; font:inherit; font-weight:var(--weight); height:var(--tab-h);
+    padding:0 16px; display:inline-flex; align-items:center; gap:6px; background:transparent;
+    color:var(--text-default); border:0; cursor:pointer; border-radius:0; opacity:.75;}
+  .overflow__trigger:hover{background:var(--tertiary-hover); opacity:1;}
+  .overflow__trigger:focus-visible{outline:2px solid var(--focus-ring); outline-offset:-3px;}
+  .overflow__menu{position:absolute; right:0; top:calc(100% + 6px); min-width:220px;
+    background:var(--tabs-overflow-background); border:1px solid var(--tabs-overflow-border); border-radius:0;
+    box-shadow:0 8px 28px rgba(0,0,0,.28); padding:6px; margin:0; list-style:none; z-index:20;
+    opacity:0; transform:translateY(-6px); pointer-events:none; transition:opacity var(--fade), transform var(--fade);}
+  .overflow__menu[data-open="true"]{opacity:1; transform:none; pointer-events:auto;}
+  .overflow__item{display:flex; width:100%; align-items:center; text-align:left; appearance:none; border:0;
+    background:transparent; color:var(--text-default); font:inherit; cursor:pointer; padding:12px 14px;
+    min-height:44px; border-radius:0;}
+  .overflow__item:hover{background:var(--tertiary-hover);}
+  .overflow__item:focus-visible{outline:2px solid var(--focus-ring); outline-offset:-2px;}
+
+  .panel{padding:1.75rem .25rem; color:var(--text-default); animation:fade var(--fade);}
+  .panel[hidden]{display:none;}
+  .panel h2{margin:0 0 .5rem; font-size:20px;}
+  .panel p{margin:0; opacity:.8; max-width:52ch;}
+  @keyframes fade{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:none;}}
+</style>
+</head>
+<body data-theme="light">
+
+  <div class="demo-controls">
+    <button id="themeToggle" type="button">◐ Toggle theme</button>
+    <span>Tabs — canonical reference implementation</span>
+  </div>
+
+  <div class="tabs">
+    <div class="tablist" role="tablist" aria-label="Account views">
+      <button class="tab" role="tab" id="t1" aria-selected="true"  aria-controls="p1" tabindex="0">Overview</button>
+      <button class="tab" role="tab" id="t2" aria-selected="false" aria-controls="p2" tabindex="-1">Transactions</button>
+      <button class="tab" role="tab" id="t3" aria-selected="false" aria-controls="p3" tabindex="-1">Statements</button>
+      <button class="tab" role="tab" id="t4" aria-selected="false" aria-controls="p4" tabindex="-1" disabled>Settings</button>
+
+      <div class="overflow">
+        <button class="overflow__trigger" id="ovTrigger" aria-haspopup="true" aria-expanded="false" aria-label="More tabs">More ▾</button>
+        <ul class="overflow__menu" id="ovMenu" role="menu" aria-labelledby="ovTrigger">
+          <li><button class="overflow__item" role="menuitem">Documents</button></li>
+          <li><button class="overflow__item" role="menuitem">Alerts</button></li>
+          <li><button class="overflow__item" role="menuitem">Help</button></li>
+        </ul>
+      </div>
+      <span class="indicator" aria-hidden="true"></span>
+    </div>
+
+    <div class="panel" role="tabpanel" id="p1" aria-labelledby="t1" tabindex="0">
+      <h2>Overview</h2><p>A summary of balances, recent activity, and quick actions for the selected account.</p>
+    </div>
+    <div class="panel" role="tabpanel" id="p2" aria-labelledby="t2" tabindex="0" hidden>
+      <h2>Transactions</h2><p>Every debit and credit, searchable and filterable.</p>
+    </div>
+    <div class="panel" role="tabpanel" id="p3" aria-labelledby="t3" tabindex="0" hidden>
+      <h2>Statements</h2><p>Monthly and annual statements available to download.</p>
+    </div>
+    <div class="panel" role="tabpanel" id="p4" aria-labelledby="t4" tabindex="0" hidden>
+      <h2>Settings</h2><p>Account preferences. (Shown disabled as a state demo.)</p>
+    </div>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Tabs",
+    "vars": {
+      "--tabs-active": "tabs/active",
+      "--tabs-background": "tabs/background",
+      "--tabs-standard-border": "tabs/standard-border",
+      "--tabs-overflow-border": "tabs/overflow-border",
+      "--tabs-overflow-background": "tabs/overflow-background",
+      "--text-default": "text/default",
+      "--text-reverse": "text/reverse",
+      "--tertiary-hover": "tertiary/background/hover",
+      "--tertiary-pressed": "tertiary/background/pressed",
+      "--focus-ring": "focus/ring",
+      "--page": "background/default"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "tabs/background", "context": "text" },
+      { "fg": "tabs/active",  "bg": "tabs/background", "context": "ui" },
+      { "fg": "focus/ring",   "bg": "tabs/background", "context": "ui" }
+    ],
+    "requiredAria": ["role=\"tablist\"", "role=\"tab\"", "role=\"tabpanel\"", "aria-selected"]
+  }
+  </script>
+
+  <script>
+    const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
+    const indicator = document.querySelector('.indicator');
+    function moveIndicator(t){ indicator.style.left = t.offsetLeft+'px'; indicator.style.width = t.offsetWidth+'px'; }
+    function select(t){ tabs.forEach(x=>{ const s=x===t; x.setAttribute('aria-selected',s); x.tabIndex=s?0:-1;
+      document.getElementById(x.getAttribute('aria-controls')).hidden=!s; }); moveIndicator(t); }
+    function focusables(){ return tabs.filter(t=>!t.disabled); }
+    tabs.forEach(tab=>{ tab.addEventListener('click',()=>!tab.disabled&&select(tab));
+      tab.addEventListener('keydown',e=>{ const l=focusables(); const i=l.indexOf(tab); let n=null;
+        if(e.key==='ArrowRight')n=(i+1)%l.length; else if(e.key==='ArrowLeft')n=(i-1+l.length)%l.length;
+        else if(e.key==='Home')n=0; else if(e.key==='End')n=l.length-1;
+        if(n!==null){e.preventDefault(); l[n].focus(); select(l[n]);} }); });
+    const ovT=document.getElementById('ovTrigger'), ovM=document.getElementById('ovMenu');
+    const items=Array.from(ovM.querySelectorAll('[role="menuitem"]'));
+    function setMenu(o){ ovM.setAttribute('data-open',String(o)); ovT.setAttribute('aria-expanded',String(o)); if(o)items[0].focus(); }
+    ovT.addEventListener('click',()=>setMenu(ovM.getAttribute('data-open')!=='true'));
+    ovM.addEventListener('keydown',e=>{ const i=items.indexOf(document.activeElement);
+      if(e.key==='ArrowDown'){e.preventDefault(); items[(i+1)%items.length].focus();}
+      else if(e.key==='ArrowUp'){e.preventDefault(); items[(i-1+items.length)%items.length].focus();}
+      else if(e.key==='Escape'){setMenu(false); ovT.focus();} });
+    document.addEventListener('click',e=>{ if(!e.target.closest('.overflow'))setMenu(false); });
+    document.getElementById('themeToggle').addEventListener('click',()=>{ const b=document.body;
+      b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    const start=tabs.find(t=>t.getAttribute('aria-selected')==='true');
+    requestAnimationFrame(()=>moveIndicator(start));
+    window.addEventListener('resize',()=>{ const s=tabs.find(t=>t.getAttribute('aria-selected')==='true'); if(s)moveIndicator(s); });
+  </script>
+</body>
+</html>

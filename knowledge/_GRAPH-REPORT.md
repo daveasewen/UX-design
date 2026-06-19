@@ -49,6 +49,7 @@ Change one of these and the listed number of components is affected. Use before 
 | `image/` | 2 |
 | `secondary/` | 2 |
 | `border-width/` | 2 |
+| `focus/` | 2 |
 | `layout/` | 2 |
 | `overlay/` | 2 |
 | `timer/` | 1 |
@@ -56,7 +57,6 @@ Change one of these and the listed number of components is affected. Use before 
 | `progress/` | 1 |
 | `table/` | 1 |
 | `tabs/` | 1 |
-| `focus/` | 1 |
 | `border-radius/` | 1 |
 
 ## Deprecated tokens still bound (migration worklist)

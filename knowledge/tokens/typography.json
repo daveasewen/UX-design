@@ -4,30 +4,45 @@
     "font-family": {
       "default": {
         "$value": "Univers Next for HSBC",
-        "$type": "string"
+        "$type": "string",
+        "$fallback": ["Helvetica Neue", "Arial", "Helvetica", "sans-serif"],
+        "$webStack": "\"Univers Next for HSBC\", \"Helvetica Neue\", Arial, Helvetica, sans-serif",
+        "$note": "Proprietary neo-grotesque. Fallback stack added 2026-06-19 (fix #5) so codegen has a web-safe degradation — Univers Next is closest to Helvetica Neue/Arial. $webStack is the ready CSS font-family value.",
+        "$confidence": "review"
       }
     },
     "font-weight": {
+      "$note": "Named weights now carry their numeric CSS equivalent in $value (fix #5, 2026-06-19) so a generator emits `font-weight: 500` not the unmapped string `medium`. $label keeps the canonical name. Numerics are the standard CSS weight mapping; confirm against the exact Univers Next instance before treating as canon.",
       "thin": {
-        "$value": "thin",
-        "$type": "string"
+        "$value": 100,
+        "$label": "thin",
+        "$type": "number",
+        "$confidence": "review"
       },
       "light": {
-        "$value": "light",
-        "$type": "string"
+        "$value": 300,
+        "$label": "light",
+        "$type": "number",
+        "$confidence": "review"
       },
       "regular": {
-        "$value": "regular",
-        "$type": "string"
+        "$value": 400,
+        "$label": "regular",
+        "$type": "number",
+        "$confidence": "review"
       },
       "medium": {
-        "$value": "medium",
-        "$type": "string"
+        "$value": 500,
+        "$label": "medium",
+        "$type": "number",
+        "$confidence": "review"
       },
       "bold": {
-        "$value": "bold",
-        "$type": "string",
-        "$review": "Figma export glitch: one mode exported as literal 'String value'; coerced to 'bold'. Verify in Figma."
+        "$value": 700,
+        "$label": "bold",
+        "$type": "number",
+        "$confidence": "review",
+        "$note": "Resolves the prior export-glitch flag (one mode exported as literal 'String value'); coerced to bold = CSS 700. Verify in Figma."
       }
     },
     "font-size": {

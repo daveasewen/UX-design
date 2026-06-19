@@ -28,6 +28,7 @@ STEPS = [
     ("dark-mode coverage audit", "_build_dark_mode_audit.py"),
     ("text/icon contrast audit", "_build_surface_contrast_audit.py"),
     ("indicator/accent contrast audit", "_build_indicator_contrast_audit.py"),
+    ("snippet gate", "_validate_snippets.py"),
     ("integrity lint (gate)", "_build_integrity.py"),
 ]
 
@@ -44,6 +45,9 @@ for i, (label, rel) in enumerate(STEPS, 1):
             rc = rc or r.returncode
         elif "contrast" in label:
             print(f"\n❌ contrast gate failed (exit {r.returncode}) — see knowledge/_*-CONTRAST-AUDIT.md")
+            rc = rc or r.returncode
+        elif "snippet" in label:
+            print(f"\n❌ snippet gate failed (exit {r.returncode}) — see knowledge/_SNIPPET-AUDIT.md")
             rc = rc or r.returncode
         else:
             print(f"\n❌ step '{label}' failed (exit {r.returncode}) — aborting")

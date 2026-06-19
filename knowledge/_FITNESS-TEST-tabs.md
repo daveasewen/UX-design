@@ -84,3 +84,22 @@ The re-run measures the A–B gap by the only thing that matters: **for each gap
 **Bottom line:** the gap shrank from *"correct but unshippable (dark-mode WCAG break + no focus)"* to *"shippable and accessible; remaining delta is type polish and overflow richness."* The dangerous gap — internally-valid-but-unusable — is closed; what's left is craft refinement that won't fail a conformance gate.
 
 **Tooling caveat still standing:** the integrity gate passed both the broken and the fixed Tabs. The new contrast-aware audits (fix #1b) now catch resolved-value failures the old gate missed, but "green gate" still means "internally consistent," not "fit for purpose." Keep the fitness re-run, not the gate, as the progress metric.
+
+---
+
+## Generalisation probe — Input fields (2026-06-19)
+
+**Question:** do the new focus (#2) and geometry (#3) standards generalise beyond Tabs, or were they Tabs-specific? **Method:** KB-only readiness check on Input fields — for each category that forced invention in the Tabs Route B, does the KB now answer it for a *different* component? Verified live (`query.py "Input fields"`, meta + token inspection).
+
+**Verdict: the standards generalise structurally, but adoption is still per-component — and the probe surfaced a new latent defect the gate doesn't cover.**
+
+| Category | Generalises? | Evidence |
+|---|---|---|
+| Focus standard *reachable* | ✅ Yes — automatic | `focus-indicators.md` appears in Input fields' guideline hub with no per-component work (it's GLOBAL). The `focus/ring` token + width/offset are available system-wide. |
+| Focus standard *applied* | ❌ Not yet | Input fields' meta has **no focus binding**, doesn't cite **2.4.7**, and its focus note is vague prose ("Visible focus; active state shows a stronger bottom stroke") — exactly Tabs' pre-fix state. |
+| Geometry *slot* | ✅ Yes | The `dimensions` schema block is available to all 32 components. |
+| Geometry *populated* | ❌ Not yet | Input fields has **no `dimensions` block** — field height, padding, border widths, the 40/44px date-cell target are still prose-only or absent. |
+
+**The real finding:** the systemic fixes did the systemic part — the standard and the schema slot now reach every component for free, so focus/geometry are **no longer ~90% invention** (as they were for Tabs) but **a cheap adoption pass**: bind the existing `focus/ring`, fill the existing `dimensions` slot with the component's own numbers. That's the generalisation win. But "systemic fix shipped" ≠ "every component adopts it" — each meta still needs the wiring. **Backlog implication: a 31-component adoption sweep** (bind focus + cite 2.4.7 + populate dimensions), now low-risk because nothing new is being invented.
+
+**Bonus defect (the probe earned its keep):** Input fields' bound form chrome is **flat in dark mode** — `form/border/default` #767676→**#FFFFFF**, `form/border/active` #000→**#FFFFFF**, `form/background/hover` #F3F3F3→**#FFFFFF**. A field built faithfully from the KB gets white borders and a **white hover fill** in dark mode — the same flat-value defect class as Tabs' original `tabs/*`. Two consequences: (1) `form/*` is the **next token-reconciliation target** after `tabs/*`/`tertiary/*` (fix #1 only swept those two groups); (2) critically, **the contrast gate does not cover this** — it audits text/icon and indicator tokens, not `*/background` or `*/border` *surface* tokens, so this would pass green. Gate-coverage gap to close: extend the dark-mode contrast audit to surface/border tokens (test border vs its surface at 3:1; flag flat light==dark chrome).
