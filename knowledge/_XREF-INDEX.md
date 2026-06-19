@@ -4,7 +4,7 @@
 
 **Totals:** 32 components · 19 with deprecated bindings · 10 god-nodes (blast≥7).
 
-**Global guidelines (apply to every component):** accessibility, digital-accessibility-standards, colour-usage, dark-mode.
+**Global guidelines (apply to every component):** accessibility, digital-accessibility-standards, colour-usage, dark-mode, focus-indicators.
 
 | Component | Cat | #Tok | God-nodes touched | WCAG SCs | Topical guidelines | Dep. |
 |---|---|---|---|---|---|---|
@@ -35,7 +35,7 @@
 | Slider | mol | 8 | background/default, text/default | 1.4.1, 2.1.1, 2.5.7, 2.5.8, 4.1.2 | forms | 1 |
 | Status indicator | ato | 9 | text/default, text/disabled | 1.4.1, 1.4.11, 1.4.3, 4.1.3 | tone-of-voice, time-based-indicators, icons | 1 |
 | Table | org | 5 | background/default, text/default | 1.3.1, 1.3.2, 1.4.10 | horizontal-scroll, typography-usage, view-controls-sort |  |
-| Tabs | mol | 11 | background/default, color/primary, border/subsection, elevation/functional… | 1.3.1, 1.4.1, 2.1.1, 2.4.11, 2.5.8, 4.1.2 | horizontal-scroll, platform-web | 2 |
+| Tabs | mol | 12 | background/default, color/primary, border/subsection, elevation/functional… | 1.3.1, 1.4.1, 2.1.1, 2.4.11, 2.4.7, 2.5.8, 4.1.2 | horizontal-scroll, platform-web | 2 |
 | Tags | ato | 2 | text/default, text/reverse | 1.4.1, 1.4.3, 2.4.4, 2.5.8 | typography-usage | 9 |
 | Tooltip | mol | 4 | background/default, elevation/functional, text/default | 1.4.13, 1.4.3, 2.1.1, 2.4.11, 4.1.2 | contextual-help, elevation |  |
 | Video player | org | 4 | icon/default, icon/default-reverse, text/default | 1.2.2, 1.2.5, 1.4.3, 2.1.1, 2.2.2 | time-based-indicators, imagery |  |

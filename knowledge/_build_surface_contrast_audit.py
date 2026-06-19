@@ -16,7 +16,7 @@ import sys
 sys.path.insert(0, os.path.dirname(__file__))
 from _contrast_utils import hex_to_rgb, luminance, contrast_ratio, is_sufficient_contrast
 
-ROOT = "/sessions/charming-blissful-volta/mnt/UX-design/knowledge"
+ROOT = os.path.dirname(os.path.abspath(__file__))
 TOK = os.path.join(ROOT, "tokens")
 
 DARK_SURFACE = "#1D1D1D"  # HSBC dark-mode/600

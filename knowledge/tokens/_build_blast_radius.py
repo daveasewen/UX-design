@@ -12,7 +12,7 @@ and prefixes (icon/default vs icon/default-reverse) don't double-match.
 import json, re, glob, os
 from collections import Counter, defaultdict
 
-ROOT = "/sessions/eloquent-cool-fermat/mnt/UX-design/knowledge"
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TOK = os.path.join(ROOT, "tokens")
 COMP = os.path.join(ROOT, "components")
 

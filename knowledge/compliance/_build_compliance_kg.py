@@ -8,7 +8,7 @@
 """
 import json, re, glob, os, sys
 
-ROOT = "/sessions/eloquent-cool-fermat/mnt/UX-design/knowledge"
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 COMP = os.path.join(ROOT, "components")
 COMPL = os.path.join(ROOT, "compliance")
 RULES = os.path.join(COMPL, "rules")

@@ -23,7 +23,7 @@ does this in order). Regenerate: python3 knowledge/_build_dark_mode_audit.py
 import json, os, glob
 from collections import defaultdict
 
-ROOT = "/sessions/eloquent-cool-fermat/mnt/UX-design/knowledge"
+ROOT = os.path.dirname(os.path.abspath(__file__))
 TOK = os.path.join(ROOT, "tokens")
 COMP = os.path.join(ROOT, "components")
 

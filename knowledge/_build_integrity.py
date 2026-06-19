@@ -18,7 +18,7 @@ import json, os, glob, re, sys
 from collections import defaultdict
 import jsonschema
 
-ROOT = "/sessions/eloquent-cool-fermat/mnt/UX-design/knowledge"
+ROOT = os.path.dirname(os.path.abspath(__file__))
 COMP = os.path.join(ROOT, "components")
 TOK = os.path.join(ROOT, "tokens")
 GUIDE = os.path.join(ROOT, "guidelines")

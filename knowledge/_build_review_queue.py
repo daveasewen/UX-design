@@ -26,7 +26,7 @@ Regenerate after editing metas:  python3 knowledge/_build_review_queue.py
 import json, os, glob, re
 from collections import Counter, defaultdict
 
-ROOT = "/sessions/eloquent-cool-fermat/mnt/UX-design/knowledge"
+ROOT = os.path.dirname(os.path.abspath(__file__))
 COMP = os.path.join(ROOT, "components")
 
 REVIEW_RE = re.compile(r"\bREVIEW\b")

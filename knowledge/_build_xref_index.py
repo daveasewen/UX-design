@@ -23,13 +23,13 @@ Depends on tokens/_blast-radius.json and compliance/graph-index.json being curre
 import json, os, glob, re
 from collections import defaultdict
 
-ROOT = "/sessions/eloquent-cool-fermat/mnt/UX-design/knowledge"
+ROOT = os.path.dirname(os.path.abspath(__file__))
 COMP = os.path.join(ROOT, "components")
 GUIDE = os.path.join(ROOT, "guidelines")
 
 # --- guideline map: every guideline file that applies to a component ---
 # GLOBAL apply to all interactive components (theming + a11y framework + foundations).
-GLOBAL = ["accessibility.md", "digital-accessibility-standards.md", "colour-usage.md", "dark-mode.md"]
+GLOBAL = ["accessibility.md", "digital-accessibility-standards.md", "colour-usage.md", "dark-mode.md", "focus-indicators.md"]
 # TOPICAL is curated (gradeable, authored — not inferred). Keyed by component name.
 TOPICAL = {
     "Accordion":        ["elevation.md", "contextual-help.md"],

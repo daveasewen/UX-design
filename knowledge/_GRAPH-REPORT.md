@@ -2,7 +2,7 @@
 
 > Generated derived view over `knowledge/` (Graphify-inspired; no external dependency). Regenerate after editing component metas or tokens: `python3 knowledge/tokens/_build_blast_radius.py`. Authored canon stays the source of truth; this is a generated dashboard.
 
-**Totals:** 32 components · 622 tokens defined · 81 tokens referenced by components · compliance: 31 rules x 32 components (31 SCs).
+**Totals:** 32 components · 627 tokens defined · 82 tokens referenced by components · compliance: 31 rules x 32 components (31 SCs).
 
 ## God-nodes — highest token blast radius
 
@@ -56,6 +56,7 @@ Change one of these and the listed number of components is affected. Use before 
 | `progress/` | 1 |
 | `table/` | 1 |
 | `tabs/` | 1 |
+| `focus/` | 1 |
 | `border-radius/` | 1 |
 
 ## Deprecated tokens still bound (migration worklist)
@@ -86,7 +87,7 @@ Components whose `tokens` block still references a `(depricate)` token (count = 
 
 ## Orphans — defined tokens not referenced by any component meta
 
-541 of 622 defined tokens are unreferenced at the component layer. **Expected** for primitives and scale steps (consumed via semantic aliases, not bound directly); worth scanning the *semantic* groups for genuinely-dead tokens. By group:
+545 of 627 defined tokens are unreferenced at the component layer. **Expected** for primitives and scale steps (consumed via semantic aliases, not bound directly); worth scanning the *semantic* groups for genuinely-dead tokens. By group:
 
 | Group | Unreferenced |
 |---|---|
@@ -112,6 +113,7 @@ Components whose `tokens` block still references a `(depricate)` token (count = 
 | `border/` | 5 |
 | `overlay/` | 5 |
 | `blur/` | 4 |
+| `focus/` | 4 |
 | `image/` | 4 |
 | `progress/` | 4 |
 | `scrollbar/` | 4 |

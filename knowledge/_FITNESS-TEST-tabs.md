@@ -56,3 +56,31 @@ Other AA dimensions: both pass **2.5.8 Target Size** (44px), **2.1.1 Keyboard**,
 ## So, is the project on track?
 
 Yes — but with a sharpened definition of "done." The KB is a strong **correctness and provenance** layer and a genuinely useful **migration-safety** layer. It is **not yet** a layer that can drive *shippable* output, because it holds almost none of the craft (focus, geometry, motion, considered dark values) that separates correct from good. That's a tractable, well-defined backlog (the seven fixes above), not a redesign. The most valuable next step after these fixes is to **re-run this exact test** and watch the A–B gap shrink — that, not another derived view, is the real progress metric.
+
+---
+
+## Re-run #1 — gap closure measured (2026-06-19, after fixes #1–#4)
+
+The re-run measures the A–B gap by the only thing that matters: **for each gap that forced invention in `route-b-gap-log.md`, can the KB now supply a concrete answer?** Each closure below was verified live against the current stores (`query.py "Tabs"`, token resolution, schema-valid build), not asserted.
+
+**The four structural blockers — the categories that separated "correct" from "shippable" — are all closed:**
+
+| Gap (Route B) | Severity then | State now | Where |
+|---|---|---|---|
+| Dark surface = white-on-white (1.0:1, fails 1.4.3/1.4.11) | 🔴 WCAG fail | **Closed** — `tabs/*` dark reconciled to canon (`#1D1D1D`/`#474747`); dark-mode audit now contrast-aware | fix #1 (yesterday) |
+| Focus-ring spec — nothing, anywhere | 🔴 invented | **Closed** — `focus/ring` (mode-aware, canon blue, ≥3:1 verified) + `layout/focus` width/offset + `guidelines/focus-indicators.md` (GLOBAL → reaches all 32) + Tabs binding & anti-pattern; `2.4.7` now cited | fix #2 (today) |
+| All component geometry | 🔴 invented | **Closed for Tabs** — `dimensions` block in the meta schema (height 48, padding 20, indicator 3px, track 1px, target 44); schema now supports it system-wide | fix #3 (today) |
+| Motion / transitions | 🔴 invented | **Closed** — `tokens/motion.json` + Tabs `motion` block | fix #4 (prior) |
+
+**Result:** in the first build, Route B **failed WCAG in dark mode and had no focus design** — it would not ship. Re-built from today's KB, those four invention-categories are now answered *from the base*. The component the KB describes is now structurally **shippable and accessible in both themes** without the builder inventing focus, geometry, motion, or dark values.
+
+**Residual A–B delta (all 🟡 — refinement, not blockers, none are WCAG failures):**
+
+- Type detail (fix #5): `typography/font-weight` is an unmapped string (`"medium"`), `letter-spacing/font-5` is empty, proprietary font has no fallback stack.
+- `tabs/*` incomplete (fix #7): no hover/pressed surface tokens, so those states still fall back to `tertiary/*` (flat in dark).
+- Overflow + guideline mapping (fix #6): overflow breakpoint/collapse-count/menu sizing unspecified; `horizontal-scroll.md` mapped to Tabs is carousel guidance, not the tab-overflow pattern.
+- Minor semantics: tab activation model (auto vs manual) and `selected-first/middle/last` positioning not spelled out in the meta.
+
+**Bottom line:** the gap shrank from *"correct but unshippable (dark-mode WCAG break + no focus)"* to *"shippable and accessible; remaining delta is type polish and overflow richness."* The dangerous gap — internally-valid-but-unusable — is closed; what's left is craft refinement that won't fail a conformance gate.
+
+**Tooling caveat still standing:** the integrity gate passed both the broken and the fixed Tabs. The new contrast-aware audits (fix #1b) now catch resolved-value failures the old gate missed, but "green gate" still means "internally consistent," not "fit for purpose." Keep the fitness re-run, not the gate, as the progress metric.
