@@ -38,9 +38,12 @@ def mode_val(n, m):
     return (x.get("$value") or x.get("value")) if isinstance(x, dict) else x
 
 def is_indicator_token(token_name):
-    """Classify if a token is an indicator/accent/status colour."""
-    patterns = ['primary', 'rag/', 'active', 'pressed', 'interactive', 'status']
-    return any(p in token_name for p in patterns)
+    """Classify if a token is an indicator/accent/status colour (not a surface)."""
+    patterns = ['primary', 'rag/', 'interactive', 'status']
+    has_pattern = any(p in token_name for p in patterns)
+    # Exclude background/surface/border tokens (they're not indicators)
+    is_surface = any(x in token_name for x in ['background', 'surface', 'border', 'tint'])
+    return has_pattern and not is_surface
 
 # Load tokens
 sem = leaves(json.load(open(os.path.join(TOK, "semantic-colour.json"))))
