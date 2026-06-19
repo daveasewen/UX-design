@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Badge — reference implementation (gated)</title>
+<!--
+  CANONICAL REFERENCE for Badge (gated). A small passive indicator: a count or a dot, on
+  brand red with white text. Badge is a documented EXEMPTION to the angular brand rule —
+  it is FULLY ROUND (border-radius:999px). Avatar is the only other exemption.
+  Surface uses the SEMANTIC primary/background/default (#DB0011 both modes); the meta binds
+  the color/primary primitive — rebind noted. Red stays red in dark (passes on the page).
+-->
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
+  [data-theme="light"]{ --surface:#DB0011; --number:#FFFFFF; --host:#333333; --page:#FFFFFF; --disabled:#D7D8D6; }
+  [data-theme="dark"]{ --surface:#DB0011; --number:#FFFFFF; --host:#FFFFFF; --page:#000000; --disabled:#767676; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--host);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:2rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 14px; border:1px solid var(--disabled); background:transparent; color:var(--host); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--host); outline-offset:2px;}
+  h2{font-size:12px; letter-spacing:.04em; text-transform:uppercase; opacity:.55; margin:1.5rem 0 1rem;}
+  .row{display:flex; gap:40px; align-items:center;}
+
+  /* host element (e.g. an icon button) with a positioned badge */
+  .host{position:relative; width:40px; height:40px; display:inline-flex; align-items:center; justify-content:center;}
+  .host svg{width:34px; height:34px; fill:var(--host);}
+  .badge{position:absolute; top:-6px; right:-8px; min-width:24px; height:24px; padding:0 7px; border-radius:999px;  /* EXEMPTION: round */
+    background:var(--surface); color:var(--number); font:700 13px/1 var(--font); display:inline-flex; align-items:center; justify-content:center;
+    border:2px solid var(--page);}   /* thin page-coloured ring so it reads when overlapping the glyph */
+  .badge.dot{min-width:0; width:20px; height:20px; padding:0; top:-4px; right:-6px;}   /* active state: prominent red dot */
+  /* standalone number badge */
+  .badge.standalone{position:static; border:0; height:24px;}
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Badge — canonical reference (round exemption)</span></div>
+
+  <h2>On an element</h2>
+  <div class="row">
+    <span class="host"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22a2 2 0 0 0 2-2h-4a2 2 0 0 0 2 2Zm6-6V11c0-3-1.6-5.4-4.5-6V4a1.5 1.5 0 0 0-3 0v1C7.6 5.6 6 8 6 11v5l-2 2v1h16v-1l-2-2Z"/></svg><span class="badge" aria-label="3 unread notifications">3</span></span>
+    <span class="host"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22a2 2 0 0 0 2-2h-4a2 2 0 0 0 2 2Zm6-6V11c0-3-1.6-5.4-4.5-6V4a1.5 1.5 0 0 0-3 0v1C7.6 5.6 6 8 6 11v5l-2 2v1h16v-1l-2-2Z"/></svg><span class="badge" aria-label="99+ unread">99+</span></span>
+    <span class="host"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22a2 2 0 0 0 2-2h-4a2 2 0 0 0 2 2Zm6-6V11c0-3-1.6-5.4-4.5-6V4a1.5 1.5 0 0 0-3 0v1C7.6 5.6 6 8 6 11v5l-2 2v1h16v-1l-2-2Z"/></svg><span class="badge dot" aria-label="New activity"></span></span>
+  </div>
+
+  <h2>Standalone</h2>
+  <div class="row">
+    <span class="badge standalone" aria-label="5 items">5</span>
+    <span class="badge standalone" aria-label="New">New</span>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Badge",
+    "vars": {
+      "--surface": "primary/background/default",
+      "--number": "text/reverse",
+      "--host": "text/default",
+      "--page": "background/default"
+    },
+    "contrastPairs": [
+      { "fg": "text/reverse", "bg": "primary/background/default", "context": "text" }
+    ],
+    "requiredAria": ["aria-label"]
+  }
+  </script>
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body;
+      b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+  </script>
+</body>
+</html>

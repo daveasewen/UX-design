@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Selection controls — A/B showcase</title>
+<!--
+  LEFT  (Route A): unconstrained quality ceiling — same canonical colours, but richer motion:
+                   spring on the switch thumb (with a travel-stretch), overshoot on the check
+                   draw and radio dot, hover cues. Reduced-motion aware. The exploration space.
+  RIGHT (Route B): canonical reference — standard ease, faithful to tokens (matches the gated snippet).
+-->
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --fs:15px;
+    --std:180ms cubic-bezier(.4,0,.2,1); --spring:340ms cubic-bezier(.5,1.7,.4,1); }
+  body[data-theme="light"]{
+    --page:#f4f4f5; --ink:#1b1b1d; --muted:#6a6a70; --card:#fff; --edge:#e7e7ea;
+    --border:#767676; --border-active:#000000; --border-dis:#D7D8D6;
+    --checked:#000000; --glyph:#FFFFFF; --label:#333333; --label-dis:#D7D8D6; --focus:#305A85; --track:#767676;
+  }
+  body[data-theme="dark"]{
+    --page:#0b0b0c; --ink:#f3f3f4; --muted:#9a9aa0; --card:#161616; --edge:#27272b;
+    --border:#656565; --border-active:#FFFFFF; --border-dis:#404040;
+    --checked:#FFFFFF; --glyph:#333333; --label:#FFFFFF; --label-dis:#767676; --focus:#4587A7; --track:#656565;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:36px clamp(20px,4vw,56px); font-family:var(--font); background:var(--page); color:var(--ink);
+    -webkit-font-smoothing:antialiased; transition:background var(--std), color var(--std);}
+  header{display:flex; justify-content:space-between; align-items:flex-start; gap:24px; margin-bottom:26px;}
+  h1{font-size:21px; margin:0 0 6px;} header p{margin:0; color:var(--muted); font-size:14px; max-width:60ch;}
+  .toggle{flex:none; cursor:pointer; font:inherit; font-size:13px; font-weight:600; color:var(--ink);
+    background:var(--card); border:1px solid var(--edge); padding:9px 14px; border-radius:999px;}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:24px;}
+  @media(max-width:860px){.grid{grid-template-columns:1fr;}}
+  .col{background:var(--card); border:1px solid var(--edge); border-radius:14px; padding:24px;}
+  .tag{display:inline-block; font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+    padding:5px 10px; border-radius:999px; margin-bottom:8px;}
+  .a .tag{background:rgba(0,95,204,.12); color:#3b82f6;} .b .tag{background:rgba(219,0,17,.12); color:#e0566b;}
+  h2{font-size:11px; letter-spacing:.04em; text-transform:uppercase; color:var(--muted); margin:18px 0 8px;}
+  .field{display:flex; align-items:center; gap:12px; margin:12px 0; font:500 var(--fs)/1.3 var(--font);}
+  .field input{position:absolute; opacity:0; width:0; height:0;}
+  .field label{cursor:pointer; display:flex; align-items:center; gap:12px; color:var(--label);}
+
+  .box{width:22px;height:22px;flex:none;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;}
+  .box svg{width:14px;height:14px;} .box path{stroke:var(--glyph);stroke-width:2.4;fill:none;stroke-dasharray:22;stroke-dashoffset:22;}
+  .radio{width:22px;height:22px;flex:none;border:2px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;}
+  .radio .dot{width:12px;height:12px;border-radius:50%;background:var(--checked);transform:scale(0);}
+  .switch{width:44px;height:24px;flex:none;border-radius:999px;background:transparent;border:2px solid var(--track);position:relative;}
+  .switch .thumb{position:absolute;top:1px;left:1px;width:18px;height:18px;border-radius:50%;background:var(--track);transform-origin:left center;}
+  input:checked + label .box{background:var(--checked);border-color:var(--checked);}
+  input:checked + label .box path{stroke-dashoffset:0;}
+  input:checked + label .radio{border-color:var(--border-active);}
+  input:checked + label .radio .dot{transform:scale(1);}
+  input:checked + label .switch{background:var(--checked);border-color:var(--checked);}
+  input:checked + label .switch .thumb{transform:translateX(20px);background:var(--glyph);}
+  input:focus-visible + label .box,input:focus-visible + label .radio,input:focus-visible + label .switch{outline:2px solid var(--focus);outline-offset:2px;}
+
+  /* Route B — standard ease */
+  .b .box,.b .box path,.b .radio,.b .radio .dot,.b .switch,.b .switch .thumb{transition:all var(--std);}
+  /* Route A — spring + overshoot, hover cue, switch thumb travel-stretch */
+  .a .box,.a .radio{transition:background var(--std),border-color var(--std);}
+  .a .box path{transition:stroke-dashoffset var(--spring);}
+  .a .radio .dot{transition:transform var(--spring);}
+  .a .switch{transition:background var(--std),border-color var(--std);}
+  .a .switch .thumb{transition:transform var(--spring),background var(--std),width var(--std);}
+  .a label:hover .box,.a label:hover .radio{border-color:var(--border-active);}
+  .a label:active .switch .thumb{width:24px;}          /* squash/stretch on press */
+  @media(prefers-reduced-motion:reduce){ .a *{transition-duration:1ms !important;} }
+</style>
+</head>
+<body data-theme="light">
+  <header>
+    <div><h1>Selection controls — A/B showcase</h1>
+      <p><b>Route A</b> is the ceiling: same canonical colours, richer motion — spring + overshoot on the check, radio dot and switch thumb, plus a hover cue and a press stretch. <b>Route B</b> is the faithful canonical reference. Toggle theme; click the controls.</p></div>
+    <button class="toggle" id="t" type="button">◐ Dark</button>
+  </header>
+
+  <div class="grid">
+    <section class="col a">
+      <span class="tag">Route A · unconstrained + motion</span>
+      <h2>Checkbox</h2>
+      <div class="field"><input type="checkbox" id="ac1" checked><label for="ac1"><span class="box"><svg viewBox="0 0 18 18"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></span> Email notifications</label></div>
+      <div class="field"><input type="checkbox" id="ac2"><label for="ac2"><span class="box"><svg viewBox="0 0 18 18"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></span> SMS notifications</label></div>
+      <h2>Radio</h2>
+      <div class="field"><input type="radio" name="ar" id="ar1" checked><label for="ar1"><span class="radio"><span class="dot"></span></span> Express delivery</label></div>
+      <div class="field"><input type="radio" name="ar" id="ar2"><label for="ar2"><span class="radio"><span class="dot"></span></span> Standard delivery</label></div>
+      <h2>Switch</h2>
+      <div class="field"><input type="checkbox" role="switch" id="as1" checked><label for="as1"><span class="switch"><span class="thumb"></span></span> Two-factor auth</label></div>
+      <div class="field"><input type="checkbox" role="switch" id="as2"><label for="as2"><span class="switch"><span class="thumb"></span></span> Marketing emails</label></div>
+    </section>
+
+    <section class="col b">
+      <span class="tag">Route B · canonical reference</span>
+      <h2>Checkbox</h2>
+      <div class="field"><input type="checkbox" id="bc1" checked><label for="bc1"><span class="box"><svg viewBox="0 0 18 18"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></span> Email notifications</label></div>
+      <div class="field"><input type="checkbox" id="bc2"><label for="bc2"><span class="box"><svg viewBox="0 0 18 18"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></span> SMS notifications</label></div>
+      <h2>Radio</h2>
+      <div class="field"><input type="radio" name="br" id="br1" checked><label for="br1"><span class="radio"><span class="dot"></span></span> Express delivery</label></div>
+      <div class="field"><input type="radio" name="br" id="br2"><label for="br2"><span class="radio"><span class="dot"></span></span> Standard delivery</label></div>
+      <h2>Switch</h2>
+      <div class="field"><input type="checkbox" role="switch" id="bs1" checked><label for="bs1"><span class="switch"><span class="thumb"></span></span> Two-factor auth</label></div>
+      <div class="field"><input type="checkbox" role="switch" id="bs2"><label for="bs2"><span class="switch"><span class="thumb"></span></span> Marketing emails</label></div>
+    </section>
+  </div>
+
+  <script>
+    document.getElementById('t').addEventListener('click', e=>{
+      const b=document.body, dark=b.getAttribute('data-theme')==='dark';
+      b.setAttribute('data-theme', dark?'light':'dark'); e.target.textContent = dark?'◐ Dark':'◐ Light';
+    });
+  </script>
+</body>
+</html>

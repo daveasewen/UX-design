@@ -93,6 +93,13 @@ def validate(path):
                 errors.append(f"{name}: CONTRAST {p['fg']} on {p['bg']} ({mode}) = {r}:1 < {need}:1")
 
     # 4. focus
+    # Focus rules only apply to INTERACTIVE components; passive ones (e.g. Badge) are exempt.
+    interactive = any(s in html for s in (
+        "<button", "<a ", "<input", "<select", "<textarea",
+        'role="button"', 'role="link"', 'role="option"', 'role="combobox"',
+        'role="switch"', 'role="menuitem"', 'role="tab"', 'tabindex="0"'))
+    if not interactive:
+        return errors, warnings
     if ":focus-visible" not in html:
         errors.append(f"{name}: no :focus-visible rule (2.4.7)")
     bare = re.findall(r'outline\s*:\s*none', html)

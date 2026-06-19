@@ -21,7 +21,7 @@ Each raw primitive bound directly, and the components binding it. Rebind to a se
 |---|---|---|---|
 | Accordion | ✅ clean | — | — |
 | Avatar | ✅ clean | — | `icon/default-reverse`, `image/opacity/default`, `image/opacity/disabled`, `text/reverse` |
-| Badge | 🔴 LEAK | `color/primary` | `text/reverse` |
+| Badge | 🔴 LEAK | `color/primary` | `primary/background/default`, `text/reverse` |
 | Breadcrumbs | ✅ clean | — | — |
 | Button | ✅ clean | — | `icon/default-reverse`, `primary/background/default`, `primary/background/hover`, `rag/success`, `text/reverse` |
 | Cards | 🔴 LEAK | `color/primary` | `icon/default-reverse`, `text/reverse` |
@@ -31,7 +31,7 @@ Each raw primitive bound directly, and the components binding it. Rebind to a se
 | Headers | ✅ clean | — | — |
 | Hero | 🔴 LEAK | `color/grey/transparent/white-75`, `color/primary` | `icon/default-reverse`, `primary/background/default`, `text/reverse` |
 | Input fields | ✅ clean | — | `form/background/default`, `icon/default-reverse`, `text/reverse` |
-| Links | 🔴 LEAK | `color/primary` | `icon/default-reverse`, `text/reverse` |
+| Links | 🔴 LEAK | `color/primary` | `icon/default-reverse`, `primary/background/default`, `text/reverse` |
 | List items | 🔴 LEAK | `color/primary` | `icon/default-reverse`, `image/opacity/default`, `image/opacity/disabled`, `rag/success`, `text/reverse` |
 | Loading indicator | ✅ clean | — | `icon/default-reverse`, `text/reverse` |
 | Modals | ✅ clean | — | `icon/default-reverse`, `overlay/version1`, `primary/background/default`, `text/reverse` |

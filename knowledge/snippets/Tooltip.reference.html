@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tooltip — reference implementation (gated)</title>
+<!--
+  CANONICAL REFERENCE for Tooltip (gated). A small floating panel with a directional tip,
+  shown on hover AND keyboard focus (1.4.13). Elevation is mode-aware like Dropdown:
+  shadow in light, a grey OUTLINE in dark. NOTE: the meta binds the border to
+  divider/border/section (#404040), which is only ~1.3:1 on the dark page (near-invisible);
+  this reference uses elevation/border (#767676, ~4.6:1) — the proven dark-elevation token.
+  Rebind noted. role=tooltip + aria-describedby; dismissible by blur/Escape.
+-->
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:150ms ease; }
+  [data-theme="light"]{ --surface:#FFFFFF; --tip-border:#FFFFFF00; --shadow:#00000033; --text:#333333; --trigger:#333333; --page:#FFFFFF; --focus:#305A85; }
+  [data-theme="dark"]{ --surface:#000000; --tip-border:#767676; --shadow:#000000D9; --text:#FFFFFF; --trigger:#FFFFFF; --page:#000000; --focus:#4587A7; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:4rem 2.5rem; font-family:var(--font); background:var(--page); color:var(--text);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:2.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 14px; border:1px solid var(--trigger); background:transparent; color:var(--text); cursor:pointer;}
+  .tip-wrap{position:relative; display:inline-block;}
+  .trigger{width:22px; height:22px; padding:0; border:0; background:transparent; color:var(--trigger); cursor:help; display:inline-flex;
+    align-items:center; justify-content:center; vertical-align:middle;}
+  .trigger svg{width:22px; height:22px; display:block;}
+  .trigger:focus-visible{outline:2px solid var(--focus); outline-offset:2px; border-radius:50%;}
+  .tip{position:absolute; bottom:calc(100% + 12px); left:50%; transform:translateX(-50%) translateY(4px); width:max-content; max-width:240px;
+    background:var(--surface); color:var(--text); border:1px solid var(--tip-border); padding:10px 12px; font:400 14px/1.4 var(--font);
+    box-shadow:0 0 16px var(--shadow); opacity:0; pointer-events:none; transition:opacity var(--ease), transform var(--ease); z-index:20;}
+  .tip::after{content:""; position:absolute; top:100%; left:50%; width:10px; height:10px; background:var(--surface);
+    border-right:1px solid var(--tip-border); border-bottom:1px solid var(--tip-border); transform:translate(-50%,-50%) rotate(45deg);}
+  .tip-wrap:hover .tip, .tip-wrap:focus-within .tip{opacity:1; transform:translateX(-50%); pointer-events:auto;}
+  p{max-width:60ch; line-height:1.6;}
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Tooltip — canonical reference</span></div>
+
+  <p>Your available balance
+    <span class="tip-wrap">
+      <button class="trigger" aria-describedby="tt1" aria-label="What is available balance?"><svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.029 0 0 4.029 0 9C0 13.971 4.029 18 9 18C13.971 18 18 13.971 18 9C18 4.029 13.971 0 9 0ZM8.999 14.5C8.309 14.5 7.749 13.94 7.749 13.25C7.749 12.56 8.309 12 8.999 12C9.689 12 10.249 12.56 10.249 13.25C10.249 13.94 9.69 14.5 8.999 14.5ZM11.222 8.542L10.074 9.689C9.9 9.864 9.9 9.929 9.9 10.011V11H8.1V10.011C8.1 9.213 8.5 8.719 8.8 8.417L9.95 7.269C10.261 6.959 10.397 6.528 10.324 6.085C10.238 5.559 9.816 5.116 9.299 5.008C8.88 4.921 8.475 5.016 8.154 5.278C7.838 5.534 7.657 5.914 7.657 6.319H5.857C5.857 5.369 6.28 4.48 7.018 3.881C7.756 3.28 8.724 3.052 9.666 3.246C10.914 3.507 11.892 4.53 12.1 5.793C12.268 6.815 11.948 7.817 11.222 8.542Z" fill="currentColor"/></svg></button>
+      <span class="tip" role="tooltip" id="tt1">The funds you can spend right now, after pending transactions are deducted.</span>
+    </span>
+    updates in real time. Hover or tab to the <strong>i</strong> for help.</p>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Tooltip",
+    "vars": {
+      "--surface": "background/default",
+      "--tip-border": "elevation/border",
+      "--shadow": "elevation/functional",
+      "--text": "text/default",
+      "--page": "background/default"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" }
+    ],
+    "requiredAria": ["role=\"tooltip\"", "aria-describedby"]
+  }
+  </script>
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body;
+      b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    // Escape dismisses the tooltip (move focus off the trigger)
+    document.querySelectorAll('.trigger').forEach(t=> t.addEventListener('keydown', e=>{ if(e.key==='Escape') t.blur(); }));
+  </script>
+</body>
+</html>

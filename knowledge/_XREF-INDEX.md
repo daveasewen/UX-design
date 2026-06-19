@@ -10,7 +10,7 @@
 |---|---|---|---|---|---|---|
 | Accordion | mol | 8 | background/default, icon/default, text/default | 1.4.3, 2.1.1, 2.4.7, 2.5.8, 4.1.2 | elevation, contextual-help |  |
 | Avatar | ato | 10 | icon/default, icon/default-reverse, icon/disabled, text/default… | 1.1.1, 1.4.10, 1.4.4, 2.4.7, 2.5.8 | imagery, hexagon-masks, typography-usage | 6 |
-| Badge | ato | 5 | color/primary, icon/disabled, text/reverse | 1.4.1, 1.4.11, 4.1.2 | typography-usage |  |
+| Badge | ato | 6 | color/primary, icon/disabled, text/reverse | 1.4.1, 1.4.11, 4.1.2 | typography-usage |  |
 | Breadcrumbs | mol | 2 | text/default | 1.4.1, 2.4.7, 2.4.8, 4.1.2 | platform-web, tone-of-voice |  |
 | Button | ato | 23 | icon/default, icon/default-reverse, icon/disabled, text/default… | 1.4.11, 1.4.3, 2.1.1, 2.4.7, 2.5.8, 4.1.2 | calls-to-action |  |
 | Cards | mol | 13 | background/default, color/primary, icon/default, icon/default-reverse… | 1.4.11, 1.4.3, 2.1.1, 2.4.7 | elevation, imagery, hexagon-masks, icons | 1 |
@@ -20,7 +20,7 @@
 | Headers | mol | 3 | icon/default, text/default | 1.3.1, 2.4.6, 2.5.8, 4.1.3 | typography-usage, platform-web, logos | 3 |
 | Hero | org | 11 | color/primary, icon/default-reverse, text/default, text/reverse | 1.3.1, 1.4.3, 2.2.2, 2.3.3, 2.4.6 | imagery, hexagon-masks, calls-to-action, typography-usage | 8 |
 | Input fields | mol | 17 | background/default, border/subsection, elevation/functional, icon/default… | 1.3.1, 1.3.5, 1.4.1, 2.1.1, 2.4.7, 3.3.1, 3.3.2, 4.1.2 | forms, tone-of-voice | 2 |
-| Links | mol | 7 | color/primary, icon/default, icon/default-reverse, icon/disabled… | 1.4.1, 1.4.11, 1.4.3, 2.4.4, 2.4.7 | calls-to-action, tone-of-voice | 4 |
+| Links | mol | 8 | color/primary, icon/default, icon/default-reverse, icon/disabled… | 1.4.1, 1.4.11, 1.4.3, 2.4.4, 2.4.7 | calls-to-action, tone-of-voice | 4 |
 | List items | mol | 14 | color/primary, icon/default, icon/default-reverse, icon/disabled… | 1.3.1, 1.4.3, 2.5.7, 2.5.8, 4.1.2, 4.1.3 | typography-usage, icons |  |
 | Loading indicator | ato | 4 | icon/default, icon/default-reverse, text/default, text/reverse | 1.1.1, 2.2.2, 2.3.3, 4.1.3 | time-based-indicators |  |
 | Modals | org | 13 | background/default, icon/default, icon/default-reverse, text/default… | 1.4.3, 2.1.2, 2.4.11, 2.4.3, 2.5.8, 4.1.2 | elevation, calls-to-action, platform-app |  |
@@ -31,13 +31,13 @@
 | Quick actions | mol | 3 | icon/default, text/default, text/disabled | 1.1.1, 2.1.1, 2.5.7, 2.5.8, 4.1.2 | calls-to-action, icons | 6 |
 | Reorder | ato | 3 | icon/default | 1.4.1, 2.1.1, 2.5.7, 2.5.8, 4.1.2 | icons |  |
 | Search field | mol | 13 | background/default, border/subsection, elevation/functional, icon/default… | 1.3.5, 1.4.10, 1.4.4, 2.4.11, 2.4.7, 3.3.2, 4.1.2 | forms, icons | 1 |
-| Selection controls | mol | 11 | background/default, icon/default, icon/default-reverse, icon/disabled… | 1.3.1, 1.4.1, 2.4.7, 2.5.8, 3.3.1, 4.1.2 | forms | 13 |
+| Selection controls | mol | 13 | background/default, icon/default, icon/default-reverse, icon/disabled… | 1.3.1, 1.4.1, 2.4.7, 2.5.8, 3.3.1, 4.1.2 | forms | 13 |
 | Slider | mol | 8 | background/default, text/default | 1.4.1, 2.1.1, 2.5.7, 2.5.8, 4.1.2 | forms | 1 |
 | Status indicator | ato | 9 | text/default, text/disabled | 1.4.1, 1.4.11, 1.4.3, 4.1.3 | tone-of-voice, time-based-indicators, icons | 1 |
 | Table | org | 5 | background/default, text/default | 1.3.1, 1.3.2, 1.4.10 | horizontal-scroll, typography-usage, view-controls-sort |  |
 | Tabs | mol | 12 | background/default, color/primary, border/subsection, elevation/functional… | 1.3.1, 1.4.1, 2.1.1, 2.4.11, 2.4.7, 2.5.8, 4.1.2 | horizontal-scroll, platform-web | 2 |
 | Tags | ato | 2 | text/default, text/reverse | 1.4.1, 1.4.3, 2.4.4, 2.5.8 | typography-usage | 9 |
-| Tooltip | mol | 4 | background/default, elevation/functional, text/default | 1.4.13, 1.4.3, 2.1.1, 2.4.11, 4.1.2 | contextual-help, elevation |  |
+| Tooltip | mol | 5 | background/default, elevation/functional, text/default | 1.4.13, 1.4.3, 2.1.1, 2.4.11, 4.1.2 | contextual-help, elevation |  |
 | Video player | org | 4 | icon/default, icon/default-reverse, text/default | 1.2.2, 1.2.5, 1.4.3, 2.1.1, 2.2.2 | time-based-indicators, imagery |  |
 | View options | mol | 8 | icon/default, icon/default-reverse, text/default | 1.4.1, 2.1.1, 2.5.8, 4.1.2 | view-controls-sort, calls-to-action | 4 |
 

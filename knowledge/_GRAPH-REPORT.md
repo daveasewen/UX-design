@@ -2,7 +2,7 @@
 
 > Generated derived view over `knowledge/` (Graphify-inspired; no external dependency). Regenerate after editing component metas or tokens: `python3 knowledge/tokens/_build_blast_radius.py`. Authored canon stays the source of truth; this is a generated dashboard.
 
-**Totals:** 32 components · 630 tokens defined · 83 tokens referenced by components · compliance: 31 rules x 32 components (31 SCs).
+**Totals:** 32 components · 630 tokens defined · 84 tokens referenced by components · compliance: 31 rules x 32 components (31 SCs).
 
 ## God-nodes — highest token blast radius
 
@@ -22,9 +22,9 @@ Change one of these and the listed number of components is affected. Use before 
 | `elevation/functional` | 7 | Dropdown, Input fields, Navigations, Notifications, Search field, Tabs… |
 | `divider/border/section` | 6 | Divider, Dropdown, List items, Pagination, Tabs, Tooltip |
 | `form/border/default` | 6 | Dropdown, Input fields, Search field, Selection controls, Slider, View options |
+| `primary/background/default` | 6 | Badge, Button, Hero, Links, Modals, Video player |
 | `tertiary/background/default` | 6 | Button, Cards, List items, Search field, Tabs, View options |
 | `tertiary/background/hover` | 6 | Accordion, Button, Cards, Reorder, Slider, Tabs |
-| `typography/font-family/default` | 6 | Avatar, Badge, Breadcrumbs, Button, Countdown timer, Headers |
 
 ## Token-group reach (components using each group)
 
@@ -38,16 +38,16 @@ Change one of these and the listed number of components is affected. Use before 
 | `rag/` | 8 |
 | `form/` | 8 |
 | `padding/` | 7 |
+| `primary/` | 7 |
 | `color/` | 7 |
 | `elevation/` | 7 |
 | `typography/` | 6 |
 | `border/` | 5 |
-| `primary/` | 5 |
+| `secondary/` | 3 |
 | `scrollbar/` | 3 |
 | `blur/` | 3 |
 | `scale/` | 2 |
 | `image/` | 2 |
-| `secondary/` | 2 |
 | `border-width/` | 2 |
 | `focus/` | 2 |
 | `layout/` | 2 |
@@ -87,7 +87,7 @@ Components whose `tokens` block still references a `(depricate)` token (count = 
 
 ## Orphans — defined tokens not referenced by any component meta
 
-547 of 630 defined tokens are unreferenced at the component layer. **Expected** for primitives and scale steps (consumed via semantic aliases, not bound directly); worth scanning the *semantic* groups for genuinely-dead tokens. By group:
+546 of 630 defined tokens are unreferenced at the component layer. **Expected** for primitives and scale steps (consumed via semantic aliases, not bound directly); worth scanning the *semantic* groups for genuinely-dead tokens. By group:
 
 | Group | Unreferenced |
 |---|---|
@@ -101,7 +101,7 @@ Components whose `tokens` block still references a `(depricate)` token (count = 
 | `primary/` | 19 |
 | `secondary/` | 19 |
 | `tertiary/` | 19 |
-| `elevation/` | 16 |
+| `elevation/` | 15 |
 | `form/` | 15 |
 | `tabs/` | 14 |
 | `divider/` | 8 |

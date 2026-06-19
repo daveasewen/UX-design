@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dropdown — hover-accent variants</title>
+<!-- Exploration: four calmer alternatives to the frenetic scaleY-from-centre accent.
+     Hover the rows under each heading. "Black bar" uses form/border/active (#000 light / #FFF dark)
+     so it stays visible in dark. Pick one and I'll fold it into the Route A dropdown. -->
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --fs:16px;
+    --ease:200ms cubic-bezier(.4,0,.2,1); --ease-soft:260ms cubic-bezier(.33,1,.68,1); }
+  body[data-theme="light"]{ --page:#f4f4f5; --ink:#1b1b1d; --muted:#6a6a70; --card:#fff; --edge:#e7e7ea;
+    --text:#333333; --item-hover:#F3F3F3; --red:#DB0011; --black:#000000; }
+  body[data-theme="dark"]{ --page:#0b0b0c; --ink:#f3f3f4; --muted:#9a9aa0; --card:#161616; --edge:#27272b;
+    --text:#FFFFFF; --item-hover:#212121; --red:#DB0011; --black:#FFFFFF; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:36px clamp(20px,4vw,56px); font-family:var(--font); background:var(--page); color:var(--ink);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  header{display:flex; justify-content:space-between; align-items:center; gap:24px; margin-bottom:24px;}
+  h1{font-size:20px; margin:0;}
+  .toggle{cursor:pointer; font:inherit; font-size:13px; font-weight:600; color:var(--ink); background:var(--card);
+    border:1px solid var(--edge); padding:9px 14px; border-radius:999px;}
+  .grid{display:grid; grid-template-columns:repeat(2,1fr); gap:20px;}
+  @media(max-width:760px){.grid{grid-template-columns:1fr;}}
+  .v{background:var(--card); border:1px solid var(--edge); border-radius:12px; padding:8px 0 12px;}
+  .v h2{font-size:12px; letter-spacing:.04em; text-transform:uppercase; color:var(--muted); margin:8px 16px 6px;}
+  .v .desc{font-size:12px; color:var(--muted); margin:0 16px 8px;}
+  .opt{position:relative; display:flex; align-items:center; min-height:44px; padding:0 16px; font:400 var(--fs)/1.3 var(--font); color:var(--text); cursor:pointer;}
+  .opt::before{content:""; position:absolute; left:0; top:0; bottom:0; width:3px;}
+
+  /* V1 — width slide (horizontal reveal), red */
+  .v1 .opt:hover{background:var(--item-hover);}
+  .v1 .opt::before{background:var(--red); width:0; transition:width var(--ease);}
+  .v1 .opt:hover::before{width:3px;}
+
+  /* V2 — fade only, red, with an ASYMMETRIC roll-off: fast in, slow out (a trail) */
+  .v2 .opt{background:transparent; transition:background 620ms cubic-bezier(.33,1,.68,1);}   /* slow exit */
+  .v2 .opt:hover{background:var(--item-hover); transition:background 130ms ease;}             /* fast enter */
+  .v2 .opt::before{background:var(--black); opacity:0; transition:opacity 620ms cubic-bezier(.33,1,.68,1);} /* slow exit; black bar */
+  .v2 .opt:hover::before{opacity:1; transition:opacity 130ms ease;}                           /* fast enter */
+
+  /* V3 — wipe down from the top, BLACK bar */
+  .v3 .opt:hover{background:var(--item-hover);}
+  .v3 .opt::before{background:var(--black); transform:scaleY(0); transform-origin:top; transition:transform var(--ease-soft);}
+  .v3 .opt:hover::before{transform:scaleY(1);}
+
+  /* V4 — background tint slides in from the left (no bar) */
+  .v4 .opt::after{content:""; position:absolute; inset:0; background:var(--item-hover); transform:scaleX(0); transform-origin:left; transition:transform var(--ease-soft); z-index:-1;}
+  .v4 .opt{z-index:0;}
+  .v4 .opt:hover::after{transform:scaleX(1);}
+</style>
+</head>
+<body data-theme="light">
+  <header><h1>Dropdown — hover-accent variants</h1><button class="toggle" id="t" type="button">◐ Dark</button></header>
+  <div class="grid">
+    <section class="v v1"><h2>V1 · Width slide (red)</h2><p class="desc">Bar grows horizontally from the edge. Calm, directional.</p>
+      <div class="opt">United Kingdom</div><div class="opt">Ireland</div><div class="opt">France</div></section>
+    <section class="v v2"><h2>V2 · Fade, black, with roll-off trail</h2><p class="desc">Black bar fades in fast on hover (130ms), fades out slowly on leave (620ms) — a lingering trail. Move across the rows quickly to see it.</p>
+      <div class="opt">United Kingdom</div><div class="opt">Ireland</div><div class="opt">France</div></section>
+    <section class="v v3"><h2>V3 · Wipe down (black)</h2><p class="desc">Bar wipes down from the top. Black (inverts to white in dark).</p>
+      <div class="opt">United Kingdom</div><div class="opt">Ireland</div><div class="opt">France</div></section>
+    <section class="v v4"><h2>V4 · Tint slide, no bar</h2><p class="desc">The row highlight itself sweeps in from the left; no accent bar.</p>
+      <div class="opt">United Kingdom</div><div class="opt">Ireland</div><div class="opt">France</div></section>
+  </div>
+  <script>
+    document.getElementById('t').addEventListener('click', e=>{
+      const b=document.body, dark=b.getAttribute('data-theme')==='dark';
+      b.setAttribute('data-theme', dark?'light':'dark'); e.target.textContent = dark?'◐ Dark':'◐ Light';
+    });
+  </script>
+</body>
+</html>

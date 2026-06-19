@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dropdown — A/B showcase</title>
+<!--
+  LEFT  (Route A): unconstrained ceiling — same canonical colours, richer motion: spring chevron,
+                   menu scales from the top, options stagger in, a sliding hover accent. Reduced-motion aware.
+  RIGHT (Route B): canonical reference — standard fade/translate (matches the gated snippet).
+-->
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --fs:16px;
+    --std:160ms cubic-bezier(.4,0,.2,1); --spring:300ms cubic-bezier(.5,1.6,.45,1); }
+  body[data-theme="light"]{
+    --page:#f4f4f5; --ink:#1b1b1d; --muted:#6a6a70; --card:#fff; --edge:#e7e7ea;
+    --field-bg-hover:#F3F3F3; --border:#767676; --border-active:#000000;
+    --menu-surface:#FFFFFF; --menu-border:#FFFFFF00; --shadow:#00000033; --divider:#D7D8D6; --item-hover:#F3F3F3;
+    --text:#333333; --icon:#333333; --focus:#305A85; --accent:#DB0011;
+  }
+  body[data-theme="dark"]{
+    --page:#0b0b0c; --ink:#f3f3f4; --muted:#9a9aa0; --card:#161616; --edge:#27272b;
+    --field-bg-hover:#212121; --border:#656565; --border-active:#FFFFFF;
+    --menu-surface:#000000; --menu-border:#767676; --shadow:#000000D9; --divider:#404040; --item-hover:#212121;
+    --text:#FFFFFF; --icon:#FFFFFF; --focus:#4587A7; --accent:#DB0011;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:36px clamp(20px,4vw,56px); font-family:var(--font); background:var(--page); color:var(--ink);
+    -webkit-font-smoothing:antialiased; transition:background var(--std), color var(--std);}
+  header{display:flex; justify-content:space-between; align-items:flex-start; gap:24px; margin-bottom:26px;}
+  h1{font-size:21px; margin:0 0 6px;} header p{margin:0; color:var(--muted); font-size:14px; max-width:60ch;}
+  .toggle{flex:none; cursor:pointer; font:inherit; font-size:13px; font-weight:600; color:var(--ink);
+    background:var(--card); border:1px solid var(--edge); padding:9px 14px; border-radius:999px;}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:24px;}
+  @media(max-width:860px){.grid{grid-template-columns:1fr;}}
+  .col{background:var(--card); border:1px solid var(--edge); border-radius:14px; padding:24px; min-height:240px;}
+  .tag{display:inline-block; font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; padding:5px 10px; border-radius:999px; margin-bottom:16px;}
+  .a .tag{background:rgba(0,95,204,.12); color:#3b82f6;} .b .tag{background:rgba(219,0,17,.12); color:#e0566b;}
+
+  .dd{position:relative; max-width:300px;}
+  .dd > label{display:block; font:600 13px/1.3 var(--font); margin-bottom:8px; color:var(--text);}
+  .trigger{width:100%; height:52px; padding:0 14px; display:flex; align-items:center; justify-content:space-between;
+    background:transparent; color:var(--text); border:0; border-bottom:1px solid var(--border); font:500 var(--fs)/1 var(--font);
+    cursor:pointer; transition:background var(--std), border-color var(--std);}
+  .trigger:hover{background:var(--field-bg-hover);}
+  .trigger[aria-expanded="true"]{border-bottom:2px solid var(--border-active);}
+  .trigger:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .chev{color:var(--icon);}
+  .menu{position:absolute; left:0; right:0; top:calc(100% + 6px); margin:0; padding:6px 0; list-style:none; z-index:20;
+    background:var(--menu-surface); border:1px solid var(--menu-border); box-shadow:0 0 16px var(--shadow);
+    pointer-events:none;}
+  .menu[data-open="true"]{pointer-events:auto;}
+  .opt{position:relative; display:flex; align-items:center; min-height:44px; padding:0 14px; font:400 var(--fs)/1.3 var(--font); color:var(--text); cursor:pointer;}
+  .opt:hover{background:var(--item-hover);}
+  .opt:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .sep{height:1px; background:var(--divider); margin:6px 0;}
+
+  /* Route B — standard fade/translate */
+  .b .menu{opacity:0; transform:translateY(-6px); transition:opacity var(--std), transform var(--std);}
+  .b .menu[data-open="true"]{opacity:1; transform:none;}
+  .b .chev{transition:transform var(--std);}
+  .b .trigger[aria-expanded="true"] .chev{transform:rotate(180deg);}
+
+  /* Route A — spring chevron, menu scales from top, options stagger, sliding hover accent */
+  .a .menu{opacity:0; transform:scaleY(.85) translateY(-6px); transform-origin:top; transition:opacity var(--std), transform var(--spring);}
+  .a .menu[data-open="true"]{opacity:1; transform:none;}
+  .a .chev{transition:transform var(--spring);}
+  .a .trigger[aria-expanded="true"] .chev{transform:rotate(180deg);}
+  .a .opt{opacity:0; transform:translateY(-4px);}
+  .a .menu[data-open="true"] .opt{opacity:1; transform:none; transition:opacity var(--std), transform var(--std);}
+  .a .menu[data-open="true"] .opt:nth-child(1){transition-delay:40ms;}
+  .a .menu[data-open="true"] .opt:nth-child(2){transition-delay:80ms;}
+  .a .menu[data-open="true"] .opt:nth-child(3){transition-delay:120ms;}
+  .a .menu[data-open="true"] .opt:nth-child(5){transition-delay:160ms;}
+  .a .menu[data-open="true"] .opt:nth-child(6){transition-delay:200ms;}
+  /* V2 (chosen): black bar, fade, asymmetric roll-off — fast in (130ms), slow out (620ms trail) */
+  .a .opt::before{content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--border-active); opacity:0; transition:opacity 620ms cubic-bezier(.33,1,.68,1);}
+  .a .opt:hover::before{opacity:1; transition:opacity 130ms ease;}
+  @media(prefers-reduced-motion:reduce){ .a *{transition-duration:1ms !important;} }
+</style>
+</head>
+<body data-theme="light">
+  <header>
+    <div><h1>Dropdown — A/B showcase</h1>
+      <p><b>Route A</b> is the ceiling: spring chevron, the menu scales open from the top, options stagger in, and a brand accent slides in on hover. <b>Route B</b> is the faithful canonical reference. Toggle theme; open both.</p></div>
+    <button class="toggle" id="t" type="button">◐ Dark</button>
+  </header>
+
+  <div class="grid">
+    <section class="col a">
+      <span class="tag">Route A · unconstrained + motion</span>
+      <div class="dd">
+        <label>Country of residence</label>
+        <button class="trigger" role="combobox" aria-haspopup="listbox" aria-expanded="false"><span class="val">United Kingdom</span><span class="chev" aria-hidden="true">▾</span></button>
+        <ul class="menu" role="listbox" tabindex="-1">
+          <li class="opt" role="option" tabindex="-1">United Kingdom</li>
+          <li class="opt" role="option" tabindex="-1">Ireland</li>
+          <li class="opt" role="option" tabindex="-1">France</li>
+          <li class="sep" role="presentation"></li>
+          <li class="opt" role="option" tabindex="-1">Germany</li>
+          <li class="opt" role="option" tabindex="-1">Spain</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="col b">
+      <span class="tag">Route B · canonical reference</span>
+      <div class="dd">
+        <label>Country of residence</label>
+        <button class="trigger" role="combobox" aria-haspopup="listbox" aria-expanded="false"><span class="val">United Kingdom</span><span class="chev" aria-hidden="true">▾</span></button>
+        <ul class="menu" role="listbox" tabindex="-1">
+          <li class="opt" role="option" tabindex="-1">United Kingdom</li>
+          <li class="opt" role="option" tabindex="-1">Ireland</li>
+          <li class="opt" role="option" tabindex="-1">France</li>
+          <li class="sep" role="presentation"></li>
+          <li class="opt" role="option" tabindex="-1">Germany</li>
+          <li class="opt" role="option" tabindex="-1">Spain</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    document.getElementById('t').addEventListener('click', e=>{
+      const b=document.body, dark=b.getAttribute('data-theme')==='dark';
+      b.setAttribute('data-theme', dark?'light':'dark'); e.target.textContent = dark?'◐ Dark':'◐ Light';
+    });
+    document.querySelectorAll('.dd').forEach(dd=>{
+      const trig=dd.querySelector('.trigger'), menu=dd.querySelector('.menu'), val=dd.querySelector('.val'),
+            opts=[...dd.querySelectorAll('[role=option]')];
+      const open=o=>{ menu.setAttribute('data-open',String(o)); trig.setAttribute('aria-expanded',String(o)); if(o) opts[0].focus(); };
+      trig.addEventListener('click', ()=> open(menu.getAttribute('data-open')!=='true'));
+      trig.addEventListener('keydown', e=>{ if(['ArrowDown','Enter',' '].includes(e.key)){e.preventDefault(); open(true);} });
+      opts.forEach(o=>{ o.addEventListener('click',()=>{ val.textContent=o.textContent; open(false); trig.focus(); });
+        o.addEventListener('keydown', e=>{ const i=opts.indexOf(o);
+          if(e.key==='ArrowDown'){e.preventDefault(); opts[(i+1)%opts.length].focus();}
+          else if(e.key==='ArrowUp'){e.preventDefault(); opts[(i-1+opts.length)%opts.length].focus();}
+          else if(e.key==='Enter'||e.key===' '){e.preventDefault(); val.textContent=o.textContent; open(false); trig.focus();}
+          else if(e.key==='Escape'){open(false); trig.focus();} }); });
+      document.addEventListener('click', e=>{ if(!e.target.closest('.dd')||!dd.contains(e.target)) { if(!dd.contains(e.target)) open(false);} });
+    });
+  </script>
+</body>
+</html>

@@ -4,17 +4,80 @@
   "purpose": "Text links (browser) — let users navigate between pages/content items or instigate actions (e.g. 'download pdf', 'open in a new window'). Family of four: Arrow link (chevron after text), Back link (chevron before text), Icon link (leading icon), Inline link (within body copy). Each on-light + on-dark.",
   "$family": "Covers the Links canvas; each type is a separate Figma component. Page title: 'Text links (browser)'.",
   "props": [
-    { "name": "type", "type": "enum", "values": ["arrow", "back", "icon", "inline"], "default": "arrow" },
-    { "name": "fontSize", "type": "enum", "values": ["font-1", "font-2", "font-3", "font-4", "font-5", "font-6", "font-7"], "default": "font-5", "$note": "Arrow link spans font-1…7; Back link font-5/6/7; Icon link S5/S6/S7; Inline link font-5 only." },
-    { "name": "state", "type": "enum", "values": ["default", "hover/pressed", "disabled"], "default": "default", "$note": "hover and pressed share one combined state (as Breadcrumbs). Disabled only modelled on Icon link." },
-    { "name": "mode", "type": "enum", "values": ["on-light", "on-dark"], "default": "on-light" },
-    { "name": "multiline", "type": "boolean", "values": ["false", "true"], "default": "false", "$note": "Arrow link supports multiline (chevron stays attached to last word)." }
+    {
+      "name": "type",
+      "type": "enum",
+      "values": [
+        "arrow",
+        "back",
+        "icon",
+        "inline"
+      ],
+      "default": "arrow"
+    },
+    {
+      "name": "fontSize",
+      "type": "enum",
+      "values": [
+        "font-1",
+        "font-2",
+        "font-3",
+        "font-4",
+        "font-5",
+        "font-6",
+        "font-7"
+      ],
+      "default": "font-5",
+      "$note": "Arrow link spans font-1…7; Back link font-5/6/7; Icon link S5/S6/S7; Inline link font-5 only."
+    },
+    {
+      "name": "state",
+      "type": "enum",
+      "values": [
+        "default",
+        "hover/pressed",
+        "disabled"
+      ],
+      "default": "default",
+      "$note": "hover and pressed share one combined state (as Breadcrumbs). Disabled only modelled on Icon link."
+    },
+    {
+      "name": "mode",
+      "type": "enum",
+      "values": [
+        "on-light",
+        "on-dark"
+      ],
+      "default": "on-light"
+    },
+    {
+      "name": "multiline",
+      "type": "boolean",
+      "values": [
+        "false",
+        "true"
+      ],
+      "default": "false",
+      "$note": "Arrow link supports multiline (chevron stays attached to last word)."
+    }
   ],
   "variants": [
-    { "name": "arrow", "use": "Chevron trails the text. font-1…7. Arrow icon is BRAND RED on light (color/primary), white on dark. Uses font-N/regular-link (font 1-4) + font-5/6/7 medium-link, with icon/arrow/font-N + padding/arrow/font-N sizing." },
-    { "name": "back", "use": "Chevron precedes the text (back navigation). font-5/6/7 medium-link. Back arrow is NEUTRAL (icon/default), not red." },
-    { "name": "icon", "use": "Leading icon + label, fixed-size S5/S6/S7. Only type with an explicit disabled state. Icon + text neutral (icon/default + text/default)." },
-    { "name": "inline", "use": "Link set within running body text. font-5 LIGHT weight (font-5/light-link) to sit in paragraph flow; default + hover/pressed only." }
+    {
+      "name": "arrow",
+      "use": "Chevron trails the text. font-1…7. Arrow icon is BRAND RED on light (color/primary), white on dark. Uses font-N/regular-link (font 1-4) + font-5/6/7 medium-link, with icon/arrow/font-N + padding/arrow/font-N sizing."
+    },
+    {
+      "name": "back",
+      "use": "Chevron precedes the text (back navigation). font-5/6/7 medium-link. Back arrow is NEUTRAL (icon/default), not red."
+    },
+    {
+      "name": "icon",
+      "use": "Leading icon + label, fixed-size S5/S6/S7. Only type with an explicit disabled state. Icon + text neutral (icon/default + text/default)."
+    },
+    {
+      "name": "inline",
+      "use": "Link set within running body text. font-5 LIGHT weight (font-5/light-link) to sit in paragraph flow; default + hover/pressed only."
+    }
   ],
   "tokens": {
     "arrow": {
@@ -36,12 +99,24 @@
     "inline": {
       "text": "text/default | text/reverse @ font-5/light-link (weight 350)",
       "icon": "icon/default | icon/default-reverse"
-    }
+    },
+    "$rebind-finding": "(2026-06-19) arrow-icon binds the color/primary PRIMITIVE; rebind to semantic primary/background/default. Links distinguished by underline not colour (1.4.1); keyboard focus = thickened underline (:focus-visible) in text/default, not a blue ring."
   },
   "relationships": {
-    "livesInside": ["Body copy", "Page content", "Footer", "Card", "List"],
+    "livesInside": [
+      "Body copy",
+      "Page content",
+      "Footer",
+      "Card",
+      "List"
+    ],
     "mustNotNeighbour": [],
-    "commonPatterns": ["read-more arrow link", "back-to navigation", "icon + label utility link", "inline text hyperlink"]
+    "commonPatterns": [
+      "read-more arrow link",
+      "back-to navigation",
+      "icon + label utility link",
+      "inline text hyperlink"
+    ]
   },
   "accessibility": {
     "distinguishable": "Links must be distinguishable from body text by more than colour (underline/affordance) — esp. inline links (1.4.1)",
@@ -50,7 +125,13 @@
     "arrowContrast": "Arrow link's red arrow (color/primary #db0011) on white passes; on dark the arrow is white",
     "iconLayout": "Back/Icon link icons sit left, aligned to the FIRST line of text (not vertically centred); arrow chevron stays attached to the last word, never on its own line",
     "targetArea": "Inline/text links should still offer an adequate hit/touch area",
-    "relatedSC": ["1.4.1 Use of Color", "2.4.4 Link Purpose", "2.4.7 Focus Visible", "1.4.3 Contrast (Minimum)", "1.4.11 Non-text Contrast"]
+    "relatedSC": [
+      "1.4.1 Use of Color",
+      "2.4.4 Link Purpose",
+      "2.4.7 Focus Visible",
+      "1.4.3 Contrast (Minimum)",
+      "1.4.11 Non-text Contrast"
+    ]
   },
   "antiPatterns": [
     "Letting the arrow chevron fall onto its own line — it must always be accompanied by a word",
@@ -66,13 +147,38 @@
     "primitiveBinding": "Arrow link's arrow icon binds the PRIMITIVE color/primary (#db0011) directly rather than a semantic icon token — same pattern flagged on Badge surface and Hero arrow/CTA. Consider a semantic 'icon/brand' token.",
     "depricateUsage": {
       "tokens": [
-        { "token": "icon/on-dark (depricate)/hover (depricate)", "value": "#FFFFFF", "usedBy": "Icon link on-dark hover/pressed", "rebind": "icon/default-reverse (identical)" },
-        { "token": "text/on-dark (depricate)/hover (depricate)", "value": "#FFFFFF", "usedBy": "Icon link on-dark hover/pressed", "rebind": "text/reverse (identical)" },
-        { "token": "icon/on-dark (depricate)/disabled", "value": "#767676", "usedBy": "Icon link on-dark disabled", "rebind": "REVIEW — NO live equivalent (same blocker as Avatar on-dark disabled)" },
-        { "token": "text/on-dark (depricate)/disabled", "value": "#767676", "usedBy": "Icon link on-dark disabled", "rebind": "REVIEW — NO live equivalent (same blocker as Avatar on-dark disabled)" }
+        {
+          "token": "icon/on-dark (depricate)/hover (depricate)",
+          "value": "#FFFFFF",
+          "usedBy": "Icon link on-dark hover/pressed",
+          "rebind": "icon/default-reverse (identical)"
+        },
+        {
+          "token": "text/on-dark (depricate)/hover (depricate)",
+          "value": "#FFFFFF",
+          "usedBy": "Icon link on-dark hover/pressed",
+          "rebind": "text/reverse (identical)"
+        },
+        {
+          "token": "icon/on-dark (depricate)/disabled",
+          "value": "#767676",
+          "usedBy": "Icon link on-dark disabled",
+          "rebind": "REVIEW — NO live equivalent (same blocker as Avatar on-dark disabled)"
+        },
+        {
+          "token": "text/on-dark (depricate)/disabled",
+          "value": "#767676",
+          "usedBy": "Icon link on-dark disabled",
+          "rebind": "REVIEW — NO live equivalent (same blocker as Avatar on-dark disabled)"
+        }
       ],
       "note": "KEY FINDING: the on-dark disabled blocker tokens (#767676), previously seen ONLY on Avatar, are ALSO used here by Icon link. This is no longer an Avatar-only edge case — a live on-dark disabled text/icon token is needed before these depricates can be deleted. The on-dark hover tokens are redundant (#fff = reverse) → clean. On-light disabled is already migrated (icon/disabled + text/disabled).",
-      "auditedNodes": ["Arrow link 219:7846 / 11733:20951", "Back link 225:8432 / 12004:15598", "Icon link 234:7957 / 2314:61348", "Inline link 2118:31124 / 2118:31155"]
+      "auditedNodes": [
+        "Arrow link 219:7846 / 11733:20951",
+        "Back link 225:8432 / 12004:15598",
+        "Icon link 234:7957 / 2314:61348",
+        "Inline link 2118:31124 / 2118:31155"
+      ]
     },
     "ignored": "specs/* annotation scaffolding."
   },
