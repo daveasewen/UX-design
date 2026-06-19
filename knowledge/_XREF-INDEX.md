@@ -12,7 +12,7 @@
 | Avatar | ato | 10 | icon/default, icon/default-reverse, icon/disabled, text/default… | 1.1.1, 1.4.10, 1.4.4, 2.4.7, 2.5.8 | imagery, hexagon-masks, typography-usage | 6 |
 | Badge | ato | 5 | color/primary, icon/disabled, text/reverse | 1.4.1, 1.4.11, 4.1.2 | typography-usage |  |
 | Breadcrumbs | mol | 2 | text/default | 1.4.1, 2.4.7, 2.4.8, 4.1.2 | platform-web, tone-of-voice |  |
-| Button | ato | 22 | icon/default, icon/default-reverse, icon/disabled, text/default… | 1.4.11, 1.4.3, 2.1.1, 2.4.7, 2.5.8, 4.1.2 | calls-to-action |  |
+| Button | ato | 23 | icon/default, icon/default-reverse, icon/disabled, text/default… | 1.4.11, 1.4.3, 2.1.1, 2.4.7, 2.5.8, 4.1.2 | calls-to-action |  |
 | Cards | mol | 13 | background/default, color/primary, icon/default, icon/default-reverse… | 1.4.11, 1.4.3, 2.1.1, 2.4.7 | elevation, imagery, hexagon-masks, icons | 1 |
 | Countdown timer | mol | 4 | text/default | 1.4.1, 2.2.1, 2.3.3, 4.1.3 | time-based-indicators |  |
 | Divider | ato | 5 | border/subsection | 1.3.1, 1.4.11 | elevation | 2 |

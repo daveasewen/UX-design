@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Button — A/B showcase</title>
+<!--
+  LEFT  (Route A): unconstrained, portfolio-grade — the same canonical colours, but with
+                   the craft the KB doesn't specify: press physics, hover lift, a loading→success
+                   morph, reduced-motion support. This is the exploration space for motion.
+  RIGHT (Route B): the canonical reference — 4 emphasis levels × states, faithful to the tokens
+                   (text/on-inverse, visible tertiary outline, ghosted disabled). No invented motion.
+-->
+<style>
+  :root{
+    --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+    --fs:16px; --w:500; --h:44px; --px:20px;
+    --move:200ms cubic-bezier(.4,0,.2,1); --press:90ms ease-out;
+  }
+  body[data-theme="light"]{
+    --page:#f4f4f5; --ink:#1b1b1d; --muted:#6a6a70; --card:#fff; --edge:#e7e7ea;
+    --pri:#DB0011; --pri-h:#BA1110; --pri-p:#000000; --pri-d:#D7D8D6;
+    --sec:#000000; --sec-h:#333333; --sec-p:#767676; --sec-d:#D7D8D6;
+    --ter:#FFFFFF; --ter-h:#F3F3F3; --ter-bd:#000000;
+    --t-def:#333333; --t-dis:#D7D8D6; --t-rev:#FFFFFF; --t-inv:#FFFFFF; --ok:#00847F;
+  }
+  body[data-theme="dark"]{
+    --page:#0b0b0c; --ink:#f3f3f4; --muted:#9a9aa0; --card:#161616; --edge:#27272b;
+    --pri:#DB0011; --pri-h:#BA1110; --pri-p:#FFFFFF; --pri-d:#404040;
+    --sec:#FFFFFF; --sec-h:#EDEDED; --sec-p:#D7D8D6; --sec-d:#404040;
+    --ter:#1D1D1D; --ter-h:#474747; --ter-bd:#767676;
+    --t-def:#FFFFFF; --t-dis:#767676; --t-rev:#FFFFFF; --t-inv:#333333; --ok:#00847F;
+  }
+
+  *{box-sizing:border-box;}
+  body{margin:0; padding:36px clamp(20px,4vw,56px); font-family:var(--font); background:var(--page); color:var(--ink);
+    -webkit-font-smoothing:antialiased; transition:background var(--move), color var(--move);}
+  header{display:flex; justify-content:space-between; align-items:flex-start; gap:24px; margin-bottom:28px;}
+  h1{font-size:21px; margin:0 0 6px;} header p{margin:0; color:var(--muted); font-size:14px; max-width:60ch;}
+  .toggle{flex:none; cursor:pointer; font:inherit; font-size:13px; font-weight:600; color:var(--ink);
+    background:var(--card); border:1px solid var(--edge); padding:9px 14px; border-radius:999px;}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:24px;}
+  @media(max-width:900px){.grid{grid-template-columns:1fr;}}
+  .col{background:var(--card); border:1px solid var(--edge); border-radius:14px; padding:24px;}
+  .tag{display:inline-block; font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+    padding:5px 10px; border-radius:999px; margin-bottom:14px;}
+  .col.a .tag{background:rgba(0,95,204,.12); color:#3b82f6;}
+  .col.b .tag{background:rgba(219,0,17,.12); color:#e0566b;}
+  h2{font-size:12px; letter-spacing:.04em; text-transform:uppercase; color:var(--muted); margin:18px 0 8px;}
+  .row{display:flex; gap:12px; flex-wrap:wrap; align-items:center;}
+
+  .btn{height:var(--h); min-width:104px; padding:0 var(--px); border:0; border-radius:0; cursor:pointer;
+    font:var(--w) var(--fs)/1 var(--font); display:inline-flex; align-items:center; justify-content:center; gap:8px;}
+  .btn:focus-visible{outline:2px solid var(--t-def); outline-offset:2px;}
+  .primary{background:var(--pri); color:var(--t-rev);}
+  .secondary{background:var(--sec); color:var(--t-inv);}
+  .tertiary{background:var(--ter); color:var(--t-def); border:1px solid var(--ter-bd);}
+  .quaternary{background:transparent; color:var(--t-def);}
+
+  /* ---------- Route A: motion/craft ---------- */
+  .a .btn{transition:background var(--move), transform var(--press); will-change:transform;}
+  .a .btn:hover{transform:translateY(-1px);}
+  .a .primary:hover{background:var(--pri-h);}
+  .a .secondary:hover{background:var(--sec-h);}
+  .a .tertiary:hover{background:var(--ter-h);}
+  .a .quaternary:hover{background:var(--ter-h);}
+  .a .btn:active{transform:translateY(0) scale(.97);}
+  @media(prefers-reduced-motion:reduce){ .a .btn{transition:background var(--move);} .a .btn:hover,.a .btn:active{transform:none;} }
+  /* loading -> success morph */
+  .a .morph{position:relative; overflow:hidden;}
+  .a .spin{width:16px;height:16px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:spin .7s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .a .morph.is-success{background:var(--ok); color:#fff;}
+  .a .tick{width:18px;height:18px;}
+  .a .tick path{stroke:#fff;stroke-width:2.2;fill:none;stroke-dasharray:24;stroke-dashoffset:24;}
+  .a .morph.is-success .tick path{animation:draw .35s .05s ease forwards;}
+  @keyframes draw{to{stroke-dashoffset:0;}}
+  .hint{font-size:12px;color:var(--muted);margin:10px 0 0;}
+
+  /* ---------- Route B: canonical static states ---------- */
+  .b .btn.is-pressed.primary{background:var(--pri-p); color:var(--t-inv);}
+  .b .btn.is-pressed.secondary{background:var(--sec-p);}
+  .b .btn.is-pressed.tertiary,.b .btn.is-pressed.quaternary{background:var(--ter-h); color:var(--t-rev);}
+  .btn:disabled{opacity:1;}   /* override the browser's native disabled fade */
+  .b .btn.is-dis{cursor:not-allowed;}
+  .b .btn.is-dis.primary{background:var(--pri-d); color:var(--t-inv);}
+  .b .btn.is-dis.secondary{background:var(--sec-d); color:var(--t-inv);}
+  .b .btn.is-dis.tertiary{background:var(--sec-d); color:var(--t-inv); border-color:var(--t-dis);}
+  .b .btn.is-dis.quaternary{background:transparent; color:var(--t-dis);}
+  .b .cap{font-size:10px; letter-spacing:.05em; text-transform:uppercase; color:var(--muted); width:100%; margin-top:2px;}
+</style>
+</head>
+<body data-theme="light">
+  <header>
+    <div><h1>Button — A/B showcase</h1>
+      <p><b>Route A</b> is the exploration space: same canonical colours, plus the motion the KB doesn't hold — press physics, hover lift, a loading→success morph. <b>Route B</b> is the faithful canonical reference. Toggle the theme; click the primary in Route A.</p></div>
+    <button class="toggle" id="t" type="button">◐ Dark</button>
+  </header>
+
+  <div class="grid">
+    <section class="col a">
+      <span class="tag">Route A · unconstrained + motion</span>
+      <h2>Interactive — click to load → success</h2>
+      <div class="row">
+        <button class="btn primary morph" id="morphBtn">Submit</button>
+        <button class="btn secondary">Secondary</button>
+        <button class="btn tertiary">Tertiary</button>
+        <button class="btn quaternary">Quaternary</button>
+      </div>
+      <p class="hint">Hover for the lift, press for the squash, click Submit for the morph. Honours reduced-motion.</p>
+    </section>
+
+    <section class="col b">
+      <span class="tag">Route B · canonical reference</span>
+      <h2>Primary</h2>
+      <div class="row">
+        <button class="btn primary">Example</button>
+        <button class="btn primary is-pressed">Example</button>
+        <button class="btn primary is-dis" disabled>Example</button>
+        <span class="cap">default · pressed (inverts) · disabled</span>
+      </div>
+      <h2>Secondary</h2>
+      <div class="row">
+        <button class="btn secondary">Example</button>
+        <button class="btn secondary is-pressed">Example</button>
+        <button class="btn secondary is-dis" disabled>Example</button>
+        <span class="cap">default (inverts) · pressed · disabled</span>
+      </div>
+      <h2>Tertiary (outlined)</h2>
+      <div class="row">
+        <button class="btn tertiary">Example</button>
+        <button class="btn tertiary is-pressed">Example</button>
+        <button class="btn tertiary is-dis" disabled>Example</button>
+        <span class="cap">default · pressed · disabled</span>
+      </div>
+      <h2>Quaternary (ghost)</h2>
+      <div class="row">
+        <button class="btn quaternary">Example</button>
+        <button class="btn quaternary is-pressed">Example</button>
+        <button class="btn quaternary is-dis" disabled>Example</button>
+        <span class="cap">default · pressed · disabled</span>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    document.getElementById('t').addEventListener('click', e=>{
+      const b=document.body, dark=b.getAttribute('data-theme')==='dark';
+      b.setAttribute('data-theme', dark?'light':'dark'); e.target.textContent = dark?'◐ Dark':'◐ Light';
+    });
+    const tick='<svg class="tick" viewBox="0 0 18 18"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg>';
+    const m=document.getElementById('morphBtn'), label=m.textContent;
+    m.addEventListener('click', ()=>{
+      if(m.dataset.busy) return; m.dataset.busy=1;
+      m.innerHTML='<span class="spin"></span>';
+      setTimeout(()=>{ m.classList.add('is-success'); m.innerHTML=tick+' Done'; }, 1100);
+      setTimeout(()=>{ m.classList.remove('is-success'); m.textContent=label; delete m.dataset.busy; }, 2600);
+    });
+  </script>
+</body>
+</html>

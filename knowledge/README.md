@@ -61,7 +61,7 @@ _INTEGRITY-REPORT.md             # ← _build_integrity.py        (the CI gate)
 python3 knowledge/_build_all.py
 ```
 
-Runs the eight generators in order (later ones read earlier outputs):
+Runs the ten generators in order (later ones read earlier outputs):
 
 1. **compliance KG** — rules + graph index from each meta's `relatedSC`.
 2. **blast-radius + graph report** — token → component reverse index; god-nodes.
@@ -70,9 +70,11 @@ Runs the eight generators in order (later ones read earlier outputs):
 5. **dark-mode audit** — components binding raw primitives that can't re-theme. *(needs 2)*
 6. **text/icon contrast audit** — every text/icon token's dark value tested against the worst-case dark surface it sits on (resolved from the store). **Gates** on any non-allowlisted token below 4.5:1 (text) / 3:1 (icon).
 7. **indicator/accent contrast audit** — brand red, RAG, interactive-state tokens tested at 3:1 (1.4.11) against their resolved dark surface. **Gates** on any non-allowlisted failure.
-8. **integrity lint** — schema-validates every meta, checks SC/rebind/guideline references resolve. **Exits non-zero on any error.**
+8. **dark-surface flatness gate** — surface/background/border/divider tokens that resolve to a flat `#FFFFFF` in dark (a white block hiding content). **Gates**; intentional inversions are exempt via a per-token `$darkNote` annotation (the reviewable allowlist).
+9. **snippet gate** — authored reference snippets in `snippets/` validated against the store: declared token values match (light+dark), required ARIA present, contrast pairs pass, real focus indicator. **Gates** on drift.
+10. **integrity lint** — schema-validates every meta, checks SC/rebind/guideline references resolve. **Exits non-zero on any error.**
 
-**Two gates, not one:** steps 6–7 (contrast) and step 8 (integrity) all run to completion, then the build exits non-zero if any of them failed. A green build now means *internally consistent AND legible in dark mode* — closing the gap where the old gate passed a white-on-white component. Known-acceptable exceptions (disabled-state tokens) are allowlisted in `_contrast_utils.py`; light-mode-only (`*/on-light`) tokens are excluded from the dark audit.
+**Four gates, not one:** the contrast audits (6–7), the dark-surface gate (8), the snippet gate (9) and integrity (10) all run to completion, then the build exits non-zero if any failed. A green build now means *internally consistent, legible in dark mode, surfaces not flat-white, and every authored snippet still matches canon* — closing the gap where the old gate passed a white-on-white component. Allowlists: disabled-state tokens in `_contrast_utils.py`; intentional dark inversions via `$darkNote`; `*/on-light` tokens excluded as light-only.
 
 Always regenerate after editing a meta, a token, or the compliance/guideline maps — the derived views are only as fresh as the last build.
 

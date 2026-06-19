@@ -143,6 +143,8 @@ def resolve_dark_surface(token_name, surfaces, default_dark, raised_dark):
     """
     if is_light_only(token_name):
         return (None, "light-mode-only (on-light); excluded from dark audit")
+    if "on-inverse" in token_name:
+        return (None, "sits on an inverting surface (secondary/pressed buttons), not the page; validated per-component via snippet contrast pairs")
     grp = _group_prefix(token_name)
     candidates = [hx for nm, hx in surfaces.items() if grp and nm.startswith(grp + "/")]
     if not candidates:

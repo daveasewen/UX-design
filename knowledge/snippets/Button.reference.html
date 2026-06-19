@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Button — reference implementation (gated)</title>
+<!--
+  CANONICAL REFERENCE for Button (4 emphasis levels × states × both themes).
+  Colours = resolved semantic tokens (primary/* secondary/* tertiary/* text/* rag/success),
+  validated against the store by _validate_snippets.py. Buttons are mode-aware: the same
+  tokens carry light+dark, so on-dark = on-light bindings (per Button.meta tokenValidation).
+
+  THREE token gaps this build surfaces (flagged, NOT silently fixed — see the notes panel):
+   1. Inverting-button label: secondary (all states) + primary PRESSED invert their fill to
+      a light colour in dark, but the bound label text/reverse is flat #FFFFFF → white-on-white.
+      Rendered here with a PROPOSED mode-aware --label-invert (#FFF light / #333 dark), LOCAL to
+      this snippet, pending a canon decision.
+   2. Tertiary (outlined) border in dark: tertiary/border/default dark #474747 is ~1.9:1 on the
+      tertiary fill — the defining outline is nearly invisible. Shown faithfully (the defect).
+   3. text/reverse is flat (#FFF/#FFF); fine for primary (always white on red) but wrong for the
+      inverting variants — root cause of #1.
+-->
+<style>
+  :root{
+    --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+    --fs:16px; --weight:500; --h:44px; --pad-x:20px; --ease:160ms cubic-bezier(.4,0,.2,1);
+  }
+  [data-theme="light"]{
+    --pri-default:#DB0011; --pri-hover:#BA1110; --pri-pressed:#000000; --pri-disabled:#D7D8D6;
+    --sec-default:#000000; --sec-hover:#333333; --sec-pressed:#767676; --sec-disabled:#D7D8D6;
+    --ter-default:#FFFFFF; --ter-hover:#F3F3F3; --ter-pressed:#767676; --ter-disabled:#D7D8D6;
+    --ter-border:#000000; --ter-border-disabled:#D7D8D6;
+    --text-default:#333333; --text-disabled:#D7D8D6; --text-reverse:#FFFFFF;
+    --success:#00847F; --page:#FFFFFF;
+    --label-invert:#FFFFFF;            /* PROPOSED token (local) — see notes */
+  }
+  [data-theme="dark"]{
+    --pri-default:#DB0011; --pri-hover:#BA1110; --pri-pressed:#FFFFFF; --pri-disabled:#404040;
+    --sec-default:#FFFFFF; --sec-hover:#EDEDED; --sec-pressed:#D7D8D6; --sec-disabled:#404040;
+    --ter-default:#1D1D1D; --ter-hover:#474747; --ter-pressed:#1D1D1D; --ter-disabled:#404040;
+    --ter-border:#767676; --ter-border-disabled:#333333;
+    --text-default:#FFFFFF; --text-disabled:#767676; --text-reverse:#FFFFFF;
+    --success:#00847F; --page:#000000;
+    --label-invert:#333333;            /* text/on-inverse (now canonical) */
+  }
+
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page);
+    color:var(--text-default); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
+  .controls button{font:inherit; font-size:13px; padding:8px 14px; border:1px solid var(--text-disabled);
+    background:transparent; color:var(--text-default); cursor:pointer;}
+  h2{font-size:13px; letter-spacing:.04em; text-transform:uppercase; opacity:.6; margin:1.75rem 0 .6rem;}
+  .row{display:flex; gap:14px; flex-wrap:wrap; align-items:center;}
+  .cap{font-size:10px; letter-spacing:.05em; text-transform:uppercase; opacity:.45; width:100%; margin-top:2px;}
+
+  .btn{height:var(--h); min-width:96px; padding:0 var(--pad-x); border:0; border-radius:0; cursor:pointer;
+    font:var(--weight) var(--fs)/1 var(--font); display:inline-flex; align-items:center; justify-content:center;
+    gap:8px; transition:background var(--ease), border-color var(--ease);}
+  .btn:focus-visible{outline:2px solid var(--text-default); outline-offset:2px;}
+
+  /* PRIMARY — red fill, white label; pressed inverts (label flips via --label-invert) */
+  .btn.primary{background:var(--pri-default); color:var(--text-reverse);}
+  .btn.primary:hover{background:var(--pri-hover);}
+  .btn.primary.is-pressed{background:var(--pri-pressed); color:var(--label-invert);}
+  /* opacity:1 overrides the browser's native disabled fade so the token colour shows true */
+  .btn:disabled{opacity:1;}
+  .btn.primary.is-disabled{background:var(--pri-disabled); color:var(--label-invert); cursor:not-allowed;}
+  .btn.primary.is-success{background:var(--success); color:var(--text-reverse);}
+
+  /* SECONDARY — inverting; label uses --label-invert in all states */
+  .btn.secondary{background:var(--sec-default); color:var(--label-invert);}
+  .btn.secondary:hover{background:var(--sec-hover);}
+  .btn.secondary.is-pressed{background:var(--sec-pressed);}
+  .btn.secondary.is-disabled{background:var(--sec-disabled); color:var(--label-invert); cursor:not-allowed;}
+
+  /* TERTIARY — outlined; label text/default (inverts with theme) */
+  .btn.tertiary{background:var(--ter-default); color:var(--text-default); border:1px solid var(--ter-border);}
+  .btn.tertiary:hover{background:var(--ter-hover);}
+  .btn.tertiary.is-pressed{background:var(--ter-pressed); color:var(--text-reverse);}
+  .btn.tertiary.is-disabled{background:var(--ter-disabled); color:var(--label-invert); border-color:var(--ter-border-disabled); cursor:not-allowed;}
+
+  /* QUATERNARY — borderless ghost; transparent default, tertiary tints on hover/press */
+  .btn.quaternary{background:transparent; color:var(--text-default);}
+  .btn.quaternary:hover{background:var(--ter-hover);}
+  .btn.quaternary.is-pressed{background:var(--ter-pressed); color:var(--text-reverse);}
+  .btn.quaternary.is-disabled{background:transparent; color:var(--text-disabled); cursor:not-allowed;}
+
+  .spin{width:16px; height:16px; border:2px solid currentColor; border-right-color:transparent; border-radius:50%; animation:s .7s linear infinite;}
+  @keyframes s{to{transform:rotate(360deg);}}
+</style>
+</head>
+<body data-theme="light">
+  <div class="controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Button — canonical reference (4 emphasis levels)</span></div>
+
+  <h2>Primary</h2>
+  <div class="row">
+    <button class="btn primary">Example</button>
+    <button class="btn primary is-pressed">Example</button>
+    <button class="btn primary is-disabled" disabled>Example</button>
+    <button class="btn primary"><span class="spin"></span>Loading</button>
+    <button class="btn primary is-success">Done</button>
+    <span class="cap">default · pressed · disabled · processing · success (hover me)</span>
+  </div>
+
+  <h2>Secondary</h2>
+  <div class="row">
+    <button class="btn secondary">Example</button>
+    <button class="btn secondary is-pressed">Example</button>
+    <button class="btn secondary is-disabled" disabled>Example</button>
+    <span class="cap">default · pressed · disabled (hover me)</span>
+  </div>
+
+  <h2>Tertiary (outlined)</h2>
+  <div class="row">
+    <button class="btn tertiary">Example</button>
+    <button class="btn tertiary is-pressed">Example</button>
+    <button class="btn tertiary is-disabled" disabled>Example</button>
+    <span class="cap">default · pressed · disabled (hover me)</span>
+  </div>
+
+  <h2>Quaternary (ghost)</h2>
+  <div class="row">
+    <button class="btn quaternary">Example</button>
+    <button class="btn quaternary is-pressed">Example</button>
+    <button class="btn quaternary is-disabled" disabled>Example</button>
+    <span class="cap">default · pressed · disabled (hover me)</span>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Button",
+    "vars": {
+      "--pri-default": "primary/background/default",
+      "--pri-hover": "primary/background/hover",
+      "--pri-disabled": "primary/background/disabled",
+      "--sec-hover": "secondary/background/hover",
+      "--sec-pressed": "secondary/background/pressed",
+      "--ter-default": "tertiary/background/default",
+      "--ter-hover": "tertiary/background/hover",
+      "--ter-border": "tertiary/border/default",
+      "--text-default": "text/default",
+      "--text-reverse": "text/reverse",
+      "--label-invert": "text/on-inverse",
+      "--success": "rag/success",
+      "--page": "background/default"
+    },
+    "contrastPairs": [
+      { "fg": "text/reverse",   "bg": "primary/background/default",   "context": "text" },
+      { "fg": "text/reverse",   "bg": "primary/background/hover",     "context": "text" },
+      { "fg": "text/on-inverse","bg": "secondary/background/default", "context": "text" },
+      { "fg": "text/on-inverse","bg": "secondary/background/hover",   "context": "text" },
+      { "fg": "rag/success",    "bg": "background/default",           "context": "ui" },
+      { "fg": "text/default",   "bg": "tertiary/background/default",  "context": "text" },
+      { "fg": "text/default",   "bg": "tertiary/background/hover",    "context": "text" },
+      { "fg": "tertiary/border/default", "bg": "tertiary/background/default", "context": "ui" },
+      { "fg": "text/default",   "bg": "background/default",           "context": "text" }
+    ],
+    "requiredAria": ["<button", "disabled"]
+  }
+  </script>
+
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', ()=>{
+      const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark');
+    });
+  </script>
+</body>
+</html>
