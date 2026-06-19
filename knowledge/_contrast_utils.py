@@ -89,6 +89,93 @@ def token_context(token_name):
         return 'unknown'
 
 
+# --- Surface resolution + audit policy (fix #1b completion, 2026-06-19) --------
+# Replaces the old "assume one hardcoded #1D1D1D surface" model. A text/icon
+# token is now judged against the WORST-CASE (lightest) dark surface it can
+# actually sit on, and mode-specific tokens are excluded rather than false-flagged.
+
+# Tokens intentionally exempt from the dark-mode contrast GATE, with reasons.
+# These are reported but do NOT fail the build. Everything else below threshold does.
+CONTRAST_ALLOWLIST = {
+    "text/disabled":          "Disabled text — exempt from WCAG 1.4.3 (inactive UI component).",
+    "tertiary/text/disabled": "Disabled text — exempt from WCAG 1.4.3 (inactive UI component).",
+    "icon/disabled":          "Disabled icon — exempt from WCAG 1.4.3/1.4.11 (inactive component).",
+    "tertiary/icon/disabled": "Disabled icon — exempt from WCAG 1.4.3/1.4.11 (inactive component).",
+}
+
+def is_light_only(token_name):
+    """Tokens designed for light surfaces only (e.g. */on-light) are not used in
+    dark mode, so judging them against a dark surface is a false positive."""
+    return "on-light" in token_name
+
+def _leaf_dark_hex(node):
+    d = node.get("dark") if isinstance(node, dict) else None
+    v = (d.get("$value") if isinstance(d, dict) else d)
+    return v.upper() if isinstance(v, str) and v.startswith("#") else None
+
+def load_dark_surfaces(sem_leaves):
+    """Map every surface/background token -> its dark hex, to resolve the real
+    surface a text/icon token sits on instead of assuming one."""
+    out = {}
+    for name, node in sem_leaves.items():
+        if any(x in name for x in ("background", "surface")) and "tint" not in name:
+            hx = _leaf_dark_hex(node)
+            if hx:
+                out[name] = hx
+    return out
+
+def _group_prefix(token_name):
+    """'tertiary/text/disabled' -> 'tertiary'; 'text/default' -> '' (global)."""
+    for marker in ("/text/", "/icon/", "/label"):
+        if marker in token_name:
+            return token_name.split(marker)[0]
+    return ""
+
+def resolve_dark_surface(token_name, surfaces, default_dark, raised_dark):
+    """Return (surface_hex, label) — the worst-case (lightest) dark surface this
+    token must stay legible on — or (None, reason) to skip.
+
+    - on-light tokens: skip (light-mode only).
+    - grouped tokens (tertiary/text/*): lightest dark surface within that group.
+    - generic text/icon: lightest of the page default and the raised island,
+      since a token can sit on either. Lightest = highest luminance = hardest
+      for light text → the conservative choice (no false negatives).
+    """
+    if is_light_only(token_name):
+        return (None, "light-mode-only (on-light); excluded from dark audit")
+    grp = _group_prefix(token_name)
+    candidates = [hx for nm, hx in surfaces.items() if grp and nm.startswith(grp + "/")]
+    if not candidates:
+        candidates = [default_dark, raised_dark]
+    worst = max(candidates, key=lambda h: luminance(*hex_to_rgb(h)))
+    return (worst, grp if grp else "page/raised")
+
+def standard_dark_surfaces(tok_dir):
+    """Resolve the two standard dark surfaces from the stores (not hardcoded):
+    page default = semantic background/default dark; raised island = primitive
+    grey dark-mode/600. Returns (default_dark, raised_dark)."""
+    import json, os
+    def leaves(node, path="", out=None):
+        if out is None: out = {}
+        if isinstance(node, dict):
+            v = node.get("$value")
+            if isinstance(v, str) and v.startswith("#"):
+                out[path] = v.upper()
+            for k, sub in node.items():
+                if not k.startswith("$"):
+                    leaves(sub, (path + "/" + k).strip("/") if path else k, out)
+        return out
+    default_dark = "#000000"
+    try:
+        sem = json.load(open(os.path.join(tok_dir, "semantic-colour.json")))
+        default_dark = sem["background"]["default"]["dark"]["$value"].upper()
+    except Exception:
+        pass
+    prims = leaves(json.load(open(os.path.join(tok_dir, "colour.json"))))
+    raised = next((hx for p, hx in prims.items() if p.endswith("dark-mode/600")), "#1D1D1D")
+    return default_dark, raised
+
+
 if __name__ == '__main__':
     # Batch 1 validation harness: known good/bad pairs from Tabs fitness test
     print("=== Contrast Calculator — Validation Harness ===\n")

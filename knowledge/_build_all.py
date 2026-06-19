@@ -12,7 +12,9 @@ The generators must run in this order because later ones read earlier outputs:
   8. _build_integrity.py                     -> _INTEGRITY-REPORT.md   (the gate; needs 3)
 
 Run:  python3 knowledge/_build_all.py
-Exits non-zero if the integrity gate (step 8) finds any ERROR — so this is the
+Exits non-zero if EITHER gate fails: the integrity lint (step 8, any ERROR) or
+the contrast audits (steps 6-7, any non-allowlisted token below its dark-mode
+threshold). Both run to completion first so every report is fresh. This is the
 single command to trust the knowledge base after editing metas or tokens.
 """
 import subprocess, sys, os
@@ -35,16 +37,20 @@ for i, (label, rel) in enumerate(STEPS, 1):
     print(f"\n=== [{i}/{len(STEPS)}] {label} — {rel} ===")
     r = subprocess.run([sys.executable, path])
     if r.returncode != 0:
-        # integrity is the only step allowed to gate the build (contrast audits are warnings)
+        # Gating steps: integrity lint AND the contrast audits. They run to the
+        # end (so you get every report) then the build exits non-zero.
         if rel.endswith("_build_integrity.py"):
             print(f"\n❌ integrity gate failed (exit {r.returncode}) — see knowledge/_INTEGRITY-REPORT.md")
-            rc = r.returncode
+            rc = rc or r.returncode
         elif "contrast" in label:
-            print(f"\n⚠️  step '{label}' completed with warnings — see knowledge/_*-CONTRAST-AUDIT.md")
+            print(f"\n❌ contrast gate failed (exit {r.returncode}) — see knowledge/_*-CONTRAST-AUDIT.md")
+            rc = rc or r.returncode
         else:
             print(f"\n❌ step '{label}' failed (exit {r.returncode}) — aborting")
             sys.exit(r.returncode)
 
 if rc == 0:
-    print("\n✅ all generators ran and the integrity gate passed.")
+    print("\n✅ all generators ran and the integrity + contrast gates passed.")
+else:
+    print("\n❌ build gate failed — see the reports above.")
 sys.exit(rc)

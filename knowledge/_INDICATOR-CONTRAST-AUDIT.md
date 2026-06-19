@@ -1,23 +1,22 @@
 # Indicator/accent token dark-mode contrast audit
 
-> Checks if brand red, RAG status, and interactive state tokens' dark values create sufficient contrast on the standard dark surface (#1D1D1D). Minimum threshold: 3:1 (UI component).
+> Brand red, RAG status, and interactive-state tokens tested at **3:1** (WCAG 1.4.11) against the worst-case (lightest) dark surface resolved from the store — page default `#000000` + raised island `#1D1D1D`. `on-light` tokens excluded (light-only).
 
-**Coverage:** 6/7 indicator tokens pass · 1 below threshold.
+**Result:** 6 pass · 0 allowed exception(s) · **0 gating failure(s)** · 1 skipped (light-only).
 
-## Poor contrast — requires fix
+## Skipped — light-mode-only tokens
 
-| Token | Dark value | Contrast on #1D1D1D | Threshold |
-|---|---|---|---|
-| `rag/text/on-light` | `#333333` | **1.33:1** | 3.0:1 |
+| Token | Reason |
+|---|---|
+| `rag/text/on-light` | light-mode-only (on-light); excluded from dark audit |
 
-## All indicator/accent tokens
+## All audited indicator/accent tokens
 
-| Token | Dark value | Contrast on #1D1D1D | Status |
-|---|---|---|---|
-| `rag/error` | `#DB0011` | 3.23:1 | ✅ OK |
-| `rag/information` | `#4587A7` | 4.24:1 | ✅ OK |
-| `rag/neutral` | `#FFFFFF` | 16.86:1 | ✅ OK |
-| `rag/success` | `#00847F` | 3.7:1 | ✅ OK |
-| `rag/text/on-dark` | `#FFFFFF` | 16.86:1 | ✅ OK |
-| `rag/text/on-light` | `#333333` | 1.33:1 | ❌ POOR |
-| `rag/warning` | `#FFBB33` | 9.96:1 | ✅ OK |
+| Token | Dark value | Surface | Contrast | Status |
+|---|---|---|---|---|
+| `rag/error` | `#DB0011` | `#1D1D1D` | 3.23:1 | ✅ OK |
+| `rag/information` | `#4587A7` | `#1D1D1D` | 4.24:1 | ✅ OK |
+| `rag/neutral` | `#FFFFFF` | `#1D1D1D` | 16.86:1 | ✅ OK |
+| `rag/success` | `#00847F` | `#1D1D1D` | 3.7:1 | ✅ OK |
+| `rag/text/on-dark` | `#FFFFFF` | `#1D1D1D` | 16.86:1 | ✅ OK |
+| `rag/warning` | `#FFBB33` | `#1D1D1D` | 9.96:1 | ✅ OK |

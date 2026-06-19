@@ -1,102 +1,146 @@
 {
-  "$description": "Text/icon token dark-mode contrast audit. Checks if all text, icon, and label tokens' dark values create sufficient contrast on the standard dark surface (#1D1D1D). Text needs 4.5:1, icons/UI need 3:1. POOR_CONTRAST = fails the threshold.",
+  "$description": "Text/icon dark-mode contrast audit. Each token is tested against the worst-case (lightest) dark surface it can sit on, resolved from the store (page default + raised island, or its own group's surfaces). on-light tokens are excluded (light-only). Allowlisted disabled-state tokens are reported but do not gate. POOR_CONTRAST (non-allowlisted, below threshold) FAILS the build.",
   "generated": "2026-06-19",
-  "standard_dark_surface": "#1D1D1D",
+  "default_dark_surface": "#000000",
+  "raised_dark_surface": "#1D1D1D",
   "totals": {
-    "text_icon_tokens": 10,
+    "text_icon_tokens": 9,
     "ok": 7,
-    "poor_contrast": 3
+    "allowed_exceptions": 2,
+    "poor_contrast": 0,
+    "skipped_light_only": 1
   },
+  "poor_contrast": [],
+  "allowed_exceptions": [
+    {
+      "token": "tertiary/text/disabled",
+      "dark_value": "#767676",
+      "surface": "#474747",
+      "surface_label": "tertiary",
+      "contrast_ratio": 2.05,
+      "threshold": 4.5,
+      "context": "text",
+      "status": "ALLOWED",
+      "allowlist_reason": "Disabled text — exempt from WCAG 1.4.3 (inactive UI component)."
+    },
+    {
+      "token": "text/disabled",
+      "dark_value": "#767676",
+      "surface": "#1D1D1D",
+      "surface_label": "page/raised",
+      "contrast_ratio": 3.71,
+      "threshold": 4.5,
+      "context": "text",
+      "status": "ALLOWED",
+      "allowlist_reason": "Disabled text — exempt from WCAG 1.4.3 (inactive UI component)."
+    }
+  ],
+  "skipped_light_only": [
+    {
+      "token": "rag/text/on-light",
+      "dark_value": "#333333",
+      "reason": "light-mode-only (on-light); excluded from dark audit"
+    }
+  ],
   "tokens": {
     "icon/default": {
       "token": "icon/default",
       "dark_value": "#FFFFFF",
-      "dark_surface": "#1D1D1D",
+      "surface": "#1D1D1D",
+      "surface_label": "page/raised",
       "contrast_ratio": 16.86,
       "threshold": 3.0,
       "context": "ui",
-      "status": "OK"
+      "status": "OK",
+      "allowlist_reason": null
     },
     "icon/default-reverse": {
       "token": "icon/default-reverse",
       "dark_value": "#FFFFFF",
-      "dark_surface": "#1D1D1D",
+      "surface": "#1D1D1D",
+      "surface_label": "page/raised",
       "contrast_ratio": 16.86,
       "threshold": 3.0,
       "context": "ui",
-      "status": "OK"
+      "status": "OK",
+      "allowlist_reason": null
     },
     "icon/disabled": {
       "token": "icon/disabled",
       "dark_value": "#767676",
-      "dark_surface": "#1D1D1D",
+      "surface": "#1D1D1D",
+      "surface_label": "page/raised",
       "contrast_ratio": 3.71,
       "threshold": 3.0,
       "context": "ui",
-      "status": "OK"
+      "status": "OK",
+      "allowlist_reason": null
     },
     "rag/text/on-dark": {
       "token": "rag/text/on-dark",
       "dark_value": "#FFFFFF",
-      "dark_surface": "#1D1D1D",
+      "surface": "#1D1D1D",
+      "surface_label": "rag",
       "contrast_ratio": 16.86,
       "threshold": 4.5,
       "context": "text",
-      "status": "OK"
-    },
-    "rag/text/on-light": {
-      "token": "rag/text/on-light",
-      "dark_value": "#333333",
-      "dark_surface": "#1D1D1D",
-      "contrast_ratio": 1.33,
-      "threshold": 4.5,
-      "context": "text",
-      "status": "POOR_CONTRAST"
+      "status": "OK",
+      "allowlist_reason": null
     },
     "tertiary/text/disabled": {
       "token": "tertiary/text/disabled",
       "dark_value": "#767676",
-      "dark_surface": "#1D1D1D",
-      "contrast_ratio": 3.71,
+      "surface": "#474747",
+      "surface_label": "tertiary",
+      "contrast_ratio": 2.05,
       "threshold": 4.5,
       "context": "text",
-      "status": "POOR_CONTRAST"
+      "status": "ALLOWED",
+      "allowlist_reason": "Disabled text — exempt from WCAG 1.4.3 (inactive UI component)."
     },
     "tertiary/text/pressed": {
       "token": "tertiary/text/pressed",
       "dark_value": "#FFFFFF",
-      "dark_surface": "#1D1D1D",
-      "contrast_ratio": 16.86,
+      "surface": "#474747",
+      "surface_label": "tertiary",
+      "contrast_ratio": 9.29,
       "threshold": 4.5,
       "context": "text",
-      "status": "OK"
+      "status": "OK",
+      "allowlist_reason": null
     },
     "text/default": {
       "token": "text/default",
       "dark_value": "#FFFFFF",
-      "dark_surface": "#1D1D1D",
+      "surface": "#1D1D1D",
+      "surface_label": "page/raised",
       "contrast_ratio": 16.86,
       "threshold": 4.5,
       "context": "text",
-      "status": "OK"
+      "status": "OK",
+      "allowlist_reason": null
     },
     "text/disabled": {
       "token": "text/disabled",
       "dark_value": "#767676",
-      "dark_surface": "#1D1D1D",
+      "surface": "#1D1D1D",
+      "surface_label": "page/raised",
       "contrast_ratio": 3.71,
       "threshold": 4.5,
       "context": "text",
-      "status": "POOR_CONTRAST"
+      "status": "ALLOWED",
+      "allowlist_reason": "Disabled text — exempt from WCAG 1.4.3 (inactive UI component)."
     },
     "text/reverse": {
       "token": "text/reverse",
       "dark_value": "#FFFFFF",
-      "dark_surface": "#1D1D1D",
+      "surface": "#1D1D1D",
+      "surface_label": "page/raised",
       "contrast_ratio": 16.86,
       "threshold": 4.5,
       "context": "text",
-      "status": "OK"
+      "status": "OK",
+      "allowlist_reason": null
     }
   }
 }

@@ -17,6 +17,15 @@ We closed the last two structural gaps the Tabs fitness test found (focus + geom
 
 All **four structural blockers** that made the first Route B unshippable — broken dark mode, no focus, no geometry, no motion — are now **answered from the KB itself** (verified live, not asserted). The gap shrank from *"correct but fails WCAG in dark + no focus"* to *"shippable and accessible; residual delta is type polish + overflow richness."* The dangerous class of defect (internally-valid-but-unusable) is closed.
 
+## ✅ Diligence note — fix #1b is now COMPLETE (was partial)
+
+A reflection pass over the prior contrast-audit work (2026-06-19) confirmed the *values* were correct (dark primitives are real canon, `$alias` provenance honest, WCAG math sound), but found two wiring gaps — both now closed:
+
+- **The contrast audits now GATE the build.** Both audits exit non-zero on any non-allowlisted token below threshold, and `_build_all.py` accumulates that into the build's exit code. Verified by injecting an invisible `text/default` dark value → build failed (exit 1); restoring → green. A regression to white-on-white can no longer pass. Known-acceptable exceptions (disabled-state tokens) live in an explicit `CONTRAST_ALLOWLIST` in `_contrast_utils.py`.
+- **The surface audit now resolves the real surface.** Each text/icon token is tested against the worst-case (lightest) dark surface it can actually sit on — its own group's surfaces, or the page-default/raised island — all resolved from the store, not hardcoded. Mode-specific `*/on-light` tokens are excluded, so the old `rag/text/on-light` 1.33:1 false positive is gone (now correctly skipped as light-only).
+
+Current build: 7 text/icon OK + 2 allowed, 6 indicators OK, 0 gating failures, integrity PASS, 32/32.
+
 ## Still open (residual A–B delta — all 🟡, none are WCAG blockers)
 
 The remaining backlog from the fitness test:

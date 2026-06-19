@@ -1,69 +1,85 @@
 {
-  "$description": "Indicator/accent token dark-mode contrast audit. Checks if brand red, RAG status, and interactive state tokens' dark values create sufficient contrast (3:1) on the standard dark surface (#1D1D1D). POOR_CONTRAST = fails the threshold.",
+  "$description": "Indicator/accent dark-mode contrast audit. Brand red, RAG status, and interactive-state tokens tested at 3:1 (WCAG 1.4.11) against the worst-case (lightest) dark surface resolved from the store. on-light tokens excluded (light-only). Allowlisted tokens reported, not gated. POOR_CONTRAST FAILS the build.",
   "generated": "2026-06-19",
-  "standard_dark_surface": "#1D1D1D",
+  "default_dark_surface": "#000000",
+  "raised_dark_surface": "#1D1D1D",
   "minimum_contrast": 3.0,
   "totals": {
-    "indicator_tokens": 7,
+    "indicator_tokens": 6,
     "ok": 6,
-    "poor_contrast": 1
+    "allowed_exceptions": 0,
+    "poor_contrast": 0,
+    "skipped_light_only": 1
   },
+  "poor_contrast": [],
+  "allowed_exceptions": [],
+  "skipped_light_only": [
+    {
+      "token": "rag/text/on-light",
+      "dark_value": "#333333",
+      "reason": "light-mode-only (on-light); excluded from dark audit"
+    }
+  ],
   "tokens": {
     "rag/error": {
       "token": "rag/error",
       "dark_value": "#DB0011",
-      "dark_surface": "#1D1D1D",
+      "surface": "#1D1D1D",
+      "surface_label": "page/raised",
       "contrast_ratio": 3.23,
       "threshold": 3.0,
-      "status": "OK"
+      "status": "OK",
+      "allowlist_reason": null
     },
     "rag/information": {
       "token": "rag/information",
       "dark_value": "#4587A7",
-      "dark_surface": "#1D1D1D",
+      "surface": "#1D1D1D",
+      "surface_label": "page/raised",
       "contrast_ratio": 4.24,
       "threshold": 3.0,
-      "status": "OK"
+      "status": "OK",
+      "allowlist_reason": null
     },
     "rag/neutral": {
       "token": "rag/neutral",
       "dark_value": "#FFFFFF",
-      "dark_surface": "#1D1D1D",
+      "surface": "#1D1D1D",
+      "surface_label": "page/raised",
       "contrast_ratio": 16.86,
       "threshold": 3.0,
-      "status": "OK"
+      "status": "OK",
+      "allowlist_reason": null
     },
     "rag/success": {
       "token": "rag/success",
       "dark_value": "#00847F",
-      "dark_surface": "#1D1D1D",
+      "surface": "#1D1D1D",
+      "surface_label": "page/raised",
       "contrast_ratio": 3.7,
       "threshold": 3.0,
-      "status": "OK"
+      "status": "OK",
+      "allowlist_reason": null
     },
     "rag/text/on-dark": {
       "token": "rag/text/on-dark",
       "dark_value": "#FFFFFF",
-      "dark_surface": "#1D1D1D",
+      "surface": "#1D1D1D",
+      "surface_label": "rag",
       "contrast_ratio": 16.86,
       "threshold": 3.0,
-      "status": "OK"
-    },
-    "rag/text/on-light": {
-      "token": "rag/text/on-light",
-      "dark_value": "#333333",
-      "dark_surface": "#1D1D1D",
-      "contrast_ratio": 1.33,
-      "threshold": 3.0,
-      "status": "POOR_CONTRAST"
+      "status": "OK",
+      "allowlist_reason": null
     },
     "rag/warning": {
       "token": "rag/warning",
       "dark_value": "#FFBB33",
-      "dark_surface": "#1D1D1D",
+      "surface": "#1D1D1D",
+      "surface_label": "page/raised",
       "contrast_ratio": 9.96,
       "threshold": 3.0,
-      "status": "OK"
+      "status": "OK",
+      "allowlist_reason": null
     }
   }
 }

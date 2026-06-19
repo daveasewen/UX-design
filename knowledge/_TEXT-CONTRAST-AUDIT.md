@@ -1,28 +1,32 @@
 # Text/icon token dark-mode contrast audit
 
-> Checks if all text, icon, and label tokens' dark values create sufficient contrast on the standard dark surface (#1D1D1D, HSBC dark-mode/600). Text needs 4.5:1 (AA), icons/UI need 3:1 (AA).
+> Each text/icon token is tested against the **worst-case (lightest) dark surface it can sit on**, resolved from the store — page default `#000000` + raised island `#1D1D1D`, or the token's own group surfaces. `on-light` tokens are excluded (light-only). Disabled-state tokens are allowlisted (reported, not gated). Text needs 4.5:1, icons/UI need 3:1.
 
-**Coverage:** 7/10 text/icon tokens pass · 3 below threshold.
+**Result:** 7 pass · 2 allowed exception(s) · **0 gating failure(s)** · 1 skipped (light-only).
 
-## Poor contrast — requires fix
+## Allowed exceptions (reported, not gated)
 
-| Token | Dark value | Contrast on #1D1D1D | Threshold | Context |
+| Token | Dark value | Surface | Contrast | Reason |
 |---|---|---|---|---|
-| `rag/text/on-light` | `#333333` | **1.33:1** | 4.5:1 | text |
-| `tertiary/text/disabled` | `#767676` | **3.71:1** | 4.5:1 | text |
-| `text/disabled` | `#767676` | **3.71:1** | 4.5:1 | text |
+| `tertiary/text/disabled` | `#767676` | `#474747` | 2.05:1 | Disabled text — exempt from WCAG 1.4.3 (inactive UI component). |
+| `text/disabled` | `#767676` | `#1D1D1D` | 3.71:1 | Disabled text — exempt from WCAG 1.4.3 (inactive UI component). |
 
-## All text/icon tokens
+## Skipped — light-mode-only tokens
 
-| Token | Dark value | Contrast on #1D1D1D | Threshold | Status |
+| Token | Reason |
+|---|---|
+| `rag/text/on-light` | light-mode-only (on-light); excluded from dark audit |
+
+## All audited text/icon tokens
+
+| Token | Dark value | Surface | Contrast | Status |
 |---|---|---|---|---|
-| `icon/default` | `#FFFFFF` | 16.86:1 | 3.0:1 | ✅ OK |
-| `icon/default-reverse` | `#FFFFFF` | 16.86:1 | 3.0:1 | ✅ OK |
-| `icon/disabled` | `#767676` | 3.71:1 | 3.0:1 | ✅ OK |
-| `rag/text/on-dark` | `#FFFFFF` | 16.86:1 | 4.5:1 | ✅ OK |
-| `rag/text/on-light` | `#333333` | 1.33:1 | 4.5:1 | ❌ POOR |
-| `tertiary/text/disabled` | `#767676` | 3.71:1 | 4.5:1 | ❌ POOR |
-| `tertiary/text/pressed` | `#FFFFFF` | 16.86:1 | 4.5:1 | ✅ OK |
-| `text/default` | `#FFFFFF` | 16.86:1 | 4.5:1 | ✅ OK |
-| `text/disabled` | `#767676` | 3.71:1 | 4.5:1 | ❌ POOR |
-| `text/reverse` | `#FFFFFF` | 16.86:1 | 4.5:1 | ✅ OK |
+| `icon/default` | `#FFFFFF` | `#1D1D1D` | 16.86:1 | ✅ OK |
+| `icon/default-reverse` | `#FFFFFF` | `#1D1D1D` | 16.86:1 | ✅ OK |
+| `icon/disabled` | `#767676` | `#1D1D1D` | 3.71:1 | ✅ OK |
+| `rag/text/on-dark` | `#FFFFFF` | `#1D1D1D` | 16.86:1 | ✅ OK |
+| `tertiary/text/disabled` | `#767676` | `#474747` | 2.05:1 | 🟡 ALLOWED |
+| `tertiary/text/pressed` | `#FFFFFF` | `#474747` | 9.29:1 | ✅ OK |
+| `text/default` | `#FFFFFF` | `#1D1D1D` | 16.86:1 | ✅ OK |
+| `text/disabled` | `#767676` | `#1D1D1D` | 3.71:1 | 🟡 ALLOWED |
+| `text/reverse` | `#FFFFFF` | `#1D1D1D` | 16.86:1 | ✅ OK |
