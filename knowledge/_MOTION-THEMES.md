@@ -23,11 +23,14 @@ State changes land with a slight overshoot for liveliness — reserved for confi
 - **Candidate:** `motion/easing/spring` ≈ `cubic-bezier(.5,1.6,.4,1)`, duration `motion/duration/spring` ≈ 320ms.
 - **Caution:** use sparingly — too many springs reads frenetic (cf. the dropdown accent we rejected for being too much).
 
-### 3. Tactile — "press physics"
+### 3. Tactile — "press physics"  ⭐ ENDORSED (Dave, 2026-06-19)
 Direct manipulation gets an immediate physical response on `:active`.
 - **Seen in:** Button press squish (scale .97) · Switch thumb stretch.
 - **Feel:** physical, satisfying, instant.
 - **Candidate:** `motion/duration/press` ≈ 90ms, ease-out. No overshoot.
+- **Status:** pulled forward from brand-refresh **principle 7** ("interactions mimic the real world,
+  buttons feel pressed, things move how you'd expect in 3D space"). This is the first refresh principle
+  promoted from future-fenced to an active motion direction — it anchors the "Motion themes" tier.
 
 ### 4. Roll-off — "fast in, slow out (trail)"
 Hover cues snap in and linger out — asymmetric timing. **Chosen for the Dropdown accent (V2).**
@@ -51,6 +54,13 @@ A single control transforms through a sequence rather than swapping elements.
 - Every theme must degrade under `prefers-reduced-motion: reduce` (the showcases already do).
 - Motion is decoration on top of an already-correct, accessible static state — never the only signal.
 - Promotion to canon follows `_PROMOTION-QUEUE.md`: tokenise → meta `motion` block → gated reference.
+
+## Review format — 3-up (Dave, 2026-06-19)
+Working through the components, each gets a **three-tier showcase** so "how much motion" is calibratable:
+1. **Canon** — what ships (colour/state only, standard ease).
+2. **Motion themes** — the agreed family applied tastefully (currently anchored by ⭐ Tactile).
+3. **Unrestrained** — the ceiling (anything).
+First built: `_fitness-test/button-3up-showcase.html`. This supersedes the old 2-up (canon vs unconstrained) format.
 
 ## For the review
 Decide: (a) which of the six themes we keep / merge / cut; (b) the exact curves + durations → `motion/*` tokens;
