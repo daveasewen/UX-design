@@ -1,0 +1,15 @@
+{
+  "$description": "Motion tokens (DTCG). Durations + easing curves for component transitions. Added 2026-06-19 from the Tabs fitness test (Route A) — first motion tokens in the store; reference these from component `motion` blocks rather than hard-coding timings. Reduced-motion handling is a component rule, not a token.",
+  "motion": {
+    "duration": {
+      "instant": { "$value": "0ms", "$type": "duration", "$description": "no animation / reduced-motion fallback" },
+      "fast": { "$value": "120ms", "$type": "duration", "$description": "small state changes (hover, colour)" },
+      "fade": { "$value": "140ms", "$type": "duration", "$description": "panel/content fade-in" },
+      "standard": { "$value": "220ms", "$type": "duration", "$description": "primary moving elements (e.g. tab selected-indicator slide)" }
+    },
+    "easing": {
+      "standard": { "$value": { "x1": 0.4, "y1": 0, "x2": 0.2, "y2": 1 }, "$type": "cubicBezier", "$description": "default ease for entering/moving elements" },
+      "linear": { "$value": { "x1": 0, "y1": 0, "x2": 1, "y2": 1 }, "$type": "cubicBezier" }
+    }
+  }
+}

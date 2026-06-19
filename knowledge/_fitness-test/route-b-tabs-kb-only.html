@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tabs — Route B (built from the knowledge base only)</title>
+<!--
+  ROUTE B — built STRICTLY from the Promenaut knowledge base:
+    knowledge/components/tabs.meta.json, the token stores, compliance rules, guidelines.
+  No live Figma, no outside design judgement. Every value is either KB-SOURCED
+  (token store / meta / compliance) or a GUESS (marked /*GUESS*/ — logged in the gap report).
+  Token values pinned from semantic-colour.json unless noted.
+-->
+<style>
+  :root {
+    /* ---- KB-SOURCED tokens (light mode) ---- */
+    --tabs-active: #DB0011;            /* tabs/active light  (meta: rewire off color/primary primitive) */
+    --tabs-standard-border: #D7D8D6;   /* tabs/standard-border light */
+    --tabs-overflow-border: #000000;   /* tabs/overflow-border light */
+    --tabs-background: #FFFFFF;         /* tabs/background light */
+    --tabs-overflow-background: #FFFFFF;/* tabs/overflow-background light */
+    --text-default: #333333;           /* text/default light */
+    --text-reverse: #FFFFFF;           /* text/reverse */
+    --surface-hover: #F3F3F3;          /* tertiary/background/hover light (no tabs/* hover exists — GAP) */
+    --surface-pressed: #767676;        /* tertiary/background/pressed light (no tabs/* pressed exists — GAP) */
+    --page-bg: #FFFFFF;                /* background/default light */
+    --divider-subsection: #EDEDED;     /* divider/border/subsection light (overflow menu separators) */
+    --elevation-shadow: #00000033;     /* elevation/functional light */
+    --font-family: "Univers Next for HSBC", Arial, Helvetica, sans-serif; /* family KB; /*GUESS*/ web fallback */
+    --font-size: 16px;                 /* typography/font-size/font-5 */
+    --line-height: 24px;               /* typography/line-height/font-5 */
+    --font-weight-medium: 500;         /* /*GUESS*/ "medium" token is an unmapped string */
+    --bw-small: 1px;                   /* border-width/small (track) /*GUESS* which width* / */
+    --bw-large: 4px;                   /* border-width/large (selected indicator) /*GUESS* which width* / */
+    --tab-pad-x: 16px;                 /* padding/fixed/medium /*GUESS* meta gives no tab padding* / */
+    --tab-min-target: 44px;            /* accessibility.targetArea + 2.5.8 (KB-stated) */
+    --focus-ring: 2px;                 /* /*GUESS* — NO focus-ring spec anywhere in the KB* / */
+    --motion: 120ms ease;             /* /*GUESS* — no motion guidance in the KB* / */
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-force]) { color-scheme: dark; } }
+  /* ---- dark mode token swaps (KB-SOURCED from semantic-colour.json `dark`) ---- */
+  [data-theme="dark"] {
+    --tabs-active: #FFFFFF;            /* tabs/active dark */
+    --tabs-standard-border: #FFFFFF;   /* tabs/standard-border dark */
+    --tabs-overflow-border: #FFFFFF;   /* tabs/overflow-border dark */
+    --tabs-background: #FFFFFF;         /* tabs/background dark — FLAT WHITE (smell, logged) */
+    --tabs-overflow-background: #FFFFFF;/* tabs/overflow-background dark — FLAT WHITE (smell) */
+    --text-default: #FFFFFF;           /* text/default dark */
+    --surface-hover: #FFFFFF;          /* tertiary/background/hover dark — FLAT (GAP) */
+    --surface-pressed: #FFFFFF;        /* tertiary/background/pressed dark — FLAT (GAP) */
+    --page-bg: #000000;                /* background/default dark */
+    --divider-subsection: #FFFFFF;
+    --elevation-shadow: #000000D9;
+  }
+
+  body {
+    margin: 0; padding: 2rem;
+    background: var(--page-bg);
+    color: var(--text-default);
+    font-family: var(--font-family);
+    font-size: var(--font-size);
+    line-height: var(--line-height);
+  }
+  .demo-controls { margin-bottom: 1.5rem; font-size: 14px; }
+
+  /* ---- tab bar ---- */
+  .tablist {
+    display: flex;
+    align-items: stretch;
+    /* track = bottom rule under the whole bar (tabs/standard-border) */
+    border-bottom: var(--bw-small) solid var(--tabs-standard-border);
+    background: var(--tabs-background);
+  }
+  .tab {
+    appearance: none; border: none; background: var(--tabs-background);
+    font: inherit; font-weight: var(--font-weight-medium); color: var(--text-default);
+    padding: 0 var(--tab-pad-x);
+    min-height: var(--tab-min-target);          /* 44px target */
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    border-bottom: var(--bw-large) solid transparent; /* reserve indicator space so layout doesn't jump /*GUESS*/ */
+    margin-bottom: calc(-1 * var(--bw-small));   /* overlap the track so indicator sits on the rule */
+    transition: background var(--motion), color var(--motion), border-color var(--motion);
+  }
+  .tab:hover { background: var(--surface-hover); }
+  .tab:active { background: var(--surface-pressed); color: var(--text-reverse); }
+  .tab[aria-selected="true"] {
+    border-bottom-color: var(--tabs-active);     /* the indicator — mode-aware tabs/active */
+    color: var(--text-default);
+  }
+  .tab:focus-visible {
+    outline: var(--focus-ring) solid var(--tabs-active); /* /*GUESS* — invented focus ring* / */
+    outline-offset: -2px;
+  }
+
+  /* ---- overflow trigger (shown when tabs don't fit) ---- */
+  .overflow {
+    position: relative; margin-left: auto;
+  }
+  .overflow__trigger {
+    appearance: none; font: inherit; font-weight: var(--font-weight-medium);
+    min-height: var(--tab-min-target); padding: 0 var(--tab-pad-x);
+    background: var(--tabs-overflow-background);
+    border: var(--bw-small) solid var(--tabs-overflow-border);
+    color: var(--text-default); cursor: pointer;
+  }
+  .overflow__menu {
+    position: absolute; right: 0; top: 100%; min-width: 200px;
+    background: var(--tabs-overflow-background);
+    box-shadow: 0 2px 8px var(--elevation-shadow); /* elevation/functional; /*GUESS* blur/offset* / */
+    margin: 0; padding: 4px 0; list-style: none; display: none; z-index: 10;
+  }
+  .overflow__menu[data-open="true"] { display: block; }
+  .overflow__item {
+    display: block; width: 100%; text-align: left; appearance: none; border: none;
+    background: var(--tabs-overflow-background); color: var(--text-default);
+    font: inherit; padding: 12px var(--tab-pad-x); min-height: var(--tab-min-target); cursor: pointer;
+    border-bottom: var(--bw-small) solid var(--divider-subsection);
+  }
+  .overflow__item:hover { background: var(--surface-hover); }
+
+  .tabpanel { padding: 1.5rem 0; }
+  .tabpanel[hidden] { display: none; }
+</style>
+</head>
+<body data-theme="light" data-force>
+
+  <div class="demo-controls">
+    <button id="themeToggle" type="button">Toggle dark mode</button>
+    <span> — Route B: Tabs from the knowledge base only</span>
+  </div>
+
+  <!-- WAI-ARIA tabs pattern (meta.accessibility.semantics): roving tabindex, arrow keys, aria-selected -->
+  <div class="tablist" role="tablist" aria-label="Account views">
+    <button class="tab" role="tab" id="t1" aria-selected="true"  aria-controls="p1" tabindex="0">Overview</button>
+    <button class="tab" role="tab" id="t2" aria-selected="false" aria-controls="p2" tabindex="-1">Transactions</button>
+    <button class="tab" role="tab" id="t3" aria-selected="false" aria-controls="p3" tabindex="-1">Statements</button>
+    <button class="tab" role="tab" id="t4" aria-selected="false" aria-controls="p4" tabindex="-1">Settings</button>
+
+    <!-- overflow dropdown (meta: trigger reveals hidden tabs; underspecified — see gap report) -->
+    <div class="overflow">
+      <button class="overflow__trigger" id="ovTrigger" aria-haspopup="true" aria-expanded="false" aria-label="More tabs">More ▾</button>
+      <ul class="overflow__menu" id="ovMenu" role="menu" aria-labelledby="ovTrigger">
+        <li><button class="overflow__item" role="menuitem">Documents</button></li>
+        <li><button class="overflow__item" role="menuitem">Alerts</button></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tabpanel" role="tabpanel" id="p1" aria-labelledby="t1" tabindex="0">Overview panel content.</div>
+  <div class="tabpanel" role="tabpanel" id="p2" aria-labelledby="t2" tabindex="0" hidden>Transactions panel content.</div>
+  <div class="tabpanel" role="tabpanel" id="p3" aria-labelledby="t3" tabindex="0" hidden>Statements panel content.</div>
+  <div class="tabpanel" role="tabpanel" id="p4" aria-labelledby="t4" tabindex="0" hidden>Settings panel content.</div>
+
+<script>
+  // Keyboard: arrow keys + Home/End move focus and activate (automatic activation).
+  // GAP: KB does not specify automatic vs manual activation — chose ARIA-APG default (automatic).
+  const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
+  function select(tab) {
+    tabs.forEach(t => {
+      const sel = t === tab;
+      t.setAttribute('aria-selected', sel);
+      t.tabIndex = sel ? 0 : -1;
+      document.getElementById(t.getAttribute('aria-controls')).hidden = !sel;
+    });
+  }
+  tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => select(tab));
+    tab.addEventListener('keydown', e => {
+      let n = null;
+      if (e.key === 'ArrowRight') n = (i + 1) % tabs.length;
+      else if (e.key === 'ArrowLeft') n = (i - 1 + tabs.length) % tabs.length;
+      else if (e.key === 'Home') n = 0;
+      else if (e.key === 'End') n = tabs.length - 1;
+      if (n !== null) { e.preventDefault(); tabs[n].focus(); select(tabs[n]); }
+    });
+  });
+
+  // Overflow menu
+  const ovT = document.getElementById('ovTrigger'), ovM = document.getElementById('ovMenu');
+  ovT.addEventListener('click', () => {
+    const open = ovM.getAttribute('data-open') === 'true';
+    ovM.setAttribute('data-open', String(!open));
+    ovT.setAttribute('aria-expanded', String(!open));
+  });
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.overflow')) { ovM.setAttribute('data-open', 'false'); ovT.setAttribute('aria-expanded', 'false'); }
+  });
+
+  // Theme toggle (demo only)
+  document.getElementById('themeToggle').addEventListener('click', () => {
+    const b = document.body;
+    b.setAttribute('data-theme', b.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  });
+</script>
+</body>
+</html>

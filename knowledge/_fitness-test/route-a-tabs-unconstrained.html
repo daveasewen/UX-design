@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tabs — Route A (unconstrained, portfolio-grade)</title>
+<!--
+  ROUTE A — the quality ceiling. Built with full design judgement (NOT KB-constrained):
+  considered geometry, an animated sliding indicator, a real focus ring that works in
+  both themes, hover/pressed/disabled states, a genuinely dark dark-mode, reduced-motion
+  support, and a polished overflow menu. Stays on HSBC brand (red #DB0011, Univers-like
+  type) but fills every gap Route B had to leave blank.
+  Design decisions are commented as DESIGN: so the gap report can compare them to the KB.
+-->
+<style>
+  :root {
+    color-scheme: light dark;
+
+    /* Brand + type */
+    --brand: #DB0011;                    /* HSBC red (KB primitive) */
+    --font: "Univers Next for HSBC", "Helvetica Neue", Arial, sans-serif;
+    --fs: 16px; --lh: 24px;
+    --weight-tab: 500; --weight-selected: 500;  /* FIX (Dave): weight CONSTANT across states so tab width doesn't change / jump */
+
+    /* Geometry — DESIGN: KB specified none of these */
+    --tab-h: 48px;                       /* ≥ 44px target with breathing room */
+    --tab-pad-x: 20px;
+    --tab-gap: 4px;
+    --indicator-h: 3px;                  /* DESIGN: 4px felt heavy; 3px reads cleaner */
+    --track-h: 1px;
+    --radius: 0;                         /* FIX (Dave): brand is ANGULAR (brand-principles.md) — square corners; border-radius/default is intentionally null */
+
+    /* Motion — DESIGN: KB has no motion guidance */
+    --move: 220ms cubic-bezier(.4, 0, .2, 1);
+    --fade: 140ms ease;
+
+    /* Light theme */
+    --page: #ffffff;
+    --bar: #ffffff;
+    --txt: #5b5b5b;                      /* unselected label — DESIGN: softer than #333 for hierarchy */
+    --txt-strong: #1c1c1c;              /* selected label */
+    --indicator: var(--brand);
+    --hover: #f5f5f5;
+    --pressed: #ebebeb;
+    --track: #e2e3e1;                   /* ≈ divider/border/section */
+    --menu-bg: #ffffff;
+    --menu-shadow: 0 6px 24px rgba(0,0,0,.14), 0 1px 3px rgba(0,0,0,.1);
+    --menu-sep: #ededed;               /* divider/border/subsection */
+    --focus: #005fcc;                   /* DESIGN: dedicated focus colour, AA-contrast on both themes */
+    --badge-bg: var(--brand);
+    --badge-txt: #ffffff;
+  }
+  [data-theme="dark"] {
+    /* DESIGN: a real dark theme. The KB's tabs/* go flat-white in dark (smell #11);
+       here the bar is a raised dark surface and the indicator is a lightened red so it
+       keeps brand identity while meeting 3:1 non-text contrast (white would lose the brand). */
+    --page: #0c0c0d;
+    --bar: #161617;                      /* raised surface, not white */
+    --txt: #a9a9ad;
+    --txt-strong: #ffffff;
+    --indicator: #DB0011;               /* FIX (Dave): core brand red — passes 1.4.11 at 3.46:1 on #161617, so keep brand red rather than lightening */
+    --hover: #202023;
+    --pressed: #2a2a2e;
+    --track: #2c2c30;
+    --menu-bg: #1b1b1d;
+    --menu-shadow: 0 8px 28px rgba(0,0,0,.6), 0 1px 3px rgba(0,0,0,.5);
+    --menu-sep: #2c2c30;
+    --focus: #4d9fff;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 2.5rem;
+    background: var(--page); color: var(--txt-strong);
+    font-family: var(--font); font-size: var(--fs); line-height: var(--lh);
+    -webkit-font-smoothing: antialiased;
+    transition: background var(--fade), color var(--fade);
+  }
+  .controls { margin-bottom: 2rem; display: flex; gap: .75rem; align-items: center; font-size: 14px; color: var(--txt); }
+  .controls button {
+    font: inherit; font-size: 14px; padding: 8px 14px; border-radius: 0; cursor: pointer;
+    border: 1px solid var(--track); background: var(--bar); color: var(--txt-strong);
+  }
+
+  /* ---- tab bar ---- */
+  .tabs { max-width: 640px; }
+  .tablist {
+    position: relative; display: flex; gap: var(--tab-gap);
+    background: var(--bar);
+    border-bottom: var(--track-h) solid var(--track);
+  }
+  .tab {
+    position: relative; appearance: none; border: 0; background: transparent;
+    font: inherit; font-weight: var(--weight-tab); color: var(--txt);
+    height: var(--tab-h); padding: 0 var(--tab-pad-x);
+    display: inline-flex; align-items: center; gap: 8px;
+    cursor: pointer; white-space: nowrap;
+    border-radius: 0;                    /* angular brand */
+    transition: color var(--fade), background var(--fade);
+  }
+  .tab:hover { background: var(--hover); color: var(--txt-strong); }
+  .tab:active { background: var(--pressed); }
+  .tab[aria-selected="true"] { color: var(--txt-strong); } /* FIX: selection shown by colour + indicator, NOT weight (no width jump) */
+  .tab:disabled { color: var(--txt); opacity: .4; cursor: not-allowed; }
+  .tab:focus-visible {
+    outline: 2px solid var(--focus); outline-offset: -3px;
+  }
+  /* count badge — DESIGN: shows the component handling richer content */
+  .tab .badge {
+    font-size: 12px; line-height: 1; font-weight: 600; padding: 3px 7px; border-radius: 999px; /* EXEMPTION (Dave): badge is fully round — angular rule does not apply to badge or avatar */
+    background: var(--badge-bg); color: var(--badge-txt);
+  }
+
+  /* sliding indicator — DESIGN: single element that animates between tabs */
+  .indicator {
+    position: absolute; bottom: calc(-1 * var(--track-h));
+    height: var(--indicator-h); background: var(--indicator);
+    border-radius: 0;
+    transition: left var(--move), width var(--move), background var(--fade);
+    will-change: left, width;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .indicator { transition: background var(--fade); }   /* DESIGN: respect reduced motion */
+    .panel { animation: none !important; }
+  }
+
+  /* ---- overflow ---- */
+  .overflow { position: relative; margin-left: auto; }
+  .overflow__trigger {
+    appearance: none; font: inherit; font-weight: var(--weight-tab);
+    height: var(--tab-h); padding: 0 16px; display: inline-flex; align-items: center; gap: 6px;
+    background: transparent; color: var(--txt); border: 0; cursor: pointer; border-radius: 0;
+  }
+  .overflow__trigger:hover { background: var(--hover); color: var(--txt-strong); }
+  .overflow__trigger:focus-visible { outline: 2px solid var(--focus); outline-offset: -3px; }
+  .overflow__menu {
+    position: absolute; right: 0; top: calc(100% + 6px); min-width: 220px;
+    background: var(--menu-bg); border-radius: var(--radius); box-shadow: var(--menu-shadow);
+    padding: 6px; margin: 0; list-style: none; z-index: 20;
+    opacity: 0; transform: translateY(-6px) scale(.98); pointer-events: none;
+    transition: opacity var(--fade), transform var(--fade);
+  }
+  .overflow__menu[data-open="true"] { opacity: 1; transform: none; pointer-events: auto; }
+  .overflow__item {
+    display: flex; width: 100%; align-items: center; text-align: left; appearance: none; border: 0;
+    background: transparent; color: var(--txt-strong); font: inherit; cursor: pointer;
+    padding: 12px 14px; min-height: 44px; border-radius: 0;
+  }
+  .overflow__item:hover { background: var(--hover); }
+  .overflow__item:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+
+  /* ---- panel ---- */
+  .panel { padding: 1.75rem .25rem; color: var(--txt-strong); animation: fade var(--fade); }
+  .panel[hidden] { display: none; }
+  .panel h2 { margin: 0 0 .5rem; font-size: 20px; }
+  .panel p { margin: 0; color: var(--txt); max-width: 52ch; }
+  @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+</style>
+</head>
+<body data-theme="light">
+
+  <div class="controls">
+    <button id="themeToggle" type="button">◐ Toggle theme</button>
+    <span>Route A — unconstrained, portfolio-grade Tabs</span>
+  </div>
+
+  <div class="tabs">
+    <div class="tablist" role="tablist" aria-label="Account views">
+      <button class="tab" role="tab" id="t1" aria-selected="true"  aria-controls="p1" tabindex="0">Overview</button>
+      <button class="tab" role="tab" id="t2" aria-selected="false" aria-controls="p2" tabindex="-1">Transactions <span class="badge">3</span></button>
+      <button class="tab" role="tab" id="t3" aria-selected="false" aria-controls="p3" tabindex="-1">Statements</button>
+      <button class="tab" role="tab" id="t4" aria-selected="false" aria-controls="p4" tabindex="-1" disabled>Settings</button>
+
+      <div class="overflow">
+        <button class="overflow__trigger" id="ovTrigger" aria-haspopup="true" aria-expanded="false" aria-label="More tabs">More ▾</button>
+        <ul class="overflow__menu" id="ovMenu" role="menu" aria-labelledby="ovTrigger">
+          <li><button class="overflow__item" role="menuitem">Documents</button></li>
+          <li><button class="overflow__item" role="menuitem">Alerts</button></li>
+          <li><button class="overflow__item" role="menuitem">Help</button></li>
+        </ul>
+      </div>
+
+      <span class="indicator" aria-hidden="true"></span>
+    </div>
+
+    <div class="panel" role="tabpanel" id="p1" aria-labelledby="t1" tabindex="0">
+      <h2>Overview</h2><p>A summary of balances, recent activity, and quick actions for the selected account.</p>
+    </div>
+    <div class="panel" role="tabpanel" id="p2" aria-labelledby="t2" tabindex="0" hidden>
+      <h2>Transactions</h2><p>Every debit and credit, searchable and filterable, with three items needing your review.</p>
+    </div>
+    <div class="panel" role="tabpanel" id="p3" aria-labelledby="t3" tabindex="0" hidden>
+      <h2>Statements</h2><p>Monthly and annual statements available to download as PDF.</p>
+    </div>
+    <div class="panel" role="tabpanel" id="p4" aria-labelledby="t4" tabindex="0" hidden>
+      <h2>Settings</h2><p>Account preferences. (This tab is shown disabled as a state demo.)</p>
+    </div>
+  </div>
+
+<script>
+  const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
+  const indicator = document.querySelector('.indicator');
+
+  function moveIndicator(tab) {
+    indicator.style.left = tab.offsetLeft + 'px';
+    indicator.style.width = tab.offsetWidth + 'px';
+  }
+  function select(tab) {
+    tabs.forEach(t => {
+      const sel = t === tab;
+      t.setAttribute('aria-selected', sel);
+      t.tabIndex = sel ? 0 : -1;
+      document.getElementById(t.getAttribute('aria-controls')).hidden = !sel;
+    });
+    moveIndicator(tab);
+  }
+  // Arrow-key navigation skips the disabled tab (DESIGN: robust keyboard model)
+  function focusables() { return tabs.filter(t => !t.disabled); }
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => !tab.disabled && select(tab));
+    tab.addEventListener('keydown', e => {
+      const list = focusables(); const i = list.indexOf(tab); let n = null;
+      if (e.key === 'ArrowRight') n = (i + 1) % list.length;
+      else if (e.key === 'ArrowLeft') n = (i - 1 + list.length) % list.length;
+      else if (e.key === 'Home') n = 0;
+      else if (e.key === 'End') n = list.length - 1;
+      if (n !== null) { e.preventDefault(); list[n].focus(); select(list[n]); }
+    });
+  });
+
+  // Overflow menu with basic keyboard support
+  const ovT = document.getElementById('ovTrigger'), ovM = document.getElementById('ovMenu');
+  const items = Array.from(ovM.querySelectorAll('[role="menuitem"]'));
+  function setMenu(open) {
+    ovM.setAttribute('data-open', String(open));
+    ovT.setAttribute('aria-expanded', String(open));
+    if (open) items[0].focus();
+  }
+  ovT.addEventListener('click', () => setMenu(ovM.getAttribute('data-open') !== 'true'));
+  ovT.addEventListener('keydown', e => { if (e.key === 'ArrowDown') { e.preventDefault(); setMenu(true); } });
+  ovM.addEventListener('keydown', e => {
+    const i = items.indexOf(document.activeElement);
+    if (e.key === 'ArrowDown') { e.preventDefault(); items[(i + 1) % items.length].focus(); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); items[(i - 1 + items.length) % items.length].focus(); }
+    else if (e.key === 'Escape') { setMenu(false); ovT.focus(); }
+  });
+  document.addEventListener('click', e => { if (!e.target.closest('.overflow')) setMenu(false); });
+
+  document.getElementById('themeToggle').addEventListener('click', () => {
+    const b = document.body;
+    b.setAttribute('data-theme', b.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  });
+
+  // init
+  const start = tabs.find(t => t.getAttribute('aria-selected') === 'true');
+  requestAnimationFrame(() => moveIndicator(start));
+  window.addEventListener('resize', () => {
+    const sel = tabs.find(t => t.getAttribute('aria-selected') === 'true');
+    if (sel) moveIndicator(sel);
+  });
+</script>
+</body>
+</html>

@@ -37,8 +37,24 @@
   "antiPatterns": [
     "Indicating the active tab by the red underline colour alone (add aria-selected)",
     "Using tabs for sequential steps (use a progress tracker / wizard)",
-    "Binding the selected indicator to the color/primary primitive instead of the mode-aware tabs/active token (loses dark mode — see tokenValidation)"
+    "Binding the selected indicator to the color/primary primitive instead of the mode-aware tabs/active token (loses dark mode — see tokenValidation)",
+    "Changing the tab label's font-weight on selection (changes width and makes tabs jump) — show selection via the indicator + colour, keep weight constant"
   ],
+  "motion": {
+    "selected-indicator": {
+      "behaviour": "The selected indicator slides horizontally to the active tab (animating left + width), rather than cutting instantly.",
+      "duration": "motion/duration/standard",
+      "easing": "motion/easing/standard",
+      "reducedMotion": "Under prefers-reduced-motion: reduce, disable the slide (indicator moves instantly); retain only the colour transition.",
+      "$confidence": "asserted — adopted from Route A fitness test 2026-06-19; tokens in tokens/motion.json"
+    },
+    "panel": {
+      "behaviour": "Panel content fades/translates in on tab change.",
+      "duration": "motion/duration/fade",
+      "easing": "motion/easing/standard",
+      "reducedMotion": "No panel animation under prefers-reduced-motion."
+    }
+  },
   "tokenValidation": {
     "date": "2026-06-18",
     "against": "token store re-based on Figma native variable export",

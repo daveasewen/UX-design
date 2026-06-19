@@ -2,7 +2,7 @@
 
 > CI gate over the authored canon. **ERROR** = the graph is inconsistent (fix before relying on it); **WARNING** = best-effort / probably fine but worth a look. Regenerate: `python3 knowledge/_build_integrity.py` (exits non-zero on any ERROR).
 
-**Result:** PASS ✅ — 0 errors, 17 warnings. Schema: 32/32 metas valid. Token store: 608 leaf tokens, groups 30.
+**Result:** PASS ✅ — 0 errors, 17 warnings. Schema: 32/32 metas valid. Token store: 614 leaf tokens, groups 31.
 
 ## Errors (0)
 
