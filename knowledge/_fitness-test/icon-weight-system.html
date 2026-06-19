@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Icon line-weight ↔ font-weight — concept</title>
+<!--
+  CONCEPT (not canon): apply the cross's principle to icons generally — an icon's line weight
+  mirrors the adjacent font weight (so icons read as type-family members), held CONSTANT as the
+  icon scales (vector-effect:non-scaling-stroke). Works ONLY on OUTLINE/stroke icons. The current
+  HSBC set is mostly FILLED, so these are GENERIC outline icons drawn to demonstrate the system —
+  real adoption needs outline icon artwork. One variable (--is) sets the whole family's weight.
+-->
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; }
+  body[data-theme="light"]{ --page:#f4f4f5; --ink:#1b1b1d; --muted:#6a6a70; --card:#fff; --edge:#e7e7ea; --icon:#1b1b1d; }
+  body[data-theme="dark"]{ --page:#0b0b0c; --ink:#f3f3f4; --muted:#9a9aa0; --card:#161616; --edge:#27272b; --icon:#f3f3f4; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:34px clamp(20px,4vw,52px); font-family:var(--font); background:var(--page); color:var(--ink); -webkit-font-smoothing:antialiased;}
+  header{display:flex; justify-content:space-between; align-items:flex-start; gap:24px; margin-bottom:22px;}
+  h1{font-size:20px; margin:0 0 6px;} header p{margin:0; color:var(--muted); font-size:13.5px; max-width:66ch;}
+  .toggle{flex:none; cursor:pointer; font:inherit; font-size:13px; font-weight:600; color:var(--ink); background:var(--card); border:1px solid var(--edge); padding:9px 14px; border-radius:999px;}
+  .matrix{background:var(--card); border:1px solid var(--edge); border-radius:14px; padding:26px; display:grid; grid-template-columns:auto repeat(4,1fr); gap:20px 30px; align-items:center; justify-items:start;}
+  .colh{font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--muted);}
+  .rowh{font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--muted);}
+  .sample{font-size:24px;}
+  .ico{color:var(--icon); display:inline-flex;}
+  .ico svg{width:30px; height:30px; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round;}
+  .ico svg *{stroke-width:var(--is,2); vector-effect:non-scaling-stroke;}   /* constant line weight, set by --is */
+  /* weight → matching icon line weight + the sample text weight */
+  .w-light  {--is:1.3; font-weight:300;}
+  .w-regular{--is:1.7; font-weight:400;}
+  .w-medium {--is:2.1; font-weight:500;}
+  .w-bold   {--is:2.7; font-weight:700;}
+</style>
+</head>
+<body data-theme="light">
+  <header><div><h1>Icon line-weight ↔ font-weight</h1><p>Each column is a weight; one variable <code>--is</code> sets both the sample text weight and the icons' line weight, so they read as one family. Lines are <code>non-scaling-stroke</code> so they stay consistent at any size. Generic outline icons — concept only.</p></div>
+    <button class="toggle" id="t" type="button">◐ Dark</button></header>
+
+  <div class="matrix" id="m">
+    <span></span>
+    <span class="colh">Light · 300</span><span class="colh">Regular · 400</span><span class="colh">Medium · 500</span><span class="colh">Bold · 700</span>
+  </div>
+
+  <script>
+    document.getElementById('t').addEventListener('click', e=>{const b=document.body,d=b.getAttribute('data-theme')==='dark';b.setAttribute('data-theme',d?'light':'dark');e.target.textContent=d?'◐ Dark':'◐ Light';});
+    const W=[['Light','w-light'],['Regular','w-regular'],['Medium','w-medium'],['Bold','w-bold']];
+    const ICONS={
+      'Type':'<span class="sample">Filter</span>',
+      'Close':'<svg viewBox="0 0 24 24"><path d="M6 6 L18 18 M18 6 L6 18"/></svg>',
+      'Plus':'<svg viewBox="0 0 24 24"><path d="M12 5 V19 M5 12 H19"/></svg>',
+      'Check':'<svg viewBox="0 0 24 24"><path d="M5 13 l4 4 L19 6"/></svg>',
+      'Chevron':'<svg viewBox="0 0 24 24"><path d="M9 6 l6 6 l-6 6"/></svg>',
+      'Search':'<svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15 L20 20"/></svg>',
+      'Arrow':'<svg viewBox="0 0 24 24"><path d="M4 12 H19 M13 6 l6 6 l-6 6"/></svg>',
+      'Info':'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11 V16.5"/><circle cx="12" cy="7.8" r=".2"/></svg>'
+    };
+    const m=document.getElementById('m');
+    Object.entries(ICONS).forEach(([name,svg])=>{
+      const rh=document.createElement('span'); rh.className='rowh'; rh.textContent=name; m.appendChild(rh);
+      W.forEach(([_,wc])=>{ const cell=document.createElement('span'); cell.className=(name==='Type'?'':'ico ')+wc; cell.innerHTML=svg; m.appendChild(cell); });
+    });
+  </script>
+</body>
+</html>

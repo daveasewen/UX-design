@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tags — cross line-weight ↔ font-weight test</title>
+<!--
+  Test: make the × cross's line weight reflect the label's FONT WEIGHT, so the icon reads as
+  part of the type family. stroke-width is in the SVG viewBox units → its VALUE expresses weight,
+  while the em-sized SVG expresses SIZE. So each chip's cross tracks both, automatically.
+  Rows = weight (light→bold), columns = size. --xw is the per-weight stroke value.
+-->
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; }
+  body[data-theme="light"]{ --page:#f4f4f5; --ink:#1b1b1d; --muted:#6a6a70; --card:#fff; --edge:#e7e7ea; --border:#767676; --text:#333; --icon:#333; }
+  body[data-theme="dark"]{ --page:#0b0b0c; --ink:#f3f3f4; --muted:#9a9aa0; --card:#161616; --edge:#27272b; --border:#656565; --text:#fff; --icon:#fff; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:34px clamp(20px,4vw,52px); font-family:var(--font); background:var(--page); color:var(--ink); -webkit-font-smoothing:antialiased;}
+  header{display:flex; justify-content:space-between; align-items:flex-start; gap:24px; margin-bottom:24px;}
+  h1{font-size:20px; margin:0 0 6px;} header p{margin:0; color:var(--muted); font-size:13.5px; max-width:64ch;}
+  .toggle{flex:none; cursor:pointer; font:inherit; font-size:13px; font-weight:600; color:var(--ink); background:var(--card); border:1px solid var(--edge); padding:9px 14px; border-radius:999px;}
+  .matrix{background:var(--card); border:1px solid var(--edge); border-radius:14px; padding:24px; display:grid; grid-template-columns:auto repeat(3,1fr); gap:22px 28px; align-items:center;}
+  .colh, .rowh{font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--muted);}
+  .rowh{justify-self:start;}
+  .cell{display:flex; align-items:center;}
+
+  .chip{display:inline-flex; align-items:center; gap:.46em; height:2.15em; padding:0 .77em; border:1px solid var(--border); border-radius:0;
+    background:transparent; color:var(--text); line-height:1; white-space:nowrap;}
+  .chip .x{display:inline-flex; font-size:inherit; width:1.54em; height:1.54em; border:0; background:transparent; color:var(--icon); cursor:pointer; align-items:center; justify-content:center;
+    transition:transform 130ms cubic-bezier(.4,0,.2,1);}
+  .chip .x:hover{transform:scale(1.4);} .chip .x:active{transform:scale(1.15);}
+  .chip .x svg{width:.85em; height:.85em; fill:none; stroke:currentColor;}
+  .chip .x svg path{stroke-width:var(--xw,2);}
+  /* CONSTANT mode: line weight stays put as the cross scales — only the X grows, the stroke doesn't thicken */
+  .matrix.constant .chip .x svg path{vector-effect:non-scaling-stroke;}
+
+  /* weight → cross stroke value (viewBox units). Tuned to feel like the type. */
+  .w-light  {font-weight:300; --xw:1.3;}
+  .w-regular{font-weight:400; --xw:1.8;}
+  .w-medium {font-weight:500; --xw:2.4;}
+  .w-bold   {font-weight:700; --xw:3.1;}
+  .s-sm{font-size:13px;} .s-md{font-size:16px;} .s-lg{font-size:21px;}
+</style>
+</head>
+<body data-theme="light">
+  <header><div><h1>Cross line-weight ↔ font-weight</h1><p>Each chip's × stroke reflects the label's font weight (so the icon feels like a type-family member), and scales with size automatically. Rows = weight, columns = size. Tune the weight→stroke map in one place.</p></div>
+    <div style="display:flex; gap:10px; flex:none;"><button class="toggle" id="ln" type="button">◫ Line: scales</button><button class="toggle" id="t" type="button">◐ Dark</button></div></header>
+
+  <div class="matrix" id="m">
+    <span></span><span class="colh">Small · 13px</span><span class="colh">Medium · 16px</span><span class="colh">Large · 21px</span>
+  </div>
+
+  <script>
+    document.getElementById('t').addEventListener('click', e=>{const b=document.body,d=b.getAttribute('data-theme')==='dark';b.setAttribute('data-theme',d?'light':'dark');e.target.textContent=d?'◐ Dark':'◐ Light';});
+    document.getElementById('ln').addEventListener('click', e=>{ const on=document.getElementById('m').classList.toggle('constant'); e.target.textContent= on?'◫ Line: constant':'◫ Line: scales'; });
+    const X='<button class="x" aria-label="Remove"><svg viewBox="0 0 12 12"><path d="M1 1 L11 11 M11 1 L1 11"/></svg></button>';
+    const weights=[['Light','w-light'],['Regular','w-regular'],['Medium','w-medium'],['Bold','w-bold']];
+    const sizes=['s-sm','s-md','s-lg'];
+    const m=document.getElementById('m');
+    weights.forEach(([name,wc])=>{
+      const rh=document.createElement('span'); rh.className='rowh'; rh.textContent=name; m.appendChild(rh);
+      sizes.forEach(sc=>{ const cell=document.createElement('div'); cell.className='cell';
+        cell.innerHTML='<span class="chip '+wc+' '+sc+'">Filter '+X+'</span>'; m.appendChild(cell); });
+    });
+  </script>
+</body>
+</html>

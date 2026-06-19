@@ -3,15 +3,59 @@
   "category": "atom",
   "purpose": "Represents a user or entity in a compact, typically circular form. Three content variants — an uploaded image, the user's initials, or a placeholder icon — in three sizes, with on-light and on-dark treatments.",
   "props": [
-    { "name": "variant", "type": "enum", "values": ["initials", "image", "icon"], "default": "initials" },
-    { "name": "size", "type": "enum", "values": ["small", "medium", "large"], "default": "medium", "$note": "small 36px, medium 44px, large 56px" },
-    { "name": "state", "type": "enum", "values": ["default", "disabled"], "default": "default" },
-    { "name": "surface", "type": "enum", "values": ["on-light", "on-dark"], "default": "on-light" }
+    {
+      "name": "variant",
+      "type": "enum",
+      "values": [
+        "initials",
+        "image",
+        "icon"
+      ],
+      "default": "initials"
+    },
+    {
+      "name": "size",
+      "type": "enum",
+      "values": [
+        "small",
+        "medium",
+        "large"
+      ],
+      "default": "medium",
+      "$note": "small 36px, medium 44px, large 56px"
+    },
+    {
+      "name": "state",
+      "type": "enum",
+      "values": [
+        "default",
+        "disabled"
+      ],
+      "default": "default"
+    },
+    {
+      "name": "surface",
+      "type": "enum",
+      "values": [
+        "on-light",
+        "on-dark"
+      ],
+      "default": "on-light"
+    }
   ],
   "variants": [
-    { "name": "image", "use": "Avatar showing an uploaded photo; image opacity 100% default / 20% disabled (image/opacity tokens)." },
-    { "name": "initials", "use": "Avatar showing the user's initials in medium-weight text on a subtle surface." },
-    { "name": "icon", "use": "Placeholder avatar showing a generic person icon when no image/initials available." }
+    {
+      "name": "image",
+      "use": "Avatar showing an uploaded photo; image opacity 100% default / 20% disabled (image/opacity tokens)."
+    },
+    {
+      "name": "initials",
+      "use": "Avatar showing the user's initials in medium-weight text on a subtle surface."
+    },
+    {
+      "name": "icon",
+      "use": "Placeholder avatar showing a generic person icon when no image/initials available."
+    }
   ],
   "tokens": {
     "on-light": {
@@ -33,12 +77,25 @@
     "image-opacity-default": "image/opacity/default",
     "image-opacity-disabled": "image/opacity/disabled",
     "text-weight": "typography/font-weight/medium",
-    "font-family": "typography/font-family/default"
+    "font-family": "typography/font-family/default",
+    "$finding": "(2026-06-19) Avatar is ROUND (angular-rule exemption, with Badge). Deprecated non-interactive surface/border rebind to live tertiary/background/hover (surface) + border/subtle (ring). Initials = text/default; interactive avatars need a focus ring (2.4.7)."
   },
   "relationships": {
-    "livesInside": ["Navigation", "Header", "List item", "Card", "Comment", "Menu"],
+    "livesInside": [
+      "Navigation",
+      "Header",
+      "List item",
+      "Card",
+      "Comment",
+      "Menu"
+    ],
     "mustNotNeighbour": [],
-    "commonPatterns": ["user menu trigger", "comment/author byline", "account switcher", "contact list"]
+    "commonPatterns": [
+      "user menu trigger",
+      "comment/author byline",
+      "account switcher",
+      "contact list"
+    ]
   },
   "accessibility": {
     "targetArea": "Minimum tappable target area 44 × 44px",
@@ -46,7 +103,13 @@
     "textSize": "Must not break when font size is increased to 400%",
     "pinchZoom": "Must not disable browser pinch-and-zoom",
     "general": "Adhere to the HSBC Accessibility Framework (create.hsbc/Guidelines/Accessibility.html); new dev reviewed by Brand Design Team",
-    "relatedSC": ["2.4.7 Focus Visible", "2.5.8 Target Size (Minimum)", "1.4.4 Resize Text", "1.4.10 Reflow", "1.1.1 Non-text Content"],
+    "relatedSC": [
+      "2.4.7 Focus Visible",
+      "2.5.8 Target Size (Minimum)",
+      "1.4.4 Resize Text",
+      "1.4.10 Reflow",
+      "1.1.1 Non-text Content"
+    ],
     "screenReader": "REVIEW (inferred): image/icon avatars need an accessible name (e.g. the person's name) or be marked decorative if adjacent text already names them"
   },
   "antiPatterns": [
@@ -68,7 +131,10 @@
         "icon/on-dark (depricate)/disabled (#767676)"
       ],
       "blocker": "ALL six are confidence=review in the replacement map — no live semantic token shares their values. So they CANNOT be auto-rebound. The live semantic layer appears to be MISSING a subtle surface + border family (and on-dark disabled text/icon) that Avatar depends on. These deprecated tokens MUST NOT be bulk-deleted until live equivalents are created and Avatar is rebound — otherwise Avatar's fill/border/disabled states detach. Escalate to Dave / the Sutherland remap.",
-      "components": ["On Light: Avatar (2136:31172)", "On Dark: Avatar (2136:31221)"]
+      "components": [
+        "On Light: Avatar (2136:31172)",
+        "On Dark: Avatar (2136:31221)"
+      ]
     },
     "ignored": "specs/* (specs-surface-white, specs-component-stroke #7B61FF, specs-focus-stroke #2278CE, specs-target-area #FF99FF) are Figma annotation scaffolding, not component tokens."
   },

@@ -20,11 +20,11 @@ Change one of these and the listed number of components is affected. Use before 
 | `color/primary` | 7 | Badge, Cards, Hero, Links, List items, Navigations… |
 | `divider/border/subsection` | 7 | Divider, Dropdown, Input fields, Navigations, Pagination, Search field… |
 | `elevation/functional` | 7 | Dropdown, Input fields, Navigations, Notifications, Search field, Tabs… |
+| `form/border/default` | 7 | Dropdown, Input fields, Search field, Selection controls, Slider, Tags… |
+| `tertiary/background/hover` | 7 | Accordion, Avatar, Button, Cards, Reorder, Slider… |
+| `border/subtle` | 6 | Accordion, Avatar, Cards, Hero, Navigations, Slider |
 | `divider/border/section` | 6 | Divider, Dropdown, List items, Pagination, Tabs, Tooltip |
-| `form/border/default` | 6 | Dropdown, Input fields, Search field, Selection controls, Slider, View options |
 | `primary/background/default` | 6 | Badge, Button, Hero, Links, Modals, Video player |
-| `tertiary/background/default` | 6 | Button, Cards, List items, Search field, Tabs, View options |
-| `tertiary/background/hover` | 6 | Accordion, Button, Cards, Reorder, Slider, Tabs |
 
 ## Token-group reach (components using each group)
 
@@ -32,17 +32,17 @@ Change one of these and the listed number of components is affected. Use before 
 |---|---|
 | `text/` | 30 |
 | `icon/` | 22 |
-| `tertiary/` | 13 |
+| `tertiary/` | 14 |
 | `background/` | 13 |
 | `divider/` | 9 |
+| `form/` | 9 |
 | `rag/` | 8 |
-| `form/` | 8 |
 | `padding/` | 7 |
 | `primary/` | 7 |
 | `color/` | 7 |
 | `elevation/` | 7 |
+| `border/` | 6 |
 | `typography/` | 6 |
-| `border/` | 5 |
 | `secondary/` | 3 |
 | `scrollbar/` | 3 |
 | `blur/` | 3 |

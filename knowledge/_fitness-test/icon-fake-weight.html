@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fake icon weight via in/out stroke — concept</title>
+<!--
+  CONCEPT (Dave's idea): fake a weight axis on the existing FILLED HSBC icons without re-authoring,
+  by adding a stroke to the filled path. SVG strokes straddle the edge:
+    • stroke = icon colour  → outer half extends the fill → HEAVIER
+    • stroke = background colour → inner half erodes the fill → LIGHTER
+  Stroke width sets how much. Real HSBC icon (help.svg) shown across sizes + a matching-weight label.
+  CAVEAT: the "lighter" trick needs a SOLID, KNOWN background (the bg-colour stroke is invisible only
+  against that colour) — it won't work over imagery/gradients.
+-->
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; }
+  body[data-theme="light"]{ --page:#ffffff; --ink:#1b1b1d; --muted:#6a6a70; --bar:#f4f4f5; --edge:#e7e7ea; }
+  body[data-theme="dark"]{ --page:#0b0b0c; --ink:#f3f3f4; --muted:#9a9aa0; --bar:#161616; --edge:#27272b; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:34px clamp(20px,4vw,52px); font-family:var(--font); background:var(--page); color:var(--ink); -webkit-font-smoothing:antialiased;}
+  header{margin-bottom:18px;} h1{font-size:20px; margin:0 0 6px;} p.lead{margin:0; color:var(--muted); font-size:13.5px; max-width:66ch;}
+  .controls{display:flex; gap:8px; flex-wrap:wrap; margin:18px 0 26px;}
+  .controls button{font:inherit; font-size:13px; padding:8px 13px; border:1px solid var(--edge); background:var(--bar); color:var(--ink); cursor:pointer;}
+  .controls button.on{background:var(--ink); color:var(--page); border-color:var(--ink);}
+  .stage{display:flex; align-items:center; gap:40px; flex-wrap:wrap;}
+  .ico{color:var(--ink); display:inline-flex; align-items:center;}
+  .ico svg{display:block;}
+  .ico.s1 svg{width:28px; height:28px;} .ico.s2 svg{width:48px; height:48px;} .ico.s3 svg{width:80px; height:80px;}
+  .sample{font-size:34px;}
+  /* the weight axis — applied to the FILLED path. stroke scales with the icon (proportional weight). */
+  .ico svg path{ fill:currentColor; }
+  body.w-light  .ico svg path{ stroke:var(--page); stroke-width:.75; }   /* erode → lighter */
+  body.w-regular .ico svg path{ stroke:none; }                            /* native */
+  body.w-medium .ico svg path{ stroke:currentColor; stroke-width:.5; }    /* extend → a bit heavier */
+  body.w-bold   .ico svg path{ stroke:currentColor; stroke-width:1.2; }   /* extend → heavier */
+  body.w-light  .sample{font-weight:300;} body.w-regular .sample{font-weight:400;} body.w-medium .sample{font-weight:500;} body.w-bold .sample{font-weight:700;}
+</style>
+</head>
+<body data-theme="light" class="w-regular">
+  <header><h1>Fake icon weight — in/out stroke on a filled icon</h1>
+    <p class="lead">Same real HSBC icon (<code>help.svg</code>), no re-drawing. Pick a weight: <b>Light</b> adds a background-coloured stroke (erodes the line), <b>Medium/Bold</b> add an icon-coloured stroke (extends it). The label matches. Toggle theme to confirm the erode-stroke tracks the background.</p></header>
+
+  <div class="controls">
+    <button data-w="w-light">Light</button>
+    <button data-w="w-regular" class="on">Regular</button>
+    <button data-w="w-medium">Medium</button>
+    <button data-w="w-bold">Bold</button>
+    <button id="theme" style="margin-left:16px;">◐ Theme</button>
+  </div>
+
+  <div class="stage">
+    <span class="sample">Filter</span>
+    <span class="ico s1">__I__</span>
+    <span class="ico s2">__I__</span>
+    <span class="ico s3">__I__</span>
+  </div>
+
+  <script>
+    const ICON='<svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.029 0 0 4.03 0 9C0 13.97 4.029 18 9 18C13.971 18 18 13.97 18 9C18 4.03 13.971 0 9 0ZM9 16.8C4.699 16.8 1.2 13.301 1.2 9C1.2 4.699 4.699 1.2 9 1.2C13.301 1.2 16.8 4.699 16.8 9C16.8 13.301 13.301 16.8 9 16.8ZM8.999 12.5C8.447 12.5 7.999 12.948 7.999 13.5C7.999 14.052 8.447 14.5 8.999 14.5C9.551 14.5 9.999 14.052 9.999 13.5C9.999 12.948 9.552 12.5 8.999 12.5ZM9.604 3.539C8.75 3.363 7.875 3.569 7.207 4.113C6.54 4.656 6.157 5.46 6.157 6.319H7.357C7.357 5.823 7.578 5.358 7.964 5.044C8.356 4.726 8.851 4.607 9.36 4.714C9.996 4.847 10.514 5.391 10.62 6.037C10.709 6.575 10.542 7.101 10.162 7.48L9.013 8.629C8.75 8.894 8.4 9.324 8.4 10.011V11H9.6V10.011C9.6 9.835 9.642 9.699 9.862 9.478L11.01 8.33C11.667 7.674 11.956 6.768 11.804 5.842C11.616 4.7 10.732 3.775 9.604 3.539Z" fill="currentColor"/></svg>';
+    document.querySelectorAll('.ico').forEach(i=> i.innerHTML=ICON);
+    const body=document.body;
+    document.querySelectorAll('.controls [data-w]').forEach(b=> b.addEventListener('click', ()=>{
+      body.className=body.className.replace(/w-\w+/,'').trim()+' '+b.dataset.w;
+      document.querySelectorAll('.controls [data-w]').forEach(x=>x.classList.toggle('on', x===b));
+    }));
+    document.getElementById('theme').addEventListener('click', ()=>{ body.setAttribute('data-theme', body.getAttribute('data-theme')==='dark'?'light':'dark'); });
+  </script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tags — reference implementation (gated)</title>
+<!--
+  CANONICAL REFERENCE for Tags (gated). SQUARE chips — Tags are NOT an angular-rule exemption
+  (only Badge + Avatar are), so border-radius:0. Outlined (form/border/default) on a transparent
+  fill — avoids the deprecated non-interactive surface tokens the meta still binds (rebind noted).
+  Variants: static, dismissible (× is a real focusable button), and link.
+-->
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
+  [data-theme="light"]{ --border:#767676; --text:#333333; --icon:#333333; --hover:#F3F3F3; --focus:#305A85; --page:#FFFFFF; }
+  [data-theme="dark"]{ --border:#656565; --text:#FFFFFF; --icon:#FFFFFF; --hover:#212121; --focus:#4587A7; --page:#000000; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:1.75rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 14px; border:1px solid var(--border); background:transparent; color:var(--text); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  h2{font-size:12px; letter-spacing:.04em; text-transform:uppercase; opacity:.55; margin:1.5rem 0 .8rem;}
+  .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+  .tag{display:inline-flex; align-items:center; gap:6px; height:28px; padding:0 10px; border:1px solid var(--border); border-radius:0; /* SQUARE */
+    background:transparent; color:var(--text); font:400 13px/1 var(--font);}
+  .tag.link{cursor:pointer; text-decoration:none;}
+  .tag.link:hover{background:var(--hover);}
+  .tag.link:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .tag .x{display:inline-flex; width:16px; height:16px; padding:0; border:0; background:transparent; color:var(--icon); cursor:pointer; align-items:center; justify-content:center;}
+  .tag .x svg{width:11px; height:11px; stroke:currentColor; stroke-width:2; fill:none;}
+  .tag .x:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Tags — canonical reference (square)</span></div>
+
+  <h2>Static</h2>
+  <div class="row"><span class="tag">Savings</span><span class="tag">Direct debit</span><span class="tag">Joint account</span></div>
+
+  <h2>Dismissible</h2>
+  <div class="row" id="dismissRow">
+    <span class="tag">Filter: GBP <button class="x" aria-label="Remove filter: GBP"><svg viewBox="0 0 12 12"><path d="M1 1 L11 11 M11 1 L1 11"/></svg></button></span>
+    <span class="tag">Filter: Last 30 days <button class="x" aria-label="Remove filter: Last 30 days"><svg viewBox="0 0 12 12"><path d="M1 1 L11 11 M11 1 L1 11"/></svg></button></span>
+  </div>
+
+  <h2>Link</h2>
+  <div class="row"><a class="tag link" href="#">#travel</a><a class="tag link" href="#">#mortgage</a></div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Tags",
+    "vars": { "--border": "form/border/default", "--text": "text/default", "--icon": "icon/default", "--hover": "form/background/hover", "--page": "background/default" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "form/border/default", "bg": "background/default", "context": "ui" }
+    ],
+    "requiredAria": ["aria-label", "<a ", "href"]
+  }
+  </script>
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    document.querySelectorAll('.tag .x').forEach(x=> x.addEventListener('click', ()=> x.closest('.tag').remove()));
+  </script>
+</body>
+</html>

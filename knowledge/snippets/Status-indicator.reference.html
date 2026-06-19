@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Status indicator — reference implementation (gated)</title>
+<!--
+  CANONICAL REFERENCE for Status indicator (gated). A coloured dot + a text LABEL.
+  Colour is never the only signal (1.4.1) — the label carries meaning, so the dot is
+  supplementary. NOTE/finding: rag/warning (#FFBB33) is only ~1.6:1 on a white page,
+  so the amber dot fails 1.4.11 (3:1) in light mode — acceptable only because the label
+  conveys the status; if a dot must stand alone it needs an outline or an icon.
+  Passive component — dots are aria-hidden, the label is the accessible text.
+-->
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
+  [data-theme="light"]{ --success:#00847F; --warning:#FFBB33; --error:#A8000B; --neutral:#767676; --info:#305A85;
+    --label:#333333; --disabled:#D7D8D6; --page:#FFFFFF; }
+  [data-theme="dark"]{ --success:#00847F; --warning:#FFBB33; --error:#DB0011; --neutral:#FFFFFF; --info:#4587A7;
+    --label:#FFFFFF; --disabled:#767676; --page:#000000; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--label);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:1.75rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 14px; border:1px solid var(--neutral); background:transparent; color:var(--label); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--label); outline-offset:2px;}
+  .stat{display:flex; align-items:center; gap:10px; margin:14px 0; font:400 15px/1.3 var(--font);}
+  .dot{width:12px; height:12px; border-radius:50%; flex:none;}
+  .ok .dot{background:var(--success);} .warn .dot{background:var(--warning);} .err .dot{background:var(--error);}
+  .neu .dot{background:var(--neutral);} .inf .dot{background:var(--info);}
+  .stat.is-disabled{color:var(--disabled);} .stat.is-disabled .dot{opacity:.4;}
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Status indicator — canonical reference</span></div>
+
+  <div class="stat ok"><span class="dot" aria-hidden="true"></span><span>Approved</span></div>
+  <div class="stat warn"><span class="dot" aria-hidden="true"></span><span>Pending review</span></div>
+  <div class="stat err"><span class="dot" aria-hidden="true"></span><span>Declined</span></div>
+  <div class="stat inf"><span class="dot" aria-hidden="true"></span><span>In progress</span></div>
+  <div class="stat neu"><span class="dot" aria-hidden="true"></span><span>Cancelled</span></div>
+  <div class="stat ok is-disabled"><span class="dot" aria-hidden="true"></span><span>Approved (disabled)</span></div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Status indicator",
+    "vars": {
+      "--success": "rag/success", "--warning": "rag/warning", "--error": "rag/error",
+      "--neutral": "rag/neutral", "--info": "rag/information",
+      "--label": "text/default", "--disabled": "text/disabled", "--page": "background/default"
+    },
+    "contrastPairs": [
+      { "fg": "text/default",     "bg": "background/default", "context": "text" },
+      { "fg": "rag/success",      "bg": "background/default", "context": "ui" },
+      { "fg": "rag/error",        "bg": "background/default", "context": "ui" },
+      { "fg": "rag/information",  "bg": "background/default", "context": "ui" }
+    ],
+    "requiredAria": ["aria-hidden"]
+  }
+  </script>
+  <script>document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });</script>
+</body>
+</html>
