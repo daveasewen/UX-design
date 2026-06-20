@@ -21,7 +21,7 @@ Unused ≠ wrong. Breakdown:
 
 **b) Pending wire-in — tracked (2):** `tabs/hover`, `tabs/pressed` — added in fix #7 for the Tabs rewire; the Tabs snippet still binds primitives. Action already in `_FINDINGS-INDEX.md` (Tabs rewire / Figma write-back).
 
-**c) Intentional snippet rebind — reconcile or deprecate (2):** `tooltip/background`, `tooltip/border`. The gated Tooltip deliberately uses `background/default` + `elevation/border` instead, because the meta-bound `tooltip/*` had a near-invisible dark border (~1.3:1). **Decision for Dave:** either fix the `tooltip/*` dark values and rebind the snippet to them, or deprecate `tooltip/*` in favour of the elevation pattern.
+**c) Intentional snippet rebind — RESOLVED (2):** `tooltip/background`, `tooltip/border`. The gated Tooltip deliberately uses `background/default` + `elevation/border` instead, because the meta-bound `tooltip/*` had a near-invisible dark border (~1.3:1). **Decision (Dave, 2026-06-20): DEPRECATE `tooltip/*` in favour of the elevation pattern.** Both tokens are now `$deprecated` in `semantic-colour.json` (orphans, 0 references); queued for bulk-delete with the Sutherland migration. No snippet/appearance change.
 
 **d) Deprecation-review candidates (8):** button border-state tokens `primary/border/{hover,pressed,disabled}`, `secondary/border/{hover,pressed,disabled}`, `form/border/pressed` — HSBC buttons are filled and don't render border emphasis per-state, so these may be genuinely dead. Plus `tertiary/text/disabled`, `elevation/decorative`, `border/strong` (general-purpose, currently unused by any gated snippet). **Decision for Dave:** confirm dead → move to the deprecation manifest, or keep as reserved.
 

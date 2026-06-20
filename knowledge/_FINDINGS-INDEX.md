@@ -79,6 +79,9 @@ Recurring sets: `interactive(depricate)/on-light/surface/primary/*` (list/nav/qu
   geometry (`layout.json` focus/ring-width|offset) from `review`→`asserted`; guideline status flipped to CANON.
   Fixed a `layout/focus/*`→`focus/*` path typo in `tabs.meta` (the path was wrong, not the token). Integrity
   warnings now **1** (was 3): only the intentional Modals Figma-name note remains.
+- **`tooltip/*` deprecated (Dave, 2026-06-20)** — `tooltip/background` + `tooltip/border` marked `$deprecated`
+  in `semantic-colour.json` in favour of the elevation pattern. Orphan tokens (0 refs); no snippet/appearance
+  change; queued for bulk-delete with Sutherland. Audit §c marked RESOLVED.
 
 ## 6. Open items needing Dave (consolidated)
 - **DECIDE:** `text/secondary` values (V1), inverting-label canon, `rag/warning` standalone-dot rule. (`focus/ring` ✅ signed off 2026-06-20 — see §2.)
@@ -86,8 +89,8 @@ Recurring sets: `interactive(depricate)/on-light/surface/primary/*` (list/nav/qu
 - **PARKED:** deprecated-binding migration (§4) → Sutherland; Figma dark write-back → pending go-ahead.
 - **TOKEN HYGIENE (from `_DESIGN-SYSTEM-AUDIT.md`):** confirm 8 dead button-border/misc tokens; verify the
   `subsectionInset` camelCase against Figma. Bundle with Sutherland (real usage confirms what's actually consumed).
-- **DECIDE — `tooltip/*` deprecation (re-assessed 2026-06-20):** the gated Tooltip uses the mode-aware **elevation
-  pattern** (shadow in light, `elevation/border` outline in dark) — same as Dropdown. The dedicated `tooltip/background`
-  + `tooltip/border` tokens are redundant with it, and *adopting* them would change appearance (dark surface
-  #000→#1D1D1D, a border appearing in light) — so this is NOT a silent fix. **Recommendation: deprecate `tooltip/*`**
-  in favour of the elevation pattern. Needs Dave's confirm (or a deliberate choice to make the tooltip a raised surface).
+- **`tooltip/*` deprecation — ✅ DECIDED (Dave, 2026-06-20): DEPRECATE** in favour of the mode-aware elevation
+  pattern (shadow in light, `elevation/border` outline in dark — same as Dropdown). `tooltip/background` +
+  `tooltip/border` are now `$deprecated` in `semantic-colour.json` (orphan tokens, 0 references); queued for
+  bulk-delete with the Sutherland migration. No snippet/appearance change — the gated Tooltip already binds
+  `background/default` + `elevation/border` + `elevation/functional`.
