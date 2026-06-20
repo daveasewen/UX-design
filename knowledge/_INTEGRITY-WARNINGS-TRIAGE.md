@@ -26,12 +26,15 @@ Status indicator, Tags (×4), View options.
 - **Hero** — `blur/surface (… radius blur/background-surface = 12)` was loose shorthand; the real
   token `blur/background-surface` was already named beside it. Dropped the shorthand.
 
-## Residual (3) — intentional, left as-is (worth a glance, not defects)
+## Residual (1) — intentional, left as-is (worth a glance, not a defect)
 - **Modals `overlay/background-blur`** — the prose explicitly documents the *Figma* name and says
   it resolves to the store token. Informational mapping note; left verbatim.
-- **Tabs `layout/focus/ring-width`, `layout/focus/ring-offset`** — these are the **proposed**
-  focus-ring tokens, not yet in the store. They track the lane-C `focus/ring` sign-off
-  (`_FINDINGS-INDEX.md §6`). Leave until that decision lands; warning is the correct signal.
+
+## Update 2026-06-20 — Tabs focus warnings resolved
+The two Tabs warnings (`layout/focus/ring-width`, `layout/focus/ring-offset`) were a **wrong prefix**,
+not missing tokens: the geometry lives at `focus/ring-width|offset` (layout.json's `focus` block roots
+at `focus/…`, not `layout/focus/…`). With `focus/ring` now **signed off as canon** (Dave, 2026-06-20),
+the `tabs.meta` prose + tokenValidation paths were corrected to `focus/ring-*`. Warnings: 3 → **1**.
 
 ## Verification
-`python3 _build_all.py` → EXIT 0; integrity PASS — 0 errors, **3** warnings (was 20); schema 32/32.
+`python3 _build_all.py` → EXIT 0; integrity PASS — 0 errors, **1** warning (was 20); schema 32/32.

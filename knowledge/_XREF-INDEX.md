@@ -35,7 +35,7 @@
 | Slider | mol | 9 | background/default, border/default, background/default, background/hover… | 1.4.1, 2.1.1, 2.5.7, 2.5.8, 4.1.2 | forms | 1 |
 | Status indicator | ato | 9 | text/default, text/disabled | 1.4.1, 1.4.11, 1.4.3, 4.1.3 | tone-of-voice, time-based-indicators, icons | 1 |
 | Table | org | 5 | background/default, text/default | 1.3.1, 1.3.2, 1.4.10 | horizontal-scroll, typography-usage, view-controls-sort |  |
-| Tabs | mol | 12 | background/default, color/primary, border/subsection, elevation/functional… | 1.3.1, 1.4.1, 2.1.1, 2.4.11, 2.4.7, 2.5.8, 4.1.2 | platform-web | 2 |
+| Tabs | mol | 14 | background/default, color/primary, border/subsection, elevation/functional… | 1.3.1, 1.4.1, 2.1.1, 2.4.11, 2.4.7, 2.5.8, 4.1.2 | platform-web | 2 |
 | Tags | ato | 3 | border/default, text/default, text/reverse | 1.4.1, 1.4.3, 2.4.4, 2.5.8 | typography-usage | 9 |
 | Tooltip | mol | 5 | background/default, elevation/functional, text/default | 1.4.13, 1.4.3, 2.1.1, 2.4.11, 4.1.2 | contextual-help, elevation |  |
 | Video player | org | 5 | icon/default, icon/default-reverse, text/default | 1.2.2, 1.2.5, 1.4.3, 2.1.1, 2.2.2 | time-based-indicators, imagery |  |

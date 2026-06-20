@@ -1,6 +1,6 @@
 # Focus indicators (keyboard focus visibility)
 
-> **Status: INFERRED standard, tagged `review`.** The HSBC Common Toolkit Figma library carries **no canonical focus primitive** — searched 2026-06-19 (`focus`, `outline`, `ring`): no variable exists, and the closest matches (`form/border/active`, `border/strong`, the `bottom stroke/active` effect) are general-purpose, not a focus ring. In the React/CSS layer focus is handled with `:focus-visible` outlines rather than a token. This document defines a system-wide standard so that generators stop **inventing** a focus ring per component (the Tabs fitness test, 2026-06-19, found Route B had no focus design at all and Route A had to guess one). Confirm the values with the design/accessibility team before treating as canon.
+> **Status: CANON — signed off by Dave 2026-06-20.** The HSBC Common Toolkit Figma library carries **no canonical focus primitive** — searched 2026-06-19 (`focus`, `outline`, `ring`): no variable exists, and the closest matches (`form/border/active`, `border/strong`, the `bottom stroke/active` effect) are general-purpose, not a focus ring. In the React/CSS layer focus is handled with `:focus-visible` outlines rather than a token. This document defines a system-wide standard so that generators stop **inventing** a focus ring per component (the Tabs fitness test, 2026-06-19, found Route B had no focus design at all and Route A had to guess one). The ring colour, width, and offset below are now the agreed standard; revisit only if the design/accessibility team introduce a native Figma focus primitive.
 
 ## Why this exists
 
@@ -41,4 +41,4 @@ A component's meta expresses its focus intent in the `tokens` block (bind `focus
 
 - WCAG basis: `guidelines/digital-accessibility-standards.md`, `components/_ACCESSIBILITY-CONFORMANCE.md` (2.4.7, 2.4.11, 2.4.13).
 - Origin: `knowledge/_FITNESS-TEST-tabs.md` fix #2 (2026-06-19).
-- Confidence: `review` — see `_CONFIDENCE.md`. Pending design-team confirmation of the ring colour/width/offset.
+- Confidence: `asserted` — signed off by Dave 2026-06-20 (was `review`; see `_CONFIDENCE.md`). The ring colour/width/offset are agreed canon; no native Figma primitive exists to supersede them.

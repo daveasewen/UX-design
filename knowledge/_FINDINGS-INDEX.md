@@ -28,7 +28,9 @@ overlays). The `dark-surface` gate was tightened to also catch white-in-dark whe
   (Avatar, Dropdown, Selection controls, Tags, Tooltip) — now gated. ACTION: confirm or adjust the two values.
 - **`rag/warning` (#FFBB33)** is ~1.6:1 on white and on its tint — fails 1.4.11 as a standalone dot/accent.
   Meaning is carried by icon shape + text; acceptable, but a stand-alone warning dot needs an outline/icon.
-- **`focus/ring`** is still `review`-tagged (inferred, no canonical Figma focus primitive) — pending design sign-off.
+- **`focus/ring`** — ✅ **SIGNED OFF as canon (Dave, 2026-06-20).** Promoted `review`→`asserted` in
+  `semantic-colour.json` (focus/ring) + `layout.json` (focus/ring-width|offset); guideline status updated.
+  No canonical Figma primitive exists; agreed standard stands until one is introduced.
 - **Inverting label pattern** (`text/on-inverse` #FFF/#333) used by secondary Button, checked controls,
   View options, ghosted disabled — confirm as canon.
 - **Tabs rewire** — the Tabs component still binds primitives/`tertiary/*`; `tabs/hover`+`tabs/pressed` now
@@ -73,9 +75,13 @@ Recurring sets: `interactive(depricate)/on-light/surface/primary/*` (list/nav/qu
   ERROR/REBIND logic + exit codes unchanged. Fixed 2 plain-English false matches (button `(primary/secondary)`,
   hero `blur/surface` shorthand; no token/appearance change). Residual 3 are intentional: Modals Figma-name
   note + Tabs proposed `focus/ring` tokens (→ §6 sign-off). Full triage in `_INTEGRITY-WARNINGS-TRIAGE.md`.
+- **`focus/ring` signed off (Dave, 2026-06-20)** — promoted colour (`semantic-colour.json` focus/ring) +
+  geometry (`layout.json` focus/ring-width|offset) from `review`→`asserted`; guideline status flipped to CANON.
+  Fixed a `layout/focus/*`→`focus/*` path typo in `tabs.meta` (the path was wrong, not the token). Integrity
+  warnings now **1** (was 3): only the intentional Modals Figma-name note remains.
 
 ## 6. Open items needing Dave (consolidated)
-- **DECIDE:** `text/secondary` values (V1), inverting-label canon, `focus/ring` sign-off, `rag/warning` standalone-dot rule.
+- **DECIDE:** `text/secondary` values (V1), inverting-label canon, `rag/warning` standalone-dot rule. (`focus/ring` ✅ signed off 2026-06-20 — see §2.)
 - **VISUAL/AT:** 4 baseline organisms (V2), screen-reader + keyboard pass (V3), zoom/reflow (V4) — see `_VISUAL-CHECK-QUEUE.md`.
 - **PARKED:** deprecated-binding migration (§4) → Sutherland; Figma dark write-back → pending go-ahead.
 - **TOKEN HYGIENE (from `_DESIGN-SYSTEM-AUDIT.md`):** confirm 8 dead button-border/misc tokens; verify the
