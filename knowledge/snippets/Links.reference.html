@@ -37,6 +37,11 @@
   a.arrow:focus-visible .lbl{box-shadow:inset 0 -3px 0 var(--text);}
   a.back .tip{color:var(--icon);}                       /* back arrow = neutral icon colour */
   a.back:hover .tip{transform:translateX(-3px);}
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
 </style>
 </head>
 <body data-theme="light">

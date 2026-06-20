@@ -29,7 +29,8 @@
   .ico.s1 svg{width:28px; height:28px;} .ico.s2 svg{width:48px; height:48px;} .ico.s3 svg{width:80px; height:80px;}
   .sample{font-size:34px;}
   /* the weight axis — applied to the FILLED path. stroke scales with the icon (proportional weight). */
-  .ico svg path{ fill:currentColor; }
+  /* scale the icon DOWN within its box so the outward stroke has room and isn't clipped (was faceting the circle) */
+  .ico svg path{ fill:currentColor; transform-box:fill-box; transform-origin:center; transform:scale(.8); }
   body.w-light  .ico svg path{ stroke:var(--page); stroke-width:.75; }   /* erode → lighter */
   body.w-regular .ico svg path{ stroke:none; }                            /* native */
   body.w-medium .ico svg path{ stroke:currentColor; stroke-width:.5; }    /* extend → a bit heavier */

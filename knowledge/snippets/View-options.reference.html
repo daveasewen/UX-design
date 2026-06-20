@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>View options — reference implementation (gated)</title>
+<!-- CANONICAL REFERENCE for View options (gated). A segmented view switcher (list/grid/etc).
+     Selected segment uses the inverting fill (secondary/background/default + text/on-inverse) — same
+     pattern as Selection controls — rather than the marginal tertiary/background/pressed the meta binds
+     (rebind noted). Selection exposed via aria-pressed, not colour alone (1.4.1). -->
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
+  [data-theme="light"]{ --surface:#FFFFFF; --hover:#F3F3F3; --sel:#000000; --on-sel:#FFFFFF; --text:#333333; --icon:#333333; --border:#767676; --focus:#305A85; --page:#FFFFFF; }
+  [data-theme="dark"]{ --surface:#1D1D1D; --hover:#474747; --sel:#FFFFFF; --on-sel:#333333; --text:#FFFFFF; --icon:#FFFFFF; --border:#656565; --focus:#4587A7; --page:#000000; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:2rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 14px; border:1px solid var(--border); background:transparent; color:var(--text); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .seg{display:inline-flex; border:1px solid var(--border);}
+  .seg button{display:inline-flex; align-items:center; gap:7px; height:40px; padding:0 16px; border:0; background:var(--surface); color:var(--text); font:500 14px/1 var(--font); cursor:pointer;}
+  .seg button + button{border-left:1px solid var(--border);}
+  .seg button:hover{background:var(--hover);}
+  .seg button[aria-pressed="true"]{background:var(--sel); color:var(--on-sel);}
+  .seg button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px; z-index:1;}
+  .seg svg{width:16px; height:16px; fill:currentColor;}
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>View options — canonical reference</span></div>
+
+  <div class="seg" role="group" aria-label="View as">
+    <button type="button" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18v3H3V5Zm0 5h18v3H3v-3Zm0 5h18v3H3v-3Z"/></svg>List</button>
+    <button type="button" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h8v8H3V3Zm10 0h8v8h-8V3ZM3 13h8v8H3v-8Zm10 0h8v8h-8v-8Z"/></svg>Grid</button>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "View options",
+    "vars": { "--surface": "tertiary/background/default", "--hover": "tertiary/background/hover", "--sel": "secondary/background/default", "--on-sel": "text/on-inverse", "--text": "text/default", "--icon": "icon/default", "--border": "form/border/default", "--focus": "focus/ring", "--page": "background/default" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/on-inverse", "bg": "secondary/background/default", "context": "text" },
+      { "fg": "form/border/default", "bg": "background/default", "context": "ui" }
+    ],
+    "requiredAria": ["aria-pressed"]
+  }
+  </script>
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    document.querySelectorAll('.seg button').forEach(b=> b.addEventListener('click', ()=>{ document.querySelectorAll('.seg button').forEach(x=>x.setAttribute('aria-pressed', String(x===b))); }));
+  </script>
+</body>
+</html>

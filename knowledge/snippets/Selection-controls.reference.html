@@ -71,6 +71,11 @@
 
   .is-disabled .box,.is-disabled .radio,.is-disabled .switch{border-color:var(--ctrl-border-disabled);}
   .is-disabled .switch .thumb{background:var(--ctrl-border-disabled);}
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
 </style>
 </head>
 <body data-theme="light">
@@ -94,7 +99,7 @@
   <script type="application/json" id="token-manifest">
   {
     "component": "Selection controls",
-    "vars": {
+    "vars": { "--focus": "focus/ring",
       "--ctrl-border": "form/border/default",
       "--ctrl-border-active": "form/border/active",
       "--ctrl-border-disabled": "form/border/disabled",

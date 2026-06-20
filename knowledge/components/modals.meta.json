@@ -4,15 +4,65 @@
   "purpose": "Modals focus the user's attention on an important message or side-task without removing them from their journey. Family: Dialog (interrupts the view and requires an action/decision to continue), Video modal (responsive video overlay), and Partial modal / Drawer (app-only, anchored to the bottom of the screen, houses supplementary content/actions the user can view and interact with alongside the underlying UI).",
   "$family": "Covers the 'Modals' canvas across three sections: Modal - dialog, Modal - video, Modal - partial (app only).",
   "props": [
-    { "name": "type", "type": "enum", "values": ["dialog", "video", "partial"], "default": "dialog" },
-    { "name": "buttons", "type": "enum", "values": ["default", "two-buttons", "stacked"], "default": "default", "$note": "Dialog button layout (single / two side-by-side / stacked)." },
-    { "name": "breakpoint", "type": "enum", "values": ["xl", "l", "m", "ms", "s", "xs"], "default": "l", "$note": "Video modal is fully responsive (XL scale-3 → XS scale-1); S/XS use a dedicated layout." },
-    { "name": "module", "type": "enum", "values": ["scale-1", "scale-2"], "default": "scale-1", "$note": "Partial modal module scale." }
+    {
+      "name": "type",
+      "type": "enum",
+      "values": [
+        "dialog",
+        "video",
+        "partial"
+      ],
+      "default": "dialog"
+    },
+    {
+      "name": "buttons",
+      "type": "enum",
+      "values": [
+        "default",
+        "two-buttons",
+        "stacked"
+      ],
+      "default": "default",
+      "$note": "Dialog button layout (single / two side-by-side / stacked)."
+    },
+    {
+      "name": "breakpoint",
+      "type": "enum",
+      "values": [
+        "xl",
+        "l",
+        "m",
+        "ms",
+        "s",
+        "xs"
+      ],
+      "default": "l",
+      "$note": "Video modal is fully responsive (XL scale-3 → XS scale-1); S/XS use a dedicated layout."
+    },
+    {
+      "name": "module",
+      "type": "enum",
+      "values": [
+        "scale-1",
+        "scale-2"
+      ],
+      "default": "scale-1",
+      "$note": "Partial modal module scale."
+    }
   ],
   "variants": [
-    { "name": "dialog", "use": "Overlay that interrupts the user and requires an action/decision. Non-native; buttons default / two-buttons / stacked. ('Dialogs for mobile')." },
-    { "name": "video", "use": "Responsive video-player overlay (XL/L/M/MS/S/XS). Surface + close + caption over a dimmed, blurred backdrop." },
-    { "name": "partial", "use": "App-only Drawer anchored to the bottom; supplementary content/actions; elevate above level 0 (shadow at rest, overlay when expanded). Include search where appropriate." }
+    {
+      "name": "dialog",
+      "use": "Overlay that interrupts the user and requires an action/decision. Non-native; buttons default / two-buttons / stacked. ('Dialogs for mobile')."
+    },
+    {
+      "name": "video",
+      "use": "Responsive video-player overlay (XL/L/M/MS/S/XS). Surface + close + caption over a dimmed, blurred backdrop."
+    },
+    {
+      "name": "partial",
+      "use": "App-only Drawer anchored to the bottom; supplementary content/actions; elevate above level 0 (shadow at rest, overlay when expanded). Include search where appropriate."
+    }
   ],
   "tokens": {
     "surface": "background/default (#ffffff)",
@@ -24,12 +74,20 @@
     "backdrop": "overlay/version1 (#00000080 — 50% black scrim) + blur/overlay (12, dark=0) applied as a BACKGROUND_BLUR effect ('overlay blur'). NOTE: Figma surfaced the blur radius as 'overlay/background-blur' but it resolves to the store token blur/overlay.",
     "section-tint": "colour/neutral/grey-1 (#f3f3f3 PRIMITIVE)",
     "layout": "layout/web/gutter 16, layout/web/margin 16, layout/web/columns 12; padding/responsive/medium 16, large 20",
-    "elevation": "Drawer sits above level 0 — shadow at rest, overlay when expanded (see elevation guidance)"
+    "elevation": "Drawer sits above level 0 — shadow at rest, overlay when expanded (see elevation guidance)",
+    "$finding": "(2026-06-20) Dialog surface rebound to tertiary/background/default (raised #1D1D1D in dark) so it is visible — background/default (#000) would vanish on the dimmed page. Elevation = shadow(light)/elevation-border(dark). Note: the overlay dim is ineffective over a pure-#000 page (black-on-black) — real app content behind it provides the dim."
   },
   "relationships": {
-    "livesInside": ["App screen", "Page (overlay layer)"],
+    "livesInside": [
+      "App screen",
+      "Page (overlay layer)"
+    ],
     "mustNotNeighbour": [],
-    "commonPatterns": ["confirm/decision dialog", "video lightbox", "bottom drawer / sheet with supplementary actions"]
+    "commonPatterns": [
+      "confirm/decision dialog",
+      "video lightbox",
+      "bottom drawer / sheet with supplementary actions"
+    ]
   },
   "accessibility": {
     "focusTrap": "REVIEW (inferred): focus must be trapped within the modal while open and returned to the trigger on close",
@@ -37,7 +95,14 @@
     "role": "Use role=dialog / aria-modal with an accessible name (title); video modal needs accessible media controls",
     "backdrop": "The dimmed/blurred scrim must not be the only way to convey modality; underlying content is inert while open",
     "targetArea": "Close and action controls min 44px target",
-    "relatedSC": ["2.4.3 Focus Order", "2.1.2 No Keyboard Trap", "4.1.2 Name Role Value", "1.4.3 Contrast", "2.5.8 Target Size (Minimum)", "2.4.11 Focus Not Obscured (Minimum)"]
+    "relatedSC": [
+      "2.4.3 Focus Order",
+      "2.1.2 No Keyboard Trap",
+      "4.1.2 Name Role Value",
+      "1.4.3 Contrast",
+      "2.5.8 Target Size (Minimum)",
+      "2.4.11 Focus Not Obscured (Minimum)"
+    ]
   },
   "antiPatterns": [
     "REVIEW (inferred): stacking multiple modals/dialogs at once",
@@ -50,8 +115,15 @@
     "result": "PASS — CLEAN across Dialog, Video and Partial; no deprecated tokens.",
     "newTokenGroupSeen": "overlay/* — the modal backdrop: overlay/version1 (#00000080 scrim, dark too) + blur radius blur/overlay (12, dark 0) applied as a BACKGROUND_BLUR effect. First component to surface overlay/version1; the blur radius reuses the blur/* group (blur/overlay) seen alongside blur/background-surface on Hero. (Figma flattened the radius var name to 'overlay/background-blur' but it maps to blur/overlay.)",
     "primitiveBinding": "Section tint binds primitive colour/neutral/grey-1 (#f3f3f3) directly — same primitive-leak flag noted on List/Badge/Hero.",
-    "depricateUsage": { "tokens": [], "note": "None." },
-    "auditedNodes": ["Dialog non-native 1076:73406", "Partial modal 2298:160787", "Video modal L/M/MS 41620:76566"],
+    "depricateUsage": {
+      "tokens": [],
+      "note": "None."
+    },
+    "auditedNodes": [
+      "Dialog non-native 1076:73406",
+      "Partial modal 2298:160787",
+      "Video modal L/M/MS 41620:76566"
+    ],
     "ignored": "specs/* annotation scaffolding."
   },
   "provenance": {

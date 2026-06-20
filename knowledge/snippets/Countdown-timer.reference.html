@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Countdown timer — reference implementation (gated)</title>
+<!-- CANONICAL REFERENCE for Countdown timer (gated). A depleting circular indicator (timer/background
+     track + timer/foreground fill) with a time readout. role=timer + aria-live. Time text not by colour
+     alone (1.4.1). Demo loops a short countdown; honours reduced-motion. -->
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
+  [data-theme="light"]{ --track:#D7D8D6; --fill:#000000; --text:#333333; --page:#FFFFFF; }
+  [data-theme="dark"]{ --track:#404040; --fill:#FFFFFF; --text:#FFFFFF; --page:#000000; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:2rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 14px; border:1px solid var(--track); background:transparent; color:var(--text); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--text); outline-offset:2px;}
+  .timer{display:inline-flex; flex-direction:column; align-items:center; gap:10px;}
+  .ring{width:84px; height:84px; transform:rotate(-90deg);}
+  .ring circle{fill:none; stroke-width:6;}
+  .ring .track{stroke:var(--track);}
+  .ring .fill{stroke:var(--fill); stroke-linecap:round; stroke-dasharray:226; stroke-dashoffset:0; animation:deplete 10s linear infinite;}
+  @keyframes deplete{from{stroke-dashoffset:0;} to{stroke-dashoffset:226;}}
+  @media(prefers-reduced-motion:reduce){ .ring .fill{animation:none; stroke-dashoffset:90;} }
+  .time{font:500 18px/1 var(--font); color:var(--text);}
+  .label{font:300 13px/1 var(--font); color:var(--text); opacity:.7;}
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Countdown timer — canonical reference</span></div>
+
+  <div class="timer" role="timer" aria-live="polite">
+    <svg class="ring" viewBox="0 0 84 84" aria-hidden="true"><circle class="track" cx="42" cy="42" r="36"/><circle class="fill" cx="42" cy="42" r="36"/></svg>
+    <span class="time" id="t">0:10</span>
+    <span class="label">until session timeout</span>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Countdown timer",
+    "vars": { "--track": "timer/background", "--fill": "timer/foreground", "--text": "text/default", "--page": "background/default" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "timer/foreground", "bg": "timer/background", "context": "ui" }
+    ],
+    "requiredAria": ["role=\"timer\"", "aria-live"]
+  }
+  </script>
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    let s=10; const el=document.getElementById('t'); setInterval(()=>{ s=s>0?s-1:10; el.textContent='0:'+String(s).padStart(2,'0'); }, 1000);
+  </script>
+</body>
+</html>

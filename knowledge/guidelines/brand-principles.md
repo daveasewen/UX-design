@@ -44,6 +44,9 @@ HSBC's brand design is **angular, tactically red, clearly understood, internatio
 
 - **Tactically red** → the `color/primary` (#DB0011) accent-only rule, and the primitive-leak flag (Badge/Hero/Links/Tabs binding the red primitive — should be governed semantic accent usage). See `tokens/_manifests/_DESIGN-SYSTEM-GAPS.md` P5.
 - **Angular** → Hexagon masks + the 22° type angle (see `guidelines/hexagon-masks.md`).
+
+### Operational rule — square corners (fix #8, 2026-06-20)
+The "Angular" principle is a concrete component constraint: **all components use square corners (`border-radius: 0`).** `border-radius/default` is intentionally `null` in `layout.json` — that is correct, not missing data. **Do NOT add `border-radius`** unless a future rounded mode is formally adopted. **Exemptions — the ONLY two:** **Badge** (fully round) and **Avatar** (round). A generator/builder that adds rounding to any other component is violating the brand. (Evidence this needed stating: both fitness-test builds got it wrong — one mis-flagged the null radius as missing, one added rounded corners until caught.)
 - **Clearly understood / Logical** → supports the component anti-patterns around clarity (single focal point, clear hierarchy, no decoration-for-decoration's-sake).
 
 ## Related brand-strategy sub-pages (create.hsbc, deeper)

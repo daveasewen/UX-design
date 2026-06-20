@@ -4,30 +4,71 @@
   "$platform": "app",
   "purpose": "Displays and controls digital video within a layout — play/pause, scrub, time and related controls overlaid on the video. Standard inline player and a larger hero variant.",
   "props": [
-    { "name": "variant", "type": "enum", "values": ["standard", "hero"], "default": "standard", "$note": "Standard inline player vs full-width hero player." },
-    { "name": "state", "type": "enum", "values": ["idle", "playing", "paused", "buffering"], "default": "idle", "$note": "Playback states (multiple state rows shown on the page)." }
+    {
+      "name": "variant",
+      "type": "enum",
+      "values": [
+        "standard",
+        "hero"
+      ],
+      "default": "standard",
+      "$note": "Standard inline player vs full-width hero player."
+    },
+    {
+      "name": "state",
+      "type": "enum",
+      "values": [
+        "idle",
+        "playing",
+        "paused",
+        "buffering"
+      ],
+      "default": "idle",
+      "$note": "Playback states (multiple state rows shown on the page)."
+    }
   ],
   "variants": [
-    { "name": "standard", "use": "Inline video player within page/layout content." },
-    { "name": "hero", "use": "Large hero-scale player (e.g. masthead/feature video)." }
+    {
+      "name": "standard",
+      "use": "Inline video player within page/layout content."
+    },
+    {
+      "name": "hero",
+      "use": "Large hero-scale player (e.g. masthead/feature video)."
+    }
   ],
   "tokens": {
     "controls-icon": "icon/default-reverse (#ffffff — controls overlaid on the video)",
     "play/accent": "primary/background/default (#db0011 — brand-red play/control accent)",
     "caption/label": "text/default (#333) @ font-6/medium",
-    "icon-on-light": "icon/default (#333 — controls on a light surface)"
+    "icon-on-light": "icon/default (#333 — controls on a light surface)",
+    "$finding": "(2026-06-20) Controls render as literals (white icon/default-reverse + red primary accent + a dark gradient scrim) because controls-on-video must hold contrast over ANY frame regardless of theme — a special on-media context, conceptually icon/default-reverse + primary + overlay/version2."
   },
   "relationships": {
-    "livesInside": ["Page content", "Hero", "Article", "Card"],
+    "livesInside": [
+      "Page content",
+      "Hero",
+      "Article",
+      "Card"
+    ],
     "mustNotNeighbour": [],
-    "commonPatterns": ["inline video with overlay controls", "hero/feature video"]
+    "commonPatterns": [
+      "inline video with overlay controls",
+      "hero/feature video"
+    ]
   },
   "accessibility": {
     "controls": "All controls (play/pause, scrub, volume, fullscreen, captions) must be keyboard-operable with accessible names",
     "captions": "Provide captions/subtitles and, where needed, a transcript / audio description (1.2.2 / 1.2.5)",
     "autoplay": "Don't autoplay with sound; any autoplaying/looping video must be pausable and respect prefers-reduced-motion (2.2.2)",
     "contrast": "Overlaid white controls must stay legible over varied video frames — use a scrim/affordance, not colour alone",
-    "relatedSC": ["1.2.2 Captions", "1.2.5 Audio Description", "2.2.2 Pause Stop Hide", "2.1.1 Keyboard", "1.4.3 Contrast"]
+    "relatedSC": [
+      "1.2.2 Captions",
+      "1.2.5 Audio Description",
+      "2.2.2 Pause Stop Hide",
+      "2.1.1 Keyboard",
+      "1.4.3 Contrast"
+    ]
   },
   "antiPatterns": [
     "Autoplaying video with sound / no pause control",
@@ -39,8 +80,14 @@
     "date": "2026-06-18",
     "against": "token store re-based on Figma native variable export",
     "result": "PASS — CLEAN, no deprecated tokens. Both standard + hero share the same token set.",
-    "depricateUsage": { "tokens": [], "note": "None. Controls icon/default-reverse + icon/default, play accent primary/background/default, caption text/default font-6 medium." },
-    "auditedNodes": ["Video player 2111:30059", "Video player - hero 2147:141453"],
+    "depricateUsage": {
+      "tokens": [],
+      "note": "None. Controls icon/default-reverse + icon/default, play accent primary/background/default, caption text/default font-6 medium."
+    },
+    "auditedNodes": [
+      "Video player 2111:30059",
+      "Video player - hero 2147:141453"
+    ],
     "ignored": "specs/* annotation scaffolding."
   },
   "provenance": {

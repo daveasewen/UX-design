@@ -29,6 +29,11 @@
   .ok .dot{background:var(--success);} .warn .dot{background:var(--warning);} .err .dot{background:var(--error);}
   .neu .dot{background:var(--neutral);} .inf .dot{background:var(--info);}
   .stat.is-disabled{color:var(--disabled);} .stat.is-disabled .dot{opacity:.4;}
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
 </style>
 </head>
 <body data-theme="light">

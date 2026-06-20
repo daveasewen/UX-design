@@ -2,7 +2,7 @@
 
 > Which components re-theme correctly in dark mode. **LEAK** = binds a raw colour *primitive* directly (single-valued, no dark variant — a real defect; the P3 family). *flat* = binds a semantic token whose dark value equals its light value (frequently intentional — reverse text, RAG, brand red — confirm per case). Derived view over the colour stores + blast-radius; regenerate: `python3 knowledge/_build_dark_mode_audit.py`. Detail in `_DARK-MODE-AUDIT.json`.
 
-**Coverage:** 25/32 components clean · 7 leak a primitive. Store: 113 semantic colour tokens (light+dark), 42 flat (dark==light), 124 primitives.
+**Coverage:** 25/32 components clean · 7 leak a primitive. Store: 116 semantic colour tokens (light+dark), 42 flat (dark==light), 124 primitives.
 
 ## Primitive leaks — fix before dark mode
 
@@ -38,7 +38,7 @@ Each raw primitive bound directly, and the components binding it. Rebind to a se
 | Navigations | 🔴 LEAK | `color/black`, `color/primary`, `color/white` | `overlay/version1`, `primary/border/default` |
 | Notifications | ✅ clean | — | `icon/default-reverse`, `rag/success`, `rag/text/on-dark`, `rag/text/on-light`, `rag/warning` |
 | Pagination | ✅ clean | — | `form/background/default` |
-| Progress tracker | ✅ clean | — | — |
+| Progress tracker | ✅ clean | — | `progress/complete` |
 | Quick actions | ✅ clean | — | — |
 | Reorder | ✅ clean | — | `rag/success` |
 | Search field | ✅ clean | — | `form/background/default`, `text/reverse` |
@@ -49,7 +49,7 @@ Each raw primitive bound directly, and the components binding it. Rebind to a se
 | Tabs | 🔴 LEAK | `color/primary` | `tabs/active`, `text/reverse` |
 | Tags | ✅ clean | — | `text/reverse` |
 | Tooltip | ✅ clean | — | — |
-| Video player | ✅ clean | — | `icon/default-reverse`, `primary/background/default` |
+| Video player | ✅ clean | — | `icon/default-reverse`, `overlay/version2`, `primary/background/default` |
 | View options | ✅ clean | — | `icon/default-reverse`, `tertiary/text/pressed` |
 
 > *flat* tokens are not necessarily wrong — `icon/default-reverse`, `text/reverse`, `rag/*` and brand reds are designed to read the same on their fixed surfaces in both modes. They're listed so a reviewer can confirm none is an unthemed surface that *should* darken (e.g. check `tertiary/background/*`).

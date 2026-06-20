@@ -59,7 +59,7 @@ TOPICAL = {
     "Slider":           ["forms.md"],
     "Status indicator": ["tone-of-voice.md", "time-based-indicators.md", "icons.md"],
     "Table":            ["horizontal-scroll.md", "typography-usage.md", "view-controls-sort.md"],
-    "Tabs":             ["horizontal-scroll.md", "platform-web.md"],
+    "Tabs":             ["platform-web.md"],   # fix #6 (2026-06-20): removed horizontal-scroll.md — that's CAROUSEL guidance, not the tab-overflow-dropdown pattern. Overflow guidance lives in the Tabs meta.
     "Tags":             ["typography-usage.md"],
     "Tooltip":          ["contextual-help.md", "elevation.md"],
     "Video player":     ["time-based-indicators.md", "imagery.md"],

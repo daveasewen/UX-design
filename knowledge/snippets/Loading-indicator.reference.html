@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Loading indicator — reference implementation (gated)</title>
+<!-- CANONICAL REFERENCE for Loading indicator (gated). A rotating arc (icon/default stroke) + optional
+     label. role=status + aria-live so AT is told; honours prefers-reduced-motion (2.3.3 / 2.2.2). -->
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
+  [data-theme="light"]{ --spinner:#333333; --text:#333333; --page:#FFFFFF; }
+  [data-theme="dark"]{ --spinner:#FFFFFF; --text:#FFFFFF; --page:#000000; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:2rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 14px; border:1px solid var(--spinner); background:transparent; color:var(--text); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--text); outline-offset:2px;}
+  .loader{display:inline-flex; align-items:center; gap:12px; font:400 16px/1 var(--font);}
+  .spinner{width:28px; height:28px; border:3px solid var(--spinner); border-right-color:transparent; border-radius:50%; animation:spin .8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  @media(prefers-reduced-motion:reduce){ .spinner{animation-duration:2.4s;} }   /* slow, don't stop, so status is still conveyed */
+  .big .spinner{width:44px; height:44px; border-width:4px;}
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Loading indicator — canonical reference</span></div>
+
+  <div class="loader" role="status"><span class="spinner" aria-hidden="true"></span><span>Loading your accounts…</span></div>
+  <div style="height:30px"></div>
+  <div class="loader big" role="status" aria-label="Loading"><span class="spinner" aria-hidden="true"></span></div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Loading indicator",
+    "vars": { "--spinner": "icon/default", "--text": "text/default", "--page": "background/default" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "icon/default", "bg": "background/default", "context": "ui" }
+    ],
+    "requiredAria": ["role=\"status\""]
+  }
+  </script>
+  <script>document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });</script>
+</body>
+</html>

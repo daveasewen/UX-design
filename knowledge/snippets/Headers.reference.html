@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Headers — reference implementation (gated)</title>
+<!-- CANONICAL REFERENCE for Headers (gated) — app screen headers. Content header (back + title + action)
+     and a display title shown. text/default + icon/default on background/default. The full set (section
+     titles, search header, large/collapsing display) is a starting point — extend per the meta. -->
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
+  [data-theme="light"]{ --surface:#FFFFFF; --text:#333333; --icon:#333333; --rule:#D7D8D6; --hover:#F3F3F3; --focus:#305A85; --page:#FFFFFF; }
+  [data-theme="dark"]{ --surface:#000000; --text:#FFFFFF; --icon:#FFFFFF; --rule:#404040; --hover:#212121; --focus:#4587A7; --page:#000000; }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{padding:1.25rem 1.5rem 0; display:flex; gap:.75rem; align-items:center; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 14px; border:1px solid var(--icon); background:transparent; color:var(--text); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .frame{max-width:420px; margin:18px 1.5rem; border:1px solid var(--rule);}
+  .content-header{display:flex; align-items:center; gap:8px; height:56px; padding:0 8px; background:var(--surface); border-bottom:1px solid var(--rule);}
+  .content-header button{width:40px; height:40px; border:0; background:transparent; color:var(--icon); cursor:pointer; display:inline-flex; align-items:center; justify-content:center;}
+  .content-header button:hover{background:var(--hover);} .content-header svg{width:20px; height:20px; fill:currentColor;}
+  .content-header button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .content-header h1{flex:1; margin:0; font:400 18px/1.2 var(--font); text-align:center;}
+  .display{padding:24px 16px;}
+  .display h1{margin:0; font:400 33px/1.1 var(--font); letter-spacing:-.01em;}
+  .display p{margin:8px 0 0; font:300 16px/1.5 var(--font); opacity:.8;}
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Headers — canonical reference</span></div>
+
+  <div class="frame">
+    <header class="content-header">
+      <button aria-label="Back"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.85 1 5.85 9l8 8H12.15L4.15 9l8-8H13.85Z"/></svg></button>
+      <h1>Statements</h1>
+      <button aria-label="More options"><svg viewBox="0 0 18 18" aria-hidden="true"><circle cx="9" cy="3.5" r="1.6"/><circle cx="9" cy="9" r="1.6"/><circle cx="9" cy="14.5" r="1.6"/></svg></button>
+    </header>
+    <div class="display"><h1>Good morning, Jordan</h1><p>Here's a summary of your accounts.</p></div>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Headers",
+    "vars": { "--surface": "background/default", "--text": "text/default", "--icon": "icon/default", "--rule": "divider/border/section", "--hover": "form/background/hover", "--focus": "focus/ring", "--page": "background/default" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "icon/default", "bg": "background/default", "context": "ui" }
+    ],
+    "requiredAria": ["<h1", "aria-label"]
+  }
+  </script>
+  <script>document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });</script>
+</body>
+</html>

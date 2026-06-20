@@ -31,8 +31,10 @@ So the weight system is NOT a CSS switch on the current artwork — there's no `
     add a stroke to the filled path — `stroke:currentColor` (icon colour) extends the fill → heavier; `stroke:<bg colour>`
     erodes it → lighter; width sets the amount. Needs NO re-authoring. CAVEATS: the "lighter" (bg-colour) stroke only
     works over a SOLID, KNOWN background (breaks over imagery/gradients); strokes are edge-centred (~half-effective,
-    both contours of compound icons thicken); sub-pixel strokes anti-alias differently per browser. Strong candidate
-    for a CSS-only weight axis where backgrounds are controlled. Fits refresh principles
+    both contours of compound icons thicken); sub-pixel strokes anti-alias differently per browser. FIX for the bold-end faceting (Dave): the
+    icon runs edge-to-edge in its viewBox, so a heavy stroke spills past the box and gets clipped (flattens curves
+    into facets) — scale the icon DOWN within its container (~80%, `transform-box:fill-box; transform:scale(.8)`)
+    so the outward stroke has room. Strong candidate for a CSS-only weight axis where backgrounds are controlled. Fits refresh principles
 1 (elegant/thinner type) + 3 (refined, sparing icon use). NB: default icons are outline-style, active = solid —
 use the outline (non-`*-active`/`*-solid`) file for default states (fixed in Tooltip 2026-06-19).
 

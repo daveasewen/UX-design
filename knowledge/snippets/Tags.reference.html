@@ -27,9 +27,16 @@
   .tag.link{cursor:pointer; text-decoration:none;}
   .tag.link:hover{background:var(--hover);}
   .tag.link:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
-  .tag .x{display:inline-flex; width:16px; height:16px; padding:0; border:0; background:transparent; color:var(--icon); cursor:pointer; align-items:center; justify-content:center;}
+  .tag .x{position:relative; display:inline-flex; width:16px; height:16px; padding:0; border:0; background:transparent; color:var(--icon); cursor:pointer; align-items:center; justify-content:center;}
+  /* WCAG 2.5.8 — expand hit target to 24×24 without changing the visible glyph */
+  .tag .x::before{content:""; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:24px; height:24px;}
   .tag .x svg{width:11px; height:11px; stroke:currentColor; stroke-width:2; fill:none;}
   .tag .x:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
 </style>
 </head>
 <body data-theme="light">
@@ -50,7 +57,7 @@
   <script type="application/json" id="token-manifest">
   {
     "component": "Tags",
-    "vars": { "--border": "form/border/default", "--text": "text/default", "--icon": "icon/default", "--hover": "form/background/hover", "--page": "background/default" },
+    "vars": { "--focus": "focus/ring", "--border": "form/border/default", "--text": "text/default", "--icon": "icon/default", "--hover": "form/background/hover", "--page": "background/default" },
     "contrastPairs": [
       { "fg": "text/default", "bg": "background/default", "context": "text" },
       { "fg": "form/border/default", "bg": "background/default", "context": "ui" }

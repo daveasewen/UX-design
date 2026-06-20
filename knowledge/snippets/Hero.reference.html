@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hero — reference implementation (gated)</title>
+<!-- CANONICAL REFERENCE for Hero (gated) — BASELINE. A marketing banner: headline + intro + primary CTA
+     + arrow link. Shown on a plain surface (text/default). The on-IMAGE variant (text/reverse over a
+     photo, with a scrim for contrast) is FLAGGED for review — it needs an image + a guaranteed-contrast
+     scrim, which is a design decision, not derivable from tokens. -->
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
+  [data-theme="light"]{ --text:#333333; --muted:#767676; --pri:#DB0011; --on-pri:#FFFFFF; --accent:#DB0011; --focus:#305A85; --page:#FFFFFF; }
+  [data-theme="dark"]{ --text:#FFFFFF; --muted:#9a9a9a; --pri:#DB0011; --on-pri:#FFFFFF; --accent:#DB0011; --focus:#4587A7; --page:#000000; }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{padding:1.25rem 2rem 0; display:flex; gap:.75rem; align-items:center; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 14px; border:1px solid var(--muted); background:transparent; color:var(--text); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .hero{padding:64px 2rem; max-width:720px;}
+  .hero h1{margin:0; font:400 clamp(33px,5vw,57px)/1.05 var(--font); letter-spacing:-.015em;}
+  .hero .intro{margin:18px 0 0; font:300 clamp(18px,2.2vw,24px)/1.4 var(--font); color:var(--text); max-width:40ch;}
+  .hero .cta-row{display:flex; gap:18px; align-items:center; margin-top:30px; flex-wrap:wrap;}
+  .hero .cta{height:48px; padding:0 24px; border:0; background:var(--pri); color:var(--on-pri); font:500 16px/1 var(--font); cursor:pointer; display:inline-flex; align-items:center;}
+  .hero .cta:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .hero .arrow{color:var(--text); text-decoration:none; font-weight:500; display:inline-flex; align-items:center; gap:6px;}
+  .hero .arrow .tip{color:var(--accent); display:inline-flex;} .hero .arrow .tip svg{width:14px; height:14px; fill:currentColor;}
+  .hero .arrow:hover .lbl{text-decoration:underline; text-underline-offset:3px;}
+  .hero .arrow:focus-visible{outline:none;} .hero .arrow:focus-visible .lbl{box-shadow:inset 0 -3px 0 var(--text);}
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Hero — canonical reference (baseline)</span></div>
+  <section class="hero">
+    <h1>Banking that moves with you.</h1>
+    <p class="intro">Manage your money, set goals and get support — all in one place.</p>
+    <div class="cta-row">
+      <button class="cta">Open an account</button>
+      <a class="arrow" href="#"><span class="lbl">Explore accounts</span><span class="tip" aria-hidden="true"><svg viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M5 17 5 1l8 8z"/></svg></span></a>
+    </div>
+  </section>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Hero",
+    "vars": { "--text": "text/default", "--pri": "primary/background/default", "--on-pri": "text/reverse", "--accent": "primary/background/default", "--focus": "focus/ring", "--page": "background/default" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "text/reverse", "bg": "primary/background/default", "context": "text" },
+      { "fg": "primary/background/default", "bg": "background/default", "context": "ui" }
+    ],
+    "requiredAria": ["<h1", "<a "]
+  }
+  </script>
+  <script>document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });</script>
+</body>
+</html>

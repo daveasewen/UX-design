@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Search field — reference implementation (gated)</title>
+<!-- CANONICAL REFERENCE for Search field (gated). A search-purpose input with a leading icon and a
+     clear button. Reuses the Input fields chrome (form/* + keyboard-only thick-stroke focus). -->
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:160ms cubic-bezier(.4,0,.2,1); }
+  [data-theme="light"]{ --bg:#FFFFFF00; --hover:#F3F3F3; --border:#767676; --border-active:#000000; --text:#333333; --icon:#333333; --page:#FFFFFF; }
+  [data-theme="dark"]{ --bg:#FFFFFF00; --hover:#212121; --border:#656565; --border-active:#FFFFFF; --text:#FFFFFF; --icon:#FFFFFF; --page:#000000; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:1.75rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 14px; border:1px solid var(--border); background:transparent; color:var(--text); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--border-active); outline-offset:2px;}
+  .search{position:relative; max-width:360px; display:flex; align-items:center; height:48px; border-bottom:1px solid var(--border);}
+  .search .mag{flex:none; width:20px; height:20px; color:var(--icon); margin:0 10px 0 2px;}
+  .search .mag svg{width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round;}
+  .search input{flex:1; height:100%; border:0; background:var(--bg); color:var(--text); font:400 16px/1 var(--font); outline:none;}
+  .search input::placeholder{color:var(--text); opacity:.5;}
+  .search:hover{background:var(--hover);}
+  .search:focus-within{box-shadow:inset 0 -2px 0 var(--border-active);}
+  .search input:focus-visible{outline:none;}
+  .clear{flex:none; width:24px; height:24px; border:0; background:transparent; color:var(--icon); cursor:pointer; display:inline-flex; align-items:center; justify-content:center;}
+  .clear svg{width:12px; height:12px; stroke:currentColor; stroke-width:2; fill:none;}
+  .clear:focus-visible{outline:2px solid var(--border-active); outline-offset:2px;}
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Search field — canonical reference</span></div>
+
+  <div class="search">
+    <span class="mag" aria-hidden="true"><svg viewBox="0 0 20 20"><circle cx="9" cy="9" r="6"/><path d="M13.5 13.5 L18 18"/></svg></span>
+    <input type="search" aria-label="Search transactions" placeholder="Search transactions" value="">
+    <button class="clear" type="button" aria-label="Clear search"><svg viewBox="0 0 12 12"><path d="M1 1 L11 11 M11 1 L1 11"/></svg></button>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Search field",
+    "vars": { "--hover": "form/background/hover", "--border": "form/border/default", "--border-active": "form/border/active", "--text": "text/default", "--icon": "icon/default", "--page": "background/default" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "form/border/default", "bg": "background/default", "context": "ui" },
+      { "fg": "icon/default", "bg": "background/default", "context": "ui" }
+    ],
+    "requiredAria": ["type=\"search\"", "aria-label"]
+  }
+  </script>
+  <script>document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });</script>
+</body>
+</html>

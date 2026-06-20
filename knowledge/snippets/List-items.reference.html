@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>List items — reference implementation (gated)</title>
+<!-- CANONICAL REFERENCE for tappable List items (gated). Rows on tertiary/background/* with a divider
+     between them, a leading icon and trailing chevron, ≥44px target. Rebinds off the deprecated
+     interactive surface tokens (value-identical) to tertiary/background/*. Keyboard focus ring. -->
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
+  [data-theme="light"]{ --surface:#FFFFFF; --hover:#F3F3F3; --text:#333333; --muted:#545454; --icon:#333333; --divider:#D7D8D6; --focus:#305A85; --page:#FFFFFF; }
+  [data-theme="dark"]{ --surface:#1D1D1D; --hover:#474747; --text:#FFFFFF; --muted:#9B9B9B; --icon:#FFFFFF; --divider:#404040; --focus:#4587A7; --page:#000000; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:1.75rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 14px; border:1px solid var(--muted); background:transparent; color:var(--text); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  ul.list{list-style:none; margin:0; padding:0; max-width:420px; background:var(--surface); border:1px solid var(--divider);}
+  ul.list li + li{border-top:1px solid var(--divider);}
+  .row{display:flex; align-items:center; gap:14px; width:100%; min-height:56px; padding:0 16px; background:transparent; border:0; cursor:pointer;
+    font:500 16px/1.3 var(--font); color:var(--text); text-align:left; transition:background var(--ease);}
+  .row:hover{background:var(--hover);}
+  .row:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .row .ic{flex:none; width:22px; height:22px; color:var(--icon); display:inline-flex;}
+  .row .ic svg{width:22px; height:22px; fill:currentColor;}
+  .row .body{flex:1; display:flex; flex-direction:column; gap:2px;}
+  .row .sub{font:400 13px/1.3 var(--font); color:var(--muted);}
+  .row .chev{flex:none; color:var(--muted); display:inline-flex;}
+  .row .chev svg{width:16px; height:16px; fill:currentColor;}
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>List items — canonical reference</span></div>
+
+  <ul class="list">
+    <li><button class="row"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18v3H3V6Zm0 5h18v7H3v-7Zm3 3v2h5v-2H6Z"/></svg></span><span class="body"><span>Current account</span><span class="sub">•••• 4821 · £2,140.50</span></span><span class="chev"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.15 17 12.15 9 4.15 1H5.85L13.85 9 5.85 17H4.15Z"/></svg></span></button></li>
+    <li><button class="row"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18v3H3V6Zm0 5h18v7H3v-7Zm3 3v2h5v-2H6Z"/></svg></span><span class="body"><span>Savings account</span><span class="sub">•••• 9032 · £8,500.00</span></span><span class="chev"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.15 17 12.15 9 4.15 1H5.85L13.85 9 5.85 17H4.15Z"/></svg></span></button></li>
+    <li><button class="row"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18v3H3V6Zm0 5h18v7H3v-7Zm3 3v2h5v-2H6Z"/></svg></span><span class="body"><span>Credit card</span><span class="sub">•••• 1190 · £312.18 owed</span></span><span class="chev"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.15 17 12.15 9 4.15 1H5.85L13.85 9 5.85 17H4.15Z"/></svg></span></button></li>
+  </ul>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "List items",
+    "vars": { "--surface": "tertiary/background/default", "--hover": "tertiary/background/hover", "--text": "text/default", "--muted": "text/secondary", "--icon": "icon/default", "--divider": "divider/border/section", "--focus": "focus/ring", "--page": "background/default" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/default", "bg": "tertiary/background/hover", "context": "text" },
+      { "fg": "text/secondary", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "icon/default", "bg": "tertiary/background/default", "context": "ui" }
+    ],
+    "requiredAria": ["<li", "<button"]
+  }
+  </script>
+  <script>document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });</script>
+</body>
+</html>

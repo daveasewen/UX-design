@@ -27,6 +27,11 @@
   .avatar.sm{width:32px; height:32px; font-size:13px;} .avatar.md{width:44px; height:44px; font-size:16px;} .avatar.lg{width:64px; height:64px; font-size:22px;}
   .avatar svg{width:60%; height:60%; fill:var(--icon);}
   a.avatar{cursor:pointer; text-decoration:none;} a.avatar:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
 </style>
 </head>
 <body data-theme="light">
@@ -52,7 +57,7 @@
   <script type="application/json" id="token-manifest">
   {
     "component": "Avatar",
-    "vars": { "--surface": "tertiary/background/hover", "--text": "text/default", "--icon": "icon/default", "--page": "background/default" },
+    "vars": { "--focus": "focus/ring", "--surface": "tertiary/background/hover", "--text": "text/default", "--icon": "icon/default", "--page": "background/default" },
     "contrastPairs": [
       { "fg": "text/default", "bg": "tertiary/background/hover", "context": "text" }
     ],

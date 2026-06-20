@@ -36,9 +36,11 @@ def walk(node, p=""):
         return
     if "light" in node and "dark" in node and isinstance(node.get("light"), dict):
         name = p.strip("/")
-        if any(c in name for c in CATS) and "reverse" not in name and "on-light" not in name:
+        if any(c in name for c in CATS) and not any(x in name for x in ("reverse", "on-light", "on-dark")):
             l, dk = mval(node, "light"), mval(node, "dark")
-            if isinstance(dk, str) and dk.upper() == "#FFFFFF" and isinstance(l, str) and l.upper() != "#FFFFFF":
+            # white in dark = a white block hiding content, whether or not light is also white
+            # (the light==white case catches surfaces that never theme, e.g. a flat-white tooltip).
+            if isinstance(dk, str) and dk.upper() == "#FFFFFF":
                 if node.get("$darkNote"):
                     allowed.append((name, node["$darkNote"]))
                 else:

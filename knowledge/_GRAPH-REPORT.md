@@ -2,7 +2,7 @@
 
 > Generated derived view over `knowledge/` (Graphify-inspired; no external dependency). Regenerate after editing component metas or tokens: `python3 knowledge/tokens/_build_blast_radius.py`. Authored canon stays the source of truth; this is a generated dashboard.
 
-**Totals:** 32 components · 630 tokens defined · 84 tokens referenced by components · compliance: 31 rules x 32 components (31 SCs).
+**Totals:** 32 components · 639 tokens defined · 86 tokens referenced by components · compliance: 31 rules x 32 components (31 SCs).
 
 ## God-nodes — highest token blast radius
 
@@ -17,6 +17,7 @@ Change one of these and the listed number of components is affected. Use before 
 | `background/default` | 13 | Accordion, Cards, Dropdown, Input fields, Modals, Navigations… |
 | `text/disabled` | 10 | Avatar, Button, Dropdown, Input fields, Links, List items… |
 | `icon/disabled` | 9 | Avatar, Badge, Button, Dropdown, Input fields, Links… |
+| `tertiary/background/default` | 8 | Button, Cards, List items, Modals, Search field, Slider… |
 | `color/primary` | 7 | Badge, Cards, Hero, Links, List items, Navigations… |
 | `divider/border/subsection` | 7 | Divider, Dropdown, Input fields, Navigations, Pagination, Search field… |
 | `elevation/functional` | 7 | Dropdown, Input fields, Navigations, Notifications, Search field, Tabs… |
@@ -24,7 +25,6 @@ Change one of these and the listed number of components is affected. Use before 
 | `tertiary/background/hover` | 7 | Accordion, Avatar, Button, Cards, Reorder, Slider… |
 | `border/subtle` | 6 | Accordion, Avatar, Cards, Hero, Navigations, Slider |
 | `divider/border/section` | 6 | Divider, Dropdown, List items, Pagination, Tabs, Tooltip |
-| `primary/background/default` | 6 | Badge, Button, Hero, Links, Modals, Video player |
 
 ## Token-group reach (components using each group)
 
@@ -43,15 +43,15 @@ Change one of these and the listed number of components is affected. Use before 
 | `elevation/` | 7 |
 | `border/` | 6 |
 | `typography/` | 6 |
-| `secondary/` | 3 |
+| `secondary/` | 4 |
 | `scrollbar/` | 3 |
 | `blur/` | 3 |
+| `overlay/` | 3 |
 | `scale/` | 2 |
 | `image/` | 2 |
 | `border-width/` | 2 |
 | `focus/` | 2 |
 | `layout/` | 2 |
-| `overlay/` | 2 |
 | `timer/` | 1 |
 | `gap/` | 1 |
 | `progress/` | 1 |
@@ -87,7 +87,7 @@ Components whose `tokens` block still references a `(depricate)` token (count = 
 
 ## Orphans — defined tokens not referenced by any component meta
 
-546 of 630 defined tokens are unreferenced at the component layer. **Expected** for primitives and scale steps (consumed via semantic aliases, not bound directly); worth scanning the *semantic* groups for genuinely-dead tokens. By group:
+553 of 639 defined tokens are unreferenced at the component layer. **Expected** for primitives and scale steps (consumed via semantic aliases, not bound directly); worth scanning the *semantic* groups for genuinely-dead tokens. By group:
 
 | Group | Unreferenced |
 |---|---|
@@ -98,23 +98,23 @@ Components whose `tokens` block still references a `(depricate)` token (count = 
 | `gap/` | 27 |
 | `rag/` | 22 |
 | `padding/` | 20 |
+| `tabs/` | 20 |
 | `primary/` | 19 |
 | `secondary/` | 19 |
 | `tertiary/` | 19 |
 | `elevation/` | 15 |
 | `form/` | 15 |
-| `tabs/` | 14 |
+| `text/` | 10 |
 | `divider/` | 8 |
-| `text/` | 8 |
 | `breakpoint/` | 6 |
 | `motion/` | 6 |
 | `table/` | 6 |
 | `tooltip/` | 6 |
 | `border/` | 5 |
-| `overlay/` | 5 |
 | `blur/` | 4 |
 | `focus/` | 4 |
 | `image/` | 4 |
+| `overlay/` | 4 |
 | `progress/` | 4 |
 | `scrollbar/` | 4 |
 | `timer/` | 4 |

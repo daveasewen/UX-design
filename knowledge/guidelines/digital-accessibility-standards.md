@@ -24,6 +24,20 @@ The toolkit moved from WCAG 2.1 to **2.2 AA**, adding success criteria. Several 
 - **3.3.8 Accessible Authentication (Minimum)** (AA): no cognitive-function test for login → relevant to any auth flow.
 - (Plus the carried-over 2.1 criteria the metas already cite: 1.4.1 Use of Color, 1.4.3/1.4.11 Contrast, 2.1.1 Keyboard, 2.4.7 Focus Visible, 4.1.2 Name/Role/Value, 4.1.3 Status Messages, 1.4.13 Content on Hover/Focus, etc.)
 
+### Operational rule — 1.4.1 Use of Color (every state-bearing component)
+Meaning must **never** be carried by colour alone. Every status/severity/selection signal needs a
+**second, non-colour cue** — a text label, a distinct icon *shape*, or a typographic change.
+Verified across the gated canon (audit 2026-06-20, all PASS):
+
+- **Status indicator / RAG**: a coloured dot is only conformant **beside a text label** (the dot is `aria-hidden`,
+  the text carries meaning). A **standalone status dot with no text is non-conformant** — it fails 1.4.1, and
+  because `rag/warning` (#FFBB33) is only ~1.6:1 it also fails 1.4.11 as a lone graphic. Rule: no naked status dots.
+- **Notifications / inline errors**: pair colour with a distinct icon *shape* (triangle = error/warning, circle-tick =
+  success, circle-i = info) **and** heading/help text; set `aria-invalid` on errored inputs and `role=alert`/`status`.
+  Error vs warning must differ by text, not just the triangle's colour.
+- **Inline text links**: must carry a non-colour indicator — keep `text-decoration:underline` (with a focus cue that
+  isn't colour-only). Links distinguished from body text by colour alone fail 1.4.1.
+
 ## Sub-pages (create.hsbc, deeper — pull on demand)
 - **New standards** — who they're for and why they matter.
 - **WCAG 2.1 → 2.2 changes** — the exact new success criteria added.

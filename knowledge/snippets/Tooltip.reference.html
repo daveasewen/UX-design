@@ -22,8 +22,10 @@
   .demo-controls{margin-bottom:2.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
   .demo-controls button{font:inherit; font-size:13px; padding:8px 14px; border:1px solid var(--trigger); background:transparent; color:var(--text); cursor:pointer;}
   .tip-wrap{position:relative; display:inline-block;}
-  .trigger{width:22px; height:22px; padding:0; border:0; background:transparent; color:var(--trigger); cursor:help; display:inline-flex;
+  .trigger{position:relative; width:22px; height:22px; padding:0; border:0; background:transparent; color:var(--trigger); cursor:help; display:inline-flex;
     align-items:center; justify-content:center; vertical-align:middle;}
+  /* WCAG 2.5.8 — expand hit target to 24×24 without changing the visible glyph */
+  .trigger::before{content:""; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:24px; height:24px;}
   .trigger svg{width:22px; height:22px; display:block;}
   .trigger:focus-visible{outline:2px solid var(--focus); outline-offset:2px; border-radius:50%;}
   .tip{position:absolute; bottom:calc(100% + 12px); left:50%; transform:translateX(-50%) translateY(4px); width:max-content; max-width:240px;
@@ -33,6 +35,11 @@
     border-right:1px solid var(--tip-border); border-bottom:1px solid var(--tip-border); transform:translate(-50%,-50%) rotate(45deg);}
   .tip-wrap:hover .tip, .tip-wrap:focus-within .tip{opacity:1; transform:translateX(-50%); pointer-events:auto;}
   p{max-width:60ch; line-height:1.6;}
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
 </style>
 </head>
 <body data-theme="light">
@@ -48,7 +55,7 @@
   <script type="application/json" id="token-manifest">
   {
     "component": "Tooltip",
-    "vars": {
+    "vars": { "--focus": "focus/ring",
       "--surface": "background/default",
       "--tip-border": "elevation/border",
       "--shadow": "elevation/functional",

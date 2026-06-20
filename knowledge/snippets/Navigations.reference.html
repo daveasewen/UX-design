@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Navigations — reference implementation (gated)</title>
+<!-- CANONICAL REFERENCE for Navigations (gated) — BASELINE, FLAGGED FOR REVIEW. A web masthead:
+     logo + primary nav (aria-current) + actions, on background/default with a bottom rule. The full
+     family (logged-in/out, mega-menu, mobile drawer, app tab-bar, deprecated surface tokens) is NOT
+     covered here — this is a token-faithful starting point for Dave to extend. -->
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
+  [data-theme="light"]{ --surface:#FFFFFF; --text:#333333; --icon:#333333; --rule:#D7D8D6; --logo:#DB0011; --hover:#F3F3F3; --focus:#305A85; --page:#FFFFFF; }
+  [data-theme="dark"]{ --surface:#000000; --text:#FFFFFF; --icon:#FFFFFF; --rule:#404040; --logo:#DB0011; --hover:#212121; --focus:#4587A7; --page:#000000; }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{padding:1.25rem 2rem 0; display:flex; gap:.75rem; align-items:center; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 14px; border:1px solid var(--icon); background:transparent; color:var(--text); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .masthead{display:flex; align-items:center; gap:28px; height:64px; padding:0 2rem; background:var(--surface); border-bottom:1px solid var(--rule);}
+  .logo{font-weight:700; font-size:18px; color:var(--logo); letter-spacing:-.01em;}
+  nav.main{display:flex; gap:4px; margin-right:auto;}
+  nav.main a{padding:0 14px; height:64px; display:inline-flex; align-items:center; color:var(--text); text-decoration:none; font:500 15px/1 var(--font);}
+  nav.main a:hover{background:var(--hover);}
+  nav.main a[aria-current="page"]{box-shadow:inset 0 -3px 0 var(--logo);}
+  nav.main a:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .actions{display:flex; gap:6px;}
+  .actions button{width:44px; height:44px; border:0; background:transparent; color:var(--icon); cursor:pointer; display:inline-flex; align-items:center; justify-content:center;}
+  .actions button:hover{background:var(--hover);} .actions svg{width:22px; height:22px; fill:currentColor;}
+  .actions button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Navigations — canonical reference (baseline, flagged)</span></div>
+  <header class="masthead">
+    <span class="logo" aria-label="HSBC">HSBC</span>
+    <nav class="main" aria-label="Primary">
+      <a href="#" aria-current="page">Accounts</a><a href="#">Payments</a><a href="#">Cards</a><a href="#">Support</a>
+    </nav>
+    <div class="actions">
+      <button aria-label="Search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 16l4 4" stroke="currentColor" stroke-width="2"/></svg></button>
+      <button aria-label="Account"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg></button>
+    </div>
+  </header>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Navigations",
+    "vars": { "--surface": "background/default", "--text": "text/default", "--icon": "icon/default", "--rule": "divider/border/section", "--logo": "primary/background/default", "--hover": "form/background/hover", "--focus": "focus/ring", "--page": "background/default" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "icon/default", "bg": "background/default", "context": "ui" }
+    ],
+    "requiredAria": ["<nav", "aria-current", "aria-label"]
+  }
+  </script>
+  <script>document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });</script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video player — reference implementation (gated)</title>
+<!-- CANONICAL REFERENCE for Video player (gated) — BASELINE. Controls overlaid on the video sit on a
+     dark scrim so the white controls (icon/default-reverse) keep contrast regardless of the frame;
+     play/scrub accent = primary red. Caption/label = text/default on the page. Full captions/quality/
+     fullscreen behaviour is a starting point — extend per the meta. -->
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
+  [data-theme="light"]{ --text:#333333; --muted:#767676; --page:#FFFFFF; }
+  [data-theme="dark"]{ --text:#FFFFFF; --muted:#9a9a9a; --page:#000000; }
+  :root{ --controls:#FFFFFF; --accent:#DB0011; --scrim:#000000D9; --focus:#4d9fff; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 14px; border:1px solid var(--muted); background:transparent; color:var(--text); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--muted); outline-offset:2px;}
+  .player{position:relative; width:100%; max-width:560px; aspect-ratio:16/9; background:linear-gradient(135deg,#2a2a30,#0e0e12); overflow:hidden;}
+  .bigplay{position:absolute; inset:0; margin:auto; width:64px; height:64px; border:0; border-radius:50%; background:var(--accent); color:#fff; cursor:pointer; display:inline-flex; align-items:center; justify-content:center;}
+  .bigplay svg{width:26px; height:26px; fill:currentColor;}
+  .bigplay:focus-visible{outline:3px solid var(--focus); outline-offset:3px;}
+  .bar{position:absolute; left:0; right:0; bottom:0; display:flex; align-items:center; gap:12px; padding:10px 12px; background:linear-gradient(transparent, var(--scrim)); color:var(--controls);}
+  .bar button{width:32px; height:32px; border:0; background:transparent; color:var(--controls); cursor:pointer; display:inline-flex; align-items:center; justify-content:center;}
+  .bar button svg{width:18px; height:18px; fill:currentColor;}
+  .bar button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .scrub{flex:1; height:4px; background:rgba(255,255,255,.3); position:relative;}
+  .scrub .played{position:absolute; left:0; top:0; bottom:0; width:35%; background:var(--accent);}
+  .time{font:400 12px/1 var(--font); color:var(--controls); min-width:78px; text-align:right;}
+  .caption{margin-top:14px; font:500 14px/1.4 var(--font); color:var(--text);}
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Video player — canonical reference (baseline)</span></div>
+
+  <div class="player" role="group" aria-label="Video player">
+    <button class="bigplay" aria-label="Play video"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></button>
+    <div class="bar">
+      <button aria-label="Play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></button>
+      <div class="scrub" role="slider" aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="35"><span class="played"></span></div>
+      <span class="time">1:12 / 3:24</span>
+      <button aria-label="Mute"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/></svg></button>
+      <button aria-label="Fullscreen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
+    </div>
+  </div>
+  <p class="caption">How to set up a standing order — 3:24</p>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Video player",
+    "vars": { "--text": "text/default", "--page": "background/default" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" }
+    ],
+    "requiredAria": ["aria-label", "role=\"slider\""]
+  }
+  </script>
+  <script>document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });</script>
+</body>
+</html>

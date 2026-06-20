@@ -24,12 +24,16 @@ STEPS = [
     ("compliance knowledge graph", "compliance/_build_compliance_kg.py"),
     ("token blast-radius + graph report", "tokens/_build_blast_radius.py"),
     ("cross-reference index", "_build_xref_index.py"),
+    ("sutherland acceptance fixtures", "_build_sutherland_fixtures.py"),
+    ("states-completeness probe (advisory)", "_build_states_probe.py"),
     ("review queue", "_build_review_queue.py"),
     ("dark-mode coverage audit", "_build_dark_mode_audit.py"),
     ("text/icon contrast audit", "_build_surface_contrast_audit.py"),
     ("indicator/accent contrast audit", "_build_indicator_contrast_audit.py"),
     ("dark-surface flatness gate", "_validate_dark_surfaces.py"),
     ("snippet gate", "_validate_snippets.py"),
+    ("a11y gate", "_validate_a11y.py"),
+    ("coverage gate", "_validate_coverage.py"),
     ("integrity lint (gate)", "_build_integrity.py"),
 ]
 
@@ -49,6 +53,12 @@ for i, (label, rel) in enumerate(STEPS, 1):
             rc = rc or r.returncode
         elif "snippet" in label:
             print(f"\n❌ snippet gate failed (exit {r.returncode}) — see knowledge/_SNIPPET-AUDIT.md")
+            rc = rc or r.returncode
+        elif "a11y" in label:
+            print(f"\n❌ a11y gate failed (exit {r.returncode}) — see knowledge/_A11Y-GATE.md")
+            rc = rc or r.returncode
+        elif "coverage" in label:
+            print(f"\n❌ coverage gate failed (exit {r.returncode}) — see knowledge/_COVERAGE-GATE.md")
             rc = rc or r.returncode
         elif "surface" in label:
             print(f"\n❌ dark-surface gate failed (exit {r.returncode}) — see knowledge/_DARK-SURFACE-AUDIT.md")

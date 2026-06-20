@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reorder — reference implementation (gated)</title>
+<!-- CANONICAL REFERENCE for Reorder (gated). Grab handle (icon/default, hover tertiary/background/hover)
+     + a green drop indicator (rag/success). Drag is NOT the only way (2.5.7): each row has keyboard
+     Move up / Move down buttons. aria-labels name the controls. -->
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
+  [data-theme="light"]{ --surface:#FFFFFF; --hover:#F3F3F3; --text:#333333; --icon:#333333; --drop:#00847F; --divider:#D7D8D6; --focus:#305A85; --page:#FFFFFF; }
+  [data-theme="dark"]{ --surface:#1D1D1D; --hover:#474747; --text:#FFFFFF; --icon:#FFFFFF; --drop:#00847F; --divider:#404040; --focus:#4587A7; --page:#000000; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:1.75rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 14px; border:1px solid var(--icon); background:transparent; color:var(--text); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  ul.reorder{list-style:none; margin:0; padding:0; max-width:420px; background:var(--surface); border:1px solid var(--divider);}
+  ul.reorder li{display:flex; align-items:center; gap:12px; min-height:52px; padding:0 12px;}
+  ul.reorder li + li{border-top:1px solid var(--divider);}
+  .handle{flex:none; width:32px; height:32px; border:0; background:transparent; color:var(--icon); cursor:grab; display:inline-flex; align-items:center; justify-content:center;}
+  .handle:hover{background:var(--hover);} .handle svg{width:18px; height:18px; fill:currentColor;}
+  .handle:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .name{flex:1; font:500 15px/1.3 var(--font);}
+  .moves{display:flex; gap:4px;}
+  .moves button{width:30px; height:30px; border:0; background:transparent; color:var(--icon); cursor:pointer; display:inline-flex; align-items:center; justify-content:center;}
+  .moves button:hover{background:var(--hover);} .moves button svg{width:14px; height:14px; fill:currentColor;}
+  .moves button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Reorder — canonical reference</span></div>
+
+  <ul class="reorder" id="list">
+    <li><button class="handle" aria-label="Drag to reorder Checking"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M6 3h2v2H6V3Zm4 0h2v2h-2V3ZM6 8h2v2H6V8Zm4 0h2v2h-2V8ZM6 13h2v2H6v-2Zm4 0h2v2h-2v-2Z"/></svg></button><span class="name">Checking</span><span class="moves"><button aria-label="Move Checking up"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 4l6 7H3z"/></svg></button><button aria-label="Move Checking down"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 14L3 7h12z"/></svg></button></span></li>
+    <li><button class="handle" aria-label="Drag to reorder Savings"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M6 3h2v2H6V3Zm4 0h2v2h-2V3ZM6 8h2v2H6V8Zm4 0h2v2h-2V8ZM6 13h2v2H6v-2Zm4 0h2v2h-2v-2Z"/></svg></button><span class="name">Savings</span><span class="moves"><button aria-label="Move Savings up"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 4l6 7H3z"/></svg></button><button aria-label="Move Savings down"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 14L3 7h12z"/></svg></button></span></li>
+    <li><button class="handle" aria-label="Drag to reorder ISA"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M6 3h2v2H6V3Zm4 0h2v2h-2V3ZM6 8h2v2H6V8Zm4 0h2v2h-2V8ZM6 13h2v2H6v-2Zm4 0h2v2h-2v-2Z"/></svg></button><span class="name">ISA</span><span class="moves"><button aria-label="Move ISA up"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 4l6 7H3z"/></svg></button><button aria-label="Move ISA down"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 14L3 7h12z"/></svg></button></span></li>
+  </ul>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Reorder",
+    "vars": { "--surface": "tertiary/background/default", "--hover": "tertiary/background/hover", "--text": "text/default", "--icon": "icon/default", "--drop": "rag/success", "--divider": "divider/border/section", "--focus": "focus/ring", "--page": "background/default" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "icon/default", "bg": "tertiary/background/default", "context": "ui" },
+      { "fg": "rag/success", "bg": "background/default", "context": "ui" }
+    ],
+    "requiredAria": ["aria-label"]
+  }
+  </script>
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    document.querySelectorAll('.moves button').forEach((btn,i)=> btn.addEventListener('click', ()=>{ const li=btn.closest('li'); const up=btn.getAttribute('aria-label').endsWith('up');
+      if(up && li.previousElementSibling) li.parentNode.insertBefore(li, li.previousElementSibling);
+      if(!up && li.nextElementSibling) li.parentNode.insertBefore(li.nextElementSibling, li); }));
+  </script>
+</body>
+</html>

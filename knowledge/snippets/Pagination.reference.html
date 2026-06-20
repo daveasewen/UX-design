@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pagination — reference implementation (gated)</title>
+<!-- CANONICAL REFERENCE for Pagination (gated). Prev/next chevrons + page-number links; the current
+     page is marked with aria-current AND a border (tertiary/border/default), not colour alone (1.4.1).
+     nav landmark; ≥44px targets. -->
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
+  [data-theme="light"]{ --text:#333333; --disabled:#D7D8D6; --icon:#333333; --current-bd:#000000; --hover:#F3F3F3; --focus:#305A85; --page:#FFFFFF; }
+  [data-theme="dark"]{ --text:#FFFFFF; --disabled:#767676; --icon:#FFFFFF; --current-bd:#767676; --hover:#212121; --focus:#4587A7; --page:#000000; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:2rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 14px; border:1px solid var(--icon); background:transparent; color:var(--text); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  nav.pg ul{list-style:none; display:flex; gap:4px; align-items:center; margin:0; padding:0;}
+  .pg a, .pg .ctrl{min-width:44px; height:44px; display:inline-flex; align-items:center; justify-content:center; padding:0 8px;
+    font:400 15px/1 var(--font); color:var(--text); text-decoration:none; cursor:pointer; border:1px solid transparent; background:transparent;}
+  .pg a:hover, .pg .ctrl:hover{background:var(--hover);}
+  .pg a:focus-visible, .pg .ctrl:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .pg [aria-current="page"]{border-color:var(--current-bd); font-weight:600;}
+  .pg .ctrl[disabled]{color:var(--disabled); cursor:not-allowed;}
+  .pg svg{width:16px; height:16px; fill:currentColor;}
+  .ellipsis{min-width:24px; text-align:center; opacity:.6;}
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Pagination — canonical reference</span></div>
+
+  <nav class="pg" aria-label="Pagination">
+    <ul>
+      <li><button class="ctrl" aria-label="Previous page"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.85 1 5.85 9l8 8H12.15L4.15 9l8-8H13.85Z"/></svg></button></li>
+      <li><a href="#">1</a></li>
+      <li><a href="#" aria-current="page" aria-label="Page 2, current page">2</a></li>
+      <li><a href="#">3</a></li>
+      <li><a href="#">4</a></li>
+      <li><span class="ellipsis" aria-hidden="true">…</span></li>
+      <li><a href="#">12</a></li>
+      <li><button class="ctrl" aria-label="Next page"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.15 17 12.15 9 4.15 1H5.85L13.85 9 5.85 17H4.15Z"/></svg></button></li>
+    </ul>
+  </nav>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Pagination",
+    "vars": { "--text": "text/default", "--disabled": "text/disabled", "--icon": "icon/default", "--current-bd": "tertiary/border/default", "--hover": "form/background/hover", "--focus": "focus/ring", "--page": "background/default" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "tertiary/border/default", "bg": "background/default", "context": "ui" },
+      { "fg": "icon/default", "bg": "background/default", "context": "ui" }
+    ],
+    "requiredAria": ["<nav", "aria-current", "aria-label"]
+  }
+  </script>
+  <script>document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });</script>
+</body>
+</html>

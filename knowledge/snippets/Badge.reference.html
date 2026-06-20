@@ -33,6 +33,11 @@
   .badge.dot{min-width:0; width:20px; height:20px; padding:0; top:-4px; right:-6px;}   /* active state: prominent red dot */
   /* standalone number badge */
   .badge.standalone{position:static; border:0; height:24px;}
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
 </style>
 </head>
 <body data-theme="light">

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quick actions — reference implementation (gated)</title>
+<!-- CANONICAL REFERENCE for Quick actions (gated). A grid of icon+label shortcut buttons. icon/default
+     + text/default; pressed uses the inverting fill. ≥44px targets; each has an accessible name. -->
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
+  [data-theme="light"]{ --surface:#FFFFFF; --hover:#F3F3F3; --pressed:#767676; --text:#333333; --icon:#333333; --on-pressed:#FFFFFF; --border:#D7D8D6; --focus:#305A85; --page:#FFFFFF; }
+  [data-theme="dark"]{ --surface:#1D1D1D; --hover:#474747; --pressed:#474747; --text:#FFFFFF; --icon:#FFFFFF; --on-pressed:#FFFFFF; --border:#404040; --focus:#4587A7; --page:#000000; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:2rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
+  .demo-controls button.tg{font:inherit; font-size:13px; padding:8px 14px; border:1px solid var(--pressed); background:transparent; color:var(--text); cursor:pointer;}
+  .demo-controls button.tg:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .grid{display:grid; grid-template-columns:repeat(4,96px); gap:12px;}
+  .qa{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; height:88px; border:1px solid var(--border); background:var(--surface); color:var(--text); cursor:pointer; font:500 12px/1.2 var(--font);}
+  .qa:hover{background:var(--hover);}
+  .qa:active{background:var(--pressed); color:var(--on-pressed);}
+  .qa:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .qa svg{width:24px; height:24px; fill:currentColor;}
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls"><button class="tg" id="themeToggle" type="button">◐ Toggle theme</button><span>Quick actions — canonical reference</span></div>
+
+  <div class="grid" role="group" aria-label="Quick actions">
+    <button class="qa"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M3 12h18" stroke="currentColor" stroke-width="2" fill="none"/></svg>Transfer</button>
+    <button class="qa"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 10h16" stroke="currentColor" stroke-width="2"/></svg>Pay bill</button>
+    <button class="qa"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v10M9 9.5h4.5a1.5 1.5 0 0 1 0 3H9m1 3h4" stroke="currentColor" stroke-width="2" fill="none"/></svg>Top up</button>
+    <button class="qa"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l18-7-7 18-3-7-8-4z" fill="none" stroke="currentColor" stroke-width="2"/></svg>Send</button>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Quick actions",
+    "vars": { "--surface": "tertiary/background/default", "--hover": "tertiary/background/hover", "--text": "text/default", "--icon": "icon/default", "--border": "border/subtle", "--focus": "focus/ring", "--page": "background/default" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "icon/default", "bg": "tertiary/background/default", "context": "ui" }
+    ],
+    "requiredAria": ["<button", "aria-label"]
+  }
+  </script>
+  <script>document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });</script>
+</body>
+</html>
