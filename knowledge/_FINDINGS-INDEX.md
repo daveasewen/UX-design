@@ -63,6 +63,16 @@ Recurring sets: `interactive(depricate)/on-light/surface/primary/*` (list/nav/qu
 - Keyboard audit (2.1.1/2.4.3) — all PASS (explicit handlers for combobox/modal/tabs; native semantics elsewhere); in `_A11Y-AUDIT.md`.
 - Design-system audit — `_DESIGN-SYSTEM-AUDIT.md`: metas 32/32 complete; naming clean bar 1 Figma-mirrored
   camelCase; 43 unused tokens categorised (31 future data-viz palette, 2 pending Tabs wire-in, 2 tooltip rebind, 8 deprecation candidates).
+- **States-completeness probe added (advisory, NON-gating)** — `_build_states_probe.py`, build step 5/14.
+  Maps which snippets demonstrate empty/loading/error/overflow vs. a curated applicability map; emits
+  `_STATES-COMPLETENESS.md` + `tokens/_manifests/states-probe.json`. 41/51 applicable states shown; 10
+  advisory gaps (mostly empty/loading — token-canon shows the populated/default visual). Applicability calls
+  are heuristic — confirm in `STATE_APPLICABILITY`. Always exits 0; never gates (tiering is strategy-owned).
+- **Integrity warnings de-noised (20 → 3)** — `_build_integrity.py` TOKENS pass now skips deprecated/migration
+  prose (the §4 backlog notes record OLD paths that are *expected* not to resolve). WARNING pass only —
+  ERROR/REBIND logic + exit codes unchanged. Fixed 2 plain-English false matches (button `(primary/secondary)`,
+  hero `blur/surface` shorthand; no token/appearance change). Residual 3 are intentional: Modals Figma-name
+  note + Tabs proposed `focus/ring` tokens (→ §6 sign-off). Full triage in `_INTEGRITY-WARNINGS-TRIAGE.md`.
 
 ## 6. Open items needing Dave (consolidated)
 - **DECIDE:** `text/secondary` values (V1), inverting-label canon, `focus/ring` sign-off, `rag/warning` standalone-dot rule.
