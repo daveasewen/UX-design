@@ -97,6 +97,11 @@ for f in metas:
     tb = d.get("tokens", {})
     for v in (tb.values() if isinstance(tb, dict) else []):
         if not isinstance(v, str): continue
+        # A value that documents a deprecated/migration binding records the OLD path
+        # being migrated away from (often with a "→ rebind X" target). Those old paths
+        # are EXPECTED not to resolve — don't warn on them. (Live rebind targets are
+        # still ERROR-checked by the REBIND pass.) WARNING pass only; ERRORs unaffected.
+        if "depricate" in v.lower() or "deprecated" in v.lower(): continue
         for cand in TOKPATH.findall(v):
             top = cand.split("/")[0]
             if top not in store_groups: continue
