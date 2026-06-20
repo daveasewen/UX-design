@@ -6,7 +6,7 @@ when you're back; nothing here is blocking.
 
 | # | Item | What to check | Where |
 |---|------|---------------|-------|
-| V1 | `text/secondary` token (#545454 light / #9B9B9B dark) | Does the de-emphasised text read right against `text/default`? Adjust value if too light/dark. | List items, Cards snippets; `tokens/semantic-colour.json` |
+| ~~V1~~ | ~~`text/secondary` token~~ | ✅ **SIGNED OFF (Dave, 2026-06-20)** — visual review, values unchanged; promoted to `asserted`. (Inverting-label canon confirmed in the same pass.) | — |
 | V2 | 4 baseline organisms | Layout/canon review — these were built as baselines, not yet design-signed. | Navigations, Headers, Hero, Video-player `.reference.html` |
 | V3 | Screen-reader / keyboard pass | Static a11y is fixed + gated, but AT behaviour needs a human: Modal focus-trap + return, Dropdown listbox announce order, Tabs arrow-key/roving-tabindex. | `_A11Y-AUDIT.md` §"Priority for the human pass" |
 | V4 | Zoom / reflow (1.4.10) | 200% zoom + text-spacing on the organisms — does layout hold? | organism snippets |

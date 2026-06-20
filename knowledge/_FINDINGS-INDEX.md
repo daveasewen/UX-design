@@ -21,18 +21,19 @@ page surfaces; 30 "identical both modes" are intentional (brand red, the mode-in
 overlays). The `dark-surface` gate was tightened to also catch white-in-dark when light is white too.
 
 ## 2. Token gaps / DECISIONS for Dave
-- **`text/secondary` token — ADDED 2026-06-20 (review-tagged, awaiting Dave's sign-off).** `#545454` light
-  (grey/700, 7.6:1 on white) / `#9B9B9B` dark (grey/500, 7.6:1 on black) — both comfortably ≥4.5:1 and clearly
-  dimmer than `text/default`. List items + Cards now bind their secondary text to it (was a literal grey).
-  Same pass token-tracked the focus ring (`focus/ring`) in 5 snippets that used it but hadn't declared it
-  (Avatar, Dropdown, Selection controls, Tags, Tooltip) — now gated. ACTION: confirm or adjust the two values.
+- **`text/secondary` token — ✅ SIGNED OFF as canon (Dave, 2026-06-20; visual review, values unchanged).**
+  `#545454` light (grey/700, 7.6:1 on white) / `#9B9B9B` dark (grey/500, 7.6:1 on black) — both comfortably
+  ≥4.5:1 and clearly dimmer than `text/default` (12.6:1 / 21:1). Promoted `review`→`asserted`. List items +
+  Cards bind their secondary text to it. Same pass token-tracked the focus ring (`focus/ring`) in 5 snippets
+  that used it but hadn't declared it (Avatar, Dropdown, Selection controls, Tags, Tooltip) — now gated.
 - **`rag/warning` (#FFBB33)** is ~1.6:1 on white and on its tint — fails 1.4.11 as a standalone dot/accent.
   Meaning is carried by icon shape + text; acceptable, but a stand-alone warning dot needs an outline/icon.
 - **`focus/ring`** — ✅ **SIGNED OFF as canon (Dave, 2026-06-20).** Promoted `review`→`asserted` in
   `semantic-colour.json` (focus/ring) + `layout.json` (focus/ring-width|offset); guideline status updated.
   No canonical Figma primitive exists; agreed standard stands until one is introduced.
-- **Inverting label pattern** (`text/on-inverse` #FFF/#333) used by secondary Button, checked controls,
-  View options, ghosted disabled — confirm as canon.
+- **Inverting label pattern** (`text/on-inverse` #FFF/#333) — ✅ **CONFIRMED as canon (Dave, 2026-06-20)**
+  for secondary Button, primary pressed, checked selection controls, View options selected, and ghosted
+  disabled. 21:1 light / 12.6:1 dark; binding the flat `text/reverse` here would give white-on-white (1.0:1).
 - **Tabs rewire** — the Tabs component still binds primitives/`tertiary/*`; `tabs/hover`+`tabs/pressed` now
   exist (fix #7) so it can rewire fully. Part of the Figma dark write-back (pending go-ahead).
 
@@ -82,9 +83,13 @@ Recurring sets: `interactive(depricate)/on-light/surface/primary/*` (list/nav/qu
 - **`tooltip/*` deprecated (Dave, 2026-06-20)** — `tooltip/background` + `tooltip/border` marked `$deprecated`
   in `semantic-colour.json` in favour of the elevation pattern. Orphan tokens (0 refs); no snippet/appearance
   change; queued for bulk-delete with Sutherland. Audit §c marked RESOLVED.
+- **`text/secondary` + inverting-label signed off (Dave, 2026-06-20)** — visual review (light+dark, contrast
+  ratios). `text/secondary` promoted `review`→`asserted` (values unchanged); `text/on-inverse` confirmed canon
+  across secondary Button / primary pressed / checked controls / View options / ghosted disabled. V1 cleared
+  from `_VISUAL-CHECK-QUEUE.md`.
 
 ## 6. Open items needing Dave (consolidated)
-- **DECIDE:** `text/secondary` values (V1), inverting-label canon, `rag/warning` standalone-dot rule. (`focus/ring` ✅ signed off 2026-06-20 — see §2.)
+- **DECIDE:** `rag/warning` standalone-dot rule. (✅ signed off 2026-06-20: `focus/ring`, `tooltip/*` deprecation, `text/secondary` values, inverting-label canon — see §2.)
 - **VISUAL/AT:** 4 baseline organisms (V2), screen-reader + keyboard pass (V3), zoom/reflow (V4) — see `_VISUAL-CHECK-QUEUE.md`.
 - **PARKED:** deprecated-binding migration (§4) → Sutherland; Figma dark write-back → pending go-ahead.
 - **TOKEN HYGIENE (from `_DESIGN-SYSTEM-AUDIT.md`):** confirm 8 dead button-border/misc tokens; verify the
