@@ -69,6 +69,15 @@ etc.) to see what the *editor*/*generation* space already solves so we don't reb
 - Which candidate checks are **blocking** vs **advisory** in v1?
 - How much of the **web/API/collaboration** slice is needed just to support solo+collaborative intake (vs deferring)?
 
+### FLAGGED FROM BUILD CHAT 2026-06-20 — high-res snippet set as a prototyping fallback
+**Proposal (Dave):** systematically refine all 32 components to the **Tabs bar** (Tabs = the agreed "solid" exemplar:
+interactive, full-state, motion + reduced-motion, complete AT, live theming, token-faithful — see `knowledge/snippets/Tabs.reference.html`).
+Method = the **multi-solution loop above**: canon + 3–4 *unconstrained* variants → dual critique → refine → promote winner.
+Output = a **high-res interactive snippet set** serving as **one of two prototyping fallbacks while Sutherland is unavailable** (the other = **Figma Make**), and for teams wanting quick-and-dirty prototypes.
+**Why it's a strategy call (not just build):** it commits a 32-component program and *positions* this set in the product's prototyping story (lane D). The build chat owns the rubric, the per-component refine loop, and promotion; it should NOT commit the rollout or the fallback positioning unilaterally.
+**Decisions needed:** (1) commit the full rollout, or pilot-then-decide? (2) confirm the **two-fallback** model (high-res snippets + Figma Make) and when each is used; (3) does the refined set feed the **prototype lane** (one guided-JTBD lane) or sit beside it? (4) does "promote winner to canon" need a new gate/tier, or stay within the existing exploration→canon two-tier?
+**Already in hand:** fitness-test pattern piloted (`knowledge/_FITNESS-TEST-tabs.md`); states-completeness probe measures one rubric dimension across all 32 (`knowledge/_STATES-COMPLETENESS.md`). **Agreed sequence: flag to strategy (this) → rubric + runbook → run the loop.** Build chat is holding phases 2–3 pending this decision.
+
 ## Pointers (don't duplicate)
 - Current KB state + gates: `knowledge/_NEXT-SESSION.md`, `knowledge/_FINDINGS-INDEX.md`.
 - What needs Dave's eyes: `knowledge/_VISUAL-CHECK-QUEUE.md`.
