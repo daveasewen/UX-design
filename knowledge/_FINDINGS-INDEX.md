@@ -92,6 +92,7 @@ Recurring sets: `interactive(depricate)/on-light/surface/primary/*` (list/nav/qu
 - **DECIDE:** `rag/warning` standalone-dot rule. (✅ signed off 2026-06-20: `focus/ring`, `tooltip/*` deprecation, `text/secondary` values, inverting-label canon — see §2.)
 - **VISUAL/AT:** 4 baseline organisms (V2), screen-reader + keyboard pass (V3), zoom/reflow (V4) — see `_VISUAL-CHECK-QUEUE.md`.
 - **PARKED:** deprecated-binding migration (§4) → Sutherland; Figma dark write-back → pending go-ahead.
+- **CODE CONNECT (lane D / strategy-owned):** last-mile Figma→Sutherland mapping; runs *after* the React lib lands + passes fixtures (step 3). Sutherland fixtures can drive the mappings. Placement note: `_CODE-CONNECT-PLACEMENT.md`.
 - **TOKEN HYGIENE (from `_DESIGN-SYSTEM-AUDIT.md`):** confirm 8 dead button-border/misc tokens; verify the
   `subsectionInset` camelCase against Figma. Bundle with Sutherland (real usage confirms what's actually consumed).
 - **`tooltip/*` deprecation — ✅ DECIDED (Dave, 2026-06-20): DEPRECATE** in favour of the mode-aware elevation
