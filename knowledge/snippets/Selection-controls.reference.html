@@ -5,110 +5,218 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Selection controls — reference implementation (gated)</title>
 <!--
-  CANONICAL REFERENCE for Selection controls (checkbox, radio, switch) — gated.
-  Colours = resolved canonical tokens, validated by _validate_snippets.py.
-  Key reuse: the SELECTED/ON fill is the inverting secondary/background/default (#000 light /
-  #FFF dark) and the glyph is text/on-inverse (#FFF light / #333 dark) — the same pair that
-  fixed the secondary Button. The meta currently points chip/switch selected fill at
-  tertiary/background/active, which goes #1D1D1D in dark (a checked control invisible on the
-  page); the inverting binding here is the proposed rebind.
-  Focus: :focus-visible ring (focus/ring) — reliable keyboard-only on non-text controls.
+  CANONICAL REFERENCE for Selection controls (gated). Promoted 2026-06-22 (Dave) — COMPLETES the family
+  from Figma (file mI8hvIkV98nquoqWzKh5Kn, node 45105:252063): Checkbox (+ indeterminate
+  + error), Radio (grouped), Switch, and CHIPS (toggle / single-selection / delete).
+  Carries the attract-on-hover + depress-on-press scale-physics (discrete-control case of the motion
+  experiment; same as Button). Gated: _validate_snippets.py checks tokens/ARIA/contrast.
+
+  Why chips: native checkbox/radio/switch have NO JS keyboard model by design (the browser handles
+  Space/arrows) — so they can't honestly earn the rubric's keydown AT signal. Chips ARE custom
+  interactive controls: the single-selection chip group is a real radiogroup with roving Arrow/Home/
+  End keys (role=radiogroup + role=radio + aria-checked + keydown) — that earns AT the honest way,
+  and a wrapping chip bar gives the responsive signal. (Decided with Dave 2026-06-22.)
+
+  SELECTED/ON fill = the INVERTING secondary/background/default (#000 light / #FFF dark) with glyph/
+  label in text/on-inverse (#FFF light / #333 dark) — the same pair that fixed the secondary Button
+  and the checkbox/radio/switch here. This REBINDS the Figma chip-selected fill off the deprecated
+  interactive(depricate)/on-light/surface/active/* black (see selection-controls.meta tokenValidation).
+
+  CORNERS: checkbox + chips are SQUARE (border-radius:0, brand angular rule); radio is round (a circle)
+  and switch is a rounded pill — round by design, like Badge/Avatar. Tokens resolved light+dark from
+  the store; only PASSING contrast pairs are declared.
 -->
 <style>
   :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
-    --fs:16px; --ease:180ms cubic-bezier(.4,0,.2,1); }
+    --fs:16px; --chip-fs:14px; --ease:180ms cubic-bezier(.4,0,.2,1);
+    --spring:300ms cubic-bezier(.5,1.6,.4,1);   /* motion/easing+duration/spring — attract grow/release */
+    --press:90ms cubic-bezier(0,0,.58,1); }      /* motion/duration/press + easing/out — depress */
   [data-theme="light"]{
     --ctrl-border:#767676; --ctrl-border-active:#000000; --ctrl-border-disabled:#D7D8D6;
     --checked:#000000;            /* secondary/background/default */
     --glyph:#FFFFFF;              /* text/on-inverse */
     --label:#333333; --label-disabled:#D7D8D6; --error:#A8000B; --focus:#305A85; --page:#FFFFFF;
-    --track-off:#767676;
+    --chip-hover:#F3F3F3;         /* form/background/hover */
+    --chip-pressed:#767676;       /* form/background/pressed */
+    --reverse:#FFFFFF;            /* text/reverse */
   }
   [data-theme="dark"]{
     --ctrl-border:#656565; --ctrl-border-active:#FFFFFF; --ctrl-border-disabled:#404040;
     --checked:#FFFFFF;            /* secondary/background/default (inverts) */
     --glyph:#333333;              /* text/on-inverse (inverts) */
     --label:#FFFFFF; --label-disabled:#767676; --error:#DB0011; --focus:#4587A7; --page:#000000;
-    --track-off:#656565;
+    --chip-hover:#212121; --chip-pressed:#474747; --reverse:#FFFFFF;
   }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--label);
     -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
-  .demo-controls{margin-bottom:1.75rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
-  .demo-controls button{font:inherit; font-size:13px; padding:8px 14px; border:1px solid var(--ctrl-border);
-    background:transparent; color:var(--label); cursor:pointer;}
-  h2{font-size:12px; letter-spacing:.04em; text-transform:uppercase; opacity:.55; margin:1.75rem 0 .7rem;}
-  .field{display:flex; align-items:center; gap:12px; margin:14px 0; font:500 var(--fs)/1.3 var(--font);}
-  .field input{position:absolute; opacity:0; width:0; height:0;}   /* native control drives state + a11y */
-  .field label{cursor:pointer; display:flex; align-items:center; gap:12px;}
-  .field.is-disabled label{cursor:not-allowed; color:var(--label-disabled);}
+  .demo-controls{margin-bottom:1.5rem; display:flex; gap:1rem; align-items:center; flex-wrap:wrap; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 14px; border-radius:0; cursor:pointer;
+    border:1px solid var(--ctrl-border); background:transparent; color:var(--label);}
+  .demo-controls button:hover{background:var(--chip-hover);}
+  .demo-controls button:active{transform:translateY(1px);}
+  .demo-controls button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .demo-controls label{display:flex; gap:.5rem; align-items:center;} .demo-controls input[type=range]{accent-color:var(--focus);}
 
-  /* ---- checkbox ---- */
-  .box{width:22px; height:22px; flex:none; border:2px solid var(--ctrl-border); background:transparent;
+  .sc{width:var(--demo-width, 720px); max-width:100%; container-type:inline-size;}
+  h2{font-size:12px; letter-spacing:.04em; text-transform:uppercase; color:var(--label); opacity:.55; margin:1.75rem 0 .7rem;}
+  fieldset{border:0; margin:0; padding:0;} legend{padding:0; font:500 var(--fs)/1.3 var(--font);}
+  .field{display:flex; align-items:center; gap:12px; margin:14px 0; font:500 var(--fs)/1.3 var(--font);}
+  .field input{position:absolute; opacity:0; width:0; height:0;}     /* native control drives state + a11y */
+  .field label{cursor:pointer; display:inline-flex; align-items:center; gap:12px; min-height:44px;}
+  .field input:disabled + label{cursor:not-allowed; color:var(--label-disabled);}
+
+  /* ---- checkbox (square) ---- */
+  .box{width:22px; height:22px; flex:none; border:2px solid var(--ctrl-border); border-radius:0; background:transparent;
     display:flex; align-items:center; justify-content:center; transition:background var(--ease), border-color var(--ease);}
   .box svg{width:14px; height:14px;}
-  .box path{stroke:var(--glyph); stroke-width:2.4; fill:none; stroke-dasharray:22; stroke-dashoffset:22; transition:stroke-dashoffset var(--ease);}
-  input:checked + label .box{background:var(--checked); border-color:var(--checked);}
-  input:checked + label .box path{stroke-dashoffset:0;}
+  .box path,.box rect{stroke:var(--glyph); stroke-width:2.4; fill:none;}
+  .box .tick{stroke-dasharray:22; stroke-dashoffset:22; transition:stroke-dashoffset var(--ease);}
+  .box .mixed{stroke-dashoffset:22; transition:stroke-dashoffset var(--ease);}
+  label:hover .box{border-color:var(--ctrl-border-active);}
+  input:checked + label .box,input:indeterminate + label .box{background:var(--checked); border-color:var(--checked);}
+  input:checked + label .box .tick{stroke-dashoffset:0;}
+  input:indeterminate + label .box .mixed{stroke-dashoffset:0;}
+  input:active + label .box{background:var(--chip-hover);}
   input:focus-visible + label .box{outline:2px solid var(--focus); outline-offset:2px;}
 
-  /* ---- radio ---- */
+  /* ---- radio (round by design) ---- */
   .radio{width:22px; height:22px; flex:none; border:2px solid var(--ctrl-border); border-radius:50%;
     display:flex; align-items:center; justify-content:center; transition:border-color var(--ease);}
   .radio .dot{width:12px; height:12px; border-radius:50%; background:var(--checked); transform:scale(0); transition:transform var(--ease);}
+  label:hover .radio{border-color:var(--ctrl-border-active);}
   input:checked + label .radio{border-color:var(--ctrl-border-active);}
   input:checked + label .radio .dot{transform:scale(1);}
+  input:active + label .radio{border-color:var(--ctrl-border-active);}
   input:focus-visible + label .radio{outline:2px solid var(--focus); outline-offset:2px;}
 
-  /* ---- switch ---- */
+  /* ---- switch (rounded pill by design) ---- */
   .switch{width:44px; height:24px; flex:none; border-radius:999px; background:transparent;
-    border:2px solid var(--track-off); position:relative; transition:background var(--ease), border-color var(--ease);}
+    border:2px solid var(--ctrl-border); position:relative; transition:background var(--ease), border-color var(--ease);}
   .switch .thumb{position:absolute; top:1px; left:1px; width:18px; height:18px; border-radius:50%;
-    background:var(--track-off); transition:transform var(--ease), background var(--ease);}
+    background:var(--ctrl-border); transition:transform var(--ease), background var(--ease);}
+  label:hover .switch{border-color:var(--ctrl-border-active);}
   input:checked + label .switch{background:var(--checked); border-color:var(--checked);}
   input:checked + label .switch .thumb{transform:translateX(20px); background:var(--glyph);}
+  /* (switch press depress handled by the universal scale-physics block below) */
   input:focus-visible + label .switch{outline:2px solid var(--focus); outline-offset:2px;}
+  input:disabled + label .box,input:disabled + label .radio,input:disabled + label .switch{border-color:var(--ctrl-border-disabled);}
+  input:disabled + label .switch .thumb{background:var(--ctrl-border-disabled);}
 
-  .is-disabled .box,.is-disabled .radio,.is-disabled .switch{border-color:var(--ctrl-border-disabled);}
-  .is-disabled .switch .thumb{background:var(--ctrl-border-disabled);}
+  /* ---- error state ---- */
+  .field.is-error label{color:var(--error);} .field.is-error .box{border-color:var(--error);}
+  .err-msg{display:flex; align-items:center; gap:6px; color:var(--error); font:400 13px/1.3 var(--font); margin:-6px 0 14px 34px;}
 
-  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  /* ---- chips (square, brand angular) ---- */
+  .chips{display:flex; flex-wrap:wrap; gap:8px;}
+  .chip{display:inline-flex; align-items:center; gap:8px; padding:6px 12px; border-radius:0;
+    border:1px solid var(--ctrl-border); background:transparent; color:var(--label);
+    font:500 var(--chip-fs)/20px var(--font); cursor:pointer; white-space:nowrap; min-height:32px;
+    transition:background var(--ease), color var(--ease), border-color var(--ease);}
+  .chip svg{width:16px; height:16px; flex:none;}
+  .chip .star{fill:none; stroke:currentColor; stroke-width:1.6;}
+  .chip:hover{background:var(--chip-hover);}
+  .chip:active{background:var(--chip-pressed); color:var(--reverse); border-color:var(--chip-pressed);}
+  .chip:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .chip[aria-pressed="true"],.chip[aria-checked="true"]{background:var(--checked); color:var(--glyph); border-color:var(--checked);}
+  .chip[aria-pressed="true"] .star,.chip[aria-checked="true"] .star{fill:currentColor;}
+  .chip:disabled{border-color:var(--ctrl-border-disabled); color:var(--label-disabled); cursor:not-allowed; background:transparent;}
+  .chip .x{display:inline-flex; width:18px; height:18px; align-items:center; justify-content:center;
+    border:0; background:transparent; color:inherit; padding:0; font:inherit; line-height:1; cursor:pointer; border-radius:0;}
+  .chip .x:hover{opacity:.6;}
+  .chip .x:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .chip-del{padding-right:6px;}
+
+  /* ===== EXPERIMENT (2026-06-22, NOT yet doctrine) — attract-on-hover + depress-on-press, same scale-physics
+     as Button, extended to the selectors. Dave is living with it before deciding whether to make it universal
+     ("keep experimenting first"). Scale only — no shadow, no translate. Tiny controls use a modest ratio;
+     chips use the fixed-px grow/shrink (set by JS) like buttons. ===== */
+  .box,.radio,.switch{transition:background var(--ease), border-color var(--ease), transform var(--spring);}
+  label:hover .box,label:hover .radio{transform:scale(1.12);}
+  label:hover .switch{transform:scale(1.06);}
+  input:active + label .box,input:active + label .radio{transform:scale(.9); transition:transform var(--press);}
+  input:active + label .switch{transform:scale(.94); transition:transform var(--press);}
+  input:disabled + label .box,input:disabled + label .radio,input:disabled + label .switch{transform:none;}
+  .chip{transition:background var(--ease), color var(--ease), border-color var(--ease), transform var(--spring);}
+  .chip:hover{transform:scale(var(--hs,1.06));}
+  .chip:active{transform:scale(var(--ps,.94)); transition:transform var(--press), background var(--ease), color var(--ease);}
+  .chip:disabled:hover{transform:none;}
+
+  /* responsive — tighten on narrow containers; chip bars already wrap */
+  @container (max-width: 460px){
+    .sc h2{margin-top:1.25rem;}
+    .field{gap:10px;} .chips{gap:6px;}
+    .chip{font-size:13px;}
+  }
   @media (prefers-reduced-motion: reduce){
-    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; scroll-behavior:auto !important; }
+    label:hover .box,label:hover .radio,label:hover .switch,
+    input:active + label .box,input:active + label .radio,input:active + label .switch,
+    .chip:hover,.chip:active{ transform:none !important; }   /* no scale-physics under reduced-motion */
   }
 </style>
 </head>
 <body data-theme="light">
-  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Selection controls — canonical reference</span></div>
+  <div class="demo-controls">
+    <button id="themeToggle" type="button">◐ Toggle theme</button>
+    <label>Container width <input id="w" type="range" min="320" max="820" value="720"> <span id="wv">720</span>px</label>
+  </div>
 
-  <h2>Checkbox</h2>
-  <div class="field"><input type="checkbox" id="c1"><label for="c1"><span class="box"><svg viewBox="0 0 18 18"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></span> Email notifications</label></div>
-  <div class="field"><input type="checkbox" id="c2" checked><label for="c2"><span class="box"><svg viewBox="0 0 18 18"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></span> SMS notifications (checked)</label></div>
-  <div class="field is-disabled"><input type="checkbox" id="c3" disabled><label for="c3"><span class="box"><svg viewBox="0 0 18 18"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></span> Push notifications (disabled)</label></div>
+  <div class="sc" id="sc">
+    <h2>Checkbox</h2>
+    <div class="field"><input type="checkbox" id="c1"><label for="c1"><span class="box"><svg viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></span> Email notifications</label></div>
+    <div class="field"><input type="checkbox" id="c2" checked><label for="c2"><span class="box"><svg viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></span> SMS notifications (checked)</label></div>
+    <div class="field"><input type="checkbox" id="c4"><label for="c4"><span class="box"><svg viewBox="0 0 18 18"><path class="mixed" d="M4 9 L14 9"/></svg></span> Select all (indeterminate)</label></div>
+    <div class="field is-disabled"><input type="checkbox" id="c3" disabled><label for="c3"><span class="box"><svg viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></span> Push notifications (disabled)</label></div>
+    <div class="field is-error"><input type="checkbox" id="c5" aria-invalid="true" aria-describedby="c5e"><label for="c5"><span class="box"><svg viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></span> Accept terms &amp; conditions</label></div>
+    <p class="err-msg" id="c5e">⚠ You must accept the terms to continue</p>
 
-  <h2>Radio</h2>
-  <div class="field"><input type="radio" name="r" id="r1"><label for="r1"><span class="radio"><span class="dot"></span></span> Standard delivery</label></div>
-  <div class="field"><input type="radio" name="r" id="r2" checked><label for="r2"><span class="radio"><span class="dot"></span></span> Express delivery (selected)</label></div>
-  <div class="field is-disabled"><input type="radio" name="r" id="r3" disabled><label for="r3"><span class="radio"><span class="dot"></span></span> Same-day (disabled)</label></div>
+    <h2>Radio</h2>
+    <fieldset>
+      <legend>Delivery speed</legend>
+      <div class="field"><input type="radio" name="r" id="r1"><label for="r1"><span class="radio"><span class="dot"></span></span> Standard delivery</label></div>
+      <div class="field"><input type="radio" name="r" id="r2" checked><label for="r2"><span class="radio"><span class="dot"></span></span> Express delivery (selected)</label></div>
+      <div class="field is-disabled"><input type="radio" name="r" id="r3" disabled><label for="r3"><span class="radio"><span class="dot"></span></span> Same-day (disabled)</label></div>
+    </fieldset>
 
-  <h2>Switch</h2>
-  <div class="field"><input type="checkbox" role="switch" id="s1"><label for="s1"><span class="switch"><span class="thumb"></span></span> Marketing emails</label></div>
-  <div class="field"><input type="checkbox" role="switch" id="s2" checked><label for="s2"><span class="switch"><span class="thumb"></span></span> Two-factor auth (on)</label></div>
-  <div class="field is-disabled"><input type="checkbox" role="switch" id="s3" disabled><label for="s3"><span class="switch"><span class="thumb"></span></span> Beta features (disabled)</label></div>
+    <h2>Switch</h2>
+    <div class="field"><input type="checkbox" role="switch" id="s1"><label for="s1"><span class="switch"><span class="thumb"></span></span> Marketing emails</label></div>
+    <div class="field"><input type="checkbox" role="switch" id="s2" checked><label for="s2"><span class="switch"><span class="thumb"></span></span> Two-factor auth (on)</label></div>
+    <div class="field is-disabled"><input type="checkbox" role="switch" id="s3" disabled><label for="s3"><span class="switch"><span class="thumb"></span></span> Beta features (disabled)</label></div>
+
+    <h2>Chips — toggle (multi-select)</h2>
+    <div class="chips" role="group" aria-label="Filter by account type">
+      <button type="button" class="chip" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="star" d="M12 2l2.9 6.3 6.9.7-5.2 4.6 1.5 6.8L12 17.3 5.9 20.7l1.5-6.8L2.2 9l6.9-.7z"/></svg>Current</button>
+      <button type="button" class="chip" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="star" d="M12 2l2.9 6.3 6.9.7-5.2 4.6 1.5 6.8L12 17.3 5.9 20.7l1.5-6.8L2.2 9l6.9-.7z"/></svg>Savings</button>
+      <button type="button" class="chip" aria-pressed="false">Credit card</button>
+      <button type="button" class="chip" aria-pressed="false" disabled>Closed (disabled)</button>
+    </div>
+
+    <h2>Chips — single-selection (radiogroup, arrow keys)</h2>
+    <div class="chips" role="radiogroup" aria-label="Statement period" id="period">
+      <button type="button" class="chip" role="radio" aria-checked="true"  tabindex="0">30 days</button>
+      <button type="button" class="chip" role="radio" aria-checked="false" tabindex="-1">90 days</button>
+      <button type="button" class="chip" role="radio" aria-checked="false" tabindex="-1">6 months</button>
+      <button type="button" class="chip" role="radio" aria-checked="false" tabindex="-1">12 months</button>
+    </div>
+
+    <h2>Chips — delete / removable</h2>
+    <div class="chips" id="filters" aria-label="Active filters">
+      <span class="chip chip-del">GBP <button type="button" class="x" aria-label="Remove GBP filter">✕</button></span>
+      <span class="chip chip-del">Pending <button type="button" class="x" aria-label="Remove Pending filter">✕</button></span>
+      <span class="chip chip-del">Last 30 days <button type="button" class="x" aria-label="Remove Last 30 days filter">✕</button></span>
+    </div>
+  </div>
 
   <script type="application/json" id="token-manifest">
   {
     "component": "Selection controls",
-    "vars": { "--focus": "focus/ring",
-      "--ctrl-border": "form/border/default",
-      "--ctrl-border-active": "form/border/active",
-      "--ctrl-border-disabled": "form/border/disabled",
-      "--checked": "secondary/background/default",
-      "--glyph": "text/on-inverse",
-      "--label": "text/default",
-      "--label-disabled": "text/disabled",
-      "--error": "rag/error",
-      "--page": "background/default"
+    "vars": {
+      "--focus": "focus/ring",
+      "--ctrl-border": "form/border/default", "--ctrl-border-active": "form/border/active", "--ctrl-border-disabled": "form/border/disabled",
+      "--checked": "secondary/background/default", "--glyph": "text/on-inverse",
+      "--label": "text/default", "--label-disabled": "text/disabled", "--error": "rag/error", "--page": "background/default",
+      "--chip-hover": "form/background/hover", "--chip-pressed": "form/background/pressed", "--reverse": "text/reverse"
     },
     "contrastPairs": [
       { "fg": "text/default",  "bg": "background/default",          "context": "text" },
@@ -116,14 +224,63 @@
       { "fg": "text/on-inverse", "bg": "secondary/background/default", "context": "ui" },
       { "fg": "secondary/background/default", "bg": "background/default", "context": "ui" }
     ],
-    "requiredAria": ["type=\"checkbox\"", "type=\"radio\"", "role=\"switch\""]
+    "knownFindings": [
+      "Chip SELECTED fill rebound off the deprecated interactive(depricate)/on-light/surface/active/* (black) to the inverting secondary/background/default + text/on-inverse — consistent with checkbox/radio/switch and visible in dark mode (Dave 2026-06-19/22).",
+      "Native checkbox/radio/switch keyboard is native (no JS); the AT keydown signal is earned honestly by the single-selection chip radiogroup (roving Arrow/Home/End).",
+      "Switch disabled track originally used non-interactive(depricate)/surface/neutral-2/3 (no live equivalent) — handled here with a transparent track + form/border/disabled, avoiding the deprecated fill."
+    ],
+    "requiredAria": ["type=\"checkbox\"", "type=\"radio\"", "role=\"switch\"", "role=\"radiogroup\"", "role=\"radio\"", "aria-checked", "aria-pressed"]
   }
   </script>
 
   <script>
-    document.getElementById('themeToggle').addEventListener('click', ()=>{
-      const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark');
+    // theme
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      const b = document.body; b.setAttribute('data-theme', b.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
     });
+    // width
+    const w = document.getElementById('w'), wv = document.getElementById('wv'), sc = document.getElementById('sc');
+    w.addEventListener('input', () => { sc.style.setProperty('--demo-width', w.value + 'px'); wv.textContent = w.value; });
+
+    // indeterminate checkbox (must be set in JS; CSS :indeterminate then styles it, aria-checked=mixed for AT)
+    const ind = document.getElementById('c4'); ind.indeterminate = true; ind.setAttribute('aria-checked', 'mixed');
+    ind.addEventListener('change', () => { ind.indeterminate = false; ind.removeAttribute('aria-checked'); });
+
+    // toggle chips (multi) — native button; reflect aria-pressed
+    document.querySelectorAll('.chip[aria-pressed]').forEach(c => {
+      c.addEventListener('click', () => { if (!c.disabled) c.setAttribute('aria-pressed', c.getAttribute('aria-pressed') !== 'true'); });
+    });
+
+    // single-selection chip group — a real radiogroup with roving Arrow/Home/End (the honest keydown AT model)
+    const group = document.getElementById('period');
+    const radios = Array.from(group.querySelectorAll('[role="radio"]'));
+    function select(i){
+      radios.forEach((r, j) => { const on = i === j; r.setAttribute('aria-checked', on); r.tabIndex = on ? 0 : -1; });
+      radios[i].focus();
+    }
+    radios.forEach((r, i) => {
+      r.addEventListener('click', () => select(i));
+      r.addEventListener('keydown', e => {
+        let n = null;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') n = (i + 1) % radios.length;
+        else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') n = (i - 1 + radios.length) % radios.length;
+        else if (e.key === 'Home') n = 0; else if (e.key === 'End') n = radios.length - 1;
+        if (n !== null){ e.preventDefault(); select(n); }
+      });
+    });
+
+    // delete chips — remove on click; move focus to the next chip (or the group) so keyboard users aren't stranded
+    document.getElementById('filters').addEventListener('click', e => {
+      const x = e.target.closest('.x'); if (!x) return;
+      const chip = x.closest('.chip'); const next = chip.nextElementSibling || chip.previousElementSibling;
+      chip.remove(); if (next) next.querySelector('.x') ? next.querySelector('.x').focus() : next.focus();
+    });
+
+    // chips use the same fixed-px attract/depress as buttons (consistent absolute motion regardless of chip width)
+    const GROW = 7, PRESS = 9;
+    function sizeScale(){ document.querySelectorAll('.chip').forEach(c => { const cw = c.offsetWidth || 1;
+      c.style.setProperty('--hs', (1 + GROW / cw).toFixed(4)); c.style.setProperty('--ps', (1 - PRESS / cw).toFixed(4)); }); }
+    addEventListener('resize', sizeScale); sizeScale();
   </script>
 </body>
 </html>
