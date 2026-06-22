@@ -21,7 +21,7 @@
 | Hero | org | 11 | color/primary, icon/default-reverse, text/default, text/reverse | 1.3.1, 1.4.3, 2.2.2, 2.3.3, 2.4.6 | imagery, hexagon-masks, calls-to-action, typography-usage | 8 |
 | Input fields | mol | 17 | background/default, border/subsection, elevation/functional, border/default… | 1.3.1, 1.3.5, 1.4.1, 2.1.1, 2.4.7, 3.3.1, 3.3.2, 4.1.2 | forms, tone-of-voice | 2 |
 | Links | mol | 8 | color/primary, icon/default, icon/default-reverse, icon/disabled… | 1.4.1, 1.4.11, 1.4.3, 2.4.4, 2.4.7 | calls-to-action, tone-of-voice | 4 |
-| List items | mol | 15 | color/primary, icon/default, icon/default-reverse, icon/disabled… | 1.3.1, 1.4.3, 2.5.7, 2.5.8, 4.1.2, 4.1.3 | typography-usage, icons |  |
+| List items | mol | 16 | color/primary, icon/default, icon/default-reverse, icon/disabled… | 1.3.1, 1.4.3, 2.5.7, 2.5.8, 4.1.2, 4.1.3 | typography-usage, icons |  |
 | Loading indicator | ato | 4 | icon/default, icon/default-reverse, text/default, text/reverse | 1.1.1, 2.2.2, 2.3.3, 4.1.3 | time-based-indicators |  |
 | Modals | org | 14 | background/default, icon/default, icon/default-reverse, background/default… | 1.4.3, 2.1.2, 2.4.11, 2.4.3, 2.5.8, 4.1.2 | elevation, calls-to-action, platform-app |  |
 | Navigations | org | 15 | background/default, color/primary, border/subsection, elevation/functional… | 1.3.1, 1.4.1, 2.1.2, 2.4.1, 2.4.11, 2.4.5, 2.5.8, 4.1.2 | platform-web, platform-app, icons | 6 |

@@ -105,7 +105,8 @@
     "badge-accent": "color/primary #db0011 (PRIMITIVE)",
     "bullets": "text/default; bullets/numbers use same font as text; custom tick rag/success; grey-1 #f3f3f3 (primitive)",
     "padding": "padding/responsive/medium 16",
-    "$finding": "(2026-06-20, RESOLVED) Secondary/sub text now uses the new text/secondary token (#545454 light / #9B9B9B dark, ~7.6:1 both) — was a literal. Token tagged review pending Dave sign-off."
+    "$finding": "(2026-06-20, RESOLVED) Secondary/sub text now uses the new text/secondary token (#545454 light / #9B9B9B dark, ~7.6:1 both) — was a literal. Token tagged review pending Dave sign-off.",
+    "$darkFinding": "(2026-06-22, OPEN — SYSTEMIC) text/secondary (#9B9B9B dark) on tertiary/background/hover (#474747 dark) = 3.34:1, under 4.5 — supporting text dips below AA on hover in dark. Affects EVERY interactive row/component with secondary text on a hover surface, not just transaction. Needs a token decision (darker dark-hover, or a higher-contrast secondary on interactive surfaces); deliberately not invented around in the snippet. Surfaced by the List-items transaction build."
   },
   "relationships": {
     "livesInside": [
@@ -241,6 +242,38 @@
       ]
     },
     "ignored": "specs/* annotation scaffolding."
+  },
+  "build": {
+    "$status": "PROMOTED 2026-06-22 (Dave) — TRANSACTION row brought to the Tabs-bar standard. Gated reference: snippets/List-items.reference.html (replaces the earlier generic account-row reference). Build green.",
+    "prototypeGrade": "9.0/9 (2026-06-22) — joined Tabs at full marks. Closed the gaps: responsive (container-query reflow at 360px), AT (roving Arrow/Home/End keyboard nav on the live list), states (native :disabled added alongside aria-disabled).",
+    "keyboard": "Roving tabindex on the live list: Arrow Up/Down + Home/End move focus between rows; Enter/Space activate (native <button>); disabled rows skipped.",
+    "responsive": "Container-query reflow at 360px — the trailing tag/status + amount drop to a full-width line beneath the merchant (WCAG 1.4.10).",
+    "scope": "Transaction row only (the ★ payments-journey row). The other types (account/badge/item/review/review-detail/bullets) stay documented in `variants`/`tokenValidation` but are not yet refined to standard.",
+    "anatomy": "leading avatar + title/description + trailing detail (tag chip OR status badge) above a right-aligned amount. Figma node 1508:76284.",
+    "states": {
+      "default": "tertiary/background/default",
+      "hover": "tertiary/background/hover; the avatar disk flips to tertiary/background/default so it separates from the hover tint",
+      "pressed": "tertiary/background/pressed + reverse text/icon; avatar, status badge and tag all REVERSED OUT; +2px inset (see $darkFinding/pressed below)",
+      "disabled": "muted; white initials on the avatar; aria-disabled; non-interactive",
+      "processing": "Loading-indicator spinner primitive + aria-busy/aria-live"
+    },
+    "statusDetail": "rag/success-TINT badge — tint surface + success dot + neutral text/default label. Chosen because rag/success AS TEXT on the tint fails 4.5:1 (3.98 light / 4.09 dark); the tint badge keeps the label at 11:1/18.7:1 and carries colour via the dot (>=3:1).",
+    "pressedFinding": "tertiary/background/pressed resolves to #1D1D1D in dark — identical to the default surface, and reverse text is also white-on-white. Press cannot rely on colour in dark; the row adds a 2px inset as a non-colour signal.",
+    "reusedPrimitives": [
+      "Avatar (round) — leading visual",
+      "Tags (square outline chip) — tag detail",
+      "Loading indicator (spinner) — processing state; MIRRORED from Loading-indicator.reference.html (not hard-coded), so it inherits that primitive's future refinement"
+    ],
+    "$reviewNeeded": "Loading-indicator primitive itself is still 5.5/9 (refinement DEFERRED 2026-06-22 by Dave). When it is refined to match Figma, this row inherits it automatically — it mirrors the canon, no local hard-code to chase."
+  },
+  "codeBindings": {
+    "$model": "Hub-and-spoke — see _RUNBOOK-onboard-code-library.md. Hub = provenance.figma_node; each consuming library is a spoke with its own names; never guess or normalise across libraries.",
+    "sutherland-react": {
+      "library": "HSBC Sutherland (React component library)",
+      "component": "TODO — confirm in Sutherland repo / via Code Connect",
+      "variantProp": "TODO (the prop selecting row type; may not be called 'type')",
+      "$status": "unverified — populate from get_code_connect_map once wired; Sutherland naming may differ from Figma."
+    }
   },
   "provenance": {
     "source": "figma",

@@ -18,11 +18,11 @@ Change one of these and the listed number of components is affected. Use before 
 | `text/disabled` | 10 | Avatar, Button, Dropdown, Input fields, Links, List items… |
 | `icon/disabled` | 9 | Avatar, Badge, Button, Dropdown, Input fields, Links… |
 | `tertiary/background/default` | 8 | Button, Cards, List items, Modals, Search field, Slider… |
+| `tertiary/background/hover` | 8 | Accordion, Avatar, Button, Cards, List items, Reorder… |
 | `color/primary` | 7 | Badge, Cards, Hero, Links, List items, Navigations… |
 | `divider/border/subsection` | 7 | Divider, Dropdown, Input fields, Navigations, Pagination, Search field… |
 | `elevation/functional` | 7 | Dropdown, Input fields, Navigations, Notifications, Search field, Tabs… |
 | `form/border/default` | 7 | Dropdown, Input fields, Search field, Selection controls, Slider, Tags… |
-| `tertiary/background/hover` | 7 | Accordion, Avatar, Button, Cards, Reorder, Slider… |
 | `border/subtle` | 6 | Accordion, Avatar, Cards, Hero, Navigations, Slider |
 | `divider/border/section` | 6 | Divider, Dropdown, List items, Pagination, Tabs, Tooltip |
 
