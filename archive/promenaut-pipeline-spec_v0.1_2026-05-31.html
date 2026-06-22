@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Promenaut Design Workflow — Agentic Pipeline Specification</title>
+<style>
+  :root {
+    --red: #DB0011;
+    --black: #000000;
+    --white: #FFFFFF;
+    --grey-1: #F3F3F3;
+    --grey-2: #EDEDED;
+    --grey-3: #D7D8D6;
+    --grey-4: #B7B7B7;
+    --grey-5: #9B9B9B;
+    --grey-6: #767676;
+    --grey-7: #545454;
+    --grey-8: #333333;
+    --s1: 0.5rem; --s2: 1rem; --s3: 1.5rem; --s4: 2rem;
+    --s5: 3rem; --s6: 4rem; --s7: 6rem;
+    --max-width: 1200px; --gutter: 2rem;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--white); color: var(--black);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 1rem; line-height: 1.75;
+  }
+  .progress {
+    position: fixed; top: 0; left: 0; width: 100%; height: 2px;
+    background: var(--red); transform-origin: left; transform: scaleX(0);
+    z-index: 1000; transition: transform 0.08s linear;
+  }
+  nav {
+    position: sticky; top: 0; background: var(--white);
+    border-bottom: 1px solid var(--grey-2); height: 54px;
+    display: flex; align-items: center; padding: 0 var(--gutter);
+    z-index: 100; gap: var(--s4);
+  }
+  .nav-back {
+    font-size: 0.75rem; font-weight: 500; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--grey-6); text-decoration: none;
+  }
+  .nav-back:hover { color: var(--black); }
+  .nav-divider { width: 1px; height: 20px; background: var(--grey-3); }
+  .nav-context {
+    font-size: 0.75rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--grey-6);
+  }
+  .nav-links { display: flex; gap: var(--s4); margin-left: auto; list-style: none; }
+  .nav-links a {
+    font-size: 0.75rem; letter-spacing: 0.04em; color: var(--grey-6); text-decoration: none;
+  }
+  .nav-links a:hover { color: var(--black); }
+  .nav-btn {
+    padding: 8px 20px; background: var(--black); color: var(--white);
+    font-family: inherit; font-size: 0.75rem; font-weight: 500;
+    letter-spacing: 0.06em; text-transform: uppercase; border: none;
+    cursor: pointer; text-decoration: none; display: inline-block;
+  }
+  .nav-btn:hover { background: var(--grey-8); }
+  .wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); }
+  .section-rule { width: 100%; height: 1px; background: var(--grey-2); }
+  .label {
+    font-size: 0.75rem; font-weight: 500; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--red);
+    display: flex; align-items: center; gap: var(--s1); margin-bottom: var(--s3);
+  }
+  .label::before { content: ''; display: inline-block; width: 20px; height: 1px; background: var(--red); }
+  .profile-header { padding: var(--s7) 0 var(--s6); }
+  .profile-header .wrap { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s6); align-items: start; }
+  .profile-title { font-size: 3.5625rem; font-weight: 300; line-height: 1.05; }
+  .profile-org { font-size: 0.875rem; color: var(--grey-6); margin-top: var(--s2); letter-spacing: 0.04em; }
+  .profile-tagline { font-size: 1.1875rem; font-weight: 400; line-height: 1.5; margin-bottom: var(--s4); }
+  .profile-meta { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s2); border-top: 1px solid var(--grey-2); padding-top: var(--s3); }
+  .meta-label { font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--grey-6); margin-bottom: var(--s1); }
+  .meta-value { font-size: 0.875rem; color: var(--black); }
+  .stats-section { background: var(--grey-1); padding: var(--s6) 0; }
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s4); }
+  .stat-number { font-size: 2.6875rem; font-weight: 200; line-height: 1.0; letter-spacing: -0.01em; }
+  .stat-label { font-size: 0.75rem; letter-spacing: 0.04em; color: var(--grey-5); margin-top: var(--s1); }
+  .proposition { display: grid; grid-template-columns: 3fr 1fr 4fr; gap: var(--s6); align-items: start; padding: var(--s7) 0; }
+  .proposition-head { font-size: 2.125rem; font-weight: 300; line-height: 1.15; }
+  .proposition-divider { border-left: 1px solid var(--grey-2); min-height: 120px; }
+  .proposition-body { font-size: 1rem; line-height: 1.8; color: var(--grey-8); }
+  .proposition-body p + p { margin-top: var(--s3); }
+  .diagram-section { padding: var(--s6) 0 var(--s7); }
+  .diagram-frame { margin-top: var(--s4); border: 1px solid var(--grey-2); overflow-x: auto; }
+  .dimension { padding: var(--s6) 0; }
+  .dimension .wrap { display: grid; grid-template-columns: 1fr 2fr; gap: var(--s6); align-items: start; }
+  .dimension-index { font-size: 6rem; font-weight: 200; line-height: 1.0; color: var(--grey-4); letter-spacing: -0.02em; margin-bottom: var(--s2); }
+  .dimension-title { font-size: 1.1875rem; font-weight: 500; margin-bottom: var(--s1); }
+  .dimension-role { font-size: 0.875rem; color: var(--grey-6); line-height: 1.6; }
+  .dimension-body { font-size: 1rem; line-height: 1.8; color: var(--grey-8); margin-bottom: var(--s3); }
+  .dimension-body p + p { margin-top: var(--s2); }
+  .code-block {
+    background: var(--grey-1); border: 1px solid var(--grey-2); padding: var(--s3);
+    font-family: "Courier New", Courier, monospace; font-size: 0.8125rem;
+    line-height: 1.7; color: var(--grey-8); overflow-x: auto; margin: var(--s3) 0; white-space: pre;
+  }
+  .pull-quote { border-top: 1px solid var(--grey-2); padding-top: var(--s3); margin-top: var(--s3); font-size: 1.1875rem; font-weight: 400; line-height: 1.5; }
+  .feature-section { background: var(--grey-1); padding: var(--s7) 0; }
+  .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin-top: var(--s4); border: 1px solid var(--grey-2); }
+  .feature-cell { padding: var(--s4); border-right: 1px solid var(--grey-2); transition: background 0.15s; }
+  .feature-cell:last-child { border-right: none; }
+  .feature-cell:hover { background: var(--white); }
+  .feature-index { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.14em; color: var(--red); margin-bottom: var(--s2); }
+  .feature-title { font-size: 1rem; font-weight: 500; margin-bottom: var(--s2); }
+  .feature-desc { font-size: 0.875rem; line-height: 1.6; color: var(--grey-7); }
+  .distinction-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--grey-3); margin-top: var(--s3); }
+  .distinction-cell { padding: var(--s3) var(--s4); }
+  .distinction-cell:first-child { border-right: 1px solid var(--grey-3); }
+  .distinction-head { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--grey-6); margin-bottom: var(--s2); }
+  .distinction-head.ours { color: var(--red); }
+  .distinction-body { font-size: 0.875rem; line-height: 1.6; color: var(--grey-8); }
+  .matrix { width: 100%; border-collapse: collapse; margin-top: var(--s3); font-size: 0.875rem; }
+  .matrix th, .matrix td { text-align: left; padding: var(--s2) var(--s3); border-bottom: 1px solid var(--grey-2); vertical-align: top; line-height: 1.5; }
+  .matrix th { font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--grey-6); font-weight: 500; }
+  .matrix td.k { color: var(--black); font-weight: 500; white-space: nowrap; }
+  .error-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s4) var(--s6); margin-top: var(--s4); }
+  .error-card { border-top: 2px solid var(--grey-3); padding-top: var(--s3); }
+  .error-type { font-size: 1rem; font-weight: 500; margin-bottom: var(--s1); }
+  .error-desc { font-size: 0.875rem; line-height: 1.6; color: var(--grey-7); margin-bottom: var(--s2); }
+  .error-recovery { font-size: 0.8125rem; color: var(--grey-6); font-style: italic; }
+  .resources-section { background: var(--black); padding: var(--s6) 0; color: var(--white); }
+  .resources-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s4); margin-top: var(--s4); }
+  .resource-card { border: 1px solid var(--grey-8); padding: var(--s4); }
+  .resource-type { font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--grey-5); margin-bottom: var(--s2); }
+  .resource-title { font-size: 1rem; font-weight: 500; color: var(--white); margin-bottom: var(--s2); }
+  .resource-desc { font-size: 0.875rem; line-height: 1.6; color: var(--grey-5); margin-bottom: var(--s3); }
+  .resource-path { font-family: "Courier New", monospace; font-size: 0.75rem; color: var(--grey-4); }
+  .questions-list { margin-top: var(--s3); list-style: none; }
+  .questions-list li { padding: var(--s2) 0; border-bottom: 1px solid var(--grey-2); font-size: 0.9375rem; color: var(--grey-7); display: flex; align-items: baseline; gap: var(--s2); }
+  .questions-list li::before { content: '—'; font-weight: 400; color: var(--grey-4); flex-shrink: 0; }
+  footer { border-top: 1px solid var(--grey-2); padding: var(--s4) 0; }
+  .footer-inner { display: flex; align-items: center; justify-content: space-between; }
+  .footer-note { font-size: 0.75rem; color: var(--grey-6); letter-spacing: 0.04em; }
+  .footer-version { font-size: 0.75rem; color: var(--grey-6); }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<nav>
+  <a href="docs/research-dossier.md" class="nav-back">← Research Dossier</a>
+  <div class="nav-divider"></div>
+  <span class="nav-context">Agentic Architecture</span>
+  <ul class="nav-links">
+    <li><a href="#pipeline">Pipeline</a></li>
+    <li><a href="#spokes">Spokes</a></li>
+    <li><a href="#state">State</a></li>
+    <li><a href="#errors">Errors</a></li>
+    <li><a href="#knowledge">Knowledge</a></li>
+    <li><a href="#resources">Repo</a></li>
+  </ul>
+  <button class="nav-btn" onclick="downloadPage()">Download</button>
+</nav>
+
+<!-- PROFILE HEADER -->
+<section class="profile-header">
+  <div class="wrap">
+    <div>
+      <p class="label">Specification</p>
+      <h1 class="profile-title">Promenaut<br>Design Workflow</h1>
+      <p class="profile-org">Agentic Pipeline — v0.1 Planning</p>
+    </div>
+    <div>
+      <p class="profile-tagline">A portable, model-agnostic harness for running design-discipline work as governed agentic pipelines — abstracted from the HDS reference architecture, built on open standards.</p>
+      <div class="profile-meta">
+        <div>
+          <p class="meta-label">Layers</p>
+          <p class="meta-value">1 reusable harness<br>6 discipline pipelines</p>
+        </div>
+        <div>
+          <p class="meta-label">Status</p>
+          <p class="meta-value">Planning · UX/UI working<br>Other disciplines skeleton</p>
+        </div>
+        <div>
+          <p class="meta-label">Standards</p>
+          <p class="meta-value">AGENTS.md · Agent Skills<br>MCP · Git</p>
+        </div>
+        <div>
+          <p class="meta-label">HITL Gates</p>
+          <p class="meta-value">3 designed<br>Brief · Taste · Final</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-rule"></div>
+
+<!-- STATS -->
+<section class="stats-section">
+  <div class="wrap">
+    <div class="stats-grid">
+      <div class="stat"><div class="stat-number">6</div><div class="stat-label">Spokes in the working pipeline</div></div>
+      <div class="stat"><div class="stat-number">4</div><div class="stat-label">Error types</div></div>
+      <div class="stat"><div class="stat-number">3</div><div class="stat-label">Knowledge representations</div></div>
+      <div class="stat"><div class="stat-number">2.2</div><div class="stat-label">WCAG AA target</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="section-rule"></div>
+
+<!-- OVERVIEW -->
+<section id="pipeline">
+  <div class="wrap">
+    <div class="proposition">
+      <div>
+        <p class="label">Overview</p>
+        <h2 class="proposition-head">The double diamond, as a harness.</h2>
+      </div>
+      <div class="proposition-divider"></div>
+      <div class="proposition-body">
+        <p>Two layers. A discipline-agnostic <strong>harness</strong> — orchestrator, state stores, gate model, error taxonomy — abstracted from the HDS editorial pipeline. And pluggable <strong>discipline pipelines</strong> that share it: CX research, CX design, UX research, UX design, UI design, UX copy, with BA and PO as cross-cutting inputs.</p>
+        <p>The first working pipeline is <strong>UX/UI build &amp; review</strong>: a brief becomes a prototype built only from the component library, passes a scored craft gate, then parallel expert, accessibility and brand review, then a human taste gate, then developer handoff.</p>
+        <p>The invariant is the contracts, stores and gates — portable across Claude, GPT&#8209;5.5 and Promenaut. The execution engine is replaceable. We own orchestration.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-rule"></div>
+
+<!-- PIPELINE DIAGRAM -->
+<section class="diagram-section">
+  <div class="wrap">
+    <p class="label">Pipeline Diagram — UX/UI Build &amp; Review</p>
+    <p style="font-size:0.875rem; color:var(--grey-6); margin-bottom:var(--s4);">Orchestration layer, single-responsibility spokes, the craft gate, parallel reviewers, HITL gates, and persistent state.</p>
+    <div class="diagram-frame">
+      <svg width="1156" height="600" viewBox="0 0 1156 600" xmlns="http://www.w3.org/2000/svg" style="display:block; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+        <defs>
+          <marker id="arr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0 0, 7 2.5, 0 5" fill="#545454"/></marker>
+          <marker id="arr-red" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0 0, 7 2.5, 0 5" fill="#DB0011"/></marker>
+          <marker id="arr-grey" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0 0, 7 2.5, 0 5" fill="#B7B7B7"/></marker>
+        </defs>
+
+        <!-- ORCHESTRATOR BAR -->
+        <rect x="20" y="18" width="1116" height="62" fill="#000000"/>
+        <text x="578" y="44" text-anchor="middle" fill="#FFFFFF" font-size="11" font-weight="500" letter-spacing="2">ORCHESTRATOR — THE HUB</text>
+        <text x="578" y="62" text-anchor="middle" fill="#9B9B9B" font-size="9">State · Routing · Checkpoints · Retries · 4-type error handling · Pre-flight policy hooks</text>
+        <text x="578" y="98" text-anchor="middle" fill="#DB0011" font-size="8" font-style="italic">↓ dispatches · validates contracts · routes on pass · escalates</text>
+
+        <!-- status dashed -->
+        <line x1="105" y1="200" x2="105" y2="82" stroke="#B7B7B7" stroke-width="0.75" stroke-dasharray="3,3"/><polygon points="102,84 105,78 108,84" fill="#B7B7B7"/>
+        <line x1="285" y1="200" x2="285" y2="82" stroke="#B7B7B7" stroke-width="0.75" stroke-dasharray="3,3"/><polygon points="282,84 285,78 288,84" fill="#B7B7B7"/>
+        <line x1="465" y1="200" x2="465" y2="82" stroke="#B7B7B7" stroke-width="0.75" stroke-dasharray="3,3"/><polygon points="462,84 465,78 468,84" fill="#B7B7B7"/>
+        <line x1="835" y1="200" x2="835" y2="82" stroke="#B7B7B7" stroke-width="0.75" stroke-dasharray="3,3"/><polygon points="832,84 835,78 838,84" fill="#B7B7B7"/>
+
+        <!-- 1 FRAMING -->
+        <rect x="30" y="200" width="150" height="88" fill="#F3F3F3" stroke="#EDEDED"/>
+        <rect x="30" y="200" width="150" height="22" fill="#EDEDED"/>
+        <text x="105" y="216" text-anchor="middle" fill="#000" font-size="9.5" font-weight="500" letter-spacing="0.1em">1 · FRAMING</text>
+        <text x="105" y="238" text-anchor="middle" fill="#545454" font-size="8.5">Requirements →</text>
+        <text x="105" y="251" text-anchor="middle" fill="#545454" font-size="8.5">brief + success</text>
+        <text x="105" y="264" text-anchor="middle" fill="#545454" font-size="8.5">criteria</text>
+        <text x="105" y="281" text-anchor="middle" fill="#9B9B9B" font-size="7.5" font-style="italic">→ brief</text>
+
+        <line x1="180" y1="244" x2="208" y2="244" stroke="#545454" stroke-width="1" marker-end="url(#arr)"/>
+
+        <!-- 2 GENERATOR -->
+        <rect x="210" y="200" width="150" height="88" fill="#F3F3F3" stroke="#EDEDED"/>
+        <rect x="210" y="200" width="150" height="22" fill="#EDEDED"/>
+        <text x="285" y="216" text-anchor="middle" fill="#000" font-size="9.5" font-weight="500" letter-spacing="0.1em">2 · GENERATOR</text>
+        <text x="285" y="238" text-anchor="middle" fill="#545454" font-size="8.5">Prototype from</text>
+        <text x="285" y="251" text-anchor="middle" fill="#545454" font-size="8.5">library only ·</text>
+        <text x="285" y="264" text-anchor="middle" fill="#545454" font-size="8.5">never invents</text>
+        <text x="285" y="281" text-anchor="middle" fill="#9B9B9B" font-size="7.5" font-style="italic">→ design_candidate</text>
+
+        <line x1="360" y1="244" x2="388" y2="244" stroke="#545454" stroke-width="1" marker-end="url(#arr)"/>
+
+        <!-- 3 CRITIC (craft gate) -->
+        <rect x="390" y="200" width="150" height="88" fill="#FFFFFF" stroke="#000000" stroke-width="1.5"/>
+        <rect x="390" y="200" width="150" height="22" fill="#000000"/>
+        <text x="465" y="216" text-anchor="middle" fill="#FFF" font-size="9.5" font-weight="500" letter-spacing="0.1em">3 · CRITIC</text>
+        <text x="465" y="238" text-anchor="middle" fill="#545454" font-size="8.5">CRAFT GATE — scored</text>
+        <text x="465" y="251" text-anchor="middle" fill="#545454" font-size="8.5">design-system</text>
+        <text x="465" y="264" text-anchor="middle" fill="#545454" font-size="8.5">conformance</text>
+        <text x="465" y="281" text-anchor="middle" fill="#9B9B9B" font-size="7.5" font-style="italic">→ pass / fail</text>
+
+        <!-- fail back to generator -->
+        <path d="M 415 288 C 360 330 320 330 285 290" stroke="#545454" stroke-width="1" fill="none" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+        <text x="345" y="322" text-anchor="middle" fill="#9B9B9B" font-size="7">fail → regenerate</text>
+
+        <!-- pass to parallel cluster -->
+        <line x1="540" y1="244" x2="566" y2="244" stroke="#545454" stroke-width="1" marker-end="url(#arr)"/>
+        <text x="553" y="237" text-anchor="middle" fill="#9B9B9B" font-size="7">pass</text>
+
+        <!-- PARALLEL CLUSTER -->
+        <text x="645" y="150" text-anchor="middle" fill="#B7B7B7" font-size="7.5" font-style="italic">parallel review (joined)</text>
+        <!-- 4 Heuristic -->
+        <rect x="570" y="156" width="150" height="52" fill="#F3F3F3" stroke="#EDEDED"/>
+        <text x="645" y="172" text-anchor="middle" fill="#000" font-size="9" font-weight="500" letter-spacing="0.08em">4 · HEURISTIC</text>
+        <text x="645" y="188" text-anchor="middle" fill="#545454" font-size="8">Nielsen 10 ·</text>
+        <text x="645" y="200" text-anchor="middle" fill="#545454" font-size="8">severity-rated</text>
+        <!-- 5 A11y -->
+        <rect x="570" y="218" width="150" height="52" fill="#F3F3F3" stroke="#EDEDED"/>
+        <text x="645" y="234" text-anchor="middle" fill="#000" font-size="9" font-weight="500" letter-spacing="0.08em">5 · A11Y</text>
+        <text x="645" y="250" text-anchor="middle" fill="#545454" font-size="8">WCAG 2.2 AA ·</text>
+        <text x="645" y="262" text-anchor="middle" fill="#545454" font-size="8">cites SC + clause</text>
+        <!-- 6 Brand -->
+        <rect x="570" y="280" width="150" height="52" fill="#F3F3F3" stroke="#EDEDED"/>
+        <text x="645" y="296" text-anchor="middle" fill="#000" font-size="9" font-weight="500" letter-spacing="0.08em">BRAND</text>
+        <text x="645" y="312" text-anchor="middle" fill="#545454" font-size="8">GTB system ·</text>
+        <text x="645" y="324" text-anchor="middle" fill="#545454" font-size="8">experience principles</text>
+
+        <!-- cluster to taste gate (down) -->
+        <line x1="645" y1="332" x2="645" y2="402" stroke="#DB0011" stroke-width="1" marker-end="url(#arr-red)"/>
+        <text x="664" y="370" fill="#DB0011" font-size="7.5">join → judge</text>
+
+        <!-- TASTE GATE (HITL) -->
+        <rect x="560" y="404" width="170" height="56" fill="#FFFFFF" stroke="#DB0011" stroke-width="1.5"/>
+        <text x="645" y="424" text-anchor="middle" fill="#000" font-size="9" font-weight="500">TASTE GATE — HITL</text>
+        <text x="645" y="439" text-anchor="middle" fill="#545454" font-size="8">Design lead · taste.md</text>
+        <text x="645" y="452" text-anchor="middle" fill="#DB0011" font-size="7.5">approve · redirect · waive</text>
+
+        <!-- GATE A (brief approved) under framing/generator -->
+        <line x1="105" y1="288" x2="105" y2="402" stroke="#DB0011" stroke-width="1" marker-end="url(#arr-red)"/>
+        <rect x="40" y="404" width="170" height="48" fill="#FFFFFF" stroke="#DB0011" stroke-width="1.5"/>
+        <text x="125" y="424" text-anchor="middle" fill="#000" font-size="9" font-weight="500">GATE A — HITL</text>
+        <text x="125" y="438" text-anchor="middle" fill="#545454" font-size="8">Brief approved (PO / lead)</text>
+        <path d="M 210 428 C 250 428 250 250 282 246" stroke="#DB0011" stroke-width="1" fill="none" stroke-dasharray="5,3" marker-end="url(#arr-red)"/>
+
+        <!-- taste gate approve → handoff -->
+        <path d="M 730 432 C 800 432 800 290 800 290" stroke="#545454" stroke-width="1" fill="none" marker-end="url(#arr)"/>
+        <text x="792" y="360" fill="#9B9B9B" font-size="7">approve</text>
+
+        <!-- HANDOFF -->
+        <rect x="760" y="200" width="150" height="88" fill="#F3F3F3" stroke="#EDEDED"/>
+        <rect x="760" y="200" width="150" height="22" fill="#EDEDED"/>
+        <text x="835" y="216" text-anchor="middle" fill="#000" font-size="9.5" font-weight="500" letter-spacing="0.1em">6 · HANDOFF</text>
+        <text x="835" y="238" text-anchor="middle" fill="#545454" font-size="8.5">Dev spec + Code</text>
+        <text x="835" y="251" text-anchor="middle" fill="#545454" font-size="8.5">Connect + React</text>
+        <text x="835" y="264" text-anchor="middle" fill="#545454" font-size="8.5">prototype</text>
+        <text x="835" y="281" text-anchor="middle" fill="#9B9B9B" font-size="7.5" font-style="italic">→ handoff_spec</text>
+
+        <line x1="910" y1="244" x2="936" y2="244" stroke="#545454" stroke-width="1" marker-end="url(#arr)"/>
+
+        <!-- GATE B final -->
+        <rect x="938" y="214" width="92" height="60" fill="#FFFFFF" stroke="#DB0011" stroke-width="1.5"/>
+        <text x="984" y="236" text-anchor="middle" fill="#000" font-size="9" font-weight="500">GATE B</text>
+        <text x="984" y="250" text-anchor="middle" fill="#545454" font-size="8">Final approval</text>
+        <text x="984" y="263" text-anchor="middle" fill="#DB0011" font-size="7.5">HITL → ship</text>
+
+        <!-- STATE STORES -->
+        <text x="40" y="505" fill="#000" font-size="8.5" font-weight="500" letter-spacing="0.1em">PERSISTENT STATE</text>
+        <rect x="40" y="514" width="180" height="40" fill="#FFFFFF" stroke="#D7D8D6"/>
+        <text x="130" y="531" text-anchor="middle" fill="#545454" font-size="9" font-weight="500" letter-spacing="0.06em">CANON (KG / RAG / MCP)</text>
+        <text x="130" y="545" text-anchor="middle" fill="#9B9B9B" font-size="7.5" font-style="italic">components · compliance · tokens</text>
+        <rect x="232" y="514" width="150" height="40" fill="#FFFFFF" stroke="#D7D8D6"/>
+        <text x="307" y="531" text-anchor="middle" fill="#545454" font-size="9" font-weight="500" letter-spacing="0.06em">MEMORY</text>
+        <text x="307" y="545" text-anchor="middle" fill="#9B9B9B" font-size="7.5" font-style="italic">learned · gated update</text>
+        <rect x="394" y="514" width="150" height="40" fill="#FFFFFF" stroke="#D7D8D6"/>
+        <text x="469" y="531" text-anchor="middle" fill="#545454" font-size="9" font-weight="500" letter-spacing="0.06em">CHECKPOINTS</text>
+        <text x="469" y="545" text-anchor="middle" fill="#9B9B9B" font-size="7.5" font-style="italic">resumable</text>
+
+        <!-- LEGEND -->
+        <rect x="600" y="492" width="536" height="62" fill="#F3F3F3" stroke="#EDEDED"/>
+        <text x="618" y="512" fill="#000" font-size="8.5" font-weight="500" letter-spacing="0.1em">LEGEND</text>
+        <line x1="618" y1="530" x2="650" y2="530" stroke="#545454" stroke-width="1" marker-end="url(#arr)"/>
+        <text x="658" y="534" fill="#545454" font-size="8">Pipeline flow</text>
+        <line x1="748" y1="530" x2="780" y2="530" stroke="#B7B7B7" stroke-width="0.75" stroke-dasharray="3,3"/><polygon points="777,527 781,530 777,533" fill="#B7B7B7"/>
+        <text x="788" y="534" fill="#545454" font-size="8">Status → hub</text>
+        <line x1="868" y1="530" x2="900" y2="530" stroke="#DB0011" stroke-width="1" marker-end="url(#arr-red)"/>
+        <text x="908" y="534" fill="#545454" font-size="8">HITL / escalation</text>
+        <rect x="1018" y="525" width="9" height="9" fill="#000"/>
+        <text x="1033" y="534" fill="#545454" font-size="8">Craft gate (scored)</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<div class="section-rule"></div>
+
+<!-- TWO LAYERS / DISTINCTION -->
+<section style="padding:var(--s7) 0;">
+  <div class="wrap">
+    <p class="label">Architecture</p>
+    <h2 style="font-size:2.125rem; font-weight:300; line-height:1.15; margin-bottom:var(--s4);">Two layers. One invariant.</h2>
+    <div class="distinction-grid">
+      <div class="distinction-cell">
+        <div class="distinction-head">Harness — reusable</div>
+        <div class="distinction-body">Orchestrator, state stores, gate model, error taxonomy, HITL framework. Discipline-agnostic. Abstracted from HDS. This is what every discipline shares.</div>
+      </div>
+      <div class="distinction-cell">
+        <div class="distinction-head ours">Pipelines — per discipline</div>
+        <div class="distinction-body">Spokes, typed contracts and gates specific to CX/UX research, UX/UI design, UX copy. Plug into the harness. The taxonomy will flex without touching the harness.</div>
+      </div>
+    </div>
+    <p class="pull-quote">The invariant — contracts, stores, gates — is portable across Claude, GPT‑5.5 and Promenaut. The execution engine is replaceable. We own orchestration.</p>
+  </div>
+</section>
+
+<div class="section-rule"></div>
+
+<!-- SPOKES -->
+<section id="spokes">
+  <div class="wrap" style="padding-top:var(--s6);"><p class="label">Spokes — the working pipeline</p></div>
+
+  <div class="dimension"><div class="wrap">
+    <div><div class="dimension-index">01</div><div class="dimension-title">Generator</div><div class="dimension-role">Renders an approved flow into a prototype using only the component library. Never invents components or variants.</div></div>
+    <div>
+      <div class="dimension-body"><p>Reads the brief and flow spec, queries canon for just the components each screen needs, composes from defined instances, binds tokens by intent, and covers every state. Missing patterns are raised as <code>open_gaps</code> — never improvised. Inventing variants is the documented primary failure of agentic design; this spoke makes it impossible by construction.</p></div>
+      <div class="code-block">{
+  "component": "Button",
+  "variant": "primary",
+  "states": ["default","hover","disabled"],
+  "tokens": { "background": "color.action.primary" },
+  "provenance": "figma:1024:88"
+}</div>
+      <div class="pull-quote">Output: design_candidate → the craft gate.</div>
+    </div>
+  </div></div>
+
+  <div class="section-rule"></div>
+
+  <div class="dimension"><div class="wrap">
+    <div><div class="dimension-index">02</div><div class="dimension-title">Critic — craft gate</div><div class="dimension-role">Scores design-system conformance. A trusted logic gate: the orchestrator routes on its pass field.</div></div>
+    <div>
+      <div class="dimension-body"><p>Checks every instance against canon: invented components or variants, hard-coded values instead of tokens, anti-pattern and adjacency violations, missing states, contract integrity. Emits a pass plus specific, actionable recommendations. A blocker violation fails the gate; failures route back to the Generator. This is the design analogue of HDS's Critic — craft is <em>scored</em>.</p></div>
+      <div class="pull-quote">The Critic catches craft failures. The taste gate catches judgment failures. Distinct failure modes, distinct recovery.</div>
+    </div>
+  </div></div>
+
+  <div class="section-rule"></div>
+
+  <div class="dimension"><div class="wrap">
+    <div><div class="dimension-index">03</div><div class="dimension-title">Parallel review</div><div class="dimension-role">Heuristic, accessibility and brand reviewers run simultaneously, each in a clean context, joined for the taste gate.</div></div>
+    <div>
+      <div class="dimension-body">
+        <p><strong>Heuristic</strong> — Nielsen's 10 usability heuristics, each issue severity-rated 0–4. <strong>Accessibility</strong> — WCAG 2.2 AA, each finding citing the success criterion and EN 301 549 clause; any non-waived AA failure blocks handoff. <strong>Brand</strong> — the GTB Swiss system and experience principles.</p>
+        <p>Mirrors HDS's parallel Editor∥Essayist dispatch — independent work, joined once before the next gate.</p>
+      </div>
+      <div class="code-block">{
+  "sc": "1.4.3 Contrast (Minimum)",
+  "en301549_clause": "9.1.4.3",
+  "component": "Button.secondary",
+  "severity": "serious"
+}</div>
+    </div>
+  </div></div>
+
+  <div class="section-rule"></div>
+
+  <div class="dimension"><div class="wrap">
+    <div><div class="dimension-index">04</div><div class="dimension-title">Handoff</div><div class="dimension-role">Assembles the approved design into a developer-ready spec with Code Connect mapping and a working prototype.</div></div>
+    <div>
+      <div class="dimension-body"><p>Produces layout in tokens, component props and states, responsive behaviour, interaction notes and edge cases — plus the Figma-to-code mapping and the prototype (production React preferred; standards-compliant Figma Make as fallback). Rolls up gate results for audit. Gate B is the final human approval before ship.</p></div>
+    </div>
+  </div></div>
+</section>
+
+<div class="section-rule"></div>
+
+<!-- STATE -->
+<section id="state" class="feature-section">
+  <div class="wrap">
+    <p class="label">Persistent State</p>
+    <h2 style="font-size:1.1875rem; font-weight:500; margin-bottom:var(--s2);">Three stores that survive across runs</h2>
+    <p style="font-size:0.875rem; color:var(--grey-6); margin-bottom:var(--s4);">The model layer reads them. The orchestration layer writes them. The design lead audits periodically.</p>
+    <div class="feature-grid">
+      <div class="feature-cell"><div class="feature-index">01</div><div class="feature-title">Canon (knowledge)</div><div class="feature-desc">Authoritative facts: the component graph, compliance graph, tokens, and guidelines. Read-only to spokes; built by ingestion on the agency machine. Representation chosen per type — graph, RAG or live MCP.</div></div>
+      <div class="feature-cell"><div class="feature-index">02</div><div class="feature-title">Memory (learning)</div><div class="feature-desc">Evolving preferences and refinements, proposed by reviews. Committed only via a gated policy — never silently. Periodic audit guards against drift. taste.md is the human-owned north star it must not contradict.</div></div>
+      <div class="feature-cell"><div class="feature-index">03</div><div class="feature-title">Checkpoints</div><div class="feature-desc">Output of each completed step, written before advancing. Enables partial resumption. Invalidation: transient → retry only; malformed input → invalidate upstream; empty → re-run from the first spoke.</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="section-rule"></div>
+
+<!-- ERRORS -->
+<section id="errors" style="padding:var(--s7) 0;">
+  <div class="wrap">
+    <p class="label">Error Handling</p>
+    <h2 style="font-size:2.125rem; font-weight:300; line-height:1.15; margin-bottom:var(--s4);">Four failure types.<br>One routing decision each.</h2>
+    <div class="error-grid">
+      <div class="error-card"><div class="error-type">01 — Transient</div><div class="error-desc">Environmental: timeout, outage, rate limit. Input valid, spoke capable.</div><div class="error-recovery">Recovery: retry same spoke, same input. Cap at N, then escalate.</div></div>
+      <div class="error-card"><div class="error-type">02 — Input Validation</div><div class="error-desc">Malformed or incomplete input. Most dangerous if misclassified as transient — retrying broken input fails expensively.</div><div class="error-recovery">Recovery: do not retry. Go upstream to find the missing field.</div></div>
+      <div class="error-card"><div class="error-type">03 — Semantic / Business Logic</div><div class="error-desc">Spoke ran fine but the content is the problem — off-brief, design-system-violating. Retry won't help.</div><div class="error-recovery">Recovery: route upstream for new input. Often triggers HITL.</div></div>
+      <div class="error-card"><div class="error-type">04 — Policy Violation</div><div class="error-desc">Crossed a safety/compliance/brand boundary. Pre-flight hooks should catch it first — a hook fires deterministically, a prompt may not.</div><div class="error-recovery">Recovery: reframe, single retry, then escalate. Never loop.</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="section-rule"></div>
+
+<!-- KNOWLEDGE -->
+<section id="knowledge" style="padding:var(--s7) 0;">
+  <div class="wrap">
+    <p class="label">Knowledge Layer</p>
+    <h2 style="font-size:2.125rem; font-weight:300; line-height:1.15; margin-bottom:var(--s3);">The right representation per stage.</h2>
+    <p style="font-size:0.875rem; color:var(--grey-6); margin-bottom:var(--s2);">A knowledge graph earns its curation cost only where relationships and traceability pay off. Elsewhere, retrieval or live access wins.</p>
+    <table class="matrix">
+      <thead><tr><th>Knowledge</th><th>Representation</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td class="k">Component library</td><td>Component graph (metadata: props, relationships, tokens, anti-patterns)</td><td>Relationships and anti-patterns are what agents can't infer — a lightweight KG</td></tr>
+        <tr><td class="k">Compliance rules</td><td>Knowledge graph (rule → component → check → SC → clause)</td><td>Audit-grade, multi-hop reasoning for a regulated context</td></tr>
+        <tr><td class="k">Design tokens</td><td>DTCG JSON + intent descriptions</td><td>Load-bearing primitives; reasoned about by intent</td></tr>
+        <tr><td class="k">Guidelines / voice</td><td>RAG over Markdown</td><td>Unstructured semantic; a graph is overkill</td></tr>
+        <tr><td class="k">Live Figma / code</td><td>MCP at runtime (Dev Mode MCP + Code Connect)</td><td>Freshness; don't snapshot what changes hourly</td></tr>
+      </tbody>
+    </table>
+    <p class="pull-quote">Build to WCAG 2.2 AA; EN 301 549 / WCAG 2.1 AA is the legal floor. The version is a config parameter. EAA is enforceable since June 2025 and covers banking.</p>
+  </div>
+</section>
+
+<div class="section-rule"></div>
+
+<!-- OPEN QUESTIONS -->
+<section style="padding:var(--s6) 0;">
+  <div class="wrap">
+    <p class="label">Open Questions</p>
+    <ul class="questions-list">
+      <li>Memory update policy: automatic on review pass, or gated by orchestrator / human review?</li>
+      <li>Retry budget per error type before HITL escalation?</li>
+      <li>taste.md authorship — manually curated by the design lead, informed by escalation patterns?</li>
+      <li>Promenaut runtime: what does it provide for free (state, logging, HITL) and how does our orchestrator map onto it? (ADR-0005, on the agency machine.)</li>
+      <li>Prototype fidelity per client — production React, or standards-compliant Figma Make?</li>
+      <li>How much of research / CX / copywriting to skeleton now vs after the UX/UI slice proves the harness?</li>
+    </ul>
+  </div>
+</section>
+
+<div class="section-rule"></div>
+
+<!-- RESOURCES / REPO -->
+<section id="resources" class="resources-section">
+  <div class="wrap">
+    <p class="label" style="color:var(--grey-5);">Repository</p>
+    <div class="resources-grid">
+      <div class="resource-card">
+        <div class="resource-type">Specification</div>
+        <div class="resource-title">Research Dossier</div>
+        <div class="resource-desc">Full findings + recommendations, sourced. Why every decision is the way it is.</div>
+        <div class="resource-path">docs/research-dossier.md</div>
+      </div>
+      <div class="resource-card">
+        <div class="resource-type">Harness</div>
+        <div class="resource-title">Reusable layer</div>
+        <div class="resource-desc">Orchestrator, error taxonomy, HITL framework, and the three state stores.</div>
+        <div class="resource-path">harness/ · AGENTS.md</div>
+      </div>
+      <div class="resource-card">
+        <div class="resource-type">Working pipeline</div>
+        <div class="resource-title">UX / UI build &amp; review</div>
+        <div class="resource-desc">Spokes, typed JSON contracts, and three portable Agent Skills.</div>
+        <div class="resource-path">disciplines/ui-design/ · skills/</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap"><div class="footer-inner">
+    <span class="footer-note">Promenaut Design Workflow — Agentic Pipeline Specification</span>
+    <span class="footer-version">v0.1 Planning · 2026-05-31</span>
+  </div></div>
+</footer>
+
+<script>
+  const progress = document.getElementById('progress');
+  window.addEventListener('scroll', () => {
+    const st = document.documentElement.scrollTop;
+    const sh = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    progress.style.transform = `scaleX(${sh ? st / sh : 0})`;
+  });
+  function downloadPage() {
+    const blob = new Blob([document.documentElement.outerHTML], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'promenaut-pipeline-spec.html'; a.click();
+    URL.revokeObjectURL(url);
+  }
+</script>
+</body></html>

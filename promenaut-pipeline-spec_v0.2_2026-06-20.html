@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Promenaut Pipeline Specification — v0.2</title>
+<style>
+  :root {
+    --red:#DB0011; --black:#000; --white:#fff;
+    --grey-1:#F3F3F3; --grey-2:#EDEDED; --grey-3:#D7D8D6; --grey-4:#B7B7B7;
+    --grey-5:#9B9B9B; --grey-6:#767676; --grey-7:#545454; --grey-8:#333;
+    --ok:#0B7A3B; --okbg:#E7F4EC; --amber:#9A6A00; --amberbg:#FBF3E0;
+    --s1:.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem; --s6:4rem; --s7:6rem;
+    --max-width:1200px; --gutter:2rem;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--white);color:var(--black);font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:1rem;line-height:1.75;}
+  .progress{position:fixed;top:0;left:0;width:100%;height:2px;background:var(--red);transform-origin:left;transform:scaleX(0);z-index:1000;transition:transform .08s linear;}
+  nav{position:sticky;top:0;background:var(--white);border-bottom:1px solid var(--grey-2);height:54px;display:flex;align-items:center;padding:0 var(--gutter);z-index:100;gap:var(--s4);}
+  .nav-context{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);}
+  .nav-links{display:flex;gap:var(--s3);margin-left:auto;list-style:none;flex-wrap:wrap;}
+  .nav-links a{font-size:.75rem;letter-spacing:.04em;color:var(--grey-6);text-decoration:none;}
+  .nav-links a:hover{color:var(--black);}
+  .nav-btn{padding:8px 18px;background:var(--black);color:var(--white);font-family:inherit;font-size:.7rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;border:none;cursor:pointer;}
+  .nav-btn:hover{background:var(--grey-8);}
+  .wrap{max-width:var(--max-width);margin:0 auto;padding:0 var(--gutter);}
+  .section-rule{width:100%;height:1px;background:var(--grey-2);}
+  .label{font-size:.75rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--red);display:flex;align-items:center;gap:var(--s1);margin-bottom:var(--s3);}
+  .label::before{content:'';display:inline-block;width:20px;height:1px;background:var(--red);}
+  .profile-header{padding:var(--s7) 0 var(--s5);}
+  .profile-header .wrap{display:grid;grid-template-columns:1fr 1fr;gap:var(--s6);align-items:start;}
+  .profile-title{font-size:3.5625rem;font-weight:300;line-height:1.05;}
+  .profile-org{font-size:.875rem;color:var(--grey-6);margin-top:var(--s2);letter-spacing:.04em;}
+  .profile-tagline{font-size:1.1875rem;line-height:1.5;margin-bottom:var(--s4);}
+  .profile-meta{display:grid;grid-template-columns:1fr 1fr;gap:var(--s2);border-top:1px solid var(--grey-2);padding-top:var(--s3);}
+  .meta-label{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);margin-bottom:var(--s1);}
+  .meta-value{font-size:.875rem;color:var(--black);}
+  .changelog{background:var(--grey-1);border-left:3px solid var(--red);padding:var(--s3) var(--s4);margin:var(--s4) 0;}
+  .changelog h3{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);margin-bottom:var(--s2);}
+  .changelog ul{list-style:none;}
+  .changelog li{font-size:.9375rem;color:var(--grey-8);padding:5px 0;display:flex;gap:var(--s2);align-items:baseline;}
+  .changelog li::before{content:'+';color:var(--red);font-weight:600;flex-shrink:0;}
+  .stats-section{background:var(--grey-1);padding:var(--s5) 0;}
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s4);}
+  .stat-number{font-size:2.6875rem;font-weight:200;line-height:1;letter-spacing:-.01em;}
+  .stat-label{font-size:.75rem;letter-spacing:.04em;color:var(--grey-5);margin-top:var(--s1);}
+  .proposition{display:grid;grid-template-columns:3fr 1fr 4fr;gap:var(--s6);align-items:start;padding:var(--s6) 0;}
+  .proposition-head{font-size:2.125rem;font-weight:300;line-height:1.15;}
+  .proposition-divider{border-left:1px solid var(--grey-2);min-height:120px;}
+  .proposition-body{font-size:1rem;line-height:1.8;color:var(--grey-8);}
+  .proposition-body p+p{margin-top:var(--s3);}
+  .diagram-section{padding:var(--s5) 0 var(--s6);}
+  .diagram-frame{margin-top:var(--s4);border:1px solid var(--grey-2);overflow-x:auto;}
+  .diagram-cap{font-size:.875rem;color:var(--grey-6);margin-bottom:var(--s3);}
+  .dimension{padding:var(--s5) 0;}
+  .dimension .wrap{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start;}
+  .dimension-index{font-size:5rem;font-weight:200;line-height:1;color:var(--grey-4);letter-spacing:-.02em;margin-bottom:var(--s2);}
+  .dimension-title{font-size:1.1875rem;font-weight:500;margin-bottom:var(--s1);}
+  .dimension-role{font-size:.875rem;color:var(--grey-6);line-height:1.6;}
+  .dimension-body{font-size:1rem;line-height:1.8;color:var(--grey-8);margin-bottom:var(--s3);}
+  .dimension-body p+p{margin-top:var(--s2);}
+  .pull-quote{border-top:1px solid var(--grey-2);padding-top:var(--s3);margin-top:var(--s3);font-size:1.1875rem;line-height:1.5;}
+  .feature-section{background:var(--grey-1);padding:var(--s6) 0;}
+  .lane-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:var(--s4);border:1px solid var(--grey-3);}
+  .lane{padding:var(--s4);border-right:1px solid var(--grey-3);}
+  .lane:last-child{border-right:none;}
+  .lane-tag{font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--red);margin-bottom:var(--s1);}
+  .lane-when{font-size:.8125rem;color:var(--grey-6);margin-bottom:var(--s2);font-style:italic;}
+  .lane-title{font-size:1.0625rem;font-weight:500;margin-bottom:var(--s2);}
+  .lane-desc{font-size:.875rem;line-height:1.6;color:var(--grey-7);}
+  .matrix{width:100%;border-collapse:collapse;margin-top:var(--s3);font-size:.875rem;}
+  .matrix th,.matrix td{text-align:left;padding:var(--s2) var(--s3);border-bottom:1px solid var(--grey-2);vertical-align:top;line-height:1.5;}
+  .matrix th{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-6);font-weight:500;}
+  .matrix td.k{color:var(--black);font-weight:500;white-space:nowrap;}
+  .pill{display:inline-block;font-size:.7rem;font-weight:600;letter-spacing:.04em;padding:2px 8px;text-transform:uppercase;}
+  .pill.ok{background:var(--okbg);color:var(--ok);}
+  .pill.open{background:var(--amberbg);color:var(--amber);}
+  .pill.block{background:#FBEAEC;color:var(--red);}
+  .guard-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--grey-3);margin-top:var(--s3);}
+  .guard{padding:var(--s4);border-right:1px solid var(--grey-3);}
+  .guard:last-child{border-right:none;}
+  .guard-n{font-size:.7rem;font-weight:600;letter-spacing:.12em;color:var(--red);margin-bottom:var(--s2);}
+  .guard-t{font-size:1rem;font-weight:500;margin-bottom:var(--s2);}
+  .guard-d{font-size:.875rem;line-height:1.6;color:var(--grey-7);}
+  .callout{border:1px solid var(--grey-3);padding:var(--s4);margin-top:var(--s3);}
+  .callout.proof{border-left:3px solid var(--red);}
+  .questions-list{margin-top:var(--s3);list-style:none;}
+  .questions-list li{padding:var(--s2) 0;border-bottom:1px solid var(--grey-2);font-size:.9375rem;color:var(--grey-7);display:flex;gap:var(--s2);align-items:baseline;}
+  .questions-list li::before{content:'—';color:var(--grey-4);flex-shrink:0;}
+  .road{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s4);margin-top:var(--s4);}
+  .road-step{border-top:2px solid var(--red);padding-top:var(--s3);}
+  .road-n{font-size:.7rem;font-weight:600;letter-spacing:.12em;color:var(--red);margin-bottom:var(--s1);}
+  .road-t{font-size:1.0625rem;font-weight:500;margin-bottom:var(--s2);}
+  .road-d{font-size:.875rem;line-height:1.6;color:var(--grey-7);}
+  footer{border-top:1px solid var(--grey-2);padding:var(--s4) 0;}
+  .footer-inner{display:flex;align-items:center;justify-content:space-between;}
+  .footer-note,.footer-version{font-size:.75rem;color:var(--grey-6);}
+  h2.sec{font-size:2.125rem;font-weight:300;line-height:1.15;margin-bottom:var(--s4);}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<nav>
+  <span class="nav-context">Promenaut · Pipeline Spec v0.2</span>
+  <ul class="nav-links">
+    <li><a href="#changed">Changes</a></li>
+    <li><a href="#pipeline">Pipeline</a></li>
+    <li><a href="#spine">Spine</a></li>
+    <li><a href="#intake">Intake</a></li>
+    <li><a href="#multi">Variants</a></li>
+    <li><a href="#checks">Checks</a></li>
+    <li><a href="#harness">Harness</a></li>
+    <li><a href="#guardrails">Guardrails</a></li>
+    <li><a href="#proof">Proof</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+  </ul>
+  <button class="nav-btn" onclick="downloadPage()">Download</button>
+</nav>
+
+<!-- HEADER -->
+<section class="profile-header">
+  <div class="wrap">
+    <div>
+      <p class="label">Specification</p>
+      <h1 class="profile-title">Promenaut<br>Pipeline</h1>
+      <p class="profile-org">v0.2 · Strategy-locked · 2026-06-20</p>
+    </div>
+    <div>
+      <p class="profile-tagline">Take a project from brief → researched, criteria-bound spec → multiple gate-verified solutions → a human-tuned prototype. The differentiated IP is the gated <strong>discovery → criteria → enforcement</strong> loop — not the editor, not the web shell.</p>
+      <div class="profile-meta">
+        <div><p class="meta-label">Spine</p><p class="meta-value">Spec / eval-first<br>criteria = the gates</p></div>
+        <div><p class="meta-label">Intake</p><p class="meta-value">Adaptive maturity router<br>3 lanes → one contract</p></div>
+        <div><p class="meta-label">Proof project</p><p class="meta-value">Payments journey<br>retrofit / gap report</p></div>
+        <div><p class="meta-label">Status</p><p class="meta-value">Decisions locked<br>thin demo built</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-rule"></div>
+
+<!-- WHAT CHANGED -->
+<section id="changed"><div class="wrap" style="padding:var(--s5) 0 0;">
+  <p class="label">What changed since v0.1</p>
+  <h2 class="sec">From a single review pipeline to a governed discovery loop.</h2>
+  <p style="font-size:.9375rem;color:var(--grey-7);max-width:72ch;">v0.1 (the "double diamond as a harness") modelled one downstream pipeline: brief → generate → craft gate → parallel review → taste gate → handoff. That architecture survives. v0.2 adds the <strong>front of the pipeline</strong> — the part that was always the real moat — and tiers the checks so rigor doesn't recreate the slow review it replaces.</p>
+  <div class="changelog">
+    <h3>Locked 2026-06-20</h3>
+    <ul>
+      <li><strong>Spec / eval-first is the spine.</strong> Success/failure criteria are written as executable checks <em>before</em> design; the criteria become the gates. Verification = enforcement, moved upstream.</li>
+      <li><strong>Intake is an adaptive maturity router</strong>, not one flow: seed idea → brainstorm; half-formed → guided JTBD; well-specced → ingest + quiz. All lanes converge on the same criteria contract.</li>
+      <li><strong>Checks are tiered</strong>: a few hard objective gates (block), many cheap advisory signals (annotate), a small set of true human taste calls.</li>
+      <li><strong>Generation is multi-solution</strong>: N variants on meaningful axes, all run through the objective gates; LLM judging <em>filters</em> the broken, humans + users <em>pick</em> the winner.</li>
+      <li><strong>Constitution pattern adopted</strong> (from spec-kit): a root file of non-negotiable principles every phase references — ≈ the gated canon.</li>
+      <li><strong>Editor stays last and bought-in, not built.</strong> Generation/editing is commodity (v0, Stitch, Figma Make, Lovable); the moat is upstream.</li>
+    </ul>
+  </div>
+</div></section>
+
+<div class="section-rule"></div>
+
+<!-- STATS -->
+<section class="stats-section"><div class="wrap"><div class="stats-grid">
+  <div><div class="stat-number">3</div><div class="stat-label">Intake lanes (maturity router)</div></div>
+  <div><div class="stat-number">3</div><div class="stat-label">Check tiers (block / advise / taste)</div></div>
+  <div><div class="stat-number">5</div><div class="stat-label">Harness tiers (token → project)</div></div>
+  <div><div class="stat-number">32</div><div class="stat-label">Gated canon components (built)</div></div>
+</div></div></section>
+
+<div class="section-rule"></div>
+
+<!-- OVERVIEW + PIPELINE DIAGRAM -->
+<section id="pipeline"><div class="wrap">
+  <div class="proposition">
+    <div><p class="label">Overview</p><h2 class="proposition-head">The pipeline is a contract, enforced.</h2></div>
+    <div class="proposition-divider"></div>
+    <div class="proposition-body">
+      <p>Intake adapts to how mature the project is and produces one thing: a <strong>criteria / spec contract</strong> — the success and failure conditions written as checks. Generation then produces several solutions; the <strong>objective gates</strong> kill anything that violates the contract; humans and users pick from what survives.</p>
+      <p>The taste call is made <strong>cheap and rare</strong>, not absent. Everything around it is computed: the evidence, the diff, the A/B, the pre-rejection of anything failing an objective gate.</p>
+    </div>
+  </div>
+</div></section>
+
+<section class="diagram-section"><div class="wrap">
+  <p class="label">Diagram 1 — End-to-end pipeline</p>
+  <p class="diagram-cap">Intake router → criteria contract → multi-solution generation → tiered checks → human taste → tuned prototype. Red = human-in-the-loop. Gates withhold "done".</p>
+  <div class="diagram-frame">
+    <svg width="1156" height="380" viewBox="0 0 1156 380" xmlns="http://www.w3.org/2000/svg" style="display:block;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+      <defs>
+        <marker id="a" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#545454"/></marker>
+        <marker id="ar" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#DB0011"/></marker>
+      </defs>
+      <!-- principle band -->
+      <rect x="20" y="16" width="1116" height="40" fill="#000"/>
+      <text x="578" y="34" text-anchor="middle" fill="#fff" font-size="11" font-weight="500" letter-spacing="2">VERIFICATION = ENFORCEMENT</text>
+      <text x="578" y="48" text-anchor="middle" fill="#9B9B9B" font-size="8.5">criteria written as checks · gates exit non-zero to withhold "done"</text>
+
+      <!-- boxes -->
+      <!-- 1 intake -->
+      <rect x="28" y="120" width="170" height="96" fill="#F3F3F3" stroke="#EDEDED"/>
+      <rect x="28" y="120" width="170" height="22" fill="#EDEDED"/>
+      <text x="113" y="136" text-anchor="middle" font-size="9.5" font-weight="500" letter-spacing=".1em">1 · INTAKE</text>
+      <text x="113" y="160" text-anchor="middle" fill="#545454" font-size="8.5">Maturity router</text>
+      <text x="113" y="173" text-anchor="middle" fill="#545454" font-size="8.5">(seed / half / specced)</text>
+      <text x="113" y="186" text-anchor="middle" fill="#545454" font-size="8.5">+ research ingestion</text>
+      <text x="113" y="206" text-anchor="middle" fill="#9B9B9B" font-size="7.5" font-style="italic">→ jobs + assumptions</text>
+
+      <line x1="198" y1="168" x2="226" y2="168" stroke="#545454" marker-end="url(#a)"/>
+
+      <!-- 2 criteria contract (hero, black border) -->
+      <rect x="228" y="120" width="178" height="96" fill="#fff" stroke="#000" stroke-width="1.5"/>
+      <rect x="228" y="120" width="178" height="22" fill="#000"/>
+      <text x="317" y="136" text-anchor="middle" fill="#fff" font-size="9.5" font-weight="500" letter-spacing=".08em">2 · CRITERIA CONTRACT</text>
+      <text x="317" y="160" text-anchor="middle" fill="#545454" font-size="8.5">Success/failure as</text>
+      <text x="317" y="173" text-anchor="middle" fill="#545454" font-size="8.5">executable evals</text>
+      <text x="317" y="186" text-anchor="middle" fill="#545454" font-size="8.5">+ constitution</text>
+      <text x="317" y="206" text-anchor="middle" fill="#9B9B9B" font-size="7.5" font-style="italic">→ the gates</text>
+
+      <!-- HITL: criteria sign-off -->
+      <line x1="317" y1="216" x2="317" y2="262" stroke="#DB0011" marker-end="url(#ar)"/>
+      <rect x="232" y="264" width="170" height="40" fill="#fff" stroke="#DB0011" stroke-width="1.5"/>
+      <text x="317" y="282" text-anchor="middle" font-size="8.5" font-weight="500">GATE · criteria sign-off</text>
+      <text x="317" y="295" text-anchor="middle" fill="#DB0011" font-size="7.5">PO / lead approves the contract</text>
+
+      <line x1="406" y1="168" x2="434" y2="168" stroke="#545454" marker-end="url(#a)"/>
+
+      <!-- 3 generator -->
+      <rect x="436" y="120" width="170" height="96" fill="#F3F3F3" stroke="#EDEDED"/>
+      <rect x="436" y="120" width="170" height="22" fill="#EDEDED"/>
+      <text x="521" y="136" text-anchor="middle" font-size="9.5" font-weight="500" letter-spacing=".1em">3 · GENERATE × N</text>
+      <text x="521" y="160" text-anchor="middle" fill="#545454" font-size="8.5">N variants on</text>
+      <text x="521" y="173" text-anchor="middle" fill="#545454" font-size="8.5">meaningful axes</text>
+      <text x="521" y="186" text-anchor="middle" fill="#545454" font-size="8.5">(density · hierarchy · motion)</text>
+      <text x="521" y="206" text-anchor="middle" fill="#9B9B9B" font-size="7.5" font-style="italic">from canon only</text>
+
+      <line x1="606" y1="168" x2="634" y2="168" stroke="#545454" marker-end="url(#a)"/>
+
+      <!-- 4 gates -->
+      <rect x="636" y="120" width="170" height="96" fill="#fff" stroke="#000" stroke-width="1.5"/>
+      <rect x="636" y="120" width="170" height="22" fill="#000"/>
+      <text x="721" y="136" text-anchor="middle" fill="#fff" font-size="9.5" font-weight="500" letter-spacing=".08em">4 · OBJECTIVE GATES</text>
+      <text x="721" y="160" text-anchor="middle" fill="#545454" font-size="8.5">Contrast · a11y · tokens</text>
+      <text x="721" y="173" text-anchor="middle" fill="#545454" font-size="8.5">states · coverage</text>
+      <text x="721" y="186" text-anchor="middle" fill="#545454" font-size="8.5">FILTER — kill the broken</text>
+      <text x="721" y="206" text-anchor="middle" fill="#9B9B9B" font-size="7.5" font-style="italic">survivors only →</text>
+
+      <line x1="806" y1="168" x2="834" y2="168" stroke="#DB0011" marker-end="url(#ar)"/>
+
+      <!-- 5 taste -->
+      <rect x="836" y="120" width="150" height="96" fill="#fff" stroke="#DB0011" stroke-width="1.5"/>
+      <rect x="836" y="120" width="150" height="22" fill="#DB0011"/>
+      <text x="911" y="136" text-anchor="middle" fill="#fff" font-size="9.5" font-weight="500" letter-spacing=".06em">5 · TASTE + TEST</text>
+      <text x="911" y="160" text-anchor="middle" fill="#545454" font-size="8.5">Human + users</text>
+      <text x="911" y="173" text-anchor="middle" fill="#545454" font-size="8.5">PICK the winner</text>
+      <text x="911" y="186" text-anchor="middle" fill="#545454" font-size="8.5">~20-sec decision</text>
+      <text x="911" y="206" text-anchor="middle" fill="#9B9B9B" font-size="7.5" font-style="italic">cheap + rare</text>
+
+      <line x1="986" y1="168" x2="1014" y2="168" stroke="#545454" marker-end="url(#a)"/>
+
+      <!-- 6 prototype -->
+      <rect x="1016" y="120" width="116" height="96" fill="#F3F3F3" stroke="#EDEDED"/>
+      <rect x="1016" y="120" width="116" height="22" fill="#EDEDED"/>
+      <text x="1074" y="136" text-anchor="middle" font-size="9" font-weight="500" letter-spacing=".06em">6 · PROTOTYPE</text>
+      <text x="1074" y="160" text-anchor="middle" fill="#545454" font-size="8">Tuned +</text>
+      <text x="1074" y="173" text-anchor="middle" fill="#545454" font-size="8">handoff spec</text>
+      <text x="1074" y="190" text-anchor="middle" fill="#9B9B9B" font-size="7.5" font-style="italic">editor: last,</text>
+      <text x="1074" y="201" text-anchor="middle" fill="#9B9B9B" font-size="7.5" font-style="italic">wrapped</text>
+
+      <!-- regenerate loop -->
+      <path d="M690 216 C 620 250 560 250 521 218" stroke="#545454" fill="none" stroke-dasharray="4,3" marker-end="url(#a)"/>
+      <text x="600" y="246" text-anchor="middle" fill="#9B9B9B" font-size="7">fail gate → regenerate</text>
+
+      <!-- state stores -->
+      <text x="28" y="338" font-size="8.5" font-weight="500" letter-spacing=".1em">PERSISTENT STATE</text>
+      <rect x="28" y="346" width="210" height="26" fill="#fff" stroke="#D7D8D6"/>
+      <text x="133" y="363" text-anchor="middle" fill="#545454" font-size="8.5">CONSTITUTION + CANON (gated)</text>
+      <rect x="250" y="346" width="150" height="26" fill="#fff" stroke="#D7D8D6"/>
+      <text x="325" y="363" text-anchor="middle" fill="#545454" font-size="8.5">MEMORY (gated update)</text>
+      <rect x="412" y="346" width="150" height="26" fill="#fff" stroke="#D7D8D6"/>
+      <text x="487" y="363" text-anchor="middle" fill="#545454" font-size="8.5">CHECKPOINTS</text>
+    </svg>
+  </div>
+</div></section>
+
+<div class="section-rule"></div>
+
+<!-- SPINE -->
+<section id="spine"><div class="wrap" style="padding:var(--s5) 0;">
+  <p class="label">The spine — spec / eval-first</p>
+  <h2 class="sec">Write the checks before the design.</h2>
+  <div style="display:grid;grid-template-columns:3fr 2fr;gap:var(--s6);align-items:start;">
+    <div class="proposition-body">
+      <p>Borrowed from agentic coding (GitHub spec-kit, eval-driven development): define success and failure as executable checks <em>first</em>. Those checks <strong>are</strong> the gates every later stage is held to. It is the purest extension of this project's founding principle — verification = enforcement — moved upstream into discovery.</p>
+      <p style="margin-top:var(--s3);">The honest limit: spec/eval-first assumes you already understand the problem. For a genuinely new problem you don't, and writing criteria too early just locks in your first guess. That is exactly why intake is a <strong>maturity router</strong> with a divergent front-end — the spine governs the objective half (states, a11y, tokens, copy rules); the subjective half is handed to the human taste call.</p>
+    </div>
+    <div class="callout">
+      <p class="meta-label">Constitution (from spec-kit)</p>
+      <p style="font-size:.9375rem;color:var(--grey-8);line-height:1.7;">A root file of non-negotiable principles every phase references. Structurally ≈ the <strong>gated canon</strong>: the hard objective rules — brand (angular), contrast, token fidelity, reduced-motion — declared once, referenced by intake, generation and checks alike.</p>
+    </div>
+  </div>
+</div></section>
+
+<div class="section-rule"></div>
+
+<!-- INTAKE + ROUTER DIAGRAM -->
+<section id="intake" class="diagram-section"><div class="wrap">
+  <p class="label">Diagram 2 — Adaptive maturity router</p>
+  <p class="diagram-cap">The project's starting maturity decides the lane. Users are non-expert, so each lane <em>guides</em>. All lanes converge on the same criteria contract.</p>
+  <div class="diagram-frame">
+    <svg width="1156" height="300" viewBox="0 0 1156 300" xmlns="http://www.w3.org/2000/svg" style="display:block;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+      <defs><marker id="b" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#545454"/></marker></defs>
+      <!-- inputs -->
+      <text x="120" y="36" text-anchor="middle" font-size="9" font-weight="500" letter-spacing=".1em" fill="#9B9B9B">PROJECT STARTS AS…</text>
+      <rect x="40" y="52" width="160" height="40" fill="#fff" stroke="#D7D8D6"/><text x="120" y="76" text-anchor="middle" font-size="9.5" font-weight="500">Seed idea</text>
+      <rect x="40" y="128" width="160" height="40" fill="#fff" stroke="#D7D8D6"/><text x="120" y="152" text-anchor="middle" font-size="9.5" font-weight="500">Half-formed</text>
+      <rect x="40" y="204" width="160" height="40" fill="#fff" stroke="#D7D8D6"/><text x="120" y="228" text-anchor="middle" font-size="9.5" font-weight="500">Well-specced</text>
+      <!-- lanes -->
+      <text x="470" y="36" text-anchor="middle" font-size="9" font-weight="500" letter-spacing=".1em" fill="#9B9B9B">…ROUTES TO A GUIDED LANE</text>
+      <line x1="200" y1="72" x2="318" y2="72" stroke="#545454" marker-end="url(#b)"/>
+      <rect x="320" y="50" width="300" height="44" fill="#F3F3F3" stroke="#EDEDED"/>
+      <text x="340" y="69" font-size="10" font-weight="500" fill="#DB0011">Brainstorm (divergent)</text>
+      <text x="340" y="84" font-size="8.5" fill="#545454">explore the problem before naming criteria</text>
+      <line x1="200" y1="148" x2="318" y2="148" stroke="#545454" marker-end="url(#b)"/>
+      <rect x="320" y="126" width="300" height="44" fill="#F3F3F3" stroke="#EDEDED"/>
+      <text x="340" y="145" font-size="10" font-weight="500" fill="#DB0011">Guided JTBD + assumption map</text>
+      <text x="340" y="160" font-size="8.5" fill="#545454">jobs + riskiest assumptions → criteria · PROTOTYPE LANE</text>
+      <line x1="200" y1="224" x2="318" y2="224" stroke="#545454" marker-end="url(#b)"/>
+      <rect x="320" y="202" width="300" height="44" fill="#F3F3F3" stroke="#EDEDED"/>
+      <text x="340" y="221" font-size="10" font-weight="500" fill="#DB0011">Ingest + short quiz</text>
+      <text x="340" y="236" font-size="8.5" fill="#545454">absorb existing material, quiz to fill gaps</text>
+      <!-- converge -->
+      <path d="M620 72 C 720 72 720 150 760 150" stroke="#545454" fill="none" marker-end="url(#b)"/>
+      <path d="M620 148 L 758 150" stroke="#545454" fill="none" marker-end="url(#b)"/>
+      <path d="M620 224 C 720 224 720 150 760 150" stroke="#545454" fill="none" marker-end="url(#b)"/>
+      <rect x="762" y="118" width="200" height="64" fill="#fff" stroke="#000" stroke-width="1.5"/>
+      <rect x="762" y="118" width="200" height="20" fill="#000"/>
+      <text x="862" y="132" text-anchor="middle" fill="#fff" font-size="9" font-weight="500" letter-spacing=".06em">CRITERIA / SPEC CONTRACT</text>
+      <text x="862" y="156" text-anchor="middle" fill="#545454" font-size="8.5">success/failure as checks</text>
+      <text x="862" y="170" text-anchor="middle" fill="#9B9B9B" font-size="8" font-style="italic">one output, three routes in</text>
+      <line x1="962" y1="150" x2="1000" y2="150" stroke="#545454" marker-end="url(#b)"/>
+      <text x="1075" y="146" text-anchor="middle" font-size="8.5" fill="#545454">to generation</text>
+      <text x="1075" y="160" text-anchor="middle" font-size="8.5" fill="#545454">+ the gates</text>
+      <!-- prototype scope note -->
+      <rect x="320" y="262" width="642" height="28" fill="#FBF3E0" stroke="#EDE0BE"/>
+      <text x="335" y="280" font-size="8.5" fill="#9A6A00">v1 prototype scope: build ONE lane (guided JTBD). Router + other lanes designed-but-deferred — don't boil the ocean.</text>
+    </svg>
+  </div>
+  <div class="lane-grid">
+    <div class="lane"><div class="lane-tag">Lane A · Seed</div><div class="lane-when">when there's just an idea</div><div class="lane-title">Brainstorm</div><div class="lane-desc">Divergent exploration first. You can't write good criteria for a problem you haven't framed — so diverge before converging.</div></div>
+    <div class="lane"><div class="lane-tag">Lane B · Half-formed</div><div class="lane-when">when there's a rough shape</div><div class="lane-title">Guided JTBD + assumptions</div><div class="lane-desc">Extract jobs, contexts and riskiest assumptions; convert risky assumptions into testable criteria. The v1 prototype lane — users are tactical practitioners, not framework experts, so it guides.</div></div>
+    <div class="lane"><div class="lane-tag">Lane C · Specced</div><div class="lane-when">when material already exists</div><div class="lane-title">Ingest + quiz</div><div class="lane-desc">Absorb existing analytics, tickets, prior research, competitor parity; a short quiz fills the gaps. Unblocked without fresh interviews.</div></div>
+  </div>
+</div></section>
+
+<div class="section-rule"></div>
+
+<!-- MULTI-SOLUTION -->
+<section id="multi" class="diagram-section"><div class="wrap">
+  <p class="label">Diagram 3 — Multi-solution loop</p>
+  <p class="diagram-cap">Generate N variants on meaningful axes, run <em>all</em> through the objective gates, then human + users pick. The machine filters; it never picks.</p>
+  <div class="diagram-frame">
+    <svg width="1156" height="300" viewBox="0 0 1156 300" xmlns="http://www.w3.org/2000/svg" style="display:block;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+      <defs><marker id="c" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#545454"/></marker>
+      <marker id="cr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#DB0011"/></marker></defs>
+      <rect x="20" y="118" width="150" height="64" fill="#fff" stroke="#000" stroke-width="1.5"/>
+      <rect x="20" y="118" width="150" height="20" fill="#000"/>
+      <text x="95" y="132" text-anchor="middle" fill="#fff" font-size="8.5" font-weight="500">CRITERIA CONTRACT</text>
+      <text x="95" y="156" text-anchor="middle" fill="#545454" font-size="8.5">the constraints +</text>
+      <text x="95" y="169" text-anchor="middle" fill="#545454" font-size="8.5">meaningful axes</text>
+      <!-- fan to 4 variants -->
+      <g font-size="8.5" fill="#545454">
+      <line x1="170" y1="150" x2="278" y2="60" stroke="#545454" marker-end="url(#c)"/>
+      <line x1="170" y1="150" x2="278" y2="120" stroke="#545454" marker-end="url(#c)"/>
+      <line x1="170" y1="150" x2="278" y2="180" stroke="#545454" marker-end="url(#c)"/>
+      <line x1="170" y1="150" x2="278" y2="240" stroke="#545454" marker-end="url(#c)"/>
+      </g>
+      <rect x="280" y="42" width="150" height="36" fill="#F3F3F3" stroke="#EDEDED"/><text x="355" y="64" text-anchor="middle" font-size="9">V1 · dense</text>
+      <rect x="280" y="102" width="150" height="36" fill="#F3F3F3" stroke="#EDEDED"/><text x="355" y="124" text-anchor="middle" font-size="9">V2 · spacious</text>
+      <rect x="280" y="162" width="150" height="36" fill="#F3F3F3" stroke="#EDEDED"/><text x="355" y="184" text-anchor="middle" font-size="9">V3 · strong hierarchy</text>
+      <rect x="280" y="222" width="150" height="36" fill="#F3F3F3" stroke="#EDEDED"/><text x="355" y="244" text-anchor="middle" font-size="9">V4 · expressive motion</text>
+      <!-- to gates -->
+      <line x1="430" y1="60" x2="498" y2="135" stroke="#545454" marker-end="url(#c)"/>
+      <line x1="430" y1="120" x2="498" y2="145" stroke="#545454" marker-end="url(#c)"/>
+      <line x1="430" y1="180" x2="498" y2="155" stroke="#545454" marker-end="url(#c)"/>
+      <line x1="430" y1="240" x2="498" y2="165" stroke="#545454" marker-end="url(#c)"/>
+      <rect x="500" y="110" width="170" height="80" fill="#fff" stroke="#000" stroke-width="1.5"/>
+      <rect x="500" y="110" width="170" height="20" fill="#000"/>
+      <text x="585" y="124" text-anchor="middle" fill="#fff" font-size="8.5" font-weight="500">OBJECTIVE GATES</text>
+      <text x="585" y="148" text-anchor="middle" fill="#545454" font-size="8.5">every variant must pass</text>
+      <text x="585" y="162" text-anchor="middle" fill="#DB0011" font-size="8.5" font-weight="500">FILTER — kill the broken</text>
+      <text x="585" y="180" text-anchor="middle" fill="#9B9B9B" font-size="7.5" font-style="italic">V1 rejected: contrast fail</text>
+      <!-- survivors -->
+      <line x1="670" y1="150" x2="738" y2="150" stroke="#545454" marker-end="url(#c)"/>
+      <text x="704" y="144" text-anchor="middle" font-size="7.5" fill="#9B9B9B">survivors</text>
+      <rect x="740" y="120" width="160" height="60" fill="#fff" stroke="#DB0011" stroke-width="1.5"/>
+      <rect x="740" y="120" width="160" height="20" fill="#DB0011"/>
+      <text x="820" y="134" text-anchor="middle" fill="#fff" font-size="8.5" font-weight="500">HUMAN + USERS PICK</text>
+      <text x="820" y="158" text-anchor="middle" fill="#545454" font-size="8.5">taste call + user test</text>
+      <text x="820" y="171" text-anchor="middle" fill="#545454" font-size="8.5">on pre-vetted options</text>
+      <line x1="900" y1="150" x2="968" y2="150" stroke="#DB0011" marker-end="url(#cr)"/>
+      <rect x="970" y="124" width="166" height="52" fill="#F3F3F3" stroke="#EDEDED"/>
+      <text x="1053" y="146" text-anchor="middle" font-size="9" font-weight="500">Winner → tune</text>
+      <text x="1053" y="162" text-anchor="middle" font-size="8" fill="#545454">into the prototype</text>
+      <!-- caption -->
+      <text x="578" y="285" text-anchor="middle" font-size="8.5" font-style="italic" fill="#767676">LLM-as-judge is unreliable on aesthetics (confident, unstable, biased) — so it filters the objectively broken, and never ranks taste.</text>
+    </svg>
+  </div>
+</div></section>
+
+<div class="section-rule"></div>
+
+<!-- CHECKS -->
+<section id="checks" class="feature-section"><div class="wrap">
+  <p class="label">Checks — tiered</p>
+  <h2 style="font-size:1.6rem;font-weight:300;margin-bottom:var(--s2);">A few blocks. Many signals. Rare taste calls.</h2>
+  <p style="font-size:.875rem;color:var(--grey-6);margin-bottom:var(--s4);max-width:74ch;">If every check becomes blocking, you have rebuilt the slow review you set out to kill. Tier them: hard objective gates block, cheap advisory signals annotate, true taste calls stay rare and human.</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--s6);align-items:start;">
+    <div class="diagram-frame" style="border:none;">
+      <svg width="540" height="300" viewBox="0 0 540 300" xmlns="http://www.w3.org/2000/svg" style="display:block;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+        <!-- pyramid bands -->
+        <polygon points="270,30 330,90 210,90" fill="#DB0011"/>
+        <text x="270" y="70" text-anchor="middle" fill="#fff" font-size="9" font-weight="500">TASTE</text>
+        <polygon points="210,92 330,92 400,170 140,170" fill="#000"/>
+        <text x="270" y="125" text-anchor="middle" fill="#fff" font-size="10" font-weight="500" letter-spacing=".06em">OBJECTIVE GATES — BLOCK</text>
+        <text x="270" y="143" text-anchor="middle" fill="#9B9B9B" font-size="8">contrast ×2 · dark-surface · token-fidelity · a11y · coverage · integrity</text>
+        <text x="270" y="158" text-anchor="middle" fill="#9B9B9B" font-size="8">6 gates · build-enforced · exit non-zero</text>
+        <polygon points="140,172 400,172 470,270 70,270" fill="#F3F3F3" stroke="#EDEDED"/>
+        <text x="270" y="205" text-anchor="middle" fill="#000" font-size="10" font-weight="500" letter-spacing=".06em">ADVISORY SIGNALS — ANNOTATE</text>
+        <text x="270" y="223" text-anchor="middle" fill="#545454" font-size="8">states-completeness · tone/UX-copy · CX heuristics</text>
+        <text x="270" y="237" text-anchor="middle" fill="#545454" font-size="8">PII/masking · responsive/reflow (tier TBC)</text>
+        <text x="270" y="255" text-anchor="middle" fill="#9B9B9B" font-size="7.5" font-style="italic">many · cheap · non-blocking</text>
+      </svg>
+    </div>
+    <div>
+      <table class="matrix">
+        <thead><tr><th>Tier</th><th>Behaviour</th><th>Count</th></tr></thead>
+        <tbody>
+          <tr><td class="k">Objective gate</td><td><span class="pill block">Block</span> withholds "done"</td><td>Few (6 now)</td></tr>
+          <tr><td class="k">Advisory signal</td><td><span class="pill open">Annotate</span> never blocks</td><td>Many</td></tr>
+          <tr><td class="k">Human taste</td><td><span class="pill ok">Decide</span> cheap + rare</td><td>Smallest</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:.8125rem;color:var(--grey-6);margin-top:var(--s3);"><strong>Candidate checks</strong> (decide tier per item): states-completeness (highest-value, very automatable), content/tone, PII/data-masking (banking), responsive/reflow + zoom, CX/journey heuristics.</p>
+    </div>
+  </div>
+</div></section>
+
+<div class="section-rule"></div>
+
+<!-- HARNESS -->
+<section id="harness"><div class="wrap" style="padding:var(--s5) 0;">
+  <p class="label">Harness — the open crux</p>
+  <h2 class="sec">What is "done" at each tier?</h2>
+  <p style="font-size:.9375rem;color:var(--grey-7);max-width:74ch;margin-bottom:var(--s2);">The harness is the contract that says, at each tier: what goes in, what "done" means (which gates), and how tiers compose upward. The component tier is solved. The screen / journey / project tiers are the open work — and the intake lanes above now specify their <em>inputs</em>, so this no longer starts cold.</p>
+  <table class="matrix">
+    <thead><tr><th>Tier</th><th>Unit of work</th><th>Input →</th><th>Definition of done</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Token</td><td>a design token</td><td>store + modes</td><td>resolves across light/dark; in store</td><td><span class="pill ok">Defined</span></td></tr>
+      <tr><td class="k">Component</td><td>a gated snippet</td><td>token bindings + ARIA</td><td>passes 6 gates; token-faithful</td><td><span class="pill ok">Defined</span></td></tr>
+      <tr><td class="k">Screen</td><td>N variants of a screen</td><td>spec criteria</td><td>variants pass objective gates; advisory annotated</td><td><span class="pill open">Open</span></td></tr>
+      <tr><td class="k">Journey</td><td>a flow</td><td>jobs + assumptions → spec</td><td>criteria contract met across steps</td><td><span class="pill open">Open</span></td></tr>
+      <tr><td class="k">Project</td><td>the whole brief</td><td>brief + ingested research</td><td>constitution + ranked risky assumptions resolved</td><td><span class="pill open">Open</span></td></tr>
+    </tbody>
+  </table>
+  <p class="pull-quote">Discovery doesn't just inform the build — it <em>emits the criteria artifact</em> that becomes the screen/journey definition-of-done. That is what makes the tiers compose instead of staying vague.</p>
+</div></section>
+
+<div class="section-rule"></div>
+
+<!-- GUARDRAILS -->
+<section id="guardrails"><div class="wrap" style="padding:var(--s5) 0;">
+  <p class="label">Guardrails</p>
+  <h2 class="sec">Three rules that keep the moat the moat.</h2>
+  <div class="guard-grid">
+    <div class="guard"><div class="guard-n">01</div><div class="guard-t">Automate around taste, not taste itself</div><div class="guard-d">Compute the evidence, render the diff, line up the A/B, pre-reject anything failing an objective gate — then hand the human a ~20-second decision. Make the taste call cheap and rare, never absent.</div></div>
+    <div class="guard"><div class="guard-n">02</div><div class="guard-t">Tier the gates</div><div class="guard-d">A few hard objective gates block; many cheap advisory signals annotate; a small set of true taste calls. Resist gate sprawl — if everything blocks, you've rebuilt the slow review.</div></div>
+    <div class="guard"><div class="guard-n">03</div><div class="guard-t">Editor last, and bought-in</div><div class="guard-d">Generation/editing is commodity (v0, Stitch, Figma Make, Lovable). Don't build a bespoke editor; wrap one. Spend the scarce effort on the differentiated front of the pipeline.</div></div>
+  </div>
+</div></section>
+
+<div class="section-rule"></div>
+
+<!-- PROOF -->
+<section id="proof"><div class="wrap" style="padding:var(--s5) 0;">
+  <p class="label">Proof project</p>
+  <h2 class="sec">Prove the method on the payments journey — backwards.</h2>
+  <div style="display:grid;grid-template-columns:3fr 2fr;gap:var(--s6);align-items:start;">
+    <div class="proposition-body">
+      <p>Define <em>just enough</em> target to run one real proof, then let the first project refine the rest. The chosen proof: run the payments journey — tech-first, slow, contested, no real discovery — <strong>backwards</strong> through the loop. Reconstruct the criteria, the riskiest assumptions and the gates it skipped, then produce a "what would have bitten us after go-live" gap report.</p>
+      <p style="margin-top:var(--s3);">Why retrofit, not a speculative PRD: it uses a real project, the ground truth is observable (the pain already exists), it needs no fabricated research, and it speaks directly to the failure being feared. A PRD with no research is confident fiction — and you can't validate a discovery tool against an imaginary project.</p>
+    </div>
+    <div class="callout proof">
+      <p class="meta-label">Instruments built (2026-06-20)</p>
+      <p style="font-size:.9375rem;color:var(--grey-8);line-height:1.7;">Semi-structured <strong>interview guide</strong> (depth, the colleague) + stakeholder <strong>questionnaire</strong> (breadth, the opinion-spread). Both double as prototypes of the guided-JTBD and ingestion intake lanes.</p>
+      <p class="meta-label" style="margin-top:var(--s3);">Demo built</p>
+      <p style="font-size:.9375rem;color:var(--grey-8);line-height:1.7;"><strong>Gated-generation demo</strong> (<code>knowledge/_demo/</code>): generate a screen, then prove it with the gates as the visible hero. Shows the render + verify step in-house — a capability the bank lacks today.</p>
+    </div>
+  </div>
+</div></section>
+
+<div class="section-rule"></div>
+
+<!-- ROADMAP -->
+<section id="roadmap" class="feature-section"><div class="wrap">
+  <p class="label">Sequencing</p>
+  <h2 style="font-size:1.6rem;font-weight:300;margin-bottom:var(--s2);">Prove → define → build.</h2>
+  <div class="road">
+    <div class="road-step"><div class="road-n">1 · Prove</div><div class="road-t">Method on payments</div><div class="road-d">Run the retrofit; produce the gap report. De-risks before any forward build. Blocked on colleague chat + stakeholder responses.</div></div>
+    <div class="road-step"><div class="road-n">2 · Define</div><div class="road-t">Minimum viable target</div><div class="road-d">Just enough to run the proof — not big-design-up-front. The first real project refines the rest. (Deferred: harness screen/journey contract.)</div></div>
+    <div class="road-step"><div class="road-n">3 · Build</div><div class="road-t">One intake lane + scaffolding</div><div class="road-d">Guided-JTBD lane first; collaboration/web slice only as far as solo + collaborative intake needs. Editor last, wrapped.</div></div>
+  </div>
+  <p style="font-size:.8125rem;color:var(--grey-6);margin-top:var(--s4);"><strong>Movable now (no external blockers):</strong> polish the gated-generation demo for a boss showing · prototype the ingestion lane · run a one-screen retrofit. <strong>Blocked:</strong> Sutherland JSON · interview + questionnaire responses.</p>
+</div></section>
+
+<div class="section-rule"></div>
+
+<!-- OPEN DECISIONS -->
+<section><div class="wrap" style="padding:var(--s5) 0;">
+  <p class="label">Open decisions</p>
+  <ul class="questions-list">
+    <li>Which candidate checks are blocking vs advisory in v1? (states-completeness the lead candidate.)</li>
+    <li>Harness: the screen / journey / project definitions-of-done (inputs now specified by the intake lanes).</li>
+    <li>How much web / API / collaboration slice is needed just to support solo + collaborative intake, vs deferring?</li>
+    <li>Multi-solution axes: which "meaningful axes" are in scope for v1 (density, hierarchy, motion…)?</li>
+    <li>Memory update policy and retry budgets (carried from v0.1, still open).</li>
+  </ul>
+</div></section>
+
+<div class="section-rule"></div>
+
+<!-- PRUNE -->
+<section><div class="wrap" style="padding:var(--s5) 0;">
+  <p class="label">v1 prune commitment</p>
+  <p style="font-size:1rem;color:var(--grey-8);line-height:1.8;max-width:76ch;">A lot of artifacts were produced fast. Naming the prune now so it isn't optional: at v1, everything in <code>knowledge/_demo/</code>, the two intake instruments, and the deferred harness work each get an explicit <strong>keep / promote / delete</strong> decision. Artifact volume is not proof — the demo and instruments are only validated once the colleague chat and a live showing actually happen.</p>
+</div></section>
+
+<footer><div class="wrap"><div class="footer-inner">
+  <span class="footer-note">Promenaut Pipeline Specification · supersedes v0.1 (archived 2026-05-31)</span>
+  <span class="footer-version">v0.2 · Strategy-locked · 2026-06-20</span>
+</div></div></footer>
+
+<script>
+  const progress=document.getElementById('progress');
+  window.addEventListener('scroll',()=>{const st=document.documentElement.scrollTop;const sh=document.documentElement.scrollHeight-document.documentElement.clientHeight;progress.style.transform=`scaleX(${sh?st/sh:0})`;});
+  function downloadPage(){const blob=new Blob([document.documentElement.outerHTML],{type:'text/html'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='promenaut-pipeline-spec_v0.2.html';a.click();URL.revokeObjectURL(url);}
+</script>
+</body></html>

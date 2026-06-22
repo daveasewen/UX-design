@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capturing Design Decisions — A Proposal</title>
+<script>document.documentElement.classList.add('js');
+if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){document.documentElement.classList.add('no-motion');}</script>
+<style>
+  :root{
+    --paper:#F3F0E9; --panel:#EAE5DA; --panel-2:#E2DCCD;
+    --ink:#181818; --muted:#5E594F; --red:#E2231A; --red-ink:#B81910;
+    --hair:rgba(24,24,24,.16); --hair-soft:rgba(24,24,24,.10);
+    --maxw:1120px;
+    --sans:"Helvetica Neue",Helvetica,Arial,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--sans);
+    font-size:19px; line-height:1.7; font-weight:400;
+    letter-spacing:.005em;
+    -webkit-font-smoothing:antialiased;
+  }
+  p{max-width:60ch; margin:0 0 1em;}
+  .lead{font-size:1.16em; line-height:1.6;}
+  strong{font-weight:700;}
+  a{color:var(--red-ink); text-underline-offset:3px;}
+
+  /* ---------- scroll progress ---------- */
+  .progress{position:fixed; top:0; left:0; height:5px; width:0%;
+    background:var(--red); z-index:60; transition:width .1s linear;}
+  .no-motion .progress{transition:none;}
+
+  /* ---------- top bar ---------- */
+  .topbar{position:sticky; top:0; z-index:50; background:var(--paper);
+    border-bottom:2px solid var(--ink);}
+  .topbar .row{max-width:var(--maxw); margin:0 auto; padding:14px 28px;
+    display:flex; align-items:center; justify-content:space-between; gap:16px;}
+  .brand{display:flex; align-items:baseline; gap:12px; font-weight:700;
+    letter-spacing:.02em; font-size:15px;}
+  .brand .dot{width:13px; height:13px; background:var(--red); display:inline-block;}
+  .brand .sub{font-weight:400; color:var(--muted);}
+  .mbtn{font-family:var(--sans); font-size:13px; font-weight:700; letter-spacing:.04em;
+    text-transform:uppercase; background:none; border:2px solid var(--ink);
+    color:var(--ink); padding:8px 14px; cursor:pointer; border-radius:999px;
+    display:inline-flex; align-items:center; gap:8px;}
+  .mbtn:hover{background:var(--ink); color:var(--paper);}
+  .mbtn .ico{font-size:11px;}
+
+  /* ---------- layout ---------- */
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 28px;}
+  section{padding:84px 0; border-bottom:1px solid var(--hair-soft);}
+  section:last-of-type{border-bottom:none;}
+
+  .eyebrow{display:inline-flex; align-items:center; gap:10px;
+    font-size:13px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--red-ink); margin:0 0 18px;}
+  .eyebrow::before{content:""; width:28px; height:2px; background:var(--red);}
+
+  .secnum{font-size:14px; font-weight:700; letter-spacing:.16em;
+    color:var(--muted); display:block; margin-bottom:8px;}
+  h1{font-size:clamp(42px,7.4vw,86px); line-height:1.02; font-weight:800;
+    letter-spacing:-.018em; margin:0 0 22px; max-width:15ch;}
+  h2{font-size:clamp(30px,4.4vw,50px); line-height:1.06; font-weight:800;
+    letter-spacing:-.015em; margin:0 0 24px; max-width:18ch;}
+  h3{font-size:22px; line-height:1.25; font-weight:700; margin:0 0 8px;}
+
+  /* ---------- hero ---------- */
+  .hero{padding:74px 0 70px; border-bottom:2px solid var(--ink);}
+  .hero .kick{font-size:13px; font-weight:700; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--muted); margin-bottom:24px;
+    display:flex; flex-wrap:wrap; gap:8px 18px;}
+  .hero .kick b{color:var(--ink);}
+  .hero .meta{display:flex; flex-wrap:wrap; gap:12px; margin-top:30px;}
+  .pill{border:2px solid var(--ink); border-radius:999px; padding:8px 16px;
+    font-size:14px; font-weight:700; letter-spacing:.02em;}
+  .pill.solid{background:var(--ink); color:var(--paper);}
+
+  /* ---------- generic blocks ---------- */
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center;}
+  .figure{background:var(--panel); border:2px solid var(--ink); border-radius:6px;
+    padding:30px; }
+  .cap{font-size:13.5px; color:var(--muted); letter-spacing:.02em; margin-top:14px;
+    max-width:46ch;}
+  .note{font-size:15px; color:var(--muted); max-width:58ch;}
+
+  svg{display:block; max-width:100%;}
+  .figure svg{width:100%; height:auto;}
+  .s-ink{fill:var(--ink);} .s-red{fill:var(--red);} .s-paper{fill:var(--paper);}
+  .s-panel{fill:var(--panel-2);}
+  .st-ink{stroke:var(--ink); fill:none;} .st-red{stroke:var(--red); fill:none;}
+  text{font-family:var(--sans);}
+  .lbl{font-size:13px; font-weight:700; fill:var(--ink);}
+  .lbl-s{font-size:11.5px; font-weight:700; fill:var(--muted); letter-spacing:.04em;}
+  .lbl-w{font-size:13px; font-weight:700; fill:var(--paper);}
+
+  /* ---------- principle cards ---------- */
+  .principles{display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-top:48px;}
+  .pcard{border:2px solid var(--ink); border-radius:6px; padding:26px 24px; background:var(--paper);}
+  .pcard .big{font-size:46px; font-weight:800; color:var(--red); line-height:1; margin-bottom:14px;}
+  .pcard h3{font-size:20px;}
+  .pcard p{font-size:16px; color:var(--muted); margin:6px 0 0;}
+
+  /* ---------- lifecycle ---------- */
+  .flow{margin-top:14px;}
+  .steps{display:grid; grid-template-columns:repeat(6,1fr); gap:14px;}
+  .step{position:relative; border-top:3px solid var(--ink); padding-top:16px;}
+  .step .n{font-size:13px; font-weight:800; letter-spacing:.1em; color:var(--red-ink);}
+  .step h3{font-size:18px; margin:6px 0 6px;}
+  .step p{font-size:14.5px; color:var(--muted); margin:0; max-width:none;}
+  .step .tag{display:inline-block; margin-top:10px; font-size:11px; font-weight:700;
+    letter-spacing:.05em; text-transform:uppercase; color:var(--red-ink);}
+
+  /* reveal staggering for steps */
+  .js .step{opacity:0; transform:translateY(14px); transition:opacity .5s ease, transform .5s ease;}
+  .js .steps.in .step{opacity:1; transform:none;}
+  .no-motion .step{opacity:1!important; transform:none!important; transition:none;}
+  .steps.in .step:nth-child(1){transition-delay:.05s}
+  .steps.in .step:nth-child(2){transition-delay:.16s}
+  .steps.in .step:nth-child(3){transition-delay:.27s}
+  .steps.in .step:nth-child(4){transition-delay:.38s}
+  .steps.in .step:nth-child(5){transition-delay:.49s}
+  .steps.in .step:nth-child(6){transition-delay:.60s}
+
+  /* ---------- research learnings ---------- */
+  .learn{display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-top:14px;}
+  .lcard{border-left:4px solid var(--red); background:var(--panel); padding:22px 22px 20px; border-radius:0 6px 6px 0;}
+  .lcard .k{font-size:12px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--red-ink); margin-bottom:10px;}
+  .lcard p{font-size:16px; margin:0 0 12px; max-width:none;}
+  .lcard .src{font-size:13px; color:var(--muted);}
+  .lcard .src a{font-weight:700;}
+
+  /* ---------- decisions ---------- */
+  .dec{border:2px solid var(--ink); border-radius:8px; margin-top:30px; overflow:hidden; background:var(--paper);}
+  .dec .head{display:flex; align-items:flex-start; gap:18px; padding:24px 28px; border-bottom:2px solid var(--ink); background:var(--panel);}
+  .dec .head .num{font-size:34px; font-weight:800; color:var(--red); line-height:1; min-width:54px;}
+  .dec .head .q{font-size:23px; font-weight:800; letter-spacing:-.01em; margin:0;}
+  .dec .head .q small{display:block; font-size:15px; font-weight:500; color:var(--muted); letter-spacing:0; margin-top:6px; max-width:60ch;}
+  .opts{display:grid; grid-template-columns:repeat(3,1fr);}
+  .opts.two{grid-template-columns:repeat(2,1fr);}
+  .opt{padding:24px 24px 26px; border-right:1px solid var(--hair); position:relative;}
+  .opt:last-child{border-right:none;}
+  .opt .ot{font-size:17px; font-weight:700; margin:16px 0 6px;}
+  .opt p{font-size:14.5px; color:var(--muted); margin:0; max-width:none;}
+  .opt .dia{height:150px; display:flex; align-items:center; justify-content:center; overflow:hidden; margin-bottom:6px;}
+  .opt .dia svg{height:142px; width:auto; max-width:100%;}
+  .opt.lean{background:#fbf6ec;}
+  .opt.lean::before{content:"★ My lean"; position:absolute; top:0; right:0;
+    background:var(--red-ink); color:#fff; font-size:11px; font-weight:800;
+    letter-spacing:.06em; text-transform:uppercase; padding:5px 12px; border-radius:0 0 0 8px;}
+
+  /* ---------- recap ---------- */
+  .recap{background:var(--ink); color:var(--paper); border-radius:8px; padding:42px 40px; margin-top:18px;}
+  .recap h2{color:var(--paper);}
+  .recap ol{list-style:none; counter-reset:r; padding:0; margin:24px 0 0; display:grid; grid-template-columns:1fr 1fr; gap:18px 40px;}
+  .recap li{counter-increment:r; padding-left:48px; position:relative; font-size:17px; line-height:1.5;}
+  .recap li::before{content:counter(r); position:absolute; left:0; top:-2px;
+    width:32px; height:32px; background:var(--red); color:#fff; border-radius:999px;
+    display:flex; align-items:center; justify-content:center; font-weight:800; font-size:15px;}
+  .recap li b{display:block;}
+  .recap li span{color:#cfc9bb; font-size:14.5px;}
+
+  /* ---------- sources ---------- */
+  .sources{font-size:14px; color:var(--muted);}
+  .sources h2{font-size:24px; color:var(--ink); max-width:none;}
+  .sources ul{padding:0; margin:18px 0 0; list-style:none; columns:2; column-gap:48px;}
+  .sources li{break-inside:avoid; margin:0 0 12px; line-height:1.45;}
+  .sources li b{color:var(--ink);}
+  footer{padding:40px 0 70px; color:var(--muted); font-size:13.5px;}
+
+  /* ---------- reveal ---------- */
+  .js .reveal{opacity:0; transform:translateY(16px); transition:opacity .6s ease, transform .6s ease;}
+  .js .reveal.in{opacity:1; transform:none;}
+  .no-motion .reveal{opacity:1!important; transform:none!important; transition:none;}
+
+  /* draw-in line */
+  .drawline{stroke-dasharray:1; stroke-dashoffset:1; }
+  .js .flowline{stroke-dasharray:1200; stroke-dashoffset:1200; transition:stroke-dashoffset 1.4s ease;}
+  .flowline.in{stroke-dashoffset:0;}
+  .no-motion .flowline{stroke-dashoffset:0!important; transition:none;}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:880px){
+    body{font-size:18px;}
+    .grid2{grid-template-columns:1fr; gap:28px;}
+    .principles{grid-template-columns:1fr;}
+    .steps{grid-template-columns:1fr 1fr;}
+    .learn{grid-template-columns:1fr;}
+    .opts,.opts.two{grid-template-columns:1fr;}
+    .opt{border-right:none; border-bottom:1px solid var(--hair);}
+    .opt:last-child{border-bottom:none;}
+    .recap ol{grid-template-columns:1fr;}
+    .sources ul{columns:1;}
+  }
+  @media (max-width:520px){
+    .steps{grid-template-columns:1fr;}
+    .wrap,.topbar .row{padding-left:20px; padding-right:20px;}
+  }
+</style>
+</head>
+<body>
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<div class="topbar">
+  <div class="row">
+    <div class="brand"><span class="dot"></span> DESIGN SYSTEM <span class="sub">/ Proposal</span></div>
+    <button class="mbtn" id="motionToggle" aria-pressed="true"><span class="ico" id="motionIco">❚❚</span> <span id="motionTxt">Motion on</span></button>
+  </div>
+</div>
+
+<!-- ===================== HERO ===================== -->
+<header class="hero">
+  <div class="wrap">
+    <div class="kick reveal in">
+      <span><b>For:</b> review with my manager</span>
+      <span><b>From:</b> Design System</span>
+      <span><b>June 2026</b></span>
+    </div>
+    <h1 class="reveal in">How we capture design&nbsp;decisions.</h1>
+    <p class="lead reveal in">One design system feeds many projects. This is a simple, safe way to
+      <strong>make a decision once</strong> — and roll it out everywhere without breaking things.</p>
+    <div class="meta reveal in">
+      <span class="pill solid">5-minute read</span>
+      <span class="pill">6 simple steps</span>
+      <span class="pill">4 decisions for you</span>
+    </div>
+  </div>
+</header>
+
+<!-- ===================== 01 PROBLEM ===================== -->
+<section id="problem">
+  <div class="wrap">
+    <span class="secnum reveal">01 — THE PROBLEM</span>
+    <div class="grid2">
+      <div class="reveal">
+        <h2>One system. Many projects. No clear path.</h2>
+        <p class="lead">Lots of teams build on our design system.</p>
+        <p>When we decide to change something, we don't have a clear, shared way to do three things:</p>
+        <p style="margin-left:2px"><strong>1. Agree it.</strong> &nbsp; <strong>2. Write it down.</strong> &nbsp; <strong>3. Roll it out safely.</strong></p>
+        <p class="note">As the system grows, a missed step can quietly break another team's work. We want a path that scales.</p>
+      </div>
+      <div class="figure reveal">
+        <svg viewBox="0 0 460 300" role="img" aria-label="One design system feeding four projects">
+          <!-- hub -->
+          <line class="st-ink flowline" x1="230" y1="150" x2="80" y2="60" stroke-width="2"/>
+          <line class="st-ink flowline" x1="230" y1="150" x2="390" y2="60" stroke-width="2"/>
+          <line class="st-ink flowline" x1="230" y1="150" x2="80" y2="244" stroke-width="2"/>
+          <line class="st-ink flowline" x1="230" y1="150" x2="390" y2="244" stroke-width="2"/>
+          <circle class="s-red" cx="230" cy="150" r="50"/>
+          <text x="230" y="146" text-anchor="middle" class="lbl-w">DESIGN</text>
+          <text x="230" y="162" text-anchor="middle" class="lbl-w">SYSTEM</text>
+          <!-- projects -->
+          <g>
+            <rect class="s-panel" x="28" y="36" width="104" height="48" rx="4" stroke="#181818" stroke-width="2"/>
+            <text x="80" y="65" text-anchor="middle" class="lbl">Project A</text>
+            <rect class="s-panel" x="338" y="36" width="104" height="48" rx="4" stroke="#181818" stroke-width="2"/>
+            <text x="390" y="65" text-anchor="middle" class="lbl">Project B</text>
+            <rect class="s-panel" x="28" y="220" width="104" height="48" rx="4" stroke="#181818" stroke-width="2"/>
+            <text x="80" y="249" text-anchor="middle" class="lbl">Project C</text>
+            <rect class="s-panel" x="338" y="220" width="104" height="48" rx="4" stroke="#181818" stroke-width="2"/>
+            <text x="390" y="249" text-anchor="middle" class="lbl">Project D</text>
+          </g>
+        </svg>
+        <p class="cap">Change the system once and it should flow out to every project — cleanly.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 02 FIRST IDEA + RESEARCH ===================== -->
+<section id="research">
+  <div class="wrap">
+    <span class="secnum reveal">02 — WE PRESSURE-TESTED THE IDEA</span>
+    <h2 class="reveal">The idea holds up. The research sharpened it.</h2>
+    <p class="lead reveal">Our idea: <strong>meet → AI drafts the notes → a person signs them off → the system updates → the team is told.</strong> The core is sound. The research confirmed one part and added two.</p>
+
+    <div class="figure reveal" style="margin:22px 0 10px;">
+      <svg viewBox="0 0 980 120" role="img" aria-label="First idea: five steps in a row">
+        <g>
+          <!-- connecting line -->
+          <line class="st-ink flowline" x1="40" y1="60" x2="940" y2="60" stroke-width="2"/>
+          <!-- 5 chips -->
+          <g>
+            <rect class="s-paper" x="20" y="36" width="150" height="48" rx="24" stroke="#181818" stroke-width="2"/>
+            <text x="95" y="65" text-anchor="middle" class="lbl">1 · Meet</text>
+            <rect class="s-paper" x="215" y="36" width="170" height="48" rx="24" stroke="#181818" stroke-width="2"/>
+            <text x="300" y="65" text-anchor="middle" class="lbl">2 · AI drafts</text>
+            <rect class="s-paper" x="430" y="36" width="170" height="48" rx="24" stroke="#181818" stroke-width="2"/>
+            <text x="515" y="65" text-anchor="middle" class="lbl">3 · Human signs off</text>
+            <rect class="s-paper" x="645" y="36" width="170" height="48" rx="24" stroke="#181818" stroke-width="2"/>
+            <text x="730" y="65" text-anchor="middle" class="lbl">4 · System updates</text>
+            <rect class="s-paper" x="860" y="36" width="110" height="48" rx="24" stroke="#181818" stroke-width="2"/>
+            <text x="915" y="65" text-anchor="middle" class="lbl">5 · Team told</text>
+          </g>
+        </g>
+      </svg>
+      <p class="cap">Your instinct holds: AI does the heavy lifting, a person signs off, and humans stay in control. The research confirmed that — and added two refinements.</p>
+    </div>
+
+    <h3 class="reveal" style="margin-top:40px;">What the research told us</h3>
+    <div class="learn">
+      <div class="lcard reveal">
+        <div class="k">✓ Confirmed · sign-off</div>
+        <p>Keeping a <strong>person to sign off</strong> the AI's draft is right — the AI never decides alone. The research strongly agrees, especially in a regulated setting.</p>
+        <div class="src">Source: <a href="https://www.whitecase.com/insight-alert/when-every-word-recorded-ai-meeting-tools-and-new-governance-risks" target="_blank" rel="noopener">White&nbsp;&amp;&nbsp;Case</a>, <a href="https://www.thomsonreuters.com/en/insights/articles/accuracy-in-ai" target="_blank" rel="noopener">Thomson&nbsp;Reuters</a></div>
+      </div>
+      <div class="lcard reveal">
+        <div class="k">＋ Added · who approves</div>
+        <p>You don't need <strong>everyone to approve every change</strong>. A few people decide; the rest are told. That avoids bottlenecks and rubber-stamping.</p>
+        <div class="src">Source: <a href="https://medium.com/eightshapes-llc/team-models-for-scaling-a-design-system-2cf9d03be6a0" target="_blank" rel="noopener">Nathan&nbsp;Curtis, EightShapes</a></div>
+      </div>
+      <div class="lcard reveal">
+        <div class="k">＋ Added · the rollout</div>
+        <p>Tell people a change is coming and <strong>give them time</strong> to update. Don't just flip a switch under them.</p>
+        <div class="src">Source: <a href="https://medium.com/eightshapes-llc/versioning-design-systems-48cceb5ace4d" target="_blank" rel="noopener">Versioning Design Systems</a>, <a href="https://semver.org/" target="_blank" rel="noopener">SemVer</a></div>
+      </div>
+    </div>
+    <p class="note reveal" style="margin-top:24px;">So the idea stands. The proposal below builds it out into six clear steps.</p>
+  </div>
+</section>
+
+<!-- ===================== 03 THE PROPOSAL ===================== -->
+<section id="proposal">
+  <div class="wrap">
+    <span class="secnum reveal">03 — THE PROPOSAL</span>
+    <h2 class="reveal">Six simple steps.</h2>
+    <p class="lead reveal">Same instinct as before, made safe. Read it left to right.</p>
+
+    <div class="flow reveal">
+      <div class="steps" id="steps">
+        <div class="step"><span class="n">STEP 1</span><h3>Propose</h3><p>Anyone can raise a decision. Small, easy-to-undo ones skip the meeting.</p></div>
+        <div class="step"><span class="n">STEP 2</span><h3>Discuss</h3><p>Talk it through on a call. AI takes notes and writes a first draft.</p><span class="tag">AI helps</span></div>
+        <div class="step"><span class="n">STEP 3</span><h3>Decide</h3><p>A few named people agree it. We note who, why, and what it affects.</p><span class="tag">Person signs</span></div>
+        <div class="step"><span class="n">STEP 4</span><h3>Build</h3><p>Teams make the change. Each one is checked automatically before it ships.</p></div>
+        <div class="step"><span class="n">STEP 5</span><h3>Tell people</h3><p>Everyone who uses it is told — with time to adjust.</p></div>
+        <div class="step"><span class="n">STEP 6</span><h3>Check</h3><p>If a decision keeps causing problems, we revisit it.</p></div>
+      </div>
+    </div>
+
+    <div class="principles">
+      <div class="pcard reveal"><div class="big">✎</div><h3>AI drafts. A person signs.</h3><p>The AI writes the first version. A named human makes it official.</p></div>
+      <div class="pcard reveal"><div class="big">①</div><h3>Decide once. Build many times.</h3><p>Agree the decision once. The changes that follow are just checked for quality — not re-argued.</p></div>
+      <div class="pcard reveal"><div class="big">◷</div><h3>A few decide. Everyone is told.</h3><p>A small group makes the call. Everyone else is kept informed — not asked to approve.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 04 DECISIONS ===================== -->
+<section id="decisions">
+  <div class="wrap">
+    <span class="secnum reveal">04 — FOUR DECISIONS, YOUR CALL</span>
+    <h2 class="reveal">Four choices for you.</h2>
+    <p class="lead reveal">Each one shows the options side by side. I've marked the way I'd lean — but the call is yours.</p>
+
+    <!-- D1 -->
+    <div class="dec reveal">
+      <div class="head"><span class="num">1</span><p class="q">Who gets to decide?<small>How much sits with a central team versus the projects.</small></p></div>
+      <div class="opts">
+        <div class="opt">
+          <div class="dia">
+            <svg viewBox="0 0 150 130" role="img" aria-label="One central team decides everything">
+              <line class="st-ink" x1="75" y1="30" x2="38" y2="70" stroke-width="2"/>
+              <line class="st-ink" x1="75" y1="30" x2="75" y2="70" stroke-width="2"/>
+              <line class="st-ink" x1="75" y1="30" x2="112" y2="70" stroke-width="2"/>
+              <circle class="s-red" cx="75" cy="30" r="15"/>
+              <circle class="s-panel" cx="38" cy="74" r="9" stroke="#181818" stroke-width="2"/>
+              <circle class="s-panel" cx="75" cy="74" r="9" stroke="#181818" stroke-width="2"/>
+              <circle class="s-panel" cx="112" cy="74" r="9" stroke="#181818" stroke-width="2"/>
+              <text x="75" y="106" text-anchor="middle" class="lbl">One team</text>
+              <text x="75" y="122" text-anchor="middle" class="lbl-s">decides all</text>
+            </svg>
+          </div>
+          <div class="ot">A. One central team</div>
+          <p>One team decides everything. Very consistent — but slow, and they become the bottleneck.</p>
+        </div>
+        <div class="opt">
+          <div class="dia">
+            <svg viewBox="0 0 150 130" role="img" aria-label="Each project decides on its own">
+              <circle class="s-ink" cx="48" cy="34" r="11"/>
+              <circle class="s-ink" cx="102" cy="34" r="11"/>
+              <circle class="s-ink" cx="48" cy="74" r="11"/>
+              <circle class="s-ink" cx="102" cy="74" r="11"/>
+              <text x="75" y="106" text-anchor="middle" class="lbl">Each project</text>
+              <text x="75" y="122" text-anchor="middle" class="lbl-s">on its own</text>
+            </svg>
+          </div>
+          <div class="ot">B. Each project alone</div>
+          <p>Every project decides for itself. Fast — but the system drifts apart over time.</p>
+        </div>
+        <div class="opt lean">
+          <div class="dia">
+            <svg viewBox="0 0 150 130" role="img" aria-label="A small core decides and the teams build">
+              <line class="st-red" x1="75" y1="46" x2="28" y2="24" stroke-width="2"/>
+              <line class="st-red" x1="75" y1="46" x2="122" y2="24" stroke-width="2"/>
+              <line class="st-red" x1="75" y1="46" x2="28" y2="68" stroke-width="2"/>
+              <line class="st-red" x1="75" y1="46" x2="122" y2="68" stroke-width="2"/>
+              <rect class="s-ink" x="20" y="16" width="16" height="16" rx="2"/>
+              <rect class="s-ink" x="114" y="16" width="16" height="16" rx="2"/>
+              <rect class="s-ink" x="20" y="60" width="16" height="16" rx="2"/>
+              <rect class="s-ink" x="114" y="60" width="16" height="16" rx="2"/>
+              <circle class="s-red" cx="75" cy="46" r="16"/>
+              <text x="75" y="106" text-anchor="middle" class="lbl">Core decides</text>
+              <text x="75" y="122" text-anchor="middle" class="lbl-s">teams build</text>
+            </svg>
+          </div>
+          <div class="ot">C. Core decides, teams build</div>
+          <p>A small core agrees the decisions. The projects build the changes. Consistent <em>and</em> fast.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- D2 -->
+    <div class="dec reveal">
+      <div class="head"><span class="num">2</span><p class="q">Where do we write decisions down?<small>We already keep a log for technical decisions. Do design decisions share it, or get their own?</small></p></div>
+      <div class="opts two">
+        <div class="opt">
+          <div class="dia">
+            <svg viewBox="0 0 150 130" role="img" aria-label="One shared log for all decisions">
+              <rect class="s-panel" x="48" y="20" width="54" height="64" rx="4" stroke="#181818" stroke-width="2"/>
+              <line class="st-ink" x1="58" y1="38" x2="92" y2="38" stroke-width="2"/>
+              <line class="st-ink" x1="58" y1="52" x2="92" y2="52" stroke-width="2"/>
+              <line class="st-ink" x1="58" y1="66" x2="92" y2="66" stroke-width="2"/>
+              <text x="75" y="106" text-anchor="middle" class="lbl">One log</text>
+              <text x="75" y="122" text-anchor="middle" class="lbl-s">for everything</text>
+            </svg>
+          </div>
+          <div class="ot">A. One shared log</div>
+          <p>Everything in one place. Simple — but design and technical notes get mixed together.</p>
+        </div>
+        <div class="opt lean">
+          <div class="dia">
+            <svg viewBox="0 0 200 130" role="img" aria-label="A separate design log, kept apart from the technical log">
+              <rect class="s-panel" x="34" y="22" width="52" height="58" rx="4" stroke="#181818" stroke-width="2"/>
+              <line class="st-ink" x1="44" y1="40" x2="76" y2="40" stroke-width="2"/>
+              <line class="st-ink" x1="44" y1="54" x2="76" y2="54" stroke-width="2"/>
+              <rect class="s-red" x="114" y="22" width="52" height="58" rx="4"/>
+              <line x1="124" y1="40" x2="156" y2="40" stroke="#ffffff" stroke-width="2"/>
+              <line x1="124" y1="54" x2="156" y2="54" stroke="#ffffff" stroke-width="2"/>
+              <text x="60" y="104" text-anchor="middle" class="lbl-s">Tech</text>
+              <text x="140" y="104" text-anchor="middle" class="lbl" style="fill:#B81910">Design</text>
+            </svg>
+          </div>
+          <div class="ot">B. A separate design log</div>
+          <p>Design decisions get their own clear home. Different readers, different pace. Easier to find.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- D3 -->
+    <div class="dec reveal">
+      <div class="head"><span class="num">3</span><p class="q">Who are the deciders?<small>For a typical decision, who must agree, who is asked, and who is just told?</small></p></div>
+      <div class="opts two">
+        <div class="opt">
+          <div class="dia">
+            <svg viewBox="0 0 200 130" role="img" aria-label="Everyone approves every change">
+              <circle class="s-red" cx="40" cy="48" r="14"/>
+              <circle class="s-red" cx="80" cy="48" r="14"/>
+              <circle class="s-red" cx="120" cy="48" r="14"/>
+              <circle class="s-red" cx="160" cy="48" r="14"/>
+              <text x="100" y="104" text-anchor="middle" class="lbl">Everyone</text>
+              <text x="100" y="120" text-anchor="middle" class="lbl-s">must approve</text>
+            </svg>
+          </div>
+          <div class="ot">A. Everyone approves</div>
+          <p>All actors sign off every change. Feels fair — but causes hold-ups and rubber-stamping.</p>
+        </div>
+        <div class="opt lean">
+          <div class="dia">
+            <svg viewBox="0 0 230 130" role="img" aria-label="A few decide, some are asked, most are told">
+              <circle class="s-red" cx="40" cy="50" r="14"/>
+              <circle class="s-ink" cx="115" cy="50" r="18"/>
+              <circle class="s-panel" cx="192" cy="50" r="24" stroke="#181818" stroke-width="2"/>
+              <text x="40" y="102" text-anchor="middle" class="lbl">Decide</text>
+              <text x="40" y="118" text-anchor="middle" class="lbl-s">a few</text>
+              <text x="115" y="102" text-anchor="middle" class="lbl">Asked</text>
+              <text x="115" y="118" text-anchor="middle" class="lbl-s">some</text>
+              <text x="192" y="102" text-anchor="middle" class="lbl">Told</text>
+              <text x="192" y="118" text-anchor="middle" class="lbl-s">most</text>
+            </svg>
+          </div>
+          <div class="ot">B. Decide · Asked · Told</div>
+          <p>A small named group <strong>decides</strong>. A few are <strong>asked</strong> for input. Everyone else is <strong>told</strong>. Clear and fast.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- D4 -->
+    <div class="dec reveal">
+      <div class="head"><span class="num">4</span><p class="q">When do we hold a meeting?<small>Not every change needs a formal call. Where's the line?</small></p></div>
+      <div class="opts two">
+        <div class="opt">
+          <div class="dia">
+            <svg viewBox="0 0 200 130" role="img" aria-label="Every change needs a meeting">
+              <circle class="s-red" cx="50" cy="48" r="16"/>
+              <circle class="s-red" cx="100" cy="48" r="16"/>
+              <circle class="s-red" cx="150" cy="48" r="16"/>
+              <text x="100" y="104" text-anchor="middle" class="lbl">Every change</text>
+              <text x="100" y="120" text-anchor="middle" class="lbl-s">gets a meeting</text>
+            </svg>
+          </div>
+          <div class="ot">A. A meeting for everything</div>
+          <p>Safe, but heavy. People start skipping the process to get work done.</p>
+        </div>
+        <div class="opt lean">
+          <div class="dia">
+            <svg viewBox="0 0 220 130" role="img" aria-label="Small changes are logged, big changes get a meeting">
+              <line class="st-ink" x1="110" y1="24" x2="110" y2="80" stroke-width="2" stroke-dasharray="5 5"/>
+              <circle class="s-panel" cx="42" cy="48" r="9" stroke="#181818" stroke-width="2"/>
+              <circle class="s-panel" cx="74" cy="48" r="9" stroke="#181818" stroke-width="2"/>
+              <circle class="s-red" cx="165" cy="48" r="18"/>
+              <text x="58" y="102" text-anchor="middle" class="lbl">Small</text>
+              <text x="58" y="118" text-anchor="middle" class="lbl-s">just log it</text>
+              <text x="165" y="102" text-anchor="middle" class="lbl">Big</text>
+              <text x="165" y="118" text-anchor="middle" class="lbl-s">hold a meeting</text>
+            </svg>
+          </div>
+          <div class="ot">B. Match the meeting to the risk</div>
+          <p>Small, easy-to-undo changes are just logged. Big or hard-to-undo ones get the full meeting.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 05 RECAP ===================== -->
+<section id="recap">
+  <div class="wrap">
+    <span class="secnum reveal">05 — WHAT I NEED FROM YOU</span>
+    <div class="recap reveal">
+      <h2>Your four answers.</h2>
+      <p class="lead" style="color:#e7e2d6; max-width:62ch;">If you're happy with my leans, this is a quick yes. If not, tell me which to change.</p>
+      <ol>
+        <li><b>Who decides?</b><span>My lean: a small core decides, teams build.</span></li>
+        <li><b>Where do we record it?</b><span>My lean: a separate design-decisions log.</span></li>
+        <li><b>Who are the deciders?</b><span>My lean: a few decide · some asked · most told.</span></li>
+        <li><b>When do we meet?</b><span>My lean: only big or hard-to-undo changes.</span></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SOURCES ===================== -->
+<section id="sources" class="sources">
+  <div class="wrap">
+    <span class="secnum reveal">APPENDIX</span>
+    <h2 class="reveal">Grounded in research.</h2>
+    <p class="reveal" style="max-width:60ch;">This proposal was checked against how other teams run design systems and against guidance on AI meeting tools. Key sources:</p>
+    <ul class="reveal">
+      <li><b>Decision records (the format):</b> <a href="https://adr.github.io/" target="_blank" rel="noopener">adr.github.io</a>, <a href="https://martinfowler.com/bliki/ArchitectureDecisionRecord.html" target="_blank" rel="noopener">Martin Fowler</a>, <a href="https://aws.amazon.com/blogs/architecture/master-architecture-decision-records-adrs-best-practices-for-effective-decision-making/" target="_blank" rel="noopener">AWS</a></li>
+      <li><b>Who decides (governance):</b> <a href="https://medium.com/eightshapes-llc/team-models-for-scaling-a-design-system-2cf9d03be6a0" target="_blank" rel="noopener">EightShapes — team models</a>, <a href="https://medium.com/@nathanacurtis/the-fallacy-of-federated-design-systems-23b9a9a05542" target="_blank" rel="noopener">The fallacy of federated</a></li>
+      <li><b>Rolling out change:</b> <a href="https://medium.com/eightshapes-llc/versioning-design-systems-48cceb5ace4d" target="_blank" rel="noopener">Versioning design systems</a>, <a href="https://semver.org/" target="_blank" rel="noopener">Semantic Versioning</a>, <a href="https://designsystems.surf/guides/single-source-of-truth" target="_blank" rel="noopener">Single source of truth</a></li>
+      <li><b>AI meeting-tool risks:</b> <a href="https://www.whitecase.com/insight-alert/when-every-word-recorded-ai-meeting-tools-and-new-governance-risks" target="_blank" rel="noopener">White &amp; Case</a>, <a href="https://www.thomsonreuters.com/en/insights/articles/accuracy-in-ai" target="_blank" rel="noopener">Thomson Reuters</a></li>
+    </ul>
+    <footer>Design System · Proposal v1 · June 2026 · Full write-up: <em>01-capturing-design-decisions.md</em></footer>
+  </div>
+</section>
+
+<script>
+(function(){
+  var root=document.documentElement;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ---- motion toggle ----
+  var btn=document.getElementById('motionToggle');
+  var ico=document.getElementById('motionIco');
+  var txt=document.getElementById('motionTxt');
+  function setMotion(on){
+    if(on){ root.classList.remove('no-motion'); ico.textContent='❚❚'; txt.textContent='Motion on'; btn.setAttribute('aria-pressed','true'); }
+    else { root.classList.add('no-motion'); ico.textContent='▶'; txt.textContent='Motion off'; btn.setAttribute('aria-pressed','false'); }
+  }
+  if(reduce) setMotion(false);
+  btn.addEventListener('click', function(){ setMotion(root.classList.contains('no-motion')); });
+
+  // ---- reveal on scroll ----
+  var io = ('IntersectionObserver' in window) ? new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, {threshold:0.16, rootMargin:'0px 0px -8% 0px'}) : null;
+
+  function revealAll(){ document.querySelectorAll('.reveal,.steps,.flowline').forEach(function(el){ el.classList.add('in'); }); }
+  try{
+    function watch(sel){ document.querySelectorAll(sel).forEach(function(el){
+      if(io){ io.observe(el); } else { el.classList.add('in'); }
+    }); }
+    watch('.reveal'); watch('.steps'); watch('.flowline');
+    // safety net: if anything is still hidden after load, show it
+    window.addEventListener('load', function(){ setTimeout(function(){
+      document.querySelectorAll('.reveal:not(.in)').forEach(function(el){
+        var r=el.getBoundingClientRect(); if(r.top < window.innerHeight){ el.classList.add('in'); }
+      });
+    }, 1200); });
+  }catch(err){ revealAll(); }
+
+  // ---- scroll progress ----
+  var bar=document.getElementById('progress');
+  function prog(){
+    var h=document.documentElement;
+    var max=h.scrollHeight - h.clientHeight;
+    var p = max>0 ? (h.scrollTop || document.body.scrollTop)/max*100 : 0;
+    bar.style.width=p+'%';
+  }
+  window.addEventListener('scroll', prog, {passive:true});
+  window.addEventListener('resize', prog); prog();
+})();
+</script>
+</body>
+</html>

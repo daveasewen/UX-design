@@ -3,21 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cards — reference implementation (gated)</title>
+<title>Cards — refined to library types (exploration)</title>
 <!--
-  CANONICAL REFERENCE IMPLEMENTATION for the Cards component (promoted 2026-06-22).
-  Authored gated snippet. Colour values are resolved canonical token values; the embedded
-  #token-manifest maps every CSS var to its token, and _validate_snippets.py fails the build if
-  any value drifts from the store, required ARIA is missing, or a contrast pair falls below threshold.
-  Edit tokens in the store, not here.
-  Three real Common Toolkit card TYPES (Figma nodes 11746:45268, 2298:52812, 862:21004):
-    • Action card  — icon + title + description + quaternary action buttons (static surface; <article>)
-    • Link card    — whole card is the link, icon + arrow-link title + description, hover state (<a>)
-    • Media card   — image + title + description + arrow links (static surface; <article>)
-  Every card link reuses the CANONICAL arrow-link atom from Links.reference.html (red tip,
-  underline-on-hover, keyboard focus) — same primitive, not a custom glyph. Plus a loading state.
-  Responsive grid (auto-fit, reflows to 300px), dark mode, square corners, reduced-motion.
-  Static cards use <article> semantics; the interactive link card is a single <a>. Conservative motion only.
+  EXPLORATION. Rebuilt to match the real Common Toolkit card TYPES (Figma nodes 11746:45268,
+  2298:52812, 862:21004): Action card (icon+title+desc+quaternary buttons), Link card
+  (clickable, icon+arrow link+desc, hover state), Media card (image+title+desc+arrow links).
+  CRITICAL: every card link reuses the CANONICAL arrow-link atom from Links.reference.html
+  (red tip, underline-on-hover, keyboard focus) — same primitive, not a custom "→".
+  Responsive grid, dark mode, square corners, reduced-motion. Tokens unchanged.
 -->
 <style>
   :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
@@ -27,7 +20,6 @@
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
   .demo-controls{margin-bottom:1.75rem; display:flex; gap:1rem; align-items:center; flex-wrap:wrap; font-size:13px;}
   .demo-controls button.tg{font:inherit; font-size:13px; padding:8px 14px; border:1px solid var(--muted); background:transparent; color:var(--text); cursor:pointer;}
-  .demo-controls button.tg:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
   .demo-controls label{display:flex; gap:.5rem; align-items:center;} .demo-controls input[type=range]{accent-color:var(--accent);}
 
   .wrap{ width:var(--demo-width, 760px); max-width:100%; }
@@ -92,16 +84,16 @@
 
   <div class="wrap"><div class="row">
 
-    <!-- Type 1: Action card (static surface → <article>) -->
-    <article class="card action">
+    <!-- Type 1: Action card -->
+    <div class="card action">
       <div class="body">
         <span class="ic" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 18 18" fill="currentColor" xmlns="http://www.w3.org/2000/svg" data-icon="informative/card-details"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.497 0H4.5C3.66992 0 2.997 0.672573 2.997 1.50223V5.46022C3.3849 5.28193 3.78867 5.14038 4.203 5.03743V4.20086H16.803V10.4976C16.7981 10.663 16.6625 10.7946 16.497 10.7945H13.095C13.163 11.1898 13.1991 11.5898 13.203 11.9909H16.497C16.8948 11.9933 17.2771 11.837 17.5592 11.5567C17.8414 11.2764 18 10.8952 18 10.4976V1.50223C18 0.672573 17.3271 0 16.497 0ZM16.803 2.99547H4.203V1.50223C4.20293 1.33677 4.33453 1.20126 4.5 1.19639H16.497C16.666 1.19639 16.803 1.33332 16.803 1.50223V2.99547ZM15.003 5.99994V7.19633H11.997V5.99994H15.003ZM5.742 9.04039C6.09964 8.91031 6.49634 9.08477 6.642 9.43619C6.74891 9.67226 6.71694 9.94801 6.55884 10.1534C6.40073 10.3588 6.14225 10.4603 5.88655 10.4175C5.63085 10.3747 5.41955 10.1946 5.337 9.94893C5.20213 9.58639 5.38212 9.18261 5.742 9.04039ZM6.642 10.9924V14.9954H5.4V10.9924H6.642ZM6.003 7.19633C4.05753 7.19269 2.30176 8.36171 1.55557 10.1575C0.809387 11.9533 1.22 14.0215 2.59566 15.3965C3.97132 16.7715 6.04065 17.1819 7.83734 16.4361C9.63403 15.6903 10.8036 13.9354 10.8 11.9909C10.795 9.34498 8.65026 7.20128 6.003 7.19633ZM6.003 5.99994C8.43181 5.99994 10.6213 7.46276 11.5499 9.70589C12.4785 11.949 11.9633 14.5304 10.2446 16.2457C8.52586 17.9609 5.94239 18.472 3.69951 17.5405C1.45664 16.609 -0.00363459 14.4185 6.79458e-06 11.9909C5.00082e-06 10.4004 0.632749 8.87525 1.75879 7.75147C2.88483 6.62769 4.41174 5.99755 6.003 5.99994Z" fill="currentColor"/></svg></span>
         <div><h3>Title</h3><p>Description.</p></div>
       </div>
       <div class="actions"><button class="qbtn" type="button">Action 1</button><button class="qbtn" type="button">Action 2</button></div>
-    </article>
+    </div>
 
-    <!-- Type 2: Link card (whole card is the link → stays <a>) -->
+    <!-- Type 2: Link card (whole card is the link) -->
     <a class="linkcard" href="#" aria-label="Example link">
       <span class="ic" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 18 18" fill="currentColor" xmlns="http://www.w3.org/2000/svg" data-icon="informative/card-details"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.497 0H4.5C3.66992 0 2.997 0.672573 2.997 1.50223V5.46022C3.3849 5.28193 3.78867 5.14038 4.203 5.03743V4.20086H16.803V10.4976C16.7981 10.663 16.6625 10.7946 16.497 10.7945H13.095C13.163 11.1898 13.1991 11.5898 13.203 11.9909H16.497C16.8948 11.9933 17.2771 11.837 17.5592 11.5567C17.8414 11.2764 18 10.8952 18 10.4976V1.50223C18 0.672573 17.3271 0 16.497 0ZM16.803 2.99547H4.203V1.50223C4.20293 1.33677 4.33453 1.20126 4.5 1.19639H16.497C16.666 1.19639 16.803 1.33332 16.803 1.50223V2.99547ZM15.003 5.99994V7.19633H11.997V5.99994H15.003ZM5.742 9.04039C6.09964 8.91031 6.49634 9.08477 6.642 9.43619C6.74891 9.67226 6.71694 9.94801 6.55884 10.1534C6.40073 10.3588 6.14225 10.4603 5.88655 10.4175C5.63085 10.3747 5.41955 10.1946 5.337 9.94893C5.20213 9.58639 5.38212 9.18261 5.742 9.04039ZM6.642 10.9924V14.9954H5.4V10.9924H6.642ZM6.003 7.19633C4.05753 7.19269 2.30176 8.36171 1.55557 10.1575C0.809387 11.9533 1.22 14.0215 2.59566 15.3965C3.97132 16.7715 6.04065 17.1819 7.83734 16.4361C9.63403 15.6903 10.8036 13.9354 10.8 11.9909C10.795 9.34498 8.65026 7.20128 6.003 7.19633ZM6.003 5.99994C8.43181 5.99994 10.6213 7.46276 11.5499 9.70589C12.4785 11.949 11.9633 14.5304 10.2446 16.2457C8.52586 17.9609 5.94239 18.472 3.69951 17.5405C1.45664 16.609 -0.00363459 14.4185 6.79458e-06 11.9909C5.00082e-06 10.4004 0.632749 8.87525 1.75879 7.75147C2.88483 6.62769 4.41174 5.99755 6.003 5.99994Z" fill="currentColor"/></svg></span>
       <div>
@@ -110,8 +102,8 @@
       </div>
     </a>
 
-    <!-- Type 3: Media card (static surface → <article>) -->
-    <article class="card media">
+    <!-- Type 3: Media card -->
+    <div class="card media">
       <div class="img" role="img" aria-label="Cannon Beach at dusk"></div>
       <div class="body">
         <h3>Title with a link <span class="tip" aria-hidden="true"><svg viewBox="0 0 18 18"><path d="M5 17L5 1L13 9L5 17Z"/></svg></span></h3>
@@ -121,7 +113,7 @@
           <a class="arrow" href="#"><span class="lbl">Example link two</span><span class="tip" aria-hidden="true"><svg viewBox="0 0 18 18"><path d="M5 17L5 1L13 9L5 17Z"/></svg></span></a>
         </div>
       </div>
-    </article>
+    </div>
 
     <!-- Loading state -->
     <div class="card loading" aria-busy="true" aria-label="Loading"><span class="sk title"></span><span class="sk line"></span><span class="sk line short"></span></div>

@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Route A — Payments (composed from HSBC canon)</title>
+<style>
+  /* ---- canon tokens (resolved from knowledge/tokens, light mode) ---- */
+  :root{
+    --bg:#FFFFFF; --surface:#FFFFFF; --surface-2:#F7F7F7;
+    --ink:#1a1a1a; --text:#333333; --text-secondary:#545454; --text-muted:#767676;
+    --border-subtle:#D7D8D6; --border-strong:#767676; --divider:#EDEDED;
+    --primary:#DB0011; --primary-hover:#BA1110;
+    --positive:#00847F; --positive-tint:#E5F2F2;       /* HSBC success = teal, NOT green */
+    --negative:#A8000B; --warning:#FFBB33;
+    --focus:#305A85;
+    --radius:0;                                         /* ANGULAR: square corners */
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:var(--font);color:var(--text);background:var(--surface-2);font-size:14px;line-height:1.45}
+  .app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+
+  /* sidebar */
+  .side{background:var(--bg);border-right:1px solid var(--border-subtle);padding:24px 16px;display:flex;flex-direction:column}
+  .brand{display:flex;align-items:center;gap:10px;margin-bottom:32px}
+  .logo{width:34px;height:34px;background:var(--primary);border-radius:var(--radius)}
+  .brand b{font-size:12px;letter-spacing:.04em;color:var(--ink)}
+  nav a{display:flex;align-items:center;gap:10px;padding:10px 12px;color:var(--text);text-decoration:none;border-radius:var(--radius);font-weight:500}
+  nav a.active{background:var(--ink);color:#fff}
+  nav a:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+  .me{margin-top:auto;display:flex;align-items:center;gap:10px;padding-top:16px;border-top:1px solid var(--divider)}
+  .ava{width:30px;height:30px;border-radius:999px;background:linear-gradient(135deg,#305A85,#00847F)} /* avatar = round (exempt) */
+  .me small{display:block;color:var(--text-muted);font-size:11px}
+
+  /* main */
+  .main{padding:28px 36px;max-width:1180px}
+  h1{font-size:26px;color:var(--ink);margin:0 0 22px}
+  .grid{display:grid;grid-template-columns:1fr 340px;gap:22px;align-items:start}
+  .card{background:var(--surface);border:1px solid var(--border-subtle);border-radius:var(--radius);padding:20px;margin-bottom:22px}
+  .card h2{font-size:13px;color:var(--text-secondary);font-weight:600;margin:0 0 16px} /* sentence case, not CAPS */
+  .muted{color:var(--text-muted);font-size:12px}
+
+  /* quick actions */
+  .tiles{display:flex;gap:14px;flex-wrap:wrap}
+  .tile{flex:1;min-width:96px;text-align:center}
+  .tile .ic{width:46px;height:46px;border:1px solid var(--border-subtle);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:20px;color:var(--text)}
+  .tile.primary .ic{border-color:var(--primary);color:var(--primary)} /* red = primary, used once + meaningfully */
+  .tile small{font-size:12px;color:var(--text)}
+
+  /* cash position */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:8px}
+  .stat label{display:block;font-size:11px;color:var(--text-muted);margin-bottom:4px}
+  .stat b{font-size:21px;color:var(--ink);font-weight:600}
+  .stat b.pos{color:var(--positive)}
+  .spark{height:70px;margin:14px 0}
+  .drivers{display:flex;gap:40px;margin:8px 0 16px}
+  .drivers b{font-size:16px}
+  .pos{color:var(--positive)} .neg{color:var(--text)}
+  .banner{background:var(--positive-tint);border-left:3px solid var(--positive);padding:12px 14px;color:#0a4f4c;font-size:13px}
+  .banner b{color:var(--positive)}
+
+  /* transactions */
+  .row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-top:1px solid var(--divider)}
+  .row:first-of-type{border-top:0}
+  .row .nm{font-weight:500;color:var(--ink)}
+  .row .sub{font-size:11px;color:var(--text-muted)}
+  .amt{font-variant-numeric:tabular-nums;font-weight:600}
+  .amt.pos{color:var(--positive)} .amt.neg{color:var(--text)}
+
+  /* right rail */
+  .appr{border:1px solid var(--border-subtle);border-radius:var(--radius);padding:14px;margin-bottom:12px}
+  .appr .top{display:flex;justify-content:space-between;align-items:baseline}
+  .appr .amt{font-size:16px}
+  .btns{display:flex;gap:8px;margin-top:10px}
+  .btn{flex:1;padding:8px 10px;border-radius:var(--radius);font-weight:600;font-size:13px;cursor:pointer;border:1px solid}
+  .btn.approve{background:var(--primary);border-color:var(--primary);color:#fff}
+  .btn.reject{background:#fff;border-color:var(--border-strong);color:var(--text)}
+  .btn:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+  .confirm{font-size:11px;color:var(--text-muted);margin-top:8px;display:flex;align-items:center;gap:5px}
+  .up{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-top:1px solid var(--divider)}
+  .up:first-of-type{border-top:0}
+  .up .d{width:38px;color:var(--text-muted);font-size:11px;text-align:center}
+  .up .nm{flex:1;padding-left:8px}
+  .up .nm small{display:block;color:var(--text-muted);font-size:11px}
+  .pill{display:inline-block;background:var(--positive-tint);color:var(--positive);font-size:11px;font-weight:600;padding:2px 8px;border-radius:var(--radius);border:1px solid #bfe0de}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- sidebar -->
+  <aside class="side">
+    <div class="brand"><span class="logo"></span><b>BUSINESS&nbsp;BANKING</b></div>
+    <nav>
+      <a href="#">▸ Accounts</a>
+      <a href="#" class="active">➤ Payments</a>
+      <a href="#">▸ Cards</a>
+      <a href="#">▸ Analytics</a>
+      <a href="#">▸ Settings</a>
+    </nav>
+    <div class="me"><span class="ava"></span><div>Sarah Chen<small>Admin</small></div></div>
+  </aside>
+
+  <!-- main -->
+  <main class="main">
+    <h1>Payments</h1>
+    <div class="grid">
+      <div>
+        <!-- quick actions -->
+        <section class="card">
+          <h2>Initiate a payment</h2>
+          <div class="tiles">
+            <div class="tile primary"><div class="ic">→</div><small>Make a payment</small></div>
+            <div class="tile"><div class="ic">▤</div><small>Pay a bill</small></div>
+            <div class="tile"><div class="ic">⇄</div><small>Move money</small></div>
+            <div class="tile"><div class="ic">▦</div><small>Standing order</small></div>
+            <div class="tile"><div class="ic">⟳</div><small>Direct debit</small></div>
+          </div>
+        </section>
+
+        <!-- cash position -->
+        <section class="card">
+          <h2>Cash position · Today, 12 May 2026</h2>
+          <div class="stats">
+            <div class="stat"><label>Opening balance</label><b>£120,000</b></div>
+            <div class="stat"><label>Current balance</label><b>£122,450</b></div>
+            <div class="stat"><label>Net movement</label><b class="pos">+£2,450</b></div>
+            <div class="stat"><label>Est. closing</label><b>£124,000</b></div>
+          </div>
+          <svg class="spark" viewBox="0 0 600 70" preserveAspectRatio="none" aria-hidden="true">
+            <polyline fill="none" stroke="#00847F" stroke-width="2"
+              points="0,52 100,48 200,44 300,36 400,30 500,24 600,20"/>
+          </svg>
+          <div class="drivers">
+            <div><div class="muted">Inflows today</div><b class="pos">+£11,650</b></div>
+            <div><div class="muted">Outflows today</div><b class="neg">−£9,200</b></div>
+          </div>
+          <div class="banner">You're covered through May. Your <b>£122,450</b> balance covers
+            <b>£49,702</b> of scheduled payments, leaving a <b>£72,748</b> buffer.</div>
+        </section>
+
+        <!-- transactions -->
+        <section class="card">
+          <h2>Recent transactions</h2>
+          <div class="row"><div><div class="nm">Amazon Web Services</div><div class="sub">Cloud services · 2 hours ago</div></div><div class="amt neg">−£1,249.50</div></div>
+          <div class="row"><div><div class="nm">Stripe Payment</div><div class="sub">Revenue · 5 hours ago</div></div><div class="amt pos">+£8,450.00</div></div>
+          <div class="row"><div><div class="nm">Figma Professional</div><div class="sub">Software · yesterday · USD</div></div><div class="amt neg">−$45.00</div></div>
+          <div class="row"><div><div class="nm">Acme Corp — Invoice #2847</div><div class="sub">Revenue · yesterday</div></div><div class="amt pos">+£12,500.00</div></div>
+          <div class="row"><div><div class="nm">Salary — J. Smith</div><div class="sub">Payroll · 2 days ago</div></div><div class="amt neg">−£3,200.00</div></div>
+        </section>
+      </div>
+
+      <!-- right rail -->
+      <div>
+        <section class="card">
+          <h2>Pending your approval</h2>
+          <div class="appr">
+            <div class="top"><div><div class="nm">Amazon Business</div><div class="sub">Sarah Chen · 2d ago</div></div><div class="amt">£4,502</div></div>
+            <div class="btns"><button class="btn approve">Approve</button><button class="btn reject">Reject</button></div>
+            <div class="confirm">🔒 Confirmation step required before sending</div>
+          </div>
+          <div class="appr">
+            <div class="top"><div><div class="nm">BrightHire Payroll Ltd</div><div class="sub">Sarah Chen · 2d ago</div></div><div class="amt">£45,200</div></div>
+            <div class="btns"><button class="btn approve">Approve</button><button class="btn reject">Reject</button></div>
+            <div class="confirm">🔒 Confirmation step required before sending</div>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Upcoming payments <span class="pill">5 · £106,302 total</span></h2>
+          <div class="up"><div class="d">15<br>MAY</div><div class="nm">Amazon Business<small>••-••-60 · ···· 1791</small></div><div class="amt">£4,502</div></div>
+          <div class="up"><div class="d">22<br>MAY</div><div class="nm">BrightHire Payroll Ltd<small>••-••-65 · ···· 7851</small></div><div class="amt">£45,200</div></div>
+          <div class="up"><div class="d">22<br>JUL</div><div class="nm">HMRC — PAYE<small>••-••-25 · ···· 4657</small></div><div class="amt">£2,200</div></div>
+          <div class="up"><div class="d">12<br>AUG</div><div class="nm">British Gas Business<small>••-••-81 · ···· 3181</small></div><div class="amt">£4,200</div></div>
+          <div class="up"><div class="d">09<br>SEP</div><div class="nm">Ravenscroft Properties<small>••-••-80 · ···· 2028</small></div><div class="amt">£50,200</div></div>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

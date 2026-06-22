@@ -1,0 +1,43 @@
+{
+  "_note": "SHARED source-of-truth for the A/B. Both generators get exactly these figures. The data is internally consistent and the coverage claim is TRUE — so any inconsistency in an output is the generator's own corruption, which gate 2 will catch.",
+  "screen": "Business Banking · Payments",
+  "currency": "GBP",
+  "as_of": "2026-05-12",
+  "cash_position": {
+    "opening_balance": 120000,
+    "inflows_today": 11650,
+    "outflows_today": 9200,
+    "current_balance": 122450,
+    "net_movement_today": 2450,
+    "expected_remaining_inflow": 1550,
+    "est_closing": 124000
+  },
+  "pending_approval": [
+    {"payee": "Amazon Business", "amount": 4502, "requested_by": "Sarah Chen", "age_days": 2, "confirmation_step": true},
+    {"payee": "BrightHire Payroll Ltd", "amount": 45200, "requested_by": "Sarah Chen", "age_days": 2, "confirmation_step": true}
+  ],
+  "upcoming_payments": {
+    "count_stated": 5,
+    "total_stated": 106302,
+    "rows": [
+      {"date": "15 May", "month": "May", "payee": "Amazon Business", "sort_code": "51-29-60", "account_last4": "1791", "amount": 4502},
+      {"date": "22 May", "month": "May", "payee": "BrightHire Payroll Ltd", "sort_code": "14-21-65", "account_last4": "7851", "amount": 45200},
+      {"date": "22 Jul", "month": "Jul", "payee": "HMRC — PAYE", "sort_code": "17-82-25", "account_last4": "4657", "amount": 2200},
+      {"date": "12 Aug", "month": "Aug", "payee": "British Gas Business", "sort_code": "38-15-81", "account_last4": "3181", "amount": 4200},
+      {"date": "09 Sep", "month": "Sep", "payee": "Ravenscroft Properties", "sort_code": "57-22-80", "account_last4": "2028", "amount": 50200}
+    ]
+  },
+  "coverage_truth": {
+    "covered": true,
+    "period": "May",
+    "may_obligations": 49702,
+    "buffer": 72748,
+    "basis": "current_balance 122,450 − May scheduled 49,702 = 72,748 buffer"
+  },
+  "_consistency_checks": {
+    "current = opening + inflows - outflows": "120000 + 11650 - 9200 = 122450 ✓",
+    "upcoming_total = sum(rows)": "4502+45200+2200+4200+50200 = 106302 ✓",
+    "may_obligations = May rows": "4502 + 45200 = 49702 ✓",
+    "pending amounts match upcoming for same payee": "Amazon 4502, BrightHire 45200 ✓"
+  }
+}

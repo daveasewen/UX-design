@@ -19,6 +19,7 @@ Canon stays deliberate and accessible-first; the showcases stay a safe sandbox. 
 | Treatment | Lives in | Notes |
 |---|---|---|
 | **Already promoted** — Input fields two-state focus (animated underline + keyboard-only ring) | canon ✓ | promoted because it's an accessibility feature, not just polish |
+| **Already promoted** — Tabs responsive overflow + round count badge + softer press (2026-06-21) | canon ✓ | first prototype-grade promotion; build green; collapse animation deliberately dropped as over-complex (canon stays conservative) |
 | Dropdown hover accent — **V2** (black bar, fade, asymmetric roll-off trail: 130ms in / 620ms out) | `dropdown-AB-showcase.html` Route A | Dave approved the look ("2 is good"); not yet folded into the gated reference |
 | Button — hover lift (translateY −1px) + press squish (scale .97) | `button-AB-showcase.html` Route A | Dave liked it ("rise and squish"); shadow removed per his note |
 | Button — loading → success morph (spinner → drawn tick) | `button-AB-showcase.html` Route A | exploration; not reviewed for canon |

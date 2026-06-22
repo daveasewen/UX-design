@@ -4,21 +4,36 @@
 
 ---
 
-We're continuing the **Promenaut** design-to-code knowledge-base project (HSBC Common Toolkit). Before doing anything, read `MEMORY.md` and these files in the `UX-design` folder for context: `GOOD-MORNING.md`, `knowledge/_FITNESS-TEST-tabs.md`, and `knowledge/README.md`. Don't re-derive what's already recorded.
+We're continuing the HSBC Common Toolkit component-refinement work (Promenaut).
+Before anything, read MEMORY.md and these files in the UX-design folder:
+GOOD-MORNING.md, knowledge/_RUBRIC-prototype-grade.md, knowledge/_PROTOTYPE-GRADE-AUDIT.md.
+Don't re-derive what's already recorded.
 
-**Where we are:** the knowledge base is a strong correctness/provenance/migration-safety layer but can't yet drive *shippable* output. We proved this by building Tabs twice (KB-only vs unconstrained) — the KB-only build is **broken in dark mode** (white-on-white, fails WCAG), and our integrity gate passed it anyway. Full findings + an 8-item fix backlog are in `knowledge/_FITNESS-TEST-tabs.md`. Fix #4 (motion tokens) is already done.
+WHERE WE ARE: the assembly-tier gate suite is built and proven (runs/proof-001, runs/proof-002).
+The component-review program has started: Tabs is promoted (responsive, 9/9, build green);
+Cards is rebuilt to the real library types (action/link/media + the canonical arrow-link atom
++ the real card-details icon) and sits blessed in knowledge/_fitness-test/cards-responsive.html,
+ready to promote.
 
-**Confirmed last session:** the Figma connector **can write variable values** via `use_figma` (Plugin API, `figma.variables.setValueForMode()`); auth is good (david.ewen@emeal.nttdata.com, Full/expert on HSBC Enterprise). Writing to Figma still requires: canonical values (not demo hexes), the "Gaps and edits" branch, and my explicit go-ahead per change — and the first write must be a single reversible test variable.
+TODAY'S PRIORITY — keep working the component reviews. Bring each journey component to the
+Tabs-bar standard, then promote it:
+  1. Promote Cards properly: write its meta for the 3 types, switch static cards to <article>,
+     then `cd knowledge && python3 _build_all.py` must be green.
+  2. Then List-items (transaction rows), then Status-indicator, Table, Modals, Notifications…
+     (★ priority rows in _PROTOTYPE-GRADE-AUDIT.md).
 
-**Today's priorities, in order:**
-1. **Reconcile the corrected Tabs dark values** to real HSBC dark primitives (`neutral-dark-mode` / `rag-dark` in the colour stores) — replace my Route A demo hexes with canon, and stage the corrected `tabs/*` dark values. (Dark indicator decision already made: **core red `#DB0011`**, which passes 1.4.11 at 3.46:1 on the dark surface.)
-2. **Fix #1** — correct the flat/wrong `tabs/*` dark token values, and make `_build_dark_mode_audit.py` **contrast-aware** (today it rates a token "clean" if it merely *has* a dark value, even when wrong).
-3. **Fix #2** — add a focus-indicator standard (a `focus/*` token + `guidelines/focus-indicators.md`); systemic, affects all 32 components.
-4. **Fix #3** — add a geometry/dimensions block to the meta schema (metas carry colours but no measurements).
-5. Then **re-run the Tabs fitness test** and check the Route A–B gap has shrunk — that re-run is the progress metric, not another derived view.
+THE METHOD (per component): refine in _fitness-test/ (exploration, never gated) → I review it
+visually → promote into the gated snippets/*.reference.html → rebuild green. Pull the real
+component from the Common Toolkit Figma (fileKey mI8hvIkV98nquoqWzKh5Kn, use get_design_context /
+get_screenshot) and real icons from knowledge/assets/icons; reuse canonical atoms (e.g. the Links
+arrow-link). KEEP CANON SIMPLE — conservative motion, no animation cleverness (the Tabs lesson).
 
-**Working rhythm (from memory):** proactively flag reflection checkpoints; watch for the "productivity bubble" (building instead of proving value); after each step run `python3 knowledge/_build_all.py` (the gate); commit via GitHub Desktop on my prompt; and write a `GOOD-MORNING.md` briefing when we wrap.
+WORKING RHYTHM: present files for my visual review; nothing enters canon without my go-ahead;
+green build = done; flag reflection checkpoints; write a GOOD-MORNING.md when we wrap; commit on
+my prompt with a paste-ready git summary.
 
-Start by reading the context files, then give me a short plan for tackling priority #1 before doing it.
+PARKED (don't get distracted): the Figma dark-mode port (task #19) — components first.
+
+Start by reading the context files and confirming the build is green, then promote Cards.
 
 ---

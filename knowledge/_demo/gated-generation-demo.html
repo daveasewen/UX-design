@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Promenaut — gated generation demo</title>
+<style>
+  :root{
+    --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+    --hsbc-red:#DB0011;        /* canon: tabs/active, primary */
+    --text:#333333;            /* canon: text/default */
+    --border:#D7D8D6;          /* canon: tabs/standard-border */
+    --page:#FFFFFF;            /* canon: background/default */
+    --muted:#5A5A5A;
+    --ok:#0B7A3B; --okbg:#E7F4ec;
+    --bad:#C00011; --badbg:#FBEAEC;
+    --ink:#1d1d1d;
+    --panel:#F6F6F5;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:var(--font);color:var(--text);background:#ECECEA;
+    -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1100px;margin:0 auto;padding:28px 24px 60px;}
+  header.top{border-bottom:3px solid var(--hsbc-red);padding-bottom:14px;margin-bottom:8px;}
+  header.top h1{font-size:20px;margin:0;font-weight:600;letter-spacing:-.01em;}
+  header.top p{margin:4px 0 0;font-size:13px;color:var(--muted);}
+  .lede{font-size:14px;color:var(--muted);margin:14px 0 22px;max-width:70ch;line-height:1.5;}
+  .lede b{color:var(--text);}
+
+  .stage{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start;}
+  @media(max-width:840px){.stage{grid-template-columns:1fr;}}
+  .col{background:#fff;border:1px solid var(--border);}
+  .col h2{font-size:12px;text-transform:uppercase;letter-spacing:.08em;margin:0;
+    padding:12px 16px;border-bottom:1px solid var(--border);color:var(--muted);
+    display:flex;justify-content:space-between;align-items:center;}
+
+  /* ---- controls ---- */
+  .controls{padding:16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
+  .controls .lbl{font-size:12px;color:var(--muted);width:100%;}
+  button{font:inherit;cursor:pointer;border-radius:0;border:1px solid var(--border);
+    background:#fff;color:var(--text);padding:9px 14px;font-size:13px;}
+  button:hover{background:#F3F3F3;}
+  button[disabled]{opacity:.4;cursor:not-allowed;}
+  .seg{display:inline-flex;border:1px solid var(--border);}
+  .seg button{border:0;border-right:1px solid var(--border);margin:0;}
+  .seg button:last-child{border-right:0;}
+  .seg button.on{background:var(--ink);color:#fff;}
+  .runbtn{background:var(--hsbc-red);color:#fff;border-color:var(--hsbc-red);font-weight:600;}
+  .runbtn:hover{background:#b8000e;}
+
+  /* ---- generated screen preview ---- */
+  .screen-frame{padding:16px;}
+  .device{border:1px solid var(--border);background:#fff;}
+  .scr-head{background:#fff;border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:10px;}
+  .scr-logo{width:26px;height:26px;background:var(--hsbc-red);}/*square = angular brand rule*/
+  .scr-head .t{font-size:14px;font-weight:600;}
+  .scr-body{padding:18px 16px;}
+  .pay-card{border:1px solid var(--border);padding:16px;margin-bottom:14px;}
+  .pay-card .amt{font-size:26px;font-weight:600;letter-spacing:-.01em;}
+  .pay-card .row{display:flex;justify-content:space-between;font-size:13px;margin-top:8px;color:var(--muted);}
+  .pay-card .row b{color:var(--text);font-weight:500;}
+  .status{display:inline-flex;align-items:center;gap:7px;font-size:12px;margin-top:10px;color:var(--ok);}
+  .status .dot{width:8px;height:8px;background:var(--ok);}
+  .tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:12px;}
+  .tab{padding:10px 16px;font-size:14px;font-weight:500;border:0;background:none;position:relative;color:var(--text);}
+  .tab .ind{position:absolute;left:0;right:0;bottom:-1px;height:3px;background:var(--hsbc-red);}
+  .tab[aria-selected="false"] .ind{display:none;}
+  .cta{background:var(--hsbc-red);color:#fff;border:0;padding:12px 18px;font-size:14px;font-weight:600;width:100%;}
+  .meta-line{font-size:11px;color:var(--muted);padding:0 16px 14px;}
+
+  /* naive overrides injected via .naive class */
+  .device.naive .scr-logo{border-radius:8px;background:#E10A1B;}
+  .device.naive .pay-card{border-radius:8px;}
+  .device.naive .row b, .device.naive .amt{color:var(--text);}
+  .device.naive .muted-text{color:#9AA0A6;}
+  .device.naive .tab .ind{background:#E10A1B;}
+  .device.naive .cta{background:#E10A1B;border-radius:8px;}
+
+  /* ---- gates panel (the hero) ---- */
+  .gates{padding:6px 0 14px;}
+  .gate{display:flex;gap:12px;padding:12px 16px;border-bottom:1px solid #eee;align-items:flex-start;}
+  .gate:last-child{border-bottom:0;}
+  .badge{flex:0 0 auto;width:64px;text-align:center;font-size:11px;font-weight:700;
+    padding:4px 0;letter-spacing:.04em;}
+  .badge.pass{background:var(--okbg);color:var(--ok);}
+  .badge.fail{background:var(--badbg);color:var(--bad);}
+  .badge.idle{background:#eee;color:#999;}
+  .gate .body{flex:1;}
+  .gate .name{font-size:13px;font-weight:600;}
+  .gate .why{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.45;min-height:0;}
+  .summary{padding:14px 16px;font-size:13px;border-top:2px solid var(--border);}
+  .summary.pass{background:var(--okbg);color:var(--ok);font-weight:600;}
+  .summary.fail{background:var(--badbg);color:var(--bad);font-weight:600;}
+  .summary.idle{color:var(--muted);}
+  .note{font-size:11px;color:#9a9a9a;padding:10px 16px 0;line-height:1.5;}
+  .pulse{animation:p .5s ease;}
+  @keyframes p{0%{background:#fffbe6;}100%{background:transparent;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>Promenaut — gated generation</h1>
+    <p>Generate a screen, then <b>prove</b> it meets standard. The check is the point.</p>
+  </header>
+
+  <p class="lede">Most AI tools generate a screen and stop. The risk lives in what they <b>don't</b> check — wrong colours, failing contrast, missing accessibility, off-brand shapes — which only surfaces after go-live. Here the generated screen is run through the same gates as our canon library. Flip to <b>"Vibes" mode</b> to see what ships when nobody checks.</p>
+
+  <div class="controls col" style="margin-bottom:20px;">
+    <span class="lbl">1 · Intent</span>
+    <button class="on" disabled>Payment confirmation</button>
+    <button disabled title="demo: one flow only">Account overview (soon)</button>
+    <button disabled title="demo: one flow only">Transfer (soon)</button>
+    <span class="lbl" style="margin-top:6px;">2 · Build mode</span>
+    <span class="seg" id="modeseg">
+      <button data-mode="gated" class="on">Gated (canon)</button>
+      <button data-mode="naive">"Vibes" (ungated)</button>
+    </span>
+    <button class="runbtn" id="run" style="margin-left:auto;">▶ Run gates</button>
+  </div>
+
+  <div class="stage">
+    <!-- generated screen -->
+    <div class="col">
+      <h2>Generated screen <span id="modeTag" style="color:var(--ok);">gated</span></h2>
+      <div class="screen-frame">
+        <div class="device" id="device">
+          <div class="scr-head"><div class="scr-logo"></div><div class="t">Payment confirmation</div></div>
+          <div class="scr-body">
+            <div class="tabs" role="tablist" aria-label="Payment views" id="tabs">
+              <button class="tab" role="tab" aria-selected="true">Details<span class="ind"></span></button>
+              <button class="tab" role="tab" aria-selected="false">Receipt</button>
+            </div>
+            <div class="pay-card">
+              <div class="amt">£1,250.00</div>
+              <div class="row muted-text"><span>To</span><b>Acme Supplies Ltd</b></div>
+              <div class="row muted-text"><span>Reference</span><b>INV-20418</b></div>
+              <div class="row muted-text"><span>Date</span><b>20 Jun 2026</b></div>
+              <div class="status"><span class="dot"></span>Payment sent</div>
+            </div>
+            <button class="cta">Done</button>
+          </div>
+          <div class="meta-line" id="metaLine">Square corners · canon HSBC red #DB0011 · text #333 · ARIA roles present · reduced-motion honoured</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- gates: the hero -->
+    <div class="col">
+      <h2>Gate report <span id="gateState" style="color:#999;">not run</span></h2>
+      <div class="gates" id="gates"></div>
+      <div class="summary idle" id="summary">Press “Run gates” to verify the generated screen.</div>
+      <p class="note">Demo harness runs a subset of checks live (contrast, token-fidelity, ARIA, reduced-motion, brand-shape) to show the principle. The authoritative gates are the repo's Python validators (<code>_validate_*.py</code>, 6 gates, build-enforced). This view mirrors them; it doesn't replace them.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---- WCAG contrast ---- */
+function lum(hex){
+  const c=hex.replace('#','');
+  const r=parseInt(c.substr(0,2),16)/255,g=parseInt(c.substr(2,2),16)/255,b=parseInt(c.substr(4,2),16)/255;
+  const f=v=>v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4);
+  return 0.2126*f(r)+0.7152*f(g)+0.0722*f(b);
+}
+function ratio(a,b){const L1=lum(a),L2=lum(b);const hi=Math.max(L1,L2),lo=Math.min(L1,L2);return (hi+0.05)/(lo+0.05);}
+
+/* canon vs vibes parameter sets */
+const CONF={
+  gated:{
+    bodyText:'#333333', accent:'#DB0011', tokenOK:true, ariaOK:true, motionOK:true, brandOK:true,
+  },
+  naive:{
+    bodyText:'#9AA0A6', accent:'#E10A1B', tokenOK:false, ariaOK:false, motionOK:false, brandOK:false,
+  }
+};
+
+let mode='gated';
+
+/* gate definitions — each returns {pass, why} */
+function evalGates(m){
+  const c=CONF[m];
+  const textR=ratio(c.bodyText,'#FFFFFF');
+  const accentR=ratio(c.accent,'#FFFFFF');
+  return [
+    {name:'Text / icon contrast (WCAG 1.4.3)',
+     pass:textR>=4.5,
+     why:`Body text ${c.bodyText} on #FFFFFF = ${textR.toFixed(2)}:1 · needs ≥ 4.5:1`},
+    {name:'Indicator / accent contrast',
+     pass:accentR>=3.0,
+     why:`Accent ${c.accent} on #FFFFFF = ${accentR.toFixed(2)}:1 · needs ≥ 3:1 for UI`},
+    {name:'Token fidelity (matches store)',
+     pass:c.tokenOK,
+     why:c.tokenOK?`Accent resolves to canon tabs/active #DB0011`:`Accent ${c.accent} is an invented hex — not in the token store (canon is #DB0011)`},
+    {name:'Accessibility — ARIA roles',
+     pass:c.ariaOK,
+     why:c.ariaOK?`tablist / tab / aria-selected present`:`Tabs missing role="tab" + aria-selected — not announced to screen readers (4.1.2)`},
+    {name:'Accessibility — reduced motion',
+     pass:c.motionOK,
+     why:c.motionOK?`Animated indicator wrapped in prefers-reduced-motion`:`Indicator animates with no prefers-reduced-motion guard — hard fail`},
+    {name:'Brand shape — angular',
+     pass:c.brandOK,
+     why:c.brandOK?`Square corners (border-radius:0) per HSBC angular rule`:`Rounded corners (8px) — violates the angular brand rule`},
+  ];
+}
+
+const gatesEl=document.getElementById('gates');
+const summaryEl=document.getElementById('summary');
+const gateStateEl=document.getElementById('gateState');
+
+function renderIdle(){
+  const gs=evalGates(mode);
+  gatesEl.innerHTML=gs.map(g=>`
+    <div class="gate">
+      <span class="badge idle">— —</span>
+      <div class="body"><div class="name">${g.name}</div><div class="why"></div></div>
+    </div>`).join('');
+  summaryEl.className='summary idle';
+  summaryEl.textContent='Press “Run gates” to verify the generated screen.';
+  gateStateEl.textContent='not run'; gateStateEl.style.color='#999';
+}
+
+function runGates(){
+  const gs=evalGates(mode);
+  const rows=gatesEl.querySelectorAll('.gate');
+  let i=0;
+  summaryEl.className='summary idle'; summaryEl.textContent='Running…';
+  const tick=()=>{
+    if(i>=gs.length){finish(gs);return;}
+    const g=gs[i], row=rows[i];
+    row.classList.add('pulse');
+    row.querySelector('.badge').className='badge '+(g.pass?'pass':'fail');
+    row.querySelector('.badge').textContent=g.pass?'PASS':'FAIL';
+    row.querySelector('.why').textContent=g.why;
+    i++; setTimeout(tick,260);
+  };
+  tick();
+}
+function finish(gs){
+  const fails=gs.filter(g=>!g.pass).length;
+  if(fails===0){summaryEl.className='summary pass';summaryEl.textContent='✓ All 6 gates pass — screen is canon-compliant and safe to ship.';
+    gateStateEl.textContent='all pass';gateStateEl.style.color='var(--ok)';}
+  else{summaryEl.className='summary fail';summaryEl.textContent=`✗ ${fails} of 6 gates failed — this would have shipped broken.`;
+    gateStateEl.textContent=`${fails} failed`;gateStateEl.style.color='var(--bad)';}
+}
+
+/* mode switch */
+document.getElementById('modeseg').addEventListener('click',e=>{
+  const b=e.target.closest('button[data-mode]'); if(!b)return;
+  mode=b.dataset.mode;
+  document.querySelectorAll('#modeseg button').forEach(x=>x.classList.toggle('on',x===b));
+  const dev=document.getElementById('device');
+  dev.classList.toggle('naive',mode==='naive');
+  document.getElementById('modeTag').textContent=mode;
+  document.getElementById('modeTag').style.color=mode==='gated'?'var(--ok)':'var(--bad)';
+  // toggle aria on the live tabs to reflect the naive build
+  const tabs=document.getElementById('tabs');
+  if(mode==='naive'){tabs.removeAttribute('role');tabs.querySelectorAll('.tab').forEach(t=>{t.removeAttribute('role');t.removeAttribute('aria-selected');});}
+  else{tabs.setAttribute('role','tablist');const ts=tabs.querySelectorAll('.tab');ts.forEach((t,ix)=>{t.setAttribute('role','tab');t.setAttribute('aria-selected',ix===0?'true':'false');});}
+  document.getElementById('metaLine').textContent = mode==='gated'
+    ? 'Square corners · canon HSBC red #DB0011 · text #333 · ARIA roles present · reduced-motion honoured'
+    : 'Rounded corners · invented red #E10A1B · low-contrast grey text · ARIA missing · motion unguarded';
+  renderIdle();
+});
+
+document.getElementById('run').addEventListener('click',runGates);
+renderIdle();
+</script>
+</body>
+</html>

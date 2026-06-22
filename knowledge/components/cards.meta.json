@@ -44,22 +44,33 @@
   "variants": [
     {
       "name": "actions",
+      "$displayName": "Action card",
+      "$aliases": ["action"],
+      "$nameNote": "`name` is the Figma-namespace variant value (the canonical hub label). $displayName is ours (library-independent). Code-library names live in codeBindings.",
       "use": "Card presenting an item with an action affordance (chevron). Content combos: icon/title/description in various pairings. Static surface (background/default)."
     },
     {
       "name": "basic",
-      "use": "Interactive card (default/hover/pressed). Background shifts via tertiary/background tints on interaction."
+      "$displayName": "Link card",
+      "$aliases": ["link"],
+      "use": "Interactive card (default/hover/pressed). Background shifts via tertiary/background tints on interaction. Built as a whole-card link (single tab stop)."
     },
     {
       "name": "basic-non-interactive",
+      "$displayName": "Static card",
+      "$aliases": [],
       "use": "Static version of basic — no hover/pressed; background/default."
     },
     {
       "name": "image-with-border",
+      "$displayName": "Media card",
+      "$aliases": ["media"],
       "use": "Card with an image plus headline (font-3) and optional headline link; bordered. Responsive image scales (3/5/6/7/8/9)."
     },
     {
       "name": "image-without-border",
+      "$displayName": "Media card (borderless)",
+      "$aliases": [],
       "use": "Image card without a border; responsive image scales."
     }
   ],
@@ -153,6 +164,57 @@
       ]
     },
     "ignored": "specs/* annotation scaffolding."
+  },
+  "build": {
+    "$status": "PROMOTED 2026-06-22 — gated reference is snippets/Cards.reference.html (replaces the earlier generic single-card reference). Build green via _build_all.py.",
+    "referenceImplements": "3 of the 5 library types, chosen as the representative canonical set. The other two (basic-non-interactive, image-without-border) are documented in `variants` and derive from these (drop the interaction / drop the border).",
+    "types": [
+      {
+        "built": "action",
+        "libraryVariant": "actions",
+        "figmaNode": "11746:45268",
+        "semantics": "<article> — static surface, not itself focusable",
+        "content": "icon (informative/card-details) + title + description + right-aligned quaternary action buttons",
+        "tokens": "surface background/default; border border/subtle; text text/default; icon icon/default; buttons focus focus/ring"
+      },
+      {
+        "built": "link",
+        "libraryVariant": "basic (interactive)",
+        "figmaNode": "2298:52812",
+        "semantics": "<a> — the whole card is one link (single focusable control, single tab stop; avoids the nested-interactive anti-pattern)",
+        "content": "icon + arrow-link title + description; hover shifts surface to tertiary/background/hover",
+        "tokens": "surface tertiary/background/default -> hover tertiary/background/hover; focus focus/ring; accent primary/background/default"
+      },
+      {
+        "built": "media",
+        "libraryVariant": "image-with-border",
+        "figmaNode": "862:21004",
+        "semantics": "<article> — static surface",
+        "content": "image + headline (font-3, red arrow tip) + description + stacked arrow links",
+        "tokens": "surface background/default; border border/subtle; description text/secondary"
+      }
+    ],
+    "loadingState": "Skeleton placeholder card (aria-busy + aria-label, pulse honours prefers-reduced-motion). Transient state, kept as <div> (not a content article).",
+    "reusedAtoms": "Every in-card link reuses the canonical arrow-link atom from Links.reference.html (red tip, underline-on-hover, inset focus underline) — same primitive, not a custom glyph.",
+    "semanticsRule": "Static cards (action, media) use <article>; the interactive link card is a single <a>. Required by the snippet manifest (requiredAria includes <article).",
+    "$resolved": "NAMING (decided 2026-06-22, Dave): hub-and-spoke. The Figma node ID is the canonical identity; each variant's Figma value is its `name`; friendly labels are `$displayName`/`$aliases` (library-independent, ours); each consuming code library is a spoke in `codeBindings` with its own names. No global 'formal name' — names map through the node, never to each other. Procedure for a new library: _RUNBOOK-onboard-code-library.md."
+  },
+  "codeBindings": {
+    "$model": "Hub-and-spoke. HUB = provenance.figma_node (the only library-independent identity; never renamed). Each key below is one consuming code library (a SPOKE). A library's component/variant names MAY differ from the Figma names — map them here, do not normalise. Populate from Code Connect (get_code_connect_map), never by guessing; tag unverified spokes with $status. See _RUNBOOK-onboard-code-library.md.",
+    "sutherland-react": {
+      "library": "HSBC Sutherland (React component library)",
+      "component": "TODO — confirm in Sutherland repo / via Code Connect (may differ from Figma 'Cards')",
+      "variantProp": "TODO — the prop that selects type (may not be called 'type')",
+      "variantValues": {
+        "actions": "TODO",
+        "basic": "TODO",
+        "basic-non-interactive": "TODO",
+        "image-with-border": "TODO",
+        "image-without-border": "TODO"
+      },
+      "$status": "unverified — Sutherland naming not yet inspectable this session; Sutherland token/library migration is Parked until its JSON lands (~late June/early July 2026, see README Parked). Fill from get_code_connect_map once wired.",
+      "$source": "to be populated by Code Connect; do not guess"
+    }
   },
   "provenance": {
     "source": "figma",

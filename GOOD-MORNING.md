@@ -1,22 +1,26 @@
 # Good morning, Dave ☕
 
-Read `knowledge/_NEXT-SESSION.md` first — it holds today's open threads and the framing for where we go next. This is the short version.
+## The session in one line
+We built the **assembly-tier enforcement engine** end-to-end (gate 2 + gate 2.1), proved it on a real Figma Make screen, ran an honest A/B vs Figma Make, and started the **component-review program** — rubric + audit, Tabs promoted, Cards rebuilt to the real library types.
 
-## Yesterday in one line
-A big one: the knowledge base went from *describing* components to *driving* them — 11 gated reference components, four enforcing build gates, the dark-mode surface layer reconciled, a new `text/on-inverse` token, and a long, fruitful divergent run on motion + icon weight.
-
-## The headline shift
-We built the **gated reference snippet** approach: authored, token-faithful component implementations validated by the build (contrast · dark-surface flatness · snippet drift · integrity). A green build now means *internally consistent AND legible in dark AND every snippet still matches canon*. The gates are **enforced** (they fail the build), not advisory — proven by injecting defects and watching it go red.
-
-## The thing that must stick (from last night's "Open Skills" reflection)
-1. **Verification = enforcement, not a nudge.** Keep new definitions-of-done executable.
-2. **Keep the convergent/divergent line bright** — gate canon, never gate exploration.
-3. **We're accruing procedural debt** — the *method* (how to build a gated component) lives only in-session. Writing it down is the highest-leverage next move.
-
-## First task today
-**Clarify direction together** before building. Today's work mixed convergent (codify + verify) and divergent (explore) modes — decide the next chunk and the split. Then pick from the action list in `_NEXT-SESSION.md` (write the runbooks · consolidation pass · motion-promotion review · standing component backlog).
+## The headline shifts
+1. **Gate 2 exists and bites.** `runs/proof-001-payments-dashboard/` — a screen-level gate that caught Figma Make's £440k "you're covered" lie and the BrightHire amount mismatch (red, exit 1); green when fixed. Verification = enforcement, now at the screen tier.
+2. **The A/B was honest, not flattering.** `runs/proof-002-payments-ab/` — same spec, two generators. **Both pass gate 2** (the spec carried Figma Make). They separate only on **gate 2.1 (brand-token fidelity)** and **checkability** (ours emits data; Make's had to be reverse-engineered from 625 lines of React). Lesson: **spec + gate are the product; generation is commodity.**
+3. **Demo reframe (yours):** the gate diff is too subtle to demo. The demo = **high-res, component-compliant prototypes from inputs, in the absence of Make.** So the component program is the priority — not "beating Make."
+4. **Component program started.** Rubric = the Tabs-bar standard (11 dims): `knowledge/_RUBRIC-prototype-grade.md`. Gap map: `_PROTOTYPE-GRADE-AUDIT.md`. **Tabs promoted** (9/9, responsive, build green). **Cards rebuilt** to the real Common-Toolkit types (action / link / media), reusing the canonical arrow-link atom and the real `card-details` icon.
 
 ## State
-Build green: 4 gates, 11/11 snippets, 32/32 metas. Everything from yesterday is committed/ready to commit (see the last commit message in chat). Nothing canon was disturbed by the motion exploration — it all lives in `_fitness-test/`.
+- Build green (`cd knowledge && python3 _build_all.py`). Tabs canon is now responsive.
+- **Cards** refined: `knowledge/_fitness-test/cards-responsive.html` — blessed, in exploration, ready to promote (needs a meta update for the 3 new types — a "revisit" task).
+- **Parked:** Figma dark-mode port (task #19) — safe path captured; deferred on purpose to protect focus.
 
-Have a good one — and maybe a glass of water. 💧
+## First task next session — keep working the component reviews
+Bring each journey component to the Tabs-bar standard → promote it:
+1. **Promote Cards** properly (meta for the 3 types + `<article>` semantics + gate green).
+2. Then **List-items** (transaction rows), then Status-indicator, Table, Modals, Notifications… (★ priority rows in `_PROTOTYPE-GRADE-AUDIT.md`).
+3. **Keep canon simple** — the Tabs over-animation lesson. Conservative motion, no cleverness.
+
+## The thing to hold
+You kept yourself honest twice today: you killed the "beat Make" framing, and you parked the Figma tangent to stay on the components. That discipline *is* the project working. Keep leading with it.
+
+Have a good one. 💧

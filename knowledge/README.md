@@ -40,6 +40,14 @@ guidelines/
 _CONFIDENCE.md                   # confidence vocabulary: asserted | inferred | review
 ```
 
+**Runbooks (the methods, written down so they don't live only in-session):**
+
+```
+_RUNBOOK-gated-component.md       # turn a meta into a gated reference snippet
+_RUNBOOK-reconcile-dark-tokens.md # fix a token group that's flat/wrong in dark
+_RUNBOOK-onboard-code-library.md  # map the canon to a NEW code library (hub-and-spoke codeBindings)
+```
+
 ## Derived views (generated — do not hand-edit)
 
 Run the generator (or `_build_all.py`) instead of editing these:
