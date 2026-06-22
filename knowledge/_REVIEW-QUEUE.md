@@ -2,7 +2,7 @@
 
 > Every assertion in the component metas that is **not** directly observed canon. Formalises the in-prose confidence convention (Graphify-borrow #1). 🔴 **review** = verify before trusting; 🟡 **inferred** = reasoned, lower urgency. `asserted` items (the default) are not listed. Generated — regenerate after editing metas: `python3 knowledge/_build_review_queue.py`. Vocabulary in `_CONFIDENCE.md`; machine detail in `_REVIEW-QUEUE.json`.
 
-**Totals:** 81 items across 26 components — 75 🔴 review, 6 🟡 inferred. By category: token-rebind 29, anti-pattern 27, accessibility 22, other 3.
+**Totals:** 80 items across 25 components — 74 🔴 review, 6 🟡 inferred. By category: token-rebind 29, anti-pattern 27, accessibility 21, other 3.
 
 Most-flagged components: Badge (6), Countdown timer (5), Dropdown (5), Hero (5), List items (5), Tags (5), Accordion (4), Avatar (4).
 
@@ -69,7 +69,7 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 - 🔴 `tokenValidation.depricateUsage.blockersNoEquivalent.rebind` — REVIEW — no live subtle-surface (Avatar/Headers/List/Nav/Quick-actions gap family)
 - 🔴 `tokenValidation.depricateUsage.blockersNoEquivalent.rebind` — REVIEW — no live on-dark surface (Avatar/Hero/List gap)
 
-## Accessibility — verify in code/with the a11y team (22)
+## Accessibility — verify in code/with the a11y team (21)
 
 **Accordion**
 - 🔴 `accessibility.focus` — REVIEW: the Figma component set defines default/hover/pressed but no explicit focus-visible state — confirm a visible focus indicator exists in code
@@ -121,9 +121,6 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 
 **Progress tracker**
 - 🔴 `accessibility.announce` — REVIEW (inferred): step changes should be announced (aria-live) as the user advances
-
-**Table**
-- 🔴 `accessibility.responsive` — REVIEW (inferred): on small screens tables should scroll horizontally or reflow without losing header association
 
 ## Anti-patterns — confirm or promote to asserted (27)
 
