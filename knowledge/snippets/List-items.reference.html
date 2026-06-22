@@ -25,14 +25,18 @@
   [data-theme="light"]{
     --surface:#FFFFFF; --hover:#F3F3F3; --pressed:#767676; --disabled-surface:#D7D8D6;
     --text:#333333; --muted:#545454; --reverse:#FFFFFF; --disabled-text:#D7D8D6;
-    --icon:#333333; --icon-rev:#FFFFFF; --divider:#D7D8D6; --success:#00847F;
-    --tag-border:#767676; --avatar:#F3F3F3; --tint:#E5F2F2; --focus:#305A85; --page:#FFFFFF;
+    --icon:#333333; --icon-rev:#FFFFFF; --divider:#D7D8D6;
+    --success:#00847F; --warning:#FFBB33; --error:#A8000B; --info:#305A85;
+    --success-tint:#E5F2F2; --warning-tint:#FFF8EA; --error-tint:#F9F2F3; --info-tint:#EBEFF4;
+    --tag-border:#767676; --avatar:#F3F3F3; --focus:#305A85; --page:#FFFFFF;
   }
   [data-theme="dark"]{
     --surface:#1D1D1D; --hover:#474747; --pressed:#1D1D1D; --disabled-surface:#404040;
     --text:#FFFFFF; --muted:#9B9B9B; --reverse:#FFFFFF; --disabled-text:#767676;
-    --icon:#FFFFFF; --icon-rev:#FFFFFF; --divider:#404040; --success:#00847F;
-    --tag-border:#656565; --avatar:#474747; --tint:#001615; --focus:#4587A7; --page:#000000;
+    --icon:#FFFFFF; --icon-rev:#FFFFFF; --divider:#404040;
+    --success:#00847F; --warning:#FFBB33; --error:#DB0011; --info:#4587A7;
+    --success-tint:#001615; --warning-tint:#221701; --error-tint:#260005; --info-tint:#000D1B;
+    --tag-border:#656565; --avatar:#474747; --focus:#4587A7; --page:#000000;
   }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
@@ -63,9 +67,15 @@
   .row .desc{font:400 13px/1.3 var(--font); color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
   .row .trail{flex:none; display:flex; flex-direction:column; align-items:flex-end; gap:4px;}
   .row .amount{font:500 15px/1.2 var(--font); font-variant-numeric:tabular-nums; white-space:nowrap;}
-  /* status detail = SQUARE success-tint badge: tint surface + success dot + neutral label (all pairs AA: label 11:1/18.7:1, dot ≥3:1) */
-  .status{display:inline-flex; align-items:center; gap:6px; height:24px; padding:0 8px; background:var(--tint); border-radius:0; font:400 12px/1 var(--font); color:var(--text); white-space:nowrap;}
-  .status .dot{width:8px; height:8px; border-radius:50%; background:var(--success);}
+  /* status detail = the Status-indicator atom (form B): SQUARE RAG tint badge, neutral text/default label + RAG dot.
+     SAME primitive as Status-indicator.reference.html. Label-on-tint is AA for every RAG (11-19:1); the warning dot
+     is < 3:1 standalone (1.4.11) so meaning is carried by the label (1.4.1) — same handled finding as the atom. */
+  .status{display:inline-flex; align-items:center; gap:6px; height:24px; padding:0 8px; border-radius:0; font:400 12px/1 var(--font); color:var(--text); white-space:nowrap;}
+  .status .dot{width:8px; height:8px; border-radius:50%; flex:none;}
+  .status.ok{background:var(--success-tint);}   .status.ok .dot{background:var(--success);}
+  .status.warn{background:var(--warning-tint);} .status.warn .dot{background:var(--warning);}
+  .status.err{background:var(--error-tint);}    .status.err .dot{background:var(--error);}
+  .status.inf{background:var(--info-tint);}     .status.inf .dot{background:var(--info);}
 
   /* states */
   .row:hover, .row.is-hover{background:var(--hover);}
@@ -116,17 +126,17 @@
       <li><button class="row" type="button">
         <span class="avatar" role="img" aria-label="Amazon">AZ</span>
         <span class="body"><span class="title">Amazon</span><span class="desc">22 Jun · Shopping</span></span>
-        <span class="trail"><span class="tag">Shopping</span><span class="amount">−1,234.00 HKD</span></span>
+        <span class="trail"><span class="status warn"><span class="dot" aria-hidden="true"></span>Pending</span><span class="amount">−1,234.00 HKD</span></span>
       </button></li>
       <li><button class="row" type="button">
         <span class="avatar" role="img" aria-label="Pret a Manger">PM</span>
         <span class="body"><span class="title">Pret a Manger</span><span class="desc">21 Jun · Eating out</span></span>
-        <span class="trail"><span class="status"><span class="dot" aria-hidden="true"></span>Approved</span><span class="amount">−48.50 HKD</span></span>
+        <span class="trail"><span class="status err"><span class="dot" aria-hidden="true"></span>Declined</span><span class="amount">−48.50 HKD</span></span>
       </button></li>
       <li><button class="row" type="button">
         <span class="avatar" role="img" aria-label="Salary">£</span>
         <span class="body"><span class="title">Monthly salary</span><span class="desc">20 Jun · Income</span></span>
-        <span class="trail"><span class="status"><span class="dot" aria-hidden="true"></span>Received</span><span class="amount">+32,000.00 HKD</span></span>
+        <span class="trail"><span class="status ok"><span class="dot" aria-hidden="true"></span>Received</span><span class="amount">+32,000.00 HKD</span></span>
       </button></li>
       <li><button class="row" type="button">
         <span class="avatar" role="img" aria-label="Transport for London">TfL</span>
@@ -143,22 +153,22 @@
       <li><div class="stateLabel">default</div><button class="row" type="button">
         <span class="avatar" role="img" aria-label="Amazon">AZ</span>
         <span class="body"><span class="title">Amazon</span><span class="desc">22 Jun · Shopping</span></span>
-        <span class="trail"><span class="status"><span class="dot" aria-hidden="true"></span>Approved</span><span class="amount">−1,234.00 HKD</span></span>
+        <span class="trail"><span class="status ok"><span class="dot" aria-hidden="true"></span>Approved</span><span class="amount">−1,234.00 HKD</span></span>
       </button></li>
       <li><div class="stateLabel">hover (web)</div><button class="row is-hover" type="button">
         <span class="avatar" role="img" aria-label="Amazon">AZ</span>
         <span class="body"><span class="title">Amazon</span><span class="desc">22 Jun · Shopping</span></span>
-        <span class="trail"><span class="status"><span class="dot" aria-hidden="true"></span>Approved</span><span class="amount">−1,234.00 HKD</span></span>
+        <span class="trail"><span class="status ok"><span class="dot" aria-hidden="true"></span>Approved</span><span class="amount">−1,234.00 HKD</span></span>
       </button></li>
       <li><div class="stateLabel">pressed — avatar + status reversed out</div><button class="row is-pressed" type="button">
         <span class="avatar" role="img" aria-label="Amazon">AZ</span>
         <span class="body"><span class="title">Amazon</span><span class="desc">22 Jun · Shopping</span></span>
-        <span class="trail"><span class="status"><span class="dot" aria-hidden="true"></span>Approved</span><span class="amount">−1,234.00 HKD</span></span>
+        <span class="trail"><span class="status ok"><span class="dot" aria-hidden="true"></span>Approved</span><span class="amount">−1,234.00 HKD</span></span>
       </button></li>
       <li><div class="stateLabel">disabled (native :disabled)</div><button class="row" type="button" disabled>
         <span class="avatar" role="img" aria-label="Amazon">AZ</span>
         <span class="body"><span class="title">Amazon</span><span class="desc">22 Jun · Shopping</span></span>
-        <span class="trail"><span class="status"><span class="dot" aria-hidden="true"></span>Approved</span><span class="amount">−1,234.00 HKD</span></span>
+        <span class="trail"><span class="status ok"><span class="dot" aria-hidden="true"></span>Approved</span><span class="amount">−1,234.00 HKD</span></span>
       </button></li>
       <li><div class="stateLabel">processing</div><button class="row" type="button" aria-busy="true">
         <span class="avatar" role="img" aria-label="Amazon">AZ</span>
@@ -172,21 +182,26 @@
   {
     "component": "List items",
     "type": "transaction",
-    "vars": { "--surface":"tertiary/background/default", "--hover":"tertiary/background/hover", "--pressed":"tertiary/background/pressed", "--disabled-surface":"tertiary/background/disabled", "--text":"text/default", "--muted":"text/secondary", "--reverse":"text/reverse", "--disabled-text":"text/disabled", "--icon":"icon/default", "--divider":"divider/border/section", "--success":"rag/success", "--tint":"rag/success-tint", "--tag-border":"form/border/default", "--avatar":"tertiary/background/hover", "--focus":"focus/ring", "--page":"background/default" },
+    "vars": { "--surface":"tertiary/background/default", "--hover":"tertiary/background/hover", "--pressed":"tertiary/background/pressed", "--disabled-surface":"tertiary/background/disabled", "--text":"text/default", "--muted":"text/secondary", "--reverse":"text/reverse", "--disabled-text":"text/disabled", "--icon":"icon/default", "--divider":"divider/border/section", "--success":"rag/success", "--warning":"rag/warning", "--error":"rag/error", "--info":"rag/information", "--success-tint":"rag/success-tint", "--warning-tint":"rag/warning-tint", "--error-tint":"rag/error-tint", "--info-tint":"rag/information-tint", "--tag-border":"form/border/default", "--avatar":"tertiary/background/hover", "--focus":"focus/ring", "--page":"background/default" },
     "contrastPairs": [
       { "fg":"text/default", "bg":"tertiary/background/default", "context":"text" },
       { "fg":"text/secondary", "bg":"tertiary/background/default", "context":"text" },
       { "fg":"text/reverse", "bg":"tertiary/background/pressed", "context":"text" },
       { "fg":"text/default", "bg":"rag/success-tint", "context":"text" },
-      { "fg":"rag/success", "bg":"rag/success-tint", "context":"ui" }
+      { "fg":"text/default", "bg":"rag/warning-tint", "context":"text" },
+      { "fg":"text/default", "bg":"rag/error-tint", "context":"text" },
+      { "fg":"text/default", "bg":"rag/information-tint", "context":"text" },
+      { "fg":"rag/success", "bg":"rag/success-tint", "context":"ui" },
+      { "fg":"rag/error", "bg":"rag/error-tint", "context":"ui" },
+      { "fg":"rag/information", "bg":"rag/information-tint", "context":"ui" }
     ],
     "knownFindings": [
       "pressed surface == default in dark (#1D1D1D) — press also signalled by inset, not colour",
-      "RESOLVED: status is a rag/success-tint badge (neutral text/default label 11:1/18.7:1 + success dot >=3:1); pressed reverses it out",
+      "status detail = Status-indicator atom (RAG tint chip): neutral label is AA on every tint (11-19:1); success/error/info dots pass on their tint, the WARNING dot is < 3:1 standalone (1.4.11) so meaning is carried by the label (1.4.1). Pressed reverses the chip out.",
       "text/secondary on tertiary/background/hover (dark) 3.34 < 4.5 — flagged token-level (see meta $finding)"
     ],
     "requiredAria": ["<ul", "<li", "<button", "aria-busy", "aria-live", "aria-disabled", "aria-label"],
-    "reuses": ["Avatar (round primitive)", "Tags (square chip)", "Loading indicator (spinner primitive — processing state; mirror, not hard-code)"]
+    "reuses": ["Avatar (round primitive)", "Tags (square chip)", "Loading indicator (spinner primitive — processing state; mirror, not hard-code)", "Status indicator (RAG tint chip — the status detail IS form B of the atom)"]
   }
   </script>
   <script>
