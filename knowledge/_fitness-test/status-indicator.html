@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Status indicator — reference implementation (gated)</title>
+<title>Status indicator — to standard (exploration)</title>
 <!--
-  CANONICAL REFERENCE IMPLEMENTATION for the Status indicator (promoted 2026-06-22).
-  Authored gated snippet. Colour values are resolved canonical token values; the embedded
-  #token-manifest maps every CSS var to its token, and _validate_snippets.py fails the build if
-  any value drifts from the store, required ARIA is missing, or a contrast pair falls below threshold.
-  Edit tokens in the store, not here.
-  A PASSIVE RAG atom (Figma node 2298:164342): a coloured dot + a text LABEL. Two canonical forms —
-  (A) inline dot + label, (B) square tint chip. FORM B IS THE SAME PRIMITIVE used as the status detail
-  in List-items transaction rows — one atom, reused (cross-referenced in both metas). Form C demonstrates
-  the live aria-live status announcement (4.1.3), the component's actual job.
-  Passive by design: no hover/active/keyboard (it is an anti-pattern to make it interactive); its AT story
-  is role="status" + aria-live + the label carrying meaning (1.4.1). See the meta ($build + findings) for
-  the two token-level findings: the amber dot is < 3:1 standalone (use form B), and rag/neutral-tint is
-  missing (so the neutral/cancelled status has no chip form).
+  EXPLORATION (never gated). Refining the Status indicator (passive RAG atom) toward the Tabs-bar standard.
+  Real anatomy from Figma (file mI8hvIkV98nquoqWzKh5Kn, node 2298:164342): a coloured dot + a text LABEL,
+  used inline in rows/cards. Two canonical forms here: (A) inline dot + label, (B) square tint chip.
+  FORM B IS THE SAME PRIMITIVE used as the STATUS detail in List-items transaction rows — one atom, reused.
+  (Same tokens + construction; record the cross-reference in both metas on promote.)
+  Tokens resolved light+dark from the store; only PASSING pairs are declared.
+  PASSIVE component — it is NOT interactive (anti-pattern to make it so), so it has no hover/active/
+  keyboard model; its AT story is role="status" + aria-live (4.1.3) and the label carrying meaning (1.4.1).
+  Findings handled/flagged:
+   1. rag/warning (#FFBB33) dot = 1.69:1 on white (< 3:1, fails 1.4.11 standalone) → meaning carried by the
+      LABEL (1.4.1); for a prominent/standalone warning use form B (tint chip), which is fully AA.
+   2. rag/neutral-tint DOES NOT EXIST in the store → the neutral/cancelled status has no chip form; shown as
+      dot + label only. Flagged (token gap — add rag/neutral-tint to complete the set).
 -->
 <style>
   :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
@@ -85,7 +85,7 @@
     <div class="stat ok is-disabled"><span class="dot" aria-hidden="true"></span><span>Approved (disabled)</span></div>
   </div>
 
-  <!-- ===== B. Tint chip (square; robust for prominent/standalone use) — same atom as List-items status ===== -->
+  <!-- ===== B. Tint chip (square; robust for prominent/standalone use) ===== -->
   <div class="wrap">
     <h2>Tint chip — square, fully AA</h2>
     <div class="chips">
@@ -93,7 +93,7 @@
       <span class="chip warn"><span class="dot" aria-hidden="true"></span>Pending review</span>
       <span class="chip err"><span class="dot" aria-hidden="true"></span>Declined</span>
       <span class="chip inf"><span class="dot" aria-hidden="true"></span>In progress</span>
-      <span class="stat neu" style="margin:0"><span class="dot" aria-hidden="true"></span><span>Cancelled (no chip — rag/neutral-tint gap)</span></span>
+      <span class="stat neu" style="margin:0"><span class="dot" aria-hidden="true"></span><span>Cancelled — no rag/neutral-tint (token gap)</span></span>
     </div>
   </div>
 
@@ -130,7 +130,6 @@
       "rag/neutral-tint missing from the store — neutral/cancelled has no chip form (token gap; add rag/neutral-tint to complete the RAG tint set)",
       "PASSIVE atom: no hover/active/keyboard by design (anti-pattern to make it interactive); AT = role=status + aria-live (4.1.3) + label (1.4.1)"
     ],
-    "reuses": ["used as the status detail in List items transaction rows — same tint-chip primitive"],
     "requiredAria": ["aria-hidden", "role=\"status\"", "aria-live"]
   }
   </script>

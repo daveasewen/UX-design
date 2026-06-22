@@ -20,6 +20,8 @@
 
 > **Dim 11 was added 2026-06-21 after Dave caught the exemplar itself lacking it** — the canon Tabs showed an overflow *menu* but never actually collapsed tabs into it. A reference that doesn't reflow isn't prototype-grade. Worked fix: `_fitness-test/tabs-responsive.html` (priority+ overflow via ResizeObserver, selected tab always kept visible).
 
+> **Decided 2026-06-22 (option A) — passive atoms vs the AT signal.** The `AT(aria+kbd)` signal used to require a `keydown`/`keyup` handler, which assumes interactivity. Passive atoms (Status-indicator, Divider, Badge, Loading-indicator) are non-interactive **by design** — a keyboard handler would violate their own anti-patterns. **Resolution:** a component's meta may set `"interactive": false`; the scorer then credits AT for being exposed via `role`/`aria-live`/`aria-label` (4.1.3 / 1.4.1) instead of a keyboard handler. A passive component that exposes *nothing* still scores 0, so the bar stays meaningful — it measures the AT each component actually needs, rather than excluding the dimension. Effect: Status-indicator 8.5→9.0; Divider 5.0→6.0; Loading-indicator 5.5→6.0; Badge 6.0→7.0.
+
 ## The bar
 **Prototype-grade** = dimensions 1–6 + 8 + 10 + 11 fully met, and 7 + 9 reviewed for that component's relevant cases. Tabs is the reference; everything else is scored against it in `_PROTOTYPE-GRADE-AUDIT.md`.
 
