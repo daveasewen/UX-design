@@ -1,5 +1,6 @@
 {
   "name": "Progress tracker",
+  "interactive": false,
   "category": "molecule",
   "purpose": "Shows users how far they are through a multi-step process by filling a segmented track and labelling the current step (e.g. 'Step 2 of 4').",
   "props": [
@@ -67,6 +68,12 @@
       ".Progress track 269:10956"
     ],
     "ignored": "specs/* annotation scaffolding."
+  },
+  "build": {
+    "$status": "PROMOTED 2026-06-22 (Dave) — gated reference: snippets/Progress-tracker.reference.html. Build green; prototype-grade 9.0/9.",
+    "$visualCorrection": "Canon previously rendered a dots-and-connectors stepper (numbered circles + connector lines + per-step labels) — that diverged from this meta and the Figma. Corrected to the SEGMENTED TRACK the source defines (node 267:10760): a 'Step X of Y' label + optional title + flat filled segments (progress/complete up to the current step, progress/incomplete after).",
+    "interactiveDecision": "PASSIVE (interactive:false) status display, like Table + Status-indicator — NOT a navigation control. AT earned the passive way: role=progressbar + aria-valuenow/valuemin/valuemax + aria-valuetext + an aria-live 'Step X of Y' announcement + accessible name. A real Back/Next control drives it and carries the interactive hover/active/focus/disabled states honestly (same pattern Status-indicator used). No clickable-step navigation bolted on.",
+    "prototypeGrade": "9.0/9 (2026-06-22). Square segments (brand angular); flexible-width track + @container nav reflow; colour never the only cue (the 'Step X of Y' label carries meaning, 1.4.1)."
   },
   "provenance": {
     "source": "figma",
