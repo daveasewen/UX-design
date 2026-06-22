@@ -5,11 +5,15 @@
       "instant": { "$value": "0ms", "$type": "duration", "$description": "no animation / reduced-motion fallback" },
       "fast": { "$value": "120ms", "$type": "duration", "$description": "small state changes (hover, colour)" },
       "fade": { "$value": "140ms", "$type": "duration", "$description": "panel/content fade-in" },
-      "standard": { "$value": "220ms", "$type": "duration", "$description": "primary moving elements (e.g. tab selected-indicator slide)" }
+      "standard": { "$value": "220ms", "$type": "duration", "$description": "primary moving elements (e.g. tab selected-indicator slide)" },
+      "press": { "$value": "90ms", "$type": "duration", "$description": "tactile/scale-physics press depress — snappy, no overshoot (ease-out). Added 2026-06-22 with Button Refined scale-physics." },
+      "spring": { "$value": "300ms", "$type": "duration", "$description": "scale-physics grow toward cursor + release; pairs with easing/spring overshoot. Added 2026-06-22." }
     },
     "easing": {
       "standard": { "$value": { "x1": 0.4, "y1": 0, "x2": 0.2, "y2": 1 }, "$type": "cubicBezier", "$description": "default ease for entering/moving elements" },
-      "linear": { "$value": { "x1": 0, "y1": 0, "x2": 1, "y2": 1 }, "$type": "cubicBezier" }
+      "linear": { "$value": { "x1": 0, "y1": 0, "x2": 1, "y2": 1 }, "$type": "cubicBezier" },
+      "spring": { "$value": { "x1": 0.5, "y1": 1.6, "x2": 0.4, "y2": 1 }, "$type": "cubicBezier", "$description": "overshoot for scale-physics grow/settle (Button Refined; promoted 2026-06-22). Use sparingly — see _MOTION-THEMES.md theme 2 (Settle)." },
+      "out": { "$value": { "x1": 0, "y1": 0, "x2": 0.58, "y2": 1 }, "$type": "cubicBezier", "$description": "CSS ease-out — snappy press release, pairs with duration/press" }
     }
   }
 }

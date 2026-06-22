@@ -112,6 +112,14 @@
     },
     "$motionRule-morph": "(Dave 2026-06-19) The loading->success morph (spinner -> drawn tick) is scoped to PROCESSING buttons only — actions that complete in-page WITHOUT a refresh (the processing/success states). Standard actions that navigate or submit-and-reload must NOT morph (the success would flash then be discarded by the reload). Implies two button sets in use: standard vs processing/async."
   },
+  "motion": {
+    "$status": "PROMOTED 2026-06-22 (Dave) — 'Refined scale-physics' chosen over the unrestrained 3D-depress (which used a translate + inset shadow Dave had previously removed, and conflicts with the flat/angular brand). Dimensionality is expressed through SCALE only — no shadow, no translate.",
+    "hover": "Grows toward the cursor — transform scale(--hs), where --hs = 1 + 7px/buttonWidth (a FIXED ~7px grow regardless of width, set per-button by JS), eased motion/easing/spring over motion/duration/spring (~300ms, slight overshoot). Full-width buttons do NOT grow (a full-bleed grow overflows the edge) — press only.",
+    "press": "Recedes + darkens to read as depth WITHOUT a shadow — transform scale(--ps), where --ps = 1 - 9px/buttonWidth, plus filter brightness(.85); transition motion/duration/press (~90ms) on motion/easing/out.",
+    "reducedMotion": "Under prefers-reduced-motion: reduce, the hover/press transforms + brightness are disabled — the static colour states already convey everything. Motion is decoration over an already-correct static state.",
+    "tokens": ["motion/easing/spring", "motion/duration/spring", "motion/duration/press", "motion/easing/out"],
+    "$note": "Realises brand-refresh principle 7 ('buttons feel pressed / 3D space') in a brand-safe way. The shadowed 3D-depress remains a recorded exploration CEILING in _fitness-test/button-3up-showcase.html (Unrestrained tier), NOT canon. See _PROMOTION-QUEUE.md + _MOTION-THEMES.md (theme 2 Settle / theme 3 Tactile)."
+  },
   "relationships": {
     "livesInside": [
       "Form",

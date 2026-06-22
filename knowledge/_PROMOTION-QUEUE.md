@@ -20,8 +20,9 @@ Canon stays deliberate and accessible-first; the showcases stay a safe sandbox. 
 |---|---|---|
 | **Already promoted** — Input fields two-state focus (animated underline + keyboard-only ring) | canon ✓ | promoted because it's an accessibility feature, not just polish |
 | **Already promoted** — Tabs responsive overflow + round count badge + softer press (2026-06-21) | canon ✓ | first prototype-grade promotion; build green; collapse animation deliberately dropped as over-complex (canon stays conservative) |
+| **Already promoted** — Button "Refined scale-physics" (grow-toward-cursor on hover + press recede/darken, SCALE only — no shadow/translate) (2026-06-22) | canon ✓ | chosen over the unrestrained 3D-depress; realises refresh principle 7 brand-safely; tokenised motion/easing/spring + motion/duration/spring + motion/duration/press + motion/easing/out; build green; see button.meta `motion` |
 | Dropdown hover accent — **V2** (black bar, fade, asymmetric roll-off trail: 130ms in / 620ms out) | `dropdown-AB-showcase.html` Route A | Dave approved the look ("2 is good"); not yet folded into the gated reference |
-| Button — hover lift (translateY −1px) + press squish (scale .97) | `button-AB-showcase.html` Route A | Dave liked it ("rise and squish"); shadow removed per his note |
+| ~~Button — hover lift (translateY −1px) + press squish~~ → **PROMOTED 2026-06-22** as Refined scale-physics | `button-3up-showcase.html` Refined tier | shipped as SCALE-only (grow + recede/darken). The translateY-lift + inset-shadow 3D-depress stay a recorded exploration **ceiling** (Unrestrained), NOT canon |
 | Button — loading → success morph (spinner → drawn tick) | `button-AB-showcase.html` Route A | exploration; not reviewed for canon |
 | Selection controls — spring/overshoot on check-draw, radio-dot, switch-thumb + press-stretch | `selection-controls-AB-showcase.html` Route A | "deliberately springy"; canonical reference uses standard ease |
 | Links / Badge / Tooltip — Route A motion | `*-AB-showcase.html` (being built) | TBD |

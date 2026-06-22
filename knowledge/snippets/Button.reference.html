@@ -10,6 +10,10 @@
   validated against the store by _validate_snippets.py. Buttons are mode-aware: the same
   tokens carry light+dark, so on-dark = on-light bindings (per Button.meta tokenValidation).
 
+  MOTION (promoted 2026-06-22): Refined scale-physics — grow toward the cursor on hover + press
+  recede/darken, expressed through SCALE only (no shadow, no translate; brand stays flat/angular).
+  Chosen over the unrestrained 3D-depress. See Button.meta `motion` + _PROMOTION-QUEUE.md.
+
   THREE token gaps this build surfaces (flagged, NOT silently fixed — see the notes panel):
    1. Inverting-button label: secondary (all states) + primary PRESSED invert their fill to
       a light colour in dark, but the bound label text/reverse is flat #FFFFFF → white-on-white.
@@ -24,6 +28,8 @@
   :root{
     --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
     --fs:16px; --weight:500; --h:44px; --pad-x:20px; --ease:160ms cubic-bezier(.4,0,.2,1);
+    --spring:300ms cubic-bezier(.5,1.6,.4,1);   /* motion/easing/spring + motion/duration/spring — grow/release */
+    --press:90ms cubic-bezier(0,0,.58,1);        /* motion/duration/press + motion/easing/out — snappy depress */
   }
   [data-theme="light"]{
     --pri-default:#DB0011; --pri-hover:#BA1110; --pri-pressed:#000000; --pri-disabled:#D7D8D6;
@@ -56,8 +62,16 @@
 
   .btn{height:var(--h); min-width:96px; padding:0 var(--pad-x); border:0; border-radius:0; cursor:pointer;
     font:var(--weight) var(--fs)/1 var(--font); display:inline-flex; align-items:center; justify-content:center;
-    gap:8px; transition:background var(--ease), border-color var(--ease);}
+    gap:8px; transition:background var(--ease), border-color var(--ease), transform var(--spring), filter var(--press);}
   .btn:focus-visible{outline:2px solid var(--text-default); outline-offset:2px;}
+
+  /* Refined scale-physics (promoted 2026-06-22) — dimensionality through SCALE: grows toward the cursor on
+     hover, press recedes + darkens to read as depth. No shadow, no translate (brand stays flat/angular).
+     --hs/--ps are FIXED-px (set by JS from each button's width) so the absolute motion is constant at any size. */
+  .btn:hover{transform:scale(var(--hs,1.04));}
+  .btn.full:hover{transform:none;}                                           /* full-width can't grow — would overflow */
+  .btn:active{transform:scale(var(--ps,.95)); filter:brightness(.85); transition:transform var(--press), filter var(--press);}
+  .btn:disabled:hover,.btn.is-disabled:hover{transform:none; filter:none;}   /* disabled stays put */
 
   /* PRIMARY — red fill, white label; pressed inverts (label flips via --label-invert) */
   .btn.primary{background:var(--pri-default); color:var(--text-reverse);}
@@ -92,6 +106,7 @@
   /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
   @media (prefers-reduced-motion: reduce){
     *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+    .btn:hover,.btn:active{ transform:none !important; filter:none !important; }   /* no scale-physics under reduced-motion */
   }
 </style>
 </head>
@@ -169,6 +184,12 @@
     document.getElementById('themeToggle').addEventListener('click', ()=>{
       const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark');
     });
+    // Refined scale-physics: fixed-px grow/shrink derived from each button's width, so the absolute motion
+    // is identical on a narrow vs a wide button. Reduced-motion disables the transforms in CSS regardless.
+    const GROW=7, PRESS=9;
+    function sizeScale(){ document.querySelectorAll('.btn').forEach(b=>{ const w=b.offsetWidth||1;
+      b.style.setProperty('--hs',(1+GROW/w).toFixed(4)); b.style.setProperty('--ps',(1-PRESS/w).toFixed(4)); }); }
+    addEventListener('resize', sizeScale); sizeScale();
   </script>
 </body>
 </html>
