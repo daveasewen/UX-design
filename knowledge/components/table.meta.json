@@ -1,5 +1,6 @@
 {
   "name": "Table",
+  "interactive": false,
   "category": "organism",
   "$platform": "browser",
   "purpose": "Data tables let users scan, analyse and compare data. Header / sub-header / data cells arranged with a first-row header, a first-column header, or both; cells can be left- or right-aligned (right for numeric).",
@@ -30,7 +31,10 @@
     "semantics": "Use real <table> with <th scope='col'/'row'> for headers; both-header tables set scope appropriately so screen readers associate cells with their row+column headers (1.3.1)",
     "alignment": "Right-align numeric columns for scanning; keep header alignment consistent with its column",
     "caption": "Provide a <caption> or accessible name describing the table's purpose",
-    "responsive": "REVIEW (inferred): on small screens tables should scroll horizontally or reflow without losing header association",
+    "responsive": "CARD-COLLAPSE (Figma 'Version=vertical', node 2137:115845). At narrow container width each row reflows into a card: column headers repeat as grey labels beside each value ([table/header label | background/default value], ~42/58), and a row-header (when present) becomes the card title bar; first-column tables show bare values under the title (no column headers exist). A focusable role=region scroll container still backs the wide form. <th scope> association is preserved in the DOM at every width (1.3.1 + 1.4.10 reflow to 320px).",
+    "variants": "Full matrix from Figma section 65540:46962: headerType {first-row, first-column, first-row-and-column} x orientation {horizontal data-table, vertical card-collapse} x cellAlign {left, right-numeric}; plus a sub-header that shares table/column/background (#F3F3F3 / #1D1D1D) with row headers.",
+    "type": "headers = font-5 medium (500); cell data = font-5 REGULAR (400). NB Figma specs data as light (350) but Univers Light renders too thin in Chrome (Dave, 2026-06-22) — promoted to regular; candidate token-store flag.",
+    "atSignal": "PASSIVE / semantic-table AT (rubric decision A, 2026-06-22 — Dave chose option a). Table is interactive:false: it is a STATIC semantic data table (props headerType/orientation/cellAlign — no sort, no selection), so it earns the AT dimension via <caption> + <th scope> + a focusable scroll region (role=region/tabindex/aria-label), NOT a keyboard widget. Adding sort/selection would change the component's nature and is out of scope; if a sortable table is ever needed it should be a distinct component.",
     "relatedSC": ["1.3.1 Info and Relationships", "1.3.2 Meaningful Sequence", "1.4.10 Reflow"]
   },
   "antiPatterns": [
@@ -46,6 +50,24 @@
     "depricateUsage": { "tokens": [], "note": "None. Fully on table/* + background/default + text/default." },
     "auditedNodes": [".Table header 2147:126475", ".Table data cell 2147:126472", ".Table sub-header 395:74064"],
     "ignored": "specs/* annotation scaffolding."
+  },
+  "build": {
+    "$status": "PROMOTED 2026-06-22 (Dave) — Table brought to standard. Gated reference: snippets/Table.reference.html. Build green; prototype-grade 9.0/9.",
+    "prototypeGrade": "9.0/9 (2026-06-22) — joined Tabs, List-items, Status-indicator at 9/9 (board: 4 at 9/9). Passive AT per rubric decision A (interactive:false): caption + th scope + focusable role=region; no sort bolted on.",
+    "responsive": "Card-collapse (Figma vertical, node 2137:115845): rows reflow to cards at narrow container width — column headers repeat as labels, row-header becomes the card title; first-column tables show bare values (no column headers). <th scope> preserved at all widths (1.3.1 + 1.4.10).",
+    "variantsCovered": "headerType {first-row, first-column, first-row-and-column} via a live scope-switching control; cellAlign right-numeric; sub-header shares table/column/background with row headers.",
+    "findings": [
+      "TYPE deviation: cell data promoted from Figma light (350) to REGULAR (400) — Univers Light renders too thin in Chrome (Dave, 2026-06-22). Candidate token-store flag (a data-text weight token, or accept the deviation).",
+      "Univers Next for HSBC is not installable in the sandbox (lives on the SSO-gated Create asset bank); snippet renders verified on LAYOUT via fallback-font headless Chromium. Real-font check is on Dave's machine."
+    ]
+  },
+  "codeBindings": {
+    "$model": "Hub-and-spoke — see _RUNBOOK-onboard-code-library.md. Hub = provenance.figma_node; spokes per consuming library; never guess or normalise across libraries.",
+    "sutherland-react": {
+      "library": "HSBC Sutherland (React component library)",
+      "component": "TODO — confirm in Sutherland repo / via Code Connect",
+      "$status": "unverified — populate from get_code_connect_map once wired."
+    }
   },
   "provenance": {
     "source": "figma",
