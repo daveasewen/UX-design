@@ -37,8 +37,13 @@ def score(name, s, interactive=True):
     d["reduced-motion"] = 1 if "prefers-reduced-motion" in s else (
         0.5 if re.search(r"transition:|@keyframes|animation:", s) else 0)
     if interactive:
-        d["AT(aria+kbd)"] = 1 if ("role=" in s and "aria-" in s and re.search(r"keydown|keyup", s)) else (
-            0.5 if ("role=" in s and "aria-" in s) else 0)
+        # DECISION B (2026-06-22, Dave): native interactive elements (<a>/<button>/<input>/<select>/
+        # <textarea>) are keyboard-operable WITHOUT a JS handler — a redundant keydown on a native <a> is
+        # an anti-pattern. Credit AT for native-keyboard (a native control + a visible :focus-visible
+        # indicator) as well as the custom role+aria+keydown path. Guard: exposing nothing still scores 0.
+        _native = bool(re.search(r"<button|<a[ >]|<input|<select|<textarea", s)) and ":focus-visible" in s
+        _custom = ("role=" in s and "aria-" in s and bool(re.search(r"keydown|keyup", s)))
+        d["AT(aria+kbd)"] = 1 if (_custom or _native) else (0.5 if ("role=" in s and "aria-" in s) else 0)
     else:
         # PASSIVE atom (meta interactive:false) — keyboard is N/A by design (decided 2026-06-22, option A).
         # Full credit for being exposed to AT via announce/role/label; 0 if it exposes nothing (still

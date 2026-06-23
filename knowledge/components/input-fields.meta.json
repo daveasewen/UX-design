@@ -8,11 +8,13 @@
     { "name": "state", "type": "enum", "values": ["default", "hover", "active", "completed", "disabled", "error"], "default": "default", "$note": "Date-picker input adds a 'date picker' (open) state. Input label: default/disabled only." },
     { "name": "dateCellState", "type": "enum", "values": ["unselected", "hover", "pressed", "selected", "disabled", "unavailable"], "default": "unselected", "$note": ".Date calendar day cell." }
   ],
+  "$styles": "TWO field styles are canon (Dave, 2026-06-22 'both styles exist'): (1) BOXED — full form/border/default box, faithful to node 65570:211753, with optional GBP prefix / trailing icon / (?) help label + 0/100 counter; active & error add a 4px bottom-stroke emphasis on the box. (2) UNDERLINE — bottom-stroke only, no box (the prior canon). Both live in snippets/Input-fields.reference.html.",
   "variants": [
-    { "name": "single-line", "use": "Standard one-line text field (default + Large size)." },
+    { "name": "boxed", "use": "Full-border field (node 65570:211753). Optional prefix (e.g. GBP), trailing icon, (?) help, char counter. Standard + Large. States default/hover/active/completed/disabled/error; active+error keep the 4px bottom-stroke emphasis (black / rag-error)." },
+    { "name": "single-line (underline)", "use": "Bottom-stroke one-line field, no box — the prior canon, kept as the second style (default + Large size)." },
     { "name": "multi-line", "use": "Multi-line textarea; same states." },
-    { "name": "date-picker", "use": "Input that opens a calendar (modal on small screens / dropdown on web). Includes .Date day cells, .Arrow month nav, and the calendar overlay (elevation/functional shadow)." },
-    { "name": "input-label", "use": "Field label above an input; default/disabled." }
+    { "name": "date-picker", "use": "Input that opens a calendar (modal on small screens / dropdown on web). Includes .Date day cells, .Arrow month nav, and the calendar overlay. NOT YET built in the reference — calendar deferred (would add a keyboard grid)." },
+    { "name": "input-label", "use": "Field label above an input; default/disabled. Optional (?) help label + help text." }
   ],
   "tokens": {
     "input-text": "text/default @ font-5/medium (value) / font-5/light (placeholder); helper/error text font-7",
@@ -42,8 +44,12 @@
     "relatedSC": ["1.3.1", "1.3.5 Identify Input Purpose", "1.4.1 Use of Color", "3.3.1 Error Identification", "3.3.2 Labels or Instructions", "4.1.2", "2.1.1 Keyboard", "2.4.7 Focus Visible"]
   },
   "dimensions": {
-    "$description": "Geometry for the single-line field. INFERRED from the Route A build in the fitness test (2026-06-19) — NOT captured from a source component (this meta was synthesised from the Input-fields standards; no measurements were extracted and code_path is empty). Tagged review: verify against the Figma node or a real build before treating as canon.",
-    "$confidence": "review",
+    "$description": "Geometry. BOXED captured from node 65570:211753 (2026-06-22): box padding 9px top / 11px bottom / 16px inline, 16px gap (prefix·value·icon), 1px form/border, ~46px standard height, Large ~+10px. UNDERLINE geometry below was INFERRED 2026-06-19 (no source measurement) — kept for the second style.",
+    "$confidence": "boxed: captured (node 65570:211753); underline: review",
+    "box-padding": { "value": "9 16 11", "unit": "px", "$note": "top · inline · bottom — node 65570:211753." },
+    "box-gap": { "value": 16, "unit": "px", "$note": "prefix · value · trailing icon." },
+    "box-bottom-stroke": { "value": 4, "unit": "px", "$note": "active (black) / error (rag-error) inner-shadow emphasis on the box." },
+    "icon-size": { "value": 18, "unit": "px", "$note": "icon-scale 'small'; library SVGs." },
     "field-height": { "value": 52, "unit": "px", "$note": "single-line; ≥44px target (2.5.8) with breathing room. 'single-line-large' would be taller." },
     "field-padding-inline": { "value": 0, "unit": "px", "$note": "underline (bottom-stroke) style — text aligns to the field edge; no inset box." },
     "underline-rest": { "token": "layout/border-width/small", "value": 1, "unit": "px" },
@@ -74,9 +80,19 @@
     },
     "ignored": "specs/* annotation scaffolding."
   },
+  "build": {
+    "$status": "9/9 prototype-grade — promoted to canon 2026-06-22 (Dave).",
+    "$file": "snippets/Input-fields.reference.html",
+    "$styles": "boxed + underline (both kept).",
+    "$stateContrast": "state-contrast gate clean (light+dark) — boxed hover/active/error + underline states.",
+    "$icons": "Real HSBC library SVGs via a <symbol> sprite (calendar=media/calendar.svg, help=informative/help.svg, error=status-icons/error.svg, success=status-icons/success.svg) — NOT invented. Declared in the snippet token-manifest 'icons' block.",
+    "$weight": "Input value + placeholder bumped light→regular (legibility in the fallback font; same call as the Table cell-data fix).",
+    "$at": "Native <input> + label + aria-describedby/aria-invalid + :focus-visible → AT credited via decision B (native-keyboard).",
+    "$deferred": "date-picker calendar variant + multi-line not built."
+  },
   "provenance": {
     "source": "figma",
-    "figma_node": "Cgbtrmfp15ruNFkIAClpkI:45011:112934",
+    "figma_node": "65570:211753 (boxed states matrix; standard 2298:166741 + large 299:73597) · prior synthesised node Cgbtrmfp15ruNFkIAClpkI:45011:112934",
     "code_path": ""
   }
 }

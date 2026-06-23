@@ -187,7 +187,7 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 - 🟡 `props.$note` — default height 44px; 'Large' variant exists for primary (and likely all types) — confirm Large height.
 
 **Input fields**
-- 🟡 `dimensions.$description` — Geometry for the single-line field. INFERRED from the Route A build in the fitness test (2026-06-19) — NOT captured from a source component (this meta was synthesised from the Input-fields standards; no measurements were extracted and co…
+- 🟡 `dimensions.$description` — Geometry. BOXED captured from node 65570:211753 (2026-06-22): box padding 9px top / 11px bottom / 16px inline, 16px gap (prefix·value·icon), 1px form/border, ~46px standard height, Large ~+10px. UNDERLINE geometry below was INFERRED 2026…
 
 **Modals**
 - 🔴 `build.a11y` — role=dialog + aria-modal + aria-labelledby + aria-describedby; focus moves in + Tab trapped within + Esc closes + focus returns to trigger; background inert; trigger disabled while open. Closes the meta's focus-trap REVIEW item.
