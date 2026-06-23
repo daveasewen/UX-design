@@ -2,7 +2,7 @@
 
 > Every assertion in the component metas that is **not** directly observed canon. Formalises the in-prose confidence convention (Graphify-borrow #1). 🔴 **review** = verify before trusting; 🟡 **inferred** = reasoned, lower urgency. `asserted` items (the default) are not listed. Generated — regenerate after editing metas: `python3 knowledge/_build_review_queue.py`. Vocabulary in `_CONFIDENCE.md`; machine detail in `_REVIEW-QUEUE.json`.
 
-**Totals:** 80 items across 25 components — 74 🔴 review, 6 🟡 inferred. By category: token-rebind 29, anti-pattern 27, accessibility 21, other 3.
+**Totals:** 81 items across 25 components — 75 🔴 review, 6 🟡 inferred. By category: token-rebind 29, anti-pattern 27, accessibility 21, other 4.
 
 Most-flagged components: Badge (6), Countdown timer (5), Dropdown (5), Hero (5), List items (5), Tags (5), Accordion (4), Avatar (4).
 
@@ -181,13 +181,16 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 **Slider**
 - 🔴 `antiPatterns` — REVIEW (inferred): using a slider where precise numeric entry is required (pair with an input)
 
-## Other (3)
+## Other (4)
 
 **Button**
 - 🟡 `props.$note` — default height 44px; 'Large' variant exists for primary (and likely all types) — confirm Large height.
 
 **Input fields**
 - 🟡 `dimensions.$description` — Geometry for the single-line field. INFERRED from the Route A build in the fitness test (2026-06-19) — NOT captured from a source component (this meta was synthesised from the Input-fields standards; no measurements were extracted and co…
+
+**Modals**
+- 🔴 `build.a11y` — role=dialog + aria-modal + aria-labelledby + aria-describedby; focus moves in + Tab trapped within + Esc closes + focus returns to trigger; background inert; trigger disabled while open. Closes the meta's focus-trap REVIEW item.
 
 **Slider**
 - 🔴 `tokens.tick-marker (DEPRECATED)` — non-interactive (depricate)/border/on-light/neutral-6 (#767676) → REVIEW (rebind form/border/default | scrollbar/foreground — both #767676)
