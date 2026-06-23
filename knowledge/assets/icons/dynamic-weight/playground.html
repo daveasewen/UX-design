@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dynamic-weight icons — playground</title>
+<!--
+  Dynamic-weight icon set — outline/stroke icons whose LINE THICKNESS is a single variable,
+  so it can be tuned freely OR snapped to match the adjacent label's font weight.
+  Core 8 (close, plus, check, chevron, search, arrow, info, menu), drawn as outlines on a
+  24 grid using the HSBC set as visual reference (the HSBC originals are FILLED and can't
+  be re-weighted — see ../../guidelines/icons.md). Three independent knobs:
+    • thickness → --icon-stroke   (slider, or font-weight preset)
+    • colour    → --icon-color    (token swatch or picker; applied via currentColor)
+    • scale     → --icon-size     (slider; line stays constant via non-scaling-stroke)
+  Builder-usable source lives next to this file: dynamic-icons.js + README.md.
+-->
+<style>
+  :root{
+    --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+    --icon-stroke:1.7;
+    --icon-color:#333333;
+    --icon-size:56px;
+    --nss:1px; /* non-scaling-stroke proxy: 1px = on, 0 = off (set on element) */
+  }
+  body[data-theme="light"]{ --page:#f4f4f5; --ink:#1b1b1d; --muted:#6a6a70; --card:#ffffff; --edge:#e7e7ea; --bar:#f4f4f5; }
+  body[data-theme="dark"]{ --page:#0b0b0c; --ink:#f3f3f4; --muted:#9a9aa0; --card:#161616; --edge:#27272b; --bar:#161616; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:32px clamp(18px,4vw,56px); font-family:var(--font); background:var(--page); color:var(--ink); -webkit-font-smoothing:antialiased;}
+  header{display:flex; justify-content:space-between; align-items:flex-start; gap:24px; margin-bottom:22px;}
+  h1{font-size:21px; margin:0 0 6px; letter-spacing:-.01em;}
+  header p{margin:0; color:var(--muted); font-size:13.5px; max-width:70ch; line-height:1.5;}
+  .toggle{flex:none; cursor:pointer; font:inherit; font-size:13px; font-weight:600; color:var(--ink); background:var(--card); border:1px solid var(--edge); padding:9px 14px; border-radius:999px;}
+
+  .wrap{display:grid; grid-template-columns:300px 1fr; gap:26px; align-items:start;}
+  @media(max-width:860px){ .wrap{grid-template-columns:1fr;} }
+
+  /* ---- controls panel ---- */
+  .panel{background:var(--card); border:1px solid var(--edge); border-radius:14px; padding:20px; position:sticky; top:16px;}
+  .panel h2{font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin:0 0 14px;}
+  .field{margin-bottom:20px;}
+  .field:last-child{margin-bottom:0;}
+  .field label.lab{display:flex; justify-content:space-between; align-items:baseline; font-size:12.5px; margin-bottom:8px; color:var(--ink);}
+  .field label.lab b{font-variant-numeric:tabular-nums; font-weight:600;}
+  input[type=range]{width:100%; accent-color:var(--ink);}
+  .presets{display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-top:4px;}
+  .presets button{font:inherit; font-size:12px; padding:8px 4px; border:1px solid var(--edge); background:var(--bar); color:var(--ink); cursor:pointer; border-radius:8px; line-height:1.2;}
+  .presets button .pw{display:block; font-size:10px; color:var(--muted); margin-top:2px;}
+  .presets button.on{background:var(--ink); color:var(--page); border-color:var(--ink);}
+  .presets button.on .pw{color:var(--page); opacity:.7;}
+  .swatches{display:flex; gap:8px; align-items:center; flex-wrap:wrap;}
+  .swatches button{width:26px; height:26px; border-radius:50%; border:2px solid var(--edge); cursor:pointer; padding:0;}
+  .swatches button.on{outline:2px solid var(--ink); outline-offset:2px;}
+  .swatches input[type=color]{width:30px; height:30px; padding:0; border:1px solid var(--edge); border-radius:8px; background:none; cursor:pointer;}
+  .row{display:flex; align-items:center; gap:9px; font-size:12.5px; color:var(--ink);}
+  .row input{accent-color:var(--ink);}
+
+  /* ---- stage ---- */
+  .stage{display:flex; flex-direction:column; gap:22px;}
+  .hero{background:var(--card); border:1px solid var(--edge); border-radius:14px; padding:30px; display:flex; align-items:center; gap:26px; flex-wrap:wrap;}
+  .hero .pair{display:inline-flex; align-items:center; gap:14px; color:var(--icon-color);}
+  .hero .pair .label{font-size:36px; line-height:1; color:var(--ink); border:none; background:none; font-family:inherit; width:auto; max-width:46vw; padding:0;}
+  .cap{font-size:12px; color:var(--muted);}
+
+  .grid{background:var(--card); border:1px solid var(--edge); border-radius:14px; padding:24px; display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:8px;}
+  .cell{display:flex; flex-direction:column; align-items:center; gap:12px; padding:18px 8px; border-radius:10px; color:var(--icon-color);}
+  .cell .name{font-size:11px; letter-spacing:.04em; text-transform:uppercase; color:var(--muted);}
+
+  /* every icon: stroke driven by the variables */
+  .ico{display:inline-flex; width:var(--icon-size); height:var(--icon-size);}
+  .ico svg{width:100%; height:100%; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; display:block;}
+  .ico svg *{ stroke-width:var(--icon-stroke); }
+
+  /* developer panel */
+  details.dev{background:var(--card); border:1px solid var(--edge); border-radius:14px; padding:0 20px;}
+  details.dev summary{cursor:pointer; padding:16px 0; font-size:12.5px; font-weight:600; list-style:none;}
+  details.dev summary::-webkit-details-marker{display:none;}
+  details.dev summary::before{content:"▸ "; color:var(--muted);}
+  details.dev[open] summary::before{content:"▾ ";}
+  pre{margin:0 0 18px; padding:16px; background:var(--bar); border:1px solid var(--edge); border-radius:10px; overflow:auto; font-size:12px; line-height:1.55; font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace; color:var(--ink);}
+  .copy{font:inherit; font-size:12px; font-weight:600; padding:7px 12px; border:1px solid var(--edge); background:var(--bar); color:var(--ink); border-radius:8px; cursor:pointer; margin-bottom:18px;}
+</style>
+</head>
+<body data-theme="light">
+  <header>
+    <div>
+      <h1>Dynamic-weight icons</h1>
+      <p>Outline icons whose line thickness, colour and scale are each a single variable. Drag the thickness slider for full control, or snap it to a font weight so the icon reads as a member of the type family next to its label. Built as outlines because the HSBC catalogue is filled and can't be re-weighted.</p>
+    </div>
+    <button class="toggle" id="theme" type="button">◐ Dark</button>
+  </header>
+
+  <div class="wrap">
+    <!-- CONTROLS -->
+    <div class="panel">
+      <h2>Controls</h2>
+
+      <div class="field">
+        <label class="lab" for="stroke">Line thickness <b><span id="strokeVal">1.7</span>px</b></label>
+        <input type="range" id="stroke" min="0.5" max="4" step="0.05" value="1.7">
+        <div class="presets" id="presets">
+          <button data-w="1.3" data-fw="300">Light<span class="pw">300</span></button>
+          <button data-w="1.7" data-fw="400" class="on">Regular<span class="pw">400</span></button>
+          <button data-w="2.1" data-fw="500">Medium<span class="pw">500</span></button>
+          <button data-w="2.7" data-fw="700">Bold<span class="pw">700</span></button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="lab">Colour</label>
+        <div class="swatches" id="swatches">
+          <button data-c="#333333" class="on" style="background:#333333" title="icon/default"></button>
+          <button data-c="#000000" style="background:#000000" title="black"></button>
+          <button data-c="#6A6A70" style="background:#6A6A70" title="muted"></button>
+          <button data-c="#DB0011" style="background:#DB0011" title="HSBC red"></button>
+          <button data-c="#FFFFFF" style="background:#FFFFFF" title="reverse (use dark theme)"></button>
+          <input type="color" id="picker" value="#333333" title="custom">
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="lab" for="size">Scale <b><span id="sizeVal">56</span>px</b></label>
+        <input type="range" id="size" min="16" max="120" step="1" value="56">
+      </div>
+
+      <div class="field">
+        <label class="row"><input type="checkbox" id="nss" checked> Constant line weight across scale</label>
+        <p class="cap" style="margin:6px 0 0;">On: thickness stays the px value above at any size (system-consistent). Off: line scales with the icon.</p>
+      </div>
+    </div>
+
+    <!-- STAGE -->
+    <div class="stage">
+      <div class="hero">
+        <div class="pair">
+          <span class="ico" data-icon="search"></span>
+          <input class="label" id="labelText" value="Filter" spellcheck="false" aria-label="Editable label">
+        </div>
+        <span class="cap" id="heroCap"></span>
+      </div>
+
+      <div class="grid" id="grid"></div>
+
+      <details class="dev">
+        <summary>For the builder — usage snippet</summary>
+        <button class="copy" id="copyBtn" type="button">Copy CSS</button>
+        <pre id="snippet"></pre>
+        <p class="cap" style="margin:0 0 18px;">The same 8 icons are exported as a drop-in source next to this file: <code>dynamic-icons.js</code> (path data + a <code>&lt;dyn-icon&gt;</code> web component) and <code>README.md</code>.</p>
+      </details>
+    </div>
+  </div>
+
+  <script src="dynamic-icons.js"></script>
+  <script>
+    const root = document.documentElement;
+    const body = document.body;
+    const ORDER = ["close","plus","check","chevron","search","arrow","info","menu"];
+
+    // ---- build the grid ----
+    const grid = document.getElementById('grid');
+    ORDER.forEach(name=>{
+      const cell=document.createElement('div'); cell.className='cell';
+      const ico=document.createElement('span'); ico.className='ico'; ico.dataset.icon=name; ico.innerHTML=DYN_ICONS[name];
+      const lab=document.createElement('span'); lab.className='name'; lab.textContent=name;
+      cell.appendChild(ico); cell.appendChild(lab); grid.appendChild(cell);
+    });
+    // fill hero icon
+    document.querySelector('.hero .ico').innerHTML = DYN_ICONS['search'];
+
+    // ---- non-scaling-stroke toggle (apply vector-effect on all icon shapes) ----
+    function applyNSS(on){
+      document.querySelectorAll('.ico svg *').forEach(el=>{
+        el.setAttribute('vector-effect', on ? 'non-scaling-stroke' : 'none');
+      });
+    }
+
+    // ---- controls ----
+    const strokeEl=document.getElementById('stroke'), strokeVal=document.getElementById('strokeVal');
+    const sizeEl=document.getElementById('size'), sizeVal=document.getElementById('sizeVal');
+    const presets=document.getElementById('presets');
+    const heroCap=document.getElementById('heroCap');
+    const label=document.getElementById('labelText');
+
+    let curFontWeight=400;
+
+    function setStroke(v){ root.style.setProperty('--icon-stroke', v); strokeEl.value=v; strokeVal.textContent=(+v).toFixed(2).replace(/\.?0+$/,''); updateCap(); updateSnippet(); }
+    function setSize(v){ root.style.setProperty('--icon-size', v+'px'); sizeEl.value=v; sizeVal.textContent=v; updateSnippet(); }
+    function setColor(c){ root.style.setProperty('--icon-color', c); document.getElementById('picker').value=c; updateSnippet();
+      document.querySelectorAll('#swatches [data-c]').forEach(b=>b.classList.toggle('on', b.dataset.c.toLowerCase()===c.toLowerCase())); }
+    function setFontWeight(fw){ curFontWeight=fw; label.style.fontWeight=fw; updateCap(); }
+    function clearPresetActive(){ presets.querySelectorAll('button').forEach(b=>b.classList.remove('on')); }
+    function updateCap(){ heroCap.textContent = `line ${(+strokeEl.value).toFixed(2).replace(/\.?0+$/,'')}px · label ${curFontWeight}`; }
+
+    strokeEl.addEventListener('input', e=>{ clearPresetActive(); setStroke(e.target.value); });
+    sizeEl.addEventListener('input', e=> setSize(e.target.value));
+    presets.addEventListener('click', e=>{ const b=e.target.closest('button'); if(!b) return;
+      clearPresetActive(); b.classList.add('on'); setStroke(b.dataset.w); setFontWeight(b.dataset.fw); });
+    document.getElementById('swatches').addEventListener('click', e=>{ const b=e.target.closest('button[data-c]'); if(b) setColor(b.dataset.c); });
+    document.getElementById('picker').addEventListener('input', e=>{ document.querySelectorAll('#swatches [data-c]').forEach(x=>x.classList.remove('on')); setColor(e.target.value); });
+    document.getElementById('nss').addEventListener('change', e=> applyNSS(e.target.checked));
+
+    // theme
+    document.getElementById('theme').addEventListener('click', e=>{
+      const dark = body.getAttribute('data-theme')==='dark';
+      body.setAttribute('data-theme', dark?'light':'dark');
+      e.target.textContent = dark?'◐ Dark':'◐ Light';
+      // helpful default: flip icon colour with theme if still on a default ink
+      const cur=getComputedStyle(root).getPropertyValue('--icon-color').trim().toLowerCase();
+      if(cur==='#333333'||cur==='#f3f3f4') setColor(dark?'#F3F3F4':'#333333');
+    });
+
+    // developer snippet
+    function updateSnippet(){
+      const s=(+strokeEl.value), c=getComputedStyle(root).getPropertyValue('--icon-color').trim(), z=sizeEl.value;
+      document.getElementById('snippet').textContent =
+`.icon{
+  --icon-stroke:${(s).toFixed(2).replace(/\.?0+$/,'')};   /* match label font-weight */
+  --icon-color:${c};
+  --icon-size:${z}px;
+  width:var(--icon-size); height:var(--icon-size); color:var(--icon-color);
+}
+.icon svg{ fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; }
+.icon svg *{ stroke-width:var(--icon-stroke); vector-effect:non-scaling-stroke; }`;
+    }
+    document.getElementById('copyBtn').addEventListener('click', ()=>{
+      navigator.clipboard?.writeText(document.getElementById('snippet').textContent);
+      const b=document.getElementById('copyBtn'); const t=b.textContent; b.textContent='Copied ✓'; setTimeout(()=>b.textContent=t,1200);
+    });
+
+    // init
+    applyNSS(true); setFontWeight(400); updateCap(); updateSnippet();
+  </script>
+</body>
+</html>
