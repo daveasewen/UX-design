@@ -10,25 +10,20 @@
   #token-manifest maps every CSS var to its token, and _validate_snippets.py fails the build if
   any value drifts from the store, required ARIA is missing, or a contrast pair falls below threshold.
   Edit tokens in the store, not here.
-  FOUR demonstrated card patterns (Figma nodes 11746:45268, 2298:52812, 862:21004):
+  Three real Common Toolkit card TYPES (Figma nodes 11746:45268, 2298:52812, 862:21004):
     • Action card  — icon + title + description + quaternary action buttons (static surface; <article>)
-    • Link card    — whole card is the link (<a>); bordered surface; hover + PRESSED states
-    • Media card   — image + title-LINK (font-3 regular) + description + arrow links (static; <article>)
-    • Selectable cards — single-select radiogroup (roving Arrow/Home/End + aria-checked) reusing the
-                     Selection-controls radio atom; BAND-AID supplying the honest keydown for the
-                     native-<a> AT gap (root-cause fix = decision B, see Cards.meta build + the rubric).
+    • Link card    — whole card is the link, icon + arrow-link title + description, hover state (<a>)
+    • Media card   — image + title + description + arrow links (static surface; <article>)
   Every card link reuses the CANONICAL arrow-link atom from Links.reference.html (red tip,
   underline-on-hover, keyboard focus) — same primitive, not a custom glyph. Plus a loading state.
-  Responsive grid + a container-query reflow, dark mode, square corners, reduced-motion.
-  STATE CONTRAST (a11y): on hover description/arrow → text/default; on pressed icon/arrow/description →
-  text/reverse — both states failed contrast on the dark hover (#474747) / pressed (#767676) greys
-  until fixed (now declared as contrast pairs). Root cause flagged: the dark hover surface is too light.
+  Responsive grid (auto-fit, reflows to 300px), dark mode, square corners, reduced-motion.
+  Static cards use <article> semantics; the interactive link card is a single <a>. Conservative motion only.
 -->
 <style>
   :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
   [data-theme="light"]{ --surface:#FFFFFF; --border:#D7D8D6; --text:#333333; --muted:#545454; --icon:#333333; --accent:#DB0011; --hover:#F3F3F3; --focus:#305A85; --page:#FFFFFF;
     --checked:#000000; --ctrl-border:#767676; --pressed:#767676; --reverse:#FFFFFF; }
-  [data-theme="dark"]{ --surface:#1D1D1D; --border:#404040; --text:#FFFFFF; --muted:#9B9B9B; --icon:#FFFFFF; --accent:#DB0011; --hover:#212121; --focus:#4587A7; --page:#000000;
+  [data-theme="dark"]{ --surface:#1D1D1D; --border:#404040; --text:#FFFFFF; --muted:#9B9B9B; --icon:#FFFFFF; --accent:#DB0011; --hover:#474747; --focus:#4587A7; --page:#000000;
     --checked:#FFFFFF; --ctrl-border:#656565; --pressed:#1D1D1D; --reverse:#FFFFFF; }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
