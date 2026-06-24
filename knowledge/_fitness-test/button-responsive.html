@@ -3,32 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Button — reference implementation (gated)</title>
+<title>Button — responsive action-bar (fitness-test, NOT gated)</title>
 <!--
-  CANONICAL REFERENCE for Button (4 emphasis levels × states × both themes).
-  Colours = resolved semantic tokens (primary/* secondary/* tertiary/* text/* rag/success),
-  validated against the store by _validate_snippets.py. Buttons are mode-aware: the same
-  tokens carry light+dark, so on-dark = on-light bindings (per Button.meta tokenValidation).
-
-  MOTION (promoted 2026-06-22): Refined scale-physics — grow toward the cursor on hover + press
-  recede/darken, expressed through SCALE only (no shadow, no translate; brand stays flat/angular).
-  Chosen over the unrestrained 3D-depress. See Button.meta `motion` + _PROMOTION-QUEUE.md.
-
-  RESPONSIVE (promoted 2026-06-24 — Dim 11): the action-bar (confirm/cancel pair, button.meta
-  commonPatterns) reflows via container-query — inline + right-aligned on a wide container; at
-  ≤420px container (incl. 320px / WCAG 1.4.10) it stacks, each button goes full-width, the PRIMARY
-  is promoted to the top (mobile priority), and hover-grow is disabled (a full-bleed grow overflows
-  — the .full rule). Drag the "Action-bar width" slider to see both. See Button.meta `responsive`.
-
-  THREE token gaps this build surfaces (flagged, NOT silently fixed — see the notes panel):
-   1. Inverting-button label: secondary (all states) + primary PRESSED invert their fill to
-      a light colour in dark, but the bound label text/reverse is flat #FFFFFF → white-on-white.
-      Rendered here with a PROPOSED mode-aware --label-invert (#FFF light / #333 dark), LOCAL to
-      this snippet, pending a canon decision.
-   2. Tertiary (outlined) border in dark: tertiary/border/default dark #474747 is ~1.9:1 on the
-      tertiary fill — the defining outline is nearly invisible. Shown faithfully (the defect).
-   3. text/reverse is flat (#FFF/#FFF); fine for primary (always white on red) but wrong for the
-      inverting variants — root cause of #1.
+  EXPLORATION (not canon). Adds the missing prototype-grade dimension to Button: RESPONSIVE / reflow (Dim 11).
+  Base = snippets/Button.reference.html (emphasis levels + scale-physics motion, unchanged).
+  NEW = an "Action bar" (the primary+secondary / confirm-cancel pattern from button.meta commonPatterns) that
+  genuinely reflows:
+    • WIDE  → buttons sit inline, right-aligned (desktop dialog-footer convention: primary last/right).
+    • NARROW (container ≤ 420px, incl. 320px / WCAG 1.4.10) → stack vertically, each goes FULL-WIDTH,
+      and the PRIMARY is promoted to the TOP (mobile priority). Hover-grow is disabled when full-width
+      (a full-bleed grow would overflow the edge — the latent .full rule, applied here in-container).
+  Reflow is driven by container-type:inline-size + @container (house style: Cards/Table/etc.), so the bar
+  adapts to its OWN width, not the viewport. The ↔ control toggles a narrow demo container so both states
+  are visible without resizing the window; max-width:100% means it also reflows on a real narrow screen.
 -->
 <style>
   :root{
@@ -52,18 +39,16 @@
     --ter-default:#1D1D1D; --ter-hover:#212121; --ter-pressed:#1D1D1D; --ter-disabled:#404040;
     --ter-border:#767676; --ter-border-disabled:#333333;
     --text-default:#FFFFFF; --text-disabled:#767676; --text-reverse:#FFFFFF;
-    --success:#00847F; --page:#000000; --surface:#212121;
+    --success:#00847F; --page:#000000; --surface:#1D1D1D;
     --label-invert:#333333;            /* text/on-inverse (now canonical) */
   }
 
   *{box-sizing:border-box;}
   body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page);
     color:var(--text-default); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
-  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
-  .demo-controls button{font:inherit; font-size:13px; padding:8px 14px; border:1px solid var(--text-disabled);
+  .controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
+  .controls button{font:inherit; font-size:13px; padding:8px 14px; border:1px solid var(--text-disabled);
     background:transparent; color:var(--text-default); cursor:pointer;}
-  .demo-controls label{display:flex; gap:.5rem; align-items:center;}
-  .demo-controls input[type=range]{accent-color:var(--text-default);}
   h2{font-size:13px; letter-spacing:.04em; text-transform:uppercase; opacity:.6; margin:1.75rem 0 .6rem;}
   .row{display:flex; gap:14px; flex-wrap:wrap; align-items:center;}
   .cap{font-size:10px; letter-spacing:.05em; text-transform:uppercase; opacity:.45; width:100%; margin-top:2px;}
@@ -111,12 +96,11 @@
   .spin{width:16px; height:16px; border:2px solid currentColor; border-right-color:transparent; border-radius:50%; animation:s .7s linear infinite;}
   @keyframes s{to{transform:rotate(360deg);}}
 
-  /* ── RESPONSIVE action bar (Dim 11 reflow) ─────────────────────────────────────────────────────
-     The confirm/cancel pair (button.meta commonPatterns). Container-query driven so it reflows to its
-     OWN width, not the viewport (house style: Cards/Table). max-width:100% → also reflows on a narrow
-     screen; the slider drives --demo-width so both states are visible without resizing. */
+  /* ── RESPONSIVE action bar (NEW — Dim 11) ───────────────────────────────────────────────────────
+     The confirm/cancel pair. Container-query driven so it reflows to its own width (house style). */
   .bar-wrap{ width:var(--demo-width, 560px); max-width:100%; container-type:inline-size;
-    border:1px solid var(--text-disabled); padding:16px; background:var(--surface); }
+    border:1px dashed var(--text-disabled); padding:16px; background:var(--surface); margin-bottom:.4rem; transition:width var(--ease);}
+  body.narrow .bar-wrap{ --demo-width:320px; }
   .actionbar{ display:flex; gap:12px; justify-content:flex-end; align-items:center; }
   @container (max-width: 420px){
     .actionbar{ flex-direction:column; align-items:stretch; }   /* stack */
@@ -133,10 +117,10 @@
 </style>
 </head>
 <body data-theme="light">
-  <div class="demo-controls">
+  <div class="controls">
     <button id="themeToggle" type="button">◐ Toggle theme</button>
-    <label>Action-bar width <input id="w" type="range" min="300" max="640" value="560"> <span id="wv">560</span>px</label>
-    <span>Button — canonical reference (4 emphasis levels)</span>
+    <button id="widthToggle" type="button">↔ Toggle container width</button>
+    <span>Button — responsive action-bar (fitness-test)</span>
   </div>
 
   <h2>Primary</h2>
@@ -173,14 +157,14 @@
     <span class="cap">default · pressed · disabled (hover me)</span>
   </div>
 
-  <h2>Action bar — responsive</h2>
-  <div class="bar-wrap" id="barWrap">
+  <h2>Action bar — responsive (NEW: Dim 11 reflow)</h2>
+  <div class="bar-wrap">
     <div class="actionbar">
       <button class="btn secondary" type="button">Cancel</button>
       <button class="btn primary" type="button">Confirm payment</button>
     </div>
   </div>
-  <span class="cap">wide → inline, primary right · narrow (≤420px container, incl. 320px) → stacked full-width, primary on top</span>
+  <span class="cap">wide → inline, primary right · narrow (≤420px container, incl. 320px) → stacked full-width, primary on top · toggle ↔ to see both</span>
 
   <script type="application/json" id="token-manifest">
   {
@@ -220,9 +204,9 @@
     document.getElementById('themeToggle').addEventListener('click', ()=>{
       const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark');
     });
-    // Action-bar width slider — drives the container query so the reflow is visible without resizing.
-    const w=document.getElementById('w'), wv=document.getElementById('wv'), barWrap=document.getElementById('barWrap');
-    w.addEventListener('input', ()=>{ barWrap.style.setProperty('--demo-width', w.value+'px'); wv.textContent=w.value; sizeScale(); });
+    document.getElementById('widthToggle').addEventListener('click', ()=>{
+      document.body.classList.toggle('narrow'); sizeScale();
+    });
     // Refined scale-physics: fixed-px grow/shrink derived from each button's width, so the absolute motion
     // is identical on a narrow vs a wide button. Reduced-motion disables the transforms in CSS regardless.
     const GROW=7, PRESS=9;
