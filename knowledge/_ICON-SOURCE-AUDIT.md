@@ -34,7 +34,7 @@
 | 26 | Status-indicator | 0 | 0 | 0 | 0 | — | — no inline svg paths |
 | 27 | Table | 0 | 0 | 0 | 0 | — | — no inline svg paths |
 | 28 | Tabs | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 29 | Tags | 2 | 2 | 0 | 0 | — | ✅ verified |
+| 29 | Tags | 1 | 1 | 0 | 0 | yes | ✅ verified |
 | 30 | Tooltip | 1 | 1 | 0 | 0 | — | ✅ verified |
 | 31 | Video-player | 4 | 4 | 0 | 0 | — | ✅ verified |
 | 32 | View-options | 2 | 2 | 0 | 0 | — | ✅ verified |

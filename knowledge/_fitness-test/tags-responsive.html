@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tags — reference implementation (gated)</title>
+<title>Tags — responsive + finessed interactions (fitness-test, NOT gated)</title>
 <!--
-  CANONICAL REFERENCE for Tags (gated). SQUARE chips — Tags are NOT an angular-rule exemption
-  (only Badge + Avatar are), so border-radius:0. Outlined (form/border/default) on a transparent
-  fill — avoids the deprecated non-interactive surface tokens the meta still binds (rebind noted).
-  Variants: static, dismissible (× is a real focusable button), and link.
-
-  EM-BASED (promoted 2026-06-24): height/padding/gap/× all track the label font-size, so the chip
-  scales with type. INTERACTIONS (promoted 2026-06-24 from _fitness-test/tags-chip-animation.html):
-  tag-link press physics (hover scale 1.05 / press .97, echoes Button); tactile dismiss × (hover 1.4
-  / press 1.15); V1 collapse+fade dismiss (neighbours reflow). Static keyword tags get NO motion.
-  STATES: default + hover/pressed (combined) + focus — Tags has no selected/checked/disabled by
-  design, so the meta declares "stateModel":"simple" (rubric Decision C). RESPONSIVE (Dim 11): the
-  applied-filters bar reflows via container-query → full-width rows + label ellipsis at <=360px (320px).
-  Close × = the real library close glyph (global-controls/close.svg) via a <symbol> sprite — not invented.
+  EXPLORATION (not canon). Rolls the BLESSED chip interactions (from _fitness-test/tags-chip-animation.html,
+  per _PROMOTION-QUEUE.md) into the responsive Tags work:
+   • em-based sizing — height/padding/gap/× all track the label font-size, so the chip scales with type.
+   • chip press physics (INTERACTIVE chips only) — tag-link hover scale(1.05) / active scale(.97); echoes Button.
+   • tactile cross — the dismiss × grows on hover scale(1.4) / press scale(1.15); the prominent affordance.
+   • V1 collapse + fade dismiss — the chip collapses its width + fades so neighbours reflow smoothly.
+   • :active mirrors :hover (the meta's COMBINED hover/pressed state).
+  KEPT from the canon/responsive pass: real library close glyph via <symbol> sprite (NOT the exploration's
+  hand-drawn stroke cross — icon-source rule); 24×24 dismiss hit target (2.5.8); the responsive applied-
+  filters bar (container-query → full-width rows + label ellipsis at <=360px, verified to 320px).
+  Static keyword tags get NO motion (they are not interactive). reduced-motion neutralises all of it.
+  NOTE: the `states` scorer signal still sees only :hover/:active/:focus-visible (Tags has no
+  selected/checked/disabled by design) → 0.5; lifting it is a rubric decision, separate from this finesse.
 -->
 <style>
   :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:220ms cubic-bezier(.4,0,.2,1); }
@@ -40,8 +40,8 @@
     transition:max-width var(--ease), opacity var(--ease), margin var(--ease), padding var(--ease), border-width var(--ease), background 140ms ease, transform 150ms cubic-bezier(.4,0,.2,1);}
   .tag .lbl{overflow:hidden; text-overflow:ellipsis; min-width:0;}
   .tag.link{cursor:pointer; text-decoration:none;}
-  .tag.link:hover{background:var(--hover); transform:scale(1.05);}                          /* attract — echoes the button */
-  .tag.link:active{background:var(--hover); transform:scale(.97); transition:transform 90ms ease-out;}  /* pressed == hover (combined state) */
+  .tag.link:hover{background:var(--hover); transform:scale(1.05);}                          /* attract */
+  .tag.link:active{background:var(--hover); transform:scale(.97); transition:transform 90ms ease-out;}  /* press == hover state, with press physics */
   .tag.link:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
   .tag .x{position:relative; display:inline-flex; font-size:inherit; width:1.54em; height:1.54em; padding:0; border:0; background:transparent; color:var(--icon); cursor:pointer; align-items:center; justify-content:center; flex:0 0 auto;
     transition:transform 130ms cubic-bezier(.4,0,.2,1), color 140ms ease;}
@@ -52,7 +52,7 @@
   .tag .x:active{transform:scale(1.15); transition:transform 90ms ease-out;}                 /* pressed from the grown size */
   .tag .x:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
 
-  /* V1 dismiss — collapse + fade so neighbours reflow smoothly */
+  /* V1 dismiss — collapse + fade so neighbours reflow smoothly (filter bar uses margin so the gap collapses too) */
   .tag.removing{max-width:0 !important; opacity:0; margin-right:0 !important; padding-left:0; padding-right:0; border-width:0; transform:scale(.95);}
 
   /* RESPONSIVE applied-filters bar */
@@ -64,7 +64,6 @@
     .filterbar .tag{ width:100%; height:auto; min-height:2.4em; justify-content:space-between; margin:0 0 8px 0; }   /* full-width applied filters */
   }
 
-  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
   @media (prefers-reduced-motion: reduce){
     *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
     .tag:hover,.tag:active,.tag .x:hover,.tag .x:active{ transform:none !important; }
@@ -77,13 +76,13 @@
   <div class="demo-controls">
     <button id="themeToggle" type="button">◐ Toggle theme</button>
     <label>Filter-bar width <input id="w" type="range" min="300" max="600" value="560"> <span id="wv">560</span>px</label>
-    <span>Tags — canonical reference (square)</span>
+    <span>Tags — responsive + finessed interactions (fitness-test)</span>
   </div>
 
-  <h2>Static</h2>
+  <h2>Static (no motion — not interactive)</h2>
   <div class="row"><span class="tag"><span class="lbl">Savings</span></span><span class="tag"><span class="lbl">Direct debit</span></span><span class="tag"><span class="lbl">Joint account</span></span></div>
 
-  <h2>Link (hover / pressed)</h2>
+  <h2>Link — hover attract / press (1.05 / 0.97)</h2>
   <div class="row"><a class="tag link" href="#"><span class="lbl">#travel</span></a><a class="tag link" href="#"><span class="lbl">#mortgage</span></a></div>
 
   <h2>Scales with label size (em-based)</h2>
@@ -93,7 +92,7 @@
     <a class="tag link" style="font-size:20px" href="#"><span class="lbl">Large</span></a>
   </div>
 
-  <h2>Dismissible — applied filters (responsive)</h2>
+  <h2>Applied filters — tactile × (1.4 / 1.15), collapse-fade dismiss, responsive bar</h2>
   <div class="filterbar" id="filterbar">
     <div class="row">
       <span class="tag"><span class="lbl">GBP</span><button class="x" aria-label="Remove filter: GBP"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg></button></span>
@@ -101,6 +100,7 @@
       <span class="tag"><span class="lbl" title="Standing orders to overseas payees">Standing orders to overseas payees</span><button class="x" aria-label="Remove filter: Standing orders to overseas payees"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg></button></span>
     </div>
   </div>
+  <span style="font-size:11px; opacity:.5; display:block; margin-top:6px;">hover/press a link · hover the × (it grows) · dismiss a filter (collapse-fade) · drag the slider → at ≤360px filters go full-width, long label ellipsis</span>
 
   <script type="application/json" id="token-manifest">
   {

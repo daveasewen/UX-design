@@ -2,6 +2,8 @@
   "name": "Tags",
   "category": "atom",
   "purpose": "Surface keyword descriptors that tell the user about an item's content composition and its relationship to a broader content structure. Static Tag (label) or interactive Tag link, with or without a background fill.",
+  "stateModel": "simple",
+  "$stateModel-note": "Tags genuinely have only default + hover/pressed (combined) + focus — no selected/checked/disabled/expanded/current by design. Declared simple so the prototype-grade scorer credits the states signal for the full applicable set (:hover + :active + :focus-visible) rather than demanding >=4 enumerated selectors it can't have (rubric Decision C, 2026-06-24).",
   "props": [
     {
       "name": "type",
@@ -68,6 +70,20 @@
     "tag-link-chip (DEPRECATED)": "on-light interactive (depricate)/on-light/surface/primary/default #fff + /hover #f3f3f3 + border/high-contrast/default+hover #767676; on-dark interactive (depricate)/on-dark/surface/primary/default #333 + /hover #767676 + border/high-contrast #d7d8d6",
     "link-hover-text (DEPRECATED)": "text/on-light (depricate)/hover #333 / text/on-dark (depricate)/hover #fff → text/default | text/reverse",
     "$finding": "(2026-06-19) Tags are SQUARE — NOT an angular-rule exemption (only Badge + Avatar are). Reference uses an outlined chip (form/border/default + transparent fill), rebinding off the deprecated non-interactive surface fills. Dismiss × is a real focusable button with aria-label."
+  },
+  "motion": {
+    "$status": "PROMOTED 2026-06-24 (Dave) from _fitness-test/tags-chip-animation.html (V1 of the dismiss exploration). Applied to INTERACTIVE chips only — static keyword tags stay still.",
+    "tag-link": "Press physics echoing Button: hover scale(1.05) attract, press scale(.97); transform ~150ms / press ~90ms.",
+    "dismiss-x": "Tactile cross — hover scale(1.4) (grows past rest), press scale(1.15); ~130ms / press ~90ms.",
+    "dismiss-exit": "V1 collapse + fade — the chip pins its width then collapses max-width/padding/border to 0 and fades, so neighbours reflow smoothly (~220ms).",
+    "reducedMotion": "All transforms neutralised under prefers-reduced-motion; the dismiss still collapses (layout, not decoration).",
+    "$note": "Concrete values not yet tokenised into motion/* (the scales are chip-specific); tokenisation tracked in _PROMOTION-QUEUE.md. Chip is em-based so the motion scales with type."
+  },
+  "responsive": {
+    "$status": "PROMOTED 2026-06-24 (Dave) — closes Dim 11 to reach prototype-grade 9/9.",
+    "rule": "Single tags are intrinsically fluid (rows wrap). The responsive unit is the applied-filters BAR: chips wrap on a wide container; long labels truncate (ellipsis + title= holds the full text) so they never overflow.",
+    "breakpoint": "container <= 360px (container-query on the bar): applied-filter chips go FULL-WIDTH rows with the label ellipsised and the × pinned right. Verified to 320px / WCAG 1.4.10, 0 horizontal overflow.",
+    "$note": "Built/verified in _fitness-test/tags-responsive.html."
   },
   "relationships": {
     "livesInside": [

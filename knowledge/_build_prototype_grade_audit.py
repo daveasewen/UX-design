@@ -24,7 +24,7 @@ ROUND_EXEMPT = {"Badge", "Avatar"}  # the ONLY two components allowed round corn
 DIMS = ["token-faithful", "dual-theme", "states", "focus-visible",
         "reduced-motion", "AT(aria+kbd)", "behaviour", "square-corners", "responsive"]
 
-def score(name, s, interactive=True):
+def score(name, s, interactive=True, state_model=None):
     d = {}
     d["token-faithful"] = 1 if "token-manifest" in s else 0
     d["dual-theme"]     = 1 if 'data-theme="dark"' in s else 0
@@ -32,7 +32,17 @@ def score(name, s, interactive=True):
                                r"\[disabled\]|:disabled",
                                r"aria-(selected|checked|expanded|current)"]
                  if re.search(pat, s))
-    d["states"]         = 1 if states >= 4 else (0.5 if states >= 2 else 0)
+    # DECISION C (2026-06-24, Dave): a component may declare a SIMPLE state model in its meta
+    # ("stateModel":"simple") when its design genuinely has only default + hover/pressed + focus
+    # (no selected/checked/disabled/expanded/current — e.g. Tags). The states signal then credits it
+    # fully IFF it actually implements that whole applicable set (:hover + :active + :focus-visible),
+    # rather than demanding >=4 of the enumerated selectors it can never have. Guard: a "simple"
+    # component missing any of those falls back to the count, so the bar stays real. Mirrors
+    # decision A (passive atoms vs the AT signal): measure the states the component actually needs.
+    if state_model == "simple":
+        d["states"] = 1 if all(re.search(p, s) for p in [r":hover", r":active", r":focus-visible"]) else (0.5 if states >= 2 else 0)
+    else:
+        d["states"] = 1 if states >= 4 else (0.5 if states >= 2 else 0)
     d["focus-visible"]  = 1 if ":focus-visible" in s else 0
     d["reduced-motion"] = 1 if "prefers-reduced-motion" in s else (
         0.5 if re.search(r"transition:|@keyframes|animation:", s) else 0)
@@ -63,11 +73,13 @@ rows = []
 for f in sorted(glob.glob(os.path.join(SNIP, "*.reference.html"))):
     name = os.path.basename(f).replace(".reference.html", "")
     mp = os.path.join(COMP, name.lower() + ".meta.json")
-    interactive = True
+    interactive = True; state_model = None
     if os.path.exists(mp):
-        try: interactive = json.load(open(mp, encoding="utf-8")).get("interactive", True)
+        try:
+            _m = json.load(open(mp, encoding="utf-8"))
+            interactive = _m.get("interactive", True); state_model = _m.get("stateModel")
         except Exception: pass
-    d, total = score(name, open(f, encoding="utf-8").read(), interactive)
+    d, total = score(name, open(f, encoding="utf-8").read(), interactive, state_model)
     rows.append((name, total, d))
 
 MAX = len(DIMS)
