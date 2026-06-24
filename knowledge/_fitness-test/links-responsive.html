@@ -3,25 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Links — reference implementation (gated)</title>
+<title>Links — states + responsive (fitness-test, NOT gated)</title>
 <!--
-  CANONICAL REFERENCE for text Links (gated). Links are distinguished by an UNDERLINE,
-  not colour alone (1.4.1). Keyboard focus = a thickened underline via :focus-visible in
-  the link's own colour (text/default) — the link variant of the focus standard, no blue.
-  The directional arrow uses the brand red via the SEMANTIC primary/background/default
-  (#DB0011 both modes); the meta currently binds the color/primary primitive — rebind noted.
-
-  FAMILY: arrow, back, ICON, inline — all four types present. Icon link is the only type with a
-  modelled disabled state; its glyph is the real library download glyph (assets/icons/global-controls/
-  download.svg) via a <symbol> sprite + <use> (never invented — icon-source rule), declared in the
-  manifest "icons" block.
-
-  STATES (promoted 2026-06-24): hover and pressed are ONE combined state (per the meta) — :active
-  carries the same treatment as :hover, not a separate look. aria-current="page" marks the current-page
-  link in a list, distinguished by WEIGHT + a persistent thick underline (never colour alone, 1.4.1).
-
-  RESPONSIVE (promoted 2026-06-24 — Dim 11): a related-links list reflows via container-query — row+wrap
-  on a wide container; at <=420px it stacks with larger tap targets (2.5.8), verified to 320px (1.4.10).
+  EXPLORATION (not canon). Takes Links 7.5 -> 9/9 by closing the two missing signals, genuinely:
+   • STATES — the canon shows only :hover + :focus-visible (scorer counted 2 -> 0.5). Adds:
+       - :active  → faithful to the documented model "hover and pressed are ONE combined state"
+                    (same treatment as hover, not an invented new look).
+       - aria-current="page" → the current-page link state, common in link lists / footer nav,
+                    styled NON-colour-only (medium weight + persistent thick underline).
+   • RESPONSIVE — adds a related-links LIST (footer/utility pattern) that reflows via container-query:
+       row+wrap on a wide container; stacks with larger tap targets at <=420px (down to 320px / 1.4.10).
+  ALSO completes the family: adds the ICON LINK (the 4th type, currently missing from canon) — the only
+  type the meta models a disabled state on. Its glyph is the REAL library download glyph
+  (assets/icons/global-controls/download.svg) via a <symbol> sprite + <use> (icon-source rule), declared
+  in the manifest "icons" block — never invented.
 -->
 <style>
   :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --fs:16px; --ease:140ms ease; }
@@ -42,14 +37,13 @@
     border-radius:0; transition:text-decoration-thickness var(--ease);}
   a.lnk:hover{text-decoration-thickness:2px;}
   a.lnk:active{text-decoration-thickness:2px;}                                   /* pressed == hover (combined state) */
-  /* keyboard focus = thick underline, own colour, no blue ring */
   a.lnk:focus-visible{outline:none; text-decoration:none; box-shadow:inset 0 -3px 0 var(--text);}
   a.lnk[aria-disabled="true"]{color:var(--text-disabled); text-decoration-color:var(--text-disabled); pointer-events:none;}
 
   /* ARROW / BACK CTA links */
   a.arrow{display:inline-flex; align-items:center; gap:4px; text-decoration:none; color:var(--text); font-weight:500;}
   a.arrow .tip{display:inline-flex; color:var(--arrow); transition:transform var(--ease);}   /* CTA arrow = brand red */
-  a.arrow .tip svg{width:.85em; height:.85em; display:block; fill:currentColor;}             /* em-based → scales with the type size */
+  a.arrow .tip svg{width:.85em; height:.85em; display:block; fill:currentColor;}             /* em-based → scales with type */
   a.arrow:hover .tip,a.arrow:active .tip{transform:translateX(3px);}
   a.arrow:hover .lbl,a.arrow:active .lbl{text-decoration:underline; text-underline-offset:3px;}
   a.arrow:focus-visible{outline:none;}
@@ -69,7 +63,7 @@
 
   /* RESPONSIVE related-links list (footer / utility pattern) */
   .related{ width:var(--demo-width, 560px); max-width:100%; container-type:inline-size;
-    border:1px solid var(--text-disabled); padding:14px 16px; }
+    border:1px solid var(--text-disabled); padding:14px 16px; transition:width var(--ease); }
   .related ul{ list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px 28px; }
   .related a{ color:var(--text); }
   /* current page (1.4.1 — not colour alone: medium weight + persistent thick underline) */
@@ -79,7 +73,6 @@
     .related a{ display:block; padding:9px 0; }     /* larger tap target when stacked (2.5.8) */
   }
 
-  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
   @media (prefers-reduced-motion: reduce){
     *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
   }
@@ -91,7 +84,7 @@
   <div class="demo-controls">
     <button id="themeToggle" type="button">◐ Toggle theme</button>
     <label>Related-list width <input id="w" type="range" min="300" max="600" value="560"> <span id="wv">560</span>px</label>
-    <span>Links — canonical reference</span>
+    <span>Links — states + responsive (fitness-test)</span>
   </div>
 
   <h2>Inline text link</h2>
@@ -103,13 +96,13 @@
   <h2>Back link</h2>
   <p><a class="arrow back" href="#"><span class="tip" aria-hidden="true"><svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13 1L13 17L5 9L13 1Z" fill="currentColor"/></svg></span><span class="lbl">Back to overview</span></a></p>
 
-  <h2>Icon link</h2>
+  <h2>Icon link (NEW — 4th family type; homes the disabled state)</h2>
   <p style="display:flex; flex-direction:column; gap:12px; align-items:flex-start;">
     <a class="icon-lnk" href="#"><span class="ic" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#ic-download"/></svg></span><span class="lbl">Download statement (PDF)</span></a>
     <a class="icon-lnk" aria-disabled="true" href="#"><span class="ic" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#ic-download"/></svg></span><span class="lbl">Download statement (PDF)</span></a>
   </p>
 
-  <h2>Related links (current-page state, responsive)</h2>
+  <h2>Related links — responsive list (current-page state)</h2>
   <div class="related" id="related">
     <ul>
       <li><a class="lnk" aria-current="page" href="#">Payments</a></li>
@@ -119,12 +112,12 @@
       <li><a class="lnk" href="#">Statements</a></li>
     </ul>
   </div>
+  <span style="font-size:11px; opacity:.5; display:block; margin-top:6px;">wide → row+wrap · narrow (≤420px container, incl. 320px) → stacked with larger tap targets · "Payments" = current page (weight + thick underline, not colour)</span>
 
   <h2>Arrow scales with type size</h2>
   <p style="display:flex; flex-direction:column; gap:14px; align-items:flex-start;">
     <a class="arrow back" style="font-size:14px" href="#"><span class="tip" aria-hidden="true"><svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13 1L13 17L5 9L13 1Z" fill="currentColor"/></svg></span><span class="lbl">Back (14px)</span></a>
     <a class="arrow back" style="font-size:20px" href="#"><span class="tip" aria-hidden="true"><svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13 1L13 17L5 9L13 1Z" fill="currentColor"/></svg></span><span class="lbl">Back (20px)</span></a>
-    <a class="arrow back" style="font-size:28px" href="#"><span class="tip" aria-hidden="true"><svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13 1L13 17L5 9L13 1Z" fill="currentColor"/></svg></span><span class="lbl">Back (28px)</span></a>
   </p>
 
   <script type="application/json" id="token-manifest">

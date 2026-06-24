@@ -18,7 +18,7 @@
 | 10 | Headers | 1 | 1 | 0 | 0 | — | ✅ verified |
 | 11 | Hero | 1 | 1 | 0 | 0 | — | ✅ verified |
 | 12 | Input-fields | 6 | 6 | 0 | 0 | yes | ✅ verified |
-| 13 | Links | 5 | 5 | 0 | 0 | — | ✅ verified |
+| 13 | Links | 6 | 6 | 0 | 0 | yes | ✅ verified |
 | 14 | List-items | 0 | 0 | 0 | 0 | — | — no inline svg paths |
 | 15 | Loading-indicator | 0 | 0 | 0 | 0 | — | — no inline svg paths |
 | 16 | Modals | 1 | 1 | 0 | 0 | — | ✅ verified |
