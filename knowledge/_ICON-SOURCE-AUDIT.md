@@ -2,7 +2,7 @@
 
 *ADVISORY (non-gating). Each inline `<svg>` path is matched to the library. **library** = byte-matches a real glyph · **bespoke** = inside `<svg data-bespoke="reason">`, a deliberately custom shape (control glyph / animated / focus mark), verified · **UNKNOWN** = neither (possibly invented → use the library SVG, or mark it `data-bespoke`). Limitation: only `<path d>` is checked; pure `<circle>`/`<rect>` icons (e.g. a 3-dot kebab) are not yet caught.*
 
-**0 UNKNOWN path(s)** across 32 snippet(s) (15 verified-bespoke). Library glyphs indexed: 746.
+**0 UNKNOWN path(s)** across 32 snippet(s) (12 verified-bespoke). Library glyphs indexed: 746.
 
 | # | Snippet | paths | library | bespoke | UNKNOWN | declares | status |
 |---|---------|------:|--------:|--------:|--------:|:--------:|--------|
@@ -23,7 +23,7 @@
 | 15 | Loading-indicator | 0 | 0 | 0 | 0 | — | — no inline svg paths |
 | 16 | Modals | 1 | 1 | 0 | 0 | — | ✅ verified |
 | 17 | Navigations | 2 | 2 | 0 | 0 | — | ✅ verified |
-| 18 | Notifications | 3 | 0 | 3 | 0 | — | ✅ verified · 3 bespoke |
+| 18 | Notifications | 9 | 9 | 0 | 0 | yes | ✅ verified |
 | 19 | Pagination | 2 | 2 | 0 | 0 | — | ✅ verified |
 | 20 | Progress-tracker | 0 | 0 | 0 | 0 | — | — no inline svg paths |
 | 21 | Quick-actions | 4 | 4 | 0 | 0 | — | ✅ verified |

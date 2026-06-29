@@ -63,6 +63,11 @@ def validate(path):
         errors.append(f"{name}: missing [data-theme=\"light\"] or [data-theme=\"dark\"] block")
 
     # 1. token fidelity (both modes)
+    # driftAllow = { "--var": ["dark"], ..., "$reason": "..." } — an INTENTIONAL, documented deviation
+    # (e.g. a broken/dangling token value worked around in the snippet pending a token-level fix). Such a
+    # drift is recorded as a WARNING, not a build failure. Mirrors the contrast/dark-surface allow-lists.
+    drift_allow = manifest.get("driftAllow", {})
+    drift_reason = drift_allow.get("$reason", "intentional (see snippet comment)")
     for var, token in manifest.get("vars", {}).items():
         for mode, block in (("light", light), ("dark", dark)):
             declared = var_value(block, var)
@@ -72,7 +77,10 @@ def validate(path):
             elif declared is None:
                 errors.append(f"{name}: var {var} missing in {mode} block")
             elif declared != canon:
-                errors.append(f"{name}: DRIFT {var} ({mode}) = {declared} but {token} = {canon}")
+                if mode in drift_allow.get(var, []):
+                    warnings.append(f"{name}: ALLOWED drift {var} ({mode}) = {declared} (token {token} = {canon}) — {drift_reason}")
+                else:
+                    errors.append(f"{name}: DRIFT {var} ({mode}) = {declared} but {token} = {canon}")
 
     # 2. ARIA
     for need in manifest.get("requiredAria", []):

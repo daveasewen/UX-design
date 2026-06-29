@@ -3,6 +3,8 @@
   "category": "molecule",
   "purpose": "Communicate system status and feedback to the user. RAG-coded family in four placements: Contextual (attached to a field/section, incl. a form multi-link variant), Global (page-level banner), Inline (compact inline message), and Snackbar (transient toast). Each carries the standard variants error / warning / success / information (Snackbar omits error).",
   "$family": "Covers the 'Notifications' canvas: Contextual, Global, Inline, Snackbar.",
+  "stateModel": "simple",
+  "$stateModel-note": "The banner is a status message; its interactive affordances (action links, dismiss ×) have only default/hover/pressed/focus — no selected/checked/disabled. Declared simple so the scorer credits states for that applicable set (rubric Decision C, 2026-06-24).",
   "props": [
     {
       "name": "type",
@@ -66,6 +68,19 @@
     "spacing": "gap/responsive/content/small 8, padding/responsive medium 16 / xsmall 11 / xxsmall 9 / fixed small 12",
     "$finding": "(2026-06-20) rag/warning accent (#FFBB33) is ~1.6:1 on its warning-tint — the icon SHAPE + text carry meaning (1.4.1); accent not gated as a contrast pair. Tints reconciled, text legible on all four both modes."
   },
+  "responsive": {
+    "$status": "PROMOTED 2026-06-24 (Dave) — closes Dim 11 to reach 9/9.",
+    "rule": "All placements are fluid (max-width:100%). Global's Action 1 / Action 2 row stacks below the message on a narrow container; contextual/inline/snackbar wrap their text. Verified to 320px / WCAG 1.4.10, 0 horizontal overflow, both themes.",
+    "breakpoint": "container <= 480px (container-query): Global .actions go column.",
+    "$note": "Built/verified in _fitness-test/notifications-responsive.html."
+  },
+  "motion": {
+    "$status": "PROMOTED 2026-06-24 (Dave).",
+    "dismiss": "Dismiss × is tactile (hover scale 1.2 / press 1.08); dismissing collapses the banner height + fades (~0.3s) so the stack reflows. Reduced-motion neutralises the transforms; the collapse remains (layout).",
+    "icons": "Static status glyphs; no motion."
+  },
+  "$rebuild-2026-06-24": "Rebuilt to the full Figma family (node 45002-355009): Contextual (compact + form multi-link), Global (solid fill, reverse text/icon, Action 1/2; warning uses dark text #333), Inline (bare icon + message), Snackbar (tinted + elevation shadow, no error). ICONS rebased onto real library status glyphs (status-icons/error|warning|success|information.svg = triangle for error, circle+marks for the rest) via a <symbol> sprite with style=fill:var(--mark) inner marks (custom props inherit through <use>) — fixes the prior hand-drawn approximations + the err/warn both-triangle bug + the undeclared circle/rect info blind-spot.",
+  "$dark-interim-2026-06-24": "INTERIM dark treatment (Dave): rag ACCENTS use LIGHT values for stroke/surface in dark + icons go white — because dark rag/information aliases a MISSING color/blue/400 (illustration-palette leak #4587A7, white-on-it = 4.0:1 fail). Tints stay dark (correct). Revisit at token level — see the dark-rag-token-gaps note (also affects dark focus/ring board-wide).",
   "relationships": {
     "livesInside": [
       "Form",

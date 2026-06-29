@@ -52,6 +52,8 @@
 - token fidelity (light+dark), ARIA, contrast pairs, focus — all clean.
 
 ## Notifications.reference.html — ✅ PASS
+- 🟡 Notifications.reference.html: ALLOWED drift --err (dark) = #A8000B (token rag/error = #DB0011) — INTERIM (Dave 2026-06-24): rag accents use LIGHT values for stroke/surface in dark — dark rag/information aliases a MISSING color/blue/400 (illustration leak #4587A7, white-on-it 4.0:1 fails). Revisit at token level; see dark-rag-token-gaps.
+- 🟡 Notifications.reference.html: ALLOWED drift --info (dark) = #305A85 (token rag/information = #4587A7) — INTERIM (Dave 2026-06-24): rag accents use LIGHT values for stroke/surface in dark — dark rag/information aliases a MISSING color/blue/400 (illustration leak #4587A7, white-on-it 4.0:1 fails). Revisit at token level; see dark-rag-token-gaps.
 - token fidelity (light+dark), ARIA, contrast pairs, focus — all clean.
 
 ## Pagination.reference.html — ✅ PASS
