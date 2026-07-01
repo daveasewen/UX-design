@@ -4,10 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Breadcrumbs — reference implementation (gated)</title>
-<!-- CANONICAL REFERENCE for Breadcrumbs (gated). Ancestor links + a current page, separated by a "/"
-     TEXT character (confirmed by Dave — not an icon), in text/default. Keyboard focus = thickened
-     underline (link pattern, own colour). aria-current on the last crumb; nav landmark. -->
+<!-- CANONICAL REFERENCE for Breadcrumbs (gated). Ancestor links + a current page. TWO separator styles
+     (both kept): a "/" TEXT character (Dave-confirmed) and a CHEVRON from the icon library
+     (arrows-and-chevrons/chevron-right.svg) via a <symbol> sprite + <use> — never invented (icon-source rule).
+     Keyboard focus = thickened underline (link pattern, own colour). aria-current on the last crumb; nav landmark. -->
 <style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
   :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
   [data-theme="light"]{ --text:#333333; --page:#FFFFFF; }
   [data-theme="dark"]{ --text:#FFFFFF; --page:#000000; }
@@ -16,9 +21,12 @@
   .demo-controls{margin-bottom:1.75rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
   .demo-controls button{font:inherit; font-size:13px; padding:8px 14px; border:1px solid var(--text); background:transparent; color:var(--text); cursor:pointer;}
   .demo-controls button:focus-visible{outline:2px solid var(--text); outline-offset:2px;}
+  .stack{display:flex; flex-direction:column; gap:28px;}
+  .cap{font:400 12px/1.3 var(--font); color:var(--text); opacity:.55; margin:0 0 8px; letter-spacing:.04em; text-transform:uppercase;}
   nav ol{list-style:none; display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:0; padding:0; font:400 14px/1.5 var(--font);}
   nav li{display:inline-flex; align-items:center; gap:8px;}
-  .sep{color:var(--text); opacity:.55;}
+  .sep{color:var(--text); opacity:.55; display:inline-flex; align-items:center;}
+  .sep .chev{width:11px; height:11px; display:block; fill:currentColor;}   /* library chevron, sized down to a separator */
   a.crumb{color:var(--text); text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px;}
   a.crumb:hover{text-decoration-thickness:2px;}
   a.crumb:focus-visible{outline:none; text-decoration:none; box-shadow:inset 0 -2px 0 var(--text);}
@@ -31,22 +39,41 @@
 </style>
 </head>
 <body data-theme="light">
-  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Breadcrumbs — canonical reference</span></div>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="ic-chevron" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.15234 17L12.1503 9L4.15234 1H5.84834L13.8483 9L5.84834 17H4.15234Z" fill="currentColor"/></symbol></svg>
 
-  <nav aria-label="Breadcrumb">
-    <ol>
-      <li><a class="crumb" href="#">Home</a></li>
-      <li><span class="sep" aria-hidden="true">/</span><a class="crumb" href="#">Accounts</a></li>
-      <li><span class="sep" aria-hidden="true">/</span><a class="crumb" href="#">Current account</a></li>
-      <li><span class="sep" aria-hidden="true">/</span><span aria-current="page">Statements</span></li>
-    </ol>
-  </nav>
+  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Breadcrumbs — canonical reference · two separator styles</span></div>
+
+  <div class="stack">
+    <div>
+      <p class="cap">Slash separator</p>
+      <nav aria-label="Breadcrumb">
+        <ol>
+          <li><a class="crumb" href="#">Home</a></li>
+          <li><span class="sep" aria-hidden="true">/</span><a class="crumb" href="#">Accounts</a></li>
+          <li><span class="sep" aria-hidden="true">/</span><a class="crumb" href="#">Current account</a></li>
+          <li><span class="sep" aria-hidden="true">/</span><span aria-current="page">Statements</span></li>
+        </ol>
+      </nav>
+    </div>
+    <div>
+      <p class="cap">Chevron separator (library icon)</p>
+      <nav aria-label="Breadcrumb">
+        <ol>
+          <li><a class="crumb" href="#">Home</a></li>
+          <li><span class="sep" aria-hidden="true"><svg class="chev" viewBox="0 0 18 18"><use href="#ic-chevron"/></svg></span><a class="crumb" href="#">Accounts</a></li>
+          <li><span class="sep" aria-hidden="true"><svg class="chev" viewBox="0 0 18 18"><use href="#ic-chevron"/></svg></span><a class="crumb" href="#">Current account</a></li>
+          <li><span class="sep" aria-hidden="true"><svg class="chev" viewBox="0 0 18 18"><use href="#ic-chevron"/></svg></span><span aria-current="page">Statements</span></li>
+        </ol>
+      </nav>
+    </div>
+  </div>
 
   <script type="application/json" id="token-manifest">
   {
     "component": "Breadcrumbs",
     "vars": { "--text": "text/default", "--page": "background/default" },
     "contrastPairs": [ { "fg": "text/default", "bg": "background/default", "context": "text" } ],
+    "icons": { "chevron-right": "arrows-and-chevrons/chevron-right.svg" },
     "requiredAria": ["<nav", "aria-label", "aria-current", "<a "]
   }
   </script>

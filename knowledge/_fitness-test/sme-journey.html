@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SME Payments journey — canon (fitness-test, NOT gated)</title>
+<!-- Built from _PROMPT-sme-journey.md. Canon HSBC styling (brand red = primary action). Figures fixed.
+     3 screens: Overview (with the triggered concentration card) -> Review & approve -> Confirmation. -->
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
+  [data-theme="light"]{ --page:#FFFFFF; --surface:#FFFFFF; --surface-2:#F7F7F6; --border:#D7D8D6; --rule:#E6E6E4;
+    --text:#1D1D1D; --muted:#6A6A66; --pri:#DB0011; --pri-text:#FFFFFF; --pri-hover:#BA1110; --pos:#00847F; --focus:#305A85;
+    --info:#305A85; --info-t:#EBEFF4; }
+  [data-theme="dark"]{ --page:#000000; --surface:#1D1D1D; --surface-2:#161616; --border:#404040; --rule:#2A2A2A;
+    --text:#FFFFFF; --muted:#9B9B9B; --pri:#DB0011; --pri-text:#FFFFFF; --pri-hover:#BA1110; --pos:#3FB6A8; --focus:#4587A7;
+    --info:#4587A7; --info-t:#0A1422; }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:var(--font); background:var(--surface-2); color:var(--text); -webkit-font-smoothing:antialiased;
+    transition:background var(--ease),color var(--ease); padding:24px; display:flex; justify-content:center; align-items:flex-start;}
+  .demo-controls{position:fixed; top:12px; left:12px; z-index:30; display:flex; gap:.5rem; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:6px 12px; border:1px solid var(--border); background:var(--surface); color:var(--text); cursor:pointer;}
+
+  .phone{ width:400px; max-width:100%; height:880px; background:var(--page); border:1px solid var(--border); overflow:hidden; display:flex; flex-direction:column; }
+  .screen{ display:none; flex-direction:column; flex:1; overflow:hidden; } .screen.active{ display:flex; }
+  .appbar{ display:flex; align-items:center; gap:10px; height:60px; padding:0 16px; border-bottom:1px solid var(--rule); flex:none; }
+  .appbar .tick{ width:10px; height:18px; background:var(--pri); } .appbar h1{ margin:0; font:500 18px/1.2 var(--font); flex:1; }
+  .appbar .co{ font:400 12px/1.2 var(--font); color:var(--muted); }
+  .appbar button.back{ width:36px;height:36px;border:0;background:transparent;color:var(--text);cursor:pointer;display:inline-flex;align-items:center;justify-content:center; }
+  .appbar button.back svg{ width:18px;height:18px;fill:currentColor; }
+  .scroll{ flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:20px; }
+
+  .sec-h{ display:flex; align-items:baseline; justify-content:space-between; margin-bottom:10px; }
+  .sec-h h2{ margin:0; font:500 16px/1.2 var(--font); } .sec-h .meta{ font:400 13px/1.2 var(--font); color:var(--muted); }
+  .card{ background:var(--surface); border:1px solid var(--border); padding:18px; }
+
+  /* triggered contextual card */
+  .trigger{ background:var(--info-t); border:1px solid var(--border); border-left:3px solid var(--info); padding:14px 16px; display:flex; gap:10px; }
+  .trigger .ic{ flex:none; width:18px; height:18px; color:var(--info); margin-top:1px; } .trigger .ic svg{ width:18px; height:18px; fill:currentColor; }
+  .trigger .bd{ font:400 14px/1.5 var(--font); } .trigger .bd strong{ font-weight:500; display:block; margin-bottom:2px; }
+  .trigger a{ color:var(--text); font-weight:500; text-decoration:underline; text-underline-offset:3px; cursor:pointer; display:inline-block; margin-top:6px; }
+
+  .cp-top{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; }
+  .cp-label{ font:400 13px/1.3 var(--font); color:var(--muted); } .cp-balance{ font:500 30px/1.05 var(--font); margin:2px 0 0; letter-spacing:-.01em; }
+  .cp-net{ font:500 14px/1.2 var(--font); color:var(--pos); white-space:nowrap; }
+  .cp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--rule); margin-top:16px; border:1px solid var(--rule); }
+  .cp-cell{ background:var(--surface); padding:12px 14px; } .cp-cell .k{ font:400 12px/1.3 var(--font); color:var(--muted); } .cp-cell .v{ font:500 16px/1.3 var(--font); margin-top:3px; } .v.pos{ color:var(--pos); }
+  .coverage{ font:400 13px/1.45 var(--font); color:var(--muted); margin-top:14px; padding-top:14px; border-top:1px solid var(--rule); } .coverage strong{ color:var(--text); font-weight:500; }
+
+  .appr{ background:var(--surface); border:1px solid var(--border); padding:16px; display:flex; flex-direction:column; gap:12px; } .appr + .appr{ margin-top:12px; }
+  .appr .row1{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; } .appr .payee{ font:500 16px/1.3 var(--font); } .appr .by{ font:400 13px/1.3 var(--font); color:var(--muted); margin-top:2px; } .appr .amt{ font:500 18px/1.2 var(--font); white-space:nowrap; }
+  .actions{ display:flex; gap:10px; }
+  .btn{ height:44px; padding:0 18px; border:1px solid transparent; border-radius:0; cursor:pointer; font:500 15px/1 var(--font); display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:background var(--ease),transform var(--ease); }
+  .btn:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; } .btn:active{ transform:scale(.98); }
+  .btn.primary{ background:var(--pri); color:var(--pri-text); border-color:var(--pri); flex:1; } .btn.primary:hover{ background:var(--pri-hover); border-color:var(--pri-hover); }
+  .btn.ghost{ background:transparent; color:var(--text); border-color:var(--border); } .btn.ghost:hover{ background:var(--surface-2); }
+  .btn.full{ width:100%; }
+
+  .up{ background:var(--surface); border:1px solid var(--border); }
+  .up .r{ display:flex; align-items:center; gap:12px; padding:13px 16px; border-top:1px solid var(--rule); } .up .r:first-child{ border-top:0; }
+  .up .date{ font:500 13px/1.2 var(--font); width:54px; flex:none; } .up .nm{ flex:1; min-width:0; font:400 15px/1.3 var(--font); } .up .amt{ font:500 15px/1.3 var(--font); white-space:nowrap; }
+  .up .total{ display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-top:1px solid var(--border); background:var(--surface-2); } .up .total .k{ font:400 14px/1.2 var(--font); color:var(--muted); } .up .total .v{ font:500 17px/1.2 var(--font); }
+
+  .kv{ border:1px solid var(--border); } .kv .kvr{ display:flex; justify-content:space-between; gap:12px; padding:13px 14px; border-top:1px solid var(--rule); font:400 15px/1.3 var(--font); } .kv .kvr:first-child{ border-top:0; } .kv .kvr .k{ color:var(--muted); } .kv .kvr .v{ font-weight:500; text-align:right; }
+  .impact{ background:var(--surface-2); padding:13px 16px; font:400 14px/1.4 var(--font); color:var(--muted); } .impact strong{ color:var(--text); font-weight:500; }
+  .actionbar{ margin-top:auto; padding:12px 16px; border-top:1px solid var(--rule); background:var(--surface); display:flex; flex-direction:column; gap:8px; flex:none; }
+
+  .done{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; padding:32px; text-align:center; }
+  .done .ic{ width:60px; height:60px; color:var(--pos); } .done .ic svg{ width:60px; height:60px; fill:currentColor; } .done .ic .cut{ fill:var(--page); }
+  @media (prefers-reduced-motion: reduce){ *{ transition-duration:.01ms !important; } .btn:active{ transform:none !important; } }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls"><button id="themeToggle" type="button">◐ Theme</button></div>
+  <div class="phone" id="phone">
+
+    <!-- SCREEN 1 — OVERVIEW -->
+    <section class="screen active" data-screen="overview">
+      <header class="appbar"><span class="tick" aria-hidden="true"></span><h1>Payments</h1><span class="co">Northwind Trading Ltd</span></header>
+      <div class="scroll">
+        <div class="trigger">
+          <span class="ic" aria-hidden="true"><svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="9"/><path style="fill:var(--info-t)" d="M9 6.25C9.69 6.25 10.25 5.69 10.25 5C10.25 4.31 9.69 3.75 9 3.75C8.31 3.75 7.75 4.31 7.75 5C7.75 5.69 8.31 6.25 9 6.25Z"/><path style="fill:var(--info-t)" d="M9.9 8.25H8.1V14.25H9.9V8.25Z"/></svg></span>
+          <div class="bd"><strong>Two large payments clear the same week</strong>On 22 May, BrightHire Payroll Ltd (£45,200) and Amazon Business (£4,502) both settle — £49,702 that week, taking your balance to £72,748. You're covered.<a data-go="review">Review the BrightHire payment</a></div>
+        </div>
+
+        <section>
+          <div class="sec-h"><h2>Cash position</h2><span class="meta">As of 12 May 2026</span></div>
+          <div class="card">
+            <div class="cp-top"><div><div class="cp-label">Current balance</div><div class="cp-balance">£122,450</div></div><div class="cp-net">+£2,450 net today</div></div>
+            <div class="cp-grid">
+              <div class="cp-cell"><div class="k">Opening</div><div class="v">£120,000</div></div>
+              <div class="cp-cell"><div class="k">Est. closing</div><div class="v">£124,000</div></div>
+              <div class="cp-cell"><div class="k">Inflows today</div><div class="v pos">+£11,650</div></div>
+              <div class="cp-cell"><div class="k">Outflows today</div><div class="v">−£9,200</div></div>
+            </div>
+            <div class="coverage"><strong>Covered through May.</strong> £122,450 balance covers £49,702 of scheduled May payments, leaving a £72,748 buffer.</div>
+          </div>
+        </section>
+
+        <section>
+          <div class="sec-h"><h2>Pending approval</h2><span class="meta">2 awaiting</span></div>
+          <div class="appr">
+            <div class="row1"><div><div class="payee">Amazon Business</div><div class="by">Requested by Sarah Chen · 2 days ago</div></div><div class="amt">£4,502</div></div>
+            <div class="actions"><button class="btn ghost" type="button">Reject</button><button class="btn primary" type="button" data-go="review">Approve</button></div>
+          </div>
+          <div class="appr">
+            <div class="row1"><div><div class="payee">BrightHire Payroll Ltd</div><div class="by">Requested by Sarah Chen · 2 days ago</div></div><div class="amt">£45,200</div></div>
+            <div class="actions"><button class="btn ghost" type="button">Reject</button><button class="btn primary" type="button" data-go="review">Review &amp; approve</button></div>
+          </div>
+        </section>
+
+        <section>
+          <div class="sec-h"><h2>Upcoming payments</h2><span class="meta">5 scheduled</span></div>
+          <div class="up">
+            <div class="r"><span class="date">15 May</span><span class="nm">Amazon Business</span><span class="amt">£4,502</span></div>
+            <div class="r"><span class="date">22 May</span><span class="nm">BrightHire Payroll Ltd</span><span class="amt">£45,200</span></div>
+            <div class="r"><span class="date">22 Jul</span><span class="nm">HMRC — PAYE</span><span class="amt">£2,200</span></div>
+            <div class="r"><span class="date">12 Aug</span><span class="nm">British Gas Business</span><span class="amt">£4,200</span></div>
+            <div class="r"><span class="date">09 Sep</span><span class="nm">Ravenscroft Properties</span><span class="amt">£50,200</span></div>
+            <div class="total"><span class="k">Total · 5 payments</span><span class="v">£106,302</span></div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- SCREEN 2 — REVIEW & APPROVE -->
+    <section class="screen" data-screen="review">
+      <header class="appbar"><button class="back" data-go="overview" aria-label="Back"><svg viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.85 17 5.85 9l8-8h-1.7l-8 8 8 8h1.7Z" fill="currentColor"/></svg></button><h1>Review &amp; approve</h1></header>
+      <div class="scroll">
+        <div class="sec-h"><h2>BrightHire Payroll Ltd</h2><span class="meta">High value</span></div>
+        <div class="kv">
+          <div class="kvr"><span class="k">Amount</span><span class="v">£45,200</span></div>
+          <div class="kvr"><span class="k">From</span><span class="v">Current account ···4821</span></div>
+          <div class="kvr"><span class="k">Payee account</span><span class="v">···7730</span></div>
+          <div class="kvr"><span class="k">Scheduled</span><span class="v">22 May 2026</span></div>
+          <div class="kvr"><span class="k">Reference</span><span class="v">May payroll</span></div>
+          <div class="kvr"><span class="k">Requested by</span><span class="v">Sarah Chen</span></div>
+        </div>
+        <div class="impact">After this payment, your projected available balance is <strong>£77,250</strong> (£122,450 − £45,200).</div>
+      </div>
+      <div class="actionbar"><button class="btn primary full" data-go="done">Confirm approval</button><button class="btn ghost full" data-go="overview">Back</button></div>
+    </section>
+
+    <!-- SCREEN 3 — CONFIRMATION -->
+    <section class="screen" data-screen="done">
+      <header class="appbar"><span class="tick" aria-hidden="true"></span><h1>Payment approved</h1></header>
+      <div class="done">
+        <span class="ic" aria-hidden="true"><svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="9"/><path class="cut" d="M7.22 13.55 3.59 9.92l1.27-1.27 2.36 2.36 5.93-5.93 1.27 1.27-7.2 7.2Z"/></svg></span>
+        <div>
+          <div style="font:500 20px/1.2 var(--font);">£45,200 approved</div>
+          <div style="font:400 15px/1.5 var(--font); color:var(--muted); margin-top:6px;">to BrightHire Payroll Ltd<br>Scheduled 22 May 2026 · from Current account ···4821<br>Reference: May payroll</div>
+        </div>
+        <div style="font:400 13px/1.4 var(--font); color:var(--muted);">Approved by you on 12 May 2026</div>
+      </div>
+      <div class="actionbar"><button class="btn primary full" data-go="overview">Done</button><button class="btn ghost full" data-go="overview">View upcoming payments</button></div>
+    </section>
+  </div>
+  <script>
+    const phone=document.getElementById('phone');
+    function show(id){ phone.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active', s.dataset.screen===id)); const a=phone.querySelector('.screen.active .scroll'); if(a)a.scrollTop=0; }
+    phone.addEventListener('click', e=>{ const t=e.target.closest('[data-go]'); if(t){ e.preventDefault(); show(t.dataset.go); } });
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+  </script>
+</body>
+</html>

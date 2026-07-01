@@ -31,6 +31,16 @@ in-session). Trigger: a component needs a canonical, token-faithful, build-verif
    caveats, and any defect surfaced. If a real **design decision** is needed (layout/structure not in
    canon), build a sensible baseline and **flag for review** rather than inventing canon.
 
+## Vertical rhythm (leading-trim is ON)
+Snippets are leading-trimmed (`text-box-trim` on labels — see `_REVIEW-SIGNOFF.md` + the leading-trim decision).
+Trim removes the line-height leading that used to separate stacked elements, so **any vertical stack of elements
+(title+sub, stacked links, key/value rows, list rows) MUST carry an explicit, tokenised gap** — a flex/grid
+`gap` or margin from the spacing scale (`gap/fixed/content` = 2/4/8/12px). Do NOT rely on line-height for
+separation. Two companion rules: body copy (multi-line paragraphs) keeps its natural line box (exclude from
+trim with `text-box-trim:normal`); truncating labels (`overflow:hidden` + ellipsis) use `text-box-edge:text text`
+so descenders aren't clipped. When centring an icon/control beside trimmed text, centre to the FIRST line and
+allow a small per-element optical nudge (a `--text-shift`-style padding) — line-box centring alone reads high.
+
 ## Invariants (don't violate)
 - Colours are resolved **semantic tokens**, never invented hexes (exception: a flagged `review`-tagged
   proposal, kept local/annotated).

@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en-GB" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payments — HSBC Business Banking</title>
+
+<!-- Design-library token spine + reviewed components (.cn-* / .c-* utilities). -->
+<link rel="stylesheet" href="../canon/canon.css">
+
+<style>
+/* =====================================================================
+   COLD-A · Payments screen — Swiss / International Typographic Style
+   applied ON TOP of the HSBC canon token spine (canon.css).
+
+   What the library gives us (consumed, not re-invented):
+     · tokens  — HSBC red #DB0011, greys, RAG, type family, spacing, motion
+     · .cn-table · .cn-modals (dialog + focus-trap) · .cn-notifications
+     · .cn-button · .cn-status-indicator (tint chips) · .c-* layout utils
+   What THIS sheet adds: the Swiss editorial system — a 12-col modular grid,
+   hairline section rules, a sentence-case label pattern (accent dash, NOT
+   uppercase — house rule forbids all-caps), ultra-light stat numerals, and
+   generous structural whitespace. The single accent is HSBC red, held to the
+   Swiss ceiling (label dashes, the active nav marker, one primary CTA).
+   ===================================================================== */
+
+:root{
+  /* Swiss spacing scale, mapped onto an 8px base (kept local so the editorial
+     rhythm is explicit and tunable without touching the token layer). */
+  --s1:8px; --s2:16px; --s3:24px; --s4:32px; --s5:48px; --s6:64px; --s7:96px;
+  --shell:1240px;              /* content measure — desktop showcase */
+  --rule:var(--divider-border-section);   /* #D7D8D6 hairline */
+  --rule-soft:var(--divider-border-subsection); /* #EDEDED */
+}
+
+*{ box-sizing:border-box; }
+html,body{ margin:0; }
+body{
+  background:var(--page);
+  color:var(--text);
+  font-family:var(--font);
+  font-weight:400;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
+/* ---- the icon sprite is display:none; instances are <svg><use> ---- */
+.spritesheet{ position:absolute; width:0; height:0; overflow:hidden; }
+.ic{ width:18px; height:18px; display:inline-block; flex:none; fill:currentColor; }
+.ic--sm{ width:14px; height:14px; }
+.ic--lg{ width:22px; height:22px; }
+
+/* =====================================================================
+   THE SWISS LABEL  — opens every section. Accent dash + sentence-case
+   label. NOT uppercase (house rule). Tracking + weight carry it instead.
+   ===================================================================== */
+.label{
+  display:flex; align-items:center; gap:12px;
+  margin:0;
+  font:500 13px/1 var(--font);
+  letter-spacing:.06em;
+  color:var(--accent);
+}
+.label::before{
+  content:""; width:26px; height:1px; background:var(--accent); flex:none;
+}
+.label--muted{ color:var(--muted); }
+.label--muted::before{ background:var(--line-strong); }
+
+/* =====================================================================
+   SHELL + MODULAR GRID
+   ===================================================================== */
+.shell{ width:100%; max-width:var(--shell); margin-inline:auto; padding-inline:var(--s4); }
+
+/* full-width hairline between major bands — a rule, never merely a gap */
+.section-rule{ border:0; border-top:1px solid var(--rule); margin:0; }
+
+.band{ padding-block:var(--s6); }
+.band--tight{ padding-block:var(--s5); }
+
+.grid12{ display:grid; grid-template-columns:repeat(12,1fr); gap:var(--s4); align-items:start; }
+
+/* =====================================================================
+   MASTHEAD  (Swiss nav: wordmark left, sections centre, utilities right;
+   sits on the HSBC red wordmark + a single hairline underline)
+   ===================================================================== */
+.masthead{
+  position:sticky; top:0; z-index:40;
+  background:var(--page);
+  border-bottom:1px solid var(--rule);
+}
+.masthead__in{
+  display:flex; align-items:center; gap:var(--s5);
+  height:68px;
+  width:100%; max-width:var(--shell); margin-inline:auto; padding-inline:var(--s4);
+}
+/* HSBC hexagon lockup — the brand's own mark, drawn from its geometry
+   (two red parallelograms on white). Wordmark set beside it. */
+.brandmark{ display:flex; align-items:center; gap:12px; text-decoration:none; color:var(--text); }
+.brandmark .hex{ width:34px; height:24px; flex:none; }
+.brandmark .wordmark{ font:700 19px/1 var(--font); letter-spacing:.01em; }
+.brandmark .wordmark .sub{ font-weight:400; color:var(--muted); }
+
+.mainnav{ display:flex; gap:2px; margin-right:auto; align-self:stretch; }
+.mainnav a{
+  display:inline-flex; align-items:center; height:100%;
+  padding-inline:16px;
+  color:var(--muted); text-decoration:none;
+  font:500 15px/1 var(--font); letter-spacing:.01em;
+  border-bottom:2px solid transparent; margin-bottom:-1px;
+  transition:color var(--ease), border-color var(--ease);
+}
+.mainnav a:hover{ color:var(--text); }
+.mainnav a[aria-current="page"]{ color:var(--text); border-bottom-color:var(--accent); }
+.mainnav a:focus-visible{ outline:2px solid var(--focus); outline-offset:-4px; }
+
+.utils{ display:flex; align-items:center; gap:4px; }
+.iconbtn{
+  width:44px; height:44px; border:0; background:transparent; color:var(--icon);
+  display:inline-flex; align-items:center; justify-content:center; cursor:pointer;
+  position:relative; border-radius:0; transition:background var(--ease);
+}
+.iconbtn:hover{ background:var(--surface-hover); }
+.iconbtn:focus-visible{ outline:2px solid var(--focus); outline-offset:-2px; }
+.iconbtn .dot{
+  position:absolute; top:9px; right:10px; width:8px; height:8px; border-radius:999px;
+  background:var(--accent); border:1.5px solid var(--page);
+}
+.userchip{
+  display:inline-flex; align-items:center; gap:10px; margin-left:8px; padding:6px 6px 6px 12px;
+  border-left:1px solid var(--rule);
+}
+.userchip .who{ text-align:right; line-height:1.2; }
+.userchip .who b{ display:block; font:500 14px/1.2 var(--font); }
+.userchip .who span{ font:400 12px/1.2 var(--font); color:var(--muted); }
+.userchip .avatar{
+  width:36px; height:36px; border-radius:50%; flex:none;
+  background:var(--surface-hover); color:var(--text);
+  display:inline-flex; align-items:center; justify-content:center;
+  font:500 14px/1 var(--font);
+}
+
+/* =====================================================================
+   PAGE HEADER BAND  (title left · account context + primary CTA right)
+   ===================================================================== */
+.pagehead .grid12{ align-items:end; }
+.pagehead .lede{ grid-column:1 / span 8; }
+.pagehead h1{
+  margin:14px 0 0;
+  font:300 52px/1.02 var(--font);
+  letter-spacing:-.015em;
+}
+.pagehead .crumbs{ display:flex; gap:8px; align-items:center; font:400 13px/1 var(--font); color:var(--muted); }
+.pagehead .crumbs a{ color:var(--muted); text-decoration:none; }
+.pagehead .crumbs a:hover{ color:var(--text); text-decoration:underline; text-underline-offset:3px; }
+.pagehead .crumbs .sep{ color:var(--border-strong); }
+
+.pagehead .aside{ grid-column:9 / span 4; display:flex; flex-direction:column; align-items:flex-end; gap:16px; }
+.acct{ text-align:right; }
+.acct .name{ font:500 15px/1.3 var(--font); }
+.acct .mask{ font:400 13px/1.5 var(--font); color:var(--muted); font-variant-numeric:tabular-nums; letter-spacing:.02em; }
+
+/* primary CTA — the ONE red fill on the page (HSBC primary button, canon spec) */
+.btn{
+  height:46px; min-width:120px; padding:0 22px; border:0; border-radius:0; cursor:pointer;
+  font:500 16px/1 var(--font); display:inline-flex; align-items:center; justify-content:center; gap:9px;
+  transition:background var(--ease), border-color var(--ease), transform var(--spring), filter var(--press);
+  white-space:nowrap;
+}
+.btn:focus-visible{ outline:2px solid var(--text); outline-offset:2px; }
+.btn:hover{ transform:scale(var(--hs,1.03)); }
+.btn:active{ transform:scale(var(--ps,.97)); filter:brightness(.9); transition:transform var(--press), filter var(--press); }
+.btn--primary{ background:var(--pri); color:var(--reverse); }
+.btn--primary:hover{ background:var(--pri-hover); }
+.btn--ghost{ background:transparent; color:var(--text); border:1px solid var(--ter-border); }
+.btn--ghost:hover{ background:var(--surface-hover); }
+.btn--ghost:active{ filter:none; }
+.btn .ic{ fill:currentColor; }
+@media (prefers-reduced-motion: reduce){
+  .btn:hover,.btn:active{ transform:none !important; filter:none !important; }
+}
+
+/* =====================================================================
+   CASH POSITION  — Swiss stat display. Ultra-light numerals, 1px cell
+   gaps on a grey field, caption labels beneath. Numbers are tabular.
+   ===================================================================== */
+.asof{ font:400 13px/1 var(--font); color:var(--muted); }
+.asof b{ font-weight:500; color:var(--text); }
+
+.stats{
+  grid-column:1 / span 8;
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:1px; background:var(--rule); border:1px solid var(--rule);
+  margin-top:var(--s3);
+}
+.stat{ background:var(--page); padding:22px 20px 20px; display:flex; flex-direction:column; gap:8px; min-height:132px; }
+.stat .k{ font:400 13px/1.2 var(--font); color:var(--muted); letter-spacing:.01em; }
+.stat .v{ font:200 40px/1 var(--font); letter-spacing:-.01em; font-variant-numeric:tabular-nums; margin-top:auto; }
+.stat .v .cur{ font-size:24px; vertical-align:top; line-height:1.4; color:var(--muted); margin-right:1px; }
+.stat--emph{ background:var(--color-grey-100); }         /* current balance — quietly lifted */
+.stat--emph .v{ font-weight:300; }
+.stat .delta{ font:500 13px/1 var(--font); font-variant-numeric:tabular-nums; }
+.pos{ color:var(--ok); }                                  /* inflow / positive net */
+.neg{ color:var(--text); }                                /* outflow — kept ink, not alarm-red */
+.stat .sign{ font-weight:500; }
+
+/* the flow line: opening → in → out → balance, as a horizontal ledger strip */
+.flowline{ grid-column:1 / span 8; margin-top:var(--s3);
+  display:flex; align-items:stretch; border:1px solid var(--rule); }
+.flowline .cell{ flex:1; padding:14px 18px; display:flex; flex-direction:column; gap:5px; border-right:1px solid var(--rule-soft); }
+.flowline .cell:last-child{ border-right:0; }
+.flowline .cell .lab{ font:400 12px/1 var(--font); color:var(--muted); }
+.flowline .cell .amt{ font:500 17px/1 var(--font); font-variant-numeric:tabular-nums; }
+.flowline .op{ width:34px; flex:none; display:flex; align-items:center; justify-content:center; color:var(--border-strong);
+  font:300 20px/1 var(--font); border-right:1px solid var(--rule-soft); background:var(--color-grey-100); }
+
+/* coverage rail (right 4 cols) — the runway readout */
+.coverage{ grid-column:9 / span 4; align-self:stretch; display:flex; flex-direction:column; gap:var(--s2);
+  border-left:1px solid var(--rule); padding-left:var(--s4); }
+.coverage .head{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; }
+.coverage .buffer{ font:300 40px/1 var(--font); font-variant-numeric:tabular-nums; letter-spacing:-.01em; }
+.coverage .buffer .cur{ font-size:22px; color:var(--muted); }
+.covermath{ display:flex; flex-direction:column; }
+.covermath .r{ display:flex; justify-content:space-between; gap:12px; padding:9px 0; border-bottom:1px solid var(--rule-soft); font:400 14px/1.3 var(--font); }
+.covermath .r:last-child{ border-bottom:0; }
+.covermath .r .k{ color:var(--muted); }
+.covermath .r .v{ font-weight:500; font-variant-numeric:tabular-nums; }
+.covermath .r--total .k,.covermath .r--total .v{ font-weight:500; color:var(--text); }
+/* meter: filled = committed (May), remainder = buffer. Meaning is in the
+   label + figures, not colour alone (WCAG 1.4.1). */
+.meter{ height:8px; background:var(--rule-soft); display:flex; overflow:hidden; }
+.meter .used{ background:var(--border-strong); }
+.meter .free{ background:var(--ok); }
+.coverage .note{ display:flex; align-items:center; gap:8px; font:400 13px/1.4 var(--font); color:var(--text); }
+.coverage .note .ic{ color:var(--ok); }
+
+/* =====================================================================
+   PENDING APPROVAL  — two request cards. High-value (£45,200) requires a
+   confirmation dialog (no one-click approve). Both approvals route through
+   the modal; the modal's confirm figure changes per request.
+   ===================================================================== */
+.approvals{ grid-column:1 / span 12; }
+.approvals .head{ display:flex; align-items:flex-end; justify-content:space-between; gap:var(--s3); margin-bottom:var(--s3); }
+.approvals .head .meta{ font:400 14px/1.4 var(--font); color:var(--muted); max-width:46ch; margin-top:12px; }
+.approvals .head .count{ font:400 13px/1 var(--font); color:var(--muted); font-variant-numeric:tabular-nums; }
+
+.reqgrid{ display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--rule); border:1px solid var(--rule); }
+.req{ background:var(--page); padding:24px; display:flex; flex-direction:column; gap:20px; }
+.req__top{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; }
+.req__payee{ display:flex; flex-direction:column; gap:6px; min-width:0; }
+.req__payee .who{ font:500 19px/1.2 var(--font); }
+.req__payee .kind{ font:400 13px/1.3 var(--font); color:var(--muted); }
+.req__amt{ text-align:right; flex:none; }
+.req__amt .n{ font:300 30px/1 var(--font); font-variant-numeric:tabular-nums; letter-spacing:-.01em; }
+.req__amt .n .cur{ font-size:18px; color:var(--muted); }
+.req__amt .band{ margin-top:6px; }
+
+/* the amber "needs your review" tint chip (canon status-indicator form B) */
+.tintchip{ display:inline-flex; align-items:center; gap:6px; height:24px; padding:0 9px; border-radius:0;
+  font:400 12px/1 var(--font); color:var(--text); white-space:nowrap; }
+.tintchip .ic{ width:13px; height:13px; }
+.tintchip--warn{ background:var(--warn-tint); }
+.tintchip--warn .ic{ color:#B47A00; }        /* amber, darkened for icon contrast on tint */
+.tintchip--high{ background:var(--err-tint); color:var(--text); }
+.tintchip--high .ic{ color:var(--err); }
+
+.req__meta{ display:flex; flex-direction:column; gap:0; border-top:1px solid var(--rule-soft); }
+.req__meta .r{ display:flex; justify-content:space-between; gap:16px; padding:10px 0; border-bottom:1px solid var(--rule-soft); font:400 14px/1.3 var(--font); }
+.req__meta .r:last-child{ border-bottom:0; }
+.req__meta .r .k{ color:var(--muted); }
+.req__meta .r .v{ font-weight:500; font-variant-numeric:tabular-nums; }
+.req__meta .r .v.mask{ letter-spacing:.04em; color:var(--text); }
+
+.req__foot{ display:flex; align-items:center; gap:12px; margin-top:auto; }
+.req__foot .btn{ flex:none; }
+.req__foot .who{ display:flex; align-items:center; gap:8px; margin-left:auto; font:400 13px/1.3 var(--font); color:var(--muted); }
+.req__foot .who .avatar{ width:26px; height:26px; border-radius:50%; background:var(--surface-hover);
+  display:inline-flex; align-items:center; justify-content:center; font:500 11px/1 var(--font); color:var(--text); flex:none; }
+
+/* text link (canon Links — underline, thickens on hover; not colour-only) */
+.tlink{ color:var(--text); text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px;
+  cursor:pointer; background:none; border:0; padding:0; font:500 15px/1 var(--font); transition:text-decoration-thickness var(--ease); }
+.tlink:hover{ text-decoration-thickness:2px; }
+.tlink:focus-visible{ outline:none; box-shadow:inset 0 -3px 0 var(--text); text-decoration:none; }
+
+/* =====================================================================
+   UPCOMING PAYMENTS  — Swiss data table. Hairline grid, tabular figures,
+   sentence-case caption, a total row. Uses the canon .cn-table primitive
+   for its reviewed cell/hover/focus + responsive card-collapse behaviour.
+   ===================================================================== */
+.upcoming{ grid-column:1 / span 12; }
+.upcoming .head{ display:flex; align-items:flex-end; justify-content:space-between; gap:var(--s3); margin-bottom:var(--s3); }
+.upcoming .head .tools{ display:flex; align-items:center; gap:8px; }
+
+.tbl{ container-type:inline-size; }
+.tbl table{ width:100%; border-collapse:collapse; background:var(--page); border:1px solid var(--rule); }
+.tbl caption{ text-align:left; padding:0 2px 14px; }
+.tbl caption .cap-k{ display:none; }
+.tbl thead th{
+  font:500 12px/1.3 var(--font); letter-spacing:.04em; color:var(--muted);
+  text-align:left; padding:12px 16px; background:var(--color-grey-100);
+  border-bottom:1px solid var(--rule);
+}
+.tbl th.num,.tbl td.num{ text-align:right; font-variant-numeric:tabular-nums; }
+.tbl tbody td{ padding:16px; border-bottom:1px solid var(--rule-soft); font:400 15px/1.4 var(--font); vertical-align:middle; }
+.tbl tbody tr:last-child td{ border-bottom:0; }
+.tbl tbody tr{ transition:background var(--ease); }
+.tbl tbody tr:hover td{ background:var(--color-grey-100); }
+.tbl .when{ display:flex; flex-direction:column; gap:2px; }
+.tbl .when .d{ font:500 15px/1.2 var(--font); font-variant-numeric:tabular-nums; }
+.tbl .when .rel{ font:400 12px/1.2 var(--font); color:var(--muted); }
+.tbl .payee{ display:flex; align-items:center; gap:12px; }
+.tbl .payee .mono{ width:34px; height:34px; flex:none; border:1px solid var(--rule); display:inline-flex; align-items:center; justify-content:center; color:var(--icon); }
+.tbl .payee .mono .ic{ width:16px; height:16px; }
+.tbl .payee .txt{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+.tbl .payee .txt b{ font:500 15px/1.2 var(--font); }
+.tbl .payee .txt span{ font:400 12px/1.2 var(--font); color:var(--muted); }
+.tbl .amt{ font:500 16px/1 var(--font); font-variant-numeric:tabular-nums; }
+.tbl .cat{ display:inline-flex; align-items:center; height:24px; padding:0 9px; border:1px solid var(--rule);
+  font:400 12px/1 var(--font); color:var(--muted); white-space:nowrap; }
+.tbl .actlink{ color:var(--muted); }
+.tbl tbody tr:hover .actlink{ color:var(--text); }
+.tbl tfoot td{ padding:16px; border-top:1px solid var(--rule); font:500 15px/1.4 var(--font); background:var(--page); }
+.tbl tfoot .tot-k{ color:var(--muted); font-weight:400; }
+.tbl tfoot .tot-v{ font-size:18px; font-variant-numeric:tabular-nums; }
+
+/* responsive: collapse the table to stacked records under ~720px container */
+@container (max-width:720px){
+  .tbl thead{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+  .tbl table,.tbl tbody,.tbl tr,.tbl td{ display:block; width:100%; }
+  .tbl tbody tr{ border-bottom:8px solid var(--color-grey-100); }
+  .tbl tbody td{ display:flex; justify-content:space-between; gap:16px; padding:11px 16px; border-bottom:1px solid var(--rule-soft); }
+  .tbl tbody td::before{ content:attr(data-label); color:var(--muted); font:500 12px/1.3 var(--font); letter-spacing:.03em; flex:none; }
+  .tbl td.num{ text-align:left; }
+  .tbl tfoot td{ display:flex; justify-content:space-between; }
+}
+
+/* =====================================================================
+   FOOTER
+   ===================================================================== */
+.foot{ padding-block:var(--s5); color:var(--muted); }
+.foot .grid12{ align-items:center; }
+.foot .legal{ grid-column:1 / span 8; font:400 12px/1.6 var(--font); max-width:70ch; }
+.foot .legal b{ color:var(--text); font-weight:500; }
+.foot .flinks{ grid-column:9 / span 4; display:flex; gap:22px; justify-content:flex-end; }
+.foot .flinks a{ color:var(--muted); text-decoration:none; font:400 13px/1 var(--font); }
+.foot .flinks a:hover{ color:var(--text); text-decoration:underline; text-underline-offset:3px; }
+
+/* =====================================================================
+   MODAL  (canon .cn-modals contract: dim scrim, square surface, close ✕,
+   PRIMARY-FIRST actions, focus-trap + inert + Esc + return focus).
+   This is the mandated confirmation step for high-value approvals.
+   ===================================================================== */
+.overlay{ position:fixed; inset:0; z-index:60; background:var(--overlay);
+  display:flex; align-items:center; justify-content:center; padding:24px;
+  opacity:0; visibility:hidden; transition:opacity var(--fade), visibility var(--fade); }
+.overlay.open{ opacity:1; visibility:visible; }
+.dialog{ width:100%; max-width:460px; background:var(--surface); border:1px solid var(--elevation-border);
+  box-shadow:0 0 28px var(--shadow); padding:28px; position:relative;
+  transform:scale(.96); opacity:0; transition:transform var(--spring), opacity var(--fade); }
+.overlay.open .dialog{ transform:scale(1); opacity:1; }
+.dialog .close{ position:absolute; top:16px; right:16px; width:36px; height:36px; border:0; background:transparent;
+  color:var(--icon); cursor:pointer; display:inline-flex; align-items:center; justify-content:center; transition:background var(--ease); }
+.dialog .close:hover{ background:var(--surface-hover); }
+.dialog .close .ic{ width:14px; height:14px; }
+.dialog .close:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }
+.dialog .eyebrow{ margin-bottom:14px; }
+.dialog h2{ margin:0 0 8px; font:400 24px/1.2 var(--font); letter-spacing:-.01em; }
+.dialog p.lede{ margin:0 0 20px; font:400 15px/1.55 var(--font); color:var(--text); max-width:44ch; }
+.dialog .review{ border:1px solid var(--rule); margin:0 0 12px; }
+.dialog .review .r{ display:flex; justify-content:space-between; gap:16px; padding:12px 16px; border-bottom:1px solid var(--rule-soft); font:400 14px/1.35 var(--font); }
+.dialog .review .r:last-child{ border-bottom:0; }
+.dialog .review .r .k{ color:var(--muted); }
+.dialog .review .r .v{ font-weight:500; font-variant-numeric:tabular-nums; }
+.dialog .review .r .v.mask{ letter-spacing:.04em; }
+.dialog .review .r--amt{ background:var(--color-grey-100); }
+.dialog .review .r--amt .v{ font-size:17px; }
+.dialog .caution{ display:flex; align-items:flex-start; gap:10px; margin:0 0 22px; padding:12px 14px;
+  background:var(--warn-tint); font:400 13px/1.45 var(--font); color:var(--text); }
+.dialog .caution .ic{ color:#B47A00; margin-top:1px; }
+.dialog .actions{ display:flex; gap:12px; }
+.dialog .actions .btn{ min-width:0; }
+@media (max-width:520px){
+  .dialog .actions{ flex-direction:column; }
+  .dialog .actions .btn{ width:100%; }
+}
+/* success confirmation view (swapped in after confirm) */
+.dialog .done{ display:none; flex-direction:column; align-items:flex-start; gap:14px; }
+.dialog.is-done .form{ display:none; }
+.dialog.is-done .done{ display:flex; }
+.dialog .done .tick{ width:44px; height:44px; color:var(--ok); }
+.dialog .done h2{ margin:0; }
+
+@media (prefers-reduced-motion: reduce){
+  .overlay,.dialog{ transition:opacity .01ms !important; }
+  .dialog{ transform:none !important; }
+}
+
+/* =====================================================================
+   RESPONSIVE  — the showcase is desktop-first; degrade gracefully so a
+   narrower window still reads (Swiss discipline: reduce, don't cram).
+   ===================================================================== */
+@media (max-width:1080px){
+  .pagehead .lede,.stats,.flowline{ grid-column:1 / span 12; }
+  .pagehead .aside{ grid-column:1 / span 12; align-items:flex-start; flex-direction:row; justify-content:space-between; flex-wrap:wrap; }
+  .acct{ text-align:left; }
+  .coverage{ grid-column:1 / span 12; border-left:0; padding-left:0; border-top:1px solid var(--rule); padding-top:var(--s3); margin-top:var(--s3); }
+  .reqgrid{ grid-template-columns:1fr; }
+}
+@media (max-width:760px){
+  .shell,.masthead__in{ padding-inline:var(--s3); }
+  .mainnav{ display:none; }
+  .pagehead h1{ font-size:40px; }
+  .stats{ grid-template-columns:1fr; }
+  .flowline{ flex-direction:column; }
+  .flowline .op{ width:auto; height:30px; border-right:0; border-bottom:1px solid var(--rule-soft); }
+  .flowline .cell{ border-right:0; border-bottom:1px solid var(--rule-soft); }
+  .userchip .who{ display:none; }
+}
+</style>
+</head>
+
+<body class="canon">
+
+<!-- ============================ ICON SPRITE ============================
+     Every glyph below is verbatim path data from the HSBC icon library
+     (knowledge/assets/icons/*). No invented icons. Status icons keep their
+     baked RAG fills; UI icons use currentColor. -->
+<svg class="spritesheet" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-payments-gbp" viewBox="0 0 18 18"><path d="M9 0C4.03 0 0 4.03 0 9C0 13.97 4.03 18 9 18C13.97 18 18 13.97 18 9C18 4.03 13.97 0 9 0ZM9 16.8C4.7 16.8 1.2 13.3 1.2 9C1.2 4.7 4.7 1.2 9 1.2C13.3 1.2 16.8 4.7 16.8 9C16.8 13.3 13.3 16.8 9 16.8ZM8 11.8H12V13H6V11.8H6.8V9.2H6V8H6.8V7C6.8 6.91 6.82 6.12 7.45 5.49C7.91 5.03 8.57 4.79 9.39 4.79H9.4C10.71 4.79 11.35 5.38 11.66 5.88C11.99 6.41 12 6.94 12 7H10.8C10.8 6.77 10.67 6 9.39 5.99C8.13 5.99 8.01 6.77 8.01 7V7.99H10.01V9.19H8.01V11.79L8 11.8Z"/></symbol>
+  <symbol id="i-send" viewBox="0 0 18 18"><path d="M0 1.73404L2.93837 9L0 16.266L18 9L0 1.73404ZM2.1688 14.0972L3.98778 9.59967H10.0944L11.5836 9L10.0944 8.40034H3.98778L2.1688 3.90283L14.7818 9L2.1688 14.0972Z"/></symbol>
+  <symbol id="i-add" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M18 8.4H9.6V0H8.4V8.4H0V9.6H8.4V18H9.6V9.6H18V8.4Z"/></symbol>
+  <symbol id="i-download" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.8 12V15.8H2.2V12H1V17H17V12H15.8ZM14 8.848V7.151L9.6 11.551V1H8.4V11.551L4 7.151V8.848L9 13.849L14 8.848Z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.19675 12.803C3.66075 14.268 5.58075 15 7.49975 15C9.23175 15 10.9598 14.398 12.3577 13.206L17.1257 17.973L17.9748 17.125L13.2067 12.357C15.7197 9.41 15.5898 4.981 12.8048 2.196C11.3388 0.732 9.41875 0 7.49975 0C5.58075 0 3.66075 0.732 2.19675 2.197C-0.73225 5.126 -0.73225 9.874 2.19675 12.803ZM1.19975 7.5C1.19975 5.817 1.85575 4.235 3.04475 3.045C4.23375 1.855 5.81675 1.2 7.49975 1.2C9.18275 1.2 10.7648 1.855 11.9548 3.045C14.4108 5.501 14.4108 9.498 11.9548 11.955C10.7648 13.145 9.18275 13.8 7.49975 13.8C5.81675 13.8 4.23475 13.145 3.04475 11.955C1.85475 10.765 1.19975 9.183 1.19975 7.5Z"/></symbol>
+  <symbol id="i-filter" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.23 12.5C4.057 12.5 3.08 13.311 2.81 14.4H0V15.6H2.81C3.08 16.689 4.057 17.5 5.23 17.5C6.403 17.5 7.38 16.689 7.649 15.6H18V14.4H7.649C7.38 13.311 6.403 12.5 5.23 12.5ZM5.23 16.3C4.513 16.3 3.93 15.717 3.93 15C3.93 14.283 4.513 13.7 5.23 13.7C5.947 13.7 6.53 14.283 6.53 15C6.53 15.717 5.947 16.3 5.23 16.3ZM12.77 6.5C11.597 6.5 10.62 7.311 10.351 8.4H0V9.6H10.351C10.621 10.689 11.598 11.5 12.77 11.5C13.943 11.5 14.92 10.689 15.19 9.6H18V8.4H15.19C14.92 7.311 13.943 6.5 12.77 6.5ZM12.77 10.3C12.053 10.3 11.47 9.717 11.47 9C11.47 8.283 12.053 7.7 12.77 7.7C13.487 7.7 14.07 8.283 14.07 9C14.07 9.717 13.487 10.3 12.77 10.3ZM7.649 2.4C7.38 1.311 6.403 0.5 5.23 0.5C4.057 0.5 3.08 1.311 2.81 2.4H0V3.6H2.81C3.08 4.689 4.057 5.5 5.23 5.5C6.403 5.5 7.38 4.689 7.649 3.6H18V2.4H7.649ZM5.23 4.3C4.513 4.3 3.93 3.717 3.93 3C3.93 2.283 4.513 1.7 5.23 1.7C5.947 1.7 6.53 2.283 6.53 3C6.53 3.717 5.947 4.3 5.23 4.3Z"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M17.2931 13.293L15.0001 11V6.252C15.0001 2.967 12.4681 0.102 9.18507 0.003C9.12307 0.001 9.06107 0 9.00007 0C5.68607 0 3.00007 2.686 3.00007 6V11L0.707069 13.293C0.0770694 13.923 0.523069 15 1.41407 15H6.56207C6.52707 15.162 6.50007 15.327 6.50007 15.5C6.50007 16.881 7.61907 18 9.00007 18C10.3811 18 11.5001 16.881 11.5001 15.5C11.5001 15.327 11.4731 15.162 11.4381 15H16.5861C17.4771 15 17.9231 13.923 17.2931 13.293ZM10.3001 15.5C10.3001 16.217 9.71707 16.8 9.00007 16.8C8.28307 16.8 7.70007 16.217 7.70007 15.5C7.70007 15.319 7.74907 15.154 7.81907 15H10.1821C10.2511 15.154 10.3001 15.319 10.3001 15.5ZM1.89707 13.8L3.84807 11.848L4.20007 11.497V6C4.20007 3.353 6.35307 1.2 9.00007 1.2L9.14807 1.202C11.7131 1.279 13.8001 3.544 13.8001 6.252V11.497L14.1521 11.848L16.1041 13.8H1.89707Z"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.376 6.992C16.208 6.374 15.96 5.774 15.634 5.206L16.319 3.592L14.408 1.68L12.794 2.365C12.225 2.04 11.626 1.791 11.007 1.623L10.352 0H7.648L6.992 1.624C6.374 1.791 5.774 2.04 5.206 2.365L3.592 1.68L1.68 3.592L2.365 5.206C2.04 5.774 1.791 6.374 1.624 6.992L0 7.648V10.351L1.624 11.007C1.791 11.626 2.04 12.225 2.366 12.794L1.68 14.408L3.592 16.32L5.206 15.635C5.775 15.961 6.374 16.209 6.993 16.377L7.648 18H10.351L11.007 16.377C11.625 16.209 12.225 15.961 12.794 15.635L14.408 16.32L16.32 14.408L15.635 12.794C15.961 12.225 16.209 11.626 16.377 11.007L18 10.352V7.648L16.376 6.992ZM15.374 10.118L15.218 10.694C15.077 11.214 14.867 11.72 14.593 12.198L14.298 12.715L14.53 13.263L14.899 14.132L14.132 14.899L12.716 14.297L12.199 14.593C11.721 14.866 11.215 15.077 10.694 15.218L10.119 15.374L9.542 16.8H8.458L7.882 15.375L7.306 15.219C6.785 15.078 6.28 14.867 5.802 14.594L5.285 14.298L4.736 14.53L3.868 14.899L3.101 14.132L3.703 12.716L3.407 12.199C3.134 11.721 2.923 11.215 2.782 10.694L2.626 10.119L1.2 9.542V8.458L2.625 7.882L2.781 7.307C2.922 6.786 3.133 6.28 3.406 5.802L3.702 5.285L3.47 4.737L3.101 3.868L3.868 3.101L5.285 3.703L5.802 3.407C6.28 3.134 6.786 2.924 7.307 2.782L7.882 2.626L8.458 1.2H9.543L10.119 2.625L10.694 2.781C11.215 2.922 11.721 3.133 12.199 3.406L12.716 3.702L14.133 3.1L14.9 3.867L14.297 5.285L14.593 5.802C14.866 6.279 15.076 6.785 15.218 7.306L15.374 7.881L15.927 8.104L16.8 8.458V9.542L15.374 10.118ZM9 4.8C7.878 4.8 6.823 5.237 6.03 6.03C5.237 6.823 4.8 7.878 4.8 9C4.8 10.122 5.237 11.177 6.03 11.97C6.823 12.763 7.878 13.2 9 13.2C10.122 13.2 11.176 12.763 11.97 11.97C12.764 11.177 13.2 10.122 13.2 9C13.2 7.878 12.763 6.823 11.97 6.03C11.177 5.237 10.122 4.8 9 4.8ZM11.121 11.121C10.536 11.707 9.768 12 9 12C8.232 12 7.464 11.707 6.878 11.121C5.707 9.95 5.707 8.05 6.878 6.879C7.464 6.293 8.232 6 9 6C9.768 6 10.536 6.293 11.121 6.879C12.293 8.05 12.293 9.95 11.121 11.121Z"/></symbol>
+  <symbol id="i-time" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.03 0 0 4.029 0 9C0 13.971 4.03 18 9 18C13.97 18 18 13.971 18 9C18 4.029 13.97 0 9 0ZM9 16.8C4.699 16.8 1.2 13.301 1.2 9C1.2 4.699 4.699 1.2 9 1.2C13.301 1.2 16.8 4.699 16.8 9C16.8 13.301 13.301 16.8 9 16.8ZM9.6 3H8.4V9.6H13V8.4H9.6V3Z"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15 1V0H13.8V1H4.2V0H3V1H0V18H14.2L18 14.2V1H15ZM14.2 16.303V14.2H16.303L14.2 16.303ZM16.8 13H13V16.8H1.2V6H16.8V13ZM16.8 4.8H1.2V2.2H3V3.5H4.2V2.2H13.8V3.5H15V2.2H16.8V4.8ZM8.8 10.029V15H10V7.971L7.003 9.667L7.594 10.712L8.8 10.029Z"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M5 17L5 1L13 9L5 17Z"/></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.15234 17L12.1503 9L4.15234 1H5.84834L13.8483 9L5.84834 17H4.15234Z"/></symbol>
+  <symbol id="i-chevron-down" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M17 4.15198L9 12.15L1 4.15198V5.84798L9 13.848L17 5.84798V4.15198Z"/></symbol>
+  <symbol id="i-menu-more" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 7.5C0.672 7.5 0 8.172 0 9C0 9.828 0.672 10.5 1.5 10.5C2.328 10.5 3 9.829 3 9C3 8.171 2.328 7.5 1.5 7.5ZM16.5 7.5C15.672 7.5 15 8.172 15 9C15 9.828 15.672 10.5 16.5 10.5C17.328 10.5 18 9.829 18 9C18 8.171 17.328 7.5 16.5 7.5ZM9 7.5C8.172 7.5 7.5 8.172 7.5 9C7.5 9.828 8.172 10.5 9 10.5C9.828 10.5 10.5 9.828 10.5 9C10.5 8.172 9.828 7.5 9 7.5Z"/></symbol>
+  <symbol id="i-close" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z"/></symbol>
+  <symbol id="i-help" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.029 0 0 4.03 0 9C0 13.97 4.029 18 9 18C13.971 18 18 13.97 18 9C18 4.03 13.971 0 9 0ZM9 16.8C4.699 16.8 1.2 13.301 1.2 9C1.2 4.699 4.699 1.2 9 1.2C13.301 1.2 16.8 4.699 16.8 9C16.8 13.301 13.301 16.8 9 16.8ZM8.999 12.5C8.447 12.5 7.999 12.948 7.999 13.5C7.999 14.052 8.447 14.5 8.999 14.5C9.551 14.5 9.999 14.052 9.999 13.5C9.999 12.948 9.552 12.5 8.999 12.5ZM9.604 3.539C8.75 3.363 7.875 3.569 7.207 4.113C6.54 4.656 6.157 5.46 6.157 6.319H7.357C7.357 5.823 7.578 5.358 7.964 5.044C8.356 4.726 8.851 4.607 9.36 4.714C9.996 4.847 10.514 5.391 10.62 6.037C10.709 6.575 10.542 7.101 10.162 7.48L9.013 8.629C8.75 8.894 8.4 9.324 8.4 10.011V11H9.6V10.011C9.6 9.835 9.642 9.699 9.862 9.478L11.01 8.33C11.667 7.674 11.956 6.768 11.804 5.842C11.616 4.7 10.732 3.775 9.604 3.539Z"/></symbol>
+  <!-- status icons: baked RAG fills (semantic colour) -->
+  <symbol id="i-warning-solid" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="#FFBB33"/><path d="M9.90107 3.80005H8.10107V9.80005H9.90107V3.80005Z" fill="#333333"/><path d="M9.00078 14.2C9.66352 14.2 10.2008 13.6628 10.2008 13C10.2008 12.3373 9.66352 11.8 9.00078 11.8C8.33804 11.8 7.80078 12.3373 7.80078 13C7.80078 13.6628 8.33804 14.2 9.00078 14.2Z" fill="#333333"/></symbol>
+  <symbol id="i-info-solid" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="#305A85"/><path d="M9 6.25C9.69036 6.25 10.25 5.69036 10.25 5C10.25 4.30964 9.69036 3.75 9 3.75C8.30964 3.75 7.75 4.30964 7.75 5C7.75 5.69036 8.30964 6.25 9 6.25Z" fill="white"/><path d="M9.89912 8.25H8.09912V14.25H9.89912V8.25Z" fill="white"/></symbol>
+  <symbol id="i-success-solid" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="#00847F"/><path d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z" fill="white"/></symbol>
+  <!-- warning glyph as line/currentColor (for tint chips where colour = the chip, not the mark) -->
+  <symbol id="i-warning-line" viewBox="0 0 18 18"><path d="M9.90107 3.80005H8.10107V10.30005H9.90107V3.80005Z" fill="currentColor"/><path d="M9.00078 14.2C9.66352 14.2 10.2008 13.6628 10.2008 13C10.2008 12.3373 9.66352 11.8 9.00078 11.8C8.33804 11.8 7.80078 12.3373 7.80078 13C7.80078 13.6628 8.33804 14.2 9.00078 14.2Z" fill="currentColor"/></symbol>
+</svg>
+
+<!-- ================================ MASTHEAD ================================ -->
+<header class="masthead">
+  <div class="masthead__in">
+    <a class="brandmark" href="#" aria-label="HSBC business banking, home">
+      <svg class="hex" viewBox="0 0 34 24" aria-hidden="true">
+        <rect x="0" y="0" width="34" height="24" fill="#DB0011"/>
+        <polygon points="17,0 17,12 0,12" fill="#ffffff"/>
+        <polygon points="17,24 17,12 34,12" fill="#ffffff"/>
+      </svg>
+      <span class="wordmark">HSBC <span class="sub">Business</span></span>
+    </a>
+
+    <nav class="mainnav" aria-label="Primary">
+      <a href="#">Accounts</a>
+      <a href="#" aria-current="page">Payments</a>
+      <a href="#">Cards</a>
+      <a href="#">Cash flow</a>
+      <a href="#">Statements</a>
+    </nav>
+
+    <div class="utils">
+      <button class="iconbtn" type="button" aria-label="Search"><svg class="ic ic--lg"><use href="#i-search"/></svg></button>
+      <button class="iconbtn" type="button" aria-label="Notifications, 2 unread"><svg class="ic ic--lg"><use href="#i-alert"/></svg><span class="dot" aria-hidden="true"></span></button>
+      <button class="iconbtn" type="button" aria-label="Settings"><svg class="ic ic--lg"><use href="#i-settings"/></svg></button>
+      <div class="userchip">
+        <span class="who"><b>Northgate Trading Ltd</b><span>Sarah Chen · Administrator</span></span>
+        <span class="avatar" aria-hidden="true">SC</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============================ PAGE HEADER ============================ -->
+  <section class="band pagehead" aria-labelledby="pg-title">
+    <div class="shell">
+      <div class="grid12">
+        <div class="lede">
+          <nav class="crumbs" aria-label="Breadcrumb">
+            <a href="#">Business banking</a><span class="sep">/</span>
+            <a href="#">Payments</a><span class="sep">/</span>
+            <span aria-current="page">Overview</span>
+          </nav>
+          <h1 id="pg-title">Payments</h1>
+        </div>
+        <div class="aside">
+          <div class="acct">
+            <div class="name">Business Current Account</div>
+            <div class="mask">Sort code &bull;&bull;&#8209;&bull;&bull;&#8209;&bull;&bull; &nbsp;·&nbsp; Acct &bull;&bull;&bull;&bull;&nbsp;3391</div>
+          </div>
+          <button class="btn btn--primary" type="button">
+            <svg class="ic"><use href="#i-send"/></svg>
+            Make a payment
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-rule">
+
+  <!-- ============================ CASH POSITION ============================ -->
+  <section class="band" aria-labelledby="cash-h">
+    <div class="shell">
+      <div class="grid12" style="row-gap:0;">
+        <div style="grid-column:1 / span 8; display:flex; align-items:baseline; justify-content:space-between; gap:16px;">
+          <p class="label" id="cash-h">Cash position</p>
+          <p class="asof">As of <b>12 May 2026</b></p>
+        </div>
+
+        <!-- three headline stats -->
+        <div class="stats" role="group" aria-label="Cash position summary">
+          <div class="stat">
+            <span class="k">Opening balance</span>
+            <span class="v"><span class="cur">£</span>120,000</span>
+          </div>
+          <div class="stat">
+            <span class="k">Net movement today</span>
+            <span class="v pos"><span class="sign">+</span><span class="cur" style="color:inherit; opacity:.55;">£</span>2,450</span>
+            <span class="delta"><span class="pos">+£11,650 in</span> &nbsp;·&nbsp; <span class="neg">−£9,200 out</span></span>
+          </div>
+          <div class="stat stat--emph">
+            <span class="k">Current balance</span>
+            <span class="v"><span class="cur">£</span>122,450</span>
+            <span class="delta pos">Est. closing £124,000</span>
+          </div>
+        </div>
+
+        <!-- coverage rail -->
+        <aside class="coverage" aria-labelledby="cov-h">
+          <div class="head">
+            <p class="label label--muted" id="cov-h">Coverage</p>
+          </div>
+          <div>
+            <div class="buffer"><span class="cur">£</span>72,748</div>
+            <div class="k" style="font:400 13px/1.4 var(--font); color:var(--muted); margin-top:4px;">buffer after May&rsquo;s scheduled payments</div>
+          </div>
+          <div class="meter" role="img" aria-label="Of the current balance, £49,702 is committed to May payments and £72,748 remains as buffer.">
+            <div class="used" style="flex:0 0 40.59%;"></div>
+            <div class="free" style="flex:1;"></div>
+          </div>
+          <div class="covermath">
+            <div class="r"><span class="k">Current balance</span><span class="v">£122,450</span></div>
+            <div class="r"><span class="k">Less: May scheduled</span><span class="v">−£49,702</span></div>
+            <div class="r r--total"><span class="k">Buffer</span><span class="v">£72,748</span></div>
+          </div>
+          <p class="note"><svg class="ic ic--sm"><use href="#i-success-solid"/></svg> Covered through May.</p>
+        </aside>
+
+        <!-- ledger flow strip -->
+        <div class="flowline" role="group" aria-label="Today's movement: opening 120,000; plus inflows 11,650; less outflows 9,200; current balance 122,450.">
+          <div class="cell"><span class="lab">Opening</span><span class="amt">£120,000</span></div>
+          <div class="op" aria-hidden="true">+</div>
+          <div class="cell"><span class="lab">Inflows today</span><span class="amt pos">£11,650</span></div>
+          <div class="op" aria-hidden="true">−</div>
+          <div class="cell"><span class="lab">Outflows today</span><span class="amt">£9,200</span></div>
+          <div class="op" aria-hidden="true">=</div>
+          <div class="cell"><span class="lab">Current balance</span><span class="amt">£122,450</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-rule">
+
+  <!-- ============================ PENDING APPROVAL ============================ -->
+  <section class="band" aria-labelledby="appr-h">
+    <div class="shell">
+      <div class="approvals">
+        <div class="head">
+          <div>
+            <p class="label" id="appr-h">Pending approval</p>
+            <p class="meta">Two payments are waiting on your authorisation. High-value payments require a confirmation step before they&rsquo;re released.</p>
+          </div>
+          <span class="count">2 requests &nbsp;·&nbsp; £49,702</span>
+        </div>
+
+        <div class="reqgrid">
+          <!-- request 1 -->
+          <article class="req">
+            <div class="req__top">
+              <div class="req__payee">
+                <span class="who">Amazon Business</span>
+                <span class="kind">Supplier invoice · GBP</span>
+              </div>
+              <div class="req__amt">
+                <div class="n"><span class="cur">£</span>4,502</div>
+                <div class="band"><span class="tintchip tintchip--warn"><svg class="ic"><use href="#i-warning-line"/></svg> Needs review</span></div>
+              </div>
+            </div>
+            <div class="req__meta">
+              <div class="r"><span class="k">Reference</span><span class="v">INV&#8209;AMZ&#8209;20486</span></div>
+              <div class="r"><span class="k">To account</span><span class="v mask">&bull;&bull;&#8209;&bull;&bull;&#8209;&bull;&bull; · &bull;&bull;&bull;&bull; 7714</span></div>
+              <div class="r"><span class="k">Value date</span><span class="v">15 May 2026</span></div>
+            </div>
+            <div class="req__foot">
+              <button class="btn btn--ghost js-approve" type="button"
+                data-payee="Amazon Business" data-amount="£4,502" data-ref="INV-AMZ-20486"
+                data-acct="&bull;&bull;-&bull;&bull;-&bull;&bull; · &bull;&bull;&bull;&bull; 7714" data-date="15 May 2026" data-high="false">
+                Review &amp; approve
+              </button>
+              <button class="tlink" type="button">Decline</button>
+              <span class="who"><span class="avatar" aria-hidden="true">SC</span> Raised by Sarah Chen, 2 days ago</span>
+            </div>
+          </article>
+
+          <!-- request 2 — HIGH VALUE -->
+          <article class="req">
+            <div class="req__top">
+              <div class="req__payee">
+                <span class="who">BrightHire Payroll Ltd</span>
+                <span class="kind">Monthly payroll run · GBP</span>
+              </div>
+              <div class="req__amt">
+                <div class="n"><span class="cur">£</span>45,200</div>
+                <div class="band"><span class="tintchip tintchip--high"><svg class="ic"><use href="#i-warning-solid"/></svg> High value</span></div>
+              </div>
+            </div>
+            <div class="req__meta">
+              <div class="r"><span class="k">Reference</span><span class="v">PAY&#8209;BH&#8209;MAY26</span></div>
+              <div class="r"><span class="k">To account</span><span class="v mask">&bull;&bull;&#8209;&bull;&bull;&#8209;&bull;&bull; · &bull;&bull;&bull;&bull; 2205</span></div>
+              <div class="r"><span class="k">Value date</span><span class="v">22 May 2026</span></div>
+            </div>
+            <div class="req__foot">
+              <button class="btn btn--ghost js-approve" type="button"
+                data-payee="BrightHire Payroll Ltd" data-amount="£45,200" data-ref="PAY-BH-MAY26"
+                data-acct="&bull;&bull;-&bull;&bull;-&bull;&bull; · &bull;&bull;&bull;&bull; 2205" data-date="22 May 2026" data-high="true">
+                Review &amp; approve
+              </button>
+              <button class="tlink" type="button">Decline</button>
+              <span class="who"><span class="avatar" aria-hidden="true">SC</span> Raised by Sarah Chen, 2 days ago</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-rule">
+
+  <!-- ============================ UPCOMING PAYMENTS ============================ -->
+  <section class="band" aria-labelledby="up-h">
+    <div class="shell">
+      <div class="upcoming">
+        <div class="head">
+          <div>
+            <p class="label" id="up-h">Upcoming payments</p>
+          </div>
+          <div class="tools">
+            <button class="btn btn--ghost" type="button" style="height:40px; min-width:0; padding:0 16px;">
+              <svg class="ic ic--sm"><use href="#i-filter"/></svg> Filter
+            </button>
+            <button class="btn btn--ghost" type="button" style="height:40px; min-width:0; padding:0 16px;">
+              <svg class="ic ic--sm"><use href="#i-download"/></svg> Export
+            </button>
+          </div>
+        </div>
+
+        <div class="tbl">
+          <table>
+            <caption class="sr-cap">Scheduled payments — 5 payments totalling £106,302.</caption>
+            <thead>
+              <tr>
+                <th scope="col" style="width:15%;">Date</th>
+                <th scope="col">Payee</th>
+                <th scope="col" style="width:20%;">Category</th>
+                <th scope="col" class="num" style="width:16%;">Amount</th>
+                <th scope="col" style="width:8%;"><span class="sr-only">Actions</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-label="Date"><span class="when"><span class="d">15 May</span><span class="rel">in 3 days</span></span></td>
+                <td data-label="Payee"><span class="payee"><span class="mono"><svg class="ic"><use href="#i-payments-gbp"/></svg></span><span class="txt"><b>Amazon Business</b><span>To &bull;&bull;&bull;&bull; 7714</span></span></span></td>
+                <td data-label="Category"><span class="cat">Suppliers</span></td>
+                <td data-label="Amount" class="num"><span class="amt">£4,502</span></td>
+                <td data-label="" class="num"><button class="iconbtn actlink" type="button" aria-label="More actions for Amazon Business" style="width:34px; height:34px;"><svg class="ic ic--sm"><use href="#i-menu-more"/></svg></button></td>
+              </tr>
+              <tr>
+                <td data-label="Date"><span class="when"><span class="d">22 May</span><span class="rel">in 10 days</span></span></td>
+                <td data-label="Payee"><span class="payee"><span class="mono"><svg class="ic"><use href="#i-payments-gbp"/></svg></span><span class="txt"><b>BrightHire Payroll Ltd</b><span>To &bull;&bull;&bull;&bull; 2205</span></span></span></td>
+                <td data-label="Category"><span class="cat">Payroll</span></td>
+                <td data-label="Amount" class="num"><span class="amt">£45,200</span></td>
+                <td data-label="" class="num"><button class="iconbtn actlink" type="button" aria-label="More actions for BrightHire Payroll Ltd" style="width:34px; height:34px;"><svg class="ic ic--sm"><use href="#i-menu-more"/></svg></button></td>
+              </tr>
+              <tr>
+                <td data-label="Date"><span class="when"><span class="d">22 Jul</span><span class="rel">next quarter</span></span></td>
+                <td data-label="Payee"><span class="payee"><span class="mono"><svg class="ic"><use href="#i-payments-gbp"/></svg></span><span class="txt"><b>HMRC — PAYE</b><span>To &bull;&bull;&bull;&bull; 0847</span></span></span></td>
+                <td data-label="Category"><span class="cat">Tax</span></td>
+                <td data-label="Amount" class="num"><span class="amt">£2,200</span></td>
+                <td data-label="" class="num"><button class="iconbtn actlink" type="button" aria-label="More actions for HMRC PAYE" style="width:34px; height:34px;"><svg class="ic ic--sm"><use href="#i-menu-more"/></svg></button></td>
+              </tr>
+              <tr>
+                <td data-label="Date"><span class="when"><span class="d">12 Aug</span><span class="rel">in 3 months</span></span></td>
+                <td data-label="Payee"><span class="payee"><span class="mono"><svg class="ic"><use href="#i-payments-gbp"/></svg></span><span class="txt"><b>British Gas Business</b><span>To &bull;&bull;&bull;&bull; 5120</span></span></span></td>
+                <td data-label="Category"><span class="cat">Utilities</span></td>
+                <td data-label="Amount" class="num"><span class="amt">£4,200</span></td>
+                <td data-label="" class="num"><button class="iconbtn actlink" type="button" aria-label="More actions for British Gas Business" style="width:34px; height:34px;"><svg class="ic ic--sm"><use href="#i-menu-more"/></svg></button></td>
+              </tr>
+              <tr>
+                <td data-label="Date"><span class="when"><span class="d">09 Sep</span><span class="rel">in 4 months</span></span></td>
+                <td data-label="Payee"><span class="payee"><span class="mono"><svg class="ic"><use href="#i-payments-gbp"/></svg></span><span class="txt"><b>Ravenscroft Properties</b><span>To &bull;&bull;&bull;&bull; 6698</span></span></span></td>
+                <td data-label="Category"><span class="cat">Rent</span></td>
+                <td data-label="Amount" class="num"><span class="amt">£50,200</span></td>
+                <td data-label="" class="num"><button class="iconbtn actlink" type="button" aria-label="More actions for Ravenscroft Properties" style="width:34px; height:34px;"><svg class="ic ic--sm"><use href="#i-menu-more"/></svg></button></td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td class="tot-k" colspan="3">5 scheduled payments</td>
+                <td class="num tot-v">£106,302</td>
+                <td></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-rule">
+
+  <!-- ============================ FOOTER ============================ -->
+  <footer class="foot">
+    <div class="shell">
+      <div class="grid12">
+        <p class="legal">
+          <b>Northgate Trading Ltd</b> — Business Current Account. Figures shown as of 12 May 2026 and may not reflect
+          transactions still processing. Account and sort-code details are masked for your security. HSBC UK Bank plc is
+          authorised by the Prudential Regulation Authority and regulated by the Financial Conduct Authority and the
+          Prudential Regulation Authority.
+        </p>
+        <nav class="flinks" aria-label="Footer">
+          <a href="#">Security</a>
+          <a href="#">Help</a>
+          <a href="#">Contact us</a>
+        </nav>
+      </div>
+    </div>
+  </footer>
+
+</main>
+
+<!-- ================================ MODAL ================================
+     Mandated confirmation step. Opened by any "Review & approve" button;
+     content is populated per request. High-value requests show an extra
+     caution note. Focus is trapped, background is inert, Esc closes,
+     focus returns to the trigger. (canon .cn-modals contract.) -->
+<div class="overlay" id="overlay">
+  <div class="dialog" id="dialog" role="dialog" aria-modal="true" aria-labelledby="d-title" aria-describedby="d-lede">
+    <button class="close" id="d-close" type="button" aria-label="Close"><svg class="ic"><use href="#i-close"/></svg></button>
+
+    <!-- form view -->
+    <div class="form">
+      <p class="label eyebrow" id="d-eyebrow">Confirm approval</p>
+      <h2 id="d-title">Approve payment</h2>
+      <p class="lede" id="d-lede">Review the details below. Approving releases this payment for processing on its value date.</p>
+
+      <div class="review">
+        <div class="r"><span class="k">Payee</span><span class="v" id="d-payee">—</span></div>
+        <div class="r"><span class="k">Reference</span><span class="v" id="d-ref">—</span></div>
+        <div class="r"><span class="k">To account</span><span class="v mask" id="d-acct">—</span></div>
+        <div class="r"><span class="k">Value date</span><span class="v" id="d-date">—</span></div>
+        <div class="r r--amt"><span class="k">Amount</span><span class="v" id="d-amt">—</span></div>
+      </div>
+
+      <div class="caution" id="d-caution" hidden>
+        <svg class="ic"><use href="#i-warning-line"/></svg>
+        <span>This is a high-value payment. Please confirm the payee and amount are correct — approval can&rsquo;t be undone once released.</span>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn--primary" id="d-confirm" type="button">Confirm &amp; approve</button>
+        <button class="btn btn--ghost" id="d-cancel" type="button">Cancel</button>
+      </div>
+    </div>
+
+    <!-- success view -->
+    <div class="done" id="d-done" aria-live="polite">
+      <svg class="ic tick" aria-hidden="true"><use href="#i-success-solid"/></svg>
+      <h2>Payment approved</h2>
+      <p class="lede" id="d-done-msg">The payment has been released for processing.</p>
+      <div class="actions">
+        <button class="btn btn--primary" id="d-done-close" type="button">Done</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---- button scale-physics: fixed-px grow/shrink from each button's width
+       (mirrors the canon Button so absolute motion is constant at any size) ---- */
+  var GROW = 6, PRESS = 8;
+  function sizeScale(){
+    document.querySelectorAll('.btn').forEach(function(b){
+      var w = b.offsetWidth || 1;
+      b.style.setProperty('--hs', (1 + GROW / w).toFixed(4));
+      b.style.setProperty('--ps', (1 - PRESS / w).toFixed(4));
+    });
+  }
+  window.addEventListener('resize', sizeScale); sizeScale();
+
+  /* ---- modal machinery (focus-trap + inert + Esc + return focus) ---- */
+  var overlay  = document.getElementById('overlay');
+  var dialog   = document.getElementById('dialog');
+  var main     = document.querySelector('main');
+  var head     = document.querySelector('.masthead');
+  var lastTrigger = null;
+
+  var out = {
+    eyebrow: document.getElementById('d-eyebrow'),
+    title:   document.getElementById('d-title'),
+    payee:   document.getElementById('d-payee'),
+    ref:     document.getElementById('d-ref'),
+    acct:    document.getElementById('d-acct'),
+    date:    document.getElementById('d-date'),
+    amt:     document.getElementById('d-amt'),
+    caution: document.getElementById('d-caution'),
+    doneMsg: document.getElementById('d-done-msg')
+  };
+
+  function focusable(){
+    return Array.prototype.slice.call(
+      dialog.querySelectorAll('button, [href], [tabindex]:not([tabindex="-1"])')
+    ).filter(function(el){ return !el.disabled && el.offsetParent !== null; });
+  }
+
+  function openModal(trigger){
+    lastTrigger = trigger;
+    var d = trigger.dataset;
+    var high = d.high === 'true';
+
+    dialog.classList.remove('is-done');
+    out.title.textContent   = high ? 'Approve high-value payment' : 'Approve payment';
+    out.payee.innerHTML     = d.payee;
+    out.ref.innerHTML       = d.ref;
+    out.acct.innerHTML      = d.acct;
+    out.date.innerHTML      = d.date;
+    out.amt.innerHTML       = d.amount;
+    out.caution.hidden      = !high;
+    out.doneMsg.innerHTML   = 'The payment of <strong>' + d.amount + '</strong> to ' + d.payee +
+                              ' has been released for processing on ' + d.date + '.';
+
+    main.inert = true; head.inert = true;
+    main.setAttribute('aria-hidden','true'); head.setAttribute('aria-hidden','true');
+
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){ overlay.classList.add('open'); }); });
+    setTimeout(function(){ var f = focusable(); if (f.length) f[0].focus(); }, 60);
+  }
+
+  function closeModal(){
+    overlay.classList.remove('open');
+    main.inert = false; head.inert = false;
+    main.removeAttribute('aria-hidden'); head.removeAttribute('aria-hidden');
+    if (lastTrigger) lastTrigger.focus();
+  }
+
+  document.querySelectorAll('.js-approve').forEach(function(btn){
+    btn.addEventListener('click', function(){ openModal(btn); });
+  });
+
+  document.getElementById('d-close').addEventListener('click', closeModal);
+  document.getElementById('d-cancel').addEventListener('click', closeModal);
+  document.getElementById('d-done-close').addEventListener('click', closeModal);
+  overlay.addEventListener('click', function(e){ if (e.target === overlay) closeModal(); });
+
+  /* confirm → swap to the success view, move focus to Done */
+  document.getElementById('d-confirm').addEventListener('click', function(){
+    dialog.classList.add('is-done');
+    setTimeout(function(){ document.getElementById('d-done-close').focus(); }, 40);
+  });
+
+  document.addEventListener('keydown', function(e){
+    if (!overlay.classList.contains('open')) return;
+    if (e.key === 'Escape'){ closeModal(); return; }
+    if (e.key === 'Tab'){
+      var f = focusable(); if (!f.length) return;
+      var a = f[0], z = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === a){ e.preventDefault(); z.focus(); }
+      else if (!e.shiftKey && document.activeElement === z){ e.preventDefault(); a.focus(); }
+    }
+  });
+})();
+</script>
+
+<style>
+/* screen-reader-only helpers (used on the table caption + hidden action label) */
+.sr-only,.sr-cap{ position:absolute!important; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
+</style>
+</body>
+</html>

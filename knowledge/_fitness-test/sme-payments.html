@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SME Payments — business banking (fitness-test, NOT gated)</title>
+<!--
+  END-TO-END PROOF #2 (not canon). Business-banking Payments screen for an SME finance admin, HSBC style,
+  assembled from canon component patterns + tokens. Figures are FIXED per the brief (not rounded/invented).
+  RULES honoured: red = destructive only (primary actions are BLACK, not red) · sentence-case labels ·
+  masked account numbers · same payee = same amount everywhere · the "covered" line matches the maths ·
+  square corners · neutral, sober, generous whitespace. High-value approval is gated behind a confirm step.
+-->
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
+  [data-theme="light"]{
+    --page:#FFFFFF; --surface:#FFFFFF; --surface-2:#F7F7F6; --border:#D7D8D6; --rule:#E6E6E4;
+    --text:#1D1D1D; --muted:#6A6A66; --icon:#333333;
+    --ink:#000000; --ink-text:#FFFFFF; --ink-hover:#333333;     /* black "primary" action — red is reserved */
+    --pos:#00847F; --danger:#DB0011; --focus:#305A85;
+    --note:#F2F4F2; --note-accent:#00847F; }
+  [data-theme="dark"]{
+    --page:#000000; --surface:#1D1D1D; --surface-2:#161616; --border:#404040; --rule:#2A2A2A;
+    --text:#FFFFFF; --muted:#9B9B9B; --icon:#FFFFFF;
+    --ink:#FFFFFF; --ink-text:#1D1D1D; --ink-hover:#EDEDED;
+    --pos:#3FB6A8; --danger:#FF5763; --focus:#4587A7;
+    --note:#10130F; --note-accent:#3FB6A8; }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:var(--font); background:var(--surface-2); color:var(--text); -webkit-font-smoothing:antialiased;
+    transition:background var(--ease), color var(--ease); padding:24px; display:flex; justify-content:center; align-items:flex-start;}
+  .demo-controls{position:fixed; top:12px; left:12px; z-index:30; display:flex; gap:.5rem; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:6px 12px; border:1px solid var(--border); background:var(--surface); color:var(--text); cursor:pointer;}
+
+  .phone{ width:400px; max-width:100%; min-height:860px; background:var(--page); border:1px solid var(--border); position:relative; overflow:hidden; display:flex; flex-direction:column; }
+  .appbar{ display:flex; align-items:center; gap:10px; height:60px; padding:0 16px; border-bottom:1px solid var(--rule); flex:none; }
+  .brandtick{ width:10px; height:18px; background:var(--danger); flex:none; }   /* sole brand-red touch */
+  .appbar h1{ margin:0; font:500 18px/1.2 var(--font); flex:1; }
+  .appbar .co{ font:400 12px/1.2 var(--font); color:var(--muted); }
+
+  .scroll{ flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:20px; }
+  .sec-h{ display:flex; align-items:baseline; justify-content:space-between; margin-bottom:10px; }
+  .sec-h h2{ margin:0; font:500 16px/1.2 var(--font); }
+  .sec-h .meta{ font:400 13px/1.2 var(--font); color:var(--muted); }
+
+  .card{ background:var(--surface); border:1px solid var(--border); padding:18px; }
+
+  /* Cash position */
+  .cp-top{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; }
+  .cp-label{ font:400 13px/1.3 var(--font); color:var(--muted); }
+  .cp-balance{ font:500 30px/1.05 var(--font); margin:2px 0 0; letter-spacing:-.01em; }
+  .cp-net{ font:500 14px/1.2 var(--font); color:var(--pos); white-space:nowrap; }
+  .cp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--rule); margin-top:16px; border:1px solid var(--rule); }
+  .cp-cell{ background:var(--surface); padding:12px 14px; }
+  .cp-cell .k{ font:400 12px/1.3 var(--font); color:var(--muted); }
+  .cp-cell .v{ font:500 16px/1.3 var(--font); margin-top:3px; }
+  .v.pos{ color:var(--pos); }
+
+  /* Coverage note — sober, not red */
+  .note{ display:flex; gap:10px; background:var(--note); border:1px solid var(--border); border-left:3px solid var(--note-accent); padding:14px 16px; }
+  .note .ic{ flex:none; width:18px; height:18px; color:var(--note-accent); margin-top:1px; } .note .ic svg{ width:18px; height:18px; fill:currentColor; }
+  .note .bd{ font:400 14px/1.5 var(--font); } .note .bd strong{ font-weight:500; }
+  .note .math{ color:var(--muted); }
+
+  /* Approval cards */
+  .appr{ background:var(--surface); border:1px solid var(--border); padding:16px; display:flex; flex-direction:column; gap:12px; }
+  .appr + .appr{ margin-top:12px; }
+  .appr .row1{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+  .appr .payee{ font:500 16px/1.3 var(--font); } .appr .by{ font:400 13px/1.3 var(--font); color:var(--muted); margin-top:2px; }
+  .appr .amt{ font:500 18px/1.2 var(--font); white-space:nowrap; }
+  .flag{ display:inline-flex; align-items:center; gap:6px; font:400 12px/1 var(--font); color:var(--muted); }
+  .flag .d{ width:6px; height:6px; background:var(--note-accent); }
+  .actions{ display:flex; gap:10px; }
+  .btn{ height:44px; padding:0 18px; border:1px solid transparent; border-radius:0; cursor:pointer; font:500 15px/1 var(--font);
+    display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:background var(--ease), filter var(--ease); }
+  .btn:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }
+  .btn.primary{ background:var(--ink); color:var(--ink-text); border-color:var(--ink); flex:1; }
+  .btn.primary:hover{ background:var(--ink-hover); border-color:var(--ink-hover); }
+  .btn.ghost{ background:transparent; color:var(--text); border-color:var(--border); }
+  .btn.ghost:hover{ background:var(--surface-2); }
+  .btn.danger{ background:transparent; color:var(--danger); border-color:var(--danger); }    /* red = destructive only */
+  .btn.danger:hover{ filter:brightness(.92); }
+  .btn.full{ width:100%; }
+
+  /* Upcoming payments */
+  .up{ background:var(--surface); border:1px solid var(--border); }
+  .up .r{ display:flex; align-items:center; gap:12px; padding:13px 16px; border-top:1px solid var(--rule); }
+  .up .r:first-child{ border-top:0; }
+  .up .date{ font:500 13px/1.2 var(--font); width:54px; flex:none; color:var(--text); }
+  .up .nm{ flex:1; min-width:0; font:400 15px/1.3 var(--font); }
+  .up .amt{ font:500 15px/1.3 var(--font); white-space:nowrap; }
+  .up .total{ display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-top:1px solid var(--border); background:var(--surface-2); }
+  .up .total .k{ font:400 14px/1.2 var(--font); color:var(--muted); } .up .total .v{ font:500 17px/1.2 var(--font); }
+
+  /* Confirmation step (Modals canon) */
+  .overlay{ position:absolute; inset:0; background:rgba(0,0,0,.45); display:none; align-items:flex-end; }
+  .overlay.open{ display:flex; }
+  .dialog{ background:var(--surface); border-top:1px solid var(--border); width:100%; padding:20px 18px 18px; }
+  .dialog h3{ margin:0 0 6px; font:500 18px/1.2 var(--font); }
+  .dialog .lead{ margin:0 0 14px; font:400 15px/1.5 var(--font); color:var(--text); }
+  .dialog .kv{ border:1px solid var(--border); margin-bottom:16px; }
+  .dialog .kv .kvr{ display:flex; justify-content:space-between; gap:12px; padding:11px 14px; border-top:1px solid var(--rule); font:400 14px/1.3 var(--font); }
+  .dialog .kv .kvr:first-child{ border-top:0; } .dialog .kv .kvr .k{ color:var(--muted); } .dialog .kv .kvr .v{ font-weight:500; }
+  .dialog .acts{ display:flex; gap:10px; }
+  .toast{ position:absolute; left:16px; right:16px; bottom:16px; background:var(--ink); color:var(--ink-text); padding:13px 16px; font:400 14px/1.4 var(--font); display:none; }
+  .toast.show{ display:block; }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition-duration:.01ms !important; } }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls"><button id="themeToggle" type="button">◐ Theme</button></div>
+
+  <div class="phone" id="phone">
+    <header class="appbar">
+      <span class="brandtick" aria-hidden="true"></span>
+      <h1>Payments</h1>
+      <span class="co">Northwind Trading Ltd</span>
+    </header>
+
+    <div class="scroll">
+
+      <!-- Cash position -->
+      <section>
+        <div class="sec-h"><h2>Cash position</h2><span class="meta">As of 12 May 2026</span></div>
+        <div class="card">
+          <div class="cp-top">
+            <div><div class="cp-label">Current balance</div><div class="cp-balance">£122,450</div></div>
+            <div class="cp-net">+£2,450 net today</div>
+          </div>
+          <div class="cp-grid">
+            <div class="cp-cell"><div class="k">Opening</div><div class="v">£120,000</div></div>
+            <div class="cp-cell"><div class="k">Est. closing</div><div class="v">£124,000</div></div>
+            <div class="cp-cell"><div class="k">Inflows today</div><div class="v pos">+£11,650</div></div>
+            <div class="cp-cell"><div class="k">Outflows today</div><div class="v">−£9,200</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Coverage -->
+      <section>
+        <div class="note">
+          <span class="ic" aria-hidden="true"><svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="9"/><path d="M7.22 13.55 3.59 9.92l1.27-1.27 2.36 2.36 5.93-5.93 1.27 1.27-7.2 7.2Z" style="fill:var(--note)"/></svg></span>
+          <div class="bd"><strong>Covered through May.</strong> <span class="math">Your £122,450 balance covers £49,702 of scheduled May payments, leaving a £72,748 buffer.</span></div>
+        </div>
+      </section>
+
+      <!-- Pending approval -->
+      <section>
+        <div class="sec-h"><h2>Pending approval</h2><span class="meta">2 awaiting</span></div>
+
+        <div class="appr">
+          <div class="row1">
+            <div><div class="payee">Amazon Business</div><div class="by">Requested by Sarah Chen · 2 days ago</div></div>
+            <div class="amt">£4,502</div>
+          </div>
+          <div class="actions">
+            <button class="btn danger" type="button">Reject</button>
+            <button class="btn primary" type="button" data-approve="Amazon Business" data-amt="£4,502" data-when="15 May" data-high="0">Approve</button>
+          </div>
+        </div>
+
+        <div class="appr">
+          <div class="row1">
+            <div><div class="payee">BrightHire Payroll Ltd</div><div class="by">Requested by Sarah Chen · 2 days ago</div></div>
+            <div class="amt">£45,200</div>
+          </div>
+          <span class="flag"><span class="d" aria-hidden="true"></span>High value — confirmation required</span>
+          <div class="actions">
+            <button class="btn danger" type="button">Reject</button>
+            <button class="btn primary" type="button" data-approve="BrightHire Payroll Ltd" data-amt="£45,200" data-when="22 May" data-high="1">Review &amp; approve</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Upcoming payments -->
+      <section>
+        <div class="sec-h"><h2>Upcoming payments</h2><span class="meta">5 scheduled</span></div>
+        <div class="up">
+          <div class="r"><span class="date">15 May</span><span class="nm">Amazon Business</span><span class="amt">£4,502</span></div>
+          <div class="r"><span class="date">22 May</span><span class="nm">BrightHire Payroll Ltd</span><span class="amt">£45,200</span></div>
+          <div class="r"><span class="date">22 Jul</span><span class="nm">HMRC — PAYE</span><span class="amt">£2,200</span></div>
+          <div class="r"><span class="date">12 Aug</span><span class="nm">British Gas Business</span><span class="amt">£4,200</span></div>
+          <div class="r"><span class="date">09 Sep</span><span class="nm">Ravenscroft Properties</span><span class="amt">£50,200</span></div>
+          <div class="total"><span class="k">Total · 5 payments</span><span class="v">£106,302</span></div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Confirmation step (no one-click approve for high value) -->
+    <div class="overlay" id="overlay">
+      <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-t">
+        <h3 id="dlg-t">Confirm approval</h3>
+        <p class="lead" id="dlg-lead">Approve a payment of £45,200 to BrightHire Payroll Ltd?</p>
+        <div class="kv">
+          <div class="kvr"><span class="k">Payee</span><span class="v" id="dlg-payee">BrightHire Payroll Ltd</span></div>
+          <div class="kvr"><span class="k">Amount</span><span class="v" id="dlg-amt">£45,200</span></div>
+          <div class="kvr"><span class="k">From</span><span class="v">Current account ···4821</span></div>
+          <div class="kvr"><span class="k">Scheduled</span><span class="v" id="dlg-when">22 May 2026</span></div>
+        </div>
+        <div class="acts">
+          <button class="btn ghost" type="button" id="dlg-cancel">Cancel</button>
+          <button class="btn primary" type="button" id="dlg-confirm">Confirm approval</button>
+        </div>
+      </div>
+    </div>
+    <div class="toast" id="toast">Payment approved.</div>
+  </div>
+
+  <script>
+    const phone=document.getElementById('phone'), overlay=document.getElementById('overlay'), toast=document.getElementById('toast');
+    let pending=null;
+    function openConfirm(p,a,w){ document.getElementById('dlg-payee').textContent=p; document.getElementById('dlg-amt').textContent=a;
+      document.getElementById('dlg-when').textContent=w+' 2026'; document.getElementById('dlg-lead').textContent='Approve a payment of '+a+' to '+p+'?';
+      overlay.classList.add('open'); }
+    function showToast(msg){ toast.textContent=msg; toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),2200); }
+    phone.addEventListener('click', e=>{
+      const ap=e.target.closest('[data-approve]');
+      if(ap){ const p=ap.dataset.approve, a=ap.dataset.amt, w=ap.dataset.when;
+        if(ap.dataset.high==='1'){ pending={p,a}; openConfirm(p,a,w); }   // high value → confirm step
+        else { showToast(p+' approved · '+a); }                            // lower value → direct (still 2-tap)
+        return; }
+      if(e.target.id==='dlg-cancel'){ overlay.classList.remove('open'); pending=null; }
+      if(e.target.id==='dlg-confirm'){ overlay.classList.remove('open'); if(pending){ showToast(pending.p+' approved · '+pending.a); pending=null; } }
+    });
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+  </script>
+</body>
+</html>

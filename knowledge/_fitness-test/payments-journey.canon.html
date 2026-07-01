@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payments journey — composed from canon.css (real reviewed components, no hand-derived CSS)</title>
+<!--
+  COMPOSITION PROOF.  Same Dashboard -> Pay -> Review -> Confirm journey as
+  payments-journey.html, assembled from knowledge/canon/canon.css:
+    • .cn-<component> = the GENERATED, decision-rich components (verbatim from the
+      reviewed snippets — same CSS, states, a11y findings). Markup is the snippet's
+      own markup wrapped in its scope class.
+    • Summary, action bar, confirmation + account card are now GATED .cn-* components
+      (reviewed snippets) and composed as such below.
+    • .c-* = canon layout utilities + a few patterns still as utils here (tab bar, choice
+      row, eyebrow).
+  The <style> below is demo harness only — 0 colours, 0 component CSS. If a component
+  changes, it changes in its snippet -> regenerate canon -> every screen updates.
+-->
+<link rel="stylesheet" href="../canon/canon.css">
+<style>
+  /* ---- DEMO HARNESS ONLY (no components, no colours re-derived) ---- */
+  body{ min-height:100vh; margin:0; display:flex; align-items:flex-start; justify-content:center; padding:24px; background:var(--surface-hover); }
+  .frame{ height:800px; overflow:hidden; }
+  .screen{ display:none; flex-direction:column; flex:1; overflow-y:auto; }
+  .screen.is-active{ display:flex; }
+  .demo-controls{ position:fixed; top:12px; left:12px; z-index:10; display:flex; gap:.5rem; }
+  .demo-controls button{ font:inherit; font-size:13px; padding:6px 12px; border:1px solid var(--border); background:var(--surface); color:var(--text); cursor:pointer; }
+  .spacer{ width:40px; flex:none; }
+  .pad{ padding:16px; display:flex; flex-direction:column; gap:16px; }
+  .pad-tight{ padding:12px 16px 0; display:flex; flex-direction:column; gap:4px; }
+</style>
+</head>
+<body class="canon">
+  <div class="demo-controls">
+    <button id="themeToggle" type="button">◐ Theme</button>
+    <button id="reset" type="button">⟲ Restart</button>
+  </div>
+
+  <!-- icon sprite — VERBATIM library glyphs (status-icons/*, global-controls/close), same as the reviewed
+       components. Compose icons via <use href="#ic-..."/>; never hand-draw. -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="ic-error" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.30911 1.68194L0.109113 15.7999C-0.199887 16.3319 0.184113 16.9999 0.800113 16.9999H17.2001C17.8161 16.9999 18.2001 16.3319 17.8911 15.7999L9.69111 1.68194C9.38311 1.15094 8.61711 1.15094 8.30911 1.68194Z" fill="currentColor"/><path style="fill:var(--mark)" d="M9.9001 5H8.1001V11H9.9001V5Z"/><path style="fill:var(--mark)" d="M9 14.8259C9.69036 14.8259 10.25 14.2663 10.25 13.5759C10.25 12.8856 9.69036 12.3259 9 12.3259C8.30964 12.3259 7.75 12.8856 7.75 13.5759C7.75 14.2663 8.30964 14.8259 9 14.8259Z"/></symbol>
+    <symbol id="ic-warning" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M9.90107 3.80005H8.10107V9.80005H9.90107V3.80005Z"/><path style="fill:var(--mark)" d="M9.00078 14.2C9.66352 14.2 10.2008 13.6628 10.2008 13C10.2008 12.3373 9.66352 11.8 9.00078 11.8C8.33804 11.8 7.80078 12.3373 7.80078 13C7.80078 13.6628 8.33804 14.2 9.00078 14.2Z"/></symbol>
+    <symbol id="ic-success" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z"/></symbol>
+    <symbol id="ic-info" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M9 6.25C9.69036 6.25 10.25 5.69036 10.25 5C10.25 4.30964 9.69036 3.75 9 3.75C8.30964 3.75 7.75 4.30964 7.75 5C7.75 5.69036 8.30964 6.25 9 6.25Z"/><path style="fill:var(--mark)" d="M9.89912 8.25H8.09912V14.25H9.89912V8.25Z"/></symbol>
+    <symbol id="ic-close" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"/></symbol>
+    <symbol id="ic-chevron-left" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.8483 17L5.85034 9L13.8483 1H12.1523L4.15234 9L12.1523 17H13.8483Z" fill="currentColor"/></symbol>
+    <symbol id="ic-more" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 3C9.828 3 10.5 2.328 10.5 1.5C10.5 0.672 9.828 0 9 0C8.171 0 7.5 0.672 7.5 1.5C7.5 2.328 8.171 3 9 3ZM9 15C8.171 15 7.5 15.672 7.5 16.5C7.5 17.328 8.171 18 9 18C9.828 18 10.5 17.328 10.5 16.5C10.5 15.672 9.828 15 9 15ZM9 7.5C8.171 7.5 7.5 8.172 7.5 9C7.5 9.828 8.171 10.5 9 10.5C9.828 10.5 10.5 9.828 10.5 9C10.5 8.172 9.828 7.5 9 7.5Z" fill="currentColor"/></symbol>
+    <symbol id="ic-arrow-right" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M5 17L5 1L13 9L5 17Z" fill="currentColor"/></symbol>
+    <symbol id="ic-home" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0L1 8V18H8V11.2H10V18H17V8L9 0ZM15.8 16.8H11.2V10H6.8V16.8H2.2V8.497L9 1.697L15.8 8.497V16.8Z" fill="currentColor"/></symbol>
+    <symbol id="ic-card" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 6H1.5C0.675 6 0 6.675 0 7.5V16.5C0 17.325 0.675 18 1.5 18H16.5C17.325 18 18 17.325 18 16.5V7.5C18 6.675 17.325 6 16.5 6ZM16.8 16.5C16.8 16.663 16.663 16.8 16.5 16.8H1.5C1.337 16.8 1.2 16.663 1.2 16.5V10.2H16.8V16.5ZM16.8 9H1.2V7.5C1.2 7.337 1.337 7.2 1.5 7.2H16.5C16.663 7.2 16.8 7.337 16.8 7.5V9ZM15 12H12V13.2H15V12ZM13.05 1.221C13.085 1.207 13.122 1.2 13.159 1.2C13.262 1.2 13.389 1.258 13.441 1.387L14.82 4.8H16.114L14.553 0.938C14.318 0.355 13.753 0 13.159 0C12.973 0 12.784 0.035 12.601 0.109L0.988 4.8H4.192L13.05 1.221Z" fill="currentColor"/></symbol>
+    <symbol id="ic-payments" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.85 3.35V5.05C7.26 4.88 6.64 4.8 6 4.8C5.94 4.8 5.88 4.8 5.82 4.81V3.35H7.85ZM18 1.5V9.76C18 10.59 17.33 11.26 16.5 11.26H13.16C13.12 10.85 13.04 10.45 12.93 10.06H16.5C16.67 10.06 16.8 9.92 16.8 9.76V1.5C16.8 1.33 16.67 1.2 16.5 1.2H4.27C4.11 1.2 3.97 1.33 3.97 1.5V5.09C3.55 5.21 3.15 5.37 2.77 5.57V1.5C2.77 0.67 3.44 0 4.27 0H16.5C17.33 0 18 0.67 18 1.5ZM6 7.2C3.35 7.2 1.2 9.35 1.2 12C1.2 14.65 3.35 16.8 6 16.8C8.65 16.8 10.8 14.65 10.8 12C10.8 9.35 8.65 7.2 6 7.2ZM6 6C9.31 6 12 8.69 12 12C12 15.31 9.31 18 6 18C2.69 18 0 15.31 0 12C0 8.69 2.69 6 6 6ZM5.4 12.59H2.43V11.39H5.4V8.42H6.6V11.39H9.57V12.59H6.6V15.56H5.4V12.59Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <div class="c-screen frame" id="phone">
+
+    <!-- ============ SCREEN 1 — DASHBOARD ============ -->
+    <section class="screen is-active" data-screen="dashboard">
+      <header class="cn-headers"><div class="content-header">
+        <span class="spacer"></span>
+        <h1>Accounts</h1>
+        <button aria-label="More options"><svg aria-hidden="true"><use href="#ic-more"/></svg></button>
+      </div></header>
+
+      <div class="pad">
+        <div class="cn-account-card">
+          <div class="account-card" role="group" aria-labelledby="acct-lbl">
+            <span class="label" id="acct-lbl">Current account · ···4821</span>
+            <span class="balance">£3,248.55</span>
+            <span class="meta-row">
+              <span class="tag">Everyday</span>
+              <span class="chip ok"><span class="dot" aria-hidden="true"></span><span>Up to date</span></span>
+            </span>
+          </div>
+        </div>
+
+        <div class="cn-button"><button class="btn primary full" data-go="pay">Make a payment</button></div>
+
+        <h2 class="c-eyebrow">Recent activity</h2>
+        <div class="cn-list-items"><ul class="list">
+          <li><button class="row" type="button"><span class="avatar" role="img" aria-label="Jordan Lee">JL</span><span class="body"><span class="title">Jordan Lee</span><span class="desc">Yesterday · Transfer</span></span><span class="trail"><span class="amount">−£250.00</span></span></button></li>
+          <li><button class="row" type="button"><span class="avatar" role="img" aria-label="Spotify">SS</span><span class="body"><span class="title">Spotify</span><span class="desc">2 Jun · Subscription</span></span><span class="trail"><span class="amount">−£11.99</span></span></button></li>
+          <li><button class="row" type="button"><span class="avatar" role="img" aria-label="Acme Corp">AC</span><span class="body"><span class="title">Acme Corp</span><span class="desc">1 Jun · Salary</span></span><span class="trail"><span class="amount">+£2,400.00</span></span></button></li>
+        </ul></div>
+
+        <div class="cn-links"><a class="arrow" href="#"><span class="lbl">View all transactions</span><span class="tip" aria-hidden="true"><svg aria-hidden="true"><use href="#ic-arrow-right"/></svg></span></a></div>
+      </div>
+
+      <nav class="c-tabbar" style="margin-top:auto">
+        <a class="c-tabbar__item is-active"><svg aria-hidden="true"><use href="#ic-home"/></svg>Home</a>
+        <a class="c-tabbar__item"><svg aria-hidden="true"><use href="#ic-card"/></svg>Cards</a>
+        <a class="c-tabbar__item"><svg aria-hidden="true"><use href="#ic-payments"/></svg>Payments</a>
+      </nav>
+    </section>
+
+    <!-- ============ SCREEN 2 — MAKE A PAYMENT ============ -->
+    <section class="screen" data-screen="pay">
+      <header class="cn-headers"><div class="content-header">
+        <button aria-label="Back" data-go="dashboard"><svg aria-hidden="true"><use href="#ic-chevron-left"/></svg></button>
+        <h1>Make a payment</h1>
+        <span class="spacer"></span>
+      </div></header>
+
+      <div class="pad-tight cn-progress-tracker">
+        <p class="count" aria-live="polite">Step 1 of 3 · Details</p>
+        <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="3" aria-valuenow="1" aria-valuetext="Step 1 of 3 · Details">
+          <span class="seg done"></span><span class="seg"></span><span class="seg"></span>
+        </div>
+      </div>
+
+      <div class="pad cn-input-fields">
+        <div class="field" style="max-width:none">
+          <div class="lbl" id="from-lbl">From account</div>
+          <div class="cn-selection-controls c-choice-group" role="radiogroup" aria-labelledby="from-lbl">
+            <input type="radio" id="acct1" name="from" checked>
+            <label for="acct1" class="c-choice-row"><span class="radio"><span class="dot"></span></span><span class="c-choice-row__body"><span class="c-choice-row__title">Current account</span><span class="c-choice-row__sub">···4821 · £3,248.55 available</span></span></label>
+            <input type="radio" id="acct2" name="from">
+            <label for="acct2" class="c-choice-row"><span class="radio"><span class="dot"></span></span><span class="c-choice-row__body"><span class="c-choice-row__title">Savings</span><span class="c-choice-row__sub">···9930 · £12,000.00 available</span></span></label>
+          </div>
+        </div>
+
+        <div class="field" style="max-width:none">
+          <div class="lbl"><label for="amt">Amount</label></div>
+          <p class="help-text" id="amthelp">Daily limit £25,000</p>
+          <div class="box"><span class="prefix" aria-hidden="true">GBP</span><input id="amt" type="text" inputmode="decimal" value="250.00" aria-describedby="amthelp"></div>
+        </div>
+
+        <div class="field" style="max-width:none">
+          <div class="lbl"><label for="ref">Reference</label></div>
+          <div class="box"><input id="ref" type="text" placeholder="e.g. Rent"></div>
+        </div>
+      </div>
+
+      <div class="c-actionbar cn-button" style="margin-top:auto"><button class="btn primary full" data-go="review">Continue</button></div>
+    </section>
+
+    <!-- ============ SCREEN 3 — REVIEW & CONFIRM ============ -->
+    <section class="screen" data-screen="review">
+      <header class="cn-headers"><div class="content-header">
+        <button aria-label="Back" data-go="pay"><svg aria-hidden="true"><use href="#ic-chevron-left"/></svg></button>
+        <h1>Review &amp; confirm</h1>
+        <span class="spacer"></span>
+      </div></header>
+
+      <div class="pad-tight cn-progress-tracker">
+        <p class="count" aria-live="polite">Step 3 of 3 · Review</p>
+        <div class="track" role="progressbar" aria-valuemin="1" aria-valuemax="3" aria-valuenow="3" aria-valuetext="Step 3 of 3 · Review">
+          <span class="seg done"></span><span class="seg done"></span><span class="seg done"></span>
+        </div>
+      </div>
+
+      <div class="pad">
+        <div class="cn-notifications"><div class="note tint info" role="status">
+          <span class="ic"><svg aria-hidden="true"><use href="#ic-info"/></svg></span>
+          <span class="main"><strong>Check the details.</strong> Payments to a new payee can take up to 2 hours.</span>
+          <button class="x" aria-label="Dismiss notification"><svg aria-hidden="true"><use href="#ic-close"/></svg></button>
+        </div></div>
+
+        <div class="cn-summary" style="border:1px solid var(--border); padding:0 14px">
+          <dl class="summary">
+            <div class="summary__row"><dt class="summary__k">To</dt><dd class="summary__v">Jordan Lee · ···6647</dd></div>
+            <div class="summary__row"><dt class="summary__k">From</dt><dd class="summary__v">Current ···4821</dd></div>
+            <div class="summary__row"><dt class="summary__k">Amount</dt><dd class="summary__v">£250.00</dd></div>
+            <div class="summary__row"><dt class="summary__k">Reference</dt><dd class="summary__v">Rent</dd></div>
+            <div class="summary__row"><dt class="summary__k">Date</dt><dd class="summary__v">Today</dd></div>
+          </dl>
+        </div>
+
+        <div class="cn-links"><a class="lnk" data-go="pay" href="#">Edit payment</a></div>
+      </div>
+
+      <div class="cn-action-bar" style="margin-top:auto">
+        <div class="action-bar-region">
+          <div class="action-bar">
+            <button class="btn secondary" type="button" data-go="pay">Back</button>
+            <button class="btn primary" type="button" data-go="done">Confirm payment</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SCREEN 4 — CONFIRMATION ============ -->
+    <section class="screen" data-screen="done">
+      <div class="cn-confirmation" style="flex:1;display:flex;align-items:center;justify-content:center">
+        <div class="confirm" role="group" aria-labelledby="cf-title">
+          <svg class="success" viewBox="0 0 18 18" aria-hidden="true"><path d="M9 0C4.03 0 0 4.03 0 9C0 13.97 4.03 18 9 18C13.97 18 18 13.97 18 9C18 4.03 13.97 0 9 0ZM7.22 13.55L3.59 9.92L4.86 8.65L7.22 11.01L13.15 5.08L14.42 6.35L7.22 13.55Z"/></svg>
+          <h2 class="confirm__title" id="cf-title">Payment sent</h2>
+          <p class="confirm__msg">£250.00 sent to Jordan Lee. Reference: Rent.</p>
+          <div class="confirm__actions">
+            <button class="btn primary" type="button" data-go="dashboard">Back to accounts</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    document.querySelectorAll('.cn-button .btn:not(.full)').forEach(b=>{
+      const w=b.offsetWidth||120; b.style.setProperty('--hs', 1+6/w); b.style.setProperty('--ps', 1-5/w);
+    });
+    // input-modality: the prominent keyboard focus ring shows for keyboard users only (suppressed on pointer)
+    const _root=document.documentElement;
+    addEventListener('keydown', e=>{ if(e.key==='Tab') _root.dataset.modality='keyboard'; });
+    addEventListener('mousedown', ()=> _root.dataset.modality='pointer');
+    addEventListener('touchstart', ()=> _root.dataset.modality='pointer', {passive:true});
+    const phone=document.getElementById('phone');
+    function show(id){ phone.querySelectorAll('.screen').forEach(s=> s.classList.toggle('is-active', s.dataset.screen===id)); const a=phone.querySelector('.screen.is-active'); if(a) a.scrollTop=0; }
+    phone.addEventListener('click', e=>{ const t=e.target.closest('[data-go]'); if(t){ e.preventDefault(); show(t.dataset.go); return; } const x=e.target.closest('.note .x'); if(x){ x.closest('.note').classList.add('removing'); } });
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const h=document.documentElement; h.setAttribute('data-theme', h.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    document.getElementById('reset').addEventListener('click', ()=> show('dashboard'));
+  </script>
+</body>
+</html>

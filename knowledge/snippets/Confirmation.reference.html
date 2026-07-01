@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Confirmation / success — reference candidate (gap-pattern → review)</title>
+<!-- CANDIDATE REFERENCE for Confirmation / success (the end-of-flow success screen; surfaced by the
+     journey gap report, NOT yet design-reviewed — meta carries REVIEW flags). Centred: a success-solid
+     glyph (rag/success), a heading, a short message, then the next actions (Button atom, reused). The
+     success is carried by the HEADING TEXT, not the green icon alone (1.4.1) — the icon is aria-hidden.
+     role="group" + aria-labelledby announces the panel as a unit. Sentence case (house type rule).
+     MOTION: the success pops in (spring), then title / message / actions rise in sequence; disabled under
+     reduced-motion (the Replay button re-runs it). LAYOUT: vertically centred in the viewport on mobile
+     (≤480px). TODO: a desktop variant (wider / dialog) is still needed — see meta + _COMPONENT-GAPS.md. -->
+<style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-30. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; --press:90ms cubic-bezier(0,0,.58,1); }
+  [data-theme="light"]{ --success:#00847F; --text:#333333; --muted:#545454; --page:#FFFFFF;
+    --pri:#DB0011; --pri-hover:#BA1110; --on-pri:#FFFFFF; --ghost-hover:#F3F3F3; }
+  [data-theme="dark"]{ --success:#00847F; --text:#FFFFFF; --muted:#9B9B9B; --page:#000000;
+    --pri:#DB0011; --pri-hover:#BA1110; --on-pri:#FFFFFF; --ghost-hover:#212121; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 14px; border:1px solid var(--muted); background:transparent; color:var(--text); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--text); outline-offset:2px;}
+
+  /* ---- Confirmation / success ---- */
+  .confirm{ display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:12px; max-width:380px; margin:0 auto; padding:40px 24px; }
+  .confirm .success{ width:56px; height:56px; fill:var(--success); }   /* success-solid glyph; tick is a cutout showing the page behind */
+  .confirm__title{ font:400 24px/1.2 var(--font); color:var(--text); margin:0; }
+  .confirm__msg{ font:400 15px/1.5 var(--font); color:var(--muted); margin:0; }
+  .confirm__actions{ display:flex; flex-direction:column; gap:12px; width:100%; margin-top:12px; }
+  /* actions = Button atom (reused); full-width so press-only physics (no hover-grow — would overflow) */
+  .confirm .btn{ height:44px; min-width:96px; width:100%; padding:0 20px; border:0; border-radius:0; cursor:pointer; font:500 16px/1 var(--font);
+    display:inline-flex; align-items:center; justify-content:center; transition:background var(--ease), filter var(--press); }
+  .confirm .btn:focus-visible{ outline:2px solid var(--text); outline-offset:2px; }
+  .confirm .btn:active{ filter:brightness(.9); }
+  .confirm .btn.primary{ background:var(--pri); color:var(--on-pri); }
+  .confirm .btn.primary:hover{ background:var(--pri-hover); }
+  .confirm .btn.ghost{ background:transparent; color:var(--text); }
+  .confirm .btn.ghost:hover{ background:var(--ghost-hover); }
+
+  /* mobile: vertically centre the confirmation in the viewport (desktop variant is a TODO — see meta) */
+  @media (max-width:480px){ .confirm{ min-height:100dvh; padding:24px; } }
+
+  /* entrance — success pops in (spring), then title / message / actions rise in sequence */
+  @keyframes pop{ 0%{ transform:scale(.5); opacity:0; } 60%{ transform:scale(1.06); } 100%{ transform:scale(1); opacity:1; } }
+  @keyframes rise{ from{ transform:translateY(10px); opacity:0; } to{ transform:translateY(0); opacity:1; } }
+  .confirm .success{ animation:pop 460ms cubic-bezier(.5,1.6,.4,1) both; }
+  .confirm__title{ animation:rise 360ms ease 140ms both; }
+  .confirm__msg{ animation:rise 360ms ease 220ms both; }
+  .confirm__actions{ animation:rise 360ms ease 300ms both; }
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+    .confirm .success,.confirm__title,.confirm__msg,.confirm__actions{ animation:none !important; }
+    .confirm .btn:active{ filter:none !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><button id="replay" type="button">↺ Replay animation</button><span>Confirmation / success — canonical reference (narrow the window to see mobile centring)</span></div>
+
+  <div class="confirm" role="group" aria-labelledby="cf-title">
+    <svg class="success" viewBox="0 0 18 18" aria-hidden="true"><path d="M9 0C4.03 0 0 4.03 0 9C0 13.97 4.03 18 9 18C13.97 18 18 13.97 18 9C18 4.03 13.97 0 9 0ZM7.22 13.55L3.59 9.92L4.86 8.65L7.22 11.01L13.15 5.08L14.42 6.35L7.22 13.55Z"/></svg>
+    <h2 class="confirm__title" id="cf-title">Payment sent</h2>
+    <p class="confirm__msg">£250.00 sent to Jane Smith. We’ve emailed your receipt.</p>
+    <div class="confirm__actions">
+      <button class="btn primary" type="button">Done</button>
+      <button class="btn ghost" type="button">View receipt</button>
+    </div>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Confirmation",
+    "type": "organism",
+    "reuses": ["Button (primary + ghost)"],
+    "vars": {
+      "--success": "rag/success",
+      "--text": "text/default",
+      "--muted": "text/secondary",
+      "--page": "background/default",
+      "--pri": "primary/background/default",
+      "--pri-hover": "primary/background/hover",
+      "--on-pri": "text/reverse",
+      "--ghost-hover": "tertiary/background/hover"
+    },
+    "contrastPairs": [
+      { "fg": "rag/success", "bg": "background/default", "context": "ui" },
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "text/secondary", "bg": "background/default", "context": "text" },
+      { "fg": "text/reverse", "bg": "primary/background/default", "context": "text" },
+      { "fg": "text/reverse", "bg": "primary/background/hover", "context": "text" },
+      { "fg": "text/default", "bg": "tertiary/background/hover", "context": "text" }
+    ],
+    "requiredAria": ["role=\"group\"", "aria-labelledby", "aria-hidden=\"true\""]
+  }
+  </script>
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    document.getElementById('replay').addEventListener('click', ()=>{ const c=document.querySelector('.confirm'); c.style.display='none'; void c.offsetWidth; c.style.display=''; });
+  </script>
+</body>
+</html>

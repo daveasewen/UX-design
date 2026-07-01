@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tab bar — reference candidate (gap-pattern → review)</title>
+<!-- CANDIDATE REFERENCE for Tab bar (app-level BOTTOM navigation — NOT the in-page Tabs component;
+     surfaced by the journey gap report, NOT yet design-reviewed — meta carries REVIEW flags).
+     INTERACTIVE demo: tap a destination to make it current. The current item swaps to the FILLED
+     (-active) glyph + text/default + aria-current='page' (icon-source convention; colour is never the
+     only signal — 1.4.1). Icons come from a <symbol> sprite + <use> (canon icon approach).
+       A) standard full-width bar with labels.
+       B) segmented control — icon-only, elevated (elevation/functional), spanning the FULL screen width;
+          the SELECTED fill is a PILL that SLIDES between segments (same easing as the toggle / View-options),
+          black with the glyph in white (inverts to white/dark in dark mode). The Menu island is part of the
+          SAME exclusive group — only one item current at a time, so selecting Menu collapses the pill — and
+          its selected state matches the segments with a 4px white (surface) ring. Menu matches the lozenge height. -->
+<style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-30. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; --slide:200ms cubic-bezier(.4,0,.2,1); }   /* --slide matches the toggle / View-options */
+  [data-theme="light"]{ --surface:#FFFFFF; --border:#D7D8D6; --muted:#545454; --text:#333333; --sel-bg:#000000; --sel-fg:#FFFFFF; --focus:#305A85; --shadow:#00000033; --page:#FFFFFF; }
+  [data-theme="dark"]{ --surface:#1D1D1D; --border:#404040; --muted:#9B9B9B; --text:#FFFFFF; --sel-bg:#FFFFFF; --sel-fg:#333333; --focus:#4587A7; --shadow:#000000D9; --page:#000000; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:1.75rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 14px; border:1px solid var(--muted); background:transparent; color:var(--text); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--text); outline-offset:2px;}
+  .stateLabel{font:400 11px/1 var(--font); color:var(--muted); margin:1.75rem 0 .6rem;}
+
+  /* ---- Tab bar (bottom navigation) ---- */
+  /* icon swap: line glyph by default, FILLED (-active) glyph when current/open */
+  .tabbar__item .ic-fill, .menu-fab .ic-fill{ display:none; }
+  .tabbar__item.is-active .ic-line, .menu-fab.is-active .ic-line{ display:none; }
+  .tabbar__item.is-active .ic-fill, .menu-fab.is-active .ic-fill{ display:block; }
+  .tabbar__item svg, .menu-fab svg{ width:24px; height:24px; fill:currentColor; pointer-events:none; }
+
+  /* A) standard full-width bar with labels */
+  .tabbar{ display:flex; max-width:420px; background:var(--surface); border-top:1px solid var(--border); }
+  .tabbar .tabbar__item{ flex:1; min-height:56px; padding:8px 0 10px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px;
+    font:400 11px/1 var(--font); color:var(--muted); text-decoration:none; cursor:pointer; background:transparent; border:0; transition:color var(--ease); }
+  .tabbar .tabbar__item:hover{ color:var(--text); }
+  .tabbar .tabbar__item:focus-visible{ outline:2px solid var(--focus); outline-offset:-2px; }
+  .tabbar .tabbar__item.is-active{ color:var(--text); }
+
+  /* B) segmented control (sliding pill) — icon-only, elevated, full-width; the selected fill slides
+        between segments on the toggle / View-options easing; Menu is a separate circular island */
+  .tabbar-pills{ display:flex; align-items:center; gap:12px; width:100%; max-width:420px; }   /* spans the full (mobile) screen width */
+  .seg{ position:relative; flex:1; display:flex; align-items:center; height:56px; padding:4px; background:var(--surface); border:1px solid var(--border); border-radius:999px; box-shadow:0 0 16px var(--shadow); }   /* the lozenge / segmented track */
+  .seg .ind{ position:absolute; top:4px; bottom:4px; left:4px; width:0; background:var(--sel-bg); border-radius:999px; z-index:0; transition:left var(--slide), width var(--slide); }   /* SLIDING pill — left+width set by JS from the current segment (same animation as the toggle) */
+  .seg__item{ position:relative; z-index:1; flex:1; height:100%; display:inline-flex; align-items:center; justify-content:center; color:var(--muted); text-decoration:none; cursor:pointer; transition:color var(--slide); }   /* each segment fills its share of the track; colour transitions on the SAME easing as the slide */
+  .seg__item[aria-current="page"]{ color:var(--sel-fg); }   /* glyph turns white as the pill arrives (inverts to dark in dark mode) */
+  .seg__item:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; border-radius:999px; }
+  .seg__item svg{ width:24px; height:24px; fill:currentColor; pointer-events:none; }
+  .menu-fab{ width:56px; height:56px; flex:none; border-radius:50%; display:inline-flex; align-items:center; justify-content:center;
+    color:var(--muted); text-decoration:none; cursor:pointer; background:var(--surface); border:1px solid var(--border); box-shadow:0 0 16px var(--shadow); transition:color var(--slide), background var(--slide), box-shadow var(--slide); }
+  .menu-fab:hover{ color:var(--text); }
+  .menu-fab:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }
+  .menu-fab[aria-current="page"]{ background:var(--sel-bg); color:var(--sel-fg); box-shadow: inset 0 0 0 4px var(--surface), 0 0 16px var(--shadow); }   /* SELECTED — same inverting fill + a 4px white(surface) ring, matching the lozenge surround */
+
+  /* WCAG 2.3.3 — honour reduced-motion (minimal motion here, kept for consistency) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+    .seg .ind{ transition:none !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <!-- icon sprite — snippet preview only (consumers provide their own sprite, as the journey does) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="ic-home" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0L1 8V18H8V11.2H10V18H17V8L9 0ZM15.8 16.8H11.2V10H6.8V16.8H2.2V8.497L9 1.697L15.8 8.497V16.8Z"/></symbol>
+    <symbol id="ic-home-a" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0L1 8V18H8V12H10V18H17V8L9 0Z"/></symbol>
+    <symbol id="ic-cards" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9.973 9.195L9.555 10.181C9.753 10.529 9.905 10.895 10.008 11.273L11 11.674V13.326L10.008 13.727C9.906 14.105 9.754 14.471 9.555 14.819L9.973 15.805L8.805 16.973L7.819 16.555C7.471 16.754 7.105 16.905 6.727 17.008L6.326 18H4.674L4.273 17.008C3.895 16.906 3.529 16.754 3.181 16.555L2.195 16.973L1.027 15.805L1.445 14.819C1.246 14.471 1.094 14.105 0.992 13.727L0 13.326V11.674L0.992 11.273C1.094 10.895 1.246 10.529 1.445 10.181L1.027 9.195L2.195 8.027L3.181 8.445C3.529 8.246 3.895 8.095 4.273 7.992L4.674 7H6.326L6.727 7.992C7.105 8.095 7.471 8.247 7.819 8.445L8.805 8.027L9.973 9.195ZM2.108 12.5C2.108 14.373 3.627 15.892 5.5 15.892C7.373 15.892 8.892 14.373 8.892 12.5C8.892 10.627 7.373 9.108 5.5 9.108C3.627 9.108 2.108 10.627 2.108 12.5Z"/><path fill-rule="evenodd" clip-rule="evenodd" d="M4.5 0H16.5C17.325 0 18 0.675 18 1.5V10.5C18 11.325 17.325 12 16.5 12H11.975C11.944 11.588 11.873 11.187 11.768 10.8H16.5C16.663 10.8 16.8 10.663 16.8 10.5V4.2H4.2V6.131C3.784 6.215 3.383 6.34 3 6.5V1.5C3 0.675 3.675 0 4.5 0ZM4.2 3H16.8V1.5C16.8 1.337 16.663 1.2 16.5 1.2H4.5C4.337 1.2 4.2 1.337 4.2 1.5V3Z"/><path d="M15 6H12V7.2H15V6Z"/></symbol>
+    <symbol id="ic-cards-a" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M3 6.234C3.774 5.925 4.616 5.75 5.5 5.75C9.059 5.75 11.968 8.506 12.225 12H17C17.55 12 18 11.55 18 11V3.5H3V6.234ZM13 5H16V6.5H13V5ZM17 0H4C3.45 0 3 0.45 3 1V2H18V1C18 0.45 17.55 0 17 0ZM9.555 10.181L9.973 9.195L8.805 8.027L7.819 8.445C7.471 8.247 7.105 8.095 6.727 7.992L6.326 7H4.674L4.273 7.992C3.895 8.095 3.529 8.247 3.181 8.445L2.195 8.027L1.027 9.195L1.445 10.181C1.246 10.529 1.094 10.895 0.992 11.273L0 11.674V13.326L0.992 13.727C1.095 14.105 1.246 14.471 1.445 14.819L1.027 15.805L2.195 16.973L3.181 16.555C3.529 16.754 3.895 16.906 4.273 17.008L4.674 18H6.326L6.727 17.008C7.105 16.905 7.471 16.754 7.819 16.555L8.805 16.973L9.973 15.805L9.555 14.819C9.754 14.471 9.906 14.105 10.008 13.727L11 13.326V11.674L10.008 11.273C9.905 10.895 9.753 10.529 9.555 10.181ZM5.5 15C4.119 15 3 13.881 3 12.5C3 11.119 4.119 10 5.5 10C6.881 10 8 11.119 8 12.5C8 13.881 6.881 15 5.5 15Z"/></symbol>
+    <symbol id="ic-pay" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.029 0 0 4.029 0 9C0 13.971 4.029 18 9 18C13.971 18 18 13.971 18 9C18 4.029 13.971 0 9 0ZM9 16.8C4.699 16.8 1.2 13.301 1.2 9C1.2 4.699 4.699 1.2 9 1.2C13.301 1.2 16.8 4.699 16.8 9C16.8 13.301 13.301 16.8 9 16.8ZM9.064 6.352C10.347 6.352 10.356 7.003 10.359 7.218L11.559 7.2C11.544 6.092 10.807 5.353 9.6 5.188V4H8.4V5.216C7.207 5.431 6.44 6.226 6.44 7.337C6.44 8.831 7.782 9.247 8.499 9.47L9.14 9.675C10.097 9.972 10.359 10.185 10.359 10.663C10.359 11.577 9.27 11.648 8.936 11.648C7.653 11.648 7.644 10.997 7.641 10.782L6.44 10.8C6.456 11.908 7.193 12.647 8.399 12.812V14H9.599V12.784C10.792 12.569 11.558 11.774 11.558 10.663C11.558 9.169 10.216 8.753 9.495 8.528L8.859 8.325C7.902 8.028 7.64 7.815 7.64 7.337C7.641 6.423 8.73 6.352 9.064 6.352Z"/></symbol>
+    <symbol id="ic-pay-a" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.029 0 0 4.029 0 9C0 13.971 4.029 18 9 18C13.971 18 18 13.971 18 9C18 4.029 13.971 0 9 0ZM8.776 8.141L9.667 8.427C10.655 8.734 12.493 9.303 12.493 11.328C12.493 12.86 11.419 13.953 9.749 14.227V16H8.249V14.254C6.564 14.047 5.528 13.041 5.505 11.518L7.005 11.497C7.017 12.36 7.658 12.799 8.909 12.799C9.398 12.799 10.992 12.693 10.992 11.329C10.992 10.615 10.595 10.286 9.222 9.86L9.217 9.857L8.326 9.571C7.344 9.268 5.506 8.697 5.506 6.672C5.506 5.14 6.58 4.047 8.25 3.773V2H9.75V3.746C11.435 3.953 12.471 4.959 12.494 6.482L10.994 6.503C10.982 5.64 10.341 5.201 9.09 5.201C8.601 5.201 7.007 5.307 7.007 6.671C7.006 7.386 7.403 7.715 8.776 8.141Z"/></symbol>
+    <symbol id="ic-insight" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.1685 3.936C13.8355 1.785 11.5295 0.5 9.00147 0.5C6.47047 0.5 4.16347 1.786 2.83047 3.94C2.14747 5.045 2.03447 6.434 2.52947 7.657L5.10647 14.028V15.369L7.23847 17.5H10.7635L12.8955 15.369V14.028L15.4725 7.653C15.9665 6.43 15.8535 5.04 15.1685 3.936ZM11.6955 14.872L10.2665 16.3H7.73547L6.30647 14.872V13.5H11.6955V14.872ZM8.20047 12.3V6.729C8.20047 6.288 8.55947 5.929 9.00047 5.929C9.44147 5.929 9.80047 6.288 9.80047 6.729V12.3H8.20047ZM14.3595 7.204L12.2995 12.3H11.0005V6.729C11.0005 5.625 10.1045 4.729 9.00047 4.729C7.89547 4.729 7.00047 5.624 7.00047 6.729V12.3H5.70247L3.64147 7.207C3.28947 6.337 3.36847 5.352 3.85047 4.572C4.96347 2.773 6.88947 1.7 9.00147 1.7C11.1115 1.7 13.0355 2.772 14.1485 4.568C14.6325 5.348 14.7115 6.333 14.3595 7.204Z"/></symbol>
+    <symbol id="ic-menu" viewBox="0 0 18 18"><path d="M0 15.6H18V14.4H0V15.6ZM0 2.40002V3.60002H18V2.40002H0ZM0 9.60002H18V8.40002H0V9.60002Z"/></symbol>
+    <symbol id="ic-menu-a" viewBox="0 0 18 18"><path d="M0 15.6H18V13.6H0V15.6ZM0 2.40002V4.40002H18V2.40002H0ZM0 10H18V8.00002H0V10Z"/></symbol>
+  </svg>
+
+  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Tab bar — tap a destination (interactive)</span></div>
+
+  <div class="stateLabel">A · standard bar with labels — tap to switch</div>
+  <nav class="tabbar" data-tabgroup aria-label="Primary">
+    <a class="tabbar__item is-active" href="#" aria-current="page"><svg class="ic-line" aria-hidden="true"><use href="#ic-home"/></svg><svg class="ic-fill" aria-hidden="true"><use href="#ic-home-a"/></svg>Home</a>
+    <a class="tabbar__item" href="#"><svg class="ic-line" aria-hidden="true"><use href="#ic-cards"/></svg><svg class="ic-fill" aria-hidden="true"><use href="#ic-cards-a"/></svg>Cards</a>
+    <a class="tabbar__item" href="#"><svg class="ic-line" aria-hidden="true"><use href="#ic-pay"/></svg><svg class="ic-fill" aria-hidden="true"><use href="#ic-pay-a"/></svg>Payments</a>
+    <a class="tabbar__item" href="#"><svg class="ic-line" aria-hidden="true"><use href="#ic-menu"/></svg><svg class="ic-fill" aria-hidden="true"><use href="#ic-menu-a"/></svg>Menu</a>
+  </nav>
+
+  <div class="stateLabel">B · segmented control — icon-only, full width; the pill slides between segments — tap to switch</div>
+  <div class="tabbar-pills">
+    <nav class="seg" aria-label="Primary">
+      <span class="ind" aria-hidden="true"></span>
+      <a class="seg__item" href="#" aria-current="page" aria-label="Home"><svg aria-hidden="true"><use href="#ic-home"/></svg></a>
+      <a class="seg__item" href="#" aria-label="Cards"><svg aria-hidden="true"><use href="#ic-cards"/></svg></a>
+      <a class="seg__item" href="#" aria-label="Payments"><svg aria-hidden="true"><use href="#ic-pay"/></svg></a>
+      <a class="seg__item" href="#" aria-label="Insights"><svg aria-hidden="true"><use href="#ic-insight"/></svg></a>
+    </nav>
+    <a class="menu-fab" href="#" aria-label="Menu"><svg aria-hidden="true"><use href="#ic-menu"/></svg></a>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Tab-bar",
+    "type": "molecule",
+    "vars": { "--surface": "tertiary/background/default", "--border": "border/subtle", "--muted": "text/secondary", "--text": "text/default", "--sel-bg": "secondary/background/default", "--sel-fg": "text/on-inverse", "--focus": "focus/ring", "--shadow": "elevation/functional", "--page": "background/default" },
+    "contrastPairs": [
+      { "fg": "text/secondary", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/on-inverse", "bg": "secondary/background/default", "context": "ui" }
+    ],
+    "icons": {
+      "#ic-home": "assets/icons/global-controls/home.svg",
+      "#ic-home-a": "assets/icons/global-controls/home-active.svg",
+      "#ic-cards": "assets/icons/global-controls/card-manage.svg",
+      "#ic-cards-a": "assets/icons/global-controls/card-manage-active.svg",
+      "#ic-pay": "assets/icons/products-and-services/payments-and-transfers.svg",
+      "#ic-pay-a": "assets/icons/products-and-services/payments-and-transfers-active.svg",
+      "#ic-insight": "assets/icons/products-and-services/insight.svg",
+      "#ic-menu": "assets/icons/global-controls/menu.svg",
+      "#ic-menu-a": "assets/icons/global-controls/menu-active.svg"
+    },
+    "requiredAria": ["aria-current=\"page\"", "aria-label"]
+  }
+  </script>
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    /* A) standard bar — radio set: tapping a destination makes it current (filled glyph + aria-current) */
+    document.querySelectorAll('.tabbar[data-tabgroup]').forEach(group=>{
+      group.addEventListener('click', e=>{
+        const item = e.target.closest('.tabbar__item'); if(!item) return; e.preventDefault();
+        group.querySelectorAll('.tabbar__item').forEach(a=>{ a.classList.remove('is-active'); a.removeAttribute('aria-current'); });
+        item.classList.add('is-active'); item.setAttribute('aria-current','page');
+      });
+    });
+    /* B) segmented control + Menu fab = ONE exclusive group — only one current at a time; the pill slides
+       between island segments and collapses when Menu (outside the lozenge) is current */
+    document.querySelectorAll('.tabbar-pills').forEach(group=>{
+      const seg = group.querySelector('.seg'), ind = seg ? seg.querySelector('.ind') : null;
+      const items = [...group.querySelectorAll('.seg__item, .menu-fab')];
+      function moveInd(){ if(!ind||!seg) return; const a = seg.querySelector('.seg__item[aria-current="page"]');
+        if(a){ ind.style.left=a.offsetLeft+'px'; ind.style.width=a.offsetWidth+'px'; } else { ind.style.width='0px'; } }
+      items.forEach(it=> it.addEventListener('click', e=>{ e.preventDefault();
+        items.forEach(x=>x.removeAttribute('aria-current')); it.setAttribute('aria-current','page'); moveInd(); }));
+      addEventListener('resize', moveInd); moveInd();
+    });
+  </script>
+</body>
+</html>

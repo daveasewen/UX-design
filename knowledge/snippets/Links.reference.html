@@ -24,6 +24,10 @@
   on a wide container; at <=420px it stacks with larger tap targets (2.5.8), verified to 320px (1.4.10).
 -->
 <style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
   :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --fs:16px; --ease:140ms ease; }
   [data-theme="light"]{ --text:#333333; --text-disabled:#D7D8D6; --arrow:#DB0011; --icon:#333333; --page:#FFFFFF; }
   [data-theme="dark"]{ --text:#FFFFFF; --text-disabled:#767676; --arrow:#DB0011; --icon:#FFFFFF; --page:#000000; }
@@ -61,6 +65,8 @@
   a.icon-lnk{display:inline-flex; align-items:flex-start; gap:6px; text-decoration:none; color:var(--text); font-weight:500;}
   a.icon-lnk .ic{display:inline-flex; color:var(--icon); flex:0 0 auto; line-height:1.6;}
   a.icon-lnk .ic svg{width:1em; height:1em; display:block; fill:currentColor;}
+  /* Active state = the label's hover/pressed underline (below). A filled "active" download glyph would be the
+     natural icon active-state, but that asset is missing (line-only icon) — DEFERRED, see knowledge/_ICON-GAPS.md. */
   a.icon-lnk:hover .lbl,a.icon-lnk:active .lbl{text-decoration:underline; text-underline-offset:3px;}
   a.icon-lnk:focus-visible{outline:none;}
   a.icon-lnk:focus-visible .lbl{box-shadow:inset 0 -3px 0 var(--text);}

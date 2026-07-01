@@ -25,6 +25,10 @@
   until fixed (now declared as contrast pairs). Root cause flagged: the dark hover surface is too light.
 -->
 <style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
   :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
   [data-theme="light"]{ --surface:#FFFFFF; --border:#D7D8D6; --text:#333333; --muted:#545454; --icon:#333333; --accent:#DB0011; --hover:#F3F3F3; --focus:#305A85; --page:#FFFFFF;
     --checked:#000000; --ctrl-border:#767676; --pressed:#767676; --reverse:#FFFFFF; }
@@ -58,8 +62,12 @@
   .card.action h3{margin:0 0 4px; font:500 16px/1.5 var(--font);}
   .card.action p{margin:0; font:400 14px/1.43 var(--font); color:var(--text);}
   .card.action .actions{display:flex; justify-content:flex-end; margin-top:8px;}
-  .qbtn{appearance:none; border:0; background:transparent; font:500 16px/1.5 var(--font); color:var(--text); padding:9px 20px; cursor:pointer;}
-  .qbtn:hover{text-decoration:underline; text-underline-offset:3px;}
+  /* undecorated (ghost) action buttons — NOT links: STANDARD button size (h44 / pad20, per Button canon),
+     bg tint on hover, fill on press; no underline */
+  .qbtn{appearance:none; border:0; background:transparent; height:44px; min-width:96px; padding:0 20px;
+    display:inline-flex; align-items:center; justify-content:center; font:500 16px/1 var(--font); color:var(--text); cursor:pointer; transition:background var(--ease);}
+  .qbtn:hover{background:var(--hover);}
+  .qbtn:active{background:var(--pressed); color:var(--reverse);}
   .qbtn:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
 
   /* type 2 — Link card (whole card clickable) */

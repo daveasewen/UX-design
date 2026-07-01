@@ -6,13 +6,17 @@
 <title>Dropdown — reference implementation (gated)</title>
 <!--
   CANONICAL REFERENCE for the non-native single-select Dropdown (gated).
-  Colours = resolved canonical tokens. Elevation is mode-aware and canonical:
-  LIGHT separates the floating menu with a shadow (elevation/functional #00000033);
-  DARK separates it with a grey outline (elevation/border #767676) because shadows
-  are invisible on a near-black page. Combobox/listbox ARIA + keyboard nav included.
-  Focus: :focus-visible ring (focus/ring).
+  TWO trigger styles (both kept): UNDERLINE (bottom-stroke) and BOXED (full form/border, matches the boxed
+  Input field — open = border/active + 4px bottom-stroke). Colours = resolved canonical tokens. Elevation is
+  mode-aware: LIGHT separates the floating menu with a shadow (elevation/functional #00000033); DARK with a
+  grey outline (elevation/border #767676) because shadows are invisible on a near-black page.
+  Combobox/listbox ARIA + keyboard nav included. Focus: :focus-visible ring (focus/ring).
 -->
 <style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
   :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --fs:16px; --ease:160ms cubic-bezier(.4,0,.2,1); }
   [data-theme="light"]{
     --field-bg:#FFFFFF00; --field-bg-hover:#F3F3F3; --border:#767676; --border-active:#000000; --border-disabled:#D7D8D6;
@@ -31,16 +35,22 @@
     -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
   .demo-controls{margin-bottom:1.75rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
   .demo-controls button{font:inherit; font-size:13px; padding:8px 14px; border:1px solid var(--border); background:transparent; color:var(--text); cursor:pointer;}
-  .dd{position:relative; max-width:320px;}
+  .row{display:flex; gap:40px; flex-wrap:wrap;}
+  .cap{font:400 12px/1.3 var(--font); color:var(--text); opacity:.55; margin:0 0 8px; letter-spacing:.04em; text-transform:uppercase;}
+  .dd{position:relative; width:320px; max-width:100%;}
   .dd > label{display:block; font:600 13px/1.3 var(--font); margin-bottom:8px;}
   .trigger{width:100%; height:52px; padding:0 14px; display:flex; align-items:center; justify-content:space-between; gap:8px;
     background:var(--field-bg); color:var(--text); border:0; border-bottom:1px solid var(--border); border-radius:0;
-    font:500 var(--fs)/1 var(--font); cursor:pointer; transition:background var(--ease), border-color var(--ease);}
+    font:500 var(--fs)/1 var(--font); cursor:pointer; transition:background var(--ease), border-color var(--ease), box-shadow var(--ease);}
   .trigger:hover{background:var(--field-bg-hover);}
   .trigger[aria-expanded="true"]{border-bottom:2px solid var(--border-active);}
   .trigger:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
   .chev{transition:transform var(--ease); color:var(--icon);}
   .trigger[aria-expanded="true"] .chev{transform:rotate(180deg);}
+
+  /* BOXED (full border) variant — matches the boxed Input field */
+  .dd.boxed .trigger{border:1px solid var(--border);}
+  .dd.boxed .trigger[aria-expanded="true"]{border-color:var(--border-active); border-bottom-width:1px; box-shadow:inset 0 -4px 0 0 var(--border-active);}
 
   .menu{position:absolute; left:0; right:0; top:calc(100% + 6px); margin:0; padding:6px 0; list-style:none; z-index:20;
     background:var(--menu-surface); border:1px solid var(--menu-border); border-radius:0;
@@ -64,22 +74,48 @@
 </style>
 </head>
 <body data-theme="light">
-  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Dropdown — canonical reference (single-select)</span></div>
+  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Dropdown — canonical reference (single-select) · two styles</span></div>
 
-  <div class="dd">
-    <label id="ddLabel" for="ddTrigger">Country of residence</label>
-    <button class="trigger" id="ddTrigger" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="ddMenu" aria-labelledby="ddLabel ddTrigger">
-      <span id="ddValue">United Kingdom</span>
-      <span class="chev" aria-hidden="true">▾</span>
-    </button>
-    <ul class="menu" id="ddMenu" role="listbox" aria-labelledby="ddLabel" tabindex="-1">
-      <li class="opt" role="option" aria-selected="true" tabindex="-1">United Kingdom <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
-      <li class="opt" role="option" aria-selected="false" tabindex="-1">Ireland <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
-      <li class="opt" role="option" aria-selected="false" tabindex="-1">France <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
-      <li class="sep" role="presentation"></li>
-      <li class="opt" role="option" aria-selected="false" tabindex="-1">Germany <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
-      <li class="opt" role="option" aria-selected="false" tabindex="-1">Spain <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
-    </ul>
+  <div class="row">
+    <!-- UNDERLINE (bottom-stroke) -->
+    <div>
+      <p class="cap">Underline</p>
+      <div class="dd">
+        <label id="ddLabel1" for="ddTrigger1">Country of residence</label>
+        <button class="trigger" id="ddTrigger1" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="ddMenu1" aria-labelledby="ddLabel1 ddTrigger1">
+          <span class="ddval">United Kingdom</span>
+          <span class="chev" aria-hidden="true">▾</span>
+        </button>
+        <ul class="menu" id="ddMenu1" role="listbox" aria-labelledby="ddLabel1" tabindex="-1">
+          <li class="opt" role="option" aria-selected="true" tabindex="-1">United Kingdom <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+          <li class="opt" role="option" aria-selected="false" tabindex="-1">Ireland <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+          <li class="opt" role="option" aria-selected="false" tabindex="-1">France <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+          <li class="sep" role="presentation"></li>
+          <li class="opt" role="option" aria-selected="false" tabindex="-1">Germany <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+          <li class="opt" role="option" aria-selected="false" tabindex="-1">Spain <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- BOXED (full border) -->
+    <div>
+      <p class="cap">Boxed (full border)</p>
+      <div class="dd boxed">
+        <label id="ddLabel2" for="ddTrigger2">Country of residence</label>
+        <button class="trigger" id="ddTrigger2" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="ddMenu2" aria-labelledby="ddLabel2 ddTrigger2">
+          <span class="ddval">United Kingdom</span>
+          <span class="chev" aria-hidden="true">▾</span>
+        </button>
+        <ul class="menu" id="ddMenu2" role="listbox" aria-labelledby="ddLabel2" tabindex="-1">
+          <li class="opt" role="option" aria-selected="true" tabindex="-1">United Kingdom <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+          <li class="opt" role="option" aria-selected="false" tabindex="-1">Ireland <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+          <li class="opt" role="option" aria-selected="false" tabindex="-1">France <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+          <li class="sep" role="presentation"></li>
+          <li class="opt" role="option" aria-selected="false" tabindex="-1">Germany <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+          <li class="opt" role="option" aria-selected="false" tabindex="-1">Spain <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>
+        </ul>
+      </div>
+    </div>
   </div>
 
   <script type="application/json" id="token-manifest">
@@ -101,7 +137,8 @@
     "contrastPairs": [
       { "fg": "text/default", "bg": "background/default",      "context": "text" },
       { "fg": "text/default", "bg": "form/background/hover",   "context": "text" },
-      { "fg": "form/border/default", "bg": "background/default","context": "ui" }
+      { "fg": "form/border/default", "bg": "background/default","context": "ui" },
+      { "fg": "form/border/active", "bg": "background/default","context": "ui" }
     ],
     "requiredAria": ["role=\"combobox\"", "aria-expanded", "role=\"listbox\"", "role=\"option\"", "aria-selected"]
   }
@@ -111,20 +148,26 @@
     document.getElementById('themeToggle').addEventListener('click', ()=>{
       const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark');
     });
-    const trig=document.getElementById('ddTrigger'), menu=document.getElementById('ddMenu'),
-          val=document.getElementById('ddValue'), opts=[...menu.querySelectorAll('[role=option]')];
-    function open(o){ menu.setAttribute('data-open',String(o)); trig.setAttribute('aria-expanded',String(o));
-      if(o){ const sel=opts.find(x=>x.getAttribute('aria-selected')==='true')||opts[0]; sel.focus(); } }
-    function choose(o){ opts.forEach(x=>x.setAttribute('aria-selected',String(x===o))); val.textContent=o.firstChild.textContent.trim(); open(false); trig.focus(); }
-    trig.addEventListener('click', ()=> open(menu.getAttribute('data-open')!=='true'));
-    trig.addEventListener('keydown', e=>{ if(['ArrowDown','Enter',' '].includes(e.key)){ e.preventDefault(); open(true);} });
-    opts.forEach(o=>{ o.addEventListener('click',()=>choose(o));
-      o.addEventListener('keydown', e=>{ const i=opts.indexOf(o);
-        if(e.key==='ArrowDown'){e.preventDefault(); opts[(i+1)%opts.length].focus();}
-        else if(e.key==='ArrowUp'){e.preventDefault(); opts[(i-1+opts.length)%opts.length].focus();}
-        else if(e.key==='Enter'||e.key===' '){e.preventDefault(); choose(o);}
-        else if(e.key==='Escape'){open(false); trig.focus();} }); });
-    document.addEventListener('click', e=>{ if(!e.target.closest('.dd')) open(false); });
+    // Wire each .dd instance independently (underline + boxed share one behaviour).
+    function wire(dd){
+      const trig=dd.querySelector('.trigger'), menu=dd.querySelector('.menu'),
+            val=dd.querySelector('.ddval'), opts=[...menu.querySelectorAll('[role=option]')];
+      function open(o){ menu.setAttribute('data-open',String(o)); trig.setAttribute('aria-expanded',String(o));
+        if(o){ const sel=opts.find(x=>x.getAttribute('aria-selected')==='true')||opts[0]; sel.focus(); } }
+      function choose(o){ opts.forEach(x=>x.setAttribute('aria-selected',String(x===o))); val.textContent=o.firstChild.textContent.trim(); open(false); trig.focus(); }
+      trig.addEventListener('click', ()=> open(menu.getAttribute('data-open')!=='true'));
+      trig.addEventListener('keydown', e=>{ if(['ArrowDown','Enter',' '].includes(e.key)){ e.preventDefault(); open(true);} });
+      opts.forEach(o=>{ o.addEventListener('click',()=>choose(o));
+        o.addEventListener('keydown', e=>{ const i=opts.indexOf(o);
+          if(e.key==='ArrowDown'){e.preventDefault(); opts[(i+1)%opts.length].focus();}
+          else if(e.key==='ArrowUp'){e.preventDefault(); opts[(i-1+opts.length)%opts.length].focus();}
+          else if(e.key==='Enter'||e.key===' '){e.preventDefault(); choose(o);}
+          else if(e.key==='Escape'){open(false); trig.focus();} }); });
+    }
+    document.querySelectorAll('.dd').forEach(wire);
+    // click-away closes any open menu
+    document.addEventListener('click', e=>{ if(!e.target.closest('.dd')){
+      document.querySelectorAll('.dd').forEach(dd=>{ dd.querySelector('.menu').setAttribute('data-open','false'); dd.querySelector('.trigger').setAttribute('aria-expanded','false'); }); } });
   </script>
 </body>
 </html>

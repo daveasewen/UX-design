@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payments — SME (governed Swiss: charter + context + skill)</title>
+<!--
+  THE "EVERYTHING" RUN — Swiss-design skill (spacing/type/grid/label-pattern/single-accent) + the
+  fixed/flex charter (fixed parts RETRIEVED from canon, not invented) + this session's context (exact
+  figures, masking, high-value confirmation, keyboard-only ring, sentence-case house rule, reduced-motion).
+  Register = disciplined. Accent (HSBC red) appears in ≤3 places (label dashes + one marker). Colour is
+  100% canon tokens — 0 invented (only the brand mark carries literal red). Note: NOT visually rendered
+  (sandbox Chromium segfaults) — built to the skill's exact spec to stay tidy; worth a real browser eyeball.
+-->
+<link rel="stylesheet" href="../canon/canon.css">
+<style>
+  /* Swiss spacing scale (skill) + colour RETRIEVED from canon tokens (charter: fixed = retrieved) */
+  .canon{
+    --s1:.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem; --s6:4rem; --s7:6rem;
+    --accent:var(--primary-background-default);   /* HSBC red — accent only, ≤3 moments */
+    --ink:var(--text);            /* #333 — all copy */
+    --g1:var(--surface-hover);    /* #F3F3F3 backgrounds */
+    --g2:var(--divider-soft);     /* #EDEDED rules */
+    --g3:var(--border);           /* #D7D8D6 secondary rules */
+    --g7:var(--muted);            /* #545454 secondary text (safe) */
+    --maxw:1040px;
+  }
+  *{ box-sizing:border-box; }
+  body{ margin:0; font-family:var(--font); color:var(--ink); background:var(--page); -webkit-font-smoothing:antialiased; }
+  h1,h2,h3,p{ margin:0; } .num{ font-variant-numeric:tabular-nums; }
+  .wrap{ max-width:var(--maxw); margin:0 auto; padding:0 var(--s4); }
+
+  /* scroll progress (skill component) — the one structural accent */
+  .progress{ position:fixed; top:0; left:0; height:2px; width:100%; background:var(--accent); transform:scaleX(0); transform-origin:left; z-index:50; }
+
+  /* nav */
+  .nav{ position:sticky; top:0; z-index:40; background:var(--page); border-bottom:1px solid var(--g2); }
+  .nav__in{ max-width:var(--maxw); margin:0 auto; padding:0 var(--s4); height:56px; display:flex; align-items:center; justify-content:space-between; }
+  .brand{ display:flex; align-items:center; gap:var(--s1); }
+  .brand .hex{ width:22px; height:25px; display:block; } .brand .wm{ font:500 14px/1 var(--font); letter-spacing:.04em; }
+  .nav__acct{ font:400 12px/1.5 var(--font); color:var(--g7); text-align:right; }
+
+  /* the label pattern (skill) — sentence case per house rule (overrides the skill's uppercase) */
+  .label{ display:flex; align-items:center; gap:var(--s1); font:500 12px/1 var(--font); letter-spacing:.06em; color:var(--accent); margin-bottom:var(--s3); }
+  .label::before{ content:''; width:20px; height:1px; background:var(--accent); display:inline-block; }
+
+  .rule{ border:0; border-top:1px solid var(--g2); margin:0; }              /* section rule (skill) — never a bare gap */
+  section{ padding:var(--s6) 0; }                                            /* generous white space — tightened from --s7 (was too airy on render) */
+
+  /* hero / cash position */
+  .bal{ font:300 76px/0.95 var(--font); letter-spacing:-.02em; }            /* light, big, single weight */
+  .bal__cap{ margin-top:var(--s2); font:400 15px/1.5 var(--font); color:var(--g7); }
+  .stats{ display:grid; grid-template-columns:repeat(4,1fr); gap:var(--s4); margin-top:var(--s6); }
+  .stat{ display:flex; flex-direction:column; gap:var(--s1); }
+  .stat .v{ font:300 40px/1 var(--font); letter-spacing:-.01em; }           /* light stat numerals — bumped from 200 (Univers Light renders too thin in Chrome, per canon note) */
+  .stat .k{ font:500 12px/1.3 var(--font); color:var(--g7); }
+
+  /* coverage — proposition split (skill): verdict left, detail right */
+  .split{ display:grid; grid-template-columns:1fr 2fr; gap:var(--s6); align-items:start; }
+  .verdict{ font:400 34px/1.15 var(--font); letter-spacing:-.01em; }
+  .cov p{ font:400 16px/1.75 var(--font); color:var(--g7); max-width:52ch; }
+  .cov p b{ color:var(--ink); font-weight:500; }
+  .runway{ margin-top:var(--s4); }
+  .runway .track{ height:12px; background:var(--g2); display:flex; }
+  .runway .committed{ width:40.59%; background:var(--g3); }
+  .runway .buffer{ width:59.41%; background:var(--ink); }
+  .runway .legend{ display:flex; gap:var(--s5); margin-top:var(--s2); font:400 13px/1.4 var(--font); color:var(--g7); }
+  .runway .legend b{ color:var(--ink); font-weight:500; }
+
+  /* pending approval — clean list rows */
+  .appr{ display:grid; grid-template-columns:1fr auto; gap:var(--s2) var(--s4); align-items:baseline; padding:var(--s4) 0; border-top:1px solid var(--g2); }
+  .appr:first-of-type{ border-top:0; padding-top:var(--s2); }
+  .appr__payee{ font:500 19px/1.2 var(--font); }
+  .appr__amt{ font:300 28px/1 var(--font); text-align:right; letter-spacing:-.01em; }
+  .appr__meta{ grid-column:1/2; font:400 13px/1.5 var(--font); color:var(--g7); }
+  .appr__meta .hi{ color:var(--accent); font-weight:500; }                  /* the one content accent */
+  .appr__act{ grid-column:1/3; display:flex; gap:var(--s2); align-items:center; margin-top:var(--s2); }
+  .appr__act .spacer{ flex:1; } .appr__act .decline{ font:500 13px/1 var(--font); color:var(--g7); background:none; border:0; cursor:pointer; padding:12px 4px; }
+  .appr__act .decline:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }
+
+  /* upcoming — Swiss ledger table */
+  .ledger{ width:100%; border-collapse:collapse; }
+  .ledger th,.ledger td{ text-align:left; padding:var(--s2) 0; border-bottom:1px solid var(--g2); font:400 16px/1.4 var(--font); vertical-align:baseline; }
+  .ledger thead th{ font:500 12px/1 var(--font); letter-spacing:.04em; color:var(--g7); border-bottom:1px solid var(--ink); padding-bottom:var(--s1); }
+  .ledger .date{ width:96px; color:var(--g7); font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .ledger .payee{ font-weight:500; }
+  .ledger .amt{ text-align:right; font-variant-numeric:tabular-nums; }
+  .ledger tfoot td{ border-bottom:0; border-top:2px solid var(--ink); font-weight:600; padding-top:var(--s2); }
+
+  /* footer */
+  .foot{ border-top:1px solid var(--g2); }
+  .foot__in{ max-width:var(--maxw); margin:0 auto; padding:var(--s5) var(--s4); display:flex; align-items:center; gap:var(--s2); }
+  .foot .note{ font:400 13px/1.4 var(--font); color:var(--g7); } .foot .spacer{ flex:1; }
+
+  /* modal — canon Modals BEHAVIOUR (fixed), Swiss chrome (flex): flat, square, black-fill confirm */
+  .overlay{ position:fixed; inset:0; background:rgba(0,0,0,.5); display:flex; align-items:center; justify-content:center; padding:var(--s4); opacity:0; visibility:hidden; transition:opacity var(--ease), visibility var(--ease); z-index:60; }
+  .overlay.open{ opacity:1; visibility:visible; }
+  .dialog{ width:100%; max-width:460px; background:var(--page); border:1px solid var(--ink); padding:var(--s4); transform:translateY(8px); opacity:0; transition:transform var(--spring), opacity var(--ease); }
+  .overlay.open .dialog{ transform:none; opacity:1; }
+  .dialog h3{ font:400 26px/1.2 var(--font); letter-spacing:-.01em; margin-bottom:var(--s2); }
+  .dialog p{ font:400 15px/1.65 var(--font); color:var(--g7); margin-bottom:var(--s4); } .dialog p b{ color:var(--ink); font-weight:500; }
+  .dialog .actions{ display:flex; gap:var(--s2); }
+  .dialog .close{ position:absolute; }
+
+  /* buttons — retrieve canon Button (black secondary = Swiss primary; tertiary = ghost). No red on actions. */
+  .actbar{ display:flex; gap:var(--s2); align-items:center; }
+
+  @media (max-width:760px){ .stats{ grid-template-columns:repeat(2,1fr); row-gap:var(--s5); } .split{ grid-template-columns:1fr; gap:var(--s4); } .bal{ font-size:56px; } }
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } .progress{ display:none; } }
+</style>
+</head>
+<body class="canon">
+  <div class="progress" id="progress" aria-hidden="true"></div>
+
+  <nav class="nav">
+    <div class="nav__in">
+      <div class="brand"><svg class="hex" viewBox="0 0 26 30" aria-hidden="true"><path d="M13 0l13 7.5v15L13 30 0 22.5v-15L13 0z" fill="#DB0011"/><path d="M13 4.3l4.6 8.2L13 15 8.4 12.5 13 4.3zM13 25.7l-4.6-8.2L13 15l4.6 2.5L13 25.7z" fill="#fff"/></svg><span class="wm">HSBC Business · Payments</span></div>
+      <div class="nav__acct">Business current account ····<br>Sort code ··–··–··</div>
+    </div>
+  </nav>
+
+  <!-- CASH POSITION -->
+  <section><div class="wrap">
+    <p class="label">Cash position · as of 12 May 2026</p>
+    <p class="bal num">£122,450</p>
+    <p class="bal__cap num">Current balance · net movement today +£2,450</p>
+    <div class="stats">
+      <div class="stat"><span class="v num">£120,000</span><span class="k">Opening</span></div>
+      <div class="stat"><span class="v num">+£11,650</span><span class="k">Inflows today</span></div>
+      <div class="stat"><span class="v num">−£9,200</span><span class="k">Outflows today</span></div>
+      <div class="stat"><span class="v num">£124,000</span><span class="k">Est. closing</span></div>
+    </div>
+  </div></section>
+
+  <hr class="rule">
+
+  <!-- COVERAGE -->
+  <section class="cov"><div class="wrap"><div class="split">
+    <div>
+      <p class="label">Coverage</p>
+      <p class="verdict">Covered through May</p>
+    </div>
+    <div>
+      <p>Current balance of <b>£122,450</b>, less <b>£49,702</b> of payments scheduled in May, leaves a buffer of <b>£72,748</b>.</p>
+      <div class="runway">
+        <div class="track"><span class="committed"></span><span class="buffer"></span></div>
+        <div class="legend num"><span>Committed in May <b>£49,702</b></span><span>Remaining buffer <b>£72,748</b></span></div>
+      </div>
+    </div>
+  </div></div></section>
+
+  <hr class="rule">
+
+  <!-- PENDING APPROVAL -->
+  <section><div class="wrap">
+    <p class="label">Pending approval · 2 awaiting you</p>
+    <div class="appr">
+      <span class="appr__payee">Amazon Business</span>
+      <span class="appr__amt num">£4,502</span>
+      <span class="appr__meta">Requested by Sarah Chen · 2 days ago</span>
+      <div class="appr__act">
+        <button class="decline" type="button">Decline</button><span class="spacer"></span>
+        <span class="cn-button"><button class="btn tertiary" type="button">Review</button></span>
+        <span class="cn-button"><button class="btn secondary" type="button" data-approve data-payee="Amazon Business" data-amount="£4,502" data-who="Sarah Chen">Approve</button></span>
+      </div>
+    </div>
+    <div class="appr">
+      <span class="appr__payee">BrightHire Payroll Ltd</span>
+      <span class="appr__amt num">£45,200</span>
+      <span class="appr__meta"><span class="hi">High value</span> · requested by Sarah Chen · 2 days ago</span>
+      <div class="appr__act">
+        <button class="decline" type="button">Decline</button><span class="spacer"></span>
+        <span class="cn-button"><button class="btn tertiary" type="button">Review</button></span>
+        <span class="cn-button"><button class="btn secondary" type="button" data-approve data-payee="BrightHire Payroll Ltd" data-amount="£45,200" data-who="Sarah Chen">Approve</button></span>
+      </div>
+    </div>
+  </div></section>
+
+  <hr class="rule">
+
+  <!-- UPCOMING PAYMENTS -->
+  <section><div class="wrap">
+    <p class="label">Upcoming payments · 5 scheduled</p>
+    <table class="ledger">
+      <thead><tr><th class="date" scope="col">Date</th><th class="payee" scope="col">Payee</th><th class="amt" scope="col">Amount</th></tr></thead>
+      <tbody>
+        <tr><td class="date num">15 May</td><td class="payee">Amazon Business</td><td class="amt num">£4,502</td></tr>
+        <tr><td class="date num">22 May</td><td class="payee">BrightHire Payroll Ltd</td><td class="amt num">£45,200</td></tr>
+        <tr><td class="date num">22 Jul</td><td class="payee">HMRC — PAYE</td><td class="amt num">£2,200</td></tr>
+        <tr><td class="date num">12 Aug</td><td class="payee">British Gas Business</td><td class="amt num">£4,200</td></tr>
+        <tr><td class="date num">09 Sep</td><td class="payee">Ravenscroft Properties</td><td class="amt num">£50,200</td></tr>
+      </tbody>
+      <tfoot><tr><td class="date"></td><td class="payee">Total scheduled</td><td class="amt num">£106,302</td></tr></tfoot>
+    </table>
+  </div></section>
+
+  <footer class="foot"><div class="foot__in">
+    <span class="note num">5 payments · £106,302 scheduled this period</span><span class="spacer"></span>
+    <span class="cn-button"><button class="btn tertiary" type="button">Export</button></span>
+    <span class="cn-button"><button class="btn secondary" type="button">New payment</button></span>
+  </div></footer>
+
+  <!-- HIGH-VALUE CONFIRMATION — canon Modals behaviour, Swiss chrome -->
+  <div class="overlay" id="overlay">
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="m-title" aria-describedby="m-body">
+      <p class="label">Confirm approval</p>
+      <h3 id="m-title" class="num"><span id="m-amount">£45,200</span></h3>
+      <p id="m-body">to <b id="m-payee">BrightHire Payroll Ltd</b>, requested by <span id="m-who">Sarah Chen</span>. Once approved, the payment is scheduled and can't be undone here.</p>
+      <div class="actions">
+        <span class="cn-button"><button class="btn secondary" id="m-confirm" type="button">Confirm approval</button></span>
+        <span class="cn-button"><button class="btn tertiary" id="m-cancel" type="button">Cancel</button></span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // scroll progress (skill)
+    const pr=document.getElementById('progress');
+    addEventListener('scroll',()=>{ const h=document.documentElement; const p=h.scrollTop/(h.scrollHeight-h.clientHeight||1); pr.style.transform='scaleX('+p+')'; },{passive:true});
+    // input-modality: keyboard focus ring only
+    const root=document.documentElement;
+    addEventListener('keydown',e=>{ if(e.key==='Tab') root.dataset.modality='keyboard'; });
+    addEventListener('mousedown',()=> root.dataset.modality='pointer');
+    // high-value confirmation (canon Modals behaviour: focus-trap, Esc, return focus)
+    const ov=document.getElementById('overlay'), dialog=ov.querySelector('.dialog'); let last=null; const foc=()=>[...dialog.querySelectorAll('button')];
+    function open(b){ last=b; document.getElementById('m-amount').textContent=b.dataset.amount; document.getElementById('m-payee').textContent=b.dataset.payee; document.getElementById('m-who').textContent=b.dataset.who; ov.classList.add('open'); setTimeout(()=>foc()[0]?.focus(),60); }
+    function close(){ ov.classList.remove('open'); last&&last.focus(); }
+    document.querySelectorAll('[data-approve]').forEach(b=> b.addEventListener('click',()=>open(b)));
+    document.getElementById('m-cancel').onclick=close; document.getElementById('m-confirm').onclick=close;
+    ov.addEventListener('click',e=>{ if(e.target===ov) close(); });
+    addEventListener('keydown',e=>{ if(!ov.classList.contains('open')) return; if(e.key==='Escape') close(); if(e.key==='Tab'){ const f=foc(),a=f[0],z=f[f.length-1]; if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus();} else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus();} } });
+  </script>
+</body>
+</html>

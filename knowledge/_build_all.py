@@ -32,6 +32,7 @@ STEPS = [
     ("indicator/accent contrast audit", "_build_indicator_contrast_audit.py"),
     ("dark-surface flatness gate", "_validate_dark_surfaces.py"),
     ("snippet gate", "_validate_snippets.py"),
+    ("icon-source gate", "_validate_icons.py"),
     ("a11y gate", "_validate_a11y.py"),
     ("coverage gate", "_validate_coverage.py"),
     ("integrity lint (gate)", "_build_integrity.py"),
@@ -53,6 +54,9 @@ for i, (label, rel) in enumerate(STEPS, 1):
             rc = rc or r.returncode
         elif "snippet" in label:
             print(f"\n❌ snippet gate failed (exit {r.returncode}) — see knowledge/_SNIPPET-AUDIT.md")
+            rc = rc or r.returncode
+        elif "icon" in label:
+            print(f"\n❌ icon-source gate failed (exit {r.returncode}) — see knowledge/_ICON-SOURCE-AUDIT.md")
             rc = rc or r.returncode
         elif "a11y" in label:
             print(f"\n❌ a11y gate failed (exit {r.returncode}) — see knowledge/_A11Y-GATE.md")

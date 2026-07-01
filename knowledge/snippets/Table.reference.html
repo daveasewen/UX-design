@@ -32,6 +32,10 @@
   for the token store: a data-text weight token, or accept the deviation.
 -->
 <style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
   :root{
     --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
     --ease:140ms ease;
@@ -115,7 +119,7 @@
     tbody td::before{content:attr(data-label); flex:0 0 var(--label-col); background:var(--header);
       font-weight:500; padding:var(--cell-py) var(--cell-px); border-right:1px solid var(--border);}
     tbody td .v{flex:1; padding:var(--cell-py) var(--cell-px);}
-    tbody td.num .v{text-align:left;}                               /* values read left-aligned in cards */
+    tbody td.num, tbody td.num .v{text-align:left;}                 /* card view: numeric cell reads LEFT — the label (::before) AND value, like every other cell (was inheriting the horizontal right-align) */
 
     /* first-row variant: the first cell acts as data too — give it a label, drop the title styling */
     table[data-headers="row"] tbody th[data-first]{display:flex; align-items:stretch; border:0;

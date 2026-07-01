@@ -1,0 +1,44 @@
+{
+  "name": "Eyebrow",
+  "interactive": false,
+  "category": "atom",
+  "purpose": "A small kicker label placed above a section heading to categorise it (e.g. 'Payments', 'Recent activity'). Sentence case (house type rule). Sets context without competing with the heading. Surfaced as a missing pattern by the journey gap report.",
+  "props": [
+    { "name": "text", "type": "string", "$note": "The kicker label; keep it to 1–3 words." }
+  ],
+  "variants": [],
+  "tokens": {
+    "muted": "text/secondary",
+    "text": "text/default",
+    "font-family": "typography/font-family/default",
+    "$type-finding": "REVIEW: uses 13px / line-height 1 / 500, sentence case, with NO dedicated 'eyebrow' type token — confirm the size/role or bind to a label type token if one exists."
+  },
+  "relationships": {
+    "livesInside": ["Section header", "Card header", "Page header"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["eyebrow + heading section intro", "card title kicker"]
+  },
+  "behaviour": "Passive display label — no states.",
+  "accessibility": {
+    "role": "None — a decorative <span>, NOT a heading, so it does not break heading order.",
+    "screenReader": "REVIEW (inferred): read inline before the heading it precedes. If purely decorative it may be redundant with the heading — confirm it adds meaning, otherwise consider aria-hidden.",
+    "relatedSC": ["1.3.1 Info and Relationships", "1.4.3 Contrast (Minimum)"]
+  },
+  "antiPatterns": [
+    "Uppercasing the eyebrow — house type rule is SENTENCE CASE; distinguish it by size / weight / colour, not capitalisation.",
+    "REVIEW (inferred): marking the eyebrow up as a heading (h1–h6) — it is supplementary; the real heading must own the level (1.3.1).",
+    "REVIEW (inferred): using an accent/brand-red eyebrow on a light surface — 13px red on white fails 1.4.3 (text < 4.5:1); keep it text/secondary.",
+    "REVIEW (inferred): writing a sentence in the eyebrow — it is a 1–3 word kicker, not a subtitle."
+  ],
+  "tokenValidation": {
+    "date": "2026-06-30",
+    "against": "canon token store (semantic-colour.json); declared values match in light + dark (passes _validate_snippets).",
+    "result": "PASS (colour); 1 OPEN type-token question (eyebrow/overline type)."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": "",
+    "$note": "REVIEW: no Figma node yet — surfaced by the journey gap report (the .c-eyebrow hand-util). Needs a design owner + Figma source before promotion from candidate to gated."
+  }
+}

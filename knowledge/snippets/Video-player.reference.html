@@ -9,18 +9,26 @@
      play/scrub accent = primary red. Caption/label = text/default on the page. Full captions/quality/
      fullscreen behaviour is a starting point — extend per the meta. -->
 <style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
   :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
   [data-theme="light"]{ --text:#333333; --muted:#767676; --page:#FFFFFF; }
   [data-theme="dark"]{ --text:#FFFFFF; --muted:#9a9a9a; --page:#000000; }
-  :root{ --controls:#FFFFFF; --accent:#DB0011; --scrim:#000000D9; --focus:#4d9fff; }
+  :root{ --controls:#FFFFFF; --accent:#DB0011; --scrim:#000000D9; --focus:#4d9fff;
+    --spring:300ms cubic-bezier(.5,1.6,.4,1); --press:90ms cubic-bezier(0,0,.58,1); }   /* Button motion tokens */
   *{box-sizing:border-box;}
   body{margin:0; padding:2rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
   .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
   .demo-controls button{font:inherit; font-size:13px; padding:8px 14px; border:1px solid var(--muted); background:transparent; color:var(--text); cursor:pointer;}
   .demo-controls button:focus-visible{outline:2px solid var(--muted); outline-offset:2px;}
   .player{position:relative; width:100%; max-width:560px; aspect-ratio:16/9; background:linear-gradient(135deg,#2a2a30,#0e0e12); overflow:hidden;}
-  .bigplay{position:absolute; inset:0; margin:auto; width:64px; height:64px; border:0; border-radius:50%; background:var(--accent); color:#fff; cursor:pointer; display:inline-flex; align-items:center; justify-content:center;}
+  .bigplay{position:absolute; inset:0; margin:auto; width:64px; height:64px; border:0; border-radius:0; background:var(--accent); color:#fff; cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
+    transition:transform var(--spring), filter var(--press);}   /* SQUARE — brand angular; carries the Button scale-physics */
   .bigplay svg{width:26px; height:26px; fill:currentColor;}
+  .bigplay:hover{transform:scale(1.08);}                                   /* grow toward the cursor */
+  .bigplay:active{transform:scale(.92); filter:brightness(.85); transition:transform var(--press), filter var(--press);}   /* snappy depress + darken */
   .bigplay:focus-visible{outline:3px solid var(--focus); outline-offset:3px;}
   .bar{position:absolute; left:0; right:0; bottom:0; display:flex; align-items:center; gap:12px; padding:10px 12px; background:linear-gradient(transparent, var(--scrim)); color:var(--controls);}
   .bar button{width:32px; height:32px; border:0; background:transparent; color:var(--controls); cursor:pointer; display:inline-flex; align-items:center; justify-content:center;}
@@ -34,6 +42,7 @@
   /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
   @media (prefers-reduced-motion: reduce){
     *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+    .bigplay:hover,.bigplay:active{ transform:none !important; filter:none !important; }   /* no scale-physics under reduced-motion */
   }
 </style>
 </head>

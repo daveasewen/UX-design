@@ -9,7 +9,7 @@
   promoted 2026-06-24): FOUR placements, each RAG-coded (error/warning/success/information; Snackbar omits error):
     • CONTEXTUAL  — tinted surface, full 1px accent border, square; icon · title · desc · inline link · ×.
         + form MULTI-LINK variant: title · × then a list of [link. description.] rows.
-    • GLOBAL      — page-level, SOLID rag fill + REVERSE text/icon; title/desc/link + Action 1 / Action 2 + ×.
+    • GLOBAL      — page-level, SOLID rag fill + REVERSE text/icon; title/desc/link + EITHER Action 1 / Action 2 OR a dismiss × (never both).
         Warning global uses DARK text (#333) — white on amber fails contrast.
     • INLINE      — bare icon + message, no surface/border.
     • SNACKBAR    — tinted + elevation shadow; warning/success/information only.
@@ -20,6 +20,10 @@
   RESPONSIVE: placements are fluid; Global actions stack at <=480px; verified to 320px (1.4.10).
 -->
 <style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
   :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
   [data-theme="light"]{
     --err:#A8000B; --warn:#FFBB33; --ok:#00847F; --info:#305A85;
@@ -50,16 +54,21 @@
   .info{ --accent:var(--info); --tint:var(--info-t); --gtext:#FFFFFF; }
 
   /* shared banner */
-  .note{ display:flex; gap:8px; align-items:flex-start; padding:12px 16px; margin:10px 0; border-radius:0; overflow:hidden;
+  .note{ --line:24px; --text-shift:7px; display:flex; gap:8px; align-items:flex-start; padding:12px 16px; margin:10px 0; border-radius:0; overflow:hidden;
     transition:max-height .3s ease, opacity .2s ease, margin .3s ease, padding .3s ease, border-width .3s ease; }
-  .note .ic{ flex:none; margin-top:1px; }
+  .note .ic{ flex:none; height:var(--line,24px); display:inline-flex; align-items:center; }   /* centre the icon to the FIRST line — holds position when the copy wraps */
   .note .ic svg{ width:20px; height:20px; display:block; fill:currentColor; }
-  .note .main{ flex:1 1 auto; min-width:0; font:400 16px/1.5 var(--font); }   /* font-5 = 16px / line-height 24 (Univers Light 350 promoted to 400 — Chrome-thin, per Table/Input) */
+  .note .main{ flex:1 1 auto; min-width:0; font:400 16px/1.5 var(--font); padding-top:var(--text-shift,7px); padding-bottom:var(--text-shift,7px); }   /* top nudge centres the first line with the icon (Univers tune); MATCHED on the bottom so the note stays vertically balanced */
+  /* BODY copy keeps its natural line box (no leading-trim). The note is align-items:flex-start and the icon/×
+     each sit in a FIRST-LINE-height box (--line) that centres them on line 1 — so they hold position when the
+     message wraps to more lines, rather than drifting to the container's middle (Dave 2026-06-29). */
+  .note .main, .note .main *{ text-box-trim:normal; }
+  .note .mlinks{ display:flex; flex-direction:column; gap:10px; }   /* vertical stack of links → explicit minimal spacing (leading-trim removed the line-height that used to separate stacked elements) */
   .note .main strong{ font-weight:500; }
   .note a{ color:inherit; text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px; cursor:pointer; font-weight:500; transition:text-decoration-thickness var(--ease); }
   .note a:hover, .note a:active{ text-decoration-thickness:2px; }
   .note a:focus-visible{ outline:none; box-shadow:inset 0 -3px 0 currentColor; text-decoration:none; }
-  .note .x{ position:relative; flex:none; display:inline-flex; width:18px; height:18px; padding:0; border:0; background:transparent; color:inherit; cursor:pointer; align-items:center; justify-content:center; margin-top:1px;
+  .note .x{ position:relative; flex:none; display:inline-flex; width:24px; height:var(--line,24px); padding:0; border:0; background:transparent; color:inherit; cursor:pointer; align-items:center; justify-content:center;
     transition:transform 130ms cubic-bezier(.4,0,.2,1); }
   .note .x::before{ content:""; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:24px; height:24px; }
   .note .x svg{ width:12px; height:12px; fill:currentColor; }
@@ -76,8 +85,21 @@
   /* GLOBAL: solid fill, reverse text/icon, mark punches to the fill */
   .note.global{ background:var(--accent); color:var(--gtext); --mark:var(--accent); padding:14px 16px; }
   .note.global .ic{ color:var(--gtext); }
-  .note.global .main{ display:flex; flex-direction:column; gap:14px; }
-  .note.global .actions{ display:flex; gap:24px; justify-content:flex-end; }
+  .note.global .main{ display:flex; flex-direction:column; gap:8px; }   /* title + message description STACK vertically (globals); gap = content-small */
+  /* GLOBAL actions = full-size UNDECORATED (ghost) buttons — not links: standard h44/pad20, subtle overlay on hover */
+  .note.global .actions{ display:flex; gap:8px; justify-content:flex-end; margin-top:16px; margin-right:-16px; }   /* clear gap above; pull RIGHT past the note padding so the buttons sit flush to the right edge (mirrors the flush-bottom fix) */
+  .note.global .actions button{ appearance:none; border:0; background:transparent; color:var(--gtext); height:44px; min-width:96px; padding:0 20px;
+    display:inline-flex; align-items:center; justify-content:center; font:500 16px/1 var(--font); cursor:pointer; transition:background var(--ease); }
+  .note.global .actions button:hover{ background:rgba(255,255,255,.18); }
+  .note.global.warn .actions button:hover{ background:rgba(0,0,0,.10); }     /* amber = dark text → darken overlay */
+  .note.global .actions button:active{ background:rgba(255,255,255,.30); }
+  .note.global.warn .actions button:active{ background:rgba(0,0,0,.16); }
+  .note.global .actions button:focus-visible{ outline:2px solid var(--gtext); outline-offset:-2px; }
+  /* CLOSE — aligned to the FIRST line alongside the icon (consistent across all placements, height-independent); larger glyph (Dave 2026-06-29) */
+  .note .x svg{ width:22px; height:22px; }
+  /* ACTIONS — drop the note's bottom padding so the buttons' bottom edge sits flush with the container bottom */
+  .note.global:has(.actions){ padding-bottom:0; }
+  .note.global:has(.actions) .main{ padding-bottom:0; }   /* actions variant ONLY: buttons flush to the bottom edge; message-only + close-only keep the balanced padding */
 
   /* SNACKBAR: tinted + elevation shadow */
   .note.snack{ box-shadow:0 2px 16px var(--shadow); }
@@ -92,7 +114,8 @@
   [data-theme="dark"] .inline .ic{ color:#FFFFFF; }
 
   @container (max-width: 480px){
-    .note.global .actions{ flex-direction:column; gap:8px; align-items:flex-start; justify-content:flex-start; }
+    .note.global .actions{ flex-direction:column; gap:8px; align-items:stretch; }
+    .note.global .actions button{ width:100%; }
   }
   @media (prefers-reduced-motion: reduce){
     *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
@@ -124,16 +147,19 @@
     <div class="note tint info" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-info"/></svg></span><span class="main"><strong>Notification title.</strong> Message description. <a href="#">Link style</a></span><button class="x" aria-label="Dismiss notification"><svg aria-hidden="true"><use href="#ic-close"/></svg></button></div>
 
     <h2>Contextual — form multi-link</h2>
-    <div class="note tint err" role="alert"><span class="ic"><svg aria-hidden="true"><use href="#ic-error"/></svg></span><span class="main"><strong>Notification title.</strong>
-      <span style="display:block; margin-top:6px;"><a href="#">Link style.</a> Message description.</span>
-      <span style="display:block; margin-top:4px;"><a href="#">Link style.</a> Message description.</span>
-      <span style="display:block; margin-top:4px;"><a href="#">Link style.</a> Message description.</span></span><button class="x" aria-label="Dismiss notification"><svg aria-hidden="true"><use href="#ic-close"/></svg></button></div>
+    <div class="note tint err" role="alert"><span class="ic"><svg aria-hidden="true"><use href="#ic-error"/></svg></span><span class="main mlinks"><strong>Notification title.</strong>
+      <span><a href="#">Link style.</a> Message description.</span>
+      <span><a href="#">Link style.</a> Message description.</span>
+      <span><a href="#">Link style.</a> Message description.</span></span><button class="x" aria-label="Dismiss notification"><svg aria-hidden="true"><use href="#ic-close"/></svg></button></div>
 
-    <h2>Global</h2>
-    <div class="note global err" role="alert"><span class="ic"><svg aria-hidden="true"><use href="#ic-error"/></svg></span><span class="main"><span><strong>Notification title.</strong> Message description. <a href="#">Link style</a></span><span class="actions"><a href="#">Action 1</a><a href="#">Action 2</a></span></span><button class="x" aria-label="Dismiss notification"><svg aria-hidden="true"><use href="#ic-close"/></svg></button></div>
-    <div class="note global warn" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-warning"/></svg></span><span class="main"><span><strong>Notification title.</strong> Message description. <a href="#">Link style</a></span><span class="actions"><a href="#">Action 1</a><a href="#">Action 2</a></span></span><button class="x" aria-label="Dismiss notification"><svg aria-hidden="true"><use href="#ic-close"/></svg></button></div>
-    <div class="note global ok" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-success"/></svg></span><span class="main"><span><strong>Notification title.</strong> Message description. <a href="#">Link style</a></span><span class="actions"><a href="#">Action 1</a><a href="#">Action 2</a></span></span><button class="x" aria-label="Dismiss notification"><svg aria-hidden="true"><use href="#ic-close"/></svg></button></div>
-    <div class="note global info" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-info"/></svg></span><span class="main"><span><strong>Notification title.</strong> Message description. <a href="#">Link style</a></span><span class="actions"><a href="#">Action 1</a><a href="#">Action 2</a></span></span><button class="x" aria-label="Dismiss notification"><svg aria-hidden="true"><use href="#ic-close"/></svg></button></div>
+    <h2>Global — message only (no actions, no close)</h2>
+    <div class="note global info" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-info"/></svg></span><span class="main"><strong>Notification title.</strong><span class="g-desc">Message description. <a href="#">Link style</a></span></span></div>
+
+    <h2>Global — close only</h2>
+    <div class="note global warn" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-warning"/></svg></span><span class="main"><strong>Notification title.</strong><span class="g-desc">Message description. <a href="#">Link style</a></span></span><button class="x" aria-label="Dismiss notification"><svg aria-hidden="true"><use href="#ic-close"/></svg></button></div>
+
+    <h2>Global — actions only</h2>
+    <div class="note global err" role="alert"><span class="ic"><svg aria-hidden="true"><use href="#ic-error"/></svg></span><span class="main"><strong>Notification title.</strong><span class="g-desc">Message description. <a href="#">Link style</a></span><span class="actions"><button type="button">Action 1</button><button type="button">Action 2</button></span></span></div>
 
     <h2>Inline</h2>
     <span class="inline err"><span class="ic"><svg aria-hidden="true"><use href="#ic-error"/></svg></span>Message to appear here</span>
@@ -161,7 +187,7 @@
       { "fg": "text/default", "bg": "rag/information-tint",  "context": "text" }
     ],
     "icons": { "error": "status-icons/error.svg", "warning": "status-icons/warning.svg", "success": "status-icons/success.svg", "information": "status-icons/information.svg", "close": "global-controls/close.svg" },
-    "driftAllow": { "--err": ["dark"], "--info": ["dark"], "$reason": "INTERIM (Dave 2026-06-24): rag accents use LIGHT values for stroke/surface in dark — dark rag/information aliases a MISSING color/blue/400 (illustration leak #4587A7, white-on-it 4.0:1 fails). Revisit at token level; see dark-rag-token-gaps." },
+    "driftAllow": { "--err": ["dark"], "--info": ["dark"], "$reason": "Global SOLID banners keep light rag accent fills in dark for white-text contrast: rag/information dark (#4587A7, now color/blue/400 — the info ACCENT, fine for borders/icons/focus) is only 4.0:1 under white text as a solid fill, so the dark global fill uses blue/600 #305A85; --err likewise kept at the deeper #A8000B. Token blue/400 dangling-alias/illustration-leak now FIXED; remaining gap = no dedicated dark rag-SURFACE token. See dark-rag-token-gaps." },
     "requiredAria": ["role=\"alert\"", "role=\"status\"", "aria-label"]
   }
   </script>

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payments journey — end-to-end proof (fitness-test, NOT gated)</title>
+<!--
+  END-TO-END PROOF (not canon). Walks the real journey Dashboard -> Make a payment -> Review & confirm,
+  assembled ONLY from canon component patterns + canon tokens (KB-only build). Purpose: pressure-test the
+  12 refined components TOGETHER and surface gaps the component-level work couldn't (signal from outside
+  the system). Every place I had to reach OUTSIDE canon is tagged inline:  <!-- GAP: … -->  and compiled
+  into _PAYMENTS-JOURNEY-GAPS.md.
+-->
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; --h:44px; }
+  [data-theme="light"]{
+    --page:#FFFFFF; --surface:#FFFFFF; --surface-2:#F3F3F3; --border:#D7D8D6; --rule:#D7D8D6;
+    --text:#333333; --muted:#545454; --icon:#333333; --reverse:#FFFFFF; --on-inverse:#FFFFFF;
+    --pri:#DB0011; --pri-hover:#BA1110; --sec:#000000; --sec-hover:#333333; --form-border:#767676; --focus:#305A85;
+    --err:#A8000B; --warn:#FFBB33; --ok:#00847F; --info:#305A85;
+    --err-t:#F9F2F3; --warn-t:#FFF8EA; --ok-t:#E5F2F2; --info-t:#EBEFF4; }
+  [data-theme="dark"]{
+    --page:#000000; --surface:#1D1D1D; --surface-2:#212121; --border:#404040; --rule:#404040;
+    --text:#FFFFFF; --muted:#9B9B9B; --icon:#FFFFFF; --reverse:#FFFFFF; --on-inverse:#333333;
+    --pri:#DB0011; --pri-hover:#BA1110; --sec:#FFFFFF; --sec-hover:#EDEDED; --form-border:#767676; --focus:#4587A7;
+    --err:#DB0011; --warn:#FFBB33; --ok:#00847F; --info:#4587A7;
+    --err-t:#260005; --warn-t:#221701; --ok-t:#001615; --info-t:#000D1B; }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:var(--font); background:var(--surface-2); color:var(--text); -webkit-font-smoothing:antialiased;
+    transition:background var(--ease), color var(--ease); padding:24px; display:flex; gap:24px; flex-wrap:wrap; justify-content:center; align-items:flex-start;}
+  .demo-controls{position:fixed; top:12px; left:12px; z-index:10; display:flex; gap:.5rem; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:6px 12px; border:1px solid var(--form-border); background:var(--surface); color:var(--text); cursor:pointer;}
+
+  /* GAP: no canon for app/page scaffolding — phone frame, screen layout, sticky bars are all invented here */
+  .phone{ width:390px; max-width:100%; height:780px; background:var(--page); border:1px solid var(--border); display:flex; flex-direction:column; overflow:hidden; position:relative; }
+  .screen{ display:none; flex-direction:column; flex:1; overflow-y:auto; }
+  .screen.active{ display:flex; }
+
+  /* Headers (canon Headers — app content header) — component is 6.5/9, NOT refined.  GAP */
+  .appbar{ display:flex; align-items:center; gap:8px; height:56px; padding:0 8px; background:var(--surface); border-bottom:1px solid var(--rule); flex:none; }
+  .appbar button{ width:40px; height:40px; border:0; background:transparent; color:var(--icon); cursor:pointer; display:inline-flex; align-items:center; justify-content:center; }
+  .appbar button:hover{ background:var(--surface-2); } .appbar svg{ width:20px; height:20px; fill:currentColor; }
+  .appbar h1{ flex:1; margin:0; font:500 17px/1.2 var(--font); text-align:center; }
+  .appbar .spacer{ width:40px; }
+
+  .body{ padding:16px; display:flex; flex-direction:column; gap:16px; }
+  h2.sec{ font:500 13px/1 var(--font); letter-spacing:.04em; text-transform:uppercase; color:var(--muted); margin:4px 0 0; }
+
+  /* Cards (canon) — square, surface + border */
+  .card{ background:var(--surface); border:1px solid var(--border); border-radius:0; padding:16px; }
+  /* GAP: no canon "balance" type token — big account number size invented (font-7-ish) */
+  .balance{ font:500 28px/1.1 var(--font); margin:4px 0 0; }
+  .card .acct{ font:400 14px/1.4 var(--font); color:var(--muted); }
+
+  /* List-items (canon) — row: leading + main + trailing amount + status */
+  .list{ background:var(--surface); border:1px solid var(--border); }
+  .li{ display:flex; align-items:center; gap:12px; padding:12px 14px; border-top:1px solid var(--rule); width:100%; text-align:left; background:transparent; border-left:0;border-right:0;border-bottom:0; color:var(--text); font:inherit; cursor:pointer; }
+  .li:first-child{ border-top:0; } .li:hover{ background:var(--surface-2); }
+  .li:focus-visible{ outline:2px solid var(--focus); outline-offset:-2px; }
+  /* GAP: Avatar component is 7.0/9, NOT refined — payee initials circle assembled by hand */
+  .avatar{ flex:none; width:36px; height:36px; border-radius:50%; background:var(--surface-2); display:flex; align-items:center; justify-content:center; font:500 13px/1 var(--font); color:var(--text); }
+  .li .m{ flex:1; min-width:0; } .li .m .t{ display:block; font:500 15px/1.3 var(--font); } .li .m .s{ display:block; font:400 13px/1.3 var(--font); color:var(--muted); }
+  .li .amt{ font:500 15px/1.3 var(--font); white-space:nowrap; }
+  .li .amt.out{ color:var(--text); } .li .amt.in{ color:var(--ok); }
+
+  /* Status-indicator (canon) — RAG chip */
+  .chip{ display:inline-flex; align-items:center; gap:6px; height:22px; padding:0 8px; border:1px solid var(--accent); border-radius:0; font:500 11px/1 var(--font); color:var(--text); background:var(--tint); }
+  .chip.ok{ --accent:var(--ok); --tint:var(--ok-t); } .chip.warn{ --accent:var(--warn); --tint:var(--warn-t); } .chip.info{ --accent:var(--info); --tint:var(--info-t); }
+  .chip .dot{ width:7px; height:7px; border-radius:50%; background:var(--accent); }
+
+  /* Tags (canon) — square */
+  .tag{ display:inline-flex; align-items:center; height:24px; padding:0 8px; border:1px solid var(--form-border); border-radius:0; font:400 12px/1 var(--font); color:var(--text); }
+
+  /* Links (canon) */
+  a.lnk{ color:var(--text); text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px; cursor:pointer; }
+  a.lnk:hover{ text-decoration-thickness:2px; }
+  a.arrow{ display:inline-flex; align-items:center; gap:4px; text-decoration:none; color:var(--text); font-weight:500; cursor:pointer; }
+  a.arrow .tip{ color:var(--pri); display:inline-flex; } a.arrow .tip svg{ width:.8em; height:.8em; fill:currentColor; }
+  a.arrow:hover .lbl{ text-decoration:underline; text-underline-offset:3px; }
+
+  /* Button (canon) — square, scale-physics */
+  .btn{ height:var(--h); min-width:96px; padding:0 20px; border:0; border-radius:0; cursor:pointer; font:500 16px/1 var(--font);
+    display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:background var(--ease), transform 300ms cubic-bezier(.5,1.6,.4,1), filter 90ms; }
+  .btn:focus-visible{ outline:2px solid var(--text); outline-offset:2px; }
+  .btn.primary{ background:var(--pri); color:var(--reverse); } .btn.primary:hover{ background:var(--pri-hover); }
+  .btn.secondary{ background:var(--sec); color:var(--on-inverse); } .btn.secondary:hover{ background:var(--sec-hover); }
+  .btn.full{ width:100%; }
+  .btn:not(.full):hover{ transform:scale(1.02); } .btn:active{ transform:scale(.97); filter:brightness(.9); }
+
+  /* action bar (canon Button action-bar pattern) — sticky bottom.  GAP: sticky-in-frame is composition, not canon */
+  .actionbar{ margin-top:auto; padding:12px 16px; background:var(--surface); border-top:1px solid var(--rule); display:flex; flex-direction:column; gap:8px; flex:none; }
+
+  /* Progress-tracker (canon) — segmented */
+  .pt{ display:flex; gap:6px; padding:12px 16px 0; }
+  .pt .seg{ flex:1; height:4px; background:var(--surface-2); } .pt .seg.done{ background:var(--ok); } .pt .seg.now{ background:var(--pri); }
+  .pt-label{ padding:6px 16px 0; font:400 12px/1 var(--font); color:var(--muted); }
+
+  /* Input-fields (canon — boxed, GBP prefix) */
+  .field{ display:flex; flex-direction:column; gap:6px; } .field label{ font:500 13px/1.3 var(--font); }
+  .box{ display:flex; align-items:center; height:48px; border:1px solid var(--form-border); background:var(--surface); }
+  .box:focus-within{ border-color:var(--focus); box-shadow:inset 0 -3px 0 var(--focus); }
+  .box .prefix{ padding:0 12px; color:var(--muted); font:400 16px/1 var(--font); border-right:1px solid var(--border); align-self:stretch; display:flex; align-items:center; }
+  .box input{ flex:1; min-width:0; border:0; outline:0; background:transparent; color:var(--text); font:400 16px/1 var(--font); padding:0 12px; }
+  .hint{ font:400 12px/1.3 var(--font); color:var(--muted); }
+
+  /* Selection-controls (canon — radio rows) */
+  .radio{ display:flex; align-items:center; gap:12px; padding:12px 14px; border:1px solid var(--border); background:var(--surface); cursor:pointer; }
+  .radio + .radio{ border-top:0; } .radio:hover{ background:var(--surface-2); }
+  .radio input{ accent-color:var(--pri); width:20px; height:20px; flex:none; }
+  .radio .m{ flex:1; } .radio .m .t{ display:block; font:500 15px/1.3 var(--font); } .radio .m .s{ display:block; font:400 13px/1.3 var(--font); color:var(--muted); }
+
+  /* Notifications (canon — contextual + global) */
+  .note{ display:flex; gap:8px; align-items:flex-start; padding:12px 14px; border:1px solid var(--accent); background:var(--tint); }
+  .note.info{ --accent:var(--info); --tint:var(--info-t); } .note.ok{ --accent:var(--ok); --tint:var(--ok-t); }
+  .note .ic{ flex:none; width:20px; height:20px; color:var(--accent); } .note .ic svg{ width:20px; height:20px; fill:currentColor; } .note .ic .cut{ fill:var(--tint); }
+  .note .bd{ font:400 14px/1.45 var(--font); } .note .bd strong{ font-weight:500; display:block; }
+
+  /* review key/value summary — GAP: no canon key-value "summary list" component (Table is tabular, List-items is transaction-shaped) */
+  .kv{ background:var(--surface); border:1px solid var(--border); }
+  .kv .row{ display:flex; justify-content:space-between; gap:16px; padding:13px 14px; border-top:1px solid var(--rule); font:400 15px/1.3 var(--font); }
+  .kv .row:first-child{ border-top:0; } .kv .row .k{ color:var(--muted); } .kv .row .v{ font-weight:500; text-align:right; }
+
+  /* bottom nav — GAP: Navigations is 6.5/9, NOT refined; assembled by hand */
+  .tabbar{ display:flex; border-top:1px solid var(--rule); background:var(--surface); flex:none; }
+  .tabbar a{ flex:1; padding:8px 0 10px; display:flex; flex-direction:column; align-items:center; gap:2px; font:400 11px/1 var(--font); color:var(--muted); text-decoration:none; cursor:pointer; }
+  .tabbar a.on{ color:var(--text); } .tabbar a svg{ width:22px; height:22px; fill:currentColor; }
+  .success-screen{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; padding:32px; text-align:center; }
+  .success-ic{ width:64px; height:64px; color:var(--ok); } .success-ic svg{ width:64px; height:64px; fill:currentColor; } .success-ic .cut{ fill:var(--page); }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition-duration:.01ms !important; } .btn:hover,.btn:active{ transform:none !important; } }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls">
+    <button id="themeToggle" type="button">◐ Theme</button>
+    <button id="reset" type="button">⟲ Restart</button>
+  </div>
+
+  <!-- ============ SCREEN 1 — DASHBOARD ============ -->
+  <div class="phone" id="phone">
+    <section class="screen active" data-screen="dashboard">
+      <header class="appbar">
+        <span class="spacer"></span>
+        <h1>Accounts</h1>
+        <button aria-label="More options"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 3C9.828 3 10.5 2.328 10.5 1.5C10.5 0.672 9.828 0 9 0C8.171 0 7.5 0.672 7.5 1.5C7.5 2.328 8.171 3 9 3ZM9 15C8.171 15 7.5 15.672 7.5 16.5C7.5 17.328 8.171 18 9 18C9.828 18 10.5 17.328 10.5 16.5C10.5 15.672 9.828 15 9 15ZM9 7.5C8.171 7.5 7.5 8.172 7.5 9C7.5 9.828 8.171 10.5 9 10.5C9.828 10.5 10.5 9.828 10.5 9C10.5 8.172 9.828 7.5 9 7.5Z" fill="currentColor"/></svg></button>
+      </header>
+      <div class="body">
+        <div class="card">
+          <div class="acct">Current account · ···4821</div>
+          <div class="balance">£3,248.55</div>
+          <div style="margin-top:12px; display:flex; gap:8px;"><span class="tag">Everyday</span><span class="chip ok"><span class="dot"></span>Up to date</span></div>
+        </div>
+
+        <button class="btn primary full" data-go="pay">Make a payment</button>
+
+        <h2 class="sec">Recent activity</h2>
+        <div class="list">
+          <button class="li"><span class="avatar">JL</span><span class="m"><span class="t">Jordan Lee</span><span class="s">Yesterday · Transfer</span></span><span class="amt out">−£250.00</span></button>
+          <button class="li"><span class="avatar">SS</span><span class="m"><span class="t">Spotify</span><span class="s">2 Jun · Subscription</span></span><span class="amt out">−£11.99</span></button>
+          <button class="li"><span class="avatar">AC</span><span class="m"><span class="t">Acme Corp</span><span class="s">1 Jun · Salary</span></span><span class="amt in">+£2,400.00</span></button>
+        </div>
+        <a class="arrow"><span class="lbl">View all transactions</span><span class="tip" aria-hidden="true"><svg viewBox="0 0 18 18"><path d="M5 17L5 1L13 9L5 17Z" fill="currentColor"/></svg></span></a>
+      </div>
+      <nav class="tabbar">
+        <a class="on"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 1 1 8h2v8h4v-5h4v5h4V8h2L9 1Z" fill="currentColor"/></svg>Home</a>
+        <a><svg viewBox="0 0 18 18" aria-hidden="true"><circle cx="9" cy="9" r="8" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>Cards</a>
+        <a><svg viewBox="0 0 18 18" aria-hidden="true"><rect x="1" y="3" width="16" height="12" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>Payments</a>
+      </nav>
+    </section>
+
+    <!-- ============ SCREEN 2 — MAKE A PAYMENT ============ -->
+    <section class="screen" data-screen="pay">
+      <header class="appbar">
+        <button aria-label="Back" data-go="dashboard"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.8483 17L5.85034 9L13.8483 1H12.1523L4.15234 9L12.1523 17H13.8483Z" fill="currentColor"/></svg></button>
+        <h1>Make a payment</h1>
+        <span class="spacer"></span>
+      </header>
+      <div class="pt"><span class="seg now"></span><span class="seg"></span><span class="seg"></span></div>
+      <div class="pt-label">Step 1 of 3 · Details</div>
+      <div class="body">
+        <div class="field">
+          <label>From account</label>
+          <label class="radio"><input type="radio" name="from" checked><span class="m"><span class="t">Current account</span><span class="s">···4821 · £3,248.55 available</span></span></label>
+          <label class="radio"><input type="radio" name="from"><span class="m"><span class="t">Savings</span><span class="s">···9930 · £12,000.00 available</span></span></label>
+        </div>
+
+        <div class="field">
+          <label for="payee">Payee</label>
+          <!-- GAP: Dropdown/select (7.5, NOT refined). Used a native select styled as the input box. -->
+          <div class="box"><select id="payee" style="flex:1;border:0;background:transparent;color:var(--text);font:400 16px/1 var(--font);padding:0 12px;outline:0;"><option>Jordan Lee · ···6647</option><option>Acme Corp · ···1180</option><option>Add a new payee…</option></select></div>
+        </div>
+
+        <div class="field">
+          <label for="amt">Amount</label>
+          <div class="box"><span class="prefix" aria-hidden="true">GBP</span><input id="amt" type="text" inputmode="decimal" value="250.00" aria-label="Amount"></div>
+          <span class="hint">Daily limit £25,000</span>
+        </div>
+
+        <div class="field">
+          <label for="ref">Reference</label>
+          <div class="box"><input id="ref" type="text" placeholder="e.g. Rent" aria-label="Reference"></div>
+        </div>
+      </div>
+      <div class="actionbar"><button class="btn primary full" data-go="review">Continue</button></div>
+    </section>
+
+    <!-- ============ SCREEN 3 — REVIEW & CONFIRM ============ -->
+    <section class="screen" data-screen="review">
+      <header class="appbar">
+        <button aria-label="Back" data-go="pay"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.8483 17L5.85034 9L13.8483 1H12.1523L4.15234 9L12.1523 17H13.8483Z" fill="currentColor"/></svg></button>
+        <h1>Review &amp; confirm</h1>
+        <span class="spacer"></span>
+      </header>
+      <div class="pt"><span class="seg done"></span><span class="seg done"></span><span class="seg now"></span></div>
+      <div class="pt-label">Step 3 of 3 · Review</div>
+      <div class="body">
+        <div class="note info"><span class="ic" aria-hidden="true"><svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="9"/><path class="cut" d="M9 6.25C9.69 6.25 10.25 5.69 10.25 5C10.25 4.31 9.69 3.75 9 3.75C8.31 3.75 7.75 4.31 7.75 5C7.75 5.69 8.31 6.25 9 6.25Z"/><path class="cut" d="M9.9 8.25H8.1V14.25H9.9V8.25Z"/></svg></span><span class="bd"><strong>Check the details</strong>Payments to a new payee can take up to 2 hours.</span></div>
+
+        <div class="card" style="padding:0;">
+          <div class="kv">
+            <div class="row"><span class="k">To</span><span class="v">Jordan Lee<br>···6647</span></div>
+            <div class="row"><span class="k">From</span><span class="v">Current ···4821</span></div>
+            <div class="row"><span class="k">Amount</span><span class="v">£250.00</span></div>
+            <div class="row"><span class="k">Reference</span><span class="v">Rent</span></div>
+            <div class="row"><span class="k">Date</span><span class="v">Today</span></div>
+          </div>
+        </div>
+        <a class="lnk" data-go="pay">Edit payment</a>
+      </div>
+      <div class="actionbar">
+        <button class="btn primary full" data-go="done">Confirm payment</button>
+        <button class="btn secondary full" data-go="pay">Back</button>
+      </div>
+    </section>
+
+    <!-- ============ SCREEN 4 — CONFIRMATION ============ -->
+    <section class="screen" data-screen="done">
+      <div class="success-screen">
+        <span class="success-ic" aria-hidden="true"><svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="9"/><path class="cut" d="M7.22 13.55 3.59 9.92l1.27-1.27 2.36 2.36 5.93-5.93 1.27 1.27-7.2 7.2Z"/></svg></span>
+        <h1 style="margin:0; font:500 22px/1.2 var(--font);">Payment sent</h1>
+        <p style="margin:0; font:400 16px/1.5 var(--font); color:var(--muted);">£250.00 to Jordan Lee<br>Reference: Rent</p>
+        <button class="btn primary full" data-go="dashboard">Back to accounts</button>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const phone=document.getElementById('phone');
+    function show(id){ phone.querySelectorAll('.screen').forEach(s=> s.classList.toggle('active', s.dataset.screen===id)); phone.querySelector('.screen.active').scrollTop=0; }
+    phone.addEventListener('click', e=>{ const t=e.target.closest('[data-go]'); if(t){ e.preventDefault(); show(t.dataset.go); } });
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    document.getElementById('reset').addEventListener('click', ()=> show('dashboard'));
+  </script>
+</body>
+</html>

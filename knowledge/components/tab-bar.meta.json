@@ -1,0 +1,62 @@
+{
+  "name": "Tab-bar",
+  "interactive": true,
+  "category": "molecule",
+  "purpose": "App-level BOTTOM navigation: 3–5 equal-width destinations, each an icon + label. The current destination uses the filled (-active) glyph + text/default label and aria-current='page'; the rest use the line glyph + text/secondary. NOT the in-page Tabs component. Surfaced as a missing pattern by the journey gap report.",
+  "props": [
+    { "name": "items", "type": "number", "$note": "3–5 destinations. Fewer than 3 isn't a tab bar; more than 5 crowds the targets." },
+    { "name": "current", "type": "string", "$note": "The active destination — gets the filled glyph + text/default + aria-current='page'." }
+  ],
+  "variants": [
+    { "name": "standard", "use": "Full-width bar with icon + label per destination; current item filled." },
+    { "name": "segmented", "use": "Segmented control spanning the full screen width, icon-only (Home / Cards / Payments / Insights), elevated; the selected fill is a PILL that slides between segments (same easing as the toggle / View-options), black + white glyph (inverts in dark). Menu is a separate circular island in the SAME exclusive group (selecting it collapses the pill); its selected state matches with a 4px surface ring; matches the lozenge height. EXPLORATION — rounding + elevation depart from the flat/angular brand; pending design sign-off." }
+  ],
+  "tokens": {
+    "surface": "tertiary/background/default",
+    "border": "border/subtle",
+    "muted": "text/secondary",
+    "text": "text/default",
+    "selected-bg": "secondary/background/default",
+    "selected-fg": "text/on-inverse",
+    "focus": "focus/ring",
+    "shadow": "elevation/functional",
+    "font-family": "typography/font-family/default",
+    "$icon-convention": "current item swaps to the icon's -active (filled) variant; inactive items use the line variant — the icon-source rule.",
+    "$segmented-note": "segmented variant departures fenced as exploratory: border-radius:999px, box-shadow(elevation/functional), full-width sliding-pill selection, and an INVERTING selected state (secondary/background/default + text/on-inverse = black/white in light, white/dark in dark — a literal black pill would vanish on the dark island). REVISIT (Dave, 2026-06-30): the islands variant is promoted as fine-for-now but to be revisited further."
+  },
+  "relationships": {
+    "livesInside": ["App shell / mobile screen (pinned to the bottom)"],
+    "mustNotNeighbour": ["Tabs (in-page) — a tab bar is app navigation, not in-page section switching"],
+    "commonPatterns": ["Home / Cards / Payments / Menu bottom nav", "persistent primary navigation on mobile"]
+  },
+  "behaviour": "Each item is a native <a> (focusable, keyboard-operable). The current item is marked with aria-current='page' so it is not signalled by colour alone. In the segmented variant the Menu island joins the SAME exclusive group — only one item current at a time, and the sliding pill collapses when Menu is current.",
+  "motion": {
+    "segmented": "the selected fill is a sliding pill — left+width animate from the current segment on 200ms cubic-bezier(.4,0,.2,1) (matching View-options / the toggle); the glyph colour transitions on the same easing so on-fill contrast holds through the slide.",
+    "reducedMotion": "the slide + colour change become instant under prefers-reduced-motion."
+  },
+  "accessibility": {
+    "role": "<nav aria-label> wrapping the destinations; the current item carries aria-current='page'.",
+    "colourIndependence": "active state = filled icon + text/default + aria-current, never colour alone (1.4.1).",
+    "targetSize": "each item is ≥44px tall (min-height 56px) and equal-width — comfortable touch targets.",
+    "focusVisible": "2px focus ring inset (outline-offset:-2px) so it is not clipped by the bar's top border.",
+    "relatedSC": ["1.4.1 Use of Color", "1.4.3 Contrast (Minimum)", "1.3.1 Info and Relationships", "2.4.3 Focus Order"]
+  },
+  "antiPatterns": [
+    "REVIEW (inferred): using a tab bar for in-page section switching — that is the Tabs component; a tab bar is app-level navigation.",
+    "REVIEW (inferred): signalling the current tab by colour alone — also swap to the filled glyph + set aria-current (1.4.1).",
+    "REVIEW (inferred): more than ~5 destinations — targets get too narrow; move overflow into a Menu item.",
+    "REVIEW (inferred): labels in UPPERCASE — house type rule is sentence case.",
+    "REVIEW (inferred): applying the pills variant's rounding/elevation to the standard bar — those are fenced to the exploratory pills variant; the standard bar stays flat/angular."
+  ],
+  "tokenValidation": {
+    "date": "2026-06-30",
+    "against": "canon token store (semantic-colour.json); declared values match in light + dark (passes _validate_snippets). Glyphs byte-match assets/icons (home, card-manage, payments-and-transfers, menu + -active).",
+    "result": "PASS (colour + icons); no open token questions."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": "",
+    "$note": "REVIEW: no Figma node yet — surfaced by the journey gap report (the .c-tabbar hand-util). Needs a design owner + Figma source before promotion from candidate to gated."
+  }
+}

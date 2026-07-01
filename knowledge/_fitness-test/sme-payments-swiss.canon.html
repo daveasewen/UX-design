@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SME Payments — Swiss / International Typographic Style (fitness test)</title>
+<!--
+  FITNESS TEST (desktop, Swiss restyle) — the same SME Payments brief, composed from canon.css tokens
+  + key components (cn-button, cn-modals, c-amount-in) but laid out in the International Typographic
+  Style: a strict modular grid, hairline rules, typographic hierarchy through size/weight, tabular
+  figures, generous negative space, one restrained accent (the brand red, kept to a single rule —
+  never on an action). Univers (the HSBC face) is itself a Swiss typeface, so this leans into the canon.
+  <style> is layout/type harness ONLY: no hex (canon vars), no .cn-* redefined.
+  Figures verbatim + reconciled (net +£2,450 · balance £122,450 · buffer £72,748 · upcoming £106,302);
+  same payee = same amount; masked account; high-value approval requires the confirmation step.
+  BRAND-REFRESH NOTES (Swiss vs the current canon) are listed at the end of this comment:
+    · the canon cn-table uses a filled grey header — a hairline-only table reads more Swiss (built custom here);
+    · canon section labels are fine sentence-case; Swiss would normally set them in tracked caps (brief forbids caps);
+    · c-stat-grid is fixed 2-col — Swiss wants a free modular grid (built custom here).
+-->
+<link rel="stylesheet" href="../canon/canon.css">
+<style>
+  /* ---- SWISS LAYOUT / TYPE HARNESS (canon vars for colour; no .cn-* redefined) ---- */
+  :root{ --gut:32px; --rule:var(--text); }
+  body{ margin:0; padding:0; background:var(--page); color:var(--text); font-family:var(--font); -webkit-font-smoothing:antialiased; }
+  .demo-controls{ position:fixed; top:12px; right:12px; z-index:30; display:flex; gap:.5rem; }
+  .demo-controls button{ font:inherit; font-size:12px; padding:6px 12px; border:1px solid var(--border); background:var(--surface); color:var(--text); cursor:pointer; }
+
+  .sheet{ max-width:1180px; margin:0 auto; padding:0 var(--gut) 80px; border-top:3px solid var(--primary-background-default); }   /* the single red accent: a brand rule */
+
+  /* masthead */
+  .mast{ display:grid; grid-template-columns:1fr auto; align-items:end; gap:24px; padding:28px 0 14px; border-bottom:2px solid var(--rule); }
+  .mast h1{ margin:0; font:500 46px/0.95 var(--font); letter-spacing:-.02em; }
+  .mast .acct{ font:400 12px/1.5 var(--font); color:var(--muted); text-align:right; }
+
+  /* section scaffolding */
+  .sec{ padding-top:18px; margin-top:36px; border-top:1px solid var(--rule); }
+  .sec--plain{ border-top:0; margin-top:40px; padding-top:0; }
+  .lbl{ font:600 12px/1 var(--font); letter-spacing:.02em; color:var(--text); }
+  .lbl .n{ color:var(--muted); font-weight:400; margin-left:8px; }
+
+  /* cash position — the typographic hero */
+  .cash{ display:grid; grid-template-columns:minmax(280px,1.1fr) 2fr; gap:var(--gut); align-items:start; margin-top:18px; }
+  .balance .fig{ display:block; font:400 64px/0.95 var(--font); letter-spacing:-.03em; font-variant-numeric:tabular-nums; }
+  .balance .cap{ display:block; margin-top:10px; font:400 13px/1.4 var(--font); color:var(--muted); }
+  .balance .cap b{ color:var(--ok); font-weight:500; }
+  .stats{ display:grid; grid-template-columns:repeat(4,1fr); border-left:1px solid var(--border); }
+  .stat{ padding:2px 18px; border-right:1px solid var(--border); display:flex; flex-direction:column; gap:8px; }
+  .stat .k{ font:500 12px/1.2 var(--font); color:var(--muted); }
+  .stat .v{ font:400 22px/1 var(--font); font-variant-numeric:tabular-nums; letter-spacing:-.01em; }
+
+  /* body grid: 2/3 main + 1/3 side, divided by a vertical hairline */
+  .grid{ display:grid; grid-template-columns:2fr 1fr; gap:var(--gut); margin-top:0; }
+  .side{ border-left:1px solid var(--rule); padding-left:var(--gut); }
+
+  /* pending approval — Swiss list rows */
+  .appr{ display:grid; grid-template-columns:1fr auto; column-gap:24px; row-gap:4px; padding:16px 0; border-top:1px solid var(--border); align-items:baseline; }
+  .appr:first-of-type{ border-top:0; }
+  .appr__payee{ font:500 17px/1.2 var(--font); }
+  .appr__amt{ font:400 19px/1 var(--font); font-variant-numeric:tabular-nums; text-align:right; }
+  .appr__meta{ grid-column:1/2; font:400 12px/1.5 var(--font); color:var(--muted); }
+  .appr__flag{ grid-column:2/3; justify-self:end; font:500 11px/1.5 var(--font); color:var(--muted); }
+  .appr__act{ grid-column:1/3; display:flex; gap:10px; align-items:center; margin-top:10px; }
+  .appr__act .spacer{ flex:1; }
+  .appr__act .decline{ font:500 13px/1 var(--font); color:var(--muted); background:none; border:0; cursor:pointer; padding:10px 2px; }
+  .appr__act .decline:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }
+
+  /* upcoming — hairline ledger table */
+  .ledger{ width:100%; border-collapse:collapse; margin-top:14px; }
+  .ledger th, .ledger td{ text-align:left; padding:11px 0; border-bottom:1px solid var(--border); font:400 15px/1.3 var(--font); vertical-align:baseline; }
+  .ledger thead th{ font:600 12px/1 var(--font); color:var(--muted); padding-bottom:9px; border-bottom:1px solid var(--rule); }
+  .ledger .date{ width:84px; color:var(--muted); font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .ledger .payee{ font-weight:500; }
+  .ledger .amt{ text-align:right; font-variant-numeric:tabular-nums; }
+  .ledger tfoot td{ border-bottom:0; border-top:2px solid var(--rule); font-weight:600; padding-top:12px; }
+  .ledger tfoot .amt{ font-size:17px; }
+
+  /* coverage + this period (side) */
+  .cover h3{ margin:14px 0 8px; font:500 17px/1.25 var(--font); }
+  .cover p{ margin:0; font:400 14px/1.65 var(--font); color:var(--muted); }
+  .cover p b{ color:var(--text); font-weight:500; }
+  .buffer{ margin-top:18px; }
+  .buffer .v{ font:400 34px/1 var(--font); font-variant-numeric:tabular-nums; letter-spacing:-.02em; }
+  .buffer .k{ display:block; margin-top:6px; font:500 12px/1.3 var(--font); color:var(--muted); }
+  .period{ margin-top:28px; }
+  .period .row{ display:flex; justify-content:space-between; align-items:baseline; gap:16px; padding:9px 0; border-top:1px solid var(--border); font:400 14px/1.4 var(--font); color:var(--muted); }
+  .period .row b{ color:var(--text); font-weight:500; font-variant-numeric:tabular-nums; }
+
+  /* actions row at masthead / footer */
+  .topact{ display:flex; gap:10px; }
+
+  @media (max-width:900px){
+    .cash{ grid-template-columns:1fr; } .stats{ border-left:0; }
+    .grid{ grid-template-columns:1fr; } .side{ border-left:0; padding-left:0; border-top:1px solid var(--rule); padding-top:18px; }
+  }
+  @media (prefers-reduced-motion: reduce){ *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; } }
+</style>
+</head>
+<body class="canon">
+  <div class="demo-controls"><button id="themeToggle" type="button">◐ Theme</button></div>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="ic-close" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <div class="sheet">
+    <!-- ============ MASTHEAD ============ -->
+    <header class="mast">
+      <h1>Payments</h1>
+      <div class="acct">Business current account ····<br>Sort code ··–··–··</div>
+    </header>
+
+    <!-- ============ CASH POSITION ============ -->
+    <section class="sec--plain" style="margin-top:32px">
+      <span class="lbl">Cash position<span class="n">as of 12 May 2026</span></span>
+      <div class="cash">
+        <div class="balance">
+          <span class="fig">£122,450</span>
+          <span class="cap">Current balance · net today <b>+£2,450</b></span>
+        </div>
+        <div class="stats">
+          <div class="stat"><span class="k">Opening</span><span class="v">£120,000</span></div>
+          <div class="stat"><span class="k">Inflows today</span><span class="v"><span class="c-amount-in">+£11,650</span></span></div>
+          <div class="stat"><span class="k">Outflows today</span><span class="v">−£9,200</span></div>
+          <div class="stat"><span class="k">Est. closing</span><span class="v">£124,000</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ BODY ============ -->
+    <div class="grid">
+      <div class="main">
+        <!-- pending approval -->
+        <section class="sec">
+          <span class="lbl">Pending approval<span class="n">2 awaiting you</span></span>
+          <div style="margin-top:8px">
+            <div class="appr">
+              <span class="appr__payee">Amazon Business</span>
+              <span class="appr__amt">£4,502</span>
+              <span class="appr__meta">Requested by Sarah Chen · 2 days ago</span>
+              <div class="appr__act">
+                <button class="decline" type="button">Decline</button>
+                <span class="spacer"></span>
+                <span class="cn-button"><button class="btn tertiary" type="button">Review</button></span>
+                <span class="cn-button"><button class="btn secondary" type="button" data-approve data-payee="Amazon Business" data-amount="£4,502" data-who="Sarah Chen">Approve</button></span>
+              </div>
+            </div>
+            <div class="appr">
+              <span class="appr__payee">BrightHire Payroll Ltd</span>
+              <span class="appr__amt">£45,200</span>
+              <span class="appr__meta">Requested by Sarah Chen · 2 days ago</span>
+              <span class="appr__flag">High value — needs confirmation</span>
+              <div class="appr__act">
+                <button class="decline" type="button">Decline</button>
+                <span class="spacer"></span>
+                <span class="cn-button"><button class="btn tertiary" type="button">Review</button></span>
+                <span class="cn-button"><button class="btn secondary" type="button" data-approve data-payee="BrightHire Payroll Ltd" data-amount="£45,200" data-who="Sarah Chen">Approve</button></span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- upcoming payments -->
+        <section class="sec">
+          <span class="lbl">Upcoming payments<span class="n">5 scheduled</span></span>
+          <table class="ledger">
+            <thead><tr><th class="date">Date</th><th class="payee">Payee</th><th class="amt">Amount</th></tr></thead>
+            <tbody>
+              <tr><td class="date">15 May</td><td class="payee">Amazon Business</td><td class="amt">£4,502</td></tr>
+              <tr><td class="date">22 May</td><td class="payee">BrightHire Payroll Ltd</td><td class="amt">£45,200</td></tr>
+              <tr><td class="date">22 Jul</td><td class="payee">HMRC — PAYE</td><td class="amt">£2,200</td></tr>
+              <tr><td class="date">12 Aug</td><td class="payee">British Gas Business</td><td class="amt">£4,200</td></tr>
+              <tr><td class="date">09 Sep</td><td class="payee">Ravenscroft Properties</td><td class="amt">£50,200</td></tr>
+            </tbody>
+            <tfoot><tr><td class="date"></td><td class="payee">Total</td><td class="amt">£106,302</td></tr></tfoot>
+          </table>
+        </section>
+      </div>
+
+      <aside class="side">
+        <section class="cover">
+          <span class="lbl">Coverage</span>
+          <h3>Covered through May</h3>
+          <p>Current balance of <b>£122,450</b>, less <b>£49,702</b> of payments scheduled in May.</p>
+          <div class="buffer"><span class="v">£72,748</span><span class="k">Remaining buffer after May</span></div>
+        </section>
+
+        <section class="period">
+          <span class="lbl">This period</span>
+          <div class="row"><span>Due in May</span><b>£49,702</b></div>
+          <div class="row"><span>Scheduled total</span><b>£106,302</b></div>
+        </section>
+      </aside>
+    </div>
+  </div>
+
+  <!-- ============ HIGH-VALUE APPROVAL — CONFIRMATION (cn-modals) ============ -->
+  <div class="cn-modals">
+    <div class="overlay" id="overlay">
+      <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="m-title" aria-describedby="m-body">
+        <button class="close" id="m-close" type="button" aria-label="Close"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg></button>
+        <h2 id="m-title">Confirm approval</h2>
+        <p id="m-body">You're approving <b id="m-amount">£45,200</b> to <b id="m-payee">BrightHire Payroll Ltd</b>, requested by <span id="m-who">Sarah Chen</span>. Once approved, the payment is scheduled and can't be undone here.</p>
+        <div class="actions">
+          <button class="btn secondary" id="m-confirm" type="button">Confirm approval</button>
+          <button class="btn secondary" id="m-cancel" type="button">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const h=document.documentElement; h.setAttribute('data-theme', h.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    const _root=document.documentElement;
+    addEventListener('keydown', e=>{ if(e.key==='Tab') _root.dataset.modality='keyboard'; });
+    addEventListener('mousedown', ()=> _root.dataset.modality='pointer');
+    addEventListener('touchstart', ()=> _root.dataset.modality='pointer', {passive:true});
+
+    const ov=document.getElementById('overlay'), dialog=ov.querySelector('.dialog');
+    let lastTrigger=null;
+    const focusable=()=>[...dialog.querySelectorAll('button')].filter(b=>!b.disabled);
+    function openModal(btn){ lastTrigger=btn;
+      document.getElementById('m-amount').textContent=btn.dataset.amount;
+      document.getElementById('m-payee').textContent=btn.dataset.payee;
+      document.getElementById('m-who').textContent=btn.dataset.who;
+      requestAnimationFrame(()=>requestAnimationFrame(()=>ov.classList.add('open')));
+      setTimeout(()=>{ const f=focusable(); if(f[0]) f[0].focus(); }, 60);
+    }
+    function closeModal(){ ov.classList.remove('open'); if(lastTrigger) lastTrigger.focus(); }
+    document.querySelectorAll('[data-approve]').forEach(b=> b.addEventListener('click', ()=> openModal(b)));
+    document.getElementById('m-close').addEventListener('click', closeModal);
+    document.getElementById('m-cancel').addEventListener('click', closeModal);
+    document.getElementById('m-confirm').addEventListener('click', closeModal);
+    ov.addEventListener('click', e=>{ if(e.target===ov) closeModal(); });
+    document.addEventListener('keydown', e=>{ if(!ov.classList.contains('open')) return;
+      if(e.key==='Escape'){ closeModal(); return; }
+      if(e.key==='Tab'){ const f=focusable(), a=f[0], z=f[f.length-1];
+        if(e.shiftKey && document.activeElement===a){ e.preventDefault(); z.focus(); }
+        else if(!e.shiftKey && document.activeElement===z){ e.preventDefault(); a.focus(); } }
+    });
+    const GROW=7, PRESS=9;
+    function sizeScale(){ document.querySelectorAll('.cn-button .btn, .cn-modals .btn').forEach(b=>{ const w=b.offsetWidth||1; b.style.setProperty('--hs',(1+GROW/w).toFixed(4)); b.style.setProperty('--ps',(1-PRESS/w).toFixed(4)); }); }
+    addEventListener('resize', sizeScale); sizeScale();
+  </script>
+</body>
+</html>

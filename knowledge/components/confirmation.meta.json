@@ -1,0 +1,66 @@
+{
+  "name": "Confirmation",
+  "interactive": false,
+  "category": "organism",
+  "purpose": "The end-of-flow success screen: a success-solid glyph, a heading, a short message and the next actions. Confirms an action completed (payment sent, request submitted). A layout/composition that reuses the Button atom. Surfaced as a missing pattern by the journey gap report.",
+  "props": [
+    { "name": "title", "type": "string", "$note": "What completed, in plain words (e.g. 'Payment sent') — carries the success meaning, not the icon colour." },
+    { "name": "message", "type": "string", "$note": "One-line detail / what happens next." },
+    { "name": "actions", "type": "number", "$note": "1 primary (e.g. Done) + optional ghost (e.g. View receipt)." }
+  ],
+  "variants": [
+    { "name": "success", "use": "Completed-successfully screen (rag/success glyph). Built here." }
+  ],
+  "tokens": {
+    "success": "rag/success",
+    "text": "text/default",
+    "muted": "text/secondary",
+    "font-family": "typography/font-family/default",
+    "buttons": {
+      "primary": "primary/background/default",
+      "primary-hover": "primary/background/hover",
+      "on-primary": "text/reverse",
+      "ghost-hover": "tertiary/background/hover"
+    },
+    "$icon-note": "success-solid glyph: the tick is a cutout, so it shows the page colour behind (white tick on light, dark tick on dark). REVIEW: confirm the dark-mode tick reads acceptably or add a backing."
+  },
+  "$reuses": ["Button (primary + ghost)"],
+  "relationships": {
+    "livesInside": ["End of a payment / transfer / application flow", "Modal (as a success state)"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["payment sent confirmation", "request submitted", "form success screen"]
+  },
+  "behaviour": "Passive panel — no states of its own; the Button atom inside carries hover/pressed/focus. Full-width actions, so buttons use press-only physics (no hover-grow).",
+  "motion": {
+    "entrance": "success-solid pops in (scale .5 → 1.06 → 1, spring easing) then title / message / actions rise (translateY 10→0 + fade), staggered 140 / 220 / 300ms.",
+    "reducedMotion": "all entrance animation disabled under prefers-reduced-motion — content is shown immediately."
+  },
+  "responsive": {
+    "mobile": "vertically centred in the viewport (min-height:100dvh + justify-content:center) at ≤480px",
+    "$desktop-todo": "REVIEW: a DESKTOP variant is still needed (wider / dialog-style layout, not full-bleed centred). Logged in _COMPONENT-GAPS.md (Dave, 2026-06-30)."
+  },
+  "accessibility": {
+    "role": "role='group' with aria-labelledby pointing at the title, so the panel is announced as a unit.",
+    "colourIndependence": "success is carried by the HEADING TEXT, not the green icon (icon is aria-hidden) — meaning never depends on colour (1.4.1).",
+    "screenReader": "REVIEW (inferred): confirm the message reads naturally after the title; consider whether the success should be announced via a live region when it appears mid-flow.",
+    "relatedSC": ["1.4.1 Use of Color", "1.4.3 Contrast (Minimum)", "1.3.1 Info and Relationships"]
+  },
+  "antiPatterns": [
+    "REVIEW (inferred): conveying success by the green icon alone — the heading text must state what happened (1.4.1).",
+    "REVIEW (inferred): two primary (red) buttons — one primary action; secondaries are ghost.",
+    "REVIEW (inferred): auto-dismissing the confirmation before the user has read/acted on it.",
+    "REVIEW (inferred): rounding the panel or buttons — brand is square/angular.",
+    "REVIEW (inferred): UPPERCASE heading or message — house type rule is sentence case."
+  ],
+  "tokenValidation": {
+    "date": "2026-06-30",
+    "against": "canon token store (semantic-colour.json); declared values match in light + dark (passes _validate_snippets). success-solid byte-matches assets/icons/status-icons.",
+    "result": "PASS (colour + icon); 1 OPEN question (dark-mode tick cutout)."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": "",
+    "$note": "REVIEW: no Figma node yet — surfaced by the journey gap report. Needs a design owner + Figma source before promotion from candidate to gated."
+  }
+}

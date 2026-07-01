@@ -1,0 +1,67 @@
+{
+  "name": "Action bar",
+  "interactive": false,
+  "category": "molecule",
+  "purpose": "A footer bar that pins a screen or flow's primary + secondary actions (e.g. Cancel / Confirm payment). A layout container that composes the Button atom — the bar itself is passive; its buttons carry the interaction. Surfaced as a missing pattern by the journey gap report.",
+  "props": [
+    { "name": "sticky", "type": "boolean", "default": false, "$note": "Pin the bar to the bottom of a scrolling flow (position:sticky)." },
+    { "name": "actions", "type": "number", "$note": "1–3 actions: one primary + optional secondary + optional tertiary (e.g. Back). More than 3 is an anti-pattern." }
+  ],
+  "variants": [
+    { "name": "default", "use": "Tertiary Back on the left + secondary/primary pair on the right (wide container)." },
+    { "name": "sticky", "use": "Same bar pinned to the bottom of a scrolling region." }
+  ],
+  "tokens": {
+    "surface": "tertiary/background/default",
+    "border": "border/subtle",
+    "buttons": {
+      "primary": "primary/background/default",
+      "primary-hover": "primary/background/hover",
+      "on-primary": "text/reverse",
+      "secondary": "secondary/background/default",
+      "secondary-hover": "secondary/background/hover",
+      "secondary-label": "text/on-inverse"
+    },
+    "font-family": "typography/font-family/default"
+  },
+  "relationships": {
+    "livesInside": ["Payment / transfer flow", "Form screen", "Modal footer"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["Back + Cancel + Confirm in a flow step", "Cancel + Confirm pair", "Back + Continue in a multi-step flow"]
+  },
+  "$reuses": ["Button (primary + secondary)"],
+  "motion": {
+    "buttons": "Button scale-physics — grow toward the cursor on hover (transform:scale, --spring) + depress and darken on press (--press); SCALE only, no shadow/translate.",
+    "reducedMotion": "transforms + filter disabled under prefers-reduced-motion (colour states remain)."
+  },
+  "responsive": {
+    "unit": "container width (container-type:inline-size on the bar's region — reflows to its own width, not the viewport)",
+    "breakpoint": "≤420px container (verified to 320px / WCAG 1.4.10)",
+    "wide": "inline — tertiary Back pinned left (margin-right:auto), secondary + primary on the right",
+    "narrow": "stacked, each button full-width; PRIMARY promoted to the TOP, tertiary Back to the BOTTOM (mobile priority); hover-grow disabled (a full-bleed grow overflows)"
+  },
+  "behaviour": "Passive layout container — no states of its own; the Button atom inside carries hover/pressed/focus.",
+  "accessibility": {
+    "role": "None on the bar itself (it is layout); the actions are native <button>s so they are focusable and keyboard-operable by default.",
+    "focusOrder": "REVIEW (inferred): DOM order is tertiary→secondary→primary (Back → Cancel → Confirm) so keyboard focus runs back-out → forward; the visual reorder at narrow widths (primary top, Back bottom) is CSS order only — confirm this does not conflict with 2.4.3 expectations.",
+    "relatedSC": ["1.4.10 Reflow", "2.4.3 Focus Order", "1.4.3 Contrast (Minimum)"]
+  },
+  "antiPatterns": [
+    "REVIEW (inferred): more than ~3 actions in the bar — overflow secondary actions into a menu instead.",
+    "REVIEW (inferred): two competing primary (red) buttons — exactly one primary per bar.",
+    "REVIEW (inferred): giving Back a filled (primary/secondary) treatment — it is the lowest-emphasis action (tertiary/outlined).",
+    "REVIEW (inferred): rounding the buttons or the bar — brand is square/angular.",
+    "REVIEW (inferred): relying on the CSS reorder while leaving DOM order such that keyboard focus reaches Confirm before Cancel — keep DOM order logical (2.4.3)."
+  ],
+  "tokenValidation": {
+    "date": "2026-06-30",
+    "against": "canon token store (semantic-colour.json); declared values match in light + dark (passes _validate_snippets); button tokens reused verbatim from Button.",
+    "result": "PASS (colour); no open token questions."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": "",
+    "$note": "REVIEW: no Figma node yet — surfaced by the journey gap report (the .c-actionbar hand-util) and Button.meta commonPatterns. Needs a design owner + Figma source before promotion from candidate to gated."
+  }
+}

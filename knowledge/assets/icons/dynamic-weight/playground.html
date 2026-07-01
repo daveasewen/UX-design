@@ -3,232 +3,430 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dynamic-weight icons — playground</title>
+<title>Dynamic-weight icons — calibration tool</title>
 <!--
-  Dynamic-weight icon set — outline/stroke icons whose LINE THICKNESS is a single variable,
-  so it can be tuned freely OR snapped to match the adjacent label's font weight.
-  Core 8 (close, plus, check, chevron, search, arrow, info, menu), drawn as outlines on a
-  24 grid using the HSBC set as visual reference (the HSBC originals are FILLED and can't
-  be re-weighted — see ../../guidelines/icons.md). Three independent knobs:
-    • thickness → --icon-stroke   (slider, or font-weight preset)
-    • colour    → --icon-color    (token swatch or picker; applied via currentColor)
-    • scale     → --icon-size     (slider; line stays constant via non-scaling-stroke)
-  Builder-usable source lives next to this file: dynamic-icons.js + README.md.
+  Calibration tool for the dynamic-weight icon set.
+  Decide the icon LINE THICKNESS for every (font-weight x text-size) pairing, compare them
+  side by side against real text, and LOCK the decisions. Locked values persist (autosave)
+  and export to JSON / CSS / JS so the builder can use them.
+
+  Why thickness depends on BOTH weight and size: with non-scaling-stroke, a 1.7px line is
+  1.7px at any icon size, so next to 16px text it reads heavier than next to 32px text. To
+  truly match the label you set the thickness per size. That's the "scaling" control.
 -->
 <style>
   :root{
     --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
-    --icon-stroke:1.7;
     --icon-color:#333333;
-    --icon-size:56px;
-    --nss:1px; /* non-scaling-stroke proxy: 1px = on, 0 = off (set on element) */
   }
-  body[data-theme="light"]{ --page:#f4f4f5; --ink:#1b1b1d; --muted:#6a6a70; --card:#ffffff; --edge:#e7e7ea; --bar:#f4f4f5; }
-  body[data-theme="dark"]{ --page:#0b0b0c; --ink:#f3f3f4; --muted:#9a9aa0; --card:#161616; --edge:#27272b; --bar:#161616; }
+  body[data-theme="light"]{ --page:#f4f4f5; --ink:#1b1b1d; --muted:#6a6a70; --card:#ffffff; --edge:#e7e7ea; --bar:#f6f6f7; --lock:#0b8457; --lockbg:#e9f6ef; }
+  body[data-theme="dark"]{ --page:#0b0b0c; --ink:#f3f3f4; --muted:#9a9aa0; --card:#161616; --edge:#2a2a2e; --bar:#1d1d1f; --lock:#37d08a; --lockbg:#11241b; }
   *{box-sizing:border-box;}
-  body{margin:0; padding:32px clamp(18px,4vw,56px); font-family:var(--font); background:var(--page); color:var(--ink); -webkit-font-smoothing:antialiased;}
-  header{display:flex; justify-content:space-between; align-items:flex-start; gap:24px; margin-bottom:22px;}
-  h1{font-size:21px; margin:0 0 6px; letter-spacing:-.01em;}
-  header p{margin:0; color:var(--muted); font-size:13.5px; max-width:70ch; line-height:1.5;}
+  body{margin:0; padding:28px clamp(16px,3.5vw,48px); font-family:var(--font); background:var(--page); color:var(--ink); -webkit-font-smoothing:antialiased;}
+  header{display:flex; justify-content:space-between; align-items:flex-start; gap:24px; margin-bottom:18px;}
+  h1{font-size:20px; margin:0 0 5px; letter-spacing:-.01em;}
+  header p{margin:0; color:var(--muted); font-size:13px; max-width:74ch; line-height:1.5;}
   .toggle{flex:none; cursor:pointer; font:inherit; font-size:13px; font-weight:600; color:var(--ink); background:var(--card); border:1px solid var(--edge); padding:9px 14px; border-radius:999px;}
 
-  .wrap{display:grid; grid-template-columns:300px 1fr; gap:26px; align-items:start;}
-  @media(max-width:860px){ .wrap{grid-template-columns:1fr;} }
+  .wrap{display:grid; grid-template-columns:268px 1fr; gap:22px; align-items:start;}
+  @media(max-width:920px){ .wrap{grid-template-columns:1fr;} }
 
-  /* ---- controls panel ---- */
-  .panel{background:var(--card); border:1px solid var(--edge); border-radius:14px; padding:20px; position:sticky; top:16px;}
-  .panel h2{font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin:0 0 14px;}
-  .field{margin-bottom:20px;}
-  .field:last-child{margin-bottom:0;}
-  .field label.lab{display:flex; justify-content:space-between; align-items:baseline; font-size:12.5px; margin-bottom:8px; color:var(--ink);}
-  .field label.lab b{font-variant-numeric:tabular-nums; font-weight:600;}
-  input[type=range]{width:100%; accent-color:var(--ink);}
-  .presets{display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-top:4px;}
-  .presets button{font:inherit; font-size:12px; padding:8px 4px; border:1px solid var(--edge); background:var(--bar); color:var(--ink); cursor:pointer; border-radius:8px; line-height:1.2;}
-  .presets button .pw{display:block; font-size:10px; color:var(--muted); margin-top:2px;}
-  .presets button.on{background:var(--ink); color:var(--page); border-color:var(--ink);}
-  .presets button.on .pw{color:var(--page); opacity:.7;}
-  .swatches{display:flex; gap:8px; align-items:center; flex-wrap:wrap;}
-  .swatches button{width:26px; height:26px; border-radius:50%; border:2px solid var(--edge); cursor:pointer; padding:0;}
+  .panel{background:var(--card); border:1px solid var(--edge); border-radius:14px; padding:18px; position:sticky; top:14px;}
+  .panel h2{font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin:0 0 12px;}
+  .field{margin-bottom:18px;} .field:last-child{margin-bottom:0;}
+  .field > label{display:block; font-size:12px; margin-bottom:7px; color:var(--ink);}
+  select, input[type=text]{font:inherit; font-size:13px; width:100%; padding:8px 9px; border:1px solid var(--edge); border-radius:8px; background:var(--bar); color:var(--ink);}
+  .swatches{display:flex; gap:7px; align-items:center; flex-wrap:wrap;}
+  .swatches button{width:24px; height:24px; border-radius:50%; border:2px solid var(--edge); cursor:pointer; padding:0;}
   .swatches button.on{outline:2px solid var(--ink); outline-offset:2px;}
-  .swatches input[type=color]{width:30px; height:30px; padding:0; border:1px solid var(--edge); border-radius:8px; background:none; cursor:pointer;}
-  .row{display:flex; align-items:center; gap:9px; font-size:12.5px; color:var(--ink);}
-  .row input{accent-color:var(--ink);}
+  .swatches input[type=color]{width:28px; height:28px; padding:0; border:1px solid var(--edge); border-radius:8px; background:none; cursor:pointer;}
+  .chips{display:flex; gap:6px; flex-wrap:wrap;}
+  .chip{font:inherit; font-size:12px; padding:6px 9px; border:1px solid var(--edge); background:var(--bar); color:var(--ink); border-radius:999px; cursor:pointer; display:inline-flex; align-items:center; gap:5px;}
+  .chip.on{background:var(--ink); color:var(--page); border-color:var(--ink);}
+  .chip .x{opacity:.5; font-weight:700;}
+  .chip .x:hover{opacity:1;}
+  .addrow{display:flex; gap:6px; margin-top:7px;}
+  .addrow input{width:64px;}
+  .addrow button, .btn{font:inherit; font-size:12px; font-weight:600; padding:7px 11px; border:1px solid var(--edge); background:var(--bar); color:var(--ink); border-radius:8px; cursor:pointer;}
+  .btn.primary{background:var(--ink); color:var(--page); border-color:var(--ink);}
 
-  /* ---- stage ---- */
-  .stage{display:flex; flex-direction:column; gap:22px;}
-  .hero{background:var(--card); border:1px solid var(--edge); border-radius:14px; padding:30px; display:flex; align-items:center; gap:26px; flex-wrap:wrap;}
-  .hero .pair{display:inline-flex; align-items:center; gap:14px; color:var(--icon-color);}
-  .hero .pair .label{font-size:36px; line-height:1; color:var(--ink); border:none; background:none; font-family:inherit; width:auto; max-width:46vw; padding:0;}
-  .cap{font-size:12px; color:var(--muted);}
+  /* tabs */
+  .tabs{display:flex; gap:6px; margin-bottom:14px;}
+  .tabs button{font:inherit; font-size:13px; font-weight:600; padding:9px 15px; border:1px solid var(--edge); background:var(--card); color:var(--muted); border-radius:10px; cursor:pointer;}
+  .tabs button.on{color:var(--ink); border-color:var(--ink);}
+  .view{display:none;} .view.on{display:block;}
 
-  .grid{background:var(--card); border:1px solid var(--edge); border-radius:14px; padding:24px; display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:8px;}
-  .cell{display:flex; flex-direction:column; align-items:center; gap:12px; padding:18px 8px; border-radius:10px; color:var(--icon-color);}
-  .cell .name{font-size:11px; letter-spacing:.04em; text-transform:uppercase; color:var(--muted);}
+  .card{background:var(--card); border:1px solid var(--edge); border-radius:14px; padding:22px;}
 
-  /* every icon: stroke driven by the variables */
-  .ico{display:inline-flex; width:var(--icon-size); height:var(--icon-size);}
-  .ico svg{width:100%; height:100%; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; display:block;}
-  .ico svg *{ stroke-width:var(--icon-stroke); }
+  /* TUNE */
+  .tune-top{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px; align-items:center;}
+  .seg{display:flex; gap:5px;}
+  .seg .chip{border-radius:8px;}
+  .preview{display:flex; align-items:center; gap:22px; padding:30px; border:1px dashed var(--edge); border-radius:12px; min-height:130px; color:var(--icon-color); background:var(--bar);}
+  .preview .pv-ico{display:inline-flex;}
+  .preview .pv-text{color:var(--ink); line-height:1;}
+  .pv-ico svg, .cell-ico svg{ display:block; width:100%; height:100%; }
 
-  /* developer panel */
-  details.dev{background:var(--card); border:1px solid var(--edge); border-radius:14px; padding:0 20px;}
-  details.dev summary{cursor:pointer; padding:16px 0; font-size:12.5px; font-weight:600; list-style:none;}
-  details.dev summary::-webkit-details-marker{display:none;}
-  details.dev summary::before{content:"▸ "; color:var(--muted);}
-  details.dev[open] summary::before{content:"▾ ";}
-  pre{margin:0 0 18px; padding:16px; background:var(--bar); border:1px solid var(--edge); border-radius:10px; overflow:auto; font-size:12px; line-height:1.55; font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace; color:var(--ink);}
-  .copy{font:inherit; font-size:12px; font-weight:600; padding:7px 12px; border:1px solid var(--edge); background:var(--bar); color:var(--ink); border-radius:8px; cursor:pointer; margin-bottom:18px;}
+  .thick{display:flex; align-items:center; gap:14px; margin:18px 0 6px;}
+  .thick input[type=range]{flex:1; accent-color:var(--ink);}
+  .thick .num{font:inherit; font-size:13px; width:74px; padding:8px; border:1px solid var(--edge); border-radius:8px; background:var(--bar); color:var(--ink); text-align:center; font-variant-numeric:tabular-nums;}
+  .meta{font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums;}
+  .actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:16px;}
+  .actions .btn.locked{background:var(--lockbg); color:var(--lock); border-color:var(--lock);}
+
+  /* MATRIX */
+  .mwrap{overflow:auto;}
+  table.mx{border-collapse:separate; border-spacing:0; width:100%;}
+  table.mx th, table.mx td{border-bottom:1px solid var(--edge); border-right:1px solid var(--edge); padding:0;}
+  table.mx th{font-size:11px; letter-spacing:.04em; text-transform:uppercase; color:var(--muted); font-weight:600; padding:10px 12px; text-align:center; background:var(--bar); position:sticky; top:0;}
+  table.mx th.rowh{text-align:left; position:sticky; left:0; z-index:2;}
+  table.mx td.rowh{font-size:12px; color:var(--ink); padding:10px 12px; text-align:left; background:var(--bar); position:sticky; left:0; white-space:nowrap;}
+  table.mx td.rowh small{color:var(--muted); font-weight:400;}
+  .mcell{min-width:118px; padding:12px 10px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:9px; color:var(--icon-color); transition:background .12s;}
+  .mcell:hover{background:var(--bar);}
+  .mcell.sel{outline:2px solid var(--ink); outline-offset:-2px;}
+  .mcell.lk{background:var(--lockbg);}
+  .mcell .cell-ico{display:inline-flex;}
+  .mcell .cell-txt{color:var(--ink); line-height:1;}
+  .mcell .cell-t{font-size:11px; color:var(--muted); font-variant-numeric:tabular-nums;}
+  .mcell.lk .cell-t{color:var(--lock); font-weight:700;}
+
+  /* DECISIONS */
+  table.dec{border-collapse:collapse; width:100%; font-size:13px;}
+  table.dec th, table.dec td{border-bottom:1px solid var(--edge); padding:9px 10px; text-align:left; font-variant-numeric:tabular-nums;}
+  table.dec th{font-size:11px; letter-spacing:.04em; text-transform:uppercase; color:var(--muted);}
+  table.dec td.lk{color:var(--lock); font-weight:700;}
+  .exports{display:flex; gap:8px; flex-wrap:wrap; margin:0 0 16px;}
+  pre{margin:14px 0 0; padding:14px; background:var(--bar); border:1px solid var(--edge); border-radius:10px; overflow:auto; font-size:12px; line-height:1.5; font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace; color:var(--ink); max-height:320px;}
+  .note{font-size:12px; color:var(--muted); margin:10px 0 0;}
+  .save-state{font-size:11px; color:var(--muted); margin-top:10px;}
 </style>
 </head>
 <body data-theme="light">
   <header>
     <div>
-      <h1>Dynamic-weight icons</h1>
-      <p>Outline icons whose line thickness, colour and scale are each a single variable. Drag the thickness slider for full control, or snap it to a font weight so the icon reads as a member of the type family next to its label. Built as outlines because the HSBC catalogue is filled and can't be re-weighted.</p>
+      <h1>Dynamic-weight icons — calibration</h1>
+      <p>Set the icon line thickness for each <b>weight × text-size</b> pairing, compare them against real text, and lock the ones that look right. Locked decisions autosave and export for the builder. "Scaling" = choosing the thickness per size (a fixed px line reads heavier next to small text than large).</p>
     </div>
     <button class="toggle" id="theme" type="button">◐ Dark</button>
   </header>
 
   <div class="wrap">
-    <!-- CONTROLS -->
+    <!-- PANEL -->
     <div class="panel">
-      <h2>Controls</h2>
+      <h2>Setup</h2>
 
       <div class="field">
-        <label class="lab" for="stroke">Line thickness <b><span id="strokeVal">1.7</span>px</b></label>
-        <input type="range" id="stroke" min="0.5" max="4" step="0.05" value="1.7">
-        <div class="presets" id="presets">
-          <button data-w="1.3" data-fw="300">Light<span class="pw">300</span></button>
-          <button data-w="1.7" data-fw="400" class="on">Regular<span class="pw">400</span></button>
-          <button data-w="2.1" data-fw="500">Medium<span class="pw">500</span></button>
-          <button data-w="2.7" data-fw="700">Bold<span class="pw">700</span></button>
-        </div>
+        <label for="iconSel">Preview icon</label>
+        <select id="iconSel"></select>
       </div>
 
       <div class="field">
-        <label class="lab">Colour</label>
+        <label for="sample">Sample text</label>
+        <input type="text" id="sample" value="Filter" spellcheck="false">
+      </div>
+
+      <div class="field">
+        <label>Colour</label>
         <div class="swatches" id="swatches">
           <button data-c="#333333" class="on" style="background:#333333" title="icon/default"></button>
           <button data-c="#000000" style="background:#000000" title="black"></button>
           <button data-c="#6A6A70" style="background:#6A6A70" title="muted"></button>
           <button data-c="#DB0011" style="background:#DB0011" title="HSBC red"></button>
-          <button data-c="#FFFFFF" style="background:#FFFFFF" title="reverse (use dark theme)"></button>
           <input type="color" id="picker" value="#333333" title="custom">
         </div>
       </div>
 
       <div class="field">
-        <label class="lab" for="size">Scale <b><span id="sizeVal">56</span>px</b></label>
-        <input type="range" id="size" min="16" max="120" step="1" value="56">
+        <label>Text sizes to test (px)</label>
+        <div class="chips" id="sizeChips"></div>
+        <div class="addrow">
+          <input type="text" id="addSize" inputmode="numeric" placeholder="e.g. 28">
+          <button id="addSizeBtn" type="button">Add</button>
+        </div>
       </div>
 
       <div class="field">
-        <label class="row"><input type="checkbox" id="nss" checked> Constant line weight across scale</label>
-        <p class="cap" style="margin:6px 0 0;">On: thickness stays the px value above at any size (system-consistent). Off: line scales with the icon.</p>
+        <label for="iconRatio">Icon size = text size × <b id="ratioVal">1.0</b></label>
+        <input type="range" id="iconRatio" min="0.75" max="2" step="0.05" value="1" style="width:100%; accent-color:var(--ink);">
+      </div>
+
+      <div class="field">
+        <label>State</label>
+        <div class="seg" id="stateSeg">
+          <span class="chip on" data-st="default">Default</span>
+          <span class="chip" data-st="active">Active (filled)</span>
+        </div>
+        <label style="display:flex; align-items:center; gap:8px; margin-top:9px; font-size:12.5px; color:var(--ink);"><input type="checkbox" id="badgeChk" style="accent-color:var(--ink);"> Show badge</label>
+      </div>
+
+      <div class="field">
+        <label>Decisions</label>
+        <div class="addrow" style="flex-wrap:wrap;">
+          <button class="btn" id="exportBtn" type="button">Export JSON</button>
+          <button class="btn" id="importBtn" type="button">Import</button>
+          <button class="btn" id="clearBtn" type="button">Clear all</button>
+        </div>
+        <div class="save-state" id="saveState"></div>
+        <input type="file" id="fileIn" accept="application/json" style="display:none">
       </div>
     </div>
 
-    <!-- STAGE -->
-    <div class="stage">
-      <div class="hero">
-        <div class="pair">
-          <span class="ico" data-icon="search"></span>
-          <input class="label" id="labelText" value="Filter" spellcheck="false" aria-label="Editable label">
-        </div>
-        <span class="cap" id="heroCap"></span>
+    <!-- CONTENT -->
+    <div>
+      <div class="tabs">
+        <button data-tab="tune" class="on">Tune</button>
+        <button data-tab="matrix">Matrix</button>
+        <button data-tab="decisions">Decisions</button>
       </div>
 
-      <div class="grid" id="grid"></div>
+      <!-- TUNE -->
+      <section class="view on card" id="view-tune">
+        <div class="tune-top">
+          <span class="meta">Weight</span><div class="seg" id="tuneWeights"></div>
+          <span class="meta" style="margin-left:10px;">Size</span><div class="seg" id="tuneSizes"></div>
+        </div>
 
-      <details class="dev">
-        <summary>For the builder — usage snippet</summary>
-        <button class="copy" id="copyBtn" type="button">Copy CSS</button>
-        <pre id="snippet"></pre>
-        <p class="cap" style="margin:0 0 18px;">The same 8 icons are exported as a drop-in source next to this file: <code>dynamic-icons.js</code> (path data + a <code>&lt;dyn-icon&gt;</code> web component) and <code>README.md</code>.</p>
-      </details>
+        <div class="preview" id="tunePreview">
+          <span class="pv-ico" id="pvIco"></span>
+          <span class="pv-text" id="pvText">Filter</span>
+        </div>
+
+        <div style="margin-top:14px;">
+          <span class="meta">All states</span>
+          <div id="statesStrip" style="display:flex; gap:22px; margin-top:8px; flex-wrap:wrap;"></div>
+        </div>
+
+        <div class="thick">
+          <input type="range" id="tStroke" min="0.4" max="6" step="0.05" value="1.7">
+          <input type="text" id="tStrokeNum" class="num" value="1.70">
+        </div>
+        <div class="meta" id="tuneMeta"></div>
+
+        <div class="actions">
+          <button class="btn primary" id="lockBtn" type="button">Lock this cell</button>
+          <button class="btn" id="rowSameBtn" type="button">Apply px to whole weight</button>
+          <button class="btn" id="rowRatioBtn" type="button">Apply ratio across sizes</button>
+          <button class="btn" id="resetBtn" type="button">Reset to auto</button>
+        </div>
+        <p class="note">"Apply ratio across sizes" keeps the stroke-to-text proportion constant for this weight at every size — usually the best match. Tune one size, then apply.</p>
+      </section>
+
+      <!-- MATRIX -->
+      <section class="view card" id="view-matrix">
+        <div class="mwrap"><table class="mx" id="mxTable"></table></div>
+        <p class="note">Click any cell to load it into Tune. Green = locked decision · grey number = auto. Compare a column to judge weight steps, a row to judge how a weight holds across sizes.</p>
+      </section>
+
+      <!-- DECISIONS -->
+      <section class="view card" id="view-decisions">
+        <div class="exports">
+          <button class="btn" id="copyJson" type="button">Copy JSON</button>
+          <button class="btn" id="copyCss" type="button">Copy CSS vars</button>
+          <button class="btn" id="copyJs" type="button">Copy JS map</button>
+        </div>
+        <table class="dec" id="decTable"></table>
+        <p class="note" id="decCount"></p>
+        <pre id="decOut"></pre>
+      </section>
     </div>
   </div>
 
   <script src="dynamic-icons.js"></script>
   <script>
-    const root = document.documentElement;
-    const body = document.body;
-    const ORDER = ["close","plus","check","chevron","search","arrow","info","menu"];
+  (function(){
+    const ORDER = (typeof ICON_NAMES !== 'undefined' && ICON_NAMES.length) ? ICON_NAMES.slice()
+                  : ["close","plus","check","chevron","search","arrow","info","menu"];
+    const WEIGHTS = [{name:"Light",fw:300},{name:"Regular",fw:400},{name:"Medium",fw:500},{name:"Bold",fw:700}];
+    const RATIO = {300:0.075, 400:0.095, 500:0.115, 700:0.150}; // auto stroke ÷ fontsize
+    const LS_KEY = "dynicon.calibration.v1";
 
-    // ---- build the grid ----
-    const grid = document.getElementById('grid');
-    ORDER.forEach(name=>{
-      const cell=document.createElement('div'); cell.className='cell';
-      const ico=document.createElement('span'); ico.className='ico'; ico.dataset.icon=name; ico.innerHTML=DYN_ICONS[name];
-      const lab=document.createElement('span'); lab.className='name'; lab.textContent=name;
-      cell.appendChild(ico); cell.appendChild(lab); grid.appendChild(cell);
-    });
-    // fill hero icon
-    document.querySelector('.hero .ico').innerHTML = DYN_ICONS['search'];
+    // Dave's locked calibration (icon-weight-decisions.json) — used as the default until edited.
+    const CAL = {300:{14:0.6,16:0.7,20:0.85,24:1,32:1.35},400:{14:1.2,16:1.4,20:1.7,24:2.05,32:2.75},500:{14:1.65,16:1.9,20:2.35,24:2.8,32:3.75},700:{14:2.1,16:2.4,20:3,24:3.6,32:4.8}};
+    function seedDecisions(){ const o={}; for(const fw in CAL){ for(const s in CAL[fw]){ o[fw+"|"+s]={t:CAL[fw][s],locked:true}; } } return o; }
 
-    // ---- non-scaling-stroke toggle (apply vector-effect on all icon shapes) ----
-    function applyNSS(on){
-      document.querySelectorAll('.ico svg *').forEach(el=>{
-        el.setAttribute('vector-effect', on ? 'non-scaling-stroke' : 'none');
-      });
+    const state = {
+      icon:"search", color:"#333333", sample:"Filter", iconRatio:1.0,
+      sizes:[14,16,20,24,32],
+      decisions:seedDecisions(),  // "fw|size" -> {t:Number, locked:true}
+      selFw:400, selSize:16,
+      iconState:"default", badge:false,
+      tab:"tune"
+    };
+
+    // unified icon painter — routes through buildIconSVG (shared with the component) so
+    // default/active (fill · bold · knockout) and badges render identically everywhere.
+    const SOLIDSET = (typeof SOLID_ICONS !== 'undefined' && SOLID_ICONS) ? SOLID_ICONS : new Set();
+    const isSolid = name => state.iconState === 'active' || SOLIDSET.has(name);
+    function paintIcon(span, name, sizePx, onScreenStrokePx, active, badge){
+      span.style.width=sizePx+'px'; span.style.height=sizePx+'px';
+      const uStroke = onScreenStrokePx * 24 / sizePx;   // viewBox units so on-screen px = onScreenStrokePx
+      span.innerHTML = buildIconSVG(name, { state: active?'active':'default', strokePx: uStroke, badge: !!badge });
+    }
+    function buildStateIcon(name, sizePx, strokePx, active, badge){
+      const span=document.createElement('span');
+      span.style.cssText=`display:inline-flex;color:var(--icon-color)`;
+      paintIcon(span, name, sizePx, strokePx, active, badge);
+      return span;
     }
 
-    // ---- controls ----
-    const strokeEl=document.getElementById('stroke'), strokeVal=document.getElementById('strokeVal');
-    const sizeEl=document.getElementById('size'), sizeVal=document.getElementById('sizeVal');
-    const presets=document.getElementById('presets');
-    const heroCap=document.getElementById('heroCap');
-    const label=document.getElementById('labelText');
+    // ---- persistence (best-effort; file:// localStorage can be blocked) ----
+    let lsOK = true;
+    function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify({sizes:state.sizes,decisions:state.decisions,iconRatio:state.iconRatio,color:state.color,sample:state.sample})); }catch(e){ lsOK=false; } updateSaveState(); }
+    function load(){ try{ const r=localStorage.getItem(LS_KEY); if(r){ const d=JSON.parse(r); Object.assign(state, {sizes:d.sizes||state.sizes, decisions:(d.decisions&&Object.keys(d.decisions).length)?d.decisions:state.decisions, iconRatio:d.iconRatio??1, color:d.color||state.color, sample:d.sample||state.sample}); } }catch(e){ lsOK=false; } }
+    function updateSaveState(){ const n=Object.keys(state.decisions).length; document.getElementById('saveState').textContent = (lsOK?"Autosaved · ":"Autosave off (export to keep) · ")+n+" locked"; }
 
-    let curFontWeight=400;
+    const key=(fw,s)=>fw+"|"+s;
+    const auto=(fw,s)=> Math.round(s*RATIO[fw]*20)/20; // step 0.05
+    const thick=(fw,s)=>{ const d=state.decisions[key(fw,s)]; return d? d.t : auto(fw,s); };
+    const locked=(fw,s)=> !!(state.decisions[key(fw,s)] && state.decisions[key(fw,s)].locked);
+    const iconPx=(s)=> Math.round(s*state.iconRatio);
 
-    function setStroke(v){ root.style.setProperty('--icon-stroke', v); strokeEl.value=v; strokeVal.textContent=(+v).toFixed(2).replace(/\.?0+$/,''); updateCap(); updateSnippet(); }
-    function setSize(v){ root.style.setProperty('--icon-size', v+'px'); sizeEl.value=v; sizeVal.textContent=v; updateSnippet(); }
-    function setColor(c){ root.style.setProperty('--icon-color', c); document.getElementById('picker').value=c; updateSnippet();
-      document.querySelectorAll('#swatches [data-c]').forEach(b=>b.classList.toggle('on', b.dataset.c.toLowerCase()===c.toLowerCase())); }
-    function setFontWeight(fw){ curFontWeight=fw; label.style.fontWeight=fw; updateCap(); }
-    function clearPresetActive(){ presets.querySelectorAll('button').forEach(b=>b.classList.remove('on')); }
-    function updateCap(){ heroCap.textContent = `line ${(+strokeEl.value).toFixed(2).replace(/\.?0+$/,'')}px · label ${curFontWeight}`; }
+    const root=document.documentElement, body=document.body;
+    const setVar=(k,v)=>root.style.setProperty(k,v);
 
-    strokeEl.addEventListener('input', e=>{ clearPresetActive(); setStroke(e.target.value); });
-    sizeEl.addEventListener('input', e=> setSize(e.target.value));
-    presets.addEventListener('click', e=>{ const b=e.target.closest('button'); if(!b) return;
-      clearPresetActive(); b.classList.add('on'); setStroke(b.dataset.w); setFontWeight(b.dataset.fw); });
-    document.getElementById('swatches').addEventListener('click', e=>{ const b=e.target.closest('button[data-c]'); if(b) setColor(b.dataset.c); });
-    document.getElementById('picker').addEventListener('input', e=>{ document.querySelectorAll('#swatches [data-c]').forEach(x=>x.classList.remove('on')); setColor(e.target.value); });
-    document.getElementById('nss').addEventListener('change', e=> applyNSS(e.target.checked));
+    // ---- build static controls ----
+    const iconSel=document.getElementById('iconSel');
+    ORDER.forEach(n=>{ const o=document.createElement('option'); o.value=n; o.textContent=n; iconSel.appendChild(o); });
+    iconSel.value=state.icon;
+    iconSel.addEventListener('change',e=>{ state.icon=e.target.value; renderAll(); });
+
+    document.getElementById('sample').addEventListener('input',e=>{ state.sample=e.target.value; renderAll(); save(); });
+    document.getElementById('swatches').addEventListener('click',e=>{ const b=e.target.closest('button[data-c]'); if(b) setColor(b.dataset.c); });
+    document.getElementById('picker').addEventListener('input',e=>{ document.querySelectorAll('#swatches [data-c]').forEach(x=>x.classList.remove('on')); setColor(e.target.value); });
+    function setColor(c){ state.color=c; setVar('--icon-color',c); document.getElementById('picker').value=c; document.querySelectorAll('#swatches [data-c]').forEach(b=>b.classList.toggle('on',b.dataset.c.toLowerCase()===c.toLowerCase())); save(); }
+
+    const ratioEl=document.getElementById('iconRatio');
+    ratioEl.addEventListener('input',e=>{ state.iconRatio=+e.target.value; document.getElementById('ratioVal').textContent=(+e.target.value).toFixed(2).replace(/\.?0+$/,''); renderAll(); save(); });
+
+    // sizes
+    document.getElementById('addSizeBtn').addEventListener('click',addSize);
+    document.getElementById('addSize').addEventListener('keydown',e=>{ if(e.key==='Enter') addSize(); });
+    function addSize(){ const v=parseInt(document.getElementById('addSize').value,10); if(v&&v>=8&&v<=120&&!state.sizes.includes(v)){ state.sizes.push(v); state.sizes.sort((a,b)=>a-b); document.getElementById('addSize').value=''; renderAll(); save(); } }
+    function renderSizeChips(){
+      const w=document.getElementById('sizeChips'); w.innerHTML='';
+      state.sizes.forEach(s=>{ const c=document.createElement('span'); c.className='chip'+(s===state.selSize?' on':''); c.innerHTML=s+'px <span class="x" title="remove">×</span>';
+        c.addEventListener('click',ev=>{ if(ev.target.classList.contains('x')){ if(state.sizes.length>1){ state.sizes=state.sizes.filter(x=>x!==s); if(state.selSize===s) state.selSize=state.sizes[0]; renderAll(); save(); } } else { state.selSize=s; renderAll(); } });
+        w.appendChild(c); });
+    }
+
+    // tabs
+    document.querySelectorAll('.tabs button').forEach(b=> b.addEventListener('click',()=>{
+      state.tab=b.dataset.tab;
+      document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+      document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
+      document.getElementById('view-'+state.tab).classList.add('on');
+      renderAll();
+    }));
 
     // theme
-    document.getElementById('theme').addEventListener('click', e=>{
-      const dark = body.getAttribute('data-theme')==='dark';
-      body.setAttribute('data-theme', dark?'light':'dark');
-      e.target.textContent = dark?'◐ Dark':'◐ Light';
-      // helpful default: flip icon colour with theme if still on a default ink
-      const cur=getComputedStyle(root).getPropertyValue('--icon-color').trim().toLowerCase();
-      if(cur==='#333333'||cur==='#f3f3f4') setColor(dark?'#F3F3F4':'#333333');
-    });
+    document.getElementById('theme').addEventListener('click',e=>{ const d=body.getAttribute('data-theme')==='dark'; body.setAttribute('data-theme',d?'light':'dark'); e.target.textContent=d?'◐ Dark':'◐ Light';
+      if(state.color.toLowerCase()==='#333333'||state.color.toLowerCase()==='#f3f3f4') setColor(d?'#F3F3F4':'#333333'); });
 
-    // developer snippet
-    function updateSnippet(){
-      const s=(+strokeEl.value), c=getComputedStyle(root).getPropertyValue('--icon-color').trim(), z=sizeEl.value;
-      document.getElementById('snippet').textContent =
-`.icon{
-  --icon-stroke:${(s).toFixed(2).replace(/\.?0+$/,'')};   /* match label font-weight */
-  --icon-color:${c};
-  --icon-size:${z}px;
-  width:var(--icon-size); height:var(--icon-size); color:var(--icon-color);
-}
-.icon svg{ fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; }
-.icon svg *{ stroke-width:var(--icon-stroke); vector-effect:non-scaling-stroke; }`;
+    // state + badge controls
+    document.getElementById('stateSeg').addEventListener('click',e=>{ const c=e.target.closest('[data-st]'); if(!c) return;
+      state.iconState=c.dataset.st;
+      document.querySelectorAll('#stateSeg [data-st]').forEach(x=>x.classList.toggle('on',x===c)); renderAll(); });
+    document.getElementById('badgeChk').addEventListener('change',e=>{ state.badge=e.target.checked; renderAll(); });
+
+    // ---- TUNE ----
+    const tStroke=document.getElementById('tStroke'), tNum=document.getElementById('tStrokeNum');
+    function renderTuneSelectors(){
+      const tw=document.getElementById('tuneWeights'); tw.innerHTML='';
+      WEIGHTS.forEach(w=>{ const c=document.createElement('span'); c.className='chip'+(w.fw===state.selFw?' on':''); c.textContent=w.name; c.addEventListener('click',()=>{ state.selFw=w.fw; renderAll(); }); tw.appendChild(c); });
+      const ts=document.getElementById('tuneSizes'); ts.innerHTML='';
+      state.sizes.forEach(s=>{ const c=document.createElement('span'); c.className='chip'+(s===state.selSize?' on':''); c.textContent=s; c.addEventListener('click',()=>{ state.selSize=s; renderAll(); }); ts.appendChild(c); });
     }
-    document.getElementById('copyBtn').addEventListener('click', ()=>{
-      navigator.clipboard?.writeText(document.getElementById('snippet').textContent);
-      const b=document.getElementById('copyBtn'); const t=b.textContent; b.textContent='Copied ✓'; setTimeout(()=>b.textContent=t,1200);
-    });
+    function renderTune(){
+      const fw=state.selFw, s=state.selSize, t=thick(fw,s), ip=iconPx(s);
+      const ico=document.getElementById('pvIco');
+      paintIcon(ico, state.icon, ip, t, state.iconState==='active', state.badge);
+      const txt=document.getElementById('pvText'); txt.textContent=state.sample||'Filter'; txt.style.fontSize=s+'px'; txt.style.fontWeight=fw;
+      tStroke.value=t; tNum.value=(+t).toFixed(2);
+      const isL=locked(fw,s);
+      const stTag = isSolid(state.icon) ? (state.iconState==='active'?' · ACTIVE (filled)':' · solid') : '';
+      document.getElementById('tuneMeta').textContent = `${WEIGHTS.find(w=>w.fw===fw).name} ${fw} · ${s}px text · icon ${ip}px · stroke ${(+t).toFixed(2)}px · ratio ${(t/s).toFixed(3)}` + (isL?' · LOCKED':' · auto') + stTag;
+      const lb=document.getElementById('lockBtn'); lb.textContent=isL?'Locked ✓ (click to unlock)':'Lock this cell'; lb.classList.toggle('locked',isL);
+      // reflect state controls + render the all-states strip
+      document.querySelectorAll('#stateSeg [data-st]').forEach(x=>x.classList.toggle('on',x.dataset.st===state.iconState));
+      document.getElementById('badgeChk').checked=state.badge;
+      renderStatesStrip(fw, s);
+    }
+    function renderStatesStrip(fw, s){
+      const wrap=document.getElementById('statesStrip'); if(!wrap) return; wrap.innerHTML='';
+      const px=40, sw=(typeof strokeFor!=='undefined')?strokeFor(fw,px):thick(fw,s)*px/s;
+      const combos=[['default',false,false],['active',true,false],['default · badge',false,true],['active · badge',true,true]];
+      combos.forEach(([label,solid,badge])=>{
+        const cell=document.createElement('div'); cell.style.cssText='display:flex;flex-direction:column;align-items:center;gap:7px;';
+        cell.appendChild(buildStateIcon(state.icon, px, sw, solid||SOLIDSET.has(state.icon), badge));
+        const l=document.createElement('span'); l.className='meta'; l.style.fontSize='11px'; l.textContent=label;
+        cell.appendChild(l); wrap.appendChild(cell);
+      });
+    }
+    function setStroke(v){ v=Math.max(0.4,Math.min(6,+v)); const fw=state.selFw,s=state.selSize; const d=state.decisions[key(fw,s)]||{locked:false}; d.t=Math.round(v*20)/20; state.decisions[key(fw,s)]=d; renderAll(); save(); }
+    tStroke.addEventListener('input',e=>setStroke(e.target.value));
+    tNum.addEventListener('change',e=>setStroke(parseFloat(e.target.value)||thick(state.selFw,state.selSize)));
+    document.getElementById('lockBtn').addEventListener('click',()=>{ const fw=state.selFw,s=state.selSize,k=key(fw,s); const d=state.decisions[k]||{t:thick(fw,s)}; d.locked=!d.locked; state.decisions[k]=d; if(!d.locked && Math.abs(d.t-auto(fw,s))<1e-6) delete state.decisions[k]; renderAll(); save(); });
+    document.getElementById('rowSameBtn').addEventListener('click',()=>{ const fw=state.selFw, t=thick(fw,state.selSize); state.sizes.forEach(s=>{ state.decisions[key(fw,s)]={t:t,locked:true}; }); renderAll(); save(); });
+    document.getElementById('rowRatioBtn').addEventListener('click',()=>{ const fw=state.selFw, r=thick(fw,state.selSize)/state.selSize; state.sizes.forEach(s=>{ state.decisions[key(fw,s)]={t:Math.round(r*s*20)/20,locked:true}; }); renderAll(); save(); });
+    document.getElementById('resetBtn').addEventListener('click',()=>{ delete state.decisions[key(state.selFw,state.selSize)]; renderAll(); save(); });
+
+    // ---- MATRIX ----
+    function renderMatrix(){
+      const tbl=document.getElementById('mxTable'); tbl.innerHTML='';
+      const head=document.createElement('tr'); head.innerHTML='<th class="rowh">Weight \\ Size</th>'+state.sizes.map(s=>`<th>${s}px</th>`).join('');
+      tbl.appendChild(head);
+      WEIGHTS.forEach(w=>{
+        const tr=document.createElement('tr');
+        const rh=document.createElement('td'); rh.className='rowh'; rh.innerHTML=`${w.name}<br><small>${w.fw}</small>`; tr.appendChild(rh);
+        state.sizes.forEach(s=>{
+          const t=thick(w.fw,s), ip=iconPx(s), isL=locked(w.fw,s), isSel=(w.fw===state.selFw&&s===state.selSize);
+          const td=document.createElement('td');
+          const cell=document.createElement('div'); cell.className='mcell'+(isL?' lk':'')+(isSel?' sel':'');
+          cell.innerHTML=`<span class="cell-ico"></span>`+
+                         `<span class="cell-txt" style="font-size:${s}px;font-weight:${w.fw}">${(state.sample||'Ag').slice(0,8)}</span>`+
+                         `<span class="cell-t">${isSolid(state.icon)?(state.iconState==='active'?'active':'solid'):(+t).toFixed(2)+'px'}</span>`;
+          paintIcon(cell.querySelector('.cell-ico'), state.icon, ip, t, state.iconState==='active', false);
+          cell.addEventListener('click',()=>{ state.selFw=w.fw; state.selSize=s; switchTab('tune'); });
+          td.appendChild(cell); tr.appendChild(td);
+        });
+        tbl.appendChild(tr);
+      });
+    }
+    function switchTab(t){ document.querySelector(`.tabs button[data-tab="${t}"]`).click(); }
+
+    // ---- DECISIONS ----
+    function resolvedMap(){ const m={}; WEIGHTS.forEach(w=>{ m[w.fw]={}; state.sizes.forEach(s=>{ m[w.fw][s]={stroke:thick(w.fw,s), locked:locked(w.fw,s)}; }); }); return m; }
+    function renderDecisions(){
+      const tbl=document.getElementById('decTable');
+      let html='<tr><th>Weight</th>'+state.sizes.map(s=>`<th>${s}px</th>`).join('')+'</tr>';
+      WEIGHTS.forEach(w=>{ html+=`<tr><td>${w.name} ${w.fw}</td>`+state.sizes.map(s=>{ const t=thick(w.fw,s); const L=locked(w.fw,s); return `<td class="${L?'lk':''}">${(+t).toFixed(2)}${L?' 🔒':''}</td>`; }).join('')+'</tr>'; });
+      tbl.innerHTML=html;
+      const n=Object.values(state.decisions).filter(d=>d.locked).length;
+      document.getElementById('decCount').textContent=`${n} locked of ${WEIGHTS.length*state.sizes.length} cells · others shown are auto defaults.`;
+      document.getElementById('decOut').textContent=jsonOut();
+    }
+    function jsonOut(){ return JSON.stringify({iconRatio:state.iconRatio, sizes:state.sizes, decisions:resolvedMap()}, null, 2); }
+    function cssOut(){ let o=":root{\n"; WEIGHTS.forEach(w=> state.sizes.forEach(s=>{ o+=`  --icon-stroke-${w.fw}-${s}: ${(+thick(w.fw,s)).toFixed(2)}px;\n`; })); return o+"}"; }
+    function jsOut(){ const m={}; WEIGHTS.forEach(w=>{ m[w.fw]={}; state.sizes.forEach(s=> m[w.fw][s]=+(+thick(w.fw,s)).toFixed(2)); }); return "export const iconStroke = "+JSON.stringify(m,null,2)+";"; }
+    function copy(txt,btn){ navigator.clipboard&&navigator.clipboard.writeText(txt); const o=btn.textContent; btn.textContent='Copied ✓'; setTimeout(()=>btn.textContent=o,1100); }
+    document.getElementById('copyJson').addEventListener('click',e=>copy(jsonOut(),e.target));
+    document.getElementById('copyCss').addEventListener('click',e=>copy(cssOut(),e.target));
+    document.getElementById('copyJs').addEventListener('click',e=>copy(jsOut(),e.target));
+
+    // export / import / clear
+    document.getElementById('exportBtn').addEventListener('click',()=>{ const blob=new Blob([jsonOut()],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='icon-weight-decisions.json'; a.click(); });
+    document.getElementById('importBtn').addEventListener('click',()=>document.getElementById('fileIn').click());
+    document.getElementById('fileIn').addEventListener('change',e=>{ const f=e.target.files[0]; if(!f)return; const r=new FileReader(); r.onload=()=>{ try{ const d=JSON.parse(r.result); if(d.sizes)state.sizes=d.sizes; if(d.iconRatio)state.iconRatio=d.iconRatio; if(d.decisions){ state.decisions={}; Object.entries(d.decisions).forEach(([fw,row])=> Object.entries(row).forEach(([s,v])=>{ if(v.locked) state.decisions[key(+fw,+s)]={t:v.stroke,locked:true}; })); } syncControls(); renderAll(); save(); }catch(err){ alert('Could not read that file.'); } }; r.readAsText(f); });
+    document.getElementById('clearBtn').addEventListener('click',()=>{ if(confirm('Clear all locked decisions?')){ state.decisions={}; renderAll(); save(); } });
+
+    // ---- render orchestration ----
+    function renderAll(){ renderSizeChips(); renderTuneSelectors(); renderTune(); renderMatrix(); renderDecisions(); updateSaveState(); }
+    function syncControls(){ ratioEl.value=state.iconRatio; document.getElementById('ratioVal').textContent=state.iconRatio.toFixed(2).replace(/\.?0+$/,''); document.getElementById('sample').value=state.sample; setColor(state.color); if(!state.sizes.includes(state.selSize)) state.selSize=state.sizes[0]; }
 
     // init
-    applyNSS(true); setFontWeight(400); updateCap(); updateSnippet();
+    load(); syncControls(); setVar('--icon-color',state.color); renderAll();
+  })();
   </script>
 </body>
 </html>

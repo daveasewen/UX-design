@@ -5,22 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Progress tracker — reference implementation (gated)</title>
 <!--
-  CANONICAL REFERENCE for Progress tracker (gated). Promoted 2026-06-22 (Dave) — corrects the visual from
-  a dots-and-connectors stepper to the SEGMENTED TRACK the source actually defines (Figma file
-  mI8hvIkV98nquoqWzKh5Kn, node 267:10760) + a "Step X of Y" label + optional title.
-  Completed segments = progress/complete (brand red), remaining = progress/incomplete. Flexible width.
-
-  STRUCTURAL CALL (passive, like Table + Status-indicator): a progress tracker is a STATUS DISPLAY, not a
-  navigation control — meta says "shows how far through… label the current step." So it's interactive:false
-  and earns AT the PASSIVE way: role="progressbar" + aria-valuenow/min/max + aria-valuetext + an aria-live
-  "Step X of Y" announcement + an accessible name. A real Back/Next control drives it (carrying the
-  interactive hover/active/focus/disabled states honestly — same approach Status-indicator used).
-  Colour is never the only cue — the "Step X of Y" text carries the meaning (1.4.1). Tokens resolved
-  light+dark from the validated progress/* + tertiary/* + text/* groups. SQUARE segments (brand angular).
+  CANONICAL REFERENCE for Progress tracker (gated). Reworked 2026-06-29 to the Figma node 1784-86051:
+  an inline label "Step N of M" (medium) + "Progress title" (regular/secondary) on ONE line, above a thin
+  full-width track whose RED fill grows proportionally (current/total) — a continuous bar, not segments.
+  PASSIVE status display (interactive:false, like Table/Status-indicator): AT via role="progressbar" +
+  aria-valuenow/min/max + aria-valuetext + an aria-live "Step X of Y" announcement + accessible name. A real
+  Back/Next control drives it (honest hover/active/focus/disabled). Colour is never the only cue — the
+  "Step X of Y" text carries progress (1.4.1). Tokens resolved light+dark from progress/* + tertiary/* + text/*.
 -->
 <style>
-  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
-    --ease:220ms cubic-bezier(.4,0,.2,1); }
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:300ms cubic-bezier(.4,0,.2,1); }
   [data-theme="light"]{
     --complete:#DB0011; --incomplete:#EDEDED; --text:#333333; --muted:#545454; --page:#FFFFFF;
     --btn-border:#000000; --btn-hover:#F3F3F3; --btn-dis-text:#D7D8D6; --btn-dis-border:#D7D8D6; --focus:#305A85;
@@ -39,13 +37,14 @@
   .demo-controls label{display:flex; gap:.5rem; align-items:center;} .demo-controls input[type=range]{accent-color:var(--focus);}
 
   .pt{ width:var(--demo-width, 520px); max-width:100%; container-type:inline-size; }
-  .pt .count{font:500 13px/1.3 var(--font); color:var(--muted); margin:0 0 4px;}
-  .pt .title{font:500 20px/1.3 var(--font); color:var(--text); margin:0 0 14px;}
+  /* inline label: "Step N of M" (medium) + "Progress title" (regular, secondary) on one line */
+  .pt .head{display:flex; align-items:baseline; gap:10px; margin:0 0 10px; flex-wrap:wrap;}
+  .pt .count{font:500 15px/1.3 var(--font); color:var(--text); white-space:nowrap;}
+  .pt .title{font:400 15px/1.3 var(--font); color:var(--muted);}
 
-  /* segmented track — flexible width; completed segments fill red up to the current step */
-  .track{display:flex; gap:4px; width:100%;}
-  .track .seg{flex:1; height:6px; border-radius:0; background:var(--incomplete); transition:background var(--ease);}
-  .track .seg.done{background:var(--complete);}
+  /* continuous track — red fill grows to current/total (no segment gaps) */
+  .track{position:relative; width:100%; height:4px; background:var(--incomplete); border-radius:0; overflow:hidden;}
+  .track .fill{position:absolute; left:0; top:0; height:100%; width:0; background:var(--complete); transition:width var(--ease);}
 
   .nav{display:flex; gap:10px; margin-top:18px;}
   .nav button{font:500 15px/1 var(--font); padding:11px 18px; border-radius:0; cursor:pointer;
@@ -56,10 +55,8 @@
   .nav button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
   .nav button:disabled{color:var(--btn-dis-text); border-color:var(--btn-dis-border); cursor:not-allowed; background:transparent;}
 
-  /* responsive — stack the nav buttons full-width on a narrow container */
   @container (max-width: 380px){
     .nav{flex-direction:column;} .nav button{width:100%;}
-    .pt .title{font-size:18px;}
   }
   @media (prefers-reduced-motion: reduce){
     *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; scroll-behavior:auto !important; }
@@ -73,11 +70,13 @@
   </div>
 
   <div class="pt" id="pt">
-    <p class="count" id="ptCount" aria-live="polite">Step 3 of 4</p>
-    <h2 class="title" id="ptTitle">Review your payment</h2>
-    <div class="track" id="track" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="3"
-         aria-valuetext="Step 3 of 4" aria-labelledby="ptTitle">
-      <span class="seg done"></span><span class="seg done"></span><span class="seg done"></span><span class="seg"></span>
+    <div class="head">
+      <span class="count" id="ptCount" aria-live="polite">Step 2 of 5</span>
+      <span class="title">Review your payment</span>
+    </div>
+    <div class="track" id="track" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"
+         aria-valuetext="Step 2 of 5" aria-label="Payment setup progress">
+      <span class="fill" id="fill"></span>
     </div>
     <div class="nav">
       <button id="back" type="button">◂ Back</button>
@@ -99,9 +98,9 @@
       { "fg": "progress/complete", "bg": "background/default", "context": "ui" }
     ],
     "knownFindings": [
-      "Visual corrected: SEGMENTED TRACK (per Figma node 267:10760), not the dots/connectors the prior canon snippet used.",
-      "PASSIVE (interactive:false) status display — AT via role=progressbar + aria-valuenow/min/max + aria-valuetext + aria-live 'Step X of Y'; a real Back/Next control drives it (honest hover/active/focus/disabled). No clickable-step navigation bolted on.",
-      "Colour is not the only cue: the 'Step X of Y' label carries progress (1.4.1). progress/incomplete is decorative (not declared as a contrast pair)."
+      "Reworked to Figma 1784-86051: inline 'Step N of M' (medium) + 'Progress title' (regular/secondary), above a CONTINUOUS red progress bar (current/total) — not the prior segmented track.",
+      "PASSIVE (interactive:false) — AT via role=progressbar + aria-valuenow/min/max + aria-valuetext + aria-live; a real Back/Next drives it.",
+      "Colour is not the only cue: the 'Step X of Y' label carries progress (1.4.1)."
     ],
     "requiredAria": ["role=\"progressbar\"", "aria-valuenow", "aria-valuetext", "aria-live"]
   }
@@ -114,15 +113,14 @@
     const w = document.getElementById('w'), wv = document.getElementById('wv'), pt = document.getElementById('pt');
     w.addEventListener('input', () => { pt.style.setProperty('--demo-width', w.value + 'px'); wv.textContent = w.value; });
 
-    // passive progressbar driven by a real Back/Next control (states + behaviour live here, honestly)
-    const TOTAL = 4; let current = 3;
-    const track = document.getElementById('track'), segs = Array.from(track.querySelectorAll('.seg'));
+    const TOTAL = 5; let current = 2;
+    const track = document.getElementById('track'), fill = document.getElementById('fill');
     const count = document.getElementById('ptCount'), back = document.getElementById('back'), next = document.getElementById('next');
     function render(){
-      segs.forEach((s, i) => s.classList.toggle('done', i < current));   // segments 1..current fill red
+      fill.style.width = (current / TOTAL * 100) + '%';                    // continuous red fill to current/total
       track.setAttribute('aria-valuenow', current);
       track.setAttribute('aria-valuetext', `Step ${current} of ${TOTAL}`);
-      count.textContent = `Step ${current} of ${TOTAL}`;                  // aria-live announces the change
+      count.textContent = `Step ${current} of ${TOTAL}`;                   // aria-live announces the change
       back.disabled = current <= 1; next.disabled = current >= TOTAL;
     }
     back.addEventListener('click', () => { if (current > 1) { current--; render(); } });

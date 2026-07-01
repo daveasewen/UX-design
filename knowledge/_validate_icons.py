@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Icon-source check (ADVISORY) — guards against invented icons.
+Icon-source GATE — guards against invented icons (promoted from advisory 2026-06-24).
 
 Why (Dave, 2026-06-22): an AI model building a snippet can hand-draw an SVG that *looks* like an
 icon instead of using the real HSBC library glyph — a silent fidelity + maintenance defect. This
@@ -14,8 +14,9 @@ Each inline path is classified:
   • UNKNOWN  — neither. Possibly invented → fix: use the library SVG, or, if genuinely custom,
                mark the <svg> with data-bespoke="why".
 
-Advisory, non-gating: it surfaces, a human decides. NOTE limitation: only <path d="…"> is checked;
-icons built purely from <circle>/<rect> (e.g. a kebab of 3 circles) are not yet caught.
+GATING: exits non-zero on any UNKNOWN (path that doesn't match the library, or a shape-only icon).
+Shape-only icons — an <svg> built from <circle>/<rect>/<ellipse>/<polygon> with NO <path> to byte-match
+(e.g. a 3-circle kebab) — are now flagged too (use the library glyph, or mark the <svg> data-bespoke).
 
 Usage:  python3 _validate_icons.py [name-filter ...]      (default: all snippets)
 """
@@ -28,6 +29,7 @@ MANIFEST = os.path.join(ICONS, "icons.manifest.json")
 OUT = os.path.join(HERE, "_ICON-SOURCE-AUDIT.md")
 SVGRE = re.compile(r'<svg\b[^>]*?>.*?</svg>', re.S)
 DRE = re.compile(r'\bd="([^"]+)"')
+SHAPERE = re.compile(r'<(?:circle|rect|ellipse|polygon|polyline)\b')  # shape-only icons (no <path> to byte-match)
 
 def norm(d):
     return re.sub(r"\s+", " ", d.strip())
@@ -75,6 +77,11 @@ def run(filters):
                     known += 1
                 else:
                     unknown.append(d)
+            # circle/rect/ellipse/polygon-only icon: no <path> to byte-match → can't be verified.
+            # An invented kebab/dots/shape icon would otherwise slip through. Flag unless data-bespoke.
+            if not paths and SHAPERE.search(blk):
+                ntot += 1
+                unknown.append("(shape-only icon: " + re.sub(r"\s+", " ", blk)[:60] + "…)")
         total_unknown += len(unknown)
         total_bespoke += bespoke
         decl = declared_icons(html)
@@ -95,11 +102,11 @@ def run(filters):
 
     L = ["# Icon-source audit — inline SVG paths vs the HSBC library (`assets/icons/`)",
          "",
-         "*ADVISORY (non-gating). Each inline `<svg>` path is matched to the library. "
+         "*GATE (build-failing as of 2026-06-24). Each inline `<svg>` path is matched to the library. "
          "**library** = byte-matches a real glyph · **bespoke** = inside `<svg data-bespoke=\"reason\">`, a "
          "deliberately custom shape (control glyph / animated / focus mark), verified · **UNKNOWN** = neither "
-         "(possibly invented → use the library SVG, or mark it `data-bespoke`). Limitation: only `<path d>` is "
-         "checked; pure `<circle>`/`<rect>` icons (e.g. a 3-dot kebab) are not yet caught.*",
+         "(possibly invented → use the library SVG, or mark it `data-bespoke`). Shape-only icons "
+         "(`<circle>`/`<rect>`/`<ellipse>`/`<polygon>` with no `<path>`, e.g. a 3-dot kebab) are now flagged too.*",
          "",
          f"**{total_unknown} UNKNOWN path(s)** across {len(files)} snippet(s) "
          f"({total_bespoke} verified-bespoke). Library glyphs indexed: {len(lib)}.",
@@ -122,4 +129,5 @@ def run(filters):
 
 if __name__ == "__main__":
     import sys
-    run(sys.argv[1:])
+    # GATE (2026-06-24): exits non-zero on any UNKNOWN so _build_all.py fails the build.
+    sys.exit(1 if run(sys.argv[1:]) else 0)

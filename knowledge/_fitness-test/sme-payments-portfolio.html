@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payments — SME command view (portfolio piece)</title>
+<!--
+  PORTFOLIO PIECE — same SME Payments brief, brand-respecting but with the temperature up: an editorial
+  dark hero with a counting balance + cash-flow waterfall, an animated coverage "runway", proportional
+  bars on upcoming payments, crafted approval cards, and a confirmation step on the high-value approval.
+  HSBC red (#DB0011) + Univers, square, confident. Self-contained (custom craft layer, not the strict
+  canon-composition gate). Figures verbatim & reconciled; same payee = same amount; account masked.
+-->
+<style>
+  :root{
+    --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+    --red:#DB0011; --red-deep:#A8000B; --red-press:#BA1110;
+    --ink:#16181D; --ink-2:#22262E; --hero-1:#0E1014; --hero-2:#1B1F27;
+    --paper:#F4F4F2; --card:#FFFFFF; --line:#E4E4E2; --line-strong:#C9CAC7;
+    --text:#1A1C20; --muted:#6A6E76; --on-dark:#FFFFFF; --on-dark-mute:#9AA0AC;
+    --teal:#00847F; --teal-soft:#E1F0EE;
+    --spring:cubic-bezier(.5,1.5,.4,1); --ease:cubic-bezier(.4,0,.2,1);
+  }
+  *{box-sizing:border-box;}
+  body{ margin:0; font-family:var(--font); background:var(--paper); color:var(--text); -webkit-font-smoothing:antialiased; }
+  .shell{ max-width:1200px; margin:0 auto; }
+  h1,h2,h3,p{ margin:0; }
+  .num{ font-variant-numeric:tabular-nums; }
+
+  /* reveal animation */
+  [data-rise]{ opacity:0; transform:translateY(14px); }
+  .in [data-rise]{ opacity:1; transform:none; transition:opacity .6s var(--ease), transform .7s var(--spring); }
+  .in [data-rise="2"]{ transition-delay:.08s; } .in [data-rise="3"]{ transition-delay:.16s; }
+  .in [data-rise="4"]{ transition-delay:.24s; } .in [data-rise="5"]{ transition-delay:.32s; }
+
+  /* ============ HERO ============ */
+  .hero{ position:relative; background:radial-gradient(120% 140% at 82% -10%, rgba(219,0,17,.42), transparent 55%), linear-gradient(155deg, var(--hero-2), var(--hero-1) 62%); color:var(--on-dark); overflow:hidden; }
+  .hero::after{ content:""; position:absolute; right:-80px; top:-80px; width:360px; height:360px; background:radial-gradient(circle, rgba(219,0,17,.30), transparent 60%); filter:blur(8px); pointer-events:none; }
+  .hero__in{ max-width:1200px; margin:0 auto; padding:30px 40px 40px; position:relative; z-index:1; }
+  .topline{ display:flex; align-items:center; justify-content:space-between; gap:24px; padding-bottom:34px; }
+  .brand{ display:flex; align-items:center; gap:12px; }
+  .hex{ width:26px; height:30px; display:block; }
+  .brand .wm{ font:500 15px/1 var(--font); letter-spacing:.14em; text-transform:none; color:var(--on-dark); }
+  .topline .acct{ font:400 12px/1.5 var(--font); color:var(--on-dark-mute); text-align:right; }
+  .hero__grid{ display:grid; grid-template-columns:1.15fr 1fr; gap:40px; align-items:end; }
+  .eyebrow{ font:600 12px/1 var(--font); letter-spacing:.03em; color:var(--on-dark-mute); }
+  .hero h1{ font:500 17px/1.2 var(--font); color:var(--on-dark-mute); margin-top:18px; }
+  .bal{ font:300 78px/0.9 var(--font); letter-spacing:-.035em; margin:8px 0 0; }
+  .bal .p{ color:var(--on-dark); }
+  .pill{ display:inline-flex; align-items:center; gap:7px; margin-top:18px; padding:7px 12px; background:rgba(0,132,127,.16); color:#7FE3D8; font:500 13px/1 var(--font); }
+  .pill .dot{ width:7px; height:7px; background:#34C7B6; border-radius:50%; }
+
+  /* cash-flow waterfall */
+  .flow{ padding-bottom:6px; }
+  .flow .cap{ font:600 12px/1 var(--font); letter-spacing:.03em; color:var(--on-dark-mute); margin-bottom:18px; }
+  .bars{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; align-items:end; height:128px; }
+  .bar{ display:flex; flex-direction:column; justify-content:flex-end; gap:10px; height:100%; }
+  .bar .col{ position:relative; background:rgba(255,255,255,.10); height:var(--h,40%); transform-origin:bottom; transform:scaleY(0); }
+  .in .bar .col{ transform:scaleY(1); transition:transform .9s var(--spring); }
+  .in .bar:nth-child(2) .col{ transition-delay:.12s; } .in .bar:nth-child(3) .col{ transition-delay:.24s; }
+  .bar.is-now .col{ background:linear-gradient(var(--red), var(--red-deep)); }
+  .bar .lab{ font:500 11px/1.3 var(--font); color:var(--on-dark-mute); }
+  .bar .val{ display:block; color:var(--on-dark); font:500 14px/1.2 var(--font); margin-top:3px; }
+  .flow .delta{ margin-top:14px; font:400 12px/1.5 var(--font); color:var(--on-dark-mute); }
+  .flow .delta b{ color:#7FE3D8; font-weight:500; }
+
+  /* ============ COVERAGE RUNWAY ============ */
+  .runway{ background:var(--ink); color:var(--on-dark); }
+  .runway__in{ max-width:1200px; margin:0 auto; padding:26px 40px 30px; }
+  .runway__top{ display:flex; align-items:baseline; justify-content:space-between; gap:20px; margin-bottom:16px; }
+  .runway h2{ font:500 20px/1.2 var(--font); }
+  .runway h2 b{ color:#fff; } .runway .sub{ font:400 13px/1.5 var(--font); color:var(--on-dark-mute); max-width:46ch; }
+  .track{ height:14px; background:rgba(255,255,255,.12); display:flex; overflow:hidden; }
+  .track .committed{ width:0; background:repeating-linear-gradient(45deg, #4A4F59, #4A4F59 7px, #3C414A 7px, #3C414A 14px); }
+  .track .buffer{ width:0; background:linear-gradient(90deg, #00847F, #00A89F); }
+  .in .track .committed{ width:var(--w-committed); transition:width 1s var(--ease) .1s; }
+  .in .track .buffer{ width:var(--w-buffer); transition:width 1.1s var(--ease) .25s; }
+  .legend{ display:flex; gap:26px; margin-top:14px; flex-wrap:wrap; }
+  .legend span{ display:flex; align-items:center; gap:9px; font:400 13px/1 var(--font); color:var(--on-dark-mute); }
+  .legend b{ color:#fff; font-weight:500; } .legend i{ width:11px; height:11px; display:block; font-style:normal; }
+  .sw-c{ background:#4A4F59; } .sw-b{ background:#00A89F; }
+
+  /* ============ BODY ============ */
+  .body{ max-width:1200px; margin:0 auto; padding:40px; display:grid; grid-template-columns:1.5fr 1fr; gap:40px; align-items:start; }
+  .sec-lab{ display:flex; align-items:baseline; justify-content:space-between; gap:14px; margin-bottom:18px; }
+  .sec-lab h2{ font:600 13px/1 var(--font); letter-spacing:.02em; color:var(--text); }
+  .sec-lab .meta{ font:400 12px/1 var(--font); color:var(--muted); }
+
+  /* approval cards */
+  .appr{ position:relative; background:var(--card); border:1px solid var(--line); padding:20px; display:flex; flex-direction:column; gap:14px; transition:transform .3s var(--spring), box-shadow .3s var(--ease), border-color .3s var(--ease); }
+  .appr + .appr{ margin-top:16px; }
+  .appr:hover{ transform:translateY(-3px); box-shadow:0 14px 34px rgba(20,22,28,.12); border-color:var(--line-strong); }
+  .appr.hi{ border-left:3px solid var(--red); }
+  .appr__top{ display:flex; align-items:center; gap:14px; }
+  .av{ width:42px; height:42px; border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; background:var(--ink); color:#fff; font:500 14px/1 var(--font); letter-spacing:.02em; }
+  .appr__id{ flex:1; min-width:0; } .appr__payee{ font:500 16px/1.25 var(--font); } .appr__meta{ font:400 12px/1.4 var(--font); color:var(--muted); margin-top:3px; }
+  .appr__amt{ font:400 24px/1 var(--font); letter-spacing:-.02em; text-align:right; }
+  .flag{ position:absolute; top:0; right:0; background:var(--red); color:#fff; font:500 10px/1 var(--font); letter-spacing:.04em; padding:6px 9px; }
+  .appr__act{ display:flex; gap:10px; align-items:center; }
+  .appr__act .spacer{ flex:1; }
+
+  /* buttons */
+  .btn{ font:500 14px/1 var(--font); padding:0 18px; height:42px; border:0; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:transform .25s var(--spring), background .2s var(--ease), filter .1s; }
+  .btn:active{ transform:scale(.96); filter:brightness(.92); }
+  .btn--red{ background:var(--red); color:#fff; } .btn--red:hover{ background:var(--red-press); transform:translateY(-1px); }
+  .btn--dark{ background:var(--ink); color:#fff; } .btn--dark:hover{ background:var(--ink-2); transform:translateY(-1px); }
+  .btn--ghost{ background:transparent; color:var(--text); border:1px solid var(--line-strong); } .btn--ghost:hover{ background:#fff; border-color:var(--ink); }
+  .btn--text{ background:none; color:var(--muted); padding:0 6px; } .btn--text:hover{ color:var(--text); }
+  .btn:focus-visible{ outline:2px solid var(--red); outline-offset:2px; }
+
+  /* upcoming — proportional bars */
+  .up{ background:var(--card); border:1px solid var(--line); }
+  .up__row{ display:grid; grid-template-columns:62px 1fr auto; gap:14px; align-items:center; padding:15px 20px; border-top:1px solid var(--line); }
+  .up__row:first-child{ border-top:0; }
+  .up__date{ font:500 12px/1.2 var(--font); color:var(--muted); }
+  .up__mid{ min-width:0; } .up__payee{ font:500 14px/1.2 var(--font); }
+  .up__bar{ height:5px; margin-top:8px; background:var(--line); }
+  .up__bar i{ display:block; height:100%; width:0; background:var(--ink); }
+  .in .up__bar i{ width:var(--w); transition:width .9s var(--ease); }
+  .up__bar i.big{ background:var(--red); }
+  .up__amt{ font:400 16px/1 var(--font); letter-spacing:-.01em; }
+  .up__total{ display:flex; align-items:baseline; justify-content:space-between; padding:16px 20px; border-top:2px solid var(--ink); }
+  .up__total .l{ font:600 13px/1 var(--font); } .up__total .r{ font:500 19px/1 var(--font); letter-spacing:-.01em; }
+
+  .foot{ max-width:1200px; margin:0 auto; padding:0 40px 48px; display:flex; gap:12px; align-items:center; }
+  .foot .spacer{ flex:1; } .foot .note{ font:400 13px/1 var(--font); color:var(--muted); }
+
+  /* ============ MODAL ============ */
+  .overlay{ position:fixed; inset:0; background:rgba(14,16,20,.55); backdrop-filter:saturate(1.1) blur(2px); display:flex; align-items:center; justify-content:center; padding:24px; opacity:0; visibility:hidden; transition:opacity .25s var(--ease), visibility .25s; z-index:50; }
+  .overlay.open{ opacity:1; visibility:visible; }
+  .dialog{ width:100%; max-width:452px; background:var(--card); padding:28px; position:relative; transform:scale(.94) translateY(8px); opacity:0; transition:transform .4s var(--spring), opacity .25s; }
+  .overlay.open .dialog{ transform:none; opacity:1; }
+  .dialog .tag{ font:600 11px/1 var(--font); letter-spacing:.04em; color:var(--red); }
+  .dialog h3{ font:500 24px/1.15 var(--font); letter-spacing:-.01em; margin:10px 0 12px; }
+  .dialog p{ font:400 15px/1.55 var(--font); color:var(--muted); margin-bottom:24px; } .dialog p b{ color:var(--text); font-weight:500; }
+  .dialog .amt-big{ font:400 40px/1 var(--font); letter-spacing:-.02em; color:var(--text); margin-bottom:6px; }
+  .dialog .amt-sub{ font:400 13px/1.4 var(--font); color:var(--muted); margin-bottom:24px; }
+  .dialog .actions{ display:flex; gap:12px; }
+  .dialog .close{ position:absolute; top:16px; right:16px; width:34px; height:34px; border:0; background:none; cursor:pointer; color:var(--muted); font-size:20px; line-height:1; }
+  .dialog .close:hover{ color:var(--text); }
+
+  @media (max-width:900px){
+    .hero__grid{ grid-template-columns:1fr; gap:28px; } .bal{ font-size:60px; }
+    .body{ grid-template-columns:1fr; padding:28px; } .hero__in,.runway__in,.foot{ padding-left:24px; padding-right:24px; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    [data-rise],.bar .col,.track .committed,.track .buffer,.up__bar i{ transition:none !important; opacity:1 !important; transform:none !important; }
+    .bar .col{ transform:scaleY(1) !important; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ============ HERO ============ -->
+  <header class="hero" id="hero">
+    <div class="hero__in">
+      <div class="topline">
+        <div class="brand">
+          <svg class="hex" viewBox="0 0 26 30" aria-hidden="true"><path d="M13 0l13 7.5v15L13 30 0 22.5v-15L13 0z" fill="#DB0011"/><path d="M13 4.3l4.6 8.2L13 15 8.4 12.5 13 4.3zM13 25.7l-4.6-8.2L13 15l4.6 2.5L13 25.7z" fill="#fff"/></svg>
+          <span class="wm">HSBC&nbsp;·&nbsp;Business</span>
+        </div>
+        <div class="acct">Business current account ····<br>Sort code ··–··–··</div>
+      </div>
+
+      <div class="hero__grid">
+        <div>
+          <span class="eyebrow" data-rise>Payments</span>
+          <h1 data-rise="2">Current balance · as of 12 May 2026</h1>
+          <p class="bal num" data-rise="2"><span class="p" id="balance">£0</span></p>
+          <span class="pill num" data-rise="3"><span class="dot"></span>Net +£2,450 today</span>
+        </div>
+
+        <div class="flow" data-rise="3">
+          <div class="cap">Today's movement</div>
+          <div class="bars">
+            <div class="bar"><span class="col" style="--h:62%"></span><span class="lab">Opening<span class="val num">£120,000</span></span></div>
+            <div class="bar is-now"><span class="col" style="--h:78%"></span><span class="lab">Current<span class="val num">£122,450</span></span></div>
+            <div class="bar"><span class="col" style="--h:92%"></span><span class="lab">Est. close<span class="val num">£124,000</span></span></div>
+          </div>
+          <p class="delta num">Inflows <b>+£11,650</b> · outflows −£9,200 · net <b>+£2,450</b></p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ COVERAGE RUNWAY ============ -->
+  <section class="runway" id="runway">
+    <div class="runway__in">
+      <div class="runway__top">
+        <h2>Covered through <b>May</b></h2>
+        <p class="sub">£122,450 balance, less £49,702 of payments scheduled in May.</p>
+      </div>
+      <div class="track" style="--w-committed:40.59%; --w-buffer:59.41%">
+        <span class="committed"></span><span class="buffer"></span>
+      </div>
+      <div class="legend num">
+        <span><i class="sw-c"></i>Committed in May <b>£49,702</b></span>
+        <span><i class="sw-b"></i>Remaining buffer <b>£72,748</b></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BODY ============ -->
+  <div class="body" id="body">
+    <!-- pending approval -->
+    <section>
+      <div class="sec-lab"><h2 data-rise>Pending approval</h2><span class="meta" data-rise>2 awaiting you</span></div>
+
+      <div class="appr" data-rise="2">
+        <div class="appr__top">
+          <span class="av" aria-hidden="true">SC</span>
+          <span class="appr__id"><span class="appr__payee">Amazon Business</span><span class="appr__meta">Requested by Sarah Chen · 2 days ago</span></span>
+          <span class="appr__amt num">£4,502</span>
+        </div>
+        <div class="appr__act">
+          <button class="btn btn--text" type="button">Decline</button>
+          <span class="spacer"></span>
+          <button class="btn btn--ghost" type="button">Review</button>
+          <button class="btn btn--red" type="button" data-approve data-payee="Amazon Business" data-amount="£4,502" data-who="Sarah Chen">Approve</button>
+        </div>
+      </div>
+
+      <div class="appr hi" data-rise="3">
+        <span class="flag">High value</span>
+        <div class="appr__top">
+          <span class="av" aria-hidden="true">SC</span>
+          <span class="appr__id"><span class="appr__payee">BrightHire Payroll Ltd</span><span class="appr__meta">Requested by Sarah Chen · 2 days ago · payroll</span></span>
+          <span class="appr__amt num">£45,200</span>
+        </div>
+        <div class="appr__act">
+          <button class="btn btn--text" type="button">Decline</button>
+          <span class="spacer"></span>
+          <button class="btn btn--ghost" type="button">Review</button>
+          <button class="btn btn--red" type="button" data-approve data-payee="BrightHire Payroll Ltd" data-amount="£45,200" data-who="Sarah Chen">Approve</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- upcoming payments -->
+    <section>
+      <div class="sec-lab"><h2 data-rise>Upcoming payments</h2><span class="meta" data-rise>5 scheduled</span></div>
+      <div class="up" data-rise="2">
+        <div class="up__row"><span class="up__date num">15 May</span><span class="up__mid"><span class="up__payee">Amazon Business</span><span class="up__bar"><i style="--w:9%"></i></span></span><span class="up__amt num">£4,502</span></div>
+        <div class="up__row"><span class="up__date num">22 May</span><span class="up__mid"><span class="up__payee">BrightHire Payroll Ltd</span><span class="up__bar"><i class="big" style="--w:90%"></i></span></span><span class="up__amt num">£45,200</span></div>
+        <div class="up__row"><span class="up__date num">22 Jul</span><span class="up__mid"><span class="up__payee">HMRC — PAYE</span><span class="up__bar"><i style="--w:4%"></i></span></span><span class="up__amt num">£2,200</span></div>
+        <div class="up__row"><span class="up__date num">12 Aug</span><span class="up__mid"><span class="up__payee">British Gas Business</span><span class="up__bar"><i style="--w:8%"></i></span></span><span class="up__amt num">£4,200</span></div>
+        <div class="up__row"><span class="up__date num">09 Sep</span><span class="up__mid"><span class="up__payee">Ravenscroft Properties</span><span class="up__bar"><i class="big" style="--w:100%"></i></span></span><span class="up__amt num">£50,200</span></div>
+        <div class="up__total"><span class="l">Total scheduled</span><span class="r num">£106,302</span></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="foot">
+    <span class="note num">5 payments · £106,302 scheduled this period</span>
+    <span class="spacer"></span>
+    <button class="btn btn--ghost" type="button">Export</button>
+    <button class="btn btn--dark" type="button">New payment</button>
+  </div>
+
+  <!-- ============ CONFIRMATION ============ -->
+  <div class="overlay" id="overlay">
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="m-title" aria-describedby="m-body">
+      <button class="close" id="m-close" type="button" aria-label="Close">✕</button>
+      <span class="tag">Confirm approval</span>
+      <h3 id="m-title">Approve this payment?</h3>
+      <div class="amt-big num" id="m-amount">£45,200</div>
+      <div class="amt-sub">to <b id="m-payee">BrightHire Payroll Ltd</b> · requested by <span id="m-who">Sarah Chen</span></div>
+      <p id="m-body">High-value payments need a second look. Once approved, it's scheduled and can't be undone here.</p>
+      <div class="actions">
+        <button class="btn btn--red" id="m-confirm" type="button">Confirm approval</button>
+        <button class="btn btn--ghost" id="m-cancel" type="button">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // staggered reveal on load
+    requestAnimationFrame(()=>{ ['hero','runway','body'].forEach((id,i)=> setTimeout(()=> document.getElementById(id).classList.add('in'), 60+i*120)); });
+
+    // balance count-up
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const el = document.getElementById('balance'), target = 122450;
+    if(reduce){ el.textContent = '£122,450'; }
+    else{ const t0=performance.now(), dur=1300;
+      (function tick(t){ const p=Math.min(1,(t-t0)/dur), e=1-Math.pow(1-p,3); const v=Math.round(target*e);
+        el.textContent = '£'+v.toLocaleString('en-GB'); if(p<1) requestAnimationFrame(tick); })(t0);
+    }
+
+    // input modality (keyboard ring only)
+    const root=document.documentElement;
+    addEventListener('keydown', e=>{ if(e.key==='Tab') root.dataset.modality='keyboard'; });
+    addEventListener('mousedown', ()=> root.dataset.modality='pointer');
+
+    // high-value confirmation
+    const ov=document.getElementById('overlay'), dialog=ov.querySelector('.dialog');
+    let last=null; const foc=()=>[...dialog.querySelectorAll('button')];
+    function open(b){ last=b; document.getElementById('m-amount').textContent=b.dataset.amount;
+      document.getElementById('m-payee').textContent=b.dataset.payee; document.getElementById('m-who').textContent=b.dataset.who;
+      ov.classList.add('open'); setTimeout(()=>foc()[1]?.focus(),60); }
+    function close(){ ov.classList.remove('open'); last&&last.focus(); }
+    document.querySelectorAll('[data-approve]').forEach(b=> b.addEventListener('click', ()=>open(b)));
+    document.getElementById('m-close').onclick=close; document.getElementById('m-cancel').onclick=close; document.getElementById('m-confirm').onclick=close;
+    ov.addEventListener('click', e=>{ if(e.target===ov) close(); });
+    addEventListener('keydown', e=>{ if(!ov.classList.contains('open')) return;
+      if(e.key==='Escape') close();
+      if(e.key==='Tab'){ const f=foc(), a=f[0], z=f[f.length-1];
+        if(e.shiftKey&&document.activeElement===a){ e.preventDefault(); z.focus(); }
+        else if(!e.shiftKey&&document.activeElement===z){ e.preventDefault(); a.focus(); } } });
+  </script>
+</body>
+</html>

@@ -6,11 +6,17 @@
 <title>Pagination — reference implementation (gated)</title>
 <!-- CANONICAL REFERENCE for Pagination (gated). Prev/next chevrons + page-number links; the current
      page is marked with aria-current AND a border (tertiary/border/default), not colour alone (1.4.1).
-     nav landmark; ≥44px targets. -->
+     INTERACTION STATES borrowed from Button (2026-06-29): hover tint + a button PRESS — inverting fill
+     (tertiary/background/pressed + text/reverse) and a snappy scale depress. nav landmark; ≥44px targets. -->
 <style>
-  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
-  [data-theme="light"]{ --text:#333333; --disabled:#D7D8D6; --icon:#333333; --current-bd:#000000; --hover:#F3F3F3; --focus:#305A85; --page:#FFFFFF; }
-  [data-theme="dark"]{ --text:#FFFFFF; --disabled:#767676; --icon:#FFFFFF; --current-bd:#767676; --hover:#212121; --focus:#4587A7; --page:#000000; }
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease;
+    --press:90ms cubic-bezier(0,0,.58,1); }   /* motion/duration/press + motion/easing/out — from Button */
+  [data-theme="light"]{ --text:#333333; --disabled:#D7D8D6; --icon:#333333; --current-bd:#000000; --hover:#F3F3F3; --pressed:#767676; --on-pressed:#FFFFFF; --focus:#305A85; --page:#FFFFFF; }
+  [data-theme="dark"]{ --text:#FFFFFF; --disabled:#767676; --icon:#FFFFFF; --current-bd:#767676; --hover:#212121; --pressed:#1D1D1D; --on-pressed:#FFFFFF; --focus:#4587A7; --page:#000000; }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
   .demo-controls{margin-bottom:2rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
@@ -18,8 +24,11 @@
   .demo-controls button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
   nav.pg ul{list-style:none; display:flex; gap:4px; align-items:center; margin:0; padding:0;}
   .pg a, .pg .ctrl{min-width:44px; height:44px; display:inline-flex; align-items:center; justify-content:center; padding:0 8px;
-    font:400 15px/1 var(--font); color:var(--text); text-decoration:none; cursor:pointer; border:1px solid transparent; background:transparent;}
-  .pg a:hover, .pg .ctrl:hover{background:var(--hover);}
+    font:400 15px/1 var(--font); color:var(--text); text-decoration:none; cursor:pointer; border:1px solid transparent; background:transparent;
+    transition:background var(--ease), color var(--ease), transform var(--press);}
+  .pg a:hover, .pg .ctrl:not([disabled]):hover{background:var(--hover);}
+  /* button PRESS state (from Button): inverting fill + snappy depress */
+  .pg a:active, .pg .ctrl:not([disabled]):active{background:var(--pressed); color:var(--on-pressed); transform:scale(.94);}
   .pg a:focus-visible, .pg .ctrl:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
   .pg [aria-current="page"]{border-color:var(--current-bd); font-weight:600;}
   .pg .ctrl[disabled]{color:var(--disabled); cursor:not-allowed;}
@@ -29,6 +38,7 @@
   /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
   @media (prefers-reduced-motion: reduce){
     *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+    .pg a:active, .pg .ctrl:active{ transform:none !important; }   /* colour press remains; no scale */
   }
 </style>
 </head>
@@ -51,11 +61,12 @@
   <script type="application/json" id="token-manifest">
   {
     "component": "Pagination",
-    "vars": { "--text": "text/default", "--disabled": "text/disabled", "--icon": "icon/default", "--current-bd": "tertiary/border/default", "--hover": "form/background/hover", "--focus": "focus/ring", "--page": "background/default" },
+    "vars": { "--text": "text/default", "--disabled": "text/disabled", "--icon": "icon/default", "--current-bd": "tertiary/border/default", "--hover": "form/background/hover", "--pressed": "tertiary/background/pressed", "--on-pressed": "text/reverse", "--focus": "focus/ring", "--page": "background/default" },
     "contrastPairs": [
       { "fg": "text/default", "bg": "background/default", "context": "text" },
       { "fg": "tertiary/border/default", "bg": "background/default", "context": "ui" },
-      { "fg": "icon/default", "bg": "background/default", "context": "ui" }
+      { "fg": "icon/default", "bg": "background/default", "context": "ui" },
+      { "fg": "text/reverse", "bg": "tertiary/background/pressed", "context": "text" }
     ],
     "requiredAria": ["<nav", "aria-current", "aria-label"]
   }

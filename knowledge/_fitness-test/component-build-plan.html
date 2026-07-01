@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Component library — build plan</title>
+<!-- Team proposal, laid out in the Swiss / International Style (swiss-design-system skill, Archetype B):
+     typographic hierarchy, hairline section rules, single accent (HSBC red), generous white space,
+     index numerals on the phases. Labels sentence-case per house rule. -->
+<style>
+  :root{
+    --font:"Univers Next for HSBC","Helvetica Neue",Helvetica,Arial,sans-serif;
+    --accent:#DB0011; --ink:#1A1A1A; --black:#000;
+    --g1:#F3F3F3; --g2:#EDEDED; --g3:#D7D8D6; --g6:#767676; --g7:#545454; --g8:#333333;
+    --s1:.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem; --s6:4rem; --s7:6rem;
+    --maxw:1120px;
+  }
+  *{ box-sizing:border-box; }
+  body{ margin:0; font-family:var(--font); color:var(--ink); background:#fff; -webkit-font-smoothing:antialiased; line-height:1.7; }
+  .wrap{ max-width:var(--maxw); margin:0 auto; padding:0 var(--s4); }
+  h1,h2,h3,p{ margin:0; } .num{ font-variant-numeric:tabular-nums; }
+
+  /* masthead */
+  .nav{ border-bottom:1px solid var(--g2); }
+  .nav__in{ max-width:var(--maxw); margin:0 auto; padding:0 var(--s4); height:56px; display:flex; align-items:center; justify-content:space-between; }
+  .brand{ display:flex; align-items:baseline; gap:.4rem; font:400 14px/1 var(--font); letter-spacing:.02em; color:var(--g7); }
+  .brand .mark{ font-weight:700; letter-spacing:.06em; color:var(--accent); }
+  .nav__meta{ font:400 13px/1 var(--font); color:var(--g6); }
+
+  .label{ display:flex; align-items:center; gap:var(--s1); font:500 12px/1 var(--font); letter-spacing:.06em; color:var(--accent); margin-bottom:var(--s3); }
+  .label::before{ content:''; width:22px; height:1px; background:var(--accent); display:inline-block; }
+  .rule{ border:0; border-top:1px solid var(--g2); margin:0; }
+  section{ padding:var(--s7) 0; }
+
+  /* hero */
+  .hero h1{ font:400 57px/1.05 var(--font); letter-spacing:-.02em; max-width:16ch; }
+  .hero .sub{ margin-top:var(--s3); font:400 19px/1.5 var(--font); color:var(--g7); max-width:52ch; }
+
+  /* proposition split */
+  .split{ display:grid; grid-template-columns:1fr 2fr; gap:var(--s6); align-items:start; }
+  .prop{ font:400 34px/1.25 var(--font); letter-spacing:-.01em; }
+  .body p{ font:400 16px/1.8 var(--font); color:var(--g7); } .body p + p{ margin-top:var(--s3); } .body b{ color:var(--ink); font-weight:500; }
+
+  /* stats */
+  .stats{ display:grid; grid-template-columns:repeat(4,1fr); gap:var(--s5); }
+  .stat .v{ font:300 46px/1 var(--font); letter-spacing:-.02em; }
+  .stat .k{ display:block; margin-top:var(--s2); font:500 12px/1.4 var(--font); color:var(--g7); }
+
+  /* phases — Archetype B dimension: index numeral + label left, body right */
+  .phase{ display:grid; grid-template-columns:1fr 2fr; gap:var(--s6); align-items:start; padding:var(--s6) 0; border-top:1px solid var(--g2); }
+  .phase:first-of-type{ border-top:0; }
+  .phase__idx{ font:200 88px/0.9 var(--font); color:var(--g3); letter-spacing:-.03em; }
+  .phase__name{ font:500 22px/1.2 var(--font); margin:var(--s2) 0 var(--s1); }
+  .phase__tag{ font:500 12px/1.4 var(--font); color:var(--accent); }
+  .phase__lead{ font:400 18px/1.6 var(--font); margin-bottom:var(--s3); }
+  .phase__list{ columns:2; column-gap:var(--s5); font:400 15px/1.9 var(--font); color:var(--g7); }
+  .phase__list span{ display:block; break-inside:avoid; }
+  .phase__meta{ margin-top:var(--s3); padding-top:var(--s3); border-top:1px solid var(--g2); display:flex; column-gap:var(--s5); row-gap:var(--s1); flex-wrap:wrap; font:400 14px/1.5 var(--font); color:var(--g7); }
+  .phase__meta b{ color:var(--ink); font-weight:500; }
+
+  /* two modes — distinction grid */
+  .modes{ display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--g3); border:1px solid var(--g3); }
+  .mode{ background:#fff; padding:var(--s4); }
+  .mode h3{ font:500 19px/1.2 var(--font); margin-bottom:var(--s2); } .mode h3.a{ color:var(--accent); }
+  .mode p{ font:400 15px/1.7 var(--font); color:var(--g7); }
+
+  /* effort table */
+  table{ width:100%; border-collapse:collapse; margin-top:var(--s4); }
+  th,td{ text-align:left; padding:var(--s2) var(--s3) var(--s2) 0; border-bottom:1px solid var(--g2); font:400 15px/1.4 var(--font); vertical-align:top; }
+  thead th{ font:500 12px/1 var(--font); letter-spacing:.04em; color:var(--g7); border-bottom:1px solid var(--ink); padding-bottom:var(--s1); }
+  td.n, th.n{ text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  tfoot td{ border-bottom:0; border-top:2px solid var(--ink); font-weight:600; padding-top:var(--s2); }
+  .caveat{ margin-top:var(--s3); font:400 13px/1.6 var(--font); color:var(--g6); max-width:70ch; }
+
+  footer{ border-top:1px solid var(--g2); }
+  footer .wrap{ padding-top:var(--s5); padding-bottom:var(--s6); }
+  footer .next{ font:400 22px/1.4 var(--font); max-width:40ch; } footer .next b{ font-weight:500; }
+
+  @media (max-width:820px){ .split,.phase,.stats,.modes{ grid-template-columns:1fr; gap:var(--s4); } .hero h1{ font-size:40px; } .phase__list{ columns:1; } .phase__idx{ font-size:56px; } }
+</style>
+</head>
+<body>
+  <nav class="nav"><div class="nav__in">
+    <span class="brand"><span class="mark">HSBC</span> · Design system</span>
+    <span class="nav__meta">Build plan · 2026</span>
+  </div></nav>
+
+  <!-- HERO -->
+  <section class="hero"><div class="wrap">
+    <p class="label">Component library · build plan</p>
+    <h1>An extensive component build</h1>
+    <p class="sub">From ~38 gated components today to a comprehensive catalogue of 200–300 — sequenced so the reliable "standard" output comes first, and creativity becomes a mode, not a workaround.</p>
+  </div></section>
+
+  <hr class="rule">
+
+  <!-- THE CASE -->
+  <section><div class="wrap"><div class="split">
+    <div><p class="label">The case</p></div>
+    <div>
+      <p class="prop">Coverage removes the reason to invent — and more parts mean more valid journeys.</p>
+      <div class="body" style="margin-top:var(--s4)">
+        <p>Today, when a screen needs a part we don't have, the engine invents one — a run we tested fabricated account numbers and status chips just to fill a table it needed. That is the source of drift and of "needs a tidy". <b>A comprehensive library is what makes standard-quality output the default</b>, because there is always a real component to retrieve.</p>
+        <p>It also buys variance for free: more legitimate components mean more valid ways to compose a journey, so the same brief yields genuinely different, on-brand results. <b>Creativity then lives in a separate ideation mode</b> — tuned, not improvised.</p>
+      </div>
+    </div>
+  </div></div></section>
+
+  <hr class="rule">
+
+  <!-- WHERE WE ARE -->
+  <section><div class="wrap">
+    <p class="label">Where we stand</p>
+    <div class="stats num">
+      <div class="stat"><span class="v">38</span><span class="k">Gated components today</span></div>
+      <div class="stat"><span class="v">65–70</span><span class="k">A comprehensive base (Ant, Carbon)</span></div>
+      <div class="stat"><span class="v">200–300</span><span class="k">With shells & lock-ups</span></div>
+      <div class="stat"><span class="v">10,000+</span><span class="k">Commercial variant scale (Untitled UI)</span></div>
+    </div>
+  </div></section>
+
+  <hr class="rule">
+
+  <!-- PHASES -->
+  <section><div class="wrap">
+    <p class="label">The programme</p>
+
+    <div class="phase">
+      <div><span class="phase__idx num">01</span><h3 class="phase__name">Foundations</h3><span class="phase__tag">Reliability-critical bases</span></div>
+      <div>
+        <p class="phase__lead">The ~20 parts a real screen can't be built without. Ship these and "standard mode" becomes trustworthy by default.</p>
+        <div class="phase__list">
+          <span>Form layout + validation</span><span>Date / range / time pickers</span><span>Amount &amp; currency input</span><span>OTP / PIN / secure entry</span><span>File upload / dropzone</span><span>Textarea · Icon button</span><span>Data grid (sort / filter)</span><span>Stat / metric card</span><span>Charts / data-viz kit</span><span>Empty &amp; skeleton states</span><span>Alert / inline callout</span><span>Toast / snackbar</span><span>Drawer · Popover</span><span>Stepper (multi-step)</span>
+        </div>
+        <div class="phase__meta"><span>Items <b>~20</b></span><span>Effort <b>~4–8 team-weeks</b></span><span>Outcome <b>standard output stops inventing</b></span></div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div><span class="phase__idx num">02</span><h3 class="phase__name">Depth</h3><span class="phase__tag">Parity + a fintech edge</span></div>
+      <div>
+        <p class="phase__lead">The rest of the base to reach comprehensive (~75–85), plus a fintech set the generic systems don't carry.</p>
+        <div class="phase__list">
+          <span>Combobox · Multi-select · Tags</span><span>Timeline / activity feed</span><span>Calendar · Tree · Carousel</span><span>Banner · Progress bar</span><span>Command palette · Nav rail</span><span>Footer · Page scaffolds</span><span>Amount display &amp; money format</span><span>Account selector / masked chip</span><span>Transaction / ledger row</span><span>Payment-card visual</span><span>Coverage / runway bar</span><span>Standing-order / mandate row</span>
+        </div>
+        <div class="phase__meta"><span>Items <b>~30</b></span><span>Effort <b>~8–12 team-weeks</b></span><span>Outcome <b>parity with Ant / Carbon + fintech depth</b></span></div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div><span class="phase__idx num">03</span><h3 class="phase__name">Scale</h3><span class="phase__tag">Shells, templates &amp; lock-ups</span></div>
+      <div>
+        <p class="phase__lead">The multiplier layer — where the big kits get their numbers. These compose from the bases, so they build faster per item.</p>
+        <div class="phase__list">
+          <span>App shells: top · side · multi-column</span><span>Split · focused · doormat · rail</span><span>Templates: dashboard · list · detail</span><span>Form · settings · wizard · auth</span><span>Empty · error · report · confirmation</span><span>Page headers (× tabs / actions / meta)</span><span>Section &amp; card headers</span><span>Hero · stats band · filter bar</span><span>Footer / doormat · CTA lock-ups</span><span>Per-component variant matrices</span>
+        </div>
+        <div class="phase__meta"><span>Items <b>~40–50 × variants</b></span><span>Effort <b>~6–10 team-weeks</b></span><span>Outcome <b>200–300 catalogue — real compositional choice</b></span></div>
+      </div>
+    </div>
+  </div></section>
+
+  <hr class="rule">
+
+  <!-- TWO MODES -->
+  <section><div class="wrap"><div class="split">
+    <div><p class="label">Two modes</p><p class="prop">The library does the grunt work; ideation is a dial on top.</p></div>
+    <div>
+      <div class="modes">
+        <div class="mode"><h3>Standard</h3><p>Retrieve the right part for almost any screen; output reads as house-standard by default. The bulk of the work — reliable, fast, on-brand.</p></div>
+        <div class="mode"><h3 class="a">Ideation</h3><p>The register dial — expressive surfaces, motion, gap-pattern generation — tuned for workshops. Creativity on top of a solid base, never a substitute for one.</p></div>
+      </div>
+      <div class="body" style="margin-top:var(--s4)"><p>Because the base is comprehensive, both modes get the <b>variance dividend</b>: more valid compositions on the same curbs, so journeys vary legitimately rather than by invention.</p></div>
+    </div>
+  </div></div></section>
+
+  <hr class="rule">
+
+  <!-- EFFORT -->
+  <section><div class="wrap">
+    <p class="label">Shape of the work</p>
+    <table>
+      <thead><tr><th>Phase</th><th>Scope</th><th class="n">Items</th><th class="n">Indicative effort</th></tr></thead>
+      <tbody>
+        <tr><td>01 · Foundations</td><td>Reliability-critical bases</td><td class="n">~20</td><td class="n">~4–8 team-weeks</td></tr>
+        <tr><td>02 · Depth</td><td>Remaining bases + fintech</td><td class="n">~30</td><td class="n">~8–12 team-weeks</td></tr>
+        <tr><td>03 · Scale</td><td>Shells · templates · lock-ups</td><td class="n">~40–50</td><td class="n">~6–10 team-weeks</td></tr>
+      </tbody>
+      <tfoot><tr><td>Comprehensive catalogue</td><td>Bases × variants + Layer 2</td><td class="n">200–300</td><td class="n">~5–7 team-months</td></tr></tfoot>
+    </table>
+    <p class="caveat">Indicative only — for shaping the proposal, not a commitment. Every item runs the <b>gated pipeline we already have</b> (snippet → meta → automated gates → <code>.cn-*</code> component), so this is a content build on a proven machine, not new infrastructure. Effort assumes a small dedicated team and shrinks with parallelism.</p>
+  </div></section>
+
+  <footer><div class="wrap">
+    <p class="label">Next</p>
+    <p class="next"><b>Approve the Phase&nbsp;01 scope.</b> Twenty parts remove the single biggest failure mode — inventing to fill gaps — and make everything downstream more reliable.</p>
+  </div></footer>
+</body>
+</html>
