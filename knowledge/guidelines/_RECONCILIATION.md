@@ -34,6 +34,16 @@ Dave rules.*
 
 - **mot-007** — "Not playful or bouncy" vs our promoted spring physics. Button "Refined scale-physics" (canon, 2026-06-22) uses an overshoot spring (`motion/easing/spring` ≈ cubic-bezier(.5,1.7,.4,1)); Selection-controls exploration is "deliberately springy". The brand standard says deliberate-not-bouncy across all platforms including apps. Read available: our scale-only, small-amplitude physics IS "confident and deliberate" (it was chosen over the unrestrained 3D-depress for exactly that reason), and this 2022
 
+## neurodiversity.md
+
+- **neuro-010** — Links and buttons visibly clickable: underline links; visited links change colour (best practice); button boundaries ≥3:1. ⚠ The :visited leg is a REAL canon gap — no snippet or canon.css styles :visited at all (checked 2026-07-02).
+- **neuro-016** — Minimum font size 12pt (exceptions: sub/superscript, T&Cs, related). ⚠ pt-vs-px: 12pt = 16px CSS at the standard 96dpi reading — under which our S6 (14px) and S7 (12px) standard-text sizes would fail; under a loose "12pt≈12px" reading our scale complies (S7=12px floor, 12px reserved for legal = mirrors the exception). The web type scale page and the store both treat 14px/12px as legitimate.
+- **neuro-019** — Line height ≥1.5× font size; paragraph spacing ≥2× font size. WCAG 1.4.12 receipt. Our scale: S5 16/24 = 1.5 exactly ✓; S6 14/20 ≈ 1.43 ✗; S7 12/16 ≈ 1.33 ✗ — same family of tension as neuro-016/webf-031; the brand's own scale sits below the neuro floor for small sizes.
+- **neuro-024** — Avoid metaphors and ambiguity. The standard EXPLICITLY flags the tension: tone of voice supports "conversational, informal" style, but literal readers need unambiguous writing.
+- **neuro-041** — Small-type neuro-compliance cluster. neuro-016 (12pt minimum, strict reading = 16px) + neuro-019 (≥1.5 line-height; S6/S7 sit at 1.43/1.33) both indict the brand's OWN type scale for small sizes if read strictly. Since the type scale page and the toolkit export agree on S6/S7, loose readings are almost certainly intended (12pt≈12px; 1.5× aspirational for body = S5 ✓). One Create Direct question settles both.
+- **neuro-042** — Calm-by-default vs expressive register. neuro-006 (hero ≤30% height), neuro-014 (bright colours ≤20% of screen), neuro-001/-028 (simplicity) collectively define a measurable "calm ceiling". The expressive register (charter §4, dual-live palettes) pushes the other way. These are not contradictions — they're the two dials of the fixed/flex charter with NUMBERS on the sober side for the first time. Generation consequence: the register spread should treat neuro caps as the sober register's defaults 
+- **neuro-044** — Communication guidance is a hub we did not descend — 7 scenario subpages (meetings, multimedia, media, digital content, internal comms, surveys, social media). Scenario 4 (digital content) is the engine-relevant one.
+
 ## pictograms.md
 
 - **pict-014** — Pictograms are a component-library gap. The engine's 38 components include icons (sprite + gate) but no pictogram asset class at all — no tokens, no assets, no manifest entry. If generated experiences ever include pictogram-bearing patterns (empty states, onboarding, confirmation illustrations), this class needs onboarding: distinct contrast rule (3:1 + alt), distinct size floor (60px), level system, and a sourcing pipeline (create.hsbc asset library + "Pictogram creation" approvals process for 
@@ -53,4 +63,4 @@ Dave rules.*
 - **webf-033** — font-1..4 sizes are TScale-mode-dependent — check the export carries them. `typography.json` has fixed sizes only for font-5..7 (correct — S5–S7 are invariant); font-1..4 sizes/leading must vary by scale mode. If the semantic-scale export didn't carry per-mode type values, large-type generation at scale-2/3 is running on a gap.
 - **webf-034** — Responsive spacing values (R units) are a source gap. `spacing.json` is fixed-only; the RScale VALUES per breakpoint aren't in the store or on this page (likely toolkit- internal). Generation currently has no responsive-spacing dimension.
 
-_19 open item(s)._
+_26 open item(s)._
