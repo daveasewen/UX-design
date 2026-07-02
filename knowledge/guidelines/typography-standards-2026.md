@@ -54,6 +54,63 @@ renders with fallbacks regardless, see `_ROBUSTNESS-PORTABILITY.md`).
   weight levels to the minimum; **max two main fonts with a bold option**.
   [ADVISORY-derivable — countable font/weight census per view] {#type26-009}
 
+## Specification (`typography/specification.html`, ingested same session)
+
+### Weights
+- Headlines: lightest weights (**Ultra Light, Thin, Light**) at larger sizes; heavier only
+  for a clear hierarchy shift or single emphasis point. **Never bold an entire headline** —
+  one or two words at most. Body: light/regular. "If everything's bold, nothing is."
+  [ADVISORY-derivable — weight-usage census] {#type26-010}
+- Hierarchy depth: **3–4 levels** (L1 headline, L2, supporting, body). [ADVISORY-derivable]
+  {#type26-011}
+
+### Minimum sizes
+- **Latin: 12pt minimum, print AND digital.** Captions/small legal copy may go to **6pt**
+  minimum. **Ultra Light/Thin forbidden at small sizes** (line too thin to be legible).
+  **Chinese (MYing Hei): 14pt body minimum.** Arabic: 12pt (as Latin).
+  [BLOCKING-derivable — font-size floor per script + weight-at-size check] {#type26-012}
+
+### Type colour (the strictest rule set on the page)
+- **Black/dark-grey on light · white/light-grey on dark · NO other colours for typography,
+  ever.** White-only on HSBC Red and supporting reds; no long-form copy on red or coloured
+  backgrounds; **no highlighted type blocks**; over photography black or white only.
+  [BLOCKING-derivable — text-colour whitelist; tightens col26-009's no-supporting-as-text
+  to a black/grey/white-only rule] {#type26-013}
+- Headline-on-photography contrast: **3:1 large AA · 4.5:1 small AA · 7:1 AAA.**
+  [BLOCKING-derivable — existing contrast-gate class] {#type26-014}
+- **"Don't overlay text on gradient backgrounds"** (+ digital: verify at viewpoints, no
+  unreadable wrap). ⚠ Collides with charter §4's expressive gradient unlock for
+  surfaces/heroes — heroes normally carry headlines. Either expressive gradient heroes are
+  text-free zones, or the rules need reconciling. NOT self-resolvable. [REVIEW] {#type26-015}
+
+### Kerning and leading
+- Latin headlines: **−15 to −30 tracking; leading = size +3pt** (50pt → 53pt). Latin body:
+  **−5 to −10 tracking; leading "1.1×"** — ⚠ but the page's own example is 12pt → **16pt**
+  (1.33×), and Chinese body says 1.1× with example 14pt → 18pt (1.29×). Stated ratio and
+  worked examples disagree — likely "1.1×" should read differently or the examples embed
+  channel-specific values. [REVIEW — source-internal inconsistency; our tokens keep their
+  own leading values meanwhile] {#type26-016}
+- Chinese headlines: leading **1.25×**; body 0 to +10 tracking. Fine-tune Chinese
+  punctuation spacing; refine baselines when mixing scripts. [ADVISORY] {#type26-017}
+- No wide kerning that breaks legibility; not too tight either. [TASTE] {#type26-018}
+
+### Casing, alignment
+- **Title case AND sentence case** are the brand-legal casings; **uppercase banned outside
+  acronyms** (explicitly: harder to read, reduces word shapes, dyslexia/low-vision cost).
+  Note: the house rule (sentence case ONLY, no title case) is *stricter* than brand — house
+  wins locally, no conflict. [BLOCKING-derivable — the all-caps check's evidence, again]
+  {#type26-019}
+- **Left-aligned is primary**; centred sparingly (short headings/labels/callouts, small
+  word counts); right rare ("Headline A of the magnetic type construct"); body copy stays
+  horizontal. **Never justified** (rivers); avoid hyphenation — rebalance lines instead.
+  [BLOCKING-derivable for justify/hyphens; ADVISORY for alignment choice] {#type26-020}
+
+### Bilingual mechanics
+- Size ratio **1.0× Latin : 0.85× Chinese** (perceived-height parity); **Chinese one weight
+  step thicker than Latin** (Univers Ultra Light ↔ MYingHei Thin · Thin ↔ Light · Light ↔
+  Regular · Regular ↔ Medium). [ADVISORY-derivable — becomes contract-relevant for
+  multilingual briefs] {#type26-021}
+
 ## Usage contexts ([TASTE], register/contract framing)
 
 Marketing/social: clean, scannable, mobile-legible. Digital: hierarchy reduces cognitive

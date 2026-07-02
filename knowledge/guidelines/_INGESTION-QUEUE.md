@@ -43,8 +43,12 @@ Status: ☐ queued · ◐ partial · ✅ ingested · ✖ skipped (reason)
    store says Univers → type26-001 [REVIEW], Dave's call; **no uppercase OR italics, sentence
    case** — house rule + G5 all-caps check now brand-source-backed (informs the all-caps
    desk ruling); red type never except toolkit use-cases; ≤2 fonts + bold option. Subpages
-   queued: `typography/typefaces.html`, `typography/creative-headlines.html`, the
-   typography SPECIFICATION page (min sizes/leading/kerning — component-relevant numbers)
+   queued: `typography/typefaces.html`, `typography/creative-headlines.html`.
+   ✅ `typography/specification.html` ingested same day (type26-010…021): min sizes
+   (Latin 12pt/6pt captions, Chinese 14pt), type colour = black/grey/white ONLY, kerning/
+   leading numbers, no-justify/no-hyphenate, bilingual mechanics (1:0.85, weight step-up).
+   2 NEW reconciliation items: text-on-gradient ban vs charter §4 expressive heroes
+   (type26-015!) and leading ratio vs its own examples (type26-016)
 5. ☐ `platforms-and-channels/web/web-foundations.html` — our component domain
 6. ☐ `platforms-and-channels/app/app-foundations.html` — ditto, mobile
 7. ☐ `foundations-and-identity/accessibility.html` (hub) +

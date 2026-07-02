@@ -33,5 +33,7 @@ Dave rules.*
 ## typography-standards-2026.md
 
 - **type26-001** — ⚠ Token-store delta: `tokens/typography.json` carries Univers as the primitive — the refresh names Univers Next for HSBC. Blast radius: the type primitive, every snippet's font stack, Sutherland fixtures. Parallel-validity means no forced migration yet, but new-work-targets-refresh implies the token store needs a 2026 mode or a documented stay-on-2025 decision. Dave's call.
+- **type26-015** — "Don't overlay text on gradient backgrounds" (+ digital: verify at viewpoints, no unreadable wrap). ⚠ Collides with charter §4's expressive gradient unlock for surfaces/heroes — heroes normally carry headlines. Either expressive gradient heroes are text-free zones, or the rules need reconciling. NOT self-resolvable.
+- **type26-016** — Latin headlines: −15 to −30 tracking; leading = size +3pt (50pt → 53pt). Latin body: −5 to −10 tracking; leading "1.1×" — ⚠ but the page's own example is 12pt → 16pt (1.33×), and Chinese body says 1.1× with example 14pt → 18pt (1.29×). Stated ratio and worked examples disagree — likely "1.1×" should read differently or the examples embed channel-specific values.
 
-_9 open item(s)._
+_11 open item(s)._
