@@ -1,0 +1,62 @@
+{
+ "name": "Details",
+ "category": "molecule",
+ "purpose": "Progressive disclosure \u2014 native <details>/<summary>. Link-coloured summary with arrow marker; open content carries a 10px grey left border (decorative).",
+ "props": {
+  "state": [
+   "closed",
+   "open"
+  ]
+ },
+ "variants": [
+  {
+   "name": "default",
+   "$displayName": "Details"
+  }
+ ],
+ "tokens": {
+  "summary": "link/default",
+  "summary/hover": "link/hover",
+  "text": "text/default",
+  "border": "border/default",
+  "background": "background/default",
+  "focus/background": "focus/background",
+  "focus/text": "focus/text"
+ },
+ "relationships": {
+  "usedIn": [
+   "help content",
+   "forms"
+  ],
+  "pairsWith": [
+   "Text input"
+  ]
+ },
+ "accessibility": {
+  "relatedSC": [
+   "1.4.3",
+   "2.4.7",
+   "4.1.2"
+  ],
+  "roles": [
+   "native details/summary (built-in disclosure semantics)"
+  ],
+  "focus": "summary gets yellow-fill focus (background+text swap), matching links",
+  "notes": "left border is DECORATIVE \u2014 #CECECE on white is 1.63:1 and intentionally NOT a gated pair (1.4.11 exemption); disclosure state is carried by the native marker + open attribute, not the border"
+ },
+ "antiPatterns": [
+  "re-implementing disclosure with divs+JS",
+  "relying on the grey border to signal state",
+  "hiding critical content behind details"
+ ],
+ "tokenValidation": {
+  "$status": "verified",
+  "$source": "components/*/_mixin.scss + settings, extracted 2026-07-02",
+  "deprecated": []
+ },
+ "provenance": {
+  "source": "govuk-frontend@5.x (npm, public)",
+  "path": "components/details",
+  "$finding": "F5 \u2014 no figma_node; code-source hub (package+path)"
+ }
+}

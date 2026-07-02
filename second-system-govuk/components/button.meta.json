@@ -1,0 +1,74 @@
+{
+ "name": "Button",
+ "category": "atom",
+ "purpose": "Triggers an action. GOV.UK: primary (green) and secondary (grey) levels; square corners; 2px bottom shadow; yellow focus state.",
+ "props": {
+  "variant": [
+   "primary",
+   "secondary"
+  ],
+  "state": [
+   "default",
+   "hover",
+   "focus",
+   "disabled"
+  ]
+ },
+ "variants": [
+  {
+   "name": "primary",
+   "$displayName": "Primary button"
+  },
+  {
+   "name": "secondary",
+   "$displayName": "Secondary button"
+  }
+ ],
+ "tokens": {
+  "background/default": "button/primary/background/default",
+  "background/hover": "button/primary/background/hover",
+  "shadow": "button/primary/shadow",
+  "text": "text/reverse",
+  "secondary/background": "button/secondary/background/default",
+  "secondary/text": "text/default",
+  "focus/background": "focus/background",
+  "focus/text": "focus/text"
+ },
+ "relationships": {
+  "usedIn": [
+   "forms",
+   "start pages"
+  ],
+  "pairsWith": [
+   "Text input",
+   "Error summary"
+  ]
+ },
+ "accessibility": {
+  "relatedSC": [
+   "1.4.3",
+   "2.4.7",
+   "2.5.5"
+  ],
+  "roles": [
+   "button (native element)"
+  ],
+  "focus": "yellow fill + black text + 3px transparent outline (visible in forced-colors); never outline:none without replacement",
+  "notes": "disabled via aria-disabled to stay perceivable/focusable per GOV.UK v5 guidance"
+ },
+ "antiPatterns": [
+  "green button on non-white surface without re-checking contrast",
+  "using a link styled as a button without role/semantics",
+  "rounding corners"
+ ],
+ "tokenValidation": {
+  "$status": "verified",
+  "$source": "settings/*.scss + components/*/_mixin.scss + _settings.scss, extracted 2026-07-02",
+  "deprecated": []
+ },
+ "provenance": {
+  "source": "govuk-frontend@5.x (npm, public)",
+  "path": "components/button",
+  "$finding": "F5 \u2014 no figma_node: the engine's hub identity is Figma-shaped; code-source systems need a package+path hub"
+ }
+}

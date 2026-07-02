@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<title>Button — GOV.UK reference (second-system run)</title>
+<style>
+  [data-theme="light"]{
+    --btn-bg: #0F7A52;
+    --btn-bg-hover: #0B5C3E;
+    --btn-shadow: #083D29;
+    --btn-text: #FFFFFF;
+    --btn2-bg: #F3F3F3;
+    --btn2-bg-hover: #CECECE;
+    --btn2-shadow: #858686;
+    --btn2-text: #0B0C0C;
+    --focus-bg: #FFDD00;
+    --focus-text: #0B0C0C;
+    --page: #FFFFFF;
+  }
+  body{font-family:arial,sans-serif;background:var(--page);margin:2rem;display:flex;gap:1rem;align-items:flex-start}
+  .gv-button{
+    font:inherit;font-size:19px;line-height:1;
+    padding:11px 15px 9px;border:2px solid transparent;border-radius:0;
+    background:var(--btn-bg);color:var(--btn-text);
+    box-shadow:0 2px 0 var(--btn-shadow);
+    cursor:pointer;transition:background-color .15s ease;
+  }
+  .gv-button:hover{background:var(--btn-bg-hover)}
+  .gv-button:active{top:2px;box-shadow:none;position:relative}
+  .gv-button:focus-visible{
+    background:var(--focus-bg);color:var(--focus-text);
+    border-color:var(--focus-text);box-shadow:0 2px 0 var(--focus-text);
+    outline:3px solid transparent; /* keeps a ring in forced-colors modes */
+  }
+  .gv-button--secondary{background:var(--btn2-bg);color:var(--btn2-text);box-shadow:0 2px 0 var(--btn2-shadow)}
+  .gv-button--secondary:hover{background:var(--btn2-bg-hover)}
+  .gv-button--secondary:focus-visible{background:var(--focus-bg);color:var(--focus-text)}
+  .gv-button[aria-disabled="true"]{opacity:.5;cursor:not-allowed}
+  @media (prefers-reduced-motion: reduce){
+    .gv-button{transition:none}
+  }
+</style>
+</head>
+<body>
+  <button type="button" class="gv-button">Save and continue</button>
+  <button type="button" class="gv-button gv-button--secondary">Find address</button>
+  <button type="button" class="gv-button" aria-disabled="true">Save and continue</button>
+
+<script type="application/json" id="token-manifest">
+{
+  "component": "Button",
+  "vars": {
+    "--btn-bg": "button/primary/background/default",
+    "--btn-bg-hover": "button/primary/background/hover",
+    "--btn-shadow": "button/primary/shadow",
+    "--btn-text": "text/reverse",
+    "--btn2-bg": "button/secondary/background/default",
+    "--btn2-bg-hover": "button/secondary/background/hover",
+    "--btn2-shadow": "button/secondary/shadow",
+    "--btn2-text": "text/default",
+    "--focus-bg": "focus/background",
+    "--focus-text": "focus/text",
+    "--page": "background/default"
+  },
+  "contrastPairs": [
+    { "fg": "text/reverse", "bg": "button/primary/background/default", "context": "text" },
+    { "fg": "text/reverse", "bg": "button/primary/background/hover", "context": "text" },
+    { "fg": "text/default", "bg": "button/secondary/background/default", "context": "text" },
+    { "fg": "text/default", "bg": "button/secondary/background/hover", "context": "text" },
+    { "fg": "focus/text", "bg": "focus/background", "context": "text" },
+    { "fg": "button/primary/background/default", "bg": "background/default", "context": "ui" }
+  ],
+  "requiredAria": ["aria-disabled"]
+}
+</script>
+</body>
+</html>

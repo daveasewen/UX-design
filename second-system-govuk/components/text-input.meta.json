@@ -1,0 +1,69 @@
+{
+ "name": "Text-input",
+ "category": "molecule",
+ "purpose": "Single-line form input with label, optional hint, and error message pattern. 2px black border; error state swaps border to red and prefixes a hidden 'Error:'.",
+ "props": {
+  "state": [
+   "default",
+   "focus",
+   "error"
+  ]
+ },
+ "variants": [
+  {
+   "name": "default",
+   "$displayName": "Text input"
+  },
+  {
+   "name": "error",
+   "$displayName": "Text input \u2014 error"
+  }
+ ],
+ "tokens": {
+  "border/default": "form/border/default",
+  "border/error": "form/border/error",
+  "error/text": "error/text",
+  "text": "text/default",
+  "hint": "text/secondary",
+  "background": "background/default",
+  "focus/background": "focus/background"
+ },
+ "relationships": {
+  "usedIn": [
+   "every form"
+  ],
+  "pairsWith": [
+   "Button",
+   "Error summary"
+  ]
+ },
+ "accessibility": {
+  "relatedSC": [
+   "1.4.3",
+   "2.4.7",
+   "3.3.1",
+   "3.3.2",
+   "4.1.2"
+  ],
+  "roles": [
+   "native input + label[for]"
+  ],
+  "focus": "yellow outline 3px + 2px black inset shadow (double-keyline)",
+  "notes": "hint and error linked via aria-describedby; error text carries visually-hidden 'Error:' prefix"
+ },
+ "antiPatterns": [
+  "placeholder as label",
+  "error indicated by colour alone",
+  "removing the label"
+ ],
+ "tokenValidation": {
+  "$status": "verified",
+  "$source": "settings/*.scss + components/*/_mixin.scss + _settings.scss, extracted 2026-07-02",
+  "deprecated": []
+ },
+ "provenance": {
+  "source": "govuk-frontend@5.x (npm, public)",
+  "path": "components/input",
+  "$finding": "F5 \u2014 no figma_node: the engine's hub identity is Figma-shaped; code-source systems need a package+path hub"
+ }
+}

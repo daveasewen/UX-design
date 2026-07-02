@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<title>Error summary — GOV.UK reference (second-system run)</title>
+<style>
+  [data-theme="light"]{
+    --border: #CA3535;
+    --title: #0B0C0C;
+    --link: #CA3535;
+    --page: #FFFFFF;
+    --focus-bg: #FFDD00;
+    --focus-text: #0B0C0C;
+  }
+  body{font-family:arial,sans-serif;background:var(--page);color:var(--title);margin:2rem;max-width:560px}
+  .gv-error-summary{
+    border:5px solid var(--border);
+    padding:20px;
+    display:flex;flex-direction:column;gap:15px;
+  }
+  .gv-error-summary:focus-visible{outline:3px solid var(--focus-bg)}
+  .gv-error-summary h2{font-size:24px;font-weight:700;margin:0;line-height:1.1}
+  .gv-error-summary ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+  .gv-error-summary a{
+    color:var(--link);font-weight:700;font-size:19px;
+    text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px;
+  }
+  .gv-error-summary a:hover{text-decoration-thickness:3px}
+  .gv-error-summary a:focus-visible{
+    background:var(--focus-bg);color:var(--focus-text);
+    outline:3px solid var(--focus-bg);text-decoration:none;
+    box-shadow:0 4px 0 var(--focus-text);
+  }
+</style>
+</head>
+<body>
+  <div class="gv-error-summary" role="alert" aria-labelledby="err-title" tabindex="-1">
+    <h2 id="err-title">There is a problem</h2>
+    <ul>
+      <li><a href="#ni">Enter a National Insurance number in the correct format</a></li>
+      <li><a href="#dob">Date of birth must be in the past</a></li>
+    </ul>
+  </div>
+
+<script type="application/json" id="token-manifest">
+{
+  "component": "Error-summary",
+  "vars": {
+    "--border": "form/border/error",
+    "--title": "text/default",
+    "--link": "error/text",
+    "--page": "background/default",
+    "--focus-bg": "focus/background",
+    "--focus-text": "focus/text"
+  },
+  "contrastPairs": [
+    { "fg": "text/default", "bg": "background/default", "context": "text" },
+    { "fg": "error/text", "bg": "background/default", "context": "text" },
+    { "fg": "form/border/error", "bg": "background/default", "context": "ui" },
+    { "fg": "focus/text", "bg": "focus/background", "context": "text" }
+  ],
+  "requiredAria": ["role=\"alert\"", "aria-labelledby", "tabindex=\"-1\""]
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+{
+ "name": "Error-summary",
+ "category": "molecule",
+ "purpose": "Boxed summary of form errors placed at top of page, focused on page load. 5px error border; bold title; list of error links that move focus to each field.",
+ "props": {
+  "state": [
+   "default"
+  ]
+ },
+ "variants": [
+  {
+   "name": "default",
+   "$displayName": "Error summary"
+  }
+ ],
+ "tokens": {
+  "border": "form/border/error",
+  "title": "text/default",
+  "link": "error/text",
+  "background": "background/default",
+  "focus/background": "focus/background",
+  "focus/text": "focus/text"
+ },
+ "relationships": {
+  "usedIn": [
+   "form pages"
+  ],
+  "pairsWith": [
+   "Text input",
+   "Button"
+  ]
+ },
+ "accessibility": {
+  "relatedSC": [
+   "1.4.3",
+   "2.4.3",
+   "3.3.1",
+   "4.1.3"
+  ],
+  "roles": [
+   "container with role=alert OR tabindex=-1 + focus on load; links list"
+  ],
+  "focus": "container receives focus on load (tabindex=-1); links get yellow-fill focus style",
+  "notes": "error links use aria-describedby targets' ids; title is an h2"
+ },
+ "antiPatterns": [
+  "listing errors without linking to fields",
+  "summary without moving focus to it",
+  "colour-only error indication"
+ ],
+ "tokenValidation": {
+  "$status": "verified",
+  "$source": "components/*/_mixin.scss + settings, extracted 2026-07-02",
+  "deprecated": []
+ },
+ "provenance": {
+  "source": "govuk-frontend@5.x (npm, public)",
+  "path": "components/error-summary",
+  "$finding": "F5 \u2014 no figma_node; code-source hub (package+path)"
+ }
+}

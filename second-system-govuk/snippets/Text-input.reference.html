@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<title>Text input — GOV.UK reference (second-system run)</title>
+<style>
+  [data-theme="light"]{
+    --border: #0B0C0C;
+    --border-error: #CA3535;
+    --error-text: #CA3535;
+    --text: #0B0C0C;
+    --hint: #484949;
+    --page: #FFFFFF;
+    --focus-bg: #FFDD00;
+  }
+  body{font-family:arial,sans-serif;background:var(--page);color:var(--text);margin:2rem;max-width:420px}
+  .gv-form-group{display:flex;flex-direction:column;gap:8px;margin-bottom:32px}
+  .gv-form-group--error{border-left:5px solid var(--border-error);padding-left:15px}
+  label{font-size:19px;font-weight:700}
+  .gv-hint{font-size:19px;color:var(--hint)}
+  .gv-error-message{font-size:19px;font-weight:700;color:var(--error-text)}
+  .gv-visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .gv-input{
+    font:inherit;font-size:19px;height:40px;padding:5px;
+    border:2px solid var(--border);border-radius:0;background:var(--page);color:var(--text);
+    width:100%;box-sizing:border-box;
+  }
+  .gv-input:focus-visible{
+    outline:3px solid var(--focus-bg);outline-offset:0;
+    box-shadow:inset 0 0 0 2px var(--border);
+  }
+  .gv-input--error{border-color:var(--border-error)}
+  .gv-input--error:focus-visible{border-color:var(--border)}
+</style>
+</head>
+<body>
+  <div class="gv-form-group">
+    <label for="ni">National Insurance number</label>
+    <div class="gv-hint" id="ni-hint">It's on your National Insurance card. For example, 'QQ 12 34 56 C'.</div>
+    <input class="gv-input" id="ni" name="ni" type="text" spellcheck="false" aria-describedby="ni-hint">
+  </div>
+
+  <div class="gv-form-group gv-form-group--error">
+    <label for="ni2">National Insurance number</label>
+    <div class="gv-hint" id="ni2-hint">It's on your National Insurance card.</div>
+    <p class="gv-error-message" id="ni2-error"><span class="gv-visually-hidden">Error:</span> Enter a National Insurance number in the correct format</p>
+    <input class="gv-input gv-input--error" id="ni2" name="ni2" type="text" spellcheck="false" aria-describedby="ni2-hint ni2-error">
+  </div>
+
+<script type="application/json" id="token-manifest">
+{
+  "component": "Text-input",
+  "vars": {
+    "--border": "form/border/default",
+    "--border-error": "form/border/error",
+    "--error-text": "error/text",
+    "--text": "text/default",
+    "--hint": "text/secondary",
+    "--page": "background/default",
+    "--focus-bg": "focus/background"
+  },
+  "contrastPairs": [
+    { "fg": "text/default", "bg": "background/default", "context": "text" },
+    { "fg": "text/secondary", "bg": "background/default", "context": "text" },
+    { "fg": "error/text", "bg": "background/default", "context": "text" },
+    { "fg": "form/border/default", "bg": "background/default", "context": "ui" },
+    { "fg": "form/border/error", "bg": "background/default", "context": "ui" }
+  ],
+  "$finding": "focus/background (yellow #FFDD00) on white = 1.35:1 — fails 1.4.11 alone, as GOV.UK's own double-keyline design anticipates. The gated focus indicator is the black inset shadow (form/border/default, 19.59:1); yellow is treated as decoration, not the indicator. Logged as F7.",
+  "requiredAria": ["aria-describedby"]
+}
+</script>
+</body>
+</html>
