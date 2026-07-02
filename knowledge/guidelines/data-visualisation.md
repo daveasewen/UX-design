@@ -10,53 +10,53 @@ checkable with tolerances/LLM judge · [TASTE] human. Per ADR-0005 §5 everythin
 Data set (a structured collection) · data variable (the changing value) · data chart (the diagram).
 
 ## Accuracy — "accuracy is key" (do/don't)
-- Display the complete scale range; **don't truncate or alter scales** to over/understate trends. [ADVISORY-derivable — axis-min ≠ 0 detection on bar charts]
-- Display full charts with reasonable scales. [TASTE]
-- Show the full data set; **don't omit data to distort interpretation**. [TASTE — but the SME brief's figure-fidelity contract rule is the per-run version of this]
+- Display the complete scale range; **don't truncate or alter scales** to over/understate trends. [ADVISORY-derivable — axis-min ≠ 0 detection on bar charts] {#dv-001}
+- Display full charts with reasonable scales. [TASTE] {#dv-002}
+- Show the full data set; **don't omit data to distort interpretation**. [TASTE — but the SME brief's figure-fidelity contract rule is the per-run version of this] {#dv-003}
 
 ## Chart types — four categories
 - **Relationship** (multiple data sets): grouped bar, …
 - **Distribution** (over time/category): bar, histogram, box plot
 - **Composition** (part-to-whole): pie, doughnut
 - **Comparison** (change over time): line, spark, bullet, candlestick
-Choose by the data's needs; research beyond the common types where warranted. [TASTE]
+Choose by the data's needs; research beyond the common types where warranted. [TASTE] {#dv-015}
 
 ## Layout
 - **Colour separation: don't rely on colour to separate values — minimum 2px separation
-  between colour blocks.** [BLOCKING-derivable — gap/stroke check on chart markup]
-- **Tabular alternative** where possible + a link to the table view (digital). [ADVISORY-derivable — presence check]
+  between colour blocks.** [BLOCKING-derivable — gap/stroke check on chart markup] {#dv-004}
+- **Tabular alternative** where possible + a link to the table view (digital). [ADVISORY-derivable — presence check] {#dv-005}
 - Labelling: title must reflect the main insight; key; alphanumeric labels + key when category
   labels are long; tooltips repeat the data point's values on both axes; **direct labelling
-  adjacent to segments in circular charts**; label current/past/projected states. [ADVISORY/TASTE]
+  adjacent to segments in circular charts**; label current/past/projected states. [ADVISORY/TASTE] {#dv-006}
 - Content ordering (digital): all data visible at smallest viewport, else explicit navigation
   instructions; adhere to the HSBC responsive grid; on resize, chart elements respond dynamically;
-  titles must scale with text-resize (chart info may rely on device zoom). [ADVISORY-derivable]
+  titles must scale with text-resize (chart info may rely on device zoom). [ADVISORY-derivable] {#dv-007}
 - Scrolling: horizontal scroll only as a last resort; the page can't also scroll vertically
-  while the chart scrolls horizontally. [ADVISORY-derivable]
+  while the chart scrolls horizontally. [ADVISORY-derivable] {#dv-008}
 
 ## Content display
-- **2-dimensional, flat colour fills only. No 3D styles, no gradient fills.** [BLOCKING-derivable]
+- **2-dimensional, flat colour fills only. No 3D styles, no gradient fills.** [BLOCKING-derivable] {#dv-009}
   ⚠ **Interaction with charter §4 (ratified 2026-07-02):** the expressive register's gradient
   unlock applies to surfaces/heroes — **data-chart fills stay flat in ALL registers.** The brand
   rule outranks the register licence inside charts.
-- Uncluttered overlays; nothing that obscures data. [TASTE]
+- Uncluttered overlays; nothing that obscures data. [TASTE] {#dv-010}
 
 ## Colour treatment
-- Don't rely on colour alone to carry the narrative. [ADVISORY]
+- Don't rely on colour alone to carry the narrative. [ADVISORY] {#dv-011}
 - **Chart building blocks** (titles, axis labels, axis/grid lines): black-or-grey on light,
   white-or-grey on dark, **≥3:1 (WCAG 2.1 AA)**. [BLOCKING-derivable — same class as the
-  indicator-contrast gate; greys retrieved from the digital toolkits]
+  indicator-contrast gate; greys retrieved from the digital toolkits] {#dv-016}
 - **Only palette colours** in charts (print/digital palette, or the programme toolkit). Now:
   the unified supporting palette. [BLOCKING-derivable — the compose gate's 0-rogue-hex, applied
-  to chart fills]
-- Use colour to focus attention; **never as the chart's background**. [ADVISORY-derivable]
+  to chart fills] {#dv-017}
+- Use colour to focus attention; **never as the chart's background**. [ADVISORY-derivable] {#dv-012}
 - Segmented data: **different colour per data set variable** (bar), different colours within a
   single-variable circular chart, different colours per line. [ADVISORY-derivable — distinct-fill
-  count check]
-- Combination charts (e.g. positive/negative): colour differentiates the data sets. [ADVISORY]
+  count check] {#dv-018}
+- Combination charts (e.g. positive/negative): colour differentiates the data sets. [ADVISORY] {#dv-013}
 - **Categorisation consistency:** same data = same colour across every chart in a user journey;
   never reuse one colour for different data in a journey; consistent within a single view.
-  [ADVISORY-derivable — cross-chart fill map; needs journey scope]
+  [ADVISORY-derivable — cross-chart fill map; needs journey scope] {#dv-014}
 
 ## Companions (ingested 2026-07-02, same session)
 `data-visualisation-bar-charts.md` · `data-visualisation-pie-charts.md` ·

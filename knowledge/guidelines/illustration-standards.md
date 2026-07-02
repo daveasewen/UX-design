@@ -9,18 +9,18 @@ one but its palette rules are already partially superseded; tensions marked inli
 
 ## Key takeaways (source's own list)
 
-- Never use illustration as the principal creative medium — **photography first**. [TASTE]
+- Never use illustration as the principal creative medium — **photography first**. [TASTE] {#ill-001}
 - **Never use data visualisation or RAG palettes for illustrations.** ⚠ **SUPERSEDED 2026:** the
   unified supporting palette explicitly grants "the full supporting palette" to illustration
   (see `colour-standards-2026.md`). Under the refresh this rule inverts from "separate palettes"
   to "one palette, shared". Old rule kept for pre-refresh work only. [REVIEW — enforcement must
-  key off which standard a brief targets]
+  key off which standard a brief targets] {#ill-007}
 - Limit the number of colours within an illustration; use HSBC Red tactically to draw focus.
-  [ADVISORY-derivable — distinct-fill count]
-- Build illustrations from **geometric shapes** — squares, circles, triangles. [TASTE]
+  [ADVISORY-derivable — distinct-fill count] {#ill-002}
+- Build illustrations from **geometric shapes** — squares, circles, triangles. [TASTE] {#ill-003}
 - **Stick to a single level of illustration through a customer experience.**
   [ADVISORY-derivable — per-journey consistency check; same class as the data-vis
-  categorisation-consistency rule]
+  categorisation-consistency rule] {#ill-008}
 
 ## Style system — one style, three levels
 
@@ -42,14 +42,14 @@ understandable at a glance).
 
 - Don't use object illustrations as icons or pictograms — those have their own visual style.
   [ADVISORY — aligns with our icon-source rule: icons come from the icon library, never from
-  illustration assets]
-- Don't mix mediums — no illustration composited with photography. [ADVISORY-derivable]
-- Don't use 3D rendered objects. [ADVISORY-derivable — consistent with the flatness charter §4]
+  illustration assets] {#ill-009}
+- Don't mix mediums — no illustration composited with photography. [ADVISORY-derivable] {#ill-004}
+- Don't use 3D rendered objects. [ADVISORY-derivable — consistent with the flatness charter §4] {#ill-005}
 - **Don't use typography within illustrations.** [BLOCKING-derivable — text-node-in-illustration
-  check on generated SVG]
+  check on generated SVG] {#ill-010}
 - Don't use caricatures; don't make illustrations cartoonish; no keyline styles; no over-complex
   characters or fine detail; abstract only if understandable at a glance; present wide cultural
-  diversity, tailored per market. [TASTE]
+  diversity, tailored per market. [TASTE] {#ill-006}
 
 ## Brand Effect Model (recorded, out of engine scope)
 

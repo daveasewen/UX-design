@@ -23,6 +23,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 STEPS = [
     ("compliance knowledge graph", "compliance/_build_compliance_kg.py"),
     ("token blast-radius + graph report", "tokens/_build_blast_radius.py"),
+    ("guideline rules index (gate)", "guidelines/gen_rules_index.py"),
     ("cross-reference index", "_build_xref_index.py"),
     ("sutherland acceptance fixtures", "_build_sutherland_fixtures.py"),
     ("states-completeness probe (advisory)", "_build_states_probe.py"),
@@ -67,6 +68,9 @@ for i, (label, rel) in enumerate(STEPS, 1):
             rc = rc or r.returncode
         elif "surface" in label:
             print(f"\n❌ dark-surface gate failed (exit {r.returncode}) — see knowledge/_DARK-SURFACE-AUDIT.md")
+            rc = rc or r.returncode
+        elif "rules index" in label:
+            print(f"\n❌ rules-index gate failed (exit {r.returncode}) — duplicate/missing/malformed rule IDs in guidelines/")
             rc = rc or r.returncode
         else:
             print(f"\n❌ step '{label}' failed (exit {r.returncode}) — aborting")

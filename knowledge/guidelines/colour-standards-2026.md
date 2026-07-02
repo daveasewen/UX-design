@@ -27,54 +27,54 @@ palette. Values: brand core below; supporting values already penned with contras
 - **White** #FFFFFF · **Black** #000000.
 - **Grey palette** — named as part of the brand palette but "specifications … will be available
   soon". ⚠ Source gap: no values published as of capture. Our token store's grey ramp remains the
-  operative source. [REVIEW — recheck the page when specs land]
+  operative source. [REVIEW — recheck the page when specs land] {#col26-001}
 - Four reds reduced to two — simplification is deliberate; recognition over variety.
 
 ## Brand palette — rules
 
-- Feature the core colour palette in all communications. [ADVISORY-derivable — presence check]
+- Feature the core colour palette in all communications. [ADVISORY-derivable — presence check] {#col26-002}
 - **Don't introduce colours outside the palettes.** [BLOCKING-derivable — this IS the compose
-  gate's 0-rogue-hex rule; source now cites it at brand level, not just data-vis]
+  gate's 0-rogue-hex rule; source now cites it at brand level, not just data-vis] {#col26-015}
 - Use red **tactically** to highlight what matters most; don't overuse ("if everything competes
   for attention, nothing stands out"). To draw attention to a CTA, consider an image with less
-  red rather than more red. [TASTE]
+  red rather than more red. [TASTE] {#col26-003}
 - **Don't use red typography — red text is reserved for call to actions.** [BLOCKING-derivable —
-  text-colour check: red foreground legal only on CTA elements]
+  text-colour check: red foreground legal only on CTA elements] {#col26-016}
 - **Don't use red backgrounds for text** — prolonged exposure causes visual fatigue and reduces
-  legibility. [BLOCKING-derivable — background-behind-text check]
+  legibility. [BLOCKING-derivable — background-behind-text check] {#col26-004}
 - Don't apply large amounts of HSBC Red where prolonged exposure may cause visual fatigue.
-  [ADVISORY-derivable — red-area-ratio threshold, needs tolerance]
+  [ADVISORY-derivable — red-area-ratio threshold, needs tolerance] {#col26-005}
 - Colour ratios across a composition vary by format/messaging/orientation; what matters is purpose
-  and hierarchy. [TASTE]
+  and hierarchy. [TASTE] {#col26-006}
 - **"Do ensure text and icons meet the 4.5:1 minimum contrast ratio."** ⚠ Source-internal
   discrepancy: this is stricter than WCAG 1.4.11 (3:1 for graphics) and stricter than the
   supporting-palette page's own 3:1 for chart/RAG graphics. Not resolved here — needs a ruling
-  (Dave / Create Direct query) before any gate change. [REVIEW]
+  (Dave / Create Direct query) before any gate change. [REVIEW] {#col26-007}
 
 ## Supporting palette — rules
 
 - Scope: **illustrations, data visualisations, status-driven interfaces (RAG, risk, gain/loss)
   only.** "Don't use the supporting palette outside of illustration, data visualisation or RAG
-  applications." [BLOCKING-derivable — usage-scope check on fill contexts]
-- **Don't use the supporting palette as text.** [BLOCKING-derivable — text-colour whitelist]
+  applications." [BLOCKING-derivable — usage-scope check on fill contexts] {#col26-008}
+- **Don't use the supporting palette as text.** [BLOCKING-derivable — text-colour whitelist] {#col26-009}
 - Don't use the supporting palette to create sections or segmentations within content.
-  [ADVISORY-derivable]
+  [ADVISORY-derivable] {#col26-010}
 - **Dark colours on light backgrounds; light colours on dark backgrounds** — never light-on-light
   or dark-on-dark. [BLOCKING-derivable — mode-aware palette-half selection; matches the 33/50
-  light / 39/50 dark indicator-legality receipts in the proposals file]
+  light / 39/50 dark indicator-legality receipts in the proposals file] {#col26-017}
 - **Data visualisation: every colour used must meet ≥3:1 against its background.**
-  [BLOCKING-derivable — indicator-contrast gate class]
+  [BLOCKING-derivable — indicator-contrast gate class] {#col26-011}
 - **RAG: text 4.5:1 · graphic elements (icons, chart indicators) 3:1** · surface/background use
   varies by scenario — refer to the specific standard. [BLOCKING-derivable for the two ratios;
-  ADVISORY for surface scenarios]
+  ADVISORY for surface scenarios] {#col26-018}
 - **Don't combine HSBC Red with the supporting palette in data visualisations.**
-  [BLOCKING-derivable — chart fill-set may contain brand red or supporting colours, not both]
+  [BLOCKING-derivable — chart fill-set may contain brand red or supporting colours, not both] {#col26-012}
 - **Distinguish HSBC with HSBC Red; use brand-palette neutrals for competitor data.**
-  [ADVISORY-derivable — needs semantic knowledge of which series is "us"; contract-level rule]
+  [ADVISORY-derivable — needs semantic knowledge of which series is "us"; contract-level rule] {#col26-013}
 - Complementary combinations: the palette is built around complementary pairs; no rainbow-like
   treatments when two complementary hues achieve the same effect. [ADVISORY-derivable — already
-  ingested in `data-visualisation.md`; V7's "B + usage rule" recommendation implements it]
-- Pair supporting colours with brand greys for balance. [TASTE]
+  ingested in `data-visualisation.md`; V7's "B + usage rule" recommendation implements it] {#col26-019}
+- Pair supporting colours with brand greys for balance. [TASTE] {#col26-014}
 - Never rely on colour alone to convey meaning. [existing 1.4.1 rule —
   `digital-accessibility-standards.md`; gated]
 
