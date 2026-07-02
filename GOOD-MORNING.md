@@ -1,81 +1,67 @@
 # Good morning, Dave ☕
 
-*Session briefing — written end of 2026-07-02, evening session ("the window day" — north-star mock + Fable-window sprint). Previous briefing (critical regroup, same date) superseded; its open items carried below.*
+*Session briefing — written end of 2026-07-02, day session ("Ingestion day — commit the
+window work, then create.hsbc guidelines"). Supersedes the evening-of-01 briefing; its desk
+items carried below where still open.*
 
 ## The session in one line
 
-The north-star mock got built and immediately started paying: two of its nine gaps closed
-same-day, GOV.UK proved the engine generalises, you ratified the four curbs, the advisory
-tier went live and caught real defects, the guidance-ingestion workstream opened (supporting
-palette + four data-vis guideline pages, enforcement-tagged) — and when I overstepped into
-the token store, the process caught it and we invented the holding pen.
+The evening's uncommitted work is safely in history (13 commits today), the guidance
+ingestion workstream became a machine — staged site map, KG-addressable rule IDs, a
+generated reconciliation register, 144 rules across 11 engine-era files — and the day's
+captures resolved one standing contradiction, source-backed two house rules, and surfaced
+the Univers Next and text-on-gradient questions.
 
-## What changed in the repo
+## What changed
 
-1. **North-star mock (the "define just enough target" artifact):**
-   `_VISION-northstar-front-end_2026-07-02.html` — six regions, every one receipted
-   built/named/gap; three switchable layouts (your pick **frame + stages** is default);
-   blocked ≠ discarded (repair + harvest exits on the killed variant); gap list G1–G9 at
-   the bottom. G-statuses updated live as the day closed them.
-2. **GOV.UK second-system run — decision #4 CLOSED, same day, under timebox:**
-   `second-system-govuk/` — 5 gated components from public code source; snippet gate 5/5
-   (one patch: themes declared per system), a11y gate 5/5 (zero modifications); 9 findings
-   (F1–F9) in `_FINDINGS.md`. Verdict: **the engine generalises; HSBC coupling is shallow
-   and enumerable.** The gate bit GOV.UK's known yellow-focus weakness (F7) and my own
-   recall drift (F8).
-3. **Charter §4: RATIFIED (you):** flatness fixed sober/balanced, expressive-only unlock
-   via derived ramp (+ data-chart carve-out — see 7); inverse/surface promoted as a role;
-   red may lead in balanced+expressive; radius square in ALL registers (rounded system =
-   future variant, not a register privilege). Parked: register reach over spacing/layout.
-4. **G2 partially closed:** `knowledge/_RUNBOOK-criteria-contract.md` +
-   `runs/contract-001-sme-payments/contract.json` (hand-compiled, `agreedBy: null` —
-   honours its own rule). The compiler is the remaining half.
-5. **G5 live:** `_validate_advisory.py` — 3 prose rules executable at the advisory tier
-   (all-caps house rule, placeholder-as-only-name, unmasked digit runs); bite-tested 6/6
-   (`_tests/test_advisory.py`, in CI); build is now **16 steps** (advisory at #6, non-gating).
-   First run: 19 signals, incl. **a real unmasked sort code in `Table.reference.html`**.
-6. **Token governance — the day's most important lesson:** I minted 10 derived tokens into
-   the live store (review-tagged); you caught it. Now: `tokens/_proposals/` is the holding
-   pen — **outside the resolving stores; a tag is not a fence, the store boundary is the
-   fence** (recorded in `_PROMOTION-QUEUE.md`). Store restored; build green without them.
-7. **Ingested (your supplies, both penned/recorded with provenance):**
-   - **Supporting palette** — 50 values, 10 families, from your create.hsbc session →
-     `tokens/_proposals/supporting-palette.proposals.json` (contrast receipts per value;
-     supersedes my derived data series, which stay as format spec).
-   - **Data-vis guidance, 4 pages** → `guidelines/data-visualisation.md` + the bar / pie /
-     line companions — first guidelines of the engine era, every rule tagged with its
-     enforcement destiny (blocking-derivable / advisory-derivable / taste). Gate-candidate
-     hard rules captured: bar zero-baseline (mandatory) vs line zero-baseline (optional!),
-     pie 6-slice cap, slices sum-to-total, straight lines only, no negative values on
-     horizontal bars, spark aspect ratios. Charter carve-out recorded: **chart fills stay
-     flat in ALL registers.** Your call: ingestion is a standing workstream — the site is
-     rich with this (queued targets in `_NEXT-SESSION.md` §2a).
-8. **Robustness papercut logged:** sandbox screenshot compositor rendered a correct white
-   DOM as a dark PNG — trust-chain rule added to `_ROBUSTNESS-PORTABILITY.md` (G8 input).
+1. **Everything committed.** The whole evening session (north-star mock, GOV.UK run, G5
+   advisory tier, G2 contract, proposals) + today's work. Supporting palette sits in its
+   own separable commit pending your ADR-0005 ruling. NOT pushed — your call.
+2. **Ingestion is now a workstream with plumbing:** `guidelines/_INGESTION-QUEUE.md`
+   (3-tier site map, per-page status) · rule IDs `{#prefix-nnn}` on every tagged rule ·
+   `gen_rules_index.py` gates the build (step 3/17, bite-tested, already caught one real
+   defect) · `_RECONCILIATION.md` GENERATED from [REVIEW] rules so it can't drift.
+3. **Ingested today:** colour standards 2026 (+brand/supporting palettes) · illustration
+   standards (v2.1) · icons (legacy upgraded) + pictograms (new class, named library gap) ·
+   brand motion · typography 2026 + full specification · generative-AI governance.
+4. **Resolved:** col26-007 — "4.5:1 vs 3:1" is asset-class differentiation (icons 4.5 ·
+   pictograms 3 · chart indicators 3), not a contradiction. #4587A7 receipted as legacy
+   illustration Blue 5 (dark-token leak now source-backed). Sort code masked in Table
+   (your approve), advisory signal cleared.
+5. **Your context recorded** (memory + register header): the 2026 refresh is IN
+   DEVELOPMENT — your approvals embed unpublished refresh knowledge; deltas ≠ defects;
+   component finessing pass coming (canon possibly "too expressive").
 
 ## On your desk (fastest first)
 
-- **V7 — charting series pick (~20s):** open `_fitness-test/v7-series-assignment-AB.html`.
-  Standing recommendation: **B + usage rule** (≤2 data sets → series-1+3 complementary pair;
-  ordered → family ramp). Queue entry has the full receipt.
-- **Table sort-code fix (~1 min):** `Table.reference.html` shows `40-12-08` unmasked —
-  charter §2 violation, propagates to the gallery. One-line fix; canon, so your approve.
-- **All-caps scope ruling:** house rule vs 17 uppercase signals across the HSBC canon —
-  canon-wide (migration) or brief-scoped (check reads the contract)? Advisory, no urgency.
-- **V6 — inverse/surface + expressive ramp proposals** (holding pen, swatches at
-  `_fitness-test/v6-token-proposals.html`).
-- **Colleague chase** — calibration materials (still the #1 unlock; jumps every queue).
-- **Token provenance (ADR-0005 open item)** — now also carries the supporting palette
-  (login-walled source) and the two-machine question.
+- **Push?** 13 commits local-only; drop/keep the palette commit per ADR-0005 first.
+- **All-caps ruling** — now easier: the 2026 standard bans uppercase outside acronyms
+  brand-wide (dyslexia rationale, type26-019). Source favours canon-wide.
+- **Univers Next for HSBC** (type26-001) — refresh renames the core typeface; token store
+  says Univers. 2026 mode in the store, or documented stay-on-2025?
+- **Text-on-gradient vs charter §4** (type26-015) — spec bans text over gradients; the
+  expressive gradient unlock targets heroes, which carry headlines. Needs your read.
+- **Icon contrast gate delta** (icon-011) — brand wants 4.5:1, gates pass 3:1. Advisory
+  until you promote.
+- **Motion spring tension** (mot-007) — "not playful or bouncy" vs promoted Button spring;
+  connects to your "too expressive" instinct; parked for the finessing pass.
+- Carried: V6 proposals · V7 series pick (deferred again) · colleague chase (calibration
+  = #1 unlock) · ADR-0005 provenance ruling.
+
+## The register
+
+`knowledge/guidelines/_RECONCILIATION.md` — 12 open items, regenerates every build.
+Reconcile when a standard settles or you rule; never hand-edit it.
+
+## Queue next (when ingestion resumes)
+
+Web foundations · app foundations · accessibility foundations trio (hub + neurodiversity +
+communication) · typefaces + creative-headlines subpages · logos/photography/hexagons 2026 ·
+tone of voice (register shaping). The gen-AI page's strategy finding (gai-008: the gates ARE
+principle 3, mechanised) is queued for `digital-experience-transformation/`.
 
 ## The window (Fable metered from the 7th)
 
-Judgment-dense work stays in the window: calibration (if materials land), G2 compiler spec,
-more guideline ingestion (targets queued in `_NEXT-SESSION.md` §2a). Plumbing (G6 diff,
-G8 render harness, G9 promote-on-win, G1 ingestion) is deliberately post-window — the gap
-entries are their briefs. The metering itself = the ADR-0005 portability test: tighten
-runbooks before the 7th, then a cold, cheaper operator runs the engine and the gates score it.
-
-## Waiting elsewhere (don't pick up unless Dave says so)
-
-Calibration project materials (colleague) · Q3 primary customer call (after calibration).
+Ingestion proved cheap-operator-friendly today (capture → distill → tag → gate is
+runbook-shaped). Judgment-dense remainder for the window: calibration (if materials land),
+G2 compiler spec, the reconciliation rulings above.
