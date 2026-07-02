@@ -110,8 +110,15 @@ Status: ☐ queued · ◐ partial · ✅ ingested · ✖ skipped (reason)
     `_sources/tone-of-voice/` for retrieval-not-recall. Raw snapshots:
     editorial-style-guide.txt, preferred-terms.txt, preferred-terms-chinese.txt,
     regional-labelling.txt.
-11. ☐ `foundations-and-identity/colour.html` — the 2025 standard (parallel-valid "until
-    further notice"; ingest for the delta map old→new)
+11. ✅ `foundations-and-identity/colour.html` + 3 subpages (brand-colours, illustration,
+    data-visualisation) → `colour-usage.md` UPGRADED to engine era (col25-001…020,
+    2026-07-02) with the 2025→2026 DELTA MAP. HEADLINE (F1): **blue/400 (#4587A7) =
+    illustration blue-5 verbatim** — the dark-RAG/focus-ring leak receipted at value
+    level; published UI blue = RAG #305A85 (= blue/600); fix = derive from blue/600
+    (col25-018 REVIEW). Token store = 2025 standard value-exact (F2, provenance
+    receipt). 3 more REVIEWs: text/secondary Grey 7 vs page's Grey-8-only
+    (col25-011) · red-in-charts vintage FLIP (col25-016) · B&W-photo ban carry
+    (col25-008, low). Raw: `_sources/colour-2025/`.
 12. ☐ `foundations-and-identity/visual-assets.html` · `Logos.html` · `photography.html` ·
     `video.html` · `mnemonic.html` · `Creative-hexagons.html` · `sound-identity.html` —
     2025 foundations, lower component relevance

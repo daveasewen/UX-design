@@ -22,6 +22,13 @@ Dave rules.*
 - **col26-001** — Grey palette — named as part of the brand palette but "specifications … will be available soon". ⚠ Source gap: no values published as of capture. Our token store's grey ramp remains the operative source.
 - **col26-007** — "Do ensure text and icons meet the 4.5:1 minimum contrast ratio." ✅ RESOLVED 2026-07-02 by the icons standard (`icons.md` icon-015): differentiated by asset class — icons 4.5:1 "in all instances" (interactive, legibility-critical) · pictograms 3:1 + descriptive alt · chart/RAG graphic indicators 3:1. No source contradiction. Remaining question is OURS: our icon checks pass at 3:1; the stricter brand 4.5:1 enters advisory pending Dave's promotion ruling.
 
+## colour-usage.md
+
+- **col25-008** — No black-and-white photography (2025 Do/Don't). The 2026 photography standard (`brand-refresh-assets.md`) is silent on this — carry or retire is a refresh reconciliation call.
+- **col25-011** — Typography in digital experiences: white or Grey 8 (#333333) ONLY — "don't use any grey for typography other than complimentary grey 8." CONTRADICTION with the shipped design system: semantic `text/secondary` (light) = #545454 (Grey 7), which canon inherits (a11y-clean at 7.5:1 on white — this is a brand-rule tension, not a contrast fail). The bank's own token export post-dates the page; likely the page simplifies.
+- **col25-016** — 2025: the Core palette should NOT be used in app or web charts and graphs (status meaning is reserved for RAG). DIRECT FLIP vs col26-013 ("distinguish HSBC with HSBC Red" in data-vis). Both standards are live; the dual-live ruling makes vintage explicit per composition, but chart generation needs to know which rule it is under.
+- **col25-018** — THE BLUE RECEIPT: `color/blue/400` (#4587A7) is `illustration/blue-5`, verbatim — the suspected illustration-palette leak is now receipted at value level. The 2025 standard publishes exactly ONE UI blue: RAG Blue #305A85 (= `color/blue/600`, sitting at /600 like its RAG siblings red/amber/green). `focus/ring` (dark) and dark `rag/information` alias blue/400 — i.e. they rest on an illustration colour that was never a published UI value and fails contrast in the dark combinations (the dark-RAG int
+
 ## copywriting.md
 
 - **copy-014** — Title case banned for headlines ("hard to read… overly formal and old fashioned. Not our tone at all") — ONE exception: meta titles (browser/SEO titles) use start case with pipe separators ('Current Accounts | Everyday Banking – HSBC UK'). Meta titles are not a canon surface today; if they ever enter the engine, the sentence-case and all-caps gates need a scoped exemption.
@@ -83,4 +90,4 @@ Dave rules.*
 - **webf-033** — font-1..4 sizes are TScale-mode-dependent — check the export carries them. `typography.json` has fixed sizes only for font-5..7 (correct — S5–S7 are invariant); font-1..4 sizes/leading must vary by scale mode. If the semantic-scale export didn't carry per-mode type values, large-type generation at scale-2/3 is running on a gap.
 - **webf-034** — Responsive spacing values (R units) are a source gap. `spacing.json` is fixed-only; the RScale VALUES per breakpoint aren't in the store or on this page (likely toolkit- internal). Generation currently has no responsive-spacing dimension.
 
-_34 open item(s)._
+_38 open item(s)._
