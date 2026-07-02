@@ -7,7 +7,8 @@ authenticated session (login-walled; ADR-0005 clearance applies — agency machi
 Engine-era format. Capture notes: dark-mode page is dated **18 April 2021** (pre-refresh);
 the other pages are undated but read as the same generation. Do/Don't figures are images —
 their captions were captured, the visuals were not. The responsive-forms link now redirects
-to a migration stub (see webf-017).*
+to a migration stub (see webf-017). Raw capture snapshots for all six pages:
+`guidelines/_sources/web-foundations/` — review capture-vs-encoding there.*
 
 ## Scope note
 
