@@ -82,9 +82,13 @@ def validate(path):
                 else:
                     errors.append(f"{name}: DRIFT {var} ({mode}) = {declared} but {token} = {canon}")
 
-    # 2. ARIA
+    # 2. ARIA — search OUTSIDE the manifest block. A bare declared string (e.g.
+    #    "aria-expanded") otherwise matches its own declaration in the manifest
+    #    JSON and the check can never fail. (Found by _tests/test_gates.py,
+    #    2026-07-02 — the self-test's first real catch.)
+    html_sans_manifest = html.replace(mm.group(0), "", 1)
     for need in manifest.get("requiredAria", []):
-        if need not in html:
+        if need not in html_sans_manifest:
             errors.append(f"{name}: required ARIA missing: {need}")
 
     # 3. contrast pairs

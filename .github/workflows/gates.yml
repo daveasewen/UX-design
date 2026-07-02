@@ -1,0 +1,32 @@
+name: gates
+
+# Verification = enforcement, applied to the repo itself (review 2026-07-02,
+# decision 5). Two jobs' worth of checks in one:
+#   1. the knowledge build — every derived view + every blocking gate
+#   2. the gate self-tests — every gate must BITE a deliberately-broken input
+#
+# Zero pip installs: the validators and tests are stdlib-only by design.
+# The render-dependent checks (_validate_state_contrast.py, _validate_screen.py
+# --render) are NOT run here — they need a browser engine; run them locally via
+# the render path. Known gap, documented in knowledge/_tests/test_gates.py.
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Knowledge build — all derived views + blocking gates
+        run: python3 knowledge/_build_all.py
+
+      - name: Gate self-tests — every gate bites its failure class
+        run: python3 knowledge/_tests/test_gates.py
