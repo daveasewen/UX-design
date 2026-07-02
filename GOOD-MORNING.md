@@ -1,68 +1,91 @@
 # Good morning, Dave ☕
 
-*Session briefing — written end of 2026-07-02, evening session ("Rulings day — desk
-decisions before the meter"). Supersedes the day-session briefing; carried items below.*
+*Session briefing — written end of 2026-07-02, late session ("Desk pickup — push, V7
+and the carried five" → became the big ingestion sprint). Supersedes the rulings-day
+briefing; carried items below.*
 
 ## The session in one line
 
-The whole desk got cleared in one sitting — five carried rulings closed (one dissolved on
-receipts), the rag roundel policy ruled + enacted + visually passed, the dual-live palette
-policy enacted, and Input-fields took three review fixes — 8 commits, every gate green,
-and the only thing left undone is the push itself.
+The desk got cleared in the first hour (ADR-0005 closed, icon 4.5 promoted to blocking,
+sizes 12–48 ruled, V6 shelved, V7 deferred-with-an-idea, push method settled + the lock
+mystery solved) — then five ingestion tranches landed in one sitting: web foundations,
+app foundations, the full neurodiversity standard, typography both vintages, and the
+refresh's logos/photography/hexagons. Register: 143 → 209 rules. Every gate green.
 
-## What changed
+## What changed — rulings
 
-1. **All-caps ENACTED, gate promoted.** Canon-wide sweep (14 snippets + gallery chrome,
-   caps tracking removed with it), advisory signals 18 → 0, check moved advisory →
-   blocking (snippet gate check 4, acronym exemption, bite-tested ×2 — suite now 16/16).
-2. **Univers Next DISSOLVED.** type26-001's premise was wrong — the store already carries
-   "Univers Next for HSBC" (since the Figma re-base) and all 45 snippet stacks match.
-   Resolved with receipts; only residual is a Sutherland fixture spot-check at next touch.
-3. **Text-on-gradient PARKED** to the finessing pass, docketed with mot-007 (the "too
-   expressive" family). Interim discipline: no gradient-hero generation; gradient surfaces
-   are text-free until ruled.
-4. **RAG ROUNDEL POLICY ruled + enacted + PASSED review.** Roundel ≥3:1 · internal mark
-   ≥4.5:1 · dark = white shape + black mark (supersedes the 06-24 interim). Amber roundel
-   EXEMPT in light (convention; its #333 mark carries at 7.47). Fixes landed: Notifications
-   success mark → white, inline amber mark → #333, Input-fields rag symbols de-hardcoded,
-   Confirmation dark glyph → white via driftAllow. New advisory `_ICON-CONTRAST-DELTA.md`
-   (build step 12/18) sizes everything: 0 fails on active treatments.
-5. **Dual-live palettes ENACTED.** The 50 supporting primitives moved from the holding pen
-   into colour.json (`color/supporting/*`, receipts kept) — preferred for new work; legacy
-   `data-vis/*` annotated old-projects-only. Series assignment untouched — still V7.
-6. **Input-fields review fixes (your eyes, live HTML):** tail icons now real buttons
-   ("icons in an input are usually clickable"), dark error border full red (white border
-   no longer overlays the red bar), text true-centred at rest (10/10; off-centre while
-   active is accepted — the text never moves). Component flagged **supercharge** candidate.
-7. **"Supercharge" recorded** = your codename for the brand-uplift component rework.
-   Rule applied: canon stays valid, but no over-polishing what the uplift will replace.
+1. **ADR-0005 CLOSED.** Premise was wrong — this is an agency machine with company
+   access. Real values cleared; AGENTS.md rewritten; history purge deferred (accepted
+   risk). Watch-item only: repo syncs to your personal GitHub.
+2. **Icon 4.5:1 PROMOTED to blocking** (your ruling: "icons alone should have the
+   small-text equivalent contrast at least") — declared icon/* pairs at 4.5, dead-zone
+   bite-test permanent, suite 17/17, sweep cost 0.
+3. **Icon sizes ruled:** full 12–48 permitted "for now, prune if we have to".
+4. **V6 derivations SHELVED** ("interesting test") — charter §4 roles stand, values stay
+   in the pen. **V7 DEFERRED** pending renders; your build-time-options idea parked
+   (generation-mechanism ideas, #3).
+5. **Push method RULED:** Claude commits, you push, terminal only. Root cause of the old
+   lock conflicts found and fixed — the sandbox delete-guard was leaving stale `.git`
+   locks after my commits; deletion now enabled.
+6. **Neuro rulings:** :visited links = neuro best practice adopted (implement at next
+   Links touch); small-type cluster (12pt/1.5×) = record-to-review, dormant until the
+   refresh re-cuts the type scale.
+7. **Ultra Light = part of supercharge** (type26-023 resolved) — the weight arrives with
+   the uplift. And a receipt: "supercharge" is HSBC's own banner language.
+
+## What changed — ingestion (all with raw snapshots in `_sources/`, new convention)
+
+1. **Web foundations** (6 pages → webf-001…035): elevation levels 0–3 taxonomy (level 0
+   never elevated — Headers/Modal/Tooltip contract); store matches the standard exactly
+   (breakpoints, TScales, S5–S7); responsive-forms page has MOVED to the "Common
+   Toolkit" (access decision yours, covers app too); body-leading contradiction feeds
+   type26-016.
+2. **App foundations** (3 pages → appf-001…008): dark mode + elevation are word-for-word
+   web mirrors; app-specific = single type scale + iOS Dynamic Type. Our web-first canon
+   is closer to app-ready than the channel split implies.
+3. **Neurodiversity** (16 pages, 40 guidelines → neuro-001…045): the first NUMERIC calm
+   ceiling — hero ≤30% page height, bright colour ≤20% of screen, ≤2 column layouts,
+   ≥20px section whitespace, ≤4 sentences/para, ≤240 chars/sentence, page-length caps.
+   These are the sober register's missing numbers (neuro-042 → charter). Plus an
+   empirical receipt FOR small hover motion (supports attract-on-hover).
+4. **Typography, both vintages** (7 pages): 2025 standard upgraded to engine era
+   (type25-001…022); 2026 subpages added (type26-022…029). Three 2025↔2026 deltas:
+   centre-align legitimised, subtle overlays permitted, magnetic-headline construct
+   replaces big-light/small-bold. Three cost-0 gate candidates: no-italics,
+   no-text-shadow, red-text-role (type25-020).
+5. **Logos/photography/hexagons 2026** (3 pages → logo26/photo26/hex26): **no gen-AI /
+   CGI imagery — ever** (photo26-002; pipeline-critical: the engine generates
+   experiences, never photographic assets — library retrieval only); logo ≥1× per
+   journey (free journey-gate check when Headers lands); hexagon deltas — Iconic now
+   smaller, Cropped reduced to 1-/2-edge crops (3-/4-edge retired → audit legacy assets
+   before reuse).
 
 ## On your desk (fastest first)
 
-- **Push.** 22 commits local-only — `git push origin master` (the sandbox has no GitHub
-  creds; palette provenance you already ruled keep).
-- **Carried:** V6 proposals · V7 series pick (palette primitives are now live, so this is
-  the natural next colour decision) · colleague chase (calibration = #1 unlock) ·
-  ADR-0005 wider provenance ruling · icon-016/017 size tensions.
-- **Small, whenever:** formally promote the 4.5 icon threshold to blocking (evidence: cost
-  0) — deferred to supercharge alongside mark tokenisation, but it's a 5-minute yes if you
-  want it sooner.
-
-## The register
-
-`knowledge/guidelines/_RECONCILIATION.md` — 11 open items (was 12; type26-001 dissolved).
-icon-015's tail narrowed to gate-promotion + mark-tokenisation, deferred to supercharge.
+- **Push.** 7 commits local-only — `git push origin master` (no stale locks, verified).
+- **Colleague chase.** Draft delivered mid-session, paste-ready — send it (calibration
+  = #1 unlock).
+- **5-minute yes, batched:** promote the three cost-0 typography scans (no-italics,
+  no-text-shadow, red-text-role) into the snippet gate — same playbook as all-caps.
+- **Carried:** V7 pick (needs renders → the sandbox Chromium papercut is now the
+  practical blocker) · Common Toolkit access decision (webf-017 — forms/element
+  standards live there now) · amber-roundel etc. all closed.
 
 ## Queue next (when ingestion resumes)
 
-Web foundations · app foundations · accessibility trio (hub + neurodiversity +
-communication) · typefaces + creative-headlines subpages · logos/photography/hexagons
-2026 · tone of voice (register shaping).
+**Tone of voice is the last big Tier-1 item** — register-shaping, feeds the fixed/flex
+temperature dial directly, and now has the neuro literalness tension (neuro-024) waiting
+to be reconciled into it. It deserves a FRESH session.
+Then: 2025 colour delta-map · communication scenario-4 · remaining 2025 foundations.
+
+> Next-session opener: **"Title this chat: Tone of voice — the register dial gets its
+> source."** Read GOOD-MORNING.md first; the ingestion method is proven (fetch-all via
+> authenticated Chrome + slice + `_sources/` snapshot + stable IDs + register).
 
 ## The window (Fable metered from the 7th)
 
-Rulings are cheap when the evidence is pre-computed — tonight proved the pattern (advisory
-check first, decide on numbers). Judgment-dense remainder: calibration (if materials land),
-G2 compiler spec, V7 series assignment, the finessing pass (mot-007 + type26-015 together).
-One papercut for the robustness list: sandbox Chromium wouldn't launch (missing system
-libs, no root) — the render path needs the tool to own it.
+Today proved the ingestion pattern is CHEAP now (five tranches in one session, zero gate
+breakage). The judgment-dense remainder for the free window: tone of voice (register
+shaping) · calibration when materials land · G2 compiler spec · the finessing pass
+(mot-007 + type26-015/026 gradient-overlay family, now dual-sourced with one softening
+delta). Rulings stay cheap when the evidence is pre-computed.
