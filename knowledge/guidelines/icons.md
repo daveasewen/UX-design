@@ -92,7 +92,14 @@ guidelines) + **tappable area**.
    page "graphics 3:1"): differentiated by asset class — **icons 4.5 · pictograms 3 ·
    chart/RAG indicators 3**. Gate impact: our text/icon contrast audit passes icons at 3:1;
    raising to 4.5 is a stricter-than-WCAG brand rule → advisory first, Dave rules on
-   promotion. [REVIEW] {#icon-015}
+   promotion. ◐ ADVISORY BUILT 2026-07-02 (Dave ruling: evidence before promotion) —
+   `_build_icon_contrast_delta.py` (build step 12/18) → `_ICON-CONTRAST-DELTA.md`.
+   Evidence: **0 declared icon pairs in the 3–4.5 dead zone** (all 18 pass 4.5 with
+   headroom — promotion cost for true icon/* pairs is ZERO); 17 exhaustive upper-bound
+   combos (all icon/disabled, allowlisted, or non-co-occurring); **5 rag/*-glyph combos
+   await icon-vs-indicator classification** — all in dark mode/tints, converging on the
+   known dark-rag token gaps. Remaining ruling = classify rag glyphs, then promote.
+   [REVIEW] {#icon-015}
 2. **Size floor tension.** Site: minimum 16px (thicker-weight set below that). Toolkit
    tokens: `xsmall = 12px`. Consistent only if xsmall implies the thicker-weight set —
    toolkit doesn't say. [REVIEW — check the design toolkits' icon sizing page] {#icon-016}

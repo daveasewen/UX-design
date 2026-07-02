@@ -32,6 +32,7 @@ STEPS = [
     ("dark-mode coverage audit", "_build_dark_mode_audit.py"),
     ("text/icon contrast audit", "_build_surface_contrast_audit.py"),
     ("indicator/accent contrast audit", "_build_indicator_contrast_audit.py"),
+    ("icon contrast delta — brand 4.5 vs 3 (advisory)", "_build_icon_contrast_delta.py"),
     ("dark-surface flatness gate", "_validate_dark_surfaces.py"),
     ("snippet gate", "_validate_snippets.py"),
     ("icon-source gate", "_validate_icons.py"),
