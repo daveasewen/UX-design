@@ -14,6 +14,12 @@ Two tiers, with explicit promotion:
 
 Canon stays deliberate and accessible-first; the showcases stay a safe sandbox. **Token proposals live in `tokens/_proposals/` — OUTSIDE the resolving stores — until Dave's sign-off physically moves them in. A `$confidence` tag is not a fence; the store boundary is the fence (rule learned 2026-07-02).** **A review pass is owed** to walk the queue below and decide each.
 
+> ⚠ **Standing tension (ingested 2026-07-02):** the brand motion standard says "deliberate,
+> not playful or bouncy" across ALL platforms incl. apps (`guidelines/motion-standards.md`
+> mot-003/mot-007). Our promoted Button spring + the springy Selection-controls exploration
+> sit against this. Future motion promotions must cite mot-007; Dave to rule whether brand-film
+> motion rules scope over UI micro-interactions.
+
 ## Pending promotion candidates (awaiting review)
 
 | Treatment | Lives in | Notes |

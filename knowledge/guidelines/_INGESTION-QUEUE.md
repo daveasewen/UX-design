@@ -29,8 +29,11 @@ Status: ☐ queued · ◐ partial · ✅ ingested · ✖ skipped (reason)
    (new, 14 rules). Resolved col26-007 (4.5:1 icons / 3:1 pictograms / 3:1 indicators by
    asset class); 3 new [REVIEW]s: icon 4.5:1 gate delta, 12px-xsmall vs 16px floor,
    36-vs-48 max; pictograms flagged as component-library gap
-2. ☐ `foundations-and-identity/motion.html` — motion tokens exist, promotion queue live;
-   the source standard has never been ingested
+2. ✅ `foundations-and-identity/motion.html` + `motion/motion-specifications.html` →
+   `motion-standards.md` (7 rules). Headline: "deliberate not playful/bouncy" tension with
+   our promoted spring physics → mot-007 [REVIEW], noted in `_PROMOTION-QUEUE.md`; >5s
+   play/pause rule (WCAG 2.2.2 class) is a clean gate candidate; easing values are
+   AE-toolkit-locked (not on the page)
 3. ☐ `foundations-and-identity/calls-to-action--ctas-.html` — Button/Links canon; red-CTA
    rules interlock with `colour-standards-2026.md` (`col26-*`)
 4. ☐ `brand-refresh/typography.html` — 2026 type standard (store primitive is Univers;
