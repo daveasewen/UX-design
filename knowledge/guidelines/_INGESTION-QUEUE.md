@@ -49,10 +49,31 @@ Status: ☐ queued · ◐ partial · ✅ ingested · ✖ skipped (reason)
    leading numbers, no-justify/no-hyphenate, bilingual mechanics (1:0.85, weight step-up).
    2 NEW reconciliation items: text-on-gradient ban vs charter §4 expressive heroes
    (type26-015!) and leading ratio vs its own examples (type26-016)
-5. ☐ `platforms-and-channels/web/web-foundations.html` — our component domain
-6. ☐ `platforms-and-channels/app/app-foundations.html` — ditto, mobile
-7. ☐ `foundations-and-identity/accessibility.html` (hub) +
-   `accessibility/Neurodiversity-Guidelines.html` + `accessibility/communication.html`
+   ✅ Subpages ingested 2026-07-02 eve (actual names: `typography/typefaces.html` +
+   `typography/creative-headlines.html` under brand-refresh) → type26-022…029. Three
+   2025↔2026 DELTAS: centre-align now legitimate (type26-025), subtle overlays permitted
+   (type26-026), magnetic-headline construct replaces big-light/small-bold vocabulary
+   (type26-029); Ultra Light weight question (type26-023). SAME session: the 2025
+   foundations typography family (`foundations-and-identity/typography.html` +
+   creative-headline/placement/latin-languages/app_type_scale) → `typography-usage.md`
+   UPGRADED to engine era (type25-001…022); 3 cost-0 gate candidates (no-italics,
+   no-text-shadow, red-text-role) logged as type25-020
+5. ✅ `platforms-and-channels/web/web-foundations.html` + 6 subpages → `web-foundations.md`
+   (webf-001…035, 2026-07-02 eve). Elevation levels 0–3 taxonomy; TScale/RScale receipts
+   match the store exactly; DISCOVERY: `responsive-forms` redirects to an "Elements and
+   patterns" stub — element standards now live in the **Common Toolkit** (webf-017 access
+   decision, covers app too); body-leading contradiction (webf-031) feeds type26-016
+6. ✅ `platforms-and-channels/app/app-foundations.html` + 3 subpages → `app-foundations.md`
+   (appf-001…008, 2026-07-02 eve). Dark-mode + elevation are word-for-word WEB MIRRORS;
+   app-specific substance = single type scale (=TScale:1) + iOS Dynamic Type (appf-002)
+7. ✅ accessibility hub + `Neurodiversity-Guidelines.html` + 15 subpages +
+   `communication.html` → `neurodiversity.md` (neuro-001…045, 2026-07-02 eve). First
+   NUMERIC calm-ceiling caps (hero ≤30% height, bright ≤20% screen, ≤2 column layouts,
+   ≥20px section whitespace, ≤4 sentences/para, ≤240 chars/sentence, page-length caps) →
+   fixed/flex sober-register defaults (neuro-042); :visited RULED (neuro best practice
+   adopted, implement at Links touch); small-type cluster RULED dormant-to-refresh
+   (neuro-041). DISCOVERY: `communication.html` is a hub of 7 scenario subpages, NOT
+   descended — scenario 4 (digital content) added to Tier 2
 8. ✅ `processes-and-tools/generative-ai-and-our-brand.html` → `generative-ai-brand.md`
    (8 rules + 2 strategy findings). Data-vis explicitly in gen-AI governance scope; two
    checkpoints (brand review before creation, Living Wall before publication); "avoid
@@ -69,6 +90,9 @@ Status: ☐ queued · ◐ partial · ✅ ingested · ✖ skipped (reason)
     2025 foundations, lower component relevance
 
 ## Tier 2 — processes + digital guidance (after T1, per-tranche decision)
+`accessibility/communication/…scenario-4-digital-content` (exact URL TBD — hub captured
+2026-07-02; likely WCAG/neuro overlap, low priority) · the **Common Toolkit** (webf-017 —
+access decision Dave; now the home of element/pattern standards incl. forms, web AND app) ·
 `processes-and-tools/Design-Standards.html` · `Component-Libraries.html` · `Toolkits.html` ·
 `accessibility/digital-accessibility-framework.html` · `accessibility/testing-and-auditing.html` ·
 `accessibility/creating-accessible-content.html` · `Naming.html` · `Digital_Governance.html` ·

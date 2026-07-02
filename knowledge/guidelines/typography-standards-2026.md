@@ -127,10 +127,73 @@ Marketing/social: clean, scannable, mobile-legible. Digital: hierarchy reduces c
 load, journeys feel calmer. Documents/presentations: size/weight/spacing differences turn
 dense content into a navigable path.
 
+## Typefaces (`typography/typefaces.html`, ingested 2026-07-02)
+
+*Raw snapshot: `_sources/typography-2026-subpages/`.*
+
+- **The multilingual font system:** Univers Next for HSBC (Latin — Frutiger heritage,
+  neo-grotesque); **MYingHei** (Traditional + Simplified Chinese, visually aligned to
+  Univers in tone/stroke/proportion); **Univers Arabic for HSBC** (harmonised proportion/
+  weight); Cyrillic/Japanese/Armenian = "a variety of other fonts that are visually
+  similar to Univers". [IN FORCE — store receipt; further nail in dissolved type26-001.
+  Vintage delta noted: 2025 named Tazuane Gothic for Japanese; 2026 names no specific
+  Japanese cut — softened, not contradictory] {#type26-022}
+
+## Creative headlines (`typography/creative-headlines.html`, ingested 2026-07-02)
+
+- **Elegant weights: the LIGHTEST cuts (Ultra Light, Thin, Light) at large sizes** for
+  headlines; heavier weights only for a clear hierarchy shift or a single point of
+  emphasis; concise headlines, comfortable letter spacing, clean line breaks.
+  ⚠ "Ultra Light" is not in the licensed five (Thin/Light/Regular/Medium/Bold,
+  type25-004) and has no token-store weight (store: 100/300/400/500/700). [REVIEW —
+  new weight or loose language? Check the font package / next export; don't add a
+  weight token unilaterally] {#type26-023}
+- **Balanced dual language** — Latin + Chinese + Arabic get comparable prominence,
+  "unified, rather than 'translated' or secondary"; balance layout/hierarchy/spacing/
+  line length. [TASTE — bilingual mechanics numbers live in the Specification section;
+  no engine action until a bilingual target exists] {#type26-024}
+- **Give imagery room to breathe:** type frames the focal point, sits in clean negative
+  space or along natural composition lines; grids + rule of thirds; clear visual path —
+  headline first, then the image's key detail. **Centre alignment is now legitimate** in
+  named cases: ambient photography without a focal point (Iconic Hexagon central, with
+  or without text), magnetic headlines centred. ⚠ DELTA vs 2025's "never centre-align
+  creative headlines with hexagons" (type25-017). [REVIEW — 2025↔2026 delta; deltas ≠
+  defects; the refresh reads as the forward direction, 2025 rule holds for 2025-standard
+  work] {#type26-025}
+- **Over-photography watch-outs:** legibility first — avoid busy areas, high-contrast
+  edges, faces; safe placement, sufficient contrast, "(where needed) a subtle gradient/
+  overlay, rather than heavy effects"; respect the subject — never cover focal points/
+  faces/brand cues. ⚠ DELTA vs 2025's flat "no treatments — adjust the asset" (type25-013):
+  the refresh PERMITS subtle overlays as a contrast aid. Interim reading: overlay-as-
+  contrast-aid OK (it's also the dark-mode imagery mechanism, webf-008), decorative
+  effects still banned. [REVIEW — fold into the finessing pass with the gradient family;
+  affects hero generation once unparked] {#type26-026}
+- **Open Hexagons as framing/flow devices:** anchor, emphasise, organise — never force
+  type to follow hexagon edges (no squeezing/warping), mind angle "pinch points",
+  breathing room for both; short simple text INSIDE is fine, long-form never; don't
+  overlap the Cropped Hexagon edge; stay in safe areas. [composition vocabulary —
+  fenced] {#type26-027}
+- **Cropped Hexagon watch-outs:** no tangents (letterforms "kissing" the crop edge);
+  protect readability near high-contrast crop intersections; alignment intentional —
+  to the hexagon's dominant angles or a clean grid. [composition vocabulary — fenced]
+  {#type26-028}
+- **Magnetic headline (NEW construct):** an Iconic Hexagon sits at the CENTRE of the
+  headline line as visual anchor/pivot; words "magnetised" around it; vertical alignment
+  to the hexagon's 5 vertices, baselines to hexagon geometry; photography stays the hero
+  (magnetic block moves to give the subject space; stacked/side variants; centred over
+  ambient scenes); rule of thirds guides, not strict. This is the brand-campaign headline
+  construct — the 2026 replacement register for 2025's big-and-light/small-and-bold
+  pairing. ⚠ DELTA: 2025's "only Big-and-Light and Small-and-Bold" takeaway has no 2026
+  equivalent; the refresh's named types are "over photography" and "magnetic". [REVIEW —
+  2025↔2026 treatment-vocabulary delta; reconcile when the refresh settles; fenced to
+  composition strand either way] {#type26-029}
+
 ## Cross-references
 
-`typography-usage.md` (legacy pre-engine distillation — superseded in part by this file;
-upgrade pending the spec-page ingestion) · `colour-standards-2026.md` (red-text family,
-col26-004/005) · `_ADVISORY-SIGNALS.md` + `_validate_advisory.py` (all-caps rule → now has
-brand-level promotion evidence) · `tokens/typography.json` (already Univers Next — type26-001 resolved, no delta) ·
-`_BRAND-REFRESH-DIRECTION.md` (expressive headlines, fenced).
+`typography-usage.md` (2025 standard + creative-headline system — UPGRADED to engine era
+2026-07-02, type25-*; deltas: type26-025/026/029) · `colour-standards-2026.md` (red-text
+family, col26-004/005) · `_ADVISORY-SIGNALS.md` + `_validate_advisory.py` (all-caps rule →
+promoted 2026-07-02) · `tokens/typography.json` (already Univers Next — type26-001
+resolved; weight receipt 100/300/400/500/700 ↔ type26-023's Ultra Light question) ·
+`_BRAND-REFRESH-DIRECTION.md` (expressive headlines + hexagon composition, fenced) ·
+`web-foundations.md` (webf-008 overlay mechanism ↔ type26-026).
