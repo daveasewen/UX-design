@@ -4,7 +4,7 @@
 (Dave ruling 2026-07-02: advisory-first). DEAD-ZONE = passes today's 3:1 gate,
 fails the brand 4.5:1. Never blocks.*
 
-**Headline: 0 declared dead-zone · 17 exhaustive (upper bound) · 2 roundel fails (<3:1) · 6 mark fails (<4.5 vs roundel, light).**
+**Headline: 0 declared dead-zone · 17 exhaustive (upper bound) · 0 roundel fails (<3:1) · 0 mark fails (<4.5 vs roundel, light).**
 
 ## 1. Declared icon pairs (the concrete promotion cost)
 
@@ -142,28 +142,31 @@ _(78 of 162 exhaustive combos already clear 4.5:1; 6 transparent/composite surfa
 | Status-indicator.reference.html | rag/information | background/default | dark | 5.28 | pass-3(roundel) |
 | Status-indicator.reference.html | rag/neutral | background/default | light | 4.54 | pass-3(roundel) |
 | Status-indicator.reference.html | rag/neutral | background/default | dark | 21.0 | pass-3(roundel) |
-| (policy audit — exhaustive) | rag/warning | background/default | light | 1.69 | FAIL-roundel<3 |
-| (policy audit — exhaustive) | rag/warning | rag/warning-tint | light | 1.6 | FAIL-roundel<3 |
+| (policy audit — exhaustive) | rag/warning | background/default | light | 1.69 | exempt(amber convention) |
+| (policy audit — exhaustive) | rag/warning | rag/warning-tint | light | 1.6 | exempt(amber convention) |
 
 ## 4. Internal mark vs roundel fill (≥4.5:1, ruled policy; dark = white roundel + black mark)
 
-| roundel | mark treatment | mode | ratio | verdict |
+| roundel | mark treatment (● = active in canon) | mode | ratio | verdict |
 |---|---|---|---|---|
 | rag/success roundel | tint-knockout | light | 3.98 | FAIL-mark<4.5 |
-| rag/success roundel | white mark | light | 4.56 | pass-4.5 |
+| rag/success roundel | ● white mark | light | 4.56 | pass-4.5 |
 | rag/success roundel | #333 mark | light | 2.77 | FAIL-mark<4.5 |
-| rag/error roundel | tint-knockout | light | 7.13 | pass-4.5 |
+| rag/error roundel | ● tint-knockout | light | 7.13 | pass-4.5 |
 | rag/error roundel | white mark | light | 7.87 | pass-4.5 |
 | rag/error roundel | #333 mark | light | 1.61 | FAIL-mark<4.5 |
 | rag/warning roundel | tint-knockout | light | 1.6 | FAIL-mark<4.5 |
 | rag/warning roundel | white mark | light | 1.69 | FAIL-mark<4.5 |
-| rag/warning roundel | #333 mark | light | 7.47 | pass-4.5 |
-| rag/information roundel | tint-knockout | light | 6.21 | pass-4.5 |
+| rag/warning roundel | ● #333 mark | light | 7.47 | pass-4.5 |
+| rag/information roundel | ● tint-knockout | light | 6.21 | pass-4.5 |
 | rag/information roundel | white mark | light | 7.17 | pass-4.5 |
 | rag/information roundel | #333 mark | light | 1.76 | FAIL-mark<4.5 |
-| WHITE roundel (policy dark) | BLACK mark | dark | 21.0 | pass-4.5 |
+| WHITE roundel (policy dark) | ● BLACK mark | dark | 21.0 | pass-4.5 |
 
 Policy (Dave, 2026-07-02 eve): roundel = indicator (3:1); internal mark = small-text
 analogue (4.5:1 vs the fill); dark mode replaces coloured roundels with WHITE + BLACK
 mark — icon shape + label carry the meaning, so colour is not the channel. Dots and
-chart marks (no internal glyph) stay pure indicators at 3:1.
+chart marks (no internal glyph) stay pure indicators at 3:1. AMBER EXEMPTION: the
+warning roundel's light failure vs surfaces is an accepted convention (ruled) — its
+ACTIVE #333 mark passes 7.47 and the label carries meaning. Fail count tracks ACTIVE
+treatments only; inactive rows document the option space.

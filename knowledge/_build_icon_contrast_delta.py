@@ -77,11 +77,16 @@ def bucket(r):
     return "below-3(gated)"
 
 
-def bucket_roundel(r):
-    """Roundel leg of the rag policy: indicator threshold only."""
+def bucket_roundel(r, fg=""):
+    """Roundel leg of the rag policy: indicator threshold only.
+    AMBER EXEMPTION (Dave ruling 2026-07-02 eve): rag/warning's light roundel is an
+    accepted convention — internal mark contrast is the priority, icon + label are
+    sufficient for meaning. Reported, never failed."""
     if r is None:
         return "unresolved"
-    return "pass-3(roundel)" if r >= WCAG else "FAIL-roundel<3"
+    if r >= WCAG:
+        return "pass-3(roundel)"
+    return "exempt(amber convention)" if fg == "rag/warning" else "FAIL-roundel<3"
 
 
 def pair_rows(fg, bg):
@@ -128,7 +133,7 @@ for it in icon_tokens:
         exhaustive += pair_rows(it, s)
 
 # re-judge rag-on-surface rows at the roundel threshold (policy §3)
-classify = [(f, fg, bg, mode, ratio, bucket_roundel(ratio))
+classify = [(f, fg, bg, mode, ratio, bucket_roundel(ratio, fg))
             for (f, fg, bg, mode, ratio, _b) in classify]
 
 # exhaustive policy-audit rows — declared pairs missed the amber roundel entirely
@@ -140,12 +145,16 @@ for fam in ("success", "error", "warning", "information", "neutral"):
         if not f_v or not b_v or len(f_v) == 9 or len(b_v) == 9:
             continue
         r = round(contrast_ratio(f_v, b_v), 2)
-        row = ("(policy audit — exhaustive)", fg, bg, "light", r, bucket_roundel(r))
+        row = ("(policy audit — exhaustive)", fg, bg, "light", r, bucket_roundel(r, fg))
         if not any(c[1] == fg and c[2] == bg and c[3] == "light" for c in classify):
             classify.append(row)
 
 # §4 — mark vs roundel fill, per policy, for each rag family × mark treatment.
 # Dark mode is WHITE roundel + BLACK mark by policy (21:1) — light mode is the audit.
+# ACTIVE = the mark treatment each family actually uses in canon (● in the table).
+# success moved tint-knockout → white per the policy fix (Dave GO, 2026-07-02 eve).
+ACTIVE_MARK = {"success": "white mark", "error": "tint-knockout",
+               "warning": "#333 mark", "information": "tint-knockout"}
 marks = []
 for fam in ("success", "error", "warning", "information"):
     r = value(f"rag/{fam}", "light")
@@ -157,13 +166,14 @@ for fam in ("success", "error", "warning", "information"):
             continue
         ratio = round(contrast_ratio(r, mk), 2)
         verdict = "pass-4.5" if ratio >= BRAND else "FAIL-mark<4.5"
-        marks.append((f"rag/{fam} roundel", label, "light", ratio, verdict))
-marks.append(("WHITE roundel (policy dark)", "BLACK mark", "dark", 21.0, "pass-4.5"))
+        active = ACTIVE_MARK.get(fam) == label
+        marks.append((f"rag/{fam} roundel", ("● " if active else "") + label, "light", ratio, verdict, active))
+marks.append(("WHITE roundel (policy dark)", "● BLACK mark", "dark", 21.0, "pass-4.5", True))
 
 dz_decl = [r for r in declared if r[5] == "DEAD-ZONE"]
 dz_exh = [r for r in exhaustive if r[4] == "DEAD-ZONE"]
 fail_roundel = [r for r in classify if r[5] == "FAIL-roundel<3"]
-fail_marks = [m for m in marks if m[4] == "FAIL-mark<4.5"]
+fail_marks = [m for m in marks if m[4] == "FAIL-mark<4.5" and m[5]]  # ACTIVE treatments only
 
 
 def fmt(rows, with_file):
@@ -214,14 +224,17 @@ lines = [
     "",
     "## 4. Internal mark vs roundel fill (≥4.5:1, ruled policy; dark = white roundel + black mark)",
     "",
-    "| roundel | mark treatment | mode | ratio | verdict |",
+    "| roundel | mark treatment (● = active in canon) | mode | ratio | verdict |",
     "|---|---|---|---|---|",
-] + [f"| {a} | {b} | {c} | {d} | {e} |" for a, b, c, d, e in marks] + [
+] + [f"| {a} | {b} | {c} | {d} | {e} |" for a, b, c, d, e, _act in marks] + [
     "",
     "Policy (Dave, 2026-07-02 eve): roundel = indicator (3:1); internal mark = small-text",
     "analogue (4.5:1 vs the fill); dark mode replaces coloured roundels with WHITE + BLACK",
     "mark — icon shape + label carry the meaning, so colour is not the channel. Dots and",
-    "chart marks (no internal glyph) stay pure indicators at 3:1.",
+    "chart marks (no internal glyph) stay pure indicators at 3:1. AMBER EXEMPTION: the",
+    "warning roundel's light failure vs surfaces is an accepted convention (ruled) — its",
+    "ACTIVE #333 mark passes 7.47 and the label carries meaning. Fail count tracks ACTIVE",
+    "treatments only; inactive rows document the option space.",
 ]
 
 open(os.path.join(ROOT, "_ICON-CONTRAST-DELTA.md"), "w").write("\n".join(lines) + "\n")

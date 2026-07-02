@@ -125,7 +125,8 @@
 
   .count{font:400 12px/16px var(--font); color:var(--text); text-align:right; margin:8px 0 0;}
   .err-msg{display:flex; gap:8px; align-items:flex-start; margin:8px 0 0;}
-  .err-msg .ic{flex-shrink:0; padding-top:4px;}
+  .err-msg .ic{flex-shrink:0; padding-top:4px; color:var(--error); --mark:var(--page);}   /* rag roundel policy: shape = rag colour, mark knocks to page */
+  [data-theme="dark"] .err-msg .ic{color:#FFFFFF;}   /* policy dark: WHITE shape + black mark (mark already = page) */
   .err-msg p{flex:1; min-width:0; font:400 16px/24px var(--font); color:var(--text); margin:0;}
 
   /* ---------- UNDERLINE field (prior canon, kept) ---------- */
@@ -142,7 +143,8 @@
   .uctrl input:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
   :root[data-modality="pointer"] .uctrl input:focus-visible{outline:none;}
   .uhelp{font:400 12px/16px var(--font); color:var(--text); opacity:.75; margin:7px 0 0;}
-  .uic{position:absolute; right:2px; top:26px; transform:translateY(-50%); display:flex;}
+  .uic{position:absolute; right:2px; top:26px; transform:translateY(-50%); display:flex; color:var(--success); --mark:var(--page);}   /* rag roundel policy: shape = rag colour, mark knocks to page */
+  [data-theme="dark"] .uic{color:#FFFFFF;}   /* policy dark: WHITE shape + black mark */
   .ufield.is-ok .uctrl input{border-bottom:3px solid var(--success);}
   .ufield.is-error .uctrl input{border-bottom:3px solid var(--error);}
   .ufield.is-disabled .uctrl input{border-bottom:1px dashed var(--border-disabled); color:var(--text-disabled); cursor:not-allowed;}
@@ -169,8 +171,12 @@
   <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
     <symbol id="ic-calendar" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15 1V0H13.8V1H4.2V0H3V1H0V18H14.2L18 14.2V1H15ZM14.2 16.303V14.2H16.303L14.2 16.303ZM16.8 13H13V16.8H1.2V6H16.8V13ZM16.8 4.8H1.2V2.2H3V3.5H4.2V2.2H13.8V3.5H15V2.2H16.8V4.8ZM8.8 10.029V15H10V7.971L7.003 9.667L7.594 10.712L8.8 10.029Z" fill="currentColor"/></symbol>
     <symbol id="ic-help" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.029 0 0 4.03 0 9C0 13.97 4.029 18 9 18C13.971 18 18 13.97 18 9C18 4.03 13.971 0 9 0ZM9 16.8C4.699 16.8 1.2 13.301 1.2 9C1.2 4.699 4.699 1.2 9 1.2C13.301 1.2 16.8 4.699 16.8 9C16.8 13.301 13.301 16.8 9 16.8ZM8.999 12.5C8.447 12.5 7.999 12.948 7.999 13.5C7.999 14.052 8.447 14.5 8.999 14.5C9.551 14.5 9.999 14.052 9.999 13.5C9.999 12.948 9.552 12.5 8.999 12.5ZM9.604 3.539C8.75 3.363 7.875 3.569 7.207 4.113C6.54 4.656 6.157 5.46 6.157 6.319H7.357C7.357 5.823 7.578 5.358 7.964 5.044C8.356 4.726 8.851 4.607 9.36 4.714C9.996 4.847 10.514 5.391 10.62 6.037C10.709 6.575 10.542 7.101 10.162 7.48L9.013 8.629C8.75 8.894 8.4 9.324 8.4 10.011V11H9.6V10.011C9.6 9.835 9.642 9.699 9.862 9.478L11.01 8.33C11.667 7.674 11.956 6.768 11.804 5.842C11.616 4.7 10.732 3.775 9.604 3.539Z" fill="currentColor"/></symbol>
-    <symbol id="ic-error" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.30911 1.68194L0.109113 15.7999C-0.199887 16.3319 0.184113 16.9999 0.800113 16.9999H17.2001C17.8161 16.9999 18.2001 16.3319 17.8911 15.7999L9.69111 1.68194C9.38311 1.15094 8.61711 1.15094 8.30911 1.68194Z" fill="#A8000B"/><path d="M9.9001 5H8.1001V11H9.9001V5Z" fill="white"/><path d="M9 14.8259C9.69036 14.8259 10.25 14.2663 10.25 13.5759C10.25 12.8856 9.69036 12.3259 9 12.3259C8.30964 12.3259 7.75 12.8856 7.75 13.5759C7.75 14.2663 8.30964 14.8259 9 14.8259Z" fill="white"/></symbol>
-    <symbol id="ic-success" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="#00847F"/><path d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z" fill="white"/></symbol>
+    <!-- RAG ROUNDEL POLICY (Dave 2026-07-02 eve): shapes were hardcoded (#A8000B/#00847F + white)
+         and could not re-theme — now currentColor + var(--mark) (Notifications pattern). Mark =
+         var(--page): white in light (error 7.87 ✓ · success 4.56 ✓), black in dark where the
+         shape flips WHITE per policy (white shape + black mark, 21:1). -->
+    <symbol id="ic-error" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.30911 1.68194L0.109113 15.7999C-0.199887 16.3319 0.184113 16.9999 0.800113 16.9999H17.2001C17.8161 16.9999 18.2001 16.3319 17.8911 15.7999L9.69111 1.68194C9.38311 1.15094 8.61711 1.15094 8.30911 1.68194Z" fill="currentColor"/><path style="fill:var(--mark)" d="M9.9001 5H8.1001V11H9.9001V5Z"/><path style="fill:var(--mark)" d="M9 14.8259C9.69036 14.8259 10.25 14.2663 10.25 13.5759C10.25 12.8856 9.69036 12.3259 9 12.3259C8.30964 12.3259 7.75 12.8856 7.75 13.5759C7.75 14.2663 8.30964 14.8259 9 14.8259Z"/></symbol>
+    <symbol id="ic-success" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z"/></symbol>
   </svg>
 
   <div class="demo-controls">

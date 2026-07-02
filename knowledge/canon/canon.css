@@ -1129,6 +1129,8 @@
 .cn-notifications .note.tint .ic{color:var(--accent);}
 .cn-notifications .note.tint.warn{--mark:#333333;}
 /* amber needs a dark mark, not a near-white one */
+.cn-notifications .note.tint.ok{--mark:#FFFFFF;}
+/* RAG ROUNDEL POLICY (Dave 2026-07-02): mark ≥4.5 vs shape — success tint-knockout was 3.98, white mark = 4.56 ✓ (error 7.13 / info 6.21 knockouts stay) */
 /* GLOBAL: solid fill, reverse text/icon, mark punches to the fill */
 .cn-notifications .note.global{background:var(--accent); color:var(--gtext); --mark:var(--accent); padding:14px 16px;}
 .cn-notifications .note.global .ic{color:var(--gtext);}
@@ -1157,7 +1159,15 @@
 .cn-notifications .inline{display:flex; align-items:center; gap:8px; margin:7px 0; font:400 16px/1.5 var(--font); color:var(--text); --mark:var(--page);}
 .cn-notifications .inline .ic{flex:none; color:var(--accent);}
 .cn-notifications .inline .ic svg{width:16px; height:16px; display:block; fill:currentColor;}
-/* INTERIM dark (Dave 2026-06-24): white icons for contrast on the dark tints/page */
+.cn-notifications .inline.warn{--mark:#333333;}
+/* RAG ROUNDEL POLICY: amber's page-knockout mark was 1.69 — dark mark 7.47 ✓ (mirrors .note.tint.warn) */
+/* RAG ROUNDEL POLICY dark (Dave ruling 2026-07-02 eve — supersedes the 06-24 interim):
+     the roundel/shape goes WHITE with a BLACK mark. Icon shape + label carry the meaning;
+     colour is not the channel. Mark-vs-roundel and roundel-vs-page both 21:1 — dissolves
+     every dark rag icon dead-zone structurally. Tint-surface accent BORDERS keep light rag
+     values meanwhile (driftAllow) — the dark rag-SURFACE token gap is still open, see
+     dark-rag-token-gaps. GLOBAL solid banners are untouched: their icons are already
+     reverse-knockout (white/dark shape, fill-coloured mark) and pass the mark leg. */
 @container (max-width: 480px){
 .cn-notifications .note.global .actions{flex-direction:column; gap:8px; align-items:stretch;}
 .cn-notifications .note.global .actions button{width:100%;}
@@ -1309,7 +1319,9 @@
 .cn-input-fields .field.is-disabled .box .tail{color:var(--icon-disabled);}
 .cn-input-fields .count{font:400 12px/16px var(--font); color:var(--text); text-align:right; margin:8px 0 0;}
 .cn-input-fields .err-msg{display:flex; gap:8px; align-items:flex-start; margin:8px 0 0;}
-.cn-input-fields .err-msg .ic{flex-shrink:0; padding-top:4px;}
+.cn-input-fields .err-msg .ic{flex-shrink:0; padding-top:4px; color:var(--error); --mark:var(--page);}
+/* rag roundel policy: shape = rag colour, mark knocks to page */
+/* policy dark: WHITE shape + black mark (mark already = page) */
 .cn-input-fields .err-msg p{flex:1; min-width:0; font:400 16px/24px var(--font); color:var(--text); margin:0;}
 /* ---------- UNDERLINE field (prior canon, kept) ---------- */
 .cn-input-fields .uline label{display:block; font:600 13px/1.3 var(--font); color:var(--text); margin-bottom:8px;}
@@ -1325,7 +1337,9 @@
 .cn-input-fields .uctrl input:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
 :root[data-modality="pointer"] .cn-input-fields .uctrl input:focus-visible{outline:none;}
 .cn-input-fields .uhelp{font:400 12px/16px var(--font); color:var(--text); opacity:.75; margin:7px 0 0;}
-.cn-input-fields .uic{position:absolute; right:2px; top:26px; transform:translateY(-50%); display:flex;}
+.cn-input-fields .uic{position:absolute; right:2px; top:26px; transform:translateY(-50%); display:flex; color:var(--success); --mark:var(--page);}
+/* rag roundel policy: shape = rag colour, mark knocks to page */
+/* policy dark: WHITE shape + black mark */
 .cn-input-fields .ufield.is-ok .uctrl input{border-bottom:3px solid var(--success);}
 .cn-input-fields .ufield.is-error .uctrl input{border-bottom:3px solid var(--error);}
 .cn-input-fields .ufield.is-disabled .uctrl input{border-bottom:1px dashed var(--border-disabled); color:var(--text-disabled); cursor:not-allowed;}
@@ -2647,12 +2661,13 @@
    Confirmation  (from snippets/Confirmation.reference.html)
    Aria: role="group", aria-labelledby, aria-hidden="true"
    Reuses: Button (primary + ghost)
+   Drift: RAG ROUNDEL POLICY (Dave 2026-07-02 eve): dark roundels are WHITE with a BLACK mark — icon shape + label carry meaning. The glyph's tick is a page-cutout, so white shape + black page = 21:1 (rag/success #00847F with a black cutout was 2.77, failing the >=4.5 mark leg). Light keeps rag/success.
    Scope: .cn-confirmation   ============================================================ */
 .cn-confirmation{
   --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
   --ease: 140ms ease;
   --press: 90ms cubic-bezier(0,0,.58,1);
-  --success: var(--rag-success);
+  --success: #00847F;
   --text: var(--text-default);
   --muted: var(--text-secondary);
   --page: var(--background-default);
@@ -2661,13 +2676,19 @@
   --on-pri: var(--text-reverse);
   --ghost-hover: var(--tertiary-background-hover);
 }
+[data-theme="dark"] .cn-confirmation{
+  --success: #FFFFFF;
+}
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
    enhancement; headings/body excluded. Added 2026-06-30. */
 .cn-confirmation :is(button, .cn-confirmation a, .cn-confirmation label, .cn-confirmation span, .cn-confirmation small, .cn-confirmation strong, .cn-confirmation em, .cn-confirmation b, .cn-confirmation i, .cn-confirmation th, .cn-confirmation td, .cn-confirmation dt, .cn-confirmation dd, .cn-confirmation li, .cn-confirmation figcaption, .cn-confirmation legend, .cn-confirmation caption, .cn-confirmation summary, .cn-confirmation output, .cn-confirmation time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+/* --success dark = WHITE (driftAllow, not rag/success): RAG ROUNDEL POLICY (Dave 2026-07-02
+       eve) — dark roundels go WHITE with a BLACK mark. The tick is a page-cutout, so it turns
+       black automatically (was #00847F + black cutout = 2.77, failed the ≥4.5 mark leg). */
 /* ---- Confirmation / success ---- */
 .cn-confirmation .confirm{display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:12px; max-width:380px; margin:0 auto; padding:40px 24px;}
 .cn-confirmation .confirm .success{width:56px; height:56px; fill:var(--success);}
-/* success-solid glyph; tick is a cutout showing the page behind */
+/* success-solid glyph; tick is a cutout showing the page behind — light: white tick on green (4.56 ✓); dark: shape flips WHITE so the cutout reads as a BLACK tick (roundel policy) */
 .cn-confirmation .confirm__title{font:400 24px/1.2 var(--font); color:var(--text); margin:0;}
 .cn-confirmation .confirm__msg{font:400 15px/1.5 var(--font); color:var(--muted); margin:0;}
 .cn-confirmation .confirm__actions{display:flex; flex-direction:column; gap:12px; width:100%; margin-top:12px;}

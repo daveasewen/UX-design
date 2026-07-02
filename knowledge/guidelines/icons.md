@@ -105,12 +105,15 @@ guidelines) + **tappable area**.
    bg 21:1); light-mode audit — error knockout 7.13 ✓, info knockout 6.21 ✓, warning
    already dark-marked #333 = 7.47 ✓ (the "amber needs a dark mark" comment was this
    policy avant la lettre), **success tint-knockout 3.98 ✗ → mark must go white (4.56 ✓)**.
-   ⚠ OPEN: the **amber warning roundel itself fails the 3:1 roundel leg in light**
-   (1.69 on white, 1.60 on warning-tint) — needs a darker amber, an outline treatment,
-   or an explicit text-adjacent exemption; same family as the success/warning-don't-
-   darken token gap. Implementation tranche (Notifications success mark, dark
-   white-roundel structure, Input-fields hardcoded fills → tokens) pending Dave's
-   HTML review. [REVIEW — amber roundel + implementation] {#icon-015}
+   ✅ AMBER EXEMPTION RULED 2026-07-02 (eve, Dave): the warning roundel's light-mode
+   roundel-leg failure (1.69 on white, 1.60 on warning-tint) is an ACCEPTED CONVENTION —
+   yellow-on-white is always problematic, but amber-means-warning is the established
+   signal. Consistent with the policy's own logic (mirrors the dark-mode stance): the
+   INTERNAL MARK's contrast is the priority (#333 mark = 7.47 ✓) and icon + label are
+   sufficient for meaning; the roundel colour is not the channel. Inconsistent on the
+   roundel leg, exempt by ruling. Implementation tranche (Notifications success mark →
+   white, dark white-roundel structure, Input-fields hardcoded fills → pattern) ruled
+   GO same session. [REVIEW — implementation in flight] {#icon-015}
 2. **Size floor tension.** Site: minimum 16px (thicker-weight set below that). Toolkit
    tokens: `xsmall = 12px`. Consistent only if xsmall implies the thicker-weight set —
    toolkit doesn't say. [REVIEW — check the design toolkits' icon sizing page] {#icon-016}

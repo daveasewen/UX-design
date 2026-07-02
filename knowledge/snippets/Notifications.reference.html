@@ -16,6 +16,8 @@
   ICONS: real library status glyphs (status-icons/error|warning|success|information.svg) + close.svg, via a
   <symbol> sprite. Inner marks use style="fill:var(--mark)" (custom props inherit through <use>), so the SAME
   glyph reads correctly on tinted (accent shape, mark=tint) and on solid Global (reverse shape, mark=fill).
+  RAG ROUNDEL POLICY (Dave 2026-07-02 eve): shape vs surface ≥3:1 (amber EXEMPT by convention — icon+label
+  suffice); internal mark vs shape ≥4.5:1; DARK = white shape + black mark. Success light mark = white (4.56).
   STATES: links + actions + dismiss × (hover/active/focus) → meta stateModel:"simple" (Decision C).
   RESPONSIVE: placements are fluid; Global actions stack at <=480px; verified to 320px (1.4.10).
 -->
@@ -81,6 +83,7 @@
   .note.tint{ background:var(--tint); border:1px solid var(--accent); color:var(--text); --mark:var(--tint); }
   .note.tint .ic{ color:var(--accent); }
   .note.tint.warn{ --mark:#333333; }                 /* amber needs a dark mark, not a near-white one */
+  .note.tint.ok{ --mark:#FFFFFF; }                   /* RAG ROUNDEL POLICY (Dave 2026-07-02): mark ≥4.5 vs shape — success tint-knockout was 3.98, white mark = 4.56 ✓ (error 7.13 / info 6.21 knockouts stay) */
 
   /* GLOBAL: solid fill, reverse text/icon, mark punches to the fill */
   .note.global{ background:var(--accent); color:var(--gtext); --mark:var(--accent); padding:14px 16px; }
@@ -108,10 +111,19 @@
   .inline{ display:flex; align-items:center; gap:8px; margin:7px 0; font:400 16px/1.5 var(--font); color:var(--text); --mark:var(--page); }
   .inline .ic{ flex:none; color:var(--accent); }
   .inline .ic svg{ width:16px; height:16px; display:block; fill:currentColor; }
+  .inline.warn{ --mark:#333333; }   /* RAG ROUNDEL POLICY: amber's page-knockout mark was 1.69 — dark mark 7.47 ✓ (mirrors .note.tint.warn) */
 
-  /* INTERIM dark (Dave 2026-06-24): white icons for contrast on the dark tints/page */
+  /* RAG ROUNDEL POLICY dark (Dave ruling 2026-07-02 eve — supersedes the 06-24 interim):
+     the roundel/shape goes WHITE with a BLACK mark. Icon shape + label carry the meaning;
+     colour is not the channel. Mark-vs-roundel and roundel-vs-page both 21:1 — dissolves
+     every dark rag icon dead-zone structurally. Tint-surface accent BORDERS keep light rag
+     values meanwhile (driftAllow) — the dark rag-SURFACE token gap is still open, see
+     dark-rag-token-gaps. GLOBAL solid banners are untouched: their icons are already
+     reverse-knockout (white/dark shape, fill-coloured mark) and pass the mark leg. */
   [data-theme="dark"] .note.tint .ic{ color:#FFFFFF; }
+  [data-theme="dark"] .note.tint, [data-theme="dark"] .note.tint.warn, [data-theme="dark"] .note.tint.ok{ --mark:#000000; }
   [data-theme="dark"] .inline .ic{ color:#FFFFFF; }
+  [data-theme="dark"] .inline, [data-theme="dark"] .inline.warn{ --mark:#000000; }
 
   @container (max-width: 480px){
     .note.global .actions{ flex-direction:column; gap:8px; align-items:stretch; }
