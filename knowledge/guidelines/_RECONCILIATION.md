@@ -12,6 +12,10 @@ Dave rules.*
 - **col26-001** — Grey palette — named as part of the brand palette but "specifications … will be available soon". ⚠ Source gap: no values published as of capture. Our token store's grey ramp remains the operative source.
 - **col26-007** — "Do ensure text and icons meet the 4.5:1 minimum contrast ratio." ✅ RESOLVED 2026-07-02 by the icons standard (`icons.md` icon-015): differentiated by asset class — icons 4.5:1 "in all instances" (interactive, legibility-critical) · pictograms 3:1 + descriptive alt · chart/RAG graphic indicators 3:1. No source contradiction. Remaining question is OURS: our icon checks pass at 3:1; the stricter brand 4.5:1 enters advisory pending Dave's promotion ruling.
 
+## generative-ai-brand.md
+
+- **gai-008** — The tool is in-scope, twice. Promenaut is (a) itself a generative-AI tool needing lifecycle approval at any HSBC-like client, and (b) a producer of brand-foundation outputs (data-vis, typography, colour) whose outputs sit under Living Wall governance. Adoption planning must include both.
+
 ## icons.md
 
 - **icon-015** — Icon contrast: 4.5:1 vs our 3:1. The hub states icons need 4.5:1 "in all instances" because they're interactive and legibility-critical; pictograms 3:1 (+ descriptive alt). This RESOLVES the `col26-007` REVIEW item (brand page "text and icons 4.5:1" vs supporting page "graphics 3:1"): differentiated by asset class — icons 4.5 · pictograms 3 · chart/RAG indicators 3. Gate impact: our text/icon contrast audit passes icons at 3:1; raising to 4.5 is a stricter-than-WCAG brand rule → advisory first, 
@@ -36,4 +40,4 @@ Dave rules.*
 - **type26-015** — "Don't overlay text on gradient backgrounds" (+ digital: verify at viewpoints, no unreadable wrap). ⚠ Collides with charter §4's expressive gradient unlock for surfaces/heroes — heroes normally carry headlines. Either expressive gradient heroes are text-free zones, or the rules need reconciling. NOT self-resolvable.
 - **type26-016** — Latin headlines: −15 to −30 tracking; leading = size +3pt (50pt → 53pt). Latin body: −5 to −10 tracking; leading "1.1×" — ⚠ but the page's own example is 12pt → 16pt (1.33×), and Chinese body says 1.1× with example 14pt → 18pt (1.29×). Stated ratio and worked examples disagree — likely "1.1×" should read differently or the examples embed channel-specific values.
 
-_11 open item(s)._
+_12 open item(s)._

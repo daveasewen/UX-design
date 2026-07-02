@@ -53,8 +53,12 @@ Status: ☐ queued · ◐ partial · ✅ ingested · ✖ skipped (reason)
 6. ☐ `platforms-and-channels/app/app-foundations.html` — ditto, mobile
 7. ☐ `foundations-and-identity/accessibility.html` (hub) +
    `accessibility/Neurodiversity-Guidelines.html` + `accessibility/communication.html`
-8. ☐ `processes-and-tools/generative-ai-and-our-brand.html` — ⚑ flagged out-of-tier: brand
-   rules FOR generative AI — directly Promenaut's operating space
+8. ✅ `processes-and-tools/generative-ai-and-our-brand.html` → `generative-ai-brand.md`
+   (8 rules + 2 strategy findings). Data-vis explicitly in gen-AI governance scope; two
+   checkpoints (brand review before creation, Living Wall before publication); "avoid
+   synthetic-looking output" = the gates' pitch, stated as un-mechanised taste (gai-008
+   strategy REVIEW → digital-experience-transformation). Group AI policy pages are
+   staff-only Confluence — permanently out of ingestion reach
 9. ☐ `brand-refresh/logos.html` · `brand-refresh/photography.html` ·
    `brand-refresh/creative-hexagons.html` — refresh completeness
 10. ☐ `foundations-and-identity/Tone_of_Voice.html` — register/flex-dial shaping (charter)
