@@ -36,7 +36,7 @@ pieces this needs. The job is mostly to *connect and extend*, not invent.
 |---|---|---|
 | **ADRs** | `docs/decisions/ADR-*.md` | Append-only, one-decision-per-file record with context/decision/rationale/consequence. This *is* a decision log. |
 | **Promotion queue** | `knowledge/_PROMOTION-QUEUE.md` | The explicit "blessed by Dave → enters canon" path. A decision-execution mechanism, already human-gated. |
-| **canon / memory / `taste.md` split** | `harness/state/`, `harness/hitl.md` | Authoritative facts vs learned preferences vs human judgment. Defines *who may write what*. |
+| **canon / memory / `taste.md` split** | `archive/harness-v0.1/harness/state/`, `…/hitl.md` (archived — see ADR-0005) | Authoritative facts vs learned preferences vs human judgment. Defines *who may write what*. |
 | **Component graph + xref index** | `knowledge/components/*.meta.json`, `knowledge/_XREF-INDEX.json` | The dependency map — i.e. the blast-radius engine for "what does this change break?" |
 
 The gap is not "we have no way to record decisions." The gap is: the existing

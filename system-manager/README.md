@@ -19,7 +19,7 @@ as it feeds several projects.
 Nothing here is wired into `AGENTS.md`, the harness, or any pipeline yet. It
 does not change how any current run behaves. It is a design space. When a
 proposal here is ready to become real, it graduates by an explicit edit to the
-harness/ADRs — not by sitting in this folder.
+engine docs / ADRs — not by sitting in this folder.
 
 ## Subjects (one file each)
 

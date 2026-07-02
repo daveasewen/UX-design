@@ -1,63 +1,72 @@
-# AGENTS.md — Promenaut Agentic Design Workflow
+# AGENTS.md — Smart Design System
 
-> Root operating manual for any agent (Claude, GPT‑5.5, Promenaut runtime) working
-> in this repository. Conforms to the open [AGENTS.md](https://agents.md/) format.
-> Per-discipline `AGENTS.md` files may override locally; the nearest file wins.
+> Root operating manual for any agent working in this repository. The nearest
+> `AGENTS.md` wins; this is the root. Conforms to the open
+> [AGENTS.md](https://agents.md/) format.
 
 ## What this project is
 
-A portable, model-agnostic **harness** for running design-discipline work as
-governed agentic pipelines, abstracted from the proven **HDS** editorial
-reference architecture. One reusable harness layer; many discipline pipelines.
-First working pipeline: **UX/UI design — build & review**.
+A **governed design-system engine**: canon (tokens + gated components) + criteria
+(metas, rubrics, charter) + gates (executable checks) + runbooks (the method).
+**The orchestrator is you, the host agent.** There is no bespoke runtime — see
+`docs/decisions/ADR-0005`. The original harness design is archived at
+`archive/harness-v0.1/`.
 
-## Core principles (inherited from HDS)
+## Core principles (non-negotiable)
 
-1. **Workflow, not free-roaming agent.** Predefined, auditable paths with bounded agentic steps. Add complexity only when it demonstrably improves outcomes.
-2. **Hub-and-spoke.** A single orchestrator owns state, routing, checkpoints, retries and failure handling — and makes *no* quality judgments.
-3. **Single-responsibility spokes.** Each agent does one thing and emits a typed contract.
-4. **Craft is scored; taste is judged.** Two distinct gate types with distinct recovery paths.
-5. **HITL gates are designed components**, placed where automated judgment is unreliable — not fallbacks.
-6. **Typed contracts.** Every spoke I/O validates against a JSON Schema in `contracts/`.
-7. **Persistent state across runs.** Canon (knowledge), memory (learning), checkpoints (resumption).
-8. **Explicit error taxonomy** (4 types) — see `harness/errors.md`.
-9. **Pre-flight policy hooks** fire deterministically before a spoke runs.
-10. **Deliberate simplicity**, with evolution paths recorded as ADRs in `docs/decisions/`.
+1. **Verification = enforcement.** Definitions of done are executable and withhold
+   "done" by exiting non-zero. Never weaken a gate to make work pass; fix the work,
+   or take an allow-list entry with a written reason.
+2. **Retrieval, not recall.** Brand primitives (colour, type, spacing, motion) are
+   retrieved from `knowledge/tokens/` and `canon.css`. Never type brand values from
+   memory. Never invent a hex, an icon, or a component that retrieval can supply.
+3. **Craft is scored; taste is judged.** Gates and signals compute the evidence;
+   the human makes the taste call — packaged small (a ~20-second decision), never
+   delegated to a model.
+4. **Convergent and divergent stay separate.** Gate canon; never gate exploration.
+   Tiers: T1 canon (all retrieved, compose-gate green) · T2 candidate (fixed
+   retrieved + derived candidates, flagged for promotion) · T3 exploration (no
+   gate — a signal, not a deliverable).
+5. **Checks are tiered.** Few blocking objective gates; many cheap advisory
+   signals; a small set of human taste calls. New checks (CX, heuristics, content)
+   enter at the **advisory** tier and earn promotion by being bite-tested.
+6. **Fix the snippet, not the output.** Snippets are the reviewed source of truth;
+   `canon.css` AUTO blocks are generated. Edit snippet → regenerate → re-gate.
+   Never hand-edit generated blocks.
+7. **Confidence is explicit.** Assert only what was observed; mark the rest
+   `inferred` or `REVIEW` (see `knowledge/_CONFIDENCE.md`).
+8. **Render and look.** Green gates mean "automatable checks passed", not "done".
+   Every substantive visual change gets rendered and inspected — every real defect
+   to date was visual and passed the static gates.
 
-## Repository conventions
+## How to work
 
-- **Source of truth is Git.** No machine-specific or absolute paths in committed files. No model-specific prompt syntax outside clearly-marked adapters.
-- **Plain Markdown + typed data.** Specs in Markdown; contracts/schemas in JSON; tokens in DTCG JSON.
-- **Capabilities are Skills.** Reusable procedures live in `skills/<name>/SKILL.md` (open Agent Skills format).
-- **Live design-system access is via MCP** (Figma Dev Mode MCP + Code Connect), used only where runtime freshness is required.
-- **Decisions are ADRs.** One decision per file in `docs/decisions/`.
-- **Commits are conventional** (`feat:`, `fix:`, `docs:`, `chore:`).
+- Start at `knowledge/_NEXT-SESSION.md` (or the handoff doc the session names),
+  then `knowledge/README.md` for the build.
+- The method lives in `knowledge/_RUNBOOK-*.md`. Follow the runbooks; improve them
+  when they're wrong — curation is part of the job. Do not add new coordination
+  docs when an existing one can hold the content.
+- One command to trust the knowledge base: `python3 knowledge/_build_all.py`.
+- Every session gets a short, distinct title. End substantial sessions with a
+  handoff note so a cold-start agent can resume.
+- Commits are conventional (`feat:`, `fix:`, `docs:`, `chore:`); provide a
+  paste-ready summary + description with every commit.
 
-## Orchestration ownership
+## Data hygiene (two-machine rule)
 
-**We control orchestration.** The orchestrator spec (`harness/orchestrator.md`)
-is self-contained and portable; Promenaut is a *deployment target* we validate
-against, not a dependency we inherit logic from. See `docs/decisions/ADR-0001`.
-
-## Two-machine split (important)
-
-- **This/home machine:** author and dry-run logic with **synthetic + public** data. Never assume company assets are present.
-- **Agency machine:** ingest **real** design-system, Figma library and React components into `knowledge/`; wire live Figma MCP; re-run against real assets.
+- **This/home machine:** synthetic + public data. **Agency machine:** real
+  design-system, Figma library and React components.
+- `knowledge/tokens/_raw/` is untracked (ADR-0005) — do **not** re-add raw
+  exports. Open item on derived token-store provenance: ADR-0005, owner Dave.
 
 ## Compliance bar
 
 Build to **WCAG 2.2 AA** (engineering target); **EN 301 549 / WCAG 2.1 AA** is the
-current legal floor. WCAG version is a config parameter. See `docs/decisions/ADR-0004`.
+legal floor. WCAG version is a config parameter. See `docs/decisions/ADR-0004`.
 
-## Where to start
+## Definition of done (any piece of work)
 
-1. `docs/research-dossier.md` — why everything is the way it is.
-2. `docs/architecture.md` — the harness + pipeline architecture.
-3. `harness/` — the reusable layer.
-4. `disciplines/ui-design/` and `disciplines/ux-design/` — the working pipeline.
-
-## Definition of done (any spoke)
-
-A spoke is done when: its output validates against its contract; the relevant
-gate has passed (or escalated); a checkpoint is written; and any learning is
-proposed to memory (not silently committed — see `harness/state/memory.md`).
+The relevant gates pass (or an allow-list entry exists with a written reason);
+anything visual has been rendered and looked at; new judgment is captured in the
+meta/criteria layer (not only in CSS or chat); and the handoff/runbook trail lets
+a cold-start agent pick up where you left off.

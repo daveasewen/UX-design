@@ -9,7 +9,7 @@ Acts as the **craft gate**. Deterministic where possible; the goal is to catch
 the primary failure mode of agentic design — *inventing* components and variants.
 
 ## Inputs
-- A `design_candidate` (see `disciplines/ui-design/contracts/design_candidate.schema.json`).
+- A `design_candidate` (see `archive/harness-v0.1/disciplines/ui-design/contracts/design_candidate.schema.json`).
 - The component graph (`knowledge/components/*.meta.json`) and the token store (`knowledge/tokens/`).
 
 ## Procedure

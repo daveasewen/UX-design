@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Critical review — regroup &amp; refocus · 2026-07-02</title>
+<style>
+:root{
+  --accent:#DB0011; --accent-2:#BA1110; --accent-3:#730014;
+  --black:#000000; --white:#FFFFFF;
+  --grey-1:#F3F3F3; --grey-2:#EDEDED; --grey-3:#D7D8D6; --grey-4:#B7B7B7;
+  --grey-5:#9B9B9B; --grey-6:#767676; --grey-7:#545454; --grey-8:#333333;
+  --display:6rem; --title1:5.25rem; --title2:3.5625rem; --head1:2.6875rem;
+  --head2:2.125rem; --head3:1.1875rem; --body1:1rem; --caption1:.875rem; --caption2:.75rem;
+  --s1:.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem; --s6:4rem; --s7:6rem; --s8:8rem;
+  --max-width:1200px; --gutter:2rem;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:var(--body1);
+  font-weight:400;line-height:1.75;color:var(--black);background:var(--white)}
+.wrap{max-width:var(--max-width);margin:0 auto;padding:0 var(--gutter)}
+/* progress bar */
+#progress{position:fixed;top:0;left:0;width:100%;height:2px;background:var(--accent);
+  transform-origin:left;transform:scaleX(0);z-index:100}
+/* nav */
+nav{position:sticky;top:0;background:var(--white);border-bottom:1px solid var(--grey-2);z-index:50}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px}
+nav .back{font-size:var(--caption1);color:var(--black);text-decoration:none;font-weight:500}
+nav .ctx{font-size:var(--caption1);color:var(--grey-6)}
+nav .date{font-size:var(--caption1);color:var(--grey-6);letter-spacing:.04em}
+/* label pattern */
+.label{font-size:var(--caption2);font-weight:500;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--accent);display:flex;align-items:center;gap:var(--s1);margin-bottom:var(--s3)}
+.label::before{content:'';display:inline-block;width:20px;height:1px;background:var(--accent)}
+.label--grey{color:var(--grey-6)}.label--grey::before{background:var(--grey-4)}
+/* section chrome */
+section{padding:var(--s7) 0;border-bottom:1px solid var(--grey-2)}
+section.minor{padding:var(--s6) 0}
+/* header */
+header.profile{padding:var(--s7) 0;border-bottom:1px solid var(--grey-2)}
+.profile-grid{display:grid;grid-template-columns:3fr 2fr;gap:var(--s6);align-items:end}
+h1{font-size:var(--title2);font-weight:400;line-height:1.06;letter-spacing:0}
+.profile-meta p{font-size:var(--caption1);color:var(--grey-7);line-height:1.6}
+.profile-meta .tagline{font-size:var(--head3);color:var(--black);line-height:1.4;margin-bottom:var(--s3)}
+/* exec summary */
+.exec p.big{font-size:var(--head3);line-height:1.55;max-width:64rem;margin-bottom:var(--s4)}
+.exec-decisions{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--grey-2);
+  border:1px solid var(--grey-2);margin-top:var(--s5)}
+.exec-decisions .cell{background:var(--white);padding:var(--s3)}
+.exec-decisions .idx{font-size:var(--caption2);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--accent);font-weight:500;display:block;margin-bottom:var(--s1)}
+.exec-decisions h3{font-size:var(--caption1);font-weight:700;margin-bottom:var(--s1);line-height:1.4}
+.exec-decisions p{font-size:var(--caption1);color:var(--grey-7);line-height:1.55}
+/* dimension sections */
+.dimension .grid{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.dim-index{font-size:var(--title1);font-weight:100;color:var(--grey-3);line-height:1;display:block}
+.dim-label{font-size:var(--head3);font-weight:500;margin-top:var(--s2);line-height:1.35}
+.dimension h2{font-size:var(--head2);font-weight:400;line-height:1.18;margin-bottom:var(--s3)}
+.dimension p{margin-bottom:var(--s3);max-width:46rem}
+.dimension p:last-child{margin-bottom:0}
+/* tables */
+table{width:100%;border-collapse:collapse;font-size:var(--caption1);margin:var(--s4) 0}
+th{text-align:left;font-weight:500;font-size:var(--caption2);letter-spacing:.1em;
+  text-transform:uppercase;color:var(--grey-6);padding:var(--s2) var(--s2) var(--s2) 0;
+  border-bottom:1px solid var(--grey-3)}
+td{padding:var(--s2) var(--s2) var(--s2) 0;border-bottom:1px solid var(--grey-2);
+  vertical-align:top;line-height:1.55}
+td.status{white-space:nowrap;font-weight:700}
+.held{color:var(--black)}.fell{color:var(--accent)}.open{color:var(--grey-6)}
+code{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:.85em;background:var(--grey-1);
+  padding:.05em .35em}
+/* pull quote */
+.pull{border-top:1px solid var(--grey-2);padding-top:var(--s3);margin-top:var(--s5);
+  font-size:var(--head3);line-height:1.5;max-width:44rem}
+/* diagram */
+.diagram-grid{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.frame{border:1px solid var(--grey-2);padding:var(--s4)}
+/* comparison / verdict */
+.verdict{background:var(--grey-1);border-bottom:1px solid var(--grey-2)}
+.verdict .grid{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.verdict .statement{font-size:var(--head2);font-weight:400;line-height:1.2;margin-top:var(--s2)}
+.distinction{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--grey-3);
+  border:1px solid var(--grey-3);margin-top:var(--s4)}
+.distinction .cell{background:var(--white);padding:var(--s4)}
+.distinction .cell h4{font-size:var(--caption2);letter-spacing:.14em;text-transform:uppercase;
+  font-weight:500;margin-bottom:var(--s2)}
+.distinction .cell.alt h4{color:var(--grey-6)}
+.distinction .cell.ours h4{color:var(--accent)}
+.distinction .cell p{font-size:var(--caption1);color:var(--grey-8);line-height:1.6}
+/* decision cards */
+.decisions .card{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);
+  padding:var(--s5) 0;border-bottom:1px solid var(--grey-2)}
+.decisions .card:last-child{border-bottom:none}
+.decisions .d-idx{font-size:var(--head1);font-weight:100;color:var(--grey-4);line-height:1}
+.decisions .d-group{font-size:var(--caption2);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--grey-6);font-weight:500;margin-top:var(--s2)}
+.decisions h3{font-size:var(--head3);font-weight:500;margin-bottom:var(--s2);line-height:1.4}
+.decisions p{max-width:46rem;margin-bottom:var(--s2)}
+.decisions .effort{font-size:var(--caption1);color:var(--grey-6)}
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s4);margin-top:var(--s5)}
+.stat .num{font-size:var(--head1);font-weight:200;line-height:1.1}
+.stat .cap{font-size:var(--caption2);color:var(--grey-5);letter-spacing:.06em;margin-top:var(--s1)}
+/* sources + footer */
+.sources p{font-size:var(--caption1);color:var(--grey-7);max-width:52rem;margin-bottom:var(--s1)}
+.sources a{color:var(--grey-7)}
+footer{padding:var(--s5) 0;display:flex;justify-content:space-between;font-size:var(--caption1);color:var(--grey-6)}
+@media(max-width:860px){
+  .profile-grid,.dimension .grid,.diagram-grid,.verdict .grid,.decisions .card{grid-template-columns:1fr}
+  .exec-decisions{grid-template-columns:1fr 1fr}
+  .distinction{grid-template-columns:1fr}
+  h1{font-size:var(--head1)}
+}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<nav>
+  <div class="wrap">
+    <span class="back">Smart Design System</span>
+    <span class="ctx">Critical review · theses, software, market</span>
+    <span class="date">2026-07-02</span>
+  </div>
+</nav>
+
+<header class="profile">
+  <div class="wrap">
+    <p class="label">Review</p>
+    <div class="profile-grid">
+      <h1>Regroup: the pivot already happened. Name it, prove it, stop polishing it.</h1>
+      <div class="profile-meta">
+        <p class="tagline">A full-depth review of the UX-design project — base assumptions, evidence, codebase, and market position — written to support this week's decisions.</p>
+        <p>Scope: 54 commits, 2026-05-31 → 2026-07-01 · every strategy doc, the gate suite (re-run cold today), the canon, the market.</p>
+        <p>Method: repo archaeology + independent build verification + external research. Receipts cited throughout.</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="exec">
+  <div class="wrap">
+    <p class="label">Executive summary</p>
+    <p class="big">The core thesis is sound and the market has moved toward it — enforcement of design systems at generation time is still an open gap that vocabulary-aware tools (Figma Make, Magic Patterns, Code Connect) do not fill. But the repo's stated identity is a month stale: the multi-discipline harness described in the README has been dormant since May 31, while everything of value was built in <code>knowledge/</code>. The real risks are not conceptual. They are: evidence is almost entirely self-graded (zero external users, the one real-project proof still unpicked since June 20); the canon is single-tenant HSBC with no proof the engine generalises; the validators that everything rests on are themselves untested and un-CI'd; and one person is feeding six strands and two competing narratives. Verdict: don't pivot — converge. Eight decisions below, grouped four ways.</p>
+    <div class="exec-decisions">
+      <div class="cell"><span class="idx">Name it</span>
+        <h3>1 · Retire the harness identity</h3>
+        <p>Archive <code>harness/</code> + skeleton disciplines; rewrite README around what was actually built. ~0.5 day.</p></div>
+      <div class="cell"><span class="idx">Prove it</span>
+        <h3>2 · Pick the real HSBC project</h3>
+        <p>The #1 goal since Jun 20, still unpicked. Decide this week; it becomes the spine both narratives feed from.</p></div>
+      <div class="cell"><span class="idx">Prove it</span>
+        <h3>3 · Cap the canon polish</h3>
+        <p>Scope component work by what the chosen journey needs — not alphabetically. This lesson already cost three weeks once.</p></div>
+      <div class="cell"><span class="idx">Prove it</span>
+        <h3>4 · Second design system</h3>
+        <p>Run one public system (GOV.UK) through the runbooks, timeboxed 2 days. Splits engine from HSBC content.</p></div>
+      <div class="cell"><span class="idx">Harden it</span>
+        <h3>5 · Gate the gates</h3>
+        <p>Fixture tests for the validators + CI running <code>_build_all.py</code> on push. ~1 day. Closes the blind-spot class.</p></div>
+      <div class="cell"><span class="idx">Harden it</span>
+        <h3>6 · Fix the two-machine breach</h3>
+        <p>Real HSBC Figma exports are committed on the home repo, against your own rule. Clear it or amend the rule.</p></div>
+      <div class="cell"><span class="idx">Ship it</span>
+        <h3>7 · Package agent-native</h3>
+        <p>Skills/plugin + MCP, not a bespoke tool shell. Defers most of the robustness bar to the host. Decide before building any renderer.</p></div>
+      <div class="cell"><span class="idx">Ship it</span>
+        <h3>8 · Pick the Q3 customer</h3>
+        <p>Leadership case or Promenaut proof — one is primary, the other becomes its by-product. Both feed on decision 2.</p></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><span class="num">54</span><div class="cap">commits, May 31 – Jul 1</div></div>
+      <div class="stat"><span class="num">15/15</span><div class="cap">gate steps green — independently re-run cold, 2026-07-02</div></div>
+      <div class="stat"><span class="num">0</span><div class="cap">external users or real projects to date</div></div>
+      <div class="stat"><span class="num">32</span><div class="cap">days since harness/ was last touched</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="minor">
+  <div class="wrap">
+    <div class="diagram-grid">
+      <div>
+        <p class="label">What this actually is</p>
+        <p style="font-size:var(--caption1);color:var(--grey-7);max-width:20rem">Four strata, by commit history. The repo's documentation describes stratum 1. Its value lives in strata 2 and 3.</p>
+      </div>
+      <div class="frame">
+        <svg viewBox="0 0 640 330" width="100%" role="img" aria-label="Four strata of the project by date and status">
+          <g font-family="Helvetica Neue,Helvetica,Arial,sans-serif">
+            <!-- stratum 1 -->
+            <rect x="10" y="10" width="620" height="62" fill="none" stroke="#D7D8D6" stroke-width="1" stroke-dasharray="4 3"/>
+            <text x="26" y="34" font-size="13" font-weight="700" fill="#767676">1 · The harness (orchestrator · spokes · 7 disciplines · contracts)</text>
+            <text x="26" y="54" font-size="12" fill="#9B9B9B">May 31 · one dry-run ever · dormant since — but still the README's story</text>
+            <!-- stratum 2 -->
+            <rect x="10" y="82" width="620" height="62" fill="#FFFFFF" stroke="#000000" stroke-width="1.5"/>
+            <text x="26" y="106" font-size="13" font-weight="700" fill="#000000">2 · The knowledge engine (644 tokens · 38 snippets · 39 metas · 15-step gated build)</text>
+            <text x="26" y="126" font-size="12" fill="#545454">Jun 2 – Jul 1 · touched by 53 of 54 commits · green, cold-start verified</text>
+            <!-- stratum 3 -->
+            <rect x="10" y="154" width="620" height="62" fill="#FFFFFF" stroke="#000000" stroke-width="1.5"/>
+            <rect x="10" y="154" width="4" height="62" fill="#DB0011"/>
+            <text x="26" y="178" font-size="13" font-weight="700" fill="#000000">3 · The governance layer (fixed/flex charter · registers · retrieval-not-recall · tiering)</text>
+            <text x="26" y="198" font-size="12" fill="#545454">Jun 24 – Jul 1 · emerged from the fitness tests · the differentiated IP</text>
+            <!-- stratum 4 -->
+            <rect x="10" y="226" width="305" height="62" fill="none" stroke="#B7B7B7" stroke-width="1"/>
+            <text x="26" y="250" font-size="13" font-weight="700" fill="#545454">4a · Leadership narrative</text>
+            <text x="26" y="270" font-size="12" fill="#9B9B9B">digital-experience-transformation/</text>
+            <rect x="325" y="226" width="305" height="62" fill="none" stroke="#B7B7B7" stroke-width="1"/>
+            <text x="341" y="250" font-size="13" font-weight="700" fill="#545454">4b · Promenaut product narrative</text>
+            <text x="341" y="270" font-size="12" fill="#9B9B9B">strategy kickoff · discovery decisions</text>
+            <text x="10" y="318" font-size="12" fill="#767676">Both 4a and 4b consume strata 2–3. Neither yet has the external proof both need.</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="dimension">
+  <div class="wrap">
+    <div class="grid">
+      <div>
+        <span class="dim-index">01</span>
+        <p class="dim-label">Identity — the pivot nobody announced</p>
+      </div>
+      <div>
+        <h2>The README describes a product that stopped existing on June 2.</h2>
+        <p>The repo's stated mission — a portable, multi-discipline agentic harness with an orchestrator, typed spokes, and seven discipline pipelines — got one dry-run (<code>runs/dryrun-001</code>) and has not been touched since: <code>harness/</code> last commit 2026-05-31, <code>disciplines/</code> 2026-06-02. Meanwhile 53 of 54 commits touch <code>knowledge/</code>. What was actually built is a <strong>design-system compiler with enforcement</strong>: a token store, 38 gated reference components, a generated composition layer, and 15 build steps that withhold "done".</p>
+        <p>This isn't drift to be reversed — it's a correct pivot to be ratified. The dossier's founding insight ("encode senior design judgment as the scarce, defensible asset") is fully intact; only the vehicle changed. The cost of not naming it is concrete in your workflow specifically: every fresh session cold-starts an agent on README and AGENTS.md, and both currently tell it the wrong mission. The pipeline mental model even admits it — "harness = conveyor (barely built)". The harness ideas worth keeping (craft/taste gate split, error taxonomy, typed contracts) already migrated into the gates and runbooks; the scaffolding can be archived without losing them.</p>
+        <p class="pull">You didn't fail to build the harness. You discovered the knowledge layer <em>was</em> the product — six weeks ago. The paperwork just hasn't caught up.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="dimension">
+  <div class="wrap">
+    <div class="grid">
+      <div>
+        <span class="dim-index">02</span>
+        <p class="dim-label">Evidence — proven vs self-graded</p>
+      </div>
+      <div>
+        <h2>Almost everything green was marked by the same hand that built it.</h2>
+        <p>What is independently solid: the gate suite runs green from a cold start (I copied <code>knowledge/</code> to a fresh directory today and ran all 15 steps — pass); the recompose proof showed 0 drift; the compose gate catches rogue hex and class redefinition by construction. That is real, deterministic verification and it is rarer than you'd think.</p>
+        <p>What is self-graded: the 9/9 scores, the dual critiques, the fitness-test verdicts — all generated and assessed by the same model in the same context window. You already have the proof this fails: the state-contrast blind spot, where 9/9 components hid real dark-mode contrast failures because the gate only checked author-<em>declared</em> pairs. The one time evidence arrived from outside the system — the payments-journey walk on June 24 — it invalidated the central assumption of three weeks of work in a single afternoon (12 × 9/9 ≠ one shippable screen).</p>
+        <p>External evidence to date: Dave's eye, and that one journey walk. Zero second users. Zero real projects. The discovery decisions locked on June 20 designed intake lanes for "non-expert users" — no non-expert has ever been observed touching any of this. The June 20 priority order put "prove the method on a real HSBC project" first; twelve days on, the project is still unpicked. That is the single most expensive open decision in the repo.</p>
+        <table>
+          <tr><th>Evidence class</th><th>Status</th><th>Instances</th></tr>
+          <tr><td>Deterministic gates (cold-start reproducible)</td><td class="status held">Strong</td><td>15-step build, compose gate, icon gate, re-verified 2026-07-02</td></tr>
+          <tr><td>Rendered visual checks</td><td class="status open">Fragile</td><td>Valuable (every real bug was visual) but duct-taped plumbing</td></tr>
+          <tr><td>Self-critique scores (9/9, dual critique)</td><td class="status fell">Weak</td><td>Same model grades its own work; blind spot already demonstrated</td></tr>
+          <tr><td>Signal from outside the system</td><td class="status fell">Scarce</td><td>One journey walk + Dave's reviews. No users, no real project</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="dimension">
+  <div class="wrap">
+    <div class="grid">
+      <div>
+        <span class="dim-index">03</span>
+        <p class="dim-label">Software review — the gate suite</p>
+      </div>
+      <div>
+        <h2>Good discipline, small and honest — resting on untested foundations.</h2>
+        <p>Credit first: ~2,900 lines of zero-dependency Python, deterministic, dependency-ordered, exiting non-zero, with allow-lists that carry reasons and a clean warning/error split. Generators are idempotent; the composition layer is generated verbatim from reviewed snippets (the right fix after the hand-retype lost ~137 decisions). For a project that isn't "software", this is better engineering hygiene than most software.</p>
+        <p>The weaknesses, ranked by how much rests on them:</p>
+        <table>
+          <tr><th>#</th><th>Finding</th><th>Why it matters</th></tr>
+          <tr><td>1</td><td><strong>No tests for the validators themselves.</strong> No fixture suite of known-good / known-bad snippets.</td><td>The state-contrast blind spot was exactly this failure class — a gate that passed for the wrong reason. It will recur; currently nothing structural prevents it.</td></tr>
+          <tr><td>2</td><td><strong>No CI.</strong> Green depends on remembering to run <code>_build_all.py</code>. The repo already pushes to GitHub.</td><td>Your own dossier: "a hook fires deterministically, a prompt instruction may not." The project's central principle — verification = enforcement — is not applied to the project itself.</td></tr>
+          <tr><td>3</td><td><strong>Convention-bound parsing.</strong> Regex extraction assumes single-level theme blocks, hex-only values, a <code>#token-manifest</code>. The convention lives in exemplars and runbook prose, not a schema.</td><td>A foreign or slightly unconventional snippet passes or fails unpredictably. For a tool meant to eat <em>other people's</em> design systems, the input contract must be written down and validated.</td></tr>
+          <tr><td>4</td><td><strong>The Sutherland swap invalidates the suite.</strong> Every gate is written against HTML snippet conventions; the plan says materials swap to React components.</td><td>No port plan exists. Either the snippets are a permanent product asset (then say so and stop treating them as interim), or the gates need a renderer-level rewrite — which changes the cost of the swap materially.</td></tr>
+          <tr><td>5</td><td><strong>Two-machine rule breached.</strong> <code>knowledge/tokens/_raw/brand/hsbc.tokens.json</code> and Sutherland exports are committed here — AGENTS.md says the home machine carries synthetic + public data only.</td><td>Your governance credibility story ("gates enforce the rules people forget") is undercut by the repo's own rules going unenforced. Clear the files or amend the rule — either is fine; the inconsistency isn't.</td></tr>
+          <tr><td>6</td><td><strong>The render path is duct tape by your own account.</strong> The most valuable check in the system (visual QA) is the least reliable plumbing in it.</td><td>Right diagnosis in <code>_ROBUSTNESS-PORTABILITY.md</code> — but see decision 7 before engineering the full fix.</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="dimension">
+  <div class="wrap">
+    <div class="grid">
+      <div>
+        <span class="dim-index">04</span>
+        <p class="dim-label">Thesis stress-test — the base assumptions</p>
+      </div>
+      <div>
+        <h2>Most assumptions held. Two fell, and one is quietly expensive.</h2>
+        <table>
+          <tr><th>Assumption</th><th>Verdict</th><th>Evidence</th></tr>
+          <tr><td>Execution collapses → value moves to judgment, criteria, governance</td><td class="status held">Held</td><td>Market-confirmed; the whole 2026 tool wave targets execution, none of it governance</td></tr>
+          <tr><td>Verification = enforcement is the differentiator</td><td class="status held">Held</td><td>Figma ecosystem's own assessment: design systems are "mapped but not dynamically enforced"; no shipping tool blocks on gates</td></tr>
+          <tr><td>Automate around the taste call, never the taste call</td><td class="status held">Held</td><td>Register-spread multi-variant + gate-filtering operationalises it; LLM-as-aesthetic-judge remains unreliable</td></tr>
+          <tr><td>Editor last / wrap don't build</td><td class="status held">Held</td><td>Canvases and editors are the most commoditised layer of the market</td></tr>
+          <tr><td>Retrieval-not-recall keeps generation on-brand</td><td class="status held">Held</td><td>The portfolio test: right output, wrong mechanism — charter §5 is the sharpest idea in the repo</td></tr>
+          <tr><td>Refining components to 9/9 accumulates toward shippable product</td><td class="status fell">Fell</td><td>Payments-journey proof, Jun 24. Note: the current queue (gallery-wide interaction review, tranche 6) has the same alphabetical shape as the program that fell</td></tr>
+          <tr><td>Model-agnostic portability (Claude → GPT-5.5 → Promenaut, no rewrites)</td><td class="status fell">Untested, costly</td><td>Never once run on another model; actual practice is deeply Claude-shaped (memory, sessions, skills). Demote to "portable data, adapted operator" or test it once</td></tr>
+          <tr><td>The HSBC proof generalises into a product</td><td class="status open">Untested</td><td>Single-tenant everything. No second design system has been through the runbooks — so "engine" and "content" are not yet demonstrably separate things</td></tr>
+          <tr><td>The tool must own all plumbing (bundled renderer, zero-config)</td><td class="status open">Right bar, wrong time</td><td>It's the correct product bar — but building it before one external user exists is product engineering ahead of proof</td></tr>
+        </table>
+        <p class="pull">The pattern in both falls is the same: bottom-up completeness feels like progress because it's measurable and gate-able. The system's own best moments — the journey walk, the SME fitness tests — all came from working top-down from a real thing.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="dimension">
+  <div class="wrap">
+    <div class="grid">
+      <div>
+        <span class="dim-index">05</span>
+        <p class="dim-label">Market — the window and the clock</p>
+      </div>
+      <div>
+        <h2>The gap you're aimed at is real, open, and closing from three directions.</h2>
+        <p><strong>Validated:</strong> vocabulary-awareness is commoditising — Figma Make pulls components/variables automatically, Magic Patterns imports design systems, Code Connect is Figma's "#1 way" to get component reuse. But the ecosystem's own literature concedes the ceiling: systems are <em>mapped, not enforced</em>; models still emit one-off styles when the map runs out; there is no rendered-output verification anywhere in the loop. Blocking gates, rendered state-contrast checks, certified canon, register dials — nobody ships these. Your moat thesis survives contact with the market.</p>
+        <p><strong>Also validated:</strong> spec-driven development went fully mainstream (30+ frameworks; spec-kit, Kiro, Tessl), with regulated-industry audit trails already a recognised wedge. Good news for the spec/eval-first discovery direction — and a warning that the generic version of the idea is no longer novel. The design-specific version (criteria that compile to design gates) is still unoccupied.</p>
+        <p><strong>The clock:</strong> the durable asset is not the Python — a competent team replicates the gate suite in weeks. The durable assets are the <em>criteria corpus</em> (the decision comments, rubrics, charter, runbooks — judgment spent once and encoded) and a <em>proof in a regulated bank</em>, which no tool vendor can shortcut. That second asset only exists if decision 2 happens. Every week spent polishing single-tenant canon is a week the enforcement gap stays unclaimed publicly while Figma, Supernova ("the semantic foundation for AI agents") and the SDD wave each drift one step closer to it.</p>
+        <div class="sources" style="margin-top:var(--s4)">
+          <p>Sources: <a href="https://www.builder.io/blog/figma-mcp-server">Builder.io — Figma MCP server</a> · <a href="https://help.figma.com/hc/en-us/articles/32132100833559-Guide-to-the-Figma-MCP-server">Figma — MCP server guide</a> · <a href="https://open-design.ai/blog/best-ai-design-tools/">Open Design — AI design tools 2026</a> · <a href="https://zeroheight.com/blog/ai-in-design-systems-whats-changing-in-2026/">zeroheight — AI in design systems 2026</a> · <a href="https://medium.com/@visrow/spec-driven-development-is-eating-software-engineering-a-map-of-30-agentic-coding-frameworks-6ac0b5e2b484">Map of 30+ SDD frameworks</a> · <a href="https://developer.microsoft.com/blog/spec-driven-development-ai-native-engineering">Microsoft — spec-driven development</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="dimension">
+  <div class="wrap">
+    <div class="grid">
+      <div>
+        <span class="dim-index">06</span>
+        <p class="dim-label">Focus — the strand economy</p>
+      </div>
+      <div>
+        <h2>One person, six live strands, two customers, forty-six coordination docs.</h2>
+        <p>Currently open: the component interaction review, the gap-pattern build, motion exploration, the fixed/flex governance work, the robustness/product-engineering track, the leadership transformation case, the Promenaut product strategy — plus parked-but-warm: contextual dashboard, brand refresh, Graphify. Two of these are <em>customers</em> with different definitions of done: leadership buys an operating model backed by proof; Promenaut buys a portable engine backed by proof. They share exactly one thing — the proof — which doesn't exist yet.</p>
+        <p>The June 19 reflection ruled "do not add more docs; curation is now part of the job." <code>knowledge/</code> now holds 46 coordination and audit <code>_*.md</code> files. The self-awareness in this repo is exceptional — the blind-spot post-mortem, the procedural-debt note, the journey-proof correction — but every correction has come <em>after</em> an excursion, paid at full price. The structural fix isn't more discipline; it's a forcing function: one real project whose weekly needs decide what gets built, and both narratives written as by-products of it.</p>
+        <p class="pull">The project doesn't have a thinking problem. It has a sequencing problem: proof was ranked first on June 20 and has been outranked by polish every day since.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="verdict">
+  <div class="wrap">
+    <div class="grid">
+      <div>
+        <p class="label">Verdict</p>
+        <p class="statement">Regroup, don't pivot. The thesis survived; the sequencing didn't.</p>
+      </div>
+      <div>
+        <p>Both available pivots fail the test. The contextual dashboard is correctly parked — same engine, different market, and it needs the design-time loop proven first anyway. Pivoting to "build the product tool" (renderer, web shell, zero-config) is premature for the same reason: it hardens plumbing around a value loop no outsider has yet run. And abandoning the enforcement thesis would mean walking away from the one gap the market research confirms is open. What's left is convergence: ratify the pivot that already happened, and put every remaining hour behind external proof.</p>
+        <div class="distinction">
+          <div class="cell alt">
+            <h4>The tempting path</h4>
+            <p>Finish all 38 components to 9/9, build the five gap-patterns, engineer the bundled renderer, keep both narratives warm, pick the real project "when the canon is ready". Measurable progress every day; the proof recedes indefinitely; the market window narrows.</p>
+          </div>
+          <div class="cell ours">
+            <h4>The recommended path</h4>
+            <p>Pick the real HSBC project this week and let its journey scope all canon work. Run one public design system through the runbooks to prove the engine generalises. Put the gates under test + CI. Package agent-native. Write both narratives from what the proof shows.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="decisions">
+  <div class="wrap">
+    <p class="label">Recommendations — eight decisions</p>
+
+    <div class="card">
+      <div><span class="d-idx">1</span><p class="d-group">Name it</p></div>
+      <div>
+        <h3>Ratify the pivot: archive the harness, rewrite the identity</h3>
+        <p>Move <code>harness/</code>, the five skeleton disciplines, and the v0.1 pipeline specs to <code>archive/</code> with a short ADR ("the knowledge layer became the product"). Rewrite README + AGENTS.md around what exists: a governed design-system engine — canon, gates, composition, registers — operated by an agent through runbooks. Keep the harness's genuinely good ideas (craft/taste split, error taxonomy) where they already live: in the gates.</p>
+        <p class="effort">Effort: half a day. Payoff: every future cold-start agent starts on the true mission.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div><span class="d-idx">2</span><p class="d-group">Prove it</p></div>
+      <div>
+        <h3>Pick the one real HSBC project — this week, imperfect is fine</h3>
+        <p>This has been the ranked-first goal since June 20 and is the gating input to everything else: it scopes the canon work (decision 3), grounds the leadership case, and is the demo Promenaut actually needs. Selection criteria: small enough for one journey, real enough to have a stakeholder who isn't you, and payments-adjacent so the existing canon carries most of it. If no perfect candidate exists, the imperfect one beats another week of polish.</p>
+        <p class="effort">Effort: one decision + a kickoff brief. This is the highest-leverage item in this document.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div><span class="d-idx">3</span><p class="d-group">Prove it</p></div>
+      <div>
+        <h3>Cap the canon program: journey-driven, not alphabet-driven</h3>
+        <p>The interaction review and remaining gap-patterns continue — but scoped to what decision 2's journey touches, in the order it touches them. The gallery-wide pass and tranche 6 wait for a journey that needs them. The June 24 proof established the principle; this just applies it to the current queue. (The craft pass you invited on portfolio-level interactions still happens — inside the proof project, where the wow lands on a stakeholder.)</p>
+        <p class="effort">Effort: zero — it's a re-ordering. Saves an estimated 1–2 weeks of pre-proof polish.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div><span class="d-idx">4</span><p class="d-group">Prove it</p></div>
+      <div>
+        <h3>Onboard a second design system — the generalisation proof</h3>
+        <p>Run one public system through <code>_RUNBOOK-onboard-code-library.md</code> and the gated-component runbook, timeboxed to two days. GOV.UK Design System is ideal: public, accessibility-first, banking-adjacent rigour, and a brutal test of every HSBC-shaped assumption in the parsers and metas. Success = the gates run green on foreign content; every place they don't is precisely the engine/content boundary you need documented. This single exercise converts "a very good HSBC knowledge base" into evidence for "a machine that eats design systems".</p>
+        <p class="effort">Effort: 2 days, timeboxed hard. Do it after decision 2 is picked, not instead of it.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div><span class="d-idx">5</span><p class="d-group">Harden it</p></div>
+      <div>
+        <h3>Gate the gates: fixture tests + CI</h3>
+        <p>A small pytest suite with deliberately-broken fixture snippets (drifted token, missing ARIA, failing contrast pair, undeclared state) asserting each validator catches each class — the bite-tests, made permanent. Then a GitHub Action running <code>_build_all.py</code> + the fixture suite on every push. Also: write the snippet authoring convention down as a schema (finding 03-3), so the input contract is validated, not folklore.</p>
+        <p class="effort">Effort: ~1 day. Closes the false-confidence class structurally instead of one post-mortem at a time.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div><span class="d-idx">6</span><p class="d-group">Harden it</p></div>
+      <div>
+        <h3>Resolve the two-machine breach</h3>
+        <p>Real HSBC and Sutherland Figma exports live in <code>knowledge/tokens/_raw/</code> on the home repo, against AGENTS.md's own rule. Either purge them (and re-derive on the agency machine), or — if the arrangement genuinely permits it — amend the rule to match reality. A governance product whose own repo ignores its written governance is a story a sceptical stakeholder only needs to find once.</p>
+        <p class="effort">Effort: an hour, plus one honest look at what the agency arrangement actually permits.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div><span class="d-idx">7</span><p class="d-group">Ship it</p></div>
+      <div>
+        <h3>Package agent-native; don't build the tool shell yet</h3>
+        <p>The robustness bar in <code>_ROBUSTNESS-PORTABILITY.md</code> is the right end-state and the wrong next step. The runbooks + gates + KB already have the exact shape of an agent skill/plugin with an MCP surface — in that packaging, the host platform owns the renderer, ports, caching and sandbox, which is ~80% of the papercut list, for ~2% of the cost. Near-term: consolidate the render duct-tape into one owned script (server + cache-bust + bounded timeout + retry) and stop there. The bespoke zero-config tool is a decision to revisit only after decisions 2 and 4 have produced an external user.</p>
+        <p class="effort">Effort: 1 day for the render script; the deferred tool-shell is weeks–months avoided for now.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div><span class="d-idx">8</span><p class="d-group">Ship it</p></div>
+      <div>
+        <h3>Pick the primary Q3 customer; make the other a by-product</h3>
+        <p>Leadership (the Digital Experience case) and Promenaut (the portable engine) want the same proof but different framing, and each deserves different next-hours once the proof exists. My read of the repo: the leadership case has the nearer forcing function and the higher downside of silence — and a funded, reorganised team is the strongest possible platform to then productise from. But this is a taste call on information only you hold (Promenaut's timeline, the agency politics). Decide it consciously rather than letting the commit history decide it for you — right now the commits are voting, and they're voting for neither.</p>
+        <p class="effort">Effort: one decision. Both documents get dramatically easier to write after decision 2 lands.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="minor">
+  <div class="wrap">
+    <p class="label label--grey">What is genuinely strong — keep, unchanged</p>
+    <p style="max-width:52rem">For balance, the things this review found no fault with: verification-as-enforcement (market-validated and correctly implemented); the convergent/divergent bright line; retrieval-not-recall and the fixed/flex charter (the sharpest strategic writing in the repo); the runbook discipline; confidence tiers and blast-radius indexing; the payments-journey style of proof; and the habit — rare anywhere — of writing honest post-mortems against your own work. The engine's ideas are right. The remaining work is to let something outside the engine say so.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="display:flex;justify-content:space-between;width:100%">
+    <span>Critical review · Smart Design System / Promenaut</span>
+    <span>Prepared by Claude · 2026-07-02 · next: pick the project (decision 2)</span>
+  </div>
+</footer>
+
+<script>
+addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  document.getElementById('progress').style.transform=
+    'scaleX('+(h.scrollTop/(h.scrollHeight-h.clientHeight))+')';
+},{passive:true});
+</script>
+</body>
+</html>

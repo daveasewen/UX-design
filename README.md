@@ -1,59 +1,83 @@
-# Promenaut Agentic Design Workflow
+# Smart Design System (project Promenaut)
 
-A portable, model-agnostic agentic harness for running design-discipline work
-(UX/UI, and — as a skeleton — research, CX, copywriting) on the Promenaut
-platform. Abstracted from the proven **HDS** editorial pipeline reference
-architecture and built on open standards so the same files run under Claude,
-GPT‑5.5, and Promenaut without rewrites.
+A **governed design-system engine** for agentic generation: senior design judgment
+encoded as executable criteria, enforced by gates that withhold "done".
 
-## Why this repo exists
+Generation is a commodity — this repo is the layer around any generator. It holds
+four kinds of asset:
 
-Three goals, in priority order:
+- **Canon** — `knowledge/tokens/` (DTCG token stores), `knowledge/snippets/`
+  (38 gated reference components), `knowledge/canon/canon.css` (the generated
+  composition layer). *Retrieval, never recall:* fixed brand primitives are
+  retrieved from the store, so generated work cannot drift off-brand.
+- **Criteria** — `knowledge/components/*.meta.json` (per-component judgment:
+  token bindings, contrast pairs, required ARIA, states), the rubrics, and
+  `knowledge/_FIXED-FLEX-CHARTER.md` (what is fixed, what may flex, and the
+  register dial).
+- **Gates** — `knowledge/_validate_*.py` orchestrated by `knowledge/_build_all.py`:
+  a 15-step build in which a11y, contrast, token fidelity, icon provenance,
+  coverage and integrity are **blocking**. Verification = enforcement.
+- **Runbooks** — `knowledge/_RUNBOOK-*.md`: the method written down, so a
+  cold-start agent can operate the engine without this chat's history.
 
-1. **Make the UX/UI build‑&‑review pipeline actually work** — brief → prototype
-   from the component library → expert + accessibility review → dev handoff.
-2. **Spec the full multi‑discipline process** as a reusable skeleton so other
-   disciplines (research, CX, copywriting) can be instantiated from the same
-   harness later.
-3. **Stay transferable** between machines and models. Everything is plain
-   Markdown + structured data, versioned in Git, conforming to open agent
-   standards (`AGENTS.md`, Agent Skills / `SKILL.md`, MCP).
+**The orchestrator is the host agent** (Claude / Cowork / Promenaut runtime). We do
+not build or maintain a bespoke pipeline runtime — see
+[`docs/decisions/ADR-0005`](docs/decisions/ADR-0005-ratify-knowledge-engine-pivot.md).
+The original harness design (2026-05-31) is preserved at `archive/harness-v0.1/`;
+its surviving ideas — craft vs taste gates, HITL as a designed component, typed
+contracts — live on inside the gates and runbooks.
+
+## Operating model
+
+brief → **criteria contract** (the definition of done, written first — it *becomes*
+the gates) → retrieve + generate **N variants** across registers (sober → balanced →
+expressive) → **blocking gates** filter (kill the broken) → **advisory signals**
+annotate (heuristics, CX, states) → **render + visual QA** → one **human taste
+call** (~20 seconds) → winner **promoted to canon** — judgment spent once,
+retrieved forever.
 
 ## Status
 
-`v0.1 — planning & research`. See [`docs/research-dossier.md`](docs/research-dossier.md)
-for the full findings, recommendations, and proposed architecture.
+Engine built and green (15/15 build steps). Next milestone: the **calibration
+proof** — re-run a completed HSBC project from its original brief, blind, and
+compare the engine's output with what actually shipped. Canon/component work is
+scoped by that project's journey, not by completeness.
 
-## Repo map (proposed)
+The standing critical review and its eight decisions:
+`REVIEW-2026-07-02-critical-regroup.html`.
+
+## Run the build
+
+```
+python3 knowledge/_build_all.py
+```
+
+Regenerates every derived view in dependency order; exits non-zero on any gate
+failure. This is the single command to trust the knowledge base.
+
+## Repo map
 
 ```
 .
-├── README.md                  ← you are here
-├── AGENTS.md                  ← root operating instructions for any agent
-├── docs/
-│   ├── research-dossier.md    ← research findings + recommendations (start here)
-│   ├── architecture.md        ← harness architecture (to be written)
-│   └── decisions/             ← ADRs: one decision per file
-├── harness/                   ← reusable, discipline-agnostic harness spec
-│   ├── orchestrator.md
-│   ├── state/                 ← persistent stores (canon, memory, checkpoints)
-│   ├── errors.md              ← error taxonomy + recovery
-│   └── hitl.md                ← human-in-the-loop gates
-├── disciplines/
-│   ├── ux-design/             ← working pipeline (Define → Develop)
-│   ├── ui-design/             ← working pipeline (Develop → Deliver, Dave's part)
-│   ├── ux-research/           ← skeleton spec
-│   ├── cx-research/           ← skeleton spec
-│   ├── cx-design/             ← skeleton spec (cross-cutting)
-│   ├── ux-copy/               ← skeleton spec
-│   └── inputs/                ← BA/PO cross-cutting inputs
-├── knowledge/                 ← design-system canon, tokens, component metadata
-└── skills/                    ← portable Agent Skills (SKILL.md folders)
+├── README.md                    ← you are here
+├── AGENTS.md                    ← operating manual for any agent in this repo
+├── knowledge/                   ← THE ENGINE: canon · criteria · gates · runbooks
+│   ├── tokens/                  ← DTCG token stores (+ _raw/, untracked — ADR-0005)
+│   ├── snippets/                ← gated reference components (source of truth)
+│   ├── components/              ← per-component criteria (metas, confidence-tiered)
+│   ├── canon/                   ← generated composition layer (canon.css + generators)
+│   ├── compliance/              ← WCAG knowledge graph
+│   └── _fitness-test/           ← composed screens, journeys, the gallery
+├── docs/                        ← research dossier · architecture · ADRs
+├── skills/                      ← portable Agent Skills (SKILL.md folders)
+├── system-manager/              ← decision-capture design space
+├── runs/                        ← historical run artifacts
+├── digital-experience-transformation/  ← leadership narrative (separate strand)
+└── archive/harness-v0.1/        ← the original harness design (ADR-0005)
 ```
 
-## Transfer model
+## Data hygiene (two-machine rule)
 
-Author here (home) → push to GitHub (whitelisted) → pull on the agency machine
-(real company assets, frontier model) → hand to Promenaut (Claude). Git is the
-single source of truth; no machine-specific paths or model-specific syntax in
-committed files.
+Home machine: synthetic + public data. Agency machine: real assets. Raw Figma
+exports under `knowledge/tokens/_raw/` are untracked as of ADR-0005; see that
+ADR's open item on token-store provenance before adding any real asset here.
