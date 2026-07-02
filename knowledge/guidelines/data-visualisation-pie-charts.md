@@ -36,5 +36,7 @@ group size relative to the whole. [ADVISORY — chart-type-choice check]
   [ADVISORY]
 - **Never enlarge or pull out slices** to emphasise scale in user journeys.
   [ADVISORY-derivable] Exception, explicitly granted: infographic/illustration contexts may
-  emphasise slices (see the illustration standards — not yet ingested).
+  emphasise slices. Ingestion note (2026-07-02): the exception is **one-directional** — the
+  illustration standards contain no slice-emphasis content; this page is the grant's only
+  source (see `illustration-standards.md` §Findings).
 - Gauge pattern: a series of single-value doughnuts for part-to-whole of single values.

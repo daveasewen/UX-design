@@ -12,12 +12,18 @@
    consumption side: an advisory judge that reads the guides per run (= G5 at full scale).
    Fluff that turns out to be precisely statable gets distilled and promoted to blocking
    via bite-test — the same promotion machine, applied to prose.
-2a. **Create.hsbc ingestion targets (from 2026-07-02 evening session):** the data-vis
-   accessibility deep page, the colour standards page, the illustration standards (pie
-   emphasis exception). DONE: data-vis foundations → `guidelines/data-visualisation.md`;
-   bar/pie/line type pages → `guidelines/data-visualisation-{bar,pie,line}-charts.md`
-   (all with enforcement-destiny tags). Dave's read: the site is rich with this — treat
-   ingestion as a standing workstream, not a one-off.
+2a. **Create.hsbc ingestion targets (from 2026-07-02 evening session):** DONE 2026-07-02 day
+   session: colour standards (2026) + brand/supporting-palette subpages →
+   `guidelines/colour-standards-2026.md`; illustration standards (main + style, v2.1) →
+   `guidelines/illustration-standards.md` (pie-emphasis exception traced — one-directional;
+   #4587A7 receipted as legacy illustration Blue 5). Earlier: data-vis foundations →
+   `guidelines/data-visualisation.md`; bar/pie/line type pages →
+   `guidelines/data-visualisation-{bar,pie,line}-charts.md` (all with enforcement-destiny
+   tags). STILL OPEN: the data-vis accessibility deep page — candidate is the Digital
+   Accessibility Framework page; needs Dave to confirm which page he meant. Two source
+   questions for Create Direct: (1) text+icons 4.5:1 (brand page) vs 3:1 graphics
+   (supporting page) discrepancy; (2) grey-palette specs "available soon". Dave's read:
+   the site is rich with this — treat ingestion as a standing workstream, not a one-off.
 3. **A11y depth.** The compliance KG maps 31 SCs × 38 components; the a11y gate enforces
    only the statically-decidable few. That delta is "mapped, not enforced" — our own market
    critique, applied inward. Growth path: extend deterministic checks (axe-core-style static

@@ -64,8 +64,15 @@ Choose by the data's needs; research beyond the common types where warranted. [T
 sum-to-total, straight lines, spark ratios). Note the deliberate asymmetry: bars REQUIRE a
 zero baseline; lines make it optional — enforcement must be chart-type-aware.
 
-## Related, not yet ingested
-The accessibility deep page, the colour standards page ("for detailed data visualisation
-colour implementation"), the illustration standards (pie-emphasis exception). Queued in
-`_NEXT-SESSION.md`. Supporting-palette values + usage rules: already penned
-(`tokens/_proposals/supporting-palette.proposals.json`).
+## Related
+**Ingested 2026-07-02 (day session):** `colour-standards-2026.md` — the colour standards page +
+brand/supporting-palette subpages (the "detailed data visualisation colour implementation":
+3:1 all chart colours, RAG ratios, no-red-in-charts, palette-half-per-mode, scope rules) ·
+`illustration-standards.md` — pie-emphasis exception traced: the grant is **one-directional**
+(exists only on the pie-charts page; the illustration standards carry no slice-emphasis content).
+**Still open:** the data-vis accessibility deep page — the site's data-vis page links only to the
+general accessibility hub (`about-us/Accessibility.html`); the digital-accessibility-standards
+page is thin (confirms WCAG 2.2 AA basis, matching ADR-0004). Candidate: the Digital Accessibility
+Framework (`processes-and-tools/accessibility/digital-accessibility-framework.html`) — needs
+Dave's confirmation of which page he meant. Supporting-palette values + usage rules: already
+penned (`tokens/_proposals/supporting-palette.proposals.json`).
