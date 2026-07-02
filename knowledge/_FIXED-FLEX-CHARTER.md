@@ -49,6 +49,26 @@ Formerly "Undecided". All four rules are now explicit; no run guesses:
 **Parked (2026-07-02, Dave):** register reach beyond colour/flatness — whether registers also
 tier the flex dials (spacing, density, layout licence). Not ratified; see `_NEXT-SESSION.md` §📌.
 
+## 4b. Register temperature — wit licence per band (PROVISIONAL, 2026-07-02)
+
+The temperature dial now has its brand source: the intelligent-wit gradient
+(tov-016), the mid-scale formality anchor (tov-045) and stress-≠-stiffness
+(tov-027). Mapping adopted **provisionally** by Dave 2026-07-02:
+
+| Band | Wit licence | Brand-source stop |
+|---|---|---|
+| **expressive** | **ON — surface-scoped**: headlines, good-news moments, marketing surfaces only; NEVER functional/action copy (the F2 partition: expressive licence is surface-scoped, literalness is function-scoped) | "advertising = dial it up" · "headlines + good news = home turf" |
+| **balanced** | **subtle** — a flourish at most, headline-only; body and functional copy stay literal | "functional messages = quite subtle" |
+| **sober** | **ZERO wit — warmth stays.** More human, not more formal (tov-027); never dress bad news as good | "important = don't distract" · "difficult situations = zero" |
+
+**Locale/formality is a parameter on any band, not a band** (tov-045): Australia
+runs informal, India/Malaysia a few degrees formal, and clarity always outranks
+the local adjustment.
+
+*Status: PROVISIONAL — may need adjusting; a separate build-time temperature
+control may supersede how this is expressed. tov-016's REVIEW stays OPEN until
+that settles (Dave, 2026-07-02).*
+
 ---
 
 ## 5. Recall vs retrieval

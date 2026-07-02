@@ -111,9 +111,10 @@ canonisation call.
   headlines = home turf · functional messages = "quite subtle" · important/clear-and-
   straightforward messages = don't distract · difficult situations (bereavement,
   pandemic) = zero.** This is the fixed/flex temperature dial with a source receipt —
-  see Findings F1. [REVIEW — register calibration; map the gradient stops onto the
-  charter's register bands and encode wit-licence per band — Dave to rule (F1)]
-  {#tov-016}
+  see Findings F1. [REVIEW — PROVISIONAL mapping enacted in _FIXED-FLEX-CHARTER §4b
+  (Dave, 2026-07-02): expressive = wit ON surface-scoped · balanced = subtle ·
+  sober = zero-with-warmth; STAYS OPEN — may need adjusting once a separate
+  build-time temperature control exists] {#tov-016}
 - **Specific beats generic: use references that resonate with the named audience**
   (UHNW legacy framing vs student 'pop into a branch'). No two audiences the same.
   [TASTE at generation — audience parameter feeds example selection] {#tov-017}
@@ -281,9 +282,10 @@ canonisation call.
   good-news/headlines → functional-subtle → important-zero → difficult-zero) + tov-045's
   mid-scale formality anchor + tov-027's stress-≠-stiffness rule together give the
   fixed/flex charter's *register temperature* dial an empirical, quotable basis.
-  → REVIEW-tagged at tov-016: map gradient stops onto the charter's register bands
-  (sober/balanced/expressive) and encode wit-licence per band. Feeds
-  `_FIXED-FLEX-CHARTER.md`.
+  → RULED (provisional) 2026-07-02: mapping enacted at `_FIXED-FLEX-CHARTER.md` §4b
+  (expressive = wit ON surface-scoped · balanced = subtle · sober = zero-with-warmth;
+  locale = parameter). tov-016 stays REVIEW-tagged — Dave flagged it may need
+  adjusting once a separate build-time temperature control exists.
 - **F2 — neuro-024 reconciled.** Literalness now has THREE tone-of-voice receipts:
   tov-019 (colloquialisms never in functional/action copy), tov-031 (euphemism ban),
   tov-046 (idiom ban for ESL). The tension queued at ingestion (brand wit vs neuro
