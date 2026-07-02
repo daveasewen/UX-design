@@ -76,7 +76,7 @@ doc = f"""<!DOCTYPE html>
   .g-bar{{ position:fixed; top:10px; right:10px; z-index:50; }}
   .g-bar button{{ font:inherit; font-size:13px; padding:6px 12px; border:1px solid var(--border); background:var(--surface); color:var(--text); cursor:pointer; }}
   .g-item{{ max-width:840px; margin:0 auto 40px; padding-bottom:28px; border-bottom:1px solid var(--divider-soft); }}
-  .g-name{{ font:500 12px/1 var(--font); letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin:0 0 16px; }}
+  .g-name{{ font:500 12px/1 var(--font); /* sentence case — type26-019 sweep (Dave 2026-07-02) */ color:var(--muted); margin:0 0 16px; }}
   /* Review gallery: render interactive components in a representative SHOWN state (no per-snippet JS).
      A real screen drives these with the component's own script; here we just reveal them for review. */
   .cn-modals .overlay{{ position:static !important; inset:auto; visibility:visible !important; opacity:1 !important; padding:0; background:transparent; display:block; }}

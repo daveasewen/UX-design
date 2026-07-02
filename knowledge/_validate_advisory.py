@@ -12,6 +12,9 @@ First three checks are distilled from RECORDED prose rules (G5, north-star mock;
   A. all-caps labels — house rule (test brief v2 §4: "avoid ALL-CAPS labels — overrides
      any styling convention that wants caps"). Flags text-transform:uppercase in CSS and
      multi-word ALL-CAPS runs in visible text.
+     ★ PROMOTED to blocking 2026-07-02 (Dave ruling; type26-019 brand-source-backed;
+     bite-tested) — now check 4 of _validate_snippets.py for gated snippets. The signal
+     HERE stays live as the wider sweep over non-gated surfaces (_fitness-test screens).
   B. placeholder-as-label — recorded anti-pattern (text-input meta): an <input> carrying
      a placeholder with no matching <label for=…>.
   C. unmasked number runs — safety pattern (charter §2: masked sort/account numbers).

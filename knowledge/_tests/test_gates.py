@@ -181,6 +181,18 @@ def mut_reduced_motion(k):
     write(p, html.replace("prefers-reduced-motion", "prefers-reduced-nothing"))
 
 
+def mut_allcaps_css(k):
+    """type26-019 promotion (Dave ruling 2026-07-02): uppercase transform must bite."""
+    p, html, man = first_snippet_with_manifest(k, lambda m, h: "</head>" in h)
+    write(p, html.replace("</head>", "<style>.zz-caps{text-transform:uppercase}</style></head>", 1))
+
+
+def mut_allcaps_text(k):
+    """A visible non-acronym ALL-CAPS run must bite (acronym-only runs are exempt)."""
+    p, html, man = first_snippet_with_manifest(k, lambda m, h: "</body>" in h)
+    write(p, html.replace("</body>", "<p>FINAL WARNING NOTICE</p></body>", 1))
+
+
 def mut_unknown_icon(k):
     p, html, man = first_snippet_with_manifest(k, lambda m, h: "</body>" in h)
     rogue = '<svg viewBox="0 0 24 24"><path d="M1 1 L23 23 L1 23 Z"/></svg>'
@@ -259,6 +271,8 @@ CASES = [
     ("snippet gate bites on missing ARIA",       "aria",     "_validate_snippets.py",     mut_missing_aria,    "required ARIA missing"),
     ("snippet gate bites on failing contrast",   "contrast", "_validate_snippets.py",     mut_bad_contrast,    "CONTRAST"),
     ("snippet gate bites on missing focus",      "focus",    "_validate_snippets.py",     mut_no_focus,        ":focus-visible"),
+    ("snippet gate bites on uppercase CSS",      "caps-css", "_validate_snippets.py",     mut_allcaps_css,     "ALL-CAPS text-transform"),
+    ("snippet gate bites on ALL-CAPS text run",  "caps-txt", "_validate_snippets.py",     mut_allcaps_text,    "ALL-CAPS text run"),
     ("a11y gate bites on missing reduced-motion","motion",   "_validate_a11y.py",         mut_reduced_motion,  "2.3.3"),
     ("icon gate bites on invented path",         "icon",     "_validate_icons.py",        mut_unknown_icon,    "UNKNOWN"),
     ("icon gate bites on shape-only icon",       "shape",    "_validate_icons.py",        mut_shape_only_icon, "UNKNOWN"),

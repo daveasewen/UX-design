@@ -8,7 +8,13 @@ For every knowledge/snippets/*.reference.html:
   2. ARIA — every requiredAria string must be present in the markup.
   3. CONTRAST — every declared contrast pair must clear its threshold in both
      modes (text 4.5:1, ui/indicator 3:1).
-  4. FOCUS — there must be a :focus-visible rule, and no outline:none without a
+  4. ALL-CAPS — no text-transform:uppercase anywhere, no multi-word ALL-CAPS runs
+     in visible text (acronym runs exempt). PROMOTED from advisory → blocking by
+     Dave ruling 2026-07-02 (ADR-0005 §5; brand source: type26-019 — the 2026
+     standard bans uppercase outside acronyms brand-wide, dyslexia rationale).
+     Bite-tested in _tests/test_gates.py. Advisory continues to sweep non-gated
+     surfaces (_fitness-test) for the same class.
+  5. FOCUS — there must be a :focus-visible rule, and no outline:none without a
      visible replacement (box-shadow or a non-none outline).
 
 This is the link that makes a snippet "gated": it cannot silently drift from the
@@ -24,6 +30,14 @@ SNIP = os.path.join(ROOT, "snippets")
 TOK = os.path.join(ROOT, "tokens")
 
 sem = json.load(open(os.path.join(TOK, "semantic-colour.json")))
+
+# Brand exemption (type26-019): uppercase is allowed for acronyms only. Runs made
+# ENTIRELY of these pass; anything else in a 2+ word caps run is a gate failure.
+ACRONYMS = {
+    "HSBC", "UK", "AA", "AAA", "AT", "ARIA", "WCAG", "RAG", "SME", "API",
+    "PDF", "URL", "CTA", "OK", "IBAN", "BIC", "OTP", "KYC", "FX",
+    "GBP", "USD", "EUR", "HKD", "CNY", "AED", "ATM", "ID",
+}
 
 
 def resolve(token, mode):
@@ -104,7 +118,20 @@ def validate(path):
                 need = 4.5 if ctx == "text" else 3.0
                 errors.append(f"{name}: CONTRAST {p['fg']} on {p['bg']} ({mode}) = {r}:1 < {need}:1")
 
-    # 4. focus
+    # 4. ALL-CAPS (PROMOTED advisory → blocking, Dave ruling 2026-07-02; type26-019.
+    #    Runs BEFORE the interactive early-return so passive components are covered too.)
+    for _ in re.finditer(r'text-transform\s*:\s*uppercase', html, re.I):
+        errors.append(f"{name}: ALL-CAPS text-transform:uppercase — banned canon-wide (type26-019, promoted 2026-07-02)")
+    vis = re.sub(r'<script.*?</script>', ' ', html, flags=re.S | re.I)
+    vis = re.sub(r'<style.*?</style>', ' ', vis, flags=re.S | re.I)
+    vis = re.sub(r'<!--.*?-->', ' ', vis, flags=re.S)
+    vis = re.sub(r'<[^>]+>', ' ', vis)
+    for run in set(re.findall(r'\b[A-Z]{2,}(?: [A-Z]{2,})+\b', vis)):
+        if all(w in ACRONYMS for w in run.split()):
+            continue  # acronym-only runs are the brand exemption (type26-019)
+        errors.append(f"{name}: ALL-CAPS text run \"{run}\" — banned outside acronyms (type26-019, promoted 2026-07-02)")
+
+    # 5. focus
     # Focus rules only apply to INTERACTIVE components; passive ones (e.g. Badge) are exempt.
     interactive = any(s in html for s in (
         "<button", "<a ", "<input", "<select", "<textarea",
@@ -142,7 +169,7 @@ for path in snippets:
     for w in warns:
         lines.append(f"- 🟡 {w}")
     if not errs:
-        lines.append("- token fidelity (light+dark), ARIA, contrast pairs, focus — all clean.")
+        lines.append("- token fidelity (light+dark), ARIA, contrast pairs, all-caps, focus — all clean.")
     lines.append("")
 
 open(os.path.join(ROOT, "_SNIPPET-AUDIT.md"), "w").write("\n".join(lines))
