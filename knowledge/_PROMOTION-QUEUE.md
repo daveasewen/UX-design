@@ -20,6 +20,11 @@ Canon stays deliberate and accessible-first; the showcases stay a safe sandbox. 
 > sit against this. Future motion promotions must cite mot-007; Dave to rule whether brand-film
 > motion rules scope over UI micro-interactions.
 
+> 📌 **Finessing-pass docket (parked by Dave, 2026-07-02):** mot-007 (above) + **type26-015**
+> (text-on-gradient ban vs charter §4 expressive gradient heroes — interim: no gradient-hero
+> generation, gradient surfaces text-free until ruled; see `guidelines/typography-standards-2026.md`).
+> Both belong to the same "canon maybe too expressive" family — rule them together at the pass.
+
 ## Pending promotion candidates (awaiting review)
 
 | Treatment | Lives in | Notes |

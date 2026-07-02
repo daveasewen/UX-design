@@ -15,11 +15,14 @@ sizes, colours, leading, kerning — the component-relevant numbers live there).
 brand font collection is downloadable on the site (licensed — not fetched; the sandbox
 renders with fallbacks regardless, see `_ROBUSTNESS-PORTABILITY.md`).
 
-- ⚠ **Token-store delta:** `tokens/typography.json` carries **Univers** as the primitive —
-  the refresh names **Univers Next for HSBC**. Blast radius: the type primitive, every
-  snippet's font stack, Sutherland fixtures. Parallel-validity means no forced migration
-  yet, but new-work-targets-refresh implies the token store needs a 2026 mode or a
-  documented stay-on-2025 decision. Dave's call. [REVIEW] {#type26-001}
+- **Token-store delta:** ✅ RESOLVED 2026-07-02 — the claimed delta doesn't exist; the
+  review misread the store. Receipts: `tokens/typography.json` `font-family.default.$value`
+  is already **"Univers Next for HSBC"** (since the Figma native re-base; fix #5 2026-06-19
+  built `$webStack` around the same name) and all 45 snippet font-stack references match.
+  Plain-"Univers" appears only in prose comments ("Univers Light renders too thin"), never
+  as a token value. No 2026 mode needed for the typeface; store already targets the refresh.
+  Residual (unverified here): Sutherland fixtures live outside this repo — spot-check the
+  font stack at next Sutherland touch. {#type26-001}
 
 ## Key takeaways (rules)
 
@@ -80,8 +83,12 @@ renders with fallbacks regardless, see `_ROBUSTNESS-PORTABILITY.md`).
   [BLOCKING-derivable — existing contrast-gate class] {#type26-014}
 - **"Don't overlay text on gradient backgrounds"** (+ digital: verify at viewpoints, no
   unreadable wrap). ⚠ Collides with charter §4's expressive gradient unlock for
-  surfaces/heroes — heroes normally carry headlines. Either expressive gradient heroes are
-  text-free zones, or the rules need reconciling. NOT self-resolvable. [REVIEW] {#type26-015}
+  surfaces/heroes — heroes normally carry headlines. 📌 PARKED 2026-07-02 (Dave) → ruled at
+  the component-finessing pass, alongside mot-007 ("too expressive" family). **Interim
+  discipline: no gradient-hero generation; gradient surfaces are treated as text-free zones
+  until ruled** (conservative reading holds by default). Candidate mechanisations noted for
+  the pass: text-free-zone gate (no text node over gradient surface) vs worst-point contrast
+  sampling (≥4.5:1 at the ramp's weakest point, render-based). [REVIEW] {#type26-015}
 
 ### Kerning and leading
 - Latin headlines: **−15 to −30 tracking; leading = size +3pt** (50pt → 53pt). Latin body:
@@ -98,8 +105,11 @@ renders with fallbacks regardless, see `_ROBUSTNESS-PORTABILITY.md`).
 - **Title case AND sentence case** are the brand-legal casings; **uppercase banned outside
   acronyms** (explicitly: harder to read, reduces word shapes, dyslexia/low-vision cost).
   Note: the house rule (sentence case ONLY, no title case) is *stricter* than brand — house
-  wins locally, no conflict. [BLOCKING-derivable — the all-caps check's evidence, again]
-  {#type26-019}
+  wins locally, no conflict. ✅ ENACTED 2026-07-02 (Dave ruling): canon-wide sweep done —
+  14 snippets + gallery chrome de-capped (caps tracking removed with it, Eyebrow precedent),
+  canon.css regenerated, 0 signals; check PROMOTED advisory → blocking
+  (`_validate_snippets.py` check 4, acronym-run exemption, bite-tested ×2 in
+  `_tests/test_gates.py`). [BLOCKING — enforced] {#type26-019}
 - **Left-aligned is primary**; centred sparingly (short headings/labels/callouts, small
   word counts); right rare ("Headline A of the magnetic type construct"); body copy stays
   horizontal. **Never justified** (rivers); avoid hyphenation — rebalance lines instead.
@@ -122,5 +132,5 @@ dense content into a navigable path.
 `typography-usage.md` (legacy pre-engine distillation — superseded in part by this file;
 upgrade pending the spec-page ingestion) · `colour-standards-2026.md` (red-text family,
 col26-004/005) · `_ADVISORY-SIGNALS.md` + `_validate_advisory.py` (all-caps rule → now has
-brand-level promotion evidence) · `tokens/typography.json` (Univers → Univers Next delta) ·
+brand-level promotion evidence) · `tokens/typography.json` (already Univers Next — type26-001 resolved, no delta) ·
 `_BRAND-REFRESH-DIRECTION.md` (expressive headlines, fenced).
