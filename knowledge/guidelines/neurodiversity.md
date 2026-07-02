@@ -119,9 +119,12 @@ people-manager guidance — captured as skeleton, out of engine scope.
   generation] {#neuro-023}
 - **Avoid metaphors and ambiguity.** The standard EXPLICITLY flags the tension: tone of
   voice supports "conversational, informal" style, but literal readers need unambiguous
-  writing. [REVIEW — register-shaping input; fold into the tone-of-voice ingest when it
-  lands (queued); the fixed/flex charter's register dials are the natural home]
-  {#neuro-024}
+  writing. ✅ RECONCILED 2026-07-02 by the tone-of-voice ingest — the brand's own
+  standard partitions the licence: expressive is SURFACE-scoped (headlines, good news,
+  marketing), literalness is FUNCTION-scoped (actions, instructions, warnings) — see
+  `tone-of-voice.md` F2 + tov-019/031/046 (three literalness receipts). Not a
+  contradiction, a partition. [ADVISORY-derivable — ambiguity/idiom lint, pairs with
+  tov-046; charter band-mapping rides tov-016's REVIEW] {#neuro-024}
 - **Avoid jargon/abbreviations/acronyms/idioms**; define acronyms on the page (WCAG
   3.1.3/3.1.4 kin; Style Guide has further guidance). [ADVISORY-derivable — pairs with
   the all-caps gate's acronym exemption: exempted acronyms should be DEFINED somewhere
@@ -232,6 +235,7 @@ type numbers ↔ neuro-016/019; webf-026 line length ↔ neuro-020; webf-016 sti
 behaviour ↔ neuro-013) · `icons.md` (icon+label ↔ neuro-026) ·
 `typography-standards-2026.md` (type26-015 text-on-gradient ↔ neuro-030) ·
 `motion-standards.md` (mot-005/mot-007 ↔ neuro-035/036) · `_FIXED-FLEX-CHARTER.md`
-(neuro-042 register dials) · tone-of-voice ingest (queued — neuro-024) ·
+(neuro-042 register dials) · `tone-of-voice.md` (neuro-024 ↔ tov-019/031/046
+literalness partition RECONCILED; neuro-023 readability ↔ tov-008/009 FK numbers) ·
 `snippets/Links.reference.html` (neuro-010 :visited gap) · Video-player component
 (neuro-032/033/034 gate contract).

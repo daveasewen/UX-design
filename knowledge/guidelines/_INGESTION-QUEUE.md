@@ -87,7 +87,25 @@ Status: ☐ queued · ◐ partial · ✅ ingested · ✖ skipped (reason)
    Masterbrand variant selection rules (dark = full colour negative); hexagon DELTAS —
    Iconic now smaller, Cropped reduced to 1-/2-edge crops (3-/4-edge RETIRED, audit
    legacy hexagon assets); graphic-treatments guidance "coming soon" (source gap)
-10. ☐ `foundations-and-identity/Tone_of_Voice.html` — register/flex-dial shaping (charter)
+10. ✅ `foundations-and-identity/Tone_of_Voice.html` + 9 subpages → `tone-of-voice.md`
+    UPGRADED to engine era (tov-001…051, 2026-07-02). THE REGISTER SOURCE: intelligent-wit
+    gradient = the temperature dial with a receipt (tov-016 [REVIEW] — charter band-mapping
+    is Dave's ruling); FK readability numbers (70+/grade ≤7 + per-artefact table); web copy
+    numerics (<15-word sentences, ≤3 sentences/para); ~8 lint-list families (formal→human
+    ×17, hedges, throat-clearers, hard-sell, euphemisms, coded language, subjective
+    adjectives, spam triggers — canon pre-swept, 0 signals); greetings/sign-off matrix by
+    LOB; neuro-024 RECONCILED (literalness partition, F2). DISCOVERY: Copywriting is a hub
+    of 4 sub-resources, NOT descended — queued below as item 10a. Raw snapshots:
+    `_sources/tone-of-voice/` (before-and-afters interactive = partial capture, accepted).
+10a. ☐ **Copywriting family** — `Tone_of_Voice/Copywriting/Editorial_Style_Guide.html`
+    (~44k chars; A–Z digital style guide with LITERAL component sections: Buttons · CTAs ·
+    Error messages and notifications · Modals · Progress trackers · Links · Lists · Help/
+    Hint text · Alt text · Capitalisation · Numbers/Currencies/Date-time — the component-
+    microcopy layer, feeds per-component antiPatterns directly) + `Preferred-terms.html` +
+    `Chinesepreferredterms.html` (internal-use Chinese list) + `regional-labelling.html`
+    (China/HK/Macau/Taiwan conventions — compliance-sensitive). Section map receipted in
+    `_sources/tone-of-voice/copywriting-HUB.txt`. High engine-relevance — natural NEXT
+    tranche after tone-of-voice rulings land.
 11. ☐ `foundations-and-identity/colour.html` — the 2025 standard (parallel-valid "until
     further notice"; ingest for the delta map old→new)
 12. ☐ `foundations-and-identity/visual-assets.html` · `Logos.html` · `photography.html` ·
