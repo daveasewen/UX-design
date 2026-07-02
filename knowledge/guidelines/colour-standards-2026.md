@@ -46,10 +46,12 @@ palette. Values: brand core below; supporting values already penned with contras
   [ADVISORY-derivable — red-area-ratio threshold, needs tolerance] {#col26-005}
 - Colour ratios across a composition vary by format/messaging/orientation; what matters is purpose
   and hierarchy. [TASTE] {#col26-006}
-- **"Do ensure text and icons meet the 4.5:1 minimum contrast ratio."** ⚠ Source-internal
-  discrepancy: this is stricter than WCAG 1.4.11 (3:1 for graphics) and stricter than the
-  supporting-palette page's own 3:1 for chart/RAG graphics. Not resolved here — needs a ruling
-  (Dave / Create Direct query) before any gate change. [REVIEW] {#col26-007}
+- **"Do ensure text and icons meet the 4.5:1 minimum contrast ratio."** ✅ RESOLVED 2026-07-02
+  by the icons standard (`icons.md` icon-015): differentiated by asset class — **icons 4.5:1
+  "in all instances" (interactive, legibility-critical) · pictograms 3:1 + descriptive alt ·
+  chart/RAG graphic indicators 3:1.** No source contradiction. Remaining question is OURS:
+  our icon checks pass at 3:1; the stricter brand 4.5:1 enters advisory pending Dave's
+  promotion ruling. [REVIEW — gate delta, see icon-011/icon-015] {#col26-007}
 
 ## Supporting palette — rules
 

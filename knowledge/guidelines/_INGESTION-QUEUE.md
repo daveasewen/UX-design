@@ -24,8 +24,11 @@ Status: ☐ queued · ◐ partial · ✅ ingested · ✖ skipped (reason)
   version it distilled, re-check against the 2026 refresh page
 
 ### Queue (engine-relevance order)
-1. ☐ `foundations-and-identity/icons-and-pictograms.html` — feeds the icon-source rule +
-   `_validate_icons.py`; possible dynamic-weight relevance
+1. ✅ `foundations-and-identity/icons-and-pictograms.html` + `…/Icons.html` +
+   `…/pictograms.html` → `icons.md` (UPGRADED to engine era, 17 rules) + `pictograms.md`
+   (new, 14 rules). Resolved col26-007 (4.5:1 icons / 3:1 pictograms / 3:1 indicators by
+   asset class); 3 new [REVIEW]s: icon 4.5:1 gate delta, 12px-xsmall vs 16px floor,
+   36-vs-48 max; pictograms flagged as component-library gap
 2. ☐ `foundations-and-identity/motion.html` — motion tokens exist, promotion queue live;
    the source standard has never been ingested
 3. ☐ `foundations-and-identity/calls-to-action--ctas-.html` — Button/Links canon; red-CTA

@@ -1,38 +1,109 @@
----
-title: Icons
-source: HSBC Common Toolkit (MCP) — "Gaps and edits" branch, Foundations › Icons page (node 2107:29115)
-type: foundation-guidance
-captured: 2026-06-17
-related_tokens: icon-scale.json (sizes: xsmall 12 / small 18 / medium 24 / large 36; arrow dims), semantic-colour.json (icon/* colours)
-related_assets: knowledge/assets/icons/ (exported SVG catalogue + icons.manifest.json)
-external_ref: create.hsbc (most up-to-date icons); UI Centre (official SVG download for development)
-note: No new tokens on this page. Icon SIZES are in icon-scale.json; icon COLOURS in semantic-colour.json (icon/*).
----
+# Icons — brand guidance (ingested, engine era)
 
-# Icons
+*Sources, two layers: (1) create.hsbc → Foundations → Icons and pictograms
+(`icons-and-pictograms.html` hub + `icons-and-pictograms/Icons.html` standard), captured
+2026-07-02 via Dave's authenticated session (login-walled; ADR-0005 provenance applies);
+(2) HSBC Common Toolkit Figma capture 2026-06-17 (retained below — toolkit-level facts the
+site doesn't carry). Upgraded 2026-07-02 from the pre-engine-era distillation: every rule now
+tagged + ID'd. Related: `tokens/icon-scale.json`, `semantic-colour.json` (icon/*),
+`assets/icons/` + manifest, `_ICON-GAPS.md`, icon-source gate (`_validate_icons.py`).*
 
-## ⚠️ Sourcing rule (important)
-Per HSBC guidance: **"Do not export SVGs from the HSBC Icon Library file or from artwork files. Download the SVGs from the UI Centre for sharing with development."** The most up-to-date icons live on **create.hsbc**; most are also in the HSBC Icon Library shipped with the toolkit.
+## Asset-class definitions (hub)
 
-**Implication for this project:** the SVGs we export from Figma (`knowledge/assets/icons/`, via `_export-icons.py`) are for **internal knowledge-base prototyping only**. For anything handed to development, source icons from the **UI Centre**, not from our Figma export.
+Three-tier graphic system: **icons** (utility-driven, interactive, small, digital-only) ·
+**pictograms** (idea-driven, not interactive, larger, digital+physical — see `pictograms.md`) ·
+**illustrations** (narrative, photographic support — see `illustration-standards.md`).
 
-## HSBC icon library
-The icon set is organised into groups (see the Export board): Miscellaneous, Social, Touch, Informative, Volume and audio, Media, Arrows and chevrons, Products and services, Global controls, Status Icons.
+- Icons and pictograms are **not interchangeable**; don't scale icons up in place of
+  pictograms. [ADVISORY] {#icon-001}
+- **Don't use illustrations as icons** (site echoes our icon-source rule at brand level).
+  [BLOCKING-derivable — the icon-source gate already enforces library-only provenance] {#icon-002}
+- Don't substitute product/3rd-party logos with icons; utility app icons are a separate
+  branding application (App tile guidelines). [ADVISORY] {#icon-003}
+- Avoid icons without labels unless universally recognisable ('home', 'save', 'search') —
+  and verify the universal meaning with user testing. [ADVISORY-derivable — icon-without-label
+  detector, allowlist of universals] {#icon-004}
 
-## Default and active states
-- In their **default** state, icons are depicted by simple lines.
-- In their **active** state, they have a **solid fill**.
-- **Not all icons have active states.**
-- Icons should appear in the **active** state when a user interacts with or selects them (e.g. selecting a tooltip or a navigation section). The only exceptions are covered in the states and Notifications section.
+## Structure
 
-(This is why the catalogue contains `… Active` variants; the manifest flags them with `active: true`.)
+Icon anatomy: **icon** (the metaphor) + **label** (descriptor; omittable only for universals) +
+**modifier** (overlay indicating specific meaning) + **badge** (passive notifier — Badges
+guidelines) + **tappable area**.
 
-## Badges
-A badge is attached to a UI element to inform the user of new activity and direct them to find out more — e.g. a badge by the inbox link when a new message arrives.
+- **Functional icons need a minimum 44×44px target area.** [BLOCKING-derivable — hit-area
+  check; our 24px expander pattern on Tags/Tooltip targets WCAG 2.5.8's 24px, the brand
+  standard asks 44 — ⚠ gate delta, see Findings] {#icon-005}
 
-## Thicker weight icons
-A few icons need to be used smaller than the standard recommended sizes. These are designed on the same 18×18px grid but with a **thicker 1.8px line weight**, so they can scale down without the line breaking up. Examples include thicker versions of chevrons and some state icons.
+## Sizing
 
-## Sizing & colour (tokens)
-- **Sizes** (`icon-scale.json`): `xsmall` 12px, `small` 18px, `medium` 24px, `large` 36px; plus per-font arrow icon dimensions.
-- **Colour** (`semantic-colour.json` → `icon/*`): e.g. `icon/default` (#333333 light / #FFFFFF dark), `icon/disabled`, `icon/default-reverse`. Monochrome icons in the exported catalogue use `currentColor` so they inherit these.
+- Designed on an **18×18px grid, 1.2px line weight** (72dpi). [structure fact]
+- **Minimum 16px, maximum 48px; scale proportionately in 2px increments.**
+  [BLOCKING-derivable — rendered-size check] {#icon-006}
+- Rationalise a standardised size set (e.g. 18/24/36/48) per toolkit/journey; don't use
+  uneven scales. [ADVISORY-derivable] {#icon-007}
+- **Match icon size to the accompanying text size**; don't pair dramatically differing
+  sizes (see Links guidelines). [ADVISORY-derivable — icon:font-size ratio check; our chip
+  em-sizing already implements the spirit] {#icon-008}
+- **Thicker-weight variants** (1.8px on the same grid — Figma layer) exist for use below
+  16px, e.g. combined with text; chevrons + some status icons. **Only thicker chevrons
+  alongside text links.** [ADVISORY-derivable] {#icon-009}
+- Some icons ship **cropped** for text alignment (e.g. chevron-right 11×16 — spare canvas
+  removed). [structure fact; relates to our leading-trim label alignment work]
+
+## States
+
+- Default state = simple lines; **active state = solid fill**; not all icons have active
+  variants (manifest flags `active: true`). [structure fact]
+- When icons indicate a function, **use the active version to differentiate default vs
+  selected**; colour may support the distinction. [ADVISORY-derivable — states-completeness
+  probe class; relates to `_ICON-GAPS.md` download-active gap] {#icon-010}
+
+## Accessibility
+
+- **Icons require 4.5:1 contrast in all instances** — "like text", labelled or not.
+  [BLOCKING-derivable — ⚠ gate delta: our icon checks target 3:1 (WCAG 1.4.11); the brand
+  standard is stricter. Enters advisory until Dave rules on promotion — see Findings]
+  {#icon-011}
+- Code: icon **with** label → `alt=""` (null); icon **without** label → `alt` = icon name.
+  [BLOCKING-derivable — alt-attribute pattern check on snippets] {#icon-012}
+- RAG-coloured notification/status icons: maintain contrast against actual background;
+  **never colour alone** for status — supporting information required. [BLOCKING-derivable —
+  1.4.1 gate + indicator-contrast gate already cover this] {#icon-013}
+
+## Sourcing (Figma-capture layer, 2026-06-17 — still operative)
+
+- **"Do not export SVGs from the HSBC Icon Library file or artwork files. Download the SVGs
+  from the UI Centre for sharing with development."** Our Figma-exported catalogue
+  (`assets/icons/`) is for internal knowledge-base prototyping only; dev handoff sources from
+  the UI Centre. [ADVISORY — process rule] {#icon-014}
+- Library groups: Miscellaneous, Social, Touch, Informative, Volume/audio, Media,
+  Arrows/chevrons, Products and services, Global controls, Status. Site gallery adds per-
+  category downloads (Status+notifications, Global controls, Products+services, Chevrons,
+  Media, Video+audio, Informative, Touch).
+- Toolkit tokens: sizes `icon-scale.json` — xsmall 12 / small 18 / medium 24 / large 36;
+  colours `semantic-colour.json` icon/* (default #333333/#FFFFFF, disabled, default-reverse);
+  catalogue uses `currentColor`.
+
+## Findings (2026-07-02 upgrade)
+
+1. **Icon contrast: 4.5:1 vs our 3:1.** The hub states icons need 4.5:1 "in all instances"
+   because they're interactive and legibility-critical; pictograms 3:1 (+ descriptive alt).
+   This RESOLVES the `col26-007` REVIEW item (brand page "text and icons 4.5:1" vs supporting
+   page "graphics 3:1"): differentiated by asset class — **icons 4.5 · pictograms 3 ·
+   chart/RAG indicators 3**. Gate impact: our text/icon contrast audit passes icons at 3:1;
+   raising to 4.5 is a stricter-than-WCAG brand rule → advisory first, Dave rules on
+   promotion. [REVIEW] {#icon-015}
+2. **Size floor tension.** Site: minimum 16px (thicker-weight set below that). Toolkit
+   tokens: `xsmall = 12px`. Consistent only if xsmall implies the thicker-weight set —
+   toolkit doesn't say. [REVIEW — check the design toolkits' icon sizing page] {#icon-016}
+3. **Max-size tension.** Hub: "three sizes 18/24/36, never scaled larger." Standard page:
+   max 48, example set includes 48. Deeper page wins provisionally (48), but the source
+   disagrees with itself. [REVIEW — Create Direct query] {#icon-017}
+
+## Cross-references
+
+`pictograms.md` (companion class) · `illustration-standards.md` (illustration ≠ icon) ·
+`colour-standards-2026.md` col26-007 (contrast resolution) · `_ICON-GAPS.md` +
+`_ICON-SOURCE-AUDIT.md` (gate) · dynamic-weight icon exploration
+(`assets/icons/dynamic-weight/`) — the thicker-weight-below-16px rule is the brand's own
+precedent for weight-varies-with-size.
