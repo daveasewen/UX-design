@@ -34,10 +34,17 @@ Status: ☐ queued · ◐ partial · ✅ ingested · ✖ skipped (reason)
    our promoted spring physics → mot-007 [REVIEW], noted in `_PROMOTION-QUEUE.md`; >5s
    play/pause rule (WCAG 2.2.2 class) is a clean gate candidate; easing values are
    AE-toolkit-locked (not on the page)
-3. ☐ `foundations-and-identity/calls-to-action--ctas-.html` — Button/Links canon; red-CTA
-   rules interlock with `colour-standards-2026.md` (`col26-*`)
-4. ☐ `brand-refresh/typography.html` — 2026 type standard (store primitive is Univers;
-   refresh may move this — high blast radius if so)
+3. ✖ `foundations-and-identity/calls-to-action--ctas-.html` — RE-TIERED 2026-07-02: it's a
+   marketing CTA framework (mindset/channel/metrics), not component rules; 4 subpages moved
+   to Tier 3. The legacy `calls-to-action.md` (Figma toolkit) remains the component-side
+   source; its upgrade will come from the digital toolkits, not this page
+4. ✅ `brand-refresh/typography.html` → `typography-standards-2026.md` (9 rules). HEADLINES:
+   core typeface is now **Univers Next for HSBC** (+MYing Hei, Univers Next Arabic) — token
+   store says Univers → type26-001 [REVIEW], Dave's call; **no uppercase OR italics, sentence
+   case** — house rule + G5 all-caps check now brand-source-backed (informs the all-caps
+   desk ruling); red type never except toolkit use-cases; ≤2 fonts + bold option. Subpages
+   queued: `typography/typefaces.html`, `typography/creative-headlines.html`, the
+   typography SPECIFICATION page (min sizes/leading/kerning — component-relevant numbers)
 5. ☐ `platforms-and-channels/web/web-foundations.html` — our component domain
 6. ☐ `platforms-and-channels/app/app-foundations.html` — ditto, mobile
 7. ☐ `foundations-and-identity/accessibility.html` (hub) +
