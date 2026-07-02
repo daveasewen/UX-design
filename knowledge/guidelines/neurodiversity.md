@@ -53,9 +53,12 @@ people-manager guidance — captured as skeleton, out of engine scope.
   accessibility criteria. [IN FORCE via a11y framework] {#neuro-009}
 - **Links and buttons visibly clickable: underline links; visited links change colour
   (best practice); button boundaries ≥3:1.** ⚠ The :visited leg is a REAL canon gap —
-  no snippet or canon.css styles :visited at all (checked 2026-07-02). [REVIEW — decide
-  whether banking-app convention (no visited styling for privacy/task-flow reasons) or
-  the neuro best practice wins; advisory candidate either way] {#neuro-010}
+  no snippet or canon.css styles :visited at all (checked 2026-07-02). 📌 RULED (Dave,
+  2026-07-02 eve): **neuro best practice adopted as direction** — visited links should
+  differ in colour; implement at the next Links touch (supercharge candidate territory —
+  don't over-polish pre-uplift), then review the result. [REVIEW — implementation +
+  review pending; advisory check candidate once a `link/visited` token exists]
+  {#neuro-010}
 - **Carousels: next/prev ≥3:1 + AT-labelled; helpful labels ("next month" not "next");
   chevron iconography; NO auto-scroll (or pausable); dot nav ≥3:1 + AT-labelled; peek
   the next slide.** [component spec — we have no carousel component; this is its gate
@@ -199,8 +202,10 @@ people-manager guidance — captured as skeleton, out of engine scope.
    16px) + neuro-019 (≥1.5 line-height; S6/S7 sit at 1.43/1.33) both indict the brand's
    OWN type scale for small sizes if read strictly. Since the type scale page and the
    toolkit export agree on S6/S7, loose readings are almost certainly intended (12pt≈12px;
-   1.5× aspirational for body = S5 ✓). One Create Direct question settles both. [REVIEW —
-   consolidated; ask alongside the icon-017 max-size query] {#neuro-041}
+   1.5× aspirational for body = S5 ✓). 📌 RULED (Dave, 2026-07-02 eve): record-to-review
+   only — "this is one that will definitely change anyway" (the refresh will re-cut the
+   type scale); do NOT chase Create Direct on it. [REVIEW — dormant until the refresh
+   type pages re-issue] {#neuro-041}
 2. **Calm-by-default vs expressive register.** neuro-006 (hero ≤30% height), neuro-014
    (bright colours ≤20% of screen), neuro-001/-028 (simplicity) collectively define a
    measurable "calm ceiling". The expressive register (charter §4, dual-live palettes)
