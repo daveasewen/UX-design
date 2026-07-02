@@ -19,8 +19,8 @@ Dave rules.*
 ## icons.md
 
 - **icon-015** — Icon contrast: 4.5:1 vs our 3:1. The hub states icons need 4.5:1 "in all instances" because they're interactive and legibility-critical; pictograms 3:1 (+ descriptive alt). This RESOLVES the `col26-007` REVIEW item (brand page "text and icons 4.5:1" vs supporting page "graphics 3:1"): differentiated by asset class — icons 4.5 · pictograms 3 · chart/RAG indicators 3. Gate impact: our text/icon contrast audit passes icons at 3:1; raising to 4.5 is a stricter-than-WCAG brand rule → advisory first, 
-- **icon-016** — Size floor tension. Site: minimum 16px (thicker-weight set below that). Toolkit tokens: `xsmall = 12px`. Consistent only if xsmall implies the thicker-weight set — toolkit doesn't say.
-- **icon-017** — Max-size tension. Hub: "three sizes 18/24/36, never scaled larger." Standard page: max 48, example set includes 48. Deeper page wins provisionally (48), but the source disagrees with itself.
+- **icon-016** — Size floor tension. Site: minimum 16px (thicker-weight set below that). Toolkit tokens: `xsmall = 12px`. Consistent only if xsmall implies the thicker-weight set — toolkit doesn't say. 📌 RULED (Dave, desk pickup): the full 12–48 range is permitted for now — "prune if we have to". Toolkit export stays operative; no gate encoding.
+- **icon-017** — Max-size tension. Hub: "three sizes 18/24/36, never scaled larger." Standard page: max 48, example set includes 48. Deeper page wins provisionally (48), but the source disagrees with itself. 📌 RULED (Dave, desk pickup): 12–48 permitted, same ruling as icon-016.
 
 ## illustration-standards.md
 

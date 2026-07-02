@@ -108,6 +108,12 @@ def validate(path):
     # 3. contrast pairs
     for p in manifest.get("contrastPairs", []):
         ctx = p.get("context", "text")
+        # icon-015 PROMOTED blocking 2026-07-02 (Dave: "icons alone should have the
+        # small-text equivalent contrast at least"): declared pairs whose fg is an
+        # icon/* token are held to 4.5:1 regardless of the declared 'ui' context.
+        # Pictograms + RAG graphic indicators (rag/*) stay at 3:1 (roundel policy).
+        if p["fg"].startswith("icon/"):
+            ctx = "icon"
         for mode in ("light", "dark"):
             fg, bg = resolve(p["fg"], mode), resolve(p["bg"], mode)
             if not fg or not bg:
@@ -115,8 +121,9 @@ def validate(path):
                 continue
             r = contrast_ratio(fg, bg)
             if not is_sufficient_contrast(r, context=ctx):
-                need = 4.5 if ctx == "text" else 3.0
-                errors.append(f"{name}: CONTRAST {p['fg']} on {p['bg']} ({mode}) = {r}:1 < {need}:1")
+                need = 4.5 if ctx in ("text", "icon") else 3.0
+                tag = " (icon-015, promoted 2026-07-02)" if ctx == "icon" else ""
+                errors.append(f"{name}: CONTRAST {p['fg']} on {p['bg']} ({mode}) = {r}:1 < {need}:1{tag}")
 
     # 4. ALL-CAPS (PROMOTED advisory → blocking, Dave ruling 2026-07-02; type26-019.
     #    Runs BEFORE the interactive early-return so passive components are covered too.)

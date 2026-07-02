@@ -166,6 +166,20 @@ def mut_bad_contrast(k):
     write(p, replace_manifest(html, man))
 
 
+def mut_icon_dead_zone(k):
+    """icon-015 promotion (Dave ruling 2026-07-02: "icons alone should have the
+    small-text equivalent contrast at least"): a declared icon/* pair in the
+    3:1–4.5:1 dead zone passed the old 'ui' threshold and must now bite at 4.5.
+    icon/default on data-vis/data-chart/blue-3 = 3.66 (light) / 3.45 (dark):
+    ≥3 in both modes (pre-promotion gate was green) · <4.5 in both."""
+    def need(man, html):
+        return bool(man.get("vars"))
+    p, html, man = first_snippet_with_manifest(k, need)
+    man.setdefault("contrastPairs", []).append(
+        {"fg": "icon/default", "bg": "data-vis/data-chart/blue-3", "context": "ui"})
+    write(p, replace_manifest(html, man))
+
+
 def mut_no_focus(k):
     def need(man, html):
         return "<button" in html and ":focus-visible" in html
@@ -270,6 +284,7 @@ CASES = [
     ("snippet gate bites on token drift",        "drift",    "_validate_snippets.py",     mut_token_drift,     "DRIFT"),
     ("snippet gate bites on missing ARIA",       "aria",     "_validate_snippets.py",     mut_missing_aria,    "required ARIA missing"),
     ("snippet gate bites on failing contrast",   "contrast", "_validate_snippets.py",     mut_bad_contrast,    "CONTRAST"),
+    ("snippet gate bites on icon 4.5 dead-zone", "icon45",   "_validate_snippets.py",     mut_icon_dead_zone,  "icon-015"),
     ("snippet gate bites on missing focus",      "focus",    "_validate_snippets.py",     mut_no_focus,        ":focus-visible"),
     ("snippet gate bites on uppercase CSS",      "caps-css", "_validate_snippets.py",     mut_allcaps_css,     "ALL-CAPS text-transform"),
     ("snippet gate bites on ALL-CAPS text run",  "caps-txt", "_validate_snippets.py",     mut_allcaps_text,    "ALL-CAPS text run"),

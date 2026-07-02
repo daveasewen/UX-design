@@ -35,7 +35,14 @@ Full analysis: `REVIEW-2026-07-02-critical-regroup.html` (root).
    (CX, heuristics, content) enter at the **advisory** tier and earn promotion to
    blocking by being bite-tested.
 
-## Open item — token-store provenance (two-machine rule)
+## Open item — token-store provenance (two-machine rule) — ✅ RESOLVED 2026-07-02
+
+**Ruling (Dave, desk pickup 2026-07-02):** the premise was wrong — this is an
+**agency machine with company access**, not a home machine. Real brand values are
+cleared to live in this repo (route (a): machine cleared, `AGENTS.md` amended);
+calibration materials may land here under the same clearance. **History purge
+DEFERRED** — raw exports remain in git history; accepted risk while the repo is
+private; revisit if visibility or host changes. Original item preserved below.
 
 `knowledge/tokens/_raw/` (raw Figma exports, including real brand variable files)
 is now **untracked** (`.gitignore` + `git rm --cached`; files remain on local

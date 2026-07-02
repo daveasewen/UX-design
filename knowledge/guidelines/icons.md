@@ -115,16 +115,22 @@ guidelines) + **tappable area**.
    Dave, live HTML): Notifications + Confirmation pass; Input-fields passed with three
    review fixes (interactive tail icons, dark error border → red, rest-state centring)
    and is flagged a **supercharge** (brand-uplift rework) candidate — expect change.
-   Remaining tail: (a) formally promote the 4.5 icon threshold into the blocking gate
-   (evidence says cost = 0) and (b) mechanise the mark-vs-roundel check once marks are
-   tokenised — both sensibly deferred to supercharge. [REVIEW — gate promotion + mark
+   Remaining tail: ✅ (a) 4.5 threshold PROMOTED to blocking 2026-07-02 desk pickup
+   (Dave: "icons alone should have the small-text equivalent contrast at least") —
+   declared icon/* pairs held to 4.5:1 in `_validate_snippets.py` check 3, dead-zone
+   bite-tested (icon/default on data-vis blue-3, 3.66/3.45), suite 17/17, sweep cost 0.
+   Pictograms + RAG graphic indicators stay 3:1 (roundel policy). Still open: (b)
+   mechanise the mark-vs-roundel check once marks are tokenised. [REVIEW — mark
    tokenisation, deferred to supercharge] {#icon-015}
 2. **Size floor tension.** Site: minimum 16px (thicker-weight set below that). Toolkit
    tokens: `xsmall = 12px`. Consistent only if xsmall implies the thicker-weight set —
-   toolkit doesn't say. [REVIEW — check the design toolkits' icon sizing page] {#icon-016}
+   toolkit doesn't say. 📌 RULED (Dave, desk pickup): the full 12–48 range is permitted
+   for now — "prune if we have to". Toolkit export stays operative; no gate encoding.
+   [REVIEW — revisit only if the refresh publishes a hard floor] {#icon-016}
 3. **Max-size tension.** Hub: "three sizes 18/24/36, never scaled larger." Standard page:
    max 48, example set includes 48. Deeper page wins provisionally (48), but the source
-   disagrees with itself. [REVIEW — Create Direct query] {#icon-017}
+   disagrees with itself. 📌 RULED (Dave, desk pickup): 12–48 permitted, same ruling as
+   icon-016. [REVIEW — revisit only if the refresh settles the max] {#icon-017}
 
 ## Cross-references
 

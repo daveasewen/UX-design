@@ -60,12 +60,15 @@ def is_sufficient_contrast(ratio, context='text'):
 
     Args:
       ratio (float): contrast ratio (e.g., from contrast_ratio())
-      context (str): 'text' (4.5:1), 'large_text' (3:1), 'ui' (3:1)
+      context (str): 'text' (4.5:1), 'icon' (4.5:1 — brand icon-015, PROMOTED
+        blocking 2026-07-02, Dave: "icons alone should have the small-text
+        equivalent contrast at least"; pictograms/RAG indicators stay 'ui'/3:1),
+        'large_text' (3:1), 'ui' (3:1)
 
     Returns:
       bool: True if meets threshold
     """
-    if context == 'text':
+    if context in ('text', 'icon'):
         return ratio >= 4.5
     elif context in ('large_text', 'ui', 'indicator'):
         return ratio >= 3.0

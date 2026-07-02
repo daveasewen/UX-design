@@ -52,12 +52,16 @@ A **governed design-system engine**: canon (tokens + gated components) + criteri
 - Commits are conventional (`feat:`, `fix:`, `docs:`, `chore:`); provide a
   paste-ready summary + description with every commit.
 
-## Data hygiene (two-machine rule)
+## Data hygiene
 
-- **This/home machine:** synthetic + public data. **Agency machine:** real
-  design-system, Figma library and React components.
-- `knowledge/tokens/_raw/` is untracked (ADR-0005) — do **not** re-add raw
-  exports. Open item on derived token-store provenance: ADR-0005, owner Dave.
+- **RESOLVED (Dave, ADR-0005 close-out):** this is an **agency machine with
+  company access** — the old "home machine = synthetic only" premise was wrong.
+  Real design-system values (tokens, palettes, Figma exports) are cleared to
+  live in this repo. Calibration project materials may land here too.
+- `knowledge/tokens/_raw/` stays untracked (keeps the repo lean; raw exports
+  live on disk only). Git *history* still contains earlier raw exports — purge
+  via git-filter-repo DEFERRED by ruling (accepted risk, private repo; revisit
+  if the repo ever changes visibility or host).
 
 ## Compliance bar
 
