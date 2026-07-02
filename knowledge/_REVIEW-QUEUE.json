@@ -7,18 +7,18 @@
     "review": "inferred AND flagged for human verification before canon"
   },
   "totals": {
-    "items": 81,
+    "items": 123,
     "by_tier": {
-      "review": 75,
+      "review": 117,
       "inferred": 6
     },
     "by_category": {
-      "accessibility": 21,
-      "anti-pattern": 27,
-      "other": 4,
+      "accessibility": 26,
+      "anti-pattern": 51,
+      "other": 17,
       "token-rebind": 29
     },
-    "components_with_items": 25,
+    "components_with_items": 31,
     "review_token_rebinds": 25
   },
   "items": [
@@ -53,6 +53,134 @@
       "category": "anti-pattern",
       "text": "REVIEW (inferred): hard-coding the header text colour or rule colour instead of binding text/default and border/subtle tokens",
       "figma_node": "mI8hvIkV98nquoqWzKh5Kn:433:13167"
+    },
+    {
+      "component": "Account card",
+      "field": "tokens.$balance-type-finding",
+      "tier": "review",
+      "category": "other",
+      "text": "REVIEW: the balance uses a display/amount type (30px / line-height 1.1 / tabular-nums / -0.01em) with NO dedicated typography token. The gap report flagged 'display/amount type + money-format' as missing — confirm the size/role and add a token, or bind to an existing display type.",
+      "figma_node": ""
+    },
+    {
+      "component": "Account card",
+      "field": "relationships.commonPatterns",
+      "tier": "review",
+      "category": "other",
+      "text": "tappable account row that opens account detail (REVIEW: interactive variant?)",
+      "figma_node": ""
+    },
+    {
+      "component": "Account card",
+      "field": "behaviour.passive",
+      "tier": "review",
+      "category": "other",
+      "text": "REVIEW: drafted as a passive display card (no states). Decide whether an INTERACTIVE variant is needed (whole card tappable → account detail), which would add hover/pressed/focus like the Cards link variant + a focusable role.",
+      "figma_node": ""
+    },
+    {
+      "component": "Account card",
+      "field": "accessibility.screenReader",
+      "tier": "review",
+      "category": "accessibility",
+      "text": "REVIEW (inferred): the status dot is decorative (aria-hidden) — meaning is in the chip label text. Confirm the masked number ('···4821') reads acceptably, and whether the balance needs an explicit aria-label (e.g. 'Balance £3,248.55').",
+      "figma_node": ""
+    },
+    {
+      "component": "Account card",
+      "field": "antiPatterns",
+      "tier": "review",
+      "category": "anti-pattern",
+      "text": "REVIEW (inferred): conveying account status by the dot colour alone — keep the meaning in the label (1.4.1).",
+      "figma_node": ""
+    },
+    {
+      "component": "Account card",
+      "field": "antiPatterns",
+      "tier": "review",
+      "category": "anti-pattern",
+      "text": "REVIEW (inferred): rounding the card corners — cards are square (angular rule; Badge + Avatar are the only round exemptions).",
+      "figma_node": ""
+    },
+    {
+      "component": "Account card",
+      "field": "antiPatterns",
+      "tier": "review",
+      "category": "anti-pattern",
+      "text": "REVIEW (inferred): hard-coding the balance type instead of a display/amount token once one exists.",
+      "figma_node": ""
+    },
+    {
+      "component": "Account card",
+      "field": "tokenValidation.$note",
+      "tier": "review",
+      "category": "other",
+      "text": "REVIEW: this is a CANDIDATE from the gap report, not yet reconciled against a Figma component. If HSBC already has an account/balance card, bind to its node + tokens; if net-new, it needs design review + a Figma source.",
+      "figma_node": ""
+    },
+    {
+      "component": "Account card",
+      "field": "provenance.$note",
+      "tier": "review",
+      "category": "other",
+      "text": "REVIEW: no Figma node yet — surfaced by knowledge/_PAYMENTS-JOURNEY-GAPS.md. Needs a design owner + Figma source before promotion from candidate to gated.",
+      "figma_node": ""
+    },
+    {
+      "component": "Action bar",
+      "field": "accessibility.focusOrder",
+      "tier": "review",
+      "category": "accessibility",
+      "text": "REVIEW (inferred): DOM order is tertiary→secondary→primary (Back → Cancel → Confirm) so keyboard focus runs back-out → forward; the visual reorder at narrow widths (primary top, Back bottom) is CSS order only — confirm this does not conflict with 2.4.3 expectations.",
+      "figma_node": ""
+    },
+    {
+      "component": "Action bar",
+      "field": "antiPatterns",
+      "tier": "review",
+      "category": "anti-pattern",
+      "text": "REVIEW (inferred): more than ~3 actions in the bar — overflow secondary actions into a menu instead.",
+      "figma_node": ""
+    },
+    {
+      "component": "Action bar",
+      "field": "antiPatterns",
+      "tier": "review",
+      "category": "anti-pattern",
+      "text": "REVIEW (inferred): two competing primary (red) buttons — exactly one primary per bar.",
+      "figma_node": ""
+    },
+    {
+      "component": "Action bar",
+      "field": "antiPatterns",
+      "tier": "review",
+      "category": "anti-pattern",
+      "text": "REVIEW (inferred): giving Back a filled (primary/secondary) treatment — it is the lowest-emphasis action (tertiary/outlined).",
+      "figma_node": ""
+    },
+    {
+      "component": "Action bar",
+      "field": "antiPatterns",
+      "tier": "review",
+      "category": "anti-pattern",
+      "text": "REVIEW (inferred): rounding the buttons or the bar — brand is square/angular.",
+      "figma_node": ""
+    },
+    {
+      "component": "Action bar",
+      "field": "antiPatterns",
+      "tier": "review",
+      "category": "anti-pattern",
+      "text": "REVIEW (inferred): relying on the CSS reorder while leaving DOM order such that keyboard focus reaches Confirm before Cancel — keep DOM order logical (2.4.3).",
+      "figma_node": ""
+    },
+    {
+      "component": "Action bar",
+      "field": "provenance.$note",
+      "tier": "review",
+      "category": "other",
+      "text": "REVIEW: no Figma node yet — surfaced by the journey gap report (the .c-actionbar hand-util) and Button.meta commonPatterns. Needs a design owner + Figma source before promotion from candidate to gated.",
+      "figma_node": ""
     },
     {
       "component": "Avatar",
@@ -223,6 +351,78 @@
       "figma_node": "Cgbtrmfp15ruNFkIAClpkI:2298:53278"
     },
     {
+      "component": "Confirmation",
+      "field": "tokens.$icon-note",
+      "tier": "review",
+      "category": "other",
+      "text": "success-solid glyph: the tick is a cutout, so it shows the page colour behind (white tick on light, dark tick on dark). REVIEW: confirm the dark-mode tick reads acceptably or add a backing.",
+      "figma_node": ""
+    },
+    {
+      "component": "Confirmation",
+      "field": "responsive.$desktop-todo",
+      "tier": "review",
+      "category": "other",
+      "text": "REVIEW: a DESKTOP variant is still needed (wider / dialog-style layout, not full-bleed centred). Logged in _COMPONENT-GAPS.md (Dave, 2026-06-30).",
+      "figma_node": ""
+    },
+    {
+      "component": "Confirmation",
+      "field": "accessibility.screenReader",
+      "tier": "review",
+      "category": "accessibility",
+      "text": "REVIEW (inferred): confirm the message reads naturally after the title; consider whether the success should be announced via a live region when it appears mid-flow.",
+      "figma_node": ""
+    },
+    {
+      "component": "Confirmation",
+      "field": "antiPatterns",
+      "tier": "review",
+      "category": "anti-pattern",
+      "text": "REVIEW (inferred): conveying success by the green icon alone — the heading text must state what happened (1.4.1).",
+      "figma_node": ""
+    },
+    {
+      "component": "Confirmation",
+      "field": "antiPatterns",
+      "tier": "review",
+      "category": "anti-pattern",
+      "text": "REVIEW (inferred): two primary (red) buttons — one primary action; secondaries are ghost.",
+      "figma_node": ""
+    },
+    {
+      "component": "Confirmation",
+      "field": "antiPatterns",
+      "tier": "review",
+      "category": "anti-pattern",
+      "text": "REVIEW (inferred): auto-dismissing the confirmation before the user has read/acted on it.",
+      "figma_node": ""
+    },
+    {
+      "component": "Confirmation",
+      "field": "antiPatterns",
+      "tier": "review",
+      "category": "anti-pattern",
+      "text": "REVIEW (inferred): rounding the panel or buttons — brand is square/angular.",
+      "figma_node": ""
+    },
+    {
+      "component": "Confirmation",
+      "field": "antiPatterns",
+      "tier": "review",
+      "category": "anti-pattern",
+      "text": "REVIEW (inferred): UPPERCASE heading or message — house type rule is sentence case.",
+      "figma_node": ""
+    },
+    {
+      "component": "Confirmation",
+      "field": "provenance.$note",
+      "tier": "review",
+      "category": "other",
+      "text": "REVIEW: no Figma node yet — surfaced by the journey gap report. Needs a design owner + Figma source before promotion from candidate to gated.",
+      "figma_node": ""
+    },
+    {
       "component": "Countdown timer",
       "field": "accessibility.announce",
       "tier": "review",
@@ -317,6 +517,54 @@
       "category": "token-rebind",
       "text": "REVIEW (form/background/hover — same value)",
       "figma_node": "Cgbtrmfp15ruNFkIAClpkI:45024:56778"
+    },
+    {
+      "component": "Eyebrow",
+      "field": "tokens.$type-finding",
+      "tier": "review",
+      "category": "other",
+      "text": "REVIEW: uses 13px / line-height 1 / 500, sentence case, with NO dedicated 'eyebrow' type token — confirm the size/role or bind to a label type token if one exists.",
+      "figma_node": ""
+    },
+    {
+      "component": "Eyebrow",
+      "field": "accessibility.screenReader",
+      "tier": "review",
+      "category": "accessibility",
+      "text": "REVIEW (inferred): read inline before the heading it precedes. If purely decorative it may be redundant with the heading — confirm it adds meaning, otherwise consider aria-hidden.",
+      "figma_node": ""
+    },
+    {
+      "component": "Eyebrow",
+      "field": "antiPatterns",
+      "tier": "review",
+      "category": "anti-pattern",
+      "text": "REVIEW (inferred): marking the eyebrow up as a heading (h1–h6) — it is supplementary; the real heading must own the level (1.3.1).",
+      "figma_node": ""
+    },
+    {
+      "component": "Eyebrow",
+      "field": "antiPatterns",
+      "tier": "review",
+      "category": "anti-pattern",
+      "text": "REVIEW (inferred): using an accent/brand-red eyebrow on a light surface — 13px red on white fails 1.4.3 (text < 4.5:1); keep it text/secondary.",
+      "figma_node": ""
+    },
+    {
+      "component": "Eyebrow",
+      "field": "antiPatterns",
+      "tier": "review",
+      "category": "anti-pattern",
+      "text": "REVIEW (inferred): writing a sentence in the eyebrow — it is a 1–3 word kicker, not a subtitle.",
+      "figma_node": ""
+    },
+    {
+      "component": "Eyebrow",
+      "field": "provenance.$note",
+      "tier": "review",
+      "category": "other",
+      "text": "REVIEW: no Figma node yet — surfaced by the journey gap report (the .c-eyebrow hand-util). Needs a design owner + Figma source before promotion from candidate to gated.",
+      "figma_node": ""
     },
     {
       "component": "Headers",
@@ -629,6 +877,94 @@
       "category": "token-rebind",
       "text": "REVIEW — no rag/neutral-tint exists. Approved/declined/pending disabled use rag/*-tint; cancelled has no tint sibling, so it falls back to neutral-3. PROPER FIX: add a rag/neutral-tint token, then rebind.",
       "figma_node": "Cgbtrmfp15ruNFkIAClpkI:2298:164342"
+    },
+    {
+      "component": "Summary",
+      "field": "accessibility.screenReader",
+      "tier": "review",
+      "category": "accessibility",
+      "text": "REVIEW (inferred): confirm amounts read naturally (e.g. '£250.00' as 'two hundred and fifty pounds'); the value carries meaning, not its right-alignment.",
+      "figma_node": ""
+    },
+    {
+      "component": "Summary",
+      "field": "antiPatterns",
+      "tier": "review",
+      "category": "anti-pattern",
+      "text": "REVIEW (inferred): using a <table> for a simple two-column name/value list — a description list (dl) is the correct structure.",
+      "figma_node": ""
+    },
+    {
+      "component": "Summary",
+      "field": "antiPatterns",
+      "tier": "review",
+      "category": "anti-pattern",
+      "text": "REVIEW (inferred): centre-aligning values — keep keys left / values right so amounts align on a common edge.",
+      "figma_node": ""
+    },
+    {
+      "component": "Summary",
+      "field": "antiPatterns",
+      "tier": "review",
+      "category": "anti-pattern",
+      "text": "REVIEW (inferred): conveying the total only by size — it must also read as 'Total' in the key (1.3.1).",
+      "figma_node": ""
+    },
+    {
+      "component": "Summary",
+      "field": "provenance.$note",
+      "tier": "review",
+      "category": "other",
+      "text": "REVIEW: no Figma node yet — surfaced by the journey gap report (the .c-summary hand-util). Needs a design owner + Figma source before promotion from candidate to gated.",
+      "figma_node": ""
+    },
+    {
+      "component": "Tab-bar",
+      "field": "antiPatterns",
+      "tier": "review",
+      "category": "anti-pattern",
+      "text": "REVIEW (inferred): using a tab bar for in-page section switching — that is the Tabs component; a tab bar is app-level navigation.",
+      "figma_node": ""
+    },
+    {
+      "component": "Tab-bar",
+      "field": "antiPatterns",
+      "tier": "review",
+      "category": "anti-pattern",
+      "text": "REVIEW (inferred): signalling the current tab by colour alone — also swap to the filled glyph + set aria-current (1.4.1).",
+      "figma_node": ""
+    },
+    {
+      "component": "Tab-bar",
+      "field": "antiPatterns",
+      "tier": "review",
+      "category": "anti-pattern",
+      "text": "REVIEW (inferred): more than ~5 destinations — targets get too narrow; move overflow into a Menu item.",
+      "figma_node": ""
+    },
+    {
+      "component": "Tab-bar",
+      "field": "antiPatterns",
+      "tier": "review",
+      "category": "anti-pattern",
+      "text": "REVIEW (inferred): labels in UPPERCASE — house type rule is sentence case.",
+      "figma_node": ""
+    },
+    {
+      "component": "Tab-bar",
+      "field": "antiPatterns",
+      "tier": "review",
+      "category": "anti-pattern",
+      "text": "REVIEW (inferred): applying the pills variant's rounding/elevation to the standard bar — those are fenced to the exploratory pills variant; the standard bar stays flat/angular.",
+      "figma_node": ""
+    },
+    {
+      "component": "Tab-bar",
+      "field": "provenance.$note",
+      "tier": "review",
+      "category": "other",
+      "text": "REVIEW: no Figma node yet — surfaced by the journey gap report (the .c-tabbar hand-util). Needs a design owner + Figma source before promotion from candidate to gated.",
+      "figma_node": ""
     },
     {
       "component": "Tags",

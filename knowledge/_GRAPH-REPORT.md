@@ -2,7 +2,7 @@
 
 > Generated derived view over `knowledge/` (Graphify-inspired; no external dependency). Regenerate after editing component metas or tokens: `python3 knowledge/tokens/_build_blast_radius.py`. Authored canon stays the source of truth; this is a generated dashboard.
 
-**Totals:** 32 components · 644 tokens defined · 88 tokens referenced by components · compliance: 31 rules x 32 components (31 SCs).
+**Totals:** 38 components · 644 tokens defined · 88 tokens referenced by components · compliance: 31 rules x 38 components (31 SCs).
 
 ## God-nodes — highest token blast radius
 
@@ -10,47 +10,47 @@ Change one of these and the listed number of components is affected. Use before 
 
 | Token | Blast | Example components |
 |---|---|---|
-| `text/default` | 29 | Accordion, Avatar, Breadcrumbs, Button, Cards, Countdown timer… |
+| `text/default` | 34 | Accordion, Account card, Avatar, Breadcrumbs, Button, Cards… |
 | `icon/default` | 20 | Accordion, Avatar, Button, Cards, Dropdown, Headers… |
-| `text/reverse` | 15 | Avatar, Badge, Button, Cards, Dropdown, Hero… |
+| `text/reverse` | 17 | Action bar, Avatar, Badge, Button, Cards, Confirmation… |
 | `icon/default-reverse` | 14 | Avatar, Button, Cards, Dropdown, Hero, Input fields… |
 | `background/default` | 13 | Accordion, Cards, Dropdown, Input fields, Modals, Navigations… |
+| `typography/font-family/default` | 12 | Account card, Action bar, Avatar, Badge, Breadcrumbs, Button… |
+| `tertiary/background/default` | 11 | Account card, Action bar, Button, Cards, List items, Modals… |
 | `text/disabled` | 10 | Avatar, Button, Dropdown, Input fields, Links, List items… |
+| `border/subtle` | 9 | Accordion, Account card, Action bar, Avatar, Cards, Hero… |
 | `icon/disabled` | 9 | Avatar, Badge, Button, Dropdown, Input fields, Links… |
-| `tertiary/background/default` | 8 | Button, Cards, List items, Modals, Search field, Slider… |
-| `tertiary/background/hover` | 8 | Accordion, Avatar, Button, Cards, List items, Reorder… |
-| `color/primary` | 7 | Badge, Cards, Hero, Links, List items, Navigations… |
-| `divider/border/subsection` | 7 | Divider, Dropdown, Input fields, Navigations, Pagination, Search field… |
-| `elevation/functional` | 7 | Dropdown, Input fields, Navigations, Notifications, Search field, Tabs… |
-| `form/border/default` | 7 | Dropdown, Input fields, Search field, Selection controls, Slider, Tags… |
-| `border/subtle` | 6 | Accordion, Avatar, Cards, Hero, Navigations, Slider |
-| `divider/border/section` | 6 | Divider, Dropdown, List items, Pagination, Tabs, Tooltip |
+| `tertiary/background/hover` | 9 | Accordion, Avatar, Button, Cards, Confirmation, List items… |
+| `divider/border/subsection` | 8 | Divider, Dropdown, Input fields, Navigations, Pagination, Search field… |
+| `elevation/functional` | 8 | Dropdown, Input fields, Navigations, Notifications, Search field, Tab-bar… |
+| `form/border/default` | 8 | Account card, Dropdown, Input fields, Search field, Selection controls, Slider… |
+| `primary/background/default` | 8 | Action bar, Badge, Button, Confirmation, Hero, Links… |
 
 ## Token-group reach (components using each group)
 
 | Group | Components |
 |---|---|
-| `text/` | 30 |
+| `text/` | 36 |
 | `icon/` | 22 |
-| `tertiary/` | 14 |
+| `tertiary/` | 18 |
 | `background/` | 13 |
-| `divider/` | 9 |
-| `form/` | 9 |
-| `rag/` | 8 |
+| `typography/` | 12 |
+| `form/` | 10 |
+| `rag/` | 10 |
+| `divider/` | 10 |
+| `border/` | 9 |
+| `primary/` | 9 |
+| `elevation/` | 8 |
 | `padding/` | 7 |
-| `primary/` | 7 |
 | `color/` | 7 |
-| `elevation/` | 7 |
-| `border/` | 6 |
-| `typography/` | 6 |
-| `secondary/` | 4 |
+| `secondary/` | 6 |
 | `scrollbar/` | 3 |
 | `blur/` | 3 |
+| `focus/` | 3 |
 | `overlay/` | 3 |
 | `scale/` | 2 |
 | `image/` | 2 |
 | `border-width/` | 2 |
-| `focus/` | 2 |
 | `layout/` | 2 |
 | `timer/` | 1 |
 | `gap/` | 1 |

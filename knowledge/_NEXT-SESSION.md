@@ -1,5 +1,29 @@
 # Start here next session — open threads + framing
 
+## 📌 Parked 2026-07-02 (Dave's nagging questions — deliberately not derailed into)
+
+1. **Expressive register reach.** Should registers tier the *flex* dials too — spacing,
+   density, layout licence (e.g. sober = strict grid discipline, expressive = broken-grid
+   licence)? Note: composition/density are already flex for ALL registers (charter §3);
+   the open question is *differentiated licence bands per register*. Decide after calibration.
+2. **Guidance ingestion at scale ("the massive-brain designer").** The fluffy brand-guide
+   prose wasn't rejected by the engine — it had nowhere to *bite*. `guidelines/` already
+   stores it and the build already cross-references topical reach; what's missing is the
+   consumption side: an advisory judge that reads the guides per run (= G5 at full scale).
+   Fluff that turns out to be precisely statable gets distilled and promoted to blocking
+   via bite-test — the same promotion machine, applied to prose.
+2a. **Create.hsbc ingestion targets (from 2026-07-02 evening session):** the data-vis
+   accessibility deep page, the colour standards page, the illustration standards (pie
+   emphasis exception). DONE: data-vis foundations → `guidelines/data-visualisation.md`;
+   bar/pie/line type pages → `guidelines/data-visualisation-{bar,pie,line}-charts.md`
+   (all with enforcement-destiny tags). Dave's read: the site is rich with this — treat
+   ingestion as a standing workstream, not a one-off.
+3. **A11y depth.** The compliance KG maps 31 SCs × 38 components; the a11y gate enforces
+   only the statically-decidable few. That delta is "mapped, not enforced" — our own market
+   critique, applied inward. Growth path: extend deterministic checks (axe-core-style static
+   rules enter at advisory, earn blocking via bite-test); human/visual SCs stay advisory.
+   Deliberately NOT before calibration (decision #3 — the polish trap).
+
 ## ✅ UPDATE 2026-06-20 (autonomous day — coverage now 32/32, a11y gated)
 Three autonomous runs landed, all gate-verified, build green (now **6 gates**: dark-surface, snippet,
 **a11y**, **coverage**, integrity, schema; **32/32 snippets + metas**):

@@ -1,7 +1,7 @@
 {
   "$description": "Sutherland acceptance fixtures — per component, the contract a React implementation must satisfy to match the gated reference. Generated from snippet manifests + metas; regenerated each build.",
   "generated": "by _build_sutherland_fixtures.py",
-  "componentCount": 32,
+  "componentCount": 38,
   "fixtures": [
     {
       "component": "Accordion",
@@ -80,6 +80,149 @@
               "6"
             ],
             "default": "5"
+          }
+        ]
+      }
+    },
+    {
+      "component": "Account card",
+      "category": "molecule",
+      "referenceSnippet": "snippets/Account-card.reference.html",
+      "meta": "components/account-card.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--surface": "tertiary/background/default",
+          "--border": "border/subtle",
+          "--text": "text/default",
+          "--muted": "text/secondary",
+          "--tag-border": "form/border/default",
+          "--ok": "rag/success",
+          "--ok-tint": "rag/success-tint",
+          "--warn": "rag/warning",
+          "--warn-tint": "rag/warning-tint",
+          "--page": "background/default"
+        },
+        "requiredAria": [
+          "role=\"group\"",
+          "aria-labelledby",
+          "aria-hidden=\"true\""
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "tertiary/background/default",
+            "context": "text"
+          },
+          {
+            "fg": "text/secondary",
+            "bg": "tertiary/background/default",
+            "context": "text"
+          },
+          {
+            "fg": "text/default",
+            "bg": "rag/success-tint",
+            "context": "text"
+          },
+          {
+            "fg": "text/default",
+            "bg": "rag/warning-tint",
+            "context": "text"
+          }
+        ],
+        "props": [
+          {
+            "name": "status",
+            "type": "enum",
+            "values": [
+              "none",
+              "ok",
+              "warn",
+              "err",
+              "info"
+            ],
+            "default": "none",
+            "$note": "Optional RAG status chip in the meta row; meaning carried by the label text, not the dot."
+          },
+          {
+            "name": "tag",
+            "type": "boolean",
+            "default": false,
+            "$note": "Optional account-type tag (Tags atom)."
+          }
+        ]
+      }
+    },
+    {
+      "component": "Action bar",
+      "category": "molecule",
+      "referenceSnippet": "snippets/Action-bar.reference.html",
+      "meta": "components/action-bar.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--surface": "tertiary/background/default",
+          "--border": "border/subtle",
+          "--page": "background/default",
+          "--pri": "primary/background/default",
+          "--pri-hover": "primary/background/hover",
+          "--on-pri": "text/reverse",
+          "--sec": "secondary/background/default",
+          "--sec-hover": "secondary/background/hover",
+          "--label-invert": "text/on-inverse",
+          "--text": "text/default",
+          "--ter-border": "tertiary/border/default",
+          "--ter-hover": "tertiary/background/hover"
+        },
+        "requiredAria": [
+          "<button"
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/reverse",
+            "bg": "primary/background/default",
+            "context": "text"
+          },
+          {
+            "fg": "text/reverse",
+            "bg": "primary/background/hover",
+            "context": "text"
+          },
+          {
+            "fg": "text/on-inverse",
+            "bg": "secondary/background/default",
+            "context": "text"
+          },
+          {
+            "fg": "text/on-inverse",
+            "bg": "secondary/background/hover",
+            "context": "text"
+          },
+          {
+            "fg": "text/default",
+            "bg": "tertiary/background/default",
+            "context": "text"
+          },
+          {
+            "fg": "tertiary/border/default",
+            "bg": "tertiary/background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "text/default",
+            "bg": "tertiary/background/hover",
+            "context": "text"
+          }
+        ],
+        "props": [
+          {
+            "name": "sticky",
+            "type": "boolean",
+            "default": false,
+            "$note": "Pin the bar to the bottom of a scrolling flow (position:sticky)."
+          },
+          {
+            "name": "actions",
+            "type": "number",
+            "$note": "1–3 actions: one primary + optional secondary + optional tertiary (e.g. Back). More than 3 is an anti-pattern."
           }
         ]
       }
@@ -462,6 +605,78 @@
       }
     },
     {
+      "component": "Confirmation",
+      "category": "organism",
+      "referenceSnippet": "snippets/Confirmation.reference.html",
+      "meta": "components/confirmation.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--success": "rag/success",
+          "--text": "text/default",
+          "--muted": "text/secondary",
+          "--page": "background/default",
+          "--pri": "primary/background/default",
+          "--pri-hover": "primary/background/hover",
+          "--on-pri": "text/reverse",
+          "--ghost-hover": "tertiary/background/hover"
+        },
+        "requiredAria": [
+          "role=\"group\"",
+          "aria-labelledby",
+          "aria-hidden=\"true\""
+        ],
+        "contrastPairs": [
+          {
+            "fg": "rag/success",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "text/default",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "text/secondary",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "text/reverse",
+            "bg": "primary/background/default",
+            "context": "text"
+          },
+          {
+            "fg": "text/reverse",
+            "bg": "primary/background/hover",
+            "context": "text"
+          },
+          {
+            "fg": "text/default",
+            "bg": "tertiary/background/hover",
+            "context": "text"
+          }
+        ],
+        "props": [
+          {
+            "name": "title",
+            "type": "string",
+            "$note": "What completed, in plain words (e.g. 'Payment sent') — carries the success meaning, not the icon colour."
+          },
+          {
+            "name": "message",
+            "type": "string",
+            "$note": "One-line detail / what happens next."
+          },
+          {
+            "name": "actions",
+            "type": "number",
+            "$note": "1 primary (e.g. Done) + optional ghost (e.g. View receipt)."
+          }
+        ]
+      }
+    },
+    {
       "component": "Countdown timer",
       "category": "molecule",
       "referenceSnippet": "snippets/Countdown-timer.reference.html",
@@ -599,6 +814,11 @@
             "fg": "form/border/default",
             "bg": "background/default",
             "context": "ui"
+          },
+          {
+            "fg": "form/border/active",
+            "bg": "background/default",
+            "context": "ui"
           }
         ],
         "props": [
@@ -666,6 +886,39 @@
             ],
             "default": "default",
             "$note": "list-item level"
+          }
+        ]
+      }
+    },
+    {
+      "component": "Eyebrow",
+      "category": "atom",
+      "referenceSnippet": "snippets/Eyebrow.reference.html",
+      "meta": "components/eyebrow.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--muted": "text/secondary",
+          "--text": "text/default",
+          "--page": "background/default"
+        },
+        "requiredAria": [],
+        "contrastPairs": [
+          {
+            "fg": "text/secondary",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "text/default",
+            "bg": "background/default",
+            "context": "text"
+          }
+        ],
+        "props": [
+          {
+            "name": "text",
+            "type": "string",
+            "$note": "The kicker label; keep it to 1–3 words."
           }
         ]
       }
@@ -1519,6 +1772,8 @@
           "--icon": "icon/default",
           "--current-bd": "tertiary/border/default",
           "--hover": "form/background/hover",
+          "--pressed": "tertiary/background/pressed",
+          "--on-pressed": "text/reverse",
           "--focus": "focus/ring",
           "--page": "background/default"
         },
@@ -1542,6 +1797,11 @@
             "fg": "icon/default",
             "bg": "background/default",
             "context": "ui"
+          },
+          {
+            "fg": "text/reverse",
+            "bg": "tertiary/background/pressed",
+            "context": "text"
           }
         ],
         "props": [
@@ -1777,6 +2037,11 @@
           },
           {
             "fg": "form/border/default",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "form/border/active",
             "bg": "background/default",
             "context": "ui"
           },
@@ -2085,6 +2350,93 @@
               "disabled"
             ],
             "default": "default"
+          }
+        ]
+      }
+    },
+    {
+      "component": "Summary",
+      "category": "molecule",
+      "referenceSnippet": "snippets/Summary.reference.html",
+      "meta": "components/summary.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--muted": "text/secondary",
+          "--text": "text/default",
+          "--divider": "divider/border/subsection",
+          "--page": "background/default"
+        },
+        "requiredAria": [],
+        "contrastPairs": [
+          {
+            "fg": "text/secondary",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "text/default",
+            "bg": "background/default",
+            "context": "text"
+          }
+        ],
+        "props": [
+          {
+            "name": "total",
+            "type": "boolean",
+            "default": false,
+            "$note": "Emphasise the final row as a total (heavier weight, larger size)."
+          }
+        ]
+      }
+    },
+    {
+      "component": "Tab-bar",
+      "category": "molecule",
+      "referenceSnippet": "snippets/Tab-bar.reference.html",
+      "meta": "components/tab-bar.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--surface": "tertiary/background/default",
+          "--border": "border/subtle",
+          "--muted": "text/secondary",
+          "--text": "text/default",
+          "--sel-bg": "secondary/background/default",
+          "--sel-fg": "text/on-inverse",
+          "--focus": "focus/ring",
+          "--shadow": "elevation/functional",
+          "--page": "background/default"
+        },
+        "requiredAria": [
+          "aria-current=\"page\"",
+          "aria-label"
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/secondary",
+            "bg": "tertiary/background/default",
+            "context": "text"
+          },
+          {
+            "fg": "text/default",
+            "bg": "tertiary/background/default",
+            "context": "text"
+          },
+          {
+            "fg": "text/on-inverse",
+            "bg": "secondary/background/default",
+            "context": "ui"
+          }
+        ],
+        "props": [
+          {
+            "name": "items",
+            "type": "number",
+            "$note": "3–5 destinations. Fewer than 3 isn't a tab bar; more than 5 crowds the targets."
+          },
+          {
+            "name": "current",
+            "type": "string",
+            "$note": "The active destination — gets the filled glyph + text/default + aria-current='page'."
           }
         ]
       }

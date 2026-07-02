@@ -28,6 +28,7 @@ The product must OWN this stage:
 | **Cache** served the old file → manual `?v=N` | know caching exists | fresh-fetch every render (content hash / no-store) |
 | `file://` blocked by the browser tool | understand URL schemes | render over a scheme the engine can actually reach |
 | Sandbox renderer **segfaults** (exit 139) | care where it renders | ship a renderer with deps baked + a fallback path |
+| Screenshot compositor renders a correct DOM as a dark/inverted PNG (aarch64 headless shell, 2026-07-02 — DOM verified white via computed styles) | doubt a correct page | trust chain for renders: screenshot + computed-style probe must agree, or the render step reports itself unreliable |
 | Extension **"document idle"** flakiness (45s timeout) | retry blindly / wait | bounded wait + retry + a clear failure, never a silent hang |
 | Git **index-lock** friction (earlier sessions) | clear `.git/index.lock` | robust VCS handling, or surface none of it |
 | Missing licensed **font** → fallback render | install fonts | inject/bundle the brand font into the render context |

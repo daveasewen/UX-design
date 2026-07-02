@@ -35,16 +35,19 @@ These are non-negotiable and must come from the knowledge graph at generation ti
 - **Data-viz** — the encoding and the story — **on a canon data palette** (see gaps).
 - **Density, scale, emphasis.**
 
-## 4. Undecided — the rules not yet defined (need a call)
+## 4. Ratified curbs — decided 2026-07-02 (Dave)
 
-These are where the curb is currently **invisible**, so every run guesses. Each needs a decision + a default:
+Formerly "Undecided". All four rules are now explicit; no run guesses:
 
-| Question | Recommended default |
+| Rule | Ruling |
 |---|---|
-| Is **flatness** fixed, or unlocked in an expressive register? (gradients / glows / shadows) | Fixed in *sober/standard*; **unlock in *expressive*** with a defined elevation/gradient ramp. |
-| Is there a **brand dark / inverse surface** for use in light mode? | Yes — promote an `inverse/surface` role from the existing dark-theme values. |
-| How **red-forward** can a register go? (red primary actions) | Restrained in *sober* (red = destructive/accent only); **red primary allowed in *expressive***. |
-| **Corner radius** — always square? | Fixed square. (One of the few true curbs.) |
+| **Flatness** | Fixed (flat) in *sober* and *balanced*. **Unlocked in *expressive* only**, via a defined elevation/gradient ramp derived from brand neutrals — never free-hand. *(Ramp itself: promotion queue.)* **Carve-out (brand rule, `guidelines/data-visualisation.md`): data-chart fills stay flat in ALL registers — the gradient licence never enters a chart.** |
+| **Brand dark / inverse surface** | **Promoted.** An `inverse/surface` role derived from the existing dark-theme values, usable in light mode (the balanced register's "one bold moment"). *(Token promotion: queue.)* |
+| **Red-forward ceiling** | *Sober*: red = destructive/accent only. ***Balanced* and *expressive*: red may lead the primary action** — aligns the charter with brief v2 §2 and the approved balanced SME screen. |
+| **Corner radius** | **Fixed square in ALL registers, including expressive — rounding is forbidden.** A rounded **version of the design system** is named as possible future work; if it comes, it is a system variant, not a register privilege. *(The previously recorded Badge + Avatar round exemption stands unless separately revoked.)* |
+
+**Parked (2026-07-02, Dave):** register reach beyond colour/flatness — whether registers also
+tier the flex dials (spacing, density, layout licence). Not ratified; see `_NEXT-SESSION.md` §📌.
 
 ---
 

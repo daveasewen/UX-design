@@ -2,9 +2,9 @@
 
 > Every assertion in the component metas that is **not** directly observed canon. Formalises the in-prose confidence convention (Graphify-borrow #1). 🔴 **review** = verify before trusting; 🟡 **inferred** = reasoned, lower urgency. `asserted` items (the default) are not listed. Generated — regenerate after editing metas: `python3 knowledge/_build_review_queue.py`. Vocabulary in `_CONFIDENCE.md`; machine detail in `_REVIEW-QUEUE.json`.
 
-**Totals:** 81 items across 25 components — 75 🔴 review, 6 🟡 inferred. By category: token-rebind 29, anti-pattern 27, accessibility 21, other 4.
+**Totals:** 123 items across 31 components — 117 🔴 review, 6 🟡 inferred. By category: anti-pattern 51, token-rebind 29, accessibility 26, other 17.
 
-Most-flagged components: Badge (6), Countdown timer (5), Dropdown (5), Hero (5), List items (5), Tags (5), Accordion (4), Avatar (4).
+Most-flagged components: Account card (9), Confirmation (9), Action bar (7), Badge (6), Eyebrow (6), Tab-bar (6), Countdown timer (5), Dropdown (5).
 
 ## Token-rebind — verify before the Sutherland migration (29)
 
@@ -69,10 +69,16 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 - 🔴 `tokenValidation.depricateUsage.blockersNoEquivalent.rebind` — REVIEW — no live subtle-surface (Avatar/Headers/List/Nav/Quick-actions gap family)
 - 🔴 `tokenValidation.depricateUsage.blockersNoEquivalent.rebind` — REVIEW — no live on-dark surface (Avatar/Hero/List gap)
 
-## Accessibility — verify in code/with the a11y team (21)
+## Accessibility — verify in code/with the a11y team (26)
 
 **Accordion**
 - 🔴 `accessibility.focus` — REVIEW: the Figma component set defines default/hover/pressed but no explicit focus-visible state — confirm a visible focus indicator exists in code
+
+**Account card**
+- 🔴 `accessibility.screenReader` — REVIEW (inferred): the status dot is decorative (aria-hidden) — meaning is in the chip label text. Confirm the masked number ('···4821') reads acceptably, and whether the balance needs an explicit aria-label (e.g. 'Balance £3,248.55').
+
+**Action bar**
+- 🔴 `accessibility.focusOrder` — REVIEW (inferred): DOM order is tertiary→secondary→primary (Back → Cancel → Confirm) so keyboard focus runs back-out → forward; the visual reorder at narrow widths (primary top, Back bottom) is CSS order only — confirm this does not conf…
 
 **Avatar**
 - 🔴 `accessibility.screenReader` — REVIEW (inferred): image/icon avatars need an accessible name (e.g. the person's name) or be marked decorative if adjacent text already names them
@@ -87,6 +93,9 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 **Cards**
 - 🔴 `accessibility.interactive` — REVIEW (inferred): an interactive card should be a single focusable control (or have one clear primary link); avoid nested interactive elements that create multiple tab stops with unclear order
 
+**Confirmation**
+- 🔴 `accessibility.screenReader` — REVIEW (inferred): confirm the message reads naturally after the title; consider whether the success should be announced via a live region when it appears mid-flow.
+
 **Countdown timer**
 - 🔴 `accessibility.announce` — REVIEW (inferred): expose remaining time to assistive tech (e.g. role=timer / polite aria-live updates at sensible intervals) — don't rely on the depleting ring alone
 - 🔴 `accessibility.timingAdjustable` — REVIEW (inferred): where the countdown triggers an action (e.g. session timeout), provide a way to extend/turn off/adjust the limit (WCAG 2.2.1)
@@ -98,6 +107,9 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 **Dropdown**
 - 🔴 `accessibility.keyboard` — REVIEW (inferred): full keyboard operation — open/close, arrow navigation, type-ahead, Enter/Escape; native family inherits browser behaviour
 - 🔴 `accessibility.roles` — REVIEW (inferred): non-native must implement combobox/listbox semantics (aria-expanded, aria-activedescendant, option roles, aria-selected); prefer native where possible for robustness
+
+**Eyebrow**
+- 🔴 `accessibility.screenReader` — REVIEW (inferred): read inline before the heading it precedes. If purely decorative it may be redundant with the heading — confirm it adds meaning, otherwise consider aria-hidden.
 
 **Headers**
 - 🔴 `accessibility.headingSemantics` — REVIEW (inferred): map header titles to the correct heading level (h1/h2…) for screen-reader structure; display header is typically the screen's h1
@@ -122,12 +134,27 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 **Progress tracker**
 - 🔴 `accessibility.announce` — REVIEW (inferred): step changes should be announced (aria-live) as the user advances
 
-## Anti-patterns — confirm or promote to asserted (27)
+**Summary**
+- 🔴 `accessibility.screenReader` — REVIEW (inferred): confirm amounts read naturally (e.g. '£250.00' as 'two hundred and fifty pounds'); the value carries meaning, not its right-alignment.
+
+## Anti-patterns — confirm or promote to asserted (51)
 
 **Accordion**
 - 🔴 `antiPatterns` — REVIEW (inferred): hiding required or critical information inside a collapsed panel
 - 🔴 `antiPatterns` — REVIEW (inferred): deeply nesting accordions within accordions
 - 🔴 `antiPatterns` — REVIEW (inferred): hard-coding the header text colour or rule colour instead of binding text/default and border/subtle tokens
+
+**Account card**
+- 🔴 `antiPatterns` — REVIEW (inferred): conveying account status by the dot colour alone — keep the meaning in the label (1.4.1).
+- 🔴 `antiPatterns` — REVIEW (inferred): rounding the card corners — cards are square (angular rule; Badge + Avatar are the only round exemptions).
+- 🔴 `antiPatterns` — REVIEW (inferred): hard-coding the balance type instead of a display/amount token once one exists.
+
+**Action bar**
+- 🔴 `antiPatterns` — REVIEW (inferred): more than ~3 actions in the bar — overflow secondary actions into a menu instead.
+- 🔴 `antiPatterns` — REVIEW (inferred): two competing primary (red) buttons — exactly one primary per bar.
+- 🔴 `antiPatterns` — REVIEW (inferred): giving Back a filled (primary/secondary) treatment — it is the lowest-emphasis action (tertiary/outlined).
+- 🔴 `antiPatterns` — REVIEW (inferred): rounding the buttons or the bar — brand is square/angular.
+- 🔴 `antiPatterns` — REVIEW (inferred): relying on the CSS reorder while leaving DOM order such that keyboard focus reaches Confirm before Cancel — keep DOM order logical (2.4.3).
 
 **Avatar**
 - 🔴 `antiPatterns` — REVIEW (inferred): using an avatar as the sole accessible label for a control — pair with a text name
@@ -153,6 +180,13 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 - 🔴 `antiPatterns` — REVIEW (inferred): nesting multiple independent links/buttons inside an interactive (basic) card
 - 🔴 `antiPatterns` — REVIEW (inferred): using an interactive card style for non-interactive content (use basic-non-interactive)
 
+**Confirmation**
+- 🔴 `antiPatterns` — REVIEW (inferred): conveying success by the green icon alone — the heading text must state what happened (1.4.1).
+- 🔴 `antiPatterns` — REVIEW (inferred): two primary (red) buttons — one primary action; secondaries are ghost.
+- 🔴 `antiPatterns` — REVIEW (inferred): auto-dismissing the confirmation before the user has read/acted on it.
+- 🔴 `antiPatterns` — REVIEW (inferred): rounding the panel or buttons — brand is square/angular.
+- 🔴 `antiPatterns` — REVIEW (inferred): UPPERCASE heading or message — house type rule is sentence case.
+
 **Countdown timer**
 - 🔴 `antiPatterns` — REVIEW (inferred): conveying the countdown only via the ring graphic without an accessible/textual time value
 - 🔴 `antiPatterns` — REVIEW (inferred): using a countdown to force an action with no way to extend the time
@@ -162,6 +196,11 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 
 **Dropdown**
 - 🔴 `antiPatterns` — REVIEW (inferred): using a non-native dropdown without full combobox keyboard/ARIA support where native would be more robust
+
+**Eyebrow**
+- 🔴 `antiPatterns` — REVIEW (inferred): marking the eyebrow up as a heading (h1–h6) — it is supplementary; the real heading must own the level (1.3.1).
+- 🔴 `antiPatterns` — REVIEW (inferred): using an accent/brand-red eyebrow on a light surface — 13px red on white fails 1.4.3 (text < 4.5:1); keep it text/secondary.
+- 🔴 `antiPatterns` — REVIEW (inferred): writing a sentence in the eyebrow — it is a 1–3 word kicker, not a subtitle.
 
 **Headers**
 - 🔴 `antiPatterns` — REVIEW (inferred): using a display header where a section title suffices (visual-hierarchy inflation)
@@ -181,10 +220,41 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 **Slider**
 - 🔴 `antiPatterns` — REVIEW (inferred): using a slider where precise numeric entry is required (pair with an input)
 
-## Other (4)
+**Summary**
+- 🔴 `antiPatterns` — REVIEW (inferred): using a <table> for a simple two-column name/value list — a description list (dl) is the correct structure.
+- 🔴 `antiPatterns` — REVIEW (inferred): centre-aligning values — keep keys left / values right so amounts align on a common edge.
+- 🔴 `antiPatterns` — REVIEW (inferred): conveying the total only by size — it must also read as 'Total' in the key (1.3.1).
+
+**Tab-bar**
+- 🔴 `antiPatterns` — REVIEW (inferred): using a tab bar for in-page section switching — that is the Tabs component; a tab bar is app-level navigation.
+- 🔴 `antiPatterns` — REVIEW (inferred): signalling the current tab by colour alone — also swap to the filled glyph + set aria-current (1.4.1).
+- 🔴 `antiPatterns` — REVIEW (inferred): more than ~5 destinations — targets get too narrow; move overflow into a Menu item.
+- 🔴 `antiPatterns` — REVIEW (inferred): labels in UPPERCASE — house type rule is sentence case.
+- 🔴 `antiPatterns` — REVIEW (inferred): applying the pills variant's rounding/elevation to the standard bar — those are fenced to the exploratory pills variant; the standard bar stays flat/angular.
+
+## Other (17)
+
+**Account card**
+- 🔴 `tokens.$balance-type-finding` — REVIEW: the balance uses a display/amount type (30px / line-height 1.1 / tabular-nums / -0.01em) with NO dedicated typography token. The gap report flagged 'display/amount type + money-format' as missing — confirm the size/role and add a…
+- 🔴 `relationships.commonPatterns` — tappable account row that opens account detail (REVIEW: interactive variant?)
+- 🔴 `behaviour.passive` — REVIEW: drafted as a passive display card (no states). Decide whether an INTERACTIVE variant is needed (whole card tappable → account detail), which would add hover/pressed/focus like the Cards link variant + a focusable role.
+- 🔴 `tokenValidation.$note` — REVIEW: this is a CANDIDATE from the gap report, not yet reconciled against a Figma component. If HSBC already has an account/balance card, bind to its node + tokens; if net-new, it needs design review + a Figma source.
+- 🔴 `provenance.$note` — REVIEW: no Figma node yet — surfaced by knowledge/_PAYMENTS-JOURNEY-GAPS.md. Needs a design owner + Figma source before promotion from candidate to gated.
+
+**Action bar**
+- 🔴 `provenance.$note` — REVIEW: no Figma node yet — surfaced by the journey gap report (the .c-actionbar hand-util) and Button.meta commonPatterns. Needs a design owner + Figma source before promotion from candidate to gated.
 
 **Button**
 - 🟡 `props.$note` — default height 44px; 'Large' variant exists for primary (and likely all types) — confirm Large height.
+
+**Confirmation**
+- 🔴 `tokens.$icon-note` — success-solid glyph: the tick is a cutout, so it shows the page colour behind (white tick on light, dark tick on dark). REVIEW: confirm the dark-mode tick reads acceptably or add a backing.
+- 🔴 `responsive.$desktop-todo` — REVIEW: a DESKTOP variant is still needed (wider / dialog-style layout, not full-bleed centred). Logged in _COMPONENT-GAPS.md (Dave, 2026-06-30).
+- 🔴 `provenance.$note` — REVIEW: no Figma node yet — surfaced by the journey gap report. Needs a design owner + Figma source before promotion from candidate to gated.
+
+**Eyebrow**
+- 🔴 `tokens.$type-finding` — REVIEW: uses 13px / line-height 1 / 500, sentence case, with NO dedicated 'eyebrow' type token — confirm the size/role or bind to a label type token if one exists.
+- 🔴 `provenance.$note` — REVIEW: no Figma node yet — surfaced by the journey gap report (the .c-eyebrow hand-util). Needs a design owner + Figma source before promotion from candidate to gated.
 
 **Input fields**
 - 🟡 `dimensions.$description` — Geometry. BOXED captured from node 65570:211753 (2026-06-22): box padding 9px top / 11px bottom / 16px inline, 16px gap (prefix·value·icon), 1px form/border, ~46px standard height, Large ~+10px. UNDERLINE geometry below was INFERRED 2026…
@@ -194,3 +264,9 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 
 **Slider**
 - 🔴 `tokens.tick-marker (DEPRECATED)` — non-interactive (depricate)/border/on-light/neutral-6 (#767676) → REVIEW (rebind form/border/default | scrollbar/foreground — both #767676)
+
+**Summary**
+- 🔴 `provenance.$note` — REVIEW: no Figma node yet — surfaced by the journey gap report (the .c-summary hand-util). Needs a design owner + Figma source before promotion from candidate to gated.
+
+**Tab-bar**
+- 🔴 `provenance.$note` — REVIEW: no Figma node yet — surfaced by the journey gap report (the .c-tabbar hand-util). Needs a design owner + Figma source before promotion from candidate to gated.

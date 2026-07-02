@@ -12,7 +12,7 @@ Two tiers, with explicit promotion:
 2. Write it into the component's `motion` block in its `*.meta.json`.
 3. Add it to the gated `*.reference.html` so it's enforced.
 
-Canon stays deliberate and accessible-first; the showcases stay a safe sandbox. **A review pass is owed** to walk the queue below and decide each.
+Canon stays deliberate and accessible-first; the showcases stay a safe sandbox. **Token proposals live in `tokens/_proposals/` — OUTSIDE the resolving stores — until Dave's sign-off physically moves them in. A `$confidence` tag is not a fence; the store boundary is the fence (rule learned 2026-07-02).** **A review pass is owed** to walk the queue below and decide each.
 
 ## Pending promotion candidates (awaiting review)
 
@@ -26,6 +26,8 @@ Canon stays deliberate and accessible-first; the showcases stay a safe sandbox. 
 | Button — loading → success morph (spinner → drawn tick) | `button-AB-showcase.html` Route A | exploration; not reviewed for canon |
 | Selection controls — spring/overshoot on check-draw, radio-dot, switch-thumb + press-stretch | `selection-controls-AB-showcase.html` Route A | "deliberately springy"; canonical reference uses standard ease |
 | Links / Badge / Tooltip — Route A motion | `*-AB-showcase.html` (being built) | TBD |
+| **`inverse/surface` role** — brand dark surface for light-mode use, derived from dark-theme values | charter §4 ratification (2026-07-02, Dave) | **PROPOSED 2026-07-02, holding pen** (`tokens/_proposals/` — inverse/surface + inverse/text, derived from grey/dark-mode/600). NOT in the store; enters only on Dave's V6 sign-off. Was candidate token #1 on the balanced SME screen |
+| **Expressive elevation/gradient ramp** — the defined ramp that unlocks flatness in *expressive* only | charter §4 ratification (2026-07-02, Dave) | **PROPOSED 2026-07-02, holding pen** (`tokens/_proposals/` — gradient/expressive hero|neutral stops, derived from complimentary ramp + dark-mode neutrals). NOT in the store; expressive gets legal gradient values only on V6 sign-off |
 
 ## Tags / chips — notes for the promotion pass
 - Chip motion settled (exploration `_fitness-test/tags-chip-animation.html`): **V1 collapse+fade** exit;

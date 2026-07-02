@@ -1,27 +1,81 @@
 # Good morning, Dave ☕
 
+*Session briefing — written end of 2026-07-02, evening session ("the window day" — north-star mock + Fable-window sprint). Previous briefing (critical regroup, same date) superseded; its open items carried below.*
+
 ## The session in one line
-Promoted **Cards**, **List-items**, and **Status-indicator** to gated canon; locked the **hub-and-spoke code-binding model**; and settled the **passive-atom rubric question** — leaving three components at a clean 9/9 and the atom-reuse web visibly tightening.
 
-## The headline shifts
-1. **Code↔design naming is solved: hub-and-spoke (LOCKED 2026-06-22).** Figma node ID = the only identity; names are per-namespace — figma `name` / `$displayName`+`$aliases` (ours) / per-library `codeBindings` spokes. Never guess or normalise a code name; populate spokes from Code Connect. `codeBindings` is now a first-class field in `meta.schema.json`; procedure in `_RUNBOOK-onboard-code-library.md` (registered in README); saved to memory.
-2. **List-items transaction row → 9.0/9.** Reuses four canon primitives — **Avatar**, **Tags**, the **Loading-indicator** spinner (mirrored, not hard-coded), and the **Status-indicator** RAG tint chip. Now carries the **full RAG** status set (Pending/Declined/Approved), container-query reflow (1.4.10), roving Arrow/Home/End nav, native `:disabled`. Logged a **systemic `$darkFinding`**: `text/secondary` on the dark hover surface = 3.34:1 (<4.5), token-level, affects every row.
-3. **Status-indicator → 9.0/9.** Passive RAG atom, three forms (inline dot+label, square tint chip, live `aria-live`). Its tint chip **IS** the List-items status detail — cross-referenced both ways. Findings logged: amber dot 1.69:1 standalone (use the chip; label carries meaning, 1.4.1) and **`rag/neutral-tint` missing** from the store.
-4. **Rubric decision A (passive-atom AT).** A component meta can set `"interactive": false`; the scorer then credits AT via `role`/`aria-live`/`aria-label` instead of a keyboard handler it shouldn't have — but a passive component exposing *nothing* still scores 0, so the bar stays real. Lifted Status-indicator 8.5→9, Badge 6→7, Divider 5→6, Loading-indicator 5.5→6.
+The north-star mock got built and immediately started paying: two of its nine gaps closed
+same-day, GOV.UK proved the engine generalises, you ratified the four curbs, the advisory
+tier went live and caught real defects, the guidance-ingestion workstream opened (supporting
+palette + four data-vis guideline pages, enforcement-tagged) — and when I overstepped into
+the token store, the process caught it and we invented the holding pen.
 
-## State
-- **Board:** 3 at 9/9 (**Tabs, List-items, Status-indicator**); average 6.3/9.
-- **Build green** — `cd knowledge && python3 _build_all.py` (snippet 32/32, schema 32/32, integrity 0 errors). **Working tree clean** — everything above is committed (last commit: List-items full RAG).
-- **Parked:** Figma dark-mode port (task #19); `rag/neutral-tint` token gap; the dark hover/secondary-text `$darkFinding`.
+## What changed in the repo
 
-## First task next session — Table (★, 6.5/9), but decide one thing first
-The canonical Table (`table.meta.json`) is a **static semantic data table** — props are `headerType`/`orientation`/`cellAlign`; **no sort, no selection**. Its accessibility is `scope`/`caption`/reflow (1.3.1, 1.4.10), **not** `role`/`aria`/keyboard. So the rubric's AT signal doesn't fit it — **same shape as the passive-atom question we just solved.**
+1. **North-star mock (the "define just enough target" artifact):**
+   `_VISION-northstar-front-end_2026-07-02.html` — six regions, every one receipted
+   built/named/gap; three switchable layouts (your pick **frame + stages** is default);
+   blocked ≠ discarded (repair + harvest exits on the killed variant); gap list G1–G9 at
+   the bottom. G-statuses updated live as the day closed them.
+2. **GOV.UK second-system run — decision #4 CLOSED, same day, under timebox:**
+   `second-system-govuk/` — 5 gated components from public code source; snippet gate 5/5
+   (one patch: themes declared per system), a11y gate 5/5 (zero modifications); 9 findings
+   (F1–F9) in `_FINDINGS.md`. Verdict: **the engine generalises; HSBC coupling is shallow
+   and enumerable.** The gate bit GOV.UK's known yellow-focus weakness (F7) and my own
+   recall drift (F8).
+3. **Charter §4: RATIFIED (you):** flatness fixed sober/balanced, expressive-only unlock
+   via derived ramp (+ data-chart carve-out — see 7); inverse/surface promoted as a role;
+   red may lead in balanced+expressive; radius square in ALL registers (rounded system =
+   future variant, not a register privilege). Parked: register reach over spacing/layout.
+4. **G2 partially closed:** `knowledge/_RUNBOOK-criteria-contract.md` +
+   `runs/contract-001-sme-payments/contract.json` (hand-compiled, `agreedBy: null` —
+   honours its own rule). The compiler is the remaining half.
+5. **G5 live:** `_validate_advisory.py` — 3 prose rules executable at the advisory tier
+   (all-caps house rule, placeholder-as-only-name, unmasked digit runs); bite-tested 6/6
+   (`_tests/test_advisory.py`, in CI); build is now **16 steps** (advisory at #6, non-gating).
+   First run: 19 signals, incl. **a real unmasked sort code in `Table.reference.html`**.
+6. **Token governance — the day's most important lesson:** I minted 10 derived tokens into
+   the live store (review-tagged); you caught it. Now: `tokens/_proposals/` is the holding
+   pen — **outside the resolving stores; a tag is not a fence, the store boundary is the
+   fence** (recorded in `_PROMOTION-QUEUE.md`). Store restored; build green without them.
+7. **Ingested (your supplies, both penned/recorded with provenance):**
+   - **Supporting palette** — 50 values, 10 families, from your create.hsbc session →
+     `tokens/_proposals/supporting-palette.proposals.json` (contrast receipts per value;
+     supersedes my derived data series, which stay as format spec).
+   - **Data-vis guidance, 4 pages** → `guidelines/data-visualisation.md` + the bar / pie /
+     line companions — first guidelines of the engine era, every rule tagged with its
+     enforcement destiny (blocking-derivable / advisory-derivable / taste). Gate-candidate
+     hard rules captured: bar zero-baseline (mandatory) vs line zero-baseline (optional!),
+     pie 6-slice cap, slices sum-to-total, straight lines only, no negative values on
+     horizontal bars, spark aspect ratios. Charter carve-out recorded: **chart fills stay
+     flat in ALL registers.** Your call: ingestion is a standing workstream — the site is
+     rich with this (queued targets in `_NEXT-SESSION.md` §2a).
+8. **Robustness papercut logged:** sandbox screenshot compositor rendered a correct white
+   DOM as a dark PNG — trust-chain rule added to `_ROBUSTNESS-PORTABILITY.md` (G8 input).
 
-**Decide:** is Table `interactive:false`-like (credit semantic-table AT: caption + `scope` + a focusable scroll `region`), or does it earn AT the interactive way (sortable `<th>` buttons + `aria-sort` + keyboard)? Pick before building.
+## On your desk (fastest first)
 
-Its three gaps to 9/9: **states** (0.5), **AT** (0), **responsive** (0 — `overflow-x:auto` isn't counted; needs a real `@media`/container reflow). `table/*` tokens are already clean.
+- **V7 — charting series pick (~20s):** open `_fitness-test/v7-series-assignment-AB.html`.
+  Standing recommendation: **B + usage rule** (≤2 data sets → series-1+3 complementary pair;
+  ordered → family ramp). Queue entry has the full receipt.
+- **Table sort-code fix (~1 min):** `Table.reference.html` shows `40-12-08` unmasked —
+  charter §2 violation, propagates to the gallery. One-line fix; canon, so your approve.
+- **All-caps scope ruling:** house rule vs 17 uppercase signals across the HSBC canon —
+  canon-wide (migration) or brief-scoped (check reads the contract)? Advisory, no urgency.
+- **V6 — inverse/surface + expressive ramp proposals** (holding pen, swatches at
+  `_fitness-test/v6-token-proposals.html`).
+- **Colleague chase** — calibration materials (still the #1 unlock; jumps every queue).
+- **Token provenance (ADR-0005 open item)** — now also carries the supporting palette
+  (login-walled source) and the two-machine question.
 
-## The thing to hold
-You kept the work **honest** twice: Status-indicator went 8.5→9 by *fixing the rubric*, not faking a `keydown`; and findings got *flagged* (amber dot, neutral-tint, dark hover) rather than absorbed. That discipline — verification as enforcement — is the project working. Table will tempt you to bolt on sort just to chase 9/9; let the component's real nature decide instead.
+## The window (Fable metered from the 7th)
 
-Have a good one. 💧
+Judgment-dense work stays in the window: calibration (if materials land), G2 compiler spec,
+more guideline ingestion (targets queued in `_NEXT-SESSION.md` §2a). Plumbing (G6 diff,
+G8 render harness, G9 promote-on-win, G1 ingestion) is deliberately post-window — the gap
+entries are their briefs. The metering itself = the ADR-0005 portability test: tighten
+runbooks before the 7th, then a cold, cheaper operator runs the engine and the gates score it.
+
+## Waiting elsewhere (don't pick up unless Dave says so)
+
+Calibration project materials (colleague) · Q3 primary customer call (after calibration).

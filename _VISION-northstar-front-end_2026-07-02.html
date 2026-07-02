@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en" data-view="frame">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Promenaut — north-star front end · vision · 2026-07-02</title>
+<style>
+/* ============ Swiss tokens (swiss-design-system v2) ============ */
+:root{
+  --accent:#DB0011; --accent-3:#730014;
+  --black:#000; --white:#fff;
+  --grey-1:#F3F3F3; --grey-2:#EDEDED; --grey-3:#D7D8D6; --grey-4:#B7B7B7;
+  --grey-5:#9B9B9B; --grey-6:#767676; --grey-7:#545454; --grey-8:#333;
+  --s1:.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem; --s6:4rem; --s7:6rem;
+  --max:1200px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;color:var(--black);background:var(--white);font-size:16px;line-height:1.7}
+h1,h2,h3,h4{line-height:1.12;font-weight:400}
+a{color:inherit}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--s4)}
+
+/* house rule (test brief §4): no all-caps labels — tracking + size carry the label instead */
+.label{font-size:.75rem;font-weight:500;letter-spacing:.14em;color:var(--accent);display:flex;align-items:center;gap:var(--s1)}
+.label::before{content:'';display:inline-block;width:20px;height:1px;background:var(--accent)}
+.label.mono{color:var(--grey-7)}
+.label.mono::before{background:var(--grey-4)}
+
+/* ============ top nav + view switcher ============ */
+.topnav{position:sticky;top:0;z-index:50;background:var(--white);border-bottom:1px solid var(--grey-2);height:56px;display:flex;align-items:center}
+.topnav .wrap{display:flex;align-items:center;justify-content:space-between;width:100%}
+.brand{font-size:.875rem;font-weight:500;letter-spacing:.04em;display:flex;gap:var(--s2);align-items:center}
+.visiontag{font-size:.75rem;letter-spacing:.12em;color:var(--white);background:var(--black);padding:2px 10px}
+.views{display:flex;border:1px solid var(--grey-3)}
+.views button{font-family:inherit;font-size:.75rem;letter-spacing:.06em;background:var(--white);border:none;border-right:1px solid var(--grey-3);padding:8px 16px;cursor:pointer;color:var(--grey-6)}
+.views button:last-child{border-right:none}
+.views button.active{background:var(--black);color:var(--white)}
+.views button:hover:not(.active){color:var(--black)}
+.runmeta{font-size:.75rem;color:var(--grey-6);letter-spacing:.04em}
+
+/* ============ fence ============ */
+.fence{border-bottom:1px solid var(--grey-2);background:var(--grey-1)}
+.fence .wrap{display:grid;grid-template-columns:1fr 2fr 1fr;gap:var(--s4);padding-top:var(--s3);padding-bottom:var(--s3);align-items:center}
+.fence strong{font-weight:500}
+.fence p{font-size:.875rem;color:var(--grey-8);line-height:1.6}
+.legend{display:flex;gap:var(--s2);justify-content:flex-end;flex-wrap:wrap}
+.chip{font-size:.6875rem;letter-spacing:.08em;padding:3px 10px;white-space:nowrap}
+.chip.built{background:var(--black);color:var(--white)}
+.chip.named{background:var(--white);border:1px solid var(--black);color:var(--black)}
+.chip.gap{background:var(--white);border:1px solid var(--accent);color:var(--accent)}
+
+/* ============ hero ============ */
+.hero{padding:var(--s7) 0 var(--s6);border-bottom:1px solid var(--grey-2)}
+.hero h1{font-size:3.5625rem;font-weight:300;letter-spacing:0;max-width:900px;margin-top:var(--s3)}
+.hero .sub{margin-top:var(--s3);font-size:1.1875rem;color:var(--grey-7);max-width:760px}
+.hero .spine{margin-top:var(--s5);display:flex;gap:0;flex-wrap:wrap;font-size:.8125rem;color:var(--grey-7)}
+.hero .spine span{padding:6px 14px;border:1px solid var(--grey-3);border-right:none}
+.hero .spine span:last-child{border-right:1px solid var(--grey-3)}
+.hero .spine b{font-weight:500;color:var(--black)}
+
+/* ============ stage rail (frame view) ============ */
+.stagewrap{display:block}
+.stagerail{display:none}
+html[data-view="frame"] .stagewrap{display:grid;grid-template-columns:230px 1fr;max-width:1400px;margin:0 auto;padding:0 var(--s4);gap:var(--s5)}
+html[data-view="frame"] .stagerail{display:block;position:sticky;top:56px;align-self:start;height:calc(100vh - 56px);padding:var(--s5) 0;border-right:1px solid var(--grey-2)}
+.stagerail ol{list-style:none}
+.stagerail li{margin-bottom:2px}
+.stagerail a{display:flex;gap:10px;align-items:baseline;text-decoration:none;font-size:.8125rem;color:var(--grey-6);padding:9px 14px 9px 0;border-left:2px solid transparent;padding-left:12px}
+.stagerail a:hover{color:var(--black)}
+.stagerail a.active{color:var(--black);border-left-color:var(--accent)}
+.stagerail .idx{font-size:.6875rem;color:var(--grey-5)}
+.railfoot{margin-top:var(--s5);font-size:.6875rem;color:var(--grey-6);line-height:1.6;padding-right:var(--s3)}
+
+/* ============ regions — flow view (default) ============ */
+.regions{max-width:var(--max);margin:0 auto;padding:0 var(--s4)}
+html[data-view="frame"] .regions{max-width:none;padding:0}
+.region{display:grid;grid-template-columns:1fr 2.1fr;gap:var(--s6);padding:var(--s7) 0;border-top:1px solid var(--grey-2)}
+.region:first-child{border-top:none}
+.rhead .idx{font-size:5.25rem;font-weight:100;line-height:1;color:var(--grey-3)}
+.rhead h2{font-size:2.125rem;font-weight:400;margin-top:var(--s2)}
+.rhead .rsub{margin-top:var(--s2);font-size:.9375rem;color:var(--grey-7)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:var(--s3)}
+.receipts{margin-top:var(--s3);border-top:1px solid var(--grey-2);padding-top:var(--s3);font-size:.8125rem;line-height:1.6}
+.receipts li{list-style:none;margin-bottom:10px;padding-left:18px;position:relative;color:var(--grey-8)}
+.receipts li::before{content:'';position:absolute;left:0;top:.55em;width:8px;height:8px}
+.receipts li.built::before{background:var(--black)}
+.receipts li.named::before{border:1px solid var(--black)}
+.receipts li.gap::before{border:1px solid var(--accent)}
+.receipts code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.75rem;background:var(--grey-1);padding:1px 5px}
+
+/* ============ panels — the UI sketch ============ */
+.panel{border:1px solid var(--grey-3);background:var(--white)}
+.pbar{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--grey-2);padding:10px 16px;font-size:.75rem;color:var(--grey-6);letter-spacing:.04em}
+.pbody{padding:var(--s3) var(--s3) var(--s4)}
+.pane-title{font-size:.9375rem;font-weight:500;margin-bottom:var(--s2)}
+.btn{display:inline-block;font-size:.8125rem;font-weight:500;letter-spacing:.04em;padding:10px 22px;background:var(--black);color:var(--white);border:none;cursor:default}
+.btn.ghost{background:var(--white);color:var(--black);border:1px solid var(--grey-3);border-bottom:1px solid var(--accent)}
+.btn.quiet{background:var(--white);color:var(--grey-6);border:1px solid var(--grey-3)}
+.smallnote{font-size:.75rem;color:var(--grey-6);margin-top:var(--s2);line-height:1.6}
+.gaptag{display:inline-block;font-size:.6875rem;letter-spacing:.06em;border:1px solid var(--accent);color:var(--accent);padding:1px 8px;vertical-align:middle}
+
+/* R1 intake */
+.lanes{display:flex;border:1px solid var(--grey-3);margin-bottom:var(--s3)}
+.lane{flex:1;padding:12px 14px;font-size:.75rem;color:var(--grey-6);border-right:1px solid var(--grey-3);line-height:1.5}
+.lane:last-child{border-right:none}
+.lane b{display:block;font-weight:500;color:var(--grey-7)}
+.lane.active{background:var(--black);color:var(--grey-3)}
+.lane.active b{color:var(--white)}
+.briefcard{border:1px solid var(--grey-2);padding:var(--s3)}
+.briefcard h4{font-size:1rem;font-weight:500}
+.briefcard p{font-size:.8125rem;color:var(--grey-8);margin-top:6px}
+.briefmeta{display:flex;gap:var(--s2);flex-wrap:wrap;margin-top:var(--s2);font-size:.6875rem;color:var(--grey-6)}
+.briefmeta span{border:1px solid var(--grey-3);padding:2px 8px}
+.attach{margin-top:var(--s3);border-top:1px solid var(--grey-2);padding-top:var(--s2)}
+.attach li{list-style:none;display:flex;justify-content:space-between;align-items:baseline;font-size:.8125rem;padding:8px 0;border-bottom:1px solid var(--grey-1);gap:var(--s2)}
+.attach .astat{font-size:.6875rem;color:var(--grey-6);white-space:nowrap}
+
+/* R2 contract */
+.contract{font-size:.8125rem}
+.contract .csec{border-top:1px solid var(--grey-2);padding:var(--s2) 0;display:grid;grid-template-columns:150px 1fr;gap:var(--s3)}
+.contract .csec:first-child{border-top:none}
+.contract .ck{font-size:.75rem;letter-spacing:.08em;color:var(--grey-6);padding-top:2px}
+.contract ul{list-style:none}
+.contract li{padding:3px 0;color:var(--grey-8)}
+.contract li b{font-weight:500;color:var(--black)}
+.gatechips{display:flex;flex-wrap:wrap;gap:6px}
+.gatechips i{font-style:normal;font-size:.6875rem;border:1px solid var(--grey-3);padding:2px 8px;color:var(--grey-8)}
+.gatechips i.adv{border-style:dashed;color:var(--grey-6)}
+.gatechips i.nb{border:1px solid var(--black)}
+.signrow{margin-top:var(--s3);display:flex;align-items:center;gap:var(--s3);border-top:1px solid var(--grey-2);padding-top:var(--s3)}
+.signrow .who{font-size:.75rem;color:var(--grey-6)}
+
+/* R3 spread */
+.curbstrip{display:flex;gap:var(--s2);align-items:center;font-size:.6875rem;color:var(--grey-6);border:1px solid var(--grey-2);background:var(--grey-1);padding:8px 14px;margin-bottom:var(--s3);flex-wrap:wrap}
+.curbstrip b{color:var(--black);font-weight:500}
+.spread{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--grey-3);border:1px solid var(--grey-3)}
+.variant{background:var(--white);padding:var(--s2)}
+.vhead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.vhead b{font-size:.8125rem;font-weight:500}
+.tier{font-size:.625rem;letter-spacing:.08em;border:1px solid var(--grey-3);padding:1px 6px;color:var(--grey-6)}
+.vdesc{font-size:.6875rem;color:var(--grey-6);line-height:1.5;margin-top:8px;min-height:3em}
+/* canon-flavoured mini payment screens (hand-drawn for the sketch — see G8) */
+.mini{border:1px solid var(--grey-2);font-size:8px;line-height:1.35;overflow:hidden}
+.mini .m-top{display:flex;justify-content:space-between;padding:5px 7px;border-bottom:1px solid var(--grey-2);color:var(--grey-6)}
+.mini .m-red{width:14px;height:8px;background:var(--accent)}
+.mini .m-bal{padding:7px}
+.mini .m-bal small{display:block;color:var(--grey-6);font-size:7px}
+.mini .m-bal .fig{font-size:15px;font-weight:300;letter-spacing:0}
+.mini .m-rows div{display:flex;justify-content:space-between;padding:3px 7px;border-top:1px solid var(--grey-1);color:var(--grey-7)}
+.mini .m-cta{margin:6px 7px 7px;text-align:center;padding:4px 0;font-size:7px}
+.mini.sober .m-cta{border:1px solid var(--black);color:var(--black)}
+.mini.balanced .m-band{background:var(--black);color:var(--white);padding:7px}
+.mini.balanced .m-band small{color:var(--grey-4);display:block;font-size:7px}
+.mini.balanced .m-band .fig{font-size:15px;font-weight:300}
+.mini.balanced .m-cta{background:var(--accent);color:var(--white)}
+.mini.expressive .m-hero{background:linear-gradient(135deg,var(--accent-3),#1a0508 70%);color:var(--white);padding:10px 7px 12px}
+.mini.expressive .m-hero small{color:var(--grey-4);display:block;font-size:7px}
+.mini.expressive .m-hero .fig{font-size:17px;font-weight:300}
+.mini.expressive .m-cta{background:var(--accent);color:var(--white)}
+.blockedover{position:relative}
+.blockedover::after{content:'blocked — indicator contrast 2.7:1 (< 3:1)';position:absolute;inset:0;background:rgba(255,255,255,.88);display:flex;align-items:center;justify-content:center;font-size:.625rem;letter-spacing:.06em;color:var(--accent);text-align:center;padding:0 10px;border:1px solid var(--accent)}
+
+/* R4 gate report */
+.gtable{width:100%;border-collapse:collapse;font-size:.75rem}
+.gtable th,.gtable td{border:1px solid var(--grey-2);padding:7px 10px;text-align:left;font-weight:400}
+.gtable th{font-size:.6875rem;letter-spacing:.06em;color:var(--grey-6);background:var(--grey-1)}
+.gtable td.ok::before{content:'✓ ';color:var(--black)}
+.gtable td.bad{color:var(--accent)}
+.gtable td.bad::before{content:'✕ '}
+.gtable td.flag::before{content:'✓ ';color:var(--black)}
+.gtable td.flag i{font-style:normal;font-size:.625rem;border:1px dashed var(--grey-4);color:var(--grey-6);padding:0 5px;margin-left:5px}
+.advisory{margin-top:var(--s3);border:1px dashed var(--grey-3);padding:var(--s2) var(--s3)}
+.advisory h5{font-size:.75rem;letter-spacing:.08em;color:var(--grey-6);font-weight:500;margin-bottom:8px}
+.advisory li{list-style:none;font-size:.8125rem;padding:4px 0;color:var(--grey-8);display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.selftest{margin-top:var(--s2);font-size:.6875rem;color:var(--grey-6)}
+
+/* R5 taste */
+.taste{display:grid;grid-template-columns:1fr 1.3fr 1fr;gap:1px;background:var(--grey-3);border:1px solid var(--grey-3)}
+.tcell{background:var(--white);padding:var(--s2) var(--s3)}
+.tcell h5{font-size:.75rem;letter-spacing:.08em;color:var(--grey-6);font-weight:500;margin-bottom:10px}
+.tcell li{list-style:none;font-size:.75rem;padding:4px 0;color:var(--grey-8)}
+.abview{border:1px solid var(--grey-2);height:120px;display:flex;align-items:center;justify-content:center;color:var(--grey-5);font-size:.75rem;letter-spacing:.06em;margin-bottom:10px}
+.abbtns{display:flex;gap:6px;flex-wrap:wrap}
+.abbtns button{font-family:inherit;font-size:.6875rem;border:1px solid var(--grey-3);background:var(--white);padding:5px 12px;cursor:pointer;color:var(--grey-7)}
+.abbtns button.on{background:var(--black);color:var(--white)}
+.timer{font-size:2.6875rem;font-weight:100;line-height:1;margin:6px 0 2px}
+.timer small{font-size:.6875rem;color:var(--grey-6);letter-spacing:.06em;font-weight:400}
+.decide{display:flex;flex-direction:column;gap:8px;margin-top:var(--s2)}
+
+/* R6 promote */
+.pipeline{display:flex;align-items:stretch;gap:0;flex-wrap:wrap;margin-bottom:var(--s3)}
+.pstep{flex:1;min-width:110px;border:1px solid var(--grey-3);border-right:none;padding:12px 14px;font-size:.6875rem;line-height:1.5;color:var(--grey-7);position:relative}
+.pstep:last-child{border-right:1px solid var(--grey-3)}
+.pstep b{display:block;font-size:.75rem;font-weight:500;color:var(--black);margin-bottom:3px}
+.pstep.done{background:var(--grey-1)}
+.promorec{border:1px solid var(--grey-2);padding:var(--s2) var(--s3);font-size:.75rem;color:var(--grey-8);line-height:1.6}
+.promorec b{font-weight:500}
+.promorec .when{color:var(--grey-6);font-size:.6875rem}
+
+/* ============ one-screen view ============ */
+html[data-view="screen"] .regions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-areas:"r1 r3 r5" "r2 r4 r6";gap:1px;background:var(--grey-3);border:1px solid var(--grey-3);max-width:1400px;height:88vh;padding:0;font-size:14px}
+html[data-view="screen"] .region{display:block;background:var(--white);border-top:none;padding:var(--s3);overflow:auto;min-height:0}
+html[data-view="screen"] #r1{grid-area:r1} html[data-view="screen"] #r2{grid-area:r2}
+html[data-view="screen"] #r3{grid-area:r3} html[data-view="screen"] #r4{grid-area:r4}
+html[data-view="screen"] #r5{grid-area:r5} html[data-view="screen"] #r6{grid-area:r6}
+html[data-view="screen"] .rhead .idx{font-size:1.1875rem;color:var(--grey-4);font-weight:400;display:inline}
+html[data-view="screen"] .rhead h2{display:inline;font-size:1.1875rem;margin-left:8px}
+html[data-view="screen"] .rhead .rsub{display:none}
+html[data-view="screen"] .receipts{display:none}
+html[data-view="screen"] .chips{margin:10px 0}
+html[data-view="screen"] .panel{border:none}
+html[data-view="screen"] .pbody{padding:var(--s2) 0}
+html[data-view="screen"] .pbar{padding:8px 0}
+html[data-view="screen"] .hero{padding:var(--s4) 0}
+html[data-view="screen"] .hero h1{font-size:1.1875rem;font-weight:500}
+html[data-view="screen"] .hero .sub,html[data-view="screen"] .hero .spine{display:none}
+html[data-view="screen"] .taste{grid-template-columns:1fr}
+
+/* ============ frame view tweaks ============ */
+html[data-view="frame"] .region{grid-template-columns:1fr;gap:var(--s3);padding:var(--s5) var(--s4);border-top:1px solid var(--grey-2)}
+html[data-view="frame"] .rhead{display:grid;grid-template-columns:auto 1fr auto;gap:var(--s3);align-items:baseline}
+html[data-view="frame"] .rhead .idx{font-size:2.125rem;font-weight:300;color:var(--grey-4)}
+html[data-view="frame"] .rhead h2{font-size:1.1875rem;margin-top:0}
+html[data-view="frame"] .rhead .rsub{grid-column:2/4}
+html[data-view="frame"] .receipts{columns:2;column-gap:var(--s5)}
+html[data-view="frame"] .receipts li{break-inside:avoid}
+html[data-view="frame"] .chips{margin-top:0}
+html[data-view="frame"] .hero{padding:var(--s5) 0}
+html[data-view="frame"] .hero h1{font-size:2.125rem}
+
+/* ============ gaps + footer ============ */
+.gapsec{border-top:1px solid var(--grey-2);background:var(--grey-1);margin-top:var(--s7)}
+.gapsec .wrap{padding-top:var(--s7);padding-bottom:var(--s7);display:grid;grid-template-columns:1fr 2fr;gap:var(--s6)}
+.gapsec h2{font-size:2.125rem;font-weight:400;margin-top:var(--s2)}
+.gapsec .verdict{margin-top:var(--s3);font-size:.9375rem;color:var(--grey-7);line-height:1.7}
+.gaplist{border-top:1px solid var(--grey-3)}
+.gapitem{display:grid;grid-template-columns:52px 1fr;gap:var(--s3);padding:var(--s3) 0;border-bottom:1px solid var(--grey-3);font-size:.875rem}
+.gapitem .gid{font-weight:500;color:var(--accent)}
+.gapitem b{font-weight:500}
+.gapitem p{color:var(--grey-8);margin-top:4px;font-size:.8125rem;line-height:1.6}
+.gapitem .src{margin-top:6px;font-size:.75rem;color:var(--grey-6)}
+.gapitem .src code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.6875rem;background:var(--white);padding:1px 5px}
+.gapstatus{display:inline-block;font-size:.625rem;letter-spacing:.08em;padding:1px 8px;margin-left:8px;vertical-align:middle}
+.gapstatus.n{border:1px solid var(--black);color:var(--black)}
+.gapstatus.u{border:1px solid var(--accent);color:var(--accent)}
+.gapstatus.d{border:1px dashed var(--grey-6);color:var(--grey-6)}
+footer{border-top:1px solid var(--grey-2);padding:var(--s5) 0;font-size:.75rem;color:var(--grey-6);line-height:1.8}
+footer .wrap{display:grid;grid-template-columns:2fr 1fr;gap:var(--s5)}
+footer code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.6875rem}
+
+@media (max-width:900px){
+  .region,.fence .wrap,.gapsec .wrap,footer .wrap{grid-template-columns:1fr}
+  html[data-view="screen"] .regions{grid-template-columns:1fr;grid-template-areas:"r1" "r2" "r3" "r4" "r5" "r6";height:auto}
+  .taste{grid-template-columns:1fr}
+  .hero h1{font-size:2.125rem}
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="wrap">
+    <div class="brand">Promenaut <span class="visiontag">vision</span></div>
+    <div class="views" role="tablist" aria-label="layout view">
+      <button data-v="flow">flow — the day</button>
+      <button data-v="screen">one screen</button>
+      <button data-v="frame" class="active">frame + stages</button>
+    </div>
+    <div class="runmeta">run 2026-07-02 · sme-payments · Northgate Timber Ltd</div>
+  </div>
+</nav>
+
+<div class="fence">
+  <div class="wrap">
+    <p class="label">vision — fenced</p>
+    <p><strong>Goal-setting artifact, not a build backlog.</strong> One screen, one day. Every region carries its capability receipt; anything without one is a gap, logged at the bottom of this file. The "define just enough target" artifact from the 2026-06-20 strategy lock.</p>
+    <div class="legend">
+      <span class="chip built">built — file exists, gated</span>
+      <span class="chip named">named — recorded, not built</span>
+      <span class="chip gap">gap — goal, see list</span>
+    </div>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="label">north-star mock</p>
+    <h1>One screen, one day: judgment spent once, retrieved forever.</h1>
+    <p class="sub">The engine's operating model (README, 2026-07-02) worn as a front end. Content is the recorded SME-Payments worked example — figures verbatim from the test brief, never invented.</p>
+    <div class="spine">
+      <span><b>1</b> brief in</span><span><b>2</b> criteria contract</span><span><b>3</b> register spread</span><span><b>4</b> gate report</span><span><b>5</b> taste call</span><span><b>6</b> promote</span>
+    </div>
+  </div>
+</header>
+
+<div class="stagewrap">
+  <aside class="stagerail" aria-label="stages">
+    <ol>
+      <li><a href="#r1"><span class="idx">1</span> brief in</a></li>
+      <li><a href="#r2"><span class="idx">2</span> criteria contract</a></li>
+      <li><a href="#r3"><span class="idx">3</span> register spread</a></li>
+      <li><a href="#r4"><span class="idx">4</span> gate report</a></li>
+      <li><a href="#r5"><span class="idx">5</span> taste call</a></li>
+      <li><a href="#r6"><span class="idx">6</span> promote</a></li>
+    </ol>
+    <p class="railfoot">The host agent orchestrates (ADR-0005). This chrome is a sketch of the day, not a tool shell.</p>
+  </aside>
+
+  <main class="regions">
+
+    <!-- ============ 1 · BRIEF IN ============ -->
+    <section class="region" id="r1">
+      <div class="rhead">
+        <div class="idx">1</div>
+        <p class="label">intake</p>
+        <h2>Brief in</h2>
+        <p class="rsub">Three lanes by project maturity, converging on one contract. Research rides in with the brief.</p>
+        <div class="chips"><span class="chip built">brief format v2</span><span class="chip named">maturity router</span><span class="chip gap">G1 ingestion</span></div>
+        <ul class="receipts">
+          <li class="built">Structured brief exists and is proven: <code>knowledge/_TEST-BRIEF-v2-sme-payments.md</code> — intent + structural licence, register as an explicit field, immutable data, correctness rules.</li>
+          <li class="named">Adaptive maturity router, 3 lanes → one contract — pipeline spec v0.2, locked 2026-06-20.</li>
+          <li class="gap">Research-attachment ingestion → <b>G1</b>.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <div class="pbar"><span>intake · lane 3 of 3</span><span>sme-payments · v2</span></div>
+        <div class="pbody">
+          <div class="lanes">
+            <div class="lane"><b>seed idea</b>→ brainstorm</div>
+            <div class="lane"><b>half-formed</b>→ guided jtbd</div>
+            <div class="lane active"><b>well-specced</b>→ ingest + quiz</div>
+          </div>
+          <div class="briefcard">
+            <h4>Payments screen — Northgate Timber Ltd</h4>
+            <p>Finance admin, business current account <b>···· 8842</b>. At a glance: today's cash position, the month's coverage, payments awaiting approval, what's scheduled ahead.</p>
+            <div class="briefmeta">
+              <span>figures welded — never invent</span>
+              <span>structure licensed</span>
+              <span>register: spread ×3</span>
+              <span>retrieve, don't recall</span>
+            </div>
+          </div>
+          <ul class="attach">
+            <li>research-dossier.md <span class="astat">read · informs criteria</span></li>
+            <li>stakeholder-questionnaire.md <span class="astat">read · informs criteria</span></li>
+            <li>interview-notes (raw) <span class="astat"><span class="gaptag">G1</span> ingestion not built</span></li>
+          </ul>
+          <p class="smallnote">All lanes end in the same place: the criteria contract below. Nothing generates before it's agreed.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 2 · CRITERIA CONTRACT ============ -->
+    <section class="region" id="r2">
+      <div class="rhead">
+        <div class="idx">2</div>
+        <p class="label">definition of done</p>
+        <h2>Criteria contract</h2>
+        <p class="rsub">Agreed before generation. This document <em>is</em> the gates — verification moved upstream.</p>
+        <div class="chips"><span class="chip built">charter · metas · wcag kg</span><span class="chip named">per-run contract</span><span class="chip gap">G2 compiler</span><span class="chip gap">G3 curbs</span></div>
+        <ul class="receipts">
+          <li class="built">Fixed/flex charter + register dial: <code>knowledge/_FIXED-FLEX-CHARTER.md</code>. Per-component judgment: 39 <code>*.meta.json</code>. Compliance graph: 31 SCs × 38 components (bar per ADR-0004). Rubric: <code>_RUBRIC-prototype-grade.md</code>. Acceptance fixtures: sutherland.</li>
+          <li class="named">"Criteria contract — written first, becomes the gates": README operating model; spec v0.2 spine (spec/eval-first).</li>
+          <li class="gap">Brief → contract compiler + signed record → <b>G2</b>. Four undecided curbs → <b>G3</b>.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <div class="pbar"><span>contract · draft compiled from brief + charter</span><span><span class="gaptag">G2</span> compiler not built</span></div>
+        <div class="pbody contract">
+          <div class="csec">
+            <div class="ck">fixed — the curbs</div>
+            <ul>
+              <li><b>Brand palette</b> retrieved from token store — recall not allowed, 0 rogue hex</li>
+              <li><b>Type</b> — Univers + the ramp, from the scale</li>
+              <li><b>A11y floor</b> — AA contrast, focus-visible ring, target size, required ARIA per meta</li>
+              <li><b>Safety</b> — high-value approval (£45,200 payroll) requires confirmation; account refs masked, last-4 only</li>
+              <li><b>Logo placed</b>, never drawn · corner radius square</li>
+            </ul>
+          </div>
+          <div class="csec">
+            <div class="ck">flex — the road</div>
+            <ul>
+              <li>Composition, grid, templates — always inferred (canon has no template layer)</li>
+              <li>Concept, narrative, voice · density, scale, emphasis</li>
+              <li>Motion choreography — through canon easing tokens (<b>--spring</b>, <b>--press</b>)</li>
+              <li>Data-viz encoding — on a canon data palette <span class="gaptag">G7</span></li>
+            </ul>
+          </div>
+          <div class="csec">
+            <div class="ck">register</div>
+            <ul><li>Spread ×3 — sober · balanced · expressive. Same curbs; only the road differs. Red-forwardness tied to register <span class="gaptag">G3</span></li></ul>
+          </div>
+          <div class="csec">
+            <div class="ck">compiles to gates</div>
+            <div>
+              <div class="gatechips">
+                <i class="nb">compose · 0 rogue hex</i><i class="nb">text/icon contrast</i><i class="nb">indicator contrast</i><i class="nb">dark-surface flatness</i><i class="nb">snippet</i><i class="nb">icon-source</i><i class="nb">a11y</i><i class="nb">coverage</i><i class="nb">integrity</i>
+                <i class="adv">states probe</i><i class="adv">review queue</i><i class="adv">heuristics — named</i><i class="adv">cx — named</i>
+              </div>
+              <p class="smallnote">Solid border = blocking (build exits non-zero). Dashed = advisory (annotates, never blocks). Exactly the engine's tiering.</p>
+            </div>
+          </div>
+          <div class="signrow">
+            <span class="btn">Agree — contract becomes the gates</span>
+            <span class="who">Dave · 2026-07-02 · nothing generates before this click</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 3 · REGISTER SPREAD ============ -->
+    <section class="region" id="r3">
+      <div class="rhead">
+        <div class="idx">3</div>
+        <p class="label">generation</p>
+        <h2>Register spread</h2>
+        <p class="rsub">N variants on the same fixed curbs, differing only on the road. The register is a visible dial, not a buried adjective.</p>
+        <div class="chips"><span class="chip built">multi-variant · tiering · live artifacts</span><span class="chip gap">G4 gen-time gating</span><span class="chip gap">G8 render harness</span></div>
+        <ul class="receipts">
+          <li class="built">Multi-variant per run + T1/T2/T3 tiering: charter §7–8. Register as input: brief §2. Retrieval-not-recall: charter §5. Live proof: <code>_fitness-test/sme-payments-registers.html</code> (+ sober / balanced / final).</li>
+          <li class="gap">Curb gates run in review, not while generating → <b>G4</b>. These panes should be live gated renders, not hand-drawn thumbnails → <b>G8</b>.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <div class="pbar"><span>3 variants · same contract · same figures</span><span>thumbnails hand-drawn for this sketch — see G8</span></div>
+        <div class="pbody">
+          <div class="curbstrip"><b>curbs held across all three:</b><span>palette retrieved</span><span>Univers ramp</span><span>AA floor</span><span>masked ···· 8842</span><span>square radius</span><span>logo placed</span></div>
+          <div class="spread">
+            <div class="variant">
+              <div class="vhead"><b>sober</b><span class="tier">T1 · canon</span></div>
+              <div class="mini sober">
+                <div class="m-top"><span>Northgate Timber</span><span class="m-red"></span></div>
+                <div class="m-bal"><small>current balance</small><span class="fig">£122,450</span><small>net today +£2,450</small></div>
+                <div class="m-rows">
+                  <div><span>BrightHire Payroll</span><span>£45,200</span></div>
+                  <div><span>Amazon Business</span><span>£4,502</span></div>
+                </div>
+                <div class="m-cta">Review 2 approvals</div>
+              </div>
+              <p class="vdesc">Light, flat, generous space. Red as accent/destructive only. Motion minimal.</p>
+            </div>
+            <div class="variant">
+              <div class="vhead"><b>balanced</b><span class="tier">T2 · candidate</span></div>
+              <div class="mini balanced">
+                <div class="m-top"><span>Northgate Timber</span><span class="m-red"></span></div>
+                <div class="m-band"><small>current balance</small><span class="fig">£122,450</span><small>covered through May · buffer £72,748</small></div>
+                <div class="m-rows">
+                  <div><span>Awaiting approval (2)</span><span>£49,702</span></div>
+                </div>
+                <div class="m-cta">Approve payroll · £45,200</div>
+              </div>
+              <p class="vdesc">One bold moment — the dark band. Red may lead the primary action. Carries 2 candidate tokens, derived + flagged.</p>
+            </div>
+            <div class="variant">
+              <div class="vhead"><b>expressive</b><span class="tier">T2 · candidate</span></div>
+              <div class="blockedover">
+                <div class="mini expressive">
+                  <div class="m-hero"><small>Northgate Timber · May position</small><span class="fig">£122,450</span><small>scheduled £106,302 · est. closing £124,000</small></div>
+                  <div class="m-rows">
+                    <div><span>Ravenscroft Properties</span><span>£50,200</span></div>
+                  </div>
+                  <div class="m-cta">Act on 2 approvals</div>
+                </div>
+              </div>
+              <p class="vdesc">Editorial: dark hero, gradient unlocked, red leads. One gate bit — see the report.</p>
+              <p class="vdesc" style="min-height:0;border-top:1px solid var(--grey-2);padding-top:6px"><b style="color:var(--black);font-weight:500">Blocked ≠ discarded.</b> Two exits: <b style="color:var(--black);font-weight:500">repair</b> — one measurable failure, recolor the series and re-gate; or <b style="color:var(--black);font-weight:500">harvest</b> — the hero treatment is recorded as T3 exploration, a signal not a deliverable (charter §8), same path the 3D-depress button took before scale-physics entered canon.</p>
+            </div>
+          </div>
+          <p class="smallnote">Divergence is the point — the spread literally shows the width of the road between the curbs (charter §7).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 4 · GATE REPORT ============ -->
+    <section class="region" id="r4">
+      <div class="rhead">
+        <div class="idx">4</div>
+        <p class="label">enforcement</p>
+        <h2>Gate report</h2>
+        <p class="rsub">Blocking gates kill the broken; advisory signals annotate the survivors. Tiered exactly as the build tiers them.</p>
+        <div class="chips"><span class="chip built">15-step build · screen gate · self-tested</span><span class="chip named">heuristics · cx advisory</span><span class="chip gap">G5</span></div>
+        <ul class="receipts">
+          <li class="built">The 15-step gated build: <code>knowledge/_build_all.py</code> — blocking: compose/token fidelity, both contrast audits, dark-surface flatness, snippet, icon-source, a11y, coverage, integrity. Composed-screen gate: <code>_validate_screen.py</code> → <code>_SCREEN-GATE.md</code>. Advisory: states probe (44/51), review queue.</li>
+          <li class="built">The gates are themselves gated: 14 bite-tests in <code>_tests/test_gates.py</code> + CI on every push (<code>.github/workflows/gates.yml</code>) — first run caught a real bug.</li>
+          <li class="named">Heuristics / CX / content checks enter at the advisory tier and earn promotion by being bite-tested — ADR-0005 §5. None built → <b>G5</b>.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <div class="pbar"><span>run gates · blocking</span><span>2 of 3 variants survive</span></div>
+        <div class="pbody">
+          <table class="gtable">
+            <tr><th>gate</th><th>sober</th><th>balanced</th><th>expressive</th></tr>
+            <tr><td>compose — 0 rogue hex, all tokens resolve</td><td class="ok">pass</td><td class="flag">pass <i>2 candidates</i></td><td class="ok">pass</td></tr>
+            <tr><td>text / icon contrast</td><td class="ok">pass</td><td class="ok">pass</td><td class="ok">pass</td></tr>
+            <tr><td>indicator / accent contrast</td><td class="ok">pass</td><td class="ok">pass</td><td class="bad">2.7:1 on dark hero — blocked</td></tr>
+            <tr><td>dark-surface flatness</td><td class="ok">pass</td><td class="ok">pass</td><td class="ok">pass</td></tr>
+            <tr><td>snippet conformance</td><td class="ok">pass</td><td class="ok">pass</td><td class="ok">pass</td></tr>
+            <tr><td>icon-source — library-matched</td><td class="ok">pass</td><td class="ok">pass</td><td class="ok">pass</td></tr>
+            <tr><td>a11y — required ARIA, focus, targets</td><td class="ok">pass</td><td class="ok">pass</td><td class="ok">pass</td></tr>
+            <tr><td>coverage · integrity</td><td class="ok">pass</td><td class="ok">pass</td><td class="ok">pass</td></tr>
+          </table>
+          <div class="advisory">
+            <h5>advisory — annotates, never blocks</h5>
+            <ul>
+              <li>states probe — 44/51 applicable states demonstrated · 7 gaps flagged on approval rows</li>
+              <li>review queue — 3 annotations (1 anti-pattern candidate on the balanced band)</li>
+              <li>heuristics <span class="chip named">named — ADR-0005 §5</span> · cx <span class="chip named">named</span> · content <span class="chip named">named</span> <span class="gaptag">G5</span></li>
+            </ul>
+          </div>
+          <p class="selftest">Trust chain: every blocking gate is fed a deliberately-broken input and must bite — 14 self-tests, CI on push.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 5 · TASTE CALL ============ -->
+    <section class="region" id="r5">
+      <div class="rhead">
+        <div class="idx">5</div>
+        <p class="label">the human ~20 seconds</p>
+        <h2>Taste call</h2>
+        <p class="rsub">Evidence + diff + A/B — never a blank canvas. Craft is gated; only taste reaches the human.</p>
+        <div class="chips"><span class="chip built">a/b pattern · recorded calls</span><span class="chip named">20-second call · taste tier</span><span class="chip gap">G6 diff</span></div>
+        <ul class="receipts">
+          <li class="built">A/B as working practice: <code>_fitness-test/*-AB-showcase.html</code>. Taste calls recorded and honoured: <code>_PROMOTION-QUEUE.md</code> ("2 is good" → dropdown V2 queued). HITL as a designed component survives from the harness (ADR-0005 §3).</li>
+          <li class="named">The ~20-second taste call: README operating model. Taste as the third check tier: spec v0.2.</li>
+          <li class="gap">Visual diff between survivors → <b>G6</b> — not built and, until this file, not even named.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <div class="pbar"><span>decide · 2 survivors</span><span>craft already verified — this is taste only</span></div>
+        <div class="pbody taste">
+          <div class="tcell">
+            <h5>evidence</h5>
+            <ul>
+              <li>Both passed all 9 blocking gates</li>
+              <li>balanced carries 2 candidate tokens — inverse/surface (from dark ramp) · data/series-2 (from canon teal)</li>
+              <li>advisory: 7 state gaps flagged, both variants</li>
+              <li>expressive blocked (indicator contrast) — not on your desk; its hero treatment harvested to the exploration ledger, repair-and-re-gate available</li>
+            </ul>
+          </div>
+          <div class="tcell">
+            <h5>compare</h5>
+            <div class="abview" id="abview">A — sober · full render</div>
+            <div class="abbtns">
+              <button class="on" data-ab="A — sober · full render">A · sober</button>
+              <button data-ab="B — balanced · full render">B · balanced</button>
+              <button data-ab="A/B — flicker compare">A/B</button>
+              <button data-ab="diff — not built (G6)">diff <span class="gaptag">G6</span></button>
+            </div>
+          </div>
+          <div class="tcell">
+            <h5>the call</h5>
+            <div class="timer">0:20<small> — the budget for this decision</small></div>
+            <div class="decide">
+              <span class="btn">Pick balanced</span>
+              <span class="btn quiet">Pick sober</span>
+              <span class="btn quiet">Return with note</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 6 · PROMOTE ============ -->
+    <section class="region" id="r6">
+      <div class="rhead">
+        <div class="idx">6</div>
+        <p class="label">canon entry</p>
+        <h2>Promote</h2>
+        <p class="rsub">The winner's judgment is written down once — tokens, meta, gated reference — and retrieved by every future run.</p>
+        <div class="chips"><span class="chip built">promotion path · 3 shipped</span><span class="chip gap">G9 promote-on-win</span></div>
+        <ul class="receipts">
+          <li class="built">The promote machine, proven three times: tokenise → meta → gated reference (<code>_PROMOTION-QUEUE.md</code>: input-fields focus, tabs overflow, button scale-physics). Method: <code>_RUNBOOK-gated-component.md</code>. Candidate flagging: charter §6.</li>
+          <li class="gap">Today the queue is walked manually, after the fact. Winner-event → promotion wiring → <b>G9</b>.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <div class="pbar"><span>promote · balanced won</span><span>judgment spent once</span></div>
+        <div class="pbody">
+          <div class="pipeline">
+            <div class="pstep done"><b>winner</b>balanced · Dave · 0:14</div>
+            <div class="pstep done"><b>tokenise</b>inverse/surface · data/series-2 → tokens/*.json</div>
+            <div class="pstep done"><b>meta</b>judgment → payments-hero.meta.json — bindings, contrast pairs, ARIA, states</div>
+            <div class="pstep done"><b>reference</b>gated *.reference.html — enforced, not exemplary</div>
+            <div class="pstep done"><b>build green</b>15/15 · self-tests bite</div>
+            <div class="pstep"><b>retrieved forever</b>next brief starts from here — the road just got wider</div>
+          </div>
+          <div class="promorec">
+            <b>What this looks like when real</b> — from the queue, 2026-06-22: <em>Button "refined scale-physics" promoted — tokenised motion/easing/spring + motion/duration/press; written into button.meta motion block; gated reference updated; build green.</em> <span class="when">Three promotions shipped through this machine to date.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ============ THE GAP LIST — the point of this artifact ============ -->
+<section class="gapsec" id="gaps">
+  <div class="wrap">
+    <div>
+      <p class="label">the goal list</p>
+      <h2>Gaps — what the screen demands that the engine can't yet say</h2>
+      <p class="verdict">Every region above maps to something built or named — except where a <span class="gaptag">G</span> appears. Those nine tags are the distance between the engine and this screen. That list, not this mock, is the deliverable.</p>
+    </div>
+    <div class="gaplist">
+      <div class="gapitem"><div class="gid">G1</div><div><b>Research-attachment ingestion</b><span class="gapstatus n">named, not built</span>
+        <p>Lane 3 ("well-specced → ingest + quiz") is named in the pipeline spec; nothing reads a dossier or interview notes into criteria today.</p>
+        <p class="src">source: pipeline spec v0.2 · region 1</p></div></div>
+      <div class="gapitem"><div class="gid">G2</div><div><b>Brief → contract compiler, and the signed record</b><span class="gapstatus n">template + worked example 2026-07-02 · compiler open</span>
+        <p>Contract format now exists: <code>_RUNBOOK-criteria-contract.md</code> + <code>runs/contract-001-sme-payments/contract.json</code> (hand-compiled from brief v2, agreedBy null until signed). The compiler that makes it mechanical stays open.</p>
+        <p class="src">source: README operating model · spec v0.2 spine · region 2</p></div></div>
+      <div class="gapitem"><div class="gid">G3</div><div><b>Four undecided curbs</b><span class="gapstatus n">ratified 2026-07-02</span>
+        <p>Closed same day: flatness fixed sober/balanced, unlocked expressive via derived ramp; inverse/surface promoted; red may lead in balanced + expressive; radius square in all registers — a rounded system is future work, not a register licence.</p>
+        <p class="src">source: <code>_FIXED-FLEX-CHARTER.md</code> §4 (ratified) · region 2</p></div></div>
+      <div class="gapitem"><div class="gid">G4</div><div><b>Generation-time gating</b><span class="gapstatus n">named, not built</span>
+        <p>The compose/curb machine runs in review, after the fact. Charter §6.4 says it plainly: it needs to run at generation time. This is the engine's core promise worn live.</p>
+        <p class="src">source: <code>_FIXED-FLEX-CHARTER.md</code> §6.4 · region 3</p></div></div>
+      <div class="gapitem"><div class="gid">G5</div><div><b>Heuristics · CX · content advisory checks</b><span class="gapstatus n">first three live 2026-07-02</span>
+        <p>First prose rules made executable at the advisory tier: all-caps labels (house rule), placeholder-as-label, unmasked number runs — <code>_validate_advisory.py</code>, bite-tested (6/6), in the build (step 6/16) and CI. First run: 19 signals incl. one real safety-pattern catch. Heuristics/CX at scale stay open.</p>
+        <p class="src">source: ADR-0005 §5 · region 4</p></div></div>
+      <div class="gapitem"><div class="gid">G6</div><div><b>Visual diff for the taste call</b><span class="gapstatus u">new — first named here</span>
+        <p>A/B exists as practice; a diff between gate-surviving variants does not, and appears in no recorded doc. This file names it.</p>
+        <p class="src">source: this mock · region 5</p></div></div>
+      <div class="gapitem"><div class="gid">G7</div><div><b>Canon data-viz palette</b><span class="gapstatus n">named, not built</span>
+        <p>Official supporting palette (50 values, 10 families) supplied by Dave 2026-07-02 and penned with contrast receipts — series assignment awaits his call (V7). Derivation fallback superseded.</p>
+        <p class="src">source: <code>_FIXED-FLEX-CHARTER.md</code> §3, §6.2 · regions 2–3</p></div></div>
+      <div class="gapitem"><div class="gid">G8</div><div><b>N-variant render + visual-QA harness</b><span class="gapstatus n">named, not built</span>
+        <p>"Render + visual QA" is a step in the README's operating model; today it's a human with a browser. The spread's panes should be live gated renders — the thumbnails above are hand-drawn stand-ins.</p>
+        <p class="src">source: README operating model · region 3</p></div></div>
+      <div class="gapitem"><div class="gid">G9</div><div><b>Promote-on-win wiring</b><span class="gapstatus u">new — first named here</span>
+        <p>Promotion works — three treatments shipped through it — but as a manual queue walk. The winner event should open a pre-filled promotion, not a to-do.</p>
+        <p class="src">source: <code>_PROMOTION-QUEUE.md</code> (manual today) · region 6</p></div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>Vision artifact · 2026-07-02 · fenced — not a build backlog, no components built, canon untouched. Receipts: <code>README.md</code> · <code>ADR-0005</code> · <code>_FIXED-FLEX-CHARTER.md</code> · <code>_build_all.py</code> · <code>_PROMOTION-QUEUE.md</code> · <code>_TEST-BRIEF-v2-sme-payments.md</code> · <code>promenaut-pipeline-spec_v0.2</code> · <code>_SCREEN-GATE.md</code>. Figures verbatim from the test brief §3.</p>
+    <p>Swiss chrome, canon inside. Labels sentence-case throughout — house rule (brief §4) overrides the caps convention. Waiting elsewhere, untouched: calibration materials · token-provenance ruling · Q3 customer call.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var btns=document.querySelectorAll('.views button');
+  btns.forEach(function(b){b.addEventListener('click',function(){
+    btns.forEach(function(x){x.classList.remove('active')});
+    b.classList.add('active');
+    document.documentElement.setAttribute('data-view',b.dataset.v);
+    window.scrollTo({top:0});
+  })});
+  // stage rail active state
+  var links=document.querySelectorAll('.stagerail a');
+  var secs=[].slice.call(document.querySelectorAll('.region'));
+  function mark(){
+    var y=window.scrollY+140,cur=secs[0];
+    secs.forEach(function(s){if(s.offsetTop<=y)cur=s});
+    links.forEach(function(l){l.classList.toggle('active',l.getAttribute('href')==='#'+cur.id)});
+  }
+  window.addEventListener('scroll',mark);mark();
+  // A/B toggle
+  var ab=document.getElementById('abview');
+  document.querySelectorAll('.abbtns button').forEach(function(b){
+    b.addEventListener('click',function(){
+      document.querySelectorAll('.abbtns button').forEach(function(x){x.classList.remove('on')});
+      b.classList.add('on');ab.textContent=b.dataset.ab;
+    });
+  });
+})();
+</script>
+</body>
+</html>
