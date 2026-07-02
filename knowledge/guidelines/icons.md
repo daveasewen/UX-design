@@ -111,9 +111,14 @@ guidelines) + **tappable area**.
    signal. Consistent with the policy's own logic (mirrors the dark-mode stance): the
    INTERNAL MARK's contrast is the priority (#333 mark = 7.47 ✓) and icon + label are
    sufficient for meaning; the roundel colour is not the channel. Inconsistent on the
-   roundel leg, exempt by ruling. Implementation tranche (Notifications success mark →
-   white, dark white-roundel structure, Input-fields hardcoded fills → pattern) ruled
-   GO same session. [REVIEW — implementation in flight] {#icon-015}
+   roundel leg, exempt by ruling. ✅ IMPLEMENTATION REVIEWED + PASSED 2026-07-02 (eve,
+   Dave, live HTML): Notifications + Confirmation pass; Input-fields passed with three
+   review fixes (interactive tail icons, dark error border → red, rest-state centring)
+   and is flagged a **supercharge** (brand-uplift rework) candidate — expect change.
+   Remaining tail: (a) formally promote the 4.5 icon threshold into the blocking gate
+   (evidence says cost = 0) and (b) mechanise the mark-vs-roundel check once marks are
+   tokenised — both sensibly deferred to supercharge. [REVIEW — gate promotion + mark
+   tokenisation, deferred to supercharge] {#icon-015}
 2. **Size floor tension.** Site: minimum 16px (thicker-weight set below that). Toolkit
    tokens: `xsmall = 12px`. Consistent only if xsmall implies the thicker-weight set —
    toolkit doesn't say. [REVIEW — check the design toolkits' icon sizing page] {#icon-016}
