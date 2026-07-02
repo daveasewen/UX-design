@@ -145,9 +145,11 @@ dense content into a navigable path.
   headlines; heavier weights only for a clear hierarchy shift or a single point of
   emphasis; concise headlines, comfortable letter spacing, clean line breaks.
   ⚠ "Ultra Light" is not in the licensed five (Thin/Light/Regular/Medium/Bold,
-  type25-004) and has no token-store weight (store: 100/300/400/500/700). [REVIEW —
-  new weight or loose language? Check the font package / next export; don't add a
-  weight token unilaterally] {#type26-023}
+  type25-004) and has no token-store weight (store: 100/300/400/500/700). ✅ RESOLVED
+  2026-07-02 (Dave): **Ultra Light is part of the supercharge package** — a real weight
+  arriving with the brand uplift, not loose language. No token until the uplift delivers
+  it; expect the weight at the supercharge re-base, alongside the component rework.
+  {#type26-023}
 - **Balanced dual language** — Latin + Chinese + Arabic get comparable prominence,
   "unified, rather than 'translated' or secondary"; balance layout/hierarchy/spacing/
   line length. [TASTE — bilingual mechanics numbers live in the Specification section;

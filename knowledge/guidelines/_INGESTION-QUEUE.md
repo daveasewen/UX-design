@@ -80,8 +80,13 @@ Status: ☐ queued · ◐ partial · ✅ ingested · ✖ skipped (reason)
    synthetic-looking output" = the gates' pitch, stated as un-mechanised taste (gai-008
    strategy REVIEW → digital-experience-transformation). Group AI policy pages are
    staff-only Confluence — permanently out of ingestion reach
-9. ☐ `brand-refresh/logos.html` · `brand-refresh/photography.html` ·
-   `brand-refresh/creative-hexagons.html` — refresh completeness
+9. ✅ `brand-refresh/logos.html` + `photography.html` + `creative-hexagons.html` →
+   `brand-refresh-assets.md` (logo26/photo26/hex26/bra26, 2026-07-02 eve). HEADLINES:
+   **no gen-AI / CGI / mixed-media imagery** (photo26-002 — pipeline-critical: library
+   retrieval only, never synthesis); logo ≥1× per journey (journey-gate candidate);
+   Masterbrand variant selection rules (dark = full colour negative); hexagon DELTAS —
+   Iconic now smaller, Cropped reduced to 1-/2-edge crops (3-/4-edge RETIRED, audit
+   legacy hexagon assets); graphic-treatments guidance "coming soon" (source gap)
 10. ☐ `foundations-and-identity/Tone_of_Voice.html` — register/flex-dial shaping (charter)
 11. ☐ `foundations-and-identity/colour.html` — the 2025 standard (parallel-valid "until
     further notice"; ingest for the delta map old→new)

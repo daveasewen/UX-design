@@ -11,6 +11,12 @@ Dave rules.*
 
 - **appf-008** — No app-specific grid/spacing/forms pages exist under app foundations. Web has six foundation subpages, app has three. App grid values live only in the toolkit export. ⚠ Source gap kin of webf-017 — if an app project lands, the Common Toolkit access decision covers this too.
 
+## brand-refresh-assets.md
+
+- **bra26-001** — The no-gen-AI-imagery rule (photo26-002) is the sharpest pipeline constraint in the refresh set — it draws the line between generating EXPERIENCES (our business) and generating ASSETS (banned for photography). Alongside gai-008 it defines Promenaut's imagery posture: library retrieval + provenance, never synthesis. Worth a line in the fixed/flex charter's fixed column when next touched.
+- **hex26-002** — Two REFRESH DELTAS with asset impact: (a) the Iconic Hexagon is now used at a smaller size than previously; (b) the Cropped Hexagon is reduced to one-edge and two-edge crops — three- and four-edge crops are RETIRED. ⚠ Any 2025-era hexagon assets/masks in the repo need a vintage check before reuse (`hexagon-masks.md` is legacy-era).
+- **hex26-005** — Graphic treatments (3D Hexagon, Graphic Hexagons, Keyline Hexagon…): guidance "will be released soon." ⚠ Source gap, same class as the grey palette (col26-001) — recheck cadence.
+
 ## colour-standards-2026.md
 
 - **col26-001** — Grey palette — named as part of the brand palette but "specifications … will be available soon". ⚠ Source gap: no values published as of capture. Our token store's grey ramp remains the operative source.
@@ -52,7 +58,6 @@ Dave rules.*
 
 - **type26-015** — "Don't overlay text on gradient backgrounds" (+ digital: verify at viewpoints, no unreadable wrap). ⚠ Collides with charter §4's expressive gradient unlock for surfaces/heroes — heroes normally carry headlines. 📌 PARKED 2026-07-02 (Dave) → ruled at the component-finessing pass, alongside mot-007 ("too expressive" family). Interim discipline: no gradient-hero generation; gradient surfaces are treated as text-free zones until ruled (conservative reading holds by default). Candidate mechanisations 
 - **type26-016** — Latin headlines: −15 to −30 tracking; leading = size +3pt (50pt → 53pt). Latin body: −5 to −10 tracking; leading "1.1×" — ⚠ but the page's own example is 12pt → 16pt (1.33×), and Chinese body says 1.1× with example 14pt → 18pt (1.29×). Stated ratio and worked examples disagree — likely "1.1×" should read differently or the examples embed channel-specific values.
-- **type26-023** — Elegant weights: the LIGHTEST cuts (Ultra Light, Thin, Light) at large sizes for headlines; heavier weights only for a clear hierarchy shift or a single point of emphasis; concise headlines, comfortable letter spacing, clean line breaks. ⚠ "Ultra Light" is not in the licensed five (Thin/Light/Regular/Medium/Bold, type25-004) and has no token-store weight (store: 100/300/400/500/700).
 - **type26-025** — Give imagery room to breathe: type frames the focal point, sits in clean negative space or along natural composition lines; grids + rule of thirds; clear visual path — headline first, then the image's key detail. Centre alignment is now legitimate in named cases: ambient photography without a focal point (Iconic Hexagon central, with or without text), magnetic headlines centred. ⚠ DELTA vs 2025's "never centre-align creative headlines with hexagons" (type25-017).
 - **type26-026** — Over-photography watch-outs: legibility first — avoid busy areas, high-contrast edges, faces; safe placement, sufficient contrast, "(where needed) a subtle gradient/ overlay, rather than heavy effects"; respect the subject — never cover focal points/ faces/brand cues. ⚠ DELTA vs 2025's flat "no treatments — adjust the asset" (type25-013): the refresh PERMITS subtle overlays as a contrast aid. Interim reading: overlay-as- contrast-aid OK (it's also the dark-mode imagery mechanism, webf-008), deco
 - **type26-029** — Magnetic headline (NEW construct): an Iconic Hexagon sits at the CENTRE of the headline line as visual anchor/pivot; words "magnetised" around it; vertical alignment to the hexagon's 5 vertices, baselines to hexagon geometry; photography stays the hero (magnetic block moves to give the subject space; stacked/side variants; centred over ambient scenes); rule of thirds guides, not strict. This is the brand-campaign headline construct — the 2026 replacement register for 2025's big-and-light/small-a
@@ -71,4 +76,4 @@ Dave rules.*
 - **webf-033** — font-1..4 sizes are TScale-mode-dependent — check the export carries them. `typography.json` has fixed sizes only for font-5..7 (correct — S5–S7 are invariant); font-1..4 sizes/leading must vary by scale mode. If the semantic-scale export didn't carry per-mode type values, large-type generation at scale-2/3 is running on a gap.
 - **webf-034** — Responsive spacing values (R units) are a source gap. `spacing.json` is fixed-only; the RScale VALUES per breakpoint aren't in the store or on this page (likely toolkit- internal). Generation currently has no responsive-spacing dimension.
 
-_31 open item(s)._
+_33 open item(s)._
