@@ -14,6 +14,8 @@ fails the brand 4.5:1. Never blocks.*
 | Accordion.reference.html | icon/default | background/default | dark | 21.0 | pass-4.5 |
 | Headers.reference.html | icon/default | background/default | light | 12.63 | pass-4.5 |
 | Headers.reference.html | icon/default | background/default | dark | 21.0 | pass-4.5 |
+| Input-fields.reference.html | icon/default | background/default | light | 12.63 | pass-4.5 |
+| Input-fields.reference.html | icon/default | background/default | dark | 21.0 | pass-4.5 |
 | Links.reference.html | icon/default | background/default | light | 12.63 | pass-4.5 |
 | Links.reference.html | icon/default | background/default | dark | 21.0 | pass-4.5 |
 | Loading-indicator.reference.html | icon/default | background/default | light | 12.63 | pass-4.5 |
