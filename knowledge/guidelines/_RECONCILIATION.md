@@ -22,6 +22,10 @@ Dave rules.*
 - **col26-001** — Grey palette — named as part of the brand palette but "specifications … will be available soon". ⚠ Source gap: no values published as of capture. Our token store's grey ramp remains the operative source.
 - **col26-007** — "Do ensure text and icons meet the 4.5:1 minimum contrast ratio." ✅ RESOLVED 2026-07-02 by the icons standard (`icons.md` icon-015): differentiated by asset class — icons 4.5:1 "in all instances" (interactive, legibility-critical) · pictograms 3:1 + descriptive alt · chart/RAG graphic indicators 3:1. No source contradiction. Remaining question is OURS: our icon checks pass at 3:1; the stricter brand 4.5:1 enters advisory pending Dave's promotion ruling.
 
+## copywriting.md
+
+- **copy-014** — Title case banned for headlines ("hard to read… overly formal and old fashioned. Not our tone at all") — ONE exception: meta titles (browser/SEO titles) use start case with pipe separators ('Current Accounts | Everyday Banking – HSBC UK'). Meta titles are not a canon surface today; if they ever enter the engine, the sentence-case and all-caps gates need a scoped exemption.
+
 ## generative-ai-brand.md
 
 - **gai-008** — The tool is in-scope, twice. Promenaut is (a) itself a generative-AI tool needing lifecycle approval at any HSBC-like client, and (b) a producer of brand-foundation outputs (data-vis, typography, colour) whose outputs sit under Living Wall governance. Adoption planning must include both.
@@ -79,4 +83,4 @@ Dave rules.*
 - **webf-033** — font-1..4 sizes are TScale-mode-dependent — check the export carries them. `typography.json` has fixed sizes only for font-5..7 (correct — S5–S7 are invariant); font-1..4 sizes/leading must vary by scale mode. If the semantic-scale export didn't carry per-mode type values, large-type generation at scale-2/3 is running on a gap.
 - **webf-034** — Responsive spacing values (R units) are a source gap. `spacing.json` is fixed-only; the RScale VALUES per breakpoint aren't in the store or on this page (likely toolkit- internal). Generation currently has no responsive-spacing dimension.
 
-_33 open item(s)._
+_34 open item(s)._

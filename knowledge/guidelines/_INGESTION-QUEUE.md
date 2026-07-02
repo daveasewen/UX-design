@@ -97,15 +97,19 @@ Status: ☐ queued · ◐ partial · ✅ ingested · ✖ skipped (reason)
     LOB; neuro-024 RECONCILED (literalness partition, F2). DISCOVERY: Copywriting is a hub
     of 4 sub-resources, NOT descended — queued below as item 10a. Raw snapshots:
     `_sources/tone-of-voice/` (before-and-afters interactive = partial capture, accepted).
-10a. ☐ **Copywriting family** — `Tone_of_Voice/Copywriting/Editorial_Style_Guide.html`
-    (~44k chars; A–Z digital style guide with LITERAL component sections: Buttons · CTAs ·
-    Error messages and notifications · Modals · Progress trackers · Links · Lists · Help/
-    Hint text · Alt text · Capitalisation · Numbers/Currencies/Date-time — the component-
-    microcopy layer, feeds per-component antiPatterns directly) + `Preferred-terms.html` +
-    `Chinesepreferredterms.html` (internal-use Chinese list) + `regional-labelling.html`
-    (China/HK/Macau/Taiwan conventions — compliance-sensitive). Section map receipted in
-    `_sources/tone-of-voice/copywriting-HUB.txt`. High engine-relevance — natural NEXT
-    tranche after tone-of-voice rulings land.
+10a. ✅ **Copywriting family** — all 4 pages → `copywriting.md` (copy-001…059,
+    2026-07-02). THE COMPONENT-MICROCOPY LAYER: per-component antiPattern harvest
+    mapped (its F1) — Buttons, Links (next ★), Notifications, Modal, Progress
+    tracker, Input-fields (supercharge), Dropdown country selectors. Fixture-data
+    formats receipted (currency-no-space, minus-before-unit, DD Month YYYY, 24h
+    clock). Strongest new gate candidate: copy-016 no-full-stops-in-microcopy
+    (exact, cost-0, pre-swept clean); 1 canon signal found total (Selection-controls
+    ampersand, copy-022 — fix at next touch). 1 [REVIEW]: copy-014 meta-title
+    start-case exemption vs sentence-case/all-caps gates. Preferred terms (~120
+    pairs) + Chinese list + HK-Legal regional labelling captured VERBATIM in
+    `_sources/tone-of-voice/` for retrieval-not-recall. Raw snapshots:
+    editorial-style-guide.txt, preferred-terms.txt, preferred-terms-chinese.txt,
+    regional-labelling.txt.
 11. ☐ `foundations-and-identity/colour.html` — the 2025 standard (parallel-valid "until
     further notice"; ingest for the delta map old→new)
 12. ☐ `foundations-and-identity/visual-assets.html` · `Logos.html` · `photography.html` ·

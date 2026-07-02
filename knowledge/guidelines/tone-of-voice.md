@@ -6,10 +6,9 @@ Engine-era format — SUPERSEDES the 2026-06-18 RAG-era summary of the hub page.
 snapshots + capture-status table: `guidelines/_sources/tone-of-voice/`. Source vintage:
 pre-refresh authoring (COVID-era examples, Twitter-280 reference) — expect the 2026
 refresh to re-cut this family; per the living-standard stance, deltas ≠ defects.
-The Copywriting sub-family (Editorial style guide ~44k chars, Preferred terms ×2,
-Regional labelling) was DISCOVERED and queued, not ingested — see
-`_INGESTION-QUEUE.md` and `_sources/tone-of-voice/copywriting-HUB.txt` for its
-section map.*
+The Copywriting sub-family (Editorial style guide ~43k chars, Preferred terms ×2,
+Regional labelling) was ingested 2026-07-02 as its own engine-era file —
+`copywriting.md` (copy-001…059), the component-microcopy layer promised at F8.*
 
 ## Scope note — this is the register dial's source
 
@@ -315,9 +314,9 @@ canonisation call.
   fixtures; tov-036 (label warmth, progress location) → Input-fields + Progress
   trackers; tov-034 (CTA open/close, no small print) → action-bar gap-pattern +
   Buttons; tov-044 (greetings matrix) → any comms-surface pattern; tov-015 (say
-  what happens next) → confirmation/success gap-pattern. Editorial Style Guide
-  (queued) will deepen every one of these — it has literal Buttons/Error-messages/
-  Modals/Progress-trackers sections.
+  what happens next) → confirmation/success gap-pattern. DELIVERED 2026-07-02:
+  `copywriting.md` deepens every one of these — see its F1 antiPattern harvest map
+  (copy-030…048, per-component).
 - **F9 — Trivial source inconsistency.** Drop-in clinics "weekly" (faqs.html) vs
   "fortnightly" (howitworks.html). Noted in `_sources/`, no action.
 
@@ -329,7 +328,7 @@ canonisation call.
 | ourtoneofvoice.html (principles) | ✅ | tov-004…020 |
 | Everythingtoeveryone.html (inclusive) | ✅ | tov-021…026 |
 | Whyitmatters.html | ✅ | tov-049 receipts |
-| Copywriting.html | ✅ hub only | family QUEUED (F8) |
+| Copywriting.html | ✅ hub + 4 subpages | `copywriting.md` copy-001…059 |
 | howitworks.html | ✅ | tov-047…048 |
 | beforeandafters.html | ◐ interactive, 'before' only | examples, none needed |
 | How-to-guides.html | ✅ | tov-027…044 |
