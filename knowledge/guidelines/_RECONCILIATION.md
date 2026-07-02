@@ -7,6 +7,10 @@ both move in short order, and component approvals already embed Dave's knowledge
 of the unpublished update. Reconcile each item when its standard settles, or when
 Dave rules.*
 
+## app-foundations.md
+
+- **appf-008** — No app-specific grid/spacing/forms pages exist under app foundations. Web has six foundation subpages, app has three. App grid values live only in the toolkit export. ⚠ Source gap kin of webf-017 — if an app project lands, the Common Toolkit access decision covers this too.
+
 ## colour-standards-2026.md
 
 - **col26-001** — Grey palette — named as part of the brand palette but "specifications … will be available soon". ⚠ Source gap: no values published as of capture. Our token store's grey ramp remains the operative source.
@@ -49,4 +53,4 @@ Dave rules.*
 - **webf-033** — font-1..4 sizes are TScale-mode-dependent — check the export carries them. `typography.json` has fixed sizes only for font-5..7 (correct — S5–S7 are invariant); font-1..4 sizes/leading must vary by scale mode. If the semantic-scale export didn't carry per-mode type values, large-type generation at scale-2/3 is running on a gap.
 - **webf-034** — Responsive spacing values (R units) are a source gap. `spacing.json` is fixed-only; the RScale VALUES per breakpoint aren't in the store or on this page (likely toolkit- internal). Generation currently has no responsive-spacing dimension.
 
-_18 open item(s)._
+_19 open item(s)._
