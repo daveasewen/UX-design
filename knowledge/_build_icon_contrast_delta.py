@@ -17,9 +17,14 @@ today's gate but would fail the brand rule:
      state-contrast lesson (declared pairs hide undeclared combos). UPPER BOUND:
      co-occurrence isn't guaranteed; a dead-zone combo here means "check whether
      this icon can ever sit on this surface", not "defect".
-  3. CLASSIFY queue — ui-context pairs whose fg is rag/* (some are true icon
-     glyphs, e.g. Notification icons → brand 4.5 would apply; some are
-     indicators → 3:1 stands). Needs a human class call per pair.
+  3. RAG ROUNDEL POLICY (ruled by Dave 2026-07-02 eve): roundel vs surface ≥3:1
+     (indicator class) · internal mark vs roundel fill ≥4.5:1 (small-text
+     analogue) · dark mode = WHITE roundel + BLACK mark (icon + label carry the
+     meaning). §3 judges rag-on-surface pairs at the ROUNDEL threshold (3:1);
+     §4 audits mark-vs-roundel per policy. Mark colours aren't tokenised yet
+     (tint-knockout / #333 / white are snippet-level) so §4 models the three
+     mark treatments explicitly — tokenising marks is part of the
+     implementation tranche.
 
 Writes knowledge/_ICON-CONTRAST-DELTA.md. ALWAYS exits 0 — advisory annotates,
 never blocks. Promotion would move the 4.5 threshold for class-'icon' pairs
@@ -72,6 +77,13 @@ def bucket(r):
     return "below-3(gated)"
 
 
+def bucket_roundel(r):
+    """Roundel leg of the rag policy: indicator threshold only."""
+    if r is None:
+        return "unresolved"
+    return "pass-3(roundel)" if r >= WCAG else "FAIL-roundel<3"
+
+
 def pair_rows(fg, bg):
     rows = []
     for mode in ("light", "dark"):
@@ -115,9 +127,43 @@ for it in icon_tokens:
     for s in surfaces:
         exhaustive += pair_rows(it, s)
 
+# re-judge rag-on-surface rows at the roundel threshold (policy §3)
+classify = [(f, fg, bg, mode, ratio, bucket_roundel(ratio))
+            for (f, fg, bg, mode, ratio, _b) in classify]
+
+# exhaustive policy-audit rows — declared pairs missed the amber roundel entirely
+# (state-contrast lesson yet again). Light only: dark roundels are WHITE by policy.
+for fam in ("success", "error", "warning", "information", "neutral"):
+    fg = f"rag/{fam}"
+    for bg in ("background/default", f"rag/{fam}-tint"):
+        f_v, b_v = value(fg, "light"), value(bg, "light")
+        if not f_v or not b_v or len(f_v) == 9 or len(b_v) == 9:
+            continue
+        r = round(contrast_ratio(f_v, b_v), 2)
+        row = ("(policy audit — exhaustive)", fg, bg, "light", r, bucket_roundel(r))
+        if not any(c[1] == fg and c[2] == bg and c[3] == "light" for c in classify):
+            classify.append(row)
+
+# §4 — mark vs roundel fill, per policy, for each rag family × mark treatment.
+# Dark mode is WHITE roundel + BLACK mark by policy (21:1) — light mode is the audit.
+marks = []
+for fam in ("success", "error", "warning", "information"):
+    r = value(f"rag/{fam}", "light")
+    if not r:
+        continue
+    for label, mk in (("tint-knockout", value(f"rag/{fam}-tint", "light")),
+                      ("white mark", "#FFFFFF"), ("#333 mark", "#333333")):
+        if not mk or len(mk) == 9 or len(r) == 9:
+            continue
+        ratio = round(contrast_ratio(r, mk), 2)
+        verdict = "pass-4.5" if ratio >= BRAND else "FAIL-mark<4.5"
+        marks.append((f"rag/{fam} roundel", label, "light", ratio, verdict))
+marks.append(("WHITE roundel (policy dark)", "BLACK mark", "dark", 21.0, "pass-4.5"))
+
 dz_decl = [r for r in declared if r[5] == "DEAD-ZONE"]
 dz_exh = [r for r in exhaustive if r[4] == "DEAD-ZONE"]
-dz_cls = [r for r in classify if r[5] == "DEAD-ZONE"]
+fail_roundel = [r for r in classify if r[5] == "FAIL-roundel<3"]
+fail_marks = [m for m in marks if m[4] == "FAIL-mark<4.5"]
 
 
 def fmt(rows, with_file):
@@ -141,8 +187,8 @@ lines = [
     "(Dave ruling 2026-07-02: advisory-first). DEAD-ZONE = passes today's 3:1 gate,",
     "fails the brand 4.5:1. Never blocks.*",
     "",
-    f"**Headline: {len(dz_decl)} declared · {len(dz_exh)} exhaustive (upper bound) · "
-    f"{len(dz_cls)} awaiting icon-vs-indicator classification.**",
+    f"**Headline: {len(dz_decl)} declared dead-zone · {len(dz_exh)} exhaustive (upper bound) · "
+    f"{len(fail_roundel)} roundel fails (<3:1) · {len(fail_marks)} mark fails (<4.5 vs roundel, light).**",
     "",
     "## 1. Declared icon pairs (the concrete promotion cost)",
     "",
@@ -160,17 +206,25 @@ lines = [
     f"{sum(1 for r in exhaustive if r[4] == 'transparent(composite)')} transparent/composite surfaces skipped "
     f"(alpha — true contrast needs the render path) — omitted.)_",
     "",
-    "## 3. Classification queue — rag/* used in ui context (icon glyph or indicator?)",
+    "## 3. Roundel vs surface — rag/* pairs at the ROUNDEL threshold (≥3:1, ruled policy)",
     "",
     "| snippet | fg | bg | mode | ratio | verdict |",
     "|---|---|---|---|---|---|",
 ] + (fmt(classify, True) or ["| — | — | — | — | — | none found |"]) + [
     "",
-    "Icon glyphs (e.g. Notification leading icons) take brand 4.5 on promotion;",
-    "indicators (Status dots, chart marks) stay 3:1 per the asset-class split (icon-015).",
+    "## 4. Internal mark vs roundel fill (≥4.5:1, ruled policy; dark = white roundel + black mark)",
+    "",
+    "| roundel | mark treatment | mode | ratio | verdict |",
+    "|---|---|---|---|---|",
+] + [f"| {a} | {b} | {c} | {d} | {e} |" for a, b, c, d, e in marks] + [
+    "",
+    "Policy (Dave, 2026-07-02 eve): roundel = indicator (3:1); internal mark = small-text",
+    "analogue (4.5:1 vs the fill); dark mode replaces coloured roundels with WHITE + BLACK",
+    "mark — icon shape + label carry the meaning, so colour is not the channel. Dots and",
+    "chart marks (no internal glyph) stay pure indicators at 3:1.",
 ]
 
 open(os.path.join(ROOT, "_ICON-CONTRAST-DELTA.md"), "w").write("\n".join(lines) + "\n")
 print(f"icon contrast delta: {len(dz_decl)} declared dead-zone, {len(dz_exh)} exhaustive (upper bound), "
-      f"{len(dz_cls)} to classify — see _ICON-CONTRAST-DELTA.md (advisory)")
+      f"{len(fail_roundel)} roundel fail(s), {len(fail_marks)} mark fail(s) — see _ICON-CONTRAST-DELTA.md (advisory)")
 sys.exit(0)

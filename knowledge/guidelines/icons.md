@@ -96,10 +96,21 @@ guidelines) + **tappable area**.
    `_build_icon_contrast_delta.py` (build step 12/18) → `_ICON-CONTRAST-DELTA.md`.
    Evidence: **0 declared icon pairs in the 3–4.5 dead zone** (all 18 pass 4.5 with
    headroom — promotion cost for true icon/* pairs is ZERO); 17 exhaustive upper-bound
-   combos (all icon/disabled, allowlisted, or non-co-occurring); **5 rag/*-glyph combos
-   await icon-vs-indicator classification** — all in dark mode/tints, converging on the
-   known dark-rag token gaps. Remaining ruling = classify rag glyphs, then promote.
-   [REVIEW] {#icon-015}
+   combos (all icon/disabled, allowlisted, or non-co-occurring).
+   ✅ RAG CLASSIFICATION RULED 2026-07-02 (eve, Dave) — the roundel policy:
+   **roundel vs surface ≥3:1** (indicator class) · **internal mark vs roundel fill
+   ≥4.5:1** (small-text analogue) · **dark mode: roundel goes WHITE with a BLACK mark**
+   (icon + label carry meaning; colour is not the channel). Consequences, computed:
+   all dark dead-zones dissolve structurally (white/black = 21:1, white roundel on dark
+   bg 21:1); light-mode audit — error knockout 7.13 ✓, info knockout 6.21 ✓, warning
+   already dark-marked #333 = 7.47 ✓ (the "amber needs a dark mark" comment was this
+   policy avant la lettre), **success tint-knockout 3.98 ✗ → mark must go white (4.56 ✓)**.
+   ⚠ OPEN: the **amber warning roundel itself fails the 3:1 roundel leg in light**
+   (1.69 on white, 1.60 on warning-tint) — needs a darker amber, an outline treatment,
+   or an explicit text-adjacent exemption; same family as the success/warning-don't-
+   darken token gap. Implementation tranche (Notifications success mark, dark
+   white-roundel structure, Input-fields hardcoded fills → tokens) pending Dave's
+   HTML review. [REVIEW — amber roundel + implementation] {#icon-015}
 2. **Size floor tension.** Site: minimum 16px (thicker-weight set below that). Toolkit
    tokens: `xsmall = 12px`. Consistent only if xsmall implies the thicker-weight set —
    toolkit doesn't say. [REVIEW — check the design toolkits' icon sizing page] {#icon-016}

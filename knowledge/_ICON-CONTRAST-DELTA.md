@@ -4,7 +4,7 @@
 (Dave ruling 2026-07-02: advisory-first). DEAD-ZONE = passes today's 3:1 gate,
 fails the brand 4.5:1. Never blocks.*
 
-**Headline: 0 declared · 17 exhaustive (upper bound) · 5 awaiting icon-vs-indicator classification.**
+**Headline: 0 declared dead-zone · 17 exhaustive (upper bound) · 2 roundel fails (<3:1) · 6 mark fails (<4.5 vs roundel, light).**
 
 ## 1. Declared icon pairs (the concrete promotion cost)
 
@@ -114,34 +114,56 @@ fails the brand 4.5:1. Never blocks.*
 
 _(78 of 162 exhaustive combos already clear 4.5:1; 6 transparent/composite surfaces skipped (alpha — true contrast needs the render path) — omitted.)_
 
-## 3. Classification queue — rag/* used in ui context (icon glyph or indicator?)
+## 3. Roundel vs surface — rag/* pairs at the ROUNDEL threshold (≥3:1, ruled policy)
 
 | snippet | fg | bg | mode | ratio | verdict |
 |---|---|---|---|---|---|
-| Button.reference.html | rag/success | background/default | light | 4.56 | pass-4.5 |
-| Button.reference.html | rag/success | background/default | dark | 4.61 | pass-4.5 |
-| Confirmation.reference.html | rag/success | background/default | light | 4.56 | pass-4.5 |
-| Confirmation.reference.html | rag/success | background/default | dark | 4.61 | pass-4.5 |
-| Input-fields.reference.html | rag/error | background/default | light | 7.87 | pass-4.5 |
-| Input-fields.reference.html | rag/error | background/default | dark | 4.02 | DEAD-ZONE |
-| Input-fields.reference.html | rag/success | background/default | light | 4.56 | pass-4.5 |
-| Input-fields.reference.html | rag/success | background/default | dark | 4.61 | pass-4.5 |
-| List-items.reference.html | rag/success | rag/success-tint | light | 3.98 | DEAD-ZONE |
-| List-items.reference.html | rag/success | rag/success-tint | dark | 4.09 | DEAD-ZONE |
-| List-items.reference.html | rag/error | rag/error-tint | light | 7.13 | pass-4.5 |
-| List-items.reference.html | rag/error | rag/error-tint | dark | 3.71 | DEAD-ZONE |
-| List-items.reference.html | rag/information | rag/information-tint | light | 6.21 | pass-4.5 |
-| List-items.reference.html | rag/information | rag/information-tint | dark | 4.92 | pass-4.5 |
-| Reorder.reference.html | rag/success | background/default | light | 4.56 | pass-4.5 |
-| Reorder.reference.html | rag/success | background/default | dark | 4.61 | pass-4.5 |
-| Status-indicator.reference.html | rag/success | background/default | light | 4.56 | pass-4.5 |
-| Status-indicator.reference.html | rag/success | background/default | dark | 4.61 | pass-4.5 |
-| Status-indicator.reference.html | rag/error | background/default | light | 7.87 | pass-4.5 |
-| Status-indicator.reference.html | rag/error | background/default | dark | 4.02 | DEAD-ZONE |
-| Status-indicator.reference.html | rag/information | background/default | light | 7.17 | pass-4.5 |
-| Status-indicator.reference.html | rag/information | background/default | dark | 5.28 | pass-4.5 |
-| Status-indicator.reference.html | rag/neutral | background/default | light | 4.54 | pass-4.5 |
-| Status-indicator.reference.html | rag/neutral | background/default | dark | 21.0 | pass-4.5 |
+| Button.reference.html | rag/success | background/default | light | 4.56 | pass-3(roundel) |
+| Button.reference.html | rag/success | background/default | dark | 4.61 | pass-3(roundel) |
+| Confirmation.reference.html | rag/success | background/default | light | 4.56 | pass-3(roundel) |
+| Confirmation.reference.html | rag/success | background/default | dark | 4.61 | pass-3(roundel) |
+| Input-fields.reference.html | rag/error | background/default | light | 7.87 | pass-3(roundel) |
+| Input-fields.reference.html | rag/error | background/default | dark | 4.02 | pass-3(roundel) |
+| Input-fields.reference.html | rag/success | background/default | light | 4.56 | pass-3(roundel) |
+| Input-fields.reference.html | rag/success | background/default | dark | 4.61 | pass-3(roundel) |
+| List-items.reference.html | rag/success | rag/success-tint | light | 3.98 | pass-3(roundel) |
+| List-items.reference.html | rag/success | rag/success-tint | dark | 4.09 | pass-3(roundel) |
+| List-items.reference.html | rag/error | rag/error-tint | light | 7.13 | pass-3(roundel) |
+| List-items.reference.html | rag/error | rag/error-tint | dark | 3.71 | pass-3(roundel) |
+| List-items.reference.html | rag/information | rag/information-tint | light | 6.21 | pass-3(roundel) |
+| List-items.reference.html | rag/information | rag/information-tint | dark | 4.92 | pass-3(roundel) |
+| Reorder.reference.html | rag/success | background/default | light | 4.56 | pass-3(roundel) |
+| Reorder.reference.html | rag/success | background/default | dark | 4.61 | pass-3(roundel) |
+| Status-indicator.reference.html | rag/success | background/default | light | 4.56 | pass-3(roundel) |
+| Status-indicator.reference.html | rag/success | background/default | dark | 4.61 | pass-3(roundel) |
+| Status-indicator.reference.html | rag/error | background/default | light | 7.87 | pass-3(roundel) |
+| Status-indicator.reference.html | rag/error | background/default | dark | 4.02 | pass-3(roundel) |
+| Status-indicator.reference.html | rag/information | background/default | light | 7.17 | pass-3(roundel) |
+| Status-indicator.reference.html | rag/information | background/default | dark | 5.28 | pass-3(roundel) |
+| Status-indicator.reference.html | rag/neutral | background/default | light | 4.54 | pass-3(roundel) |
+| Status-indicator.reference.html | rag/neutral | background/default | dark | 21.0 | pass-3(roundel) |
+| (policy audit — exhaustive) | rag/warning | background/default | light | 1.69 | FAIL-roundel<3 |
+| (policy audit — exhaustive) | rag/warning | rag/warning-tint | light | 1.6 | FAIL-roundel<3 |
 
-Icon glyphs (e.g. Notification leading icons) take brand 4.5 on promotion;
-indicators (Status dots, chart marks) stay 3:1 per the asset-class split (icon-015).
+## 4. Internal mark vs roundel fill (≥4.5:1, ruled policy; dark = white roundel + black mark)
+
+| roundel | mark treatment | mode | ratio | verdict |
+|---|---|---|---|---|
+| rag/success roundel | tint-knockout | light | 3.98 | FAIL-mark<4.5 |
+| rag/success roundel | white mark | light | 4.56 | pass-4.5 |
+| rag/success roundel | #333 mark | light | 2.77 | FAIL-mark<4.5 |
+| rag/error roundel | tint-knockout | light | 7.13 | pass-4.5 |
+| rag/error roundel | white mark | light | 7.87 | pass-4.5 |
+| rag/error roundel | #333 mark | light | 1.61 | FAIL-mark<4.5 |
+| rag/warning roundel | tint-knockout | light | 1.6 | FAIL-mark<4.5 |
+| rag/warning roundel | white mark | light | 1.69 | FAIL-mark<4.5 |
+| rag/warning roundel | #333 mark | light | 7.47 | pass-4.5 |
+| rag/information roundel | tint-knockout | light | 6.21 | pass-4.5 |
+| rag/information roundel | white mark | light | 7.17 | pass-4.5 |
+| rag/information roundel | #333 mark | light | 1.76 | FAIL-mark<4.5 |
+| WHITE roundel (policy dark) | BLACK mark | dark | 21.0 | pass-4.5 |
+
+Policy (Dave, 2026-07-02 eve): roundel = indicator (3:1); internal mark = small-text
+analogue (4.5:1 vs the fill); dark mode replaces coloured roundels with WHITE + BLACK
+mark — icon shape + label carry the meaning, so colour is not the channel. Dots and
+chart marks (no internal glyph) stay pure indicators at 3:1.
