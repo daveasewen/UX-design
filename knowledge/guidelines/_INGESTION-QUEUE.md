@@ -119,9 +119,21 @@ Status: ☐ queued · ◐ partial · ✅ ingested · ✖ skipped (reason)
     receipt). 3 more REVIEWs: text/secondary Grey 7 vs page's Grey-8-only
     (col25-011) · red-in-charts vintage FLIP (col25-016) · B&W-photo ban carry
     (col25-008, low). Raw: `_sources/colour-2025/`.
-12. ☐ `foundations-and-identity/visual-assets.html` · `Logos.html` · `photography.html` ·
-    `video.html` · `mnemonic.html` · `Creative-hexagons.html` · `sound-identity.html` —
-    2025 foundations, lower component relevance
+12. ✅ all 7 pages → `visual-assets.md` (va25-001…027, 2026-07-02). **TIER 1 COMPLETE.**
+    Queue mis-tiered it: visual-assets.html is a UX application standard — imagery
+    budget per page-type (va25-003, the imagery calm-ceiling), empty-state/
+    confirmation asset-type consistency (va25-005), icon SEMANTIC-fit (va25-007),
+    masthead logo behaviour contract (va25-015 → Headers), avatar rounding =
+    code-mask-on-square (va25-013). no-genAI ban proven VINTAGE-STABLE (va25-018 ↔
+    photo26-002). F1: Logos/Photography "2025" pages already refresh-contaminated —
+    page vintage labels can't be trusted; brand-refresh-assets.md stays operative on
+    overlaps. 0 new REVIEWs. Raw: `_sources/visual-assets-2025/`.
+    DISCOVERED (→ Tier 2/3): video sub-standards ×6 (creative/media-types/patterns/
+    subject/technical/interactive) · favicon guidelines · photography type standards
+    ×5 (cinematic, landscape-aerial, studio, products-lifestyle, textures) · hexagon
+    subpages (Iconic/Open/Cropped + graphic-treatments — treatments fills the bra26
+    "coming soon" gap) · brand architecture · identifiers · third-party
+    relationships · Brand Effect Model · visualising-climate-ambitions.
 
 ## Tier 2 — processes + digital guidance (after T1, per-tranche decision)
 `accessibility/communication/…scenario-4-digital-content` (exact URL TBD — hub captured

@@ -1,6 +1,7 @@
 # Imagery — photography, illustration & visual assets
 
 > Source: create.hsbc brandhub (authenticated). Captured 2026-06-18 for RAG. Summarised, not verbatim. **Photography = 2026 refresh** (`foundations-and-identity/brand-refresh/photography.html`); illustration + visual-assets summarised (2025 pages noted for on-demand deeper pulls).
+> **⚠ SUPERSEDED 2026-07-02 for visual-assets + 2025 photography**: the engine-era `visual-assets.md` (va25-001…027) now carries the full 7-page 2025 family with rule IDs + raw snapshots (`_sources/visual-assets-2025/`). This file remains for its 2026-refresh photography summary.
 
 ---
 
