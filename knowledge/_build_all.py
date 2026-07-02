@@ -26,6 +26,7 @@ STEPS = [
     ("cross-reference index", "_build_xref_index.py"),
     ("sutherland acceptance fixtures", "_build_sutherland_fixtures.py"),
     ("states-completeness probe (advisory)", "_build_states_probe.py"),
+    ("advisory signals — prose rules (advisory)", "_validate_advisory.py"),
     ("review queue", "_build_review_queue.py"),
     ("dark-mode coverage audit", "_build_dark_mode_audit.py"),
     ("text/icon contrast audit", "_build_surface_contrast_audit.py"),
