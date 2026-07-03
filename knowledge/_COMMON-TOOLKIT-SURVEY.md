@@ -79,6 +79,11 @@ skeleton — capture deferred with the channels batch (meter). Treat "not found"
    contextual/snackbar; affects criteria contracts.
 5. **Dropdown 4-taxa split** — same class of gap; canon Dropdown is single-select only.
 6. **App tile, Masthead-logged-on** — journey-blocking kin (payments-journey gaps).
+7. **Alert + Add Alert** (added 2026-07-03, Notifications pass) — the notification
+   BELL trigger (Size 18/24/36 × Active × Badge) + its add-action companion; a
+   real vocabulary gap distinct from the message taxa (create.hsbc: alerts =
+   dynamic real-time system/network events). Masthead adjacency — likely enters
+   with the Masthead/Headers work, not the Notifications ★ pass.
 
 **Canon-has / toolkit-lacks (so far):** Account-card (our gap-pattern promotion),
 Confirmation, Countdown-timer, Eyebrow, Summary, Action-bar, Tab-bar (islands) —
@@ -93,6 +98,8 @@ don't force-fit" rule applies at generation time.
   LAYERED VINTAGES inside the toolkit itself — same tell as the framework pages.
 - td-003 — guide frames are `component` type (publishable), not annexed docs: they
   travel with the library. Useful: our review pass can screenshot them directly.
+- td-006 — `Notification snackbar` set description reads "Notification contextual -
+  scale 1" — copy-paste debris in a shipped set (found at the Notifications pass).
 
 ## Page census (2026-07-03 eve — supersedes the search sample above)
 
@@ -113,10 +120,17 @@ they mirror the create.hsbc foundations tree and need their own tranche.
 
 More hygiene deltas: **td-004** page-name typo "Condextual help" · stray paren in
 "App tiles (" · **td-005** lorem-ipsum stubs inside shipped guideline frames
-(Links Standard frame, found at distillation). GOTCHAS: remote `get_metadata`
-lists only the Cover page for this file (lazy loading) — use the desktop bridge
-for enumeration; the bridge intermittently drops large text extractions
-(ERR_HTTP2_PROTOCOL_ERROR) — fall back to `get_screenshot` per guide frame.
+(Links Standard frame, found at distillation; EXTENDED 2026-07-03: same lorem
+stub at "Form errors" in BOTH the Banners and Notifications Standard frames, plus
+a "See XXX standard" placeholder — but NOTE the Notifications-page Standard
+frames otherwise carry REAL create.hsbc standard text, richer than Links).
+GOTCHAS: remote `get_metadata` lists only the Cover page for this file (lazy
+loading) — use the desktop bridge for enumeration; the bridge intermittently
+drops large text extractions (ERR_HTTP2_PROTOCOL_ERROR) — fall back to
+`get_screenshot` per guide frame; NEW (Notifications pass): a text node
+containing U+2028 kills the bridge transport DETERMINISTICALLY — hex-escape
+non-ASCII in the extraction script and the same node passes (screenshot fallback
+often unnecessary).
 
 ## Tranche 1 status
 
@@ -127,8 +141,23 @@ for enumeration; the bridge intermittently drops large text extractions
   gaps: back/expander/anchor/add-remove/download-microcopy · canon exceeds on
   focus (keep, record). NOTE: Tag link + bare `Link` set + Expander guide live on
   OTHER pages — pick up at their families' passes.
-- ☐ Notification family (Q1 ruled: adopt 4-way split) · ☐ Tags/Chips · ☐ Button
-  ranks · then tranche 2/3 below.
+- ✅ **Notification family DISTILLED 2026-07-03** →
+  `guidelines/common-toolkit-notifications.md` (ctkn-001…028, register 421).
+  Headlines: canon meta already reconciles 1:1 on structure/tokens (06-24 rebuild
+  was from this node set) — the pass's value is the RULES layer: severity
+  stacking order + 1px/8px stack numerics · placement contracts (global ABOVE
+  masthead, contextual below page title, snackbar ≤6 cols centred) · snackbar
+  4–10s timing with fade-vs-instant dismiss motion · the four RAG copy registers
+  with the exact form-error title string · aid-009 receipt #3 WITH new hit-area
+  coverage clauses · SR announcement strings. One REVIEW raised (ctkn-019:
+  per-instruction "Please" ban vs copy-035's optional-please). CORRECTION to the
+  inventory above: **Alert is not a notification** — it's the bell TRIGGER set
+  (Size×Active×Badge) + companion Add Alert; both move to the canon-lacks
+  vocabulary list. Also: NO On Light/On Dark pairing exists for this family
+  (canon exceeds on dark); the four Standard frames carry real create.hsbc text
+  (Banners app · Notifications browser · Snackbars app · Snackbars browser — the
+  snackbar pair NESTED inside the section, not at page level).
+- ☐ Tags/Chips · ☐ Button ranks · then tranche 2/3 below.
 
 ## Queue — the rigorous pass (per-family, guide frame first)
 

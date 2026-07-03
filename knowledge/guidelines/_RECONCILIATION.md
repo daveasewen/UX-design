@@ -26,6 +26,10 @@ Dave rules.*
 
 - **col25-008** — No black-and-white photography (2025 Do/Don't). The 2026 photography standard (`brand-refresh-assets.md`) is silent on this. RULED interim by Dave 2026-07-03: the ban CARRIES — a live standard states it, the other is merely silent; silence ≠ withdrawal. Low stakes for the engine (photos are retrieved, never made).
 
+## common-toolkit-notifications.md
+
+- **ctkn-019** — User errors: never write an error message without a clear instruction to fix it; instruction-first copy; no "Please…" before each error instruction; no "We're sorry" for user-caused errors.
+
 ## generative-ai-brand.md
 
 - **gai-008** — The tool is in-scope, twice. Promenaut is (a) itself a generative-AI tool needing lifecycle approval at any HSBC-like client, and (b) a producer of brand-foundation outputs (data-vis, typography, colour) whose outputs sit under Living Wall governance. Adoption planning must include both.
@@ -79,4 +83,4 @@ Dave rules.*
 - **webf-033** — font-1..4 sizes are TScale-mode-dependent — check the export carries them. `typography.json` has fixed sizes only for font-5..7 (correct — S5–S7 are invariant); font-1..4 sizes/leading must vary by scale mode. If the semantic-scale export didn't carry per-mode type values, large-type generation at scale-2/3 is running on a gap.
 - **webf-034** — Responsive spacing values (R units) are a source gap. `spacing.json` is fixed-only; the RScale VALUES per breakpoint aren't in the store or on this page (likely toolkit- internal). Generation currently has no responsive-spacing dimension.
 
-_33 open item(s)._
+_34 open item(s)._
