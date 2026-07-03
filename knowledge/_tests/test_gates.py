@@ -226,6 +226,37 @@ def mut_red_text(k):
     write(p, html.replace("</head>", "<style>.zz-red{color:#DB0011}</style></head>", 1))
 
 
+def mut_possessive(k):
+    """check 7 / nam-001 (Dave ruling 2026-07-03, straight to blocking):
+    possessive HSBC's + name must bite."""
+    p, html, man = first_snippet_with_manifest(k, lambda m, h: "</body>" in h)
+    write(p, html.replace("</body>", "<p>HSBC's Easy Invest</p></body>", 1))
+
+
+def mut_alt_prefix(k):
+    """check 7 / avd-006 prefix half: element-type alt prefix must bite."""
+    p, html, man = first_snippet_with_manifest(k, lambda m, h: "</body>" in h)
+    write(p, html.replace("</body>", '<span aria-label="Image of a chart"></span></body>', 1))
+
+
+def mut_bare_link(k):
+    """check 7 / aca-004: bare 'click here'-class link text must bite."""
+    p, html, man = first_snippet_with_manifest(k, lambda m, h: "</body>" in h)
+    write(p, html.replace("</body>", '<a href="#">Click here</a></body>', 1))
+
+
+def mut_duplicate_title(k):
+    """compose check 8 / aca-003 (Dave ruling 2026-07-03): duplicate <title>
+    across the composed set must bite."""
+    ft = os.path.join(k, "_fitness-test")
+    canon = [f for f in sorted(os.listdir(ft)) if f.endswith(".canon.html")]
+    if len(canon) < 2:
+        raise RuntimeError("need ≥2 *.canon.html screens for the duplicate-title bite")
+    a, b = os.path.join(ft, canon[0]), os.path.join(ft, canon[1])
+    ta = re.search(r'<title>(.*?)</title>', read(a), re.S).group(1)
+    write(b, re.sub(r'<title>.*?</title>', f'<title>{ta}</title>', read(b), count=1, flags=re.S))
+
+
 def mut_unknown_icon(k):
     p, html, man = first_snippet_with_manifest(k, lambda m, h: "</body>" in h)
     rogue = '<svg viewBox="0 0 24 24"><path d="M1 1 L23 23 L1 23 Z"/></svg>'
@@ -310,6 +341,9 @@ CASES = [
     ("snippet gate bites on italics",            "italic",   "_validate_snippets.py",     mut_italics,         "ITALICS"),
     ("snippet gate bites on text-shadow",        "tshadow",  "_validate_snippets.py",     mut_text_shadow,     "TEXT-SHADOW"),
     ("snippet gate bites on raw red text",       "redtext",  "_validate_snippets.py",     mut_red_text,        "RED TEXT"),
+    ("snippet gate bites on possessive HSBC's",  "possess",  "_validate_snippets.py",     mut_possessive,      "POSSESSIVE"),
+    ("snippet gate bites on element-type alt",   "altpre",   "_validate_snippets.py",     mut_alt_prefix,      "ALT PREFIX"),
+    ("snippet gate bites on bare link text",     "barelink", "_validate_snippets.py",     mut_bare_link,       "BARE LINK"),
     ("a11y gate bites on missing reduced-motion","motion",   "_validate_a11y.py",         mut_reduced_motion,  "2.3.3"),
     ("icon gate bites on invented path",         "icon",     "_validate_icons.py",        mut_unknown_icon,    "UNKNOWN"),
     ("icon gate bites on shape-only icon",       "shape",    "_validate_icons.py",        mut_shape_only_icon, "UNKNOWN"),
@@ -319,6 +353,7 @@ CASES = [
     ("compose gate bites on rogue hex",          "hex",      "_validate_compose.py",      mut_rogue_hex,       "hex colour"),
     ("compose gate bites on undefined class",    "undef",    "_validate_compose.py",      mut_undefined_class, "used but undefined"),
     ("compose gate bites on class redefinition", "redef",    "_validate_compose.py",      mut_redefine_class,  "redefines canon class"),
+    ("compose gate bites on duplicate title",    "duptitle", "_validate_compose.py",      mut_duplicate_title, "duplicate <title>"),
 ]
 
 

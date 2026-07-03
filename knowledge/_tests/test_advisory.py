@@ -32,6 +32,15 @@ CASES = [
      "placeholder-as-label"),
     ("digits", CLEAN.replace("···· 8842", "12345678842"), "unmasked-digits"),
     ("sortcode", CLEAN.replace("··–··–··", "12-34-56"), "unmasked-digits"),
+    # sweep-batch additions (Dave ruling 2026-07-03) — checks D/E/F/G
+    ("caps-name", CLEAN.replace("<p>Account", "<p>Try INVESTNOW today</p><p>Account"), "caps-name"),
+    ("directional", CLEAN.replace("<p>Account", "<p>Use the button on the right</p><p>Account"), "directional"),
+    ("adjacent-links", CLEAN.replace("<p>Account",
+                                     '<a href="/pay">icon</a> <a href="/pay">Payments</a><p>Account'),
+     "adjacent-links"),
+    ("role-suffix", CLEAN.replace("<p>Account",
+                                  '<a href="/x" aria-label="Example link">x</a><p>Account'),
+     "role-suffix"),
 ]
 
 failures = []

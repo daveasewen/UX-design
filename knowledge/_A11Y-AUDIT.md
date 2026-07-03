@@ -1,5 +1,20 @@
 # Accessibility Audit: Gated reference snippets (all 31)
-**Standard:** WCAG 2.1 AA (+ 2.5.8 from 2.2, + 2.3.3 advisory) | **Date:** 2026-06-20 | **Method:** static analysis across every `snippets/*.reference.html`
+**Standard:** WCAG 2.2 AA (re-baselined 2026-07-03, axf-001 ruling — per-criterion map below; + 2.3.3 AAA kept deliberately) | **Date:** 2026-06-20 | **Method:** static analysis across every `snippets/*.reference.html`
+
+## WCAG 2.2 re-baseline (axf-001 — RULED 2026-07-03: declare now, mechanise later)
+
+The source bar (digital accessibility framework, axf-001) is 2.2 AA; this audit previously
+declared 2.1 AA + partials. Contrast math is unchanged — the 2.2 delta is structural. Status:
+
+| 2.2 criterion | Status | Route |
+|---|---|---|
+| 2.5.8 Target Size (Min) | ✅ enforced | `_validate_a11y.py`, since 2026-06-20 (1 open warn: Selection-controls chip 18px) |
+| 2.5.7 Dragging Movements | ✅ passing, audited | Reorder ships native move-button alternatives (§2.1.1 table below); watch at component touches |
+| 2.4.11 Focus Not Obscured (Min) | ⏳ queued | render-based axis — joins the render/state-contrast sweep work; kin of VD-9's focused-pixel-delta (avd-*); not statically checkable |
+| 3.2.6 Consistent Help | ⏳ routed | journey-level → screen/criteria-contract intake (`_RUNBOOK-criteria-contract.md`) |
+| 3.3.7 Redundant Entry | ⏳ routed | journey-level → forms-journey criteria contracts |
+| 3.3.8 Accessible Authentication (Min) | ⏳ routed | journey-level → auth-journey criteria contract (no auth pattern in canon yet) |
+| 4.1.1 Parsing | — | removed in 2.2 (obsolete); nothing to carry |
 
 ## Summary
 Contrast (1.4.3 / 1.4.11) and name/role/value (4.1.2) are already **continuously enforced** by the

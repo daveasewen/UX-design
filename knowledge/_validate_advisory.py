@@ -20,6 +20,25 @@ First three checks are distilled from RECORDED prose rules (G5, north-star mock;
   C. unmasked number runs — safety pattern (charter §2: masked sort/account numbers).
      Flags 8+ consecutive digits or a XX-XX-XX sort-code shape in visible text.
 
+Sweep-batch additions (Dave ruling 2026-07-03 — these four RULED ADVISORY; their
+exact-match siblings nam-001/avd-006-prefix/aca-004 went straight to blocking as
+snippet-gate check 7):
+
+  D. all-caps NAMES (nam-002) — a lone ALL-CAPS word ≥4 chars outside the acronym
+     allowlist reads as a shouted product name ("CONNECTED MONEY" class). Names take
+     Title Case. Single-word complement to check A's multi-word runs; needs a curated
+     allowlist = judgment, hence advisory.
+  E. directional phrases (aca-007, SC 1.3.3) — "button on the right" class; AT reflows
+     location, so left/right instructions break. "above"/"below" acceptable per source.
+     False-positive-prone by the source's own note, hence advisory.
+  F. adjacent duplicate links (aca-005, SC 1.1.1 + 2.4.4) — adjacent <a> tags sharing
+     one href combine into a single actionable element. Canon Cards already enact this;
+     demo href="#" exempt.
+  G. role-suffix accessible names (avd-006 suffix half) — aria-label ending
+     "… button"/"… link" announces the element type AT already announces. NOT promoted
+     with the prefix half: 4 live canon signals at ruling time (Cards "Example link");
+     fix at the Cards revisit, then promote.
+
 Scans <root>/snippets/*.reference.html and <root>/_fitness-test/*.canon.html.
 Writes <root>/_ADVISORY-SIGNALS.md. ALWAYS exits 0 — advisory annotates, never blocks.
 
@@ -36,6 +55,24 @@ CAPS_TEXT = re.compile(r'\b[A-Z]{2,}(?: [A-Z]{2,})+\b')
 DIGIT_RUN = re.compile(r'\d{8,}')
 SORT_CODE = re.compile(r'\b\d{2}[-–]\d{2}[-–]\d{2}\b')
 INPUT_TAG = re.compile(r'<input\b[^>]*>', re.I)
+
+# D — nam-002. Local mirror of the snippet gate's ACRONYMS (importing
+# _validate_snippets executes the gate) + UK-gov/banking additions with live
+# canon use (PAYE/HMRC swept clean 2026-07-03).
+NAME_CAPS = re.compile(r'\b[A-Z]{4,}\b')
+ACRONYMS = {
+    "HSBC", "ARIA", "WCAG", "IBAN", "PAYE", "HMRC", "SEPA", "SWIFT",
+    "CHAPS", "BACS", "HTML", "JSON",
+}
+# E — aca-007 (SC 1.3.3): sensory/directional location phrases.
+DIRECTIONAL = re.compile(
+    r'\b(?:on the (?:right|left)\b|(?:right|left)[- ]hand side\b'
+    r'|to the (?:right|left) of\b|in the (?:top|bottom) (?:right|left)\b)', re.I)
+# F — aca-005: adjacent <a> pair sharing an href (whitespace-only gap).
+ADJ_LINKS = re.compile(
+    r'<a\b[^>]*href="([^"]+)"[^>]*>.*?</a>\s*<a\b[^>]*href="([^"]+)"', re.S | re.I)
+# G — avd-006 suffix half: role words in accessible names.
+ROLE_SUFFIX = re.compile(r'\baria-label\s*=\s*"([^"]*\b(?:button|link))"', re.I)
 
 
 def visible_text(html):
@@ -74,6 +111,23 @@ def check(path):
         signals.append(("unmasked-digits", f'digit run "{m}" — account refs last-4 only, sort codes fully masked'))
     for m in set(SORT_CODE.findall(text)):
         signals.append(("unmasked-digits", f'sort-code shape "{m}" — sort codes are fully masked'))
+
+    # D — all-caps names (nam-002, advisory 2026-07-03)
+    for m in sorted(set(NAME_CAPS.findall(text)) - ACRONYMS):
+        signals.append(("caps-name", f'ALL-CAPS word "{m}" — names take Title Case, caps are for acronyms (nam-002)'))
+
+    # E — directional phrases (aca-007, advisory 2026-07-03)
+    for m in sorted(set(DIRECTIONAL.findall(text))):
+        signals.append(("directional", f'sensory instruction "{m}" — AT reflows location; name the control instead (aca-007)'))
+
+    # F — adjacent duplicate links (aca-005, advisory 2026-07-03; demo "#" exempt)
+    for m in ADJ_LINKS.finditer(html):
+        if m.group(1) == m.group(2) and m.group(1) != "#":
+            signals.append(("adjacent-links", f'adjacent links share href "{m.group(1)}" — combine into ONE actionable element (aca-005)'))
+
+    # G — role-suffix accessible names (avd-006 suffix half, advisory 2026-07-03)
+    for m in sorted(set(ROLE_SUFFIX.findall(html))):
+        signals.append(("role-suffix", f'aria-label "{m}" announces the element type — AT announces the role itself (avd-006)'))
 
     return name, signals
 

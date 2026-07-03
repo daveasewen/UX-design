@@ -13,10 +13,12 @@ paths 404 (nav restructure, redirects incomplete) — live paths are under
 - **The HSBC digital accessibility standard is WCAG 2.2 AA** — desktop web: all framework
   standards; mobile web + apps: WCAG 2.2 AA enriched/mapped against BBC Mobile
   Accessibility Guidelines v1.0 and Funka Nu mobile guidelines, including some WCAG AAA.
-  Process guidance draws on BS 8878:2010. [REVIEW — our gate baseline says "WCAG 2.1 AA
-  (+2.5.8 from 2.2, +2.3.3 advisory)" (`_A11Y-AUDIT.md`); the source bar is 2.2 AA, so
-  the gates need a 2.2 re-baseline (delta: the six 2.2 additions beyond 2.5.8) — Dave to
-  rule scope/timing] {#axf-001}
+  Process guidance draws on BS 8878:2010. [RULED 2026-07-03 (Dave): **declare now,
+  mechanise later** — declared bar re-baselined to 2.2 AA with a per-criterion status
+  map in `_A11Y-AUDIT.md`; 2.5.7 already passing (Reorder native move buttons), 2.5.8
+  already enforced; 2.4.11 focus-not-obscured queued with the render-based sweep work
+  (kin of VD-9); 3.2.6/3.3.7/3.3.8 routed to screen/journey criteria contracts, not
+  snippet gates] {#axf-001}
 - **Two-element standard** — (1) international legal compliance (the WCAG 2.2 bar above);
   (2) assured experience: the named disabled/older user groups can "effectively complete
   the product's core user journeys" with the default AT list. Acceptance is
@@ -72,11 +74,11 @@ paths 404 (nav restructure, redirects incomplete) — live paths are under
 ## Findings
 
 - **F1 — the version gap is real and ours** (axf-001): the standard is WCAG 2.2 AA;
-  our audit header says 2.1 AA + partial 2.2. Re-baseline is gate work (likely small —
+  our audit header said 2.1 AA + partial 2.2. Re-baseline was gate work (small —
   contrast math unchanged; the new 2.2 criteria are structural: focus-not-obscured,
   dragging alternatives, consistent help, redundant entry, accessible authentication,
-  target size already adopted). Dave to rule scope/timing — carried on axf-001, this
-  file's one REVIEW item.
+  target size already adopted). RULED + ENACTED 2026-07-03: declared bar is 2.2 AA,
+  per-criterion map in `_A11Y-AUDIT.md` — this file's REVIEW item, now closed.
 - **F2 — the institution keeps arguing our case at source:** journey-completability over
   checkpoint-passing (axf-002) = fitness tests; modularity-shrinks-testing (axf-011) +
   GDEA's reuse exemption (gdea-003) = certified components; the scoping questionnaire

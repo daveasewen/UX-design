@@ -49,8 +49,12 @@ at source.*
   images are AT-ignorable; **never "Image of…", "Link to…", "Picture of…", "Add
   button"**; verbose alts harm speech-output users; unclear-purpose images should be
   replaced with ones that tell the story (HSBC's text-heavy pages especially). Visual
-  designers deliver alt-text WITH assets. [ADVISORY — cost-0 sweep candidate: banned
-  alt/aria-label prefixes; joins nam-001/002 in the sweep queue] {#avd-006}
+  designers deliver alt-text WITH assets. [SPLIT RULING 2026-07-03: **prefix half GATED**
+  (RULED STRAIGHT TO BLOCKING; pre-swept 0 signals) — "Image of…"/"Picture of…"/
+  "Link to…"-class alt/aria-label prefixes = snippet gate check 7, bite-tested. **Role-
+  suffix half ADVISORY** (check G) — aria-label ending "… button"/"… link" had 4 live
+  canon signals at ruling time (Cards `aria-label="Example link"` + descendants); fix at
+  the Cards revisit (already piled: V7 link-atom flag), then promote] {#avd-006}
 
 ## Motion + journeys (rules)
 

@@ -19,28 +19,37 @@ work" (self-check duty again).*
   programmatically determinable. [ADVISORY — composition-layer rule; DOM order =
   reading order in canon, keep it that way when composing] {#aca-002}
 - **CA-3 — unique, concise page/frame/iframe titles** (SC 2.4.2 A + 4.1.2 A): first
-  thing a speech-output user hears. [ADVISORY — screen-gate candidate: composed screens
-  must carry a unique descriptive <title>; cost-0 check] {#aca-003}
+  thing a speech-output user hears. [GATED — RULED BLOCKING 2026-07-03 (sweep-batch
+  ruling): compose gate check 8, every `*.canon.html` carries a non-empty <title>,
+  unique across the composed set; showcase/fitness-test surfaces exempt by scope (the
+  cold-A/cold-B duplicate is a deliberate A/B pair). Bite-tested] {#aca-003}
 
 ## Links (rules)
 
 - **CA-4 — link text uniquely describes the target** (SC 2.4.4 A): unique link/nav text,
   in context; audio-labelled repeats ("Info", "Add to favourites") must be made unique.
-  [ADVISORY — microcopy rule; bans bare "click here"-class links; joins the copywriting
-  vocabulary] {#aca-004}
+  [SPLIT RULING 2026-07-03: **bare-phrase half GATED** (RULED STRAIGHT TO BLOCKING;
+  pre-swept 0 signals) — "click here"-class link labels = snippet gate check 7,
+  bite-tested. **Uniqueness-in-context half** stays composition-layer (screen-scope,
+  needs assembled-screen DOM)] {#aca-004}
 - **CA-5 — repeated links to one target are ONE link** (SC 1.1.1 + 2.4.4 A): adjacent
   image + text with the same target combine into a single actionable element. [ADVISORY —
-  canon Cards already enact this (single-link card patterns); composition check
-  candidate for assembled screens] {#aca-005}
+  RULED 2026-07-03: enacted as advisory check F (`_validate_advisory.py`, adjacent
+  same-href <a> pairs, demo `#` exempt; 0 signals at enactment). Canon Cards already
+  enact the pattern (single-link cards)] {#aca-005}
 - **CA-6 — links leaving the window/site/app say so** (SC 2.4.4 A): warn before opening
-  elsewhere + name where it opens. [ADVISORY — Links canon has no external-link variant
-  marked; REVIEW-adjacent for the Links ★ pass, logged in F2] {#aca-006}
+  elsewhere + name where it opens. [RULED 2026-07-03 (Dave): external-link variant
+  **joins the Links ★ pass**, bundled with the deferred `:visited` adoption
+  (neuro best-practice ruling); microcopy ready in copy-* family. Gap entry updated in
+  `_COMPONENT-GAPS.md`] {#aca-006}
 
 ## Copy (rules)
 
 - **CA-7 — no sensory-only instructions** (SC 1.3.3 A): "above"/"below" acceptable;
-  "button on the right" banned — AT reflows location. [ADVISORY — copy sweep candidate
-  (directional-phrase regex, needs judgment for false positives)] {#aca-007}
+  "button on the right" banned — AT reflows location. [ADVISORY — RULED 2026-07-03:
+  enacted as advisory check E (`_validate_advisory.py`, directional-phrase regex;
+  0 signals in copy at enactment). Stays advisory per the source's own false-positive
+  note] {#aca-007}
 - **CA-8 — colour-only meaning ban** = VD-1 verbatim (SC 1.4.1 A), incl. the data-vis
   hatching + deuteranopia/protanopia palette guidance. [RECORDED — duplicate; destiny
   carried on avd-001] {#aca-008}

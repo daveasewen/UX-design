@@ -11,12 +11,16 @@ names — several are cost-0 gate candidates kin to the sentence-case family.*
 
 - **Never possessive with product names** — "HSBC should not appear in the possessive
   form": never "HSBC's Credit Card" / "HSBC's Easy Invest"; write "An HSBC Credit Card" /
-  "HSBC Easy Invest". [ADVISORY — cost-0 gate candidate: regex `HSBC's` preceding a
-  name; sweep first] {#nam-001}
+  "HSBC Easy Invest". [GATED — RULED STRAIGHT TO BLOCKING 2026-07-03 (sweep-batch
+  ruling; pre-swept 0 signals): snippet gate check 7, visible text + accessible-name
+  attributes, bite-tested in `_tests/test_gates.py`] {#nam-001}
 - **Names are never fully capitalised** — "CONNECTED MONEY" banned; capitalised first
   letters + lowercase ("Connected Money"). Action-suggesting multi-word names may close
-  up (PayMe, InvestDirect). [ADVISORY — kin to the all-caps ban (type26-019 family) but
-  scoped to NAMES, which keep Title Case where UI copy is sentence case] {#nam-002}
+  up (PayMe, InvestDirect). [ADVISORY — RULED 2026-07-03: enacted as advisory check D
+  (`_validate_advisory.py`, single-word caps outside the acronym allowlist; multi-word
+  runs already blocked by snippet gate check 4). Stays advisory: the allowlist is
+  judgment (PAYE/HMRC-class acronyms are legitimate); NAMES keep Title Case where UI
+  copy is sentence case] {#nam-002}
 - **Lock-ups are maintained in text for business propositions** — always "HSBC Premier",
   "HSBC Advance"; the HSBC prefix protocol is HSBC + functional descriptor, with
   judgment to reduce repetition of "HSBC" in running text. [ADVISORY — vocabulary rule

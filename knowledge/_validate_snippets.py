@@ -22,6 +22,16 @@ For every knowledge/snippets/*.reference.html:
      2026-07-02 (type25-020; overrides advisory-first — all three families had
      zero canon occurrences, evidence pre-computed). Bite-tested in
      _tests/test_gates.py.
+  7. COPY-LINT — nam-001 (HSBC never possessive: no "HSBC's" in copy),
+     avd-006 (alt/aria-label never opens with "Image of…"/"Picture of…"/
+     "Link to…"-class element-type prefixes), aca-004 (no bare
+     "click here"-class link text — SC 2.4.4). RULED STRAIGHT TO BLOCKING by
+     Dave 2026-07-03 (sweep-batch ruling; all three exact-match + pre-swept to
+     zero canon signals, type25-020 precedent). The avd-006 ROLE-SUFFIX half
+     (aria-label ending "… button"/"… link") had 4 live canon signals at
+     ruling time (Cards "Example link") so it enters at ADVISORY tier instead
+     (_validate_advisory.py check G) — fix at the Cards revisit, promote after.
+     Bite-tested in _tests/test_gates.py.
 
 This is the link that makes a snippet "gated": it cannot silently drift from the
 meta + token stores. Exits non-zero on any failure so _build_all.py fails the build.
@@ -50,6 +60,19 @@ ACRONYMS = {
 # retired Complementary Reds (legacy-asset drift guard). The sanctioned routes for
 # red text are the rag/error role token (var(--error)) and CTA-role styling.
 RED_HEXES = {"DB0011", "9B0000", "A8000B", "E31E22", "BA1110", "730014"}
+
+# check 7 (blocking 2026-07-03): copy-lint pattern lists.
+# avd-006 — alt/aria-label must describe PURPOSE, never announce the element type.
+BANNED_ALT_PREFIX = re.compile(
+    r'^\s*(image of|picture of|photo of|graphic of|icon of|link to)\b', re.I)
+# aca-004 — bare link labels that describe the MECHANISM, not the target
+# (normalised: tags stripped, whitespace collapsed, trailing punctuation dropped,
+# lowercased). The uniqueness half of CA-4 (repeat labels on one screen) is
+# screen-scope and stays with the composition layer.
+BARE_LINK_TEXT = {
+    "click here", "here", "click", "more", "read more", "learn more",
+    "see more", "find out more", "this link", "link", "go",
+}
 
 
 def resolve(token, mode):
@@ -168,6 +191,32 @@ def validate(path):
                           f"red type only via the rag/error role token or a CTA role "
                           f"(type25-020/col26-016, blocking 2026-07-02)")
 
+    # 7. COPY-LINT (nam-001 + avd-006-prefix + aca-004 — RULED STRAIGHT TO
+    #    BLOCKING by Dave 2026-07-03. Overrides advisory-first: exact-match
+    #    checks, pre-swept to zero canon signals (type25-020 precedent).
+    #    Runs before the interactive early-return so passive components'
+    #    alt text is covered too.)
+    #    nam-001 — HSBC never possessive with a product/service name: applies
+    #    to visible text AND accessible-name attributes.
+    attr_copy = re.findall(
+        r'\b(?:alt|aria-label|title|placeholder)\s*=\s*"([^"]*)"', html, re.I)
+    for surface, t in [("visible text", vis)] + [("attribute copy", a) for a in attr_copy]:
+        if re.search(r"\bHSBC[’']s\b", t):
+            errors.append(f"{name}: POSSESSIVE \"HSBC's\" in {surface} — brand/product "
+                          f"names never take the possessive (nam-001, blocking 2026-07-03)")
+    #    avd-006 — alt/aria-label describes purpose, never the element type.
+    for m in re.finditer(r'\b(alt|aria-label)\s*=\s*"([^"]*)"', html, re.I):
+        if BANNED_ALT_PREFIX.match(m.group(2)):
+            errors.append(f"{name}: ALT PREFIX {m.group(1)}=\"{m.group(2)}\" — announce "
+                          f"purpose, not element type (avd-006, blocking 2026-07-03)")
+    #    aca-004 — link text must describe the target (SC 2.4.4).
+    for m in re.finditer(r'<a\b[^>]*>(.*?)</a>', html, re.S | re.I):
+        txt = re.sub(r'<[^>]+>', ' ', m.group(1))
+        txt = re.sub(r'\s+', ' ', txt).strip().strip('.…!').lower()
+        if txt in BARE_LINK_TEXT:
+            errors.append(f"{name}: BARE LINK text \"{txt}\" — link text describes the "
+                          f"target, not the mechanism (aca-004, blocking 2026-07-03)")
+
     # 5. focus
     # Focus rules only apply to INTERACTIVE components; passive ones (e.g. Badge) are exempt.
     interactive = any(s in html for s in (
@@ -206,7 +255,7 @@ for path in snippets:
     for w in warns:
         lines.append(f"- 🟡 {w}")
     if not errs:
-        lines.append("- token fidelity (light+dark), ARIA, contrast pairs, all-caps, focus — all clean.")
+        lines.append("- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.")
     lines.append("")
 
 open(os.path.join(ROOT, "_SNIPPET-AUDIT.md"), "w").write("\n".join(lines))

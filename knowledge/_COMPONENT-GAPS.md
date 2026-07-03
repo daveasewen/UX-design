@@ -6,7 +6,7 @@ Durable log of component SCOPE not yet built. We promote the reviewed baseline n
 |---|---|---|---|
 | Modals | Dialog box (confirm/alert) — promoted as a dialog | **True modals** + **lightboxes**, for **desktop and mobile** — more variants exist in the HSBC Figma library (file `mI8hvIkV98nquoqWzKh5Kn`). Build these as their own gated snippets/variants. | 2026-06-29 (Dave) |
 | Confirmation / success | Mobile success screen — animated, vertically centred (gated `.cn-confirmation`) | **Desktop variant** — wider / dialog-style layout (not full-bleed centred). Build as a variant once the desktop pattern is defined. | 2026-06-30 (Dave) |
-| Links | Standard/label/icon link set (signed off 2026-06-29) | **External-link / new-window variant** — CA-6 (aca-006, `accessibility-framework` ingest): links leaving the window/site/app must say so + name where they open. No marked variant exists in the reviewed snippet. Candidate for the Links ★ pass — Dave to rule. | 2026-07-03 (ingest) |
+| Links | Standard/label/icon link set (signed off 2026-06-29) | **External-link / new-window variant** — CA-6 (aca-006, `accessibility-framework` ingest): links leaving the window/site/app must say so + name where they open. No marked variant exists in the reviewed snippet. **RULED 2026-07-03 (Dave): IN the Links ★ pass** — build bundled with the deferred `:visited` adoption; microcopy from the copy-* family. | 2026-07-03 (ingest) · ruled 2026-07-03 |
 
 ## Token / system gaps (SME-Payments fitness tests, 2026-06-30)
 

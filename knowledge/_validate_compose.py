@@ -19,6 +19,12 @@ For each composed screen (*.canon.html):
                       (no per-screen component re-derivation = the drift vector).
   6. CLASSES RESOLVE — every .c-* class used in the markup is defined in canon.css
                       (a typo'd class silently renders unstyled).
+  8. UNIQUE TITLE   — every composed screen carries a non-empty <title>, unique
+                      across the *.canon.html set (aca-003, SC 2.4.2 — first thing
+                      a speech-output user hears. RULED BLOCKING by Dave 2026-07-03,
+                      sweep-batch ruling; scope = composed/canon screens only, so
+                      showcase/fitness-test surfaces are exempt by scope — the known
+                      cold-A/cold-B duplicate is a deliberate A/B pair outside scope).
 
 Exits non-zero on any failure. Writes knowledge/_COMPOSE-AUDIT.md.
 """
@@ -91,6 +97,24 @@ def main():
             report.append(f"- ❌ {name} ({nused} canon classes): " + "; ".join(fails))
         else:
             report.append(f"- ✅ {name} — {nused} canon classes, 0 rogue hex, 0 redefines, all resolve")
+    # 8. unique <title> across the composed set (aca-003, blocking 2026-07-03)
+    report.append(f"\n## screen titles (aca-003)")
+    titles = {}
+    tfails = 0
+    for s in screens:
+        name = os.path.basename(s)
+        m = re.search(r'<title>(.*?)</title>', open(s).read(), re.S)
+        t = m.group(1).strip() if m else ""
+        if not t:
+            ok = False; tfails += 1
+            report.append(f"- ❌ {name}: missing/empty <title> (aca-003, SC 2.4.2)")
+        elif t in titles:
+            ok = False; tfails += 1
+            report.append(f"- ❌ {name}: duplicate <title> \"{t}\" — also {titles[t]} (aca-003, SC 2.4.2)")
+        else:
+            titles[t] = name
+    if not tfails:
+        report.append(f"- ✅ {len(screens)} screen(s), every <title> present + unique")
     open(os.path.join(HERE, "_COMPOSE-AUDIT.md"), "w").write("\n".join(report) + "\n")
     print("\n".join(report))
     print("\nRESULT:", "PASS ✅" if ok else "FAIL ❌")
