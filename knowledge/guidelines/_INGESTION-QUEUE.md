@@ -212,8 +212,23 @@ Status: ☐ queued · ◐ partial · ✅ ingested · ✖ skipped (reason)
     VINTAGES (2014 base + 2024 patches) · BS 8878 16 steps ≈ the pipeline frame (F3).
     **ALL 9 ROLE PAGES COMPLETE.**
 
+### Done (continued)
+24. ✅ `platforms-and-channels/Accessibility_Standards.html` + 3 subpages (new-standards ·
+    wcag-2-1-to-wcag-2-2-changes · legacy-standards) → `accessibility-standards-hub.md`
+    (axs-001…007, 2026-07-03; upgrades the Tier-1 ◐ partial). **THE AUTHORITATIVE 2.2
+    ADOPTION MAP — validates the 07-03 axf-001 ruling line-for-line** (5 SC → Standards,
+    2.5.8 upgraded, 2.4.13 → Guideline, 4.1.1 → Recommendation-not-dropped). aid-009 now
+    two-receipted ("existing 44×44 guidance TAKES PRIORITY"); **VD-9 numerics landed:
+    focus indicator ≥2 CSS px + ≥3:1 vs unfocused** → render-axis spec. Timeline anchors
+    for layered vintages: framework 2013 · 2.1 patch 2019 · 2.2 patch 2024.
+25. ✅ `accessibility/creating-accessible-content.html` — video-tutorial hub (4 chapters),
+    no text rules; content duplicated by aca-*/avd-*; noted in axs F3, videos = staff
+    training assets, not capturable.
+✖ `accessibility/digital-accessibility-framework.html` + `accessibility/testing-and-auditing.html`
+    — PRUNED 2026-07-03: stale old-path duplicates of queue item 16 (ingested as
+    `accessibility-framework.md` from the live `/processes-and-tools/accessibility/` tree).
+
 ### Queued
-`platforms-and-channels/Accessibility_Standards.html` ·
 The **Common Toolkit** — RULED 2026-07-03 (Dave): his "Gaps and edits" branch
 `Cgbtrmfp15ruNFkIAClpkI` is faithful → USE IT as the source (prior use was ad hoc, this
 pass is rigorous). Library index = "HSBC Common Toolkit (MCP)" via `search_design_system`
@@ -221,8 +236,6 @@ pass is rigorous). Library index = "HSBC Common Toolkit (MCP)" via `search_desig
 incl. `(depricate)` families); branch file metadata exposes only a Cover page, so survey
 via library search + the create.hsbc toolkit pages as enumeration skeleton. NOTE: an
 earlier session left a probe-results text node on the branch Cover — Dave to delete. ·
-`accessibility/digital-accessibility-framework.html` · `accessibility/testing-and-auditing.html` ·
-`accessibility/creating-accessible-content.html` ·
 `platforms-and-channels/presentations.html` + `introduction-to-document-accessibility.html` +
 `accessible-pdf-requirements.html` · `email.html` · `web/design-toolkits.html` ·
 `app/design-toolkits.html` · `web/sharepoint-accessibility-guidelines.html` ·
