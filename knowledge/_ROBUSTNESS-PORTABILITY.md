@@ -40,8 +40,12 @@ Every row is a place a real user would get stuck, blame the tool, and leave.
 The chromium-launch papercut is fixed for THIS sandbox generation; recipe recorded
 so no session re-diagnoses it:
 
-1. `npx playwright install chromium --only-shell` (downloads fine; host-requirement
-   VALIDATION fails, the download itself succeeds).
+1. Install with the CA fix or the download SILENTLY ROLLS BACK (re-verified
+   2026-07-03: the ffmpeg leg fails TLS `UNABLE_TO_GET_ISSUER_CERT_LOCALLY` and the
+   installer deletes the ENTIRE ms-playwright cache — including the chromium shell
+   that had already worked):
+   `NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt python3 -m playwright install chromium-headless-shell`
+   (host-requirement VALIDATION still fails; the download itself succeeds).
 2. Exactly ONE system lib is missing (aarch64 Ubuntu 22 sandbox): `libXdamage.so.1`.
    No root, sudo broken → user-space fix: `apt-get download libxdamage1` (works
    rootless), `dpkg-deb -x`, copy `libXdamage.so.1*` to
@@ -52,8 +56,11 @@ so no session re-diagnoses it:
 4. Python side: `pip install playwright==1.61.0 --break-system-packages` happily
    drives the node-installed `chromium_headless_shell-1228`.
 5. Gotcha: `/tmp` is PER-CALL in this sandbox (each bash call gets a fresh mount) —
-   background-job logs must go to the workspace mount, not /tmp. Processes DO
-   persist across calls; poll with pgrep.
+   background-job logs must go to the workspace mount, not /tmp.
+6. Gotcha (CHANGED 2026-07-03): background processes NO LONGER survive the end of
+   a bash call in this sandbox generation (bwrap `--die-with-parent`) — nohup+`&`
+   dies silently, log stops mid-write. Long jobs must be CHUNKED into ≤45 s calls
+   (the full 38-snippet sweep runs fine as four filtered batches + a merge step).
 
 First fruit: `_validate_state_contrast.py` ran for real (full 38-snippet sweep,
 2026-07-03). Product lesson unchanged: this is exactly the plumbing the tool must
