@@ -165,11 +165,21 @@ Status: ☐ queued · ◐ partial · ✅ ingested · ✖ skipped (reason)
     2.2 checklist PDFs (staff downloads) ·
     `platforms-and-channels/Accessibility_Standards.html`.
 
+### Done (continued)
+17. ✅ `…/accessibility-for-visual-designers.html` → `accessibility-visual-design.md`
+    (avd-001…009, 2026-07-03). Sweep candidate avd-006 (banned alt prefixes); VD-9 names
+    a gate axis we don't measure (focused-vs-unfocused pixel delta ≥3:1).
+18. ✅ `…/accessibility-for-content-authors.html` → `accessibility-content-authoring.md`
+    (aca-001…020, 2026-07-03). Duplicates xref'd to avd-* (destiny carried once);
+    aca-003/004/005 = cost-0 screen-gate candidates; aca-014…017 = ready-made
+    Video-player criteria contract; CA-6 Links gap → `_COMPONENT-GAPS.md`.
+
 ### Queued
-**Accessibility framework role pages ×9** (paths under
+**Accessibility framework role pages ×7 remaining** (paths under
 `/processes-and-tools/accessibility/digital-accessibility-framework/accessibility-for-*.html`
-— captured hub 2026-07-03; ingest priority: visual-designers · interaction-designers ·
-content-authors · client-side-developers first) ·
+— next: interaction-designers · client-side-developers, then information-architects ·
+qa-and-cx-testers · project-managers · product-managers · procurement-managers; expect
+per-role checkpoint duplicates — xref to avd-*/aca-*, carry destiny once per F4) ·
 `platforms-and-channels/Accessibility_Standards.html` ·
 The **Common Toolkit** — RULED 2026-07-03 (Dave): his "Gaps and edits" branch
 `Cgbtrmfp15ruNFkIAClpkI` is faithful → USE IT as the source (prior use was ad hoc, this
