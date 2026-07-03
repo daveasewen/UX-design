@@ -132,9 +132,17 @@ source receipt (F1) — the biggest single finding of this tranche.
   dark `rag/information` alias blue/400 — i.e. they rest on an illustration colour
   that was never a published UI value and fails contrast in the dark combinations
   (the dark-RAG interim patch). Fix path per charter §6: DERIVE a dark-legible blue
-  from #305A85 (brand-derived ramp), don't import from illustration. [REVIEW —
-  token-provenance fix for blue/400; joins the dark-RAG gap revisit + the ADR-0005
-  provenance item] {#col25-018}
+  from #305A85 (brand-derived ramp), don't import from illustration.
+  EVIDENCE PREPARED 2026-07-03 (Dave: HOLD for a render session). Derivation ladder
+  at hue 210° / sat 47%: **#719ECC (L62%)** ≥3:1 on ALL dark surfaces (#101010 6.8 ·
+  #1D1D1D 6.0 · #212121 5.7 · #404040 3.7 · #474747 3.3) · **#6293C6 (L58%)** passes
+  all but #474747 (2.88), closer to current weight · current #4587A7 FAILS #404040
+  (2.61) + #474747 (2.33). Both candidates accent-only (fills keep blue/600 + white
+  via the existing driftAllow). BLAST RADIUS: 24 snippet manifests + notifications/
+  tabs meta (inspect, don't blind-sed — hex may sit in historical findings) +
+  canon.css regenerates. [REVIEW — HELD for a render session: focus rings across 24
+  components need eyes before the value moves; candidates + numbers ready]
+  {#col25-018}
 
 ## Pointers (recorded)
 

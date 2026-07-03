@@ -41,38 +41,48 @@ commits awaiting your push — and the blue/400 mystery is solved with a source 
    Page banners can't be trusted — provenance headers + capture dates are doing
    real work now.
 
-## To push (4 commits, terminal)
+## UPDATE — same night, after your push: the desk got CLEARED
 
-`716e624` copywriting · `82400a3` charter §4b · `3f80080` colour-2025 ·
-`02c3347` visual-assets — tree clean, locks cleared, `git push` when ready.
+Seven rulings enacted (commits `0d63d27` · `cc79501` · `b6cd361`): the 3 cost-0
+typography gates went **straight to blocking** (your override — snippet-gate check
+6, bite-tested, suite 20/20) · [RECORDED]/[PROCESS] blessed · copy-014 meta titles
+out of scope · Grey 7 blessed as text/secondary (token store governs) ·
+red-in-charts: **2026 wins outright** · B&W-photo ban carries interim · Common
+Toolkit PROBED — it's Figma (`HSBC-Common-Library`), MCP needs per-file edit
+access, but your Gaps-and-edits branch is still fully MCP-reachable (re-verified
+live). Register 339, REVIEW down to 34, BLOCKING 54.
 
-## On your desk (fastest first)
+**Your one follow-up from the probe:** open `HSBC-Common-Library` in Figma —
+republish of your branch, or new content? If new, request editor access. That
+answer opens Tier 2.
 
-- **New REVIEWs from this session (evidence pre-computed, all cheap):**
-  (a) **copy-014** — meta-title start-case: exempt from sentence-case/all-caps gates
-  or rule out of engine scope. (b) **col25-011** — text/secondary is Grey 7 but the
-  2025 page says white/Grey-8 only: bless the token store or tighten canon.
-  (c) **col25-016** — red-in-charts FLIPPED between vintages (2025 bans, 2026
-  brands): encode as a chart-contract vintage parameter? (d) **col25-008** —
-  B&W-photo ban, 2026 silent (low).
-- **Carried:** tag vocabulary bless ([RECORDED]/[PROCESS]) · batched yes on the 3
-  cost-0 typography gates (no-italics, no-text-shadow, red-text-role) · colleague
-  chase (draft paste-ready) · V7 pick (blocked on sandbox Chromium papercut) ·
-  webf-017 Common Toolkit access — **now the gateway to Tier 2**.
+## On your desk
+
+- **col25-018 blue/400 fix** — the only REVIEW needing real work (derive a
+  dark-legible blue from RAG #305A85, charter §6; candidates + blast radius being
+  prepared in-session).
+- **Carried:** colleague chase (draft paste-ready, calibration = #1 unlock) · V7
+  pick (deferred pending proper renders) · Common-Library lineage check (above).
 
 ## Queue next
 
-Tier 1 is DONE. Ingestion continues only per-tranche by your call: Tier 2 opens with
-the **Common Toolkit access decision (webf-017)** — it's where element/pattern
-standards (forms, web AND app) now live. Otherwise the judgment-dense strand
-resumes: **calibration when the colleague's materials land** · the desk REVIEWs
-above · G2 compiler spec · the finessing pass (mot-007 + type26-015/026 gradient
-family) · gap-pattern Batch B (tab-bar + confirmation/success — copy-037/va25-005
-just gave confirmation its content contract).
+Tier 1 is DONE, the desk is clear, and all 5 gap-patterns are BUILT (Batch B —
+Tab-bar + Confirmation — exists in snippets; the build memory was stale). Next:
 
-> Next-session opener: **"Title this chat: Desk clearing — the register earns its
-> keep."** Read GOOD-MORNING.md first. The review register holds 38 items; ~8 are
-> yours and cheap — batch them, then pick the next build tranche clean.
+1. **Interaction review resume** — Tranche 6 (Avatar/Hero/Video-player) + the 5
+   gap-patterns (fresh-chat rule applies; copy-037/va25-005 give confirmation its
+   content contract to review against).
+2. **Blue/400 render session** — HELD by your call; candidates + full contrast
+   matrix + blast radius pre-computed on col25-018 (#719ECC recommended, #6293C6
+   conservative). Needs the visual-QA loop / working Chromium.
+3. **Tier 2 ingestion** once you answer the Common-Library-vs-branch question.
+4. Calibration when the colleague's materials land · G2 compiler spec · finessing
+   pass (mot-007 + type26-015/026).
+
+> Next-session opener: **"Title this chat: Tranche 6 — the review resumes."**
+> Read GOOD-MORNING.md first. Capture note: create.hsbc sessions EXPIRE silently —
+> fetch returns logged-out shells with status 200; verify a marker string before
+> trusting any capture.
 
 ## The window (Fable metered from the 7th)
 
