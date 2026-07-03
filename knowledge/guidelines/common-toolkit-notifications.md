@@ -120,12 +120,13 @@ stacking, placement, timing, and copy contracts canon didn't carry.*
   adds the before/after example pair] {#ctkn-018}
 - **User errors: never write an error message without a clear instruction to fix
   it; instruction-first copy; no "Please…" before each error instruction; no
-  "We're sorry" for user-caused errors.** [REVIEW — tension with copy-035, which
-  allows an "optional 'please' opener" (create.hsbc copywriting standard, testing
-  receipt): the toolkit bans per-instruction 'Please' while ctkn-020 MANDATES
-  'Please' in the form-error title. Likely reconciliation: 'Please' banned
-  per-instruction, allowed in the standard title — but that reading needs Dave's
-  ruling before any lint is derived] {#ctkn-019}
+  "We're sorry" for user-caused errors.** 📌 RULED (Dave, 2026-07-03): 'Please'
+  banned per-instruction, allowed ONLY in the exact standard form-error title
+  string (ctkn-020) — the politeness lint flags any other 'Please' in error
+  copy; copy-035's optional-please is narrowed accordingly for error contexts.
+  [REVIEW — ruled; tension with copy-035's "optional 'please' opener"
+  (create.hsbc copywriting standard, testing receipt) resolved as above]
+  {#ctkn-019}
 - **Form errors**: standard title copy "Please correct the following errors"
   (exact string); instructions begin "Enter…" + what to do, or "The [field name]
   field can't be left blank"; reference the field label (2–3 words) for
@@ -202,7 +203,8 @@ stacking, placement, timing, and copy contracts canon didn't carry.*
 - **F4 — copy tension for Dave** (ctkn-019): toolkit's per-instruction "Please"
   ban + mandated "Please correct the following errors" title vs copy-035's
   optional-please. One REVIEW flag raised, resolution shapes the
-  apology/politeness lint.
+  apology/politeness lint. 📌 RULED (Dave, 2026-07-03): banned per-instruction,
+  allowed only in the standard title — lint derivation unblocked.
 - **F5 — hygiene deltas (appended to survey)**: snackbar set description reads
   "Notification contextual - scale 1" (debris, td-006) · lorem stubs at "Form
   errors" in BOTH the Banners and Notifications Standard frames (td-005

@@ -178,7 +178,9 @@ often unnecessary).
   4–10s timing with fade-vs-instant dismiss motion · the four RAG copy registers
   with the exact form-error title string · aid-009 receipt #3 WITH new hit-area
   coverage clauses · SR announcement strings. One REVIEW raised (ctkn-019:
-  per-instruction "Please" ban vs copy-035's optional-please). CORRECTION to the
+  per-instruction "Please" ban vs copy-035's optional-please) — 📌 RULED (Dave,
+  2026-07-03): banned per-instruction, allowed only in the standard title;
+  politeness lint unblocked. CORRECTION to the
   inventory above: **Alert is not a notification** — it's the bell TRIGGER set
   (Size×Active×Badge) + companion Add Alert; both move to the canon-lacks
   vocabulary list. Also: NO On Light/On Dark pairing exists for this family
@@ -206,7 +208,9 @@ often unnecessary).
   with AT labels) · copy lints (≤5 words, Continue-not-Next, banned generics) ·
   aid-009 receipt #6 (entire container) + name-matches-label · the guide's
   "Figma note" documents the soft-return workaround = the U+2028 provenance.
-  One REVIEW (ctkb-015: inline quaternary vs tertiary-inline). primary Large:
+  One REVIEW (ctkb-015: inline quaternary vs tertiary-inline) — 📌 DEFERRED
+  (Dave, 2026-07-03): stays open pending the create.hsbc button-standard probe
+  at channels ingestion; Button ★ stays gated. primary Large:
   undocumented set, no disabled, primary/background triplet, no typography
   variables surfaced (td-013).
 

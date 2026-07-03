@@ -28,11 +28,11 @@ Dave rules.*
 
 ## common-toolkit-buttons.md
 
-- **ctkb-015** — Inline-use contradiction: the guide says quaternary buttons can be used "in-line on their own", but the app standard rules that inline buttons should "use a tertiary rather than an undecorated button" and bans undecorated inline within body copy. If quaternary = undecorated (td-011), these conflict. Likely vintage layering (guide May 2023 vs newer standard), but which wins shapes the rank-choice heuristic.
+- **ctkb-015** — Inline-use contradiction: the guide says quaternary buttons can be used "in-line on their own", but the app standard rules that inline buttons should "use a tertiary rather than an undecorated button" and bans undecorated inline within body copy. If quaternary = undecorated (td-011), these conflict. Likely vintage layering (guide May 2023 vs newer standard), but which wins shapes the rank-choice heuristic. DEFERRED by Dave 2026-07-03: REVIEW stays open — probe the create.hsbc button standard at channels ingestion for a third source before fixing the heuristic. Button ★ stays gated.
 
 ## common-toolkit-notifications.md
 
-- **ctkn-019** — User errors: never write an error message without a clear instruction to fix it; instruction-first copy; no "Please…" before each error instruction; no "We're sorry" for user-caused errors.
+- **ctkn-019** — User errors: never write an error message without a clear instruction to fix it; instruction-first copy; no "Please…" before each error instruction; no "We're sorry" for user-caused errors. RULED by Dave 2026-07-03: 'Please' banned per-instruction, allowed ONLY in the exact standard form-error title string (ctkn-020). The politeness lint flags any other 'Please' in error copy; copy-035's optional-please is narrowed accordingly for error contexts.
 
 ## generative-ai-brand.md
 

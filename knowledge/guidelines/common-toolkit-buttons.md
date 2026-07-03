@@ -109,9 +109,12 @@ feeds the finish-Button-★ item.*
   "use a tertiary rather than an undecorated button" and bans undecorated
   inline within body copy. If quaternary = undecorated (td-011), these
   conflict. Likely vintage layering (guide May 2023 vs newer standard), but
-  which wins shapes the rank-choice heuristic. [REVIEW — Dave to rule: inline
-  buttons = tertiary (app-standard reading) or quaternary-alone allowed
-  (guide reading)?] {#ctkb-015}
+  which wins shapes the rank-choice heuristic. 📌 DEFERRED (Dave, 2026-07-03):
+  REVIEW stays open — probe the create.hsbc button standard at channels
+  ingestion for a third source before fixing the heuristic; Button ★ stays
+  gated. [REVIEW — Dave to rule after the channels probe: inline buttons =
+  tertiary (app-standard reading) or quaternary-alone allowed (guide
+  reading)?] {#ctkb-015}
 
 ## Census and tokens
 
