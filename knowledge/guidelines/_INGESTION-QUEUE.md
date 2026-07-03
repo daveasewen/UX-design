@@ -138,9 +138,11 @@ Status: ☐ queued · ◐ partial · ✅ ingested · ✖ skipped (reason)
 ## Tier 2 — processes + digital guidance (after T1, per-tranche decision)
 `accessibility/communication/…scenario-4-digital-content` (exact URL TBD — hub captured
 2026-07-02; likely WCAG/neuro overlap, low priority) · the **Common Toolkit** (webf-017
-RULED 2026-07-03: probe via Dave's authenticated Chrome session next ingestion session;
-if Figma/SSO-gated like the Create portal, fall back to a proper access request — home of
-element/pattern standards incl. forms, web AND app) ·
+PROBED 2026-07-03: create.hsbc links to Figma `HSBC-Common-Library` — MCP needs per-file
+EDIT access (denied); the "Gaps and edits" branch `Cgbtrmfp15ruNFkIAClpkI` remains fully
+MCP-reachable (re-verified). Dave to check: Common-Library = republish of his branch, or
+new content → request editor access. Home of element/pattern standards incl. forms, web
+AND app) ·
 `processes-and-tools/Design-Standards.html` · `Component-Libraries.html` · `Toolkits.html` ·
 `accessibility/digital-accessibility-framework.html` · `accessibility/testing-and-auditing.html` ·
 `accessibility/creating-accessible-content.html` · `Naming.html` · `Digital_Governance.html` ·
