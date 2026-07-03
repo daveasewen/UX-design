@@ -57,8 +57,20 @@ def audit_page(pg, theme, sink):
             if not el.is_visible(): continue   # skip hidden (e.g. a closed modal) — avoids slow hover timeouts
         except Exception:
             continue
+        # Never DRIVE demo chrome (2026-07-03): pressed = mouse down+up = a CLICK, and the
+        # snippets' own #themeToggle is the first button in document order — clicking it flipped
+        # the theme mid-sweep, so each pass measured the OTHER theme (the "light 4.02" fail on
+        # Selection-controls was the dark theme wearing a light label). Measurement already
+        # excluded .demo-controls/.controls; driving must too.
+        try:
+            if el.evaluate("e=>!!e.closest('.demo-controls,.controls')"): continue
+        except Exception:
+            continue
         for label in ("hover", "pressed"):
             try:
+                # re-assert the theme before every drive — belt-and-braces against any
+                # state-mutating click putting the page in the wrong theme silently
+                pg.evaluate("t=>document.body.setAttribute('data-theme',t)", theme)
                 el.hover(timeout=250); pg.wait_for_timeout(20)
                 if label == "pressed": pg.mouse.down(); pg.wait_for_timeout(25)
                 fails = pg.evaluate(MEASURE, el)
