@@ -69,12 +69,14 @@ source receipt (F1) — the biggest single finding of this tranche.
   Grey 8 or Black; text on Grey 6–8 = White.** [ADVISORY-derivable — receipt for the
   surface-contrast audit's pairings] {#col25-010}
 - **Typography in digital experiences: white or Grey 8 (#333333) ONLY — "don't use
-  any grey for typography other than complimentary grey 8."** CONTRADICTION with the
-  shipped design system: semantic `text/secondary` (light) = #545454 (Grey 7), which
-  canon inherits (a11y-clean at 7.5:1 on white — this is a brand-rule tension, not a
-  contrast fail). The bank's own token export post-dates the page; likely the page
-  simplifies. [REVIEW — brand page vs shipped token store: bless Grey 7 as
-  text/secondary (treat page as stale) or tighten canon to Grey 8] {#col25-011}
+  any grey for typography other than complimentary grey 8."** Contradicted the
+  shipped design system: semantic `text/secondary` (light) = #545454 (Grey 7),
+  a11y-clean at 7.5:1 on white. RULED by Dave 2026-07-03: **the token store
+  governs** — the bank's own export post-dates the page; the page rule is treated
+  as marketing-surface/stale guidance. Grey 7 stays as text/secondary; delta map
+  notes the tension for the 2026 grey specs to settle definitively.
+  [ADVISORY — ruled: token store governs; re-check when col26-001's grey specs
+  publish] {#col25-011}
 - **Grey usage: lighter greys as solid backgrounds; never the grey palette in
   isolation without brand-palette colours; greys as fallback background when other
   colours can't reach contrast.** [TASTE + the contrast part already gated]
@@ -145,7 +147,7 @@ source receipt (F1) — the biggest single finding of this tranche.
 | Architecture | 4 separate palette groups | brand + supporting (50 values / 10 families) | supersession at composition level; dual-live ruling picks vintage |
 | Reds | HSBC Red + Comp Red 1–3 (no tints) | HSBC Red + Deep Red #9B0000 | Comp Red RETIRED (col25-007); audit legacy assets |
 | Greys | Grey 1–8 + DM Grey 1–6 PUBLISHED | "specs available soon" | 2025 values operative; token store matches (col25-009/013 → col26-001) |
-| Typography grey | white or Grey 8 ONLY | silent (greys pending) | tension with shipped text/secondary = Grey 7 → col25-011 REVIEW |
+| Typography grey | white or Grey 8 ONLY | silent (greys pending) | RULED 2026-07-03: token store governs (text/secondary = Grey 7 stays); re-check at 2026 grey specs (col25-011) |
 | Red in charts | Core palette banned in app/web charts | HSBC Red distinguishes own data (col26-013) | FLIP → col25-016 REVIEW (vintage parameter) |
 | B&W photography | banned | silent | col25-008 REVIEW (low) |
 | Illustration | dedicated palettes incl. skin/hair families | folded into supporting palette | supersession recorded in `illustration-standards.md` |
@@ -164,11 +166,11 @@ source receipt (F1) — the biggest single finding of this tranche.
   published hexes (8 greys, 6 dark-mode greys, 4 RAG, HSBC Red) exist in
   `tokens/colour.json` at matching positions. Provenance receipt for the ADR-0005
   open item: the store's vintage is now documented, not assumed.
-- **F3 — Three REVIEW items, tiered.** col25-018 (blue/400 fix — real work, joins
-  the dark-RAG revisit) · col25-011 (text/secondary Grey 7 vs page's Grey-8-only —
-  bless or tighten) · col25-016 (red-in-charts vintage flip — encode as chart-
-  contract parameter) · plus col25-008 (B&W photo, low). None block current work;
-  all are cheap rulings except 018.
+- **F3 — REVIEW items, tiered.** col25-018 (blue/400 fix — real work, joins the
+  dark-RAG revisit) · col25-016 (red-in-charts vintage flip — encode as chart-
+  contract parameter) · col25-008 (B&W photo, low). col25-011 RULED 2026-07-03:
+  token store governs, Grey 7 stays (re-check when the 2026 grey specs publish).
+  None block current work; all are cheap rulings except 018.
 - **F4 — Continuity receipts, both vintages agree:** tactical red (col25-001 ↔
   col26-003) · closed palettes / 0 rogue hex (col25-005 ↔ col26-015) · palette-scope
   discipline (col25-003 ↔ col26-008) · contrast floors stable. The compose gate's

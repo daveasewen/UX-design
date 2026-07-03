@@ -119,10 +119,13 @@ future composition/journey experimentation strand. 2025↔2026 deltas are logged
    re-issue, this file gets the delta pass; deltas ≠ defects (three already logged:
    type26-025/026/029). [structure note] {#type25-019}
 2. **Three cost-0 gate candidates surfaced:** no-italics scan (type25-007),
-   no-text-shadow scan (type25-008), red-text-role check (type25-003) — all pass canon
-   today with zero occurrences, so promotion is free; same playbook as the all-caps and
-   icon-4.5 promotions. [REVIEW — batch-promotion decision at the next gate touch;
-   5-minute yes] {#type25-020}
+   no-text-shadow scan (type25-008), red-text-role check (type25-003) — all passed
+   canon with zero occurrences. RULED by Dave 2026-07-03: **STRAIGHT TO BLOCKING**
+   (his override of the advisory-first convention — zero occurrences + exact checks
+   = the advisory step buys nothing). ENACTED as snippet-gate check 6
+   (`_validate_snippets.py`), bite-tested ×3 in `_tests/test_gates.py`; red text
+   stays legal via the rag/error role token (var(--error)) and CTA roles — the gate
+   bans the raw-hex role bypass. [BLOCKING — enacted 2026-07-03] {#type25-020}
 3. **Orphan/widow detection** (type25-005) is a NEW visual-QA-loop candidate — needs
    render, not parsing; belongs to the owned render path when it lands
    (`_ROBUSTNESS-PORTABILITY.md`). [structure note] {#type25-021}

@@ -16,6 +16,12 @@ For every knowledge/snippets/*.reference.html:
      surfaces (_fitness-test) for the same class.
   5. FOCUS — there must be a :focus-visible rule, and no outline:none without a
      visible replacement (box-shadow or a non-none outline).
+  6. TYPOGRAPHY — no italics (font-style or <i>/<em>), no text-shadow, no raw
+     brand-red hex on the color property (red text arrives only via the
+     rag/error role token or a CTA role). RULED STRAIGHT TO BLOCKING by Dave
+     2026-07-02 (type25-020; overrides advisory-first — all three families had
+     zero canon occurrences, evidence pre-computed). Bite-tested in
+     _tests/test_gates.py.
 
 This is the link that makes a snippet "gated": it cannot silently drift from the
 meta + token stores. Exits non-zero on any failure so _build_all.py fails the build.
@@ -38,6 +44,12 @@ ACRONYMS = {
     "PDF", "URL", "CTA", "OK", "IBAN", "BIC", "OTP", "KYC", "FX",
     "GBP", "USD", "EUR", "HKD", "CNY", "AED", "ATM", "ID",
 }
+
+# type25-020 (blocking 2026-07-02): brand + complementary reds that may never be
+# typed raw onto the color property. HSBC Red, Deep Red, rag/error light, and the
+# retired Complementary Reds (legacy-asset drift guard). The sanctioned routes for
+# red text are the rag/error role token (var(--error)) and CTA-role styling.
+RED_HEXES = {"DB0011", "9B0000", "A8000B", "E31E22", "BA1110", "730014"}
 
 
 def resolve(token, mode):
@@ -137,6 +149,24 @@ def validate(path):
         if all(w in ACRONYMS for w in run.split()):
             continue  # acronym-only runs are the brand exemption (type26-019)
         errors.append(f"{name}: ALL-CAPS text run \"{run}\" — banned outside acronyms (type26-019, promoted 2026-07-02)")
+
+    # 6. TYPOGRAPHY (type25-020 — RULED STRAIGHT TO BLOCKING, Dave 2026-07-02.
+    #    Brand sources: no-italics + no-text-shadow (2025+2026 typography standards),
+    #    red type only for CTA/toolkit roles (col26-016 + type25 red-type rule).
+    #    color:var(--error) stays legal — that IS the sanctioned rag/error role route;
+    #    this bans the ROLE BYPASS (raw red hex typed onto text).
+    #    Runs before the interactive early-return so passive components are covered.)
+    for _ in re.finditer(r'font-style\s*:\s*italic', html, re.I):
+        errors.append(f"{name}: ITALICS font-style:italic — banned canon-wide (type25-020, blocking 2026-07-02)")
+    for m in re.finditer(r'<(i|em)\b', html, re.I):
+        errors.append(f"{name}: ITALICS <{m.group(1)}> tag — banned canon-wide (type25-020, blocking 2026-07-02)")
+    for _ in re.finditer(r'text-shadow\s*:', html, re.I):
+        errors.append(f"{name}: TEXT-SHADOW — banned canon-wide (type25-020, blocking 2026-07-02)")
+    for m in re.finditer(r'(?<![-\w])color\s*:\s*#([0-9A-Fa-f]{6})', html):
+        if m.group(1).upper() in RED_HEXES:
+            errors.append(f"{name}: RED TEXT color:#{m.group(1)} — raw brand red on text; "
+                          f"red type only via the rag/error role token or a CTA role "
+                          f"(type25-020/col26-016, blocking 2026-07-02)")
 
     # 5. focus
     # Focus rules only apply to INTERACTIVE components; passive ones (e.g. Badge) are exempt.

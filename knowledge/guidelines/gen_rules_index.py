@@ -7,6 +7,12 @@ Contract (decided 2026-07-02, Dave):
     destiny tag. IDs are identifiers, not ordinals — never renumber.
   * Destiny tags: [BLOCKING…] [ADVISORY…] [TASTE…] [REVIEW…] (free text after the
     keyword allowed; multi-line tags allowed).
+  * NON-INDEXED tags (BLESSED by Dave 2026-07-03): [RECORDED…] out-of-engine
+    channels (print/SMS/social/internal-comms/sound) · [PROCESS…] workflow
+    guidance · [IN FORCE…] operative framing. Deliberately invisible to this
+    generator — no index entries, no gate failures; they keep completeness and
+    delta-mapping without polluting the enforcement register. Rules under them
+    still carry stable {#ids}.
   * This generator FAILS the build (exit 1) on: duplicate IDs anywhere; a tagged
     rule with no ID; a malformed ID. A tag is only exempt in the file header
     (before the first `## `) and on heading lines — those are format docs.

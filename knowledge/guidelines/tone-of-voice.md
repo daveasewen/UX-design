@@ -24,8 +24,8 @@ phrases — the lists arrive at cost 0.
 
 Tag note: [RECORDED] and [PROCESS] rules below are deliberately NON-indexed (kin of
 [IN FORCE]) — out-of-engine channels (print/SMS/social) and workflow guidance, kept
-for completeness and delta-mapping. New vocabulary this file — flagged for Dave's
-canonisation call.
+for completeness and delta-mapping. BLESSED by Dave 2026-07-03 — canon vocabulary,
+documented in `gen_rules_index.py`.
 
 ## The four principles (the register frame)
 

@@ -91,10 +91,10 @@ rule applied to vocabulary.
 - **Title case banned for headlines** ("hard to read… overly formal and old
   fashioned. Not our tone at all") — **ONE exception: meta titles (browser/SEO
   titles) use start case with pipe separators** ('Current Accounts | Everyday Banking
-  – HSBC UK'). Meta titles are not a canon surface today; if they ever enter the
-  engine, the sentence-case and all-caps gates need a scoped exemption.
-  [REVIEW — gate-scope ruling: pre-register the meta-title exemption (or rule meta
-  titles permanently out of engine scope) — Dave, cheap] {#copy-014}
+  – HSBC UK'). RULED by Dave 2026-07-03: **meta titles are OUT OF ENGINE SCOPE** —
+  canon doesn't generate them; gates unchanged; revisit only if SEO surfaces ever
+  enter the engine. [RECORDED — out-of-scope surface, ruled 2026-07-03; the
+  title-case ban itself is carried by the enacted sentence-case gate] {#copy-014}
 - **Product naming register: prefer common nouns** ('our app', not 'the HSBC Mobile
   Banking app'); **HSBC prefix is never mandatory** (Global Brand + Global Brand Legal
   confirmed — no trademark requirement in any scenario); prefix only where ambiguity
@@ -382,9 +382,9 @@ rule applied to vocabulary.
   surface identified. Same promotion path as all-caps: encode → advisory →
   bite-test → promote. copy-051's log-on family and copy-057's 'Country / region'
   label are the next two.
-- **F4 — One REVIEW item this tranche: copy-014** (meta-title start-case exemption
-  vs the sentence-case/all-caps gates). Cheap ruling: either pre-register the
-  exemption or rule meta titles out of engine scope.
+- **F4 — copy-014 RULED (2026-07-03): meta titles out of engine scope.** The
+  tranche's one review item closed next-day; gates unchanged; revisit clause
+  recorded on the rule.
 - **F5 — The sentence-case gate gets its allowlist mechanism** (copy-053): consult
   preferred terms for proper-noun exceptions (Open Banking, Direct Debit) instead of
   maintaining a parallel list. Small gate refactor, logged not built.

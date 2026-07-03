@@ -207,6 +207,25 @@ def mut_allcaps_text(k):
     write(p, html.replace("</body>", "<p>FINAL WARNING NOTICE</p></body>", 1))
 
 
+def mut_italics(k):
+    """type25-020 (Dave ruling 2026-07-02, straight to blocking): italics must bite."""
+    p, html, man = first_snippet_with_manifest(k, lambda m, h: "</head>" in h)
+    write(p, html.replace("</head>", "<style>.zz-it{font-style:italic}</style></head>", 1))
+
+
+def mut_text_shadow(k):
+    """type25-020: text-shadow must bite."""
+    p, html, man = first_snippet_with_manifest(k, lambda m, h: "</head>" in h)
+    write(p, html.replace("</head>", "<style>.zz-ts{text-shadow:0 1px 2px #000}</style></head>", 1))
+
+
+def mut_red_text(k):
+    """type25-020/col26-016: raw brand-red hex on the color property must bite
+    (var(--error) — the rag role route — stays legal and is untouched)."""
+    p, html, man = first_snippet_with_manifest(k, lambda m, h: "</head>" in h)
+    write(p, html.replace("</head>", "<style>.zz-red{color:#DB0011}</style></head>", 1))
+
+
 def mut_unknown_icon(k):
     p, html, man = first_snippet_with_manifest(k, lambda m, h: "</body>" in h)
     rogue = '<svg viewBox="0 0 24 24"><path d="M1 1 L23 23 L1 23 Z"/></svg>'
@@ -288,6 +307,9 @@ CASES = [
     ("snippet gate bites on missing focus",      "focus",    "_validate_snippets.py",     mut_no_focus,        ":focus-visible"),
     ("snippet gate bites on uppercase CSS",      "caps-css", "_validate_snippets.py",     mut_allcaps_css,     "ALL-CAPS text-transform"),
     ("snippet gate bites on ALL-CAPS text run",  "caps-txt", "_validate_snippets.py",     mut_allcaps_text,    "ALL-CAPS text run"),
+    ("snippet gate bites on italics",            "italic",   "_validate_snippets.py",     mut_italics,         "ITALICS"),
+    ("snippet gate bites on text-shadow",        "tshadow",  "_validate_snippets.py",     mut_text_shadow,     "TEXT-SHADOW"),
+    ("snippet gate bites on raw red text",       "redtext",  "_validate_snippets.py",     mut_red_text,        "RED TEXT"),
     ("a11y gate bites on missing reduced-motion","motion",   "_validate_a11y.py",         mut_reduced_motion,  "2.3.3"),
     ("icon gate bites on invented path",         "icon",     "_validate_icons.py",        mut_unknown_icon,    "UNKNOWN"),
     ("icon gate bites on shape-only icon",       "shape",    "_validate_icons.py",        mut_shape_only_icon, "UNKNOWN"),

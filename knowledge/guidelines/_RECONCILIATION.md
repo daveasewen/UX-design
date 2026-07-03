@@ -25,13 +25,8 @@ Dave rules.*
 ## colour-usage.md
 
 - **col25-008** — No black-and-white photography (2025 Do/Don't). The 2026 photography standard (`brand-refresh-assets.md`) is silent on this — carry or retire is a refresh reconciliation call.
-- **col25-011** — Typography in digital experiences: white or Grey 8 (#333333) ONLY — "don't use any grey for typography other than complimentary grey 8." CONTRADICTION with the shipped design system: semantic `text/secondary` (light) = #545454 (Grey 7), which canon inherits (a11y-clean at 7.5:1 on white — this is a brand-rule tension, not a contrast fail). The bank's own token export post-dates the page; likely the page simplifies.
 - **col25-016** — 2025: the Core palette should NOT be used in app or web charts and graphs (status meaning is reserved for RAG). DIRECT FLIP vs col26-013 ("distinguish HSBC with HSBC Red" in data-vis). Both standards are live; the dual-live ruling makes vintage explicit per composition, but chart generation needs to know which rule it is under.
 - **col25-018** — THE BLUE RECEIPT: `color/blue/400` (#4587A7) is `illustration/blue-5`, verbatim — the suspected illustration-palette leak is now receipted at value level. The 2025 standard publishes exactly ONE UI blue: RAG Blue #305A85 (= `color/blue/600`, sitting at /600 like its RAG siblings red/amber/green). `focus/ring` (dark) and dark `rag/information` alias blue/400 — i.e. they rest on an illustration colour that was never a published UI value and fails contrast in the dark combinations (the dark-RAG int
-
-## copywriting.md
-
-- **copy-014** — Title case banned for headlines ("hard to read… overly formal and old fashioned. Not our tone at all") — ONE exception: meta titles (browser/SEO titles) use start case with pipe separators ('Current Accounts | Everyday Banking – HSBC UK'). Meta titles are not a canon surface today; if they ever enter the engine, the sentence-case and all-caps gates need a scoped exemption.
 
 ## generative-ai-brand.md
 
@@ -76,10 +71,6 @@ Dave rules.*
 - **type26-026** — Over-photography watch-outs: legibility first — avoid busy areas, high-contrast edges, faces; safe placement, sufficient contrast, "(where needed) a subtle gradient/ overlay, rather than heavy effects"; respect the subject — never cover focal points/ faces/brand cues. ⚠ DELTA vs 2025's flat "no treatments — adjust the asset" (type25-013): the refresh PERMITS subtle overlays as a contrast aid. Interim reading: overlay-as- contrast-aid OK (it's also the dark-mode imagery mechanism, webf-008), deco
 - **type26-029** — Magnetic headline (NEW construct): an Iconic Hexagon sits at the CENTRE of the headline line as visual anchor/pivot; words "magnetised" around it; vertical alignment to the hexagon's 5 vertices, baselines to hexagon geometry; photography stays the hero (magnetic block moves to give the subject space; stacked/side variants; centred over ambient scenes); rule of thirds guides, not strict. This is the brand-campaign headline construct — the 2026 replacement register for 2025's big-and-light/small-a
 
-## typography-usage.md
-
-- **type25-020** — Three cost-0 gate candidates surfaced: no-italics scan (type25-007), no-text-shadow scan (type25-008), red-text-role check (type25-003) — all pass canon today with zero occurrences, so promotion is free; same playbook as the all-caps and icon-4.5 promotions.
-
 ## web-foundations.md
 
 - **webf-017** — The responsive-forms URL redirects to an "Elements and patterns (web and app)" stub: element/pattern standards (buttons, accordions, app tiles…) now live in the Common Toolkit; "the Design Toolkit remains the single source of truth" for interaction states, accessibility requirements, usage rules, specifications. ⚠ Source gap: forms standards are not reachable as a page; the Common Toolkit is an asset/toolkit destination, not an ingestable standard.
@@ -90,4 +81,4 @@ Dave rules.*
 - **webf-033** — font-1..4 sizes are TScale-mode-dependent — check the export carries them. `typography.json` has fixed sizes only for font-5..7 (correct — S5–S7 are invariant); font-1..4 sizes/leading must vary by scale mode. If the semantic-scale export didn't carry per-mode type values, large-type generation at scale-2/3 is running on a gap.
 - **webf-034** — Responsive spacing values (R units) are a source gap. `spacing.json` is fixed-only; the RScale VALUES per breakpoint aren't in the store or on this page (likely toolkit- internal). Generation currently has no responsive-spacing dimension.
 
-_38 open item(s)._
+_35 open item(s)._
