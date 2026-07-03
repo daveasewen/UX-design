@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Promenaut — the iteration machine (vision prototype)</title>
+<!--
+  VISION PROTOTYPE · 2026-07-03 · Dave's notebook sketch, realised.
+  "An iteration machine on the user end." Input → Shape → Result → Refine → loop.
+  Tool chrome is neutral/Swiss; the CANON lives inside the Result pane.
+  Palette RETRIEVED from knowledge/tokens/colour.json (#DB0011 et al) — not recalled.
+  Figures WELDED from the SME-payments worked example — never invented.
+  Univers shown in fallback (brand font not embedded). Fenced: not a build backlog.
+-->
+<style>
+  :root{
+    /* ---- tool chrome (neutral / instrument) ---- */
+    --paper:#ffffff; --ink:#161616; --ink-2:#3a3a3a; --muted:#6a6a6a; --faint:#9a9a9a;
+    --rule:#e6e6e6; --rule-2:#efefef; --wash:#f6f6f5; --wash-2:#fafafa;
+    --brand:#DB0011;            /* retrieved: color/primary */
+    --brand-deep:#730014;       /* retrieved: red-3 */
+    --ok:#1C7F55; --ok-tint:#E5F6EF; --info:#366982; --amber:#A87C00; --amber-tint:#FFF4D7;
+    /* ---- canon primitives (retrieved) ---- */
+    --c-red:#DB0011; --c-red-deep:#730014;
+    --c-ink:#212121; --c-ink-2:#545454; --c-g7:#333333; --c-g5:#767676;
+    --c-g3:#B7B7B7; --c-g2:#D7D8D6; --c-g1:#EDEDED; --c-g0:#F3F3F3;
+    --c-dark:#101010; --c-dark-2:#1D1D1D; --c-dark-3:#212121;
+    --mono:"SFMono-Regular",ui-monospace,"JetBrains Mono",Menlo,Consolas,monospace;
+    --sans:"Helvetica Neue",Univers,Arial,system-ui,sans-serif; /* Univers→Helvetica fallback */
+    --step:cubic-bezier(.22,.61,.36,1);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{font-family:var(--sans);color:var(--ink);background:var(--wash-2);
+    -webkit-font-smoothing:antialiased;font-size:14px;line-height:1.5}
+  button{font-family:inherit;cursor:pointer}
+  :focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:2px}
+
+  .app{display:grid;grid-template-columns:236px 1fr;height:100vh;overflow:hidden}
+
+  /* ---------------- left rail ---------------- */
+  .rail{background:var(--paper);border-right:1px solid var(--rule);display:flex;flex-direction:column;min-height:0}
+  .brand-row{display:flex;align-items:center;gap:10px;padding:16px 16px 14px}
+  .burger{width:22px;height:16px;display:inline-flex;flex-direction:column;justify-content:space-between}
+  .burger i{height:2px;background:var(--ink);display:block}
+  .wordmark{font-weight:700;letter-spacing:.14em;font-size:12px}
+  .wordmark b{color:var(--brand)}
+  .rail-lbl{font:600 10px/1 var(--mono);letter-spacing:.16em;color:var(--faint);
+    text-transform:uppercase;padding:14px 16px 8px}
+  .proj{display:flex;align-items:center;gap:9px;padding:9px 16px;color:var(--ink-2);font-size:13px;
+    border-left:2px solid transparent}
+  .proj:hover{background:var(--wash)}
+  .proj.active{border-left-color:var(--brand);background:var(--wash);font-weight:600;color:var(--ink)}
+  .proj .dot{width:6px;height:6px;border-radius:50%;background:var(--c-g3)}
+  .proj.active .dot{background:var(--brand)}
+  .newproj{margin:8px 16px;padding:8px;border:1px dashed var(--rule);border-radius:6px;color:var(--muted);
+    background:none;font-size:12px;display:flex;align-items:center;gap:8px;justify-content:center}
+  .newproj:hover{border-color:var(--c-g3);color:var(--ink)}
+  .rail-foot{margin-top:auto;padding:14px 16px;border-top:1px solid var(--rule);color:var(--faint);
+    font:500 10px/1.5 var(--mono)}
+
+  /* ---------------- main ---------------- */
+  .main{display:flex;flex-direction:column;min-width:0;min-height:0}
+  .topbar{display:flex;align-items:center;gap:18px;padding:0 22px;height:56px;background:var(--paper);
+    border-bottom:1px solid var(--rule);flex:0 0 auto}
+  .loop{display:flex;align-items:center;gap:6px}
+  .loop .node{display:flex;align-items:center;gap:7px;padding:5px 10px;border-radius:20px;font-size:12px;
+    color:var(--faint);transition:.35s var(--step)}
+  .loop .node .n{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--c-g2);display:grid;
+    place-items:center;font:600 10px/1 var(--mono);color:var(--faint);transition:.35s var(--step)}
+  .loop .node.on{color:var(--ink)}
+  .loop .node.on .n{border-color:var(--brand);background:var(--brand);color:#fff}
+  .loop .node.done .n{border-color:var(--ok);background:var(--ok);color:#fff}
+  .loop .arrow{color:var(--c-g3);font-size:12px}
+  .loop .cyc{margin-left:2px;color:var(--brand);font-size:14px}
+  .topbar .spacer{flex:1}
+  .pill-min{font:600 10px/1 var(--mono);letter-spacing:.1em;color:var(--muted);border:1px solid var(--rule);
+    padding:6px 10px;border-radius:20px;text-transform:uppercase}
+
+  .stage{flex:1;overflow:auto;padding:34px 22px 60px;min-height:0}
+  .sheet{max-width:940px;margin:0 auto}
+  .kicker{font:600 11px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--brand)}
+  h1.big{font-size:30px;line-height:1.15;letter-spacing:-.01em;margin:12px 0 6px;font-weight:700}
+  .sub{color:var(--muted);max-width:620px;margin:0 0 26px}
+
+  .view{display:none;animation:rise .4s var(--step)}
+  .view.show{display:block}
+  @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  /* ---- input ---- */
+  .promptbox{border:1px solid var(--rule);border-radius:12px;background:var(--paper);padding:16px 16px 12px;
+    box-shadow:0 1px 0 rgba(0,0,0,.02)}
+  .promptbox textarea{width:100%;border:0;resize:none;font-family:inherit;font-size:15px;line-height:1.55;
+    color:var(--ink);min-height:78px;background:none}
+  .promptbox textarea:focus{outline:none}
+  .attach{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+  .chip{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--ink-2);background:var(--wash);
+    border:1px solid var(--rule);border-radius:16px;padding:5px 10px}
+  .chip .x{color:var(--faint)}
+  .chip.add{border-style:dashed;color:var(--muted);background:none}
+  .prow{display:flex;align-items:center;gap:14px;margin-top:12px;padding-top:12px;border-top:1px solid var(--rule-2)}
+  .prow .lbl{font:600 10px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+  .seg{display:inline-flex;border:1px solid var(--rule);border-radius:8px;overflow:hidden;background:var(--wash)}
+  .seg button{border:0;background:none;padding:7px 13px;font-size:12.5px;color:var(--muted);display:flex;
+    align-items:center;gap:7px}
+  .seg button.on{background:var(--paper);color:var(--ink);font-weight:600;box-shadow:0 0 0 1px var(--rule) inset}
+  .seg .glow{width:6px;height:6px;border-radius:50%;background:var(--c-g3)}
+  .seg button.on .glow{background:var(--brand)}
+  .hint{font-size:12px;color:var(--faint);margin-left:2px}
+  .cta{margin-left:auto;background:var(--ink);color:#fff;border:0;border-radius:8px;padding:10px 20px;
+    font-size:13.5px;font-weight:600;display:inline-flex;align-items:center;gap:9px;transition:.2s}
+  .cta:hover{background:#000;transform:translateY(-1px)}
+  .cta.brand{background:var(--brand)} .cta.brand:hover{background:#b90a17}
+  .mini-note{font-size:12px;color:var(--muted);margin-top:16px;display:flex;align-items:center;gap:8px}
+  .mini-note .k{font:600 10px/1 var(--mono);color:var(--brand);letter-spacing:.1em}
+
+  /* ---- shape / quiz ---- */
+  .qcard{border:1px solid var(--rule);border-radius:12px;background:var(--paper);padding:18px 18px;margin-bottom:14px}
+  .qcard .q{font-size:15px;font-weight:600;margin-bottom:12px;display:flex;gap:10px;align-items:baseline}
+  .qcard .q .qi{font:600 11px/1 var(--mono);color:var(--brand)}
+  .opts{display:flex;gap:8px;flex-wrap:wrap}
+  .opt{border:1px solid var(--rule);background:var(--wash-2);border-radius:8px;padding:9px 13px;font-size:13px;color:var(--ink-2)}
+  .opt:hover{border-color:var(--c-g3)}
+  .opt.sel{border-color:var(--brand);background:#fff;color:var(--ink);font-weight:600;box-shadow:0 0 0 1px var(--brand) inset}
+
+  /* ---- result ---- */
+  .result-top{display:flex;align-items:flex-end;gap:16px;margin-bottom:16px}
+  .tabs{display:inline-flex;gap:4px;background:var(--wash);border:1px solid var(--rule);border-radius:10px;padding:4px}
+  .tab{border:0;background:none;padding:8px 16px;border-radius:7px;font-size:13px;color:var(--muted);
+    display:flex;align-items:center;gap:8px;transition:.2s var(--step);font-weight:600}
+  .tab .tt{font:600 9px/1 var(--mono);letter-spacing:.12em;opacity:.7}
+  .tab .flame{width:9px;height:9px;border-radius:50%;background:var(--c-g3);transition:.25s}
+  .tab.on{background:var(--paper);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+  .tab[data-r=cool].on .flame{background:#4587A7}
+  .tab[data-r=warm].on .flame{background:var(--amber)}
+  .tab[data-r=hot].on .flame{background:var(--brand);box-shadow:0 0 0 3px rgba(219,0,17,.18)}
+  .result-top .spacer{flex:1}
+  .promote{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:9px 18px;font-weight:600;
+    font-size:13px;display:inline-flex;gap:9px;align-items:center;transition:.2s}
+  .promote:hover{transform:translateY(-1px);background:#b90a17}
+  .tier-tag{font:600 10px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+    padding:6px 10px;border:1px solid var(--rule);border-radius:16px;background:var(--paper)}
+
+  /* the canon frame */
+  .canvas{position:relative;border:1px solid var(--rule);border-radius:14px;overflow:hidden;background:#fff;
+    box-shadow:0 10px 30px -18px rgba(0,0,0,.25)}
+  .screen{display:none}
+  .screen.show{display:block;animation:swap .45s var(--step)}
+  @keyframes swap{from{opacity:0;transform:scale(.985)}to{opacity:1;transform:none}}
+
+  /* shared canon bits */
+  .cn{font-family:var(--sans);color:var(--c-ink)}
+  .cn-mast{display:flex;align-items:center;gap:12px;padding:16px 22px;border-bottom:1px solid var(--c-g1)}
+  .logo{width:26px;height:26px;position:relative;flex:0 0 auto}
+  .logo i{position:absolute;inset:0;background:
+     linear-gradient(135deg,#fff 0 50%,var(--c-red) 50% 100%),
+     linear-gradient(45deg,var(--c-red) 0 50%,#fff 50% 100%);
+     background-blend-mode:multiply;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
+  .logo b{position:absolute;inset:0;background:var(--c-red);clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);
+     -webkit-mask:linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0)}
+  .logo::after{content:"placed";position:absolute;left:50%;top:110%;transform:translateX(-50%);
+     font:500 7px/1 var(--mono);color:var(--c-g3);white-space:nowrap}
+  .cn-acct{font-size:12.5px;color:var(--c-ink-2)} .cn-acct b{color:var(--c-g7);font-weight:600}
+  .cn-mast .mspacer{flex:1}
+  .cn-mast .mbtn{font-size:12px;color:var(--c-ink-2)}
+
+  /* COOL screen */
+  .s-cool .body{padding:26px 22px 24px}
+  .s-cool .eyebrow{font:600 10px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--c-g5)}
+  .s-cool .balance{font-size:44px;font-weight:700;letter-spacing:-.02em;margin:8px 0 2px;color:var(--c-ink)}
+  .s-cool .net{font-size:13px;color:var(--ok);font-weight:600}
+  .s-cool .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:26px}
+  .s-cool .panel{border:1px solid var(--c-g1);border-radius:10px;padding:16px}
+  .s-cool .panel h4{margin:0 0 12px;font-size:12px;letter-spacing:.02em;color:var(--c-g5);font-weight:600;
+    display:flex;justify-content:space-between}
+  .s-cool .li{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-top:1px solid var(--c-g0);font-size:13.5px}
+  .s-cool .li:first-of-type{border-top:0}
+  .s-cool .li .amt{font-weight:600;font-variant-numeric:tabular-nums}
+  .s-cool .li .amt.due{color:var(--c-red)}
+  .s-cool .approve{margin-top:14px;width:100%;border:1px solid var(--c-red);color:var(--c-red);background:#fff;
+    border-radius:8px;padding:10px;font-weight:600;font-size:13px}
+  .s-cool .sched{margin-top:8px;font-size:12.5px;color:var(--c-g5)}
+
+  /* WARM screen — one bold moment (inverse surface band) */
+  .s-warm .band{background:var(--c-dark-2);color:#fff;padding:24px 22px}
+  .s-warm .band .eyebrow{font:600 10px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:#b9b9b9}
+  .s-warm .band .balance{font-size:40px;font-weight:700;letter-spacing:-.02em;margin:6px 0 4px}
+  .s-warm .band .cover{font-size:13px;color:#cfcfcf}
+  .s-warm .band .cover b{color:#7ED3AF;font-weight:600}
+  .s-warm .body{padding:20px 22px 22px}
+  .s-warm .approw{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--c-g1);
+    border-radius:10px;padding:14px 16px}
+  .s-warm .approw .lab{font-size:13.5px;color:var(--c-ink)} .s-warm .approw .lab b{font-weight:700}
+  .s-warm .approw .sum{font-size:12px;color:var(--c-g5);margin-top:2px}
+  .s-warm .approve{background:var(--c-red);color:#fff;border:0;border-radius:8px;padding:11px 18px;font-weight:700;font-size:13.5px}
+  .s-warm .cand{display:inline-flex;align-items:center;gap:6px;font:600 10px/1 var(--mono);color:var(--amber);
+    background:var(--amber-tint);border:1px solid #F0DCA0;border-radius:14px;padding:5px 9px;margin-top:14px}
+
+  /* HOT screen — editorial dark hero, gradient unlocked, red leads */
+  .s-hot .hero{position:relative;padding:34px 24px 30px;color:#fff;overflow:hidden;
+    background:radial-gradient(120% 140% at 82% 8%,#3a0a10 0%,#1a0508 34%,var(--c-dark) 70%)}
+  .s-hot .hero::before{content:"";position:absolute;inset:0;opacity:.5;mix-blend-mode:screen;
+    background:linear-gradient(115deg,transparent 30%,rgba(219,0,17,.5) 48%,transparent 66%);
+    background-size:250% 100%;animation:sheen 5.5s linear infinite}
+  @keyframes sheen{from{background-position:180% 0}to{background-position:-80% 0}}
+  .s-hot .hero>*{position:relative}
+  .s-hot .eyebrow{font:600 10px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:#ff8f98}
+  .s-hot .balance{font-size:58px;font-weight:800;letter-spacing:-.03em;margin:6px 0 6px;line-height:1}
+  .s-hot .balance .p{color:#ff5a67}
+  .s-hot .strip{display:flex;gap:22px;font-size:12.5px;color:#d7c7c9;margin-top:8px}
+  .s-hot .strip b{color:#fff}
+  .s-hot .cta-hot{margin-top:20px;background:var(--c-red);color:#fff;border:0;border-radius:9px;padding:13px 22px;
+    font-weight:700;font-size:14px;display:inline-flex;gap:10px;align-items:center;box-shadow:0 8px 24px -8px rgba(219,0,17,.7)}
+  .s-hot .cta-hot .arw{transition:.25s} .s-hot .cta-hot:hover .arw{transform:translateX(4px)}
+  .s-hot .body{padding:18px 24px 22px;background:#fff}
+  .s-hot .rowline{display:flex;justify-content:space-between;align-items:center;padding:11px 0;
+    border-top:1px solid var(--c-g1);font-size:13.5px}
+  .s-hot .rowline:first-child{border-top:0}
+  .s-hot .rowline .amt{font-weight:700;font-variant-numeric:tabular-nums}
+
+  /* gate strip (present-but-quiet) */
+  .gates{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:16px;padding:12px 14px;
+    border:1px solid var(--rule);border-radius:10px;background:var(--paper)}
+  .gates .glabel{font:600 10px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-right:2px}
+  .gp{display:inline-flex;align-items:center;gap:6px;font:600 11px/1 var(--mono);color:var(--ok);
+    background:var(--ok-tint);border:1px solid #BEE9D7;border-radius:14px;padding:5px 9px;transition:.3s}
+  .gp.adv{color:var(--muted);background:var(--wash);border-color:var(--rule)}
+  .gp.fail{color:var(--brand);background:#FBE4EA;border-color:#F8BFCE}
+  .gp .tick{font-size:11px}
+  .gates .spacer{flex:1}
+  .repair-row{display:none;align-items:center;gap:10px;margin-top:10px;padding:11px 14px;border-radius:10px;
+    background:#FBE4EA;border:1px solid #F8BFCE;font-size:12.5px;color:var(--brand-deep)}
+  .repair-row.show{display:flex}
+  .repair-row b{color:var(--brand)}
+  .repair-row .spacer{flex:1}
+  .rbtn{border:1px solid var(--brand);background:#fff;color:var(--brand);border-radius:7px;padding:7px 13px;font-weight:600;font-size:12px}
+  .rbtn.solid{background:var(--brand);color:#fff}
+  .rbtn.ghost{border-color:#E4A9B4;color:var(--brand-deep);background:none}
+  .curbs{font-size:11.5px;color:var(--faint);margin-top:12px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .curbs .cb{display:inline-flex;align-items:center;gap:5px}
+  .curbs .cb::before{content:"✓";color:var(--ok);font-size:10px}
+  .curbs .sep{color:var(--c-g2)}
+
+  /* ---- refine ---- */
+  .refine-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:16px}
+  .rc{border:1px solid var(--rule);border-radius:12px;background:var(--paper);padding:18px}
+  .rc h3{margin:0 0 4px;font-size:14px}
+  .rc .rsub{color:var(--muted);font-size:12.5px;margin:0 0 14px}
+  .rc textarea{width:100%;border:1px solid var(--rule);border-radius:8px;padding:11px;font-family:inherit;
+    font-size:13.5px;min-height:88px;resize:none}
+  .rc textarea:focus{outline:none;border-color:var(--brand)}
+  .comment{display:flex;gap:10px;padding:10px 0;border-top:1px solid var(--rule-2);font-size:13px}
+  .comment .av{width:22px;height:22px;border-radius:50%;background:var(--brand);color:#fff;display:grid;
+    place-items:center;font-size:10px;font-weight:700;flex:0 0 auto}
+  .comment .who{font-weight:600;font-size:12px} .comment .txt{color:var(--ink-2)}
+  .regen{margin-top:14px;background:var(--ink);color:#fff;border:0;border-radius:8px;padding:11px 18px;
+    font-weight:600;font-size:13px;display:inline-flex;gap:9px;align-items:center;width:100%;justify-content:center}
+  .regen:hover{background:#000}
+  .docs-link{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--info);margin-top:12px}
+
+  /* toast */
+  .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);opacity:0;
+    background:var(--ink);color:#fff;padding:12px 18px;border-radius:10px;font-size:13px;display:flex;gap:10px;
+    align-items:center;box-shadow:0 12px 30px -10px rgba(0,0,0,.5);pointer-events:none;transition:.4s var(--step);z-index:50;max-width:520px}
+  .toast .k{font:600 10px/1 var(--mono);color:#ff8f98;letter-spacing:.1em}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  .foot{max-width:940px;margin:34px auto 0;border-top:1px solid var(--rule);padding-top:14px;
+    font-size:11.5px;color:var(--faint);line-height:1.7}
+  .foot b{color:var(--muted)}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none!important;transition:none!important}
+  }
+  @media (max-width:820px){
+    .app{grid-template-columns:1fr}.rail{display:none}.refine-grid{grid-template-columns:1fr}
+    .s-cool .grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- ============ LEFT RAIL ============ -->
+  <aside class="rail">
+    <div class="brand-row">
+      <span class="burger" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="wordmark">PROME<b>N</b>AUT</span>
+    </div>
+    <div class="rail-lbl">Projects</div>
+    <div class="proj active"><span class="dot"></span> Northgate Timber — payments</div>
+    <div class="proj"><span class="dot"></span> Onboarding · KYC refresh</div>
+    <div class="proj"><span class="dot"></span> Card controls v2</div>
+    <div class="proj"><span class="dot"></span> Statements redesign</div>
+    <button class="newproj">＋ New project</button>
+    <div class="rail-foot">CANON · HSBC hsbc-mode<br>gates green · 18/18<br>register: spread ×3</div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <div class="main">
+    <div class="topbar">
+      <div class="loop" id="loop">
+        <div class="node" data-s="input"><span class="n">1</span> Input</div>
+        <span class="arrow">→</span>
+        <div class="node" data-s="shape"><span class="n">2</span> Shape</div>
+        <span class="arrow">→</span>
+        <div class="node" data-s="result"><span class="n">3</span> Result</div>
+        <span class="arrow">→</span>
+        <div class="node" data-s="refine"><span class="n">4</span> Refine</div>
+        <span class="cyc" title="it loops">↻</span>
+      </div>
+      <div class="spacer"></div>
+      <div class="pill-min" id="modePill">MODE · ANALYSIS</div>
+    </div>
+
+    <div class="stage">
+      <div class="sheet">
+
+        <!-- ---------- 1 · INPUT ---------- -->
+        <section class="view show" id="v-input">
+          <div class="kicker">Input · chat · inject</div>
+          <h1 class="big">What are we designing?</h1>
+          <p class="sub">Describe it, or paste a brief. Attach the research and the tool reads it in.
+             Everything converges on one criteria contract before anything generates.</p>
+
+          <div class="promptbox">
+            <textarea id="prompt">Payments screen for the finance admin at Northgate Timber Ltd (business current account ••••8842): today's cash position, the month's coverage, payments awaiting approval, and what's scheduled ahead.</textarea>
+            <div class="attach">
+              <span class="chip">📎 research-dossier.md <span class="x">×</span></span>
+              <span class="chip">📎 stakeholder-questionnaire.md <span class="x">×</span></span>
+              <span class="chip add">＋ inject research</span>
+            </div>
+            <div class="prow">
+              <span class="lbl">Approach</span>
+              <div class="seg" id="mode">
+                <button data-m="analysis" class="on"><span class="glow"></span> Analysis <span class="hint">— interview me first</span></button>
+                <button data-m="vibe"><span class="glow"></span> Vibe <span class="hint">— just generate</span></button>
+              </div>
+              <button class="cta brand" id="go1">Generate <span>→</span></button>
+            </div>
+          </div>
+
+          <div class="mini-note"><span class="k">FLEX</span> Analysis runs discovery for novel work; Vibe goes straight to a compliant draft for churn. Same curbs either way.</div>
+        </section>
+
+        <!-- ---------- 2 · SHAPE (quiz) ---------- -->
+        <section class="view" id="v-shape">
+          <div class="kicker">Shape · the tool interviews you</div>
+          <h1 class="big">Three questions before it draws.</h1>
+          <p class="sub">Novel work earns discovery. Your answers compile into the criteria contract —
+             the definition of done it will then be gated against.</p>
+
+          <div class="qcard">
+            <div class="q"><span class="qi">Q1</span> Who is this really for, and what's the one job of the screen?</div>
+            <div class="opts">
+              <button class="opt sel">Finance admin · approve & watch cash</button>
+              <button class="opt">Owner · high-level glance</button>
+              <button class="opt">Bookkeeper · reconcile detail</button>
+            </div>
+          </div>
+          <div class="qcard">
+            <div class="q"><span class="qi">Q2</span> Any hard constraint the design must not break?</div>
+            <div class="opts">
+              <button class="opt sel">High-value approval needs a confirm step</button>
+              <button class="opt sel">Account & sort refs masked</button>
+              <button class="opt">Single-column, mobile-first</button>
+            </div>
+          </div>
+          <div class="qcard">
+            <div class="q"><span class="qi">Q3</span> How much licence do you want on the look?</div>
+            <div class="opts">
+              <button class="opt">Hold the house style</button>
+              <button class="opt sel">Spread it — show me cool → warm → hot</button>
+              <button class="opt">Go expressive, I'll rein it in</button>
+            </div>
+          </div>
+          <button class="cta brand" id="go2" style="margin-top:6px">Compile contract & generate <span>→</span></button>
+          <div class="mini-note"><span class="k">CONTRACT</span> 6 curbs fixed · 2 licences granted · register = spread. Nothing generates until this is agreed.</div>
+        </section>
+
+        <!-- ---------- 3 · RESULT ---------- -->
+        <section class="view" id="v-result">
+          <div class="kicker">Result · one contract, three temperatures</div>
+          <div class="result-top">
+            <div class="tabs" id="tabs" role="tablist" aria-label="register">
+              <button class="tab on" data-r="cool" role="tab"><span class="flame"></span> Cool <span class="tt">SOBER</span></button>
+              <button class="tab" data-r="warm" role="tab"><span class="flame"></span> Warm <span class="tt">BALANCED</span></button>
+              <button class="tab" data-r="hot" role="tab"><span class="flame"></span> Hot <span class="tt">EXPRESSIVE</span></button>
+            </div>
+            <div class="spacer"></div>
+            <span class="tier-tag" id="tier">T1 · canon</span>
+            <button class="promote" id="promote">Submit — promote winner ↑</button>
+          </div>
+
+          <div class="canvas">
+            <!-- COOL -->
+            <div class="screen cn s-cool show" id="sc-cool">
+              <div class="cn-mast">
+                <span class="logo"><b></b></span>
+                <span class="cn-acct">Northgate Timber Ltd &nbsp;·&nbsp; <b>Business current ••••8842</b></span>
+                <span class="mspacer"></span><span class="mbtn">Statements ▾</span>
+              </div>
+              <div class="body">
+                <div class="eyebrow">Balance today</div>
+                <div class="balance">£122,450</div>
+                <div class="net">▲ net today +£2,450</div>
+                <div class="grid">
+                  <div class="panel">
+                    <h4>Awaiting approval <span>2</span></h4>
+                    <div class="li"><span>BrightHire Payroll</span><span class="amt due">£45,200</span></div>
+                    <div class="li"><span>Amazon Business</span><span class="amt">£4,502</span></div>
+                    <button class="approve">Review 2 approvals</button>
+                  </div>
+                  <div class="panel">
+                    <h4>Scheduled ahead <span>May</span></h4>
+                    <div class="li"><span>Ravenscroft Properties</span><span class="amt">£50,200</span></div>
+                    <div class="li"><span>HMRC VAT</span><span class="amt">£31,900</span></div>
+                    <div class="sched">Est. closing £124,000 · covered through May</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- WARM -->
+            <div class="screen cn s-warm" id="sc-warm">
+              <div class="cn-mast">
+                <span class="logo"><b></b></span>
+                <span class="cn-acct">Northgate Timber Ltd &nbsp;·&nbsp; <b>Business current ••••8842</b></span>
+                <span class="mspacer"></span><span class="mbtn">Statements ▾</span>
+              </div>
+              <div class="band">
+                <div class="eyebrow">Balance today</div>
+                <div class="balance">£122,450</div>
+                <div class="cover">Covered through May &nbsp;·&nbsp; buffer <b>£72,748</b></div>
+              </div>
+              <div class="body">
+                <div class="approw">
+                  <div>
+                    <div class="lab">Awaiting approval — <b>payroll £45,200</b> + 1</div>
+                    <div class="sum">Confirm step required · account masked ••••8842</div>
+                  </div>
+                  <button class="approve">Approve payroll →</button>
+                </div>
+                <div class="cand">◆ candidate token · inverse/surface — flagged for promotion</div>
+              </div>
+            </div>
+            <!-- HOT -->
+            <div class="screen cn s-hot" id="sc-hot">
+              <div class="hero">
+                <div class="eyebrow">Northgate Timber · May position</div>
+                <div class="balance">£122,<span class="p">450</span></div>
+                <div class="strip"><span>scheduled <b>£106,302</b></span><span>est. closing <b>£124,000</b></span><span>••••8842</span></div>
+                <button class="cta-hot">Act on 2 approvals <span class="arw">→</span></button>
+              </div>
+              <div class="body">
+                <div class="rowline"><span>BrightHire Payroll · <span style="color:var(--c-g5)">due today</span></span><span class="amt" style="color:var(--c-red)">£45,200</span></div>
+                <div class="rowline"><span>Ravenscroft Properties · scheduled</span><span class="amt">£50,200</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- present-but-quiet enforcement -->
+          <div class="gates" id="gates">
+            <span class="glabel">Gates</span>
+            <span class="gp"><span class="tick">✓</span> compose</span>
+            <span class="gp" id="gp-contrast"><span class="tick">✓</span> contrast</span>
+            <span class="gp"><span class="tick">✓</span> a11y</span>
+            <span class="gp"><span class="tick">✓</span> icons</span>
+            <span class="gp"><span class="tick">✓</span> dark-surface</span>
+            <span class="spacer"></span>
+            <span class="gp adv">states 44/51 · advisory</span>
+          </div>
+          <div class="repair-row" id="repair">
+            <span>⚠ <b>1 blocked</b> — indicator/accent contrast <b>2.7:1</b> on the dark hero (needs 3:1). Expressive licence, one measurable miss.</span>
+            <span class="spacer"></span>
+            <button class="rbtn solid" id="btnRepair">Repair &amp; re-gate</button>
+            <button class="rbtn ghost" id="btnHarvest">Harvest to exploration</button>
+          </div>
+          <div class="curbs">
+            <span class="cb">palette retrieved</span><span class="sep">·</span>
+            <span class="cb">Univers ramp</span><span class="sep">·</span>
+            <span class="cb">AA floor</span><span class="sep">·</span>
+            <span class="cb">••••8842 masked</span><span class="sep">·</span>
+            <span class="cb">square radius</span><span class="sep">·</span>
+            <span class="cb">logo placed</span>
+          </div>
+
+          <div class="mini-note" style="margin-top:20px"><span class="k">WHY IT'S NOT v0</span> Same three screens in any other tool are just variants. Here every one has already passed the blocking gates — and Hot shows the one that didn't, with a way out.</div>
+        </section>
+
+        <!-- ---------- 4 · REFINE ---------- -->
+        <section class="view" id="v-refine">
+          <div class="kicker">Refine · comment · quiz · loop</div>
+          <h1 class="big">Tell it what to change.</h1>
+          <p class="sub">Leave a note or answer a nudge. It regenerates inside the same curbs —
+             so refinement can't drift the work off-brand. This is the loop.</p>
+
+          <div class="refine-grid">
+            <div class="rc">
+              <h3>Comments</h3>
+              <p class="rsub">On the Warm variant · balance band</p>
+              <div class="comment"><span class="av">D</span><div><div class="who">Dave</div><div class="txt">Love the dark band. Can the payroll approval feel more urgent without going red-on-red?</div></div></div>
+              <div class="comment"><span class="av" style="background:var(--info)">P</span><div><div class="who">Priya · reviewer</div><div class="txt">+1. And keep the buffer figure — stakeholders asked for it.</div></div></div>
+              <textarea placeholder="Add a comment…"></textarea>
+            </div>
+            <div class="rc">
+              <h3>Quick quiz</h3>
+              <p class="rsub">Two nudges to sharpen the next pass</p>
+              <div class="q" style="font-size:13.5px;font-weight:600;margin-bottom:9px">Urgency on the approval?</div>
+              <div class="opts" style="margin-bottom:16px">
+                <button class="opt sel">Weight, not colour</button>
+                <button class="opt">A quiet countdown</button>
+                <button class="opt">Leave it</button>
+              </div>
+              <div class="q" style="font-size:13.5px;font-weight:600;margin-bottom:9px">Which survives to canon?</div>
+              <div class="opts">
+                <button class="opt">Cool</button>
+                <button class="opt sel">Warm</button>
+                <button class="opt">Hot (repaired)</button>
+              </div>
+              <div class="docs-link">📄 open criteria contract &amp; gate report</div>
+            </div>
+          </div>
+          <button class="regen" id="regen">↻ Regenerate within the curbs</button>
+        </section>
+
+        <div class="foot">
+          <b>Vision prototype · 2026-07-03</b> — the notebook sketch, realised. Fenced: no components built, canon untouched.
+          Tool chrome neutral; canon inside the Result pane. Palette <b>retrieved</b> from <b>tokens/colour.json</b> (#DB0011, the grey ramp, dark neutrals) — not recalled.
+          Figures <b>welded</b> from the SME-payments worked example — never invented. Univers shown in fallback.
+          The one thing to protect: the enforcement under Cool/Warm/Hot must stay <b>present</b> even when it's quiet — that's the difference between this and a commodity generator.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span class="k">LOOP</span><span id="toastMsg">Regenerated within the same curbs.</span></div>
+
+<script>
+(function(){
+  var state='input', mode='analysis', reg='cool', hotRepaired=false;
+  var views={input:document.getElementById('v-input'),shape:document.getElementById('v-shape'),
+             result:document.getElementById('v-result'),refine:document.getElementById('v-refine')};
+  var nodes=[].slice.call(document.querySelectorAll('#loop .node'));
+  var order=['input','shape','result','refine'];
+
+  function show(s){
+    state=s;
+    for(var k in views){views[k].classList.toggle('show', k===s);}
+    var idx=order.indexOf(s);
+    nodes.forEach(function(n){
+      var ni=order.indexOf(n.dataset.s);
+      n.classList.toggle('on', n.dataset.s===s);
+      n.classList.toggle('done', ni<idx);
+    });
+    document.querySelector('.stage').scrollTop=0;
+  }
+  function toast(msg){
+    document.getElementById('toastMsg').textContent=msg;
+    var t=document.getElementById('toast');t.classList.add('show');
+    clearTimeout(window._tt);window._tt=setTimeout(function(){t.classList.remove('show')},2600);
+  }
+
+  // mode toggle
+  document.querySelectorAll('#mode button').forEach(function(b){
+    b.addEventListener('click',function(){
+      document.querySelectorAll('#mode button').forEach(function(x){x.classList.remove('on')});
+      b.classList.add('on');mode=b.dataset.m;
+      document.getElementById('modePill').textContent='MODE · '+mode.toUpperCase();
+    });
+  });
+
+  document.getElementById('go1').addEventListener('click',function(){
+    show(mode==='analysis' ? 'shape' : 'result');
+    if(mode==='vibe') toast('Vibe mode — straight to a compliant draft. Curbs still held.');
+  });
+  document.getElementById('go2').addEventListener('click',function(){ show('result'); });
+
+  // register tabs
+  var tiers={cool:'T1 · canon',warm:'T2 · candidate',hot:'T3 · exploration'};
+  document.querySelectorAll('#tabs .tab').forEach(function(tab){
+    tab.addEventListener('click',function(){
+      document.querySelectorAll('#tabs .tab').forEach(function(t){t.classList.remove('on')});
+      tab.classList.add('on');reg=tab.dataset.r;
+      ['cool','warm','hot'].forEach(function(r){
+        document.getElementById('sc-'+r).classList.toggle('show', r===reg);
+      });
+      document.getElementById('tier').textContent=tiers[reg];
+      // enforcement follows the register
+      var contrast=document.getElementById('gp-contrast');
+      var repair=document.getElementById('repair');
+      if(reg==='hot' && !hotRepaired){
+        contrast.classList.add('fail');contrast.innerHTML='<span class="tick">✕</span> contrast 2.7:1';
+        repair.classList.add('show');
+      }else{
+        contrast.classList.remove('fail');contrast.innerHTML='<span class="tick">✓</span> contrast';
+        repair.classList.remove('show');
+      }
+    });
+  });
+
+  // repair the hot variant → gate turns green
+  document.getElementById('btnRepair').addEventListener('click',function(){
+    hotRepaired=true;
+    var contrast=document.getElementById('gp-contrast');
+    contrast.classList.remove('fail');contrast.innerHTML='<span class="tick">✓</span> contrast 3.4:1';
+    document.getElementById('repair').classList.remove('show');
+    // nudge the hero accent lighter to "prove" the fix
+    document.querySelector('.s-hot .balance .p').style.color='#ff7a86';
+    document.getElementById('tier').textContent='T2 · candidate';
+    toast('Recoloured the accent series and re-gated — Hot now passes. Judgment logged.');
+  });
+  document.getElementById('btnHarvest').addEventListener('click',function(){
+    document.getElementById('repair').classList.remove('show');
+    toast('Hero treatment harvested to the exploration ledger — a signal, not a deliverable.');
+  });
+
+  // promote + regenerate → the loop
+  document.getElementById('promote').addEventListener('click',function(){
+    toast('Winner promoted → tokenise · meta · gated reference. Retrieved by every next run.');
+  });
+  document.getElementById('regen').addEventListener('click',function(){
+    show('result');
+    toast('Regenerated within the same curbs — incorporated your note, 0 rogue hex.');
+  });
+
+  // let the user reach Refine from Result by clicking the loop node
+  nodes.forEach(function(n){ n.addEventListener('click',function(){
+    var ni=order.indexOf(n.dataset.s);
+    if(ni<=order.indexOf(state)+1) show(n.dataset.s); // only forward one step or back
+  });});
+
+  // opt toggles (cosmetic)
+  document.querySelectorAll('.opt').forEach(function(o){
+    o.addEventListener('click',function(){ o.classList.toggle('sel'); });
+  });
+})();
+</script>
+</body>
+</html>
