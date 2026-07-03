@@ -174,12 +174,26 @@ Status: ☐ queued · ◐ partial · ✅ ingested · ✖ skipped (reason)
     aca-003/004/005 = cost-0 screen-gate candidates; aca-014…017 = ready-made
     Video-player criteria contract; CA-6 Links gap → `_COMPONENT-GAPS.md`.
 
+### Done (continued)
+19. ✅ `…/accessibility-for-interaction-designers.html` → `accessibility-interaction-design.md`
+    (aid-001…021, 2026-07-03). ID-26/27/28 = direct receipts for the axf-001 2.2 map;
+    **aid-009 [REVIEW]: HSBC target-size default is 44×44 (24 = exception)** — gate
+    upgrade candidate; label-placement contract (aid-018) → Input-fields supercharge;
+    source gaps: ID-6/7/24 absent, ID-13/14 summary-only.
+20. ✅ `…/accessibility-for-client-side-developers.html` → `accessibility-client-side-dev.md`
+    (acd-001…036, 2026-07-03). The heavy page (48 checkpoints; 64k chars — capture needed
+    a DOM-split via Chrome). Gates already hold most of it (F1 receipts). **acd-009
+    [REVIEW]: source says text in ems, canon.css is all-px** — token-scale ruling.
+    8-item cost-0 gate-candidate harvest (F3: skip-link · lang keep-true · pinch-zoom ·
+    up-event · onchange · aria-required · inputmode · paste-block) — advisory-first, one
+    sitting. CD-13 MUST-strengthens the avd-006 role-suffix (check G) promotion case.
+
 ### Queued
-**Accessibility framework role pages ×7 remaining** (paths under
+**Accessibility framework role pages ×5 remaining** (paths under
 `/processes-and-tools/accessibility/digital-accessibility-framework/accessibility-for-*.html`
-— next: interaction-designers · client-side-developers, then information-architects ·
-qa-and-cx-testers · project-managers · product-managers · procurement-managers; expect
-per-role checkpoint duplicates — xref to avd-*/aca-*, carry destiny once per F4) ·
+— next: information-architects · qa-and-cx-testers, then project-managers ·
+product-managers · procurement-managers; expect per-role checkpoint duplicates — xref to
+avd-*/aca-*/aid-*/acd-*, carry destiny once per F4) ·
 `platforms-and-channels/Accessibility_Standards.html` ·
 The **Common Toolkit** — RULED 2026-07-03 (Dave): his "Gaps and edits" branch
 `Cgbtrmfp15ruNFkIAClpkI` is faithful → USE IT as the source (prior use was ad hoc, this
