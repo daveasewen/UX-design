@@ -100,6 +100,17 @@ don't force-fit" rule applies at generation time.
   travel with the library. Useful: our review pass can screenshot them directly.
 - td-006 — `Notification snackbar` set description reads "Notification contextual -
   scale 1" — copy-paste debris in a shipped set (found at the Notifications pass).
+- td-007 — THREE-way naming register for one family: create.hsbc standard "Pills" ·
+  set names "Chip …" · set descriptions "Pill response / Pill multiple selection"
+  (Tags/Chips pass). Retrieval must know both nouns; canon says Chips.
+- td-008 — `Chip single selection` AND `Chip delete` descriptions both read "Pill
+  multiple selection" — description debris, td-006 kin.
+- td-009 — the Tags page ships TWO exact-duplicate Standard frames (44397:143942 +
+  44423:158328, byte-identical text).
+- td-010 — REVERSE VINTAGE: the Pills standard documents state ladders (disabled ·
+  selected-disabled · indeterminate · spinner) that the chip component sets never
+  received (sets = default/"hover (web)"/pressed × selected only). Docs can lag
+  sets (td-002) AND sets can lag docs — set-census alone under-counts criteria.
 
 ## Page census (2026-07-03 eve — supersedes the search sample above)
 
@@ -157,7 +168,18 @@ often unnecessary).
   (canon exceeds on dark); the four Standard frames carry real create.hsbc text
   (Banners app · Notifications browser · Snackbars app · Snackbars browser — the
   snackbar pair NESTED inside the section, not at page level).
-- ☐ Tags/Chips · ☐ Button ranks · then tranche 2/3 below.
+- ✅ **Tags + Chips/Pills DISTILLED 2026-07-03** →
+  `guidelines/common-toolkit-tags-chips.md` (ctkt-001…032, register 444; chips
+  live on the SELECTION CONTROLS page, not Tags). Headlines: two NEW contract
+  classes — the SHARED 44px target band for grouped tag links (12+20+12 recipe,
+  row-overlap allowed; speaks to the sub-44 revisit pile) + no-layout-shift
+  select (padding reserves the tick) · the tag↔pill↔button misuse boundary fully
+  sourced · verb-polarity copy split by chip type (response/toggle want action
+  verbs, selection avoids them) · reverse vintage td-010 (standard AHEAD of
+  sets) · Tag link merges hover/pressed into one variant (canon exceeds, keeps
+  split states). Deprecate leaks all pre-receipted in canon metas — zero new
+  token gaps. td-007…010 logged.
+- ☐ Button ranks · then tranche 2/3 below.
 
 ## Queue — the rigorous pass (per-family, guide frame first)
 
