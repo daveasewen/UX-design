@@ -1,97 +1,100 @@
 # Good morning, Dave ☕
 
-*Session briefing — written end of 2026-07-02, late-eve session ("Copywriting family —
-the microcopy layer lands"). Supersedes the tone-of-voice briefing; carried items
-below. Big session: three tranches + one ruling enacted — **Tier 1 of the ingestion
-queue is COMPLETE.***
+*Session briefing — written end of 2026-07-03 ("Blue/400 — the render session", which
+cleared the desk by ruling, then opened Tier 2 and ran three ingestion tranches).
+Supersedes the Tier-1-complete briefing; carried items below.*
 
 ## The session in one line
 
-Copywriting (copy-001…059) + colour-2025 (col25-001…020) + visual-assets-2025
-(va25-001…027) all landed — register 250 → 341, 18/18 gates green throughout, four
-commits awaiting your push — and the blue/400 mystery is solved with a source receipt.
+The blue/400 question died by governance rather than by token change — your
+derivation ruling created `_DS-IMPROVEMENTS.md` (ds-001 + a NEW ds-002) — a second
+gate bug got caught and fixed on the way, and Tier 2 ingestion opened hard: six
+create.hsbc pages distilled (register 339 → 365), the Common Toolkit route settled
+on your branch.
 
 ## What landed
 
-1. **The component-microcopy layer (copy-*).** Literal antiPattern material for
-   Buttons, Links (your next ★), Notifications, Modal, Progress trackers,
-   Input-fields (supercharge) and Dropdown country selectors — mapped per-component
-   in `copywriting.md` F1. Preferred terms (~170 pairs, 3 languages) captured
-   verbatim as the retrieval-not-recall exemplar. Regional labelling = HK-Legal,
-   fixed-dial. Strongest new gate candidate: **copy-016 no-full-stops-in-microcopy**
-   (exact, cost-0, pre-swept clean). One canon signal found all session:
-   Selection-controls 'Accept terms & conditions' ampersand.
-2. **The blue/400 receipt (col25-018).** #4587A7 = illustration Blue 5, verbatim, in
-   the CURRENT 2025 standard; the only published UI blue is RAG **#305A85 =
-   blue/600** (RAG red/amber/green all sit at /600 too). Fix path: derive dark blue
-   from blue/600 per charter §6, never import from illustration. Bonus: the token
-   store is proven **value-exact against the 2025 standard** (19/19 hexes) — the
-   ADR-0005 provenance receipt.
-3. **The imagery calm-ceiling (va25-003).** Applications/processes get NO
-   complementary imagery except start/completion — the page-type imagery budget,
-   pairing neuro-042. Plus: icon semantic-fit (va25-007), masthead logo behaviour
-   contract (va25-015 → Headers), avatar rounding = code-mask-on-square (va25-013),
-   and the no-genAI ban proven vintage-stable (both 2025 AND 2026 say it).
-4. **tov-016 ENACTED (provisional).** Wit licence per register band is in
-   `_FIXED-FLEX-CHARTER.md` §4b (expressive = ON surface-scoped · balanced = subtle ·
-   sober = zero-with-warmth; locale = parameter). Stays open per your call — a
-   separate build-time temperature control may reshape it.
-5. **Vintage-label warning (va25 F1).** "2025" pages on create.hsbc are being edited
-   in place with refresh content (Logos already describes the new Masterbrand).
-   Page banners can't be trusted — provenance headers + capture dates are doing
-   real work now.
-
-## UPDATE — same night, after your push: the desk got CLEARED
-
-Seven rulings enacted (commits `0d63d27` · `cc79501` · `b6cd361`): the 3 cost-0
-typography gates went **straight to blocking** (your override — snippet-gate check
-6, bite-tested, suite 20/20) · [RECORDED]/[PROCESS] blessed · copy-014 meta titles
-out of scope · Grey 7 blessed as text/secondary (token store governs) ·
-red-in-charts: **2026 wins outright** · B&W-photo ban carries interim · Common
-Toolkit PROBED — it's Figma (`HSBC-Common-Library`), MCP needs per-file edit
-access, but your Gaps-and-edits branch is still fully MCP-reachable (re-verified
-live). Register 339, REVIEW down to 34, BLOCKING 54.
-
-**Your one follow-up from the probe:** open `HSBC-Common-Library` in Figma —
-republish of your branch, or new content? If new, request editor access. That
-answer opens Tier 2.
+1. **Derivation governance, RULED and recorded.** The engine never
+   derives-and-promotes; promotion is your judgment only; design-system errors get
+   LOGGED with artifacts in the new `knowledge/_DS-IMPROVEMENTS.md` and we move on.
+   First entries: **ds-001** (no published dark-legible UI blue; #4587A7 stands;
+   #719ECC/#6293C6 stay unpromoted evidence, live in
+   `_fitness-test/blue400-review.html`) and **ds-002** (dark error text #DB0011 on
+   black = 4.02:1 AT REST; candidates ladder unpromoted). col25-018 closed to
+   ds-001 — the desk is fully clear.
+2. **Gate bug #2 found + fixed.** The state-contrast sweep's pressed-drive was
+   CLICKING each snippet's own theme toggle (first button in document order), so
+   every pass measured the other theme — the "one real catch" was dark wearing a
+   light label. Fixed (demo chrome never driven + theme re-asserted per element);
+   true re-sweep = 36/38 clean, the 2 Selection-controls dark fails are **ds-002's
+   signature, not a regression**. View-options z-layer artifact (bug #1) still
+   docketed.
+3. **Tier 2 ingestion, tranches 1 + 2a + 2b (queue 13–18).** register 339 → 365,
+   builds 18/18 throughout:
+   - `design-system-processes.md` (dsp-) — the source names OUR architecture:
+     standards → toolkits → component libraries, certification + token-binding as
+     upstream policy.
+   - `naming.md` (nam-) + `digital-governance.md` (gdea-) — **gdea-003: certified
+     reuse is EXEMPT from re-approval** — the institutional case for the whole
+     certified-component model, stated at source.
+   - `accessibility-framework.md` (axf-) — **axf-001 [REVIEW] on your desk: the
+     HSBC bar is WCAG 2.2 AA; our audit baseline says 2.1 AA + partial 2.2.**
+   - `accessibility-visual-design.md` (avd-) + `accessibility-content-authoring.md`
+     (aca-) — VD-9 names a gate axis we don't measure (focused-vs-unfocused pixel
+     delta ≥3:1); aca-014…017 = a ready-made Video-player criteria contract;
+     CA-6 Links gap (external-link variant) logged to `_COMPONENT-GAPS.md`.
+4. **Common Toolkit route RULED:** your Gaps-and-edits branch is the source
+   (faithful; prior use was ad hoc — this pass is rigorous). Figma MCP reaches it
+   with your full HSBC seat; the library indexes as **"HSBC Common Toolkit (MCP)"**
+   via `search_design_system`. The branch file's metadata only exposes a Cover page
+   — survey runs via library search + the create.hsbc toolkit pages as skeleton.
+5. **Render recipe hardened** (`_ROBUSTNESS-PORTABILITY.md`): the ffmpeg TLS
+   failure ROLLS BACK the whole browser cache (install `chromium-headless-shell`
+   with `NODE_EXTRA_CA_CERTS`), and background processes now DIE per bash call —
+   chunk long jobs, don't nohup.
+6. **Stale-memory correction:** Tranche 6 AND all 5 gap-patterns were already
+   signed off (06-29/30) — `_REVIEW-SIGNOFF.md` is the durable record. The review's
+   real remainder is the revisit pile: Account-card · Headers · Hero · tab-bar
+   islands · confirmation finesse.
 
 ## On your desk
 
-- **col25-018 blue/400 fix** — the only REVIEW needing real work (derive a
-  dark-legible blue from RAG #305A85, charter §6; candidates + blast radius being
-  prepared in-session).
-- **Carried:** colleague chase (draft paste-ready, calibration = #1 unlock) · V7
-  pick (deferred pending proper renders) · Common-Library lineage check (above).
+- **axf-001 — WCAG 2.2 re-baseline** (scope/timing of updating the audit/gates from
+  2.1 AA + partials; contrast math unchanged, the delta is structural criteria).
+- **Sweep-candidate batch (×6, advisory-first):** nam-001 possessive `HSBC's` ·
+  nam-002 all-caps names · avd-006 alt prefixes ("Image of…") · aca-003 unique
+  titles · aca-004/005 link discipline · aca-007 directional phrases. One sitting.
+- **CA-6 Links external-link variant** — joins the Links ★ pass? (Links is your
+  next ★ component.)
+- **Housekeeping:** delete the probe-debris text node an old session pasted on your
+  branch's Cover page.
+- **Carried:** colleague chase (calibration = #1 unlock) · V7 (proper renders) ·
+  finessing pass (mot-007 + type26-015/026) · G2 compiler spec.
 
 ## Queue next
 
-Tier 1 is DONE, the desk is clear, and all 5 gap-patterns are BUILT (Batch B —
-Tab-bar + Confirmation — exists in snippets; the build memory was stale). Next:
+1. **Role pages session** — 7 remain; interaction-designers +
+   client-side-developers first (the heavy, rule-dense pair), then IA · QA/CX ·
+   project/product/procurement. Expect per-role checkpoint duplicates — xref to
+   avd-*/aca-* and carry destiny ONCE (the F4 rule).
+2. **Common Toolkit rigorous pass** — fresh session; survey → toolkit queue →
+   first tranche per the engine-era method (provenance = file key + branch + node
+   IDs + capture date).
+3. **Channels pages** — presentations · document-a11y + pdf · email · web/app
+   design-toolkits · sharepoint · Accessibility_Standards.html.
+4. Then the older queue: revisit pile · calibration when the colleague's materials
+   land.
 
-1. **Interaction review resume** — Tranche 6 (Avatar/Hero/Video-player) + the 5
-   gap-patterns (fresh-chat rule applies; copy-037/va25-005 give confirmation its
-   content contract to review against).
-2. **Blue/400 render session** — HELD by your call; candidates + full contrast
-   matrix + blast radius pre-computed on col25-018 (#719ECC recommended, #6293C6
-   conservative). **Chromium now WORKS in-sandbox** (recipe in
-   `_ROBUSTNESS-PORTABILITY.md` — 3 commands to revive in a fresh sandbox); the
-   state-contrast gate ran its FIRST FULL SWEEP: one real catch
-   (Selection-controls label 4.02:1 hover/pressed — same row as the copy-022
-   ampersand → ONE component touch, needs your eyes) and one gate bug docketed
-   (View-options z-layer false positive, screenshot-verified legible).
-3. **Tier 2 ingestion** once you answer the Common-Library-vs-branch question.
-4. Calibration when the colleague's materials land · G2 compiler spec · finessing
-   pass (mot-007 + type26-015/026).
-
-> Next-session opener: **"Title this chat: Tranche 6 — the review resumes."**
-> Read GOOD-MORNING.md first. Capture note: create.hsbc sessions EXPIRE silently —
-> fetch returns logged-out shells with status 200; verify a marker string before
-> trusting any capture.
+> Next-session opener: **"Title this chat: Role pages — the framework payload."**
+> Read GOOD-MORNING.md first. Gotchas: create.hsbc nav RESTRUCTURED (old
+> `/accessibility/…` paths 404 — the live tree is
+> `/processes-and-tools/accessibility/…`); login marker = "Hello David" (sessions
+> expire silently, status-200 shells); one commit may be ahead — check before
+> starting.
 
 ## The window (Fable metered from the 7th)
 
-Ingestion is no longer the clock-pressure item — Tier 1 closed with days to spare.
-What's left before metering is judgment-dense and mostly YOURS: the batched rulings
-(one sitting), calibration, and the G2 spec. Mechanical work remaining (Tier 2
-capture, gap-pattern builds) can safely land inside the metered window.
+The judgment-dense items are YOURS and small: the axf-001 ruling and the ×6 sweep
+batch (one sitting together). Role-page and toolkit capture is method-driven and
+lands fine inside the metered window — the method is written down and the gates
+catch the slips (they caught two of mine this session).
