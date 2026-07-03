@@ -188,12 +188,24 @@ Status: ☐ queued · ◐ partial · ✅ ingested · ✖ skipped (reason)
     up-event · onchange · aria-required · inputmode · paste-block) — advisory-first, one
     sitting. CD-13 MUST-strengthens the avd-006 role-suffix (check G) promotion case.
 
+### Done (continued)
+21. ✅ `…/accessibility-for-information-architects.html` →
+    `accessibility-information-architecture.md` (aia-001…004, 2026-07-03). Thinnest page:
+    3 of 4 checkpoints are dups (→ aid-002/aca-002/aca-009); the keeper is **aia-002
+    heading/label out-of-context descriptiveness (2.4.6)** — new to the register.
+22. ✅ `…/accessibility-for-qa-and-cx-testers.html` → `accessibility-qa-cx-testing.md`
+    (aqa-001…014, 2026-07-03). The METHOD page — receipts the engine wholesale (staged
+    gates · independent UAT expert · fix-or-justify · **ship-with-LOGGED-deficiencies via
+    Accessibility Statement + GMDA** = known-signature discipline at source). **aqa-003
+    scope rule: UI libraries test against guidelines AND recommendations** — canon-bar
+    confirmation for the desk discussion. Strategy pull-quotes for the transformation
+    strand live here.
+
 ### Queued
-**Accessibility framework role pages ×5 remaining** (paths under
+**Accessibility framework role pages ×3 remaining** (paths under
 `/processes-and-tools/accessibility/digital-accessibility-framework/accessibility-for-*.html`
-— next: information-architects · qa-and-cx-testers, then project-managers ·
-product-managers · procurement-managers; expect per-role checkpoint duplicates — xref to
-avd-*/aca-*/aid-*/acd-*, carry destiny once per F4) ·
+— project-managers · product-managers · procurement-managers; expect process-heavy +
+duplicate-dense — xref to avd-*/aca-*/aid-*/acd-*/aqa-*, carry destiny once per F4) ·
 `platforms-and-channels/Accessibility_Standards.html` ·
 The **Common Toolkit** — RULED 2026-07-03 (Dave): his "Gaps and edits" branch
 `Cgbtrmfp15ruNFkIAClpkI` is faithful → USE IT as the source (prior use was ad hoc, this
