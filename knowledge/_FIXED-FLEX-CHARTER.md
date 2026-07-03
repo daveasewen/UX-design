@@ -46,8 +46,9 @@ Formerly "Undecided". All four rules are now explicit; no run guesses:
 | **Red-forward ceiling** | *Sober*: red = destructive/accent only. ***Balanced* and *expressive*: red may lead the primary action** — aligns the charter with brief v2 §2 and the approved balanced SME screen. |
 | **Corner radius** | **Fixed square in ALL registers, including expressive — rounding is forbidden.** A rounded **version of the design system** is named as possible future work; if it comes, it is a system variant, not a register privilege. *(The previously recorded Badge + Avatar round exemption stands unless separately revoked.)* |
 
-**Parked (2026-07-02, Dave):** register reach beyond colour/flatness — whether registers also
-tier the flex dials (spacing, density, layout licence). Not ratified; see `_NEXT-SESSION.md` §📌.
+**RESOLVED 2026-07-03 (Dave) → §9:** register reach — registers **do** tier the curbs.
+The register is an **inference ramp** that lifts *foundational* curbs from sober→expressive
+while the *cardinal* curbs never move. (Was: parked 2026-07-02.)
 
 ## 4b. Register temperature — wit licence per band (PROVISIONAL, 2026-07-02)
 
@@ -94,6 +95,10 @@ Generate a **spread across the register** (e.g. sober → balanced → expressiv
 - makes **register a visible dial** instead of a buried adjective,
 - literally **shows the width of the road between the curbs.**
 
+**Machinery (§9):** generate each band in **isolation** (a cold pass from the same signed
+contract — no anchoring) and run a **divergence probe** on the spread (flag if the bands
+cluster). Register is the *inference ramp* of §9, not a set of looks.
+
 ## 8. Tiering (how the gates apply)
 
 | Tier | What it is | Gate |
@@ -103,6 +108,69 @@ Generate a **spread across the register** (e.g. sober → balanced → expressiv
 | **T3 — exploration** | free craft, brand primitives recalled | no gate (the portfolio piece) — a *signal*, not a deliverable |
 
 The balanced version (`sme-payments-balanced.html`) is **T2** by design.
+
+Under §9 the tiers align with the inference ramp: **sober ≈ T1** (retrieve), **balanced ≈ T2**
+(extend, derive-and-flag), **expressive ≈ T3 but *within the cardinal curbs*** — the leash the
+old T3 lacked.
+
+---
+
+## 9. Register = an inference ramp (ranked curbs) — ratified 2026-07-03 (Dave)
+
+Register is **not a look; it is the level of inference** the engine is licensed to use —
+realised as a ramp that lifts curbs down to a floor that never moves. This supersedes the
+"describe the output" framing (which was *leading*: it prescribed a dark band / a hero / a
+gradient instead of setting the dial) and **resolves the §4 parked question** — registers
+*do* tier the curbs; that tiering *is* the register.
+
+**Two coupled dials move together across the ramp:**
+
+| Band | Inference | Curbs in force |
+|---|---|---|
+| **Sober** *(retrieve)* | OFF — retrieve and assemble what exists; invent only if forced, then derive-from-canon + flag | all (cardinal + foundational) |
+| **Balanced** *(extend)* | ON but bounded — invent, but it must still read unmistakably HSBC | cardinal + foundational |
+| **Expressive** *(invent)* | MAX — let inference rip, invent what you like | **cardinal only** |
+
+Sober→balanced turns *inference* on; balanced→expressive *releases the foundational curbs*.
+"Sober" means **don't infer** — not "boring".
+
+**The curbs, ranked:**
+
+- **Cardinal — never lifted, any register (the floor):** brand colour (retrieved), type
+  (Univers + ramp), corner radius / angles (square), logo & brand assets (placed), the
+  **a11y floor** (AA contrast, focus ring, target size, reduced-motion, ARIA), the **safety
+  patterns** (high-value confirm, masked account/sort refs), and the **data-chart-flat**
+  carve-out. *(= the §2 non-negotiables + §4 radius + §4 chart carve-out, now named.)*
+  **The cardinal floor is what makes MAX inference safe:** retrieval-not-recall on these cheap
+  primitives (§5) means the craft can run as hot as it likes and *cannot* drift off-brand.
+  Expressive is "hot but leashed", not the ungated free-for-all the old T3 was.
+- **Foundational — held at sober & balanced, released at expressive:** flatness / elevation
+  (the §4 derived ramp), composition & layout templates, density / scale / emphasis, motion
+  amount, red-forwardness (§4), new-component/cluster invention. Releasing these *is* what
+  "expressive" means.
+- Everything else is **road** (flex, §3); the inference dial sets how far onto it the engine drives.
+
+**Generation machinery — two pieces, specced (not yet built):**
+
+1. **Isolated generation.** Each band is produced in a **cold, independent pass from the
+   *same signed contract*** — none seeing the others. Generating the spread sequentially in one
+   context lets later bands *anchor* on earlier ones and collapse toward a shared mean (the
+   "why were they so similar?" pollution). Isolation removes the anchoring — the
+   isolated-context subagent pattern (`docs/research-dossier.md`).
+2. **Divergence probe (advisory → earns blocking by bite-test).** After the spread lands,
+   measure how far apart the bands actually are (structural diff / novelty count). If they
+   cluster inside a threshold, the spread failed to span the road — flag it. Turns "did they
+   pollute each other?" into a signal. **Threshold is screen-relative:** a cardinal-heavy
+   screen (dense data, safety-critical — e.g. payments) has a *narrow road*, so the bands
+   *should* look alike; that is not a failed spread. The probe accounts for how much flex the
+   screen actually carries.
+
+**Naming:** the bands keep their names (sober/balanced/expressive) — they appear in the brief,
+the contract and the mock, so a rename carries blast radius. The *(retrieve / extend / invent)*
+gloss is the plain-language meaning; a full rename is deferred, not rejected.
+
+*Upgrades §7 (multi-variant) with the machinery above; relates to §5 (retrieval = the cardinal
+leash) and §8 (tiers). The two machinery pieces are new named-not-built gaps.*
 
 ---
 
