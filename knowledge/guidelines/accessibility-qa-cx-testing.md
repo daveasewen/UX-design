@@ -25,7 +25,9 @@ the engine's architecture more directly than any page yet (F1).*
   LIBRARIES) test against ALL guidelines and recommendations too.** [ADVISORY — bears
   directly on us: the canon IS a UI library, so the source holds library-grade work to
   the guideline+recommendation tier, not just standards. Receipt for treating
-  GUIDELINE-tier rules as binding on canon components — see F2] {#aqa-003}
+  GUIDELINE-tier rules as binding on canon components — see F2. RULED 2026-07-03
+  (Dave): AFFIRMED — the canon is library-grade, guideline + recommendation tiers
+  bind it; recorded in the _A11Y-GATE.md header] {#aqa-003}
 - **Defect reports enable cost-benefit prioritisation**: per-defect — quick
   understanding, severity × affected disabled audiences, fix, fix-cost; the
   Accessibility Issue Prioritisation Matrix is the named template (staff artefact).
@@ -91,8 +93,8 @@ the engine's architecture more directly than any page yet (F1).*
 - **F2 — the scope rule elevates the canon's bar** (aqa-003): UI libraries test against
   guidelines AND recommendations, not just standards. Our destiny mapping already
   treats most guideline-tier rules as advisory checks; the source says for
-  library-grade work they're in scope, full stop. Worth a line in the next desk batch
-  discussion — philosophy confirmation, not a gate change.
+  library-grade work they're in scope, full stop. RULED 2026-07-03: affirmed + recorded
+  (gate-doc header line) — philosophy confirmation, not a gate change.
 - **F3 — tool vintage**: aDesigner (Eclipse), WAVE toolbar, snook contrast, W3C
   validator — a pre-CI toolchain. The gates are the modern equivalent of exactly this
   list (contrast maths, structure lint, keyboard walk pending V3). Useful contrast for

@@ -1983,8 +1983,10 @@
 .cn-selection-controls .chip[aria-pressed="true"], .cn-selection-controls .chip[aria-checked="true"]{background:var(--checked); color:var(--glyph); border-color:var(--checked);}
 .cn-selection-controls .chip[aria-pressed="true"] .star, .cn-selection-controls .chip[aria-checked="true"] .star{fill:currentColor;}
 .cn-selection-controls .chip:disabled{border-color:var(--ctrl-border-disabled); color:var(--label-disabled); cursor:not-allowed; background:transparent;}
-.cn-selection-controls .chip .x{display:inline-flex; width:18px; height:18px; align-items:center; justify-content:center;
+.cn-selection-controls .chip .x{display:inline-flex; position:relative; width:18px; height:18px; align-items:center; justify-content:center;
     border:0; background:transparent; color:inherit; padding:0; font:inherit; line-height:1; cursor:pointer; border-radius:0;}
+.cn-selection-controls .chip .x::before{content:""; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:24px; height:24px;}
+/* 24×24 hit target (2.5.8 floor; aid-009 ruling 2026-07-03 — Tooltip house pattern; 44 would overlap adjacent chips) */
 .cn-selection-controls .chip .x:hover{opacity:.6;}
 .cn-selection-controls .chip .x:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
 .cn-selection-controls .chip-del{padding-right:6px;}

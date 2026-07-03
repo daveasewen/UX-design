@@ -10,11 +10,18 @@ regresses on a deterministic, statically-checkable WCAG criterion:
       @keyframes) MUST carry a `prefers-reduced-motion: reduce` block. A canonical
       reference that animates with no reduced-motion escape hatch is a defect.
 
-  WARN (reported, non-gating — needs a human/visual call):
     * 2.5.8 Target Size (Minimum, AA) — interactive controls (button / a[href] /
-      [role=button|switch|tab|option]) whose CSS box is < 24×24px and which do NOT
-      expand their hit area with a ::before/::after overlay. Decorative inner glyphs
-      (.dot/.thumb/svg) are excluded; this only flags the focusable element itself.
+      [role=button|switch|tab|option]) with a declared CSS box under 24px in EITHER
+      dimension and no ::before/::after hit-area expander for that selector.
+      PROMOTED from warn tier by the aid-009 ruling (Dave, 2026-07-03): 24 is the
+      hard floor. (Was AND-semantics <24×24; EITHER-dimension is the SC's reading.)
+
+  WARN (reported, non-gating — needs a human/visual call):
+    * target size < 44 — the HSBC DEFAULT is 44×44 (ID-26 + axs-003 "existing 44×44
+      guidance takes priority"; 24 is the exception tier, not the goal). Advisory
+      per the same aid-009 ruling: signal 24–43, promotion only with the exception
+      outs (spacing/equivalent/inline/UA/essential) modelled. Decorative inner
+      glyphs (.dot/.thumb/svg) are excluded; only the focusable element flags.
 
 Writes _A11Y-GATE.md and exits non-zero iff there is >=1 FAIL.
 """
@@ -40,17 +47,22 @@ def check(fp):
     if MOTION.search(s) and 'prefers-reduced-motion' not in s:
         fails.append("animates but has no `prefers-reduced-motion: reduce` block (2.3.3)")
 
-    has_expander = '::before' in s or '::after' in s
     for sel, body in css_blocks(s):
         if not CTRL.search(sel) or DECOR.search(sel):
             continue
         w = re.search(r'(?<![\w-])width\s*:\s*(\d+)px', body)
         h = re.search(r'(?<![\w-])height\s*:\s*(\d+)px', body)
-        if w and h and int(w.group(1)) < 24 and int(h.group(1)) < 24:
-            # does THIS selector have an explicit hit-area expander nearby?
-            expanded = re.search(re.escape(sel) + r'\s*::(before|after)', s)
-            if not expanded:
-                warns.append(f"`{sel}` is {w.group(1)}×{h.group(1)}px (<24, 2.5.8) — add a ::before hit-area expander or enlarge")
+        if not (w and h):
+            continue
+        wv, hv = int(w.group(1)), int(h.group(1))
+        # an explicit hit-area expander for THIS selector exempts both tiers
+        # (static CSS can't size the expander; the render axis owns that check)
+        if re.search(re.escape(sel) + r'\s*::(before|after)', s):
+            continue
+        if min(wv, hv) < 24:
+            fails.append(f"`{sel}` is {wv}×{hv}px (<24 floor, 2.5.8) — add a ::before hit-area expander or enlarge (aid-009)")
+        elif min(wv, hv) < 44:
+            warns.append(f"`{sel}` is {wv}×{hv}px (<44 HSBC default, aid-009) — enlarge, expand hit area, or claim a 2.5.8 exception out")
     return name, fails, warns
 
 def main():
@@ -60,7 +72,10 @@ def main():
 
     lines = ["# A11y gate — _validate_a11y.py", "",
              f"**{len(rows)} snippet(s)** · **{nfail} failure(s)** · **{nwarn} warning(s)**",
-             "", "Gating: reduced-motion (2.3.3). Reported: target size (2.5.8).", ""]
+             "", "Gating: reduced-motion (2.3.3) · target size <24 floor (2.5.8, aid-009 ruling 2026-07-03). "
+             "Reported: target size 24–43 vs the 44×44 HSBC default (aid-009).", "",
+             "Library bar (aqa-003, ruled 2026-07-03): the canon is LIBRARY-GRADE — guideline "
+             "and recommendation tiers bind it, not just standards.", ""]
     for name, fails, warns in rows:
         if not fails and not warns:
             continue

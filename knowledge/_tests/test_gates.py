@@ -195,6 +195,14 @@ def mut_reduced_motion(k):
     write(p, html.replace("prefers-reduced-motion", "prefers-reduced-nothing"))
 
 
+def mut_target_floor(k):
+    """aid-009 promotion (Dave ruling 2026-07-03): a <24px control box must bite.
+    Injects a style block declaring a 20x20 `.x` control (CTRL-matching selector,
+    no ::before expander) into the first snippet."""
+    p, html, man = first_snippet_with_manifest(k, lambda m, h: "</head>" in h and ".x2{" not in h)
+    write(p, html.replace("</head>", "<style>.x2, .x{width:20px;height:20px;}</style></head>", 1))
+
+
 def mut_allcaps_css(k):
     """type26-019 promotion (Dave ruling 2026-07-02): uppercase transform must bite."""
     p, html, man = first_snippet_with_manifest(k, lambda m, h: "</head>" in h)
@@ -345,6 +353,7 @@ CASES = [
     ("snippet gate bites on element-type alt",   "altpre",   "_validate_snippets.py",     mut_alt_prefix,      "ALT PREFIX"),
     ("snippet gate bites on bare link text",     "barelink", "_validate_snippets.py",     mut_bare_link,       "BARE LINK"),
     ("a11y gate bites on missing reduced-motion","motion",   "_validate_a11y.py",         mut_reduced_motion,  "2.3.3"),
+    ("a11y gate bites on sub-24 target floor",   "target24", "_validate_a11y.py",         mut_target_floor,    "2.5.8"),
     ("icon gate bites on invented path",         "icon",     "_validate_icons.py",        mut_unknown_icon,    "UNKNOWN"),
     ("icon gate bites on shape-only icon",       "shape",    "_validate_icons.py",        mut_shape_only_icon, "UNKNOWN"),
     ("coverage gate bites on orphan snippet",    "orphan",   "_validate_coverage.py",     mut_orphan_snippet,  "no meta"),

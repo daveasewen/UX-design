@@ -46,9 +46,11 @@ Duplicates xref'd per the F4 rule — destiny carried once.*
 - **ID-26 [introduced 2024] — target size, the formal 2.2 rule: HSBC DEFAULT 44×44,
   minimum exception 24×24** (SC 2.5.8 + 2.5.5): 24 only with the spacing/equivalent/
   inline/UA/essential outs; "HSBC already has formal design guidance… 44×44 is therefore
-  considered the default requirement." [REVIEW — our gate holds the 24 floor (2.5.8,
-  reporting tier). The source names 44 as the HSBC default: candidate gate upgrade =
-  advisory signal <44, hard fail <24. Dave to rule — next desk batch] {#aid-009}
+  considered the default requirement." [RULED 2026-07-03 (Dave): ENACTED — <24 now BLOCKING in _validate_a11y.py
+  (EITHER-dimension semantics per the SC), 24–43 signals advisory against the 44
+  default; promotion of the 44 tier waits on modelling the exception outs. Sole
+  floor offender (Selection-controls chip dismiss, 18×18) fixed via the Tooltip
+  hit-area pattern. Bite-tested (test_gates target24)] {#aid-009}
 - **ID-16 — swipe areas clearly indicated** (SC 4.1.2 A): visual affordance (arrow etc.)
   + alt + audible cue on load; swipe content is routinely missed. [ADVISORY — binds any
   future carousel/swipe pattern; no swipe surface in canon today] {#aid-010}
@@ -113,7 +115,7 @@ Duplicates xref'd per the F4 rule — destiny carried once.*
 - **F1 — the 2.2 additions section receipts this morning's axf-001 map**: ID-27 (3.2.6)
   and ID-28 (3.3.8) arrive exactly on the routes ruled (journey criteria contracts), and
   ID-26 adds the NUMERIC the map lacked: **44 default / 24 minimum-exception** →
-  aid-009 REVIEW, the one ruling this file puts on Dave's desk.
+  aid-009 — RULED 2026-07-03, enacted as fail<24 / advisory<44.
 - **F2 — Input-fields supercharge payload keeps growing**: aid-018's label-placement
   contract (portrait-above, radio-right + group-heading-above, landscape-left,
   placeholder≠label) joins the deferred Input-fields rework scope.

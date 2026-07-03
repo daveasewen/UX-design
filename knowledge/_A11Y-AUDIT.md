@@ -8,7 +8,7 @@ declared 2.1 AA + partials. Contrast math is unchanged — the 2.2 delta is stru
 
 | 2.2 criterion | Status | Route |
 |---|---|---|
-| 2.5.8 Target Size (Min) | ✅ enforced | `_validate_a11y.py`, since 2026-06-20 (1 open warn: Selection-controls chip 18px) |
+| 2.5.8 Target Size (Min) | ✅ enforced (BLOCKING) | `_validate_a11y.py` — aid-009 ruling 2026-07-03: <24 fails the build (EITHER-dimension), 24–43 signals advisory vs the 44×44 HSBC default (ID-26 + axs-003); chip-dismiss offender fixed via hit-area expander |
 | 2.5.7 Dragging Movements | ✅ passing, audited | Reorder ships native move-button alternatives (§2.1.1 table below); watch at component touches |
 | 2.4.11 Focus Not Obscured (Min) | ⏳ queued | render-based axis — joins the render/state-contrast sweep work; kin of VD-9's focused-pixel-delta (avd-*); not statically checkable |
 | 3.2.6 Consistent Help | ⏳ routed | journey-level → screen/criteria-contract intake (`_RUNBOOK-criteria-contract.md`) |

@@ -39,6 +39,28 @@ snippet-gate check 7):
      with the prefix half: 4 live canon signals at ruling time (Cards "Example link");
      fix at the Cards revisit, then promote.
 
+Cost-0 harvest (Dave ruling 2026-07-03 — all eight advisory-first per ADR-0005 §5):
+
+  H. skip-link (acd-003, SC 2.4.1) — composed screens (*.canon.html) only: a full page
+     with no skip-to-content link. ALL 5 screens signal at wiring time — real gap.
+  I. <html lang> keep-true (acd-007, SC 3.1.1) — every file; swept clean at wiring.
+  J. pinch-zoom never disabled (acd-010, SC 1.4.10) — user-scalable=no / maximum-scale=1
+     in the viewport meta.
+  K. no activation on down-events (acd-016, SC 2.5.2) — inline on(mouse|pointer|touch)-
+     down/start attributes, or down-listeners whose one-liner body navigates/submits/
+     clicks. Calibrated at wiring: input-modality listeners (set a dataset flag) and
+     Reorder's drag pointerdown (drag ≠ activation) do NOT match — by design.
+  L. no submit/navigation on change (acd-019, SC 3.2.2) — onchange/change listeners
+     containing submit()/location/.href/window.open. UI-preference change handlers
+     (List-items density, Selection-controls indeterminate) don't match — by design.
+  M. aria-required on required fields (acd-024, SC 3.3.2) — required without
+     aria-required. 0 signals at wiring (canon declares no required fields yet).
+  N. inputmode/autocomplete on typed inputs (acd-025, SC 1.3.5) — email/tel/number
+     inputs carrying neither. FIRES on canon email inputs at wiring time — evidence
+     banked for the Input-fields supercharge.
+  O. no paste-blocking (aid-020) — onpaste="return false"/preventDefault or paste
+     listeners that preventDefault.
+
 Scans <root>/snippets/*.reference.html and <root>/_fitness-test/*.canon.html.
 Writes <root>/_ADVISORY-SIGNALS.md. ALWAYS exits 0 — advisory annotates, never blocks.
 
@@ -73,6 +95,31 @@ ADJ_LINKS = re.compile(
     r'<a\b[^>]*href="([^"]+)"[^>]*>.*?</a>\s*<a\b[^>]*href="([^"]+)"', re.S | re.I)
 # G — avd-006 suffix half: role words in accessible names.
 ROLE_SUFFIX = re.compile(r'\baria-label\s*=\s*"([^"]*\b(?:button|link))"', re.I)
+# H — acd-003: skip-to-content link (screens only).
+SKIP_LINK = re.compile(r'<a\b[^>]*href="#[^"]*"[^>]*>[^<]*\bskip\b', re.I)
+# I — acd-007: page language declared.
+HTML_LANG = re.compile(r'<html\b[^>]*\blang\s*=', re.I)
+# J — acd-010: pinch-zoom disabled.
+VIEWPORT_BAD = re.compile(
+    r'<meta\b[^>]*name\s*=\s*"viewport"[^>]*content\s*=\s*"[^"]*'
+    r'(user-scalable\s*=\s*(?:no|0)|maximum-scale\s*=\s*1(?:\.0*)?(?![.\d]))', re.I)
+# K — acd-016: activation on down-events (inline attrs always; listeners only when
+#     the one-liner body navigates/submits/clicks — modality + drag listeners exempt).
+DOWN_ATTR = re.compile(r'\bon(?:mousedown|pointerdown|touchstart)\s*=', re.I)
+DOWN_LISTENER = re.compile(
+    r"addEventListener\(\s*['\"](?:mousedown|pointerdown|touchstart)['\"]"
+    r"[^\n]*(?:location|\.submit\(|\.click\(|\.href\s*=)", re.I)
+# L — acd-019: submit/navigation inside change handlers.
+CHANGE_ATTR = re.compile(r'\bonchange\s*=\s*"[^"]*(?:submit|location|\.href|window\.open)', re.I)
+CHANGE_LISTENER = re.compile(
+    r"addEventListener\(\s*['\"]change['\"][^\n]*(?:location|\.submit\(|\.href\s*=|window\.open)", re.I)
+# M — acd-024: required fields carry aria-required.
+FIELD_TAG = re.compile(r'<(?:input|select|textarea)\b[^>]*>', re.I)
+# N — acd-025: typed inputs carry inputmode/autocomplete.
+TYPED_INPUT = re.compile(r'<input\b[^>]*\btype\s*=\s*"(?:email|tel|number)"[^>]*>', re.I)
+# O — aid-020: paste-blocking.
+PASTE_ATTR = re.compile(r'\bonpaste\s*=\s*"[^"]*(?:return\s+false|preventDefault)', re.I)
+PASTE_LISTENER = re.compile(r"addEventListener\(\s*['\"]paste['\"][^\n]*preventDefault", re.I)
 
 
 def visible_text(html):
@@ -128,6 +175,46 @@ def check(path):
     # G — role-suffix accessible names (avd-006 suffix half, advisory 2026-07-03)
     for m in sorted(set(ROLE_SUFFIX.findall(html))):
         signals.append(("role-suffix", f'aria-label "{m}" announces the element type — AT announces the role itself (avd-006)'))
+
+    # ---- cost-0 harvest, checks H–O (Dave ruling 2026-07-03) ----
+    screen = "_fitness-test" in path
+
+    # H — skip link on composed screens (acd-003)
+    if screen and not SKIP_LINK.search(html):
+        signals.append(("skip-link", "composed screen has no skip-to-content link (acd-003, 2.4.1)"))
+
+    # I — <html lang> keep-true (acd-007)
+    if not HTML_LANG.search(html):
+        signals.append(("html-lang", "<html> carries no lang attribute (acd-007, 3.1.1)"))
+
+    # J — pinch-zoom never disabled (acd-010)
+    m = VIEWPORT_BAD.search(html)
+    if m:
+        signals.append(("pinch-zoom", f'viewport meta disables zoom via "{m.group(1)}" — never disable pinch-to-zoom (acd-010, 1.4.10)'))
+
+    # K — no activation on down-events (acd-016)
+    for m in sorted(set(DOWN_ATTR.findall(html))):
+        signals.append(("down-event", "inline down-event handler attribute — activation belongs on the up-event (acd-016, 2.5.2)"))
+    for m in DOWN_LISTENER.finditer(html):
+        signals.append(("down-event", "down-event listener navigates/submits/clicks — activation belongs on the up-event (acd-016, 2.5.2)"))
+
+    # L — no submit/navigation on change (acd-019)
+    if CHANGE_ATTR.search(html) or CHANGE_LISTENER.search(html):
+        signals.append(("onchange-nav", "change handler submits/navigates — context shifts only on user request (acd-019, 3.2.2)"))
+
+    # M — aria-required on required fields (acd-024)
+    for tag in FIELD_TAG.findall(html):
+        if re.search(r'(?<![-\w])required\b', tag, re.I) and not re.search(r'aria-required', tag, re.I):
+            signals.append(("aria-required", f"required field without aria-required: {tag[:60]}… (acd-024, 3.3.2)"))
+
+    # N — inputmode/autocomplete on typed inputs (acd-025)
+    for tag in TYPED_INPUT.findall(html):
+        if not re.search(r'\b(?:inputmode|autocomplete)\s*=', tag, re.I):
+            signals.append(("input-hints", f"typed input with neither inputmode nor autocomplete: {tag[:60]}… (acd-025, 1.3.5)"))
+
+    # O — no paste-blocking (aid-020)
+    if PASTE_ATTR.search(html) or PASTE_LISTENER.search(html):
+        signals.append(("paste-block", "paste is blocked — never disable paste (aid-020)"))
 
     return name, signals
 

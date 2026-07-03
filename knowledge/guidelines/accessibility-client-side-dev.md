@@ -24,7 +24,7 @@ RECORDED with their enforcement receipts rather than re-opened. Duplicates xref'
 - **CD-2 — bypass mechanism on ALL pages** (SC 2.4.1 A): skip-to-content link; long
   pages add section shortcuts (may be visually hidden until focused). [ADVISORY —
   REAL GAP: composed `*.canon.html` screens carry NO skip link today (swept
-  2026-07-03). Screen-gate candidate, advisory-first → next desk batch] {#acd-003}
+  2026-07-03). Screen-gate candidate — RULED + WIRED 2026-07-03 (Dave): advisory check H; all 5 composed screens signal at wiring — real gap, fix at the composition touch] {#acd-003}
 - **CD-3/4 — grouped controls read as ONE accessible component, and groups are proper**
   (SC 1.3.1 + 4.1.2 A): composite widgets (spinners etc.) must not decompose into
   meaningless fragments for AT; radio groups grouped so keyboard behaviour works.
@@ -38,24 +38,25 @@ RECORDED with their enforcement receipts rather than re-opened. Duplicates xref'
 - **CD-7/8 — page language declared; in-page language CHANGES declared** (SC 3.1.1 A +
   3.1.2 AA). [ADVISORY — composed screens all carry `<html lang>` today (swept
   2026-07-03); keep-it-true screen-gate candidate (cost-0); bilingual snippets would
-  need `lang` on parts — pairs with the type26 bilingual mechanics] {#acd-007}
+  need `lang` on parts — pairs with the type26 bilingual mechanics. RULED + WIRED 2026-07-03: advisory check I (keep-true; 0 signals)] {#acd-007}
 - **CD-9 — degrade gracefully without CSS** (recommendation): content/function survive
   styling loss; off-screen-text fallbacks for custom controls. [RECORDED] {#acd-008}
 
 ## Text sizing + personalisation (rules)
 
 - **CD-10 — code text so it can resize: "code all text in ems, not pixels"**
-  (SC 1.4.4 AA). [REVIEW — REAL DELTA: canon.css types EVERYTHING in px (checked
+  (SC 1.4.4 AA). [RULED 2026-07-03 — REAL DELTA: canon.css types EVERYTHING in px (checked
   2026-07-03: 20 font-size declarations, all px). Browser full-page zoom works with px;
-  Firefox text-only resize does not. Options for Dave: (a) rem-refactor the type scale
-  at a supercharge touch, (b) accept px + document the zoom rationale, (c) partial
-  (body copy rem, chrome px). Next desk batch — token-scale question, not a one-line
-  fix] {#acd-009}
+  Firefox text-only resize does not. Dave's ruling: rem-for-ALL is the
+  destination — queued as a STANDALONE canon task, explicitly NOT gated on the
+  supercharge and not now (a distraction from the current spine). px stands
+  documented until the rem pass: browser zoom covers 1.4.4 in practice; user-set
+  default font size is the accepted, recorded interim gap] {#acd-009}
 - **CD-11/12 — interface zoomable; consider text/colour personalisation settings**
   (SC 1.4.8 / 1.4.10): **never disable pinch-to-zoom**; style-switchers → GMDA consult
   first (same clause as aid-016). [ADVISORY — the pinch-zoom half is a cost-0 gate
   candidate: ban `user-scalable=no` / `maximum-scale=1` in viewport meta (0 signals
-  today) → next desk batch] {#acd-010}
+  today). RULED + WIRED 2026-07-03: advisory check J] {#acd-010}
 
 ## Non-text content (rules)
 
@@ -90,7 +91,9 @@ RECORDED with their enforcement receipts rather than re-opened. Duplicates xref'
   up-reversal / essential; drag-drop released outside target REVERTS. [ADVISORY —
   cost-0 gate candidate: no action handlers on mousedown/touchstart in canon JS
   (0 signals expected — canon drives on click); Reorder's drag semantics already
-  conform → next desk batch] {#acd-016}
+  conform. RULED + WIRED 2026-07-03: advisory check K (inline down-attrs always;
+  down-listeners only when the body navigates/submits/clicks — modality + drag
+  listeners exempt by pattern; 0 signals)] {#acd-016}
 
 ## Keyboard + focus (rules)
 
@@ -105,7 +108,7 @@ RECORDED with their enforcement receipts rather than re-opened. Duplicates xref'
 - **CD-24/25 — no automatic focus/context change on focus or input** (SC 3.2.1 /
   3.2.2 A): no auto-submit, no auto-advance out of a maxed field; shifts only on user
   request. [ADVISORY — forms rule; cost-0 candidate: no submit/navigation inside
-  onchange/oninput handlers → next desk batch] {#acd-019}
+  onchange/oninput handlers. RULED + WIRED 2026-07-03: advisory check L (0 signals)] {#acd-019}
 
 ## Notifications of dynamic change (rules)
 
@@ -125,12 +128,14 @@ RECORDED with their enforcement receipts rather than re-opened. Duplicates xref'
 - **CD-31/32 — explicit labels; instructions ASSOCIATED with their field; required
   notation INSIDE the label + aria-required** (SC 3.3.2 A): asterisk goes in the
   label, not beside it. [ADVISORY — Input-fields supercharge payload with aid-018;
-  cost-0 candidate: required fields carry aria-required (exact attribute check)]
-  {#acd-024}
+  cost-0 candidate: required fields carry aria-required (exact attribute check).
+  RULED + WIRED 2026-07-03: advisory check M (0 signals — canon declares no
+  required fields yet)] {#acd-024}
 - **CD-33 — adapt the virtual keyboard + autocomplete** (SC 1.3.5 AA): numeric keyboard
   for numeric fields; auto-complete/search suggestions reduce errors. [ADVISORY —
   cost-0 candidate: inputmode/autocomplete attributes on typed inputs — Input-fields
-  supercharge scope] {#acd-025}
+  supercharge scope. RULED + WIRED 2026-07-03: advisory check N — fires on canon
+  email inputs (8 signals), evidence banked for the supercharge] {#acd-025}
 
 ## Feedback + status (rules)
 
@@ -195,15 +200,15 @@ RECORDED with their enforcement receipts rather than re-opened. Duplicates xref'
   (focus-visible), acd-020/028 (live regions), acd-031 (reduced-motion, no autoplay),
   acd-036 (Reorder). The source keeps receipting the built enforcement — strategy
   material, same class as axf-011/gdea-003.
-- **F2 — two REVIEWs for the next desk batch**: acd-009 ems-vs-px (canon types in px —
-  token-scale question) and aid-009 target-44-default (arrived via the ID page; the
-  pair should be ruled together with the candidate harvest below).
+- **F2 — two REVIEWs, RULED 2026-07-03**: acd-009 ems-vs-px (rem-for-all queued as a
+  standalone task, px documented interim) and aid-009 target-44-default (fail <24 /
+  advisory <44, enacted in _validate_a11y.py). Ruled together with the harvest below.
 - **F3 — cost-0 gate-candidate harvest (advisory-first per ADR-0005 §5)**: skip-link
   on composed screens (acd-003) · `<html lang>` keep-true (acd-007) · pinch-zoom never
   disabled (acd-010) · no action-on-down-event (acd-016) · no onchange
   submit/navigation (acd-019) · aria-required on required fields (acd-024) ·
   inputmode/autocomplete (acd-025) · no paste-blocking (aid-020). Eight candidates,
-  one sitting.
+  one sitting — RULED + WIRED 2026-07-03 as advisory checks H…O, all bite-tested.
 - **F4 — duplicates carried once**: CD-6→aca-002 · CD-13→avd-006 (with the MUST
   strengthening noted for check G's promotion case) · CD-17 holds destiny for ID-25 ·
   CD-11/12's GMDA clause shared with aid-016.
