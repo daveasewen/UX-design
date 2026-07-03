@@ -143,9 +143,13 @@ source receipt (F1) — the biggest single finding of this tranche.
   canon.css regenerates. Surface note: #474747 is retired as dark tertiary-hover
   (→#212121, 2026-06-22) but STILL binds form/background/pressed, tabs/hover and
   two tab borders in dark — all real focus-ring adjacencies, so the #474747 column
-  counts and #719ECC stays the recommendation. [REVIEW — HELD for a render session:
-  focus rings across 24 components need eyes before the value moves; candidates +
-  numbers ready] {#col25-018}
+  counts and #719ECC stays the recommendation. [RULED 2026-07-03 — rendered in
+  `_fitness-test/blue400-review.html`, then routed to the DS-improvements register
+  per the derivation-governance ruling (nothing derives-and-promotes on the engine's
+  derivation alone; design-system errors are LOGGED with artifacts, not patched):
+  `_DS-IMPROVEMENTS.md` ds-001. The value does NOT move; candidates stay unpromoted
+  evidence. Sibling finding ds-002 (dark error text #DB0011 = 4.02:1 at rest) logged
+  the same day.] {#col25-018}
 
 ## Pointers (recorded)
 
@@ -184,8 +188,8 @@ source receipt (F1) — the biggest single finding of this tranche.
 - **F3 — REVIEW items: three of four RULED next-day (2026-07-03).** col25-011:
   token store governs, Grey 7 stays (re-check at 2026 grey specs) · col25-016:
   2026 wins outright, 2025 chart-red ban superseded · col25-008: B&W ban carries
-  interim, closes when the refresh photography page speaks. REMAINING OPEN:
-  **col25-018** (blue/400 fix — real token work, joins the dark-RAG revisit).
+  interim, closes when the refresh photography page speaks. col25-018 RULED
+  2026-07-03: routed to `_DS-IMPROVEMENTS.md` ds-001 (log-and-move-on; value stands).
 - **F4 — Continuity receipts, both vintages agree:** tactical red (col25-001 ↔
   col26-003) · closed palettes / 0 rogue hex (col25-005 ↔ col26-015) · palette-scope
   discipline (col25-003 ↔ col26-008) · contrast floors stable. The compose gate's

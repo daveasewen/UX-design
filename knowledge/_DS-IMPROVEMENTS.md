@@ -1,0 +1,73 @@
+# Design-system improvements register
+
+Recommendations for improving the DESIGN SYSTEM itself — findings where our gates fail
+not because the engine is wrong but because the published standard has a gap or error.
+
+## Governance (RULED 2026-07-03, Dave)
+
+Nothing is derived-and-promoted on the engine's derivation alone. Promotion into the
+token store or canon requires **Dave's judgment, grounded in his knowledge of the design
+system**. When a gate failure is essentially an error in the design system, the default
+path is: **log the recommendation here, with supporting artifacts, and move on** — no
+token or component change. Sometimes Dave will simply decide on the spot; logging is the
+default when he doesn't. Derived candidate values recorded here are **evidence, not
+canon** — they carry no authority until Dave promotes them.
+
+Entry format: finding · evidence (receipts) · prepared-but-unpromoted candidates ·
+blast radius if adopted · artifacts.
+
+---
+
+## ds-001 — dark UI blue: no published dark-legible blue exists (blue/400 leak)
+
+**Status:** LOGGED 2026-07-03 (Dave: log and move on). Current value stands.
+
+**Finding:** dark `focus/ring` + `rag/information` carry #4587A7 — illustration Blue 5
+verbatim, never a published UI value (receipted against BOTH the legacy illustration page
+and the current 2025 standard, col25-018). It fails 3:1 on #404040 (2.61) and #474747
+(2.33), both real adjacencies (form borders; form/background/pressed, tabs hover, two tab
+borders in dark). The published standard offers exactly ONE UI blue — RAG #305A85 =
+blue/600 — and no dark ramp above it. **The design system has no legal dark-legible UI
+blue.**
+
+**Recommendation to the design system:** publish a dark-mode UI blue (a blue/400-class
+primitive) derived from the RAG blue ramp. Prepared, unpromoted candidates (hue 210°/
+sat 47%, charter §6 method): **#719ECC** (≥3:1 on every dark surface incl. #474747) ·
+**#6293C6** (all but #474747 at 2.88; closer to current weight).
+
+**Blast radius if adopted:** colour.json value + 24 snippet manifests (inspect, not
+blind-sed) + notifications/tabs meta + canon.css regen + full gate sweep.
+
+**Artifacts:** `_fitness-test/blue400-review.html` (live, switchable, in-situ) ·
+`guidelines/colour-usage.md` {#col25-018} (ladder + matrix) ·
+`guidelines/illustration-standards.md` §Findings (provenance receipt) ·
+`_STATE-CONTRAST-AUDIT.md`.
+
+## ds-002 — dark error text: #DB0011 on #000000 = 4.02:1 at rest
+
+**Status:** LOGGED 2026-07-03 (Dave: log and move on). Current value stands.
+
+**Finding:** rag/error does darken (light #A8000B → dark #DB0011 = color/primary), but
+not far enough for TEXT: 4.02:1 on the dark page, 3.71:1 on the error tint, 3.23:1 on
+#1D1D1D — all under the 4.5:1 text floor, at rest, wherever dark error text appears
+(found on Selection-controls error label + message via the corrected state-contrast
+sweep, 2026-07-03). No published red sits above #DB0011, so the standard offers no legal
+dark-legible error text. As a GRAPHIC (border, mark, roundel) #DB0011 clears 3:1 — the
+gap is text-only.
+
+**Recommendation to the design system:** publish a dark-mode error-text red, or rule the
+white-text-with-red-mark pattern (kin to the 2026-07-02 dark roundel policy) for dark
+error text. Prepared, unpromoted candidates (hue 355°/sat 100%, charter §6 method):
+**#FF3D4C** (≥4.5 on page/tint/surface/form-hover) · #FF3343 · #FF4D5A (also ≥3:1 as a
+graphic on #404040).
+
+**Blast radius if adopted:** snippets whose dark theme block carries `--error` for text
++ rag/error token note; graphics keep #DB0011 either way.
+
+**Artifacts:** `_fitness-test/blue400-review.html` §4 (at-rest 4-up + ladder) ·
+`_STATE-CONTRAST-AUDIT.md` (Selection-controls, dark) · `tokens/colour.json` (red ramp:
+nothing above #DB0011).
+
+**Gate note:** until the standard moves, the state-contrast sweep will keep reporting
+the 2 Selection-controls dark text fails — they are this entry's signature, not a
+regression. Treat "36/38 clean + ds-002 signature" as the known-good sweep state.
