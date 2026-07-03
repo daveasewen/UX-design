@@ -201,11 +201,18 @@ Status: ☐ queued · ◐ partial · ✅ ingested · ✖ skipped (reason)
     confirmation for the desk discussion. Strategy pull-quotes for the transformation
     strand live here.
 
+### Done (continued)
+23. ✅ manager trio (`…-project-managers` + `…-product-managers` + `…-procurement-managers`)
+    → `accessibility-management-roles.md` (amr-001…008, 2026-07-03, combined per dsp
+    precedent). All BS 8878 [PROCESS]. HEADLINES: **amr-005 = the decision-receipt
+    discipline at source** (recognise/consider/justify/RECORD into one lifecycle policy —
+    the register method, institutionally blessed; transformation pull-quote) · Statement
+    contract = public face of ship-with-logged-deficiencies (amr-007, no-certificates
+    stance) · **vintage tell: "available later in 2014"** — framework pages are LAYERED
+    VINTAGES (2014 base + 2024 patches) · BS 8878 16 steps ≈ the pipeline frame (F3).
+    **ALL 9 ROLE PAGES COMPLETE.**
+
 ### Queued
-**Accessibility framework role pages ×3 remaining** (paths under
-`/processes-and-tools/accessibility/digital-accessibility-framework/accessibility-for-*.html`
-— project-managers · product-managers · procurement-managers; expect process-heavy +
-duplicate-dense — xref to avd-*/aca-*/aid-*/acd-*/aqa-*, carry destiny once per F4) ·
 `platforms-and-channels/Accessibility_Standards.html` ·
 The **Common Toolkit** — RULED 2026-07-03 (Dave): his "Gaps and edits" branch
 `Cgbtrmfp15ruNFkIAClpkI` is faithful → USE IT as the source (prior use was ad hoc, this
