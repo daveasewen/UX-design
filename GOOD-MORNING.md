@@ -74,7 +74,12 @@ Tab-bar + Confirmation — exists in snippets; the build memory was stale). Next
    content contract to review against).
 2. **Blue/400 render session** — HELD by your call; candidates + full contrast
    matrix + blast radius pre-computed on col25-018 (#719ECC recommended, #6293C6
-   conservative). Needs the visual-QA loop / working Chromium.
+   conservative). **Chromium now WORKS in-sandbox** (recipe in
+   `_ROBUSTNESS-PORTABILITY.md` — 3 commands to revive in a fresh sandbox); the
+   state-contrast gate ran its FIRST FULL SWEEP: one real catch
+   (Selection-controls label 4.02:1 hover/pressed — same row as the copy-022
+   ampersand → ONE component touch, needs your eyes) and one gate bug docketed
+   (View-options z-layer false positive, screenshot-verified legible).
 3. **Tier 2 ingestion** once you answer the Common-Library-vs-branch question.
 4. Calibration when the colleague's materials land · G2 compiler spec · finessing
    pass (mot-007 + type26-015/026).
