@@ -86,9 +86,12 @@ tokens, breakpoint/scale modes); the value here is (a) receipts for what we alre
   Toolkit**; "the Design Toolkit remains the single source of truth" for interaction
   states, accessibility requirements, usage rules, specifications. ⚠ Source gap: forms
   standards are not reachable as a page; the Common Toolkit is an asset/toolkit
-  destination, not an ingestable standard. [REVIEW — queue a Common Toolkit access
-  decision (Dave); until then our Input-fields/forms canon stands on the toolkit export +
-  component review] {#webf-017}
+  destination, not an ingestable standard. RULED by Dave 2026-07-03: **probe the
+  Common Toolkit via his authenticated Chrome session next ingestion session** (it
+  may be Figma/SSO-gated like the Create portal — if so, fall back to a proper
+  access request). [REVIEW — access route ruled, probe pending; until it lands our
+  Input-fields/forms canon stands on the toolkit export + component review]
+  {#webf-017}
 
 ## Responsive grid
 

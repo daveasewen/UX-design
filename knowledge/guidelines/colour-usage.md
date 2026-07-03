@@ -54,9 +54,11 @@ source receipt (F1) — the biggest single finding of this tranche.
   reds → HSBC Red + Deep Red #9B0000). [RECORDED — retired-by-refresh; kept for
   legacy-asset auditing] {#col25-007}
 - **No black-and-white photography** (2025 Do/Don't). The 2026 photography standard
-  (`brand-refresh-assets.md`) is silent on this — carry or retire is a refresh
-  reconciliation call. [REVIEW — 2025 rule, 2026 silent: does the B&W-photography
-  ban survive the refresh? Low priority] {#col25-008}
+  (`brand-refresh-assets.md`) is silent on this. RULED interim by Dave 2026-07-03:
+  **the ban CARRIES** — a live standard states it, the other is merely silent;
+  silence ≠ withdrawal. Low stakes for the engine (photos are retrieved, never
+  made). [REVIEW — interim-ruled 2026-07-03: ban operative; CLOSE when the refresh
+  photography page speaks either way] {#col25-008}
 
 ## Greys — the operative published values
 
@@ -109,10 +111,12 @@ source receipt (F1) — the biggest single finding of this tranche.
   `data-visualisation.md`] {#col25-015}
 - **2025: the Core palette should NOT be used in app or web charts and graphs**
   (status meaning is reserved for RAG). DIRECT FLIP vs col26-013 ("distinguish HSBC
-  with HSBC Red" in data-vis). Both standards are live; the dual-live ruling makes
-  vintage explicit per composition, but chart generation needs to know which rule it
-  is under. [REVIEW — vintage flip: red-in-charts banned (2025) vs branded (2026);
-  encode as a vintage parameter on the chart contract] {#col25-016}
+  with HSBC Red" in data-vis). RULED by Dave 2026-07-03: **2026 wins outright** —
+  HSBC Red may distinguish own-data in ALL charts; the 2025 ban is superseded and
+  recorded for legacy-asset auditing only. (col26-012 still bans MIXING HSBC Red
+  with supporting-palette fills in one chart, and RAG semantics remain protected by
+  the RAG-scope rules — the ambiguity risk is carried by those, not by this ban.)
+  [RECORDED — superseded by ruling; col26-013 governs both vintages] {#col25-016}
 - **RAG palette values: Red #A8000B · Amber #FFBB33 · Green #00847F · Blue #305A85**
   — token store match at `color/{red,amber,green,blue}/600`. Semantics, verbatim:
   red = strong negative (errors, unsuccessful outcomes) · amber = negative (alert,
@@ -148,8 +152,8 @@ source receipt (F1) — the biggest single finding of this tranche.
 | Reds | HSBC Red + Comp Red 1–3 (no tints) | HSBC Red + Deep Red #9B0000 | Comp Red RETIRED (col25-007); audit legacy assets |
 | Greys | Grey 1–8 + DM Grey 1–6 PUBLISHED | "specs available soon" | 2025 values operative; token store matches (col25-009/013 → col26-001) |
 | Typography grey | white or Grey 8 ONLY | silent (greys pending) | RULED 2026-07-03: token store governs (text/secondary = Grey 7 stays); re-check at 2026 grey specs (col25-011) |
-| Red in charts | Core palette banned in app/web charts | HSBC Red distinguishes own data (col26-013) | FLIP → col25-016 REVIEW (vintage parameter) |
-| B&W photography | banned | silent | col25-008 REVIEW (low) |
+| Red in charts | Core palette banned in app/web charts | HSBC Red distinguishes own data (col26-013) | RULED 2026-07-03: 2026 wins outright; 2025 ban superseded (col25-016) |
+| B&W photography | banned | silent | RULED interim 2026-07-03: ban carries; close at refresh re-cut (col25-008) |
 | Illustration | dedicated palettes incl. skin/hair families | folded into supporting palette | supersession recorded in `illustration-standards.md` |
 | RAG | 4 values, digital-UX only | RAG inside supporting palette; text 4.5:1 / graphics 3:1 (col26-018) | value continuity confirmed via tokens (col25-017) |
 | Contrast floors | 4.5:1 text on greys · 3:1 illustration/data-vis | same numbers restated | no delta — stable across vintages |
@@ -166,11 +170,11 @@ source receipt (F1) — the biggest single finding of this tranche.
   published hexes (8 greys, 6 dark-mode greys, 4 RAG, HSBC Red) exist in
   `tokens/colour.json` at matching positions. Provenance receipt for the ADR-0005
   open item: the store's vintage is now documented, not assumed.
-- **F3 — REVIEW items, tiered.** col25-018 (blue/400 fix — real work, joins the
-  dark-RAG revisit) · col25-016 (red-in-charts vintage flip — encode as chart-
-  contract parameter) · col25-008 (B&W photo, low). col25-011 RULED 2026-07-03:
-  token store governs, Grey 7 stays (re-check when the 2026 grey specs publish).
-  None block current work; all are cheap rulings except 018.
+- **F3 — REVIEW items: three of four RULED next-day (2026-07-03).** col25-011:
+  token store governs, Grey 7 stays (re-check at 2026 grey specs) · col25-016:
+  2026 wins outright, 2025 chart-red ban superseded · col25-008: B&W ban carries
+  interim, closes when the refresh photography page speaks. REMAINING OPEN:
+  **col25-018** (blue/400 fix — real token work, joins the dark-RAG revisit).
 - **F4 — Continuity receipts, both vintages agree:** tactical red (col25-001 ↔
   col26-003) · closed palettes / 0 rogue hex (col25-005 ↔ col26-015) · palette-scope
   discipline (col25-003 ↔ col26-008) · contrast floors stable. The compose gate's

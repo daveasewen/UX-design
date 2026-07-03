@@ -24,8 +24,7 @@ Dave rules.*
 
 ## colour-usage.md
 
-- **col25-008** — No black-and-white photography (2025 Do/Don't). The 2026 photography standard (`brand-refresh-assets.md`) is silent on this — carry or retire is a refresh reconciliation call.
-- **col25-016** — 2025: the Core palette should NOT be used in app or web charts and graphs (status meaning is reserved for RAG). DIRECT FLIP vs col26-013 ("distinguish HSBC with HSBC Red" in data-vis). Both standards are live; the dual-live ruling makes vintage explicit per composition, but chart generation needs to know which rule it is under.
+- **col25-008** — No black-and-white photography (2025 Do/Don't). The 2026 photography standard (`brand-refresh-assets.md`) is silent on this. RULED interim by Dave 2026-07-03: the ban CARRIES — a live standard states it, the other is merely silent; silence ≠ withdrawal. Low stakes for the engine (photos are retrieved, never made).
 - **col25-018** — THE BLUE RECEIPT: `color/blue/400` (#4587A7) is `illustration/blue-5`, verbatim — the suspected illustration-palette leak is now receipted at value level. The 2025 standard publishes exactly ONE UI blue: RAG Blue #305A85 (= `color/blue/600`, sitting at /600 like its RAG siblings red/amber/green). `focus/ring` (dark) and dark `rag/information` alias blue/400 — i.e. they rest on an illustration colour that was never a published UI value and fails contrast in the dark combinations (the dark-RAG int
 
 ## generative-ai-brand.md
@@ -73,7 +72,7 @@ Dave rules.*
 
 ## web-foundations.md
 
-- **webf-017** — The responsive-forms URL redirects to an "Elements and patterns (web and app)" stub: element/pattern standards (buttons, accordions, app tiles…) now live in the Common Toolkit; "the Design Toolkit remains the single source of truth" for interaction states, accessibility requirements, usage rules, specifications. ⚠ Source gap: forms standards are not reachable as a page; the Common Toolkit is an asset/toolkit destination, not an ingestable standard.
+- **webf-017** — The responsive-forms URL redirects to an "Elements and patterns (web and app)" stub: element/pattern standards (buttons, accordions, app tiles…) now live in the Common Toolkit; "the Design Toolkit remains the single source of truth" for interaction states, accessibility requirements, usage rules, specifications. ⚠ Source gap: forms standards are not reachable as a page; the Common Toolkit is an asset/toolkit destination, not an ingestable standard. RULED by Dave 2026-07-03: probe the Common Tool
 - **webf-029** — Pre-refresh vintage. The dark-mode page is dated 2021 and the family reads pre-refresh. Its "limit red / replace colour with white-grey" conservatism sits oddly against the 2026 refresh's expressive direction (dual-live palettes, charter §4) — the living-standard caveat applies: deltas ≠ defects; reconcile when the web pages re-issue under the refresh.
 - **webf-030** — "No purely aesthetic shadows" vs `elevation/decorative`. webf-013 bans decoration- only shadows; our store carries `elevation/decorative` (blur 8) alongside `elevation/functional` (blur 16) — from the Figma export. Likely the toolkit means "decorative" as a lighter functional tier, not aesthetic-only, but the name collides with the standard's language.
 - **webf-031** — Body leading contradiction, cross-standard. This page: S5 body = 16/24 = 1.5 leading (and our store matches). typography-standards-2026 (type26-016): Latin body leading "1.1×" with worked examples at 1.29–1.33×. Three sources, three ratios — strengthens the type26-016 suspicion that "1.1×" is a misprint or channel-specific. The web scale + our store agree at 1.5 for web body; operative.
@@ -81,4 +80,4 @@ Dave rules.*
 - **webf-033** — font-1..4 sizes are TScale-mode-dependent — check the export carries them. `typography.json` has fixed sizes only for font-5..7 (correct — S5–S7 are invariant); font-1..4 sizes/leading must vary by scale mode. If the semantic-scale export didn't carry per-mode type values, large-type generation at scale-2/3 is running on a gap.
 - **webf-034** — Responsive spacing values (R units) are a source gap. `spacing.json` is fixed-only; the RScale VALUES per breakpoint aren't in the store or on this page (likely toolkit- internal). Generation currently has no responsive-spacing dimension.
 
-_35 open item(s)._
+_34 open item(s)._
