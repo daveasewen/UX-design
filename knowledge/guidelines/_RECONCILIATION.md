@@ -26,6 +26,10 @@ Dave rules.*
 
 - **col25-008** — No black-and-white photography (2025 Do/Don't). The 2026 photography standard (`brand-refresh-assets.md`) is silent on this. RULED interim by Dave 2026-07-03: the ban CARRIES — a live standard states it, the other is merely silent; silence ≠ withdrawal. Low stakes for the engine (photos are retrieved, never made).
 
+## common-toolkit-buttons.md
+
+- **ctkb-015** — Inline-use contradiction: the guide says quaternary buttons can be used "in-line on their own", but the app standard rules that inline buttons should "use a tertiary rather than an undecorated button" and bans undecorated inline within body copy. If quaternary = undecorated (td-011), these conflict. Likely vintage layering (guide May 2023 vs newer standard), but which wins shapes the rank-choice heuristic.
+
 ## common-toolkit-notifications.md
 
 - **ctkn-019** — User errors: never write an error message without a clear instruction to fix it; instruction-first copy; no "Please…" before each error instruction; no "We're sorry" for user-caused errors.
@@ -83,4 +87,4 @@ Dave rules.*
 - **webf-033** — font-1..4 sizes are TScale-mode-dependent — check the export carries them. `typography.json` has fixed sizes only for font-5..7 (correct — S5–S7 are invariant); font-1..4 sizes/leading must vary by scale mode. If the semantic-scale export didn't carry per-mode type values, large-type generation at scale-2/3 is running on a gap.
 - **webf-034** — Responsive spacing values (R units) are a source gap. `spacing.json` is fixed-only; the RScale VALUES per breakpoint aren't in the store or on this page (likely toolkit- internal). Generation currently has no responsive-spacing dimension.
 
-_34 open item(s)._
+_35 open item(s)._

@@ -111,6 +111,12 @@ don't force-fit" rule applies at generation time.
   selected-disabled · indeterminate · spinner) that the chip component sets never
   received (sets = default/"hover (web)"/pressed × selected only). Docs can lag
   sets (td-002) AND sets can lag docs — set-census alone under-counts criteria.
+- td-011 — rank-4 naming three-way split: guide "Quaternary" · app standard
+  "Undecorated" · browser standard omits the rank entirely (Buttons pass).
+- td-012 — "sucess (app)" — typo in a SHIPPING variant value (Button primary set).
+- td-013 — `primary Large` set is UNDOCUMENTED (no guide/standard mention), has no
+  disabled state, and uses a Capitalised state register (Default/Hover/Pressed) vs
+  its lowercase siblings.
 
 ## Page census (2026-07-03 eve — supersedes the search sample above)
 
@@ -179,7 +185,23 @@ often unnecessary).
   sets) · Tag link merges hover/pressed into one variant (canon exceeds, keeps
   split states). Deprecate leaks all pre-receipted in canon metas — zero new
   token gaps. td-007…010 logged.
-- ☐ Button ranks · then tranche 2/3 below.
+- ✅ **Buttons rank-ladder DISTILLED 2026-07-03** →
+  `guidelines/common-toolkit-buttons.md` (ctkb-001…019, register 458).
+  Headlines: quaternary = the app standard's "Undecorated" (browser standard
+  omits rank 4 — td-011) · cardinality contract (ONE primary and/or ONE
+  secondary per page, never both in a group) · 8px + primary-first ordering ·
+  always-rectangular · app "button activity" pattern = the contract behind the
+  processing/"sucess (app)" variants (spinner → RAG colour NO copy → resolve,
+  with AT labels) · copy lints (≤5 words, Continue-not-Next, banned generics) ·
+  aid-009 receipt #6 (entire container) + name-matches-label · the guide's
+  "Figma note" documents the soft-return workaround = the U+2028 provenance.
+  One REVIEW (ctkb-015: inline quaternary vs tertiary-inline). primary Large:
+  undocumented set, no disabled, primary/background triplet, no typography
+  variables surfaced (td-013).
+
+**TRANCHE 1 COMPONENT FAMILIES COMPLETE** (Links · Notifications · Tags+Chips ·
+Buttons; register 389 → 458 across the tranche). Next: FOUNDATIONS pages tranche
+(×11), then tranche 2/3 below.
 
 ## Queue — the rigorous pass (per-family, guide frame first)
 
