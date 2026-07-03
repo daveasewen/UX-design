@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-cand="cur">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blue/400 render review — col25-018 + dark error red (2026-07-03)</title>
+<!-- REVIEW ARTIFACT (not a gated screen). Built 2026-07-03 for Dave's render session.
+     Receipts: colour-usage.md col25-018 (derivation ladder + blast radius) · state-contrast
+     re-sweep 2026-07-03 (post gate-fix: demo chrome no longer driven) · tokens/colour.json.
+     Component markup is VERBATIM from canon-gallery.canon.html; styling comes from canon.css. -->
+<link rel="stylesheet" href="../canon/canon.css">
+<style>
+  body{ margin:0; padding:24px 24px 80px; background:var(--page); color:var(--text); font-family:var(--font); }
+  .wrap{ max-width:900px; margin:0 auto; }
+  h1{ font:500 22px/1.25 var(--font); margin:0 0 6px; }
+  .prov{ font-size:12px; color:var(--muted); margin:0 0 28px; max-width:70ch; }
+  h2.sec{ font:500 16px/1.3 var(--font); margin:44px 0 4px; padding-top:20px; border-top:1px solid var(--divider-soft); }
+  p.note{ font-size:13px; color:var(--muted); max-width:76ch; margin:4px 0 16px; }
+  /* sticky candidate switcher */
+  .bar{ position:fixed; top:10px; right:10px; z-index:50; display:flex; gap:6px; align-items:center;
+        background:var(--surface); border:1px solid var(--border); padding:6px 8px; }
+  .bar span{ font-size:11px; color:var(--muted); margin-right:2px; }
+  .bar button{ font:inherit; font-size:12px; padding:5px 10px; border:1px solid var(--border);
+               background:transparent; color:var(--text); cursor:pointer; }
+  .bar button[aria-pressed="true"]{ background:var(--text); color:var(--page); border-color:var(--text); }
+  .bar label{ font-size:12px; display:flex; gap:5px; align-items:center; cursor:pointer; }
+  /* candidate overrides — hit the dark scopes themselves so canon's aliases re-resolve there */
+  html[data-cand="con"] .dkscope[data-theme="dark"]{ --focus-ring:#6293C6; --rag-information:#6293C6; --color-blue-400:#6293C6; }
+  html[data-cand="rec"] .dkscope[data-theme="dark"]{ --focus-ring:#719ECC; --rag-information:#719ECC; --color-blue-400:#719ECC; }
+  /* ring-adjacency grid */
+  .ringrow{ display:grid; grid-template-columns:170px repeat(6,1fr); gap:0; align-items:stretch; margin:0 0 2px; }
+  .ringlab{ font-size:12px; color:var(--muted); padding:10px 10px 10px 0; }
+  .ringlab b{ color:var(--text); font-weight:500; }
+  .cell{ display:flex; flex-direction:column; gap:8px; align-items:center; justify-content:center; padding:14px 6px; }
+  .tile{ width:34px; height:22px; display:block; outline-offset:2px; background:transparent; }
+  .num{ font-size:11px; } .num.ok{ color:#00847F; } .num.bad{ color:#FF5252; font-weight:700; }
+  .gridhead{ display:grid; grid-template-columns:170px repeat(6,1fr); font-size:11px; color:var(--muted); margin-top:14px; }
+  .gridhead div{ padding:0 6px 6px; text-align:center; } .gridhead div:first-child{ text-align:left; padding-left:0; }
+  /* matrices */
+  table{ border-collapse:collapse; font-size:13px; margin:10px 0 6px; }
+  th,td{ border:1px solid var(--border); padding:7px 12px; text-align:left; font-weight:400; }
+  thead th{ font-weight:500; } th small{ display:block; color:var(--muted); font-size:10px; font-weight:400; }
+  td.ok{ color:#006A66; } td.bad{ color:#A8000B; font-weight:700; }
+  [data-theme="dark"] td.ok, .dk td.ok{ color:#00847F; }
+  .sw{ display:inline-block; width:12px; height:12px; margin-right:8px; vertical-align:-1px; border:1px solid var(--border); }
+  /* dark in-situ scope */
+  .dkscope{ background:var(--page); color:var(--text); padding:26px 26px 8px; margin:14px 0; }
+  .dkscope .g-item{ max-width:none; margin:0 0 34px; padding-bottom:22px; border-bottom:1px solid var(--divider-soft); }
+  .dkscope .g-name{ font:500 12px/1 var(--font); color:var(--muted); margin:0 0 16px; }
+  /* flood rings (approximation for review — real offsets vary per component) */
+  .show-rings .dkscope :is(button, a, [role="tab"], input:not([type=checkbox]):not([type=radio]), .box, .radio, .switch){
+    outline:2px solid var(--focus) !important; outline-offset:2px; }
+  /* error red 3-up */
+  .errgrid{ display:grid; grid-template-columns:repeat(4,1fr); gap:2px; }
+  .errcol{ background:var(--page); padding:18px 16px 6px; }
+  .collab{ font-size:11px; color:var(--muted); margin:0 0 12px; }
+  .asks li{ margin:6px 0; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="ic-error" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.30911 1.68194L0.109113 15.7999C-0.199887 16.3319 0.184113 16.9999 0.800113 16.9999H17.2001C17.8161 16.9999 18.2001 16.3319 17.8911 15.7999L9.69111 1.68194C9.38311 1.15094 8.61711 1.15094 8.30911 1.68194Z" fill="currentColor"/><path style="fill:var(--mark)" d="M9.9001 5H8.1001V11H9.9001V5Z"/><path style="fill:var(--mark)" d="M9 14.8259C9.69036 14.8259 10.25 14.2663 10.25 13.5759C10.25 12.8856 9.69036 12.3259 9 12.3259C8.30964 12.3259 7.75 12.8856 7.75 13.5759C7.75 14.2663 8.30964 14.8259 9 14.8259Z"/></symbol>
+  <symbol id="ic-warning" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M9.90107 3.80005H8.10107V9.80005H9.90107V3.80005Z"/><path style="fill:var(--mark)" d="M9.00078 14.2C9.66352 14.2 10.2008 13.6628 10.2008 13C10.2008 12.3373 9.66352 11.8 9.00078 11.8C8.33804 11.8 7.80078 12.3373 7.80078 13C7.80078 13.6628 8.33804 14.2 9.00078 14.2Z"/></symbol>
+  <symbol id="ic-success" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z"/></symbol>
+  <symbol id="ic-info" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M9 6.25C9.69036 6.25 10.25 5.69036 10.25 5C10.25 4.30964 9.69036 3.75 9 3.75C8.30964 3.75 7.75 4.30964 7.75 5C7.75 5.69036 8.30964 6.25 9 6.25Z"/><path style="fill:var(--mark)" d="M9.89912 8.25H8.09912V14.25H9.89912V8.25Z"/></symbol>
+  <symbol id="ic-close" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z"/></symbol>
+  <symbol id="ic-calendar" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15 1V0H13.8V1H4.2V0H3V1H0V18H14.2L18 14.2V1H15ZM14.2 16.303V14.2H16.303L14.2 16.303ZM16.8 13H13V16.8H1.2V6H16.8V13ZM16.8 4.8H1.2V2.2H3V3.5H4.2V2.2H13.8V3.5H15V2.2H16.8V4.8ZM8.8 10.029V15H10V7.971L7.003 9.667L7.594 10.712L8.8 10.029Z" fill="currentColor"/></symbol>
+  <symbol id="ic-help" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.029 0 0 4.03 0 9C0 13.97 4.029 18 9 18C13.971 18 18 13.97 18 9C18 4.03 13.971 0 9 0ZM9 16.8C4.699 16.8 1.2 13.301 1.2 9C1.2 4.699 4.699 1.2 9 1.2C13.301 1.2 16.8 4.699 16.8 9C16.8 13.301 13.301 16.8 9 16.8ZM8.999 12.5C8.447 12.5 7.999 12.948 7.999 13.5C7.999 14.052 8.447 14.5 8.999 14.5C9.551 14.5 9.999 14.052 9.999 13.5C9.999 12.948 9.552 12.5 8.999 12.5ZM9.604 3.539C8.75 3.363 7.875 3.569 7.207 4.113C6.54 4.656 6.157 5.46 6.157 6.319H7.357C7.357 5.823 7.578 5.358 7.964 5.044C8.356 4.726 8.851 4.607 9.36 4.714C9.996 4.847 10.514 5.391 10.62 6.037C10.709 6.575 10.542 7.101 10.162 7.48L9.013 8.629C8.75 8.894 8.4 9.324 8.4 10.011V11H9.6V10.011C9.6 9.835 9.642 9.699 9.862 9.478L11.01 8.33C11.667 7.674 11.956 6.768 11.804 5.842C11.616 4.7 10.732 3.775 9.604 3.539Z" fill="currentColor"/></symbol>
+  <symbol id="ic-download" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.8 12V15.8H2.2V12H1V17H17V12H15.8ZM14 8.848V7.151L9.6 11.551V1H8.4V11.551L4 7.151V8.848L9 13.849L14 8.848Z" fill="currentColor"/></symbol>
+  <symbol id="ic-search" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.19675 12.803C3.66075 14.268 5.58075 15 7.49975 15C9.23175 15 10.9598 14.398 12.3577 13.206L17.1257 17.973L17.9748 17.125L13.2067 12.357C15.7197 9.41 15.5898 4.981 12.8048 2.196C11.3388 0.732 9.41875 0 7.49975 0C5.58075 0 3.66075 0.732 2.19675 2.197C-0.73225 5.126 -0.73225 9.874 2.19675 12.803ZM1.19975 7.5C1.19975 5.817 1.85575 4.235 3.04475 3.045C4.23375 1.855 5.81675 1.2 7.49975 1.2C9.18275 1.2 10.7648 1.855 11.9548 3.045C14.4108 5.501 14.4108 9.498 11.9548 11.955C10.7648 13.145 9.18275 13.8 7.49975 13.8C5.81675 13.8 4.23475 13.145 3.04475 11.955C1.85475 10.765 1.19975 9.183 1.19975 7.5Z" fill="currentColor"/></symbol>
+  <symbol id="ic-clear" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"/></symbol>
+  <symbol id="ic-chevron" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.15234 17L12.1503 9L4.15234 1H5.84834L13.8483 9L5.84834 17H4.15234Z" fill="currentColor"/></symbol>
+  <symbol id="ic-home" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0L1 8V18H8V11.2H10V18H17V8L9 0ZM15.8 16.8H11.2V10H6.8V16.8H2.2V8.497L9 1.697L15.8 8.497V16.8Z"/></symbol>
+  <symbol id="ic-home-a" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0L1 8V18H8V12H10V18H17V8L9 0Z"/></symbol>
+  <symbol id="ic-cards" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9.973 9.195L9.555 10.181C9.753 10.529 9.905 10.895 10.008 11.273L11 11.674V13.326L10.008 13.727C9.906 14.105 9.754 14.471 9.555 14.819L9.973 15.805L8.805 16.973L7.819 16.555C7.471 16.754 7.105 16.905 6.727 17.008L6.326 18H4.674L4.273 17.008C3.895 16.906 3.529 16.754 3.181 16.555L2.195 16.973L1.027 15.805L1.445 14.819C1.246 14.471 1.094 14.105 0.992 13.727L0 13.326V11.674L0.992 11.273C1.094 10.895 1.246 10.529 1.445 10.181L1.027 9.195L2.195 8.027L3.181 8.445C3.529 8.246 3.895 8.095 4.273 7.992L4.674 7H6.326L6.727 7.992C7.105 8.095 7.471 8.247 7.819 8.445L8.805 8.027L9.973 9.195ZM2.108 12.5C2.108 14.373 3.627 15.892 5.5 15.892C7.373 15.892 8.892 14.373 8.892 12.5C8.892 10.627 7.373 9.108 5.5 9.108C3.627 9.108 2.108 10.627 2.108 12.5Z"/><path fill-rule="evenodd" clip-rule="evenodd" d="M4.5 0H16.5C17.325 0 18 0.675 18 1.5V10.5C18 11.325 17.325 12 16.5 12H11.975C11.944 11.588 11.873 11.187 11.768 10.8H16.5C16.663 10.8 16.8 10.663 16.8 10.5V4.2H4.2V6.131C3.784 6.215 3.383 6.34 3 6.5V1.5C3 0.675 3.675 0 4.5 0ZM4.2 3H16.8V1.5C16.8 1.337 16.663 1.2 16.5 1.2H4.5C4.337 1.2 4.2 1.337 4.2 1.5V3Z"/><path d="M15 6H12V7.2H15V6Z"/></symbol>
+  <symbol id="ic-cards-a" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M3 6.234C3.774 5.925 4.616 5.75 5.5 5.75C9.059 5.75 11.968 8.506 12.225 12H17C17.55 12 18 11.55 18 11V3.5H3V6.234ZM13 5H16V6.5H13V5ZM17 0H4C3.45 0 3 0.45 3 1V2H18V1C18 0.45 17.55 0 17 0ZM9.555 10.181L9.973 9.195L8.805 8.027L7.819 8.445C7.471 8.247 7.105 8.095 6.727 7.992L6.326 7H4.674L4.273 7.992C3.895 8.095 3.529 8.247 3.181 8.445L2.195 8.027L1.027 9.195L1.445 10.181C1.246 10.529 1.094 10.895 0.992 11.273L0 11.674V13.326L0.992 13.727C1.095 14.105 1.246 14.471 1.445 14.819L1.027 15.805L2.195 16.973L3.181 16.555C3.529 16.754 3.895 16.906 4.273 17.008L4.674 18H6.326L6.727 17.008C7.105 16.905 7.471 16.754 7.819 16.555L8.805 16.973L9.973 15.805L9.555 14.819C9.754 14.471 9.906 14.105 10.008 13.727L11 13.326V11.674L10.008 11.273C9.905 10.895 9.753 10.529 9.555 10.181ZM5.5 15C4.119 15 3 13.881 3 12.5C3 11.119 4.119 10 5.5 10C6.881 10 8 11.119 8 12.5C8 13.881 6.881 15 5.5 15Z"/></symbol>
+  <symbol id="ic-pay" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.029 0 0 4.029 0 9C0 13.971 4.029 18 9 18C13.971 18 18 13.971 18 9C18 4.029 13.971 0 9 0ZM9 16.8C4.699 16.8 1.2 13.301 1.2 9C1.2 4.699 4.699 1.2 9 1.2C13.301 1.2 16.8 4.699 16.8 9C16.8 13.301 13.301 16.8 9 16.8ZM9.064 6.352C10.347 6.352 10.356 7.003 10.359 7.218L11.559 7.2C11.544 6.092 10.807 5.353 9.6 5.188V4H8.4V5.216C7.207 5.431 6.44 6.226 6.44 7.337C6.44 8.831 7.782 9.247 8.499 9.47L9.14 9.675C10.097 9.972 10.359 10.185 10.359 10.663C10.359 11.577 9.27 11.648 8.936 11.648C7.653 11.648 7.644 10.997 7.641 10.782L6.44 10.8C6.456 11.908 7.193 12.647 8.399 12.812V14H9.599V12.784C10.792 12.569 11.558 11.774 11.558 10.663C11.558 9.169 10.216 8.753 9.495 8.528L8.859 8.325C7.902 8.028 7.64 7.815 7.64 7.337C7.641 6.423 8.73 6.352 9.064 6.352Z"/></symbol>
+  <symbol id="ic-pay-a" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.029 0 0 4.029 0 9C0 13.971 4.029 18 9 18C13.971 18 18 13.971 18 9C18 4.029 13.971 0 9 0ZM8.776 8.141L9.667 8.427C10.655 8.734 12.493 9.303 12.493 11.328C12.493 12.86 11.419 13.953 9.749 14.227V16H8.249V14.254C6.564 14.047 5.528 13.041 5.505 11.518L7.005 11.497C7.017 12.36 7.658 12.799 8.909 12.799C9.398 12.799 10.992 12.693 10.992 11.329C10.992 10.615 10.595 10.286 9.222 9.86L9.217 9.857L8.326 9.571C7.344 9.268 5.506 8.697 5.506 6.672C5.506 5.14 6.58 4.047 8.25 3.773V2H9.75V3.746C11.435 3.953 12.471 4.959 12.494 6.482L10.994 6.503C10.982 5.64 10.341 5.201 9.09 5.201C8.601 5.201 7.007 5.307 7.007 6.671C7.006 7.386 7.403 7.715 8.776 8.141Z"/></symbol>
+  <symbol id="ic-insight" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.1685 3.936C13.8355 1.785 11.5295 0.5 9.00147 0.5C6.47047 0.5 4.16347 1.786 2.83047 3.94C2.14747 5.045 2.03447 6.434 2.52947 7.657L5.10647 14.028V15.369L7.23847 17.5H10.7635L12.8955 15.369V14.028L15.4725 7.653C15.9665 6.43 15.8535 5.04 15.1685 3.936ZM11.6955 14.872L10.2665 16.3H7.73547L6.30647 14.872V13.5H11.6955V14.872ZM8.20047 12.3V6.729C8.20047 6.288 8.55947 5.929 9.00047 5.929C9.44147 5.929 9.80047 6.288 9.80047 6.729V12.3H8.20047ZM14.3595 7.204L12.2995 12.3H11.0005V6.729C11.0005 5.625 10.1045 4.729 9.00047 4.729C7.89547 4.729 7.00047 5.624 7.00047 6.729V12.3H5.70247L3.64147 7.207C3.28947 6.337 3.36847 5.352 3.85047 4.572C4.96347 2.773 6.88947 1.7 9.00147 1.7C11.1115 1.7 13.0355 2.772 14.1485 4.568C14.6325 5.348 14.7115 6.333 14.3595 7.204Z"/></symbol>
+  <symbol id="ic-menu" viewBox="0 0 18 18"><path d="M0 15.6H18V14.4H0V15.6ZM0 2.40002V3.60002H18V2.40002H0ZM0 9.60002H18V8.40002H0V9.60002Z"/></symbol>
+  <symbol id="ic-menu-a" viewBox="0 0 18 18"><path d="M0 15.6H18V13.6H0V15.6ZM0 2.40002V4.40002H18V2.40002H0ZM0 10H18V8.00002H0V10Z"/></symbol>
+</svg>
+<div class="bar" role="group" aria-label="candidate switcher">
+  <span>blue/400 →</span>
+  <button type="button" data-c="cur" aria-pressed="true">#4587A7 current</button>
+  <button type="button" data-c="con" aria-pressed="false">#6293C6</button>
+  <button type="button" data-c="rec" aria-pressed="false">#719ECC ★</button>
+  <label><input type="checkbox" id="floodRings"> show rings</label>
+</div>
+<div class="wrap">
+<h1>Blue/400 render review — col25-018 + dark error red</h1>
+<p class="prov">2026-07-03 render session. Everything on this page is dark-theme — light is untouched by both
+decisions (light focus ring and light error text stay blue/600 #305A85 and red/600 #A8000B). Candidates are
+accent-only: fills keep blue/600 + white via the existing driftAllow. Numbers receipted in
+guidelines/colour-usage.md (col25-018) and this session's re-swept _STATE-CONTRAST-AUDIT.md.
+Component markup below is verbatim from the canon gallery — all styling is live canon.css, so what you see
+is what ships.</p>
+
+<h2 class="sec">1 · The decision — dark focus ring + info accent</h2>
+<p class="note">Current #4587A7 is illustration Blue 5, verbatim — never a published UI value — and it fails
+3:1 on the two mid greys that carry real adjacencies (#404040 binds form borders; #474747 still binds
+form/background/pressed, tabs hover and two tab borders in dark). Both candidates derive from the published
+RAG blue #305A85 (hue 210° / sat 47%), per charter §6.</p>
+<table><thead><tr><th>candidate</th><th>#000000<small>background/default</small></th><th>#101010<small>grey/dark-mode/700</small></th><th>#1D1D1D<small>grey/dark-mode/600</small></th><th>#212121<small>grey/dark-mode/500</small></th><th>#404040<small>grey/dark-mode/400</small></th><th>#474747<small>grey/dark-mode/300</small></th></tr></thead><tbody><tr><th><span class="sw" style="background:#4587A7"></span>#4587A7</th><td class="ok">5.28</td><td class="ok">4.78</td><td class="ok">4.24</td><td class="ok">4.05</td><td class="bad">2.61</td><td class="bad">2.33</td></tr><tr><th><span class="sw" style="background:#6293C6"></span>#6293C6</th><td class="ok">6.51</td><td class="ok">5.9</td><td class="ok">5.22</td><td class="ok">4.99</td><td class="ok">3.21</td><td class="bad">2.88</td></tr><tr><th><span class="sw" style="background:#719ECC"></span>#719ECC</th><td class="ok">7.46</td><td class="ok">6.76</td><td class="ok">5.99</td><td class="ok">5.72</td><td class="ok">3.69</td><td class="ok">3.3</td></tr></tbody></table>
+<p class="note">Threshold 3:1 (WCAG 1.4.11 non-text). #719ECC clears every surface; #6293C6 clears all but
+#474747 (2.88) and sits closer to the current visual weight.</p>
+
+<h2 class="sec">2 · Ring against every dark surface — all three at once</h2>
+<div class="gridhead"><div></div><div>#000000<br>background/default</div><div>#101010<br>dm 700</div><div>#1D1D1D<br>dm 600</div><div>#212121<br>dm 500</div><div>#404040<br>dm 400</div><div>#474747<br>dm 300</div></div>
+<div class="ringrow"><div class="ringlab"><b>#4587A7</b><br>current — illustration Blue 5 leak</div><div class="cell" style="background:#000000"><span class="tile" style="outline:2px solid #4587A7"></span><span class="num ok">5.28</span></div><div class="cell" style="background:#101010"><span class="tile" style="outline:2px solid #4587A7"></span><span class="num ok">4.78</span></div><div class="cell" style="background:#1D1D1D"><span class="tile" style="outline:2px solid #4587A7"></span><span class="num ok">4.24</span></div><div class="cell" style="background:#212121"><span class="tile" style="outline:2px solid #4587A7"></span><span class="num ok">4.05</span></div><div class="cell" style="background:#404040"><span class="tile" style="outline:2px solid #4587A7"></span><span class="num bad">2.61</span></div><div class="cell" style="background:#474747"><span class="tile" style="outline:2px solid #4587A7"></span><span class="num bad">2.33</span></div></div>
+<div class="ringrow"><div class="ringlab"><b>#6293C6</b><br>conservative — closer to current weight</div><div class="cell" style="background:#000000"><span class="tile" style="outline:2px solid #6293C6"></span><span class="num ok">6.51</span></div><div class="cell" style="background:#101010"><span class="tile" style="outline:2px solid #6293C6"></span><span class="num ok">5.9</span></div><div class="cell" style="background:#1D1D1D"><span class="tile" style="outline:2px solid #6293C6"></span><span class="num ok">5.22</span></div><div class="cell" style="background:#212121"><span class="tile" style="outline:2px solid #6293C6"></span><span class="num ok">4.99</span></div><div class="cell" style="background:#404040"><span class="tile" style="outline:2px solid #6293C6"></span><span class="num ok">3.21</span></div><div class="cell" style="background:#474747"><span class="tile" style="outline:2px solid #6293C6"></span><span class="num bad">2.88</span></div></div>
+<div class="ringrow"><div class="ringlab"><b>#719ECC</b><br>recommended — passes every dark surface</div><div class="cell" style="background:#000000"><span class="tile" style="outline:2px solid #719ECC"></span><span class="num ok">7.46</span></div><div class="cell" style="background:#101010"><span class="tile" style="outline:2px solid #719ECC"></span><span class="num ok">6.76</span></div><div class="cell" style="background:#1D1D1D"><span class="tile" style="outline:2px solid #719ECC"></span><span class="num ok">5.99</span></div><div class="cell" style="background:#212121"><span class="tile" style="outline:2px solid #719ECC"></span><span class="num ok">5.72</span></div><div class="cell" style="background:#404040"><span class="tile" style="outline:2px solid #719ECC"></span><span class="num ok">3.69</span></div><div class="cell" style="background:#474747"><span class="tile" style="outline:2px solid #719ECC"></span><span class="num ok">3.3</span></div></div>
+
+<h2 class="sec">3 · In situ — the components that wear it</h2>
+<p class="note">Use the switcher (top right) to swap the value live. Tab through for real focus rings, or
+tick “show rings” to flood an approximation (uniform 2px/+2 — real offsets vary per component).
+Notifications’ information accents and Status-indicator’s info dot also follow the switcher (they share
+rag/information in dark).</p>
+<div class="canon dkscope" data-theme="dark">
+<section class="g-item">
+  <h2 class="g-name">Tabs</h2>
+  <div class="cn-tabs"><div class="tabs">
+    <div class="tablist" role="tablist" aria-label="Account views">
+      <button class="tab" role="tab" id="t1" aria-selected="true"  aria-controls="p1" tabindex="0">Overview</button>
+      <button class="tab" role="tab" id="t2" aria-selected="false" aria-controls="p2" tabindex="-1">Transactions</button>
+      <button class="tab" role="tab" id="t3" aria-selected="false" aria-controls="p3" tabindex="-1">Statements</button>
+      <button class="tab" role="tab" id="t4" aria-selected="false" aria-controls="p4" tabindex="-1">Payments</button>
+      <button class="tab" role="tab" id="t5" aria-selected="false" aria-controls="p5" tabindex="-1">Documents</button>
+      <button class="tab" role="tab" id="t6" aria-selected="false" aria-controls="p6" tabindex="-1" disabled>Settings</button>
+
+      <div class="overflow" hidden>
+        <button class="overflow__trigger" id="ovTrigger" aria-haspopup="true" aria-expanded="false" aria-label="More tabs">More ▾</button>
+        <ul class="overflow__menu" id="ovMenu" role="menu" aria-labelledby="ovTrigger"></ul>
+      </div>
+      <span class="indicator" aria-hidden="true"></span>
+    </div>
+
+    <div class="panel" role="tabpanel" id="p1" aria-labelledby="t1" tabindex="0"><h2>Overview</h2><p>A summary of balances, recent activity, and quick actions for the selected account.</p></div>
+    <div class="panel" role="tabpanel" id="p2" aria-labelledby="t2" tabindex="0" hidden><h2>Transactions</h2><p>Every debit and credit, searchable and filterable.</p></div>
+    <div class="panel" role="tabpanel" id="p3" aria-labelledby="t3" tabindex="0" hidden><h2>Statements</h2><p>Monthly and annual statements available to download.</p></div>
+    <div class="panel" role="tabpanel" id="p4" aria-labelledby="t4" tabindex="0" hidden><h2>Payments</h2><p>Scheduled, pending and completed payments in one place.</p></div>
+    <div class="panel" role="tabpanel" id="p5" aria-labelledby="t5" tabindex="0" hidden><h2>Documents</h2><p>Letters, certificates and downloads for this account.</p></div>
+    <div class="panel" role="tabpanel" id="p6" aria-labelledby="t6" tabindex="0" hidden><h2>Settings</h2><p>Account preferences. (Shown disabled as a state demo.)</p></div>
+  </div></div>
+</section>
+<section class="g-item">
+  <h2 class="g-name">Search-field</h2>
+  <div class="cn-search-field"><div class="stack">
+    <div>
+      <p class="cap">Boxed (full border)</p>
+      <div class="search boxed">
+        <span class="mag" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></span>
+        <input type="search" aria-label="Search transactions" placeholder="Search transactions" value="Statements">
+        <button class="clear" type="button" aria-label="Clear search"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-clear"/></svg></button>
+      </div>
+    </div>
+    <div>
+      <p class="cap">Underline</p>
+      <div class="search">
+        <span class="mag" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></span>
+        <input type="search" aria-label="Search payees" placeholder="Search payees" value="">
+        <button class="clear" type="button" aria-label="Clear search"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-clear"/></svg></button>
+      </div>
+    </div>
+  </div></div>
+</section>
+<section class="g-item">
+  <h2 class="g-name">Pagination</h2>
+  <div class="cn-pagination"><nav class="pg" aria-label="Pagination">
+    <ul>
+      <li><button class="ctrl" aria-label="Previous page"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.8483 17L5.85034 9L13.8483 1H12.1523L4.15234 9L12.1523 17H13.8483Z"/></svg></button></li>
+      <li><a href="#">1</a></li>
+      <li><a href="#" aria-current="page" aria-label="Page 2, current page">2</a></li>
+      <li><a href="#">3</a></li>
+      <li><a href="#">4</a></li>
+      <li><span class="ellipsis" aria-hidden="true">…</span></li>
+      <li><a href="#">12</a></li>
+      <li><button class="ctrl" aria-label="Next page"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.15234 17L12.1503 9L4.15234 1H5.84834L13.8483 9L5.84834 17H4.15234Z"/></svg></button></li>
+    </ul>
+  </nav></div>
+</section>
+<section class="g-item">
+  <h2 class="g-name">Input-fields</h2>
+  <div class="cn-input-fields"><!-- ===== HSBC icon-library sprite (real SVGs from assets/icons/, defined once) ===== -->
+  
+
+  
+
+  <!-- ================= BOXED ================= -->
+  <h2 class="sec">Boxed field</h2>
+  <p class="note">Full-border field (Figma 65570:211753). The <strong>GBP prefix</strong>, <strong>trailing icon</strong> and
+    <strong>(?) help</strong> are optional. Active &amp; error states add a 4px bottom-stroke emphasis; the error message uses
+    <code>text/default</code> so it stays legible (rag/error red is reserved for the stroke + alert icon).</p>
+
+  <!-- live, fully-featured: prefix + trailing icon + (?) help + counter -->
+  <div class="field">
+    <div class="lbl">
+      <label for="b1">Amount</label>
+      <button class="help-btn" type="button" aria-label="More information about Amount" aria-describedby="b1tip">
+        <svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-help"/></svg>
+        <span class="tip" id="b1tip" role="tooltip">Enter the amount you want to send, in pounds.</span>
+      </button>
+    </div>
+    <p class="help-text" id="b1help">How much would you like to pay?</p>
+    <div class="box">
+      <span class="prefix" aria-hidden="true">GBP</span>
+      <input id="b1" type="text" inputmode="decimal" placeholder="Placeholder" maxlength="100" aria-describedby="b1help b1count">
+      <button type="button" class="tail-btn" aria-label="Choose date"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></button>
+    </div>
+    <p class="count" id="b1count" aria-hidden="true">0/100</p>
+  </div>
+
+  <!-- live, minimal: no prefix, no icon, no (?) help, no counter (optional slots removed) -->
+  <div class="field">
+    <div class="lbl"><label for="b2">Reference</label></div>
+    <p class="help-text" id="b2help">Shown on the recipient's statement.</p>
+    <div class="box">
+      <input id="b2" type="text" placeholder="Placeholder" aria-describedby="b2help">
+    </div>
+  </div>
+
+  <!-- full state set (standard size) -->
+  <h2 class="sec" style="margin-top:2.75rem;">States — standard</h2>
+  <div class="gallery">
+    <div>
+      <p class="cap">Default</p>
+      <div class="field"><div class="box"><span class="prefix" aria-hidden="true">GBP</span><input type="text" placeholder="Placeholder" aria-label="Default example"><button type="button" class="tail-btn" aria-label="Choose date"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></button></div></div>
+    </div>
+    <div>
+      <p class="cap">Hover</p>
+      <div class="field"><div class="box s-hover"><span class="prefix" aria-hidden="true">GBP</span><input type="text" placeholder="Placeholder" aria-label="Hover example" tabindex="-1"><button type="button" class="tail-btn" tabindex="-1" aria-label="Choose date"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></button></div></div>
+    </div>
+    <div>
+      <p class="cap">Active (typing)</p>
+      <div class="field"><div class="box s-active"><span class="prefix" aria-hidden="true">GBP</span><input type="text" value="250.00" aria-label="Active example" tabindex="-1"><button type="button" class="tail-btn" tabindex="-1" aria-label="Choose date"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></button></div></div>
+    </div>
+    <div>
+      <p class="cap">Completed</p>
+      <div class="field is-completed"><div class="box"><span class="prefix" aria-hidden="true">GBP</span><input type="text" value="250.00" aria-label="Completed example" tabindex="-1"><button type="button" class="tail-btn" tabindex="-1" aria-label="Choose date"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></button></div></div>
+    </div>
+    <div>
+      <p class="cap">Disabled</p>
+      <div class="field is-disabled"><div class="box"><span class="prefix" aria-hidden="true">GBP</span><input type="text" placeholder="Placeholder" disabled aria-label="Disabled example"><button type="button" class="tail-btn" disabled aria-label="Choose date"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></button></div></div>
+    </div>
+    <div>
+      <p class="cap">Error</p>
+      <div class="field is-error">
+        <div class="box"><span class="prefix" aria-hidden="true">GBP</span><input type="text" value="abc" aria-invalid="true" aria-label="Error example" aria-describedby="g-err" tabindex="-1"><button type="button" class="tail-btn" tabindex="-1" aria-label="Choose date"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></button></div>
+        <div class="err-msg"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-error"/></svg></span><p id="g-err">Enter a valid amount.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- large size -->
+  <h2 class="sec" style="margin-top:2.75rem;">Size — large</h2>
+  <div class="field">
+    <div class="lbl"><label for="b3">Amount (large)</label></div>
+    <div class="box lg">
+      <span class="prefix" aria-hidden="true">GBP</span>
+      <input id="b3" type="text" inputmode="decimal" placeholder="Placeholder" aria-label="Large amount">
+    </div>
+  </div>
+
+  <!-- ================= UNDERLINE ================= -->
+  <h2 class="sec">Underline field (second style)</h2>
+  <p class="note">The prior canon — a bottom-stroke field, no box. Kept as a second style. Keyboard focus grows a thick stroke
+    in the field's own colour plus the accessible ring.</p>
+  <div class="uline" style="max-width:380px;">
+    <div class="ufield">
+      <label for="u1">Email address</label>
+      <div class="uctrl"><input id="u1" type="email" placeholder="name@example.com" aria-describedby="u1h"></div>
+      <p class="uhelp" id="u1h">We'll only use this to contact you.</p>
+    </div>
+    <div class="ufield is-ok">
+      <label for="u2">Email address</label>
+      <div class="uctrl"><input id="u2" type="email" value="jordan.lee@hsbc.com" aria-describedby="u2h">
+        <span class="uic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-success"/></svg></span></div>
+      <p class="uhelp" id="u2h">Looks good.</p>
+    </div>
+    <div class="ufield is-error">
+      <label for="u3">Email address</label>
+      <div class="uctrl"><input id="u3" type="email" value="not-an-email" aria-invalid="true" aria-describedby="u3h"></div>
+      <p class="uhelp" id="u3h">Enter a valid email address.</p>
+    </div>
+    <div class="ufield is-disabled">
+      <label for="u4">Email address</label>
+      <div class="uctrl"><input id="u4" type="email" placeholder="name@example.com" disabled aria-describedby="u4h"></div>
+      <p class="uhelp" id="u4h">This field is unavailable.</p>
+    </div>
+  </div></div>
+</section>
+<section class="g-item">
+  <h2 class="g-name">Notifications</h2>
+  <div class="cn-notifications"><div class="nwrap" id="nwrap">
+
+    <h2>Contextual</h2>
+    <div class="note tint err" role="alert"><span class="ic"><svg aria-hidden="true"><use href="#ic-error"/></svg></span><span class="main"><strong>Notification title.</strong> Message description. <a href="#">Link style</a></span><button class="x" aria-label="Dismiss notification"><svg aria-hidden="true"><use href="#ic-close"/></svg></button></div>
+    <div class="note tint warn" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-warning"/></svg></span><span class="main"><strong>Notification title.</strong> Message description. <a href="#">Link style</a></span><button class="x" aria-label="Dismiss notification"><svg aria-hidden="true"><use href="#ic-close"/></svg></button></div>
+    <div class="note tint ok" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-success"/></svg></span><span class="main"><strong>Notification title.</strong> Message description. <a href="#">Link style</a></span><button class="x" aria-label="Dismiss notification"><svg aria-hidden="true"><use href="#ic-close"/></svg></button></div>
+    <div class="note tint info" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-info"/></svg></span><span class="main"><strong>Notification title.</strong> Message description. <a href="#">Link style</a></span><button class="x" aria-label="Dismiss notification"><svg aria-hidden="true"><use href="#ic-close"/></svg></button></div>
+
+    <h2>Contextual — form multi-link</h2>
+    <div class="note tint err" role="alert"><span class="ic"><svg aria-hidden="true"><use href="#ic-error"/></svg></span><span class="main mlinks"><strong>Notification title.</strong>
+      <span><a href="#">Link style.</a> Message description.</span>
+      <span><a href="#">Link style.</a> Message description.</span>
+      <span><a href="#">Link style.</a> Message description.</span></span><button class="x" aria-label="Dismiss notification"><svg aria-hidden="true"><use href="#ic-close"/></svg></button></div>
+
+    <h2>Global — message only (no actions, no close)</h2>
+    <div class="note global info" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-info"/></svg></span><span class="main"><strong>Notification title.</strong><span class="g-desc">Message description. <a href="#">Link style</a></span></span></div>
+
+    <h2>Global — close only</h2>
+    <div class="note global warn" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-warning"/></svg></span><span class="main"><strong>Notification title.</strong><span class="g-desc">Message description. <a href="#">Link style</a></span></span><button class="x" aria-label="Dismiss notification"><svg aria-hidden="true"><use href="#ic-close"/></svg></button></div>
+
+    <h2>Global — actions only</h2>
+    <div class="note global err" role="alert"><span class="ic"><svg aria-hidden="true"><use href="#ic-error"/></svg></span><span class="main"><strong>Notification title.</strong><span class="g-desc">Message description. <a href="#">Link style</a></span><span class="actions"><button type="button">Action 1</button><button type="button">Action 2</button></span></span></div>
+
+    <h2>Inline</h2>
+    <span class="inline err"><span class="ic"><svg aria-hidden="true"><use href="#ic-error"/></svg></span>Message to appear here</span>
+    <span class="inline warn"><span class="ic"><svg aria-hidden="true"><use href="#ic-warning"/></svg></span>Message to appear here</span>
+    <span class="inline ok"><span class="ic"><svg aria-hidden="true"><use href="#ic-success"/></svg></span>Message to appear here</span>
+    <span class="inline info"><span class="ic"><svg aria-hidden="true"><use href="#ic-info"/></svg></span>Message to appear here</span>
+
+    <h2>Snackbar (no error variant)</h2>
+    <div class="note tint snack warn" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-warning"/></svg></span><span class="main">Message description.</span></div>
+    <div class="note tint snack ok" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-success"/></svg></span><span class="main">Message description.</span></div>
+    <div class="note tint snack info" role="status"><span class="ic"><svg aria-hidden="true"><use href="#ic-info"/></svg></span><span class="main">Message description.</span></div>
+
+  </div></div>
+</section>
+<section class="g-item">
+  <h2 class="g-name">Status-indicator</h2>
+  <div class="cn-status-indicator"><!-- ===== A. Inline dot + label (label carries meaning — 1.4.1) ===== -->
+  <div class="wrap">
+    <h2>Inline — dot + label</h2>
+    <div class="stat ok"><span class="dot" aria-hidden="true"></span><span>Approved</span></div>
+    <div class="stat warn"><span class="dot" aria-hidden="true"></span><span>Pending review</span></div>
+    <div class="stat err"><span class="dot" aria-hidden="true"></span><span>Declined</span></div>
+    <div class="stat inf"><span class="dot" aria-hidden="true"></span><span>In progress</span></div>
+    <div class="stat neu"><span class="dot" aria-hidden="true"></span><span>Cancelled</span></div>
+    <div class="stat ok is-disabled"><span class="dot" aria-hidden="true"></span><span>Approved (disabled)</span></div>
+  </div>
+
+  <!-- ===== B. Tint chip (square; robust for prominent/standalone use) — same atom as List-items status ===== -->
+  <div class="wrap">
+    <h2>Tint chip — square, fully AA</h2>
+    <div class="chips">
+      <span class="chip ok"><span class="dot" aria-hidden="true"></span>Approved</span>
+      <span class="chip warn"><span class="dot" aria-hidden="true"></span>Pending review</span>
+      <span class="chip err"><span class="dot" aria-hidden="true"></span>Declined</span>
+      <span class="chip inf"><span class="dot" aria-hidden="true"></span>In progress</span>
+      <span class="stat neu" style="margin:0"><span class="dot" aria-hidden="true"></span><span>Cancelled (no chip — rag/neutral-tint gap)</span></span>
+    </div>
+  </div>
+
+  <!-- ===== C. Live announced status change (4.1.3 — the component's actual job) ===== -->
+  <div class="wrap">
+    <h2>Live update — announced to AT</h2>
+    <div class="live">
+      <span class="now ok" id="now" role="status" aria-live="polite"><span class="dot" aria-hidden="true"></span><span id="nowLabel">Approved</span></span>
+      <button class="sim" id="sim" type="button">Simulate update</button>
+    </div>
+  </div></div>
+</section>
+</div>
+
+<h2 class="sec">4 · New on the desk — dark error red fails at rest</h2>
+<p class="note">Found while verifying the sweep’s Selection-controls catch: the reported “light hover 4.02:1”
+was the gate clicking each snippet’s own theme toggle mid-pass (pressed = a real click; the toggle is the
+first button in document order), so each pass measured the other theme. Fixed — demo chrome is no longer
+driven, theme re-asserted per element; the 38-snippet re-sweep now shows the true picture: light is clean
+(#A8000B on white = 7.87), but in dark, error text #DB0011 on #000000 = 4.02:1 <b>at rest</b> — label and
+message, every snippet that shows dark error text. As a graphic (border, mark) 4.02 ≥ 3:1 is fine — only
+text needs to move. No published red sits above #DB0011, so this is the same charter-§6 derivation call as
+the blue (ladder at hue 355° / sat 100%):</p>
+<table><thead><tr><th>candidate</th><th>#000000<small>page</small></th><th>#260005<small>error tint</small></th><th>#1D1D1D<small>surface</small></th></tr></thead><tbody><tr><th><span class="sw" style="background:#DB0011"></span>#DB0011<small>current (rag/error dark = color/primary)</small></th><td class="bad">4.02</td><td class="bad">3.71</td><td class="bad">3.23</td></tr><tr><th><span class="sw" style="background:#FF3343"></span>#FF3343<small>ladder L60 — lightest that clears surface greys</small></th><td class="ok">5.81</td><td class="ok">5.35</td><td class="ok">4.66</td></tr><tr><th><span class="sw" style="background:#FF3D4C"></span>#FF3D4C<small>recommended L62 — clears form-hover too</small></th><td class="ok">6.02</td><td class="ok">5.55</td><td class="ok">4.84</td></tr><tr><th><span class="sw" style="background:#FF4D5A"></span>#FF4D5A<small>L65 — also ≥3:1 as graphic on #404040</small></th><td class="ok">6.46</td><td class="ok">5.96</td><td class="ok">5.19</td></tr></tbody></table>
+<p class="note">Threshold 4.5:1 (text). Graphics — the error border, the roundel — can stay #DB0011.</p>
+<div class="errgrid">
+
+<div class="canon errcol" data-theme="dark" style="--rag-error:#DB0011">
+  <p class="collab">#DB0011</p>
+  <div class="canon-scope cn-selection-controls">
+    <div class="field is-error"><input type="checkbox" id="e-DB0011" aria-invalid="true"><label for="e-DB0011"><span class="box"><svg viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></span> Accept terms and conditions</label></div>
+    <p class="err-msg">⚠ You must accept the terms to continue</p>
+  </div>
+</div>
+
+<div class="canon errcol" data-theme="dark" style="--rag-error:#FF3343">
+  <p class="collab">#FF3343</p>
+  <div class="canon-scope cn-selection-controls">
+    <div class="field is-error"><input type="checkbox" id="e-FF3343" aria-invalid="true"><label for="e-FF3343"><span class="box"><svg viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></span> Accept terms and conditions</label></div>
+    <p class="err-msg">⚠ You must accept the terms to continue</p>
+  </div>
+</div>
+
+<div class="canon errcol" data-theme="dark" style="--rag-error:#FF3D4C">
+  <p class="collab">#FF3D4C</p>
+  <div class="canon-scope cn-selection-controls">
+    <div class="field is-error"><input type="checkbox" id="e-FF3D4C" aria-invalid="true"><label for="e-FF3D4C"><span class="box"><svg viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></span> Accept terms and conditions</label></div>
+    <p class="err-msg">⚠ You must accept the terms to continue</p>
+  </div>
+</div>
+
+<div class="canon errcol" data-theme="dark" style="--rag-error:#FF4D5A">
+  <p class="collab">#FF4D5A</p>
+  <div class="canon-scope cn-selection-controls">
+    <div class="field is-error"><input type="checkbox" id="e-FF4D5A" aria-invalid="true"><label for="e-FF4D5A"><span class="box"><svg viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></span> Accept terms and conditions</label></div>
+    <p class="err-msg">⚠ You must accept the terms to continue</p>
+  </div>
+</div>
+</div>
+<p class="note">Same row, live, at rest — no interaction needed. (Wording here already uses the copy-022
+“terms and conditions” fix the row is due; the snippet still carries the ampersand.)</p>
+
+<h2 class="sec">5 · On your say-so</h2>
+<ol class="asks">
+<li><b>Blue/400 replacement</b> — #719ECC (recommended) or #6293C6. Enactment: colour.json value + de-leak
+annotation, 24 snippet manifests (inspected, not blind-sed), notifications/tabs meta, canon regen, full gate
+sweep.</li>
+<li><b>Dark error text</b> — derive (recommendation #FF3D4C) or keep #DB0011 and route dark error text to
+white-with-red-mark like the roundel policy. Blast radius smaller: snippets whose dark theme block carries
+--error, plus rag/error token note (graphics keep #DB0011 either way).</li>
+<li><b>Gate fix + re-sweep</b> — already applied and re-run (36/38 clean; View-options fails are the docketed
+z-layer artifact, bug #1). Ready to commit with a bite-test on your nod.</li>
+</ol>
+</div>
+<script>
+(function(){
+  document.querySelectorAll('.bar button').forEach(function(b){
+    b.addEventListener('click', function(){
+      document.documentElement.setAttribute('data-cand', b.getAttribute('data-c'));
+      document.querySelectorAll('.bar button').forEach(function(x){ x.setAttribute('aria-pressed', String(x===b)); });
+    });
+  });
+  document.getElementById('floodRings').addEventListener('change', function(e){
+    document.body.classList.toggle('show-rings', e.target.checked);
+  });
+})();
+</script>
+</body>
+</html>
