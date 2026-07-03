@@ -94,6 +94,42 @@ don't force-fit" rule applies at generation time.
 - td-003 — guide frames are `component` type (publishable), not annexed docs: they
   travel with the library. Useful: our review pass can screenshot them directly.
 
+## Page census (2026-07-03 eve — supersedes the search sample above)
+
+Full page enumeration via the desktop bridge (`use_figma`, read-only), file
+`mI8hvIkV98nquoqWzKh5Kn`: **Cover · How to use the toolkit · FOUNDATIONS ×11**
+(Breakpoints/grids/scales · Font scales+tokens · Spacing scale+tokens · Colour
+tokens · Dark mode · Image · Icons · Elevation · Logos · Hexagon masks) ·
+**ELEMENTS & PATTERNS ×40** (Accordions · App tiles · Badge · Avatar · Breadcrumbs ·
+Buttons · Cards · Carousels · Contextual help · Countdown timer · Cookie
+notification · Divider · Dropdowns · Favicon · Forms · Headers · Hero · Input
+fields · Links · List items · Loading indicator · Modals · Navigations ·
+Notifications · Pagination (web only) · Progress tracker · Quick actions (app
+only) · Reorder · Search field · Selection controls · Slider · Status indicator ·
+Table · Tabs · Tags · Time-based indicators · Tooltip · Video player · View
+controls · View option) · **ANIMATIONS ×2** (Mixed elements WIP · Navigation
+animations). The FOUNDATIONS pages are the "lots of guidelines" Dave flagged —
+they mirror the create.hsbc foundations tree and need their own tranche.
+
+More hygiene deltas: **td-004** page-name typo "Condextual help" · stray paren in
+"App tiles (" · **td-005** lorem-ipsum stubs inside shipped guideline frames
+(Links Standard frame, found at distillation). GOTCHAS: remote `get_metadata`
+lists only the Cover page for this file (lazy loading) — use the desktop bridge
+for enumeration; the bridge intermittently drops large text extractions
+(ERR_HTTP2_PROTOCOL_ERROR) — fall back to `get_screenshot` per guide frame.
+
+## Tranche 1 status
+
+- ✅ **Links family DISTILLED 2026-07-03** → `guidelines/common-toolkit-links.md`
+  (ctkl-001…023). Headlines: 44-target receipted at component level WITH the
+  inline exception verbatim (ctkl-016 → aid-009 F1) · CA-6 external-link build
+  spec sourced (ctkl-011) · arrow-sizing numerics (ctkl-007) · canon vocabulary
+  gaps: back/expander/anchor/add-remove/download-microcopy · canon exceeds on
+  focus (keep, record). NOTE: Tag link + bare `Link` set + Expander guide live on
+  OTHER pages — pick up at their families' passes.
+- ☐ Notification family (Q1 ruled: adopt 4-way split) · ☐ Tags/Chips · ☐ Button
+  ranks · then tranche 2/3 below.
+
 ## Queue — the rigorous pass (per-family, guide frame first)
 
 Method per family: `get_screenshot` the `00 … guide` → distill rules (IDs `ctk-…`,
@@ -116,11 +152,15 @@ Tranche 3: Headers ×3 + Masthead + Hero ×4 (the deferred revisit pile, now wit
 toolkit receipts) · Carousel (new class) · status micro-sets (needs guide frames to
 name them properly).
 
-## Open questions for Dave
+## Open questions — RULED 2026-07-03 (Dave)
 
-1. Notification/Dropdown taxonomy: reconcile canon to the toolkit's 4-way splits,
-   or keep canon's consolidated components with variant coverage? (Affects criteria
-   contracts and the compose layer.)
-2. Platform-variant policy: canon is web-first; do iOS/Android loading indicators
-   and iOS Nav Bar enter the knowledge base as RECORDED (out-of-scope) or queued?
-3. Carousel: admit as a new component class (gap-pattern pipeline) or hold?
+1. **Q1 RULED: adopt the 4-way split.** The toolkit is the certified source; canon
+   Notifications becomes global/inline/contextual/snackbar (variants or
+   sub-components — shape decided at its next ★ touch); criteria contracts per
+   taxon. Same logic will be tested against Dropdown ×4 at its tranche-2 pass.
+2. **Q2 RULED: RECORDED, out-of-scope.** Canon is web-first; iOS/Android loading
+   indicators + iOS Nav Bar logged with destiny RECORDED, revisit if an app project
+   lands (kin of appf-008 — the Common Toolkit access decision covers app too).
+3. **Q3 RULED: Carousel queued via the gap-pattern pipeline.** Not built
+   speculatively — enters when a screen demands it; aid-010 (ID-16 swipe rules)
+   binds it on arrival. Added to `_COMPONENT-GAPS.md` queue.
