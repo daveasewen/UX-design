@@ -54,12 +54,23 @@ and a per-family queue now live in `knowledge/_COMMON-TOOLKIT-SURVEY.md`.
   NEW: standalone rem-refactor task (acd-009 ruling) · skip-link gap-fix at the
   composition touch.
 
+## Late addendum (same day, post-briefing)
+
+Session continued: the 3 survey questions RULED (Q1 adopt 4-way split · Q2
+platform=RECORDED · Q3 Carousel via gap-pattern queue) and **tranche 1 Links family
+DISTILLED** (`guidelines/common-toolkit-links.md`, ctkl-001…023, register 404,
+commit `54ed528`). Full page census landed too — 55 pages incl. FOUNDATIONS ×11
+(your "lots of guidelines") + 40 component families; census + gotchas (remote
+metadata lists only Cover; bridge drops big extractions → screenshot fallback) in
+the survey doc. Headlines: 44-target receipted WITH the inline exception verbatim ·
+CA-6 external-link build spec sourced · arrow numerics · back/expander/anchor/
+add-remove = canon vocabulary gaps.
+
 ## Queue next
 
-1. **Toolkit tranche 1** (Fable-worthy, aligns with the ★ program): Links family →
-   Notification family (carries Q1) → Tags/Chips → Button ranks. Method in the
-   survey doc: guide frame screenshot → distill (`ctk-…` IDs) → design context on
-   OL+OD pairs → delta vs canon meta.
+1. **Toolkit tranche 1 continues** (Fable-worthy): Notification family (Q1 ruled) →
+   Tags/Chips → Button ranks. Then FOUNDATIONS pages tranche. Method proven on
+   Links: bridge for structure/text, screenshots per guide when it drops.
 2. **Channels ingestion** (cheap-model session, post-reset): presentations ·
    doc-a11y/pdf · email · web+app design-toolkits (also unblocks the toolkit
    enumeration skeleton) · sharepoint · scenario-4. Capture recipe: DOM-split for
