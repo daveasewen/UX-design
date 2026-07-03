@@ -152,7 +152,25 @@ Status: ☐ queued · ◐ partial · ✅ ingested · ✖ skipped (reason)
     the institutional argument for the certified-component model; audit→fix→RETEST +
     named risk acceptance mirrors the known-signature discipline (F2).
 
+### Done (continued)
+16. ✅ `processes-and-tools/accessibility/digital-accessibility-framework.html` +
+    `testing-and-auditing.html` + `qa-checklists.html` → `accessibility-framework.md`
+    (axf-001…012, 2026-07-03). **axf-001 [REVIEW]: source bar is WCAG 2.2 AA, our audit
+    baseline is 2.1 AA + partial 2.2 — gate re-baseline for Dave to rule.** Site nav
+    RESTRUCTURED: old `/accessibility/…` paths 404; live tree is
+    `/processes-and-tools/accessibility/…` (queue paths corrected). DISCOVERED: 9
+    role-specific framework pages (information architects · interaction designers ·
+    visual designers · client-side developers · content authors · QA/CX testers ·
+    project/product/procurement managers — the rule-dense payload) · training · 4 WCAG
+    2.2 checklist PDFs (staff downloads) ·
+    `platforms-and-channels/Accessibility_Standards.html`.
+
 ### Queued
+**Accessibility framework role pages ×9** (paths under
+`/processes-and-tools/accessibility/digital-accessibility-framework/accessibility-for-*.html`
+— captured hub 2026-07-03; ingest priority: visual-designers · interaction-designers ·
+content-authors · client-side-developers first) ·
+`platforms-and-channels/Accessibility_Standards.html` ·
 The **Common Toolkit** — RULED 2026-07-03 (Dave): his "Gaps and edits" branch
 `Cgbtrmfp15ruNFkIAClpkI` is faithful → USE IT as the source (prior use was ad hoc, this
 pass is rigorous). Library index = "HSBC Common Toolkit (MCP)" via `search_design_system`
