@@ -117,6 +117,17 @@ don't force-fit" rule applies at generation time.
 - td-013 — `primary Large` set is UNDOCUMENTED (no guide/standard mention), has no
   disabled state, and uses a Capitalised state register (Default/Hover/Pressed) vs
   its lowercase siblings.
+- td-014 — the Breakpoints page flags its OWN divergence: "breakpoints follow the
+  Common Toolkit, but scale have applied differently compared to Common Toolkit"
+  (sic) — a toolkit page declaring it applies scales differently from the toolkit
+  it ships in. (Also: Icons guide "18x8px grid" = suspected 18x18 typo.)
+- td-015 — the "Colour tokens semantic" frame is swatch-only (ZERO text nodes) —
+  not text-capturable; native variable export remains the only machine-readable
+  source for semantic tokens. ("Colours components" frame carries CSS-var debris.)
+- td-002 EXTENSION (cleanest exhibit) — the Icons page ships a CHANGE LOG with
+  monthly updates through 2026-04-08 (ai · clickToPay · mastheadHide/Show ·
+  sidePanel ×4 · addAlert · socialX rename …) while every guide reads
+  "0.0.0 | May 2023": living library, frozen guides.
 
 ## Page census (2026-07-03 eve — supersedes the search sample above)
 
@@ -200,8 +211,27 @@ often unnecessary).
   variables surfaced (td-013).
 
 **TRANCHE 1 COMPONENT FAMILIES COMPLETE** (Links · Notifications · Tags+Chips ·
-Buttons; register 389 → 458 across the tranche). Next: FOUNDATIONS pages tranche
-(×11), then tranche 2/3 below.
+Buttons; register 389 → 458 across the tranche).
+
+- ✅ **FOUNDATIONS delta pass DONE 2026-07-03** →
+  `guidelines/common-toolkit-foundations.md` (ctkf-001…014, register 462 —
+  deliberately light: TRIAGE FOUND THE TRANCHE ALREADY ⅔-INGESTED via the
+  06-17 Figma batch (dark-mode/elevation/logos/hexagons/icons) + 07-02
+  create.hsbc ingests (web/app foundations, typography). New: masthead/footer
+  fluid-XL grid variant + masthead-FLYOUT 4-column grid (Headers/Nav input) +
+  email 6-column grid (RECORDED) + type-tier clauses (12px=legal-only,
+  medium-weight-paragraph ban) + TWO dark-mode clauses the 06-17 summary
+  dropped (light-bleed compensation · extra negative space) — capture-loss
+  check works, consider re-grepping the other 06-17 files. Receipts: web
+  breakpoint table · font matrix px+em · spacing ramp (+2/+4/+8, cross-receipts
+  Notification 9/11px pads) · elevation level table (0 base / 1 sticky /
+  2 modality / 3 notifications — receipts ctkn-011) · ds-001 now SOURCE-complete
+  (no dark solid RAG accents exist in the brand collection) · icons change log
+  (td-002's cleanest exhibit). td-014/015 logged.
+
+**TRANCHE 1 FULLY COMPLETE** (4 component families + FOUNDATIONS; register
+389 → 462). Next: tranche 2 (Dropdown ×4 · Input Field + Date picker ·
+Progress/Loading · Table header configs), then tranche 3.
 
 ## Queue — the rigorous pass (per-family, guide frame first)
 
