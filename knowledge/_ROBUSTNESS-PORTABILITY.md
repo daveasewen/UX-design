@@ -35,6 +35,30 @@ The product must OWN this stage:
 
 Every row is a place a real user would get stuck, blame the tool, and leave.
 
+## Render path REVIVED in-sandbox (2026-07-03) — the working recipe
+
+The chromium-launch papercut is fixed for THIS sandbox generation; recipe recorded
+so no session re-diagnoses it:
+
+1. `npx playwright install chromium --only-shell` (downloads fine; host-requirement
+   VALIDATION fails, the download itself succeeds).
+2. Exactly ONE system lib is missing (aarch64 Ubuntu 22 sandbox): `libXdamage.so.1`.
+   No root, sudo broken → user-space fix: `apt-get download libxdamage1` (works
+   rootless), `dpkg-deb -x`, copy `libXdamage.so.1*` to
+   `~/.local/chromelibs/`.
+3. Run everything with BOTH:
+   `LD_LIBRARY_PATH=~/.local/chromelibs` and
+   `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=1`.
+4. Python side: `pip install playwright==1.61.0 --break-system-packages` happily
+   drives the node-installed `chromium_headless_shell-1228`.
+5. Gotcha: `/tmp` is PER-CALL in this sandbox (each bash call gets a fresh mount) —
+   background-job logs must go to the workspace mount, not /tmp. Processes DO
+   persist across calls; poll with pgrep.
+
+First fruit: `_validate_state_contrast.py` ran for real (full 38-snippet sweep,
+2026-07-03). Product lesson unchanged: this is exactly the plumbing the tool must
+own — four manual steps and two env vars a user would never survive.
+
 ## Broader: environment fragility is the enemy
 
 This is bigger than rendering. Across the project the fragile bits have all been *environmental*, not conceptual: the renderer, the server, git locks, the font, the sandbox itself. The governance model (curbs, retrieval, registers) is sound — it's the ground it runs on that shifts. **A portable product has to make the ground solid and invisible**, or people bounce off the plumbing before they ever feel the governance working.

@@ -140,9 +140,12 @@ source receipt (F1) — the biggest single finding of this tranche.
   (2.61) + #474747 (2.33). Both candidates accent-only (fills keep blue/600 + white
   via the existing driftAllow). BLAST RADIUS: 24 snippet manifests + notifications/
   tabs meta (inspect, don't blind-sed — hex may sit in historical findings) +
-  canon.css regenerates. [REVIEW — HELD for a render session: focus rings across 24
-  components need eyes before the value moves; candidates + numbers ready]
-  {#col25-018}
+  canon.css regenerates. Surface note: #474747 is retired as dark tertiary-hover
+  (→#212121, 2026-06-22) but STILL binds form/background/pressed, tabs/hover and
+  two tab borders in dark — all real focus-ring adjacencies, so the #474747 column
+  counts and #719ECC stays the recommendation. [REVIEW — HELD for a render session:
+  focus rings across 24 components need eyes before the value moves; candidates +
+  numbers ready] {#col25-018}
 
 ## Pointers (recorded)
 
