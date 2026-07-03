@@ -136,19 +136,40 @@ Status: ☐ queued · ◐ partial · ✅ ingested · ✖ skipped (reason)
     relationships · Brand Effect Model · visualising-climate-ambitions.
 
 ## Tier 2 — processes + digital guidance (after T1, per-tranche decision)
-`accessibility/communication/…scenario-4-digital-content` (exact URL TBD — hub captured
-2026-07-02; likely WCAG/neuro overlap, low priority) · the **Common Toolkit** (webf-017
-PROBED 2026-07-03: create.hsbc links to Figma `HSBC-Common-Library` — MCP needs per-file
-EDIT access (denied); the "Gaps and edits" branch `Cgbtrmfp15ruNFkIAClpkI` remains fully
-MCP-reachable (re-verified). Dave to check: Common-Library = republish of his branch, or
-new content → request editor access. Home of element/pattern standards incl. forms, web
-AND app) ·
-`processes-and-tools/Design-Standards.html` · `Component-Libraries.html` · `Toolkits.html` ·
+
+### Done
+13. ✅ `processes-and-tools/Design-Standards.html` + `Toolkits.html` +
+    `Component-Libraries.html` → `design-system-processes.md` (dsp-001…013, 2026-07-03).
+    The three-layer model = our architecture, named by the source (F1); provenance
+    retention is upstream policy (F2). DISCOVERED (→ below): standards anatomy/process ·
+    toolkit anatomy/process.
+14. ✅ `processes-and-tools/Naming.html` → `naming.md` (nam-001…018, 2026-07-03). Two
+    cost-0 sweep candidates: nam-001 possessive `HSBC's`+name, nam-002 all-caps names
+    (advisory-first, Dave may straight-to-block). Key documents are staff-only — source
+    boundary. DISCOVERED: Naming a chatbot · WeChat Standards · social media standards.
+15. ✅ `processes-and-tools/Digital_Governance.html` → `digital-governance.md`
+    (gdea-001…008, 2026-07-03). gdea-003: certified reuse is EXEMPT from re-approval —
+    the institutional argument for the certified-component model; audit→fix→RETEST +
+    named risk acceptance mirrors the known-signature discipline (F2).
+
+### Queued
+The **Common Toolkit** — RULED 2026-07-03 (Dave): his "Gaps and edits" branch
+`Cgbtrmfp15ruNFkIAClpkI` is faithful → USE IT as the source (prior use was ad hoc, this
+pass is rigorous). Library index = "HSBC Common Toolkit (MCP)" via `search_design_system`
+(component sets in On Light/On Dark pairs, guide frames `00 …`, semantic-color variables
+incl. `(depricate)` families); branch file metadata exposes only a Cover page, so survey
+via library search + the create.hsbc toolkit pages as enumeration skeleton. NOTE: an
+earlier session left a probe-results text node on the branch Cover — Dave to delete. ·
 `accessibility/digital-accessibility-framework.html` · `accessibility/testing-and-auditing.html` ·
-`accessibility/creating-accessible-content.html` · `Naming.html` · `Digital_Governance.html` ·
+`accessibility/creating-accessible-content.html` ·
 `platforms-and-channels/presentations.html` + `introduction-to-document-accessibility.html` +
 `accessible-pdf-requirements.html` · `email.html` · `web/design-toolkits.html` ·
-`app/design-toolkits.html` · `web/sharepoint-accessibility-guidelines.html`
+`app/design-toolkits.html` · `web/sharepoint-accessibility-guidelines.html` ·
+`accessibility/communication/…scenario-4-digital-content` (exact URL TBD — hub captured
+2026-07-02; likely WCAG/neuro overlap, low priority) ·
+DISCOVERED 2026-07-03: Design Standards anatomy · Design Standards process · Design
+Toolkit anatomy · Design Toolkit process · Naming a chatbot · WeChat Standards · social
+media standards (hashtag approval).
 
 ## Tier 3 — channels + articles (flex-shaping context; ingest on demand)
 ATM/touchscreens · metaverse-VR a11y · conversational banking · branches · cards · events ·

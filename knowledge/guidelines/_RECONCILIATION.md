@@ -25,7 +25,6 @@ Dave rules.*
 ## colour-usage.md
 
 - **col25-008** — No black-and-white photography (2025 Do/Don't). The 2026 photography standard (`brand-refresh-assets.md`) is silent on this. RULED interim by Dave 2026-07-03: the ban CARRIES — a live standard states it, the other is merely silent; silence ≠ withdrawal. Low stakes for the engine (photos are retrieved, never made).
-- **col25-018** — THE BLUE RECEIPT: `color/blue/400` (#4587A7) is `illustration/blue-5`, verbatim — the suspected illustration-palette leak is now receipted at value level. The 2025 standard publishes exactly ONE UI blue: RAG Blue #305A85 (= `color/blue/600`, sitting at /600 like its RAG siblings red/amber/green). `focus/ring` (dark) and dark `rag/information` alias blue/400 — i.e. they rest on an illustration colour that was never a published UI value and fails contrast in the dark combinations (the dark-RAG int
 
 ## generative-ai-brand.md
 
@@ -80,4 +79,4 @@ Dave rules.*
 - **webf-033** — font-1..4 sizes are TScale-mode-dependent — check the export carries them. `typography.json` has fixed sizes only for font-5..7 (correct — S5–S7 are invariant); font-1..4 sizes/leading must vary by scale mode. If the semantic-scale export didn't carry per-mode type values, large-type generation at scale-2/3 is running on a gap.
 - **webf-034** — Responsive spacing values (R units) are a source gap. `spacing.json` is fixed-only; the RScale VALUES per breakpoint aren't in the store or on this page (likely toolkit- internal). Generation currently has no responsive-spacing dimension.
 
-_34 open item(s)._
+_33 open item(s)._
