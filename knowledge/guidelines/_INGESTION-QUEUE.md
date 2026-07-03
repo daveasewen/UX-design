@@ -236,6 +236,9 @@ pass is rigorous). Library index = "HSBC Common Toolkit (MCP)" via `search_desig
 incl. `(depricate)` families); branch file metadata exposes only a Cover page, so survey
 via library search + the create.hsbc toolkit pages as enumeration skeleton. NOTE: an
 earlier session left a probe-results text node on the branch Cover — Dave to delete. ·
+**The named create.hsbc standards the toolkit guides defer to** (banner · snackbar · pills ·
+tags · buttons — named during toolkit tranche 1, 2026-07-03; the BUTTONS standard is the
+third source that feeds the open ctkb-015 ruling; exact URLs via the toolkits skeleton) ·
 `platforms-and-channels/presentations.html` + `introduction-to-document-accessibility.html` +
 `accessible-pdf-requirements.html` · `email.html` · `web/design-toolkits.html` ·
 `app/design-toolkits.html` · `web/sharepoint-accessibility-guidelines.html` ·
