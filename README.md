@@ -15,7 +15,7 @@ four kinds of asset:
   `knowledge/_FIXED-FLEX-CHARTER.md` (what is fixed, what may flex, and the
   register dial).
 - **Gates** — `knowledge/_validate_*.py` orchestrated by `knowledge/_build_all.py`:
-  a 15-step build in which a11y, contrast, token fidelity, icon provenance,
+  an 18-step build in which a11y, contrast, token fidelity, icon provenance,
   coverage and integrity are **blocking**. Verification = enforcement.
 - **Runbooks** — `knowledge/_RUNBOOK-*.md`: the method written down, so a
   cold-start agent can operate the engine without this chat's history.
@@ -33,15 +33,16 @@ brief → **criteria contract** (the definition of done, written first — it *b
 the gates) → retrieve + generate **N variants** across registers (sober → balanced →
 expressive) → **blocking gates** filter (kill the broken) → **advisory signals**
 annotate (heuristics, CX, states) → **render + visual QA** → one **human taste
-call** (~20 seconds) → winner **promoted to canon** — judgment spent once,
+call** (a brief human decision) → winner **promoted to canon** — judgment spent once,
 retrieved forever.
 
 ## Status
 
-Engine built and green (15/15 build steps). Next milestone: the **calibration
-proof** — re-run a completed HSBC project from its original brief, blind, and
-compare the engine's output with what actually shipped. Canon/component work is
-scoped by that project's journey, not by completeness.
+Engine built and green (18/18 build steps). Next milestone: the **first real test**
+— a scoped novel-work screen with an external stakeholder (a colleague, not us), the
+engine bounded to generate → enforce → compose → register → promote; the **calibration
+re-run** (a completed project, blind, compared with what shipped) stays as the rigour
+backstop. Canon/component work is scoped by that project's journey, not by completeness.
 
 The standing critical review and its eight decisions:
 `REVIEW-2026-07-02-critical-regroup.html`.
@@ -76,8 +77,10 @@ failure. This is the single command to trust the knowledge base.
 └── archive/harness-v0.1/        ← the original harness design (ADR-0005)
 ```
 
-## Data hygiene (two-machine rule)
+## Data hygiene
 
-Home machine: synthetic + public data. Agency machine: real assets. Raw Figma
-exports under `knowledge/tokens/_raw/` are untracked as of ADR-0005; see that
-ADR's open item on token-store provenance before adding any real asset here.
+Resolved (ADR-0005): this is an **agency machine with company access** — the
+"home = synthetic only" premise was wrong; real brand values (tokens, palettes,
+Figma exports) are cleared to live here. Raw exports under `knowledge/tokens/_raw/`
+stay untracked (keeps the repo lean); git *history* still holds earlier raw exports —
+purge deferred by ruling (accepted risk while the repo is private).
