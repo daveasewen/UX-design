@@ -20,13 +20,15 @@ A **governed design-system engine**: canon (tokens + gated components) + criteri
 2. **Retrieval, not recall.** Brand primitives (colour, type, spacing, motion) are
    retrieved from `knowledge/tokens/` and `canon.css`. Never type brand values from
    memory. Never invent a hex, an icon, or a component that retrieval can supply.
+   Register is the *level of inference* (charter §9); the cardinal curbs hold at every
+   band — retrieved, never recalled.
 3. **Craft is scored; taste is judged.** Gates and signals compute the evidence;
-   the human makes the taste call — packaged small (a ~20-second decision), never
-   delegated to a model.
-4. **Convergent and divergent stay separate.** Gate canon; never gate exploration.
+   the human makes the taste call — packaged small (a brief human decision, not a
+   review), never delegated to a model.
+4. **Convergent and divergent stay separate.** Gate canon; never gate exploration beyond the cardinal floor (§9) — the road is free, the cardinals always hold.
    Tiers: T1 canon (all retrieved, compose-gate green) · T2 candidate (fixed
-   retrieved + derived candidates, flagged for promotion) · T3 exploration (no
-   gate — a signal, not a deliverable).
+   retrieved + derived candidates, flagged for promotion) · T3 expressive — max
+   inference within the cardinal curbs (retrieved), divergence-probed (charter §8/§9).
 5. **Checks are tiered.** Few blocking objective gates; many cheap advisory
    signals; a small set of human taste calls. New checks (CX, heuristics, content)
    enter at the **advisory** tier and earn promotion by being bite-tested.
@@ -41,8 +43,9 @@ A **governed design-system engine**: canon (tokens + gated components) + criteri
 
 ## How to work
 
-- Start at `knowledge/_NEXT-SESSION.md` (or the handoff doc the session names),
-  then `knowledge/README.md` for the build.
+- Start at the **latest handoff** the most recent session named (e.g. `GOOD-MORNING.md`),
+  then `knowledge/README.md` for the build. Keep this entry point current — it is the
+  first thing every cold-start agent reads; if it is stale, refresh it before continuing.
 - The method lives in `knowledge/_RUNBOOK-*.md`. Follow the runbooks; improve them
   when they're wrong — curation is part of the job. Do not add new coordination
   docs when an existing one can hold the content.
