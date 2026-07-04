@@ -1,6 +1,6 @@
 # Fixed / Flex charter — governing brand-true generation
 
-*"A wide road with high curbs."* The rules that let generation be **creative where it matters** while it **respects the components and brand that exist**. Drafted 2026-06-30 from the SME-Payments fitness tests (sober → desktop → Swiss → portfolio).
+*"A wide road with high curbs."* The rules that let generation be **creative where it matters** (the road / flex, §3) while it **respects the curbs that never move** (the cardinals, §9). Drafted 2026-06-30 from the SME-Payments fitness tests (sober → desktop → Swiss → portfolio).
 
 ---
 
@@ -11,7 +11,7 @@ Every generated screen is the product of **two independent dials**, and confusin
 | Dial | Governs | Today | Risk |
 |---|---|---|---|
 | **Canon** (vocabulary) | tokens + components — *what is retrieved* | gated (`_validate_compose`, snippet/meta/icon/a11y gates) | strong below the component line, **silent above it** |
-| **Register** (temperature/voice) | concept, density, how hot the craft runs — *how it is composed* | **ungoverned** — buried in brief adjectives ("sober", "bold") | every run guesses; un-repeatable |
+| **Register** — the *level of inference* (§9) | concept, density, how hot the craft runs — the *felt effect* of the inference dial, not its definition | **governed** by the §9 ramp (was ungoverned/adjective-buried) | resolved — the ramp makes it explicit and repeatable |
 
 The four SME versions used the **same canon** at **opposite registers**. The sober↔portfolio gap was mostly the *register* dial — a word ("sober"), not the canon. **Make register an explicit, named input**, not an adjective.
 
@@ -19,7 +19,7 @@ The four SME versions used the **same canon** at **opposite registers**. The sob
 
 ## 2. Fixed — the curbs (always *retrieved*, never typed)
 
-These are non-negotiable and must come from the knowledge graph at generation time. Recall is not allowed (recall drifts; retrieval can't).
+These are non-negotiable and must be **retrieved from the token store** (`knowledge/tokens/`) **and canon** at generation time. Recall is not allowed (recall drifts; retrieval can't).
 
 - **Brand colour values** — the red and the core palette, pulled from the token store.
 - **Type** — Univers + the type ramp (sizes/weights from the scale).
@@ -27,7 +27,9 @@ These are non-negotiable and must come from the knowledge graph at generation ti
 - **Safety / UX patterns** — high-value confirmation (no one-click), masked sort/account numbers, the input-modality focus ring.
 - **Official brand assets** — the logo/mark is *placed*, never *drawn*.
 
-## 3. Flex — the wide road (invent freely)
+## 3. Flex — the wide road (invent freely *at expressive*)
+
+**Per §9 these are *foundational* curbs — flex at expressive, held at sober & balanced.** "Invent freely" describes the *expressive* band; at sober & balanced, composition / density / motion are curbs, not open road. (Register, listed below, is now the inference dial of §9, not a flex item.)
 
 - **Composition** — layout, grid, page templates (the canon has *no* template layer — this is always inferred).
 - **Concept / narrative / voice / register.**
@@ -70,11 +72,15 @@ the local adjustment.
 control may supersede how this is expressed. tov-016's REVIEW stays OPEN until
 that settles (Dave, 2026-07-02).*
 
+**§4b = the copy/tone dimension of the §9 ramp** — wit licence scales with the inference
+band exactly as the curbs do (sober = zero wit, expressive = on). Resolve tov-016 to lift
+the provisional tag.
+
 ---
 
 ## 5. Recall vs retrieval
 
-The portfolio "looked HSBC" on **~4 primitives** (the red trio + the teal) — but I *typed them from memory*. Right output, wrong mechanism. **The fix is cheap and total:** if those few primitives are *retrieved from the graph*, the craft layer can run as hot as it likes and **cannot drift off-brand**. Lock the cheap primitives hard; that buys all the freedom above them.
+The portfolio "looked HSBC" on **~4 primitives** (the red trio + the teal) — but I *typed them from memory*. Right output, wrong mechanism. **The fix is cheap and total:** if those few primitives are *retrieved from the graph*, the craft layer can run as hot as the register licenses (§9) and **cannot drift off-brand**. Lock the cheap primitives hard; that buys all the freedom above them.
 
 ---
 
@@ -105,7 +111,7 @@ cluster). Register is the *inference ramp* of §9, not a set of looks.
 |---|---|---|
 | **T1 — canon** | 100% retrieved tokens + gated components | `_validate_compose` green (0 rogue hex, all resolve) |
 | **T2 — candidate** | retrieved fixed + *flagged* candidate tokens/patterns, derived + a11y-gated | curbs pass; candidates logged for promotion |
-| **T3 — exploration** | free craft, brand primitives recalled | no gate (the portfolio piece) — a *signal*, not a deliverable |
+| **T3 — expressive** | max inference within the cardinal curbs (**retrieved**, not recalled) | cardinals enforced; divergence-probed; new candidates flagged (§9) — the leash the old ungated T3 lacked |
 
 The balanced version (`sme-payments-balanced.html`) is **T2** by design.
 
@@ -128,8 +134,8 @@ gradient instead of setting the dial) and **resolves the §4 parked question** �
 | Band | Inference | Curbs in force |
 |---|---|---|
 | **Sober** *(retrieve)* | OFF — retrieve and assemble what exists; invent only if forced, then derive-from-canon + flag | all (cardinal + foundational) |
-| **Balanced** *(extend)* | ON but bounded — invent, but it must still read unmistakably HSBC | cardinal + foundational |
-| **Expressive** *(invent)* | MAX — let inference rip, invent what you like | **cardinal only** |
+| **Balanced** *(extend)* | ON but bounded — invent, but its brand-ness is *retrieved*: cardinals from the token store, composition from canon, tone from the guidelines corpus; flag where the KB is silent | cardinal + foundational |
+| **Expressive** *(invent)* | MAX — widest licence on composition and concept; anything new is derived from a cardinal and flagged (§6), never recalled | **cardinal only** |
 
 Sober→balanced turns *inference* on; balanced→expressive *releases the foundational curbs*.
 "Sober" means **don't infer** — not "boring".
