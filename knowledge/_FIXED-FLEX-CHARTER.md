@@ -131,11 +131,11 @@ gradient instead of setting the dial) and **resolves the §4 parked question** �
 
 **Two coupled dials move together across the ramp:**
 
-| Band | Inference | Curbs in force |
-|---|---|---|
-| **Sober** *(retrieve)* | OFF — retrieve and assemble what exists; invent only if forced, then derive-from-canon + flag | all (cardinal + foundational) |
-| **Balanced** *(extend)* | ON but bounded — invent, but its brand-ness is *retrieved*: cardinals from the token store, composition from canon, tone from the guidelines corpus; flag where the KB is silent | cardinal + foundational |
-| **Expressive** *(invent)* | MAX — widest licence on composition and concept; anything new is derived from a cardinal and flagged (§6), never recalled | **cardinal only** |
+| Band | Inference | Curbs in force | Brand-source stop (§9a) |
+|---|---|---|---|
+| **Sober** *(retrieve)* | OFF — retrieve and assemble what exists; invent only if forced, then derive-from-canon + flag | all (cardinal + foundational) | token store + `canon/canon.css` (`.cn-*`) — retrieve only |
+| **Balanced** *(extend)* | ON but bounded — invent, but its brand-ness is *retrieved*: cardinals from the token store, composition from canon, tone from the guidelines corpus; flag where the KB is silent | cardinal + foundational | + `brand-principles.md` (character) · §4b (tone) · `colour-usage.md` (red) · flag-where-silent |
+| **Expressive** *(invent)* | MAX — widest licence on composition and concept; anything new is derived from a cardinal and flagged (§6), never recalled | **cardinal only** | cardinals retrieved; new = §6 derive-and-flag; residual gestalt = **human** (mode A) |
 
 Sober→balanced turns *inference* on; balanced→expressive *releases the foundational curbs*.
 "Sober" means **don't infer** — not "boring".
@@ -171,12 +171,50 @@ Sober→balanced turns *inference* on; balanced→expressive *releases the found
    *should* look alike; that is not a failed spread. The probe accounts for how much flex the
    screen actually carries.
 
+### 9a. Provenance of "reads HSBC" + the two working modes — ratified 2026-07-04 (Dave)
+
+*Tightens the qualitative band terms so "HSBC-ness" is a retrieval instruction, not the
+model's prior (closes the §5 recall-drift that otherwise re-enters at the register layer).
+Map + decision record: `_PROVENANCE-inference-levels_2026-07-04.md`.*
+
+**Provenance rule — "reads HSBC" resolves to a named source, never to a feeling.** Every band's
+brand-ness decomposes into retrieval targets, each verified to exist in the KB:
+**primitives** → token store · **composition** → `canon/canon.css` (`.cn-*`) · **character** →
+`guidelines/brand-principles.md` (the six design principles + supercharge direction; add
+`brand-refresh-assets.md` *only* on imagery/marketing surfaces, where it also drags in the
+hard gen-AI-imagery ban) · **tone** → §4b (tov-016/027/045) · **red-forwardness** →
+`colour-usage.md` + `colour-standards-2026.md`. This applies to §9 the pattern §4b already used
+for wit (a per-band "Brand-source stop").
+
+**Flag-where-silent (advisory generation behaviour, D-2).** Where a required quality has **no
+source in the KB**, the engine emits a **flagged candidate** (§6) and never improvises from
+priors. This is a named generation behaviour (advisory now; earns blocking by bite-test), not
+just charter prose.
+
+**The residual gestalt is where a human comes in — and it defines two modes.** After
+retrieval + assembly + flagging, one thing does not reduce to a source: the whole-screen
+gestalt ("does it *hang together* as HSBC?"). Gestalt is where LLM-as-judge fails, so it is
+**out-of-model**. How it is handled *is a mode*, and **mode belongs in the harness as a
+first-class dial** (named-not-built), mapping onto the flexing engine's two ends (ADR-0006):
+
+- **Converge / ship mode (Option B — adopted).** An **advisory brand self-check** runs the
+  output against the six principles (square corners · single focal point · red tactical not
+  decorative · clarity over decoration · logo present) as a **retrieved** checklist, surfaced
+  as a pre-flight card — *not* a gate, carrying the contrast-gate humility label
+  ("checks passed ≠ feels HSBC"; see `gate-blindspot-state-contrast`). Fast; suits the
+  **floor/churn** end (BA-instruction → compliant screen). A human still signs the gestalt.
+- **Explore / noodle mode (Option A — OPEN).** No automated verdict; open human judgment /
+  dossier-style deliberation. Suits the **ceiling/novel** end where sitting with it is the
+  point. Kept as an open question, not rejected — the exploratory counterpart to ship mode.
+
 **Naming:** the bands keep their names (sober/balanced/expressive) — they appear in the brief,
 the contract and the mock, so a rename carries blast radius. The *(retrieve / extend / invent)*
 gloss is the plain-language meaning; a full rename is deferred, not rejected.
 
 *Upgrades §7 (multi-variant) with the machinery above; relates to §5 (retrieval = the cardinal
-leash) and §8 (tiers). The two machinery pieces are new named-not-built gaps.*
+leash) and §8 (tiers). Named-not-built gaps: isolated generation, the divergence probe, the
+mode-B advisory brand self-check, and the harness **mode dial** (converge/ship ↔ explore/noodle,
+§9a).*
 
 ---
 
