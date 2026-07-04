@@ -1,97 +1,90 @@
 # Good morning, Dave ☕
 
-*Session briefing — written end of 2026-07-03 (late), session "Toolkit tranche 1 —
-Notifications family" (which outran its title). Supersedes the "44 ruling" brief.*
+*Session briefing — written end of 2026-07-04, session "Flexing engine, the register
+inference-ramp & the review instrument." Supersedes the 07-03 "Toolkit tranche 1" brief
+(that thread is paused, not dropped — see On your desk).*
 
 ## The session in one line
 
-Tranche 1 went from one-quarter done to FULLY COMPLETE in a single sitting —
-Notifications, Tags/Chips and Buttons distilled, plus a FOUNDATIONS delta pass
-that found the tranche already ⅔-ingested; register 404 → 462, 4 commits staged.
+A strategy-and-governance session, not an ingestion one: the product got a name and shape
+(a *flexing* engine, ADR-0006), the register became an *inference ramp* with real machinery
+(charter §9), your sketch became a clickable front-end, D2 turned into a real scoped test with
+engaged colleagues, and we built a reusable review instrument and used it to reconcile the
+three cold-start docs — 6 commits, all pushed.
 
 ## What landed
 
-1. **Notifications** (`common-toolkit-notifications.md`, ctkn-001…028, `49e1235`):
-   canon meta already reconciled 1:1 (the 06-24 rebuild came from these nodes) —
-   the value was the RULES layer: severity stacking order + 1px/8px stack
-   numerics · placement contracts (global ABOVE masthead · contextual below page
-   title · snackbar ≤6 cols centred, above modals) · snackbar 4–10s timing,
-   fade-vs-instant dismiss · the four RAG copy registers with the exact
-   form-error title string · SR announcement strings · aid-009 receipt #3 with
-   NEW hit-area COVERAGE clauses. Correction: toolkit "Alert" = the bell
-   TRIGGER (Size×Active×Badge), not a notification → canon-lacks item 7.
-2. **Tags + Chips/Pills** (`common-toolkit-tags-chips.md`, ctkt-001…032,
-   `a8242aa`): two NEW contract classes — the SHARED 44px target band for
-   grouped tag links (12+20+12 recipe, adjacent rows share the 12px band —
-   speaks to your sub-44 revisit pile) and no-layout-shift select (padding
-   reserves the tick). The tag↔pill↔button misuse boundary fully sourced ·
-   verb-polarity copy split by chip type · REVERSE vintage found (td-010: the
-   standard documents state ladders the sets never received).
-3. **Buttons rank ladder** (`common-toolkit-buttons.md`, ctkb-001…019,
-   `a58fd22`): quaternary = the app standard's "Undecorated" (browser standard
-   omits rank 4, td-011) · cardinality (ONE primary and/or ONE secondary per
-   page, never same group) · the app "button activity" pattern finally gives
-   processing/success states their contract (spinner → RAG colour, NO copy →
-   resolve, AT labels) · "sucess (app)" typo ships in the primary set (td-012) ·
-   primary Large is an UNDOCUMENTED set (td-013) · aid-009 receipt #6.
-4. **FOUNDATIONS delta pass** (`common-toolkit-foundations.md`, ctkf-001…014,
-   `5c18dfd`): triage found dark-mode/elevation/logos/hexagons/icons already
-   captured 06-17 and the grid/type/spacing doctrine already in webf/appf/typo —
-   so delta-only: masthead-FLYOUT 4-col grid + masthead/footer fluid-XL variant
-   (direct Headers/Nav input) · email 6-col grid · 12px=legal-only +
-   medium-weight-paragraph ban · TWO dark-mode rules the 06-17 summary DROPPED
-   (light-bleed compensation · extra negative space) · ds-001 now
-   SOURCE-complete (the brand collection has dark RAG tints but NO dark solid
-   accents) · the icons CHANGE LOG (live monthly to 2026-04 vs guides frozen at
-   May 2023 — td-002's cleanest exhibit).
-5. **Method upgrades**: the U+2028 bridge-killer diagnosed (hex-escape fixes it
-   deterministically — and the Buttons guide's own "Figma note" instructs the
-   soft returns that cause it, provenance closed) ·
-   `importComponentSetByKeyAsync` resolves sets on unenumerated pages ·
-   capture-loss check proved its worth (F3, foundations file).
+1. **The product shape — a *flexing* engine (ADR-0006).** Re-examined "designer-in-a-box vs
+   multidisciplinary agents" (desk research recovered, not re-run) and reaffirmed engine-first
+   on necessary-vs-optional + reversibility grounds. Product = ONE engine that flexes by dials
+   per work-type: **floor** (churn / "vibe" — BA-instruction → compliant screen = standards-
+   compliant Figma Make, the wedge) and **ceiling** (novel / "analysis" — discovery → journey).
+   Library compounds via cluster-level promote (least-proven, highest-value bit).
+
+2. **Front-end vision realised — the iteration machine** (`_VISION-iteration-machine_2026-07-03.html`).
+   Your notebook sketch → a clickable loop: input → shape (analysis/vibe) → result (cool/warm/hot
+   register spread) → refine → loop. **Facade, not wired** — an alignment artifact; palette
+   retrieved real, everything else simulated. Proves nothing; the proof is the gates + GOV.UK +
+   the real test.
+
+3. **Register = an inference ramp (charter §9).** The big one. Register redefined as the **level
+   of inference** (sober = retrieve · balanced = extend · expressive = invent), realised as a
+   curb ramp with a floor: **cardinal** curbs (colour, type, angle, logo, a11y, safety) never
+   lift; **foundational** curbs (composition, density, motion, red-forwardness…) lift only at
+   expressive. Two machinery pieces specced but **NOT built**: isolated generation (kills the
+   pollution you spotted) + a divergence probe. Resolved the parked §4 register-reach question.
+
+4. **D2 shaped into a real test.** You've spoken to two colleagues (both novel work). First test
+   = a **scoped novel-work screen**: they own the discovery, the engine is bounded to generate →
+   enforce → compose → register → promote, success + a comparison baseline agreed up front.
+   Churn/floor test = the parallel leadership track. Plan: `_TEST-PLAN-novel-screen-proof.md`.
+
+5. **A reusable review instrument.** A Swiss-styled dossier (frames+stages navigation, HSBC
+   colour-coded tags, GitHub-style diffs, severe filter, manual tagging) where I pre-flag
+   language and you decide; the export is a **reconciliation register** = decision record + git
+   rollback. `_REVIEW-DOSSIER-*.html`.
+
+6. **Reconciled the cold-start trio with it.** Charter (8/8), AGENTS.md (5/5), README (5/5) —
+   all agreed, enacted, committed, recorded (`_RECONCILIATION-*-language.md`). **Two were
+   propagation catches** — the charter §9 edit left AGENTS' T3 contradicting it; ADR-0005 had
+   left README still teaching the retired two-machine rule. The three now agree with each other.
 
 ## On your desk
 
-- **REVIEW ctkn-019** — toolkit bans per-instruction "Please…" yet mandates the
-  "Please correct the following errors" title, vs copy-035's optional-please.
-  My read: banned per-instruction, allowed in the standard title — needs your
-  ruling before the politeness lint derives.
-- **REVIEW ctkb-015** — guide blesses quaternary inline; app standard says
-  inline = tertiary, never undecorated. Vintage layering suspected. Gates the
-  Button ★ finish.
-- **Push the 4 commits** (`49e1235` · `a8242aa` · `a58fd22` · `5c18dfd`).
-- **Carried**: colleague chase (calibration = #1 unlock) · V7 charting call ·
-  finessing pass (mot-007 + type26-015/026) · G2 compiler spec · revisit pile
-  (Account-card · Headers · Hero · tab-bar islands · confirmation finesse ·
-  5 sub-44 targets — NOTE the shared-target-band recipe ctkt-011 may clear some
-  of these) · Cards "Example link" fix → check-G promotion · rem-refactor task ·
-  skip-link gap-fix at the composition touch · Figma branch Cover probe-debris ·
-  NEW: consider a one-pass re-grep of the other 06-17 capture files against
-  their source pages (capture-loss lesson).
+- **The novel-screen test — waiting on the colleague's brief.** When it lands (they fill a
+  brief-v2 for one screen + produce their own baseline + sign the contract before generation),
+  the engine finally meets someone else's real work. This is **D2, the #1 unlock**.
+- **Morning task flagged: "tighten the inference levels — the provenance of 'HSBC-ness'."** The
+  qualitative band terms ("must still read HSBC" etc.) need retrieval provenance, not vibes, or
+  they default to the model's priors (§5 recall-drift at the register layer). Memory:
+  `register-inference-ramp`.
+- **Build the divergence machinery** (isolated generation + divergence probe) — named-not-built;
+  the unlock for genuine innovation (your F2 question: expressive is *safe* within cardinals by
+  construction; whether it *innovates* depends on this).
+- **_NEXT-SESSION.md retired** — superseded by this doc (repointed).
+- **Parked (longer horizon):** guidance-ingestion-at-scale (the "massive-brain designer" — an
+  advisory judge that reads the guidelines per run = G5 at full scale); a11y-depth (the
+  compliance KG maps 31 SCs but the gate enforces few — "mapped not enforced" turned inward).
+- **Parallel thread paused, not dropped:** the Common Toolkit ingestion — tranche 2 (Dropdown
+  ×4) queued for a cheap-model session (memory: `common-toolkit-survey`). Separate workstream.
 
 ## Queue next
 
-1. **Toolkit tranche 2** (fresh session): Dropdown ×4 FIRST — the Q1 four-way-
-   split logic gets its second test — then Input Field + Date picker (supercharge
-   adjacency) · Progress/Loading (platform policy = RECORDED per Q2) · Table
-   header configs.
-2. **Channels ingestion** stays deferred to a cheap-model session (also unblocks
-   the toolkit enumeration skeleton + the create.hsbc standards the guides
-   defer to — banner/snackbar/pills/tags standards are all named now).
-3. Then: tranche 3 (Headers ×3 + Masthead + Hero — now WITH the flyout grid and
-   masthead icon vocabulary in hand) · revisit pile · calibration when the
-   colleague's materials land.
+1. **The colleague's screen → run the novel-screen test (D2).** Everything waits on this.
+2. **Provenance tightening** — the "HSBC-ness" morning task (charter §9 qualitative terms).
+3. **Continue the review rollout** if wanted — ADRs + runbooks next, same tool, swap the findings.
+4. **Build the divergence probe** — the real-innovation unlock.
+5. Parallel: toolkit tranche 2 (Dropdowns) on a cheap model when you want a different mode.
 
-> Next-session opener: **"Title this chat: Toolkit tranche 2 — Dropdowns."**
-> Read GOOD-MORNING.md first. Rule ctkn-019 + ctkb-015 before tranche 2 starts —
-> ctkb-015 gates the Button ★ finish. Check `git status` ahead-count (4 pending
-> at writing).
+> Next-session opener: **"Title this chat: <pick one>."** Read GOOD-MORNING.md first, then
+> `knowledge/README.md` for the build. Everything was pushed at writing. The cold-start trio
+> (charter / AGENTS / README) is now mutually consistent — trust it.
 
 ## The meter
 
-One session took tranche 1 from Links-only to fully complete — the method is
-compounding: guide-frame extraction is now deterministic (U+2028 fix), canon
-keeps reconciling 1:1 on structure so passes spend themselves on the rules
-layer, and aid-009 is receipted on all five families with per-component
-coverage clauses. Tranche 2's Dropdown pass starts with a ruled taxonomy and a
-proven recipe.
+This was the session where the project stopped being "a very good HSBC knowledge base" and
+became a *shaped* thing: a named product (flexing engine), a governed generation model (the
+inference ramp), a real proof lined up (the colleague's screen), and a governance-hygiene loop
+that keeps the docs honest. The review instrument compounding is the tell — two of ten findings
+were staleness *we* created that same day, caught automatically. The next real progress is a
+conversation (the colleague's brief) and a build (the divergence probe), not more documents.
