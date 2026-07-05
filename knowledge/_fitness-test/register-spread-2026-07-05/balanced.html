@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Northgate Timber Ltd — Payments</title>
+<link rel="stylesheet" href="../../canon/canon.css">
+<!--
+  REGISTER BAND: BALANCED — "extend, inference ON but bounded" (contract §2).
+  Built cold from _TEST-BRIEF-v2-sme-payments.md + canon.css + brand-principles.md + colour-usage.md ONLY.
+  No prior SME-Payments variant (incl. the existing balanced.html in this folder) was read or referenced.
+
+  RETRIEVAL LOG (what was pulled from where):
+  - Tokens: --color-primary #DB0011, --border-radius-default:0, type ramp (Univers Next for HSBC),
+    spacing (--gap-fixed-*, --padding-fixed-*), motion (--spring 300ms spring-ease, --press 90ms out-ease)
+    all from canon.css AUTO-GENERATED TOKENS block + semantic aliases layer.
+  - Components used verbatim (.cn-* classes, unmodified): .cn-account-card, .cn-summary,
+    .cn-status-indicator (chip form B), .cn-tags, .cn-table, .cn-notifications (tint variant),
+    .cn-modals (as the confirmation dialog shell), .cn-confirmation (approve-success state),
+    .cn-action-bar, .cn-button, .cn-eyebrow, .cn-badge (round EXEMPTION only), .cn-divider.
+  - Character/composition licence: brand-principles.md's six principles (angular / tactically red /
+    clearly understood / internationally relatable / logical / creatively considered) — the single
+    "bold moment" (net-movement figure sized up + red-led) traces to "tactically red" (accent for
+    impact, not everywhere) + "clearly understood" (one focal point).
+  - Red-forwardness: guidelines/colour-usage.md col25-001 ("HSBC Red applied tactically... to draw
+    the user's attention and drive the journey") licenses letting red lead the ONE primary CTA
+    (Review & approve) and the one emphasis number, but nothing else — reds stay off status/RAG
+    roles per col25-017 (RAG palette is semantic, not decorative) and off illustration/data-vis use.
+  - Icons: retrieved raw path data from knowledge/assets/icons/ (success-solid, warning-solid, close,
+    chevron-down, chevron-right, payment, salaries-and-payroll, tax, card — all viewBox 0 0 18 18,
+    fill=currentColor). Declared as <symbol>s in a sprite below per icon-source-rule (never invented).
+    GAP: error-solid.svg on disk returned an empty <svg> (no path data) and a reliable "utilities"
+    icon glyph could not be confirmically distinguished from "card" in this pass — both flagged
+    below at point of use rather than guessed.
+-->
+<style>
+  /* ===== FLAGGED CANDIDATES — derived, not invented; see inline flags at point of use ===== */
+
+  /* FLAGGED CANDIDATE: derived from --typography-font-size-font-5 (16px)/--typography-line-height-font-5 (24px)
+     scaled up for a single hero figure. Canon ships no "display/amount" size token yet (Account-card's own
+     .balance at 30px is the closest precedent and is reused directly); this ONE bigger cut (40px) is only
+     used for the current-balance headline number, derived proportionally from that same family and flagged
+     here as a candidate for a "display/amount-lg" token — not recalled from memory. */
+  .cn-account-card .account-card .balance.balance--hero{
+    font-size:40px; line-height:1.05; letter-spacing:-.015em;
+  }
+
+  /* FLAGGED CANDIDATE: canon's .c-stat-grid (2x2 metric grid, hand-authored utility layer) covers the
+     cash-position tiles; there is no canon primitive for a "coverage strip" (single full-width bar showing
+     buffer as text + a slim progress-style indicator). Derived from Progress-tracker's continuous-track
+     pattern (.track/.fill, red fill on grey incomplete) + Summary's key/value row spacing (--divider,
+     padding 12px 0). Flagged as a candidate "coverage-strip" gap-pattern. */
+  .bal-coverage{ border:1px solid var(--divider-soft); padding:16px; display:flex; flex-direction:column; gap:10px; }
+  .bal-coverage__row{ display:flex; justify-content:space-between; align-items:baseline; gap:12px; }
+  .bal-coverage__label{ font:400 14px/1.4 var(--font); color:var(--muted); }
+  .bal-coverage__value{ font:500 15px/1.4 var(--font); color:var(--text); font-variant-numeric:tabular-nums; }
+  .bal-coverage__track{ position:relative; width:100%; height:6px; background:var(--progress-incomplete); }
+  .bal-coverage__fill{ position:absolute; left:0; top:0; height:100%; background:var(--progress-complete); }
+  .bal-coverage__note{ font:400 13px/1.4 var(--font); color:var(--muted); }
+
+  /* layout scaffold — not a canon component, plain composition using canon spacing/border tokens only */
+  .page-shell{ max-width:960px; margin:0 auto; padding:var(--gap-fixed-subsection-small) var(--padding-fixed-xlarge) var(--gap-fixed-section-small); display:flex; flex-direction:column; gap:var(--gap-fixed-subsection-medium); }
+  .page-head{ display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  .page-head h1{ font:400 28px/1.15 var(--font); margin:0; }
+  .page-head .asof{ font:400 14px/1.4 var(--font); color:var(--muted); }
+  .section-head{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:2px; }
+  .section-head h2{ font:500 18px/1.3 var(--font); margin:0; }
+  .section-head .count{ font:400 13px/1.4 var(--font); color:var(--muted); }
+  .icn{ width:18px; height:18px; display:block; fill:currentColor; }
+  .icn-sm{ width:14px; height:14px; }
+  .cat-icon{ display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; flex:none; background:var(--tertiary-background-hover); color:var(--icon-default); }
+  .cat-icon .icn{ width:16px; height:16px; }
+  .payee-cell{ display:flex; align-items:center; gap:10px; }
+  .payee-cell__body{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+  .payee-cell__name{ font-weight:500; }
+  .payee-cell__cat{ font:400 12px/1.3 var(--font); color:var(--muted); }
+  .approver-note{ font:400 12px/1.3 var(--font); color:var(--muted); }
+  .row-actions{ display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap; }
+  /* compact approve/decline pair sized from Button canon's own scale, kept small only where the
+     table's row density needs it — the confirmation dialog itself always uses full Button/.cn-modals sizing */
+  .row-actions .btn-sm{
+    height:36px; min-width:0; padding:0 14px; border:0; cursor:pointer;
+    font:500 14px/1 var(--font); display:inline-flex; align-items:center; justify-content:center; gap:6px;
+    transition:background 160ms cubic-bezier(.4,0,.2,1), transform 300ms cubic-bezier(.5,1.6,.4,1), filter 90ms cubic-bezier(0,0,.58,1);
+  }
+  .row-actions .btn-sm:hover{ transform:scale(1.04); }
+  .row-actions .btn-sm:active{ transform:scale(.95); filter:brightness(.85); }
+  .row-actions .btn-sm.primary{ background:var(--primary-background-default); color:var(--text-reverse); }
+  .row-actions .btn-sm.primary:hover{ background:var(--primary-background-hover); }
+  .row-actions .btn-sm.tertiary{ background:transparent; color:var(--text-default); border:1px solid var(--tertiary-border-default); }
+  .row-actions .btn-sm.tertiary:hover{ background:var(--tertiary-background-hover); }
+  .row-actions .btn-sm:focus-visible{ outline:2px solid var(--focus-ring); outline-offset:2px; }
+
+  @media (max-width:600px){
+    .page-shell{ padding:var(--gap-fixed-subsection-xsmall) var(--padding-fixed-medium) var(--gap-fixed-section-small); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .row-actions .btn-sm:hover, .row-actions .btn-sm:active{ transform:none !important; filter:none !important; }
+  }
+</style>
+</head>
+<body class="canon">
+
+<!-- ICON SPRITE — every symbol below is retrieved raw path data from knowledge/assets/icons/
+     (see header comment). None invented. Declared once, referenced by <use>. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ic-success-solid" viewBox="0 0 18 18">
+      <path d="M9 0C4.03 0 0 4.03 0 9C0 13.97 4.03 18 9 18C13.97 18 18 13.97 18 9C18 4.03 13.97 0 9 0ZM7.22 13.55L3.59 9.92L4.86 8.65L7.22 11.01L13.15 5.08L14.42 6.35L7.22 13.55Z"/>
+    </symbol>
+    <symbol id="ic-warning-solid" viewBox="0 0 18 18">
+      <path d="M9 0C4.03 0 0 4.03 0 9C0 13.97 4.03 18 9 18C13.97 18 18 13.97 18 9C18 4.03 13.97 0 9 0ZM8.1 3.75H9.9V9.75H8.1V3.75ZM9 14.25C8.31 14.25 7.75 13.69 7.75 13C7.75 12.31 8.31 11.75 9 11.75C9.69 11.75 10.25 12.31 10.25 13C10.25 13.69 9.69 14.25 9 14.25Z"/>
+    </symbol>
+    <symbol id="ic-close" viewBox="0 0 18 18">
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z"/>
+    </symbol>
+    <symbol id="ic-chevron-down" viewBox="0 0 18 18">
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M17 4.15198L9 12.15L1 4.15198V5.84798L9 13.848L17 5.84798V4.15198Z"/>
+    </symbol>
+    <symbol id="ic-chevron-right" viewBox="0 0 18 18">
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M4.15234 17L12.1503 9L4.15234 1H5.84834L13.8483 9L5.84834 17H4.15234Z"/>
+    </symbol>
+    <symbol id="ic-payment" viewBox="0 0 18 18">
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.029 0 0 4.029 0 9C0 13.97 4.029 18 9 18C13.971 18 18 13.97 18 9C18 4.029 13.971 0 9 0ZM13 10L12.97 10.03L9.75 6.81V14H8.25V6.811L5.03 10.031L5 10V7.939L9 3.939L13 7.939V10Z"/>
+    </symbol>
+    <symbol id="ic-payroll" viewBox="0 0 18 18">
+      <path d="M6.41 11.48L5.98 11.34C5.31 11.13 5.31 11.02 5.31 10.87C5.31 10.46 5.83 10.41 6.06 10.41C6.72 10.41 6.72 10.67 6.72 10.79V10.99H6.92H7.72L7.92 10.97V10.77C7.91 9.99 7.42 9.43 6.61 9.26V8.44H5.41V9.29C4.6 9.5 4.1 10.09 4.1 10.87C4.1 12.01 5.12 12.33 5.61 12.48L6.04 12.62C6.71 12.83 6.71 12.94 6.71 13.09C6.71 13.5 6.19 13.55 5.96 13.55C5.3 13.55 5.3 13.29 5.3 13.17V12.97H5.1H4.3L4.1 12.99V13.19C4.11 13.97 4.6 14.53 5.41 14.7V15.52H6.61V14.67C7.42 14.46 7.92 13.87 7.92 13.09C7.92 11.95 6.9 11.63 6.41 11.48ZM6.02 7.17C8.67 7.17 10.83 9.33 10.83 11.98C10.83 14.63 8.67 16.79 6.02 16.79C3.37 16.79 1.2 14.64 1.2 11.98C1.2 9.32 3.36 7.17 6.01 7.17M6.01 5.97C2.69 5.97 0 8.66 0 11.98C0 15.3 2.69 17.99 6.01 17.99C9.33 17.99 12.02 15.3 12.02 11.98C12.02 8.66 9.33 5.97 6.01 5.97ZM12.56 15C12.56 15 12.56 15 12.56 14.99C12.74 14.61 12.88 14.21 12.98 13.8H16.22L15.21 11.3C15.08 10.99 14.91 10.72 14.7 10.5C14.35 10.14 13.97 9.85 13.51 9.6C13.33 9.75 13.14 9.88 12.94 9.99C12.83 9.59 12.68 9.21 12.5 8.84C12.68 8.73 12.84 8.6 13 8.44L13.3 8.15L13.69 8.33C14.42 8.67 15.06 9.13 15.59 9.68C15.91 10.01 16.15 10.4 16.33 10.86L18 14.99H12.56V15ZM8.94 5.4C8.49 5.2 8.02 5.04 7.52 4.94C7.44 4.56 7.39 4.17 7.39 3.77C7.4 1.48 8.66 0 10.61 0C12.56 0 13.8 1.48 13.8 3.77C13.8 5.33 13.12 6.98 11.67 7.52C11.37 7.15 11.04 6.8 10.68 6.5C12.19 6.44 12.6 4.78 12.6 3.78C12.6 3.18 12.46 1.21 10.61 1.21C8.76 1.21 8.6 3.18 8.6 3.78C8.6 4.33 8.71 4.92 8.94 5.41V5.4Z"/>
+    </symbol>
+    <symbol id="ic-tax" viewBox="0 0 18 18">
+      <path d="M8.99 15V10.29H6.56L8.99 4.26V8.97H11.42L8.99 15ZM9 1.62C6.87 3.64 3.2 7.79 3.2 11C3.2 14.21 5.8 16.8 9 16.8C12.2 16.8 14.8 14.2 14.8 11C14.8 7.8 11.13 3.64 9 1.62ZM9 0C9 0 16 6 16 11C16 14.86 12.87 18 9 18C5.13 18 2 14.86 2 11C2 5.99 9 0 9 0Z"/>
+    </symbol>
+    <symbol id="ic-card" viewBox="0 0 18 18">
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M15 1V0H13.8V1H4.2V0H3V1H0V18H14.2L18 14.2V1H15ZM14.2 16.303V14.2H16.303L14.2 16.303ZM16.8 13H13V16.8H1.2V6H16.8V13ZM16.8 4.8H1.2V2.2H3V3.5H4.2V2.2H13.8V3.5H15V2.2H16.8V4.8ZM8.8 10.029V15H10V7.971L7.003 9.667L7.594 10.712L8.8 10.029Z"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="page-shell">
+
+  <!-- ===== Page head ===== -->
+  <div class="page-head">
+    <div>
+      <div class="cn-eyebrow"><span class="eyebrow">Business current account</span></div>
+      <h1>Northgate Timber Ltd — Payments</h1>
+    </div>
+    <div class="asof">As of 12 May 2026</div>
+  </div>
+
+  <!-- ===== Cash position — .cn-account-card retrieved verbatim, extended with the hero balance ===== -->
+  <section class="cn-account-card" aria-labelledby="cash-h">
+    <h2 id="cash-h" class="section-head" style="display:block; margin-bottom:12px;">Today's cash position</h2>
+    <div class="account-card" style="max-width:none;">
+      <div class="label">Business current account <span aria-hidden="true">···· 8842</span>
+        <span class="visually-hidden" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">account ending 8842, sort code masked</span>
+      </div>
+      <!--
+        BOLD / CONFIDENT MOMENT (the one this band is licensed to allow — contract §2 "one deliberate
+        emphasis moment... let red lead the primary action"). The single figure a finance admin most
+        needs at a glance is the CURRENT balance, so it is the one number sized up (.balance--hero,
+        flagged candidate above) rather than every figure competing at the same weight. This traces to
+        brand-principles.md "clearly understood" (singular focal point) — NOT to red; red is reserved
+        for the primary CTA below per colour-usage.md col25-001, so the hero number stays --text (ink),
+        keeping "tactically red" literal (red = action/signpost only, never decoration on a figure).
+      -->
+      <div class="balance balance--hero">£122,450</div>
+      <div class="meta-row">
+        <span class="chip ok"><span class="dot" aria-hidden="true"></span>Net +£2,450 today</span>
+        <span class="tag">Opening £120,000</span>
+        <span class="tag">In +£11,650</span>
+        <span class="tag">Out −£9,200</span>
+        <span class="tag">Est. closing £124,000</span>
+      </div>
+    </div>
+
+    <!--
+      FLAGGED CANDIDATE: "coverage-strip" pattern (see .bal-coverage CSS above) — derived from
+      Progress-tracker's continuous-track primitive (red fill / grey incomplete track) + Summary's
+      key-value row rhythm. No canon component exists yet for "balance minus committed spend =
+      buffer, stated as a fraction of the month". Figures verbatim from contract §3: £122,450 −
+      £49,702 = £72,748 buffer; covered through May only (not overstated).
+    -->
+    <div class="bal-coverage" style="margin-top:16px;">
+      <div class="bal-coverage__row">
+        <span class="bal-coverage__label">Coverage</span>
+        <span class="bal-coverage__value">£72,748 buffer</span>
+      </div>
+      <div class="bal-coverage__track" role="img" aria-label="72,748 pounds of buffer remaining after May's scheduled payments of 49,702 pounds, against a balance of 122,450 pounds">
+        <div class="bal-coverage__fill" style="width:40.6%;"></div>
+      </div>
+      <p class="bal-coverage__note">£122,450 balance − £49,702 scheduled in May = £72,748 buffer. Covered through May.</p>
+    </div>
+  </section>
+
+  <!-- ===== Awaiting approval — .cn-notifications tint variant frames the section (2 items, both need action) ===== -->
+  <section aria-labelledby="approve-h">
+    <div class="section-head">
+      <h2 id="approve-h">Awaiting your approval</h2>
+      <span class="count">2 payments · £49,702 total</span>
+    </div>
+
+    <div class="cn-notifications">
+      <div class="note tint warn" role="status" style="margin:8px 0 16px;">
+        <span class="ic" aria-hidden="true"><svg class="icn"><use href="#ic-warning-solid"/></svg></span>
+        <div class="main">
+          <strong>Two payments need your sign-off</strong> — both were queued by Sarah Chen 2 days ago. The payroll run is high-value and needs a confirmation step before it is released.
+        </div>
+      </div>
+    </div>
+
+    <div class="cn-table">
+      <div class="wrap" style="width:100%;">
+        <div class="scroll" tabindex="0" role="region" aria-label="Payments awaiting approval">
+          <table>
+            <caption>Awaiting approval<span class="sub">2 payments, £49,702 combined</span></caption>
+            <thead>
+              <tr>
+                <th scope="col">Payee</th>
+                <th scope="col">Account</th>
+                <th scope="col">Date</th>
+                <th scope="col">Status</th>
+                <th scope="col" class="num">Amount</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row" data-label="Payee">
+                  <div class="payee-cell">
+                    <span class="cat-icon" aria-hidden="true"><svg class="icn"><use href="#ic-card"/></svg></span>
+                    <span class="payee-cell__body">
+                      <span class="payee-cell__name">Amazon Business</span>
+                      <span class="payee-cell__cat">Supplier · card &amp; fulfilment</span>
+                    </span>
+                  </div>
+                </th>
+                <td data-label="Account"><span class="v">···· 4021</span></td>
+                <td data-label="Date"><span class="v">15 May 2026</span></td>
+                <td data-label="Status">
+                  <span class="v">
+                    <span class="cn-status-indicator" style="display:inline-block;">
+                      <span class="chip warn"><span class="dot" aria-hidden="true"></span>Awaiting approval</span>
+                    </span>
+                    <div class="approver-note">Sarah Chen, 2 days ago</div>
+                  </span>
+                </td>
+                <td class="num" data-label="Amount"><span class="v">£4,502</span></td>
+                <td data-label="Action">
+                  <div class="v row-actions">
+                    <button type="button" class="btn-sm tertiary">Decline</button>
+                    <button type="button" class="btn-sm primary">Approve</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row" data-label="Payee">
+                  <div class="payee-cell">
+                    <span class="cat-icon" aria-hidden="true"><svg class="icn"><use href="#ic-payroll"/></svg></span>
+                    <span class="payee-cell__body">
+                      <span class="payee-cell__name">BrightHire Payroll Ltd</span>
+                      <span class="payee-cell__cat">Payroll · monthly run</span>
+                    </span>
+                  </div>
+                </th>
+                <td data-label="Account"><span class="v">···· 7730</span></td>
+                <td data-label="Date"><span class="v">22 May 2026</span></td>
+                <td data-label="Status">
+                  <span class="v">
+                    <span class="cn-status-indicator" style="display:inline-block;">
+                      <span class="chip warn"><span class="dot" aria-hidden="true"></span>Awaiting approval</span>
+                    </span>
+                    <div class="approver-note">Sarah Chen, 2 days ago</div>
+                  </span>
+                </td>
+                <td class="num" data-label="Amount"><span class="v">£45,200</span></td>
+                <td data-label="Action">
+                  <!--
+                    CORRECTNESS RULE (contract §4): high-value approval (£45,200 payroll) must require
+                    a confirmation step — no one-click approve. This button opens the confirmation
+                    dialog below (.cn-modals) rather than approving directly.
+                  -->
+                  <div class="v row-actions">
+                    <button type="button" class="btn-sm tertiary">Decline</button>
+                    <button type="button" class="btn-sm primary" onclick="document.getElementById('confirm-overlay').classList.add('open'); document.getElementById('confirm-overlay').setAttribute('aria-hidden','false');">
+                      Review &amp; approve
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Scheduled ahead — .cn-table, passive, card-collapse ===== -->
+  <section aria-labelledby="sched-h">
+    <div class="section-head">
+      <h2 id="sched-h">Scheduled ahead</h2>
+      <span class="count">3 payments · £56,600 total</span>
+    </div>
+    <div class="cn-table">
+      <div class="wrap" style="width:100%;">
+        <div class="scroll" tabindex="0" role="region" aria-label="Scheduled payments">
+          <table>
+            <caption>Scheduled<span class="sub">3 payments</span></caption>
+            <thead>
+              <tr>
+                <th scope="col">Payee</th>
+                <th scope="col">Account</th>
+                <th scope="col">Date</th>
+                <th scope="col">Status</th>
+                <th scope="col" class="num">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row" data-label="Payee">
+                  <div class="payee-cell">
+                    <span class="cat-icon" aria-hidden="true"><svg class="icn"><use href="#ic-tax"/></svg></span>
+                    <span class="payee-cell__body">
+                      <span class="payee-cell__name">HMRC — PAYE</span>
+                      <span class="payee-cell__cat">Tax · PAYE / NIC</span>
+                    </span>
+                  </div>
+                </th>
+                <td data-label="Account"><span class="v">···· 0001</span></td>
+                <td data-label="Date"><span class="v">22 Jul 2026</span></td>
+                <td data-label="Status"><span class="v"><span class="cn-status-indicator" style="display:inline-block;"><span class="chip inf"><span class="dot" aria-hidden="true"></span>Scheduled</span></span></span></td>
+                <td class="num" data-label="Amount"><span class="v">£2,200</span></td>
+              </tr>
+              <tr>
+                <th scope="row" data-label="Payee">
+                  <div class="payee-cell">
+                    <!-- FLAGGED CANDIDATE: no dedicated "utilities" icon could be confidently confirmed distinct
+                         from other Products & Services glyphs in this retrieval pass; reusing ic-card (a
+                         generic account/billing glyph already in this screen) rather than guessing at an
+                         unseen shape. Flagging the utilities icon as a retrieval gap, not inventing one. -->
+                    <span class="cat-icon" aria-hidden="true"><svg class="icn"><use href="#ic-card"/></svg></span>
+                    <span class="payee-cell__body">
+                      <span class="payee-cell__name">British Gas Business</span>
+                      <span class="payee-cell__cat">Utilities · electricity &amp; gas</span>
+                    </span>
+                  </div>
+                </th>
+                <td data-label="Account"><span class="v">···· 5560</span></td>
+                <td data-label="Date"><span class="v">12 Aug 2026</span></td>
+                <td data-label="Status"><span class="v"><span class="cn-status-indicator" style="display:inline-block;"><span class="chip inf"><span class="dot" aria-hidden="true"></span>Scheduled</span></span></span></td>
+                <td class="num" data-label="Amount"><span class="v">£4,200</span></td>
+              </tr>
+              <tr>
+                <th scope="row" data-label="Payee">
+                  <div class="payee-cell">
+                    <span class="cat-icon" aria-hidden="true"><svg class="icn"><use href="#ic-payment"/></svg></span>
+                    <span class="payee-cell__body">
+                      <span class="payee-cell__name">Ravenscroft Properties</span>
+                      <span class="payee-cell__cat">Rent · quarterly lease</span>
+                    </span>
+                  </div>
+                </th>
+                <td data-label="Account"><span class="v">···· 3318</span></td>
+                <td data-label="Date"><span class="v">09 Sep 2026</span></td>
+                <td data-label="Status"><span class="v"><span class="cn-status-indicator" style="display:inline-block;"><span class="chip inf"><span class="dot" aria-hidden="true"></span>Scheduled</span></span></span></td>
+                <td class="num" data-label="Amount"><span class="v">£50,200</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="hint">These 3 rows total <strong>£56,600</strong>. Together with the £49,702 awaiting approval above, the combined scheduled total for the period is <strong>£106,302</strong> — matching the sum of all 5 payments in the contract data.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Month summary — .cn-summary retrieved verbatim ===== -->
+  <section class="cn-summary" aria-labelledby="sum-h">
+    <h2 id="sum-h" style="font:500 18px/1.3 var(--font); margin:0 0 8px;">Month summary</h2>
+    <dl class="summary" style="max-width:none;">
+      <div class="summary__row">
+        <dt class="summary__k">Opening balance</dt>
+        <dd class="summary__v">£120,000</dd>
+      </div>
+      <div class="summary__row">
+        <dt class="summary__k">Inflows today</dt>
+        <dd class="summary__v">+£11,650</dd>
+      </div>
+      <div class="summary__row">
+        <dt class="summary__k">Outflows today</dt>
+        <dd class="summary__v">−£9,200</dd>
+      </div>
+      <div class="summary__row">
+        <dt class="summary__k">Scheduled in May</dt>
+        <dd class="summary__v">£49,702</dd>
+      </div>
+      <div class="summary__row">
+        <dt class="summary__k">Scheduled total (all dates shown)</dt>
+        <dd class="summary__v">£106,302</dd>
+      </div>
+      <div class="summary__row summary__row--total">
+        <dt class="summary__k">Estimated closing balance</dt>
+        <dd class="summary__v">£124,000</dd>
+      </div>
+    </dl>
+  </section>
+
+</div>
+
+<!-- ===== High-value confirmation dialog — .cn-modals shell + .cn-confirmation success state =====
+     CORRECTNESS RULE (contract §4): the £45,200 payroll run is a high-value approval and must require
+     an explicit confirmation step, not a one-click approve. This dialog is that step: it restates the
+     figure, payee, and masked account before a second, separate "Confirm approval" action commits it. -->
+<div class="cn-modals">
+  <div class="overlay" id="confirm-overlay" role="dialog" aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-desc" aria-hidden="true">
+    <div class="dialog">
+      <button type="button" class="close" aria-label="Cancel and close" onclick="document.getElementById('confirm-overlay').classList.remove('open'); document.getElementById('confirm-overlay').setAttribute('aria-hidden','true');">
+        <svg class="icn"><use href="#ic-close"/></svg>
+      </button>
+      <h2 id="confirm-title">Confirm high-value approval</h2>
+      <p id="confirm-desc">
+        You are approving a payroll payment of <strong>£45,200</strong> to <strong>BrightHire Payroll Ltd</strong>,
+        account ending <strong>···· 7730</strong>, queued by Sarah Chen. This action cannot be undone once confirmed.
+      </p>
+      <div class="actions">
+        <button type="button" class="btn primary" onclick="document.getElementById('confirm-overlay').classList.remove('open'); document.getElementById('confirm-overlay').setAttribute('aria-hidden','true');">
+          Confirm approval
+        </button>
+        <button type="button" class="btn secondary" onclick="document.getElementById('confirm-overlay').classList.remove('open'); document.getElementById('confirm-overlay').setAttribute('aria-hidden','true');">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

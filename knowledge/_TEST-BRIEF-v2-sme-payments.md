@@ -14,15 +14,43 @@ You are designing a real product screen, not formatting a table. You **may** add
 - **prefer the data in §3** — it already carries account refs, categories and statuses, so you should not need to fabricate anything;
 - anything you must still add that isn't given must be **derived** from what is, or visibly marked as sample/placeholder.
 
-## 2 · Register — the dial (pick one, or produce all three)
+## 2 · Register — the inference dial (produce all three)
 
-The one knob for temperature. Do not bury it in adjectives — set it here.
+> **⚠️ Reconciled 2026-07-05 to charter §9.** This section previously described register as a
+> *look* (surfaces / hero / gradients) — the exact propagation gap logged OPEN in `_LIVE-STATE.md`
+> ("vision still speaks the OLD looks-language"). Register is **not a look; it is the level of
+> inference you are licensed to use.** The visual outcome is a *consequence* of the inference level,
+> never the instruction itself. See `_FIXED-FLEX-CHARTER.md` §9/§9a for the full ramp.
 
-- **Sober** — light surfaces, flat, generous white space; red restrained to accent / destructive only; motion minimal.
-- **Balanced** — confident; one bold moment allowed (a dark band or a hero figure); red may lead the primary action; motion subtle.
-- **Expressive** — editorial; dark hero, gradients and motion unlocked; red leads.
+Register sets which curbs are in force. **Cardinal curbs never lift, at any band:** brand colour
+(retrieved, never typed), type (Univers + ramp), corner radius (square — no rounding, no exceptions
+on this screen), the a11y floor (AA contrast, focus ring, target size, reduced-motion), the safety
+patterns (§4 below — high-value confirm, masked refs), and the data-chart-flat carve-out.
+**Foundational curbs move with the band** (flatness/elevation, composition & density, motion amount,
+red-forwardness).
 
-**Register for this run:** `____________`
+- **Sober** *(retrieve — inference OFF)*. All curbs held, cardinal + foundational. Retrieve and
+  assemble what already exists in `canon/canon.css`; invent only if forced, and if you do, derive
+  it from a canon primitive and flag it as a candidate — never type a brand value from memory.
+  Brand-source stop: token store + `canon/canon.css` (`.cn-*`) only.
+- **Balanced** *(extend — inference ON but bounded)*. Cardinal + foundational curbs still both
+  hold, but you may **extend**: compose more confidently, allow one deliberate emphasis moment,
+  let red lead the primary action — provided every brand-bearing choice still traces to a named
+  source (cardinals from the token store, composition from canon, character from
+  `guidelines/brand-principles.md`, red-forwardness from `guidelines/colour-usage.md`). Flag
+  anywhere the knowledge base is silent rather than inventing from a prior.
+- **Expressive** *(invent — MAX inference, cardinal curbs only)*. Foundational curbs release —
+  composition, density, motion, and red-forwardness are yours to invent. **Cardinal curbs still
+  never lift** — square corners, retrieved brand colour, type, and the full a11y/safety floor are
+  non-negotiable even here. Anything new must be derived from a cardinal and flagged (§6 of the
+  charter), never recalled free-hand. This is "hot but leashed," not an ungated free-for-all.
+
+**Machinery for this run (§9):** generate **each band in isolation** — a cold, independent pass
+that does not see the other two bands or any prior SME-Payments variant in
+`knowledge/_fitness-test/`. After all three land, run the **divergence probe**: measure how far
+apart the bands actually are: are they properly clustering/diverging, or did they collapse toward a
+shared mean? Payments is a cardinal-heavy, safety-critical screen, so some convergence across bands
+is *expected*, not a failed spread — the probe is screen-relative, not a fixed distance target.
 
 ## 3 · Immutable data — never alter, round, or invent a figure
 
@@ -59,7 +87,11 @@ Use `knowledge/canon/canon.css` (link it; put `class="canon"` on the root). **Re
 
 ## 6 · Output
 
-A single self-contained HTML file. If producing the register spread, make the three switchable on one screen — the fixed content (§3) identical across all three; only the register (§2) changes.
+**One self-contained HTML file per band — three files, not one switchable screen.** (Superseded
+2026-07-05: the old single-file-with-a-toggle instruction let one pass anchor on itself across
+bands, defeating the isolation the divergence probe depends on.) Each file is produced from **this
+same signed contract**, in a cold pass that cannot see the other two bands. The fixed content (§3
+data, §4 rules) must be identical across all three; only what §2 licenses may change.
 
 ---
 

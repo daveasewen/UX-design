@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Northgate Timber Ltd — Payments (Expressive)</title>
+<link rel="stylesheet" href="../../canon/canon.css">
+<style>
+  /* =====================================================================
+     EXPRESSIVE BAND — SME Payments (Northgate Timber Ltd)
+     Register = §2 "invent — MAX inference, cardinal curbs only."
+     Foundational curbs released here: composition, density, motion,
+     red-forwardness. Cardinal curbs held throughout (see report):
+     square corners, retrieved brand colour only, Univers + ramp, full
+     a11y/safety floor. Every derived value is flagged inline where used.
+     ===================================================================== */
+
+  .payments{
+    --font: var(--typography-font-family-default);
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 0 96px;
+  }
+
+  /* ---------------------------------------------------------------
+     ANGULAR MASTHEAD — a diagonal-cut red band. Composition device:
+     derives the 22°/45° angle vocabulary named in brand-principles.md
+     ("Angular… derived from the 90° and 45° angles of the Hexagon and
+     the 22° angle from the typography"). The clip-path itself is a new
+     shape (not in canon), so:
+     FLAGGED CANDIDATE: derived from brand-principles.md "Angular" (45°/22°
+     cut) + --color-primary (retrieved token, not typed) for the fill.
+     No border-radius used anywhere in the cut — remains square-cornered
+     geometry, just an angled clip, which is compatible with the
+     square-corner rule (no rounding introduced).
+     --------------------------------------------------------------- */
+  .p-masthead{
+    position: relative;
+    background: var(--accent);
+    color: var(--text-reverse);
+    padding: 28px 40px 64px;
+    clip-path: polygon(0 0, 100% 0, 100% 78%, 0 100%);
+    margin-bottom: -28px;
+    overflow: hidden;
+  }
+  .p-masthead::after{
+    /* second angled ply in the ink tone — reinforces the angular language without adding any new colour */
+    content: "";
+    position: absolute; inset: 0;
+    background: var(--ink);
+    clip-path: polygon(0 88%, 100% 62%, 100% 66%, 0 92%);
+    opacity: .18;
+    pointer-events: none;
+  }
+  .p-masthead__row{ display:flex; align-items:flex-start; justify-content:space-between; gap:24px; flex-wrap:wrap; }
+  .p-masthead__id{ display:flex; flex-direction:column; gap:2px; }
+  .p-masthead__biz{ font:500 15px/1.3 var(--font); color:var(--text-reverse); }
+  /* NOTE: full-opacity white throughout the masthead — opacity-faded white on --accent (#DB0011)
+     was checked and FAILS AA (opacity:.75 blend measures ~3.28:1, opacity:.85 ~3.97:1; both < 4.5:1
+     required for this text size). The a11y floor is cardinal even at expressive, so no fading of
+     reverse text on the red band is used anywhere in this file — weight/size carry the hierarchy
+     instead of opacity. */
+  .p-masthead__acct{ font:400 13px/1.3 var(--font); color:var(--text-reverse); font-variant-numeric:tabular-nums; }
+  .p-masthead__date{ font:400 13px/1.3 var(--font); color:var(--text-reverse); text-align:right; }
+
+  /* ---------------------------------------------------------------
+     HERO NUMBER — the current balance driven to a very large scale.
+     display/amount has no dedicated type token (gap already logged
+     against .cn-account-card .balance, "flagged in the gap report:
+     display/amount + money-format"); this pushes the SAME primitive
+     further (up-scaled) rather than inventing a separate type ramp.
+     FLAGGED CANDIDATE: font-size 72px is an EXTENSION of the existing
+     unlabelled display/amount primitive (30px, tabular-nums, -0.01em,
+     seen in Account-card) — same family/weight/numeric-features, just
+     scaled up for expressive emphasis. No new typeface, no new weight
+     token: font-family and font-weight both retrieved as-is.
+     --------------------------------------------------------------- */
+  .p-hero{ margin-top: 8px; }
+  .p-hero__label{ font:500 14px/1.3 var(--font); color: var(--text-reverse); margin-bottom:4px; }
+  .p-hero__value{
+    font:400 72px/1 var(--font);
+    color: var(--text-reverse);
+    letter-spacing:-.02em;
+    font-variant-numeric: tabular-nums;
+    display:flex; align-items:baseline; gap:14px; flex-wrap:wrap;
+  }
+  .p-hero__delta{ font:500 20px/1.2 var(--font); color: var(--text-reverse); }
+  .p-hero__meta{ display:flex; gap:28px; margin-top:18px; flex-wrap:wrap; }
+  .p-hero__meta-item{ display:flex; flex-direction:column; gap:2px; }
+  .p-hero__meta-k{ font:400 12px/1.2 var(--font); color:var(--text-reverse); }
+  .p-hero__meta-v{ font:500 17px/1.2 var(--font); color:var(--text-reverse); font-variant-numeric:tabular-nums; }
+
+  /* ---------------------------------------------------------------
+     COVERAGE STRIP — the buffer stated as an editorial pull-quote
+     rather than a plain summary row. Composition licence: expressive
+     is allowed to invent layout/emphasis. Figure fidelity held:
+     numbers below are verbatim from §3 (122,450 / 49,702 / 72,748).
+     --------------------------------------------------------------- */
+  .p-coverage{
+    display:flex; align-items:center; gap:32px; flex-wrap:wrap;
+    background: var(--surface);
+    border: var(--border-width-medium) solid var(--text-default);
+    padding: 24px 28px;
+    margin: 0 40px 40px;
+    position: relative;
+    z-index: 1;
+  }
+  .p-coverage__num{ font:400 40px/1 var(--font); color:var(--accent); font-variant-numeric:tabular-nums; letter-spacing:-.01em; white-space:nowrap; }
+  .p-coverage__copy{ flex:1; min-width:240px; font:400 17px/1.5 var(--font); color:var(--text-default); }
+  .p-coverage__copy strong{ font-weight:500; }
+  .p-coverage__math{ font:400 13px/1.5 var(--font); color:var(--muted); font-variant-numeric:tabular-nums; }
+
+  /* ---------------------------------------------------------------
+     SECTION SPINE — a bold red rule + oversized eyebrow leads each
+     section, instead of the quiet .c-eyebrow default. Extends the
+     retrieved --accent and --font tokens; no new colour.
+     --------------------------------------------------------------- */
+  .p-section{ padding: 0 40px; margin-top: 56px; }
+  .p-section__head{ display:flex; align-items:baseline; gap:16px; border-bottom: var(--border-width-large) solid var(--text-default); padding-bottom:14px; margin-bottom:24px; }
+  .p-section__num{ font:500 13px/1 var(--font); color: var(--accent); }
+  .p-section__title{ font:400 28px/1.1 var(--font); color:var(--text-default); letter-spacing:-.01em; }
+  .p-section__sub{ font:400 14px/1.4 var(--font); color:var(--muted); margin-left:auto; text-align:right; }
+
+  /* ---------------------------------------------------------------
+     APPROVAL QUEUE — dense, asymmetric grid: high-value item gets a
+     visually dominant treatment (larger card, red-forward accent bar)
+     vs. the standard item. Derived from --accent (retrieved) as a
+     LEFT ACCENT BAR — this "accent bar" motif does not exist in canon
+     as a named component.
+     FLAGGED CANDIDATE: left accent-bar treatment on high-value approval
+     rows, derived from --accent (brand red, retrieved) + border-width
+     tokens (--border-width-large, retrieved from layout.json). No new
+     hex introduced.
+     --------------------------------------------------------------- */
+  .p-approvals{ display:flex; flex-direction:column; gap:16px; }
+  .p-approval{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 20px 24px;
+    display:flex; align-items:center; gap:20px; flex-wrap:wrap;
+    transition: background var(--ease-fast), transform var(--press);
+  }
+  .p-approval--high{
+    border-left: 6px solid var(--accent);
+    background: var(--surface);
+  }
+  .p-approval__id{ flex:1 1 240px; min-width:0; display:flex; flex-direction:column; gap:6px; }
+  .p-approval__payee{ font:500 19px/1.25 var(--font); color:var(--text-default); }
+  .p-approval__meta{ font:400 13px/1.4 var(--font); color:var(--muted); }
+  .p-approval__requested{ font:400 12px/1.4 var(--font); color:var(--muted); }
+  .p-approval__amount{ font:500 30px/1 var(--font); color:var(--text-default); font-variant-numeric:tabular-nums; letter-spacing:-.01em; flex:none; }
+  .p-approval--high .p-approval__amount{ color:var(--accent); }
+  .p-approval__actions{ display:flex; gap:10px; flex:none; }
+
+  /* pulse affordance on the awaiting-approval accent bar — motion
+     licence used here (foundational curb released at expressive).
+     Purely decorative signal, NOT the sole means of conveying status
+     (the "Awaiting approval" text label + button remain the carriers
+     of meaning — 1.4.1 held). Respects reduced-motion below. */
+  @keyframes p-pulse-bar{ 0%,100%{ opacity:1; } 50%{ opacity:.55; } }
+  .p-approval--high{ position:relative; }
+  .p-approval--high::before{
+    content:"";
+    position:absolute; left:-1px; top:0; bottom:0; width:6px;
+    background:var(--accent);
+    animation: p-pulse-bar 2.4s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce){
+    .p-approval--high::before{ animation:none; }
+  }
+
+  /* ---------------------------------------------------------------
+     SCHEDULED LEDGER — dense data table, canon .cn-table primitive
+     composed at higher density than the reference snippet's default
+     spacing. Cell padding tightened via local vars only (component
+     already exposes --cell-py/--cell-px as its own density dial).
+     --------------------------------------------------------------- */
+  .p-ledger{ --cell-py: 8px; --cell-px: 14px; }
+  .p-ledger table{ width:100%; }
+
+  /* ---------------------------------------------------------------
+     CTA row — canon .cn-button primary/tertiary, unmodified.
+     --------------------------------------------------------------- */
+  .p-cta{ display:flex; justify-content:flex-end; gap:12px; padding: 40px 40px 0; }
+
+  /* ---------------------------------------------------------------
+     MODAL (high-value confirmation) — canon .cn-modals, unmodified
+     structurally; content follows §4's mandatory confirm step for the
+     £45,200 payroll run.
+     --------------------------------------------------------------- */
+  .p-modal-figure{ font:400 34px/1.1 var(--font); color:var(--text-default); font-variant-numeric:tabular-nums; margin:4px 0 18px; }
+
+  @media (max-width: 760px){
+    .p-masthead{ padding:24px 20px 56px; }
+    .p-coverage{ margin:0 20px 32px; flex-direction:column; align-items:flex-start; }
+    .p-section{ padding:0 20px; }
+    .p-cta{ padding:32px 20px 0; }
+    .p-hero__value{ font-size:48px; }
+    .p-approval__amount{ font-size:24px; }
+  }
+</style>
+</head>
+<body class="canon">
+<main class="payments">
+
+  <!-- =================================================================
+       MASTHEAD + HERO — cash position, 12 May 2026 (§3 verbatim)
+       ================================================================= -->
+  <header class="p-masthead">
+    <div class="p-masthead__row">
+      <div class="p-masthead__id">
+        <span class="p-masthead__biz">Northgate Timber Ltd</span>
+        <!-- masked account ref: last-4 only, sort code fully masked, verbatim from §3 -->
+        <span class="p-masthead__acct">Business current account ···· 8842 · sort code ··–··–··</span>
+      </div>
+      <div class="p-masthead__date">As of 12 May 2026</div>
+    </div>
+
+    <div class="p-hero">
+      <div class="p-hero__label">Current balance</div>
+      <div class="p-hero__value">
+        £122,450
+        <span class="p-hero__delta">+£2,450 today</span>
+      </div>
+      <div class="p-hero__meta">
+        <div class="p-hero__meta-item">
+          <span class="p-hero__meta-k">Opening</span>
+          <span class="p-hero__meta-v">£120,000</span>
+        </div>
+        <div class="p-hero__meta-item">
+          <span class="p-hero__meta-k">Inflows today</span>
+          <span class="p-hero__meta-v">+£11,650</span>
+        </div>
+        <div class="p-hero__meta-item">
+          <span class="p-hero__meta-k">Outflows today</span>
+          <span class="p-hero__meta-v">−£9,200</span>
+        </div>
+        <div class="p-hero__meta-item">
+          <span class="p-hero__meta-k">Est. closing</span>
+          <span class="p-hero__meta-v">£124,000</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Coverage pull-quote — figures verbatim: 122,450 − 49,702 = 72,748, covered through May -->
+  <section class="p-coverage" aria-label="Coverage">
+    <div class="p-coverage__num">£72,748</div>
+    <div class="p-coverage__copy">
+      <strong>Buffer, covered through May.</strong> Current balance minus what's scheduled this month leaves headroom into June — nothing scheduled beyond May draws on it yet.
+      <div class="p-coverage__math">£122,450 − £49,702 scheduled = £72,748</div>
+    </div>
+  </section>
+
+  <!-- =================================================================
+       AWAITING APPROVAL — two items, high-value one flagged + gated
+       ================================================================= -->
+  <section class="p-section" aria-labelledby="p-approvals-h">
+    <div class="p-section__head">
+      <span class="p-section__num">01</span>
+      <h2 class="p-section__title" id="p-approvals-h">Awaiting your approval</h2>
+      <span class="p-section__sub">2 payments · £49,702 total</span>
+    </div>
+
+    <div class="p-approvals cn-button">
+      <!-- HIGH VALUE — payroll run, requires confirmation step per §4 (no one-click approve) -->
+      <article class="p-approval p-approval--high">
+        <div class="p-approval__id">
+          <span class="p-approval__payee">BrightHire Payroll Ltd</span>
+          <span class="p-approval__meta">Payroll · monthly run · to ···· 7730</span>
+          <span class="p-approval__requested">Awaiting approval — Sarah Chen, 2 days ago</span>
+        </div>
+        <div class="p-approval__amount">£45,200</div>
+        <div class="p-approval__actions">
+          <button class="btn tertiary" type="button">Review</button>
+          <!-- opens .p-modal-payroll — confirmation step, not a direct approve -->
+          <button class="btn primary" type="button" onclick="document.getElementById('p-modal-payroll').classList.add('open')">Approve</button>
+        </div>
+      </article>
+
+      <!-- standard value — single-click approve permitted (not high-value) -->
+      <article class="p-approval">
+        <div class="p-approval__id">
+          <span class="p-approval__payee">Amazon Business</span>
+          <span class="p-approval__meta">Supplier · card &amp; fulfilment · to ···· 4021</span>
+          <span class="p-approval__requested">Awaiting approval — Sarah Chen, 2 days ago</span>
+        </div>
+        <div class="p-approval__amount">£4,502</div>
+        <div class="p-approval__actions">
+          <button class="btn tertiary" type="button">Review</button>
+          <button class="btn primary" type="button">Approve</button>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- =================================================================
+       SCHEDULED — canon Table, card-collapse variant, dense
+       ================================================================= -->
+  <section class="p-section" aria-labelledby="p-scheduled-h">
+    <div class="p-section__head">
+      <span class="p-section__num">02</span>
+      <h2 class="p-section__title" id="p-scheduled-h">Scheduled ahead</h2>
+      <span class="p-section__sub">5 payments · £106,302 total</span>
+    </div>
+
+    <div class="cn-table p-ledger">
+      <div class="wrap">
+        <div class="scroll" tabindex="0" role="region" aria-label="Scheduled payments, scrollable">
+          <table data-headers="all">
+            <caption>
+              Scheduled payments
+              <span class="sub">Northgate Timber Ltd · business current account ···· 8842</span>
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Payee</th>
+                <th scope="col">Category</th>
+                <th scope="col">Account</th>
+                <th scope="col">Status</th>
+                <th scope="col" class="num">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row" data-label="Date">15 May 2026</th>
+                <td data-label="Payee"><div class="v">Amazon Business</div></td>
+                <td data-label="Category"><div class="v">Supplier · card &amp; fulfilment</div></td>
+                <td data-label="Account"><div class="v">···· 4021</div></td>
+                <td data-label="Status"><div class="v">Awaiting approval</div></td>
+                <td data-label="Amount" class="num"><div class="v">£4,502</div></td>
+              </tr>
+              <tr>
+                <th scope="row" data-label="Date">22 May 2026</th>
+                <td data-label="Payee"><div class="v">BrightHire Payroll Ltd</div></td>
+                <td data-label="Category"><div class="v">Payroll · monthly run</div></td>
+                <td data-label="Account"><div class="v">···· 7730</div></td>
+                <td data-label="Status"><div class="v">Awaiting approval</div></td>
+                <td data-label="Amount" class="num"><div class="v">£45,200</div></td>
+              </tr>
+              <tr>
+                <th scope="row" data-label="Date">22 Jul 2026</th>
+                <td data-label="Payee"><div class="v">HMRC — PAYE</div></td>
+                <td data-label="Category"><div class="v">Tax · PAYE / NIC</div></td>
+                <td data-label="Account"><div class="v">···· 0001</div></td>
+                <td data-label="Status"><div class="v">Scheduled</div></td>
+                <td data-label="Amount" class="num"><div class="v">£2,200</div></td>
+              </tr>
+              <tr>
+                <th scope="row" data-label="Date">12 Aug 2026</th>
+                <td data-label="Payee"><div class="v">British Gas Business</div></td>
+                <td data-label="Category"><div class="v">Utilities · electricity &amp; gas</div></td>
+                <td data-label="Account"><div class="v">···· 5560</div></td>
+                <td data-label="Status"><div class="v">Scheduled</div></td>
+                <td data-label="Amount" class="num"><div class="v">£4,200</div></td>
+              </tr>
+              <tr>
+                <th scope="row" data-label="Date">09 Sep 2026</th>
+                <td data-label="Payee"><div class="v">Ravenscroft Properties</div></td>
+                <td data-label="Category"><div class="v">Rent · quarterly lease</div></td>
+                <td data-label="Account"><div class="v">···· 3318</div></td>
+                <td data-label="Status"><div class="v">Scheduled</div></td>
+                <td data-label="Amount" class="num"><div class="v">£50,200</div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="hint"><span class="wide">Scroll horizontally on narrow screens, or resize below 600px to see the card layout. </span>Scheduled total: £106,302 — matches the sum of the five rows above.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="p-cta cn-button">
+    <button class="btn tertiary" type="button">View all payments</button>
+  </div>
+
+  <!-- =================================================================
+       HIGH-VALUE CONFIRMATION MODAL — required by §4 for the £45,200
+       payroll run. Canon .cn-modals, unmodified structure.
+       ================================================================= -->
+  <div class="cn-modals">
+    <div class="overlay" id="p-modal-payroll" role="dialog" aria-modal="true" aria-labelledby="p-modal-title" aria-describedby="p-modal-desc">
+      <div class="dialog">
+        <button class="close" type="button" aria-label="Close" onclick="document.getElementById('p-modal-payroll').classList.remove('open')">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.3 5.71 12 12l6.3 6.29-1.41 1.42L10.59 13.4 4.3 19.7 2.88 18.3 9.17 12 2.88 5.71 4.3 4.29l6.29 6.3 6.29-6.3z"/></svg>
+        </button>
+        <h2 id="p-modal-title">Confirm high-value approval</h2>
+        <p id="p-modal-desc">You're approving a payroll run to BrightHire Payroll Ltd (account ···· 7730). This is a high-value payment and can't be undone once confirmed.</p>
+        <p class="p-modal-figure">£45,200</p>
+        <div class="actions">
+          <button class="btn primary" type="button">Confirm approval</button>
+          <button class="btn secondary" type="button" onclick="document.getElementById('p-modal-payroll').classList.remove('open')">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+</body>
+</html>

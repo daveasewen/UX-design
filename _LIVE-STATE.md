@@ -68,15 +68,28 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
 
 ## OPEN — propagation gaps + parked threads
 
-- **⚠️ PROPAGATION GAP:** the product vision still speaks the OLD looks-language — `ADR-0006` +
-  `_VISION-iteration-machine_2026-07-03.html` say "cool/warm/hot register switch" with surface-band
-  moments (the mock even has a `border-radius:10px` cardinal violation). Reconcile with §9
-  inference-def when next in that area.
-- **No worked spread exists under the new inference definition yet** — the looks→inference shift
-  landed in the charter only.
-- **Divergence probe — PARKED** behind the missing inference-era spread. Build a real
-  retrieve/extend/invent spread on one screen first; the probe then measures **inference
-  separation** (tier/candidate count), not look-distance.
+- **⚠️ PROPAGATION GAP (partially closed):** the product vision still speaks the OLD looks-language —
+  `ADR-0006` + `_VISION-iteration-machine_2026-07-03.html` say "cool/warm/hot register switch" with
+  surface-band moments (the mock even has a `border-radius:10px` cardinal violation) — **still
+  open, not yet touched.** One instance of the gap **was** reconciled 2026-07-05:
+  `_TEST-BRIEF-v2-sme-payments.md` §2 rewritten from look-language (surfaces/hero/gradients) to §9
+  inference-language (retrieve/extend/invent + cardinal/foundational curbs). The vision doc + ADR-0006
+  itself remain unreconciled — do that when next in that area.
+- **✅ Worked spread — DONE 2026-07-05, one instance.** First retrieve/extend/invent spread under
+  the §9 inference definition: SME Payments screen, three bands generated in isolated parallel
+  passes. Result: cardinal curbs (brand colour, square corners, correctness data) held with **zero**
+  violations across all three (grep-verified, not just self-reported); foundational curbs
+  (composition, motion, component-vocabulary purity) diverged monotonically with the register, as
+  predicted. One gap found (no logo/masterbrand in any band — a contract-scope issue, not a
+  register failure); one process finding (an agent self-report claimed a flagged comment that
+  wasn't actually in the file — verify artifacts, not reports). Full writeup + probe:
+  `knowledge/_fitness-test/register-spread-2026-07-05/_PROBE-and-selfcheck.md`; artifacts
+  `sober.html`/`balanced.html`/`expressive.html` in the same folder. **This is one spread, one
+  screen — §9/§9a's "proven" status stays deferred (see the audit-deferred entry below) until more
+  spreads land and Dave has eyeballed the actual HTML.**
+- **Divergence probe — first real run done 2026-07-05** (structural/grep-based, not the full
+  novelty-scoring tooling named in §9). See the writeup above. The formal tooling (threshold
+  calibration, automated novelty count) is still named-not-built.
 - **Named-not-built harness machinery** (§9/§9a): isolated generation · divergence probe · mode-B
   brand self-check · the mode dial.
 - **PM-KG MVP** (`ADR-0007`): build `_build_live_state.py` + the staleness gate — own focused
@@ -102,11 +115,15 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
     accessible bank in the world* (bar leads, not complies; ratchets over time).
   - **⚠️ AUDIT-DEFERRED verification (charter §9/§9a) — DO NOT FORGET (Dave, 07-05).** The
     inference-ramp *framing* is vouched, but its *proven/safe* status is **deferred** pending: (a)
-    the first worked retrieve/extend/invent spread on one screen, and (b) the divergence probe +
-    isolated generation + mode-B self-check (all named-not-built). These are the same items in the
-    "no worked spread" / "named-not-built harness machinery" bullets above — now carrying an
-    explicit audit obligation, not just a build backlog. Re-audit §9/§9a's proven status once a
-    spread exists.
+    the first worked retrieve/extend/invent spread on one screen — **✅ first instance done
+    2026-07-05**, see the worked-spread entry above; (b) the divergence probe + isolated generation
+    + mode-B self-check — **✅ first-pass run done 2026-07-05** (isolated generation used for real;
+    probe was structural/grep-based, not the full novelty-scoring tooling; mode-B self-check run
+    manually against the six principles). **Still not "proven"** — one screen, one spread, no
+    calibrated tooling, no rendered visual check, Dave hasn't eyeballed the artifacts yet. Re-audit
+    §9/§9a's proven status once Dave has reviewed `_PROBE-and-selfcheck.md` + the three HTML files
+    and, ideally, a second spread on a different (less cardinal-heavy) screen exists to check the
+    probe isn't just measuring "payments is always narrow-road."
   - **Re-audit obligation (two amended nodes).** ADR-0006 (register dial corrected to §9 inference
     ramp) and `derivation-governance` (staged multi-human promotion path) were **amended** in the
     audit; their amended text **re-enters `unaudited`** and must be re-audited in a later batch.
