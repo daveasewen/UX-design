@@ -38,9 +38,23 @@ Recorded two ways per node (ledger line in `knowledge/_DECISION-AUDIT.md` + stat
 completed work. Two of the four verdicts (§4, §4b) trace to the **same root cause as ADR-0003: the KG
 was never fully ingested.** That thread is now the load-bearing unlock behind multiple deferrals.
 
+## Also landed this session (post-audit)
+
+- **Ingestion assessment** — durable cockroach doc `knowledge/_INGESTION-ASSESSMENT_2026-07-05.md`
+  (file-level survey). Headline: 3 siloed strands + one narrow graph; the **Sutherland export already
+  arrived 2026-06-17** so the token migration is **unblocked** (the gaps manifest was stale — now
+  corrected). Target + phased path in `_LIVE-STATE` PLANNED/TARGET.
+- **State machine now records FUTURE/TARGET states** (Dave ruling; extends ADR-0007) — new
+  PLANNED/TARGET section in `_LIVE-STATE`.
+- **Sutherland + output-modes recorded externally** (was being re-explained each session): Sutherland
+  = React lib reflecting the Common Toolkit, the Figma library IS its working file, our dark-mode work
+  feeds back in, build-direct is the goal; output = a two-tier dial (dumb portable HTML ↔ build-ready
+  from a prebuilt library). Memories `output-modes-portability` + `sutherland-figma-mapping`.
+
 ## On your desk
 
-- **Committed, not pushed** — Tier A batch 3. Stale `.git` locks cleared. **Push via GitHub Desktop.**
+- **3 commits, not pushed** — `9260a56` (Tier A batch 3) · `67f2106` (ingestion assessment +
+  future-states) · `251b586` (Sutherland/output-modes). Stale `.git` locks cleared. **Push via GitHub Desktop.**
 - **Tier A is CLEAN** ✅ — the audit milestone. No more Tier A nodes to adjudicate.
 
 ## Queue next (fresh session)

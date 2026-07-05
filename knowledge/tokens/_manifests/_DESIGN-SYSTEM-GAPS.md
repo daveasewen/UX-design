@@ -2,7 +2,13 @@
 
 > Consolidated from the full component-ingest sweep of the HSBC Common Toolkit "Gaps and edits" branch (fileKey `Cgbtrmfp15ruNFkIAClpkI`). Each item lists the evidence (components that surfaced it), the impact, and the recommended action. Prioritised P1→P5. Per-component detail lives in `knowledge/components/*.meta.json` and `_INGEST-NOTES.md`; per-token rebinds in `depricate-replacement-map.json` (`$usage_audit`, `$interactive_namespace_note`, `$tabs_wiring_note`).
 
-> **⏳ PARKED (~1–2 weeks, blocked on the Sutherland tokens JSON) — Sutherland token migration.** This is NOT the immediate next task; it can't start until the JSON exists. Sutherland will become the canonical token source, imported into Figma as a couple of modes. When the Sutherland tokens JSON is exported: (1) drop in `knowledge/tokens/_raw/`, reconcile into the store, re-validate all component metas; (2) check whether Sutherland supplies the **P1** subtle-surface family and **P4** `rag/neutral-tint` (likely closes those gaps); (3) build the final rebind worklist + deletion-safety check. **Order is strict: import modes → rebind every in-use depricate (layers + aliases) to its live target → re-verify zero references → THEN delete. Importing modes is NOT rebinding; do not delete on import.** Tabs (P3) is a good first rebind candidate.
+> **⚠️ CORRECTION 2026-07-05 — NO LONGER BLOCKED.** The claim below that this is "blocked on the
+> Sutherland tokens JSON … can't start until the JSON exists" is **STALE**: the export **landed
+> 2026-06-17** (`tokens/_raw/brand/` + `semantic-color/` + `semantic-scale/`; diffs + fixtures already
+> computed). The migration is **unblocked and is our work now, not a wait.** Full state + phased plan:
+> **`knowledge/_INGESTION-ASSESSMENT_2026-07-05.md`**. Read the strike-through below as history.
+>
+> **⏳ ~~PARKED (~1–2 weeks, blocked on the Sutherland tokens JSON)~~ — Sutherland token migration.** ~~This is NOT the immediate next task; it can't start until the JSON exists.~~ Sutherland will become the canonical token source, imported into Figma as a couple of modes. When the Sutherland tokens JSON is exported: (1) drop in `knowledge/tokens/_raw/`, reconcile into the store, re-validate all component metas; (2) check whether Sutherland supplies the **P1** subtle-surface family and **P4** `rag/neutral-tint` (likely closes those gaps); (3) build the final rebind worklist + deletion-safety check. **Order is strict: import modes → rebind every in-use depricate (layers + aliases) to its live target → re-verify zero references → THEN delete. Importing modes is NOT rebinding; do not delete on import.** Tabs (P3) is a good first rebind candidate.
 
 ---
 
