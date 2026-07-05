@@ -4,6 +4,12 @@
 
 ## Context
 
+**Intent, in one line: this is *state management for project knowledge.*** Current state, recorded
+transitions, one source of truth with derived views, no stale reads — the same discipline you'd
+apply to application state, pointed at the project's own decisions instead of a UI. Everything
+below (supersession edges, `_LIVE-STATE`, the staleness gate, the unaudited→vouched states) is that
+one idea made concrete.
+
 A cold-start session (2026-07-05) wasted most of a sitting reasoning from a **retired
 artifact** (`sme-payments-registers.html`, the old looks-based register dial) as if it were
 live, because nothing marked it dead and nothing recorded that the §9 looks→inference ruling
