@@ -1,90 +1,79 @@
 # Good morning, Dave ☕
 
-*Session briefing — written end of 2026-07-04, session "Flexing engine, the register
-inference-ramp & the review instrument." Supersedes the 07-03 "Toolkit tranche 1" brief
-(that thread is paused, not dropped — see On your desk).*
+*Session briefing — written end of 2026-07-05, session "From provenance to project-memory: the
+decision-graph turn." Supersedes the 07-04 "Flexing engine / inference-ramp / review instrument"
+brief. **Read this, then `_LIVE-STATE.md` (new — the live/dead/open ledger), then
+`knowledge/README.md`.***
 
 ## The session in one line
 
-A strategy-and-governance session, not an ingestion one: the product got a name and shape
-(a *flexing* engine, ADR-0006), the register became an *inference ramp* with real machinery
-(charter §9), your sketch became a clickable front-end, D2 turned into a real scoped test with
-engaged colleagues, and we built a reusable review instrument and used it to reconcile the
-three cold-start docs — 6 commits, all pushed.
+Started tightening the register's provenance (§9a) and turned up a deeper bug — a cold start had
+been reasoning from a *retired* artifact — which reframed the whole session into **fixing how the
+project remembers itself**: a supersession discipline, a temporal decision-graph (ADR-0007), a
+`_LIVE-STATE` spine that successive sessions inherit, and a guard so the graph can't launder
+unaudited decisions as vetted.
 
 ## What landed
 
-1. **The product shape — a *flexing* engine (ADR-0006).** Re-examined "designer-in-a-box vs
-   multidisciplinary agents" (desk research recovered, not re-run) and reaffirmed engine-first
-   on necessary-vs-optional + reversibility grounds. Product = ONE engine that flexes by dials
-   per work-type: **floor** (churn / "vibe" — BA-instruction → compliant screen = standards-
-   compliant Figma Make, the wedge) and **ceiling** (novel / "analysis" — discovery → journey).
-   Library compounds via cluster-level promote (least-proven, highest-value bit).
+1. **§9a — provenance of "reads HSBC."** The register's vibe-terms were de-anchored (drifting to
+   the model's priors). Decomposed into named sources — character → `brand-principles.md` (the
+   six principles), the pointer §9 was missing — plus a per-band **Brand-source stop** column and
+   **flag-where-silent** as an advisory behaviour. Record: `knowledge/_PROVENANCE-inference-levels_2026-07-04.md`.
 
-2. **Front-end vision realised — the iteration machine** (`_VISION-iteration-machine_2026-07-03.html`).
-   Your notebook sketch → a clickable loop: input → shape (analysis/vibe) → result (cool/warm/hot
-   register spread) → refine → loop. **Facade, not wired** — an alignment artifact; palette
-   retrieved real, everything else simulated. Proves nothing; the proof is the gates + GOV.UK +
-   the real test.
+2. **Two harness modes (§9a).** Your reframe: converge/ship = **mode B** advisory brand self-check
+   (ADOPTED) · explore/noodle = **mode A** open human gestalt (OPEN). **Mode is a first-class
+   harness dial**, mapping onto the flexing engine's floor/ceiling. Memory: `harness-two-modes`.
 
-3. **Register = an inference ramp (charter §9).** The big one. Register redefined as the **level
-   of inference** (sober = retrieve · balanced = extend · expressive = invent), realised as a
-   curb ramp with a floor: **cardinal** curbs (colour, type, angle, logo, a11y, safety) never
-   lift; **foundational** curbs (composition, density, motion, red-forwardness…) lift only at
-   expressive. Two machinery pieces specced but **NOT built**: isolated generation (kills the
-   pollution you spotted) + a divergence probe. Resolved the parked §4 register-reach question.
+3. **Context-rot root cause found + fixed.** A cold start resurrected the retired looks-based
+   register dial (`sme-payments-registers.html`) — root cause = **an unrecorded supersession
+   edge**. Fixes: tombstone banner on the dead artifact; **supersession discipline** now
+   non-negotiable in `AGENTS.md`; live-vs-dead state in memory.
 
-4. **D2 shaped into a real test.** You've spoken to two colleagues (both novel work). First test
-   = a **scoped novel-work screen**: they own the discovery, the engine is bounded to generate →
-   enforce → compose → register → promote, success + a comparison baseline agreed up front.
-   Churn/floor test = the parallel leadership track. Plan: `_TEST-PLAN-novel-screen-proof.md`.
+4. **ADR-0007 — project memory as a temporal decision-graph, lightweight-first.** Desk research
+   (Graphiti/Zep bitemporal `t_valid→t_invalid`; ADR-as-KG / OIDA supersession; OpenLineage
+   lineage). Edges as front-matter → generated `_LIVE-STATE` → advisory staleness gate → Graphiti
+   as the graduation path. Load-bearing lesson: *the graph is a view over well-recorded edges; the
+   ruling-time edge discipline prevents rot, not the storage.*
 
-5. **A reusable review instrument.** A Swiss-styled dossier (frames+stages navigation, HSBC
-   colour-coded tags, GitHub-style diffs, severe filter, manual tagging) where I pre-flag
-   language and you decide; the export is a **reconciliation register** = decision record + git
-   rollback. `_REVIEW-DOSSIER-*.html`.
+5. **`_LIVE-STATE.md` — the state-retention spine.** Seeded live/dead/open ledger, wired into the
+   cold-start sequence (**GOOD-MORNING → `_LIVE-STATE` → `knowledge/README`**). Interim/hand-kept
+   until the generator exists.
 
-6. **Reconciled the cold-start trio with it.** Charter (8/8), AGENTS.md (5/5), README (5/5) —
-   all agreed, enacted, committed, recorded (`_RECONCILIATION-*-language.md`). **Two were
-   propagation catches** — the charter §9 edit left AGENTS' T3 contradicting it; ADR-0005 had
-   left README still teaching the retired two-machine rule. The three now agree with each other.
+6. **Anti-laundering guard (ADR-0007 §5) — your catch.** Validity ≠ provenance. Every node carries
+   a validation state (`unaudited → vouched`) *separate* from lifecycle; the backlog seeds
+   **`unaudited`**; promotion = **human audit only, never derived**; the staleness gate enforces
+   consistency, never validity.
+
+7. **Git mechanism ruled.** Claude commits in terminal + clears stale `.git/*.lock`; **Dave pushes
+   via GitHub Desktop only** (terminal push hangs on creds). Supersedes the 07-02 terminal-only
+   ruling. In `AGENTS.md` + memory `git-push-method`.
 
 ## On your desk
 
-- **The novel-screen test — waiting on the colleague's brief.** When it lands (they fill a
-  brief-v2 for one screen + produce their own baseline + sign the contract before generation),
-  the engine finally meets someone else's real work. This is **D2, the #1 unlock**.
-- **Morning task flagged: "tighten the inference levels — the provenance of 'HSBC-ness'."** The
-  qualitative band terms ("must still read HSBC" etc.) need retrieval provenance, not vibes, or
-  they default to the model's priors (§5 recall-drift at the register layer). Memory:
-  `register-inference-ramp`.
-- **Build the divergence machinery** (isolated generation + divergence probe) — named-not-built;
-  the unlock for genuine innovation (your F2 question: expressive is *safe* within cardinals by
-  construction; whether it *innovates* depends on this).
-- **_NEXT-SESSION.md retired** — superseded by this doc (repointed).
-- **Parked (longer horizon):** guidance-ingestion-at-scale (the "massive-brain designer" — an
-  advisory judge that reads the guidelines per run = G5 at full scale); a11y-depth (the
-  compliance KG maps 31 SCs but the gate enforces few — "mapped not enforced" turned inward).
-- **Parallel thread paused, not dropped:** the Common Toolkit ingestion — tranche 2 (Dropdown
-  ×4) queued for a cheap-model session (memory: `common-toolkit-survey`). Separate workstream.
+- **Push before you close** — `master` is **ahead 3** (`8dbfbc4`, `7e6f024`, `a6d6ce0`) via Desktop.
+- **⚠️ The whole decision corpus is `unaudited`.** The KG now retains state, but nothing in it has
+  been checked for *correctness*. That's the open risk you named.
 
-## Queue next
+## Queue next (fresh session)
 
-1. **The colleague's screen → run the novel-screen test (D2).** Everything waits on this.
-2. **Provenance tightening** — the "HSBC-ness" morning task (charter §9 qualitative terms).
-3. **Continue the review rollout** if wanted — ADRs + runbooks next, same tool, swap the findings.
-4. **Build the divergence probe** — the real-innovation unlock.
-5. Parallel: toolkit tranche 2 (Dropdowns) on a cheap model when you want a different mode.
+1. **Decision-corpus correctness audit — THE priority.** The guard against baking bad decisions in.
+   First task = **design the audit method** (batched, fresh-context, you as judge; reuse
+   `_REVIEW-QUEUE` tiering + `_CONFIDENCE` states). Then run it in batches. Do NOT attempt in a
+   loaded context.
+2. **`_build_live_state.py` + staleness gate** — make the ledger self-generating (ADR-0007 MVP).
+3. **Divergence probe** — still parked behind the *missing inference-era spread*; and the
+   propagation gap (vision/ADR-0006/iteration-machine still speak looks vs §9 inference) is unresolved.
+4. **D2 novel-screen test** — the #1 external unlock, still waiting on the colleague's brief.
+5. Parallel: toolkit tranche 2 (Dropdowns) on a cheap model.
 
-> Next-session opener: **"Title this chat: <pick one>."** Read GOOD-MORNING.md first, then
-> `knowledge/README.md` for the build. Everything was pushed at writing. The cold-start trio
-> (charter / AGENTS / README) is now mutually consistent — trust it.
+> Next-session opener: **"Title this chat: <pick one>."** Read GOOD-MORNING.md, then `_LIVE-STATE.md`,
+> then `knowledge/README.md`. Everything today is committed; push the pending 3 via Desktop.
 
 ## The meter
 
-This was the session where the project stopped being "a very good HSBC knowledge base" and
-became a *shaped* thing: a named product (flexing engine), a governed generation model (the
-inference ramp), a real proof lined up (the colleague's screen), and a governance-hygiene loop
-that keeps the docs honest. The review instrument compounding is the tell — two of ten findings
-were staleness *we* created that same day, caught automatically. The next real progress is a
-conversation (the colleague's brief) and a build (the divergence probe), not more documents.
+This was the session the project got a spine for its *own* memory — the same recursion that made
+the design system self-validating, now pointed at the project's decisions. The tell that it's
+working: we caught the rot mid-session, turned it into governance (a discipline + a ledger), and
+then caught the *next* trap before building it — that a graph launders unaudited decisions. The
+real next move is a **conversation-light, judgment-heavy audit**, run fresh, in batches — not more
+docs.
