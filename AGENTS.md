@@ -54,6 +54,14 @@ A **governed design-system engine**: canon (tokens + gated components) + criteri
   handoff note so a cold-start agent can resume.
 - Commits are conventional (`feat:`, `fix:`, `docs:`, `chore:`); provide a
   paste-ready summary + description with every commit.
+- **Supersession discipline (non-negotiable).** Any ruling that changes a definition
+  or retires an approach must, in the same pass: (a) **tombstone** every artifact it
+  kills — a `⚠️ SUPERSEDED <date> — Superseded-by: <ref>` banner at the top of the file
+  (so a cold-start grep can't resurrect it); and (b) **log the propagation gap** — which
+  downstream docs/mocks still speak the old language — in the relevant memory + handoff.
+  `superseded` is a first-class state: a live doc must never point at a dead node. The
+  review-dossier "stale" pass is the periodic catch. *(Instituted 2026-07-05 after a cold
+  start resurrected the retired looks-based register dial.)*
 
 ## Data hygiene
 
