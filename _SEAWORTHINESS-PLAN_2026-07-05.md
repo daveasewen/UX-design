@@ -22,8 +22,14 @@ phased plan **and** make the tracking un-rottable. Everything else is cargo — 
    the manifest — mostly done) + install the **end-of-session capture ritual/gate** (§ below).
 2. **Big rock #1 — Ingestion Phase 1 (Sutherland token migration).** Confirmed unblocked. Rebind +
    retire the 147 depricates, close P1/P3/P4. The convergent "finish, don't add" win.
-3. **Prove-the-core track — runs in PARALLEL.** §9 first worked retrieve/extend/invent spread on one
-   screen + divergence probe. Independent of ingestion; validates the whole engine thesis.
+3. **Prove-the-core track — runs in PARALLEL. ⏸️ PAUSED, not advancing — needs a dedicated session
+   (Dave, end of 2026-07-05).** §9 first worked retrieve/extend/invent spread ran (Sonnet + Opus,
+   plus a gravity-fix, a pure-inference diagnostic, and a hand-restyle-and-fix pass) — but the
+   result is confusing, not converging: Dave isn't sure the governed pipeline beats "AI model +
+   component library, unconstrained," and the two lineages tested were never actually a controlled
+   comparison. This is no longer a "keep iterating the prompt" task — see `_LIVE-STATE.md` OPEN →
+   "What does the §9 spread actually reveal?" for the full framing and the two live hypotheses. Do
+   not resume this track until that dedicated session happens.
 4. **Big rock #2 — PM-KG MVP (staleness gate).** `_build_live_state.py` + gate that flags targets
    whose blockers cleared but still read "blocked." Also unblocks Phase 4.
 5. **Finish + unify.** Ingestion **Phase 2** (guidelines tail; toolkit tranche 2 on cheap model) →
@@ -45,8 +51,10 @@ phased plan **and** make the tracking un-rottable. Everything else is cargo — 
 3. **Execute Ingestion Phase 1** — strict order: import modes → rebind every in-use depricate
    (`depricate-replacement-map.json`) → re-verify zero references → **then** delete. Tabs = proven
    first rebind. Own focused session.
-4. **In parallel: §9 worked spread** — one screen, retrieve vs extend vs invent, then the divergence
-   probe. Moves §9/§9a from "framing vouched" to "proven"; closes the vision's looks-language gap.
+4. **§9 worked spread — ⏸️ PAUSED, own dedicated session needed, not "next steps here."** Ran (one
+   screen, retrieve vs extend vs invent, divergence probe, gravity fix, pure-inference diagnostic,
+   hand-restyle-and-fix) but landed on a confusing result, not a "proven." See `_LIVE-STATE.md`
+   OPEN entry for the framing before touching this again.
 5. **Then PM-KG MVP** — build `_build_live_state.py` + staleness gate emitting FUTURE/TARGET states.
 6. **Then Phase 2 → 3 → 4** in order. §4 language-strip lives inside Phase 3, not as a charter tweak.
 

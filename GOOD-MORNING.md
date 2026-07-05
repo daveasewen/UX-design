@@ -1,62 +1,73 @@
 # Good morning, Dave ☕
 
 *Session briefing — written end of 2026-07-05, session "§9 worked spread — SME Payments register
-run + Opus re-test." Third execution session of the seaworthiness sequence. **Read this, then
-`_LIVE-STATE.md`, then `knowledge/_fitness-test/register-spread-2026-07-05-opus/_COMPARISON-sonnet-vs-opus.md`.***
+run, Opus re-test, restyle + audit." Read this, then `_LIVE-STATE.md` (OPEN → "What does the §9
+spread actually reveal?"), then decide if the NEXT session is the dedicated §9 session or something
+else.*
 
 ## The session in one line
 
-Ran the first §9 worked spread, you reviewed the actual HTML and found two real gaps (not just
-polish), I fixed one concretely and re-ran the whole spread on Opus to test the other — both moved
-in the right direction, verified against the files themselves, not agent self-reports.
+Ran the §9 spread all the way through (gravity fix → pure-inference diagnostic → hand-restyle onto
+HSBC canon → real bug/a11y fixes, each one caught by you asking a pointed question, not by me
+self-checking) — and your verdict at the end wasn't "converged," it was "confused." That confusion
+is real and load-bearing: it's now the top OPEN item, and you've asked for a session dedicated
+just to working out what it means, separate from continuing to iterate the prompt.
 
 ## What landed this session
 
-- **First spread (Sonnet).** Isolated 3-band generation on SME Payments. Cardinal curbs held, but
-  **you caught two real problems on eyeball review**: sober used a plain, never-reviewed canon
-  utility instead of the purpose-built, gate-reviewed `.cn-account-card` for the same data; and
-  expressive wasn't bold enough. You also asked whether a build→review→correct loop exists (it
-  doesn't) and floated testing Opus.
-- **Root-caused finding 1 precisely.** Canon.css already encodes a real rigour hierarchy through
-  naming alone — `.cn-*` = auto-generated from gate-reviewed reference snippets; `.c-*` = a
-  hand-authored, never-reviewed utility layer. The brief never said "prefer the reviewed one." Fixed:
-  `_TEST-BRIEF-v2-sme-payments.md` §2 now states this as a mechanical rule, not an adjective.
-- **Re-ran the full 3-band spread on Opus** (your call: "full 3-band spread, Opus"), same fixed
-  contract, same isolation discipline (cold passes, no visibility into siblings or the earlier
-  Sonnet run). **Verified against the files:** all three bands now retrieve `.cn-account-card`;
-  sober dropped to **zero** never-reviewed-utility usage (from relying on it before). Expressive
-  reads as a much bigger swing in its own report ("the reckoning wall" — full-bleed bands, 76px
-  hero figure, red slab as deliberate centre of gravity) — **this needs your eyeball, not my grep.**
-  Cardinal curbs held with zero violations on both models throughout.
-- **Bonus catch:** two independent Opus passes flagged the same real ambiguity in the contract's
-  §3 wording (it conflated "sum of all 5 rows" with "scheduled total") — neither Sonnet pass caught
-  it. Fixed in the contract.
-- **Full writeups:** `register-spread-2026-07-05/_PROBE-and-selfcheck.md` (first pass) +
-  `register-spread-2026-07-05-opus/_COMPARISON-sonnet-vs-opus.md` (the re-run + comparison table).
-  `_LIVE-STATE.md` + memory (`register-inference-ramp`, new `spread-review-gaps-2026-07-05`) both
-  updated with the honest verdict: **promising, still not proven** — one screen, two variables
-  changed at once this round, no rendered visual check yet.
+- **Gravity-fix re-run + pure-inference diagnostic** (both already summarised in prior sessions):
+  sourced 5 external references (Linear/Stripe/Mercury/Ramp/award-fintech), re-ran expressive-v2 on
+  both models, then ran a zero-curb diagnostic (with/without those references) to find the ceiling.
+- **You picked `without-influences.html`** (the diagnostic piece with the strongest organising
+  idea — "today's arc" day-timeline + horizontal scheduled-payments timeline) and asked for it
+  restyled onto HSBC primitives.
+- **Built the restyle, then you caught three real problems in a row, each by looking, not by
+  trusting my report:**
+  1. A screenshot showed the hero balance number effectively invisible — root cause was a
+     `:root`-only token-alias block freezing to the light theme (exactly the trap canon.css
+     documents at its own line 495-496). Fixed.
+  2. You asked directly: **"did you put this through the gates or use your own inference?"**
+     Answer: inference, not gates — confirmed no `_SCREEN-GATE.md` existed and the file wasn't
+     even named `*.canon.html` so the default gate glob would've missed it either way. Ran
+     `_validate_screen.py` for real: **FAIL** (2 hex-in-comments, 3 hand-drawn icons that weren't
+     library-sourced). Fixed both, re-ran: **PASS**.
+  3. You said **"this would fail accessibility for a start."** Ran the `design:accessibility-review`
+     skill + computed real WCAG contrast ratios against canon's actual dark-theme hex values (the
+     gate's own a11y check only covers reduced-motion/target-size — a false-confidence gap, same
+     shape as the earlier state-contrast blind spot). Found 4 genuine 1.4.3 failures, all inside my
+     own hand-invented tint compositions, not canon's reviewed patterns — worst was 2.92:1 (needs
+     4.5:1). Fixed all 4 with real numbers verified, plus closed a modal keyboard-trap gap found in
+     the same pass. Re-ran gate: **PASS**.
+- **Then your actual verdict, unprompted, after all of that:** "the canon works but probably no
+  better than an AI model tied to a component library. The layouts tend to be better and the extra
+  'assumptions' or gap fillers seem better when unconstrained... I expected something like:
+  unconstrained with the right styling." You want a session dedicated to working this out, and
+  flagged we're stuck on the seaworthiness plan's §9 parallel-track line. You also said, live: **"its
+  just about crafting the rules I guess, i need to read through them"** — your own current working
+  hypothesis, not yet confirmed.
 
 ## On your desk
 
-- **Please open both sets of HTML files** — `register-spread-2026-07-05/` (Sonnet) and
-  `register-spread-2026-07-05-opus/` (Opus), especially the two `expressive.html` files
-  side-by-side. That's the actual test of "is Opus better for this kind of judgment work" — I can't
-  see it, only describe what the files claim.
+- **The reading you said you want to do:** `_FIXED-FLEX-CHARTER.md` §9 (the ramp definition) and
+  `_TEST-BRIEF-v2-sme-payments.md` §2 (the actual per-band instructions, including the gravity
+  block) — these are the exact rules behind everything generated this session.
+- **The alternative hypothesis, for when you get there:** memory `generation-mechanism-ideas` Idea 2
+  ("generate-then-normalise," parked 2026-07-01) describes almost exactly what happened by accident
+  this session (diagnostic → hand-restyle-and-fix). Worth weighing against "it's just the rules."
 - Everything committed this session, ready to push via GitHub Desktop.
 
-## Queue next (fresh session, or continue now)
+## Queue next (fresh session, dedicated — per your ask)
 
-1. **Your verdict on the Opus comparison** decides a lot: if Opus genuinely reads better here,
-   that's the first real evidence (not just an a priori assumption) for reserving Opus for
-   judgment-heavy generation per `model-selection-by-phase`.
-2. **A designed build→review→correct loop is still an open question** — worth its own test once
-   the model question settles, separate from just picking a better model.
-3. Ingestion Phase 1 (Sutherland migration) still queued whenever you want to bank it — deferred
-   again this session, not cancelled.
-4. Off critical path unless you say: D2 novel-screen (waiting on colleague), toolkit tranche 2,
+1. **"What does the §9 spread actually reveal?"** — full framing in `_LIVE-STATE.md` OPEN section.
+   Two live hypotheses to weigh, unranked: (a) rule/prompt-crafting quality — fixable by better
+   instructions, no architecture change; (b) a structural ceiling — one governed pass may just cap
+   out below a two-pass "generate free, then constrain+verify" pipeline (which is what actually
+   worked this session, unplanned). Nobody has run these as a genuinely controlled comparison yet.
+2. Ingestion Phase 1 (Sutherland migration) still queued whenever you want to bank it — not
+   cancelled, just still not this.
+3. Off critical path unless you say: D2 novel-screen (waiting on colleague), toolkit tranche 2,
    harness-modes exploration, TOV spin-off, ADR-0004 ops follow-ups.
 
-> Next-session opener: **"Title this chat: <pick one>."** Read GOOD-MORNING → `_LIVE-STATE.md` →
-> the comparison writeup if continuing the §9 thread; → `_SEAWORTHINESS-PLAN_2026-07-05.md` if
-> starting Phase 1.
+> Next-session opener: **"Title this chat: <pick one>."** Read GOOD-MORNING → `_LIVE-STATE.md` OPEN
+> entry → charter §9 + test-brief §2 if doing the dedicated §9 session; → `_SEAWORTHINESS-PLAN_2026-07-05.md`
+> if picking up Phase 1 instead (§9 track is paused there, not next-in-line).

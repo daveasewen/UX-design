@@ -100,6 +100,47 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
   check, and Dave hasn't yet confirmed the Opus expressive band actually reads more exciting. A
   designed build→review→correct loop remains unbuilt (Opus self-corrected mid-pass on one bug, but
   that's not the same as a designed loop).
+- **🔴 OPEN, TOP PRIORITY — "What does the §9 spread actually reveal?" NEEDS A DEDICATED SESSION
+  (Dave, end of 2026-07-05). This supersedes the "blocking external review" framing above — the
+  gravity-fix + diagnostic + restyle-and-fix sequence all ran, and the result is confusing, not
+  converging.** Dave's own words: "the canon works but probably no better than an AI model tied to
+  a component library. The layouts tend to be better and the extra 'assumptions' or gap fillers
+  seem better when unconstrained... I expected something like: unconstrained with the right
+  styling" — i.e. he expected the gravity-fixed *expressive-v2* band to read as roughly
+  "unconstrained-quality composition, wearing HSBC tokens," produced directly by the governed
+  pipeline. Instead: the governed expressive-v2 bands (both models) still underwhelmed against the
+  ungoverned diagnostic pieces on composition/organising-idea/gap-filling; the ungoverned pieces
+  had to go through a SEPARATE, manual restyle-and-fix pass (this session's `without-influences-
+  hsbc.html` work) to become brand-legitimate — and even that pass needed real bug fixes (a theme-
+  alias trap, 3 invented icons, 4 real WCAG contrast failures) the ungoverned model never had to
+  care about because it wasn't building inside real constraints. So the "two-step" path (generate
+  free → constrain + verify after) visibly works end-to-end, but it is NOT what §9 set out to build
+  (one governed pass that's good AND compliant) — and nobody has yet named which of these two
+  shapes the engine should actually target.
+  - **Two live hypotheses, unranked, Dave to weigh (his own framing as of this message, "its just
+    about crafting the rules I guess, i need to read through them"):**
+    (1) **Rule-crafting quality** — the gravity instruction (and the register-ramp prompts
+    generally) may simply be under-specified/weak, not structurally capped; per
+    `register-spread-2026-07-05-diagnostic/_FINDINGS.md`'s own closing line, the ungoverned run's
+    real edge was asking for "a point of view on the data's structure," while the governed prompt
+    asked to "extract patterns from named products" — a rule-wording gap, fixable by better
+    prompting, not a ceiling. Read: `_FIXED-FLEX-CHARTER.md` §9 (the ramp definition) +
+    `_TEST-BRIEF-v2-sme-payments.md` §2 (the actual per-band instructions, incl. the gravity block)
+    — these are the exact rules Dave means to read through.
+    (2) **Structural ceiling — generate-then-normalise.** Memory `generation-mechanism-ideas` Idea 2
+    (parked 2026-07-01, Dave: "is this legitimate? yes, plausible") named this almost exactly: run
+    ideation from pure inference, then pass the output through a converter/normaliser back onto
+    canon. This session accidentally hand-executed that idea once (diagnostic → restyle-and-fix)
+    and it worked — which is either the answer (formalise generate-then-normalise as the real
+    pipeline shape) or a coincidence that shouldn't be over-read from one screen.
+  - **Not yet done, don't assume it's done:** no one has compared "governed single-pass" vs
+    "generate-then-normalise two-pass" as a controlled pair on the same screen — everything so far
+    is one lineage (unconstrained → hand-restyled) vs a different lineage (governed ramp,
+    Sonnet+Opus) that were never actually running the same experiment.
+  - **Path:** own dedicated session, per Dave — this is a product-shape/architecture question
+    ([[product-shape-flexing-engine]] territory), not a prompt-tuning afternoon. Don't resolve
+    inline; start that session by reading this entry + the charter §9 + the test-brief §2 + memory
+    `register-inference-ramp` + `generation-mechanism-ideas`.
 - **Divergence probe — first real run done 2026-07-05** (structural/grep-based, not the full
   novelty-scoring tooling named in §9). See the writeup above. The formal tooling (threshold
   calibration, automated novelty count) is still named-not-built.
@@ -213,8 +254,13 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
 *The forward-looking dimension of the state machine. Not current truth (that's LIVE) and not a flat
 backlog (that's OPEN) — these are intended end-states with a path. Refresh alongside LIVE/DEAD/OPEN.*
 
-- **🎯 Inference-gravity for the register ramp (expressive craft fix) — ⚠️ BLOCKS external
-  review of the §9 spread until resolved (Dave, 2026-07-05).**
+- **🔴 SUPERSEDED BY OPEN QUESTION BELOW (2026-07-05, end of session) — Dave's verdict landed,
+  and it's not the "converges once gravity-fixed" outcome this target-state assumed.** See the new
+  OPEN entry "What does the §9 spread actually reveal?" — this target-state's own diagnosis (craft
+  gap → sourced external references → re-run) is no longer the live framing; kept below for the
+  historical trail only.
+- ~~**🎯 Inference-gravity for the register ramp (expressive craft fix) — ⚠️ BLOCKS external
+  review of the §9 spread until resolved (Dave, 2026-07-05).**~~
   - **Target:** the expressive band reads as genuinely exciting/award-calibre digital-product craft
     (motion, depth, interaction choreography) — not just "sober, but bigger" — while the cardinal
     curbs (brand colour retrieved not typed, type, square corners, a11y/safety floor) still hold
