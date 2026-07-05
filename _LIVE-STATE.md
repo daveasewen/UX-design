@@ -27,7 +27,7 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
   cold-start spine.** `ADR-0007`. Memory: `pm-knowledge-graph-direction`.
 - **Supersession discipline** (non-negotiable, `AGENTS.md`): any ruling that kills something must
   tombstone the artifact + log the propagation gap in the same pass.
-- **Git split** (`ADR`/`AGENTS`, memory `git-push-method`): Claude commits in terminal + clears
+- **Git split** (`AGENTS.md` + memory `git-push-method`; no standalone ADR): Claude commits in terminal + clears
   stale `.git/*.lock`; **Dave pushes via GitHub Desktop only** (never terminal push, never Desktop
   commit, Desktop closed during commits).
 - **Build**: `python3 knowledge/_build_all.py` — four gates green = internally consistent, dark-
