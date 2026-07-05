@@ -1,78 +1,64 @@
 # Good morning, Dave ☕
 
-*Session briefing — written end of 2026-07-05, session "Decision audit — Tier A batch 3 (closes Tier A)."
-Supersedes the earlier 07-05 "batch 2" brief.
-**Read this, then `_LIVE-STATE.md`, then `knowledge/README.md`.***
+*Session briefing — written end of 2026-07-05, session "Seaworthiness planning — sequencing the
+half-finished threads." Supersedes the earlier 07-05 "Tier A batch 3" brief.
+**Read this, then `_LIVE-STATE.md`, then `_SEAWORTHINESS-PLAN_2026-07-05.md`.***
 
 ## The session in one line
 
-Ran ADR-0007 §5 correctness audit **Tier A batch 3** — the batch that **closes Tier A.** Every
-foundational node now carries a verdict. **The "everything is unaudited" risk is retired for Tier A.**
+Pulled every OPEN / TARGET thread into **one curated, dependency-aware sequence** to get the ship
+seaworthy — not a flat backlog. **The plan is set, committed, and pushed.** No building happened;
+this was the sequencing session you asked for.
 
-## What landed (4 verdicts + a triage)
+## The sequence (this is the plan now)
 
-Recorded two ways per node (ledger line in `knowledge/_DECISION-AUDIT.md` + state in `_LIVE-STATE`):
+Full doc: **`_SEAWORTHINESS-PLAN_2026-07-05.md`.** In order:
 
-1. **Charter §4** (ratified fixed curbs) — **amend + defer.** Your call: the ramp must be governed
-   ONLY by cardinal + foundational curbs + inference levels + full compliance, **all retrieved from
-   the KG.** §4's interpretive *language* is recall-by-adjective (§9/§9a kills it) and must be
-   stripped — the four curbs survive only as KG-sourced derivations. Flagged as a **HARD follow-up**,
-   done inside the KG/ingestion thread, not a quick charter tweak. Completeness **deferred** (blocked
-   on incomplete ingestion).
-2. **Charter §4b** (register temperature / wit) — **defer.** TOV = genuinely useful for **digital
-   editorial → candidate spin-off thread**; for interfaces it's **not a priority** except neutral
-   guidance (labelling, language/locale, formality). Can't vouch without a future **audit of the
-   actual TOV content.** Tagged on memory `tone-of-voice-ingest`.
-3. **Two harness modes** — **defer (kept Tier A).** Abstract/named-not-built. Your reflections
-   captured: harness must be **flexible** — clean switch *or* both (toggle + advanced-mode tuning),
-   maybe a **"let it rip" mode**; **finding the use cases is the point**; research + iterate, start
-   small. Own research thread (task created).
-4. **Supersession discipline** (AGENTS.md) — **vouch.** The operational guard that makes ADR-0007's
-   ledger trustworthy; earned from a real failure. Noted-but-not-faults: no executable gate; a
-   standing ADR-0006 propagation gap is the live test that it's being followed.
+1. **Hull patches — cheap, first.** Finish ingestion **Phase 0** (correction banner already in
+   `_DESIGN-SYSTEM-GAPS.md`; rebuild the compliance KG to resync 39-vs-38) + **stand up the capture
+   ritual** (spec in the plan).
+2. **Big rock #1 — Ingestion Phase 1** (Sutherland token migration, **confirmed unblocked**): import
+   modes → rebind the 147 depricates → re-verify zero refs → delete; close P1/P3/P4. Tabs first.
+3. **Prove-the-core, in PARALLEL — §9 worked spread**: one screen, retrieve/extend/invent + the
+   divergence probe. Independent of ingestion; validates the flexing-engine thesis.
+4. **Big rock #2 — PM-KG MVP**: `_build_live_state.py` + the staleness gate (emits FUTURE/TARGET,
+   flags blockers-cleared-but-still-"blocked"). Build the **capture-gate script** alongside it — same
+   front-matter machinery.
+5. **Finish + unify** — Phase 2 (guidelines tail; toolkit t2 on cheap model) → Phase 3 (overlay/index
+   KG = ADR-0003 "done right", **§4 language-strip lives inside it**) → Phase 4 (wire coverage into
+   the state machine — needs #4).
 
-**Triage:** git split → **Tier B**, build gate → **Tier B** (fast-follower; one cheap fix waiting —
-`_LIVE-STATE` says "four gates," `_build_all.py` runs ~8).
+**Off the critical path (don't pick up unless you say):** D2 novel-screen (waiting on colleague) ·
+toolkit tranche 2 (cheap model) · harness-modes exploration (after §9) · TOV digital-editorial
+spin-off + §4b content audit · ADR-0004 ops follow-ups (EAA/EN 301 549 recheck; align
+`design:accessibility-review` skill to 2.2 AA).
 
-**The batch's finding:** the batch-1/2 pattern held — no *bad* foundations, but several set ahead of
-completed work. Two of the four verdicts (§4, §4b) trace to the **same root cause as ADR-0003: the KG
-was never fully ingested.** That thread is now the load-bearing unlock behind multiple deferrals.
+## What landed this session
 
-## Also landed this session (post-audit)
-
-- **Ingestion assessment** — durable cockroach doc `knowledge/_INGESTION-ASSESSMENT_2026-07-05.md`
-  (file-level survey). Headline: 3 siloed strands + one narrow graph; the **Sutherland export already
-  arrived 2026-06-17** so the token migration is **unblocked** (the gaps manifest was stale — now
-  corrected). Target + phased path in `_LIVE-STATE` PLANNED/TARGET.
-- **State machine now records FUTURE/TARGET states** (Dave ruling; extends ADR-0007) — new
-  PLANNED/TARGET section in `_LIVE-STATE`.
-- **Sutherland + output-modes recorded externally** (was being re-explained each session): Sutherland
-  = React lib reflecting the Common Toolkit, the Figma library IS its working file, our dark-mode work
-  feeds back in, build-direct is the goal; output = a two-tier dial (dumb portable HTML ↔ build-ready
-  from a prebuilt library). Memories `output-modes-portability` + `sutherland-figma-mapping`.
-- **Spin-off / generalisable candidates register** (new `_LIVE-STATE` section + memory
-  `spin-off-candidates`): reusable tools/methods should be spun off like company spin-offs; surface
-  emergent projects mid-chat. **State machine = Dave's first named candidate.**
-- **Insurance-policy decision:** don't archive all chats (rebuilds the haystack). Transcript = a
-  black-box last resort (likely already retrievable via session tools); invest instead in a *reliable
-  end-of-session capture ritual/gate* — that's where the risk is. For the seaworthiness run.
+- **KG re-verified on disk** (your "double-check first" call — it paid off). Assessment holds on
+  every count (462 rules · 31/31/38 compliance · 147 depricates · Sutherland exports present). Two
+  live drifts found: **Phase 0 already partly done**; **compliance KG stale by one** (39 metas vs 38
+  in the 2026-06-18 graph) — a miniature of the "tracking rots silently" failure, cheap to fix.
+- **The plan doc** `_SEAWORTHINESS-PLAN_2026-07-05.md` (dependency-aware sequence + next-steps +
+  capture-ritual/gate spec + spin-off decision parked).
+- **Capture ritual/gate decided** — ritual (refresh `_LIVE-STATE` → `GOOD-MORNING` → memory →
+  supersession → commit) stands up now; the enforcing `_capture_gate.py` builds alongside the PM-KG MVP.
+- **`_LIVE-STATE` OPEN entry** for the seaworthiness plan flipped ✅ DONE, pointing to the doc.
 
 ## On your desk
 
-- **5 commits, not pushed** — `9260a56` (Tier A batch 3) · `67f2106` (ingestion assessment +
-  future-states) · `251b586` (Sutherland/output-modes) · `2dc37de` (completeness fixes: un-staled the
-  token manifest) · `c8a3e35` (spin-off candidates). Stale `.git` locks cleared. **Push via GitHub Desktop.**
-- **Tier A is CLEAN** ✅ — the audit milestone. No more Tier A nodes to adjudicate.
+- **All pushed.** Commit `c0f9bd5` (seaworthiness plan + `_LIVE-STATE` pointer). Stale `.git` locks
+  cleared. Nothing pending.
+- Your first big-rock decision this session: **Ingestion Phase 1 leads** (my recommendation, your
+  "follow your advice") — the finish-don't-add move, fully unblocked.
 
 ## Queue next (fresh session)
 
-1. **Seaworthiness planning run (THE next task, your ask).** State + goals analysis → one prioritised
-   sequence, not a flat backlog. Pull the OPEN threads together: KG/ingestion (the big unlock behind
-   §4 + §4b + ADR-0003), §9 proof-obligation, PM-KG MVP, D2 novel-screen, harness-modes exploration,
-   TOV spin-off. Exec-summary-first + reflection rhythm. *You flagged: too much half-finished work —
-   this session is where it gets sequenced.*
-2. Standing / parallel (NOT now): Tier B audit opportunistically · toolkit tranche 2 (cheap model) ·
-   D2 (waiting on colleague).
+1. **Start the sequence: hull patches.** Finish Phase 0 (rebuild compliance KG) + stand up the
+   capture ritual. Cheap, clears the deck. *Or* jump straight to Ingestion Phase 1 if you'd rather
+   bank the big win first — Phase 0 is now light enough to fold in.
+2. **Then Ingestion Phase 1** as its own focused session — the token migration.
+3. **§9 worked spread** available to run in parallel whenever you want the divergent track.
 
 > Next-session opener: **"Title this chat: <pick one>."** Read GOOD-MORNING → `_LIVE-STATE` →
-> `knowledge/README.md`. Everything is committed; push via Desktop.
+> `_SEAWORTHINESS-PLAN_2026-07-05.md`. Everything is committed and pushed.
