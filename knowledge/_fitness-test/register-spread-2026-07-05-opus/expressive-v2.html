@@ -79,7 +79,13 @@
     background:radial-gradient(closest-side, color-mix(in srgb, var(--color-primary) 42%, transparent), transparent 72%);
     filter:blur(8px);
   }
-  .cover > *{position:relative; z-index:1;}
+  /* BUG FIX 2026-07-05: this previously read `.cover > *{position:relative}` — equal
+     specificity to `.cover__glow{position:absolute}` above, and later in the cascade,
+     so it silently overrode the glow back to position:relative, dropping it into normal
+     flow as a 520px-tall block and pushing all real content down by that much (the
+     "huge black box" Dave flagged). Excluding .cover__glow from this selector restores
+     the intended absolute/decorative-layer behaviour. */
+  .cover > *:not(.cover__glow){position:relative; z-index:1;}
 
   .cover__topline{display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;}
   .cover__acct{display:flex; align-items:center; gap:12px; min-width:0;}

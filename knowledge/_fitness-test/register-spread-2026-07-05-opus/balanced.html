@@ -36,10 +36,19 @@
   /* PAGE-LEVEL COMPOSITION ONLY — no brand values invented here.
      All colour/type/space via canon tokens + .cn-* components. These rules are layout
      glue (the .c-* tier's job): they position reviewed components on a mobile canvas. */
+  /* DESKTOP NORMALISATION 2026-07-05: this was built as a 390px fixed phone-frame with a
+     bottom mobile tab bar. This is an SME finance-admin desktop screen and every sibling
+     in the comparison set is desktop-width with no mobile nav chrome — widened to a
+     centred desktop content column and the tab bar hidden at desktop widths (kept in the
+     DOM; this file is honestly a mobile-canvas build, so the tab bar is preserved for a
+     genuinely narrow viewport, just not shown when compared at desktop width). No
+     content/data/curb changes; canon's .cn-table container-query switches to full
+     desktop table mode once the container clears its 600px breakpoint. */
   body{ margin:0; background:var(--color-grey-100); } /* Grey 1 #F3F3F3 — app backdrop; token, retrieved (colour-usage col25-009/012: lighter greys as solid backgrounds) */
-  .app{ width:390px; max-width:100%; margin-inline:auto; min-height:100vh; background:var(--page);
-        border-inline:1px solid var(--border); display:flex; flex-direction:column; container-type:inline-size; }
-  .app__body{ flex:1; display:flex; flex-direction:column; gap:24px; padding:16px 16px 24px; }
+  .app{ max-width:960px; width:100%; margin-inline:auto; min-height:100vh; background:var(--page);
+        display:flex; flex-direction:column; container-type:inline-size; }
+  .app__body{ flex:1; display:flex; flex-direction:column; gap:24px; padding:24px 32px 32px; }
+  @media (min-width:769px){ .cn-tab-bar{ display:none; } }
   .sec{ display:flex; flex-direction:column; gap:12px; }
   .sec__head{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; }
   .sec__title{ font:500 17px/1.2 var(--font); color:var(--text); margin:0; }

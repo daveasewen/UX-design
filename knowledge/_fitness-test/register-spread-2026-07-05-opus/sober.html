@@ -56,13 +56,20 @@
   /* Screen shell only — a phone-width frame + vertical rhythm. Colours/type/space
      all reference canon tokens; no brand values introduced. (Layout scaffolding is
      structure, not a brand-bearing choice.) */
+  /* DESKTOP NORMALISATION 2026-07-05: this was built as a 420px fixed phone-frame
+     (width:420px + a visible border-inline silhouette). This is an SME finance-admin
+     desktop screen, and every sibling in the comparison set is desktop-width — widened
+     to a centred desktop content column so the comparison viewer is like-for-like.
+     No content/data/curb changes; canon's .cn-table container-query already switches
+     to full desktop table mode once the container is wider than its 600px breakpoint,
+     so this also fixes the tables' collapsed-card mobile view for free. */
   body{ margin:0; background:var(--divider-border-break); }
   .screen{
-    width:420px; max-width:100%; margin-inline:auto; min-height:100vh;
-    background:var(--page); border-inline:1px solid var(--border-subtle);
+    max-width:960px; width:100%; margin-inline:auto; min-height:100vh;
+    background:var(--page);
     display:flex; flex-direction:column;
   }
-  .screen__body{ flex:1; display:flex; flex-direction:column; gap:24px; padding:20px 16px 32px; }
+  .screen__body{ flex:1; display:flex; flex-direction:column; gap:24px; padding:24px 32px 40px; }
   .region{ display:flex; flex-direction:column; gap:12px; }
   .region > .eyebrow{ display:inline-block; font:500 13px/1 var(--font); color:var(--text-secondary); }
   .region > h2{ font:400 20px/1.2 var(--font); color:var(--text-default); letter-spacing:-.01em; }

@@ -254,6 +254,25 @@ backlog (that's OPEN) — these are intended end-states with a path. Refresh alo
     presentable outside this session. **Scope discipline held:** this stayed inside the existing
     "prove-the-core, §9 worked spread" parallel track from `_SEAWORTHINESS-PLAN_2026-07-05.md` —
     did not touch hull patches (done) or reorder Ingestion Phase 1 (still queued, untouched).
+  - **Additional diagnostic run, same session (Dave's idea): pure-inference ceiling probe.**
+    Two cold Opus passes on the same data, zero brand governance at all (no canon, no curbs, no
+    a11y mandate) — with vs without the named influences — to see the true ceiling and isolate
+    where the governed version's gaps are. Finding: colour/type/radius gaps are expected (that's
+    what the cardinal floor is *for*); the more useful signal is structural — the ungoverned runs
+    reached for a genuine organising idea (e.g. "time as the spine") that the governed gravity-fix
+    prompt didn't, suggesting the next iteration should ask for a point of view on the data's
+    structure, not just borrowed craft patterns. Writeup:
+    `register-spread-2026-07-05-diagnostic/_FINDINGS.md`.
+  - **Also fixed same session:** a real CSS cascade bug in Opus's `expressive-v2.html` (an
+    equal-specificity, later-in-source `.cover > *{position:relative}` rule was silently
+    overriding the decorative glow div's `position:absolute`, dropping it into normal flow as a
+    520px block and pushing all content down — the "huge black box" Dave flagged from a
+    screenshot); and a real comparability bug — three of the ten spread artifacts (Sonnet
+    `expressive-v2`, Opus `sober` v1, Opus `balanced` v1) were built as fixed mobile-phone-width
+    layouts (390-560px, one with a bottom tab bar) while the rest were desktop-width (900-1240px).
+    Normalised all three to a shared desktop container (960px) so the comparison viewer
+    (`register-spread-2026-07-05-compare.html`, now also carries the two diagnostic files) is
+    genuinely like-for-like. No content/data/curb changes in any of these fixes.
 
 - **🎯 Ingestion "done right".** Full detail + phased worklist: **`knowledge/_INGESTION-ASSESSMENT_2026-07-05.md`** (cockroach doc — cold-start-proof, evidence-cited).
   - **Target:** every ingested entity (guideline rule · token · component · snippet · success-
