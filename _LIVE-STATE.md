@@ -288,6 +288,20 @@ backlog (that's OPEN) — these are intended end-states with a path. Refresh alo
     job, direction carried by an icon instead). File: `without-influences-hsbc.html`; wired
     into the comparison viewer. Dave confirmed via screenshot that the restyle's structure
     matches what he's judging against — visual verdict on the restyle itself still pending.
+  - **✅ Bug found + fixed from that screenshot:** the hero balance number ("122,450") was
+    rendering effectively invisible. Root cause was the exact trap canon.css documents at its
+    own line 495-496 — my restyle's `:root{ --ink: var(--page); --panel: var(--surface);
+    --paper: var(--text); ... }` alias block was a BARE `:root` selector, so every alias
+    computed once against `<html>`'s own (light-theme) tokens and inherited that frozen light
+    value down, instead of recomputing at `<body data-theme="dark">` the way canon's own
+    tokens do. Fixed by matching canon's own selector pattern: `:root, [data-theme="dark"]{...}`.
+    Same class of bug as the earlier Opus cascade fix — a real, generalisable lesson (declare
+    theme-dependent aliases against the same selector list the tokens they wrap use, never bare
+    `:root`). **Still open, not yet fixed or raised for a ruling:** the "Free buffer" gauge
+    legend uses the same accent red as "current balance/live" and the approve button — one
+    accent doing double duty (live-status AND good/free-status), which may read oddly against
+    normal finance-UX convention (red = attention/negative). Flagged for Dave's eye, not
+    silently changed.
 
 - **🎯 Ingestion "done right".** Full detail + phased worklist: **`knowledge/_INGESTION-ASSESSMENT_2026-07-05.md`** (cockroach doc — cold-start-proof, evidence-cited).
   - **Target:** every ingested entity (guideline rule · token · component · snippet · success-

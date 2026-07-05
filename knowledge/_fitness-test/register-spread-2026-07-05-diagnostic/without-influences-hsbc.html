@@ -43,10 +43,21 @@
   Figures verbatim from the corrected §3 wording throughout.
 -->
 <style>
-:root{
+:root, [data-theme="dark"]{
   /* Every value below is a var() into canon.css — nothing here is a typed hex. This block
      is deliberately an ALIAS layer so the ~150 rules further down (written against these
-     names) don't need touching individually; only what each name POINTS TO changed. */
+     names) don't need touching individually; only what each name POINTS TO changed.
+
+     FIX 2026-07-05: this was originally a bare `:root{...}` block, which is exactly the
+     trap canon.css documents at its own line 495-496 — a token declared only on :root
+     computes ONCE using :root's (html's) own --background-default/--text-default, which
+     resolve LIGHT because data-theme="dark" lives on <body>, not <html>. That frozen
+     light value then inherited down through every descendant, which is why the hero
+     balance number effectively vanished (dark-theme text colour computed light, sitting
+     on a surface colour also frozen light — legible tokens, wrong theme, and inconsistent
+     with the few rules elsewhere that correctly recomputed at body). Matching canon's own
+     `:root, [data-theme="dark"]` selector pattern here makes every alias recompute fresh
+     wherever data-theme="dark" actually applies, same as canon's native tokens already do. */
   --ink: var(--page);              /* page canvas: dark theme -> #000 */
   --panel: var(--surface);         /* raised card surface */
   --panel-2: var(--surface);
