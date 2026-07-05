@@ -1,79 +1,69 @@
 # Good morning, Dave ☕
 
-*Session briefing — written end of 2026-07-05, session "From provenance to project-memory: the
-decision-graph turn." Supersedes the 07-04 "Flexing engine / inference-ramp / review instrument"
-brief. **Read this, then `_LIVE-STATE.md` (new — the live/dead/open ledger), then
-`knowledge/README.md`.***
+*Session briefing — written end of 2026-07-05, session "Decision audit — Tier A batch 1."
+Supersedes the earlier 07-05 "From provenance to project-memory: the decision-graph turn" brief.
+**Read this, then `_LIVE-STATE.md`, then `knowledge/README.md`.***
 
 ## The session in one line
 
-Started tightening the register's provenance (§9a) and turned up a deeper bug — a cold start had
-been reasoning from a *retired* artifact — which reframed the whole session into **fixing how the
-project remembers itself**: a supersession discipline, a temporal decision-graph (ADR-0007), a
-`_LIVE-STATE` spine that successive sessions inherit, and a guard so the graph can't launder
-unaudited decisions as vetted.
+Ran the ADR-0007 §5 correctness audit for the first time — Tier A, batch 1 — moving five
+foundational decision nodes out of `unaudited`, fresh-context, with Dave adjudicating each. The
+KG's load-bearing claims are no longer taken on trust.
 
 ## What landed
 
-1. **§9a — provenance of "reads HSBC."** The register's vibe-terms were de-anchored (drifting to
-   the model's priors). Decomposed into named sources — character → `brand-principles.md` (the
-   six principles), the pointer §9 was missing — plus a per-band **Brand-source stop** column and
-   **flag-where-silent** as an advisory behaviour. Record: `knowledge/_PROVENANCE-inference-levels_2026-07-04.md`.
+Five verdicts (recorded two ways per runbook §5 — ledger line in `knowledge/_DECISION-AUDIT.md`
++ state in `_LIVE-STATE`):
 
-2. **Two harness modes (§9a).** Your reframe: converge/ship = **mode B** advisory brand self-check
-   (ADOPTED) · explore/noodle = **mode A** open human gestalt (OPEN). **Mode is a first-class
-   harness dial**, mapping onto the flexing engine's floor/ceiling. Memory: `harness-two-modes`.
+1. **ADR-0005** (engine pivot) — **vouch.** Most-proven node (gates green, GOV.UK second system).
+   Note kept open: the token-store history-purge is *conditionally-accepted, not resolved.*
+2. **ADR-0007** (decision-graph pattern) — **vouch**, circularity noted (vouched by its own process).
+3. **Charter §9/§9a** (inference ramp) — **vouch framing + DEFER proven/safe.** The definition is
+   right; the claim it's *demonstrated/safe* is deferred — no worked spread exists, safety
+   machinery is named-not-built. Tracked as an explicit **audit-deferred verification** ("we can't
+   forget this").
+4. **ADR-0006** (flexing engine) — **amend.** Register dial "cool/warm/hot" corrected to the §9
+   inference ramp (retrieve/extend/invent). Amended text re-enters `unaudited`.
+5. **`derivation-governance`** — **amend.** Core (human-only promotion) vouched; promotion refined
+   to a **staged multi-human path** (holding-pen/sandbox → colleague review → **extension library**
+   → general canon if broadly useful). Amended text re-enters `unaudited`.
 
-3. **Context-rot root cause found + fixed.** A cold start resurrected the retired looks-based
-   register dial (`sme-payments-registers.html`) — root cause = **an unrecorded supersession
-   edge**. Fixes: tombstone banner on the dead artifact; **supersession discipline** now
-   non-negotiable in `AGENTS.md`; live-vs-dead state in memory.
+**The batch's real finding:** no *bad* decisions surfaced — the pattern was **decisions ratified
+ahead of their proof** (three of five lean on specced-not-built machinery). That's exactly what the
+`defer` state exists to hold honestly.
 
-4. **ADR-0007 — project memory as a temporal decision-graph, lightweight-first.** Desk research
-   (Graphiti/Zep bitemporal `t_valid→t_invalid`; ADR-as-KG / OIDA supersession; OpenLineage
-   lineage). Edges as front-matter → generated `_LIVE-STATE` → advisory staleness gate → Graphiti
-   as the graduation path. Load-bearing lesson: *the graph is a view over well-recorded edges; the
-   ruling-time edge discipline prevents rot, not the storage.*
-
-5. **`_LIVE-STATE.md` — the state-retention spine.** Seeded live/dead/open ledger, wired into the
-   cold-start sequence (**GOOD-MORNING → `_LIVE-STATE` → `knowledge/README`**). Interim/hand-kept
-   until the generator exists.
-
-6. **Anti-laundering guard (ADR-0007 §5) — your catch.** Validity ≠ provenance. Every node carries
-   a validation state (`unaudited → vouched`) *separate* from lifecycle; the backlog seeds
-   **`unaudited`**; promotion = **human audit only, never derived**; the staleness gate enforces
-   consistency, never validity.
-
-7. **Git mechanism ruled.** Claude commits in terminal + clears stale `.git/*.lock`; **Dave pushes
-   via GitHub Desktop only** (terminal push hangs on creds). Supersedes the 07-02 terminal-only
-   ruling. In `AGENTS.md` + memory `git-push-method`.
+**Forward idea captured (Dave):** the state-management tool should also track **goals + forward
+planning** in the same graph ("decisions and goals are the same object at different tenses"), and
+be extracted into a **transferable plugin**. Parked with a guardrail — *prove it self-generating
+here before packaging.* Memory: `pm-knowledge-graph-direction`.
 
 ## On your desk
 
-- **Push before you close** — `master` is **ahead 3** (`8dbfbc4`, `7e6f024`, `a6d6ce0`) via Desktop.
-- **⚠️ The whole decision corpus is `unaudited`.** The KG now retains state, but nothing in it has
-  been checked for *correctness*. That's the open risk you named.
+- **Pushed & clean** — the audit commit (`5cf9837`) is on `origin/master`. Nothing pending.
+- **Tier A is not done** — batch 1 of ~3. Two amended nodes still owe a re-audit.
 
 ## Queue next (fresh session)
 
-1. **Decision-corpus correctness audit — THE priority.** The guard against baking bad decisions in.
-   First task = **design the audit method** (batched, fresh-context, you as judge; reuse
-   `_REVIEW-QUEUE` tiering + `_CONFIDENCE` states). Then run it in batches. Do NOT attempt in a
-   loaded context.
-2. **`_build_live_state.py` + staleness gate** — make the ledger self-generating (ADR-0007 MVP).
-3. **Divergence probe** — still parked behind the *missing inference-era spread*; and the
-   propagation gap (vision/ADR-0006/iteration-machine still speak looks vs §9 inference) is unresolved.
-4. **D2 novel-screen test** — the #1 external unlock, still waiting on the colleague's brief.
-5. Parallel: toolkit tranche 2 (Dropdowns) on a cheap model.
+1. **Tier A batch 2 — decision audit.** ADR-0001–0004 + charter §4/§4b. Same protocol: fresh
+   context, dossier + devil's-advocate + recommendation per node, Dave adjudicates. Runbook:
+   `knowledge/_RUNBOOK-decision-audit.md`; ledger: `knowledge/_DECISION-AUDIT.md`. **Never run in a
+   loaded session.**
+2. **Re-audit the two amended nodes** — ADR-0006 (register dial) + `derivation-governance` (staged
+   promotion). Their edits re-entered `unaudited`; fold into a batch.
+3. **PM-KG MVP** — build `_build_live_state.py` + the advisory staleness gate (ADR-0007). This is
+   the "prove it self-generating" step that must land *before* the forward-planning / plugin idea
+   can be scoped. Own focused session.
 
-> Next-session opener: **"Title this chat: <pick one>."** Read GOOD-MORNING.md, then `_LIVE-STATE.md`,
-> then `knowledge/README.md`. Everything today is committed; push the pending 3 via Desktop.
+Parallel/standing: D2 novel-screen test (waiting on colleague brief) · toolkit tranche 2
+(Dropdowns, cheap model).
+
+> Next-session opener: **"Title this chat: <pick one>."** Read GOOD-MORNING.md → `_LIVE-STATE.md`
+> → `knowledge/README.md`. Everything is committed and pushed.
 
 ## The meter
 
-This was the session the project got a spine for its *own* memory — the same recursion that made
-the design system self-validating, now pointed at the project's decisions. The tell that it's
-working: we caught the rot mid-session, turned it into governance (a discipline + a ledger), and
-then caught the *next* trap before building it — that a graph launders unaudited decisions. The
-real next move is a **conversation-light, judgment-heavy audit**, run fresh, in batches — not more
-docs.
+The audit worked the way it was meant to: fresh context, a written case *against* every node before
+a verdict, and honest split/defer/amend outcomes rather than a rubber-stamp. The most valuable thing
+it produced wasn't a stack of vouches — it was naming the *shape* of the risk (ratified-ahead-of-
+proof) and pinning the deferred proofs so they can't quietly evaporate. Next move is either to keep
+clearing Tier A, or to build the MVP that makes the whole ledger self-generating.
