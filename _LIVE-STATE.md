@@ -315,6 +315,28 @@ backlog (that's OPEN) — these are intended end-states with a path. Refresh alo
     before presenting, not as an afterthought prompted by a direct question — a hand-built
     "canon-primitive" restyle is a claim the gate exists specifically to check, not something to
     self-certify.
+  - **⚠️ Caught by Dave again, then verified with real numbers, not just fixed on faith:**
+    Dave said "this would fail accessibility for a start" after seeing the balance figure fixed.
+    Ran the `design:accessibility-review` skill + pulled canon's actual dark-theme hex values and
+    computed real WCAG contrast ratios (not the shallow `_validate_screen.py` a11y check, which
+    only covers reduced-motion + target-size and gave a false-confidence ✅ earlier — same shape
+    of gap as the [[gate-blindspot-state-contrast]] lesson). Found genuine 1.4.3 failures, all in
+    my OWN invented tint compositions (not canon's `.cn-*` patterns): rail "current balance" value
+    (red text on panel) 3.23:1; gauge "free buffer" label (red text on red-tinted fill) 2.92:1 —
+    worse, and even canon's real error-tint token only gets red text to 3.71:1, so red is
+    structurally unfit as small/normal-text colour on any dark tint, only as a solid fill with
+    reverse text (which is why the buttons pass at 5.2:1); "Scheduled" tag (info/blue text on a
+    hand-mixed 12% tint) 3.67:1; scheduled-card date (info/blue on bare panel) 4.24:1, borderline-
+    failing. Fixed: the two red instances now use `--paper` (white) text, keeping red as the
+    accent/fill only; the two blue instances now sit on canon's REAL `--info-tint` token instead
+    of a hand-mixed approximation — verified 4.92:1, passes. Also closed a real modal gap found in
+    the same pass: the payroll confirmation dialog had Escape-to-close but no actual keyboard trap
+    (Tab could reach the still-exposed-to-AT background) — added Tab-cycling inside the dialog and
+    `aria-hidden` on the background wrap while open. Re-ran `_validate_screen.py`: **PASS**.
+    **Pattern now twice-confirmed:** a hand-built "canon-primitive" restyle needs its OWN explicit
+    verification pass (gate script AND a real contrast check) before presenting — passing the
+    existing automated gate is necessary but not sufficient, because that gate doesn't check
+    contrast on compositions that aren't `.cn-*` snippets.
 
 - **🎯 Ingestion "done right".** Full detail + phased worklist: **`knowledge/_INGESTION-ASSESSMENT_2026-07-05.md`** (cockroach doc — cold-start-proof, evidence-cited).
   - **Target:** every ingested entity (guideline rule · token · component · snippet · success-
