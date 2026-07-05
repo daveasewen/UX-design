@@ -19,6 +19,15 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
 
 - **Product = a *flexing* engine** — one governed core, dials per work-type; floor/churn ("vibe")
   vs ceiling/novel ("analysis"). `ADR-0006`.
+- **Output modes = a first-class dial** (Dave, 2026-07-05): the engine must produce **two fidelity
+  tiers** — (1) **"dumber" portable HTML-component prototypes** (library-agnostic, no build; the
+  portability floor) and (2) **build-ready output from a prebuilt library**, with **Sutherland** (the
+  HSBC React lib) the intended build target ("build directly using Sutherland"). **Portability =
+  NOT married to Sutherland** — dumb-HTML mode, or ingest other libraries, or whatever strategy wins;
+  Sutherland is *a* target, not *the* architecture. Note the two-way tie: our **dark-mode work feeds
+  back INTO Sutherland** while Sutherland is also our **build target** (same artifact up- and
+  downstream); the **Figma library IS Sutherland's working file.** Memories: `output-modes-portability`,
+  `sutherland-figma-mapping`. Unaudited node (extends ADR-0006).
 - **Register = an inference ramp** (NOT a look): sober = retrieve · balanced = extend ·
   expressive = invent. Charter `_FIXED-FLEX-CHARTER.md` **§9**.
 - **§9a — provenance of "reads HSBC"**: brand-ness resolves to named sources (primitives→token
