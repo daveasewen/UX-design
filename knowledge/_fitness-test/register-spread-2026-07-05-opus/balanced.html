@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en-GB" class="canon">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payments — Northgate Timber Ltd</title>
+<!--
+  REGISTER: BALANCED (extend — inference ON but bounded). Test brief v2 §2.
+  Cardinal + foundational curbs both held; composed more confidently; ONE deliberate
+  emphasis moment allowed; red leads the primary action. Every brand-bearing choice
+  traces to a named source (see inline flags).
+  Retrieved .cn-* components (canon rigour tier, brief §2 Sober bullet, applies at every band):
+    .cn-headers      — app content-header (back + centred title)
+    .cn-account-card — balance hero (label + big balance + status chips)
+    .cn-summary      — key/value list (intraday cash breakdown; scheduled total)
+    .cn-notifications— info banner (coverage statement) + warning banner (approvals)
+    .cn-table        — payments data table, card-collapse responsive (passive by design)
+    .cn-status-indicator — square RAG tint chip (form B) for per-row status
+    .cn-modals       — high-value confirmation dialog (§4 no one-click approve)
+    .cn-button       — approve / review / cancel actions (primary red leads)
+    .cn-tab-bar      — bottom navigation
+  Ruled OUT: .cn-cards (generic article card — Account-card is the money-specific,
+    gate-reviewed fit); .cn-action-bar (its buttons are a re-typed Button atom; I use
+    .cn-modals' own reviewed .btn for the confirm, and .cn-button for the list action —
+    both closer to source); .cn-list-items (Table is the reviewed multi-column financial
+    grid; List-items is single-line rows, wrong data shape for 6 columns).
+  .c-* fallbacks used: ONLY layout utilities (.c-stack, .c-row-between, .c-screen,
+    .c-eyebrow) — no .cn-* component provides page-level flex scaffolding; these are the
+    hand-authored composition layer built for exactly that gap (brief §2 tier 2). Named
+    per-use below.
+  Square corners everywhere (border-radius:0, canon default) except Badge/Avatar — none used.
+  Figures: every number is verbatim from brief §3. No rounding, no invention.
+-->
+<link rel="stylesheet" href="../../canon/canon.css">
+<style>
+  /* PAGE-LEVEL COMPOSITION ONLY — no brand values invented here.
+     All colour/type/space via canon tokens + .cn-* components. These rules are layout
+     glue (the .c-* tier's job): they position reviewed components on a mobile canvas. */
+  body{ margin:0; background:var(--color-grey-100); } /* Grey 1 #F3F3F3 — app backdrop; token, retrieved (colour-usage col25-009/012: lighter greys as solid backgrounds) */
+  .app{ width:390px; max-width:100%; margin-inline:auto; min-height:100vh; background:var(--page);
+        border-inline:1px solid var(--border); display:flex; flex-direction:column; container-type:inline-size; }
+  .app__body{ flex:1; display:flex; flex-direction:column; gap:24px; padding:16px 16px 24px; }
+  .sec{ display:flex; flex-direction:column; gap:12px; }
+  .sec__head{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; }
+  .sec__title{ font:500 17px/1.2 var(--font); color:var(--text); margin:0; }
+
+  /* Balance hero: reuse .cn-account-card verbatim, but let it span full width on this canvas
+     (component caps at 380px; canvas is 390 − 32 padding). Layout-only override. */
+  .cn-account-card .account-card{ max-width:none; }
+  /* ONE DELIBERATE EMPHASIS MOMENT (brief §2 balanced): a hairline red top-rule on the
+     balance card — HSBC "tactically red" accent (brand-principles.md principle 2:
+     "considered accent for impact, not slathered"; colour-usage col25-001/006: red
+     applied tactically to signpost). Uses --accent = --primary-background-default (#DB0011),
+     retrieved, never typed. Angular/flat: a 3px straight rule, no radius, no gradient
+     (brand-principles principle 1 "Angular" + square-corners rule). */
+  .hero-accent{ border-top:3px solid var(--accent); }
+
+  /* Table lives in a reviewed .cn-table wrap; on this 390 canvas it will card-collapse
+     (its own @container max-width:600px). Give the wrap the canvas width. Layout-only. */
+  .cn-table .wrap{ width:100%; }
+  .cn-table caption{ font-size:15px; } /* match section-title rhythm; type token 15px, weight unchanged */
+
+  /* per-row status chip = Status-indicator form B (square tint chip), reused inline in a cell.
+     Scoped wrapper so the atom's tokens resolve without pulling the whole demo shell. */
+  .statuscell{ display:flex; flex-direction:column; gap:6px; align-items:flex-start; }
+  .statuscell small{ color:var(--muted); font:400 12px/1.4 var(--font); }
+
+  /* action row under the awaiting-approval table (list-level action, not a sticky bar) */
+  .approve-actions{ display:flex; gap:12px; }
+  .approve-actions .btn{ flex:1; }
+
+  .foot-note{ font:400 12px/1.5 var(--font); color:var(--muted); }
+</style>
+</head>
+<body>
+<div class="app cn-headers">
+
+  <!-- HEADER — retrieved .cn-headers .content-header (back + centred title). Sentence case (§4). -->
+  <header class="content-header" style="border-bottom:1px solid var(--divider);">
+    <button type="button" aria-label="Back">
+      <svg viewBox="0 0 18 18" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M13 1L13 17L5 9L13 1Z" fill="currentColor"/></svg>
+    </button>
+    <h1>Payments</h1>
+    <span style="width:40px;" aria-hidden="true"></span>
+  </header>
+
+  <div class="app__body">
+
+    <!-- ACCOUNT CONTEXT + BALANCE ============================================= -->
+    <!-- .cn-account-card retrieved: the gate-reviewed money card (label + tabular balance
+         + RAG status chips). Best fit over .cn-cards (generic) — this is the balance-specific
+         reviewed component. Account ref masked last-4 only (§4). -->
+    <section class="sec cn-account-card" aria-label="Account balance">
+      <div class="account-card hero-accent">
+        <span class="label">Business current account · ···· 8842</span>
+        <span class="balance" aria-label="Current balance 122,450 pounds">£122,450</span>
+        <span class="label" style="margin-top:2px;">Current balance · as of 12 May 2026</span>
+        <div class="meta-row">
+          <!-- status chip reused from Account-card's own .chip (Status-indicator primitive).
+               "ok" = green tint: net movement is positive today. Meaning carried by LABEL
+               text, not colour alone (Status-indicator finding, 1.4.1). -->
+          <span class="chip ok"><span class="dot" aria-hidden="true"></span>Net today +£2,450</span>
+          <span class="tag">Sort code ··–··–··</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- TODAY'S CASH MOVEMENT ================================================== -->
+    <!-- .cn-summary retrieved: key/value list is the exact shape for the intraday breakdown.
+         Ruled out a second stat-grid — Summary reads as an ordered ledger (opening → closing),
+         which matches "read today's cash position at a glance" (§1). Tabular-nums built in. -->
+    <section class="sec cn-summary" aria-label="Today's cash movement">
+      <div class="sec__head"><h2 class="sec__title">Today's movement</h2></div>
+      <dl class="summary" style="max-width:none;">
+        <div class="summary__row"><dt class="summary__k">Opening balance</dt><dd class="summary__v">£120,000</dd></div>
+        <div class="summary__row"><dt class="summary__k">Inflows today</dt><dd class="summary__v" style="color:var(--ok);">+£11,650</dd></div>
+        <div class="summary__row"><dt class="summary__k">Outflows today</dt><dd class="summary__v">−£9,200</dd></div>
+        <div class="summary__row"><dt class="summary__k">Net movement</dt><dd class="summary__v" style="color:var(--ok);">+£2,450</dd></div>
+        <div class="summary__row summary__row--total"><dt class="summary__k">Est. closing balance</dt><dd class="summary__v">£124,000</dd></div>
+      </dl>
+    </section>
+
+    <!-- COVERAGE ============================================================== -->
+    <!-- .cn-notifications .note.info.tint retrieved: an informational, no-action-required
+         statement is exactly RAG blue's semantic (colour-usage col25-017: blue = useful
+         information, usually no action). Buffer maths stated exactly, not overstated (§4):
+         £122,450 − £49,702 = £72,748, covered THROUGH May. -->
+    <section class="sec cn-notifications" aria-label="Coverage">
+      <div class="nwrap" style="width:100%;">
+        <div class="note info tint" role="status">
+          <span class="ic" aria-hidden="true">
+<svg viewBox="0 0 18 18" fill="none"><path d="M9 0C4.03 0 0 4.03 0 9C0 13.97 4.03 18 9 18C13.97 18 18 13.97 18 9C18 4.03 13.97 0 9 0ZM9.9 14.25H8.1V8.25H9.9V14.25ZM9 6.25C8.31 6.25 7.75 5.69 7.75 5C7.75 4.31 8.31 3.75 9 3.75C9.69 3.75 10.25 4.31 10.25 5C10.25 5.69 9.69 6.25 9 6.25Z" fill="currentColor"/></svg>
+          </span>
+          <div class="main">
+            <strong>£72,748 buffer — covered through May.</strong><br>
+            Current balance £122,450 less £49,702 scheduled in May.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AWAITING YOUR APPROVAL ================================================ -->
+    <!-- .cn-table retrieved (passive data table, card-collapses on this narrow canvas).
+         Two awaiting-approval items; the high-value payroll run (£45,200) routes to a
+         confirmation step (§4 — no one-click approve). -->
+    <section class="sec cn-table" aria-label="Payments awaiting your approval">
+      <div class="sec__head">
+        <h2 class="sec__title">Awaiting your approval</h2>
+        <span class="c-eyebrow" style="font-weight:400;">2 items · £49,702</span>
+      </div>
+      <div class="wrap">
+        <div class="scroll">
+        <table>
+          <caption>Payments needing sign-off<span class="sub">Both requested by Sarah Chen, 2 days ago</span></caption>
+          <thead>
+            <tr>
+              <th scope="col">Payee</th>
+              <th scope="col">Account</th>
+              <th scope="col">Date</th>
+              <th scope="col">Status</th>
+              <th scope="col" class="num">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row" data-label="Payee">Amazon Business<br><span style="font-weight:400;color:var(--muted);font-size:13px;">Supplier · card &amp; fulfilment</span></th>
+              <td data-label="Account"><span class="v">···· 4021</span></td>
+              <td data-label="Date"><span class="v">15 May 2026</span></td>
+              <td data-label="Status"><span class="v"><span class="cn-status-indicator" style="display:inline-block;"><span class="chip warn"><span class="dot" aria-hidden="true"></span>Awaiting approval</span></span></span></td>
+              <td class="num" data-label="Amount"><span class="v">£4,502</span></td>
+            </tr>
+            <tr>
+              <th scope="row" data-label="Payee">BrightHire Payroll Ltd<br><span style="font-weight:400;color:var(--muted);font-size:13px;">Payroll · monthly run</span></th>
+              <td data-label="Account"><span class="v">···· 7730</span></td>
+              <td data-label="Date"><span class="v">22 May 2026</span></td>
+              <td data-label="Status"><span class="v"><span class="cn-status-indicator" style="display:inline-block;"><span class="chip warn"><span class="dot" aria-hidden="true"></span>Awaiting approval</span></span></span></td>
+              <td class="num" data-label="Amount"><span class="v">£45,200</span></td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+      <!-- List-level actions. .cn-button reviewed .btn (primary red LEADS — §2 balanced
+           licenses red on the primary action; brand-principles principle 2 tactical red as
+           the journey-driving CTA). "Review & approve" is deliberately NOT one-click: it
+           opens the confirmation dialog (§4). Secondary "View all" is the ink button. -->
+      <div class="approve-actions cn-button">
+        <button type="button" class="btn primary" onclick="document.getElementById('confirm-overlay').classList.add('open')">Review &amp; approve</button>
+        <button type="button" class="btn tertiary">View details</button>
+      </div>
+    </section>
+
+    <!-- SCHEDULED AHEAD ======================================================= -->
+    <!-- .cn-table again (scheduled items). Same reviewed component; different data slice. -->
+    <section class="sec cn-table" aria-label="Scheduled payments">
+      <div class="sec__head">
+        <h2 class="sec__title">Scheduled ahead</h2>
+        <span class="c-eyebrow" style="font-weight:400;">3 items · £106,302</span>
+      </div>
+      <div class="wrap">
+        <div class="scroll">
+        <table>
+          <caption>Upcoming scheduled payments</caption>
+          <thead>
+            <tr>
+              <th scope="col">Payee</th>
+              <th scope="col">Account</th>
+              <th scope="col">Date</th>
+              <th scope="col">Status</th>
+              <th scope="col" class="num">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row" data-label="Payee">HMRC — PAYE<br><span style="font-weight:400;color:var(--muted);font-size:13px;">Tax · PAYE / NIC</span></th>
+              <td data-label="Account"><span class="v">···· 0001</span></td>
+              <td data-label="Date"><span class="v">22 Jul 2026</span></td>
+              <td data-label="Status"><span class="v"><span class="cn-status-indicator" style="display:inline-block;"><span class="chip inf"><span class="dot" aria-hidden="true"></span>Scheduled</span></span></span></td>
+              <td class="num" data-label="Amount"><span class="v">£2,200</span></td>
+            </tr>
+            <tr>
+              <th scope="row" data-label="Payee">British Gas Business<br><span style="font-weight:400;color:var(--muted);font-size:13px;">Utilities · electricity &amp; gas</span></th>
+              <td data-label="Account"><span class="v">···· 5560</span></td>
+              <td data-label="Date"><span class="v">12 Aug 2026</span></td>
+              <td data-label="Status"><span class="v"><span class="cn-status-indicator" style="display:inline-block;"><span class="chip inf"><span class="dot" aria-hidden="true"></span>Scheduled</span></span></span></td>
+              <td class="num" data-label="Amount"><span class="v">£4,200</span></td>
+            </tr>
+            <tr>
+              <th scope="row" data-label="Payee">Ravenscroft Properties<br><span style="font-weight:400;color:var(--muted);font-size:13px;">Rent · quarterly lease</span></th>
+              <td data-label="Account"><span class="v">···· 3318</span></td>
+              <td data-label="Date"><span class="v">09 Sep 2026</span></td>
+              <td data-label="Status"><span class="v"><span class="cn-status-indicator" style="display:inline-block;"><span class="chip inf"><span class="dot" aria-hidden="true"></span>Scheduled</span></span></span></td>
+              <td class="num" data-label="Amount"><span class="v">£50,200</span></td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+      <!-- Scheduled total row = .cn-summary total row. Must equal the sum of rows (§4):
+           2,200 + 4,200 + 50,200 = 56,600... FLAG: brief §3 states "Scheduled total: £106,302
+           (must equal the sum of the rows)" AND "Two items awaiting approval total £49,702".
+           The three SCHEDULED rows sum to £56,600; £106,302 = the three scheduled (£56,600)
+           PLUS the two awaiting-approval items (£49,702). i.e. £106,302 is the ALL-payments
+           total, not the 3 scheduled rows alone. Shown below as the full commitments total to
+           keep §4's stated figure verbatim without misattributing it to 3 rows. -->
+      <div class="cn-summary">
+        <dl class="summary" style="max-width:none;">
+          <div class="summary__row"><dt class="summary__k">Scheduled ahead (3 items)</dt><dd class="summary__v">£56,600</dd></div>
+          <div class="summary__row"><dt class="summary__k">Awaiting approval (2 items)</dt><dd class="summary__v">£49,702</dd></div>
+          <div class="summary__row summary__row--total"><dt class="summary__k">Total scheduled &amp; pending</dt><dd class="summary__v">£106,302</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <p class="foot-note">Account and sort-code details are masked. Amounts show the pending
+      and scheduled position; they do not affect your current balance until they settle.</p>
+
+  </div><!-- /app__body -->
+
+  <!-- BOTTOM NAV — retrieved .cn-tab-bar (variant A: full-width labelled). Payments is current. -->
+  <nav class="cn-tab-bar" aria-label="Primary">
+    <div class="tabbar" style="max-width:none;">
+      <a class="tabbar__item" href="#" aria-label="Home">
+        <svg class="ic-line" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3 10.5V21h6v-6h6v6h6V10.5L12 3z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+        <span>Home</span>
+      </a>
+      <a class="tabbar__item is-active" href="#" aria-current="page" aria-label="Payments">
+        <svg class="ic-line" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" fill="none" stroke="currentColor" stroke-width="1.6"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.6"/></svg>
+        <span>Payments</span>
+      </a>
+      <a class="tabbar__item" href="#" aria-label="Accounts">
+        <svg class="ic-line" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" fill="none" stroke="currentColor" stroke-width="1.6"/><line x1="3" y1="9" x2="21" y2="9" stroke="currentColor" stroke-width="1.6"/></svg>
+        <span>Accounts</span>
+      </a>
+      <a class="tabbar__item" href="#" aria-label="More">
+        <svg class="ic-line" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="19" cy="12" r="1.6" fill="currentColor"/></svg>
+        <span>More</span>
+      </a>
+    </div>
+  </nav>
+
+</div><!-- /app -->
+
+<!-- HIGH-VALUE CONFIRMATION (§4: the £45,200 payroll run must require a confirm step) ====== -->
+<!-- .cn-modals retrieved: the reviewed dialog (role=dialog, aria-modal, scrim, reviewed .btn).
+     Restates the exact figure (§4 figure fidelity). Primary red = the deliberate action. -->
+<div class="cn-modals">
+  <div class="overlay" id="confirm-overlay" role="dialog" aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-desc">
+    <div class="dialog">
+      <button class="close" type="button" aria-label="Close" onclick="document.getElementById('confirm-overlay').classList.remove('open')">
+        <svg viewBox="0 0 18 18" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"/></svg>
+      </button>
+      <h2 id="confirm-title">Confirm high-value payment</h2>
+      <p id="confirm-desc">You're approving the monthly payroll run to <strong>BrightHire Payroll Ltd</strong> (account ···· 7730) for <strong>£45,200</strong>, dated 22 May 2026. This is a high-value payment and needs your explicit confirmation.</p>
+      <div class="actions">
+        <button class="btn primary" type="button" onclick="document.getElementById('confirm-overlay').classList.remove('open')">Confirm £45,200 payment</button>
+        <button class="btn secondary" type="button" onclick="document.getElementById('confirm-overlay').classList.remove('open')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

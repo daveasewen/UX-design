@@ -75,18 +75,31 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
   `_TEST-BRIEF-v2-sme-payments.md` §2 rewritten from look-language (surfaces/hero/gradients) to §9
   inference-language (retrieve/extend/invent + cardinal/foundational curbs). The vision doc + ADR-0006
   itself remain unreconciled — do that when next in that area.
-- **✅ Worked spread — DONE 2026-07-05, one instance.** First retrieve/extend/invent spread under
-  the §9 inference definition: SME Payments screen, three bands generated in isolated parallel
-  passes. Result: cardinal curbs (brand colour, square corners, correctness data) held with **zero**
-  violations across all three (grep-verified, not just self-reported); foundational curbs
-  (composition, motion, component-vocabulary purity) diverged monotonically with the register, as
-  predicted. One gap found (no logo/masterbrand in any band — a contract-scope issue, not a
-  register failure); one process finding (an agent self-report claimed a flagged comment that
-  wasn't actually in the file — verify artifacts, not reports). Full writeup + probe:
-  `knowledge/_fitness-test/register-spread-2026-07-05/_PROBE-and-selfcheck.md`; artifacts
-  `sober.html`/`balanced.html`/`expressive.html` in the same folder. **This is one spread, one
-  screen — §9/§9a's "proven" status stays deferred (see the audit-deferred entry below) until more
-  spreads land and Dave has eyeballed the actual HTML.**
+- **✅ Worked spread — DONE 2026-07-05, TWO instances (Sonnet + Opus re-run).** First
+  retrieve/extend/invent spread under the §9 inference definition: SME Payments screen, three bands
+  generated in isolated parallel passes. **Sonnet pass:** cardinal curbs held with zero violations;
+  foundational curbs diverged monotonically with the register, as predicted. **Dave reviewed the
+  actual HTML and found two real gaps**, not just polish: (a) sober used the never-reviewed
+  `.c-stat-grid` utility instead of the gate-reviewed `.cn-account-card` for the same data —
+  the brief said "retrieve" but had no rule ranking canon artifacts by rigour; (b) expressive
+  wasn't bold enough despite nominal MAX-inference licence. Dave also asked whether a
+  build→review→correct loop exists (**it didn't**) and proposed testing Opus. **Fixes made same
+  session:** (1) `_TEST-BRIEF-v2-sme-payments.md` §2 now states an explicit, mechanical **canon
+  rigour tier** — `.cn-*` (gate-reviewed, generated from snippets) always preferred over `.c-*`
+  (hand-authored, never reviewed) when one fits; (2) re-ran the full spread on **Opus**. **Opus
+  re-run result:** all three bands now retrieve `.cn-account-card`; sober dropped to **zero**
+  `.c-*` fallback usage (from relying on it for its centrepiece); expressive reads as a
+  substantially bigger compositional swing (needs Dave's eyeball, not just structural grep) — same
+  cardinal-curb floor held throughout with zero violations. **Bonus finding:** two independent Opus
+  passes caught a real ambiguity in the contract's own §3 wording (conflated "sum of all 5 rows"
+  with "scheduled total") that neither Sonnet pass flagged — fixed in the contract. Full writeups:
+  `knowledge/_fitness-test/register-spread-2026-07-05/_PROBE-and-selfcheck.md` (Sonnet pass) +
+  `register-spread-2026-07-05-opus/_COMPARISON-sonnet-vs-opus.md` (the re-run + comparison).
+  Memory: `register-inference-ramp`, `spread-review-gaps-2026-07-05`. **Still not "proven"** — one
+  screen, two passes changing two variables at once (rigour-tier rule + model), no rendered visual
+  check, and Dave hasn't yet confirmed the Opus expressive band actually reads more exciting. A
+  designed build→review→correct loop remains unbuilt (Opus self-corrected mid-pass on one bug, but
+  that's not the same as a designed loop).
 - **Divergence probe — first real run done 2026-07-05** (structural/grep-based, not the full
   novelty-scoring tooling named in §9). See the writeup above. The formal tooling (threshold
   calibration, automated novelty count) is still named-not-built.
@@ -119,11 +132,13 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
     2026-07-05**, see the worked-spread entry above; (b) the divergence probe + isolated generation
     + mode-B self-check — **✅ first-pass run done 2026-07-05** (isolated generation used for real;
     probe was structural/grep-based, not the full novelty-scoring tooling; mode-B self-check run
-    manually against the six principles). **Still not "proven"** — one screen, one spread, no
-    calibrated tooling, no rendered visual check, Dave hasn't eyeballed the artifacts yet. Re-audit
-    §9/§9a's proven status once Dave has reviewed `_PROBE-and-selfcheck.md` + the three HTML files
-    and, ideally, a second spread on a different (less cardinal-heavy) screen exists to check the
-    probe isn't just measuring "payments is always narrow-road."
+    manually against the six principles). **Still not "proven"** — one screen, two spreads now
+    (Sonnet + an Opus re-run that fixed two real gaps Dave found on eyeball review), no calibrated
+    tooling, no rendered visual check, and Dave hasn't yet confirmed the Opus expressive band reads
+    as more exciting. Re-audit §9/§9a's proven status once Dave has reviewed both writeups + all six
+    HTML files and, ideally, a second *screen* (not just a second model) with more compositional
+    latitude than payments exists, to check the probe isn't just measuring "payments is always
+    narrow-road."
   - **Re-audit obligation (two amended nodes).** ADR-0006 (register dial corrected to §9 inference
     ramp) and `derivation-governance` (staged multi-human promotion path) were **amended** in the
     audit; their amended text **re-enters `unaudited`** and must be re-audited in a later batch.

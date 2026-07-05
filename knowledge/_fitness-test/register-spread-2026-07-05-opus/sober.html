@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en-GB" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payments — Northgate Timber Ltd</title>
+<link rel="stylesheet" href="../../canon/canon.css">
+<!--
+  ============================================================================
+  REGISTER SPREAD 2026-07-05 · SOBER band (retrieve — inference OFF)
+  Screen: SME Payments · Northgate Timber Ltd · per _TEST-BRIEF-v2-sme-payments.md
+  Built cold; did not read _fitness-test/ prior variants or sibling bands.
+
+  RETRIEVAL LOG (canon rigour tier — .cn-* first, mechanical order §2):
+  · Screen chrome ............ .cn-headers  (.content-header + .display)
+  · Cash position (balance) .. .cn-account-card  — the gate-reviewed label+
+                               balance(+meta chips) component built for EXACTLY
+                               this data shape (single account balance + today's
+                               movement context). Preferred over any .c-* grid
+                               utility (.c-stat-grid / .c-summary) per §2 tier 1.
+  · Today's movement ......... .cn-summary  (key/value list + --total row) — the
+                               reviewed component for opening/in/out/net/closing.
+  · Coverage / buffer ........ .cn-account-card (second card: label + buffer
+                               balance + .chip.ok "Covered through May"). Same
+                               reviewed component; buffer is a labelled balance
+                               with a status chip — an account-card, not a stat.
+  · Awaiting-approval callout  .cn-notifications  (.note.tint.info)
+  · Payments (both groups) ... .cn-table  (reviewed passive data table: masked
+                               account col, category, status chip, amount;
+                               caption + th scope; card-collapse responsive)
+  · Status chips in rows ..... Status-indicator tint chip (.chip.warn / .chip.inf)
+                               — the same RAG-tint primitive the reviewed
+                               components (account-card / list-items) reuse.
+  · High-value approve ....... .cn-modals dialog (confirmation step — no one-click
+                               approve for the £45,200 payroll run, §4) then
+                               .cn-confirmation success state.
+  · Action bar ............... .cn-action-bar (reviewed; primary + tertiary Button)
+
+  NO .c-* fallback classes were needed on this screen — every region mapped to a
+  gate-reviewed .cn-* component, so tier 1 was never exhausted. (.c-stat-grid and
+  .c-summary in the hand-authored layer were CHECKED and ruled out: .cn-account-card
+  and .cn-summary cover the same data shapes and are gate-reviewed; using the .c-*
+  utilities would be a retrieval failure per §2.)
+
+  FLAGGED / DERIVED VALUES: none. Every colour, type, spacing and motion value is
+  retrieved from canon.css tokens or .cn-* component vars. No brand value typed from
+  memory; nothing invented that required derive-and-flag.
+
+  ROUNDING / MASKING (§4): sort code fully masked (··–··–··); account refs last-4
+  only (···· 8842 etc.); every figure verbatim from §3; scheduled total £106,302 =
+  sum of the five rows; awaiting-approval £49,702 = £4,502 + £45,200; buffer
+  £72,748 = £122,450 − £49,702; coverage stated "through May", not overstated.
+  ============================================================================
+-->
+<style>
+  /* Screen shell only — a phone-width frame + vertical rhythm. Colours/type/space
+     all reference canon tokens; no brand values introduced. (Layout scaffolding is
+     structure, not a brand-bearing choice.) */
+  body{ margin:0; background:var(--divider-border-break); }
+  .screen{
+    width:420px; max-width:100%; margin-inline:auto; min-height:100vh;
+    background:var(--page); border-inline:1px solid var(--border-subtle);
+    display:flex; flex-direction:column;
+  }
+  .screen__body{ flex:1; display:flex; flex-direction:column; gap:24px; padding:20px 16px 32px; }
+  .region{ display:flex; flex-direction:column; gap:12px; }
+  .region > .eyebrow{ display:inline-block; font:500 13px/1 var(--font); color:var(--text-secondary); }
+  .region > h2{ font:400 20px/1.2 var(--font); color:var(--text-default); letter-spacing:-.01em; }
+  /* let the two reviewed components fill the phone column (their demo max-widths cap narrower) */
+  .region .account-card{ max-width:none; }
+  .region .summary{ max-width:none; }
+  .region .wrap{ width:auto; }
+  .region .nwrap{ width:auto; }
+  .card-pair{ display:flex; flex-direction:column; gap:16px; }
+  .visually-hidden{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
+</style>
+</head>
+
+<body class="canon" data-theme="light">
+<div class="screen">
+
+  <!-- ============ Screen header — .cn-headers ============ -->
+  <div class="cn-headers">
+    <div class="content-header" style="border-bottom:1px solid var(--divider-border-section);">
+      <button type="button" aria-label="Back">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5 8 12l7 7" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+      </button>
+      <h1>Payments</h1>
+      <button type="button" aria-label="Search">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="m16 16 4 4" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="screen__body">
+
+    <!-- ============ Cash position — .cn-account-card ============ -->
+    <!-- The gate-reviewed label+balance(+meta) component, used for exactly what it
+         was built for: a single account's balance with today's movement context. -->
+    <section class="region cn-account-card" aria-labelledby="cash-h">
+      <span class="eyebrow">As of 12 May 2026</span>
+      <h2 id="cash-h">Cash position</h2>
+
+      <div class="card-pair">
+        <div class="account-card" role="group" aria-labelledby="bal-label">
+          <span class="label" id="bal-label">Northgate Timber Ltd · Business current account ···· 8842 · sort code ··–··–··</span>
+          <span class="balance">£122,450</span>
+          <div class="meta-row">
+            <span class="chip ok"><span class="dot" aria-hidden="true"></span>Net movement +£2,450 today</span>
+            <span class="tag">Est. closing £124,000</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Today's movement — .cn-summary ============ -->
+    <!-- Reviewed key/value list with an emphasised total row: the opening→closing
+         breakdown. Figures verbatim; net = +£2,450 = inflows −£9,200 outflows applied
+         to +£11,650 inflows. -->
+    <section class="region cn-summary" aria-labelledby="move-h">
+      <h2 id="move-h">Today's movement</h2>
+      <dl class="summary">
+        <div class="summary__row"><dt class="summary__k">Opening balance</dt><dd class="summary__v">£120,000</dd></div>
+        <div class="summary__row"><dt class="summary__k">Inflows today</dt><dd class="summary__v">+£11,650</dd></div>
+        <div class="summary__row"><dt class="summary__k">Outflows today</dt><dd class="summary__v">−£9,200</dd></div>
+        <div class="summary__row"><dt class="summary__k">Net movement</dt><dd class="summary__v">+£2,450</dd></div>
+        <div class="summary__row summary__row--total"><dt class="summary__k">Current balance</dt><dd class="summary__v">£122,450</dd></div>
+      </dl>
+    </section>
+
+    <!-- ============ Coverage / buffer — .cn-account-card ============ -->
+    <!-- Same reviewed account-card: a labelled balance (the buffer) + a status chip.
+         £72,748 = £122,450 current − £49,702 scheduled in May. Stated "through May",
+         not overstated. -->
+    <section class="region cn-account-card" aria-labelledby="cover-h">
+      <h2 id="cover-h">Coverage</h2>
+      <div class="account-card" role="group" aria-labelledby="cover-label">
+        <span class="label" id="cover-label">Buffer after May commitments · £122,450 − £49,702 scheduled in May</span>
+        <span class="balance">£72,748</span>
+        <div class="meta-row">
+          <span class="chip ok"><span class="dot" aria-hidden="true"></span>Covered through May</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Awaiting-approval callout — .cn-notifications ============ -->
+    <section class="region cn-notifications" aria-label="Approvals waiting">
+      <div class="nwrap">
+        <div class="note tint info" role="status">
+          <span class="ic" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="10" fill="currentColor"/><rect x="11" y="10" width="2" height="7" fill="var(--info-t)"/><rect x="11" y="7" width="2" height="2" fill="var(--info-t)"/></svg>
+          </span>
+          <div class="main"><strong>2 payments awaiting your approval</strong> — £49,702 in total. Review and approve below.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Awaiting approval — .cn-table + per-row approve ============ -->
+    <section class="region cn-table" aria-labelledby="await-h">
+      <h2 id="await-h">Awaiting approval</h2>
+      <div class="wrap">
+        <div class="scroll" tabindex="0" role="region" aria-label="Payments awaiting approval">
+          <table>
+            <caption>Payments awaiting approval<span class="sub">Requested by Sarah Chen, 2 days ago · £49,702 total</span></caption>
+            <thead>
+              <tr>
+                <th scope="col">Payee</th>
+                <th scope="col">Category</th>
+                <th scope="col">Account</th>
+                <th scope="col">Due</th>
+                <th scope="col" class="num">Amount</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row" data-label="Payee">Amazon Business</th>
+                <td data-label="Category"><span class="v">Supplier · card &amp; fulfilment</span></td>
+                <td data-label="Account"><span class="v">···· 4021</span></td>
+                <td data-label="Due"><span class="v">15 May 2026</span></td>
+                <td class="num" data-label="Amount"><span class="v">£4,502</span></td>
+                <td data-label="Action"><span class="v">
+                  <button type="button" class="cn-button" aria-label="Approve payment to Amazon Business, £4,502"
+                    style="height:36px;min-width:88px;padding:0 16px;border:1px solid var(--tertiary-border-default);background:var(--tertiary-background-default);color:var(--text-default);font:500 14px/1 var(--font);cursor:pointer;border-radius:0;">Approve</button>
+                </span></td>
+              </tr>
+              <tr>
+                <th scope="row" data-label="Payee">BrightHire Payroll Ltd</th>
+                <td data-label="Category"><span class="v">Payroll · monthly run</span></td>
+                <td data-label="Account"><span class="v">···· 7730</span></td>
+                <td data-label="Due"><span class="v">22 May 2026</span></td>
+                <td class="num" data-label="Amount"><span class="v">£45,200</span></td>
+                <td data-label="Action"><span class="v">
+                  <!-- HIGH-VALUE (£45,200): opens a confirmation dialog — NOT one-click approve (§4). -->
+                  <button type="button" id="approve-payroll" aria-haspopup="dialog"
+                    aria-label="Review and approve payroll run to BrightHire Payroll Ltd, £45,200"
+                    style="height:36px;min-width:88px;padding:0 16px;border:0;background:var(--primary-background-default);color:var(--text-reverse);font:500 14px/1 var(--font);cursor:pointer;border-radius:0;">Review</button>
+                </span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Scheduled ahead — .cn-table (passive) ============ -->
+    <section class="region cn-table" aria-labelledby="sched-h">
+      <h2 id="sched-h">Scheduled ahead</h2>
+      <div class="wrap">
+        <div class="scroll" tabindex="0" role="region" aria-label="Scheduled payments">
+          <table>
+            <caption>Scheduled payments<span class="sub">3 payments · £56,600 total · £106,302 scheduled across May–Sep</span></caption>
+            <thead>
+              <tr>
+                <th scope="col">Payee</th>
+                <th scope="col">Category</th>
+                <th scope="col">Account</th>
+                <th scope="col">Date</th>
+                <th scope="col">Status</th>
+                <th scope="col" class="num">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row" data-label="Payee">HMRC — PAYE</th>
+                <td data-label="Category"><span class="v">Tax · PAYE / NIC</span></td>
+                <td data-label="Account"><span class="v">···· 0001</span></td>
+                <td data-label="Date"><span class="v">22 Jul 2026</span></td>
+                <td data-label="Status"><span class="v"><span class="status-chip inf"><span class="dot" aria-hidden="true"></span>Scheduled</span></span></td>
+                <td class="num" data-label="Amount"><span class="v">£2,200</span></td>
+              </tr>
+              <tr>
+                <th scope="row" data-label="Payee">British Gas Business</th>
+                <td data-label="Category"><span class="v">Utilities · electricity &amp; gas</span></td>
+                <td data-label="Account"><span class="v">···· 5560</span></td>
+                <td data-label="Date"><span class="v">12 Aug 2026</span></td>
+                <td data-label="Status"><span class="v"><span class="status-chip inf"><span class="dot" aria-hidden="true"></span>Scheduled</span></span></td>
+                <td class="num" data-label="Amount"><span class="v">£4,200</span></td>
+              </tr>
+              <tr>
+                <th scope="row" data-label="Payee">Ravenscroft Properties</th>
+                <td data-label="Category"><span class="v">Rent · quarterly lease</span></td>
+                <td data-label="Account"><span class="v">···· 3318</span></td>
+                <td data-label="Date"><span class="v">09 Sep 2026</span></td>
+                <td data-label="Status"><span class="v"><span class="status-chip inf"><span class="dot" aria-hidden="true"></span>Scheduled</span></span></td>
+                <td class="num" data-label="Amount"><span class="v">£50,200</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ============ Action bar — .cn-action-bar ============ -->
+  <div class="cn-action-bar">
+    <div class="action-bar-region">
+      <div class="action-bar action-bar--sticky">
+        <button type="button" class="btn tertiary">Export</button>
+        <button type="button" class="btn primary" id="approve-all">Approve selected</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============ High-value confirmation — .cn-modals ============ -->
+<!-- Confirmation step for the £45,200 payroll run. No approval happens on the table
+     button click; approval only after this explicit confirm (§4 high-value rule). -->
+<div class="cn-modals">
+  <div class="overlay" id="payroll-modal" role="presentation">
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="pm-title" aria-describedby="pm-body">
+      <button type="button" class="close" aria-label="Cancel" data-close>
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+      </button>
+      <h2 id="pm-title">Approve payroll run?</h2>
+      <p id="pm-body">You're approving <strong>£45,200</strong> to BrightHire Payroll Ltd from account ···· 7730, due 22 May 2026. This is a high-value payment and can't be undone once approved.</p>
+      <div class="actions">
+        <button type="button" class="btn primary" id="confirm-payroll">Approve £45,200</button>
+        <button type="button" class="btn secondary" data-close>Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Success — .cn-confirmation ============ -->
+<div class="cn-confirmation" id="payroll-success" hidden
+     style="position:fixed; inset:0; background:var(--page); z-index:60; display:none; align-items:center; justify-content:center;">
+  <div class="confirm" role="dialog" aria-modal="true" aria-labelledby="ok-title">
+    <svg class="success" viewBox="0 0 56 56" aria-hidden="true" focusable="false">
+      <circle cx="28" cy="28" r="28" fill="currentColor"/>
+      <path d="M17 29l7 7 15-16" fill="none" stroke="var(--page)" stroke-width="4" stroke-linecap="square"/>
+    </svg>
+    <h2 class="confirm__title" id="ok-title">Payroll approved</h2>
+    <p class="confirm__msg">£45,200 to BrightHire Payroll Ltd is scheduled for 22 May 2026 from account ···· 7730.</p>
+    <div class="confirm__actions">
+      <button type="button" class="btn primary" id="success-done">Back to payments</button>
+    </div>
+  </div>
+</div>
+
+<!-- Local status-chip: the Status-indicator RAG tint chip (form B), square, label-on-tint.
+     Same spec the reviewed account-card / list-items reuse; scoped here for the table's
+     "Scheduled" cells (informational — blue/info per RAG semantics). -->
+<style>
+  .canon .status-chip{ display:inline-flex; align-items:center; gap:6px; height:24px; padding:0 8px;
+    border-radius:0; font:400 12px/1 var(--font); color:var(--text-default); white-space:nowrap; }
+  .canon .status-chip .dot{ width:8px; height:8px; border-radius:50%; flex:none; }
+  .canon .status-chip.inf{ background:var(--rag-information-tint); }
+  .canon .status-chip.inf .dot{ background:var(--rag-information); }
+  .canon .status-chip.warn{ background:var(--rag-warning-tint); }
+  .canon .status-chip.warn .dot{ background:var(--rag-warning); }
+</style>
+
+<script>
+  // Behaviour only — no brand values. Wires the high-value confirmation flow (§4).
+  (function(){
+    var openBtn  = document.getElementById('approve-payroll');
+    var overlay  = document.getElementById('payroll-modal');
+    var confirm  = document.getElementById('confirm-payroll');
+    var success  = document.getElementById('payroll-success');
+    var done     = document.getElementById('success-done');
+    var lastFocus = null;
+
+    function openModal(){
+      lastFocus = document.activeElement;
+      overlay.classList.add('open');
+      confirm.focus();
+    }
+    function closeModal(){
+      overlay.classList.remove('open');
+      if (lastFocus) lastFocus.focus();
+    }
+    function showSuccess(){
+      closeModal();
+      success.hidden = false;
+      success.style.display = 'flex';
+      done.focus();
+    }
+    function closeSuccess(){
+      success.style.display = 'none';
+      success.hidden = true;
+      if (openBtn) openBtn.focus();
+    }
+
+    if (openBtn) openBtn.addEventListener('click', openModal);
+    if (confirm) confirm.addEventListener('click', showSuccess);
+    if (done) done.addEventListener('click', closeSuccess);
+    overlay.querySelectorAll('[data-close]').forEach(function(b){ b.addEventListener('click', closeModal); });
+    overlay.addEventListener('click', function(e){ if (e.target === overlay) closeModal(); });
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape'){
+        if (overlay.classList.contains('open')) closeModal();
+        else if (!success.hidden) closeSuccess();
+      }
+    });
+  })();
+</script>
+
+</body>
+</html>

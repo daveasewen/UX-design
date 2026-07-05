@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en-GB" class="canon">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payments — Northgate Timber Ltd</title>
+<link rel="stylesheet" href="../../canon/canon.css">
+<!--
+  ============================================================================
+  REGISTER: EXPRESSIVE  (invent — MAX inference, cardinal curbs only)
+  Band of the SME-Payments register spread, per _TEST-BRIEF-v2-sme-payments.md.
+  Built cold; did not read the other two bands or any prior variant.
+
+  BOLD CREATIVE CHOICE — "The reckoning wall":
+  The screen is split into two worlds by a hard 22° diagonal seam (the angle
+  from HSBC's own typography; the Hexagon 45°/90° geometry drives the rest).
+  ABOVE the seam: a black expressive command band with a monumental display
+  balance (76px) — deliberate, extreme scale contrast against 13px eyebrows.
+  BELOW the seam, red LEADS STRUCTURALLY, not as an accent: a full-bleed HSBC
+  Red approval slab is the visual centre of gravity of the whole page — the two
+  payments awaiting approval are given monumental weight (the £45,200 payroll
+  run confirmed through a modal — cardinal §4 rule held), while everything
+  merely scheduled recedes into a quiet, receding table. Asymmetry is the point:
+  the eye is thrown down-left onto the decision, not spread evenly.
+  Density is compressed at the top, opened at the decision, then compressed
+  again for the scheduled ledger — an intentional accordion of pacing.
+
+  CARDINAL CURBS — all held despite the boldness:
+   • Corners: border-radius:0 everywhere. The ONLY round things are the RAG
+     status dots (canon status-indicator; a dot, not a component corner) and
+     the Avatar. No exceptions taken beyond Badge/Avatar.
+   • Brand colour: every colour is a canon token (var(--*)); no typed hex in
+     any rule except where a canon component's own generated CSS already types
+     one. The red "leading" is var(--accent)/--primary-background-default
+     (#DB0011, retrieved). The black band is the retrieved dark-theme
+     --background-default (#000000) via data-theme="dark" scoping — NOT invented.
+   • Type: Univers ramp only (var(--font)); sentence case throughout (§4 house
+     rule); no ALL-CAPS.
+   • a11y floor: AA contrast, visible focus rings (all interactive elements),
+     44px targets, reduced-motion honoured (canon global + local), high-value
+     confirm modal, masked refs.
+
+  FLAGGED / DERIVED CANDIDATES (named source primitive):
+   1. DISPLAY BALANCE 76px — no display/amount type token exists in the ramp
+      (largest is Hero h1 clamp ~57px). Extended from the Account-card balance
+      pattern (400 weight, tabular-nums, -0.01em). Source primitive:
+      --typography-font-weight (300/400) + Account-card .balance spec. CANDIDATE
+      for a display/amount token (already logged in the gap report per canon).
+   2. DIAGONAL SEAM 22° — clip-path angle. NOT a colour/type/corner invention;
+      it is composition (a foundational curb, released at this register). Source
+      primitive: brand-principles.md "Angular" — the 22° typography angle +
+      45°/90° Hexagon. Pure geometry, no radius introduced.
+   3. RED SLAB as page centre of gravity — red-forwardness (foundational,
+      released here). Fill = var(--accent) (#DB0011, retrieved). Source:
+      colour-usage.md — red leads navigation/CTAs; expressive band licenses it
+      to lead structurally. White label on #DB0011 = 5.25:1 (AA).
+   4. HAIRLINE ACCENT RULES at 22° — 1px var(--accent) lines echoing the seam.
+      Decorative composition; retrieved colour; no new value.
+  ============================================================================
+-->
+<style>
+  /* ---- page shell: full-bleed, asymmetric. Not the 390px phone frame — this
+         band is licensed to compose its own canvas (foundational). ---- */
+  html, body { margin:0; }
+  .canon { min-height:100vh; }
+  .page { max-width:1120px; margin-inline:auto; }
+
+  /* ===== BAND 1 — the black command band (retrieved dark surface) =====
+     data-theme="dark" makes --background-default resolve to #000000 (retrieved,
+     not typed). Everything inside re-resolves to the dark token set. */
+  .commandband{
+    position:relative;
+    background:var(--page);            /* #000000 dark token */
+    color:var(--text);                 /* #FFFFFF dark token */
+    overflow:hidden;
+    padding:56px 48px 108px;
+  }
+  /* the 22° diagonal seam — a red hairline slashing the band, echoing the
+     Hexagon/type angle. Pure geometry; colour retrieved. */
+  .commandband::after{
+    content:"";
+    position:absolute; left:-10%; right:-10%; bottom:70px; height:2px;
+    background:var(--accent);          /* #DB0011 retrieved */
+    transform:rotate(-1.2deg);
+    transform-origin:left center;
+    pointer-events:none;
+  }
+  .cb-eyebrow{ font:500 13px/1 var(--font); color:var(--muted); letter-spacing:0; }
+  .cb-grid{
+    display:grid;
+    grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);
+    gap:56px;
+    align-items:end;
+    margin-top:32px;
+  }
+  /* MONUMENTAL scale contrast — the whole point of the top band */
+  .display-balance{
+    font:300 76px/0.98 var(--font);    /* Univers Light — derived display size, see flag 1 */
+    letter-spacing:-.02em;
+    font-variant-numeric:tabular-nums;
+    color:var(--text);
+    margin:6px 0 0;
+  }
+  .display-sub{ font:400 15px/1.4 var(--font); color:var(--muted); margin:14px 0 0; }
+  .movement{
+    display:inline-flex; align-items:baseline; gap:8px;
+    font:400 20px/1 var(--font); margin-top:20px;
+  }
+  .movement .up{ color:var(--ok); font-weight:500; font-variant-numeric:tabular-nums; }
+
+  /* right column of the command band — the cash-flow micro-ledger, dense */
+  .flow{ display:flex; flex-direction:column; gap:0; }
+  .flow__row{
+    display:flex; justify-content:space-between; align-items:baseline; gap:16px;
+    padding:11px 0; border-bottom:1px solid var(--divider);
+    font:400 15px/1.3 var(--font);
+  }
+  .flow__row:last-child{ border-bottom:0; }
+  .flow__k{ color:var(--muted); }
+  .flow__v{ font-weight:500; font-variant-numeric:tabular-nums; }
+  .flow__row.is-net .flow__v{ color:var(--ok); }
+  .flow__row.is-total{ border-top:2px solid var(--accent); border-bottom:0; margin-top:6px; padding-top:14px; }
+  .flow__row.is-total .flow__k, .flow__row.is-total .flow__v{ font-weight:500; font-size:17px; }
+
+  /* coverage read-out — sits ON the seam, straddling the two worlds */
+  .coverage{
+    position:relative; z-index:1;
+    margin-top:40px;
+    display:inline-flex; align-items:center; gap:14px;
+    padding:14px 20px;
+    background:var(--surface);         /* dark raised token */
+    border:1px solid var(--border);
+    border-left:4px solid var(--accent);  /* red leads the eye */
+  }
+  .coverage .k{ font:500 15px/1.3 var(--font); color:var(--text); }
+  .coverage .amt{ font:500 22px/1 var(--font); font-variant-numeric:tabular-nums; }
+  .coverage .through{ font:400 13px/1.3 var(--font); color:var(--muted); }
+
+  /* ===== BAND 2 — the red decision slab (red LEADS structurally) ===== */
+  .decision{
+    position:relative;
+    background:var(--accent);          /* #DB0011 retrieved — red leads */
+    color:var(--reverse);              /* white, retrieved */
+    padding:44px 48px 40px;
+    overflow:hidden;
+  }
+  /* 45° hexagon-derived corner cut, drawn with a hairline, no radius */
+  .decision::before{
+    content:"";
+    position:absolute; top:0; right:0; width:120px; height:120px;
+    background:linear-gradient(45deg, transparent 50%, rgba(0,0,0,.18) 50%);
+    pointer-events:none;
+  }
+  .decision__head{ display:flex; align-items:flex-end; justify-content:space-between; gap:24px; flex-wrap:wrap; }
+  .decision__title{ font:400 30px/1.05 var(--font); letter-spacing:-.01em; margin:0; max-width:16ch; }
+  .decision__count{
+    font:300 64px/1 var(--font); font-variant-numeric:tabular-nums; letter-spacing:-.02em;
+    color:var(--reverse); white-space:nowrap;
+  }
+  .decision__count small{ font:500 15px/1.3 var(--font); display:block; letter-spacing:0; }
+  /* the two approval items — monumental weight, side by side, asymmetric */
+  .approvals{ display:grid; grid-template-columns:1fr 1fr; gap:2px; margin-top:32px; background:rgba(255,255,255,.28); border:1px solid rgba(255,255,255,.28); }
+  .approval{
+    background:var(--accent); color:var(--reverse);
+    padding:22px 24px 20px; display:flex; flex-direction:column; gap:4px;
+  }
+  .approval__eyebrow{ font:500 12px/1 var(--font); color:var(--reverse); opacity:.82; }
+  .approval__payee{ font:500 20px/1.2 var(--font); margin-top:4px; }
+  .approval__amt{ font:300 40px/1 var(--font); font-variant-numeric:tabular-nums; letter-spacing:-.01em; margin-top:8px; }
+  .approval__meta{ font:400 13px/1.4 var(--font); opacity:.9; margin-top:10px; }
+  .approval__meta .ref{ font-variant-numeric:tabular-nums; }
+  .approval__foot{ margin-top:auto; padding-top:18px; }
+  /* buttons ON the red slab — white ink so they read as the action, not the field.
+     Reuses the canon button size spec (h44/pad20/square). */
+  .slab-btn{
+    height:44px; min-width:96px; padding:0 20px; border:0; border-radius:0; cursor:pointer;
+    font:500 16px/1 var(--font); display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    background:var(--reverse); color:var(--accent);
+    transition:transform var(--spring), filter var(--press);
+  }
+  .slab-btn:hover{ transform:scale(1.03); }
+  .slab-btn:active{ transform:scale(.96); filter:brightness(.92); transition:transform var(--press), filter var(--press); }
+  .slab-btn:focus-visible{ outline:3px solid var(--reverse); outline-offset:3px; }
+  .slab-btn--ghost{ background:transparent; color:var(--reverse); box-shadow:inset 0 0 0 1px var(--reverse); }
+  .decision__note{
+    margin-top:18px; font:400 13px/1.4 var(--font); color:var(--reverse); opacity:.9;
+    display:flex; align-items:center; gap:8px;
+  }
+  .decision__note svg{ width:16px; height:16px; fill:currentColor; flex:none; }
+
+  /* ===== BAND 3 — the scheduled ledger, receding & quiet ===== */
+  .ledger{ padding:48px 48px 72px; }
+  .ledger__head{ display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:20px; }
+  .ledger__title{ font:400 22px/1.1 var(--font); letter-spacing:-.01em; margin:0; }
+  .ledger__total{ font:400 15px/1.3 var(--font); color:var(--muted); }
+  .ledger__total strong{ font-weight:500; color:var(--text); font-variant-numeric:tabular-nums; }
+
+  /* the seam echo again as a faint 22° red hairline above the ledger */
+  .seam-echo{ position:relative; height:1px; background:var(--accent); opacity:.5; margin:0 0 40px; transform:rotate(-.5deg); transform-origin:left; }
+
+  @media (max-width: 860px){
+    .commandband{ padding:40px 24px 88px; }
+    .cb-grid{ grid-template-columns:1fr; gap:36px; }
+    .display-balance{ font-size:56px; }
+    .decision{ padding:36px 24px 32px; }
+    .decision__count{ font-size:44px; }
+    .approvals{ grid-template-columns:1fr; }
+    .approval__amt{ font-size:34px; }
+    .ledger{ padding:36px 24px 56px; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .slab-btn:hover, .slab-btn:active{ transform:none !important; filter:none !important; }
+  }
+
+  /* confirm modal open-state driver (canon .cn-modals handles the visuals) */
+  #approve-modal.overlay.open{ }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- =================== BAND 1: black command band =================== -->
+  <!-- data-theme="dark": --background-default resolves to #000000 (RETRIEVED
+       dark token), text to #FFFFFF, borders/surfaces to their dark values.
+       No colour is typed here. -->
+  <section class="commandband cn-account-card" data-theme="dark" aria-labelledby="cb-h">
+    <p class="cb-eyebrow">Northgate Timber Ltd · Business current account ···· 8842 · sort code ··–··–··</p>
+
+    <div class="cb-grid">
+      <div>
+        <h1 id="cb-h" class="cb-eyebrow" style="color:var(--muted);">Balance today · 12 May 2026</h1>
+        <!-- FLAG 1: display balance 76px — derived display size (no display/amount
+             token). Univers Light (--typography-font-weight 300), tabular-nums,
+             -0.02em; extends the Account-card .balance spec. Figure verbatim §3. -->
+        <div class="display-balance">£122,450</div>
+        <div class="movement">
+          <span class="up">+£2,450</span>
+          <span style="color:var(--muted); font-size:15px;">net movement today</span>
+        </div>
+        <p class="display-sub">Opening £120,000&nbsp;&nbsp;·&nbsp;&nbsp;estimated closing £124,000</p>
+      </div>
+
+      <!-- dense cash-flow ledger (composed by hand: no .cn-* summary fits a
+           dark-band micro-ledger with a red total rule; checked .cn-summary
+           (light key/value, max-width 420, no dark-band treatment) and
+           .c-summary utility — both are light-surface list patterns and neither
+           carries the red total rule this composition leads with. Values verbatim §3. -->
+      <div class="flow" role="group" aria-label="Today's cash flow">
+        <div class="flow__row"><span class="flow__k">Opening balance</span><span class="flow__v">£120,000</span></div>
+        <div class="flow__row"><span class="flow__k">Inflows today</span><span class="flow__v" style="color:var(--ok);">+£11,650</span></div>
+        <div class="flow__row"><span class="flow__k">Outflows today</span><span class="flow__v">−£9,200</span></div>
+        <div class="flow__row is-net"><span class="flow__k">Net movement</span><span class="flow__v">+£2,450</span></div>
+        <div class="flow__row is-total"><span class="flow__k">Current balance</span><span class="flow__v">£122,450</span></div>
+      </div>
+    </div>
+
+    <!-- coverage read-out straddling the seam. Statement equals the maths:
+         122,450 − 49,702 = 72,748 buffer. "through May" stated exactly. -->
+    <div class="coverage" role="group" aria-label="Coverage">
+      <span class="k">Covered through May</span>
+      <span class="amt" style="color:var(--ok);">£72,748</span>
+      <span class="through">buffer after £49,702 scheduled in May</span>
+    </div>
+  </section>
+
+  <!-- =================== BAND 2: red decision slab =================== -->
+  <!-- RED LEADS STRUCTURALLY. Fill = var(--accent) #DB0011 (retrieved).
+       White label on #DB0011 = 5.25:1 (AA). This is the page's gravity centre. -->
+  <section class="decision" aria-labelledby="dec-h">
+    <div class="decision__head">
+      <h2 id="dec-h" class="decision__title">Two payments need your approval</h2>
+      <div class="decision__count">£49,702<small>awaiting your approval</small></div>
+    </div>
+
+    <div class="approvals">
+      <!-- item 1 — Amazon Business £4,502 -->
+      <article class="approval" aria-labelledby="ap1-payee">
+        <span class="approval__eyebrow">Supplier · card &amp; fulfilment</span>
+        <span id="ap1-payee" class="approval__payee">Amazon Business</span>
+        <span class="approval__amt">£4,502</span>
+        <span class="approval__meta">
+          Debits account <span class="ref">···· 4021</span> · 15 May 2026<br>
+          Raised by Sarah Chen, 2 days ago
+        </span>
+        <div class="approval__foot c-row" style="gap:12px;">
+          <!-- low-value: single-step approve is allowed (only the high-value
+               payroll run needs the confirm — §4). -->
+          <button type="button" class="slab-btn" onclick="approveLow(this,'Amazon Business')">Approve £4,502</button>
+          <button type="button" class="slab-btn slab-btn--ghost">Review</button>
+        </div>
+      </article>
+
+      <!-- item 2 — HIGH VALUE: BrightHire Payroll £45,200 -->
+      <article class="approval" aria-labelledby="ap2-payee">
+        <span class="approval__eyebrow">Payroll · monthly run</span>
+        <span id="ap2-payee" class="approval__payee">BrightHire Payroll Ltd</span>
+        <span class="approval__amt">£45,200</span>
+        <span class="approval__meta">
+          Debits account <span class="ref">···· 7730</span> · 22 May 2026<br>
+          Raised by Sarah Chen, 2 days ago
+        </span>
+        <div class="approval__foot c-row" style="gap:12px;">
+          <!-- §4 CARDINAL: high-value approval requires a confirmation step.
+               This button opens the confirm modal — no one-click approve. -->
+          <button type="button" class="slab-btn" aria-haspopup="dialog"
+                  onclick="openApprove()">Approve £45,200</button>
+          <button type="button" class="slab-btn slab-btn--ghost">Review</button>
+        </div>
+      </article>
+    </div>
+
+    <p class="decision__note">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 3 7v6c0 5 3.8 8.4 9 9 5.2-.6 9-4 9-9V7l-9-5Zm0 2.2 7 3.9V13c0 4-2.9 6.6-7 7.2-4.1-.6-7-3.2-7-7.2V8.1l7-3.9Z"/></svg>
+      Payments over £10,000 ask you to confirm before they leave the account.
+    </p>
+  </section>
+
+  <!-- =================== BAND 3: scheduled ledger (recedes) =================== -->
+  <section class="ledger" aria-labelledby="led-h">
+    <div class="seam-echo" aria-hidden="true"></div>
+    <div class="ledger__head">
+      <h2 id="led-h" class="ledger__title">Scheduled ahead</h2>
+      <span class="ledger__total">Scheduled total <strong>£106,302</strong> across 5 payments</span>
+    </div>
+
+    <!-- Quiet, receding data ledger. Anchored on the reviewed .cn-table
+         (PASSIVE, card-collapse responsive, th scope). Amounts tabular; refs
+         masked last-4. Figures verbatim §3. This is deliberately LOW-drama —
+         the pacing accordion: dense top, loud decision, quiet tail. -->
+    <div class="cn-table">
+      <div class="wrap" style="--demo-width:100%;">
+        <div class="scroll" tabindex="0" role="region" aria-label="Scheduled payments">
+          <table>
+            <caption>Upcoming scheduled payments
+              <span class="sub">Two items above await approval and are not shown here.</span>
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Payee</th>
+                <th scope="col">Category</th>
+                <th scope="col">Account</th>
+                <th scope="col">Status</th>
+                <th scope="col" class="num">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-label="Date"><span class="v">22 Jul 2026</span></td>
+                <th scope="row">HMRC — PAYE</th>
+                <td data-label="Category"><span class="v">Tax · PAYE / NIC</span></td>
+                <td data-label="Account"><span class="v" style="font-variant-numeric:tabular-nums;">···· 0001</span></td>
+                <td data-label="Status"><span class="v">
+                  <span class="cn-status-indicator" style="display:inline;"><span class="chip inf"><span class="dot"></span>Scheduled</span></span>
+                </span></td>
+                <td data-label="Amount" class="num"><span class="v">£2,200</span></td>
+              </tr>
+              <tr>
+                <td data-label="Date"><span class="v">12 Aug 2026</span></td>
+                <th scope="row">British Gas Business</th>
+                <td data-label="Category"><span class="v">Utilities · electricity &amp; gas</span></td>
+                <td data-label="Account"><span class="v" style="font-variant-numeric:tabular-nums;">···· 5560</span></td>
+                <td data-label="Status"><span class="v">
+                  <span class="cn-status-indicator" style="display:inline;"><span class="chip inf"><span class="dot"></span>Scheduled</span></span>
+                </span></td>
+                <td data-label="Amount" class="num"><span class="v">£4,200</span></td>
+              </tr>
+              <tr>
+                <td data-label="Date"><span class="v">09 Sep 2026</span></td>
+                <th scope="row">Ravenscroft Properties</th>
+                <td data-label="Category"><span class="v">Rent · quarterly lease</span></td>
+                <td data-label="Account"><span class="v" style="font-variant-numeric:tabular-nums;">···· 3318</span></td>
+                <td data-label="Status"><span class="v">
+                  <span class="cn-status-indicator" style="display:inline;"><span class="chip inf"><span class="dot"></span>Scheduled</span></span>
+                </span></td>
+                <td data-label="Amount" class="num"><span class="v">£50,200</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="hint">The two payments awaiting approval (Amazon Business £4,502 · BrightHire Payroll Ltd £45,200) fall in May and are actioned above. Scheduled total shown is for the three future-dated items plus the two awaiting approval: £49,702 + £2,200 + £4,200 + £50,200 = £106,302.</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- =================== HIGH-VALUE CONFIRM MODAL (§4 cardinal) =================== -->
+<!-- Anchored on the reviewed .cn-modals component (role=dialog, aria-modal,
+     labelledby/describedby, focus ring, reduced-motion). No one-click approve
+     for the £45,200 payroll run. -->
+<div class="cn-modals">
+  <div class="overlay" id="approve-modal" role="dialog" aria-modal="true"
+       aria-labelledby="am-title" aria-describedby="am-body">
+    <div class="dialog">
+      <button class="close" type="button" aria-label="Cancel approval" onclick="closeApprove()">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/></svg>
+      </button>
+      <h2 id="am-title">Confirm this payment</h2>
+      <p id="am-body">
+        You're approving the <strong>monthly payroll run</strong> to
+        <strong>BrightHire Payroll Ltd</strong> for <strong>£45,200</strong>,
+        debiting account ···· 7730 on 22 May 2026. This is a high-value payment —
+        please confirm before it leaves the account.
+      </p>
+      <div class="actions">
+        <button class="btn primary" type="button" onclick="confirmApprove()">Confirm £45,200</button>
+        <button class="btn secondary" type="button" onclick="closeApprove()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var modal = document.getElementById('approve-modal');
+  var lastFocus = null;
+  function openApprove(){
+    lastFocus = document.activeElement;
+    modal.classList.add('open');
+    var f = modal.querySelector('.btn.primary'); if (f) f.focus();
+  }
+  function closeApprove(){
+    modal.classList.remove('open');
+    if (lastFocus) lastFocus.focus();
+  }
+  function confirmApprove(){
+    modal.classList.remove('open');
+    var btn = document.querySelector('article[aria-labelledby="ap2-payee"] .slab-btn');
+    if (btn){ btn.textContent = 'Approved · £45,200'; btn.disabled = true; btn.style.opacity = '.85'; }
+    if (lastFocus) lastFocus.focus();
+  }
+  function approveLow(btn){
+    btn.textContent = 'Approved · £4,502'; btn.disabled = true; btn.style.opacity = '.85';
+  }
+  // Esc closes the modal (keyboard parity)
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeApprove();
+  });
+  // click scrim to dismiss
+  modal.addEventListener('click', function(e){ if (e.target === modal) closeApprove(); });
+</script>
+</body>
+</html>

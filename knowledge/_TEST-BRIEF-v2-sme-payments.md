@@ -33,6 +33,18 @@ red-forwardness).
   assemble what already exists in `canon/canon.css`; invent only if forced, and if you do, derive
   it from a canon primitive and flag it as a candidate — never type a brand value from memory.
   Brand-source stop: token store + `canon/canon.css` (`.cn-*`) only.
+  **Canon rigour tier (mechanical, not adjectival — check this order every time):**
+  1. **`.cn-*` components** (auto-generated from `knowledge/snippets/*.reference.html` — gate-
+     reviewed, the single source of truth for that pattern) — **always prefer these** when one
+     fits the data shape, even approximately.
+  2. **`.c-*` classes** (the hand-authored alias/utility/gap-pattern layer — never gate-reviewed,
+     built to patch compositional gaps) — use **only** when no `.cn-*` component fits.
+  3. Raw tokens/semantic aliases only, composed by hand — **last resort**, and the composition
+     itself becomes a flagged candidate.
+  Before using any `.c-*` class, name in a comment *which* `.cn-*` components you checked and
+  ruled out, and why. Skipping a fitting `.cn-*` component in favour of a `.c-*` utility is a
+  retrieval failure at every register, not a register-appropriate choice — sober means *don't
+  invent*, not *pick the least-reviewed available option*.
 - **Balanced** *(extend — inference ON but bounded)*. Cardinal + foundational curbs still both
   hold, but you may **extend**: compose more confidently, allow one deliberate emphasis moment,
   let red lead the primary action — provided every brand-bearing choice still traces to a named
@@ -70,7 +82,14 @@ is *expected*, not a failed spread — the probe is screen-relative, not a fixed
 | 12 Aug 2026 | British Gas Business | Utilities · electricity & gas | ···· 5560 | Scheduled | £4,200 |
 | 09 Sep 2026 | Ravenscroft Properties | Rent · quarterly lease | ···· 3318 | Scheduled | £50,200 |
 
-Scheduled total: **£106,302** (must equal the sum of the rows). Two items awaiting approval total **£49,702**.
+**Total across all 5 rows: £106,302** (awaiting-approval + scheduled combined — this is "the sum of
+the rows" the coverage figure above is calculated against). Two items **awaiting approval** total
+**£49,702**; the three **already-scheduled** items (HMRC, British Gas, Ravenscroft) total
+**£56,600**. £49,702 + £56,600 = £106,302 — all three figures are consistent, but don't call
+£106,302 the "scheduled total" on-screen; it's the whole table's total. **⚠️ Corrected 2026-07-05:**
+the original wording ("Scheduled total: £106,302") conflated "all 5 rows" with "scheduled" (2 of the
+5 rows are awaiting-approval, not scheduled) — two independent Opus generation passes caught this
+ambiguity where the earlier Sonnet passes did not; fixed here so it can't mislabel on-screen again.
 
 ## 4 · Rules — correctness (must hold)
 
