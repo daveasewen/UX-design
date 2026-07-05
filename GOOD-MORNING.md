@@ -50,11 +50,18 @@ was never fully ingested.** That thread is now the load-bearing unlock behind mu
   = React lib reflecting the Common Toolkit, the Figma library IS its working file, our dark-mode work
   feeds back in, build-direct is the goal; output = a two-tier dial (dumb portable HTML ↔ build-ready
   from a prebuilt library). Memories `output-modes-portability` + `sutherland-figma-mapping`.
+- **Spin-off / generalisable candidates register** (new `_LIVE-STATE` section + memory
+  `spin-off-candidates`): reusable tools/methods should be spun off like company spin-offs; surface
+  emergent projects mid-chat. **State machine = Dave's first named candidate.**
+- **Insurance-policy decision:** don't archive all chats (rebuilds the haystack). Transcript = a
+  black-box last resort (likely already retrievable via session tools); invest instead in a *reliable
+  end-of-session capture ritual/gate* — that's where the risk is. For the seaworthiness run.
 
 ## On your desk
 
-- **3 commits, not pushed** — `9260a56` (Tier A batch 3) · `67f2106` (ingestion assessment +
-  future-states) · `251b586` (Sutherland/output-modes). Stale `.git` locks cleared. **Push via GitHub Desktop.**
+- **5 commits, not pushed** — `9260a56` (Tier A batch 3) · `67f2106` (ingestion assessment +
+  future-states) · `251b586` (Sutherland/output-modes) · `2dc37de` (completeness fixes: un-staled the
+  token manifest) · `c8a3e35` (spin-off candidates). Stale `.git` locks cleared. **Push via GitHub Desktop.**
 - **Tier A is CLEAN** ✅ — the audit milestone. No more Tier A nodes to adjudicate.
 
 ## Queue next (fresh session)
