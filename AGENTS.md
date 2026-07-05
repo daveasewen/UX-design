@@ -44,8 +44,11 @@ A **governed design-system engine**: canon (tokens + gated components) + criteri
 ## How to work
 
 - Start at the **latest handoff** the most recent session named (e.g. `GOOD-MORNING.md`),
-  then `knowledge/README.md` for the build. Keep this entry point current — it is the
-  first thing every cold-start agent reads; if it is stale, refresh it before continuing.
+  then **`_LIVE-STATE.md`** (the live/dead/open supersession ledger — what's true now, what's
+  retired, what's parked; `ADR-0007`), then `knowledge/README.md` for the build. Keep these
+  entry points current — they are the first things every cold-start agent reads; if stale,
+  refresh before continuing. **`_LIVE-STATE.md` is the state-retention spine across sessions:
+  trust it for what supersedes what, and refresh it at end of session with the handoff.**
 - The method lives in `knowledge/_RUNBOOK-*.md`. Follow the runbooks; improve them
   when they're wrong — curation is part of the job. Do not add new coordination
   docs when an existing one can hold the content.
