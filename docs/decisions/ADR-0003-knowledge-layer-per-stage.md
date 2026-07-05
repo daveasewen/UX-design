@@ -2,6 +2,15 @@
 
 **Status:** accepted · **Date:** 2026-05-31
 
+> **AUDIT — DEFERRED 2026-07-05 (Tier A batch 2, Dave). Validation state = `defer`, not vouched.**
+> The per-stage hybrid was reasonable for 2026-05-31, but the founding instinct that the *whole*
+> design-system corpus (component specs, foundations, tokens, snippets, create.hsbc guidelines) is
+> **one interlinked knowledge graph** is being reopened — that cross-entity interlink is modelled
+> only *inside* the compliance graph today. Root cause named by Dave: **ingestion was never
+> completed** (attempted, curtailed). Spun off as a separate, structured work thread — "unified DS
+> KG + ingestion, done right" — with its own audit-grade method. Do not treat this ADR as vouched.
+> See `knowledge/_DECISION-AUDIT.md` + `_LIVE-STATE` OPEN.
+
 ## Context
 The original hypothesis was to ingest all standards and the design system into a
 single knowledge graph. Research shows KGs win for relationships/traceability;

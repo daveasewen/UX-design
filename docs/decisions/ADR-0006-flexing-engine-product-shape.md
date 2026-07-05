@@ -7,6 +7,10 @@
 > *inference ramp* (retrieve/extend/invent), **not a look**. The looks-language below is corrected
 > to the §9 framing; the spine of this ADR was vouched. This amended text re-enters as `unaudited`
 > and is re-audited in a later batch. See `knowledge/_DECISION-AUDIT.md`.
+>
+> **Re-audited 2026-07-05 (Tier A batch 2) — `validation: vouched`.** The dial correction verified
+> against charter §9 line-by-line: every register mention now reads retrieve/extend/invent + "not a
+> look"; no "cool/warm/hot" survives; spine untouched. See `knowledge/_DECISION-AUDIT.md`.
 
 ## Context
 

@@ -64,12 +64,21 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
   brand self-check · the mode dial.
 - **PM-KG MVP** (`ADR-0007`): build `_build_live_state.py` + the staleness gate — own focused
   session.
-- **Decision-corpus correctness audit — Tier A BATCH 1 RUN 2026-07-05 (ADR-0007 §5).** Method:
+- **Decision-corpus correctness audit — Tier A BATCHES 1–2 RUN 2026-07-05 (ADR-0007 §5).** Method:
   `knowledge/_RUNBOOK-decision-audit.md`; ledger: `knowledge/_DECISION-AUDIT.md`. Batch 1 verdicts:
   **ADR-0005 vouch · ADR-0007 vouch · charter §9/§9a vouch(framing)+defer(proven/safe) ·
-  ADR-0006 amend · `derivation-governance` amend.** Audit obligations now OPEN (see below).
-  **Next: Tier A batch 2** (ADR-0001–0004, charter §4/§4b) in a fresh session; then Tier B/C.
-  Never run in a loaded session.
+  ADR-0006 amend · `derivation-governance` amend.** Batch 2 verdicts: **ADR-0006 re-audit → vouch ·
+  `derivation-governance` re-audit → split (core vouch + mechanism defer) · ADR-0001 vouch ·
+  ADR-0002 vouch · ADR-0003 defer · ADR-0004 vouch+rationale-amend.** Coverage: 11/~20 Tier A
+  audited. Both re-audit obligations discharged — no amended nodes pending. **Next: Tier A batch 3**
+  (charter §4 / §4b + uncovered LIVE entries) in a fresh session; then Tier B/C. Never run in a
+  loaded session.
+  - **Operational follow-ups from ADR-0004 (07-05, not correctness faults):** (a) **verify current
+    EAA / EN 301 549 legal position** (2026-05-31 legal facts are point-in-time); (b) the installed
+    `design:accessibility-review` skill audits to **WCAG 2.1 AA** — align to the project's 2.2-AA
+    bar; (c) `wcag_version` config param survives only in `archive/harness-v0.1/`, live engine
+    hard-targets 2.2. Foundational driver now recorded in ADR-0004: HSBC aspiration = *most digitally
+    accessible bank in the world* (bar leads, not complies; ratchets over time).
   - **⚠️ AUDIT-DEFERRED verification (charter §9/§9a) — DO NOT FORGET (Dave, 07-05).** The
     inference-ramp *framing* is vouched, but its *proven/safe* status is **deferred** pending: (a)
     the first worked retrieve/extend/invent spread on one screen, and (b) the divergence probe +
@@ -84,6 +93,26 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
     amend).** Define how inference-born ideas move: holding-pen/sandbox → colleague review →
     "extension library" (separate-but-connected canon) → general canon if broadly useful. Not yet
     worked out; connects to the ADR-0006 compounding-canon promote loop + `gap-pattern-build`.
+    **Re-audited 07-05 (batch 2): direction VOUCHED, mechanism DEFERRED — kept OPEN not banked.**
+    **FUTURE FEATURE (Dave, 07-05 — capture-only, build once the goal is set):** tiered access to
+    canon commits — roles **design-system admin → domain admin → standard**; **sandbox open to
+    everyone**, **commits tiered**; **extension libraries readable by all, edit privileges gated by
+    domain + commit right**; general-canon promotion still needs the multi-human bar. Set the goal
+    first, then the access model falls out of it.
+- **⭐ NEW — Unified DS knowledge-graph + ingestion, done right (from ADR-0003 defer, 07-05).**
+  ADR-0003 was **deferred** (not vouched): Dave reopened the founding instinct that the *whole*
+  design-system corpus (component specs, foundations, tokens, snippets, create.hsbc guidelines) is
+  **one interlinked graph**. Today that interlink lives only inside the compliance graph. **Root
+  cause: ingestion was never completed** (attempted, curtailed). This is a **separate, structured
+  work thread with its own audit-grade method** — stated aim: do it correctly this time. Scope:
+  map the entity/edge model across the full corpus; decide keep-hybrid / go-unified / **overlay-
+  index layer** (leading hypothesis — link across existing stores, don't collapse into one monolith;
+  extends `_blast-radius.json` / `graph-index.json`); connect to `graphify-tool` + ADR-0007 infra.
+  Memory: `ds-knowledge-graph-revisit`. **Own focused session — not the audit.**
+- **⭐ NEW — Seaworthiness plan (Dave, 07-05).** After Tier A batch 2, run a deliberate
+  **state + goals analysis → curated plan to get the ship seaworthy.** Pull the OPEN threads
+  (KG/ingestion, PM-KG MVP, D2, deferred §9 proof, toolkit) into one prioritised sequence rather
+  than a flat backlog. Own session; use the exec-summary-first + reflection rhythm.
 - **D2 — novel-screen test — THE #1 unlock.** Waiting on a colleague's brief (their brief-v2 +
   own baseline + signed contract *before* generation). `_TEST-PLAN-novel-screen-proof.md`.
 - **Toolkit tranche 2** (Dropdowns ×4) — parallel cheap-model workstream. Memory:
