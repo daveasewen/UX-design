@@ -153,10 +153,14 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
   index layer** (leading hypothesis — link across existing stores, don't collapse into one monolith;
   extends `_blast-radius.json` / `graph-index.json`); connect to `graphify-tool` + ADR-0007 infra.
   Memory: `ds-knowledge-graph-revisit`. **Own focused session — not the audit.**
-- **⭐ NEW — Seaworthiness plan (Dave, 07-05).** After Tier A batch 2, run a deliberate
-  **state + goals analysis → curated plan to get the ship seaworthy.** Pull the OPEN threads
-  (KG/ingestion, PM-KG MVP, D2, deferred §9 proof, toolkit) into one prioritised sequence rather
-  than a flat backlog. Own session; use the exec-summary-first + reflection rhythm.
+- **✅ Seaworthiness plan — DONE 2026-07-05 → `_SEAWORTHINESS-PLAN_2026-07-05.md`.** Curated,
+  dependency-aware sequence (not a flat backlog): hull patches (ingestion Phase 0 + capture ritual) →
+  **big-rock #1 Ingestion Phase 1** (Sutherland token migration, confirmed unblocked) → **§9 worked
+  spread in parallel** → **big-rock #2 PM-KG MVP** (staleness gate) → finish/unify (Phase 2→3→4, with
+  the §4 language-strip inside Phase 3). Waiting/parked (D2, toolkit t2, harness-modes, TOV spin-off,
+  ADR-0004 ops) kept off the critical path. KG re-verified on disk this session: assessment holds;
+  found a live 39-vs-38 compliance-KG drift + Phase 0 already partly done. Capture ritual/gate spec
+  decided in the doc (ritual now, gate script alongside PM-KG MVP).
 - **D2 — novel-screen test — THE #1 unlock.** Waiting on a colleague's brief (their brief-v2 +
   own baseline + signed contract *before* generation). `_TEST-PLAN-novel-screen-proof.md`.
 - **Toolkit tranche 2** (Dropdowns ×4) — parallel cheap-model workstream. Memory:
