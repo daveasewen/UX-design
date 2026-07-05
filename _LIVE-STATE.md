@@ -273,6 +273,21 @@ backlog (that's OPEN) — these are intended end-states with a path. Refresh alo
     Normalised all three to a shared desktop container (960px) so the comparison viewer
     (`register-spread-2026-07-05-compare.html`, now also carries the two diagnostic files) is
     genuinely like-for-like. No content/data/curb changes in any of these fixes.
+  - **✅ Restyled-ceiling build, same session (Dave: "if we style these using the HSBC
+    primitives I'd be pretty happy").** Took `without-influences.html` (Dave's pick — the
+    diagnostic piece with the stronger organising idea) and rebuilt its `:root` palette as a
+    thin alias layer into canon tokens (accent/warn/info/ok/muted), replaced all three Google
+    Fonts with the Univers ramp, squared every corner except the avatar exemption, and
+    reinstated the cardinal safety/a11y floor the diagnostic had been told to skip (the
+    £45,200 payroll approval was identical to the low-value row — now gated behind a
+    confirmation dialog; added focus rings + reduced-motion handling). Kept every
+    compositional/motion decision: the "Today's arc" day-timeline and the horizontal
+    scheduled-payments timeline (flagged as candidates — no `.cn-*` equivalent exists for
+    either). One disclosed deviation: outflow is no longer rendered in red (HSBC's dark-mode
+    error token shares the same hex as the brand accent; kept red to the one accent/approval
+    job, direction carried by an icon instead). File: `without-influences-hsbc.html`; wired
+    into the comparison viewer. Dave confirmed via screenshot that the restyle's structure
+    matches what he's judging against — visual verdict on the restyle itself still pending.
 
 - **🎯 Ingestion "done right".** Full detail + phased worklist: **`knowledge/_INGESTION-ASSESSMENT_2026-07-05.md`** (cockroach doc — cold-start-proof, evidence-cited).
   - **Target:** every ingested entity (guideline rule · token · component · snippet · success-
