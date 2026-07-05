@@ -7,6 +7,12 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
 
 *Last refreshed: 2026-07-05.*
 
+> ⚠️ **AUDIT STATUS — everything below is RECORDED, not VALIDATED.** Provenance ≠ correctness.
+> These entries capture *that* a decision was made and what it supersedes — **not** that it is
+> right. Treat every node as **`unaudited`** until a human correctness-audit vouches it (ADR-0007).
+> The ledger tells you what's live/dead; it does **not** endorse. Don't mistake a clean node for a
+> vetted one.
+
 ---
 
 ## LIVE — current truth (in force)
@@ -58,6 +64,10 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
   brand self-check · the mode dial.
 - **PM-KG MVP** (`ADR-0007`): build `_build_live_state.py` + the staleness gate — own focused
   session.
+- **Decision-corpus correctness audit — NOT YET DONE (ADR-0007 §5).** Everything is `unaudited`:
+  provenance recorded, validity not vouched. Run as **batched, fresh-context** passes with Dave
+  as judge (never rubber-stamp a corpus in a loaded session); reuse `_REVIEW-QUEUE` tiering.
+  This is the guard against baking bad decisions into the KG.
 - **D2 — novel-screen test — THE #1 unlock.** Waiting on a colleague's brief (their brief-v2 +
   own baseline + signed contract *before* generation). `_TEST-PLAN-novel-screen-proof.md`.
 - **Toolkit tranche 2** (Dropdowns ×4) — parallel cheap-model workstream. Memory:

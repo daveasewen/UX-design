@@ -55,6 +55,19 @@ and artifacts. Four parts:
 4. **Graphiti as the graduation path** — if/when agent-memory volume justifies a real temporal
    KG engine, adopt Graphiti rather than inventing one. Not now.
 
+5. **Validity is not provenance — the anti-laundering guard (added 2026-07-05, Dave's catch).**
+   The graph records *that* a decision was made, by whom, when, superseding what. It does **not**
+   establish the decision was *correct*. A wrong decision, once a clean node with a tidy edge,
+   *looks vetted* — the graph launders it. So every node carries a **validation state distinct
+   from its lifecycle state**, reusing `_CONFIDENCE.md` (`asserted / inferred / review`) + the
+   review-queue: lifecycle = live/superseded; validation = **unaudited → vouched**. Rules: the
+   whole existing backlog **seeds in as `unaudited`** (honest by default); promotion to `vouched`
+   is a **human correctness-audit only, never derived** (engine records, Dave vouches — validity
+   is the §9a gestalt principle applied to decisions); the staleness gate enforces *consistency*
+   and must **never imply validity**. The correctness audit runs as **batched, fresh-context
+   passes** (a loaded session is the worst place to rubber-stamp a decision corpus) — method TBD,
+   an open thread, reusing the `_REVIEW-QUEUE` tiering.
+
 **State-retention wiring (the hard requirement):** `_LIVE-STATE.md` joins the cold-start entry
 sequence in `AGENTS.md` — **GOOD-MORNING (latest handoff) → `_LIVE-STATE` (live/dead/open ledger)
 → `knowledge/README` (the build)** — and is refreshed at end-of-session alongside the handoff.
