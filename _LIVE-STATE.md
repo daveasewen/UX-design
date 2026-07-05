@@ -181,6 +181,22 @@ backlog (that's OPEN) — these are intended end-states with a path. Refresh alo
     the overlay/index graph (ADR-0003 "done right", audit-grade) → Phase 4 wire ingestion coverage
     into this machine as a tracked target.
 
+## SPIN-OFF / GENERALISABLE CANDIDATES — surface, don't bury (Dave, 2026-07-05)
+
+*Tools/methods built here that may generalise to other projects — treat like company spin-offs.
+Also the place to surface **whole new projects that emerge mid-chat**. Flag when something proves
+reusable; don't force it (most stays local). Memory: `spin-off-candidates`. Revisit in seaworthiness.*
+
+- **🌱 The state machine** (`_LIVE-STATE` + temporal decision-graph/`ADR-0007` + decision-audit
+  method) — **Dave's first named candidate.** A portable "how a long-running agent project retains
+  state, records supersession, and audits its own decisions" kit.
+- Other candidates (unruled): decision-audit runbook + validation-state machine · the fixed/flex
+  charter as a brand-true-generation governance pattern · the ingestion→overlay-KG method · the
+  review-dossier language-review instrument · verification=enforcement / gate-tiering · the
+  "cockroach doc" cold-start-proof pattern.
+- Precedent (already ad hoc): `digital-experience-transformation`, `graphify-tool`. The ask is to
+  make spin-off **intentional + surfaced**, not accidental.
+
 ## Entry points
 
 `GOOD-MORNING.md` (latest handoff) → **this file** → `knowledge/README.md` (build) ·
