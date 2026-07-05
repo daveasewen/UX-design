@@ -1,77 +1,57 @@
 # Good morning, Dave ☕
 
-*Session briefing — written end of 2026-07-05, session "Decision audit — Tier A batch 2."
-Supersedes the earlier 07-05 "Decision audit — Tier A batch 1" brief.
+*Session briefing — written end of 2026-07-05, session "Decision audit — Tier A batch 3 (closes Tier A)."
+Supersedes the earlier 07-05 "batch 2" brief.
 **Read this, then `_LIVE-STATE.md`, then `knowledge/README.md`.***
 
 ## The session in one line
 
-Ran ADR-0007 §5 correctness audit **Tier A batch 2** — six nodes, fresh context, Dave adjudicating
-each. Cleared the two amended-node re-audits and the remaining foundational ADRs. Tier A is now
-**11/~20 audited**; every ADR (0001–0007) has a verdict.
+Ran ADR-0007 §5 correctness audit **Tier A batch 3** — the batch that **closes Tier A.** Every
+foundational node now carries a verdict. **The "everything is unaudited" risk is retired for Tier A.**
 
-## What landed
+## What landed (4 verdicts + a triage)
 
-Six verdicts (recorded two ways per runbook §5 — ledger line in `knowledge/_DECISION-AUDIT.md`
-+ state in `_LIVE-STATE`):
+Recorded two ways per node (ledger line in `knowledge/_DECISION-AUDIT.md` + state in `_LIVE-STATE`):
 
-1. **ADR-0006 re-audit** (register dial) — **vouch.** Verified line-by-line against charter §9;
-   no "cool/warm/hot" survives; spine untouched.
-2. **`derivation-governance` re-audit** — **split: core vouch + mechanism defer.** Multi-human/
-   staged *direction* is sound; the specific holding-pen→extension-library machinery is named-not-
-   built → deferred. **Dave's future-feature captured:** tiered canon-commit access (design-system
-   admin → domain admin → standard; sandbox open to all, commits tiered, extension libraries
-   read-all / edit-by-domain).
-3. **ADR-0001** (own our orchestration) — **vouch.** Portability/own-the-invariant principle is the
-   backbone of 0002/0005/0006. (Noted: the named `harness/orchestrator.md` is archived; Dave
-   vouched the principle as-written.)
-4. **ADR-0002** (open standards) — **vouch.** The three-standard spine (AGENTS.md + Skills + MCP)
-   is exactly how the project runs; the founding leg that survived and strengthened.
-5. **ADR-0003** (knowledge-rep per stage) — **defer.** Dave reopened the scope: the *whole* DS
-   corpus may be one interlinked graph. **Root cause = ingestion was never completed.** Spun off as
-   a separate, audit-grade work thread (see below). Not vouched.
-6. **ADR-0004** (WCAG 2.2 AA bar) — **vouch + rationale-amend.** Added the **foundational driver the
-   ADR omitted**: HSBC's aspiration to be *the most digitally accessible bank in the world* — the
-   bar leads, doesn't merely comply; 2.2 AA is the floor of that aspiration, not its ceiling.
+1. **Charter §4** (ratified fixed curbs) — **amend + defer.** Your call: the ramp must be governed
+   ONLY by cardinal + foundational curbs + inference levels + full compliance, **all retrieved from
+   the KG.** §4's interpretive *language* is recall-by-adjective (§9/§9a kills it) and must be
+   stripped — the four curbs survive only as KG-sourced derivations. Flagged as a **HARD follow-up**,
+   done inside the KG/ingestion thread, not a quick charter tweak. Completeness **deferred** (blocked
+   on incomplete ingestion).
+2. **Charter §4b** (register temperature / wit) — **defer.** TOV = genuinely useful for **digital
+   editorial → candidate spin-off thread**; for interfaces it's **not a priority** except neutral
+   guidance (labelling, language/locale, formality). Can't vouch without a future **audit of the
+   actual TOV content.** Tagged on memory `tone-of-voice-ingest`.
+3. **Two harness modes** — **defer (kept Tier A).** Abstract/named-not-built. Your reflections
+   captured: harness must be **flexible** — clean switch *or* both (toggle + advanced-mode tuning),
+   maybe a **"let it rip" mode**; **finding the use cases is the point**; research + iterate, start
+   small. Own research thread (task created).
+4. **Supersession discipline** (AGENTS.md) — **vouch.** The operational guard that makes ADR-0007's
+   ledger trustworthy; earned from a real failure. Noted-but-not-faults: no executable gate; a
+   standing ADR-0006 propagation gap is the live test that it's being followed.
 
-**The batch's real finding:** the pattern is holding from batch 1 — no *bad* decisions, but
-foundations set defensively or scoped ahead of completed work. ADR-0003's defer named the biggest
-one: the KG ambition wasn't disproven, ingestion just never finished.
+**Triage:** git split → **Tier B**, build gate → **Tier B** (fast-follower; one cheap fix waiting —
+`_LIVE-STATE` says "four gates," `_build_all.py` runs ~8).
+
+**The batch's finding:** the batch-1/2 pattern held — no *bad* foundations, but several set ahead of
+completed work. Two of the four verdicts (§4, §4b) trace to the **same root cause as ADR-0003: the KG
+was never fully ingested.** That thread is now the load-bearing unlock behind multiple deferrals.
 
 ## On your desk
 
-- **Committed, not pushed** — `5435b99` ("Decision audit — Tier A batch 2"). Stale `.git` locks
-  cleared. **Push via GitHub Desktop.**
-- **Two new work threads captured** (both in `_LIVE-STATE` OPEN, memories written):
-  - **Unified DS KG + ingestion, done right** — `ds-knowledge-graph-revisit`. Own session, its own
-    audit-grade method; leading hypothesis = overlay/index layer, not a monolith.
-  - **Seaworthiness plan** — state + goals analysis → one prioritised sequence. Deferred *after*
-    batch 3 (Dave chose to finish Tier A first).
-- **New foundational memory:** `accessibility-aspiration` (most-accessible-bank; bar leads, ratchets).
+- **Committed, not pushed** — Tier A batch 3. Stale `.git` locks cleared. **Push via GitHub Desktop.**
+- **Tier A is CLEAN** ✅ — the audit milestone. No more Tier A nodes to adjudicate.
 
-## Queue next (fresh session) — FOCUS: finish Tier A
+## Queue next (fresh session)
 
-1. **Tier A batch 3 — decision audit (THE task).** **Charter §4 (ratified curbs) + §4b (tone/
-   temperature)**, plus any `_LIVE-STATE` LIVE entry not yet covered by an ADR/§9 (triage: two
-   harness modes, supersession discipline, git split, build gate — some may drop to Tier B). Same
-   protocol: fresh context, dossier + devil's-advocate + recommendation per node, Dave adjudicates,
-   record at ruling-time. Runbook: `knowledge/_RUNBOOK-decision-audit.md`; ledger:
-   `knowledge/_DECISION-AUDIT.md`. **This closes Tier A** ("KG stops laundering its load-bearing
-   claims"). **Never run in a loaded session.**
-2. **Then: seaworthiness planning session** — the state+goals curation Dave asked for.
-3. Standing/parallel: DS-KG + ingestion thread · PM-KG MVP · D2 novel-screen (waiting on colleague)
-   · toolkit tranche 2 (cheap model).
+1. **Seaworthiness planning run (THE next task, your ask).** State + goals analysis → one prioritised
+   sequence, not a flat backlog. Pull the OPEN threads together: KG/ingestion (the big unlock behind
+   §4 + §4b + ADR-0003), §9 proof-obligation, PM-KG MVP, D2 novel-screen, harness-modes exploration,
+   TOV spin-off. Exec-summary-first + reflection rhythm. *You flagged: too much half-finished work —
+   this session is where it gets sequenced.*
+2. Standing / parallel (NOT now): Tier B audit opportunistically · toolkit tranche 2 (cheap model) ·
+   D2 (waiting on colleague).
 
-Two small operational follow-ups parked from ADR-0004 (not audit nodes): verify current EAA /
-EN 301 549 legal position; align the `design:accessibility-review` skill (audits to 2.1 AA) to the
-2.2 bar.
-
-> Next-session opener: **"Title this chat: <pick one>."** Read GOOD-MORNING.md → `_LIVE-STATE.md`
-> → `knowledge/README.md`. Everything is committed; push `5435b99` via Desktop.
-
-## The meter
-
-Batch 2 did the job batch 1 designed: fresh context, a written case *against* each node, and honest
-outcomes — including one **defer** that surfaced the real root cause (incomplete ingestion) rather
-than papering it, and one **rationale-amend** that put the actual foundational reason (the
-accessibility aspiration) back into ADR-0004. Two nodes to go and Tier A is clean.
+> Next-session opener: **"Title this chat: <pick one>."** Read GOOD-MORNING → `_LIVE-STATE` →
+> `knowledge/README.md`. Everything is committed; push via Desktop.

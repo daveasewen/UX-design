@@ -64,15 +64,19 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
   brand self-check · the mode dial.
 - **PM-KG MVP** (`ADR-0007`): build `_build_live_state.py` + the staleness gate — own focused
   session.
-- **Decision-corpus correctness audit — Tier A BATCHES 1–2 RUN 2026-07-05 (ADR-0007 §5).** Method:
-  `knowledge/_RUNBOOK-decision-audit.md`; ledger: `knowledge/_DECISION-AUDIT.md`. Batch 1 verdicts:
-  **ADR-0005 vouch · ADR-0007 vouch · charter §9/§9a vouch(framing)+defer(proven/safe) ·
-  ADR-0006 amend · `derivation-governance` amend.** Batch 2 verdicts: **ADR-0006 re-audit → vouch ·
-  `derivation-governance` re-audit → split (core vouch + mechanism defer) · ADR-0001 vouch ·
-  ADR-0002 vouch · ADR-0003 defer · ADR-0004 vouch+rationale-amend.** Coverage: 11/~20 Tier A
-  audited. Both re-audit obligations discharged — no amended nodes pending. **Next: Tier A batch 3**
-  (charter §4 / §4b + uncovered LIVE entries) in a fresh session; then Tier B/C. Never run in a
-  loaded session.
+- **✅ Decision-corpus correctness audit — TIER A CLEAN 2026-07-05 (ADR-0007 §5).** Method:
+  `knowledge/_RUNBOOK-decision-audit.md`; ledger: `knowledge/_DECISION-AUDIT.md`. Batches 1–3 run in
+  fresh sessions. Batch 1: **ADR-0005 vouch · ADR-0007 vouch · §9/§9a vouch(framing)+defer(proven) ·
+  ADR-0006 amend · `derivation-governance` amend.** Batch 2: **ADR-0006 re-audit vouch ·
+  `derivation-governance` re-audit split · ADR-0001 vouch · ADR-0002 vouch · ADR-0003 defer ·
+  ADR-0004 vouch+rationale-amend.** Batch 3: **charter §4 amend+defer · charter §4b defer ·
+  two-harness-modes defer(kept A) · supersession-discipline vouch;** triage **git-split → Tier B ·
+  build-gate → Tier B (fast-follower).** **Every Tier A node now has a verdict — the milestone that
+  retires the "everything is unaudited" risk for foundational nodes.** Standing OPEN follow-ups:
+  §9 proof-obligation · ADR-0003 KG/ingestion · §4 language-strip · TOV content audit ·
+  harness-modes exploration. **Next audit work: Tier B opportunistically (feedback/project memories,
+  runbook rules) + Tier C by sample/on-touch — NOT the priority; per Dave the next session is the
+  seaworthiness planning run.** Never run the audit in a loaded session.
   - **Operational follow-ups from ADR-0004 (07-05, not correctness faults):** (a) **verify current
     EAA / EN 301 549 legal position** (2026-05-31 legal facts are point-in-time); (b) the installed
     `design:accessibility-review` skill audits to **WCAG 2.1 AA** — align to the project's 2.2-AA
@@ -99,6 +103,29 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
     everyone**, **commits tiered**; **extension libraries readable by all, edit privileges gated by
     domain + commit right**; general-canon promotion still needs the multi-human bar. Set the goal
     first, then the access model falls out of it.
+- **⭐ NEW — Harness modes + dials exploration (from two-harness-modes defer, 07-05 batch 3).**
+  Kept **Tier A** but **DEFERRED** — abstract/named-not-built, inherits §9a (framing vouched, proven
+  deferred). **Dave's reflections to carry:** the harness must be **flexible to a degree** — the modes
+  might be a **clean switch, or both** (a simple toggle *plus* an **advanced mode** to tune it); maybe
+  even a **"let it rip" mode** (for fun); **finding the use cases is the important part**; approach =
+  **research + iterate, start small, expand if needed**; the **dials themselves may need exploration,
+  and that exploration may define the settings/toggle**. Own research thread — not the audit. Memory:
+  `harness-two-modes`; ledger: `_DECISION-AUDIT.md`.
+- **⭐ NEW — Tone-of-voice (TOV) = digital-editorial spin-off + future content audit (from §4b defer, 07-05 batch 3).**
+  §4b deferred. Dave's framing: **TOV is genuinely useful for DIGITAL EDITORIAL** and is a **candidate
+  spin-off thread** (its own home, separate from the interface engine). For **interfaces it is NOT a
+  priority** — the exception is guidance for the **neutral decisions: labelling, language/locale,
+  formality**. The wit-licence-per-band mapping can't be vouched without **auditing the actual TOV
+  content** (tov-001…051) against the KG — a **possible future thread**, not this audit. Tagged on
+  memory `tone-of-voice-ingest`. Ledger: `_DECISION-AUDIT.md` (§4b).
+- **⭐ NEW — Charter §4 language-strip (HARD follow-up, from §4 amend+defer, 07-05 batch 3).**
+  Audit ruled §4 **amend + defer**: the ramp is governed ONLY by cardinal + foundational curbs +
+  inference levels + full compliance, all **retrieved from the KG** — §4's interpretive *language*
+  (prose rulings on flatness/red/rounding) is recall-by-adjective (§9/§9a) and must be **stripped**,
+  leaving the four curbs only as KG-sourced curb/level derivations. Dave flagged this as a **HARD
+  follow-up**, not a quick edit — **do it inside the unified-KG/ingestion thread below, not as a
+  standalone charter tweak.** Completeness of the derivations is **deferred** (unprovable until
+  ingestion is finished). §4's amended text will re-enter `unaudited`. Ledger: `_DECISION-AUDIT.md`.
 - **⭐ NEW — Unified DS knowledge-graph + ingestion, done right (from ADR-0003 defer, 07-05).**
   ADR-0003 was **deferred** (not vouched): Dave reopened the founding instinct that the *whole*
   design-system corpus (component specs, foundations, tokens, snippets, create.hsbc guidelines) is
