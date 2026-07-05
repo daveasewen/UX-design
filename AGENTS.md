@@ -54,6 +54,12 @@ A **governed design-system engine**: canon (tokens + gated components) + criteri
   handoff note so a cold-start agent can resume.
 - Commits are conventional (`feat:`, `fix:`, `docs:`, `chore:`); provide a
   paste-ready summary + description with every commit.
+- **Git split (RULED 2026-07-05):** Claude makes ALL commits in the terminal
+  (local, no creds) and clears any stale `.git/*.lock` before handoff (via
+  `mcp__cowork__allow_cowork_file_delete` if `rm` is blocked). Dave does the
+  **push through GitHub Desktop only** — never push from the terminal (it hangs
+  on credentials), never commit in Desktop, keep Desktop closed during commits.
+  One tool on the auth layer. (Supersedes the 07-02 terminal-only push ruling.)
 - **Supersession discipline (non-negotiable).** Any ruling that changes a definition
   or retires an approach must, in the same pass: (a) **tombstone** every artifact it
   kills — a `⚠️ SUPERSEDED <date> — Superseded-by: <ref>` banner at the top of the file
