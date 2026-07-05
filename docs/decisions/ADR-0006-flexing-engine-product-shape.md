@@ -2,6 +2,12 @@
 
 **Date:** 2026-07-03 · **Status:** accepted (Dave) · **Extends:** ADR-0005
 
+> **Amended 2026-07-05 (decision audit, Tier A batch 1).** The register dial was described here
+> as "cool → warm → hot", which charter **§9** (ratified the same day) superseded — register is an
+> *inference ramp* (retrieve/extend/invent), **not a look**. The looks-language below is corrected
+> to the §9 framing; the spine of this ADR was vouched. This amended text re-enters as `unaudited`
+> and is re-audited in a later batch. See `knowledge/_DECISION-AUDIT.md`.
+
 ## Context
 
 ADR-0005 ratified "the knowledge engine is the product; orchestration is inherited."
@@ -43,7 +49,9 @@ standard).**
 work-type. The flex has (at least) four dials:
 
 - **Discovery depth** — none / quiz / full ingestion+synthesis (the maturity router).
-- **Creativity register** — cool → warm → hot (sober → balanced → expressive; charter §7).
+- **Creativity register** — the inference ramp: sober (retrieve) → balanced (extend) → expressive
+  (invent); charter **§9**. This is the *level of inference* the engine is licensed to use, **not a
+  look** (§9 superseded the earlier "cool/warm/hot" describe-the-output framing).
 - **Unit of work** — component-cluster → screen → journey.
 - **Library growth** — retrieve if it exists; else generate-inside-the-curbs → gate →
   promote (compounding canon).
@@ -73,11 +81,11 @@ components. Build the clusters a *real journey* needs, in the order it needs the
 
 **5. Front-end vision — the iteration machine.** Dave's notebook sketch, realised at
 `_VISION-iteration-machine_2026-07-03.html`. A **loop**, not a linear pipeline:
-Input (chat + inject + analysis/vibe toggle) → Shape (quiz) → Result (cool/warm/hot
-register switch on a canon screen) → Refine (comments + quiz) → loop. Sits beside the
+Input (chat + inject + analysis/vibe toggle) → Shape (quiz) → Result (register switch on a
+canon screen — the §9 inference ramp: retrieve/extend/invent) → Refine (comments + quiz) → loop. Sits beside the
 north-star mock (`_VISION-northstar-front-end_2026-07-02.html`) as the more user-facing
-expression. Cool/warm/hot = the register spread; **enforcement present-but-quiet is the
-moat** vs commodity generators (v0 / Lovable / Figma Make).
+expression. The register spread = the §9 inference ramp (retrieve/extend/invent, not a look);
+**enforcement present-but-quiet is the moat** vs commodity generators (v0 / Lovable / Figma Make).
 
 ## Honesty — status of the mock
 

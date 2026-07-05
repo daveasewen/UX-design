@@ -64,13 +64,26 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
   brand self-check · the mode dial.
 - **PM-KG MVP** (`ADR-0007`): build `_build_live_state.py` + the staleness gate — own focused
   session.
-- **Decision-corpus correctness audit — METHOD DESIGNED 2026-07-05, NOT YET RUN (ADR-0007 §5).**
-  Everything is `unaudited`: provenance recorded, validity not vouched. Method now written up:
-  `knowledge/_RUNBOOK-decision-audit.md` (triage into Tier A/B/C by cost-of-being-wrong;
-  batched 5–8 nodes, fresh context per batch; Claude builds dossier + devil's-advocate case +
-  recommendation, **Dave adjudicates**; `unaudited → vouched/amend/overturn/defer`; verdicts logged
-  to interim `_DECISION-AUDIT.md`). **Next: RUN Tier A batch 1 in a fresh session** (ADR-0006,
-  charter §9/§9a, ADR-0007, ADR-0005, `derivation-governance`). Never run in a loaded session.
+- **Decision-corpus correctness audit — Tier A BATCH 1 RUN 2026-07-05 (ADR-0007 §5).** Method:
+  `knowledge/_RUNBOOK-decision-audit.md`; ledger: `knowledge/_DECISION-AUDIT.md`. Batch 1 verdicts:
+  **ADR-0005 vouch · ADR-0007 vouch · charter §9/§9a vouch(framing)+defer(proven/safe) ·
+  ADR-0006 amend · `derivation-governance` amend.** Audit obligations now OPEN (see below).
+  **Next: Tier A batch 2** (ADR-0001–0004, charter §4/§4b) in a fresh session; then Tier B/C.
+  Never run in a loaded session.
+  - **⚠️ AUDIT-DEFERRED verification (charter §9/§9a) — DO NOT FORGET (Dave, 07-05).** The
+    inference-ramp *framing* is vouched, but its *proven/safe* status is **deferred** pending: (a)
+    the first worked retrieve/extend/invent spread on one screen, and (b) the divergence probe +
+    isolated generation + mode-B self-check (all named-not-built). These are the same items in the
+    "no worked spread" / "named-not-built harness machinery" bullets above — now carrying an
+    explicit audit obligation, not just a build backlog. Re-audit §9/§9a's proven status once a
+    spread exists.
+  - **Re-audit obligation (two amended nodes).** ADR-0006 (register dial corrected to §9 inference
+    ramp) and `derivation-governance` (staged multi-human promotion path) were **amended** in the
+    audit; their amended text **re-enters `unaudited`** and must be re-audited in a later batch.
+  - **OPEN thread — staged-promotion / extension-library process (from `derivation-governance`
+    amend).** Define how inference-born ideas move: holding-pen/sandbox → colleague review →
+    "extension library" (separate-but-connected canon) → general canon if broadly useful. Not yet
+    worked out; connects to the ADR-0006 compounding-canon promote loop + `gap-pattern-build`.
 - **D2 — novel-screen test — THE #1 unlock.** Waiting on a colleague's brief (their brief-v2 +
   own baseline + signed contract *before* generation). `_TEST-PLAN-novel-screen-proof.md`.
 - **Toolkit tranche 2** (Dropdowns ×4) — parallel cheap-model workstream. Memory:
