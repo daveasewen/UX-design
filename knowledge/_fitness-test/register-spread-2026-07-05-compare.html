@@ -48,7 +48,14 @@
       <div class="seg" id="regSeg">
         <button data-reg="sober" aria-pressed="true">Sober</button>
         <button data-reg="balanced" aria-pressed="false">Balanced</button>
-        <button data-reg="expressive" aria-pressed="false">Expressive</button>
+        <button data-reg="expressive" aria-pressed="false">Expressive (v1)</button>
+        <button data-reg="expressive-v2" aria-pressed="false">Expressive (v2 — gravity fix)</button>
+      </div>
+    </div>
+    <div class="grp">
+      <span class="lab">Reference (old, ungoverned)</span>
+      <div class="seg" id="refSeg">
+        <button id="refBtn">Portfolio piece</button>
       </div>
     </div>
     <div class="now">Now viewing: <b id="nowLabel">Sonnet — Sober</b></div>
@@ -78,6 +85,11 @@
     model = b.dataset.model; modelName = b.textContent;
     render();
   }));
+  document.getElementById('refBtn').addEventListener('click', ()=>{
+    frame.src = 'sme-payments-portfolio.html';
+    nowLabel.textContent = 'Reference — old portfolio piece (ungoverned, pre-charter)';
+    pathLabel.textContent = 'knowledge/_fitness-test/sme-payments-portfolio.html';
+  });
   regBtns.forEach(b=>b.addEventListener('click', ()=>{
     regBtns.forEach(x=>x.setAttribute('aria-pressed','false'));
     b.setAttribute('aria-pressed','true');

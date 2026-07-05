@@ -231,22 +231,29 @@ backlog (that's OPEN) — these are intended end-states with a path. Refresh alo
     `colour-usage.md`). Permission without a target to reach for makes the model recombine what it
     already has rather than invent something new. Full diagnosis: memory
     `spread-review-gaps-2026-07-05`; comparison data: `_COMPARISON-sonnet-vs-opus.md`.
-  - **Blockers:** one open design tension, not yet resolved — an external creative reference must
-    feed composition/motion/energy/hierarchy *only*; it must never leak a different brand's colour,
-    type, or logo into the cardinal layer (retrieval-not-recall still has to hold for HSBC
-    primitives even while recall-from-inspiration is deliberately invited for craft). Needs a
-    concrete, bounded reference set (Dave's call, in progress) before testing.
-  - **Path:** (1) define the inspiration source + the guardrail as an explicit "inference gravity"
-    instruction, same pattern as the canon-rigour-tier fix; (2) add it to
-    `_TEST-BRIEF-v2-sme-payments.md` §2's expressive bullet; (3) re-run **only** the expressive band
-    (sober/balanced already fixed, no need to re-spend the run) — both models, to separate "was it
-    the missing direction" from "was it the model"; (4) Dave reviews via
-    `register-spread-2026-07-05-compare.html` against the portfolio piece specifically for
-    motion/depth/interaction craft; (5) once confirmed, fold the mechanism into charter §9 as a
-    named piece and only then is the §9 spread presentable outside this session; log the resolution
-    here and in the memory. **Scope discipline: this stays inside the existing "prove-the-core, §9
-    worked spread" parallel track from `_SEAWORTHINESS-PLAN_2026-07-05.md` — it does not touch hull
-    patches (done) or reorder Ingestion Phase 1 (still queued, untouched).**
+  - **Blockers:** the design tension is resolved in principle — an explicit guardrail now exists
+    (pattern only: composition/motion/interaction; never colour/type/logo, which stay retrieved
+    from HSBC canon) — but **Dave's eyeball verdict on the actual result is still outstanding.**
+  - **Path — steps 1–3 DONE same session, step 4 is next:**
+    (1) ✅ defined the inspiration source + guardrail as an explicit "inference gravity" instruction
+    (Linear/Stripe/Mercury/Ramp/award-calibre-fintech, each with a named pattern to extract —
+    sourced via web search 2026-07-05, not recall); (2) ✅ added it to
+    `_TEST-BRIEF-v2-sme-payments.md` §2's expressive bullet, alongside the corrected §3 wording
+    (the scheduled/awaiting labelling ambiguity found during the Opus run); (3) ✅ re-ran **only**
+    the expressive band on both models as `expressive-v2.html` in each spread folder — grep-verified
+    (not just self-reported): motion/animation/transition mentions roughly doubled-to-tripled
+    (Sonnet 4→23, Opus 2→15), `backdrop-filter`/blur depth technique appears for the first time in
+    either run (0→5 Sonnet, 0→3 Opus), `prefers-reduced-motion` still present in both, zero
+    `border-radius` violations, zero brand-colour leaks (every hex is inside a comment citing the
+    `var()` it derives from), all figures verbatim including the corrected §3 wording. **(4) NEXT —
+    Dave reviews via the updated `register-spread-2026-07-05-compare.html`** (now has an
+    "Expressive (v2 — gravity fix)" button per model, plus a direct "Portfolio piece" reference
+    button) **against `sme-payments-portfolio.html` specifically for motion/depth/interaction craft.
+    This is the actual test — structural counts are a proxy, not the verdict.** (5) once Dave
+    confirms, fold the mechanism into charter §9 as a named piece and only then is the §9 spread
+    presentable outside this session. **Scope discipline held:** this stayed inside the existing
+    "prove-the-core, §9 worked spread" parallel track from `_SEAWORTHINESS-PLAN_2026-07-05.md` —
+    did not touch hull patches (done) or reorder Ingestion Phase 1 (still queued, untouched).
 
 - **🎯 Ingestion "done right".** Full detail + phased worklist: **`knowledge/_INGESTION-ASSESSMENT_2026-07-05.md`** (cockroach doc — cold-start-proof, evidence-cited).
   - **Target:** every ingested entity (guideline rule · token · component · snippet · success-

@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Northgate Timber Ltd — Payments</title>
+<link rel="stylesheet" href="../../canon/canon.css">
+<!--
+  EXPRESSIVE band — SME Payments — Test brief v2, cold independent pass, 2026-07-05.
+  Register = MAX inference on foundational curbs (composition/density/motion/red-forwardness).
+  Cardinal curbs held throughout: brand red RETRIEVED (--primary-background-default / --accent,
+  never a typed hex), Univers type ramp only, border-radius:0 everywhere except the two named
+  exemptions (Badge/Avatar — neither is used here, so zero rounded corners in this file), full
+  a11y floor (AA contrast, focus-visible rings on every interactive element, ≥24px hit targets,
+  prefers-reduced-motion honoured throughout), high-value confirm gate on the £45,200 payroll run,
+  masked account refs (last-4 only) + fully masked sort code.
+
+  INFERENCE GRAVITY — pattern extraction, not brand borrowing (§2 guardrail: colour/type/logo
+  never leave HSBC canon; only composition/motion/interaction pattern is pulled):
+
+  1. MERCURY — confident, oversized numerals + generous whitespace + exactly ONE bold moment.
+     Extracted: the hero cash-position number is set at a genuinely large display size (clamp
+     up to ~96px) with tabular-nums and tight tracking, alone in a wide-margin block — the "one
+     bold moment" is the count-up on the closing balance itself, nothing else on the screen
+     competes with it. Colour is canon --text / --accent only (no invented dark-mode-forward
+     palette — this build stays on the light canon surface per §5, no dark surface exists in
+     canon.css that this screen's brief calls for, so none is invented).
+
+  2. RAMP — a single accent colour doing real, disciplined work, not spread thin.
+     Extracted: --accent (token: --primary-background-default, #DB0011, retrieved) is used in
+     exactly three places on the whole screen — the "2 awaiting your approval" count chip, the
+     left rule + amount colour on the two awaiting-approval rows, and the primary CTA. Every
+     other numeral on the page (scheduled rows, buffer, closing estimate) stays --text. This is
+     the red-forwardness dial turned up (per colour-usage.md col25-001/col26-003 — red is
+     tactical/accent, never decorative) but disciplined to ONE semantic job: "needs you."
+
+  3. LINEAR — obsessive micro-interaction timing, calm density, physics-based transitions,
+     blur/depth over drop-shadow.
+     Extracted: (a) the sticky sub-header gains a backdrop-filter blur + hairline border only
+     once the page has scrolled past the hero (JS toggle, class .is-stuck) — depth communicated
+     through blur, not a heavy box-shadow; (b) every interactive row/button uses the canon
+     --spring / --press tokens (300ms spring-out, 90ms snappy-in) already defined in canon.css,
+     never an invented easing curve; (c) the approval-queue rows stagger in on load at 40ms
+     offsets (a Linear-style calm cascade, not a bouncy list).
+
+  4. STRIPE (dashboard/docs craft) — considered typographic rhythm; clear hierarchy inside dense
+     financial data; spring-eased state change.
+     Extracted: the coverage buffer bar is a real compositional device (not just a number) — a
+     single-track proportional bar (reusing the --spring token for its fill transition) that
+     divides the current balance into "committed" vs "buffer," so the £72,748 headline is felt
+     spatially as well as read. Typographic rhythm: three deliberately distinct type tiers
+     (eyebrow / oversized figure / supporting caption) repeated consistently across every stat,
+     borrowed from Stripe's dashboard hierarchy discipline — never Stripe's actual typeface or
+     colour.
+
+  5. AWARD-CALIBRE FINTECH LAUNCHES — scroll/reveal choreography as a craft moment.
+     Extracted: an IntersectionObserver-driven reveal choreographs the hero number counting up
+     from 0 → £122,450 the first time it enters view (respects prefers-reduced-motion — jumps
+     straight to the final value with no animation for those users), and the payments list rows
+     reveal with a staggered translateY+opacity entrance keyed to scroll, rather than a plain
+     appear. This is a layout/motion choreography borrowed as craft-pattern, not a copied layout.
+
+  DERIVED / FLAGGED CANDIDATES (none invent a hex; all trace to a named cardinal + reference):
+  - flag/exp-001: the coverage bar's two-segment track (.buffer-bar) is composed BY HAND from
+    raw tokens (--accent-quiet / --progress-incomplete-analog), because no existing .cn-*
+    component models a two-segment proportional bar (.cn-progress-tracker is single-fill/step,
+    not committed-vs-buffer). Colours used are --progress-complete's sibling relationship: the
+    "committed" segment uses --text (neutral, not red — committed spend is not an alarm state)
+    and the "buffer" segment uses --divider-border-section (canon neutral, already used by
+    .cn-progress-tracker's own --incomplete token at the semantic-colour layer). No new hex.
+    Source: Stripe dashboard-craft pattern (typographic + spatial hierarchy in dense data).
+    Candidate for promotion: a "dual-segment proportional bar" gap-pattern alongside
+    .cn-progress-tracker, if this composition recurs.
+  - flag/exp-002: the blurred sticky-header treatment (`backdrop-filter: blur()`) composes the
+    existing --page / --border tokens with a translucency (background-color-mix at 85% opacity)
+    rather than a flat surface fill, because canon has no "translucent scrim over blur" utility.
+    No new colour value — same --page token, alpha-blended. Source: Linear's blur/depth-over-
+    shadow pattern. Candidate: a `.c-scrim-blur` utility if sticky/blur headers recur.
+  - flag/exp-003: the count-up hero numeral is a compositional/motion invention (JS-driven
+    number tween), not a colour or token invention — flagged because it's new INTERACTION
+    behaviour, not previously in canon.css. Derived from Mercury's "confident numerals as the
+    one bold moment" pattern. Candidate: a `.c-count-up` motion utility if this recurs across
+    screens with hero figures.
+  - All category/payee/status copy is taken VERBATIM from §3. No figure on this screen is
+    invented, rounded, or altered — every number traces to §3, and the £106,302 / £56,600 /
+    £49,702 relationship is stated per the corrected 2026-07-05 wording (total across all 5 rows
+    ≠ "scheduled total").
+-->
+<style>
+  /* ============================================================
+     EXPRESSIVE-BAND COMPOSITION LAYER
+     Hand-authored, scoped to this screen only. Every colour value below is a
+     var(--token) reference into canon.css — zero literal hex in this block.
+     ============================================================ */
+  html{ scroll-behavior:smooth; }
+  body{ margin:0; background:var(--page); }
+  .canon{ min-height:100vh; }
+
+  .screen{
+    max-width:560px; margin-inline:auto; min-height:100vh;
+    background:var(--page); display:flex; flex-direction:column;
+    container-type:inline-size;
+  }
+
+  /* ---- masthead : minimal, quiet, lets the hero number carry the weight ---- */
+  .masthead{
+    display:flex; align-items:center; justify-content:space-between;
+    padding: clamp(20px,4vw,32px) clamp(20px,5vw,40px) 0;
+  }
+  .masthead .biz{ display:flex; flex-direction:column; gap:2px; }
+  .masthead .biz .name{ font:500 15px/1.3 var(--font); color:var(--text); }
+  .masthead .biz .acct{ font:400 13px/1.3 var(--font); color:var(--muted); font-variant-numeric:tabular-nums; }
+  .masthead .avatar-mark{
+    width:40px; height:40px; border:1px solid var(--border); display:flex;
+    align-items:center; justify-content:center; font:500 15px/1 var(--font); color:var(--text);
+    flex:none; border-radius:0; /* square — not the Avatar component, this is a business mark not a person */
+  }
+
+  /* ---- HERO : the one bold moment (Mercury) ---- */
+  .hero{
+    padding: clamp(28px,6vw,56px) clamp(20px,5vw,40px) clamp(20px,4vw,32px);
+  }
+  .hero .eyebrow-row{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:14px; }
+  .hero .eyebrow{ font:500 13px/1 var(--font); color:var(--muted); }
+  .hero .asof{ font:400 13px/1 var(--font); color:var(--muted); font-variant-numeric:tabular-nums; }
+  .hero .figure{
+    font:400 clamp(52px,13vw,96px)/1 var(--font);
+    letter-spacing:-0.03em; color:var(--text);
+    font-variant-numeric:tabular-nums;
+    margin:0 0 6px;
+  }
+  .hero .figure .sign{ color:var(--muted); font-size:0.42em; vertical-align:0.5em; }
+  .hero .delta-row{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .hero .delta{
+    font:500 15px/1.3 var(--font); color:var(--ok);
+    display:inline-flex; align-items:center; gap:6px;
+  }
+  .hero .delta svg{ width:12px; height:12px; transform:rotate(-90deg); }
+  .hero .delta-caption{ font:400 14px/1.4 var(--font); color:var(--muted); }
+
+  /* ---- micro stat rail : opening / in / out / est. close — Stripe-style repeated tier ---- */
+  .rail{
+    display:grid; grid-template-columns:repeat(4,1fr);
+    border-top:1px solid var(--divider); border-bottom:1px solid var(--divider);
+    margin: 0 clamp(20px,5vw,40px);
+  }
+  .rail .cell{
+    padding:16px 4px 18px; display:flex; flex-direction:column; gap:4px;
+    border-left:1px solid var(--divider);
+  }
+  .rail .cell:first-child{ border-left:0; padding-left:0; }
+  .rail .cell:last-child{ padding-right:0; }
+  .rail .cell .k{ font:400 11px/1.3 var(--font); color:var(--muted); }
+  .rail .cell .v{ font:500 16px/1.2 var(--font); color:var(--text); font-variant-numeric:tabular-nums; letter-spacing:-.01em; }
+  .rail .cell.out .v{ color:var(--text); }
+  .rail .cell.in .v{ color:var(--ok); }
+
+  @container (max-width:420px){
+    .rail{ grid-template-columns:repeat(2,1fr); }
+    .rail .cell:nth-child(3){ border-left:0; padding-left:0; }
+  }
+
+  /* ---- coverage : dual-segment proportional bar (flag/exp-001 — hand-composed, no .cn-* fits) ---- */
+  .coverage{ padding: clamp(24px,5vw,40px) clamp(20px,5vw,40px); }
+  .coverage .head{ display:flex; justify-content:space-between; align-items:baseline; gap:12px; margin-bottom:14px; }
+  .coverage .head h2{ font:500 15px/1.3 var(--font); color:var(--text); margin:0; }
+  .coverage .head .thru{ font:400 13px/1.3 var(--font); color:var(--muted); }
+  .buffer-bar{
+    position:relative; height:10px; background:var(--divider); overflow:hidden; display:flex;
+  }
+  .buffer-bar .seg{ height:100%; transition: width var(--spring); }
+  .buffer-bar .seg.committed{ background:var(--text); width:0; }
+  .buffer-bar .seg.buffer{ background:var(--divider-border-section, var(--divider)); flex:1; }
+  .coverage .legend{ display:flex; justify-content:space-between; margin-top:10px; gap:16px; }
+  .coverage .legend .item{ display:flex; align-items:center; gap:8px; }
+  .coverage .legend .dot{ width:8px; height:8px; flex:none; }
+  .coverage .legend .dot.committed{ background:var(--text); }
+  .coverage .legend .dot.buffer{ background:var(--divider-border-section, var(--divider)); border:1px solid var(--border); }
+  .coverage .legend .lbl{ font:400 13px/1.3 var(--font); color:var(--muted); }
+  .coverage .legend .amt{ font:500 13px/1.3 var(--font); color:var(--text); font-variant-numeric:tabular-nums; }
+  .coverage .buffer-figure{ margin-top:18px; display:flex; align-items:baseline; gap:10px; }
+  .coverage .buffer-figure .num{ font:400 40px/1 var(--font); color:var(--text); letter-spacing:-0.02em; font-variant-numeric:tabular-nums; }
+  .coverage .buffer-figure .cap{ font:400 14px/1.4 var(--font); color:var(--muted); max-width:26ch; }
+
+  /* ---- sticky sub-header : approvals queue anchor — Linear blur/depth (flag/exp-002) ---- */
+  .queue-anchor{
+    position:sticky; top:0; z-index:5;
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:14px clamp(20px,5vw,40px);
+    background: color-mix(in srgb, var(--page) 88%, transparent);
+    border-bottom:1px solid transparent;
+    transition: border-color 200ms var(--motion-easing-standard, ease), backdrop-filter 200ms ease;
+  }
+  .queue-anchor.is-stuck{
+    border-bottom-color:var(--divider);
+    backdrop-filter: blur(calc(var(--blur-background-surface,12) * 1px));
+    -webkit-backdrop-filter: blur(calc(var(--blur-background-surface,12) * 1px));
+  }
+  .queue-anchor h2{ font:500 15px/1.3 var(--font); color:var(--text); margin:0; }
+  .queue-anchor .count-chip{
+    display:inline-flex; align-items:center; gap:6px; height:24px; padding:0 10px;
+    background:var(--err-tint); color:var(--accent); font:600 13px/1 var(--font); border:1px solid var(--accent);
+  }
+
+  /* ---- approval rows : accent does ONE job (Ramp discipline) ---- */
+  .queue{ padding:4px clamp(20px,5vw,40px) 8px; display:flex; flex-direction:column; }
+  .prow{
+    display:flex; align-items:center; gap:14px; padding:16px 0;
+    border-bottom:1px solid var(--divider);
+    opacity:0; transform:translateY(10px);
+    animation: cn-exp-rise 420ms var(--motion-easing-out,ease) both;
+  }
+  .prow.needs-you{ border-left:3px solid var(--accent); padding-left:14px; margin-left:-3px; }
+  .prow:last-child{ border-bottom:0; }
+  .prow .body{ flex:1; min-width:0; display:flex; flex-direction:column; gap:4px; }
+  .prow .line1{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .prow .payee{ font:500 16px/1.3 var(--font); color:var(--text); }
+  .prow .cat{ font:400 13px/1.3 var(--font); color:var(--muted); }
+  .prow .meta{ font:400 12px/1.4 var(--font); color:var(--muted); display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+  .prow .meta .acct{ font-variant-numeric:tabular-nums; }
+  .prow .amount{ flex:none; font:500 19px/1.2 var(--font); color:var(--text); font-variant-numeric:tabular-nums; letter-spacing:-.01em; }
+  .prow.needs-you .amount{ color:var(--accent); }
+  .prow .approve{
+    flex:none; height:40px; padding:0 18px; border:1px solid var(--accent); background:transparent;
+    color:var(--accent); font:500 14px/1 var(--font); cursor:pointer;
+    transition: background var(--ease), transform var(--spring), color var(--ease);
+  }
+  .prow .approve:hover{ background:var(--accent); color:var(--text-reverse); transform:scale(1.03); }
+  .prow .approve:active{ transform:scale(.96); }
+  .prow .approve:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }
+
+  /* stagger via inline custom property, set by JS below */
+  .prow{ animation-delay: calc(var(--i,0) * 40ms); }
+
+  @keyframes cn-exp-rise{ to{ opacity:1; transform:translateY(0); } }
+
+  /* ---- scheduled section : quiet, neutral, deliberately LESS visual weight than approvals ---- */
+  .scheduled{ padding: clamp(8px,2vw,16px) clamp(20px,5vw,40px) clamp(28px,5vw,48px); }
+  .scheduled .head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px; }
+  .scheduled .head h2{ font:500 15px/1.3 var(--font); color:var(--text); margin:0; }
+  .scheduled .head .total{ font:400 13px/1.3 var(--font); color:var(--muted); font-variant-numeric:tabular-nums; }
+  .srow{
+    display:flex; align-items:center; gap:14px; padding:14px 0; border-bottom:1px solid var(--divider-soft, var(--divider));
+    opacity:0; transform:translateY(8px);
+    animation: cn-exp-rise 420ms var(--motion-easing-out,ease) both;
+    animation-delay: calc(var(--i,0) * 40ms + 160ms);
+  }
+  .srow:last-child{ border-bottom:0; }
+  .srow .date{ flex:none; width:64px; display:flex; flex-direction:column; }
+  .srow .date .d{ font:500 15px/1.1 var(--font); color:var(--text); }
+  .srow .date .m{ font:400 11px/1.2 var(--font); color:var(--muted); }
+  .srow .body{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; }
+  .srow .payee{ font:400 15px/1.3 var(--font); color:var(--text); }
+  .srow .cat{ font:400 12px/1.3 var(--font); color:var(--muted); }
+  .srow .amount{ flex:none; font:400 16px/1.2 var(--font); color:var(--text); font-variant-numeric:tabular-nums; }
+
+  /* ---- footer summary : the reconciliation (§4 correctness surfaced honestly) ---- */
+  .recon{ margin: 0 clamp(20px,5vw,40px) clamp(32px,6vw,56px); padding-top:20px; border-top:1px solid var(--divider); }
+  .recon .row{ display:flex; justify-content:space-between; padding:8px 0; font:400 14px/1.4 var(--font); color:var(--muted); }
+  .recon .row .v{ color:var(--text); font-variant-numeric:tabular-nums; }
+  .recon .row.total{ border-top:1px solid var(--divider); margin-top:4px; padding-top:14px; }
+  .recon .row.total .k, .recon .row.total .v{ color:var(--text); font-weight:500; }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    .prow, .srow{ animation:none !important; opacity:1 !important; transform:none !important; }
+    .buffer-bar .seg{ transition:none !important; }
+    .prow .approve:hover, .prow .approve:active{ transform:none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="canon">
+<div class="screen">
+
+  <header class="masthead">
+    <div class="biz">
+      <span class="name">Northgate Timber Ltd</span>
+      <span class="acct">Business current account &middot;&middot;&middot;&middot; 8842</span>
+    </div>
+    <div class="avatar-mark" aria-hidden="true">NT</div>
+  </header>
+
+  <section class="hero" aria-labelledby="hero-h">
+    <div class="eyebrow-row">
+      <span class="eyebrow" id="hero-h">Current balance</span>
+      <span class="asof">As of 12 May 2026</span>
+    </div>
+    <p class="figure" data-count-to="122450">
+      <span class="sign">&pound;</span><span class="num">0</span>
+    </p>
+    <div class="delta-row">
+      <span class="delta">
+        <svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M17 4.15198L9 12.15L1 4.15198V5.84798L9 13.848L17 5.84798V4.15198Z" fill="currentColor"/></svg>
+        +&pound;2,450 net today
+      </span>
+      <span class="delta-caption">&pound;11,650 in &middot; &pound;9,200 out &middot; est. closing &pound;124,000</span>
+    </div>
+  </section>
+
+  <div class="rail">
+    <div class="cell"><span class="k">Opening</span><span class="v">&pound;120,000</span></div>
+    <div class="cell in"><span class="k">Inflows today</span><span class="v">+&pound;11,650</span></div>
+    <div class="cell out"><span class="k">Outflows today</span><span class="v">&minus;&pound;9,200</span></div>
+    <div class="cell"><span class="k">Est. closing</span><span class="v">&pound;124,000</span></div>
+  </div>
+
+  <section class="coverage" aria-labelledby="cov-h">
+    <div class="head">
+      <h2 id="cov-h">Coverage</h2>
+      <span class="thru">Covered through May</span>
+    </div>
+    <div class="buffer-bar" role="img" aria-label="Of your &pound;122,450 balance, &pound;49,702 is scheduled in May, leaving a &pound;72,748 buffer.">
+      <div class="seg committed" data-fill-to="40.6"></div>
+      <div class="seg buffer"></div>
+    </div>
+    <div class="legend">
+      <span class="item"><span class="dot committed" aria-hidden="true"></span><span class="lbl">Scheduled in May</span><span class="amt">&pound;49,702</span></span>
+      <span class="item"><span class="dot buffer" aria-hidden="true"></span><span class="lbl">Buffer</span><span class="amt">&pound;72,748</span></span>
+    </div>
+    <div class="buffer-figure">
+      <span class="num">&pound;72,748</span>
+      <span class="cap">buffer after May's scheduled £49,702 &mdash; covered through May, not beyond.</span>
+    </div>
+  </section>
+
+  <div class="queue-anchor" id="queueAnchor">
+    <h2>Awaiting your approval</h2>
+    <span class="count-chip">2 &middot; &pound;49,702</span>
+  </div>
+
+  <section class="queue" aria-label="Payments awaiting approval">
+
+    <article class="prow needs-you" style="--i:0">
+      <div class="body">
+        <div class="line1">
+          <span class="payee">Amazon Business</span>
+          <span class="cat">Supplier &middot; card &amp; fulfilment</span>
+        </div>
+        <div class="meta">
+          <span class="acct">Account &middot;&middot;&middot;&middot; 4021</span>
+          <span>&middot;</span>
+          <span>Awaiting approval &mdash; Sarah Chen, 2 days ago</span>
+          <span>&middot;</span>
+          <span>15 May 2026</span>
+        </div>
+      </div>
+      <span class="amount">&pound;4,502</span>
+      <button class="approve" type="button" data-action="approve" data-amount="4502" data-payee="Amazon Business">Approve</button>
+    </article>
+
+    <!-- High-value approval: £45,200 payroll — §4 requires a confirmation step, no one-click approve.
+         Implemented by routing THIS row's Approve button through the Confirmation dialog below
+         (.cn-modals-based custom confirm), rather than the direct one-tap approve the low-value row uses. -->
+    <article class="prow needs-you" style="--i:1">
+      <div class="body">
+        <div class="line1">
+          <span class="payee">BrightHire Payroll Ltd</span>
+          <span class="cat">Payroll &middot; monthly run</span>
+        </div>
+        <div class="meta">
+          <span class="acct">Account &middot;&middot;&middot;&middot; 7730</span>
+          <span>&middot;</span>
+          <span>Awaiting approval &mdash; Sarah Chen, 2 days ago</span>
+          <span>&middot;</span>
+          <span>22 May 2026</span>
+        </div>
+      </div>
+      <span class="amount">&pound;45,200</span>
+      <button class="approve" type="button" data-action="confirm-high-value" data-amount="45200" data-payee="BrightHire Payroll Ltd" aria-haspopup="dialog" aria-controls="confirmDialog">Approve</button>
+    </article>
+
+  </section>
+
+  <section class="scheduled" aria-labelledby="sched-h">
+    <div class="head">
+      <h2 id="sched-h">Scheduled ahead</h2>
+      <span class="total">3 payments &middot; &pound;56,600</span>
+    </div>
+
+    <article class="srow" style="--i:0">
+      <div class="date"><span class="d">22</span><span class="m">Jul 2026</span></div>
+      <div class="body"><span class="payee">HMRC &mdash; PAYE</span><span class="cat">Tax &middot; PAYE / NIC</span></div>
+      <span class="amount">&pound;2,200</span>
+    </article>
+    <article class="srow" style="--i:1">
+      <div class="date"><span class="d">12</span><span class="m">Aug 2026</span></div>
+      <div class="body"><span class="payee">British Gas Business</span><span class="cat">Utilities &middot; electricity &amp; gas</span></div>
+      <span class="amount">&pound;4,200</span>
+    </article>
+    <article class="srow" style="--i:2">
+      <div class="date"><span class="d">09</span><span class="m">Sep 2026</span></div>
+      <div class="body"><span class="payee">Ravenscroft Properties</span><span class="cat">Rent &middot; quarterly lease</span></div>
+      <span class="amount">&pound;50,200</span>
+    </article>
+  </section>
+
+  <section class="recon" aria-labelledby="recon-h">
+    <h2 id="recon-h" class="eyebrow" style="display:block;margin-bottom:4px;">Table total</h2>
+    <div class="row"><span class="k">Awaiting approval (2 items)</span><span class="v">&pound;49,702</span></div>
+    <div class="row"><span class="k">Already scheduled (3 items)</span><span class="v">&pound;56,600</span></div>
+    <div class="row total"><span class="k">All 5 rows combined</span><span class="v">&pound;106,302</span></div>
+  </section>
+
+</div>
+</div>
+
+<!-- High-value confirmation dialog — reuses .cn-modals dialog chrome; content mirrors .cn-confirmation
+     rhythm (title / message / actions) per §4's "no one-click approve" rule for the £45,200 run. -->
+<div class="cn-modals">
+  <div class="overlay" id="confirmDialog" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" aria-describedby="confirmMsg">
+    <div class="dialog">
+      <button class="close" type="button" data-action="close-confirm" aria-label="Cancel">
+        <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M1 1L17 17M17 1L1 17" stroke="currentColor" stroke-width="2"/></svg>
+      </button>
+      <h2 id="confirmTitle">Confirm high-value payment</h2>
+      <p id="confirmMsg">Approve <strong>BrightHire Payroll Ltd</strong> &mdash; payroll, monthly run &mdash; for <strong>&pound;45,200</strong> from account &middot;&middot;&middot;&middot; 7730? This action can't be undone.</p>
+      <div class="actions">
+        <button class="btn primary" type="button" data-action="confirm-approve">Confirm &amp; approve &pound;45,200</button>
+        <button class="btn secondary" type="button" data-action="close-confirm">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---- Mercury count-up: the ONE bold moment. Runs once, on first view. ---- */
+  var heroFigure = document.querySelector(".figure[data-count-to]");
+  if (heroFigure) {
+    var target = parseInt(heroFigure.getAttribute("data-count-to"), 10);
+    var numEl = heroFigure.querySelector(".num");
+    function formatGBP(n){ return n.toLocaleString("en-GB"); }
+    function setFinal(){ numEl.textContent = formatGBP(target); }
+    if (reduceMotion) {
+      setFinal();
+    } else if ("IntersectionObserver" in window) {
+      var done = false;
+      var obs = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if (entry.isIntersecting && !done) {
+            done = true;
+            var start = null, duration = 900;
+            function step(ts){
+              if (!start) start = ts;
+              var p = Math.min((ts - start) / duration, 1);
+              var eased = 1 - Math.pow(1 - p, 3); /* ease-out cubic */
+              numEl.textContent = formatGBP(Math.round(target * eased));
+              if (p < 1) requestAnimationFrame(step); else setFinal();
+            }
+            requestAnimationFrame(step);
+            obs.disconnect();
+          }
+        });
+      }, { threshold: 0.4 });
+      obs.observe(heroFigure);
+    } else {
+      setFinal();
+    }
+  }
+
+  /* ---- coverage bar: fill to proportion on load (Stripe-style spring-eased state change) ---- */
+  var committedSeg = document.querySelector(".seg.committed[data-fill-to]");
+  if (committedSeg) {
+    var pct = committedSeg.getAttribute("data-fill-to");
+    if (reduceMotion) {
+      committedSeg.style.width = pct + "%";
+    } else {
+      requestAnimationFrame(function(){
+        requestAnimationFrame(function(){ committedSeg.style.width = pct + "%"; });
+      });
+    }
+  }
+
+  /* ---- Linear-style blur/depth on the sticky queue anchor once it detaches from the hero ---- */
+  var anchor = document.getElementById("queueAnchor");
+  if (anchor && "IntersectionObserver" in window) {
+    var sentinel = document.createElement("div");
+    anchor.parentNode.insertBefore(sentinel, anchor);
+    var stickObs = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        anchor.classList.toggle("is-stuck", !entry.isIntersecting);
+      });
+    }, { threshold: 0, rootMargin: "-1px 0px 0px 0px" });
+    stickObs.observe(sentinel);
+  }
+
+  /* ---- high-value confirm gate (§4: no one-click approve on the £45,200 payroll run) ---- */
+  var dialog = document.getElementById("confirmDialog");
+  function openDialog(){
+    dialog.classList.add("open");
+    var primaryBtn = dialog.querySelector(".btn.primary");
+    if (primaryBtn) primaryBtn.focus();
+    document.addEventListener("keydown", onKeydown);
+  }
+  function closeDialog(){
+    dialog.classList.remove("open");
+    document.removeEventListener("keydown", onKeydown);
+    var trigger = document.querySelector('[data-action="confirm-high-value"]');
+    if (trigger) trigger.focus();
+  }
+  function onKeydown(e){ if (e.key === "Escape") closeDialog(); }
+
+  document.addEventListener("click", function(e){
+    var t = e.target.closest("[data-action]");
+    if (!t) return;
+    var action = t.getAttribute("data-action");
+    if (action === "confirm-high-value") { e.preventDefault(); openDialog(); }
+    else if (action === "close-confirm") { e.preventDefault(); closeDialog(); }
+    else if (action === "confirm-approve") {
+      e.preventDefault();
+      var row = document.querySelector('[data-action="confirm-high-value"]').closest(".prow");
+      if (row) {
+        row.style.transition = "opacity 200ms ease, transform 200ms ease";
+        row.style.opacity = "0.45";
+        var btn = row.querySelector(".approve");
+        if (btn) { btn.textContent = "Approved"; btn.disabled = true; }
+      }
+      closeDialog();
+    } else if (action === "approve") {
+      /* low-value row: direct approve is permitted (only the high-value row is gated per §4) */
+      t.textContent = "Approved";
+      t.disabled = true;
+      var row2 = t.closest(".prow");
+      if (row2) row2.style.opacity = "0.55";
+    }
+  });
+})();
+</script>
+</body>
+</html>

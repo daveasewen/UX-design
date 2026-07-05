@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payments — Northgate Timber Ltd</title>
+
+<!-- ============================================================================
+     REGISTER: EXPRESSIVE (max inference, cardinal curbs only) — SME Payments v2
+     Built cold against _TEST-BRIEF-v2-sme-payments.md. Did NOT read the other two
+     bands or any prior SME-Payments variant.
+
+     INFERENCE GRAVITY — patterns pulled from the named reference set (§2). Pattern
+     only: composition / motion / interaction. NEVER colour / type / logo — those
+     stay CARDINAL, retrieved from canon.css (HSBC token store) verbatim.
+       • MERCURY  — one oversized confident numeral (the £122,450 balance is the
+         single bold moment); a deliberately dark "cover" band, used once, not
+         decoratively. Dark surface = canon [data-theme="dark"] TOKENS, not invented.
+       • RAMP     — a single accent (HSBC Red, RETRIEVED via --accent) doing real
+         work: it marks ONLY the two payments awaiting action + the approve CTA.
+         Everywhere else is monochrome. Red as the state channel, spread thin nowhere.
+       • LINEAR   — physics-based micro-interactions: spring count-up on the numeral,
+         staggered scroll-reveal (IntersectionObserver), snappy hover using the canon
+         --spring / --press tokens; blur/depth layering (backdrop-filter) for the
+         sticky approval bar instead of a heavy drop-shadow.
+       • STRIPE   — one deliberate accent glow behind the balance (radial, low-opacity,
+         DERIVED from --color-primary — flagged below); considered typographic rhythm.
+       • AWARD-CALIBRE FINTECH — deliberate layout choreography: a focused "approval
+         spotlight" lane lifts the two awaiting items out of the ledger for review,
+         then the full ledger sits below in the canon Table; the hero band morphs at
+         breakpoint (not just a resize).
+
+     CARDINAL CURBS held (never lift, even here):
+       • brand colour RETRIEVED (var(--accent)=--color-primary #DB0011), never typed
+       • Univers type ramp (canon --font); NO invented typeface
+       • SQUARE corners everywhere; ONLY exemptions = Badge (round) + Avatar (round)
+       • a11y floor: AA contrast, visible focus rings, 24px+ targets, reduced-motion
+       • safety: high-value £45,200 payroll requires a 2-step confirm (canon Modal);
+         masked refs last-4 only, sort code fully masked
+       • §4 correctness: figures verbatim; coverage == maths; same payee same amount
+     ============================================================================ -->
+
+<link rel="stylesheet" href="../../canon/canon.css">
+<style>
+  /* ---- page scaffold (composition = expressive licence; no brand values invented) ---- */
+  body{margin:0;}
+  .pay{max-width:1080px; margin-inline:auto; padding:0 24px 120px;}
+  @media (max-width:640px){ .pay{padding:0 16px 120px;} }
+
+  /* Utility: scroll-reveal (LINEAR — staggered physics entrance). Motion only;
+     falls fully static under reduced-motion (handled in the global canon rule + here). */
+  .reveal{opacity:0; transform:translateY(14px); transition:opacity .5s var(--motion-easing-standard), transform .5s var(--motion-easing-spring);}
+  .reveal.in{opacity:1; transform:none;}
+  @media (prefers-reduced-motion: reduce){ .reveal{opacity:1 !important; transform:none !important;} }
+
+  /* ==========================================================================
+     HERO / COVER BAND (MERCURY dark-forward moment + STRIPE single accent glow)
+     Surface = canon dark TOKENS applied by data-theme="dark" on THIS band only.
+     No invented colour: --page/--text/--muted/--border all resolve from the dark
+     token set in canon.css. This is the ONE dark moment on the screen.
+     ========================================================================== */
+  .cover{
+    position:relative; overflow:hidden;
+    background:var(--page);                 /* dark token #000 in this band */
+    color:var(--text);                      /* dark token #FFF */
+    border:1px solid var(--border);
+    padding:44px 40px 40px;
+    margin-top:28px;
+  }
+  @media (max-width:640px){ .cover{padding:32px 20px 28px;} }
+
+  /* STRIPE — ONE deliberate accent glow, DERIVED from --color-primary (flagged).
+     Low-opacity radial; purely decorative depth, carries no meaning, sits behind
+     the numeral. Not a page background fill (tactical-red rule respected). */
+  .cover__glow{
+    position:absolute; pointer-events:none; z-index:0;
+    width:520px; height:520px; right:-140px; top:-180px;
+    /* DERIVED CANDIDATE #1 — see HTML comment at first use */
+    background:radial-gradient(closest-side, color-mix(in srgb, var(--color-primary) 42%, transparent), transparent 72%);
+    filter:blur(8px);
+  }
+  .cover > *{position:relative; z-index:1;}
+
+  .cover__topline{display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;}
+  .cover__acct{display:flex; align-items:center; gap:12px; min-width:0;}
+  .cover__acctmeta{display:flex; flex-direction:column; gap:2px; min-width:0;}
+  .cover__biz{font:500 15px/1.2 var(--font); color:var(--text);}
+  .cover__ref{font:400 13px/1.2 var(--font); color:var(--muted); font-variant-numeric:tabular-nums;}
+
+  /* MERCURY — the single oversized numeral. Univers ramp only; tabular-nums;
+     tight tracking echoing the canon Account-card balance (-0.01em), scaled up. */
+  .cover__ballabel{margin-top:30px; font:400 14px/1.2 var(--font); color:var(--muted);}
+  .cover__balance{
+    margin-top:6px;
+    font:300 clamp(56px,9vw,104px)/0.98 var(--font);
+    letter-spacing:-.02em; font-variant-numeric:tabular-nums; color:var(--text);
+  }
+  .cover__net{margin-top:10px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    font:400 15px/1.3 var(--font); color:var(--muted);}
+  .cover__net .up{color:var(--rag-success); font-weight:500;}   /* +movement = RAG success token */
+  .cover__net .dot{width:4px; height:4px; border-radius:50%; background:var(--muted); flex:none;}
+
+  /* three-up cash strip inside the cover — flat, monochrome, calm density (LINEAR) */
+  .cover__strip{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; margin-top:34px;
+    background:var(--border); border:1px solid var(--border);}
+  @media (max-width:560px){ .cover__strip{grid-template-columns:1fr;} }
+  .cover__cell{background:var(--page); padding:16px 18px; display:flex; flex-direction:column; gap:5px;}
+  .cover__cell .k{font:400 13px/1.2 var(--font); color:var(--muted);}
+  .cover__cell .v{font:400 22px/1.1 var(--font); color:var(--text); font-variant-numeric:tabular-nums;}
+
+  /* ==========================================================================
+     COVERAGE LINE (STRIPE typographic rhythm — one confident sentence, exact maths)
+     ========================================================================== */
+  .coverage{margin-top:28px; padding:22px 24px; border:1px solid var(--border); background:var(--surface);
+    display:flex; align-items:baseline; gap:14px; flex-wrap:wrap;}
+  .coverage__num{font:400 30px/1 var(--font); color:var(--text); font-variant-numeric:tabular-nums; letter-spacing:-.01em;}
+  .coverage__txt{font:400 15px/1.5 var(--font); color:var(--muted); flex:1; min-width:240px;}
+  .coverage__txt b{color:var(--text); font-weight:500;}
+
+  /* ==========================================================================
+     APPROVAL SPOTLIGHT LANE (AWARD-CALIBRE choreography + RAMP single-accent).
+     Lifts the two AWAITING-APPROVAL items out of the ledger into a focused review
+     lane. The accent (RETRIEVED HSBC Red) marks ONLY these action items.
+     ========================================================================== */
+  .lane{margin-top:52px;}
+  .lane__head{display:flex; align-items:center; gap:12px; margin-bottom:16px;}
+  .lane__title{font:500 20px/1.2 var(--font); color:var(--text); letter-spacing:-.01em;}
+  /* RAMP — the accent-bar signalling "these need YOU". Red retrieved, doing real state work. */
+  .lane__count{display:inline-flex; align-items:center; height:24px; padding:0 10px;
+    background:var(--accent); color:var(--text-reverse); font:500 13px/1 var(--font);
+    font-variant-numeric:tabular-nums;}  /* SQUARE — not a Badge; a count marker */
+  .lane__grid{display:grid; grid-template-columns:repeat(2,1fr); gap:18px;}
+  @media (max-width:760px){ .lane__grid{grid-template-columns:1fr;} }
+
+  /* Approval card — canon Card surface + a single RED action rail on the leading edge (RAMP). */
+  .apcard{position:relative; background:var(--surface); border:1px solid var(--border);
+    padding:20px 22px 20px 26px; display:flex; flex-direction:column; gap:14px;
+    transition:transform var(--spring), border-color var(--ease);}
+  .apcard::before{content:""; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--accent);} /* accent rail = red doing work */
+  .apcard:hover{transform:translateY(-3px); border-color:var(--line-strong);}
+  @media (prefers-reduced-motion: reduce){ .apcard:hover{transform:none;} }
+  .apcard__top{display:flex; align-items:flex-start; gap:14px;}
+  .apcard__body{flex:1; min-width:0; display:flex; flex-direction:column; gap:6px;}
+  .apcard__payee{font:500 17px/1.2 var(--font); color:var(--text);}
+  .apcard__cat{font:400 13px/1.3 var(--font); color:var(--muted);}
+  .apcard__amt{font:400 30px/1 var(--font); color:var(--text); font-variant-numeric:tabular-nums; letter-spacing:-.01em; white-space:nowrap;}
+  .apcard__meta{display:flex; gap:16px; flex-wrap:wrap; font:400 13px/1.3 var(--font); color:var(--muted);}
+  .apcard__meta .ref{font-variant-numeric:tabular-nums;}
+  .apcard__flag{display:inline-flex; align-items:center; gap:6px; height:24px; padding:0 8px;
+    background:var(--rag-warning-tint); color:var(--text); font:400 12px/1 var(--font); border-radius:0;}
+  .apcard__flag .d{width:8px; height:8px; border-radius:50%; background:var(--rag-warning); flex:none;} /* dot round = status-dot rule */
+  .apcard__actions{display:flex; gap:10px; align-items:center;}
+  .apcard__actions .btn{height:44px; min-width:96px; padding:0 20px; border:0; border-radius:0; cursor:pointer;
+    font:500 16px/1 var(--font); display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    transition:background var(--ease), transform var(--spring), filter var(--press);}
+  .apcard__actions .btn:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .apcard__actions .btn:hover{transform:scale(1.04);}
+  .apcard__actions .btn:active{transform:scale(.96); filter:brightness(.88); transition:transform var(--press), filter var(--press);}
+  @media (prefers-reduced-motion: reduce){ .apcard__actions .btn:hover, .apcard__actions .btn:active{transform:none; filter:none;} }
+  .apcard__actions .btn.primary{background:var(--pri); color:var(--text-reverse);}
+  .apcard__actions .btn.primary:hover{background:var(--pri-hover);}
+  .apcard__actions .btn.ghost{background:transparent; color:var(--text); border:1px solid var(--ter-border);}
+  .apcard__actions .btn.ghost:hover{background:var(--surface-hover);}
+  .apcard__hv{font:400 12px/1.3 var(--font); color:var(--muted);}
+
+  /* ==========================================================================
+     SCHEDULED LEDGER — the full table below (canon .cn-table, verbatim behaviour)
+     ========================================================================== */
+  .ledger{margin-top:56px;}
+  .ledger__head{display:flex; align-items:baseline; justify-content:space-between; gap:14px; margin-bottom:16px; flex-wrap:wrap;}
+  .ledger__title{font:500 20px/1.2 var(--font); color:var(--text); letter-spacing:-.01em;}
+  .ledger__sub{font:400 14px/1.4 var(--font); color:var(--muted); font-variant-numeric:tabular-nums;}
+  .cn-table .amt{font-variant-numeric:tabular-nums; white-space:nowrap;}
+  .cn-table .chip{display:inline-flex; align-items:center; gap:6px; height:24px; padding:0 8px; border-radius:0;
+    font:400 12px/1 var(--font); color:var(--text); white-space:nowrap;}
+  .cn-table .chip .dot{width:8px; height:8px; border-radius:50%; flex:none;} /* status dot round */
+  .cn-table .chip.sched{background:var(--rag-information-tint);}
+  .cn-table .chip.sched .dot{background:var(--rag-information);}
+  .cn-table .chip.await{background:var(--rag-warning-tint);}
+  .cn-table .chip.await .dot{background:var(--rag-warning);}
+
+  /* total row emphasis — the whole-table total (NOT labelled "scheduled") */
+  .cn-table tfoot td, .cn-table tfoot th{background:var(--surface); font-weight:600;}
+
+  /* ==========================================================================
+     STICKY APPROVAL BAR (LINEAR blur/depth layering, not a heavy shadow)
+     ========================================================================== */
+  .sticky{position:fixed; left:0; right:0; bottom:0; z-index:30;
+    background:color-mix(in srgb, var(--surface) 82%, transparent);
+    -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px);   /* canon --blur-background-surface = 12 */
+    border-top:1px solid var(--border);}
+  .sticky__in{max-width:1080px; margin-inline:auto; padding:12px 24px; display:flex; align-items:center; gap:16px; flex-wrap:wrap;}
+  @media (max-width:640px){ .sticky__in{padding:12px 16px;} }
+  .sticky__sum{display:flex; flex-direction:column; gap:2px; margin-right:auto;}
+  .sticky__k{font:400 12px/1.2 var(--font); color:var(--muted);}
+  .sticky__v{font:500 16px/1.1 var(--font); color:var(--text); font-variant-numeric:tabular-nums;}
+  .sticky .btn{height:44px; min-width:96px; padding:0 20px; border:0; border-radius:0; cursor:pointer;
+    font:500 16px/1 var(--font); display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    transition:background var(--ease), transform var(--spring), filter var(--press);}
+  .sticky .btn:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .sticky .btn:hover{transform:scale(1.04);}
+  .sticky .btn:active{transform:scale(.96); filter:brightness(.88); transition:transform var(--press), filter var(--press);}
+  @media (prefers-reduced-motion: reduce){ .sticky .btn:hover, .sticky .btn:active{transform:none; filter:none;} }
+  .sticky .btn.primary{background:var(--pri); color:var(--text-reverse);}
+  .sticky .btn.primary:hover{background:var(--pri-hover);}
+  .sticky .btn.ghost{background:transparent; color:var(--text); border:1px solid var(--ter-border);}
+  .sticky .btn.ghost:hover{background:var(--surface-hover);}
+  @container (max-width:420px){}
+
+  /* page eyebrow + title */
+  .pay__eyebrow{margin-top:36px;}
+  .pay__title{margin-top:6px; font:400 clamp(28px,4vw,40px)/1.05 var(--font); letter-spacing:-.015em; color:var(--text);}
+</style>
+</head>
+
+<!-- class="canon" on root per §5. Page is LIGHT; only the cover band flips to dark tokens. -->
+<body class="canon">
+<main class="pay" role="main">
+
+  <!-- ================= PAGE HEADER ================= -->
+  <p class="cn-eyebrow reveal" style="display:block;">
+    <span class="eyebrow">Northgate Timber Ltd · Business current account</span>
+  </p>
+  <h1 class="pay__title reveal">Payments</h1>
+
+  <!-- ================= COVER / HERO BAND (dark tokens; MERCURY + STRIPE) =================
+       DERIVED CANDIDATE #1 — the accent GLOW behind the balance.
+         Reference: STRIPE (one sparing signature glow as a single accent).
+         Canon primitive: --color-primary (#DB0011, RETRIEVED). Rendered as a low-opacity
+         radial via color-mix() at 42% over transparent — a decorative depth layer only,
+         carrying no state meaning, used exactly once. NOT a solid red background (tactical-
+         red rule holds). Flagged as a promotion candidate: an "expressive accent-glow"
+         derivation from the brand primitive; not a typed brand value. -->
+  <section class="cover reveal" data-theme="dark" aria-label="Cash position as of 12 May 2026">
+    <div class="cover__glow" aria-hidden="true"></div>
+
+    <div class="cover__topline">
+      <div class="cover__acct">
+        <!-- Avatar EXEMPTION: round, per brand-principles square-corner rule -->
+        <span class="cn-avatar"><span class="avatar md" role="img" aria-label="Northgate Timber Ltd">NT</span></span>
+        <span class="cover__acctmeta">
+          <span class="cover__biz">Business current account</span>
+          <!-- masked: last-4 only; sort code fully masked (§4) -->
+          <span class="cover__ref">···· 8842 &nbsp;·&nbsp; ··–··–··</span>
+        </span>
+      </div>
+      <span class="cover__ref">As of 12 May 2026</span>
+    </div>
+
+    <p class="cover__ballabel">Current balance</p>
+    <!-- MERCURY — the single oversized numeral (the one bold moment). data-count drives the
+         spring count-up (LINEAR). Verbatim figure: £122,450 (§3). -->
+    <div class="cover__balance" data-count="122450" data-prefix="£">£122,450</div>
+
+    <p class="cover__net">
+      <span class="up">+£2,450</span> net movement today
+      <span class="dot" aria-hidden="true"></span>
+      Est. closing £124,000
+    </p>
+
+    <div class="cover__strip">
+      <div class="cover__cell"><span class="k">Opening</span><span class="v">£120,000</span></div>
+      <div class="cover__cell"><span class="k">Inflows today</span><span class="v">+£11,650</span></div>
+      <div class="cover__cell"><span class="k">Outflows today</span><span class="v">−£9,200</span></div>
+    </div>
+  </section>
+
+  <!-- ================= COVERAGE LINE (exact maths, §3) =================
+       £122,450 − £49,702 (awaiting approval, due in May) = £72,748 buffer.
+       Stated as "covered through May" — not overstated. -->
+  <section class="coverage reveal" aria-label="Coverage">
+    <span class="coverage__num">£72,748</span>
+    <span class="coverage__txt">
+      buffer after the <b>£49,702</b> due in May clears — you're <b>covered through May</b>.
+      That's the current balance <b>£122,450</b> less the May outgoings <b>£49,702</b>.
+    </span>
+  </section>
+
+  <!-- ================= APPROVAL SPOTLIGHT LANE (choreography + RAMP accent) =================
+       The two AWAITING-APPROVAL rows lifted out of the ledger. £4,502 + £45,200 = £49,702. -->
+  <section class="lane" aria-labelledby="lane-h">
+    <div class="lane__head reveal">
+      <h2 class="lane__title" id="lane-h">Waiting on you</h2>
+      <span class="lane__count" aria-label="2 payments awaiting your approval">2</span>
+    </div>
+
+    <div class="lane__grid">
+
+      <!-- Approval item 1 — Amazon Business — standard value, one-tap approve allowed -->
+      <article class="apcard reveal" aria-label="Amazon Business, £4,502, awaiting approval">
+        <div class="apcard__top">
+          <div class="apcard__body">
+            <span class="apcard__payee">Amazon Business</span>
+            <span class="apcard__cat">Supplier · card &amp; fulfilment</span>
+            <div class="apcard__meta">
+              <span class="ref">Account ···· 4021</span>
+              <span>Due 15 May 2026</span>
+            </div>
+            <div><span class="apcard__flag"><span class="d" aria-hidden="true"></span>Awaiting approval — Sarah Chen, 2 days ago</span></div>
+          </div>
+          <span class="apcard__amt">£4,502</span>
+        </div>
+        <div class="apcard__actions">
+          <button type="button" class="btn primary" data-approve="amazon" data-amount="£4,502" data-payee="Amazon Business">Approve</button>
+          <button type="button" class="btn ghost">Review</button>
+        </div>
+      </article>
+
+      <!-- Approval item 2 — BrightHire Payroll — HIGH VALUE (£45,200): NO one-click approve.
+           The button opens a 2-step confirm modal (§4). Amount verbatim (§3). -->
+      <article class="apcard reveal" aria-label="BrightHire Payroll Ltd, £45,200, awaiting approval, high value">
+        <div class="apcard__top">
+          <div class="apcard__body">
+            <span class="apcard__payee">BrightHire Payroll Ltd</span>
+            <span class="apcard__cat">Payroll · monthly run</span>
+            <div class="apcard__meta">
+              <span class="ref">Account ···· 7730</span>
+              <span>Due 22 May 2026</span>
+            </div>
+            <div><span class="apcard__flag"><span class="d" aria-hidden="true"></span>Awaiting approval — Sarah Chen, 2 days ago</span></div>
+          </div>
+          <span class="apcard__amt">£45,200</span>
+        </div>
+        <div class="apcard__actions">
+          <button type="button" class="btn primary" data-confirm="payroll" data-amount="£45,200" data-payee="BrightHire Payroll Ltd">Approve</button>
+          <button type="button" class="btn ghost">Review</button>
+        </div>
+        <p class="apcard__hv">High-value payment — you'll confirm before it's released.</p>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ================= FULL LEDGER (canon .cn-table) =================
+       All five rows. Total row = whole-table total £106,302 — labelled "All payments",
+       NOT "scheduled" (§3 corrected: 2 of 5 are awaiting-approval, not scheduled). -->
+  <section class="ledger cn-table" aria-labelledby="ledger-h">
+    <div class="ledger__head reveal">
+      <h2 class="ledger__title" id="ledger-h">All upcoming payments</h2>
+      <span class="ledger__sub">3 scheduled · £56,600 &nbsp;·&nbsp; 2 awaiting approval · £49,702</span>
+    </div>
+    <div class="wrap reveal" style="width:100%;">
+      <div class="scroll">
+        <table aria-label="All upcoming payments for Northgate Timber Ltd">
+          <caption>Upcoming payments
+            <span class="sub">Awaiting approval and scheduled, ordered by date</span>
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Date</th>
+              <th scope="col">Payee</th>
+              <th scope="col">Category</th>
+              <th scope="col">Account</th>
+              <th scope="col">Status</th>
+              <th scope="col" class="num">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label="Date"><span class="v">15 May 2026</span></td>
+              <td data-label="Payee"><span class="v">Amazon Business</span></td>
+              <td data-label="Category"><span class="v">Supplier · card &amp; fulfilment</span></td>
+              <td data-label="Account"><span class="v">···· 4021</span></td>
+              <td data-label="Status"><span class="v"><span class="chip await"><span class="dot" aria-hidden="true"></span>Awaiting approval</span></span></td>
+              <td data-label="Amount" class="num"><span class="v amt">£4,502</span></td>
+            </tr>
+            <tr>
+              <td data-label="Date"><span class="v">22 May 2026</span></td>
+              <td data-label="Payee"><span class="v">BrightHire Payroll Ltd</span></td>
+              <td data-label="Category"><span class="v">Payroll · monthly run</span></td>
+              <td data-label="Account"><span class="v">···· 7730</span></td>
+              <td data-label="Status"><span class="v"><span class="chip await"><span class="dot" aria-hidden="true"></span>Awaiting approval</span></span></td>
+              <td data-label="Amount" class="num"><span class="v amt">£45,200</span></td>
+            </tr>
+            <tr>
+              <td data-label="Date"><span class="v">22 Jul 2026</span></td>
+              <td data-label="Payee"><span class="v">HMRC — PAYE</span></td>
+              <td data-label="Category"><span class="v">Tax · PAYE / NIC</span></td>
+              <td data-label="Account"><span class="v">···· 0001</span></td>
+              <td data-label="Status"><span class="v"><span class="chip sched"><span class="dot" aria-hidden="true"></span>Scheduled</span></span></td>
+              <td data-label="Amount" class="num"><span class="v amt">£2,200</span></td>
+            </tr>
+            <tr>
+              <td data-label="Date"><span class="v">12 Aug 2026</span></td>
+              <td data-label="Payee"><span class="v">British Gas Business</span></td>
+              <td data-label="Category"><span class="v">Utilities · electricity &amp; gas</span></td>
+              <td data-label="Account"><span class="v">···· 5560</span></td>
+              <td data-label="Status"><span class="v"><span class="chip sched"><span class="dot" aria-hidden="true"></span>Scheduled</span></span></td>
+              <td data-label="Amount" class="num"><span class="v amt">£4,200</span></td>
+            </tr>
+            <tr>
+              <td data-label="Date"><span class="v">09 Sep 2026</span></td>
+              <td data-label="Payee"><span class="v">Ravenscroft Properties</span></td>
+              <td data-label="Category"><span class="v">Rent · quarterly lease</span></td>
+              <td data-label="Account"><span class="v">···· 3318</span></td>
+              <td data-label="Status"><span class="v"><span class="chip sched"><span class="dot" aria-hidden="true"></span>Scheduled</span></span></td>
+              <td data-label="Amount" class="num"><span class="v amt">£50,200</span></td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th scope="row" colspan="5" data-label="Total">All payments (5)</th>
+              <td class="num"><span class="v amt">£106,302</span></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <p class="hint">3 scheduled (£56,600) and 2 awaiting approval (£49,702) — £106,302 across all five payments.</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- ================= STICKY APPROVAL BAR (blur/depth — LINEAR) ================= -->
+<div class="sticky" role="region" aria-label="Approve waiting payments">
+  <div class="sticky__in">
+    <div class="sticky__sum">
+      <span class="sticky__k">Waiting on your approval</span>
+      <span class="sticky__v">2 payments · £49,702</span>
+    </div>
+    <button type="button" class="btn ghost">Review both</button>
+    <button type="button" class="btn primary" id="approve-all">Approve waiting</button>
+  </div>
+</div>
+
+<!-- ================= CONFIRMATION MODAL (canon .cn-modals) — high-value 2-step =================
+     Opened by the £45,200 payroll approve button. No one-click on high value (§4). -->
+<div class="cn-modals">
+  <div class="overlay" id="hv-overlay" aria-hidden="true">
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="hv-title" aria-describedby="hv-desc">
+      <button type="button" class="close" id="hv-close" aria-label="Cancel approval">
+        <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+      </button>
+      <h2 id="hv-title">Confirm high-value payment</h2>
+      <p id="hv-desc">You're about to approve <strong id="hv-payee">BrightHire Payroll Ltd</strong> for
+        <strong id="hv-amount">£45,200</strong> from account <strong>···· 7730</strong>, due 22 May 2026.
+        This releases the payment for processing.</p>
+      <div class="actions">
+        <button type="button" class="btn primary" id="hv-approve">Confirm &amp; approve</button>
+        <button type="button" class="btn secondary" id="hv-cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- LINEAR: staggered scroll-reveal via IntersectionObserver ---- */
+  var revs = Array.prototype.slice.call(document.querySelectorAll('.reveal'));
+  if(reduce || !('IntersectionObserver' in window)){
+    revs.forEach(function(el){ el.classList.add('in'); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          var el = e.target;
+          setTimeout(function(){ el.classList.add('in'); }, (parseInt(el.dataset.delay,10)||0));
+          io.unobserve(el);
+        }
+      });
+    }, {threshold:0.12, rootMargin:'0px 0px -8% 0px'});
+    revs.forEach(function(el,i){ el.dataset.delay = (i%4)*70; io.observe(el); });
+  }
+
+  /* ---- LINEAR/MERCURY: spring count-up on the balance numeral ---- */
+  var bal = document.querySelector('.cover__balance');
+  if(bal && !reduce){
+    var target = parseInt(bal.dataset.count,10);
+    var prefix = bal.dataset.prefix || '';
+    var start = null, dur = 900;
+    function ease(t){ return 1 - Math.pow(1-t, 3); }  /* easeOutCubic — snappy settle */
+    function frame(ts){
+      if(start===null) start = ts;
+      var p = Math.min((ts-start)/dur, 1);
+      var val = Math.round(ease(p) * target);
+      bal.textContent = prefix + val.toLocaleString('en-GB');
+      if(p<1) requestAnimationFrame(frame);
+      else bal.textContent = prefix + target.toLocaleString('en-GB'); /* land EXACTLY on the figure (§4) */
+    }
+    /* only animate once the cover is on-screen */
+    if('IntersectionObserver' in window){
+      var bio = new IntersectionObserver(function(en){
+        if(en[0].isIntersecting){ requestAnimationFrame(frame); bio.disconnect(); }
+      }, {threshold:0.4});
+      bio.observe(bal);
+    } else { requestAnimationFrame(frame); }
+  }
+
+  /* ---- High-value confirm modal wiring (safety §4) ---- */
+  var overlay = document.getElementById('hv-overlay');
+  var lastFocus = null;
+  function openHV(payee, amount){
+    document.getElementById('hv-payee').textContent = payee;
+    document.getElementById('hv-amount').textContent = amount;
+    lastFocus = document.activeElement;
+    overlay.classList.add('open'); overlay.setAttribute('aria-hidden','false');
+    document.getElementById('hv-approve').focus();
+    document.addEventListener('keydown', onKey);
+  }
+  function closeHV(){
+    overlay.classList.remove('open'); overlay.setAttribute('aria-hidden','true');
+    document.removeEventListener('keydown', onKey);
+    if(lastFocus) lastFocus.focus();
+  }
+  function onKey(e){
+    if(e.key==='Escape') closeHV();
+    if(e.key==='Tab'){ /* simple focus trap */
+      var f = overlay.querySelectorAll('button');
+      var first=f[0], last=f[f.length-1];
+      if(e.shiftKey && document.activeElement===first){ e.preventDefault(); last.focus(); }
+      else if(!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); }
+    }
+  }
+  document.querySelectorAll('[data-confirm]').forEach(function(b){
+    b.addEventListener('click', function(){ openHV(b.dataset.payee, b.dataset.amount); });
+  });
+  var allBtn = document.getElementById('approve-all');
+  if(allBtn) allBtn.addEventListener('click', function(){
+    /* batch includes the high-value payroll -> must still confirm */
+    openHV('BrightHire Payroll Ltd', '£45,200');
+  });
+  document.getElementById('hv-close').addEventListener('click', closeHV);
+  document.getElementById('hv-cancel').addEventListener('click', closeHV);
+  document.getElementById('hv-approve').addEventListener('click', closeHV);
+  overlay.addEventListener('click', function(e){ if(e.target===overlay) closeHV(); });
+
+  /* standard (non-high-value) approvals: no modal required (one-tap allowed) */
+  document.querySelectorAll('[data-approve]').forEach(function(b){
+    b.addEventListener('click', function(){ b.textContent='Approved'; b.disabled=true; });
+  });
+})();
+</script>
+</body>
+</html>

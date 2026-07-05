@@ -57,6 +57,34 @@ red-forwardness).
   non-negotiable even here. Anything new must be derived from a cardinal and flagged (§6 of the
   charter), never recalled free-hand. This is "hot but leashed," not an ungated free-for-all.
 
+  **Inference gravity (added 2026-07-05 — this is a fix, not decoration).** Two prior runs found
+  expressive underwhelming: it had *permission* to invent but no *direction* to invent toward, so
+  it recombined the same internal source material (canon.css, brand-principles.md) rather than
+  reaching further. Permission without a target produces "sober, but bigger," not something new.
+  **Pull toward this reference set** for composition, motion, and interaction craft (never for
+  colour, type, or logo — those stay cardinal, retrieved from HSBC canon only):
+  - **Linear** — obsessive micro-interaction timing; dense information handled with calm restraint,
+    not clutter; snappy, physics-based state transitions; subtle blur/depth layering for hierarchy
+    instead of heavy drop-shadows.
+  - **Stripe** (dashboard/docs craft) — considered typographic rhythm; a signature gradient/glow
+    used sparingly as one deliberate accent, not decoration; clear hierarchy inside genuinely dense
+    financial data; spring-eased motion on state change.
+  - **Mercury** (banking-for-startups) — confident, oversized numerals; generous whitespace
+    punctuated by exactly one bold moment; dark-mode-forward when used, used deliberately, not
+    decoratively.
+  - **Ramp** — bold, high-contrast treatment of financial figures; serious data paired with
+    disciplined (not decorative) motion; a single accent colour doing real work for state/emphasis
+    rather than being spread thin.
+  - **Award-calibre fintech launches generally** (e.g. Awwwards Site-of-the-Day fintech work) —
+    scroll/reveal choreography and layout that *morphs* deliberately across breakpoints as a craft
+    moment, not just a responsive resize.
+  **The guardrail, restated:** extract *pattern* (pacing, density handling, depth technique, motion
+  physics, hierarchy discipline) from these — never their actual brand colour, wordmark, or type.
+  If a technique needs a colour, it still resolves through the HSBC token store; if it needs a
+  typeface, it's still the Univers ramp. Inspiration changes *how confidently and physically* the
+  screen behaves, not *whose brand it borrows*. Sourced via web search 2026-07-05, not recall from
+  a prior — treat this list as a first cut to be tuned, not a fixed canon.
+
 **Machinery for this run (§9):** generate **each band in isolation** — a cold, independent pass
 that does not see the other two bands or any prior SME-Payments variant in
 `knowledge/_fitness-test/`. After all three land, run the **divergence probe**: measure how far
