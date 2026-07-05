@@ -158,9 +158,19 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
   **big-rock #1 Ingestion Phase 1** (Sutherland token migration, confirmed unblocked) → **§9 worked
   spread in parallel** → **big-rock #2 PM-KG MVP** (staleness gate) → finish/unify (Phase 2→3→4, with
   the §4 language-strip inside Phase 3). Waiting/parked (D2, toolkit t2, harness-modes, TOV spin-off,
-  ADR-0004 ops) kept off the critical path. KG re-verified on disk this session: assessment holds;
-  found a live 39-vs-38 compliance-KG drift + Phase 0 already partly done. Capture ritual/gate spec
-  decided in the doc (ritual now, gate script alongside PM-KG MVP).
+  ADR-0004 ops) kept off the critical path. Capture ritual/gate spec decided in the doc (ritual now,
+  gate script alongside PM-KG MVP).
+- **✅ Phase 0 (ingestion tracking hygiene) — CLOSED 2026-07-05.** The "39 metas vs 38 in the
+  compliance graph" drift flagged in the prior session's KG spot-check was a **false alarm**: 39
+  files exist in `components/`, but one (`EXAMPLE-button.meta.json`) is the authoring template,
+  correctly excluded by `_build_compliance_kg.py`. Real component count is 38, matching the graph
+  exactly. Rebuilt the KG to confirm — `git diff` on `compliance/graph-index.json` and `compliance/rules/`
+  was **empty**; the graph was already current. Fixed a latent bug while here: `generated` was a
+  hardcoded literal (`"2026-06-18"`) rather than today's date — a miniature of the exact
+  "tracking rots silently" failure this plan exists to prevent; now stamps dynamically
+  (`datetime.date.today()`). The `_DESIGN-SYSTEM-GAPS.md` correction banner + `_INGESTION-ASSESSMENT_2026-07-05.md`
+  as single entry point both confirmed standing. Phase 0 fully closed; Phase 1 (Sutherland token
+  migration) is next and is real, unblocked work — unlike this drift.
 - **D2 — novel-screen test — THE #1 unlock.** Waiting on a colleague's brief (their brief-v2 +
   own baseline + signed contract *before* generation). `_TEST-PLAN-novel-screen-proof.md`.
 - **Toolkit tranche 2** (Dropdowns ×4) — parallel cheap-model workstream. Memory:
@@ -201,7 +211,14 @@ reusable; don't force it (most stays local). Memory: `spin-off-candidates`. Revi
 - Precedent (already ad hoc): `digital-experience-transformation`, `graphify-tool`. The ask is to
   make spin-off **intentional + surfaced**, not accidental.
 
+- **✅ Capture ritual — STOOD UP 2026-07-05 → `knowledge/_RUNBOOK-capture-ritual.md`.** The five-step
+  end-of-session sequence (refresh `_LIVE-STATE` → refresh `GOOD-MORNING` → update memory → record
+  decision nodes with supersession discipline → commit+push) is now a runbook, not a hope. The
+  enforcing `_capture_gate.py` is still deferred to the PM-KG MVP build (spec lives in the runbook);
+  until then, the runbook itself **is** the gate — run it by hand every session.
+
 ## Entry points
 
 `GOOD-MORNING.md` (latest handoff) → **this file** → `knowledge/README.md` (build) ·
-`MEMORY.md` (memory index) · `AGENTS.md` (principles + method).
+`MEMORY.md` (memory index) · `AGENTS.md` (principles + method) ·
+`knowledge/_RUNBOOK-capture-ritual.md` (end-of-session sequence, run every session).

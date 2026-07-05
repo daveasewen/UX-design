@@ -11,9 +11,10 @@
 ## TL;DR — the sequence (read this)
 
 The ship has **one structural leak** (ingestion never finished → gates §4, §4b, ADR-0003) and **one
-failure MODE** (tracking rots silently → the stale Sutherland manifest; a live 39-vs-38 compliance-KG
-drift found this session). Seaworthy = close the leak on a phased plan **and** make the tracking
-un-rottable. Everything else is cargo — parallel or parked.
+failure MODE** (tracking rots silently → the stale Sutherland manifest). A suspected 39-vs-38
+compliance-KG drift was checked this session and turned out to be a **false alarm** (EXAMPLE-button
+template miscounted as a component) — see Phase 0 update below. Seaworthy = close the leak on a
+phased plan **and** make the tracking un-rottable. Everything else is cargo — parallel or parked.
 
 **Order (dependency-aware):**
 
@@ -34,9 +35,12 @@ un-rottable. Everything else is cargo — parallel or parked.
 
 ## Next steps (numbered, act on these)
 
-1. **Finish Phase 0.** Confirm `_DESIGN-SYSTEM-GAPS.md` correction stands; make
-   `_INGESTION-ASSESSMENT_2026-07-05.md` the single ingestion-state entry point. Rebuild the
-   compliance KG so 39 metas == 39 in the graph (currently 38, generated 2026-06-18). Cheap.
+1. **Finish Phase 0 — ✅ CLOSED 2026-07-05.** Confirmed `_DESIGN-SYSTEM-GAPS.md` correction stands;
+   confirmed `_INGESTION-ASSESSMENT_2026-07-05.md` is the single ingestion-state entry point.
+   Rebuilt the compliance KG: **no drift** — 38 real components (`EXAMPLE-button.meta.json` is a
+   template, correctly excluded) already matched 38 in the graph; `git diff` after rebuild was empty.
+   Fixed a hardcoded `generated` date in `_build_compliance_kg.py` (was a literal, now stamps
+   dynamically) so the graph can't silently go stale the same way the Sutherland manifest did.
 2. **Stand up the capture ritual/gate** (spec below). One-time; protects every future session.
 3. **Execute Ingestion Phase 1** — strict order: import modes → rebind every in-use depricate
    (`depricate-replacement-map.json`) → re-verify zero references → **then** delete. Tabs = proven
@@ -70,9 +74,12 @@ un-rottable. Everything else is cargo — parallel or parked.
 Assessment confirmed accurate. Guidelines **462 rules** (317 advisory / 54 blocking / 35 review /
 56 taste — exact). Compliance KG **31 SC ↔ 31 rules ↔ 38 components**. Depricate set **147**.
 Sutherland raw exports **present** (brand + semantic-color light/dark/Sutherland-light +
-semantic-scale). Two live drifts found: (a) Phase 0 already partly done — correction banner in
-`_DESIGN-SYSTEM-GAPS.md`; (b) **39 component metas on disk vs 38 in the 2026-06-18 compliance graph**
-— a one-component drift, a miniature of the "tracking rots" failure. Both fold into steps 1–2 above.
+semantic-scale). One real finding, one false alarm: (a) Phase 0 already partly done — correction
+banner in `_DESIGN-SYSTEM-GAPS.md`, now confirmed standing; (b) the suspected **"39 component metas
+vs 38 in the compliance graph"** drift was **investigated and closed as a false alarm** — 39 files
+exist in `components/`, one of them (`EXAMPLE-button.meta.json`) is the authoring template, already
+excluded by the build script; real count is 38 = 38, confirmed by rebuild (`git diff` empty). Fixed
+the build script's hardcoded `generated` date (was a literal, now dynamic) while here.
 
 ---
 

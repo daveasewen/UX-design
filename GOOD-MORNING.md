@@ -1,64 +1,54 @@
 # Good morning, Dave ☕
 
-*Session briefing — written end of 2026-07-05, session "Seaworthiness planning — sequencing the
-half-finished threads." Supersedes the earlier 07-05 "Tier A batch 3" brief.
-**Read this, then `_LIVE-STATE.md`, then `_SEAWORTHINESS-PLAN_2026-07-05.md`.***
+*Session briefing — written end of 2026-07-05, session "Hull patches — Phase 0 close + capture ritual
+stood up." First execution session of the seaworthiness sequence (supersedes the "Seaworthiness
+planning" brief). **Read this, then `_LIVE-STATE.md`.***
 
 ## The session in one line
 
-Pulled every OPEN / TARGET thread into **one curated, dependency-aware sequence** to get the ship
-seaworthy — not a flat backlog. **The plan is set, committed, and pushed.** No building happened;
-this was the sequencing session you asked for.
-
-## The sequence (this is the plan now)
-
-Full doc: **`_SEAWORTHINESS-PLAN_2026-07-05.md`.** In order:
-
-1. **Hull patches — cheap, first.** Finish ingestion **Phase 0** (correction banner already in
-   `_DESIGN-SYSTEM-GAPS.md`; rebuild the compliance KG to resync 39-vs-38) + **stand up the capture
-   ritual** (spec in the plan).
-2. **Big rock #1 — Ingestion Phase 1** (Sutherland token migration, **confirmed unblocked**): import
-   modes → rebind the 147 depricates → re-verify zero refs → delete; close P1/P3/P4. Tabs first.
-3. **Prove-the-core, in PARALLEL — §9 worked spread**: one screen, retrieve/extend/invent + the
-   divergence probe. Independent of ingestion; validates the flexing-engine thesis.
-4. **Big rock #2 — PM-KG MVP**: `_build_live_state.py` + the staleness gate (emits FUTURE/TARGET,
-   flags blockers-cleared-but-still-"blocked"). Build the **capture-gate script** alongside it — same
-   front-matter machinery.
-5. **Finish + unify** — Phase 2 (guidelines tail; toolkit t2 on cheap model) → Phase 3 (overlay/index
-   KG = ADR-0003 "done right", **§4 language-strip lives inside it**) → Phase 4 (wire coverage into
-   the state machine — needs #4).
-
-**Off the critical path (don't pick up unless you say):** D2 novel-screen (waiting on colleague) ·
-toolkit tranche 2 (cheap model) · harness-modes exploration (after §9) · TOV digital-editorial
-spin-off + §4b content audit · ADR-0004 ops follow-ups (EAA/EN 301 549 recheck; align
-`design:accessibility-review` skill to 2.2 AA).
+Closed **hull patch #1** (ingestion Phase 0) and stood up **hull patch #2** (the capture ritual) —
+step 1 of the seaworthiness sequence, done. Both were quick; next up is the first big rock.
 
 ## What landed this session
 
-- **KG re-verified on disk** (your "double-check first" call — it paid off). Assessment holds on
-  every count (462 rules · 31/31/38 compliance · 147 depricates · Sutherland exports present). Two
-  live drifts found: **Phase 0 already partly done**; **compliance KG stale by one** (39 metas vs 38
-  in the 2026-06-18 graph) — a miniature of the "tracking rots silently" failure, cheap to fix.
-- **The plan doc** `_SEAWORTHINESS-PLAN_2026-07-05.md` (dependency-aware sequence + next-steps +
-  capture-ritual/gate spec + spin-off decision parked).
-- **Capture ritual/gate decided** — ritual (refresh `_LIVE-STATE` → `GOOD-MORNING` → memory →
-  supersession → commit) stands up now; the enforcing `_capture_gate.py` builds alongside the PM-KG MVP.
-- **`_LIVE-STATE` OPEN entry** for the seaworthiness plan flipped ✅ DONE, pointing to the doc.
+- **Phase 0 CLOSED.** The "39 metas vs 38 in the compliance graph" drift flagged in the planning
+  session was investigated and turned out to be a **false alarm**: 39 files exist in
+  `knowledge/components/`, but one is `EXAMPLE-button.meta.json` — the authoring template, already
+  excluded by `_build_compliance_kg.py`. Real count is 38 = 38. Rebuilt the KG to confirm:
+  `git diff` on `compliance/graph-index.json` + `compliance/rules/` came back **empty** — nothing
+  changed, the graph was already current.
+- **Fixed a real (small) bug found while verifying:** `_build_compliance_kg.py` hardcoded
+  `"generated": "2026-06-18"` as a literal instead of stamping the actual build date — a miniature
+  instance of the exact "tracking rots silently" failure this whole plan exists to prevent. Now
+  uses `datetime.date.today()`. Confirmed `_DESIGN-SYSTEM-GAPS.md` correction banner and
+  `_INGESTION-ASSESSMENT_2026-07-05.md` as single entry point both already stand — no further edits
+  needed there.
+- **Capture ritual stood up** — `knowledge/_RUNBOOK-capture-ritual.md`: the five-step sequence
+  (refresh `_LIVE-STATE` → refresh `GOOD-MORNING` → update memory → record decisions with
+  supersession discipline → commit+push), spec'd in the seaworthiness plan, is now a runbook. The
+  enforcing `_capture_gate.py` is still deferred to the PM-KG MVP build (spec lives inside the
+  runbook) — until then, running the runbook by hand **is** the gate.
+- **Docs corrected:** `_LIVE-STATE.md` and `_SEAWORTHINESS-PLAN_2026-07-05.md` both updated to
+  reflect the false-alarm finding (not a real drift) and the new runbook.
+- **Memory added:** `capture-ritual` (feedback-type) — run the ritual unasked at the end of every
+  session that changes project state.
 
 ## On your desk
 
-- **All pushed.** Commit `c0f9bd5` (seaworthiness plan + `_LIVE-STATE` pointer). Stale `.git` locks
-  cleared. Nothing pending.
-- Your first big-rock decision this session: **Ingestion Phase 1 leads** (my recommendation, your
-  "follow your advice") — the finish-don't-add move, fully unblocked.
+- Everything from this session is ready to commit (see summary below) — not yet pushed. **You push
+  via GitHub Desktop only**, same as always.
+- Hull patches (step 1 of the sequence) are **done**. Nothing blocking.
 
-## Queue next (fresh session)
+## Queue next (fresh session, or continue now)
 
-1. **Start the sequence: hull patches.** Finish Phase 0 (rebuild compliance KG) + stand up the
-   capture ritual. Cheap, clears the deck. *Or* jump straight to Ingestion Phase 1 if you'd rather
-   bank the big win first — Phase 0 is now light enough to fold in.
-2. **Then Ingestion Phase 1** as its own focused session — the token migration.
-3. **§9 worked spread** available to run in parallel whenever you want the divergent track.
+1. **Big rock #1 — Ingestion Phase 1** (Sutherland token migration): import modes → rebind the 147
+   in-use depricates (`depricate-replacement-map.json`) → re-verify zero references → delete; close
+   P1/P3/P4. Tabs is the proven first rebind. Own focused session — this is the next thing per the
+   sequence in `_SEAWORTHINESS-PLAN_2026-07-05.md`.
+2. **§9 worked spread** available to run in parallel whenever you want the divergent track
+   (retrieve/extend/invent, one screen, then the divergence probe).
+3. Off critical path unless you say: D2 novel-screen (waiting on colleague), toolkit tranche 2,
+   harness-modes exploration, TOV spin-off, ADR-0004 ops follow-ups.
 
-> Next-session opener: **"Title this chat: <pick one>."** Read GOOD-MORNING → `_LIVE-STATE` →
-> `_SEAWORTHINESS-PLAN_2026-07-05.md`. Everything is committed and pushed.
+> Next-session opener: **"Title this chat: <pick one>."** Read GOOD-MORNING → `_LIVE-STATE.md` →
+> `_SEAWORTHINESS-PLAN_2026-07-05.md` if starting Phase 1 fresh.

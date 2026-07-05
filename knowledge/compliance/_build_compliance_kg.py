@@ -6,7 +6,7 @@
 - Emits one schema-conformant rule file per SC + a both-way graph index.
 - Validates every rule against rule.schema.json (manual check, no deps).
 """
-import json, re, glob, os, sys
+import json, re, glob, os, sys, datetime
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 COMP = os.path.join(ROOT, "components")
@@ -119,7 +119,7 @@ for sc in sorted(by_sc):
 # --- graph index ---
 index = {
     "$description": "Compliance knowledge graph index — both-way adjacency between WCAG success criteria and components. Generated from knowledge/components/*.meta.json relatedSC by build_compliance_kg.py. Conformance basis: WCAG 2.2 AA (HSBC digital accessibility framework).",
-    "generated": "2026-06-18",
+    "generated": datetime.date.today().isoformat(),
     "totals": {"rules": len(written), "components": len(by_comp), "sc": len(by_sc)},
     "by_sc": {sc: sorted(list(c)) for sc, c in sorted(by_sc.items())},
     "by_component": {c: sorted(list(s)) for c, s in sorted(by_comp.items())},
