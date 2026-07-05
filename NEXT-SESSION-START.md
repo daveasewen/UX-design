@@ -1,41 +1,51 @@
 # Session-starter prompt — paste this into a fresh chat
 
 > Copy everything in the block below into a new conversation to bootstrap it cleanly.
+> *(Refreshed 2026-07-05 end-of-session. Supersedes the 07-02 "North-star mock" starter.)*
 
 ---
 
-Title this chat: North-star mock — the front end as a goal list
+Title this chat: Seaworthiness planning — sequencing the half-finished threads
 
-We're building the Smart Design System's north-star front-end mock (Promenaut).
-Before anything, read MEMORY.md, then in the UX-design folder:
-GOOD-MORNING.md · docs/decisions/ADR-0005-ratify-knowledge-engine-pivot.md ·
-README.md (rewritten 2026-07-02) · REVIEW-2026-07-02-critical-regroup.html (the
-standing review — exec summary is enough). Don't re-derive what's recorded.
+This is a PLANNING session, not a build. Before anything, read MEMORY.md, then in the
+UX-design folder, in order: GOOD-MORNING.md · _LIVE-STATE.md (the spine — LIVE / DEAD /
+OPEN / PLANNED-TARGET / SPIN-OFF sections) · knowledge/_INGESTION-ASSESSMENT_2026-07-05.md.
+Don't re-derive what's recorded; the state machine is current as of 2026-07-05.
 
-THE TASK — one screen, one day, fenced as VISION (not a build backlog):
-a mock of the tool's front end in which **every region maps to an engine
-capability that exists or is named**:
+CONTEXT: Tier A of the decision audit is CLEAN (every foundational node has a verdict).
+The recurring finding across the audit was foundations set ahead of completed work — and
+the single biggest root cause is that **ingestion was never finished** (it gates §4, §4b,
+ADR-0003). There is too much half-finished work; the point of this session is to sequence
+it, not add to it.
 
-1. Brief in (+ research attachments) — the intake surface
-2. Criteria contract — the definition-of-done the user agrees BEFORE generation
-   (it becomes the gates)
-3. Register spread — N generated variants side by side (sober → balanced →
-   expressive), same fixed curbs
-4. Gate report — blocking results (a11y, contrast, tokens, icons) + advisory
-   signals (heuristics, CX, states), tiered exactly as the engine tiers them
-5. The taste call — the ~20-second human decision, framed as evidence + diff +
-   A/B, never a blank canvas
-6. Promote — winner enters canon; show what "judgment spent once" looks like
+THE TASK — one curated plan, not a flat backlog:
+Pull the OPEN / PLANNED-TARGET threads into ONE prioritised sequence to get the ship
+seaworthy. The threads to weigh (all in _LIVE-STATE):
+1. Ingestion "done right" — the big unlock (Sutherland export already landed 2026-06-17;
+   token migration UNBLOCKED; then the overlay/index KG). Phased plan already in the
+   assessment doc.
+2. §9 proof-obligation — first worked retrieve/extend/invent spread on one screen +
+   divergence probe / isolated generation / mode-B self-check (named-not-built).
+3. PM-KG MVP — _build_live_state.py + staleness gate; now must also emit FUTURE/TARGET
+   states (ADR-0007 extension) and flag targets whose blockers cleared but still read
+   "blocked" (the stale-manifest failure).
+4. Harness modes + dials exploration (find the use cases first).
+5. TOV = digital-editorial spin-off.
+6. D2 novel-screen (waiting on colleague) · toolkit tranche 2 (cheap model).
+7. Spin-off / generalisable candidates — surface + decide which deserve their own thread
+   (state machine is Dave's first pick).
 
-METHOD: sketch as a single HTML file (Swiss or canon styling, Dave's call at
-kickoff). The point is GOAL SETTING: any region we can't map to a real or named
-capability is a gap in the goal list — log those gaps explicitly at the bottom
-of the file. Dave drives the layout; render + look before showing (his rule:
-present live HTML, not PNGs).
+Also decide: the end-of-session CAPTURE RITUAL/GATE (the insurance-policy conclusion —
+don't archive chats; harden distillation instead).
 
-DON'T: build components, touch the canon, or start the tool shell. This is the
-"define just enough target" artifact from the 2026-06-20 strategy lock.
+METHOD: exec-summary-first + numbered next-steps (Dave is dyslexic + time-poor); lead with
+a short prioritised sequence, detail below. Use the reflection rhythm. Deliverable = a
+curated, sequenced plan Dave can act on — dependency-aware (what unblocks what), not a
+priority-flat list. One question at a time where the call is genuinely Dave's.
 
-WAITING ELSEWHERE (don't pick up unless Dave says so): calibration project
-materials (colleague), token-provenance ruling (ADR-0005 open item, Dave),
-Q3 primary customer call (Dave, after the calibration run).
+DON'T: start building any thread, touch canon, or reopen Tier A. This is sequencing +
+goal-curation only. Standing audit work (Tier B/C) is later, not now.
+
+WAITING ELSEWHERE (don't pick up unless Dave says so): D2 novel-screen (colleague brief) ·
+toolkit tranche 2 (cheap-model workstream) · the two ADR-0004 operational follow-ups
+(EAA/EN 301 549 legal recheck; align design:accessibility-review skill to 2.2 AA).
