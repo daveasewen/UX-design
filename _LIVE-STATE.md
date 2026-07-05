@@ -302,6 +302,19 @@ backlog (that's OPEN) — these are intended end-states with a path. Refresh alo
     accent doing double duty (live-status AND good/free-status), which may read oddly against
     normal finance-UX convention (red = attention/negative). Flagged for Dave's eye, not
     silently changed.
+  - **⚠️ Caught by Dave, not by me:** when asked directly "did you put the restyle through the
+    gates or use your own inference?" — the honest answer was **inference, not gates**. No
+    `_SCREEN-GATE.md` existed for this file, no validator run showed in the commit history, and
+    the file wasn't even named `*.canon.html` (the default glob `_validate_screen.py` scans), so
+    the pipeline would have been blind to it either way. Ran `_validate_screen.py` against it for
+    real: **FAIL** on first pass — 2 hex refs (`#000`/`#FFF`, only inside explanatory CSS
+    comments, reworded to "black"/"white") + 3 UNKNOWN icon paths (hand-drawn stroke arrows for
+    inflow/outflow/net-movement direction, a genuine icon-source-rule violation). Fixed by
+    swapping in the real library glyphs (`assets/icons/arrows-and-chevrons/arrow-up.svg` /
+    `arrow-down.svg`). Re-ran: **PASS**. Lesson for next restyle: run the gate as the LAST step
+    before presenting, not as an afterthought prompted by a direct question — a hand-built
+    "canon-primitive" restyle is a claim the gate exists specifically to check, not something to
+    self-certify.
 
 - **🎯 Ingestion "done right".** Full detail + phased worklist: **`knowledge/_INGESTION-ASSESSMENT_2026-07-05.md`** (cockroach doc — cold-start-proof, evidence-cited).
   - **Target:** every ingested entity (guideline rule · token · component · snippet · success-
