@@ -213,6 +213,41 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
 *The forward-looking dimension of the state machine. Not current truth (that's LIVE) and not a flat
 backlog (that's OPEN) — these are intended end-states with a path. Refresh alongside LIVE/DEAD/OPEN.*
 
+- **🎯 Inference-gravity for the register ramp (expressive craft fix) — ⚠️ BLOCKS external
+  review of the §9 spread until resolved (Dave, 2026-07-05).**
+  - **Target:** the expressive band reads as genuinely exciting/award-calibre digital-product craft
+    (motion, depth, interaction choreography) — not just "sober, but bigger" — while the cardinal
+    curbs (brand colour retrieved not typed, type, square corners, a11y/safety floor) still hold
+    with zero violations, same as the two spreads already run.
+  - **Current vs target:** two isolated 3-band spreads run (Sonnet, then Opus) on the same SME
+    Payments contract. Both closed the sober retrieval gap (finding 1 — now uses `.cn-account-card`
+    via the canon-rigour-tier rule) but **neither closed the expressive excitement gap** — Dave
+    judged both against `sme-payments-portfolio.html` (an older, ungoverned "craft piece" with
+    hover-lift+shadow/spring easing, radial-gradient hero glow, count-up motion, backdrop-blur
+    modal) and found the governed expressive bands still underwhelming by comparison.
+  - **Diagnosed cause (this session, confirmed against the actual prompts):** every expressive
+    prompt gave *permission* (curbs lifted) but never *direction* — no external creative reference,
+    only internal/corporate source material (`canon.css`, `brand-principles.md`,
+    `colour-usage.md`). Permission without a target to reach for makes the model recombine what it
+    already has rather than invent something new. Full diagnosis: memory
+    `spread-review-gaps-2026-07-05`; comparison data: `_COMPARISON-sonnet-vs-opus.md`.
+  - **Blockers:** one open design tension, not yet resolved — an external creative reference must
+    feed composition/motion/energy/hierarchy *only*; it must never leak a different brand's colour,
+    type, or logo into the cardinal layer (retrieval-not-recall still has to hold for HSBC
+    primitives even while recall-from-inspiration is deliberately invited for craft). Needs a
+    concrete, bounded reference set (Dave's call, in progress) before testing.
+  - **Path:** (1) define the inspiration source + the guardrail as an explicit "inference gravity"
+    instruction, same pattern as the canon-rigour-tier fix; (2) add it to
+    `_TEST-BRIEF-v2-sme-payments.md` §2's expressive bullet; (3) re-run **only** the expressive band
+    (sober/balanced already fixed, no need to re-spend the run) — both models, to separate "was it
+    the missing direction" from "was it the model"; (4) Dave reviews via
+    `register-spread-2026-07-05-compare.html` against the portfolio piece specifically for
+    motion/depth/interaction craft; (5) once confirmed, fold the mechanism into charter §9 as a
+    named piece and only then is the §9 spread presentable outside this session; log the resolution
+    here and in the memory. **Scope discipline: this stays inside the existing "prove-the-core, §9
+    worked spread" parallel track from `_SEAWORTHINESS-PLAN_2026-07-05.md` — it does not touch hull
+    patches (done) or reorder Ingestion Phase 1 (still queued, untouched).**
+
 - **🎯 Ingestion "done right".** Full detail + phased worklist: **`knowledge/_INGESTION-ASSESSMENT_2026-07-05.md`** (cockroach doc — cold-start-proof, evidence-cited).
   - **Target:** every ingested entity (guideline rule · token · component · snippet · success-
     criterion) addressable in **one interlinked graph or an overlay/index layer** across the existing
