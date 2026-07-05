@@ -36,8 +36,16 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
 - **Git split** (`AGENTS.md` + memory `git-push-method`; no standalone ADR): Claude commits in terminal + clears
   stale `.git/*.lock`; **Dave pushes via GitHub Desktop only** (never terminal push, never Desktop
   commit, Desktop closed during commits).
-- **Build**: `python3 knowledge/_build_all.py` — four gates green = internally consistent, dark-
-  legible, surfaces not flat-white, snippets match canon.
+- **Build**: `python3 knowledge/_build_all.py` — runs the full gate set (integrity · contrast ·
+  snippet · icon-source · a11y · coverage · dark-surface · rules-index); green = internally
+  consistent, dark-legible, surfaces not flat-white, snippets match canon. *(Doc-drift: older notes
+  say "four gates" — it's ~8; fix on the Tier-B build-gate audit.)*
+- **State machine records FUTURE/TARGET states too** (RULED 2026-07-05, Dave; extends `ADR-0007`):
+  this ledger carries not just current truth + change history but **where we intend to be** — see the
+  `## PLANNED / TARGET STATES` section below. A target = what · why · blockers · source. The
+  staleness gate must flag a target whose blockers have cleared but whose status still reads
+  "blocked" (the Sutherland failure). This ruling is itself an `unaudited` decision node (extends the
+  vouched ADR-0007).
 
 ## SUPERSEDED / DEAD — do not build on
 
@@ -144,6 +152,25 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
   own baseline + signed contract *before* generation). `_TEST-PLAN-novel-screen-proof.md`.
 - **Toolkit tranche 2** (Dropdowns ×4) — parallel cheap-model workstream. Memory:
   `common-toolkit-survey`.
+
+## PLANNED / TARGET STATES — where we intend to be (for planning, per ADR-0007 extension)
+
+*The forward-looking dimension of the state machine. Not current truth (that's LIVE) and not a flat
+backlog (that's OPEN) — these are intended end-states with a path. Refresh alongside LIVE/DEAD/OPEN.*
+
+- **🎯 Ingestion "done right".** Full detail + phased worklist: **`knowledge/_INGESTION-ASSESSMENT_2026-07-05.md`** (cockroach doc — cold-start-proof, evidence-cited).
+  - **Target:** every ingested entity (guideline rule · token · component · snippet · success-
+    criterion) addressable in **one interlinked graph or an overlay/index layer** across the existing
+    stores; token store **Sutherland-canonical** with the **147 depricate tokens retired**;
+    completeness measured as **edge coverage**, not pages processed.
+  - **Current vs target:** 3 siloed stores + 1 narrow graph (WCAG↔component only); guidelines 462
+    rules (Tier 1 done, Tier 2 tail + 21 legacy open); tokens half-migrated.
+  - **Blockers:** **Sutherland export NO LONGER a blocker** (arrived 2026-06-17; the gaps manifest is
+    STALE and still says "parked" — Phase 0 fix). Remaining work is ours, not a wait.
+  - **Path:** Phase 0 un-stale tracking → Phase 1 execute Sutherland token migration (rebind 147
+    depricates → verify → delete; close P1/P3/P4) → Phase 2 finish guidelines capture → Phase 3 build
+    the overlay/index graph (ADR-0003 "done right", audit-grade) → Phase 4 wire ingestion coverage
+    into this machine as a tracked target.
 
 ## Entry points
 
