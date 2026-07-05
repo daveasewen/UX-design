@@ -1,69 +1,77 @@
 # Good morning, Dave ☕
 
-*Session briefing — written end of 2026-07-05, session "Decision audit — Tier A batch 1."
-Supersedes the earlier 07-05 "From provenance to project-memory: the decision-graph turn" brief.
+*Session briefing — written end of 2026-07-05, session "Decision audit — Tier A batch 2."
+Supersedes the earlier 07-05 "Decision audit — Tier A batch 1" brief.
 **Read this, then `_LIVE-STATE.md`, then `knowledge/README.md`.***
 
 ## The session in one line
 
-Ran the ADR-0007 §5 correctness audit for the first time — Tier A, batch 1 — moving five
-foundational decision nodes out of `unaudited`, fresh-context, with Dave adjudicating each. The
-KG's load-bearing claims are no longer taken on trust.
+Ran ADR-0007 §5 correctness audit **Tier A batch 2** — six nodes, fresh context, Dave adjudicating
+each. Cleared the two amended-node re-audits and the remaining foundational ADRs. Tier A is now
+**11/~20 audited**; every ADR (0001–0007) has a verdict.
 
 ## What landed
 
-Five verdicts (recorded two ways per runbook §5 — ledger line in `knowledge/_DECISION-AUDIT.md`
+Six verdicts (recorded two ways per runbook §5 — ledger line in `knowledge/_DECISION-AUDIT.md`
 + state in `_LIVE-STATE`):
 
-1. **ADR-0005** (engine pivot) — **vouch.** Most-proven node (gates green, GOV.UK second system).
-   Note kept open: the token-store history-purge is *conditionally-accepted, not resolved.*
-2. **ADR-0007** (decision-graph pattern) — **vouch**, circularity noted (vouched by its own process).
-3. **Charter §9/§9a** (inference ramp) — **vouch framing + DEFER proven/safe.** The definition is
-   right; the claim it's *demonstrated/safe* is deferred — no worked spread exists, safety
-   machinery is named-not-built. Tracked as an explicit **audit-deferred verification** ("we can't
-   forget this").
-4. **ADR-0006** (flexing engine) — **amend.** Register dial "cool/warm/hot" corrected to the §9
-   inference ramp (retrieve/extend/invent). Amended text re-enters `unaudited`.
-5. **`derivation-governance`** — **amend.** Core (human-only promotion) vouched; promotion refined
-   to a **staged multi-human path** (holding-pen/sandbox → colleague review → **extension library**
-   → general canon if broadly useful). Amended text re-enters `unaudited`.
+1. **ADR-0006 re-audit** (register dial) — **vouch.** Verified line-by-line against charter §9;
+   no "cool/warm/hot" survives; spine untouched.
+2. **`derivation-governance` re-audit** — **split: core vouch + mechanism defer.** Multi-human/
+   staged *direction* is sound; the specific holding-pen→extension-library machinery is named-not-
+   built → deferred. **Dave's future-feature captured:** tiered canon-commit access (design-system
+   admin → domain admin → standard; sandbox open to all, commits tiered, extension libraries
+   read-all / edit-by-domain).
+3. **ADR-0001** (own our orchestration) — **vouch.** Portability/own-the-invariant principle is the
+   backbone of 0002/0005/0006. (Noted: the named `harness/orchestrator.md` is archived; Dave
+   vouched the principle as-written.)
+4. **ADR-0002** (open standards) — **vouch.** The three-standard spine (AGENTS.md + Skills + MCP)
+   is exactly how the project runs; the founding leg that survived and strengthened.
+5. **ADR-0003** (knowledge-rep per stage) — **defer.** Dave reopened the scope: the *whole* DS
+   corpus may be one interlinked graph. **Root cause = ingestion was never completed.** Spun off as
+   a separate, audit-grade work thread (see below). Not vouched.
+6. **ADR-0004** (WCAG 2.2 AA bar) — **vouch + rationale-amend.** Added the **foundational driver the
+   ADR omitted**: HSBC's aspiration to be *the most digitally accessible bank in the world* — the
+   bar leads, doesn't merely comply; 2.2 AA is the floor of that aspiration, not its ceiling.
 
-**The batch's real finding:** no *bad* decisions surfaced — the pattern was **decisions ratified
-ahead of their proof** (three of five lean on specced-not-built machinery). That's exactly what the
-`defer` state exists to hold honestly.
-
-**Forward idea captured (Dave):** the state-management tool should also track **goals + forward
-planning** in the same graph ("decisions and goals are the same object at different tenses"), and
-be extracted into a **transferable plugin**. Parked with a guardrail — *prove it self-generating
-here before packaging.* Memory: `pm-knowledge-graph-direction`.
+**The batch's real finding:** the pattern is holding from batch 1 — no *bad* decisions, but
+foundations set defensively or scoped ahead of completed work. ADR-0003's defer named the biggest
+one: the KG ambition wasn't disproven, ingestion just never finished.
 
 ## On your desk
 
-- **Pushed & clean** — the audit commit (`5cf9837`) is on `origin/master`. Nothing pending.
-- **Tier A is not done** — batch 1 of ~3. Two amended nodes still owe a re-audit.
+- **Committed, not pushed** — `5435b99` ("Decision audit — Tier A batch 2"). Stale `.git` locks
+  cleared. **Push via GitHub Desktop.**
+- **Two new work threads captured** (both in `_LIVE-STATE` OPEN, memories written):
+  - **Unified DS KG + ingestion, done right** — `ds-knowledge-graph-revisit`. Own session, its own
+    audit-grade method; leading hypothesis = overlay/index layer, not a monolith.
+  - **Seaworthiness plan** — state + goals analysis → one prioritised sequence. Deferred *after*
+    batch 3 (Dave chose to finish Tier A first).
+- **New foundational memory:** `accessibility-aspiration` (most-accessible-bank; bar leads, ratchets).
 
-## Queue next (fresh session)
+## Queue next (fresh session) — FOCUS: finish Tier A
 
-1. **Tier A batch 2 — decision audit.** ADR-0001–0004 + charter §4/§4b. Same protocol: fresh
-   context, dossier + devil's-advocate + recommendation per node, Dave adjudicates. Runbook:
-   `knowledge/_RUNBOOK-decision-audit.md`; ledger: `knowledge/_DECISION-AUDIT.md`. **Never run in a
-   loaded session.**
-2. **Re-audit the two amended nodes** — ADR-0006 (register dial) + `derivation-governance` (staged
-   promotion). Their edits re-entered `unaudited`; fold into a batch.
-3. **PM-KG MVP** — build `_build_live_state.py` + the advisory staleness gate (ADR-0007). This is
-   the "prove it self-generating" step that must land *before* the forward-planning / plugin idea
-   can be scoped. Own focused session.
+1. **Tier A batch 3 — decision audit (THE task).** **Charter §4 (ratified curbs) + §4b (tone/
+   temperature)**, plus any `_LIVE-STATE` LIVE entry not yet covered by an ADR/§9 (triage: two
+   harness modes, supersession discipline, git split, build gate — some may drop to Tier B). Same
+   protocol: fresh context, dossier + devil's-advocate + recommendation per node, Dave adjudicates,
+   record at ruling-time. Runbook: `knowledge/_RUNBOOK-decision-audit.md`; ledger:
+   `knowledge/_DECISION-AUDIT.md`. **This closes Tier A** ("KG stops laundering its load-bearing
+   claims"). **Never run in a loaded session.**
+2. **Then: seaworthiness planning session** — the state+goals curation Dave asked for.
+3. Standing/parallel: DS-KG + ingestion thread · PM-KG MVP · D2 novel-screen (waiting on colleague)
+   · toolkit tranche 2 (cheap model).
 
-Parallel/standing: D2 novel-screen test (waiting on colleague brief) · toolkit tranche 2
-(Dropdowns, cheap model).
+Two small operational follow-ups parked from ADR-0004 (not audit nodes): verify current EAA /
+EN 301 549 legal position; align the `design:accessibility-review` skill (audits to 2.1 AA) to the
+2.2 bar.
 
 > Next-session opener: **"Title this chat: <pick one>."** Read GOOD-MORNING.md → `_LIVE-STATE.md`
-> → `knowledge/README.md`. Everything is committed and pushed.
+> → `knowledge/README.md`. Everything is committed; push `5435b99` via Desktop.
 
 ## The meter
 
-The audit worked the way it was meant to: fresh context, a written case *against* every node before
-a verdict, and honest split/defer/amend outcomes rather than a rubber-stamp. The most valuable thing
-it produced wasn't a stack of vouches — it was naming the *shape* of the risk (ratified-ahead-of-
-proof) and pinning the deferred proofs so they can't quietly evaporate. Next move is either to keep
-clearing Tier A, or to build the MVP that makes the whole ledger self-generating.
+Batch 2 did the job batch 1 designed: fresh context, a written case *against* each node, and honest
+outcomes — including one **defer** that surfaced the real root cause (incomplete ingestion) rather
+than papering it, and one **rationale-amend** that put the actual foundational reason (the
+accessibility aspiration) back into ADR-0004. Two nodes to go and Tier A is clean.
