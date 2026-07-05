@@ -64,10 +64,13 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
   brand self-check · the mode dial.
 - **PM-KG MVP** (`ADR-0007`): build `_build_live_state.py` + the staleness gate — own focused
   session.
-- **Decision-corpus correctness audit — NOT YET DONE (ADR-0007 §5).** Everything is `unaudited`:
-  provenance recorded, validity not vouched. Run as **batched, fresh-context** passes with Dave
-  as judge (never rubber-stamp a corpus in a loaded session); reuse `_REVIEW-QUEUE` tiering.
-  This is the guard against baking bad decisions into the KG.
+- **Decision-corpus correctness audit — METHOD DESIGNED 2026-07-05, NOT YET RUN (ADR-0007 §5).**
+  Everything is `unaudited`: provenance recorded, validity not vouched. Method now written up:
+  `knowledge/_RUNBOOK-decision-audit.md` (triage into Tier A/B/C by cost-of-being-wrong;
+  batched 5–8 nodes, fresh context per batch; Claude builds dossier + devil's-advocate case +
+  recommendation, **Dave adjudicates**; `unaudited → vouched/amend/overturn/defer`; verdicts logged
+  to interim `_DECISION-AUDIT.md`). **Next: RUN Tier A batch 1 in a fresh session** (ADR-0006,
+  charter §9/§9a, ADR-0007, ADR-0005, `derivation-governance`). Never run in a loaded session.
 - **D2 — novel-screen test — THE #1 unlock.** Waiting on a colleague's brief (their brief-v2 +
   own baseline + signed contract *before* generation). `_TEST-PLAN-novel-screen-proof.md`.
 - **Toolkit tranche 2** (Dropdowns ×4) — parallel cheap-model workstream. Memory:
