@@ -141,6 +141,21 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
     ([[product-shape-flexing-engine]] territory), not a prompt-tuning afternoon. Don't resolve
     inline; start that session by reading this entry + the charter §9 + the test-brief §2 + memory
     `register-inference-ramp` + `generation-mechanism-ideas`.
+  - **✅ Prep tooling agreed, same session (Dave: "is there a way we can build a trace to record
+    what entities from the knowledge a cold run uses?") — build THIS as part of the dedicated
+    session, not separately.** Two-layer design proposed and agreed: (1) a self-reported "sources"
+    manifest emitted alongside each cold-run artifact (which guideline rules/tokens/`.cn-*`
+    components/named gravity-references it drew on + a one-line reason each); (2) an automatic
+    verification pass against the actual artifact — grep for real `.cn-*`/`.c-*` classes, `var(--
+    token)` names, and icon path data (extending `_validate_icons.py`'s existing byte-match
+    technique) — that flags claimed-but-absent or used-but-unclaimed mismatches. Layer 2 is
+    load-bearing, not optional: this exact session already proved a cold run's self-report can
+    claim a comment/derivation that isn't actually in the file, so the manifest alone isn't
+    trustworthy without the cross-check. Run across the governed spread + gravity-fix + diagnostic
+    pieces to get real comparable data on what each lineage actually retrieved vs invented — this
+    is the closest thing to a direct empirical answer to the open question above. Reuses existing
+    infra rather than new foundations: `_build_xref_index.py` (static token/guideline/component
+    map) + the icon-source gate's byte-match method are the components to extend, not rebuild.
 - **Divergence probe — first real run done 2026-07-05** (structural/grep-based, not the full
   novelty-scoring tooling named in §9). See the writeup above. The formal tooling (threshold
   calibration, automated novelty count) is still named-not-built.

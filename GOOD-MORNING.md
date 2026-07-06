@@ -63,6 +63,12 @@ just to working out what it means, separate from continuing to iterate the promp
    instructions, no architecture change; (b) a structural ceiling — one governed pass may just cap
    out below a two-pass "generate free, then constrain+verify" pipeline (which is what actually
    worked this session, unplanned). Nobody has run these as a genuinely controlled comparison yet.
+   **Build the knowledge-usage trace as PREP TOOLING inside this same session** (your ask, end of
+   this session, agreed to fold in rather than build separately): a self-reported "sources" manifest
+   per cold run + an automatic verification pass against the real artifact (extends
+   `_validate_icons.py`'s byte-match technique + `_build_xref_index.py`'s existing token/guideline
+   map) — gives real, comparable data on what each lineage (governed vs gravity-fix vs diagnostic)
+   actually retrieved vs invented, which is close to a direct empirical answer to the question above.
 2. Ingestion Phase 1 (Sutherland migration) still queued whenever you want to bank it — not
    cancelled, just still not this.
 3. Off critical path unless you say: D2 novel-screen (waiting on colleague), toolkit tranche 2,
