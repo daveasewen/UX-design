@@ -32,14 +32,34 @@ component genuinely doesn't touch text/icon or indicator colour, or the
 blast-radius scanner's meta-text matching missed it — see its own
 docstring caveat about prose-only references). 2.3.3 and 2.5.8 already
 verified at component granularity (the a11y gate runs per reference snippet).
+
+Secondary evidence path for 1.4.11 (2026-07-14, Badge/Links investigation):
+neither Badge nor Links binds a border-category token, so both came back
+"not_covered" from the blast-radius join above — but that's a false negative
+for Links, which already declares two "ui"-context `contrastPairs` in its
+reference snippet (arrow, icon) that the BLOCKING snippet gate
+(`_validate_snippets.py`, check 3) already checks every build. Badge declared
+only a "text" pair for its own red fill; the missing "ui" pair for the fill's
+boundary against the page was added to `Badge.reference.html` alongside this
+change, mirroring Links' existing pattern. `snippet_ui_contrast_join()` below
+reads each `applies_to` component's reference snippet directly and resolves/
+computes any declared "ui"/"icon" pair the same way `_validate_snippets.py`
+does (same `resolve()` logic, same `_contrast_utils` formula) — this is not a
+new check, it's surfacing evidence the snippet gate already produces but that
+the blast-radius join (token-bindings only) can't see. Only used to upgrade a
+"not_covered" verdict; never overrides a real blast-radius pass/fail.
 """
-import json, os, re, sys, datetime
+import json, os, re, sys, glob, datetime
 
 HERE = os.path.dirname(os.path.abspath(__file__))          # knowledge/compliance
 ROOT = os.path.dirname(HERE)                                # knowledge/
 RULES = os.path.join(HERE, "rules")
 GRAPH_INDEX = os.path.join(HERE, "graph-index.json")
 BLAST_RADIUS = os.path.join(ROOT, "tokens", "_blast-radius.json")
+SNIPPETS = os.path.join(ROOT, "snippets")
+
+sys.path.insert(0, ROOT)
+from _contrast_utils import contrast_ratio, is_sufficient_contrast
 
 
 def read_json(path):
@@ -82,6 +102,81 @@ def contrast_component_join(artifact_name, applies_to_components, poor_key="poor
     covered = sum(1 for v in per_component.values() if v != "not_covered")
     coverage = f"{covered}/{len(applies_to_components)} applies_to components have a bound audited token"
     return overall, per_component, coverage, None
+
+
+def _sem_resolve(sem, token, mode):
+    """Same walk as _validate_snippets.py's resolve() — token path split on '/',
+    read $value at the given mode. Kept as a local copy (not imported) since
+    _validate_snippets.py is a script, not a module other generators import from."""
+    n = sem
+    for k in token.split("/"):
+        n = n.get(k) if isinstance(n, dict) else None
+        if n is None:
+            return None
+    m = n.get(mode)
+    v = m.get("$value") if isinstance(m, dict) else m
+    return v.upper() if isinstance(v, str) and v.startswith("#") else None
+
+
+def snippet_ui_contrast_join(not_covered_components):
+    """Secondary evidence path (2026-07-14): for 1.4.11 components the
+    blast-radius join couldn't cover (no bound border token), check whether
+    the component's OWN reference snippet already declares a "ui"/"icon"
+    contrastPair — evidence the blocking snippet gate (_validate_snippets.py)
+    already checks every build, just not surfaced at this graph's granularity.
+
+    Returns {component: {"verdict": "pass"|"fail", "snippet": filename,
+    "pairs_checked": [str, ...]}} — only for components actually resolved
+    here; components with no snippet or no qualifying pair are omitted
+    (they stay "not_covered", an honest gap, not silently upgraded).
+    """
+    if not not_covered_components:
+        return {}
+    sem = read_json(os.path.join(ROOT, "tokens", "semantic-colour.json"))
+    if sem is None:
+        return {}
+
+    by_component = {}
+    for path in sorted(glob.glob(os.path.join(SNIPPETS, "*.reference.html"))):
+        html = open(path).read()
+        mm = re.search(r'<script[^>]*id="token-manifest"[^>]*>(.*?)</script>', html, re.S)
+        if not mm:
+            continue
+        try:
+            manifest = json.loads(mm.group(1))
+        except Exception:
+            continue
+        comp = manifest.get("component")
+        if comp:
+            by_component[comp] = (os.path.basename(path), manifest)
+
+    result = {}
+    for comp in not_covered_components:
+        entry = by_component.get(comp)
+        if entry is None:
+            continue
+        snippet_name, manifest = entry
+        pairs = [p for p in manifest.get("contrastPairs", [])
+                 if p.get("fg", "").startswith("icon/") or p.get("context") in ("ui", "icon")]
+        if not pairs:
+            continue
+        verdict = "pass"
+        checked = []
+        for p in pairs:
+            ctx = "icon" if p["fg"].startswith("icon/") else p.get("context", "ui")
+            for mode in ("light", "dark"):
+                fg, bg = _sem_resolve(sem, p["fg"], mode), _sem_resolve(sem, p["bg"], mode)
+                if not fg or not bg:
+                    verdict = "fail"
+                    checked.append(f"{p['fg']}/{p['bg']} unresolved ({mode})")
+                    continue
+                r = contrast_ratio(fg, bg)
+                ok = is_sufficient_contrast(r, context=ctx)
+                checked.append(f"{p['fg']} on {p['bg']} ({mode}) = {r}:1 ({'pass' if ok else 'fail'})")
+                if not ok:
+                    verdict = "fail"
+        result[comp] = {"verdict": verdict, "snippet": snippet_name, "pairs_checked": checked}
+    return result
 
 
 def a11y_gate_result(sc_marker):
@@ -141,12 +236,13 @@ def main():
     for sc in sorted(index.get("by_sc", {})):
         if sc not in VERIFY_MAP:
             verification[sc] = None
-            rows.append((sc, "unverified", None, None, None, None))
+            rows.append((sc, "unverified", None, None, None, None, None))
             continue
         script, artifact, mechanism, granularity, kind, key = VERIFY_MAP[sc]
 
         per_component = None
         coverage = None
+        secondary_evidence = None
         if kind == "contrast":
             applies_to_components = index.get("by_sc", {}).get(sc, [])
             result, per_component, coverage, err = contrast_component_join(key, applies_to_components)
@@ -155,8 +251,22 @@ def main():
 
         if result is None:
             verification[sc] = None
-            rows.append((sc, "unverified", None, None, err, None))
+            rows.append((sc, "unverified", None, None, err, None, None))
             continue
+
+        # Secondary evidence path (1.4.11 only, 2026-07-14): components the
+        # blast-radius join couldn't cover may still have a declared, gated
+        # contrastPair in their own reference snippet. Only upgrades
+        # "not_covered" — never overrides a real blast-radius pass/fail.
+        if sc == "1.4.11" and per_component:
+            not_covered = [c for c, v in per_component.items() if v == "not_covered"]
+            secondary = snippet_ui_contrast_join(not_covered)
+            if secondary:
+                secondary_evidence = secondary
+                for comp, info in secondary.items():
+                    per_component[comp] = info["verdict"]
+                covered = sum(1 for v in per_component.values() if v != "not_covered")
+                coverage = f"{covered}/{len(per_component)} applies_to components have a bound audited token or a gated snippet contrastPair"
 
         vb = {
             "script": script, "artifact": artifact, "mechanism": mechanism,
@@ -165,8 +275,21 @@ def main():
         if per_component is not None:
             vb["per_component"] = per_component
             vb["coverage"] = coverage
+        if secondary_evidence:
+            vb["secondary_evidence"] = {
+                comp: {
+                    "mechanism": "Reference snippet declares a \"ui\"/\"icon\"-context contrastPair "
+                                 "already checked by the blocking snippet gate (_validate_snippets.py, "
+                                 "check 3) — resolved here directly since the blast-radius join found "
+                                 "no bound border-category token for this component.",
+                    "snippet": info["snippet"],
+                    "verdict": info["verdict"],
+                    "pairs_checked": info["pairs_checked"],
+                }
+                for comp, info in secondary_evidence.items()
+            }
         verification[sc] = vb
-        rows.append((sc, "verified", result, granularity, coverage, per_component))
+        rows.append((sc, "verified", result, granularity, coverage, per_component, secondary_evidence))
 
         # patch the individual rule file
         rule_id = None
@@ -212,12 +335,12 @@ def main():
         "| SC | Result | Granularity | Coverage |",
         "|---|---|---|---|",
     ]
-    for sc, _, result, granularity, coverage, _ in verified_rows:
+    for sc, _, result, granularity, coverage, _, _ in verified_rows:
         badge = "✅ pass" if result == "pass" else "❌ fail"
         L.append(f"| {sc} | {badge} | {granularity} | {coverage or '—'} |")
 
     L += ["", "## Component-level breakdown — 1.4.3 / 1.4.11 (the blast-radius join)", ""]
-    for sc, _, result, granularity, coverage, per_component in verified_rows:
+    for sc, _, result, granularity, coverage, per_component, secondary_evidence in verified_rows:
         if not per_component:
             continue
         fails = [c for c, v in per_component.items() if v == "fail"]
@@ -235,11 +358,22 @@ def main():
                       f"token — either the component genuinely doesn't touch this colour category, or the scan's "
                       f"meta-text matching missed a prose-only reference): {', '.join(sorted(not_covered))}")
             L.append("")
+        if secondary_evidence:
+            L.append(f"**Resolved via secondary evidence** (no bound border token, but the component's own reference "
+                      f"snippet declares a \"ui\"/\"icon\"-context contrastPair that the blocking snippet gate "
+                      f"(`_validate_snippets.py`, check 3) already checks every build):")
+            L.append("")
+            L.append("| Component | Snippet | Verdict | Pairs checked |")
+            L.append("|---|---|---|---|")
+            for comp, info in sorted(secondary_evidence.items()):
+                badge = "✅ pass" if info["verdict"] == "pass" else "❌ fail"
+                L.append(f"| {comp} | `{info['snippet']}` | {badge} | {'; '.join(info['pairs_checked'])} |")
+            L.append("")
 
     L += ["", "## Unverified (applies_to only)", ""]
     if unverified_rows:
         L += ["| SC | Note |", "|---|---|"]
-        for sc, _, _, _, err, _ in unverified_rows:
+        for sc, _, _, _, err, _, _ in unverified_rows:
             L.append(f"| {sc} | {err or 'no executable check in this build'} |")
     else:
         L.append("_None — every SC has a wired check._")
@@ -257,7 +391,7 @@ def main():
 
     print(f"verification edges: {len(verified_rows)}/{len(rows)} SCs verified "
           f"({sum(1 for r in verified_rows if r[2]=='fail')} failing), {len(unverified_rows)} applies_to-only")
-    for sc, status, result, granularity, coverage, per_component in rows:
+    for sc, status, result, granularity, coverage, per_component, _ in rows:
         if status == "verified":
             extra = f" [{coverage}]" if coverage else ""
             print(f"  {'✅' if result=='pass' else '❌'} {sc}: {result} ({granularity}){extra}")

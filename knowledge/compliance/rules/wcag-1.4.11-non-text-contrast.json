@@ -37,15 +37,37 @@
     "checked": "2026-07-14",
     "per_component": {
       "Account card": "pass",
-      "Badge": "not_covered",
+      "Badge": "pass",
       "Button": "pass",
       "Cards": "pass",
       "Divider": "pass",
       "Dropdown": "pass",
-      "Links": "not_covered",
+      "Links": "pass",
       "Status indicator": "pass"
     },
-    "coverage": "6/8 applies_to components have a bound audited token"
+    "coverage": "8/8 applies_to components have a bound audited token or a gated snippet contrastPair",
+    "secondary_evidence": {
+      "Badge": {
+        "mechanism": "Reference snippet declares a \"ui\"/\"icon\"-context contrastPair already checked by the blocking snippet gate (_validate_snippets.py, check 3) — resolved here directly since the blast-radius join found no bound border-category token for this component.",
+        "snippet": "Badge.reference.html",
+        "verdict": "pass",
+        "pairs_checked": [
+          "primary/background/default on background/default (light) = 5.22:1 (pass)",
+          "primary/background/default on background/default (dark) = 4.02:1 (pass)"
+        ]
+      },
+      "Links": {
+        "mechanism": "Reference snippet declares a \"ui\"/\"icon\"-context contrastPair already checked by the blocking snippet gate (_validate_snippets.py, check 3) — resolved here directly since the blast-radius join found no bound border-category token for this component.",
+        "snippet": "Links.reference.html",
+        "verdict": "pass",
+        "pairs_checked": [
+          "primary/background/default on background/default (light) = 5.22:1 (pass)",
+          "primary/background/default on background/default (dark) = 4.02:1 (pass)",
+          "icon/default on background/default (light) = 12.63:1 (pass)",
+          "icon/default on background/default (dark) = 21.0:1 (pass)"
+        ]
+      }
+    }
   },
   "external_automatable_refs": []
 }

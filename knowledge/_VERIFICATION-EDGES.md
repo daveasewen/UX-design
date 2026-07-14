@@ -8,7 +8,7 @@
 
 | SC | Result | Granularity | Coverage |
 |---|---|---|---|
-| 1.4.11 | ✅ pass | component | 6/8 applies_to components have a bound audited token |
+| 1.4.11 | ✅ pass | component | 8/8 applies_to components have a bound audited token or a gated snippet contrastPair |
 | 1.4.3 | ✅ pass | component | 18/18 applies_to components have a bound audited token |
 | 2.3.3 | ✅ pass | component | — |
 | 2.5.8 | ✅ pass | component | — |
@@ -17,9 +17,14 @@
 
 ### 1.4.11
 
-6/8 applies_to components have a bound audited token. 6 pass, 0 fail, 2 not_covered.
+8/8 applies_to components have a bound audited token or a gated snippet contrastPair. 8 pass, 0 fail, 0 not_covered.
 
-**Not covered** (applies_to claims this SC but the blast-radius scan found no bound audited token — either the component genuinely doesn't touch this colour category, or the scan's meta-text matching missed a prose-only reference): Badge, Links
+**Resolved via secondary evidence** (no bound border token, but the component's own reference snippet declares a "ui"/"icon"-context contrastPair that the blocking snippet gate (`_validate_snippets.py`, check 3) already checks every build):
+
+| Component | Snippet | Verdict | Pairs checked |
+|---|---|---|---|
+| Badge | `Badge.reference.html` | ✅ pass | primary/background/default on background/default (light) = 5.22:1 (pass); primary/background/default on background/default (dark) = 4.02:1 (pass) |
+| Links | `Links.reference.html` | ✅ pass | primary/background/default on background/default (light) = 5.22:1 (pass); primary/background/default on background/default (dark) = 4.02:1 (pass); icon/default on background/default (light) = 12.63:1 (pass); icon/default on background/default (dark) = 21.0:1 (pass) |
 
 ### 1.4.3
 
