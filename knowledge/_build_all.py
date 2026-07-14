@@ -3,8 +3,10 @@
 
 The generators must run in this order because later ones read earlier outputs:
   1. compliance/_build_compliance_kg.py      -> compliance/rules/, graph-index.json
-  1b. compliance/_import_axe_rules.py        -> graph-index.json (external_automatable_refs) + rules/*.json
-                                                 (needs 1; reads the vendored axe-core snapshot in compliance/_vendor/, no network)
+                                                 (NOTE: this rewrites graph-index.json wholesale — any
+                                                 verification{}/external_automatable_refs{} block from a
+                                                 PRIOR run is gone after this step. Both must be rebuilt
+                                                 fresh every run, in the order below.)
   2. tokens/_build_blast_radius.py           -> tokens/_blast-radius.json, _GRAPH-REPORT.md
   3. _build_xref_index.py                    -> _XREF-INDEX.json/.md   (needs 1 + 2)
   4. _build_review_queue.py                  -> _REVIEW-QUEUE.json/.md
@@ -12,8 +14,12 @@ The generators must run in this order because later ones read earlier outputs:
   6. _build_surface_contrast_audit.py        -> _TEXT-CONTRAST-AUDIT.json/.md (needs _contrast_utils)
   7. _build_indicator_contrast_audit.py      -> _INDICATOR-CONTRAST-AUDIT.json/.md (needs _contrast_utils)
   8. compliance/_build_verification_edges.py -> compliance/graph-index.json (verification block) + rules/*.json (verified_by)
-                                                 (needs 1, 6, 7 and the a11y gate — runs after all of them, see STEPS order)
-  9. _build_integrity.py                     -> _INTEGRITY-REPORT.md   (the gate; needs 3)
+                                                 (needs 1, 2 (blast-radius join), 6, 7 and the a11y gate — runs after all of them)
+  9. compliance/_import_axe_rules.py         -> graph-index.json (external_automatable_refs) + rules/*.json
+                                                 (needs 1 AND 8 — its "already wired" cross-check reads the
+                                                 verification{} block, so it MUST run after step 8, not before.
+                                                 Reads the vendored axe-core snapshot in compliance/_vendor/, no network.)
+  10. _build_integrity.py                    -> _INTEGRITY-REPORT.md   (the gate; needs 3)
 
 Run:  python3 knowledge/_build_all.py
 Exits non-zero if EITHER gate fails: the integrity lint (step 8, any ERROR) or
@@ -26,7 +32,6 @@ import subprocess, sys, os
 HERE = os.path.dirname(os.path.abspath(__file__))
 STEPS = [
     ("compliance knowledge graph", "compliance/_build_compliance_kg.py"),
-    ("external automatable-check refs — axe-core import (advisory)", "compliance/_import_axe_rules.py"),
     ("token blast-radius + graph report", "tokens/_build_blast_radius.py"),
     ("guideline rules index (gate)", "guidelines/gen_rules_index.py"),
     ("cross-reference index", "_build_xref_index.py"),
@@ -45,6 +50,7 @@ STEPS = [
     ("a11y gate", "_validate_a11y.py"),
     ("coverage gate", "_validate_coverage.py"),
     ("compliance verification edges — applies_to vs verified_by (advisory)", "compliance/_build_verification_edges.py"),
+    ("external automatable-check refs — axe-core import (advisory)", "compliance/_import_axe_rules.py"),
     ("integrity lint (gate)", "_build_integrity.py"),
 ]
 

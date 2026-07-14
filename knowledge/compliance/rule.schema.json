@@ -36,9 +36,15 @@
         "script": { "type": "string", "description": "generator/validator that produces the evidence, relative to knowledge/" },
         "artifact": { "type": "string", "description": "report file the result was read from, relative to knowledge/" },
         "mechanism": { "type": "string", "description": "one line: what is actually being checked and how" },
-        "granularity": { "enum": ["component", "token", "aggregate"], "description": "component = checked per named component instance (e.g. per snippet); token = checked on the design-token store, joined to components only via blast-radius (not yet a direct per-component edge); aggregate = one pass/fail for the whole rule, not split by component" },
+        "granularity": { "enum": ["component", "token", "aggregate"], "description": "component = checked per named component instance (e.g. per snippet, or a token-level check joined down via the blast-radius index); token = checked on the design-token store only, not yet joined to components; aggregate = one pass/fail for the whole rule, not split by component" },
         "result": { "enum": ["pass", "fail"], "description": "pass = 0 non-allowlisted failures against this SC at the last build run" },
         "checked": { "type": "string", "description": "ISO date this verified_by entry was last (re)computed" },
+        "per_component": {
+          "type": "object",
+          "description": "Only present when granularity is component AND the check is itself token-level (e.g. 1.4.3/1.4.11) — component name -> pass/fail/not_covered, derived via the token blast-radius join. not_covered = applies_to claims this SC but no bound audited token was found for this component (a real gap, not a silent pass).",
+          "additionalProperties": { "enum": ["pass", "fail", "not_covered"] }
+        },
+        "coverage": { "type": "string", "description": "one-line note on how many applies_to components got a real per-component verdict vs fell through as not_covered" },
         "note": { "type": "string" }
       }
     },

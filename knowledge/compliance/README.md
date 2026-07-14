@@ -47,14 +47,16 @@ Two more generators layer additional edges onto the same rule files + index, bot
 
 `applies_to` is the **claimed** edge — a component meta asserts it satisfies a WCAG SC. Derived straight from source-of-truth, so it never drifts, but nothing runs to check it's true.
 
-`verified_by` is the **verified** edge (built 2026-07-14): non-null only where an executable check runs in **our** build (`_build_all.py`) and its current result is recorded. Today that's **4 of 31 SCs**:
+`verified_by` is the **verified** edge (built 2026-07-14): non-null only where an executable check runs in **our** build (`_build_all.py`) and its current result is recorded. Today that's **4 of 31 SCs**, ALL at **component** granularity:
 
-| SC | Mechanism | Granularity |
+| SC | Mechanism | Coverage |
 |---|---|---|
-| `1.4.3` Contrast (Minimum) | our token-level dark-mode contrast audit, gates the build | token |
-| `1.4.11` Non-text Contrast | our token-level dark-mode contrast audit, gates the build | token |
-| `2.3.3` Animation from Interactions | our a11y gate scans every snippet for missing `prefers-reduced-motion`, gates the build | component |
-| `2.5.8` Target Size (Minimum) | our a11y gate measures every control's CSS box against the 24px floor, gates the build | component |
+| `1.4.3` Contrast (Minimum) | dark-mode contrast audit, joined to components via `tokens/_blast-radius.json` | 18/18 applies_to components covered |
+| `1.4.11` Non-text Contrast | dark-mode contrast audit, joined to components via `tokens/_blast-radius.json` | **4/8** applies_to components covered — see finding below |
+| `2.3.3` Animation from Interactions | a11y gate scans every snippet for missing `prefers-reduced-motion` | per-snippet (=per-component) natively |
+| `2.5.8` Target Size (Minimum) | a11y gate measures every control's CSS box against the 24px floor | per-snippet (=per-component) natively |
+
+**A real finding the blast-radius join surfaced (2026-07-14):** 4 of the 8 components claiming `1.4.11` — **Badge, Cards, Divider, Links** — have no bound token that our indicator-contrast audit actually checks. That's not necessarily a defect: it could mean the component genuinely doesn't touch a RAG/brand/interactive-state colour in a way the audit models, or it could mean the blast-radius scanner's meta-text matching missed a prose-only reference (its own docstring already flags this as a lower-bound method). Either way it's now visible instead of hidden inside an aggregate "pass" — see `_VERIFICATION-EDGES.md` → Component-level breakdown, and `rules/wcag-1.4.11-non-text-contrast.json` → `verified_by.per_component`. Worth a look before trusting `1.4.11` compliance claims on those four components specifically.
 
 `external_automatable_refs` is the **available** edge (built 2026-07-14, the other half of the 2026-07-10 "cheap-now slice"): does an off-the-shelf tool exist for this SC, regardless of whether we run it. Imported from axe-core v4.12.1 (vendored snapshot, no live network at build time). **15 of 31 SCs have at least one axe-core rule tagged against them** — see `knowledge/_EXTERNAL-AUTOMATABLE-REFS.md` for the full breakdown, which splits those 15 into:
 
@@ -63,6 +65,8 @@ Two more generators layer additional edges onto the same rule files + index, bot
 - **16 have no OSS axe-core coverage at all**, including two we already verify ourselves (`1.4.11`, `2.3.3`) — our bespoke dark-mode contrast audit and reduced-motion scan cover ground the open-source axe-core rule set doesn't. Worth knowing: our custom gates aren't redundant with off-the-shelf tooling here.
 
 **A correction the verification pass surfaced:** `2.3.3`'s `check.type` was hand-typed as `manual` in `_build_compliance_kg.py`'s SC lookup table, but the a11y gate has enforced it (gating) since before this change — the metadata just hadn't caught up. Corrected to `semi-automated`.
+
+**A build-order bug this pass caught:** `_import_axe_rules.py`'s "already wired vs easy-win" split depends on reading a CURRENT `verification{}` block — but `_build_compliance_kg.py` (step 1) rewrites `graph-index.json` wholesale every run, wiping any `verification{}`/`external_automatable_refs{}` left by the previous run. Running the axe import right after step 1 (as first committed) meant it always saw an empty/stale verification block, so the "already wired" count was accidentally right only by leftover-state coincidence, not by design. Fixed by moving `_import_axe_rules.py` to run AFTER `_build_verification_edges.py` in `_build_all.py` — confirmed stable across repeat runs (13 easy-win / 2 already-wired / 16 uncovered, same both times). Worth remembering when adding more cross-referencing generators: check what each one reads, not just what it needs to exist.
 
 ## Traversing the graph
 
@@ -78,4 +82,4 @@ Two more generators layer additional edges onto the same rule files + index, bot
 - `check.type` is the *gradeability* hint (automated / semi-automated / manual) — treat it as intent, `verified_by` as evidence of what we actually enforce, `external_automatable_refs` as evidence of what's possible off-the-shelf.
 - As more components are ingested, re-run the generators — the graph stays in sync with the component metas.
 - **W3C ACT Rules Format** — checked 2026-07-14, **not ingested**: no structured JSON/CSV/API export found without scraping ~500 individual rule pages (no `act-rules` npm package, no `_data/*.json` in the GitHub repo). Deferred approach logged in `_vendor/_INGEST-NOTES.md`: parse the per-rule markdown frontmatter directly from `github.com/act-rules/act-rules.github.io` rather than scraping the rendered site.
-- **Next for the verification/external-refs layer** (not this pass): (1) the token→component join via `tokens/_blast-radius.json` to lift `1.4.3`/`1.4.11` from token to component granularity; (2) decide whether any of the 13 "easy win" SCs are worth actually wiring an axe-core check into the build (this import only catalogs availability, it doesn't adopt anything); (3) the ACT ingest, if it earns its own session.
+- **Next for the verification/external-refs layer** (not this pass): (1) investigate the `1.4.11` not_covered components (Badge, Cards, Divider, Links) — confirm whether they're genuinely out of scope or the blast-radius scan missed a prose token reference; (2) decide whether any of the 13 axe-core "easy win" SCs are worth actually wiring into the build (that import only catalogs availability, it doesn't adopt anything); (3) the ACT ingest, if it earns its own session.

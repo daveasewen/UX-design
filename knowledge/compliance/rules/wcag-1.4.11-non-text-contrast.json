@@ -28,13 +28,24 @@
     "en301549_clause": "9.1.4.11",
     "internal_policy_ref": "HSBC digital accessibility framework — WCAG 2.2 AA minimum, governed by Group Digital Experience and Accessibility (mandatory on all HSBC digital projects)."
   },
-  "external_automatable_refs": [],
   "verified_by": {
-    "script": "_build_indicator_contrast_audit.py",
+    "script": "_build_indicator_contrast_audit.py + tokens/_build_blast_radius.py",
     "artifact": "_INDICATOR-CONTRAST-AUDIT.json",
-    "mechanism": "Brand/RAG/interactive-state tokens are contrast-checked at 3:1 against their worst-case dark surface; gates the build on any non-allowlisted failure.",
-    "granularity": "token",
+    "mechanism": "Brand/RAG/interactive-state tokens are contrast-checked at 3:1 against their worst-case dark surface (gates the build); joined down to component granularity via the token blast-radius reverse index.",
+    "granularity": "component",
     "result": "pass",
-    "checked": "2026-07-14"
-  }
+    "checked": "2026-07-14",
+    "per_component": {
+      "Account card": "pass",
+      "Badge": "not_covered",
+      "Button": "pass",
+      "Cards": "not_covered",
+      "Divider": "not_covered",
+      "Dropdown": "pass",
+      "Links": "not_covered",
+      "Status indicator": "pass"
+    },
+    "coverage": "4/8 applies_to components have a bound audited token"
+  },
+  "external_automatable_refs": []
 }
