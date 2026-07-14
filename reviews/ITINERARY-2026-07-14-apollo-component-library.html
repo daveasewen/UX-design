@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apollo · Component library itinerary</title>
+<style>
+  :root{
+    --font:"Univers Next for HSBC","Helvetica Neue",Helvetica,Arial,sans-serif;
+    --accent:#DB0011; --ink:#1A1A1A; --black:#000;
+    --g1:#F7F7F7; --g2:#EDEDED; --g3:#D7D8D6; --g6:#767676; --g7:#545454; --g8:#333;
+    --ok:#2E7D32; --okbg:#E7F3EA; --warn:#B26A00; --warnbg:#FCF3E2; --gapbg:#FBE7E9;
+    --s1:.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem; --s6:4rem; --s7:6rem;
+    --maxw:1160px;
+  }
+  *{ box-sizing:border-box; }
+  body{ margin:0; font-family:var(--font); color:var(--ink); background:#fff; -webkit-font-smoothing:antialiased; line-height:1.6; }
+  .wrap{ max-width:var(--maxw); margin:0 auto; padding:0 var(--s4); }
+  h1,h2,h3,h4,p{ margin:0; } .num{ font-variant-numeric:tabular-nums; }
+  .nav{ border-bottom:1px solid var(--g2); position:sticky; top:0; background:#fff; z-index:10; }
+  .nav__in{ max-width:var(--maxw); margin:0 auto; padding:0 var(--s4); height:56px; display:flex; align-items:center; justify-content:space-between; }
+  .brand{ display:flex; align-items:baseline; gap:.4rem; font:400 14px/1 var(--font); letter-spacing:.02em; color:var(--g7); }
+  .brand .mark{ font-weight:700; letter-spacing:.06em; color:var(--accent); }
+  .nav__meta{ font:400 13px/1 var(--font); color:var(--g6); }
+  .label{ display:flex; align-items:center; gap:var(--s1); font:500 12px/1 var(--font); letter-spacing:.06em; color:var(--accent); margin-bottom:var(--s3); text-transform:uppercase; }
+  .label::before{ content:''; width:22px; height:1px; background:var(--accent); display:inline-block; }
+  .rule{ border:0; border-top:1px solid var(--g2); margin:0; }
+
+  .hero{ padding:var(--s7) 0 var(--s5); }
+  .hero h1{ font:400 52px/1.05 var(--font); letter-spacing:-.02em; max-width:18ch; }
+  .hero .sub{ margin-top:var(--s3); font:400 19px/1.5 var(--font); color:var(--g7); max-width:60ch; }
+
+  .stats{ display:grid; grid-template-columns:repeat(5,1fr); gap:var(--s4); padding:var(--s5) 0; border-top:1px solid var(--g2); border-bottom:1px solid var(--g2); }
+  .stat .v{ font:300 42px/1 var(--font); letter-spacing:-.02em; }
+  .stat .v.red{ color:var(--accent); } .stat .v.grn{ color:var(--ok); }
+  .stat .k{ display:block; margin-top:var(--s2); font:500 11px/1.4 var(--font); color:var(--g7); text-transform:uppercase; letter-spacing:.04em; }
+
+  .controls{ display:flex; gap:var(--s1); align-items:center; padding:var(--s4) 0; position:sticky; top:56px; background:#fff; z-index:9; border-bottom:1px solid var(--g2); flex-wrap:wrap; }
+  .controls .lbl{ font:500 12px/1 var(--font); color:var(--g6); margin-right:var(--s1); letter-spacing:.04em; text-transform:uppercase; }
+  .btn{ font:500 13px/1 var(--font); padding:.5rem .8rem; border:1px solid var(--g3); background:#fff; color:var(--g8); cursor:pointer; border-radius:2px; }
+  .btn:hover{ border-color:var(--ink); }
+  .btn.on{ background:var(--ink); color:#fff; border-color:var(--ink); }
+
+  .phase{ padding:var(--s6) 0; border-top:1px solid var(--g2); }
+  .phase__head{ display:grid; grid-template-columns:auto 1fr; gap:var(--s4); align-items:start; margin-bottom:var(--s4); }
+  .phase__idx{ font:200 76px/0.9 var(--font); color:var(--g3); letter-spacing:-.03em; }
+  .phase__name{ font:500 26px/1.1 var(--font); margin-bottom:var(--s1); }
+  .phase__lead{ font:400 16px/1.5 var(--font); color:var(--g7); max-width:70ch; }
+  .phase__count{ margin-top:var(--s1); font:500 12px/1 var(--font); color:var(--accent); letter-spacing:.04em; }
+
+  .cat{ margin:var(--s4) 0; }
+  .cat__h{ font:500 13px/1 var(--font); letter-spacing:.04em; text-transform:uppercase; color:var(--g8); padding-bottom:var(--s1); border-bottom:1px solid var(--ink); display:flex; align-items:center; gap:.5rem; }
+  .cat__n{ font:400 12px/1 var(--font); color:var(--g6); }
+  .tbl{ width:100%; border-collapse:collapse; }
+  .tbl td{ padding:.62rem .8rem .62rem 0; border-bottom:1px solid var(--g2); font:400 14px/1.45 var(--font); color:var(--g7); vertical-align:top; }
+  .c-comp{ color:var(--ink) !important; font-weight:500; width:26%; }
+  .c-chip{ width:64px; white-space:nowrap; }
+  .c-mine{ width:20%; color:var(--g6) !important; font-size:13px; }
+  .c-notes{ font-size:13px; }
+
+  .chip{ display:inline-block; font:600 11px/1 var(--font); padding:.28rem .45rem; border-radius:2px; letter-spacing:.02em; }
+  .chip.p0{ background:var(--okbg); color:var(--ok); }
+  .chip.p1{ background:var(--accent); color:#fff; }
+  .chip.p2{ background:var(--warnbg); color:var(--warn); }
+  .chip.p3{ background:var(--g1); color:var(--g6); }
+  .stt{ display:inline-block; font:500 11px/1 var(--font); padding:.28rem .45rem; border-radius:2px; }
+  .stt.st-have{ background:var(--okbg); color:var(--ok); }
+  .stt.st-part{ background:var(--warnbg); color:var(--warn); }
+  .stt.st-gap{ background:var(--gapbg); color:var(--accent); }
+
+  tr.hide{ display:none; }
+  .cat.hide, .phase.hide{ display:none; }
+
+  footer{ border-top:1px solid var(--g2); }
+  footer .wrap{ padding:var(--s5) var(--s4) var(--s6); }
+  footer p{ font:400 15px/1.6 var(--font); color:var(--g7); max-width:74ch; }
+  footer b{ color:var(--ink); font-weight:500; }
+  footer .note{ margin-top:var(--s3); font:400 13px/1.6 var(--font); color:var(--g6); }
+
+  @media (max-width:820px){
+    .stats{ grid-template-columns:repeat(2,1fr); }
+    .hero h1{ font-size:36px; } .phase__idx{ font-size:52px; }
+    .phase__head{ grid-template-columns:1fr; gap:var(--s2); }
+    .c-comp{ width:auto; } .tbl,.tbl tbody,.tbl tr,.tbl td{ display:block; width:auto; }
+    .tbl tr{ padding:.6rem 0; border-bottom:1px solid var(--g2); }
+    .tbl td{ border:0; padding:.15rem 0; }
+  }
+</style>
+</head>
+<body>
+  <nav class="nav"><div class="nav__in">
+    <span class="brand"><span class="mark">Apollo</span> · Component library</span>
+    <span class="nav__meta">Itinerary for review · 2026-07-14</span>
+  </div></nav>
+
+  <div class="wrap">
+  <section class="hero">
+    <p class="label">Component library · itinerary</p>
+    <h1>The whole library, one reviewable list.</h1>
+    <p class="sub">Every component the engine should be able to retrieve — what we already have gated, what's partial, and what's a gap to build — prioritised and sequenced. Review, re-rank, and finesse this, then we build the gaps on the pipeline we already have.</p>
+  </section>
+
+  <div class="stats num">
+    <div class="stat"><span class="v">124</span><span class="k">Items in the itinerary</span></div>
+    <div class="stat"><span class="v grn">38</span><span class="k">Gated today</span></div>
+    <div class="stat"><span class="v red">79</span><span class="k">Gaps to build</span></div>
+    <div class="stat"><span class="v red">23</span><span class="k">P1 reliability-critical</span></div>
+    <div class="stat"><span class="v">200–300</span><span class="k">With variants (target)</span></div>
+  </div>
+
+  <div class="controls">
+    <span class="lbl">Show</span>
+    <button class="btn on" data-f="all">All 124</button>
+    <button class="btn" data-f="gap">Gaps + partial (86)</button>
+    <button class="btn" data-f="p1">P1 only (23)</button>
+    <button class="btn" data-f="have">Have (38)</button>
+  </div>
+
+  <section class="phase" data-phase="0 Have">
+      <div class="phase__head">
+        <span class="phase__idx num">00</span>
+        <div>
+          <h3 class="phase__name">Already gated</h3>
+          <p class="phase__lead">The reviewed baseline — the ~38 components the engine can retrieve today.</p>
+          <p class="phase__count num">38 items</p>
+        </div>
+      </div>
+      <div class="cat">
+          <h4 class="cat__h">Actions <span class="cat__n">3</span></h4>
+          <table class="tbl"><tbody><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Button</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">Reviewed + gated.</td>
+            </tr><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Quick-actions</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">Reviewed + gated.</td>
+            </tr><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Segmented (View-options)</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">Reviewed + gated.</td>
+            </tr></tbody></table>
+        </div><div class="cat">
+          <h4 class="cat__h">Inputs &amp; forms <span class="cat__n">5</span></h4>
+          <table class="tbl"><tbody><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Text input</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">input-fields, gated.</td>
+            </tr><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Search field</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">Reviewed + gated.</td>
+            </tr><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Select</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">dropdown, gated.</td>
+            </tr><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Checkbox / Radio / Switch</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">selection-controls, gated.</td>
+            </tr><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Slider</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">Reviewed + gated.</td>
+            </tr></tbody></table>
+        </div><div class="cat">
+          <h4 class="cat__h">Navigation <span class="cat__n">6</span></h4>
+          <table class="tbl"><tbody><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Tabs</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">Reviewed + gated.</td>
+            </tr><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Tab-bar</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">Mobile bottom nav, gated.</td>
+            </tr><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Breadcrumbs</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">Reviewed + gated.</td>
+            </tr><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Pagination</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">Reviewed + gated.</td>
+            </tr><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Nav / Menu</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">navigations, gated.</td>
+            </tr><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Dropdown menu</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">dropdown, gated.</td>
+            </tr></tbody></table>
+        </div><div class="cat">
+          <h4 class="cat__h">Data display <span class="cat__n">12</span></h4>
+          <table class="tbl"><tbody><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Table</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">Reviewed + gated.</td>
+            </tr><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">List-items</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">Reviewed + gated.</td>
+            </tr><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Cards</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">Reviewed + gated (first Code Connect spoke).</td>
+            </tr><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Account-card</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">Fintech; gated.</td>
+            </tr><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Summary</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">Reviewed + gated.</td>
+            </tr><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Accordion</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">Reviewed + gated.</td>
+            </tr><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Tags</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">Reviewed + gated.</td>
+            </tr><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Badge</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">Reviewed + gated.</td>
+            </tr><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Status-indicator</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">RAG chips, gated.</td>
+            </tr><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Avatar</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">Reviewed + gated.</td>
+            </tr><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Reorder</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">Gated (portfolio-interactions testbed).</td>
+            </tr><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Progress-tracker (display)</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">Display-only; interactive Stepper is the gap.</td>
+            </tr></tbody></table>
+        </div><div class="cat">
+          <h4 class="cat__h">Feedback &amp; status <span class="cat__n">4</span></h4>
+          <table class="tbl"><tbody><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Notifications</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">Persistent; gated.</td>
+            </tr><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Tooltip</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">Reviewed + gated.</td>
+            </tr><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Spinner (Loading)</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">loading-indicator, gated.</td>
+            </tr><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Countdown timer</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">Reviewed + gated.</td>
+            </tr></tbody></table>
+        </div><div class="cat">
+          <h4 class="cat__h">Layout &amp; containers <span class="cat__n">5</span></h4>
+          <table class="tbl"><tbody><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Divider</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">Reviewed + gated.</td>
+            </tr><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Header</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">Reviewed + gated.</td>
+            </tr><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Hero</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">Reviewed + gated.</td>
+            </tr><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Eyebrow</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">Reviewed + gated.</td>
+            </tr><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Action-bar</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">Reviewed + gated.</td>
+            </tr></tbody></table>
+        </div><div class="cat">
+          <h4 class="cat__h">Media &amp; identity <span class="cat__n">2</span></h4>
+          <table class="tbl"><tbody><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Video-player</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">Reviewed + gated.</td>
+            </tr><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">Icon system</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">Dynamic-weight; some glyph gaps logged (_ICON-GAPS).</td>
+            </tr></tbody></table>
+        </div><div class="cat">
+          <h4 class="cat__h">Fintech-specific <span class="cat__n">1</span></h4>
+          <table class="tbl"><tbody><tr data-status="Gated" data-prio="P0">
+              <td class="c-comp">RAG / status chips</td>
+              <td class="c-chip"><span class="chip p0">Have</span></td>
+              <td class="c-chip"><span class="stt st-have">Gated</span></td>
+              <td class="c-mine">—</td>
+              <td class="c-notes">status-indicator, gated.</td>
+            </tr></tbody></table>
+        </div>
+    </section><section class="phase" data-phase="1 Foundations">
+      <div class="phase__head">
+        <span class="phase__idx num">01</span>
+        <div>
+          <h3 class="phase__name">Foundations</h3>
+          <p class="phase__lead">The reliability-critical parts a real screen can&#x27;t be built without. Ship these and “standard mode” stops inventing.</p>
+          <p class="phase__count num">23 items</p>
+        </div>
+      </div>
+      <div class="cat">
+          <h4 class="cat__h">Actions <span class="cat__n">1</span></h4>
+          <table class="tbl"><tbody><tr data-status="Gap" data-prio="P1">
+              <td class="c-comp">Icon button</td>
+              <td class="c-chip"><span class="chip p1">P1</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">MD3 / Carbon / Ant</td>
+              <td class="c-notes">Reliability-critical; used everywhere.</td>
+            </tr></tbody></table>
+        </div><div class="cat">
+          <h4 class="cat__h">Inputs &amp; forms <span class="cat__n">8</span></h4>
+          <table class="tbl"><tbody><tr data-status="Gap" data-prio="P1">
+              <td class="c-comp">Form layout + validation</td>
+              <td class="c-chip"><span class="chip p1">P1</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Carbon / Ant / GOV.UK</td>
+              <td class="c-notes">Field groups, inline + form-level errors. Biggest single gap.</td>
+            </tr><tr data-status="Gap" data-prio="P1">
+              <td class="c-comp">Date picker</td>
+              <td class="c-chip"><span class="chip p1">P1</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Ant / Carbon / MD3</td>
+              <td class="c-notes">Core banking input.</td>
+            </tr><tr data-status="Gap" data-prio="P1">
+              <td class="c-comp">Date-range picker</td>
+              <td class="c-chip"><span class="chip p1">P1</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Ant / Carbon</td>
+              <td class="c-notes">Statements / reporting periods.</td>
+            </tr><tr data-status="Gap" data-prio="P1">
+              <td class="c-comp">Time picker</td>
+              <td class="c-chip"><span class="chip p1">P1</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Ant / MD3</td>
+              <td class="c-notes">Payments scheduling.</td>
+            </tr><tr data-status="Gap" data-prio="P1">
+              <td class="c-comp">Number / currency (amount) input</td>
+              <td class="c-chip"><span class="chip p1">P1</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Fintech (Stripe) / Ant</td>
+              <td class="c-notes">Amount entry with formatting; banking-critical.</td>
+            </tr><tr data-status="Gap" data-prio="P1">
+              <td class="c-comp">File upload / dropzone</td>
+              <td class="c-chip"><span class="chip p1">P1</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Ant / Carbon / Untitled</td>
+              <td class="c-notes">Document upload journeys.</td>
+            </tr><tr data-status="Gap" data-prio="P1">
+              <td class="c-comp">OTP / PIN / secure entry</td>
+              <td class="c-chip"><span class="chip p1">P1</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Fintech (Plaid/Stripe)</td>
+              <td class="c-notes">Banking auth; generic systems lack this.</td>
+            </tr><tr data-status="Gap" data-prio="P1">
+              <td class="c-comp">Textarea</td>
+              <td class="c-chip"><span class="chip p1">P1</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Ant / Carbon / MD3</td>
+              <td class="c-notes">Multi-line input.</td>
+            </tr></tbody></table>
+        </div><div class="cat">
+          <h4 class="cat__h">Navigation <span class="cat__n">1</span></h4>
+          <table class="tbl"><tbody><tr data-status="Gap" data-prio="P1">
+              <td class="c-comp">Stepper (interactive)</td>
+              <td class="c-chip"><span class="chip p1">P1</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Ant / Carbon / MD3</td>
+              <td class="c-notes">Progress-tracker is display-only; this drives multi-step flows.</td>
+            </tr></tbody></table>
+        </div><div class="cat">
+          <h4 class="cat__h">Data display <span class="cat__n">4</span></h4>
+          <table class="tbl"><tbody><tr data-status="Gap" data-prio="P1">
+              <td class="c-comp">Data grid (sort/filter/select/edit)</td>
+              <td class="c-chip"><span class="chip p1">P1</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Carbon / Ant / AG-Grid</td>
+              <td class="c-notes">Data-dense tables; drives most fintech screens.</td>
+            </tr><tr data-status="Gap" data-prio="P1">
+              <td class="c-comp">Stat / metric card</td>
+              <td class="c-chip"><span class="chip p1">P1</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Tailwind / Untitled</td>
+              <td class="c-notes">Only a util today; promote to gated component.</td>
+            </tr><tr data-status="Gap" data-prio="P1">
+              <td class="c-comp">Charts / data-viz kit</td>
+              <td class="c-chip"><span class="chip p1">P1</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">dataviz skill / Carbon</td>
+              <td class="c-notes">Bar / line / donut / sparkline. Fitness tests invented these.</td>
+            </tr><tr data-status="Gap" data-prio="P1">
+              <td class="c-comp">Empty state</td>
+              <td class="c-chip"><span class="chip p1">P1</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Untitled / Tailwind</td>
+              <td class="c-notes">No-data / first-run screens.</td>
+            </tr></tbody></table>
+        </div><div class="cat">
+          <h4 class="cat__h">Feedback &amp; status <span class="cat__n">6</span></h4>
+          <table class="tbl"><tbody><tr data-status="Partial" data-prio="P1">
+              <td class="c-comp">Modal / Dialog</td>
+              <td class="c-chip"><span class="chip p1">P1</span></td>
+              <td class="c-chip"><span class="stt st-part">Partial</span></td>
+              <td class="c-mine">HSBC Figma (mI8hvIkV…)</td>
+              <td class="c-notes">Have confirm/alert dialog; true modals + lightboxes (desktop+mobile) to add.</td>
+            </tr><tr data-status="Gap" data-prio="P1">
+              <td class="c-comp">Alert / inline callout</td>
+              <td class="c-chip"><span class="chip p1">P1</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Carbon / Ant / GOV.UK</td>
+              <td class="c-notes">Already logged; inline + form-level messaging.</td>
+            </tr><tr data-status="Gap" data-prio="P1">
+              <td class="c-comp">Toast / snackbar</td>
+              <td class="c-chip"><span class="chip p1">P1</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">MD3 / Ant</td>
+              <td class="c-notes">Transient; distinct from persistent Notifications.</td>
+            </tr><tr data-status="Gap" data-prio="P1">
+              <td class="c-comp">Drawer / side sheet</td>
+              <td class="c-chip"><span class="chip p1">P1</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Ant / MD3 / Untitled</td>
+              <td class="c-notes">Slide-in panel for filters/detail.</td>
+            </tr><tr data-status="Gap" data-prio="P1">
+              <td class="c-comp">Popover</td>
+              <td class="c-chip"><span class="chip p1">P1</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Ant / Untitled</td>
+              <td class="c-notes">Rich anchored content; distinct from Tooltip.</td>
+            </tr><tr data-status="Gap" data-prio="P1">
+              <td class="c-comp">Skeleton loader</td>
+              <td class="c-chip"><span class="chip p1">P1</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Ant / MD3 / Untitled</td>
+              <td class="c-notes">Perceived-performance placeholder.</td>
+            </tr></tbody></table>
+        </div><div class="cat">
+          <h4 class="cat__h">Media &amp; identity <span class="cat__n">1</span></h4>
+          <table class="tbl"><tbody><tr data-status="Gap" data-prio="P1">
+              <td class="c-comp">Brand mark / logo</td>
+              <td class="c-chip"><span class="chip p1">P1</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">HSBC brand assets</td>
+              <td class="c-notes">Official asset; needed for shells/auth screens.</td>
+            </tr></tbody></table>
+        </div><div class="cat">
+          <h4 class="cat__h">Fintech-specific <span class="cat__n">2</span></h4>
+          <table class="tbl"><tbody><tr data-status="Gap" data-prio="P1">
+              <td class="c-comp">Amount / currency display + money format</td>
+              <td class="c-chip"><span class="chip p1">P1</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Fintech (Stripe/Wise)</td>
+              <td class="c-notes">Money formatting primitive; a true differentiator.</td>
+            </tr><tr data-status="Partial" data-prio="P1">
+              <td class="c-comp">Account selector / masked account chip</td>
+              <td class="c-chip"><span class="chip p1">P1</span></td>
+              <td class="c-chip"><span class="stt st-part">Partial</span></td>
+              <td class="c-mine">Fintech / Account-card</td>
+              <td class="c-notes">Partial via Account-card; promote a selector chip.</td>
+            </tr></tbody></table>
+        </div>
+    </section><section class="phase" data-phase="2 Depth">
+      <div class="phase__head">
+        <span class="phase__idx num">02</span>
+        <div>
+          <h3 class="phase__name">Depth</h3>
+          <p class="phase__lead">The rest of the base to reach comprehensive, plus the fintech set generic systems don&#x27;t carry.</p>
+          <p class="phase__count num">19 items</p>
+        </div>
+      </div>
+      <div class="cat">
+          <h4 class="cat__h">Actions <span class="cat__n">1</span></h4>
+          <table class="tbl"><tbody><tr data-status="Partial" data-prio="P2">
+              <td class="c-comp">Links</td>
+              <td class="c-chip"><span class="chip p2">P2</span></td>
+              <td class="c-chip"><span class="stt st-part">Partial</span></td>
+              <td class="c-mine">HSBC Figma / WCAG</td>
+              <td class="c-notes">Have base set; external-link / new-window variant still to add (CA-6).</td>
+            </tr></tbody></table>
+        </div><div class="cat">
+          <h4 class="cat__h">Inputs &amp; forms <span class="cat__n">3</span></h4>
+          <table class="tbl"><tbody><tr data-status="Gap" data-prio="P2">
+              <td class="c-comp">Combobox / autocomplete</td>
+              <td class="c-chip"><span class="chip p2">P2</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Ant / Untitled</td>
+              <td class="c-notes">Type-ahead select.</td>
+            </tr><tr data-status="Gap" data-prio="P2">
+              <td class="c-comp">Multi-select</td>
+              <td class="c-chip"><span class="chip p2">P2</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Ant / Carbon</td>
+              <td class="c-notes">Chips-in-field selection.</td>
+            </tr><tr data-status="Gap" data-prio="P2">
+              <td class="c-comp">Tags input</td>
+              <td class="c-chip"><span class="chip p2">P2</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Ant / Untitled</td>
+              <td class="c-notes">Free-entry token field.</td>
+            </tr></tbody></table>
+        </div><div class="cat">
+          <h4 class="cat__h">Navigation <span class="cat__n">2</span></h4>
+          <table class="tbl"><tbody><tr data-status="Gap" data-prio="P2">
+              <td class="c-comp">Command palette / global search</td>
+              <td class="c-chip"><span class="chip p2">P2</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Untitled / Tailwind</td>
+              <td class="c-notes">Power-user search.</td>
+            </tr><tr data-status="Gap" data-prio="P2">
+              <td class="c-comp">Sidebar / nav rail</td>
+              <td class="c-chip"><span class="chip p2">P2</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Tailwind / Untitled</td>
+              <td class="c-notes">Desktop app frame nav.</td>
+            </tr></tbody></table>
+        </div><div class="cat">
+          <h4 class="cat__h">Data display <span class="cat__n">3</span></h4>
+          <table class="tbl"><tbody><tr data-status="Gap" data-prio="P2">
+              <td class="c-comp">KPI / trend tile</td>
+              <td class="c-chip"><span class="chip p2">P2</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Tailwind / Untitled</td>
+              <td class="c-notes">Metric + delta + spark.</td>
+            </tr><tr data-status="Gap" data-prio="P2">
+              <td class="c-comp">Timeline / activity feed</td>
+              <td class="c-chip"><span class="chip p2">P2</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Ant / Untitled</td>
+              <td class="c-notes">Transaction history pattern.</td>
+            </tr><tr data-status="Gap" data-prio="P2">
+              <td class="c-comp">Avatar group</td>
+              <td class="c-chip"><span class="chip p2">P2</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Untitled / MD3</td>
+              <td class="c-notes">Stacked avatars.</td>
+            </tr></tbody></table>
+        </div><div class="cat">
+          <h4 class="cat__h">Feedback &amp; status <span class="cat__n">4</span></h4>
+          <table class="tbl"><tbody><tr data-status="Partial" data-prio="P2">
+              <td class="c-comp">Confirmation</td>
+              <td class="c-chip"><span class="chip p2">P2</span></td>
+              <td class="c-chip"><span class="stt st-part">Partial</span></td>
+              <td class="c-mine">HSBC Figma</td>
+              <td class="c-notes">Mobile success gated; desktop dialog-style variant to add.</td>
+            </tr><tr data-status="Gap" data-prio="P2">
+              <td class="c-comp">Banner</td>
+              <td class="c-chip"><span class="chip p2">P2</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Untitled / Tailwind</td>
+              <td class="c-notes">Page-level persistent message.</td>
+            </tr><tr data-status="Gap" data-prio="P2">
+              <td class="c-comp">Progress bar (linear/circular)</td>
+              <td class="c-chip"><span class="chip p2">P2</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Ant / MD3</td>
+              <td class="c-notes">Determinate progress.</td>
+            </tr><tr data-status="Gap" data-prio="P2">
+              <td class="c-comp">Popconfirm</td>
+              <td class="c-chip"><span class="chip p2">P2</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Ant</td>
+              <td class="c-notes">Inline confirm-in-place.</td>
+            </tr></tbody></table>
+        </div><div class="cat">
+          <h4 class="cat__h">Layout &amp; containers <span class="cat__n">2</span></h4>
+          <table class="tbl"><tbody><tr data-status="Gap" data-prio="P2">
+              <td class="c-comp">Footer</td>
+              <td class="c-chip"><span class="chip p2">P2</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Tailwind / Untitled</td>
+              <td class="c-notes">Incl. doormat / mega-footer.</td>
+            </tr><tr data-status="Gap" data-prio="P2">
+              <td class="c-comp">Grid / stack utilities</td>
+              <td class="c-chip"><span class="chip p2">P2</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Tailwind / MUI</td>
+              <td class="c-notes">Layout primitives.</td>
+            </tr></tbody></table>
+        </div><div class="cat">
+          <h4 class="cat__h">Fintech-specific <span class="cat__n">4</span></h4>
+          <table class="tbl"><tbody><tr data-status="Partial" data-prio="P2">
+              <td class="c-comp">Transaction / ledger row</td>
+              <td class="c-chip"><span class="chip p2">P2</span></td>
+              <td class="c-chip"><span class="stt st-part">Partial</span></td>
+              <td class="c-mine">Fintech (Monzo/Stripe)</td>
+              <td class="c-notes">Statement/ledger line item.</td>
+            </tr><tr data-status="Partial" data-prio="P2">
+              <td class="c-comp">Statement / document row</td>
+              <td class="c-chip"><span class="chip p2">P2</span></td>
+              <td class="c-chip"><span class="stt st-part">Partial</span></td>
+              <td class="c-mine">Fintech</td>
+              <td class="c-notes">Downloadable document row.</td>
+            </tr><tr data-status="Gap" data-prio="P2">
+              <td class="c-comp">Payment-card visual</td>
+              <td class="c-chip"><span class="chip p2">P2</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Fintech (Stripe/Apple)</td>
+              <td class="c-notes">Card face render.</td>
+            </tr><tr data-status="Gap" data-prio="P2">
+              <td class="c-comp">Coverage / runway bar</td>
+              <td class="c-chip"><span class="chip p2">P2</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Fintech (own)</td>
+              <td class="c-notes">Cash-runway meter (fitness tests invented this).</td>
+            </tr></tbody></table>
+        </div>
+    </section><section class="phase" data-phase="3 Scale">
+      <div class="phase__head">
+        <span class="phase__idx num">03</span>
+        <div>
+          <h3 class="phase__name">Scale</h3>
+          <p class="phase__lead">The multiplier layer — shells, templates and lock-ups that compose from the bases and take the catalogue to 200–300.</p>
+          <p class="phase__count num">44 items</p>
+        </div>
+      </div>
+      <div class="cat">
+          <h4 class="cat__h">Actions <span class="cat__n">2</span></h4>
+          <table class="tbl"><tbody><tr data-status="Gap" data-prio="P3">
+              <td class="c-comp">Split button</td>
+              <td class="c-chip"><span class="chip p3">P3</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Ant / Carbon</td>
+              <td class="c-notes">Nice-to-have.</td>
+            </tr><tr data-status="Gap" data-prio="P3">
+              <td class="c-comp">FAB (mobile)</td>
+              <td class="c-chip"><span class="chip p3">P3</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">MD3</td>
+              <td class="c-notes">Mobile floating action.</td>
+            </tr></tbody></table>
+        </div><div class="cat">
+          <h4 class="cat__h">Inputs &amp; forms <span class="cat__n">4</span></h4>
+          <table class="tbl"><tbody><tr data-status="Gap" data-prio="P3">
+              <td class="c-comp">Range slider</td>
+              <td class="c-chip"><span class="chip p3">P3</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Ant / MD3</td>
+              <td class="c-notes">Dual-handle.</td>
+            </tr><tr data-status="Gap" data-prio="P3">
+              <td class="c-comp">Rating</td>
+              <td class="c-chip"><span class="chip p3">P3</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Ant</td>
+              <td class="c-notes">Star / score input.</td>
+            </tr><tr data-status="Gap" data-prio="P3">
+              <td class="c-comp">Cascader / tree-select</td>
+              <td class="c-chip"><span class="chip p3">P3</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Ant</td>
+              <td class="c-notes">Hierarchical select.</td>
+            </tr><tr data-status="Gap" data-prio="P3">
+              <td class="c-comp">Transfer (dual list)</td>
+              <td class="c-chip"><span class="chip p3">P3</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Ant</td>
+              <td class="c-notes">Move-between lists.</td>
+            </tr></tbody></table>
+        </div><div class="cat">
+          <h4 class="cat__h">Navigation <span class="cat__n">2</span></h4>
+          <table class="tbl"><tbody><tr data-status="Gap" data-prio="P3">
+              <td class="c-comp">Anchor / scrollspy</td>
+              <td class="c-chip"><span class="chip p3">P3</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Ant</td>
+              <td class="c-notes">In-page section nav.</td>
+            </tr><tr data-status="Gap" data-prio="P3">
+              <td class="c-comp">Back-to-top</td>
+              <td class="c-chip"><span class="chip p3">P3</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Ant</td>
+              <td class="c-notes">Long-page utility.</td>
+            </tr></tbody></table>
+        </div><div class="cat">
+          <h4 class="cat__h">Data display <span class="cat__n">4</span></h4>
+          <table class="tbl"><tbody><tr data-status="Gap" data-prio="P3">
+              <td class="c-comp">Tree</td>
+              <td class="c-chip"><span class="chip p3">P3</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Ant / Carbon</td>
+              <td class="c-notes">Hierarchical data.</td>
+            </tr><tr data-status="Gap" data-prio="P3">
+              <td class="c-comp">Calendar</td>
+              <td class="c-chip"><span class="chip p3">P3</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Ant / MD3</td>
+              <td class="c-notes">Full month view (distinct from date picker).</td>
+            </tr><tr data-status="Gap" data-prio="P3">
+              <td class="c-comp">Carousel</td>
+              <td class="c-chip"><span class="chip p3">P3</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Ant / Untitled</td>
+              <td class="c-notes">Rotating content.</td>
+            </tr><tr data-status="Gap" data-prio="P3">
+              <td class="c-comp">QR code</td>
+              <td class="c-chip"><span class="chip p3">P3</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Fintech</td>
+              <td class="c-notes">Payments / onboarding.</td>
+            </tr></tbody></table>
+        </div><div class="cat">
+          <h4 class="cat__h">Layout &amp; containers <span class="cat__n">1</span></h4>
+          <table class="tbl"><tbody><tr data-status="Gap" data-prio="P3">
+              <td class="c-comp">Splitter / resizable</td>
+              <td class="c-chip"><span class="chip p3">P3</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Ant</td>
+              <td class="c-notes">Resizable panes.</td>
+            </tr></tbody></table>
+        </div><div class="cat">
+          <h4 class="cat__h">Media &amp; identity <span class="cat__n">1</span></h4>
+          <table class="tbl"><tbody><tr data-status="Partial" data-prio="P3">
+              <td class="c-comp">Image / media block</td>
+              <td class="c-chip"><span class="chip p3">P3</span></td>
+              <td class="c-chip"><span class="stt st-part">Partial</span></td>
+              <td class="c-mine">Untitled / Tailwind</td>
+              <td class="c-notes">Partial today.</td>
+            </tr></tbody></table>
+        </div><div class="cat">
+          <h4 class="cat__h">Fintech-specific <span class="cat__n">2</span></h4>
+          <table class="tbl"><tbody><tr data-status="Gap" data-prio="P3">
+              <td class="c-comp">Standing-order / mandate row</td>
+              <td class="c-chip"><span class="chip p3">P3</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Fintech</td>
+              <td class="c-notes">Recurring-payment row.</td>
+            </tr><tr data-status="Gap" data-prio="P3">
+              <td class="c-comp">Limits meter</td>
+              <td class="c-chip"><span class="chip p3">P3</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Fintech</td>
+              <td class="c-notes">Spend/transfer limit gauge.</td>
+            </tr></tbody></table>
+        </div><div class="cat">
+          <h4 class="cat__h">Shells (Layer 2) <span class="cat__n">7</span></h4>
+          <table class="tbl"><tbody><tr data-status="Gap" data-prio="P2">
+              <td class="c-comp">App shell — top / stacked nav</td>
+              <td class="c-chip"><span class="chip p2">P2</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Tailwind UI (~23 shells)</td>
+              <td class="c-notes">Frame content lives in.</td>
+            </tr><tr data-status="Gap" data-prio="P2">
+              <td class="c-comp">App shell — side nav</td>
+              <td class="c-chip"><span class="chip p2">P2</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Tailwind UI</td>
+              <td class="c-notes">Desktop app frame.</td>
+            </tr><tr data-status="Gap" data-prio="P2">
+              <td class="c-comp">App shell — multi-column</td>
+              <td class="c-chip"><span class="chip p2">P2</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Tailwind UI</td>
+              <td class="c-notes">List + detail frame.</td>
+            </tr><tr data-status="Gap" data-prio="P3">
+              <td class="c-comp">App shell — split</td>
+              <td class="c-chip"><span class="chip p3">P3</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Tailwind UI</td>
+              <td class="c-notes">Two-pane.</td>
+            </tr><tr data-status="Gap" data-prio="P3">
+              <td class="c-comp">App shell — focused / full-page</td>
+              <td class="c-chip"><span class="chip p3">P3</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Tailwind UI</td>
+              <td class="c-notes">Auth / wizard frame.</td>
+            </tr><tr data-status="Gap" data-prio="P3">
+              <td class="c-comp">App shell — doormat (mega-footer) nav</td>
+              <td class="c-chip"><span class="chip p3">P3</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Tailwind UI</td>
+              <td class="c-notes">Marketing frame.</td>
+            </tr><tr data-status="Gap" data-prio="P3">
+              <td class="c-comp">App shell — nav rail</td>
+              <td class="c-chip"><span class="chip p3">P3</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Tailwind UI / MD3</td>
+              <td class="c-notes">Compact icon rail.</td>
+            </tr></tbody></table>
+        </div><div class="cat">
+          <h4 class="cat__h">Templates (Layer 2) <span class="cat__n">11</span></h4>
+          <table class="tbl"><tbody><tr data-status="Gap" data-prio="P2">
+              <td class="c-comp">Template — dashboard</td>
+              <td class="c-chip"><span class="chip p2">P2</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Tailwind / Untitled</td>
+              <td class="c-notes">Composes from stat/chart/grid bases.</td>
+            </tr><tr data-status="Gap" data-prio="P2">
+              <td class="c-comp">Template — list / index</td>
+              <td class="c-chip"><span class="chip p2">P2</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Tailwind / Untitled</td>
+              <td class="c-notes">Table/list + filter bar.</td>
+            </tr><tr data-status="Gap" data-prio="P2">
+              <td class="c-comp">Template — detail</td>
+              <td class="c-chip"><span class="chip p2">P2</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Tailwind / Untitled</td>
+              <td class="c-notes">Record detail view.</td>
+            </tr><tr data-status="Gap" data-prio="P2">
+              <td class="c-comp">Template — create / edit form</td>
+              <td class="c-chip"><span class="chip p2">P2</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Tailwind / Untitled</td>
+              <td class="c-notes">Needs Form base first.</td>
+            </tr><tr data-status="Gap" data-prio="P3">
+              <td class="c-comp">Template — settings</td>
+              <td class="c-chip"><span class="chip p3">P3</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Tailwind / Untitled</td>
+              <td class="c-notes">Preferences layout.</td>
+            </tr><tr data-status="Gap" data-prio="P2">
+              <td class="c-comp">Template — multi-step wizard</td>
+              <td class="c-chip"><span class="chip p2">P2</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Tailwind / Untitled</td>
+              <td class="c-notes">Needs Stepper base first.</td>
+            </tr><tr data-status="Gap" data-prio="P3">
+              <td class="c-comp">Template — empty</td>
+              <td class="c-chip"><span class="chip p3">P3</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Untitled</td>
+              <td class="c-notes">Composes Empty-state base.</td>
+            </tr><tr data-status="Gap" data-prio="P3">
+              <td class="c-comp">Template — error (404 / 500)</td>
+              <td class="c-chip"><span class="chip p3">P3</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Tailwind / Untitled</td>
+              <td class="c-notes">Error pages.</td>
+            </tr><tr data-status="Gap" data-prio="P2">
+              <td class="c-comp">Template — auth (login / register / OTP)</td>
+              <td class="c-chip"><span class="chip p2">P2</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Tailwind / Untitled</td>
+              <td class="c-notes">Needs OTP + brand-mark bases.</td>
+            </tr><tr data-status="Gap" data-prio="P3">
+              <td class="c-comp">Template — report</td>
+              <td class="c-chip"><span class="chip p3">P3</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Fintech / Untitled</td>
+              <td class="c-notes">Printable statement/report.</td>
+            </tr><tr data-status="Gap" data-prio="P3">
+              <td class="c-comp">Template — confirmation</td>
+              <td class="c-chip"><span class="chip p3">P3</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Untitled</td>
+              <td class="c-notes">Composes Confirmation base.</td>
+            </tr></tbody></table>
+        </div><div class="cat">
+          <h4 class="cat__h">Lock-ups (Layer 2) <span class="cat__n">10</span></h4>
+          <table class="tbl"><tbody><tr data-status="Gap" data-prio="P2">
+              <td class="c-comp">Lock-up — page headers (tabs/actions/breadcrumb/meta)</td>
+              <td class="c-chip"><span class="chip p2">P2</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Tailwind (25 header variants)</td>
+              <td class="c-notes">The Untitled multiplier lives here.</td>
+            </tr><tr data-status="Gap" data-prio="P3">
+              <td class="c-comp">Lock-up — section headings</td>
+              <td class="c-chip"><span class="chip p3">P3</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Tailwind</td>
+              <td class="c-notes">Configured heading rows.</td>
+            </tr><tr data-status="Gap" data-prio="P3">
+              <td class="c-comp">Lock-up — card headers</td>
+              <td class="c-chip"><span class="chip p3">P3</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Tailwind</td>
+              <td class="c-notes">Card-top arrangements.</td>
+            </tr><tr data-status="Gap" data-prio="P3">
+              <td class="c-comp">Lock-up — hero variants</td>
+              <td class="c-chip"><span class="chip p3">P3</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Tailwind / Untitled</td>
+              <td class="c-notes">Hero configurations.</td>
+            </tr><tr data-status="Gap" data-prio="P3">
+              <td class="c-comp">Lock-up — stats band</td>
+              <td class="c-chip"><span class="chip p3">P3</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Tailwind</td>
+              <td class="c-notes">Row of stat tiles.</td>
+            </tr><tr data-status="Gap" data-prio="P2">
+              <td class="c-comp">Lock-up — filter / toolbar bar</td>
+              <td class="c-chip"><span class="chip p2">P2</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Tailwind / Untitled</td>
+              <td class="c-notes">Above tables/lists.</td>
+            </tr><tr data-status="Gap" data-prio="P3">
+              <td class="c-comp">Lock-up — footer / doormat</td>
+              <td class="c-chip"><span class="chip p3">P3</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Tailwind</td>
+              <td class="c-notes">Mega-footer.</td>
+            </tr><tr data-status="Gap" data-prio="P3">
+              <td class="c-comp">Lock-up — CTA</td>
+              <td class="c-chip"><span class="chip p3">P3</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Tailwind / Untitled</td>
+              <td class="c-notes">Call-to-action band.</td>
+            </tr><tr data-status="Gap" data-prio="P3">
+              <td class="c-comp">Lock-up — feature grid</td>
+              <td class="c-chip"><span class="chip p3">P3</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Tailwind / Untitled</td>
+              <td class="c-notes">Feature tiles.</td>
+            </tr><tr data-status="Gap" data-prio="P3">
+              <td class="c-comp">Per-component variant matrices</td>
+              <td class="c-chip"><span class="chip p3">P3</span></td>
+              <td class="c-chip"><span class="stt st-gap">Gap</span></td>
+              <td class="c-mine">Untitled UI (10k+ variants)</td>
+              <td class="c-notes">Every base × emphasis/size/state/density — the number multiplier to 200–300.</td>
+            </tr></tbody></table>
+        </div>
+    </section>
+  </div>
+
+  <footer><div class="wrap">
+    <p class="label">How to read this</p>
+    <p><b>P1</b> = reliability-critical (build first — removes the reason the engine invents). <b>P2</b> = common. <b>P3</b> = nice-to-have. <b>Status</b>: <span class="stt st-have">Gated</span> already reviewed · <span class="stt st-part">Partial</span> exists, needs a variant · <span class="stt st-gap">Gap</span> to build. “Mine from” names the reference library to review each gap against.</p>
+    <p class="note">Layer 1 = base components (~96). Layer 2 = shells, templates and lock-ups (~28) that compose from the bases; with per-component variant matrices these multiply into the 200–300 catalogue. Every gap runs the existing gated pipeline (snippet → meta → gate → <code>.cn-*</code>) — a content build, not new infrastructure. Indicative counts for shaping the plan, not a commitment.</p>
+  </div></footer>
+
+<script>
+  const btns = document.querySelectorAll('.controls .btn');
+  function apply(f){
+    document.querySelectorAll('tr[data-status]').forEach(tr => {
+      const st = tr.dataset.status, pr = tr.dataset.prio;
+      let show = true;
+      if(f==='gap') show = (st==='Gap' || st==='Partial');
+      else if(f==='p1') show = (pr==='P1');
+      else if(f==='have') show = (st==='Gated');
+      tr.classList.toggle('hide', !show);
+    });
+    // hide empty categories / phases
+    document.querySelectorAll('.cat').forEach(c => {
+      const any = [...c.querySelectorAll('tr')].some(t => !t.classList.contains('hide'));
+      c.classList.toggle('hide', !any);
+    });
+    document.querySelectorAll('.phase').forEach(p => {
+      const any = [...p.querySelectorAll('tr')].some(t => !t.classList.contains('hide'));
+      p.classList.toggle('hide', !any);
+    });
+  }
+  btns.forEach(b => b.addEventListener('click', () => {
+    btns.forEach(x => x.classList.remove('on')); b.classList.add('on');
+    apply(b.dataset.f);
+  }));
+</script>
+</body>
+</html>
