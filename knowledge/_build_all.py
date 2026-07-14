@@ -9,7 +9,9 @@ The generators must run in this order because later ones read earlier outputs:
   5. _build_dark_mode_audit.py               -> _DARK-MODE-AUDIT.json/.md (needs 2)
   6. _build_surface_contrast_audit.py        -> _TEXT-CONTRAST-AUDIT.json/.md (needs _contrast_utils)
   7. _build_indicator_contrast_audit.py      -> _INDICATOR-CONTRAST-AUDIT.json/.md (needs _contrast_utils)
-  8. _build_integrity.py                     -> _INTEGRITY-REPORT.md   (the gate; needs 3)
+  8. compliance/_build_verification_edges.py -> compliance/graph-index.json (verification block) + rules/*.json (verified_by)
+                                                 (needs 1, 6, 7 and the a11y gate — runs after all of them, see STEPS order)
+  9. _build_integrity.py                     -> _INTEGRITY-REPORT.md   (the gate; needs 3)
 
 Run:  python3 knowledge/_build_all.py
 Exits non-zero if EITHER gate fails: the integrity lint (step 8, any ERROR) or
@@ -39,6 +41,7 @@ STEPS = [
     ("icon-source gate", "_validate_icons.py"),
     ("a11y gate", "_validate_a11y.py"),
     ("coverage gate", "_validate_coverage.py"),
+    ("compliance verification edges — applies_to vs verified_by (advisory)", "compliance/_build_verification_edges.py"),
     ("integrity lint (gate)", "_build_integrity.py"),
 ]
 

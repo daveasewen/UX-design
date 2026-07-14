@@ -14,7 +14,7 @@
     "wcag_versions": { "type": "array", "items": { "enum": ["2.0", "2.1", "2.2"] } },
     "applies_to": {
       "type": "array",
-      "description": "component categories or specific components this rule governs (graph edges)",
+      "description": "component categories or specific components this rule governs — the CLAIMED edge (asserted by the component metas, not machine-checked).",
       "items": { "type": "string" }
     },
     "check": {
@@ -25,6 +25,21 @@
         "type": { "enum": ["automated", "semi-automated", "manual"] },
         "description": { "type": "string" },
         "threshold": { "type": "string" }
+      }
+    },
+    "verified_by": {
+      "type": ["object", "null"],
+      "description": "The VERIFIED edge — orthogonal to applies_to. Null means this rule has no executable check wired into the build yet (applies_to is asserted only). Non-null means an executable, gating-or-advisory check runs in knowledge/_build_all.py and its current result is recorded here. Populated by knowledge/compliance/_build_verification_edges.py, which runs AFTER the audits/gates it reads (contrast audits, a11y gate) so the result reflects the current build, not a stale claim. Granularity note: today's mechanisms check at TOKEN or SNIPPET granularity, not always at the exact per-component-instance granularity applies_to implies — see 'granularity' field.",
+      "additionalProperties": false,
+      "required": ["script", "artifact", "mechanism", "granularity", "result", "checked"],
+      "properties": {
+        "script": { "type": "string", "description": "generator/validator that produces the evidence, relative to knowledge/" },
+        "artifact": { "type": "string", "description": "report file the result was read from, relative to knowledge/" },
+        "mechanism": { "type": "string", "description": "one line: what is actually being checked and how" },
+        "granularity": { "enum": ["component", "token", "aggregate"], "description": "component = checked per named component instance (e.g. per snippet); token = checked on the design-token store, joined to components only via blast-radius (not yet a direct per-component edge); aggregate = one pass/fail for the whole rule, not split by component" },
+        "result": { "enum": ["pass", "fail"], "description": "pass = 0 non-allowlisted failures against this SC at the last build run" },
+        "checked": { "type": "string", "description": "ISO date this verified_by entry was last (re)computed" },
+        "note": { "type": "string" }
       }
     },
     "severity": { "enum": ["minor", "serious", "critical"] },

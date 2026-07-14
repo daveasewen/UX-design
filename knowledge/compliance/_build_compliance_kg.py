@@ -5,6 +5,13 @@
 - Derives applies_to edges (which components cite each WCAG SC) from source-of-truth.
 - Emits one schema-conformant rule file per SC + a both-way graph index.
 - Validates every rule against rule.schema.json (manual check, no deps).
+
+Edge-typing note (2026-07-14): this generator only ever writes the CLAIMED edge
+(applies_to). The VERIFIED edge (verified_by — is there an executable check and
+does it currently pass) is layered on separately, later in the build, by
+knowledge/compliance/_build_verification_edges.py — it needs the contrast
+audits and the a11y gate to have already run, which happen after this step in
+_build_all.py. Don't add verified_by logic here; add it there.
 """
 import json, re, glob, os, sys, datetime
 
@@ -33,7 +40,7 @@ M = {
  "2.1.2": ("No Keyboard Trap","A",["2.0","2.1","2.2"],"critical","manual","Keyboard focus can be moved away from any component using only the keyboard (Esc / standard exits).",None,"no-keyboard-trap"),
  "2.2.1": ("Timing Adjustable","A",["2.0","2.1","2.2"],"serious","manual","Time limits can be turned off, adjusted, or extended (or are essential/exempt).",None,"timing-adjustable"),
  "2.2.2": ("Pause, Stop, Hide","A",["2.0","2.1","2.2"],"serious","manual","Moving/auto-updating content (>5s) can be paused, stopped or hidden.",None,"pause-stop-hide"),
- "2.3.3": ("Animation from Interactions","AAA",["2.1","2.2"],"minor","manual","Motion animation triggered by interaction can be disabled (respect prefers-reduced-motion) unless essential.",None,"animation-from-interactions"),
+ "2.3.3": ("Animation from Interactions","AAA",["2.1","2.2"],"minor","semi-automated","Motion animation triggered by interaction can be disabled (respect prefers-reduced-motion) unless essential.",None,"animation-from-interactions"),
  "2.4.1": ("Bypass Blocks","A",["2.0","2.1","2.2"],"serious","semi-automated","A mechanism is available to bypass repeated blocks (skip link / landmarks).",None,"bypass-blocks"),
  "2.4.3": ("Focus Order","A",["2.0","2.1","2.2"],"serious","manual","Focusable components receive focus in an order that preserves meaning and operability (incl. trapped/returned focus for dialogs).",None,"focus-order"),
  "2.4.4": ("Link Purpose (In Context)","A",["2.0","2.1","2.2"],"serious","semi-automated","The purpose of each link is determinable from the link text (alone or with its context); avoid 'click here'.",None,"link-purpose-in-context"),
@@ -118,7 +125,7 @@ for sc in sorted(by_sc):
 
 # --- graph index ---
 index = {
-    "$description": "Compliance knowledge graph index — both-way adjacency between WCAG success criteria and components. Generated from knowledge/components/*.meta.json relatedSC by build_compliance_kg.py. Conformance basis: WCAG 2.2 AA (HSBC digital accessibility framework).",
+    "$description": "Compliance knowledge graph index — both-way adjacency between WCAG success criteria and components. Generated from knowledge/components/*.meta.json relatedSC by build_compliance_kg.py. Conformance basis: WCAG 2.2 AA (HSBC digital accessibility framework). The 'verification' block (SC -> verified_by-or-null) is added LATER in the build by _build_verification_edges.py — absent here, present after a full knowledge/_build_all.py run.",
     "generated": datetime.date.today().isoformat(),
     "totals": {"rules": len(written), "components": len(by_comp), "sc": len(by_sc)},
     "by_sc": {sc: sorted(list(c)) for sc, c in sorted(by_sc.items())},
