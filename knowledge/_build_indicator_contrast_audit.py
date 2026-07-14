@@ -8,7 +8,40 @@ Allowlisted tokens are reported but do not gate.
 
 GATES the build: exits non-zero if any non-allowlisted indicator is below 3:1
 (WCAG 1.4.11 non-text contrast, AA).
-Writes knowledge/_INDICATOR-CONTRAST-AUDIT.json + .md
+
+Classifier note (2026-07-14): `is_indicator_token` was widened to include
+BORDER tokens generally (e.g. `divider/border/subsection`, `form/border/default`),
+not just brand/RAG/interactive-accent tokens. Reason: WCAG 1.4.11 explicitly
+covers "the boundaries of user interface components" — a border IS a graphical
+object this SC protects, not a surface fill. The prior classifier required one
+of {primary, rag/, interactive, status} AND excluded anything containing
+"border", which meant a token like `divider/border/subsection` could never be
+picked up regardless — it's not brand/status-named, and even if it were, the
+border exclusion would have caught it. That silently exempted every border
+token in the store from this SC's audit. Fixed by adding a `border` keyword to
+the positive match and dropping `border` from the surface-exclusion list
+(surface exclusion now only covers actual fills: background/surface/tint).
+This was found via the compliance-graph verification join (2026-07-14,
+[[compliance-verified-by-edges]]) surfacing Divider as `1.4.11 not_covered`
+despite binding proper light/dark-mode tokens.
+
+Inactive-component exemption (2026-07-14, same pass): the first full run of the
+widened classifier caught 19 tokens below 3:1, not just Divider's. 4 of those
+were `*/disabled` tokens (`form/border/disabled`, `primary/border/disabled`,
+`secondary/border/disabled`, `tertiary/border/disabled`). WCAG 1.4.11's own
+normative text carves these out: "...have a contrast ratio of at least 3:1...
+except for inactive components." So auditing disabled-state borders against
+this SC was itself a bug in the widened classifier, not a real finding — fixed
+by excluding any token containing "disabled" from this audit entirely.
+
+The remaining 15 tokens (dividers, table/tabs/tooltip borders, active-state
+form/primary borders, data-vis gridlines, and the generic border/strong +
+border/subtle primitives) are left as genuine GATING failures per an explicit
+decision (2026-07-14): rather than quietly narrowing the classifier further or
+allowlisting them, the build stays red on these until each is either given a
+real dark-mode value fix or its component's `applies_to` claim is reconsidered.
+See `_INDICATOR-CONTRAST-AUDIT.md` for the live list and
+`knowledge/compliance/README.md` for the tracking note.
 """
 import json, os, sys
 from collections import OrderedDict
@@ -43,9 +76,10 @@ def mode_val(n, m):
 
 
 def is_indicator_token(name):
-    has = any(p in name for p in ["primary", "rag/", "interactive", "status"])
-    is_surface = any(x in name for x in ["background", "surface", "border", "tint"])
-    return has and not is_surface
+    has = any(p in name for p in ["primary", "rag/", "interactive", "status", "border"])
+    is_surface = any(x in name for x in ["background", "surface", "tint"])
+    is_inactive = "disabled" in name  # WCAG 1.4.11 exempts inactive components, verbatim
+    return has and not is_surface and not is_inactive
 
 
 sem = leaves(json.load(open(os.path.join(TOK, "semantic-colour.json"))))
@@ -87,7 +121,7 @@ ok_count = sum(1 for r in audit if r["status"] == "OK")
 allowed = [r for r in audit if r["status"] == "ALLOWED"]
 
 audit_json = {
-    "$description": "Indicator/accent dark-mode contrast audit. Brand red, RAG status, and interactive-state tokens tested at 3:1 (WCAG 1.4.11) against the worst-case (lightest) dark surface resolved from the store. on-light tokens excluded (light-only). Allowlisted tokens reported, not gated. POOR_CONTRAST FAILS the build.",
+    "$description": "Indicator/accent dark-mode contrast audit. Brand red, RAG status, interactive-state, AND border tokens (widened 2026-07-14 — WCAG 1.4.11 explicitly covers UI-component boundaries, not just accent fills) tested at 3:1 (WCAG 1.4.11) against the worst-case (lightest) dark surface resolved from the store. on-light tokens excluded (light-only). Disabled/inactive-state tokens excluded per WCAG 1.4.11's own text ('except for inactive components'). Allowlisted tokens reported, not gated. POOR_CONTRAST FAILS the build — as of 2026-07-14, 15 border tokens genuinely fail and are being tracked as real gaps, not allowlisted away.",
     "generated": "2026-06-19",
     "default_dark_surface": DEFAULT_DARK,
     "raised_dark_surface": RAISED_DARK,
@@ -107,7 +141,7 @@ json.dump(audit_json, open(os.path.join(ROOT, "_INDICATOR-CONTRAST-AUDIT.json"),
 L = [
     "# Indicator/accent token dark-mode contrast audit",
     "",
-    f"> Brand red, RAG status, and interactive-state tokens tested at **3:1** (WCAG 1.4.11) against the worst-case (lightest) dark surface resolved from the store — page default `{DEFAULT_DARK}` + raised island `{RAISED_DARK}`. `on-light` tokens excluded (light-only).",
+    f"> Brand red, RAG status, interactive-state, and border tokens tested at **3:1** (WCAG 1.4.11) against the worst-case (lightest) dark surface resolved from the store — page default `{DEFAULT_DARK}` + raised island `{RAISED_DARK}`. `on-light` tokens excluded (light-only). Border tokens included since 2026-07-14 (1.4.11 explicitly covers UI-component boundaries). `*/disabled` tokens excluded — WCAG 1.4.11 itself exempts inactive components.",
     "",
     f"**Result:** {ok_count} pass · {len(allowed)} allowed exception(s) · **{len(poor)} gating failure(s)** · {len(skipped)} skipped (light-only).",
     "",

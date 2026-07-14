@@ -8,7 +8,7 @@
 
 | SC | Result | Granularity | Coverage |
 |---|---|---|---|
-| 1.4.11 | ✅ pass | component | 4/8 applies_to components have a bound audited token |
+| 1.4.11 | ❌ fail | component | 6/8 applies_to components have a bound audited token |
 | 1.4.3 | ✅ pass | component | 18/18 applies_to components have a bound audited token |
 | 2.3.3 | ✅ pass | component | — |
 | 2.5.8 | ✅ pass | component | — |
@@ -17,9 +17,11 @@
 
 ### 1.4.11
 
-4/8 applies_to components have a bound audited token. 4 pass, 0 fail, 4 not_covered.
+6/8 applies_to components have a bound audited token. 2 pass, 4 fail, 2 not_covered.
 
-**Not covered** (applies_to claims this SC but the blast-radius scan found no bound audited token — either the component genuinely doesn't touch this colour category, or the scan's meta-text matching missed a prose-only reference): Badge, Cards, Divider, Links
+**Failing:** Account card, Cards, Divider, Dropdown
+
+**Not covered** (applies_to claims this SC but the blast-radius scan found no bound audited token — either the component genuinely doesn't touch this colour category, or the scan's meta-text matching missed a prose-only reference): Badge, Links
 
 ### 1.4.3
 
