@@ -5,7 +5,7 @@ what's **OPEN**. Read this second, after `GOOD-MORNING.md`, before `knowledge/RE
 Per **ADR-0007**. ⚠️ **INTERIM — hand-maintained** until `_build_live_state.py` generates it from
 front-matter edges + tombstones. Refresh at end of every session alongside the handoff.*
 
-*Last refreshed: 2026-07-10 (§9 session — trace tool, layout/library root-cause, findings doc; eve: external deep review + generation-shape ruling + KG design direction + component-factory build-out plan).*
+*Last refreshed: 2026-07-14 (presentations + housekeeping — designer pack shipped-ready, sponsor deck, Apollo rename, red-rule fix, repo restructure + interactive map). All committed AND pushed.*
 
 > ⚠️ **AUDIT STATUS — everything below is RECORDED, not VALIDATED.** Provenance ≠ correctness.
 > These entries capture *that* a decision was made and what it supersedes — **not** that it is
@@ -16,6 +16,28 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
 ---
 
 ## LIVE — current truth (in force)
+
+- **Project name = Apollo** (2026-07-14). Renamed from *Promenaut* repo-wide (51 files + renames);
+  the "Smart Design System" descriptor dropped in favour of **Apollo** (singular preferred; "Apollo
+  SDS" acceptable). `archive/` included (kept as part of the one project). Commit be3c364.
+- **Red rule = red is the PRIMARY-action accent, used ONCE per screen** (RULED Dave 2026-07-14) —
+  **NOT destructive-only.** Destructive/error takes a distinct, non-red treatment. **Supersedes**
+  the charter §4 register-tied "red-forward ceiling" (sober=destructive/accent, balanced/expressive=
+  red-may-lead) → now universal. `BRAND-1` gate (`runs/proof-001.../gate2_assembly.py`) rewritten:
+  blocks red on any non-primary action AND red used >once. **Propagation gap (OPEN):** historical
+  fitness-test builds (`knowledge/_fitness-test/sme-payments*.html`) + proof-001 `_GATE2-REPORT.md`
+  still state the old rule — regenerate if revived. Memory `apollo-rename-and-red-rule-2026-07-14`. Commit f8e05e5.
+- **Designer pack = shipped-ready** (2026-07-14). `designer-skills-v1/` (4 skills + built KB, gitignored);
+  handover artifact **`Apollo-designer-skills.zip`**. Delivery via VS Code + GitHub Copilot Agent
+  Skills; **no Python for v1**. Intro (`notes/designer-pack-intro-teams.md`) for ~the 20th; hands-on
+  the 24th. **Untested:** live-fire on a designer's machine (likely folder-placement) — top release risk.
+- **Working model = land to the live repo as-you-go** (RULED 2026-07-14). Deliverables write straight
+  to the connected repo via the desktop bridge, NOT cloud scratch; the `/tmp/ux` snapshot is stale —
+  don't trust it. Keep GitHub Desktop CLOSED during Claude commits (lock contention). Memory
+  `working-model-cloud-vs-device`.
+- **Repo restructured for human-readability** (2026-07-14). Root = operating essentials only
+  (README · AGENTS · GOOD-MORNING · _LIVE-STATE · MODEL-ROUTING); new `reviews/ notes/ projects/`;
+  visual map at `docs/repo-map.html`. Commit 70d38f6.
 
 - **Product = a *flexing* engine** — one governed core, dials per work-type; floor/churn ("vibe")
   vs ceiling/novel ("analysis"). `ADR-0006`.
