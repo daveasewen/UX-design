@@ -27,6 +27,7 @@ STEPS = [
     ("cross-reference index", "_build_xref_index.py"),
     ("sutherland acceptance fixtures", "_build_sutherland_fixtures.py"),
     ("states-completeness probe (advisory)", "_build_states_probe.py"),
+    ("_LIVE-STATE staleness gate (advisory, ADR-0007)", "_build_live_state.py"),
     ("advisory signals — prose rules (advisory)", "_validate_advisory.py"),
     ("review queue", "_build_review_queue.py"),
     ("dark-mode coverage audit", "_build_dark_mode_audit.py"),
@@ -73,6 +74,9 @@ for i, (label, rel) in enumerate(STEPS, 1):
         elif "rules index" in label:
             print(f"\n❌ rules-index gate failed (exit {r.returncode}) — duplicate/missing/malformed rule IDs in guidelines/")
             rc = rc or r.returncode
+        elif "advisory" in label.lower():
+            # advisory steps never gate/abort — they report and the build continues
+            print(f"\n⚠ advisory step '{label}' reported findings (exit {r.returncode}) — non-gating")
         else:
             print(f"\n❌ step '{label}' failed (exit {r.returncode}) — aborting")
             sys.exit(r.returncode)

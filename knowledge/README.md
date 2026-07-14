@@ -10,7 +10,7 @@ Each kind of knowledge is stored in the representation that suits how it's queri
 
 | Layer | Representation | Lives in | How the pipeline uses it |
 |---|---|---|---|
-| **Components** | Component graph — one `*.meta.json` node per component (props, variants, token bindings, relationships, anti-patterns, a11y, token-validation, provenance) | `components/` (32 metas) | Look up a component's contract before generating code; traverse `relationships` edges |
+| **Components** | Component graph — one `*.meta.json` node per component (props, variants, token bindings, relationships, anti-patterns, a11y, token-validation, provenance) | `components/` (38 metas) | Look up a component's contract before generating code; traverse `relationships` edges |
 | **Tokens** | DTCG-style store with intent descriptions; semantic tokens carry `light`+`dark` modes | `tokens/` (7 stores) | Resolve a binding to a value; check dark-mode coverage; drive the Sutherland migration |
 | **Compliance** | Knowledge graph — rule → component → check → WCAG SC → EN 301 549 clause | `compliance/` (31 rules) | Given a component, list its WCAG 2.2 AA obligations + automatable checks |
 | **Guidelines** | RAG over Markdown (brand, voice, patterns, platform, a11y) | `guidelines/` (23 docs) | Retrieve prose guidance at generation time |
@@ -23,7 +23,7 @@ create.hsbc is **not** a runtime dependency: its content is captured into `guide
 ```
 components/
   meta.schema.json              # contract for a component node (reconciled to the canon 2026-06-18)
-  <component>.meta.json          # 32 component nodes
+  <component>.meta.json          # 38 component nodes
   _ACCESSIBILITY-CONFORMANCE.md  # WCAG 2.2 AA basis + 2.2-new SC mapping
 tokens/
   colour.json semantic-colour.json elevation.json layout.json
@@ -64,6 +64,11 @@ _INTEGRITY-REPORT.md             # ← _build_integrity.py        (the CI gate)
 ```
 
 ## Build — one command, dependency-ordered, self-gating
+
+> ⚠️ **Stale (pending the Tier-B build-gate audit):** the step/gate description below reflects an
+> older **10-step / 4-gate** build. The real build is **`_build_all.py` = 18 steps, ~9 blocking
+> gates** (see `_LIVE-STATE.md`). The command is right; the enumeration needs a rewrite against the
+> current `STEPS` list — a substantive fix, not string-drift, so it is escalated, not swept.
 
 ```
 python3 knowledge/_build_all.py
@@ -111,6 +116,6 @@ Or read the indexes directly:
 
 Accessibility is graded against **WCAG 2.2 AA** — the bar set by HSBC's digital accessibility framework (Group Digital Experience and Accessibility). See `guidelines/digital-accessibility-standards.md` and `components/_ACCESSIBILITY-CONFORMANCE.md`.
 
-## Parked
+## Sutherland migration — unblocked (was parked)
 
-The **Sutherland** token migration (Sutherland = the HSBC React library; its tokens become canon) is on hold until its JSON lands (~late June / early July 2026). When it arrives: import as modes → rebind in-use deprecated tokens (worklist in `_REVIEW-QUEUE.md` + `tokens/_manifests/`) → re-verify zero references → delete. The blast-radius, review queue, and dark-mode audit are the safety tooling for that rebind.
+The **Sutherland** token migration (Sutherland = the HSBC React library; its tokens become canon) **is no longer blocked** — the export arrived 2026-06-17 and lives under `tokens/_raw/`. Remaining work is ours, not a wait: import as modes → rebind in-use deprecated tokens (worklist in `_REVIEW-QUEUE.md` + `tokens/_manifests/`) → re-verify zero references → delete. Full status + phased worklist: `_INGESTION-ASSESSMENT_2026-07-05.md`. The blast-radius, review queue, and dark-mode audit are the safety tooling for that rebind.

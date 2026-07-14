@@ -5,7 +5,7 @@ what's **OPEN**. Read this second, after `GOOD-MORNING.md`, before `knowledge/RE
 Per **ADR-0007**. ⚠️ **INTERIM — hand-maintained** until `_build_live_state.py` generates it from
 front-matter edges + tombstones. Refresh at end of every session alongside the handoff.*
 
-*Last refreshed: 2026-07-05.*
+*Last refreshed: 2026-07-10 (§9 session — trace tool, layout/library root-cause, findings doc; eve: external deep review + generation-shape ruling + KG design direction + component-factory build-out plan).*
 
 > ⚠️ **AUDIT STATUS — everything below is RECORDED, not VALIDATED.** Provenance ≠ correctness.
 > These entries capture *that* a decision was made and what it supersedes — **not** that it is
@@ -156,6 +156,93 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
     is the closest thing to a direct empirical answer to the open question above. Reuses existing
     infra rather than new foundations: `_build_xref_index.py` (static token/guideline/component
     map) + the icon-source gate's byte-match method are the components to extend, not rebuild.
+  - **✅ BUILT + FIRST EVIDENCE 2026-07-07.** Tools: `knowledge/_trace_knowledge_usage.py`
+    (measurement) + `knowledge/_build_trace_dossier.py` (Swiss interactive dossier w/ canvas
+    knowledge-graph viz, entity explorer, accordion, rule-adherence layer). Outputs
+    `_KNOWLEDGE-USAGE-TRACE.html` / `.md` / `-ENTITIES.json`. Reconstructs retrieved-vs-invented
+    from the artifact directly (no self-report needed — sidesteps the unreliable-manifest problem).
+    Full record: memory [[knowledge-usage-trace-tool]]. **Result leans H(architecture/rules-design),
+    not H(rule-adherence):** governed lineages are provenance-PERFECT (0 invented colours, ~200
+    canon token refs, PURE-RETRIEVAL) yet flat → the governed rules are already saturated, so
+    tightening application can't be the lever. Diagnostic (best layout, per Dave) is INVENTED (56
+    live hex, 219 local vars) AND violates 6 rules/honours 1 → freer layout and rule-honouring pull
+    in OPPOSITE directions. **Layout is the crux and the KB does not govern it** — charter line 34:
+    "the canon has no template layer — always inferred"; zero `.cn-page/.cn-grid/.cn-layout`; canon
+    governs only the *measure* (grid/breakpoints/spacing), and even layout-spacing tokens are
+    ~0-retrieved (governed screens hand-author spacing in raw px).
+  - **🆕 THIRD HYPOTHESIS ON RECORD (Dave, 2026-07-07): rules WRONG/TOO-TIGHT AT SOURCE.** Not
+    mis-applied (H1), not pure architecture ceiling (H2) — constraining composition to reviewed
+    human-made create.hsbc components may stifle the layout creativity that is the real
+    differentiator. **Next probe Dave flagged: what would a *retrievable* layout/composition layer
+    look like (page archetypes as graph nodes)** — the missing governance the trace exposed. Still
+    no controlled governed-1-pass vs generate-then-normalise-2-pass run on one screen (the thing).
+  - **🎯 ROOT-CAUSED 2026-07-07 → the library-composition-tier gap (H3 refined).** Verified: the
+    invention rule (§6 retrieval-first + derive-from-fixed; §9 sober "retrieve and assemble what
+    exists") is correct, but the **library stops at organism** — 38 comps = 9 atoms/23 molecules/
+    6 organisms, **ZERO templates/shells/page-scaffolds**. So page composition has nothing to
+    retrieve → flat layouts are *structurally forced*, not a tuning issue. The layout-governance gap
+    and the library-tier gap are the SAME gap. `_COMPONENT-LIBRARY-TARGET.md` already scoped the
+    fix (~200–300 catalog incl. Layer-2 shells/templates; "the automation can only compose what
+    exists"). **OPEN DECISION F7: build-upfront (`_COMPONENT-LIBRARY-TARGET.md`) vs cluster-compound
+    (ADR-0006 pt4 "compounding not completeness"; cluster-promotion = least-proven loop step).**
+    Full session record: `knowledge/_FINDINGS-s9-session-2026-07-07.md`. Memories
+    [[library-composition-tier-gap]], [[register-inference-ramp]], [[knowledge-usage-trace-tool]].
+  - **🟠 COMPONENT-FACTORY DIRECTION + BUILD-OUT PLAN (Dave, 2026-07-10). Reframe firming toward a
+    plan — still unaudited, floor-first.** Memory: [[component-library-buildout-plan]].
+    Dave's frame: the project became a **compliant component-building machine**; fulfil the brief by
+    using it (with **designers always guiding** — human-in-loop, answers bus-factor) to **build the
+    library out 38 → ~200-300** (`_COMPONENT-LIBRARY-TARGET.md`). **New facts he supplied:** (a)
+    **Sutherland is NOT a rich library to bind to — it's the same sparse ~36, a reflection of the
+    Figma library** → there is ONE sparse source reflected in 3 places (Figma↔Sutherland↔canon);
+    build it out at source, it feeds all three; the "which library" fork is closed. (b) **Rationale
+    = enrich the inference substrate:** more/richer canon → more texture to "semi-innovate" from, so
+    even a strict/retrieval run can invent interesting on-brand solutions. (This is a *tune-the-
+    inference* move — sits alongside the rule-tuning lead [[ruling-generation-shape-2026-07-10]], and
+    it lowers R1's stakes for the FLOOR product: a designer is in the loop + the substrate is richer,
+    so autonomous single-pass quality is no longer the go/no-go.) His method: **gap-analysis vs other
+    libraries → requirements/spec docs → flesh out the library.**
+    **Working plan (agreed direction, sequence mine, for his sign-off):** ① **Housecleaning FIRST**
+    (report §08 grooming — fix the 3 lying entry points, tombstone the vision mock, delete 4 dead
+    files, archive June cluster, settle gate-count language, commit in-flight work). Rationale: the
+    build-out multiplies every artifact ~8× and other designers must be able to read the repo. ②
+    **Target** via gap-analysis across THREE tiers (leaf · organism · **page templates/shells** — the
+    tier we have ZERO of and the one that actually fixes flat layouts); write specs in the machine's
+    own meta.json+snippet format, not prose. ③ **Prove the loop on ONE cluster** (a designer drives
+    spec→generate→gate→human-promote→recompose a screen) — tests designer-speed-up + the texture
+    hypothesis (measurable, not assumed) + the promotion gate; de-risks 300 before building 300;
+    doubles with D2. ④ **Build the template/shell tier + its governance** (new compose gate + layout-
+    KG nodes = the generation-KG; "complete library at layout tier" = "build the KG", same move). ⑤
+    **Scale compounding** cluster-by-cluster (splits F7: *targeted* build map + *compounding* delivery).
+    KG grows as a **byproduct** (each promote adds typed edges). **My caveats (feedback, on record):**
+    (1) the load-bearing ~40-50 items are **templates/shells, NOT more leaf components** — prioritise
+    the zero-tier or flatness won't move; (2) "designers use the system" is a **product dependency** —
+    the tool must be usable by non-Dave ([[robustness-portability]] papercuts: ports, env, no-Univers,
+    SSO portal) — Phase ③ will expose it; (3) 260 new components is a multi-month multi-designer
+    programme — frame as "build the loop then compound, ship each cluster," not "build 300 then ship."
+  - **📄 EXTERNAL DEEP REVIEW 2026-07-10 → `REVIEW-2026-07-10-deep-analysis.html`** (repo root,
+    untracked — commit it; also a desktop artifact). Independent whole-project pass: code-level
+    architecture map, git archaeology, experiments/trace re-read, July-2026 field research (v0 DS 2.0 /
+    Builder / Bolt = canon-tied generation is now commodity; gates + §9 tiering = ahead of all surveyed;
+    RALF/LayoutRAG = retrieval-conditioned layout is published science), grooming inventory (entry-point
+    staleness, ~45 archive candidates, tombstones owed). The report *leans* H2+H3; treat that lean as
+    analysis input only — superseded on ranking by the ruling below.
+  - **🟠 RULING (Dave, 2026-07-10) — direction after reading the review: RULE-TUNING + INFERENCE
+    TIERING LEADS; double-pass is a component, not the architecture.** Dave's verdict on the two-pass
+    evidence: the restyle/double-pass was "not all that successful" — it produced interesting insights
+    and data, but is an interesting hypothesis, no more (this supersedes the earlier "pretty happy"
+    reading of `without-influences-hsbc.html`). Way forward = **more experimenting on tuning the rules
+    and tiering the inference, with a double pass forming PART of the process** (a stage, e.g.
+    normalise/repair after gates — not the pipeline shape). **Future state affirmed: strict mode over a
+    full component suite for the "factory"** (floor/churn end) — "arguably we could create this with
+    less infrastructure." Consequences: (a) the review's R1 experiment becomes **three arms** on one
+    contract — governed single-pass as-is · rule-tuned/re-tiered single-pass (lead hypothesis) ·
+    two-pass — rendered, blind-judged; (b) note the empirical hurdle the trace sets for rule-tuning:
+    governed output is already PURE-RETRIEVAL, so the tuning that can move the needle is *what the
+    rules ask for* (tier definitions, composition licence per band, point-of-view prompts), not
+    adherence tightening; (c) connects to OPEN DECISION F7 above (a fuller library tier is the
+    strict-mode/factory path). Dave is now in a reading/thinking pass (charter §9, test-brief §2,
+    findings doc, the review) — no build work on this thread until he rules again. Memory:
+    [[ruling-generation-shape-2026-07-10]]. Unaudited node.
 - **Divergence probe — first real run done 2026-07-05** (structural/grep-based, not the full
   novelty-scoring tooling named in §9). See the writeup above. The formal tooling (threshold
   calibration, automated novelty count) is still named-not-built.
@@ -241,6 +328,39 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
   index layer** (leading hypothesis — link across existing stores, don't collapse into one monolith;
   extends `_blast-radius.json` / `graph-index.json`); connect to `graphify-tool` + ADR-0007 infra.
   Memory: `ds-knowledge-graph-revisit`. **Own focused session — not the audit.**
+  - **🟠 DESIGN DIRECTION (Dave, 2026-07-10) — from the deep-review KG question; folded into the plan.**
+    The compliance "KG" is today an **inverted index, not a graph** (`_build_compliance_kg.py:61–78`:
+    self-asserted `relatedSC` arrays flipped into two lookup tables; no SC→SC or component→component
+    edges; meta `relationships` never compiled; `query.py` = one-hop dict joins + substring match).
+    **Verdict: fine for its current job, wrong for the roadmap** — the layout tier (R4), blast-radius
+    reasoning and this ADR-0003 thread all need cross-store *traversal* the index can't do. Chosen
+    approach when this thread is taken up:
+    (1) **NOT GraphRAG.** GraphRAG *extracts* a graph from unstructured prose for fuzzy sense-making;
+        our compliance entities are already structured records with IDs — extraction adds LLM cost +
+        noise over clean data. The need is *connection*, not extraction → **overlay-index/property
+        graph** over the existing stores (sources of truth stay; edge-layer is derived + regenerable;
+        no monolith). Tiny embedded property graph (typed edges in JSON, or Kùzu/DuckDB-PGQ) if real
+        path queries are wanted — no RAG machinery.
+    (2) **Guideline granularity — not finer text, typed EDGES.** Rules are already ~1-bullet granular;
+        don't shatter them. Split only where one rule *bundles* several constraints, so each atom maps
+        to exactly one target (the **ACT "atomic vs composite"** distinction). Then add the edge from
+        each atomic rule → the token/component/SC/pattern it governs (today those are prose `[REVIEW]`/
+        `F1` notes). Connected text, not smaller text, is what multiplies relationships.
+    (3) **Import, don't hand-type, the SC↔rule leg.** W3C **ACT Rules Format 1.1** (W3C Rec, Feb 2026)
+        + **axe-core** rule metadata already publish rule↔SC machine-readably. Ingest that; hand-curate
+        only the **component↔SC** leg (our genuine novelty — exists nowhere else). = report **R6**.
+    (4) **Type the edges to give them teeth: `applies_to` (claimed) vs `verified_by` (an executable
+        rule exists AND passes).** Turns the graph from bookkeeping into "which compliance claims are
+        actually enforced vs merely asserted" — the queryable form of the shallow-a11y-gate finding.
+    (5) **Keep the two retrieval needs separate.** The structural compliance graph (above) ≠ the
+        advisory "massive-brain designer reads the 462 guideline rules per run" need — *that* one is
+        retrieval-over-prose and is the one place a vector/light-graph layer earns its keep. Don't make
+        one architecture be both.
+    **Sequencing (holds the F5 anti-pattern at bay):** do NOT build now as standalone infra — it rides
+    with the **layout/library tier (R4)** + Ingestion **Phase 3**, which are inherently graph-shaped
+    and are the natural moment to introduce typed edges (the compliance index becomes one *projection*
+    of the overlay). Cheap-now slice if wanted: type the existing edges + import ACT. Unaudited node
+    (feeds ADR-0003 when reopened). Report: `REVIEW-2026-07-10-deep-analysis_rev2.html` §03 gap-3, R4, R6.
 - **✅ Seaworthiness plan — DONE 2026-07-05 → `_SEAWORTHINESS-PLAN_2026-07-05.md`.** Curated,
   dependency-aware sequence (not a flat backlog): hull patches (ingestion Phase 0 + capture ritual) →
   **big-rock #1 Ingestion Phase 1** (Sutherland token migration, confirmed unblocked) → **§9 worked
@@ -412,6 +532,11 @@ backlog (that's OPEN) — these are intended end-states with a path. Refresh alo
     depricates → verify → delete; close P1/P3/P4) → Phase 2 finish guidelines capture → Phase 3 build
     the overlay/index graph (ADR-0003 "done right", audit-grade) → Phase 4 wire ingestion coverage
     into this machine as a tracked target.
+  - **Phase 3 approach = the 2026-07-10 KG design direction** (see OPEN → "Unified DS knowledge-graph"
+    above): overlay/property graph over the existing stores (NOT GraphRAG, NOT a monolith) · atomic-
+    where-bundled rules + typed edges (rule→token/component/SC/pattern) · import ACT/axe-core for the
+    SC↔rule leg, hand-curate only component↔SC · `applies_to` vs `verified_by` edge types · rides with
+    the layout/library tier (R4), not standalone. Cheap-now slice: type existing edges + import ACT.
 
 ## SPIN-OFF / GENERALISABLE CANDIDATES — surface, don't bury (Dave, 2026-07-05)
 

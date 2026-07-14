@@ -36,6 +36,13 @@ edges. The discipline of writing the edge at ruling-time is what actually preven
 storage engine.** A full graph DB (Neo4j) would be gold-plating for a solo-run project; the top
 80% is text-achievable (Cosmos SDK = markdown headers; "Decision Graph" = a text-based KG).
 
+> **North-star target elaborated 2026-07-10 → `_STATE-MACHINE-TARGET.md`.** This ADR is the
+> accepted decision; that doc is the full goal Dave holds — a *context machine* spanning three
+> tenses (past decisions · present state · future goals) and every entity kind (decisions · goals ·
+> insights · sub-quests/side-projects · tools), whose headline capability is to **compile a
+> narrative on demand** (drifts · completions · sub-quests · side-projects · new tools). "Combat
+> drift and lost decisions." Build status tracked there (§9); the staleness gate below is slice 1.
+
 ## Decision
 
 Adopt the **temporal decision-graph pattern, implemented lightweight-first** — the same
@@ -85,6 +92,14 @@ index; `_LIVE-STATE` = the supersession ledger / graph view.
 - The next focused session builds `_build_live_state.py` + the staleness gate from this spec
   rather than a blank page. Until then, `_LIVE-STATE.md` is hand-maintained and **must be marked
   as interim** (a hand-maintained derived-view is itself a rot risk — the honesty tag mitigates).
+  - **✅ STALENESS GATE BUILT 2026-07-10 (lightweight-first slice).** `knowledge/_build_live_state.py`
+    validates the ledger against reality — 5 checks (freshness drift · dead-node resurrection ·
+    tombstone consistency · ADR lifecycle contradiction · orphan supersession edge) → writes
+    `_LIVE-STATE-CHECK.md`. Advisory by default (`--strict` gates); wired non-gating into
+    `_build_all.py` (per §5 anti-laundering: it enforces *consistency*, never *validity*). Negative-
+    tested (catches all 5 injected drifts) and clean on the live ledger. **Still deferred:** the
+    *generator* half (walking front-matter edges to regenerate LIVE/DEAD blocks) — needs the
+    front-matter edge convention on ADRs first; the gate parses the existing prose markers for now.
 - Every ruling now has a two-step close: record the edge (front-matter/tombstone) **and** update
   `_LIVE-STATE`. This is the AGENTS supersession discipline made systematic.
 - Low-regret and reversible: it reuses the existing generator+gate machinery; if it doesn't earn

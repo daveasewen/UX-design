@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deep analysis (rev 2, corrected) — Smart Design System (Promenaut) · 2026-07-10</title>
+<style>
+:root{
+  --accent:#DB0011; --accent-3:#730014; --black:#000; --white:#fff;
+  --g1:#F3F3F3; --g2:#EDEDED; --g3:#D7D8D6; --g5:#9B9B9B; --g6:#767676; --g7:#545454; --g8:#333;
+  --ret:#111; --inv:#DB0011; --util:#767676; --amber:#B7791F; --ok:#1a7a4a;
+  --s1:.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem; --s6:4rem; --s7:6rem;
+  --max:1200px; --font:"Univers Next","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;font-family:var(--font);color:var(--black);background:var(--white);
+  font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased;}
+.prog{position:fixed;top:0;left:0;height:2px;background:var(--accent);width:0;z-index:60;transform-origin:left;}
+.nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:var(--s3);
+  background:var(--white);border-bottom:1px solid var(--g2);height:56px;padding:0 var(--s4);}
+.nav .brand{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:8px;white-space:nowrap;}
+.nav .brand::before{content:"";width:20px;height:1px;background:var(--accent);}
+.nav .ctx{font-size:13px;color:var(--g6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.nav .spacer{flex:1;}
+.nav .meta{font-size:12px;color:var(--g6);letter-spacing:.02em;white-space:nowrap;}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--s4);}
+.rail{position:fixed;top:96px;left:24px;z-index:30;display:flex;flex-direction:column;gap:8px;max-width:180px;}
+.rail a{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--g6);text-decoration:none;
+  border-left:2px solid var(--g2);padding:2px 0 2px 12px;transition:color .15s,border-color .15s;line-height:1.4;}
+.rail a:hover,.rail a.on{color:var(--black);border-color:var(--accent);}
+@media(max-width:1500px){.rail{display:none;}}
+.label{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);
+  display:flex;align-items:center;gap:var(--s1);margin:0 0 var(--s2);}
+.label::before{content:"";width:20px;height:1px;background:var(--accent);}
+.rule{border:0;border-top:1px solid var(--g2);margin:0;}
+section{padding:var(--s6) 0;}
+h1{font-size:43px;line-height:1.1;font-weight:300;margin:0 0 var(--s3);}
+h1 b{font-weight:600;}
+h2{font-size:28px;line-height:1.15;font-weight:300;margin:0 0 var(--s3);max-width:24em;}
+h2 b{font-weight:600;}
+h3{font-size:19px;font-weight:600;margin:var(--s4) 0 var(--s2);}
+p{max-width:46em;margin:0 0 var(--s2);}
+small,.cap{font-size:13px;color:var(--g6);line-height:1.55;}
+a{color:var(--black);}
+code{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:.85em;background:var(--g1);padding:1px 5px;}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--g2);border:1px solid var(--g2);margin:var(--s4) 0;}
+.stat{background:var(--white);padding:var(--s3);}
+.stat .n{font-size:34px;font-weight:200;line-height:1.1;}
+.stat .n b{font-weight:600;color:var(--accent);}
+.stat .c{font-size:12px;color:var(--g6);letter-spacing:.04em;margin-top:6px;line-height:1.5;}
+.grid2{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start;}
+.grid11{display:grid;grid-template-columns:1fr 1fr;gap:var(--s5);align-items:start;}
+@media(max-width:900px){.grid2,.grid11{grid-template-columns:1fr;}.stats{grid-template-columns:repeat(2,1fr);}}
+.idx{font-size:57px;font-weight:100;color:var(--g3);line-height:1;margin:0 0 var(--s2);}
+.band{background:var(--g1);}
+.chip{display:inline-block;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;
+  padding:2px 8px;border:1px solid var(--g3);color:var(--g7);white-space:nowrap;}
+.chip.red{border-color:var(--accent);color:var(--accent);}
+.chip.dark{background:var(--black);border-color:var(--black);color:var(--white);}
+.chip.amber{border-color:var(--amber);color:var(--amber);}
+.chip.ok{border-color:var(--ok);color:var(--ok);}
+table{border-collapse:collapse;width:100%;font-size:14px;margin:var(--s2) 0 var(--s3);}
+th{text-align:left;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--g6);font-weight:500;
+  border-bottom:1px solid var(--g3);padding:8px 12px 8px 0;vertical-align:bottom;}
+td{border-bottom:1px solid var(--g2);padding:9px 12px 9px 0;vertical-align:top;line-height:1.55;}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;}
+details{border-top:1px solid var(--g2);}
+details:last-of-type{border-bottom:1px solid var(--g2);}
+summary{cursor:pointer;list-style:none;display:flex;align-items:baseline;gap:var(--s2);padding:14px 0;}
+summary::-webkit-details-marker{display:none;}
+summary .tt{font-size:16px;font-weight:600;flex:1;}
+summary .tt small{font-weight:400;}
+summary::after{content:"+";font-size:20px;font-weight:300;color:var(--g5);margin-left:auto;}
+details[open] summary::after{content:"–";}
+details .dbody{padding:0 0 var(--s3);max-width:52em;}
+details .dbody p{margin-bottom:var(--s2);}
+.filerow{font-size:12px;color:var(--g6);font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;}
+.bars{margin:var(--s3) 0;}
+.bar{display:grid;grid-template-columns:200px 1fr 70px;align-items:center;gap:12px;margin:7px 0;font-size:13px;}
+.bar .lab{color:var(--g7);text-align:right;line-height:1.3;}
+.bar .trk{background:var(--g1);height:20px;position:relative;}
+.bar .fil{height:100%;background:var(--black);}
+.bar .fil.red{background:var(--accent);}
+.bar .fil.grey{background:var(--g5);}
+.bar .val{font-variant-numeric:tabular-nums;color:var(--black);font-weight:500;}
+@media(max-width:700px){.bar{grid-template-columns:110px 1fr 60px;}}
+.legend{display:flex;gap:var(--s3);font-size:12px;color:var(--g6);margin:var(--s2) 0;flex-wrap:wrap;}
+.legend i{display:inline-block;width:12px;height:12px;margin-right:6px;vertical-align:-1px;}
+.tl{display:flex;align-items:flex-end;gap:2px;height:180px;margin:var(--s4) 0 4px;border-bottom:1px solid var(--g3);padding:0 2px;}
+.tl .d{flex:1;background:var(--g3);position:relative;cursor:pointer;transition:background .15s;min-width:8px;}
+.tl .d:hover{background:var(--g6);}
+.tl .d.p2{background:var(--accent);}
+.tl .d.p2:hover{background:var(--accent-3);}
+.tl .d .tip{display:none;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);
+  background:var(--black);color:var(--white);font-size:12px;line-height:1.5;padding:8px 12px;white-space:nowrap;z-index:20;}
+.tl .d:hover .tip{display:block;}
+.tlx{display:flex;gap:2px;font-size:10px;color:var(--g6);padding:4px 2px 0;}
+.tlx span{flex:1;text-align:center;min-width:8px;overflow:visible;white-space:nowrap;}
+.phasekey{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--g2);border:1px solid var(--g2);margin:var(--s3) 0;font-size:13px;}
+.phasekey>div{background:var(--white);padding:var(--s2) var(--s3);cursor:pointer;}
+.phasekey>div:hover{background:var(--g1);}
+.phasekey b{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;}
+.phasekey i{font-style:normal;color:var(--g6);font-size:12px;}
+@media(max-width:900px){.phasekey{grid-template-columns:1fr;}}
+.verdict{border-left:2px solid var(--accent);padding:var(--s2) 0 var(--s2) var(--s3);margin:var(--s3) 0;max-width:46em;}
+.verdict p{margin:0;font-size:19px;line-height:1.5;font-weight:300;}
+.verdict p b{font-weight:600;}
+.numlist{counter-reset:n;list-style:none;margin:var(--s3) 0;padding:0;max-width:48em;}
+.numlist li{counter-increment:n;display:grid;grid-template-columns:44px 1fr;gap:var(--s2);padding:12px 0;border-top:1px solid var(--g2);}
+.numlist li::before{content:counter(n,decimal-leading-zero);font-size:22px;font-weight:100;color:var(--accent);line-height:1.2;}
+.numlist li:last-child{border-bottom:1px solid var(--g2);}
+.numlist b{font-weight:600;}
+svg text{font-family:var(--font);}
+.dg{border:1px solid var(--g2);padding:var(--s3);margin:var(--s3) 0;background:var(--white);overflow-x:auto;}
+.dg svg{display:block;min-width:640px;width:100%;height:auto;}
+.matrix td:first-child{font-weight:600;}
+.mini{font-size:13px;color:var(--g7);}
+.foot{padding:var(--s5) 0;border-top:1px solid var(--g2);font-size:13px;color:var(--g6);}
+.klist{columns:2;column-gap:var(--s5);font-size:13px;color:var(--g7);max-width:none;}
+@media(max-width:800px){.klist{columns:1;}}
+.srcs{font-size:13px;line-height:1.9;color:var(--g7);columns:2;column-gap:var(--s5);}
+@media(max-width:800px){.srcs{columns:1;}}
+.srcs a{color:var(--g7);}
+.hyp{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--g2);border:1px solid var(--g2);margin:var(--s3) 0;}
+.hyp>div{background:var(--white);padding:var(--s3);}
+.hyp h4{margin:8px 0 6px;font-size:15px;}
+.hyp p{font-size:13px;color:var(--g7);margin:0;}
+@media(max-width:900px){.hyp{grid-template-columns:1fr;}}
+.reco{border:1px solid var(--g2);margin:0 0 var(--s3);}
+.reco .rhead{display:flex;align-items:baseline;gap:var(--s2);padding:var(--s2) var(--s3);border-bottom:1px solid var(--g2);background:var(--g1);}
+.reco .rhead b{font-size:15px;}
+.reco .rbody{padding:var(--s2) var(--s3);font-size:14px;}
+.reco .rbody p{margin:0 0 8px;max-width:52em;}
+</style></head>
+<body>
+<div class="prog" id="prog"></div>
+<nav class="nav">
+  <span class="brand">Deep analysis</span>
+  <span class="ctx">Smart Design System · project Promenaut · UX-design repo</span>
+  <span class="spacer"></span>
+  <span class="meta">2026-07-10 · rev 2 (corrected per Dave's ruling) · code + history + field research</span>
+</nav>
+<div class="rail" id="rail">
+  <a href="#exec">Executive summary</a>
+  <a href="#what">What this is</a>
+  <a href="#history">History</a>
+  <a href="#arch">Architecture</a>
+  <a href="#evidence">The evidence</a>
+  <a href="#field">The field</a>
+  <a href="#critique">Critique</a>
+  <a href="#reco">Recommendations</a>
+  <a href="#groom">Grooming plan</a>
+  <a href="#sources">Method &amp; sources</a>
+</div>
+
+<!-- ============ HERO / EXEC ============ -->
+<header class="wrap" id="exec">
+<section style="padding-bottom:var(--s4);">
+  <p class="label">Executive summary</p>
+  <div class="verdict" style="border-left-color:var(--g8);background:var(--g1);padding:var(--s3);margin:0 0 var(--s4);max-width:46em;">
+    <p style="font-size:15px;font-weight:400;line-height:1.6;"><b>Revision 2 · 2026-07-10 (evening) — corrected for the record.</b> After re-weighing the evidence, Dave ruled that the double-pass (generate-then-normalise) was <b>not</b> a clear success: it produced useful data and an interesting hypothesis, not a proven mechanism. Rev 1 overstated it. Corrected reading, carried throughout this version: <b>tuning the rules and the inference tiering leads</b>; the two-pass is <b>one stage to test, not the architecture</b>; and the missing layout/library tier (H3) remains the single strongest finding. Changed passages are tagged <span class="chip amber" style="font-size:10px;padding:1px 6px;">rev 2</span>. Full ruling: <code>_LIVE-STATE.md</code> §9 OPEN. Rev 1 is preserved unaltered in <code>REVIEW-2026-07-10-deep-analysis.html</code>.</p>
+  </div>
+  <h1>The engine <b>works as governance</b>. Its rules <b>under-govern the thing that carries a design — layout</b>. Tune what they ask for before changing the machine.</h1>
+  <p style="font-size:18px;font-weight:300;max-width:44em;">Thirty-eight days, 170 commits, three deliberate pivots. What you have built — canon, criteria, executable gates, a temporal decision ledger — is ahead of every commercial tool surveyed on <b>enforcement and provenance</b>. What it wraps — a <b>single cold pass that must be creative and compliant at once</b> — is the weakest configuration in the 2024–26 literature, and the flat layouts are its signature. The fix is not a teardown, and it is not (yet) a new machine: keep the gates, and sharpen <b>what they ask for</b>. The lead is <b>tuning the rules and the inference tiering</b> and building the missing retrievable <b>layout/library tier</b> the trace exposed. The two-pass is a stage worth testing — not the destination. <span class="chip amber" style="font-size:10px;padding:1px 6px;">rev 2</span></p>
+
+  <div class="stats">
+    <div class="stat"><div class="n">170</div><div class="c">commits · 2026-05-31 → 07-07 · 64% landed on just three days</div></div>
+    <div class="stat"><div class="n">18</div><div class="c">build steps, ~9 blocking gates — but the screen &amp; compose gates sit outside the build</div></div>
+    <div class="stat"><div class="n"><b>0</b></div><div class="c">invented hex across all 8 governed spread files — the colour cardinal provably holds</div></div>
+    <div class="stat"><div class="n">54<span style="font-size:18px;color:var(--g5);">/462</span></div><div class="c">guideline rules actually blocking — 12% of the register is enforced</div></div>
+  </div>
+
+  <div class="verdict"><p><b>The verdict on your open question <span class="chip amber" style="font-size:10px;padding:1px 6px;">rev 2</span>:</b> <b>H3 is the strongest single finding</b> — the KB does not govern layout, and the component library stops at the organism tier, so flat composition is structurally forced, not a tuning slip. <b>The lead fix is to change what the rules encode</b> — the tier definitions, the composition licence per band, and a retrievable layout/library tier — not to tighten adherence (governed output is already provenance-perfect, so there is nothing left to tighten there). <b>The two-pass (H2) is a stage to test, not a proven mechanism</b>: its one data point — the hand-restyle — was informative, but on Dave's considered verdict "not all that successful." <i>(Corrected from rev 1, which read H2 as the working mechanism.)</i></p></div>
+
+  <h3>Do next, in order</h3>
+  <ol class="numlist">
+    <li><span><b>Commit the in-flight trace work</b> (5 modified files incl. <code>_LIVE-STATE.md</code> and the dossier build), then run the 30-minute grooming pass on the three cold-start entry points — <code>knowledge/README.md</code> still says "32 metas / four gates / Sutherland parked"; <code>GOOD-MORNING.md</code> still lists the trace tool as future work. Your spine is lying to a cold start today. <a href="#groom" style="color:var(--g6)">→ Grooming plan</a></span></li>
+    <li><span><b>Run the three-arm controlled experiment</b> <span class="chip amber" style="font-size:10px;padding:1px 6px;">rev 2</span> — same screen, same contract, rendered, blind-judged: (a) governed single-pass as-is, (b) a <b>rule-tuned / re-tiered single-pass</b> (your lead hypothesis), (c) the two-pass. Everything so far compared different lineages; this isolates whether tuning the rules beats changing the machine. <a href="#reco" style="color:var(--g6)">→ R1</a></span></li>
+    <li><span><b>Trial gates-as-repair as one arm, not a foregone conclusion</b> <span class="chip amber" style="font-size:10px;padding:1px 6px;">rev 2</span>: feed gate failures back as repair instructions (bounded 2–3 rounds) inside arm (c). The literature is encouraging — repair works when feedback is ground truth, and your validators are — but your own read of the one manual run was lukewarm, so treat this as a test, not an adoption. <a href="#reco" style="color:var(--g6)">→ R2</a></span></li>
+    <li><span><b>Build the retrievable layout layer</b> — page archetypes as graph nodes (layout × slots × allowed component families), seeded from GOV.UK/USWDS patterns and your own endorsed compositions ("time as the spine"). Read RALF and LayoutRAG first: retrieval-conditioned layout is settled science, and nobody has done the governed-semantic-archetype version. <a href="#reco" style="color:var(--g6)">→ R4</a></span></li>
+    <li><span><b>Add a render-and-look gate:</b> Playwright screenshot → visual critique in the loop. Every real defect to date was visual and passed the static gates — your own AGENTS.md principle 8 already knows this; the harness just doesn't do it yet. <a href="#reco" style="color:var(--g6)">→ R3</a></span></li>
+    <li><span><b>Stop hand-rolling what is now commodity:</b> import the W3C ACT / axe-core rule↔SC layer into the compliance KG, evaluate Style Dictionary v5/Terrazzo for the token spine, and keep bespoke effort for the two things nobody else has — the component↔SC↔rule graph leg and the gates. <a href="#reco" style="color:var(--g6)">→ R6</a></span></li>
+  </ol>
+  <p class="mini">Everything above is expanded, evidenced and phased below. Every load-bearing claim carries a file / line or an external source.</p>
+</section>
+</header>
+<hr class="rule">
+<!-- ============ WHAT THIS IS ============ -->
+<div class="wrap" id="what">
+<section>
+  <div class="grid2">
+    <div>
+      <div class="idx">01</div>
+      <p class="label">What this is</p>
+    </div>
+    <div>
+      <h2>A <b>governed design-system engine</b>: judgment encoded as data, enforced by executables, operated by whatever agent hosts it.</h2>
+      <p>The repo's one-line self-description holds up against the code. Generation is treated as a commodity; the product is the layer around any generator, in four kinds of asset: <b>canon</b> (DTCG token stores, 38 human-reviewed reference snippets, a generated <code>canon.css</code> composition layer), <b>criteria</b> (per-component <code>meta.json</code> judgment, rubrics, the fixed/flex charter), <b>gates</b> (Python validators run as an 18-step build where a11y, contrast, token fidelity, icon provenance, coverage and integrity block), and <b>runbooks</b> (the method written down for a cold-start agent).</p>
+      <p>Around the engine sits a second, quieter invention: a <b>project-memory state machine</b> — <code>_LIVE-STATE.md</code> as a supersession ledger (LIVE / DEAD / OPEN / PLANNED), ADRs with a correctness-audit that separates <i>recorded</i> from <i>vouched</i>, tombstone discipline, and an end-of-session capture ritual. This is how a solo, nights-and-weekends project survives its own context loss — and it is your first named spin-off candidate for good reason.</p>
+      <p>The governing idea that makes this more than "AI + component library" is charter §9: <b>register is not a look, it is a licensed level of inference</b> — sober = retrieve, balanced = extend, expressive = invent — with <i>cardinal</i> curbs (brand colour, type, square corners, a11y floor, safety patterns) that never lift and <i>foundational</i> curbs that release as the ramp climbs. No commercial tool surveyed has an equivalent; the market's ceiling is a binary "strict mode" toggle.</p>
+      <details>
+        <summary><span class="tt">The operating flow, as designed <small>— and where reality currently stops</small></span></summary>
+        <div class="dbody">
+          <p>brief → <b>criteria contract</b> (definition of done, written first) → retrieve + generate <b>N variants across registers</b> in isolated cold passes → <b>blocking gates</b> kill the broken → <b>advisory signals</b> annotate → <b>render + visual QA</b> → one <b>human taste call</b> → winner <b>promoted to canon</b>.</p>
+          <p>As-built, the chain is real up to the gates. Isolated generation was used for real in the July spreads; the divergence probe ran once as a grep, not the specced tooling; <b>render + visual QA is not owned by the pipeline at all</b> (no Chromium in the loop; every quality verdict in the spreads was a text description); and promotion has run end-to-end only for components, not screens. The conveyor exists; two of its stations are drawn on the floor in chalk.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+</div>
+<hr class="rule">
+
+<!-- ============ HISTORY ============ -->
+<div class="wrap" id="history">
+<section>
+  <div class="grid2">
+    <div>
+      <div class="idx">02</div>
+      <p class="label">History — read from git, not the docs</p>
+    </div>
+    <div>
+      <h2>Five phases, three pivots, one repeating pattern: <b>build → doubt → formalise the doubt into machinery</b>.</h2>
+      <p>The history is unusually honest — the repo keeps its own abandoned first design in <code>archive/</code> and its own unproven claims labelled as such. It also shows a working rhythm the docs don't: <b>108 of 170 commits (64%) landed on three days</b> (Jul 02 / 03 / 05), around a day job, with multi-day silences between bursts.</p>
+    </div>
+  </div>
+
+  <div class="tl" id="tl"></div>
+  <div class="tlx" id="tlx"></div>
+  <p class="cap">Commits per active day. Red = the 2026-07-02 pivot day (ADR-0005) and its two sibling burst days. Hover any bar for the day's story; click a phase card below to expand it.</p>
+
+  <div class="phasekey">
+    <div onclick="document.getElementById('ph0').open=true;document.getElementById('ph0').scrollIntoView({behavior:'smooth',block:'center'})"><b>P0 · May 31 – Jun 02</b><i>Harness scaffold + one dry run, then 15 days of silence</i></div>
+    <div onclick="document.getElementById('ph1').open=true;document.getElementById('ph1').scrollIntoView({behavior:'smooth',block:'center'})"><b>P1 · Jun 17 – Jul 01</b><i>Knowledge layer + the 9/9 canon grind</i></div>
+    <div onclick="document.getElementById('ph2').open=true;document.getElementById('ph2').scrollIntoView({behavior:'smooth',block:'center'})"><b>P2 · Jul 02</b><i>THE PIVOT — ADR-0005 + ingestion sprint, 42 commits</i></div>
+    <div onclick="document.getElementById('ph3').open=true;document.getElementById('ph3').scrollIntoView({behavior:'smooth',block:'center'})"><b>P3 · Jul 03 – 05</b><i>§9 ramp, decision-graph, audits, seaworthiness</i></div>
+    <div onclick="document.getElementById('ph4').open=true;document.getElementById('ph4').scrollIntoView({behavior:'smooth',block:'center'})"><b>P4 · Jul 06 → now</b><i>The §9 crux + the knowledge-usage trace</i></div>
+  </div>
+
+  <details id="ph0">
+    <summary><span class="tt">P0 — Founded as something else entirely <small>· 2 commits</small></span><span class="chip">superseded</span></summary>
+    <div class="dbody">
+      <p>The founding vision (research dossier v0.1, <code>promenaut-pipeline-spec.html</code>, ADR-0001…0004) was a portable <b>multi-discipline agentic harness</b> — "the double diamond, as a harness": one reusable orchestrator, six discipline pipelines, typed contracts, craft-vs-taste gates, three HITL points. It got two commits and a single dry run (<code>runs/dryrun-001-action-row/</code>), then lay dormant. The harness was effectively stillborn: 53 of the first 54 working commits built the knowledge layer instead. ADR-0005 later frames this as "executing the research's own hedges" — accurate, but softer than what the git record shows. Surviving ideas — craft/taste split, HITL as designed component, typed contracts — genuinely do live on inside the gates.</p>
+    </div>
+  </details>
+  <details id="ph1">
+    <summary><span class="tt">P1 — The knowledge layer gets built while the harness sleeps <small>· ~46 commits</small></span></summary>
+    <div class="dbody">
+      <p>Work resumes on the agency machine 06-17: first HSBC component + Figma token ingest, 20+ component metas, the derived-views layer (xref, review queue, blast radius — the "Graphify borrow"), a contrast-audit framework that <b>gates the build</b>, and the "prototype-grade → 9/9" grind that promoted Tabs, Table, Cards, Buttons, Input-fields and friends to gated canon. Register in this era is still <b>a look</b> (surface/accent/motion knobs) — later killed by §9. The 06-24→07-01 window goes almost silent (Notifications 9/9, then the composition layer / gap patterns on 07-01); the payments-journey proof (06-24) is the era's punchline: <i>twelve 9/9 components ≠ one shippable screen</i> — no composition mechanism existed. That finding seeded canon.css.</p>
+    </div>
+  </details>
+  <details id="ph2">
+    <summary><span class="tt">P2 — The pivot day <small>· 42 commits in one day, the repo's busiest</small></span><span class="chip red">pivot</span></summary>
+    <div class="dbody">
+      <p><b>ADR-0005 ratifies the knowledge-engine pivot:</b> the bespoke orchestrator and seven discipline pipelines are <code>git mv</code>'d wholesale to <code>archive/harness-v0.1/</code>; README/AGENTS/architecture rewritten around "the engine is the product, orchestration is inherited from the host agent." The same day: a massive create.hsbc ingestion sprint (colour, type, motion, TOV, copywriting — the rules register grows all day), the "gate the gates" bite-test suite, and the <b>GOV.UK second-system run</b> proving the method generalises beyond HSBC (the per-component gates transferred with no edits and immediately caught GOV.UK's known focus-contrast failure — and the operator's own recall drift).</p>
+    </div>
+  </details>
+  <details id="ph3">
+    <summary><span class="tt">P3 — Register becomes inference; memory becomes a graph <small>· ~71 commits over three days</small></span><span class="chip red">2 pivots</span></summary>
+    <div class="dbody">
+      <p>07-03: <b>ADR-0006</b> (one flexing engine, dials per work-type) and <b>charter §9</b> — register redefined from a look to an inference ramp (retrieve / extend / invent over cardinal + foundational curbs). 07-04: language reviews of charter/AGENTS/README (18 findings enacted). 07-05, after a cold start wasted a sitting on a retired artifact: <b>ADR-0007</b> — project memory as a temporal decision graph, <code>_LIVE-STATE.md</code> as cold-start spine, supersession discipline with tombstones, the anti-laundering guard (recorded ≠ validated), then a three-batch <b>Tier-A correctness audit</b> of every foundational decision, the seaworthiness sequencing plan, and the first two §9 worked spreads (Sonnet, then Opus). The most introspective 72 hours of the project — and the origin of its best spin-off candidate.</p>
+    </div>
+  </details>
+  <details id="ph4">
+    <summary><span class="tt">P4 — The crux <small>· sparse commits, heavy signal · includes today's uncommitted work</small></span><span class="chip amber">open</span></summary>
+    <div class="dbody">
+      <p>Dave's end-of-spread verdict was <i>confusion, not convergence</i>: "the canon works but probably no better than an AI model tied to a component library… I expected: unconstrained with the right styling." The response was correct instrument-building: the <b>knowledge-usage trace</b> (07-07) reconstructs retrieved-vs-invented directly from artifacts. Its finding reframed everything — governed output is provenance-<b>perfect</b> yet flat, the best layout is the ungoverned one, and <b>layout is the one dimension the KB does not govern at all</b> (charter line 34: "the canon has no template layer — always inferred"). A third hypothesis landed the same day: the rules may be wrong at source. The 07-09/10 dossier build-out (canvas KG viz, rule-adherence layer) is still uncommitted in the working tree, alongside a two-line <code>AGENTS.md</code> stub and the <code>_LIVE-STATE</code> entry recording H3.</p>
+    </div>
+  </details>
+
+  <h3>The ADR ledger at a glance</h3>
+  <table>
+    <tr><th>ADR</th><th>Decision</th><th>Audit verdict (07-05)</th><th>State</th></tr>
+    <tr><td>0001 · 05-31</td><td>Own the orchestration spec; runtimes swappable</td><td><span class="chip ok">vouched</span></td><td>Principle survives; its artifact is archived</td></tr>
+    <tr><td>0002 · 05-31</td><td>Open standards: AGENTS.md · Skills · MCP · MD/JSON in git</td><td><span class="chip ok">vouched</span></td><td>Strengthened — now industry-standard practice</td></tr>
+    <tr><td>0003 · 05-31</td><td>Knowledge layer per stage (hybrid stores)</td><td><span class="chip amber">deferred</span></td><td>Reopened: unified-KG instinct; root cause "ingestion never completed"</td></tr>
+    <tr><td>0004 · 05-31</td><td>WCAG 2.2 AA build target, 2.1 AA legal floor</td><td><span class="chip ok">vouched + amended</span></td><td>True driver recorded: most-accessible-bank aspiration</td></tr>
+    <tr><td>0005 · 07-02</td><td><b>Knowledge-engine pivot</b> — archive the harness</td><td><span class="chip ok">vouched</span></td><td>The central re-founding; token history purge still conditionally accepted</td></tr>
+    <tr><td>0006 · 07-03</td><td>Flexing engine — one core, dials per work-type</td><td><span class="chip ok">amended → vouched</span></td><td>Looks-language stripped in re-audit</td></tr>
+    <tr><td>0007 · 07-05</td><td>Project memory = temporal decision graph</td><td><span class="chip ok">vouched</span></td><td>Born from a real context-rot failure; <code>_build_live_state.py</code> still unbuilt</td></tr>
+  </table>
+
+  <details>
+    <summary><span class="tt">What the history reveals that the docs downplay <small>— six candid observations</small></span></summary>
+    <div class="dbody">
+      <p><b>1 · The founding product was abandoned, not evolved.</b> Two commits, one dry run, then archived wholesale. The calm "preserved at archive/" understates it. That's fine — but it means the research dossier's frame ("the harness is the product") should never be used to reason about today's system.</p>
+      <p><b>2 · Green gates sit on an admittedly incomplete corpus.</b> "Ingestion was never completed — attempted, curtailed" is the load-bearing admission, and it lives in an ADR audit banner, not the README.</p>
+      <p><b>3 · Process churn is visible scar tissue.</b> The git workflow ruling flipped once (terminal-only → Desktop-only push) and reads defensively specific; a duplicate Table commit and a pasted-shell-command commit message are seams of the same friction.</p>
+      <p><b>4 · The top-churn files are all governance, not design.</b> <code>_rules-index.json</code> (37 touches), <code>GOOD-MORNING.md</code> (33), <code>_RECONCILIATION.md</code> (26), <code>_LIVE-STATE.md</code> (23 in ~5 days). The state machine is real work and it is also real overhead — 56 rewrites of two handoff files.</p>
+      <p><b>5 · The self-analysis ratio is climbing.</b> By P3–P4 the project increasingly reasons about itself: language reviews, decision audits, seaworthiness plans, memory-graph design. Each is individually justified; the trend is worth naming because the audit's own recurring finding was "foundations set ahead of completed work."</p>
+      <p><b>6 · Bus factor is 1 by design.</b> Every vouch, ruling, taste call and push funnels through one person. The governance model formalises this rather than mitigating it. The D2 colleague test is the first crack of daylight — it is correctly rated the #1 unlock.</p>
+    </div>
+  </details>
+</section>
+</div>
+<hr class="rule">
+
+<!-- ============ ARCHITECTURE ============ -->
+<div class="wrap" id="arch">
+<section>
+  <div class="grid2">
+    <div>
+      <div class="idx">03</div>
+      <p class="label">Architecture — as built, from code</p>
+    </div>
+    <div>
+      <h2>Four asset layers and a build spine. The strength is real; so are the <b>four structural gaps</b> the code exposes.</h2>
+      <p>This section was mapped from the executables, not the prose docs — the repo's ~60 status files disagree with the code often enough that the code is the more reliable record (the build's own docstring still describes 8 steps; the <code>STEPS</code> list has 18).</p>
+    </div>
+  </div>
+
+  <div class="dg">
+  <svg viewBox="0 0 960 560" role="img" aria-label="Engine architecture diagram">
+    <defs>
+      <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#767676"/></marker>
+      <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#DB0011"/></marker>
+    </defs>
+    <!-- stores row -->
+    <text x="20" y="30" font-size="11" letter-spacing="2" fill="#DB0011">SOURCES OF TRUTH (HAND-REVIEWED)</text>
+    <g font-size="13">
+      <rect x="20" y="44" width="210" height="72" fill="#fff" stroke="#000"/>
+      <text x="34" y="70" font-weight="600">tokens/ · DTCG store</text>
+      <text x="34" y="90" fill="#545454">503 tokens · light/dark modes</text>
+      <text x="34" y="106" fill="#9B9B9B" font-size="11">+147 "depricate" awaiting retirement</text>
+      <rect x="250" y="44" width="210" height="72" fill="#fff" stroke="#000"/>
+      <text x="264" y="70" font-weight="600">snippets/ · 38 references</text>
+      <text x="264" y="90" fill="#545454">token-manifest + contrast pairs</text>
+      <text x="264" y="106" fill="#9B9B9B" font-size="11">the reviewed source of truth</text>
+      <rect x="480" y="44" width="210" height="72" fill="#fff" stroke="#000"/>
+      <text x="494" y="70" font-weight="600">components/ · 38 metas</text>
+      <text x="494" y="90" fill="#545454">criteria: ARIA · states · antiPatterns</text>
+      <text x="494" y="106" fill="#9B9B9B" font-size="11">token refs are unvalidated prose</text>
+      <rect x="710" y="44" width="230" height="72" fill="#fff" stroke="#000"/>
+      <text x="724" y="70" font-weight="600">guidelines/ · 462 rules</text>
+      <text x="724" y="90" fill="#545454">create.hsbc ingested, ID'd, tiered</text>
+      <text x="724" y="106" fill="#9B9B9B" font-size="11">54 blocking · 317 advisory · 35 review</text>
+    </g>
+    <!-- arrows to generated -->
+    <line x1="125" y1="116" x2="125" y2="160" stroke="#767676" marker-end="url(#ar)"/>
+    <line x1="355" y1="116" x2="355" y2="160" stroke="#767676" marker-end="url(#ar)"/>
+    <line x1="585" y1="116" x2="585" y2="160" stroke="#767676" marker-end="url(#ar)"/>
+    <line x1="825" y1="116" x2="825" y2="160" stroke="#767676" marker-end="url(#ar)"/>
+    <!-- generated row -->
+    <text x="20" y="152" font-size="11" letter-spacing="2" fill="#DB0011">GENERATED · REGENERATE, NEVER HAND-EDIT</text>
+    <g font-size="13">
+      <rect x="20" y="164" width="440" height="66" fill="#F3F3F3" stroke="#D7D8D6"/>
+      <text x="34" y="188" font-weight="600">canon/canon.css — the composition layer</text>
+      <text x="34" y="206" fill="#545454">token spine (auto) + 29 hand .c-* utilities + 38 generated .cn-* blocks</text>
+      <text x="34" y="222" fill="#9B9B9B" font-size="11">zero .cn-page / .cn-grid / .cn-layout — no layout layer exists</text>
+      <rect x="480" y="164" width="210" height="66" fill="#F3F3F3" stroke="#D7D8D6"/>
+      <text x="494" y="188" font-weight="600">compliance/ KG</text>
+      <text x="494" y="206" fill="#545454">31 SC ↔ 31 rules ↔ 38 comps</text>
+      <text x="494" y="222" fill="#9B9B9B" font-size="11">bipartite index, self-asserted edges</text>
+      <rect x="710" y="164" width="230" height="66" fill="#F3F3F3" stroke="#D7D8D6"/>
+      <text x="724" y="188" font-weight="600">derived views</text>
+      <text x="724" y="206" fill="#545454">xref hub · blast radius · queues</text>
+      <text x="724" y="222" fill="#9B9B9B" font-size="11">query.py = one-hop joins, substring match</text>
+    </g>
+    <!-- build spine -->
+    <line x1="480" y1="230" x2="480" y2="272" stroke="#767676" marker-end="url(#ar)"/>
+    <rect x="20" y="276" width="920" height="86" fill="#000"/>
+    <text x="34" y="302" font-size="13" fill="#fff" font-weight="600">_build_all.py — 18 steps, one command to trust the knowledge base</text>
+    <text x="34" y="322" font-size="12" fill="#EDEDED">BLOCKING: rules-index · contrast ×2 · dark-surface · snippet (7 checks) · icon byte-match · a11y · coverage · integrity</text>
+    <text x="34" y="340" font-size="12" fill="#9B9B9B">ADVISORY (never blocks by construction): states probe · 15 heuristic signals · icon-contrast delta</text>
+    <!-- outside the build -->
+    <rect x="20" y="392" width="440" height="72" fill="#fff" stroke="#DB0011" stroke-dasharray="5 4"/>
+    <text x="34" y="416" font-size="13" font-weight="600" fill="#DB0011">OUTSIDE the build — run by hand, if remembered</text>
+    <text x="34" y="434" font-size="12" fill="#545454">_validate_compose.py · _validate_screen.py (screens/gallery)</text>
+    <text x="34" y="450" font-size="12" fill="#545454">_validate_state_contrast.py (rendered; needs Playwright)</text>
+    <rect x="480" y="392" width="460" height="72" fill="#fff" stroke="#DB0011" stroke-dasharray="5 4"/>
+    <text x="494" y="416" font-size="13" font-weight="600" fill="#DB0011">NOT BUILT — named in the charter, missing in code</text>
+    <text x="494" y="434" font-size="12" fill="#545454">divergence-probe tooling · mode-B brand self-check · mode dial</text>
+    <text x="494" y="450" font-size="12" fill="#545454">render + visual-QA loop · repair loop · _build_live_state.py</text>
+    <line x1="240" y1="362" x2="240" y2="392" stroke="#DB0011" marker-end="url(#arr)"/>
+    <line x1="710" y1="362" x2="710" y2="392" stroke="#DB0011" marker-end="url(#arr)"/>
+    <!-- host agent -->
+    <rect x="20" y="494" width="920" height="46" fill="#F3F3F3" stroke="#D7D8D6"/>
+    <text x="34" y="522" font-size="12" fill="#545454"><tspan font-weight="600" fill="#000">HOST AGENT (Claude / Cowork / Promenaut runtime)</tspan> — orchestration, state, retries inherited · operates via runbooks · ADR-0005: no bespoke runtime</text>
+    <line x1="480" y1="464" x2="480" y2="494" stroke="#767676" marker-end="url(#ar)"/>
+  </svg>
+  </div>
+  <p class="cap">The as-built engine. Solid black = the enforced spine. Dashed red = governance that exists but sits outside the one-command build, or is named in the charter and not yet built. The layout layer is absent from every box — that absence is the crux of section 04.</p>
+
+  <h3>What each blocking gate really checks — and what slips through</h3>
+  <details>
+    <summary><span class="tt">Snippet gate <small>· the deepest — 7 checks</small></span><span class="chip ok">strong</span><span class="chip amber">declaration-scoped</span></summary>
+    <div class="dbody">
+      <p>Token fidelity light+dark against the store, ARIA presence, contrast pairs, all-caps ban, focus-visible, typography rules, copy-lint. The catch: checks 1–3 validate only what the author <b>declared in the snippet's own token-manifest</b> (<span class="filerow">_validate_snippets.py:120–161</span>). A genuinely low-contrast pairing that was simply never listed in <code>contrastPairs</code> is never computed. The gate verifies <i>stated</i> obligations, not <i>actual</i> accessibility — an honesty system, not an inspection system. (The gate-blindspot lesson on state contrast was exactly this failure shape.)</p>
+    </div>
+  </details>
+  <details>
+    <summary><span class="tt">a11y gate <small>· the shallowest link</small></span><span class="chip red">weak</span></summary>
+    <div class="dbody">
+      <p>Two checks only. Reduced-motion is a substring presence test — a <code>prefers-reduced-motion</code> block that does nothing still passes (<span class="filerow">_validate_a11y.py:47</span>). Target-size fires only when a rule declares BOTH <code>width</code> and <code>height</code> in px on a selector matching a hardcoded class-name regex (<span class="filerow">:35, :53–55</span>) — the overwhelmingly common padding-sized button is never checked, and any control class outside the regex is invisible. Context from the field: even axe-core's full ruleset finds ~57% of issues by volume; this gate is far below that. It should not carry the name "a11y gate" with its current scope.</p>
+    </div>
+  </details>
+  <details>
+    <summary><span class="tt">Icon-source gate <small>· byte-level provenance</small></span><span class="chip ok">novel</span></summary>
+    <div class="dbody">
+      <p>Every inline SVG path byte-matched (whitespace-normalised) against the 746-glyph library; UNKNOWN fails the build; shape-only icons flagged (<span class="filerow">_validate_icons.py:34–84</span>). No commercial tool surveyed does this. Two holes: <code>data-bespoke</code> is self-attestation (a hand-drawn icon so marked passes unexamined), and byte-matching can't see a right glyph used at a wrong meaning.</p>
+    </div>
+  </details>
+  <details>
+    <summary><span class="tt">Coverage · integrity · contrast audits · dark-surface <small>· the bookkeeping gates</small></span><span class="chip ok">sound</span></summary>
+    <div class="dbody">
+      <p>Coverage is name-existence only — every meta has a snippet and vice versa; it does not verify the snippet implements the meta's declared props/states (<span class="filerow">_validate_coverage.py:52–64</span>, whose docstring still says "32/32"). The contrast audits compute real WCAG ratios from token data — genuinely ahead of tools that only check rendered current-state. Dark-surface catches one defect class (flat-white-in-dark) by category name-matching. Integrity lints the cross-file joins.</p>
+    </div>
+  </details>
+  <details>
+    <summary><span class="tt">The four structural gaps <small>· what the code itself exposes</small></span><span class="chip red">load-bearing</span></summary>
+    <div class="dbody">
+      <p><b>1 · Screen-level governance is out-of-band.</b> <code>_validate_compose.py</code> and <code>_validate_screen.py</code> are not in <code>STEPS</code>; they scan only a hand-curated <code>_fitness-test/*.canon.html</code> glob. An agent's arbitrary generated output is gated only if a human remembers to drop it in the right folder with the right filename — the July restyle proved exactly this (no gate ran until Dave asked "did you put this through the gates?", and the file's name meant the default glob would have missed it anyway).</p>
+      <p><b>2 · There is no layout/composition layer to retrieve.</b> Zero <code>.cn-page/.cn-grid/.cn-layout</code>; the charter says so itself at line 34. Canon governs the vocabulary below the component line and is silent above it — the charter's own §1 risk table even names this ("strong below the component line, silent above it").</p>
+      <p><b>3 · The KG is an inverted index, not a graph.</b> Self-asserted <code>relatedSC</code> arrays flipped into two lookup tables (<span class="filerow">_build_compliance_kg.py:61–78</span>); no SC→SC or component→component edges; meta <code>relationships</code> never compiled; nothing verifies a component actually satisfies an SC. Meanwhile retrieval (<code>query.py</code>) is one-hop dict joins with substring name-matching. "Knowledge graph" currently overstates both.</p>
+      <p><b>4 · Enforcement covers 12% of the register.</b> 54 of 462 rules block; the advisory tier never blocks by construction (<span class="filerow">_validate_advisory.py:243</span>); and metas can cite dead tokens forever because meta token refs are prose (19 of 38 components still carry deprecated bindings per the xref index).</p>
+    </div>
+  </details>
+  <details>
+    <summary><span class="tt">Portability — what the GOV.UK second system actually proved <small>· 2-day probe</small></span><span class="chip ok">generalises</span><span class="chip amber">with coupling</span></summary>
+    <div class="dbody">
+      <p>The differentiated logic — contrast enforcement, ARIA, focus, retrieval-not-recall — transferred to GOV.UK components <b>with no edits</b> and immediately bit two real issues (GOV.UK's known 1.35:1 yellow-focus failure, and the operator's own v4/v5 recall drift). But the probe also enumerated real single-tenant coupling: HSBC hardcoded in the icon gate, KG builder, token generator and typography; a light/dark mode assumption; Figma-node-shaped identity; no DTCG alias resolution in gates. Portability is proven for the per-component gates, unproven for the system-completeness gates. The hardcoded constants list (RED_HEXES, ACRONYMS, CTRL regex, GOD_BLAST=7, a duplicated 32-name ORDER list in two generators) is the tax to pay when a second tenant arrives for real.</p>
+    </div>
+  </details>
+
+  <h3>Doc-vs-code drift found while mapping</h3>
+  <table>
+    <tr><th>Where</th><th>Says</th><th>Reality</th></tr>
+    <tr><td><code>_build_all.py</code> docstring</td><td>8 steps</td><td>18 steps in <code>STEPS</code></td></tr>
+    <tr><td><code>knowledge/README.md</code></td><td>"32 metas" · "ten generators" · "four gates" · "Sutherland parked"</td><td>38 metas · 18 steps · ~9 gates · Sutherland arrived 06-17</td></tr>
+    <tr><td><code>_validate_coverage.py:14</code> · <code>canon.css:490</code> · <code>gen_gallery.py</code></td><td>"32" snippets</td><td>38</td></tr>
+    <tr><td><code>_RUNBOOK-gated-component.md:47</code></td><td>"6 gates"</td><td>~9 blocking of 18 steps</td></tr>
+    <tr><td>Gate-count language overall</td><td>"4" / "6" / "12 steps" in six live or semi-live docs</td><td>systemic drift — settle one canonical count and sweep (the Tier-B build-gate audit already planned)</td></tr>
+  </table>
+</section>
+</div>
+<hr class="rule">
+
+<!-- ============ EVIDENCE ============ -->
+<div class="wrap" id="evidence">
+<section>
+  <div class="grid2">
+    <div>
+      <div class="idx">04</div>
+      <p class="label">The evidence — experiments &amp; the trace</p>
+    </div>
+    <div>
+      <h2>Five experiments on one screen. The trace turned a feeling into a <b>measured, uncomfortable fact</b>.</h2>
+      <p>The experimental record is small — one screen (SME Payments), a handful of passes, no rendered scoring — but it is honestly logged, and the 07-07 trace instrument is the best thing the project has built for a month: it reconstructs retrieved-vs-invented directly from artifacts, sidestepping the already-proven-unreliable self-reports.</p>
+    </div>
+  </div>
+
+  <h3>The experiment chain</h3>
+  <table>
+    <tr><th></th><th>Design</th><th>Headline result</th><th>Confound</th></tr>
+    <tr><td><b>E0</b> · 06-19<br><span class="mini">Tabs fitness test</span></td><td>Build Tabs twice: KB-only vs unconstrained ceiling</td><td>KB strong on correctness scaffolding, <b>silent on everything that makes it feel finished</b> (no focus-ring spec, no geometry, no motion)</td><td>—; the ancestor of the layout finding</td></tr>
+    <tr><td><b>E1</b> · 07-05<br><span class="mini">§9 spread, Sonnet</span></td><td>3 registers, isolated cold passes, same contract</td><td>Cardinal curbs held (0 violations); bands diverged monotonically; sober used the never-reviewed <code>.c-stat-grid</code>; a self-report claimed flags grep couldn't find</td><td>Self-graded by structural grep; no render</td></tr>
+    <tr><td><b>E2</b> · 07-05<br><span class="mini">Opus re-run</span></td><td>Add canon-rigour-tier rule + switch model</td><td>Retrieval fixed (sober → <code>.cn-account-card</code>, zero fallback); Opus caught a real data ambiguity in the brief twice</td><td><b>Two variables changed at once</b> — by design, unresolved</td></tr>
+    <tr><td><b>E3</b> · 07-05<br><span class="mini">Zero-governance diagnostic</span></td><td>Two cold passes, no canon/curbs/a11y; with vs without named influences</td><td>The ungoverned run reached an <b>organising idea</b> ("time as the spine") nothing in the curbs would have blocked</td><td>Ceiling probe, not a controlled comparison</td></tr>
+    <tr><td><b>E4</b> · 07-07/10<br><span class="mini">Knowledge-usage trace</span></td><td>Reconstruct provenance from all 11 artifacts</td><td>Governed = provenance-perfect yet flat; <b>layout is the crux and the KB does not govern it</b></td><td>Measures provenance, not gestalt — by its own caveat</td></tr>
+  </table>
+
+  <div class="grid11">
+    <div>
+      <h3>Invention signals per lineage <span class="mini">(Σ across files)</span></h3>
+      <div class="bars">
+        <div class="bar"><span class="lab">governed · Sonnet ×4</span><div class="trk"><div class="fil red" style="width:0%"></div></div><span class="val">0 hex</span></div>
+        <div class="bar"><span class="lab">governed · Opus ×4</span><div class="trk"><div class="fil red" style="width:0%"></div></div><span class="val">0 hex</span></div>
+        <div class="bar"><span class="lab">diagnostic ×3</span><div class="trk"><div class="fil red" style="width:56%"></div></div><span class="val">56 hex</span></div>
+        <div class="bar"><span class="lab">Sonnet — local-only vars</span><div class="trk"><div class="fil grey" style="width:1%"></div></div><span class="val">2</span></div>
+        <div class="bar"><span class="lab">Opus — local-only vars</span><div class="trk"><div class="fil grey" style="width:0%"></div></div><span class="val">0</span></div>
+        <div class="bar"><span class="lab">diagnostic — local-only vars</span><div class="trk"><div class="fil grey" style="width:100%"></div></div><span class="val">219</span></div>
+      </div>
+      <p class="cap">Live hex + local palette vars = invented brand values. The governed engine's colour cardinal <b>provably holds</b> — there is no adherence left for better prompts to win.</p>
+    </div>
+    <div>
+      <h3>Retrieval signals per lineage</h3>
+      <div class="bars">
+        <div class="bar"><span class="lab">Sonnet — canon var() refs</span><div class="trk"><div class="fil" style="width:99%"></div></div><span class="val">207</span></div>
+        <div class="bar"><span class="lab">Opus — canon var() refs</span><div class="trk"><div class="fil" style="width:97%"></div></div><span class="val">201</span></div>
+        <div class="bar"><span class="lab">diagnostic — canon var() refs</span><div class="trk"><div class="fil" style="width:54%"></div></div><span class="val">112</span></div>
+        <div class="bar"><span class="lab">Sonnet — .cn-* uses</span><div class="trk"><div class="fil" style="width:73%"></div></div><span class="val">19</span></div>
+        <div class="bar"><span class="lab">Opus — .cn-* uses</span><div class="trk"><div class="fil" style="width:100%"></div></div><span class="val">26</span></div>
+        <div class="bar"><span class="lab">diagnostic — .cn-* uses</span><div class="trk"><div class="fil" style="width:4%"></div></div><span class="val">1</span></div>
+      </div>
+      <p class="cap">Canon vocabulary indexed: 503 tokens · 45 <code>.cn-*</code> components · 746 icon glyphs. Overall across all 11 files: 197 retrieved vs 104 invented entities (35% invented — almost all of it in the diagnostic lineage).</p>
+    </div>
+  </div>
+
+  <div class="grid11">
+    <div>
+      <h3>The layout tell: CSS grids per file</h3>
+      <div class="bars">
+        <div class="bar"><span class="lab">governed Sonnet (4 files)</span><div class="trk"><div class="fil" style="width:8%"></div></div><span class="val">0·2·0·0</span></div>
+        <div class="bar"><span class="lab">governed Opus (4 files)</span><div class="trk"><div class="fil" style="width:33%"></div></div><span class="val">0·4·4·0</span></div>
+        <div class="bar"><span class="lab">diagnostic (3 files)</span><div class="trk"><div class="fil red" style="width:58%"></div></div><span class="val">2·6·6</span></div>
+      </div>
+      <p class="cap">Governed sober/balanced screens are single-column; even layout-spacing tokens are ~0-retrieved (governed screens hand-author spacing in raw px). Freedom to compose is where the ungoverned lineage wins — and it is exactly the dimension no store, meta, gate or rule governs.</p>
+    </div>
+    <div>
+      <h3>Separability, shown — but not a success <span class="chip amber" style="font-size:10px;padding:1px 6px;">rev 2</span></h3>
+      <p class="mini" style="font-size:14px;">The headline ("best layout <i>but</i> 56 hex, 6 rule violations") conflates the two <i>raw</i> diagnostics with the third file. <code>without-influences-hsbc.html</code> — the hand-restyle — measures: <b>0 invented hex · 66 canon var refs · 6 grids · HYBRID</b>. That is a useful <b>proof of separability</b>: a stronger layout and cardinal colour compliance <i>can</i> coexist in one artifact. But read it as <b>one data point, not a success story</b> — Dave's considered verdict is that the two-pass was "not all that successful," and the file still carries two cardinal blemishes (a leftover radius and one ALL-CAPS). It tells us the two are separable; it does <b>not</b> establish generate-then-normalise as a working mechanism. <i>(Corrected from rev 1, which called this the strongest evidence in the repo "and it worked.")</i></p>
+    </div>
+  </div>
+
+  <h3>The three hypotheses, weighed</h3>
+  <div class="hyp">
+    <div>
+      <span class="chip">H1 · rules mis-applied</span>
+      <h4>Applying the existing rules better fixes it</h4>
+      <p><b>Largely exhausted.</b> The rigour-tier rule did fix a real retrieval failure — prompts close <i>leaks</i>. But governed output already measures PURE-RETRIEVAL; there is no adherence headroom left to buy flatness back with. Note the distinction from H3: this is applying the <i>current</i> rules harder, which isn't the lever — changing what the rules <i>encode</i> is (that's H3).</p>
+    </div>
+    <div>
+      <span class="chip">H2 · two-pass architecture</span>
+      <h4>A stage to test — not the architecture <span class="chip amber" style="font-size:9px;padding:0 5px;">rev 2</span></h4>
+      <p><b>Evidence thin; keep as a candidate stage.</b> The hand-restyle is a single manual two-pass; Dave's considered verdict is it was "not all that successful" — informative, not a proven mechanism. The field is encouraging (repair-with-ground-truth, rendered-feedback multi-pass +8pts), but no controlled comparison has run. Hold it as a possible <i>stage</i> in the process, not the pipeline shape. <i>(Rev 1 called this "the working mechanism.")</i></p>
+    </div>
+    <div>
+      <span class="chip red">H3 · rules wrong at source — Dave's lead</span>
+      <h4>Layout ungoverned; the library stops at organism</h4>
+      <p><b>Best-supported, and the lead direction.</b> Convergent: charter line 34 admits no template layer; the trace measures zero layout retrieval; the library is 38 comps with <b>zero templates/shells</b> (07-07 root-cause), so composition has nothing to retrieve; E0 found the KB "silent on what makes it feel finished." Dave's route: tune what the rules encode — tier definitions, composition licence, and a retrievable layout/library tier — rather than change the machine.</p>
+    </div>
+  </div>
+
+  <details>
+    <summary><span class="tt">Where the trace itself needs a health warning <small>— five nuances the writeups miss</small></span></summary>
+    <div class="dbody">
+      <p><b>1 · "Zero cardinal violations" is overstated on two cardinals.</b> The dossier's own rule layer flags square-corner violations in two governed files (partly a heuristic false-positive on the sanctioned round-dot exemption — but that proves square-corners can't be self-certified mechanically), and <b>2.4.7 focus-visible reads not-honoured in four governed files</b>. Given E0 found the KB has no focus-ring spec at all, that may be a real cardinal a11y gap hiding under a celebratory summary.</p>
+      <p><b>2 · Flag-where-silent counts are syntactic.</b> Candidate markers are comment-string matches; E1 already proved a self-report can claim flags that don't exist. Don't read candidate counts as evidence of reasoned derivation.</p>
+      <p><b>3 · Two trace outputs at different fidelity coexist</b> (07-07 TRACE.md vs 07-10 entities/dossier). Same files, different instruments — cite the dated one, or a future session will "find" a discrepancy that is just version skew.</p>
+      <p><b>4 · Rule-adherence verdicts are heuristics, not the gates.</b> "Retrieve-don't-recall" collapses to one boolean; the "20 rules violated" total includes false positives. Fine for direction, not for a scoreboard.</p>
+      <p><b>5 · The tool cannot answer its own framing question.</b> It measures provenance; the complaint is gestalt. "PURE-RETRIEVAL yet flat → points at architecture" is an inference the instrument supports but cannot verify — only the controlled two-pass comparison (never run) can.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="tt">Evidence-quality ledger <small>— what is proven vs suggestive</small></span></summary>
+    <div class="dbody">
+      <p><b>Proven (mechanical, reproducible):</b> colour cardinal holds under governance (0 live hex ×8 files); rigour-tier rule changed retrieval behaviour; layout divergence is real and monotonic; two independent Opus passes caught a genuine contract-data ambiguity; a cold run's self-report can be false.</p>
+      <p><b>Suggestive only:</b> "Opus expressive reads bolder" (never rendered); "diagnostic layouts are better" (one human eyeball, no blind comparison, no scoring); "two-pass beats one-pass" (one hand-made artifact, no controlled pair); everything is n=1 screen — payments, explicitly a narrow-road screen. The §9 framing survives; its <i>proven</i> status is rightly still deferred in the audit ledger.</p>
+    </div>
+  </details>
+</section>
+</div>
+<hr class="rule">
+
+<!-- ============ THE FIELD ============ -->
+<div class="wrap" id="field">
+<section>
+  <div class="grid2">
+    <div>
+      <div class="idx">05</div>
+      <p class="label">The field — influences &amp; comparables, July 2026</p>
+    </div>
+    <div>
+      <h2>Eight research sweeps. Verdict: <b>ahead on enforcement, behind on generation shape</b>, and reinventing three commodities.</h2>
+      <p>Web research ran across the token ecosystem, design-to-code products, constrained-generation literature, layout generation, knowledge graphs, agent memory, a11y verification and UI eval harnesses. Expand any row for the detail and sources; the full link list is in <a href="#sources">Method &amp; sources</a>.</p>
+    </div>
+  </div>
+
+  <table class="matrix">
+    <tr><th>Area</th><th>State of the art</th><th>Verdict on this project</th></tr>
+    <tr><td>AI design-to-code</td><td>v0 Design Systems 2.0, Builder Fusion, Bolt DS Agents, Figma Make kits — all ingest a design system and prompt with it</td><td><span class="chip dark">canon = commodity</span> <span class="chip ok">gates = ahead of all</span></td></tr>
+    <tr><td>Constrained generation</td><td>Verifier-guided multi-pass (repair / best-of-N / rendered feedback) is the winning shape</td><td><span class="chip red">single-pass = weakest known config</span></td></tr>
+    <tr><td>Layout generation</td><td>Retrieval-conditioned layout is settled science (RALF, LayoutRAG); SDUI archetypes proven at scale</td><td><span class="chip amber">H3 validated — build it, read first</span></td></tr>
+    <tr><td>Knowledge graphs</td><td>ACT Rules Format 1.1 is now a W3C Rec; overlay-index beat ontology-first for code corpora</td><td><span class="chip ok">component↔SC leg = novel</span> <span class="chip amber">SC↔rule leg = import, don't write</span></td></tr>
+    <tr><td>Agent memory / state</td><td>Graphiti/Zep bi-temporal graphs; AGENTS.md at Linux Foundation; spec-kit constitutions</td><td><span class="chip ok">composition is novel</span> <span class="chip amber">infra is hand-rolled</span></td></tr>
+    <tr><td>Token ecosystem</td><td>DTCG stable 2025.10 + Resolver draft; Style Dictionary v5 / Terrazzo reference implementations</td><td><span class="chip amber">canon.css generator reinvents commodity</span></td></tr>
+    <tr><td>A11y verification</td><td>axe-core ~57% ceiling; no shelf tool sweeps hover/pressed states — but all check the rendered DOM</td><td><span class="chip ok">state-aware intent ahead</span> <span class="chip red">rendered truth absent</span></td></tr>
+    <tr><td>UI eval harnesses</td><td>Screenshot-feedback loops are standard practice; UIClip / pairwise arenas for aesthetics</td><td><span class="chip red">no rendered evaluation at all</span></td></tr>
+  </table>
+
+  <details>
+    <summary><span class="tt">Design-to-code — the "no better than AI + component library" worry, answered <small>· v0 · Builder · Bolt · Lovable · Figma · Google</small></span></summary>
+    <div class="dbody">
+      <p>At the <b>canon layer, the worry is correct</b>: grounding generation in a real design system is now table stakes. v0's Design Systems 2.0 imports repos/Figma/docs into a stored "skill" with human-approved verification; Builder Fusion indexes the repo and offers a strict-tokens-only mode; Bolt's Design System Agents claim "every button is an existing approved component"; Lovable ships DS-as-project rules. The industry's plumbing convergence (shadcn registry + MCP + DTCG + Style Dictionary) is essentially what this repo hand-rolled.</p>
+      <p>At the <b>gates layer, nothing in the market matches this repo</b>: no product ships design-specific post-generation validation (real contrast math, token fidelity, icon byte-provenance, coverage/integrity) as a blocking pipeline. The commercial enforcement ceiling is generic ESLint/Stylelint/TS gates assembled DIY — Builder's own engineering guidance ("make agents pass <code>test:verify-ui</code> before opening PRs", Stylelint forcing semantic tokens over hex) is the closest cousin and is exactly this repo's philosophy, weaker. The register-as-inference-ramp charter has <b>no commercial analogue found</b>.</p>
+      <p>The most useful external datapoint: Google's Generative UI paper measured ungoverned frontier-model generation against experts — raters preferred generated UIs over markdown 82.8% of the time, but <b>human-expert sites still won 56%</b>. The governed-vs-creative gap is real, industry-wide, and unsolved. The live frontier is precisely this project's open question: constrained generation that iterates toward layout quality.</p>
+    </div>
+  </details>
+  <details>
+    <summary><span class="tt">Constrained generation — what the literature says about your architecture <small>· the crux research</small></span></summary>
+    <div class="dbody">
+      <p>Three findings bear directly on the §9 question. <b>(1) Post-hoc rejection is the weakest configuration.</b> The field's hierarchy: constrain during decoding &gt; repair after &gt; reject after. Blocking gates with no repair loop are rejection sampling at N=1. <b>(2) Repair works when feedback is ground truth</b> (Olausson, ICLR 2024: self-repair is often not worth it — <i>except</i> when the critic is a stronger signal such as tests). Your validators are deterministic ground truth; they are the exact ingredient that makes repair loops pay. <b>(3) Rendered-feedback multi-pass beats single-pass on UI specifically</b> (UI2Code^N: 66→74% across 5 rounds). Best-of-N with weak-verifier filtering (Weaver) is the cheap middle path: sample 3–5 expressive candidates, keep what passes most gates, repair the rest.</p>
+      <p>And the flatness itself has a literature: RLHF measurably reduces output diversity; format constraints degrade some tasks on some models. "Governance tax on creativity" is a documented phenomenon, not a Promenaut bug — which is why the answer is architectural (spend the constraint budget in a second pass) rather than motivational (ask the model harder to be exciting).</p>
+    </div>
+  </details>
+  <details>
+    <summary><span class="tt">Layout generation — H3 has published precedent on all three claims <small>· RALF · LayoutRAG · UI grammars · SDUI · A2UI</small></span></summary>
+    <div class="dbody">
+      <p>Decomposed, "a retrievable layout layer (page archetypes as graph nodes)" makes three claims, each separately validated: <b>layout should be an explicit serialized object</b> (LayoutGPT/LayoutNUWA treat layout as code; Stanford's Generative Interfaces pipeline inserts a structured plan stage and wins 84% over chat UI); <b>layouts should be retrieved, not invented</b> (RALF, CVPR 2024 oral: retrieval-conditioning beats pure generation — trained on 3k samples it beat a baseline trained on 7.7k; LayoutRAG halves FID); and <b>the unit should be a semantic archetype</b> (GOV.UK "patterns" and USWDS templates prove the granularity for humans; Airbnb's Ghost SDUI schema — screen = named layout × typed section slots — proves it as a production schema; Google's A2UI ships "agent may only render from a client-owned catalog" as an open protocol).</p>
+      <p>What does <i>not</i> exist anywhere: semantic page archetypes as graph nodes linked to a governed component canon, retrieved and instantiated under blocking validation. Academia retrieves geometry; industry governs component vocabularies and leaves composition to the model. The synthesis is open ground — with one caution: retrieval helps fidelity, not creativity, so a small archetype library trades flat for repetitive. Seed wide (GOV.UK/USWDS are free and pre-vetted) and let the promote loop grow it.</p>
+    </div>
+  </details>
+  <details>
+    <summary><span class="tt">Knowledge graphs &amp; the compliance KG — import the middle layer <small>· ACT Rules · axe-core · GraphRAG · overlay indexes</small></span></summary>
+    <div class="dbody">
+      <p>The <b>W3C ACT Rules Format 1.1 became a Recommendation in February 2026</b>: every ACT rule carries a machine-readable mapping to WCAG success criteria, atomic/composite typing, and — crucially — "partial testing" semantics that prevent the false claim "passed rule = conformant SC". axe-core publishes rule metadata mapping rules→SC→ACT IDs. This is the SC↔rule half of your compliance KG, standardized and community-maintained: <b>import it rather than hand-typing the 31-entry table</b>. The component↔SC leg — components as first-class nodes with applicable SCs and executable checks — exists nowhere else and is your genuine novelty.</p>
+      <p>On graph infrastructure: extraction-based GraphRAG is overkill and cost-critiqued at this corpus size; the overlay-index pattern (graph derived from artifacts, disposable, regenerable — exactly your <code>_blast-radius</code>/<code>graph-index</code> instinct and ADR-0003's leading hypothesis) has clearly won over ontology-first for code corpora. Your Phase-3 plan is pointing the right way; the trap to avoid is building a monolith.</p>
+    </div>
+  </details>
+  <details>
+    <summary><span class="tt">Agent memory — the state machine, benchmarked <small>· Graphiti/Zep · AGENTS.md · spec-kit · A-MEM</small></span></summary>
+    <div class="dbody">
+      <p>Your _LIVE-STATE + ADR-0007 + decision-audit stack is a hybrid nobody ships as one product: Graphiti's edge-invalidation semantics + classic ADR supersession + spec-kit's constitution-as-memory, applied to design decisions. As a spin-off thesis, that's defensible. As infrastructure, be honest about scale: <b>at single-designer scale, plain ADR files with supersession front-matter + the _LIVE-STATE index gets ~80% of the value</b>, and Graphiti (Apache-2.0, 27.8k stars, custom entity types) exists if queryability ever matters. Borrow two cheap upgrades: <b>bi-temporality</b> (record when a decision became true in the design AND when the ledger learned it — makes audits reconstructable) and <b>A-MEM-style backlink refresh</b> (when superseding a node, also refresh the summaries of its neighbours — your propagation-gap failures are exactly what this prevents). The industry lesson that validates your whole approach: prose instruction files don't enforce; enforcement belongs in gates. You knew that on day one.</p>
+    </div>
+  </details>
+  <details>
+    <summary><span class="tt">Tokens &amp; a11y tooling — what to adopt, what to keep <small>· DTCG 2025.10 · Style Dictionary v5 · axe · EAA</small></span></summary>
+    <div class="dbody">
+      <p><b>Tokens:</b> DTCG shipped its first stable version (2025.10) with a Resolver Module draft for modes/theming — check the store against the stable spec, and evaluate Style Dictionary v5 / Terrazzo as the token→CSS transform layer with your Python gates validating their output. The bet on DTCG was right; hand-maintaining the transform now carries drift risk against a stabilized spec. Your token-fidelity blocking gate has no commercial equivalent (Omlet/Luro are analytics, not gates) — that stays bespoke.</p>
+      <p><b>A11y:</b> the declared-pairs contrast approach is ahead of shelf tools in one way (it checks hover/pressed from token data at all) and behind in the decisive way (axe-family tools check the <i>rendered DOM</i>, catching undeclared pairs, inheritance, overlays). No mature product automates a full forced-state sweep — but the mechanism exists: Playwright + CDP <code>CSS.forcePseudoState</code> + axe's contrast rule per state is a few hundred lines and would close both the declared-pairs hole and the state blind spot at once. Don't adopt APCA (removed from the WCAG 3 draft; WCAG 3 is 2030+); stay on 2.x ratios. <b>EAA</b>: in force since June 2025, banking explicitly in scope, enforcement so far "guidance first, fines later"; UK domestic law unaffected but EU-facing services in scope — the ADR-0004 follow-up to re-verify the legal position stands, direction unchanged.</p>
+    </div>
+  </details>
+</section>
+</div>
+<hr class="rule">
+
+<!-- ============ CRITIQUE ============ -->
+<div class="wrap band" id="critique" style="max-width:none;">
+<div style="max-width:var(--max);margin:0 auto;padding:0 var(--s4);">
+<section>
+  <div class="grid2">
+    <div>
+      <div class="idx">06</div>
+      <p class="label">Critique — invited to be bold</p>
+    </div>
+    <div>
+      <h2>What's right is rarer than you think. What's wrong is <b>specific and fixable</b>.</h2>
+      <p>You asked for boldness, so here is the sharpest honest framing. Expand each finding for evidence.</p>
+    </div>
+  </div>
+
+  <h3 style="margin-top:var(--s2)">What's right — defend these</h3>
+  <details style="background:var(--white);padding:0 var(--s3);">
+    <summary><span class="tt">Verification = enforcement is the correct founding bet</span><span class="chip ok">keep</span></summary>
+    <div class="dbody"><p>The whole field is converging on your day-one position: prose rules don't govern, executables do. No commercial design-to-code product ships blocking design-specific validation; you do. The gates are the moat — every recommendation below <i>reuses</i> them rather than replacing them.</p></div>
+  </details>
+  <details style="background:var(--white);padding:0 var(--s3);">
+    <summary><span class="tt">The charter's register-as-inference-ramp is genuinely novel</span><span class="chip ok">keep</span></summary>
+    <div class="dbody"><p>Cardinal-vs-foundational curbs with a licensed inference level is a cleaner governance vocabulary than anything surveyed — the market's ceiling is a binary strict-mode. §9a's "reads-HSBC resolves to a named source, never a feeling" is publishable thinking. The framing is vouched; only the <i>proven</i> tag is rightly deferred.</p></div>
+  </details>
+  <details style="background:var(--white);padding:0 var(--s3);">
+    <summary><span class="tt">The epistemics are exceptional for a solo project</span><span class="chip ok">keep</span></summary>
+    <div class="dbody"><p>Self-reports were distrusted and then proven false; a trace instrument was built instead of an argument; decisions carry recorded-vs-vouched states; the repo keeps its own abandoned design and labels its own headline capability not-proven. This discipline is why the current architecture question can even be answered with data. Most teams never find out they're wrong this precisely.</p></div>
+  </details>
+
+  <h3>What's wrong — the six findings</h3>
+  <details style="background:var(--white);padding:0 var(--s3);">
+    <summary><span class="tt">F1 — The rules under-govern layout — the real gap isn't the pass count <small>· rev 2, reframed</small></span><span class="chip red">critical</span></summary>
+    <div class="dbody">
+      <p><i>(Rev 1 titled this "the generation shape is the architecture error" and argued single-pass should be considered superseded. Dave's ruling corrects it: single-pass is not the fault — for the factory/floor end it is exactly right, and provenance-perfect. The real gap is what the rules govern.)</i></p>
+      <p>The engine's rules govern the vocabulary below the component line thoroughly and are <b>silent above it</b> — layout, composition, page structure. So the generator, single-pass or not, has nothing to <i>retrieve</i> for the dimension that most carries a design; it must invent layout every time, and governed inventions come out flat. The evidence is convergent: the trace measures zero layout retrieval; the library stops at the organism tier (0 templates/shells); the charter admits it at line 34. <b>The fix is to widen what the rules encode</b> — a retrievable layout/library tier, sharper tier definitions, composition licence per band — not to abandon the single pass. A normalise/repair <i>stage</i> (the two-pass) is one option to trial on the ceiling/novel end, where it may help; it is not the headline. What survives untouched and is the moat: the canon, criteria, curbs, gates, and the register vocabulary.</p>
+    </div>
+  </details>
+  <details style="background:var(--white);padding:0 var(--s3);">
+    <summary><span class="tt">F2 — The engine cannot see. Every real defect was visual; every gate is static</span><span class="chip red">critical</span></summary>
+    <div class="dbody">
+      <p>AGENTS.md principle 8 states it; the July session proved it four times in one sitting (invisible hero number, ungated restyle, 4 real contrast failures behind a green check, a modal keyboard trap). The failure mode lives in the one channel the gates don't measure. Rendering exists in the sandbox (Playwright was proven for snippet PNGs); it has simply never been wired into the loop as an owned stage. Until the pipeline renders and looks, "gates green" will keep manufacturing false confidence — the state-contrast blind spot generalised.</p>
+    </div>
+  </details>
+  <details style="background:var(--white);padding:0 var(--s3);">
+    <summary><span class="tt">F3 — Declaration-scoped gates verify honesty, not reality</span><span class="chip amber">structural</span></summary>
+    <div class="dbody">
+      <p>Contrast checks cover only author-declared pairs; ARIA checks only declared strings; coverage checks only name existence; the a11y gate's target-size check fires only on a hardcoded class regex with literal px pairs; screen/compose gates aren't even in the build and scan only a hand-curated glob. The system audits what authors <i>claim</i>, exhaustively — and inspects what artifacts <i>are</i>, barely. The rendered-DOM state sweep (R5) and putting screen gates in the build close most of this.</p>
+    </div>
+  </details>
+  <details style="background:var(--white);padding:0 var(--s3);">
+    <summary><span class="tt">F4 — "Knowledge graph" oversells two lookup tables; retrieval is grep</span><span class="chip amber">structural</span></summary>
+    <div class="dbody">
+      <p>The compliance KG is a bipartite index over self-asserted arrays — no verification edges, no component relationships compiled, nothing beyond WCAG. <code>query.py</code> is one-hop joins with substring matching. This matters because the project's next big bets (unified overlay KG, archetype nodes, PM-KG MVP) all assume a graph substrate that doesn't exist yet. The good news: the overlay-index instinct is the industry-validated pattern, the component↔SC leg is real novelty, and the SC↔rule layer can be imported wholesale from W3C ACT/axe-core instead of maintained by hand.</p>
+    </div>
+  </details>
+  <details style="background:var(--white);padding:0 var(--s3);">
+    <summary><span class="tt">F5 — The self-analysis ratio is becoming its own risk</span><span class="chip amber">trajectory</span></summary>
+    <div class="dbody">
+      <p>The top-churn files are all governance machinery; 56 rewrites of two handoff files; the July-05 session produced an audit of the audit method. Each piece is individually excellent — collectively, the project increasingly reasons about itself instead of shipping screens, and the audit's own recurring finding was "foundations set ahead of completed work." The state machine is also your best spin-off, so this isn't wasted — but cap it: the PM-KG MVP should be the <i>last</i> infra build before D2, and new governance docs should need a kill-something-first rule. The deepest mitigation is external: one colleague using the engine converts self-analysis into feedback.</p>
+    </div>
+  </details>
+  <details style="background:var(--white);padding:0 var(--s3);">
+    <summary><span class="tt">F6 — Green gates sit on an incomplete, mis-tracked corpus — and the entry points still drift</span><span class="chip amber">hygiene</span></summary>
+    <div class="dbody">
+      <p>Ingestion was never completed (three siloed strands, one narrow graph, 147 deprecated tokens un-retired, 21 legacy files, metas citing purged tokens); the Sutherland manifest sat stale for 18 days saying "blocked" after the blocker cleared; today <code>knowledge/README.md</code> tells a cold start "32 metas / four gates / Sutherland parked" and <code>GOOD-MORNING.md</code> presents the built trace tool as future work. The supersession discipline exists and works when run — the gap is that it isn't yet mechanical (<code>_build_live_state.py</code> and the staleness gate remain unbuilt). Until then the ledger's accuracy is a function of end-of-session willpower, which the burst working pattern regularly exhausts.</p>
+    </div>
+  </details>
+
+  <div class="verdict" style="background:var(--white);padding:var(--s3);border-left-color:var(--black);">
+    <p><b>The one-sentence critique <span class="chip amber" style="font-size:10px;padding:1px 6px;">rev 2</span>:</b> you built a world-class verification layer and an honest memory system, but the rules they enforce under-govern the thing that carries a design — layout — so tune what the rules ask for, give layout a retrievable tier, and trial (don't assume) a normalise/repair stage, and the same assets become the product you set out to build.</p>
+  </div>
+</section>
+</div>
+</div>
+<hr class="rule">
+
+<!-- ============ RECOMMENDATIONS ============ -->
+<div class="wrap" id="reco">
+<section>
+  <div class="grid2">
+    <div>
+      <div class="idx">07</div>
+      <p class="label">Recommendations — phased, reversible first</p>
+    </div>
+    <div>
+      <h2>Three phases: <b>test the direction cheaply</b>, then build the missing layer, then consolidate. Nothing here throws away the engine.</h2>
+      <p>Ordered to respect the experimental stage: Phase A is days and mostly reversible; Phase B is the one new knowledge layer the evidence demands; Phase C swaps bespoke plumbing for commodity where the ecosystem has caught up. The existing seaworthiness sequence (Ingestion Phase 1, PM-KG MVP) slots in unchanged — noted where relevant.</p>
+    </div>
+  </div>
+
+  <div class="dg">
+  <svg viewBox="0 0 960 300" role="img" aria-label="Proposed target generation shape">
+    <defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#000"/></marker></defs>
+    <text x="20" y="28" font-size="11" letter-spacing="2" fill="#DB0011">CANDIDATE SHAPE — ONE ARM TO TEST, NOT A DECISION (REV 2)</text>
+    <g font-size="12.5">
+      <rect x="20" y="48" width="170" height="88" fill="#fff" stroke="#000"/>
+      <text x="32" y="72" font-weight="600">1 · PLAN + RETRIEVE</text>
+      <text x="32" y="92" fill="#545454">criteria contract +</text>
+      <text x="32" y="108" fill="#545454">archetype retrieval</text>
+      <text x="32" y="124" fill="#DB0011" font-size="11">NEW: layout layer (R4)</text>
+      <rect x="230" y="48" width="180" height="88" fill="#fff" stroke="#000"/>
+      <text x="242" y="72" font-weight="600">2 · GENERATE FREE-ER</text>
+      <text x="242" y="92" fill="#545454">register licence, best-of-N,</text>
+      <text x="242" y="108" fill="#545454">organising-idea prompt,</text>
+      <text x="242" y="124" fill="#545454">inference gravity</text>
+      <rect x="450" y="48" width="180" height="88" fill="#fff" stroke="#000"/>
+      <text x="462" y="72" font-weight="600">3 · NORMALISE</text>
+      <text x="462" y="92" fill="#545454">alias palette → canon tokens,</text>
+      <text x="462" y="108" fill="#545454">glyph swap, curb re-instate</text>
+      <text x="462" y="124" fill="#DB0011" font-size="11">= the restyle, mechanised (R2)</text>
+      <rect x="670" y="48" width="140" height="88" fill="#000"/>
+      <text x="682" y="72" font-weight="600" fill="#fff">4 · GATES</text>
+      <text x="682" y="92" fill="#EDEDED">existing validators,</text>
+      <text x="682" y="108" fill="#EDEDED">unchanged</text>
+      <rect x="850" y="48" width="90" height="88" fill="#F3F3F3" stroke="#D7D8D6"/>
+      <text x="862" y="72" font-weight="600">5 · HUMAN</text>
+      <text x="862" y="92" fill="#545454">taste call,</text>
+      <text x="862" y="108" fill="#545454">promote</text>
+    </g>
+    <line x1="190" y1="92" x2="230" y2="92" stroke="#000" marker-end="url(#a2)"/>
+    <line x1="410" y1="92" x2="450" y2="92" stroke="#000" marker-end="url(#a2)"/>
+    <line x1="630" y1="92" x2="670" y2="92" stroke="#000" marker-end="url(#a2)"/>
+    <line x1="810" y1="92" x2="850" y2="92" stroke="#000" marker-end="url(#a2)"/>
+    <!-- feedback loops -->
+    <path d="M740 136 L740 200 L340 200 L340 140" fill="none" stroke="#DB0011" stroke-width="1.5" marker-end="url(#arr)"/>
+    <text x="360" y="192" font-size="12" fill="#DB0011">gate failures fed back as repair instructions (R2) · max 2–3 rounds</text>
+    <path d="M540 136 L540 250 L295 250 L295 140" fill="none" stroke="#767676" stroke-dasharray="4 4" stroke-width="1.5" marker-end="url(#ar)"/>
+    <text x="315" y="242" font-size="12" fill="#767676">render → screenshot → visual critique (R3) · the "look at it" loop</text>
+    <text x="20" y="275" font-size="12" fill="#9B9B9B">One candidate shape among the R1 arms — not the recommendation. Sober stays pure retrieval either way; the open</text>
+    <text x="20" y="292" font-size="12" fill="#9B9B9B">question is the ceiling end, where rule-tuning + a layout tier (Dave's lead) compete with this two-stage split.</text>
+  </svg>
+  </div>
+
+  <h3>Phase A — experiment &amp; tidy · days, cheap, this month <span class="chip amber" style="font-size:10px;padding:1px 6px;">rev 2</span></h3>
+  <div class="reco">
+    <div class="rhead"><b>R1 · Run the three-arm controlled experiment</b><span class="chip red">the decider</span><span class="chip">~1 session</span></div>
+    <div class="rbody"><p>Same screen, same signed contract, same model, three arms rendered and judged blind: <b>(a)</b> governed single-pass as-is; <b>(b)</b> a <b>rule-tuned / re-tiered single-pass</b> — sharper tier definitions, composition licence per band, a point-of-view prompt ("have a view on the data's structure") — this is Dave's lead hypothesis; <b>(c)</b> generate-free → mechanical normalise → gates (the two-pass). Judge pairwise — ideally with one colleague — on organising idea / brand read / would-ship. Everything to date compared different lineages; this isolates whether <i>tuning the rules</i> (b) beats <i>changing the machine</i> (c), against the current baseline (a). Do it on a second screen with more compositional latitude than payments to escape the narrow-road confound.</p></div>
+  </div>
+  <div class="reco">
+    <div class="rhead"><b>R2 · Build the two-pass only as arm (c) — a test, not an adoption</b><span class="chip">one arm</span><span class="chip">small build</span></div>
+    <div class="rbody"><p>To run arm (c) you need the normalise pass as a runbook + script: alias-palette rebind onto canon tokens (the <code>:root,[data-theme]</code> lesson is learned), library-glyph swap, curb re-instatement, then loop gates → targeted fix → re-gate, bounded 2–3 rounds. Every ingredient exists (the July evening did it by hand). But <b>hold the verdict for R1's blind judgment</b> — the one manual run read lukewarm to Dave, so this is instrumentation for the experiment, not a recommended pipeline. If (b) wins, most of this can be shelved.</p></div>
+  </div>
+  <div class="reco">
+    <div class="rhead"><b>R3 · Wire render-and-look into the loop</b><span class="chip">small build</span></div>
+    <div class="rbody"><p>Playwright screenshot per artifact (light+dark, 2 viewports) → a visual-critique step against the register licence + the six brand principles → verdict attached to the run. Advisory first, per your own tiering rule; earns blocking by bite-test. This is the owned "craft gate" stage the robustness memo already commits to — and it is the only mitigation for the F2 class of defect.</p></div>
+  </div>
+  <div class="reco">
+    <div class="rhead"><b>R0 · The grooming pass</b><span class="chip">~1 hour</span></div>
+    <div class="rbody"><p>Commit the in-flight work, then fix the three entry points, tombstone the vision mock, delete the four dead files, batch-archive the June cluster. Full inventory in <a href="#groom">section 08</a> — sequenced so the cold-start spine stops lying first.</p></div>
+  </div>
+
+  <h3>Phase B — the missing knowledge · the one new layer</h3>
+  <div class="reco">
+    <div class="rhead"><b>R4 · Build the retrievable layout/composition layer</b><span class="chip red">the H3 answer</span><span class="chip">the next big rock</span></div>
+    <div class="rbody"><p>Page archetypes as first-class canon nodes: <code>{archetype: named layout arrangement, slots: typed regions → allowed component families, measure: grid/breakpoint/spacing bindings}</code> — the Airbnb-Ghost schema shape, serialized like your metas, gated like your snippets (a compose-gate check that a screen declares its archetype and fills slots from canon). Seed from: GOV.UK/USWDS page patterns (free, pre-vetted, semantically named), your own endorsed compositions (time-as-spine, the balanced SME screen, the portfolio piece's structure), and Sutherland/Figma page templates when ingested. Retrieval: LayoutRAG's two-stage trick — index by component-type signature, rank by structural similarity, <i>adapt not copy</i>. Read RALF + LayoutRAG first (both linked in sources): retrieval-conditioned layout is settled science, and your framing — governed semantic archetypes joined to a component canon — is the unclaimed synthesis. Caution from the literature: a small archetype library trades flat for repetitive; grow it via the existing promote loop.</p></div>
+  </div>
+  <div class="reco">
+    <div class="rhead"><b>R5 · Close the rendered-truth a11y gap while you're in there</b><span class="chip">few hundred lines</span></div>
+    <div class="rbody"><p>Playwright + CDP <code>CSS.forcePseudoState</code> + axe's contrast rule, swept per snippet per state per theme. Closes the declared-pairs hole and the state-contrast blind spot in one instrument; no shelf product automates it. Add axe-core per snippet as a build step for the rest of its ruleset (with the ~57%-ceiling humility label your gates already carry). Keep WCAG 2.x ratios; skip APCA.</p></div>
+  </div>
+
+  <h3>Phase C — consolidate · swap bespoke for commodity, keep the moat</h3>
+  <div class="reco">
+    <div class="rhead"><b>R6 · Import, don't maintain, the standard layers</b><span class="chip">refactor</span></div>
+    <div class="rbody"><p>(a) Compliance KG: ingest W3C ACT rules + axe-core rule metadata as the SC↔rule layer (with ACT's partial-testing semantics); keep hand-curation only for the novel component↔SC leg. (b) Tokens: validate the store against DTCG stable 2025.10 + Resolver draft; trial Style Dictionary v5/Terrazzo as the transform behind <code>canon.css</code>'s token spine, Python gates verifying output. (c) Consider exposing canon over MCP so generators retrieve at generation time instead of only being policed after — the industry's whole direction of travel, and it makes the engine host-agnostic in practice, not just principle.</p></div>
+  </div>
+  <div class="reco">
+    <div class="rhead"><b>R7 · PM-KG MVP: build it lean, and lean on precedent</b><span class="chip">as planned, trimmed</span></div>
+    <div class="rbody"><p>The staleness gate + <code>_capture_gate.py</code> + front-matter supersession edges are worth building — the July drift incidents prove the failure is real. But resist the full bespoke temporal graph: front-matter + generated index gets ~80% at this scale, Graphiti exists if queryability ever matters, and the two cheap upgrades worth stealing are bi-temporal stamps and neighbour-summary refresh on supersession. Keep the spin-off framing: this stack is the portable kit; building it minimal makes it <i>more</i> portable, not less.</p></div>
+  </div>
+  <div class="reco">
+    <div class="rhead"><b>R8 · Sequence guard</b><span class="chip">discipline</span></div>
+    <div class="rbody"><p>D2 (the colleague's novel screen) stays the #1 unlock and now doubles as the blind judge for R1. Ingestion Phase 1 (Sutherland rebind) stays queued as the finishing win. And one standing rule against F5: no new governance instrument until R1–R3 have shipped a screen — the machine has enough mirrors for now.</p></div>
+  </div>
+</section>
+</div>
+<hr class="rule">
+
+<!-- ============ GROOMING ============ -->
+<div class="wrap" id="groom">
+<section>
+  <div class="grid2">
+    <div>
+      <div class="idx">08</div>
+      <p class="label">Grooming plan — stale &amp; orphaned content</p>
+    </div>
+    <div>
+      <h2>Your instinct was right: <b>4 deletes, ~45 archives, 2 tombstones, 4 live-doc fixes</b> — and the entry points come first.</h2>
+      <p>Every file at root and in <code>knowledge/</code> was checked for last commit, inbound references from live docs, and contradictions with current state. Generated build outputs (everything stamped by the 07-03 build run, plus the 07-10 trace outputs) are excluded — they regenerate and need no grooming. The suggested order is blast-radius-first.</p>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="n">3+1</div><div class="c">entry-point fixes first — README counts, GOOD-MORNING trace status, _LIVE-STATE narrowing, + commit in-flight work</div></div>
+    <div class="stat"><div class="n">4</div><div class="c">true deletes — a byte-identical duplicate, a tracked empty blob, an empty dir, a renamed audit's orphans</div></div>
+    <div class="stat"><div class="n">~45</div><div class="c">archive candidates — the June strategy cluster, orphaned knowledge docs, ~25 one-off fitness-test showcases</div></div>
+    <div class="stat"><div class="n">2</div><div class="c">tombstones owed — the iteration-machine mock (the real gap) + canonicalising _NEXT-SESSION's banner</div></div>
+  </div>
+
+  <details>
+    <summary><span class="tt">1 · UPDATE — live docs whose content is stale <small>· do these first, they are the cold-start spine</small></span><span class="chip red">priority</span></summary>
+    <div class="dbody">
+      <table>
+        <tr><th>File</th><th>Exact drift</th></tr>
+        <tr><td><code>knowledge/README.md</code></td><td>"32 metas" → 38 · "ten generators / four gates" → 18 steps, ~9 gates · "Sutherland… on hold until its JSON lands" → arrived 2026-06-17, Phase 0 closed. Last committed 06-22; it is entry point #3.</td></tr>
+        <tr><td><code>GOOD-MORNING.md</code></td><td>Queue item 1 still says "build the knowledge-usage trace as prep tooling" — it was built 07-07 with first evidence in <code>_LIVE-STATE</code>. Presents done work as pending; exactly the 07-05-vs-07-07 staleness you suspected.</td></tr>
+        <tr><td><code>_LIVE-STATE.md</code></td><td>The OPEN propagation-gap entry still claims ADR-0006 is unreconciled looks-language — verified false: ADR-0006 was amended + re-vouched 07-05 and now speaks §9. Only the vision mock remains open; narrow the entry. Also settle the "~8 gates" hedge into one canonical count on the planned Tier-B build-gate audit.</td></tr>
+        <tr><td><code>knowledge/_RUNBOOK-gated-component.md</code></td><td>"the build must end green (6 gates…)" — stale count in a live runbook (line 47).</td></tr>
+      </table>
+      <p class="mini">Also: commit the five uncommitted files (trace dossier build-out + _LIVE-STATE H3 entry + a dangling two-line <code>AGENTS.md</code> stub heading "Imported Claude Cowork project instructions" — finish or drop that stub).</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="tt">2 · TOMBSTONE — superseded without the banner <small>· the convention exists; these two escaped it</small></span><span class="chip amber">owed</span></summary>
+    <div class="dbody">
+      <table>
+        <tr><th>File</th><th>Why</th></tr>
+        <tr><td><code>_VISION-iteration-machine_2026-07-03.html</code></td><td><b>The one real open propagation gap.</b> Still ships "Cool/Warm/Hot must stay present", inverse-surface-band language, and a <code>border-radius:10px</code> cardinal violation. Superseded by §9 — either tombstone-banner it or update it to §9 language when next touched. (Already logged in _LIVE-STATE; still untouched.)</td></tr>
+        <tr><td><code>knowledge/_NEXT-SESSION.md</code></td><td>Correctly retired in prose, but with an ad-hoc header — bring it to the canonical <code>⚠️ SUPERSEDED &lt;date&gt; — Superseded-by:</code> form so a cold-start grep can't miss it. (<code>sme-payments-registers.html</code> is the model of doing this right.)</td></tr>
+      </table>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="tt">3 · DELETE — no value beyond git history <small>· safe: git preserves all of it</small></span></summary>
+    <div class="dbody">
+      <table>
+        <tr><th>Item</th><th>Evidence</th></tr>
+        <tr><td><code>promenaut-pipeline-spec.html</code> (root)</td><td>Byte-identical (<code>diff -q</code> verified) to <code>archive/harness-v0.1/…v0.1_2026-05-31.html</code>. Pure duplicate of an already-archived file.</td></tr>
+        <tr><td><code>_wt_test</code></td><td>Tracked empty blob from 06-22, no longer on disk; <code>git rm --cached _wt_test</code>.</td></tr>
+        <tr><td><code>UX-design/</code> (nested dir)</td><td>Empty, untracked. Also the folder that was accidentally connected to Cowork this morning — deleting it prevents the wrong-mount repeat.</td></tr>
+        <tr><td><code>knowledge/_SURFACE-CONTRAST-AUDIT.json/.md</code></td><td>Orphaned outputs of a renamed generator — the build now emits <code>_TEXT-CONTRAST-AUDIT.*</code>; these stopped regenerating 06-19.</td></tr>
+        <tr><td><i>optional:</i> <code>figma make test/</code> · <code>Figma prompt 01/</code> · <code>Accounts Overview….png</code></td><td>One-off Figma-Make export zips + a screenshot, 06-21, zero references — delete or archive to taste.</td></tr>
+        <tr><td><code>uxdesign-full.tar.gz</code> (root)</td><td>Created by this analysis session for staging — moved to <code>_to_delete/</code> for you to remove.</td></tr>
+      </table>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="tt">4 · ARCHIVE — historical value, wrong shelf <small>· one `git mv` batch into archive/</small></span></summary>
+    <div class="dbody">
+      <p><b>Root, the June cluster (pre-pivot / dated session docs):</b> <code>HANDOFF.md</code> (day-one, pipeline-era) · <code>promenaut-pipeline-spec_v0.2</code> (join v0.1 in archive) · <code>RUNBOOK-end-to-end-proof.md</code> · <code>_STRATEGY-KICKOFF.md</code> · <code>_STRATEGY-framework-comparison.md</code> · <code>_SESSION-BRIEF-2026-06-20-strategy.md</code> · <code>_BUILD-CHAT-HANDOFF.md</code> ("12 steps, 6 gates") · <code>SESSION-BRIEF-tabs-fitness-test.md</code> · <code>_VISION-contextual-dashboard_2026-06-29.md</code> (self-labelled parked) · the three <code>_REVIEW-DOSSIER-*.html</code> (their findings are enacted and recorded) · <code>REVIEW-2026-07-02-critical-regroup.html</code> (re-point the README link when moved). Consider moving the three <code>payments-*</code> D2 intake docs into a <code>d2/</code> folder — live but loose at root.</p>
+      <p><b>knowledge/, orphaned or superseded era docs:</b> <code>_FINDINGS-INDEX.md</code> ("6 gates / 32 snippets") · <code>_FITNESS-TEST-tabs.md</code> · <code>_CODE-CONNECT-PLACEMENT.md</code> · <code>_DESIGN-SYSTEM-AUDIT.md</code> · <code>_INTEGRITY-WARNINGS-TRIAGE.md</code> · <code>_NEXT-SESSION-composition.md</code> (0 refs) · <code>_HANDOFF-component-review.md</code> (0 refs, "32 snippets") · <code>_COMPONENT-LIBRARY-TARGET.md</code> (0 refs) · <code>_PROTOTYPE-GRADE-AUDIT.md</code> (its generator isn't in the build — regenerate or archive) · <code>_demo/</code> ("6 gates", "Demo harness") · the seven one-off <code>_render_*.py</code> helpers superseded by <code>gen_gallery.py</code>.</p>
+      <p><b>knowledge/_fitness-test/, ~25 one-off showcases</b> (zero inbound refs; keep everything the live docs cite): all <code>*-AB-showcase.html</code>, <code>*-responsive.html</code>, <code>button-3up</code>, <code>blue400-review</code>, <code>icon-fake-weight</code>, <code>icon-weight-system</code>, <code>cold-A/B-*</code>, <code>route-a/b-tabs*</code> + <code>route-b-gap-log.md</code>, <code>v6-token-proposals</code>, <code>v7-series-assignment-AB</code>, <code>component-build-plan</code>, <code>status-indicator</code>, <code>progress-tracker-segmented</code>, <code>list-items-transaction</code>, <code>tags-chip-animation</code>, <code>tags-cross-weight-test</code>, <code>sme-journey</code>, <code>sme-payments-final</code>, <code>sme-payments-portfolio</code>. <b>Keep live:</b> the three <code>register-spread-2026-07-05*</code> folders + compare viewer, all <code>*.canon.html</code> (the screen gate's glob), <code>modal-motion-3up</code>, <code>tags-responsive</code>, <code>sme-payments-balanced</code>, <code>payments-journey.html</code>, and the tombstoned <code>sme-payments-registers.html</code>.</p>
+      <p class="mini">Suggestion: archive with structure — <code>archive/sessions-2026-06/</code>, <code>archive/fitness-test-showcases/</code> — so the shelf stays browsable. E0's <code>route-b-gap-log.md</code> is quoted in this report's evidence chain; archived is fine, deleted would be a loss.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="tt">5 · Systemic language sweeps <small>· fold into the planned Tier-B build-gate audit</small></span></summary>
+    <div class="dbody">
+      <p><b>Gate-count drift</b> survives in six live/semi-live docs ("four gates" / "6 gates" / "12 steps"): knowledge README, the gated-component runbook, <code>_demo</code>, <code>_FINDINGS-INDEX</code>, <code>_BUILD-CHAT-HANDOFF</code>, <code>_STRATEGY-framework-comparison</code>. Settle one canonical phrase ("18-step build, N blocking gates") and sweep once. <b>"Harness/pipeline-runtime" language</b> (retired by ADR-0005) persists in the two root pipeline specs, <code>_demo</code>, and softly in knowledge README's "query harness". <b>"32 snippets"</b> persists inside <code>canon.css</code>'s hand-layer comment and <code>gen_gallery.py</code>'s duplicated ORDER list — fix the comment, and de-duplicate the ORDER constant while there.</p>
+    </div>
+  </details>
+</section>
+</div>
+<hr class="rule">
+
+<!-- ============ SOURCES ============ -->
+<div class="wrap" id="sources">
+<section>
+  <div class="grid2">
+    <div>
+      <div class="idx">09</div>
+      <p class="label">Method &amp; sources</p>
+    </div>
+    <div>
+      <h2>How this report was made — and where to dig further.</h2>
+      <p>Five parallel deep-dives over a full snapshot of the repo (all 170 commits + working tree, 2026-07-10): an as-built architecture map from the executables, a git-history archaeology, a rigorous read of the experiments + trace instrument, a file-by-file staleness sweep, and an eight-area web research sweep (July 2026). Load-bearing repo claims were verified to file/line by at least one dedicated pass; external claims carry their source below. Numbers quoted from the trace are the tool's own outputs (<code>_KNOWLEDGE-USAGE-TRACE.md</code> · <code>-ENTITIES.json</code>).</p>
+      <p class="mini">Known limits: no artifact was re-rendered for this report (the repo's own standing limitation), so visual-quality claims inherit the project's "text description, not proof" caveat; the influence sweep is July-2026 current but web-sourced, not vendor-confirmed; grooming reference-counts were computed by grep over tracked markdown and may miss references inside HTML mocks.</p>
+    </div>
+  </div>
+
+  <h3>Key external sources</h3>
+  <p class="mini" style="margin-bottom:var(--s2)">Generation &amp; repair</p>
+  <p class="srcs">
+    <a href="https://arxiv.org/abs/2306.09896">Olausson et al. — Is Self-Repair a Silver Bullet? (ICLR 2024)</a><br>
+    <a href="https://arxiv.org/html/2511.08195v1">UI2Code^N — interactive UI-to-code, rendered feedback (2025)</a><br>
+    <a href="https://scalingintelligence.stanford.edu/pubs/weaver.pdf">Weaver — weak-verifier ensembles (Stanford)</a><br>
+    <a href="https://arxiv.org/abs/2510.04905">Survey: retrieval-augmented code generation (2025)</a><br>
+    <a href="https://dl.acm.org/doi/10.1145/3729274">Type-constrained code generation (PLDI 2025)</a><br>
+    <a href="https://arxiv.org/abs/2310.06452">RLHF reduces output diversity (ICLR 2024)</a><br>
+    <a href="https://generativeui.github.io/static/pdfs/paper.pdf">Google — Generative UI paper + PAGEN (arXiv 2604.09577)</a><br>
+    <a href="https://arxiv.org/html/2508.19227v2">Stanford — Generative Interfaces for LMs (2025)</a>
+  </p>
+  <p class="mini" style="margin:var(--s2) 0">Layout</p>
+  <p class="srcs">
+    <a href="https://udonda.github.io/RALF/">RALF — retrieval-augmented layout (CVPR 2024 oral)</a><br>
+    <a href="https://arxiv.org/abs/2506.02697">LayoutRAG (2025)</a><br>
+    <a href="https://arxiv.org/abs/2305.15393">LayoutGPT (NeurIPS 2023)</a><br>
+    <a href="https://arxiv.org/abs/2310.15455">UI grammars for LLM layout (2023)</a><br>
+    <a href="https://medium.com/airbnb-engineering/a-deep-dive-into-airbnbs-server-driven-ui-system-842244c5f5">Airbnb Ghost — SDUI schema</a><br>
+    <a href="https://developers.googleblog.com/introducing-a2ui-an-open-project-for-agent-driven-interfaces/">Google A2UI — catalog-governed agent UI</a><br>
+    <a href="https://design-system.service.gov.uk/patterns/">GOV.UK patterns</a> · <a href="https://designsystem.digital.gov/templates/">USWDS templates</a>
+  </p>
+  <p class="mini" style="margin:var(--s2) 0">Design-to-code market</p>
+  <p class="srcs">
+    <a href="https://v0.app/docs/design-systems-2">v0 Design Systems 2.0</a><br>
+    <a href="https://www.builder.io/blog/how-to-make-ai-agents-follow-your-design-system">Builder — make agents follow your design system</a><br>
+    <a href="https://bolt.new/blog/bolt-design-system-agents">Bolt — Design System Agents</a><br>
+    <a href="https://docs.lovable.dev/features/design-systems">Lovable — design systems</a><br>
+    <a href="https://developers.figma.com/docs/figma-mcp-server/">Figma Dev Mode MCP server</a> · <a href="https://developers.figma.com/docs/code/write-design-system-guidelines/">Make kit guidelines</a><br>
+    <a href="https://zeroheight.com/blog/ai-in-design-systems-whats-changing-in-2026/">zeroheight — AI in design systems 2026</a>
+  </p>
+  <p class="mini" style="margin:var(--s2) 0">Knowledge graphs · memory · standards</p>
+  <p class="srcs">
+    <a href="https://www.w3.org/news/2026/accessibility-conformance-testing-act-rules-format-1-1-is-now-a-w3c-recommendation/">W3C ACT Rules Format 1.1 — Recommendation (Feb 2026)</a><br>
+    <a href="https://github.com/dequelabs/axe-core/blob/develop/doc/rule-descriptions.md">axe-core machine-readable rule metadata</a><br>
+    <a href="https://github.com/getzep/graphiti">Graphiti — bi-temporal agent memory</a> · <a href="https://arxiv.org/abs/2501.13956">Zep paper</a><br>
+    <a href="https://github.com/github/spec-kit">GitHub spec-kit — constitution pattern</a><br>
+    <a href="https://openai.com/index/agentic-ai-foundation/">AGENTS.md → Agentic AI Foundation (Linux Foundation)</a><br>
+    <a href="https://arxiv.org/abs/2502.12110">A-MEM — Zettelkasten agent memory (NeurIPS 2025)</a><br>
+    <a href="https://www.microsoft.com/en-us/research/blog/lazygraphrag-setting-a-new-standard-for-quality-and-cost/">LazyGraphRAG</a>
+  </p>
+  <p class="mini" style="margin:var(--s2) 0">Tokens · accessibility · evals</p>
+  <p class="srcs">
+    <a href="https://www.w3.org/community/design-tokens/2025/10/28/design-tokens-specification-reaches-first-stable-version/">DTCG first stable version (2025.10)</a> · <a href="https://www.designtokens.org/tr/drafts/resolver/">Resolver Module draft</a><br>
+    <a href="https://styledictionary.com/versions/v5/migration/">Style Dictionary v5</a> · <a href="https://terrazzo.app/docs/">Terrazzo</a><br>
+    <a href="https://www.deque.com/automated-accessibility-coverage-report/">Deque — 57% automated coverage study</a><br>
+    <a href="https://polypane.app/blog/polypane-14-1-container-query-support-forced-element-state-and-contrast-lines-in-color-pickers/">Polypane — forced-state contrast (the CDP mechanism)</a><br>
+    <a href="https://adrianroselli.com/2026/04/wcag3-contrast-as-of-april-2026.html">Roselli — WCAG 3 / APCA status (Apr 2026)</a><br>
+    <a href="https://www.pivotalaccessibility.com/2025/09/eaa-enforcement-in-europe-following-the-june-2025-deadline/">EAA enforcement after June 2025</a><br>
+    <a href="https://arxiv.org/abs/2404.12500">UIClip — trained UI quality scorer (UIST 2024)</a><br>
+    <a href="https://arxiv.org/html/2506.06251v3">DesignBench (2025)</a> · <a href="https://www.designarena.ai/">Design Arena</a>
+  </p>
+</section>
+</div>
+
+<footer class="foot">
+  <div class="wrap" style="display:flex;gap:var(--s4);flex-wrap:wrap;align-items:baseline;">
+    <span>Deep analysis — Smart Design System (project Promenaut)</span>
+    <span>Prepared 2026-07-10 for Dave Ewen · rev 2 corrected same evening</span>
+    <span class="spacer" style="flex:1"></span>
+    <span>Snapshot: master @ a2771a8 + working tree · repo read in full</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var prog=document.getElementById('prog');
+  addEventListener('scroll',function(){
+    var h=document.documentElement, p=h.scrollTop/(h.scrollHeight-h.clientHeight);
+    prog.style.width=(p*100)+'%';
+  },{passive:true});
+  // timeline
+  var days=[["05-31",1,0],["06-02",1,0],["06-17",3,0],["06-18",11,0],["06-19",13,0],["06-20",8,0],["06-22",9,0],["06-23",4,0],["06-24",3,0],["06-29",1,0],["07-01",1,0],["07-02",42,1],["07-03",34,1],["07-04",5,0],["07-05",32,1],["07-06",1,0],["07-07",1,0]];
+  var notes={"05-31":"Harness scaffold — the founding commit","06-02":"Contracts, synthetic tokens, the one dry run — then 15 days of silence","06-17":"Work resumes: first HSBC component + Figma tokens","06-18":"Metas + guidelines ingest begins","06-19":"Derived views: xref, review queue, blast radius; Tabs fitness test","06-20":"Strategy day — Promenaut spec v0.2","06-22":"9/9 grind: Tabs, Table, Cards promoted; code-binding ruling","06-23":"9/9 grind continues","06-24":"Payments-journey proof: twelve 9/9 ≠ one screen","06-29":"Notifications 9/9; composition-layer seeds","07-01":"canon.css composition layer + gap patterns land","07-02":"THE PIVOT — ADR-0005 + ingestion sprint + GOV.UK second system","07-03":"§9 inference ramp + ADR-0006 flexing engine + Tier-1/2 ingest","07-04":"Language reviews + §9a provenance + two harness modes","07-05":"ADR-0007 state machine + decision audit + §9 spreads + seaworthiness","07-06":"Trace design recorded","07-07":"Trace BUILT — provenance-perfect yet flat; H3 lands"};
+  var max=42, tl=document.getElementById('tl'), tlx=document.getElementById('tlx');
+  days.forEach(function(d){
+    var b=document.createElement('div');
+    b.className='d'+(d[2]?' p2':'');
+    b.style.height=Math.max(4,(d[1]/max*170))+'px';
+    b.innerHTML='<span class="tip"><b>'+d[0]+' · '+d[1]+' commit'+(d[1]>1?'s':'')+'</b><br>'+(notes[d[0]]||'')+'</span>';
+    tl.appendChild(b);
+    var x=document.createElement('span');
+    x.textContent=(["05-31","06-17","06-24","07-02","07-05","07-07"].indexOf(d[0])>-1)?d[0]:'';
+    tlx.appendChild(x);
+  });
+  // rail scroll-spy
+  var links=[].slice.call(document.querySelectorAll('#rail a'));
+  var ids=links.map(function(a){return a.getAttribute('href').slice(1);});
+  addEventListener('scroll',function(){
+    var cur=ids[0];
+    ids.forEach(function(id){var el=document.getElementById(id); if(el&&el.getBoundingClientRect().top<140)cur=id;});
+    links.forEach(function(a){a.classList.toggle('on',a.getAttribute('href')==='#'+cur);});
+  },{passive:true});
+})();
+</script>
+</body></html>

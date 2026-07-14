@@ -55,6 +55,11 @@ A **governed design-system engine**: canon (tokens + gated components) + criteri
 - One command to trust the knowledge base: `python3 knowledge/_build_all.py`.
 - Every session gets a short, distinct title. End substantial sessions with a
   handoff note so a cold-start agent can resume.
+- **Model routing (`MODEL-ROUTING.md`).** Name the session's work → pick its model from the
+  routing table (Fable = rationed premium · Opus = default/complex · Sonnet = throughput to a
+  plan · Haiku = chores). Default down, escalate up. Keep judgment on the strong model but
+  **delegate chore/throughput sub-tasks to cheaper subagents** — don't run mechanical work on the
+  judgment model. Model choice never moves who promotes/vouches (that's Dave, always).
 - Commits are conventional (`feat:`, `fix:`, `docs:`, `chore:`); provide a
   paste-ready summary + description with every commit.
 - **Git split (RULED 2026-07-05):** Claude makes ALL commits in the terminal
@@ -94,3 +99,5 @@ The relevant gates pass (or an allow-list entry exists with a written reason);
 anything visual has been rendered and looked at; new judgment is captured in the
 meta/criteria layer (not only in CSS or chat); and the handoff/runbook trail lets
 a cold-start agent pick up where you left off.
+
+## Imported Claude Cowork project instructions

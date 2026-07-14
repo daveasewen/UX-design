@@ -93,6 +93,41 @@ WCAG_NAMES = {
 }
 
 
+WCAG_DESC = {
+    "1.1.1": "All non-text content (images, icons) has a text alternative that serves the equivalent purpose.",
+    "1.2.2": "Captions are provided for all prerecorded audio in synchronised media.",
+    "1.2.5": "Audio description is provided for all prerecorded video content.",
+    "1.3.1": "Information, structure and relationships conveyed visually are also available programmatically (headings, lists, table markup, labels).",
+    "1.3.2": "The reading/navigation order in the DOM is meaningful and matches the visual order.",
+    "1.3.5": "Input fields collecting user info have an autocomplete purpose identified programmatically.",
+    "1.4.1": "Colour is not the only visual means of conveying information or indicating an action.",
+    "1.4.3": "Text has a contrast ratio of at least 4.5:1 (3:1 for large text) against its background.",
+    "1.4.4": "Text can be resized up to 200% without loss of content or function.",
+    "1.4.10": "Content reflows to a single column at 320px width without horizontal scrolling.",
+    "1.4.11": "UI components and graphical objects have at least 3:1 contrast against adjacent colours.",
+    "1.4.13": "Content revealed on hover/focus is dismissable, hoverable and persistent.",
+    "2.1.1": "All functionality is operable through a keyboard.",
+    "2.1.2": "Keyboard focus can be moved away from any component using only the keyboard (no trap).",
+    "2.2.1": "Users can turn off, adjust or extend any time limit.",
+    "2.2.2": "Moving, blinking or auto-updating content can be paused, stopped or hidden.",
+    "2.3.3": "Motion animation triggered by interaction can be disabled (respects prefers-reduced-motion).",
+    "2.4.1": "A mechanism is available to bypass blocks of content repeated on multiple pages.",
+    "2.4.3": "Components receive focus in an order that preserves meaning and operability.",
+    "2.4.4": "The purpose of each link can be determined from the link text (or its context).",
+    "2.4.5": "More than one way is available to locate a page within a set.",
+    "2.4.6": "Headings and labels describe the topic or purpose.",
+    "2.4.7": "Any keyboard-operable interface has a visible focus indicator.",
+    "2.4.8": "Information about the user's location within a set of pages is available.",
+    "2.4.11": "When a component receives focus, it is not entirely hidden by author-created content.",
+    "2.5.7": "Functionality using a dragging movement has a single-pointer alternative.",
+    "2.5.8": "Targets are at least 24x24 CSS px (HSBC raises this to 44x44).",
+    "3.3.1": "If an input error is detected, the item in error is identified and described in text.",
+    "3.3.2": "Labels or instructions are provided when content requires user input.",
+    "4.1.2": "For all UI components, the name, role, value and states are programmatically available to assistive tech.",
+    "4.1.3": "Status messages can be programmatically determined through role/properties without receiving focus.",
+}
+
+
 def guideline_descriptions():
     out = {}
     for f in glob.glob(os.path.join(HERE, "guidelines", "*.md")):
@@ -325,6 +360,34 @@ def slugify(name):
     return "cn-" + re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
 
 
+def build_reading_layer():
+    """Embed the actual guideline doc bodies + WCAG descriptions + per-component meta so the
+    accordion can display full rule text in-tool (Dave's 'read through them here' ask)."""
+    refd = set(["brand-principles.md", "copywriting.md", "dark-mode.md"])
+    for c in XREF_COMPS.values():
+        refd.update(c.get("guidelines", []))
+    docs = {}
+    for g in sorted(x for x in refd if x):
+        p = os.path.join(HERE, "guidelines", g)
+        if os.path.exists(p):
+            try:
+                docs[g] = open(p, encoding="utf-8").read()
+            except Exception:
+                pass
+    wcag = {sc: {"name": WCAG_NAMES.get(sc, sc), "desc": WCAG_DESC.get(sc, "")}
+            for sc in set(WCAG_NAMES) | set(WCAG_DESC)}
+    comp_meta = {}
+    for name, c in XREF_COMPS.items():
+        slug = "cn-" + re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
+        ap = c.get("anti_patterns", {})
+        comp_meta[slug] = {
+            "name": name, "category": c.get("category", ""), "token_count": c.get("token_count", 0),
+            "guidelines": c.get("guidelines", []), "wcag": c.get("wcag_sc", []),
+            "anti": ((ap.get("asserted") or []) + (ap.get("inferred_review") or []))[:4],
+        }
+    return {"docs": docs, "wcag": wcag, "comp_meta": comp_meta}
+
+
 def build_graph(files_data):
     """Build the actual DS knowledge graph from _XREF-INDEX.json: components <-> god-node tokens
     <-> guidelines <-> WCAG SCs. Overlay = which components the §9 spread actually retrieved."""
@@ -506,8 +569,24 @@ tr.tgt td{background:#FFF8F1;}
 .ename.tog::before{content:"▸ ";color:var(--g5);}
 .ename.tog.open::before{content:"▾ ";}
 tr.detail td{background:var(--g1);color:var(--g7);font-size:12.5px;line-height:1.6;padding:10px 14px;}
-tr.detail .dwrap{max-width:60em;}
-tr.detail .dk{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--g6);margin-right:8px;}
+tr.detail .dwrap{max-width:64em;}
+tr.detail .dk{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--g6);display:block;margin:10px 0 4px;}
+tr.detail p{margin:4px 0;}
+tr.detail ul{margin:4px 0 4px 18px;padding:0;}
+tr.detail li{margin:2px 0;}
+details.doc{border:1px solid var(--g3);background:#fff;margin:5px 0;}
+details.doc>summary{cursor:pointer;padding:7px 10px;font-size:12px;color:var(--black);list-style:none;}
+details.doc>summary::-webkit-details-marker{display:none;}
+details.doc>summary::before{content:"▸ ";color:var(--g5);}
+details.doc[open]>summary::before{content:"▾ ";}
+details.doc[open]>summary{border-bottom:1px solid var(--g2);}
+.docbody{padding:8px 16px 14px;max-height:460px;overflow:auto;color:var(--g8);}
+.docbody h3,.docbody h4,.docbody h5,.docbody h6{font-size:13px;margin:12px 0 4px;color:var(--black);letter-spacing:.02em;}
+.docbody p{font-size:12.5px;line-height:1.65;}
+.docbody code{background:var(--g1);padding:1px 4px;font-size:11.5px;}
+.docbody pre{background:var(--g1);padding:8px 10px;overflow:auto;font-size:11.5px;}
+.docbody hr{border:0;border-top:1px solid var(--g2);margin:10px 0;}
+.docmiss{color:var(--g6);font-style:italic;}
 .tp{font-size:11px;color:var(--g6);letter-spacing:.06em;text-transform:uppercase;}
 .tgtbtn{font-family:var(--font);font-size:11px;border:1px solid var(--g3);background:var(--white);padding:3px 9px;cursor:pointer;letter-spacing:.04em;text-transform:uppercase;}
 .tgtbtn.on{background:var(--accent);color:#fff;border-color:var(--accent);}
@@ -669,7 +748,7 @@ const FLAT=[];
 DATA.files.forEach(f=>{
   f.entities.forEach((e,i)=>{
     FLAT.push({id:f.lineage+"|"+f.file+"|"+e.type+"|"+e.name, name:e.name,type:e.type,
-      verdict:e.verdict,count:e.count,lineage:f.lineage,file:f.file,detail:e.detail||""});
+      verdict:e.verdict,count:e.count,lineage:f.lineage,file:f.file,detail:e.detail||"",rule_node:e.rule_node||""});
   });
 });
 
@@ -748,6 +827,54 @@ function setType(v){fType=fType===v?null:v;renderFilters();renderRows();}
 function setVer(v){fVer=fVer===v?null:v;renderFilters();renderRows();}
 function toggleTgtOnly(){tgtOnly=!tgtOnly;renderFilters();renderRows();}
 
+// minimal markdown -> html for reading guideline docs in-tool
+function mdToHtml(md){
+  if(!md)return "";
+  const lines=md.replace(/\r/g,"").split("\n");let out=[],inList=false,inCode=false;
+  const inl=s=>esc(s).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/`([^`]+)`/g,"<code>$1</code>")
+    .replace(/\[([^\]]+)\]\([^)]+\)/g,"$1");
+  const closeL=()=>{if(inList){out.push("</ul>");inList=false;}};
+  for(let ln of lines){
+    if(ln.trim().startsWith("```")){inCode=!inCode;out.push(inCode?"<pre>":"</pre>");continue;}
+    if(inCode){out.push(esc(ln));continue;}
+    if(/^---+$/.test(ln.trim())){closeL();out.push("<hr>");continue;}
+    let m;
+    if(m=ln.match(/^(#{1,6})\s+(.*)/)){closeL();const lv=Math.min(m[1].length+2,6);out.push(`<h${lv}>${inl(m[2])}</h${lv}>`);continue;}
+    if(m=ln.match(/^\s*[-*]\s+(.*)/)){if(!inList){out.push("<ul>");inList=true;}out.push(`<li>${inl(m[1])}</li>`);continue;}
+    if(!ln.trim()){closeL();continue;}
+    closeL();out.push(`<p>${inl(ln)}</p>`);
+  }
+  closeL();if(inCode)out.push("</pre>");
+  return out.join("\n");
+}
+function docBlock(fname){
+  const md=DATA.docs&&DATA.docs[fname];
+  if(!md)return `<div class="docmiss">Full text for <code>${esc(fname)}</code> not embedded (not in the referenced set).</div>`;
+  return `<details class="doc"><summary>Read <b>${esc(fname)}</b> (${md.length.toLocaleString()} chars)</summary><div class="docbody">${mdToHtml(md)}</div></details>`;
+}
+function renderDetail(e){
+  if(e.type==="a11y"){
+    const sc=(e.rule_node||"").replace("W:","");const w=(DATA.wcag||{})[sc]||{};
+    return `<div class="dwrap"><span class="dk">WCAG ${esc(sc)} · ${esc(w.name||"")}</span>
+      <p><b>Probe:</b> ${esc(e.detail)}</p><p><b>Success criterion:</b> ${esc(w.desc||"—")}</p></div>`;
+  }
+  if(e.type==="principle"){
+    const g=(e.rule_node||"").replace("G:","");
+    return `<div class="dwrap"><span class="dk">create.hsbc principle</span>
+      <p><b>Probe:</b> ${esc(e.detail)}</p>${docBlock(g)}</div>`;
+  }
+  if(e.type==="component"){
+    const slug=e.name.replace(/^\./,"");const m=(DATA.comp_meta||{})[slug];
+    if(!m)return `<div class="dwrap"><span class="dk">component</span>${esc(e.detail)}</div>`;
+    const gl=m.guidelines.map(docBlock).join("");
+    const wl=m.wcag.map(sc=>{const w=(DATA.wcag||{})[sc]||{};return `<li><b>${esc(sc)}</b> ${esc(w.name||"")} — ${esc(w.desc||"")}</li>`;}).join("");
+    const ap=m.anti.length?`<p class="dk">Anti-patterns</p><ul>${m.anti.map(a=>`<li>${esc(a)}</li>`).join("")}</ul>`:"";
+    return `<div class="dwrap"><span class="dk">${esc(m.category)} · ${m.token_count} tokens</span>
+      <p class="dk">Governing guidelines — click to read</p>${gl||"<p>—</p>"}
+      <p class="dk">Must satisfy (WCAG)</p><ul>${wl||"<li>—</li>"}</ul>${ap}</div>`;
+  }
+  return `<div class="dwrap"><span class="dk">${e.type} · ${e.verdict}</span>${esc(e.detail)||"<em>No detail.</em>"}</div>`;
+}
 function isTgt(id){return !!(state[id]&&state[id].t);}
 function renderRows(){
   let list=FLAT.filter(e=>(!fLin||e.lineage===fLin)&&(!fType||e.type===fType)&&(!fVer||e.verdict===fVer)&&(!tgtOnly||isTgt(e.id)));
@@ -763,7 +890,7 @@ function renderRows(){
       <td class="count">${e.count}</td>
       <td><button class="tgtbtn${t?' on':''}" onclick="toggleTgt('${e.id}')">${t?'✓ target':'target'}</button></td>
     </tr>`;
-    if(op){html+=`<tr class="detail"><td colspan="6"><div class="dwrap"><span class="dk">${e.type} · ${e.verdict}</span>${esc(e.detail)||"<em>No detail wired for this entity type yet.</em>"}</div></td></tr>`;}
+    if(op){html+=`<tr class="detail"><td colspan="6">${renderDetail(e)}</td></tr>`;}
     return html;
   }).join("");
   document.getElementById("emptyNote").textContent=list.length?"":"No entities match these filters.";
@@ -949,11 +1076,15 @@ def build(lineages):
         "rules_violated": sum(1 for e in all_ents if e["verdict"] == "violated"),
         "rules_nd": sum(1 for e in all_ents if e["verdict"] == "not-detected"),
     }
+    reading = build_reading_layer()
     payload = {
         "lineages": list(lineages.keys()),
         "files": files_data,
         "totals": totals,
         "graph": build_graph(files_data),
+        "docs": reading["docs"],
+        "wcag": reading["wcag"],
+        "comp_meta": reading["comp_meta"],
     }
     json.dump(payload, open(OUT_JSON, "w"), indent=2)
     html = HTML_TEMPLATE.replace("__DATA__", json.dumps(payload))

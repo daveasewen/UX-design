@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Review dossier — template</title>
+<!--
+  REVIEW-DOSSIER TEMPLATE (Swiss idiom).
+  Fill the CONTENT section. Two things make this template do its job:
+  1) TOOLTIPS: wrap any acronym or jargon in <span class="term" tabindex="0" data-def="plain definition">TERM</span>.
+     The reader hovers OR tab-focuses it to see the definition — works for mouse, touch and keyboard.
+  2) TWO MODES: every finding has a .tech block (default, full/technical) AND a .std block
+     (plain-language, reading level ~16, for a capable reader who isn't AI-native). The toggle top-right
+     swaps between them; nothing is lost, the reader just picks the level they want. Write BOTH for every
+     finding. Standard = adult prose, no internal jargon; explain only AI/accessibility/design-system terms.
+-->
+<style>
+:root{
+  --accent:#DB0011; --black:#000; --white:#fff;
+  --g1:#F3F3F3; --g2:#EDEDED; --g3:#D7D8D6; --g5:#9B9B9B; --g6:#767676; --g7:#545454; --g8:#333;
+  --amber:#B7791F; --ok:#1a7a4a;
+  --s1:.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem; --s6:4rem;
+  --max:920px; --font:"Univers Next","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:var(--font);color:var(--black);background:var(--white);font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased;}
+.nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:var(--s3);background:var(--white);border-bottom:1px solid var(--g2);height:56px;padding:0 var(--s4);}
+.nav .brand{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:8px;}
+.nav .brand::before{content:"";width:20px;height:1px;background:var(--accent);}
+.nav .spacer{flex:1;}
+/* mode toggle */
+.modes{display:flex;border:1px solid var(--g3);}
+.modes button{font-family:var(--font);font-size:12px;letter-spacing:.04em;text-transform:uppercase;background:var(--white);color:var(--g6);border:0;padding:8px 14px;cursor:pointer;}
+.modes button+button{border-left:1px solid var(--g3);}
+.modes button[aria-pressed="true"]{background:var(--black);color:var(--white);}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--s4);}
+.label{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:var(--s1);margin:0 0 var(--s2);}
+.label::before{content:"";width:20px;height:1px;background:var(--accent);}
+.rule{border:0;border-top:1px solid var(--g2);margin:0;}
+section{padding:var(--s5) 0;}
+h1{font-size:38px;line-height:1.12;font-weight:300;margin:0 0 var(--s3);}
+h1 b{font-weight:600;}
+h2{font-size:22px;font-weight:600;margin:0 0 var(--s2);}
+p{max-width:42em;margin:0 0 var(--s2);}
+.finding{border-top:1px solid var(--g2);padding:var(--s4) 0;}
+.finding:last-child{border-bottom:1px solid var(--g2);}
+.finding .h{display:flex;align-items:baseline;gap:var(--s2);margin-bottom:var(--s2);}
+.finding .n{font-size:28px;font-weight:100;color:var(--g3);line-height:1;}
+.chip{display:inline-block;font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border:1px solid var(--g3);color:var(--g7);}
+.chip.red{border-color:var(--accent);color:var(--accent);} .chip.amber{border-color:var(--amber);color:var(--amber);} .chip.ok{border-color:var(--ok);color:var(--ok);}
+/* the acronym / jargon tooltip */
+.term{border-bottom:1px dotted var(--g5);cursor:help;position:relative;outline:none;}
+.term:focus{background:var(--g1);}
+.term::after{content:attr(data-def);position:absolute;left:0;top:calc(100% + 6px);z-index:20;
+  background:var(--black);color:var(--white);font-size:13px;line-height:1.5;font-weight:400;
+  letter-spacing:0;text-transform:none;padding:8px 12px;width:max-content;max-width:280px;
+  opacity:0;visibility:hidden;transition:opacity .12s;pointer-events:none;}
+.term:hover::after,.term:focus::after{opacity:1;visibility:visible;}
+/* two modes: technical is default; standard is simpler + guided */
+.std{display:none;}
+body.mode-standard .tech{display:none;}
+body.mode-standard .std{display:block;}
+.guide{background:var(--g1);border-left:2px solid var(--accent);padding:var(--s2) var(--s3);margin:0 0 var(--s3);max-width:42em;}
+.guide p{margin:0;}
+.mini{font-size:13px;color:var(--g6);}
+.foot{padding:var(--s5) 0;border-top:1px solid var(--g2);font-size:13px;color:var(--g6);}
+</style></head>
+<body class="mode-technical">
+<nav class="nav">
+  <span class="brand">Review dossier</span>
+  <span class="spacer"></span>
+  <div class="modes" role="group" aria-label="Reading level">
+    <button id="mTech" aria-pressed="true">Technical</button>
+    <button id="mStd" aria-pressed="false">Standard</button>
+  </div>
+</nav>
+
+<div class="wrap">
+<!-- ============ HEADER ============ -->
+<section>
+  <p class="label">Review dossier · &lt;subject&gt; · &lt;date&gt;</p>
+  <h1><span class="tech">Review of <b>&lt;the thing being reviewed&gt;</b></span><span class="std">Review of <b>&lt;the thing being reviewed&gt;</b></span></h1>
+
+  <div class="tech"><p>&lt;One or two sentences of technical context: what this reviews, the method, how to read it.&gt;</p></div>
+
+  <div class="std">
+    <div class="guide"><p><b>How this page works.</b> Each point below flags something we found in &lt;the thing&gt; and rates it: <b>red</b> needs fixing, <b>amber</b> is worth a look, <b>green</b> is fine. Specialist terms — mostly AI and accessibility — carry a dotted underline; hover or tap one for a plain definition.</p></div>
+  </div>
+</section>
+
+<!-- ============ EXAMPLE FINDING (copy this block per finding; write BOTH .tech and .std) ============ -->
+<section>
+  <p class="label">Findings</p>
+
+  <div class="finding">
+    <div class="h"><span class="n">01</span><h2>Colour contrast on the dark theme</h2><span class="chip red">Needs fixing</span></div>
+
+    <div class="tech">
+      <p>The rail "current balance" value renders red text on a tinted panel at <span class="term" tabindex="0" data-def="Contrast ratio — how different two colours are in brightness. WCAG AA needs at least 4.5:1 for normal text.">3.23:1</span>, below the <span class="term" tabindex="0" data-def="Web Content Accessibility Guidelines, level AA — the accessibility standard we build to.">WCAG AA</span> 4.5:1 floor for normal text. Red is structurally unfit as a small-text colour on any dark tint; keep it to solid fills with reverse text. <b>Fix:</b> bind the value to <span class="term" tabindex="0" data-def="A named design token — a reusable colour value from the system, not a raw hex code.">--paper</span> (white) and keep red to the accent/approval role only.</p>
+    </div>
+
+    <div class="std">
+      <p>The balance figure is set in red on a dark panel, and the two colours are too close in brightness to read comfortably — anyone with weaker eyesight will struggle with it. Red also doesn't hold up as a colour for small text on a dark background.</p>
+      <p><b>What to do:</b> set this figure in white so it reads cleanly, and keep red for buttons and highlights rather than body text.</p>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="h"><span class="n">02</span><h2>A missing "in-between" step</h2><span class="chip amber">Have a look</span></div>
+
+    <div class="tech">
+      <p>The flow jumps from list to confirmation with no interstitial <span class="term" tabindex="0" data-def="Empty state — what a screen shows when there's no data yet, e.g. no results.">empty state</span> or loading feedback, so on a slow connection the screen looks frozen. Consider a skeleton or a status message bound to the request state.</p>
+    </div>
+
+    <div class="std">
+      <p>Moving from the list to the confirmation screen, there's a moment where nothing on screen changes while the app fetches data. On a slow connection that pause can look like the app has frozen.</p>
+      <p><b>What to do:</b> show a brief "loading…" indicator during that step so people can see it's still working and hasn't crashed.</p>
+    </div>
+  </div>
+
+</section>
+
+<footer class="foot wrap" style="max-width:var(--max);margin:0 auto;">
+  Review dossier · generated by the review-dossier skill · switch reading level top-right.
+</footer>
+</div>
+
+<script>
+(function(){
+  var body=document.body, t=document.getElementById('mTech'), s=document.getElementById('mStd');
+  function set(mode){
+    body.classList.toggle('mode-standard', mode==='standard');
+    body.classList.toggle('mode-technical', mode!=='standard');
+    t.setAttribute('aria-pressed', String(mode!=='standard'));
+    s.setAttribute('aria-pressed', String(mode==='standard'));
+  }
+  t.addEventListener('click',function(){set('technical');});
+  s.addEventListener('click',function(){set('standard');});
+})();
+</script>
+</body></html>
