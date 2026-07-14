@@ -42,6 +42,22 @@
         "note": { "type": "string" }
       }
     },
+    "external_automatable_refs": {
+      "type": "array",
+      "description": "Off-the-shelf automatable checks that EXIST for this SC (currently: axe-core OSS rules), independent of whether verified_by shows we've wired one up ourselves. Populated by knowledge/compliance/_import_axe_rules.py from the vendored snapshot in compliance/_vendor/. Empty array = no known OSS coverage found (genuinely manual/bespoke territory today, not a scan failure).",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source", "rule_id"],
+        "properties": {
+          "source": { "type": "string" },
+          "source_version": { "type": "string" },
+          "rule_id": { "type": "string" },
+          "description": { "type": "string" },
+          "url": { "type": "string" }
+        }
+      }
+    },
     "severity": { "enum": ["minor", "serious", "critical"] },
     "sources": {
       "type": "object",

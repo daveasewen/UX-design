@@ -3,6 +3,8 @@
 
 The generators must run in this order because later ones read earlier outputs:
   1. compliance/_build_compliance_kg.py      -> compliance/rules/, graph-index.json
+  1b. compliance/_import_axe_rules.py        -> graph-index.json (external_automatable_refs) + rules/*.json
+                                                 (needs 1; reads the vendored axe-core snapshot in compliance/_vendor/, no network)
   2. tokens/_build_blast_radius.py           -> tokens/_blast-radius.json, _GRAPH-REPORT.md
   3. _build_xref_index.py                    -> _XREF-INDEX.json/.md   (needs 1 + 2)
   4. _build_review_queue.py                  -> _REVIEW-QUEUE.json/.md
@@ -24,6 +26,7 @@ import subprocess, sys, os
 HERE = os.path.dirname(os.path.abspath(__file__))
 STEPS = [
     ("compliance knowledge graph", "compliance/_build_compliance_kg.py"),
+    ("external automatable-check refs — axe-core import (advisory)", "compliance/_import_axe_rules.py"),
     ("token blast-radius + graph report", "tokens/_build_blast_radius.py"),
     ("guideline rules index (gate)", "guidelines/gen_rules_index.py"),
     ("cross-reference index", "_build_xref_index.py"),
