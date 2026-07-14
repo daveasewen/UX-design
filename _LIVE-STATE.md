@@ -408,6 +408,20 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
 
 ## PLANNED / TARGET STATES — where we intend to be (for planning, per ADR-0007 extension)
 
+- **🎯 TARGET — Gates-as-a-service → close the agentic loop** (Dave 2026-07-14). Expose Apollo's own
+  Python validators (contrast · token-fidelity · a11y · icon-provenance) as **callable tools (an MCP /
+  tool interface)** so a host agent runs them **mid-task**, not only in the batch `_build_all.py` CI run.
+  *Why:* the validators are the **verifier** — the expensive, differentiated half, already built; wiring
+  an agent to call them iteratively (generate → check → fix → re-check) is the **cheap half** that turns
+  v1 (skills + KB, one-pass retrieval = *agent-ready*) into *agentic* (self-correcting). Also removes the
+  per-designer Python-install blocker. **NOT** the Figma MCP (that's ingestion, already used) and **NOT**
+  Sutherland (build target) — this is Apollo's OWN checks as a service. *Blockers/honesty:* the **repair
+  loop is "not built"** (deep-analysis architecture diagram); gates verify **declared** obligations only
+  ("honesty system, not inspection") — real autonomy may need inspection-mode checks. Connects to the §9
+  "generate-free-then-constrain-and-verify" two-pass. Memory `agentic-loop-gates-as-service`. Unaudited —
+  an idea recorded today, not a spec.
+
+
 *The forward-looking dimension of the state machine. Not current truth (that's LIVE) and not a flat
 backlog (that's OPEN) — these are intended end-states with a path. Refresh alongside LIVE/DEAD/OPEN.*
 

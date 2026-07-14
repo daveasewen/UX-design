@@ -50,9 +50,13 @@ built an interactive repo map. Everything committed **and pushed** (origin/maste
    `reviews/PLAN-2026-07-13-calibration-test.html`. The engine's first proper trial on novel work.
 3. **"What does the §9 spread actually reveal?"** — still TOP-PRIORITY engine research in
    `_LIVE-STATE` OPEN; a dedicated fresh Opus session. Prep tooling (knowledge-usage trace) already built.
-4. **KB edges / knowledge-graph** — your standing thin-edges concern; import W3C ACT / axe-core
+4. **Gates-as-a-service — the agentic-loop step** — expose Apollo's Python validators as callable
+   tools (an MCP) so a host agent runs the check→fix loop mid-task, not just in batch CI. Turns the pack
+   from agent-*ready* into agent-*ic*; the verifier's already built, this is the wiring. (NOT the Figma
+   MCP / ingestion; NOT Sutherland.) Framing: `_LIVE-STATE` TARGET + memory `agentic-loop-gates-as-service`.
+5. **KB edges / knowledge-graph** — your standing thin-edges concern; import W3C ACT / axe-core
    rather than hand-roll (overlay-index, not GraphRAG).
-5. Off critical path: sponsor meeting (date TBD), multi-mode + settings UI, ingestion Phase 1 (Sutherland).
+6. Off critical path: sponsor meeting (date TBD), multi-mode + settings UI, ingestion Phase 1 (Sutherland).
 
 > Next-session opener: **"Title this chat: <pick one>."** Read GOOD-MORNING → `_LIVE-STATE.md`
 > (LIVE + OPEN) → then the relevant plan/charter for whichever item you pick.
