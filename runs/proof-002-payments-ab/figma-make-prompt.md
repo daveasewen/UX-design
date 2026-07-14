@@ -24,7 +24,7 @@ payments £49,702 leaves a **£72,748 buffer**. State this accurately; don't ove
 The stated total **must equal** the sum of the rows.
 
 **RULES:** the same payee shows the same amount everywhere · the "covered" statement must match the maths ·
-don't use red for routine actions (red = destructive only) · mask sort codes and account numbers ·
+use red once, on the primary action only (red = the primary-action accent, not destructive-only) · mask sort codes and account numbers ·
 avoid ALL-CAPS labels.
 
 ---

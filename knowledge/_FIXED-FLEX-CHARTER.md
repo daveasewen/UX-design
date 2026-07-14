@@ -45,7 +45,7 @@ Formerly "Undecided". All four rules are now explicit; no run guesses:
 |---|---|
 | **Flatness** | Fixed (flat) in *sober* and *balanced*. **Unlocked in *expressive* only**, via a defined elevation/gradient ramp derived from brand neutrals — never free-hand. *(Ramp itself: promotion queue.)* **Carve-out (brand rule, `guidelines/data-visualisation.md`): data-chart fills stay flat in ALL registers — the gradient licence never enters a chart.** |
 | **Brand dark / inverse surface** | **Promoted.** An `inverse/surface` role derived from the existing dark-theme values, usable in light mode (the balanced register's "one bold moment"). *(Token promotion: queue.)* |
-| **Red-forward ceiling** | *Sober*: red = destructive/accent only. ***Balanced* and *expressive*: red may lead the primary action** — aligns the charter with brief v2 §2 and the approved balanced SME screen. |
+| **Red-forward ceiling** | **Red is the PRIMARY-action accent — used once per screen, on the single primary action, in ALL registers.** Not destructive-only; destructive/error takes a distinct, non-red treatment. *(Superseded 2026-07-14, Dave: retires the earlier register-tied version — sober=destructive/accent only, balanced/expressive=red-may-lead — in favour of one universal rule: red leads the single primary action, once per screen.)* |
 | **Corner radius** | **Fixed square in ALL registers, including expressive — rounding is forbidden.** A rounded **version of the design system** is named as possible future work; if it comes, it is a system variant, not a register privilege. *(The previously recorded Badge + Avatar round exemption stands unless separately revoked.)* |
 
 **RESOLVED 2026-07-03 (Dave) → §9:** register reach — registers **do** tier the curbs.

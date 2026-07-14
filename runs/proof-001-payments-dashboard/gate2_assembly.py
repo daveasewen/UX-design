@@ -114,13 +114,15 @@ def run(screen):
     else:
         record("A11Y-1", "BLOCK", True, "All action-tile glyphs >= 3:1.")
 
-    # BRAND-1 — red reserved for destructive
-    redroutine = [t["label"] for t in screen.get("action_tiles", [])
-                  if _is_reddish(t["fill"]) and t.get("role") != "destructive"]
-    if redroutine:
-        record("BRAND-1", "BLOCK", False, "Destructive/error red used for routine action(s): " + ", ".join(redroutine))
+    # BRAND-1 — red is the primary-action accent, used ONCE per screen (Dave 2026-07-14)
+    reds = [t for t in screen.get("action_tiles", []) if _is_reddish(t["fill"])]
+    red_nonprimary = [t["label"] for t in reds if t.get("role") != "primary"]
+    if red_nonprimary:
+        record("BRAND-1", "BLOCK", False, "Red on non-primary action(s) — red is reserved for the single primary action: " + ", ".join(red_nonprimary))
+    elif len(reds) > 1:
+        record("BRAND-1", "BLOCK", False, "Red used %d times — one red per screen, on the primary action only: %s" % (len(reds), ", ".join(t["label"] for t in reds)))
     else:
-        record("BRAND-1", "BLOCK", True, "Red reserved for destructive actions.")
+        record("BRAND-1", "BLOCK", True, "Red used once on the primary action (or not at all).")
 
     # FLOW-1 — high-value approval needs confirmation
     noconfirm = [f"{it['payee']} {gbp(it['amount'])}" for it in screen.get("pending_approval", [])

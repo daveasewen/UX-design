@@ -28,7 +28,7 @@ statement · pending approvals · upcoming scheduled payments **with a stated to
 | DATA-3 | The coverage statement is **derivable from balance − scheduled obligations** for the period (incl. buffer). |
 | DATA-4 | **Fidelity:** every figure matches `dataset.json` — nothing invented or rounded away. *(new vs proof-001; needs the dataset — gate 2 to be extended, or checked by hand for v1.)* |
 | A11Y-1 | Non-text contrast **≥ 3:1** (1.4.11) on action glyphs / status. |
-| BRAND-1 | **Red reserved** for destructive actions only. |
+| BRAND-1 | **Red is the primary-action accent, used once per screen** (on the single primary action; not destructive-only). |
 | FLOW-1 | High-value approval (> £10k) **requires a confirmation step**. |
 
 ### Advisory (WARN)

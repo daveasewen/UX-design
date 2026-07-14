@@ -23,7 +23,7 @@ Each becomes a checkable criterion.
 | DATA-2 | A stated total is **≥ the sum of its itemised rows** (and = when all rows are shown). |
 | DATA-3 | Any solvency/"covered" reassurance is **derivable from balance − scheduled obligations** for the stated period, including the stated buffer. |
 | A11Y-1 | Non-text contrast **≥ 3:1** (WCAG 1.4.11): action-tile glyphs vs tile fill. |
-| BRAND-1 | Destructive/error **red is not used for routine actions**. |
+| BRAND-1 | **Red appears once per screen, on the primary action only** (not on routine actions; not destructive-only). |
 | FLOW-1 | A high-value approval (> £10k) **requires a confirmation step**. |
 
 ### Advisory → annotate (WARN, non-blocking)
