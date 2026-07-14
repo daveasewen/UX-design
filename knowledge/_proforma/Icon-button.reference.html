@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Icon button — reference implementation (gated · pro-forma)</title>
+<!--
+  CANONICAL REFERENCE for Icon button (icon-only trigger; 4 emphasis levels × states × both themes).
+  Atom. Mirrors Button's emphasis hierarchy + tokens, but icon-only, so it carries the icon-button
+  invariants the labelled Button doesn't need:
+   - ACCESSIBLE NAME is mandatory (no visible label) → aria-label on every instance (4.1.2 / 2.4.4).
+   - TARGET SIZE ≥ 44×44 (2.5.8) even when the glyph is 20px — padding makes the hit area.
+   - The glyph is NON-TEXT → 1.4.11 at 3:1 (context "ui"), not 4.5:1.
+  Colours = resolved semantic tokens (primary/* secondary/* tertiary/* icon/*), light+dark, the SAME
+  bindings Button gates green on. Square corners (angular rule). Motion = Button's scale-physics,
+  reduced-motion honoured.
+  $finding (icon source): glyphs here are inline line-SVGs for the proof render; final gate-green
+  rebases them onto the assets/icons/ <symbol> sprite (per icon-source rule + _validate_icons.py),
+  exactly as Notifications was rebased 2026-06-24. Flagged, not swept.
+-->
+<style>
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  :root{
+    --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+    --ease:160ms cubic-bezier(.4,0,.2,1);
+    --spring:300ms cubic-bezier(.5,1.6,.4,1);
+    --press:90ms cubic-bezier(0,0,.58,1);
+    --target:44px; --glyph:20px;
+  }
+  [data-theme="light"]{
+    --pri-default:#DB0011; --pri-hover:#BA1110; --pri-pressed:#000000; --pri-disabled:#D7D8D6;
+    --sec-default:#000000; --sec-hover:#333333; --sec-pressed:#767676; --sec-disabled:#D7D8D6;
+    --ter-default:#FFFFFF; --ter-hover:#F3F3F3; --ter-pressed:#767676; --ter-disabled:#D7D8D6;
+    --ter-border:#000000; --ter-border-disabled:#D7D8D6;
+    --icon-default:#333333; --icon-reverse:#FFFFFF; --icon-disabled:#D7D8D6;
+    --icon-disabled-ink:#B7B7B7;   /* tertiary/text/disabled — muted but NEVER == the disabled surface */
+    --text-default:#333333; --page:#FFFFFF; --surface:#F3F3F3;
+    --icon-on-invert:#FFFFFF;
+  }
+  [data-theme="dark"]{
+    --pri-default:#DB0011; --pri-hover:#BA1110; --pri-pressed:#FFFFFF; --pri-disabled:#404040;
+    --sec-default:#FFFFFF; --sec-hover:#EDEDED; --sec-pressed:#D7D8D6; --sec-disabled:#404040;
+    --ter-default:#1D1D1D; --ter-hover:#212121; --ter-pressed:#1D1D1D; --ter-disabled:#404040;
+    --ter-border:#767676; --ter-border-disabled:#333333;
+    --icon-default:#FFFFFF; --icon-reverse:#FFFFFF; --icon-disabled:#767676;
+    --icon-disabled-ink:#767676;   /* tertiary/text/disabled (dark) — present on the dark disabled fill */
+    --text-default:#FFFFFF; --page:#000000; --surface:#212121;
+    --icon-on-invert:#333333;
+  }
+
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page);
+    color:var(--text-default); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 14px; border:1px solid #999;
+    background:transparent; color:var(--text-default); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--text-default); outline-offset:2px;}
+  h2{font-size:13px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+  .row{display:flex; gap:14px; flex-wrap:wrap; align-items:center;}
+  .cap{font-size:10px; opacity:.45; width:100%; margin-top:6px;}
+
+  /* the atom */
+  .iconbtn{
+    width:var(--target); height:var(--target); min-width:var(--target); min-height:var(--target);
+    display:inline-flex; align-items:center; justify-content:center;
+    padding:0; border:0; border-radius:0; cursor:pointer; background:transparent;
+    transition:background var(--ease), border-color var(--ease), transform var(--spring), filter var(--press);
+  }
+  .iconbtn svg{width:var(--glyph); height:var(--glyph); display:block; fill:none;
+    stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; pointer-events:none;}
+  .iconbtn:focus-visible{outline:2px solid var(--text-default); outline-offset:2px;}
+  /* Subtle scale-physics: hover = default +2px, press = default −2px, on the 44px target (self-documenting via calc). */
+  .iconbtn:hover{transform:scale(calc(1 + 2/44));}
+  .iconbtn:active{transform:scale(calc(1 - 2/44)); filter:brightness(.94); transition:transform var(--press), filter var(--press);}
+  .iconbtn:disabled{cursor:not-allowed; opacity:1;}
+  .iconbtn:disabled:hover,.iconbtn:disabled:active{transform:none; filter:none;}
+
+  /* PRIMARY — red fill, reverse glyph; pressed inverts (glyph flips via --icon-on-invert) */
+  .iconbtn.primary{background:var(--pri-default); color:var(--icon-reverse);}
+  .iconbtn.primary:hover{background:var(--pri-hover);}
+  .iconbtn.primary.is-pressed{background:var(--pri-pressed); color:var(--icon-on-invert);}
+  .iconbtn.primary:disabled{background:var(--pri-disabled); color:var(--icon-disabled-ink);}
+
+  /* SECONDARY — inverting solid; glyph uses --icon-on-invert (white light / #333 dark) */
+  .iconbtn.secondary{background:var(--sec-default); color:var(--icon-on-invert);}
+  .iconbtn.secondary:hover{background:var(--sec-hover);}
+  .iconbtn.secondary.is-pressed{background:var(--sec-pressed);}
+  .iconbtn.secondary:disabled{background:var(--sec-disabled); color:var(--icon-disabled-ink);}
+
+  /* TERTIARY — outlined; glyph icon/default (inverts with theme) */
+  .iconbtn.tertiary{background:var(--ter-default); color:var(--icon-default); border:1px solid var(--ter-border);}
+  .iconbtn.tertiary:hover{background:var(--ter-hover);}
+  .iconbtn.tertiary.is-pressed{background:var(--ter-pressed); color:var(--icon-reverse);}
+  .iconbtn.tertiary:disabled{background:var(--ter-disabled); color:var(--icon-disabled-ink); border-color:var(--ter-border-disabled);}
+
+  /* QUATERNARY — ghost; transparent, tertiary tints on hover/press */
+  .iconbtn.quaternary{background:transparent; color:var(--icon-default);}
+  .iconbtn.quaternary:hover{background:var(--ter-hover);}
+  .iconbtn.quaternary.is-pressed{background:var(--ter-pressed); color:var(--icon-reverse);}
+  .iconbtn.quaternary:disabled{background:transparent; color:var(--icon-disabled-ink);}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; }
+    .iconbtn:hover,.iconbtn:active{ transform:none !important; filter:none !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls">
+    <button id="themeToggle" type="button">◐ Toggle theme</button>
+    <span>Icon button — canonical reference (atom · 4 emphasis levels)</span>
+  </div>
+
+  <!-- reusable glyph sprite (proof: inline line-SVGs; final = assets/icons sprite) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="g-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="g-download" viewBox="0 0 24 24"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></symbol>
+    <symbol id="g-edit" viewBox="0 0 24 24"><path d="M4 20h4L18 10l-4-4L4 16v4zM14 6l4 4"/></symbol>
+    <symbol id="g-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></symbol>
+    <symbol id="g-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  </svg>
+
+  <h2>Primary</h2>
+  <div class="row">
+    <button class="iconbtn primary" aria-label="Add"><svg><use href="#g-plus"/></svg></button>
+    <button class="iconbtn primary is-pressed" aria-label="Add"><svg><use href="#g-plus"/></svg></button>
+    <button class="iconbtn primary" disabled aria-label="Add"><svg><use href="#g-plus"/></svg></button>
+    <span class="cap">Default · pressed · disabled — hit area 44×44, glyph 20 (hover me)</span>
+  </div>
+
+  <h2>Secondary</h2>
+  <div class="row">
+    <button class="iconbtn secondary" aria-label="Download"><svg><use href="#g-download"/></svg></button>
+    <button class="iconbtn secondary is-pressed" aria-label="Download"><svg><use href="#g-download"/></svg></button>
+    <button class="iconbtn secondary" disabled aria-label="Download"><svg><use href="#g-download"/></svg></button>
+    <span class="cap">Default · pressed · disabled (inverting fill; hover me)</span>
+  </div>
+
+  <h2>Tertiary (outlined)</h2>
+  <div class="row">
+    <button class="iconbtn tertiary" aria-label="Edit"><svg><use href="#g-edit"/></svg></button>
+    <button class="iconbtn tertiary is-pressed" aria-label="Edit"><svg><use href="#g-edit"/></svg></button>
+    <button class="iconbtn tertiary" disabled aria-label="Edit"><svg><use href="#g-edit"/></svg></button>
+    <span class="cap">Default · pressed · disabled (hover me)</span>
+  </div>
+
+  <h2>Quaternary (ghost)</h2>
+  <div class="row">
+    <button class="iconbtn quaternary" aria-label="Search"><svg><use href="#g-search"/></svg></button>
+    <button class="iconbtn quaternary is-pressed" aria-label="Search"><svg><use href="#g-search"/></svg></button>
+    <button class="iconbtn quaternary" disabled aria-label="Close"><svg><use href="#g-close"/></svg></button>
+    <span class="cap">Default · pressed · disabled (hover me)</span>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Icon button",
+    "vars": {
+      "--pri-default": "primary/background/default",
+      "--pri-hover": "primary/background/hover",
+      "--pri-pressed": "primary/background/pressed",
+      "--pri-disabled": "primary/background/disabled",
+      "--sec-default": "secondary/background/default",
+      "--sec-hover": "secondary/background/hover",
+      "--sec-pressed": "secondary/background/pressed",
+      "--sec-disabled": "secondary/background/disabled",
+      "--ter-default": "tertiary/background/default",
+      "--ter-hover": "tertiary/background/hover",
+      "--ter-pressed": "tertiary/background/pressed",
+      "--ter-border": "tertiary/border/default",
+      "--icon-default": "icon/default",
+      "--icon-reverse": "icon/default-reverse",
+      "--icon-on-invert": "text/on-inverse",
+      "--icon-disabled": "icon/disabled",
+      "--icon-disabled-ink": "tertiary/text/disabled",
+      "--text-default": "text/default",
+      "--page": "background/default"
+    },
+    "glyphPresence": [
+      { "glyph": "icon/default-reverse", "surface": "primary/background/default",   "state": "default" },
+      { "glyph": "tertiary/text/disabled","surface": "primary/background/disabled",  "state": "disabled" },
+      { "glyph": "text/on-inverse",       "surface": "secondary/background/default", "state": "default" },
+      { "glyph": "tertiary/text/disabled","surface": "secondary/background/disabled","state": "disabled" },
+      { "glyph": "icon/default",          "surface": "tertiary/background/default",  "state": "default" },
+      { "glyph": "tertiary/text/disabled","surface": "tertiary/background/disabled", "state": "disabled" },
+      { "glyph": "icon/default",          "surface": "background/default",           "state": "default (ghost)" },
+      { "glyph": "tertiary/text/disabled","surface": "background/default",           "state": "disabled (ghost)" }
+    ],
+    "$glyphPresenceGate": "NEW gate proposal (_validate_glyph_presence): for an icon-only component, every glyph MUST be distinguishable from its own surface in EVERY state incl. disabled — resolve glyph vs surface (light+dark), FAIL below ~1.3:1 (the 'is it even there' floor, distinct from the 3:1 non-text-contrast gate; disabled is contrast-exempt but must still be PRESENT). Would have caught icon/disabled #D7D8D6 on tertiary/background/disabled #D7D8D6 = 1.0:1 (the empty box). tertiary/text/disabled fixes it (never == the surface).",
+    "contrastPairs": [
+      { "fg": "icon/default-reverse", "bg": "primary/background/default", "context": "ui" },
+      { "fg": "icon/default-reverse", "bg": "primary/background/hover",   "context": "ui" },
+      { "fg": "text/on-inverse",      "bg": "secondary/background/default","context": "ui" },
+      { "fg": "text/on-inverse",      "bg": "secondary/background/hover",  "context": "ui" },
+      { "fg": "icon/default",         "bg": "tertiary/background/default", "context": "ui" },
+      { "fg": "icon/default",         "bg": "tertiary/background/hover",   "context": "ui" },
+      { "fg": "tertiary/border/default","bg": "tertiary/background/default","context": "ui" },
+      { "fg": "icon/default",         "bg": "background/default",          "context": "ui" }
+    ],
+    "requiredAria": ["<button", "aria-label", "disabled"]
+  }
+  </script>
+  <script>document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });</script>
+</body>
+</html>

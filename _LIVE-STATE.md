@@ -39,6 +39,24 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
   (README · AGENTS · GOOD-MORNING · _LIVE-STATE · MODEL-ROUTING); new `reviews/ notes/ projects/`;
   visual map at `docs/repo-map.html`. Commit 70d38f6.
 
+- **Component library = Apollo pro-forma programme** (STARTED 2026-07-14, in flight). Building the
+  *whole* inventory as a lightly-styled **pro-forma** (generate → iterate; styling cascades via
+  tokens), then expressing it in MODES: Mode 1 = current HSBC brand (KB tokens as-is); Mode 2 = a new
+  **business-line "big sister"** (rounded corners, monochrome, usability-first — colour only where
+  meaningful, own type stack + DataViz), captured as a divergence **token mode**, never canon edits.
+  ONE component skeleton, N modes — the cascade IS the proof of the factory. Chose **A** (KB-as-base;
+  binds by intent so a neutral sub-floor can slide under later). Correctness = a **scramble-test** idea
+  (wrong token values → anything that doesn't move is hardcoded). Reviewable build list =
+  `reviews/ITINERARY-2026-07-14-apollo-component-library.{html,xlsx}` (124 items: 38 gated / 7 partial /
+  79 gaps; 23 P1). IN FLIGHT: proof batch of 6 net-new **atomic** foundations (Icon button, Empty
+  state, Skeleton loader, Amount/currency input, Stepper, Drawer) through the gated pipeline to
+  validate the pro-forma contract + factory struct-mode. Memory `apollo-component-library-itinerary`. **UPDATE 07-14 eve — TRANCHE 1 DONE** (all 6 as one interactive MONOCHROME file `knowledge/_proforma/Tranche-1-interactive.html`; near-black primary, colour=meaning, real HSBC icons ENFORCED via `_check_proforma.py`; `_PROFORMA-RULES.md` living; artifact `apollo-proforma-tranche-1`). LESSON: a new surface needs its gate wired. NEXT: promote UNIVERSAL rules to main `_build_all.py` + Tranche 2. Full: [[proforma-programme]].
+- **ATOMISE — build at the true atomic level, compose up** (RULED Dave 2026-07-14). Rolled-up
+  patterns (e.g. Notifications = inline + toast + global + contextual in one molecule) are a **debt**,
+  not the model; going forward build atoms → molecules → organisms per the `meta.schema` category
+  ladder, exposing the atoms. Known debt: decompose the existing rolled-up molecules in a later
+  refactor. Applies to all new component work.
+
 - **Product = a *flexing* engine** — one governed core, dials per work-type; floor/churn ("vibe")
   vs ceiling/novel ("analysis"). `ADR-0006`.
 - **Output modes = a first-class dial** (Dave, 2026-07-05): the engine must produce **two fidelity

@@ -1,0 +1,76 @@
+{
+  "name": "Icon button",
+  "category": "atom",
+  "purpose": "An icon-only control that triggers a single action where space is tight or the action is universally recognised (add, download, edit, search, close). Shares Button's four-level emphasis hierarchy (primary / secondary / tertiary / quaternary) and its tokens, but carries no visible label — so it must supply an accessible name and guarantee a 44x44 target. Use a labelled Button when the action is not unambiguous from a glyph alone.",
+  "props": [
+    { "name": "type", "type": "enum", "values": ["primary", "secondary", "tertiary", "quaternary"], "default": "quaternary", "$note": "Emphasis mirrors Button. Quaternary (ghost) is the most common icon-button in toolbars/inputs; primary icon-only is rare (reserve for a single decisive action e.g. a FAB-like add)." },
+    { "name": "state", "type": "enum", "values": ["default", "hover", "pressed", "focus", "disabled"], "default": "default" },
+    { "name": "glyph", "type": "string", "$note": "Icon id from the assets/icons sprite; drives the accessible name unless aria-label overrides." },
+    { "name": "label", "type": "string", "$note": "REQUIRED accessible name (aria-label / visually-hidden text). Icon-only = no visible label, so the name is non-optional (4.1.2 / 2.4.4)." }
+  ],
+  "variants": [
+    { "name": "primary", "use": "Highest-emphasis icon-only action; solid brand-red fill, reverse glyph. Rare — one per view." },
+    { "name": "secondary", "use": "Alternative icon action; inverting solid fill." },
+    { "name": "tertiary", "use": "Outlined icon button on a white fill." },
+    { "name": "quaternary", "use": "Ghost icon button — the toolbar/input-adornment default; transparent, tints on hover/press." }
+  ],
+  "tokens": {
+    "target-size": "44x44 min (2.5.8); glyph 20px (icon-scale/*)",
+    "font-family": "n/a (icon-only)",
+    "primary": { "glyph": "icon/default-reverse", "glyph-pressed": "text/on-inverse", "background-default": "primary/background/default", "background-hover": "primary/background/hover", "background-pressed": "primary/background/pressed", "background-disabled": "primary/background/disabled" },
+    "secondary": { "glyph": "text/on-inverse", "background-default": "secondary/background/default", "background-hover": "secondary/background/hover", "background-pressed": "secondary/background/pressed", "background-disabled": "secondary/background/disabled" },
+    "tertiary": { "glyph": "icon/default", "glyph-pressed": "icon/default-reverse", "glyph-disabled": "tertiary/text/disabled", "border-default": "tertiary/border/default", "border-disabled": "tertiary/border/disabled", "background-default": "tertiary/background/default", "background-hover": "tertiary/background/hover", "background-pressed": "tertiary/background/pressed", "background-disabled": "tertiary/background/disabled" },
+    "quaternary": { "glyph": "icon/default", "glyph-pressed": "icon/default-reverse", "glyph-disabled": "tertiary/text/disabled", "background-hover": "tertiary/background/hover", "background-pressed": "tertiary/background/pressed" },
+    "focus": "outline text/default (2px, offset 2px)",
+    "$darkDecisions": "Inherits Button's decisions verbatim (same bindings): secondary + primary-pressed glyph = text/on-inverse (#FFF light / #333 dark) to avoid white-on-light; tertiary/border/default dark = #767676 (>=3:1). Disabled glyph is contrast-exempt.",
+    "$finding": "(2026-07-14) Glyphs in the proof snippet are inline line-SVGs. Gate-green requires rebasing onto the assets/icons/ <symbol> sprite (icon-source rule; _validate_icons.py rejects UNKNOWN + circle/rect-only). Same path Notifications took 2026-06-24. Logged, not swept.",
+    "$disabledGlyphDecision": "(2026-07-14, Dave) The disabled glyph must stay VISIBLE. Original bind (icon/disabled #D7D8D6) equalled tertiary/background/disabled (#D7D8D6) → glyph vanished (empty box). Rebound all disabled glyphs to tertiary/text/disabled (#B7B7B7 light / #767676 dark) — muted but never equal to the disabled surface. Motion also softened per Dave: hover = +2px, press = -2px on the 44px target (was scale 1.08 / .92).",
+    "$glyphPresenceGate": "(2026-07-14, Dave ask) NEW gate to build — _validate_glyph_presence: for icon-only components, every glyph must be distinguishable from its own surface in EVERY state incl. disabled (resolve glyph vs surface light+dark; FAIL below ~1.3:1). A presence floor distinct from the 3:1 non-text-contrast gate — disabled is contrast-exempt but must still be present. Manifest carries the glyphPresence pairs. Wire into _build_all after the batch."
+  },
+  "motion": {
+    "hover": "scale(1.08) over motion/duration/spring (slight overshoot).",
+    "press": "scale(.92) + brightness(.85) over motion/duration/press.",
+    "reducedMotion": "Transforms + brightness disabled under prefers-reduced-motion; static colour states convey everything.",
+    "tokens": ["motion/easing/spring", "motion/duration/spring", "motion/duration/press", "motion/easing/out"]
+  },
+  "responsive": {
+    "rule": "Intrinsically fixed at the 44x44 target; does not reflow. Groups of icon buttons (a toolbar) are the responsive unit and wrap/collapse per their container.",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": ["Toolbar", "Action-bar", "Table (row actions)", "Input-fields (adornment)", "Card header", "Modals (close)", "Page header"],
+    "mustNotNeighbour": ["Icon button (primary) x2 (a second primary icon action)"],
+    "commonPatterns": ["toolbar action cluster", "input clear/reveal adornment", "table row actions", "dialog close (x)"],
+    "triggeredBy": []
+  },
+  "accessibility": {
+    "role": "button",
+    "name": "MANDATORY accessible name via aria-label or visually-hidden text — icon-only has no visible label (4.1.2 Name, Role, Value / 2.4.4). A tooltip is not a substitute for the name.",
+    "keyboard": "Reachable in tab order; Enter/Space activate.",
+    "focus": "Visible focus outline (text/default), never removed without replacement.",
+    "target": "Hit area >= 44x44 CSS px even when the glyph is 20px — padding/box makes the target (2.5.8).",
+    "nonText": "Glyph is non-text content: >= 3:1 against its background (1.4.11), and meaning must not rest on the glyph alone where ambiguous (pair with tooltip/label).",
+    "relatedSC": ["2.1.1 Keyboard", "2.4.7 Focus Visible", "1.4.11 Non-text Contrast", "2.5.8 Target Size (Minimum)", "4.1.2 Name, Role, Value", "2.4.4 Link Purpose"]
+  },
+  "antiPatterns": [
+    "Icon button with no accessible name (no aria-label / visually-hidden text)",
+    "Disabled (or any-state) glyph bound to a token equal to its own surface — the icon disappears and the control reads empty (glyph-presence gate)",
+    "Hit area smaller than 44x44 because the glyph is small",
+    "Using an ambiguous glyph as the only action affordance without a tooltip/label",
+    "More than one primary icon button in a single context",
+    "Removing the focus ring",
+    "Hard-coded colour instead of a token binding",
+    "REVIEW (inferred): using an icon button where a labelled Button is clearer (unfamiliar action)"
+  ],
+  "tokenValidation": {
+    "date": "2026-07-14",
+    "against": "token store (semantic-colour.json) — bindings inherited from Button.meta (gated green)",
+    "result": "PROVISIONAL — reuses Button's live on-light/on-dark bindings verbatim (primary/*, secondary/*, tertiary/*, icon/*, text/on-inverse). Same deprecated-on-dark migration applies as Button. Icon-source rebase pending ($finding).",
+    "$note": "Pro-forma proof component; promote after gate-green rebase + Dave review."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": ""
+  }
+}
