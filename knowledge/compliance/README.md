@@ -36,17 +36,20 @@ Two more generators layer additional edges onto the same rule files + index, bot
 - `_build_verification_edges.py` — runs LATE (after the contrast audits + a11y gate) and records `verified_by`: is an executable check wired into **our** build, and does it currently pass.
 - `_import_axe_rules.py` — runs right after step 1 and records `external_automatable_refs`: does an off-the-shelf tool (axe-core) **exist** that could check this SC, whether or not we've adopted it. Reads a vendored, offline snapshot — see `_vendor/_INGEST-NOTES.md` to refresh it.
 
-## ⚠️ Build state (2026-07-14): the contrast gate is intentionally RED
+## ✅ Build state (2026-07-14): the 1.4.11 border-contrast gap is now fixed
 
 The `1.4.11` investigation below (widening the indicator-contrast classifier to
 include border tokens) surfaced 15 genuine dark-mode contrast failures across
 border tokens store-wide — not just the Divider gap that prompted the look.
-Per an explicit decision, these are being left as real gating failures rather
-than allowlisted or quietly narrowed away: `python3 knowledge/_build_all.py`
-will exit non-zero until each of the 15 tokens listed below gets either a real
-dark-mode value fix or a reconsidered `applies_to` claim. This is a known,
-tracked, intentional red — not a regression to chase blindly. See
-`_INDICATOR-CONTRAST-AUDIT.md` for the live list.
+These were deliberately left gating rather than allowlisted while the fix was
+designed. Since we own these dark-mode values outright (no external brand
+constraint), all 15 were lifted to clear 3:1 with a small safety margin,
+preserving each token's original relative weight (e.g. `border/strong` stays
+more prominent than the near-invisible divider lines — nothing was flattened
+to one identical grey). Disabled-state tokens were deliberately left untouched
+(WCAG 1.4.11 exempts inactive components). `python3 knowledge/_build_all.py`
+is green: 31/31 indicator tokens pass, 0 gating failures. Full before/after
+values in `_INDICATOR-CONTRAST-AUDIT.md`.
 
 ## Current graph (generated 2026-06-18; verification + external-refs added 2026-07-14)
 
@@ -64,15 +67,15 @@ tracked, intentional red — not a regression to chase blindly. See
 | SC | Mechanism | Coverage |
 |---|---|---|
 | `1.4.3` Contrast (Minimum) | dark-mode contrast audit, joined to components via `tokens/_blast-radius.json` | 18/18 applies_to components covered |
-| `1.4.11` Non-text Contrast | dark-mode contrast audit, joined to components via `tokens/_blast-radius.json` | **6/8** applies_to components covered (2 pass, 4 fail, 2 not_covered) — see finding below |
+| `1.4.11` Non-text Contrast | dark-mode contrast audit, joined to components via `tokens/_blast-radius.json` | **6/8** applies_to components covered — all 6 **pass** (2 not_covered) — see finding below |
 | `2.3.3` Animation from Interactions | a11y gate scans every snippet for missing `prefers-reduced-motion` | per-snippet (=per-component) natively |
 | `2.5.8` Target Size (Minimum) | a11y gate measures every control's CSS box against the 24px floor | per-snippet (=per-component) natively |
 
 **A real finding the blast-radius join surfaced, then a second real finding underneath it (both 2026-07-14):** the join originally showed 4 of the 8 components claiming `1.4.11` — Badge, Cards, Divider, Links — with no bound token the indicator-contrast audit checked at all (`not_covered`). Digging into *why* Divider specifically fell through found the actual cause: the audit's classifier only matched brand/RAG/interactive/status-named tokens and explicitly excluded anything containing "border" — so `divider/border/subsection` (and every other border token in the store) was structurally incapable of being picked up, regardless of whether it had valid light/dark values. WCAG 1.4.11 explicitly covers "the boundaries of user interface components," so a border token being invisible to this audit was itself a gap, not correct scoping.
 
-Widening the classifier to include border tokens (and, per WCAG 1.4.11's own "except for inactive components" text, explicitly excluding `*/disabled` tokens) changed the join to **6/8 covered**: Badge and Links remain `not_covered` (they don't bind a border/brand/status token our audit models — may be genuinely out of scope, or the blast-radius scan missed a prose-only reference), Button and Status indicator **pass**, and **Account card, Cards, Divider, and Dropdown now `fail`** — real, previously-invisible dark-mode contrast gaps on border tokens those components bind (e.g. Divider's own `divider/border/subsection` sits at 1.05:1 against `#1D1D1D`, nowhere near the 3:1 floor). That's the point of the join: an honest "fail" beats a silent "not_covered" or an inflated "pass." See `_VERIFICATION-EDGES.md` → Component-level breakdown, and `rules/wcag-1.4.11-non-text-contrast.json` → `verified_by.per_component`.
+Widening the classifier to include border tokens (and, per WCAG 1.4.11's own "except for inactive components" text, explicitly excluding `*/disabled` tokens) changed the join to **6/8 covered**: Badge and Links remain `not_covered` (they don't bind a border/brand/status token our audit models — may be genuinely out of scope, or the blast-radius scan missed a prose-only reference); Button, Status indicator, Account card, Cards, Divider, and Dropdown **all pass** — the last four only after the token-value fix below (e.g. Divider's own `divider/border/subsection` was sitting at 1.05:1 against `#1D1D1D`, nowhere near the 3:1 floor, before it was lifted). That's the point of the join: it surfaced an honest `fail` first rather than hiding behind a silent `not_covered` or an inflated `pass`, and that honest fail is what got it fixed. See `_VERIFICATION-EDGES.md` → Component-level breakdown, and `rules/wcag-1.4.11-non-text-contrast.json` → `verified_by.per_component`.
 
-**The failing 15 tokens, store-wide** (not just the 4 components above — this is every border token below 3:1 in dark mode, `*/disabled` already excluded as WCAG-exempt): `border/strong`, `border/subtle`, `data-vis/border/on-dark/baseline-2`, `data-vis/border/on-dark/gridline`, `divider/border/break`, `divider/border/section`, `divider/border/subsection`, `divider/border/subsectionInset`, `form/border/default`, `form/border/pressed`, `primary/border/hover`, `table/border`, `tabs/overflow-border`, `tabs/standard-border`, `tooltip/border`. That's most of the border-token system — worth treating as a real design question (are these genuinely meant to be near-invisible dividers/rules that don't need independent 3:1 because the component is identifiable another way, or do the dark-mode values need lifting) rather than a quick token edit. Left gating rather than allowlisted, on purpose — see the build-state note above.
+**The 15 tokens that were fixed, store-wide** (not just the 4 components above — this was every border token below 3:1 in dark mode; `*/disabled` intentionally excluded as WCAG-exempt, values untouched): `border/strong`, `border/subtle`, `data-vis/border/on-dark/baseline-2`, `data-vis/border/on-dark/gridline`, `divider/border/break`, `divider/border/section`, `divider/border/subsection`, `divider/border/subsectionInset`, `form/border/default`, `form/border/pressed`, `primary/border/hover`, `table/border`, `tabs/overflow-border`, `tabs/standard-border`, `tooltip/border`. Since we own these dark-mode values (no external brand constraint), each was lifted just enough to clear 3:1 with a small margin, preserving relative weight within the original ramp (border/strong stays the most prominent, the divider break-lines stay the subtlest — nothing was flattened to one identical grey). `data-vis/border/on-dark/*` specifically had been reusing the *light-mode* grey/800 value verbatim with no real dark adaptation — now has its own proper dark value. 22 reference snippets that hardcoded the old hex values were updated in the same pass to clear the snippet-gate drift this created. Full before/after table in `_INDICATOR-CONTRAST-AUDIT.md`.
 
 `external_automatable_refs` is the **available** edge (built 2026-07-14, the other half of the 2026-07-10 "cheap-now slice"): does an off-the-shelf tool exist for this SC, regardless of whether we run it. Imported from axe-core v4.12.1 (vendored snapshot, no live network at build time). **15 of 31 SCs have at least one axe-core rule tagged against them** — see `knowledge/_EXTERNAL-AUTOMATABLE-REFS.md` for the full breakdown, which splits those 15 into:
 
@@ -98,4 +101,4 @@ Widening the classifier to include border tokens (and, per WCAG 1.4.11's own "ex
 - `check.type` is the *gradeability* hint (automated / semi-automated / manual) — treat it as intent, `verified_by` as evidence of what we actually enforce, `external_automatable_refs` as evidence of what's possible off-the-shelf.
 - As more components are ingested, re-run the generators — the graph stays in sync with the component metas.
 - **W3C ACT Rules Format** — checked 2026-07-14, **not ingested**: no structured JSON/CSV/API export found without scraping ~500 individual rule pages (no `act-rules` npm package, no `_data/*.json` in the GitHub repo). Deferred approach logged in `_vendor/_INGEST-NOTES.md`: parse the per-rule markdown frontmatter directly from `github.com/act-rules/act-rules.github.io` rather than scraping the rendered site.
-- **Next for the verification/external-refs layer** (not this pass): (1) resolve the 15 gating `1.4.11` border-contrast failures listed above — either real dark-mode value fixes or a design call that some are decorative/non-required and their component's `applies_to` claim should be corrected instead; (2) the remaining `not_covered` pair (Badge, Links) — confirm whether they're genuinely out of scope or the blast-radius scan missed a prose token reference; (3) decide whether any of the 13 axe-core "easy win" SCs are worth actually wiring into the build (that import only catalogs availability, it doesn't adopt anything); (4) the ACT ingest, if it earns its own session.
+- **Next for the verification/external-refs layer** (not this pass): (1) the remaining `not_covered` pair (Badge, Links) — confirm whether they're genuinely out of scope or the blast-radius scan missed a prose token reference; (2) decide whether any of the 13 axe-core "easy win" SCs are worth actually wiring into the build (that import only catalogs availability, it doesn't adopt anything); (3) the ACT ingest, if it earns its own session.
