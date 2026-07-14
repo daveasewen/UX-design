@@ -25,8 +25,8 @@ h1{font-size:30px;font-weight:300;margin:8px 0 4px;} h1 b{font-weight:600;}
 @media(max-width:1040px){.stage{grid-template-columns:1fr;}}
 svg{width:100%;height:auto;display:block;border:1px solid var(--g2);background:var(--paper);}
 /* nodes */
-.node{cursor:pointer;}
-.node rect{transition:opacity .15s;}
+.node{cursor:pointer;transition:opacity .28s ease;}
+.node rect{transition:opacity .28s ease, stroke .2s ease, stroke-width .2s ease;}
 .node .box{fill:var(--paper);stroke:var(--ink);stroke-width:1;}
 .node.gen .box{fill:var(--g1);stroke:var(--g3);}
 .node.support .box{fill:var(--paper);stroke:var(--g3);}
@@ -37,10 +37,11 @@ svg{width:100%;height:auto;display:block;border:1px solid var(--g2);background:v
 .node .cnt{font-size:10.5px;fill:var(--g5);}
 .node.engine .cnt{fill:var(--g5);}
 .grouplab{font-size:10.5px;letter-spacing:.18em;fill:var(--accent);text-transform:uppercase;font-weight:500;}
-.edge{stroke:var(--g5);stroke-width:1;fill:none;opacity:.5;transition:opacity .15s,stroke .15s;}
-/* interaction states */
-svg.hasfocus .node:not(.active):not(.nbr){opacity:.22;}
-svg.hasfocus .edge:not(.hot){opacity:.06;}
+.edge{stroke:var(--g5);stroke-width:1;fill:none;opacity:.4;transition:opacity .28s ease,stroke .28s ease;}
+/* interaction states — gentle de-emphasis; nothing drops below readable */
+svg.hasfocus .node:not(.active):not(.nbr){opacity:.55;}
+svg.hasfocus .node.engpart:not(.active):not(.nbr){opacity:.82;}   /* engine contents always legible */
+svg.hasfocus .edge:not(.hot){opacity:.16;}
 .node.active .box{stroke:var(--accent);stroke-width:2;}
 .node.engine.active .box{stroke:var(--accent);}
 .edge.hot{stroke:var(--accent);opacity:1;stroke-width:1.5;}
@@ -187,6 +188,7 @@ for(const id in N){
   if(n.cat==="gen")g.classList.add("gen");
   if(n.cat==="support")g.classList.add("support");
   if(n.cat==="engine")g.classList.add("engine");
+  if(["source","gen","engine"].includes(n.cat))g.classList.add("engpart");
   g.appendChild(el("rect",{x:n.x,y:n.y,width:n.w,height:n.h,class:"box"}));
   if(n.container){
     g.appendChild(Object.assign(el("text",{x:n.x+18,y:n.y+26,class:"lab"}),{textContent:"THE ENGINE — "+n.lab}));
