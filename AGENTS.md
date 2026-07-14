@@ -1,4 +1,4 @@
-# AGENTS.md — Smart Design System
+# AGENTS.md — Apollo
 
 > Root operating manual for any agent working in this repository. The nearest
 > `AGENTS.md` wins; this is the root. Conforms to the open

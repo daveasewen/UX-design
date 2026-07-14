@@ -3,7 +3,7 @@
 *Source: create.hsbc → Processes and tools → `generative-ai-and-our-brand.html`, captured
 2026-07-02 via Dave's authenticated session (login-walled; ADR-0005 provenance applies).
 Engine-era format. This is GOVERNANCE, not visual rules — ingested out-of-tier because it
-defines the regime any generative design tool (i.e. Promenaut) operates inside. Group AI
+defines the regime any generative design tool (i.e. Apollo) operates inside. Group AI
 policies / Responsible AI / AI-lifecycle pages are staff-only Confluence — not reachable
 from create.hsbc, noted as source boundary.*
 
@@ -17,7 +17,7 @@ brand identity foundations. **Our engine's entire output class is in scope.**
 ## The seven principles (rules)
 
 - **Approved tools only** — generative AI tools must pass the HSBC AI lifecycle review;
-  third parties and agencies included (Supplier Code of Conduct). [process — for Promenaut
+  third parties and agencies included (Supplier Code of Conduct). [process — for Apollo
   this is an ADOPTION GATE: the tool itself needs lifecycle approval at a client]
   {#gai-001}
 - **Brand protection, two checkpoints** — brand review ticket BEFORE the creative process
@@ -52,9 +52,9 @@ low-quality or synthetic-looking output · editing religious or political items.
    in scope. 2. Define the purpose against brand standards. 3. Submit all creative work to
    the Global Living Wall before release.
 
-## Findings — Promenaut positioning (the reason this page jumped the queue)
+## Findings — Apollo positioning (the reason this page jumped the queue)
 
-1. **The tool is in-scope, twice.** Promenaut is (a) itself a generative-AI tool needing
+1. **The tool is in-scope, twice.** Apollo is (a) itself a generative-AI tool needing
    lifecycle approval at any HSBC-like client, and (b) a producer of brand-foundation
    outputs (data-vis, typography, colour) whose outputs sit under Living Wall governance.
    Adoption planning must include both. [REVIEW — strategy input, Dave] {#gai-008}

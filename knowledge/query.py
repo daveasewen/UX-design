@@ -129,7 +129,7 @@ def show_leaks():
     print()
 
 def main():
-    ap = argparse.ArgumentParser(description="Query the Promenaut knowledge base.")
+    ap = argparse.ArgumentParser(description="Query the Apollo knowledge base.")
     ap.add_argument("component", nargs="?", help="component name (partial ok)")
     ap.add_argument("--token", help="show components binding a token")
     ap.add_argument("--sc", help="show components owing a WCAG SC + the rule")

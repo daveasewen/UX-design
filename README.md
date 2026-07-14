@@ -1,4 +1,4 @@
-# Smart Design System (project Promenaut)
+# Apollo
 
 A **governed design-system engine** for agentic generation: senior design judgment
 encoded as executable criteria, enforced by gates that withhold "done".
@@ -20,7 +20,7 @@ four kinds of asset:
 - **Runbooks** — `knowledge/_RUNBOOK-*.md`: the method written down, so a
   cold-start agent can operate the engine without this chat's history.
 
-**The orchestrator is the host agent** (Claude / Cowork / Promenaut runtime). We do
+**The orchestrator is the host agent** (Claude / Cowork / Apollo runtime). We do
 not build or maintain a bespoke pipeline runtime — see
 [`docs/decisions/ADR-0005`](docs/decisions/ADR-0005-ratify-knowledge-engine-pivot.md).
 The original harness design (2026-05-31) is preserved at `archive/harness-v0.1/`;

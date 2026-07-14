@@ -54,7 +54,7 @@ reliability over long runs).
 ## Portability note
 
 This spec is runtime-agnostic. It can be executed by a thin custom loop, or
-mapped onto LangGraph/CrewAI/Promenaut as a *swappable engine*. The contracts and
+mapped onto LangGraph/CrewAI/Apollo as a *swappable engine*. The contracts and
 state stores are the invariant; the engine is replaceable. See ADR-0001.
 
 ## Parallel dispatch

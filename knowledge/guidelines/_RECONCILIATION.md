@@ -13,7 +13,7 @@ Dave rules.*
 
 ## brand-refresh-assets.md
 
-- **bra26-001** — The no-gen-AI-imagery rule (photo26-002) is the sharpest pipeline constraint in the refresh set — it draws the line between generating EXPERIENCES (our business) and generating ASSETS (banned for photography). Alongside gai-008 it defines Promenaut's imagery posture: library retrieval + provenance, never synthesis. Worth a line in the fixed/flex charter's fixed column when next touched.
+- **bra26-001** — The no-gen-AI-imagery rule (photo26-002) is the sharpest pipeline constraint in the refresh set — it draws the line between generating EXPERIENCES (our business) and generating ASSETS (banned for photography). Alongside gai-008 it defines Apollo's imagery posture: library retrieval + provenance, never synthesis. Worth a line in the fixed/flex charter's fixed column when next touched.
 - **hex26-002** — Two REFRESH DELTAS with asset impact: (a) the Iconic Hexagon is now used at a smaller size than previously; (b) the Cropped Hexagon is reduced to one-edge and two-edge crops — three- and four-edge crops are RETIRED. ⚠ Any 2025-era hexagon assets/masks in the repo need a vintage check before reuse (`hexagon-masks.md` is legacy-era).
 - **hex26-005** — Graphic treatments (3D Hexagon, Graphic Hexagons, Keyline Hexagon…): guidance "will be released soon." ⚠ Source gap, same class as the grey palette (col26-001) — recheck cadence.
 
@@ -36,7 +36,7 @@ Dave rules.*
 
 ## generative-ai-brand.md
 
-- **gai-008** — The tool is in-scope, twice. Promenaut is (a) itself a generative-AI tool needing lifecycle approval at any HSBC-like client, and (b) a producer of brand-foundation outputs (data-vis, typography, colour) whose outputs sit under Living Wall governance. Adoption planning must include both.
+- **gai-008** — The tool is in-scope, twice. Apollo is (a) itself a generative-AI tool needing lifecycle approval at any HSBC-like client, and (b) a producer of brand-foundation outputs (data-vis, typography, colour) whose outputs sit under Living Wall governance. Adoption planning must include both.
 
 ## icons.md
 

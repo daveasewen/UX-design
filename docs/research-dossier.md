@@ -1,4 +1,4 @@
-# Research Dossier — Agentic Design Workflow for Promenaut
+# Research Dossier — Agentic Design Workflow for Apollo
 
 **Version:** 0.1 (planning & research)
 **Date:** 2026-05-31
@@ -14,7 +14,7 @@ build anything. It does five things:
 
 1. Abstracts your **HDS** pipeline into a reusable, discipline-agnostic harness pattern.
 2. Reconciles it against published **best practice** for agentic harnesses.
-3. Picks the **portable file standards** that keep everything model-agnostic (Claude → GPT‑5.5 → Promenaut).
+3. Picks the **portable file standards** that keep everything model-agnostic (Claude → GPT‑5.5 → Apollo).
 4. Surveys **prior art** ("agency-in-a-box" systems) and extracts what to copy and what to avoid.
 5. Recommends the **knowledge layer per stage**, the **UX methodology blend**, and the **compliance bar**, then proposes a concrete architecture and repo structure.
 
@@ -24,14 +24,14 @@ Every external claim is sourced in §11.
 
 ## 1. Context and constraints
 
-**Promenaut** positions itself as *"the operating system for the digital
+**Apollo** positions itself as *"the operating system for the digital
 workforce"* — a harness to manage and deploy agentic workflows, working as an
 intimate strategic partner to your company. Our deliverables target their
 platform, which is likely to run on Claude.
 
 **Your goal** is twofold and personal: prove the value of design expertise in an
 agentic world (designer headcount is forecast to fall over the next ~24 months),
-and ship something that impresses both Promenaut and your company. The strategic
+and ship something that impresses both Apollo and your company. The strategic
 move is therefore *not* "automate designers away" but "encode senior design
 judgment as the scarce, defensible asset the system depends on." That framing
 runs through every recommendation here.
@@ -40,7 +40,7 @@ runs through every recommendation here.
 
 | Constraint | Architectural consequence |
 |---|---|
-| Files must move between home machine, agency machine, and Promenaut | Plain Markdown + structured data, Git as source of truth, no machine paths, no model-specific syntax in committed files |
+| Files must move between home machine, agency machine, and Apollo | Plain Markdown + structured data, Git as source of truth, no machine paths, no model-specific syntax in committed files |
 | Frontier model + real company assets only reachable on the agency machine (Monday) | **Knowledge ingestion** must be cleanly separable from **workflow logic**. We design and dry-run logic here with synthetic/public data; ingestion runs where the assets live |
 | Transfer via GitHub (whitelisted) | Repo-shaped deliverables, conventional commits, ADRs for decisions |
 | Regulated financial-services context, mixed compliance surface | Adopt the **most stringent** accessibility/compliance bar (see §8) |
@@ -127,7 +127,7 @@ coding/agent tool the project conventions, build steps, and operating rules.
 Introduced by OpenAI in mid-2025, adopted by 60,000+ projects by year end, now
 stewarded by the Agentic AI Foundation under the Linux Foundation. Think of it
 as "a README for agents." It is model-neutral by design — exactly what we need
-for Claude/GPT‑5.5/Promenaut parity.
+for Claude/GPT‑5.5/Apollo parity.
 
 **Agent Skills / `SKILL.md`** — Anthropic's open spec (released Dec 2025) for
 packaging procedural knowledge: a folder with a `SKILL.md` (YAML frontmatter:
@@ -172,7 +172,7 @@ MetaGPT, OpenAI Agents SDK) yields three transferable lessons:
 **Framework stance:** follow Anthropic's guidance — *don't* marry a heavyweight
 framework. Author in portable Markdown/Skills/MCP; if an execution engine is
 needed, treat LangGraph/CrewAI as a swappable runtime, not the source of truth.
-This protects portability to Promenaut.
+This protects portability to Apollo.
 
 **Design-specific prior art (directly usable for your part):**
 
@@ -324,7 +324,7 @@ knowledge layer, and wiring live Figma MCP.
 ## 10. Recommended repo structure (Git = source of truth)
 
 ```
-promenaut-design-workflow/
+apollo-design-workflow/
 ├── README.md
 ├── AGENTS.md                       # root operating manual (open standard)
 ├── docs/
@@ -376,7 +376,7 @@ Carried forward (some echo HDS's own open questions, which transfer directly):
 1. **Knowledge-store update policy** — automatic on review pass, or gated by orchestrator/human review? (HDS's Persona-Store question, reframed.)
 2. **Retry budget** before HITL escalation — what N per error type?
 3. **`taste.md` authorship** — you author/curate manually, informed by escalation patterns? (Recommended.)
-4. **Execution runtime on Promenaut** — do they expose an orchestrator we target, or do we ship a portable runtime? (Affects how thin the orchestrator spec must be.)
+4. **Execution runtime on Apollo** — do they expose an orchestrator we target, or do we ship a portable runtime? (Affects how thin the orchestrator spec must be.)
 5. **Prototype fidelity target** — production-grade React from the real library, or standards-compliant Figma Make as the fallback? (You prefer usable code; confirm per client.)
 6. **WCAG target per client** — 2.2 AA default, 2.1 AA where contractually pinned.
 7. **How much of `ux-research/`, `cx-research/`, `cx-design/`, `ux-copy/` to skeleton now** vs after the UX pipeline proves the harness.
@@ -389,7 +389,7 @@ Carried forward (some echo HDS's own open questions, which transfer directly):
 2. **Scaffold the repo** here with the harness spec, the `ux-design` + `ui-design` pipeline definitions, contracts/schemas, root `AGENTS.md`, and 1–2 Skills — all dry-runnable with synthetic data.
 3. **Dry-run** the UX build-&-review pipeline end-to-end on a synthetic component set + public standards to validate the contracts and gates.
 4. **On the agency machine (Monday):** ingest the real design system, Figma library and React components into `knowledge/`; wire Figma MCP + Code Connect; re-run the pipeline against real assets.
-5. **Hand to Promenaut:** the repo is already in their likely-native (Claude) idiom and conforms to open standards, so handoff is a pull, not a port.
+5. **Hand to Apollo:** the repo is already in their likely-native (Claude) idiom and conforms to open standards, so handoff is a pull, not a port.
 
 ---
 
@@ -415,4 +415,4 @@ Carried forward (some echo HDS's own open questions, which transfer directly):
 - [Understanding the EAA and WCAG 2.2 — OneTrust](https://www.onetrust.com/blog/understanding-the-european-accessibility-act-and-wcag-22/)
 - [How to conduct a heuristic evaluation — NN/g](https://www.nngroup.com/articles/how-to-conduct-a-heuristic-evaluation/)
 - [Double Diamond methodology — Aguayo](https://aguayo.co/en/blog-aguayo-user-experience/double-diamond-methodology-user-experience/)
-- [Promenaut](https://www.promenaut.ai/)
+- [Apollo](https://www.apollo.ai/)

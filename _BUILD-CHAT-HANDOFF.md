@@ -1,4 +1,4 @@
-# Promenaut — Build chat hand-off
+# Apollo — Build chat hand-off
 *Seed doc for a fresh chat to continue the hands-on KB / gated-component work **in parallel** with the
 strategy chat (`_STRATEGY-KICKOFF.md`). Paste this in and say "continue the build chat."*
 *Written 2026-06-20. Current state is green and stable — safe to pick up cold.*

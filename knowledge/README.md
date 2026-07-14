@@ -1,6 +1,6 @@
-# Knowledge base — Promenaut design-to-code canon
+# Knowledge base — Apollo design-to-code canon
 
-The authoritative, portable knowledge the Promenaut pipeline queries to use the **HSBC Common Toolkit** design system correctly — built from the Figma library ("Gaps and edits" branch, fileKey `Cgbtrmfp15ruNFkIAClpkI`) and the design standards on create.hsbc.
+The authoritative, portable knowledge the Apollo pipeline queries to use the **HSBC Common Toolkit** design system correctly — built from the Figma library ("Gaps and edits" branch, fileKey `Cgbtrmfp15ruNFkIAClpkI`) and the design standards on create.hsbc.
 
 It has two halves: **authored canon** (hand-curated, the source of truth) and **derived views** (generated from the canon, never edited by hand). Everything regenerates and self-validates from one command: `python3 knowledge/_build_all.py`.
 

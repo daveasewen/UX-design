@@ -1,11 +1,11 @@
-# Promenaut — Framework comparison + recommendation
+# Apollo — Framework comparison + recommendation
 *Deliverable (b) from the strategy kickoff. Written 2026-06-20 by Claude + Dave.*
 *Sketch-level by design — enough to make decisions, not big-design-up-front.*
 
 ---
 
 ## Summary (read this first)
-**Recommendation: use spec/eval-first as the spine, and treat the other frameworks as *intake patterns* that feed it — not as competitors.** They operate at different layers, so "pick one" is a false choice. Spec/eval-first is the only one that is natively a *contract* (criteria as executable checks), which is exactly Promenaut's "verification = enforcement" principle moved upstream. The others are better at the *fuzzy front* (finding the right problem, surfacing risk) where spec/eval-first is weak.
+**Recommendation: use spec/eval-first as the spine, and treat the other frameworks as *intake patterns* that feed it — not as competitors.** They operate at different layers, so "pick one" is a false choice. Spec/eval-first is the only one that is natively a *contract* (criteria as executable checks), which is exactly Apollo's "verification = enforcement" principle moved upstream. The others are better at the *fuzzy front* (finding the right problem, surfacing risk) where spec/eval-first is weak.
 
 **The honest risk with spec/eval-first:** it assumes you already know enough to write criteria. For a genuinely new problem you don't — and writing criteria too early just locks in your first guess. That's the gap the other frameworks fill. So the spine needs a divergent front-end bolted on, or it becomes premature precision.
 
@@ -24,7 +24,7 @@
 
 ## The comparison (compact)
 
-| Framework | What it's good at | Where it's weak | Maps to Promenaut as… | Artifact it hands downstream → tier |
+| Framework | What it's good at | Where it's weak | Maps to Apollo as… | Artifact it hands downstream → tier |
 |---|---|---|---|---|
 | **Spec/eval-first** (spec-kit, eval-driven dev) | Turning intent into *executable criteria before building*; criteria = gates | Assumes the problem is already understood; premature if used too early | **The spine** — criteria contract = your gates | `spec.md` + executable evals → **screen/journey tier** definition-of-done |
 | **Double Diamond** | Clean mental model: diverge→converge twice; the Define gate *is* a criteria contract | High-level; doesn't tell you *how* to do any phase | Framing wrapper; `brainstorm`=Discover, `grill-me`=Define | Problem statement + success criteria → feeds the spec |

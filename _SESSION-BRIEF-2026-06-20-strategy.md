@@ -21,7 +21,7 @@ Run the real, contested, under-discovered payments journey *backwards* through t
 - `payments-interview-guide.md` — semi-structured depth guide (doubles as guided-JTBD lane prototype).
 - `payments-stakeholder-questionnaire.md` — ~10q breadth survey, opinion-spread (doubles as ingestion-lane prototype).
 - `knowledge/_demo/_SCOPE-gated-generation-demo.md` + `knowledge/_demo/gated-generation-demo.html` — thin demo: generate a screen, gates as visible hero, gated vs "vibes" toggle. Build verified green (EXIT 0); fully isolated in `_demo/`, touches no canon.
-- `promenaut-pipeline-spec_v0.2_2026-06-20.html` — reissued spec with diagrams. **v0.1 archived** at `archive/promenaut-pipeline-spec_v0.1_2026-05-31.html`.
+- `apollo-pipeline-spec_v0.2_2026-06-20.html` — reissued spec with diagrams. **v0.1 archived** at `archive/apollo-pipeline-spec_v0.1_2026-05-31.html`.
 
 ## Repo / process notes
 - Two chats share ONE working tree on `master` — **do not branch** (it would switch the build chat's files). Isolate by directory.
@@ -45,4 +45,4 @@ High artifact output in one session — watch the productivity-bubble risk. The 
 ## Next session — first moves
 1. Did the colleague chat happen? If yes → run the payments retrofit into a gap report.
 2. If not → do an unblocked movable: polish demo for the boss, or prototype the ingestion lane.
-3. Pointers: `_STRATEGY-framework-comparison.md`, `promenaut-pipeline-spec_v0.2_2026-06-20.html`.
+3. Pointers: `_STRATEGY-framework-comparison.md`, `apollo-pipeline-spec_v0.2_2026-06-20.html`.

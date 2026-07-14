@@ -1,4 +1,4 @@
-# Promenaut — Strategy kickoff brief
+# Apollo — Strategy kickoff brief
 *Seed doc for a fresh chat. Paste this in to start the vision/strategy deep-dive with clean context.*
 *Written 2026-06-20 by Claude + Dave, off the back of the gated-KB build (see `knowledge/_NEXT-SESSION.md`).*
 

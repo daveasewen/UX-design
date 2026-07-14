@@ -36,7 +36,7 @@ The art of running the team is keeping the **tiering** honest: a few hard object
 | **Researcher** — often first to be cut | **Experience researcher** — elevated to the front of the value chain | When building is cheap, knowing *what* to build and whether it worked is the scarce input. Research moves from optional to essential. |
 | **UX writer / content designer** — writes copy per screen | **Content & tone governor** — encodes tone-of-voice as an enforceable check | Content quality becomes governed and consistent, not hand-written every time. |
 | *(scattered / informal)* | **DesignOps / governance lead** *(new or elevated)* — owns the gate model, compliance bar (WCAG 2.2), tiering, auditability | In a regulated org this is a senior, central role: compliance-as-enforcement. |
-| **BA / PO** — write requirements | **Input providers & gate participants** — acceptance criteria become executable checks | Already modelled this way in the Smart Design System. Their criteria feed the gates directly. |
+| **BA / PO** — write requirements | **Input providers & gate participants** — acceptance criteria become executable checks | Already modelled this way in the Apollo. Their criteria feed the gates directly. |
 | **Design manager** — manages artifact throughput | **Experience lead / orchestrator** — manages outcomes and the system | Manages the machine and the experience, not the volume of hand-made deliverables. |
 
 ## What the team STOPS doing

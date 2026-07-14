@@ -1,12 +1,12 @@
 # Phased roadmap — prove → encode → shift → scale
 
-*DRAFT v0.1 for review. Timelines are indicative and tied to the Smart Design System's maturity, not the calendar.*
+*DRAFT v0.1 for review. Timelines are indicative and tied to the Apollo's maturity, not the calendar.*
 
 ---
 
 ## Executive summary
 
-The transformation runs in four phases, deliberately paced to the maturity of the Smart Design System so the team change is always **backed by working proof, never by promise**. **Prove** (now) establishes that the engine works on one real journey and gathers the internal evidence. **Encode** (≈0–6 months) turns the team's standards into the system and seeds the new roles from existing people. **Shift** (≈6–12 months) flips the operating model on a first product area and runs old and new in parallel — this is where role changes and redundancies become real and must be handled deliberately. **Scale** (≈12–18 months) rolls the model across the portfolio, formalises the Digital Experience identity, and opens the new-value story. The golden rule: **never restructure ahead of proven capability.** If the proof slips, the people changes slip with it.
+The transformation runs in four phases, deliberately paced to the maturity of the Apollo so the team change is always **backed by working proof, never by promise**. **Prove** (now) establishes that the engine works on one real journey and gathers the internal evidence. **Encode** (≈0–6 months) turns the team's standards into the system and seeds the new roles from existing people. **Shift** (≈6–12 months) flips the operating model on a first product area and runs old and new in parallel — this is where role changes and redundancies become real and must be handled deliberately. **Scale** (≈12–18 months) rolls the model across the portfolio, formalises the Digital Experience identity, and opens the new-value story. The golden rule: **never restructure ahead of proven capability.** If the proof slips, the people changes slip with it.
 
 ## Phase 0 — Prove *(now → next ~3 months)*
 **Goal:** demonstrate the loop end-to-end on one real banking journey (the payments work already underway). Generate undeniable internal evidence that artifact cost has collapsed and quality has held.

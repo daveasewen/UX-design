@@ -12,7 +12,7 @@ a 15-step enforcement build, a generated composition layer (`canon.css`), runboo
 and the fixed/flex governance charter.
 
 Market context (2026): orchestration and agent runtimes are commoditising rapidly
-(agent SDKs, 30+ spec-driven frameworks, Promenaut itself). Design-system
+(agent SDKs, 30+ spec-driven frameworks, Apollo itself). Design-system
 **enforcement at generation time** remains unoccupied — the ecosystem's own
 assessment of the state of the art is "mapped, but not dynamically enforced".
 Full analysis: `REVIEW-2026-07-02-critical-regroup.html` (root).
@@ -20,7 +20,7 @@ Full analysis: `REVIEW-2026-07-02-critical-regroup.html` (root).
 ## Decision
 
 1. **The product is the engine:** canon + criteria + gates + runbooks — versioned
-   files operated by a host agent (Claude / Cowork / Promenaut runtime).
+   files operated by a host agent (Claude / Cowork / Apollo runtime).
 2. **We do not build or maintain a bespoke orchestrator/runtime.** The host agent
    orchestrates. `harness/` and the discipline pipelines move to
    `archive/harness-v0.1/` (git history preserved via `git mv`).

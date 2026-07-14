@@ -4,7 +4,7 @@
 ---
 
 ## Status & guardrail (read first)
-This is a **horizon-3 "what if," deliberately fenced from the active project.** Promenaut's
+This is a **horizon-3 "what if," deliberately fenced from the active project.** Apollo's
 sequence is unchanged: prove the design-time loop on one real HSBC screen, then define the
 target, then build scaffolding. Nothing here competes with that. The question this note
 captures is narrow and durable: *could the engine we're building be dropped into a different
@@ -12,7 +12,7 @@ vehicle with a different purpose?* Answer: yes — and the cleanest first vehicl
 **contextual dashboard**, not full GenUI.
 
 ## One line
-Promenaut's IP — gated canon + criteria-as-executable-checks + enforcement — is a generic
+Apollo's IP — gated canon + criteria-as-executable-checks + enforcement — is a generic
 **"trust layer for assembled UI."** Pointed at design-time it produces gate-verified prototypes
 (what we're building). Pointed at run-time it could assemble a **per-user dashboard** where every
 element is provably compliant and the user only ever sees what they're entitled to.
@@ -50,7 +50,7 @@ you can only ever see what you're entitled to" is something freeform GenUI tools
 offer. The enforcement layer is the differentiator, and entitlements-as-a-gate is *verification =
 enforcement* applied to data visibility — a compliance requirement in banking, not a flourish.
 
-## What it reuses from Promenaut (the kernel)
+## What it reuses from Apollo (the kernel)
 - **Gated canon** → the card/widget library (certified, compliant building blocks).
 - **Criteria-as-executable-checks** → run-time eligibility + composition rules (entitlement gates,
   states-completeness, per-card a11y).

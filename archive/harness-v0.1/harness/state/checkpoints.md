@@ -28,4 +28,4 @@ continues from the next step — no re-running of completed, still-valid work.
 
 Checkpoints are plain JSON files (or whatever the deployment runtime maps them
 to). Keep them engine-agnostic so a run authored here can resume on the agency
-machine or on Promenaut.
+machine or on Apollo.

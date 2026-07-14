@@ -7,7 +7,7 @@ You asked to keep the strategy separate from the commit-safe context so you can 
 ## What's here
 1. `01_transformation-thesis.md` — the core argument: why AI forces the shift, why "shrink-only" fails, where value moves.
 2. `02_operating-model-and-roles.md` — the new operating model and a from→to role map.
-3. `03_phased-roadmap.md` — prove → encode → shift → scale, tied to the Smart Design System's maturity.
+3. `03_phased-roadmap.md` — prove → encode → shift → scale, tied to the Apollo's maturity.
 4. `04_people-transition.md` — the honest people / redundancy plan.
 5. `05_narrative-and-deck-outline.md` — the leadership pitch, slide by slide.
 
@@ -17,5 +17,5 @@ Read the thesis first. If the spine of the argument holds for you, the other fou
 ## Known soft spots to pressure-test (I'd challenge these myself)
 - **The redundancy framing.** It must be honest without being cold, and it must survive scrutiny from people whose jobs are affected. See `04`.
 - **The "new value" claim.** The upside story (compliance-at-scale, contextual dashboard) is real but currently a *parked* horizon-3 idea, not proven. Don't oversell it to leadership as imminent.
-- **Timeline realism.** The roadmap assumes the Smart Design System keeps maturing on schedule. If the proof slips, the team transformation timeline slips with it.
+- **Timeline realism.** The roadmap assumes the Apollo keeps maturing on schedule. If the proof slips, the team transformation timeline slips with it.
 - **Naming.** "Digital Experience" is a deliberate choice (see thesis), but check it doesn't collide with an existing team or term in your org.

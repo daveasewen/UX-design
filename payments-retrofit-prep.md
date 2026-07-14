@@ -1,5 +1,5 @@
 # Payments journey — colleague chat prep sheet
-*Goal: gather enough to run the payments journey *backwards* through Promenaut and produce a "what would have bitten us after go-live" gap report. ~20–30 min chat.*
+*Goal: gather enough to run the payments journey *backwards* through Apollo and produce a "what would have bitten us after go-live" gap report. ~20–30 min chat.*
 
 **Golden rule:** capture **evidence, not opinion.** Every "we thought / everyone felt" = an *assumption to test*, not a fact. Mark them as you go.
 

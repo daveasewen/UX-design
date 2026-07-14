@@ -23,7 +23,7 @@ The pitch follows a simple, hard-to-argue arc: **the shift is real → the easy 
 
 5. **Delivery → Experience.** Why the rename encodes the strategy: from owning *output/throughput* to owning *outcomes* and the *infrastructure that guarantees quality at scale*. Cross-disciplinary by design.
 
-6. **We've already built the engine.** The Smart Design System. Its principles *are* the new operating model: craft scored / taste judged; automate around the taste call; criteria-as-checks; gated canon. *This is the slide that flips the story from defensive to offensive.* Show the working proof on the lighthouse journey.
+6. **We've already built the engine.** The Apollo. Its principles *are* the new operating model: craft scored / taste judged; automate around the taste call; criteria-as-checks; gated canon. *This is the slide that flips the story from defensive to offensive.* Show the working proof on the lighthouse journey.
 
 7. **The new operating model.** The three layers — Machine, Standards, Humans. What the team stops doing; what it starts doing. The new metrics that replace "artifacts shipped."
 
@@ -46,4 +46,4 @@ The pitch follows a simple, hard-to-argue arc: **the shift is real → the easy 
 - **Open and close on the ask;** keep slide 1 and slide 11 tight.
 - **Lead with evidence, not vision** — the room trusts the proof slide (6) far more than the trend slides (2).
 - **Don't oversell the upside.** The horizon-3 material is a *bonus*, explicitly flagged; the core case stands without it.
-- **Bring the proof, not just the deck** — a live or recorded walk of the Smart Design System on the lighthouse journey is worth more than any slide.
+- **Bring the proof, not just the deck** — a live or recorded walk of the Apollo on the lighthouse journey is worth more than any slide.

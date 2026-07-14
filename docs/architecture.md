@@ -5,7 +5,7 @@ runtime (ADR-0005). The original two-layer harness design (2026-05-31) is preser
 at `archive/harness-v0.1/` and in `research-dossier.md` (historical).
 
 ```
-┌──────────── HOST AGENT (Claude / Cowork / Promenaut) ────────────┐
+┌──────────── HOST AGENT (Claude / Cowork / Apollo) ────────────┐
 │ orchestration · state · context assembly · retries — inherited    │
 └───────────────────────────────────────────────────────────────────┘
         ▼ operates via runbooks (knowledge/_RUNBOOK-*.md)

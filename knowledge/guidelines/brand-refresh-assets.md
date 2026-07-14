@@ -52,7 +52,7 @@ for the composition/journey strand; component relevance flagged where real.*
   montages/composites; no staged/posed/clichéd shots; no text as a mask.** ⚠ The gen-AI
   ban is PIPELINE-CRITICAL: a generation engine must never fabricate photographic
   imagery — photography comes from the Global Image Library/approved sources only.
-  Direct kin of the gen-AI governance regime (gai-*); Promenaut's imagery story =
+  Direct kin of the gen-AI governance regime (gai-*); Apollo's imagery story =
   retrieval from licensed libraries, full stop. [BLOCKING-derivable at asset-provenance
   level — generated experiences may only reference library assets; pairs with the
   icon-source rule] {#photo26-002}
@@ -96,7 +96,7 @@ for the composition/journey strand; component relevance flagged where real.*
 
 1. **The no-gen-AI-imagery rule (photo26-002) is the sharpest pipeline constraint in the
    refresh set** — it draws the line between generating EXPERIENCES (our business) and
-   generating ASSETS (banned for photography). Alongside gai-008 it defines Promenaut's
+   generating ASSETS (banned for photography). Alongside gai-008 it defines Apollo's
    imagery posture: library retrieval + provenance, never synthesis. Worth a line in the
    fixed/flex charter's fixed column when next touched. [REVIEW — charter annotation at
    next touch] {#bra26-001}

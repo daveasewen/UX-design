@@ -85,7 +85,7 @@ completes ALL 9 role pages.*
   1–6 = scoping), strategic decisions (7–12 = charter/fixed-flex dials), guideline-
   directed production (13 = generation against canon), assurance through production
   (14 = gates + fitness tests), communicate decisions (15 = statements/receipts),
-  repeat (16 = regression tier). Worth a note in the promenaut strategy pack — the
+  repeat (16 = regression tier). Worth a note in the apollo strategy pack — the
   discovery spine has a British-Standard ancestor.
 - **F4 — source gaps**: PM page names 4 workshops, details 2; procurement page has no
   numbered checkpoints (5 duties). Logged, not chased.

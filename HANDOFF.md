@@ -21,7 +21,7 @@ Have these ready. If one is missing, note it and carry on; most stages still wor
 - [ ] **The React component library** — the repo/folder path on the machine, or its Git URL.
 - [ ] **The published design-standards website** URL.
 - [ ] A **real, small example to design** — one screen or feature. Small on purpose.
-- [ ] Anything Promenaut gave you: docs, a workspace, login.
+- [ ] Anything Apollo gave you: docs, a workspace, login.
 
 ---
 
@@ -32,17 +32,17 @@ If you haven't pushed from home yet, do this at home first (in this folder):
 ```bash
 git init
 git add .
-git commit -m "feat: planning + harness scaffold for Promenaut design workflow"
+git commit -m "feat: planning + harness scaffold for Apollo design workflow"
 # create an empty repo on github.com, then:
-git remote add origin https://github.com/<you>/promenaut-design-workflow.git
+git remote add origin https://github.com/<you>/apollo-design-workflow.git
 git push -u origin main
 ```
 
 On the agency machine:
 
 ```bash
-git clone https://github.com/<you>/promenaut-design-workflow.git
-cd promenaut-design-workflow
+git clone https://github.com/<you>/apollo-design-workflow.git
+cd apollo-design-workflow
 ```
 
 Open the folder in your AI agent tool. **Done when** you can see `AGENTS.md` in
@@ -105,12 +105,12 @@ passing accessibility review citing actual WCAG criteria, and a handoff spec.
 
 ---
 
-## Stage 4 — close the Promenaut question (30–45 min)
+## Stage 4 — close the Apollo question (30–45 min)
 
-Open Promenaut's documentation. With the agent, answer: what does their runtime
+Open Apollo's documentation. With the agent, answer: what does their runtime
 give you for free — state, logging, human-in-the-loop, scheduling? How would our
 orchestrator (`harness/orchestrator.md`) map onto it? Write the answer as
-`docs/decisions/ADR-0005-promenaut-runtime-mapping.md`. This is the one decision
+`docs/decisions/ADR-0005-apollo-runtime-mapping.md`. This is the one decision
 we deliberately left open because it needs their docs.
 
 ---
@@ -123,7 +123,7 @@ git commit -m "feat: ingest real design system + first working UX/UI run"
 git push
 ```
 
-That's the artifact you show Promenaut and your company: a working, documented,
+That's the artifact you show Apollo and your company: a working, documented,
 standards-compliant pipeline that ran on real assets — with your judgment encoded
 at the gates.
 
@@ -151,5 +151,5 @@ A single real, working example beats broad coverage. Ship the proof.
 
 Both, and they're complementary. The docs + Prompt 1 alone will orient any capable
 agent correctly. This runbook is the connective tissue that keeps *you* moving
-fast and stops the two risky stages (ingestion, Promenaut mapping) from eating
+fast and stops the two risky stages (ingestion, Apollo mapping) from eating
 your day. Follow the stages; lean on the prompts in `prompts/`.

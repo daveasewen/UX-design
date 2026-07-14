@@ -3,7 +3,7 @@
 *Source: create.hsbc → Processes and tools → `Digital_Governance.html`, captured
 2026-07-03 via Dave's authenticated session (login-walled; ADR-0005 provenance applies).
 Engine-era format. Pure [PROCESS] destiny — but this is the regime every generated screen
-ultimately ships through, so the criteria are strategy-bearing for Promenaut (the engine's
+ultimately ships through, so the criteria are strategy-bearing for Apollo (the engine's
 certificates should be evidence a GDEA review can consume).*
 
 ## GDEA approval criteria (rules)
@@ -57,7 +57,7 @@ certificates should be evidence a GDEA review can consume).*
   retest artefacts (a11y), and checklists. A composed screen that ships with its
   criteria-contract + gate receipts + rendered state-contrast audit arrives at
   governance pre-evidenced. Strategy material for `digital-experience-transformation/`
-  and the Promenaut pitch (gdea-003: certified reuse is EXEMPT from re-approval — the
+  and the Apollo pitch (gdea-003: certified reuse is EXEMPT from re-approval — the
   strongest institutional argument for the certified-component model).
 - **F2 — third-party auditor + retest (gdea-006)** is the human-shaped version of the
   render-based sweep: the system already believes in "re-run the check after the fix";

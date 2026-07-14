@@ -3,7 +3,7 @@
 **Status:** accepted · **Date:** 2026-05-31
 
 ## Context
-Files must transfer between home, agency and Promenaut machines and run under
+Files must transfer between home, agency and Apollo machines and run under
 different models (Claude, GPT‑5.5). We need conventions that no single vendor owns.
 
 ## Decision
@@ -19,5 +19,5 @@ Everything else is plain Markdown + typed JSON, versioned in Git.
 - MCP: open protocol for runtime tool access.
 
 ## Consequence
-Handoff to Promenaut is a `git pull`, not a port. No model-specific prompt syntax
+Handoff to Apollo is a `git pull`, not a port. No model-specific prompt syntax
 in committed files except in clearly-marked adapters.
