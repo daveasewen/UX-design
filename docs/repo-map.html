@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apollo — repository map</title>
+<style>
+:root{
+  --accent:#DB0011; --ink:#000; --paper:#fff;
+  --g1:#F3F3F3; --g2:#EDEDED; --g3:#D7D8D6; --g5:#9B9B9B; --g6:#767676; --g7:#545454; --g8:#333;
+  --font:"Univers Next","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:var(--font);color:var(--ink);background:var(--paper);-webkit-font-smoothing:antialiased;}
+.nav{display:flex;align-items:center;gap:20px;border-bottom:1px solid var(--g2);height:56px;padding:0 32px;position:sticky;top:0;background:var(--paper);z-index:10;}
+.brand{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:8px;}
+.brand::before{content:"";width:22px;height:1px;background:var(--accent);}
+.spacer{flex:1;}
+.filters{display:flex;gap:0;border:1px solid var(--g3);}
+.filters button{font-family:var(--font);font-size:11px;letter-spacing:.06em;text-transform:uppercase;background:var(--paper);color:var(--g6);border:0;padding:7px 12px;cursor:pointer;}
+.filters button+button{border-left:1px solid var(--g3);}
+.filters button.on{background:var(--ink);color:var(--paper);}
+.wrap{max-width:1300px;margin:0 auto;padding:24px 32px 64px;}
+h1{font-size:30px;font-weight:300;margin:8px 0 4px;} h1 b{font-weight:600;}
+.sub{font-size:14px;color:var(--g6);margin:0 0 20px;max-width:60em;}
+.stage{display:grid;grid-template-columns:1fr 320px;gap:24px;align-items:start;}
+@media(max-width:1040px){.stage{grid-template-columns:1fr;}}
+svg{width:100%;height:auto;display:block;border:1px solid var(--g2);background:var(--paper);}
+/* nodes */
+.node{cursor:pointer;}
+.node rect{transition:opacity .15s;}
+.node .box{fill:var(--paper);stroke:var(--ink);stroke-width:1;}
+.node.gen .box{fill:var(--g1);stroke:var(--g3);}
+.node.support .box{fill:var(--paper);stroke:var(--g3);}
+.node.engine .box{fill:var(--ink);stroke:var(--ink);}
+.node .lab{font-size:13px;font-weight:600;fill:var(--ink);}
+.node .meta{font-size:10.5px;fill:var(--g6);}
+.node.engine .lab{fill:var(--paper);} .node.engine .meta{fill:var(--g3);}
+.node .cnt{font-size:10.5px;fill:var(--g5);}
+.node.engine .cnt{fill:var(--g5);}
+.grouplab{font-size:10.5px;letter-spacing:.18em;fill:var(--accent);text-transform:uppercase;font-weight:500;}
+.edge{stroke:var(--g5);stroke-width:1;fill:none;opacity:.5;transition:opacity .15s,stroke .15s;}
+/* interaction states */
+svg.hasfocus .node:not(.active):not(.nbr){opacity:.22;}
+svg.hasfocus .edge:not(.hot){opacity:.06;}
+.node.active .box{stroke:var(--accent);stroke-width:2;}
+.node.engine.active .box{stroke:var(--accent);}
+.edge.hot{stroke:var(--accent);opacity:1;stroke-width:1.5;}
+svg.filtered .node.hide{opacity:.1;}
+svg.filtered .edge{opacity:.06;}
+/* detail panel */
+.panel{border:1px solid var(--g2);padding:20px;position:sticky;top:80px;min-height:340px;}
+.panel .plab{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:8px;margin:0 0 10px;}
+.panel .plab::before{content:"";width:18px;height:1px;background:var(--accent);}
+.panel h2{font-size:19px;font-weight:600;margin:0 0 2px;}
+.panel .path{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:var(--g7);margin:0 0 14px;}
+.panel .purpose{font-size:14px;line-height:1.55;color:var(--g8);margin:0 0 16px;}
+.panel .cnt2{font-size:12px;color:var(--g6);border-top:1px solid var(--g2);padding-top:12px;margin-bottom:8px;}
+.panel ul{margin:6px 0 0;padding-left:16px;}
+.panel li{font-size:12.5px;line-height:1.5;color:var(--g7);margin-bottom:3px;}
+.panel .hint{color:var(--g5);font-size:13px;line-height:1.6;}
+.legend{display:flex;gap:20px;flex-wrap:wrap;margin:16px 0 0;font-size:11px;color:var(--g7);}
+.legend span{display:flex;align-items:center;gap:7px;}
+.sw{width:22px;height:13px;display:inline-block;border:1px solid var(--ink);}
+.sw.gen{background:var(--g1);border-color:var(--g3);} .sw.eng{background:var(--ink);} .sw.sup{border-color:var(--g3);}
+.sw.edge-sw{border:0;height:0;border-top:1px solid var(--g5);width:22px;}
+.foot{margin-top:22px;font-size:12px;color:var(--g6);}
+</style></head>
+<body>
+<nav class="nav">
+  <span class="brand">Apollo · repository map</span>
+  <span class="spacer"></span>
+  <div class="filters" id="filters" role="group" aria-label="Filter by layer">
+    <button data-cat="all" class="on">All</button>
+    <button data-cat="entry">Entry</button>
+    <button data-cat="engine">Engine</button>
+    <button data-cat="output">Outputs</button>
+    <button data-cat="skill">Skills</button>
+    <button data-cat="support">Supporting</button>
+  </div>
+</nav>
+<div class="wrap">
+  <h1>The <b>Apollo</b> repository</h1>
+  <p class="sub">Hover a box to trace its connections · click to see what it holds · use the filter to isolate a layer. Solid black = the enforced engine spine · grey = generated / supporting · white = source &amp; outputs.</p>
+  <div class="stage">
+    <div>
+      <svg id="map" viewBox="0 0 1200 760" role="img" aria-label="Interactive map of the Apollo repository structure"></svg>
+      <div class="legend">
+        <span><i class="sw"></i> source / output</span>
+        <span><i class="sw eng"></i> the engine (knowledge/)</span>
+        <span><i class="sw gen"></i> generated</span>
+        <span><i class="sw sup"></i> supporting</span>
+        <span><i class="sw edge-sw"></i> dependency</span>
+      </div>
+    </div>
+    <aside class="panel" id="panel">
+      <p class="plab">Detail</p>
+      <p class="hint">Hover or click any box to see its path, what it's for, and what's inside. Click the layer filters above to isolate one part of the repo.</p>
+    </aside>
+  </div>
+  <p class="foot">Generated map of the repo after the 2026-07-14 restructure · a companion to <code>README.md</code>'s repo map.</p>
+</div>
+
+<script>
+const N = {
+  // entry
+  readme:{lab:"README.md",cat:"entry",x:30,y:60,w:200,h:50,path:"README.md",cnt:"front door",
+    purpose:"The project front door: what Apollo is, the operating model, the build command, and the repo map.",contents:["What Apollo is","Operating model","Run the build","Repo map"]},
+  agents:{lab:"AGENTS.md",cat:"entry",x:250,y:60,w:200,h:50,path:"AGENTS.md",cnt:"the manual",
+    purpose:"The operating manual for any agent in the repo — core principles, how to work, the git split, supersession discipline.",contents:["Core principles (non-negotiable)","How to work","Model routing","Git split · supersession"]},
+  goodmorning:{lab:"GOOD-MORNING.md",cat:"entry",x:470,y:60,w:220,h:50,path:"GOOD-MORNING.md",cnt:"latest handoff",
+    purpose:"The most recent session handoff — the first thing a cold-start agent reads to resume where the last session left off.",contents:["Where we are","What's next","Open threads"]},
+  livestate:{lab:"_LIVE-STATE.md",cat:"entry",x:710,y:60,w:220,h:50,path:"_LIVE-STATE.md",cnt:"the ledger",
+    purpose:"The live / dead / open ledger — what is true now, what is superseded, what is parked. The state-retention spine across sessions.",contents:["LIVE — current truth","SUPERSEDED / DEAD","OPEN — gaps + parked"]},
+  routing:{lab:"MODEL-ROUTING.md",cat:"entry",x:950,y:60,w:220,h:50,path:"MODEL-ROUTING.md",cnt:"model tiers",
+    purpose:"Which model for which work — Fable / Opus / Sonnet / Haiku tiers, the default-down escalate-up rule, and in-session delegation.",contents:["The tiers","The rules","How it runs (Modes 1–3)"]},
+  // engine container
+  engine:{lab:"knowledge/",cat:"engine",x:30,y:190,w:1140,h:250,path:"knowledge/",cnt:"1,120 files",container:true,
+    purpose:"THE ENGINE. Canon + criteria + gates + runbooks — the governed layer around any generator. One command to trust it: python3 knowledge/_build_all.py.",contents:["tokens · snippets · components (sources of truth)","canon.css · compliance KG (generated)","_validate_*.py gates · _RUNBOOK-*.md","_fitness-test/ composed screens + gallery"]},
+  tokens:{lab:"tokens/",cat:"source",x:55,y:250,w:250,h:74,path:"knowledge/tokens/",cnt:"38 files",
+    purpose:"DTCG token stores — colour, type, spacing, elevation, motion. Retrieved never recalled, so generated work can't drift off-brand.",contents:["colour · semantic-colour","typography · spacing · elevation · motion","_raw/ (untracked — ADR-0005)"]},
+  snippets:{lab:"snippets/",cat:"source",x:335,y:250,w:250,h:74,path:"knowledge/snippets/",cnt:"38 files",
+    purpose:"The gated reference components — the reviewed source of truth. Each is a *.reference.html with its own token-manifest.",contents:["38 *.reference.html","token-manifest + contrast pairs","fix the snippet, not the output"]},
+  components:{lab:"components/",cat:"source",x:615,y:250,w:250,h:74,path:"knowledge/components/",cnt:"41 files",
+    purpose:"Per-component criteria (metas): token bindings, required ARIA, states, anti-patterns, confidence tiers.",contents:["*.meta.json (per component)","meta.schema.json","confidence-tiered judgment"]},
+  guidelines:{lab:"guidelines/",cat:"source",x:895,y:250,w:250,h:74,path:"knowledge/guidelines/",cnt:"100 files",
+    purpose:"The ingested design standards — 462 rules, ID'd and tiered (blocking · advisory · review). Fuel for creative mode.",contents:["brand · colour · type · a11y · tone","_rules-index.json (462 rules)","54 blocking · 317 advisory"]},
+  canon:{lab:"canon/",cat:"gen",x:55,y:350,w:330,h:74,path:"knowledge/canon/",cnt:"3 files",
+    purpose:"The generated composition layer — canon.css (token spine + reviewed component blocks). Regenerate, never hand-edit.",contents:["canon.css (the composition layer)","token spine (auto) + .cn-* blocks","gen_canon_tokens.py"]},
+  compliance:{lab:"compliance/",cat:"gen",x:425,y:350,w:330,h:74,path:"knowledge/compliance/",cnt:"36 files",
+    purpose:"The WCAG knowledge graph — SC ↔ rules ↔ components (an overlay index, regenerable). Import target: W3C ACT / axe-core.",contents:["graph-index.json","rules/*.json","rule.schema.json"]},
+  fitness:{lab:"_fitness-test/",cat:"gen",x:795,y:350,w:350,h:74,path:"knowledge/_fitness-test/",cnt:"66 files",
+    purpose:"Composed screens, journeys and the component gallery — where the engine's output is exercised and looked at.",contents:["composed screens + journeys","canon component gallery","register-spread experiments"]},
+  // outputs
+  reviews:{lab:"reviews/",cat:"output",x:30,y:520,w:340,h:52,path:"reviews/",cnt:"9 files",
+    purpose:"The consumable outputs — deep-analysis reviews, plans, the Apollo sponsor deck (html + pptx), and rendered dossiers.",contents:["REVIEW-2026-07-10-deep-analysis (+rev2)","PLAN / PRESENTATION-2026-07-14","_REVIEW-DOSSIER-* renders"]},
+  notes:{lab:"notes/",cat:"output",x:30,y:585,w:340,h:52,path:"notes/",cnt:"10 files",
+    purpose:"The thinking — vision mocks, strategy docs, test plans, the state-machine target, and the Swiss-design reference.",contents:["_VISION-* (×3) · _STRATEGY-* (×2)","_STATE-MACHINE-TARGET · _SEAWORTHINESS-PLAN","Swiss-design.md · RUNBOOK-end-to-end"]},
+  projects:{lab:"projects/",cat:"output",x:30,y:650,w:340,h:52,path:"projects/",cnt:"4 files",
+    purpose:"Project inputs — currently payments/: the calibration brief, interview guide, questionnaire, and design asset.",contents:["payments/ interview-guide","payments/ stakeholder-questionnaire","Accounts Overview asset"]},
+  // skills
+  skills:{lab:"skills/",cat:"skill",x:410,y:520,w:340,h:52,path:"skills/",cnt:"4 skills",
+    purpose:"The engine's own gated Agent Skills (SKILL.md folders) — design-system compliance check, heuristic review, prototype-from-library.",contents:["design-system-compliance-check","heuristic-review","prototype-from-library"]},
+  designer:{lab:"designer-skills-v1/",cat:"skill",x:410,y:585,w:340,h:52,path:"designer-skills-v1/",cnt:"6 files + KB",
+    purpose:"The designer Copilot pack — 4 skills + a lean KB built from knowledge/ (KB gitignored, rebuilt via build-designer-kb.sh).",contents:["generate-from-canon · check-against-ds","usability-review · draft-a-new-pattern","build-designer-kb.sh → knowledge/"]},
+  reviewskills:{lab:"review-skills/",cat:"skill",x:410,y:650,w:340,h:52,path:"review-skills/",cnt:"3 skills",
+    purpose:"The review toolkit — review-dossier (2-mode HTML), component-review (light+dark + diff), and the swiss-design-system.",contents:["review-dossier (Technical / Standard)","component-review (light+dark, diff mode)","swiss-design-system"]},
+  // supporting
+  docs:{lab:"docs/",cat:"support",x:790,y:520,w:175,h:52,path:"docs/",cnt:"9 files",
+    purpose:"Research dossier, architecture, and the ADR decision record (docs/decisions/).",contents:["decisions/ADR-000x","research-dossier.md","architecture"]},
+  runs:{lab:"runs/",cat:"support",x:985,y:520,w:185,h:52,path:"runs/",cnt:"26 files",
+    purpose:"Historical run artifacts — proofs, contracts, dry-runs. Where the gates were exercised on real screens.",contents:["proof-00x-payments","contract-001-sme-payments","dryrun-001-action-row"]},
+  sysmgr:{lab:"system-manager/",cat:"support",x:790,y:585,w:175,h:52,path:"system-manager/",cnt:"3 files",
+    purpose:"The decision-capture design space — proposals for how decisions get recorded.",contents:["capturing-decisions-proposal","design notes"]},
+  govuk:{lab:"second-system-govuk/",cat:"support",x:985,y:585,w:185,h:52,path:"second-system-govuk/",cnt:"23 files",
+    purpose:"The GOV.UK second-system probe — testing portability of the gates on a different design system.",contents:["snippets + _validate_snippets.py","_FINDINGS.md","portability evidence"]},
+  transform:{lab:"digital-experience…/",cat:"support",x:790,y:650,w:175,h:52,path:"digital-experience-transformation/",cnt:"12 files",
+    purpose:"Leadership narrative — a separate strand (transformation thesis, operating model, roadmap).",contents:["thesis · operating model","roadmap","project-context-summary"]},
+  archive:{lab:"archive/",cat:"support",x:985,y:650,w:185,h:52,path:"archive/",cnt:"35 files",
+    purpose:"Superseded docs + the original harness-v0.1 design (ADR-0005). Kept — may be resuscitated (two-hypothesis framing).",contents:["harness-v0.1/ (the original design)","superseded handoffs + specs","apollo-pipeline-spec history"]},
+};
+const E = [
+  ["agents","goodmorning"],["agents","livestate"],["agents","routing"],["agents","engine"],["readme","engine"],
+  ["tokens","canon"],["snippets","canon"],["components","canon"],["components","compliance"],["guidelines","compliance"],["canon","fitness"],
+  ["engine","designer"],["engine","skills"],["engine","reviews"],["reviewskills","reviews"],["engine","docs"],["designer","reviewskills"]
+];
+const CATLAB=[["entry",120,44,"Entry points · read first"],["engine",60,182,"The engine — knowledge/"],["output",120,506,"Outputs"],["skill",500,506,"Skills"],["support",900,506,"Supporting"]];
+
+const svg=document.getElementById('map'), SVGNS="http://www.w3.org/2000/svg";
+function el(n,a){const e=document.createElementNS(SVGNS,n);for(const k in a)e.setAttribute(k,a[k]);return e;}
+function wtrim(s,max){s=s.trim();if(s.length<=max)return s;let c=s.slice(0,max);const i=c.lastIndexOf(' ');return (i>10?c.slice(0,i):c);}
+function center(id){const n=N[id];return[n.x+n.w/2,n.y+n.h/2];}
+// edges first (behind)
+const eLayer=el("g",{}); svg.appendChild(eLayer);
+const edgeEls=[];
+E.forEach(([a,b])=>{
+  const[x1,y1]=center(a),[x2,y2]=center(b);
+  const ln=el("line",{x1,y1,x2,y2,class:"edge","data-a":a,"data-b":b});
+  eLayer.appendChild(ln); edgeEls.push(ln);
+});
+// category labels
+CATLAB.forEach(([c,x,y,t])=>{ svg.appendChild(el("text",{x,y,class:"grouplab"})).textContent=t; });
+// nodes
+const nodeEls={};
+for(const id in N){
+  const n=N[id];
+  const g=el("g",{class:"node "+({source:"",gen:"gen",support:"support",engine:"engine",entry:"",output:"",skill:""}[n.cat]||"")+(n.cat==="gen"?"":""),"data-id":id,"data-cat":n.cat,tabindex:"0"});
+  g.classList.add("node");
+  if(n.cat==="gen")g.classList.add("gen");
+  if(n.cat==="support")g.classList.add("support");
+  if(n.cat==="engine")g.classList.add("engine");
+  g.appendChild(el("rect",{x:n.x,y:n.y,width:n.w,height:n.h,class:"box"}));
+  if(n.container){
+    g.appendChild(Object.assign(el("text",{x:n.x+18,y:n.y+26,class:"lab"}),{textContent:"THE ENGINE — "+n.lab}));
+    g.appendChild(Object.assign(el("text",{x:n.x+n.w-18,y:n.y+26,class:"cnt","text-anchor":"end"}),{textContent:n.cnt}));
+    g.appendChild(Object.assign(el("text",{x:n.x+18,y:n.y+44,class:"meta"}),{textContent:"canon · criteria · gates · runbooks — one command to trust it"}));
+  }else{
+    const tl=el("text",{x:n.x+14,y:n.y+ (n.h>60?30:24),class:"lab"}); tl.textContent=n.lab; g.appendChild(tl);
+    if(n.h>60 || n.lab.length<=12){const tc=el("text",{x:n.x+n.w-14,y:n.y+(n.h>60?30:24),class:"cnt","text-anchor":"end"}); tc.textContent=n.cnt; g.appendChild(tc);}
+    if(n.h>60){const tm=el("text",{x:n.x+14,y:n.y+52,class:"meta"}); tm.textContent=wtrim(n.purpose.split("—")[0], n.w>320?58:44); g.appendChild(tm);}
+  }
+  svg.appendChild(g); nodeEls[id]=g;
+}
+// interaction
+const panel=document.getElementById('panel');
+function neighbours(id){const s=new Set();E.forEach(([a,b])=>{if(a===id)s.add(b);if(b===id)s.add(a);});return s;}
+function focusNode(id){
+  svg.classList.add('hasfocus');
+  const nb=neighbours(id);
+  for(const k in nodeEls){nodeEls[k].classList.toggle('active',k===id);nodeEls[k].classList.toggle('nbr',nb.has(k));}
+  edgeEls.forEach(e=>{const a=e.getAttribute('data-a'),b=e.getAttribute('data-b');e.classList.toggle('hot',a===id||b===id);});
+}
+function clearFocus(){svg.classList.remove('hasfocus');for(const k in nodeEls){nodeEls[k].classList.remove('active','nbr');}edgeEls.forEach(e=>e.classList.remove('hot'));}
+function showPanel(id){
+  const n=N[id];
+  panel.innerHTML='<p class="plab">'+({entry:"Entry point",engine:"The engine",source:"Source of truth",gen:"Generated",output:"Output",skill:"Skill pack",support:"Supporting"}[n.cat]||"Detail")+'</p>'+
+    '<h2>'+n.lab+'</h2><p class="path">'+n.path+' · '+n.cnt+'</p>'+
+    '<p class="purpose">'+n.purpose+'</p>'+
+    '<p class="cnt2">Inside</p><ul>'+n.contents.map(c=>'<li>'+c+'</li>').join('')+'</ul>';
+}
+let pinned=null;
+for(const id in nodeEls){
+  const g=nodeEls[id];
+  g.addEventListener('mouseenter',()=>{if(!pinned){focusNode(id);showPanel(id);}});
+  g.addEventListener('focus',()=>{focusNode(id);showPanel(id);});
+  g.addEventListener('click',()=>{pinned=(pinned===id?null:id);if(pinned){focusNode(id);showPanel(id);}else clearFocus();});
+}
+svg.addEventListener('mouseleave',()=>{if(pinned){focusNode(pinned);showPanel(pinned);}else clearFocus();});
+// filters
+const fbar=document.getElementById('filters');
+fbar.addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b)return;
+  [...fbar.children].forEach(x=>x.classList.toggle('on',x===b));
+  const cat=b.dataset.cat; pinned=null; clearFocus();
+  if(cat==='all'){svg.classList.remove('filtered');for(const k in nodeEls)nodeEls[k].classList.remove('hide');return;}
+  svg.classList.add('filtered');
+  const engineKids=new Set(['tokens','snippets','components','guidelines','canon','compliance','fitness','engine']);
+  for(const k in nodeEls){
+    const nc=N[k].cat; let keep=(nc===cat)||(cat==='engine'&&engineKids.has(k));
+    nodeEls[k].classList.toggle('hide',!keep);
+  }
+});
+</script>
+</body></html>

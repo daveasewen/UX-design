@@ -91,6 +91,8 @@ failure. This is the single command to trust the knowledge base.
 └── _to_delete/                  ← staging for removal (gitignored; bridge cannot delete)
 ```
 
+> **Interactive version:** [`docs/repo-map.html`](docs/repo-map.html) — hover a box to trace its connections, click for detail, filter by layer.
+
 ## Data hygiene
 
 Resolved (ADR-0005): this is an **agency machine with company access** — the
