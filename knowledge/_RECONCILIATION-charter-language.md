@@ -1,7 +1,7 @@
 # Reconciliation register — _FIXED-FLEX-CHARTER.md (language review)
 
 *Decision record for the 2026-07-03/04 process-doc language review. Produced by the review
-dossier (`_REVIEW-DOSSIER-charter_2026-07-03.html`), decided by Dave, enacted 2026-07-04.
+dossier (`reviews/_REVIEW-DOSSIER-charter_2026-07-03.html`), decided by Dave, enacted 2026-07-04.
 **Rollback:** revert the enacting commit; the REVERT line on each entry is the exact
 pre-change wording. **Status: ALL 8 ENACTED.***
 

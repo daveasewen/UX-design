@@ -1,7 +1,7 @@
 # Reconciliation register — AGENTS.md (language review)
 
 *Decision record for the 2026-07-04 process-doc language review (rollout #2, after the charter).
-Produced by the review dossier (`_REVIEW-DOSSIER-AGENTS_2026-07-04.html`), decided by Dave,
+Produced by the review dossier (`reviews/_REVIEW-DOSSIER-AGENTS_2026-07-04.html`), decided by Dave,
 enacted 2026-07-04. **Rollback:** revert the enacting commit; the REVERT line on each entry is
 the exact pre-change wording. **Status: ALL 5 ENACTED.***
 

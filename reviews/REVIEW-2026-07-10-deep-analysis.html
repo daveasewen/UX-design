@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Deep analysis (rev 2, corrected) — Apollo · 2026-07-10</title>
+<title>Deep analysis — Apollo · 2026-07-10</title>
 <style>
 :root{
   --accent:#DB0011; --accent-3:#730014; --black:#000; --white:#fff;
@@ -137,7 +137,7 @@ svg text{font-family:var(--font);}
   <span class="brand">Deep analysis</span>
   <span class="ctx">Apollo · project Apollo · UX-design repo</span>
   <span class="spacer"></span>
-  <span class="meta">2026-07-10 · rev 2 (corrected per Dave's ruling) · code + history + field research</span>
+  <span class="meta">2026-07-10 · 170 commits read · code + history + field research</span>
 </nav>
 <div class="rail" id="rail">
   <a href="#exec">Executive summary</a>
@@ -156,11 +156,8 @@ svg text{font-family:var(--font);}
 <header class="wrap" id="exec">
 <section style="padding-bottom:var(--s4);">
   <p class="label">Executive summary</p>
-  <div class="verdict" style="border-left-color:var(--g8);background:var(--g1);padding:var(--s3);margin:0 0 var(--s4);max-width:46em;">
-    <p style="font-size:15px;font-weight:400;line-height:1.6;"><b>Revision 2 · 2026-07-10 (evening) — corrected for the record.</b> After re-weighing the evidence, Dave ruled that the double-pass (generate-then-normalise) was <b>not</b> a clear success: it produced useful data and an interesting hypothesis, not a proven mechanism. Rev 1 overstated it. Corrected reading, carried throughout this version: <b>tuning the rules and the inference tiering leads</b>; the two-pass is <b>one stage to test, not the architecture</b>; and the missing layout/library tier (H3) remains the single strongest finding. Changed passages are tagged <span class="chip amber" style="font-size:10px;padding:1px 6px;">rev 2</span>. Full ruling: <code>_LIVE-STATE.md</code> §9 OPEN. Rev 1 is preserved unaltered in <code>REVIEW-2026-07-10-deep-analysis.html</code>.</p>
-  </div>
-  <h1>The engine <b>works as governance</b>. Its rules <b>under-govern the thing that carries a design — layout</b>. Tune what they ask for before changing the machine.</h1>
-  <p style="font-size:18px;font-weight:300;max-width:44em;">Thirty-eight days, 170 commits, three deliberate pivots. What you have built — canon, criteria, executable gates, a temporal decision ledger — is ahead of every commercial tool surveyed on <b>enforcement and provenance</b>. What it wraps — a <b>single cold pass that must be creative and compliant at once</b> — is the weakest configuration in the 2024–26 literature, and the flat layouts are its signature. The fix is not a teardown, and it is not (yet) a new machine: keep the gates, and sharpen <b>what they ask for</b>. The lead is <b>tuning the rules and the inference tiering</b> and building the missing retrievable <b>layout/library tier</b> the trace exposed. The two-pass is a stage worth testing — not the destination. <span class="chip amber" style="font-size:10px;padding:1px 6px;">rev 2</span></p>
+  <h1>The engine <b>works as governance</b>. It is pointed at the <b>wrong generation shape</b> — and your own trace already proves it.</h1>
+  <p style="font-size:18px;font-weight:300;max-width:44em;">Thirty-eight days, 170 commits, three deliberate pivots. What you have built — canon, criteria, executable gates, a temporal decision ledger — is ahead of every commercial tool surveyed on <b>enforcement and provenance</b>. What it wraps — a <b>single cold pass that must be creative and compliant at once</b> — is the weakest configuration in the 2024–26 literature, and the flat layouts are its signature. The fix is not a teardown: keep the gates, change the shape around them. Your accidental two-pass (diagnostic&nbsp;→ hand-restyle) is the architecture; the missing retrievable <b>layout layer</b> is the knowledge.</p>
 
   <div class="stats">
     <div class="stat"><div class="n">170</div><div class="c">commits · 2026-05-31 → 07-07 · 64% landed on just three days</div></div>
@@ -169,13 +166,13 @@ svg text{font-family:var(--font);}
     <div class="stat"><div class="n">54<span style="font-size:18px;color:var(--g5);">/462</span></div><div class="c">guideline rules actually blocking — 12% of the register is enforced</div></div>
   </div>
 
-  <div class="verdict"><p><b>The verdict on your open question <span class="chip amber" style="font-size:10px;padding:1px 6px;">rev 2</span>:</b> <b>H3 is the strongest single finding</b> — the KB does not govern layout, and the component library stops at the organism tier, so flat composition is structurally forced, not a tuning slip. <b>The lead fix is to change what the rules encode</b> — the tier definitions, the composition licence per band, and a retrievable layout/library tier — not to tighten adherence (governed output is already provenance-perfect, so there is nothing left to tighten there). <b>The two-pass (H2) is a stage to test, not a proven mechanism</b>: its one data point — the hand-restyle — was informative, but on Dave's considered verdict "not all that successful." <i>(Corrected from rev 1, which read H2 as the working mechanism.)</i></p></div>
+  <div class="verdict"><p><b>The verdict on your open question:</b> the evidence now favours H3 (the rules constrain the wrong thing — layout is the crux and the KB does not govern it), with H2 (generate-then-normalise) as the working mechanism, and H1 (better prompt-crafting) close to exhausted — governed output is already provenance-perfect, so there is no adherence left to tighten.</p></div>
 
   <h3>Do next, in order</h3>
   <ol class="numlist">
     <li><span><b>Commit the in-flight trace work</b> (5 modified files incl. <code>_LIVE-STATE.md</code> and the dossier build), then run the 30-minute grooming pass on the three cold-start entry points — <code>knowledge/README.md</code> still says "32 metas / four gates / Sutherland parked"; <code>GOOD-MORNING.md</code> still lists the trace tool as future work. Your spine is lying to a cold start today. <a href="#groom" style="color:var(--g6)">→ Grooming plan</a></span></li>
-    <li><span><b>Run the three-arm controlled experiment</b> <span class="chip amber" style="font-size:10px;padding:1px 6px;">rev 2</span> — same screen, same contract, rendered, blind-judged: (a) governed single-pass as-is, (b) a <b>rule-tuned / re-tiered single-pass</b> (your lead hypothesis), (c) the two-pass. Everything so far compared different lineages; this isolates whether tuning the rules beats changing the machine. <a href="#reco" style="color:var(--g6)">→ R1</a></span></li>
-    <li><span><b>Trial gates-as-repair as one arm, not a foregone conclusion</b> <span class="chip amber" style="font-size:10px;padding:1px 6px;">rev 2</span>: feed gate failures back as repair instructions (bounded 2–3 rounds) inside arm (c). The literature is encouraging — repair works when feedback is ground truth, and your validators are — but your own read of the one manual run was lukewarm, so treat this as a test, not an adoption. <a href="#reco" style="color:var(--g6)">→ R2</a></span></li>
+    <li><span><b>Run the controlled experiment that has never been run:</b> governed-single-pass vs generate-then-normalise-two-pass, same screen, same contract, rendered output, blind pairwise judgment. Everything so far compares different lineages. One afternoon; it settles the architecture question with data instead of instinct. <a href="#reco" style="color:var(--g6)">→ R1</a></span></li>
+    <li><span><b>Turn the gates from bouncers into coaches:</b> feed gate failures back to the generator as repair instructions (bounded loop, 2–3 rounds). The literature is unambiguous — repair works precisely when feedback is ground truth, and your validators are ground truth. This alone may buy back most of the creative headroom. <a href="#reco" style="color:var(--g6)">→ R2</a></span></li>
     <li><span><b>Build the retrievable layout layer</b> — page archetypes as graph nodes (layout × slots × allowed component families), seeded from GOV.UK/USWDS patterns and your own endorsed compositions ("time as the spine"). Read RALF and LayoutRAG first: retrieval-conditioned layout is settled science, and nobody has done the governed-semantic-archetype version. <a href="#reco" style="color:var(--g6)">→ R4</a></span></li>
     <li><span><b>Add a render-and-look gate:</b> Playwright screenshot → visual critique in the loop. Every real defect to date was visual and passed the static gates — your own AGENTS.md principle 8 already knows this; the harness just doesn't do it yet. <a href="#reco" style="color:var(--g6)">→ R3</a></span></li>
     <li><span><b>Stop hand-rolling what is now commodity:</b> import the W3C ACT / axe-core rule↔SC layer into the compliance KG, evaluate Style Dictionary v5/Terrazzo for the token spine, and keep bespoke effort for the two things nobody else has — the component↔SC↔rule graph leg and the gates. <a href="#reco" style="color:var(--g6)">→ R6</a></span></li>
@@ -239,7 +236,7 @@ svg text{font-family:var(--font);}
   <details id="ph0">
     <summary><span class="tt">P0 — Founded as something else entirely <small>· 2 commits</small></span><span class="chip">superseded</span></summary>
     <div class="dbody">
-      <p>The founding vision (research dossier v0.1, <code>apollo-pipeline-spec.html</code>, ADR-0001…0004) was a portable <b>multi-discipline agentic harness</b> — "the double diamond, as a harness": one reusable orchestrator, six discipline pipelines, typed contracts, craft-vs-taste gates, three HITL points. It got two commits and a single dry run (<code>runs/dryrun-001-action-row/</code>), then lay dormant. The harness was effectively stillborn: 53 of the first 54 working commits built the knowledge layer instead. ADR-0005 later frames this as "executing the research's own hedges" — accurate, but softer than what the git record shows. Surviving ideas — craft/taste split, HITL as designed component, typed contracts — genuinely do live on inside the gates.</p>
+      <p>The founding vision (research dossier v0.1, <code>archive/apollo-pipeline-spec.html</code>, ADR-0001…0004) was a portable <b>multi-discipline agentic harness</b> — "the double diamond, as a harness": one reusable orchestrator, six discipline pipelines, typed contracts, craft-vs-taste gates, three HITL points. It got two commits and a single dry run (<code>runs/dryrun-001-action-row/</code>), then lay dormant. The harness was effectively stillborn: 53 of the first 54 working commits built the knowledge layer instead. ADR-0005 later frames this as "executing the research's own hedges" — accurate, but softer than what the git record shows. Surviving ideas — craft/taste split, HITL as designed component, typed contracts — genuinely do live on inside the gates.</p>
     </div>
   </details>
   <details id="ph1">
@@ -496,8 +493,8 @@ svg text{font-family:var(--font);}
       <p class="cap">Governed sober/balanced screens are single-column; even layout-spacing tokens are ~0-retrieved (governed screens hand-author spacing in raw px). Freedom to compose is where the ungoverned lineage wins — and it is exactly the dimension no store, meta, gate or rule governs.</p>
     </div>
     <div>
-      <h3>Separability, shown — but not a success <span class="chip amber" style="font-size:10px;padding:1px 6px;">rev 2</span></h3>
-      <p class="mini" style="font-size:14px;">The headline ("best layout <i>but</i> 56 hex, 6 rule violations") conflates the two <i>raw</i> diagnostics with the third file. <code>without-influences-hsbc.html</code> — the hand-restyle — measures: <b>0 invented hex · 66 canon var refs · 6 grids · HYBRID</b>. That is a useful <b>proof of separability</b>: a stronger layout and cardinal colour compliance <i>can</i> coexist in one artifact. But read it as <b>one data point, not a success story</b> — Dave's considered verdict is that the two-pass was "not all that successful," and the file still carries two cardinal blemishes (a leftover radius and one ALL-CAPS). It tells us the two are separable; it does <b>not</b> establish generate-then-normalise as a working mechanism. <i>(Corrected from rev 1, which called this the strongest evidence in the repo "and it worked.")</i></p>
+      <h3>The separability proof nobody has named</h3>
+      <p class="mini" style="font-size:14px;">The headline ("best layout <i>but</i> 56 hex, 6 rule violations") conflates the two <i>raw</i> diagnostics with the third file. <code>without-influences-hsbc.html</code> — the hand-restyle Dave endorsed — measures: <b>0 invented hex · 66 canon var refs · 6 grids · HYBRID</b>. The ceiling layout and cardinal colour compliance <b>coexist in one artifact</b>. That file is the strongest single piece of evidence in the repo: it is a manual execution of generate-then-normalise, and it worked. (It still carries two cardinal blemishes — a leftover radius and one ALL-CAPS — so "restyle = shippable" is not yet true either.)</p>
     </div>
   </div>
 
@@ -505,18 +502,18 @@ svg text{font-family:var(--font);}
   <div class="hyp">
     <div>
       <span class="chip">H1 · rules mis-applied</span>
-      <h4>Applying the existing rules better fixes it</h4>
-      <p><b>Largely exhausted.</b> The rigour-tier rule did fix a real retrieval failure — prompts close <i>leaks</i>. But governed output already measures PURE-RETRIEVAL; there is no adherence headroom left to buy flatness back with. Note the distinction from H3: this is applying the <i>current</i> rules harder, which isn't the lever — changing what the rules <i>encode</i> is (that's H3).</p>
+      <h4>Better prompt-crafting fixes it</h4>
+      <p><b>Close to exhausted.</b> The rigour-tier rule did fix a real retrieval failure — proof prompts close <i>leaks</i>. But governed output already measures PURE-RETRIEVAL; on the trace's own logic there is no adherence headroom left to buy flatness back with. Fighting a documented diversity-collapse effect with wording is the weakest tool available.</p>
     </div>
     <div>
-      <span class="chip">H2 · two-pass architecture</span>
-      <h4>A stage to test — not the architecture <span class="chip amber" style="font-size:9px;padding:0 5px;">rev 2</span></h4>
-      <p><b>Evidence thin; keep as a candidate stage.</b> The hand-restyle is a single manual two-pass; Dave's considered verdict is it was "not all that successful" — informative, not a proven mechanism. The field is encouraging (repair-with-ground-truth, rendered-feedback multi-pass +8pts), but no controlled comparison has run. Hold it as a possible <i>stage</i> in the process, not the pipeline shape. <i>(Rev 1 called this "the working mechanism.")</i></p>
+      <span class="chip amber">H2 · architecture ceiling</span>
+      <h4>One governed pass caps below two passes</h4>
+      <p><b>The working mechanism.</b> The restyle is a manual two-pass that beat every one-pass on layout while holding colour. The field agrees: repair loops work precisely when feedback is ground truth, and rendered-feedback multi-pass beats single-pass on UI (+8pts in the best published study). Unproven only because the controlled pair has never been run.</p>
     </div>
     <div>
-      <span class="chip red">H3 · rules wrong at source — Dave's lead</span>
-      <h4>Layout ungoverned; the library stops at organism</h4>
-      <p><b>Best-supported, and the lead direction.</b> Convergent: charter line 34 admits no template layer; the trace measures zero layout retrieval; the library is 38 comps with <b>zero templates/shells</b> (07-07 root-cause), so composition has nothing to retrieve; E0 found the KB "silent on what makes it feel finished." Dave's route: tune what the rules encode — tier definitions, composition licence, and a retrievable layout/library tier — rather than change the machine.</p>
+      <span class="chip red">H3 · rules wrong at source</span>
+      <h4>Layout is ungoverned — the KB has no layout layer</h4>
+      <p><b>Best-supported.</b> Convergent: charter line 34 admits it; the trace measures zero layout retrieval; E0 found the KB "silent on what makes it feel finished" three weeks earlier; the ungoverned organising idea violated no curb. Not a rebuttal of H2 — H3 names the missing knowledge, H2 names the missing mechanism. They compose.</p>
     </div>
   </div>
 
@@ -645,10 +642,9 @@ svg text{font-family:var(--font);}
 
   <h3>What's wrong — the six findings</h3>
   <details style="background:var(--white);padding:0 var(--s3);">
-    <summary><span class="tt">F1 — The rules under-govern layout — the real gap isn't the pass count <small>· rev 2, reframed</small></span><span class="chip red">critical</span></summary>
+    <summary><span class="tt">F1 — The generation shape is the architecture error <small>· the bold one</small></span><span class="chip red">critical</span></summary>
     <div class="dbody">
-      <p><i>(Rev 1 titled this "the generation shape is the architecture error" and argued single-pass should be considered superseded. Dave's ruling corrects it: single-pass is not the fault — for the factory/floor end it is exactly right, and provenance-perfect. The real gap is what the rules govern.)</i></p>
-      <p>The engine's rules govern the vocabulary below the component line thoroughly and are <b>silent above it</b> — layout, composition, page structure. So the generator, single-pass or not, has nothing to <i>retrieve</i> for the dimension that most carries a design; it must invent layout every time, and governed inventions come out flat. The evidence is convergent: the trace measures zero layout retrieval; the library stops at the organism tier (0 templates/shells); the charter admits it at line 34. <b>The fix is to widen what the rules encode</b> — a retrievable layout/library tier, sharper tier definitions, composition licence per band — not to abandon the single pass. A normalise/repair <i>stage</i> (the two-pass) is one option to trial on the ceiling/novel end, where it may help; it is not the headline. What survives untouched and is the moat: the canon, criteria, curbs, gates, and the register vocabulary.</p>
+      <p>The engine demands one cold pass be simultaneously maximally creative and fully compliant, then uses its best asset — deterministic verifiers — merely to reject. That is rejection sampling at N=1, the weakest configuration in the constrained-generation literature. The evidence is now three-deep: your trace (provenance-perfect yet flat), your accident (the endorsed restyle IS a two-pass), and the field (repair-with-ground-truth and rendered-feedback multi-pass reliably beat single-pass on UI). <b>The single-pass §9 pipeline as the shape of generation should be considered superseded-by-evidence.</b> What survives untouched: the canon, the criteria, the curbs, the gates, the register vocabulary — they all slot into a two-stage shape as the normalise/verify half plus the licence levels for pass one.</p>
     </div>
   </details>
   <details style="background:var(--white);padding:0 var(--s3);">
@@ -683,7 +679,7 @@ svg text{font-family:var(--font);}
   </details>
 
   <div class="verdict" style="background:var(--white);padding:var(--s3);border-left-color:var(--black);">
-    <p><b>The one-sentence critique <span class="chip amber" style="font-size:10px;padding:1px 6px;">rev 2</span>:</b> you built a world-class verification layer and an honest memory system, but the rules they enforce under-govern the thing that carries a design — layout — so tune what the rules ask for, give layout a retrievable tier, and trial (don't assume) a normalise/repair stage, and the same assets become the product you set out to build.</p>
+    <p><b>The one-sentence critique:</b> you built a world-class verification layer and an honest memory system around the one generation shape that can't benefit from them — flip the shape, feed the gates back, govern layout, and the same assets become the product you set out to build.</p>
   </div>
 </section>
 </div>
@@ -699,7 +695,7 @@ svg text{font-family:var(--font);}
       <p class="label">Recommendations — phased, reversible first</p>
     </div>
     <div>
-      <h2>Three phases: <b>test the direction cheaply</b>, then build the missing layer, then consolidate. Nothing here throws away the engine.</h2>
+      <h2>Three phases: <b>prove the shape cheaply</b>, then build the missing layer, then consolidate. Nothing here throws away the engine.</h2>
       <p>Ordered to respect the experimental stage: Phase A is days and mostly reversible; Phase B is the one new knowledge layer the evidence demands; Phase C swaps bespoke plumbing for commodity where the ecosystem has caught up. The existing seaworthiness sequence (Ingestion Phase 1, PM-KG MVP) slots in unchanged — noted where relevant.</p>
     </div>
   </div>
@@ -707,7 +703,7 @@ svg text{font-family:var(--font);}
   <div class="dg">
   <svg viewBox="0 0 960 300" role="img" aria-label="Proposed target generation shape">
     <defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#000"/></marker></defs>
-    <text x="20" y="28" font-size="11" letter-spacing="2" fill="#DB0011">CANDIDATE SHAPE — ONE ARM TO TEST, NOT A DECISION (REV 2)</text>
+    <text x="20" y="28" font-size="11" letter-spacing="2" fill="#DB0011">TARGET SHAPE — GOVERNED TWO-STAGE, GATES AS COACHES</text>
     <g font-size="12.5">
       <rect x="20" y="48" width="170" height="88" fill="#fff" stroke="#000"/>
       <text x="32" y="72" font-weight="600">1 · PLAN + RETRIEVE</text>
@@ -742,19 +738,19 @@ svg text{font-family:var(--font);}
     <text x="360" y="192" font-size="12" fill="#DB0011">gate failures fed back as repair instructions (R2) · max 2–3 rounds</text>
     <path d="M540 136 L540 250 L295 250 L295 140" fill="none" stroke="#767676" stroke-dasharray="4 4" stroke-width="1.5" marker-end="url(#ar)"/>
     <text x="315" y="242" font-size="12" fill="#767676">render → screenshot → visual critique (R3) · the "look at it" loop</text>
-    <text x="20" y="275" font-size="12" fill="#9B9B9B">One candidate shape among the R1 arms — not the recommendation. Sober stays pure retrieval either way; the open</text>
-    <text x="20" y="292" font-size="12" fill="#9B9B9B">question is the ceiling end, where rule-tuning + a layout tier (Dave's lead) compete with this two-stage split.</text>
+    <text x="20" y="275" font-size="12" fill="#9B9B9B">Sober collapses stages 2–3 into pure retrieval (unchanged). Expressive is where the split pays: invent on an armature,</text>
+    <text x="20" y="292" font-size="12" fill="#9B9B9B">then normalise onto canon — the licence ramp becomes WHERE inference happens, not a plea for boldness.</text>
   </svg>
   </div>
 
-  <h3>Phase A — experiment &amp; tidy · days, cheap, this month <span class="chip amber" style="font-size:10px;padding:1px 6px;">rev 2</span></h3>
+  <h3>Phase A — prove the shape · days, cheap, this month</h3>
   <div class="reco">
-    <div class="rhead"><b>R1 · Run the three-arm controlled experiment</b><span class="chip red">the decider</span><span class="chip">~1 session</span></div>
-    <div class="rbody"><p>Same screen, same signed contract, same model, three arms rendered and judged blind: <b>(a)</b> governed single-pass as-is; <b>(b)</b> a <b>rule-tuned / re-tiered single-pass</b> — sharper tier definitions, composition licence per band, a point-of-view prompt ("have a view on the data's structure") — this is Dave's lead hypothesis; <b>(c)</b> generate-free → mechanical normalise → gates (the two-pass). Judge pairwise — ideally with one colleague — on organising idea / brand read / would-ship. Everything to date compared different lineages; this isolates whether <i>tuning the rules</i> (b) beats <i>changing the machine</i> (c), against the current baseline (a). Do it on a second screen with more compositional latitude than payments to escape the narrow-road confound.</p></div>
+    <div class="rhead"><b>R1 · Run the controlled one-pass vs two-pass experiment</b><span class="chip red">the decider</span><span class="chip">~1 session</span></div>
+    <div class="rbody"><p>Same screen, same signed contract, same model: (a) governed single-pass expressive, (b) generate-free → mechanical normalise → gates. Render both. Judge blind — ideally with one colleague, pairwise, three criteria (organising idea / brand read / would-ship). Everything to date compares different lineages; this is the experiment the _LIVE-STATE entry itself says has never been run. Do it on a second screen too (something with more compositional latitude than payments) to escape the narrow-road confound.</p></div>
   </div>
   <div class="reco">
-    <div class="rhead"><b>R2 · Build the two-pass only as arm (c) — a test, not an adoption</b><span class="chip">one arm</span><span class="chip">small build</span></div>
-    <div class="rbody"><p>To run arm (c) you need the normalise pass as a runbook + script: alias-palette rebind onto canon tokens (the <code>:root,[data-theme]</code> lesson is learned), library-glyph swap, curb re-instatement, then loop gates → targeted fix → re-gate, bounded 2–3 rounds. Every ingredient exists (the July evening did it by hand). But <b>hold the verdict for R1's blind judgment</b> — the one manual run read lukewarm to Dave, so this is instrumentation for the experiment, not a recommended pipeline. If (b) wins, most of this can be shelved.</p></div>
+    <div class="rhead"><b>R2 · Mechanise the restyle: gates become repair oracles</b><span class="chip red">highest leverage</span><span class="chip">small build</span></div>
+    <div class="rbody"><p>Write the normalise pass as a runbook + script pair: alias-palette rebind onto canon tokens (the <code>:root,[data-theme]</code> selector lesson is already learned), library-glyph swap, curb re-instatement, then loop: run gates → feed each failure back as a targeted fix instruction → re-gate, bounded at 2–3 rounds. Every ingredient already exists — the July session did this by hand in one evening. Literature: repair works when feedback is ground truth; yours is.</p></div>
   </div>
   <div class="reco">
     <div class="rhead"><b>R3 · Wire render-and-look into the loop</b><span class="chip">small build</span></div>
@@ -832,7 +828,7 @@ svg text{font-family:var(--font);}
     <div class="dbody">
       <table>
         <tr><th>File</th><th>Why</th></tr>
-        <tr><td><code>_VISION-iteration-machine_2026-07-03.html</code></td><td><b>The one real open propagation gap.</b> Still ships "Cool/Warm/Hot must stay present", inverse-surface-band language, and a <code>border-radius:10px</code> cardinal violation. Superseded by §9 — either tombstone-banner it or update it to §9 language when next touched. (Already logged in _LIVE-STATE; still untouched.)</td></tr>
+        <tr><td><code>notes/_VISION-iteration-machine_2026-07-03.html</code></td><td><b>The one real open propagation gap.</b> Still ships "Cool/Warm/Hot must stay present", inverse-surface-band language, and a <code>border-radius:10px</code> cardinal violation. Superseded by §9 — either tombstone-banner it or update it to §9 language when next touched. (Already logged in _LIVE-STATE; still untouched.)</td></tr>
         <tr><td><code>knowledge/_NEXT-SESSION.md</code></td><td>Correctly retired in prose, but with an ad-hoc header — bring it to the canonical <code>⚠️ SUPERSEDED &lt;date&gt; — Superseded-by:</code> form so a cold-start grep can't miss it. (<code>sme-payments-registers.html</code> is the model of doing this right.)</td></tr>
       </table>
     </div>
@@ -843,7 +839,7 @@ svg text{font-family:var(--font);}
     <div class="dbody">
       <table>
         <tr><th>Item</th><th>Evidence</th></tr>
-        <tr><td><code>apollo-pipeline-spec.html</code> (root)</td><td>Byte-identical (<code>diff -q</code> verified) to <code>archive/harness-v0.1/…v0.1_2026-05-31.html</code>. Pure duplicate of an already-archived file.</td></tr>
+        <tr><td><code>archive/apollo-pipeline-spec.html</code> (root)</td><td>Byte-identical (<code>diff -q</code> verified) to <code>archive/harness-v0.1/…v0.1_2026-05-31.html</code>. Pure duplicate of an already-archived file.</td></tr>
         <tr><td><code>_wt_test</code></td><td>Tracked empty blob from 06-22, no longer on disk; <code>git rm --cached _wt_test</code>.</td></tr>
         <tr><td><code>UX-design/</code> (nested dir)</td><td>Empty, untracked. Also the folder that was accidentally connected to Cowork this morning — deleting it prevents the wrong-mount repeat.</td></tr>
         <tr><td><code>knowledge/_SURFACE-CONTRAST-AUDIT.json/.md</code></td><td>Orphaned outputs of a renamed generator — the build now emits <code>_TEXT-CONTRAST-AUDIT.*</code>; these stopped regenerating 06-19.</td></tr>
@@ -856,7 +852,7 @@ svg text{font-family:var(--font);}
   <details>
     <summary><span class="tt">4 · ARCHIVE — historical value, wrong shelf <small>· one `git mv` batch into archive/</small></span></summary>
     <div class="dbody">
-      <p><b>Root, the June cluster (pre-pivot / dated session docs):</b> <code>HANDOFF.md</code> (day-one, pipeline-era) · <code>apollo-pipeline-spec_v0.2</code> (join v0.1 in archive) · <code>RUNBOOK-end-to-end-proof.md</code> · <code>_STRATEGY-KICKOFF.md</code> · <code>_STRATEGY-framework-comparison.md</code> · <code>_SESSION-BRIEF-2026-06-20-strategy.md</code> · <code>_BUILD-CHAT-HANDOFF.md</code> ("12 steps, 6 gates") · <code>SESSION-BRIEF-tabs-fitness-test.md</code> · <code>_VISION-contextual-dashboard_2026-06-29.md</code> (self-labelled parked) · the three <code>_REVIEW-DOSSIER-*.html</code> (their findings are enacted and recorded) · <code>REVIEW-2026-07-02-critical-regroup.html</code> (re-point the README link when moved). Consider moving the three <code>payments-*</code> D2 intake docs into a <code>d2/</code> folder — live but loose at root.</p>
+      <p><b>Root, the June cluster (pre-pivot / dated session docs):</b> <code>archive/HANDOFF.md</code> (day-one, pipeline-era) · <code>apollo-pipeline-spec_v0.2</code> (join v0.1 in archive) · <code>notes/RUNBOOK-end-to-end-proof.md</code> · <code>notes/_STRATEGY-KICKOFF.md</code> · <code>notes/_STRATEGY-framework-comparison.md</code> · <code>archive/_SESSION-BRIEF-2026-06-20-strategy.md</code> · <code>archive/_BUILD-CHAT-HANDOFF.md</code> ("12 steps, 6 gates") · <code>archive/SESSION-BRIEF-tabs-fitness-test.md</code> · <code>notes/_VISION-contextual-dashboard_2026-06-29.md</code> (self-labelled parked) · the three <code>_REVIEW-DOSSIER-*.html</code> (their findings are enacted and recorded) · <code>reviews/REVIEW-2026-07-02-critical-regroup.html</code> (re-point the README link when moved). Consider moving the three <code>payments-*</code> D2 intake docs into a <code>d2/</code> folder — live but loose at root.</p>
       <p><b>knowledge/, orphaned or superseded era docs:</b> <code>_FINDINGS-INDEX.md</code> ("6 gates / 32 snippets") · <code>_FITNESS-TEST-tabs.md</code> · <code>_CODE-CONNECT-PLACEMENT.md</code> · <code>_DESIGN-SYSTEM-AUDIT.md</code> · <code>_INTEGRITY-WARNINGS-TRIAGE.md</code> · <code>_NEXT-SESSION-composition.md</code> (0 refs) · <code>_HANDOFF-component-review.md</code> (0 refs, "32 snippets") · <code>_COMPONENT-LIBRARY-TARGET.md</code> (0 refs) · <code>_PROTOTYPE-GRADE-AUDIT.md</code> (its generator isn't in the build — regenerate or archive) · <code>_demo/</code> ("6 gates", "Demo harness") · the seven one-off <code>_render_*.py</code> helpers superseded by <code>gen_gallery.py</code>.</p>
       <p><b>knowledge/_fitness-test/, ~25 one-off showcases</b> (zero inbound refs; keep everything the live docs cite): all <code>*-AB-showcase.html</code>, <code>*-responsive.html</code>, <code>button-3up</code>, <code>blue400-review</code>, <code>icon-fake-weight</code>, <code>icon-weight-system</code>, <code>cold-A/B-*</code>, <code>route-a/b-tabs*</code> + <code>route-b-gap-log.md</code>, <code>v6-token-proposals</code>, <code>v7-series-assignment-AB</code>, <code>component-build-plan</code>, <code>status-indicator</code>, <code>progress-tracker-segmented</code>, <code>list-items-transaction</code>, <code>tags-chip-animation</code>, <code>tags-cross-weight-test</code>, <code>sme-journey</code>, <code>sme-payments-final</code>, <code>sme-payments-portfolio</code>. <b>Keep live:</b> the three <code>register-spread-2026-07-05*</code> folders + compare viewer, all <code>*.canon.html</code> (the screen gate's glob), <code>modal-motion-3up</code>, <code>tags-responsive</code>, <code>sme-payments-balanced</code>, <code>payments-journey.html</code>, and the tombstoned <code>sme-payments-registers.html</code>.</p>
       <p class="mini">Suggestion: archive with structure — <code>archive/sessions-2026-06/</code>, <code>archive/fitness-test-showcases/</code> — so the shelf stays browsable. E0's <code>route-b-gap-log.md</code> is quoted in this report's evidence chain; archived is fine, deleted would be a loss.</p>
@@ -946,7 +942,7 @@ svg text{font-family:var(--font);}
 <footer class="foot">
   <div class="wrap" style="display:flex;gap:var(--s4);flex-wrap:wrap;align-items:baseline;">
     <span>Deep analysis — Apollo</span>
-    <span>Prepared 2026-07-10 for Dave Ewen · rev 2 corrected same evening</span>
+    <span>Prepared 2026-07-10 for Dave Ewen</span>
     <span class="spacer" style="flex:1"></span>
     <span>Snapshot: master @ a2771a8 + working tree · repo read in full</span>
   </div>

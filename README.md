@@ -45,7 +45,7 @@ re-run** (a completed project, blind, compared with what shipped) stays as the r
 backstop. Canon/component work is scoped by that project's journey, not by completeness.
 
 The standing critical review and its eight decisions:
-`REVIEW-2026-07-02-critical-regroup.html`.
+`reviews/REVIEW-2026-07-02-critical-regroup.html`.
 
 ## Run the build
 
@@ -60,8 +60,12 @@ failure. This is the single command to trust the knowledge base.
 
 ```
 .
-├── README.md                    ← you are here
+├── README.md                    ← you are here (front door + this map)
 ├── AGENTS.md                    ← operating manual for any agent in this repo
+├── GOOD-MORNING.md              ← latest session handoff (cold-start reads this first)
+├── _LIVE-STATE.md               ← live / dead / open ledger — what is true now
+├── MODEL-ROUTING.md             ← which model for which work
+│
 ├── knowledge/                   ← THE ENGINE: canon · criteria · gates · runbooks
 │   ├── tokens/                  ← DTCG token stores (+ _raw/, untracked — ADR-0005)
 │   ├── snippets/                ← gated reference components (source of truth)
@@ -69,12 +73,22 @@ failure. This is the single command to trust the knowledge base.
 │   ├── canon/                   ← generated composition layer (canon.css + generators)
 │   ├── compliance/              ← WCAG knowledge graph
 │   └── _fitness-test/           ← composed screens, journeys, the gallery
-├── docs/                        ← research dossier · architecture · ADRs
-├── skills/                      ← portable Agent Skills (SKILL.md folders)
+│
+├── reviews/                     ← consumable outputs: REVIEW-* · PLAN-* · PRESENTATION-* · dossier renders
+├── notes/                       ← thinking: _VISION-* · _STRATEGY-* · test plans · Swiss-design reference
+├── projects/                    ← project inputs (e.g. payments/ — calibration brief, guides, assets)
+│
+├── skills/                      ← the engine's gated Agent Skills (SKILL.md folders)
+├── designer-skills-v1/          ← designer Copilot pack (skills + built KB; KB gitignored, rebuild via script)
+├── review-skills/               ← review toolkit: review-dossier · component-review · swiss-design-system
+│
+├── docs/                        ← research dossier · architecture · ADRs (decisions/)
+├── runs/                        ← historical run artifacts (proofs, contracts, dryruns)
 ├── system-manager/              ← decision-capture design space
-├── runs/                        ← historical run artifacts
+├── second-system-govuk/         ← GOV.UK second-system probe
 ├── digital-experience-transformation/  ← leadership narrative (separate strand)
-└── archive/harness-v0.1/        ← the original harness design (ADR-0005)
+├── archive/                     ← superseded docs + original harness-v0.1 design (ADR-0005)
+└── _to_delete/                  ← staging for removal (gitignored; bridge cannot delete)
 ```
 
 ## Data hygiene

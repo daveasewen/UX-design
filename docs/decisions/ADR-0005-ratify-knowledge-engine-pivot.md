@@ -15,7 +15,7 @@ Market context (2026): orchestration and agent runtimes are commoditising rapidl
 (agent SDKs, 30+ spec-driven frameworks, Apollo itself). Design-system
 **enforcement at generation time** remains unoccupied — the ecosystem's own
 assessment of the state of the art is "mapped, but not dynamically enforced".
-Full analysis: `REVIEW-2026-07-02-critical-regroup.html` (root).
+Full analysis: `reviews/REVIEW-2026-07-02-critical-regroup.html` (root).
 
 ## Decision
 

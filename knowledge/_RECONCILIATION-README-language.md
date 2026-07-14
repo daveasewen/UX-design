@@ -1,7 +1,7 @@
 # Reconciliation register — README.md (language review)
 
 *Decision record for the 2026-07-04 process-doc language review (rollout #3 — completes the
-cold-start trio: charter, AGENTS, README). Produced by `_REVIEW-DOSSIER-README_2026-07-04.html`,
+cold-start trio: charter, AGENTS, README). Produced by `reviews/_REVIEW-DOSSIER-README_2026-07-04.html`,
 decided by Dave, enacted 2026-07-04. **Rollback:** revert the enacting commit; the REVERT line
 on each entry is the exact pre-change wording. **Status: ALL 5 ENACTED.***
 

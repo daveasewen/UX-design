@@ -75,5 +75,5 @@ just to working out what it means, separate from continuing to iterate the promp
    harness-modes exploration, TOV spin-off, ADR-0004 ops follow-ups.
 
 > Next-session opener: **"Title this chat: <pick one>."** Read GOOD-MORNING → `_LIVE-STATE.md` OPEN
-> entry → charter §9 + test-brief §2 if doing the dedicated §9 session; → `_SEAWORTHINESS-PLAN_2026-07-05.md`
+> entry → charter §9 + test-brief §2 if doing the dedicated §9 session; → `notes/_SEAWORTHINESS-PLAN_2026-07-05.md`
 > if picking up Phase 1 instead (§9 track is paused there, not next-in-line).

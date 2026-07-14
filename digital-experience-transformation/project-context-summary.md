@@ -53,5 +53,5 @@ A Design Delivery team's traditional value is its capacity to **produce artifact
 - `README.md`, `AGENTS.md` — what the project is and how any agent operates in it.
 - `docs/architecture.md`, `docs/research-dossier.md` — the two-layer design and its rationale.
 - `disciplines/README.md` — the full discipline / process map (the team-shaped view).
-- `_STRATEGY-KICKOFF.md` — the product/strategy framing this transformation work sits alongside.
+- `notes/_STRATEGY-KICKOFF.md` — the product/strategy framing this transformation work sits alongside.
 - `knowledge/canon/` — the gated component canon and composition layer.

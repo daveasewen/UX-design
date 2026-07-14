@@ -16,12 +16,12 @@ Worked the strategy kickoff. **Decisions are locked, instruments + a demo are bu
 Run the real, contested, under-discovered payments journey *backwards* through the loop → reconstruct criteria + riskiest assumptions + skipped gates → "what would've bitten us after go-live" gap report. Real, observable ground truth, no fabricated research. Dave to talk to a colleague close to it (state unknown — "slow, lots of opinions, no discovery").
 
 ## Artifacts produced (all in repo)
-- `_STRATEGY-framework-comparison.md` — deliverable (b); recommendation + per-framework artifact/handoff notes.
-- `payments-retrofit-prep.md` — quick prep sheet for the colleague chat.
-- `payments-interview-guide.md` — semi-structured depth guide (doubles as guided-JTBD lane prototype).
-- `payments-stakeholder-questionnaire.md` — ~10q breadth survey, opinion-spread (doubles as ingestion-lane prototype).
+- `notes/_STRATEGY-framework-comparison.md` — deliverable (b); recommendation + per-framework artifact/handoff notes.
+- `projects/payments/payments-retrofit-prep.md` — quick prep sheet for the colleague chat.
+- `projects/payments/payments-interview-guide.md` — semi-structured depth guide (doubles as guided-JTBD lane prototype).
+- `projects/payments/payments-stakeholder-questionnaire.md` — ~10q breadth survey, opinion-spread (doubles as ingestion-lane prototype).
 - `knowledge/_demo/_SCOPE-gated-generation-demo.md` + `knowledge/_demo/gated-generation-demo.html` — thin demo: generate a screen, gates as visible hero, gated vs "vibes" toggle. Build verified green (EXIT 0); fully isolated in `_demo/`, touches no canon.
-- `apollo-pipeline-spec_v0.2_2026-06-20.html` — reissued spec with diagrams. **v0.1 archived** at `archive/apollo-pipeline-spec_v0.1_2026-05-31.html`.
+- `archive/apollo-pipeline-spec_v0.2_2026-06-20.html` — reissued spec with diagrams. **v0.1 archived** at `archive/apollo-pipeline-spec_v0.1_2026-05-31.html`.
 
 ## Repo / process notes
 - Two chats share ONE working tree on `master` — **do not branch** (it would switch the build chat's files). Isolate by directory.
@@ -45,4 +45,4 @@ High artifact output in one session — watch the productivity-bubble risk. The 
 ## Next session — first moves
 1. Did the colleague chat happen? If yes → run the payments retrofit into a gap report.
 2. If not → do an unblocked movable: polish demo for the boss, or prototype the ingestion lane.
-3. Pointers: `_STRATEGY-framework-comparison.md`, `apollo-pipeline-spec_v0.2_2026-06-20.html`.
+3. Pointers: `notes/_STRATEGY-framework-comparison.md`, `archive/apollo-pipeline-spec_v0.2_2026-06-20.html`.

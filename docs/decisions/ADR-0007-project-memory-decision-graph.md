@@ -36,7 +36,7 @@ edges. The discipline of writing the edge at ruling-time is what actually preven
 storage engine.** A full graph DB (Neo4j) would be gold-plating for a solo-run project; the top
 80% is text-achievable (Cosmos SDK = markdown headers; "Decision Graph" = a text-based KG).
 
-> **North-star target elaborated 2026-07-10 → `_STATE-MACHINE-TARGET.md`.** This ADR is the
+> **North-star target elaborated 2026-07-10 → `notes/_STATE-MACHINE-TARGET.md`.** This ADR is the
 > accepted decision; that doc is the full goal Dave holds — a *context machine* spanning three
 > tenses (past decisions · present state · future goals) and every entity kind (decisions · goals ·
 > insights · sub-quests/side-projects · tools), whose headline capability is to **compile a

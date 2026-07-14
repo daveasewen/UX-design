@@ -40,4 +40,4 @@ the contract format must not hardcode HSBC token paths.
 ## Companion
 `_FIXED-FLEX-CHARTER.md` (curbs, registers, tiering) · `_TEST-BRIEF-v2-sme-payments.md`
 (the brief format) · `_validate_advisory.py` (where prose-rule checks live) ·
-north-star mock region 2 (`_VISION-northstar-front-end_2026-07-02.html`).
+north-star mock region 2 (`notes/_VISION-northstar-front-end_2026-07-02.html`).

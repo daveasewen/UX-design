@@ -1,13 +1,13 @@
 # Apollo — Build chat hand-off
 *Seed doc for a fresh chat to continue the hands-on KB / gated-component work **in parallel** with the
-strategy chat (`_STRATEGY-KICKOFF.md`). Paste this in and say "continue the build chat."*
+strategy chat (`notes/_STRATEGY-KICKOFF.md`). Paste this in and say "continue the build chat."*
 *Written 2026-06-20. Current state is green and stable — safe to pick up cold.*
 
 ---
 
 ## Read me first — scope boundary (the two chats must not collide)
 There are two chats running in parallel on the **same repo** (`knowledge/`):
-- **Strategy chat** (`_STRATEGY-KICKOFF.md`) — owns product vision, the **harness/pipeline redesign**, the
+- **Strategy chat** (`notes/_STRATEGY-KICKOFF.md`) — owns product vision, the **harness/pipeline redesign**, the
   **check-tier architecture** (blocking vs advisory), and anything that re-shapes how the pipeline fits together.
 - **THIS chat (build/tactical)** — owns convergent, gate-verifiable canon work *inside the current architecture*.
 

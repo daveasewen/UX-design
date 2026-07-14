@@ -4,7 +4,7 @@
 work are engaged — this is the **ceiling / craft** track. The churn / floor test (the
 business case) runs separately with the other teams; don't collapse them. Built on the kit
 already in the repo: `knowledge/_TEST-BRIEF-v2-sme-payments.md` (brief format) ·
-`payments-interview-guide.md` · `runs/contract-001-sme-payments/contract.json` (contract
+`projects/payments/payments-interview-guide.md` · `runs/contract-001-sme-payments/contract.json` (contract
 format) · `knowledge/_FIXED-FLEX-CHARTER.md` (the curbs) · `knowledge/_RUNBOOK-criteria-contract.md`.*
 
 ## Purpose (read first)

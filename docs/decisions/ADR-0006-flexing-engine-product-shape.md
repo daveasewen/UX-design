@@ -84,10 +84,10 @@ components. Build the clusters a *real journey* needs, in the order it needs the
 (extends review decision 3).
 
 **5. Front-end vision — the iteration machine.** Dave's notebook sketch, realised at
-`_VISION-iteration-machine_2026-07-03.html`. A **loop**, not a linear pipeline:
+`notes/_VISION-iteration-machine_2026-07-03.html`. A **loop**, not a linear pipeline:
 Input (chat + inject + analysis/vibe toggle) → Shape (quiz) → Result (register switch on a
 canon screen — the §9 inference ramp: retrieve/extend/invent) → Refine (comments + quiz) → loop. Sits beside the
-north-star mock (`_VISION-northstar-front-end_2026-07-02.html`) as the more user-facing
+north-star mock (`notes/_VISION-northstar-front-end_2026-07-02.html`) as the more user-facing
 expression. The register spread = the §9 inference ramp (retrieve/extend/invent, not a look);
 **enforcement present-but-quiet is the moat** vs commodity generators (v0 / Lovable / Figma Make).
 
@@ -117,6 +117,6 @@ Structurally verified; **not** pixel-rendered (sandbox renderer absent).
 
 ## Related
 
-`ADR-0005` · `ADR-0001` · `docs/research-dossier.md` · `REVIEW-2026-07-02-critical-regroup.html` ·
-`_FIXED-FLEX-CHARTER.md` · `_VISION-northstar-front-end_2026-07-02.html` ·
-`_VISION-iteration-machine_2026-07-03.html` · `second-system-govuk/_FINDINGS.md`
+`ADR-0005` · `ADR-0001` · `docs/research-dossier.md` · `reviews/REVIEW-2026-07-02-critical-regroup.html` ·
+`_FIXED-FLEX-CHARTER.md` · `notes/_VISION-northstar-front-end_2026-07-02.html` ·
+`notes/_VISION-iteration-machine_2026-07-03.html` · `second-system-govuk/_FINDINGS.md`

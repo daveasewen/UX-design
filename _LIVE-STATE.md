@@ -69,7 +69,7 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
 ## OPEN — propagation gaps + parked threads
 
 - **⚠️ PROPAGATION GAP (partially closed):** the product vision still speaks the OLD looks-language —
-  `ADR-0006` + `_VISION-iteration-machine_2026-07-03.html` say "cool/warm/hot register switch" with
+  `ADR-0006` + `notes/_VISION-iteration-machine_2026-07-03.html` say "cool/warm/hot register switch" with
   surface-band moments (the mock even has a `border-radius:10px` cardinal violation) — **still
   open, not yet touched.** One instance of the gap **was** reconciled 2026-07-05:
   `_TEST-BRIEF-v2-sme-payments.md` §2 rewritten from look-language (surfaces/hero/gradients) to §9
@@ -219,7 +219,7 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
     the tool must be usable by non-Dave ([[robustness-portability]] papercuts: ports, env, no-Univers,
     SSO portal) — Phase ③ will expose it; (3) 260 new components is a multi-month multi-designer
     programme — frame as "build the loop then compound, ship each cluster," not "build 300 then ship."
-  - **📄 EXTERNAL DEEP REVIEW 2026-07-10 → `REVIEW-2026-07-10-deep-analysis.html`** (repo root,
+  - **📄 EXTERNAL DEEP REVIEW 2026-07-10 → `reviews/REVIEW-2026-07-10-deep-analysis.html`** (repo root,
     untracked — commit it; also a desktop artifact). Independent whole-project pass: code-level
     architecture map, git archaeology, experiments/trace re-read, July-2026 field research (v0 DS 2.0 /
     Builder / Bolt = canon-tied generation is now commodity; gates + §9 tiering = ahead of all surveyed;
@@ -360,8 +360,8 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
     with the **layout/library tier (R4)** + Ingestion **Phase 3**, which are inherently graph-shaped
     and are the natural moment to introduce typed edges (the compliance index becomes one *projection*
     of the overlay). Cheap-now slice if wanted: type the existing edges + import ACT. Unaudited node
-    (feeds ADR-0003 when reopened). Report: `REVIEW-2026-07-10-deep-analysis_rev2.html` §03 gap-3, R4, R6.
-- **✅ Seaworthiness plan — DONE 2026-07-05 → `_SEAWORTHINESS-PLAN_2026-07-05.md`.** Curated,
+    (feeds ADR-0003 when reopened). Report: `reviews/REVIEW-2026-07-10-deep-analysis_rev2.html` §03 gap-3, R4, R6.
+- **✅ Seaworthiness plan — DONE 2026-07-05 → `notes/_SEAWORTHINESS-PLAN_2026-07-05.md`.** Curated,
   dependency-aware sequence (not a flat backlog): hull patches (ingestion Phase 0 + capture ritual) →
   **big-rock #1 Ingestion Phase 1** (Sutherland token migration, confirmed unblocked) → **§9 worked
   spread in parallel** → **big-rock #2 PM-KG MVP** (staleness gate) → finish/unify (Phase 2→3→4, with
@@ -380,7 +380,7 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
   as single entry point both confirmed standing. Phase 0 fully closed; Phase 1 (Sutherland token
   migration) is next and is real, unblocked work — unlike this drift.
 - **D2 — novel-screen test — THE #1 unlock.** Waiting on a colleague's brief (their brief-v2 +
-  own baseline + signed contract *before* generation). `_TEST-PLAN-novel-screen-proof.md`.
+  own baseline + signed contract *before* generation). `notes/_TEST-PLAN-novel-screen-proof.md`.
 - **Toolkit tranche 2** (Dropdowns ×4) — parallel cheap-model workstream. Memory:
   `common-toolkit-survey`.
 
@@ -433,7 +433,7 @@ backlog (that's OPEN) — these are intended end-states with a path. Refresh alo
     This is the actual test — structural counts are a proxy, not the verdict.** (5) once Dave
     confirms, fold the mechanism into charter §9 as a named piece and only then is the §9 spread
     presentable outside this session. **Scope discipline held:** this stayed inside the existing
-    "prove-the-core, §9 worked spread" parallel track from `_SEAWORTHINESS-PLAN_2026-07-05.md` —
+    "prove-the-core, §9 worked spread" parallel track from `notes/_SEAWORTHINESS-PLAN_2026-07-05.md` —
     did not touch hull patches (done) or reorder Ingestion Phase 1 (still queued, untouched).
   - **Additional diagnostic run, same session (Dave's idea): pure-inference ceiling probe.**
     Two cold Opus passes on the same data, zero brand governance at all (no canon, no curbs, no

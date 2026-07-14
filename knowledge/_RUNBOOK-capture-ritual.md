@@ -1,6 +1,6 @@
 # Runbook — end-of-session capture ritual
 
-*The insurance policy decided in `_SEAWORTHINESS-PLAN_2026-07-05.md` ("The capture ritual / gate").
+*The insurance policy decided in `notes/_SEAWORTHINESS-PLAN_2026-07-05.md` ("The capture ritual / gate").
 Stood up 2026-07-05 as a fixed, repeatable sequence — the enforcing script (`_capture_gate.py`) is
 deferred to the PM-KG MVP build, but the ritual itself is free and starts now. Anchor: ADR-0007
 (temporal decision-graph); principle: don't archive every transcript (rebuilds the haystack) — invest
@@ -61,6 +61,6 @@ next layer once PM-KG infrastructure exists to build it on.
 
 ## Entry points
 
-`_SEAWORTHINESS-PLAN_2026-07-05.md` (§ "The capture ritual / gate" — origin of this spec) ·
+`notes/_SEAWORTHINESS-PLAN_2026-07-05.md` (§ "The capture ritual / gate" — origin of this spec) ·
 `_LIVE-STATE.md` · `GOOD-MORNING.md` · `MEMORY.md` · `AGENTS.md` (supersession discipline, git split) ·
 `_RUNBOOK-decision-audit.md` (validation-state discipline for step 4).
