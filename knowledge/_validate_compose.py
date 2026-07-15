@@ -6,7 +6,7 @@ cannot silently drift from the gated components + tokens.
 
 For canon/canon.css:
   1. VARS RESOLVE   — every var(--x) used has a matching --x definition
-                      (runtime-set --hs/--ps/--pct/--demo-width/--row-h excepted).
+                      (runtime-set --pct/--demo-width/--row-h excepted).
   2. BRACES         — balanced (cheap structural sanity).
   3. TOKEN SPINE    — the AUTO-GENERATED token block regenerates byte-identically
                       from knowledge/tokens/*.json (the spine is generated, not
@@ -33,7 +33,7 @@ import os, re, sys, glob, subprocess
 HERE = os.path.dirname(os.path.abspath(__file__))
 CANON = os.path.join(HERE, "canon", "canon.css")
 GEN = os.path.join(HERE, "..")  # generator lives in outputs at runtime; spine check is optional
-RUNTIME_VARS = {"--hs", "--ps", "--pct", "--demo-width", "--row-h"}
+RUNTIME_VARS = {"--pct", "--demo-width", "--row-h"}
 
 def check_canon():
     css = open(CANON).read()

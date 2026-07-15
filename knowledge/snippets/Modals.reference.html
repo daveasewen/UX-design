@@ -32,7 +32,8 @@
     --ease:160ms cubic-bezier(.4,0,.2,1);
     --spring:300ms cubic-bezier(.5,1.6,.4,1);   /* motion/easing/spring + motion/duration/spring (= the button's) */
     --press:90ms cubic-bezier(0,0,.58,1);        /* motion/duration/press + motion/easing/out */
-    --fade:140ms ease; }                          /* motion/duration/fade */
+    --fade:140ms ease;                            /* motion/duration/fade */
+    --btn-grow:1.04; --btn-press:0.95; }         /* interaction motion — CSS scale-factor tokens (tokenised 2026-07-15; formerly runtime JS-computed) */
   [data-theme="light"]{ --surface:#FFFFFF; --elev-bd:#FFFFFF00; --shadow:#00000033; --overlay:#00000080;
     --text:#333333; --icon:#333333; --pri:#DB0011; --pri-hover:#BA1110; --on-pri:#FFFFFF;
     --sec-bd:#000000; --sec-hover:#F3F3F3; --focus:#305A85; --page:#FFFFFF; }
@@ -55,8 +56,8 @@
     font:500 16px/1 var(--font); transition:background var(--ease), transform var(--spring), filter var(--press);}
   .btn.primary{background:var(--pri); color:var(--on-pri);} .btn.primary:hover{background:var(--pri-hover);}
   .btn.secondary{background:transparent; color:var(--text); border:1px solid var(--sec-bd);} .btn.secondary:hover{background:var(--sec-hover);}
-  .btn:hover{transform:scale(var(--hs,1.04));}
-  .btn:active{transform:scale(var(--ps,.95)); filter:brightness(.85); transition:transform var(--press), filter var(--press);}
+  .btn:hover{transform:scale(var(--btn-grow));}
+  .btn:active{transform:scale(var(--btn-press)); filter:brightness(.85); transition:transform var(--press), filter var(--press);}
   .btn:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
 
   /* overlay + dialog — scale + fade entrance (dim scrim) */
@@ -149,10 +150,6 @@
         if (e.shiftKey && document.activeElement === a){ e.preventDefault(); z.focus(); }
         else if (!e.shiftKey && document.activeElement === z){ e.preventDefault(); a.focus(); } }
     });
-    const GROW = 7, PRESS = 9;   /* button scale-physics: fixed-px grow/shrink (inherited from canon Button) */
-    function sizeScale(){ document.querySelectorAll('.btn').forEach(b => { const w = b.offsetWidth || 1;
-      b.style.setProperty('--hs', (1 + GROW / w).toFixed(4)); b.style.setProperty('--ps', (1 - PRESS / w).toFixed(4)); }); }
-    addEventListener('resize', sizeScale); sizeScale();
   </script>
 </body>
 </html>

@@ -34,7 +34,8 @@
   :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
     --fs:16px; --chip-fs:14px; --ease:180ms cubic-bezier(.4,0,.2,1);
     --spring:300ms cubic-bezier(.5,1.6,.4,1);   /* motion/easing+duration/spring — attract grow/release */
-    --press:90ms cubic-bezier(0,0,.58,1); }      /* motion/duration/press + easing/out — depress */
+    --press:90ms cubic-bezier(0,0,.58,1);        /* motion/duration/press + easing/out — depress */
+    --chip-grow:1.06; --chip-press:0.94; }       /* interaction motion — CSS scale-factor tokens (tokenised 2026-07-15; formerly runtime JS-computed) */
   [data-theme="light"]{
     --ctrl-border:#767676; --ctrl-border-active:#000000; --ctrl-border-disabled:#D7D8D6;
     --checked:#000000;            /* secondary/background/default */
@@ -135,7 +136,7 @@
   /* ===== EXPERIMENT (2026-06-22, NOT yet doctrine) — attract-on-hover + depress-on-press, same scale-physics
      as Button, extended to the selectors. Dave is living with it before deciding whether to make it universal
      ("keep experimenting first"). Scale only — no shadow, no translate. Tiny controls use a modest ratio;
-     chips use the fixed-px grow/shrink (set by JS) like buttons. ===== */
+     chips use the --chip-grow/--chip-press CSS scale-factor tokens (tokenised 2026-07-15) like buttons. ===== */
   .box,.radio,.switch{transition:background var(--ease), border-color var(--ease), transform var(--spring);}
   label:hover .box,label:hover .radio{transform:scale(1.12);}
   label:hover .switch{transform:scale(1.06);}
@@ -143,8 +144,8 @@
   input:active + label .switch{transform:scale(.94); transition:transform var(--press);}
   input:disabled + label .box,input:disabled + label .radio,input:disabled + label .switch{transform:none;}
   .chip{transition:background var(--ease), color var(--ease), border-color var(--ease), transform var(--spring);}
-  .chip:hover{transform:scale(var(--hs,1.06));}
-  .chip:active{transform:scale(var(--ps,.94)); transition:transform var(--press), background var(--ease), color var(--ease);}
+  .chip:hover{transform:scale(var(--chip-grow));}
+  .chip:active{transform:scale(var(--chip-press)); transition:transform var(--press), background var(--ease), color var(--ease);}
   .chip:disabled:hover{transform:none;}
 
   /* responsive — tighten on narrow containers; chip bars already wrap */
@@ -280,12 +281,6 @@
       const chip = x.closest('.chip'); const next = chip.nextElementSibling || chip.previousElementSibling;
       chip.remove(); if (next) next.querySelector('.x') ? next.querySelector('.x').focus() : next.focus();
     });
-
-    // chips use the same fixed-px attract/depress as buttons (consistent absolute motion regardless of chip width)
-    const GROW = 7, PRESS = 9;
-    function sizeScale(){ document.querySelectorAll('.chip').forEach(c => { const cw = c.offsetWidth || 1;
-      c.style.setProperty('--hs', (1 + GROW / cw).toFixed(4)); c.style.setProperty('--ps', (1 - PRESS / cw).toFixed(4)); }); }
-    addEventListener('resize', sizeScale); sizeScale();
   </script>
 </body>
 </html>

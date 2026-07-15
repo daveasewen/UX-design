@@ -40,6 +40,7 @@
     --fs:16px; --weight:500; --h:44px; --pad-x:20px; --ease:160ms cubic-bezier(.4,0,.2,1);
     --spring:300ms cubic-bezier(.5,1.6,.4,1);   /* motion/easing/spring + motion/duration/spring — grow/release */
     --press:90ms cubic-bezier(0,0,.58,1);        /* motion/duration/press + motion/easing/out — snappy depress */
+    --btn-grow:1.04; --btn-press:0.95;           /* interaction motion — CSS scale-factor tokens (tokenised 2026-07-15; formerly runtime JS-computed) */
   }
   [data-theme="light"]{
     --pri-default:#DB0011; --pri-hover:#BA1110; --pri-pressed:#000000; --pri-disabled:#D7D8D6;
@@ -79,10 +80,10 @@
 
   /* Refined scale-physics (promoted 2026-06-22) — dimensionality through SCALE: grows toward the cursor on
      hover, press recedes + darkens to read as depth. No shadow, no translate (brand stays flat/angular).
-     --hs/--ps are FIXED-px (set by JS from each button's width) so the absolute motion is constant at any size. */
-  .btn:hover{transform:scale(var(--hs,1.04));}
+     --btn-grow/--btn-press are CSS scale-factor tokens (tokenised 2026-07-15; formerly runtime JS-computed, constant regardless of viewport). */
+  .btn:hover{transform:scale(var(--btn-grow));}
   .btn.full:hover{transform:none;}                                           /* full-width can't grow — would overflow */
-  .btn:active{transform:scale(var(--ps,.95)); filter:brightness(.85); transition:transform var(--press), filter var(--press);}
+  .btn:active{transform:scale(var(--btn-press)); filter:brightness(.85); transition:transform var(--press), filter var(--press);}
   .btn:disabled:hover,.btn.is-disabled:hover{transform:none; filter:none;}   /* disabled stays put */
 
   /* PRIMARY — red fill, white label; pressed inverts (label flips via --label-invert) */
@@ -226,13 +227,7 @@
     });
     // Action-bar width slider — drives the container query so the reflow is visible without resizing.
     const w=document.getElementById('w'), wv=document.getElementById('wv'), barWrap=document.getElementById('barWrap');
-    w.addEventListener('input', ()=>{ barWrap.style.setProperty('--demo-width', w.value+'px'); wv.textContent=w.value; sizeScale(); });
-    // Refined scale-physics: fixed-px grow/shrink derived from each button's width, so the absolute motion
-    // is identical on a narrow vs a wide button. Reduced-motion disables the transforms in CSS regardless.
-    const GROW=7, PRESS=9;
-    function sizeScale(){ document.querySelectorAll('.btn').forEach(b=>{ const w=b.offsetWidth||1;
-      b.style.setProperty('--hs',(1+GROW/w).toFixed(4)); b.style.setProperty('--ps',(1-PRESS/w).toFixed(4)); }); }
-    addEventListener('resize', sizeScale); sizeScale();
+    w.addEventListener('input', ()=>{ barWrap.style.setProperty('--demo-width', w.value+'px'); wv.textContent=w.value; });
   </script>
 </body>
 </html>

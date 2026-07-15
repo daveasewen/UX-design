@@ -1,7 +1,7 @@
 # Composition gate audit
 
 ## canon.css
-- defs 503, var() refs 213
+- defs 559, var() refs 217
 - ✅ vars resolve, braces balanced, spine markers present
 
 ## composed screens (5)
