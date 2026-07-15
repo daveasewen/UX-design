@@ -49,6 +49,8 @@ STEPS = [
     ("icon-source gate", "_validate_icons.py"),
     ("a11y gate", "_validate_a11y.py"),
     ("coverage gate", "_validate_coverage.py"),
+    ("pro-forma universal gate", "_validate_proforma.py"),
+    ("pro-forma CSS-governed motion gate (DEF-003)", "_validate_css_governed.py"),
     ("compliance verification edges — applies_to vs verified_by (advisory)", "compliance/_build_verification_edges.py"),
     ("external automatable-check refs — axe-core import (advisory)", "compliance/_import_axe_rules.py"),
     ("integrity lint (gate)", "_build_integrity.py"),
@@ -79,6 +81,12 @@ for i, (label, rel) in enumerate(STEPS, 1):
             rc = rc or r.returncode
         elif "coverage" in label:
             print(f"\n❌ coverage gate failed (exit {r.returncode}) — see knowledge/_COVERAGE-GATE.md")
+            rc = rc or r.returncode
+        elif "CSS-governed" in label:
+            print(f"\n❌ pro-forma CSS-governed motion gate failed (exit {r.returncode}) — see knowledge/_CSS-GOVERNED-GATE.md")
+            rc = rc or r.returncode
+        elif "pro-forma" in label:
+            print(f"\n❌ pro-forma universal gate failed (exit {r.returncode}) — see knowledge/_PROFORMA-GATE.md")
             rc = rc or r.returncode
         elif "surface" in label:
             print(f"\n❌ dark-surface gate failed (exit {r.returncode}) — see knowledge/_DARK-SURFACE-AUDIT.md")

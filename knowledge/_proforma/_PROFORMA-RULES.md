@@ -72,6 +72,17 @@ that pipeline, so the existing gates never ran on them — which is how invented
 every icon-only button named) and MUST be green before a tranche is shown. Run it on every regenerate.
 At promotion, the per-component split also runs the full `_build_all.py` gate set.
 
+**⭐ PROMOTED 2026-07-14 (Dave asked):** the UNIVERSAL subset is now a real build gate. New
+`knowledge/_validate_proforma.py` = a **mode-agnostic** gate wired into `knowledge/_build_all.py`
+(step "pro-forma universal gate"). It auto-discovers every `_proforma/*.html` carrying an
+`#icon-manifest` and enforces: real-icons-only · no-hardcode-colour · refs-resolve · icon-buttons-named
+**+ a STRENGTHENED check that every manifest path resolves to a real asset file** (closes the
+"fabricated path behind a real-looking manifest entry" hole `_check_proforma` left). So the pro-forma
+surface is now gated on every `python3 knowledge/_build_all.py`, not just by hand. **MODE rules
+(monochrome / near-black / colour=meaning / square) are deliberately NOT in this gate** — they are the
+monochrome-base subset (this file); the main pipeline also carries brand-mode components that
+legitimately re-add colour. `_check_proforma.py` stays as the single-file dev tool.
+
 ## Process (how we build + review)
 
 - **A tranche = one self-contained interactive file** (light/dark toggle + width slider) as the
@@ -83,5 +94,71 @@ At promotion, the per-component split also runs the full `_build_all.py` gate se
 
 ---
 
-*Open to confirm with Dave: near-black shade (#1A1A1A), and whether any of the above should move from
-"rule" to "hard gate" now vs at promotion.*
+## UPDATE 2026-07-14 — Tranches 2–5 built + RAG palette retrieved
+
+**Tranches 2–5 built** as interactive monochrome files in `knowledge/_proforma/` (all gate-green,
+rendered + inspected; verified on-device 5/5 pass incl. asset-path check):
+- **T2** Toast · Alert/callout · Date picker · File upload
+- **T3** Checkbox (tri-state) · Radio · Switch · Segmented · custom Select/listbox
+- **T4** Tabs · Breadcrumb · Pagination · Accordion · Tooltip
+- **T5** Card · Badge/Tag · Progress (bar/ring) · Avatar · Banner
+
+**RAG palette — RETRIEVED from `tokens/semantic-colour.json` (not recalled)**, both themes, now in the
+shared scaffold token blocks: `--err` #A8000B/#DB0011 · `--warn` #FFBB33 · `--success` #00847F ·
+`--info` #305A85/#4587A7 (+ `-t` tints). **Accessible status pattern (LOCKED):** amber fails as text
+(1.69:1 on white) → **status text stays ink; the RAG hue appears only on the status icon + a left accent
+bar + a tint background; colour is never the sole carrier** (icon + label always present).
+
+**Canon-pack method:** a shared **scaffold** (token blocks + base CSS + a 39-glyph sprite EXTRACTED from
+the real asset files + manifest + `splice.py`) is filled by each tranche at three markers only, so
+tokens/sprite/manifest can't drift. Control glyphs render `currentColor`; the 4 status badges keep their
+real brand fills (colour = meaning).
+
+*Open to confirm with Dave: (a) near-black shade (#1A1A1A); (b) two finesse taste-calls — T4 tooltip
+info-badge (one blue dot) and T2 upload completed-bar going teal (both defensible as colour=meaning);
+(c) whether a MODE-rule gate (monochrome/square) is wanted, or mode rules stay rules-not-gates.*
+
+---
+
+## UPDATE 2026-07-14 (review pass) — new rules from Dave's feedback
+
+10. **ROUNDEL CARVE-OUT (Dave 2026-07-14).** The square-corners base rule (rule 4) has a carve-out:
+    **circular atoms — Badge, Avatar, status pins/dots, and standard circular atoms — are EXEMPT and may be
+    `border-radius:50%`.** Tags/chips are **NOT** exempt (they stay square — confirmed against `snippets/Tags.reference.html`,
+    which says the same). Radio dots, switch thumbs, progress rings were already circular and are fine.
+
+11. **COMMON INTERACTIVE STATE CLUSTER (Dave 2026-07-14).** Every interactive atom binds to the ONE canonical
+    Button scale-physics — width-derived `--hs`/`--ps` (grow 7px hover / recede 9px + `brightness(.85)` press),
+    set by `sizeScale()`; focus ring; disabled stays put; reduced-motion disables it. Buttons, icon-buttons, the
+    clickable card, and stacked avatars all use it — **never a bespoke hover or a translate-based lift.** The
+    scaffold `.btn`/`.ib` now carry it centrally. Recurrence is tracked as **DEF-001** in `_PROFORMA-DEFECTS.md`.
+
+12. **GLYPH PRESENCE (reinforced — DEF-002).** A glyph must read against its own surface in EVERY state incl.
+    disabled; never let a glyph's colour equal its surface. A CSS `fill:` on the wrapping `<svg>` does NOT override
+    a `<symbol>` path's own `fill="currentColor"` — control the box's `color` instead. Build the glyph-presence
+    gate (rule 7) to catch this class automatically.
+
+13. **REUSE CALIBRATION (Dave 2026-07-14).** Reuse so prior work isn't wasted — but **deliberate, never the
+    default.** Distinguish reusing the **decisions** (motion, a11y, state model, variants someone already reasoned
+    through — mine these freely, incl. the brand-agnostic work in brand-mode snippets) from reusing the **artifact**
+    (the snippet, brand skin and all — risky: it's brand-mode + may carry rolled-up/ATOMISE debt). Default = pull the
+    decisions, rebuild clean for the monochrome base; bind to the artifact only where it genuinely fits. **Declare
+    per component whether you're *mining* an existing snippet or *building fresh*, so Dave can veto either.**
+
+North star (Dave 2026-07-14): make the pro-forma **as technically robust and flexible as possible** — everything is
+reviewable and expected to take several passes; token-bound-by-intent so modes cascade with no re-code; fix once,
+propagate (the button-motion fix is the exemplar). Robustness (gates, tracker) makes the flexibility safe to lean on.
+
+## UPDATE 2026-07-15 — styling is CSS + token governed (portability / Figma)
+
+14. **CSS + TOKENS GOVERN STYLING; JS IS BEHAVIOUR-ONLY (Dave 2026-07-15).** As little JS as possible:
+    **motion, spacing, radii, colour** are governed by CSS + design tokens — never computed in JS. JS is
+    for genuine **behaviour** (open/close, validation, focus management) and data-driven values (a progress
+    width, a ring offset). *Why:* the library must be **portable**, and the target is a clean **Figma
+    transfer** (tokens → Figma variables, CSS structure → components/auto-layout; JS logic does not
+    transfer). Worked example — **motion**: the old `sizeScale()` JS (measuring each button's width to
+    compute a constant-px scale) is replaced by pure-CSS scale-factor tokens — `--btn-grow`/`--btn-press`
+    for buttons, `--ib-grow`/`--ib-press` for icon-buttons (size-scoped so each reads ~2px). Trade-off
+    accepted (Dave, "within reason"): CSS scale is a percentage, so absolute px varies a little with width.
+    Enforced by **DEF-003** (`_validate_css_governed.py`, wired into `_build_all.py`): flags `sizeScale`,
+    JS setting `--hs`/`--ps`, or `.style.transform = scale`.
