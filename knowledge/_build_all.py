@@ -51,6 +51,7 @@ STEPS = [
     ("coverage gate", "_validate_coverage.py"),
     ("pro-forma universal gate", "_validate_proforma.py"),
     ("pro-forma CSS-governed motion gate (DEF-003)", "_validate_css_governed.py"),
+    ("pro-forma no-hardcode styling gate (DEF-004)", "_validate_no_hardcode.py"),
     ("compliance verification edges — applies_to vs verified_by (advisory)", "compliance/_build_verification_edges.py"),
     ("external automatable-check refs — axe-core import (advisory)", "compliance/_import_axe_rules.py"),
     ("integrity lint (gate)", "_build_integrity.py"),
@@ -81,6 +82,9 @@ for i, (label, rel) in enumerate(STEPS, 1):
             rc = rc or r.returncode
         elif "coverage" in label:
             print(f"\n❌ coverage gate failed (exit {r.returncode}) — see knowledge/_COVERAGE-GATE.md")
+            rc = rc or r.returncode
+        elif "no-hardcode" in label:
+            print("pro-forma no-hardcode styling gate failed (exit %d) — see knowledge/_NO-HARDCODE-GATE.md" % r.returncode)
             rc = rc or r.returncode
         elif "CSS-governed" in label:
             print(f"\n❌ pro-forma CSS-governed motion gate failed (exit {r.returncode}) — see knowledge/_CSS-GOVERNED-GATE.md")

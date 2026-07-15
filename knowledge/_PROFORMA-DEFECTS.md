@@ -50,3 +50,18 @@ gated. Build DEF-001's state-cluster gate and DEF-002's glyph-presence gate next
 - **Prevention (BUILT — `_validate_css_governed.py`, wired into `_build_all.py`):** flags `sizeScale`, JS
   setting `--hs`/`--ps`, or `.style.transform = scale`. Self-tested (catches an injected `sizeScale`). Behaviour/data JS is not flagged.
 - **Status:** FIXED + GATED (pro-forma). TODO: the gated snippet canon (Button/Modals/Quick-actions/Selection-controls + canon.css) still uses the JS `GROW=7` — migrate in a focused pass ([[interaction-motion-experiment]]).
+
+
+## DEF-004 — hardcoded styling values (defeat mode-governance / Figma transfer)
+- **Symptom (Dave, 2026-07-15):** *"we shouldn't hard code any styling going forward, must be tokenised and all the
+  sibling libraries should be governed by modes ... very flexible and future-proof."* Raw px for spacing/radius/border
+  can't be overridden by a mode → Apollo UI/SC can't diverge without forking components; Figma transfer is lossy.
+- **Root cause:** the pro-forma was built with hand-picked px (spacing, border-width, radius) not bound to tokens.
+- **Fix (2026-07-15):** bound to the KB `semantic-scale` — spacing → `--space-*` (value-preserving; computed spacing
+  identical on all 1,474 elements), border-width → `--bw-sm/md/lg` (+ `--bw-1_5`, off-KB-scale, flagged), radius →
+  a **MODE token** `--radius` (0=mono) + `--radius-round`/`--radius-pill`. Geometry (widths/heights, CSS-triangle
+  arrows) deliberately left as a separate axis.
+- **Prevention (BUILT 2026-07-15 — `knowledge/_validate_no_hardcode.py`, wired into `_build_all.py`):** flags raw px
+  in spacing / border-radius / border-stroke properties in component CSS (skips token defs, @media, transparent
+  borders, var() fallbacks). Self-tested (catches an injected `padding:13px`). It caught 3 real `1.5px` border leaks
+  the manual pass missed. **Status:** FIXED + GATED (all 5 tranches pass; DEF-004 in the build).

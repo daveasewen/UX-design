@@ -162,3 +162,15 @@ propagate (the button-motion fix is the exemplar). Robustness (gates, tracker) m
     accepted (Dave, "within reason"): CSS scale is a percentage, so absolute px varies a little with width.
     Enforced by **DEF-003** (`_validate_css_governed.py`, wired into `_build_all.py`): flags `sizeScale`,
     JS setting `--hs`/`--ps`, or `.style.transform = scale`.
+
+
+15. **NO HARDCODED STYLING — everything is a token; sibling libraries diverge by MODE (Dave 2026-07-15, FOUNDATIONAL).**
+    Nothing is hardcoded going forward: ALL styling — colour, **spacing** (`--space-*`), **radius** (`--radius` /
+    `--radius-round` / `--radius-pill`), **border-stroke** (`--bw-*`), motion, type — is a token, so the three
+    sibling libraries (**Apollo mono / UI / SC**) are governed purely by MODES (token-value overrides over the ONE
+    skeleton). Adding a library = adding a mode, **never forking components**. Radius is the worked example:
+    `--radius:0` in mono (square); Apollo UI overrides it for rounding. Goal = maximally flexible + future-proof.
+    Geometry / component dimensions (width/height, CSS-triangle arrow sizes, transparent borders) are a SEPARATE
+    axis — not "styling". Enforced by **DEF-004** (`_validate_no_hardcode.py`, wired into `_build_all.py`): flags
+    raw px in spacing / radius / border-stroke inside component CSS. Spacing/border bound to KB `semantic-scale`
+    (`tokens/spacing.json` + `layout.json`); full semantic-responsive spacing map is a Figma-stage refinement.
