@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apollo · The Masthead — a switchable model</title>
+<style>
+  :root{
+    --ink:#1a1a1a; --ink2:#5c5c5c; --ink3:#8a8a8a; --line:#e4e4e4; --line2:#d0d0d0;
+    --page:#ffffff; --surf:#f6f6f6; --raised:#fff; --acc:#a8000b; --ok:#00847f; --info:#305a85;
+    --sp:16px; --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:"SF Mono",ui-monospace,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--surf);color:var(--ink);font:400 16px/1.6 var(--font);-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:940px;margin:0 auto;background:var(--page);padding:56px clamp(20px,5vw,64px);}
+  header.head{border-bottom:2px solid var(--ink);padding-bottom:24px;margin-bottom:8px;}
+  .eyebrow{font:600 12px/1 var(--font);letter-spacing:.12em;text-transform:uppercase;color:var(--ink2);margin:0 0 12px;}
+  h1{font:700 34px/1.15 var(--font);margin:0 0 10px;letter-spacing:-.01em;}
+  .lede{font-size:17px;color:var(--ink2);margin:0;max-width:64ch;}
+  .meta{font:400 13px/1.5 var(--font);color:var(--ink3);margin-top:16px;}
+  h2{font:700 24px/1.2 var(--font);letter-spacing:-.01em;margin:52px 0 4px;padding-top:20px;border-top:1px solid var(--line);}
+  h2 .n{color:var(--ink3);font-weight:400;margin-right:.5ch;}
+  h2:first-of-type{border-top:0;}
+  h3{font:700 18px/1.3 var(--font);margin:30px 0 6px;}
+  h4{font:600 15px/1.3 var(--font);margin:18px 0 4px;}
+  p{margin:8px 0;}
+  a{color:var(--info);}
+  small{color:var(--ink3);}
+  .sub{color:var(--ink2);margin:2px 0 14px;}
+  ul,ol{margin:8px 0;padding-left:22px;} li{margin:4px 0;}
+  code{font:500 13px/1.4 var(--mono);background:var(--surf);border:1px solid var(--line);border-radius:3px;padding:1px 5px;}
+  .toc{background:var(--surf);border:1px solid var(--line);padding:18px 22px;margin:24px 0 8px;columns:2;column-gap:32px;font-size:14px;}
+  .toc a{display:block;color:var(--ink);text-decoration:none;padding:3px 0;break-inside:avoid;}
+  .toc a:hover{color:var(--info);}
+  .evidence{border-left:3px solid var(--acc);background:#fdf5f5;padding:12px 16px;margin:14px 0;font-size:14.5px;}
+  .evidence b{color:var(--acc);}
+  .note{border-left:3px solid var(--info);background:#f3f7fb;padding:12px 16px;margin:14px 0;font-size:14.5px;}
+  .decision{border:1px solid var(--acc);border-left:4px solid var(--acc);background:#fffafa;padding:14px 18px;margin:16px 0;font-size:14.5px;border-radius:0 6px 6px 0;}
+  .decision .lbl{font:700 11px/1 var(--font);letter-spacing:.1em;text-transform:uppercase;color:var(--acc);display:block;margin-bottom:6px;}
+  .card{border:1px solid var(--line);border-radius:6px;padding:18px 20px;margin:16px 0;background:var(--raised);}
+  .card h3{margin-top:0;}
+  .tag{display:inline-block;font:600 11px/1 var(--font);letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);border:1px solid var(--line2);border-radius:3px;padding:4px 7px;margin-left:8px;vertical-align:middle;}
+  .grid{display:grid;grid-template-columns:120px 1fr;gap:2px 16px;margin:12px 0 2px;font-size:14.5px;}
+  .grid dt{font-weight:600;color:var(--ink2);}
+  .grid dd{margin:0 0 8px;}
+  table{border-collapse:collapse;width:100%;margin:16px 0;font-size:13px;}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top;}
+  th{background:var(--surf);font-weight:600;}
+  .apollo{background:var(--surf);border-radius:0 0 6px 6px;margin:12px -20px -18px;padding:12px 20px;border-top:1px dashed var(--line2);font-size:14px;}
+  .apollo b{color:var(--ink);}
+  .pill{display:inline-block;font:500 12px/1 var(--mono);background:var(--page);border:1px solid var(--line2);border-radius:3px;padding:3px 6px;margin:2px 3px 2px 0;}
+  .rec{background:var(--ink);color:var(--page);padding:2px 8px;border-radius:3px;font:600 12px/1.5 var(--font);letter-spacing:.02em;}
+  .footnl{font-size:13px;color:var(--ink3);}
+  .src{font-size:13.5px;} .src li{margin:5px 0;}
+  /* layer diagram */
+  .layers{border:1px solid var(--line2);border-radius:6px;overflow:hidden;margin:18px 0;}
+  .layer{display:grid;grid-template-columns:132px 1fr;border-top:1px solid var(--line);}
+  .layer:first-child{border-top:0;}
+  .layer .ly-h{background:var(--surf);padding:14px 16px;font:600 13px/1.35 var(--font);border-right:1px solid var(--line);}
+  .layer .ly-h small{display:block;color:var(--ink3);font-weight:400;margin-top:3px;}
+  .layer .ly-b{padding:14px 16px;}
+  .regions{display:flex;flex-wrap:wrap;gap:8px;}
+  .region{border:1px solid var(--line2);border-radius:4px;padding:8px 11px;font-size:13px;min-width:120px;}
+  .region.on{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink);}
+  .region b{display:block;} .region small{color:var(--ink3);}
+  /* mode ladder */
+  .ladder{display:grid;grid-template-columns:1fr;gap:0;border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:16px 0;}
+  .rung{display:grid;grid-template-columns:150px 1fr;border-top:1px solid var(--line);}
+  .rung:first-child{border-top:0;}
+  .rung .r-k{background:var(--surf);padding:12px 14px;border-right:1px solid var(--line);}
+  .rung .r-k code{background:var(--page);}
+  .rung .r-b{padding:12px 14px;font-size:14px;}
+  .depthbar{height:4px;background:var(--line);border-radius:2px;margin-top:8px;}
+  .depthbar i{display:block;height:100%;background:var(--ink);border-radius:2px;}
+  @media(max-width:640px){
+    .toc{columns:1;} .grid{grid-template-columns:1fr;} .grid dt{margin-top:6px;}
+    .layer,.rung{grid-template-columns:1fr;} .layer .ly-h,.rung .r-k{border-right:0;border-bottom:1px solid var(--line);}
+    table{font-size:12px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="head">
+  <p class="eyebrow">Apollo · Design model · for review</p>
+  <h1>The Masthead — one switchable pattern</h1>
+  <p class="lede">The global header and the content-heavy masthead are not two components. They are one masthead pattern that reconfigures by <b>intent</b> — and the thing that felt tangled is that <b>three separate layers</b> were being decided as one. This is the model, its labels, and how it maps onto what we already built.</p>
+  <p class="meta">Synthesised 2026-07-16, built collaboratively with Dave, from a research pass across Nielsen Norman Group, IBM Carbon, Shopify Polaris, USWDS, and Material 3. <b>Status: PROPOSED</b> — the structure is settled; the <em>labels</em> are open (see §06). First entry in the Apollo pattern catalog. Sources at the end.</p>
+</header>
+
+<nav class="toc" aria-label="Contents">
+  <a href="#tangle">00 · What was tangled</a>
+  <a href="#layers">01 · The three layers</a>
+  <a href="#axes">02 · The masthead's own axes</a>
+  <a href="#recipes">03 · Intent recipes</a>
+  <a href="#examples">04 · Your examples, mapped</a>
+  <a href="#search">05 · The search rule</a>
+  <a href="#naming">06 · Open naming decisions</a>
+  <a href="#unlocks">07 · What this unlocks</a>
+  <a href="#sources">Sources</a>
+</nav>
+
+<!-- ============ 00 ============ -->
+<h2 id="tangle"><span class="n">00</span>What was tangled</h2>
+<p class="sub">Three different questions, at three different layers, were being answered as if they were one.</p>
+<p>The knot was that these got bundled together:</p>
+<ul>
+  <li><b>Does the masthead show its links flat, or hide them behind a mega?</b> — a property of the <em>masthead</em>.</li>
+  <li><b>Is there also a side nav, or in-page links?</b> — a property of the <em>page</em>, driven by how deep the information architecture is.</li>
+  <li><b>What is each of those regions actually for?</b> — a <em>role</em>, not a component.</li>
+</ul>
+<div class="evidence">
+  <b>Dave's own examples split cleanly along these lines.</b> "A flat menu — top level exposed, no mega — might be used in isolation, or with a side menu, or with an in-page links list." That is one axis (flat) crossed with another (what else is on the page). "Some might use a mega paired with another type — it all depends on depth of the IA, future scaling, or designer preference." Depth drives the pairing; the masthead's own behaviour is separate.
+</div>
+<p>Untangle those three and the god-component risk disappears: the masthead owns only the first question. The rest lives one layer up.</p>
+
+<!-- ============ 01 ============ -->
+<h2 id="layers"><span class="n">01</span>The three layers</h2>
+<p class="sub">Each has an established name in the field. Keeping them apart is the whole move.</p>
+
+<div class="layers" role="img" aria-label="Three-layer navigation model: Shell composes regions; roles label them; the masthead owns its reveal mode.">
+  <div class="layer">
+    <div class="ly-h">Layer 1 · Shell<small>the page frame</small></div>
+    <div class="ly-b">
+      <p style="margin:0 0 8px;font-size:14px;">Which nav regions coexist on the page. Driven by <b>IA depth</b>, not the masthead. <em>Template-tier.</em></p>
+      <div class="regions">
+        <div class="region on"><b>Masthead</b><small>this component</small></div>
+        <div class="region"><b>Side nav</b><small>optional</small></div>
+        <div class="region"><b>In-page nav</b><small>optional</small></div>
+        <div class="region"><b>Breadcrumb</b><small>optional</small></div>
+      </div>
+    </div>
+  </div>
+  <div class="layer">
+    <div class="ly-h">Layer 2 · Roles<small>what each is for</small></div>
+    <div class="ly-b">
+      <p style="margin:0;font-size:14px;">Labels you apply to regions, not components:
+      <span class="pill">Global / primary</span> <span class="pill">Local / secondary</span> <span class="pill">Utility</span> <span class="pill">In-page / contextual</span> <span class="pill">Breadcrumb / wayfinding</span></p>
+    </div>
+  </div>
+  <div class="layer">
+    <div class="ly-h">Layer 3 · Masthead mode<small>the only axis it owns</small></div>
+    <div class="ly-b">
+      <p style="margin:0;font-size:14px;">How the bar reveals its primary nav: <span class="pill">minimal</span> <span class="pill">exposed</span> <span class="pill">exposed-mega</span> <span class="pill">trigger</span> — plus the trigger's modifiers (§02).</p>
+    </div>
+  </div>
+</div>
+
+<div class="evidence">
+  <b>Carbon says the split out loud.</b> "Simple products have the flexibility of using a header <em>or</em> a side panel; more complex products require a <em>combination</em> of UI shell components to accommodate the depth of their navigation." Header-only vs header-with-left-panel is a Shell decision made on IA depth — exactly Layer 1.
+  <br><small>IBM Carbon — Global header pattern, "Configurations".</small>
+</div>
+
+<h3>The role vocabulary (Layer 2)</h3>
+<table>
+  <thead><tr><th>Role</th><th>What it carries</th><th>Usually lives in</th><th>Source term</th></tr></thead>
+  <tbody>
+    <tr><td><b>Global / primary</b></td><td>Top tier of the IA; present everywhere</td><td>Masthead</td><td>NN/g "global"; Carbon "global"</td></tr>
+    <tr><td><b>Local / secondary</b></td><td>Sibling &amp; child pages of the current section</td><td>Side nav</td><td>NN/g "local"; Carbon "local"</td></tr>
+    <tr><td><b>Utility</b></td><td>Search, account, notifications — secondary tools</td><td>Masthead (right)</td><td>NN/g "utility" (Farrell)</td></tr>
+    <tr><td><b>In-page / contextual</b></td><td>Anchors, scroll-spy on long pages</td><td>In-page nav</td><td>NN/g "contextual"</td></tr>
+    <tr><td><b>Breadcrumb</b></td><td>Wayfinding back up the hierarchy</td><td>Above page title</td><td>Carbon "breadcrumb"</td></tr>
+  </tbody>
+</table>
+<div class="apollo"><b>Apollo:</b> the <span class="pill">Shell</span> is a <b>template-tier</b> concern — it composes <span class="pill">Masthead</span> with optional <span class="pill">SideNav</span> / <span class="pill">InPageNav</span> / <span class="pill">Breadcrumb</span>. The masthead never knows the side nav exists. This is the Tranche 8 + template-tier boundary, not the masthead build.</div>
+
+<!-- ============ 02 ============ -->
+<h2 id="axes"><span class="n">02</span>The masthead's own axes</h2>
+<p class="sub">Not granular parameterisation — a small closed set, categorised by intent. The reveal mode is a ladder of increasing IA depth.</p>
+
+<div class="ladder">
+  <div class="rung">
+    <div class="r-k"><code>minimal</code><div class="depthbar"><i style="width:12%"></i></div></div>
+    <div class="r-b"><b>Brand + utility only.</b> No primary nav in the bar — it lives elsewhere (side nav / in-page) or the context is a focused app. <small>Precedent: Polaris Frame (nav in the sidebar).</small></div>
+  </div>
+  <div class="rung">
+    <div class="r-k"><code>exposed</code><div class="depthbar"><i style="width:40%"></i></div></div>
+    <div class="r-b"><b>L1 links inline, no panels.</b> Shallow, stable IA — roughly ≤6 top items, one level. Show it all. <small>Precedent: USWDS basic header. Evidence: exposed beats hidden by a wide margin (NN/g).</small></div>
+  </div>
+  <div class="rung">
+    <div class="r-k"><code>exposed-mega</code><div class="depthbar"><i style="width:72%"></i></div></div>
+    <div class="r-b"><b>L1 links inline, each opens a mega.</b> Broad <em>and</em> deep — show the top level, reveal the rest on demand. This is your "exposed header that also invokes a mega." <small>Precedent: USWDS mega header.</small></div>
+  </div>
+  <div class="rung">
+    <div class="r-k"><code>trigger</code><div class="depthbar"><i style="width:100%"></i></div></div>
+    <div class="r-b"><b>One door opens a panel holding the nav.</b> Deepest / most flexible — carries the modifiers below. <small>Precedent: content-heavy masthead; our current <code>.mm-masthead</code>.</small></div>
+  </div>
+</div>
+
+<h3>The <code>trigger</code> modifiers</h3>
+<p>Everything that felt like "more modes" is actually variation <em>inside</em> trigger. This is where depth and emphasis live.</p>
+<dl class="grid">
+  <dt>Prominence</dt><dd><code>primary</code> (nav is the star — brand-led / marketing) or <code>index</code> (deliberately tucked, low-frequency — the well-configured dashboard where nav is an occasional index). <b>Index is a subset of trigger, not a peer</b> — prominence only means something once the nav is behind a door.</dd>
+  <dt>Affordance</dt><dd><code>burger</code> (plain menu control) or <code>menu+search</code> (a combined control that opens a panel leading with search, then browse — the common mobile pattern). Pairs especially well with <code>index</code>, where search is often the fastest way in.</dd>
+  <dt>Panel layout</dt><dd><code>cols</code> (1 level) · <code>featured</code> (+ journeys rail) · <code>tabbed-vertical</code> (L1 tabs → L2 columns → L3 links = 3 levels) · <code>tabbed-horizontal</code>. <b>This sub-axis is what carries IA depth</b> — a 3-level structure lives here, not in a new top-level mode.</dd>
+</dl>
+<div class="note">
+  <b>Tuck-by-intent ≠ collapse-by-necessity.</b> The <code>index</code> prominence tucks the nav at <em>all</em> widths because it is incidental. That is different from the automatic responsive collapse to a drawer at narrow widths, which happens under <em>every</em> mode because there is no room. Same drawer, different reason — keep them distinct.
+</div>
+
+<!-- ============ 03 ============ -->
+<h2 id="recipes"><span class="n">03</span>Intent recipes</h2>
+<p class="sub">Axes are for the machine; <b>recipes are for the designer.</b> A designer picks a named intent, not five raw dials — which is what keeps this from becoming a god-component.</p>
+<table>
+  <thead><tr><th>Recipe</th><th>Reveal</th><th>Prominence</th><th>Affordance</th><th>Panel layout</th><th>Utilities</th><th>Reach for it when…</th></tr></thead>
+  <tbody>
+    <tr><td><b>App-minimal</b></td><td><code>minimal</code></td><td>—</td><td>—</td><td>—</td><td>account</td><td>Post-login app; primary nav is a side rail</td></tr>
+    <tr><td><b>Marketing-exposed</b></td><td><code>exposed</code></td><td>primary</td><td>—</td><td>—</td><td>search + account</td><td>Shallow, stable IA; ≤6 sections</td></tr>
+    <tr><td><b>Marketing-mega</b></td><td><code>exposed-mega</code></td><td>primary</td><td>—</td><td>tabbed-h</td><td>search + account</td><td>Broad + deep public site</td></tr>
+    <tr><td><b>Content-heavy masthead</b></td><td><code>trigger</code></td><td>primary</td><td>burger</td><td>featured</td><td>account (search in panel)</td><td>Brand-led, discovery-first entry</td></tr>
+    <tr><td><b>Dashboard-index</b></td><td><code>trigger</code></td><td>index</td><td>menu+search</td><td>tabbed (deep)</td><td>account (search in panel)</td><td>Well-configured dashboard; nav is a rarely-used index</td></tr>
+  </tbody>
+</table>
+<p class="footnl">Responsive collapse → drawer sits underneath all five, automatically.</p>
+
+<!-- ============ 04 ============ -->
+<h2 id="examples"><span class="n">04</span>Your examples, mapped</h2>
+<p class="sub">The four cases you described land as points in the model — nothing left over, nothing forced.</p>
+<table>
+  <thead><tr><th>What you described</th><th>Shell (Layer 1)</th><th>Masthead mode (Layer 3)</th></tr></thead>
+  <tbody>
+    <tr><td>Flat menu, in isolation</td><td>masthead only</td><td><code>exposed</code></td></tr>
+    <tr><td>Flat menu + side menu</td><td>masthead + side nav <small>(global + local)</small></td><td><code>exposed</code></td></tr>
+    <tr><td>Flat menu + in-page links</td><td>masthead + in-page</td><td><code>exposed</code></td></tr>
+    <tr><td>Mega paired with another type</td><td>masthead + side nav</td><td><code>exposed-mega</code> or <code>trigger</code></td></tr>
+    <tr><td>Dashboard, nav rarely used</td><td>masthead + side nav / dashboard body</td><td><code>trigger</code> · index · menu+search</td></tr>
+  </tbody>
+</table>
+<p>Three independent, intent-driven choices: <b>(1)</b> masthead mode by top-level IA breadth/depth, <b>(2)</b> shell composition by whether there is sectional depth needing a side nav, <b>(3)</b> utilities as needed. None entangled — which is exactly the "depends on IA depth / future scaling / designer preference" flexibility you wanted.</p>
+
+<!-- ============ 05 ============ -->
+<h2 id="search"><span class="n">05</span>The search rule</h2>
+<p class="sub">Search can appear in the bar and inside the mega/panel. Here is when that is fine and when it is redundant.</p>
+<dl class="grid">
+  <dt>Both global?</dt><dd>Fine. Two entry points to the same global search is acceptable — in trigger/index modes the bar is stripped down (brand + door), so the bar-search and the panel-search never sit inches apart competing.</dd>
+  <dt>The finesse<br>(Dave)</dt><dd><b>The masthead search icon disappears when the panel/mega search is present or open</b> — so you never see two global searches at once. This is the clean resolution of the redundancy worry.</dd>
+  <dt>Combined control</dt><dd>The <code>menu+search</code> affordance folds the two together into one door — the search <em>is</em> the top of the opened panel. Most natural in the <code>index</code> recipe.</dd>
+  <dt>Accessibility</dt><dd>Two search fields = two landmarks. Either give each a distinct accessible name ("Search", "Search menu"), or expose only one to the accessibility tree. Do not ship two unlabelled, identical search landmarks.</dd>
+</dl>
+<div class="note"><b>Scope note (settled as "same global" for now):</b> if a future context wants the panel search <em>scoped</em> to that section (e.g. "Search payments") while the bar stays global, that is a legitimate variant — but it must be labelled to show the difference, or it reads as a duplicate. Parked, not adopted.</div>
+
+<!-- ============ 06 ============ -->
+<h2 id="naming"><span class="n">06</span>Open naming decisions</h2>
+<p class="sub">The structure is settled. These labels are yours to set — mark them up.</p>
+
+<div class="decision">
+  <span class="lbl">Decision · D1 — mode labels</span>
+  Proposed: <code>minimal</code> · <code>exposed</code> · <code>exposed-mega</code> · <code>trigger</code>. Are these the right names? Candidates if not: <em>bar / inline</em> for exposed; <em>panel / drawer-nav</em> for trigger. The label should read as intent, not mechanism.
+</div>
+<div class="decision">
+  <span class="lbl">Decision · D2 — the Layer-1 name</span>
+  What do we call the composition layer for Apollo? <b>Shell</b> (IBM Carbon) · <b>Frame</b> (Shopify Polaris) · or an Apollo term. "Shell" is the more common enterprise term; "Frame" is Polaris-specific.
+</div>
+<div class="decision">
+  <span class="lbl">Decision · D3 — recipe names</span>
+  <code>App-minimal · Marketing-exposed · Marketing-mega · Content-heavy masthead · Dashboard-index</code>. These are the designer-facing presets. Do they read cleanly, and is the set complete — or is there a sixth intent we should name?
+</div>
+
+<!-- ============ 07 ============ -->
+<h2 id="unlocks"><span class="n">07</span>What this unlocks</h2>
+<p class="sub">Beyond tidying the component — this is a proof and a seed.</p>
+<div class="card">
+  <h3>One component, many use-cases <span class="tag">factory proof</span></h3>
+  <p style="margin:0;">A single <code>.masthead</code> skeleton that reconfigures across five real intents via a <code>data-mode</code> attribute + a small prop set <em>is</em> the pro-forma programme thesis made visible. It is a strong artefact for the "one skeleton, N modes" story — the switch UI reconfigures one live instance across use-cases.</p>
+</div>
+<div class="card">
+  <h3>The component API falls out of the model <span class="tag">build</span></h3>
+  <p style="margin:0;">Reveal mode → <code>data-mode</code> (declarative, CSS-driven). Prominence / affordance / panel-layout → modifier classes or props. Utilities → boolean toggles. Motion stays CSS-only; JS only for disclosure open/close, focus, keyboard. The recipes become documented presets.</p>
+</div>
+<div class="card">
+  <h3>First entry in the Apollo catalog <span class="tag">Storybook, but Swiss</span></h3>
+  <p style="margin:0;">This dossier is the template for the eventual HTML component catalog — a nicer, Swiss-aesthetic Storybook. Its content is also stored in the KB (<code>knowledge/_proforma/_MASTHEAD-MODEL.md</code>) with typed relationships, so the model feeds the knowledge graph rather than living only as a one-off page.</p>
+</div>
+
+<!-- ============ SOURCES ============ -->
+<h2 id="sources"><span class="n">—</span>Sources</h2>
+<ul class="src">
+  <li>Nielsen Norman Group — <a href="https://www.nngroup.com/articles/local-navigation/">Local Navigation</a> · <a href="https://www.nngroup.com/articles/utility-navigation/">Utility Navigation</a> (Farrell)</li>
+  <li>IBM Carbon Design System — <a href="https://carbondesignsystem.com/patterns/global-header/">Global header pattern</a> (persistence, task hierarchy, configurations)</li>
+  <li>Shopify Polaris — <a href="https://polaris.shopify.com/components/utilities/frame">Frame</a> (app shell composing TopBar + Navigation)</li>
+  <li>U.S. Web Design System — <a href="https://designsystem.digital.gov/components/headers/basic-mega/">Header with megamenu</a></li>
+  <li>Material Design 3 — <a href="https://m3.material.io/components/navigation-drawer/guidelines">Navigation drawer / rail / bar</a> (responsive hierarchy)</li>
+  <li>Prior Apollo research — <code>reviews/NAV-PATTERN-CATALOG-2026-07-15.html</code></li>
+</ul>
+
+<p class="meta" style="margin-top:32px;border-top:1px solid var(--line);padding-top:16px;">Apollo · Masthead model · 2026-07-16 · PROPOSED, pending sign-off on §06. To mark this up, run <code>python3 knowledge/_review/_make_review.py reviews/MASTHEAD-MODEL-2026-07-16.html</code> and comment on the REVIEW copy.</p>
+
+</div>
+<meta name="rv-doc" content="MASTHEAD MODEL 2026 07 16">
+<meta name="rv-file" content="knowledge/_proforma/MASTHEAD-MODEL-2026-07-16.html">
+<!-- APOLLO-REVIEW-OVERLAY -->
+<!-- ============================================================================
+     APOLLO REVIEW OVERLAY — reusable comment layer for pro-forma review files.
+     Self-contained (no external deps, no browser storage). Drop this whole block
+     in before </body> of ANY interactive HTML to add: a Review-mode toggle,
+     click-a-component-to-pin-a-comment, a comments panel, and Export → a
+     structured numbered prompt (copy / download) to paste back for the edits.
+     Injected by _make_review.py. All ids/classes are `rv-` prefixed to avoid
+     clashing with the host page. Nothing here is scanned by the component gates.
+     ========================================================================= -->
+<style id="rv-style">
+  #rv-fab{position:fixed;right:16px;bottom:16px;z-index:2147483000;display:inline-flex;align-items:center;gap:8px;
+    height:40px;padding:0 16px;border:1.5px solid #1A1A1A;border-radius:999px;background:#fff;color:#1A1A1A;
+    font:600 13px/1 -apple-system,Segoe UI,Roboto,sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.14);}
+  #rv-fab .rv-dot{width:8px;height:8px;border-radius:50%;background:#B7B7B7;}
+  #rv-fab.rv-on{background:#1A1A1A;color:#fff;border-color:#1A1A1A;}
+  #rv-fab.rv-on .rv-dot{background:#37D67A;}
+  #rv-fab .rv-count{min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#DB0011;color:#fff;
+    font:700 11px/18px -apple-system,Segoe UI,Roboto,sans-serif;text-align:center;display:none;}
+  #rv-fab .rv-count.rv-has{display:inline-block;}
+  /* review mode: crosshair + hover outline on the host content */
+  body.rv-active [data-rv-hover]{outline:2px solid #DB0011 !important;outline-offset:1px;cursor:crosshair;}
+  body.rv-active{scroll-behavior:auto;}
+  /* pinned markers layer */
+  #rv-markers{position:fixed;inset:0;z-index:2147482000;pointer-events:none;}
+  .rv-pin{position:fixed;transform:translate(-50%,-50%);width:22px;height:22px;border-radius:50% 50% 50% 2px;
+    background:#DB0011;color:#fff;font:700 12px/22px -apple-system,Segoe UI,Roboto,sans-serif;text-align:center;
+    box-shadow:0 2px 6px rgba(0,0,0,.3);pointer-events:auto;cursor:pointer;border:2px solid #fff;}
+  /* composer popover */
+  #rv-composer{position:fixed;z-index:2147483600;width:300px;max-width:92vw;background:#fff;border:1px solid #D7D8D6;
+    border-radius:8px;box-shadow:0 12px 40px rgba(0,0,0,.22);padding:12px;display:none;
+    font:400 13px/1.45 -apple-system,Segoe UI,Roboto,sans-serif;color:#1A1A1A;}
+  #rv-composer.rv-show{display:block;}
+  #rv-composer .rv-target{font:600 12px/1.3 inherit;color:#333;margin:0 0 8px;word-break:break-word;}
+  #rv-composer textarea{width:100%;box-sizing:border-box;min-height:76px;resize:vertical;padding:8px;
+    border:1px solid #B7B7B7;border-radius:6px;font:inherit;color:#1A1A1A;outline:none;}
+  #rv-composer textarea:focus{border-color:#1A1A1A;}
+  #rv-composer .rv-row{display:flex;gap:8px;justify-content:flex-end;margin-top:8px;}
+  .rv-btn{height:32px;padding:0 14px;border-radius:6px;border:1px solid #1A1A1A;background:#fff;color:#1A1A1A;
+    font:600 12px/1 -apple-system,Segoe UI,Roboto,sans-serif;cursor:pointer;}
+  .rv-btn.rv-primary{background:#1A1A1A;color:#fff;}
+  .rv-btn.rv-danger{border-color:#DB0011;color:#DB0011;}
+  .rv-btn:disabled{opacity:.4;cursor:not-allowed;}
+  /* comments panel */
+  #rv-panel{position:fixed;top:0;right:0;bottom:0;width:340px;max-width:88vw;z-index:2147483200;background:#fff;
+    border-left:1px solid #D7D8D6;box-shadow:-8px 0 30px rgba(0,0,0,.16);transform:translateX(100%);
+    transition:transform .18s ease;display:flex;flex-direction:column;
+    font:400 13px/1.45 -apple-system,Segoe UI,Roboto,sans-serif;color:#1A1A1A;}
+  #rv-panel.rv-open{transform:translateX(0);}
+  #rv-panel .rv-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px 16px;border-bottom:1px solid #EEE;}
+  #rv-panel .rv-head strong{font:700 14px/1 inherit;}
+  #rv-panel .rv-list{flex:1;overflow:auto;padding:8px 12px;}
+  #rv-panel .rv-empty{color:#8A8A8A;padding:24px 8px;text-align:center;}
+  .rv-item{border:1px solid #EEE;border-radius:8px;padding:10px;margin:0 0 8px;}
+  .rv-item .rv-item-h{display:flex;align-items:center;gap:8px;margin:0 0 4px;}
+  .rv-item .rv-num{flex:none;width:20px;height:20px;border-radius:50%;background:#1A1A1A;color:#fff;font:700 11px/20px inherit;text-align:center;}
+  .rv-item .rv-loc{font:600 12px/1.3 inherit;color:#333;word-break:break-word;}
+  .rv-item .rv-txt{color:#1A1A1A;white-space:pre-wrap;word-break:break-word;margin:2px 0 8px;}
+  .rv-item .rv-acts{display:flex;gap:8px;}
+  .rv-item .rv-link{background:none;border:0;padding:0;color:#333;text-decoration:underline;cursor:pointer;font:600 12px/1 inherit;}
+  .rv-item .rv-link.rv-del{color:#DB0011;}
+  #rv-panel .rv-foot{border-top:1px solid #EEE;padding:12px 16px;display:flex;gap:8px;}
+  #rv-panel .rv-foot .rv-btn{flex:1;height:38px;}
+  /* export modal */
+  #rv-export{position:fixed;inset:0;z-index:2147483600;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;padding:24px;}
+  #rv-export.rv-show{display:flex;}
+  #rv-export .rv-card{width:720px;max-width:100%;max-height:86vh;background:#fff;border-radius:10px;display:flex;flex-direction:column;overflow:hidden;
+    font:400 13px/1.45 -apple-system,Segoe UI,Roboto,sans-serif;color:#1A1A1A;}
+  #rv-export .rv-card-h{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #EEE;}
+  #rv-export textarea{flex:1;margin:0;border:0;outline:none;resize:none;padding:16px;font:400 12.5px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;color:#1A1A1A;min-height:320px;}
+  #rv-export .rv-card-f{display:flex;gap:8px;justify-content:flex-end;padding:12px 16px;border-top:1px solid #EEE;}
+  .rv-x{background:none;border:0;font-size:20px;line-height:1;cursor:pointer;color:#666;padding:4px;}
+  @media print{#rv-fab,#rv-panel,#rv-composer,#rv-markers,#rv-export{display:none !important;}}
+</style>
+
+<button id="rv-fab" type="button" aria-pressed="false" title="Toggle review mode">
+  <span class="rv-dot" aria-hidden="true"></span><span class="rv-label">Review</span><span class="rv-count" id="rv-count">0</span>
+</button>
+<div id="rv-markers" aria-hidden="true"></div>
+<div id="rv-composer" role="dialog" aria-label="Add comment">
+  <p class="rv-target" id="rv-composer-target"></p>
+  <textarea id="rv-composer-text" placeholder="Describe the change you want here…" aria-label="Comment"></textarea>
+  <div class="rv-row">
+    <button class="rv-btn rv-danger" id="rv-composer-del" type="button" style="margin-right:auto;display:none;">Delete</button>
+    <button class="rv-btn" id="rv-composer-cancel" type="button">Cancel</button>
+    <button class="rv-btn rv-primary" id="rv-composer-save" type="button">Save</button>
+  </div>
+</div>
+<aside id="rv-panel" aria-label="Review comments">
+  <div class="rv-head"><strong>Comments (<span id="rv-panel-count">0</span>)</strong>
+    <button class="rv-x" id="rv-panel-close" type="button" aria-label="Close panel">×</button></div>
+  <div class="rv-list" id="rv-list"><p class="rv-empty">Turn on <b>Review</b>, then click any component to pin a comment.</p></div>
+  <div class="rv-foot">
+    <button class="rv-btn" id="rv-clear" type="button">Clear all</button>
+    <button class="rv-btn rv-primary" id="rv-export-btn" type="button">Export prompt</button>
+  </div>
+</aside>
+<div id="rv-export" role="dialog" aria-label="Export prompt" aria-modal="true">
+  <div class="rv-card">
+    <div class="rv-card-h"><strong>Edit prompt — copy &amp; paste back</strong><button class="rv-x" id="rv-export-close" type="button" aria-label="Close">×</button></div>
+    <textarea id="rv-export-text" readonly spellcheck="false"></textarea>
+    <div class="rv-card-f">
+      <button class="rv-btn" id="rv-export-download" type="button">Download .md</button>
+      <button class="rv-btn rv-primary" id="rv-export-copy" type="button">Copy to clipboard</button>
+    </div>
+  </div>
+</div>
+
+<script id="rv-script">
+(function(){
+  "use strict";
+  function meta(n){ var m=document.querySelector('meta[name="'+n+'"]'); return m?m.getAttribute('content'):''; }
+  var DOC_TITLE = meta('rv-doc') || (document.title||"Review").replace(/\s+·.*$/,"").trim();
+  var DOC_FILE = meta('rv-file') || '';
+  var comments = [];            // {id, section, desc, path, text, el}
+  var seq = 0;
+  var active = false, editingId = null, pendingEl = null;
+
+  var fab=document.getElementById('rv-fab'),
+      countEl=document.getElementById('rv-count'),
+      markers=document.getElementById('rv-markers'),
+      composer=document.getElementById('rv-composer'),
+      cTarget=document.getElementById('rv-composer-target'),
+      cText=document.getElementById('rv-composer-text'),
+      cSave=document.getElementById('rv-composer-save'),
+      cCancel=document.getElementById('rv-composer-cancel'),
+      cDel=document.getElementById('rv-composer-del'),
+      panel=document.getElementById('rv-panel'),
+      list=document.getElementById('rv-list'),
+      panelCount=document.getElementById('rv-panel-count'),
+      exportModal=document.getElementById('rv-export'),
+      exportText=document.getElementById('rv-export-text');
+
+  function isRvNode(n){ return n && n.closest && n.closest('#rv-fab,#rv-panel,#rv-composer,#rv-markers,#rv-export'); }
+
+  // ---- element description -------------------------------------------------
+  function sectionName(el){
+    var sec = el.closest && el.closest('section[aria-labelledby]');
+    if(sec){ var h=document.getElementById(sec.getAttribute('aria-labelledby')); if(h) return h.textContent.trim(); }
+    var anySec = el.closest && el.closest('section'); if(anySec){ var hh=anySec.querySelector('h1,h2,h3'); if(hh) return hh.textContent.trim(); }
+    return '';
+  }
+  function descOf(el){
+    var aria=(el.getAttribute&&el.getAttribute('aria-label'))||'';
+    var own=(aria||el.textContent||'').replace(/\s+/g,' ').trim();
+    if(own.length>48) own=own.slice(0,48)+'…';
+    var tag=el.tagName?el.tagName.toLowerCase():'el';
+    var cls=(typeof el.className==='string'&&el.className)?'.'+el.className.split(/\s+/)[0]:'';
+    return own ? own+' ('+tag+cls+')' : tag+cls;
+  }
+  function pathOf(el){
+    var parts=[], n=el, depth=0;
+    while(n && n.nodeType===1 && n!==document.body && depth<5){
+      var s=n.tagName.toLowerCase();
+      if(n.id){ s='#'+n.id; parts.unshift(s); break; }
+      if(typeof n.className==='string' && n.className.trim()) s+='.'+n.className.trim().split(/\s+/)[0];
+      parts.unshift(s); n=n.parentElement; depth++;
+    }
+    return parts.join(' > ');
+  }
+
+  // ---- markers -------------------------------------------------------------
+  function renderMarkers(){
+    markers.innerHTML='';
+    comments.forEach(function(c,i){
+      if(!c.el||!c.el.getBoundingClientRect) return;
+      var r=c.el.getBoundingClientRect();
+      if(r.width===0&&r.height===0) return;
+      var pin=document.createElement('button');
+      pin.className='rv-pin'; pin.type='button'; pin.textContent=(i+1);
+      pin.style.left=(r.right-6)+'px'; pin.style.top=(r.top+8)+'px';
+      pin.title=c.text||'(empty)';
+      pin.addEventListener('click',function(e){ e.stopPropagation(); openComposer(c.el,c.id); });
+      markers.appendChild(pin);
+    });
+  }
+
+  // ---- composer ------------------------------------------------------------
+  function openComposer(el, id){
+    editingId=(id!=null)?id:null; pendingEl=el;
+    var sec=sectionName(el), d=descOf(el);
+    cTarget.textContent=(sec?('['+sec+'] '):'')+d;
+    var existing=id!=null?comments.filter(function(c){return c.id===id;})[0]:null;
+    cText.value=existing?existing.text:'';
+    cDel.style.display=existing?'inline-flex':'none';
+    var r=el.getBoundingClientRect();
+    var top=Math.min(window.innerHeight-220, Math.max(12, r.top));
+    var left=Math.min(window.innerWidth-312, Math.max(12, r.left));
+    composer.style.top=top+'px'; composer.style.left=left+'px';
+    composer.classList.add('rv-show');
+    setTimeout(function(){ cText.focus(); },0);
+  }
+  function closeComposer(){ composer.classList.remove('rv-show'); pendingEl=null; editingId=null; }
+  cSave.addEventListener('click',function(){
+    var txt=cText.value.trim(); if(!txt){ closeComposer(); return; }
+    if(editingId!=null){
+      comments.forEach(function(c){ if(c.id===editingId) c.text=txt; });
+    } else if(pendingEl){
+      comments.push({id:++seq, section:sectionName(pendingEl), desc:descOf(pendingEl), path:pathOf(pendingEl), text:txt, el:pendingEl});
+    }
+    closeComposer(); refresh();
+  });
+  cCancel.addEventListener('click',closeComposer);
+  cDel.addEventListener('click',function(){ if(editingId!=null){ comments=comments.filter(function(c){return c.id!==editingId;}); } closeComposer(); refresh(); });
+  cText.addEventListener('keydown',function(e){ if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)){ cSave.click(); } if(e.key==='Escape'){ closeComposer(); } });
+
+  // ---- panel list ----------------------------------------------------------
+  function refresh(){
+    countEl.textContent=comments.length; countEl.classList.toggle('rv-has',comments.length>0);
+    panelCount.textContent=comments.length;
+    if(!comments.length){ list.innerHTML='<p class="rv-empty">Turn on <b>Review</b>, then click any component to pin a comment.</p>'; }
+    else {
+      list.innerHTML='';
+      comments.forEach(function(c,i){
+        var it=document.createElement('div'); it.className='rv-item';
+        var loc=(c.section?('['+c.section+'] '):'')+c.desc;
+        it.innerHTML='<div class="rv-item-h"><span class="rv-num">'+(i+1)+'</span><span class="rv-loc"></span></div>'+
+          '<div class="rv-txt"></div>'+
+          '<div class="rv-acts"><button class="rv-link rv-goto" type="button">Reveal</button>'+
+          '<button class="rv-link rv-edit" type="button">Edit</button>'+
+          '<button class="rv-link rv-del" type="button">Delete</button></div>';
+        it.querySelector('.rv-loc').textContent=loc;
+        it.querySelector('.rv-txt').textContent=c.text;
+        it.querySelector('.rv-goto').addEventListener('click',function(){ if(c.el&&c.el.scrollIntoView){ c.el.scrollIntoView({block:'center'}); flash(c.el);} });
+        it.querySelector('.rv-edit').addEventListener('click',function(){ if(c.el) openComposer(c.el,c.id); });
+        it.querySelector('.rv-del').addEventListener('click',function(){ comments=comments.filter(function(x){return x.id!==c.id;}); refresh(); });
+        list.appendChild(it);
+      });
+    }
+    renderMarkers();
+  }
+  function flash(el){ var o=el.style.outline; el.style.outline='3px solid #DB0011'; setTimeout(function(){ el.style.outline=o; },700); }
+
+  // ---- export --------------------------------------------------------------
+  function buildPrompt(){
+    var lines=[];
+    lines.push('# '+DOC_TITLE+' — review edits ('+comments.length+')');
+    lines.push('');
+    lines.push('Apply the following change requests'+(DOC_FILE?(' to `'+DOC_FILE+'`'):'')+'. Each item is pinned to a component; treat the bracketed location as the target and use the selector to disambiguate.');
+    lines.push('');
+    comments.forEach(function(c,i){
+      var loc=(c.section?('['+c.section+'] '):'')+c.desc;
+      lines.push((i+1)+'. '+loc);
+      lines.push('   - '+c.text.replace(/\n/g,'\n     '));
+      lines.push('   - selector: `'+c.path+'`');
+      lines.push('');
+    });
+    return lines.join('\n');
+  }
+  function openExport(){ exportText.value=buildPrompt(); exportModal.classList.add('rv-show'); setTimeout(function(){ exportText.focus(); exportText.select(); },0); }
+  document.getElementById('rv-export-btn').addEventListener('click',openExport);
+  document.getElementById('rv-export-close').addEventListener('click',function(){ exportModal.classList.remove('rv-show'); });
+  exportModal.addEventListener('click',function(e){ if(e.target===exportModal) exportModal.classList.remove('rv-show'); });
+  document.getElementById('rv-export-copy').addEventListener('click',function(){
+    exportText.select();
+    var ok=false; try{ ok=document.execCommand('copy'); }catch(e){}
+    if(navigator.clipboard){ navigator.clipboard.writeText(exportText.value).catch(function(){}); ok=true; }
+    var b=document.getElementById('rv-export-copy'); var t=b.textContent; b.textContent=ok?'Copied ✓':'Select + ⌘C'; setTimeout(function(){ b.textContent=t; },1400);
+  });
+  document.getElementById('rv-export-download').addEventListener('click',function(){
+    var blob=new Blob([buildPrompt()],{type:'text/markdown'});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+    a.download=(DOC_TITLE.replace(/[^\w-]+/g,'-')||'review')+'-comments.md'; a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); },1000);
+  });
+
+  // ---- review-mode wiring --------------------------------------------------
+  var hoverEl=null;
+  function setActive(on){
+    active=on; document.body.classList.toggle('rv-active',on);
+    fab.classList.toggle('rv-on',on); fab.setAttribute('aria-pressed',on?'true':'false');
+    fab.querySelector('.rv-label').textContent=on?'Reviewing':'Review';
+    if(on){ panel.classList.add('rv-open'); } else { clearHover(); }
+  }
+  function clearHover(){ if(hoverEl){ hoverEl.removeAttribute('data-rv-hover'); hoverEl=null; } }
+  fab.addEventListener('click',function(){ setActive(!active); });
+  document.getElementById('rv-panel-close').addEventListener('click',function(){ panel.classList.remove('rv-open'); });
+  document.getElementById('rv-clear').addEventListener('click',function(){ if(comments.length&&confirm('Delete all '+comments.length+' comments?')){ comments=[]; refresh(); } });
+
+  document.addEventListener('mousemove',function(e){
+    if(!active) return;
+    var t=e.target;
+    if(isRvNode(t)){ clearHover(); return; }
+    if(t!==hoverEl){ clearHover(); hoverEl=t; if(hoverEl&&hoverEl.setAttribute) hoverEl.setAttribute('data-rv-hover',''); }
+  },true);
+
+  // capture clicks in review mode so the host page's own handlers/nav don't fire
+  document.addEventListener('click',function(e){
+    if(!active) return;
+    if(isRvNode(e.target)) return;           // let overlay UI work normally
+    e.preventDefault(); e.stopPropagation();
+    clearHover();
+    openComposer(e.target, null);
+  },true);
+
+  window.addEventListener('scroll',renderMarkers,true);
+  window.addEventListener('resize',function(){ renderMarkers(); },true);
+  setInterval(renderMarkers,600);          // keep pins glued as the page reflows
+
+  refresh();
+})();
+</script>
+<!-- ===================== END APOLLO REVIEW OVERLAY ===================== -->
+
+</body>
+</html>

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apollo · The Masthead — a switchable model</title>
+<style>
+  :root{
+    --ink:#1a1a1a; --ink2:#5c5c5c; --ink3:#8a8a8a; --line:#e4e4e4; --line2:#d0d0d0;
+    --page:#ffffff; --surf:#f6f6f6; --raised:#fff; --acc:#a8000b; --ok:#00847f; --info:#305a85;
+    --sp:16px; --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:"SF Mono",ui-monospace,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--surf);color:var(--ink);font:400 16px/1.6 var(--font);-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:940px;margin:0 auto;background:var(--page);padding:56px clamp(20px,5vw,64px);}
+  header.head{border-bottom:2px solid var(--ink);padding-bottom:24px;margin-bottom:8px;}
+  .eyebrow{font:600 12px/1 var(--font);letter-spacing:.12em;text-transform:uppercase;color:var(--ink2);margin:0 0 12px;}
+  h1{font:700 34px/1.15 var(--font);margin:0 0 10px;letter-spacing:-.01em;}
+  .lede{font-size:17px;color:var(--ink2);margin:0;max-width:64ch;}
+  .meta{font:400 13px/1.5 var(--font);color:var(--ink3);margin-top:16px;}
+  h2{font:700 24px/1.2 var(--font);letter-spacing:-.01em;margin:52px 0 4px;padding-top:20px;border-top:1px solid var(--line);}
+  h2 .n{color:var(--ink3);font-weight:400;margin-right:.5ch;}
+  h2:first-of-type{border-top:0;}
+  h3{font:700 18px/1.3 var(--font);margin:30px 0 6px;}
+  h4{font:600 15px/1.3 var(--font);margin:18px 0 4px;}
+  p{margin:8px 0;}
+  a{color:var(--info);}
+  small{color:var(--ink3);}
+  .sub{color:var(--ink2);margin:2px 0 14px;}
+  ul,ol{margin:8px 0;padding-left:22px;} li{margin:4px 0;}
+  code{font:500 13px/1.4 var(--mono);background:var(--surf);border:1px solid var(--line);border-radius:3px;padding:1px 5px;}
+  .toc{background:var(--surf);border:1px solid var(--line);padding:18px 22px;margin:24px 0 8px;columns:2;column-gap:32px;font-size:14px;}
+  .toc a{display:block;color:var(--ink);text-decoration:none;padding:3px 0;break-inside:avoid;}
+  .toc a:hover{color:var(--info);}
+  .evidence{border-left:3px solid var(--acc);background:#fdf5f5;padding:12px 16px;margin:14px 0;font-size:14.5px;}
+  .evidence b{color:var(--acc);}
+  .note{border-left:3px solid var(--info);background:#f3f7fb;padding:12px 16px;margin:14px 0;font-size:14.5px;}
+  .decision{border:1px solid var(--acc);border-left:4px solid var(--acc);background:#fffafa;padding:14px 18px;margin:16px 0;font-size:14.5px;border-radius:0 6px 6px 0;}
+  .decision .lbl{font:700 11px/1 var(--font);letter-spacing:.1em;text-transform:uppercase;color:var(--acc);display:block;margin-bottom:6px;}
+  .decision.done{border-color:var(--ink);border-left-color:var(--ink);background:var(--surf);}
+  .decision.done .lbl{color:var(--ink);}
+  .decision.done .lbl::after{content:' ✓';}
+  .card{border:1px solid var(--line);border-radius:6px;padding:18px 20px;margin:16px 0;background:var(--raised);}
+  .card h3{margin-top:0;}
+  .tag{display:inline-block;font:600 11px/1 var(--font);letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);border:1px solid var(--line2);border-radius:3px;padding:4px 7px;margin-left:8px;vertical-align:middle;}
+  .grid{display:grid;grid-template-columns:120px 1fr;gap:2px 16px;margin:12px 0 2px;font-size:14.5px;}
+  .grid dt{font-weight:600;color:var(--ink2);}
+  .grid dd{margin:0 0 8px;}
+  table{border-collapse:collapse;width:100%;margin:16px 0;font-size:13px;}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top;}
+  th{background:var(--surf);font-weight:600;}
+  .apollo{background:var(--surf);border-radius:0 0 6px 6px;margin:12px -20px -18px;padding:12px 20px;border-top:1px dashed var(--line2);font-size:14px;}
+  .apollo b{color:var(--ink);}
+  .pill{display:inline-block;font:500 12px/1 var(--mono);background:var(--page);border:1px solid var(--line2);border-radius:3px;padding:3px 6px;margin:2px 3px 2px 0;}
+  .rec{background:var(--ink);color:var(--page);padding:2px 8px;border-radius:3px;font:600 12px/1.5 var(--font);letter-spacing:.02em;}
+  .footnl{font-size:13px;color:var(--ink3);}
+  .src{font-size:13.5px;} .src li{margin:5px 0;}
+  /* layer diagram */
+  .layers{border:1px solid var(--line2);border-radius:6px;overflow:hidden;margin:18px 0;}
+  .layer{display:grid;grid-template-columns:132px 1fr;border-top:1px solid var(--line);}
+  .layer:first-child{border-top:0;}
+  .layer .ly-h{background:var(--surf);padding:14px 16px;font:600 13px/1.35 var(--font);border-right:1px solid var(--line);}
+  .layer .ly-h small{display:block;color:var(--ink3);font-weight:400;margin-top:3px;}
+  .layer .ly-b{padding:14px 16px;}
+  .regions{display:flex;flex-wrap:wrap;gap:8px;}
+  .region{border:1px solid var(--line2);border-radius:4px;padding:8px 11px;font-size:13px;min-width:120px;}
+  .region.on{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink);}
+  .region b{display:block;} .region small{color:var(--ink3);}
+  /* mode ladder */
+  .ladder{display:grid;grid-template-columns:1fr;gap:0;border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:16px 0;}
+  .rung{display:grid;grid-template-columns:150px 1fr;border-top:1px solid var(--line);}
+  .rung:first-child{border-top:0;}
+  .rung .r-k{background:var(--surf);padding:12px 14px;border-right:1px solid var(--line);}
+  .rung .r-k code{background:var(--page);}
+  .rung .r-b{padding:12px 14px;font-size:14px;}
+  .depthbar{height:4px;background:var(--line);border-radius:2px;margin-top:8px;}
+  .depthbar i{display:block;height:100%;background:var(--ink);border-radius:2px;}
+  @media(max-width:640px){
+    .toc{columns:1;} .grid{grid-template-columns:1fr;} .grid dt{margin-top:6px;}
+    .layer,.rung{grid-template-columns:1fr;} .layer .ly-h,.rung .r-k{border-right:0;border-bottom:1px solid var(--line);}
+    table{font-size:12px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="head">
+  <p class="eyebrow">Apollo · Design model · for review</p>
+  <h1>The Masthead — one switchable pattern</h1>
+  <p class="lede">The global header and the content-heavy masthead are not two components. They are one masthead pattern that reconfigures by <b>intent</b> — and the thing that felt tangled is that <b>three separate layers</b> were being decided as one. This is the model, its labels, and how it maps onto what we already built.</p>
+  <p class="meta">Synthesised 2026-07-16, built collaboratively with Dave, from a research pass across Nielsen Norman Group, IBM Carbon, Shopify Polaris, USWDS, and Material 3. <b>Status: labels signed off 2026-07-16 (Dave)</b> — Layer-1 name = <b>Shell</b> (+ optional footer); recipes named; mode labels kept provisionally pending user feedback. See §06 for the resolved decisions. First entry in the Apollo pattern catalog. Sources at the end.</p>
+</header>
+
+<nav class="toc" aria-label="Contents">
+  <a href="#tangle">00 · What was tangled</a>
+  <a href="#layers">01 · The three layers</a>
+  <a href="#axes">02 · The masthead's own axes</a>
+  <a href="#recipes">03 · Intent recipes</a>
+  <a href="#examples">04 · Your examples, mapped</a>
+  <a href="#search">05 · The search rule</a>
+  <a href="#naming">06 · Open naming decisions</a>
+  <a href="#unlocks">07 · What this unlocks</a>
+  <a href="#sources">Sources</a>
+</nav>
+
+<!-- ============ 00 ============ -->
+<h2 id="tangle"><span class="n">00</span>What was tangled</h2>
+<p class="sub">Three different questions, at three different layers, were being answered as if they were one.</p>
+<p>The knot was that these got bundled together:</p>
+<ul>
+  <li><b>Does the masthead show its links flat, or hide them behind a mega?</b> — a property of the <em>masthead</em>.</li>
+  <li><b>Is there also a side nav, or in-page links?</b> — a property of the <em>page</em>, driven by how deep the information architecture is.</li>
+  <li><b>What is each of those regions actually for?</b> — a <em>role</em>, not a component.</li>
+</ul>
+<div class="evidence">
+  <b>Dave's own examples split cleanly along these lines.</b> "A flat menu — top level exposed, no mega — might be used in isolation, or with a side menu, or with an in-page links list." That is one axis (flat) crossed with another (what else is on the page). "Some might use a mega paired with another type — it all depends on depth of the IA, future scaling, or designer preference." Depth drives the pairing; the masthead's own behaviour is separate.
+</div>
+<p>Untangle those three and the god-component risk disappears: the masthead owns only the first question. The rest lives one layer up.</p>
+
+<!-- ============ 01 ============ -->
+<h2 id="layers"><span class="n">01</span>The three layers</h2>
+<p class="sub">Each has an established name in the field. Keeping them apart is the whole move.</p>
+
+<div class="layers" role="img" aria-label="Three-layer navigation model: Shell composes regions; roles label them; the masthead owns its reveal mode.">
+  <div class="layer">
+    <div class="ly-h">Layer 1 · Shell<small>the page frame</small></div>
+    <div class="ly-b">
+      <p style="margin:0 0 8px;font-size:14px;">Which nav regions coexist on the page. Driven by <b>IA depth</b>, not the masthead. <em>Template-tier.</em></p>
+      <div class="regions">
+        <div class="region on"><b>Masthead</b><small>this component</small></div>
+        <div class="region"><b>Side nav</b><small>optional</small></div>
+        <div class="region"><b>In-page nav</b><small>optional</small></div>
+        <div class="region"><b>Breadcrumb</b><small>optional</small></div>
+        <div class="region"><b>Footer</b><small>optional · variants</small></div>
+      </div>
+    </div>
+  </div>
+  <div class="layer">
+    <div class="ly-h">Layer 2 · Roles<small>what each is for</small></div>
+    <div class="ly-b">
+      <p style="margin:0;font-size:14px;">Labels you apply to regions, not components:
+      <span class="pill">Global / primary</span> <span class="pill">Local / secondary</span> <span class="pill">Utility</span> <span class="pill">In-page / contextual</span> <span class="pill">Breadcrumb / wayfinding</span></p>
+    </div>
+  </div>
+  <div class="layer">
+    <div class="ly-h">Layer 3 · Masthead mode<small>the only axis it owns</small></div>
+    <div class="ly-b">
+      <p style="margin:0;font-size:14px;">How the bar reveals its primary nav: <span class="pill">minimal</span> <span class="pill">exposed</span> <span class="pill">exposed-mega</span> <span class="pill">trigger</span> — plus the trigger's modifiers (§02).</p>
+    </div>
+  </div>
+</div>
+
+<div class="evidence">
+  <b>Carbon says the split out loud.</b> "Simple products have the flexibility of using a header <em>or</em> a side panel; more complex products require a <em>combination</em> of UI shell components to accommodate the depth of their navigation." Header-only vs header-with-left-panel is a Shell decision made on IA depth — exactly Layer 1.
+  <br><small>IBM Carbon — Global header pattern, "Configurations".</small>
+</div>
+
+<h3>The role vocabulary (Layer 2)</h3>
+<table>
+  <thead><tr><th>Role</th><th>What it carries</th><th>Usually lives in</th><th>Source term</th></tr></thead>
+  <tbody>
+    <tr><td><b>Global / primary</b></td><td>Top tier of the IA; present everywhere</td><td>Masthead</td><td>NN/g "global"; Carbon "global"</td></tr>
+    <tr><td><b>Local / secondary</b></td><td>Sibling &amp; child pages of the current section</td><td>Side nav</td><td>NN/g "local"; Carbon "local"</td></tr>
+    <tr><td><b>Utility</b></td><td>Search, account, notifications — secondary tools</td><td>Masthead (right)</td><td>NN/g "utility" (Farrell)</td></tr>
+    <tr><td><b>In-page / contextual</b></td><td>Anchors, scroll-spy on long pages</td><td>In-page nav</td><td>NN/g "contextual"</td></tr>
+    <tr><td><b>Breadcrumb</b></td><td>Wayfinding back up the hierarchy</td><td>Above page title</td><td>Carbon "breadcrumb"</td></tr>
+  </tbody>
+</table>
+<div class="apollo"><b>Apollo:</b> <b>Shell</b> is confirmed as the Layer-1 name (Dave — "it's what I've always called it"). It's a <b>template-tier</b> concern — it composes <span class="pill">Masthead</span> with optional <span class="pill">SideNav</span> / <span class="pill">InPageNav</span> / <span class="pill">Breadcrumb</span> / <span class="pill">Footer</span> (the footer is optional and will carry its own variants; ties to the Tranche&nbsp;8 FooterNav). The masthead never knows the side nav exists. This is the Tranche&nbsp;8 + template-tier boundary, not the masthead build.</div>
+
+<!-- ============ 02 ============ -->
+<h2 id="axes"><span class="n">02</span>The masthead's own axes</h2>
+<p class="sub">Not granular parameterisation — a small closed set, categorised by intent. The reveal mode is a ladder of increasing IA depth.</p>
+
+<div class="ladder">
+  <div class="rung">
+    <div class="r-k"><code>minimal</code><div class="depthbar"><i style="width:12%"></i></div></div>
+    <div class="r-b"><b>Brand + utility only.</b> No primary nav in the bar — it lives elsewhere (side nav / in-page) or the context is a focused app. <small>Precedent: Polaris Frame (nav in the sidebar).</small></div>
+  </div>
+  <div class="rung">
+    <div class="r-k"><code>exposed</code><div class="depthbar"><i style="width:40%"></i></div></div>
+    <div class="r-b"><b>L1 links inline, no panels.</b> Shallow, stable IA — roughly ≤6 top items, one level. Show it all. <small>Precedent: USWDS basic header. Evidence: exposed beats hidden by a wide margin (NN/g).</small></div>
+  </div>
+  <div class="rung">
+    <div class="r-k"><code>exposed-mega</code><div class="depthbar"><i style="width:72%"></i></div></div>
+    <div class="r-b"><b>L1 links inline, each opens a mega.</b> Broad <em>and</em> deep — show the top level, reveal the rest on demand. This is your "exposed header that also invokes a mega." <small>Precedent: USWDS mega header.</small></div>
+  </div>
+  <div class="rung">
+    <div class="r-k"><code>trigger</code><div class="depthbar"><i style="width:100%"></i></div></div>
+    <div class="r-b"><b>One door opens a panel holding the nav.</b> Deepest / most flexible — carries the modifiers below. <small>Precedent: content-heavy masthead; our current <code>.mm-masthead</code>.</small></div>
+  </div>
+</div>
+
+<h3>The <code>trigger</code> modifiers</h3>
+<p>Everything that felt like "more modes" is actually variation <em>inside</em> trigger. This is where depth and emphasis live.</p>
+<dl class="grid">
+  <dt>Prominence</dt><dd><code>primary</code> (nav is the star — brand-led / marketing) or <code>index</code> (deliberately tucked, low-frequency — the well-configured dashboard where nav is an occasional index). <b>Index is a subset of trigger, not a peer</b> — prominence only means something once the nav is behind a door.</dd>
+  <dt>Affordance</dt><dd><code>burger</code> (plain menu control) or <code>menu+search</code> (a combined control that opens a panel leading with search, then browse — the common mobile pattern). Pairs especially well with <code>index</code>, where search is often the fastest way in.</dd>
+  <dt>Panel layout</dt><dd><code>cols</code> (1 level) · <code>featured</code> (+ journeys rail) · <code>tabbed-vertical</code> (L1 tabs → L2 columns → L3 links = 3 levels) · <code>tabbed-horizontal</code>. <b>This sub-axis is what carries IA depth</b> — a 3-level structure lives here, not in a new top-level mode.</dd>
+</dl>
+<div class="note">
+  <b>Tuck-by-intent ≠ collapse-by-necessity.</b> The <code>index</code> prominence tucks the nav at <em>all</em> widths because it is incidental. That is different from the automatic responsive collapse to a drawer at narrow widths, which happens under <em>every</em> mode because there is no room. Same drawer, different reason — keep them distinct.
+</div>
+
+<!-- ============ 03 ============ -->
+<h2 id="recipes"><span class="n">03</span>Intent recipes</h2>
+<p class="sub">Axes are for the machine; <b>recipes are for the designer.</b> A designer picks a named intent, not five raw dials — which is what keeps this from becoming a god-component.</p>
+<table>
+  <thead><tr><th>Recipe</th><th>Reveal</th><th>Prominence</th><th>Affordance</th><th>Panel layout</th><th>Utilities</th><th>Reach for it when…</th></tr></thead>
+  <tbody>
+    <tr><td><b>App-minimal</b></td><td><code>minimal</code></td><td>—</td><td>—</td><td>—</td><td>account</td><td>Focused app; primary nav lives in a side rail (or elsewhere)</td></tr>
+    <tr><td><b>L1 exposed</b></td><td><code>exposed</code></td><td>primary</td><td>—</td><td>—</td><td>search + account</td><td>Shallow, stable IA — ≤6 top items, one level</td></tr>
+    <tr><td><b>L1 + mega</b></td><td><code>exposed-mega</code></td><td>primary</td><td>—</td><td>tabbed-h</td><td>search + account</td><td>Broad + deep IA — top level shown, rest revealed</td></tr>
+    <tr><td><b>Trigger mega</b></td><td><code>trigger</code></td><td>primary</td><td>burger</td><td>featured</td><td>account (search in panel)</td><td>Rich IA behind one menu into a content-heavy panel (no exposed L1)</td></tr>
+    <tr><td><b>Dashboard-index</b></td><td><code>trigger</code></td><td>index</td><td>menu+search</td><td>tabbed (deep)</td><td>account (search in panel)</td><td>Dashboard where nav is a rarely-used index (tucked by intent)</td></tr>
+  </tbody>
+</table>
+<p class="footnl">Responsive collapse → drawer sits underneath all five, automatically.</p>
+<div class="note"><b>Naming (Dave 2026-07-16):</b> kept <b>simple and descriptive</b> for now — these configs serve <em>app interfaces and public sites alike</em>, so the names describe the configuration, not the channel. The richer <em>intent-based</em> naming is a good idea but <b>parked for later</b>, once we have feedback.</div>
+
+<!-- ============ 04 ============ -->
+<h2 id="examples"><span class="n">04</span>Your examples, mapped</h2>
+<p class="sub">The four cases you described land as points in the model — nothing left over, nothing forced.</p>
+<table>
+  <thead><tr><th>What you described</th><th>Shell (Layer 1)</th><th>Masthead mode (Layer 3)</th></tr></thead>
+  <tbody>
+    <tr><td>Flat menu, in isolation</td><td>masthead only</td><td><code>exposed</code></td></tr>
+    <tr><td>Flat menu + side menu</td><td>masthead + side nav <small>(global + local)</small></td><td><code>exposed</code></td></tr>
+    <tr><td>Flat menu + in-page links</td><td>masthead + in-page</td><td><code>exposed</code></td></tr>
+    <tr><td>Mega paired with another type</td><td>masthead + side nav</td><td><code>exposed-mega</code> or <code>trigger</code></td></tr>
+    <tr><td>Dashboard, nav rarely used</td><td>masthead + side nav / dashboard body</td><td><code>trigger</code> · index · menu+search</td></tr>
+  </tbody>
+</table>
+<p>Three independent, intent-driven choices: <b>(1)</b> masthead mode by top-level IA breadth/depth, <b>(2)</b> shell composition by whether there is sectional depth needing a side nav, <b>(3)</b> utilities as needed. None entangled — which is exactly the "depends on IA depth / future scaling / designer preference" flexibility you wanted.</p>
+
+<!-- ============ 05 ============ -->
+<h2 id="search"><span class="n">05</span>The search rule</h2>
+<p class="sub">Search can appear in the bar and inside the mega/panel. Here is when that is fine and when it is redundant.</p>
+<dl class="grid">
+  <dt>Both global?</dt><dd>Fine. Two entry points to the same global search is acceptable — in trigger/index modes the bar is stripped down (brand + door), so the bar-search and the panel-search never sit inches apart competing.</dd>
+  <dt>The finesse<br>(Dave)</dt><dd><b>The masthead search icon disappears when the panel/mega search is present or open</b> — so you never see two global searches at once. This is the clean resolution of the redundancy worry.</dd>
+  <dt>Combined control</dt><dd>The <code>menu+search</code> affordance folds the two together into one door — the search <em>is</em> the top of the opened panel. Most natural in the <code>index</code> recipe.</dd>
+  <dt>Accessibility</dt><dd>Two search fields = two landmarks. Either give each a distinct accessible name ("Search", "Search menu"), or expose only one to the accessibility tree. Do not ship two unlabelled, identical search landmarks.</dd>
+</dl>
+<div class="note"><b>Scope note (settled as "same global" for now):</b> if a future context wants the panel search <em>scoped</em> to that section (e.g. "Search payments") while the bar stays global, that is a legitimate variant — but it must be labelled to show the difference, or it reads as a duplicate. Parked, not adopted.</div>
+
+<!-- ============ 06 ============ -->
+<h2 id="naming"><span class="n">06</span>Naming decisions — signed off</h2>
+<p class="sub">Resolved with Dave, 2026-07-16. Structure was already settled; these were the label calls.</p>
+
+<div class="decision done">
+  <span class="lbl">Decision · D1 — mode labels</span>
+  <b>Kept:</b> <code>minimal</code> · <code>exposed</code> · <code>exposed-mega</code> · <code>trigger</code>. Fine for now; open to changing later once we have user feedback. (Dave: "these are fine for now.")
+</div>
+<div class="decision done">
+  <span class="lbl">Decision · D2 — the Layer-1 name</span>
+  <b>Shell.</b> (Dave: "for sure — it's what I've always called it.") The Shell will also carry an <b>optional footer</b> region — possibly with its own variants — alongside masthead / side nav / in-page / breadcrumb. Ties to the Tranche&nbsp;8 FooterNav.
+</div>
+<div class="decision done">
+  <span class="lbl">Decision · D3 — recipe names</span>
+  <b>Renamed simple + descriptive, channel-neutral:</b> <code>App-minimal · L1 exposed · L1 + mega · Trigger mega · Dashboard-index</code>. They apply to app interfaces and public sites alike; the richer intent-based naming is parked for later.
+</div>
+
+<!-- ============ 07 ============ -->
+<h2 id="unlocks"><span class="n">07</span>What this unlocks</h2>
+<p class="sub">Beyond tidying the component — this is a proof and a seed.</p>
+<div class="card">
+  <h3>One component, many use-cases <span class="tag">factory proof</span></h3>
+  <p style="margin:0;">A single <code>.masthead</code> skeleton that reconfigures across five real intents via a <code>data-mode</code> attribute + a small prop set <em>is</em> the pro-forma programme thesis made visible. It is a strong artefact for the "one skeleton, N modes" story — the switch UI reconfigures one live instance across use-cases.</p>
+</div>
+<div class="card">
+  <h3>The component API falls out of the model <span class="tag">build</span></h3>
+  <p style="margin:0;">Reveal mode → <code>data-mode</code> (declarative, CSS-driven). Prominence / affordance / panel-layout → modifier classes or props. Utilities → boolean toggles. Motion stays CSS-only; JS only for disclosure open/close, focus, keyboard. The recipes become documented presets.</p>
+</div>
+<div class="card">
+  <h3>First entry in the Apollo catalog <span class="tag">Storybook, but Swiss</span></h3>
+  <p style="margin:0;">This dossier is the template for the eventual HTML component catalog — a nicer, Swiss-aesthetic Storybook. Its content is also stored in the KB (<code>knowledge/_proforma/_MASTHEAD-MODEL.md</code>) with typed relationships, so the model feeds the knowledge graph rather than living only as a one-off page.</p>
+</div>
+
+<!-- ============ SOURCES ============ -->
+<h2 id="sources"><span class="n">—</span>Sources</h2>
+<ul class="src">
+  <li>Nielsen Norman Group — <a href="https://www.nngroup.com/articles/local-navigation/">Local Navigation</a> · <a href="https://www.nngroup.com/articles/utility-navigation/">Utility Navigation</a> (Farrell)</li>
+  <li>IBM Carbon Design System — <a href="https://carbondesignsystem.com/patterns/global-header/">Global header pattern</a> (persistence, task hierarchy, configurations)</li>
+  <li>Shopify Polaris — <a href="https://polaris.shopify.com/components/utilities/frame">Frame</a> (app shell composing TopBar + Navigation)</li>
+  <li>U.S. Web Design System — <a href="https://designsystem.digital.gov/components/headers/basic-mega/">Header with megamenu</a></li>
+  <li>Material Design 3 — <a href="https://m3.material.io/components/navigation-drawer/guidelines">Navigation drawer / rail / bar</a> (responsive hierarchy)</li>
+  <li>Prior Apollo research — <code>reviews/NAV-PATTERN-CATALOG-2026-07-15.html</code></li>
+</ul>
+
+<p class="meta" style="margin-top:32px;border-top:1px solid var(--line);padding-top:16px;">Apollo · Masthead model · 2026-07-16 · PROPOSED, pending sign-off on §06. To mark this up, run <code>python3 knowledge/_review/_make_review.py reviews/MASTHEAD-MODEL-2026-07-16.html</code> and comment on the REVIEW copy.</p>
+
+</div>
+</body>
+</html>

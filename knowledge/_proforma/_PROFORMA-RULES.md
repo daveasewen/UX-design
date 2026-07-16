@@ -174,3 +174,25 @@ propagate (the button-motion fix is the exemplar). Robustness (gates, tracker) m
     axis — not "styling". Enforced by **DEF-004** (`_validate_no_hardcode.py`, wired into `_build_all.py`): flags
     raw px in spacing / radius / border-stroke inside component CSS. Spacing/border bound to KB `semantic-scale`
     (`tokens/spacing.json` + `layout.json`); full semantic-responsive spacing map is a Figma-stage refinement.
+
+## UPDATE 2026-07-16 — every component ships with documentation
+
+16. **DOCUMENTATION IS PART OF DONE — CLEAN + REVIEW PAIR (Dave 2026-07-16, FIRM going forward).** Every
+    component / pattern ships with documentation in a fixed form: **(a)** a reviewable **Swiss dossier** in
+    `reviews/` (house style = `NAV-PATTERN-CATALOG` / `MASTHEAD-MODEL-2026-07-16.html`: model, variants,
+    intent recipes, a11y, examples-mapped, open decisions, sources), and **(b)** a **KB model doc** in
+    `knowledge/_proforma/` with front-matter `related:` + typed `relations:` edges so it feeds the knowledge
+    graph (exemplar: `_MASTHEAD-MODEL.md`).
+    **EVERY HTML doc ships as TWO versions (Dave 2026-07-16):** a **clean** canonical file (the source of
+    truth — shareable / publishable) and a **REVIEW** file with the Tranche-7 comment overlay injected
+    (`knowledge/_review/_make_review.py <doc>` → toggle Review mode · click any section/card/row to pin an
+    in-memory comment · Export a numbered edit-prompt). This is now the DEFAULT review surface for all docs —
+    it keeps Dave in-context and lets him share for others' comments too. Discipline: the review copy is
+    **generated, never hand-edited**; regenerate it after each edit batch; edits always apply to the clean
+    source (the overlay's `rv-file` meta points there). The injector co-locates the review copy next to the
+    source as `<stem>.REVIEW.html`, EXCEPT `_proforma/` component files route to `knowledge/_review/` so the
+    component gates never scan them. The overlay labels comments by nearest heading even on flat dossiers.
+    *Applies to everything built after 2026-07-16.* **RETROFIT (backlog, not committed — Dave "we might have
+    to go back"):** Tranches 1–7 predate the rule; back-filling their docs is a candidate future task. The
+    eventual home for all of these = the Swiss-aesthetic HTML **component catalog** ("nicer Storybook").
+    *(Candidate: promote the review overlay to a standalone skill.)*

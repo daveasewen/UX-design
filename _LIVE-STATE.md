@@ -125,6 +125,58 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
 
 ## OPEN — propagation gaps + parked threads
 
+- **🟢 NEW RULE + backlog (2026-07-16) — component documentation is part of "done".** Every component now
+  ships with a two-part doc: a reviewable **Swiss dossier** in `reviews/` + a graph-connected **KB model doc**
+  in `knowledge/_proforma/` (typed `relations:` edges). Codified as **`_PROFORMA-RULES` rule 16** (FIRM going
+  forward). First exemplar pair: `reviews/MASTHEAD-MODEL-2026-07-16.html` + `knowledge/_proforma/_MASTHEAD-MODEL.md`
+  (the switchable-masthead model — PROPOSED, labels open, see its §06 / Open decisions). **FUTURE TASK (state
+  machine, backlog — Dave "we might have to go back"):** retrofit dossier+KB-model docs for Tranches 1–7, and
+  stand up the Swiss-aesthetic HTML **component catalog** ("nicer Storybook") as their shared home. Not committed
+  — sequenced after current build work.
+- **🔵 FUTURE SIDEQUEST (2026-07-16, Dave) — Swiss HTML viewer for this ledger.** Build a well-structured
+  Swiss-styled HTML view of `_LIVE-STATE.md` so Dave can inspect it (and ideally **edit / add** entries) rather
+  than reading raw markdown. Editable = needs write-back (bigger). Same house style as the pattern catalog /
+  masthead dossier. Not started — parked as a state-machine future task. Pairs with the PM-KG direction
+  (a rendered face over the ledger). Also: TLS-CA playwright render recipe now captured in memory
+  `sandbox-html-rendering` (full chrome renders in-sandbox again with local-extracted libs).
+- **🟢 BUILT + LIVE (2026-07-16) — unified Masthead shipped, all gates green.**
+  `knowledge/_proforma/Masthead-interactive.html`: ONE `.masthead` driven by `data-mode`
+  (`minimal/exposed/exposed-mega/trigger`) + modifiers (`data-prominence primary|index`, `data-affordance
+  burger|menu-search`, `data-search/-account on|off`) + a **switch row** that reconfigures the one live
+  instance across the **5 recipes** (`App-minimal · L1 exposed · L1 + mega · Trigger mega · Dashboard-index`).
+  **Folds in + SUPERSEDES the T7 `gheader` + `mm-masthead` demos** (they can be retired from Tranche-7).
+  CSS-only motion (mega grid-reveal), search-finesse working (bar search icon hides when the panel carries
+  search), priority+ → hamburger→modal-drawer responsive, disclosure a11y (aria-expanded/controls, ink
+  underbar current, Esc-return, focus-trapped drawer). **All 4 pro-forma gates PASS + full `_build_all.py`
+  (24 steps) green**; render-verified all 5 recipes + responsive, 0 console errors. Labels as signed off
+  (D1 kept provisional · D2 Shell + optional footer → T8 · D3 recipe names). Docs: model dossier
+  `reviews/MASTHEAD-MODEL-2026-07-16.html` + KB `_MASTHEAD-MODEL.md` (rule 16 pair); component review copy
+  `knowledge/_review/Masthead-interactive-REVIEW.html`. **REVIEW ROUND 1 APPLIED (Dave, 2026-07-16):**
+  dropped App-minimal (responsive covers it; app builds get their own components later) + the axis controls;
+  merged Dashboard-index → **Trigger mega** (now 3 recipes: L1 exposed · L1 + mega · Trigger mega); trigger +
+  account moved to the RIGHT; bar search + narrow hamburger now collapse into ONE drawn **combined
+  menu-search glyph** (`i-menu-search`, flagged `provisional`/`bespoke`, logged to `_ICON-GAPS.md` — replace
+  with a real HSBC asset later); removed the "All products" button (exposed-mega L1 links open the mega
+  themselves); frame is bottom-border-only + account dropdown no longer clipped. All 4 gates + full
+  `_build_all.py` still green; re-rendered all 3 recipes + narrow, 0 errors. **REVIEW ROUND 2 APPLIED
+  (Dave, 2026-07-16):** (a) **bow+arrow brand mark** (`i-brand-apollo`, provisional/bespoke — Apollo the archer);
+  (b) desktop trigger shows **separate menu + search** icons that **combine into the one menu-search glyph on
+  mobile**; (c) **NEW drill-down side-nav drawer variant** (`.drawer.drilldown` — horizontal push nav, each
+  submenu a full panel with title + back button, reflecting the mega IA; modal focus-trap scoped to the active
+  level via `inert`; CSS-only slide) opened by the mobile combined glyph — the simple `.navacc` accordion
+  variant is RETAINED in Tranche 7 (Dave: keep both); (d) masthead **underline** moved to `.masthead-bar` so it
+  shows in every mode. 2 provisional glyphs logged to `_ICON-GAPS.md`. All 4 gates + full board green; rendered
+  desktop/narrow/drill-down push+back, 0 errors.
+  **REVIEW COMPLETE (Dave, 2026-07-16 — "done at last") after ~6 rounds.** Final state: **3 recipes**
+  (App-minimal + the axis controls dropped; Dashboard-index merged into Trigger mega); **brand = extreme
+  crescent** `i-brand-apollo` (provisional; picked from a 2-option render — bow-arrow & moon-craters rejected);
+  desktop = separate menu+search, **combine into one menu-search glyph on mobile → drill-down drawer**; search
+  finesse tied to **mega-open state** (bar search present, goes TRANSPARENT — not display:none, so no jump —
+  when the mega is invoked); mega search = white bg + clear-on-active; masthead **underbar on `.masthead-bar`**;
+  nav labels **wrapped in `<span>`** so leading-trim applies inside the flex `<a>` (memory
+  `leading-trim-label-decision` gotcha #4); **all-caps purged** (`.dd-group-h`); brand icon↔wordmark gap 4px.
+  Provisional icons `i-brand-apollo` (crescent) + `i-menu-search` await real assets (`_ICON-GAPS.md`).
+  **NEXT** = Tranche 8 (+ Shell/footer template tier) or the type-token system on Figma arrival.
 - **⚠️ PROPAGATION GAP (partially closed):** the product vision still speaks the OLD looks-language —
   `ADR-0006` + `notes/_VISION-iteration-machine_2026-07-03.html` say "cool/warm/hot register switch" with
   surface-band moments (the mock even has a `border-radius:10px` cardinal violation) — **still
