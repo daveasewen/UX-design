@@ -10,9 +10,10 @@ Shipped the **unified switchable Masthead** end-to-end (model → build → ~6 r
 > rounds: **C = default · A = high-contrast alternate · D2 deltas (value-split)** — LIVE in `semantic-colour.json`
 > (`data/series/*` · `data/series-high-contrast/*` · `data/delta/*`); override + NEW **vibrating-boundaries rule**
 > recorded as `{#dv-019}`; ranges = palette-native proposals in `dataviz-ranges.proposals.json` (edit-mode dial,
-> parked). Build green. **NEXT SESSION = step 3: the round-one kit** (KPI card → bar/column → line → donut),
-> `_validate_dataviz.py` incl. the vibration check lands WITH the first chart. Dossier §08 items 1/5/6/7/8 still
-> open — mark up `DATAVIZ-METHOD-2026-07-16.REVIEW.html` when you get a minute.
+> parked). Build green. **METHOD DOSSIER RATIFIED same night** (approach · gate plan · kit spec incl.
+> chevron-in-R1; tiers + hand-rolled maths = standing defaults). **NO OPEN BLOCKERS.**
+> **NEXT SESSION = step 3: the round-one kit** (KPI card → bar/column → line → donut), gate-first:
+> `_validate_dataviz.py` (incl. the vibration check, dv-019) lands WITH the first chart.
 
 Everything needed is on disk. Order:
 1. **Method dossier** (clean + review pair, like the masthead model) — pin down: approach, the variant-complete inventory, the round-one kit, gate mapping. Draft is task #15.

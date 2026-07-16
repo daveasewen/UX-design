@@ -2,7 +2,7 @@
 title: DataViz — the build method (SVG + tokens + CSS motion + table spine)
 source: Synthesised 2026-07-16 from the desk research (reviews/DATAVIZ-DESK-RESEARCH-2026-07-16.html) + the ingested HSBC dataviz/colour rules + the supporting-palette proposals
 type: pattern-model
-status: V7 RESOLVED 2026-07-16 (Dave confirmed C default + A high-contrast + D2 deltas, value-split; promoted to semantic-colour.json data/*; override dv-019 recorded) · vibrating-boundaries rule ADDED (Apollo rule, receipts + gate spec) · ranges = palette-native proposals in dataviz-ranges.proposals.json · approach + inventory tiers + gate plan still awaiting dossier §08 markup
+status: RATIFIED 2026-07-16 (Dave's dossier markup — approach ratified · gate plan approved · round-one kit spec approved incl. chevron-in-R1; tiers + hand-rolled-maths standing as defaults) · V7 RESOLVED same day (C default + A high-contrast + D2 value-split deltas live in semantic-colour.json; override dv-019) · vibrating-boundaries rule ADDED (Apollo rule) · ranges = palette-native proposals · NOTHING BLOCKS the round-one kit
 captured: 2026-07-16
 related: _PROFORMA-RULES.md, ../guidelines/data-visualisation.md, ../tokens/_proposals/supporting-palette.proposals.json, ../../reviews/DATAVIZ-METHOD-2026-07-16.html, ../../reviews/DATAVIZ-SERIES-RENDERS-2026-07-16.html
 relations:

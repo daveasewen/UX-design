@@ -210,6 +210,13 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
   advisory start. Full `_build_all.py` GREEN. **NEXT = round-one kit** (KPI card → bar/column → line → donut)
   against the live tokens, `_validate_dataviz.py` (incl. vibration check) landing WITH the first chart; dossier
   §08 items 1/5/6/7/8 (approach ratify, tiers, maths helper, chevron timing, gate plan) still open for markup.
+  **✅ UPDATE 2026-07-16 final — METHOD DOSSIER RATIFIED (Dave's markup, 4 items).** §01 approach RATIFIED
+  (semantic SVG + tokens + CSS motion + hidden-table spine; canvas rejected — now the build method) · §05
+  confirmed · §06 gate plan APPROVED · §07 kit spec APPROVED (settles chevron-in-R1). Tiers (§03 boundaries) +
+  maths helper (hand-rolled first) stand as DEFAULTS, unmarked — movable before they bite. Dossier §08 updated
+  to resolved-status; KB model doc status updated. **DataViz has NO open blockers: next session = build the
+  round-one kit** (KPI card → bar/column → line → donut, gate-first). Committed `966f0d1` (tokens batch) —
+  this ratification batch needs its own commit.
 - **🔵 FUTURE SIDEQUEST (2026-07-16, Dave) — knowledge graph of ALL our research.** Build a KG over the
   research corpus we keep generating (dataviz desk-research + method, masthead/nav pattern research, the model
   dossiers, framework scans, etc.) so findings are queryable + reusable, not stranded in one-off dossiers.
