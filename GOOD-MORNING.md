@@ -1,52 +1,36 @@
 # Good morning, Dave ☕
 
-*Briefing — written end of 2026-07-16, session **"Apollo masthead — model, review tooling & switchable build" + dataviz kickoff.** Read this → `_LIVE-STATE.md` (LIVE + OPEN) → then the dataviz dossiers below. Dense on purpose.*
+*Briefing — written end of 2026-07-16 (late), session **"DataViz method dossier + V7 series decision."** Read this → `_LIVE-STATE.md` (LIVE + OPEN) → then build. Dense on purpose.*
 
 ## The session in one line
-Shipped the **unified switchable Masthead** end-to-end (model → build → ~6 review rounds → done), upgraded the **review tool**, fixed **playwright in-sandbox**, then pivoted to **DataViz**: desk research + KB mining + a framework verdict. Dataviz is the next big pillar and it's teed up to build.
+DataViz went from research to **fully decided in one evening**: method dossier written + **RATIFIED**, V7 series colours **decided on real renders and PROMOTED to live tokens**, a **new vibrating-boundaries a11y rule** (your article) quantified and recorded, deltas fixed for the shimmer you spotted, ranges parked as palette-native token proposals. **Nothing blocks the build.**
 
-## ⏭ FIRST TASK — the DataViz **method dossier**, then unblock the palette, then build round-one
-> **UPDATE 2026-07-16 close: steps 1+2 DONE, CONFIRMED + ENACTED.** V7 resolved on renders through three markup
-> rounds: **C = default · A = high-contrast alternate · D2 deltas (value-split)** — LIVE in `semantic-colour.json`
-> (`data/series/*` · `data/series-high-contrast/*` · `data/delta/*`); override + NEW **vibrating-boundaries rule**
-> recorded as `{#dv-019}`; ranges = palette-native proposals in `dataviz-ranges.proposals.json` (edit-mode dial,
-> parked). Build green. **METHOD DOSSIER RATIFIED same night** (approach · gate plan · kit spec incl.
-> chevron-in-R1; tiers + hand-rolled maths = standing defaults). **NO OPEN BLOCKERS.**
-> **NEXT SESSION = step 3: the round-one kit** (KPI card → bar/column → line → donut), gate-first:
-> `_validate_dataviz.py` (incl. the vibration check, dv-019) lands WITH the first chart.
+## ⏭ FIRST TASK — build the round-one chart kit, GATE-FIRST
+The whole decision stack is closed. Order (per the ratified dossier §07):
+1. **`_validate_dataviz.py` FIRST** — the gate lands WITH the first chart, never after (pro-forma tranche lesson). Blocking set: flat-fills/no-gradient (≤1 chevron `<pattern>`), palette-only fills bound to `data/*` tokens, ≥3:1 building blocks, ≥2px separation, zero baseline (bars ONLY — never fire on lines, dv-line-001 asymmetry), no negative horizontal bars, ≤6 slices, sum-to-total, straight lines (no C/S/Q in series paths). Advisory-first: table-presence, letters-on-elements, spark aspect, **vibration check** (adjacent pairs: value-ratio <1.25 AND hue-sep ≥135° AND sats ≥0.5 = fail-candidate; skip dv-004-gapped pairs; dv-019). Wire into `_build_all.py` + bite-test each check (a deliberately broken chart must fail).
+2. **KPI stat card** (metric · +delta · +delta+spark) → 3. **bar/column** (+grouped/stacked; chevron proves itself on the stacked column) → 4. **line** (+multi/spark) → 5. **donut** (+centre total).
+- **Done per component** (rule 16 + pro-forma contract): interactive MONO html in `knowledge/_proforma/` · clean+REVIEW dossier pair · KB model doc with typed relations · all gates green · render-verified both modes.
+- Build per the ratified stack: data = real `<table>` (a11y spine + dv-005) · geometry = behaviour-only JS, **hand-rolled maths** (default stands; d3-scale only when time-axes demand) · one skeleton per type, variants via `data-*` · styling 100% tokens · CSS-only motion.
 
-Everything needed is on disk. Order:
-1. **Method dossier** (clean + review pair, like the masthead model) — pin down: approach, the variant-complete inventory, the round-one kit, gate mapping. Draft is task #15.
-2. **Unblock V7 (series assignment)** — decide which supporting-palette family/step = series-1/2/3… **per mode**, using **real renders** in light+dark (respect each step's `indicatorOK`). This was deferred "for proper renders" — we can now render.
-3. **Build round-one kit**: KPI **"metric + delta + spark"** card · line (+ sparkline) · bar/column (+ stacked) · donut. Covers most retail banking; exercises palette + flat-fill + table-fallback + CSS motion.
+## Decided — do NOT re-open (all RULED/CONFIRMED Dave 2026-07-16)
+- **Approach RATIFIED**: semantic SVG + tokens + CSS motion + hidden-table spine; canvas rejected.
+- **Series tokens LIVE** in `semantic-colour.json`: `data/series/1–5` (candidate C, mode-stable — dv-014 held ACROSS the theme switch) · `data/series-high-contrast/1–5` (candidate A; per-chart `data-contrast`/`data-range` rebind — every chart carries the switch) · `data/delta/{gain,loss,neutral,warning}` (D2, both pairs value-split; derived = the ONLY invented-colour zone, "only safe in the RAG").
+- **`{#dv-019}`** in `guidelines/data-visualisation.md`: scoped gain/loss override (delta indicators only, never series fills, exempt from red-once-per-screen) + the **vibrating-boundaries rule** (Apollo-added, from Dave's Tuts+ article; astigmatism/a11y; NB the rules-index ID grammar rejected `dv-019-apollo` — ids must end in the number).
+- **Ranges = palette-native ONLY** (no invented series colours), parked as `proposed` in `tokens/_proposals/dataviz-ranges.proposals.json` — the future edit-mode harness dial. Suggestion ranges widened across step-ramps 1→5.
+- **Standing defaults** (movable before they bite): inventory tier boundaries as drawn (dossier §03) · hand-rolled maths.
 
-## DataViz — what's already in hand (don't re-research)
-- **Desk research DONE** → `reviews/DATAVIZ-DESK-RESEARCH-2026-07-16.html` (+ REVIEW). Digital + finance charting, cited, reviewed by Dave.
-- **HSBC rules already in the KB** → `guidelines/data-visualisation.md` (+ `-bar-charts` / `-pie-charts` / `-line-charts`): flat 2D fills only / **no gradient / no 3D**; building blocks ≥3:1; **palette-only fills**; ≥2px block gap; bars need a zero baseline (lines don't); straight lines only; 6-slice pie cap; **tabular alternative + link**. Many tagged BLOCKING-derivable = gate-able.
-- **"Supercharge" palette = the SUPPORTING palette** → `tokens/_proposals/supporting-palette.proposals.json` (10 families × 5 steps, with per-mode contrast + `indicatorOK`). Primitives already **live** in `tokens/colour.json` as `color/supporting/<family>/<step>`. Families: midnight-blue · forest-green · olive-green · burnt-orange · dusk-purple · rose-pink · sky-blue · mint-green · sun-yellow · apricot-orange.
-- **Approach RECOMMENDED (not yet ratified):** CSS-first **custom SVG + token layer** — **reject canvas** (can't tokenise/inspect/a11y); table-as-source (Charts.css idea) for simple types; D3-scale / Observable Plot for hard maths only; **CSS-only motion** (DEF-003-clean); a visually-hidden `<table>` doubles as the a11y tree + the required tabular alternative.
+## Where everything lives
+`reviews/DATAVIZ-METHOD-2026-07-16.html` (ratified method, 41-item inventory, gate map §06, kit spec §07) · `reviews/DATAVIZ-SERIES-RENDERS-2026-07-16.html` (REV 3 decision record, vibration receipts) · `knowledge/_proforma/_DATAVIZ-METHOD.md` (KB model doc) · generator `knowledge/_review/_gen_series_renders.py` (owns the sheet + ranges proposals; vibration metric lives here — lift it into the gate).
 
-## DataViz — Dave's rulings this session (carry into the dossier)
-1. **Red/green: not precious.** The never-red/green orthodoxy is overblown — use the gain/loss convention, pair with sign/arrow/position. ⚠ BUT the KB rule **"no red in charts"** ({#dv-017}) must be **explicitly overridden for gain/loss** — do it consciously, it's a documented brand rule.
-2. **Texture: sparingly + stylishly** — one **chevron-style** pattern max per chart, still flat (no gradient/3D). Not a zoo of hatchings.
-3. **Legends OK, but with an alphabetic signifier** — bars A·B·C on the element; legend shows **colour + letter + name** (letter = the colour-independent channel).
-4. **Variant-complete inventory** — enumerate ALL sub-variants (bar → vertical/horizontal · grouped · stacked · segmented · **butterfly/tornado** · diverging · waterfall · bullet…; same depth for line / composition / relationship).
+## On your desk
+- **Push via GitHub Desktop** (if not already): `966f0d1` (tokens batch) + `b1fd725` (ratification) + this briefing refresh. Sandbox commits worked tonight via the mv-lock dance; locks parked in `_to_delete/gitlocks-20260716/` — delete that folder (and any `.git/objects/**/tmp_obj_*` scraps) from your side when convenient; the sandbox can't.
+- Dossier §08 items 5/6 stand as defaults — flag any time.
+- Playwright in-sandbox renders working (headless-shell recipe in memory); review surface = live HTML as always.
 
-## Also DONE this session (context, not to-do)
-- **Masthead LIVE + reviewed to done** → `knowledge/_proforma/Masthead-interactive.html`. One `data-mode` skeleton, **3 recipes** (L1 exposed · L1 + mega · Trigger mega), a **drill-down mobile drawer** variant, crescent brand mark, CSS-only motion, all 4 gates + full `_build_all.py` green. Model dossier `reviews/MASTHEAD-MODEL-2026-07-16.html` + KB `_MASTHEAD-MODEL.md`. **Supersedes** the T7 gheader + mm-masthead demos.
-- **Review tool upgraded** (`knowledge/_review/`): draggable comment box + leader-line "noodle" + exact-element highlight; `_make_review.py` generalised (co-located clean/review pair). **Rule 16** in `_PROFORMA-RULES.md` = every doc ships a clean + review pair.
-- **Playwright renders in-sandbox again** — full recipe (TLS trick + local-extracted libs) in memory `sandbox-html-rendering`. Reuse it, don't re-yak-shave.
-- **2 provisional glyphs** (crescent brand `i-brand-apollo`, combined `i-menu-search`) logged in `_ICON-GAPS.md` — swap for real assets later (Dave: "later").
+## Queue after round-one (from `_LIVE-STATE` OPEN)
+- DataViz R2 tier (area/stacked-area · diverging · butterfly · waterfall · bullet · progress/gauge · in-table patterns) + Layer-2 interactions (drill-down, cross-filter).
+- **Tranche 8** (BottomTabBar · InPageNav · FooterNav · RelatedLinks · Stepper) + Shell/footer template tier.
+- **Type-token system** — still blocked on your Figma file.
+- Sidequests (harvest later): research knowledge-graph · Swiss state-ledger viewer · component catalog.
 
-## On your desk / rules to hold
-- **Uncommitted:** a LOT landed this session (masthead, dataviz dossiers, review-tool changes, `_LIVE-STATE`, rules, `_ICON-GAPS`). **Commit + push via GitHub Desktop** (Claude commits local; keep Desktop CLOSED during Claude commits — lock contention). Paste-ready commit line was given at the masthead wrap.
-- **Working model:** deliverables land straight to the live repo as-made (not cloud scratch).
-- **Every doc = clean + review pair** (rule 16). Feed edits by marking up the REVIEW copy → paste the exported prompt back.
-- **Comms:** exec-summary first + numbered next-steps (dyslexia + time-poor).
-
-## Queue after dataviz (from `_LIVE-STATE` OPEN)
-- **Tranche 8** (nav completion: BottomTabBar · InPageNav/scrollspy · FooterNav · RelatedLinks · journey Stepper) + the **Shell/footer template tier** (the thing that makes screens *ship* — payments-journey-proof blocker).
-- **Type-token system** — blocked on your Figma file.
-- **Sidequests (harvest later):** research **knowledge-graph** · Swiss **state-ledger viewer** · the **component catalog** ("nicer Storybook") + retrofit T1–7 docs.
-
-> Opener: **"Title this chat: <pick one>."** Then GOOD-MORNING → `_LIVE-STATE.md` (LIVE + OPEN) → the dataviz dossier + `supporting-palette.proposals.json`.
+> Opener: **"Title this chat: Round-one chart kit — gate first."** Then GOOD-MORNING → `_LIVE-STATE.md` → `reviews/DATAVIZ-METHOD-2026-07-16.html` §06+§07 → build.
