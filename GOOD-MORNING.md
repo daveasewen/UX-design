@@ -1,62 +1,51 @@
 # Good morning, Dave ☕
 
-*Session briefing — written end of 2026-07-14, session "Presentations + housekeeping: designer pack,
-sponsor deck, Apollo rename, red-rule fix, restructure, repo map." Read this, then `_LIVE-STATE.md`
-(LIVE + OPEN), then pick the next session's focus from the queue below.*
+*Briefing — written end of 2026-07-16, session **"Apollo masthead — model, review tooling & switchable build" + dataviz kickoff.** Read this → `_LIVE-STATE.md` (LIVE + OPEN) → then the dataviz dossiers below. Dense on purpose.*
 
 ## The session in one line
+Shipped the **unified switchable Masthead** end-to-end (model → build → ~6 review rounds → done), upgraded the **review tool**, fixed **playwright in-sandbox**, then pivoted to **DataViz**: desk research + KB mining + a framework verdict. Dataviz is the next big pillar and it's teed up to build.
 
-A big deliver-and-tidy day: shipped the designer skill pack + a clean handover zip, finished the
-review toolkit, built the Apollo sponsor deck (Lisa loved it; PPTX ported), renamed the project
-Promenaut → **Apollo**, corrected the red rule, restructured the repo for human-readability, and
-built an interactive repo map. Everything committed **and pushed** (origin/master = b08c96e).
+## ⏭ FIRST TASK — the DataViz **method dossier**, then unblock the palette, then build round-one
+> **UPDATE 2026-07-16 close: steps 1+2 DONE, CONFIRMED + ENACTED.** V7 resolved on renders through three markup
+> rounds: **C = default · A = high-contrast alternate · D2 deltas (value-split)** — LIVE in `semantic-colour.json`
+> (`data/series/*` · `data/series-high-contrast/*` · `data/delta/*`); override + NEW **vibrating-boundaries rule**
+> recorded as `{#dv-019}`; ranges = palette-native proposals in `dataviz-ranges.proposals.json` (edit-mode dial,
+> parked). Build green. **NEXT SESSION = step 3: the round-one kit** (KPI card → bar/column → line → donut),
+> `_validate_dataviz.py` incl. the vibration check lands WITH the first chart. Dossier §08 items 1/5/6/7/8 still
+> open — mark up `DATAVIZ-METHOD-2026-07-16.REVIEW.html` when you get a minute.
 
-## What landed this session
+Everything needed is on disk. Order:
+1. **Method dossier** (clean + review pair, like the masthead model) — pin down: approach, the variant-complete inventory, the round-one kit, gate mapping. Draft is task #15.
+2. **Unblock V7 (series assignment)** — decide which supporting-palette family/step = series-1/2/3… **per mode**, using **real renders** in light+dark (respect each step's `indicatorOK`). This was deferred "for proper renders" — we can now render.
+3. **Build round-one kit**: KPI **"metric + delta + spark"** card · line (+ sparkline) · bar/column (+ stacked) · donut. Covers most retail banking; exercises palette + flat-fill + table-fallback + CSS motion.
 
-- **Designer pack ready to hand over.** `designer-skills-v1/` = 4 skills + built KB (839 files),
-  packaged as **`Apollo-designer-skills.zip`** (938 KB, build script stripped, no stale name).
-  Delivery = Agent Skills for VS Code + GitHub Copilot; **no Python needed for v1**.
-- **Review toolkit complete** (`review-skills/`): review-dossier (Technical/Standard — Standard
-  reframed to reading-level ~16, tech-literate-but-not-AI-native), component-review (light+dark
-  gallery + before/after diff mode), swiss-design-system.
-- **Sponsor deck** — `reviews/PRESENTATION-2026-07-14-apollo-sponsor.html` (+ `.pptx`). Balanced
-  narrative, **craft-over-build** hero, honest-footing slide. Lisa: "loved it as is."
-- **Apollo rename** — Promenaut → Apollo repo-wide (51 files + 3 renames); "Smart Design System"
-  descriptor dropped → "Apollo". archive/ included. Commit be3c364.
-- **Red rule corrected** — red = the **PRIMARY-action accent, used once per screen** (NOT
-  destructive-only). Charter §4 superseded; BRAND-1 gate rewritten. Commit f8e05e5. Memory:
-  `apollo-rename-and-red-rule-2026-07-14`.
-- **Restructure** — root cleared to operating essentials; `reviews/ notes/ projects/` created;
-  README repo-map refreshed; cross-refs fixed. Commit 70d38f6.
-- **Interactive repo map** — `docs/repo-map.html` (+ artifact). Swiss node-map: hover to trace
-  dependencies, click for detail, filter by layer.
-- **Teams intro** finalised — `notes/designer-pack-intro-teams.md`.
+## DataViz — what's already in hand (don't re-research)
+- **Desk research DONE** → `reviews/DATAVIZ-DESK-RESEARCH-2026-07-16.html` (+ REVIEW). Digital + finance charting, cited, reviewed by Dave.
+- **HSBC rules already in the KB** → `guidelines/data-visualisation.md` (+ `-bar-charts` / `-pie-charts` / `-line-charts`): flat 2D fills only / **no gradient / no 3D**; building blocks ≥3:1; **palette-only fills**; ≥2px block gap; bars need a zero baseline (lines don't); straight lines only; 6-slice pie cap; **tabular alternative + link**. Many tagged BLOCKING-derivable = gate-able.
+- **"Supercharge" palette = the SUPPORTING palette** → `tokens/_proposals/supporting-palette.proposals.json` (10 families × 5 steps, with per-mode contrast + `indicatorOK`). Primitives already **live** in `tokens/colour.json` as `color/supporting/<family>/<step>`. Families: midnight-blue · forest-green · olive-green · burnt-orange · dusk-purple · rose-pink · sky-blue · mint-green · sun-yellow · apricot-orange.
+- **Approach RECOMMENDED (not yet ratified):** CSS-first **custom SVG + token layer** — **reject canvas** (can't tokenise/inspect/a11y); table-as-source (Charts.css idea) for simple types; D3-scale / Observable Plot for hard maths only; **CSS-only motion** (DEF-003-clean); a visually-hidden `<table>` doubles as the a11y tree + the required tabular alternative.
 
-## On your desk
+## DataViz — Dave's rulings this session (carry into the dossier)
+1. **Red/green: not precious.** The never-red/green orthodoxy is overblown — use the gain/loss convention, pair with sign/arrow/position. ⚠ BUT the KB rule **"no red in charts"** ({#dv-017}) must be **explicitly overridden for gain/loss** — do it consciously, it's a documented brand rule.
+2. **Texture: sparingly + stylishly** — one **chevron-style** pattern max per chart, still flat (no gradient/3D). Not a zoo of hatchings.
+3. **Legends OK, but with an alphabetic signifier** — bars A·B·C on the element; legend shows **colour + letter + name** (letter = the colour-independent channel).
+4. **Variant-complete inventory** — enumerate ALL sub-variants (bar → vertical/horizontal · grouped · stacked · segmented · **butterfly/tornado** · diverging · waterfall · bullet…; same depth for line / composition / relationship).
 
-- **Send the designer intro (for ~the 20th):** attach `Apollo-designer-skills.zip`, paste
-  `notes/designer-pack-intro-teams.md`. Confirm the exact Copilot skills-folder path with the team.
-- **NEW working-model rule (2026-07-14):** deliverables land straight to the live repo via the
-  desktop bridge *as they're made* — not cloud scratch. Memory: `working-model-cloud-vs-device`.
-- **Git:** keep **GitHub Desktop CLOSED** while Claude commits — lock contention caused friction
-  this session (per the git-split rule). Claude commits local; you push via Desktop.
-- Everything committed AND pushed; working tree clean.
+## Also DONE this session (context, not to-do)
+- **Masthead LIVE + reviewed to done** → `knowledge/_proforma/Masthead-interactive.html`. One `data-mode` skeleton, **3 recipes** (L1 exposed · L1 + mega · Trigger mega), a **drill-down mobile drawer** variant, crescent brand mark, CSS-only motion, all 4 gates + full `_build_all.py` green. Model dossier `reviews/MASTHEAD-MODEL-2026-07-16.html` + KB `_MASTHEAD-MODEL.md`. **Supersedes** the T7 gheader + mm-masthead demos.
+- **Review tool upgraded** (`knowledge/_review/`): draggable comment box + leader-line "noodle" + exact-element highlight; `_make_review.py` generalised (co-located clean/review pair). **Rule 16** in `_PROFORMA-RULES.md` = every doc ships a clean + review pair.
+- **Playwright renders in-sandbox again** — full recipe (TLS trick + local-extracted libs) in memory `sandbox-html-rendering`. Reuse it, don't re-yak-shave.
+- **2 provisional glyphs** (crescent brand `i-brand-apollo`, combined `i-menu-search`) logged in `_ICON-GAPS.md` — swap for real assets later (Dave: "later").
 
-## Queue next (fresh session — context was getting long, so start cold)
+## On your desk / rules to hold
+- **Uncommitted:** a LOT landed this session (masthead, dataviz dossiers, review-tool changes, `_LIVE-STATE`, rules, `_ICON-GAPS`). **Commit + push via GitHub Desktop** (Claude commits local; keep Desktop CLOSED during Claude commits — lock contention). Paste-ready commit line was given at the masthead wrap.
+- **Working model:** deliverables land straight to the live repo as-made (not cloud scratch).
+- **Every doc = clean + review pair** (rule 16). Feed edits by marking up the REVIEW copy → paste the exported prompt back.
+- **Comms:** exec-summary first + numbered next-steps (dyslexia + time-poor).
 
-1. **Designer live-fire** — get Lisa to run one skill on her machine before the 24th. The one thing
-   we could NOT test, and the only real risk to the release. If it doesn't fire, it's folder placement.
-2. **Real calibration test** — the 3 Figma projects; prioritised plan in
-   `reviews/PLAN-2026-07-13-calibration-test.html`. The engine's first proper trial on novel work.
-3. **"What does the §9 spread actually reveal?"** — still TOP-PRIORITY engine research in
-   `_LIVE-STATE` OPEN; a dedicated fresh Opus session. Prep tooling (knowledge-usage trace) already built.
-4. **Gates-as-a-service — the agentic-loop step** — expose Apollo's Python validators as callable
-   tools (an MCP) so a host agent runs the check→fix loop mid-task, not just in batch CI. Turns the pack
-   from agent-*ready* into agent-*ic*; the verifier's already built, this is the wiring. (NOT the Figma
-   MCP / ingestion; NOT Sutherland.) Framing: `_LIVE-STATE` TARGET + memory `agentic-loop-gates-as-service`.
-5. **KB edges / knowledge-graph** — your standing thin-edges concern; import W3C ACT / axe-core
-   rather than hand-roll (overlay-index, not GraphRAG).
-6. Off critical path: sponsor meeting (date TBD), multi-mode + settings UI, ingestion Phase 1 (Sutherland).
+## Queue after dataviz (from `_LIVE-STATE` OPEN)
+- **Tranche 8** (nav completion: BottomTabBar · InPageNav/scrollspy · FooterNav · RelatedLinks · journey Stepper) + the **Shell/footer template tier** (the thing that makes screens *ship* — payments-journey-proof blocker).
+- **Type-token system** — blocked on your Figma file.
+- **Sidequests (harvest later):** research **knowledge-graph** · Swiss **state-ledger viewer** · the **component catalog** ("nicer Storybook") + retrofit T1–7 docs.
 
-> Next-session opener: **"Title this chat: <pick one>."** Read GOOD-MORNING → `_LIVE-STATE.md`
-> (LIVE + OPEN) → then the relevant plan/charter for whichever item you pick.
+> Opener: **"Title this chat: <pick one>."** Then GOOD-MORNING → `_LIVE-STATE.md` (LIVE + OPEN) → the dataviz dossier + `supporting-palette.proposals.json`.

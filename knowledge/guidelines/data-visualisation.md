@@ -49,6 +49,21 @@ Choose by the data's needs; research beyond the common types where warranted. [T
 - **Only palette colours** in charts (print/digital palette, or the programme toolkit). Now:
   the unified supporting palette. [BLOCKING-derivable — the compose gate's 0-rogue-hex, applied
   to chart fills] {#dv-017}
+  ⚠ **SCOPED OVERRIDE + RESOLUTIONS (RULED+CONFIRMED Dave 2026-07-16; record =
+  `reviews/DATAVIZ-SERIES-RENDERS-2026-07-16.html` REV 3):**
+  (a) **Gain/loss deltas** — delta INDICATORS (text, arrows, spark end-values, RAG-style cells) may
+  carry red/green semantic colour (`data/delta-*` in `semantic-colour.json`; derived values, not HSBC
+  Red) as a conscious exception to col26-012 (no HSBC Red with the supporting palette in charts) and
+  to the 07-14 red-once-per-screen rule — deltas are DATA SEMANTICS, not actions, and do not count
+  against the once-per-screen budget. **Series fills remain palette-only ({#dv-017} unchanged).**
+  Sign + arrow mandatory ({#dv-011}); both red/green pairs value-split per the vibration rule below.
+  (b) **V7 series assignment RESOLVED** — `data/series-1…5` (mode-stable, dv-014 held across the
+  theme switch) + `data/series-high-contrast/*` (per-chart rebind), in `semantic-colour.json`.
+  (c) **NEW APOLLO-ADDED RULE — avoid vibrating boundaries** (not ingested-HSBC; source: Tuts+
+  "Vibrating boundaries" 2024, adopted for astigmatism/sensory a11y): adjacent saturated
+  near-complementary near-equal-value pairs shimmer; fail-candidate when pair value-ratio <1.25 AND
+  hue-sep ≥135° AND both HSL sats ≥0.5; the {#dv-004} ≥2px gap is the structural defence.
+  [ADVISORY-derivable → gate check in `_validate_dataviz.py`; APOLLO-ADDED rule] {#dv-019}
 - Use colour to focus attention; **never as the chart's background**. [ADVISORY-derivable] {#dv-012}
 - Segmented data: **different colour per data set variable** (bar), different colours within a
   single-variable circular chart, different colours per line. [ADVISORY-derivable — distinct-fill

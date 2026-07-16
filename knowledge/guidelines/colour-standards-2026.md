@@ -71,6 +71,9 @@ palette. Values: brand core below; supporting values already penned with contras
   ADVISORY for surface scenarios] {#col26-018}
 - **Don't combine HSBC Red with the supporting palette in data visualisations.**
   [BLOCKING-derivable — chart fill-set may contain brand red or supporting colours, not both] {#col26-012}
+  ⚠ **SCOPED OVERRIDE (RULED+CONFIRMED Dave 2026-07-16):** gain/loss delta INDICATORS may carry
+  red/green (`data/delta-*`, derived — not HSBC Red) in charts; series FILLS unaffected. Full wording
+  + record: `data-visualisation.md` dv-019.
 - **Distinguish HSBC with HSBC Red; use brand-palette neutrals for competitor data.**
   [ADVISORY-derivable — needs semantic knowledge of which series is "us"; contract-level rule] {#col26-013}
 - Complementary combinations: the palette is built around complementary pairs; no rainbow-like

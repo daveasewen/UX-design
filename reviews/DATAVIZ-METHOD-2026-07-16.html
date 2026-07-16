@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apollo · DataViz — the method dossier</title>
+<style>
+  :root{
+    --ink:#1a1a1a; --ink2:#5c5c5c; --ink3:#8a8a8a; --line:#e4e4e4; --line2:#d0d0d0;
+    --page:#ffffff; --surf:#f6f6f6; --acc:#a8000b; --ok:#00847f; --info:#305a85;
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:"SF Mono",ui-monospace,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--surf);color:var(--ink);font:400 16px/1.6 var(--font);-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:940px;margin:0 auto;background:var(--page);padding:56px clamp(20px,5vw,64px);}
+  header.head{border-bottom:2px solid var(--ink);padding-bottom:24px;margin-bottom:8px;}
+  .eyebrow{font:600 12px/1 var(--font);letter-spacing:.12em;text-transform:uppercase;color:var(--ink2);margin:0 0 12px;}
+  h1{font:700 34px/1.15 var(--font);margin:0 0 10px;letter-spacing:-.01em;}
+  .lede{font-size:17px;color:var(--ink2);margin:0;max-width:66ch;}
+  .meta{font:400 13px/1.5 var(--font);color:var(--ink3);margin-top:16px;}
+  h2{font:700 24px/1.2 var(--font);letter-spacing:-.01em;margin:52px 0 4px;padding-top:20px;border-top:1px solid var(--line);}
+  h2 .n{color:var(--ink3);font-weight:400;margin-right:.5ch;}
+  h2:first-of-type{border-top:0;}
+  h3{font:700 18px/1.3 var(--font);margin:28px 0 6px;}
+  p{margin:8px 0;} a{color:var(--info);} small{color:var(--ink3);}
+  .sub{color:var(--ink2);margin:2px 0 14px;}
+  ul,ol{margin:8px 0;padding-left:22px;} li{margin:4px 0;}
+  code{font:500 13px/1.4 var(--mono);background:var(--surf);border:1px solid var(--line);border-radius:3px;padding:1px 5px;}
+  .toc{background:var(--surf);border:1px solid var(--line);padding:18px 22px;margin:24px 0 8px;columns:2;column-gap:32px;font-size:14px;}
+  .toc a{display:block;color:var(--ink);text-decoration:none;padding:3px 0;break-inside:avoid;}
+  .toc a:hover{color:var(--info);}
+  .ask{border:1px solid var(--info);border-left:4px solid var(--info);background:#f3f7fb;padding:16px 20px;margin:20px 0;border-radius:0 6px 6px 0;font-size:14.5px;}
+  .ask .lbl{font:700 11px/1 var(--font);letter-spacing:.1em;text-transform:uppercase;color:var(--info);display:block;margin-bottom:6px;}
+  .ruled{border-left:3px solid var(--ok);background:#f0f7f6;padding:12px 16px;margin:14px 0;font-size:14.5px;}
+  .ruled b{color:var(--ok);}
+  .tension{border:1px solid var(--acc);border-left:4px solid var(--acc);background:#fffafa;padding:14px 18px;margin:16px 0;font-size:14.5px;border-radius:0 6px 6px 0;}
+  .tension .lbl{font:700 11px/1 var(--font);letter-spacing:.1em;text-transform:uppercase;color:var(--acc);display:block;margin-bottom:6px;}
+  table{border-collapse:collapse;width:100%;margin:16px 0;font-size:13px;}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top;}
+  th{background:var(--surf);font-weight:600;}
+  .tier{font:600 11px/1 var(--mono);border-radius:3px;padding:2px 6px;white-space:nowrap;}
+  .t1{background:#e5f2f2;color:#00504c;} .t2{background:#ebeff4;color:#1d3d5c;}
+  .tm{background:#f6f0e6;color:#6b4e12;} .tx{background:#f4eef4;color:#4d2d52;}
+  .stack{border:1px solid var(--line2);border-radius:6px;margin:16px 0;overflow:hidden;font-size:14px;}
+  .stack .layer{padding:12px 18px;border-bottom:1px solid var(--line);}
+  .stack .layer:last-child{border-bottom:0;}
+  .stack .layer b{display:inline-block;min-width:150px;}
+  .stack .layer small{display:block;color:var(--ink3);margin-top:2px;}
+  @media(max-width:640px){.toc{columns:1;} table{font-size:12px;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="head">
+  <p class="eyebrow">Apollo · DataViz · Method dossier</p>
+  <h1>DataViz — the method</h1>
+  <p class="lede">The build method for the Apollo chart kit: the approach (for ratification), the vocabulary model, the variant-complete inventory, your four rulings enacted, the series-colour decision (V7, separate render sheet), the gate mapping, and the round-one kit spec. Everything traces to the desk research and the ingested HSBC rules — retrieval, not recall.</p>
+  <p class="meta">Compiled 2026-07-16 from <code>reviews/DATAVIZ-DESK-RESEARCH-2026-07-16.html</code> + <code>guidelines/data-visualisation.md</code> (and bar/pie/line companions) + <code>guidelines/colour-standards-2026.md</code> + <code>tokens/_proposals/supporting-palette.proposals.json</code>. Status: <b>DRAFT for review — approach recommended, not yet ratified</b>. Companion decision sheet: <a href="DATAVIZ-SERIES-RENDERS-2026-07-16.html">V7 series renders</a>.</p>
+</header>
+
+<nav class="toc" aria-label="Contents">
+  <a href="#ask">00 · Status &amp; the ask</a>
+  <a href="#approach">01 · The approach (ratify)</a>
+  <a href="#model">02 · The vocabulary model</a>
+  <a href="#inventory">03 · Variant-complete inventory</a>
+  <a href="#rulings">04 · Your four rulings, enacted</a>
+  <a href="#series">05 · Series colours (V7)</a>
+  <a href="#gates">06 · Gate mapping</a>
+  <a href="#kit">07 · Round-one kit spec</a>
+  <a href="#decisions">08 · Open decisions</a>
+</nav>
+
+<h2 id="ask"><span class="n">00</span>Status &amp; the ask</h2>
+<div class="ask"><span class="lbl">The ask — mark up the review copy</span>
+This dossier pins the method down so the round-one kit can build against it. Eight numbered decisions
+are collected in <a href="#decisions">§08</a>; the big three are: <b>ratify the approach</b> (§01),
+<b>pick the series assignment + delta treatment</b> (§05 → render sheet), and <b>approve the gate plan</b>
+(§06 — the gate lands <em>with</em> the first chart, not after; that's the pro-forma tranche lesson).
+Nothing here self-promotes: every RULED item below is quoted back for confirmation before it enters canon.</div>
+
+<h2 id="approach"><span class="n">01</span>The approach — custom SVG + token layer (to ratify)</h2>
+<p class="sub">Recommended in the desk research; restated here as the thing you're signing.</p>
+<p><b>Charts are semantic SVG in the DOM, styled entirely by tokens, animated entirely by CSS, described by a real table.</b> The stack:</p>
+<div class="stack">
+  <div class="layer"><b>Data</b> a real <code>&lt;table&gt;</code> in the markup (visually hidden when a visual chart is shown)<small>Doubles as the KB's required tabular alternative (dv-005) AND the screen-reader surface — one artefact, two obligations. For simple types the table IS the source the geometry reads from (the Charts.css idea, without adopting Charts.css).</small></div>
+  <div class="layer"><b>Geometry</b> small JS: data → x/y/arc coordinates, writes SVG elements + CSS custom properties<small>Behaviour-only per rule 14 — JS positions things and wires toggles/tooltips; it never styles. Hard maths (nice ticks, time scales, stack layouts) via a scale helper — see decision 6 on hand-rolled vs vendored d3-scale.</small></div>
+  <div class="layer"><b>Skeleton</b> one SVG skeleton per chart type, classed <code>.dv-*</code>, variants via <code>data-*</code><small>The masthead move applied to charts: one skeleton, N variants by attribute, N brands by token mode. No per-brand chart forks — Apollo mono / HSBC / Apollo UI are token cascades (rule 15).</small></div>
+  <div class="layer"><b>Style</b> 100% tokens: <code>--data-series-N</code> fills, grey building blocks, spacing/border tokens<small>Flat fills only (dv-009); fills bind to the V7 assignment; axes/labels/gridlines bind to mode-aware greys at ≥3:1 (dv-016). DEF-004 no-hardcode applies in full.</small></div>
+  <div class="layer"><b>Motion</b> CSS keyframes/transitions only: bars grow, lines draw, donuts sweep<small>DEF-003-clean; honours <code>prefers-reduced-motion</code>; motion clarifies change, never decorates.</small></div>
+  <div class="layer"><b>A11y</b> accessible name + description on the SVG; letters A·B·C on elements; <code>aria-live="polite"</code> for updating values; decorative ticks hidden<small>Colour is never alone (dv-011): letter + marker shape + position + direct label are the redundant channels.</small></div>
+</div>
+<p><b>Canvas is rejected</b> — it forfeits token styling, per-element CSS motion, DOM inspectability (which is what makes charts gate-able), and the accessible tree. A canvas chart would be invisible to every gate we have.</p>
+<p><b>Why this is the Apollo-shaped answer:</b> the KB's chart rules are mostly statements about markup and computed style (gaps, fills, baselines, slice counts, contrast). SVG-in-DOM makes every one of them statically or render-checkable with the machinery we already run; the token layer makes the "one skeleton, N modes" factory thesis extend to charts for free.</p>
+
+<h2 id="model"><span class="n">02</span>The vocabulary model</h2>
+<p class="sub">Axes for the machine, recipes for the designer — the anti-god-chart guardrail.</p>
+<p>The model is a three-rung ladder: <b>intent family</b> (the KB's four: comparison-over-time · distribution · composition · relationship, plus the KPI/indicator family banking actually leads with) → <b>type</b> (line, bar, donut…) → <b>variant</b> (stacked, diverging, butterfly…). A variant is a <code>data-*</code> reconfiguration of its type's skeleton, not a new component — exactly the masthead's reveal-mode move.</p>
+<p><b>Designers pick recipes, not variants:</b> "Balance trend" (line), "Spend by category" (donut or stacked column), "Budget vs cap" (progress/bullet), "This year vs last" (grouped column), "KPI with delta" (stat card + spark). Recipe names stay simple + descriptive + channel-neutral, per the masthead naming ruling. The recipe table grows in the component catalog as types build out.</p>
+
+<h2 id="inventory"><span class="n">03</span>The variant-complete inventory</h2>
+<p class="sub">Your ruling: enumerate ALL sub-variants — each is its own build item. 41 items, four tiers.</p>
+<table>
+  <thead><tr><th>Type</th><th>Variants (each = one build item)</th><th>Intent family</th><th>Tier</th></tr></thead>
+  <tbody>
+    <tr><td><b>KPI stat card</b></td><td>metric · metric+delta · metric+delta+spark · metric+progress</td><td>indicator</td><td><span class="tier t1">R1 round-one</span></td></tr>
+    <tr><td><b>Line</b></td><td>standard · multi-series · sparkline</td><td>comparison-time</td><td><span class="tier t1">R1 round-one</span></td></tr>
+    <tr><td><b>Bar / column</b></td><td>column (vertical) · bar (horizontal) · grouped · stacked</td><td>distribution</td><td><span class="tier t1">R1 round-one</span></td></tr>
+    <tr><td><b>Donut</b></td><td>donut (≤6 slices) · with centre total</td><td>composition</td><td><span class="tier t1">R1 round-one</span></td></tr>
+    <tr><td>Line, extended</td><td>stepped · area · stacked-area · range/confidence band · slope</td><td>comparison-time</td><td><span class="tier t2">R2 retail</span></td></tr>
+    <tr><td>Bar, extended</td><td>100%-stacked · segmented · diverging · butterfly/tornado · range/floating · waterfall · histogram</td><td>distribution</td><td><span class="tier t2">R2 retail</span></td></tr>
+    <tr><td>Progress / target</td><td>progress bar · progress ring · semi-donut gauge · bullet</td><td>indicator</td><td><span class="tier t2">R2 retail</span></td></tr>
+    <tr><td>Pie</td><td>standard pie (≤6) — donut preferred; kept for parity with the KB page</td><td>composition</td><td><span class="tier t2">R2 retail</span></td></tr>
+    <tr><td>Markets set</td><td>candlestick/OHLC · dual-axis line · scatter · bubble · heatmap</td><td>relationship / markets</td><td><span class="tier tm">M markets</span></td></tr>
+    <tr><td>Flow &amp; hierarchy</td><td>Sankey · treemap · radial bar</td><td>composition</td><td><span class="tier tx">X exploratory</span></td></tr>
+    <tr><td>In-table patterns</td><td>sparkline column · delta column · RAG cell</td><td>indicator</td><td><span class="tier t2">R2 retail</span></td></tr>
+  </tbody>
+</table>
+<p><small>Tier boundaries are decision 5. Layer-2 (interaction: tooltip, series toggle, date filter, drill-down, cross-filter) rides on top of every tier per the itinerary's base-vs-Layer-2 split — tooltip + toggle land with R1; drill-down/cross-filter are Layer-2 items sequenced later.</small></p>
+
+<h2 id="rulings"><span class="n">04</span>Your four rulings, enacted</h2>
+<p class="sub">Quoted back for confirmation before they enter canon (nothing recorded as FIRM until you nod).</p>
+
+<h3>1 · Gain/loss — use the convention, override the rule consciously</h3>
+<div class="ruled"><b>Ruling (2026-07-16):</b> the never-red/green orthodoxy is overblown — use the gain/loss convention, paired with sign/arrow/position.</div>
+<p><b>Enactment:</b> delta indicators may carry gain/loss colour, with <code>+/−</code> sign and ▲/▼ arrow always present (colour never alone, dv-011), zero-baseline position carrying the meaning where applicable. Two colour options rendered on the decision sheet (§05). <b>Proposed override wording</b> (records the conscious exception you asked for):</p>
+<div class="tension"><span class="lbl">Draft override — for your sign-off, verbatim or edited</span>
+"OVERRIDE (RULED Dave 2026-07-16, scoped): gain/loss DELTA INDICATORS (text, arrows, spark end-values, RAG-style cells)
+may use red/green semantic colour in data visualisations, as a conscious exception to col26-012 (no HSBC Red alongside the
+supporting palette in charts) and to the red-reserved-for-primary-action rule — DELTAS ARE DATA SEMANTICS, NOT ACTIONS,
+and do not count against red-once-per-screen. SERIES FILLS remain supporting-palette only (dv-017). Sign + arrow are
+mandatory companions (dv-011)." <br><small>Note the second rule this touches: the 07-14 red rule (red = primary-action
+accent, once per screen). If a screen has a red CTA <em>and</em> three negative deltas, the once-per-screen count must
+exclude deltas — that's what the wording above pins.</small></div>
+
+<h3>2 · Texture — sparingly and stylishly</h3>
+<div class="ruled"><b>Ruling (2026-07-16):</b> one chevron-style pattern max per chart, still flat — not a zoo of hatchings.</div>
+<p><b>Enactment:</b> one SVG <code>&lt;pattern&gt;</code> (chevron) in the kit's defs, flat two-tone from the series' own token (no gradient, dv-009). Usable on at most ONE series per chart — the gate counts pattern references (§06). Round-one includes it on the stacked column as the proof; decision 7 covers whether it ships in R1 or waits.</p>
+
+<h3>3 · Legends — colour + letter + name</h3>
+<div class="ruled"><b>Ruling (2026-07-16):</b> legends are fine, with an alphabetic signifier; letters repeat on the elements.</div>
+<p><b>Enactment:</b> every multi-series chart labels elements A·B·C·D·E and its legend rows read [swatch] [letter] · [name]. The letter is the colour-independent channel; line charts additionally keep per-series marker shapes (dv-line-002). Rendered live across the whole decision sheet. Becomes a kit rule + a gate check (letters present when series ≥2).</p>
+
+<h3>4 · Variant-complete inventory</h3>
+<div class="ruled"><b>Ruling (2026-07-16):</b> enumerate ALL sub-variants — butterfly/tornado, segmented, waterfall, the lot.</div>
+<p><b>Enactment:</b> §03 above — 41 items, tiered, each tagged by intent family. Feeds the itinerary as the DataViz section (the itinerary's 124 items pre-date this enumeration; reconcile on next itinerary refresh).</p>
+
+<h3>5 · Avoid vibrating boundaries (added from your article, 2026-07-16)</h3>
+<div class="ruled"><b>Ruling (2026-07-16):</b> avoid the vibrating-boundaries effect — adjacent, highly saturated, near-complementary colours at near-equal value shimmer at the edge; an accessibility hazard (astigmatism, sensory processing) that you confirmed live on the D2 dark red/green pair ("they dance a little"). <small>Source: Tuts+ "Vibrating boundaries: making colors pop" (MacDonald, 2024) — an Apollo-added rule, not an ingested HSBC one.</small></div>
+<p><b>Enactment:</b> the risk is quantifiable — all three legs together: pair value-ratio &lt;1.25 + hue separation ≥135° + both HSL saturations ≥0.5; breaking any one leg kills the shimmer. Rolled in three places: (1) <b>receipts</b> — every candidate set, delta pair and suggestion range on the render sheet now carries adjacent-pair vibration receipts, and the tokens holding pen records the worst level per range; (2) <b>fixes applied</b> — D2/D1 delta pairs value-split in both modes (the receipts caught light mode too, not just the dark pair you saw); suggestion ranges rebuilt across the palette's step-ramps so adjacent picks are value-stepped; (3) <b>gate</b> — an advisory adjacent-pair check joins <code>_validate_dataviz.py</code> (thresholds tunable, promote after bite-test). Structural note: the dv-004 ≥2px surface-coloured gap is itself the classic defence — a neutral boundary between fills; the check protects the gapless surfaces (legends, adjacent text, touching edges).</p>
+
+<h2 id="series"><span class="n">05</span>Series colours — V7, decided on renders</h2>
+<p class="sub">The deferred-for-proper-renders decision, now renderable — and rendered.</p>
+<p>The full decision sheet is <a href="DATAVIZ-SERIES-RENDERS-2026-07-16.html"><b>DATAVIZ-SERIES-RENDERS-2026-07-16.html</b></a> — now at <b>REV 2</b> with your 2026-07-16 markup enacted:</p>
+<ul>
+  <li><b>C — mode-stable = CHOSEN DEFAULT</b> (your pick): one dual-legal mid-step set, same hex both modes; resolves the dv-014 scope question toward cross-mode stability; the col26-017 divergence is recorded consciously with per-swatch receipts.</li>
+  <li><b>A — hue-spread mid-step = HIGH-CONTRAST ALTERNATE</b> (your idea): every chart carries <code>data-contrast="default|high"</code>; high rebinds the same <code>data/series-N</code> tokens to the A set. Token swap, no chart forks; the gate checks both bindings.</li>
+  <li><b>B — not selected</b>, kept on the sheet as the receipt.</li>
+  <li><b>Deltas — D2 PICKED (your second markup batch), both pairs value-split:</b> derived from the palette's most-red/most-green hues (+ blue neutral + amber) — the sole derived-colour zone ("only safe in the RAG"). The dark "dance" you flagged was the vibrating-boundary triple; the fix (value-split + calmer dark red) covers light mode too, where the receipts caught the same triple. D1 kept as an option (same split); D3 retired — its mechanism IS the fix. Tokens: <code>data/delta-gain · delta-loss · delta-neutral · delta-warning</code>.</li>
+  <li><b>Suggestion ranges — palette-native only, widened (your rulings):</b> no invented series colours — every range swatch is an existing palette primitive selected by the harmony/contrast rule, walked across the step-ramps 1→5 (wider, and vibration-safe by construction). CVD-diverging retired (the guideline rules are the mitigation). Ranges live in tokens (<code>dataviz-ranges.proposals.json</code>) as the future edit-mode dial.</li>
+</ul>
+<p>On confirmation: C lands as <code>data/series-1…5</code> in <code>semantic-colour.json</code> (A as its high-contrast binding); the delta pick lands with the §04 override wording.</p>
+
+<h2 id="gates"><span class="n">06</span>Gate mapping — rules to enforcement</h2>
+<p class="sub">The KB tagged most chart rules BLOCKING-derivable in 2026-07-02. SVG+tokens is what cashes that in. New checks live in <code>_validate_dataviz.py</code>, wired into <code>_build_all.py</code> the day the first chart lands — a new surface never ships before its gate (the pro-forma tranche lesson, and the icon-gate lesson before it).</p>
+<table>
+  <thead><tr><th>Rule</th><th>Check</th><th>Home</th><th>Mode</th></tr></thead>
+  <tbody>
+    <tr><td>dv-009 flat fills, no gradient/3D</td><td>no <code>&lt;linearGradient&gt;</code>/<code>&lt;radialGradient&gt;</code>/<code>&lt;filter&gt;</code> in chart SVG; ≤1 <code>&lt;pattern&gt;</code> (chevron only)</td><td>new: _validate_dataviz</td><td>blocking</td></tr>
+    <tr><td>dv-017 palette-only fills</td><td>every fill/stroke on series elements resolves to <code>data/series-*</code> or building-block tokens — 0 rogue hex</td><td>new (compose-gate class)</td><td>blocking</td></tr>
+    <tr><td>col26-011 / dv-016 ≥3:1</td><td>computed contrast of series fills + axes/labels/gridlines vs surface, per mode — exhaustive, not author-declared (the 9/9 blind-spot fix applies here from day one)</td><td>extend indicator-contrast gate</td><td>blocking</td></tr>
+    <tr><td>dv-004 ≥2px separation</td><td>adjacent same-chart blocks: gap or bg-stroke ≥2px</td><td>new: _validate_dataviz</td><td>blocking</td></tr>
+    <tr><td>dv-bar-009 zero baseline (bars)</td><td>bar/column charts: y-domain includes 0; chart-type-aware — MUST NOT fire on lines (dv-line-001 asymmetry)</td><td>new: _validate_dataviz</td><td>blocking</td></tr>
+    <tr><td>dv-bar-007 negative values vertical only</td><td>horizontal bar + negative value = fail</td><td>new: _validate_dataviz</td><td>blocking</td></tr>
+    <tr><td>dv-pie-009 ≤6 slices</td><td>slice count per pie/donut</td><td>new: _validate_dataviz</td><td>blocking</td></tr>
+    <tr><td>dv-pie-010/011 sum = total, rounding noted</td><td>segment values sum to stated total; rounding note when displayed sum ≠ 100</td><td>new: _validate_dataviz</td><td>blocking</td></tr>
+    <tr><td>dv-line-011 straight lines</td><td>series <code>&lt;path&gt;</code>/<code>&lt;polyline&gt;</code> contain no curve commands (C/S/Q/T); arcs legal only in donut/ring geometry</td><td>new: _validate_dataviz</td><td>blocking</td></tr>
+    <tr><td>dv-005 tabular alternative</td><td>chart component contains a real <code>&lt;table&gt;</code> + link/toggle</td><td>new: _validate_dataviz</td><td>advisory → blocking after bite-test</td></tr>
+    <tr><td>Letters ruling (§04.3)</td><td>series ≥2 ⇒ letter labels on elements + letters in legend</td><td>new: _validate_dataviz</td><td>advisory → blocking after bite-test</td></tr>
+    <tr><td>dv-line-009 spark aspect</td><td>spark height ≤ surrounding line-height × tolerance</td><td>new: _validate_dataviz</td><td>advisory</td></tr>
+    <tr><td>dv-014 journey consistency</td><td>cross-chart fill map per view (journey scope = decision 4)</td><td>new, view-scope first</td><td>advisory</td></tr>
+    <tr><td>Vibrating boundaries (§04.5 — Apollo-added)</td><td>adjacent colour pairs: fail-candidate when value-ratio &lt;1.25 AND hue-sep ≥135° AND both sats ≥0.5; skip pairs separated by a dv-004 gap</td><td>new: _validate_dataviz</td><td>advisory → blocking after bite-test</td></tr>
+    <tr><td>DEF-003 CSS-only motion · DEF-004 no hardcode · sentence case · icon-source</td><td>charts inherit the existing checks unchanged</td><td>existing gates</td><td>blocking (already)</td></tr>
+  </tbody>
+</table>
+<p><small>Per ADR-0005 §5 the genuinely new checks enter advisory-first where marked, then promote after a bite-test (a deliberately broken chart must fail). The blocking rows reuse check classes already proven elsewhere (rogue-hex, contrast, counts).</small></p>
+
+<h2 id="kit"><span class="n">07</span>Round-one kit — the spec</h2>
+<p class="sub">Four components; covers most retail banking; exercises palette, flat-fill, table-fallback, letters, and CSS motion.</p>
+<table>
+  <thead><tr><th>Component</th><th>Variants in scope</th><th>Rules it proves</th><th>Interaction (Layer-2 in R1)</th></tr></thead>
+  <tbody>
+    <tr><td><b>KPI stat card</b></td><td>metric · +delta · +delta+spark</td><td>delta ruling + override; spark aspect (dv-line-009); spark-in-context grouping (dv-line-010)</td><td>none (static + live-update aria)</td></tr>
+    <tr><td><b>Line</b></td><td>standard · multi-series · sparkline</td><td>straight lines (dv-line-011); markers per set (dv-line-002); optional zero baseline (dv-line-001); tooltip both-axes (dv-line-004)</td><td>tooltip/reference point · series show/hide (dv-line-007)</td></tr>
+    <tr><td><b>Bar / column</b></td><td>column · bar · grouped · stacked</td><td>zero baseline (dv-bar-009); neg-vertical-only (dv-bar-007); ≥2px gaps (dv-004); axis titles (dv-bar-002); chevron texture (≤1 series)</td><td>tooltip · group filter above chart (dv-bar-005)</td></tr>
+    <tr><td><b>Donut</b></td><td>donut + centre total</td><td>≤6 slices (dv-pie-009); sum-to-total (dv-pie-010); 12 o'clock desc order (dv-pie-001); centre value+descriptor (dv-pie-003); direct labels (dv-pie-002/004)</td><td>segment hover → value emphasis (no pull-out — dv-pie-007)</td></tr>
+  </tbody>
+</table>
+<p><b>Done means</b> (rule 16 + pro-forma contract): one interactive HTML per component in <code>knowledge/_proforma/</code> (mono base, tokens only, CSS motion, states live) · clean + review dossier pair · KB model doc with typed relations · <code>_validate_dataviz.py</code> green alongside all existing gates · render-verified both modes. Build order: KPI card → bar/column → line → donut (each lands with its gate checks active before the next starts).</p>
+
+<h2 id="decisions"><span class="n">08</span>Open decisions — the markup list</h2>
+<ol>
+  <li><b>Ratify the approach</b> (§01): semantic SVG + tokens + CSS motion + table-as-a11y-spine; canvas rejected.</li>
+  <li><b>Series assignment</b> (render sheet): A / B / C, or a marked-up mix.</li>
+  <li><b>Delta treatment</b> (render sheet + §04.1): Option 1 RAG tokens + the drafted override wording, or Option 2 in-palette pair. Confirm or edit the override text verbatim.</li>
+  <li><b>Scope of dv-014 consistency:</b> within-mode only (A/B) or across the theme switch (C). Record either way.</li>
+  <li><b>Inventory tiers</b> (§03): confirm the R1/R2/M/X boundaries, or move items.</li>
+  <li><b>Maths helper:</b> hand-rolled scale/ticks first (zero dependencies, portability-friendly) vs vendoring d3-scale now. Recommendation: hand-rolled until a type actually needs more (time scales will likely be that moment).</li>
+  <li><b>Chevron texture:</b> prove it in R1 on the stacked column (recommended — it's the ruling's testbed) or defer to R2.</li>
+  <li><b>Gate plan</b> (§06): approve advisory-first set + the blocking set, and that <code>_validate_dataviz.py</code> lands with the first chart.</li>
+</ol>
+
+<p class="meta" style="margin-top:32px;border-top:1px solid var(--line);padding-top:16px;">Apollo · DataViz method dossier · 2026-07-16 · companion: <a href="DATAVIZ-SERIES-RENDERS-2026-07-16.html">V7 series renders</a> · KB model doc: <code>knowledge/_proforma/_DATAVIZ-METHOD.md</code>. To mark up: <code>python3 knowledge/_review/_make_review.py reviews/DATAVIZ-METHOD-2026-07-16.html</code>.</p>
+
+</div>
+</body>
+</html>
