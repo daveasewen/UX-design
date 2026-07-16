@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apollo · Navigation Pattern Catalog</title>
+<style>
+  :root{
+    --ink:#1a1a1a; --ink2:#5c5c5c; --ink3:#8a8a8a; --line:#e4e4e4; --line2:#d0d0d0;
+    --page:#ffffff; --surf:#f6f6f6; --raised:#fff; --acc:#a8000b; --ok:#00847f; --info:#305a85;
+    --sp:16px; --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:"SF Mono",ui-monospace,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--surf);color:var(--ink);font:400 16px/1.6 var(--font);-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:940px;margin:0 auto;background:var(--page);padding:56px clamp(20px,5vw,64px);}
+  header.head{border-bottom:2px solid var(--ink);padding-bottom:24px;margin-bottom:8px;}
+  .eyebrow{font:600 12px/1 var(--font);letter-spacing:.12em;text-transform:uppercase;color:var(--ink2);margin:0 0 12px;}
+  h1{font:700 34px/1.15 var(--font);margin:0 0 10px;letter-spacing:-.01em;}
+  .lede{font-size:17px;color:var(--ink2);margin:0;max-width:64ch;}
+  .meta{font:400 13px/1.5 var(--font);color:var(--ink3);margin-top:16px;}
+  h2{font:700 24px/1.2 var(--font);letter-spacing:-.01em;margin:52px 0 4px;padding-top:20px;border-top:1px solid var(--line);}
+  h2 .n{color:var(--ink3);font-weight:400;margin-right:.5ch;}
+  h2:first-of-type{border-top:0;}
+  h3{font:700 18px/1.3 var(--font);margin:30px 0 6px;}
+  h4{font:600 15px/1.3 var(--font);margin:18px 0 4px;}
+  p{margin:8px 0;}
+  a{color:var(--info);}
+  small{color:var(--ink3);}
+  .sub{color:var(--ink2);margin:2px 0 14px;}
+  ul,ol{margin:8px 0;padding-left:22px;} li{margin:3px 0;}
+  code{font:500 13px/1.4 var(--mono);background:var(--surf);border:1px solid var(--line);border-radius:3px;padding:1px 5px;}
+  .toc{background:var(--surf);border:1px solid var(--line);padding:18px 22px;margin:24px 0 8px;columns:2;column-gap:32px;font-size:14px;}
+  .toc a{display:block;color:var(--ink);text-decoration:none;padding:3px 0;break-inside:avoid;}
+  .toc a:hover{color:var(--info);}
+  .evidence{border-left:3px solid var(--acc);background:#fdf5f5;padding:12px 16px;margin:14px 0;font-size:14.5px;}
+  .evidence b{color:var(--acc);}
+  .note{border-left:3px solid var(--info);background:#f3f7fb;padding:12px 16px;margin:14px 0;font-size:14.5px;}
+  .card{border:1px solid var(--line);border-radius:6px;padding:18px 20px;margin:16px 0;background:var(--raised);}
+  .card h3{margin-top:0;}
+  .tag{display:inline-block;font:600 11px/1 var(--font);letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);border:1px solid var(--line2);border-radius:3px;padding:4px 7px;margin-left:8px;vertical-align:middle;}
+  .grid{display:grid;grid-template-columns:120px 1fr;gap:2px 16px;margin:12px 0 2px;font-size:14.5px;}
+  .grid dt{font-weight:600;color:var(--ink2);}
+  .grid dd{margin:0 0 8px;}
+  table{border-collapse:collapse;width:100%;margin:16px 0;font-size:13.5px;}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top;}
+  th{background:var(--surf);font-weight:600;}
+  .apollo{background:var(--surf);border-radius:0 0 6px 6px;margin:12px -20px -18px;padding:12px 20px;border-top:1px dashed var(--line2);font-size:14px;}
+  .apollo b{color:var(--ink);}
+  .pill{display:inline-block;font:500 12px/1 var(--mono);background:var(--page);border:1px solid var(--line2);border-radius:3px;padding:3px 6px;margin:2px 3px 2px 0;}
+  .rec{background:var(--ink);color:var(--page);padding:2px 8px;border-radius:3px;font:600 12px/1.5 var(--font);letter-spacing:.02em;}
+  .footnl{font-size:13px;color:var(--ink3);}
+  .src{font-size:13.5px;} .src li{margin:5px 0;}
+  @media(max-width:640px){.toc{columns:1;} .grid{grid-template-columns:1fr;} .grid dt{margin-top:6px;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="head">
+  <p class="eyebrow">Apollo · Research reference</p>
+  <h1>Navigation Pattern Catalog</h1>
+  <p class="lede">A comprehensive, evidence-grounded taxonomy of web + app navigation patterns — every family, its variants, responsive behaviour, accessibility model, and how each maps to an Apollo component. Built to scope the navigation tranche.</p>
+  <p class="meta">Synthesised 2026-07-15 from a fact-checked research pass (24 verified claims across Nielsen Norman Group, W3C ARIA Authoring Practices, Baymard, IBM Carbon, Shopify Polaris, Material 3). Evidence blocks are cited; the rest is design-system craft. Sources listed at the end.</p>
+</header>
+
+<nav class="toc" aria-label="Contents">
+  <a href="#principles">00 · Principles &amp; the evidence spine</a>
+  <a href="#a">A · Primary / global navigation</a>
+  <a href="#b">B · Menus (mega, dropdown, fly-out)</a>
+  <a href="#c">C · Side / vertical navigation</a>
+  <a href="#d">D · Overlay / transient (drawers, sheets)</a>
+  <a href="#e">E · In-page / secondary</a>
+  <a href="#f">F · Wayfinding (breadcrumb, pagination, steps)</a>
+  <a href="#g">G · Contextual / related &amp; footer</a>
+  <a href="#h">H · Mobile-specific</a>
+  <a href="#matrix">Responsive transformation matrix</a>
+  <a href="#a11y">Accessibility model (one place)</a>
+  <a href="#apollo">Apollo decomposition + Tranche 7 scope</a>
+  <a href="#sources">Sources</a>
+</nav>
+
+<!-- ============ PRINCIPLES ============ -->
+<h2 id="principles"><span class="n">00</span>Principles &amp; the evidence spine</h2>
+<p class="sub">The findings that survived adversarial fact-checking. They shape defaults for every pattern below.</p>
+
+<div class="evidence">
+  <b>Exposed beats hidden — by a lot.</b> Hiding the main nav (hamburger / icon-only) cut content discoverability by <b>&gt;20%</b> and slowed tasks <b>~39% on desktop, ~15% on mobile</b>; a hidden hamburger drew 17% usage vs a 42% desktop-nav average. On mobile, a labelled combination pattern (big “Browse” button) hit <b>89% usage vs 44%</b> for a low-salience hidden icon.
+  <br><small>NN/g — Hamburger Menus &amp; Hidden Navigation; Find Navigation (desktop &amp; mobile).</small>
+</div>
+
+<p><b>What this means for Apollo:</b></p>
+<ul>
+  <li><span class="rec">Default</span> Expose top-level items on desktop. Collapse to a menu <em>only</em> when space genuinely runs out, and then <b>label the toggle</b> (“Menu”), don’t rely on the bare ☰ glyph — icon recognition isn’t universal.</li>
+  <li>Prefer a <b>combination / “priority+”</b> pattern (show what fits, roll the rest into “More”) over an all-or-nothing hamburger.</li>
+  <li><b>Click, not hover</b>, opens submenus — hover excludes touch and keyboard users. If a hover affordance is added on top, use hover-intent timing (~0.1s to open, ~0.5s to close) to avoid accidental triggers. <small>(NN/g — Menu Design; Timing Guidelines.)</small></li>
+  <li><b>Don’t cascade.</b> Multi-tier fly-out dropdowns are error-prone past two levels; use a mega menu (2–3 tiers in one panel) or route to a landing page instead. <small>(NN/g; Baymard; Microsoft.)</small></li>
+  <li>Put the <b>real destinations at the top level</b>, not under generic umbrellas (“Products”, “Shop”). 33% of sites bury them and users abandon the menu. <small>(Baymard.)</small></li>
+</ul>
+
+<div class="note">
+  <b>Accessibility spine (normative, least time-sensitive).</b> For site navigation use the <b>Disclosure pattern</b> — a real <code>&lt;button&gt;</code> with <code>aria-expanded</code> + <code>aria-controls</code> — <em>not</em> the ARIA <code>menu</code>/<code>menubar</code> roles, which are reserved for application-style command menus. <kbd>Esc</kbd> closes an open panel and returns focus to its trigger (also helps WCAG 2.1 §1.4.13). Keyboard model is two-tier: <b>Tab</b> moves between components, <b>arrow keys</b> move within one. Wrap regions in <code>&lt;nav&gt;</code> landmarks with distinct <code>aria-label</code>s, mark the current item with <code>aria-current</code>, and provide a <b>“skip to content”</b> link.
+  <br><small>W3C ARIA APG — Disclosure Navigation, Keyboard Interface. One refuted claim: general site nav is <em>not</em> a single roving-tabindex composite — each top-level link stays independently tabbable.</small>
+</div>
+
+<div class="note" style="border-left-color:var(--ink2);background:var(--surf)">
+  <b>Read the evidence honestly.</b> The headline NN/g percentages come from ~2016 studies on browse/e-commerce sites; the direction is robust and repeatedly reconfirmed, but exact figures predate current touch norms, and their transfer to <em>authenticated, task-heavy banking flows</em> (accounts, transfers, servicing) is reasonable but not directly measured. Treat as strong defaults, not immutable law — and validate against HSBC’s own analytics where possible.
+</div>
+
+<!-- ============ A ============ -->
+<h2 id="a"><span class="n">A</span>Primary / global navigation</h2>
+<p class="sub">The persistent top-level wayfinding for the whole property. The organism everything else hangs off.</p>
+
+<div class="card">
+  <h3>Global header / top navigation bar <span class="tag">organism</span></h3>
+  <dl class="grid">
+    <dt>What</dt><dd>The persistent bar carrying brand, primary destinations, and utility (search, account, region, sign-in). The IA’s front door.</dd>
+    <dt>Variants</dt><dd><b>Exposed top-level</b> (items visible in the bar) · <b>with dropdowns / mega menus</b> · <b>burger-only</b> (all nav hidden — avoid on desktop) · <b>hybrid / responsive-collapse</b> (exposed on wide, collapses on narrow) · <b>with utility rail</b> (secondary bar above/below for locale, login, contact).</dd>
+    <dt>Use when</dt><dd>Always, for a browsable site. It’s the anchor. On task-apps (post-login banking) it often thins to brand + account + a few key actions, with the real nav in a side rail.</dd>
+    <dt>Avoid</dt><dd>Burger-only on desktop; more than ~7 top-level items (chunk the IA instead); a logo that isn’t a home link.</dd>
+    <dt>Responsive</dt><dd>Exposed items → “priority+” (overflow into “More”) → labelled drawer/off-canvas at the smallest sizes. Utility items usually move into the drawer or a bottom bar.</dd>
+    <dt>A11y</dt><dd><code>&lt;header&gt;</code> + <code>&lt;nav aria-label="Primary"&gt;</code>; skip-link first in DOM; brand link labelled “Home”; each disclosure a real button; visible focus.</dd>
+    <dt>Pitfalls</dt><dd>Sticky headers eating viewport on mobile; utility drowning primary; “mystery-meat” icon-only actions with no labels.</dd>
+  </dl>
+  <div class="apollo"><b>Apollo:</b> organism <span class="pill">GlobalHeader</span> composed of atoms <span class="pill">Brand</span> <span class="pill">NavLink</span> <span class="pill">NavToggle (disclosure)</span> and molecules <span class="pill">UtilityBar</span> <span class="pill">Search</span> <span class="pill">AccountMenu</span>. Slots: brand / primary / utility. States per link: default·hover·active·<b>current (aria-current)</b>·focus. Density + sticky as tokens. This is the composition root for B–D.</div>
+</div>
+
+<div class="card">
+  <h3>Utility navigation <span class="tag">molecule</span></h3>
+  <dl class="grid">
+    <dt>What</dt><dd>Secondary, always-available links/actions distinct from primary IA: locale/region, language, login/register, contact, search, basket, accessibility.</dd>
+    <dt>Variants</dt><dd>Top utility strip · inline-right in the header · icon cluster · “meatball/kebab” overflow at narrow widths.</dd>
+    <dt>Responsive</dt><dd>Collapses earliest — into the drawer header or an overflow menu. Region/language often persists (regulatory).</dd>
+    <dt>A11y</dt><dd>Separate <code>&lt;nav aria-label="Utility"&gt;</code>; icon-only items need <code>aria-label</code>; login state announced.</dd>
+  </dl>
+  <div class="apollo"><b>Apollo:</b> <span class="pill">UtilityBar</span> reusing <span class="pill">NavLink</span>, <span class="pill">IconButton</span> (built), <span class="pill">Badge</span> (built, T5). Region/locale switcher may itself be a small menu.</div>
+</div>
+
+<!-- ============ B ============ -->
+<h2 id="b"><span class="n">B</span>Menus — mega, dropdown, fly-out</h2>
+<p class="sub">The disclosure panels that hang off a top-level item. Where most of the depth (and most of the risk) lives.</p>
+
+<div class="card">
+  <h3>Mega menu <span class="tag">organism</span></h3>
+  <dl class="grid">
+    <dt>What</dt><dd>A large, structured panel showing many destinations at once in a scannable layout — the recommended way to handle a broad/deep IA (handles 2–3 tiers without cascading).</dd>
+    <dt>Variants</dt><dd><b>Multi-column list</b> (grouped links) · <b>featured / promotional panel</b> (links + a highlighted card/CTA) · <b>tabbed / category-switching</b> (left rail switches the right panel) · <b>image-led</b> (visual product/segment tiles) · <b>mixed</b> (columns + feature + media). For HSBC scale, tabbed and featured-panel variants cover most needs.</dd>
+    <dt>Use when</dt><dd>Broad IA with many peer destinations you want discoverable in one move (products, segments, support). Replaces fragile multi-tier dropdowns.</dd>
+    <dt>Avoid</dt><dd>As a dumping ground (structure it — headings, ≤~7 per group); hover-only open; trapping keyboard users; opening on accidental mouse-through (use hover-intent / click).</dd>
+    <dt>Responsive</dt><dd>Collapses into the mobile drawer as <b>nested accordions</b> — each top item expands its groups in place. Tabbed variant → sequential accordion sections.</dd>
+    <dt>A11y</dt><dd>Disclosure per top item (<code>aria-expanded</code>/<code>aria-controls</code>); panel is grouped links (headings + lists), <em>not</em> <code>role=menu</code>; <kbd>Esc</kbd> closes + returns focus; first-focus into panel optional; no focus trap (it’s navigation, not a dialog).</dd>
+    <dt>Pitfalls</dt><dd>Diagonal-movement problem (cursor slips out crossing to the panel — solve with an intent “triangle” or click); content hidden from SR if toggled wrong; over-tall panels on laptops.</dd>
+  </dl>
+  <div class="apollo"><b>Apollo:</b> organism <span class="pill">MegaMenu</span> = <span class="pill">NavToggle</span> + panel of <span class="pill">MenuGroup</span> (heading + <span class="pill">MenuLink</span> list) + optional <span class="pill">FeatureCard</span> (reuse T5 Card) + optional <span class="pill">TabRail</span> (reuse T4 Tabs). Variant prop: <code>list | featured | tabbed | media</code>. The tabbed variant is Tabs + panels composed — a good proof of the “compose, don’t re-invent” rule.</div>
+</div>
+
+<div class="card">
+  <h3>Dropdown menu (single-tier) &amp; menu button <span class="tag">molecule</span></h3>
+  <dl class="grid">
+    <dt>What</dt><dd>A small panel of links/actions under a trigger. As <b>navigation</b> = disclosure of links; as <b>actions</b> (e.g. a row’s “⋯” or a “New ▾” split button) = the ARIA <code>menu</code> pattern.</dd>
+    <dt>Variants</dt><dd>Nav dropdown (links) · action menu (commands) · <b>split button</b> (default action + ▾ for alternates) · select-like listbox (that’s a form control — T3, built).</dd>
+    <dt>Use when</dt><dd>≤ one tier, a handful of items. More than that → mega menu or a page.</dd>
+    <dt>A11y — the fork that matters</dt><dd><b>Links → Disclosure</b> (button + <code>aria-expanded</code>, Tab through links, no arrow-key model required). <b>Commands → <code>role=menu</code>/<code>menuitem</code></b> (roving tabindex, arrow keys, <kbd>Esc</kbd>, type-ahead). Pick by content type — don’t mix.</dd>
+    <dt>Pitfalls</dt><dd>Using <code>role=menu</code> for a nav list (breaks SR expectations, hides non-interactive content); no <kbd>Esc</kbd>; losing focus on close.</dd>
+  </dl>
+  <div class="apollo"><b>Apollo:</b> two molecules on one popover shell — <span class="pill">NavDropdown</span> (disclosure, links) &amp; <span class="pill">ActionMenu</span> (menu pattern, commands). Shell = <span class="pill">Popover</span> primitive shared with D. Split button = <span class="pill">Button</span> (built) + <span class="pill">ActionMenu</span>.</div>
+</div>
+
+<div class="card">
+  <h3>Fly-out / cascading menu <span class="tag">discouraged</span></h3>
+  <dl class="grid">
+    <dt>What</dt><dd>Submenus that open to the side on hover/focus, cascading multiple levels.</dd>
+    <dt>Verdict</dt><dd><span class="rec">Avoid</span> beyond two tiers — “a usability nightmare” (Microsoft), error-prone, hostile to touch/keyboard, and the diagonal-movement trap. Provide it only as a desktop <em>enhancement</em> over an accessible click/disclosure base, or replace with a mega menu / routing page.</dd>
+    <dt>If unavoidable</dt><dd>Click-to-open, generous hit areas, intent timing, full keyboard (arrows in/out, <kbd>Esc</kbd> up a level), and a mobile fallback that is a flat accordion.</dd>
+  </dl>
+  <div class="apollo"><b>Apollo:</b> not a first-class component. If HSBC IA truly needs it, model as nested <span class="pill">ActionMenu</span> with a documented “prefer mega menu” warning in the usage guidance.</div>
+</div>
+
+<!-- ============ C ============ -->
+<h2 id="c"><span class="n">C</span>Side / vertical navigation</h2>
+<p class="sub">Persistent left/right rails — the backbone of authenticated banking apps, dashboards and long IAs.</p>
+
+<div class="card">
+  <h3>Side navigation (persistent / collapsible / tree) <span class="tag">organism</span></h3>
+  <dl class="grid">
+    <dt>What</dt><dd>A vertical list of destinations alongside content. The natural primary nav for <b>post-login product areas</b> where the top bar thins to identity + actions.</dd>
+    <dt>Variants</dt><dd><b>Persistent</b> (always open, wide) · <b>collapsible</b> (toggle to a mini <b>icon rail</b> ↔ expanded) · <b>multi-level / tree</b> (expandable groups, accordion or disclosure) · <b>left vs right</b> (right rare, used for contextual/secondary) · <b>flyout-on-hover for the collapsed rail</b>.</dd>
+    <dt>Use when</dt><dd>Many peer destinations, deep IA, app-like tasks, dashboards. Scales far better than a top bar for 8+ areas.</dd>
+    <dt>Avoid</dt><dd>On thin/marketing pages; nesting past ~2 levels without a tree affordance; icon-rail with unlabelled icons (needs tooltips + accessible names).</dd>
+    <dt>Responsive</dt><dd>Persistent → collapsible rail (tablet) → off-canvas drawer or bottom tab bar (phone). The collapsed rail is a genuine responsive state, not a separate component.</dd>
+    <dt>A11y</dt><dd><code>&lt;nav aria-label="Sections"&gt;</code>; expandable groups = disclosure; <code>aria-current="page"</code> on the active item; collapsed icons need visible-on-hover/focus labels + <code>aria-label</code>; keyboard: Tab through, arrows optional for tree.</dd>
+    <dt>Pitfalls</dt><dd>Losing the current-location signal when collapsed; deep trees with no “you are here”; hover-flyouts that vanish before you reach them.</dd>
+  </dl>
+  <div class="apollo"><b>Apollo:</b> organism <span class="pill">SideNav</span> = <span class="pill">NavItem</span> (icon + label + current/expand states) + <span class="pill">NavGroup</span> (disclosure) + <span class="pill">RailToggle</span>. One component, prop <code>state: expanded | rail</code> + <code>levels</code>. Reuses the disclosure + tooltip (T4) + icon-button (T1) atoms. Highest-value organism for a banking app.</div>
+</div>
+
+<!-- ============ D ============ -->
+<h2 id="d"><span class="n">D</span>Overlay / transient — drawers, sheets, popovers</h2>
+<p class="sub">Navigation that slides in over content, then dismisses. The mobile home of primary nav, and a desktop home for secondary/contextual nav.</p>
+
+<div class="card">
+  <h3>Drawer / off-canvas panel <span class="tag">organism</span></h3>
+  <dl class="grid">
+    <dt>What</dt><dd>A panel that slides from an edge (left/right/top/bottom) over a scrim, holding nav or secondary content. On mobile it’s where the collapsed primary nav lives.</dd>
+    <dt>Variants</dt><dd>By edge (left = primary nav; right = filters/account; bottom = mobile sheet) · <b>modal</b> (scrim + focus-trap, blocks page) vs <b>non-modal / push</b> (shifts content, no trap) · full-height vs partial <b>sheet</b>.</dd>
+    <dt>Use when</dt><dd>Mobile primary nav; secondary/contextual panels that shouldn’t take permanent space (filters, account, help).</dd>
+    <dt>Responsive</dt><dd>This <em>is</em> the responsive target for A and C on small screens. Its content = the mega/side nav re-expressed as accordions.</dd>
+    <dt>A11y — differs from a menu</dt><dd>A <b>modal</b> drawer is a dialog: <code>role=dialog</code> + <code>aria-modal="true"</code>, <b>focus trap</b>, <kbd>Esc</kbd> to close, focus returns to the opener, background <code>inert</code>. A <b>non-modal</b> push drawer does not trap. (Note: this is the one place a focus trap is correct — plain menus must <em>not</em> trap.)</dd>
+    <dt>Pitfalls</dt><dd>No focus trap on a modal drawer (SR users escape into hidden page); background scroll bleed; no return-focus.</dd>
+  </dl>
+  <div class="apollo"><b>Apollo:</b> <span class="pill">Drawer</span> extends the <b>T1 Drawer</b> we already built (motion, focus, scrim) — generalise it: props <code>edge</code>, <code>modal</code>, <code>size</code>. Its body composes <span class="pill">NavAccordion</span> (the mobile form of MegaMenu/SideNav). Big reuse win.</div>
+</div>
+
+<div class="card">
+  <h3>Popover (as nav shell) <span class="tag">primitive</span></h3>
+  <dl class="grid">
+    <dt>What</dt><dd>A small, anchored, dismissible overlay — the shared shell under dropdowns, action menus, and tooltips-with-actions.</dd>
+    <dt>A11y</dt><dd>Positioning + collision, outside-click/<kbd>Esc</kbd> dismiss, focus-return; role depends on content (disclosure vs menu vs dialog).</dd>
+  </dl>
+  <div class="apollo"><b>Apollo:</b> primitive <span class="pill">Popover</span> underpins B’s dropdowns and much of D. Worth building early — many components depend on it.</div>
+</div>
+
+<!-- ============ E ============ -->
+<h2 id="e"><span class="n">E</span>In-page / secondary navigation</h2>
+<p class="sub">Wayfinding <em>within</em> a page or section — long articles, product detail, settings, legal/help.</p>
+
+<div class="card">
+  <h3>In-page anchor nav / on-this-page / scroll-spy <span class="tag">molecule</span></h3>
+  <dl class="grid">
+    <dt>What</dt><dd>A list of jump-links to sections of the current page (“On this page” / table of contents), often sticky, often highlighting the section in view (<b>scroll-spy</b>).</dd>
+    <dt>Variants</dt><dd>Sticky left/right rail (desktop) · inline “jump to” list (top of page) · sticky sub-bar (horizontal, tabs-like) · collapsible ToC on mobile · scroll-spy on/off.</dd>
+    <dt>Use when</dt><dd>Long single pages: help articles, T&amp;Cs, product detail, guides. Reduces scrolling and shows structure.</dd>
+    <dt>Responsive</dt><dd>Rail → collapsible “Contents” disclosure or a horizontal sticky sub-bar at the top.</dd>
+    <dt>A11y</dt><dd><code>&lt;nav aria-label="On this page"&gt;</code>; links move focus to the target heading (target has <code>tabindex="-1"</code>); scroll-spy updates <code>aria-current</code>; respect reduced-motion for smooth-scroll.</dd>
+    <dt>Pitfalls</dt><dd>Scroll-spy flicker; sticky header covering the anchored heading (use <code>scroll-margin-top</code>); JS-only (must degrade to plain anchors).</dd>
+  </dl>
+  <div class="apollo"><b>Apollo:</b> <span class="pill">InPageNav</span> = list of <span class="pill">AnchorLink</span> + optional scroll-spy behaviour (CSS-first where possible). Related to your <b>“you may also be interested in”</b> — different intent, similar list atom.</div>
+</div>
+
+<div class="card">
+  <h3>Local / sub-navigation · Tabs-as-nav · Segmented-as-nav <span class="tag">molecule</span></h3>
+  <dl class="grid">
+    <dt>What</dt><dd>Navigation scoped to a section: a sub-bar of sibling pages, or <b>Tabs</b> used to switch <em>routed views</em> (URL changes), or a <b>Segmented control</b> to filter one view.</dd>
+    <dt>The distinction that matters</dt><dd><b>Tabs/segmented = one page, switching panels</b> (tab semantics). <b>Sub-nav = links to other pages</b> (nav semantics). If the URL changes, it’s navigation (links), not a tabset — don’t use <code>role=tablist</code> for routing.</dd>
+    <dt>Responsive</dt><dd>Horizontal tabs → scrollable tabs → “More” overflow → select/segmented at the narrowest.</dd>
+  </dl>
+  <div class="apollo"><b>Apollo:</b> reuse <b>T4 Tabs</b> and <b>T3 Segmented</b> — but document the semantic rule: routed switching = <span class="pill">SubNav</span> (links), in-page switching = Tabs. A common real-world bug worth gating.</div>
+</div>
+
+<!-- ============ F ============ -->
+<h2 id="f"><span class="n">F</span>Wayfinding — breadcrumb, pagination, steps</h2>
+<p class="sub">“Where am I, where can I go back to, and how far through am I.”</p>
+
+<div class="card">
+  <h3>Breadcrumbs <span class="tag">molecule</span></h3>
+  <dl class="grid">
+    <dt>What</dt><dd>A trail from home to the current page, showing hierarchy and enabling one-tap ascent.</dd>
+    <dt>Variants</dt><dd><b>Location</b> (IA hierarchy — most common) · <b>attribute</b> (faceted, e.g. filters) · <b>history</b> (rare, path taken) · <b>truncated</b> (Home › … › Current) · with dropdowns at each level.</dd>
+    <dt>Use when</dt><dd>Deep hierarchies (≥3 levels): product catalogues, support trees, docs. Redundant on flat IAs.</dd>
+    <dt>Responsive</dt><dd>Collapse middle to “…”, or reduce to a single “← Back to {parent}” on mobile.</dd>
+    <dt>A11y</dt><dd><code>&lt;nav aria-label="Breadcrumb"&gt;</code> → ordered list; current page = <code>aria-current="page"</code> and not a link; separators are CSS/decorative (<code>aria-hidden</code>).</dd>
+    <dt>Pitfalls</dt><dd>Using breadcrumbs as the <em>only</em> nav; making the current item a link; separators read out by SRs.</dd>
+  </dl>
+  <div class="apollo"><b>Apollo:</b> we built <b>T4 Breadcrumb</b> — extend with truncation + per-level dropdown variants and confirm the <code>aria-current</code>/ordered-list semantics against Carbon’s spec.</div>
+</div>
+
+<div class="card">
+  <h3>Pagination · “Back to top” · Step / wizard nav <span class="tag">molecule</span></h3>
+  <dl class="grid">
+    <dt>Pagination</dt><dd>Page-number navigation for long result sets. Variants: numbered · prev/next only · “load more” · infinite scroll (avoid for findable/legal content — no footer access, no position memory). We built <b>T4 Pagination</b>. A11y: <code>&lt;nav aria-label="Pagination"&gt;</code>, <code>aria-current="page"</code>.</dd>
+    <dt>Back to top</dt><dd>A floating return-to-top affordance on long pages; appears after scroll. A11y: real button, respects reduced-motion.</dd>
+    <dt>Step / wizard</dt><dd>Progress through a multi-step flow (apply for an account, transfer setup). Variants: numbered stepper · progress bar · vertical steps. Shows completed / current / upcoming; may or may not allow jumping back. Critical for banking journeys. A11y: <code>aria-current="step"</code>, state announced.</dd>
+  </dl>
+  <div class="apollo"><b>Apollo:</b> <span class="pill">Stepper</span> (journey) is a high-value new organism for banking flows — reuses the T1 Stepper <em>control</em> idea but at the page-flow scale (distinct component). <span class="pill">BackToTop</span> = trivial reuse of IconButton.</div>
+</div>
+
+<!-- ============ G ============ -->
+<h2 id="g"><span class="n">G</span>Contextual / related &amp; footer</h2>
+<p class="sub">Navigation driven by <em>content relationships</em> rather than the fixed IA.</p>
+
+<div class="card">
+  <h3>Contextual / related — “You may also be interested in” <span class="tag">molecule</span></h3>
+  <dl class="grid">
+    <dt>What</dt><dd>Cross-links to related content/products surfaced in-context: related articles, “people also viewed”, next-best-action, cross-sell. Compensates for the discoverability cost of any hidden nav.</dd>
+    <dt>Variants</dt><dd>Link list · card carousel · inline “see also” · end-of-article block · sidebar module. Content is usually algorithmic/editorial, so the component is a <b>presentation shell</b> fed data.</dd>
+    <dt>Use when</dt><dd>To deepen engagement and rescue findability. Especially valuable when primary nav is collapsed.</dd>
+    <dt>A11y</dt><dd><code>&lt;nav aria-label="Related"&gt;</code> or a labelled region; if a carousel, full keyboard + reduced-motion + pause.</dd>
+  </dl>
+  <div class="apollo"><b>Apollo:</b> <span class="pill">RelatedLinks</span> (list) and <span class="pill">RelatedCards</span> (reuse T5 Card + a carousel/track). Data-driven; the component owns layout + states, not the recommendations.</div>
+</div>
+
+<div class="card">
+  <h3>Footer navigation (fat footer) &amp; sitemap <span class="tag">organism</span></h3>
+  <dl class="grid">
+    <dt>What</dt><dd>Comprehensive grouped links at page bottom — a full secondary IA plus legal, regional, social, regulatory. For banks this carries heavy compliance content (terms, security, accessibility, regulator statements).</dd>
+    <dt>Variants</dt><dd>Fat footer (multi-column groups) · minimal footer · with locale/region switcher · with newsletter/CTA · accordion-collapsed on mobile.</dd>
+    <dt>Responsive</dt><dd>Columns stack; groups often become accordions on mobile.</dd>
+    <dt>A11y</dt><dd><code>&lt;footer&gt;</code> + <code>&lt;nav aria-label="Footer"&gt;</code>; grouped with headings; accordion groups = disclosure.</dd>
+  </dl>
+  <div class="apollo"><b>Apollo:</b> <span class="pill">FooterNav</span> = <span class="pill">NavGroup</span> (reused from SideNav) in a responsive column grid + legal/utility strip. Compliance-heavy, so a real HSBC need.</div>
+</div>
+
+<!-- ============ H ============ -->
+<h2 id="h"><span class="n">H</span>Mobile-specific</h2>
+<p class="sub">Patterns native to small, touch, task-focused screens — the HSBC mobile app’s home turf.</p>
+
+<div class="card">
+  <h3>Bottom tab bar <span class="tag">organism</span></h3>
+  <dl class="grid">
+    <dt>What</dt><dd>3–5 primary destinations pinned to the bottom, always visible, thumb-reachable. The default primary nav for task apps (banking apps use this heavily).</dd>
+    <dt>Use when</dt><dd>≤5 flat, equally-important top destinations you want one-tap and persistent. Ideal for “Home / Accounts / Move money / Cards / More”.</dd>
+    <dt>Avoid</dt><dd>&gt;5 items (last becomes “More”); using it for deep IA; hiding it on scroll if it’s primary.</dd>
+    <dt>Responsive</dt><dd>Mobile/app only; on wider screens promote to a top bar or side rail. The “More” tab opens a drawer/sheet with the overflow.</dd>
+    <dt>A11y</dt><dd><code>&lt;nav aria-label="Primary"&gt;</code>; each tab labelled (icon + text), <code>aria-current="page"</code>; 44px+ targets; safe-area insets.</dd>
+    <dt>Pitfalls</dt><dd>Icon-only tabs (label them); &gt;5 items; competing with the OS home indicator.</dd>
+  </dl>
+  <div class="apollo"><b>Apollo:</b> organism <span class="pill">BottomTabBar</span> = <span class="pill">TabBarItem</span> (icon + label + current + badge). Reuses icon + badge atoms. Pairs with the “More” <span class="pill">Drawer</span>.</div>
+</div>
+
+<div class="card">
+  <h3>Hamburger + accordion menu · Priority+ / “More” · Sticky action bar <span class="tag">molecule/organism</span></h3>
+  <dl class="grid">
+    <dt>Hamburger → drawer</dt><dd>The labelled toggle that opens the off-canvas drawer holding the full nav as nested accordions. Acceptable on mobile <em>with a label</em>; the drawer content is the responsive form of A/B/C.</dd>
+    <dt>Priority+ / overflow</dt><dd>Show as many top items as fit; roll the rest into a “More” menu. The evidence-preferred middle path between fully-exposed and fully-hidden. Great for a responsive top bar.</dd>
+    <dt>Sticky mobile action bar</dt><dd>Context actions pinned at the bottom of a task screen (e.g. “Continue”, “Pay”) — navigation-adjacent; keep distinct from the tab bar.</dd>
+    <dt>A11y</dt><dd>Labelled toggle (<code>aria-expanded</code>); drawer focus management (see D); overflow “More” = disclosure or menu per content; sticky bars must not obscure focused fields.</dd>
+  </dl>
+  <div class="apollo"><b>Apollo:</b> <span class="pill">NavToggle</span> + <span class="pill">Drawer</span> + <span class="pill">NavAccordion</span> cover the hamburger path. <span class="pill">PriorityNav</span> is a responsive behaviour of GlobalHeader, not a separate component. Sticky action bar reuses the T5 actionbar + T1 button.</div>
+</div>
+
+<!-- ============ MATRIX ============ -->
+<h2 id="matrix">Responsive transformation matrix</h2>
+<p class="sub">The through-line: most “mobile patterns” are responsive <em>states</em> of a desktop organism, not new components. Build the organism once; express states via tokens/props.</p>
+<table>
+  <thead><tr><th>Desktop / wide</th><th>Tablet / medium</th><th>Phone / narrow</th><th>Apollo: one component, states</th></tr></thead>
+  <tbody>
+    <tr><td>Exposed top bar</td><td>Priority+ (“More”)</td><td>Labelled hamburger → drawer</td><td><span class="pill">GlobalHeader</span> · <code>state: full|priority|collapsed</code></td></tr>
+    <tr><td>Mega menu panel</td><td>Mega menu / accordion</td><td>Nested accordions in drawer</td><td><span class="pill">MegaMenu</span> → <span class="pill">NavAccordion</span></td></tr>
+    <tr><td>Persistent side nav</td><td>Collapsible icon rail</td><td>Off-canvas drawer / bottom bar</td><td><span class="pill">SideNav</span> · <code>state: expanded|rail|drawer</code></td></tr>
+    <tr><td>Horizontal tabs / sub-nav</td><td>Scrollable tabs</td><td>“More” overflow / segmented / select</td><td><span class="pill">Tabs</span> (T4) + overflow behaviour</td></tr>
+    <tr><td>Breadcrumb trail</td><td>Truncated (Home › … › Current)</td><td>“← Back to {parent}”</td><td><span class="pill">Breadcrumb</span> (T4) · <code>truncate</code></td></tr>
+    <tr><td>On-this-page rail</td><td>Sticky sub-bar</td><td>“Contents” disclosure</td><td><span class="pill">InPageNav</span> · <code>state: rail|bar|disclosure</code></td></tr>
+    <tr><td>Fat footer columns</td><td>Fewer columns</td><td>Accordion groups</td><td><span class="pill">FooterNav</span> · <code>collapse</code></td></tr>
+  </tbody>
+</table>
+
+<!-- ============ A11Y ============ -->
+<h2 id="a11y">Accessibility model — in one place</h2>
+<p class="sub">Get these right once at the atom level and every nav organism inherits them. All normative (W3C ARIA APG / WCAG), so the least time-sensitive part of the catalog.</p>
+<ul>
+  <li><b>Landmarks &amp; labels:</b> every nav region in a <code>&lt;nav&gt;</code> with a distinct <code>aria-label</code> (Primary, Utility, Breadcrumb, Footer, On this page). One <b>skip-to-content</b> link, first in the DOM.</li>
+  <li><b>Disclosure, not menubar, for site nav:</b> real <code>&lt;button&gt;</code> + <code>aria-expanded</code> + <code>aria-controls</code>. Reserve <code>role=menu/menubar</code> for <em>command</em> menus (actions), with their roving-tabindex + arrow-key model.</li>
+  <li><b>Current location:</b> <code>aria-current="page"</code> (or <code>"step"</code>) on the active item — a required state on every nav-item atom.</li>
+  <li><b>Keyboard:</b> two-tier — <kbd>Tab</kbd> between components, <kbd>arrows</kbd> within a composite. <kbd>Esc</kbd> closes any open panel and returns focus to its trigger. General nav links stay individually tabbable (not one roving stop).</li>
+  <li><b>Overlays:</b> a <em>modal</em> drawer/sheet is a dialog — trap focus, <code>aria-modal</code>, background <code>inert</code>, return focus on close. A menu/disclosure must <em>not</em> trap.</li>
+  <li><b>Motion:</b> honour <code>prefers-reduced-motion</code> for slide/scroll/scroll-spy. Hover-revealed content meets WCAG 1.4.13 (dismissable, hoverable, persistent).</li>
+  <li><b>Targets &amp; RTL:</b> ≥44px touch targets; mirror horizontal nav, chevrons and drawer edges under RTL (Material bidirectionality).</li>
+</ul>
+
+<!-- ============ APOLLO ============ -->
+<h2 id="apollo">Apollo decomposition + Tranche 7 scope</h2>
+<p class="sub">Atomise first, compose up — and it collapses to a surprisingly small set of atoms feeding a few organisms. Everything token- and mode-governed (mono / UI / SC), no hardcoded styling, motion in CSS.</p>
+
+<h3>The atoms &amp; molecules almost everything shares</h3>
+<p>
+  <span class="pill">NavLink</span> <span class="pill">NavItem (icon+label+current+expand)</span> <span class="pill">NavToggle (disclosure)</span>
+  <span class="pill">MenuLink</span> <span class="pill">MenuGroup (heading+list)</span> <span class="pill">Popover (shell)</span>
+  <span class="pill">NavAccordion</span> <span class="pill">Brand</span> <span class="pill">TabBarItem</span>
+</p>
+<p class="footnl">Reused from built tranches: IconButton, Tooltip, Tabs, Breadcrumb, Pagination, Segmented, Card, Badge, Drawer, Actionbar. The nav tranche is heavily a <em>composition</em> exercise — a strong proof of the pro-forma’s “compose, don’t re-invent” claim.</p>
+
+<h3>Proposed build order</h3>
+<table>
+  <thead><tr><th>#</th><th>Component</th><th>Type</th><th>Why first</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td><b>Popover</b> primitive + <b>NavToggle</b> (disclosure)</td><td>primitive/atom</td><td>Everything in B &amp; D depends on it; encodes the a11y spine once.</td></tr>
+    <tr><td>2</td><td><b>Global header</b> (exposed → priority+ → collapsed)</td><td>organism</td><td>The composition root; demonstrates the responsive-state model.</td></tr>
+    <tr><td>3</td><td><b>Side nav</b> (expanded ↔ rail ↔ drawer)</td><td>organism</td><td>Highest value for authenticated banking; deep IA backbone.</td></tr>
+    <tr><td>4</td><td><b>Mega menu</b> (list / featured / tabbed)</td><td>organism</td><td>The depth workhorse; composes Tabs + Card; replaces fly-outs.</td></tr>
+    <tr><td>5</td><td><b>Drawer</b> (generalised from T1) + <b>NavAccordion</b></td><td>organism</td><td>The responsive target for 2–4; one component, many homes.</td></tr>
+    <tr><td>6</td><td><b>Bottom tab bar</b> + “More”</td><td>organism</td><td>Primary nav for the mobile app.</td></tr>
+    <tr><td>7</td><td><b>In-page nav</b> / on-this-page (+ scroll-spy)</td><td>molecule</td><td>Long help/legal/product pages; CSS-first.</td></tr>
+    <tr><td>8</td><td><b>Footer nav</b>, <b>Related/“you may also like”</b>, <b>Journey stepper</b></td><td>organism/molecule</td><td>Round out the set; stepper is key for banking journeys.</td></tr>
+  </tbody>
+</table>
+
+<div class="note">
+  <b>Recommended Tranche 7 = items 1–5</b> (Popover/NavToggle, Global header, Side nav, Mega menu, Drawer+NavAccordion). That single tranche makes a full <em>flow</em> testable — header + side nav + a mega menu, collapsing correctly to a mobile drawer — which is exactly what Apollo mono needs to move from screens to journeys. Items 6–8 become Tranche 8. <span class="footnl">All pending the Figma type + colour tokens, which these will inherit like the rest.</span>
+</div>
+
+<h3>The HSBC-specific note</h3>
+<p>Your listed models map cleanly: <b>mega-menu + variants</b> → item 4; <b>side nav</b> → item 3; <b>in-page anchor lists</b> → item 7; <b>“you may also be interested in”</b> → item 8 (RelatedLinks); <b>burger-only vs exposed top-level</b> → the responsive states of item 2 (with the evidence steering you to <em>exposed-by-default, labelled-collapse</em>); <b>fly-outs</b> → deliberately down-weighted in favour of mega menus; <b>drawers</b> → item 5. Nothing in your list needs a bespoke component outside this set — which is the reassuring result.</p>
+
+<!-- ============ SOURCES ============ -->
+<h2 id="sources">Sources</h2>
+<p class="sub">Primary/authoritative sources from the fact-checked pass. Evidence blocks above cite these; the UX figures are NN/g’s, the a11y model is the W3C ARIA APG (normative), component specifics are IBM Carbon / Shopify Polaris / Material 3.</p>
+<ul class="src">
+  <li>Nielsen Norman Group — <a href="https://www.nngroup.com/articles/hamburger-menus/">Hamburger Menus &amp; Hidden Navigation Hurt UX Metrics</a>; <a href="https://www.nngroup.com/articles/find-navigation-desktop-not-hamburger/">Find Navigation on Desktop</a>; <a href="https://www.nngroup.com/articles/find-navigation-mobile-even-hamburger/">Find Navigation on Mobile</a>; <a href="https://www.nngroup.com/articles/mobile-navigation-patterns/">Basic Patterns for Mobile Navigation</a>; <a href="https://www.nngroup.com/articles/menu-design/">Menu Design</a>; <a href="https://www.nngroup.com/articles/timing-exposing-content/">Timing Guidelines for Exposing Hidden Content</a>.</li>
+  <li>W3C WAI-ARIA Authoring Practices — <a href="https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/examples/disclosure-navigation/">Disclosure Navigation Menu</a>; <a href="https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/">Developing a Keyboard Interface</a>; <a href="https://www.w3.org/WAI/ARIA/apg/">APG index</a>.</li>
+  <li>Baymard Institute — <a href="https://baymard.com/blog/main-navigation-product-categories">Product Categories as Top-Level Navigation</a>.</li>
+  <li>IBM Carbon — <a href="https://carbondesignsystem.com/components/UI-shell-header/usage/">UI Shell Header</a>; <a href="https://carbondesignsystem.com/components/UI-shell-left-panel/usage/">Left Panel</a>; <a href="https://carbondesignsystem.com/components/breadcrumb/usage/">Breadcrumb</a>. Shopify <a href="https://polaris.shopify.com/components/navigation">Polaris — Navigation</a>. Google <a href="https://m3.material.io/foundations/layout/bidirectionality-rtl">Material 3 — Bidirectionality (RTL)</a>.</li>
+  <li>Smashing Magazine — <a href="https://www.smashingmagazine.com/2017/04/overview-responsive-navigation-patterns/">Responsive Navigation Patterns</a>; <a href="https://www.smashingmagazine.com/2019/08/bottom-navigation-pattern-mobile-web-pages/">Bottom Navigation</a>; <a href="https://www.smashingmagazine.com/2021/05/frustrating-design-patterns-mega-dropdown-hover-menus/">Mega-Dropdown Hover Menus</a>. Level Access — <a href="https://www.levelaccess.com/blog/accessible-navigation-menus-pitfalls-and-best-practices/">Accessible Navigation Menus</a>.</li>
+</ul>
+<p class="footnl" style="margin-top:24px;border-top:1px solid var(--line);padding-top:16px;">Apollo · Navigation Pattern Catalog · synthesised from a 26-source, 24-verified-claim research pass, 2026-07-15. Evidence is directional (UX figures from NN/g studies, ~2016 on browse/e-commerce contexts); the accessibility model is normative and current. Validate the exposed-vs-hidden and IA-depth choices against HSBC’s own analytics for authenticated banking flows.</p>
+
+</div>
+</body>
+</html>

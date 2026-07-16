@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apollo pro-forma · Tranche 7 · Navigation</title>
+<!-- MONOCHROME pro-forma base. Primary = near-black (#1A1A1A)/near-white; colour = MEANING ONLY (RAG status via tokens).
+     ICONS: real HSBC assets only (sprite built from knowledge/assets/icons/* — see #icon-manifest). No invented glyphs.
+     Every colour is a token var (no hardcoded colour outside the theme blocks + status-badge glyphs). Behaviours are LIVE. -->
+<style>
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+  :root{ --btn-grow:1.02; --btn-press:0.98; --ib-grow:1.045; --ib-press:0.955; --card-grow:1.007; --card-press:0.993; --accent-grow-soft:1.06; --accent-grow:1.15; --accent-grow-strong:1.4; --accent-press-subtle:0.995; --accent-press-soft:0.95; --accent-press:0.9;  /* interaction motion — scale factors. Buttons/card size-scoped for ~1px/side travel (ib≈44px, btn≈120px, card≈275px); --accent-* = named pops on small fixed-size controls (date/radio/checkbox/segmented/select/chip/avatar/dot — already ~constant-px by their fixed size); all CSS-governed, mode-overridable */
+  --bw-sm:1px; --bw-md:2px; --bw-lg:4px; --bw-1_5:1.5px; --radius:0; --radius-round:50%; --radius-pill:999px;  /* structural → KB semantic-scale (layout.json): border-width 1/2/4; radius is a MODE token (0=mono/square; Apollo UI overrides with varying radii); --radius-round=circles */
+  --space-1:1px; --space-2:2px; --space-3:3px; --space-4:4px; --space-5:5px; --space-6:6px; --space-7:7px; --space-8:8px; --space-9:9px; --space-10:10px; --space-11:11px; --space-12:12px; --space-13:13px; --space-14:14px; --space-16:16px; --space-18:18px; --space-20:20px; --space-22:22px; --space-24:24px; --space-26:26px; --space-28:28px; --space-30:30px; --space-34:34px; --space-80:80px;  /* spacing scale -> KB semantic-scale (spacing.json); value-preserving flat ladder (mono); mode-overridable; new components SHOULD prefer canonical steps 4/8/12/16/24/32/40/48 (rule 15 + DEF-004) */
+    --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+    --ease:160ms cubic-bezier(.4,0,.2,1); --spring:280ms cubic-bezier(.5,1.4,.4,1); --press:90ms cubic-bezier(0,0,.58,1);
+    --drawer:460ms cubic-bezier(.22,.61,.36,1); }
+  [data-theme="light"]{
+    --page:#FFFFFF; --raised:#FFFFFF; --ink:#333333; --ink2:#545454; --disi:#B7B7B7; --line:#D7D8D6; --line2:#EDEDED;
+    --surf:#F3F3F3; --fbord:#767676; --fborda:#1A1A1A; --fbordd:#D7D8D6;
+    --pri:#1A1A1A; --pri-h:#000000; --pri-lbl:#FFFFFF; --icon:#333333; --icon-rev:#FFFFFF; --focus:#1A1A1A;
+    --scrim:#00000066; --shadow:#00000026;
+    --err:#A8000B; --err-t:#F9F2F3; --warn:#FFBB33; --warn-t:#FFF8EA; --success:#00847F; --success-t:#E5F2F2; --info:#305A85; --info-t:#EBEFF4;
+  }
+  [data-theme="dark"]{
+    --page:#000000; --raised:#1D1D1D; --ink:#FFFFFF; --ink2:#9B9B9B; --disi:#767676; --line:#707070; --line2:#3A3A3A;
+    --surf:#212121; --fbord:#808080; --fborda:#FFFFFF; --fbordd:#404040;
+    --pri:#F2F2F2; --pri-h:#FFFFFF; --pri-lbl:#1A1A1A; --icon:#FFFFFF; --icon-rev:#1A1A1A; --focus:#FFFFFF;
+    --scrim:#00000099; --shadow:#000000D9;
+    --err:#DB0011; --err-t:#260005; --warn:#FFBB33; --warn-t:#221701; --success:#00847F; --success-t:#001615; --info:#4587A7; --info-t:#000D1B;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:var(--font); background:var(--page); color:var(--ink); -webkit-font-smoothing:antialiased;
+    transition:background var(--ease), color var(--ease); line-height:1.5;}
+  .wrap{max-width:1600px; margin:0 auto; padding:0 var(--space-28) var(--space-80);}
+  .top{position:sticky; top:0; z-index:20; background:var(--page); border-bottom:var(--bw-sm) solid var(--line2);
+    display:flex; align-items:center; justify-content:space-between; padding:var(--space-14) var(--space-28); margin:0 calc(-1 * var(--space-28)) var(--space-8); gap:var(--space-12); flex-wrap:wrap;}
+  .top .t{font:500 15px/1 var(--font);} .top .t small{color:var(--ink2); font-weight:400; margin-left:var(--space-8);}
+  .ctrls{display:flex;align-items:center;gap:var(--space-16);}
+  .wctl{display:flex;align-items:center;gap:var(--space-8);font:400 12px/1 var(--font);color:var(--ink2);}
+  .wctl input[type=range]{accent-color:var(--ink);width:120px;} .wctl b{color:var(--ink);font-weight:500;min-width:40px;text-align:right;}
+  .tgl{font:500 13px/1 var(--font); padding:var(--space-9) var(--space-14); border:var(--bw-sm) solid var(--line); background:transparent; color:var(--ink); cursor:pointer;}
+  .tgl:focus-visible{outline:var(--bw-md) solid var(--focus); outline-offset:2px;}
+  .frame{container-type:inline-size; width:var(--fw,100%); max-width:100%; margin:0; transition:width .08s linear;}
+  section{padding:var(--space-34) 0; border-top:var(--bw-sm) solid var(--line2);}
+  .h{display:flex; align-items:baseline; gap:var(--space-12); margin-bottom:var(--space-6); flex-wrap:wrap;}
+  .h h2{font:500 19px/1.2 var(--font); margin:0;} .h .tag{font:500 11px/1 var(--font); color:var(--ink2); text-transform:capitalize;}
+  .sub{color:var(--ink2); font:400 13px/1.5 var(--font); margin:0 0 var(--space-20); max-width:64ch;}
+  .row{display:flex; gap:var(--space-16); flex-wrap:wrap; align-items:center;}
+  .lbl{font:400 11px/1.4 var(--font); color:var(--ink2); width:100%; margin-top:var(--space-8);}
+  .fld{max-width:320px;} .fld>label{display:block;font:500 13px/1.3 var(--font);margin-bottom:var(--space-6);}
+
+  .btn{height:44px; padding:0 var(--space-20); border:var(--bw-sm) solid transparent; border-radius:var(--radius); font:500 15px/1 var(--font); cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:var(--space-8);
+    transition:background var(--ease), border-color var(--ease), transform var(--spring), filter var(--press);}
+  .btn:focus-visible{outline:var(--bw-md) solid var(--focus); outline-offset:2px;}
+  .btn svg{width:18px;height:18px;fill:currentColor;stroke:none;}
+  /* Motion via CSS scale-factor tokens --btn-grow / --btn-press (no JS): grow on hover, press recedes + darkens. Applies to EVERY variant. */
+  .btn:hover{transform:scale(var(--btn-grow));}
+  .btn.full:hover{transform:none;}
+  .btn:active{transform:scale(var(--btn-press)); filter:brightness(.85); transition:transform var(--press), filter var(--press);}
+  .btn:disabled:hover,.btn[aria-disabled="true"]:hover{transform:none; filter:none;}
+  .btn.pri{background:var(--pri); color:var(--pri-lbl); border-color:var(--pri);} .btn.pri:hover{background:var(--pri-h); border-color:var(--pri-h);}
+  .btn.ghost{background:transparent; color:var(--ink); border-color:var(--line);} .btn.ghost:hover{background:var(--surf); border-color:var(--ink);}
+  .btn.sm{height:36px;padding:0 var(--space-14);font-size:13px;}
+
+  .ib{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;padding:0;border:var(--bw-sm) solid transparent;border-radius:var(--radius);
+    background:transparent;cursor:pointer;transition:background var(--ease),transform var(--spring),filter var(--press),border-color var(--ease);}
+  .ib svg{width:20px;height:20px;fill:currentColor;stroke:none;pointer-events:none;}
+  .ib:focus-visible{outline:var(--bw-md) solid var(--focus);outline-offset:2px;}
+  .ib:hover{transform:scale(var(--ib-grow));} .ib:active{transform:scale(var(--ib-press));filter:brightness(.85);}
+  .ib:disabled{cursor:not-allowed;} .ib:disabled:hover{transform:none;filter:none;}
+  .ib.pri{background:var(--pri);color:var(--icon-rev);border-color:var(--pri);} .ib.pri:hover{background:var(--pri-h);}
+  .ib.ter{background:transparent;color:var(--icon);border-color:var(--line);} .ib.ter:hover{background:var(--surf);border-color:var(--ink);}
+  .ib.ghost{background:transparent;color:var(--icon);} .ib.ghost:hover{background:var(--surf);}
+  .ib:disabled{background:var(--surf);color:var(--disi);border-color:var(--fbordd);}
+  .ib.ghost:disabled{background:transparent;}
+  .actionbar{display:flex; gap:var(--space-12); justify-content:flex-end; align-items:center; max-width:420px;}
+
+  .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:var(--pri);color:var(--pri-lbl);
+    padding:var(--space-12) var(--space-18);font:500 14px/1 var(--font);opacity:0;visibility:hidden;transition:opacity var(--ease),transform var(--ease),visibility var(--ease);z-index:60;}
+  .toast.on{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}
+
+  /* ===================== Tranche 7 · Navigation ===================== */
+  /* shared demo helpers */
+  .hintline{font:400 12px/1.5 var(--font);color:var(--ink2);margin:var(--space-12) 0 0;max-width:70ch;}
+  .mt12{margin-top:var(--space-12);} .mt16{margin-top:var(--space-16);} .mt18{margin-top:var(--space-18);} .mt24{margin-top:var(--space-24);}
+  .grouplbl{font:600 11px/1 var(--font);color:var(--ink2);letter-spacing:.05em;text-transform:uppercase;margin:var(--space-24) 0 var(--space-12);}
+  .grouplbl:first-of-type{margin-top:0;}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:calc(-1 * var(--space-1));overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+  .gallery-row{display:flex;flex-wrap:wrap;gap:var(--space-16);align-items:flex-start;}
+  .gallery-item{display:flex;flex-direction:column;gap:var(--space-6);}
+  .gallery-item .cap{font:400 11px/1 var(--font);color:var(--ink2);}
+  /* static pseudo-state previews (real :hover/:focus-within can't be faked without a pointer/keyboard) */
+  .demo-hover{background:var(--surf);}
+  .demo-focus{outline:var(--bw-md) solid var(--focus);outline-offset:var(--space-2);}
+
+  /* =====================================================================
+     ATOMS — built ONCE, composed everywhere below.
+     .navtoggle (disclosure trigger) · .navlink (exposed top-level link) ·
+     .navitem (side-nav row) · .menugroup/.menulink (mega-menu group) · .navacc (nested disclosure)
+     ===================================================================== */
+
+  /* .navtoggle — a real <button> disclosure trigger: aria-expanded flips the chevron via CSS only (no JS motion, DEF-003) */
+  .navtoggle{display:inline-flex;align-items:center;gap:var(--space-8);height:44px;padding:0 var(--space-16);
+    border:var(--bw-sm) solid var(--line);border-radius:var(--radius);background:transparent;color:var(--ink);
+    font:500 14px/1 var(--font);cursor:pointer;white-space:nowrap;
+    transition:background var(--ease),border-color var(--ease),transform var(--spring),filter var(--press);}
+  .navtoggle:hover{background:var(--surf);border-color:var(--ink);transform:scale(var(--btn-grow));}
+  .navtoggle:active{transform:scale(var(--btn-press));filter:brightness(.85);transition:transform var(--press),filter var(--press);}
+  .navtoggle:focus-visible{outline:var(--bw-md) solid var(--focus);outline-offset:2px;}
+  .navtoggle[aria-expanded="true"]{background:var(--surf);border-color:var(--fborda);}
+  .navtoggle .chev{width:14px;height:14px;fill:currentColor;transition:transform var(--ease);flex:none;}
+  .navtoggle[aria-expanded="true"] .chev{transform:rotate(180deg);}
+  .navtoggle:disabled{cursor:not-allowed;color:var(--disi);border-color:var(--fbordd);}
+  /* icon-only variant riding on .ib sizing: `.ib.navtoggle` */
+  .ib.navtoggle{border-color:transparent;}
+  .ib.navtoggle[aria-expanded="true"]{background:var(--surf);border-color:var(--fbordd);}
+
+  /* .navlink — exposed top-level link atom (Global header). Current = ink 2px bottom bar, never colour. */
+  .navlink{position:relative;display:inline-flex;align-items:center;height:44px;padding:0 var(--space-12);
+    color:var(--ink2);text-decoration:none;font:500 14px/1 var(--font);border-bottom:var(--bw-md) solid transparent;
+    transition:color var(--ease),border-color var(--ease),background var(--ease);}
+  .navlink:hover{color:var(--ink);background:var(--surf);}
+  .navlink:focus-visible{outline:var(--bw-md) solid var(--focus);outline-offset:calc(-1 * var(--space-2));}
+  .navlink[aria-current="page"]{color:var(--ink);border-bottom-color:var(--ink);font-weight:600;}
+  /* vertical-list contexts (popovers / menus) — block rows, a left marker instead of a bottom bar */
+  .popover .navlink,.menulink,.navacc-link{display:flex;width:100%;height:auto;padding:var(--space-10) var(--space-12);
+    border-bottom:0;border-left:var(--bw-md) solid transparent;border-radius:var(--radius);gap:var(--space-8);color:var(--ink);}
+  .popover .navlink:hover,.menulink:hover,.navacc-link:hover{background:var(--surf);}
+  .popover .navlink:focus-visible,.menulink:focus-visible,.navacc-link:focus-visible{outline:var(--bw-md) solid var(--focus);outline-offset:calc(-1 * var(--space-2));}
+  .popover .navlink[aria-current="page"],.menulink[aria-current="page"],.navacc-link[aria-current="page"]{
+    border-left-color:var(--ink);background:var(--surf);font-weight:600;}
+
+  /* .navitem — side-nav row atom: icon + label + current + optional group chevron */
+  .navitem{position:relative;display:flex;align-items:center;gap:var(--space-12);height:44px;padding:0 var(--space-12);
+    color:var(--ink2);text-decoration:none;font:500 14px/1 var(--font);border-left:var(--bw-md) solid transparent;
+    border-radius:var(--radius);transition:color var(--ease),background var(--ease),border-color var(--ease);}
+  .navitem:hover{color:var(--ink);background:var(--surf);}
+  .navitem:focus-visible{outline:var(--bw-md) solid var(--focus);outline-offset:calc(-1 * var(--space-2));}
+  .navitem[aria-current="page"]{color:var(--ink);border-left-color:var(--ink);font-weight:600;background:var(--surf);}
+  .navitem.sub{height:38px;padding-left:var(--space-24);font-weight:400;font-size:13px;}
+  .navitem-ic{flex:none;display:inline-flex;width:20px;height:20px;color:var(--icon);}
+  .navitem-ic svg{width:18px;height:18px;fill:currentColor;}
+  .navitem-tx{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+  /* .menugroup / .menulink — mega-menu grouped links: a heading + a <ul> of links, NOT role=menu */
+  .menugroup{display:flex;flex-direction:column;gap:var(--space-4);min-width:160px;}
+  .menugroup-h{font:600 12px/1 var(--font);color:var(--ink2);letter-spacing:.03em;text-transform:uppercase;margin:0 0 var(--space-8);padding:0 var(--space-12);}
+  .menugroup-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--space-2);}
+
+  /* .navacc — NavAccordion: nested disclosure list, the mobile form of B/C/D */
+  .navacc{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--space-2);}
+  .navacc-item{display:flex;flex-direction:column;}
+  .navacc-toggle{width:100%;justify-content:flex-start;border:0;height:48px;padding:0 var(--space-12);}
+  .navacc-toggle .navacc-tx{flex:1;text-align:left;}
+  .navacc-sub{list-style:none;margin:0;padding:0 0 0 var(--space-8);display:flex;flex-direction:column;gap:var(--space-2);}
+  .navacc-sub[hidden]{display:none;}
+
+  /* =====================================================================
+     A · POPOVER (primitive) + NavToggle demo
+     ===================================================================== */
+  .popover-anchor{position:relative;display:inline-block;}
+  .popover-demo{padding-bottom:var(--space-80);} /* reserves room so the default-open popover doesn't collide with the hintline */
+  .popover{position:absolute;top:calc(100% + var(--space-8));left:0;min-width:220px;
+    background:var(--raised);border:var(--bw-sm) solid var(--line);border-radius:var(--radius);
+    box-shadow:0 8px 24px var(--shadow);padding:var(--space-8);
+    opacity:0;visibility:hidden;transform:scale(.96) translateY(calc(-1 * var(--space-4)));transform-origin:top left;
+    transition:opacity var(--ease),transform var(--ease),visibility var(--ease);z-index:40;}
+  .popover.on{opacity:1;visibility:visible;transform:scale(1) translateY(0);}
+  .navtoggle.demo-expanded{background:var(--surf);border-color:var(--fborda);}
+  .navtoggle.demo-expanded .chev{transform:rotate(180deg);}
+
+  /* =====================================================================
+     B · GLOBAL HEADER (organism — the composition root)
+     ===================================================================== */
+  .gheader{container-type:inline-size;container-name:gheader;border:var(--bw-sm) solid var(--line2);border-radius:var(--radius);background:var(--page);position:relative;}
+  .skip-link{position:absolute;left:var(--space-8);top:var(--space-8);z-index:70;
+    transform:translateY(calc(-1 * var(--space-80)));opacity:0;
+    background:var(--pri);color:var(--pri-lbl);padding:var(--space-10) var(--space-16);border-radius:var(--radius);
+    font:500 13px/1 var(--font);text-decoration:none;transition:transform var(--ease),opacity var(--ease);}
+  .skip-link:focus{transform:translateY(0);opacity:1;}
+  .gheader-bar{display:flex;align-items:center;gap:var(--space-16);padding:var(--space-12) var(--space-16);}
+  .brand{display:inline-flex;align-items:center;gap:var(--space-8);color:var(--ink);text-decoration:none;font:600 16px/1 var(--font);flex:none;
+    border-radius:var(--radius);}
+  .brand:focus-visible{outline:var(--bw-md) solid var(--focus);outline-offset:2px;}
+  .brand-ic{display:inline-flex;width:22px;height:22px;color:var(--ink);}
+  .brand-ic svg{width:20px;height:20px;fill:currentColor;}
+  .gheader-primary{display:flex;align-items:center;gap:var(--space-2);flex:1;position:relative;min-width:0;}
+  .gheader-utility{display:flex;align-items:center;gap:var(--space-8);flex:none;position:relative;}
+  .gheader-hamburger{display:none;}
+  .gheader-primary .navtoggle.more{display:none;}
+  /* WIDE (default): every primary link exposed, no More toggle, no hamburger — the evidence-preferred default */
+  /* MEDIUM: priority+ — items 4-6 roll into a "More" popover (duplicated inside it for full a11y at this width) */
+  @container gheader (max-width:640px){
+    .gheader-primary a.navlink:nth-of-type(n+4){display:none;}
+    .gheader-primary .navtoggle.more{display:inline-flex;}
+  }
+  /* NARROW: brand + labelled hamburger only — opens the modal Drawer (section E) holding a .navacc */
+  @container gheader (max-width:440px){
+    .gheader-primary{display:none;}
+    .gheader-hamburger{display:inline-flex;}
+    .gheader-utility .ib.search{display:none;}
+    /* CDC Frame 1 mobile default: hamburger (left) · logo (centred) · person (right) */
+    .gheader-hamburger{order:0;}
+    .gheader-bar .brand{order:1;margin-inline:auto;}
+    .gheader-utility{order:2;}
+  }
+
+  /* =====================================================================
+     C · SIDE NAV (organism) — expanded ↔ rail ↔ Drawer
+     ===================================================================== */
+  .sidenav-shell{container-type:inline-size;container-name:sidenav;}
+  .sidenav{display:flex;flex-direction:column;gap:var(--space-2);width:260px;max-width:100%;
+    border:var(--bw-sm) solid var(--line2);border-radius:var(--radius);padding:var(--space-8);background:var(--page);}
+  .sidenav-head{display:flex;justify-content:flex-end;padding:0 var(--space-4) var(--space-8);border-bottom:var(--bw-sm) solid var(--line2);margin-bottom:var(--space-8);}
+  .navgroup{display:flex;flex-direction:column;}
+  .navgroup-list{display:flex;flex-direction:column;gap:var(--space-2);padding-top:var(--space-2);}
+  .navgroup-list[hidden]{display:none;}
+  .sidenav-drawer-trigger{display:none;}
+
+  /* rail mode (manual toggle OR forced by the container query below) — icons only; tooltip on hover/focus (reuses the T4 Tooltip shape: .tip-wrap/.tip-bubble) */
+  .sidenav .tip-wrap{position:relative;display:block;}
+  .sidenav .tip-bubble{position:absolute;left:calc(100% + var(--space-10));top:50%;
+    transform:translateY(-50%) translateX(calc(-1 * var(--space-4)));
+    width:max-content;max-width:200px;padding:var(--space-8) var(--space-12);background:var(--pri);color:var(--pri-lbl);
+    font:500 12.5px/1.3 var(--font);border-radius:var(--radius);box-shadow:0 8px 22px var(--shadow);
+    opacity:0;visibility:hidden;pointer-events:none;transition:opacity var(--ease),transform var(--ease),visibility var(--ease);z-index:50;display:none;}
+  .sidenav.rail .navitem-tx,.sidenav.rail .navacc-tx{display:none;}
+  .sidenav.rail .navitem,.sidenav.rail .navtoggle{justify-content:center;padding:0;width:44px;height:44px;}
+  .sidenav.rail{width:64px;}
+  .sidenav.rail .navgroup-list{padding-left:0;align-items:center;}
+  .sidenav.rail .navtoggle .chev{display:none;}
+  .sidenav.rail .tip-bubble{display:block;}
+  .sidenav.rail .tip-wrap:hover .tip-bubble,.sidenav.rail .tip-wrap:focus-within .tip-bubble{
+    opacity:1;visibility:visible;transform:translateY(-50%) translateX(0);}
+  @container sidenav (max-width:300px){
+    .sidenav{width:64px;}
+    .sidenav .navitem-tx,.sidenav .navacc-tx{display:none;}
+    .sidenav .navitem,.sidenav .navtoggle{justify-content:center;padding:0;width:44px;height:44px;}
+    .sidenav .navgroup-list{padding-left:0;align-items:center;}
+    .sidenav .navtoggle .chev{display:none;}
+    .sidenav .tip-bubble{display:block;}
+    .sidenav .tip-wrap:hover .tip-bubble,.sidenav .tip-wrap:focus-within .tip-bubble{
+      opacity:1;visibility:visible;transform:translateY(-50%) translateX(0);}
+  }
+  @container sidenav (max-width:180px){
+    .sidenav{display:none;}
+    .sidenav-drawer-trigger{display:inline-flex;}
+  }
+
+  /* =====================================================================
+     D · MEGA MENU (organism) — cols / featured / tabbed variants
+     Rendered in-flow (not floating) inside this pro-forma so the three stacked demos never overlap;
+     a real page would anchor it as an overlay using the same .popover positioning idea from section A.
+     ===================================================================== */
+  .megamenu-shell{container-type:inline-size;container-name:megamenu;margin-top:var(--space-24);}
+  .megamenu-shell:first-of-type{margin-top:0;}
+  .mm-mini-header{display:flex;align-items:center;gap:var(--space-8);padding:var(--space-8) 0;border-bottom:var(--bw-sm) solid var(--line2);margin-bottom:var(--space-8);}
+  .megamenu{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows var(--ease),opacity var(--ease);}
+  .megamenu.on{grid-template-rows:1fr;opacity:1;}
+  .megamenu>.mm-inner{overflow:hidden;min-height:0;display:flex;gap:var(--space-24);flex-wrap:wrap;
+    background:var(--raised);border:var(--bw-sm) solid var(--line);border-radius:var(--radius);padding:var(--space-20);}
+  /* CDC Frame 2 "content-heavy" masthead: brand + utility (person + hamburger), L1 hidden until the toggle reveals it */
+  .mm-masthead{display:flex;align-items:center;justify-content:space-between;gap:var(--space-16);
+    padding:var(--space-12) var(--space-16);border:var(--bw-sm) solid var(--line2);border-radius:var(--radius);background:var(--page);}
+  .mm-masthead-util{display:flex;align-items:center;gap:var(--space-8);flex:none;}
+  /* featured panel = column: an exposed L1 row on top, then a body of group columns + a divided Journeys rail */
+  .megamenu.featured>.mm-inner{flex-direction:column;align-items:stretch;gap:var(--space-16);border-top:0;}
+  .mm-l1row{display:flex;flex-wrap:wrap;gap:var(--space-4);padding-bottom:var(--space-8);border-bottom:var(--bw-sm) solid var(--line2);}
+  .mm-body{display:flex;gap:var(--space-24);align-items:flex-start;flex-wrap:wrap;}
+  .mm-groups{flex:1;min-width:0;display:flex;gap:var(--space-24);flex-wrap:wrap;}
+  .mm-rail{flex:none;width:220px;display:flex;flex-direction:column;gap:var(--space-2);
+    border-left:var(--bw-sm) solid var(--line2);padding-left:var(--space-20);}
+  .mm-journey{display:flex;align-items:center;gap:var(--space-10);padding:var(--space-8) var(--space-6);
+    color:var(--ink);text-decoration:none;border-radius:var(--radius);transition:background var(--ease);}
+  .mm-journey:hover{background:var(--surf);}
+  .mm-journey:focus-visible{outline:var(--bw-md) solid var(--focus);outline-offset:calc(-1 * var(--space-2));}
+  .mm-journey-ic{flex:none;width:var(--space-20);height:var(--space-20);display:inline-flex;align-items:center;justify-content:center;color:var(--icon);}
+  .mm-journey-ic svg{width:var(--space-18);height:var(--space-18);fill:currentColor;}
+  @container megamenu (max-width:720px){ .mm-rail{width:100%;border-left:0;border-top:var(--bw-sm) solid var(--line2);padding-left:0;padding-top:var(--space-16);} }
+  .megamenu.tabbed>.mm-inner{align-items:stretch;gap:var(--space-16);}
+  .tab{position:relative;height:44px;padding:0 var(--space-12);border:0;background:transparent;color:var(--ink2);
+    font:500 14px/1 var(--font);cursor:pointer;display:flex;align-items:center;text-align:left;border-radius:var(--radius);
+    transition:background var(--ease),color var(--ease);}
+  .tab:hover{color:var(--ink);background:var(--surf);}
+  .tab:focus-visible{outline:var(--bw-md) solid var(--focus);outline-offset:calc(-1 * var(--space-2));}
+  .tabrail{display:flex;flex-direction:column;gap:var(--space-2);border-right:var(--bw-sm) solid var(--line2);padding-right:var(--space-16);min-width:170px;flex:none;}
+  .tabrail .tab[aria-selected="true"]{background:var(--surf);font-weight:600;color:var(--ink);}
+  .mm-tab-panels{flex:1;min-width:0;}
+  .mm-tab-panels [role="tabpanel"][hidden]{display:none;}
+  .mm-accordion-fallback{display:none;}
+  @container megamenu (max-width:520px){
+    .mm-inner{flex-wrap:wrap;}
+    .megamenu-shell.has-fallback .megamenu{display:none;}
+    .megamenu-shell.has-fallback .mm-accordion-fallback{display:block;}
+  }
+
+  /* =====================================================================
+     E · DRAWER (generalised T1) + NavAccordion
+     props via classes: edge-left|edge-right|edge-top|edge-bottom + modal. Slide motion via the --drawer token (CSS only).
+     ===================================================================== */
+  .scrim{position:fixed;inset:0;background:var(--scrim);opacity:0;visibility:hidden;
+    transition:opacity var(--drawer),visibility var(--drawer);z-index:59;}
+  .scrim.on{opacity:1;visibility:visible;}
+  .drawer{position:fixed;top:0;bottom:0;background:var(--raised);display:flex;flex-direction:column;
+    box-shadow:0 0 30px var(--shadow);z-index:60;transition:transform var(--drawer);will-change:transform;}
+  .drawer.edge-left{left:0;width:320px;max-width:86%;border-right:var(--bw-sm) solid var(--line);transform:translateX(-100%);}
+  .drawer.edge-right{right:0;width:320px;max-width:86%;border-left:var(--bw-sm) solid var(--line);transform:translateX(100%);}
+  .drawer.edge-top{left:0;right:0;top:0;bottom:auto;height:60%;border-bottom:var(--bw-sm) solid var(--line);transform:translateY(-100%);}
+  .drawer.edge-bottom{left:0;right:0;bottom:0;top:auto;height:60%;border-top:var(--bw-sm) solid var(--line);transform:translateY(100%);}
+  .drawer.on{transform:translate(0,0);}
+  .drawer__h{display:flex;align-items:center;justify-content:space-between;
+    padding:var(--space-14) var(--space-10) var(--space-14) var(--space-20);border-bottom:var(--bw-sm) solid var(--line);}
+  .drawer__h .t{font:500 17px/1.2 var(--font);}
+  .drawer__h .ib:hover{transform:none;background:var(--surf);}
+  .drawer__b{flex:1;padding:var(--space-16) var(--space-8);overflow:auto;}
+
+  @container (max-width:440px){
+    .actionbar{flex-direction:column; align-items:stretch;} .actionbar .btn{width:100%;}
+  }
+  @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
+</style>
+</head>
+<body data-theme="light">
+  <div class="top">
+    <span class="t">Apollo pro-forma <small>Tranche 7 · Navigation · monochrome · real icons · interactive</small></span>
+    <span class="ctrls">
+      <label class="wctl">Width <input type="range" id="fw" min="320" max="1600" value="1600"><b id="fwv">full</b></label>
+      <button class="tgl" id="themeToggle" type="button">◐ Light / dark</button>
+    </span>
+  </div>
+  <div class="wrap">
+  <div class="frame" id="frame">
+
+    <section aria-labelledby="s-popover">
+      <div class="h"><h2 id="s-popover">Popover &amp; NavToggle</h2><span class="tag">primitive / atom</span></div>
+      <p class="sub">The shared shell under every disclosure in this tranche: a real <b>&lt;button&gt;</b> (<b>.navtoggle</b>) carrying <code>aria-expanded</code> + <code>aria-controls</code>, and an anchored <b>.popover</b> panel with a subtle CSS reveal (opacity/scale via <code>--ease</code>). Dismisses on outside-click and <b>Esc</b> — focus returns to the trigger. Shown open below so the panel is visible without interacting.</p>
+
+      <p class="grouplbl">Live — disclosure list of nav links</p>
+      <div class="popover-demo">
+        <div class="popover-anchor">
+          <button class="navtoggle" id="pop-toggle" type="button" aria-expanded="true" aria-controls="pop-panel">
+            Quick links <svg class="chev" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+          </button>
+          <nav class="popover on" id="pop-panel" aria-label="Quick links">
+            <a class="navlink" href="#">Overview</a>
+            <a class="navlink" href="#" aria-current="page">Payments</a>
+            <a class="navlink" href="#">Statements</a>
+            <a class="navlink" href="#">Help centre</a>
+          </nav>
+        </div>
+      </div>
+
+      <p class="grouplbl">State gallery</p>
+      <div class="gallery-row">
+        <div class="gallery-item"><span class="cap">Default</span>
+          <button class="navtoggle" type="button" aria-expanded="false" disabled aria-label="Menu (default, demo)">Menu <svg class="chev" aria-hidden="true"><use href="#i-chevron-down"/></svg></button></div>
+        <div class="gallery-item"><span class="cap">Hover</span>
+          <button class="navtoggle demo-hover" type="button" aria-expanded="false" disabled aria-label="Menu (hover, demo)">Menu <svg class="chev" aria-hidden="true"><use href="#i-chevron-down"/></svg></button></div>
+        <div class="gallery-item"><span class="cap">Expanded</span>
+          <button class="navtoggle demo-expanded" type="button" aria-expanded="true" disabled aria-label="Menu (expanded, demo)">Menu <svg class="chev" aria-hidden="true"><use href="#i-chevron-down"/></svg></button></div>
+        <div class="gallery-item"><span class="cap">Focus</span>
+          <button class="navtoggle demo-focus" type="button" aria-expanded="false" disabled aria-label="Menu (focus, demo)">Menu <svg class="chev" aria-hidden="true"><use href="#i-chevron-down"/></svg></button></div>
+        <div class="gallery-item"><span class="cap">Icon-only (.ib)</span>
+          <button class="ib ter navtoggle" type="button" aria-expanded="false" disabled aria-label="More options (icon-only, demo)"><svg aria-hidden="true"><use href="#i-more-h"/></svg></button></div>
+      </div>
+      <p class="hintline">Try it: click <b>Quick links</b> to close it, click outside the panel, or press <b>Esc</b> — focus returns to the toggle every time. This is the <b>Disclosure</b> pattern (button + aria-expanded/aria-controls), not <code>role="menu"</code>.</p>
+    </section>
+
+    <section aria-labelledby="s-header">
+      <div class="h"><h2 id="s-header">Global header</h2><span class="tag">organism</span></div>
+      <p class="sub">The composition root: <b>brand</b> (accessible name “Home”) + <b>primary</b> nav of <b>.navlink</b>s + <b>utility</b> nav (search, account). Narrow the width slider above to see it move through its three responsive states: <b>wide</b> = every link exposed (the evidence-preferred default) → <b>medium</b> = priority+ (“More”) → <b>narrow</b> = the CDC mobile layout (hamburger left · logo centred · person right); the hamburger opens the modal Drawer (section E) holding the accordion nav.</p>
+
+      <header class="gheader" id="gheader-demo">
+        <a class="skip-link" href="#gheader-skip-target">Skip to content</a>
+        <div class="gheader-bar">
+          <a class="brand" href="/" aria-label="Home">
+            <span class="brand-ic" aria-hidden="true"><svg><use href="#i-home"/></svg></span>
+            <span class="brand-tx">Apollo bank</span>
+          </a>
+          <nav class="gheader-primary" aria-label="Primary">
+            <a class="navlink" href="#" aria-current="page">Accounts</a>
+            <a class="navlink" href="#">Payments</a>
+            <a class="navlink" href="#">Cards</a>
+            <a class="navlink" href="#">Savings</a>
+            <a class="navlink" href="#">Investments</a>
+            <a class="navlink" href="#">Support</a>
+            <div class="popover-anchor">
+              <button class="navtoggle more" id="gh-more-toggle" type="button" aria-expanded="false" aria-controls="gh-more-panel">
+                More <svg class="chev" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+              </button>
+              <div class="popover" id="gh-more-panel" role="group" aria-label="More primary links">
+                <a class="navlink" href="#">Savings</a>
+                <a class="navlink" href="#">Investments</a>
+                <a class="navlink" href="#">Support</a>
+              </div>
+            </div>
+          </nav>
+          <nav class="gheader-utility" aria-label="Utility">
+            <button class="ib ghost search" type="button" aria-label="Search" data-toast="Search opened"><svg aria-hidden="true"><use href="#i-search"/></svg></button>
+            <div class="popover-anchor">
+              <button class="ib ghost navtoggle" id="gh-account-toggle" type="button" aria-expanded="false" aria-controls="gh-account-panel" aria-label="Account menu"><svg aria-hidden="true"><use href="#i-avatar"/></svg></button>
+              <div class="popover" id="gh-account-panel" role="group" aria-label="Account menu" style="right:0;left:auto;transform-origin:top right;">
+                <a class="navlink" href="#">Profile</a>
+                <a class="navlink" href="#">Security settings</a>
+                <a class="navlink" href="#">Sign out</a>
+              </div>
+            </div>
+          </nav>
+          <button class="ib ghost navtoggle gheader-hamburger" id="gheader-hamburger" type="button" aria-expanded="false" aria-controls="mobile-drawer" aria-label="Open menu"><svg aria-hidden="true"><use href="#i-menu"/></svg></button>
+        </div>
+        <p id="gheader-skip-target" class="sr-only" tabindex="-1">Header navigation ends — main content would start here.</p>
+      </header>
+
+      <p class="grouplbl mt24">.navlink state gallery</p>
+      <div class="gallery-row">
+        <div class="gallery-item"><span class="cap">Default</span><a class="navlink" href="#" tabindex="-1" aria-hidden="true">Payments</a></div>
+        <div class="gallery-item"><span class="cap">Hover</span><a class="navlink demo-hover" href="#" tabindex="-1" aria-hidden="true">Payments</a></div>
+        <div class="gallery-item"><span class="cap">Current</span><a class="navlink" href="#" aria-current="page" tabindex="-1" aria-hidden="true">Payments</a></div>
+        <div class="gallery-item"><span class="cap">Focus</span><a class="navlink demo-focus" href="#" tabindex="-1" aria-hidden="true">Payments</a></div>
+      </div>
+      <p class="hintline">The current-page indicator is a <b>2px ink bottom bar</b> — mono, not colour. Each disclosure (More, Account) keeps its own <code>aria-expanded</code>; links stay individually tabbable, this is not a single roving-tabindex composite.</p>
+    </section>
+
+    <section aria-labelledby="s-sidenav">
+      <div class="h"><h2 id="s-sidenav">Side nav</h2><span class="tag">organism</span></div>
+      <p class="sub">The backbone of authenticated banking areas. Composes <b>.navitem</b> (icon + label + current) and <b>.navgroup</b> (a nested disclosure). The rail toggle collapses labels to an icon-only rail — reusing the <b>T4 Tooltip</b> shape to keep every icon labelled on hover/focus. Narrow the width slider to see it force-collapse to rail, then to a Drawer trigger.</p>
+
+      <div class="sidenav-shell">
+        <nav class="sidenav" id="sidenav-demo" aria-label="Sections">
+          <div class="sidenav-head">
+            <button class="ib ghost" id="rail-toggle" type="button" aria-pressed="false" aria-label="Collapse to icon rail"><svg aria-hidden="true"><use href="#i-collapse" id="rail-toggle-icon"/></svg></button>
+          </div>
+          <span class="tip-wrap"><a class="navitem" href="#" aria-current="page" aria-label="Overview">
+            <span class="navitem-ic" aria-hidden="true"><svg><use href="#i-home"/></svg></span><span class="navitem-tx">Overview</span></a>
+            <span class="tip-bubble" role="tooltip">Overview</span></span>
+          <span class="tip-wrap"><a class="navitem" href="#" aria-label="Statements">
+            <span class="navitem-ic" aria-hidden="true"><svg><use href="#i-document"/></svg></span><span class="navitem-tx">Statements</span></a>
+            <span class="tip-bubble" role="tooltip">Statements</span></span>
+          <div class="navgroup">
+            <span class="tip-wrap">
+              <button class="navtoggle navgroup-h" id="sn-pay-t" type="button" aria-expanded="true" aria-controls="sn-pay-p" aria-label="Payments">
+                <span class="navitem-ic" aria-hidden="true"><svg><use href="#i-tag"/></svg></span><span class="navitem-tx navacc-tx">Payments</span>
+                <svg class="chev" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+              </button>
+              <span class="tip-bubble" role="tooltip">Payments</span>
+            </span>
+            <div class="navgroup-list" id="sn-pay-p">
+              <a class="navitem sub" href="#">Domestic transfer</a>
+              <a class="navitem sub" href="#">International</a>
+              <a class="navitem sub" href="#">Standing orders</a>
+            </div>
+          </div>
+          <div class="navgroup">
+            <span class="tip-wrap">
+              <button class="navtoggle navgroup-h" id="sn-sup-t" type="button" aria-expanded="false" aria-controls="sn-sup-p" aria-label="Support">
+                <span class="navitem-ic" aria-hidden="true"><svg><use href="#i-help"/></svg></span><span class="navitem-tx navacc-tx">Support</span>
+                <svg class="chev" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+              </button>
+              <span class="tip-bubble" role="tooltip">Support</span>
+            </span>
+            <div class="navgroup-list" id="sn-sup-p" hidden>
+              <a class="navitem sub" href="#">Help centre</a>
+              <a class="navitem sub" href="#">Contact us</a>
+            </div>
+          </div>
+        </nav>
+        <button class="btn ghost sidenav-drawer-trigger" id="sidenav-drawer-trigger" type="button" aria-expanded="false" aria-controls="mobile-drawer">
+          <svg aria-hidden="true"><use href="#i-menu"/></svg> Open navigation
+        </button>
+      </div>
+
+      <p class="grouplbl mt24">.navitem state gallery</p>
+      <div class="gallery-row">
+        <div class="gallery-item"><span class="cap">Default</span><a class="navitem" href="#" tabindex="-1" aria-hidden="true"><span class="navitem-ic" aria-hidden="true"><svg><use href="#i-document"/></svg></span><span class="navitem-tx">Statements</span></a></div>
+        <div class="gallery-item"><span class="cap">Hover</span><a class="navitem demo-hover" href="#" tabindex="-1" aria-hidden="true"><span class="navitem-ic" aria-hidden="true"><svg><use href="#i-document"/></svg></span><span class="navitem-tx">Statements</span></a></div>
+        <div class="gallery-item"><span class="cap">Current</span><a class="navitem" href="#" aria-current="page" tabindex="-1" aria-hidden="true"><span class="navitem-ic" aria-hidden="true"><svg><use href="#i-document"/></svg></span><span class="navitem-tx">Statements</span></a></div>
+        <div class="gallery-item"><span class="cap">Focus</span><a class="navitem demo-focus" href="#" tabindex="-1" aria-hidden="true"><span class="navitem-ic" aria-hidden="true"><svg><use href="#i-document"/></svg></span><span class="navitem-tx">Statements</span></a></div>
+      </div>
+      <p class="hintline">Groups are a genuine <b>disclosure</b> (<code>aria-expanded</code> on a real button) — shown here in both states, <b>Payments</b> expanded and <b>Support</b> collapsed. In rail mode every icon keeps its <code>aria-label</code> and gains a hover/focus tooltip.</p>
+    </section>
+
+    <section aria-labelledby="s-megamenu">
+      <div class="h"><h2 id="s-megamenu">Mega menu</h2><span class="tag">organism</span></div>
+      <p class="sub">Three variants of the same organism — a <b>NavToggle</b> opening a wide panel of grouped links (headings + lists, <em>not</em> <code>role="menu"</code>). <b>Esc</b> closes and returns focus; there is <b>no focus trap</b> — it's navigation, not a dialog. Each is shown open below. The <b>featured</b> variant mirrors the CDC “content-heavy services” pattern: a masthead (brand + person + hamburger) that reveals an exposed L1 row, four groups of links, and a divided <b>Journeys</b> rail — with the red active underline swapped for a mono ink bar.</p>
+
+      <div class="megamenu-shell has-fallback">
+        <div class="mm-mini-header">
+          <button class="navtoggle" id="mm-cols-toggle" type="button" aria-expanded="true" aria-controls="mm-cols-panel">Products <svg class="chev" aria-hidden="true"><use href="#i-chevron-down"/></svg></button>
+          <span class="hintline" style="margin:0;">.megamenu.cols — grouped links, 1: multi-column list</span>
+        </div>
+        <nav class="megamenu cols on" id="mm-cols-panel" aria-label="Products menu">
+          <div class="mm-inner">
+            <div class="menugroup"><h3 class="menugroup-h">Accounts</h3>
+              <ul class="menugroup-list"><li><a class="menulink" href="#">Current accounts</a></li><li><a class="menulink" href="#">Savings accounts</a></li><li><a class="menulink" href="#">Joint accounts</a></li></ul></div>
+            <div class="menugroup"><h3 class="menugroup-h">Cards</h3>
+              <ul class="menugroup-list"><li><a class="menulink" href="#">Credit cards</a></li><li><a class="menulink" href="#">Debit cards</a></li><li><a class="menulink" href="#">Compare cards</a></li></ul></div>
+            <div class="menugroup"><h3 class="menugroup-h">Payments</h3>
+              <ul class="menugroup-list"><li><a class="menulink" href="#">Domestic transfer</a></li><li><a class="menulink" href="#">International</a></li><li><a class="menulink" href="#">Standing orders</a></li></ul></div>
+            <div class="menugroup"><h3 class="menugroup-h">Support</h3>
+              <ul class="menugroup-list"><li><a class="menulink" href="#">Help centre</a></li><li><a class="menulink" href="#">Security</a></li><li><a class="menulink" href="#">Contact us</a></li></ul></div>
+          </div>
+        </nav>
+        <div class="mm-accordion-fallback">
+          <p class="hintline" style="margin:0 0 var(--space-8);">Narrow form — nested accordion (reuses <b>.navacc</b>):</p>
+          <ul class="navacc">
+            <li class="navacc-item">
+              <button class="navtoggle navacc-toggle" id="mmacc-1-t" type="button" aria-expanded="false" aria-controls="mmacc-1-p"><span class="navacc-tx">Accounts</span><svg class="chev" aria-hidden="true"><use href="#i-chevron-down"/></svg></button>
+              <ul class="navacc-sub" id="mmacc-1-p" hidden><li><a class="navacc-link" href="#">Current accounts</a></li><li><a class="navacc-link" href="#">Savings accounts</a></li></ul>
+            </li>
+            <li class="navacc-item">
+              <button class="navtoggle navacc-toggle" id="mmacc-2-t" type="button" aria-expanded="false" aria-controls="mmacc-2-p"><span class="navacc-tx">Cards</span><svg class="chev" aria-hidden="true"><use href="#i-chevron-down"/></svg></button>
+              <ul class="navacc-sub" id="mmacc-2-p" hidden><li><a class="navacc-link" href="#">Credit cards</a></li><li><a class="navacc-link" href="#">Debit cards</a></li></ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="grouplbl mt24">.megamenu.featured — content-heavy masthead (mirrors CDC “Mega menu” pattern)</p>
+      <div class="megamenu-shell">
+        <div class="mm-masthead">
+          <a class="brand" href="/" aria-label="Home"><span class="brand-ic" aria-hidden="true"><svg><use href="#i-home"/></svg></span><span class="brand-tx">Apollo bank</span></a>
+          <div class="mm-masthead-util">
+            <button class="ib ghost" type="button" aria-label="Account" data-toast="Account menu"><svg aria-hidden="true"><use href="#i-avatar"/></svg></button>
+            <button class="ib ghost navtoggle" id="mm-feat-toggle" type="button" aria-expanded="true" aria-controls="mm-feat-panel" aria-label="Open menu"><svg aria-hidden="true"><use href="#i-menu"/></svg></button>
+          </div>
+        </div>
+        <nav class="megamenu featured on" id="mm-feat-panel" aria-label="Products menu">
+          <div class="mm-inner">
+            <div class="mm-l1row">
+              <a class="navlink" href="#" aria-current="page">Everyday banking</a>
+              <a class="navlink" href="#">Borrowing</a>
+              <a class="navlink" href="#">Savings &amp; investments</a>
+              <a class="navlink" href="#">Insurance</a>
+              <a class="navlink" href="#">Ways to bank</a>
+            </div>
+            <div class="mm-body">
+              <div class="mm-groups">
+                <div class="menugroup"><h3 class="menugroup-h">Current accounts</h3>
+                  <ul class="menugroup-list"><li><a class="menulink" href="#">Compare accounts</a></li><li><a class="menulink" href="#">Student account</a></li><li><a class="menulink" href="#">Premier</a></li><li><a class="menulink" href="#">Switch to us</a></li></ul></div>
+                <div class="menugroup"><h3 class="menugroup-h">Saving</h3>
+                  <ul class="menugroup-list"><li><a class="menulink" href="#">Easy access</a></li><li><a class="menulink" href="#">Fixed rate</a></li><li><a class="menulink" href="#">Cash ISAs</a></li><li><a class="menulink" href="#">Regular saver</a></li></ul></div>
+                <div class="menugroup"><h3 class="menugroup-h">Borrowing</h3>
+                  <ul class="menugroup-list"><li><a class="menulink" href="#">Personal loans</a></li><li><a class="menulink" href="#">Mortgages</a></li><li><a class="menulink" href="#">Credit cards</a></li></ul></div>
+                <div class="menugroup"><h3 class="menugroup-h">Investing</h3>
+                  <ul class="menugroup-list"><li><a class="menulink" href="#">Ready-made</a></li><li><a class="menulink" href="#">Funds &amp; shares</a></li></ul></div>
+              </div>
+              <div class="mm-rail">
+                <a class="mm-journey" href="#"><span class="mm-journey-ic" aria-hidden="true"><svg><use href="#i-home"/></svg></span>Open an account</a>
+                <a class="mm-journey" href="#"><span class="mm-journey-ic" aria-hidden="true"><svg><use href="#i-document"/></svg></span>View statements</a>
+                <a class="mm-journey" href="#"><span class="mm-journey-ic" aria-hidden="true"><svg><use href="#i-location"/></svg></span>Find a branch</a>
+                <a class="mm-journey" href="#"><span class="mm-journey-ic" aria-hidden="true"><svg><use href="#i-calendar"/></svg></span>Book an appointment</a>
+                <a class="mm-journey" href="#"><span class="mm-journey-ic" aria-hidden="true"><svg><use href="#i-tag"/></svg></span>Latest offers</a>
+              </div>
+            </div>
+          </div>
+        </nav>
+      </div>
+
+      <div class="megamenu-shell">
+        <div class="mm-mini-header">
+          <button class="navtoggle" id="mm-tab-toggle" type="button" aria-expanded="true" aria-controls="mm-tab-panel">Support <svg class="chev" aria-hidden="true"><use href="#i-chevron-down"/></svg></button>
+          <span class="hintline" style="margin:0;">.megamenu.tabbed — reused T4 Tabs as a left .tabrail</span>
+        </div>
+        <nav class="megamenu tabbed on" id="mm-tab-panel" aria-label="Support menu">
+          <div class="mm-inner">
+            <div class="tabrail" role="tablist" aria-label="Support categories" aria-orientation="vertical">
+              <button class="tab" role="tab" id="mmtab-1" aria-controls="mmtab-panel-1" aria-selected="true" tabindex="0" type="button">Help centre</button>
+              <button class="tab" role="tab" id="mmtab-2" aria-controls="mmtab-panel-2" aria-selected="false" tabindex="-1" type="button">Security</button>
+              <button class="tab" role="tab" id="mmtab-3" aria-controls="mmtab-panel-3" aria-selected="false" tabindex="-1" type="button">Contact</button>
+            </div>
+            <div class="mm-tab-panels">
+              <div class="menugroup" role="tabpanel" id="mmtab-panel-1" aria-labelledby="mmtab-1">
+                <ul class="menugroup-list"><li><a class="menulink" href="#">FAQs</a></li><li><a class="menulink" href="#">Guides</a></li><li><a class="menulink" href="#">System status</a></li></ul></div>
+              <div class="menugroup" role="tabpanel" id="mmtab-panel-2" aria-labelledby="mmtab-2" hidden>
+                <ul class="menugroup-list"><li><a class="menulink" href="#">Report fraud</a></li><li><a class="menulink" href="#">Freeze a card</a></li></ul></div>
+              <div class="menugroup" role="tabpanel" id="mmtab-panel-3" aria-labelledby="mmtab-3" hidden>
+                <ul class="menugroup-list"><li><a class="menulink" href="#">Call us</a></li><li><a class="menulink" href="#">Live chat</a></li><li><a class="menulink" href="#">Branch finder</a></li></ul></div>
+            </div>
+          </div>
+        </nav>
+      </div>
+      <p class="hintline">Narrow the width slider — the <b>Products</b> panel above collapses to a nested accordion (all three variants share the same responsive fallback: nested <b>.navacc</b> rows inside the mobile Drawer, section E).</p>
+    </section>
+
+    <section aria-labelledby="s-drawer">
+      <div class="h"><h2 id="s-drawer">Drawer &amp; NavAccordion</h2><span class="tag">organism / molecule</span></div>
+      <p class="sub">The generalised <b>T1 Drawer</b> — <code>edge-left|edge-right|edge-top|edge-bottom</code> + <code>modal</code>. This <b>modal</b> instance is a real dialog: <code>role="dialog"</code> + <code>aria-modal="true"</code>, a genuine <b>focus trap</b>, <b>Esc</b>-close, focus <b>returns to the opener</b>, and the background is made <code>inert</code> while open. It's the same drawer the header hamburger (section B, narrow) and the side nav's narrowest state (section C) open — one component, three doors in.</p>
+      <div class="row">
+        <button class="btn ghost" id="drawer-open-btn" type="button" aria-expanded="false" aria-controls="mobile-drawer">
+          <svg aria-hidden="true"><use href="#i-menu"/></svg> Open menu
+        </button>
+      </div>
+      <p class="hintline">Inside: a <b>.navacc</b> — nested disclosure rows that expand their child link group in place (<code>aria-expanded</code> per level). This is the mobile form of the Global header's primary nav.</p>
+    </section>
+
+  </div>
+  </div>
+
+  <div class="scrim" id="dr-scrim"></div>
+  <aside class="drawer edge-left modal" id="mobile-drawer" role="dialog" aria-modal="true" aria-labelledby="mobile-drawer-title" aria-hidden="true">
+    <div class="drawer__h">
+      <span class="t" id="mobile-drawer-title">Menu</span>
+      <button class="ib ghost" id="mobile-drawer-close" type="button" aria-label="Close menu"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+    </div>
+    <div class="drawer__b">
+      <nav aria-label="Primary (mobile)">
+        <ul class="navacc">
+          <li class="navacc-item">
+            <a class="navacc-link" href="#" aria-current="page">
+              <span class="navitem-ic" aria-hidden="true"><svg><use href="#i-home"/></svg></span>Overview</a>
+          </li>
+          <li class="navacc-item">
+            <button class="navtoggle navacc-toggle" id="dnav-pay-t" type="button" aria-expanded="false" aria-controls="dnav-pay-p">
+              <span class="navitem-ic" aria-hidden="true"><svg><use href="#i-tag"/></svg></span><span class="navacc-tx">Payments</span>
+              <svg class="chev" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+            </button>
+            <ul class="navacc-sub" id="dnav-pay-p" hidden>
+              <li><a class="navacc-link" href="#">Domestic transfer</a></li>
+              <li><a class="navacc-link" href="#">International</a></li>
+            </ul>
+          </li>
+          <li class="navacc-item">
+            <button class="navtoggle navacc-toggle" id="dnav-sup-t" type="button" aria-expanded="false" aria-controls="dnav-sup-p">
+              <span class="navitem-ic" aria-hidden="true"><svg><use href="#i-help"/></svg></span><span class="navacc-tx">Support</span>
+              <svg class="chev" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+            </button>
+            <ul class="navacc-sub" id="dnav-sup-p" hidden>
+              <li><a class="navacc-link" href="#">Help centre</a></li>
+              <li><a class="navacc-link" href="#">Security</a></li>
+              <li><a class="navacc-link" href="#">Contact us</a></li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </aside>
+
+  <div class="toast" id="toast" role="status"></div>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-add" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M18 8.4H9.6V0H8.4V8.4H0V9.6H8.4V18H9.6V9.6H18V8.4Z" fill="currentColor"/></symbol>
+    <symbol id="i-close" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"/></symbol>
+    <symbol id="i-check" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.82617 15.685L0.0761719 9.93502L0.924172 9.08802L5.82617 13.988L17.0762 2.73901L17.9242 3.58701L5.82617 15.685Z" fill="currentColor"/></symbol>
+    <symbol id="i-indeterminate" viewBox="0 0 18 18"><rect y="8.3999" width="18" height="1.199" fill="currentColor"/></symbol>
+    <symbol id="i-chevron-down" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M17 4.15198L9 12.15L1 4.15198V5.84798L9 13.848L17 5.84798V4.15198Z" fill="currentColor"/></symbol>
+    <symbol id="i-chevron-up" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M1 13.848L9 5.84998L17 13.848V12.152L9 4.15198L1 12.152V13.848Z" fill="currentColor"/></symbol>
+    <symbol id="i-chevron-left" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.8483 17L5.85034 9L13.8483 1H12.1523L4.15234 9L12.1523 17H13.8483Z" fill="currentColor"/></symbol>
+    <symbol id="i-chevron-right" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.15234 17L12.1503 9L4.15234 1H5.84834L13.8483 9L5.84834 17H4.15234Z" fill="currentColor"/></symbol>
+    <symbol id="i-chevron-dbl-left" viewBox="0 0 18 18"><path d="M9 1H10.696L2.698 9L10.696 17H9L1 9L9 1Z" fill="currentColor"/> <path d="M17.696 1L9.698 9L17.696 17H16L8 9L16 1H17.696Z" fill="currentColor"/></symbol>
+    <symbol id="i-chevron-dbl-right" viewBox="0 0 18 18"><path d="M0.695312 1L8.69331 9L0.695312 17H2.39131L10.3913 9L2.39131 1H0.695312Z" fill="currentColor"/> <path d="M9.39131 1H7.69531L15.6933 9L7.69531 17H9.39131L17.3913 9L9.39131 1Z" fill="currentColor"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15 1V0H13.8V1H4.2V0H3V1H0V18H14.2L18 14.2V1H15ZM14.2 16.303V14.2H16.303L14.2 16.303ZM16.8 13H13V16.8H1.2V6H16.8V13ZM16.8 4.8H1.2V2.2H3V3.5H4.2V2.2H13.8V3.5H15V2.2H16.8V4.8ZM8.8 10.029V15H10V7.971L7.003 9.667L7.594 10.712L8.8 10.029Z" fill="currentColor"/></symbol>
+    <symbol id="i-document" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.9891 0H0.789062V18H16.7891V3.8L12.9891 0ZM15.0921 3.8H12.9891V1.697L15.0921 3.8ZM15.5891 16.8H1.98906V1.2H11.7891V5H15.5891V16.8Z" fill="currentColor"/></symbol>
+    <symbol id="i-file" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.1985 0H1.9985V8.703L3.1985 7.503V1.2H10.9985V5H14.7985V16.8H8.4895L7.2895 18H15.9985V3.8L12.1985 0ZM12.1985 3.8V1.697L14.3015 3.8H12.1985ZM12.0245 7.534C10.9145 6.426 9.1065 6.426 7.9945 7.534L2.7725 12.758C2.0905 13.44 2.0905 14.55 2.7725 15.232C3.1135 15.574 3.5625 15.744 4.0095 15.744C4.4575 15.744 4.9055 15.574 5.2475 15.232L9.6675 10.812L8.8185 9.964L4.3985 14.384C4.1845 14.597 3.8365 14.598 3.6205 14.384C3.4065 14.169 3.4065 13.821 3.6205 13.606L8.8425 8.384C9.4855 7.739 10.5325 7.74 11.1755 8.383C11.8185 9.027 11.8185 10.074 11.1755 10.718L5.8985 15.994C4.8245 17.066 3.0775 17.066 2.0035 15.994C0.9295 14.92 0.9295 13.172 2.0035 12.098L6.5335 7.57L5.6845 6.723L1.1565 11.25C-0.3855 12.791 -0.3855 15.3 1.1565 16.842C1.9275 17.613 2.9395 17.998 3.9525 17.998C4.9655 17.998 5.9775 17.613 6.7485 16.842L12.0255 11.566C13.1365 10.454 13.1365 8.646 12.0245 7.534Z" fill="currentColor"/></symbol>
+    <symbol id="i-image" viewBox="0 0 18 18"><path d="M14.67 9.82L11.13 13.36L13.77 16H18V13.15L14.67 9.82ZM3.64 7.99L0 11.64V16H11.65L3.64 7.99ZM0 2V9.5L3.64 5.87L10.07 12.3L14.67 7.7L18 11.03V2H0ZM10.07 8.57C8.97 8.57 8.07 7.67 8.07 6.57C8.07 5.47 8.97 4.57 10.07 4.57C11.17 4.57 12.07 5.46 12.07 6.57C12.07 7.68 11.18 8.57 10.07 8.57Z" fill="currentColor"/></symbol>
+    <symbol id="i-pdf" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.69006 9.378H3.37306V10.176H3.64006C4.18706 10.176 4.26106 9.967 4.26106 9.763C4.26106 9.489 4.09506 9.378 3.69006 9.378ZM12.9891 0H2.78906V5.8H3.98906V1.2H11.7891V5H15.5891V16.8H3.98906V15.2H2.78906V18H16.7891V3.8L12.9891 0ZM12.9891 3.8V1.697L15.0921 3.8H12.9891ZM12.7891 13.99V7.01C12.7891 7.004 12.7851 7 12.7791 7H0.799062C0.793062 7 0.789062 7.004 0.789062 7.01V13.99C0.789062 13.995 0.793062 14 0.799062 14H12.7791C12.7851 14 12.7891 13.995 12.7891 13.99ZM4.54906 10.77L4.54806 10.771C4.37706 10.84 4.14306 10.877 3.89006 10.877H3.37306V12.15H2.46106V8.676H3.77606C4.09806 8.676 4.43606 8.692 4.72006 8.883C5.02206 9.088 5.18106 9.404 5.18106 9.795C5.18206 10.239 4.94506 10.604 4.54906 10.77ZM6.60206 12.151H5.47406V8.676H6.71206C7.98706 8.676 8.63406 9.255 8.63406 10.398C8.63306 11.952 7.54806 12.151 6.60206 12.151ZM11.3691 9.383H9.90606V10.058H11.2831V10.76H9.90606V12.152H9.00706V8.676H11.3691V9.383ZM6.64806 9.378H6.38506V11.449H6.62006C7.37906 11.449 7.70306 11.137 7.70306 10.406C7.70306 9.675 7.39806 9.378 6.64806 9.378Z" fill="currentColor"/></symbol>
+    <symbol id="i-time" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.03 0 0 4.029 0 9C0 13.971 4.03 18 9 18C13.97 18 18 13.971 18 9C18 4.029 13.97 0 9 0ZM9 16.8C4.699 16.8 1.2 13.301 1.2 9C1.2 4.699 4.699 1.2 9 1.2C13.301 1.2 16.8 4.699 16.8 9C16.8 13.301 13.301 16.8 9 16.8ZM9.6 3H8.4V9.6H13V8.4H9.6V3Z" fill="currentColor"/></symbol>
+    <symbol id="i-camera" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 4.5H14.148L12.912 1.44C12.682 0.872 12.131 0.5 11.518 0.5H6.482C5.869 0.5 5.318 0.872 5.088 1.44L3.852 4.5H1.5C0.675 4.5 0 5.175 0 6V16C0 16.825 0.675 17.5 1.5 17.5H16.5C17.325 17.5 18 16.825 18 16V6C18 5.175 17.325 4.5 16.5 4.5ZM16.8 16C16.8 16.163 16.663 16.3 16.5 16.3H1.5C1.337 16.3 1.2 16.163 1.2 16V6C1.2 5.837 1.337 5.7 1.5 5.7H4.661L6.201 1.89C6.247 1.774 6.358 1.7 6.482 1.7H11.518C11.642 1.7 11.753 1.774 11.799 1.89L13.339 5.7H16.5C16.663 5.7 16.8 5.837 16.8 6V16ZM9 5.5C6.515 5.5 4.5 7.515 4.5 10C4.5 12.485 6.515 14.5 9 14.5C11.485 14.5 13.5 12.485 13.5 10C13.5 7.515 11.485 5.5 9 5.5ZM9 13.3C7.18 13.3 5.7 11.82 5.7 10C5.7 8.18 7.18 6.7 9 6.7C10.82 6.7 12.3 8.18 12.3 10C12.3 11.82 10.82 13.3 9 13.3Z" fill="currentColor"/></symbol>
+    <symbol id="i-location" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M14.0212 2.184C12.5772 0.728 10.6832 0 8.78917 0C6.89517 0 5.00117 0.728 3.55617 2.184C0.666172 5.096 0.666172 9.817 3.55617 12.728L8.78917 18L14.0212 12.728C16.9112 9.816 16.9112 5.095 14.0212 2.184ZM13.1702 11.883L8.78917 16.297L4.40817 11.883C1.98517 9.442 1.98517 5.47 4.40817 3.029C5.57917 1.849 7.13417 1.2 8.78917 1.2C10.4432 1.2 11.9992 1.849 13.1702 3.029C15.5922 5.47 15.5922 9.442 13.1702 11.883ZM8.78917 3.4C6.52817 3.4 4.68917 5.239 4.68917 7.5C4.68917 9.761 6.52817 11.6 8.78917 11.6C11.0502 11.6 12.8892 9.761 12.8892 7.5C12.8892 5.239 11.0502 3.4 8.78917 3.4ZM8.78917 10.4C7.19017 10.4 5.88917 9.098 5.88917 7.5C5.88917 5.902 7.19017 4.6 8.78917 4.6C10.3882 4.6 11.6892 5.902 11.6892 7.5C11.6892 9.098 10.3882 10.4 8.78917 10.4Z" fill="currentColor"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.8 12V15.8H2.2V12H1V17H17V12H15.8ZM8.4 13.849H9.6V3.297L14 7.697V6.001L9 1L4 6.001V7.698L8.4 3.298V13.849Z" fill="currentColor"/></symbol>
+    <symbol id="i-download" viewBox="0 0 18 18"><g> <path fill-rule="evenodd" clip-rule="evenodd" d="M15.8 12V15.8H2.2V12H1V17H17V12H15.8ZM14 8.848V7.151L9.6 11.551V1H8.4V11.551L4 7.151V8.848L9 13.849L14 8.848Z" fill="currentColor"/> </g></symbol>
+    <symbol id="i-delete" viewBox="0 0 18 18"><g> <path fill-rule="evenodd" clip-rule="evenodd" d="M15.5 2H12V1.5C12 0.675 11.325 0 10.5 0H7.5C6.675 0 6 0.675 6 1.5V2H2.5C1.672 2 1 2.672 1 3.5V6H2V18H16V6H17V3.5C17 2.672 16.328 2 15.5 2ZM7.2 1.5C7.2 1.337 7.337 1.2 7.5 1.2H10.5C10.663 1.2 10.8 1.337 10.8 1.5V2H7.2V1.5ZM14.8 16.8H3.2V6H14.8V16.8ZM15.8 4.8H2.2V3.5C2.2 3.335 2.335 3.2 2.5 3.2H15.5C15.666 3.2 15.8 3.335 15.8 3.5V4.8ZM7.2 8H6V15H7.2V8ZM12 8H10.8V15H12V8Z" fill="currentColor"/> </g></symbol>
+    <symbol id="i-search" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.19675 12.803C3.66075 14.268 5.58075 15 7.49975 15C9.23175 15 10.9598 14.398 12.3577 13.206L17.1257 17.973L17.9748 17.125L13.2067 12.357C15.7197 9.41 15.5898 4.981 12.8048 2.196C11.3388 0.732 9.41875 0 7.49975 0C5.58075 0 3.66075 0.732 2.19675 2.197C-0.73225 5.126 -0.73225 9.874 2.19675 12.803ZM1.19975 7.5C1.19975 5.817 1.85575 4.235 3.04475 3.045C4.23375 1.855 5.81675 1.2 7.49975 1.2C9.18275 1.2 10.7648 1.855 11.9548 3.045C14.4108 5.501 14.4108 9.498 11.9548 11.955C10.7648 13.145 9.18275 13.8 7.49975 13.8C5.81675 13.8 4.23475 13.145 3.04475 11.955C1.85475 10.765 1.19975 9.183 1.19975 7.5Z" fill="currentColor"/></symbol>
+    <symbol id="i-clear" viewBox="0 0 18 18"><g> <path fill-rule="evenodd" clip-rule="evenodd" d="M12.576 4.576L9 8.152L5.424 4.576L4.576 5.424L8.152 9L4.576 12.576L5.425 13.424L9 9.848L12.576 13.424L13.425 12.576L9.848 9L13.424 5.424L12.576 4.576ZM9 0C4.029 0 0 4.03 0 9C0 13.97 4.029 18 9 18C13.971 18 18 13.97 18 9C18 4.03 13.971 0 9 0ZM9 16.8C4.699 16.8 1.2 13.301 1.2 9C1.2 4.699 4.699 1.2 9 1.2C13.301 1.2 16.8 4.699 16.8 9C16.8 13.301 13.301 16.8 9 16.8Z" fill="currentColor"/> </g></symbol>
+    <symbol id="i-edit" viewBox="0 0 18 18"><g> <path fill-rule="evenodd" clip-rule="evenodd" d="M17.368 1.584L16.416 0.632C15.994 0.211 15.441 0 14.889 0C14.337 0 13.784 0.211 13.362 0.632L2.954 11.041L0 18L6.959 15.046L17.368 4.638C18.211 3.795 18.211 2.427 17.368 1.584ZM6.276 14.032L2.265 15.734L3.967 11.723L12.421 3.269L14.729 5.577L6.276 14.032ZM16.519 3.789L15.578 4.73L13.27 2.422L14.211 1.481C14.392 1.3 14.633 1.2 14.889 1.2C15.145 1.2 15.386 1.3 15.567 1.481L16.519 2.433C16.893 2.807 16.893 3.415 16.519 3.789Z" fill="currentColor"/> </g></symbol>
+    <symbol id="i-view" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 3C4.973 3 1.516 5.469 0 9C1.516 12.53 4.973 15 9 15C13.027 15 16.484 12.53 18 9C16.484 5.469 13.027 3 9 3ZM12.551 7.75C12.551 9.708 10.958 11.3 9 11.3C7.042 11.3 5.449 9.708 5.449 7.75C5.449 5.792 7.042 4.2 9 4.2C10.958 4.2 12.551 5.792 12.551 7.75ZM9 13.8C5.75 13.8 2.791 11.933 1.323 9C2.144 7.36 3.44 6.072 4.983 5.238C4.525 5.968 4.25 6.825 4.25 7.75C4.25 10.373 6.377 12.5 9 12.5C11.623 12.5 13.75 10.373 13.75 7.75C13.75 6.825 13.474 5.968 13.017 5.238C14.56 6.071 15.857 7.36 16.677 9C15.209 11.933 12.25 13.8 9 13.8Z" fill="currentColor"/></symbol>
+    <symbol id="i-hidden" viewBox="0 0 18 18"><path d="M14.2996 8.41005L15.8296 12.2L14.7196 12.65L13.2496 9.01005C12.1396 9.56005 10.9096 9.89005 9.60961 9.97005V14H8.40961V9.97005C7.10961 9.89005 5.87961 9.56005 4.76961 9.01005L3.29961 12.65L2.18961 12.2L3.71961 8.41005C2.69961 7.74005 1.80961 6.90005 1.09961 5.91005L1.95961 5.05005C3.54961 7.37005 6.17961 8.80005 9.01961 8.80005C11.8596 8.80005 14.4896 7.37005 16.0796 5.05005L16.9396 5.91005C16.2296 6.90005 15.3296 7.74005 14.3196 8.41005H14.2996Z" fill="currentColor"/></symbol>
+    <symbol id="i-filter" viewBox="0 0 18 18"><g> <path fill-rule="evenodd" clip-rule="evenodd" d="M5.23 12.5C4.057 12.5 3.08 13.311 2.81 14.4H0V15.6H2.81C3.08 16.689 4.057 17.5 5.23 17.5C6.403 17.5 7.38 16.689 7.649 15.6H18V14.4H7.649C7.38 13.311 6.403 12.5 5.23 12.5ZM5.23 16.3C4.513 16.3 3.93 15.717 3.93 15C3.93 14.283 4.513 13.7 5.23 13.7C5.947 13.7 6.53 14.283 6.53 15C6.53 15.717 5.947 16.3 5.23 16.3ZM12.77 6.5C11.597 6.5 10.62 7.311 10.351 8.4H0V9.6H10.351C10.621 10.689 11.598 11.5 12.77 11.5C13.943 11.5 14.92 10.689 15.19 9.6H18V8.4H15.19C14.92 7.311 13.943 6.5 12.77 6.5ZM12.77 10.3C12.053 10.3 11.47 9.717 11.47 9C11.47 8.283 12.053 7.7 12.77 7.7C13.487 7.7 14.07 8.283 14.07 9C14.07 9.717 13.487 10.3 12.77 10.3ZM7.649 2.4C7.38 1.311 6.403 0.5 5.23 0.5C4.057 0.5 3.08 1.311 2.81 2.4H0V3.6H2.81C3.08 4.689 4.057 5.5 5.23 5.5C6.403 5.5 7.38 4.689 7.649 3.6H18V2.4H7.649ZM5.23 4.3C4.513 4.3 3.93 3.717 3.93 3C3.93 2.283 4.513 1.7 5.23 1.7C5.947 1.7 6.53 2.283 6.53 3C6.53 3.717 5.947 4.3 5.23 4.3Z" fill="currentColor"/> </g></symbol>
+    <symbol id="i-sort" viewBox="0 0 18 18"><path d="M1.5 7.5L9 0L16.5 7.5H1.5Z" fill="currentColor"/> <path d="M16.5 10.5L9 18L1.5 10.5H16.5Z" fill="currentColor"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.2 7H18V1.2L16.8 0V4.536C15.25 1.829 12.343 0 9 0C4.03 0 0 4.029 0 9C0 13.971 4.03 18 9 18C13.97 18 18 13.971 18 9H16.8C16.8 13.301 13.301 16.8 9 16.8C4.699 16.8 1.2 13.301 1.2 9C1.2 4.699 4.699 1.2 9 1.2C12.16 1.2 14.88 3.092 16.103 5.8H11L12.2 7Z" fill="currentColor"/></symbol>
+    <symbol id="i-more-v" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 3C9.828 3 10.5 2.328 10.5 1.5C10.5 0.672 9.828 0 9 0C8.171 0 7.5 0.672 7.5 1.5C7.5 2.328 8.171 3 9 3ZM9 15C8.171 15 7.5 15.672 7.5 16.5C7.5 17.328 8.171 18 9 18C9.828 18 10.5 17.328 10.5 16.5C10.5 15.672 9.828 15 9 15ZM9 7.5C8.171 7.5 7.5 8.172 7.5 9C7.5 9.828 8.171 10.5 9 10.5C9.828 10.5 10.5 9.828 10.5 9C10.5 8.172 9.828 7.5 9 7.5Z" fill="currentColor"/></symbol>
+    <symbol id="i-more-h" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 7.5C0.672 7.5 0 8.172 0 9C0 9.828 0.672 10.5 1.5 10.5C2.328 10.5 3 9.829 3 9C3 8.171 2.328 7.5 1.5 7.5ZM16.5 7.5C15.672 7.5 15 8.172 15 9C15 9.828 15.672 10.5 16.5 10.5C17.328 10.5 18 9.829 18 9C18 8.171 17.328 7.5 16.5 7.5ZM9 7.5C8.172 7.5 7.5 8.172 7.5 9C7.5 9.828 8.172 10.5 9 10.5C9.828 10.5 10.5 9.828 10.5 9C10.5 8.172 9.828 7.5 9 7.5Z" fill="currentColor"/></symbol>
+    <symbol id="i-user" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.191 12.775C15.993 12.286 15.713 11.831 15.345 11.453C14.47 10.552 13.375 9.87 12.083 9.451L9.01 12.524L5.932 9.445C4.633 9.864 3.533 10.548 2.654 11.453C2.286 11.832 2.006 12.286 1.808 12.775L0 17.25H18L16.191 12.775ZM2.921 13.225C3.07 12.857 3.27 12.542 3.515 12.29C4.11 11.677 4.82 11.191 5.63 10.84L9.012 14.221L12.386 10.847C13.19 11.197 13.894 11.681 14.485 12.29C14.73 12.542 14.93 12.857 15.079 13.226L16.221 16.051H1.779L2.921 13.225ZM9.01 9.25C11.459 9.25 12.5 6.952 12.5 4.891C12.5 2.751 11.479 0.75 9.01 0.75C6.541 0.75 5.5 2.732 5.5 4.891C5.5 7.011 6.52 9.25 9.01 9.25ZM9.01 1.95C11.077 1.95 11.3 4.007 11.3 4.891C11.3 6.064 10.818 8.05 9.01 8.05C6.811 8.05 6.7 5.419 6.7 4.891C6.7 4.007 6.925 1.95 9.01 1.95Z" fill="currentColor"/></symbol>
+    <symbol id="i-avatar" viewBox="0 0 18 18"><g> <path d="M5.6 10.9L9 14.3L12.3 11C13.0913 11.3125 13.8072 11.7898 14.4 12.4C14.6917 12.669 14.9 13.0161 15 13.4L16.1 16.2H1.8L2.9 13.4C2.97739 13.0343 3.19215 12.7122 3.5 12.5C4.02735 11.7717 4.75784 11.2152 5.6 10.9ZM12.1 9.50005L9 12.6L5.9 9.50005C4.663 9.90878 3.53473 10.5926 2.6 11.5C2.24171 11.8699 1.96866 12.3136 1.8 12.8L0 17.3H18L16.2 12.8C15.9931 12.3326 15.724 11.8953 15.4 11.5C14.4494 10.6133 13.326 9.93238 12.1 9.50005ZM9 0.800049C6.6 0.800049 5.5 2.70005 5.5 4.80005C5.37831 4.74652 5.24174 4.73722 5.11391 4.77374C4.98608 4.81026 4.87504 4.89031 4.8 5.00005C4.71207 5.1212 4.67347 5.27125 4.69204 5.41979C4.71061 5.56834 4.78495 5.70427 4.9 5.80005C5.11026 5.97023 5.34664 6.1053 5.6 6.20005C6 7.90005 7 9.30005 9 9.30005C11.5 9.30005 12.5 7.00005 12.5 4.90005C12.5 2.80005 11.5 0.800049 9 0.800049ZM9 8.10005C8.56265 8.10275 8.13527 7.96948 7.77697 7.71867C7.41867 7.46786 7.14716 7.11191 7 6.70005C7.2 6.70005 7.4 6.80005 7.7 6.80005C7.78191 6.94278 7.89778 7.0631 8.03733 7.15032C8.17688 7.23754 8.33581 7.28897 8.5 7.30005C8.63361 7.30889 8.76756 7.28908 8.8929 7.24195C9.01823 7.19482 9.13205 7.12146 9.22673 7.02678C9.32141 6.9321 9.39477 6.81828 9.4419 6.69295C9.48903 6.56761 9.50884 6.43366 9.5 6.30005C9.50884 6.16644 9.48903 6.03248 9.4419 5.90715C9.39477 5.78182 9.32141 5.668 9.22673 5.57332C9.13205 5.47864 9.01823 5.40527 8.8929 5.35815C8.76756 5.31102 8.63361 5.29121 8.5 5.30005C8.36741 5.28606 8.23345 5.30629 8.1109 5.35881C7.98835 5.41133 7.88131 5.49439 7.8 5.60005C7.42613 5.58211 7.05626 5.51486 6.7 5.40005V4.90005C6.7 4.10005 6.9 2.00005 9 2.00005C11.1 2.00005 11.3 4.10005 11.3 4.90005C11.3 6.10005 10.8 8.10005 9 8.10005Z" fill="currentColor"/> </g></symbol>
+    <symbol id="i-help" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.029 0 0 4.03 0 9C0 13.97 4.029 18 9 18C13.971 18 18 13.97 18 9C18 4.03 13.971 0 9 0ZM9 16.8C4.699 16.8 1.2 13.301 1.2 9C1.2 4.699 4.699 1.2 9 1.2C13.301 1.2 16.8 4.699 16.8 9C16.8 13.301 13.301 16.8 9 16.8ZM8.999 12.5C8.447 12.5 7.999 12.948 7.999 13.5C7.999 14.052 8.447 14.5 8.999 14.5C9.551 14.5 9.999 14.052 9.999 13.5C9.999 12.948 9.552 12.5 8.999 12.5ZM9.604 3.539C8.75 3.363 7.875 3.569 7.207 4.113C6.54 4.656 6.157 5.46 6.157 6.319H7.357C7.357 5.823 7.578 5.358 7.964 5.044C8.356 4.726 8.851 4.607 9.36 4.714C9.996 4.847 10.514 5.391 10.62 6.037C10.709 6.575 10.542 7.101 10.162 7.48L9.013 8.629C8.75 8.894 8.4 9.324 8.4 10.011V11H9.6V10.011C9.6 9.835 9.642 9.699 9.862 9.478L11.01 8.33C11.667 7.674 11.956 6.768 11.804 5.842C11.616 4.7 10.732 3.775 9.604 3.539Z" fill="currentColor"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M17.2931 13.293L15.0001 11V6.252C15.0001 2.967 12.4681 0.102 9.18507 0.003C9.12307 0.001 9.06107 0 9.00007 0C5.68607 0 3.00007 2.686 3.00007 6V11L0.707069 13.293C0.0770694 13.923 0.523069 15 1.41407 15H6.56207C6.52707 15.162 6.50007 15.327 6.50007 15.5C6.50007 16.881 7.61907 18 9.00007 18C10.3811 18 11.5001 16.881 11.5001 15.5C11.5001 15.327 11.4731 15.162 11.4381 15H16.5861C17.4771 15 17.9231 13.923 17.2931 13.293ZM10.3001 15.5C10.3001 16.217 9.71707 16.8 9.00007 16.8C8.28307 16.8 7.70007 16.217 7.70007 15.5C7.70007 15.319 7.74907 15.154 7.81907 15H10.1821C10.2511 15.154 10.3001 15.319 10.3001 15.5ZM1.89707 13.8L3.84807 11.848L4.20007 11.497V6C4.20007 3.353 6.35307 1.2 9.00007 1.2L9.14807 1.202C11.7131 1.279 13.8001 3.544 13.8001 6.252V11.497L14.1521 11.848L16.1041 13.8H1.89707Z" fill="currentColor"/></symbol>
+    <symbol id="i-tag" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.341 7.713H7.542L7.272 10.116H10.071L10.341 7.713ZM7.902 4.5L7.677 6.516H10.476L10.701 4.5H11.898L11.7 6.516H13.5L13.374 7.713H11.574L11.313 10.116H13.167L13.032 11.313H11.142L10.899 13.5H9.702L9.945 11.313H7.146L6.903 13.5H5.697L5.94 11.313H3.996L4.131 10.116H6.075L6.345 7.713H4.401L4.5 6.516H6.471L6.696 4.5H7.902ZM9 1.197C4.69052 1.197 1.197 4.69052 1.197 9C1.197 13.3095 4.69052 16.803 9 16.803C13.3095 16.803 16.803 13.3095 16.803 9C16.803 6.93052 15.9809 4.94579 14.5176 3.48245C13.0542 2.0191 11.0695 1.197 9 1.197ZM9 0C13.9706 0 18 4.02944 18 9C18 13.9706 13.9706 18 9 18C4.02944 18 0 13.9706 0 9C0 4.02944 4.02944 0 9 0Z" fill="currentColor"/></symbol>
+    <symbol id="i-error" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.30911 1.68194L0.109113 15.7999C-0.199887 16.3319 0.184113 16.9999 0.800113 16.9999H17.2001C17.8161 16.9999 18.2001 16.3319 17.8911 15.7999L9.69111 1.68194C9.38311 1.15094 8.61711 1.15094 8.30911 1.68194Z" fill="currentColor"/> <path d="M9.9001 5H8.1001V11H9.9001V5Z" style="fill:var(--mark)"/> <path d="M9 14.8259C9.69036 14.8259 10.25 14.2663 10.25 13.5759C10.25 12.8856 9.69036 12.3259 9 12.3259C8.30964 12.3259 7.75 12.8856 7.75 13.5759C7.75 14.2663 8.30964 14.8259 9 14.8259Z" style="fill:var(--mark)"/></symbol>
+    <symbol id="i-success" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/> <path d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z" style="fill:var(--mark)"/></symbol>
+    <symbol id="i-warning" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/> <path d="M9.90107 3.80005H8.10107V9.80005H9.90107V3.80005Z" style="fill:var(--mark)"/> <path d="M9.00078 14.2C9.66352 14.2 10.2008 13.6628 10.2008 13C10.2008 12.3373 9.66352 11.8 9.00078 11.8C8.33804 11.8 7.80078 12.3373 7.80078 13C7.80078 13.6628 8.33804 14.2 9.00078 14.2Z" style="fill:var(--mark)"/></symbol>
+    <symbol id="i-information" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/> <path d="M9 6.25C9.69036 6.25 10.25 5.69036 10.25 5C10.25 4.30964 9.69036 3.75 9 3.75C8.30964 3.75 7.75 4.30964 7.75 5C7.75 5.69036 8.30964 6.25 9 6.25Z" style="fill:var(--mark)"/> <path d="M9.89912 8.25H8.09912V14.25H9.89912V8.25Z" style="fill:var(--mark)"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 18 18"><path d="M0 15.6H18V14.4H0V15.6ZM0 2.40002V3.60002H18V2.40002H0ZM0 9.60002H18V8.40002H0V9.60002Z" fill="currentColor"/></symbol>
+    <symbol id="i-home" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0L1 8V18H8V11.2H10V18H17V8L9 0ZM15.8 16.8H11.2V10H6.8V16.8H2.2V8.497L9 1.697L15.8 8.497V16.8Z" fill="currentColor"/></symbol>
+    <symbol id="i-collapse" viewBox="0 0 18 18"><g clip-path="url(#clip0_13244_4223)"><path d="M0.924 0.076L5.8 4.952V0L7 1.2V7H1.2L0 5.8H4.952L0.076 0.924L0.924 0.076Z" fill="currentColor"/><path d="M13.048 5.8H18L16.8 7H11V1.2L12.2 0V4.952L17.076 0.076L17.924 0.924L13.048 5.8Z" fill="currentColor"/><path d="M12.2 13.048L17.076 17.924L17.924 17.076L13.048 12.2H18L16.8 11H11V16.8L12.2 18V13.048Z" fill="currentColor"/><path d="M4.952 12.2H0L1.2 11H7V16.8L5.8 18V13.048L0.924 17.924L0.076 17.076L4.952 12.2Z" fill="currentColor"/></g><defs><clipPath id="clip0_13244_4223"><rect width="18" height="18" fill="white"/></clipPath></defs></symbol>
+    <symbol id="i-expand" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.139 11.709L6.291 10.861L2.2 14.952V10.8L1 12V17H6L7.2 15.8H3.048L7.139 11.709ZM15.8 14.952L11.709 10.862L10.861 11.71L14.952 15.8H10.8L12 17H17V12L15.8 10.8V14.952ZM12 1L10.8 2.2H14.952L10.862 6.29L11.71 7.138L15.8 3.048V7.2L17 6V1H12ZM1 1V6L2.2 7.2V3.048L6.291 7.138L7.139 6.29L3.048 2.2H7.2L6 1H1Z" fill="currentColor"/></symbol>
+  </svg>
+  <script type="application/json" id="icon-manifest">{"source":"knowledge/assets/icons","icons":{"i-add":"global-controls/add.svg","i-close":"global-controls/close.svg","i-check":"status-icons/yes.svg","i-indeterminate":"status-icons/indeterminate.svg","i-chevron-down":"arrows-and-chevrons/chevron-down.svg","i-chevron-up":"arrows-and-chevrons/chevron-up.svg","i-chevron-left":"arrows-and-chevrons/chevron-left.svg","i-chevron-right":"arrows-and-chevrons/chevron-right.svg","i-chevron-dbl-left":"arrows-and-chevrons/chevron-double-left.svg","i-chevron-dbl-right":"arrows-and-chevrons/chevron-double-right.svg","i-calendar":"media/calendar.svg","i-document":"media/document.svg","i-file":"media/file-attachment.svg","i-image":"media/image.svg","i-pdf":"media/document-pdf.svg","i-time":"media/time.svg","i-camera":"media/camera.svg","i-location":"media/location.svg","i-upload":"global-controls/upload.svg","i-download":"global-controls/download.svg","i-delete":"global-controls/delete.svg","i-search":"global-controls/search.svg","i-clear":"global-controls/clear.svg","i-edit":"global-controls/edit.svg","i-view":"global-controls/view.svg","i-hidden":"global-controls/hidden.svg","i-filter":"global-controls/filter.svg","i-sort":"global-controls/sort.svg","i-refresh":"global-controls/refresh.svg","i-more-v":"global-controls/menu-more-vertical.svg","i-more-h":"global-controls/menu-more-horizontal.svg","i-user":"informative/user.svg","i-avatar":"informative/avatar.svg","i-help":"informative/help.svg","i-bell":"informative/alert.svg","i-tag":"informative/tag.svg","i-error":"status-icons/error.svg","i-success":"status-icons/success.svg","i-warning":"status-icons/warning.svg","i-information":"status-icons/information.svg","i-menu":"global-controls/menu.svg","i-home":"global-controls/home.svg","i-collapse":"global-controls/collapse.svg","i-expand":"global-controls/expand.svg"}}</script>
+
+<script>
+  var body=document.body;
+  document.getElementById('themeToggle').onclick=function(){body.setAttribute('data-theme',body.getAttribute('data-theme')==='dark'?'light':'dark');};
+  var fw=document.getElementById('fw'),fwv=document.getElementById('fwv'),frame=document.getElementById('frame');
+  fw.addEventListener('input',function(){var v=+fw.value; frame.style.setProperty('--fw', v>=1600?'100%':v+'px'); fwv.textContent=v>=1600?'full':v+'px';});
+  var toast=document.getElementById('toast'),tt;
+  function showToast(m){toast.textContent=m;toast.classList.add('on');clearTimeout(tt);tt=setTimeout(function(){toast.classList.remove('on');},1800);}
+  document.querySelectorAll('[data-toast]').forEach(function(b){b.onclick=function(){showToast(b.getAttribute('data-toast'));};});
+
+  // interaction motion is governed by CSS scale tokens (no JS)
+
+  // modality — Tab announces keyboard focus, pointer suppresses it (base scaffold wiring)
+  (function(){
+    var root=document.documentElement;
+    document.addEventListener('mousedown',function(){ root.setAttribute('data-modality','pointer'); },true);
+    document.addEventListener('touchstart',function(){ root.setAttribute('data-modality','pointer'); },true);
+    document.addEventListener('keydown',function(e){ if(e.key==='Tab'){ root.setAttribute('data-modality','keyboard'); } },true);
+  })();
+
+  /* ===================== Tranche 7 · Navigation ===================== */
+  (function(){
+
+    /* ---------------- generic DISCLOSURE helper ----------------
+       Wires a real <button> (aria-expanded) to a panel. Esc closes + returns focus to the
+       trigger; outside-click optionally closes overlay-style panels (popovers/mega menu).
+       Inline panels (sidenav groups, accordions) are NOT overlay: they push layout, no
+       outside-click dismissal, but Esc-close-and-return-focus still applies. */
+    function makeDisclosure(toggle, panel, opts){
+      opts = opts || {};
+      function isOpen(){ return toggle.getAttribute('aria-expanded')==='true'; }
+      function open(){
+        toggle.setAttribute('aria-expanded','true');
+        if(opts.overlay){ panel.classList.add('on'); } else { panel.hidden=false; }
+      }
+      function close(returnFocus){
+        toggle.setAttribute('aria-expanded','false');
+        if(opts.overlay){ panel.classList.remove('on'); } else { panel.hidden=true; }
+        if(returnFocus){ toggle.focus({preventScroll:true}); }
+      }
+      toggle.addEventListener('click', function(){ isOpen() ? close(false) : open(); });
+      toggle.addEventListener('keydown', function(e){ if(e.key==='Escape' && isOpen()){ close(true); } });
+      panel.addEventListener('keydown', function(e){ if(e.key==='Escape'){ e.stopPropagation(); close(true); } });
+      if(opts.overlay){
+        document.addEventListener('click', function(e){
+          if(isOpen() && !panel.contains(e.target) && !toggle.contains(e.target)){ close(false); }
+        });
+      }
+      return {open:open, close:close, isOpen:isOpen};
+    }
+
+    /* ---------------- A · POPOVER + NAVTOGGLE demo ---------------- */
+    (function(){
+      var t=document.getElementById('pop-toggle'), p=document.getElementById('pop-panel');
+      if(!t||!p) return;
+      makeDisclosure(t, p, {overlay:true}); // starts open (see markup) so the panel is visible without interacting
+    })();
+
+    /* ---------------- B · GLOBAL HEADER — "More" + account popovers, hamburger opens the Drawer ---------------- */
+    (function(){
+      var mt=document.getElementById('gh-more-toggle'), mp=document.getElementById('gh-more-panel');
+      if(mt && mp) makeDisclosure(mt, mp, {overlay:true});
+      var at=document.getElementById('gh-account-toggle'), ap=document.getElementById('gh-account-panel');
+      if(at && ap) makeDisclosure(at, ap, {overlay:true});
+      // gheader-hamburger is wired into the shared Drawer module below (section E)
+    })();
+
+    /* ---------------- C · SIDE NAV — group disclosures + rail toggle ---------------- */
+    (function(){
+      var t1=document.getElementById('sn-pay-t'), p1=document.getElementById('sn-pay-p');
+      if(t1 && p1) makeDisclosure(t1, p1, {overlay:false}); // starts expanded
+      var t2=document.getElementById('sn-sup-t'), p2=document.getElementById('sn-sup-p');
+      if(t2 && p2) makeDisclosure(t2, p2, {overlay:false}); // starts collapsed
+
+      var rail=document.getElementById('rail-toggle'), railIcon=document.getElementById('rail-toggle-icon'), nav=document.getElementById('sidenav-demo');
+      if(rail && nav){
+        rail.addEventListener('click', function(){
+          var isRail = nav.classList.toggle('rail');
+          rail.setAttribute('aria-pressed', isRail ? 'true' : 'false');
+          rail.setAttribute('aria-label', isRail ? 'Expand side navigation' : 'Collapse to icon rail');
+          if(railIcon) railIcon.setAttribute('href', isRail ? '#i-expand' : '#i-collapse');
+        });
+      }
+      // sidenav-drawer-trigger (narrowest state) is wired into the shared Drawer module below
+    })();
+
+    /* ---------------- D · MEGA MENU — three toggles + tabbed variant + accordion fallback ---------------- */
+    (function(){
+      ['mm-cols','mm-feat','mm-tab'].forEach(function(base){
+        var t=document.getElementById(base+'-toggle'), p=document.getElementById(base+'-panel');
+        if(t && p) makeDisclosure(t, p, {overlay:true}); // all start open (shown per the pro-forma demo convention)
+      });
+
+      var rail=document.querySelector('.megamenu.tabbed .tabrail');
+      if(rail){
+        var tabs=[].slice.call(rail.querySelectorAll('[role="tab"]'));
+        function select(tab){
+          tabs.forEach(function(tb){
+            var sel=(tb===tab);
+            tb.setAttribute('aria-selected', sel?'true':'false');
+            tb.tabIndex = sel?0:-1;
+            var panel=document.getElementById(tb.getAttribute('aria-controls'));
+            if(panel) panel.hidden=!sel;
+          });
+        }
+        tabs.forEach(function(tb,i){
+          tb.addEventListener('click', function(){ select(tb); tb.focus(); });
+          tb.addEventListener('keydown', function(e){
+            var idx=tabs.indexOf(tb), next=null;
+            if(e.key==='ArrowDown'||e.key==='ArrowRight'){ next=tabs[(idx+1)%tabs.length]; }
+            else if(e.key==='ArrowUp'||e.key==='ArrowLeft'){ next=tabs[(idx-1+tabs.length)%tabs.length]; }
+            else if(e.key==='Home'){ next=tabs[0]; }
+            else if(e.key==='End'){ next=tabs[tabs.length-1]; }
+            if(next){ e.preventDefault(); select(next); next.focus(); }
+          });
+        });
+      }
+
+      [['mmacc-1-t','mmacc-1-p'],['mmacc-2-t','mmacc-2-p']].forEach(function(pair){
+        var t=document.getElementById(pair[0]), p=document.getElementById(pair[1]);
+        if(t && p) makeDisclosure(t, p, {overlay:false});
+      });
+    })();
+
+    /* ---------------- E · DRAWER (modal, focus-trapped) + NAVACCORDION ---------------- */
+    (function(){
+      var scrim=document.getElementById('dr-scrim'), drawer=document.getElementById('mobile-drawer');
+      var closeBtn=document.getElementById('mobile-drawer-close');
+      if(!scrim||!drawer||!closeBtn) return;
+      var openers=[document.getElementById('gheader-hamburger'), document.getElementById('drawer-open-btn'), document.getElementById('sidenav-drawer-trigger')]
+        .filter(Boolean);
+      var bgEls=[document.querySelector('.top'), document.querySelector('.wrap')].filter(Boolean);
+      var lastOpener=null;
+
+      function focusables(root){
+        return [].slice.call(root.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])'))
+          .filter(function(el){ return el.offsetParent!==null; });
+      }
+      function openDrawer(opener){
+        lastOpener = opener || document.activeElement;
+        drawer.classList.add('on'); scrim.classList.add('on');
+        drawer.setAttribute('aria-hidden','false');
+        bgEls.forEach(function(el){ el.setAttribute('inert',''); el.setAttribute('aria-hidden','true'); });
+        openers.forEach(function(b){ b.setAttribute('aria-expanded','true'); });
+        var f=focusables(drawer);
+        (f[0]||closeBtn).focus({preventScroll:true});
+      }
+      function closeDrawer(){
+        if(!drawer.classList.contains('on')) return;
+        drawer.classList.remove('on'); scrim.classList.remove('on');
+        drawer.setAttribute('aria-hidden','true');
+        bgEls.forEach(function(el){ el.removeAttribute('inert'); el.removeAttribute('aria-hidden'); });
+        openers.forEach(function(b){ b.setAttribute('aria-expanded','false'); });
+        if(lastOpener && typeof lastOpener.focus==='function'){ lastOpener.focus({preventScroll:true}); }
+      }
+      openers.forEach(function(b){ b.addEventListener('click', function(){ openDrawer(b); }); });
+      scrim.addEventListener('click', closeDrawer);
+      closeBtn.addEventListener('click', closeDrawer);
+      document.addEventListener('keydown', function(e){
+        if(!drawer.classList.contains('on')) return;
+        if(e.key==='Escape'){ closeDrawer(); return; }
+        if(e.key==='Tab'){
+          var f=focusables(drawer); if(!f.length) return;
+          var first=f[0], last=f[f.length-1];
+          if(e.shiftKey && document.activeElement===first){ e.preventDefault(); last.focus(); }
+          else if(!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); }
+        }
+      });
+
+      [['dnav-pay-t','dnav-pay-p'],['dnav-sup-t','dnav-sup-p']].forEach(function(pair){
+        var t=document.getElementById(pair[0]), p=document.getElementById(pair[1]);
+        if(t && p) makeDisclosure(t, p, {overlay:false});
+      });
+    })();
+
+  })();
+
+</script>
+</body>
+</html>

@@ -5,7 +5,7 @@ what's **OPEN**. Read this second, after `GOOD-MORNING.md`, before `knowledge/RE
 Per **ADR-0007**. ⚠️ **INTERIM — hand-maintained** until `_build_live_state.py` generates it from
 front-matter edges + tombstones. Refresh at end of every session alongside the handoff.*
 
-*Last refreshed: 2026-07-15 (Apollo library taxonomy mono/UI/SC + Apollo mono tokenisation “up to par” — motion tokens done, spacing/border/radius binding in flight, snippet-canon JS pending). Prior: 2026-07-14 (presentations + housekeeping). ⚠️ 07-15 pro-forma token edits landed to disk; commit in progress.*
+*Last refreshed: 2026-07-15 (Apollo mono pro-forma — Tranches 6+7 built, full tokenisation colour/motion/spacing/border/radius, no-hardcode/mode-governed FOUNDATIONAL ruling + DEF-004 gate, sibling-library taxonomy, nav research catalog + Tranche 7 navigation, type-token system scheduled). Prior: 2026-07-14 (presentations + housekeeping — designer pack, sponsor deck, Apollo rename, red-rule fix, repo restructure). Uncommitted — Dave to commit+push via GitHub Desktop.*
 
 > ⚠️ **AUDIT STATUS — everything below is RECORDED, not VALIDATED.** Provenance ≠ correctness.
 > These entries capture *that* a decision was made and what it supersedes — **not** that it is
@@ -50,29 +50,24 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
   `reviews/ITINERARY-2026-07-14-apollo-component-library.{html,xlsx}` (124 items: 38 gated / 7 partial /
   79 gaps; 23 P1). IN FLIGHT: proof batch of 6 net-new **atomic** foundations (Icon button, Empty
   state, Skeleton loader, Amount/currency input, Stepper, Drawer) through the gated pipeline to
-  validate the pro-forma contract + factory struct-mode. Memory `apollo-component-library-itinerary`. **UPDATE 07-14 eve — TRANCHE 1 DONE** (all 6 as one interactive MONOCHROME file `knowledge/_proforma/Tranche-1-interactive.html`; near-black primary, colour=meaning, real HSBC icons ENFORCED via `_check_proforma.py`; `_PROFORMA-RULES.md` living; artifact `apollo-proforma-tranche-1`). LESSON: a new surface needs its gate wired. **UPDATE 07-14 late — TRANCHES 2–5 DONE + UNIVERSAL GATE PROMOTED** (T2 Toast/Alert/Date-picker/File-upload · T3 Selection-controls · T4 Nav/disclosure · T5 Containers/status, ~19 comps, all gate-green + rendered/inspected; RAG palette RETRIEVED from `tokens/semantic-colour.json`; new `knowledge/_validate_proforma.py` = mode-agnostic universal gate WIRED into `_build_all.py` + a manifest-path-is-real check; verified on Dave's machine 5/5 pass, 39/39 asset paths real; artifacts `apollo-proforma-tranche-2..5`; 6 files landed via bridge for Dave to review+commit+push). MODE rules (monochrome/near-black/square) kept as the subset, NOT gated. Full: [[proforma-programme]].
-- **Apollo = THREE libraries** (NAMED Dave 2026-07-15): **Apollo mono** = the monochrome pro-forma
-  (unbranded, colour=meaning; the base + the **user-testing** build + Figma-transfer target — Tranches 1–5,
-  memory [[apollo-mono]]); **Apollo UI** = a NEW library where **varying radii** live (rounded; the
-  usability-first "big-sister" variant — radius is NOT flat here); **Apollo SC** = the **branded** build
-  worked on previously. ONE skeleton, expressed as token MODES — radius/colour/motion are mode-overridable
-  tokens, never canon edits. (Refines the earlier "Mode 1 brand / Mode 2 big-sister" framing above.)
-- **Token governance — getting Apollo mono "up to par"** (Dave 2026-07-15, IN FLIGHT): (a) MOTION = pure
-  CSS + tokens, no JS — size-bucketed `--btn/--ib/--card-grow/press` (~1px/side travel) + named `--accent-*`
-  pops; `sizeScale()` removed; **DEF-003** gate enforces no JS motion. (b) COLOUR fully tokenised + gated.
-  (c) SPACING/BORDER/RADIUS → bind to the KB **`semantic-scale`** (`tokens/spacing.json`+`layout.json`):
-  border-width 1/2/4, **radius = a MODE TOKEN** (`--radius:0` in mono; **Apollo UI overrides** with its
-  varying radii). Full semantic-responsive spacing map = a **Figma-stage** job (don't rationalise approved
-  layouts pre-Figma). (d) REMAINING: snippet-canon JS holdout — `GROW=7/PRESS=9`+`sizeScale` in 4
-  `snippets/*.reference.html` (Button/Modals/Quick-actions/Selection-controls) → migrate to CSS tokens.
-  A rule + gate (DEF-004: no raw spacing/border px in component CSS) to keep future additions tokenised. Memory [[apollo-mono]]. **Border-width (1/2/4→--bw-*) + radius (MODE token: --radius:0 mono · --radius-round circles · --radius-pill:999px) DONE + written-back 2026-07-15, value-preserving (render-diffed identical).** **SPACING DONE** (all padding/margin/gap → `--space-*`, value-preserving — computed spacing identical on 1,474 elements; + 3 stray `1.5px` field borders → `--bw-1_5`). **DEF-004 no-hardcode gate BUILT + WIRED** (`_validate_no_hardcode.py`, step 21/24; flags raw spacing/radius/border px in component CSS; caught the 1.5px leaks; self-tested) — **full build green 24/24**. Rule 15 + DEF-004 defect entry added. **✅ Snippet-canon JS holdout RESOLVED 2026-07-15** — `sizeScale()` removed from Button/Modals/Quick-actions/Selection-controls; motion now pure-CSS scale-factor tokens (`--btn/--qa/--chip-grow/press`, defined in `canon.css` hand-alias block + each snippet :root); `canon.css` regenerated value-preserving; compose gate PASS. **No JS-driven motion anywhere in the system now.** (Delegated to Sonnet, verified by me.) Optional hardening: extend DEF-003 to also scan `snippets/` so a JS-motion regression there is caught.
-- **FOUNDATIONAL — no hardcoded styling; everything TOKEN + MODE governed** (RULED Dave 2026-07-15):
-  going forward NOTHING is hardcoded — ALL styling (colour, spacing, radius, border, motion, type) is a
-  **token**, and the sibling libraries (**Apollo mono/UI/SC**) are governed purely by **MODES** (token-value
-  overrides over the ONE skeleton). Goal = **maximally flexible + future-proof**: adding a library = adding a
-  mode, never forking components. Enforcement = the planned **DEF-004** gate ("no raw styling value in
-  component CSS", wired into `_build_all.py`). NB geometry/component dimensions (widths/heights, CSS-triangle
-  arrows) are a separate axis, not "styling" — revisit if we also bind the KB icon/layout size scales.
+  validate the pro-forma contract + factory struct-mode. Memory `apollo-component-library-itinerary`. **UPDATE 07-14 eve — TRANCHE 1 DONE** (all 6 as one interactive MONOCHROME file `knowledge/_proforma/Tranche-1-interactive.html`; near-black primary, colour=meaning, real HSBC icons ENFORCED via `_check_proforma.py`; `_PROFORMA-RULES.md` living; artifact `apollo-proforma-tranche-1`). LESSON: a new surface needs its gate wired. Full: [[proforma-programme]].
+  **UPDATE 2026-07-15 — library NAMED "Apollo mono" + Tranches 1–7 all built & gated.** Dave named this monochrome
+  base **Apollo mono** (unbranded user-testing + Figma target), one of a THREE-library taxonomy governed by MODES:
+  **Apollo mono** (here) · **Apollo UI** (new branded, varying radii) · **Apollo SC** (prior branded — "keep the ideas,
+  don't copy the solutions"). **FOUNDATIONAL RULING (Dave):** *"we shouldn't hard code any styling going forward, must be
+  tokenised and all the sibling libraries should be governed by modes — very flexible and future-proof."* Now enforced.
+  **T6 (text entry & forms)** built + review-fixed with Dave (border-as-state-channel; uniform 51px field height every state;
+  real error triangle; no size/layout jumps). **T7 (navigation)** built from a deep-research nav catalog
+  (`reviews/NAV-PATTERN-CATALOG-2026-07-15.html` + artifact) — Popover/NavToggle · GlobalHeader · SideNav · MegaMenu
+  (cols/featured/tabbed) · Drawer+NavAccordion; disclosure a11y spine; artifact `apollo-tranche-7-navigation`.
+  **FULLY TOKENISED** (colour · motion via CSS scale tokens, JS motion removed incl. snippet canon · spacing `--space-*` ·
+  border `--bw-sm/md/lg/1_5` · radius mode-token). **FOUR gates in `_build_all.py`:** universal `_validate_proforma.py` ·
+  **DEF-003** `_validate_css_governed.py` (no JS motion) · **DEF-004** `_validate_no_hardcode.py` (no raw px in
+  spacing/border/radius — caught real 1.5px leaks). DEF taxonomy 001 state-cluster / 002 glyph / 003 motion / 004 styling.
+  **SCHEDULED TARGET (blocked on Dave's Figma):** type-token system = 3 responsive scales × 9 sizes + line-heights, 4px-grid →
+  2 labelling-style sets (editorial + UI); same Figma file carries new colour tokens for all 3 modes; restore placeholder
+  leading-trim (fixes off-grid 51px field). NOTED: legacy-libraries build-out. NEXT = Tranche 8 (BottomTabBar · InPageNav ·
+  FooterNav · RelatedLinks · Stepper) OR type-tokens on Figma arrival. Full: [[proforma-programme]], [[nav-pattern-catalog]], [[apollo-mono]].
 - **ATOMISE — build at the true atomic level, compose up** (RULED Dave 2026-07-14). Rolled-up
   patterns (e.g. Notifications = inline + toast + global + contextual in one molecule) are a **debt**,
   not the model; going forward build atoms → molecules → organisms per the `meta.schema` category
