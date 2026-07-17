@@ -158,6 +158,18 @@ Source of these rulings: the exported review comment-pins on the REVIEW copy (ba
   all. Added `pathLength="2400"` to normalise the path so the dash-draw spans the whole animation (and
   it's immune to the responsive rescaling). Now the line and the eased node cadence share one timeline.
 
+## STATUS — round-one kit PARKED, "good enough", NOT signed off (Dave 2026-07-16)
+
+Dave's call: **move on now, but this is a REVISIT target — not DONE.** The round-one kit + its
+interactions are accepted as good-enough to stop here; sign-off is deferred until a later pass. Mirrored
+in `_LIVE-STATE.md` (🟡 PARKED entry) so the state machine doesn't read this as finished.
+
+**Revisit backlog (when Dave returns):**
+- More **controls**: filtering, **chart titles**, and other Layer-2 interaction controls.
+- Finish the interactions that are only partially there; full sign-off after an **in-browser** pass
+  (everything to date is gate + `node --check` verified only — never render-checked in a browser).
+- Then flip the `_LIVE-STATE` entry from 🟡 PARKED to DONE.
+
 ## Open / pending
 
 - **Grouped column layout redesign** — awaiting Dave's reference images (Batch 1 #3).

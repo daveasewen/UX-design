@@ -133,6 +133,17 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
   machine, backlog — Dave "we might have to go back"):** retrofit dossier+KB-model docs for Tranches 1–7, and
   stand up the Swiss-aesthetic HTML **component catalog** ("nicer Storybook") as their shared home. Not committed
   — sequenced after current build work.
+- **🟡 PARKED — round-one DataViz kit BUILT + reviewed, "good enough for now", NOT signed off (RULED Dave 2026-07-16).**
+  Gate-first build complete: `_validate_dataviz.py` (9 blocking + 5 advisory, `--selftest`) wired into `_build_all.py`
+  step 22; whole kit on ONE file `knowledge/_proforma/DataViz-interactive.html` (KPI · column/bar/grouped/stacked ·
+  line/multi/spark · donut ×3 label variants) via generator `knowledge/_review/_gen_dataviz_charts.py`; build green
+  25/25. **NINE review rounds enacted** — full ruling+WHY ledger at **`knowledge/_proforma/_DATAVIZ-DECISIONS.md`**
+  (read it before touching charts). Committed `c0d8db6`, `baf1f7b`, `f10b082`, `f93c2cc`, `de8cbcb` (Dave pushes via Desktop).
+  **Dave's ruling:** move on now, but this is a **REVISIT target, not DONE** — he will come back to add **more controls
+  (filtering, chart titles, and other Layer-2 interaction controls)** and finish sign-off. Interactivity so far
+  (theme/contrast/width-slider/table-drawer/series-toggle/tooltip/variant-tabs/marker-toggle) is verified by gate +
+  `node --check` only — **never render-checked in a browser** (sandbox has no browser); needs Dave's in-browser pass.
+  Staleness gate: flip this to DONE only when Dave signs off after the revisit. Prior research history below is retained.
 - **🟠 OPEN (2026-07-16) — DataViz is the next big pillar (Dave's pick), in research.** Desk research DONE
   → `reviews/DATAVIZ-DESK-RESEARCH-2026-07-16.html` (+ review pair): digital + finance charting, cited; feeds a
   method dossier. KB already carries the HSBC rules (`guidelines/data-visualisation.md` + bar/pie/line companions:
