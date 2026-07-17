@@ -699,7 +699,7 @@ def build_spark(cid, title, caption, xs, name, vals):
     svg = (f'<svg class="dv-svg" viewBox="0 0 {SW} {SH}" role="img" aria-label="{title}." '
            f'preserveAspectRatio="none" style="max-width:340px;height:64px">'
            f'<line class="dv-grid" x1="{sp}" y1="{SH-sp}" x2="{SW-sp}" y2="{SH-sp}"/>'
-           f'<polyline class="dv-series" fill="none" stroke="var(--data-series-1)" stroke-width="2.5" '
+           f'<polyline class="dv-series" pathLength="2400" fill="none" stroke="var(--data-series-1)" stroke-width="2.5" '
            f'stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" points="{pstr}"/>'
            f'<circle class="dv-series" cx="{lx:.1f}" cy="{ly:.1f}" r="3.5" fill="var(--data-series-1)"/></svg>')
     return assemble(cid, 'data-dv-type="spark" data-surface="page"', caption,
@@ -726,8 +726,11 @@ def build_line(cid, title, caption, xs, series, dtype="line"):
         # batch8 #1: node cadence FOLLOWS the line's easing (not linear) — each node lands as the drawing
         # head passes it, so they keep pace with the line (fast through the middle, no slow linear trickle).
         node_delay = line_node_delays(len(vs), 2400)
+        # pathLength="2400" NORMALISES the path so the dash-draw spans the WHOLE animation (not ~20% —
+        # the real geometry is far shorter than the dasharray) and is immune to responsive rescaling.
+        # This is what makes the line-draw share the SAME easing timeline as the nodes (batch9 #1).
         parts.append(f'<polyline class="dv-series" data-series-group="{j+1}" data-fxs="{fxs}" data-ys="{ys}" '
-                     f'fill="none" '
+                     f'pathLength="2400" fill="none" '
                      f'stroke="var(--data-series-{j+1})" stroke-width="2.5" stroke-linejoin="round" '
                      f'stroke-linecap="round" vector-effect="non-scaling-stroke" points="{pstr}"><title>{name}</title></polyline>')
         for i, (x, y) in enumerate(pts):

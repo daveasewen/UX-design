@@ -149,6 +149,15 @@ Source of these rulings: the exported review comment-pins on the REVIEW copy (ba
   (`line_node_delays()` inverts the cubic-bezier) — each node lands as the drawing head passes it, fast
   through the middle, matching the line.
 
+## Batch 9 — review 2026-07-16 (1 pin)
+
+- **#1 Line + nodes now truly share one easing.** Root cause the node-easing didn't fix: the polyline's
+  `stroke-dasharray` was a fixed 2400 while the real drawn path is only ~500 units, so the LINE finished
+  drawing in the first ~20% of the timeline (then sat still) while the nodes ran the full duration —
+  they looked like different easings because the line effectively wasn't easing across the timeline at
+  all. Added `pathLength="2400"` to normalise the path so the dash-draw spans the whole animation (and
+  it's immune to the responsive rescaling). Now the line and the eased node cadence share one timeline.
+
 ## Open / pending
 
 - **Grouped column layout redesign** — awaiting Dave's reference images (Batch 1 #3).
