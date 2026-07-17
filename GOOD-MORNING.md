@@ -1,28 +1,31 @@
 # Good morning, Dave ☕
 
-*Briefing — written end of 2026-07-17, session **"DataViz round-one kit — build + polish."** Read this → `_LIVE-STATE.md` (🟡 PARKED DataViz entry + OPEN queue) → then build. Dense on purpose.*
+*Briefing — written end of 2026-07-17, session **"Type-token system — build from Figma."** Read this → `_LIVE-STATE.md` (LIVE "TYPE-TOKEN SYSTEM" entry) → `knowledge/_proforma/_TYPE-DECISIONS.md` (every ruling + WHY) → then carry on. Dense on purpose.*
 
 ## The session in one line
-Built the **DataViz round-one chart kit gate-first** (KPI · bar/column/grouped/stacked · line/multi/spark · donut), landed the gate WITH the first chart, then ran **nine review rounds** with you on animation/interaction polish — now **PARKED: "good enough", not signed off** (your call, revisit for controls).
+Took the Figma type file and built a **type-token system**: reconciled + 4px-normalised **primitives**, two composite sets **Editorial** (full line-height) + **Component** (cap-trim → 4px grid-slot), a working **`type.css`**, and a **grid gate** — all decisions captured in `_TYPE-DECISIONS.md`. Proposals are built and **awaiting your promotion to canon**.
 
-## ⏭ FIRST TASK — pick the next pillar (DataViz is parked)
-Two clean options; **Tranche 8 + templates is the load-bearing one and is NOT blocked**:
-1. **Tranche 8 + the shell/template tier** *(recommended)* — nav stragglers (BottomTabBar · InPageNav · FooterNav · RelatedLinks · Stepper) **+ page shell/footer templates**. `_LIVE-STATE` says this repeatedly: library has ~38 leaf/organism components but **ZERO templates/shells**, so page composition has nothing to compose into. "The load-bearing ~40–50 items are templates/shells, NOT more leaf components." Highest leverage.
-2. **Type-token system** — only if you bring the **Figma file** (the two new display types + 4px-grid scale). Still Figma-gated; the KB scale (`typography.json` font-5/6/7 + weights) is usable in the meantime.
+## ⏭ FIRST TASK — carry on in the agreed order (promotion first)
+We agreed to continue in this order; picked up where a stretched context window left off:
+1. **Promote the type proposals to canon** *(your sign-off step — canon promotion = Dave only)*: move `tokens/_proposals/typography-reconciled-2026-07-17.json` + `typography-composites-2026-07-17.json` into `tokens/typography.json`, settle `knowledge/canon/type.css`, mind the blast-radius. **Task #8**: wire `_validate_grid.py` into `_build_all.py` as DEF-005.
+2. **Retrofit sweep** (task #9): ~**123** off-grid values in `canon.css` + **69** across proforma tranches. Fix **source snippets + spacing tokens + regenerate** (canon.css is generated — don't hand-edit). Also investigate the **arrow-padding 5/6/7px asset** (likely an off-grid asset, not a real optical).
+3. **Vertical-stack spacing rule** (task #7): trimming hands vertical rhythm to spacing tokens — draft rule in `_TYPE-DECISIONS.md` (4px gaps slot-edge to slot-edge; min gap ≥ upper block's descender depth; Editorial keeps paragraph-spacing; baseline-grid now clean).
 
-## DataViz — PARKED, do NOT treat as done
-- Round-one kit BUILT + gate green 25/25; `_validate_dataviz.py` (9 blocking + 5 advisory, `--selftest`) is step 22 of `_build_all.py`. All on ONE file `knowledge/_proforma/DataViz-interactive.html` (generator `knowledge/_review/_gen_dataviz_charts.py` — **edit the generator, never the HTML**).
-- **Nine review rounds** of rulings + WHY live in `knowledge/_proforma/_DATAVIZ-DECISIONS.md` — **read it before touching charts.**
-- **REVISIT backlog (your call):** add **filtering, chart titles, other Layer-2 controls**; finish partial interactions; **in-browser sign-off** (everything so far is gate + `node --check` only — this sandbox has no browser, nothing was render-checked). Flip the `_LIVE-STATE` 🟡 PARKED entry to DONE only after that.
+## What landed (all built this session)
+- **Primitives** — `tokens/_proposals/typography-reconciled-2026-07-17.json`. Reconciled with repo export; weights **250/300/350/400/500/700** confirmed from the Latin desktop OTF; display sizes `font-00`/`font-0` added (scale-2/3 **inferred**, flagged); 4px-normalised (only font-1/3/4 moved at scale-1).
+- **Composites** — `tokens/_proposals/typography-composites-2026-07-17.json` + `knowledge/canon/type.css`. Editorial roles (display/heading/body/caption) + Component roles (label/button/input/link/figure/caption…). Component = `text-box-trim` (native) + Capsize fallback + 4px grid-slot.
+- **Grid gate** — `knowledge/_validate_grid.py`. 4n + 2px half-step; font-size/letter-spacing/border/radius exempt. Passes selftest + type.css.
+- **Specimens (real Univers)** — `reviews/TYPE-SPECIMEN-2026-07-17.html` (scale, weights, the measured crop→slot proof) and `reviews/TYPE-COMPOSITES-2026-07-17.html` (both sets in action, dark-mode step-up). `.REVIEW.html` twins carry your comments.
+- **Rulings ledger** — `knowledge/_proforma/_TYPE-DECISIONS.md` — READ FIRST before touching type.
 
 ## On your desk
-- **Push via GitHub Desktop** — six commits this session, in order: `c0d8db6` (kit + rounds 1–5) · `baf1f7b` (batch 6) · `f10b082` (batch 7) · `f93c2cc` (batch 8) · `de8cbcb` (batch 9) · `e435efe` (PARKED status docs). Desktop was closed during my commits.
-- Give the DataViz interactions a real **in-browser click-through** when convenient — drawer overlay, width slider, donut sweep, marker/variant toggles, tooltips, line-draw easing. That's the one thing I couldn't verify.
+- **Promotion is yours** — I built the proposals but didn't touch canon `typography.json` (governance: promotion = Dave).
+- **Commit**: hand-ready summary below — commit + push via **GitHub Desktop** (Desktop closed while any terminal commit runs). New/changed files: `_TYPE-DECISIONS.md`, `typography-reconciled/composites` proposals, `type.css`, `_validate_grid.py`, three `reviews/TYPE-*` pairs, `_LIVE-STATE.md`, this file, `knowledge/assets/fonts/_desktop/` (Latin OTF/TTF — **note licensing: desktop licence, product needs the webfont renewed on create.hsbc**).
+- **Webfont licence** expired on create.hsbc — chase renewal (product needs it; desktop files are internal-only).
 
-## Queue after the next pillar (from `_LIVE-STATE` OPEN / TARGET)
-- **DataViz R2 tier** (area/stacked-area · diverging · butterfly · waterfall · bullet · progress/gauge · in-table patterns) + Layer-2 (drill-down, cross-filter) — behind the DataViz controls revisit.
-- **Component library floor-first build-out** 38 → ~200–300 via the component machine; templates/shells are the gap (`_COMPONENT-LIBRARY-TARGET.md`; OPEN decision F7 build-upfront vs cluster-compound).
-- **Gates-as-a-service** (close the agentic loop) · **§9 register spread** diagnosis · **PM-KG MVP** + the capture-gate script.
-- Sidequests (harvest later): research knowledge-graph · Swiss state-ledger viewer · component catalog.
+## Queue after type (from tasks + `_LIVE-STATE`)
+- Review-overlay upgrades — **image paste + audio dictation + export-as-bundle** (task #4; it's a **product** feature now).
+- DataViz still **🟡 PARKED** (needs your in-browser pass + Layer-2 controls).
+- Bigger horizon captured this session (memory): **"lovable on rails"** 4-phase spine (Discover/Create/Craft/Dispatch), **chat-to-KB bot**, **KB-distillation-at-deploy**, modes = **tiered adherence** (a11y = the one non-removable floor, admin-tunable).
 
-> Opener: **"Title this chat: Tranche 8 + shell/template tier."** Then GOOD-MORNING → `_LIVE-STATE.md` → `reviews/NAV-PATTERN-CATALOG-2026-07-15.html` + `_COMPONENT-LIBRARY-TARGET.md` → build. (Or bring the Figma file and we do type-tokens instead.)
+> Opener: **"Title this chat: Type tokens — promote to canon + retrofit."** Then GOOD-MORNING → `_LIVE-STATE.md` → `_TYPE-DECISIONS.md` → promote, then the retrofit sweep.

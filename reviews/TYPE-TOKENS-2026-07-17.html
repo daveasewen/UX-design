@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apollo · Type tokens — editorial & interface — for review</title>
+<style>
+  :root{
+    --ink:#1a1a1a; --ink2:#5c5c5c; --ink3:#8a8a8a; --line:#e4e4e4; --line2:#d0d0d0;
+    --page:#ffffff; --surf:#f6f6f6; --raised:#fff; --acc:#a8000b; --ok:#00847f; --info:#305a85;
+    --sp:16px; --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:"SF Mono",ui-monospace,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--surf);color:var(--ink);font:400 16px/1.6 var(--font);-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:940px;margin:0 auto;background:var(--page);padding:56px clamp(20px,5vw,64px);}
+  header.head{border-bottom:2px solid var(--ink);padding-bottom:24px;margin-bottom:8px;}
+  .eyebrow{font:600 12px/1 var(--font);letter-spacing:.12em;text-transform:uppercase;color:var(--ink2);margin:0 0 12px;}
+  h1{font:700 34px/1.15 var(--font);margin:0 0 10px;letter-spacing:-.01em;}
+  .lede{font-size:17px;color:var(--ink2);margin:0;max-width:64ch;}
+  .meta{font:400 13px/1.5 var(--font);color:var(--ink3);margin-top:16px;}
+  h2{font:700 24px/1.2 var(--font);letter-spacing:-.01em;margin:52px 0 4px;padding-top:20px;border-top:1px solid var(--line);}
+  h2 .n{color:var(--ink3);font-weight:400;margin-right:.5ch;}
+  h2:first-of-type{border-top:0;}
+  h3{font:700 18px/1.3 var(--font);margin:30px 0 6px;}
+  h4{font:600 15px/1.3 var(--font);margin:18px 0 4px;}
+  p{margin:8px 0;}
+  a{color:var(--info);}
+  small{color:var(--ink3);}
+  .sub{color:var(--ink2);margin:2px 0 14px;}
+  ul,ol{margin:8px 0;padding-left:22px;} li{margin:5px 0;}
+  code{font:500 13px/1.4 var(--mono);background:var(--surf);border:1px solid var(--line);border-radius:3px;padding:1px 5px;}
+  .toc{background:var(--surf);border:1px solid var(--line);padding:18px 22px;margin:24px 0 8px;columns:2;column-gap:32px;font-size:14px;}
+  .toc a{display:block;color:var(--ink);text-decoration:none;padding:3px 0;break-inside:avoid;}
+  .toc a:hover{color:var(--info);}
+  .evidence{border-left:3px solid var(--acc);background:#fdf5f5;padding:12px 16px;margin:14px 0;font-size:14.5px;}
+  .evidence b{color:var(--acc);}
+  .note{border-left:3px solid var(--info);background:#f3f7fb;padding:12px 16px;margin:14px 0;font-size:14.5px;}
+  .flag{border-left:3px solid #b7791f;background:#fdf8ef;padding:12px 16px;margin:14px 0;font-size:14.5px;}
+  .flag b{color:#8a5a00;}
+  .decision{border:1px solid var(--acc);border-left:4px solid var(--acc);background:#fffafa;padding:16px 18px 14px;margin:18px 0;font-size:14.5px;border-radius:0 6px 6px 0;}
+  .decision .lbl{font:700 11px/1 var(--font);letter-spacing:.1em;text-transform:uppercase;color:var(--acc);display:block;margin-bottom:8px;}
+  .decision .q{font-weight:600;font-size:15.5px;display:block;margin-bottom:8px;}
+  .decision.done{border-color:var(--ink);border-left-color:var(--ink);background:var(--surf);}
+  .decision.done .lbl{color:var(--ink);}
+  .decision.done .lbl::after{content:' ✓';}
+  .opt{border:1px solid var(--line);border-radius:5px;padding:10px 13px;margin:8px 0;background:var(--raised);}
+  .opt.rec-opt{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink);}
+  .opt b{display:inline-block;}
+  .yourcall{border-top:1px dashed var(--line2);margin-top:12px;padding-top:10px;color:var(--ink3);font-size:13.5px;}
+  .yourcall b{color:var(--ink2);}
+  .rec{background:var(--ink);color:var(--page);padding:2px 8px;border-radius:3px;font:600 11px/1.5 var(--font);letter-spacing:.04em;text-transform:uppercase;vertical-align:middle;}
+  .tag{display:inline-block;font:600 11px/1 var(--font);letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);border:1px solid var(--line2);border-radius:3px;padding:4px 7px;margin-left:8px;vertical-align:middle;}
+  table{border-collapse:collapse;width:100%;margin:16px 0;font-size:13px;}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top;}
+  th{background:var(--surf);font-weight:600;}
+  td.num{text-align:right;font-variant-numeric:tabular-nums;}
+  tr.odd-row td{background:#fdf7ef;}
+  .pill{display:inline-block;font:500 12px/1 var(--mono);background:var(--page);border:1px solid var(--line2);border-radius:3px;padding:3px 6px;margin:2px 3px 2px 0;}
+  /* layer diagram */
+  .layers{border:1px solid var(--line2);border-radius:6px;overflow:hidden;margin:18px 0;}
+  .layer{display:grid;grid-template-columns:150px 1fr;border-top:1px solid var(--line);}
+  .layer:first-child{border-top:0;}
+  .layer .ly-h{background:var(--surf);padding:14px 16px;font:600 13px/1.35 var(--font);border-right:1px solid var(--line);}
+  .layer .ly-h small{display:block;color:var(--ink3);font-weight:400;margin-top:3px;}
+  .layer .ly-b{padding:14px 16px;font-size:14px;}
+  .src{font-size:13.5px;} .src li{margin:5px 0;}
+  @media(max-width:640px){
+    .toc{columns:1;} table{font-size:12px;}
+    .layer{grid-template-columns:1fr;} .layer .ly-h{border-right:0;border-bottom:1px solid var(--line);}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="head">
+  <p class="eyebrow">Apollo · Type-token system · for review</p>
+  <h1>Editorial &amp; interface type — structure and naming</h1>
+  <p class="lede">You want two sets from the same styles: an <b>editorial</b> set (type as-is, full line-height) and an <b>interface</b> set (the same type with the line-height-crop technique for components). Before I build the tokens, here's what I read from the Figma file, how it maps onto those two sets, and the decisions I need from you — with a recommendation on each.</p>
+  <p class="meta">Built 2026-07-17 by Claude, from the <code>scale-1</code> specimen in <b>Digital Supercharge 0.5</b> (Figma node <code>2320-70342</code>) — bound variables + rendered specimen. <b>Status: for review — no tokens built yet.</b> Nothing below is decided; the decision blocks in §05 are open. Use the review tool (bottom-right) to pin comments or hit Export to send your rulings back.</p>
+</header>
+
+<nav class="toc" aria-label="Contents">
+  <a href="#source">00 · What the Figma file gives us</a>
+  <a href="#primitives">01 · The primitives</a>
+  <a href="#scale">02 · The size scale (+ one oddity)</a>
+  <a href="#composites">03 · The composite styles</a>
+  <a href="#twosets">04 · Your two sets — editorial vs interface</a>
+  <a href="#decisions">05 · Decisions to make</a>
+  <a href="#rec">06 · My recommendation, in one picture</a>
+  <a href="#sources">Sources</a>
+</nav>
+
+<!-- ============ 00 ============ -->
+<h2 id="source"><span class="n">00</span>What the Figma file gives us</h2>
+<p class="sub">One responsive scale of a fully tokenised type system — no hardcoded values, which is exactly the foundation we want.</p>
+<p>The node is titled <code>scale-1</code>, which strongly implies there are sibling scales (<code>scale-2</code>, <code>scale-3</code>) for the other breakpoints — matching the "three responsive scales" the project has been anticipating. Everything on the specimen is driven by variables, layered like this:</p>
+<div class="layers">
+  <div class="layer">
+    <div class="ly-h">Primitives<small>the raw values</small></div>
+    <div class="ly-b">font family, font weights (named → numeric), and per-size <b>font-size / line-height / letter-spacing / paragraph-spacing</b>.</div>
+  </div>
+  <div class="layer">
+    <div class="ly-h">Composite styles<small>what a designer applies</small></div>
+    <div class="ly-b">named text styles that combine the primitives — e.g. <code>font-1/regular</code>, <code>font-5/link</code>, <code>Call-to-actions/default</code>.</div>
+  </div>
+</div>
+<p>So the good news up front: the source is already primitive-driven. Our job is to decide how to <em>name</em> and <em>arrange</em> it, and to add the second (interface / cropped) expression you want.</p>
+
+<!-- ============ 01 ============ -->
+<h2 id="primitives"><span class="n">01</span>The primitives</h2>
+<h3>Family &amp; weights</h3>
+<p>Family is <code>Univers Next for HSBC</code>. Weights are named and carry a numeric value:</p>
+<table>
+  <thead><tr><th>Name</th><th>Numeric</th><th>Notes</th></tr></thead>
+  <tbody>
+    <tr><td>ultra-light</td><td class="num">250</td><td>display-only (font-00)</td></tr>
+    <tr><td>thin</td><td class="num">300</td><td>the common "default" weight at large sizes</td></tr>
+    <tr><td>light</td><td class="num">350</td><td>the common body weight</td></tr>
+    <tr><td>regular</td><td class="num">400</td><td>the common "highlight" / emphasis weight</td></tr>
+    <tr><td>medium</td><td class="num">500</td><td>stronger emphasis</td></tr>
+    <tr><td>bold</td><td class="num">700</td><td>used by the "-V2" highlight at small sizes</td></tr>
+  </tbody>
+</table>
+<p class="note">Note for later, not now: <code>Univers Next for HSBC</code> is a licensed font we don't have in the render sandbox — any rendered previews I make will fall back to a system font. It doesn't affect the token values, only how my own screenshots look.</p>
+
+<!-- ============ 02 ============ -->
+<h2 id="scale"><span class="n">02</span>The size scale (+ one oddity)</h2>
+<p class="sub">Nine steps, <code>font-00</code> (largest) down to <code>font-7</code> (smallest). Values as resolved from the file:</p>
+<table>
+  <thead><tr><th>Token</th><th>Size (px)</th><th>Line-height</th><th>Letter-sp</th><th>Para-sp</th></tr></thead>
+  <tbody>
+    <tr><td><code>font-00</code></td><td class="num">52</td><td class="num">60</td><td class="num">−1</td><td class="num">36</td></tr>
+    <tr><td><code>font-0</code></td><td class="num">40</td><td class="num">48</td><td class="num">0</td><td class="num">—</td></tr>
+    <tr><td><code>font-1</code></td><td class="num">33</td><td class="num">40</td><td class="num">0</td><td class="num">20</td></tr>
+    <tr class="odd-row"><td><code>font-2</code></td><td class="num">43 ⚠</td><td class="num">52</td><td class="num">0</td><td class="num">26</td></tr>
+    <tr><td><code>font-3</code></td><td class="num">23</td><td class="num">30</td><td class="num">0</td><td class="num">15</td></tr>
+    <tr><td><code>font-4</code></td><td class="num">19</td><td class="num">27</td><td class="num">0</td><td class="num">14</td></tr>
+    <tr><td><code>font-5</code></td><td class="num">16</td><td class="num">24</td><td class="num">0</td><td class="num">12</td></tr>
+    <tr><td><code>font-6</code></td><td class="num">14</td><td class="num">20</td><td class="num">0</td><td class="num">10</td></tr>
+    <tr><td><code>font-7</code></td><td class="num">12</td><td class="num">16</td><td class="num">0</td><td class="num">8</td></tr>
+  </tbody>
+</table>
+<div class="flag">
+  <b>⚠ Please sanity-check <code>font-2</code>.</b> It resolves to <b>43px</b> — larger than <code>font-0</code> (40) and <code>font-1</code> (33), so the numbered sequence isn't a straight size ladder. On the rendered specimen, font-2 actually <em>looks</em> smaller than font-1, which contradicts the 43 value. Most likely either (a) a stray value in the variable, or (b) font-2 is bound to a different responsive mode than the one this node resolved in. Whichever it is, it's worth fixing at source — it's the kind of thing that quietly bites later. It also feeds directly into the naming decision below (opaque numbers that don't even sort by size are hard to defend).
+</div>
+
+<!-- ============ 03 ============ -->
+<h2 id="composites"><span class="n">03</span>The composite styles</h2>
+<p class="sub">Each size ships several ready-made text styles. There are three "columns" on the specimen, plus role styles at the small sizes.</p>
+<h4>1 · Weight-named</h4>
+<p><code>font-N/light</code> · <code>font-N/regular</code> · <code>font-N/medium</code> — the plain "pick a weight" styles.</p>
+<h4>2 · Default → highlight</h4>
+<p>A two-weight pairing: <code>default</code> for the run of text and <code>highlight</code> for the emphasised words inside it (the "quick brown <b>fox</b>" bolding on the specimen). At large sizes <code>default</code> is the lighter weight and <code>highlight</code> a step up.</p>
+<h4>3 · V2</h4>
+<p>The same default/highlight pairing bumped up one weight step — a heavier alternative (likely for lower-contrast surfaces or a slightly bolder aesthetic).</p>
+<h4>Role styles (small sizes)</h4>
+<p>At <code>font-5/6/7</code> the system adds purpose-named styles: <span class="pill">link</span> <span class="pill">tooltip</span> <span class="pill">superscript</span> <span class="pill">alternative</span>, plus <span class="pill">Call-to-actions/default</span> (font-5) and <span class="pill">Call-to-actions/small</span> (font-6).</p>
+
+<!-- ============ 04 ============ -->
+<h2 id="twosets"><span class="n">04</span>Your two sets — editorial vs interface</h2>
+<p class="sub">This is the heart of what you asked for. The key point: <b>both sets share the same primitives.</b> The only real difference is the box / line-height treatment.</p>
+<div class="layers">
+  <div class="layer">
+    <div class="ly-h">Editorial<small>type as-is</small></div>
+    <div class="ly-b">Full line-height baked in (the values in §02). Leading gives vertical rhythm and breathing room — for prose, headings, marketing and content. Matches your earlier ruling that <b>headings and body are excluded</b> from the crop.</div>
+  </div>
+  <div class="layer">
+    <div class="ly-h">Interface<small>line-height crop</small></div>
+    <div class="ly-b">Same primitives, but the visual box is <b>cropped to cap-height→baseline</b> (text-box-trim / leading-trim). Lets component text — labels, buttons, inputs, table cells — sit exactly on the 4px grid without the half-leading padding above and below. Matches "text-box-trim for labels, metric-aware".</div>
+  </div>
+</div>
+<p>So structurally I'd expect <b>one primitive tier feeding two composite tiers</b>, not two duplicated scales. That's decision D2 below.</p>
+
+<!-- ============ 05 ============ -->
+<h2 id="decisions"><span class="n">05</span>Decisions to make</h2>
+<p class="sub">Six open calls. Each has my recommendation marked; the "Your call" line is yours to answer (pin a comment on it or use Export).</p>
+
+<div class="decision">
+  <span class="lbl">Decision · D1 — how to name the size scale</span>
+  <span class="q">Keep <code>font-00…font-7</code>, or rename?</span>
+  <p>The <code>font-N</code> names don't say how big a step is or what it's for, and (per §02) they don't even sort by size. Three common approaches:</p>
+  <div class="opt"><b>A · Keep <code>font-N</code></b> — 1:1 with Figma, easy to trace back; but opaque, and keeps the out-of-order oddity.</div>
+  <div class="opt"><b>B · Role names</b> — <code>display · heading-xl · heading · body · caption · label</code>. Readable, says what to use it for (what Material / Polaris / Carbon do); needs a lookup back to Figma.</div>
+  <div class="opt"><b>C · Numeric ladder</b> — <code>size-900…size-100</code> or by px. Always sorts correctly, fixes the font-2 oddity; but doesn't say what it's for.</div>
+  <div class="opt rec-opt"><span class="rec">Recommend</span> <b>D · Two-tier — C underneath, B on top.</b> A clean ordered <em>primitive</em> scale (unambiguous), with <em>role</em> aliases layered over it. This is what mature systems actually do — you get traceability <em>and</em> readability, and nobody argues whether "font-4" is a heading or a caption. Keep a note mapping each back to its <code>font-N</code> source.</div>
+  <p class="yourcall"><b>Your call:</b> A / B / C / D — or your own scheme. If D, do you want the primitive scale numbered by rank (100–900) or by px?</p>
+</div>
+
+<div class="decision">
+  <span class="lbl">Decision · D2 — how to structure editorial vs interface</span>
+  <span class="q">How should the two sets sit in the token tree?</span>
+  <div class="opt rec-opt"><span class="rec">Recommend</span> <b>A · One primitive tier, two composite tiers.</b> Shared size/weight/family primitives; <code>editorial/*</code> and <code>interface/*</code> reference them; the crop lives only in interface. Least duplication, standard shape, easiest for another designer/dev to pick up.</div>
+  <div class="opt"><b>B · Two parallel trees</b> — fully separate editorial and interface trees. Each is independently portable, but you maintain everything twice.</div>
+  <div class="opt"><b>C · One set + crop modifier</b> — a single tree where interface is editorial plus a boolean crop flag. Leanest, but couples the two so a change to one leaks into the other.</div>
+  <p class="yourcall"><b>Your call:</b> A / B / C.</p>
+</div>
+
+<div class="decision">
+  <span class="lbl">Decision · D3 — how you picture the two sets in Figma</span>
+  <span class="q">Two style folders, or "the same thing, tightened"?</span>
+  <p>This is the one I genuinely need your mental model on, because it changes how the role layer is named. When you imagine a designer working: do they see <b>two separate style folders</b> ("Editorial" and "Interface") and pick from the right one — or <b>one set</b> where interface is understood as "the editorial style, cropped for components"?</p>
+  <p class="yourcall"><b>Your call:</b> folders-of-styles / one-set-tightened / something else — tell me how you see it.</p>
+</div>
+
+<div class="decision">
+  <span class="lbl">Decision · D4 — the font-2 value</span>
+  <span class="q">Is <code>font-2 = 43px</code> correct, or a bug?</span>
+  <p>Flagged in §02. I don't want to bake in a value that's out of order with the rest of the scale without you confirming it against the source.</p>
+  <p class="yourcall"><b>Your call:</b> 43 is right / it's a bug (should be ~__) / I'll check the Figma and confirm.</p>
+</div>
+
+<div class="decision">
+  <span class="lbl">Decision · D5 — default / highlight / V2 naming</span>
+  <span class="q">Keep the <code>default · highlight · -V2</code> vocabulary, or rename?</span>
+  <p><code>highlight</code> reads a bit ambiguously (it's inline emphasis, not a highlighter), and <code>-V2</code> doesn't say what the variant is <em>for</em>. Options: keep as-is for continuity; or rename to something like <code>body / emphasis</code> and a purpose name for the heavier set.</p>
+  <div class="opt rec-opt"><span class="rec">Lean</span> Keep <code>default</code>/<code>highlight</code> for continuity with the existing file, but give <code>-V2</code> a real name once we know what it's for (accessibility? a bolder brand register?).</div>
+  <p class="yourcall"><b>Your call:</b> keep / rename (to what?).</p>
+</div>
+
+<div class="decision">
+  <span class="lbl">Decision · D6 — where the role styles live</span>
+  <span class="q"><code>link · tooltip · superscript · CTA · alternative</code> — editorial, interface, or both?</span>
+  <p>These are inherently component-ish. My instinct is they belong in the <b>interface</b> set (cropped), with editorial carrying only the reading styles.</p>
+  <div class="opt rec-opt"><span class="rec">Recommend</span> Role styles → interface set. Editorial = headings + body only.</div>
+  <p class="yourcall"><b>Your call:</b> interface / both / split differently.</p>
+</div>
+
+<!-- ============ 06 ============ -->
+<h2 id="rec"><span class="n">06</span>My recommendation, in one picture</h2>
+<p class="sub">If you took every "recommend" above, the system would look like this:</p>
+<div class="layers">
+  <div class="layer">
+    <div class="ly-h">Primitives<small>ordered, unambiguous</small></div>
+    <div class="ly-b">Numeric size scale + weights + family + the four per-size metrics. font-2 fixed. Each maps back to its <code>font-N</code> source in a note.</div>
+  </div>
+  <div class="layer">
+    <div class="ly-h">Editorial<small>role aliases, full leading</small></div>
+    <div class="ly-b"><code>display · heading · body …</code> — reading styles only, natural line-height.</div>
+  </div>
+  <div class="layer">
+    <div class="ly-h">Interface<small>role aliases, cropped</small></div>
+    <div class="ly-b"><code>label · button · input · caption · link · tooltip · CTA …</code> — same primitives, text-box-trim for 4px-grid alignment.</div>
+  </div>
+</div>
+<p>Three responsive scales (<code>scale-1/2/3</code>) sit under all of it as a mode, once we bring in scale-2 and scale-3.</p>
+<p class="note">None of this is built yet — it's a proposal to react to. Once you rule on D1–D6 I'll generate the DTCG token files and a specimen to check against the Figma.</p>
+
+<!-- ============ Sources ============ -->
+<h2 id="sources">Sources</h2>
+<ul class="src">
+  <li>Figma — <b>Digital Supercharge 0.5</b>, <code>scale-1</code> specimen, node <code>2320-70342</code> (bound variable definitions + rendered specimen).</li>
+  <li>Project — <code>_LIVE-STATE.md</code> type-token target (3 responsive scales × 9 sizes → 2 labelling-style sets: editorial + UI); leading-trim / text-box-trim ruling (labels cropped, headings + body excluded).</li>
+  <li>Convention — two-tier token structure (primitive scale + semantic/role aliases) as used by Material 3, Shopify Polaris, IBM Carbon.</li>
+</ul>
+
+<p class="meta" style="margin-top:32px;border-top:1px solid var(--line);padding-top:16px;">Apollo · type-token review · 2026-07-17 · for Dave. Comment inline with the tool bottom-right, or Export to send rulings back.</p>
+
+</div>
+</body>
+</html>

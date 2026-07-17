@@ -5,7 +5,7 @@ what's **OPEN**. Read this second, after `GOOD-MORNING.md`, before `knowledge/RE
 Per **ADR-0007**. ⚠️ **INTERIM — hand-maintained** until `_build_live_state.py` generates it from
 front-matter edges + tombstones. Refresh at end of every session alongside the handoff.*
 
-*Last refreshed: 2026-07-17 (DataViz round-one kit BUILT gate-first + NINE review rounds enacted, then PARKED "good enough / not signed off" — see the 🟡 PARKED DataViz entry + `_proforma/_DATAVIZ-DECISIONS.md`). Prior: 2026-07-16 eve (DataViz method dossier + V7 render sheet), 2026-07-16 (masthead model/build/review + review-tool upgrade + dataviz desk research), 2026-07-15 (Apollo mono Tranches 6+7, tokenisation, DEF-004). Committed this session: `c0d8db6`·`baf1f7b`·`f10b082`·`f93c2cc`·`de8cbcb`·`e435efe` — Dave to push via GitHub Desktop.*
+*Last refreshed: 2026-07-17 eve (TYPE-TOKEN SYSTEM built from the Figma file — reconciled + 4px-normalised primitives, Editorial + Component composite sets, measured crop→grid-slot mechanism, `type.css`, and the `_validate_grid.py` gate; all rulings in `knowledge/_proforma/_TYPE-DECISIONS.md`; proposals await promotion to canon. Also captured a big product-vision arc: "lovable on rails" 4-phase spine, chat-to-KB bot, KB-distillation-at-deploy, review-layer-as-product. Prior same day: DataViz round-one kit BUILT gate-first + NINE review rounds, then PARKED — see the 🟡 PARKED DataViz entry + `_proforma/_DATAVIZ-DECISIONS.md`). Prior: 2026-07-16 eve (DataViz method dossier + V7 render sheet), 2026-07-16 (masthead model/build/review + review-tool upgrade + dataviz desk research), 2026-07-15 (Apollo mono Tranches 6+7, tokenisation, DEF-004). Committed this session: `c0d8db6`·`baf1f7b`·`f10b082`·`f93c2cc`·`de8cbcb`·`e435efe` — Dave to push via GitHub Desktop.*
 
 > ⚠️ **AUDIT STATUS — everything below is RECORDED, not VALIDATED.** Provenance ≠ correctness.
 > These entries capture *that* a decision was made and what it supersedes — **not** that it is
@@ -68,12 +68,49 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
   2 labelling-style sets (editorial + UI); same Figma file carries new colour tokens for all 3 modes; restore placeholder
   leading-trim (fixes off-grid 51px field). NOTED: legacy-libraries build-out. NEXT = Tranche 8 (BottomTabBar · InPageNav ·
   FooterNav · RelatedLinks · Stepper) OR type-tokens on Figma arrival. Full: [[proforma-programme]], [[nav-pattern-catalog]], [[apollo-mono]].
+- **TYPE-TOKEN SYSTEM = built, proposals await promotion** (2026-07-17). From Figma *Digital Supercharge 0.5*
+  (`scale-1`, node 2320-70342) reconciled with repo `typography.json`. **Primitives** (reconciled + 4px-normalised,
+  weights confirmed 250/300/350/400/500/700 from the Latin desktop instances, display sizes font-00/font-0 added —
+  scale-2/3 INFERRED) → `tokens/_proposals/typography-reconciled-2026-07-17.json`. **Composites** = TWO sets
+  **Editorial** (full line-height) + **Component** (cap-trim + 4px grid-slot) → `tokens/_proposals/typography-composites-2026-07-17.json`
+  + working mixin `knowledge/canon/type.css`. Key mechanism: Component text is **cap-trimmed** then **seated in a
+  4px grid-slot** (slot = `ceil(cap+2·descender)`→4px = line-height token AND descender-guard); metrics measured
+  (cap 0.723em, USE_TYPO_METRICS off → 1.3em natural box). **Gate** `knowledge/_validate_grid.py` (4n + 2px half-step;
+  1px=borders only; font-size/letter/border/radius exempt) — passes selftest + type.css. RULINGS + WHY all in
+  `knowledge/_proforma/_TYPE-DECISIONS.md` (D1–D6, N1, V1, body-weight brand rule, grid subdivisions). **Naming:**
+  role names + font-N alias (D1); sets = Editorial vs Component (D3, "get people off Figma onto Apollo"); highlight→
+  **emphasis** (D5); `-V2` = dark-mode weight step-up (V1). **BRAND RULE:** no light/ultra on body sizes (min regular);
+  see memory [[type-body-weight-rule]]. OPEN: promote proposals→canon (Dave's sign-off; canon promotion = Dave only);
+  wire grid gate as DEF-005 (task #8); vertical-stack spacing rule (task #7); retrofit ~123 off-grid values in canon.css
+  + 69 across tranches — fix source snippets+tokens, regenerate (task #9); investigate arrow-padding 5/6/7 asset;
+  webfont: Latin desktop OTF/TTF in `knowledge/assets/fonts/_desktop/` (product still needs webfont licence renewed).
 - **ATOMISE — build at the true atomic level, compose up** (RULED Dave 2026-07-14). Rolled-up
   patterns (e.g. Notifications = inline + toast + global + contextual in one molecule) are a **debt**,
   not the model; going forward build atoms → molecules → organisms per the `meta.schema` category
   ladder, exposing the atoms. Known debt: decompose the existing rolled-up molecules in a later
   refactor. Applies to all new component work.
 
+- **Apollo product spine = "lovable on rails" · four phases** (Dave 2026-07-17, new framing — labels
+  provisional, shape is the vision). Tagline **"lovable on rails"** = generative freedom bound to
+  brand/a11y/governance **rails**. Four phases the final harness rolls every feature into:
+  **1 · Apollo Discover** (ingest · research · analyse — KB intake; chat-to-KB bot likely here) ·
+  **2 · Apollo Create** (generation, being built now; four modes: **Strict** = assembly-line "Factory
+  mode" from the sponsor deck · **Creative** · **Component Dev** · **Explore** = free noodling) ·
+  **3 · Apollo Craft** (review · edit · craft — the review doc + comment overlay IS this phase) ·
+  **4 · Apollo Dispatch** (hand a package to engineering; may fold away if integrated rather than a
+  discrete handoff — ties to Sutherland build target). Subsumes prior mode thinking: the four Create
+  modes = `multi-mode-product-vision`; converge-ship vs explore-noodle = `harness-two-modes`; one
+  `product-shape-flexing-engine` underneath. Memory `apollo-product-framing`. Unaudited — a framing, not a spec.
+  **REFINEMENT (Dave 2026-07-17): the four Create modes = TIERED LEVELS OF ADHERENCE** to the rails
+  (a11y · standards · canon components · KB guidance), guardrails **progressively removed along the tiers**
+  (Strict = all gates blocking + canon-only → … → Explore = most off), with **per-tier sub-settings**. "Lovable
+  on rails" = a dial, not a fixed track; it's the `fixed-flex-charter` + `register-inference-ramp` made an
+  explicit per-mode governance control. **RESOLVED (Dave 2026-07-17): a11y (WCAG 2.2 AA) IS the single
+  non-removable floor** — holds across every mode incl. Explore, no tier dial can drop it (per FOUNDATIONAL
+  `accessibility-aspiration`); likely joined by other locked foundations (e.g. colour palette, TBD).
+  **Nuance: "non-removable" = LOCKED, not HARDCODED** — an **admin access layer tunes every setting incl. the
+  floor** (new product concept: an admin settings surface above the per-mode tier dials), keeping nothing truly
+  hardcoded. **Name rationale: Apollo = the MOONSHOT** (after the Apollo programme) — the ambition behind the name.
 - **Product = a *flexing* engine** — one governed core, dials per work-type; floor/churn ("vibe")
   vs ceiling/novel ("analysis"). `ADR-0006`.
 - **Output modes = a first-class dial** (Dave, 2026-07-05): the engine must produce **two fidelity
@@ -610,6 +647,16 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
   ("honesty system, not inspection") — real autonomy may need inspection-mode checks. Connects to the §9
   "generate-free-then-constrain-and-verify" two-pass. Memory `agentic-loop-gates-as-service`. Unaudited —
   an idea recorded today, not a spec.
+
+- **🎯 TARGET — chat-to-the-KB bot in the final system** (Dave 2026-07-17, quick capture). Ship a
+  conversational agent, part of the delivered product, that users (designers/devs/stakeholders) can
+  **chat to the design-system knowledge base** — ask what a token/component/rule is, why a decision was
+  made, how to use something — answered from the Apollo KB (canon · criteria · rulings · the decision
+  graph), not general knowledge. *Why:* the KB is already the source of truth; a retrieval-grounded chat
+  surface makes it self-serve and is a natural sibling to gates-as-a-service (same KB, read side vs
+  enforce side). *Open/unspecified:* retrieval grounding + provenance/citations, scope (read-only Q&A
+  vs can-it-generate), surface (in-catalog / Slack / IDE), guardrails against invented answers. Idea
+  recorded today, not a spec. Memory `chat-to-kb-bot`. Unaudited.
 
 
 *The forward-looking dimension of the state machine. Not current truth (that's LIVE) and not a flat

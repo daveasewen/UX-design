@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apollo · Type tokens v2 — reconciled + normalised — for review</title>
+<style>
+  :root{
+    --ink:#1a1a1a; --ink2:#5c5c5c; --ink3:#8a8a8a; --line:#e4e4e4; --line2:#d0d0d0;
+    --page:#ffffff; --surf:#f6f6f6; --raised:#fff; --acc:#a8000b; --ok:#00847f; --info:#305a85;
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:"SF Mono",ui-monospace,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--surf);color:var(--ink);font:400 16px/1.6 var(--font);-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:940px;margin:0 auto;background:var(--page);padding:56px clamp(20px,5vw,64px);}
+  header.head{border-bottom:2px solid var(--ink);padding-bottom:24px;margin-bottom:8px;}
+  .eyebrow{font:600 12px/1 var(--font);letter-spacing:.12em;text-transform:uppercase;color:var(--ink2);margin:0 0 12px;}
+  h1{font:700 34px/1.15 var(--font);margin:0 0 10px;letter-spacing:-.01em;}
+  .lede{font-size:17px;color:var(--ink2);margin:0;max-width:64ch;}
+  .meta{font:400 13px/1.5 var(--font);color:var(--ink3);margin-top:16px;}
+  h2{font:700 24px/1.2 var(--font);letter-spacing:-.01em;margin:52px 0 4px;padding-top:20px;border-top:1px solid var(--line);}
+  h2 .n{color:var(--ink3);font-weight:400;margin-right:.5ch;}
+  h2:first-of-type{border-top:0;}
+  h3{font:700 18px/1.3 var(--font);margin:30px 0 6px;}
+  p{margin:8px 0;} a{color:var(--info);} small{color:var(--ink3);}
+  .sub{color:var(--ink2);margin:2px 0 14px;}
+  ul,ol{margin:8px 0;padding-left:22px;} li{margin:5px 0;}
+  code{font:500 13px/1.4 var(--mono);background:var(--surf);border:1px solid var(--line);border-radius:3px;padding:1px 5px;}
+  .toc{background:var(--surf);border:1px solid var(--line);padding:18px 22px;margin:24px 0 8px;columns:2;column-gap:32px;font-size:14px;}
+  .toc a{display:block;color:var(--ink);text-decoration:none;padding:3px 0;break-inside:avoid;}
+  .toc a:hover{color:var(--info);}
+  .note{border-left:3px solid var(--info);background:#f3f7fb;padding:12px 16px;margin:14px 0;font-size:14.5px;}
+  .ruled{border-left:3px solid var(--ok);background:#f1f8f7;padding:12px 16px;margin:14px 0;font-size:14.5px;}
+  .ruled b{color:#046a63;}
+  .flag{border-left:3px solid #b7791f;background:#fdf8ef;padding:12px 16px;margin:14px 0;font-size:14.5px;}
+  .flag b{color:#8a5a00;}
+  .decision{border:1px solid var(--acc);border-left:4px solid var(--acc);background:#fffafa;padding:16px 18px 14px;margin:18px 0;font-size:14.5px;border-radius:0 6px 6px 0;}
+  .decision .lbl{font:700 11px/1 var(--font);letter-spacing:.1em;text-transform:uppercase;color:var(--acc);display:block;margin-bottom:8px;}
+  .decision .q{font-weight:600;font-size:15.5px;display:block;margin-bottom:8px;}
+  .yourcall{border-top:1px dashed var(--line2);margin-top:12px;padding-top:10px;color:var(--ink3);font-size:13.5px;}
+  .yourcall b{color:var(--ink2);}
+  .rec{background:var(--ink);color:var(--page);padding:2px 8px;border-radius:3px;font:600 11px/1.5 var(--font);letter-spacing:.04em;text-transform:uppercase;vertical-align:middle;}
+  table{border-collapse:collapse;width:100%;margin:16px 0;font-size:13px;}
+  th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top;}
+  th{background:var(--surf);font-weight:600;}
+  td.num{text-align:right;font-variant-numeric:tabular-nums;}
+  tr.chg td{background:#fdf5f5;}
+  tr.chg td:first-child{font-weight:600;}
+  .arrow{color:var(--acc);font-weight:700;}
+  .keep{color:var(--ink3);}
+  .pill{display:inline-block;font:500 12px/1 var(--mono);background:var(--page);border:1px solid var(--line2);border-radius:3px;padding:3px 6px;margin:2px 3px 2px 0;}
+  .layers{border:1px solid var(--line2);border-radius:6px;overflow:hidden;margin:18px 0;}
+  .layer{display:grid;grid-template-columns:150px 1fr;border-top:1px solid var(--line);}
+  .layer:first-child{border-top:0;}
+  .layer .ly-h{background:var(--surf);padding:14px 16px;font:600 13px/1.35 var(--font);border-right:1px solid var(--line);}
+  .layer .ly-h small{display:block;color:var(--ink3);font-weight:400;margin-top:3px;}
+  .layer .ly-b{padding:14px 16px;font-size:14px;}
+  @media(max-width:640px){ .toc{columns:1;} table{font-size:12px;} .layer{grid-template-columns:1fr;} .layer .ly-h{border-right:0;border-bottom:1px solid var(--line);} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="head">
+  <p class="eyebrow">Apollo · Type-token system · v2 · for review</p>
+  <h1>Type tokens — reconciled, normalised, split into two sets</h1>
+  <p class="lede">Your eleven comments are folded in. This is the reconciled scale (display sizes + real weights merged into the repo's existing token file), a proposed <b>4px-normalised</b> scale shown current-vs-proposed, and the <b>Editorial / Component</b> split with draft role names. Three real calls left — in the decision blocks.</p>
+  <p class="meta">Built 2026-07-17 by Claude from your v1 markup + the repo's <code>typography.json</code> + Figma node <code>2320-70342</code>. Rulings ledger: <code>knowledge/_proforma/_TYPE-DECISIONS.md</code>. <b>Status: for review — no tokens written yet.</b> Comment / Export bottom-right.</p>
+</header>
+
+<nav class="toc" aria-label="Contents">
+  <a href="#ruled">00 · What you ruled (folded in)</a>
+  <a href="#reconcile">01 · The reconciliation</a>
+  <a href="#normalise">02 · Proposed 4px-normalised scale</a>
+  <a href="#sets">03 · Editorial &amp; Component — draft roles</a>
+  <a href="#v2">04 · The "-V2" question</a>
+  <a href="#open">05 · Open calls, summarised</a>
+</nav>
+
+<!-- 00 -->
+<h2 id="ruled"><span class="n">00</span>What you ruled (folded in)</h2>
+<div class="ruled">
+  <b>Recorded from your v1 markup:</b>
+  <ul style="margin:6px 0 0;">
+    <li><b>D1 naming</b> → role names <em>plus</em> the retained <code>font-N</code> number, for people used to the convention.</li>
+    <li><b>D2 structure</b> → <b>A</b>: one primitive tier, two composite tiers. (Also the cleanest to mirror in Figma — see §03.)</li>
+    <li><b>D3</b> → two <b>separate</b> sets, named <b>Editorial</b> and <b>Component</b> (not "interface"). And the north star: get people off Figma and into Apollo.</li>
+    <li><b>D4</b> → font-2 fixed <em>and</em> the whole scale normalised to the 4px grid (§02).</li>
+    <li><b>D5</b> → <code>highlight</code> → <b><code>emphasis</code></b> (highlight implied an underline/background).</li>
+    <li><b>D6</b> → role styles live in <b>Component</b>; and Component spans large sizes too (big figures).</li>
+    <li><b>§06 architecture</b> → approved.</li>
+  </ul>
+</div>
+<div class="note"><b>Font (your comment 1):</b> yes — a licensed <b>webfont pack</b> changes everything. It means specimens and the product render in real Univers Next, not a fallback. The caveat in v1 is gone. <b>Action:</b> drop the webfont pack into <code>knowledge/assets/fonts/</code> and I'll wire <code>@font-face</code> so every specimen is true-to-face (my sandbox can't show the real font until it's in the repo).</div>
+
+<!-- 01 -->
+<h2 id="reconcile"><span class="n">01</span>The reconciliation</h2>
+<p class="sub">The repo already has a good token file — we extend it, not replace it. Two gaps the new Figma file fills:</p>
+<h3>Display sizes added</h3>
+<p>The repo's <code>typography.json</code> covers <code>font-1…font-7</code> only. The new file adds the two display sizes above them: <code>font-00</code> (52) and <code>font-0</code> (40). These are the hero / big-figure sizes.</p>
+<h3>Weight numerics corrected</h3>
+<p>The repo file carried <em>placeholder</em> weights flagged "confirm against the instance" (thin=100, light=300…). The Figma file <b>is</b> that confirmation — the real Univers Next instance weights:</p>
+<table>
+  <thead><tr><th>Weight</th><th>Repo (placeholder)</th><th>Figma (confirmed)</th></tr></thead>
+  <tbody>
+    <tr><td>ultra-light</td><td class="num keep">— (missing)</td><td class="num">250</td></tr>
+    <tr class="chg"><td>thin</td><td class="num keep">100</td><td class="num">300</td></tr>
+    <tr class="chg"><td>light</td><td class="num keep">300</td><td class="num">350</td></tr>
+    <tr><td>regular</td><td class="num">400</td><td class="num">400</td></tr>
+    <tr><td>medium</td><td class="num">500</td><td class="num">500</td></tr>
+    <tr><td>bold</td><td class="num">700</td><td class="num">700</td></tr>
+  </tbody>
+</table>
+<p>These are the intermediate weights Univers Next actually ships — <code>thin 300 / light 350</code>, not the standard CSS mapping. I'll adopt the confirmed column.</p>
+<div class="flag"><b>Worth knowing:</b> those non-standard numerics (250/300/350) are real named instances in the webfont, so <code>@font-face</code> must declare each named weight — a browser won't synthesise a 350 from a 400. One more reason to get the webfont pack in.</div>
+
+<!-- 02 -->
+<h2 id="normalise"><span class="n">02</span>Proposed 4px-normalised scale</h2>
+<p class="sub">Your "normalise to the 4x rule" call. Line-heights snapped to strict 4px multiples; sizes rounded to even values that keep the hierarchy. Shown at <code>scale-1</code> (the base breakpoint). Only three rows move.</p>
+<table>
+  <thead><tr><th>Token</th><th>Size now</th><th>Size proposed</th><th>LH now</th><th>LH proposed</th></tr></thead>
+  <tbody>
+    <tr><td><code>font-00</code></td><td class="num">52</td><td class="num">52</td><td class="num">60</td><td class="num">60</td></tr>
+    <tr><td><code>font-0</code></td><td class="num">40</td><td class="num">40</td><td class="num">48</td><td class="num">48</td></tr>
+    <tr class="chg"><td><code>font-1</code></td><td class="num">33</td><td class="num">32 <span class="arrow">→</span></td><td class="num">40</td><td class="num">40</td></tr>
+    <tr><td><code>font-2</code></td><td class="num">28</td><td class="num">28</td><td class="num">36</td><td class="num">36</td></tr>
+    <tr class="chg"><td><code>font-3</code></td><td class="num">23</td><td class="num">24 <span class="arrow">→</span></td><td class="num">30</td><td class="num">32 <span class="arrow">→</span></td></tr>
+    <tr class="chg"><td><code>font-4</code></td><td class="num">19</td><td class="num">20 <span class="arrow">→</span></td><td class="num">27</td><td class="num">28 <span class="arrow">→</span></td></tr>
+    <tr><td><code>font-5</code></td><td class="num">16</td><td class="num">16</td><td class="num">24</td><td class="num">24</td></tr>
+    <tr><td><code>font-6</code></td><td class="num">14</td><td class="num">14</td><td class="num">20</td><td class="num">20</td></tr>
+    <tr><td><code>font-7</code></td><td class="num">12</td><td class="num">12</td><td class="num">16</td><td class="num">16</td></tr>
+  </tbody>
+</table>
+<p><small>Note: font-2 = 28 here (the "43" in v1 was its scale-3 value read in the wrong mode — no bug). The same normalisation logic applies across scale-2 / scale-3 / the 200% mode; I'll carry it through once you sign the base.</small></p>
+<div class="decision">
+  <span class="lbl">Decision · N1 — normalised numbers</span>
+  <span class="q">Sign off the three moved rows?</span>
+  <p><code>font-1</code> 33→32 · <code>font-3</code> 23→24 (LH 30→32) · <code>font-4</code> 19→20 (LH 27→28). Everything else already sits on the grid. These change brand values, so they're yours to approve.</p>
+  <p class="yourcall"><b>Your call:</b> approve all three / adjust a specific one / line-heights only, leave sizes as-is.</p>
+</div>
+
+<!-- 03 -->
+<h2 id="sets"><span class="n">03</span>Editorial &amp; Component — draft roles</h2>
+<p class="sub">Same primitives underneath (D2-A); two separate role sets on top (D3). Draft names below carry the <code>font-N</code> number as an alias (D1).</p>
+<div class="layers">
+  <div class="layer">
+    <div class="ly-h">Primitives<small>numeric, shared</small></div>
+    <div class="ly-b">the normalised scale + weights + family. In Figma these become <b>variables</b> — so the two sets stay in parity with what you build there.</div>
+  </div>
+  <div class="layer">
+    <div class="ly-h">Editorial<small>full line-height</small></div>
+    <div class="ly-b"><span class="pill">display-1 · font-00</span><span class="pill">display-2 · font-0</span><span class="pill">heading-1 · font-1</span><span class="pill">heading-2 · font-2</span><span class="pill">heading-3 · font-3</span><span class="pill">heading-4 · font-4</span><span class="pill">body · font-5</span><span class="pill">body-small · font-6</span><span class="pill">caption · font-7</span><br><small>each with <code>default</code> + <code>emphasis</code> weights. In Figma = <b>text styles</b>.</small></div>
+  </div>
+  <div class="layer">
+    <div class="ly-h">Component<small>line-height cropped</small></div>
+    <div class="ly-b"><span class="pill">figure-1 · font-00</span><span class="pill">figure-2 · font-0</span><span class="pill">heading · font-1–3</span><span class="pill">label · font-5</span><span class="pill">button · font-5</span><span class="pill">input · font-5</span><span class="pill">link · font-5/6</span><span class="pill">caption · font-6</span><span class="pill">tooltip · font-6</span><span class="pill">cta · font-5/6</span><span class="pill">legal · font-7</span><br><small>cropped for the 4px grid; spans large sizes for <b>big figures</b> (D6).</small></div>
+  </div>
+</div>
+<div class="note"><b>On Figma parity (your D2 comment):</b> it doesn't change the decision — it <em>confirms</em> A. Figma variables = our primitives, Figma text styles = our two sets. B (two full trees) or C (crop modifier) don't mirror as cleanly. So building it in Figma and here from the same shape is exactly what A gives you.</div>
+<div class="flag"><b>Crop needs spacing rules (your comment 3).</b> Agreed and logged: because the Component styles trim the half-leading, descenders can clash with whatever sits below in a stack. So every Component text style ships a <b>companion spacing rule</b> (a minimum space-below / descender guard). We'll design these against real vertical stacks — flagging now so it's built in, not bolted on.</div>
+<div class="decision">
+  <span class="lbl">Decision · R1 — role names</span>
+  <span class="q">Are these role names right, and is <code>role · font-N</code> the alias format you want?</span>
+  <p>Draft only — mark up any name. Open sub-questions: do the big Component <b>figures</b> need <b>tabular/lining numerals</b> (for aligning stats in tables)? And is <code>link</code> one style or per-size?</p>
+  <p class="yourcall"><b>Your call:</b> tweak names inline / confirm the <code>role · font-N</code> format / flag tabular figures.</p>
+</div>
+
+<!-- 04 -->
+<h2 id="v2"><span class="n">04</span>The "-V2" question</h2>
+<p class="sub">The one piece I can't infer from the file.</p>
+<p>Every style in the source has a <code>-V2</code> variant that bumps each weight up one step — e.g. at <code>font-00</code>: default goes ultra-light→thin, emphasis goes light→regular. So <code>-V2</code> is a uniformly <b>heavier</b> cut of the whole set. What I don't know is <em>why</em> it exists.</p>
+<div class="decision">
+  <span class="lbl">Decision · V1 — what is "-V2" for, and what do we call it?</span>
+  <span class="q">Purpose + name.</span>
+  <p>Likely candidates: a heavier register for <b>low-contrast surfaces / small sizes</b> where ultra-light reads too faint (an accessibility lever); or simply a bolder brand register. Naming options once we know: keep <code>-V2</code>, or something meaningful like <code>-strong</code> / a register name.</p>
+  <p class="yourcall"><b>Your call:</b> tell me what -V2 is for, and I'll propose a name (or you name it).</p>
+</div>
+
+<!-- 05 -->
+<h2 id="open"><span class="n">05</span>Open calls, summarised</h2>
+<p class="sub">Three decisions and one action stand between here and writing the tokens:</p>
+<ul>
+  <li><b>N1</b> — sign off the three normalised rows (§02).</li>
+  <li><b>R1</b> — role names + alias format, tabular figures (§03).</li>
+  <li><b>V1</b> — what <code>-V2</code> is for + its name (§04).</li>
+  <li><b>Action</b> — drop the webfont pack into <code>knowledge/assets/fonts/</code> so specimens render true.</li>
+</ul>
+<p>Rule on those and I'll write the reconciled + normalised <code>typography.json</code> (primitives + Editorial/Component composites, all modes), then a real specimen to check against Figma.</p>
+
+<p class="meta" style="margin-top:32px;border-top:1px solid var(--line);padding-top:16px;">Apollo · type tokens v2 · 2026-07-17 · for Dave. Comment inline or Export bottom-right.</p>
+
+</div>
+</body>
+</html>
