@@ -5,7 +5,7 @@ what's **OPEN**. Read this second, after `GOOD-MORNING.md`, before `knowledge/RE
 Per **ADR-0007**. ⚠️ **INTERIM — hand-maintained** until `_build_live_state.py` generates it from
 front-matter edges + tombstones. Refresh at end of every session alongside the handoff.*
 
-*Last refreshed: 2026-07-16 eve (DataViz method dossier drafted + V7 series-assignment render sheet built — both awaiting Dave's markup; see the DataViz OPEN entry). Prior: 2026-07-16 (masthead model/build/review + review-tool upgrade + dataviz desk research), 2026-07-15 (Apollo mono Tranches 6+7, full tokenisation, DEF-004). Uncommitted: dataviz batch + this file + GOOD-MORNING — Dave to commit+push via GitHub Desktop.*
+*Last refreshed: 2026-07-17 (DataViz round-one kit BUILT gate-first + NINE review rounds enacted, then PARKED "good enough / not signed off" — see the 🟡 PARKED DataViz entry + `_proforma/_DATAVIZ-DECISIONS.md`). Prior: 2026-07-16 eve (DataViz method dossier + V7 render sheet), 2026-07-16 (masthead model/build/review + review-tool upgrade + dataviz desk research), 2026-07-15 (Apollo mono Tranches 6+7, tokenisation, DEF-004). Committed this session: `c0d8db6`·`baf1f7b`·`f10b082`·`f93c2cc`·`de8cbcb`·`e435efe` — Dave to push via GitHub Desktop.*
 
 > ⚠️ **AUDIT STATUS — everything below is RECORDED, not VALIDATED.** Provenance ≠ correctness.
 > These entries capture *that* a decision was made and what it supersedes — **not** that it is
