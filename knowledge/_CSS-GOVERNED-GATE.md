@@ -1,5 +1,7 @@
 # CSS-governed motion gate — DEF-003
 
+## ✓ _proforma/DataViz-interactive.html — PASS
+
 ## ✓ _proforma/Masthead-interactive.html — PASS
 
 ## ✓ _proforma/Tranche-1-interactive.html — PASS

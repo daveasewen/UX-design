@@ -11,7 +11,9 @@ relations:
   governed_by: proforma-rules               # mono base / tokens-only / CSS-motion / real-icons / clean+review pairs all apply
   depends_on: v7-series-assignment          # RESOLVED 2026-07-16 — C default + A high-contrast + D2 deltas confirmed, live in semantic-colour.json
   binds: supporting-palette                 # fills = data/series-* from the V7 winner; RAG tokens candidate for deltas
-  gated_by: validate-dataviz                # NEW gate, must land WITH the first chart (new-surface lesson)
+  gated_by: validate-dataviz                # NEW gate, BUILT + wired into _build_all.py step 22 (lands WITH the first chart)
+  realised_by: dataviz-round-one-kit-built  # 4 interactive files in _proforma/ — see "Round-one kit — BUILT" below
+  decisions_in: dataviz-decisions           # running review-ruling ledger → _DATAVIZ-DECISIONS.md
 dossier: ../../reviews/DATAVIZ-METHOD-2026-07-16.html
 ---
 
@@ -75,3 +77,38 @@ counts, gradients, baselines, slice caps, straight lines); advisory-first where 
 KPI stat card → bar/column (+grouped/stacked) → line (+multi/spark) → donut. "Done" = interactive
 mono HTML in `_proforma/` + clean/review dossier pair + KB model doc + all gates green +
 render-verified both modes (rule 16 + pro-forma contract).
+
+## Round-one kit — BUILT (2026-07-16, gate-first)
+
+All four types on **one** interactive MONO pro-forma file (Tranche-N convention, per Dave 2026-07-16);
+**`_validate_dataviz.py` landed WITH the first chart** and is wired into `_build_all.py` (step 22).
+Full build green 25/25.
+
+- `_proforma/DataViz-interactive.html` — the whole round-one kit (13 charts): **KPI stat card**
+  (metric · +delta · +delta+spark; delta = sign **+** arrow **+** colour, dv-011 / dv-019 override) ·
+  **column · horizontal bar · grouped** (2-series, letters A/B, toggle) · **stacked** (4-series,
+  **chevron on one series** = the R1 texture proof, 2px surface-stroke separation dv-004) · **line ·
+  multi-series** (per-series marker shape dv-line-002 + letter + colour) · **sparkline** (axis-free,
+  wide aspect dv-line-009) · **donut + centre total** (≤6 slices dv-pie-009, sum-to-total dv-pie-010).
+- Review copy (mark-up template): `_review/DataViz-interactive-REVIEW.html` — regenerate after edits
+  with `python3 knowledge/_review/_make_review.py knowledge/_proforma/DataViz-interactive.html`.
+
+**Geometry helper** (method decision 6 — hand-rolled maths, no d3): `_review/_gen_dataviz_charts.py`
+computes nice-ticks / linear scale / stack layout / arc geometry and **bakes static SVG into the DOM**
+so every chart is gate-visible (a canvas/JS-injected chart would be invisible to the gate). Runtime JS
+is behaviour-only (theme/contrast/series toggle, table toggle); motion is CSS (DEF-003).
+
+**Gate** `_validate_dataviz.py`: 9 blocking checks (dv-009 flat-fills/≤1-chevron · dv-017 palette-only
+· dv-016 ≥3:1 **rendered** contrast both modes — the 9/9 declared-pairs blind-spot fix · dv-004
+separation · dv-bar-009 zero-baseline bars-ONLY · dv-bar-007 no-negative-horizontal · dv-pie-009
+≤6-slices · dv-pie-010 sum-to-total · dv-line-011 straight-lines) + 5 advisory (dv-005 table · §04.3
+letters · dv-line-009 spark aspect · dv-014 journey consistency · vibrating-boundaries, metric lifted
+from `_review/_gen_series_renders.py`). `--selftest` bite-tests every check (13 cases, incl. the
+dv-bar-009-never-fires-on-a-line asymmetry) — a deliberately broken chart MUST fail.
+
+**Standing default flagged for Dave:** gridline contrast is **advisory** (decorative, WCAG 1.4.11-exempt;
+3:1 gridlines read heavy) while series-fill + axis/label contrast is **blocking**. Movable before it bites.
+
+**Not done in this pass:** PNG render-verification (sandbox had no browser + the Playwright CDN was
+blocked); contrast verified numerically from resolved hex instead (series C ≥3.17:1 both modes/surfaces,
+HC set 5–12:1). Review surface = the live HTML.

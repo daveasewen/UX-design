@@ -1,5 +1,8 @@
 # Pro-forma universal gate — report
 
+## ✓ _proforma/DataViz-interactive.html — PASS
+- stats: {'hardcode_leaks': 0, 'real_icons': 0, 'provisional': [], 'refs': '0/0', 'asset_paths': '0/0 real'}
+
 ## ✓ _proforma/Masthead-interactive.html — PASS
 - stats: {'hardcode_leaks': 0, 'real_icons': 44, 'provisional': ['i-brand-apollo', 'i-menu-search'], 'refs': '14/14', 'asset_paths': '44/44 real'}
 

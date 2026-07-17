@@ -52,6 +52,7 @@ STEPS = [
     ("pro-forma universal gate", "_validate_proforma.py"),
     ("pro-forma CSS-governed motion gate (DEF-003)", "_validate_css_governed.py"),
     ("pro-forma no-hardcode styling gate (DEF-004)", "_validate_no_hardcode.py"),
+    ("DataViz chart gate (semantic SVG + tokens + table spine)", "_validate_dataviz.py"),
     ("compliance verification edges — applies_to vs verified_by (advisory)", "compliance/_build_verification_edges.py"),
     ("external automatable-check refs — axe-core import (advisory)", "compliance/_import_axe_rules.py"),
     ("integrity lint (gate)", "_build_integrity.py"),
@@ -91,6 +92,9 @@ for i, (label, rel) in enumerate(STEPS, 1):
             rc = rc or r.returncode
         elif "pro-forma" in label:
             print(f"\n❌ pro-forma universal gate failed (exit {r.returncode}) — see knowledge/_PROFORMA-GATE.md")
+            rc = rc or r.returncode
+        elif "DataViz" in label:
+            print(f"\n❌ DataViz chart gate failed (exit {r.returncode}) — see knowledge/_DATAVIZ-GATE.md")
             rc = rc or r.returncode
         elif "surface" in label:
             print(f"\n❌ dark-surface gate failed (exit {r.returncode}) — see knowledge/_DARK-SURFACE-AUDIT.md")

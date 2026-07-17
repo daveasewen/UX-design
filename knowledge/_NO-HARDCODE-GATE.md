@@ -3,6 +3,8 @@
 Styling (spacing / radius / border-stroke) must be a token so MODES (Apollo mono/UI/SC) can override it.
 Geometry/dimensions, @media breakpoints, transparent borders, and token definitions are a separate axis (not flagged).
 
+## ✓ _proforma/DataViz-interactive.html — PASS
+
 ## ✓ _proforma/Masthead-interactive.html — PASS
 
 ## ✓ _proforma/Tranche-1-interactive.html — PASS
