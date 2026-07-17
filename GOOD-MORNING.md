@@ -1,31 +1,28 @@
 # Good morning, Dave ☕
 
-*Briefing — written end of 2026-07-17, session **"Type-token system — build from Figma."** Read this → `_LIVE-STATE.md` (LIVE "TYPE-TOKEN SYSTEM" entry) → `knowledge/_proforma/_TYPE-DECISIONS.md` (every ruling + WHY) → then carry on. Dense on purpose.*
+*Briefing — written end of 2026-07-17, session **"Type tokens — promote to canon + retrofit."** Read this → `_LIVE-STATE.md` (top LIVE "TYPE-TOKEN SYSTEM = PROMOTED" entry) → `knowledge/_proforma/_TYPE-DECISIONS.md` (every ruling + WHY) → then carry on.*
 
 ## The session in one line
-Took the Figma type file and built a **type-token system**: reconciled + 4px-normalised **primitives**, two composite sets **Editorial** (full line-height) + **Component** (cap-trim → 4px grid-slot), a working **`type.css`**, and a **grid gate** — all decisions captured in `_TYPE-DECISIONS.md`. Proposals are built and **awaiting your promotion to canon**.
+Promoted the Apollo SDS type system to canon and drove the whole 4px-grid programme to completion: parked the HSBC-general incumbent as a sibling, ran the retrofit (230 snaps), drafted the vertical-stack rule, **retired the legacy arrow asset**, and **expanded the DEF-005 grid gate to enforce the whole library** — all build-green.
 
-## ⏭ FIRST TASK — carry on in the agreed order (promotion first)
-We agreed to continue in this order; picked up where a stretched context window left off:
-1. **Promote the type proposals to canon** *(your sign-off step — canon promotion = Dave only)*: move `tokens/_proposals/typography-reconciled-2026-07-17.json` + `typography-composites-2026-07-17.json` into `tokens/typography.json`, settle `knowledge/canon/type.css`, mind the blast-radius. **Task #8**: wire `_validate_grid.py` into `_build_all.py` as DEF-005.
-2. **Retrofit sweep** (task #9): ~**123** off-grid values in `canon.css` + **69** across proforma tranches. Fix **source snippets + spacing tokens + regenerate** (canon.css is generated — don't hand-edit). Also investigate the **arrow-padding 5/6/7px asset** (likely an off-grid asset, not a real optical).
-3. **Vertical-stack spacing rule** (task #7): trimming hands vertical rhythm to spacing tokens — draft rule in `_TYPE-DECISIONS.md` (4px gaps slot-edge to slot-edge; min gap ≥ upper block's descender depth; Editorial keeps paragraph-spacing; baseline-grid now clean).
-
-## What landed (all built this session)
-- **Primitives** — `tokens/_proposals/typography-reconciled-2026-07-17.json`. Reconciled with repo export; weights **250/300/350/400/500/700** confirmed from the Latin desktop OTF; display sizes `font-00`/`font-0` added (scale-2/3 **inferred**, flagged); 4px-normalised (only font-1/3/4 moved at scale-1).
-- **Composites** — `tokens/_proposals/typography-composites-2026-07-17.json` + `knowledge/canon/type.css`. Editorial roles (display/heading/body/caption) + Component roles (label/button/input/link/figure/caption…). Component = `text-box-trim` (native) + Capsize fallback + 4px grid-slot.
-- **Grid gate** — `knowledge/_validate_grid.py`. 4n + 2px half-step; font-size/letter-spacing/border/radius exempt. Passes selftest + type.css.
-- **Specimens (real Univers)** — `reviews/TYPE-SPECIMEN-2026-07-17.html` (scale, weights, the measured crop→slot proof) and `reviews/TYPE-COMPOSITES-2026-07-17.html` (both sets in action, dark-mode step-up). `.REVIEW.html` twins carry your comments.
-- **Rulings ledger** — `knowledge/_proforma/_TYPE-DECISIONS.md` — READ FIRST before touching type.
+## What landed (all this session)
+- **Type promoted to canon** — reconciled primitives → `tokens/typography.json`, composites → `tokens/typography-composites.json`, `knowledge/canon/type.css` settled.
+- **HSBC-general parked as siblings** — `tokens/_typography-hsbc-general.json` + `_spacing-hsbc-general.json` (incumbent, still live for HSBC-general; underscore-prefixed → out of Apollo gen + blast-radius). Apollo = the proposed HSBC standard, governed by modes. Ruling: "preserve old as legacy."
+- **Retrofit done** — 230 off-grid snaps (preserve-density ties, hairlines exempt) across canon.css + 38 snippets + 9 tranches; spacing `padding/responsive` micro-scale snapped. Review sheet: `reviews/GRID-RETROFIT-2026-07-17.html`.
+- **Vertical-stack rule drafted** — the Component slot already contains the descender, so stacking is pure 4px rhythm (no new tokens/gate). In `_TYPE-DECISIONS.md`.
+- **Arrow asset retired** — `padding/arrow` + `icon/arrow/font-N` were unused legacy fixed-px chevron; live components use an em-scaled, flex-centred chevron. Parked + 3 metas rebound. Zero visual change.
+- **DEF-005 expanded** — grid gate rewritten block-aware + HTML-safe, exempts hairline(1/3px)/negative/square; now gates **50 files** (type.css + canon.css + snippets + tranches), all pass.
 
 ## On your desk
-- **Promotion is yours** — I built the proposals but didn't touch canon `typography.json` (governance: promotion = Dave).
-- **Commit**: hand-ready summary below — commit + push via **GitHub Desktop** (Desktop closed while any terminal commit runs). New/changed files: `_TYPE-DECISIONS.md`, `typography-reconciled/composites` proposals, `type.css`, `_validate_grid.py`, three `reviews/TYPE-*` pairs, `_LIVE-STATE.md`, this file, `knowledge/assets/fonts/_desktop/` (Latin OTF/TTF — **note licensing: desktop licence, product needs the webfont renewed on create.hsbc**).
-- **Webfont licence** expired on create.hsbc — chase renewal (product needs it; desktop files are internal-only).
+- **Commit 1 of 2 already pushed by you** — `4a7a103 feat(type,grid): promote Apollo SDS type to canon + 4px-grid retrofit`.
+- **Commit 2 is ready to run** (arrow retirement + gate expansion + this handoff refresh) — paste-ready message is in the last chat message; **commit via GitHub Desktop** (Desktop was the source of the lock contention — keep it closed while any terminal commit runs). New file: `tokens/_icon-scale-hsbc-general.json`.
+- **Webfont licence** — the one genuinely open thread: Latin desktop OTF/TTF are internal-only; the product still needs the webfont licence renewed on create.hsbc. Chase it.
 
-## Queue after type (from tasks + `_LIVE-STATE`)
-- Review-overlay upgrades — **image paste + audio dictation + export-as-bundle** (task #4; it's a **product** feature now).
-- DataViz still **🟡 PARKED** (needs your in-browser pass + Layer-2 controls).
-- Bigger horizon captured this session (memory): **"lovable on rails"** 4-phase spine (Discover/Create/Craft/Dispatch), **chat-to-KB bot**, **KB-distillation-at-deploy**, modes = **tiered adherence** (a11y = the one non-removable floor, admin-tunable).
+## Queue next (numbered, actionable)
+1. **Tranche 8** — BottomTabBar · InPageNav · FooterNav · RelatedLinks · Stepper (the other proforma fork; atomise per the ATOMISE ruling).
+2. **Wire the em-chevron guidance** into the component-composite usage docs (the canon arrow pattern is now the em/flex chevron; make it discoverable so nobody re-adds fixed-px arrows).
+3. **Review-overlay upgrades** — image paste + audio dictation + export-as-bundle (it's a product feature now).
+4. **DataViz** — still 🟡 PARKED; needs your in-browser pass + Layer-2 controls.
+5. Optional: extend DEF-005's square-exemption into a shared helper if other gates need "intrinsic size ≠ layout" logic.
 
-> Opener: **"Title this chat: Type tokens — promote to canon + retrofit."** Then GOOD-MORNING → `_LIVE-STATE.md` → `_TYPE-DECISIONS.md` → promote, then the retrofit sweep.
+> Opener: **"Title this chat: Tranche 8 — proforma nav-tail."** Then GOOD-MORNING → `_LIVE-STATE.md` → `_TYPE-DECISIONS.md`.

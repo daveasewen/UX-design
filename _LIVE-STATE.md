@@ -5,7 +5,7 @@ what's **OPEN**. Read this second, after `GOOD-MORNING.md`, before `knowledge/RE
 Per **ADR-0007**. ⚠️ **INTERIM — hand-maintained** until `_build_live_state.py` generates it from
 front-matter edges + tombstones. Refresh at end of every session alongside the handoff.*
 
-*Last refreshed: 2026-07-17 eve (TYPE-TOKEN SYSTEM built from the Figma file — reconciled + 4px-normalised primitives, Editorial + Component composite sets, measured crop→grid-slot mechanism, `type.css`, and the `_validate_grid.py` gate; all rulings in `knowledge/_proforma/_TYPE-DECISIONS.md`; proposals await promotion to canon. Also captured a big product-vision arc: "lovable on rails" 4-phase spine, chat-to-KB bot, KB-distillation-at-deploy, review-layer-as-product. Prior same day: DataViz round-one kit BUILT gate-first + NINE review rounds, then PARKED — see the 🟡 PARKED DataViz entry + `_proforma/_DATAVIZ-DECISIONS.md`). Prior: 2026-07-16 eve (DataViz method dossier + V7 render sheet), 2026-07-16 (masthead model/build/review + review-tool upgrade + dataviz desk research), 2026-07-15 (Apollo mono Tranches 6+7, tokenisation, DEF-004). Committed this session: `c0d8db6`·`baf1f7b`·`f10b082`·`f93c2cc`·`de8cbcb`·`e435efe` — Dave to push via GitHub Desktop.*
+*Last refreshed: 2026-07-17 late (TYPE-TOKEN SYSTEM **promoted to canon** + full grid arc: HSBC-general parked as sibling, retrofit 230 snaps, vertical-stack rule, arrow asset retired, DEF-005 grid gate expanded library-wide to 50 files — all build-green; see the top LIVE entry + `_TYPE-DECISIONS.md`. Prior same session: TYPE-TOKEN SYSTEM built from the Figma file — reconciled + 4px-normalised primitives, Editorial + Component composite sets, measured crop→grid-slot mechanism, `type.css`, and the `_validate_grid.py` gate; all rulings in `knowledge/_proforma/_TYPE-DECISIONS.md`; proposals await promotion to canon. Also captured a big product-vision arc: "lovable on rails" 4-phase spine, chat-to-KB bot, KB-distillation-at-deploy, review-layer-as-product. Prior same day: DataViz round-one kit BUILT gate-first + NINE review rounds, then PARKED — see the 🟡 PARKED DataViz entry + `_proforma/_DATAVIZ-DECISIONS.md`). Prior: 2026-07-16 eve (DataViz method dossier + V7 render sheet), 2026-07-16 (masthead model/build/review + review-tool upgrade + dataviz desk research), 2026-07-15 (Apollo mono Tranches 6+7, tokenisation, DEF-004). Committed this session: `c0d8db6`·`baf1f7b`·`f10b082`·`f93c2cc`·`de8cbcb`·`e435efe` — Dave to push via GitHub Desktop.*
 
 > ⚠️ **AUDIT STATUS — everything below is RECORDED, not VALIDATED.** Provenance ≠ correctness.
 > These entries capture *that* a decision was made and what it supersedes — **not** that it is
@@ -68,6 +68,21 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
   2 labelling-style sets (editorial + UI); same Figma file carries new colour tokens for all 3 modes; restore placeholder
   leading-trim (fixes off-grid 51px field). NOTED: legacy-libraries build-out. NEXT = Tranche 8 (BottomTabBar · InPageNav ·
   FooterNav · RelatedLinks · Stepper) OR type-tokens on Figma arrival. Full: [[proforma-programme]], [[nav-pattern-catalog]], [[apollo-mono]].
+- **TYPE-TOKEN SYSTEM = PROMOTED TO CANON + grid enforced library-wide** (2026-07-17, Dave "crack on"). Whole
+  arc landed this session: (1) **promoted** reconciled primitives → `tokens/typography.json` + composites →
+  `tokens/typography-composites.json`, `type.css` settled; (2) **HSBC-general incumbent** type+spacing parked as
+  sibling sets (`_typography-hsbc-general.json`, `_spacing-hsbc-general.json`) — Apollo = the proposed HSBC
+  standard, governed by modes ("preserve old as legacy"); (3) **DEF-005** grid gate wired into `_build_all.py`;
+  (4) **retrofit** — 230 off-grid snaps (preserve-density ties, hairlines exempt) across canon.css + 38 snippets
+  + 9 tranches; spacing padding/responsive snapped; (5) **vertical-stack rule** drafted (slots already contain
+  the descender → pure 4px rhythm); (6) **arrow asset RETIRED** — `padding/arrow` + `icon/arrow/font-N` were
+  unused legacy fixed-px chevron; live components use em-scaled flex-centred chevron; parked + 3 metas rebound;
+  (7) **DEF-005 EXPANDED** — gate now block-aware + HTML-safe, exempts hairline(1/3)/negative/square, gates **50
+  files** (type.css + canon.css + snippets + tranches), all PASS. **Build green (26 steps).** Renders verified
+  in-sandbox. Review sheet `reviews/GRID-RETROFIT-2026-07-17.html`. ALL rulings + WHY in
+  `knowledge/_proforma/_TYPE-DECISIONS.md`. **OPEN:** webfont — Latin desktop OTF/TTF in
+  `knowledge/assets/fonts/_desktop/`, product still needs the webfont licence renewed on create.hsbc.
+  Historical build detail below:
 - **TYPE-TOKEN SYSTEM = built, proposals await promotion** (2026-07-17). From Figma *Digital Supercharge 0.5*
   (`scale-1`, node 2320-70342) reconciled with repo `typography.json`. **Primitives** (reconciled + 4px-normalised,
   weights confirmed 250/300/350/400/500/700 from the Latin desktop instances, display sizes font-00/font-0 added —

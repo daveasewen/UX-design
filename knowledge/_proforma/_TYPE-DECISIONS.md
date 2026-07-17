@@ -175,6 +175,23 @@ proves it useful; not needed for correctness.
   the between-steps = the real retrofit debt (snap decisions). canon.css is GENERATED → fix source snippets +
   spacing tokens + regenerate. Retrofit = task #9.
 
+## Arrow asset RESOLVED — retire the legacy fixed-px chevron (2026-07-17, Dave approved "retire + park as legacy")
+Investigation (tasks #6/#7): the off-grid `padding/arrow` (5/6/7px) + `icon/arrow/font-N` (fixed-px chevrons,
+e.g. font-1 8.5×17) are the **legacy Figma fixed-pixel chevron** scheme — a fixed-size glyph placed by absolute
+offsets, inherently off-grid. **They are consumed by NOTHING** (0 `var(--padding-arrow-*)` / `var(--icon-arrow-*)`
+in any snippet/tranche). Every live component already draws the chevron the right way: **em-scaled +
+flex-centred** — `.tip svg{width:.85em;height:.85em}` + `align-items:center` + `gap:4px` — which tracks the type
+size and needs no fixed tokens. So "fix the asset" = reconcile the token store to what already shipped.
+- **RETIRED + PARKED:** `padding/arrow` (from spacing.json → already in `_spacing-hsbc-general.json`) and
+  `icon/arrow/font-N` dims (from icon-scale.json → new sibling `tokens/_icon-scale-hsbc-general.json`). Both
+  deprecated/tombstoned, underscore-prefixed (out of gen + blast-radius). **Zero visual change** (unused).
+- **Canon arrow pattern = em-scaled flex-centred chevron** (`.85em`, `align-items:center`, `gap:4px`). Rebound
+  the 3 stale metas (links, hero, cards) from the old fixed-px sizing prose to this. Reconciled the 2 live
+  `.arrow{gap:6px}` (hero) → `gap:4px` to match canon.
+- **Unblocks:** arrow is no longer a held grid exception → the only residual off-grid in canon/snippets/proforma
+  is now hairlines (1/3px), negative overlap offsets, and icon/avatar squares — all structurally exempt. Next:
+  teach `_validate_grid.py` those exemptions, then expand DEF-005 to gate canon.css + snippets + proforma.
+
 ## Retrofit DONE (2026-07-17, task #9) — Dave approved the 3-rule snap policy
 Review sheet `reviews/GRID-RETROFIT-2026-07-17.html` (+ REVIEW twin) rendered + presented; Dave: *"your
 proposal looks pretty good… as long as we preserve the old as legacy."* Applied via `apply_grid_snap.py`.
@@ -191,11 +208,12 @@ proposal looks pretty good… as long as we preserve the old as legacy."* Applie
 - **Residuals are all INTENTIONAL exemptions** (verified): hairlines 1/3px (rule 2) · negative overlap offsets
   (−6px) · arrow `gap:6px` in `.arrow` (rule 3 held) · **icon/avatar/glyph SQUARES** (`width:Npx;height:Npx`
   with N off-grid, e.g. 22/18/14/34/30/26).
-- **NEW gate finding — intrinsic squares.** The grid gate flags a square element's `height` (22/18/14…px) as
-  off-grid, but that's an **intrinsic icon/avatar size governed by icon-scale, not layout rhythm** — like
-  font-size, it should be EXEMPT. `apply_grid_snap.py` already skips `height` when it equals a `width` in the
-  same rule (avoids distorting icons). GATE TODO: teach `_validate_grid.py` the same square-exemption + the
-  rule-2 hairline exemption. Until then DEF-005 stays **type.css-only**.
-- **DEF-005 expansion (deferred):** add canon.css + snippets + proforma to `DEFAULT_TARGETS` only AFTER the gate
-  learns (a) hairline 1/3px exempt, (b) square-height exempt, and (c) the **arrow asset is fixed** (its held
-  `gap/padding` off-grids clear). Bundle these into the arrow-asset session.
+- **Intrinsic squares — gate now handles it.** A square element's `height` (22/18/14…px) is an intrinsic
+  icon/avatar size (like font-size), not layout rhythm. `apply_grid_snap.py` skips it; **`_validate_grid.py` now
+  exempts it too** (height == a width in the same rule).
+- **DEF-005 EXPANDED — DONE (2026-07-17).** Gate rewritten block-aware + HTML-safe (style-only, never `<script>`)
+  with three structural exemptions: **hairline 1/3px** (rule 2), **negative** overlap/pull offsets, **square
+  height** (== width). Residuals across the library categorised exactly: 24 hairline · 4 negative · 83 square ·
+  **0 other**. `DEFAULT_TARGETS` now = **type.css + canon.css + 38 snippets + 9 tranches (50 files)** — all PASS;
+  full build green. The 4px grid is now enforced library-wide, not just on type.css. (Enabled by the arrow
+  retirement clearing the last held off-grids.)
