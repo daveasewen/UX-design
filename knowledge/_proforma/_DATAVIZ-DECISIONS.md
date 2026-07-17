@@ -142,6 +142,13 @@ Source of these rulings: the exported review comment-pins on the REVIEW copy (ba
 - **#3 Stacked easing = donut's** — ease-in on the first (bottom) segment, ease-out on the last (top),
   middle linear (per-segment `animation-timing-function`).
 
+## Batch 8 — review 2026-07-16 (1 pin)
+
+- **#1 Line nodes follow the line's easing.** The symbols were on a linear cadence while the line eased,
+  so they trickled in and read as slow. Node delays now follow the line's easing curve
+  (`line_node_delays()` inverts the cubic-bezier) — each node lands as the drawing head passes it, fast
+  through the middle, matching the line.
+
 ## Open / pending
 
 - **Grouped column layout redesign** — awaiting Dave's reference images (Batch 1 #3).

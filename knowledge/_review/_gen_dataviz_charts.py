@@ -43,6 +43,25 @@ def fmt(v):
     v = round(v, 2)
     return str(int(v)) if v == int(v) else ("%.1f" % v)
 
+def line_node_delays(n, dur, x1=0.33, x2=0.30):
+    """Delay (ms) for each line node so it appears when the LINE'S drawing head reaches it — i.e. the
+    node cadence follows the line's easing (cubic-bezier x1,x2 with y1=0,y2=1), not a linear gap.
+    The line's progress is Y(u)=3u^2-2u^3; node i wants Y=i/(n-1); its time is X(u)*dur."""
+    if n <= 1:
+        return [0.0]
+    out = []
+    for i in range(n):
+        f = i / (n - 1)
+        lo, hi = 0.0, 1.0
+        for _ in range(40):                      # bisect u where Y(u)=f (Y monotonic)
+            u = (lo + hi) / 2
+            if 3 * u * u - 2 * u ** 3 < f: lo = u
+            else: hi = u
+        u = (lo + hi) / 2
+        x = 3 * (1 - u) ** 2 * u * x1 + 3 * (1 - u) * u * u * x2 + u ** 3
+        out.append(x * dur)
+    return out
+
 # ---------------- shared head / chrome ----------------
 TOKENS = """  :root{
     --card-grow:1.006; --bw-sm:1px; --bw-md:2px; --bw-lg:4px; --radius:0; --radius-round:50%; --radius-pill:999px;
@@ -704,10 +723,9 @@ def build_line(cid, title, caption, xs, series, dtype="line"):
         pstr = " ".join(f"{x:.1f},{y:.1f}" for x, y in pts)
         fxs = " ".join(f"{fx(x):.4f}" for x, _ in pts)
         ys = " ".join(f"{y:.1f}" for _, y in pts)
-        # ALL lines build together; each symbol appears AS the line reaches it. batch7 #2: the symbol sequence
-        # runs for the SAME duration as the line (2400ms draw), the last symbol COMPLETING with the line
-        # (minus its own ~160ms fade), so symbols keep pace and finish together — faster + in sync.
-        per_pt = (2400 - 160) / max(1, len(vs) - 1)
+        # batch8 #1: node cadence FOLLOWS the line's easing (not linear) — each node lands as the drawing
+        # head passes it, so they keep pace with the line (fast through the middle, no slow linear trickle).
+        node_delay = line_node_delays(len(vs), 2400)
         parts.append(f'<polyline class="dv-series" data-series-group="{j+1}" data-fxs="{fxs}" data-ys="{ys}" '
                      f'fill="none" '
                      f'stroke="var(--data-series-{j+1})" stroke-width="2.5" stroke-linejoin="round" '
@@ -715,7 +733,7 @@ def build_line(cid, title, caption, xs, series, dtype="line"):
         for i, (x, y) in enumerate(pts):
             parts.append(f'<g class="dv-marker" data-series-group="{j+1}" data-fx="{fx(x):.4f}" data-x0="{x:.1f}" '
                          f'data-tip="{LETTERS[j]} · {name} · {xs[i]}: {fmt(vs[i])}" '
-                         f'style="animation-delay:{i*per_pt:.0f}ms">'
+                         f'style="animation-delay:{node_delay[i]:.0f}ms">'
                          f'{marker(MARKERS[j], x, y, f"var(--data-series-{j+1})")}</g>')
         lx, ly = pts[-1]
         keys.append(f'<text class="dv-key-el" data-series-group="{j+1}" data-fx="{fx(lx):.4f}" data-dx="7" '
