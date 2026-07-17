@@ -84,8 +84,20 @@ def selftest():
     print("selftest OK — exempts font-size/letter-spacing/border-radius; catches off-grid height/padding.")
     return 0
 
+import os
+# Files that MUST be on-grid today (scanned when the gate runs with no args, e.g.
+# as DEF-005 in _build_all.py). Grows as the retrofit (task #9) snaps canon.css +
+# proforma tranches onto the grid; add them here once clean so regressions gate.
+HERE = os.path.dirname(os.path.abspath(__file__))
+DEFAULT_TARGETS = [os.path.join(HERE, "canon", "type.css")]
+
 if __name__ == "__main__":
     args = sys.argv[1:]
-    if not args or args[0] == "--selftest":
+    if args and args[0] == "--selftest":
         sys.exit(selftest())
-    sys.exit(run(args))
+    if args:
+        sys.exit(run(args))
+    # no args → DEF-005 build mode: selftest, then gate the canonical on-grid set
+    rc = selftest()
+    rc = run([p for p in DEFAULT_TARGETS if os.path.exists(p)]) or rc
+    sys.exit(rc)

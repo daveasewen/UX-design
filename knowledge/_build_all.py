@@ -52,6 +52,7 @@ STEPS = [
     ("pro-forma universal gate", "_validate_proforma.py"),
     ("pro-forma CSS-governed motion gate (DEF-003)", "_validate_css_governed.py"),
     ("pro-forma no-hardcode styling gate (DEF-004)", "_validate_no_hardcode.py"),
+    ("4px-grid gate (DEF-005)", "_validate_grid.py"),
     ("DataViz chart gate (semantic SVG + tokens + table spine)", "_validate_dataviz.py"),
     ("compliance verification edges — applies_to vs verified_by (advisory)", "compliance/_build_verification_edges.py"),
     ("external automatable-check refs — axe-core import (advisory)", "compliance/_import_axe_rules.py"),
@@ -89,6 +90,9 @@ for i, (label, rel) in enumerate(STEPS, 1):
             rc = rc or r.returncode
         elif "CSS-governed" in label:
             print(f"\n❌ pro-forma CSS-governed motion gate failed (exit {r.returncode}) — see knowledge/_CSS-GOVERNED-GATE.md")
+            rc = rc or r.returncode
+        elif "4px-grid" in label:
+            print(f"\n❌ 4px-grid gate (DEF-005) failed (exit {r.returncode}) — off-grid layout value(s); see _validate_grid.py output")
             rc = rc or r.returncode
         elif "pro-forma" in label:
             print(f"\n❌ pro-forma universal gate failed (exit {r.returncode}) — see knowledge/_PROFORMA-GATE.md")

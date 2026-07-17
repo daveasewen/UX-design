@@ -100,15 +100,25 @@ Shown in specimen §04. This is the rule the Component composites encode. NOT an
    scale-1). PROPOSAL — promote to `tokens/typography.json` on Dave's sign-off (canon promotion = Dave).
    NEXT: build the editorial + component COMPOSITES (roles → primitives; component trim + grid-slot mixin).
 
-## Vertical-stack spacing (Dave flagged 2026-07-17) — NEXT (task #7)
-Trimming removes the built-in leading, so **vertical rhythm is controlled entirely by spacing tokens** — the
-crop hands the job to spacing (same theme as the descender-guard). Draft rule to design:
-1. Gaps between Component blocks = **4px tokens, slot-edge to slot-edge** (predictable now boxes are trimmed).
-2. **Min gap ≥ upper block's descender depth (0.232×size)** so descenders clear the next line's caps — reuse
-   the per-size guard number.
-3. **Editorial** (untrimmed) stacks keep **paragraph-spacing** — full line-height already buffers.
-4. Opportunity: true **baseline-grid** alignment is now clean because boxes are trimmed to known metrics.
-Emit as spacing tokens + guidance; wire into component composites.
+## Vertical-stack spacing rule — DRAFTED (2026-07-17, task #7)
+**Key insight (supersedes the earlier "min gap ≥ descender" sketch):** the descender guard is **already baked
+into the Component slot**. Slot height = `ceil(cap + 2·descender)` → the cap box is optically centred with
+descender + buffer below. Verified every role: bottom padding > descender depth (label 16px → 4.2px pad vs 3.7
+desc; heading 32px → 8.45 vs 7.4; figure-1 52px → 13.2 vs 12.1). So descenders live **inside** the slot and
+never reach the block below. ⇒ **Vertical stacking of Component blocks is PURE 4px rhythm — no per-gap descender
+math.** The RULE:
+1. **Component stacks** = gaps are **4px spacing tokens, slot-edge to slot-edge**. Use `gap/*` from spacing.json
+   (semantic: content / subsection / section); the crop already handed rhythm to spacing, and the slot handled
+   the descender. No bespoke per-size guard tokens needed.
+2. **Editorial stacks** (untrimmed, `trim:none`) keep **`paragraph-spacing`** between paragraphs (full
+   line-height already buffers); between Editorial headings/blocks use `gap/*`. Both line-heights are 4px-
+   normalised, so Editorial boxes also slot cleanly.
+3. **Mixed Editorial + Component stacks** align on **slot / line-box edges** (both are 4px multiples) → the whole
+   column lands on a **4px baseline grid by construction**. This is the clean baseline-grid opportunity, now free.
+4. **Enforcement:** covered by the existing 4px-grid gate (gaps are grid-governed props). No new tokens; no new
+   gate. Guidance only — wire the "use gap/* tokens, never raw px" note into the component-composite usage docs.
+FUTURE (optional): a `--stack-gap-*` alias set mapping the semantic gap tokens to stack contexts, if authoring
+proves it useful; not needed for correctness.
 
 ## Rulings round 3 (2026-07-17, composites review)
 - **Body weight floor (BRAND rule, Dave):** brand insists **no light(350)/ultra(250) on body sizes**
@@ -122,6 +132,37 @@ Emit as spacing tokens + guidance; wire into component composites.
   **DEF-005 grid** + extend to scan component snippets/generated output. Pairs with grid-by-construction
   (only expose 4px spacing tokens) so it's grid-safe by default AND gated.
 
+## Promotion to canon (2026-07-17, Dave: "lets crack on in your order")
+- **PROMOTED.** `_proposals/typography-reconciled-2026-07-17.json` → **`tokens/typography.json`** (Apollo SDS
+  primitives) and `_proposals/typography-composites-2026-07-17.json` → **`tokens/typography-composites.json`**;
+  `knowledge/canon/type.css` settled as the rendered composite layer. Proposals parked at
+  `tokens/_proposals/` (superseded; kept for provenance). Promotion done in the working tree — **Dave holds
+  the final gate at push** (GitHub Desktop). Build **green, 26 steps**.
+- **DEF-005 wired** (task #8 DONE). `_validate_grid.py` added to `_build_all.py` (step 22). No-arg build mode
+  runs selftest + scans `canon/type.css` (the on-grid set today); `DEFAULT_TARGETS` grows as the retrofit
+  (task #9) snaps canon.css + tranches clean. Passing.
+- **Two HSBC type sets: incumbent + proposed standard** (RULED Dave 2026-07-17: *"the new ones are the Apollo
+  SDS fonts… the old ones are used by HSBC in general"*, then *"Apollo will hopefully be adopted for HSBC so
+  it's still very relevant to the company"*). Framing: **both sets are HSBC.** `tokens/_typography-hsbc-general.json`
+  = the **incumbent** HSBC house type (pre-normalisation: font-1 33 / font-3 23 / font-4 19; weights thin=100 /
+  light=300), **still live across HSBC generally**. `tokens/typography.json` = **Apollo SDS**, the 4px-normalised
+  evolution **intended for HSBC adoption** (the moonshot) — the proposed future standard, not a peripheral fork.
+  The two are governed as SIBLINGS by MODES (incumbent = candidate first-class `hsbc-general` token mode) so a
+  migration can run mode-by-mode. Incumbent is underscore-prefixed ⇒ excluded from Apollo's `gen_canon_tokens` +
+  blast-radius (out of Apollo canon.css) while it remains a distinct mode. WHY: non-destructive — Apollo advances
+  its own normalised set without breaking incumbent HSBC-general consumers, and keeps a clean adoption path;
+  fits "governed by modes, flexible, future-proof."
+- **Faithful-promotion consequences (flagged, nothing gated breaks):**
+  1. **Weight remap** in Apollo canon: thin 100→300, light 300→350, **+ ultra-light 250**; regular/medium/bold
+     unchanged. Old numerics live on in the HSBC-general sibling.
+  2. **6 flat vars dropped** from canon.css: `--typography-font-size/line-height-font-5/6/7` no longer emit
+     (reconciled restructured font-5/6/7 to per-mode, no `$value`). Nothing gated consumed them; the composite
+     classes in `type.css` carry the px. font-1..4 responsive sizes never surfaced as flat vars either (by design).
+  3. **Generator quirk (pre-existing, LOGGED):** the weight name **"light" collides with the light/dark
+     mode-leaf detection** in `gen_canon_tokens.py`, so it emits as bare `--typography-font-weight: 350` rather
+     than `--typography-font-weight-light`. Harmless (unconsumed) but a trap — fix candidate in the retrofit:
+     guard mode-leaf stripping to colour/semantic files, or rename the weight key path.
+
 ## Grid subdivisions + arrow asset (Dave 2026-07-17)
 - **Sanctioned grid = 4n + 2px half-step** for spacing/layout. Applied to `_validate_grid.py` (2px allowed).
   **1px quarter-step NOT allowed as spacing** — 1px is a hairline/border value (border-width already exempt);
@@ -133,3 +174,28 @@ Emit as spacing tokens + guidance; wire into component composites.
 - **canon.css off-grid = 123** (after 2px allowed). Dominant: 6px(21) 14px(22) 10px(20) 18px(17) 22px(9) —
   the between-steps = the real retrofit debt (snap decisions). canon.css is GENERATED → fix source snippets +
   spacing tokens + regenerate. Retrofit = task #9.
+
+## Retrofit DONE (2026-07-17, task #9) — Dave approved the 3-rule snap policy
+Review sheet `reviews/GRID-RETROFIT-2026-07-17.html` (+ REVIEW twin) rendered + presented; Dave: *"your
+proposal looks pretty good… as long as we preserve the old as legacy."* Applied via `apply_grid_snap.py`.
+- **Rules enacted:** (1) tie direction = **preserve density** (paddings DOWN, gaps/margins/heights UP);
+  (2) hairlines **1/3px EXEMPT** (dividers/focus/optical); (3) `padding/arrow` 5/6/7 **HELD** for the
+  asset investigation (not snapped, not allowlisted).
+- **Preserve-old-as-legacy (Dave):** current spacing parked as sibling **`tokens/_spacing-hsbc-general.json`**
+  (HSBC-general incumbent), matching the type sibling pattern. Apollo `spacing.json` snapped: padding/responsive
+  **xxxsmall 6/8/10→4/8/8, xxsmall 9/13/17→8/12/16, xsmall 11/15/19→12/16/20** (xsmall now == small at these
+  breakpoints — intentional collapse, noted in token). Arrow tokens untouched.
+- **230 snaps applied**: canon.css 87 · snippets ~100 · proforma ~43. **Build green (26 steps).** Rendered
+  Tranche-2 + Account-card in-sandbox (full chrome, recipe [[sandbox-html-rendering]]) — layouts clean, no
+  distortion.
+- **Residuals are all INTENTIONAL exemptions** (verified): hairlines 1/3px (rule 2) · negative overlap offsets
+  (−6px) · arrow `gap:6px` in `.arrow` (rule 3 held) · **icon/avatar/glyph SQUARES** (`width:Npx;height:Npx`
+  with N off-grid, e.g. 22/18/14/34/30/26).
+- **NEW gate finding — intrinsic squares.** The grid gate flags a square element's `height` (22/18/14…px) as
+  off-grid, but that's an **intrinsic icon/avatar size governed by icon-scale, not layout rhythm** — like
+  font-size, it should be EXEMPT. `apply_grid_snap.py` already skips `height` when it equals a `width` in the
+  same rule (avoids distorting icons). GATE TODO: teach `_validate_grid.py` the same square-exemption + the
+  rule-2 hairline exemption. Until then DEF-005 stays **type.css-only**.
+- **DEF-005 expansion (deferred):** add canon.css + snippets + proforma to `DEFAULT_TARGETS` only AFTER the gate
+  learns (a) hairline 1/3px exempt, (b) square-height exempt, and (c) the **arrow asset is fixed** (its held
+  `gap/padding` off-grids clear). Bundle these into the arrow-asset session.
