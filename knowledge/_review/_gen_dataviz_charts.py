@@ -55,7 +55,7 @@ TOKENS = """  :root{
     --fw-regular:400; --fw-medium:500; --fw-bold:700;
     --fs-5:16px; --fs-6:14px; --fs-7:12px; --fs-display:40px;
     --ease:160ms cubic-bezier(.4,0,.2,1); --grow:760ms cubic-bezier(.22,.61,.36,1);
-    --draw:1000ms cubic-bezier(.22,.61,.36,1); --draw-slow:1600ms cubic-bezier(.22,.61,.36,1);
+    --draw:1000ms cubic-bezier(.22,.61,.36,1); --draw-slow:2400ms cubic-bezier(.33,0,.3,1);
   }
   [data-theme="light"]{
     --page:#FFFFFF; --raised:#F3F3F3; --ink:#333333; --ink2:#545454; --disi:#B7B7B7; --line:#D7D8D6; --line2:#EDEDED;
@@ -170,8 +170,11 @@ ANIM_CSS = """
     /* donut segments RADIALLY SWEEP, sequentially — driven by JS (Dave review #7), so no CSS transform here */
     /* grouped letters RISE with the bar (per-element --rise + delay) — Dave review #3 */
     .dv-animate text.dv-key-el[data-rise]{animation:dvRise var(--grow) both;}
-    .dv-animate text.dv-key-el:not([data-rise]),.dv-animate text.dv-val{opacity:0; animation:dvFade var(--ease) both; animation-delay:calc(var(--grow) * 0.7);}
+    .dv-animate text.dv-key-el:not([data-rise]):not(.dv-anno),.dv-animate text.dv-val{opacity:0; animation:dvFade var(--ease) both; animation-delay:calc(var(--grow) * 0.7);}
   }
+  /* donut labels/legs fade in AS their segment grows (JS toggles .show) — sequenced with the sweep (#2) */
+  .dv-anno{opacity:0; transition:opacity 240ms ease;}
+  .dv-anno.show{opacity:1;}
   @keyframes dvGrowY{from{transform:scaleY(0);} to{transform:scaleY(1);}}
   @keyframes dvGrowX{from{transform:scaleX(0);} to{transform:scaleX(1);}}
   @keyframes dvRise{from{transform:translateY(var(--rise,12px)); opacity:0;} to{transform:translateY(0); opacity:1;}}
@@ -250,7 +253,7 @@ def head(title, extra_css=""):
 </head>
 <body data-theme="light">
 <script type="application/json" id="icon-manifest">{{"icons":{{}}}}</script>
-<noscript><style>.dv-donut-seg{{visibility:visible !important}}</style></noscript>
+<noscript><style>.dv-donut-seg{{visibility:visible !important}} .dv-anno{{opacity:1 !important}}</style></noscript>
 <div class="top">
   <div class="t">Apollo DataViz <small>{title.split('· ',1)[-1]}</small></div>
   <div class="ctrls">
@@ -395,21 +398,32 @@ FOOT = """</div></div>
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function sweepDonut(fig){
     var segs = [].slice.call(fig.querySelectorAll('.dv-donut-seg'));
-    if (reduce) { segs.forEach(function(s){ s.style.visibility = ''; }); return; }  // no motion: just reveal
+    var annos = [].slice.call(fig.querySelectorAll('.dv-anno'));
+    if (reduce) { segs.forEach(function(s){ s.style.visibility = ''; }); annos.forEach(function(a){ a.classList.add('show'); }); return; }
     segs.forEach(function(s){ s.style.visibility = 'hidden'; });
-    var k = 0;
+    annos.forEach(function(a){ a.classList.remove('show'); });
+    var last = segs.length - 1, k = 0;
+    function showAnno(idx){
+      var m = fig.querySelectorAll('.dv-anno[data-seq="' + idx + '"]');
+      for (var i = 0; i < m.length; i++) { m[i].classList.add('show'); }  // label/leg fades in as its segment grows (#2)
+    }
     function grow(){
       if (k >= segs.length) { return; }
-      var s = segs[k], cx = +s.getAttribute('data-cx'), cy = +s.getAttribute('data-cy'),
+      var kk = k, s = segs[kk], cx = +s.getAttribute('data-cx'), cy = +s.getAttribute('data-cy'),
           R = +s.getAttribute('data-ro'), r = +s.getAttribute('data-ri'),
           a1 = +s.getAttribute('data-a1'), a2 = +s.getAttribute('data-a2');
-      // collapse the arc to zero AND reveal in the SAME synchronous tick, so the full arc never paints (#1)
+      // collapse the arc to zero AND reveal in the SAME synchronous tick, so the full arc never paints (batch5 #1)
       s.setAttribute('d', arcPath(cx, cy, R, r, a1, a1));
       s.style.visibility = '';
+      showAnno(kk);
       var dur = 220 + (a2 - a1) / 360 * 620, t0 = null;
       function frameStep(ts){
         if (t0 === null) { t0 = ts; }
-        var p = Math.min(1, (ts - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+        var p = Math.min(1, (ts - t0) / dur), e;
+        // #1: ease ONLY the first (ease-out) and last (ease-in) segments; middle segments are linear
+        if (kk === 0) { e = 1 - Math.pow(1 - p, 3); }
+        else if (kk === last) { e = p * p * p; }
+        else { e = p; }
         s.setAttribute('d', arcPath(cx, cy, R, r, a1, a1 + (a2 - a1) * e));
         if (p < 1) { requestAnimationFrame(frameStep); } else { k++; grow(); }
       }
@@ -688,9 +702,9 @@ def build_line(cid, title, caption, xs, series, dtype="line"):
         pstr = " ".join(f"{x:.1f},{y:.1f}" for x, y in pts)
         fxs = " ".join(f"{fx(x):.4f}" for x, _ in pts)
         ys = " ".join(f"{y:.1f}" for _, y in pts)
-        # #5/#6: ALL lines build at the SAME time, and each symbol appears AS the line reaches it
-        # (marker i delay tracks the line-draw progress) — no per-series sequencing.
-        per_pt = 1500 / max(1, len(vs) - 1)
+        # #5/#6 + batch6 #3: ALL lines build together, slower and gentler; each symbol appears AS the line
+        # reaches it — marker delay tracks the (now 2400ms) draw progress so nothing lands too harshly.
+        per_pt = 2300 / max(1, len(vs) - 1)
         parts.append(f'<polyline class="dv-series" data-series-group="{j+1}" data-fxs="{fxs}" data-ys="{ys}" '
                      f'fill="none" '
                      f'stroke="var(--data-series-{j+1})" stroke-width="2.5" stroke-linejoin="round" '
@@ -756,8 +770,8 @@ def build_donut(cid, title, caption, cats, vals, total_label="Total", mode="lett
             ex, ey = cx + (R + 14) * math.cos(ar), cy + (R + 14) * math.sin(ar)
             right = math.cos(ar) >= 0
             lx = (cx + R + 60) if right else (cx - R - 60); anchor = "start" if right else "end"; tx = lx + (4 if right else -4)
-            extras.append(f'<polyline class="dv-leader" points="{px:.1f},{py:.1f} {ex:.1f},{ey:.1f} {lx:.1f},{ey:.1f}"/>')
-            extras.append(f'<text class="dv-direct" x="{tx:.1f}" y="{ey-2:.1f}" text-anchor="{anchor}">{LETTERS[idx]} · {c}'
+            extras.append(f'<polyline class="dv-leader dv-anno" data-seq="{idx}" points="{px:.1f},{py:.1f} {ex:.1f},{ey:.1f} {lx:.1f},{ey:.1f}"/>')
+            extras.append(f'<text class="dv-direct dv-anno" data-seq="{idx}" x="{tx:.1f}" y="{ey-2:.1f}" text-anchor="{anchor}">{LETTERS[idx]} · {c}'
                           f'<tspan class="amt" x="{tx:.1f}" dy="13">£{fmt(v)} · {v/total*100:.0f}%</tspan></text>')
             i0 = a2
         svg = (f'<svg class="dv-svg" viewBox="0 0 400 260" role="img" aria-label="{title}. Total {fmt(total)}." '
@@ -776,13 +790,13 @@ def build_donut(cid, title, caption, cats, vals, total_label="Total", mode="lett
                 px, py = cx + (R + 2) * math.cos(ar), cy + (R + 2) * math.sin(ar)
                 ex, ey = cx + (R + 13) * math.cos(ar), cy + (R + 13) * math.sin(ar)
                 lxp = cx + (R + 22) * math.cos(ar)
-                marks.append(f'<polyline class="dv-leader" points="{px:.1f},{py:.1f} {ex:.1f},{ey:.1f}"/>')
-                marks.append(f'<text class="dv-key-el" fill="var(--ink)" x="{lxp:.1f}" y="{ey+4:.1f}" '
+                marks.append(f'<polyline class="dv-leader dv-anno" data-seq="{idx}" points="{px:.1f},{py:.1f} {ex:.1f},{ey:.1f}"/>')
+                marks.append(f'<text class="dv-key-el dv-anno" data-seq="{idx}" fill="var(--ink)" x="{lxp:.1f}" y="{ey+4:.1f}" '
                              f'text-anchor="middle">{LETTERS[idx]}</text>')
             else:  # letters on the segment body
                 rm = (R + r) / 2
                 mx, my = cx + rm * math.cos(ar), cy + rm * math.sin(ar)
-                marks.append(f'<text class="dv-key-el" fill="#FFFFFF" x="{mx:.1f}" y="{my+4:.1f}" '
+                marks.append(f'<text class="dv-key-el dv-anno" data-seq="{idx}" fill="#FFFFFF" x="{mx:.1f}" y="{my+4:.1f}" '
                              f'text-anchor="middle">{LETTERS[idx]}</text>')
             i0 = a2
         svg = (f'<svg class="dv-svg" viewBox="0 0 {vbW} 260" role="img" aria-label="{title}. Total {fmt(total)}." '

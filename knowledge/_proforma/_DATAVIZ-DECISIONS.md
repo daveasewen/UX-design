@@ -124,6 +124,15 @@ Source of these rulings: the exported review comment-pins on the REVIEW copy (ba
 - **#3 Drawer is solid white, no frost.** *(Supersedes Batch 4 #3's backdrop-blur.)* `--drawer-bg` opaque
   white, blur removed. Applied to all drawers for consistency (was pinned to the horizontal-bar one).
 
+## Batch 6 — review 2026-07-16 (3 pins)
+
+- **#1 Donut easing — first + last only.** Ease-out on the first segment, ease-in on the last, the
+  middle segments linear (a gentle start and a soft stop, steady through the middle).
+- **#2 Labels/legs sequenced.** For spider + direct (and letters-on-segment for consistency), each
+  label and leader line fades in as its own segment grows (`.dv-anno[data-seq]` + JS `.show`).
+- **#3 Line slower + gentler.** `--draw-slow` 1600→2400ms with a smoother easing; symbols still appear
+  as the line reaches each point (marker timing tracks the slower draw), so the build isn't harsh.
+
 ## Open / pending
 
 - **Grouped column layout redesign** — awaiting Dave's reference images (Batch 1 #3).
