@@ -16,7 +16,7 @@ Promoted the Apollo SDS type system to canon and drove the whole 4px-grid progra
 ## On your desk
 - **Commit 1 of 2 already pushed by you** — `4a7a103 feat(type,grid): promote Apollo SDS type to canon + 4px-grid retrofit`.
 - **Commit 2 is ready to run** (arrow retirement + gate expansion + this handoff refresh) — paste-ready message is in the last chat message; **commit via GitHub Desktop** (Desktop was the source of the lock contention — keep it closed while any terminal commit runs). New file: `tokens/_icon-scale-hsbc-general.json`.
-- **Webfont licence** — the one genuinely open thread: Latin desktop OTF/TTF are internal-only; the product still needs the webfont licence renewed on create.hsbc. Chase it.
+- **Webfont licence** — external dependency, **not Dave's to action** (owned elsewhere): the product needs the create.hsbc webfont licence renewed; the Latin desktop OTF/TTF we hold are internal-only, so renders fall back until it's sorted. Logged as a standing blocker on the *product* path, not a task.
 
 ## Queue next (numbered, actionable)
 1. **Tranche 8** — BottomTabBar · InPageNav · FooterNav · RelatedLinks · Stepper (the other proforma fork; atomise per the ATOMISE ruling).

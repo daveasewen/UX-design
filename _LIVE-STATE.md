@@ -81,7 +81,7 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
   files** (type.css + canon.css + snippets + tranches), all PASS. **Build green (26 steps).** Renders verified
   in-sandbox. Review sheet `reviews/GRID-RETROFIT-2026-07-17.html`. ALL rulings + WHY in
   `knowledge/_proforma/_TYPE-DECISIONS.md`. **OPEN:** webfont — Latin desktop OTF/TTF in
-  `knowledge/assets/fonts/_desktop/`, product still needs the webfont licence renewed on create.hsbc.
+  `knowledge/assets/fonts/_desktop/`, product still needs the create.hsbc webfont licence renewed — **external dependency, outside Dave's control**, logged as a standing product-path blocker (not an action item).
   Historical build detail below:
 - **TYPE-TOKEN SYSTEM = built, proposals await promotion** (2026-07-17). From Figma *Digital Supercharge 0.5*
   (`scale-1`, node 2320-70342) reconciled with repo `typography.json`. **Primitives** (reconciled + 4px-normalised,
