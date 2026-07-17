@@ -133,6 +133,15 @@ Source of these rulings: the exported review comment-pins on the REVIEW copy (ba
 - **#3 Line slower + gentler.** `--draw-slow` 1600→2400ms with a smoother easing; symbols still appear
   as the line reaches each point (marker timing tracks the slower draw), so the build isn't harsh.
 
+## Batch 7 — review 2026-07-16 (3 pins)
+
+- **#1 Donut easing swapped** — ease-**IN** on the first segment, ease-**OUT** on the last (reverse of
+  batch 6), middle linear.
+- **#2 Line symbols keep pace** — the symbol sequence runs for the same duration as the line draw
+  (2400ms), the last symbol completing with the line (minus its fade), so symbols finish in sync.
+- **#3 Stacked easing = donut's** — ease-in on the first (bottom) segment, ease-out on the last (top),
+  middle linear (per-segment `animation-timing-function`).
+
 ## Open / pending
 
 - **Grouped column layout redesign** — awaiting Dave's reference images (Batch 1 #3).

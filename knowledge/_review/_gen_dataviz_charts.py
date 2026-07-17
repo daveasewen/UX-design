@@ -420,9 +420,9 @@ FOOT = """</div></div>
       function frameStep(ts){
         if (t0 === null) { t0 = ts; }
         var p = Math.min(1, (ts - t0) / dur), e;
-        // #1: ease ONLY the first (ease-out) and last (ease-in) segments; middle segments are linear
-        if (kk === 0) { e = 1 - Math.pow(1 - p, 3); }
-        else if (kk === last) { e = p * p * p; }
+        // ease ONLY the first + last segments; middle linear. batch7 #1: ease-IN first, ease-OUT last
+        if (kk === 0) { e = p * p * p; }
+        else if (kk === last) { e = 1 - Math.pow(1 - p, 3); }
         else { e = p; }
         s.setAttribute('d', arcPath(cx, cy, R, r, a1, a1 + (a2 - a1) * e));
         if (p < 1) { requestAnimationFrame(frameStep); } else { k++; grow(); }
@@ -626,8 +626,10 @@ def build_stacked(cid, title, caption, cats, series, chevron_idx=None):
             fill = f'url(#chevron-{chevron_idx+1})' if (chevron_idx is not None and j == chevron_idx) else f'var(--data-series-{j+1})'
             # #4: sequential from the BOTTOM segment up — series 0 (baseline) first, each waits for the one below
             seq = j
+            # batch7 #3: same easing as the donut — ease-IN on the first (bottom) segment, ease-OUT on the last (top), middle linear
+            tf = "ease-in" if j == 0 else ("ease-out" if j == n - 1 else "linear")
             segs.append(f'<rect class="dv-series" data-grow="up" data-series-group="{j+1}" '
-                        f'style="animation-delay:{seq*420}ms; animation-duration:400ms" '
+                        f'style="animation-delay:{seq*420}ms; animation-duration:400ms; animation-timing-function:{tf}" '
                         f'data-fx="{fx(x):.4f}" data-fw="{bw/plotW:.4f}" '
                         f'data-tip="{LETTERS[j]} · {name} · {c}: £{fmt(v)}" '
                         f'fill="{fill}" '
@@ -702,9 +704,10 @@ def build_line(cid, title, caption, xs, series, dtype="line"):
         pstr = " ".join(f"{x:.1f},{y:.1f}" for x, y in pts)
         fxs = " ".join(f"{fx(x):.4f}" for x, _ in pts)
         ys = " ".join(f"{y:.1f}" for _, y in pts)
-        # #5/#6 + batch6 #3: ALL lines build together, slower and gentler; each symbol appears AS the line
-        # reaches it — marker delay tracks the (now 2400ms) draw progress so nothing lands too harshly.
-        per_pt = 2300 / max(1, len(vs) - 1)
+        # ALL lines build together; each symbol appears AS the line reaches it. batch7 #2: the symbol sequence
+        # runs for the SAME duration as the line (2400ms draw), the last symbol COMPLETING with the line
+        # (minus its own ~160ms fade), so symbols keep pace and finish together — faster + in sync.
+        per_pt = (2400 - 160) / max(1, len(vs) - 1)
         parts.append(f'<polyline class="dv-series" data-series-group="{j+1}" data-fxs="{fxs}" data-ys="{ys}" '
                      f'fill="none" '
                      f'stroke="var(--data-series-{j+1})" stroke-width="2.5" stroke-linejoin="round" '
