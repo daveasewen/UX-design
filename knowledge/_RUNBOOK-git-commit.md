@@ -8,13 +8,25 @@ Companion to memory `git-push-method`; git split = Claude commits, Dave pushes v
 
 ## The procedure
 
+**Clear locks BEFORE staging as well as after — the sequence is clear · stage · clear · commit · clear.**
+A lock left behind by the *previous* session blocks `git add` itself, so starting at "stage" only works
+from an already-clean `.git`. (Corrected 2026-07-18 after step 1 failed on a 12-minute-old stale lock.)
+
+0. **Clear any inherited lock first** (not `rm` — `mv`):
+   ```
+   cd <repo> && mkdir -p _to_delete/_stale_locks
+   for L in $(find .git -name '*.lock'); do mv "$L" _to_delete/_stale_locks/; done
+   find .git -name '*.lock'      # expect: none — if not, stop; do not stage
+   ```
 1. **Stage** (this may print `unable to unlink … tmp_obj_*` warnings — harmless, ignore):
    ```
-   cd <repo> && git add -A
+   git add -A
+   git diff --cached --name-only    # confirm the files actually staged
    ```
-2. **Move every lock aside** (not `rm` — `mv`):
+   > If this prints *"Another git process seems to be running … remove the file manually"*, a lock
+   > survived step 0. Nothing staged. Re-run step 0 and try again — do **not** proceed.
+2. **Move every lock aside again** (staging respawns `index.lock`):
    ```
-   mkdir -p _to_delete/_stale_locks
    for L in $(find .git -name '*.lock'); do mv "$L" _to_delete/_stale_locks/; done
    find .git -name '*.lock'      # expect: none
    ```
@@ -37,6 +49,14 @@ Companion to memory `git-push-method`; git split = Claude commits, Dave pushes v
 - **Judge success by HEAD, not warnings.** The `unable to unlink … tmp_obj_*` / `*.lock` lines are git
   failing to tidy its own scratch files; the commit object is written and HEAD advances regardless.
 - **Never `rm` inside `.git`** from the sandbox — it fails and wastes a turn. Always `mv` aside.
+- **A stale lock is not a live lock.** Before assuming GitHub Desktop is holding it, check: a **0-byte**
+  `index.lock` whose mtime is ~the same instant as `.git/index` is the signature of a *completed* git
+  operation that then failed to unlink its own lock — i.e. this delete-guard, not a live process.
+  Moving that aside is safe. A lock Desktop genuinely holds is a different situation; keep Desktop
+  closed during sandbox git work (memory `git-push-method`).
+- **The warnings lie about failure, and `git status` lies about success.** Even a read-only
+  `git status` respawns `index.lock`, so a clean-looking status run leaves the next `git add` blocked.
+  That is why step 4 says the lock-clear must be the *last* git-touching action.
 - **`_to_delete/` is gitignored** and the bridge can't empty it from the sandbox — Dave deletes it on
   his machine when convenient. Never commit `_to_delete/`.
 - **Big/licensed binaries** (fonts, raw exports) must be gitignored before `git add -A` — check
