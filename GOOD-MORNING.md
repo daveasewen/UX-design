@@ -1,16 +1,19 @@
 # Good morning, Dave ☕
 
-*Briefing — written end of 2026-07-18, session **"Amber, and the box inside the composite."***
+*Briefing — written end of 2026-07-19, session **"Splitting type from box."***
 
 ---
 
 ## ⬛ DO THESE TWO FIRST (10 seconds)
 
-> **RENAME YESTERDAY'S CHAT →** `Amber, and the box inside the composite`
-> *(it opened as the binding-mechanism ruling and got it — then spent most of its length solving
-> amber, and ended by discovering that the type composite has a BOX hiding inside it.)*
+> **RENAME YESTERDAY'S CHAT →** `The box was the line-height all along`
+> *(it opened as the type/box split and got it — but the ruling that actually decided the batch was
+> one nobody had queued: where `line-height` lives. It then spent its back half closing the font
+> licence thread, and ended by scoping the Fable session.)*
 
-> **TITLE TODAY'S CHAT →** `Splitting type from box`
+> **TITLE TODAY'S CHAT →** `Making the record answerable`
+> *(the Fable consolidation. If you'd rather knock off the four small picks first, title it
+> `Four small picks` instead and leave the Fable line for the session after.)*
 
 *Standing practice (your ask, 2026-07-18): every handoff carries **both** names — retrospective for
 the session that ended, forward for the next. Step 4b in `_RUNBOOK-capture-ritual.md`. I can't rename
@@ -85,7 +88,7 @@ knowledge/            THE ENGINE
   guidelines/         the ingested + Apollo-added RULES, each with a stable {#id} and a destiny tag
     _rules-index.json   GENERATED machine-readable rule spine (465 rules)
   _proforma/          Apollo mono tranches T1–T8 + Masthead + DataViz  ← in-flight build surface
-    _TYPE-DECISIONS.md   type rulings ledger (T-D1…T-D11)
+    _TYPE-DECISIONS.md   type rulings ledger (T-D1…T-D12)
     _RAG-DECISIONS.md    colour rulings ledger (R-D1…R-D3)   ← NEW 2026-07-18
   _review/            review-overlay copies (+ _make_review.py). Gates never scan here.
   _assertions.json    environment claims + predicates, re-tested every build
@@ -107,6 +110,11 @@ pro-forma · DataViz · edge-extremity (advisory). **DEF-006 type-composites exi
 - **⚠️ canon.css** — "generated, never hand-edit" applies only *between the AUTO-COMPONENTS markers*.
   The **`.c-*` composition layer above that marker is hand-authored and has NO snippet source.**
 - **⚠️ type.css is HAND-AUTHORED** — its "generated" header was false and is gone (2026-07-18).
+- **TYPE and BOX are separate lists** (T-D12). `.t-cm-<size>` = family/size/weight/**line-height:1**,
+  safe anywhere. `.t-cm-slot` = display/align/min-height/cap-trim, **opt-in, only where the element
+  already declares flex.** Slotting anything else is a per-component ruling, never a sweep.
+- **A diff you cannot attribute is not evidence.** Before calling a change good or bad, isolate it
+  with a control (see `NO_SNAP` in `apply_type_bind.py`). Pixel count alone condemns correct work.
 - **Icons: real assets only.** Filenames are not trustworthy — render-verify before binding.
 - **4px grid** (DEF-005) · **sentence case** · **square corners in mono** · **red = primary-action
   accent, once per screen** (brand modes only).
@@ -142,7 +150,9 @@ Do not prune this list.)*
 which work) · `knowledge/_proforma/_PROFORMA-RULES.md` (Apollo mono mode rules: monochrome,
 `surface/digital-black`, colour=meaning, square) · `knowledge/_proforma/_TYPE-DECISIONS.md` (type
 rulings T-D1…T-D11) · `knowledge/_proforma/_RAG-DECISIONS.md` (colour rulings R-D1…R-D3) ·
-`knowledge/_proforma/_DATAVIZ-DECISIONS.md` (DataViz rulings) · `knowledge/_DS-IMPROVEMENTS.md`
+`knowledge/_proforma/_DATAVIZ-DECISIONS.md` (DataViz rulings) ·
+`notes/_FABLE-BRIEF-consolidation.md` (**the scoped Fable session** + the running candidate list) ·
+`knowledge/_DS-IMPROVEMENTS.md`
 (logged DS defects — ds-001…004) · `knowledge/_ICON-GAPS.md` (mislabelled/inverted icon assets) ·
 `knowledge/_ASSERTIONS.md` + `knowledge/_assertions.json` (environment claims + predicates, 6 live) ·
 `knowledge/guidelines/_rules-index.json` (465 rules, the machine-readable spine) · `_retired/`
@@ -181,91 +191,107 @@ memory `sandbox-html-rendering`. ⚠️ The browser cache can be **wiped between
 
 ---
 
-# §B · THIS SESSION (2026-07-18, second)
+# §B · THIS SESSION (2026-07-19, "Splitting type from box")
 
-**Opened on the binding-mechanism ruling and got it in the first hour. Then spent most of its length
-on amber — and ended by finding a box hiding inside the type composite.**
+**The queued ruling landed in the first hour. Then a question nobody had queued turned out to be the
+one that decided the batch — and the back half closed a licence thread that had been mis-recorded
+for weeks.**
 
-## What LANDED — ruled and built
+## What LANDED
 
-**⭐ T-D9 · The binding mechanism.** Components bind by being **appended to their composite's
-selector list** in `type.css`. Plain CSS, no generator, no build step, **no markup change**. Your
-words: *"so the JSON is for generation but A would just work with CSS and HTML??"* — which found the
-simplification. The generator is deferred, not required.
+**⭐ T-D12 · TYPE and BOX are separate lists. RULED, and verified before asking.**
+`.t-cm-<size>` carries family/size/weight/**line-height:1** — safe anywhere. `.t-cm-slot` carries
+display/align/min-height/cap-trim — **opt-in**, bound only where the element already declares a flex
+display. The slot height rides on `--slot`; a custom property is inert unless read, which is what
+makes the two lists independent. **13/21 pixel-identical, zero page-height changes**, real HSBC
+Univers. Closes T-D11. Commit `9fb1381`.
 
-**T-D8 · Variant D, OBSERVED not reasoned.** Cap-trim does **not** need the `.txt` child; it applies
-to the element directly. Rendered in real HSBC Univers, four variants × three button shapes, all
-h=20. `.btn` bound and **pixel-diff verified** — the only difference was the loading spinner caught
-at a different animation frame.
+**⭐ The ruling that actually decided it was not on the queue.** §C1 asked "type or box". The real
+question was **where `line-height` lives.** With it in the BOX, type-only bindings silently DROPPED
+the `/1` the old shorthand carried — `.stateLabel` fell to `line-height:normal`, h 12→16. Moving it
+into TYPE took the result 11/21 → 13/21 and removed the last page-height change.
+**The queued question was the right area and the wrong question.**
 
-**T-D10 · Component Medium is drift.** 88 declarations snap to 400, **zero new composites**. Settled
-by **pin POSITION** — all 19 pins sat on the 400 column, none on the 500.
+**🕓 The webfont thread — closed on distribution, reframed on the rest.** Repo is private and
+everything in it is shared only to HSBC employees, so the distribution worry is **CLOSED, ruled
+"leave"** — no `git rm`, no BFG purge. The licence itself is **renewal-pending, procedural, low-risk**
+(your call, recorded as made — don't let me re-litigate it). What survives is **not a risk item**:
+**zero Latin `.woff`/`.woff2` files exist**, so shareable real-face material is blocked by
+asset-delivery, not permission.
 
-**⭐ R-D3 · AMBER SOLVED.** `amber/background` **`#F0B13A`** (ink 9.16) + `amber/graphic`
-**`#C58900`** (3.02 white, 6.25 dark). Two rules: *always paired with black text*; *not a
-directional delta colour, but valid for status and tolerance*. Ledger: **`_RAG-DECISIONS.md`** (new).
+**📋 The Fable session is now scoped** — `notes/_FABLE-BRIEF-consolidation.md`, with a running
+candidate list for you to add to.
 
-## What FAILED, usefully
+## What I got wrong, and what caught it
 
-**T-D11 · The 21-file batch — reverted.** I predicted the 208 `/1` declarations would bind as a
-no-op like `.btn`. **13 of 21 files moved, 2 changed page height.** `.btn` was already
-`inline-flex` so the composite told it nothing new about its BOX; `.eyebrow`, `.badge`, `h2`,
-`.status` are block or inline, so binding handed them a layout change wearing a type change's
-clothing. **The pixel diff caught it before it shipped.**
+**Two defects in my own enactment — NEITHER caught by a gate, both by inspection.**
+1. **A hold honoured in planning was violated in the write.** `.tag` was correctly skipped as a
+   collision, then stripped anyway: removal used a global `str.replace`, and `.tag` carries the
+   identical declaration text as the bound `.chip`. **A hold that exists only in the planning stage
+   is not a hold.**
+2. **The slot list patched 1 of 3 `.t-cm-slot` occurrences**, so a slotted selector could have got
+   the box *without* the cap-trim — a different bug wearing the same clothes.
 
-## What you caught, and were right about
+**I designed the split before checking whether line-height was already ruled anywhere.** That is the
+07-18 stale-reading failure again, one day later, by the agent who wrote the warning. It cost two
+render cycles rather than a day, but the shape is identical.
 
-1. **"Can't you use the desktop fonts in assets?"** — killed a 16-month-old false caveat I'd repeated
-   three times *that session*.
-2. **"The entire project must be portable"** — reversed my 49-file inline sweep; it solved a problem
-   that doesn't exist and would have created 49 copies to keep in sync.
-3. **"Contrast with a white background is a luxury, the label carries the meaning"** — already canon
-   in five snippets. I'd built a dark ochre glyph to satisfy a rule we had deliberately waived.
-4. **"This is for finance, we might not get away with this one"** — correctly narrowed my rule from
-   "amber is not a data colour" to "not a *directional* delta colour".
-5. **"I'm getting a little frustrated, we're going round in circles"** — you were right, and I should
-   have caught it first.
+**I also mis-ranked the Fable task**, listing the consolidation ninth as housekeeping until you
+pushed back. It isn't housekeeping — see §C.
 
-## The thing to know before §C1
+## What you caught
 
-**`.t-cm` conflates TYPE with BOX.** Type = family/size/weight, safe anywhere. Box = `inline-flex`,
-`align-items:center`, `line-height:1`, `min-height`, cap-trim — only safe where the element is
-already a single-line control. **That is the whole reason the batch failed.** Split them and it
-becomes a genuine no-op.
+1. **"I thought we had a big task set up for fable"** — I'd buried it. It's the only Fable-designated
+   task in the repo and it deserved the top of the list, not the bottom.
+2. **"it's checked already, this is a private repo"** and **"only shared to other HSBC employees"** —
+   two facts that closed a thread I was still treating as an open risk.
+3. **The licence is procedural, not a blocker** — I had been citing `WebfontUserGuide-2024.pdf` as if
+   it were the entitlement record. **It isn't one** — it's generic usage guidance with no schedule.
+   Our "we hold no Latin webfont" claim has always rested on absence of files. Now recorded as such.
 
 ---
 
 # §C · QUEUE
 
-## 1. ⭐ SPLIT TYPE FROM BOX — one small ruling, ~460 selectors unblocked
-Propose: `.t-cm-*` keeps **type only**; a new `.t-cm-slot` carries the **box**. Elements already
-shaped like controls take both; everything else takes type only and keeps its own box.
-Then: `python3 knowledge/apply_type_bind.py --apply` re-derives the batch in one command →
-wire DEF-006 → drive to green. **Opus for the ruling; Sonnet for the rebind.**
+## 1. 🧹 THE FABLE SESSION — scoped, ready to run
+`notes/_FABLE-BRIEF-consolidation.md`. **Read §0 first** — the brief argues the task is not "shorten
+`_LIVE-STATE`" but **"make the record answerable"**, because four separate complaints from the last
+fortnight are one problem: *we can write to the KB far better than we can interrogate it.*
+Includes the running **candidate-task list** (§7) for you to add to — and my argument that
+**"turbo-charge the KB" is at least four different tasks**, of which retrieval is the one that
+unlocks the others. **Fable, cold. Do not warm-start it.**
 
 ## 2. Small picks — yours, no analysis needed
 | what | detail |
 |---|---|
-| **matting rung, green + blue** | `as now` / `−15%` / `−28%` / `−40%` · `reviews/RAG-MATTING-2026-07-18.html`. **No numerical tell — I must not guess.** |
-| **`.tag` collision** | 14px canonical vs 12px "reused" — one atom one size, or `.tag--sm`? |
+| **matting rung, green + blue** | `as now` / `−15%` / `−28%` / `−40%` · `reviews/RAG-MATTING-2026-07-18.html`. Sitting unmarked since 07-18. **No numerical tell — I must not guess.** |
+| **`.tag` collision** | 14px canonical vs 12px "reused". **Actively blocks bindings.** One atom one size, or `.tag--sm`? |
 | **`.num` 24px** | no Component rung at 24px. Add one, or snap to 20/32? |
 | **`{#dv-017}`(a)** | permits red/green for deltas while naming **"RAG-style cells"** — RAG includes amber. **The rule permits a palette it also excludes.** |
 
-## 3. Gates owed — rules that exist but don't bite
-Amber rules 1 + 2 · `type.css` load order · **DEF-006 still unwired** · dark-mode green `#1AA05C`
-(3.37) · dark-mode red/blue as TEXT glyphs on `#111` (3.97 / 4.15).
+## 3. 🔴 The binding blast-radius gate — my view: BEFORE the next batch
+The selector-list mechanism puts **bare, unscoped selectors** (`h2`, `.label`, `.status`, `.chip`)
+into a globally-linked stylesheet. It holds only because component CSS loads second — **load order
+doing safety-critical work across ~460 selectors, ungated.** `.tag` was the first collision.
+**This does not reopen T-D9**; it's the missing guard-rail. Opus-sized.
 
-## 4. ⛔ YOURS — the Latin Univers **webfont** pack
-Ask brand for **WOFF + WOFF2**. Gated as `ASSERT-001` — when it lands the build goes red and names
-every doc that says otherwise. *(Unchanged. The desktop set being usable in-sandbox does NOT affect
-this: desktop ≠ webfont.)*
+## 4. The non-`/1` batch — and why DEF-006 stays unwired
+61 non-`/1` shorthands left in `snippets/`; the bulk of the remaining **690 TYPE-002** are in the
+pro-forma tranches. They carry line-heights of 1.1–1.6, so binding **moves things** — needs its own
+reviewed batch with T-D12's before/after pixel discipline. **DEF-006 is 780 → 729 and stays unwired
+until then**: a build that is red on known work trains everyone to ignore a red build.
 
-## 5. 🧹 CONSOLIDATION — separate track, **Fable, cold**
-`_LIVE-STATE.md` is now **~1044 lines** and has still never shrunk. Today added to it.
-**New input for that session:** the failure mode is not only stale *facts* (the assertion gate
-handles those) but stale *readings* — rules we have and forget. And: **the review overlay loses row
-identity**, which cost two rounds today and is a product fix, not a process one.
+## 5. Gates owed
+Amber rules 1 + 2 · `type.css` load order · dark-mode green `#1AA05C` (3.37) · dark-mode red/blue as
+TEXT glyphs on `#111` (3.97 / 4.15).
 
-> **COMMITTED:** nothing yet — one paste-ready commit below.
-> Build: DEF-006 fails by design (unwired). Everything else green.
-> **Next session model:** Opus for §1; Sonnet once the split is ruled. **Fable + cold for §5 only.**
+## 6. 🕓 Waiting on brand — the Latin webfont pack
+Not a blocker, not yours to chase beyond the ask. **Two things clear it:** the `.woff`/`.woff2` files
+landing in `knowledge/assets/fonts/`, and brand confirming whether **Ultralight** is in scope.
+⚠️ **Ultralight is not a detail** — the script packs ship Th/Lt/Rg/Md/Bd ≡ 100/300/400/500/700, so an
+Ultralight sits BELOW Thin and is a **sixth weight**: a change to the canon ramp, therefore a **type
+ruling, not an asset drop.** Expect it; don't discover it in a diff.
+
+> **COMMITTED:** `9fb1381` (T-D12 + verification + the two script fixes). This handoff is a second
+> commit below. Build green, all 30 steps; DEF-006 fails by design.
+> **Next session model:** **Fable + cold for §1.** Opus for §3. Sonnet for §4 once §3 is ruled.

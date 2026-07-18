@@ -5,48 +5,93 @@ what's **OPEN**. Read this second, after `GOOD-MORNING.md`, before `knowledge/RE
 Per **ADR-0007**. ⚠️ **INTERIM — hand-maintained** until `_build_live_state.py` generates it from
 front-matter edges + tombstones. Refresh at end of every session alongside the handoff.*
 
-*Last refreshed: **2026-07-18 (session "Amber, and the box inside the composite")**. Second session
-of 2026-07-18. **RULED:** type binding mechanism = selector-list extension, hand-maintained (T-D9) ·
-Component Medium is drift, snap 88 to 400, family A held (T-D10) · RAG background/glyph token split
-(R-D2) · **amber SOLVED** — `amber/background` `#F0B13A` + `amber/graphic` `#C58900`, two rules
-(R-D3). **BUILT + VERIFIED:** `.t-cm` amended to variant D (cap-trim on the ELEMENT, `.txt` child
-GONE — observed in real HSBC Univers); Button bound and pixel-diffed clean. **REVERTED:** the 21-file
-`/1` binding batch — 13 files moved, 2 changed page height; the `/1` heuristic predicted line-height
-was safe but said nothing about DISPLAY (T-D11). **NEW LEDGER:** `_proforma/_RAG-DECISIONS.md`.
-**Three stale readings cost real work** (ochre glyph · 49-file inline sweep · "no Univers
-in-sandbox") — all solving problems the KB or gates had already answered.*
+*Last refreshed: **2026-07-19 (session "Splitting type from box")**. **RULED — T-D12:** TYPE and BOX
+are SEPARATE selector lists. `.t-cm-<size>` carries family/size/weight/**line-height:1** (safe
+anywhere); `.t-cm-slot` carries display/align/min-height/cap-trim (**opt-in**, only where the element
+already declares a flex display). Slot height travels as `--slot`, inert unless read. All three
+questions ruled as recommended (Dave: *"cool lets go with all your recommendations"*).
+**VERIFIED, NOT ARGUED:** 13/21 pixel-identical, **zero page-height changes**, real HSBC Univers;
+6 of 8 residuals isolated as T-D10's intended weight snap via a `NO_SNAP` control, the other 2 are
+accepted cap-trim (geometry probe: only `min-height` changed). **CLOSES T-D11.**
+**TWO SELF-INFLICTED DEFECTS, neither caught by a gate:** a `COLLISION_HOLD` honoured in planning
+was violated in the write (global `str.replace` stripped `.tag`, which shares declaration text with
+`.chip`); and the slot list patched 1 of 3 `.t-cm-slot` occurrences, so a slotted selector could get
+the box WITHOUT the trim. Both fixed. **DEF-006: 780 → 729**, still deliberately unwired.
+**LICENCE THREAD CLOSED + REFRAMED** — see the OPEN/BLOCKING section immediately below.
+**Commit `9fb1381`.***
 
-## ⛔ OPEN / BLOCKING — Latin Univers **WEBFONT** licence (raised 2026-07-18)
+> ⚠️ **THIS FILE IS 1044 LINES AND HAS NEVER SHRUNK.** It is the cold-start spine and it has grown
+> past what a cold agent can actually read — which defeats the purpose it exists for. Consolidation
+> is scoped as the **Fable session**; see `notes/_FABLE-BRIEF-consolidation.md`. **Do not add to this
+> file without asking whether something can come out.**
 
-**We do not hold a Latin webfont pack.** Five script webfont packs are in the repo (Arabic, Japanese,
-Chinese ×2, Armenian — ten `.woff`/`.woff2` each). **Zero Latin.** The Latin *desktop* set (TTF/OTF) is
-present and is licensed for design work on a machine — **not** for embedding or serving.
+## 🕓 OPEN — Latin Univers **WEBFONT**: waiting on brand (raised 2026-07-18, **reframed 2026-07-19**)
 
-**Why it now blocks real work (Dave, 2026-07-18):** *"we really need the webfonts, this will hinder
-sharing material."* Without it: no shareable specimen sheets, no real-face review docs sent outside, no
-hosted prototype in brand type.
+> **DOWNGRADED from ⛔ BLOCKING to 🕓 WAITING.** Dave, 2026-07-19: *"the license will be renewed soon,
+> it may well have been already, the webfont needed Ultralight added, I think this is only procedural,
+> and low risk."* **The commercial judgement is his and it is recorded as made — do not re-litigate it.**
 
-**Monotype terms now on file** — `knowledge/assets/WebfontUserGuide-2024.pdf`. Web fonts are licensed for
-**self-hosting** (WOFF/WOFF2); **base64 serving is explicitly sanctioned** for licensed webfonts; fonts must
-**not** be distributed via a *public* Git repository; prescribed remediation if already committed is
-`git rm` then **BFG Repo Cleaner**.
+**Split the question in two. Only one half is about risk.**
 
-**Known exposure, low but non-zero:** four tracked files (`TYPE-SPECIMEN-2026-07-17`,
-`TYPE-COMPOSITES-2026-07-17`, plain + REVIEW) each embed six base64 woff2 payloads of `Univers Next HSBC`
-(~264KB each), entered at `24accd0` and pushed. **The repo is PRIVATE** (404 unauthenticated), and
-Monotype's prohibition names *public* repos — but any collaborator without their own licence still receives
-the font. **Dave's call:** leave / `git rm --cached` / BFG history purge.
+**(1) LICENCE — procedural, pending, low-risk. Owner: BRAND, chased by Dave.** The renewal is in
+flight and the delta is a *weight* (**Ultralight**) being added, which implies a renewal line-item
+rather than an entitlement that never existed. Stop writing "we have no licence"; write **"renewal
+pending; Dave assesses the gap as procedural and low-risk."**
 
-**Interim controls in place:** `reviews/*CONTACT*.html` gitignored; anything shared outside goes as PDF.
+**(2) ASSETS — unchanged, and NOT a risk question.** Verified by inventory 2026-07-19: **zero Latin
+`.woff`/`.woff2` files exist in the repo.** Five script packs present (Arabic, Japanese Tazugane,
+Chinese ×2, Armenian — Th/Lt/Rg/Md/Bd each); Latin has none. **A favourable licence does not deliver
+files.** Shareable real-face material stays blocked until the pack physically lands — not because it
+is forbidden, but because there is nothing to embed.
 
-**ACTION (Dave):** request the **Latin "Univers Next for HSBC" webfont pack (WOFF + WOFF2)** from brand —
-the same deliverable already held for the five script companions. One asset clears all of the above.
+**✅ DISTRIBUTION QUESTION — CLOSED, ruled "leave".** The four tracked files embedding base64 woff2
+(`TYPE-SPECIMEN-2026-07-17`, `TYPE-COMPOSITES-2026-07-17`, plain + REVIEW, at `24accd0`) stay as they
+are. **No `git rm --cached`, no BFG purge, no history rewrite.** Repo is private (confirmed by Dave,
+upgrading it from an unauthenticated-404 inference) and Dave 2026-07-19: *"anything in the repo will
+only be shared to other HSBC employees anyway"* — every recipient sits inside HSBC's own licence.
+**Interim control retained:** `reviews/*CONTACT*.html` gitignored; share OUTSIDE HSBC as PDF only.
+
+**⚠️ PROVENANCE CORRECTION.** `WebfontUserGuide-2024.pdf` is **generic Monotype usage guidance with
+no entitlement schedule** (723 lines; no mention of Latin, Ultralight, or entitlements). It cannot
+settle the question either way. "We hold no Latin webfont" has always rested on **absence of files**,
+not on any document — I had been citing the PDF as if it were the licence record. **It is not one.**
+The entitlement record sits with brand/procurement and we have never seen it.
+
+**WHAT EXACTLY CLEARS THIS** *(a blocker must name its own clearing artefact — this one did not)*:
+1. **Files land** — `HSBC_MtUnivers_Latin-*.woff` + `.woff2` in `knowledge/assets/fonts/`. This alone
+   unblocks shareable real-face material.
+2. **Brand confirms scope** — whether **Ultralight** is included. **Not a detail:** the script packs
+   ship Th/Lt/Rg/Md/Bd ≡ 100/300/400/500/700, so an Ultralight sits BELOW Thin and is a **sixth
+   weight** — a change to the canon ramp, therefore a **TYPE RULING, not an asset drop.** Expect it;
+   do not discover it in a diff. (`{#type26-*}` weights rule, memory `type-body-weight-rule`.)
 
 **⚠️ Provenance note:** I struck this blocker earlier the same day as "false", having found the *desktop*
 set and not read which licence class the blocker named. Dave caught it. Full correction + the superseded
 text are in `knowledge/_proforma/_TYPE-DECISIONS.md` § Blockers 1.
 
 ## LIVE — current truth (in force)
+
+### ⭐ TYPE and BOX are SEPARATE — T-D12, RULED + VERIFIED across 21 files (2026-07-19)
+- **Two lists, two questions.** `.t-cm-<size>` = TYPE (family, size, weight, **`line-height:1`**) —
+  **safe to bind anywhere.** `.t-cm-slot` = BOX (`display:inline-flex`, `align-items`, `min-height`,
+  cap-trim) — **opt-in**, bound ONLY where the element already declares a flex display.
+- **`--slot` carries the slot height on the type composite.** A custom property is inert unless read,
+  so a type-only binding has no box consequence. That is what makes the two lists independent.
+- **`line-height` is TYPE, not BOX** — Component tier *is* "single-line at line-height 1". This was
+  not the question the queue asked and it is the one that decided the batch: with line-height in the
+  box, type-only bindings silently DROPPED the `/1` the old shorthand carried.
+- **Cap-trim reaches elements that lacked it, and the shift is ACCEPTED** — refusing it would leave
+  two classes of button in canon (trimmed in `Button.reference`, untrimmed in `Confirmation`).
+- **The slot test stays conservative.** "Already declares flex" is the OBSERVED condition `.btn` met,
+  not a theory. **Slotting anything else is a per-component decision with its own diff, never a
+  mechanical sweep.** Widening it is a ruling.
+- Evidence: 13/21 pixel-identical, 0 page-height changes, real HSBC Univers. Ledger:
+  `_proforma/_TYPE-DECISIONS.md` **T-D12**; sheet `reviews/TYPE-BOX-SPLIT-2026-07-18.html`.
+  Validation state: **unaudited** (per `_RUNBOOK-decision-audit.md` — never self-promoted).
+- **METHOD, reusable:** the `NO_SNAP=1` isolation control in `apply_type_bind.py` separated diffs the
+  binding CAUSED from diffs T-D10 INTENDED — turning "8 files differ" into "6 intended, 2 to rule on".
+  **A diff you cannot attribute is not evidence.** Pixel count alone would have condemned a correct
+  change. Reach for a control before reaching for a verdict.
 
 ### Type binding — RULED + PROVEN on one component (2026-07-18)
 - **Mechanism = (d) selector-list extension, HAND-MAINTAINED.** A component binds by being appended
@@ -243,14 +288,29 @@ text are in `knowledge/_proforma/_TYPE-DECISIONS.md` § Blockers 1.
 
 ## OPEN — propagation gaps + parked threads
 
-### ⭐ NEXT SESSION STARTS HERE — one small ruling unblocks ~460 selectors
-**`.t-cm` conflates TYPE with BOX.** Type = family/size/weight (safe to bind anywhere). Box =
-`display:inline-flex`, `align-items:center`, `line-height:1`, `min-height`, cap-trim (only safe
-where the element is ALREADY a single-line control). **Proposed split (NOT ruled):** `.t-cm-*` keeps
-type only; a separate `.t-cm-slot` carries the box. **This is why the 21-file batch failed** —
-`.btn` was already inline-flex so it bound clean, but `.eyebrow`/`.badge`/`h2`/`.status` are block
-or inline and binding handed them a layout change wearing a type change's clothing. Split it and the
-batch becomes a genuine no-op. `knowledge/apply_type_bind.py --apply` re-derives it in one command.
+### ✅ CLOSED 2026-07-19 — the type/box split. Ruled as **T-D12**; see LIVE above.
+*(This entry was "NEXT SESSION STARTS HERE". Kept as a tombstone for one refresh so the transition is
+visible, then delete it — flagged for the consolidation session.)*
+
+### 🔴 OPEN — the binding mechanism's BLAST RADIUS has no gate (raised 2026-07-19, T-D12 §5)
+**The selector-list mechanism puts bare, unscoped selectors into a globally-linked stylesheet.**
+`h2`, `.label`, `.status`, `.time`, `.chip` are now global rules in `canon/type.css`, applying to
+**every** snippet that links it. It holds today only because component CSS loads second and wins at
+equal specificity — i.e. **load order is doing safety-critical work across ~460 selectors with no
+gate on it.** The `.tag` collision is the first instance and will not be the last.
+- **This does NOT reopen T-D9.** The mechanism is ruled; what is missing is its guard-rail.
+- **Sequencing view (mine, for Dave):** this wants a gate **BEFORE** the remaining 690 TYPE-002 are
+  bound, not after. The next batch is where the blast radius stops being tolerable.
+- Candidate check: every selector appended to a composite list must be either namespaced or proven
+  unique across all gated files; flag any bare element selector (`h2`) outright.
+
+### 🟠 OPEN — the non-`/1` batch, and why DEF-006 stays unwired
+**61 non-`/1` font shorthands remain in `snippets/`**; the bulk of the remaining **690 TYPE-002**
+sit in the pro-forma tranches. These carry unitless line-heights of **1.1–1.6**, so binding REPLACES
+them with the canon value and **things move**. That is not mechanical and needs its own reviewed
+batch with the same before/after pixel discipline as T-D12.
+**DEF-006 is 780 → 729 and stays UNWIRED until this lands** — wiring it earlier turns the build red
+on known, unruled work, which trains everyone to ignore a red build.
 
 ### Awaiting Dave — small, no analysis needed
 - **Matting rung for green + blue** — `as now` / `−15%` / `−28%` / `−40%`. Contrast is near-identical

@@ -11,4 +11,4 @@
 - i DEAD artifact `_NEXT-SESSION.md` is mentioned (no nearby tombstone) in: `knowledge/_RECONCILIATION-AGENTS-language.md`, `knowledge/_RUNBOOK-gated-component.md`
 
 ---
-*Checked: 4 DEAD entries · 7 ADRs · LIVE section 35 bullets.*
+*Checked: 4 DEAD entries · 7 ADRs · LIVE section 42 bullets.*
