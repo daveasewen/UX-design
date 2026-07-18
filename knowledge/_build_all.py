@@ -61,6 +61,7 @@ STEPS = [
     ("pro-forma CSS-governed motion gate (DEF-003)", "_validate_css_governed.py"),
     ("pro-forma no-hardcode styling gate (DEF-004)", "_validate_no_hardcode.py"),
     ("4px-grid gate (DEF-005)", "_validate_grid.py"),
+    ("type-binding blast-radius gate (canon/type.css)", "_validate_type_blast_radius.py"),
     ("DataViz chart gate (semantic SVG + tokens + table spine)", "_validate_dataviz.py"),
     ("reverse-text edge-extremity check {#col26-020} (advisory)", "_validate_edge_extremity.py"),
     ("compliance verification edges — applies_to vs verified_by (advisory)", "compliance/_build_verification_edges.py"),
@@ -110,6 +111,9 @@ for i, step in enumerate(STEPS, 1):
             rc = rc or r.returncode
         elif "4px-grid" in label:
             print(f"\n❌ 4px-grid gate (DEF-005) failed (exit {r.returncode}) — off-grid layout value(s); see _validate_grid.py output")
+            rc = rc or r.returncode
+        elif "blast-radius" in label:
+            print(f"\n❌ type-binding blast-radius gate failed (exit {r.returncode}) — a global type-composite selector is unregistered or its blast radius escaped; see knowledge/_TYPE-BLAST-GATE.md")
             rc = rc or r.returncode
         elif "pro-forma" in label:
             print(f"\n❌ pro-forma universal gate failed (exit {r.returncode}) — see knowledge/_PROFORMA-GATE.md")

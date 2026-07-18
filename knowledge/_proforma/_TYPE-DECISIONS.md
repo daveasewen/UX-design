@@ -914,14 +914,36 @@ the base rule and both `@supports` branches. The writer patched only the first, 
 selectors got flex + min-height but no cap-trim: a different bug wearing the same clothes. Fixed:
 the slot list patches every occurrence.
 
-### 🔴 OPEN — the mechanism's blast radius, flagged and NOT closed
-The selector-list mechanism puts **bare, unscoped selectors into a globally-linked stylesheet**.
-`h2`, `.label`, `.status`, `.time`, `.chip` are now global rules in `type.css` applying to every
-snippet that links it. It holds only because component CSS loads second and wins at equal
-specificity — **load order doing safety-critical work across ~460 selectors, with no gate on it.**
-The `.tag` collision is the first instance and will not be the last.
-**Ruled scope: this does NOT reopen T-D9.** It wants a gate of its own BEFORE the remaining 690
-TYPE-002 violations are bound. Not built today.
+### ✅ T-D13 — CLOSED: the blast-radius gate is built (2026-07-18)
+The mechanism's blast radius — bare, unscoped selectors in a globally-linked stylesheet, held only
+by component-CSS load order across ~460 selectors — now has its guard-rail. **This did NOT reopen
+T-D9;** the mechanism stays ruled, this is the missing gate.
+
+**Gate:** `_validate_type_blast_radius.py`, wired into `_build_all.py` (blocking, deferred-abort
+family). Registry: `canon/_type-bindings.json` records every selector appended to a composite list
+with its acknowledged blast radius (the exact gated files it matches, corpus = snippets + _proforma).
+It FAILS on: (1) **UNREGISTERED** — a selector appended but not recorded (a new global binding must be
+a conscious act); (2) **ESCAPED** — a registered selector now matching a file outside its acknowledged
+set (radius grew → namespace it, or `--update` and review the diff); (3) **UNWAIVED-BARE** — a new
+pure-bare or scoped-element selector without `waived:true`. A *shrinking* radius never fails.
+
+**Day-one-green ruling (Dave, 2026-07-18):** a naive "fail on any bare selector" check would go red
+immediately — `h2` alone matches 25 of 49 files — violating the "don't wire a red build on known,
+unruled work" rule. So the gate is blocking but honest: current debt is *registered and waived*, not
+hidden. It bites the moment a NEW unscoped selector is appended or an existing radius escapes —
+exactly the guard wanted BEFORE the remaining ~690 TYPE-002 bind. Chosen over advisory-first (wouldn't
+stop a bare `h2` added tomorrow) and baseline-diff (less self-documenting). Bite-tested: unregistered,
+escaped, and unwaived injections each fail; restore goes green.
+
+**Waived DEBT to burn down (not a licence to add more), priority order:** `h2` (25 files) —
+namespace to its intended container; then the scoped-element set (`.seg button`, `.search input`,
+`.nav button`, `.pg a`, `nav.main a`, `.note.global .actions button`). Burndown moves pixels
+(T-D12 discipline) → belongs in the non-`/1` reviewed batch, NOT swept here.
+
+**Known v1 limit:** the gate matches selectors structurally (class/element presence per file), not by
+full CSS cascade, and gates on the file *set*; a same-count file *swap* inside the acknowledged set
+would pass. Good enough for advisory→blocking bed-in (cf. the consult tool's fuzzy enforcement
+column); the rigorous cascade-aware version is a `_FUTURE-STATE` candidate.
 
 ### Where this leaves DEF-006
 780 → **729** violations (TYPE-001 49→28 as 21 files gained their `<link>`). **Still unwired, and

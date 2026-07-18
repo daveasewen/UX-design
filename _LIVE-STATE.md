@@ -214,16 +214,12 @@ Latin webfont" rests on absence of files, not on any document.
 
 ## OPEN — propagation gaps + parked threads
 
-### 🔴 OPEN — the binding mechanism's BLAST RADIUS has no gate (raised 2026-07-18, T-D12 §5)
-**The selector-list mechanism puts bare, unscoped selectors into a globally-linked stylesheet.**
-`h2`, `.label`, `.status`, `.time`, `.chip` are now global rules in `canon/type.css`, applying to
-**every** snippet that links it. It holds today only because component CSS loads second — **load
-order doing safety-critical work across ~460 selectors with no gate.** The `.tag` collision is the
-first instance and will not be the last.
-- **This does NOT reopen T-D9.** The mechanism is ruled; what is missing is its guard-rail.
-- **Sequencing (mine, for Dave):** gate BEFORE the remaining 690 TYPE-002 are bound. Opus-sized.
-- Candidate check: every selector appended to a composite list must be namespaced or proven unique
-  across all gated files; flag any bare element selector outright.
+### ✅ CLOSED (2026-07-18) — the binding mechanism's BLAST RADIUS now has a gate
+`_validate_type_blast_radius.py` (blocking, wired into `_build_all.py`) + registry
+`canon/_type-bindings.json`. Bites on any UNREGISTERED / ESCAPED / UNWAIVED-BARE appended selector;
+current debt registered + waived so it lands green. Full ruling + v1 limits: **T-D13** in
+`_proforma/_TYPE-DECISIONS.md`. Residual DEBT to burn down (non-`/1` batch): namespace `h2` (25
+files) then the scoped-element set — tracked there, not here.
 
 ### 🟠 OPEN — the non-`/1` batch, and why DEF-006 stays unwired
 **61 non-`/1` font shorthands remain in `snippets/`**; the bulk of the remaining **690 TYPE-002** sit

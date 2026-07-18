@@ -56,6 +56,13 @@ status (`idea` / `parked` / `resurrection-candidate` / `graduated→LIVE`).
   dictation, export. *Feeds:* Craft phase — the overlay IS the product surface. *Status:* idea,
   method-debt half already logged in `_LIVE-STATE` OPEN.
 
+- **Blast-radius gate v2 — cascade-aware.** T-D13's gate matches selectors structurally
+  (class/element presence per file) and gates on the file *set*, so a same-count file *swap* inside
+  an acknowledged radius passes, and it doesn't reason about real cascade/specificity. The rigorous
+  version parses each file's own CSS and detects genuine size/weight COLLISIONS (the `.tag` 14-vs-12
+  case) rather than proxying via file membership. *Feeds:* the type-binding guard-rail. *Status:*
+  idea — promote once the v1 has bedded in (cf. consult tool's fuzzy→rigorous path).
+
 ## Standing register elsewhere (pointers, not copies)
 
 - **In-flight targets** — gates-as-a-service · chat-to-KB bot · ingestion done-right: `_LIVE-STATE.md`
