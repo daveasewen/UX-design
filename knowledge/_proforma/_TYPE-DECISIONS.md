@@ -842,3 +842,94 @@ box. That would have made this batch a genuine no-op. **Do not enact without Dav
 - `snippets/Button.reference.html` — the proven pilot. Kept.
 - `knowledge/apply_type_bind.py` — the script. Kept: it re-derives the whole batch in one command
   once the box/type split is ruled, and its `--apply` is a one-liner to re-run.
+
+---
+
+## ⭐ T-D12 — RULED: TYPE and BOX are separate lists (2026-07-19)
+
+**Dave, on the evidence sheet `reviews/TYPE-BOX-SPLIT-2026-07-18.html`: *"cool lets go with all your
+recommendations."*** All three questions ruled as recommended. This closes T-D11.
+
+### The mechanism
+A composite binding answers TWO questions, bound through TWO selector lists:
+
+| list | carries | question |
+|---|---|---|
+| `.t-cm-<size>` | `font-family` · `font-size` · `font-weight` · **`line-height:1`** | what does the text look like — **safe anywhere** |
+| `.t-cm-slot` | `display:inline-flex` · `align-items` · `min-height` · cap-trim | is it a single-line control — **opt-in** |
+
+The slot height travels with the type as `--slot`. **A custom property is inert unless something
+reads it**, so a type-only binding carries no box consequence. That single property is what makes
+the two lists independent without a second source of truth for the ramp.
+
+### The three rulings
+
+**Q1 — `line-height:1` is TYPE, not BOX.** *Component tier IS "single-line at line-height 1" — that
+is precisely what distinguishes it from Editorial.* The gate already forces wrapping text to
+Editorial, so the drift risk this creates is already governed elsewhere.
+⚠️ **This was NOT the question the queue asked, and it is the one that decided the batch.** With
+line-height in the BOX, type-only bindings silently DROPPED the `/1` the old shorthand carried —
+`.stateLabel` fell from `line-height:12px` to `normal`, h 12→16. Moving it to TYPE took the result
+from 11/21 to 13/21 pixel-identical and removed the last page-height change.
+
+**Q2 — the slot carries cap-trim onto elements that did not have it. Shift accepted.** Refusing it
+would leave the same button trimmed in `Button.reference` and untrimmed in `Confirmation` — two
+classes of button in canon. Optical centring is the point of the composite.
+
+**Q3 — "already declares a flex display" stands as the slot test.** Deliberately conservative: it is
+the OBSERVED condition `.btn` satisfied when it bound cleanly, not a theory about what ought to be
+control-shaped. 16 selectors stay type-only, some of which (`.nav button`, `.eyebrow`, `h2`)
+arguably are controls — **slotting those is a per-component decision with its own diff, never a
+mechanical sweep.** Widening this test is a ruling, not a tweak.
+
+### The evidence (rendered in real HSBC Univers, full-page pixel diff, all 21 files)
+
+| variant | pixel-identical | page-height changes |
+|---|---|---|
+| T-D11, old `.t-cm` (reverted) | 7 / 21 | 2 |
+| split, line-height in BOX | 11 / 21 | 1 |
+| **split, line-height in TYPE — RULED** | **13 / 21** | **0** |
+
+Of the 8 residuals, **6 are T-D10's intended weight snap** — isolated by re-running with snapping
+held constant, at which point all six go pixel-identical. The other 2 (Cards, Confirmation) are Q2's
+cap-trim: the geometry probe found **only** `min-height: auto → 20px` changed, with x/y/w/h identical
+across all 75 and 14 elements. Nothing moved; the label recentred.
+
+> **METHOD NOTE, worth keeping.** The isolation control — re-run the same batch with T-D10's snap
+> disabled (`NO_SNAP=1`) — is what converted "8 files still differ" into "6 intended, 2 to rule on".
+> Kept as a flag in `apply_type_bind.py`. **A diff you cannot attribute is not evidence.** Pixel
+> count alone would have condemned a correct change.
+
+### ⚠️ TWO DEFECTS IN MY OWN ENACTMENT — both caught by inspection, NEITHER by a gate
+
+**(a) The hold was honoured in the plan and violated in the write.** `.tag` is on `COLLISION_HOLD`
+and was correctly skipped by `plan()`. But removal used `str.replace()`, which replaces EVERY
+occurrence of the literal text in the file — and `.tag` carries the identical string
+`font:400 12px/1 var(--font)` as the bound `.chip`. The held selector was stripped anyway and fell
+back to inheriting 16px. **A hold that only exists in the planning stage is not a hold.** Fixed:
+removal is byte-span scoped, with an assert that the span still matches before writing.
+
+**(b) A slotted selector could get the box without the trim.** `.t-cm-slot` appears THREE times —
+the base rule and both `@supports` branches. The writer patched only the first, so newly slotted
+selectors got flex + min-height but no cap-trim: a different bug wearing the same clothes. Fixed:
+the slot list patches every occurrence.
+
+### 🔴 OPEN — the mechanism's blast radius, flagged and NOT closed
+The selector-list mechanism puts **bare, unscoped selectors into a globally-linked stylesheet**.
+`h2`, `.label`, `.status`, `.time`, `.chip` are now global rules in `type.css` applying to every
+snippet that links it. It holds only because component CSS loads second and wins at equal
+specificity — **load order doing safety-critical work across ~460 selectors, with no gate on it.**
+The `.tag` collision is the first instance and will not be the last.
+**Ruled scope: this does NOT reopen T-D9.** It wants a gate of its own BEFORE the remaining 690
+TYPE-002 violations are bound. Not built today.
+
+### Where this leaves DEF-006
+780 → **729** violations (TYPE-001 49→28 as 21 files gained their `<link>`). **Still unwired, and
+deliberately so** — the remaining 690 TYPE-002 are the 257 non-`/1` declarations plus the pro-forma
+tranches, which replace unitless line-heights of 1.1–1.6 with a canon value and therefore MOVE
+things. That is not mechanical and needs its own reviewed batch. Wiring DEF-006 before then would
+turn the build red on known, unruled work.
+
+### Carried, unchanged
+`.tag` collision (one atom one size, or `.tag--sm`?) · `.num` at 24px with no Component rung ·
+both still awaiting a pick.

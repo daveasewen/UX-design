@@ -67,3 +67,29 @@ from an already-clean `.git`. (Corrected 2026-07-18 after step 1 failed on a 12-
 ## Entry points
 `git-push-method` (memory — the single-writer split + cloud/local variants) · `AGENTS.md` (git split) ·
 `_RUNBOOK-capture-ritual.md` (step 5 calls this).
+
+---
+
+## Reverting in the sandbox — and the trap in the bulk form (added 2026-07-19, T-D12)
+
+`git checkout` FAILS here: it needs to unlink, and the `.git` mount blocks unlink. **Write-in-place
+is the working revert:**
+
+```bash
+git show HEAD:<path> > <path>                                   # one file
+for f in $(git diff --name-only); do git show HEAD:$f > $f; done  # everything — SEE WARNING
+```
+
+⚠️ **The bulk form reverts YOUR TOOLING TOO.** During T-D12 I used it to reset an experiment and it
+silently took `apply_type_bind.py` — the script the experiment depended on — back to HEAD with it.
+The next run then produced HEAD's behaviour while I read the output as the new behaviour. Cost:
+two wasted render cycles before I noticed.
+
+**Before any bulk revert, park work-in-progress tooling outside the repo:**
+```bash
+cp knowledge/apply_type_bind.py /tmp/apply_type_bind.py.patched   # park
+for f in $(git diff --name-only); do git show HEAD:$f > $f; done  # revert
+cp /tmp/apply_type_bind.py.patched knowledge/apply_type_bind.py   # restore the instrument
+```
+The general rule: **a revert is scoped to the EXPERIMENT, never to the instrument measuring it.**
+If the instrument is itself uncommitted, `git diff --name-only` cannot tell them apart — you must.

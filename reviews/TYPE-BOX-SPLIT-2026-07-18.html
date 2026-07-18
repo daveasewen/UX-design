@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>T-D12 — splitting TYPE from BOX</title>
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<style>
+  :root{--font:"Univers Next HSBC","Helvetica Neue",Arial,sans-serif;
+        --ink:#111;--mid:#5b5b5b;--line:#d8d8d8;--bg:#fff;
+        --ok:#0E7C4A;--no:#C8102E;--amber-bg:#F0B13A;--amber-gfx:#C58900;}
+  body{margin:0;padding:48px 40px 96px;background:var(--bg);color:var(--ink);
+       font:400 16px/24px var(--font);max-width:1080px;}
+  h1{font:300 40px/48px var(--font);margin:0 0 8px;}
+  h2{font:400 24px/32px var(--font);margin:48px 0 12px;padding-top:20px;border-top:1px solid var(--line);}
+  h3{font:500 16px/24px var(--font);margin:28px 0 8px;}
+  p,li{max-width:78ch;}
+  .lede{font:300 20px/28px var(--font);color:var(--mid);margin:0 0 4px;}
+  .meta{font:400 12px/16px var(--font);color:var(--mid);margin:0 0 32px;}
+  table{border-collapse:collapse;width:100%;margin:12px 0 8px;font:400 14px/20px var(--font);}
+  th{text-align:left;font-weight:500;border-bottom:1px solid var(--ink);padding:6px 10px 6px 0;}
+  td{border-bottom:1px solid var(--line);padding:6px 10px 6px 0;vertical-align:top;}
+  td.n{text-align:right;font-variant-numeric:tabular-nums;}
+  .zero{color:var(--ok);font-weight:500;}
+  .diff{color:var(--no);font-weight:500;}
+  .q{border:1px solid var(--ink);padding:20px 24px;margin:20px 0;}
+  .q h3{margin-top:0;}
+  .opt{display:block;padding:8px 0;border-bottom:1px solid var(--line);}
+  .opt:last-child{border-bottom:0;}
+  .rec{background:var(--amber-bg);color:#000;padding:1px 6px;font:500 12px/16px var(--font);}
+  code{font:400 13px/20px ui-monospace,Menlo,monospace;background:#f4f4f4;padding:1px 4px;}
+  .null{border-left:3px solid var(--amber-gfx);padding:12px 0 12px 16px;margin:20px 0;color:var(--mid);}
+  figure{margin:16px 0;}
+  figcaption{font:400 12px/16px var(--font);color:var(--mid);margin-top:6px;}
+</style></head><body>
+
+<h1>Splitting TYPE from BOX</h1>
+<p class="lede">T-D12 — <strong>RULED</strong>. Batch re-derived and pixel-verified before asking.</p>
+<p class="meta">2026-07-18 · evidence rendered in real HSBC Univers, headless Chrome 149, full-page
+pixel diff of all 21 touched snippets · repo state = ruling applied, full build green</p>
+
+<div class="q" style="border-width:2px">
+  <h3 style="margin-bottom:6px">✅ RULED 2026-07-19 — all three as recommended</h3>
+  <p style="margin:0">Dave: <em>“cool lets go with all your recommendations.”</em>
+  <strong>Q1 → line-height is TYPE. Q2 → the slot carries cap-trim; the shift is accepted.
+  Q3 → “already declares flex” stands as the slot test.</strong>
+  Enacted in <code>canon/type.css</code> and logged as <strong>T-D12</strong> in
+  <code>_TYPE-DECISIONS.md</code>, which is now the authority — this sheet is the evidence
+  behind it, kept for the reasoning, not for the state.</p>
+</div>
+
+<h2>1 · What is being proposed</h2>
+<p><code>.t-cm</code> conflated two separable things, and that is why the <code>/1</code> batch failed
+(T-D11: 13 of 21 files moved, 2 changed page height). The proposal splits them into two lists that
+answer two different questions:</p>
+<table>
+  <tr><th style="width:96px">List</th><th style="width:300px">Carries</th><th>Question it answers</th></tr>
+  <tr><td><code>.t-cm-&lt;size&gt;</code></td><td>font-family, font-size, font-weight, line-height:1</td>
+      <td>What does this text look like? <strong>Safe to bind anywhere.</strong></td></tr>
+  <tr><td><code>.t-cm-slot</code></td><td>display:inline-flex, align-items, min-height, cap-trim</td>
+      <td>Is this a single-line control? <strong>Opt-in only.</strong></td></tr>
+</table>
+<p>The slot height travels with the type as a custom property (<code>--slot</code>). A custom property
+is inert unless something reads it, so a type-only binding carries no box consequence. An element may
+join the first list without the second — that is the whole point.</p>
+<p><strong>The slot binds only where the element already declares a flex display</strong> — the exact
+condition <code>.btn</code> met when it bound cleanly, stated as a rule instead of assumed. Observed
+split of the batch: 14 take type+box, 16 take type only.</p>
+
+<h2>2 · The result, measured</h2>
+<p>Every touched snippet rendered before and after in the real face and pixel-diffed full-page.</p>
+<table>
+  <tr><th>Variant</th><th class="n">Pixel-identical</th><th class="n">Page-height changes</th><th>Residual</th></tr>
+  <tr><td>T-D11 (old <code>.t-cm</code>, reverted)</td><td class="n">7 / 21</td><td class="n">2</td>
+      <td class="diff">the failure</td></tr>
+  <tr><td>Split, line-height in BOX</td><td class="n">11 / 21</td><td class="n">1</td>
+      <td class="diff">type-only bindings silently lost <code>line-height:1</code></td></tr>
+  <tr><td><strong>Split, line-height in TYPE</strong></td><td class="n"><strong>13 / 21</strong></td>
+      <td class="n"><strong>0*</strong></td><td class="zero">2 files, both explained</td></tr>
+</table>
+<p class="meta">*The one remaining page-height change disappears once T-D10's weight snap is held
+constant — see below. No binding changes page height on its own.</p>
+
+<h3>The 8 files that still differ, and why</h3>
+<table>
+  <tr><th style="width:220px">File</th><th class="n" style="width:90px">Δ px</th><th>Cause</th></tr>
+  <tr><td>Badge, Eyebrow, List-items,<br>Notifications, Status-indicator,<br>View-options</td>
+      <td class="n">0 with<br>snap held</td>
+      <td class="zero">T-D10 weight snap, 500→400. <strong>Intended.</strong> Re-ran with snapping
+      disabled and all six go pixel-identical, which isolates the cause.</td></tr>
+  <tr><td>Cards, Confirmation</td><td class="n">10,136<br>18,911</td>
+      <td>Cap-trim reaching these buttons for the first time. Geometry probe: <strong>only</strong>
+      <code>min-height: auto → 20px</code> changed; x/y/w/h identical on all 75 and 14 elements.
+      The label optically recentres by about a pixel. This is the Component composite doing its job,
+      but it <em>is</em> a change and it is yours to accept.</td></tr>
+</table>
+
+<figure>
+  <img src="assets/crop.before.png" alt="Confirmation before" style="width:49%;border:1px solid var(--line)">
+  <img src="assets/crop.after.png" alt="Confirmation after" style="width:49%;border:1px solid var(--line)">
+  <figcaption>Confirmation, before / after, real HSBC Univers at 2×. The “Done” label sits fractionally
+  higher after cap-trim. If this is not visible to you at this size, that is itself a finding.</figcaption>
+</figure>
+
+<div class="null">
+  <strong>Null result is available.</strong> If you judge the cap-trim shift on Cards and Confirmation
+  to be wrong, the answer is not to abandon the split — it is to narrow the slot further so cap-trim
+  binds only where it was already present. That is a one-line change to the classifier. The split
+  itself stands on the 13 pixel-identical files regardless of how you rule on trim.
+</div>
+
+<h2>3 · Two defects found in my own enactment</h2>
+<p>Both were caught by inspection and diff, not by a gate. Recording them because they are the
+interesting part.</p>
+<h3>(a) The hold was honoured in the plan and violated in the write</h3>
+<p><code>.tag</code> is on COLLISION_HOLD and was correctly skipped. But the script removed
+declarations with <code>str.replace()</code>, which replaces <em>every</em> occurrence of the literal
+text in the file — and <code>.tag</code> carries the identical string
+<code>font:400 12px/1 var(--font)</code> as the bound <code>.chip</code>. So the held selector was
+stripped anyway and fell back to inheriting 16px. Fixed: removal is now scoped to the rule's byte span,
+with an assert that the span still matches.</p>
+<h3>(b) A slotted selector could get the box without the trim</h3>
+<p><code>.t-cm-slot</code> appears three times — the base rule and both <code>@supports</code> trim
+branches. The writer patched only the first, so newly slotted selectors got flex and min-height but no
+cap-trim. Fixed: the slot list patches every occurrence.</p>
+
+<h2>4 · The three questions — all ruled as recommended</h2>
+
+<div class="q">
+  <h3>Q1 — Is <code>line-height:1</code> TYPE or BOX?</h3>
+  <p>This is the ruling that decides the batch. Moving it into TYPE took the result from 11/21 to
+  13/21 and removed the page-height change, because type-only bindings had been silently dropping the
+  <code>/1</code> the shorthand used to carry.</p>
+  <span class="opt"><span class="rec">recommended</span> <strong>TYPE.</strong> "Component tier" is
+  defined as single-line at line-height 1 — that is what makes it Component rather than Editorial.
+  The gate already forces wrapping text to Editorial, so the drift risk is already governed.</span>
+  <span class="opt"><strong>BOX.</strong> Keeps the box wholly responsible for vertical rhythm, at the
+  cost of type-only bindings needing to keep their own line-height by hand.</span>
+</div>
+
+<div class="q">
+  <h3>Q2 — Does the slot carry cap-trim onto elements that did not have it?</h3>
+  <p>This is the entire residual on Cards and Confirmation. No geometry moves; the label recentres.</p>
+  <span class="opt"><span class="rec">recommended</span> <strong>Yes — accept the shift.</strong>
+  Optical centring is the point of the composite, and refusing it here means the same button is
+  trimmed in Button.reference and untrimmed in Confirmation.</span>
+  <span class="opt"><strong>No — trim only where trim already existed.</strong> Guarantees a true
+  no-op today, but leaves two classes of button in canon and defers the reconciliation.</span>
+</div>
+
+<div class="q">
+  <h3>Q3 — Is "already declares a flex display" the right test for the slot?</h3>
+  <p>It is deliberately conservative — it is the observed condition <code>.btn</code> satisfied, not a
+  theory about what ought to be control-shaped. It leaves 16 selectors type-only, including several
+  (<code>.nav button</code>, <code>.eyebrow</code>, <code>h2</code>) that arguably <em>are</em>
+  single-line controls and could be slotted deliberately later.</p>
+  <span class="opt"><span class="rec">recommended</span> <strong>Yes, keep it conservative.</strong>
+  Widening it becomes a per-component decision with its own diff, not a mechanical sweep.</span>
+  <span class="opt"><strong>No</strong> — and tell me what the test should be instead.</span>
+</div>
+
+<h2>5 · One thing I want to flag, unasked</h2>
+<p>The selector-list mechanism puts <strong>bare, unscoped selectors into a globally-linked
+stylesheet</strong>. <code>h2</code>, <code>.label</code>, <code>.status</code>, <code>.time</code> and
+<code>.chip</code> are now global rules in <code>type.css</code>, applying to every snippet that links
+it. It held here because component CSS loads second and wins at equal specificity — but that is load
+order doing safety-critical work, across 460 selectors, with no gate on it.</p>
+<p>The <code>.tag</code> collision is the first instance of this, and it will not be the last. I am not
+proposing a change to T-D9; I am flagging that the mechanism's blast radius grows with every binding,
+and that it probably wants a gate of its own before the remaining 690 violations are bound.</p>
+
+<h2>6 · State of the repo right now</h2>
+<ul>
+  <li>Proposal applied: split <code>type.css</code>, 30 bindings across 21 files, 21 files newly
+      linked to <code>type.css</code>.</li>
+  <li><code>python3 knowledge/_build_all.py</code> — <strong>green</strong>, all 30 steps.</li>
+  <li>DEF-006: 780 → 729 violations (TYPE-001 49→28). Still unwired, and the remaining 690 TYPE-002
+      are the non-<code>/1</code> declarations, which need their own reviewed batch.</li>
+  <li>Nothing committed. Revert is one command if you rule against it.</li>
+</ul>
+
+</body></html>

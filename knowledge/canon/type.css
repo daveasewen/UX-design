@@ -24,42 +24,108 @@
 .t-ed-caption{font-family:var(--uf);font-size:12px;line-height:16px;font-weight:400;}
 .t-ed-caption .em,.t-ed-caption.em{font-weight:500;}
 
-/* ===== COMPONENT — cap-trim, seated in a 4px slot =====
-   BINDING MECHANISM (Dave ruling T-D9, 2026-07-18): components bind by being APPENDED TO THE
-   SELECTOR LIST of the composite they use. Plain CSS — no generator, no build step, no markup
-   change. To bind a component: add its selector to `.t-cm` AND to its size composite below.
-   ⚠️ LOAD ORDER IS LOAD-BEARING: `.t-cm-button` and `.btn` are both specificity 0-1-0, so source
+/* ===== COMPONENT — TYPE and BOX are SEPARATE (T-D12 proposal, 2026-07-18) =====
+   BINDING MECHANISM (Dave ruling T-D9): components bind by being APPENDED TO THE SELECTOR LIST
+   of the composite they use. Plain CSS — no generator, no build step, no markup change.
+   LOAD ORDER IS LOAD-BEARING: `.t-cm-button` and `.btn` are both specificity 0-1-0, so source
    order decides. type.css MUST load BEFORE component CSS. Gated by _validate_type_composites.py.
 
-   TRIM SITS ON THE ELEMENT, not on a child (variant D, observed 2026-07-18 in real HSBC Univers —
-   outputs/trimtest2.png). The former required `.txt` child is GONE. `display:inline-flex` +
-   `align-items:center` is what optically centres the cap box in a taller slot; an inline-block
-   variant TOP-ALIGNS and is wrong. No padding is authored anywhere — the space below the cap is a
-   consequence of the slot being taller than the cap box. */
-.t-cm,
-.btn{font-family:var(--uf);display:inline-flex;align-items:center;line-height:1;}
+   WHY THE SPLIT (T-D11 evidence): the old `.t-cm` conflated two separable things, and binding it
+   to elements that were not already single-line controls handed them a LAYOUT change wearing a
+   type change's clothing - 13 of 21 files moved, 2 changed page height.
+
+     TYPE  = font-family / font-size / font-weight.        Safe to bind ANYWHERE.
+     BOX   = display / align-items / line-height / min-height / cap-trim.
+             Safe ONLY where the element is already shaped as a single-line control.
+
+   TWO LISTS, TWO QUESTIONS. Joining `.t-cm-<size>` answers "what does it look like"; joining
+   `.t-cm-slot` answers "is it a single-line control". An element may join the first without the
+   second - that is the whole point, and it is what makes the `/1` batch a genuine no-op.
+
+   The slot HEIGHT travels with the type via `--slot`, declared on each type composite. A custom
+   property is INERT unless something reads it, so a type-only binding carries no box consequence.
+
+   TRIM SITS ON THE ELEMENT, not on a child (variant D, observed 2026-07-18 in real HSBC Univers).
+   `display:inline-flex` + `align-items:center` is what optically centres the cap box in a taller
+   slot; an inline-block variant TOP-ALIGNS and is wrong. No padding is authored anywhere. */
+
+/* ---- TYPE - family, size, weight, and the slot height the box WOULD use ---- */
+.t-cm-figure-1{font-family:var(--uf);font-size:52px;font-weight:300;line-height:1;--slot:64px;}
+.t-cm-figure-2{font-family:var(--uf);font-size:40px;font-weight:300;line-height:1;--slot:48px;}
+.t-cm-heading{font-family:var(--uf);font-size:32px;font-weight:400;line-height:1;--slot:40px;}
+.t-cm-section-label{font-family:var(--uf);font-size:20px;font-weight:500;line-height:1;--slot:24px;}
+.t-cm-label,
+.loader,
+.pg a, .pg .ctrl,
+.search input{font-family:var(--uf);font-size:16px;font-weight:400;line-height:1;--slot:20px;}
+.t-cm-button,
+.btn,
+.action-bar .btn,
+.confirm .btn,
+.hero .cta,
+.nav button,
+.note.global .actions button,
+.qbtn,
+nav.main a{font-family:var(--uf);font-size:16px;font-weight:500;line-height:1;--slot:20px;}
+.t-cm-input{font-family:var(--uf);font-size:16px;font-weight:400;line-height:1;--slot:20px;}
+.t-cm-link{font-family:var(--uf);font-size:16px;font-weight:400;line-height:1;--slot:20px;}
+.t-cm-caption,
+.avatar,
+.badge,
+.eyebrow,
+.label,
+.seg button,
+.sim,
+h2{font-family:var(--uf);font-size:14px;font-weight:400;line-height:1;--slot:20px;}
+.t-cm-tooltip{font-family:var(--uf);font-size:14px;font-weight:400;line-height:1;--slot:20px;}
+.t-cm-legal,
+.chip,
+.stateLabel,
+.status,
+.tabbar .tabbar__item,
+.time{font-family:var(--uf);font-size:12px;font-weight:400;line-height:1;--slot:16px;}
+
+/* ---- BOX - the slot. OPT-IN. Only for elements already shaped as single-line controls ---- */
+.t-cm-slot,
+.btn,
+.action-bar .btn,
+.avatar,
+.badge,
+.chip,
+.confirm .btn,
+.hero .cta,
+.loader,
+.note.global .actions button,
+.pg a, .pg .ctrl,
+.qbtn,
+.seg button,
+.status,
+.tabbar .tabbar__item,
+nav.main a{display:inline-flex;align-items:center;min-height:var(--slot);}
 @supports (text-box-trim: trim-both){
- .t-cm,
- .btn{text-box:trim-both cap alphabetic;}
+ .t-cm-slot,
+ .btn,
+.action-bar .btn,
+.avatar,
+.badge,
+.chip,
+.confirm .btn,
+.hero .cta,
+.loader,
+.note.global .actions button,
+.pg a, .pg .ctrl,
+.qbtn,
+.seg button,
+.status,
+.tabbar .tabbar__item,
+nav.main a{text-box:trim-both cap alphabetic;}
 }
 @supports not (text-box-trim: trim-both){
- .t-cm::before,
+ .t-cm-slot::before,
  .btn::before{content:"";display:table;margin-bottom:calc((0.5 - 0.65 + (1.068 - var(--cap)))*-1em);}
- .t-cm::after,
+ .t-cm-slot::after,
  .btn::after{content:"";display:table;margin-top:calc((0.5 - 0.65 + var(--desc))*-1em);}
 }
-.t-cm-figure-1{font-size:52px;font-weight:300;min-height:64px;}
-.t-cm-figure-2{font-size:40px;font-weight:300;min-height:48px;}
-.t-cm-heading{font-size:32px;font-weight:400;min-height:40px;}
-.t-cm-section-label{font-size:20px;font-weight:500;min-height:24px;}
-.t-cm-label{font-size:16px;font-weight:400;min-height:20px;}
-.t-cm-button,
-.btn{font-size:16px;font-weight:500;min-height:20px;}
-.t-cm-input{font-size:16px;font-weight:400;min-height:20px;}
-.t-cm-link{font-size:16px;font-weight:400;min-height:20px;}
-.t-cm-caption{font-size:14px;font-weight:400;min-height:20px;}
-.t-cm-tooltip{font-size:14px;font-weight:400;min-height:20px;}
-.t-cm-legal{font-size:12px;font-weight:400;min-height:16px;}
 
 /* ===== dark mode — step-up (-V2) on display+heading only; body stays regular ===== */
 [data-theme="dark"]{background:#111;color:#fff;}
