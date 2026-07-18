@@ -25,6 +25,24 @@ label. The label has to carry the meaning.
 | **git** | **tracked** | gitignored |
 | **safe to empty?** | **no — deliberate keeps** | yes, any time |
 
+## Plain English — what the junk in `_to_delete/` actually is
+
+*Dave, 2026-07-18: "you'll have to explain like I'm 5 what you mean by tarballs, snapshots…" Fair — and it
+matters, because you cannot check a claim that something is rubbish if you cannot read the list. Written
+here so the next person (or the next cold session) can sort the bin without a developer.*
+
+| You'll see | It means |
+|---|---|
+| `.tar.gz` · `.tgz` — a **tarball** | **A zip file.** `tar` squashes a folder into one file, `gz` compresses it. Mac would just say "archive". |
+| `..._snapshot...` | **A copy taken before doing something risky** — Save As before a big edit. A safety net that was never needed. |
+| `.stale` | **The old version, superseded.** A label meaning "replaced, don't use." Usually with the date it was retired. |
+| `DUP` | **Duplicate.** A second copy of something that already exists properly elsewhere. The long number is a timestamp. |
+| `*.lock` — **git locks** | Git drops a tiny "I'm busy, don't touch" note while it works, and tidies it up after. The sandbox **can't delete files**, so they pile up. They are **0 bytes** — literally empty. |
+
+**The rule of thumb for sorting the bin:** genuine rubbish is always *a zip file*, *a dated copy of
+something that still exists*, or *an empty file*. Anything that is none of those three — actual working
+files with real content, like the Tranche 6 folder below — **stop and look before deleting.**
+
 ## What's in here
 
 ### `tranche6-reverted-20260715/`
