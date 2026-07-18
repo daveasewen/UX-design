@@ -136,7 +136,8 @@ it would red the build until the 721 rebinds land.
 ## The other standing documents
 `AGENTS.md` (repo agent contract, git split, supersession) · `MODEL-ROUTING.md` (which model for which work) ·
 `_proforma/_PROFORMA-RULES.md` (Apollo mono mode rules: monochrome, `surface/digital-black`, colour=meaning,
-square) · `_DS-IMPROVEMENTS.md` (logged DS defects — ds-001…003) · `_ICON-GAPS.md` (mislabelled/inverted icon
+square) · `_retired/` (reverted work with residual value — TRACKED; vs `_to_delete/` which is gitignored rubbish) ·
+`_DS-IMPROVEMENTS.md` (logged DS defects — ds-001…003) · `_ICON-GAPS.md` (mislabelled/inverted icon
 assets) · `guidelines/_rules-index.json` (465 rules, the machine-readable spine).
 
 **Runbooks** — the method written down so a cold agent can operate the engine:

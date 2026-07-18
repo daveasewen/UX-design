@@ -1,0 +1,22 @@
+---
+name: critical-review-2026-07-02
+description: "Critical review scoreboard: D1+D5 executed, D6 closed, D8 ruled (leadership primary), D7 deferred; OPEN = D2 pick-real-project (gating, waiting on colleague) + D3/D4"
+metadata: 
+  node_type: memory
+  type: project
+  originSessionId: 7280bdc1-282e-4da2-8745-60d0e641f3e0
+---
+
+2026-07-02: delivered a full critical review of the UX-design project (theses + software + market) as `REVIEW-2026-07-02-critical-regroup.html` in the repo root, Swiss-design format. Verdict: **regroup, don't pivot** — the enforcement thesis is market-validated; the problem is sequencing and self-graded evidence.
+
+Key findings: harness/ dormant since 2026-05-31 while 53/54 commits touch knowledge/ (pivot happened, unnamed); zero external users/projects; real-HSBC-project proof (ranked #1 on 2026-06-20) still unpicked; validators untested + no CI; real HSBC Figma exports committed at `knowledge/tokens/_raw/` breaching the repo's own two-machine rule; gates independently re-run cold 2026-07-02 = 15/15 green.
+
+8 decisions pending Dave: (1) ratify pivot/rewrite README, (2) pick the real HSBC project THIS WEEK — highest leverage, (3) cap canon work journey-driven, (4) generalisation proof via GOV.UK design system 2-day timebox, (5) fixture tests + CI for the gates, (6) resolve two-machine breach, (7) package agent-native not tool-shell (defer renderer build), (8) pick primary Q3 customer (leadership vs Promenaut).
+
+**Why:** these decisions gate all next work; don't resume canon polish before Dave rules on (2)/(3). Related: [[payments-journey-proof]], [[gate-blindspot-state-contrast]], [[robustness-portability]], [[component-review-program]].
+
+**UPDATE 2026-07-02 (same day):** Dave RATIFIED the pivot in conversation. Decision 1 EXECUTED (staged, awaiting his commit): harness/ + disciplines/ + prompts/ → archive/harness-v0.1/ via git mv; ADR-0005 written; README/AGENTS/architecture rewritten around the engine; _raw untracked + gitignored (files on disk; git HISTORY still holds them — full purge = Dave's call, see ADR-0005 open item; derived stores still carry real values). Decision 2 refined: calibration proof = COMPLETED HSBC project re-run blind from its brief, compare vs shipped; Dave WAITING ON A COLLEAGUE to supply the project materials. Decision 4 reordered: model-swap test (his portability axis) before second-design-system test. NEW agreed: north-star front-end mock (1 screen, 1 day, every region maps to engine capability, label VISION); re-import state/checkpoint discipline as files during the proof. Also: sandbox git quirk — .git/index.lock can't be unlinked (EPERM), workaround = `mv .git/index.lock .git/stale-index.lock` before each git write; GitHub Desktop races for the lock while open — merges/commits from Dave's terminal with Desktop QUIT.
+
+**UPDATE 2026-07-03 (meter session, Fable at 94%):** three more ruled by Dave via decision batch — **D8 RULED**: Leadership case is the Q3 PRIMARY customer (digital-experience-transformation strand leads; Promenaut packaging becomes its by-product). **D6 CLOSED**: premise wrong — the repo lives on Dave's AGENCY machine, not home ("it's an agency branch not home, it's fine"); no breach, two-machine rule stands, no purge needed. **D7 DEFERRED**: packaging decision (agent-native vs shell) waits until the D2 proof has walked the pipeline; no renderer build before then. **D2 STILL OPEN** — Dave chose to spend the remaining Fable budget on cheap-model groundwork instead: `knowledge/_RUNBOOK-toolkit-tranche.md` written so toolkit tranches 2+ (and channels) run on cheaper models; Fable reserve = D2 pick + calibration + fitness test.
+
+**Decision 5 EXECUTED (same day):** knowledge/_tests/test_gates.py (14 bite-tests, stdlib-only, /tmp copies, control case first) + .github/workflows/gates.yml (runs _build_all + self-tests on push). **First real catch:** _validate_snippets ARIA check was self-satisfying — bare declared strings (e.g. "aria-expanded") matched their own manifest declaration, so the check could never fail; FIXED (search excludes manifest block); 38 snippets still green (declarations were honest). Documented caveat: gates enforce author-DECLARED requirements in the same file — hardening idea = cross-check requiredAria vs component meta. Render-dependent gates (state-contrast, screen --render) NOT in CI — known gap. Also resolved: remote 81b979c was a byte-identical duplicate of 4199477 (mangled paste-command message); absorbed via `git merge -s ours`, pushed.

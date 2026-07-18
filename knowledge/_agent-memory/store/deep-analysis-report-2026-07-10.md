@@ -1,0 +1,21 @@
+---
+name: deep-analysis-report-2026-07-10
+description: Independent whole-project review (code+history+field research) — verdict, phased recs, grooming inventory; report at repo root. Rev 2 supersedes rev 1's H2-forward reading.
+type: project
+---
+**Deliverable:** TWO versions at repo root, both UNTRACKED (commit; Dave pushes via Desktop per [[git-push-method]]).
+- `REVIEW-2026-07-10-deep-analysis.html` — REV 1 (original), preserved unaltered. Desktop artifact `uxdesign-deep-analysis-2026-07-10` still points here.
+- `REVIEW-2026-07-10-deep-analysis_rev2.html` — **REV 2, the record-correct version** (Dave asked for a version, not an overwrite). Corrects rev 1's overstatement of the double-pass per [[ruling-generation-shape-2026-07-10]]. Changed passages tagged "rev 2"; each carries a "rev 1 said X" callout. **Artifact NOT yet updated to rev 2** — offer to when asked.
+Swiss dossier idiom, exec-summary-first, expandable evidence, file:line citations.
+
+**Headline verdict (REV 2, current):** engine works as governance (0 invented hex across all 8 governed spread files) but its RULES UNDER-GOVERN LAYOUT. Hypothesis weighing as corrected: **H3 (no retrievable layout layer + library stops at organism tier) = strongest single finding AND Dave's lead direction** (tune what the rules encode — tier defs, composition licence, layout tier — not the machine); converges with [[library-composition-tier-gap]]. **H2 (two-pass/generate-then-normalise) = a STAGE TO TEST, not a proven mechanism** — the one hand-restyle data point was "not all that successful" (Dave), only proves layout-quality and colour-compliance are SEPARABLE, not that two-pass works. H1 (apply existing rules better) = largely exhausted (already PURE-RETRIEVAL). *(Rev 1 had H2 as "the working mechanism" and single-pass as "superseded-by-evidence" — both corrected.)*
+
+**Key recs (REV 2):** R1 = **three-arm** controlled experiment on one contract, rendered, blind-judged: (a) governed single-pass as-is · (b) rule-tuned/re-tiered single-pass [Dave's lead] · (c) two-pass. R2 = build two-pass only AS arm (c), a test not an adoption (hold verdict for R1). R3 render-and-look loop. R4 layout/library tier as canon nodes (archetype = layout × typed slots → component families; seed GOV.UK/USWDS + endorsed comps; read RALF/LayoutRAG — retrieval-conditioned layout is settled science) = the H3 build, aligns with factory strict-mode. R5 rendered-DOM state-contrast sweep (CDP forcePseudoState + axe). R6 import commodity layers (W3C ACT Rules 1.1 = SC↔rule half of compliance KG; DTCG stable 2025.10 + Style Dictionary v5/Terrazzo; canon over MCP). R7 PM-KG MVP lean (front-matter+index ≈80%; steal bi-temporal + neighbour-refresh from Graphiti/A-MEM).
+
+**Field verdicts (unchanged rev1→rev2):** gates + charter §9 ramp = ahead of every commercial tool (v0 DS 2.0/Builder/Bolt ceiling = prompting + generic lint); canon-tied generation = commodity; component↔SC↔rule KG leg = genuine novelty (ACT stops at rule↔SC); "governance tax on creativity" documented (RLHF diversity collapse).
+
+**Grooming inventory (report §08):** fix 3 entry points FIRST (knowledge/README "32 metas/four gates/Sutherland parked"; GOOD-MORNING presents built trace as pending; _LIVE-STATE overstated ADR-0006 gap — closed, only _VISION-iteration-machine remains) · tombstone _VISION-iteration-machine + canonicalise _NEXT-SESSION banner · delete: root promenaut-pipeline-spec.html (byte-identical to archived v0.1), git rm --cached _wt_test, empty UX-design/ dir, knowledge/_SURFACE-CONTRAST-AUDIT.* · archive ~45 items (June cluster, orphaned knowledge docs, ~25 fitness-test one-offs — keep register-spread folders + *.canon.html + cited) · gate-count drift ("4/6 gates/32 snippets") in 6 docs → Tier-B build-gate audit.
+
+**Also:** `_to_delete/uxdesign-full.tar.gz` at repo root = staging artifact, safe to delete. Uncommitted at review time: trace dossier build-out + _LIVE-STATE entries + dangling AGENTS.md stub heading "Imported Claude Cowork project instructions".
+
+How to apply: cite REV 2, not rev 1. Report §07 (rev 2) = candidate sequencing input for next seaworthiness update; R1 three-arm is the recommended next dedicated §9 session and D2's colleague doubles as blind judge.

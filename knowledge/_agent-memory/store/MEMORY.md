@@ -1,0 +1,95 @@
+- [Model selection by phase](model-selection-by-phase.md) — routing canon in repo `MODEL-ROUTING.md`; Fable=rationed premium, Opus=default, Sonnet=throughput, Haiku=chores
+- [Route by default](feedback-route-by-default.md) — RULE: announce the model/routing split at the START of every substantive task, unprompted
+- [Comms style: exec summary first](comms-style-exec-summary.md) — Dave is dyslexic + time-poor; short summary + numbered next-steps first, detail below
+- [Session title convention](session-title-convention.md) — every session gets a short distinct title; open next-session prompts with "Title this chat: …"
+- [GOOD-MORNING orientation section](good-morning-orientation-section.md) — RULE: every handoff opens with a standing §A Orientation (whole project, new-starter style), then §B session, §C queue
+- [Memento framing](memento-framing.md) — WHY the handoff is called GOOD-MORNING; tattoos vs Polaroids trust hierarchy; the real risk is confident FALSE inscription, not forgetting
+- [Working style: divergent/fractal](working-style-divergent.md) — ride Dave's divergence, anchor with structure + thread-capture
+- [Feedback: clarify + reflect back](feedback-clarify-reflect-back.md) — RULE: British understatement; reflect interpretation back + confirm firmness BEFORE recording rulings
+- [Verify before asking](feedback-verify-before-asking.md) — RULE: answer state-questions by reading the repo/running gates, not by asking Dave
+- [Reuse calibration = ask first](feedback-reuse-calibration.md) — RULE: ask what Dave valued in prior work BEFORE mine-vs-fresh; change-by-change (cost a reverted T6)
+- [Survey before build](feedback-survey-before-build.md) — RULE: grep snippets/ + metas + tranches BEFORE building any component; pro-forma==Apollo mono (one library); T8 duplicated Tab-bar+Stepper
+- [Type composites mandatory](feedback-type-composites-mandatory.md) — RULE: all component text uses canon type.css composites (.t-cm-*/.t-ed-*), never raw font shorthand; hard-wire via a gate
+- [Circular stepper location](circular-stepper-location.md) — the dots→line responsive stepper = Tranche-1; canon dots version in git history at 273d18c~1
+- [Working rhythm: reflection](working-rhythm-reflection.md) — suggest reflection checkpoints; end-of-session morning briefing
+- [Capture ritual](capture-ritual.md) — run the 5-step end-of-session sequence (runbook `_RUNBOOK-capture-ritual.md`) every session unasked
+- [Capture review decisions](feedback-capture-review-decisions.md) — RULE: per-pillar running `_<PILLAR>-DECISIONS.md` ledger of review rulings + WHY, so iterative feedback doesn't evaporate
+- [Decisions as review doc](feedback-decisions-as-review-doc.md) — RULE: decision-heavy / material-referring choices ship as a review-template HTML (`_make_review.py`), not AskUserQuestion; that tool is for simple questions only
+- [Review layer = product feature](review-layer-product-feature.md) — the review doc + comment overlay is part of the FINAL product; build overlay work (image paste, dictation, export) product-grade
+- [Commit summary workflow](workflow-commit-summaries.md) — provide paste-ready git summary + description at commit time
+- [Git push method](git-push-method.md) — Dave pushes via GitHub Desktop ONLY; sandbox/cloud can't commit reliably → hand ONE paste-ready commit; Desktop closed during Claude commits
+- [Sandbox HTML rendering](sandbox-html-rendering.md) — PNG renders via Playwright headless-shell work; full recipe + gotchas in file; no Univers font; HTML (not PNG) is what Dave reviews
+- [Review preview = HTML](review-preview-html.md) — present live HTML for review; PNGs only for my own verification
+- NOTE: current project state lives in the repo (`GOOD-MORNING.md` → `_LIVE-STATE.md`); read those first every session — this index is background only
+- [DataViz pillar progress](dataviz-pillar-progress.md) — 07-16 eve: method dossier + V7 render sheet BUILT, awaiting Dave's markup; then round-one kit; override target = col26-012 not dv-017
+- [Pro-forma programme](proforma-programme.md) — Apollo mono library: Tranches 1–7 built+gated in `_proforma/`; rules 10–16; T6-revert lesson (ask-first); gates DEF-001..004
+- [Apollo component-library itinerary](apollo-component-library-itinerary.md) — 124-item build list at `reviews/ITINERARY-2026-07-14…`; extend-not-restart; ~50 real base gaps
+- [Component-library build-out plan](component-library-buildout-plan.md) — floor-first: grow library 38→~300 via the component machine; templates/shells are the load-bearing gap
+- [Apollo product framing](apollo-product-framing.md) — SPINE: tagline "lovable on rails"; four phases Discover / Create (strict·creative·component-dev·explore) / Craft / Dispatch — the map every feature rolls into
+- [Multi-mode product vision](multi-mode-product-vision.md) — HORIZON: KB as DS source-of-truth, grow by accretion; modes strict/creative/component-dev/explore share the compliance-gate moat
+- [Product shape: flexing engine](product-shape-flexing-engine.md) — ADR-0006: ONE engine flexing by dials; floor/churn vs ceiling/novel; build floor first
+- [Register = inference ramp](register-inference-ramp.md) — charter §9; 07-05 verdict = confusion not convergence; direction = rule-tuning + inference-tiering + richer substrate
+- [Ruling: generation shape 2026-07-10](ruling-generation-shape-2026-07-10.md) — double-pass = data not method; rule-tuning + inference tiering lead; factory strict-mode end-state
+- [Generation-mechanism ideas](generation-mechanism-ideas.md) — parked: inspire-don't-force-fit; generate-then-normalise (live candidate for the register question)
+- [Calibration test plan 2026-07-13](component-library-buildout-plan.md) — 3 shipped projects = calibration backstop; 07-13 reframe: use as BLUEPRINT (gap-mining), not bake-off
+- [Deep-analysis report 2026-07-10](deep-analysis-report-2026-07-10.md) — independent review, REV 2 current; verdict: rules under-govern layout; read with the 07-10 ruling
+- [Critical review 2026-07-02](critical-review-2026-07-02.md) — regroup-not-pivot; OPEN: D2 pick-real-project + D3 journey; no canon polish until D2/D3
+- [Payments-journey proof](payments-journey-proof.md) — 12×9/9 ≠ a shippable screen; needs nav/templates + composition mechanism
+- [Composition layer (canon.css)](composition-layer-canon-css.md) — canon.css generated from reviewed snippets (hand-retype lost decisions — generate, don't retype); 0-drift recompose proof
+- [Library composition-tier gap](library-composition-tier-gap.md) — library stops at organism; 0 templates/shells; ~200-300 catalog scoped
+- [Fixed/flex charter](fixed-flex-charter.md) — brand-true generation governance: canon vocabulary + register temperature dials; retrieval-not-recall
+- [Harness: two working modes](harness-two-modes.md) — converge/ship (mode B adopted) vs explore/noodle (mode A open); first-class dial
+- [Derivation governance](derivation-governance.md) — engine never derives-and-promotes; promotion = Dave only; DS errors → _DS-IMPROVEMENTS.md then move on
+- [Accessibility aspiration](accessibility-aspiration.md) — FOUNDATIONAL: most digitally accessible bank; WCAG 2.2 AA = floor not ceiling (ADR-0004)
+- [Gate blind-spot: state contrast](gate-blindspot-state-contrast.md) — declared-pairs-only contrast checks hid real fails; 9/9 = "automatable checks passed", not done
+- [Icon-source rule](icon-source-rule.md) — never invent icons; sprite + manifest + hard gate; NEW SURFACES need their gate wired before shipping
+- [Icon gap: download-active](icon-gap-download-active.md) — filled download glyph missing; icon-link active deferred to label-only; logged in _ICON-GAPS.md
+- [Dynamic-weight icons](dynamic-weight-icons.md) — outline set, line-weight = CSS var matched to label weight; assets at knowledge/assets/icons/dynamic-weight/
+- [Type body-weight rule](type-body-weight-rule.md) — BRAND: no light/ultra on body sizes (font-5/6/7); min regular 400; regular works both modes → body no dark step-up; overrides source file
+- [Type rule: sentence case](type-rule-sentence-case.md) — RULED+ENACTED: canon-wide, blocking gate
+- [WCAG state contrast rule](wcag-state-contrast.md) — hover/active/pressed need more than a single colour change; active > hover
+- [Leading-trim label decision](leading-trim-label-decision.md) — text-box-trim for labels, metric-aware; headings+body excluded; Firefox degrades gracefully
+- [Interaction-motion experiment](interaction-motion-experiment.md) — scale-physics hover/press; case-by-case, not universal
+- [Dark rag token gaps](dark-rag-token-gaps.md) — CLOSED log-and-move-on: ds-001 blue/400 leak + ds-002 dark error #DB0011 4.02:1; values stand
+- [Desk rulings 2026-07-02](desk-rulings-2026-07-02.md) — 07-02/03 batches enacted; desk clear
+- [2026 refresh = living standard](refresh-2026-living-standard.md) — refresh in development; deltas ≠ defects; reconciliation register; finessing pass coming
+- [Brand refresh direction](brand-refresh-direction.md) — 8-point cheat-sheet fenced to future composition/journey experimentation only
+- [Supercharge codename](supercharge-codename.md) — "supercharge" = brand-uplift component rework; several items deferred to it
+- [Apollo rename + red rule + designer pack](apollo-rename-and-red-rule-2026-07-14.md) — Promenaut→Apollo; red = primary-action accent ONCE per screen; designer-skills-v1 pack rebuilt (gotchas in file)
+- [Tier 2 ingestion progress](tier2-ingestion-progress.md) — all 9 role pages + standards hub done; channels deferred to cheap-model session
+- [Common Toolkit survey](common-toolkit-survey.md) — tranche 1 complete (register 462); next tranches on cheap model via runbook
+- [Ingestion sprint 2026-07-02](ingestion-sprint-2026-07-02.md) — 5 tranches; Chrome fetch-all method + gotchas
+- [Tone-of-voice ingest](tone-of-voice-ingest.md) — done (tov-001…051); tov-016 charter-mapping pending Dave
+- [Copywriting ingest](copywriting-ingest.md) — done; TIER 1 COMPLETE (register 341); open items listed in file
+- [PM knowledge-graph direction](pm-knowledge-graph-direction.md) — ADR-0007 temporal decision-graph; `_LIVE-STATE.md` = cold-start spine; MVP build pending
+- [DS knowledge-graph revisit](ds-knowledge-graph-revisit.md) — unified KG reopened; typed edges; grows as byproduct of library build-out
+- [Compliance graph — verified_by edges](compliance-verified-by-edges.md) — six slices built 07-14; 1.4.11 join 8/8 all-pass; build green; details+commits in file
+- [Decision-audit method](decision-audit-method.md) — ADR-0007 §5 audit designed, not run; run cold, Tier A batch 1 first
+- [Knowledge-usage trace tool](knowledge-usage-trace-tool.md) — retrieved-vs-invented trace → Swiss dossier; reuse per Dave
+- [Process-doc language review](process-doc-language-review.md) — HITL governance-doc review method; charter specimen has findings incl. 2 real contradictions
+- [Graphify tool](graphify-tool.md) — KG engine to pilot at Sutherland code-ingestion; patterns to borrow
+- [Spin-off candidates](spin-off-candidates.md) — generalise reusable tools as spin-offs; surface mid-chat; register in _LIVE-STATE
+- [Sutherland ↔ Figma mapping](sutherland-figma-mapping.md) — Sutherland = HSBC React lib, SPARSE ~36; Figma library IS its working file; two-way tie
+- [Output modes + portability](output-modes-portability.md) — two fidelity tiers: portable HTML + build-ready (Sutherland a target, not the architecture)
+- [Token collection architecture](token-collection-architecture.md) — brand / semantic-color / semantic-scale + modes; native export supersedes OCR
+- [Code-binding hub-and-spoke](code-binding-hub-spoke.md) — Figma node ID = identity; per-namespace names; never guess code names
+- [Robustness & portability](robustness-portability.md) — tool OWNS the plumbing; visual-QA loop = core owned stage
+- [Capability gap + obsolescence](capability-gap-and-obsolescence.md) — capability deposits transferable structure; invest the slow curve (library/gates/criteria)
+- [Digital Experience team transformation](digital-experience-transformation.md) — leadership strategy strand at digital-experience-transformation/; drafts pending Dave
+- [Vision: contextual dashboard](vision-contextual-dashboard.md) — parked horizon-3; revisit after design-time loop proven
+- [Chat-to-KB bot](chat-to-kb-bot.md) — TARGET: ship a bot users chat to the design-system KB; sibling to gates-as-a-service (read side)
+- [KB distillation at deploy](kb-distillation-at-deploy.md) — EXPLORE pre-deploy: deployed build engine may run on a distilled artifact, not the live KB; KB stays dev-time + chat source of truth
+- [Promenaut product vision](promenaut-product-vision.md) — early pillar priority + guardrails (pre-Apollo naming; historical)
+- [Promenaut discovery decisions](promenaut-discovery-decisions.md) — locked 06-20: spec/eval-first spine, adaptive intake, no editor (historical)
+- [Pipeline mental model](pipeline-mental-model.md) — one production line: scoping→generation→gates→prototype; criteria==gates
+- [Procedural debt + method](procedural-debt-and-method.md) — verification=enforcement; separate convergent/divergent; write runbooks
+- [Component-review program](component-review-program.md) — ★ components to 9/9; decisions A+B enacted; 9 at 9/9
+- [Review session progress](review-session-progress.md) — interaction review T1–5 promoted; T6 + gap-patterns were next (historical)
+- [Gated snippets + motion](gated-snippets-and-motion.md) — 32/32 reference snippets + 6 gates; two-tier canon vs exploration
+- [Gap-pattern build](gap-pattern-build.md) — all 5 done + signed off 06-30; tab-bar islands = revisit
+- [Gallery + gap-pattern frontier](gallery-and-gap-pattern-frontier.md) — canon gallery via gen_gallery.py; gate sweep green (06-29 handoff)
+- [Fitness-test plan](promenaut-fitness-test-plan.md) — Tabs KB-only vs unconstrained test (historical)
+- [Iteration-machine mock](iteration-machine-mock.md) — front-end vision facade, not wired; proves alignment only
+- [Portfolio-interactions invite](portfolio-interactions-invite.md) — future craft/wow pass on Reorder testbed; don't gold-plate before the ask
+- [Synthetech project status](synthetech-project-status.md) — earliest project framing (pre-Promenaut/Apollo; historical)
+- [Product feedback: Cowork↔Code parity](product-feedback-cowork-parity.md) — Dave wants slash-commands in Cowork; cloud-bridge flakiness evidence logged; 👎 routes feedback
