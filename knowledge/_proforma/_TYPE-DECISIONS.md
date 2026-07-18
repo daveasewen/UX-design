@@ -89,9 +89,57 @@ token.** Its MINIMUM = `ceil(cap + 2·descender)` to 4px — which also guarante
 Shown in specimen §04. This is the rule the Component composites encode. NOT anally retentive — it's the point.
 
 ## Blockers to writing clean canon tokens
-1. ~~**Latin "Univers Next for HSBC" webfont** — the dropped packs are the SCRIPT companions (Arabic /
-   Japanese Tazugane / Chinese M Ying Hei / Armenian Helvetica), NOT the core Latin default.~~
-   **STRUCK 2026-07-18 — this blocker was FALSE the whole time.** The Latin desktop set is at
+1. **Latin "Univers Next for HSBC" WEBFONT — STILL OPEN. The blocker was RIGHT.**
+   The dropped packs are the SCRIPT companions (Arabic / Japanese Tazugane / Chinese M Ying Hei /
+   Armenian Helvetica), NOT the core Latin default. **Verified 2026-07-18: five webfont packs
+   present, ten `.woff`/`.woff2` files each — and ZERO Latin.**
+
+   ### ⚠️ I STRUCK THIS BLOCKER EARLIER TODAY AND WAS WRONG. Un-struck same session.
+   I found the Latin **desktop** set (TTF + OTF, `_desktop/`, dated 2024-03-25) and concluded the
+   blocker was false. **Desktop and webfont are different licence classes.** A desktop licence
+   covers design work on a machine; a **webfont** licence covers embedding and serving. The blocker
+   never claimed the desktop fonts were missing — it said the *webfont* was, and it was correct.
+   **Dave caught it:** *"we really need the webfonts, this will hinder sharing material."*
+
+   **What I got right, and it still stands:** the desktop files are present and readable, which
+   legitimately unblocked (a) exact metric measurement — cap-height, sidebearings, kerning, the
+   HSBC-vs-stock comparison in § T-D3 — and (b) local rendering for my own verification. Those
+   were never webfont-licensed activities.
+
+   **What I got wrong, and it had consequences:** I converted desktop TTFs to woff2 and base64-
+   embedded them in a review sheet, treating a desktop licence as if it permitted web embedding.
+   Monotype's Web Font User Guide sanctions base64 as an *obfuscation* method — **for fonts you
+   hold a webfont licence for**. We do not, for Latin.
+
+   **Monotype's own terms (Web Font User Guide 2024, p.10–11), now on file:**
+   - Web fonts are licensed for **self-hosting**; WOFF/WOFF2 only; base64 serving is explicitly allowed.
+   - *"Our fonts cannot be shared or distributed via open-source Git sharing platforms … it is your
+     responsibility to ensure that Monotype fonts are not distributed via a **public** Git repository."*
+   - Their prescribed remediation if fonts are already committed: `git rm`, then **BFG Repo Cleaner**
+     to purge history.
+
+   **Live exposure (2026-07-18):** four tracked files — `TYPE-SPECIMEN-2026-07-17` and
+   `TYPE-COMPOSITES-2026-07-17`, plain + REVIEW — each carry six base64 woff2 payloads of
+   `Univers Next HSBC` (~264KB of font data per file). They entered at commit `24accd0` and are
+   pushed. **Mitigating: `github.com/daveasewen/UX-design` returns 404 unauthenticated, i.e. it is
+   PRIVATE**, and Monotype's prohibition names *public* repositories. Exposure is low but non-zero —
+   any repo collaborator without their own licence is still receiving the font.
+
+   **ACTION (Dave):** request the **Latin "Univers Next for HSBC" webfont pack** (WOFF + WOFF2)
+   from brand — the same deliverable already held for the five script companions. That single asset
+   unblocks: shareable specimens, real-face review sheets, and any hosted prototype.
+   **Until it lands:** font-embedded sheets stay gitignored (`reviews/*CONTACT*.html`), and anything
+   shared outside goes as PDF, not HTML.
+
+   **LESSON — the strike itself is the lesson.** A blocker that has stopped work for weeks is
+   *exactly* the claim you want to be false, which is why disproving one deserves more scrutiny than
+   confirming it, not less. I found *a* font, matched it against the word "font" in the blocker, and
+   declared victory without reading which licence class the blocker actually named. Blockers should
+   carry a re-test date **and** the precise artefact that would clear them.
+
+   <details><summary>superseded text of my incorrect strike (kept for the audit trail)</summary>
+
+   ~~STRUCK 2026-07-18 — this blocker was FALSE the whole time. The Latin desktop set is at
    `knowledge/assets/fonts/_desktop/` — **TTF and OTF, six weights plus italics, dated 2024-03-25**.
    It predates the blocker being written. The claim was inferred from the *web font* folders (which really
    are script-only) without checking `_desktop/`, and then trusted for a fortnight.
@@ -100,9 +148,9 @@ Shown in specimen §04. This is the rule the Component composites encode. NOT an
    never brand type" unnecessarily; and the crop/cap metrics were treated as provisional when they were
    measurable all along. Review sheets now embed the real face as base64 woff2
    (`gen_tracking_contact_sheet.py → embed_fonts()`).
-   **LESSON — this is the §A failure mode in miniature:** a confident negative, written once, believed by
-   every later session because nobody re-checked a *blocker*. Blockers are exactly the claims that should
-   carry a re-test date, because they stop work and therefore stop the thing that would disprove them.
+   ~~LESSON — this is the §A failure mode in miniature: a confident negative, written once, believed by
+   every later session because nobody re-checked a *blocker*.~~
+   </details>
 2. **Display-size values across modes** — only have `font-00`=52 / `font-0`=40 at **scale-1**; need their
    scale-2 / scale-3 / 200% values from Figma to populate all breakpoints.
 3. ~~Confirm: apply 4px-normalisation across modes~~ — DONE (Dave 2026-07-17: "decide and infer, change later").
