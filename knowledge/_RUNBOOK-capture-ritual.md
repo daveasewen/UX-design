@@ -19,9 +19,23 @@ only for pure Q&A sessions that touched nothing. If in doubt, run it; it's cheap
    anything that changed this session. Bump the `*Last refreshed: YYYY-MM-DD*` line at the top to
    today. If a ruling killed something, tombstone the artifact **and** log the propagation gap in the
    same pass (supersession discipline, non-negotiable per `AGENTS.md`).
-2. **Write/refresh `GOOD-MORNING.md`.** Session-in-one-line → what landed → on-your-desk (commit
-   state) → queue next (numbered, actionable). This is the cold-start entry point for the *next*
-   session — write it for a reader with zero memory of this one.
+2. **Write/refresh `GOOD-MORNING.md`.** The cold-start entry point for the *next* session — write it
+   for a reader with zero memory of this one. **Required structure, in order:**
+   - **The two names first** (see step 4b) — rename + next title, at the very top.
+   - **§A ORIENTATION — STANDING. Carry it forward EVERY time.** The whole project on one page,
+     new-starter style, at Dave's request 2026-07-17: *"orientate a new starter — wider context helps."*
+     What Apollo is · the three-libraries-one-skeleton model · where things live · the one command ·
+     the rules that actually bite · how we work. **Update it when the shape of the project changes, not
+     every session — but NEVER drop it, and never shorten it to a label.**
+   - **§B this session** — what landed, what was found, what I got wrong.
+   - **§C queue** — numbered, actionable, plus commit/push state.
+
+   ⚠️ **§A is the section most at risk, because it is the only one that doesn't change each session.**
+   On 2026-07-18 a from-scratch rewrite of `GOOD-MORNING.md` reduced §A's standing-instruction note to
+   the two words "Standing section", dropping both the carry-forward rule and Dave's reason for it —
+   caught only because Dave asked. The instruction had been surviving *only* by being copied forward
+   inside the file it governs, which is not survival, it is luck. That is why it is written here too:
+   a rule that lives only in the artefact it governs dies the first time that artefact is rewritten.
 3. **Update memory.** Any `feedback` / `project` / `user` / `reference` memory that's new or changed
    this session, plus the one-line pointer in `MEMORY.md`. Check for stale memories the session
    disproved and correct or remove them.

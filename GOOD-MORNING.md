@@ -22,7 +22,16 @@ Then `_LIVE-STATE.md` → the decision files it points to.*
 ---
 
 # §A · ORIENTATION — the whole project in one page
-*(Standing section. Update when the shape of the project changes, not every session.)*
+
+> **STANDING SECTION — carry it into every handoff, from 2026-07-17 on.** At Dave's request:
+> *"orientate a new starter — wider context helps."* Written new-starter style: assume the reader has
+> no context and no memory of prior sessions. **Update it when the shape of the project changes, not
+> every session — but never drop it, and never shorten it to a label.**
+>
+> *(Restored 2026-07-18 after I rewrote this file and reduced this note to the words "Standing section",
+> losing both the instruction and Dave's reason for it. The rule had been surviving only by being copied
+> forward, so a from-scratch rewrite silently degraded it — the same failure as the `#1A1A1A` rationale.
+> It is now also step 2 of `_RUNBOOK-capture-ritual.md`, so it no longer depends on this file surviving.)*
 
 ## What Apollo is
 A **governed design-system engine** for agentic UI generation. The bet: *generation is a commodity* — the value
