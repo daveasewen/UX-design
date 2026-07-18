@@ -270,3 +270,53 @@ type is governed in the units it actually renders in? Neither "snap" nor "exempt
   doc **cannot drift from the gate**.
 - Scope is component-only; demo-chrome (78 decls) deferred and logged as **ds-003** in `_DS-IMPROVEMENTS.md`
   rather than silently exempted — the carve-out is a selector-name convention and is recorded as debt.
+
+## REVERSE TEXT ON CHROMA — rulings 2026-07-18 (specimen v1 → v2)
+
+### Q1 ANSWERED — chroma is the driver, NOT lightness
+The v1 §2 control pair sat at near-identical lightness (**0.43 vs 0.42**) and differed only in saturation
+(**1.00 vs 0.72**). Dave: *"they are quite similar but these seems to dance the least. the bright red and the
+white text is instantly straining."* The sheet was built to be able to return a null result — if lightness had
+been the driver, the honest outcome was NO new rule, just a higher contrast floor. **It did not come back null.**
+⇒ the effect is real, distinct from contrast, and cannot be folded into the contrast gate.
+
+### It is NOT the vibrating-boundaries rule — verified against our own function
+`vibration()` (`_validate_dataviz.py`, the `{#dv-019}` rule quantified from the Tuts+ article 07-16) scores
+white-on-red **0/3 legs** and is RIGHT to: it needs two *saturated* near-complementary colours at near-equal
+value; white has sat 0.00 and the value ratio is 5.22. A real chart pair scores 3/3. **Sibling phenomenon —
+halation/irradiation, not vibration.**
+
+### ⚠️ SUPERSEDED — the `#A8000B` badge ruling (made earlier the same day)
+`#A8000B` is **sat 1.00** — the same maximum chroma as the `#DB0011` Dave called straining, only darker. It buys
+*lightness* contrast, which was never the problem. Superseded by the chroma observation, which has the
+controlled comparison behind it. **Badge moves to a sat-0.72 red.** Recorded because the two rulings are
+hours apart and a future reader will otherwise see only the first.
+
+### THE UNIFYING LEVER (2026-07-18) — two levers, one rule
+White on `#000` = 21:1; on **`#1A1A1A`** = 17.4:1 — the edge step cut ~17%. That is **the same lever** as
+dropping chroma 1.00→0.72 on a coloured ground: both **reduce the extremity of the edge** rather than adding
+contrast. So the drafted rule has **two levers by ground type — CHROMA on coloured, LUMINANCE EXTREMITY on
+neutral** — and `#1A1A1A` has been the neutral-ground instance for two weeks without being written down as such.
+
+### 🔴 FINDING — `#1A1A1A` exists but is not governed
+Dave asked whether the anti-halation black was stored. It is `_PROFORMA-RULES.md` rule 1. But: it is **in NO
+token store** (a literal across 10 files + a line in a rules doc — nothing resolves or gates it); it is **still
+marked open** (*"Open to confirm with Dave: (a) near-black shade (#1A1A1A)"*); and **the halation rationale was
+never recorded** — the written rationale is about red already meaning destruction. *The value survived, the
+reason did not.* This is the exact loss the decisions ledger exists to prevent, found by Dave's own recall.
+
+### RAG PROMOTION — direction set, sheet built, NOT promoted
+Dave: *"this and it's the other selected for rag during the session should be canon, red amber green and blue"* —
+promote the **data/delta** family to canon RAG. Well-founded: delta is **saturation-normalised at 0.72 across all
+four hues**; the incumbent `rag/*` has no consistent chroma (1.00/1.00/1.00/0.47). Delta was value-split AND
+saturation-normalised during the 07-16 D2 vibration work — engineered for this problem before it was named.
+- **R2 RULED — amber takes DARK text** (Dave). **But the ruling forces a second choice:** on delta amber
+  `#C58720` the existing `rag/text/on-light` (`#333333`) scores **4.13:1 — FAILS**. Only `#1A1A1A` (5.69) or
+  `#000000` (6.86) pass. So "black text on amber" **cannot mean the existing token**, and `#1A1A1A`'s
+  promotion becomes a *dependency* of the RAG promotion, not a separate matter.
+- Blast radius measured, not asserted: **21 files** consume `rag/*` tokens, **42** carry the literal hexes.
+- Sheet: `reviews/RAG-PROMOTION-2026-07-18.html`. Promotion is Dave's alone — nothing applied.
+
+### STILL OPEN (specimen v2 re-cut at the chosen chroma)
+Q2 minimum weight · Q3 size floor · **Q-new: the saturation threshold** (without a number there is no gate,
+only a preference — the equivalent of dv-019's 135°) · Q5 scope (badges vs every light-on-chroma surface).

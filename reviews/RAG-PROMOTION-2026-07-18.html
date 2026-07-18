@@ -1,0 +1,124 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RAG promotion &mdash; review</title>
+<style>
+:root{--ink:#1c1c1c;--mut:#6b6b6b;--line:#e4e4e4;--rec:#0b7a34;--tie:#b25000;--arrow:#8a1f1f;--red:#db0011;}
+*{box-sizing:border-box}
+body{font-family:"Univers Next for HSBC","Helvetica Neue",Arial,sans-serif;color:var(--ink);margin:0;padding:40px;max-width:1180px;line-height:1.5;background:#fafafa}
+h1{font-size:32px;font-weight:300;margin:0 0 4px}
+h2{font-size:20px;font-weight:500;margin:40px 0 4px;padding-top:16px;border-top:2px solid var(--ink)}
+.sub{color:var(--mut);font-size:14px;margin:0 0 24px}
+.lead{font-size:15px;background:#fff;border:1px solid var(--line);border-left:3px solid var(--red);padding:16px 20px;margin:20px 0}
+table{width:100%;border-collapse:collapse;background:#fff;margin:12px 0 8px;font-size:13px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font-weight:500;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--mut);background:#f4f4f4}
+code{font-family:ui-monospace,Menlo,monospace;font-size:11px;background:#f2f2f2;padding:1px 5px;border-radius:3px}
+.sw{display:inline-flex;align-items:center;justify-content:center;min-width:104px;height:34px;padding:0 10px;
+  font-size:13px;font-weight:500;margin:0 4px 0 0}
+.met{font-size:11px;color:var(--mut);white-space:nowrap}
+.ask{width:120px;background:#fffdf5}
+.rules{background:#fff;border:1px solid var(--line);padding:4px 20px 16px;margin:16px 0}
+.rules li{margin:12px 0;font-size:14px}
+.fail{color:var(--arrow);font-weight:600}.pass{color:var(--rec);font-weight:600}
+.num{background:#fff;border:1px solid var(--line);display:flex;margin:16px 0}
+.num div{padding:12px 18px;border-right:1px solid var(--line);flex:1}.num div:last-child{border-right:0}
+.num b{display:block;font-size:26px;font-weight:300;line-height:1.1}
+.num span{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.03em}
+.foot{color:var(--mut);font-size:12px;margin-top:40px;border-top:1px solid var(--line);padding-top:12px}
+</style></head><body>
+<h1>RAG promotion &mdash; review</h1>
+<p class="sub">Apollo SDS &middot; 2026-07-18 &middot; promote the <b>data/delta</b> family to canon RAG. Your proposal, pinned on the reverse-text specimen. Nothing applied.</p>
+<div class="num">
+<div><b>0.72</b><span>delta set — one saturation, all four hues</span></div>
+<div><b>4</b><span>incumbent sats: 1.00/1.00/1.00/0.47</span></div>
+<div><b>21</b><span>files consuming rag/* tokens</span></div>
+<div><b>42</b><span>files carrying the literal hexes</span></div>
+</div>
+<div class="lead"><b>Why this is well-founded.</b> The delta family is <b>saturation-normalised &mdash; every member at sat 0.72</b> &mdash; and already spans exactly red/amber/green/blue. The incumbent <code>rag/*</code> set has no consistent chroma (1.00/1.00/1.00/0.47). The delta values were value-split <i>and</i> saturation-normalised during the 07-16 D2 vibration work, which is why they behave: they were engineered for this problem before it had a name. <b>The caveat this sheet exists to surface:</b> amber still cannot carry white text in either set &mdash; <code>#C58720</code> is 3.06:1 against <code>#FFBB33</code>'s 1.69:1. Better, not fixed. &ldquo;Red amber green blue&rdquo; is <b>not</b> a uniform set where reverse text is concerned, and treating it as one is the trap.</div>
+<h2>1 &middot; Head to head &mdash; incumbent vs delta</h2>
+<p class="sub">White text and dark text on each. <span class="fail">✗</span> = under 4.5:1. Light mode shown; dark-mode values in §2.</p>
+<table><thead><tr><th>Hue</th><th>Incumbent</th><th>sat</th><th>white / dark</th><th>Delta (proposed)</th><th>sat</th><th>white / dark</th><th class="ask">Ruling</th></tr></thead><tbody>
+<tr><td><b>red</b></td>
+<td><span class="sw" style="background:#A8000B;color:#FFFFFF">white</span><span class="sw" style="background:#A8000B;color:#333333">dark ✗</span><br><span class='met'><code>#A8000B</code> rag/error</span></td>
+<td class='met'><b>1.00</b></td>
+<td class='met'><span class='pass'>7.87</span> / <span class='fail'>1.61</span></td>
+<td><span class="sw" style="background:#B92F1E;color:#FFFFFF">white</span><span class="sw" style="background:#B92F1E;color:#333333">dark ✗</span><br><span class='met'><code>#B92F1E</code> data/delta/loss</span></td>
+<td class='met'><b>0.72</b></td>
+<td class='met'><span class='pass'>6.02</span> / <span class='fail'>2.10</span></td>
+<td class="ask"></td></tr>
+<tr><td><b>amber</b></td>
+<td><span class="sw" style="background:#FFBB33;color:#FFFFFF">white ✗</span><span class="sw" style="background:#FFBB33;color:#333333">dark</span><br><span class='met'><code>#FFBB33</code> rag/warning</span></td>
+<td class='met'><b>1.00</b></td>
+<td class='met'><span class='fail'>1.69</span> / <span class='pass'>7.47</span></td>
+<td><span class="sw" style="background:#C58720;color:#FFFFFF">white ✗</span><span class="sw" style="background:#C58720;color:#333333">dark ✗</span><br><span class='met'><code>#C58720</code> data/delta/warning</span></td>
+<td class='met'><b>0.72</b></td>
+<td class='met'><span class='fail'>3.06</span> / <span class='fail'>4.13</span></td>
+<td class="ask"></td></tr>
+<tr><td><b>green</b></td>
+<td><span class="sw" style="background:#00847F;color:#FFFFFF">white</span><span class="sw" style="background:#00847F;color:#333333">dark ✗</span><br><span class='met'><code>#00847F</code> rag/success</span></td>
+<td class='met'><b>1.00</b></td>
+<td class='met'><span class='pass'>4.56</span> / <span class='fail'>2.77</span></td>
+<td><span class="sw" style="background:#16864E;color:#FFFFFF">white</span><span class="sw" style="background:#16864E;color:#333333">dark ✗</span><br><span class='met'><code>#16864E</code> data/delta/gain</span></td>
+<td class='met'><b>0.72</b></td>
+<td class='met'><span class='pass'>4.61</span> / <span class='fail'>2.74</span></td>
+<td class="ask"></td></tr>
+<tr><td><b>blue</b></td>
+<td><span class="sw" style="background:#305A85;color:#FFFFFF">white</span><span class="sw" style="background:#305A85;color:#333333">dark ✗</span><br><span class='met'><code>#305A85</code> rag/information</span></td>
+<td class='met'><b>0.47</b></td>
+<td class='met'><span class='pass'>7.17</span> / <span class='fail'>1.76</span></td>
+<td><span class="sw" style="background:#2573DC;color:#FFFFFF">white</span><span class="sw" style="background:#2573DC;color:#333333">dark ✗</span><br><span class='met'><code>#2573DC</code> data/delta/neutral</span></td>
+<td class='met'><b>0.72</b></td>
+<td class='met'><span class='pass'>4.60</span> / <span class='fail'>2.75</span></td>
+<td class="ask"></td></tr>
+</tbody></table>
+<h2>2 &middot; Dark mode</h2>
+<p class="sub">Both sets carry per-mode values. Same test.</p>
+<table><thead><tr><th>Hue</th><th>Incumbent (dark)</th><th>white / dark</th><th>Delta (dark)</th><th>white / dark</th><th class="ask">Ruling</th></tr></thead><tbody>
+<tr><td><b>red</b></td>
+<td><span class="sw" style="background:#DB0011;color:#FFFFFF">white</span><span class="sw" style="background:#DB0011;color:#333333">dark ✗</span><br><span class='met'><code>#DB0011</code></span></td>
+<td class='met'><span class='pass'>5.22</span> / <span class='fail'>2.42</span></td>
+<td><span class="sw" style="background:#CC4333;color:#FFFFFF">white</span><span class="sw" style="background:#CC4333;color:#333333">dark ✗</span><br><span class='met'><code>#CC4333</code></span></td>
+<td class='met'><span class='pass'>4.75</span> / <span class='fail'>2.66</span></td>
+<td class="ask"></td></tr>
+<tr><td><b>amber</b></td>
+<td><span class="sw" style="background:#FFBB33;color:#FFFFFF">white ✗</span><span class="sw" style="background:#FFBB33;color:#333333">dark</span><br><span class='met'><code>#FFBB33</code></span></td>
+<td class='met'><span class='fail'>1.69</span> / <span class='pass'>7.47</span></td>
+<td><span class="sw" style="background:#C0831F;color:#FFFFFF">white ✗</span><span class="sw" style="background:#C0831F;color:#333333">dark ✗</span><br><span class='met'><code>#C0831F</code></span></td>
+<td class='met'><span class='fail'>3.23</span> / <span class='fail'>3.92</span></td>
+<td class="ask"></td></tr>
+<tr><td><b>green</b></td>
+<td><span class="sw" style="background:#00847F;color:#FFFFFF">white</span><span class="sw" style="background:#00847F;color:#333333">dark ✗</span><br><span class='met'><code>#00847F</code></span></td>
+<td class='met'><span class='pass'>4.56</span> / <span class='fail'>2.77</span></td>
+<td><span class="sw" style="background:#1AA05C;color:#FFFFFF">white ✗</span><span class="sw" style="background:#1AA05C;color:#333333">dark ✗</span><br><span class='met'><code>#1AA05C</code></span></td>
+<td class='met'><span class='fail'>3.37</span> / <span class='fail'>3.75</span></td>
+<td class="ask"></td></tr>
+<tr><td><b>blue</b></td>
+<td><span class="sw" style="background:#4587A7;color:#FFFFFF">white ✗</span><span class="sw" style="background:#4587A7;color:#333333">dark ✗</span><br><span class='met'><code>#4587A7</code></span></td>
+<td class='met'><span class='fail'>3.98</span> / <span class='fail'>3.17</span></td>
+<td><span class="sw" style="background:#2674DC;color:#FFFFFF">white</span><span class="sw" style="background:#2674DC;color:#333333">dark ✗</span><br><span class='met'><code>#2674DC</code></span></td>
+<td class='met'><span class='pass'>4.55</span> / <span class='fail'>2.78</span></td>
+<td class="ask"></td></tr>
+</tbody></table>
+<h2>3 &middot; Blast radius</h2>
+<p class="sub"><b>21 files</b> consume <code>rag/*</code> tokens; <b>42 files</b> carry the literal hexes. Token-bound consumers re-resolve for free; literal-bearing files need a sweep. This is a promotion, not an edit.</p>
+<table><thead><tr><th>Files consuming <code>rag/*</code> tokens</th></tr></thead><tbody>
+<tr><td class='met'><code>knowledge/canon/canon.css</code> · <code>knowledge/components/account-card.meta.json</code> · <code>knowledge/components/button.meta.json</code> · <code>knowledge/components/confirmation.meta.json</code> · <code>knowledge/components/dropdown.meta.json</code> · <code>knowledge/components/input-fields.meta.json</code> · <code>knowledge/components/list-items.meta.json</code> · <code>knowledge/components/notifications.meta.json</code> · <code>knowledge/components/reorder.meta.json</code> · <code>knowledge/components/selection-controls.meta.json</code> · <code>knowledge/components/status-indicator.meta.json</code> · <code>knowledge/snippets/Account-card.reference.html</code> · <code>knowledge/snippets/Button.reference.html</code> · <code>knowledge/snippets/Confirmation.reference.html</code> · <code>knowledge/snippets/Dropdown.reference.html</code> · <code>knowledge/snippets/Input-fields.reference.html</code> · <code>knowledge/snippets/List-items.reference.html</code> · <code>knowledge/snippets/Notifications.reference.html</code> · <code>knowledge/snippets/Reorder.reference.html</code> · <code>knowledge/snippets/Selection-controls.reference.html</code> · <code>knowledge/snippets/Status-indicator.reference.html</code></td></tr>
+</tbody></table>
+<h2>4 &middot; Questions to rule</h2>
+<ol class="rules">
+<li><b>R1 &mdash; promote the delta family to canon RAG?</b> <b>[ yes / no / partially ]</b> If partially, which hues.</li>
+<li><b>R2 &mdash; amber = DARK TEXT. RULED (Dave, 2026-07-18):</b> &ldquo;we should use black text on the amber.&rdquo; Consistent with what Notifications already does. <b>BUT the ruling forces a second choice:</b> on the delta amber <code>#C58720</code>, your existing <code>rag/text/on-light</code> (<code>#333333</code>) scores <span class='fail'>4.13:1 &mdash; FAIL</span>. Only <code>#1A1A1A</code> (5.69) or <code>#000000</code> (6.86) pass. So &ldquo;black text&rdquo; cannot mean the existing token. <b>[ #1A1A1A / #000000 / new amber-specific text token ]</b> &mdash; see &sect;5.</li>
+<li><b>R3 &mdash; do the incumbent values survive as a sibling?</b> The spacing retrofit parked the incumbent as <code>_spacing-hsbc-general.json</code> (&ldquo;preserve the old as legacy&rdquo;). Same pattern here? <b>[ park as sibling / retire ]</b></li>
+<li><b>R4 &mdash; does this change <code>rag/error</code>'s meaning for the badge?</b> A count badge is not an error. If RAG red becomes the badge fill, the RAG vocabulary is doing double duty. <b>[ accept / give badges their own token ]</b></li>
+</ol>
+<h2>5 &middot; The near-black &mdash; <code>#1A1A1A</code>, and the lever it reveals</h2>
+<p class="sub">Dave, 2026-07-18: <i>&ldquo;we discovered a new black value that helped with halation, not #000 but I can't remember &mdash; is it stored anywhere?&rdquo;</i> It is <code>#1A1A1A</code>, <code>_PROFORMA-RULES.md</code> rule 1. Three problems: it is <b>in no token store</b> (a literal in 10 files plus a line in a rules doc &mdash; nothing resolves or gates it); it is <b>still marked open</b> (<i>&ldquo;Open to confirm with Dave: (a) near-black shade&rdquo;</i>); and <b>the halation rationale was never recorded</b> &mdash; the written rationale is about red already meaning destruction. The value survived; the reason did not.</p>
+<table><thead><tr><th>White text on&hellip;</th><th>Contrast</th><th>Luminance step</th><th class="ask">Ruling</th></tr></thead><tbody>
+<tr><td><span class="sw" style="background:#000000;color:#FFFFFF">white text</span><br><span class="met"><code>#000000</code> pure black</span></td><td class="met"><b>21.00:1</b></td><td class="met">0% below pure black</td><td class="ask"></td></tr>
+<tr><td><span class="sw" style="background:#1A1A1A;color:#FFFFFF">white text</span><br><span class="met"><code>#1A1A1A</code> the near-black — proforma rule 1</span></td><td class="met"><b>17.40:1</b></td><td class="met">17% below pure black</td><td class="ask"></td></tr>
+<tr><td><span class="sw" style="background:#1D1D1D;color:#FFFFFF">white text</span><br><span class="met"><code>#1D1D1D</code> color/grey/dark-mode/600</span></td><td class="met"><b>16.86:1</b></td><td class="met">20% below pure black</td><td class="ask"></td></tr>
+<tr><td><span class="sw" style="background:#333333;color:#FFFFFF">white text</span><br><span class="met"><code>#333333</code> color/grey/800</span></td><td class="met"><b>12.63:1</b></td><td class="met">40% below pure black</td><td class="ask"></td></tr>
+</tbody></table>
+<p class="sub"><b>Why this matters beyond the badge.</b> White on <code>#000</code> is 21:1; on <code>#1A1A1A</code> it is 17.4:1 &mdash; the edge step cut by ~17%. That is <b>the same lever</b> as dropping chroma 1.00&rarr;0.72 on a coloured ground: both reduce the <b>extremity of the edge</b> rather than adding contrast. So the rule being drafted has <b>two levers</b> &mdash; <b>chroma</b> on coloured grounds, <b>luminance extremity</b> on neutral ones &mdash; and <code>#1A1A1A</code> is already its neutral-ground instance, applied for two weeks without ever being written down as such. <b>R5 &mdash; tokenise <code>#1A1A1A</code> and record the halation rationale? [ yes / no ]</b></p>
+<p class="foot">Generated by <code>reviews/gen_rag_promotion.py</code> from live <code>tokens/semantic-colour.json</code> &middot; contrast computed, blast radius measured &mdash; not asserted &middot; promotion is Dave&rsquo;s alone; nothing applied.</p>
+</body></html>
