@@ -50,11 +50,29 @@ only for pure Q&A sessions that touched nothing. If in doubt, run it; it's cheap
    check that a memory-only rule was ever mirrored, which makes this step the weakest link in the chain
    and the one to do deliberately rather than at speed.
 
-   **If memories changed this session, flag the mirror to Dave.** The agent cannot copy the memory
-   directory (shell can't reach outside the connected folder; `Glob` refuses application-internal paths).
-   It is Dave's one command, and it is in `knowledge/_agent-memory/README.md`. Say so explicitly at
-   handoff rather than assuming he remembers — 95 memories currently sit in one un-backed-up directory
-   keyed to a single Cowork space UUID.
+   **MIRROR-ON-WRITE (revised 2026-07-18 — this step no longer depends on Dave).** The old text here
+   said the agent *cannot* copy the memory directory because "`Glob` refuses application-internal paths".
+   **That was tested and is false:** `Glob` returns all 109 files and `Read`/`Write`/`Edit` work on them
+   normally. Only the **bash sandbox** is confined to the mount; the claim conflated bash with the file
+   tools, and the cost was that every memory write hung off Dave remembering an rsync.
+   ⇒ **PROVISIONAL — mirror-on-write.** Write the copy into `knowledge/_agent-memory/store/` in the
+   same pass as the memory write, rather than batching it here.
+   ⚠️ **BUT DO NOT TREAT THIS AS SETTLED — Dave challenged the whole premise the same day, correctly.**
+   *"why are we doing this, surely this isn't the usual way it works?"* It is not. The evidence:
+   **store held 115 files against 110 live** — the mirror already contains five memories that no longer
+   exist, i.e. it has already become the third source of truth its own README forbids. And the deeper
+   point: the mirror exists because we do not trust our own rule that *"memory is an accelerator, the
+   repo is the record"*. If that rule held, losing memory would cost nothing worth backing up. **The
+   mirror is a symptom of the normalisation failure, not a fix for it.**
+   ⇒ **OPEN QUESTION for the consolidation session: should the mirror be DELETED rather than
+   maintained?** Do not invest further in mirroring machinery until that is ruled. Mirror-on-write is
+   the least-bad interim behaviour, not an endorsement.
+
+   **Also: if you wrote a checkable claim about the environment, register it.** Anything of the form
+   "X exists / X is missing / there are N of Y" belongs in `knowledge/_assertions.json` with a predicate,
+   so `_validate_assertions.py` re-tests it every build and names every document that repeats it when it
+   flips. Prose asserting a fact with no way to re-test it is exactly how "the sandbox has no Univers"
+   survived sixteen months.
 4. **Record decision nodes with supersession discipline.** Any new ruling gets logged where decisions
    live (ADR, charter section, or `_LIVE-STATE`), cross-linked both ways, seeded as `unaudited`
    per the decision-audit method (`_RUNBOOK-decision-audit.md`) — never self-promoted to `vouched`.

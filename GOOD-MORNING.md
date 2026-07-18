@@ -1,21 +1,21 @@
 # Good morning, Dave ☕
 
-*Briefing — written end of 2026-07-18 afternoon, session **"Univers under the microscope."***
+*Briefing — written end of 2026-07-18, session **"The tidy first answer."***
 
 ---
 
 ## ⬛ DO THESE TWO FIRST (10 seconds)
 
-> **RENAME YESTERDAY'S CHAT →** `Univers under the microscope`
-> *(it opened as the 721 rebinds; those never moved — it became a tracking-rules research arc
-> and ended with a font-licensing finding)*
+> **RENAME YESTERDAY'S CHAT →** `The tidy first answer`
+> *(it opened as the 721 rebinds; those never moved. It became tracking research, then font
+> forensics, then a licensing finding, then a diagnosis of why the record rots. Four corrections,
+> all with the same shape.)*
 
-> **TITLE TODAY'S CHAT →** `Five sheets and a binding mechanism`
+> **TITLE TODAY'S CHAT →** `Type and components — the binding mechanism`
 
 *Standing practice (your ask, 2026-07-18): every handoff carries **both** names — retrospective for
-the session that ended, forward for the next. Sessions drift; naming them only at the start records the
-intention rather than the work. Step 4b in `_RUNBOOK-capture-ritual.md`. I can't rename a conversation
-myself — no tool — so these are ready to copy.*
+the session that ended, forward for the next. Step 4b in `_RUNBOOK-capture-ritual.md`. I can't rename
+a conversation myself, so these are ready to copy.*
 
 *Read: **§A Orientation** (skip if you're in context) → **§B This session** → **§C Queue**.
 Then `_LIVE-STATE.md` → the decision files it points to.*
@@ -167,113 +167,127 @@ rather than this paragraph if you want the current set with purposes.
 
 ---
 
-# §B · THIS SESSION (2026-07-18, afternoon)
+# §B · THIS SESSION (2026-07-18)
 
-**Opened as the 721 rebinds. They never moved.** What happened instead was a tracking-rules research
-arc, a measured font study, and a licensing finding that now blocks sharing.
+**Opened as the TYPE-002 ×721 retrofit. Those never moved.** Became tracking research → font
+forensics → a licensing finding → a diagnosis of why the whole record rots.
 
-## What LANDED (committed, build green 29/29)
+## What LANDED
 
-**A blocking rule that wasn't biting.** `{#type26-019}` bans uppercase brand-wide on a dyslexia
-rationale, promoted to **blocking** by your 2026-07-02 ruling. It was only ever implemented in
-`_validate_snippets.py`, which globs `snippets/*.reference.html` — so **`_proforma/` was never scanned**
-and Tranche-3/5/6/8 carried `text-transform:uppercase` past it for weeks. Found incidentally while
-grepping for letter-spacing. Added the check to `_validate_proforma.py` (which already declares itself
-home to "the UNIVERSAL rules"), de-capped all five breaches with their caps tracking, and **bite-tested
-it** by reintroducing an uppercase to confirm it fails.
-> **Lesson, now in the gate source:** *a rule is only as wide as its gate's glob. "Blocking" describes
-> the rule; the glob decides where it bites.* Same class as the type gate scoring clean on the very badge
-> that motivated it, and Cards at 9/9 in June.
+**A blocking rule that wasn't biting.** `{#type26-019}` (no uppercase, brand-wide, dyslexia
+rationale) has been BLOCKING since 2026-07-02 but lived only in `_validate_snippets.py`, which globs
+`snippets/` — so **`_proforma/` was never scanned** and four tranches carried
+`text-transform:uppercase` past it for weeks, green build throughout. Found *by accident* while
+grepping for letter-spacing. Check added to `_validate_proforma.py`, all five breaches de-capped,
+gate **bite-tested**.
+> **Lesson, in the gate source:** *a rule is only as wide as its gate's glob. "Blocking" describes the
+> rule; the glob decides where it bites.*
 
-**`_TYPE-DECISIONS` → T-D1..T-D6.** The session's reasoning, inscribed.
+**A new gate — `_validate_assertions.py` (build now 30/30).** Answer to your *"how do we fix this
+permanently?"*. Checkable environment claims carry a predicate re-tested every build; `asserted_in`
+names every document that goes false when one flips. Bite-tested by faking a Latin webfont — went
+red, named all four docs. **Registry: `knowledge/_assertions.json`.**
 
-**`ds-004`** — the `Fo` kerning gap is an upstream foundry omission, not HSBC's. Don't raise it with brand.
+**Ledger + memory.** `_TYPE-DECISIONS` T-D1..T-D6. `ds-004` (upstream foundry kerning gap). Five new
+memories. Two spin-offs registered.
 
-**Two spin-offs registered** in `_LIVE-STATE`: the fontTools **font-audit instrument**, and **real-font
-embedding** for review sheets (candidate to fold into `_make_review.py`).
+## ⭐ Your ruling — the most valuable thing here
 
-## ⭐ The ruling that matters most — yours
+**Editorial and Component answer to different physics.** Editorial is *read*; Component is
+*recognised*. So reading-speed evidence governs **Editorial only** (I'd been misapplying it), and
+crowding evidence governs **Component more** (I'd filed it under the wrong tier). **Structural
+consequence: the same 40px wants different values per tier, so size alone cannot express the rule —
+tracking must live ON the composites.** Strongest argument yet that the D2/D3 split is real.
+Frutiger drew the same line, and put Univers on the Editorial side.
 
-**Editorial and Component answer to different physics.** Editorial is *read* (fixations, saccades,
-word-skipping). Component is *recognised* — nobody saccades through "Pending approval". Therefore:
-- **Reading-speed evidence governs Editorial ONLY.** I'd been using it to argue against opening tracking
-  on component labels, where it was never in scope.
-- **Crowding evidence governs Component MORE** — the Zorzi/dyslexia work measures *letter
-  identification*, which is exactly what recognising a label is. I had it filed under the wrong tier.
-- **Structural consequence:** the same 40px wants −0.02em in Editorial and −0.01em in Component.
-  **Size alone cannot express the rule** — so tracking must live ON the composites, not in a size-indexed
-  token ramp. That's the strongest argument yet that the D2/D3 role split is real rather than tidy.
-- **Frutiger drew the same line:** he designed *Frutiger* because Univers was "perfect for printed books"
-  but wrong for someone crossing an airport at 5mph. He put Univers on the Editorial side of your split.
+## Measured (highest evidence tier we've had)
 
-## Measured, not read (highest evidence tier we've had)
+- **Univers is LOOSER than Helvetica** (SB 15.6% of x-height vs 12.4%). The "Univers is tight"
+  folklore is about **apertures** — and **tracking cannot open a counter**, so the face's known
+  glance-reading weakness is not fixable by the lever we spent the day on.
+- **SB/stem collapses 4.60 → 0.46 across weights.** Largest single effect measured; **no rule
+  accounts for it.** Tracking may need a weight term. (Ladder C6 asks exactly this.)
+- **HSBC's cut ≡ stock Univers Next Pro horizontally** — only the ampersand differs. Settled forever.
 
-- **Univers is LOOSER than Helvetica** — `n` sidebearing 15.6% of x-height vs Arial 12.4%. The folklore
-  "Univers is tight" is about **apertures**, not spacing. **Tracking cannot open a counter**, so the face's
-  known glance-reading weakness is *not* fixable by the lever we spent the day designing.
-- **Sidebearing/stem collapses 4.60 → 0.46** across the weight range — the largest single effect measured,
-  and **no rule accounts for it**. Tracking may need a *weight* term.
-- **HSBC's cut ≡ stock Univers Next Pro horizontally.** Sidebearings, advances, 60/60 kerning pairs — all
-  identical. Only the **ampersand** differs. Published Univers spacing guidance therefore applies to us
-  directly. Vertical metrics differ though: our line box 1.300em vs 1.200em, baseline ~11pp lower.
+## ⚠️ Four wrong turns — the pattern matters more than the errors
 
-## ⚠️ Where I was wrong — four times, one of which you caught
+1. **Invented a fork the evidence had closed** (col26-020 scope). Read the rule text, not the specimen
+   that generated it.
+2. **Nearly logged a font defect that doesn't exist** — kerning parser skipped GPOS extension lookups.
+3. **Nearly reported 8% as 30%** — ascent looks decisive, lineGap made it not.
+4. **← YOU CAUGHT THIS. Struck a blocker that was right.** Found the Latin *desktop* set and declared
+   the *webfont* blocker false. **Desktop ≠ webfont licence.**
 
-1. **Invented a fork the evidence had closed.** Framed `col26-020(c)` as "universal floor vs conditional
-   rung" and told you it blocked the retrofit. I'd read the *rule text*, not the *specimen that generated
-   it*. → **Read the specimen, not the summary.**
-2. **Nearly logged a font defect that doesn't exist.** First kerning parser said "no kerning except
-   Medium"; the family uses GPOS *extension lookups* it was skipping. → **A finding that makes a vendor
-   look careless deserves a second parser.**
-3. **Nearly reported 8% as 30%.** Ascent 1068 vs 750 *looks* decisive; stock carries a 200-unit lineGap
-   that HSBC zeroed. → **Compute the derived quantity; never eyeball the component.**
-4. **← YOU CAUGHT THIS ONE. Struck a blocker that was right.** I found the Latin *desktop* set and
-   declared the "Latin webfont missing" blocker false. **Desktop ≠ webfont licence.** The blocker named
-   the webfont, and it was correct. → **A blocker that has stopped work for weeks is exactly the claim
-   you WANT to be false, so disproving one deserves MORE scrutiny than confirming it, not less.**
+**In all four the first answer was tidy and confirmed what I half-expected.** That is the signal to
+run it twice. Hence the session name.
 
-**The pattern across all four: the first answer was tidy and confirmed what I half-expected.** That is
-the signal to run it twice.
+## 🔍 The diagnosis you pushed me to — read this before the consolidation session
+
+You called the assertion gate a sticking plaster. Correct. **The root cause is that the architecture
+is append-only by construction.** The capture ritual has five steps and **all five are writes** —
+no read step, no reconcile, no prune, no retire, anywhere in the system.
+
+**`_LIVE-STATE.md`: 638 → 975 lines in three days. It has never once shrunk.** 128KB, and it's what a
+cold session is told to read *second*. So old claims are never re-encountered, let alone re-checked.
+"No Univers" survived 16 months not because it was hidden but because **no read path would ever have
+brought it back into view.**
+
+**And the assertion gate has the same flaw one level up** — it needs someone to *remember to register*.
+
+**The memory mirror is a symptom of the same disease.** You asked why we do it at all — it isn't how
+agent memory normally works. Evidence: **`store/` holds 115 files against 110 live**, so it already
+contains five dead memories and has become the third source of truth its own README forbids. It exists
+because we don't trust our own rule that *"memory is an accelerator, the repo is the record."*
+**Mirror-on-write is now marked PROVISIONAL in both homes, with "should this be deleted?" as the open
+question.** Do not invest further in mirroring machinery before that is ruled.
 
 ---
 
 # §C · QUEUE
 
-## ⛔ 0. THE BLOCKER — Latin Univers **webfont** pack. Yours, and it gates sharing.
-We hold five *script* webfont packs and **zero Latin**. The desktop set is licensed for design work on a
-machine, not for embedding or serving. Without the webfont: **no shareable specimens, no real-face review
-docs sent outside, no hosted prototype in brand type.**
-**Ask brand for: the Latin "Univers Next for HSBC" webfont pack (WOFF + WOFF2)** — same deliverable
-already held for the five script companions.
-*Also yours:* four tracked files (`TYPE-SPECIMEN` / `TYPE-COMPOSITES` 2026-07-17, plain + REVIEW) embed
-base64 Univers and are pushed. Repo is **private** (404 unauthenticated) and Monotype's prohibition names
-*public* repos — so exposure is low but not zero. Options: leave / `git rm --cached` / BFG history purge.
-Terms are on file at `knowledge/assets/WebfontUserGuide-2024.pdf`. Full detail: `_LIVE-STATE` top entry.
+## 1. ⭐ TYPE + COMPONENTS — the track you asked for. One ruling unblocks it all.
 
-## 1. FIVE review sheets await your markup — nothing is promoted
+**THE RULING: how does a component bind to a composite?** I told you 339 were "safely bindable" —
+true that they *map* value-wise, **false that the work is mechanical**. `.t-cm-*` / `.t-ed-*` appear in
+**zero** markup anywhere. So the fork is:
+- **(a) markup class** — add `class="t-cm-button"` to 339 elements
+- **(b) CSS composition** — components reference composites via custom properties
+- **(c) build-time inlining** — canon.css generation folds composites into component rules
+
+**Your call. Then the rest is mechanical and cheap:** rebind (Sonnet, to spec) → wire DEF-006 →
+drive to green. That is a clean, satisfying session and it is *not* blocked by anything else here.
+
+## 2. Five review sheets await your markup — nothing promoted
 | sheet | asks |
 |---|---|
-| `TRACKING-CONTACT-2026-07-18` | 7 ladders, 47 cells, **renders in real Univers**. My picks marked green. |
+| `TRACKING-CONTACT-2026-07-18` | 7 ladders, 47 cells, **renders in real Univers**; picks marked green |
 | `COMPONENT-MEDIUM-2026-07-18` | are the 100 Component `500`s structural or drift? |
 | `TRACKING-DOSSIER-2026-07-18` | evidence tiers + 4 contradictions + 7 questions |
 | `UNIVERS-DOSSIER-2026-07-18` | the measured font study |
-| `RAG-PROMOTION-2026-07-18` | **from 07-17, still unmarked** — amber trap: `#333` on delta amber = 4.13:1, FAILS |
+| `RAG-PROMOTION-2026-07-18` | **from 07-17, still unmarked** — amber trap: `#333` on delta amber 4.13:1 FAILS |
 
-## 2. ⚠️ TYPE-002 ×721 — BLOCKED, and I under-scoped it
-I told you 339 were "safely bindable". True that they *map* to a composite value-wise; **false that the
-work is mechanical**. The composites are used in **zero files** — `.t-cm-*` / `.t-ed-*` appear in no
-markup anywhere. So binding needs either markup class changes on 339 elements, or a composition mechanism
-that doesn't exist. **That's an architectural fork — markup class vs CSS composition vs build-time
-inlining — and it's yours.** Exactly the class of decision the T6 revert taught us to ask about first.
+## 3. ⛔ YOURS — the Latin Univers **webfont** pack
+Ask brand for **WOFF + WOFF2**, same deliverable already held for the five script companions. Gates
+all shareable material. Also yours: four tracked files embed base64 Univers (`24accd0`, pushed); repo
+is **private** and Monotype's prohibition names *public* repos, so exposure is low but non-zero.
+Options: leave / `git rm --cached` / BFG purge. Terms: `knowledge/assets/WebfontUserGuide-2024.pdf`.
+Now gated as `ASSERT-001` with a 30-day recheck — **when the pack lands the build goes red and names
+every doc that says otherwise.**
 
-## 3. Then: wire DEF-006 and drive to green. Still unwired; would red the build today.
+## 4. 🧹 CONSOLIDATION — separate track, **Fable, cold**. Do not let it block §1.
+Per `MODEL-ROUTING`, Fable is for *"big, high-stakes, hands-off jobs where a mistake across the whole
+scope is costly."* This decides what gets **deleted** from a 975-line spine and 115 memory files.
+Needs: **fresh context** (rule 6), a **dry-run diff** before anything is removed, and — my advice —
+**not me designing it**, since I spent today appending ~200 lines to the files that need pruning.
+Scope: (a) a consolidation pass to counterpart capture · (b) normalise, one fact one home ·
+(c) size budgets so adding forces retiring · (d) a retirement path · (e) rule on deleting the mirror.
 
-## 4. Carried, unchanged
-Q5 (col26-020 scope) still open · triage the 25 edge-extremity findings · rebind the 10 literal `#1A1A1A`
-· paste the Figma style description from `neutral-blacks.proposals.json` · **rule→gate coverage: 42 of 54
-BLOCKING rules cited by no gate** — today's blind-spot is one instance of exactly that · Tranche 8 comments
-· DataViz 🟡 parked.
+## 5. Carried, unchanged
+Q5 (col26-020 scope) · triage the 25 edge-extremity findings · rebind the 10 literal `#1A1A1A` ·
+paste the Figma style description · **42 of 54 BLOCKING rules cited by no gate** — today's blind-spot
+was one instance · Tranche 8 comments · DataViz 🟡 parked.
 
-> **COMMITTED:** `4cc58ff` (gate fix + inscription) · `362be48` (the webfont correction).
-> **You have pushed.** Build green 29/29. Nothing uncommitted.
-> **Memory changed this session** — worth running your rsync (`knowledge/_agent-memory/README.md`).
+> **COMMITTED:** `4cc58ff` · `362be48` · `5fd1db2` (pushed) + this session's final commit.
+> Build green **30/30**. Nothing uncommitted at handoff.
+> **Next session model:** Opus for the binding ruling (§1); Sonnet once the mechanism is chosen.
+> **Fable + cold for §4** — and only §4.

@@ -36,6 +36,12 @@ STEPS = [
     ("guideline rules index (gate)", "guidelines/gen_rules_index.py"),
     ("runbook index (generated)", "gen_runbook_index.py"),
     ("standing-instructions reachability gate", "_validate_standing_instructions.py"),
+    # Sibling to the above, and deliberately adjacent: that gate asks "is every standing
+    # doc REACHABLE"; this one asks "is what we say still TRUE". A doc can be perfectly
+    # reachable and perfectly wrong — which is how "the sandbox has no Univers" survived
+    # 16 months while the fonts sat in the repo (Dave, 2026-07-18: "how do we fix this
+    # permanently?"). Registry: _assertions.json.
+    ("assertion veracity gate — claims that can rot", "_validate_assertions.py"),
     ("cross-reference index", "_build_xref_index.py"),
     ("sutherland acceptance fixtures", "_build_sutherland_fixtures.py"),
     ("states-completeness probe (advisory)", "_build_states_probe.py"),

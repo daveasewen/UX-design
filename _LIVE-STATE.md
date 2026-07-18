@@ -5,24 +5,23 @@ what's **OPEN**. Read this second, after `GOOD-MORNING.md`, before `knowledge/RE
 Per **ADR-0007**. ⚠️ **INTERIM — hand-maintained** until `_build_live_state.py` generates it from
 front-matter edges + tombstones. Refresh at end of every session alongside the handoff.*
 
-*Last refreshed: **2026-07-18 (afternoon — TRACKING / LETTER-SPACING arc + a gate blind-spot closed)**.
-Opened as the TYPE-002 retrofit; became a tracking-rules research arc. **LANDED:** the type26-019 all-caps
-check added to `_validate_proforma.py` — the rule has been BLOCKING since 07-02 but only ever lived in
-`_validate_snippets.py` (which globs `snippets/` only), so four `_proforma` tranches carried
-`text-transform:uppercase` past it for weeks; de-capped + bite-tested. Four review sheets built
-(COMPONENT-MEDIUM, TRACKING-DOSSIER, UNIVERS-DOSSIER, TRACKING-CONTACT) — **all awaiting Dave's markup,
-nothing promoted**. `_TYPE-DECISIONS` gains T-D1..T-D6. `ds-004` logged (upstream foundry kerning gap).
-Two spin-offs registered (font-audit instrument; real-font embedding). **KEY RULING (Dave):** Editorial and
-Component answer to *different physics* — reading-speed evidence governs Editorial only, crowding + halation
-govern Component; consequence is that tracking must live ON the composites, since the same 40px wants
-different values per tier. **MEASURED:** HSBC's Univers cut is horizontally IDENTICAL to stock Univers Next
-Pro (only the ampersand differs); Univers is LOOSER than Helvetica; sidebearing/stem collapses 4.60→0.46
-across the weight range. **⚠️ CORRECTED IN-SESSION:** I struck the "Latin webfont missing" blocker as false,
-then Dave caught that desktop ≠ webfont licence — **blocker reinstated, still open, and it is the thing
-blocking shareable material**. Prior: 2026-07-18 morning (halation/edge-extremity discovery, `col26-020/021`,
-`surface/digital-black` promoted), 2026-07-17 late (TYPE-TOKEN SYSTEM promoted to canon + grid arc),
-2026-07-17 (type-token system built), 2026-07-16 eve (DataViz dossier). Committed this session:
-`4cc58ff`·`362be48` — **Dave has pushed.***
+*Last refreshed: **2026-07-18 (session "The tidy first answer")**. Opened as the TYPE-002 ×721
+retrofit; those never moved. Became tracking research → font forensics → a licensing finding → a
+diagnosis of the record-rot problem. **LANDED:** type26-019 all-caps check added to
+`_validate_proforma.py`, closing a gate blind-spot that let four tranches carry uppercase past a
+BLOCKING rule for weeks (bite-tested); **new `_validate_assertions.py` veracity gate + registry**
+(build now **30/30**); `_TYPE-DECISIONS` T-D1..T-D6; `ds-004`; five new memories; two spin-offs.
+**KEY RULING (Dave):** Editorial and Component answer to different physics → tracking must live ON
+the composites. **MEASURED:** HSBC's cut ≡ stock Univers Next Pro horizontally; Univers LOOSER than
+Helvetica; SB/stem collapses 4.60→0.46 across weights. **⛔ OPEN:** Latin webfont licence (see the
+top entry) — I struck this blocker wrongly and Dave caught it. **🔍 DIAGNOSIS (Dave pushed for it):**
+the architecture is **append-only by construction** — the capture ritual's five steps are all writes,
+nothing prunes, and `_LIVE-STATE` has gone 638→975 lines in three days without ever shrinking. The
+assertion gate is a partial fix; **consolidation is the real one, and is queued as a Fable/cold
+session.** The memory mirror (115 files vs 110 live) is a symptom, and whether it should exist at all
+is now an open question. Prior: 2026-07-18 morning (halation/edge-extremity, `col26-020/021`),
+2026-07-17 late (type tokens promoted + grid arc), 2026-07-16 eve (DataViz dossier).
+Committed: `4cc58ff`·`362be48`·`5fd1db2` (pushed) + final.*
 ---
 
 ## ⛔ OPEN / BLOCKING — Latin Univers **WEBFONT** licence (raised 2026-07-18)

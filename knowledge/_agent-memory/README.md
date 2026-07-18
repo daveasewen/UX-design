@@ -35,11 +35,54 @@ failure mode that produced the `#1A1A1A` and §A incidents.
 > here and not only in memory**. If you find yourself reading this mirror to answer a question about how
 > the project works, something has already gone wrong upstream.
 
-## Refreshing it
+## ⚠️ WHETHER THIS DIRECTORY SHOULD EXIST AT ALL — open, raised by Dave 2026-07-18
 
-The agent **cannot** copy the memory directory itself — the shell sandbox cannot reach outside the
-connected folder, `Glob` refuses application-internal paths, and requesting that directory as a working
-folder is off-limits. So this is Dave's one command, run in Terminal from anywhere:
+*"why are we doing this, surely this isn't the usual way it works?"* — Dave, on being told mirror-on-write
+was now automatic. **He is right, and the mirror does not survive the question well.**
+
+- **It is not how agent memory normally works.** Memory lives where it lives; users do not back it up.
+- **It has already drifted into the third source of truth its own README forbids.** Counted 2026-07-18:
+  **115 files in `store/` against 110 live.** Five memories that were deleted or superseded still sit
+  here, reading as current.
+- **It exists because we do not trust our own rule.** The project says *"memory is an accelerator, the
+  repo is the record."* If that were true, losing memory would cost nothing worth mirroring. The mirror
+  is insurance against durable things living ONLY in memory — which is a **normalisation failure**, the
+  same disease behind the 975-line `_LIVE-STATE` and the sixteen-month "no Univers" claim.
+
+⇒ **Recommendation to the consolidation session: consider DELETING this mirror rather than maintaining
+it.** If facts get one home each in the repo, memory becomes genuinely disposable and this directory is
+pointless. A well-synced mirror is a worse outcome than no mirror, because it is another place to rot.
+Everything below is interim behaviour pending that ruling.
+
+## Refreshing it — **MIRROR-ON-WRITE (2026-07-18, PROVISIONAL)**
+
+> ### ⚠️ The old instruction here was WRONG, and it was wrong in the way this whole project keeps
+> ### getting caught: a checkable claim, written once, believed for weeks.
+>
+> It said *"the agent **cannot** copy the memory directory itself — the shell sandbox cannot reach
+> outside the connected folder, `Glob` refuses application-internal paths"*. **Tested 2026-07-18:
+> `Glob` on the memory directory returns all 109 files, and `Read`/`Write`/`Edit` operate on them
+> normally.** Only the **bash sandbox** is confined to the mount; the *file tools are not*. The claim
+> conflated the two, and the cost was that every memory write since has depended on Dave remembering
+> a manual rsync — a durable thing hanging off a human's memory, which is the exact anti-pattern the
+> Memento framing exists to name.
+>
+> Dave, 2026-07-18, on being told the rsync was still outstanding: *"same thing I guess."* Correct.
+
+### The rule now: **mirror in the same pass as the write.**
+
+**When the agent writes or edits a memory file, it writes the copy into `store/` immediately — same
+turn, not batched, not deferred to the capture ritual.** A mirror that is refreshed at the same
+moment as the source cannot drift, needs no reconciliation step, and cannot be forgotten because it
+is not a separate step at all. Batching is what created the dependency; removing the batch removes it.
+
+Practically: `Read` the memory file → `Write` the identical content to
+`knowledge/_agent-memory/store/<name>.md`. Update `store/MEMORY.md` whenever the index changes.
+
+### Dave's rsync — still valid, now a belt-and-braces catch-up, not the mechanism
+
+Useful for a full reconciliation (e.g. after a session that pre-dates mirror-on-write, or to catch
+anything written outside this project's conventions):
 
 ```bash
 rsync -a --delete \
@@ -47,11 +90,24 @@ rsync -a --delete \
   ~/Documents/Claude/Projects/UX-design/knowledge/_agent-memory/store/
 ```
 
-Then commit as normal. Worth doing at the end of any session that added or changed memories — the
-capture ritual (step 3) flags when that happened.
+If the glob matches more than one space, that is useful information in itself: memory is fragmented
+across spaces, and the largest `store/` is the live one.
 
-If the glob matches more than one space, that is useful information in itself: it means memory is
-fragmented across spaces, and the largest `store/` is the live one.
+<details><summary>superseded text (kept for the audit trail)</summary>
+
+~~The agent **cannot** copy the memory directory itself — the shell sandbox cannot reach outside the
+connected folder, `Glob` refuses application-internal paths, and requesting that directory as a working
+folder is off-limits. So this is Dave's one command, run in Terminal from anywhere:~~
+
+```bash
+rsync -a --delete \
+  ~/Library/Application\ Support/Claude/local-agent-mode-sessions/*/*/spaces/*/memory/ \
+  ~/Documents/Claude/Projects/UX-design/knowledge/_agent-memory/store/
+```
+
+Then commit as normal.
+</details>
+
 
 ## Recovery
 
