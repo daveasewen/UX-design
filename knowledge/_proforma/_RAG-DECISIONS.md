@@ -201,9 +201,53 @@ excludes.** Surfaced by Dave's finance challenge. Needs a ruling; not resolved h
 where a status chip and a chart series share a dashboard.
 
 ### OPEN
-- Green + blue matting rungs — Dave's pick, still needed (`as now` / `−15%` / `−28%` / `−40%`).
+- ~~Green + blue matting rungs~~ — **RULED, see R-D4.**
 - Dark-mode green `#1AA05C` (3.37 white) — unfixed.
 - Dark-mode red `#CC4333` (3.97) / blue `#2674DC` (4.15) as GLYPHS on `#111` — pass 1.4.11 for
   icons, **fail 4.5 for text**.
 - The `dv-017` RAG-cell contradiction above.
 - Build the amber gate.
+
+---
+
+## R-D4 — Matting rungs RULED + first token promotion (2026-07-18)
+
+### The rungs — RULED
+Source: Dave's second markup of `reviews/RAG-MATTING-2026-07-18.html` (3 pins) **plus a direct
+readback** — the pins named the hue but not the step (every row shares `td.ask`; the R-D2 ⛔ OPEN
+predicted exactly this), so the rung came from an explicit in-chat pick, not inference:
+
+| hue | pick | value | note |
+|---|---|---|---|
+| **green** | **matted 15%** | **`#2B7E4F`** | L 0.530 · C 0.109 · H 154.9° · white 5.00 |
+| **blue** | **matted 15%** | **`#306EC6`** | L 0.544 · C 0.151 · H 257.8° · white 5.03 |
+| **red** | **as-is** | `#B92F1E` (R-D1) | Dave: leave; no matting pass on red |
+| **amber** | — | absorbed by **R-D3** | pin "this for glyphs, not backgrounds" = the R-D2/R-D3 split, already ruled |
+
+**Q1 resolved implicitly: one matting level (15%) across green + blue.** Q3 resolved: red as-is.
+Q0/Q2 were overtaken by R-D3 (the AMBER-MATRIX sheet — `reviews/AMBER-MATRIX-2026-07-18.html` —
+is where the amber background was re-cut; Dave's "there was definitely work done on this" verified
+against that sheet and R-D3).
+
+### First token promotion — ENACTED (additive)
+`tokens/semantic-colour.json` gains the R-D2 role pairs as NEW flat keys under `rag/`
+(`<hue>-background` + `<hue>-glyph`), values per R-D1/R-D3/R-D4. **Incumbent keys
+(`error`/`warning`/`success`/`information` + tints) are UNTOUCHED — they are the future legacy
+theme (R-D1 pin 12). No component rebinds yet** — that waits for the blast-radius gate, so this
+promotion is zero-visual-change by construction.
+**Dark-mode is promoted only where ruled:** red `#CC4333` (R-D1) · amber pair mode-stable (R-D3) ·
+blue dark `#2674DC` (passes 4.55 for white text; glyph-as-text on `#111` 4.15 stays OPEN) ·
+**green is promoted LIGHT-ONLY** — the first enactment attempt carried the incumbent dark
+`#1AA05C` with an OPEN flag and **the contrast gate refused it** (3.37 vs 4.5): a known-failing
+value behind a prose flag is exactly the pattern the gates exist to stop. The dark leaf lands with
+the dark-green ruling. **No unruled value was invented.**
+**Gate model extended, not weakened:** the promotion also added `RULED_PAIR_EXCLUSIONS` to
+`_contrast_utils.py` — white `rag/text` × `rag/warning-background` is a pairing R-D3 rule 1
+forbids outright, so the audit no longer tests a state that cannot occur (reason string carries
+the ledger ref). Note the promotion made the fills VISIBLE to the surface-resolver for the first
+time (incumbent keys never name-matched "background") — the gate seeing amber and dark-green at
+all is new coverage, and it bit correctly both times.
+
+### Still open after R-D4
+Dark-mode green fix · dark-mode red/blue text-glyph lift · the `dv-017` contradiction · the amber
+gate (rules 1+2) · component rebinding to the new role tokens (AFTER the blast-radius gate).

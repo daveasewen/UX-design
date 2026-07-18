@@ -25,7 +25,7 @@
 | `icon/default` | `#FFFFFF` | `#1D1D1D` | 16.86:1 | ✅ OK |
 | `icon/default-reverse` | `#FFFFFF` | `#1D1D1D` | 16.86:1 | ✅ OK |
 | `icon/disabled` | `#767676` | `#1D1D1D` | 3.71:1 | ✅ OK |
-| `rag/text/on-dark` | `#FFFFFF` | `#1D1D1D` | 16.86:1 | ✅ OK |
+| `rag/text/on-dark` | `#FFFFFF` | `#2674DC` | 4.55:1 | ✅ OK |
 | `tertiary/text/disabled` | `#767676` | `#404040` | 2.28:1 | 🟡 ALLOWED |
 | `tertiary/text/pressed` | `#FFFFFF` | `#404040` | 10.37:1 | ✅ OK |
 | `text/default` | `#FFFFFF` | `#1D1D1D` | 16.86:1 | ✅ OK |

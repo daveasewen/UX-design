@@ -17,7 +17,7 @@ narrative, relocated verbatim (how we got here; see its README for the rules + R
 > tripwire ~500 lines. Edits to this file are reachability-relevant — run
 > `python3 knowledge/_validate_standing_instructions.py` (STAND-002) after touching it.
 
-*Last refreshed: **2026-07-18 (Fable consolidation, "Making the record answerable")** — consolidated
+*Last refreshed: **2026-07-18 late (same session — R-D4 matting rungs ruled + first RAG role-token promotion)**. Previous: **2026-07-18 Fable consolidation** — consolidated
 1104 → ~450 lines per the classification Dave ruled via markup (11 pins) on
 `reviews/CONSOLIDATION-AUDIT-2026-07-18.html`. Nothing deleted: ~580 lines relocated verbatim to
 `_DECISION-HISTORY/`, duplicates reduced to pointers, two entries removed on their own recorded
@@ -110,6 +110,13 @@ Latin webfont" rests on absence of files, not on any document.
 - **`#000000` retained in the KB as brand source of truth**; `#1A1A1A` = digital black for screens;
   `#1D1D1D` dropped; `#333333` canon, stays.
 - **Incumbent RAG values NOT deleted** — retired into a future legacy theme. Tombstone, keep.
+- **R-D4 (2026-07-18): matting rungs RULED — green + blue matted 15%** (`#2B7E4F` / `#306EC6`),
+  red as-is, one level across both. **Role tokens PROMOTED** into `semantic-colour.json` as
+  `rag/<hue>-background` + `rag/<hue>-glyph` (additive; incumbents untouched; zero components
+  rebound yet — rebinding waits for the blast-radius gate). Green promoted **light-only**: the
+  contrast gate refused the known-failing incumbent dark (3.37) — dark leaf lands with the
+  dark-green ruling. Gate model gained `RULED_PAIR_EXCLUSIONS` (white text × amber fill is
+  forbidden by rule 1, so the audit no longer tests it). Ledger: R-D4.
 - **⚠️ NOT YET GATED.** Both amber rules are mechanically checkable and unenforced.
 
 - **Project name = Apollo** (renamed from *Promenaut* repo-wide 2026-07-14; "Apollo" singular
@@ -226,8 +233,9 @@ in the pro-forma tranches, carrying line-heights 1.1–1.6 — binding REPLACES 
 ignore a red build.
 
 ### Awaiting Dave — small, no analysis needed
-- **Matting rung for green + blue** — `as now` / `−15%` / `−28%` / `−40%`. No numerical tell — do
-  NOT guess. Sheet: `reviews/RAG-MATTING-2026-07-18.html`.
+- ~~Matting rung for green + blue~~ — **RULED R-D4 (2026-07-18): both matted 15%** (`#2B7E4F` /
+  `#306EC6`), red as-is; role tokens promoted (see LIVE → RAG). Rung came from a direct readback —
+  the pin export named the hue, not the row (the overlay row-identity debt biting again).
 - **`{#dv-017}`(a) CONTRADICTION** — permits red/green for deltas while naming "RAG-style cells";
   RAG includes amber. The rule permits a palette it also excludes.
 - **`.tag` COLLISION** — 14px canonical vs 12px "reused". One atom at one size, or `.tag--sm`?

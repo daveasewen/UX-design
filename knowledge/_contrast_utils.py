@@ -106,6 +106,29 @@ CONTRAST_ALLOWLIST = {
     "tertiary/icon/disabled": "Disabled icon — exempt from WCAG 1.4.3/1.4.11 (inactive component).",
 }
 
+# Pairs FORBIDDEN BY RULING — not exemptions from contrast, but pairings that are
+# not allowed to occur at all, so auditing them is auditing a non-existent state.
+# Keyed token-prefix -> {surface-token: written reason}. Scope deliberately narrow:
+# a pair lands here only when a recorded ruling forbids the combination, with the
+# ledger reference in the reason. (Mechanism added 2026-07-18 with the R-D4 token
+# promotion — the amber role token was the first fill the surface-resolver ever
+# paired with the universal white RAG text.)
+RULED_PAIR_EXCLUSIONS = {
+    "rag/text": {
+        "rag/warning-background":
+            "R-D3 rule 1 (2026-07-18, _RAG-DECISIONS.md): amber ALWAYS carries black "
+            "ink (#1A1A1A — 9.16:1); white RAG text on amber is forbidden by ruling, so "
+            "this pair cannot occur. The amber-rules gate (owed) enforces the ruling "
+            "itself; this entry only stops the audit testing a state the ruling forbids.",
+    },
+}
+
+def _excluded_surfaces(token_name):
+    for prefix, pairs in RULED_PAIR_EXCLUSIONS.items():
+        if token_name.startswith(prefix):
+            return pairs
+    return {}
+
 def is_light_only(token_name):
     """Tokens designed for light surfaces only (e.g. */on-light) are not used in
     dark mode, so judging them against a dark surface is a false positive."""
@@ -149,7 +172,9 @@ def resolve_dark_surface(token_name, surfaces, default_dark, raised_dark):
     if "on-inverse" in token_name:
         return (None, "sits on an inverting surface (secondary/pressed buttons), not the page; validated per-component via snippet contrast pairs")
     grp = _group_prefix(token_name)
-    candidates = [hx for nm, hx in surfaces.items() if grp and nm.startswith(grp + "/")]
+    excluded = _excluded_surfaces(token_name)
+    candidates = [hx for nm, hx in surfaces.items()
+                  if grp and nm.startswith(grp + "/") and nm not in excluded]
     if not candidates:
         candidates = [default_dark, raised_dark]
     worst = max(candidates, key=lambda h: luminance(*hex_to_rgb(h)))

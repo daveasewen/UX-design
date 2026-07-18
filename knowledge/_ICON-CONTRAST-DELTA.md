@@ -6,7 +6,7 @@
 gate (check 3, bite-tested). This advisory continues as the exhaustive/state×theme
 watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 
-**Headline: 0 declared dead-zone · 18 exhaustive (upper bound) · 0 roundel fails (<3:1) · 0 mark fails (<4.5 vs roundel, light).**
+**Headline: 0 declared dead-zone · 21 exhaustive (upper bound) · 0 roundel fails (<3:1) · 0 mark fails (<4.5 vs roundel, light).**
 
 ## 1. Declared icon pairs (the concrete promotion cost)
 
@@ -45,6 +45,11 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | icon/default | primary/background/hover | light | 1.91 | below-3(gated) |
 | icon/default | primary/background/pressed | light | 1.66 | below-3(gated) |
 | icon/default | primary/background/pressed | dark | 1.0 | below-3(gated) |
+| icon/default | rag/error-background | light | 2.1 | below-3(gated) |
+| icon/default | rag/information-background | light | 2.51 | below-3(gated) |
+| icon/default | rag/success-background | light | 2.53 | below-3(gated) |
+| icon/default | rag/success-background | dark | None | unresolved |
+| icon/default | rag/warning-background | dark | 1.9 | below-3(gated) |
 | icon/default | secondary/background/default | light | 1.66 | below-3(gated) |
 | icon/default | secondary/background/default | dark | 1.0 | below-3(gated) |
 | icon/default | secondary/background/hover | light | 1.0 | below-3(gated) |
@@ -61,6 +66,9 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | icon/default-reverse | form/background/hover | light | 1.11 | below-3(gated) |
 | icon/default-reverse | primary/background/disabled | light | 1.43 | below-3(gated) |
 | icon/default-reverse | primary/background/pressed | dark | 1.0 | below-3(gated) |
+| icon/default-reverse | rag/success-background | dark | None | unresolved |
+| icon/default-reverse | rag/warning-background | light | 1.9 | below-3(gated) |
+| icon/default-reverse | rag/warning-background | dark | 1.9 | below-3(gated) |
 | icon/default-reverse | scrollbar/background | light | 1.17 | below-3(gated) |
 | icon/default-reverse | secondary/background/default | dark | 1.0 | below-3(gated) |
 | icon/default-reverse | secondary/background/disabled | light | 1.43 | below-3(gated) |
@@ -88,6 +96,14 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | icon/disabled (allowlisted) | primary/background/disabled | light | 1.0 | below-3(gated) |
 | icon/disabled (allowlisted) | primary/background/disabled | dark | 2.28 | below-3(gated) |
 | icon/disabled (allowlisted) | primary/background/hover | dark | 1.46 | below-3(gated) |
+| icon/disabled (allowlisted) | rag/error-background | light | 4.21 | DEAD-ZONE |
+| icon/disabled (allowlisted) | rag/error-background | dark | 1.05 | below-3(gated) |
+| icon/disabled (allowlisted) | rag/information-background | light | 3.52 | DEAD-ZONE |
+| icon/disabled (allowlisted) | rag/information-background | dark | 1.0 | below-3(gated) |
+| icon/disabled (allowlisted) | rag/success-background | light | 3.5 | DEAD-ZONE |
+| icon/disabled (allowlisted) | rag/success-background | dark | None | unresolved |
+| icon/disabled (allowlisted) | rag/warning-background | light | 1.33 | below-3(gated) |
+| icon/disabled (allowlisted) | rag/warning-background | dark | 2.39 | below-3(gated) |
 | icon/disabled (allowlisted) | scrollbar/background | light | 1.22 | below-3(gated) |
 | icon/disabled (allowlisted) | scrollbar/background | dark | 3.55 | DEAD-ZONE |
 | icon/disabled (allowlisted) | secondary/background/disabled | light | 1.0 | below-3(gated) |
@@ -118,7 +134,7 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | icon/disabled (allowlisted) | tooltip/background | light | 1.43 | below-3(gated) |
 | icon/disabled (allowlisted) | tooltip/background | dark | 3.71 | DEAD-ZONE |
 
-_(82 of 168 exhaustive combos already clear 4.5:1; 6 transparent/composite surfaces skipped (alpha — true contrast needs the render path) — omitted.)_
+_(90 of 192 exhaustive combos already clear 4.5:1; 6 transparent/composite surfaces skipped (alpha — true contrast needs the render path) — omitted.)_
 
 ## 3. Roundel vs surface — rag/* pairs at the ROUNDEL threshold (≥3:1, ruled policy)
 

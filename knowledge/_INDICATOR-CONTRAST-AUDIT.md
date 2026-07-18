@@ -2,7 +2,7 @@
 
 > Brand red, RAG status, interactive-state, and border tokens tested at **3:1** (WCAG 1.4.11) against the worst-case (lightest) dark surface resolved from the store — page default `#000000` + raised island `#1D1D1D`. `on-light` tokens excluded (light-only). Border tokens included since 2026-07-14 (1.4.11 explicitly covers UI-component boundaries). `*/disabled` tokens excluded — WCAG 1.4.11 itself exempts inactive components.
 
-**Result:** 31 pass · 0 allowed exception(s) · **0 gating failure(s)** · 5 skipped (light-only).
+**Result:** 34 pass · 0 allowed exception(s) · **0 gating failure(s)** · 5 skipped (light-only).
 
 ## Skipped — light-mode-only tokens
 
@@ -36,11 +36,14 @@
 | `primary/border/hover` | `#D61412` | `#1D1D1D` | 3.19:1 | ✅ OK |
 | `primary/border/pressed` | `#FFFFFF` | `#1D1D1D` | 16.86:1 | ✅ OK |
 | `rag/error` | `#DB0011` | `#1D1D1D` | 3.23:1 | ✅ OK |
+| `rag/error-glyph` | `#CC4333` | `#1D1D1D` | 3.55:1 | ✅ OK |
 | `rag/information` | `#4587A7` | `#1D1D1D` | 4.24:1 | ✅ OK |
+| `rag/information-glyph` | `#2674DC` | `#1D1D1D` | 3.7:1 | ✅ OK |
 | `rag/neutral` | `#FFFFFF` | `#1D1D1D` | 16.86:1 | ✅ OK |
 | `rag/success` | `#00847F` | `#1D1D1D` | 3.7:1 | ✅ OK |
-| `rag/text/on-dark` | `#FFFFFF` | `#1D1D1D` | 16.86:1 | ✅ OK |
+| `rag/text/on-dark` | `#FFFFFF` | `#2674DC` | 4.55:1 | ✅ OK |
 | `rag/warning` | `#FFBB33` | `#1D1D1D` | 9.96:1 | ✅ OK |
+| `rag/warning-glyph` | `#C58900` | `#1D1D1D` | 5.58:1 | ✅ OK |
 | `secondary/border/default` | `#FFFFFF` | `#1D1D1D` | 16.86:1 | ✅ OK |
 | `secondary/border/hover` | `#EDEDED` | `#1D1D1D` | 14.4:1 | ✅ OK |
 | `secondary/border/pressed` | `#D7D8D6` | `#1D1D1D` | 11.79:1 | ✅ OK |

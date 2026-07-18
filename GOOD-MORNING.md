@@ -242,10 +242,10 @@ Unchanged from the T-D12 handoff: bare selectors in a globally-linked stylesheet
 safety-critical work across ~460 selectors, ungated. Wanted BEFORE the non-`/1` batch binds 690 more.
 `_LIVE-STATE.md` → OPEN has the candidate check.
 
-## 2. Small picks — yours, no analysis needed (unchanged, still unmarked)
+## 2. Small picks — yours, no analysis needed
 | what | detail |
 |---|---|
-| **matting rung, green + blue** | `reviews/RAG-MATTING-2026-07-18.html` — no numerical tell, I must not guess |
+| ~~matting rungs~~ | **RULED R-D4 same evening: green + blue matted 15%, red as-is; role tokens promoted.** |
 | **`.tag` collision** | one atom one size, or `.tag--sm`? Actively blocks bindings |
 | **`.num` 24px** | add a Component rung at 24, or snap to 20/32? |
 | **`{#dv-017}`(a)** | the rule permits a palette it also excludes |
