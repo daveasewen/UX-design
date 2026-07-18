@@ -935,10 +935,22 @@ exactly the guard wanted BEFORE the remaining ~690 TYPE-002 bind. Chosen over ad
 stop a bare `h2` added tomorrow) and baseline-diff (less self-documenting). Bite-tested: unregistered,
 escaped, and unwaived injections each fail; restore goes green.
 
-**Waived DEBT to burn down (not a licence to add more), priority order:** `h2` (25 files) —
-namespace to its intended container; then the scoped-element set (`.seg button`, `.search input`,
+**Waived DEBT to burn down (not a licence to add more), priority order:** ~~`h2` (25 files)~~
+**DONE** (2026-07-18, below); then the scoped-element set (`.seg button`, `.search input`,
 `.nav button`, `.pg a`, `nav.main a`, `.note.global .actions button`). Burndown moves pixels
 (T-D12 discipline) → belongs in the non-`/1` reviewed batch, NOT swept here.
+
+**✅ h2 burndown DONE (2026-07-18).** The survey reframed it: the "25-file radius" was a **2-file
+intentional binding disguised as a global**. 22 files override `h2` locally (global inert);
+Confirmation's title is `.confirm__title` (24px class, inert); the bare global was *live* in only
+**List-items + Status-indicator**, where the specimen-chrome section labels deliberately delegate
+sizing to the caption composite. Fix: bare `h2` → scoped `.spec-h`; the 5 chrome headings in those
+2 files now carry an explicit `.spec-h` class. `.wrap h2` was rejected (Avatar/Badge sit in `.wrap`
+and would jump 12→14px). **Visual no-op, computed-style verified in real Chromium** (14px before +
+after; controls Avatar 12px / Confirmation 24px unchanged). Gate radius for `h2`: **25 → 0**;
+`.spec-h` registered as a `class` binding (not waived) over its 2 declared files.
+*Open convention debt:* specimen chrome is inconsistent — the 2 migrated files use `.spec-h` (14px)
+while older reference files hardcode `h2{12px opacity:.55}`. Harmonisation tracked in `_FUTURE-STATE`.
 
 **Known v1 limit:** the gate matches selectors structurally (class/element presence per file), not by
 full CSS cascade, and gates on the file *set*; a same-count file *swap* inside the acknowledged set

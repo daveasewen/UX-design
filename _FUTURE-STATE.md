@@ -63,6 +63,13 @@ status (`idea` / `parked` / `resurrection-candidate` / `graduated→LIVE`).
   case) rather than proxying via file membership. *Feeds:* the type-binding guard-rail. *Status:*
   idea — promote once the v1 has bedded in (cf. consult tool's fuzzy→rigorous path).
 
+- **Harmonise specimen-chrome section labels onto `.spec-h`.** Reference-file section labels are
+  inconsistent: List-items + Status-indicator now use `.spec-h` (14px, via the caption composite),
+  while older files hardcode `h2{font-size:12px; opacity:.55}`. A pass could move all specimen chrome
+  onto one `.spec-h` treatment — but note this is a *visible* change (12→14px + the muting), not a
+  no-op, and it's demo scaffolding, not product. *Feeds:* the type-binding tidy / T-D13 follow-on.
+  *Status:* idea — surfaced 2026-07-18 during the h2 burndown; decide treatment before sweeping.
+
 ## Standing register elsewhere (pointers, not copies)
 
 - **In-flight targets** — gates-as-a-service · chat-to-KB bot · ingestion done-right: `_LIVE-STATE.md`
