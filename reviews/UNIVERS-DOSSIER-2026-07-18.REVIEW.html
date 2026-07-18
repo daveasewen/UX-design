@@ -1,0 +1,573 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Univers &mdash; what the licensed cut actually does</title>
+<style>
+:root{--ink:#1c1c1c;--mut:#6b6b6b;--line:#e4e4e4;--red:#db0011;--meas:#0b7a34;--res:#3b5f8a;
+      --warn:#b25000;}
+*{box-sizing:border-box}
+body{font-family:"Univers Next for HSBC","Helvetica Neue",Arial,sans-serif;color:var(--ink);
+  margin:0;padding:40px;max-width:1160px;line-height:1.5;background:#fafafa}
+h1{font-size:32px;font-weight:300;margin:0 0 4px}
+h2{font-size:20px;font-weight:500;margin:44px 0 4px;padding-top:16px;border-top:2px solid var(--ink)}
+.sub{color:var(--mut);font-size:14px;margin:0 0 24px}
+.lead{font-size:15px;background:#fff;border:1px solid var(--line);border-left:3px solid var(--red);
+  padding:16px 20px;margin:20px 0}
+.correct{font-size:14px;background:#fff;border:1px solid var(--line);border-left:3px solid var(--warn);
+  padding:14px 20px;margin:20px 0}
+.card{background:#fff;border:1px solid var(--line);padding:18px 22px;margin:14px 0}
+.tag{display:inline-block;font-size:10px;letter-spacing:.06em;font-weight:500;padding:3px 9px;
+  color:#fff;margin-bottom:8px}
+.tag.MEASURED{background:var(--meas)}.tag.RESEARCH{background:var(--res)}
+.key{font-size:11px;font-weight:500;color:#fff;background:var(--ink);padding:2px 8px;margin-right:8px}
+.find{font-size:16px;font-weight:500;margin:0 0 8px}
+.detail{font-size:14px;margin:0 0 12px}
+.imp{font-size:13.5px;background:#fbfbfb;border-left:2px solid var(--line);padding:9px 14px;margin:0}
+table{width:100%;border-collapse:collapse;background:#fff;margin:12px 0;font-size:13px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{font-weight:500;font-size:11px;letter-spacing:.04em;color:var(--mut);background:#f4f4f4}
+tr.ours td{background:#f2f8f4;font-weight:500}
+td.num{text-align:right;font-family:ui-monospace,Menlo,monospace;font-size:12px}
+code{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;background:#f2f2f2;padding:1px 5px;
+  border-radius:3px}
+.rules{background:#fff;border:1px solid var(--line);padding:4px 20px 16px;margin:16px 0}
+.rules li{margin:15px 0;font-size:14px}
+.foot{color:var(--mut);font-size:12px;margin-top:44px;border-top:1px solid var(--line);padding-top:12px}
+.zero{color:var(--red);font-weight:500}
+</style></head><body>
+<h1>Univers &mdash; what the licensed cut actually does</h1>
+<p class="sub">Apollo SDS &middot; 2026-07-18 &middot; measured from the repo font files, plus lineage research.</p>
+<div class="lead"><b>The method changed for this one.</b> Every tracking sheet so far has rested on literature and brand precedent. This one is <b>measured</b> &mdash; the licensed Latin desktop TTFs are in the repo at <code>knowledge/assets/fonts/_desktop/TTF/</code>, and sidebearings, kerning and vertical metrics come straight out of them. That is a higher evidence tier than anything in the tracking dossier: not what typographers say about Univers in general, but what <b>this cut</b> does.<br><br><b>&#9888; Side effect: a stale blocker.</b> <code>_TYPE-DECISIONS.md</code> records &quot;Blockers to writing clean canon tokens &rarr; 1. Latin webfont missing; the dropped packs are the script companions&quot;. <b>The Latin desktop set is present</b> &mdash; six weights plus italics, TTF and OTF. That blocker should be struck, and it may also mean the sandbox can render specimens in the real face for the first time.</div>
+<div class="lead"><b>The headline.</b> Received wisdom says Univers is tight. <b>Measured, this cut is looser than Helvetica, Arial, Calibri and Lato.</b> Frutiger&#39;s famous &quot;too tight&quot; remark was about <b>apertures</b> &mdash; a different property, and one letter-spacing cannot fix.</div>
+<h2>1 &middot; Is it tight or loose? &mdash; measured</h2>
+<p class="sub">All normalised to 1000 UPM. <b>Sidebearing &divide; stem</b> is the standard tightness index &mdash; it asks how much air a face leaves relative to its own stroke weight, so it is comparable across designs. Lower = tighter.</p>
+<table><thead><tr><th>Face</th><th class='num'>n sidebrg</th><th class='num'>o sidebrg</th><th class='num'>stem</th><th class='num'>SB &divide; stem</th><th class='num'>SB as % x-height</th></tr></thead><tbody>
+<tr class=ours><td>HSBC Univers Latin Rg</td><td class='num'>79</td><td class='num'>45</td><td class='num'>88</td><td class='num'>0.90</td><td class='num'>15.6%</td></tr>
+<tr><td>DejaVu Sans</td><td class='num'>88</td><td class='num'>55</td><td class='num'>90</td><td class='num'>0.98</td><td class='num'>15.7%</td></tr>
+<tr><td>Lato</td><td class='num'>68</td><td class='num'>42</td><td class='num'>89</td><td class='num'>0.76</td><td class='num'>13.4%</td></tr>
+<tr><td>Carlito (Calibri metrics)</td><td class='num'>65</td><td class='num'>37</td><td class='num'>86</td><td class='num'>0.75</td><td class='num'>13.5%</td></tr>
+<tr><td>Liberation Sans (Arial metrics)</td><td class='num'>66</td><td class='num'>42</td><td class='num'>88</td><td class='num'>0.75</td><td class='num'>12.4%</td></tr>
+</tbody></table>
+<p class="sub">Only DejaVu Sans is looser &mdash; and DejaVu was drawn deliberately open for low-resolution screens. Univers sits at the loose end of the neo-grotesques, not the tight end.</p>
+<h2>2 &middot; Spacing across the weight range &mdash; the finding I did not expect</h2>
+<p class="sub">Sidebearings are nearly flat while stems grow sevenfold. The relative tightness therefore changes enormously across the family.</p>
+<table><thead><tr><th>Weight</th><th class='num'>CSS</th><th class='num'>n sidebrg</th><th class='num'>stem</th><th class='num'>SB &divide; stem</th><th class='num'>n advance</th></tr></thead><tbody>
+<tr><td>Ultra Light</td><td class='num'>250</td><td class='num'>92</td><td class='num'>20</td><td class='num'>4.60</td><td class='num'>545</td></tr>
+<tr><td>Thin</td><td class='num'>300</td><td class='num'>85</td><td class='num'>40</td><td class='num'>2.12</td><td class='num'>553</td></tr>
+<tr><td>Light</td><td class='num'>350</td><td class='num'>84</td><td class='num'>61</td><td class='num'>1.38</td><td class='num'>574</td></tr>
+<tr><td>Regular</td><td class='num'>400</td><td class='num'>79</td><td class='num'>88</td><td class='num'>0.90</td><td class='num'>593</td></tr>
+<tr class=ours><td>Medium</td><td class='num'>500</td><td class='num'>74</td><td class='num'>116</td><td class='num'>0.64</td><td class='num'>612</td></tr>
+<tr><td>Bold</td><td class='num'>700</td><td class='num'>68</td><td class='num'>146</td><td class='num'>0.46</td><td class='num'>632</td></tr>
+</tbody></table>
+<p class="sub">Highlighted row is <b>Medium</b> &mdash; the weight <code>{#col26-020}(c)</code> mandates for small reverse text. At 0.64 it is already on the tight side of the family, before bloom closes the apparent gap any further.</p>
+<h2>3 &middot; Kerning &mdash; present, consistent, one gap</h2>
+<p class="sub">Kern values in font units per 1000em for ten common problem pairs. <span class='zero'>Red zero</span> = pair not kerned.</p>
+<table><thead><tr><th>Pair</th><th class='num'>ULt</th><th class='num'>Th</th><th class='num'>Lt</th><th class='num'>Rg</th><th class='num'>Md</th><th class='num'>Bd</th></tr></thead><tbody>
+<tr><td><code>Ta</code></td>
+<td class='num'>-91</td>
+<td class='num'>-73</td>
+<td class='num'>-94</td>
+<td class='num'>-93</td>
+<td class='num'>-91</td>
+<td class='num'>-119</td>
+</tr>
+<tr><td><code>Vo</code></td>
+<td class='num'>-60</td>
+<td class='num'>-48</td>
+<td class='num'>-54</td>
+<td class='num'>-48</td>
+<td class='num'>-73</td>
+<td class='num'>-75</td>
+</tr>
+<tr><td><code>AV</code></td>
+<td class='num'>-24</td>
+<td class='num'>-36</td>
+<td class='num'>-54</td>
+<td class='num'>-61</td>
+<td class='num'>-59</td>
+<td class='num'>-60</td>
+</tr>
+<tr><td><code>Yo</code></td>
+<td class='num'>-78</td>
+<td class='num'>-73</td>
+<td class='num'>-94</td>
+<td class='num'>-93</td>
+<td class='num'>-102</td>
+<td class='num'>-105</td>
+</tr>
+<tr><td><code>Pa</code></td>
+<td class='num'>-40</td>
+<td class='num'>-44</td>
+<td class='num'>-52</td>
+<td class='num'>-45</td>
+<td class='num'>-59</td>
+<td class='num'>-59</td>
+</tr>
+<tr><td><code>Fo</code></td>
+<td class='num'>-25</td>
+<td class='num'>-30</td>
+<td class='num'>-28</td>
+<td class='num'><span class=zero>0</span></td>
+<td class='num'>-30</td>
+<td class='num'>-30</td>
+</tr>
+<tr><td><code>LT</code></td>
+<td class='num'>-114</td>
+<td class='num'>-108</td>
+<td class='num'>-96</td>
+<td class='num'>-93</td>
+<td class='num'>-104</td>
+<td class='num'>-105</td>
+</tr>
+<tr><td><code>r.</code></td>
+<td class='num'>-72</td>
+<td class='num'>-84</td>
+<td class='num'>-72</td>
+<td class='num'>-48</td>
+<td class='num'>-76</td>
+<td class='num'>-60</td>
+</tr>
+<tr><td><code>ov</code></td>
+<td class='num'><span class=zero>0</span></td>
+<td class='num'><span class=zero>0</span></td>
+<td class='num'>-12</td>
+<td class='num'>-16</td>
+<td class='num'>-15</td>
+<td class='num'>-15</td>
+</tr>
+<tr><td><code>24</code></td>
+<td class='num'><span class=zero>0</span></td>
+<td class='num'><span class=zero>0</span></td>
+<td class='num'><span class=zero>0</span></td>
+<td class='num'><span class=zero>0</span></td>
+<td class='num'><span class=zero>0</span></td>
+<td class='num'><span class=zero>0</span></td>
+</tr>
+</tbody></table>
+<p class="sub"><b><code>Fo</code> is unkerned in Regular alone</b> &mdash; every other weight gives it &minus;25 to &minus;30. Digit pairs unkerned throughout is correct: tabular figures must hold their column.</p>
+<div class="correct"><b>&#9888; A correction, recorded because the ledger should carry it.</b> My first kerning parser reported <i>&quot;no kerning in any weight except Medium&quot;</i> and I was about to write it up as a font defect. It was <b>wrong</b>: the family uses GPOS <b>extension lookups (LookupType 9)</b>, and the parser was skipping anything that was not a direct type-2 lookup. Unwrapped, every weight kerns. <b>Had I recorded the first result it would have entered the ledger as a defect that does not exist</b> &mdash; the same failure mode as yesterday&#39;s &quot;38% of rules missing&quot;. Two passes, because the first answer was tidy and confirmed what I half-expected.</div>
+<h2>4 &middot; What it means</h2>
+<div class="card">
+<span class="tag MEASURED">MEASURED</span>
+<p class="find"><span class="key">M1</span>This cut is spaced <b>looser</b> than Helvetica, Arial, Calibri and Lato.</p>
+<p class="detail">The <code>n</code> sidebearing is <b>15.6% of x-height</b>; Arial is 12.4%, Calibri 13.5%, Lato 13.4%. Only DejaVu Sans &mdash; a face drawn deliberately open for low-resolution screens &mdash; is looser, at 15.7%. Relative to its own stroke weight the sidebearing/stem ratio is <b>0.90</b> against roughly 0.75 for the Helvetica-lineage faces.</p>
+<p class="imp"><b>For us: </b><b>This weakens C1 on the contact sheet.</b> I recommended <code>+0.01em</code> on 12px component labels on a crowding argument that silently assumed normally-spaced type. Univers already carries more air than Arial. The crowding case does not disappear &mdash; but it starts from a looser baseline than I assumed, and C1 should probably fall back toward <code>+0.005em</code> or zero.</p>
+</div>
+<div class="card">
+<span class="tag MEASURED">MEASURED</span>
+<p class="find"><span class="key">M2</span>Sidebearings barely move across the weight range. Stems increase sevenfold.</p>
+<p class="detail">From Ultra Light to Bold the sidebearing falls <b>92 &rarr; 68</b> (&minus;26%), while the stem goes <b>20 &rarr; 146</b> (+630%). So the sidebearing/stem ratio collapses <b>4.60 &rarr; 0.46</b>: at Bold the space between letters is under half a stem, at Ultra Light it is over four stems.</p>
+<p class="imp"><b>For us: </b><b>Tracking in this family is weight-dependent, and none of our rules account for that.</b> Heavier weights are relatively far tighter and need more relief. Note where this lands: col26-020(c) mandates <b>Medium</b> for small reverse text, and Medium sits at <b>0.64</b> &mdash; already tight-side. Bloom then closes the apparent gap further. <b>C2/C3 hold or strengthen; C1 weakens.</b></p>
+</div>
+<div class="card">
+<span class="tag MEASURED">MEASURED</span>
+<p class="find"><span class="key">M3</span>Kerning is present in every weight, and consistent. One real gap.</p>
+<p class="detail">All six weights kern via GPOS extension lookups. Across ten common problem pairs the values track closely (<code>Ta</code> &minus;73 to &minus;119, <code>LT</code> &minus;93 to &minus;114). <b>The one inconsistency: <code>Fo</code> is unkerned in Regular only</b> (0, against &minus;25 to &minus;30 in every other weight). Digit pairs are unkerned throughout, which is correct for tabular figures.</p>
+<p class="imp"><b>For us: </b>Not a systemic defect. The <code>Fo</code> gap is present in stock too (&sect;5), so it is upstream, not an HSBC error. <b>See the correction note below</b> &mdash; my first pass reported this section very differently and was wrong.</p>
+</div>
+<div class="card">
+<span class="tag RESEARCH">RESEARCH</span>
+<p class="find"><span class="key">R1</span>Frutiger's &quot;too tight&quot; was about <b>apertures</b>, not spacing.</p>
+<p class="detail">The often-repeated line is that Frutiger found Univers &quot;too tight&quot; for airport signage and drew Frutiger in response. The sources are specific about what he meant: Univers had <i>&quot;too round and closed an effect for the easy recognition of word-signs&quot;</i>. He wanted larger apertures &mdash; the openings in <code>c</code>, <code>e</code>, <code>s</code>, <code>a</code> &mdash; so letters would not blur into circles at a glance. Aperture is a counter property. It is not sidebearing.</p>
+<p class="imp"><b>For us: </b><b>The negative finding, and the important one: tracking cannot fix this.</b> Letter-spacing does not open a counter. The known weakness of Univers for glance-reading is not addressable by the lever we have been designing. Size, weight and the halation levers can help; tracking cannot. That should stop us reaching for tracking as a general legibility cure.</p>
+</div>
+<div class="card">
+<span class="tag RESEARCH">RESEARCH</span>
+<p class="find"><span class="key">R2</span>Frutiger drew the same Editorial / Component line you did.</p>
+<p class="detail">His judgement was that Univers was <i>&quot;perfect for printed books&quot;</i> but wrong for someone moving through an airport at 5&nbsp;mph &mdash; continuous reading versus recognition at a glance. That is exactly the split you made: Editorial is read, Component is recognised.</p>
+<p class="imp"><b>For us: </b><b>The typeface's own designer put Univers on the Editorial side of your line.</b> Not a reason to abandon it &mdash; it is the brand face &mdash; but it means the Component tier is working against the grain of the design, and compensations there (size, weight, ground) are carrying more load than they would in a face drawn for glance-reading.</p>
+</div>
+<div class="card">
+<span class="tag RESEARCH">RESEARCH</span>
+<p class="find"><span class="key">R3</span>Lineage: the real revision was 1997, not 2010.</p>
+<p class="detail">Original Univers, Frutiger for Deberny &amp; Peignot, 1957 &mdash; 21 coordinated variants on the two-digit grid. <b>Linotype Univers (1997)</b> was the substantial rework, done with Frutiger, in which <i>stroke weights were revised for consistency within each face and between weights</i>. <b>Univers Next (2010)</b> added true small caps and renamed the family; sources describe it as extension and rebranding rather than a spacing redesign.</p>
+<p class="imp"><b>For us: </b>The stroke-weight consistency work in 1997 is visible in M2's clean progression. It also means &quot;Univers&quot; advice written before 1997 may not describe what we have.</p>
+</div>
+<h2>5 &middot; HSBC&#39;s cut vs stock Univers Next Pro &mdash; ANSWERED</h2>
+<p class="sub">Dave supplied Univers Next Pro mid-session, so this moved from &quot;cannot answer&quot; to measured. Six weight pairs, matched UltraLight&ndash;Thin&ndash;Light&ndash;Regular&ndash;Medium&ndash;Bold.</p>
+<div class="lead"><b>Horizontally, HSBC&#39;s cut IS stock Univers Next Pro.</b> Not &quot;close to&quot; &mdash; identical, to the font unit.<br><br>&bull; <b>Sidebearings</b>: 75 glyphs &times; 6 weights, LSB and RSB both compared. <b>One glyph differs</b> in the entire set.<br>&bull; <b>Advance widths</b>: 82 glyphs &times; 6 weights. Same one glyph.<br>&bull; <b>Kerning</b>: 10 problem pairs &times; 6 weights = <b>60/60 exact matches</b>, value for value.<br>&bull; <b>Cap-height and x-height</b>: identical to the unit at every weight.<br><br><b>The single differing glyph is the ampersand</b> &mdash; redrawn for HSBC (ink 680&times;751 vs 664&times;738; right sidebearing &minus;1 vs 15, so the brand ampersand runs right to its edge). A deliberate brand glyph, not a spacing change.</div>
+<div class="lead"><b>What this settles.</b> <b>Published Univers Next guidance on spacing applies to us directly</b> &mdash; that is now an empirical finding, not an assumption. Everything in &sect;1&ndash;3 describes stock Univers Next Pro as much as it describes our cut.<br><br><b>It also relocates the <code>Fo</code> defect.</b> The unkerned <code>Fo</code> in Regular is present in <b>stock</b> too, at the same zero. It is an upstream Linotype/Monotype omission, <b>not an HSBC error</b> &mdash; so there is no point raising it with brand. Worth knowing before someone files it.</div>
+<div class="correct"><b>&#9888; Where they genuinely differ: VERTICAL metrics.</b> This is the one place published Univers advice will mislead us.<br><br><table><thead><tr><th></th><th class='num'>hhea asc/desc</th><th class='num'>lineGap</th><th class='num'>natural line box</th><th class='num'>baseline from top</th><th class='num'>glyphs</th></tr></thead><tbody><tr class='ours'><td><b>HSBC cut</b></td><td class='num'>1068 / &minus;232</td><td class='num'>0</td><td class='num'>1.300em</td><td class='num'>~82%</td><td class='num'>835&ndash;1011</td></tr><tr><td>stock Univers Next Pro</td><td class='num'>750 / &minus;250</td><td class='num'>200</td><td class='num'>1.200em</td><td class='num'>~71%</td><td class='num'>669</td></tr></tbody></table>Both ship <code>USE_TYPO_METRICS</code> OFF, so the browser reads hhea. The line boxes are only <b>8% apart</b> &mdash; but the <b>baseline sits ~11 percentage points lower in the box</b> in our cut, because HSBC put everything into ascent and dropped the lineGap to zero. <b>That changes where text sits inside its line, which is exactly what the cap-trim and grid-slot work depends on.</b> HSBC also extended the charset substantially (669 &rarr; 1011 glyphs).<br><br><b>A number I nearly got wrong:</b> reading ascents alone (1068 vs 750) suggests a 30% difference. It is 8%, because stock carries a 200-unit lineGap that HSBC folded away. Recorded because the ascent figure is the one that looks decisive and is not.</div>
+<h2>6 &middot; What this changes on the contact sheet</h2>
+<ol class="rules">
+<li><b>C1 weakens &mdash; 12px component label, ordinary ground.</b> I recommended <code>+0.01em</code> on a crowding argument that assumed normally-spaced type. This face is <b>looser than Arial</b>. <b>Revised suggestion: <code>+0.005em</code> or zero</b>, and I would not defend the higher number now.</li>
+<li><b>C2 / C3 hold, and arguably strengthen.</b> They specify <b>Medium</b>, which measures 0.64 SB/stem &mdash; tight-side for this family &mdash; with bloom closing the gap further. Two compounding effects, now with a measured basis rather than practitioner lore.</li>
+<li><b>E1 strengthens &mdash; editorial display.</b> A relatively loose face at 40px drifts apart more, not less. <code>&minus;0.02em</code> stands, and the brand&#39;s &minus;15/&minus;30 range looks better-founded than it did.</li>
+<li><b>NEW &mdash; tracking may need to vary by WEIGHT, not just size and role.</b> The SB/stem collapse from 4.60 to 0.46 is the largest single effect measured here, and nothing in the current rule sketch accounts for it. <b>This is the open question I would take to a ladder next.</b></li>
+<li><b>A limit on the whole exercise.</b> Univers&#39; known glance-reading weakness is <b>closed apertures</b>. Tracking does not open a counter. Some of what we might want from tracking on the Component tier is simply not available from this lever, and size, weight and ground have to carry it.</li>
+</ol>
+<p class="foot">Generated by <code>reviews/gen_univers_dossier.py</code> &middot; spacing, kerning and vertical metrics measured with fontTools from <code>knowledge/assets/fonts/_desktop/TTF/</code> &middot; comparison faces are the metric-compatible clones available in-sandbox &middot; lineage from published sources &middot; <b>nothing promoted</b> &mdash; promotion is Dave&#39;s alone.</p>
+<meta name="rv-doc" content="UNIVERS DOSSIER 2026 07 18">
+<meta name="rv-file" content="reviews/UNIVERS-DOSSIER-2026-07-18.html">
+<!-- APOLLO-REVIEW-OVERLAY -->
+<!-- ============================================================================
+     APOLLO REVIEW OVERLAY — reusable comment layer for pro-forma review files.
+     Self-contained (no external deps, no browser storage). Drop this whole block
+     in before </body> of ANY interactive HTML to add: a Review-mode toggle,
+     click-a-component-to-pin-a-comment, a DRAGGABLE comment box that opens beside
+     the target (not over it) with a NOODLE leader-line + dot back to the commented
+     element, a comments panel, and Export → a structured numbered prompt
+     (copy / download) to paste back for the edits.
+     Injected by _make_review.py. All ids/classes are `rv-` prefixed to avoid
+     clashing with the host page. Nothing here is scanned by the component gates.
+     ========================================================================= -->
+<style id="rv-style">
+  #rv-fab{position:fixed;right:16px;bottom:16px;z-index:2147483000;display:inline-flex;align-items:center;gap:8px;
+    height:40px;padding:0 16px;border:1.5px solid #1A1A1A;border-radius:999px;background:#fff;color:#1A1A1A;
+    font:600 13px/1 -apple-system,Segoe UI,Roboto,sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.14);}
+  #rv-fab .rv-dot{width:8px;height:8px;border-radius:50%;background:#B7B7B7;}
+  #rv-fab.rv-on{background:#1A1A1A;color:#fff;border-color:#1A1A1A;}
+  #rv-fab.rv-on .rv-dot{background:#37D67A;}
+  #rv-fab .rv-count{min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#DB0011;color:#fff;
+    font:700 11px/18px -apple-system,Segoe UI,Roboto,sans-serif;text-align:center;display:none;}
+  #rv-fab .rv-count.rv-has{display:inline-block;}
+  /* review mode: crosshair + hover outline on the host content */
+  body.rv-active [data-rv-hover]{outline:2px solid #DB0011 !important;outline-offset:1px;cursor:crosshair;}
+  body.rv-active{scroll-behavior:auto;}
+  /* pinned markers layer */
+  #rv-markers{position:fixed;inset:0;z-index:2147482000;pointer-events:none;}
+  .rv-pin{position:fixed;transform:translate(-50%,-50%);width:22px;height:22px;border-radius:50% 50% 50% 2px;
+    background:#DB0011;color:#fff;font:700 12px/22px -apple-system,Segoe UI,Roboto,sans-serif;text-align:center;
+    box-shadow:0 2px 6px rgba(0,0,0,.3);pointer-events:auto;cursor:pointer;border:2px solid #fff;}
+  /* composer popover */
+  #rv-composer{position:fixed;z-index:2147483600;width:300px;max-width:92vw;background:#fff;border:1px solid #D7D8D6;
+    border-radius:8px;box-shadow:0 12px 40px rgba(0,0,0,.22);padding:12px;display:none;
+    font:400 13px/1.45 -apple-system,Segoe UI,Roboto,sans-serif;color:#1A1A1A;}
+  #rv-composer.rv-show{display:block;}
+  #rv-composer .rv-target{font:600 12px/1.3 inherit;color:#333;margin:0 0 8px;padding-left:16px;word-break:break-word;
+    cursor:move;user-select:none;position:relative;}
+  #rv-composer .rv-target::before{content:'';position:absolute;left:2px;top:1px;width:7px;height:12px;opacity:.55;
+    background:radial-gradient(circle,#666 1px,transparent 1.4px);background-size:3px 4px;}
+  /* noodle: leader line from the commented element to the composer box */
+  #rv-noodle{position:fixed;inset:0;z-index:2147483500;pointer-events:none;overflow:visible;}
+  #rv-noodle path{fill:none;stroke:#DB0011;stroke-width:1.5;opacity:.9;}
+  #rv-noodle circle{fill:#DB0011;stroke:#fff;stroke-width:1.5;}
+  #rv-noodle rect{fill:rgba(219,0,17,.06);stroke:#DB0011;stroke-width:2;opacity:.95;}
+  #rv-composer textarea{width:100%;box-sizing:border-box;min-height:76px;resize:vertical;padding:8px;
+    border:1px solid #B7B7B7;border-radius:6px;font:inherit;color:#1A1A1A;outline:none;}
+  #rv-composer textarea:focus{border-color:#1A1A1A;}
+  #rv-composer .rv-row{display:flex;gap:8px;justify-content:flex-end;margin-top:8px;}
+  .rv-btn{height:32px;padding:0 14px;border-radius:6px;border:1px solid #1A1A1A;background:#fff;color:#1A1A1A;
+    font:600 12px/1 -apple-system,Segoe UI,Roboto,sans-serif;cursor:pointer;}
+  .rv-btn.rv-primary{background:#1A1A1A;color:#fff;}
+  .rv-btn.rv-danger{border-color:#DB0011;color:#DB0011;}
+  .rv-btn:disabled{opacity:.4;cursor:not-allowed;}
+  /* comments panel */
+  #rv-panel{position:fixed;top:0;right:0;bottom:0;width:340px;max-width:88vw;z-index:2147483200;background:#fff;
+    border-left:1px solid #D7D8D6;box-shadow:-8px 0 30px rgba(0,0,0,.16);transform:translateX(100%);
+    transition:transform .18s ease;display:flex;flex-direction:column;
+    font:400 13px/1.45 -apple-system,Segoe UI,Roboto,sans-serif;color:#1A1A1A;}
+  #rv-panel.rv-open{transform:translateX(0);}
+  #rv-panel .rv-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px 16px;border-bottom:1px solid #EEE;}
+  #rv-panel .rv-head strong{font:700 14px/1 inherit;}
+  #rv-panel .rv-list{flex:1;overflow:auto;padding:8px 12px;}
+  #rv-panel .rv-empty{color:#8A8A8A;padding:24px 8px;text-align:center;}
+  .rv-item{border:1px solid #EEE;border-radius:8px;padding:10px;margin:0 0 8px;}
+  .rv-item .rv-item-h{display:flex;align-items:center;gap:8px;margin:0 0 4px;}
+  .rv-item .rv-num{flex:none;width:20px;height:20px;border-radius:50%;background:#1A1A1A;color:#fff;font:700 11px/20px inherit;text-align:center;}
+  .rv-item .rv-loc{font:600 12px/1.3 inherit;color:#333;word-break:break-word;}
+  .rv-item .rv-txt{color:#1A1A1A;white-space:pre-wrap;word-break:break-word;margin:2px 0 8px;}
+  .rv-item .rv-acts{display:flex;gap:8px;}
+  .rv-item .rv-link{background:none;border:0;padding:0;color:#333;text-decoration:underline;cursor:pointer;font:600 12px/1 inherit;}
+  .rv-item .rv-link.rv-del{color:#DB0011;}
+  #rv-panel .rv-foot{border-top:1px solid #EEE;padding:12px 16px;display:flex;gap:8px;}
+  #rv-panel .rv-foot .rv-btn{flex:1;height:38px;}
+  /* export modal */
+  #rv-export{position:fixed;inset:0;z-index:2147483600;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;padding:24px;}
+  #rv-export.rv-show{display:flex;}
+  #rv-export .rv-card{width:720px;max-width:100%;max-height:86vh;background:#fff;border-radius:10px;display:flex;flex-direction:column;overflow:hidden;
+    font:400 13px/1.45 -apple-system,Segoe UI,Roboto,sans-serif;color:#1A1A1A;}
+  #rv-export .rv-card-h{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #EEE;}
+  #rv-export textarea{flex:1;margin:0;border:0;outline:none;resize:none;padding:16px;font:400 12.5px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;color:#1A1A1A;min-height:320px;}
+  #rv-export .rv-card-f{display:flex;gap:8px;justify-content:flex-end;padding:12px 16px;border-top:1px solid #EEE;}
+  .rv-x{background:none;border:0;font-size:20px;line-height:1;cursor:pointer;color:#666;padding:4px;}
+  @media print{#rv-fab,#rv-panel,#rv-composer,#rv-markers,#rv-export{display:none !important;}}
+</style>
+
+<button id="rv-fab" type="button" aria-pressed="false" title="Toggle review mode">
+  <span class="rv-dot" aria-hidden="true"></span><span class="rv-label">Review</span><span class="rv-count" id="rv-count">0</span>
+</button>
+<div id="rv-markers" aria-hidden="true"></div>
+<svg id="rv-noodle" aria-hidden="true"><rect id="rv-noodle-box" rx="3" style="display:none"/><path id="rv-noodle-path"/><circle id="rv-noodle-dot" r="3.5" style="display:none"/></svg>
+<div id="rv-composer" role="dialog" aria-label="Add comment">
+  <p class="rv-target" id="rv-composer-target" title="Drag to move"></p>
+  <textarea id="rv-composer-text" placeholder="Describe the change you want here…" aria-label="Comment"></textarea>
+  <div class="rv-row">
+    <button class="rv-btn rv-danger" id="rv-composer-del" type="button" style="margin-right:auto;display:none;">Delete</button>
+    <button class="rv-btn" id="rv-composer-cancel" type="button">Cancel</button>
+    <button class="rv-btn rv-primary" id="rv-composer-save" type="button">Save</button>
+  </div>
+</div>
+<aside id="rv-panel" aria-label="Review comments">
+  <div class="rv-head"><strong>Comments (<span id="rv-panel-count">0</span>)</strong>
+    <button class="rv-x" id="rv-panel-close" type="button" aria-label="Close panel">×</button></div>
+  <div class="rv-list" id="rv-list"><p class="rv-empty">Turn on <b>Review</b>, then click any component to pin a comment.</p></div>
+  <div class="rv-foot">
+    <button class="rv-btn" id="rv-clear" type="button">Clear all</button>
+    <button class="rv-btn rv-primary" id="rv-export-btn" type="button">Export prompt</button>
+  </div>
+</aside>
+<div id="rv-export" role="dialog" aria-label="Export prompt" aria-modal="true">
+  <div class="rv-card">
+    <div class="rv-card-h"><strong>Edit prompt — copy &amp; paste back</strong><button class="rv-x" id="rv-export-close" type="button" aria-label="Close">×</button></div>
+    <textarea id="rv-export-text" readonly spellcheck="false"></textarea>
+    <div class="rv-card-f">
+      <button class="rv-btn" id="rv-export-download" type="button">Download .md</button>
+      <button class="rv-btn rv-primary" id="rv-export-copy" type="button">Copy to clipboard</button>
+    </div>
+  </div>
+</div>
+
+<script id="rv-script">
+(function(){
+  "use strict";
+  function meta(n){ var m=document.querySelector('meta[name="'+n+'"]'); return m?m.getAttribute('content'):''; }
+  var DOC_TITLE = meta('rv-doc') || (document.title||"Review").replace(/\s+·.*$/,"").trim();
+  var DOC_FILE = meta('rv-file') || '';
+  var comments = [];            // {id, section, desc, path, text, el}
+  var seq = 0;
+  var active = false, editingId = null, pendingEl = null, composerEl = null, dragging = false;
+
+  var fab=document.getElementById('rv-fab'),
+      countEl=document.getElementById('rv-count'),
+      markers=document.getElementById('rv-markers'),
+      composer=document.getElementById('rv-composer'),
+      cTarget=document.getElementById('rv-composer-target'),
+      cText=document.getElementById('rv-composer-text'),
+      cSave=document.getElementById('rv-composer-save'),
+      cCancel=document.getElementById('rv-composer-cancel'),
+      cDel=document.getElementById('rv-composer-del'),
+      panel=document.getElementById('rv-panel'),
+      list=document.getElementById('rv-list'),
+      panelCount=document.getElementById('rv-panel-count'),
+      exportModal=document.getElementById('rv-export'),
+      exportText=document.getElementById('rv-export-text');
+
+  function isRvNode(n){ return n && n.closest && n.closest('#rv-fab,#rv-panel,#rv-composer,#rv-markers,#rv-export'); }
+
+  // ---- element description -------------------------------------------------
+  function cleanHead(s){ return (s||'').replace(/\s+/g,' ').replace(/^(\d+)(?=\D)/,'$1 ').trim(); }
+  function sectionName(el){
+    var sec = el.closest && el.closest('section[aria-labelledby]');
+    if(sec){ var h=document.getElementById(sec.getAttribute('aria-labelledby')); if(h) return cleanHead(h.textContent); }
+    var anySec = el.closest && el.closest('section'); if(anySec){ var hh=anySec.querySelector('h1,h2,h3'); if(hh) return cleanHead(hh.textContent); }
+    // fallback for FLAT docs (dossiers with no <section> wrappers): nearest preceding heading in document order
+    var heads=[].slice.call(document.querySelectorAll('h1,h2,h3')), best='';
+    for(var i=0;i<heads.length;i++){
+      if(heads[i]===el || (el.compareDocumentPosition(heads[i]) & Node.DOCUMENT_POSITION_PRECEDING)){
+        best=cleanHead(heads[i].textContent);
+      }
+    }
+    return best;
+  }
+  function descOf(el){
+    var aria=(el.getAttribute&&el.getAttribute('aria-label'))||'';
+    var own=(aria||el.textContent||'').replace(/\s+/g,' ').trim();
+    if(own.length>48) own=own.slice(0,48)+'…';
+    var tag=el.tagName?el.tagName.toLowerCase():'el';
+    var cls=(typeof el.className==='string'&&el.className)?'.'+el.className.split(/\s+/)[0]:'';
+    return own ? own+' ('+tag+cls+')' : tag+cls;
+  }
+  function pathOf(el){
+    var parts=[], n=el, depth=0;
+    while(n && n.nodeType===1 && n!==document.body && depth<5){
+      var s=n.tagName.toLowerCase();
+      if(n.id){ s='#'+n.id; parts.unshift(s); break; }
+      if(typeof n.className==='string' && n.className.trim()) s+='.'+n.className.trim().split(/\s+/)[0];
+      parts.unshift(s); n=n.parentElement; depth++;
+    }
+    return parts.join(' > ');
+  }
+
+  // ---- markers -------------------------------------------------------------
+  function renderMarkers(){
+    markers.innerHTML='';
+    comments.forEach(function(c,i){
+      if(!c.el||!c.el.getBoundingClientRect) return;
+      var r=c.el.getBoundingClientRect();
+      if(r.width===0&&r.height===0) return;
+      var pin=document.createElement('button');
+      pin.className='rv-pin'; pin.type='button'; pin.textContent=(i+1);
+      pin.style.left=(r.right-6)+'px'; pin.style.top=(r.top+8)+'px';
+      pin.title=c.text||'(empty)';
+      pin.addEventListener('click',function(e){ e.stopPropagation(); openComposer(c.el,c.id); });
+      markers.appendChild(pin);
+    });
+  }
+
+  // ---- composer ------------------------------------------------------------
+  function openComposer(el, id){
+    editingId=(id!=null)?id:null; pendingEl=el;
+    var sec=sectionName(el), d=descOf(el);
+    cTarget.textContent=(sec?('['+sec+'] '):'')+d;
+    var existing=id!=null?comments.filter(function(c){return c.id===id;})[0]:null;
+    cText.value=existing?existing.text:'';
+    cDel.style.display=existing?'inline-flex':'none';
+    // default placement: beside the element (not over it); drag + noodle handle the rest
+    var r=el.getBoundingClientRect(), cw=312, ch=200, gap=14, left, top;
+    if(window.innerWidth-r.right > cw+gap) left=r.right+gap;                 // room on the right
+    else if(r.left > cw+gap) left=r.left-cw-gap;                            // else the left
+    else left=Math.min(window.innerWidth-cw-8, Math.max(8, r.left));        // else clamp
+    top=Math.min(window.innerHeight-ch, Math.max(8, r.top));
+    composer.style.top=top+'px'; composer.style.left=left+'px';
+    composer.classList.add('rv-show');
+    composerEl=el;
+    setTimeout(function(){ cText.focus(); drawNoodle(); },0);
+  }
+  function closeComposer(){ composer.classList.remove('rv-show'); pendingEl=null; editingId=null; composerEl=null; drawNoodle(); }
+
+  // ---- noodle (leader line) + drag ----------------------------------------
+  var noodlePath=document.getElementById('rv-noodle-path'), noodleDot=document.getElementById('rv-noodle-dot'),
+      noodleBox=document.getElementById('rv-noodle-box');
+  function drawNoodle(){
+    if(!composerEl || !composer.classList.contains('rv-show') || !noodlePath){
+      if(noodlePath) noodlePath.removeAttribute('d');
+      if(noodleDot) noodleDot.style.display='none';
+      if(noodleBox) noodleBox.style.display='none';
+      return;
+    }
+    var r=composerEl.getBoundingClientRect(), cr=composer.getBoundingClientRect();
+    // 1) highlight the EXACT element being commented on (its precise bounds)
+    noodleBox.setAttribute('x', r.left); noodleBox.setAttribute('y', r.top);
+    noodleBox.setAttribute('width', Math.max(0, r.width)); noodleBox.setAttribute('height', Math.max(0, r.height));
+    noodleBox.style.display='';
+    // 2) anchor the noodle to the element's BORDER edge facing the composer (never the centre)
+    var ecx=r.left+r.width/2, ecy=r.top+r.height/2, ccx=cr.left+cr.width/2, ccy=cr.top+cr.height/2;
+    var dx=ccx-ecx, dy=ccy-ecy, ex, ey;
+    if(Math.abs(dx) >= Math.abs(dy)){                           // composer is more to the side → left/right edge
+      ex = dx>=0 ? r.right : r.left;
+      ey = Math.min(Math.max(ccy, r.top+4), r.bottom-4);
+    } else {                                                    // composer is more above/below → top/bottom edge
+      ey = dy>=0 ? r.bottom : r.top;
+      ex = Math.min(Math.max(ccx, r.left+4), r.right-4);
+    }
+    // 3) composer-side anchor: nearest edge of the box to the element anchor
+    var cx = (ex<cr.left) ? cr.left : (ex>cr.right ? cr.right : Math.min(Math.max(ex,cr.left),cr.right));
+    var cy = Math.min(Math.max(ey, cr.top+8), cr.bottom-8);
+    var mx = ex+(cx-ex)*0.5;
+    noodlePath.setAttribute('d','M'+ex+','+ey+' C'+mx+','+ey+' '+mx+','+cy+' '+cx+','+cy);
+    noodleDot.setAttribute('cx',ex); noodleDot.setAttribute('cy',ey); noodleDot.style.display='';
+  }
+  cTarget.addEventListener('mousedown',function(e){
+    dragging=true; var cr=composer.getBoundingClientRect();
+    composer._dx=e.clientX-cr.left; composer._dy=e.clientY-cr.top;
+    e.preventDefault(); e.stopPropagation();
+  });
+  document.addEventListener('mousemove',function(e){
+    if(!dragging) return;
+    var left=Math.min(window.innerWidth-composer.offsetWidth-8, Math.max(8, e.clientX-composer._dx));
+    var top =Math.min(window.innerHeight-40, Math.max(8, e.clientY-composer._dy));
+    composer.style.left=left+'px'; composer.style.top=top+'px'; drawNoodle();
+  },true);
+  document.addEventListener('mouseup',function(){ dragging=false; },true);
+  cSave.addEventListener('click',function(){
+    var txt=cText.value.trim(); if(!txt){ closeComposer(); return; }
+    if(editingId!=null){
+      comments.forEach(function(c){ if(c.id===editingId) c.text=txt; });
+    } else if(pendingEl){
+      comments.push({id:++seq, section:sectionName(pendingEl), desc:descOf(pendingEl), path:pathOf(pendingEl), text:txt, el:pendingEl});
+    }
+    closeComposer(); refresh();
+  });
+  cCancel.addEventListener('click',closeComposer);
+  cDel.addEventListener('click',function(){ if(editingId!=null){ comments=comments.filter(function(c){return c.id!==editingId;}); } closeComposer(); refresh(); });
+  cText.addEventListener('keydown',function(e){ if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)){ cSave.click(); } if(e.key==='Escape'){ closeComposer(); } });
+
+  // ---- panel list ----------------------------------------------------------
+  function refresh(){
+    countEl.textContent=comments.length; countEl.classList.toggle('rv-has',comments.length>0);
+    panelCount.textContent=comments.length;
+    if(!comments.length){ list.innerHTML='<p class="rv-empty">Turn on <b>Review</b>, then click any component to pin a comment.</p>'; }
+    else {
+      list.innerHTML='';
+      comments.forEach(function(c,i){
+        var it=document.createElement('div'); it.className='rv-item';
+        var loc=(c.section?('['+c.section+'] '):'')+c.desc;
+        it.innerHTML='<div class="rv-item-h"><span class="rv-num">'+(i+1)+'</span><span class="rv-loc"></span></div>'+
+          '<div class="rv-txt"></div>'+
+          '<div class="rv-acts"><button class="rv-link rv-goto" type="button">Reveal</button>'+
+          '<button class="rv-link rv-edit" type="button">Edit</button>'+
+          '<button class="rv-link rv-del" type="button">Delete</button></div>';
+        it.querySelector('.rv-loc').textContent=loc;
+        it.querySelector('.rv-txt').textContent=c.text;
+        it.querySelector('.rv-goto').addEventListener('click',function(){ if(c.el&&c.el.scrollIntoView){ c.el.scrollIntoView({block:'center'}); flash(c.el);} });
+        it.querySelector('.rv-edit').addEventListener('click',function(){ if(c.el) openComposer(c.el,c.id); });
+        it.querySelector('.rv-del').addEventListener('click',function(){ comments=comments.filter(function(x){return x.id!==c.id;}); refresh(); });
+        list.appendChild(it);
+      });
+    }
+    renderMarkers();
+  }
+  function flash(el){ var o=el.style.outline; el.style.outline='3px solid #DB0011'; setTimeout(function(){ el.style.outline=o; },700); }
+
+  // ---- export --------------------------------------------------------------
+  function buildPrompt(){
+    var lines=[];
+    lines.push('# '+DOC_TITLE+' — review edits ('+comments.length+')');
+    lines.push('');
+    lines.push('Apply the following change requests'+(DOC_FILE?(' to `'+DOC_FILE+'`'):'')+'. Each item is pinned to a component; treat the bracketed location as the target and use the selector to disambiguate.');
+    lines.push('');
+    comments.forEach(function(c,i){
+      var loc=(c.section?('['+c.section+'] '):'')+c.desc;
+      lines.push((i+1)+'. '+loc);
+      lines.push('   - '+c.text.replace(/\n/g,'\n     '));
+      lines.push('   - selector: `'+c.path+'`');
+      lines.push('');
+    });
+    return lines.join('\n');
+  }
+  function openExport(){ exportText.value=buildPrompt(); exportModal.classList.add('rv-show'); setTimeout(function(){ exportText.focus(); exportText.select(); },0); }
+  document.getElementById('rv-export-btn').addEventListener('click',openExport);
+  document.getElementById('rv-export-close').addEventListener('click',function(){ exportModal.classList.remove('rv-show'); });
+  exportModal.addEventListener('click',function(e){ if(e.target===exportModal) exportModal.classList.remove('rv-show'); });
+  document.getElementById('rv-export-copy').addEventListener('click',function(){
+    exportText.select();
+    var ok=false; try{ ok=document.execCommand('copy'); }catch(e){}
+    if(navigator.clipboard){ navigator.clipboard.writeText(exportText.value).catch(function(){}); ok=true; }
+    var b=document.getElementById('rv-export-copy'); var t=b.textContent; b.textContent=ok?'Copied ✓':'Select + ⌘C'; setTimeout(function(){ b.textContent=t; },1400);
+  });
+  document.getElementById('rv-export-download').addEventListener('click',function(){
+    var blob=new Blob([buildPrompt()],{type:'text/markdown'});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+    a.download=(DOC_TITLE.replace(/[^\w-]+/g,'-')||'review')+'-comments.md'; a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); },1000);
+  });
+
+  // ---- review-mode wiring --------------------------------------------------
+  var hoverEl=null;
+  function setActive(on){
+    active=on; document.body.classList.toggle('rv-active',on);
+    fab.classList.toggle('rv-on',on); fab.setAttribute('aria-pressed',on?'true':'false');
+    fab.querySelector('.rv-label').textContent=on?'Reviewing':'Review';
+    if(on){ panel.classList.add('rv-open'); } else { clearHover(); }
+  }
+  function clearHover(){ if(hoverEl){ hoverEl.removeAttribute('data-rv-hover'); hoverEl=null; } }
+  fab.addEventListener('click',function(){ setActive(!active); });
+  document.getElementById('rv-panel-close').addEventListener('click',function(){ panel.classList.remove('rv-open'); });
+  document.getElementById('rv-clear').addEventListener('click',function(){ if(comments.length&&confirm('Delete all '+comments.length+' comments?')){ comments=[]; refresh(); } });
+
+  document.addEventListener('mousemove',function(e){
+    if(!active || dragging) return;
+    var t=e.target;
+    if(isRvNode(t)){ clearHover(); return; }
+    if(t!==hoverEl){ clearHover(); hoverEl=t; if(hoverEl&&hoverEl.setAttribute) hoverEl.setAttribute('data-rv-hover',''); }
+  },true);
+
+  // capture clicks in review mode so the host page's own handlers/nav don't fire
+  document.addEventListener('click',function(e){
+    if(!active) return;
+    if(isRvNode(e.target)) return;           // let overlay UI work normally
+    e.preventDefault(); e.stopPropagation();
+    clearHover();
+    openComposer(e.target, null);
+  },true);
+
+  window.addEventListener('scroll',function(){ renderMarkers(); drawNoodle(); },true);
+  window.addEventListener('resize',function(){ renderMarkers(); drawNoodle(); },true);
+  setInterval(function(){ renderMarkers(); drawNoodle(); },600);   // keep pins + noodle glued as the page reflows
+
+  refresh();
+})();
+</script>
+<!-- ===================== END APOLLO REVIEW OVERLAY ===================== -->
+
+</body></html>

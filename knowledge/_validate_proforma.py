@@ -21,6 +21,15 @@ PROFORMA_DIR = os.path.join(HERE, "_proforma")
 ICONS_ROOT = os.path.join(HERE, "assets", "icons")
 SCAFFOLD_SELECTORS = ['.top', '.tgl', '.wctl', '.ctrls', '.wctl input']
 
+# Brand exemption (type26-019): uppercase is allowed for ACRONYMS only. Runs made entirely
+# of these pass; anything else in a 2+ word caps run is a gate failure.
+# Kept in sync with _validate_snippets.py — if one list grows, grow both.
+ACRONYMS = {
+    "HSBC", "UK", "AA", "AAA", "AT", "ARIA", "WCAG", "RAG", "SME", "API",
+    "PDF", "URL", "CTA", "OK", "IBAN", "BIC", "OTP", "KYC", "FX",
+    "GBP", "USD", "EUR", "HKD", "CNY", "AED", "ATM", "ID",
+}
+
 def check_file(path):
     """Return (fails, warns, stats) for one pro-forma file. Mirrors _check_proforma.py
     (single-file dev tool) and adds the manifest-path-existence check."""
@@ -78,6 +87,38 @@ def check_file(path):
     else:
         warns.append("assets dir not found (%s) — skipped path-existence check" % ICONS_ROOT)
         stats['asset_paths'] = "skipped"
+
+    # 4 — ALL-CAPS (type26-019). ADDED 2026-07-18, closing a GATE BLIND-SPOT.
+    #
+    #     type26-019 bans uppercase outside acronyms brand-wide, on a DYSLEXIA rationale, and
+    #     Dave promoted it advisory→BLOCKING on 2026-07-02 (ADR-0005 §5). It was implemented in
+    #     _validate_snippets.py, which globs snippets/*.reference.html ONLY — so _proforma/ was
+    #     never scanned and four tranche files carried text-transform:uppercase past a blocking
+    #     rule for weeks. Found incidentally on 2026-07-18 while grepping for letter-spacing.
+    #
+    #     WHY THE CHECK LIVES HERE rather than widening the snippets glob: _validate_snippets
+    #     also runs token-parity, ARIA, contrast and focus checks calibrated to the snippet
+    #     surface. Pointing it at _proforma would fire all of them. This file already declares
+    #     itself the home of "the UNIVERSAL rules (hold in every mode)" — which is exactly what
+    #     type26-019 is. Mirrored logic, one gate per surface.
+    #
+    #     LESSON (worth more than the fix): a rule is only as wide as its gate's glob. "Blocking"
+    #     describes the rule; the glob decides where it BITES. Any new surface needs its gates
+    #     wired explicitly — same class as the icon-source rule, and the same class as the type
+    #     gate reporting clean on the very badge that motivated it.
+    for _ in re.finditer(r'text-transform\s*:\s*uppercase', html, re.I):
+        fails.append("ALL-CAPS text-transform:uppercase — banned canon-wide "
+                     "(type26-019, blocking since 2026-07-02)")
+    vis = re.sub(r'<script.*?</script>', ' ', html, flags=re.S | re.I)
+    vis = re.sub(r'<style.*?</style>', ' ', vis, flags=re.S | re.I)
+    vis = re.sub(r'<!--.*?-->', ' ', vis, flags=re.S)
+    vis = re.sub(r'<[^>]+>', ' ', vis)
+    for run in sorted(set(re.findall(r'\b[A-Z]{2,}(?: [A-Z]{2,})+\b', vis))):
+        if all(w in ACRONYMS for w in run.split()):
+            continue  # acronym-only runs are the brand exemption (type26-019)
+        fails.append('ALL-CAPS text run "%s" — banned outside acronyms (type26-019)' % run)
+    stats['allcaps'] = sum(1 for f in fails if 'ALL-CAPS' in f)
+
     return (fails, warns, stats)
 
 def main():

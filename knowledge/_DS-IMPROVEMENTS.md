@@ -101,3 +101,33 @@ changes; no canon.css regeneration needed (chrome is not promoted into canon).
 
 **Artifacts:** `_validate_type_composites.py` (`CHROME_SEL`, advisory line in `run()`) ·
 `reviews/TYPE-RETROFIT-2026-07-18.html` §4.
+
+---
+
+## ds-004 — `Fo` unkerned in Univers Regular. **UPSTREAM — do NOT raise with HSBC brand.**
+
+*Logged 2026-07-18. Measured, not inferred.*
+
+**What:** the pair `Fo` carries **zero kerning in Regular (400) only**. Every other weight in the
+family kerns it −25 to −30 units. Visible as a slightly loose `Fo` in body-weight text.
+
+**Why it is logged as upstream, with the evidence:** Dave supplied stock **Univers Next Pro**
+mid-session, which made a direct comparison possible for the first time. The gap is present in
+**stock Univers Next Pro Regular at the identical zero**. It is a Linotype/Monotype omission that
+HSBC's commissioned cut inherited — **not something HSBC introduced, and not something they can
+fix**. Raising it with brand would waste their time and ours.
+
+**Supporting measurement (same comparison, worth keeping):** HSBC's cut is horizontally
+**identical** to stock — sidebearings (LSB *and* RSB) across 75 glyphs × 6 weights, advance widths
+across 82 glyphs × 6 weights, and **60/60 exact kerning matches** on ten problem pairs. The single
+differing glyph in the entire Latin set is the **ampersand**, deliberately redrawn for HSBC.
+Full detail: `_proforma/_TYPE-DECISIONS.md` § T-D3.
+
+**Recommendation:** accept. A single unkerned pair at body weight is below the threshold at which
+a manual `letter-spacing` patch would do more harm than good, and patching one pair by hand is
+exactly the kind of untracked local override the TYPE-002 retrofit exists to remove. **Log and
+move on** — the standing rule for DS defects.
+
+**Blast radius if ever addressed:** none available to us. Would require a re-cut from the foundry.
+
+**Artifacts:** `reviews/UNIVERS-DOSSIER-2026-07-18.html` §3 + §5 · `reviews/gen_univers_dossier.py`.

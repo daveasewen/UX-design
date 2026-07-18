@@ -897,6 +897,31 @@ reusable; don't force it (most stays local). Memory: `spin-off-candidates`. Revi
 - Precedent (already ad hoc): `digital-experience-transformation`, `graphify-tool`. The ask is to
   make spin-off **intentional + surfaced**, not accidental.
 
+- **🌱 NEW 2026-07-18 — the FONT AUDIT instrument** (`reviews/gen_univers_dossier.py` + the
+  fontTools measurement passes behind it). Given any two font files it answers, with numbers rather
+  than opinion: *is this face tight or loose relative to its own stroke weight?* (sidebearing ÷ stem,
+  normalised to 1000 UPM, comparable across designs) · *how does spacing behave across the weight
+  range?* · *is our commissioned cut actually the same as the stock family?* (glyph-by-glyph advance,
+  LSB/RSB, and kerning-pair comparison) · *what are the real vertical metrics and therefore the
+  natural line box?*
+  **Why it generalises:** every brand with a commissioned type cut has the "is ours the same as
+  stock, and where does published guidance stop applying?" question, and almost nobody can answer it.
+  Here it settled in ten minutes a question that had been open for weeks, and **relocated a defect
+  from HSBC to the foundry** (ds-004). It also produced the session's most load-bearing measurement —
+  the SB/stem collapse across weights — which no amount of reading would have surfaced.
+  **Status:** unruled candidate. Currently embedded in a dossier generator; would need extracting.
+
+- **🌱 NEW 2026-07-18 — REAL-FONT EMBEDDING for review sheets** (`embed_fonts()` in
+  `gen_tracking_contact_sheet.py`). Inlines the licensed face as base64 woff2 (~300KB for five
+  weights) so a specimen renders in the actual brand type in any browser, with no install and no
+  broken relative paths when the file moves.
+  **Why it matters beyond convenience:** it **retired a caveat that had been attached to every
+  specimen sheet in this project** — "sandbox has no Univers, judge on your screen". Type decisions
+  judged in a fallback face are not type decisions. **Candidate to fold into `_make_review.py`** so
+  every future sheet gets it automatically rather than by remembering.
+  **Status:** unruled candidate; working, and the obvious next step is promotion into the review
+  pipeline.
+
 - **✅ Capture ritual — STOOD UP 2026-07-05 → `knowledge/_RUNBOOK-capture-ritual.md`.** The five-step
   end-of-session sequence (refresh `_LIVE-STATE` → refresh `GOOD-MORNING` → update memory → record
   decision nodes with supersession discipline → commit+push) is now a runbook, not a hope. The

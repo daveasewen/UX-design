@@ -1,0 +1,175 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Component Medium &mdash; structural or drift?</title>
+<style>
+:root{--ink:#1c1c1c;--mut:#6b6b6b;--line:#e4e4e4;--red:#db0011;--pri:#1a1a1a;--pri-lbl:#fff;
+      --surf:#f0f0f0;--muted:#6b6b6b;--ink2:#4a4a4a;}
+*{box-sizing:border-box}
+body{font-family:"Univers Next for HSBC","Helvetica Neue",Arial,sans-serif;color:var(--ink);
+  margin:0;padding:40px;max-width:1180px;line-height:1.5;background:#fafafa}
+h1{font-size:32px;font-weight:300;margin:0 0 4px}
+h2{font-size:20px;font-weight:500;margin:44px 0 4px;padding-top:16px;border-top:2px solid var(--ink)}
+h3{font-size:15px;font-weight:500;margin:24px 0 2px}
+.sub{color:var(--mut);font-size:14px;margin:0 0 24px}
+.lead{font-size:15px;background:#fff;border:1px solid var(--line);border-left:3px solid var(--red);
+  padding:16px 20px;margin:20px 0}
+.null{font-size:14px;background:#fff;border:1px solid var(--line);border-left:3px solid #0b7a34;
+  padding:14px 20px;margin:20px 0}
+table{width:100%;border-collapse:collapse;background:#fff;margin:12px 0 8px;font-size:13px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font-weight:500;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--mut);
+  background:#f4f4f4}
+code{font-family:ui-monospace,Menlo,monospace;font-size:11px;background:#f2f2f2;padding:1px 5px;
+  border-radius:3px}
+.met{font-size:11px;color:var(--mut);white-space:nowrap}
+.ask{width:150px;background:#fffdf5}
+.count{font-size:22px;font-weight:300;color:var(--ink)}
+.rules{background:#fff;border:1px solid var(--line);padding:4px 20px 16px;margin:16px 0}
+.rules li{margin:14px 0;font-size:14px}
+.fam{background:#fff;border:1px solid var(--line);padding:0 20px 8px;margin:16px 0}
+.q{font-size:13px;color:var(--ink);background:#fbfbfb;border-left:2px solid var(--line);
+  padding:8px 14px;margin:10px 0 14px}
+.rev{background:var(--pri);color:var(--pri-lbl);padding:6px 12px;display:inline-block;line-height:1.2}
+.pill{background:var(--surf);padding:3px 10px;border-radius:999px;display:inline-block;line-height:1.3}
+.plain{display:inline-block;line-height:1.3}
+.foot{color:var(--mut);font-size:12px;margin-top:44px;border-top:1px solid var(--line);padding-top:12px}
+.warn{color:#8a1f1f;font-weight:500}
+</style></head><body>
+<h1>Small-label Medium &mdash; structural, or drift?</h1>
+<p class="sub">Apollo SDS &middot; 2026-07-18 &middot; blocking the TYPE-002 rebind (100 declarations of the 721).</p>
+<div class="lead"><b>The situation.</b> Of the 721 raw font declarations, <b>339 map cleanly</b> onto an existing composite and can be rebound without a ruling. <b>100 do not</b>, and they are all the same shape: Component scope, single-line, <b>weight 500</b>, at 12&nbsp;/&nbsp;14&nbsp;/&nbsp;24px. The Component composites at those sizes are all <b>400</b> &mdash; <code>.t-cm-legal</code> 12/400, <code>.t-cm-caption</code> and <code>.t-cm-tooltip</code> 14/400.<br><br>So either the corpus is right and the composite ladder is missing a Medium rung, or the corpus drifted and these should snap to Regular. <b>Binding them to the 400 composites would answer the question silently, in the direction nobody chose.</b></div>
+<div class="null"><b>This sheet can come back null &mdash; and that is a real outcome.</b> If every family below reads fine at Regular, the answer is "drift: snap all 100 to Regular, add no composites" and the ladder stays at eleven. Medium winning everywhere is equally valid, but it has to be <i>seen</i> here, not inherited from the fact that someone once typed 500.</div>
+<div class="lead"><b class="warn">What this sheet is NOT.</b> It is not the reverse-text question. <code>{#col26-020}(c)</code> &mdash; 12/14/16px&nbsp;=&nbsp;Medium, 20px&nbsp;=&nbsp;Light &mdash; was settled from the v2 specimen and is <b>conditional on reverse text over an extreme ground</b>. Only <b>family A</b> sits in that condition. The other four are on ordinary grounds where col26-020 has nothing to say. Keeping that separation visible is half the point: a rule quoted outside its condition is how a preference becomes a gate by accident.</div>
+<h2>1 &middot; The shape of the 100</h2>
+<p class="sub">Every row is real &mdash; selector, size and declared ground taken from the corpus, not composed for the sheet.</p>
+<table><thead><tr><th>Family</th><th>What it is</th><th>Decls</th><th>Sizes</th><th>Ground</th><th>In col26-020?</th></tr></thead><tbody>
+<tr><td><b>A &middot; Reverse on primary</b></td><td class='met'>toast, skip-link, count-badge</td><td class='count'>12</td><td class='met'>12, 14</td><td class='met'><code>var(--pri)</code> near-black</td><td class='met'><b>YES</b> &mdash; the only one</td></tr>
+<tr><td><b>B &middot; Eyebrow / group label</b></td><td class='met'>eyebrow, list h2, group headings</td><td class='count'>16</td><td class='met'>12, 14</td><td class='met'>inherited page</td><td class='met'>no</td></tr>
+<tr><td><b>C &middot; Control label</b></td><td class='met'>toggle, tab, segmented, nav</td><td class='count'>31</td><td class='met'>12, 14</td><td class='met'>transparent</td><td class='met'>no</td></tr>
+<tr><td><b>D &middot; Chip / tag / badge</b></td><td class='met'>tag, chip, badge, avatar</td><td class='count'>20</td><td class='met'>12, 14</td><td class='met'><code>var(--surf)</code> quiet</td><td class='met'>no</td></tr>
+<tr><td><b>E &middot; Numeral / data label</b></td><td class='met'>num, delta, axis label, pct</td><td class='count'>7</td><td class='met'>12, 14, 24</td><td class='met'>inherited page</td><td class='met'>no</td></tr>
+<tr><td><b>&mdash; &middot; Unclassified</b></td><td class='met'>13 one-off selectors, no family yet</td><td class='count'>14</td><td class='met'>14, 24</td><td class='met'>inherited page</td><td class='met'>no</td></tr>
+</tbody></table>
+<h2>2 &middot; Medium vs Regular, family by family</h2>
+<p class="sub">Same specimen, same size, same ground &mdash; weight is the only variable. <b>Mark which column holds.</b> If Regular is fine, say so; that is the null result and it retires a composite request.</p>
+<div class="fam">
+<h3>A &middot; Reverse on primary ground</h3>
+<p class="sub" style="margin-bottom:8px">White label on <code>var(--pri)</code> — in Apollo mono that is the near-black <code>surface/digital-black</code> ground.</p>
+<div class="q">This is the ONLY family inside {#col26-020}(c)'s condition. The rule already says Medium at 12&ndash;16px here. Confirm the reading &mdash; then it needs a composite that <i>encodes</i> the condition, not a note asking authors to remember it.</div>
+<table><thead><tr><th>Selector</th><th>Size</th><th>500 &middot; Medium <span class='met'>(as authored)</span></th><th>400 &middot; Regular <span class='met'>(as the composite says)</span></th><th>Where</th><th class='ask'>Which holds?</th></tr></thead><tbody>
+<tr><td><code>.toast</code></td><td class='met'>14px</td>
+<td><span class="rev" style="font-size:14px;font-weight:500">Payment scheduled</span></td>
+<td><span class="rev" style="font-size:14px;font-weight:400">Payment scheduled</span></td>
+<td class='met'>Masthead + T1&ndash;T8, 8 files</td><td class='ask'></td></tr>
+<tr><td><code>.skip-link</code></td><td class='met'>14px</td>
+<td><span class="rev" style="font-size:14px;font-weight:500">Skip to content</span></td>
+<td><span class="rev" style="font-size:14px;font-weight:400">Skip to content</span></td>
+<td class='met'>Masthead, T7</td><td class='ask'></td></tr>
+<tr><td><code>.count-badge</code></td><td class='met'>12px</td>
+<td><span class="rev" style="font-size:12px;font-weight:500">12</span></td>
+<td><span class="rev" style="font-size:12px;font-weight:400">12</span></td>
+<td class='met'>Tranche-5</td><td class='ask'></td></tr>
+</tbody></table>
+</div>
+<div class="fam">
+<h3>B &middot; Eyebrow / group label</h3>
+<p class="sub" style="margin-bottom:8px">Muted small label above a block &mdash; <code>.eyebrow</code>, list-item <code>h2</code>, menu group headings.</p>
+<div class="q">Classic candidate for structural Medium: short, muted, doing hierarchy work at small size. Muted colour lowers contrast, which is the argument FOR weight. Or it is just a habit.</div>
+<table><thead><tr><th>Selector</th><th>Size</th><th>500 &middot; Medium <span class='met'>(as authored)</span></th><th>400 &middot; Regular <span class='met'>(as the composite says)</span></th><th>Where</th><th class='ask'>Which holds?</th></tr></thead><tbody>
+<tr><td><code>.eyebrow</code></td><td class='met'>14px</td>
+<td><span class="plain" style="font-size:14px;font-weight:500;color:var(--muted)">Account overview</span></td>
+<td><span class="plain" style="font-size:14px;font-weight:400;color:var(--muted)">Account overview</span></td>
+<td class='met'>Eyebrow + canon.css</td><td class='ask'></td></tr>
+<tr><td><code>h2 (list-items)</code></td><td class='met'>14px</td>
+<td><span class="plain" style="font-size:14px;font-weight:500;color:var(--muted)">Recent transactions</span></td>
+<td><span class="plain" style="font-size:14px;font-weight:400;color:var(--muted)">Recent transactions</span></td>
+<td class='met'>List-items</td><td class='ask'></td></tr>
+<tr><td><code>.grouplbl</code></td><td class='met'>12px</td>
+<td><span class="plain" style="font-size:12px;font-weight:500;color:var(--muted)">Saved accounts</span></td>
+<td><span class="plain" style="font-size:12px;font-weight:400;color:var(--muted)">Saved accounts</span></td>
+<td class='met'>Dropdown</td><td class='ask'></td></tr>
+<tr><td><code>.menugroup-h</code></td><td class='met'>12px</td>
+<td><span class="plain" style="font-size:12px;font-weight:500;color:var(--muted)">Transfers</span></td>
+<td><span class="plain" style="font-size:12px;font-weight:400;color:var(--muted)">Transfers</span></td>
+<td class='met'>Masthead</td><td class='ask'></td></tr>
+</tbody></table>
+</div>
+<div class="fam">
+<h3>C &middot; Control label (toggle / tab / segmented)</h3>
+<p class="sub" style="margin-bottom:8px">Interactive affordance text on a transparent ground &mdash; <code>.tgl</code>, <code>.tab</code>, <code>.seg button</code>, <code>.navtoggle</code>.</p>
+<div class="q">The largest family (31). <code>.t-cm-button</code> is already 16px/<b>500</b> &mdash; so Medium-for-controls is arguably ALREADY canon, and these are the same thing at 12/14px. If so the fix is a size range on the button composite, not a new one.</div>
+<table><thead><tr><th>Selector</th><th>Size</th><th>500 &middot; Medium <span class='met'>(as authored)</span></th><th>400 &middot; Regular <span class='met'>(as the composite says)</span></th><th>Where</th><th class='ask'>Which holds?</th></tr></thead><tbody>
+<tr><td><code>.tgl</code></td><td class='met'>14px</td>
+<td><span class="plain" style="font-size:14px;font-weight:500;color:var(--ink2)">Show details</span></td>
+<td><span class="plain" style="font-size:14px;font-weight:400;color:var(--ink2)">Show details</span></td>
+<td class='met'>T1&ndash;T8, DataViz, 10 files</td><td class='ask'></td></tr>
+<tr><td><code>.tab</code></td><td class='met'>14px</td>
+<td><span class="plain" style="font-size:14px;font-weight:500;color:var(--ink2)">Statements</span></td>
+<td><span class="plain" style="font-size:14px;font-weight:400;color:var(--ink2)">Statements</span></td>
+<td class='met'>Masthead, T4, T7</td><td class='ask'></td></tr>
+<tr><td><code>.seg button</code></td><td class='met'>14px</td>
+<td><span class="plain" style="font-size:14px;font-weight:500;color:var(--ink2)">Monthly</span></td>
+<td><span class="plain" style="font-size:14px;font-weight:400;color:var(--ink2)">Monthly</span></td>
+<td class='met'>View-options + canon.css</td><td class='ask'></td></tr>
+<tr><td><code>.variant-tabs button</code></td><td class='met'>12px</td>
+<td><span class="plain" style="font-size:12px;font-weight:500;color:var(--ink2)">Compact</span></td>
+<td><span class="plain" style="font-size:12px;font-weight:400;color:var(--ink2)">Compact</span></td>
+<td class='met'>DataViz</td><td class='ask'></td></tr>
+</tbody></table>
+</div>
+<div class="fam">
+<h3>D &middot; Chip / tag / badge on surface</h3>
+<p class="sub" style="margin-bottom:8px">Small enclosed label with its own quiet ground &mdash; <code>.tag</code>, <code>.chip</code>, <code>.badge</code>, <code>.avatar</code>.</p>
+<div class="q">Enclosed text in a small pill. The enclosure already separates it from the page, which may make the weight redundant &mdash; or may be exactly why it needs to hold its own.</div>
+<table><thead><tr><th>Selector</th><th>Size</th><th>500 &middot; Medium <span class='met'>(as authored)</span></th><th>400 &middot; Regular <span class='met'>(as the composite says)</span></th><th>Where</th><th class='ask'>Which holds?</th></tr></thead><tbody>
+<tr><td><code>.tag</code></td><td class='met'>12px</td>
+<td><span class="pill" style="font-size:12px;font-weight:500">Pending</span></td>
+<td><span class="pill" style="font-size:12px;font-weight:400">Pending</span></td>
+<td class='met'>T5 &times;7</td><td class='ask'></td></tr>
+<tr><td><code>.chip</code></td><td class='met'>12px</td>
+<td><span class="pill" style="font-size:12px;font-weight:500">Last 30 days</span></td>
+<td><span class="pill" style="font-size:12px;font-weight:400">Last 30 days</span></td>
+<td class='met'>Tranche-5</td><td class='ask'></td></tr>
+<tr><td><code>.badge</code></td><td class='met'>14px</td>
+<td><span class="pill" style="font-size:14px;font-weight:500">99+</span></td>
+<td><span class="pill" style="font-size:14px;font-weight:400">99+</span></td>
+<td class='met'>Badge + canon.css</td><td class='ask'></td></tr>
+<tr><td><code>.avatar</code></td><td class='met'>14px</td>
+<td><span class="pill" style="font-size:14px;font-weight:500">DW</span></td>
+<td><span class="pill" style="font-size:14px;font-weight:400">DW</span></td>
+<td class='met'>List-items + canon.css</td><td class='ask'></td></tr>
+</tbody></table>
+</div>
+<div class="fam">
+<h3>E &middot; Numeral / data label</h3>
+<p class="sub" style="margin-bottom:8px">Figures and axis labels &mdash; <code>.num</code>, <code>.delta</code>, <code>.axlbl</code>, <code>.prog-pct</code>.</p>
+<div class="q">Digits carry less stroke variety than letters, and tabular figures are already in play (D6). May want Medium for a different reason than the text families.</div>
+<table><thead><tr><th>Selector</th><th>Size</th><th>500 &middot; Medium <span class='met'>(as authored)</span></th><th>400 &middot; Regular <span class='met'>(as the composite says)</span></th><th>Where</th><th class='ask'>Which holds?</th></tr></thead><tbody>
+<tr><td><code>.num</code></td><td class='met'>24px</td>
+<td><span class="plain" style="font-size:24px;font-weight:500;font-variant-numeric:tabular-nums">02:47</span></td>
+<td><span class="plain" style="font-size:24px;font-weight:400;font-variant-numeric:tabular-nums">02:47</span></td>
+<td class='met'>Countdown-timer</td><td class='ask'></td></tr>
+<tr><td><code>.delta</code></td><td class='met'>14px</td>
+<td><span class="plain" style="font-size:14px;font-weight:500;font-variant-numeric:tabular-nums">+2.4%</span></td>
+<td><span class="plain" style="font-size:14px;font-weight:400;font-variant-numeric:tabular-nums">+2.4%</span></td>
+<td class='met'>canon.css</td><td class='ask'></td></tr>
+<tr><td><code>.axlbl</code></td><td class='met'>12px</td>
+<td><span class="plain" style="font-size:12px;font-weight:500;font-variant-numeric:tabular-nums">Q3</span></td>
+<td><span class="plain" style="font-size:12px;font-weight:400;font-variant-numeric:tabular-nums">Q3</span></td>
+<td class='met'>DataViz</td><td class='ask'></td></tr>
+<tr><td><code>.prog-pct</code></td><td class='met'>14px</td>
+<td><span class="plain" style="font-size:14px;font-weight:500;font-variant-numeric:tabular-nums">68%</span></td>
+<td><span class="plain" style="font-size:14px;font-weight:400;font-variant-numeric:tabular-nums">68%</span></td>
+<td class='met'>Tranche-6</td><td class='ask'></td></tr>
+</tbody></table>
+</div>
+<h2>3 &middot; To rule</h2>
+<ol class="rules">
+<li><b>R1 &mdash; per family, is Medium structural?</b> Five answers from &sect;2. Each <i>structural</i> answer costs a composite; each <i>drift</i> answer costs nothing and snaps to Regular. <b>[ per family: structural / drift ]</b></li>
+<li><b>R2 &mdash; if family C is structural, is it really a new composite?</b> <code>.t-cm-button</code> is already 16px/<b>500</b>. Controls at 12/14px may be the same role at a smaller size, in which case the fix is <b>extending the button composite down the ramp</b> rather than adding <code>.t-cm-control-sm</code>. Cheaper, and it keeps the ladder honest about roles. <b>[ extend button / new composite ]</b></li>
+<li><b>R3 &mdash; naming, if any composite is added.</b> The Editorial set already uses <code>.em</code> as its emphasis modifier. A Component equivalent could be <code>.t-cm-caption.em</code> rather than a parallel <code>-strong</code> family &mdash; one mechanism instead of two. R1 in <code>_TYPE-DECISIONS</code> left Component naming open for exactly this. <b>[ .em modifier / -strong family / other ]</b></li>
+<li><b>R4 &mdash; Q5, carried forward from specimen v2 and still open.</b> Scope of the reverse-text rule: badges only, or every light-on-chroma surface (RAG banners, primary buttons, pressed states, tags)? Family A is the population it would bite. <b>[ library-wide / badges only ]</b></li>
+<li><b>R5 &mdash; the two DataViz strays.</b> Independent of the above, both breaking existing rules: an <b>11px</b> size (below the 12px floor set in specimen v2) and a <b>font-weight 600</b> (<code>type25-004</code> &mdash; not a licensed weight, no OTF ships, so it renders as browser faux-bold). Confirm both snap to 12px / 500. <b>[ confirm / handle separately ]</b></li>
+</ol>
+<p class="foot">Generated by <code>reviews/gen_component_medium_specimen.py</code> &middot; every selector, size and ground taken from the live corpus &middot; licensed weights only &middot; <b>judge on YOUR screen with the real webfont</b> &mdash; the sandbox has no Univers, so these render in a fallback face and the weight difference will read differently here than it does for you. Nothing promoted; promotion is yours alone.</p>
+</body></html>

@@ -89,9 +89,20 @@ token.** Its MINIMUM = `ceil(cap + 2·descender)` to 4px — which also guarante
 Shown in specimen §04. This is the rule the Component composites encode. NOT anally retentive — it's the point.
 
 ## Blockers to writing clean canon tokens
-1. **Latin "Univers Next for HSBC" webfont** — the dropped packs are the SCRIPT companions (Arabic /
-   Japanese Tazugane / Chinese M Ying Hei / Armenian Helvetica), NOT the core Latin default. Need the Latin
-   pack for true rendering + exact cap-height/crop metrics.
+1. ~~**Latin "Univers Next for HSBC" webfont** — the dropped packs are the SCRIPT companions (Arabic /
+   Japanese Tazugane / Chinese M Ying Hei / Armenian Helvetica), NOT the core Latin default.~~
+   **STRUCK 2026-07-18 — this blocker was FALSE the whole time.** The Latin desktop set is at
+   `knowledge/assets/fonts/_desktop/` — **TTF and OTF, six weights plus italics, dated 2024-03-25**.
+   It predates the blocker being written. The claim was inferred from the *web font* folders (which really
+   are script-only) without checking `_desktop/`, and then trusted for a fortnight.
+   **Consequences of the false blocker, all now reversed:** every specimen sheet since carried a
+   "sandbox has no Univers — judge on your screen" caveat that was never true; renders "verified layout,
+   never brand type" unnecessarily; and the crop/cap metrics were treated as provisional when they were
+   measurable all along. Review sheets now embed the real face as base64 woff2
+   (`gen_tracking_contact_sheet.py → embed_fonts()`).
+   **LESSON — this is the §A failure mode in miniature:** a confident negative, written once, believed by
+   every later session because nobody re-checked a *blocker*. Blockers are exactly the claims that should
+   carry a re-test date, because they stop work and therefore stop the thing that would disprove them.
 2. **Display-size values across modes** — only have `font-00`=52 / `font-0`=40 at **scale-1**; need their
    scale-2 / scale-3 / 200% values from Figma to populate all breakpoints.
 3. ~~Confirm: apply 4px-normalisation across modes~~ — DONE (Dave 2026-07-17: "decide and infer, change later").
@@ -367,3 +378,142 @@ Two levers by ground type, one principle: **never add contrast, which makes hala
 - **Both grounds → SIZE×WEIGHT**: the table above.
 Distinct from `{#dv-019}` and must not be merged with it (dv-019 scores this 0/3 and is right to).
 **Gateable now, gated by nothing.** Q5 (scope — badges only vs every light-on-chroma surface) still open.
+
+---
+
+# SESSION 2026-07-18 (afternoon) — TRACKING / LETTER-SPACING
+
+*Spun off from the TYPE-002 retrofit. Nothing here is promoted — five review sheets await Dave's
+markup. What IS settled is the reasoning and the measurements, recorded so a cold session does not
+re-derive them.*
+
+## ⭐ T-D1 — Editorial and Component answer to DIFFERENT PHYSICS (Dave, ruled by observation)
+
+Dave: *"we have editorial and component styles to take into account, I don't [think] there is any
+impact on short labeling to reading speed … this isn't just about reading speed it's about halation
+and blooming, so we may have different rules for the text roles."*
+
+**This is the load-bearing idea of the session and it generalises beyond tracking.**
+
+| | EDITORIAL | COMPONENT |
+|---|---|---|
+| what happens | **read** continuously | **recognised**, not read |
+| mechanics | fixations, saccades, word-skipping, word-shape | letter identification at a glance |
+| governed by | reading-speed evidence · optical sizing | crowding · halation / bloom |
+| ground | almost always ordinary | often reversed on chroma or near-black |
+| tracking direction | restraint — near zero, tighten at display | opens at label sizes, tightens at figures |
+
+**Two consequences, both of which corrected live work:**
+1. **Reading-speed evidence governs Editorial ONLY.** Nobody saccades through "Pending approval".
+   I had used it to argue *against* opening tracking on component labels, where it was never in scope.
+2. **Crowding evidence governs Component MORE than Editorial.** The Zorzi/dyslexia literature measures
+   *letter identification* — which is precisely what recognising a short label is. It had been filed
+   under the wrong tier.
+
+**Independent corroboration:** Frutiger drew the same line. His stated reason for designing *Frutiger*
+was that Univers was *"perfect for printed books"* but wrong for someone crossing an airport at 5 mph —
+continuous reading vs glance recognition. **He put Univers on the Editorial side of Dave's split.**
+
+**Structural consequence — the reason this matters beyond tracking:** the same 40px wants a different
+value in each tier (Editorial −0.02em vs Component −0.01em). **Size alone cannot express the rule.**
+So tracking must live ON the composites (11 Component + 9 Editorial), not as a token ramp indexed by
+size. That is the strongest available argument that the D2/D3 role split is real rather than tidy.
+
+## T-D2 — MEASURED font facts (from the licensed files, not literature)
+
+Measured with fontTools from `knowledge/assets/fonts/_desktop/TTF/`. **Highest evidence tier we have** —
+not what typographers say about Univers, what our actual files do.
+
+- **Univers is LOOSE, not tight.** `n` sidebearing = **15.6% of x-height**; Arial 12.4%, Calibri 13.5%,
+  Lato 13.4%. Only DejaVu Sans (drawn open for low-res screens) is looser at 15.7%. SB/stem **0.90**
+  vs ~0.75 for the Helvetica lineage.
+  ⚠️ **The folklore "Univers is tight" refers to APERTURES, not spacing.** Frutiger's complaint was
+  *"too round and closed an effect for the easy recognition of word-signs"* — a counter property.
+  **Tracking cannot open a counter**, so the face's known glance-reading weakness is NOT addressable by
+  the lever we spent the day designing. Size, weight and ground must carry it.
+- **Sidebearings barely move across weights; stems grow sevenfold.** ULt→Bd: sidebearing 92→68 (−26%),
+  stem 20→146 (+630%). **SB/stem collapses 4.60 → 0.46.** At Bold there is under half a stem of air.
+  **Medium — mandated by col26-020(c) for small reverse text — sits at 0.64, already tight-side.**
+  ⇒ **Tracking may need a WEIGHT term, not just size and role.** Largest single effect measured;
+  no current rule accounts for it. Ladder C6 on the contact sheet asks this and nothing else.
+- **Kerning present in all six weights** (via GPOS extension lookups), values consistent.
+- **Vertical metrics:** UPM 1000 · cap 723 · x-height 505 · hhea 1068/−232 · lineGap 0 ·
+  `USE_TYPO_METRICS` OFF → natural line box **1.300em**.
+
+## T-D3 — HSBC's cut ≡ stock Univers Next Pro, horizontally. SETTLED, never re-ask.
+
+Dave supplied Univers Next Pro mid-session; both families measured against each other, six matched weights.
+
+- **Sidebearings** (LSB *and* RSB): 75 glyphs × 6 weights → **1 glyph differs**.
+- **Advance widths**: 82 glyphs × 6 weights → same 1 glyph.
+- **Kerning**: 10 problem pairs × 6 weights = **60/60 exact matches**, value for value.
+- **Cap-height / x-height**: identical to the unit at every weight.
+- The one difference is the **ampersand**, redrawn for HSBC (ink 680×751 vs 664×738; RSB −1 vs 15).
+
+**⇒ Published Univers Next guidance on SPACING applies to us directly.** Empirical, not assumed.
+**⇒ The `Fo`-unkerned-in-Regular gap exists in STOCK too** — upstream Linotype/Monotype omission,
+**not an HSBC error**. Do not raise it with brand. Logged in `_DS-IMPROVEMENTS.md` as ds-004.
+
+**⇒ Where published advice WILL mislead us — vertical metrics:**
+
+| | hhea asc/desc | lineGap | line box | baseline from top | glyphs |
+|---|---|---|---|---|---|
+| **HSBC cut** | 1068 / −232 | 0 | **1.300em** | ~82% | 835–1011 |
+| stock Univers Next Pro | 750 / −250 | 200 | 1.200em | ~71% | 669 |
+
+Line boxes are only **8%** apart — but the **baseline sits ~11 percentage points lower in the box** in
+our cut, because HSBC folded the lineGap into ascent. **That is what the cap-trim and grid-slot work
+depends on**, so stock-Univers line-height advice does not transfer.
+
+## ⚠️ T-D4 — THREE CORRECTIONS I MADE TODAY (all mine; all "tidy first answer, wrong")
+
+Recorded per the §A rule that corrections are inscribed as loudly as the original claim. **The pattern
+matters more than the individual errors: in all three the first answer was neat and confirmed what I
+half-expected.** That is the signal to run it twice.
+
+1. **Invented a fork that the evidence had already closed.** I framed col26-020(c) as "universal weight
+   floor vs conditional rung" and told Dave it blocked the retrofit. Reading the *rule text* off the KB
+   page without returning to the *specimen that generated it*, I missed that the sheet only ever tested
+   reverse text on extreme grounds — the universal reading was never a candidate. **Dave asked "am I
+   right that this was decided?" and he was.** Q5 (scope) is genuinely open; my fork was not.
+   → **Lesson: read the specimen, not the summary. The rule text is a Polaroid of the sheet.**
+2. **Nearly recorded a font defect that does not exist.** First kerning parser reported "no kerning in
+   any weight except Medium" — I was composing the write-up when I re-checked. The family uses **GPOS
+   extension lookups (LookupType 9)**; the parser only counted direct type-2. Every weight kerns.
+   → **Lesson: a finding that makes the vendor look careless deserves a second parser.**
+3. **Nearly reported an 8% difference as 30%.** HSBC ascent 1068 vs stock 750 *looks* like 30%. It is 8%,
+   because stock carries a 200-unit lineGap that HSBC zeroed. The ascent is the figure that looks
+   decisive and is not.
+   → **Lesson: compute the derived quantity, never eyeball the component that suggests it.**
+
+## T-D5 — What the tracking rule would be, IF the sheets survive Dave
+
+**Nothing below is promoted.** Recommendations on `reviews/TRACKING-CONTACT-2026-07-18.html`.
+
+| role | context | recommend | confidence |
+|---|---|---|---|
+| Editorial | display 40px | −0.02em | medium-high |
+| Editorial | body 16px | **no change** | **high** — the null result |
+| Component | label 12px, ordinary | +0.005em | **low** — moved twice |
+| Component | label 14px, reverse neutral | +0.015em | medium |
+| Component | label 14px, reverse chroma | +0.015em | medium |
+| Component | figure 40px | −0.01em | low-medium |
+| both | reverse text luminance | #EBEBEB, **neutral grounds only** | medium |
+| Component | **weight term** | **open — ladder C6** | — |
+
+**Text-luminance asymmetry, computed not guessed:** on `surface/digital-black` there is enormous
+headroom (`#EBEBEB` = 14.60:1). On the sat-0.72 chroma ground the lever runs out immediately —
+`#E0E0E0` = 4.56:1 and `#D4D4D4` **FAILS** at 4.06:1. So text-dimming is a **neutral-ground lever**,
+which mirrors col26-020's existing chroma/luminance split rather than cutting across it.
+
+**Candidate extension to {#col26-020}:** the rule currently has two levers (ground chroma, ground
+luminance). The literature supplies two more for reverse text — **open the tracking** and **dim the
+ink off pure white**. Both are "reduce the extremity of the edge" without adding contrast.
+
+## T-D6 — Open, carried forward
+
+- **Q5** (col26-020 scope: badges only vs every light-on-chroma surface) — open since specimen v2,
+  never marked. Now restated as R4 on the Component-Medium sheet.
+- **The 100 Component `500`s** — is small-label Medium structural or drift? `COMPONENT-MEDIUM` sheet.
+- **The weight term** (T-D2) — ladder C6.
+- **Whether tracking becomes a composite property** — follows from T-D1's structural argument.
