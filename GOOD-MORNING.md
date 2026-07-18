@@ -1,18 +1,21 @@
 # Good morning, Dave ☕
 
-*Briefing — written end of 2026-07-18 (date from `date`, per the new ritual rule), session
-**"Making the record answerable"** — the Fable consolidation run.*
+*Briefing — written end of 2026-07-19 00:46 (date from `date`, per the ritual rule), session
+**"A gate for the blast radius"** — built the gate, then rode it through a chain of cleanups.*
 
 ---
 
 ## ⬛ DO THESE TWO FIRST (10 seconds)
 
-> **RENAME YESTERDAY'S CHAT → `Making the record answerable`** *(no change — it already carries this
-> name, and for once it earned it: the session did exactly what it was opened for — ran the Fable
-> brief cold, you ruled the 11 pins, and the whole consolidation was enacted the same day.)*
+> **RENAME YESTERDAY'S CHAT → `The blast-radius gate, and the Tag atom`** *(it opened to build the
+> binding blast-radius gate — and did, closing open-001 — then the gate's own logic carried the
+> session outward: the h2 landmine defused (radius 25→0), specimen chrome harmonised, and while
+> building the Tag atom you asked for (3 variants × 2 sizes) it surfaced ds-005 — a cross-component
+> descender-clip finding that also hits buttons.)*
 
-> **TITLE TODAY'S CHAT →** `A gate for the blast radius`
-> Next session = the binding blast-radius gate, **Opus**, per the queue below.
+> **TITLE TODAY'S CHAT →** `The button-label clip audit`
+> Next session = ds-005 follow-on (audit `.btn/.cta` labels for the same clip) + the remaining §2
+> small picks. **Sonnet** for the audit sweep; **Opus** if a real ruling surfaces. Per §C.
 
 *Standing practice: every handoff carries both names — retrospective + forward. Step 4b in
 `_RUNBOOK-capture-ritual.md`.*
@@ -96,10 +99,11 @@ _retired/             reverted/retired work with residual value (incl. the memor
 ```
 python3 knowledge/_build_all.py     # 31 steps, all gates, exits non-zero on any failure
 ```
-Gates: a11y · contrast · state-contrast · icon-source · coverage · integrity · rules-index ·
+Gates (33 steps): a11y · contrast · state-contrast · icon-source · coverage · integrity · rules-index ·
 assertions · standing-instructions · **DEF-003** no-JS-motion · **DEF-004** no-hardcoded-styling ·
-**DEF-005** 4px grid · pro-forma · DataViz · consult-index + selftest (advisory) · edge-extremity
-(advisory). **DEF-006 type-composites exists but is NOT wired** (deliberate — see the non-`/1` batch).
+**DEF-005** 4px grid · **type-binding blast-radius** (NEW — guards `canon/type.css`, registry
+`canon/_type-bindings.json`) · pro-forma · DataViz · consult-index + selftest (advisory) ·
+edge-extremity (advisory). **DEF-006 type-composites exists but is NOT wired** (deliberate — see the non-`/1` batch).
 
 ## Rules that actually bite
 - **CONSULT before designing** (see the Memento block above) — then **survey before build**: grep
@@ -111,6 +115,13 @@ assertions · standing-instructions · **DEF-003** no-JS-motion · **DEF-004** n
   a ruling, never a sweep.
 - **A diff you cannot attribute is not evidence.** Isolate with a control (`NO_SNAP` pattern) before
   judging.
+- **Every selector appended to `canon/type.css` is GLOBAL** (T-D9 binding). New ones must be registered
+  in `canon/_type-bindings.json` or the blast-radius gate fails (UNREGISTERED / ESCAPED / UNWAIVED-BARE).
+  Run `_validate_type_blast_radius.py --update` for intentional growth, then review the diff.
+- **Label trimming near an icon** (`_DS-IMPROVEMENTS` ds-005): trimmed truncating labels — stacked, no
+  icon → `text-box-edge:text text`; **icon+label control (tag/button/CTA) → `cap alphabetic` + label
+  `overflow:visible`** into the control's slack (clip-safe AND icon-aligned). `text text` next to an
+  icon misaligns it; `cap alphabetic` + label `overflow:hidden` clips descenders. Audit button labels.
 - **Icons: real assets only** — render-verify before binding; filenames lie.
 - **4px grid** (DEF-005) · **sentence case** · **square corners in mono** · **red = primary-action
   accent, once per screen** (brand modes) · **weights: five licensed only — 100/300/400/500/700,
@@ -186,83 +197,82 @@ Chrome needs ~17 libs via `apt-get download` → `dpkg -x` → `LD_LIBRARY_PATH`
 
 ---
 
-# §B · THIS SESSION (2026-07-18, "Making the record answerable")
+# §B · THIS SESSION (2026-07-19, "A gate for the blast radius")
 
-**The Fable consolidation run — opened cold from the brief, and for once the session did exactly
-what it was opened for.**
+**Opened to build the one gate open-001 was waiting for. Built it — then its own logic pulled the
+session through a chain: the gate names a danger, so we defused the biggest instance of it, then the
+next, and building the component you asked for surfaced a fresh cross-component finding.**
 
-## What LANDED
+## What LANDED (five commits, `fd473d1`→`a7944cb`)
 
-**⭐ The brief's central claim was tested and UPHELD, on cold evidence** — then the whole
-consolidation was ruled (your 11 pins on `reviews/CONSOLIDATION-AUDIT-2026-07-18.html`) and enacted
-same-day:
-- **`_LIVE-STATE.md`: 1104 → 402 lines.** Nothing deleted: ~580 lines relocated **verbatim** to
-  `_DECISION-HISTORY/` (7 dated files + README, with **RESURRECT tags** — your ruling that the old
-  experiments feed the future Create modes); duplicates → pointers; two entries removed on their own
-  recorded instructions. **Masthead recorded as shipped MLP.**
-- **`_FUTURE-STATE.md` created** — your "future-state machine": side-quests, feature ideas,
-  resurrection candidates (incl. the new **DataViz → colleague presentation** candidate).
-- **The memory mirror is DELETED** (your ruling, pin 11): it was the third source of truth its own
-  README forbade (115 vs 110, five ghosts). Dated snapshot in `_retired/agent-memory-snapshot-2026-07-18/`;
-  ritual step 3 now says **inscribe, don't photocopy**.
-- **The consult tool is BUILT** (pin 10; delegated to **Sonnet** per MODEL-ROUTING mode 2):
-  `knowledge/_consult.py` over a 557-record generated index — rules, rulings, assertions, gates
-  **with where each bites** ("gated by X over N files" vs "asserted only"). Selftest replays the
-  three 07-18 stale-reading failures and passes honestly. Wired into the build (now 31 steps).
-- **Two lessons inscribed as rules** (bare-`:root` alias trap · gate-as-last-step) in
-  `_RUNBOOK-compose-from-canon.md`; **stale assertion prose fixed** (ASSERT-001/005 no longer speak
-  the pre-ruling licence framing).
+- **🔴→✅ The type-binding blast-radius gate — closes open-001.** `_validate_type_blast_radius.py`
+  (blocking, build step 26/33) + registry `canon/_type-bindings.json`. Every selector appended to a
+  global type composite is recorded with its acknowledged blast radius; the gate fails on a new
+  UNREGISTERED selector, an ESCAPED radius, or a new UNWAIVED bare-element. **Day-one-green by design**
+  (your call): current debt registered + waived, not hidden — so it bites new unscoped bindings without
+  a red build on known work. Bite-tested three ways. Ruling: **T-D13** in `_TYPE-DECISIONS.md`.
+- **The `h2` landmine defused — radius 25→0.** The "25-file" bare global `h2` was really a **2-file
+  intentional binding in disguise** (22 files override it; Confirmation is a class). Namespaced to a
+  scoped `.spec-h`; **visual no-op, computed-style verified**.
+- **Specimen chrome harmonised — full strength, no muting** (you ruled out opacity; it dodges the
+  contrast gate). All 9 spec-doc section labels → 12px/opacity-1. 5 files use `.spec-h`; 4 self-contained
+  files keep a local rule (linking canon into them would re-open the blast radius).
+- **⭐ ds-005 logged — a KEEP finding, cross-component.** `cap alphabetic` trim aligns a label to an
+  adjacent icon but **clips descenders under `overflow:hidden`** — the gated **Tags** component renders
+  "Savin*q*s" today. `text text` unclips but misaligns the icon. Fix for icon+label controls: `cap
+  alphabetic` + label `overflow:visible`. Inscribed in `_DS-IMPROVEMENTS` ds-005 + the §A rule; memory
+  `leading-trim-label-decision` extended. **You flagged it hits buttons — hence next session's title.**
+- **The Tag atom, your spec, wired into canon.** 3 variants (dismissible/bordered/plain) × 2 sizes
+  (`.tag`/`.tag--sm`), the live clip fixed, Account-card/List-items confirmed already-conforming. The
+  masthead descriptor `.h .tag` → `.h .subtitle` (it's spec chrome, not a component). Colour/RAG deferred.
 
-## Found cold (the §4.5 list — full version in the audit sheet §5)
+## What I got wrong (honesty over tidiness)
 
-1. **The record mis-dated itself**: the T-D12 handoff said "written end of 2026-07-19"; its commits
-   landed 07-18 19:51–20:23. Fixed forward: dates from `date`.
-2. **"1044 lines" had rotted to 1104** inside the very banner warning about growth.
-3. **The assertion register nearly re-opened your closed licence thread** — stale consequence prose
-   behind passing predicates. Fixed; the FLIP blind spot is real and now documented.
-4. Pro-forma≡Apollo-mono naming, invisible LIVE-section stratigraphy, and the spine's unnamed
-   guardian gate — all addressed structurally by the split + §A updates.
+- **I hand-rolled the label trim twice instead of consulting the strategy** — `line-height:1` +
+  `overflow:hidden`, then a half-right `text text` — before reusing the canon `text-box-trim`. You
+  caught both ("we had a strategy for this already"). The **stale-reading failure recurred**: I ran
+  CONSULT for the collision but not for the rendering. ds-005 is the durable outcome; the lesson is
+  consult for the *mechanics* too, not just the decision.
+- I proposed `.h .eyebrow` for the rename — but `.eyebrow` is a live component; it would have recreated
+  the very overload we were removing. Caught by a collision check before renaming.
 
-## What to watch (honesty over tidiness)
+## What to watch
 
-- **The spine rewrite was a full-file rewrite** — the operation class that degraded §A once before.
-  Mitigations: relocations were verbatim `sed` extractions, not retypes; STAND-002 + the full build
-  are green; the audit sheet records every cut. Residual risk: the new spine *summaries* are mine
-  and **unaudited** — if one reads wrong against its ledger, the ledger wins.
-- The consult tool's enforcement column is **keyword-fuzzy** ("possibly gated by…") — good enough
-  for advisory tier; the gate-glob audit (Fable candidate #2) is the rigorous version, re-scope it
-  after the tool beds in.
+- **The Tag atom is wired but not review-gated as a full component** — the variant CSS is in canon; a
+  proper gated-component pass (states, a11y, the `_RUNBOOK-gated-component` checklist) hasn't run on the
+  new variants. Fine for now; flag before it's called "done".
+- ds-005's fix trades away per-label ellipsis (overflow:visible). Acceptable for short atoms; a control
+  needing ellipsis **and** an icon **and** descenders at once is unsolved — noted in ds-005.
 
 ---
 
 # §C · QUEUE
 
-## 1. 🔴 The binding blast-radius gate — **next session, Opus**
-Unchanged from the T-D12 handoff: bare selectors in a globally-linked stylesheet, load order doing
-safety-critical work across ~460 selectors, ungated. Wanted BEFORE the non-`/1` batch binds 690 more.
-`_LIVE-STATE.md` → OPEN has the candidate check.
+## 1. 🟠 ds-005 follow-on — audit button labels — **next session**
+The descender-clip finding hits any icon+label control that truncates a label. Confirmed live in Tags
+(now fixed). **Audit `.btn`/`.cta`/`.qbtn` labels for `overflow:hidden` + descenders**; apply the ds-005
+fix where they clip. Bounded sweep — **Sonnet**; **Opus** only if a real ruling surfaces. `_DS-IMPROVEMENTS`
+ds-005 has the decision tree + the gate candidate (a render-time descender-clip check).
 
 ## 2. Small picks — yours, no analysis needed
 | what | detail |
 |---|---|
-| ~~matting rungs~~ | **RULED R-D4 same evening: green + blue matted 15%, red as-is; role tokens promoted.** |
-| **`.tag` collision** | one atom one size, or `.tag--sm`? Actively blocks bindings |
+| ~~`.tag` collision~~ | **RESOLVED this session** — 3 variants × 2 sizes; masthead renamed; clip fixed. |
 | **`.num` 24px** | add a Component rung at 24, or snap to 20/32? |
 | **`{#dv-017}`(a)** | the rule permits a palette it also excludes |
+| **Tag colour/RAG** | deferred by you — layer status colour onto the atom when ready. |
 
-## 3. The non-`/1` batch (Sonnet, after #1)
+## 3. The non-`/1` batch (Sonnet)
 61 shorthands in snippets + the tranche bulk; things move; DEF-006 stays unwired until it lands.
 
 ## 4. Consult protocol — bed it in
-Use it at the top of every design task; paste receipts; grow the lexicon one line per miss. When it
-has earned trust, promote the receipt check from advisory to blocking, and re-scope the **gate-glob
-audit** (Fable candidate #2) against what the bite column already answers.
+Use it at the top of every design task **including the mechanics, not just the decision** (this session's
+lesson). Paste receipts; grow the lexicon per miss. Promote receipt-check advisory→blocking once trusted.
 
 ## 5. 🕓 Waiting on brand — the Latin webfont pack
-Unchanged: files land in `knowledge/assets/fonts/` + Ultralight scope confirmed (= a type ruling,
-not an asset drop). Not yours to chase beyond the ask.
+Unchanged: files land in `knowledge/assets/fonts/` + Ultralight scope confirmed. Not yours to chase.
 
-> **COMMIT STATE:** this session's work is committed in-sandbox (paste-ready summary handed in chat);
-> **you push via GitHub Desktop**, as ever. Build green, 31 steps; DEF-006 unwired by design.
-> **Next session model: Opus** (§1 is judgment work). The audit sheet + REVIEW copy stay in
-> `reviews/` as the session's record.
+> **COMMIT STATE:** five commits in-sandbox (`fd473d1`, `141e8a0`, `f488c50`, `88a9dd5`, `a7944cb`),
+> locks clear; **you push via GitHub Desktop**. Build green, **33 steps**; DEF-006 unwired by design.
+> **Next session model: Sonnet** (button-label audit is a sweep). Review specimens in `reviews/`
+> (`TAG-COMPONENT`, `TAG-COLLISION`, `SPEC-H-CHROME`) are the session's record.
