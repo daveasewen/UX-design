@@ -1,7 +1,13 @@
 # FABLE BRIEF — make the knowledge base interrogable
 
 *Written 2026-07-19 by Opus, for a **cold Fable session**. Dave's ask: "make the brief bloody good."*
-*Status: **DRAFT — Dave to add candidates before the session runs.** See §7, the running list.*
+
+> **🅕 IF YOU ARE READING THIS AT THE START OF A SESSION: this is your task. Begin.**
+> Dave ruled 2026-07-19 that the handoff kicks off the run — there is no "should I?" gate. You are
+> the cold Fable agent this was written for. Read §0, then work §4 in order. The only reason to stop
+> before starting is if §0's central claim fails against the evidence (§6.5) — in which case do the
+> smaller job and say so.
+> *Status: **LIVE. Dave's candidate list (§7) may have grown since writing — read it before scoping.***
 
 ---
 

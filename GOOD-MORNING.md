@@ -12,8 +12,13 @@
 > licence thread, and ended by scoping the Fable session.)*
 
 > **TITLE TODAY'S CHAT →** `Making the record answerable`
-> *(the Fable consolidation. If you'd rather knock off the four small picks first, title it
-> `Four small picks` instead and leave the Fable line for the session after.)*
+
+> **🅕 THIS SESSION IS THE FABLE RUN — start it on FABLE, COLD.** No warm-up, no re-reading this
+> conversation. **First action: open `notes/_FABLE-BRIEF-consolidation.md` and execute it**, §0
+> first. The brief is self-contained and written to be run cold; if it can't be understood cold,
+> that is finding #1, report it. Everything in §C below is context for AFTER the brief, or for a
+> different session — **do not let it pull you off the consolidation.** (Dave, 2026-07-19:
+> *"assume the fable briefing and run is kicked off by the handoff."*)
 
 *Standing practice (your ask, 2026-07-18): every handoff carries **both** names — retrospective for
 the session that ended, forward for the next. Step 4b in `_RUNBOOK-capture-ritual.md`. I can't rename
@@ -253,13 +258,15 @@ pushed back. It isn't housekeeping — see §C.
 
 # §C · QUEUE
 
-## 1. 🧹 THE FABLE SESSION — scoped, ready to run
-`notes/_FABLE-BRIEF-consolidation.md`. **Read §0 first** — the brief argues the task is not "shorten
-`_LIVE-STATE`" but **"make the record answerable"**, because four separate complaints from the last
-fortnight are one problem: *we can write to the KB far better than we can interrogate it.*
-Includes the running **candidate-task list** (§7) for you to add to — and my argument that
-**"turbo-charge the KB" is at least four different tasks**, of which retrieval is the one that
-unlocks the others. **Fable, cold. Do not warm-start it.**
+## 1. 🅕 THE FABLE SESSION — THIS IS THE RUN, not a decision to make
+**Per Dave's ruling 2026-07-19, the handoff kicks off the Fable run: opening this session cold IS
+starting it.** Go straight to `notes/_FABLE-BRIEF-consolidation.md` and execute §0 onward. The brief
+argues the task is not "shorten `_LIVE-STATE`" but **"make the record answerable"** — four complaints
+from one fortnight are one problem: *we can write to the KB far better than we can interrogate it.*
+It carries the running **candidate-task list** (§7, Dave adds to it) and my argument that
+**"turbo-charge the KB" is four tasks, of which retrieval is the unlock.**
+**Do not warm-start, do not detour into §§2–6 first.** If the record can't be read cold, that is the
+first thing to report, not to paper over.
 
 ## 2. Small picks — yours, no analysis needed
 | what | detail |
@@ -294,4 +301,5 @@ ruling, not an asset drop.** Expect it; don't discover it in a diff.
 
 > **COMMITTED:** `9fb1381` (T-D12 + verification + the two script fixes). This handoff is a second
 > commit below. Build green, all 30 steps; DEF-006 fails by design.
-> **Next session model:** **Fable + cold for §1.** Opus for §3. Sonnet for §4 once §3 is ruled.
+> **Next session model:** **§1 IS the session — Fable, cold, from the brief.** §§3–4 are later
+> sessions (Opus for §3; Sonnet for §4 once §3 is ruled), NOT this one.
