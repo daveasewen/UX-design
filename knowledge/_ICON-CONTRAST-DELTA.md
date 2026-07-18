@@ -6,7 +6,7 @@
 gate (check 3, bite-tested). This advisory continues as the exhaustive/state×theme
 watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 
-**Headline: 0 declared dead-zone · 17 exhaustive (upper bound) · 0 roundel fails (<3:1) · 0 mark fails (<4.5 vs roundel, light).**
+**Headline: 0 declared dead-zone · 18 exhaustive (upper bound) · 0 roundel fails (<3:1) · 0 mark fails (<4.5 vs roundel, light).**
 
 ## 1. Declared icon pairs (the concrete promotion cost)
 
@@ -51,6 +51,7 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | icon/default | secondary/background/hover | dark | 1.17 | below-3(gated) |
 | icon/default | secondary/background/pressed | light | 2.78 | below-3(gated) |
 | icon/default | secondary/background/pressed | dark | 1.43 | below-3(gated) |
+| icon/default | surface/digital-black | light | 1.38 | below-3(gated) |
 | icon/default | tertiary/background/active | light | 1.66 | below-3(gated) |
 | icon/default | tertiary/background/pressed | light | 2.78 | below-3(gated) |
 | icon/default-reverse | background/default | light | 1.0 | below-3(gated) |
@@ -94,6 +95,7 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | icon/disabled (allowlisted) | secondary/background/hover | dark | 3.88 | DEAD-ZONE |
 | icon/disabled (allowlisted) | secondary/background/pressed | light | 3.18 | DEAD-ZONE |
 | icon/disabled (allowlisted) | secondary/background/pressed | dark | 3.18 | DEAD-ZONE |
+| icon/disabled (allowlisted) | surface/digital-black | dark | 3.83 | DEAD-ZONE |
 | icon/disabled (allowlisted) | table/column/background | light | 1.29 | below-3(gated) |
 | icon/disabled (allowlisted) | table/column/background | dark | 3.71 | DEAD-ZONE |
 | icon/disabled (allowlisted) | table/header/background | light | 1.22 | below-3(gated) |
@@ -116,7 +118,7 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | icon/disabled (allowlisted) | tooltip/background | light | 1.43 | below-3(gated) |
 | icon/disabled (allowlisted) | tooltip/background | dark | 3.71 | DEAD-ZONE |
 
-_(78 of 162 exhaustive combos already clear 4.5:1; 6 transparent/composite surfaces skipped (alpha — true contrast needs the render path) — omitted.)_
+_(82 of 168 exhaustive combos already clear 4.5:1; 6 transparent/composite surfaces skipped (alpha — true contrast needs the render path) — omitted.)_
 
 ## 3. Roundel vs surface — rag/* pairs at the ROUNDEL threshold (≥3:1, ruled policy)
 

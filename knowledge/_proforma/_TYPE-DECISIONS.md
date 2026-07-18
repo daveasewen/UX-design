@@ -320,3 +320,50 @@ saturation-normalised during the 07-16 D2 vibration work — engineered for this
 ### STILL OPEN (specimen v2 re-cut at the chosen chroma)
 Q2 minimum weight · Q3 size floor · **Q-new: the saturation threshold** (without a number there is no gate,
 only a preference — the equivalent of dv-019's 135°) · Q5 scope (badges vs every light-on-chroma surface).
+
+## SPECIMEN V2 RULINGS — 2026-07-18. The rule is now QUANTIFIED.
+
+### Q2 + Q3 ANSWERED — it is a SIZE×WEIGHT PAIR, not a flat weight minimum
+| size | minimum weight |
+|---|---|
+| 10px | Medium — **excluded**: Dave *"I don't recommend using this size and it isn't in the font ramp"* (ramp starts at 12) |
+| 12px | **Medium (500)** |
+| 14px | **Medium (500)** |
+| 16px | **Medium (500)** |
+| 20px | **Light (300)** |
+The minimum weight **falls as size rises** — larger type carries more stroke mass. Q3 = yes, size matters,
+so the rule cannot be expressed as "reverse text must be ≥N".
+
+### Q-new ANSWERED — the saturation ceiling is **≤ 0.72**
+Dave picked `#B92F1E` (sat 0.72) as the first ladder row that reads clean; 0.78 / 0.84 / 1.00 do not.
+**This is the gate's number** — the equivalent of `dv-019`'s 135° hue leg, and for the same reason: derived
+from an observation, not from theory. The rule was un-gateable without it.
+
+### ⚠️ TWO CORRECTIONS TO EARLIER CLAIMS IN THIS SESSION (mine, both)
+1. **The `700→500` collapse did NOT cause the spidery badge.** The ruling puts the minimum at Medium (500)
+   for 12–16px, so the badge weight was always sufficient. **The GROUND was the fault** — at sat 1.00 it
+   strained at any weight; at sat 0.72 Medium holds. I attributed it to my own change and was wrong.
+2. **`type25-008` was wrongly invoked.** "Emphasis = Univers Bold only" governs emphasising keywords within
+   running text — not badge counts. It does not apply here, and I used it to argue for 700 when it had no
+   bearing. The 600→500 half of rule 2 still stands on its own merits (600 is not a licensed weight and ships
+   no font file); the 700→500 half needs no special justification after all.
+
+### `#1A1A1A` PROMOTED — `surface/digital-black` (Dave: *"it can be called digital black or something,
+that's probably how I'll remember it"*)
+Placed in `semantic-colour.json`, **not** `colour.json` — the brand store holds published brand values and
+`#1A1A1A` is Apollo-derived; putting it there would corrupt the brand source. Follows the `data/delta`
+precedent (derived, no primitive alias, `$note` carries the anchors). The token carries `$substitutesFor`,
+`$condition`, `$rule` and `$provenance` so the condition travels with the value.
+- **Naming trade, recorded deliberately:** "digital black" favours **recall over precision** — it does not
+  encode the condition, and reads like a second black free to pick. That is Dave's call (he is the one who
+  must remember it), so the condition lives on the token and must never be stripped from it.
+- **Still open:** the **10 literal `#1A1A1A` usages** need rebinding to the token; and
+  `_PROFORMA-RULES.md` rule 1 still carries its stale *"Open to confirm: (a) near-black shade"* line.
+
+### THE RULE, ASSEMBLED — "reduce the extremity of the edge"
+Two levers by ground type, one principle: **never add contrast, which makes halation worse.**
+- **Coloured ground → CHROMA**: saturation ≤ 0.72.
+- **Neutral ground → LUMINANCE EXTREMITY**: `surface/digital-black` (#1A1A1A, 17.4:1) in place of `#000` (21:1).
+- **Both grounds → SIZE×WEIGHT**: the table above.
+Distinct from `{#dv-019}` and must not be merged with it (dv-019 scores this 0/3 and is right to).
+**Gateable now, gated by nothing.** Q5 (scope — badges only vs every light-on-chroma surface) still open.
