@@ -30,6 +30,10 @@
    3. text/reverse is flat (#FFF/#FFF); fine for primary (always white on red) but wrong for the
       inverting variants — root cause of #1.
 -->
+<!-- TYPE-001 · canon type composites. MUST come BEFORE the component <style> below: `.btn` is
+     bound by being appended to `.t-cm` / `.t-cm-button`'s selector lists (T-D9), and both are
+     specificity 0-1-0, so source order decides the winner. -->
+<link rel="stylesheet" href="../canon/type.css">
 <style>
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
    enhancement; headings/body excluded. Added 2026-06-29. */
@@ -73,8 +77,11 @@
   .row{display:flex; gap:16px; flex-wrap:wrap; align-items:center;}
   .cap{font-size:12px; /* sentence case — type26-019 sweep (Dave ruling 2026-07-02): no uppercase, caps tracking removed with it */ opacity:.45; width:100%; margin-top:2px;}
 
+  /* TYPE-002 · type comes from the canon composite — `.btn` is appended to `.t-cm` and
+     `.t-cm-button` in canon/type.css (T-D9). font-family / size / weight / line-height /
+     inline-flex / align-items / cap-trim all arrive from there. Do NOT re-declare them here. */
   .btn{height:var(--h); min-width:96px; padding:0 var(--pad-x); border:0; border-radius:0; cursor:pointer;
-    font:var(--weight) var(--fs)/1 var(--font); display:inline-flex; align-items:center; justify-content:center;
+    justify-content:center;
     gap:8px; transition:background var(--ease), border-color var(--ease), transform var(--spring), filter var(--press);}
   .btn:focus-visible{outline:2px solid var(--text-default); outline-offset:2px;}
 

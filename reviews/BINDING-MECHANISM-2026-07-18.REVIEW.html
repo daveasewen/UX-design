@@ -1,0 +1,558 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Type binding mechanism &mdash; options and impacts</title>
+<style>
+:root{--ink:#1c1c1c;--mut:#6b6b6b;--line:#e4e4e4;--red:#db0011;--set:#0b7a34;--con:#b25000;
+      --pra:#3b5f8a;--ten:#8a1f1f;}
+*{box-sizing:border-box}
+body{font-family:"Univers Next for HSBC","Helvetica Neue",Arial,sans-serif;color:var(--ink);
+  margin:0;padding:40px;max-width:1120px;line-height:1.5;background:#fafafa}
+h1{font-size:32px;font-weight:300;margin:0 0 4px}
+h2{font-size:20px;font-weight:500;margin:44px 0 4px;padding-top:16px;border-top:2px solid var(--ink)}
+h3{font-size:16px;font-weight:500;margin:22px 0 6px}
+.sub{color:var(--mut);font-size:14px;margin:0 0 24px}
+.lead{font-size:15px;background:#fff;border:1px solid var(--line);border-left:3px solid var(--red);
+  padding:16px 20px;margin:20px 0}
+.card{background:#fff;border:1px solid var(--line);padding:18px 22px;margin:14px 0}
+.card.rec{border-left:3px solid var(--set)}
+.card.kill{border-left:3px solid var(--ten)}
+.tier{display:inline-block;font-size:10px;letter-spacing:.06em;font-weight:500;padding:3px 9px;
+  color:#fff;margin-bottom:8px}
+.t-s{background:var(--set)}.t-c{background:var(--con)}.t-p{background:var(--pra)}.t-t{background:var(--ten)}
+.find{font-size:16px;font-weight:500;margin:0 0 8px}
+.detail{font-size:14px;margin:0 0 12px}
+.imp{font-size:13.5px;background:#fbfbfb;border-left:2px solid var(--line);padding:9px 14px;margin:8px 0 0}
+code{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;background:#f2f2f2;padding:1px 5px;border-radius:3px}
+pre{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;background:#f6f6f6;border:1px solid var(--line);
+  padding:12px 14px;overflow-x:auto;margin:10px 0;line-height:1.6}
+table{width:100%;border-collapse:collapse;background:#fff;margin:12px 0;font-size:13px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:500;font-size:11px;letter-spacing:.04em;color:var(--mut);background:#f4f4f4}
+.y{color:var(--set);font-weight:500}.n{color:var(--ten);font-weight:500}.m{color:var(--con);font-weight:500}
+.ask{background:#fffdf5}
+.foot{color:var(--mut);font-size:12px;margin-top:44px;border-top:1px solid var(--line);padding-top:12px}
+ol li,ul li{margin:8px 0;font-size:14px}
+</style></head><body>
+
+<h1>How does a component bind to a type composite?</h1>
+<p class="sub">Apollo SDS &middot; 2026-07-18 &middot; options and impacts. <b>Nothing enacted.</b> Read &sect;1 first &mdash; it corrects the numbers I gave you in the handoff.</p>
+
+<div class="lead"><b>Your criteria, as you stated them:</b> <i>robust, but flexible conversions, and solid standards.</i> Those three pull in different directions here and the sheet is arranged so you can see where. <b>It is built able to return a null result:</b> if none of the four options clears the bar, the honest outcome is that the mechanism isn't ready and DEF-006 stays unwired.</div>
+
+<h2>1 &middot; Four corrections before the options</h2>
+<p class="sub">I gave you &ldquo;339 elements, safely bindable&rdquo;. Every part of that was measured wrong. Same shape as yesterday &mdash; the tidy first answer.</p>
+
+<div class="card">
+<span class="tier t-t">CORRECTION</span>
+<p class="find">The unit is wrong. These are <b>CSS declarations, not elements.</b></p>
+<p class="detail">The gate's own inventory reports <b>782 violations across 49 files</b>. They are declarations inside stylesheet rules, not attributes on elements. <b>152 of them are in <code>canon/canon.css</code> alone</b> &mdash; a file with no markup in it at all.</p>
+<p class="imp"><b>Why it matters: </b>&ldquo;Add a class to 339 elements&rdquo; described a job that does not exist in that form. Roughly a fifth of the work is in a stylesheet where <b>there is nothing to add a class to</b>. That single fact eliminates any pure-markup answer.</p>
+</div>
+
+<div class="card">
+<span class="tier t-t">CORRECTION</span>
+<p class="find">A prior decision is hiding inside this one: <b>TYPE-001 fails in 100% of files.</b></p>
+<p class="detail"><b>Zero</b> of the 49 gated files pull <code>canon/type.css</code> today &mdash; not by link, not by inlined sentinel block. Whatever binding mechanism you pick, every gated file also needs a <i>delivery</i> mechanism, and the two choices are independent.</p>
+<p class="imp"><b>Why it matters: </b>Snippets are <b>deliberately self-contained and portable</b> &mdash; that is an architectural property, and a <code>&lt;link&gt;</code> destroys it. The gate already sanctions the inlined sentinel block as the form for snippets. So delivery is close to pre-decided, but it carries a real cost: <b>every edit to <code>type.css</code> now requires a re-inline sweep across 49 files</b>, and that sweep must itself be a gated build step or the copies rot. This is the same failure mode as the memory mirror.</p>
+</div>
+
+<div class="card">
+<span class="tier t-t">CORRECTION</span>
+<p class="find">Option (a) is structurally larger than &ldquo;add a class&rdquo;.</p>
+<p class="detail"><code>.t-cm-button</code> sets only <code>font-size</code>, <code>font-weight</code>, <code>min-height</code>. The cap-trim machinery &mdash; the thing that actually seats text in the 4px slot &mdash; lives on <code>.t-cm</code> and on a <code>.txt</code> <b>child</b>:</p>
+<pre>.t-cm{display:inline-flex;align-items:center;}
+.t-cm &gt; .txt{line-height:1; text-box:trim-both cap alphabetic;}</pre>
+<p class="detail">So a correct Component binding is not one class. It is:</p>
+<pre>&lt;button class="btn <b>t-cm t-cm-button</b>"&gt;&lt;span class="<b>txt</b>"&gt;Confirm payment&lt;/span&gt;&lt;/button&gt;</pre>
+<p class="imp"><b>Why it matters: </b>Two classes <b>plus an inserted element</b>, per text-bearing node, in the files that <i>are</i> the visual reference. And <code>display:inline-flex</code> on a button that was previously <code>inline-block</code> is a layout change, not a type change &mdash; it will move things. <b>Editorial (<code>.t-ed-*</code>) has no such structure and is genuinely one class.</b> The two tiers are not equally cheap, which is your D2/D3 ruling showing up again in the plumbing.</p>
+</div>
+
+<div class="card">
+<span class="tier t-c">FOUND IN PASSING</span>
+<p class="find"><code>type.css</code> says &ldquo;generated&rdquo; in its header. <b>Nothing generates it.</b></p>
+<p class="detail">Line 1 reads <code>/* Apollo type composites &mdash; generated 2026-07-17 */</code>. There is no generator for it anywhere in <code>knowledge/</code>. It is hand-authored with a misleading provenance line.</p>
+<p class="imp"><b>Why it matters: </b>Exactly the <code>canon.css</code> caveat again &mdash; a header that tells a future session not to edit a file it must edit, or vice-versa. Worth fixing whichever option wins; option (d) below depends on the answer.</p>
+</div>
+
+<h2>2 &middot; The options</h2>
+<p class="sub">Scored against your three criteria. <b>Robust</b> = can a gate prove it, and does it survive a rewrite. <b>Flexible</b> = what does it cost to change a binding, or to add a mode. <b>Standards</b> = is it idiomatic CSS a new starter recognises.</p>
+
+<table>
+<tr><th style="width:22%">option</th><th>robust</th><th>flexible</th><th>standards</th><th style="width:26%">covers all 782?</th></tr>
+<tr><td><b>(a)</b> markup class</td><td class="y">high &mdash; greppable, gateable per element</td><td class="n">low &mdash; rebinding = markup edit</td><td class="y">high &mdash; ordinary utility classes</td><td class="n">No &mdash; leaves 152 in <code>canon.css</code></td></tr>
+<tr><td><b>(b)</b> custom properties</td><td class="m">medium &mdash; gate sees no raw values, but cannot prove the <i>right</i> composite</td><td class="y">highest &mdash; mode = a property override</td><td class="y">high &mdash; native theming idiom</td><td class="n"><b>No &mdash; cannot express cap-trim</b></td></tr>
+<tr><td><b>(c)</b> build-time inlining</td><td class="y">high at the artefact</td><td class="n">low &mdash; origin invisible in devtools</td><td class="m">medium &mdash; generated flat CSS</td><td class="n">No &mdash; only the generated region</td></tr>
+<tr><td><b>(d)</b> selector-list extension <span style="color:var(--mut)">(new)</span></td><td class="y">high &mdash; one source, mapping is a checkable file</td><td class="y">high &mdash; rebind = one JSON line</td><td class="y">high &mdash; plain CSS selector lists</td><td class="y">Yes &mdash; markup and stylesheet alike</td></tr>
+</table>
+
+<h3>(a) &mdash; markup class</h3>
+<div class="card">
+<p class="detail">Add <code>.t-cm</code> + <code>.t-cm-*</code> + a <code>.txt</code> child to every Component text node; <code>.t-ed-*</code> to every Editorial one.</p>
+<p class="imp"><b>Impact: </b>Most <i>legible</i> option &mdash; you can read a component's type off its markup, which is the best possible answer to &ldquo;retrieval, not recall&rdquo;. But binding becomes <b>welded to markup</b>, and the three libraries are supposed to be one skeleton with token overrides. The moment a mode wants different type <i>structure</i>, markup diverges &mdash; and divergent markup is the first step of the fork the architecture forbids. <b>Leaves the 152 <code>canon.css</code> violations entirely unaddressed.</b></p>
+</div>
+
+<h3>(b) &mdash; CSS composition via custom properties</h3>
+<div class="card kill">
+<p class="detail">Components keep their selectors and pull values: <code>font-size:var(--t-cm-button-size)</code>. Precedent exists &mdash; <code>.cn-button .btn{font:var(--weight) var(--fs)/1 var(--font)}</code> already does this.</p>
+<p class="imp"><b>Impact &mdash; and the finding that decides it: </b>Custom properties carry <i>values</i>. Cap-trim is not a value, it is <b>a pseudo-element pair and a required child</b>. No custom property can deliver <code>text-box:trim-both</code> to a child that doesn't exist. <b>So (b) cannot express the Component tier at all</b> &mdash; it would work for Editorial and silently drop the trim on everything else, which is precisely the class of failure DEF-006 was written to catch. It also requires rewriting <code>type.css</code> from a class library into a property library, i.e. throwing away the composites you signed off on 07-17.</p>
+<p class="imp"><b>My read: </b>this one is dead as a whole answer. Its flexibility is real but it cannot carry the tier that matters most.</p>
+</div>
+
+<h3>(c) &mdash; build-time inlining</h3>
+<div class="card">
+<p class="detail">The canon.css generator folds composite declarations into component rules at build time.</p>
+<p class="imp"><b>Impact: </b>A generator can only fold into what it generates. It covers the <code>.cn-*</code> region and <b>not</b> the hand-authored <code>.c-*</code> composition layer &mdash; which is where 152 of the violations live &mdash; and <b>not</b> the 630-odd in hand-authored snippet and tranche <code>&lt;style&gt;</code> blocks, which nothing generates. It also costs you traceability: devtools shows <code>font-size:16px</code>, not <code>.t-cm-button</code>, so the composite name survives only in the generator. That is a direct trade of auditability for tidiness.</p>
+</div>
+
+<h3>(d) &mdash; generated selector-list extension <span style="color:var(--mut);font-weight:400">&mdash; not on your original list</span></h3>
+<div class="card rec">
+<p class="detail">A mapping file (<code>knowledge/canon/type-bindings.json</code>) names which component selectors bind to which composite. A generator appends them to the composite's own rule as a selector list:</p>
+<pre>/* generated from type-bindings.json */
+.t-ed-body, <b>.c-summary__k</b>, <b>.cn-list-items .row .desc</b> { font-size:16px; line-height:24px; font-weight:400; }
+.t-cm-button, <b>.cn-button .btn</b> { font-size:16px; font-weight:500; min-height:20px; }</pre>
+<p class="imp"><b>Robust: </b>one source of truth, and the mapping is a small machine-readable file a gate can check <i>exhaustively</i> &mdash; &ldquo;every text-bearing selector in the corpus appears in the map exactly once&rdquo; is a checkable claim, which is more than (a), (b) or (c) can offer. It also makes <b>orphans</b> visible: a component nobody bound shows up as a missing key rather than as silence.</p>
+<p class="imp"><b>Flexible: </b>rebinding a component is one line of JSON. No markup churn, no CSS churn, no re-inline sweep of hand-authored files. Adding a mode is adding an override block, same as today.</p>
+<p class="imp"><b>Standards: </b>plain CSS selector lists &mdash; no preprocessor, no <code>@extend</code>, nothing a browser or a new starter has to be taught.</p>
+<p class="imp"><b>The costs, stated honestly: </b><br>
+&mdash; <b>Cap-trim still needs the <code>.txt</code> child.</b> (d) solves values and sizes everywhere, but the Component tier's trim structure is markup, and no CSS mechanism removes that. So <b>(d) does not eliminate the markup pass &mdash; it shrinks it from ~230 nodes to only those Component nodes that need trim</b>, and defers the rest. That must be measured before you commit, not asserted.<br>
+&mdash; <b>Cascade order becomes load-bearing.</b> Composite rules live in <code>type.css</code>; component rules that must still win need to come after, or need the map to own them too.<br>
+&mdash; <b><code>type.css</code> becomes genuinely generated</b>, which fixes the false header in &sect;1 but means the hand-authored composites move to a source file. That is a real change to a file you reviewed and signed off nine days ago.</p>
+</div>
+
+<h2>3 &middot; What I actually think, and where I'd be wrong</h2>
+<div class="lead"><b>(d) fits your three criteria best, and (b) is dead.</b> But I built (d) today, in the same session where I got the framing wrong three times, and it has the same seductive property as every wrong turn yesterday: <b>it is tidy and it confirms what I expected.</b> Treat the recommendation as a candidate, not a finding.<br><br><b>The one number that would settle it</b> and which I have <b>not</b> measured: how many of the ~230 markup nodes genuinely need cap-trim, versus how many are wrapping text that Editorial should own anyway. If that number is small, (d) is clearly right. <b>If most Component text needs the <code>.txt</code> child regardless, then (d)'s advantage largely evaporates and (a) is the honest answer</b> &mdash; because you would be doing the markup pass either way, and (a) is simpler.</div>
+
+<h3>What I'd like to do next, if you agree</h3>
+<ol>
+<li><b>Measure the trim question</b> before you rule &mdash; a cheap counting pass over the 230 nodes, single-line vs wrapping. One Sonnet job. It is the difference between (a) and (d).</li>
+<li><b>Then rule</b>, on this sheet, with the number in front of you.</li>
+<li><b>Then the mechanical work</b> &mdash; rebind, wire DEF-006, drive to green.</li>
+</ol>
+<p class="detail"><b>Or overrule this</b> and pick now &mdash; the sheet is arranged so that you can. Mark the option and I'll take it as the ruling.</p>
+
+<h2>4 &middot; Round one &mdash; your marks, and what they settled</h2>
+<div class="lead"><b>Four of the five are closed. Q1 is not</b> &mdash; you leaned (d) <i>before</i> the evidence below existed, and the evidence changed the picture, so the lean needs re-marking rather than assuming.</div>
+<table>
+<tr><th style="width:30%">question</th><th style="width:26%">your mark</th><th>outcome</th></tr>
+<tr><td><b>Q1</b> mechanism</td><td><i>&ldquo;looks like D, but do the check from Q2&rdquo;</i></td><td><b>STILL OPEN</b> &mdash; blocker cleared, re-mark in &sect;6</td></tr>
+<tr><td><b>Q2</b> measure first</td><td><i>&ldquo;yes&rdquo;</i></td><td><b>RULED</b> &mdash; measured, see &sect;5</td></tr>
+<tr><td><b>Q3</b> delivery</td><td><i>&ldquo;the entire project must be portable &hellip; a package, pulled from a repo&rdquo;</i></td><td><b>RULED &mdash; reverses my &sect;1</b></td></tr>
+<tr><td><b>Q4</b> generated <code>type.css</code></td><td><i>&ldquo;seems reasonable&rdquo;</i></td><td><b>RULED yes</b>, conditional on Q1=(d)</td></tr>
+<tr><td><b>Q5</b> inline-flex</td><td>buttons = text, text+trailing icon, sometimes leading icon</td><td><b>DISSOLVED</b> &mdash; see &sect;5</td></tr>
+</table>
+
+<h3>Q3 &mdash; you were right to attack the premise</h3>
+<div class="card rec">
+<p class="detail">You didn't answer the portability question, you rejected its framing: <i>&ldquo;previously we assumed Python would be a problem, it no longer is.&rdquo;</i> The assumption had never been tested.</p>
+<p class="imp"><b>Ruled: the portable unit is the PROJECT, not the file.</b> Apollo is a system of parts; a package carries the whole tree, so a relative <code>&lt;link href="../canon/type.css"&gt;</code> resolves fine. <b>The 49-file inline sweep in &sect;1 was solving a problem that does not exist</b> &mdash; and would have created 49 duplicate copies to keep in sync, which is the memory-mirror disease in a new costume. <code>&lt;link&gt;</code> is the delivery mechanism; the gate's &ldquo;inlining is sanctioned&rdquo; note relaxes to &ldquo;either, link preferred&rdquo;.</p>
+</div>
+
+<h2>5 &middot; The specimen &mdash; OBSERVED, and it reverses the measurement</h2>
+<p class="sub">Full-chrome Playwright, in-sandbox. Four variants &times; your three real button shapes. Source: <code>reviews/trimtest.html</code> &middot; render: <code>reviews/trimtest.png</code>.</p>
+
+<table>
+<tr><th>variant</th><th>mechanism</th><th>height</th><th>width (icon cases)</th></tr>
+<tr><td><b>A</b> current &mdash; <code>inline-flex</code> + required <code>.txt</code> child</td><td>trim on child</td><td class="y">20</td><td>141.83</td></tr>
+<tr><td><b>B</b> <code>inline-block</code>, no child, no flex</td><td>trim on element</td><td class="y">20</td><td>138.27</td></tr>
+<tr><td><b>C</b> fallback pseudo-element path, no child</td><td>trim on element</td><td class="y">20</td><td>138.27</td></tr>
+<tr><td><b>D</b> <code>inline-flex</code> kept, no child</td><td>trim on element</td><td class="y">20</td><td class="y"><b>141.83</b></td></tr>
+</table>
+
+<div class="card rec">
+<span class="tier t-s">OBSERVED</span>
+<p class="find">The <code>.txt</code> child is not required. <b>And D is a drop-in for A.</b></p>
+<p class="detail">All four seat text identically at h=20. <code>text-box:trim-both cap alphabetic</code> applies to the element directly &mdash; including when that element is a flex container with an icon sibling. <b><code>.txt</code> was an implementation choice in the 07-17 composite, never a requirement of the trim.</b> D matches A exactly including width; B and C differ by 3.5px only because flex <code>gap:8px</code> is not the same as a whitespace space &mdash; a spacing difference, not a trim one.</p>
+<p class="imp"><b>Consequence for Q1: </b>&sect;5's 80%-single-line count argued against (d) <i>only</i> on the premise that single-line &rArr; needs the child. <b>That premise is now false.</b> A selector-list extension can add <code>.btn</code> to <code>.t-cm-button</code>'s rule and deliver size, weight, flex, gap and trim <b>without touching one line of HTML</b>. (d)'s cost objection is gone.</p>
+</div>
+
+<div class="card">
+<span class="tier t-c">SCOPE LIMIT &mdash; do not widen this without re-testing</span>
+<p class="detail">Observed for the <b>button</b> case, three shapes, <b>Chromium</b>, <b>no Univers</b> (layout only). <b>Not</b> observed for the other ten Component composites &mdash; input, link, label, caption, tooltip, legal, figure-1/2, heading, section-label &mdash; nor for elements where <code>inline-flex</code> would change wrapping. Firefox has no <code>text-box-trim</code> and falls to path C, which also rendered h=20, so the fallback holds &mdash; but that is a Chromium render of the Firefox path, not Firefox.</p>
+</div>
+
+<h3>Q5 &mdash; answered, then dissolved</h3>
+<p class="detail">Since your buttons are only ever text, text+trailing icon, or leading icon+text, flex is <i>helpful</i> for them (it gives the gap and the centring), not harmful. And because D keeps flex while dropping the child, the &ldquo;does the composite need a non-flex fallback?&rdquo; question doesn't arise for buttons at all. <b>Re-ask it per composite</b> when the other ten get bound &mdash; a wrapping label is a different animal.</p>
+
+<h2>6 &middot; Round two &mdash; one mark left</h2>
+<table>
+<tr><th style="width:38%">question</th><th class="ask">your call</th></tr>
+<tr><td><b>Q1 (re-marked).</b> Mechanism: <b>(a)</b> markup class &middot; <b>(c)</b> build-time inlining &middot; <b>(d)</b> selector-list extension. You leaned (d); the cost objection against it has now been cleared by measurement rather than by argument. <i>Confirm or change.</i></td><td class="ask"></td></tr>
+<tr><td><b>Q6 (new).</b> Rewriting <code>.t-cm</code> to variant D changes a composite you signed off on 2026-07-17. Agreed as an amendment, or does it want its own specimen round across all eleven composites first?</td><td class="ask"></td></tr>
+</table>
+
+<p class="foot">Apollo SDS &middot; BINDING-MECHANISM-2026-07-18 &middot; clean source; review copy generated by <code>_make_review.py</code>. Nothing here is promoted. Evidence: <code>_validate_type_composites.py --inventory</code> (782 rows, 49 files), <code>canon/type.css</code>, <code>canon/canon.css</code>.</p>
+<meta name="rv-doc" content="BINDING MECHANISM 2026 07 18">
+<meta name="rv-file" content="reviews/BINDING-MECHANISM-2026-07-18.html">
+<!-- APOLLO-REVIEW-OVERLAY -->
+<!-- ============================================================================
+     APOLLO REVIEW OVERLAY — reusable comment layer for pro-forma review files.
+     Self-contained (no external deps, no browser storage). Drop this whole block
+     in before </body> of ANY interactive HTML to add: a Review-mode toggle,
+     click-a-component-to-pin-a-comment, a DRAGGABLE comment box that opens beside
+     the target (not over it) with a NOODLE leader-line + dot back to the commented
+     element, a comments panel, and Export → a structured numbered prompt
+     (copy / download) to paste back for the edits.
+     Injected by _make_review.py. All ids/classes are `rv-` prefixed to avoid
+     clashing with the host page. Nothing here is scanned by the component gates.
+     ========================================================================= -->
+<style id="rv-style">
+  #rv-fab{position:fixed;right:16px;bottom:16px;z-index:2147483000;display:inline-flex;align-items:center;gap:8px;
+    height:40px;padding:0 16px;border:1.5px solid #1A1A1A;border-radius:999px;background:#fff;color:#1A1A1A;
+    font:600 13px/1 -apple-system,Segoe UI,Roboto,sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.14);}
+  #rv-fab .rv-dot{width:8px;height:8px;border-radius:50%;background:#B7B7B7;}
+  #rv-fab.rv-on{background:#1A1A1A;color:#fff;border-color:#1A1A1A;}
+  #rv-fab.rv-on .rv-dot{background:#37D67A;}
+  #rv-fab .rv-count{min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#DB0011;color:#fff;
+    font:700 11px/18px -apple-system,Segoe UI,Roboto,sans-serif;text-align:center;display:none;}
+  #rv-fab .rv-count.rv-has{display:inline-block;}
+  /* review mode: crosshair + hover outline on the host content */
+  body.rv-active [data-rv-hover]{outline:2px solid #DB0011 !important;outline-offset:1px;cursor:crosshair;}
+  body.rv-active{scroll-behavior:auto;}
+  /* pinned markers layer */
+  #rv-markers{position:fixed;inset:0;z-index:2147482000;pointer-events:none;}
+  .rv-pin{position:fixed;transform:translate(-50%,-50%);width:22px;height:22px;border-radius:50% 50% 50% 2px;
+    background:#DB0011;color:#fff;font:700 12px/22px -apple-system,Segoe UI,Roboto,sans-serif;text-align:center;
+    box-shadow:0 2px 6px rgba(0,0,0,.3);pointer-events:auto;cursor:pointer;border:2px solid #fff;}
+  /* composer popover */
+  #rv-composer{position:fixed;z-index:2147483600;width:300px;max-width:92vw;background:#fff;border:1px solid #D7D8D6;
+    border-radius:8px;box-shadow:0 12px 40px rgba(0,0,0,.22);padding:12px;display:none;
+    font:400 13px/1.45 -apple-system,Segoe UI,Roboto,sans-serif;color:#1A1A1A;}
+  #rv-composer.rv-show{display:block;}
+  #rv-composer .rv-target{font:600 12px/1.3 inherit;color:#333;margin:0 0 8px;padding-left:16px;word-break:break-word;
+    cursor:move;user-select:none;position:relative;}
+  #rv-composer .rv-target::before{content:'';position:absolute;left:2px;top:1px;width:7px;height:12px;opacity:.55;
+    background:radial-gradient(circle,#666 1px,transparent 1.4px);background-size:3px 4px;}
+  /* noodle: leader line from the commented element to the composer box */
+  #rv-noodle{position:fixed;inset:0;z-index:2147483500;pointer-events:none;overflow:visible;}
+  #rv-noodle path{fill:none;stroke:#DB0011;stroke-width:1.5;opacity:.9;}
+  #rv-noodle circle{fill:#DB0011;stroke:#fff;stroke-width:1.5;}
+  #rv-noodle rect{fill:rgba(219,0,17,.06);stroke:#DB0011;stroke-width:2;opacity:.95;}
+  #rv-composer textarea{width:100%;box-sizing:border-box;min-height:76px;resize:vertical;padding:8px;
+    border:1px solid #B7B7B7;border-radius:6px;font:inherit;color:#1A1A1A;outline:none;}
+  #rv-composer textarea:focus{border-color:#1A1A1A;}
+  #rv-composer .rv-row{display:flex;gap:8px;justify-content:flex-end;margin-top:8px;}
+  .rv-btn{height:32px;padding:0 14px;border-radius:6px;border:1px solid #1A1A1A;background:#fff;color:#1A1A1A;
+    font:600 12px/1 -apple-system,Segoe UI,Roboto,sans-serif;cursor:pointer;}
+  .rv-btn.rv-primary{background:#1A1A1A;color:#fff;}
+  .rv-btn.rv-danger{border-color:#DB0011;color:#DB0011;}
+  .rv-btn:disabled{opacity:.4;cursor:not-allowed;}
+  /* comments panel */
+  #rv-panel{position:fixed;top:0;right:0;bottom:0;width:340px;max-width:88vw;z-index:2147483200;background:#fff;
+    border-left:1px solid #D7D8D6;box-shadow:-8px 0 30px rgba(0,0,0,.16);transform:translateX(100%);
+    transition:transform .18s ease;display:flex;flex-direction:column;
+    font:400 13px/1.45 -apple-system,Segoe UI,Roboto,sans-serif;color:#1A1A1A;}
+  #rv-panel.rv-open{transform:translateX(0);}
+  #rv-panel .rv-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px 16px;border-bottom:1px solid #EEE;}
+  #rv-panel .rv-head strong{font:700 14px/1 inherit;}
+  #rv-panel .rv-list{flex:1;overflow:auto;padding:8px 12px;}
+  #rv-panel .rv-empty{color:#8A8A8A;padding:24px 8px;text-align:center;}
+  .rv-item{border:1px solid #EEE;border-radius:8px;padding:10px;margin:0 0 8px;}
+  .rv-item .rv-item-h{display:flex;align-items:center;gap:8px;margin:0 0 4px;}
+  .rv-item .rv-num{flex:none;width:20px;height:20px;border-radius:50%;background:#1A1A1A;color:#fff;font:700 11px/20px inherit;text-align:center;}
+  .rv-item .rv-loc{font:600 12px/1.3 inherit;color:#333;word-break:break-word;}
+  .rv-item .rv-txt{color:#1A1A1A;white-space:pre-wrap;word-break:break-word;margin:2px 0 8px;}
+  .rv-item .rv-acts{display:flex;gap:8px;}
+  .rv-item .rv-link{background:none;border:0;padding:0;color:#333;text-decoration:underline;cursor:pointer;font:600 12px/1 inherit;}
+  .rv-item .rv-link.rv-del{color:#DB0011;}
+  #rv-panel .rv-foot{border-top:1px solid #EEE;padding:12px 16px;display:flex;gap:8px;}
+  #rv-panel .rv-foot .rv-btn{flex:1;height:38px;}
+  /* export modal */
+  #rv-export{position:fixed;inset:0;z-index:2147483600;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;padding:24px;}
+  #rv-export.rv-show{display:flex;}
+  #rv-export .rv-card{width:720px;max-width:100%;max-height:86vh;background:#fff;border-radius:10px;display:flex;flex-direction:column;overflow:hidden;
+    font:400 13px/1.45 -apple-system,Segoe UI,Roboto,sans-serif;color:#1A1A1A;}
+  #rv-export .rv-card-h{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #EEE;}
+  #rv-export textarea{flex:1;margin:0;border:0;outline:none;resize:none;padding:16px;font:400 12.5px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;color:#1A1A1A;min-height:320px;}
+  #rv-export .rv-card-f{display:flex;gap:8px;justify-content:flex-end;padding:12px 16px;border-top:1px solid #EEE;}
+  .rv-x{background:none;border:0;font-size:20px;line-height:1;cursor:pointer;color:#666;padding:4px;}
+  @media print{#rv-fab,#rv-panel,#rv-composer,#rv-markers,#rv-export{display:none !important;}}
+</style>
+
+<button id="rv-fab" type="button" aria-pressed="false" title="Toggle review mode">
+  <span class="rv-dot" aria-hidden="true"></span><span class="rv-label">Review</span><span class="rv-count" id="rv-count">0</span>
+</button>
+<div id="rv-markers" aria-hidden="true"></div>
+<svg id="rv-noodle" aria-hidden="true"><rect id="rv-noodle-box" rx="3" style="display:none"/><path id="rv-noodle-path"/><circle id="rv-noodle-dot" r="3.5" style="display:none"/></svg>
+<div id="rv-composer" role="dialog" aria-label="Add comment">
+  <p class="rv-target" id="rv-composer-target" title="Drag to move"></p>
+  <textarea id="rv-composer-text" placeholder="Describe the change you want here…" aria-label="Comment"></textarea>
+  <div class="rv-row">
+    <button class="rv-btn rv-danger" id="rv-composer-del" type="button" style="margin-right:auto;display:none;">Delete</button>
+    <button class="rv-btn" id="rv-composer-cancel" type="button">Cancel</button>
+    <button class="rv-btn rv-primary" id="rv-composer-save" type="button">Save</button>
+  </div>
+</div>
+<aside id="rv-panel" aria-label="Review comments">
+  <div class="rv-head"><strong>Comments (<span id="rv-panel-count">0</span>)</strong>
+    <button class="rv-x" id="rv-panel-close" type="button" aria-label="Close panel">×</button></div>
+  <div class="rv-list" id="rv-list"><p class="rv-empty">Turn on <b>Review</b>, then click any component to pin a comment.</p></div>
+  <div class="rv-foot">
+    <button class="rv-btn" id="rv-clear" type="button">Clear all</button>
+    <button class="rv-btn rv-primary" id="rv-export-btn" type="button">Export prompt</button>
+  </div>
+</aside>
+<div id="rv-export" role="dialog" aria-label="Export prompt" aria-modal="true">
+  <div class="rv-card">
+    <div class="rv-card-h"><strong>Edit prompt — copy &amp; paste back</strong><button class="rv-x" id="rv-export-close" type="button" aria-label="Close">×</button></div>
+    <textarea id="rv-export-text" readonly spellcheck="false"></textarea>
+    <div class="rv-card-f">
+      <button class="rv-btn" id="rv-export-download" type="button">Download .md</button>
+      <button class="rv-btn rv-primary" id="rv-export-copy" type="button">Copy to clipboard</button>
+    </div>
+  </div>
+</div>
+
+<script id="rv-script">
+(function(){
+  "use strict";
+  function meta(n){ var m=document.querySelector('meta[name="'+n+'"]'); return m?m.getAttribute('content'):''; }
+  var DOC_TITLE = meta('rv-doc') || (document.title||"Review").replace(/\s+·.*$/,"").trim();
+  var DOC_FILE = meta('rv-file') || '';
+  var comments = [];            // {id, section, desc, path, text, el}
+  var seq = 0;
+  var active = false, editingId = null, pendingEl = null, composerEl = null, dragging = false;
+
+  var fab=document.getElementById('rv-fab'),
+      countEl=document.getElementById('rv-count'),
+      markers=document.getElementById('rv-markers'),
+      composer=document.getElementById('rv-composer'),
+      cTarget=document.getElementById('rv-composer-target'),
+      cText=document.getElementById('rv-composer-text'),
+      cSave=document.getElementById('rv-composer-save'),
+      cCancel=document.getElementById('rv-composer-cancel'),
+      cDel=document.getElementById('rv-composer-del'),
+      panel=document.getElementById('rv-panel'),
+      list=document.getElementById('rv-list'),
+      panelCount=document.getElementById('rv-panel-count'),
+      exportModal=document.getElementById('rv-export'),
+      exportText=document.getElementById('rv-export-text');
+
+  function isRvNode(n){ return n && n.closest && n.closest('#rv-fab,#rv-panel,#rv-composer,#rv-markers,#rv-export'); }
+
+  // ---- element description -------------------------------------------------
+  function cleanHead(s){ return (s||'').replace(/\s+/g,' ').replace(/^(\d+)(?=\D)/,'$1 ').trim(); }
+  function sectionName(el){
+    var sec = el.closest && el.closest('section[aria-labelledby]');
+    if(sec){ var h=document.getElementById(sec.getAttribute('aria-labelledby')); if(h) return cleanHead(h.textContent); }
+    var anySec = el.closest && el.closest('section'); if(anySec){ var hh=anySec.querySelector('h1,h2,h3'); if(hh) return cleanHead(hh.textContent); }
+    // fallback for FLAT docs (dossiers with no <section> wrappers): nearest preceding heading in document order
+    var heads=[].slice.call(document.querySelectorAll('h1,h2,h3')), best='';
+    for(var i=0;i<heads.length;i++){
+      if(heads[i]===el || (el.compareDocumentPosition(heads[i]) & Node.DOCUMENT_POSITION_PRECEDING)){
+        best=cleanHead(heads[i].textContent);
+      }
+    }
+    return best;
+  }
+  function descOf(el){
+    var aria=(el.getAttribute&&el.getAttribute('aria-label'))||'';
+    var own=(aria||el.textContent||'').replace(/\s+/g,' ').trim();
+    if(own.length>48) own=own.slice(0,48)+'…';
+    var tag=el.tagName?el.tagName.toLowerCase():'el';
+    var cls=(typeof el.className==='string'&&el.className)?'.'+el.className.split(/\s+/)[0]:'';
+    return own ? own+' ('+tag+cls+')' : tag+cls;
+  }
+  function pathOf(el){
+    var parts=[], n=el, depth=0;
+    while(n && n.nodeType===1 && n!==document.body && depth<5){
+      var s=n.tagName.toLowerCase();
+      if(n.id){ s='#'+n.id; parts.unshift(s); break; }
+      if(typeof n.className==='string' && n.className.trim()) s+='.'+n.className.trim().split(/\s+/)[0];
+      parts.unshift(s); n=n.parentElement; depth++;
+    }
+    return parts.join(' > ');
+  }
+
+  // ---- markers -------------------------------------------------------------
+  function renderMarkers(){
+    markers.innerHTML='';
+    comments.forEach(function(c,i){
+      if(!c.el||!c.el.getBoundingClientRect) return;
+      var r=c.el.getBoundingClientRect();
+      if(r.width===0&&r.height===0) return;
+      var pin=document.createElement('button');
+      pin.className='rv-pin'; pin.type='button'; pin.textContent=(i+1);
+      pin.style.left=(r.right-6)+'px'; pin.style.top=(r.top+8)+'px';
+      pin.title=c.text||'(empty)';
+      pin.addEventListener('click',function(e){ e.stopPropagation(); openComposer(c.el,c.id); });
+      markers.appendChild(pin);
+    });
+  }
+
+  // ---- composer ------------------------------------------------------------
+  function openComposer(el, id){
+    editingId=(id!=null)?id:null; pendingEl=el;
+    var sec=sectionName(el), d=descOf(el);
+    cTarget.textContent=(sec?('['+sec+'] '):'')+d;
+    var existing=id!=null?comments.filter(function(c){return c.id===id;})[0]:null;
+    cText.value=existing?existing.text:'';
+    cDel.style.display=existing?'inline-flex':'none';
+    // default placement: beside the element (not over it); drag + noodle handle the rest
+    var r=el.getBoundingClientRect(), cw=312, ch=200, gap=14, left, top;
+    if(window.innerWidth-r.right > cw+gap) left=r.right+gap;                 // room on the right
+    else if(r.left > cw+gap) left=r.left-cw-gap;                            // else the left
+    else left=Math.min(window.innerWidth-cw-8, Math.max(8, r.left));        // else clamp
+    top=Math.min(window.innerHeight-ch, Math.max(8, r.top));
+    composer.style.top=top+'px'; composer.style.left=left+'px';
+    composer.classList.add('rv-show');
+    composerEl=el;
+    setTimeout(function(){ cText.focus(); drawNoodle(); },0);
+  }
+  function closeComposer(){ composer.classList.remove('rv-show'); pendingEl=null; editingId=null; composerEl=null; drawNoodle(); }
+
+  // ---- noodle (leader line) + drag ----------------------------------------
+  var noodlePath=document.getElementById('rv-noodle-path'), noodleDot=document.getElementById('rv-noodle-dot'),
+      noodleBox=document.getElementById('rv-noodle-box');
+  function drawNoodle(){
+    if(!composerEl || !composer.classList.contains('rv-show') || !noodlePath){
+      if(noodlePath) noodlePath.removeAttribute('d');
+      if(noodleDot) noodleDot.style.display='none';
+      if(noodleBox) noodleBox.style.display='none';
+      return;
+    }
+    var r=composerEl.getBoundingClientRect(), cr=composer.getBoundingClientRect();
+    // 1) highlight the EXACT element being commented on (its precise bounds)
+    noodleBox.setAttribute('x', r.left); noodleBox.setAttribute('y', r.top);
+    noodleBox.setAttribute('width', Math.max(0, r.width)); noodleBox.setAttribute('height', Math.max(0, r.height));
+    noodleBox.style.display='';
+    // 2) anchor the noodle to the element's BORDER edge facing the composer (never the centre)
+    var ecx=r.left+r.width/2, ecy=r.top+r.height/2, ccx=cr.left+cr.width/2, ccy=cr.top+cr.height/2;
+    var dx=ccx-ecx, dy=ccy-ecy, ex, ey;
+    if(Math.abs(dx) >= Math.abs(dy)){                           // composer is more to the side → left/right edge
+      ex = dx>=0 ? r.right : r.left;
+      ey = Math.min(Math.max(ccy, r.top+4), r.bottom-4);
+    } else {                                                    // composer is more above/below → top/bottom edge
+      ey = dy>=0 ? r.bottom : r.top;
+      ex = Math.min(Math.max(ccx, r.left+4), r.right-4);
+    }
+    // 3) composer-side anchor: nearest edge of the box to the element anchor
+    var cx = (ex<cr.left) ? cr.left : (ex>cr.right ? cr.right : Math.min(Math.max(ex,cr.left),cr.right));
+    var cy = Math.min(Math.max(ey, cr.top+8), cr.bottom-8);
+    var mx = ex+(cx-ex)*0.5;
+    noodlePath.setAttribute('d','M'+ex+','+ey+' C'+mx+','+ey+' '+mx+','+cy+' '+cx+','+cy);
+    noodleDot.setAttribute('cx',ex); noodleDot.setAttribute('cy',ey); noodleDot.style.display='';
+  }
+  cTarget.addEventListener('mousedown',function(e){
+    dragging=true; var cr=composer.getBoundingClientRect();
+    composer._dx=e.clientX-cr.left; composer._dy=e.clientY-cr.top;
+    e.preventDefault(); e.stopPropagation();
+  });
+  document.addEventListener('mousemove',function(e){
+    if(!dragging) return;
+    var left=Math.min(window.innerWidth-composer.offsetWidth-8, Math.max(8, e.clientX-composer._dx));
+    var top =Math.min(window.innerHeight-40, Math.max(8, e.clientY-composer._dy));
+    composer.style.left=left+'px'; composer.style.top=top+'px'; drawNoodle();
+  },true);
+  document.addEventListener('mouseup',function(){ dragging=false; },true);
+  cSave.addEventListener('click',function(){
+    var txt=cText.value.trim(); if(!txt){ closeComposer(); return; }
+    if(editingId!=null){
+      comments.forEach(function(c){ if(c.id===editingId) c.text=txt; });
+    } else if(pendingEl){
+      comments.push({id:++seq, section:sectionName(pendingEl), desc:descOf(pendingEl), path:pathOf(pendingEl), text:txt, el:pendingEl});
+    }
+    closeComposer(); refresh();
+  });
+  cCancel.addEventListener('click',closeComposer);
+  cDel.addEventListener('click',function(){ if(editingId!=null){ comments=comments.filter(function(c){return c.id!==editingId;}); } closeComposer(); refresh(); });
+  cText.addEventListener('keydown',function(e){ if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)){ cSave.click(); } if(e.key==='Escape'){ closeComposer(); } });
+
+  // ---- panel list ----------------------------------------------------------
+  function refresh(){
+    countEl.textContent=comments.length; countEl.classList.toggle('rv-has',comments.length>0);
+    panelCount.textContent=comments.length;
+    if(!comments.length){ list.innerHTML='<p class="rv-empty">Turn on <b>Review</b>, then click any component to pin a comment.</p>'; }
+    else {
+      list.innerHTML='';
+      comments.forEach(function(c,i){
+        var it=document.createElement('div'); it.className='rv-item';
+        var loc=(c.section?('['+c.section+'] '):'')+c.desc;
+        it.innerHTML='<div class="rv-item-h"><span class="rv-num">'+(i+1)+'</span><span class="rv-loc"></span></div>'+
+          '<div class="rv-txt"></div>'+
+          '<div class="rv-acts"><button class="rv-link rv-goto" type="button">Reveal</button>'+
+          '<button class="rv-link rv-edit" type="button">Edit</button>'+
+          '<button class="rv-link rv-del" type="button">Delete</button></div>';
+        it.querySelector('.rv-loc').textContent=loc;
+        it.querySelector('.rv-txt').textContent=c.text;
+        it.querySelector('.rv-goto').addEventListener('click',function(){ if(c.el&&c.el.scrollIntoView){ c.el.scrollIntoView({block:'center'}); flash(c.el);} });
+        it.querySelector('.rv-edit').addEventListener('click',function(){ if(c.el) openComposer(c.el,c.id); });
+        it.querySelector('.rv-del').addEventListener('click',function(){ comments=comments.filter(function(x){return x.id!==c.id;}); refresh(); });
+        list.appendChild(it);
+      });
+    }
+    renderMarkers();
+  }
+  function flash(el){ var o=el.style.outline; el.style.outline='3px solid #DB0011'; setTimeout(function(){ el.style.outline=o; },700); }
+
+  // ---- export --------------------------------------------------------------
+  function buildPrompt(){
+    var lines=[];
+    lines.push('# '+DOC_TITLE+' — review edits ('+comments.length+')');
+    lines.push('');
+    lines.push('Apply the following change requests'+(DOC_FILE?(' to `'+DOC_FILE+'`'):'')+'. Each item is pinned to a component; treat the bracketed location as the target and use the selector to disambiguate.');
+    lines.push('');
+    comments.forEach(function(c,i){
+      var loc=(c.section?('['+c.section+'] '):'')+c.desc;
+      lines.push((i+1)+'. '+loc);
+      lines.push('   - '+c.text.replace(/\n/g,'\n     '));
+      lines.push('   - selector: `'+c.path+'`');
+      lines.push('');
+    });
+    return lines.join('\n');
+  }
+  function openExport(){ exportText.value=buildPrompt(); exportModal.classList.add('rv-show'); setTimeout(function(){ exportText.focus(); exportText.select(); },0); }
+  document.getElementById('rv-export-btn').addEventListener('click',openExport);
+  document.getElementById('rv-export-close').addEventListener('click',function(){ exportModal.classList.remove('rv-show'); });
+  exportModal.addEventListener('click',function(e){ if(e.target===exportModal) exportModal.classList.remove('rv-show'); });
+  document.getElementById('rv-export-copy').addEventListener('click',function(){
+    exportText.select();
+    var ok=false; try{ ok=document.execCommand('copy'); }catch(e){}
+    if(navigator.clipboard){ navigator.clipboard.writeText(exportText.value).catch(function(){}); ok=true; }
+    var b=document.getElementById('rv-export-copy'); var t=b.textContent; b.textContent=ok?'Copied ✓':'Select + ⌘C'; setTimeout(function(){ b.textContent=t; },1400);
+  });
+  document.getElementById('rv-export-download').addEventListener('click',function(){
+    var blob=new Blob([buildPrompt()],{type:'text/markdown'});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+    a.download=(DOC_TITLE.replace(/[^\w-]+/g,'-')||'review')+'-comments.md'; a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); },1000);
+  });
+
+  // ---- review-mode wiring --------------------------------------------------
+  var hoverEl=null;
+  function setActive(on){
+    active=on; document.body.classList.toggle('rv-active',on);
+    fab.classList.toggle('rv-on',on); fab.setAttribute('aria-pressed',on?'true':'false');
+    fab.querySelector('.rv-label').textContent=on?'Reviewing':'Review';
+    if(on){ panel.classList.add('rv-open'); } else { clearHover(); }
+  }
+  function clearHover(){ if(hoverEl){ hoverEl.removeAttribute('data-rv-hover'); hoverEl=null; } }
+  fab.addEventListener('click',function(){ setActive(!active); });
+  document.getElementById('rv-panel-close').addEventListener('click',function(){ panel.classList.remove('rv-open'); });
+  document.getElementById('rv-clear').addEventListener('click',function(){ if(comments.length&&confirm('Delete all '+comments.length+' comments?')){ comments=[]; refresh(); } });
+
+  document.addEventListener('mousemove',function(e){
+    if(!active || dragging) return;
+    var t=e.target;
+    if(isRvNode(t)){ clearHover(); return; }
+    if(t!==hoverEl){ clearHover(); hoverEl=t; if(hoverEl&&hoverEl.setAttribute) hoverEl.setAttribute('data-rv-hover',''); }
+  },true);
+
+  // capture clicks in review mode so the host page's own handlers/nav don't fire
+  document.addEventListener('click',function(e){
+    if(!active) return;
+    if(isRvNode(e.target)) return;           // let overlay UI work normally
+    e.preventDefault(); e.stopPropagation();
+    clearHover();
+    openComposer(e.target, null);
+  },true);
+
+  window.addEventListener('scroll',function(){ renderMarkers(); drawNoodle(); },true);
+  window.addEventListener('resize',function(){ renderMarkers(); drawNoodle(); },true);
+  setInterval(function(){ renderMarkers(); drawNoodle(); },600);   // keep pins + noodle glued as the page reflows
+
+  refresh();
+})();
+</script>
+<!-- ===================== END APOLLO REVIEW OVERLAY ===================== -->
+
+</body></html>

@@ -1,0 +1,65 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Cap-trim: does it need the .txt child?</title><style>
+body{font-family:"Helvetica Neue",Arial,sans-serif;padding:24px;background:#fff;margin:0}
+h1{font-size:20px;font-weight:500;margin:0 0 4px}
+h2{font-size:13px;font-weight:500;margin:24px 0 6px;color:#6b6b6b;border-top:1px solid #e4e4e4;padding-top:10px}
+p.n{font-size:12px;color:#6b6b6b;margin:0 0 12px;max-width:640px}
+/* the yellow slot shows the BOX. If trim works, box top/bottom hug the cap and baseline. */
+.slot{background:#ffe08a;outline:1px solid #e0a800;display:inline-block;vertical-align:top;margin:0 14px 10px 0}
+.lab{font-size:10px;color:#6b6b6b;display:block;margin-bottom:2px}
+.ico{width:12px;height:12px;background:#3b5f8a;display:inline-block;flex:none}
+
+/* ---------- A · CURRENT composite: inline-flex + required .txt child ---------- */
+.a{display:inline-flex;align-items:center;gap:8px;font-size:16px;font-weight:500;min-height:20px;}
+.a > .txt{line-height:1;}
+@supports (text-box-trim: trim-both){.a > .txt{text-box:trim-both cap alphabetic;}}
+@supports not (text-box-trim: trim-both){
+ .a > .txt::before{content:"";display:table;margin-bottom:calc((0.5 - 0.65 + (1.068 - 0.723))*-1em);}
+ .a > .txt::after{content:"";display:table;margin-top:calc((0.5 - 0.65 + 0.232)*-1em);}
+}
+/* ---------- B · PROPOSED: trim on the ELEMENT, no child, no flex ---------- */
+.b{display:inline-block;font-size:16px;font-weight:500;min-height:20px;line-height:1;}
+@supports (text-box-trim: trim-both){.b{text-box:trim-both cap alphabetic;}}
+/* ---------- C · PROPOSED fallback path (no text-box support), no child ---------- */
+.c{display:inline-block;font-size:16px;font-weight:500;min-height:20px;line-height:1;}
+.c::before{content:"";display:table;margin-bottom:calc((0.5 - 0.65 + (1.068 - 0.723))*-1em);}
+.c::after{content:"";display:table;margin-top:calc((0.5 - 0.65 + 0.232)*-1em);}
+/* ---------- D · PROPOSED with flex kept (for icons) but NO .txt child ---------- */
+.d{display:inline-flex;align-items:center;gap:8px;font-size:16px;font-weight:500;min-height:20px;line-height:1;}
+@supports (text-box-trim: trim-both){.d{text-box:trim-both cap alphabetic;}}
+button{border:0;padding:0;background:none;font:inherit;color:inherit}
+</style></head><body>
+<h1>Does cap-trim require the <code>.txt</code> child?</h1>
+<p class="n">Yellow = the element's box. Trim works if the box hugs cap-height on top and the baseline
+below. A, B, C, D should look identical if the child is unnecessary. Dave's three real button shapes
+are tested: text only, text + trailing icon, text + leading icon.</p>
+
+<h2>A · current composite — inline-flex + required <code>.txt</code> child</h2>
+<span class="slot"><span class="lab">text</span><button class="a"><span class="txt">Confirm payment</span></button></span>
+<span class="slot"><span class="lab">text + trailing icon</span><button class="a"><span class="txt">Confirm payment</span><span class="ico"></span></button></span>
+<span class="slot"><span class="lab">leading icon + text</span><button class="a"><span class="ico"></span><span class="txt">Confirm payment</span></button></span>
+
+<h2>B · trim on the element — inline-block, no child, no flex</h2>
+<span class="slot"><span class="lab">text</span><button class="b">Confirm payment</button></span>
+<span class="slot"><span class="lab">text + trailing icon</span><button class="b">Confirm payment <span class="ico"></span></button></span>
+<span class="slot"><span class="lab">leading icon + text</span><button class="b"><span class="ico"></span> Confirm payment</button></span>
+
+<h2>C · fallback path (pseudo-element trim) — no child, no flex</h2>
+<span class="slot"><span class="lab">text</span><button class="c">Confirm payment</button></span>
+<span class="slot"><span class="lab">text + trailing icon</span><button class="c">Confirm payment <span class="ico"></span></button></span>
+<span class="slot"><span class="lab">leading icon + text</span><button class="c"><span class="ico"></span> Confirm payment</button></span>
+
+<h2>D · flex kept for icon layout, but trim on the element — no <code>.txt</code> child</h2>
+<span class="slot"><span class="lab">text</span><button class="d">Confirm payment</button></span>
+<span class="slot"><span class="lab">text + trailing icon</span><button class="d">Confirm payment<span class="ico"></span></button></span>
+<span class="slot"><span class="lab">leading icon + text</span><button class="d"><span class="ico"></span>Confirm payment</button></span>
+
+<script>
+window.__r={};
+window.__r.supports = (CSS.supports('text-box-trim','trim-both') || CSS.supports('text-box','trim-both cap alphabetic'));
+['a','b','c','d'].forEach(k=>{
+  window.__r[k]=[...document.querySelectorAll('.'+k)].map(e=>{
+    const r=e.getBoundingClientRect();
+    return {h:+r.height.toFixed(2), w:+r.width.toFixed(2)};
+  });
+});
+</script></body></html>

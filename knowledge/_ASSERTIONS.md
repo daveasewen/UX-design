@@ -51,3 +51,11 @@
 - consequence: Monotype terms prohibit distribution via a public Git repository; remediation if breached is git rm + BFG Repo Cleaner. Terms on file at knowledge/assets/WebfontUserGuide-2024.pdf.
 - asserted in: `.gitignore`, `knowledge/_proforma/_TYPE-DECISIONS.md`, `memory:univers-webfont-blocker`
 - last verified: 2026-07-18
+
+## ✓ ASSERT-006 — environment
+
+**Claim:** The HSBC Latin Univers DESKTOP TTFs are present and installable for real-font sandbox rendering. Renders are NOT layout-only.
+
+- check: `1 match(es)`
+- asserted in: `GOOD-MORNING.md`, `memory:sandbox-html-rendering`, `knowledge/_RUNBOOK-capture-ritual.md`
+- last verified: 2026-07-18

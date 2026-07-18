@@ -5,24 +5,16 @@ what's **OPEN**. Read this second, after `GOOD-MORNING.md`, before `knowledge/RE
 Per **ADR-0007**. ⚠️ **INTERIM — hand-maintained** until `_build_live_state.py` generates it from
 front-matter edges + tombstones. Refresh at end of every session alongside the handoff.*
 
-*Last refreshed: **2026-07-18 (session "The tidy first answer")**. Opened as the TYPE-002 ×721
-retrofit; those never moved. Became tracking research → font forensics → a licensing finding → a
-diagnosis of the record-rot problem. **LANDED:** type26-019 all-caps check added to
-`_validate_proforma.py`, closing a gate blind-spot that let four tranches carry uppercase past a
-BLOCKING rule for weeks (bite-tested); **new `_validate_assertions.py` veracity gate + registry**
-(build now **30/30**); `_TYPE-DECISIONS` T-D1..T-D6; `ds-004`; five new memories; two spin-offs.
-**KEY RULING (Dave):** Editorial and Component answer to different physics → tracking must live ON
-the composites. **MEASURED:** HSBC's cut ≡ stock Univers Next Pro horizontally; Univers LOOSER than
-Helvetica; SB/stem collapses 4.60→0.46 across weights. **⛔ OPEN:** Latin webfont licence (see the
-top entry) — I struck this blocker wrongly and Dave caught it. **🔍 DIAGNOSIS (Dave pushed for it):**
-the architecture is **append-only by construction** — the capture ritual's five steps are all writes,
-nothing prunes, and `_LIVE-STATE` has gone 638→975 lines in three days without ever shrinking. The
-assertion gate is a partial fix; **consolidation is the real one, and is queued as a Fable/cold
-session.** The memory mirror (115 files vs 110 live) is a symptom, and whether it should exist at all
-is now an open question. Prior: 2026-07-18 morning (halation/edge-extremity, `col26-020/021`),
-2026-07-17 late (type tokens promoted + grid arc), 2026-07-16 eve (DataViz dossier).
-Committed: `4cc58ff`·`362be48`·`5fd1db2` (pushed) + final.*
----
+*Last refreshed: **2026-07-18 (session "Amber, and the box inside the composite")**. Second session
+of 2026-07-18. **RULED:** type binding mechanism = selector-list extension, hand-maintained (T-D9) ·
+Component Medium is drift, snap 88 to 400, family A held (T-D10) · RAG background/glyph token split
+(R-D2) · **amber SOLVED** — `amber/background` `#F0B13A` + `amber/graphic` `#C58900`, two rules
+(R-D3). **BUILT + VERIFIED:** `.t-cm` amended to variant D (cap-trim on the ELEMENT, `.txt` child
+GONE — observed in real HSBC Univers); Button bound and pixel-diffed clean. **REVERTED:** the 21-file
+`/1` binding batch — 13 files moved, 2 changed page height; the `/1` heuristic predicted line-height
+was safe but said nothing about DISPLAY (T-D11). **NEW LEDGER:** `_proforma/_RAG-DECISIONS.md`.
+**Three stale readings cost real work** (ochre glyph · 49-file inline sweep · "no Univers
+in-sandbox") — all solving problems the KB or gates had already answered.*
 
 ## ⛔ OPEN / BLOCKING — Latin Univers **WEBFONT** licence (raised 2026-07-18)
 
@@ -55,6 +47,41 @@ set and not read which licence class the blocker named. Dave caught it. Full cor
 text are in `knowledge/_proforma/_TYPE-DECISIONS.md` § Blockers 1.
 
 ## LIVE — current truth (in force)
+
+### Type binding — RULED + PROVEN on one component (2026-07-18)
+- **Mechanism = (d) selector-list extension, HAND-MAINTAINED.** A component binds by being appended
+  to its composite's selector list in `canon/type.css`. Plain CSS: no generator, no build step, no
+  markup change. `type-bindings.json` + orphan gate = an OPTIONAL later upgrade, **explicitly
+  deferred — do not build**. Ledger: `_proforma/_TYPE-DECISIONS.md` T-D9.
+- **`.t-cm` is variant D.** Cap-trim sits on the **ELEMENT**; the former required `.txt` child is
+  **GONE**. `inline-flex` + `align-items:center` is what centres the cap box in a taller slot — an
+  `inline-block` variant TOP-ALIGNS and is wrong. Observed in real HSBC Univers
+  (`reviews/trimtest.html`, `outputs/trimtest2.png`). Supersedes the 07-17 composite.
+- **⚠️ LOAD ORDER IS LOAD-BEARING.** `.t-cm-button` and `.btn` are both specificity 0-1-0 → source
+  order decides. **`type.css` must load BEFORE component CSS.** Not yet gated.
+- **Delivery = `<link>`, NOT inlining.** The portable unit is the PROJECT, not the file (Dave:
+  *"the entire project must be portable… a package, pulled from a repo"*). The 49-file inline sweep
+  was solving a problem that does not exist.
+- **`type.css` is HAND-AUTHORED.** The "generated 2026-07-17" header was false provenance; removed.
+- **Bound so far: `.btn` only**, pixel-diff verified as a no-op.
+- **Unchanged from 07-17:** CSS cap-trim · 4px slot · slot min `ceil(cap + 2·descender)` snapped to
+  4px · descender guard baked INTO the slot · stacks use `gap` slot-edge to slot-edge, **never
+  padding**. **No `padding` property is authored anywhere.**
+
+### RAG — amber SOLVED, background/glyph split (2026-07-18)
+- **Two tokens per hue: `background` (fills) + `glyph` (icons, arrows, text).** Red/green/blue hold
+  the SAME value in both roles; **only amber diverges**. Ledger: `_proforma/_RAG-DECISIONS.md`.
+- **`amber/background` = `#F0B13A`** (L 0.800, C 0.147, H 79.5°) — ink on it 9.16.
+- **`amber/graphic` = `#C58900`** (L 0.673) — 3.02 on white, 6.25 on `#111`. **Required by
+  `{#dv-016}`** (≥3:1 series fills, blocking): the light amber is 1.90 and cannot be a chart colour.
+- **Rule 1 — amber is always paired with black text. Rule 2 — amber is not a DIRECTIONAL delta
+  colour**; it remains valid for status and tolerance (RAG health, watch, within-tolerance variance).
+- **White is the RAG text colour universally; the dark-text variant is DROPPED** (R-D1) — amber is
+  the sole exception and always was.
+- **`#000000` retained in the KB as brand source of truth** (query-bot rationale); `#1A1A1A` is the
+  digital black for screens; `#1D1D1D` dropped; `#333333` canon, stays.
+- **Incumbent RAG values are NOT deleted** — retired into a future legacy theme. Tombstone, keep.
+- **⚠️ NOT YET GATED.** Both amber rules are mechanically checkable and unenforced.
 
 - **Project name = Apollo** (2026-07-14). Renamed from *Promenaut* repo-wide (51 files + renames);
   the "Smart Design System" descriptor dropped in favour of **Apollo** (singular preferred; "Apollo
@@ -215,6 +242,49 @@ text are in `knowledge/_proforma/_TYPE-DECISIONS.md` § Blockers 1.
 - `knowledge/_NEXT-SESSION.md` — retired, → superseded by `GOOD-MORNING.md`.
 
 ## OPEN — propagation gaps + parked threads
+
+### ⭐ NEXT SESSION STARTS HERE — one small ruling unblocks ~460 selectors
+**`.t-cm` conflates TYPE with BOX.** Type = family/size/weight (safe to bind anywhere). Box =
+`display:inline-flex`, `align-items:center`, `line-height:1`, `min-height`, cap-trim (only safe
+where the element is ALREADY a single-line control). **Proposed split (NOT ruled):** `.t-cm-*` keeps
+type only; a separate `.t-cm-slot` carries the box. **This is why the 21-file batch failed** —
+`.btn` was already inline-flex so it bound clean, but `.eyebrow`/`.badge`/`h2`/`.status` are block
+or inline and binding handed them a layout change wearing a type change's clothing. Split it and the
+batch becomes a genuine no-op. `knowledge/apply_type_bind.py --apply` re-derives it in one command.
+
+### Awaiting Dave — small, no analysis needed
+- **Matting rung for green + blue** — `as now` / `−15%` / `−28%` / `−40%`. Contrast is near-identical
+  across steps by design, so there is **no numerical tell — do NOT guess**. Sheet:
+  `reviews/RAG-MATTING-2026-07-18.html`.
+- **`{#dv-017}`(a) CONTRADICTION** — permits **red/green** for delta indicators while naming
+  **"RAG-style cells"** as an indicator form; RAG includes amber by definition. The rule permits a
+  palette it also excludes. Surfaced by Dave's finance challenge 2026-07-18.
+- **`.tag` COLLISION** — 14px in its canonical `Tags.reference`, 12px in `Account-card` and
+  `List-items` where the source comment says it is *reusing that atom*. One selector cannot join two
+  composites. Ruling: one atom at one size, or an explicit `.tag--sm`.
+- **`.num` at 24px/400** — no Component composite exists at 24px (ramp: 12/14/16/20/32/40/52). Add a
+  rung, or snap to 20 or 32.
+- **Family A (reverse on near-black), 12 decls** — held at 500. To revisit, re-specimen on a FULL
+  dark surface, not a chip.
+
+### Gates owed — rules that exist but do not bite
+- **Amber rules 1 + 2** (R-D3) — checkable, unbuilt.
+- **type.css load order** — checkable, unbuilt.
+- **DEF-006** — still not wired.
+- Dark-mode green `#1AA05C` 3.37 · dark-mode red/blue as TEXT glyphs on `#111` (3.97 / 4.15).
+
+### ⚠️ METHOD DEBT — the review overlay loses row identity
+Three sheets this session needed **three different** disambiguation routes: pin POSITION (T-D10),
+ARITHMETIC (R-D1), and NEITHER (RAG-MATTING — unresolvable, still open). **The overlay should
+capture which row a comment is pinned to.** This is a PRODUCT fix to the overlay, not a process
+workaround. Register against the review-layer-as-product-feature thread.
+
+### ⚠️ THE PATTERN THAT COST THE MOST TIME TODAY — for the consolidation session
+Three times I designed a solution to a problem the system had **already answered**: the ochre glyph
+(1.4.1 waiver was canon in 5 snippets) · the 49-file inline sweep (portability was never tested) ·
+"no Univers in-sandbox" (fonts have been in the repo). **Not stale facts — a stale READING of our
+own rules.** `_validate_assertions.py` catches facts that flip; nothing catches a rule we forgot we
+had. **Check the KB and the gates BEFORE designing.**
 
 - **🔴 GAP FOUND (2026-07-17, measured) — the library does NOT use the canon type ramp.** Type was *promoted
   to canon* on 07-17 and the *grid* retrofit ran — but components were **never rebound to the composites**.

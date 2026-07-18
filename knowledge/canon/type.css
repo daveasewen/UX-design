@@ -1,4 +1,6 @@
-/* Apollo type composites — generated 2026-07-17. Editorial + Component.
+/* Apollo type composites — HAND-AUTHORED. Editorial + Component.
+   (The header said "generated 2026-07-17" for a day. Nothing has ever generated this file; the
+   line was false provenance and is removed per T-D9. Edit it directly — that is the design.)
    Metrics: cap 0.723em, descender 0.232em (Univers Next, USE_TYPO_METRICS off).
    BRAND RULE: no light/ultra on body sizes (font-5/6/7 min regular 400; no dark step-up there). */
 :root{--uf:"Univers Next HSBC","Helvetica Neue",Arial,sans-serif;--cap:0.723;--desc:0.232;}
@@ -22,20 +24,37 @@
 .t-ed-caption{font-family:var(--uf);font-size:12px;line-height:16px;font-weight:400;}
 .t-ed-caption .em,.t-ed-caption.em{font-weight:500;}
 
-/* ===== COMPONENT — cap-trim, seated in a 4px slot ===== */
-.t-cm{font-family:var(--uf);display:inline-flex;align-items:center;}
-.t-cm > .txt,.t-cm.txt{line-height:1;}
-@supports (text-box-trim: trim-both){.t-cm > .txt,.t-cm.txt{text-box:trim-both cap alphabetic;}}
+/* ===== COMPONENT — cap-trim, seated in a 4px slot =====
+   BINDING MECHANISM (Dave ruling T-D9, 2026-07-18): components bind by being APPENDED TO THE
+   SELECTOR LIST of the composite they use. Plain CSS — no generator, no build step, no markup
+   change. To bind a component: add its selector to `.t-cm` AND to its size composite below.
+   ⚠️ LOAD ORDER IS LOAD-BEARING: `.t-cm-button` and `.btn` are both specificity 0-1-0, so source
+   order decides. type.css MUST load BEFORE component CSS. Gated by _validate_type_composites.py.
+
+   TRIM SITS ON THE ELEMENT, not on a child (variant D, observed 2026-07-18 in real HSBC Univers —
+   outputs/trimtest2.png). The former required `.txt` child is GONE. `display:inline-flex` +
+   `align-items:center` is what optically centres the cap box in a taller slot; an inline-block
+   variant TOP-ALIGNS and is wrong. No padding is authored anywhere — the space below the cap is a
+   consequence of the slot being taller than the cap box. */
+.t-cm,
+.btn{font-family:var(--uf);display:inline-flex;align-items:center;line-height:1;}
+@supports (text-box-trim: trim-both){
+ .t-cm,
+ .btn{text-box:trim-both cap alphabetic;}
+}
 @supports not (text-box-trim: trim-both){
- .t-cm > .txt::before,.t-cm.txt::before{content:"";display:table;margin-bottom:calc((0.5 - 0.65 + (1.068 - var(--cap)))*-1em);}
- .t-cm > .txt::after,.t-cm.txt::after{content:"";display:table;margin-top:calc((0.5 - 0.65 + var(--desc))*-1em);}
+ .t-cm::before,
+ .btn::before{content:"";display:table;margin-bottom:calc((0.5 - 0.65 + (1.068 - var(--cap)))*-1em);}
+ .t-cm::after,
+ .btn::after{content:"";display:table;margin-top:calc((0.5 - 0.65 + var(--desc))*-1em);}
 }
 .t-cm-figure-1{font-size:52px;font-weight:300;min-height:64px;}
 .t-cm-figure-2{font-size:40px;font-weight:300;min-height:48px;}
 .t-cm-heading{font-size:32px;font-weight:400;min-height:40px;}
 .t-cm-section-label{font-size:20px;font-weight:500;min-height:24px;}
 .t-cm-label{font-size:16px;font-weight:400;min-height:20px;}
-.t-cm-button{font-size:16px;font-weight:500;min-height:20px;}
+.t-cm-button,
+.btn{font-size:16px;font-weight:500;min-height:20px;}
 .t-cm-input{font-size:16px;font-weight:400;min-height:20px;}
 .t-cm-link{font-size:16px;font-weight:400;min-height:20px;}
 .t-cm-caption{font-size:14px;font-weight:400;min-height:20px;}

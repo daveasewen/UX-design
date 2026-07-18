@@ -1,0 +1,184 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Type binding mechanism &mdash; options and impacts</title>
+<style>
+:root{--ink:#1c1c1c;--mut:#6b6b6b;--line:#e4e4e4;--red:#db0011;--set:#0b7a34;--con:#b25000;
+      --pra:#3b5f8a;--ten:#8a1f1f;}
+*{box-sizing:border-box}
+body{font-family:"Univers Next for HSBC","Helvetica Neue",Arial,sans-serif;color:var(--ink);
+  margin:0;padding:40px;max-width:1120px;line-height:1.5;background:#fafafa}
+h1{font-size:32px;font-weight:300;margin:0 0 4px}
+h2{font-size:20px;font-weight:500;margin:44px 0 4px;padding-top:16px;border-top:2px solid var(--ink)}
+h3{font-size:16px;font-weight:500;margin:22px 0 6px}
+.sub{color:var(--mut);font-size:14px;margin:0 0 24px}
+.lead{font-size:15px;background:#fff;border:1px solid var(--line);border-left:3px solid var(--red);
+  padding:16px 20px;margin:20px 0}
+.card{background:#fff;border:1px solid var(--line);padding:18px 22px;margin:14px 0}
+.card.rec{border-left:3px solid var(--set)}
+.card.kill{border-left:3px solid var(--ten)}
+.tier{display:inline-block;font-size:10px;letter-spacing:.06em;font-weight:500;padding:3px 9px;
+  color:#fff;margin-bottom:8px}
+.t-s{background:var(--set)}.t-c{background:var(--con)}.t-p{background:var(--pra)}.t-t{background:var(--ten)}
+.find{font-size:16px;font-weight:500;margin:0 0 8px}
+.detail{font-size:14px;margin:0 0 12px}
+.imp{font-size:13.5px;background:#fbfbfb;border-left:2px solid var(--line);padding:9px 14px;margin:8px 0 0}
+code{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;background:#f2f2f2;padding:1px 5px;border-radius:3px}
+pre{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;background:#f6f6f6;border:1px solid var(--line);
+  padding:12px 14px;overflow-x:auto;margin:10px 0;line-height:1.6}
+table{width:100%;border-collapse:collapse;background:#fff;margin:12px 0;font-size:13px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:500;font-size:11px;letter-spacing:.04em;color:var(--mut);background:#f4f4f4}
+.y{color:var(--set);font-weight:500}.n{color:var(--ten);font-weight:500}.m{color:var(--con);font-weight:500}
+.ask{background:#fffdf5}
+.foot{color:var(--mut);font-size:12px;margin-top:44px;border-top:1px solid var(--line);padding-top:12px}
+ol li,ul li{margin:8px 0;font-size:14px}
+</style></head><body>
+
+<h1>How does a component bind to a type composite?</h1>
+<p class="sub">Apollo SDS &middot; 2026-07-18 &middot; options and impacts. <b>Nothing enacted.</b> Read &sect;1 first &mdash; it corrects the numbers I gave you in the handoff.</p>
+
+<div class="lead"><b>Your criteria, as you stated them:</b> <i>robust, but flexible conversions, and solid standards.</i> Those three pull in different directions here and the sheet is arranged so you can see where. <b>It is built able to return a null result:</b> if none of the four options clears the bar, the honest outcome is that the mechanism isn't ready and DEF-006 stays unwired.</div>
+
+<h2>1 &middot; Four corrections before the options</h2>
+<p class="sub">I gave you &ldquo;339 elements, safely bindable&rdquo;. Every part of that was measured wrong. Same shape as yesterday &mdash; the tidy first answer.</p>
+
+<div class="card">
+<span class="tier t-t">CORRECTION</span>
+<p class="find">The unit is wrong. These are <b>CSS declarations, not elements.</b></p>
+<p class="detail">The gate's own inventory reports <b>782 violations across 49 files</b>. They are declarations inside stylesheet rules, not attributes on elements. <b>152 of them are in <code>canon/canon.css</code> alone</b> &mdash; a file with no markup in it at all.</p>
+<p class="imp"><b>Why it matters: </b>&ldquo;Add a class to 339 elements&rdquo; described a job that does not exist in that form. Roughly a fifth of the work is in a stylesheet where <b>there is nothing to add a class to</b>. That single fact eliminates any pure-markup answer.</p>
+</div>
+
+<div class="card">
+<span class="tier t-t">CORRECTION</span>
+<p class="find">A prior decision is hiding inside this one: <b>TYPE-001 fails in 100% of files.</b></p>
+<p class="detail"><b>Zero</b> of the 49 gated files pull <code>canon/type.css</code> today &mdash; not by link, not by inlined sentinel block. Whatever binding mechanism you pick, every gated file also needs a <i>delivery</i> mechanism, and the two choices are independent.</p>
+<p class="imp"><b>Why it matters: </b>Snippets are <b>deliberately self-contained and portable</b> &mdash; that is an architectural property, and a <code>&lt;link&gt;</code> destroys it. The gate already sanctions the inlined sentinel block as the form for snippets. So delivery is close to pre-decided, but it carries a real cost: <b>every edit to <code>type.css</code> now requires a re-inline sweep across 49 files</b>, and that sweep must itself be a gated build step or the copies rot. This is the same failure mode as the memory mirror.</p>
+</div>
+
+<div class="card">
+<span class="tier t-t">CORRECTION</span>
+<p class="find">Option (a) is structurally larger than &ldquo;add a class&rdquo;.</p>
+<p class="detail"><code>.t-cm-button</code> sets only <code>font-size</code>, <code>font-weight</code>, <code>min-height</code>. The cap-trim machinery &mdash; the thing that actually seats text in the 4px slot &mdash; lives on <code>.t-cm</code> and on a <code>.txt</code> <b>child</b>:</p>
+<pre>.t-cm{display:inline-flex;align-items:center;}
+.t-cm &gt; .txt{line-height:1; text-box:trim-both cap alphabetic;}</pre>
+<p class="detail">So a correct Component binding is not one class. It is:</p>
+<pre>&lt;button class="btn <b>t-cm t-cm-button</b>"&gt;&lt;span class="<b>txt</b>"&gt;Confirm payment&lt;/span&gt;&lt;/button&gt;</pre>
+<p class="imp"><b>Why it matters: </b>Two classes <b>plus an inserted element</b>, per text-bearing node, in the files that <i>are</i> the visual reference. And <code>display:inline-flex</code> on a button that was previously <code>inline-block</code> is a layout change, not a type change &mdash; it will move things. <b>Editorial (<code>.t-ed-*</code>) has no such structure and is genuinely one class.</b> The two tiers are not equally cheap, which is your D2/D3 ruling showing up again in the plumbing.</p>
+</div>
+
+<div class="card">
+<span class="tier t-c">FOUND IN PASSING</span>
+<p class="find"><code>type.css</code> says &ldquo;generated&rdquo; in its header. <b>Nothing generates it.</b></p>
+<p class="detail">Line 1 reads <code>/* Apollo type composites &mdash; generated 2026-07-17 */</code>. There is no generator for it anywhere in <code>knowledge/</code>. It is hand-authored with a misleading provenance line.</p>
+<p class="imp"><b>Why it matters: </b>Exactly the <code>canon.css</code> caveat again &mdash; a header that tells a future session not to edit a file it must edit, or vice-versa. Worth fixing whichever option wins; option (d) below depends on the answer.</p>
+</div>
+
+<h2>2 &middot; The options</h2>
+<p class="sub">Scored against your three criteria. <b>Robust</b> = can a gate prove it, and does it survive a rewrite. <b>Flexible</b> = what does it cost to change a binding, or to add a mode. <b>Standards</b> = is it idiomatic CSS a new starter recognises.</p>
+
+<table>
+<tr><th style="width:22%">option</th><th>robust</th><th>flexible</th><th>standards</th><th style="width:26%">covers all 782?</th></tr>
+<tr><td><b>(a)</b> markup class</td><td class="y">high &mdash; greppable, gateable per element</td><td class="n">low &mdash; rebinding = markup edit</td><td class="y">high &mdash; ordinary utility classes</td><td class="n">No &mdash; leaves 152 in <code>canon.css</code></td></tr>
+<tr><td><b>(b)</b> custom properties</td><td class="m">medium &mdash; gate sees no raw values, but cannot prove the <i>right</i> composite</td><td class="y">highest &mdash; mode = a property override</td><td class="y">high &mdash; native theming idiom</td><td class="n"><b>No &mdash; cannot express cap-trim</b></td></tr>
+<tr><td><b>(c)</b> build-time inlining</td><td class="y">high at the artefact</td><td class="n">low &mdash; origin invisible in devtools</td><td class="m">medium &mdash; generated flat CSS</td><td class="n">No &mdash; only the generated region</td></tr>
+<tr><td><b>(d)</b> selector-list extension <span style="color:var(--mut)">(new)</span></td><td class="y">high &mdash; one source, mapping is a checkable file</td><td class="y">high &mdash; rebind = one JSON line</td><td class="y">high &mdash; plain CSS selector lists</td><td class="y">Yes &mdash; markup and stylesheet alike</td></tr>
+</table>
+
+<h3>(a) &mdash; markup class</h3>
+<div class="card">
+<p class="detail">Add <code>.t-cm</code> + <code>.t-cm-*</code> + a <code>.txt</code> child to every Component text node; <code>.t-ed-*</code> to every Editorial one.</p>
+<p class="imp"><b>Impact: </b>Most <i>legible</i> option &mdash; you can read a component's type off its markup, which is the best possible answer to &ldquo;retrieval, not recall&rdquo;. But binding becomes <b>welded to markup</b>, and the three libraries are supposed to be one skeleton with token overrides. The moment a mode wants different type <i>structure</i>, markup diverges &mdash; and divergent markup is the first step of the fork the architecture forbids. <b>Leaves the 152 <code>canon.css</code> violations entirely unaddressed.</b></p>
+</div>
+
+<h3>(b) &mdash; CSS composition via custom properties</h3>
+<div class="card kill">
+<p class="detail">Components keep their selectors and pull values: <code>font-size:var(--t-cm-button-size)</code>. Precedent exists &mdash; <code>.cn-button .btn{font:var(--weight) var(--fs)/1 var(--font)}</code> already does this.</p>
+<p class="imp"><b>Impact &mdash; and the finding that decides it: </b>Custom properties carry <i>values</i>. Cap-trim is not a value, it is <b>a pseudo-element pair and a required child</b>. No custom property can deliver <code>text-box:trim-both</code> to a child that doesn't exist. <b>So (b) cannot express the Component tier at all</b> &mdash; it would work for Editorial and silently drop the trim on everything else, which is precisely the class of failure DEF-006 was written to catch. It also requires rewriting <code>type.css</code> from a class library into a property library, i.e. throwing away the composites you signed off on 07-17.</p>
+<p class="imp"><b>My read: </b>this one is dead as a whole answer. Its flexibility is real but it cannot carry the tier that matters most.</p>
+</div>
+
+<h3>(c) &mdash; build-time inlining</h3>
+<div class="card">
+<p class="detail">The canon.css generator folds composite declarations into component rules at build time.</p>
+<p class="imp"><b>Impact: </b>A generator can only fold into what it generates. It covers the <code>.cn-*</code> region and <b>not</b> the hand-authored <code>.c-*</code> composition layer &mdash; which is where 152 of the violations live &mdash; and <b>not</b> the 630-odd in hand-authored snippet and tranche <code>&lt;style&gt;</code> blocks, which nothing generates. It also costs you traceability: devtools shows <code>font-size:16px</code>, not <code>.t-cm-button</code>, so the composite name survives only in the generator. That is a direct trade of auditability for tidiness.</p>
+</div>
+
+<h3>(d) &mdash; generated selector-list extension <span style="color:var(--mut);font-weight:400">&mdash; not on your original list</span></h3>
+<div class="card rec">
+<p class="detail">A mapping file (<code>knowledge/canon/type-bindings.json</code>) names which component selectors bind to which composite. A generator appends them to the composite's own rule as a selector list:</p>
+<pre>/* generated from type-bindings.json */
+.t-ed-body, <b>.c-summary__k</b>, <b>.cn-list-items .row .desc</b> { font-size:16px; line-height:24px; font-weight:400; }
+.t-cm-button, <b>.cn-button .btn</b> { font-size:16px; font-weight:500; min-height:20px; }</pre>
+<p class="imp"><b>Robust: </b>one source of truth, and the mapping is a small machine-readable file a gate can check <i>exhaustively</i> &mdash; &ldquo;every text-bearing selector in the corpus appears in the map exactly once&rdquo; is a checkable claim, which is more than (a), (b) or (c) can offer. It also makes <b>orphans</b> visible: a component nobody bound shows up as a missing key rather than as silence.</p>
+<p class="imp"><b>Flexible: </b>rebinding a component is one line of JSON. No markup churn, no CSS churn, no re-inline sweep of hand-authored files. Adding a mode is adding an override block, same as today.</p>
+<p class="imp"><b>Standards: </b>plain CSS selector lists &mdash; no preprocessor, no <code>@extend</code>, nothing a browser or a new starter has to be taught.</p>
+<p class="imp"><b>The costs, stated honestly: </b><br>
+&mdash; <b>Cap-trim still needs the <code>.txt</code> child.</b> (d) solves values and sizes everywhere, but the Component tier's trim structure is markup, and no CSS mechanism removes that. So <b>(d) does not eliminate the markup pass &mdash; it shrinks it from ~230 nodes to only those Component nodes that need trim</b>, and defers the rest. That must be measured before you commit, not asserted.<br>
+&mdash; <b>Cascade order becomes load-bearing.</b> Composite rules live in <code>type.css</code>; component rules that must still win need to come after, or need the map to own them too.<br>
+&mdash; <b><code>type.css</code> becomes genuinely generated</b>, which fixes the false header in &sect;1 but means the hand-authored composites move to a source file. That is a real change to a file you reviewed and signed off nine days ago.</p>
+</div>
+
+<h2>3 &middot; What I actually think, and where I'd be wrong</h2>
+<div class="lead"><b>(d) fits your three criteria best, and (b) is dead.</b> But I built (d) today, in the same session where I got the framing wrong three times, and it has the same seductive property as every wrong turn yesterday: <b>it is tidy and it confirms what I expected.</b> Treat the recommendation as a candidate, not a finding.<br><br><b>The one number that would settle it</b> and which I have <b>not</b> measured: how many of the ~230 markup nodes genuinely need cap-trim, versus how many are wrapping text that Editorial should own anyway. If that number is small, (d) is clearly right. <b>If most Component text needs the <code>.txt</code> child regardless, then (d)'s advantage largely evaporates and (a) is the honest answer</b> &mdash; because you would be doing the markup pass either way, and (a) is simpler.</div>
+
+<h3>What I'd like to do next, if you agree</h3>
+<ol>
+<li><b>Measure the trim question</b> before you rule &mdash; a cheap counting pass over the 230 nodes, single-line vs wrapping. One Sonnet job. It is the difference between (a) and (d).</li>
+<li><b>Then rule</b>, on this sheet, with the number in front of you.</li>
+<li><b>Then the mechanical work</b> &mdash; rebind, wire DEF-006, drive to green.</li>
+</ol>
+<p class="detail"><b>Or overrule this</b> and pick now &mdash; the sheet is arranged so that you can. Mark the option and I'll take it as the ruling.</p>
+
+<h2>4 &middot; Round one &mdash; your marks, and what they settled</h2>
+<div class="lead"><b>Four of the five are closed. Q1 is not</b> &mdash; you leaned (d) <i>before</i> the evidence below existed, and the evidence changed the picture, so the lean needs re-marking rather than assuming.</div>
+<table>
+<tr><th style="width:30%">question</th><th style="width:26%">your mark</th><th>outcome</th></tr>
+<tr><td><b>Q1</b> mechanism</td><td><i>&ldquo;looks like D, but do the check from Q2&rdquo;</i></td><td><b>STILL OPEN</b> &mdash; blocker cleared, re-mark in &sect;6</td></tr>
+<tr><td><b>Q2</b> measure first</td><td><i>&ldquo;yes&rdquo;</i></td><td><b>RULED</b> &mdash; measured, see &sect;5</td></tr>
+<tr><td><b>Q3</b> delivery</td><td><i>&ldquo;the entire project must be portable &hellip; a package, pulled from a repo&rdquo;</i></td><td><b>RULED &mdash; reverses my &sect;1</b></td></tr>
+<tr><td><b>Q4</b> generated <code>type.css</code></td><td><i>&ldquo;seems reasonable&rdquo;</i></td><td><b>RULED yes</b>, conditional on Q1=(d)</td></tr>
+<tr><td><b>Q5</b> inline-flex</td><td>buttons = text, text+trailing icon, sometimes leading icon</td><td><b>DISSOLVED</b> &mdash; see &sect;5</td></tr>
+</table>
+
+<h3>Q3 &mdash; you were right to attack the premise</h3>
+<div class="card rec">
+<p class="detail">You didn't answer the portability question, you rejected its framing: <i>&ldquo;previously we assumed Python would be a problem, it no longer is.&rdquo;</i> The assumption had never been tested.</p>
+<p class="imp"><b>Ruled: the portable unit is the PROJECT, not the file.</b> Apollo is a system of parts; a package carries the whole tree, so a relative <code>&lt;link href="../canon/type.css"&gt;</code> resolves fine. <b>The 49-file inline sweep in &sect;1 was solving a problem that does not exist</b> &mdash; and would have created 49 duplicate copies to keep in sync, which is the memory-mirror disease in a new costume. <code>&lt;link&gt;</code> is the delivery mechanism; the gate's &ldquo;inlining is sanctioned&rdquo; note relaxes to &ldquo;either, link preferred&rdquo;.</p>
+</div>
+
+<h2>5 &middot; The specimen &mdash; OBSERVED, and it reverses the measurement</h2>
+<p class="sub">Full-chrome Playwright, in-sandbox. Four variants &times; your three real button shapes. Source: <code>reviews/trimtest.html</code> &middot; render: <code>reviews/trimtest.png</code>.</p>
+
+<table>
+<tr><th>variant</th><th>mechanism</th><th>height</th><th>width (icon cases)</th></tr>
+<tr><td><b>A</b> current &mdash; <code>inline-flex</code> + required <code>.txt</code> child</td><td>trim on child</td><td class="y">20</td><td>141.83</td></tr>
+<tr><td><b>B</b> <code>inline-block</code>, no child, no flex</td><td>trim on element</td><td class="y">20</td><td>138.27</td></tr>
+<tr><td><b>C</b> fallback pseudo-element path, no child</td><td>trim on element</td><td class="y">20</td><td>138.27</td></tr>
+<tr><td><b>D</b> <code>inline-flex</code> kept, no child</td><td>trim on element</td><td class="y">20</td><td class="y"><b>141.83</b></td></tr>
+</table>
+
+<div class="card rec">
+<span class="tier t-s">OBSERVED</span>
+<p class="find">The <code>.txt</code> child is not required. <b>And D is a drop-in for A.</b></p>
+<p class="detail">All four seat text identically at h=20. <code>text-box:trim-both cap alphabetic</code> applies to the element directly &mdash; including when that element is a flex container with an icon sibling. <b><code>.txt</code> was an implementation choice in the 07-17 composite, never a requirement of the trim.</b> D matches A exactly including width; B and C differ by 3.5px only because flex <code>gap:8px</code> is not the same as a whitespace space &mdash; a spacing difference, not a trim one.</p>
+<p class="imp"><b>Consequence for Q1: </b>&sect;5's 80%-single-line count argued against (d) <i>only</i> on the premise that single-line &rArr; needs the child. <b>That premise is now false.</b> A selector-list extension can add <code>.btn</code> to <code>.t-cm-button</code>'s rule and deliver size, weight, flex, gap and trim <b>without touching one line of HTML</b>. (d)'s cost objection is gone.</p>
+</div>
+
+<div class="card">
+<span class="tier t-c">SCOPE LIMIT &mdash; do not widen this without re-testing</span>
+<p class="detail">Observed for the <b>button</b> case, three shapes, <b>Chromium</b>, <b>no Univers</b> (layout only). <b>Not</b> observed for the other ten Component composites &mdash; input, link, label, caption, tooltip, legal, figure-1/2, heading, section-label &mdash; nor for elements where <code>inline-flex</code> would change wrapping. Firefox has no <code>text-box-trim</code> and falls to path C, which also rendered h=20, so the fallback holds &mdash; but that is a Chromium render of the Firefox path, not Firefox.</p>
+</div>
+
+<h3>Q5 &mdash; answered, then dissolved</h3>
+<p class="detail">Since your buttons are only ever text, text+trailing icon, or leading icon+text, flex is <i>helpful</i> for them (it gives the gap and the centring), not harmful. And because D keeps flex while dropping the child, the &ldquo;does the composite need a non-flex fallback?&rdquo; question doesn't arise for buttons at all. <b>Re-ask it per composite</b> when the other ten get bound &mdash; a wrapping label is a different animal.</p>
+
+<h2>6 &middot; Round two &mdash; one mark left</h2>
+<table>
+<tr><th style="width:38%">question</th><th class="ask">your call</th></tr>
+<tr><td><b>Q1 (re-marked).</b> Mechanism: <b>(a)</b> markup class &middot; <b>(c)</b> build-time inlining &middot; <b>(d)</b> selector-list extension. You leaned (d); the cost objection against it has now been cleared by measurement rather than by argument. <i>Confirm or change.</i></td><td class="ask"></td></tr>
+<tr><td><b>Q6 (new).</b> Rewriting <code>.t-cm</code> to variant D changes a composite you signed off on 2026-07-17. Agreed as an amendment, or does it want its own specimen round across all eleven composites first?</td><td class="ask"></td></tr>
+</table>
+
+<p class="foot">Apollo SDS &middot; BINDING-MECHANISM-2026-07-18 &middot; clean source; review copy generated by <code>_make_review.py</code>. Nothing here is promoted. Evidence: <code>_validate_type_composites.py --inventory</code> (782 rows, 49 files), <code>canon/type.css</code>, <code>canon/canon.css</code>.</p>
+</body></html>

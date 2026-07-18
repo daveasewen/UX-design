@@ -565,3 +565,280 @@ ink off pure white**. Both are "reduce the extremity of the edge" without adding
 - **The 100 Component `500`s** — is small-label Medium structural or drift? `COMPONENT-MEDIUM` sheet.
 - **The weight term** (T-D2) — ladder C6.
 - **Whether tracking becomes a composite property** — follows from T-D1's structural argument.
+
+---
+
+## T-D7 — Binding mechanism: measure before ruling (2026-07-18)
+
+**Dave's marks on `BINDING-MECHANISM-2026-07-18`:**
+
+| Q | mark | status |
+|---|---|---|
+| Q1 mechanism | *"looks like D to me, but do the check from Q2"* | **PROVISIONAL — not a ruling** |
+| Q2 measure first | *"yes"* | **RULED. Firm.** |
+| Q3 delivery/portability | *"has to be shared, and widely, but it depends on your description of portable"* | **CHALLENGE, not an answer** |
+| Q4 type.css generated | *"I guess yes, but guide me"* | open, needs guidance |
+| Q5 inline-flex | *"give me a simple explanation"* | open, needs explanation |
+
+**WHY Q2 is the only ruling:** Dave leaned (d) but explicitly conditioned it on the measurement.
+Recording (d) as decided would be exactly the confident-false-inscription failure — a lean logged
+as a ruling, then trusted absolutely by later sessions. Q1 stays PROVISIONAL until the trim
+question is answered and re-marked.
+
+**Q3 is the sharpest mark on the sheet.** Dave did not answer the portability question — he
+attacked its premise: *"previously we assumed Python would be a problem, it no longer is."* The
+inlining decision rests on an assumption about consumers' environments that was never tested, in a
+project whose recurring failure is exactly that (`{#type26-019}`'s glob, "no Univers" surviving 16
+months). **Portability must be defined by observed consumption, not asserted.** Logged as an open
+premise-check, NOT as a delivery decision.
+
+### The measurement (Q2) — result, with a correction to my own unit
+
+**My "~230 markup nodes" in the sheet was wrong, in both directions.**
+- Distinct selectors needing a binding: **~460** (689 file-scoped pairs) — `_proforma` 196,
+  `canon` 144, `snippets` 120.
+- Text-bearing leaf NODES in gated markup: **2,277**, of which **80% are single-line** (would need
+  Component trim), 7% wrapping (Editorial), 13% ambiguous.
+
+**But the node count overstates the work badly, and the reason matters:** reference files
+demonstrate every state and variant of a component, so `<button class="btn primary">Example</button>`
+appears four times in `Button.reference.html` against **one** CSS rule. Node count measures
+demonstrations; selector count measures bindings.
+
+**Read naively, the 80% kills (d)** — if most Component text needs the `.txt` child, the markup pass
+happens regardless and (a) is simpler, exactly as the sheet predicted.
+
+### ⚠️ INFERRED, NOT OBSERVED — the finding that may reverse that
+
+`cap-trim does not appear to require the `.txt` child.` `text-box:trim-both` applies to a block
+container directly; the child + `display:inline-flex` in `.t-cm` buys **vertical centring inside
+`min-height`**, not the trim itself. If a composite can trim the element directly, then a
+selector-list extension (d) delivers trim to `.btn` with **no markup pass at all**, and the 80%
+stops being an argument against (d).
+
+**This is inferred from reading the CSS. It has NOT been rendered.** Playwright is not installed in
+this session, so the specimen was written (`/tmp/trimtest.html`, three variants A/B/C) but not run.
+**Do not act on this until it is rendered and compared.** It is tidy, it arrived late, and it
+rescues the option I had already recommended — all three of yesterday's warning signs at once.
+
+**Next:** render the A/B/C specimen → if B/C match A, re-mark Q1 with (d) now viable at near-zero
+markup cost; if they do not, (a) is the answer.
+
+---
+
+## T-D8 — The trim specimen: OBSERVED, and it reverses T-D7 (2026-07-18)
+
+**The T-D7 inference was correct. Rendered, not reasoned.** Full-chrome Playwright in-sandbox
+(07-16 recipe, worked first try again — see [[sandbox-html-rendering]]). Specimen:
+`outputs/trimtest.html` + `trimtest.png`. Four variants × Dave's three real button shapes
+(text · text+trailing icon · leading icon+text).
+
+| variant | mechanism | height | width (icon cases) |
+|---|---|---|---|
+| **A** current — `inline-flex` + required `.txt` child | trim on child | **20** | 141.83 |
+| **B** `inline-block`, no child, no flex | trim on element | **20** | 138.27 |
+| **C** fallback pseudo-element path, no child | trim on element | **20** | 138.27 |
+| **D** `inline-flex` kept, no child | trim on element | **20** | **141.83** |
+
+**FINDING (OBSERVED): the `.txt` child is not required.** All four seat text identically at
+h=20. `text-box:trim-both cap alphabetic` applies to the element directly, including when that
+element is a flex container with an icon sibling. **`.txt` was an implementation choice in the
+07-17 composite, never a requirement of the trim.**
+
+**FINDING: D is a drop-in for A.** D matches A exactly, including width (141.83 — B/C differ only
+because flex `gap:8px` ≠ a whitespace space, ~3.5px; a spacing difference, not a trim one). So the
+composite can be rewritten to trim the element while keeping `inline-flex` for icon gap and
+centring, and **existing markup needs no change at all**.
+
+**CONSEQUENCE for Q1 — (d) is now viable at near-zero markup cost.** T-D7's 80%-single-line count
+was an argument against (d) *only* on the premise that single-line ⇒ needs the child. That premise
+is now false. A selector-list extension can add `.btn` to `.t-cm-button`'s rule and deliver size,
+weight, flex, gap and trim **without touching one line of HTML**.
+
+**SCOPE LIMIT — state it before anyone widens it.** Observed for the **button** case, three shapes,
+**Chromium**, **no Univers** (layout only). NOT yet observed for the other ten Component composites
+(input, link, label, caption, tooltip, legal, figure-1/2, heading, section-label) or for elements
+where `inline-flex` would change wrapping behaviour. Firefox lacks `text-box-trim` and falls to
+path C, which also rendered h=20 — so the fallback holds, but that too is Chromium-rendered.
+
+### Dave's remaining marks, ruled
+
+**Q3 — RULED, and it reverses my §1 correction.** Dave: *"the entire project must be portable…
+if I share snippets it will be part of a package, pulled from a repo, maybe zipped. Remember the
+plan for Apollo, it is a system of parts."*
+→ **The portable unit is the PROJECT, not the file.** A package carries the whole tree, so a
+relative `<link href="../canon/type.css">` resolves fine. **The 49-file inline sweep was solving a
+problem that does not exist**, and would have created a duplication/rot surface — the memory-mirror
+disease again. `<link>` is the delivery mechanism. The gate's "inlining is sanctioned for snippets"
+note should be relaxed to "either, and link is preferred".
+→ **WHY this was caught:** Dave refused the question and attacked its premise (*"previously we
+assumed Python would be a problem, it no longer is"*). The assumption had never been tested.
+
+**Q4 — RULED yes, conditional on Q1=(d).** `type.css` becomes genuinely generated from
+composites + `type-bindings.json`. Under (a) there would be no source other than the CSS and the
+honest fix would be to correct the header. **Either way the false "generated 2026-07-17" header
+goes** — nothing generates it today.
+
+**Q5 — ANSWERED, then dissolved.** Dave: buttons are only ever text, text+trailing icon,
+occasionally leading icon. Flex is *helpful* for those (gap + centring), not harmful. And since
+variant D keeps flex while dropping the child, the "does the composite need a non-flex fallback?"
+question does not arise for buttons. **Re-ask it per composite** when the other ten are bound.
+
+**Q1 — still not ruled.** Dave leaned (d); the blocker is cleared; but the lean was given before
+this evidence and must be re-marked, not assumed.
+
+---
+
+## T-D9 — RULED: binding mechanism = (d), hand-maintained (2026-07-18)
+
+**Dave: *"fine lets move on D it is"*.** Firm. Q1 closed.
+
+**THE MECHANISM.** Component selectors are appended to the composite's own rule in `canon/type.css`
+as a plain CSS selector list:
+```css
+.t-cm-button, .btn { font-size:16px; font-weight:500; min-height:20px; … }
+```
+**No JSON, no generator, no build step, and no markup edits.** The generator + `type-bindings.json`
++ orphan gate are an OPTIONAL later upgrade if the list becomes unwieldy — explicitly deferred, do
+not build them now.
+
+**WHY (d)-by-hand beat (a), in Dave's terms — elegance = where the knowledge has to live.**
+(a) leaks the composite's implementation detail (the `.txt` child) into every consumer, forever, on
+every surface — and the span has no equivalent in Figma, in Sutherland React, or in a token. (d)
+keeps the mechanism inside the composite. (d)-by-hand is *strictly simpler* than (a): same zero
+build step, but zero markup churn and no rule for authors to remember.
+
+**Trade accepted, on the record:** (a)'s binding is visible in markup; (d)'s is visible only in CSS.
+Auditability moves from "a thousand places" to "one authoritative place".
+
+### Consequences that follow automatically
+
+1. **Q4 FLIPS to NO.** Hand-maintained ⇒ `type.css` stays hand-authored. **Do not generate it.**
+   Still delete the false `/* generated 2026-07-17 */` header — nothing ever generated it.
+2. **`.t-cm` is amended to variant D** — trim moves from the `.txt` child to the element; keep
+   `display:inline-flex` + `align-items:center` (that is what centres the cap box in a taller slot;
+   `inline-block` variant B **top-aligns** and is wrong — see `outputs/trimtest2.png`). The `.txt`
+   child and its rules are removed. Supersedes the 07-17 composite; tombstone it there.
+3. **LOAD ORDER IS NOW LOAD-BEARING.** `.t-cm-button` and `.btn` have identical specificity (0-1-0),
+   so source order decides. **`type.css` must load BEFORE component CSS.** Gate this — an
+   unenforced ordering rule is a rule that will break (`[[gate-glob-scope-rule]]`).
+4. **Delivery = `<link>`, not inlining** (T-D8/Q3): the portable unit is the project.
+
+### UNCHANGED — nothing from the 07-17 trim work is discarded
+CSS cap-trim ✓ · 4px slot ✓ · slot minimum `ceil(cap + 2·descender)` snapped to 4px ✓ · descender
+guard baked into the slot ✓ · stacks use `gap` slot-edge to slot-edge, **never padding** ✓.
+**No `padding` property is authored anywhere** — the space below the cap is a consequence of the
+slot being taller than the cap box, not an authored value. Dave flagged this directly; it is why
+variant B fails.
+
+### Open, carried
+- The stack demo in `trimtest2.png` seats text higher in the slot than expected. Does not affect
+  the A/B/D result. **Noted, not chased.**
+
+---
+
+## T-D10 — RULED: Component Medium is DRIFT, except family A (2026-07-18)
+
+**Dave marked all 19 specimens "good"** with the note *"this was genuinely difficult to rule on so
+we may decide on simplicity rather than my remarks."*
+
+**DISAMBIGUATED BY PIN POSITION, not by the word.** "Good" does not answer the sheet's question
+("which holds — 500 or 400?"). The review-overlay pin COORDINATES do: **all 19 pins sit on or
+beside the 400 · REGULAR column; not one is on the 500 · MEDIUM column.** Pins 3–7, 11–15, 17–19
+immediately left of the Regular specimen; 1, 2, 8, 9, 10, 16 in the whitespace just right of it.
+Nineteen for nineteen. ⇒ **"good" = the Regular version reads fine.**
+
+> **METHOD NOTE, worth keeping:** the pin's POSITION carried the ruling when its TEXT did not.
+> The review overlay is a spatial instrument, not just a comment box — read where a mark lands,
+> not only what it says. Supports [[review-layer-product-feature]].
+
+### The ruling
+
+| family | decls | outcome |
+|---|---|---|
+| B eyebrow / group label · C control label · D chip/tag/badge · E numeral/data · unclassified | **88** | **SNAP TO 400.** No new composites. |
+| **A** reverse on near-black | **12** | **HOLD AT 500 — not ruled by this sheet.** |
+
+**This is the sheet's stated null result and the simplest available outcome: zero new composites.**
+
+### WHY family A is held back — the specimen did not reproduce its own condition
+
+`{#col26-020}(c)` says **"both grounds"** — coloured AND near-black — **12/14/16px = Medium (500)**
+as a MINIMUM, thresholds set from Dave's own observation (specimen v1+v2, 2026-07-18). Family A is
+inside that condition, so a 400 mark there contradicts evidence-backed canon set the same week.
+
+**But the more important reason is methodological.** Family A renders as a **small black chip in a
+white page**. col26-020 mitigates **halation** — bright text blooming across a boundary — and that
+effect scales with the SURROUNDING FIELD. A 14px white label in a ~200px black box on a white
+background is a far weaker stimulus than the same label on a full dark screen. **So "400 looks
+fine" here may be the instrument under-testing, not the weight being unnecessary.** That is the
+null-result trap inverted: an instrument that cannot detect the effect returns "no effect" and it
+looks like evidence. Under ADR-0004 (WCAG = floor, not ceiling) a legibility minimum does not get
+relaxed on an instrument we cannot vouch for.
+
+**To revisit A:** re-specimen on a FULL dark surface, not a chip. Until then A stays 500.
+
+> **GENERALISE THIS:** a specimen must reproduce the CONDITION its rule names, not merely the
+> ELEMENT the rule applies to. Ground-dependent effects (halation, vibration, edge extremity) need
+> the ground at real extent. Add to the sheet-building method alongside "must be able to return null".
+
+### Why this costs nothing extra to enact
+Under the T-D9 binding mechanism, "snap to 400" **is** the rebind: the 88 selectors are appended to
+the existing `.t-cm-caption` / `.t-cm-legal` / `.t-cm-label` selector lists and their raw
+`font-weight:500` is deleted. **The ruling and the rebind are the same edit.**
+
+---
+
+## T-D11 — The `/1` batch: attempted, VERIFIED FAILING, reverted (2026-07-18)
+
+**What I predicted:** of 465 font shorthands carrying a line-height, 208 use `/1`. Since the
+Component composite sets `line-height:1`, I reasoned those would bind as a visual NO-OP — as `.btn`
+demonstrably had (417px diff, all of it the loading spinner's animation frame).
+
+**What happened:** 23 selectors bound across 21 snippets. Pixel-diffed every file before/after in
+real HSBC Univers. **7 pixel-identical · 13 changed materially · 2 changed PAGE HEIGHT**
+(Notifications 1439→1624px, List-items 1065→1091px). Largest diffs: Tab-bar 43k px, Status-indicator
+36k, Account-card 33k. **REVERTED** — `git show HEAD:<path> > <path>` (the sandbox cannot unlink,
+so `git checkout` fails; write-in-place is the working revert. Worth adding to
+`_RUNBOOK-git-commit.md`).
+
+### WHY the prediction was wrong — the composite is not only type
+
+`.btn` bound cleanly because it was **already** `display:inline-flex; align-items:center;
+line-height:1`. The composite told it nothing new about its BOX. The other 23 selectors —
+`.eyebrow`, `.badge`, `.status`, `.tabbar__item`, `h2`, `.avatar`, `.chip`, `.time` — were block or
+inline elements. Binding handed them `display:inline-flex` + `align-items:center` + `min-height` +
+cap-trim, which is **a layout change wearing a type change's clothing**.
+
+> **THE LESSON, and it generalises past this task:** `/1` predicted the LINE-HEIGHT was safe. It
+> said nothing about DISPLAY. I matched on the one property I had been staring at and inferred
+> safety for four others I had not. Same shape as the four wrong turns on 07-17: the first answer
+> was tidy and confirmed what I half-expected.
+
+**The pixel-diff caught it before it shipped, and that is the system working.** A binding claimed
+to be a no-op has to be SHOWN to be one, per file, in the real face.
+
+### The structural question this exposes — needs Dave
+
+`.t-cm` currently conflates **two separable things**:
+- **TYPE** — `font-family`, `font-size`, `font-weight` (safe to bind anywhere)
+- **BOX** — `display:inline-flex`, `align-items:center`, `line-height:1`, `min-height`, cap-trim
+  (only safe where the element is already a single-line control)
+
+**Proposed split (NOT ruled):** `.t-cm-*` keeps type only; a separate `.t-cm-slot` carries the box.
+Elements already shaped like controls take both; everything else takes type only and keeps its own
+box. That would have made this batch a genuine no-op. **Do not enact without Dave.**
+
+### Also surfaced, also unruled
+- **`.tag` COLLISION** — 14px in its canonical `Tags.reference`, 12px in `Account-card` and
+  `List-items` where the source comment says it is *reusing that atom*. One selector cannot join two
+  composites (one shared type.css → last wins for both). **The mechanism surfaced real drift.**
+  Ruling needed: one atom at one size, or an explicit `.tag--sm`.
+- **`.num` at 24px/400** — Countdown-timer. **No Component composite exists at 24px** (ramp runs
+  12/14/16/20/32/40/52). Add a rung, or snap to 20 or 32.
+
+### What SURVIVES from this session
+- `canon/type.css` — variant D amendment + `.btn` bound. **Verified.** Kept.
+- `snippets/Button.reference.html` — the proven pilot. Kept.
+- `knowledge/apply_type_bind.py` — the script. Kept: it re-derives the whole batch in one command
+  once the box/type split is ruled, and its `--apply` is a one-liner to re-run.

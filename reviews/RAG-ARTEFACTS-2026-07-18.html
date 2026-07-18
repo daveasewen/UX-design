@@ -1,0 +1,138 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RAG on the artefacts</title>
+<style>
+:root{--ink:#1c1c1c;--mut:#6b6b6b;--line:#e4e4e4;--red:#db0011;--ok:#0b7a34;--bad:#8a1f1f;--warn:#b25000}
+*{box-sizing:border-box}
+body{font-family:"HSBC_MtUnivers_Latin","Univers Next for HSBC","Helvetica Neue",Arial,sans-serif;
+ color:var(--ink);margin:0;padding:40px;max-width:1180px;line-height:1.5;background:#fafafa}
+h1{font-size:30px;font-weight:300;margin:0 0 4px}
+h2{font-size:19px;font-weight:500;margin:40px 0 4px;padding-top:14px;border-top:2px solid var(--ink)}
+.sub{color:var(--mut);font-size:14px;margin:0 0 20px}
+.lead{font-size:15px;background:#fff;border:1px solid var(--line);border-left:3px solid var(--red);
+ padding:16px 20px;margin:18px 0}
+.card{background:#fff;border:1px solid var(--line);padding:16px 20px;margin:12px 0;font-size:14px}
+table{width:100%;border-collapse:collapse;background:#fff;margin:12px 0;font-size:13px}
+th,td{text-align:left;padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font-weight:500;font-size:11px;letter-spacing:.04em;color:var(--mut);background:#f4f4f4}
+td.c{text-align:center}
+.met{color:var(--mut);font-size:11px}
+code{font-family:ui-monospace,Menlo,monospace;font-size:11px;background:#f2f2f2;padding:1px 4px}
+.r{font-weight:500;font-size:13px} .ok{color:var(--ok)} .bad{color:var(--bad)} .warn{color:var(--warn)}
+.tag{display:inline-flex;align-items:center;font-size:12px;font-weight:400;padding:3px 9px;line-height:1}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:4px 9px;line-height:1}
+.ask{width:150px;background:#fffdf5}
+.dark{background:#111111;padding:18px 20px;margin:12px 0}
+.dark table{background:transparent;color:#fff}
+.dark th{background:#1d1d1d;color:#aaa} .dark td{border-bottom-color:#333}
+.foot{color:var(--mut);font-size:12px;margin-top:40px;border-top:1px solid var(--line);padding-top:12px}
+</style></head><body>
+<h1>RAG on the artefacts</h1>
+<p class="sub">Apollo SDS &middot; 2026-07-18 &middot; the four carriers you asked for &mdash; tag, status badge, arrow, text. Nothing promoted.</p>
+
+<div class="lead"><b>Your instinct was right and it has a structural cause.</b> Amber is an
+intrinsically LIGHT hue. Darkening it far enough for white text does not produce a dark amber, it
+produces brown &mdash; there is no path through that. Going lighter with dark ink is how amber
+wants to work: the incumbent <code>#FFBB33</code> with the digital black already reads
+<b>10.28:1</b>, comfortably AAA.<br><br>
+<b>But that is exactly where the icons-and-arrows problem you sensed bites</b>, and it is worth
+naming precisely.</div>
+
+<div class="card"><b>Two different rules are in play, and they pull opposite ways for amber.</b><br>
+&mdash; <b>Text on a filled ground</b> (tag, badge) &rarr; WCAG&nbsp;1.4.3, <b>4.5:1</b>. A light
+amber fill with dark ink sails through.<br>
+&mdash; <b>An icon, arrow or fill edge against the page</b> &rarr; WCAG&nbsp;1.4.11,
+<b>3:1</b>. Light amber against a white page is <b>1.69:1</b> &mdash; it fails badly. The one amber
+that passes as an ink is the dark <code>#C58720</code> you just rejected as a ground.<br><br>
+<b>So amber may genuinely need two tokens: a GROUND and an INK.</b> Red, green and blue don't,
+because they sit at mid luminance and work as both. Amber cannot be both. That is not a defect in
+the palette &mdash; it is the hue.</div>
+
+<h2>1 &middot; Light mode &mdash; the four carriers</h2>
+<p class="sub">Ink on fills is white except amber, which uses the digital black <code>#1A1A1A</code>.
+The arrow and the text use the <b>ink-form</b> colour, which for amber is the darker cut.</p>
+<table><thead><tr><th>Hue</th><th>Tag</th><th>Status badge</th><th>text on fill</th><th>Arrow</th><th>Text</th><th>ink on page</th><th>fill edge</th><th class="ask">Ruling</th></tr></thead>
+<tbody>
+<tr>
+ <td><b>red</b><br><span class="met"><code>#B92F1E</code></span></td>
+ <td><span class="tag" style="background:#B92F1E;color:#FFFFFF">Pending</span></td>
+ <td><span class="badge" style="background:#B92F1E;color:#FFFFFF"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3 8.5l3.5 3L13 5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg><span>Complete</span></span></td>
+ <td class="c"><span class="r ok">6.02</span><br><span class="met">text on fill · 4.5</span></td>
+ <td class="c" style="color:#B92F1E"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3 8h9M8.5 4.5L12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></td>
+ <td class="c" style="color:#B92F1E"><b>Red status</b></td>
+ <td class="c"><span class="r ok">6.02</span><br><span class="met">ink on page · 4.5</span></td>
+ <td class="c"><span class="r ok">6.02</span><br><span class="met">fill edge vs page · 3</span></td>
+ <td class="ask"></td>
+</tr>
+<tr>
+ <td><b>amber</b><br><span class="met"><code>#FFBB33</code></span></td>
+ <td><span class="tag" style="background:#FFBB33;color:#1A1A1A">Pending</span></td>
+ <td><span class="badge" style="background:#FFBB33;color:#1A1A1A"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3 8.5l3.5 3L13 5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg><span>Complete</span></span></td>
+ <td class="c"><span class="r ok">10.28</span><br><span class="met">text on fill · 4.5</span></td>
+ <td class="c" style="color:#C58720"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3 8h9M8.5 4.5L12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></td>
+ <td class="c" style="color:#C58720"><b>Amber status</b></td>
+ <td class="c"><span class="r warn">3.06</span><br><span class="met">ink on page · 4.5</span></td>
+ <td class="c"><span class="r bad">1.69</span><br><span class="met">fill edge vs page · 3</span></td>
+ <td class="ask"></td>
+</tr>
+<tr>
+ <td><b>green</b><br><span class="met"><code>#16864E</code></span></td>
+ <td><span class="tag" style="background:#16864E;color:#FFFFFF">Pending</span></td>
+ <td><span class="badge" style="background:#16864E;color:#FFFFFF"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3 8.5l3.5 3L13 5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg><span>Complete</span></span></td>
+ <td class="c"><span class="r ok">4.61</span><br><span class="met">text on fill · 4.5</span></td>
+ <td class="c" style="color:#16864E"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3 8h9M8.5 4.5L12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></td>
+ <td class="c" style="color:#16864E"><b>Green status</b></td>
+ <td class="c"><span class="r ok">4.61</span><br><span class="met">ink on page · 4.5</span></td>
+ <td class="c"><span class="r ok">4.61</span><br><span class="met">fill edge vs page · 3</span></td>
+ <td class="ask"></td>
+</tr>
+<tr>
+ <td><b>blue</b><br><span class="met"><code>#2573DC</code></span></td>
+ <td><span class="tag" style="background:#2573DC;color:#FFFFFF">Pending</span></td>
+ <td><span class="badge" style="background:#2573DC;color:#FFFFFF"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3 8.5l3.5 3L13 5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg><span>Complete</span></span></td>
+ <td class="c"><span class="r ok">4.60</span><br><span class="met">text on fill · 4.5</span></td>
+ <td class="c" style="color:#2573DC"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3 8h9M8.5 4.5L12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></td>
+ <td class="c" style="color:#2573DC"><b>Blue status</b></td>
+ <td class="c"><span class="r ok">4.60</span><br><span class="met">ink on page · 4.5</span></td>
+ <td class="c"><span class="r ok">4.60</span><br><span class="met">fill edge vs page · 3</span></td>
+ <td class="ask"></td>
+</tr></tbody></table>
+
+<h2>2 &middot; The amber question, isolated</h2>
+<div class="card">
+<b>Option 1 &mdash; one light amber, dark ink, and accept it cannot be an ink.</b> Tags and badges
+only. Arrows and standalone amber text are then <i>not permitted</i> &mdash; status is carried by
+the badge, never by a loose glyph. Simple rule, real restriction.<br><br>
+<b>Option 2 &mdash; two tokens.</b> <code>rag/amber/ground</code> light for fills,
+<code>rag/amber/ink</code> dark for arrows, icons and text. Honest to the hue; one more concept to
+teach, and the pair must never be swapped.<br><br>
+<b>Option 3 &mdash; outline the fill.</b> Keep the light ground and give the tag a darker amber
+border so its EDGE clears 3:1 while the fill stays light. Solves 1.4.11 without a second ink token
+&mdash; but adds a border to a square-cornered mono component, which is a look decision, not just a
+contrast one.
+</div>
+
+<h2>3 &middot; Dark mode</h2>
+<div class="dark">
+<table><thead><tr><th>Hue</th><th>Tag</th><th>Status badge</th><th>Arrow</th><th>Text</th></tr></thead><tbody>
+<tr><td style="color:#fff"><b>red</b></td><td><span class="tag" style="background:#CC4333;color:#fff">Pending</span></td><td><span class="badge" style="background:#CC4333;color:#fff"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3 8.5l3.5 3L13 5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg><span>Complete</span></span></td><td style="color:#CC4333"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3 8h9M8.5 4.5L12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></td><td style="color:#CC4333"><b>Red status</b></td></tr>
+<tr><td style="color:#fff"><b>amber</b></td><td><span class="tag" style="background:#FFBB33;color:#1A1A1A">Pending</span></td><td><span class="badge" style="background:#FFBB33;color:#1A1A1A"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3 8.5l3.5 3L13 5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg><span>Complete</span></span></td><td style="color:#FFBB33"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3 8h9M8.5 4.5L12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></td><td style="color:#FFBB33"><b>Amber status</b></td></tr>
+<tr><td style="color:#fff"><b>green</b></td><td><span class="tag" style="background:#1AA05C;color:#fff">Pending</span></td><td><span class="badge" style="background:#1AA05C;color:#fff"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3 8.5l3.5 3L13 5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg><span>Complete</span></span></td><td style="color:#1AA05C"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3 8h9M8.5 4.5L12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></td><td style="color:#1AA05C"><b>Green status</b></td></tr>
+<tr><td style="color:#fff"><b>blue</b></td><td><span class="tag" style="background:#2674DC;color:#fff">Pending</span></td><td><span class="badge" style="background:#2674DC;color:#fff"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3 8.5l3.5 3L13 5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg><span>Complete</span></span></td><td style="color:#2674DC"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3 8h9M8.5 4.5L12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></td><td style="color:#2674DC"><b>Blue status</b></td></tr>
+</tbody></table></div>
+<div class="card"><b>Note the inversion.</b> On a dark page the amber problem REVERSES: light amber
+as an ink reads <b>11.16:1</b> against <code>#111111</code> — it is the best
+ink of the four. So amber's ink and ground may legitimately differ BY MODE, not just by role.
+Dark-mode green <code>#1AA05C</code> on white text is still 3.37 and remains an open fix.</div>
+
+<h2>4 &middot; Your marks</h2>
+<table><thead><tr><th>question</th><th class="ask">your call</th></tr></thead><tbody>
+<tr><td><b>Q1.</b> Which amber option &mdash; 1 (light only, no amber inks), 2 (ground + ink tokens), or 3 (light fill, darker border)?</td><td class="ask"></td></tr>
+<tr><td><b>Q2.</b> If option 2: does the ground/ink split apply to red, green and blue too for consistency, or is amber an acknowledged special case?</td><td class="ask"></td></tr>
+<tr><td><b>Q3.</b> Is the light amber the incumbent <code>#FFBB33</code> unchanged, or does it want its own cut?</td><td class="ask"></td></tr>
+<tr><td><b>Q4.</b> Dark-mode green <code>#1AA05C</code> (3.37 on white text) &mdash; darken the ground, or switch it to dark ink like amber?</td><td class="ask"></td></tr>
+</tbody></table>
+
+<p class="foot">Apollo SDS &middot; RAG-ARTEFACTS-2026-07-18 &middot; generated by <code>reviews/gen_rag_artefacts.py</code>.
+Contrast computed from hex, WCAG 2.x relative luminance. Ink = <code>#1A1A1A</code> (the digital black, R-D1).</p>
+</body></html>
