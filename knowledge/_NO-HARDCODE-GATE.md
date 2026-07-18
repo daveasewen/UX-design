@@ -21,5 +21,7 @@ Geometry/dimensions, @media breakpoints, transparent borders, and token definiti
 
 ## ✓ _proforma/Tranche-7-interactive.html — PASS
 
+## ✓ _proforma/Tranche-8-interactive.html — PASS
+
 ---
 Rule 15 in `_proforma/_PROFORMA-RULES.md`. Sibling companions: motion = DEF-003, colour = universal-gate hardcode check.

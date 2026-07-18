@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apollo pro-forma · Tranche 8 · Navigation tail</title>
+<!-- MONOCHROME pro-forma base. Primary = near-black (#1A1A1A)/near-white; colour = MEANING ONLY (RAG status via tokens).
+     ICONS: real HSBC assets only (sprite built from knowledge/assets/icons/* — see #icon-manifest). No invented glyphs.
+     Every colour is a token var (no hardcoded colour outside the theme blocks + status-badge glyphs). Behaviours are LIVE. -->
+<style>
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+  :root{ --btn-grow:1.02; --btn-press:0.98; --ib-grow:1.045; --ib-press:0.955; --card-grow:1.007; --card-press:0.993; --accent-grow-soft:1.06; --accent-grow:1.15; --accent-grow-strong:1.4; --accent-press-subtle:0.995; --accent-press-soft:0.95; --accent-press:0.9;  /* interaction motion — scale factors. Buttons/card size-scoped for ~1px/side travel (ib≈44px, btn≈120px, card≈275px); --accent-* = named pops on small fixed-size controls (date/radio/checkbox/segmented/select/chip/avatar/dot — already ~constant-px by their fixed size); all CSS-governed, mode-overridable */
+  --bw-sm:1px; --bw-md:2px; --bw-lg:4px; --bw-1_5:1.5px; --radius:0; --radius-round:50%; --radius-pill:999px;  /* structural → KB semantic-scale (layout.json): border-width 1/2/4; radius is a MODE token (0=mono/square; Apollo UI overrides with varying radii); --radius-round=circles */
+  --space-1:1px; --space-2:2px; --space-3:3px; --space-4:4px; --space-5:5px; --space-6:6px; --space-7:7px; --space-8:8px; --space-9:9px; --space-10:10px; --space-11:11px; --space-12:12px; --space-13:13px; --space-14:14px; --space-16:16px; --space-18:18px; --space-20:20px; --space-22:22px; --space-24:24px; --space-26:26px; --space-28:28px; --space-30:30px; --space-34:34px; --space-80:80px;  /* spacing scale -> KB semantic-scale (spacing.json); value-preserving flat ladder (mono); mode-overridable; new components SHOULD prefer canonical steps 4/8/12/16/24/32/40/48 (rule 15 + DEF-004) */
+    --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+    --ease:160ms cubic-bezier(.4,0,.2,1); --spring:280ms cubic-bezier(.5,1.4,.4,1); --press:90ms cubic-bezier(0,0,.58,1);
+    --drawer:460ms cubic-bezier(.22,.61,.36,1); }
+  [data-theme="light"]{
+    --page:#FFFFFF; --raised:#FFFFFF; --ink:#333333; --ink2:#545454; --disi:#B7B7B7; --line:#D7D8D6; --line2:#EDEDED;
+    --surf:#F3F3F3; --fbord:#767676; --fborda:#1A1A1A; --fbordd:#D7D8D6;
+    --pri:#1A1A1A; --pri-h:#000000; --pri-lbl:#FFFFFF; --icon:#333333; --icon-rev:#FFFFFF; --focus:#1A1A1A;
+    --scrim:#00000066; --shadow:#00000026;
+    --err:#A8000B; --err-t:#F9F2F3; --warn:#FFBB33; --warn-t:#FFF8EA; --success:#00847F; --success-t:#E5F2F2; --info:#305A85; --info-t:#EBEFF4;
+  }
+  [data-theme="dark"]{
+    --page:#000000; --raised:#1D1D1D; --ink:#FFFFFF; --ink2:#9B9B9B; --disi:#767676; --line:#707070; --line2:#3A3A3A;
+    --surf:#212121; --fbord:#808080; --fborda:#FFFFFF; --fbordd:#404040;
+    --pri:#F2F2F2; --pri-h:#FFFFFF; --pri-lbl:#1A1A1A; --icon:#FFFFFF; --icon-rev:#1A1A1A; --focus:#FFFFFF;
+    --scrim:#00000099; --shadow:#000000D9;
+    --err:#DB0011; --err-t:#260005; --warn:#FFBB33; --warn-t:#221701; --success:#00847F; --success-t:#001615; --info:#4587A7; --info-t:#000D1B;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:var(--font); background:var(--page); color:var(--ink); -webkit-font-smoothing:antialiased;
+    transition:background var(--ease), color var(--ease); line-height:1.5;}
+  .wrap{max-width:1600px; margin:0 auto; padding:0 var(--space-28) var(--space-80);}
+  .top{position:sticky; top:0; z-index:20; background:var(--page); border-bottom:var(--bw-sm) solid var(--line2);
+    display:flex; align-items:center; justify-content:space-between; padding:var(--space-14) var(--space-28); margin:0 calc(-1 * var(--space-28)) var(--space-8); gap:var(--space-12); flex-wrap:wrap;}
+  .top .t{font:500 15px/1 var(--font);} .top .t small{color:var(--ink2); font-weight:400; margin-left:var(--space-8);}
+  .ctrls{display:flex;align-items:center;gap:var(--space-16);}
+  .wctl{display:flex;align-items:center;gap:var(--space-8);font:400 12px/1 var(--font);color:var(--ink2);}
+  .wctl input[type=range]{accent-color:var(--ink);width:120px;} .wctl b{color:var(--ink);font-weight:500;min-width:40px;text-align:right;}
+  .tgl{font:500 13px/1 var(--font); padding:var(--space-9) var(--space-14); border:var(--bw-sm) solid var(--line); background:transparent; color:var(--ink); cursor:pointer;}
+  .tgl:focus-visible{outline:var(--bw-md) solid var(--focus); outline-offset:2px;}
+  .frame{container-type:inline-size; width:var(--fw,100%); max-width:100%; margin:0; transition:width .08s linear;}
+  section{padding:var(--space-34) 0; border-top:var(--bw-sm) solid var(--line2);}
+  .h{display:flex; align-items:baseline; gap:var(--space-12); margin-bottom:var(--space-6); flex-wrap:wrap;}
+  .h h2{font:500 19px/1.2 var(--font); margin:0;} .h .tag{font:500 11px/1 var(--font); color:var(--ink2); text-transform:capitalize;}
+  .sub{color:var(--ink2); font:400 13px/1.5 var(--font); margin:0 0 var(--space-20); max-width:64ch;}
+  .row{display:flex; gap:var(--space-16); flex-wrap:wrap; align-items:center;}
+  .lbl{font:400 11px/1.4 var(--font); color:var(--ink2); width:100%; margin-top:var(--space-8);}
+  .fld{max-width:320px;} .fld>label{display:block;font:500 13px/1.3 var(--font);margin-bottom:var(--space-6);}
+
+  .btn{height:44px; padding:0 var(--space-20); border:var(--bw-sm) solid transparent; border-radius:var(--radius); font:500 15px/1 var(--font); cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:var(--space-8);
+    transition:background var(--ease), border-color var(--ease), transform var(--spring), filter var(--press);}
+  .btn:focus-visible{outline:var(--bw-md) solid var(--focus); outline-offset:2px;}
+  .btn svg{width:18px;height:18px;fill:currentColor;stroke:none;}
+  /* Motion via CSS scale-factor tokens --btn-grow / --btn-press (no JS): grow on hover, press recedes + darkens. Applies to EVERY variant. */
+  .btn:hover{transform:scale(var(--btn-grow));}
+  .btn.full:hover{transform:none;}
+  .btn:active{transform:scale(var(--btn-press)); filter:brightness(.85); transition:transform var(--press), filter var(--press);}
+  .btn:disabled:hover,.btn[aria-disabled="true"]:hover{transform:none; filter:none;}
+  .btn.pri{background:var(--pri); color:var(--pri-lbl); border-color:var(--pri);} .btn.pri:hover{background:var(--pri-h); border-color:var(--pri-h);}
+  .btn.ghost{background:transparent; color:var(--ink); border-color:var(--line);} .btn.ghost:hover{background:var(--surf); border-color:var(--ink);}
+  .btn.sm{height:36px;padding:0 var(--space-14);font-size:13px;}
+
+  .ib{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;padding:0;border:var(--bw-sm) solid transparent;border-radius:var(--radius);
+    background:transparent;cursor:pointer;transition:background var(--ease),transform var(--spring),filter var(--press),border-color var(--ease);}
+  .ib svg{width:20px;height:20px;fill:currentColor;stroke:none;pointer-events:none;}
+  .ib:focus-visible{outline:var(--bw-md) solid var(--focus);outline-offset:2px;}
+  .ib:hover{transform:scale(var(--ib-grow));} .ib:active{transform:scale(var(--ib-press));filter:brightness(.85);}
+  .ib:disabled{cursor:not-allowed;} .ib:disabled:hover{transform:none;filter:none;}
+  .ib.pri{background:var(--pri);color:var(--icon-rev);border-color:var(--pri);} .ib.pri:hover{background:var(--pri-h);}
+  .ib.ter{background:transparent;color:var(--icon);border-color:var(--line);} .ib.ter:hover{background:var(--surf);border-color:var(--ink);}
+  .ib.ghost{background:transparent;color:var(--icon);} .ib.ghost:hover{background:var(--surf);}
+  .ib:disabled{background:var(--surf);color:var(--disi);border-color:var(--fbordd);}
+  .ib.ghost:disabled{background:transparent;}
+  .actionbar{display:flex; gap:var(--space-12); justify-content:flex-end; align-items:center; max-width:420px;}
+
+  .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:var(--pri);color:var(--pri-lbl);
+    padding:var(--space-12) var(--space-18);font:500 14px/1 var(--font);opacity:0;visibility:hidden;transition:opacity var(--ease),transform var(--ease),visibility var(--ease);z-index:60;}
+  .toast.on{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}
+
+  /* ===================== Tranche 8 · Navigation tail ===================== */
+  /* shared demo helpers */
+  .hintline{font:400 12px/1.5 var(--font);color:var(--ink2);margin:var(--space-12) 0 0;max-width:70ch;}
+  .mt12{margin-top:var(--space-12);} .mt16{margin-top:var(--space-16);} .mt18{margin-top:var(--space-18);} .mt24{margin-top:var(--space-24);}
+  .grouplbl{font:600 11px/1 var(--font);color:var(--ink2);letter-spacing:.02em;margin:var(--space-24) 0 var(--space-12);}
+  .grouplbl:first-of-type{margin-top:0;}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:calc(-1 * var(--space-1));overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+  .gallery-row{display:flex;flex-wrap:wrap;gap:var(--space-16);align-items:flex-start;}
+  .gallery-item{display:flex;flex-direction:column;gap:var(--space-6);}
+  .gallery-item .cap{font:400 11px/1 var(--font);color:var(--ink2);}
+  /* static pseudo-state previews (real :hover/:focus-within can't be faked without a pointer/keyboard) */
+  .demo-hover{background:var(--surf);}
+  .demo-focus{outline:var(--bw-md) solid var(--focus);outline-offset:var(--space-2);}
+
+  /* =====================================================================
+     ATOMS — built ONCE, composed everywhere below.
+     .navtoggle (disclosure trigger) · .navlink (exposed top-level link) ·
+     .navitem (side-nav row) · .menugroup/.menulink (mega-menu group) · .navacc (nested disclosure)
+     ===================================================================== */
+
+  /* .navtoggle — a real <button> disclosure trigger: aria-expanded flips the chevron via CSS only (no JS motion, DEF-003) */
+  .navtoggle{display:inline-flex;align-items:center;gap:var(--space-8);height:44px;padding:0 var(--space-16);
+    border:var(--bw-sm) solid var(--line);border-radius:var(--radius);background:transparent;color:var(--ink);
+    font:500 14px/1 var(--font);cursor:pointer;white-space:nowrap;
+    transition:background var(--ease),border-color var(--ease),transform var(--spring),filter var(--press);}
+  .navtoggle:hover{background:var(--surf);border-color:var(--ink);transform:scale(var(--btn-grow));}
+  .navtoggle:active{transform:scale(var(--btn-press));filter:brightness(.85);transition:transform var(--press),filter var(--press);}
+  .navtoggle:focus-visible{outline:var(--bw-md) solid var(--focus);outline-offset:2px;}
+  .navtoggle[aria-expanded="true"]{background:var(--surf);border-color:var(--fborda);}
+  .navtoggle .chev{width:14px;height:14px;fill:currentColor;transition:transform var(--ease);flex:none;}
+  .navtoggle[aria-expanded="true"] .chev{transform:rotate(180deg);}
+  .navtoggle:disabled{cursor:not-allowed;color:var(--disi);border-color:var(--fbordd);}
+  /* icon-only variant riding on .ib sizing: `.ib.navtoggle` */
+  .ib.navtoggle{border-color:transparent;padding:0;}   /* icon-only toggle: drop the text-toggle's side padding so the glyph keeps its full 20px (was squashing to ~10px) */
+  .ib.navtoggle[aria-expanded="true"]{background:var(--surf);border-color:var(--fbordd);}
+
+  /* .navlink — exposed top-level link atom (Global header). Current = ink 2px bottom bar, never colour. */
+  .navlink{position:relative;display:inline-flex;align-items:center;height:44px;padding:0 var(--space-12);
+    color:var(--ink2);text-decoration:none;font:500 14px/1 var(--font);border-bottom:var(--bw-md) solid transparent;
+    transition:color var(--ease),border-color var(--ease),background var(--ease);}
+  .navlink:hover{color:var(--ink);background:var(--surf);}
+  .navlink:focus-visible{outline:var(--bw-md) solid var(--focus);outline-offset:calc(-1 * var(--space-2));}
+  .navlink[aria-current="page"]{color:var(--ink);border-bottom-color:var(--ink);font-weight:600;}
+  /* vertical-list contexts (popovers / menus) — block rows, a left marker instead of a bottom bar */
+  .popover .navlink,.menulink,.navacc-link{display:flex;width:100%;height:auto;padding:var(--space-10) var(--space-12);
+    border-bottom:0;border-left:var(--bw-md) solid transparent;border-radius:var(--radius);gap:var(--space-8);color:var(--ink);text-decoration:none;}
+  .popover .navlink:hover,.menulink:hover,.navacc-link:hover{background:var(--surf);}
+  .popover .navlink:focus-visible,.menulink:focus-visible,.navacc-link:focus-visible{outline:var(--bw-md) solid var(--focus);outline-offset:calc(-1 * var(--space-2));}
+  .popover .navlink[aria-current="page"],.menulink[aria-current="page"],.navacc-link[aria-current="page"]{
+    border-left-color:var(--ink);background:var(--surf);font-weight:600;}
+
+  /* .navitem — side-nav row atom: icon + label + current + optional group chevron */
+  .navitem{position:relative;display:flex;align-items:center;gap:var(--space-12);height:44px;padding:0 var(--space-12);
+    color:var(--ink2);text-decoration:none;font:500 14px/1 var(--font);border-left:var(--bw-md) solid transparent;
+    border-radius:var(--radius);transition:color var(--ease),background var(--ease),border-color var(--ease);}
+  .navitem:hover{color:var(--ink);background:var(--surf);}
+  .navitem:focus-visible{outline:var(--bw-md) solid var(--focus);outline-offset:calc(-1 * var(--space-2));}
+  .navitem[aria-current="page"]{color:var(--ink);border-left-color:var(--ink);font-weight:600;background:var(--surf);}
+  .navitem.sub{height:40px;padding-left:var(--space-24);font-weight:400;font-size:13px;}
+  .navitem-ic{flex:none;display:inline-flex;width:20px;height:20px;color:var(--icon);}
+  .navitem-ic svg{width:18px;height:18px;fill:currentColor;}
+  .navitem-tx{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+  /* .menugroup / .menulink — mega-menu grouped links: a heading + a <ul> of links, NOT role=menu */
+  .menugroup{display:flex;flex-direction:column;gap:var(--space-4);min-width:160px;}
+  .menugroup-h{font:600 12px/1 var(--font);color:var(--ink2);margin:0 0 var(--space-8);padding:0 var(--space-12);}
+  .menugroup-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--space-2);}
+
+  /* .navacc — NavAccordion: nested disclosure list, the mobile form of B/C/D */
+  .navacc{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--space-2);}
+  .navacc-item{display:flex;flex-direction:column;}
+  /* side-nav group header shares the drawer's borderless row style (Dave: not a bordered button; same open styling for both) */
+  .navacc-toggle,.navgroup-h{width:100%;justify-content:flex-start;border:0;height:48px;padding:0 var(--space-12);}
+  .navacc-toggle .navacc-tx,.navgroup-h .navacc-tx{flex:1;text-align:left;}
+  .navacc-sub{list-style:none;margin:0;padding:0 0 0 var(--space-8);display:flex;flex-direction:column;gap:var(--space-2);}
+  .navacc-sub[hidden]{display:none;}
+
+  /* =====================================================================
+     A · BOTTOM TAB BAR (organism) — 3–5 primary destinations, thumb-reachable,
+     always visible. The default primary nav for banking apps. Mobile/app only; on
+     wider screens it promotes to a top bar / side rail (shown in a phone mock so the
+     mobile context is honest). "More" opens the bottom Drawer sheet (reuses section E).
+     TabBarItem atom = icon + label + current + badge; badge stays MONOCHROME (colour = meaning).
+     ===================================================================== */
+  .phone{width:380px;max-width:100%;margin:0;border:var(--bw-md) solid var(--line);border-radius:var(--radius);
+    background:var(--page);overflow:hidden;display:flex;flex-direction:column;height:520px;position:relative;}
+  .phone-screen{flex:1;overflow:auto;padding:var(--space-20);}
+  .phone-screen h4{font:600 16px/1.3 var(--font);margin:0 0 var(--space-8);}
+  .phone-screen p{font:400 13px/1.5 var(--font);color:var(--ink2);margin:0 0 var(--space-16);}
+  .placeholder-block{height:64px;border:var(--bw-sm) solid var(--line2);border-radius:var(--radius);
+    background:var(--surf);margin-bottom:var(--space-12);}
+  /* the bar — an atom-composed organism; also usable standalone */
+  .tabbar{display:flex;align-items:stretch;background:var(--raised);border-top:var(--bw-sm) solid var(--line);}
+  .tabbar-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--space-4);
+    min-height:56px;padding:var(--space-8) var(--space-4);border:0;background:transparent;color:var(--ink2);
+    text-decoration:none;font:500 11px/1.2 var(--font);cursor:pointer;position:relative;
+    border-top:var(--bw-md) solid transparent;
+    transition:color var(--ease),background var(--ease),filter var(--press);}
+  .tabbar-item:hover{color:var(--ink);background:var(--surf);}
+  .tabbar-item:active{filter:brightness(.85);}
+  .tabbar-item:focus-visible{outline:var(--bw-md) solid var(--focus);outline-offset:calc(-1 * var(--space-2));}
+  .tabbar-item[aria-current="page"]{color:var(--ink);border-top-color:var(--ink);font-weight:600;}
+  .tabbar-ic{position:relative;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;}
+  .tabbar-ic svg{width:24px;height:24px;fill:currentColor;}
+  /* notification badge — monochrome (near-black) count pill; mono base keeps colour for MEANING only */
+  .tab-badge{position:absolute;top:calc(-1 * var(--space-4));right:calc(-1 * var(--space-8));
+    min-width:16px;height:16px;padding:0 var(--space-4);border-radius:var(--radius-pill);
+    background:var(--pri);color:var(--pri-lbl);font:600 10px/16px var(--font);text-align:center;}
+  .tabbar-tx{white-space:nowrap;}
+
+  /* =====================================================================
+     B · IN-PAGE NAV / on-this-page (molecule) — jump-links + scroll-spy.
+     Links move focus to the target section (tabindex=-1); scroll-margin-top clears the
+     sticky bar; degrades to plain anchors with JS off. Rail → "Contents" disclosure when
+     narrow. Demo scrolls inside its own box so the spy works in-page.
+     ===================================================================== */
+  .inpage-shell{container-type:inline-size;container-name:inpage;
+    border:var(--bw-sm) solid var(--line2);border-radius:var(--radius);}
+  .inpage-scroll{display:flex;gap:var(--space-24);max-height:440px;overflow:auto;padding:var(--space-20);
+    position:relative;scroll-behavior:smooth;}
+  .inpage-nav{position:sticky;top:0;align-self:flex-start;flex:none;width:200px;
+    background:var(--page);padding-bottom:var(--space-8);}
+  .inpage-nav-h{font:600 12px/1 var(--font);color:var(--ink2);margin:0 0 var(--space-12);}
+  .anchorlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--space-2);}
+  .anchorlink{display:block;padding:var(--space-6) var(--space-12);color:var(--ink2);text-decoration:none;
+    font:500 13px/1.4 var(--font);border-left:var(--bw-md) solid var(--line2);
+    transition:color var(--ease),border-color var(--ease),background var(--ease);}
+  .anchorlink:hover{color:var(--ink);background:var(--surf);}
+  .anchorlink:focus-visible{outline:var(--bw-md) solid var(--focus);outline-offset:calc(-1 * var(--space-2));}
+  .anchorlink[aria-current="true"]{color:var(--ink);border-left-color:var(--ink);font-weight:600;}
+  .inpage-content{flex:1;min-width:0;}
+  .inpage-content .doc{border:0;padding:0;margin-bottom:var(--space-34);scroll-margin-top:var(--space-16);}
+  .inpage-content .doc:focus-visible{outline:var(--bw-md) solid var(--focus);outline-offset:var(--space-4);}
+  .inpage-content h3{font:600 18px/1.3 var(--font);margin:0 0 var(--space-8);}
+  .inpage-content .doc p{font:400 14px/1.6 var(--font);color:var(--ink2);margin:0 0 var(--space-12);max-width:60ch;}
+  /* Back to top — a floating IconButton that appears after scroll (motion via CSS) */
+  .backtotop{position:absolute;right:var(--space-16);bottom:var(--space-16);
+    opacity:0;visibility:hidden;transform:translateY(var(--space-8));
+    transition:opacity var(--ease),transform var(--ease),visibility var(--ease);}
+  .backtotop.show{opacity:1;visibility:visible;transform:translateY(0);}
+  .backtotop .ib{background:var(--pri);color:var(--icon-rev);box-shadow:0 6px 18px var(--shadow);}
+  .inpage-contents-toggle{display:none;margin-bottom:var(--space-12);}
+  @container inpage (max-width:560px){
+    .inpage-scroll{flex-direction:column;gap:var(--space-16);}
+    .inpage-nav{position:static;width:100%;}
+    .inpage-nav[hidden]{display:none;}
+    .inpage-contents-toggle{display:inline-flex;}
+  }
+  @media (prefers-reduced-motion:reduce){.inpage-scroll{scroll-behavior:auto;}}
+
+  /* =====================================================================
+     C · FOOTER NAV (fat footer) (organism) — grouped link columns (secondary IA) +
+     legal/utility strip + region switcher + social. Columns become disclosure
+     accordions on narrow. Compliance-heavy = a real HSBC need.
+     ===================================================================== */
+  .footer{container-type:inline-size;container-name:foot;background:var(--surf);
+    border-top:var(--bw-md) solid var(--line);border-radius:var(--radius);}
+  .foot-cols{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-24);padding:var(--space-34) var(--space-24);}
+  .footgroup{display:flex;flex-direction:column;min-width:0;}
+  .footgroup-h{display:flex;align-items:center;justify-content:space-between;gap:var(--space-8);width:100%;
+    height:44px;padding:0;border:0;background:transparent;color:var(--ink);text-align:left;
+    font:600 13px/1.2 var(--font);cursor:pointer;}
+  .footgroup-h .chev{width:14px;height:14px;fill:currentColor;transition:transform var(--ease);flex:none;}
+  .footgroup-h[aria-expanded="true"] .chev{transform:rotate(180deg);}
+  .footgroup-list{list-style:none;margin:0;padding:var(--space-4) 0 0;display:flex;flex-direction:column;gap:var(--space-2);}
+  .footgroup-list[hidden]{display:none;}
+  .footlink{display:inline-flex;align-items:center;gap:var(--space-6);padding:var(--space-6) 0;
+    color:var(--ink2);text-decoration:none;font:400 13px/1.4 var(--font);transition:color var(--ease);}
+  .footlink:hover{color:var(--ink);text-decoration:underline;}
+  .footlink:focus-visible{outline:var(--bw-md) solid var(--focus);outline-offset:var(--space-2);}
+  .footlink .ext{width:14px;height:14px;fill:currentColor;color:var(--ink2);flex:none;}
+  /* WIDE: columns open + non-collapsible (chevron hidden). NARROW: accordions (JS-wired). */
+  @container foot (min-width:641px){
+    .footgroup-list{display:flex;}
+    .footgroup-h{pointer-events:none;cursor:default;height:auto;margin-bottom:var(--space-8);}
+    .footgroup-h .chev{display:none;}
+  }
+  @container foot (max-width:640px){
+    .foot-cols{grid-template-columns:1fr;gap:var(--space-4);padding:var(--space-20) var(--space-20) var(--space-8);}
+    .footgroup{border-bottom:var(--bw-sm) solid var(--line);}
+  }
+  .foot-strip{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-16);
+    padding:var(--space-20) var(--space-24);border-top:var(--bw-sm) solid var(--line);}
+  .foot-legal{display:flex;flex-wrap:wrap;gap:var(--space-8) var(--space-16);align-items:center;flex:1;min-width:0;}
+  .foot-legal a{color:var(--ink2);text-decoration:none;font:400 12px/1.4 var(--font);}
+  .foot-legal a:hover{color:var(--ink);text-decoration:underline;}
+  .foot-legal a:focus-visible{outline:var(--bw-md) solid var(--focus);outline-offset:var(--space-2);}
+  .foot-copy{font:400 12px/1.4 var(--font);color:var(--ink2);width:100%;margin:0;}
+  .tg-ic{width:18px;height:18px;fill:currentColor;flex:none;}
+  .region{position:relative;}
+  .region-pop{position:absolute;bottom:calc(100% + var(--space-8));left:0;min-width:200px;
+    background:var(--raised);border:var(--bw-sm) solid var(--line);border-radius:var(--radius);
+    box-shadow:0 8px 24px var(--shadow);padding:var(--space-8);
+    opacity:0;visibility:hidden;transform:translateY(var(--space-4));
+    transition:opacity var(--ease),transform var(--ease),visibility var(--ease);z-index:40;}
+  .region-pop.on{opacity:1;visibility:visible;transform:translateY(0);}
+  .social{display:flex;align-items:center;gap:var(--space-4);flex:none;}
+
+  /* =====================================================================
+     D · RELATED LINKS (molecule) — "you may also be interested in". Two forms: a
+     link list and cards (reuses the T5 Card shape). Presentation shell fed data —
+     owns layout + states, not the picks. External items flag the new-window glyph.
+     ===================================================================== */
+  .related{border:var(--bw-sm) solid var(--line2);border-radius:var(--radius);padding:var(--space-20);}
+  .related-h{font:600 14px/1.3 var(--font);margin:0 0 var(--space-16);}
+  .related-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--space-2);}
+  .related-item{display:flex;align-items:center;gap:var(--space-12);padding:var(--space-12);
+    color:var(--ink);text-decoration:none;border-left:var(--bw-md) solid transparent;border-radius:var(--radius);
+    transition:background var(--ease),border-color var(--ease);}
+  .related-item:hover{background:var(--surf);border-left-color:var(--ink);}
+  .related-item:focus-visible{outline:var(--bw-md) solid var(--focus);outline-offset:calc(-1 * var(--space-2));}
+  .related-item .r-body{flex:1;min-width:0;}
+  .related-item .r-title{display:block;font:500 14px/1.3 var(--font);}
+  .related-item .r-meta{display:block;font:400 12px/1.4 var(--font);color:var(--ink2);margin-top:var(--space-2);}
+  .related-item .r-chev{width:16px;height:16px;fill:currentColor;color:var(--ink2);flex:none;}
+  .related-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--space-16);}
+  .rcard{display:flex;flex-direction:column;gap:var(--space-8);padding:var(--space-16);
+    border:var(--bw-sm) solid var(--line);border-radius:var(--radius);background:var(--raised);color:var(--ink);
+    text-decoration:none;transition:border-color var(--ease),background var(--ease),transform var(--spring),filter var(--press);}
+  .rcard:hover{border-color:var(--ink);transform:scale(var(--card-grow));}
+  .rcard:active{transform:scale(var(--card-press));filter:brightness(.97);transition:transform var(--press),filter var(--press);}
+  .rcard:focus-visible{outline:var(--bw-md) solid var(--focus);outline-offset:var(--space-2);}
+  .rcard-tag{font:600 11px/1 var(--font);color:var(--ink2);text-transform:uppercase;letter-spacing:.04em;}
+  .rcard-title{font:600 15px/1.3 var(--font);display:flex;align-items:flex-start;gap:var(--space-6);}
+  .rcard-title .ext{width:14px;height:14px;fill:currentColor;color:var(--ink2);flex:none;margin-top:var(--space-2);}
+  .rcard-desc{font:400 13px/1.5 var(--font);color:var(--ink2);}
+
+  /* =====================================================================
+     E · STEPPER — journey / page-flow (organism). Interactive (Back/Next advance;
+     completed steps click to jump back) and announces changes via a live region.
+     Distinct from T1's display-only control stepper. Markers = circular atoms
+     (roundel carve-out). completed=check · current=aria-current="step" · upcoming=muted.
+     ===================================================================== */
+  .stepper-shell{container-type:inline-size;container-name:step;}
+  .stepper{display:flex;list-style:none;margin:0 0 var(--space-24);padding:0;}
+  .step{flex:1;display:flex;flex-direction:column;align-items:center;gap:var(--space-8);position:relative;
+    text-align:center;min-width:0;}
+  .step:not(:first-child)::before{content:"";position:absolute;top:16px;right:50%;width:100%;height:0;
+    border-top:var(--bw-md) solid var(--line);z-index:0;}
+  .step.done::before,.step.current::before{border-top-color:var(--ink);}
+  .step-marker{position:relative;z-index:1;width:32px;height:32px;border-radius:var(--radius-round);
+    display:inline-flex;align-items:center;justify-content:center;flex:none;
+    border:var(--bw-md) solid var(--line);background:var(--page);color:var(--ink2);
+    font:600 13px/1 var(--font);transition:background var(--ease),border-color var(--ease),color var(--ease);}
+  .step-marker svg{width:16px;height:16px;fill:currentColor;}
+  .step.done .step-marker{background:var(--pri);border-color:var(--pri);color:var(--pri-lbl);}
+  .step.current .step-marker{border-color:var(--ink);color:var(--ink);border-width:var(--bw-lg);}
+  .step-btn{border:0;background:transparent;padding:0;cursor:pointer;display:flex;flex-direction:column;
+    align-items:center;gap:var(--space-8);color:inherit;font:inherit;}
+  .step-btn:disabled{cursor:default;}
+  .step-btn:focus-visible{outline:var(--bw-md) solid var(--focus);outline-offset:var(--space-4);border-radius:var(--radius);}
+  .step-label{font:500 13px/1.3 var(--font);color:var(--ink2);}
+  .step.current .step-label{color:var(--ink);font-weight:600;}
+  .step.done .step-label{color:var(--ink);}
+  .step-sub{font:400 11px/1.3 var(--font);color:var(--ink2);}
+  .stepper.vertical{flex-direction:column;gap:var(--space-4);margin-bottom:var(--space-16);}
+  .stepper.vertical .step{flex-direction:row;align-items:flex-start;gap:var(--space-12);text-align:left;padding-bottom:var(--space-16);}
+  .stepper.vertical .step:not(:first-child)::before{top:calc(-1 * var(--space-16));left:16px;right:auto;
+    width:0;height:100%;border-top:0;border-left:var(--bw-md) solid var(--line);}
+  .stepper.vertical .step.done::before,.stepper.vertical .step.current::before{border-left-color:var(--ink);}
+  .stepper.vertical .step-txt{display:flex;flex-direction:column;gap:var(--space-2);padding-top:var(--space-4);}
+  .stepper-progress{margin-bottom:var(--space-16);max-width:420px;}
+  .sp-meta{display:flex;justify-content:space-between;align-items:baseline;gap:var(--space-12);margin-bottom:var(--space-8);}
+  .sp-count{font:600 13px/1.3 var(--font);color:var(--ink);}
+  .sp-name{font:400 13px/1.3 var(--font);color:var(--ink2);}
+  .sp-track{height:8px;background:var(--surf);border-radius:var(--radius-pill);overflow:hidden;}
+  .sp-fill{height:100%;width:0;background:var(--pri);border-radius:var(--radius-pill);transition:width var(--spring);}
+  .step-controls{display:flex;gap:var(--space-12);margin-top:var(--space-16);}
+  @container step (max-width:520px){
+    .stepper:not(.vertical) .step-sub{display:none;}
+  }
+
+  /* --- A · variant 2: floating pill (brand / Neo-net ref) — icon-only, active = filled
+     pill, detached AI action. Rounded via --radius-pill (a mode-token shape, not the mono
+     square base). Reference tokens mapped to ours: white→--raised, grey-1 border→--line2,
+     grey-8 active→--pri, drop-shadow→--shadow. Retrieval, not hardcode. --- */
+  .tabfloat-screen{padding-bottom:var(--space-80);}
+  .tabfloat-dock{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:space-between;
+    gap:var(--space-8);padding:var(--space-12) var(--space-16) var(--space-20);
+    background:linear-gradient(to bottom, transparent, var(--page));}
+  .tabbar-float{display:flex;align-items:center;gap:0;padding:var(--space-4);
+    background:var(--raised);border:var(--bw-sm) solid var(--line2);border-radius:var(--radius-pill);
+    box-shadow:0 2px 8px var(--shadow);}
+  .tabfloat-item{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;padding:0;
+    border:0;border-radius:var(--radius-pill);background:transparent;color:var(--icon);cursor:pointer;text-decoration:none;
+    transition:background var(--ease),color var(--ease),transform var(--spring),filter var(--press);}
+  .tabfloat-item svg{width:20px;height:20px;fill:currentColor;}
+  .tabfloat-item:hover{background:var(--surf);transform:scale(var(--ib-grow));}
+  .tabfloat-item:active{transform:scale(var(--ib-press));filter:brightness(.85);}
+  .tabfloat-item:focus-visible{outline:var(--bw-md) solid var(--focus);outline-offset:var(--space-2);}
+  .tabfloat-item.active,.tabfloat-item[aria-current="page"]{background:var(--pri);color:var(--icon-rev);
+    width:auto;min-width:56px;padding:0 var(--space-8);}
+  .tabfloat-ai{display:flex;padding:var(--space-4);background:var(--raised);
+    border:var(--bw-sm) solid var(--line2);border-radius:var(--radius-round);box-shadow:0 2px 8px var(--shadow);}
+
+  /* =====================================================================
+     E · DRAWER (generalised T1) + NavAccordion
+     props via classes: edge-left|edge-right|edge-top|edge-bottom + modal. Slide motion via the --drawer token (CSS only).
+     ===================================================================== */
+  .scrim{position:fixed;inset:0;background:var(--scrim);opacity:0;visibility:hidden;
+    transition:opacity var(--drawer),visibility var(--drawer);z-index:59;}
+  .scrim.on{opacity:1;visibility:visible;}
+  .drawer{position:fixed;top:0;bottom:0;background:var(--raised);display:flex;flex-direction:column;
+    box-shadow:0 0 30px var(--shadow);z-index:60;transition:transform var(--drawer);will-change:transform;}
+  .drawer.edge-left{left:0;width:320px;max-width:86%;border-right:var(--bw-sm) solid var(--line);transform:translateX(-100%);}
+  .drawer.edge-right{right:0;width:320px;max-width:86%;border-left:var(--bw-sm) solid var(--line);transform:translateX(100%);}
+  .drawer.edge-top{left:0;right:0;top:0;bottom:auto;height:60%;border-bottom:var(--bw-sm) solid var(--line);transform:translateY(-100%);}
+  .drawer.edge-bottom{left:0;right:0;bottom:0;top:auto;height:60%;border-top:var(--bw-sm) solid var(--line);transform:translateY(100%);}
+  .drawer.on{transform:translate(0,0);}
+  .drawer__h{display:flex;align-items:center;justify-content:space-between;
+    padding:var(--space-14) var(--space-10) var(--space-14) var(--space-20);border-bottom:var(--bw-sm) solid var(--line);}
+  .drawer__h .t{font:500 17px/1.2 var(--font);}
+  .drawer__h .ib:hover{transform:none;background:var(--surf);}
+  .drawer__b{flex:1;padding:var(--space-16) var(--space-8);overflow:auto;}
+
+  @container (max-width:440px){
+    .actionbar{flex-direction:column; align-items:stretch;} .actionbar .btn{width:100%;}
+  }
+  @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
+</style>
+</head>
+<body data-theme="light">
+  <div class="top">
+    <span class="t">Apollo pro-forma <small>Tranche 8 · Navigation tail · monochrome · real icons · interactive</small></span>
+    <span class="ctrls">
+      <label class="wctl">Width <input type="range" id="fw" min="320" max="1600" value="1600"><b id="fwv">full</b></label>
+      <button class="tgl" id="themeToggle" type="button">◐ Light / dark</button>
+    </span>
+  </div>
+  <div class="wrap">
+  <div class="frame" id="frame">
+
+    <!-- =========================== A · BOTTOM TAB BAR =========================== -->
+    <section aria-labelledby="s-tabbar">
+      <div class="h"><h2 id="s-tabbar">Bottom tab bar</h2><span class="tag">organism</span></div>
+      <p class="sub">Three-to-five primary destinations pinned to the bottom, thumb-reachable and always visible — the default primary nav for banking apps. Mobile/app only; on wider screens it promotes to a top bar or side rail. The “More” tab opens an overflow sheet.</p>
+
+      <div class="phone" role="group" aria-label="Mobile app preview">
+        <div class="phone-screen" id="tab-screen">
+          <h4 id="tab-panel-title">Home</h4>
+          <p>Tap a tab to switch destination. The active tab is marked with an ink top-bar and <code>aria-current="page"</code> — never colour alone. Targets are ≥44px and every tab keeps its label.</p>
+          <div class="placeholder-block"></div>
+          <div class="placeholder-block"></div>
+          <div class="placeholder-block"></div>
+        </div>
+        <nav class="tabbar" aria-label="Primary" id="tabbar-demo">
+          <a class="tabbar-item" href="#" aria-current="page" data-tab="Home">
+            <span class="tabbar-ic"><svg aria-hidden="true"><use href="#i-home"/></svg></span>
+            <span class="tabbar-tx">Home</span></a>
+          <a class="tabbar-item" href="#" data-tab="Accounts">
+            <span class="tabbar-ic"><svg aria-hidden="true"><use href="#i-account"/></svg></span>
+            <span class="tabbar-tx">Accounts</span></a>
+          <a class="tabbar-item" href="#" data-tab="Move money">
+            <span class="tabbar-ic"><svg aria-hidden="true"><use href="#i-payments"/></svg></span>
+            <span class="tabbar-tx">Move money</span></a>
+          <a class="tabbar-item" href="#" data-tab="Cards">
+            <span class="tabbar-ic"><svg aria-hidden="true"><use href="#i-card"/></svg><span class="tab-badge">2<span class="sr-only"> new alerts</span></span></span>
+            <span class="tabbar-tx">Cards</span></a>
+          <button class="tabbar-item" type="button" id="tab-more" aria-haspopup="dialog" aria-expanded="false" aria-controls="more-sheet">
+            <span class="tabbar-ic"><svg aria-hidden="true"><use href="#i-more-h"/></svg></span>
+            <span class="tabbar-tx">More</span></button>
+        </nav>
+      </div>
+      <p class="hintline"><b>Atoms:</b> TabBarItem (icon + label + current + badge). <b>Reuses</b> IconButton glyph sizing and the Drawer (§E) for “More”. Badge stays monochrome — colour is reserved for meaning. Variant 1 is the classic edge-to-edge bar (labels + top indicator).</p>
+
+      <p class="grouplbl">Variant 2 · floating pill (brand) — icon-only · active = filled pill · detached AI action</p>
+      <div class="phone" role="group" aria-label="Mobile app preview — floating pill nav">
+        <div class="phone-screen tabfloat-screen">
+          <h4>Home</h4>
+          <p>The pill floats above content, with the AI action detached as its own circle. Icon-only, so every tab carries an <code>aria-label</code>; the active tab is a filled pill — never colour alone.</p>
+          <div class="placeholder-block"></div>
+          <div class="placeholder-block"></div>
+          <div class="placeholder-block"></div>
+        </div>
+        <div class="tabfloat-dock">
+          <nav class="tabbar-float" aria-label="Primary">
+            <a class="tabfloat-item active" href="#" aria-current="page" aria-label="Home"><svg aria-hidden="true"><use href="#i-home"/></svg></a>
+            <a class="tabfloat-item" href="#" aria-label="Accounts"><svg aria-hidden="true"><use href="#i-account"/></svg></a>
+            <a class="tabfloat-item" href="#" aria-label="Stamps"><svg aria-hidden="true"><use href="#i-stamp"/></svg></a>
+            <a class="tabfloat-item" href="#" aria-label="Payments"><svg aria-hidden="true"><use href="#i-payment"/></svg></a>
+            <a class="tabfloat-item" href="#" aria-label="Insights"><svg aria-hidden="true"><use href="#i-insight"/></svg></a>
+          </nav>
+          <div class="tabfloat-ai">
+            <button class="tabfloat-item" type="button" aria-label="AI assistant"><svg aria-hidden="true"><use href="#i-ai"/></svg></button>
+          </div>
+        </div>
+      </div>
+      <p class="hintline"><b>Variant 2</b> maps the Neo-net brand reference to our tokens (white→<code>--raised</code>, active→<code>--pri</code>, shadow→<code>--shadow</code>) and takes its rounded shape from <code>--radius-pill</code> — the branded (Apollo UI) treatment, where mono defaults to the square bar of variant 1. Icons are real assets: Home, Account, Stamp, Payment, Insight, AI.</p>
+    </section>
+
+    <!-- =========================== B · IN-PAGE NAV =========================== -->
+    <section aria-labelledby="s-inpage">
+      <div class="h"><h2 id="s-inpage">In-page nav · on this page</h2><span class="tag">molecule</span></div>
+      <p class="sub">Jump-links to sections of a long page (help articles, terms, product detail). Sticky, with scroll-spy highlighting the section in view. Links move focus to the target section and degrade to plain anchors with JavaScript off. The rail collapses to a “Contents” disclosure when narrow — drag the width slider to see it.</p>
+
+      <div class="inpage-shell">
+        <div class="inpage-scroll" id="inpage-scroll">
+          <button class="navtoggle inpage-contents-toggle" type="button" id="inpage-contents-t" aria-expanded="true" aria-controls="inpage-nav">Contents <svg class="chev" aria-hidden="true"><use href="#i-chevron-down"/></svg></button>
+          <nav class="inpage-nav" aria-label="On this page" id="inpage-nav">
+            <p class="inpage-nav-h">On this page</p>
+            <ul class="anchorlist">
+              <li><a class="anchorlink" href="#ip-eligibility" aria-current="true">Eligibility</a></li>
+              <li><a class="anchorlink" href="#ip-rates">Rates &amp; fees</a></li>
+              <li><a class="anchorlink" href="#ip-apply">How to apply</a></li>
+              <li><a class="anchorlink" href="#ip-manage">Managing your account</a></li>
+              <li><a class="anchorlink" href="#ip-support">Support</a></li>
+            </ul>
+          </nav>
+          <div class="inpage-content">
+            <section class="doc" id="ip-eligibility" tabindex="-1" aria-labelledby="ip-eligibility-h">
+              <h3 id="ip-eligibility-h">Eligibility</h3>
+              <p>You must be a UK resident aged 18 or over to open this account. Some products have a minimum income or balance requirement — check the summary box before you apply.</p>
+              <p>Existing customers can apply in the app; new customers will need proof of identity and address.</p>
+            </section>
+            <section class="doc" id="ip-rates" tabindex="-1" aria-labelledby="ip-rates-h">
+              <h3 id="ip-rates-h">Rates &amp; fees</h3>
+              <p>The headline rate is variable and may change after opening. There is no monthly account fee, but charges may apply for arranged and unarranged overdrafts.</p>
+              <p>Representative examples and the full fee schedule are set out in the terms document.</p>
+            </section>
+            <section class="doc" id="ip-apply" tabindex="-1" aria-labelledby="ip-apply-h">
+              <h3 id="ip-apply-h">How to apply</h3>
+              <p>Applying takes about ten minutes. You will be asked for your personal details, then to verify your identity, and finally to review and submit.</p>
+              <p>Once approved, your account details are available immediately in the app.</p>
+            </section>
+            <section class="doc" id="ip-manage" tabindex="-1" aria-labelledby="ip-manage-h">
+              <h3 id="ip-manage-h">Managing your account</h3>
+              <p>Manage standing orders, direct debits and payees from the Move money tab. You can freeze a card, set spending limits and view statements at any time.</p>
+              <p>Paperless statements are on by default and can be switched to post in settings.</p>
+            </section>
+            <section class="doc" id="ip-support" tabindex="-1" aria-labelledby="ip-support-h">
+              <h3 id="ip-support-h">Support</h3>
+              <p>Message us in the app 24/7, or call the number on the back of your card. Accessibility support and alternative formats are available on request.</p>
+              <p>If something has gone wrong, our complaints process is set out in the help centre.</p>
+            </section>
+          </div>
+          <div class="backtotop" id="backtotop">
+            <button class="ib" type="button" id="backtotop-btn" aria-label="Back to top"><svg aria-hidden="true"><use href="#i-chevron-up"/></svg></button>
+          </div>
+        </div>
+      </div>
+      <p class="hintline"><b>Atoms:</b> AnchorLink + scroll-spy behaviour. <code>&lt;nav aria-label="On this page"&gt;</code>; the active link tracks the section in view via <code>aria-current</code>; activating a link moves focus to the target section (<code>tabindex="-1"</code> + <code>scroll-margin-top</code>). Back-to-top reuses IconButton. Smooth-scroll respects reduced-motion.</p>
+    </section>
+
+    <!-- =========================== C · FOOTER NAV =========================== -->
+    <section aria-labelledby="s-footer">
+      <div class="h"><h2 id="s-footer">Footer navigation</h2><span class="tag">organism</span></div>
+      <p class="sub">A fat footer: grouped link columns forming a secondary IA, plus the legal, regulatory and regional content banks must carry. Columns become disclosure accordions on narrow — drag the slider. A region switcher and social links sit in the utility strip.</p>
+
+      <footer class="footer" id="footer-demo">
+        <div class="foot-cols">
+          <div class="footgroup">
+            <button class="footgroup-h" type="button" aria-expanded="true" aria-controls="fg-1">Banking <svg class="chev" aria-hidden="true"><use href="#i-chevron-down"/></svg></button>
+            <ul class="footgroup-list" id="fg-1">
+              <li><a class="footlink" href="#">Current accounts</a></li>
+              <li><a class="footlink" href="#">Savings</a></li>
+              <li><a class="footlink" href="#">Credit cards</a></li>
+              <li><a class="footlink" href="#">Loans</a></li>
+              <li><a class="footlink" href="#">Mortgages</a></li>
+            </ul>
+          </div>
+          <div class="footgroup">
+            <button class="footgroup-h" type="button" aria-expanded="true" aria-controls="fg-2">Support <svg class="chev" aria-hidden="true"><use href="#i-chevron-down"/></svg></button>
+            <ul class="footgroup-list" id="fg-2">
+              <li><a class="footlink" href="#">Help centre</a></li>
+              <li><a class="footlink" href="#">Contact us</a></li>
+              <li><a class="footlink" href="#">Lost or stolen card</a></li>
+              <li><a class="footlink" href="#">Report fraud</a></li>
+              <li><a class="footlink" href="#">Accessibility</a></li>
+            </ul>
+          </div>
+          <div class="footgroup">
+            <button class="footgroup-h" type="button" aria-expanded="true" aria-controls="fg-3">About <svg class="chev" aria-hidden="true"><use href="#i-chevron-down"/></svg></button>
+            <ul class="footgroup-list" id="fg-3">
+              <li><a class="footlink" href="#">Our company</a></li>
+              <li><a class="footlink" href="#">Careers</a></li>
+              <li><a class="footlink" href="#">Newsroom</a></li>
+              <li><a class="footlink" href="#">Sustainability</a></li>
+            </ul>
+          </div>
+          <div class="footgroup">
+            <button class="footgroup-h" type="button" aria-expanded="true" aria-controls="fg-4">Tools <svg class="chev" aria-hidden="true"><use href="#i-chevron-down"/></svg></button>
+            <ul class="footgroup-list" id="fg-4">
+              <li><a class="footlink" href="#">Branch &amp; ATM finder</a></li>
+              <li><a class="footlink" href="#">Exchange rates</a></li>
+              <li><a class="footlink" href="#">Mortgage calculator</a></li>
+              <li><a class="footlink" href="#" target="_blank" rel="noopener">Developer portal <svg class="ext" aria-hidden="true"><use href="#i-external"/></svg><span class="sr-only"> (opens in new window)</span></a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="foot-strip">
+          <div class="region">
+            <button class="navtoggle" type="button" id="region-toggle" aria-expanded="false" aria-controls="region-pop"><svg class="tg-ic" aria-hidden="true"><use href="#i-global"/></svg> United Kingdom (English) <svg class="chev" aria-hidden="true"><use href="#i-chevron-down"/></svg></button>
+            <div class="region-pop" id="region-pop" aria-label="Choose region">
+              <a class="navlink" href="#" aria-current="page">United Kingdom (English)</a>
+              <a class="navlink" href="#">France (Français)</a>
+              <a class="navlink" href="#">Hong Kong (中文)</a>
+              <a class="navlink" href="#">United States (English)</a>
+            </div>
+          </div>
+          <nav class="foot-legal" aria-label="Legal">
+            <a href="#">Legal</a>
+            <a href="#">Privacy notice</a>
+            <a href="#">Cookie policy</a>
+            <a href="#">Terms</a>
+            <a href="#">Security</a>
+          </nav>
+          <div class="social">
+            <a class="ib ghost" href="#" target="_blank" rel="noopener" aria-label="HSBC on LinkedIn (opens in new window)"><svg aria-hidden="true"><use href="#i-linkedin"/></svg></a>
+            <a class="ib ghost" href="#" target="_blank" rel="noopener" aria-label="HSBC on Facebook (opens in new window)"><svg aria-hidden="true"><use href="#i-facebook"/></svg></a>
+            <a class="ib ghost" href="#" target="_blank" rel="noopener" aria-label="HSBC on X (opens in new window)"><svg aria-hidden="true"><use href="#i-twitter"/></svg></a>
+            <a class="ib ghost" href="#" target="_blank" rel="noopener" aria-label="HSBC on YouTube (opens in new window)"><svg aria-hidden="true"><use href="#i-youtube"/></svg></a>
+          </div>
+          <p class="foot-copy">© 2026 HSBC Group. All rights reserved. Pro-forma illustration — not a live footer.</p>
+        </div>
+      </footer>
+      <p class="hintline"><b>Reuses</b> the NavGroup disclosure pattern from the Side nav (§T7). <code>&lt;footer&gt;</code> + labelled <code>&lt;nav&gt;</code> landmarks; groups are grouped with headings; on narrow each column is a disclosure accordion. Region switcher is a disclosure popover; social + external links are labelled “opens in new window”.</p>
+    </section>
+
+    <!-- =========================== D · RELATED LINKS =========================== -->
+    <section aria-labelledby="s-related">
+      <div class="h"><h2 id="s-related">Related links</h2><span class="tag">molecule</span></div>
+      <p class="sub">Cross-links to related content surfaced in-context — “you may also be interested in”. A presentation shell fed by editorial or algorithmic recommendations: it owns layout and states, not the picks. Two forms: a compact link list and richer cards.</p>
+
+      <p class="grouplbl">List form</p>
+      <nav class="related" aria-labelledby="rel-list-h">
+        <p class="related-h" id="rel-list-h">You may also be interested in</p>
+        <ul class="related-list">
+          <li><a class="related-item" href="#"><span class="r-body"><span class="r-title">Switching your current account</span><span class="r-meta">Guide · 4 min read</span></span><svg class="r-chev" aria-hidden="true"><use href="#i-chevron-right"/></svg></a></li>
+          <li><a class="related-item" href="#"><span class="r-body"><span class="r-title">Understanding overdraft charges</span><span class="r-meta">Article · 3 min read</span></span><svg class="r-chev" aria-hidden="true"><use href="#i-chevron-right"/></svg></a></li>
+          <li><a class="related-item" href="#"><span class="r-body"><span class="r-title">How to set up a standing order</span><span class="r-meta">How-to · 2 min read</span></span><svg class="r-chev" aria-hidden="true"><use href="#i-chevron-right"/></svg></a></li>
+          <li><a class="related-item" href="#" target="_blank" rel="noopener"><span class="r-body"><span class="r-title">Financial Ombudsman Service<span class="sr-only"> (opens in new window)</span></span><span class="r-meta">External · financial-ombudsman.org.uk</span></span><svg class="r-chev" aria-hidden="true"><use href="#i-external"/></svg></a></li>
+        </ul>
+      </nav>
+
+      <p class="grouplbl">Card form</p>
+      <div class="related-cards">
+        <a class="rcard" href="#"><span class="rcard-tag">Saving</span><span class="rcard-title">Ways to build a rainy-day fund</span><span class="rcard-desc">Small, regular steps that add up over a year.</span></a>
+        <a class="rcard" href="#"><span class="rcard-tag">Borrowing</span><span class="rcard-title">Is a personal loan right for you?</span><span class="rcard-desc">Weigh up the cost of borrowing before you apply.</span></a>
+        <a class="rcard" href="#" target="_blank" rel="noopener"><span class="rcard-tag">Guidance</span><span class="rcard-title">MoneyHelper budgeting tool<svg class="ext" aria-hidden="true"><use href="#i-external"/></svg><span class="sr-only"> (opens in new window)</span></span><span class="rcard-desc">A free, government-backed way to plan your spending.</span></a>
+      </div>
+      <p class="hintline"><b>Atoms:</b> RelatedItem (list) and RelatedCard (reuses the T5 Card shape + scale-press). Labelled <code>&lt;nav&gt;</code> / region; the component owns layout and states, the recommendations are data. External items carry the new-window glyph + an sr-only “opens in new window”.</p>
+    </section>
+
+    <!-- =========================== E · STEPPER (journey) =========================== -->
+    <section aria-labelledby="s-stepper">
+      <div class="h"><h2 id="s-stepper">Stepper — journey</h2><span class="tag">organism</span></div>
+      <p class="sub">Progress through a multi-step banking flow (open an account, set up a transfer) at page-flow scale — distinct from the display-only control stepper in Tranche 1. It shows completed / current / upcoming, announces each change, and lets you step back. Three forms: numbered, vertical, and a compact progress bar.</p>
+
+      <div class="stepper-shell" id="stepper-shell">
+        <p class="grouplbl">Numbered (horizontal · interactive)</p>
+        <ol class="stepper" id="stepper-h" aria-label="Application progress">
+          <li class="step" data-i="0"><button class="step-btn" type="button"><span class="step-marker"></span><span class="step-txt"><span class="step-label">Your details</span></span></button></li>
+          <li class="step" data-i="1"><button class="step-btn" type="button"><span class="step-marker"></span><span class="step-txt"><span class="step-label">Verify identity</span></span></button></li>
+          <li class="step" data-i="2"><button class="step-btn" type="button"><span class="step-marker"></span><span class="step-txt"><span class="step-label">Choose account</span></span></button></li>
+          <li class="step" data-i="3"><button class="step-btn" type="button"><span class="step-marker"></span><span class="step-txt"><span class="step-label">Review &amp; submit</span></span></button></li>
+        </ol>
+        <div class="step-controls">
+          <button class="btn ghost sm" type="button" id="step-back">Back</button>
+          <button class="btn pri sm" type="button" id="step-next">Continue</button>
+        </div>
+        <p class="sr-only" aria-live="polite" id="step-live"></p>
+      </div>
+
+      <p class="grouplbl">Vertical</p>
+      <ol class="stepper vertical" aria-label="Transfer setup (illustrative)">
+        <li class="step done"><span class="step-marker"><svg aria-hidden="true"><use href="#i-check"/></svg></span><span class="step-txt"><span class="step-label">Choose payee</span><span class="step-sub">Sarah Okafor · ••• 4471</span></span></li>
+        <li class="step current" aria-current="step"><span class="step-marker">2</span><span class="step-txt"><span class="step-label">Enter amount</span><span class="step-sub">£250.00</span></span></li>
+        <li class="step"><span class="step-marker">3</span><span class="step-txt"><span class="step-label">Review</span><span class="step-sub">Check the details</span></span></li>
+        <li class="step"><span class="step-marker">4</span><span class="step-txt"><span class="step-label">Confirm</span><span class="step-sub">Authorise the payment</span></span></li>
+      </ol>
+
+      <p class="grouplbl">Progress bar (compact · syncs with the interactive stepper)</p>
+      <div class="stepper-progress" id="sp-demo" role="group" aria-label="Application progress (compact)">
+        <div class="sp-meta"><span class="sp-count" id="sp-count">Step 1 of 4</span><span class="sp-name" id="sp-name">Your details</span></div>
+        <div class="sp-track"><div class="sp-fill" id="sp-fill"></div></div>
+      </div>
+      <p class="hintline"><b>Atoms:</b> StepItem (marker + label + state). Interactive: Back/Continue advance; completed steps are clickable to jump back; upcoming steps are disabled. <code>aria-current="step"</code> marks the current step; every change is announced via a polite live region. Markers are circular (roundel carve-out). This is the interactive Stepper the itinerary flagged as the gap — T1 was display-only.</p>
+    </section>
+
+    <!-- Shared bottom sheet — opened by the Bottom tab bar "More" tab -->
+    <div class="scrim" id="more-scrim"></div>
+    <aside class="drawer edge-bottom" id="more-sheet" role="dialog" aria-modal="true" aria-label="More" aria-hidden="true">
+      <div class="drawer__h">
+        <span class="t">More</span>
+        <button class="ib ghost" id="more-close" type="button" aria-label="Close"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      </div>
+      <div class="drawer__b">
+        <ul class="navacc">
+          <li><a class="navitem" href="#"><span class="navitem-ic"><svg aria-hidden="true"><use href="#i-card"/></svg></span><span class="navitem-tx">Cards</span></a></li>
+          <li><a class="navitem" href="#"><span class="navitem-ic"><svg aria-hidden="true"><use href="#i-bell"/></svg></span><span class="navitem-tx">Notifications</span></a></li>
+          <li><a class="navitem" href="#"><span class="navitem-ic"><svg aria-hidden="true"><use href="#i-help"/></svg></span><span class="navitem-tx">Help &amp; support</span></a></li>
+          <li><a class="navitem" href="#"><span class="navitem-ic"><svg aria-hidden="true"><use href="#i-user"/></svg></span><span class="navitem-tx">Profile &amp; settings</span></a></li>
+        </ul>
+      </div>
+    </aside>
+
+  <div class="toast" id="toast" role="status"></div>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-add" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M18 8.4H9.6V0H8.4V8.4H0V9.6H8.4V18H9.6V9.6H18V8.4Z" fill="currentColor"/></symbol>
+    <symbol id="i-close" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"/></symbol>
+    <symbol id="i-check" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.82617 15.685L0.0761719 9.93502L0.924172 9.08802L5.82617 13.988L17.0762 2.73901L17.9242 3.58701L5.82617 15.685Z" fill="currentColor"/></symbol>
+    <symbol id="i-indeterminate" viewBox="0 0 18 18"><rect y="8.3999" width="18" height="1.199" fill="currentColor"/></symbol>
+    <symbol id="i-chevron-down" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M17 4.15198L9 12.15L1 4.15198V5.84798L9 13.848L17 5.84798V4.15198Z" fill="currentColor"/></symbol>
+    <symbol id="i-chevron-up" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M1 13.848L9 5.84998L17 13.848V12.152L9 4.15198L1 12.152V13.848Z" fill="currentColor"/></symbol>
+    <symbol id="i-chevron-left" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.8483 17L5.85034 9L13.8483 1H12.1523L4.15234 9L12.1523 17H13.8483Z" fill="currentColor"/></symbol>
+    <symbol id="i-chevron-right" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.15234 17L12.1503 9L4.15234 1H5.84834L13.8483 9L5.84834 17H4.15234Z" fill="currentColor"/></symbol>
+    <symbol id="i-chevron-dbl-left" viewBox="0 0 18 18"><path d="M9 1H10.696L2.698 9L10.696 17H9L1 9L9 1Z" fill="currentColor"/> <path d="M17.696 1L9.698 9L17.696 17H16L8 9L16 1H17.696Z" fill="currentColor"/></symbol>
+    <symbol id="i-chevron-dbl-right" viewBox="0 0 18 18"><path d="M0.695312 1L8.69331 9L0.695312 17H2.39131L10.3913 9L2.39131 1H0.695312Z" fill="currentColor"/> <path d="M9.39131 1H7.69531L15.6933 9L7.69531 17H9.39131L17.3913 9L9.39131 1Z" fill="currentColor"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15 1V0H13.8V1H4.2V0H3V1H0V18H14.2L18 14.2V1H15ZM14.2 16.303V14.2H16.303L14.2 16.303ZM16.8 13H13V16.8H1.2V6H16.8V13ZM16.8 4.8H1.2V2.2H3V3.5H4.2V2.2H13.8V3.5H15V2.2H16.8V4.8ZM8.8 10.029V15H10V7.971L7.003 9.667L7.594 10.712L8.8 10.029Z" fill="currentColor"/></symbol>
+    <symbol id="i-document" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.9891 0H0.789062V18H16.7891V3.8L12.9891 0ZM15.0921 3.8H12.9891V1.697L15.0921 3.8ZM15.5891 16.8H1.98906V1.2H11.7891V5H15.5891V16.8Z" fill="currentColor"/></symbol>
+    <symbol id="i-file" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.1985 0H1.9985V8.703L3.1985 7.503V1.2H10.9985V5H14.7985V16.8H8.4895L7.2895 18H15.9985V3.8L12.1985 0ZM12.1985 3.8V1.697L14.3015 3.8H12.1985ZM12.0245 7.534C10.9145 6.426 9.1065 6.426 7.9945 7.534L2.7725 12.758C2.0905 13.44 2.0905 14.55 2.7725 15.232C3.1135 15.574 3.5625 15.744 4.0095 15.744C4.4575 15.744 4.9055 15.574 5.2475 15.232L9.6675 10.812L8.8185 9.964L4.3985 14.384C4.1845 14.597 3.8365 14.598 3.6205 14.384C3.4065 14.169 3.4065 13.821 3.6205 13.606L8.8425 8.384C9.4855 7.739 10.5325 7.74 11.1755 8.383C11.8185 9.027 11.8185 10.074 11.1755 10.718L5.8985 15.994C4.8245 17.066 3.0775 17.066 2.0035 15.994C0.9295 14.92 0.9295 13.172 2.0035 12.098L6.5335 7.57L5.6845 6.723L1.1565 11.25C-0.3855 12.791 -0.3855 15.3 1.1565 16.842C1.9275 17.613 2.9395 17.998 3.9525 17.998C4.9655 17.998 5.9775 17.613 6.7485 16.842L12.0255 11.566C13.1365 10.454 13.1365 8.646 12.0245 7.534Z" fill="currentColor"/></symbol>
+    <symbol id="i-image" viewBox="0 0 18 18"><path d="M14.67 9.82L11.13 13.36L13.77 16H18V13.15L14.67 9.82ZM3.64 7.99L0 11.64V16H11.65L3.64 7.99ZM0 2V9.5L3.64 5.87L10.07 12.3L14.67 7.7L18 11.03V2H0ZM10.07 8.57C8.97 8.57 8.07 7.67 8.07 6.57C8.07 5.47 8.97 4.57 10.07 4.57C11.17 4.57 12.07 5.46 12.07 6.57C12.07 7.68 11.18 8.57 10.07 8.57Z" fill="currentColor"/></symbol>
+    <symbol id="i-pdf" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.69006 9.378H3.37306V10.176H3.64006C4.18706 10.176 4.26106 9.967 4.26106 9.763C4.26106 9.489 4.09506 9.378 3.69006 9.378ZM12.9891 0H2.78906V5.8H3.98906V1.2H11.7891V5H15.5891V16.8H3.98906V15.2H2.78906V18H16.7891V3.8L12.9891 0ZM12.9891 3.8V1.697L15.0921 3.8H12.9891ZM12.7891 13.99V7.01C12.7891 7.004 12.7851 7 12.7791 7H0.799062C0.793062 7 0.789062 7.004 0.789062 7.01V13.99C0.789062 13.995 0.793062 14 0.799062 14H12.7791C12.7851 14 12.7891 13.995 12.7891 13.99ZM4.54906 10.77L4.54806 10.771C4.37706 10.84 4.14306 10.877 3.89006 10.877H3.37306V12.15H2.46106V8.676H3.77606C4.09806 8.676 4.43606 8.692 4.72006 8.883C5.02206 9.088 5.18106 9.404 5.18106 9.795C5.18206 10.239 4.94506 10.604 4.54906 10.77ZM6.60206 12.151H5.47406V8.676H6.71206C7.98706 8.676 8.63406 9.255 8.63406 10.398C8.63306 11.952 7.54806 12.151 6.60206 12.151ZM11.3691 9.383H9.90606V10.058H11.2831V10.76H9.90606V12.152H9.00706V8.676H11.3691V9.383ZM6.64806 9.378H6.38506V11.449H6.62006C7.37906 11.449 7.70306 11.137 7.70306 10.406C7.70306 9.675 7.39806 9.378 6.64806 9.378Z" fill="currentColor"/></symbol>
+    <symbol id="i-time" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.03 0 0 4.029 0 9C0 13.971 4.03 18 9 18C13.97 18 18 13.971 18 9C18 4.029 13.97 0 9 0ZM9 16.8C4.699 16.8 1.2 13.301 1.2 9C1.2 4.699 4.699 1.2 9 1.2C13.301 1.2 16.8 4.699 16.8 9C16.8 13.301 13.301 16.8 9 16.8ZM9.6 3H8.4V9.6H13V8.4H9.6V3Z" fill="currentColor"/></symbol>
+    <symbol id="i-camera" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 4.5H14.148L12.912 1.44C12.682 0.872 12.131 0.5 11.518 0.5H6.482C5.869 0.5 5.318 0.872 5.088 1.44L3.852 4.5H1.5C0.675 4.5 0 5.175 0 6V16C0 16.825 0.675 17.5 1.5 17.5H16.5C17.325 17.5 18 16.825 18 16V6C18 5.175 17.325 4.5 16.5 4.5ZM16.8 16C16.8 16.163 16.663 16.3 16.5 16.3H1.5C1.337 16.3 1.2 16.163 1.2 16V6C1.2 5.837 1.337 5.7 1.5 5.7H4.661L6.201 1.89C6.247 1.774 6.358 1.7 6.482 1.7H11.518C11.642 1.7 11.753 1.774 11.799 1.89L13.339 5.7H16.5C16.663 5.7 16.8 5.837 16.8 6V16ZM9 5.5C6.515 5.5 4.5 7.515 4.5 10C4.5 12.485 6.515 14.5 9 14.5C11.485 14.5 13.5 12.485 13.5 10C13.5 7.515 11.485 5.5 9 5.5ZM9 13.3C7.18 13.3 5.7 11.82 5.7 10C5.7 8.18 7.18 6.7 9 6.7C10.82 6.7 12.3 8.18 12.3 10C12.3 11.82 10.82 13.3 9 13.3Z" fill="currentColor"/></symbol>
+    <symbol id="i-location" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M14.0212 2.184C12.5772 0.728 10.6832 0 8.78917 0C6.89517 0 5.00117 0.728 3.55617 2.184C0.666172 5.096 0.666172 9.817 3.55617 12.728L8.78917 18L14.0212 12.728C16.9112 9.816 16.9112 5.095 14.0212 2.184ZM13.1702 11.883L8.78917 16.297L4.40817 11.883C1.98517 9.442 1.98517 5.47 4.40817 3.029C5.57917 1.849 7.13417 1.2 8.78917 1.2C10.4432 1.2 11.9992 1.849 13.1702 3.029C15.5922 5.47 15.5922 9.442 13.1702 11.883ZM8.78917 3.4C6.52817 3.4 4.68917 5.239 4.68917 7.5C4.68917 9.761 6.52817 11.6 8.78917 11.6C11.0502 11.6 12.8892 9.761 12.8892 7.5C12.8892 5.239 11.0502 3.4 8.78917 3.4ZM8.78917 10.4C7.19017 10.4 5.88917 9.098 5.88917 7.5C5.88917 5.902 7.19017 4.6 8.78917 4.6C10.3882 4.6 11.6892 5.902 11.6892 7.5C11.6892 9.098 10.3882 10.4 8.78917 10.4Z" fill="currentColor"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.8 12V15.8H2.2V12H1V17H17V12H15.8ZM8.4 13.849H9.6V3.297L14 7.697V6.001L9 1L4 6.001V7.698L8.4 3.298V13.849Z" fill="currentColor"/></symbol>
+    <symbol id="i-download" viewBox="0 0 18 18"><g> <path fill-rule="evenodd" clip-rule="evenodd" d="M15.8 12V15.8H2.2V12H1V17H17V12H15.8ZM14 8.848V7.151L9.6 11.551V1H8.4V11.551L4 7.151V8.848L9 13.849L14 8.848Z" fill="currentColor"/> </g></symbol>
+    <symbol id="i-delete" viewBox="0 0 18 18"><g> <path fill-rule="evenodd" clip-rule="evenodd" d="M15.5 2H12V1.5C12 0.675 11.325 0 10.5 0H7.5C6.675 0 6 0.675 6 1.5V2H2.5C1.672 2 1 2.672 1 3.5V6H2V18H16V6H17V3.5C17 2.672 16.328 2 15.5 2ZM7.2 1.5C7.2 1.337 7.337 1.2 7.5 1.2H10.5C10.663 1.2 10.8 1.337 10.8 1.5V2H7.2V1.5ZM14.8 16.8H3.2V6H14.8V16.8ZM15.8 4.8H2.2V3.5C2.2 3.335 2.335 3.2 2.5 3.2H15.5C15.666 3.2 15.8 3.335 15.8 3.5V4.8ZM7.2 8H6V15H7.2V8ZM12 8H10.8V15H12V8Z" fill="currentColor"/> </g></symbol>
+    <symbol id="i-search" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.19675 12.803C3.66075 14.268 5.58075 15 7.49975 15C9.23175 15 10.9598 14.398 12.3577 13.206L17.1257 17.973L17.9748 17.125L13.2067 12.357C15.7197 9.41 15.5898 4.981 12.8048 2.196C11.3388 0.732 9.41875 0 7.49975 0C5.58075 0 3.66075 0.732 2.19675 2.197C-0.73225 5.126 -0.73225 9.874 2.19675 12.803ZM1.19975 7.5C1.19975 5.817 1.85575 4.235 3.04475 3.045C4.23375 1.855 5.81675 1.2 7.49975 1.2C9.18275 1.2 10.7648 1.855 11.9548 3.045C14.4108 5.501 14.4108 9.498 11.9548 11.955C10.7648 13.145 9.18275 13.8 7.49975 13.8C5.81675 13.8 4.23475 13.145 3.04475 11.955C1.85475 10.765 1.19975 9.183 1.19975 7.5Z" fill="currentColor"/></symbol>
+    <symbol id="i-clear" viewBox="0 0 18 18"><g> <path fill-rule="evenodd" clip-rule="evenodd" d="M12.576 4.576L9 8.152L5.424 4.576L4.576 5.424L8.152 9L4.576 12.576L5.425 13.424L9 9.848L12.576 13.424L13.425 12.576L9.848 9L13.424 5.424L12.576 4.576ZM9 0C4.029 0 0 4.03 0 9C0 13.97 4.029 18 9 18C13.971 18 18 13.97 18 9C18 4.03 13.971 0 9 0ZM9 16.8C4.699 16.8 1.2 13.301 1.2 9C1.2 4.699 4.699 1.2 9 1.2C13.301 1.2 16.8 4.699 16.8 9C16.8 13.301 13.301 16.8 9 16.8Z" fill="currentColor"/> </g></symbol>
+    <symbol id="i-edit" viewBox="0 0 18 18"><g> <path fill-rule="evenodd" clip-rule="evenodd" d="M17.368 1.584L16.416 0.632C15.994 0.211 15.441 0 14.889 0C14.337 0 13.784 0.211 13.362 0.632L2.954 11.041L0 18L6.959 15.046L17.368 4.638C18.211 3.795 18.211 2.427 17.368 1.584ZM6.276 14.032L2.265 15.734L3.967 11.723L12.421 3.269L14.729 5.577L6.276 14.032ZM16.519 3.789L15.578 4.73L13.27 2.422L14.211 1.481C14.392 1.3 14.633 1.2 14.889 1.2C15.145 1.2 15.386 1.3 15.567 1.481L16.519 2.433C16.893 2.807 16.893 3.415 16.519 3.789Z" fill="currentColor"/> </g></symbol>
+    <symbol id="i-view" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 3C4.973 3 1.516 5.469 0 9C1.516 12.53 4.973 15 9 15C13.027 15 16.484 12.53 18 9C16.484 5.469 13.027 3 9 3ZM12.551 7.75C12.551 9.708 10.958 11.3 9 11.3C7.042 11.3 5.449 9.708 5.449 7.75C5.449 5.792 7.042 4.2 9 4.2C10.958 4.2 12.551 5.792 12.551 7.75ZM9 13.8C5.75 13.8 2.791 11.933 1.323 9C2.144 7.36 3.44 6.072 4.983 5.238C4.525 5.968 4.25 6.825 4.25 7.75C4.25 10.373 6.377 12.5 9 12.5C11.623 12.5 13.75 10.373 13.75 7.75C13.75 6.825 13.474 5.968 13.017 5.238C14.56 6.071 15.857 7.36 16.677 9C15.209 11.933 12.25 13.8 9 13.8Z" fill="currentColor"/></symbol>
+    <symbol id="i-hidden" viewBox="0 0 18 18"><path d="M14.2996 8.41005L15.8296 12.2L14.7196 12.65L13.2496 9.01005C12.1396 9.56005 10.9096 9.89005 9.60961 9.97005V14H8.40961V9.97005C7.10961 9.89005 5.87961 9.56005 4.76961 9.01005L3.29961 12.65L2.18961 12.2L3.71961 8.41005C2.69961 7.74005 1.80961 6.90005 1.09961 5.91005L1.95961 5.05005C3.54961 7.37005 6.17961 8.80005 9.01961 8.80005C11.8596 8.80005 14.4896 7.37005 16.0796 5.05005L16.9396 5.91005C16.2296 6.90005 15.3296 7.74005 14.3196 8.41005H14.2996Z" fill="currentColor"/></symbol>
+    <symbol id="i-filter" viewBox="0 0 18 18"><g> <path fill-rule="evenodd" clip-rule="evenodd" d="M5.23 12.5C4.057 12.5 3.08 13.311 2.81 14.4H0V15.6H2.81C3.08 16.689 4.057 17.5 5.23 17.5C6.403 17.5 7.38 16.689 7.649 15.6H18V14.4H7.649C7.38 13.311 6.403 12.5 5.23 12.5ZM5.23 16.3C4.513 16.3 3.93 15.717 3.93 15C3.93 14.283 4.513 13.7 5.23 13.7C5.947 13.7 6.53 14.283 6.53 15C6.53 15.717 5.947 16.3 5.23 16.3ZM12.77 6.5C11.597 6.5 10.62 7.311 10.351 8.4H0V9.6H10.351C10.621 10.689 11.598 11.5 12.77 11.5C13.943 11.5 14.92 10.689 15.19 9.6H18V8.4H15.19C14.92 7.311 13.943 6.5 12.77 6.5ZM12.77 10.3C12.053 10.3 11.47 9.717 11.47 9C11.47 8.283 12.053 7.7 12.77 7.7C13.487 7.7 14.07 8.283 14.07 9C14.07 9.717 13.487 10.3 12.77 10.3ZM7.649 2.4C7.38 1.311 6.403 0.5 5.23 0.5C4.057 0.5 3.08 1.311 2.81 2.4H0V3.6H2.81C3.08 4.689 4.057 5.5 5.23 5.5C6.403 5.5 7.38 4.689 7.649 3.6H18V2.4H7.649ZM5.23 4.3C4.513 4.3 3.93 3.717 3.93 3C3.93 2.283 4.513 1.7 5.23 1.7C5.947 1.7 6.53 2.283 6.53 3C6.53 3.717 5.947 4.3 5.23 4.3Z" fill="currentColor"/> </g></symbol>
+    <symbol id="i-sort" viewBox="0 0 18 18"><path d="M1.5 7.5L9 0L16.5 7.5H1.5Z" fill="currentColor"/> <path d="M16.5 10.5L9 18L1.5 10.5H16.5Z" fill="currentColor"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.2 7H18V1.2L16.8 0V4.536C15.25 1.829 12.343 0 9 0C4.03 0 0 4.029 0 9C0 13.971 4.03 18 9 18C13.97 18 18 13.971 18 9H16.8C16.8 13.301 13.301 16.8 9 16.8C4.699 16.8 1.2 13.301 1.2 9C1.2 4.699 4.699 1.2 9 1.2C12.16 1.2 14.88 3.092 16.103 5.8H11L12.2 7Z" fill="currentColor"/></symbol>
+    <symbol id="i-more-v" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 3C9.828 3 10.5 2.328 10.5 1.5C10.5 0.672 9.828 0 9 0C8.171 0 7.5 0.672 7.5 1.5C7.5 2.328 8.171 3 9 3ZM9 15C8.171 15 7.5 15.672 7.5 16.5C7.5 17.328 8.171 18 9 18C9.828 18 10.5 17.328 10.5 16.5C10.5 15.672 9.828 15 9 15ZM9 7.5C8.171 7.5 7.5 8.172 7.5 9C7.5 9.828 8.171 10.5 9 10.5C9.828 10.5 10.5 9.828 10.5 9C10.5 8.172 9.828 7.5 9 7.5Z" fill="currentColor"/></symbol>
+    <symbol id="i-more-h" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 7.5C0.672 7.5 0 8.172 0 9C0 9.828 0.672 10.5 1.5 10.5C2.328 10.5 3 9.829 3 9C3 8.171 2.328 7.5 1.5 7.5ZM16.5 7.5C15.672 7.5 15 8.172 15 9C15 9.828 15.672 10.5 16.5 10.5C17.328 10.5 18 9.829 18 9C18 8.171 17.328 7.5 16.5 7.5ZM9 7.5C8.172 7.5 7.5 8.172 7.5 9C7.5 9.828 8.172 10.5 9 10.5C9.828 10.5 10.5 9.828 10.5 9C10.5 8.172 9.828 7.5 9 7.5Z" fill="currentColor"/></symbol>
+    <symbol id="i-user" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.191 12.775C15.993 12.286 15.713 11.831 15.345 11.453C14.47 10.552 13.375 9.87 12.083 9.451L9.01 12.524L5.932 9.445C4.633 9.864 3.533 10.548 2.654 11.453C2.286 11.832 2.006 12.286 1.808 12.775L0 17.25H18L16.191 12.775ZM2.921 13.225C3.07 12.857 3.27 12.542 3.515 12.29C4.11 11.677 4.82 11.191 5.63 10.84L9.012 14.221L12.386 10.847C13.19 11.197 13.894 11.681 14.485 12.29C14.73 12.542 14.93 12.857 15.079 13.226L16.221 16.051H1.779L2.921 13.225ZM9.01 9.25C11.459 9.25 12.5 6.952 12.5 4.891C12.5 2.751 11.479 0.75 9.01 0.75C6.541 0.75 5.5 2.732 5.5 4.891C5.5 7.011 6.52 9.25 9.01 9.25ZM9.01 1.95C11.077 1.95 11.3 4.007 11.3 4.891C11.3 6.064 10.818 8.05 9.01 8.05C6.811 8.05 6.7 5.419 6.7 4.891C6.7 4.007 6.925 1.95 9.01 1.95Z" fill="currentColor"/></symbol>
+    <symbol id="i-avatar" viewBox="0 0 18 18"><g> <path d="M5.6 10.9L9 14.3L12.3 11C13.0913 11.3125 13.8072 11.7898 14.4 12.4C14.6917 12.669 14.9 13.0161 15 13.4L16.1 16.2H1.8L2.9 13.4C2.97739 13.0343 3.19215 12.7122 3.5 12.5C4.02735 11.7717 4.75784 11.2152 5.6 10.9ZM12.1 9.50005L9 12.6L5.9 9.50005C4.663 9.90878 3.53473 10.5926 2.6 11.5C2.24171 11.8699 1.96866 12.3136 1.8 12.8L0 17.3H18L16.2 12.8C15.9931 12.3326 15.724 11.8953 15.4 11.5C14.4494 10.6133 13.326 9.93238 12.1 9.50005ZM9 0.800049C6.6 0.800049 5.5 2.70005 5.5 4.80005C5.37831 4.74652 5.24174 4.73722 5.11391 4.77374C4.98608 4.81026 4.87504 4.89031 4.8 5.00005C4.71207 5.1212 4.67347 5.27125 4.69204 5.41979C4.71061 5.56834 4.78495 5.70427 4.9 5.80005C5.11026 5.97023 5.34664 6.1053 5.6 6.20005C6 7.90005 7 9.30005 9 9.30005C11.5 9.30005 12.5 7.00005 12.5 4.90005C12.5 2.80005 11.5 0.800049 9 0.800049ZM9 8.10005C8.56265 8.10275 8.13527 7.96948 7.77697 7.71867C7.41867 7.46786 7.14716 7.11191 7 6.70005C7.2 6.70005 7.4 6.80005 7.7 6.80005C7.78191 6.94278 7.89778 7.0631 8.03733 7.15032C8.17688 7.23754 8.33581 7.28897 8.5 7.30005C8.63361 7.30889 8.76756 7.28908 8.8929 7.24195C9.01823 7.19482 9.13205 7.12146 9.22673 7.02678C9.32141 6.9321 9.39477 6.81828 9.4419 6.69295C9.48903 6.56761 9.50884 6.43366 9.5 6.30005C9.50884 6.16644 9.48903 6.03248 9.4419 5.90715C9.39477 5.78182 9.32141 5.668 9.22673 5.57332C9.13205 5.47864 9.01823 5.40527 8.8929 5.35815C8.76756 5.31102 8.63361 5.29121 8.5 5.30005C8.36741 5.28606 8.23345 5.30629 8.1109 5.35881C7.98835 5.41133 7.88131 5.49439 7.8 5.60005C7.42613 5.58211 7.05626 5.51486 6.7 5.40005V4.90005C6.7 4.10005 6.9 2.00005 9 2.00005C11.1 2.00005 11.3 4.10005 11.3 4.90005C11.3 6.10005 10.8 8.10005 9 8.10005Z" fill="currentColor"/> </g></symbol>
+    <symbol id="i-help" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.029 0 0 4.03 0 9C0 13.97 4.029 18 9 18C13.971 18 18 13.97 18 9C18 4.03 13.971 0 9 0ZM9 16.8C4.699 16.8 1.2 13.301 1.2 9C1.2 4.699 4.699 1.2 9 1.2C13.301 1.2 16.8 4.699 16.8 9C16.8 13.301 13.301 16.8 9 16.8ZM8.999 12.5C8.447 12.5 7.999 12.948 7.999 13.5C7.999 14.052 8.447 14.5 8.999 14.5C9.551 14.5 9.999 14.052 9.999 13.5C9.999 12.948 9.552 12.5 8.999 12.5ZM9.604 3.539C8.75 3.363 7.875 3.569 7.207 4.113C6.54 4.656 6.157 5.46 6.157 6.319H7.357C7.357 5.823 7.578 5.358 7.964 5.044C8.356 4.726 8.851 4.607 9.36 4.714C9.996 4.847 10.514 5.391 10.62 6.037C10.709 6.575 10.542 7.101 10.162 7.48L9.013 8.629C8.75 8.894 8.4 9.324 8.4 10.011V11H9.6V10.011C9.6 9.835 9.642 9.699 9.862 9.478L11.01 8.33C11.667 7.674 11.956 6.768 11.804 5.842C11.616 4.7 10.732 3.775 9.604 3.539Z" fill="currentColor"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M17.2931 13.293L15.0001 11V6.252C15.0001 2.967 12.4681 0.102 9.18507 0.003C9.12307 0.001 9.06107 0 9.00007 0C5.68607 0 3.00007 2.686 3.00007 6V11L0.707069 13.293C0.0770694 13.923 0.523069 15 1.41407 15H6.56207C6.52707 15.162 6.50007 15.327 6.50007 15.5C6.50007 16.881 7.61907 18 9.00007 18C10.3811 18 11.5001 16.881 11.5001 15.5C11.5001 15.327 11.4731 15.162 11.4381 15H16.5861C17.4771 15 17.9231 13.923 17.2931 13.293ZM10.3001 15.5C10.3001 16.217 9.71707 16.8 9.00007 16.8C8.28307 16.8 7.70007 16.217 7.70007 15.5C7.70007 15.319 7.74907 15.154 7.81907 15H10.1821C10.2511 15.154 10.3001 15.319 10.3001 15.5ZM1.89707 13.8L3.84807 11.848L4.20007 11.497V6C4.20007 3.353 6.35307 1.2 9.00007 1.2L9.14807 1.202C11.7131 1.279 13.8001 3.544 13.8001 6.252V11.497L14.1521 11.848L16.1041 13.8H1.89707Z" fill="currentColor"/></symbol>
+    <symbol id="i-tag" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.341 7.713H7.542L7.272 10.116H10.071L10.341 7.713ZM7.902 4.5L7.677 6.516H10.476L10.701 4.5H11.898L11.7 6.516H13.5L13.374 7.713H11.574L11.313 10.116H13.167L13.032 11.313H11.142L10.899 13.5H9.702L9.945 11.313H7.146L6.903 13.5H5.697L5.94 11.313H3.996L4.131 10.116H6.075L6.345 7.713H4.401L4.5 6.516H6.471L6.696 4.5H7.902ZM9 1.197C4.69052 1.197 1.197 4.69052 1.197 9C1.197 13.3095 4.69052 16.803 9 16.803C13.3095 16.803 16.803 13.3095 16.803 9C16.803 6.93052 15.9809 4.94579 14.5176 3.48245C13.0542 2.0191 11.0695 1.197 9 1.197ZM9 0C13.9706 0 18 4.02944 18 9C18 13.9706 13.9706 18 9 18C4.02944 18 0 13.9706 0 9C0 4.02944 4.02944 0 9 0Z" fill="currentColor"/></symbol>
+    <symbol id="i-error" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.30911 1.68194L0.109113 15.7999C-0.199887 16.3319 0.184113 16.9999 0.800113 16.9999H17.2001C17.8161 16.9999 18.2001 16.3319 17.8911 15.7999L9.69111 1.68194C9.38311 1.15094 8.61711 1.15094 8.30911 1.68194Z" fill="currentColor"/> <path d="M9.9001 5H8.1001V11H9.9001V5Z" style="fill:var(--mark)"/> <path d="M9 14.8259C9.69036 14.8259 10.25 14.2663 10.25 13.5759C10.25 12.8856 9.69036 12.3259 9 12.3259C8.30964 12.3259 7.75 12.8856 7.75 13.5759C7.75 14.2663 8.30964 14.8259 9 14.8259Z" style="fill:var(--mark)"/></symbol>
+    <symbol id="i-success" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/> <path d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z" style="fill:var(--mark)"/></symbol>
+    <symbol id="i-warning" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/> <path d="M9.90107 3.80005H8.10107V9.80005H9.90107V3.80005Z" style="fill:var(--mark)"/> <path d="M9.00078 14.2C9.66352 14.2 10.2008 13.6628 10.2008 13C10.2008 12.3373 9.66352 11.8 9.00078 11.8C8.33804 11.8 7.80078 12.3373 7.80078 13C7.80078 13.6628 8.33804 14.2 9.00078 14.2Z" style="fill:var(--mark)"/></symbol>
+    <symbol id="i-information" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/> <path d="M9 6.25C9.69036 6.25 10.25 5.69036 10.25 5C10.25 4.30964 9.69036 3.75 9 3.75C8.30964 3.75 7.75 4.30964 7.75 5C7.75 5.69036 8.30964 6.25 9 6.25Z" style="fill:var(--mark)"/> <path d="M9.89912 8.25H8.09912V14.25H9.89912V8.25Z" style="fill:var(--mark)"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 18 18"><path d="M0 15.6H18V14.4H0V15.6ZM0 2.40002V3.60002H18V2.40002H0ZM0 9.60002H18V8.40002H0V9.60002Z" fill="currentColor"/></symbol>
+    <symbol id="i-home" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0L1 8V18H8V11.2H10V18H17V8L9 0ZM15.8 16.8H11.2V10H6.8V16.8H2.2V8.497L9 1.697L15.8 8.497V16.8Z" fill="currentColor"/></symbol>
+    <symbol id="i-collapse" viewBox="0 0 18 18"><g clip-path="url(#clip0_13244_4223)"><path d="M0.924 0.076L5.8 4.952V0L7 1.2V7H1.2L0 5.8H4.952L0.076 0.924L0.924 0.076Z" fill="currentColor"/><path d="M13.048 5.8H18L16.8 7H11V1.2L12.2 0V4.952L17.076 0.076L17.924 0.924L13.048 5.8Z" fill="currentColor"/><path d="M12.2 13.048L17.076 17.924L17.924 17.076L13.048 12.2H18L16.8 11H11V16.8L12.2 18V13.048Z" fill="currentColor"/><path d="M4.952 12.2H0L1.2 11H7V16.8L5.8 18V13.048L0.924 17.924L0.076 17.076L4.952 12.2Z" fill="currentColor"/></g><defs><clipPath id="clip0_13244_4223"><rect width="18" height="18" fill="white"/></clipPath></defs></symbol>
+    <symbol id="i-expand" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.139 11.709L6.291 10.861L2.2 14.952V10.8L1 12V17H6L7.2 15.8H3.048L7.139 11.709ZM15.8 14.952L11.709 10.862L10.861 11.71L14.952 15.8H10.8L12 17H17V12L15.8 10.8V14.952ZM12 1L10.8 2.2H14.952L10.862 6.29L11.71 7.138L15.8 3.048V7.2L17 6V1H12ZM1 1V6L2.2 7.2V3.048L6.291 7.138L7.139 6.29L3.048 2.2H7.2L6 1H1Z" fill="currentColor"/></symbol>
+    <symbol id="i-account" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 5H1.5C0.675 5 0 5.675 0 6.5V16.5C0 17.325 0.675 18 1.5 18H16.5C17.325 18 18 17.325 18 16.5V6.5C18 5.675 17.325 5 16.5 5ZM16.8 16.5C16.8 16.663 16.663 16.8 16.5 16.8H1.5C1.337 16.8 1.2 16.663 1.2 16.5V6.5C1.2 6.337 1.337 6.2 1.5 6.2H16.5C16.663 6.2 16.8 6.337 16.8 6.5V16.5ZM3 12H5V10H3V12ZM14.8 2.6H3.2C2.537 2.6 2 3.137 2 3.8H16C16 3.137 15.463 2.6 14.8 2.6ZM12.8 0H5.2C4.537 0 4 0.537 4 1.2H14C14 0.537 13.463 0 12.8 0Z" fill="currentColor"/></symbol>
+    <symbol id="i-card" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 6H1.5C0.675 6 0 6.675 0 7.5V16.5C0 17.325 0.675 18 1.5 18H16.5C17.325 18 18 17.325 18 16.5V7.5C18 6.675 17.325 6 16.5 6ZM16.8 16.5C16.8 16.663 16.663 16.8 16.5 16.8H1.5C1.337 16.8 1.2 16.663 1.2 16.5V10.2H16.8V16.5ZM16.8 9H1.2V7.5C1.2 7.337 1.337 7.2 1.5 7.2H16.5C16.663 7.2 16.8 7.337 16.8 7.5V9ZM15 12H12V13.2H15V12ZM13.05 1.221C13.085 1.207 13.122 1.2 13.159 1.2C13.262 1.2 13.389 1.258 13.441 1.387L14.82 4.8H16.114L14.553 0.938C14.318 0.355 13.753 0 13.159 0C12.973 0 12.784 0.035 12.601 0.109L0.988 4.8H4.192L13.05 1.221Z" fill="currentColor"/></symbol>
+    <symbol id="i-payments" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.029 0 0 4.029 0 9C0 13.971 4.029 18 9 18C13.971 18 18 13.971 18 9C18 4.029 13.971 0 9 0ZM9 16.8C4.699 16.8 1.2 13.301 1.2 9C1.2 4.699 4.699 1.2 9 1.2C13.301 1.2 16.8 4.699 16.8 9C16.8 13.301 13.301 16.8 9 16.8ZM9.064 6.352C10.347 6.352 10.356 7.003 10.359 7.218L11.559 7.2C11.544 6.092 10.807 5.353 9.6 5.188V4H8.4V5.216C7.207 5.431 6.44 6.226 6.44 7.337C6.44 8.831 7.782 9.247 8.499 9.47L9.14 9.675C10.097 9.972 10.359 10.185 10.359 10.663C10.359 11.577 9.27 11.648 8.936 11.648C7.653 11.648 7.644 10.997 7.641 10.782L6.44 10.8C6.456 11.908 7.193 12.647 8.399 12.812V14H9.599V12.784C10.792 12.569 11.558 11.774 11.558 10.663C11.558 9.169 10.216 8.753 9.495 8.528L8.859 8.325C7.902 8.028 7.64 7.815 7.64 7.337C7.641 6.423 8.73 6.352 9.064 6.352Z" fill="currentColor"/></symbol>
+    <symbol id="i-global" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.029 0 0 4.029 0 9C0 13.971 4.029 18 9 18C13.971 18 18 13.971 18 9C18 4.029 13.971 0 9 0ZM6.851 1.508C5.244 3.055 4.166 5.546 4.03 8.4H1.23C1.482 5.111 3.778 2.391 6.851 1.508ZM1.23 9.6H4.03C4.166 12.454 5.244 14.945 6.851 16.492C3.778 15.609 1.482 12.889 1.23 9.6ZM8.4 16.221C6.637 15.044 5.387 12.549 5.234 9.6H8.4V16.221ZM8.4 8.4H5.234C5.387 5.451 6.637 2.956 8.4 1.779V8.4ZM16.77 8.4H13.97C13.835 5.552 12.762 3.066 11.161 1.518C14.225 2.404 16.518 5.116 16.77 8.4ZM9.6 16.221V9.6H12.766C12.613 12.549 11.363 15.044 9.6 16.221ZM9.6 1.779C11.363 2.956 12.613 5.451 12.766 8.401H9.6V1.779ZM11.161 16.482C12.762 14.934 13.835 12.448 13.97 9.6H16.77C16.518 12.884 14.225 15.596 11.161 16.482Z" fill="currentColor"/></symbol>
+    <symbol id="i-external" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.8 15.8H2.2V2.2H9V1H1V17H17V9H15.8V15.8ZM10.46 8.388L15.8 3.048V7.856L17 6.656V1H11.343L10.144 2.199H14.953L9.612 7.54L10.46 8.388Z" fill="currentColor"/></symbol>
+    <symbol id="i-linkedin" viewBox="0 0 18 18"><path d="M4.19243 5.78922H0.573382C0.410116 5.78922 0.287667 5.92527 0.287667 6.07493V17.6804C0.287667 17.8436 0.423722 17.9661 0.573382 17.9661H4.19243C4.35569 17.9661 4.47814 17.83 4.47814 17.6804V6.07493C4.47814 5.91166 4.34209 5.78922 4.19243 5.78922ZM2.38291 0.0205078C1.07678 0.0205078 0.00195312 1.09534 0.00195312 2.40146C0.00195312 3.70758 1.07678 4.78241 2.38291 4.78241C3.68903 4.78241 4.76386 3.70758 4.76386 2.40146C4.76386 1.08173 3.68903 0.0205078 2.38291 0.0205078ZM13.3761 5.5035C11.9203 5.5035 10.8455 6.12935 10.206 6.83684V6.08854C10.206 5.92527 10.07 5.80282 9.92032 5.80282H6.46454C6.30127 5.80282 6.17882 5.93888 6.17882 6.08854V17.694C6.17882 17.8572 6.31488 17.9797 6.46454 17.9797H10.07C10.2332 17.9797 10.3557 17.8436 10.3557 17.694V11.9525C10.3557 10.0205 10.8863 9.2586 12.2332 9.2586C13.7026 9.2586 13.8251 10.4695 13.8251 12.0477V17.694C13.8251 17.8572 13.9611 17.9797 14.1108 17.9797H17.7162C17.8795 17.9797 18.002 17.8436 18.002 17.694V11.3266C18.002 8.44228 17.4577 5.5035 13.3897 5.5035H13.3761Z" fill="currentColor"/></symbol>
+    <symbol id="i-facebook" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.5 0.129808V2.98558H11.8646C11.2674 2.98558 10.8646 3.11538 10.6562 3.375C10.4479 3.63462 10.3438 4.02404 10.3438 4.54327V6.58774H13.3958L12.9896 9.78966H10.3438V18H7.15625V9.78966H4.5V6.58774H7.15625V4.22957C7.15625 2.88821 7.51736 1.84796 8.23958 1.10877C8.96181 0.369588 9.9236 0 11.125 0C12.1458 0 12.9375 0.0432688 13.5 0.129808Z" fill="currentColor"/></symbol>
+    <symbol id="i-twitter" viewBox="0 0 18 18"><path d="M10.6774 7.62177L17.2342 0H15.6805L9.98719 6.61788L5.43998 0H0.195312L7.07159 10.0074L0.195312 18H1.74916L7.76141 11.0113L12.5636 18H17.8083L10.677 7.62177H10.6774ZM8.54921 10.0956L7.8525 9.09906L2.30903 1.16971H4.69564L9.16929 7.56895L9.866 8.56546L15.6812 16.8835H13.2946L8.54921 10.096V10.0956Z" fill="currentColor"/></symbol>
+    <symbol id="i-youtube" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.14551 11.2797L12.0093 8.82312L7.14551 6.33703V11.2797ZM9.00462 2.80933C10.1301 2.80933 11.2171 2.82407 12.2656 2.85355C13.3141 2.88302 14.0828 2.91414 14.5719 2.9469L15.3055 2.9862C15.3122 2.9862 15.3691 2.99112 15.4763 3.00094C15.5835 3.01077 15.6606 3.0206 15.7075 3.03042C15.7544 3.04025 15.8331 3.05499 15.9436 3.07464C16.0542 3.09429 16.1496 3.1205 16.23 3.15325C16.3104 3.18601 16.4042 3.22859 16.5114 3.281C16.6186 3.3334 16.7224 3.39728 16.8229 3.47261C16.9234 3.54795 17.0206 3.63475 17.1143 3.73301C17.1545 3.77232 17.2065 3.83292 17.2701 3.9148C17.3338 3.99669 17.4309 4.18831 17.5615 4.48965C17.6922 4.791 17.7809 5.12182 17.8278 5.48213C17.8814 5.90139 17.9233 6.34849 17.9535 6.82344C17.9836 7.29839 18.002 7.67015 18.0087 7.93874V9.6682C18.0154 10.6181 17.9551 11.568 17.8278 12.5179C17.7809 12.8782 17.6972 13.2041 17.5766 13.4956C17.456 13.7871 17.3488 13.9886 17.255 14.0999L17.1143 14.267C17.0206 14.3653 16.9234 14.4521 16.8229 14.5274C16.7224 14.6027 16.6186 14.665 16.5114 14.7141C16.4042 14.7632 16.3104 14.8042 16.23 14.8369C16.1496 14.8697 16.0542 14.8959 15.9436 14.9155C15.8331 14.9352 15.7527 14.9499 15.7024 14.9598C15.6522 14.9696 15.5751 14.9794 15.4713 14.9892C15.3675 14.9991 15.3122 15.004 15.3055 15.004C13.6239 15.1284 11.5236 15.1907 9.00462 15.1907C7.61782 15.1776 6.41359 15.1563 5.39192 15.1268C4.37024 15.0973 3.69862 15.0728 3.37705 15.0531L2.88463 15.0138L2.52286 14.9745C2.28168 14.9417 2.09912 14.909 1.97518 14.8762C1.85124 14.8435 1.6804 14.7747 1.46267 14.6699C1.24493 14.5651 1.05567 14.4308 0.894884 14.267C0.854687 14.2277 0.802767 14.1671 0.739121 14.0852C0.675476 14.0033 0.578334 13.8117 0.447693 13.5103C0.317053 13.209 0.228285 12.8782 0.181389 12.5179C0.127792 12.0986 0.0859211 11.6515 0.0557733 11.1766C0.0256254 10.7016 0.00720199 10.3299 0.000502471 10.0613V8.3318C-0.00619705 7.3819 0.0540977 6.43202 0.181389 5.48213C0.228285 5.12182 0.312028 4.79591 0.43262 4.50439C0.553211 4.21287 0.660402 4.01143 0.754195 3.90006L0.894884 3.73301C0.988678 3.63475 1.08582 3.54795 1.18631 3.47261C1.28681 3.39728 1.39065 3.3334 1.49784 3.281C1.60503 3.22859 1.69882 3.18601 1.77922 3.15325C1.85961 3.1205 1.95508 3.09429 2.06562 3.07464C2.17616 3.05499 2.25488 3.04025 2.30178 3.03042C2.34867 3.0206 2.42572 3.01077 2.53291 3.00094C2.6401 2.99112 2.69705 2.9862 2.70375 2.9862C4.38533 2.86828 6.4856 2.80933 9.00462 2.80933Z" fill="currentColor"/></symbol>
+    <symbol id="i-stamp" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M14.2007 1.188C15.5238 1.10276 16.7021 2.01855 16.9453 3.32111C17.1885 4.62367 16.42 5.90258 15.1553 6.3L11.7064 7.713C11.3846 7.84403 11.0933 8.04013 10.8509 8.289L10.7068 8.433C10.1968 8.93739 9.90842 9.62386 9.9054 10.341C9.90137 11.0551 10.1873 11.7404 10.6978 12.24L12.859 14.4C12.9218 14.4574 12.9549 14.5402 12.9491 14.625C12.9513 14.7092 12.9187 14.7906 12.859 14.85L11.3552 16.344L1.68392 6.651L3.18774 5.148C3.24777 5.0892 3.32881 5.0568 3.41286 5.058C3.49379 5.05915 3.57117 5.09138 3.62898 5.148L5.76314 7.281C6.81682 8.32785 8.51854 8.32785 9.57222 7.281L9.7163 7.128C9.96116 6.89269 10.157 6.61129 10.2926 6.3L11.7604 2.853C12.1529 1.85093 13.1241 1.19547 14.2007 1.206M14.2007 0.018C12.6404 0.0185029 11.2366 0.965738 10.6528 2.412L9.20302 5.832C9.12395 6.00619 9.01414 6.16472 8.87884 6.3L8.73476 6.444C8.14458 7.03095 7.19078 7.03095 6.6006 6.444L4.50245 4.311C3.91227 3.72405 2.95848 3.72405 2.36829 4.311L0 6.651L11.3552 18L13.6965 15.66C13.9808 15.3778 14.1407 14.9939 14.1407 14.5935C14.1407 14.1931 13.9808 13.8092 13.6965 13.527L11.5713 11.403C10.9851 10.8162 10.9851 9.86578 11.5713 9.279L11.7154 9.126C11.8567 8.9939 12.0177 8.88459 12.1926 8.802L15.6145 7.353C17.3048 6.66895 18.2752 4.8857 17.931 3.09582C17.5869 1.30594 16.0243 0.00916196 14.2007 0V0.018ZM0.900491 9.207L0 10.053L7.95134 18L8.8068 17.145L0.900491 9.207Z" fill="currentColor"/></symbol>
+    <symbol id="i-payment" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.029 0 0 4.029 0 9C0 13.97 4.029 18 9 18C13.971 18 18 13.97 18 9C18 4.029 13.971 0 9 0ZM13 10L12.97 10.03L9.75 6.81V14H8.25V6.811L5.03 10.031L5 10V7.939L9 3.939L13 7.939V10Z" fill="currentColor"/></symbol>
+    <symbol id="i-insight" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.1685 3.936C13.8355 1.785 11.5295 0.5 9.00147 0.5C6.47047 0.5 4.16347 1.786 2.83047 3.94C2.14747 5.045 2.03447 6.434 2.52947 7.657L5.10647 14.028V15.369L7.23847 17.5H10.7635L12.8955 15.369V14.028L15.4725 7.653C15.9665 6.43 15.8535 5.04 15.1685 3.936ZM11.6955 14.872L10.2665 16.3H7.73547L6.30647 14.872V13.5H11.6955V14.872ZM8.20047 12.3V6.729C8.20047 6.288 8.55947 5.929 9.00047 5.929C9.44147 5.929 9.80047 6.288 9.80047 6.729V12.3H8.20047ZM14.3595 7.204L12.2995 12.3H11.0005V6.729C11.0005 5.625 10.1045 4.729 9.00047 4.729C7.89547 4.729 7.00047 5.624 7.00047 6.729V12.3H5.70247L3.64147 7.207C3.28947 6.337 3.36847 5.352 3.85047 4.572C4.96347 2.773 6.88947 1.7 9.00147 1.7C11.1115 1.7 13.0355 2.772 14.1485 4.568C14.6325 5.348 14.7115 6.333 14.3595 7.204Z" fill="currentColor"/></symbol>
+    <symbol id="i-ai" viewBox="0 0 18 18"><path d="M14.11 3.89L14.98 6.04L15.85 3.89L18 3.02L15.85 2.15L14.98 0L14.11 2.15L11.96 3.02L14.11 3.89ZM8.99 3.23L10.46 6.88L10.65 7.35L11.12 7.54L14.77 9.01L11.12 10.48L10.65 10.67L10.46 11.14L8.99 14.79L7.52 11.14L7.33 10.67L6.86 10.48L3.21 9.01L6.86 7.54L7.33 7.35L7.52 6.88L8.99 3.23ZM8.99 0.03L6.4 6.43L0 9.01L6.4 11.6L8.99 18L11.58 11.6L17.98 9.01L11.58 6.42L8.99 0.03ZM1.71 16.29L2.4 18L3.09 16.29L4.8 15.6L3.09 14.91L2.4 13.2L1.71 14.91L0 15.6L1.71 16.29Z" fill="currentColor"/></symbol>
+  </svg>
+  <script type="application/json" id="icon-manifest">{"source":"knowledge/assets/icons","icons":{"i-add":"global-controls/add.svg","i-close":"global-controls/close.svg","i-check":"status-icons/yes.svg","i-indeterminate":"status-icons/indeterminate.svg","i-chevron-down":"arrows-and-chevrons/chevron-down.svg","i-chevron-up":"arrows-and-chevrons/chevron-up.svg","i-chevron-left":"arrows-and-chevrons/chevron-left.svg","i-chevron-right":"arrows-and-chevrons/chevron-right.svg","i-chevron-dbl-left":"arrows-and-chevrons/chevron-double-left.svg","i-chevron-dbl-right":"arrows-and-chevrons/chevron-double-right.svg","i-calendar":"media/calendar.svg","i-document":"media/document.svg","i-file":"media/file-attachment.svg","i-image":"media/image.svg","i-pdf":"media/document-pdf.svg","i-time":"media/time.svg","i-camera":"media/camera.svg","i-location":"media/location.svg","i-upload":"global-controls/upload.svg","i-download":"global-controls/download.svg","i-delete":"global-controls/delete.svg","i-search":"global-controls/search.svg","i-clear":"global-controls/clear.svg","i-edit":"global-controls/edit.svg","i-view":"global-controls/view.svg","i-hidden":"global-controls/hidden.svg","i-filter":"global-controls/filter.svg","i-sort":"global-controls/sort.svg","i-refresh":"global-controls/refresh.svg","i-more-v":"global-controls/menu-more-vertical.svg","i-more-h":"global-controls/menu-more-horizontal.svg","i-user":"informative/user.svg","i-avatar":"informative/avatar.svg","i-help":"informative/help.svg","i-bell":"informative/alert.svg","i-tag":"informative/tag.svg","i-error":"status-icons/error.svg","i-success":"status-icons/success.svg","i-warning":"status-icons/warning.svg","i-information":"status-icons/information.svg","i-menu":"global-controls/menu.svg","i-home":"global-controls/home.svg","i-collapse":"global-controls/collapse.svg","i-expand":"global-controls/expand.svg","i-account":"products-and-services/account.svg","i-card":"products-and-services/card.svg","i-payments":"products-and-services/payments-and-transfers.svg","i-global":"informative/global.svg","i-external":"global-controls/new-window.svg","i-linkedin":"social/social-linkedin.svg","i-facebook":"social/social-facebook-2.svg","i-twitter":"social/social-twitter.svg","i-youtube":"social/social-youtube-2.svg","i-stamp":"products-and-services/stamp.svg","i-payment":"products-and-services/payment.svg","i-insight":"products-and-services/insight.svg","i-ai":"products-and-services/ai.svg"}}</script>
+
+<script>
+  var body=document.body;
+  document.getElementById('themeToggle').onclick=function(){body.setAttribute('data-theme',body.getAttribute('data-theme')==='dark'?'light':'dark');};
+  var fw=document.getElementById('fw'),fwv=document.getElementById('fwv'),frame=document.getElementById('frame');
+  fw.addEventListener('input',function(){var v=+fw.value; frame.style.setProperty('--fw', v>=1600?'100%':v+'px'); fwv.textContent=v>=1600?'full':v+'px';});
+  var toast=document.getElementById('toast'),tt;
+  function showToast(m){toast.textContent=m;toast.classList.add('on');clearTimeout(tt);tt=setTimeout(function(){toast.classList.remove('on');},1800);}
+  document.querySelectorAll('[data-toast]').forEach(function(b){b.onclick=function(){showToast(b.getAttribute('data-toast'));};});
+
+  // interaction motion is governed by CSS scale tokens (no JS)
+
+  // modality — Tab announces keyboard focus, pointer suppresses it (base scaffold wiring)
+  (function(){
+    var root=document.documentElement;
+    document.addEventListener('mousedown',function(){ root.setAttribute('data-modality','pointer'); },true);
+    document.addEventListener('touchstart',function(){ root.setAttribute('data-modality','pointer'); },true);
+    document.addEventListener('keydown',function(e){ if(e.key==='Tab'){ root.setAttribute('data-modality','keyboard'); } },true);
+  })();
+
+  /* ===================== Tranche 8 · Navigation tail ===================== */
+  (function(){
+
+    /* generic DISCLOSURE helper (same contract as T7): a real <button> (aria-expanded)
+       wired to a panel. Esc closes + returns focus; overlay panels also close on outside-click. */
+    function makeDisclosure(toggle, panel, opts){
+      opts = opts || {};
+      function isOpen(){ return toggle.getAttribute('aria-expanded')==='true'; }
+      function open(){ toggle.setAttribute('aria-expanded','true'); if(opts.overlay){ panel.classList.add('on'); } else { panel.hidden=false; } }
+      function close(returnFocus){ toggle.setAttribute('aria-expanded','false'); if(opts.overlay){ panel.classList.remove('on'); } else { panel.hidden=true; } if(returnFocus){ toggle.focus({preventScroll:true}); } }
+      toggle.addEventListener('click', function(){ isOpen() ? close(false) : open(); });
+      toggle.addEventListener('keydown', function(e){ if(e.key==='Escape' && isOpen()){ close(true); } });
+      panel.addEventListener('keydown', function(e){ if(e.key==='Escape'){ e.stopPropagation(); close(true); } });
+      if(opts.overlay){ document.addEventListener('click', function(e){ if(isOpen() && !panel.contains(e.target) && !toggle.contains(e.target)){ close(false); } }); }
+      return {open:open, close:close, isOpen:isOpen};
+    }
+    function prefersReduced(){ return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
+
+    /* ---------------- A · BOTTOM TAB BAR — switch destination; "More" opens the sheet ---------------- */
+    (function(){
+      var bar=document.getElementById('tabbar-demo'), title=document.getElementById('tab-panel-title');
+      if(bar){
+        [].slice.call(bar.querySelectorAll('.tabbar-item[data-tab]')).forEach(function(item){
+          item.addEventListener('click', function(e){
+            e.preventDefault();
+            bar.querySelectorAll('.tabbar-item[aria-current]').forEach(function(i){ i.removeAttribute('aria-current'); });
+            item.setAttribute('aria-current','page');
+            if(title) title.textContent=item.getAttribute('data-tab');
+          });
+        });
+      }
+      // floating-pill variant — same current-state behaviour (icon-only)
+      var fbar=document.querySelector('.tabbar-float');
+      if(fbar){
+        [].slice.call(fbar.querySelectorAll('.tabfloat-item')).forEach(function(item){
+          item.addEventListener('click', function(e){
+            e.preventDefault();
+            fbar.querySelectorAll('.tabfloat-item[aria-current]').forEach(function(i){ i.removeAttribute('aria-current'); i.classList.remove('active'); });
+            item.setAttribute('aria-current','page'); item.classList.add('active');
+          });
+        });
+      }
+    })();
+
+    /* ---------------- Shared bottom SHEET (modal, focus-trapped) for "More" ---------------- */
+    (function(){
+      var scrim=document.getElementById('more-scrim'), sheet=document.getElementById('more-sheet'),
+          opener=document.getElementById('tab-more'), closeBtn=document.getElementById('more-close');
+      if(!scrim||!sheet||!opener||!closeBtn) return;
+      var bgEls=[document.querySelector('.top'), document.querySelector('.wrap')].filter(Boolean);
+      var lastOpener=null;
+      function focusables(root){ return [].slice.call(root.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),[tabindex]:not([tabindex="-1"])')).filter(function(el){ return el.offsetParent!==null; }); }
+      function openSheet(){ lastOpener=opener; sheet.classList.add('on'); scrim.classList.add('on'); sheet.setAttribute('aria-hidden','false'); opener.setAttribute('aria-expanded','true'); bgEls.forEach(function(el){ el.setAttribute('inert',''); el.setAttribute('aria-hidden','true'); }); var f=focusables(sheet); (f[0]||closeBtn).focus({preventScroll:true}); }
+      function closeSheet(){ if(!sheet.classList.contains('on')) return; sheet.classList.remove('on'); scrim.classList.remove('on'); sheet.setAttribute('aria-hidden','true'); opener.setAttribute('aria-expanded','false'); bgEls.forEach(function(el){ el.removeAttribute('inert'); el.removeAttribute('aria-hidden'); }); if(lastOpener){ lastOpener.focus({preventScroll:true}); } }
+      opener.addEventListener('click', openSheet);
+      scrim.addEventListener('click', closeSheet);
+      closeBtn.addEventListener('click', closeSheet);
+      document.addEventListener('keydown', function(e){
+        if(!sheet.classList.contains('on')) return;
+        if(e.key==='Escape'){ closeSheet(); return; }
+        if(e.key==='Tab'){ var f=focusables(sheet); if(!f.length) return; var first=f[0], last=f[f.length-1];
+          if(e.shiftKey && document.activeElement===first){ e.preventDefault(); last.focus(); }
+          else if(!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); } }
+      });
+    })();
+
+    /* ---------------- B · IN-PAGE NAV — scroll-spy + focus-moving anchors + back-to-top ---------------- */
+    (function(){
+      var scroll=document.getElementById('inpage-scroll');
+      if(!scroll) return;
+      var links=[].slice.call(scroll.querySelectorAll('.anchorlink'));
+      var byId={}; links.forEach(function(l){ byId[l.getAttribute('href').slice(1)]=l; });
+      // anchor click → scroll within the container + move focus to the target section
+      links.forEach(function(link){
+        link.addEventListener('click', function(e){
+          var id=link.getAttribute('href').slice(1), target=document.getElementById(id);
+          if(!target) return;
+          e.preventDefault();
+          target.scrollIntoView({behavior: prefersReduced()?'auto':'smooth', block:'start'});
+          target.focus({preventScroll:true});
+        });
+      });
+      // scroll-spy — highlight the section nearest the top of the scroll container
+      var sections=[].slice.call(scroll.querySelectorAll('.doc'));
+      if('IntersectionObserver' in window){
+        var visible={};
+        var io=new IntersectionObserver(function(entries){
+          entries.forEach(function(en){ visible[en.target.id]=en.isIntersecting?en.boundingClientRect.top:Infinity; });
+          var best=null, bestTop=Infinity;
+          sections.forEach(function(s){ var t=visible[s.id]; if(t!==undefined && t!==Infinity && t<bestTop){ bestTop=t; best=s.id; } });
+          if(best){ links.forEach(function(l){ l.removeAttribute('aria-current'); }); if(byId[best]) byId[best].setAttribute('aria-current','true'); }
+        }, {root:scroll, rootMargin:'0px 0px -70% 0px', threshold:0});
+        sections.forEach(function(s){ io.observe(s); });
+      }
+      // back-to-top
+      var btt=document.getElementById('backtotop'), bttBtn=document.getElementById('backtotop-btn');
+      scroll.addEventListener('scroll', function(){ if(scroll.scrollTop>120){ btt.classList.add('show'); } else { btt.classList.remove('show'); } });
+      if(bttBtn) bttBtn.addEventListener('click', function(){ scroll.scrollTo({top:0, behavior: prefersReduced()?'auto':'smooth'}); });
+      // narrow-width "Contents" disclosure
+      var ct=document.getElementById('inpage-contents-t'), nav=document.getElementById('inpage-nav');
+      if(ct && nav) makeDisclosure(ct, nav, {overlay:false});
+    })();
+
+    /* ---------------- C · FOOTER NAV — column accordions (narrow) + region switcher ---------------- */
+    (function(){
+      [].slice.call(document.querySelectorAll('#footer-demo .footgroup-h')).forEach(function(h){
+        var p=document.getElementById(h.getAttribute('aria-controls'));
+        if(p) makeDisclosure(h, p, {overlay:false}); // start expanded; CSS locks them open at wide widths
+      });
+      var rt=document.getElementById('region-toggle'), rp=document.getElementById('region-pop');
+      if(rt && rp) makeDisclosure(rt, rp, {overlay:true});
+    })();
+
+    /* ---------------- E · STEPPER (journey) — interactive: Back/Continue, click-to-jump-back, live region ---------------- */
+    (function(){
+      var stepper=document.getElementById('stepper-h');
+      if(!stepper) return;
+      var steps=[].slice.call(stepper.querySelectorAll('.step'));
+      var labels=steps.map(function(s){ return s.querySelector('.step-label').textContent; });
+      var N=steps.length, cur=1;
+      var live=document.getElementById('step-live'), back=document.getElementById('step-back'), next=document.getElementById('step-next');
+      var spFill=document.getElementById('sp-fill'), spCount=document.getElementById('sp-count'), spName=document.getElementById('sp-name');
+      var CHECK='<svg aria-hidden="true"><use href="#i-check"/></svg>';
+      function render(announce){
+        steps.forEach(function(s,i){
+          var btn=s.querySelector('.step-btn'), marker=s.querySelector('.step-marker');
+          s.classList.remove('done','current'); btn.removeAttribute('aria-current');
+          if(i<cur){ s.classList.add('done'); marker.innerHTML=CHECK; btn.disabled=false; }
+          else if(i===cur){ s.classList.add('current'); marker.textContent=String(i+1); btn.disabled=false; btn.setAttribute('aria-current','step'); }
+          else { marker.textContent=String(i+1); btn.disabled=true; }
+        });
+        if(back) back.disabled = cur===0;
+        if(next) next.textContent = cur===N-1 ? 'Submit' : 'Continue';
+        var pct=Math.round(((cur+1)/N)*100);
+        if(spFill) spFill.style.width=pct+'%';
+        if(spCount) spCount.textContent='Step '+(cur+1)+' of '+N;
+        if(spName) spName.textContent=labels[cur];
+        if(live && announce) live.textContent='Step '+(cur+1)+' of '+N+': '+labels[cur];
+      }
+      steps.forEach(function(s,i){ s.querySelector('.step-btn').addEventListener('click', function(){ if(i<=cur){ cur=i; render(true); } }); });
+      if(next) next.addEventListener('click', function(){ if(cur<N-1){ cur++; render(true); } else if(live){ live.textContent='Application submitted.'; } });
+      if(back) back.addEventListener('click', function(){ if(cur>0){ cur--; render(true); } });
+      render(false);
+    })();
+
+  })();
+
+</script>
+</body>
+</html>

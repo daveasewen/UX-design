@@ -27,6 +27,9 @@
 ## ✓ _proforma/Tranche-7-interactive.html — PASS
 - stats: {'hardcode_leaks': 0, 'real_icons': 44, 'provisional': [], 'refs': '14/14', 'asset_paths': '44/44 real'}
 
+## ✓ _proforma/Tranche-8-interactive.html — PASS
+- stats: {'hardcode_leaks': 0, 'real_icons': 57, 'provisional': [], 'refs': '23/23', 'asset_paths': '57/57 real'}
+
 ---
 Universal rules gated: real-icons-only · no-hardcode-colour · refs-resolve · icon-buttons-named · manifest-paths-real.
 Mode rules (monochrome/near-black/colour=meaning/square) are NOT gated here — they are the monochrome-base subset (see _proforma/_PROFORMA-RULES.md).

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apollo mono · Reconciled components — Tab bar + Stepper</title>
+<!-- RECONCILIATION CANDIDATE (2026-07-17) — ONE tab-bar skeleton, mode-tokenised, merging what already existed:
+     • standard labelled bar + the LINE→FILLED (-active) glyph swap for the current item  [snippets/Tab-bar.reference.html]
+     • the SLIDING-pill segmented control + the detached circular ISLAND in the same exclusive group  [snippets/Tab-bar.reference.html]
+     • the floating-pill aesthetic + destinations + detached AI island  [Neo-net v02.0 Figma, node 93-159087 / Tranche-8]
+     Modes: Apollo mono here (square standard bar; --radius:0). Apollo UI / SC override tokens (rounding, red) — never fork.
+     NON-DESTRUCTIVE: the snippet + Tranche-8 are untouched; this is a standalone candidate. Real icons only; tokens throughout. -->
+<style>
+:is(button,a,label,span,small,strong,em,b,i,li,figcaption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+  :root{ --ib-grow:1.045; --ib-press:0.955;
+    --bw-sm:1px; --bw-md:2px; --bw-lg:4px; --radius:0; --radius-round:50%; --radius-pill:999px;
+    --space-2:2px; --space-4:4px; --space-6:6px; --space-8:8px; --space-12:12px; --space-14:14px; --space-16:16px; --space-20:20px; --space-24:24px; --space-28:28px; --space-34:34px; --space-80:80px;
+    --dot:36px;  /* step-marker diameter; connectors centre on calc(--dot/2) */
+    --cap:0.723; --desc:0.232;  /* canon type metrics (type.css) — Univers cap/descender for the Component cap-trim */
+    --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+    --ease:160ms cubic-bezier(.4,0,.2,1); --slide:200ms cubic-bezier(.4,0,.2,1); --press:90ms cubic-bezier(0,0,.58,1); }
+  [data-theme="light"]{ --page:#FFFFFF; --raised:#FFFFFF; --ink:#333333; --ink2:#545454; --line:#D7D8D6; --line2:#EDEDED; --surf:#F3F3F3;
+    --pri:#1A1A1A; --pri-lbl:#FFFFFF; --icon:#333333; --icon-rev:#FFFFFF; --focus:#1A1A1A; --shadow:#00000026; }
+  [data-theme="dark"]{ --page:#000000; --raised:#1D1D1D; --ink:#FFFFFF; --ink2:#9B9B9B; --line:#707070; --line2:#3A3A3A; --surf:#212121;
+    --pri:#F2F2F2; --pri-lbl:#1A1A1A; --icon:#FFFFFF; --icon-rev:#1A1A1A; --focus:#FFFFFF; --shadow:#000000D9; }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:var(--font);background:var(--page);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.5;transition:background var(--ease),color var(--ease);}
+  .top{position:sticky;top:0;z-index:20;background:var(--page);border-bottom:var(--bw-sm) solid var(--line2);display:flex;align-items:center;justify-content:space-between;padding:var(--space-14) var(--space-28);gap:var(--space-12);flex-wrap:wrap;}
+  .top .t{font:500 15px/1 var(--font);} .top .t small{color:var(--ink2);font-weight:400;margin-left:var(--space-8);}
+  .ctrls{display:flex;align-items:center;gap:var(--space-16);}
+  .tgl{font:500 13px/1 var(--font);padding:var(--space-8) var(--space-14);border:var(--bw-sm) solid var(--line);background:transparent;color:var(--ink);cursor:pointer;}
+  .tgl:focus-visible{outline:var(--bw-md) solid var(--focus);outline-offset:2px;}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 var(--space-28) var(--space-80);}
+    .wctl{display:flex;align-items:center;gap:var(--space-8);font:400 12px/1 var(--font);color:var(--ink2);}
+  .wctl input[type=range]{accent-color:var(--ink);width:120px;} .wctl b{color:var(--ink);font-weight:500;min-width:40px;text-align:right;}
+  .frame{width:var(--fw,100%);max-width:100%;transition:width .08s linear;}
+  section{padding:var(--space-34) 0;border-top:var(--bw-sm) solid var(--line2);}
+  section:first-of-type{border-top:0;}
+  .h{display:flex;align-items:baseline;gap:var(--space-12);margin-bottom:var(--space-6);flex-wrap:wrap;}
+  .h h2{font:500 19px/1.2 var(--font);margin:0;} .h .tag{font:500 11px/1 var(--font);color:var(--ink2);text-transform:capitalize;}
+  .sub{color:var(--ink2);font:400 13px/1.5 var(--font);margin:0 0 var(--space-20);max-width:66ch;}
+  .grouplbl{font:600 11px/1 var(--font);color:var(--ink2);letter-spacing:.02em;margin:var(--space-24) 0 var(--space-12);}
+  .hintline{font:400 12px/1.5 var(--font);color:var(--ink2);margin:var(--space-16) 0 0;max-width:76ch;}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:calc(-1 * var(--space-2));overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+  .device{width:400px;max-width:100%;border:var(--bw-md) solid var(--line);border-radius:var(--radius);background:var(--page);padding:var(--space-16);}
+
+  /* ===== Tab bar — reconciled ===== */
+  /* line→filled glyph swap (icon-source convention, mined from the canon snippet): current swaps line→-active glyph */
+  .tabbar-ic .ic-fill{display:none;}
+  .tabbar-item[aria-current="page"] .tabbar-ic .ic-line{display:none;}
+  .tabbar-item[aria-current="page"] .tabbar-ic .ic-fill{display:block;}
+
+  /* A) standard full-width labelled bar (mono) — current = filled glyph + ink label + ink top-indicator + aria-current */
+  .tabbar{display:flex;align-items:stretch;background:var(--raised);border-top:var(--bw-sm) solid var(--line);}
+  .tabbar-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--space-4);
+    min-height:56px;padding:var(--space-8) var(--space-4);border:0;border-top:var(--bw-md) solid transparent;background:transparent;color:var(--ink2);
+    text-decoration:none;font-family:var(--font);font-size:12px;font-weight:500;line-height:16px;cursor:pointer;position:relative;
+    text-align:center;  /* label CAN wrap ("Move money") → canon Editorial caption 12/16 (4px line-height), centred: flex centres the box, not the text */
+    transition:color var(--ease),filter var(--press);}
+  .tabbar-item:active{filter:brightness(.85);}
+  .tabbar-item:focus-visible{outline:var(--bw-md) solid var(--focus);outline-offset:calc(-1 * var(--space-2));}
+  .tabbar-item[aria-current="page"]{color:var(--ink);border-top-color:var(--ink);font-weight:600;}
+  .tabbar-ic{position:relative;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;}
+  .tabbar-ic svg{width:24px;height:24px;fill:currentColor;}
+  .tab-badge{position:absolute;top:calc(-1 * var(--space-4));right:calc(-1 * var(--space-8));min-width:16px;height:16px;padding:0 var(--space-4);
+    border-radius:var(--radius-pill);background:var(--pri);color:var(--pri-lbl);font:600 10px/1 var(--font);
+    display:inline-flex;align-items:center;justify-content:center;text-box-trim:none;}  /* flex-centre the figure; opt out of the global cap-trim so the digit sits dead-centre */
+
+  /* B) floating pill / segmented (Neo-net) — SLIDING pill + detached island in the same exclusive group */
+  .pillbar{display:flex;align-items:center;gap:var(--space-12);width:100%;}
+  .seg{position:relative;flex:1;display:flex;align-items:center;height:56px;padding:var(--space-4);
+    background:var(--raised);border:var(--bw-sm) solid var(--line2);border-radius:var(--radius-pill);box-shadow:0 2px 8px var(--shadow);}
+  .ind{position:absolute;top:var(--space-4);bottom:var(--space-4);left:var(--ind-l,var(--space-4));width:var(--ind-w,0);
+    background:var(--pri);border-radius:var(--radius-pill);z-index:0;transition:left var(--slide),width var(--slide);}
+  .seg-item{position:relative;z-index:1;flex:1;height:100%;display:inline-flex;align-items:center;justify-content:center;
+    color:var(--icon);text-decoration:none;cursor:pointer;border-radius:var(--radius-pill);transition:color var(--slide);}
+  .seg-item[aria-current="page"]{color:var(--icon-rev);}      /* glyph inverts as the pill arrives */
+  .seg-item:focus-visible{outline:var(--bw-md) solid var(--focus);outline-offset:var(--space-2);}
+  .seg-item svg{width:24px;height:24px;fill:currentColor;pointer-events:none;}
+  /* the AI island is an INDEPENDENT toggle (aria-pressed) — it can be active at the same time as a cluster item; no hover state */
+  .seg-fab{width:56px;height:56px;flex:none;border-radius:var(--radius-round);display:inline-flex;align-items:center;justify-content:center;
+    color:var(--icon);cursor:pointer;background:var(--raised);border:var(--bw-sm) solid var(--line2);box-shadow:0 2px 8px var(--shadow);padding:0;
+    transition:color var(--slide),background var(--slide),filter var(--press);}
+  .seg-fab svg{width:24px;height:24px;fill:currentColor;pointer-events:none;}
+  .seg-fab:active{filter:brightness(.85);}
+  .seg-fab:focus-visible{outline:var(--bw-md) solid var(--focus);outline-offset:var(--space-2);}
+  .seg-fab[aria-pressed="true"]{background:var(--pri);color:var(--icon-rev);box-shadow:inset 0 0 0 4px var(--raised),0 2px 8px var(--shadow);}
+
+  /* ===== Stepper (journey) — reconciled ===== */
+  .stepper-shell{container-type:inline-size;}
+
+  /* FULL circular horizontal (from T1) — shown at wider widths */
+  .stepper{display:flex;list-style:none;margin:0 0 var(--space-24);padding:0;}
+  .step{flex:1;display:flex;flex-direction:column;align-items:center;gap:var(--space-12);position:relative;text-align:center;min-width:0;}
+  .step:not(:first-child)::before{content:"";position:absolute;top:calc(var(--dot) / 2);right:50%;width:100%;height:0;border-top:var(--bw-md) solid var(--line);z-index:0;}
+  .step.done::before,.step.current::before{border-top-color:var(--pri);}
+  .dot{position:relative;z-index:1;width:var(--dot);height:var(--dot);border-radius:var(--radius-round);display:inline-flex;align-items:center;justify-content:center;flex:none;
+    border:var(--bw-md) solid var(--line);background:var(--page);color:var(--ink2);font:500 15px/1 var(--font);cursor:pointer;padding:0;
+    transition:background var(--ease),border-color var(--ease),color var(--ease),transform var(--spring),filter var(--press);}
+  .dot svg{width:18px;height:18px;fill:currentColor;}
+  .dot:hover{transform:scale(var(--btn-grow));} .dot:active{transform:scale(var(--btn-press));filter:brightness(.85);}
+  .dot:focus-visible{outline:var(--bw-md) solid var(--focus);outline-offset:var(--space-4);}
+  .dot:disabled{cursor:default;} .dot:disabled:hover{transform:none;}
+  .step.done .dot{background:var(--pri);border-color:var(--pri);color:var(--pri-lbl);}
+  .step.current .dot{background:var(--pri);border-color:var(--pri);color:var(--pri-lbl);box-shadow:0 0 0 4px var(--page),0 0 0 6px var(--pri);}
+  /* labels use the canon type composites (knowledge/canon/type.css), not raw shorthand:
+     single-line labels = Component (cap-trim via the global leading-trim rule + a 4px grid slot);
+     horizontal labels wrap → Editorial body-small metrics (14/20, full 4px line-height). */
+  .step__l{font-family:var(--font);font-size:14px;font-weight:400;color:var(--ink2);}                        /* = Editorial body-small / Component caption size */
+  .stepper:not(.vertical) .step__l{line-height:20px;max-width:14ch;}                                          /* horizontal wraps → 4px line-height (Editorial) */
+  .stepper.vertical .step__l{line-height:1;min-height:20px;display:inline-flex;align-items:center;max-width:none;}  /* single line → Component 20px slot (cap-trimmed) */
+  .step.current .step__l{color:var(--ink);font-weight:500;}
+  .step.done .step__l{color:var(--ink);}
+
+  /* MINI collapsed form (from T1 + canon Progress-tracker track) — shown at narrow widths */
+  .stepper-mini{display:none;margin:0 0 var(--space-24);max-width:420px;}
+  .mini-lbl{font:500 14px/1.3 var(--font);color:var(--ink);margin-bottom:var(--space-8);}
+  .mini-lbl b{color:var(--ink2);font-weight:400;margin-left:var(--space-6);}
+  /* square in mono (rule 4) — a progress track is not a circular atom, so it takes --radius (0), not the pill */
+  .mini-track{height:8px;background:var(--surf);border-radius:var(--radius);overflow:hidden;}
+  .mini-fill{height:100%;width:0;background:var(--pri);border-radius:var(--radius);transition:width var(--spring);}
+
+  /* the collapse: circular row → mini track (T1's rule, container-driven) */
+  @container (max-width:520px){ .stepper{display:none;} .stepper-mini{display:block;} }
+
+  .step-controls{display:flex;gap:var(--space-12);margin-top:var(--space-16);}
+
+  /* Vertical variant (from T8) */
+  .stepper.vertical{flex-direction:column;gap:var(--space-4);margin-bottom:0;}
+  .stepper.vertical .step{flex-direction:row;align-items:flex-start;gap:var(--space-16);text-align:left;padding-bottom:var(--space-16);}
+  /* vertical connector — drawn DOWNWARD from each dot's centre to the next dot's top edge, so it closes the
+     step's bottom padding AND the flex gap (the old height:100% left gaps). Dots are opaque + above it. */
+  .stepper.vertical .step:not(:first-child)::before{display:none;}
+  .stepper.vertical .step:not(:last-child)::after{content:"";position:absolute;z-index:0;
+    top:calc(var(--dot) / 2);left:calc(var(--dot) / 2 - var(--bw-md) / 2);width:0;
+    height:calc(100% - (var(--dot) / 2) + var(--space-4));
+    border-left:var(--bw-md) solid var(--line);}
+  .stepper.vertical .step.done::after{border-left-color:var(--pri);}
+  /* vertical stack = pure 4px rhythm, slot-edge to slot-edge (descender guard is baked into the slot — vertical-stack rule);
+     padding-top:8 centres the 20px label slot against the 36px dot ((36-20)/2). */
+  .stepper.vertical .step__txt{display:flex;flex-direction:column;gap:var(--space-4);padding-top:var(--space-8);}
+  .step__sub{font-family:var(--font);font-size:12px;font-weight:400;line-height:1;min-height:16px;display:inline-flex;align-items:center;color:var(--ink2);}  /* Component legal — cap-trim + 4px slot */
+
+  @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition-duration:.01ms!important;} .ind{transition:none!important;}}
+</style>
+</head>
+<body data-theme="light">
+  <div class="top">
+    <span class="t">Apollo mono <small>Reconciled candidates · Stepper + Tab bar · real icons · interactive</small></span>
+    <span class="ctrls"><label class="wctl">Width <input type="range" id="fw" min="320" max="1000" value="1000"><b id="fwv">full</b></label><button class="tgl" id="themeToggle" type="button">◐ Light / dark</button></span>
+  </div>
+  <div class="wrap">
+  <div class="frame" id="frame">
+
+    <section aria-labelledby="s-step">
+      <div class="h"><h2 id="s-step">Stepper — journey</h2><span class="tag">organism · reconciled</span></div>
+      <p class="sub">One component, merged from what already existed in Apollo mono: the circular dot markers and the responsive collapse-to-line from Tranche&nbsp;1, made interactive per Tranche&nbsp;8. Drag the width slider below 520px to see it collapse to the compact “Step N of M” track (the canon Progress-tracker form).</p>
+
+      <div class="stepper-shell">
+        <p class="grouplbl">Circular · horizontal · interactive · collapses when narrow</p>
+
+        <!-- FULL circular (from T1) -->
+        <ol class="stepper" id="stepper-h" aria-label="Application progress">
+          <li class="step" data-i="0"><button class="dot" type="button"></button><span class="step__l">Your details</span></li>
+          <li class="step" data-i="1"><button class="dot" type="button"></button><span class="step__l">Verify identity</span></li>
+          <li class="step" data-i="2"><button class="dot" type="button"></button><span class="step__l">Choose account</span></li>
+          <li class="step" data-i="3"><button class="dot" type="button"></button><span class="step__l">Review &amp; submit</span></li>
+        </ol>
+
+        <!-- MINI collapsed (from T1 + canon track), driven by the same state -->
+        <div class="stepper-mini" aria-hidden="true">
+          <p class="mini-lbl">Step <span id="mini-n">2</span> of <span id="mini-m">4</span> <b id="mini-name">Verify identity</b></p>
+          <div class="mini-track"><div class="mini-fill" id="mini-fill"></div></div>
+        </div>
+
+        <div class="step-controls">
+          <button class="btn ghost sm" type="button" id="step-back">Back</button>
+          <button class="btn pri sm" type="button" id="step-next">Continue</button>
+        </div>
+        <p class="sr-only" aria-live="polite" id="step-live"></p>
+      </div>
+
+      <p class="grouplbl">Vertical</p>
+      <ol class="stepper vertical" aria-label="Transfer setup (illustrative)">
+        <li class="step done"><span class="dot" role="img" aria-label="Completed"><svg aria-hidden="true"><use href="#i-check"/></svg></span><span class="step__txt"><span class="step__l">Choose payee</span><span class="step__sub">Sarah Okafor · ••• 4471</span></span></li>
+        <li class="step current" aria-current="step"><span class="dot">2</span><span class="step__txt"><span class="step__l">Enter amount</span><span class="step__sub">£250.00</span></span></li>
+        <li class="step"><span class="dot">3</span><span class="step__txt"><span class="step__l">Review</span><span class="step__sub">Check the details</span></span></li>
+        <li class="step"><span class="dot">4</span><span class="step__txt"><span class="step__l">Confirm</span><span class="step__sub">Authorise the payment</span></span></li>
+      </ol>
+
+      <p class="hintline"><b>Reconciled from:</b> circular dots + responsive collapse = <code>Tranche-1-interactive.html</code>; interactivity (Back/Continue, click a done step to jump back, <code>aria-current="step"</code>, live region) = <code>Tranche-8-interactive.html</code>; compact track = the canon <code>Progress-tracker</code>. Full + mini share one state object, so they never disagree. Nothing above was overwritten — this is a standalone candidate.</p>
+    </section>
+
+    <section aria-labelledby="s-tab">
+      <div class="h"><h2 id="s-tab">Tab bar</h2><span class="tag">organism · reconciled</span></div>
+      <p class="sub">One skeleton, two variants, mode-tokenised (Apollo mono here; Apollo UI / SC override tokens — never fork). Merges the canon Tab-bar candidate’s decisions — the line→filled glyph swap and the sliding pill — with the Neo-net floating-pill reference and its independent AI island. Tap either bar to switch destination.</p>
+
+      <p class="grouplbl">A · standard labelled bar — Home · Accounts · Approve · Pay · Insights; current swaps to the filled glyph + ink top-indicator</p>
+      <div class="device">
+        <nav class="tabbar" data-tabgroup aria-label="Primary">
+          <a class="tabbar-item" href="#" aria-current="page">
+            <span class="tabbar-ic"><svg class="ic-line" aria-hidden="true"><use href="#i-home"/></svg><svg class="ic-fill" aria-hidden="true"><use href="#i-home-a"/></svg></span>Home</a>
+          <a class="tabbar-item" href="#">
+            <span class="tabbar-ic"><svg class="ic-line" aria-hidden="true"><use href="#i-account"/></svg><svg class="ic-fill" aria-hidden="true"><use href="#i-account-a"/></svg></span>Accounts</a>
+          <a class="tabbar-item" href="#">
+            <span class="tabbar-ic"><svg class="ic-line" aria-hidden="true"><use href="#i-stamp"/></svg><svg class="ic-fill" aria-hidden="true"><use href="#i-stamp-a"/></svg><span class="tab-badge">2<span class="sr-only"> awaiting approval</span></span></span>Approve</a>
+          <a class="tabbar-item" href="#">
+            <span class="tabbar-ic"><svg class="ic-line" aria-hidden="true"><use href="#i-payment"/></svg><svg class="ic-fill" aria-hidden="true"><use href="#i-payment-a"/></svg></span>Pay</a>
+          <a class="tabbar-item" href="#">
+            <span class="tabbar-ic"><svg class="ic-line" aria-hidden="true"><use href="#i-insight"/></svg><svg class="ic-fill" aria-hidden="true"><use href="#i-insight-a"/></svg></span>Insights</a>
+        </nav>
+      </div>
+
+      <p class="grouplbl">B · floating pill (Neo-net) — same five destinations, icon-only; sliding pill + an independent AI island</p>
+      <div class="device">
+        <div class="pillbar" data-pillgroup>
+          <nav class="seg" aria-label="Primary">
+            <span class="ind" aria-hidden="true"></span>
+            <a class="seg-item" href="#" aria-current="page" aria-label="Home"><svg aria-hidden="true"><use href="#i-home"/></svg></a>
+            <a class="seg-item" href="#" aria-label="Accounts"><svg aria-hidden="true"><use href="#i-account"/></svg></a>
+            <a class="seg-item" href="#" aria-label="Approve"><svg aria-hidden="true"><use href="#i-stamp"/></svg></a>
+            <a class="seg-item" href="#" aria-label="Pay"><svg aria-hidden="true"><use href="#i-payment"/></svg></a>
+            <a class="seg-item" href="#" aria-label="Insights"><svg aria-hidden="true"><use href="#i-insight"/></svg></a>
+          </nav>
+          <button class="seg-fab" type="button" aria-pressed="false" aria-label="AI assistant"><svg aria-hidden="true"><use href="#i-ai"/></svg></button>
+        </div>
+      </div>
+
+      <p class="hintline"><b>Mined from</b> <code>snippets/Tab-bar.reference.html</code>: the line→filled (-active) glyph swap on the current item (colour is never the only signal — 1.4.1), the sliding pill (<code>left</code>+<code>width</code> to the current segment on the 200ms toggle easing, glyph inverting as it arrives), and the sliding pill idea. <b>From the Neo-net Figma:</b> the floating-pill aesthetic, the destinations, and the island as an AI action. <b>Ruling (Dave):</b> the AI island is an <b>independent toggle</b> (<code>aria-pressed</code>) — it can be active at the same time as a cluster item, so it is NOT in the cluster’s exclusive group (superseding the snippet’s Menu-island grouping). No hover states on either bar. <b>Modes:</b> square standard bar is Apollo mono (<code>--radius:0</code>); Apollo UI / SC round + re-introduce red by overriding tokens — one skeleton, no fork.</p>
+    </section>
+
+  </div>
+  </div>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-check" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.82617 15.685L0.0761719 9.93502L0.924172 9.08802L5.82617 13.988L17.0762 2.73901L17.9242 3.58701L5.82617 15.685Z" fill="currentColor"/></symbol>
+    <symbol id="i-home" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0L1 8V18H8V11.2H10V18H17V8L9 0ZM15.8 16.8H11.2V10H6.8V16.8H2.2V8.497L9 1.697L15.8 8.497V16.8Z" fill="currentColor"/></symbol>
+    <symbol id="i-home-a" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0L1 8V18H8V12H10V18H17V8L9 0Z" fill="currentColor"/></symbol>
+    <symbol id="i-account" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 5H1.5C0.675 5 0 5.675 0 6.5V16.5C0 17.325 0.675 18 1.5 18H16.5C17.325 18 18 17.325 18 16.5V6.5C18 5.675 17.325 5 16.5 5ZM16.8 16.5C16.8 16.663 16.663 16.8 16.5 16.8H1.5C1.337 16.8 1.2 16.663 1.2 16.5V6.5C1.2 6.337 1.337 6.2 1.5 6.2H16.5C16.663 6.2 16.8 6.337 16.8 6.5V16.5ZM3 12H5V10H3V12ZM14.8 2.6H3.2C2.537 2.6 2 3.137 2 3.8H16C16 3.137 15.463 2.6 14.8 2.6ZM12.8 0H5.2C4.537 0 4 0.537 4 1.2H14C14 0.537 13.463 0 12.8 0Z" fill="currentColor"/></symbol>
+    <symbol id="i-account-a" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 6H1.5C0.675 6 0 6.675 0 7.5V16.5C0 17.325 0.675 18 1.5 18H16.5C17.325 18 18 17.325 18 16.5V7.5C18 6.675 17.325 6 16.5 6ZM5 12H3V10H5V12ZM16 4.2C16 3.537 15.463 3 14.8 3H3.2C2.537 3 2 3.537 2 4.2V4.5H16V4.2ZM14 1.2C14 0.537 13.463 0 12.8 0H5.2C4.537 0 4 0.537 4 1.2V1.5H14V1.2Z" fill="currentColor"/></symbol>
+    <symbol id="i-stamp" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M14.2007 1.188C15.5238 1.10276 16.7021 2.01855 16.9453 3.32111C17.1885 4.62367 16.42 5.90258 15.1553 6.3L11.7064 7.713C11.3846 7.84403 11.0933 8.04013 10.8509 8.289L10.7068 8.433C10.1968 8.93739 9.90842 9.62386 9.9054 10.341C9.90137 11.0551 10.1873 11.7404 10.6978 12.24L12.859 14.4C12.9218 14.4574 12.9549 14.5402 12.9491 14.625C12.9513 14.7092 12.9187 14.7906 12.859 14.85L11.3552 16.344L1.68392 6.651L3.18774 5.148C3.24777 5.0892 3.32881 5.0568 3.41286 5.058C3.49379 5.05915 3.57117 5.09138 3.62898 5.148L5.76314 7.281C6.81682 8.32785 8.51854 8.32785 9.57222 7.281L9.7163 7.128C9.96116 6.89269 10.157 6.61129 10.2926 6.3L11.7604 2.853C12.1529 1.85093 13.1241 1.19547 14.2007 1.206M14.2007 0.018C12.6404 0.0185029 11.2366 0.965738 10.6528 2.412L9.20302 5.832C9.12395 6.00619 9.01414 6.16472 8.87884 6.3L8.73476 6.444C8.14458 7.03095 7.19078 7.03095 6.6006 6.444L4.50245 4.311C3.91227 3.72405 2.95848 3.72405 2.36829 4.311L0 6.651L11.3552 18L13.6965 15.66C13.9808 15.3778 14.1407 14.9939 14.1407 14.5935C14.1407 14.1931 13.9808 13.8092 13.6965 13.527L11.5713 11.403C10.9851 10.8162 10.9851 9.86578 11.5713 9.279L11.7154 9.126C11.8567 8.9939 12.0177 8.88459 12.1926 8.802L15.6145 7.353C17.3048 6.66895 18.2752 4.8857 17.931 3.09582C17.5869 1.30594 16.0243 0.00916196 14.2007 0V0.018ZM0.900491 9.207L0 10.053L7.95134 18L8.8068 17.145L0.900491 9.207Z" fill="currentColor"/></symbol>
+    <symbol id="i-stamp-a" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.94381 18L0 10.0577L1.06157 9.00534L8.99639 16.9296L7.94381 18ZM11.6953 9.13127C11.8313 8.99514 11.9935 8.88804 12.1721 8.81646L15.5907 7.35932C17.0345 6.78727 17.9872 5.39721 17.9998 3.84457C18.0123 2.29192 17.082 0.886702 15.6477 0.291475C14.2133 -0.303751 12.5612 0.0298632 11.4704 1.13502C11.1108 1.49861 10.8264 1.92959 10.6337 2.40326L9.17632 5.82123C9.11113 6.0015 9.01015 6.16672 8.87944 6.30695L8.7265 6.45986C8.13996 7.04542 7.18989 7.04542 6.60335 6.45986L4.4982 4.31913C3.91165 3.73356 2.96159 3.73356 2.37505 4.31913L0.431827 6.23499L11.7763 17.5773L13.6925 15.6614C14.2782 15.075 14.2782 14.1251 13.6925 13.5387L11.5604 11.4069C10.9747 10.8205 10.9747 9.87061 11.5604 9.28418L11.6953 9.13127Z" fill="currentColor"/></symbol>
+    <symbol id="i-payment" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.029 0 0 4.029 0 9C0 13.971 4.029 18 9 18C13.971 18 18 13.971 18 9C18 4.029 13.971 0 9 0ZM9 16.8C4.699 16.8 1.2 13.301 1.2 9C1.2 4.699 4.699 1.2 9 1.2C13.301 1.2 16.8 4.699 16.8 9C16.8 13.301 13.301 16.8 9 16.8ZM5 8.152V9.848L8.4 6.449V14H9.6V6.449L13 9.848V8.152L9 4.152L5 8.152Z" fill="currentColor"/></symbol>
+    <symbol id="i-payment-a" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.029 0 0 4.029 0 9C0 13.97 4.029 18 9 18C13.971 18 18 13.97 18 9C18 4.029 13.971 0 9 0ZM13 10L12.97 10.03L9.75 6.81V14H8.25V6.811L5.03 10.031L5 10V7.939L9 3.939L13 7.939V10Z" fill="currentColor"/></symbol>
+    <symbol id="i-insight" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.1685 3.936C13.8355 1.785 11.5295 0.5 9.00147 0.5C6.47047 0.5 4.16347 1.786 2.83047 3.94C2.14747 5.045 2.03447 6.434 2.52947 7.657L5.10647 14.028V15.369L7.23847 17.5H10.7635L12.8955 15.369V14.028L15.4725 7.653C15.9665 6.43 15.8535 5.04 15.1685 3.936ZM11.6955 14.872L10.2665 16.3H7.73547L6.30647 14.872V13.5H11.6955V14.872ZM8.20047 12.3V6.729C8.20047 6.288 8.55947 5.929 9.00047 5.929C9.44147 5.929 9.80047 6.288 9.80047 6.729V12.3H8.20047ZM14.3595 7.204L12.2995 12.3H11.0005V6.729C11.0005 5.625 10.1045 4.729 9.00047 4.729C7.89547 4.729 7.00047 5.624 7.00047 6.729V12.3H5.70247L3.64147 7.207C3.28947 6.337 3.36847 5.352 3.85047 4.572C4.96347 2.773 6.88947 1.7 9.00147 1.7C11.1115 1.7 13.0355 2.772 14.1485 4.568C14.6325 5.348 14.7115 6.333 14.3595 7.204Z" fill="currentColor"/></symbol>
+    <symbol id="i-insight-a" viewBox="0 0 18 18"><path d="M15.169 3.436C13.835 1.284 11.529 0 9.00098 0C6.47098 0 4.16398 1.286 2.83098 3.44C2.14698 4.545 2.03498 5.934 2.52898 7.156L4.28698 11.5H7.00098V6C7.00098 4.896 7.89598 4 9.00098 4C10.105 4 11.001 4.895 11.001 6V11.5H13.715L15.472 7.153C15.967 5.93 15.854 4.539 15.169 3.436Z" fill="currentColor"/><path d="M5.00098 13V16L7.00098 18H11.001L13.001 16V13H5.00098Z" fill="currentColor"/><path d="M8.50098 6C8.50098 5.724 8.72498 5.5 9.00098 5.5C9.27598 5.5 9.50098 5.724 9.50098 6V11.5H8.50098V6Z" fill="currentColor"/></symbol>
+    <symbol id="i-ai" viewBox="0 0 18 18"><path d="M14.11 3.89L14.98 6.04L15.85 3.89L18 3.02L15.85 2.15L14.98 0L14.11 2.15L11.96 3.02L14.11 3.89ZM8.99 3.23L10.46 6.88L10.65 7.35L11.12 7.54L14.77 9.01L11.12 10.48L10.65 10.67L10.46 11.14L8.99 14.79L7.52 11.14L7.33 10.67L6.86 10.48L3.21 9.01L6.86 7.54L7.33 7.35L7.52 6.88L8.99 3.23ZM8.99 0.03L6.4 6.43L0 9.01L6.4 11.6L8.99 18L11.58 11.6L17.98 9.01L11.58 6.42L8.99 0.03ZM1.71 16.29L2.4 18L3.09 16.29L4.8 15.6L3.09 14.91L2.4 13.2L1.71 14.91L0 15.6L1.71 16.29Z" fill="currentColor"/></symbol>
+  </svg>
+  <script type="application/json" id="icon-manifest">{"source":"knowledge/assets/icons","icons":{"i-check":"status-icons/yes.svg","i-home":"global-controls/home.svg","i-home-a":"global-controls/home-active.svg","i-account":"products-and-services/account.svg","i-account-a":"products-and-services/account-active.svg","i-stamp":"products-and-services/stamp.svg","i-stamp-a":"products-and-services/stamp-active.svg","i-payment":"products-and-services/payment-active.svg","i-payment-a":"products-and-services/payment.svg","i-insight":"products-and-services/insight.svg","i-insight-a":"products-and-services/insight-active.svg","i-ai":"products-and-services/ai.svg"}}</script>
+
+<script>
+  document.getElementById('themeToggle').onclick=function(){var b=document.body;b.setAttribute('data-theme',b.getAttribute('data-theme')==='dark'?'light':'dark');};
+
+  /* A) standard bar — exclusive set: tap makes it current (filled glyph swap + top-indicator + aria-current) */
+  document.querySelectorAll('[data-tabgroup]').forEach(function(group){
+    group.addEventListener('click',function(e){
+      var item=e.target.closest('.tabbar-item'); if(!item) return; e.preventDefault();
+      group.querySelectorAll('.tabbar-item').forEach(function(a){a.removeAttribute('aria-current');});
+      item.setAttribute('aria-current','page');
+    });
+  });
+
+  /* B) floating pill: the SEG cluster is one exclusive group (pill slides to the current segment via CSS
+     vars — data, not motion). The AI island is an INDEPENDENT aria-pressed toggle (Dave's ruling): it can
+     be active at the same time as a cluster item, and does not move/collapse the pill. */
+  document.querySelectorAll('[data-pillgroup]').forEach(function(group){
+    var seg=group.querySelector('.seg');
+    var segItems=[].slice.call(seg.querySelectorAll('.seg-item'));
+    function place(){
+      var a=seg.querySelector('.seg-item[aria-current="page"]');
+      if(a){ seg.style.setProperty('--ind-l',a.offsetLeft+'px'); seg.style.setProperty('--ind-w',a.offsetWidth+'px'); }
+      else { seg.style.setProperty('--ind-w','0px'); }
+    }
+    segItems.forEach(function(it){ it.addEventListener('click',function(e){ e.preventDefault();
+      segItems.forEach(function(x){x.removeAttribute('aria-current');}); it.setAttribute('aria-current','page'); place(); }); });
+    var fab=group.querySelector('.seg-fab');
+    if(fab){ fab.addEventListener('click',function(e){ e.preventDefault();
+      fab.setAttribute('aria-pressed', fab.getAttribute('aria-pressed')==='true' ? 'false' : 'true'); }); }
+    window.addEventListener('resize', place); place();
+  });
+  var fw=document.getElementById('fw'),fwv=document.getElementById('fwv'),frame=document.getElementById('frame');
+  fw.addEventListener('input',function(){var v=+fw.value;frame.style.setProperty('--fw',v>=1000?'100%':v+'px');fwv.textContent=v>=1000?'full':v+'px';});
+
+  (function(){
+    var stepper=document.getElementById('stepper-h');
+    var steps=[].slice.call(stepper.querySelectorAll('.step'));
+    var labels=steps.map(function(s){return s.querySelector('.step__l').textContent;});
+    var N=steps.length, cur=1;
+    var back=document.getElementById('step-back'), next=document.getElementById('step-next'), live=document.getElementById('step-live');
+    var miniN=document.getElementById('mini-n'), miniM=document.getElementById('mini-m'), miniName=document.getElementById('mini-name'), miniFill=document.getElementById('mini-fill');
+    var CHECK='<svg aria-hidden="true"><use href="#i-check"/></svg>';
+    miniM.textContent=N;
+    function render(announce){
+      steps.forEach(function(s,i){
+        var dot=s.querySelector('.dot');
+        s.classList.remove('done','current'); dot.removeAttribute('aria-current');
+        if(i<cur){ s.classList.add('done'); dot.innerHTML=CHECK; dot.disabled=false; dot.setAttribute('aria-label','Step '+(i+1)+': '+labels[i]+' (completed)'); }
+        else if(i===cur){ s.classList.add('current'); dot.textContent=String(i+1); dot.disabled=false; dot.setAttribute('aria-current','step'); dot.setAttribute('aria-label','Step '+(i+1)+': '+labels[i]+' (current)'); }
+        else { dot.textContent=String(i+1); dot.disabled=true; dot.setAttribute('aria-label','Step '+(i+1)+': '+labels[i]+' (upcoming)'); }
+      });
+      back.disabled = cur===0;
+      next.textContent = cur===N-1 ? 'Submit' : 'Continue';
+      // mini (shares the same state)
+      miniN.textContent=cur+1; miniName.textContent=labels[cur];
+      miniFill.style.width=Math.round(((cur+1)/N)*100)+'%';
+      if(announce) live.textContent='Step '+(cur+1)+' of '+N+': '+labels[cur];
+    }
+    steps.forEach(function(s,i){ s.querySelector('.dot').addEventListener('click',function(){ if(i<=cur){ cur=i; render(true); } }); });
+    next.addEventListener('click',function(){ if(cur<N-1){ cur++; render(true); } else { live.textContent='Application submitted.'; } });
+    back.addEventListener('click',function(){ if(cur>0){ cur--; render(true); } });
+    render(false);
+  })();
+
+</script>
+</body>
+</html>

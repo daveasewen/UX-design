@@ -177,6 +177,61 @@ front-matter edges + tombstones. Refresh at end of every session alongside the h
 
 ## OPEN — propagation gaps + parked threads
 
+- **🔴 GAP FOUND (2026-07-17, measured) — the library does NOT use the canon type ramp.** Type was *promoted
+  to canon* on 07-17 and the *grid* retrofit ran — but components were **never rebound to the composites**.
+  The grid retrofit snapped **dimensions**; it did not change how **text** is specified. Measured today:
+  **0 of 50** component files reference a `.t-cm-*` / `.t-ed-*` composite, **0** link or inline `canon/type.css`,
+  and raw font declarations remain everywhere — **canon.css 113**, Tranche-8 43, Tranche-1 25, Tranche-6 23, etc.
+  (Contrast: **grid IS done + enforced** — DEF-005 passes across 51 files.) The only things using canon type
+  metrics today are the two reconciled candidates in `knowledge/_review/`, and even they inline the values
+  rather than the classes. **THE TYPE RETROFIT (sibling to the grid retrofit) — NOT STARTED:**
+  1. Components link/inline `type.css` instead of redefining fonts.
+  2. Rebind every text declaration to a composite: **Component** (`.t-cm-*`, cap-trim + 4px slot) for
+     single-line labels; **Editorial** (`.t-ed-*`, 4px line-heights) for wrapping prose. (Multi-line Component
+     text drifts off-grid — the N1 caveat — so the single-line/wrapping split is the deciding rule.)
+  3. Snap off-ramp sizes (plenty of 11/13/15/19px that isn't on the 12/14/16/20/24… ramp).
+  4. Wire **`_validate_type_composites.py`** into `_build_all.py` so it's enforced like DEF-005 — Dave
+     2026-07-17: *"everything we produce should use these font rules … we need to hard wire this."*
+  ⚠️ **`canon.css` is GENERATED from the reviewed snippets — edit the snippets and regenerate, never hand-retype**
+  (hand-retyping loses decisions). Scope ≈ the grid retrofit; needs a fresh session, not a tail-end one.
+- **✅ STEP 0 DONE (2026-07-17) — icon SOURCE canvas normalised to 18×18.** RULED Dave: **normalise the source
+  assets** ("the errors happened either by the author or during ingest, they should definitely be aligned") —
+  i.e. option A, we own this library, not emit-time patching. **69 files** were off-canvas (35× `19×18`,
+  28× `18×19`, 6× `19×19`); measured with real path bboxes (`svgelements`), not a number-scrape:
+  **53 had artwork already inside 0–18 → lossless viewBox retag** (these had been rendering ~5% SMALL, since a
+  19-unit canvas scale-to-fits into a square box); **16 genuinely exceeded 18 → uniform scale-to-fit wrapper**
+  `<g transform="scale(k)">` (k=0.947 for the six true 19×19 — lending/-active, overdraft, pay-company,
+  premier-privileges-active, sell; k≈0.994–0.999 for ten rounding-noise cases) — **the wrapper preserves the
+  original path data byte-intact** for provenance/diffing. **EXCLUDED (deliberate non-square utility marks,
+  left alone):** `handle.svg`, `arrow-{up,down}-low`, `arrow-{left,right}-narrow` (`8×16`/`18×9`/`18×7`).
+  Library now **652 × 18×18** + those 6. Only **3 glyphs were inlined downstream** (social-linkedin,
+  social-youtube-2, stamp-active) — their `<symbol viewBox>` updated in Tranche-8 + the reconciled candidate.
+  **Full build green (26/26) incl. the icon gate; before/after renders identical (no clip, no distortion).**
+- **🔵 SCHEDULED (Dave 2026-07-17) — ICON SCALE onto the 4px grid** (step 0 above is its prerequisite, now done).
+  Type + spacing were snapped to 4px this session; **icon RENDER sizes were not**, and the grid gate can't see them: `_validate_grid.py` deliberately
+  **exempts a height that equals a width** in the same rule ("intrinsic square size … governed by icon-scale,
+  not layout"), so every icon box escapes DEF-005. **Measured today across `canon.css` + 38 snippets + 9
+  tranches:** ~56 icon usages are already on-grid (20px ×22, 16px ×22, 24px ×8, 12px ×4) and **~50 are OFF**
+  — **18px ×20**, **14px ×14**, 22px ×7, 26px ×3, 34px ×2, 11px ×2, 15px ×1, 10px ×1. Roughly half the library.
+  **The work:**
+  1. **Define the sanctioned icon scale** on 4px — **12 / 16 / 20 / 24 / 32 / 36 / 40 / 44** (36·40·44 added by
+     Dave 2026-07-17 — 44 matches the WCAG target-size floor, so an icon can fill a full touch target) — and rule the mapping
+     for each off-grid size (18→16 or 20? 14→12 or 16? 22→20 or 24? 26→24, 34→32, 11→12, 15→16, 10→12).
+     Dave's call; sizes affect optical weight, so decide against renders, not on paper.
+  2. **Tie icon box → the type grid-slot.** A Component label sits in a 4px slot (16px label → 20px slot);
+     an icon beside it should take the SAME slot so icon+label rows land on-grid by construction. This is
+     the clean rule that makes the scale self-evident rather than arbitrary.
+  3. **Source-artwork caveat (found today):** the asset library is drawn on an **18-unit canvas** — 786 files
+     are `18×18`, but **~71 are NON-SQUARE** (`19×18` ×35, `18×19` ×28, `19×19` ×6, plus `8×16`/`18×9`/`18×7`).
+     Vector scaling to a 16/20/24 box is fine, but the non-square ones will letterbox or distort in a square
+     box — need a `preserveAspectRatio` / pad-to-square ruling. (Same family of asset defects as the mislabelled
+     glyphs in `knowledge/_ICON-GAPS.md`.)
+  4. **Gate it (verification = enforcement):** either narrow DEF-005's square exemption for icons, or add
+     **`_validate_icon_scale.py`** allowing only the sanctioned sizes, wired into `_build_all.py`.
+  5. **Retrofit** the ~50 off-grid usages, then re-render to confirm no optical regressions.
+  Sequenced with the other enforcement work: component index + duplicate-guard + type-composite gate
+  (see the type/reuse rules). NOT started.
+
 - **🟢 NEW RULE + backlog (2026-07-16) — component documentation is part of "done".** Every component now
   ships with a two-part doc: a reviewable **Swiss dossier** in `reviews/` + a graph-connected **KB model doc**
   in `knowledge/_proforma/` (typed `relations:` edges). Codified as **`_PROFORMA-RULES` rule 16** (FIRM going
