@@ -42,7 +42,12 @@
   .tag{display:inline-flex; align-items:center; gap:.46em; height:2.15em; padding:0 .77em; border:1px solid var(--border); border-radius:0; /* SQUARE */
     background:transparent; color:var(--text); font:400 14px/1 var(--font); max-width:100%; white-space:nowrap; overflow:hidden;
     transition:max-width var(--ease), opacity var(--ease), margin var(--ease), padding var(--ease), border-width var(--ease), background 140ms ease, transform 150ms cubic-bezier(.4,0,.2,1);}
-  .tag .lbl{overflow:hidden; text-overflow:ellipsis; min-width:0;}
+  /* label overflow:VISIBLE (was hidden) — keeps cap/alphabetic icon alignment AND stops descenders
+     being clipped; the chip's own overflow:hidden bounds length. See _DS-IMPROVEMENTS ds-005. */
+  .tag .lbl{overflow:visible; min-width:0;}
+  /* ---- VARIANTS (2026-07-18) — 3 styles × 2 sizes. Base .tag = bordered; +.x child = dismissible. ---- */
+  .tag--sm{font-size:12px;}                              /* size — em-based, scales the whole chip */
+  .tag--plain{border-color:transparent; padding-inline:0;}  /* text only, no border */
   .tag.link{cursor:pointer; text-decoration:none;}
   .tag.link:hover{background:var(--hover); transform:scale(1.05);}                          /* attract — echoes the button */
   .tag.link:active{background:var(--hover); transform:scale(.97); transition:transform 90ms ease-out;}  /* pressed == hover (combined state) */

@@ -234,7 +234,11 @@ ignore a red build.
   the pin export named the hue, not the row (the overlay row-identity debt biting again).
 - **`{#dv-017}`(a) CONTRADICTION** — permits red/green for deltas while naming "RAG-style cells";
   RAG includes amber. The rule permits a palette it also excludes.
-- **`.tag` COLLISION** — 14px canonical vs 12px "reused". One atom at one size, or `.tag--sm`?
+- ~~**`.tag` COLLISION**~~ **RESOLVED 2026-07-18.** Was three things under one name: the tag component
+  (14px), a smaller reuse (12px), and a masthead descriptor `.h .tag`. Ruled (Dave): tag atom = 3
+  variants (dismissible/bordered/plain) × 2 sizes (`.tag`/`.tag--sm`), `.tag--plain` for borderless;
+  colour/RAG deferred. Masthead descriptor renamed `.h .tag` → `.h .subtitle` (specimen chrome, not a
+  component). Live Tags descender clip fixed via ds-005. Specimen: `reviews/TAG-COMPONENT-2026-07-18`.
 - **`.num` at 24px/400** — no Component rung at 24px (ramp: 12/14/16/20/32/40/52). Add or snap?
 - **Family A (reverse on near-black), 12 decls** — held at 500. Re-specimen on a FULL dark surface.
 
