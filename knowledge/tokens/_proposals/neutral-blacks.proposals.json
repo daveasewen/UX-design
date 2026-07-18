@@ -1,0 +1,103 @@
+{
+  "$README": "HOLDING PEN for the NEUTRAL BLACKS and the digital-substitution rule (Dave 2026-07-18: 'keep all three, pure black is in the brand, maybe we have some way to substitute in digital. I just want to keep it for when we build the query bit for the KB'). ALL THREE VALUES ARE KEPT — this is NOT a pick-one. #000000 is a genuine brand value (color/black, color/grey/black) and is load-bearing across 12+ semantic tokens, so #1A1A1A was never a replacement for it: it is a CONDITIONAL DIGITAL SUBSTITUTE, applied when light text sits ON the dark ground and pure black's maximum luminance step causes halation. Recorded in typed form specifically so the future KB query layer can answer 'which black do we use, and when?' without a human re-deriving it — the failure this record exists to prevent already happened once: #1A1A1A has been in production use since ~2026-07-04 via _PROFORMA-RULES.md rule 1, and when Dave asked on 07-18 where it was stored, the VALUE was findable but the RATIONALE had never been written down. Statuses: 'brand-canon' = published brand value, not ours to change; 'in-use-ungoverned' = applied in the library but in no token store and gated by nothing; 'proposed' = ungoverned until Dave promotes (derivation governance — the engine never derives-and-promotes). NOTHING HERE IS PROMOTED.",
+  "$provenance": {
+    "raised_by": "Dave, 2026-07-18, during the reverse-text-on-chroma investigation",
+    "trigger": "badge count read as 'spidery' after the type retrofit collapsed it 700->500; Dave recalled 'a new black value that helped with halation, not #000' and asked whether it was stored anywhere",
+    "related_decisions": [
+      "knowledge/_proforma/_TYPE-DECISIONS.md — 'REVERSE TEXT ON CHROMA — rulings 2026-07-18'",
+      "knowledge/_proforma/_PROFORMA-RULES.md rule 1 — the near-black, still marked open-to-confirm",
+      "reviews/RAG-PROMOTION-2026-07-18.html §5",
+      "reviews/REVERSE-TEXT-SPECIMEN-V2-2026-07-18.html"
+    ],
+    "measurement_method": "WCAG 2.x relative luminance; white #FFFFFF as the reverse-text foreground"
+  },
+
+  "$theRule": {
+    "name": "reduce the extremity of the edge",
+    "status": "DRAFTED — not yet a rule, has no threshold, is gated by nothing",
+    "statement": "Where light text meets a dark or saturated ground, legibility is degraded by the EXTREMITY of the edge, not by insufficient contrast. The mitigation is to reduce that extremity — never to add more contrast, which makes it worse.",
+    "twoLevers": {
+      "chroma": "on COLOURED grounds — drop saturation (observed: 1.00 -> 0.72 stops the strain; Dave 2026-07-18, controlled against a near-equal-lightness pair so lightness is excluded as the driver)",
+      "luminanceExtremity": "on NEUTRAL grounds — step back from pure black (#000 -> #1A1A1A cuts the white-text step ~17%)"
+    },
+    "$note": "These were discovered ~2 weeks apart, by different routes, and were not recognised as the same rule until 2026-07-18. #1A1A1A is the neutral-ground instance; the chroma finding is the coloured-ground instance.",
+    "distinctFrom": {
+      "rule": "{#dv-019} vibrating boundaries",
+      "why": "dv-019 requires TWO saturated near-complementary colours at near-equal value. Verified against our own vibration() in _validate_dataviz.py: white-on-red scores 0/3 legs (value-ratio 5.22, hue-sep 5deg, min-sat 0.00) and is CORRECT to. A real chart pair scores 3/3. Sibling phenomenon (halation/irradiation), not the same one.",
+      "$doNotMerge": "A future reader may try to fold this into dv-019. Do not — dv-019 would then fire on pairs that do not shimmer, and this one would still miss white-on-red."
+    },
+    "openQuestions": [
+      "the saturation threshold — without a number there is no gate, only a preference (the equivalent of dv-019's 135deg leg, which exists because Dave observed the dance on a 146deg pair)",
+      "minimum weight for reverse text (Q2) and whether a size floor comes with it (Q3)",
+      "scope: badges only, or every light-on-chroma surface (solid RAG banners, primary buttons, pressed states, tags)"
+    ]
+  },
+
+  "blacks": {
+    "$description": "All three kept. They are not alternatives — they answer different questions.",
+
+    "pure": {
+      "$value": "#000000",
+      "$status": "brand-canon",
+      "$token": "color/black · color/grey/black",
+      "$role": "The published brand black. Not ours to change or retire.",
+      "$inUse": "load-bearing across 12+ semantic tokens: secondary/background/default/light, secondary/border/default/light, tertiary/border/default/light, tertiary/background/active/light, primary/background/pressed/light, form/border/active/light, timer/foreground/light, tabs/overflow-border/light, background/default/dark, data-vis/surface/primary/dark, data-vis/surface/secondary/*",
+      "$whiteTextContrast": 21.0,
+      "$halationNote": "Maximum possible luminance step against white. Where no light text sits on it — borders, marks, rules — there is no halation and nothing to fix. The substitution below is conditional, not blanket."
+    },
+
+    "nearBlack": {
+      "$value": "#1A1A1A",
+      "$status": "in-use-ungoverned",
+      "$token": null,
+      "$role": "The digital substitute for pure black where light text sits ON the ground.",
+      "$substitutesFor": "color/black",
+      "$condition": "light/reverse text on the dark ground",
+      "$rationale": "Pure black maximises the luminance step against white text, which drives halation (the bright field blooming across the edge). Stepping back to #1A1A1A cuts the step ~17% and settles the text without reducing legibility.",
+      "$whiteTextContrast": 17.4,
+      "$stepReduction": "17% below pure black",
+      "🔴 $governanceGap": "Defined ONLY in _PROFORMA-RULES.md rule 1 as prose. Present in NO token store — a bare literal across 10 files. Nothing resolves it, nothing gates it, and it is still flagged 'Open to confirm with Dave: (a) near-black shade (#1A1A1A)' in that same file. Its halation rationale was never recorded anywhere until this file; the written rationale in _PROFORMA-RULES concerns red already meaning destruction, which is a different argument entirely.",
+      "$inUse": "Apollo mono primary / high-emphasis actions (light mode); 10 files"
+    },
+
+    "textGrey": {
+      "$value": "#333333",
+      "$status": "brand-canon",
+      "$token": "color/grey/800 · text/default/light · rag/text/on-light · icon/default/light",
+      "$role": "The dark-text token — foreground on light grounds, NOT a ground itself.",
+      "$whiteTextContrast": 12.63,
+      "🔴 $knownFailure": "Ruled 2026-07-18 that amber takes dark text. On the PROPOSED delta amber #C58720, #333333 scores 4.13:1 and FAILS 4.5:1. Only #1A1A1A (5.69) or #000000 (6.86) pass. So 'black text on amber' cannot mean this token if the RAG promotion proceeds — which makes the near-black's promotion a DEPENDENCY of the RAG promotion, not a separate tidy-up."
+    }
+  },
+
+  "$forTheKBQueryBot": {
+    "$why": "Dave 2026-07-18: 'I just want to keep it for when we build the query bot for the KB.' This is the chat-to-KB-bot target — a bot designers ASK IN NATURAL LANGUAGE, not a lookup API. That changes what this record must carry: a bot answering 'which black should I use?' needs the CONDITION and the REASON, not just the value. A flat token export answers 'what is color/black' and then gives the wrong advice, because the substitution is invisible to it. Question/answer pairs below are written as the bot should actually answer them.",
+    "answerable": [
+      {
+        "q": "Which black do we use?",
+        "a": "Three, for different jobs. #000000 is the brand black. #1A1A1A is the digital substitute used when light text sits on the dark ground, because pure black's maximum luminance step causes halation. #333333 is the dark-text foreground token, not a ground."
+      },
+      {
+        "q": "Why not pure black?",
+        "a": "Pure black IS used — it is a brand value and load-bearing in 12+ semantic tokens. It is only substituted where reverse text sits on it."
+      },
+      {
+        "q": "What is the near-black for?",
+        "a": "Reducing the luminance step against white text (21:1 -> 17.4:1, ~17% less) to stop halation. Same lever as reducing chroma on a coloured ground."
+      },
+      {
+        "q": "Is the near-black governed?",
+        "a": "No. It is in no token store and gated by nothing. Recorded here; promotion is Dave's alone."
+      }
+    ],
+    "$shapeNote": "Prose ledgers are not queryable — that is the whole reason this record is structured rather than another paragraph in a decisions file. If the query bot is built over these _proposals/ records, it inherits provenance, status and rationale for free, and the substitution EDGE (nearBlack $substitutesFor pure, under $condition) is the piece a graph can traverse. A flat token export would lose exactly that edge.",
+    "$theTestCase": "This record IS the worked example for the query bot, and it earned that by failing first. #1A1A1A shipped ~2026-07-04 and was in production use for two weeks. On 2026-07-18 Dave asked where it was stored: the VALUE was findable in ten files, the RATIONALE was nowhere, and the one person who knew it was the one asking. A bot reading the token store alone would have answered '#000000, color/black' — correct, and wrong advice. If the query bot cannot answer the four questions above correctly, it is not yet doing the job."
+  },
+
+  "$openForDave": [
+    "R5 — tokenise #1A1A1A? It has been in production use for ~2 weeks with no token and no gate.",
+    "If tokenised: what is its semantic name? It is not 'black' — it is a conditional substitute, and naming it 'black' would hide the condition that makes it correct.",
+    "Confirm the near-black shade itself — _PROFORMA-RULES.md has been asking since ~07-04 and it has never been answered.",
+    "Does the substitution rule generalise beyond black, i.e. is 'step back from the extreme' a rule about ALL maximal values (pure white grounds in dark mode; sat 1.00 grounds)?"
+  ]
+}
