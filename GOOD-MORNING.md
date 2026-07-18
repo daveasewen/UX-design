@@ -23,6 +23,25 @@ Then `_LIVE-STATE.md` → the decision files it points to.*
 
 # §A · ORIENTATION — the whole project in one page
 
+> **Why this file is called GOOD-MORNING** *(Dave's framing — keep it, it explains the architecture)*
+> **Memento.** Leonard has anterograde amnesia: every morning he reconstitutes himself from a record he
+> built when he still remembered — Polaroids for working state, **tattoos for the facts he cannot afford
+> to lose**. That is this project's operating model, not a metaphor for it. A session starts with no
+> memory and rebuilds from artefacts.
+>
+> **The trust hierarchy is the tattoo/Polaroid distinction:** memory files + runbooks = tattoos (durable,
+> survive any single rewrite) · `GOOD-MORNING` + `_LIVE-STATE` = Polaroids (working state, rewritten often)
+> · the chat = gone by morning. **Never let a durable rule live only on a Polaroid** — that is how §A's own
+> standing instruction nearly died on 2026-07-18.
+>
+> **The real danger is not forgetting — it is confident false inscription.** Leonard's tragedy is that he
+> writes a *false* tattoo and then trusts it absolutely, because he cannot remember writing it. On
+> 2026-07-18 I wrote "38% of the rule corpus is silently missing" with full confidence; it was wrong, and
+> had Dave not challenged it, it would have entered the ledger as fact and been trusted by every session
+> after. **So: records carry provenance and confidence, not just content. Corrections get inscribed as
+> loudly as the original claim. Mark what was OBSERVED versus what was INFERRED** — `dv-019`'s 135° leg
+> says *"because Dave saw the dance on a 146° pair"*, and that sentence is the tattoo, not the number.
+
 > **STANDING SECTION — carry it into every handoff, from 2026-07-17 on.** At Dave's request:
 > *"orientate a new starter — wider context helps."* Written new-starter style: assume the reader has
 > no context and no memory of prior sessions. **Update it when the shape of the project changes, not
@@ -68,7 +87,7 @@ _LIVE-STATE.md        LIVE / DEAD / OPEN — read second, always
 
 ## The one command that matters
 ```
-python3 knowledge/_build_all.py     # 27 steps, all gates, exits non-zero on any failure
+python3 knowledge/_build_all.py     # 28 steps, all gates, exits non-zero on any failure
 ```
 Gates: a11y · contrast · state-contrast · icon-source · coverage · integrity · rules-index ·
 **DEF-003** no-JS-motion · **DEF-004** no-hardcoded-styling · **DEF-005** 4px grid · pro-forma · DataViz ·
@@ -87,8 +106,40 @@ it would red the build until the 721 rebinds land.
 - **4px grid** (DEF-005) · **sentence case** · **square corners in mono** (roundels are the carve-out) ·
   **red = primary-action accent, once per screen** (brand modes only).
 - **Derivation governance** — the engine never derives-and-promotes. **Promotion is Dave's alone.**
+- **ATOMISE** — build at the true atomic level and compose up.
 - **Weights: five licensed only — 100/300/400/500/700. THERE IS NO 600** (`type25-004`; the OTF set ships no
   SemiBold, so a 600 is browser-synthesised faux-bold). This nearly got enacted on 07-18.
+- **Supersession discipline** — a ruling that kills something tombstones the artefact **and** logs the
+  propagation gap in the same pass. Non-negotiable per `AGENTS.md`.
+
+## Standing instructions for the agent (not the artefact)
+*Added 2026-07-18 after an audit found these lived only in memory — i.e. one tattoo deep, no backup.*
+- **Announce the model/routing split at the START of every substantive task, unprompted** (`MODEL-ROUTING.md`).
+- **Verify before asking.** Answer state-questions by reading the repo or running the gates — not by asking Dave.
+- **Reflect back before recording.** Restate the interpretation and confirm firmness **before** writing a ruling
+  into a ledger. British understatement — "quite good" is not approval.
+- **Ask what Dave valued in prior work BEFORE proposing mine-vs-fresh.** Change-by-change; this cost a reverted T6.
+- **Decision-heavy or material-referring choices ship as a review-template HTML** (`_make_review.py`), not as
+  `AskUserQuestion` — that tool is for simple questions only.
+- **Log rulings in the per-pillar `_<PILLAR>-DECISIONS.md` ledger**, with the WHY, so iterative feedback survives.
+- **Surface spin-off candidates mid-chat** — reusable tools worth generalising; register in `_LIVE-STATE`.
+- **Suggest reflection checkpoints**; run the capture ritual unasked at session end.
+
+## The other standing documents
+`AGENTS.md` (repo agent contract, git split, supersession) · `MODEL-ROUTING.md` (which model for which work) ·
+`_proforma/_PROFORMA-RULES.md` (Apollo mono mode rules: monochrome, `surface/digital-black`, colour=meaning,
+square) · `_DS-IMPROVEMENTS.md` (logged DS defects — ds-001…003) · `_ICON-GAPS.md` (mislabelled/inverted icon
+assets) · `guidelines/_rules-index.json` (465 rules, the machine-readable spine).
+
+**Runbooks** — the method written down so a cold agent can operate the engine:
+`_RUNBOOK-capture-ritual.md` (end of session) · `_RUNBOOK-git-commit.md` (**the sandbox lock dance — read it
+before any git**) · `_RUNBOOK-gated-component.md` · `_RUNBOOK-compose-from-canon.md` (the `.c-*` composition
+layer) · `_RUNBOOK-toolkit-tranche.md` · `_RUNBOOK-criteria-contract.md` · `_RUNBOOK-decision-audit.md` ·
+`_RUNBOOK-reconcile-dark-tokens.md` · `_RUNBOOK-onboard-code-library.md`.
+
+**`knowledge/_RUNBOOKS.md` is the runbook of runbooks** — GENERATED from the filesystem each build
+(`gen_runbook_index.py`), so adding a runbook lists it automatically and the index cannot rot. Read that
+rather than this paragraph if you want the current set with purposes.
 
 ## How we work
 - **Review loop:** every doc ships **clean source + REVIEW copy** (`_make_review.py <file>`). Edits apply to the

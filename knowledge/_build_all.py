@@ -34,6 +34,7 @@ STEPS = [
     ("compliance knowledge graph", "compliance/_build_compliance_kg.py"),
     ("token blast-radius + graph report", "tokens/_build_blast_radius.py"),
     ("guideline rules index (gate)", "guidelines/gen_rules_index.py"),
+    ("runbook index (generated)", "gen_runbook_index.py"),
     ("cross-reference index", "_build_xref_index.py"),
     ("sutherland acceptance fixtures", "_build_sutherland_fixtures.py"),
     ("states-completeness probe (advisory)", "_build_states_probe.py"),
