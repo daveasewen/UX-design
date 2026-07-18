@@ -5,15 +5,55 @@ what's **OPEN**. Read this second, after `GOOD-MORNING.md`, before `knowledge/RE
 Per **ADR-0007**. ⚠️ **INTERIM — hand-maintained** until `_build_live_state.py` generates it from
 front-matter edges + tombstones. Refresh at end of every session alongside the handoff.*
 
-*Last refreshed: 2026-07-17 late (TYPE-TOKEN SYSTEM **promoted to canon** + full grid arc: HSBC-general parked as sibling, retrofit 230 snaps, vertical-stack rule, arrow asset retired, DEF-005 grid gate expanded library-wide to 50 files — all build-green; see the top LIVE entry + `_TYPE-DECISIONS.md`. Prior same session: TYPE-TOKEN SYSTEM built from the Figma file — reconciled + 4px-normalised primitives, Editorial + Component composite sets, measured crop→grid-slot mechanism, `type.css`, and the `_validate_grid.py` gate; all rulings in `knowledge/_proforma/_TYPE-DECISIONS.md`; proposals await promotion to canon. Also captured a big product-vision arc: "lovable on rails" 4-phase spine, chat-to-KB bot, KB-distillation-at-deploy, review-layer-as-product. Prior same day: DataViz round-one kit BUILT gate-first + NINE review rounds, then PARKED — see the 🟡 PARKED DataViz entry + `_proforma/_DATAVIZ-DECISIONS.md`). Prior: 2026-07-16 eve (DataViz method dossier + V7 render sheet), 2026-07-16 (masthead model/build/review + review-tool upgrade + dataviz desk research), 2026-07-15 (Apollo mono Tranches 6+7, tokenisation, DEF-004). Committed this session: `c0d8db6`·`baf1f7b`·`f10b082`·`f93c2cc`·`de8cbcb`·`e435efe` — Dave to push via GitHub Desktop.*
-
-> ⚠️ **AUDIT STATUS — everything below is RECORDED, not VALIDATED.** Provenance ≠ correctness.
-> These entries capture *that* a decision was made and what it supersedes — **not** that it is
-> right. Treat every node as **`unaudited`** until a human correctness-audit vouches it (ADR-0007).
-> The ledger tells you what's live/dead; it does **not** endorse. Don't mistake a clean node for a
-> vetted one.
-
+*Last refreshed: **2026-07-18 (afternoon — TRACKING / LETTER-SPACING arc + a gate blind-spot closed)**.
+Opened as the TYPE-002 retrofit; became a tracking-rules research arc. **LANDED:** the type26-019 all-caps
+check added to `_validate_proforma.py` — the rule has been BLOCKING since 07-02 but only ever lived in
+`_validate_snippets.py` (which globs `snippets/` only), so four `_proforma` tranches carried
+`text-transform:uppercase` past it for weeks; de-capped + bite-tested. Four review sheets built
+(COMPONENT-MEDIUM, TRACKING-DOSSIER, UNIVERS-DOSSIER, TRACKING-CONTACT) — **all awaiting Dave's markup,
+nothing promoted**. `_TYPE-DECISIONS` gains T-D1..T-D6. `ds-004` logged (upstream foundry kerning gap).
+Two spin-offs registered (font-audit instrument; real-font embedding). **KEY RULING (Dave):** Editorial and
+Component answer to *different physics* — reading-speed evidence governs Editorial only, crowding + halation
+govern Component; consequence is that tracking must live ON the composites, since the same 40px wants
+different values per tier. **MEASURED:** HSBC's Univers cut is horizontally IDENTICAL to stock Univers Next
+Pro (only the ampersand differs); Univers is LOOSER than Helvetica; sidebearing/stem collapses 4.60→0.46
+across the weight range. **⚠️ CORRECTED IN-SESSION:** I struck the "Latin webfont missing" blocker as false,
+then Dave caught that desktop ≠ webfont licence — **blocker reinstated, still open, and it is the thing
+blocking shareable material**. Prior: 2026-07-18 morning (halation/edge-extremity discovery, `col26-020/021`,
+`surface/digital-black` promoted), 2026-07-17 late (TYPE-TOKEN SYSTEM promoted to canon + grid arc),
+2026-07-17 (type-token system built), 2026-07-16 eve (DataViz dossier). Committed this session:
+`4cc58ff`·`362be48` — **Dave has pushed.***
 ---
+
+## ⛔ OPEN / BLOCKING — Latin Univers **WEBFONT** licence (raised 2026-07-18)
+
+**We do not hold a Latin webfont pack.** Five script webfont packs are in the repo (Arabic, Japanese,
+Chinese ×2, Armenian — ten `.woff`/`.woff2` each). **Zero Latin.** The Latin *desktop* set (TTF/OTF) is
+present and is licensed for design work on a machine — **not** for embedding or serving.
+
+**Why it now blocks real work (Dave, 2026-07-18):** *"we really need the webfonts, this will hinder
+sharing material."* Without it: no shareable specimen sheets, no real-face review docs sent outside, no
+hosted prototype in brand type.
+
+**Monotype terms now on file** — `knowledge/assets/WebfontUserGuide-2024.pdf`. Web fonts are licensed for
+**self-hosting** (WOFF/WOFF2); **base64 serving is explicitly sanctioned** for licensed webfonts; fonts must
+**not** be distributed via a *public* Git repository; prescribed remediation if already committed is
+`git rm` then **BFG Repo Cleaner**.
+
+**Known exposure, low but non-zero:** four tracked files (`TYPE-SPECIMEN-2026-07-17`,
+`TYPE-COMPOSITES-2026-07-17`, plain + REVIEW) each embed six base64 woff2 payloads of `Univers Next HSBC`
+(~264KB each), entered at `24accd0` and pushed. **The repo is PRIVATE** (404 unauthenticated), and
+Monotype's prohibition names *public* repos — but any collaborator without their own licence still receives
+the font. **Dave's call:** leave / `git rm --cached` / BFG history purge.
+
+**Interim controls in place:** `reviews/*CONTACT*.html` gitignored; anything shared outside goes as PDF.
+
+**ACTION (Dave):** request the **Latin "Univers Next for HSBC" webfont pack (WOFF + WOFF2)** from brand —
+the same deliverable already held for the five script companions. One asset clears all of the above.
+
+**⚠️ Provenance note:** I struck this blocker earlier the same day as "false", having found the *desktop*
+set and not read which licence class the blocker named. Dave caught it. Full correction + the superseded
+text are in `knowledge/_proforma/_TYPE-DECISIONS.md` § Blockers 1.
 
 ## LIVE — current truth (in force)
 

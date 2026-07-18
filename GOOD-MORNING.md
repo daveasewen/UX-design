@@ -1,20 +1,21 @@
 # Good morning, Dave ☕
 
-*Briefing — written end of 2026-07-18, session **"Halation, chroma and the rule nobody wrote down."***
+*Briefing — written end of 2026-07-18 afternoon, session **"Univers under the microscope."***
 
 ---
 
 ## ⬛ DO THESE TWO FIRST (10 seconds)
 
-> **RENAME YESTERDAY'S CHAT →** `Halation, chroma and the rule nobody wrote down`
-> *(it opened as the type retrofit; the retrofit was ~15% of it)*
+> **RENAME YESTERDAY'S CHAT →** `Univers under the microscope`
+> *(it opened as the 721 rebinds; those never moved — it became a tracking-rules research arc
+> and ended with a font-licensing finding)*
 
-> **TITLE TODAY'S CHAT →** `Type retrofit part 2 — the 721 rebinds`
+> **TITLE TODAY'S CHAT →** `Five sheets and a binding mechanism`
 
-*New standing practice (your ask, 2026-07-18): every handoff now carries **both** names at the top —
-retrospective for the session that just ended, forward for the next. Sessions drift; naming them only
-at the start records the intention rather than the work. Recorded as step 4b in
-`_RUNBOOK-capture-ritual.md`. I can't rename a conversation myself — no tool — so these are ready to copy.*
+*Standing practice (your ask, 2026-07-18): every handoff carries **both** names — retrospective for
+the session that ended, forward for the next. Sessions drift; naming them only at the start records the
+intention rather than the work. Step 4b in `_RUNBOOK-capture-ritual.md`. I can't rename a conversation
+myself — no tool — so these are ready to copy.*
 
 *Read: **§A Orientation** (skip if you're in context) → **§B This session** → **§C Queue**.
 Then `_LIVE-STATE.md` → the decision files it points to.*
@@ -166,70 +167,113 @@ rather than this paragraph if you want the current set with purposes.
 
 ---
 
-# §B · THIS SESSION (2026-07-18)
+# §B · THIS SESSION (2026-07-18, afternoon)
 
-**Started as the type retrofit. Became something more useful.**
+**Opened as the 721 rebinds. They never moved.** What happened instead was a tracking-rules research
+arc, a measured font study, and a licensing finding that now blocks sharing.
 
-**Type retrofit — half done.** DEF-006 gate written first (your ruling), baseline **1183 violations / 50 of 50
-files**. All 17 review rulings applied via `apply_type_snap.py`: **342 values snapped**, TYPE-003 **412 → 11**
-(the 11 are DataViz SVG text, deferred under rule 4C — SVG text px is viewBox-relative, so snapping it to the
-CSS ramp measures the wrong thing). **TYPE-002 ×721 — the actual composite rebinding — has not moved.**
+## What LANDED (committed, build green 29/29)
 
-**Then the badge "danced."** Chasing it produced the session's real work:
-- Ran it through **our own** `vibration()` — scores **0/3 legs**, correctly. It is **not** `{#dv-019}`.
-- Built a specimen sheet able to falsify itself; your control pair (equal lightness, different saturation)
-  proved **chroma is the driver, not lightness**.
-- You asked where the anti-halation black was stored. It was `#1A1A1A` — **in no token store, gated by nothing,
-  still marked "open to confirm" since ~07-04, and its rationale never written down.** The value survived; the
-  reason didn't.
-- That unified the whole thing: **"reduce the extremity of the edge"** — two levers, **chroma** on coloured
-  grounds, **luminance extremity** on neutral. Both had been operating for weeks, unrecognised as one rule.
+**A blocking rule that wasn't biting.** `{#type26-019}` bans uppercase brand-wide on a dyslexia
+rationale, promoted to **blocking** by your 2026-07-02 ruling. It was only ever implemented in
+`_validate_snippets.py`, which globs `snippets/*.reference.html` — so **`_proforma/` was never scanned**
+and Tranche-3/5/6/8 carried `text-transform:uppercase` past it for weeks. Found incidentally while
+grepping for letter-spacing. Added the check to `_validate_proforma.py` (which already declares itself
+home to "the UNIVERSAL rules"), de-capped all five breaches with their caps tracking, and **bite-tested
+it** by reintroducing an uppercase to confirm it fails.
+> **Lesson, now in the gate source:** *a rule is only as wide as its gate's glob. "Blocking" describes
+> the rule; the glob decides where it bites.* Same class as the type gate scoring clean on the very badge
+> that motivated it, and Cards at 9/9 in June.
 
-**Landed:** `surface/digital-black` promoted · rules **{#col26-020}** + **{#col26-021}** written into the KB
-prose and indexed · `_validate_edge_extremity.py` built and wired (advisory) · thresholds quantified from your
-observation (**sat ≤0.72**; weight **500 @ 12–16px, 300 @ 20px**, nothing below 12) · `_PROFORMA-RULES` rule 1's
-stale line closed · capture-ritual step 4b added.
+**`_TYPE-DECISIONS` → T-D1..T-D6.** The session's reasoning, inscribed.
 
-**Three times I was wrong, corrected in the ledger:**
-1. Claimed the rules index silently drops 38% of rules. **It doesn't** — `IN FORCE`/`RECORDED`/`PROCESS` are
-   deliberately non-indexed, blessed by you 2026-07-03. Your challenge caught it. The *real* hole is narrower:
-   **42 of 54 BLOCKING rules are cited by no gate.**
-2. Blamed the spidery badge on my `700→500` collapse. **The weight was always fine** (Medium is the floor at
-   14px) — the **ground** was the fault.
-3. Invoked `type25-008` ("Emphasis = Bold only") to argue for 700. It governs keywords in running text, not
-   badge counts. No bearing.
+**`ds-004`** — the `Fo` kerning gap is an upstream foundry omission, not HSBC's. Don't raise it with brand.
 
-**And the gate lied on its first build** — reported "clean across 50 files" because snippets write
-`background:var(--surface)` and I skipped anything with a `var()`. It was green on the very badge that motivated
-it. Fixed with custom-property resolution + a regression test. Same blind spot that let Cards score 9/9 with
-real failures in June. **With sight restored: 25 findings across 9+ components** — which answered scope
-empirically: library-wide, not badges.
+**Two spin-offs registered** in `_LIVE-STATE`: the fontTools **font-audit instrument**, and **real-font
+embedding** for review sheets (candidate to fold into `_make_review.py`).
+
+## ⭐ The ruling that matters most — yours
+
+**Editorial and Component answer to different physics.** Editorial is *read* (fixations, saccades,
+word-skipping). Component is *recognised* — nobody saccades through "Pending approval". Therefore:
+- **Reading-speed evidence governs Editorial ONLY.** I'd been using it to argue against opening tracking
+  on component labels, where it was never in scope.
+- **Crowding evidence governs Component MORE** — the Zorzi/dyslexia work measures *letter
+  identification*, which is exactly what recognising a label is. I had it filed under the wrong tier.
+- **Structural consequence:** the same 40px wants −0.02em in Editorial and −0.01em in Component.
+  **Size alone cannot express the rule** — so tracking must live ON the composites, not in a size-indexed
+  token ramp. That's the strongest argument yet that the D2/D3 role split is real rather than tidy.
+- **Frutiger drew the same line:** he designed *Frutiger* because Univers was "perfect for printed books"
+  but wrong for someone crossing an airport at 5mph. He put Univers on the Editorial side of your split.
+
+## Measured, not read (highest evidence tier we've had)
+
+- **Univers is LOOSER than Helvetica** — `n` sidebearing 15.6% of x-height vs Arial 12.4%. The folklore
+  "Univers is tight" is about **apertures**, not spacing. **Tracking cannot open a counter**, so the face's
+  known glance-reading weakness is *not* fixable by the lever we spent the day designing.
+- **Sidebearing/stem collapses 4.60 → 0.46** across the weight range — the largest single effect measured,
+  and **no rule accounts for it**. Tracking may need a *weight* term.
+- **HSBC's cut ≡ stock Univers Next Pro horizontally.** Sidebearings, advances, 60/60 kerning pairs — all
+  identical. Only the **ampersand** differs. Published Univers spacing guidance therefore applies to us
+  directly. Vertical metrics differ though: our line box 1.300em vs 1.200em, baseline ~11pp lower.
+
+## ⚠️ Where I was wrong — four times, one of which you caught
+
+1. **Invented a fork the evidence had closed.** Framed `col26-020(c)` as "universal floor vs conditional
+   rung" and told you it blocked the retrofit. I'd read the *rule text*, not the *specimen that generated
+   it*. → **Read the specimen, not the summary.**
+2. **Nearly logged a font defect that doesn't exist.** First kerning parser said "no kerning except
+   Medium"; the family uses GPOS *extension lookups* it was skipping. → **A finding that makes a vendor
+   look careless deserves a second parser.**
+3. **Nearly reported 8% as 30%.** Ascent 1068 vs 750 *looks* decisive; stock carries a 200-unit lineGap
+   that HSBC zeroed. → **Compute the derived quantity; never eyeball the component.**
+4. **← YOU CAUGHT THIS ONE. Struck a blocker that was right.** I found the Latin *desktop* set and
+   declared the "Latin webfont missing" blocker false. **Desktop ≠ webfont licence.** The blocker named
+   the webfont, and it was correct. → **A blocker that has stopped work for weeks is exactly the claim
+   you WANT to be false, so disproving one deserves MORE scrutiny than confirming it, not less.**
+
+**The pattern across all four: the first answer was tidy and confirmed what I half-expected.** That is
+the signal to run it twice.
 
 ---
 
 # §C · QUEUE
 
-1. **TYPE-002 ×721 — the composite rebinding.** The big one, untouched. Per-component judgement:
-   **single-line → `.t-cm-*`, wrapping → `.t-ed-*`** (multi-line Component text drifts off-grid — the N1
-   caveat). Then wire DEF-006 into `_build_all.py` and drive to green.
-2. **RAG promotion sheet** — `reviews/RAG-PROMOTION-2026-07-18.REVIEW.html`, awaiting your markup. The delta
-   family is saturation-normalised at 0.72 across all four hues; the incumbent is 1.00/1.00/1.00/0.47.
-   **The amber dependency runs through it:** you ruled amber takes dark text, but `#333333` on the delta amber
-   is **4.13:1 and FAILS** — only `#1A1A1A` or `#000` pass.
-3. **Triage the 25 edge-extremity findings**, then decide whether the check becomes blocking.
-4. **Rebind the 10 literal `#1A1A1A` usages** to `surface/digital-black` (the token exists; the literals don't
-   reference it).
-5. **Apply the Figma style description** — ready-to-paste text in
-   `tokens/_proposals/neutral-blacks.proposals.json` → `$carriers.figmaStyleDescription`. Your action. The
-   styles panel is the only place a designer sees the condition; an empty description is the exact failure
-   this record exists to prevent.
-6. **Rule→gate coverage report** — **42 of 54 BLOCKING rules are cited by no gate**, including `type25-008`.
-   `verified_by` already exists for WCAG SCs in the compliance graph; extend it to house rules and the unknown
-   becomes a triaged list. *This is the mechanism for "I don't want these things to be missed."*
-7. **Rule 4A** — `.arrow--sm/md/lg` + Tags size modifiers as candidates in `_review/` for your promotion call.
-8. **Tranche 8 comments** — still deferred, twice now.
-9. **DataViz** — still 🟡 parked. Carries an open question now: should the type ramp gain a **viewBox-relative
-   expression** so chart type is governed in the units it actually renders in?
+## ⛔ 0. THE BLOCKER — Latin Univers **webfont** pack. Yours, and it gates sharing.
+We hold five *script* webfont packs and **zero Latin**. The desktop set is licensed for design work on a
+machine, not for embedding or serving. Without the webfont: **no shareable specimens, no real-face review
+docs sent outside, no hosted prototype in brand type.**
+**Ask brand for: the Latin "Univers Next for HSBC" webfont pack (WOFF + WOFF2)** — same deliverable
+already held for the five script companions.
+*Also yours:* four tracked files (`TYPE-SPECIMEN` / `TYPE-COMPOSITES` 2026-07-17, plain + REVIEW) embed
+base64 Univers and are pushed. Repo is **private** (404 unauthenticated) and Monotype's prohibition names
+*public* repos — so exposure is low but not zero. Options: leave / `git rm --cached` / BFG history purge.
+Terms are on file at `knowledge/assets/WebfontUserGuide-2024.pdf`. Full detail: `_LIVE-STATE` top entry.
 
-> **UNCOMMITTED:** nothing — all six commits landed (`bd21398`, `a6b3dc8`, `c84a08e`, `095b817`, `cf012ec`,
-> `58c0561`, `a580ffb`). Build green **27/27**. Push via Desktop.
+## 1. FIVE review sheets await your markup — nothing is promoted
+| sheet | asks |
+|---|---|
+| `TRACKING-CONTACT-2026-07-18` | 7 ladders, 47 cells, **renders in real Univers**. My picks marked green. |
+| `COMPONENT-MEDIUM-2026-07-18` | are the 100 Component `500`s structural or drift? |
+| `TRACKING-DOSSIER-2026-07-18` | evidence tiers + 4 contradictions + 7 questions |
+| `UNIVERS-DOSSIER-2026-07-18` | the measured font study |
+| `RAG-PROMOTION-2026-07-18` | **from 07-17, still unmarked** — amber trap: `#333` on delta amber = 4.13:1, FAILS |
+
+## 2. ⚠️ TYPE-002 ×721 — BLOCKED, and I under-scoped it
+I told you 339 were "safely bindable". True that they *map* to a composite value-wise; **false that the
+work is mechanical**. The composites are used in **zero files** — `.t-cm-*` / `.t-ed-*` appear in no
+markup anywhere. So binding needs either markup class changes on 339 elements, or a composition mechanism
+that doesn't exist. **That's an architectural fork — markup class vs CSS composition vs build-time
+inlining — and it's yours.** Exactly the class of decision the T6 revert taught us to ask about first.
+
+## 3. Then: wire DEF-006 and drive to green. Still unwired; would red the build today.
+
+## 4. Carried, unchanged
+Q5 (col26-020 scope) still open · triage the 25 edge-extremity findings · rebind the 10 literal `#1A1A1A`
+· paste the Figma style description from `neutral-blacks.proposals.json` · **rule→gate coverage: 42 of 54
+BLOCKING rules cited by no gate** — today's blind-spot is one instance of exactly that · Tranche 8 comments
+· DataViz 🟡 parked.
+
+> **COMMITTED:** `4cc58ff` (gate fix + inscription) · `362be48` (the webfont correction).
+> **You have pushed.** Build green 29/29. Nothing uncommitted.
+> **Memory changed this session** — worth running your rsync (`knowledge/_agent-memory/README.md`).
