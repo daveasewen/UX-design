@@ -131,3 +131,46 @@ move on** — the standing rule for DS defects.
 **Blast radius if ever addressed:** none available to us. Would require a re-cut from the foundry.
 
 **Artifacts:** `reviews/UNIVERS-DOSSIER-2026-07-18.html` §3 + §5 · `reviews/gen_univers_dossier.py`.
+
+---
+
+## ds-005 — descender clip on trimmed labels inside icon+label controls. **KEEP — cross-component.**
+
+**Status:** LOGGED 2026-07-18 (Dave: *"a finding we have to keep… it applies to buttons"*). Confirmed
+live in the gated Tags component; fix proven on the Tag specimen in real Chromium.
+
+**Finding.** The canon leading-trim strategy applies `text-box-trim:trim-both; text-box-edge:cap alphabetic`
+to label elements. `cap alphabetic` trims the box to cap-height…baseline — which is *exactly* what makes a
+label optically centre against an adjacent **icon** (the ✕ in a tag, an icon in a button). BUT when that
+same label also carries `overflow:hidden` (for ellipsis), the descender sits **below** the alphabetic
+baseline — outside the trimmed box — and is **clipped**. The gated **Tags** component shows this today:
+"Savings" renders "Savin*q*s". `leading-trim-label-decision` gotcha 2 named the clip but prescribed
+`text-box-edge:text text`; that keeps the glyph box (no clip) but **re-introduces the misalignment** —
+`text text` centres the full ascent→descent box, so cap-height text no longer centres on the icon. The two
+documented options are therefore **mutually exclusive for the icon+label case**: `cap alphabetic` =
+aligned-but-clips; `text text` = unclipped-but-misaligned.
+
+**Resolution (proven, real Chromium).** For **icon+label controls**, keep `cap alphabetic` (icon alignment)
+and **don't clip at the label** — set the label `overflow:visible` and let the descender sit in the
+control's own vertical slack (a 14px tag in a 30px chip has ~8px); the control's own `overflow:hidden`
+still bounds genuine over-length. Trade-off: no per-label ellipsis (fine for short atoms; a control needing
+true ellipsis **and** an icon **and** descenders at once needs horizontal-only clipping, which CSS doesn't
+do cleanly today — revisit if it arises).
+
+**Decision tree — trimmed truncating labels:**
+- Stacked text, NO adjacent icon (List-items `.title/.desc`) → `text-box-edge:text text` (keeps ellipsis, no clip; alignment N/A). *Already applied.*
+- Icon+label control (tag, button, CTA, chip) → `cap alphabetic` + label `overflow:visible` into the control's slack. *New.*
+
+**Blast radius.** Icon+label pairing is pervasive — **24** snippet/tranche files pair an icon with a label
+under the global trim. Only those that **truncate** a label (`overflow:hidden` on the label) clip today;
+the confirmed live case is **Tags**. **Buttons/CTAs with truncating labels are the next-most-likely** —
+audit `.btn/.cta/.qbtn` labels for `overflow:hidden` + descenders. The *alignment* half is already correct
+everywhere via `cap alphabetic`; only the *clip* half is the defect.
+
+**Recommendation:** (1) bake the decision tree into the leading-trim canon guidance (extends gotcha 2);
+(2) fix Tags at Tag-atom wiring time; (3) audit button labels. **Gate candidate:** render-time check that no
+descender is cut inside a trimmed+clipped label (cheap static approximation: trimmed label with
+`overflow:hidden` and no `overflow:visible`/`text text` override).
+
+**Artifacts:** `reviews/TAG-COMPONENT-2026-07-18.html` (specimen + fix) · the 5-way alignment comparison
+(`outputs/tag-align-test`) · memory `leading-trim-label-decision` (gotcha 2, extended here).

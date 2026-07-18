@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tag — component spec (3 variants × 2 sizes)</title>
+<style>
+  :root{
+    --uf:"Univers Next HSBC","HSBC_MtUnivers_Latin","Helvetica Neue",Arial,sans-serif;
+    --text:#333333; --border:#767676; --icon:#333333; --hover:#f3f3f3; --focus:#305a85;
+    --muted:#5b6770; --line:#e6e8ea; --bg-soft:#f6f7f8; --accent:#db0011;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:var(--uf); color:#111; background:#fff; line-height:1.4;
+       max-width:1040px; margin:0 auto; padding:48px 40px 120px;}
+
+  /* leading-trim (label alignment) — the CANON strategy: native text-box-trim, metric-aware,
+     progressive. Global base = cap/alphabetic; TRUNCATING labels override to text/text so
+     descenders aren't clipped (leading-trim-label-decision, gotcha 2). Ignored on flex + on
+     svg-holders by design. */
+  :is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+  .eyebrow{font-size:12px; font-weight:500; color:var(--accent); margin-bottom:6px;}
+  h1{font-size:32px; font-weight:300; line-height:1.15; margin-bottom:10px;}
+  .lede{font-size:16px; color:var(--muted); max-width:64ch; margin-bottom:8px;}
+  .meta{font-size:12px; color:var(--muted); margin-bottom:40px;}
+  h3.section{font-size:12px; font-weight:500; letter-spacing:.04em; color:#111;
+       border-top:2px solid #111; padding-top:8px; margin:46px 0 18px;}
+  .note{font-size:13px; color:var(--muted); max-width:76ch; margin:0 0 18px;}
+  .note b{color:#111; font-weight:500;}
+  code{font-family:ui-monospace,Menlo,monospace; font-size:.88em; background:var(--bg-soft); padding:1px 5px;}
+
+  /* ============ THE TAG ATOM ============ */
+  /* em-based square chip — every dimension tracks font-size, so size = one property. */
+  .tag{display:inline-flex; align-items:center; gap:.46em; height:2.15em; padding:0 .77em;
+    border:1px solid var(--border); border-radius:0; background:transparent; color:var(--text);
+    font:400 14px/1 var(--uf); max-width:100%; white-space:nowrap; overflow:hidden; vertical-align:middle;
+    transition:background 140ms ease, transform 150ms cubic-bezier(.4,0,.2,1);}
+  /* label — inherits the global cap/alphabetic trim (aligns with the ✕ icon). overflow:VISIBLE is
+     the fix: the descender sits below the cap-alphabetic box, and the roomy chip (align-items:center,
+     ~8px slack) still bounds it — so g/y/p survive WITHOUT the label clipping them. The chip's own
+     overflow:hidden catches any genuine over-length. (cap/alphabetic + label overflow:hidden is what
+     clips descenders — see leading-trim-label-decision gotcha 2; this is the icon+label chip case.) */
+  .tag .lbl{overflow:visible; min-width:0; white-space:nowrap;}
+
+  /* SIZE — default 14px; --sm = 12px */
+  .tag--sm{font-size:12px;}
+
+  /* VARIANT — plain removes the border (text only) */
+  .tag--plain{border-color:transparent; padding-inline:0;}
+
+  /* VARIANT — dismissible: presence of .x (real close glyph, 24px hit target per WCAG 2.5.8) */
+  .tag .x{position:relative; display:inline-flex; font-size:inherit; width:1.54em; height:1.54em; padding:0;
+    border:0; background:transparent; color:var(--icon); cursor:pointer; align-items:center; justify-content:center; flex:0 0 auto;
+    transition:transform 130ms cubic-bezier(.4,0,.2,1), color 140ms ease;}
+  .tag .x::before{content:""; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:24px; height:24px;}
+  .tag .x svg{width:.85em; height:.85em; fill:currentColor;}
+  .tag .x:hover{color:#111; transform:scale(1.4);}
+  .tag .x:active{transform:scale(1.15);}
+  .tag .x:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+
+  /* optional interactive (filter) tag */
+  .tag.link{cursor:pointer; text-decoration:none;}
+  .tag.link:hover{background:var(--hover); transform:scale(1.05);}
+  .tag.link:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+
+  /* ============ specimen scaffolding ============ */
+  .matrix{border-collapse:separate; border-spacing:0; width:100%; max-width:760px; margin-bottom:8px;}
+  .matrix th{font-size:11px; font-weight:600; letter-spacing:.04em; color:var(--muted); text-align:left; padding:0 24px 12px 0; vertical-align:bottom;}
+  .matrix td{padding:16px 24px 16px 0; border-top:1px solid var(--line); vertical-align:middle;}
+  .matrix .rl{font-size:12px; color:#111; font-weight:500; white-space:nowrap;}
+  .matrix .rl small{display:block; color:var(--muted); font-weight:400; margin-top:2px;}
+  .ctx{background:var(--bg-soft); padding:16px 18px; margin-bottom:14px; max-width:640px;}
+  .ctx .cap{font-size:11px; color:var(--muted); margin-bottom:12px;}
+  .filterbar{display:flex; gap:8px; flex-wrap:wrap;}
+  .prose{font-size:14px; color:#111; max-width:60ch;}
+  .prose .tag{margin:0 2px;}
+  table.api{border-collapse:collapse; font-size:13px; margin:8px 0; width:100%; max-width:720px;}
+  table.api th, table.api td{border:1px solid var(--line); padding:7px 11px; text-align:left; vertical-align:top;}
+  table.api th{background:var(--bg-soft); font-weight:500;}
+  table.api code{background:#fff;}
+</style>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="ic-close" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z"/></symbol></svg>
+
+  <div class="eyebrow">Apollo · component library · Tag atom</div>
+  <h1>Tag — three variants, two sizes</h1>
+  <p class="lede">Your spec, realised: <b>dismissible</b> (border + ✕), <b>bordered</b> (text + border),
+     <b>plain</b> (text only) — each at 14px and 12px. Square corners, em-based so a size is one property.</p>
+  <p class="meta">Review copy · 2026-07-18 · rendered in real Chromium · sign off → wire into canon + migrate usages</p>
+
+  <h3 class="section">THE MATRIX — 3 × 2</h3>
+  <table class="matrix">
+    <tr><th></th><th>14px · default</th><th>12px · <code>.tag--sm</code></th></tr>
+    <tr>
+      <td class="rl">Dismissible<small>border + ✕ close</small></td>
+      <td><span class="tag"><span class="lbl">Savings</span><button class="x" aria-label="Remove Savings"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg></button></span></td>
+      <td><span class="tag tag--sm"><span class="lbl">Savings</span><button class="x" aria-label="Remove Savings"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg></button></span></td>
+    </tr>
+    <tr>
+      <td class="rl">Bordered<small>text + border</small></td>
+      <td><span class="tag"><span class="lbl">Everyday</span></span></td>
+      <td><span class="tag tag--sm"><span class="lbl">Everyday</span></span></td>
+    </tr>
+    <tr>
+      <td class="rl">Plain<small>text only</small></td>
+      <td><span class="tag tag--plain"><span class="lbl">Rewards</span></span></td>
+      <td><span class="tag tag--plain tag--sm"><span class="lbl">Rewards</span></span></td>
+    </tr>
+  </table>
+
+  <h3 class="section">IN CONTEXT</h3>
+  <div class="ctx">
+    <div class="cap">Dismissible — applied filters (14px)</div>
+    <div class="filterbar">
+      <span class="tag"><span class="lbl">GBP</span><button class="x" aria-label="Remove GBP"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg></button></span>
+      <span class="tag"><span class="lbl">Last 30 days</span><button class="x" aria-label="Remove Last 30 days"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg></button></span>
+      <span class="tag"><span class="lbl">Joint account</span><button class="x" aria-label="Remove Joint account"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg></button></span>
+    </div>
+  </div>
+  <div class="ctx">
+    <div class="cap">Bordered — status tags in a dense card row (12px)</div>
+    <div class="filterbar">
+      <span class="tag tag--sm"><span class="lbl">Everyday</span></span>
+      <span class="tag tag--sm"><span class="lbl">Rewards</span></span>
+      <span class="tag tag--sm"><span class="lbl">Travel</span></span>
+    </div>
+  </div>
+  <div class="ctx">
+    <div class="cap">Plain — inline, no chrome (12px)</div>
+    <p class="prose">Tagged <span class="tag tag--plain tag--sm"><span class="lbl">#travel</span></span>
+      <span class="tag tag--plain tag--sm"><span class="lbl">#savings</span></span> — reads as part of the sentence.</p>
+  </div>
+
+  <h3 class="section">CLASS API</h3>
+  <table class="api">
+    <tr><th>variant</th><th>markup</th><th>notes</th></tr>
+    <tr><td>Dismissible</td><td><code>.tag</code> + child <code>.x</code> button</td><td>border + real ✕ glyph; 24px hit target (WCAG 2.5.8)</td></tr>
+    <tr><td>Bordered</td><td><code>.tag</code></td><td>the base — text + 1px border</td></tr>
+    <tr><td>Plain</td><td><code>.tag.tag--plain</code></td><td>border transparent, no side padding</td></tr>
+    <tr><td>Size</td><td><code>.tag--sm</code></td><td>12px; default is 14px. Em-based, so this scales the whole chip.</td></tr>
+  </table>
+  <p class="note"><b>Open, your call:</b> (1) names — <code>--plain</code> / <code>--sm</code> are my picks, easy to change.
+     (2) colour — shown neutral; status/RAG colouring (e.g. green "Active") can layer on as a separate concern.
+     (3) the masthead <code>.h .tag</code> still renames to <code>.h .eyebrow</code> so this atom owns the name.</p>
+  <p class="note">On sign-off: add these to <code>canon/type.css</code>/component CSS, update <code>Tags.reference</code>
+     as the gated home, migrate Account-card + List-items onto the named variants, rename the masthead label,
+     re-render to confirm, rebuild green. <b>Nothing swept until you rule.</b></p>
+
+</body>
+</html>
