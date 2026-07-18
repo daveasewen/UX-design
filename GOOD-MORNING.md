@@ -125,7 +125,9 @@ it would red the build until the 721 rebinds land.
   `_proforma/_TYPE-DECISIONS.md` and `_proforma/_DATAVIZ-DECISIONS.md` today; one per pillar as they appear.
 - **Surface spin-off candidates mid-chat** — reusable tools worth generalising; register in `_LIVE-STATE`.
 - **Suggest reflection checkpoints**; run the capture ritual unasked at session end.
-- **Memory is NOT backed up.** It lives outside the repo (),
+- **Memory is NOT backed up.** It lives outside the repo, at
+  `~/Library/Application Support/Claude/local-agent-mode-sessions/…/spaces/<space-uuid>/memory/` — local files,
+  not cloud, but keyed to the Cowork space —
   is invisible to the shell and every gate, and dies with the Cowork space. **Memory is an accelerator; the repo is
   the record.** Mirror instructions: `knowledge/_agent-memory/README.md` — Dave's one rsync, worth running whenever
   memories changed.
