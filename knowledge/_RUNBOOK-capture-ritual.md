@@ -28,6 +28,19 @@ only for pure Q&A sessions that touched nothing. If in doubt, run it; it's cheap
 4. **Record decision nodes with supersession discipline.** Any new ruling gets logged where decisions
    live (ADR, charter section, or `_LIVE-STATE`), cross-linked both ways, seeded as `unaudited`
    per the decision-audit method (`_RUNBOOK-decision-audit.md`) — never self-promoted to `vouched`.
+4b. **Name the session — BOTH directions.** *(Added 2026-07-18, Dave: "add a rename instruction into the
+   good morning going forward, it's more efficient than copy and pasting your suggestion.")*
+   Sessions drift — they routinely end up being about something other than what they were opened for
+   (2026-07-18 opened as the type retrofit and became the halation/edge-extremity discovery; the retrofit
+   was ~15% of it). So the handoff carries **two** names, and both go at the TOP of `GOOD-MORNING.md`
+   where Dave acts on them first, not buried at the bottom:
+   - **RENAME THIS SESSION → `<retrospective title>`** — what it turned out to be, written with hindsight.
+     Dave applies it to the finished conversation.
+   - **NEXT SESSION TITLE → `<forward title>`** — the opener for tomorrow.
+   Write them as ready-to-use lines, not as a suggestion needing reformatting. Claude cannot rename a
+   conversation itself — no tool for it — so the line exists to make Dave's action one copy, not a
+   re-read of the whole handoff to work out what the session became.
+
 5. **Commit + push.** Claude commits in terminal with a paste-ready summary + description, clears any
    stale `.git/*.lock` files. **Dave pushes via GitHub Desktop only** — never terminal push, never a
    Desktop commit, Desktop closed while Claude commits (memory `git-push-method`).
