@@ -36,9 +36,19 @@ only for pure Q&A sessions that touched nothing. If in doubt, run it; it's cheap
    caught only because Dave asked. The instruction had been surviving *only* by being copied forward
    inside the file it governs, which is not survival, it is luck. That is why it is written here too:
    a rule that lives only in the artefact it governs dies the first time that artefact is rewritten.
-3. **Update memory.** Any `feedback` / `project` / `user` / `reference` memory that's new or changed
-   this session, plus the one-line pointer in `MEMORY.md`. Check for stale memories the session
-   disproved and correct or remove them.
+3. **Update memory — AND mirror anything durable into the repo.** Any `feedback` / `project` / `user` /
+   `reference` memory that's new or changed this session, plus the one-line pointer in `MEMORY.md`.
+   Check for stale memories the session disproved and correct or remove them.
+
+   ⚠️ **Memory is NOT a backup and NOT the source of truth.** It lives outside the repo: not in git, not
+   pushed by GitHub Desktop, invisible to the shell and to every gate, and lost if the Cowork space is
+   reset. It is also *mine* — a terminal session or another tool won't have it. And it can hold stale
+   facts confidently (on 2026-07-18 a memory still said "26 gates"; it was 29 by end of day).
+   **So: memory is an accelerator, the repo is the record.** Anything that must survive — a rule, a
+   rationale, a threshold, a convention — gets written into the repo in the same pass, not just into
+   memory. `_validate_standing_instructions.py` enforces reachability **repo-side only**; nothing can
+   check that a memory-only rule was ever mirrored, which makes this step the weakest link in the chain
+   and the one to do deliberately rather than at speed.
 4. **Record decision nodes with supersession discipline.** Any new ruling gets logged where decisions
    live (ADR, charter section, or `_LIVE-STATE`), cross-linked both ways, seeded as `unaudited`
    per the decision-audit method (`_RUNBOOK-decision-audit.md`) — never self-promoted to `vouched`.
