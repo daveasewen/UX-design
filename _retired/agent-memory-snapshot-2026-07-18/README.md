@@ -1,7 +1,14 @@
 # Agent memory — repo mirror
 
-**STANDING:** this directory is the backup of the agent's memory, which otherwise lives outside the repo
-and outside every backup Dave actually runs.
+> ⚠️ **SUPERSEDED 2026-07-18 — Superseded-by: the mirror ruling, `_LIVE-STATE.md` SUPERSEDED/DEAD +
+> `reviews/CONSOLIDATION-AUDIT-2026-07-18.html` §4 (RULED Dave, pin 11: delete-with-snapshot).**
+> This directory is a **dated snapshot, not a mirror**: taken at deletion, never refreshed,
+> **non-authoritative** — contents were already stale (115 stored vs 110 live, five ghosts, three
+> known-unmirrored changes). Its own §"whether this should exist" argued for this outcome. Durable
+> content now gets INSCRIBED (rules → guidelines/runbooks · facts → assertions · rulings → ledgers),
+> per the amended `_RUNBOOK-capture-ritual.md` step 3. Recovery use only.
+
+*(Original README below, kept verbatim for the audit trail. Its instructions no longer apply.)*
 
 ## The problem this exists for
 

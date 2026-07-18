@@ -1,28 +1,21 @@
 # Good morning, Dave ☕
 
-*Briefing — written end of 2026-07-19, session **"Splitting type from box."***
+*Briefing — written end of 2026-07-18 (date from `date`, per the new ritual rule), session
+**"Making the record answerable"** — the Fable consolidation run.*
 
 ---
 
 ## ⬛ DO THESE TWO FIRST (10 seconds)
 
-> **RENAME YESTERDAY'S CHAT →** `The box was the line-height all along`
-> *(it opened as the type/box split and got it — but the ruling that actually decided the batch was
-> one nobody had queued: where `line-height` lives. It then spent its back half closing the font
-> licence thread, and ended by scoping the Fable session.)*
+> **RENAME YESTERDAY'S CHAT → `Making the record answerable`** *(no change — it already carries this
+> name, and for once it earned it: the session did exactly what it was opened for — ran the Fable
+> brief cold, you ruled the 11 pins, and the whole consolidation was enacted the same day.)*
 
-> **TITLE TODAY'S CHAT →** `Making the record answerable`
+> **TITLE TODAY'S CHAT →** `A gate for the blast radius`
+> Next session = the binding blast-radius gate, **Opus**, per the queue below.
 
-> **🅕 THIS SESSION IS THE FABLE RUN — start it on FABLE, COLD.** No warm-up, no re-reading this
-> conversation. **First action: open `notes/_FABLE-BRIEF-consolidation.md` and execute it**, §0
-> first. The brief is self-contained and written to be run cold; if it can't be understood cold,
-> that is finding #1, report it. Everything in §C below is context for AFTER the brief, or for a
-> different session — **do not let it pull you off the consolidation.** (Dave, 2026-07-19:
-> *"assume the fable briefing and run is kicked off by the handoff."*)
-
-*Standing practice (your ask, 2026-07-18): every handoff carries **both** names — retrospective for
-the session that ended, forward for the next. Step 4b in `_RUNBOOK-capture-ritual.md`. I can't rename
-a conversation myself, so these are ready to copy.*
+*Standing practice: every handoff carries both names — retrospective + forward. Step 4b in
+`_RUNBOOK-capture-ritual.md`.*
 
 *Read: **§A Orientation** (skip if you're in context) → **§B This session** → **§C Queue**.
 Then `_LIVE-STATE.md` → the decision files it points to.*
@@ -37,35 +30,32 @@ Then `_LIVE-STATE.md` → the decision files it points to.*
 > to lose**. That is this project's operating model, not a metaphor for it. A session starts with no
 > memory and rebuilds from artefacts.
 >
-> **The trust hierarchy is the tattoo/Polaroid distinction:** memory files + runbooks = tattoos (durable,
-> survive any single rewrite) · `GOOD-MORNING` + `_LIVE-STATE` = Polaroids (working state, rewritten often)
-> · the chat = gone by morning. **Never let a durable rule live only on a Polaroid** — that is how §A's own
-> standing instruction nearly died on 2026-07-18.
+> **The trust hierarchy is the tattoo/Polaroid distinction:** repo rules + runbooks + ledgers = tattoos
+> (durable, survive any single rewrite) · `GOOD-MORNING` + `_LIVE-STATE` = Polaroids (working state,
+> rewritten often) · the chat = gone by morning. **Never let a durable rule live only on a Polaroid** —
+> that is how §A's own standing instruction nearly died on 2026-07-18.
 >
-> **The real danger is not forgetting — it is confident false inscription.** Leonard's tragedy is that he
-> writes a *false* tattoo and then trusts it absolutely, because he cannot remember writing it. So: records
-> carry provenance and confidence, not just content. Corrections get inscribed as loudly as the original
-> claim. **Mark what was OBSERVED versus what was INFERRED** — `dv-019`'s 135° leg says *"because Dave saw
-> the dance on a 146° pair"*, and that sentence is the tattoo, not the number.
+> **The real danger is not forgetting — it is confident false inscription.** Records carry provenance
+> and confidence, not just content. Corrections get inscribed as loudly as the original claim. **Mark
+> what was OBSERVED versus what was INFERRED.** It reaches even the small things: the T-D12 handoff
+> dated itself "2026-07-19" while its commits landed 07-18 evening — so the ritual now stamps dates
+> from `date`, never from the session's own belief.
 >
-> **NEW, 2026-07-18 (second session) — there is a SECOND failure mode, and it cost more than the first.**
-> Three times in one day I designed a solution to a problem the system had **already answered**: a dark
-> ochre glyph (the 1.4.1 label-carries-meaning waiver was already canon in five snippets) · a 49-file
-> inline sweep (portability had never actually been tested) · "no Univers in-sandbox" (the licensed fonts
-> have been in the repo all along). **Not stale FACTS — a stale READING of our own rules.**
-> `_validate_assertions.py` catches a fact that flips. **Nothing catches a rule we forgot we had.**
-> ⇒ **Before designing anything: grep the guidelines and read the gates.** The answer is often already
-> written down.
+> **The SECOND failure mode costs more: a stale READING of our own rules.** Three times in one day a
+> solution was designed to a problem the system had already answered. `_validate_assertions.py`
+> catches a fact that flips; **nothing used to catch a rule we forgot we had — now something does:**
+> ⇒ **Before designing anything, CONSULT: `python3 knowledge/_consult.py "<what you're about to
+> design>"`** (557 records: rules · rulings · assertions · gates + where each bites). Paste the
+> receipt (query + retrieved ids) into the work's review sheet or meta. Advisory tier for now;
+> lexicon grows one line per miss. Runbook: `knowledge/_RUNBOOK-consult.md`.
 
 > **STANDING SECTION — carry it into every handoff, from 2026-07-17 on.** At Dave's request:
 > *"orientate a new starter — wider context helps."* Written new-starter style: assume the reader has
 > no context and no memory of prior sessions. **Update it when the shape of the project changes, not
-> every session — but never drop it, and never shorten it to a label.**
->
-> *(Restored 2026-07-18 after a from-scratch rewrite reduced this note to the words "Standing section",
-> losing both the instruction and Dave's reason for it. The rule had been surviving only by being copied
-> forward, so a rewrite silently degraded it. It is now also step 2 of `_RUNBOOK-capture-ritual.md`, so it
-> no longer depends on this file surviving.)*
+> every session — but never drop it, and never shorten it to a label.** *(Also step 2 of
+> `_RUNBOOK-capture-ritual.md`, so it no longer depends on this file surviving. It is
+> reachability-gated by `_validate_standing_instructions.py` — the gate caught a dropped reference
+> again on 2026-07-18, which is the system working.)*
 
 ## What Apollo is
 A **governed design-system engine** for agentic UI generation. The bet: *generation is a commodity* — the value
@@ -85,221 +75,194 @@ One component skeleton; **modes are token-override sets**. Adding a library = ad
 ## Where things live
 ```
 knowledge/            THE ENGINE
-  tokens/             DTCG token stores — the retrieval source
-    _proposals/       HOLDING PEN: structured, provenanced, NOT promoted
+  tokens/             DTCG token stores — the retrieval source (_proposals/ = holding pen)
   snippets/           38 gated reference components = CANON
   components/*.meta.json   per-component CRITERIA
-  canon/              canon.css (GENERATED — see the CAVEAT) + type.css (composites, HAND-AUTHORED)
-  guidelines/         the ingested + Apollo-added RULES, each with a stable {#id} and a destiny tag
-    _rules-index.json   GENERATED machine-readable rule spine (465 rules)
-  _proforma/          Apollo mono tranches T1–T8 + Masthead + DataViz  ← in-flight build surface
-    _TYPE-DECISIONS.md   type rulings ledger (T-D1…T-D12)
-    _RAG-DECISIONS.md    colour rulings ledger (R-D1…R-D3)   ← NEW 2026-07-18
+  canon/              canon.css (GENERATED between AUTO markers) + type.css (HAND-AUTHORED composites)
+  guidelines/         the rules, each with a stable {#id} + destiny tag; _rules-index.json (465, generated)
+  _proforma/          Apollo mono tranches T1–T8 + Masthead + DataViz + the decisions ledgers
   _review/            review-overlay copies (+ _make_review.py). Gates never scan here.
+  _consult.py         ★ NEW — "what governs X?" in one step; index generated every build
   _assertions.json    environment claims + predicates, re-tested every build
-  _validate_*.py      the gates; orchestrated by _build_all.py
+  _validate_*.py      the gates; orchestrated by _build_all.py (31 steps)
 reviews/              consumable outputs + the review sheets you mark up
-_LIVE-STATE.md        LIVE / DEAD / OPEN — read second, always
+_LIVE-STATE.md        LIVE / DEAD / OPEN / TARGETS — read second, always (402 lines, spine discipline)
+_FUTURE-STATE.md      ★ NEW — side-quests, ideas, RESURRECTION candidates (the forward ledger)
+_DECISION-HISTORY/    ★ NEW — dated narrative, relocated verbatim; RESURRECT tags; see its README
+_retired/             reverted/retired work with residual value (incl. the memory-mirror snapshot)
 ```
 
 ## The one command that matters
 ```
-python3 knowledge/_build_all.py     # 30 steps, all gates, exits non-zero on any failure
+python3 knowledge/_build_all.py     # 31 steps, all gates, exits non-zero on any failure
 ```
 Gates: a11y · contrast · state-contrast · icon-source · coverage · integrity · rules-index ·
-assertions · **DEF-003** no-JS-motion · **DEF-004** no-hardcoded-styling · **DEF-005** 4px grid ·
-pro-forma · DataViz · edge-extremity (advisory). **DEF-006 type-composites exists but is NOT wired.**
+assertions · standing-instructions · **DEF-003** no-JS-motion · **DEF-004** no-hardcoded-styling ·
+**DEF-005** 4px grid · pro-forma · DataViz · consult-index + selftest (advisory) · edge-extremity
+(advisory). **DEF-006 type-composites exists but is NOT wired** (deliberate — see the non-`/1` batch).
 
 ## Rules that actually bite
-- **Survey before build** — grep `snippets/` + metas + tranches BEFORE building.
-- **⚠️ canon.css** — "generated, never hand-edit" applies only *between the AUTO-COMPONENTS markers*.
-  The **`.c-*` composition layer above that marker is hand-authored and has NO snippet source.**
-- **⚠️ type.css is HAND-AUTHORED** — its "generated" header was false and is gone (2026-07-18).
-- **TYPE and BOX are separate lists** (T-D12). `.t-cm-<size>` = family/size/weight/**line-height:1**,
-  safe anywhere. `.t-cm-slot` = display/align/min-height/cap-trim, **opt-in, only where the element
-  already declares flex.** Slotting anything else is a per-component ruling, never a sweep.
-- **A diff you cannot attribute is not evidence.** Before calling a change good or bad, isolate it
-  with a control (see `NO_SNAP` in `apply_type_bind.py`). Pixel count alone condemns correct work.
-- **Icons: real assets only.** Filenames are not trustworthy — render-verify before binding.
+- **CONSULT before designing** (see the Memento block above) — then **survey before build**: grep
+  `snippets/` + metas + tranches before building anything.
+- **⚠️ canon.css** — "generated, never hand-edit" applies only *between the AUTO markers*; the `.c-*`
+  layer above is hand-authored. **type.css is HAND-AUTHORED** throughout.
+- **TYPE and BOX are separate lists** (T-D12). `.t-cm-<size>` = type incl. `line-height:1`, safe
+  anywhere. `.t-cm-slot` = box, **opt-in, only where the element already declares flex.** Widening is
+  a ruling, never a sweep.
+- **A diff you cannot attribute is not evidence.** Isolate with a control (`NO_SNAP` pattern) before
+  judging.
+- **Icons: real assets only** — render-verify before binding; filenames lie.
 - **4px grid** (DEF-005) · **sentence case** · **square corners in mono** · **red = primary-action
-  accent, once per screen** (brand modes only).
+  accent, once per screen** (brand modes) · **weights: five licensed only — 100/300/400/500/700,
+  THERE IS NO 600.**
+- **A rule is only as wide as its gate's glob.** Bite-test every check.
+- **Theme-dependent alias blocks use the same selector list as the tokens they wrap — never bare
+  `:root`** (inscribed 2026-07-18; `_RUNBOOK-compose-from-canon.md`).
+- **Run the gate as the LAST step before presenting** — a hand-built "canon" claim is what the gate
+  exists to check (same runbook).
 - **Derivation governance** — the engine never derives-and-promotes. **Promotion is Dave's alone.**
 - **ATOMISE** — build at the true atomic level and compose up.
-- **Weights: five licensed only — 100/300/400/500/700. THERE IS NO 600.**
-- **A rule is only as wide as its gate's glob.** "Blocking" describes the rule; the glob decides where
-  it bites. `{#type26-019}` was blocking for weeks while four tranches breached it.
-- **Supersession discipline** — a ruling that kills something tombstones the artefact **and** logs the
-  propagation gap in the same pass. Non-negotiable per `AGENTS.md`.
+- **Supersession discipline** — tombstone + propagation gap in the same pass (`AGENTS.md`).
+- **Spine discipline** (NEW 2026-07-18) — state lines in `_LIVE-STATE`; narrative >10 lines goes to
+  `_DECISION-HISTORY/` at write time.
 
 ## Standing instructions for the agent (not the artefact)
 - **Announce the model/routing split at the START of every substantive task, unprompted** (`MODEL-ROUTING.md`).
 - **Verify before asking.** Answer state-questions by reading the repo or running the gates — not by asking Dave.
 - **Reflect back before recording.** Restate the interpretation and confirm firmness **before** writing a ruling
   into a ledger. British understatement — "quite good" is not approval. **A lean is not a ruling.**
-- **Ask what Dave valued in prior work BEFORE proposing mine-vs-fresh.** Change-by-change; this cost a reverted T6.
+- **Ask what Dave valued in prior work BEFORE proposing mine-vs-fresh.** Change-by-change.
 - **Decision-heavy or material-referring choices ship as a review-template HTML** (`_make_review.py`), not as
   `AskUserQuestion`.
 - **Log rulings in the per-pillar decisions ledger**, with the WHY.
-- **Surface spin-off candidates mid-chat**; register in `_LIVE-STATE`.
-- **Suggest reflection checkpoints**; run the capture ritual unasked at session end.
-- **Memory is NOT backed up.** It lives outside the repo and dies with the Cowork space.
-  **Memory is an accelerator; the repo is the record.**
+- **Surface spin-off candidates mid-chat**; register ideas/side-quests in `_FUTURE-STATE.md`.
+- **Suggest reflection checkpoints**; run the capture ritual unasked at session end; **stamp dates
+  from `date`**.
+- **Memory is an accelerator; the repo is the record.** The repo mirror of memory was DELETED by
+  ruling 2026-07-18 (snapshot in `_retired/`): durable content gets **inscribed** in its proper repo
+  home in the same pass — never photocopied, never memory-only.
 
 ## The other standing documents
-*(This paragraph is REACHABILITY-GATED by `_validate_standing_instructions.py` (STAND-002) — every
-one of these must stay referenced from the cold-start spine. **My 2026-07-18 rewrite dropped four of
-them and the gate caught it**, which is the §A-degradation failure the capture runbook predicts.
-Do not prune this list.)*
+*(REACHABILITY-GATED by `_validate_standing_instructions.py` (STAND-002) — every one of these must
+stay referenced from the cold-start spine. Do not prune this list.)*
 
-`AGENTS.md` (repo agent contract, git split, supersession) · `MODEL-ROUTING.md` (which model for
-which work) · `knowledge/_proforma/_PROFORMA-RULES.md` (Apollo mono mode rules: monochrome,
-`surface/digital-black`, colour=meaning, square) · `knowledge/_proforma/_TYPE-DECISIONS.md` (type
-rulings T-D1…T-D11) · `knowledge/_proforma/_RAG-DECISIONS.md` (colour rulings R-D1…R-D3) ·
-`knowledge/_proforma/_DATAVIZ-DECISIONS.md` (DataViz rulings) ·
-`notes/_FABLE-BRIEF-consolidation.md` (**the scoped Fable session** + the running candidate list) ·
-`knowledge/_DS-IMPROVEMENTS.md`
-(logged DS defects — ds-001…004) · `knowledge/_ICON-GAPS.md` (mislabelled/inverted icon assets) ·
-`knowledge/_ASSERTIONS.md` + `knowledge/_assertions.json` (environment claims + predicates, 6 live) ·
-`knowledge/guidelines/_rules-index.json` (465 rules, the machine-readable spine) · `_retired/`
-(reverted work with residual value — TRACKED; vs `_to_delete/`, gitignored rubbish).
+`AGENTS.md` (repo agent contract, git split, supersession) · `MODEL-ROUTING.md` ·
+`_FUTURE-STATE.md` (forward ledger) · `_DECISION-HISTORY/README.md` (the archive's rules) ·
+`knowledge/_proforma/_PROFORMA-RULES.md` · `knowledge/_proforma/_TYPE-DECISIONS.md` (T-D1…T-D12) ·
+`knowledge/_proforma/_RAG-DECISIONS.md` (R-D1…R-D3) · `knowledge/_proforma/_DATAVIZ-DECISIONS.md` ·
+`notes/_FABLE-BRIEF-consolidation.md` (**executed 2026-07-18** — kept for its §7 candidate list) ·
+`knowledge/_DS-IMPROVEMENTS.md` · `knowledge/_ICON-GAPS.md` · `knowledge/_ASSERTIONS.md` +
+`knowledge/_assertions.json` (6 live) · `knowledge/guidelines/_rules-index.json` (465 rules) ·
+`_retired/` (tracked; vs `_to_delete/`, gitignored).
 
 **Runbooks** — the method written down so a cold agent can operate the engine:
-`_RUNBOOK-capture-ritual.md` (end of session) · `_RUNBOOK-git-commit.md` (**the sandbox lock dance —
-read it before any git**) · `_RUNBOOK-gated-component.md` · `_RUNBOOK-compose-from-canon.md` ·
-`_RUNBOOK-toolkit-tranche.md` · `_RUNBOOK-criteria-contract.md` · `_RUNBOOK-decision-audit.md` ·
-`_RUNBOOK-reconcile-dark-tokens.md` · `_RUNBOOK-onboard-code-library.md`.
+`_RUNBOOK-capture-ritual.md` (end of session — step 3 amended 07-18: inscribe, don't mirror) ·
+`_RUNBOOK-consult.md` (★ NEW — the pre-flight protocol) · `_RUNBOOK-git-commit.md` (**the sandbox
+lock dance — read before any git**) · `_RUNBOOK-gated-component.md` · `_RUNBOOK-compose-from-canon.md`
+(now carries the two inscribed restyle lessons) · `_RUNBOOK-toolkit-tranche.md` ·
+`_RUNBOOK-criteria-contract.md` · `_RUNBOOK-decision-audit.md` · `_RUNBOOK-reconcile-dark-tokens.md` ·
+`_RUNBOOK-onboard-code-library.md`.
 **`knowledge/_RUNBOOKS.md` is the runbook of runbooks** — GENERATED each build, so it cannot rot.
 
-## Renders — REAL FONT, in-sandbox (updated 2026-07-18)
-**The old "no Univers in-sandbox, layout only" caveat is DEAD.** Renders use the real HSBC cut:
+## Renders — REAL FONT, in-sandbox
+Renders use the real HSBC cut (never stock Univers Next Pro — both are in `assets/fonts/_desktop/`):
 ```bash
 pip3 install playwright --break-system-packages
 NODE_TLS_REJECT_UNAUTHORIZED=0 python3 -m playwright install chromium
 mkdir -p ~/.fonts && cp knowledge/assets/fonts/_desktop/TTF/*.ttf ~/.fonts/ && fc-cache -f
 # CSS: font-family:"HSBC_MtUnivers_Latin"  ·  verify: document.fonts.check('16px HSBC_MtUnivers_Latin')
 ```
-**Always the HSBC cut, never stock Univers Next Pro** (Dave, 2026-07-18) — both are in
-`assets/fonts/_desktop/`, metrically identical horizontally, but only one is the brand font.
-Chrome also needs ~17 libs via `apt-get download` → `dpkg -x` → `LD_LIBRARY_PATH`. Full recipe in
-memory `sandbox-html-rendering`. ⚠️ The browser cache can be **wiped between bash calls** — just re-run.
+Chrome needs ~17 libs via `apt-get download` → `dpkg -x` → `LD_LIBRARY_PATH`; full recipe in memory
+`sandbox-html-rendering`. ⚠️ The browser cache can be wiped between bash calls — just re-run.
 
 ## How we work
 - **Review loop:** every doc ships **clean source + REVIEW copy** (`_make_review.py <file>`).
-- **Sheets are instruments, not proposals.** Build them able to return a **null result**.
-- **A specimen must reproduce the CONDITION its rule names, not merely the ELEMENT.** Ground-dependent
-  effects (halation, vibration) need the ground at real extent. *(New 2026-07-18 — family A's specimen
-  was a small chip on a white page, which under-tests halation.)*
+- **Sheets are instruments, not proposals** — build them able to return a **null result**.
+- **A specimen must reproduce the CONDITION its rule names, not merely the ELEMENT.**
 - **Thresholds come from what Dave can SEE**, not from theory.
 - **Dave commits via GitHub Desktop.** Claude commits in-sandbox per `_RUNBOOK-git-commit.md`.
-  ⚠️ **The sandbox cannot unlink** — `git checkout` FAILS. To revert: `git show HEAD:<path> > <path>`.
+  ⚠️ The sandbox cannot unlink — to revert: `git show HEAD:<path> > <path>`; renames (`mv`) work.
 - **Comms:** exec summary + numbered next steps first, detail below.
 
 ---
 
-# §B · THIS SESSION (2026-07-19, "Splitting type from box")
+# §B · THIS SESSION (2026-07-18, "Making the record answerable")
 
-**The queued ruling landed in the first hour. Then a question nobody had queued turned out to be the
-one that decided the batch — and the back half closed a licence thread that had been mis-recorded
-for weeks.**
+**The Fable consolidation run — opened cold from the brief, and for once the session did exactly
+what it was opened for.**
 
 ## What LANDED
 
-**⭐ T-D12 · TYPE and BOX are separate lists. RULED, and verified before asking.**
-`.t-cm-<size>` carries family/size/weight/**line-height:1** — safe anywhere. `.t-cm-slot` carries
-display/align/min-height/cap-trim — **opt-in**, bound only where the element already declares a flex
-display. The slot height rides on `--slot`; a custom property is inert unless read, which is what
-makes the two lists independent. **13/21 pixel-identical, zero page-height changes**, real HSBC
-Univers. Closes T-D11. Commit `9fb1381`.
+**⭐ The brief's central claim was tested and UPHELD, on cold evidence** — then the whole
+consolidation was ruled (your 11 pins on `reviews/CONSOLIDATION-AUDIT-2026-07-18.html`) and enacted
+same-day:
+- **`_LIVE-STATE.md`: 1104 → 402 lines.** Nothing deleted: ~580 lines relocated **verbatim** to
+  `_DECISION-HISTORY/` (7 dated files + README, with **RESURRECT tags** — your ruling that the old
+  experiments feed the future Create modes); duplicates → pointers; two entries removed on their own
+  recorded instructions. **Masthead recorded as shipped MLP.**
+- **`_FUTURE-STATE.md` created** — your "future-state machine": side-quests, feature ideas,
+  resurrection candidates (incl. the new **DataViz → colleague presentation** candidate).
+- **The memory mirror is DELETED** (your ruling, pin 11): it was the third source of truth its own
+  README forbade (115 vs 110, five ghosts). Dated snapshot in `_retired/agent-memory-snapshot-2026-07-18/`;
+  ritual step 3 now says **inscribe, don't photocopy**.
+- **The consult tool is BUILT** (pin 10; delegated to **Sonnet** per MODEL-ROUTING mode 2):
+  `knowledge/_consult.py` over a 557-record generated index — rules, rulings, assertions, gates
+  **with where each bites** ("gated by X over N files" vs "asserted only"). Selftest replays the
+  three 07-18 stale-reading failures and passes honestly. Wired into the build (now 31 steps).
+- **Two lessons inscribed as rules** (bare-`:root` alias trap · gate-as-last-step) in
+  `_RUNBOOK-compose-from-canon.md`; **stale assertion prose fixed** (ASSERT-001/005 no longer speak
+  the pre-ruling licence framing).
 
-**⭐ The ruling that actually decided it was not on the queue.** §C1 asked "type or box". The real
-question was **where `line-height` lives.** With it in the BOX, type-only bindings silently DROPPED
-the `/1` the old shorthand carried — `.stateLabel` fell to `line-height:normal`, h 12→16. Moving it
-into TYPE took the result 11/21 → 13/21 and removed the last page-height change.
-**The queued question was the right area and the wrong question.**
+## Found cold (the §4.5 list — full version in the audit sheet §5)
 
-**🕓 The webfont thread — closed on distribution, reframed on the rest.** Repo is private and
-everything in it is shared only to HSBC employees, so the distribution worry is **CLOSED, ruled
-"leave"** — no `git rm`, no BFG purge. The licence itself is **renewal-pending, procedural, low-risk**
-(your call, recorded as made — don't let me re-litigate it). What survives is **not a risk item**:
-**zero Latin `.woff`/`.woff2` files exist**, so shareable real-face material is blocked by
-asset-delivery, not permission.
+1. **The record mis-dated itself**: the T-D12 handoff said "written end of 2026-07-19"; its commits
+   landed 07-18 19:51–20:23. Fixed forward: dates from `date`.
+2. **"1044 lines" had rotted to 1104** inside the very banner warning about growth.
+3. **The assertion register nearly re-opened your closed licence thread** — stale consequence prose
+   behind passing predicates. Fixed; the FLIP blind spot is real and now documented.
+4. Pro-forma≡Apollo-mono naming, invisible LIVE-section stratigraphy, and the spine's unnamed
+   guardian gate — all addressed structurally by the split + §A updates.
 
-**📋 The Fable session is now scoped** — `notes/_FABLE-BRIEF-consolidation.md`, with a running
-candidate list for you to add to.
+## What to watch (honesty over tidiness)
 
-## What I got wrong, and what caught it
-
-**Two defects in my own enactment — NEITHER caught by a gate, both by inspection.**
-1. **A hold honoured in planning was violated in the write.** `.tag` was correctly skipped as a
-   collision, then stripped anyway: removal used a global `str.replace`, and `.tag` carries the
-   identical declaration text as the bound `.chip`. **A hold that exists only in the planning stage
-   is not a hold.**
-2. **The slot list patched 1 of 3 `.t-cm-slot` occurrences**, so a slotted selector could have got
-   the box *without* the cap-trim — a different bug wearing the same clothes.
-
-**I designed the split before checking whether line-height was already ruled anywhere.** That is the
-07-18 stale-reading failure again, one day later, by the agent who wrote the warning. It cost two
-render cycles rather than a day, but the shape is identical.
-
-**I also mis-ranked the Fable task**, listing the consolidation ninth as housekeeping until you
-pushed back. It isn't housekeeping — see §C.
-
-## What you caught
-
-1. **"I thought we had a big task set up for fable"** — I'd buried it. It's the only Fable-designated
-   task in the repo and it deserved the top of the list, not the bottom.
-2. **"it's checked already, this is a private repo"** and **"only shared to other HSBC employees"** —
-   two facts that closed a thread I was still treating as an open risk.
-3. **The licence is procedural, not a blocker** — I had been citing `WebfontUserGuide-2024.pdf` as if
-   it were the entitlement record. **It isn't one** — it's generic usage guidance with no schedule.
-   Our "we hold no Latin webfont" claim has always rested on absence of files. Now recorded as such.
+- **The spine rewrite was a full-file rewrite** — the operation class that degraded §A once before.
+  Mitigations: relocations were verbatim `sed` extractions, not retypes; STAND-002 + the full build
+  are green; the audit sheet records every cut. Residual risk: the new spine *summaries* are mine
+  and **unaudited** — if one reads wrong against its ledger, the ledger wins.
+- The consult tool's enforcement column is **keyword-fuzzy** ("possibly gated by…") — good enough
+  for advisory tier; the gate-glob audit (Fable candidate #2) is the rigorous version, re-scope it
+  after the tool beds in.
 
 ---
 
 # §C · QUEUE
 
-## 1. 🅕 THE FABLE SESSION — THIS IS THE RUN, not a decision to make
-**Per Dave's ruling 2026-07-19, the handoff kicks off the Fable run: opening this session cold IS
-starting it.** Go straight to `notes/_FABLE-BRIEF-consolidation.md` and execute §0 onward. The brief
-argues the task is not "shorten `_LIVE-STATE`" but **"make the record answerable"** — four complaints
-from one fortnight are one problem: *we can write to the KB far better than we can interrogate it.*
-It carries the running **candidate-task list** (§7, Dave adds to it) and my argument that
-**"turbo-charge the KB" is four tasks, of which retrieval is the unlock.**
-**Do not warm-start, do not detour into §§2–6 first.** If the record can't be read cold, that is the
-first thing to report, not to paper over.
+## 1. 🔴 The binding blast-radius gate — **next session, Opus**
+Unchanged from the T-D12 handoff: bare selectors in a globally-linked stylesheet, load order doing
+safety-critical work across ~460 selectors, ungated. Wanted BEFORE the non-`/1` batch binds 690 more.
+`_LIVE-STATE.md` → OPEN has the candidate check.
 
-## 2. Small picks — yours, no analysis needed
+## 2. Small picks — yours, no analysis needed (unchanged, still unmarked)
 | what | detail |
 |---|---|
-| **matting rung, green + blue** | `as now` / `−15%` / `−28%` / `−40%` · `reviews/RAG-MATTING-2026-07-18.html`. Sitting unmarked since 07-18. **No numerical tell — I must not guess.** |
-| **`.tag` collision** | 14px canonical vs 12px "reused". **Actively blocks bindings.** One atom one size, or `.tag--sm`? |
-| **`.num` 24px** | no Component rung at 24px. Add one, or snap to 20/32? |
-| **`{#dv-017}`(a)** | permits red/green for deltas while naming **"RAG-style cells"** — RAG includes amber. **The rule permits a palette it also excludes.** |
+| **matting rung, green + blue** | `reviews/RAG-MATTING-2026-07-18.html` — no numerical tell, I must not guess |
+| **`.tag` collision** | one atom one size, or `.tag--sm`? Actively blocks bindings |
+| **`.num` 24px** | add a Component rung at 24, or snap to 20/32? |
+| **`{#dv-017}`(a)** | the rule permits a palette it also excludes |
 
-## 3. 🔴 The binding blast-radius gate — my view: BEFORE the next batch
-The selector-list mechanism puts **bare, unscoped selectors** (`h2`, `.label`, `.status`, `.chip`)
-into a globally-linked stylesheet. It holds only because component CSS loads second — **load order
-doing safety-critical work across ~460 selectors, ungated.** `.tag` was the first collision.
-**This does not reopen T-D9**; it's the missing guard-rail. Opus-sized.
+## 3. The non-`/1` batch (Sonnet, after #1)
+61 shorthands in snippets + the tranche bulk; things move; DEF-006 stays unwired until it lands.
 
-## 4. The non-`/1` batch — and why DEF-006 stays unwired
-61 non-`/1` shorthands left in `snippets/`; the bulk of the remaining **690 TYPE-002** are in the
-pro-forma tranches. They carry line-heights of 1.1–1.6, so binding **moves things** — needs its own
-reviewed batch with T-D12's before/after pixel discipline. **DEF-006 is 780 → 729 and stays unwired
-until then**: a build that is red on known work trains everyone to ignore a red build.
+## 4. Consult protocol — bed it in
+Use it at the top of every design task; paste receipts; grow the lexicon one line per miss. When it
+has earned trust, promote the receipt check from advisory to blocking, and re-scope the **gate-glob
+audit** (Fable candidate #2) against what the bite column already answers.
 
-## 5. Gates owed
-Amber rules 1 + 2 · `type.css` load order · dark-mode green `#1AA05C` (3.37) · dark-mode red/blue as
-TEXT glyphs on `#111` (3.97 / 4.15).
+## 5. 🕓 Waiting on brand — the Latin webfont pack
+Unchanged: files land in `knowledge/assets/fonts/` + Ultralight scope confirmed (= a type ruling,
+not an asset drop). Not yours to chase beyond the ask.
 
-## 6. 🕓 Waiting on brand — the Latin webfont pack
-Not a blocker, not yours to chase beyond the ask. **Two things clear it:** the `.woff`/`.woff2` files
-landing in `knowledge/assets/fonts/`, and brand confirming whether **Ultralight** is in scope.
-⚠️ **Ultralight is not a detail** — the script packs ship Th/Lt/Rg/Md/Bd ≡ 100/300/400/500/700, so an
-Ultralight sits BELOW Thin and is a **sixth weight**: a change to the canon ramp, therefore a **type
-ruling, not an asset drop.** Expect it; don't discover it in a diff.
-
-> **COMMITTED:** `9fb1381` (T-D12 + verification + the two script fixes). This handoff is a second
-> commit below. Build green, all 30 steps; DEF-006 fails by design.
-> **Next session model:** **§1 IS the session — Fable, cold, from the brief.** §§3–4 are later
-> sessions (Opus for §3; Sonnet for §4 once §3 is ruled), NOT this one.
+> **COMMIT STATE:** this session's work is committed in-sandbox (paste-ready summary handed in chat);
+> **you push via GitHub Desktop**, as ever. Build green, 31 steps; DEF-006 unwired by design.
+> **Next session model: Opus** (§1 is judgment work). The audit sheet + REVIEW copy stay in
+> `reviews/` as the session's record.

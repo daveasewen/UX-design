@@ -10,8 +10,8 @@
 **Claim:** No Latin Univers WEBFONT pack is present. Only the five SCRIPT companions have webfonts.
 
 - check: `0 matches`
-- consequence: Gates ALL shareable material — specimens, review docs sent outside, hosted prototypes. Desktop licence does not cover embedding or serving.
-- clears when: Dave obtains the Latin 'Univers Next for HSBC' webfont pack (WOFF + WOFF2) from brand.
+- consequence: Shareable real-face material is blocked by ASSET DELIVERY, not permission — there is nothing to embed. Licence side is renewal-pending; Dave assesses the gap as procedural and low-risk (ruled 2026-07-18, do not re-litigate). REFRAMED from 'blocker' the same week: within-HSBC distribution is CLOSED, ruled 'leave'.
+- clears when: The Latin webfont files (WOFF + WOFF2) physically land in knowledge/assets/fonts/. Watch for Ultralight in the pack — a sixth weight below Thin = a TYPE RULING, not an asset drop.
 - asserted in: `knowledge/_proforma/_TYPE-DECISIONS.md`, `_LIVE-STATE.md`, `GOOD-MORNING.md`, `memory:univers-webfont-blocker`
 - last verified: 2026-07-18
 
@@ -48,7 +48,7 @@
 **Claim:** Licensed font binaries are gitignored and must never be committed.
 
 - check: `needle='knowledge/assets/fonts/'`
-- consequence: Monotype terms prohibit distribution via a public Git repository; remediation if breached is git rm + BFG Repo Cleaner. Terms on file at knowledge/assets/WebfontUserGuide-2024.pdf.
+- consequence: Keeps font binaries out of future commits. NOTE the 2026-07-18 reframe: the four files already embedding base64 woff2 at 24accd0 are CLOSED, ruled 'leave' (private repo, HSBC-only recipients) — no git rm, no BFG. And WebfontUserGuide-2024.pdf is generic Monotype guidance, NOT an entitlement record; the entitlement sits with brand/procurement, unseen.
 - asserted in: `.gitignore`, `knowledge/_proforma/_TYPE-DECISIONS.md`, `memory:univers-webfont-blocker`
 - last verified: 2026-07-18
 

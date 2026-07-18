@@ -48,6 +48,20 @@ screen cannot silently drift because it has no component CSS of its own.
    `payments-journey.html`, but its hand-written CSS dropped from **117 lines → ~20** (harness
    only), 0 rogue hex, every component the gated original.
 
+## Two inscribed lessons (from the 2026-07-05 restyle saga — history:
+`_DECISION-HISTORY/2026-07-05-register-spread-and-restyle.md`; inscribed 2026-07-18 by ruling)
+
+- **Theme-dependent alias blocks use the SAME selector list as the tokens they wrap — never a bare
+  `:root`.** A bare `:root{ --ink: var(--page); }` computes once against `<html>`'s light values and
+  inherits the frozen result under `[data-theme="dark"]`. Match canon's own pattern:
+  `:root, [data-theme="dark"]{ … }`. This bug rendered a hero figure invisible and canon.css
+  documents the trap at its own alias layer — check there before writing aliases.
+- **A hand-built "canon-primitive" screen is a CLAIM the gate exists to check — run the gate as the
+  LAST step before presenting, never when asked.** The restyle passed "on inference" until Dave asked
+  directly; the real run then failed on hex refs + 3 unknown icon paths, and a follow-up contrast
+  pass found four genuine 1.4.3 failures the shallow check missed. Gate + a real contrast check on
+  any composition that is not a `.cn-*` snippet.
+
 ## Gate it — run the composed screen through the WHOLE pipeline, not a hand audit
 
 ```

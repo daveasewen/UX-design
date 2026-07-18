@@ -1,0 +1,596 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Making the record answerable &mdash; consolidation audit</title>
+<style>
+:root{--ink:#1c1c1c;--mut:#6b6b6b;--line:#e4e4e4;--red:#db0011;--set:#0b7a34;--con:#b25000;
+      --pra:#3b5f8a;--ten:#8a1f1f;}
+*{box-sizing:border-box}
+body{font-family:"Univers Next for HSBC","Helvetica Neue",Arial,sans-serif;color:var(--ink);
+  margin:0;padding:40px;max-width:1180px;line-height:1.5;background:#fafafa}
+h1{font-size:32px;font-weight:300;margin:0 0 4px}
+h2{font-size:20px;font-weight:500;margin:44px 0 4px;padding-top:16px;border-top:2px solid var(--ink)}
+h3{font-size:16px;font-weight:500;margin:22px 0 6px}
+.sub{color:var(--mut);font-size:14px;margin:0 0 24px}
+.lead{font-size:15px;background:#fff;border:1px solid var(--line);border-left:3px solid var(--red);
+  padding:16px 20px;margin:20px 0}
+.card{background:#fff;border:1px solid var(--line);padding:18px 22px;margin:14px 0}
+.card.rec{border-left:3px solid var(--set)}
+.card.kill{border-left:3px solid var(--ten)}
+.tier{display:inline-block;font-size:10px;letter-spacing:.06em;font-weight:500;padding:3px 9px;
+  color:#fff;margin-bottom:8px}
+.t-s{background:var(--set)}.t-c{background:var(--con)}.t-p{background:var(--pra)}.t-t{background:var(--ten)}.t-m{background:var(--mut)}
+.find{font-size:16px;font-weight:500;margin:0 0 8px}
+.detail{font-size:14px;margin:0 0 12px}
+.imp{font-size:13.5px;background:#fbfbfb;border-left:2px solid var(--line);padding:9px 14px;margin:8px 0 0}
+code{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;background:#f2f2f2;padding:1px 5px;border-radius:3px}
+pre{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;background:#f6f6f6;border:1px solid var(--line);
+  padding:12px 14px;overflow-x:auto;margin:10px 0;line-height:1.6}
+table{width:100%;border-collapse:collapse;background:#fff;margin:12px 0;font-size:13px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:500;font-size:11px;letter-spacing:.04em;color:var(--mut);background:#f4f4f4}
+.y{color:var(--set);font-weight:500}.n{color:var(--ten);font-weight:500}.m{color:var(--con);font-weight:500}.h{color:var(--pra);font-weight:500}
+.ask{background:#fffdf5}
+td.cl{white-space:nowrap;font-weight:500}
+.flag{display:inline-block;font-size:10px;font-weight:500;letter-spacing:.05em;color:#fff;background:var(--red);padding:2px 7px;margin-left:6px}
+.foot{color:var(--mut);font-size:12px;margin-top:44px;border-top:1px solid var(--line);padding-top:12px}
+ol li,ul li{margin:8px 0;font-size:14px}
+</style></head><body>
+
+<h1>Making the record answerable</h1>
+<p class="sub">Apollo SDS &middot; 2026-07-18 (see &sect;6 item 1 for why not 07-19) &middot; the Fable consolidation session, run cold from <code>notes/_FABLE-BRIEF-consolidation.md</code>. <b>Nothing has been cut.</b> This sheet is the audit the brief requires before any edit &mdash; disagree here, cheaply, before anything moves.</p>
+
+<div class="lead"><b>Verdict on the brief's central claim first, since the brief demands it be tested:</b> the reframe is <b>upheld, on evidence gathered cold</b>. Three observations from the first hour, none of which required context: (1) the file is now <b>1104 lines, not 1044</b> &mdash; it grew 60 lines <i>after</i> the "this file has never shrunk" banner was written into it, and no document tracking it noticed; (2) <code>_ASSERTIONS.md</code> still carries the pre-07-19 licence framing (ASSERT-001 "gates ALL shareable material&hellip; desktop licence does not cover embedding"; ASSERT-005 citing the user guide as "terms on file") &mdash; the predicates pass, so nothing chases the stale prose, exactly the FLIP blind spot; a cold agent reading that register alone would re-open the closed licence thread &mdash; I nearly did; (3) the handoff mis-dated itself by a day (&sect;6). All three are read-side failures in a corpus whose write-side is in good order. <b>This is not a long file needing a trim; it is an unanswerable record needing a query surface, of which the trim is one part.</b></div>
+
+<h2>1 &middot; The classification &mdash; every entry, before any cut</h2>
+<p class="sub">Classes per the brief: <span class="y">LIVE</span> (true now, load-bearing, stays in the spine) &middot; <span class="h">HISTORICAL</span> (true, value is provenance &mdash; relocate, never delete) &middot; <span class="m">DUPLICATE</span> (another file says it better &mdash; reduce to a pointer) &middot; <span class="n">SUPERSEDED</span> (tombstone) &middot; ORPHANED (nothing references it). Line numbers refer to the current file. Rows marked <span class="flag">DAVE</span> are the judgement calls surfaced rather than absorbed &mdash; &sect;1b lists them with the case each way.</p>
+
+<h3>Header + the open licence thread</h3>
+<table>
+<tr><th>lines</th><th>entry</th><th>class</th><th>action proposed</th></tr>
+<tr><td>1&ndash;6</td><td>File purpose + "interim, hand-maintained" note</td><td class="cl y">LIVE</td><td>Keep; tighten.</td></tr>
+<tr><td>8&ndash;21</td><td>"Last refreshed" T-D12 session narrative</td><td class="cl m">DUPLICATE</td><td>Duplicates the &starf;T-D12 LIVE entry, the ledger, and GOOD-MORNING &sect;B. Reduce to one line: date &middot; session &middot; commit. The refresh line should be a stamp, not a second copy of the handoff.</td></tr>
+<tr><td>23&ndash;26</td><td>"1044 lines and never shrunk" banner</td><td class="cl n">SUPERSEDED</td><td>By this session. Replace with the new spine discipline (&sect;2) once ruled.</td></tr>
+<tr class="ask"><td>28&ndash;71</td><td>OPEN &mdash; Latin webfont, reframed 07-19</td><td class="cl y">LIVE</td><td>Keep &mdash; recent, corrected, load-bearing. Trim only the two provenance paragraphs to loud one-liners pointing at <code>_TYPE-DECISIONS.md</code> &sect;Blockers&nbsp;1, where the full correction already lives. Corrections stay loud; they need not stay long twice. <span class="flag">DAVE</span> (call 1)</td></tr>
+</table>
+
+<h3>LIVE section (lines 72&ndash;278)</h3>
+<table>
+<tr><th>lines</th><th>entry</th><th>class</th><th>action proposed</th></tr>
+<tr><td>74&ndash;94</td><td>&starf; T-D12 type/box split</td><td class="cl y">LIVE</td><td>Keep as-is &mdash; canonical spine summary; full record in ledger.</td></tr>
+<tr><td>96&ndash;114</td><td>Type binding T-D9 mechanism</td><td class="cl y">LIVE</td><td>Keep.</td></tr>
+<tr><td>116&ndash;129</td><td>RAG amber background/glyph split</td><td class="cl y">LIVE</td><td>Keep; ledger holds detail.</td></tr>
+<tr><td>133</td><td>Apollo rename (07-14)</td><td class="cl y">LIVE</td><td>Keep one line; commit detail &rarr; history.</td></tr>
+<tr><td>134&ndash;140</td><td>Red rule = primary-action accent once per screen</td><td class="cl y">LIVE</td><td>Keep, including its embedded propagation gap.</td></tr>
+<tr><td>141&ndash;144</td><td>Designer pack shipped-ready; intro ~20th, hands-on 24th</td><td class="cl y">LIVE</td><td>Keep &mdash; dates imminent.</td></tr>
+<tr><td>145&ndash;148</td><td>Working model: land to live repo</td><td class="cl y">LIVE</td><td>Keep.</td></tr>
+<tr><td>149&ndash;151</td><td>Repo restructured (07-14)</td><td class="cl h">HISTORICAL</td><td>Done and stable; <code>docs/repo-map.html</code> is the record. One line + pointer; detail &rarr; history.</td></tr>
+<tr><td>153&ndash;181</td><td>Pro-forma programme mega-entry (T1&ndash;T7 arc, naming, updates)</td><td class="cl y">LIVE + <span class="h">HIST</span></td><td>Split: current truth (~10 lines &mdash; three libraries, tranches 1&ndash;8 built+gated, tokenisation ruling, gates DEF-003/004, what's next) stays; the 07-14/07-15 UPDATE narrative arc &rarr; history file.</td></tr>
+<tr><td>182&ndash;196</td><td>Type tokens promoted to canon (07-17 summary)</td><td class="cl y">LIVE</td><td>Keep.</td></tr>
+<tr><td>197&ndash;212</td><td>Type-token build detail (self-labelled "historical build detail below")</td><td class="cl h">HISTORICAL</td><td>The entry names itself historical. Relocate; rulings already in <code>_TYPE-DECISIONS.md</code>.</td></tr>
+<tr><td>213&ndash;217</td><td>ATOMISE ruling</td><td class="cl y">LIVE</td><td>Keep.</td></tr>
+<tr><td>219&ndash;239</td><td>Apollo product spine: lovable on rails, four phases, tier dials, a11y floor</td><td class="cl y">LIVE</td><td>Keep.</td></tr>
+<tr><td>240&ndash;262</td><td>Flexing engine &middot; output modes &middot; register ramp &middot; &sect;9a &middot; harness modes &middot; ADR-0007 pattern</td><td class="cl y">LIVE</td><td>Keep (six entries, all pointers to their anchors).</td></tr>
+<tr><td>263&ndash;267</td><td>Supersession discipline &middot; git split</td><td class="cl m">DUPLICATE</td><td><code>AGENTS.md</code> is canonical for both. One-line pointers.</td></tr>
+<tr><td>268&ndash;271</td><td>Build gate list ("~8 gates" &mdash; it is 30 steps; the entry flags its own drift)</td><td class="cl m">DUPLICATE</td><td>One-line pointer to <code>_build_all.py</code>; GOOD-MORNING &sect;A carries the human list. Stop maintaining a third copy that is already wrong.</td></tr>
+<tr><td>272&ndash;277</td><td>Ruling: this file records future/target states</td><td class="cl y">LIVE</td><td>Keep &mdash; structural rule of the file itself.</td></tr>
+</table>
+
+<h3>SUPERSEDED / DEAD ledger (279&ndash;288)</h3>
+<table>
+<tr><th>lines</th><th>entry</th><th>class</th><th>action proposed</th></tr>
+<tr><td>279&ndash;288</td><td>The four tombstones</td><td class="cl y">LIVE</td><td>Keep verbatim &mdash; this section IS the ledger's job and is already terse.</td></tr>
+</table>
+
+<h3>OPEN section (289&ndash;873)</h3>
+<table>
+<tr><th>lines</th><th>entry</th><th>class</th><th>action proposed</th></tr>
+<tr><td>291&ndash;293</td><td>"CLOSED type/box" transition tombstone</td><td class="cl n">SUPERSEDED</td><td>Delete &mdash; its own text says "kept for one refresh, then delete; flagged for the consolidation session". This is that session.</td></tr>
+<tr><td>295&ndash;313</td><td>Blast-radius gate &middot; the non-/1 batch + DEF-006 rationale</td><td class="cl y">LIVE</td><td>Keep both &mdash; they are the next two build sessions.</td></tr>
+<tr><td>315&ndash;334</td><td>Awaiting-Dave picks &middot; gates owed</td><td class="cl y">LIVE</td><td>Keep.</td></tr>
+<tr><td>336&ndash;341</td><td>Method debt: review overlay loses row identity</td><td class="cl y">LIVE</td><td>Keep &mdash; registered product fix.</td></tr>
+<tr class="ask"><td>342&ndash;347</td><td>"The pattern that cost the most time" note-to-this-session</td><td class="cl n">SUPERSEDED</td><td>Addressed to this session; once the &sect;3 mechanism is ruled its content lives there. Tombstone with pointer. <span class="flag">DAVE</span> (call 2)</td></tr>
+<tr><td>349&ndash;365</td><td>Type retrofit gap (0/50 files bound)</td><td class="cl y">LIVE</td><td>Keep &mdash; major open work.</td></tr>
+<tr><td>366&ndash;378</td><td>Icon canvas normalisation &mdash; step 0 DONE</td><td class="cl h">HISTORICAL</td><td>Done 07-17. Current truth = one line ("library is 652&times;18&times;18 + 6 utility marks"); the measurement narrative &rarr; history.</td></tr>
+<tr><td>379&ndash;402</td><td>Icon scale onto 4px grid &mdash; scheduled work spec</td><td class="cl y">LIVE</td><td>Keep &mdash; it is the spec for a queued session.</td></tr>
+<tr><td>404&ndash;411</td><td>Rule 16: docs are part of done + retrofit backlog</td><td class="cl y">LIVE</td><td>Keep.</td></tr>
+<tr><td>412&ndash;422</td><td>DataViz round-one kit PARKED, not signed off</td><td class="cl y">LIVE</td><td>Keep &mdash; current truth with a staleness condition.</td></tr>
+<tr class="ask"><td>423&ndash;506</td><td>DataViz research mega-entry (five dated UPDATE blocks, rev 1&rarr;3 arc)</td><td class="cl y">LIVE + <span class="h">HIST</span></td><td>Current truth &asymp; 12 lines (method ratified &middot; V7 promoted C/A &middot; deltas D2 &middot; <code>{#dv-019}</code> + vibration rule &middot; ranges parked &middot; next = revisit). The evening&rarr;close narrative &rarr; history. <b>Checked before proposing:</b> rulings ARE in <code>_DATAVIZ-DECISIONS.md</code> + the dossier; the <i>arc</i> (what was retired when, rev sequence) is only here &mdash; so it relocates, not deletes. <span class="flag">DAVE</span> (call 3)</td></tr>
+<tr><td>507&ndash;520</td><td>Research-KG sidequest &middot; Swiss viewer sidequest</td><td class="cl y">LIVE</td><td>Keep (parked, correctly labelled).</td></tr>
+<tr class="ask"><td>521&ndash;558</td><td>Masthead build + six review rounds</td><td class="cl h">HISTORICAL</td><td>Signed off "done at last". Current truth = 4 lines (shipped &middot; 3 recipes &middot; 2 provisional glyphs in <code>_ICON-GAPS.md</code> &middot; supersedes T7 demos). <b>Checked:</b> the review-round arc exists ONLY here &mdash; <code>_MASTHEAD-MODEL.md</code> does not carry it. Relocate whole narrative to history, verbatim. <span class="flag">DAVE</span> (call 3)</td></tr>
+<tr><td>559&ndash;565</td><td>Propagation gap: vision doc + ADR-0006 speak old looks-language</td><td class="cl y">LIVE</td><td>Keep &mdash; open gap.</td></tr>
+<tr><td>566&ndash;590</td><td>Worked spread 07-05 (Sonnet + Opus)</td><td class="cl h">HISTORICAL</td><td>Writeups exist in <code>_fitness-test/register-spread-2026-07-05*/</code>. Two-line summary + pointer; narrative &rarr; history.</td></tr>
+<tr class="ask"><td>591&ndash;733</td><td>"What does the &sect;9 spread reveal?" mega-entry (~140 lines: question &rarr; 3 hypotheses &rarr; trace tool &rarr; root cause &rarr; build-out plan &rarr; 07-10 ruling)</td><td class="cl y">LIVE + <span class="h">HIST</span></td><td>Current truth &asymp; 15 lines: the 07-10 ruling (rule-tuning + inference tiering lead; double-pass = a stage), the root cause (library stops at organism &mdash; composition-tier gap), OPEN F7, the buildout plan direction, trace tool exists. The hypothesis-evolution chain &rarr; history &mdash; it is the project's best specimen of provenance-preserving reasoning and must survive whole, just not in the spine. Records exist: <code>_FINDINGS-s9-session-2026-07-07.md</code>, deep-review rev2, ledgers. <span class="flag">DAVE</span> (call 3)</td></tr>
+<tr><td>734&ndash;736</td><td>Divergence probe first run</td><td class="cl h">HISTORICAL</td><td>Fold into the &sect;9 history file.</td></tr>
+<tr><td>737&ndash;740</td><td>Named-not-built machinery &middot; PM-KG MVP</td><td class="cl y">LIVE</td><td>Keep.</td></tr>
+<tr><td>741&ndash;793</td><td>Decision audit: Tier A clean + batch detail + follow-ups</td><td class="cl y">LIVE + <span class="h">HIST</span></td><td>Milestone + standing follow-ups stay (~10 lines); per-batch verdict detail is canonical in <code>_DECISION-AUDIT.md</code> &mdash; pointer.</td></tr>
+<tr><td>794&ndash;808</td><td>TOV spin-off &middot; charter &sect;4 language-strip</td><td class="cl y">LIVE</td><td>Keep.</td></tr>
+<tr><td>809&ndash;851</td><td>Unified KG + ingestion design direction (overlay graph, typed edges, ACT import)</td><td class="cl y">LIVE</td><td>Keep &mdash; it is the agreed design for a queued thread. Long, but it is spec, not narrative.</td></tr>
+<tr><td>852&ndash;869</td><td>Seaworthiness plan DONE &middot; Phase 0 closed</td><td class="cl h">HISTORICAL</td><td>Plan doc + assessment doc are the records. Two pointers; detail &rarr; history.</td></tr>
+<tr><td>870&ndash;873</td><td>D2 novel-screen test &middot; toolkit tranche 2</td><td class="cl y">LIVE</td><td>Keep.</td></tr>
+</table>
+
+<h3>PLANNED / TARGET + spin-offs (875&ndash;1104)</h3>
+<table>
+<tr><th>lines</th><th>entry</th><th>class</th><th>action proposed</th></tr>
+<tr><td>877&ndash;898</td><td>Targets: gates-as-a-service &middot; chat-to-KB bot</td><td class="cl y">LIVE</td><td>Keep &mdash; both connect directly to &sect;3 below.</td></tr>
+<tr class="ask"><td>904&ndash;1033</td><td>Superseded gravity-fix target + the whole restyle saga (~130 lines, self-labelled "kept for the historical trail only")</td><td class="cl h">HISTORICAL</td><td>The file already ruled this historical; it just never left. Relocate whole. <b>Two generalisable lessons inside deserve inscription as rules, not burial:</b> (a) theme-dependent alias blocks must use the same selector list as the tokens they wrap, never bare <code>:root</code> (canon.css documents it; nothing gates it); (b) "run the gate as the LAST step before presenting, not when asked" &mdash; belongs in a runbook. <span class="flag">DAVE</span> (call 4)</td></tr>
+<tr><td>1034&ndash;1051</td><td>Ingestion done-right target</td><td class="cl y">LIVE</td><td>Keep.</td></tr>
+<tr><td>1053&ndash;1092</td><td>Spin-off register (state machine, font-audit instrument, font embedding)</td><td class="cl y">LIVE</td><td>Keep &mdash; standing register by ruling.</td></tr>
+<tr><td>1094&ndash;1098</td><td>Capture ritual stood up</td><td class="cl m">DUPLICATE</td><td>The runbook is canonical. One-line pointer.</td></tr>
+</table>
+
+<div class="card">
+<span class="tier t-m">TALLY</span>
+<p class="find">No entry is ORPHANED. The file's disease is conflation, not junk.</p>
+<p class="detail">Roughly: <b>LIVE ~34 entries</b> (&asymp;550 lines, compressible to &asymp;330 by de-duplication within entries) &middot; <b>HISTORICAL ~10 blocks</b> (&asymp;430 lines &rarr; relocate) &middot; <b>DUPLICATE 6</b> (&asymp;35 lines &rarr; pointers) &middot; <b>SUPERSEDED 2</b> (delete/tombstone per their own instructions) &middot; <b>ORPHANED 0</b>. Everything in the file is referenced by something &mdash; which is itself evidence for the brief's claim: the write side has been disciplined; the file is long because history has nowhere else to live.</p>
+<p class="imp"><b>Projected spine after enactment: roughly 420&ndash;480 lines.</b> No target was set on purpose; this figure is what falls out of the classification, not a number optimised for. I will report the real figure after the cut and defend it.</p>
+</div>
+
+<h3>1b &middot; The judgement calls surfaced, not absorbed</h3>
+<ol>
+<li><b>Webfont entry trim.</b> Keep the whole 44 lines, or keep the ruling + clearing-conditions and point the two provenance paragraphs at the ledger? My recommendation: trim to ~30 lines with loud one-line corrections. Risk if wrong: a cold agent misses the "I struck this and was wrong" warning. <i>Nothing is deleted either way.</i></li>
+<li><b>The stale-reading pattern note (342&ndash;347).</b> Tombstone once &sect;3's mechanism is ruled, or keep both? My recommendation: tombstone with pointer &mdash; two live copies of the same warning is how copies drift.</li>
+<li><b>The three narrative relocations</b> (DataViz arc, masthead rounds, &sect;9 chain). All three relocate verbatim to per-thread history files, spine keeps a summary + pointer. The masthead rounds and the &sect;9 chain exist nowhere else, so this is relocation in the strict sense &mdash; flagged because these are the biggest blocks and your review rulings live inside them.</li>
+<li><b>The two lessons inside the restyle saga</b> (bare-<code>:root</code> alias trap; gate-as-last-step). Inscribe as a guideline rule + a runbook line respectively, or leave them in history? My recommendation: inscribe &mdash; a lesson only in a history file is a rule that will be relearned.</li>
+<li><b>The memory mirror</b> &mdash; &sect;4 below; it is its own ruling.</li>
+</ol>
+
+<h2>2 &middot; The split: state from history</h2>
+<div class="card rec">
+<span class="tier t-s">PROPOSAL</span>
+<p class="find">A root <code>_DECISION-HISTORY/</code> of dated per-thread files; the spine keeps rulings, state, and pointers.</p>
+<p class="detail">Six files to start, each opening with a link back to its spine entry, each spine summary ending <code>History: _DECISION-HISTORY/&lt;file&gt;</code>:</p>
+<pre>_DECISION-HISTORY/
+  2026-07-05-register-spread-and-restyle.md   (worked spread &middot; &sect;9 saga &middot; restyle + its lessons &middot; probe)
+  2026-07-07-s9-root-cause-and-ruling.md      (hypothesis chain &rarr; 07-10 ruling; or merged with the above)
+  2026-07-14-rename-and-restructure.md
+  2026-07-15-proforma-tranche-arc.md
+  2026-07-16-dataviz-v7-arc.md
+  2026-07-16-masthead-rounds.md
+  2026-07-17-type-token-build.md              (+ icon canvas step 0)</pre>
+<p class="detail"><b>Where a per-pillar ledger already holds the record</b> (<code>_TYPE-DECISIONS</code>, <code>_DATAVIZ-DECISIONS</code>, <code>_DECISION-AUDIT</code>), the spine points there and no history file duplicates it &mdash; history files take only what has no other home. Cross-linked both ways; nothing orphaned; the standing-instructions gate keeps the new directory reachable from the spine.</p>
+<p class="imp"><b>The discipline that stops regrowth</b> (to add to the spine header, replacing the 1044 banner): <i>state lines in the spine; narrative &gt;10 lines goes to <code>_DECISION-HISTORY/</code> at write time, in the same pass.</i> Plus one advisory check in the build: warn when <code>_LIVE-STATE.md</code> exceeds ~500 lines &mdash; a tripwire, not a straitjacket.</p>
+</div>
+
+<h2>3 &middot; The read-side mechanism &mdash; one, designed to build-ready depth</h2>
+<p class="sub">The brief offered four candidates and said pick one. Picked: <b>the consult step</b> &mdash; a problem-domain query surface plus the pre-flight protocol that requires using it. The other three, and why not, at the end of this section.</p>
+
+<div class="card">
+<span class="tier t-p">DIAGNOSIS</span>
+<p class="detail">Every failure the brief lists shares one shape: <b>at the moment of design, nobody asked the record "what already governs this?" &mdash; because there is nothing to ask.</b> The corpus is superbly ID'd (465 rules, T-D/R-D/DV-D rulings, ASSERT-00x, DEF-00x, ADRs, gates) but lives in nine-plus stores with grep as the only join. A rule that is written, correct, and unretrieved is indistinguishable from one that does not exist (&sect;2 of the brief). So the mechanism must supply both halves: <b>an answerable index</b> (else asking is grep by another name) and <b>a required moment of asking</b> (else the index joins the pile of unretrieved correctness).</p>
+</div>
+
+<div class="card rec">
+<span class="tier t-s">DESIGN</span>
+<p class="find"><code>_consult.py</code> &mdash; "what governs X?", answered in one step, with an enforcement path.</p>
+<p class="detail"><b>Part 1 &mdash; the index, generated so it cannot rot.</b> <code>_build_consult_index.py</code>, wired into <code>_build_all.py</code>, emits <code>knowledge/_consult-index.json</code> from sources that all already exist:</p>
+<pre>record := { id, kind, text, file, status, bite }
+  kind &isin; rule | ruling | assertion | gate | adr | defect | open-item
+  sources:
+    guidelines/_rules-index.json            &rarr; 465 rule records (id, destiny, text)
+    _proforma/_TYPE|_RAG|_DATAVIZ-DECISIONS &rarr; ruling records (parse **T-D\d+ / R-D\d+ / DV-D\d+** + first sentence)
+    _assertions.json                        &rarr; assertion records (claim + consequence + last-verified)
+    _validate_*.py                          &rarr; gate records: docstring line 1 + the gate's GLOB(s)
+                                              &rarr; bite = the resolved file list ("where this rule actually applies")
+    docs/decisions/ADR-*                    &rarr; adr records (title + status)
+    _DS-IMPROVEMENTS / _ICON-GAPS           &rarr; defect records
+    _LIVE-STATE OPEN entries                &rarr; open-item records (heading line only)</pre>
+<p class="detail"><b>Part 2 &mdash; the query.</b> <code>python3 knowledge/_consult.py "amber indicator on white"</code> &rarr; ranked governing records grouped as: rulings first, then blocking rules, advisory rules, assertions, open items &mdash; and for every rule, <b>its enforcement state</b>: <i>gated (by which gate, over which files)</i> or <i>asserted only</i>. That last column is the gate-glob audit answered per-query instead of as a separate campaign &mdash; the <code>{#type26-019}</code> failure becomes visible at the moment someone consults, not weeks later. Matching = keyword over <code>text</code> + a small hand-authored synonym lexicon (<code>_consult-lexicon.json</code>: "ochre&rarr;amber", "leading&rarr;line-height", "webfont&rarr;woff") that grows one line each time a query misses &mdash; curation is part of the job.</p>
+<p class="detail"><b>Part 3 &mdash; the protocol (the required moment of asking).</b> One new step at the top of <code>_RUNBOOK-gated-component.md</code> and <code>_RUNBOOK-compose-from-canon.md</code>, and in GOOD-MORNING &sect;A's bite-rules: <i>before designing, consult; paste the receipt (query + retrieved ids) into the work's review sheet or meta.</i> Enters at the <b>advisory tier</b> per AGENTS principle 5; the promotion path to blocking is a presence-check gate (<code>_validate_consult.py</code>: new/changed review sheets and metas must carry a consult receipt) once the tool has earned trust by being bite-tested.</p>
+<p class="detail"><b>Part 4 &mdash; the bite test, built in.</b> <code>--selftest</code> replays the three 07-18 failures as regression queries; the tool fails its own build step if any misses its known answer:</p>
+<pre>"amber glyph contrast white"   must surface the 1.4.1 label-carries-meaning waiver + R-D3
+"inline fonts portability"     must surface the delivery-=-link ruling (T-D9 block) + the portable-unit ruling
+"univers sandbox render"       must surface ASSERT-002/006</pre>
+<p class="imp"><b>Reuse, not rebuild:</b> the enforcement half of the receipt check extends <code>_trace_knowledge_usage.py</code>'s claimed-vs-actual cross-match technique; the index generator reuses <code>_rules-index.json</code> and the assertions register as-is. <b>Sequencing:</b> the index + query + selftest are throughput work to this spec &mdash; <b>Sonnet, one session</b>, per MODEL-ROUTING. The lexicon's first ~30 entries and the runbook step are judgment &mdash; they ride along with the enactment of this sheet. <b>This is also the seed of the chat-to-KB bot target:</b> same index, same join, conversational surface later &mdash; the read side built once, used twice.</p>
+</div>
+
+<div class="card">
+<span class="tier t-m">WHY NOT THE OTHER THREE</span>
+<p class="detail"><b>Gate-glob coverage audit</b> &mdash; real, but enforcement-side: it audits rules already wired into gates, and it is already &sect;7 candidate #2 on the Fable list (my read: Opus-shaped, and partially answered per-query by the consult tool's bite column). <b>Assertion re-test dates</b> &mdash; too narrow: today's ASSERT-001 finding shows the live failure is stale <i>consequence prose</i> behind a passing predicate; the fix for that is a small amendment (see &sect;5 note), not this session's one mechanism. <b>Problem-domain index alone</b> &mdash; an index nobody is required to consult joins the corpus of unretrieved correctness; the trigger is half the mechanism. The consult step is the index <i>plus</i> its trigger, which is why it is one design and not two sketches.</p>
+</div>
+
+<h2>4 &middot; The memory mirror &mdash; recommendation for your ruling</h2>
+<div class="card kill">
+<span class="tier t-t">RECOMMEND: DELETE</span>
+<p class="find">Delete <code>knowledge/_agent-memory/store/</code>; keep one final dated snapshot in <code>_retired/</code>; amend capture-ritual step 3.</p>
+<p class="detail"><b>The case:</b> (1) It has already become what its own README forbids &mdash; a third source of truth: 115 stored vs 110 live, five ghosts, now knowingly stale by three more after the 07-19 declared deviation. (2) It exists because we do not trust our own rule that <i>memory is an accelerator, the repo is the record</i> &mdash; you challenged the premise and the evidence agrees. If a fact deserves survival it must be <b>inscribed properly</b> (rules &rarr; guidelines/runbooks, checkable facts &rarr; assertions, rulings &rarr; ledgers), not photocopied wholesale. The mirror is a Polaroid of a Polaroid. (3) Mirror-on-write doubles every memory write forever, and no gate can verify it against the live side &mdash; the live side is invisible to the repo, so the mirror can only ever be checked against itself.</p>
+<p class="detail"><b>The honest case against (deleting a true record is worse than keeping a long one):</b> memory dies with the Cowork space, and some calibration feedback lives only there. The snapshot answers this: one final copy into <code>_retired/agent-memory-snapshot-2026-07-18/</code>, tombstone-bannered as a dated snapshot, explicitly non-authoritative, never refreshed. Nothing true is lost; nothing false is maintained.</p>
+<p class="imp"><b>Enactment if you confirm:</b> snapshot &rarr; delete store &rarr; rewrite ritual step 3 to end at "inscribe durable content properly, in the same pass" &rarr; tombstone + propagation note (the store README, the runbook's mirror-on-write paragraph, memory <code>capture-ritual</code>). Reflecting back before recording: <b>is DELETE-with-snapshot your ruling, or do you want keep-and-make-honest?</b> A lean is not a ruling.</p>
+</div>
+
+<h2>5 &middot; What could not be understood cold</h2>
+<p class="sub">The brief's &sect;4.5 &mdash; the only direct measurement of the cold-start spine. Each item cost real time or nearly caused a wrong act.</p>
+<ol>
+<li><b>The record mis-dated itself.</b> The handoff says "written end of 2026-07-19"; the commits it describes landed 2026-07-18, 19:51&ndash;20:23 (git log). A cold agent cannot tell from the documents alone which is true &mdash; I settled it only from commit timestamps. Confident false inscription, in the file that warns about it. Small fix: the capture ritual stamps dates from <code>date</code>, never from the session's own belief.</li>
+<li><b>"1044 lines" is inscribed in three documents; the file is 1104.</b> The number rotted inside the warning about rot, because it was prose, not an assertion with a predicate. (Candidate ASSERT-007 if the tripwire in &sect;2 is adopted; the &sect;2 discipline supersedes the need for precision here.)</li>
+<li><b>The assertion register re-litigates a closed thread.</b> ASSERT-001/005's consequence prose still speaks the pre-07-19 licence framing. Reading <code>_ASSERTIONS.md</code> cold, I began re-treating distribution as an open risk before <code>_LIVE-STATE</code> corrected me. Assertions need their prose refreshed when the surrounding ruling changes, not only when the predicate flips &mdash; a one-line addition to the capture ritual, or a <code>ruling-context</code> date field per assertion.</li>
+<li><b>"Pro-forma" == "Apollo mono" is established only at line 165.</b> Four names (pro-forma, Apollo mono, the tranches, the library) circulate for one thing; a cold reader holds them as possibly-distinct for 160 lines. The consult lexicon is the cheap fix; a naming line in GOOD-MORNING &sect;A is the cheaper one. <i>(It is in the memory index &mdash; but memory is mine, not a cold terminal agent's.)</i></li>
+<li><b>The LIVE section has invisible stratigraphy.</b> Entries from 07-14 sit unmarked below starred 07-19 entries; only date-mining reveals which layer is newest. The split fixes this structurally (state has no strata; history is dated).</li>
+<li><b>Which gate protects the spine is not stated in the spine.</b> <code>_validate_standing_instructions.py</code> / STAND-002 is named in GOOD-MORNING &sect;A but not in <code>_LIVE-STATE</code>'s own header; a cold agent editing the spine first could not know its edits are reachability-gated. One header line fixes it.</li>
+<li><b>Minor, for completeness:</b> the brief says ~110 memories and the store held 115 &mdash; live count today is 110 per the runbook's own note; consistent, but only after cross-reading three documents. And the DataViz memory (<code>dataviz-pillar-progress</code>) still says "awaiting Dave's markup" for work <code>_LIVE-STATE</code> records as confirmed + enacted &mdash; repo wins by rule, but a cold agent reading memory first inherits a day-old world. Supports &sect;4's recommendation.</li>
+</ol>
+
+<h2>6 &middot; What happens on your markup</h2>
+<ol>
+<li><b>You rule on &sect;1b's five calls + the &sect;4 mirror question</b> (pin comments on this sheet's REVIEW copy, or just tell me).</li>
+<li><b>Enactment, same session or next:</b> relocations verbatim &rarr; <code>_DECISION-HISTORY/</code>; duplicates &rarr; pointers; the two self-instructed deletions; spine header gets the new discipline + the STAND-002 line + a corrected refresh stamp. Every move is additive-then-subtractive: history files land and are cross-linked <i>before</i> the spine loses a line. <code>_validate_standing_instructions.py</code> + full <code>_build_all.py</code> after every batch.</li>
+<li><b>The consult tool</b> builds to &sect;3's spec &mdash; throughput work, routed to <b>Sonnet</b> per MODEL-ROUTING; the lexicon seed + runbook step ride with enactment. DEF-006 stays red by design; nothing else may be.</li>
+<li><b>Not this session</b> (already queued elsewhere): the blast-radius gate (Opus), the non-/1 batch (Sonnet, after), the gate-glob audit (Fable candidate #2 &mdash; partially absorbed by the consult bite column; re-scope it after the tool lands).</li>
+</ol>
+
+<p class="foot">Fable consolidation session &middot; run cold from <code>notes/_FABLE-BRIEF-consolidation.md</code> per Dave's 07-19 ruling &middot; nothing enacted, nothing promoted &mdash; derivation governance holds &middot; sheet built able to return a null result: if you rule the reframe wrong, &sect;1's table still stands as the trim plan, and &sect;3 is severable.</p>
+<meta name="rv-doc" content="CONSOLIDATION AUDIT 2026 07 18">
+<meta name="rv-file" content="reviews/CONSOLIDATION-AUDIT-2026-07-18.html">
+<!-- APOLLO-REVIEW-OVERLAY -->
+<!-- ============================================================================
+     APOLLO REVIEW OVERLAY — reusable comment layer for pro-forma review files.
+     Self-contained (no external deps, no browser storage). Drop this whole block
+     in before </body> of ANY interactive HTML to add: a Review-mode toggle,
+     click-a-component-to-pin-a-comment, a DRAGGABLE comment box that opens beside
+     the target (not over it) with a NOODLE leader-line + dot back to the commented
+     element, a comments panel, and Export → a structured numbered prompt
+     (copy / download) to paste back for the edits.
+     Injected by _make_review.py. All ids/classes are `rv-` prefixed to avoid
+     clashing with the host page. Nothing here is scanned by the component gates.
+     ========================================================================= -->
+<style id="rv-style">
+  #rv-fab{position:fixed;right:16px;bottom:16px;z-index:2147483000;display:inline-flex;align-items:center;gap:8px;
+    height:40px;padding:0 16px;border:1.5px solid #1A1A1A;border-radius:999px;background:#fff;color:#1A1A1A;
+    font:600 13px/1 -apple-system,Segoe UI,Roboto,sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.14);}
+  #rv-fab .rv-dot{width:8px;height:8px;border-radius:50%;background:#B7B7B7;}
+  #rv-fab.rv-on{background:#1A1A1A;color:#fff;border-color:#1A1A1A;}
+  #rv-fab.rv-on .rv-dot{background:#37D67A;}
+  #rv-fab .rv-count{min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#DB0011;color:#fff;
+    font:700 11px/18px -apple-system,Segoe UI,Roboto,sans-serif;text-align:center;display:none;}
+  #rv-fab .rv-count.rv-has{display:inline-block;}
+  /* review mode: crosshair + hover outline on the host content */
+  body.rv-active [data-rv-hover]{outline:2px solid #DB0011 !important;outline-offset:1px;cursor:crosshair;}
+  body.rv-active{scroll-behavior:auto;}
+  /* pinned markers layer */
+  #rv-markers{position:fixed;inset:0;z-index:2147482000;pointer-events:none;}
+  .rv-pin{position:fixed;transform:translate(-50%,-50%);width:22px;height:22px;border-radius:50% 50% 50% 2px;
+    background:#DB0011;color:#fff;font:700 12px/22px -apple-system,Segoe UI,Roboto,sans-serif;text-align:center;
+    box-shadow:0 2px 6px rgba(0,0,0,.3);pointer-events:auto;cursor:pointer;border:2px solid #fff;}
+  /* composer popover */
+  #rv-composer{position:fixed;z-index:2147483600;width:300px;max-width:92vw;background:#fff;border:1px solid #D7D8D6;
+    border-radius:8px;box-shadow:0 12px 40px rgba(0,0,0,.22);padding:12px;display:none;
+    font:400 13px/1.45 -apple-system,Segoe UI,Roboto,sans-serif;color:#1A1A1A;}
+  #rv-composer.rv-show{display:block;}
+  #rv-composer .rv-target{font:600 12px/1.3 inherit;color:#333;margin:0 0 8px;padding-left:16px;word-break:break-word;
+    cursor:move;user-select:none;position:relative;}
+  #rv-composer .rv-target::before{content:'';position:absolute;left:2px;top:1px;width:7px;height:12px;opacity:.55;
+    background:radial-gradient(circle,#666 1px,transparent 1.4px);background-size:3px 4px;}
+  /* noodle: leader line from the commented element to the composer box */
+  #rv-noodle{position:fixed;inset:0;z-index:2147483500;pointer-events:none;overflow:visible;}
+  #rv-noodle path{fill:none;stroke:#DB0011;stroke-width:1.5;opacity:.9;}
+  #rv-noodle circle{fill:#DB0011;stroke:#fff;stroke-width:1.5;}
+  #rv-noodle rect{fill:rgba(219,0,17,.06);stroke:#DB0011;stroke-width:2;opacity:.95;}
+  #rv-composer textarea{width:100%;box-sizing:border-box;min-height:76px;resize:vertical;padding:8px;
+    border:1px solid #B7B7B7;border-radius:6px;font:inherit;color:#1A1A1A;outline:none;}
+  #rv-composer textarea:focus{border-color:#1A1A1A;}
+  #rv-composer .rv-row{display:flex;gap:8px;justify-content:flex-end;margin-top:8px;}
+  .rv-btn{height:32px;padding:0 14px;border-radius:6px;border:1px solid #1A1A1A;background:#fff;color:#1A1A1A;
+    font:600 12px/1 -apple-system,Segoe UI,Roboto,sans-serif;cursor:pointer;}
+  .rv-btn.rv-primary{background:#1A1A1A;color:#fff;}
+  .rv-btn.rv-danger{border-color:#DB0011;color:#DB0011;}
+  .rv-btn:disabled{opacity:.4;cursor:not-allowed;}
+  /* comments panel */
+  #rv-panel{position:fixed;top:0;right:0;bottom:0;width:340px;max-width:88vw;z-index:2147483200;background:#fff;
+    border-left:1px solid #D7D8D6;box-shadow:-8px 0 30px rgba(0,0,0,.16);transform:translateX(100%);
+    transition:transform .18s ease;display:flex;flex-direction:column;
+    font:400 13px/1.45 -apple-system,Segoe UI,Roboto,sans-serif;color:#1A1A1A;}
+  #rv-panel.rv-open{transform:translateX(0);}
+  #rv-panel .rv-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px 16px;border-bottom:1px solid #EEE;}
+  #rv-panel .rv-head strong{font:700 14px/1 inherit;}
+  #rv-panel .rv-list{flex:1;overflow:auto;padding:8px 12px;}
+  #rv-panel .rv-empty{color:#8A8A8A;padding:24px 8px;text-align:center;}
+  .rv-item{border:1px solid #EEE;border-radius:8px;padding:10px;margin:0 0 8px;}
+  .rv-item .rv-item-h{display:flex;align-items:center;gap:8px;margin:0 0 4px;}
+  .rv-item .rv-num{flex:none;width:20px;height:20px;border-radius:50%;background:#1A1A1A;color:#fff;font:700 11px/20px inherit;text-align:center;}
+  .rv-item .rv-loc{font:600 12px/1.3 inherit;color:#333;word-break:break-word;}
+  .rv-item .rv-txt{color:#1A1A1A;white-space:pre-wrap;word-break:break-word;margin:2px 0 8px;}
+  .rv-item .rv-acts{display:flex;gap:8px;}
+  .rv-item .rv-link{background:none;border:0;padding:0;color:#333;text-decoration:underline;cursor:pointer;font:600 12px/1 inherit;}
+  .rv-item .rv-link.rv-del{color:#DB0011;}
+  #rv-panel .rv-foot{border-top:1px solid #EEE;padding:12px 16px;display:flex;gap:8px;}
+  #rv-panel .rv-foot .rv-btn{flex:1;height:38px;}
+  /* export modal */
+  #rv-export{position:fixed;inset:0;z-index:2147483600;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;padding:24px;}
+  #rv-export.rv-show{display:flex;}
+  #rv-export .rv-card{width:720px;max-width:100%;max-height:86vh;background:#fff;border-radius:10px;display:flex;flex-direction:column;overflow:hidden;
+    font:400 13px/1.45 -apple-system,Segoe UI,Roboto,sans-serif;color:#1A1A1A;}
+  #rv-export .rv-card-h{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #EEE;}
+  #rv-export textarea{flex:1;margin:0;border:0;outline:none;resize:none;padding:16px;font:400 12.5px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;color:#1A1A1A;min-height:320px;}
+  #rv-export .rv-card-f{display:flex;gap:8px;justify-content:flex-end;padding:12px 16px;border-top:1px solid #EEE;}
+  .rv-x{background:none;border:0;font-size:20px;line-height:1;cursor:pointer;color:#666;padding:4px;}
+  @media print{#rv-fab,#rv-panel,#rv-composer,#rv-markers,#rv-export{display:none !important;}}
+</style>
+
+<button id="rv-fab" type="button" aria-pressed="false" title="Toggle review mode">
+  <span class="rv-dot" aria-hidden="true"></span><span class="rv-label">Review</span><span class="rv-count" id="rv-count">0</span>
+</button>
+<div id="rv-markers" aria-hidden="true"></div>
+<svg id="rv-noodle" aria-hidden="true"><rect id="rv-noodle-box" rx="3" style="display:none"/><path id="rv-noodle-path"/><circle id="rv-noodle-dot" r="3.5" style="display:none"/></svg>
+<div id="rv-composer" role="dialog" aria-label="Add comment">
+  <p class="rv-target" id="rv-composer-target" title="Drag to move"></p>
+  <textarea id="rv-composer-text" placeholder="Describe the change you want here…" aria-label="Comment"></textarea>
+  <div class="rv-row">
+    <button class="rv-btn rv-danger" id="rv-composer-del" type="button" style="margin-right:auto;display:none;">Delete</button>
+    <button class="rv-btn" id="rv-composer-cancel" type="button">Cancel</button>
+    <button class="rv-btn rv-primary" id="rv-composer-save" type="button">Save</button>
+  </div>
+</div>
+<aside id="rv-panel" aria-label="Review comments">
+  <div class="rv-head"><strong>Comments (<span id="rv-panel-count">0</span>)</strong>
+    <button class="rv-x" id="rv-panel-close" type="button" aria-label="Close panel">×</button></div>
+  <div class="rv-list" id="rv-list"><p class="rv-empty">Turn on <b>Review</b>, then click any component to pin a comment.</p></div>
+  <div class="rv-foot">
+    <button class="rv-btn" id="rv-clear" type="button">Clear all</button>
+    <button class="rv-btn rv-primary" id="rv-export-btn" type="button">Export prompt</button>
+  </div>
+</aside>
+<div id="rv-export" role="dialog" aria-label="Export prompt" aria-modal="true">
+  <div class="rv-card">
+    <div class="rv-card-h"><strong>Edit prompt — copy &amp; paste back</strong><button class="rv-x" id="rv-export-close" type="button" aria-label="Close">×</button></div>
+    <textarea id="rv-export-text" readonly spellcheck="false"></textarea>
+    <div class="rv-card-f">
+      <button class="rv-btn" id="rv-export-download" type="button">Download .md</button>
+      <button class="rv-btn rv-primary" id="rv-export-copy" type="button">Copy to clipboard</button>
+    </div>
+  </div>
+</div>
+
+<script id="rv-script">
+(function(){
+  "use strict";
+  function meta(n){ var m=document.querySelector('meta[name="'+n+'"]'); return m?m.getAttribute('content'):''; }
+  var DOC_TITLE = meta('rv-doc') || (document.title||"Review").replace(/\s+·.*$/,"").trim();
+  var DOC_FILE = meta('rv-file') || '';
+  var comments = [];            // {id, section, desc, path, text, el}
+  var seq = 0;
+  var active = false, editingId = null, pendingEl = null, composerEl = null, dragging = false;
+
+  var fab=document.getElementById('rv-fab'),
+      countEl=document.getElementById('rv-count'),
+      markers=document.getElementById('rv-markers'),
+      composer=document.getElementById('rv-composer'),
+      cTarget=document.getElementById('rv-composer-target'),
+      cText=document.getElementById('rv-composer-text'),
+      cSave=document.getElementById('rv-composer-save'),
+      cCancel=document.getElementById('rv-composer-cancel'),
+      cDel=document.getElementById('rv-composer-del'),
+      panel=document.getElementById('rv-panel'),
+      list=document.getElementById('rv-list'),
+      panelCount=document.getElementById('rv-panel-count'),
+      exportModal=document.getElementById('rv-export'),
+      exportText=document.getElementById('rv-export-text');
+
+  function isRvNode(n){ return n && n.closest && n.closest('#rv-fab,#rv-panel,#rv-composer,#rv-markers,#rv-export'); }
+
+  // ---- element description -------------------------------------------------
+  function cleanHead(s){ return (s||'').replace(/\s+/g,' ').replace(/^(\d+)(?=\D)/,'$1 ').trim(); }
+  function sectionName(el){
+    var sec = el.closest && el.closest('section[aria-labelledby]');
+    if(sec){ var h=document.getElementById(sec.getAttribute('aria-labelledby')); if(h) return cleanHead(h.textContent); }
+    var anySec = el.closest && el.closest('section'); if(anySec){ var hh=anySec.querySelector('h1,h2,h3'); if(hh) return cleanHead(hh.textContent); }
+    // fallback for FLAT docs (dossiers with no <section> wrappers): nearest preceding heading in document order
+    var heads=[].slice.call(document.querySelectorAll('h1,h2,h3')), best='';
+    for(var i=0;i<heads.length;i++){
+      if(heads[i]===el || (el.compareDocumentPosition(heads[i]) & Node.DOCUMENT_POSITION_PRECEDING)){
+        best=cleanHead(heads[i].textContent);
+      }
+    }
+    return best;
+  }
+  function descOf(el){
+    var aria=(el.getAttribute&&el.getAttribute('aria-label'))||'';
+    var own=(aria||el.textContent||'').replace(/\s+/g,' ').trim();
+    if(own.length>48) own=own.slice(0,48)+'…';
+    var tag=el.tagName?el.tagName.toLowerCase():'el';
+    var cls=(typeof el.className==='string'&&el.className)?'.'+el.className.split(/\s+/)[0]:'';
+    return own ? own+' ('+tag+cls+')' : tag+cls;
+  }
+  function pathOf(el){
+    var parts=[], n=el, depth=0;
+    while(n && n.nodeType===1 && n!==document.body && depth<5){
+      var s=n.tagName.toLowerCase();
+      if(n.id){ s='#'+n.id; parts.unshift(s); break; }
+      if(typeof n.className==='string' && n.className.trim()) s+='.'+n.className.trim().split(/\s+/)[0];
+      parts.unshift(s); n=n.parentElement; depth++;
+    }
+    return parts.join(' > ');
+  }
+
+  // ---- markers -------------------------------------------------------------
+  function renderMarkers(){
+    markers.innerHTML='';
+    comments.forEach(function(c,i){
+      if(!c.el||!c.el.getBoundingClientRect) return;
+      var r=c.el.getBoundingClientRect();
+      if(r.width===0&&r.height===0) return;
+      var pin=document.createElement('button');
+      pin.className='rv-pin'; pin.type='button'; pin.textContent=(i+1);
+      pin.style.left=(r.right-6)+'px'; pin.style.top=(r.top+8)+'px';
+      pin.title=c.text||'(empty)';
+      pin.addEventListener('click',function(e){ e.stopPropagation(); openComposer(c.el,c.id); });
+      markers.appendChild(pin);
+    });
+  }
+
+  // ---- composer ------------------------------------------------------------
+  function openComposer(el, id){
+    editingId=(id!=null)?id:null; pendingEl=el;
+    var sec=sectionName(el), d=descOf(el);
+    cTarget.textContent=(sec?('['+sec+'] '):'')+d;
+    var existing=id!=null?comments.filter(function(c){return c.id===id;})[0]:null;
+    cText.value=existing?existing.text:'';
+    cDel.style.display=existing?'inline-flex':'none';
+    // default placement: beside the element (not over it); drag + noodle handle the rest
+    var r=el.getBoundingClientRect(), cw=312, ch=200, gap=14, left, top;
+    if(window.innerWidth-r.right > cw+gap) left=r.right+gap;                 // room on the right
+    else if(r.left > cw+gap) left=r.left-cw-gap;                            // else the left
+    else left=Math.min(window.innerWidth-cw-8, Math.max(8, r.left));        // else clamp
+    top=Math.min(window.innerHeight-ch, Math.max(8, r.top));
+    composer.style.top=top+'px'; composer.style.left=left+'px';
+    composer.classList.add('rv-show');
+    composerEl=el;
+    setTimeout(function(){ cText.focus(); drawNoodle(); },0);
+  }
+  function closeComposer(){ composer.classList.remove('rv-show'); pendingEl=null; editingId=null; composerEl=null; drawNoodle(); }
+
+  // ---- noodle (leader line) + drag ----------------------------------------
+  var noodlePath=document.getElementById('rv-noodle-path'), noodleDot=document.getElementById('rv-noodle-dot'),
+      noodleBox=document.getElementById('rv-noodle-box');
+  function drawNoodle(){
+    if(!composerEl || !composer.classList.contains('rv-show') || !noodlePath){
+      if(noodlePath) noodlePath.removeAttribute('d');
+      if(noodleDot) noodleDot.style.display='none';
+      if(noodleBox) noodleBox.style.display='none';
+      return;
+    }
+    var r=composerEl.getBoundingClientRect(), cr=composer.getBoundingClientRect();
+    // 1) highlight the EXACT element being commented on (its precise bounds)
+    noodleBox.setAttribute('x', r.left); noodleBox.setAttribute('y', r.top);
+    noodleBox.setAttribute('width', Math.max(0, r.width)); noodleBox.setAttribute('height', Math.max(0, r.height));
+    noodleBox.style.display='';
+    // 2) anchor the noodle to the element's BORDER edge facing the composer (never the centre)
+    var ecx=r.left+r.width/2, ecy=r.top+r.height/2, ccx=cr.left+cr.width/2, ccy=cr.top+cr.height/2;
+    var dx=ccx-ecx, dy=ccy-ecy, ex, ey;
+    if(Math.abs(dx) >= Math.abs(dy)){                           // composer is more to the side → left/right edge
+      ex = dx>=0 ? r.right : r.left;
+      ey = Math.min(Math.max(ccy, r.top+4), r.bottom-4);
+    } else {                                                    // composer is more above/below → top/bottom edge
+      ey = dy>=0 ? r.bottom : r.top;
+      ex = Math.min(Math.max(ccx, r.left+4), r.right-4);
+    }
+    // 3) composer-side anchor: nearest edge of the box to the element anchor
+    var cx = (ex<cr.left) ? cr.left : (ex>cr.right ? cr.right : Math.min(Math.max(ex,cr.left),cr.right));
+    var cy = Math.min(Math.max(ey, cr.top+8), cr.bottom-8);
+    var mx = ex+(cx-ex)*0.5;
+    noodlePath.setAttribute('d','M'+ex+','+ey+' C'+mx+','+ey+' '+mx+','+cy+' '+cx+','+cy);
+    noodleDot.setAttribute('cx',ex); noodleDot.setAttribute('cy',ey); noodleDot.style.display='';
+  }
+  cTarget.addEventListener('mousedown',function(e){
+    dragging=true; var cr=composer.getBoundingClientRect();
+    composer._dx=e.clientX-cr.left; composer._dy=e.clientY-cr.top;
+    e.preventDefault(); e.stopPropagation();
+  });
+  document.addEventListener('mousemove',function(e){
+    if(!dragging) return;
+    var left=Math.min(window.innerWidth-composer.offsetWidth-8, Math.max(8, e.clientX-composer._dx));
+    var top =Math.min(window.innerHeight-40, Math.max(8, e.clientY-composer._dy));
+    composer.style.left=left+'px'; composer.style.top=top+'px'; drawNoodle();
+  },true);
+  document.addEventListener('mouseup',function(){ dragging=false; },true);
+  cSave.addEventListener('click',function(){
+    var txt=cText.value.trim(); if(!txt){ closeComposer(); return; }
+    if(editingId!=null){
+      comments.forEach(function(c){ if(c.id===editingId) c.text=txt; });
+    } else if(pendingEl){
+      comments.push({id:++seq, section:sectionName(pendingEl), desc:descOf(pendingEl), path:pathOf(pendingEl), text:txt, el:pendingEl});
+    }
+    closeComposer(); refresh();
+  });
+  cCancel.addEventListener('click',closeComposer);
+  cDel.addEventListener('click',function(){ if(editingId!=null){ comments=comments.filter(function(c){return c.id!==editingId;}); } closeComposer(); refresh(); });
+  cText.addEventListener('keydown',function(e){ if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)){ cSave.click(); } if(e.key==='Escape'){ closeComposer(); } });
+
+  // ---- panel list ----------------------------------------------------------
+  function refresh(){
+    countEl.textContent=comments.length; countEl.classList.toggle('rv-has',comments.length>0);
+    panelCount.textContent=comments.length;
+    if(!comments.length){ list.innerHTML='<p class="rv-empty">Turn on <b>Review</b>, then click any component to pin a comment.</p>'; }
+    else {
+      list.innerHTML='';
+      comments.forEach(function(c,i){
+        var it=document.createElement('div'); it.className='rv-item';
+        var loc=(c.section?('['+c.section+'] '):'')+c.desc;
+        it.innerHTML='<div class="rv-item-h"><span class="rv-num">'+(i+1)+'</span><span class="rv-loc"></span></div>'+
+          '<div class="rv-txt"></div>'+
+          '<div class="rv-acts"><button class="rv-link rv-goto" type="button">Reveal</button>'+
+          '<button class="rv-link rv-edit" type="button">Edit</button>'+
+          '<button class="rv-link rv-del" type="button">Delete</button></div>';
+        it.querySelector('.rv-loc').textContent=loc;
+        it.querySelector('.rv-txt').textContent=c.text;
+        it.querySelector('.rv-goto').addEventListener('click',function(){ if(c.el&&c.el.scrollIntoView){ c.el.scrollIntoView({block:'center'}); flash(c.el);} });
+        it.querySelector('.rv-edit').addEventListener('click',function(){ if(c.el) openComposer(c.el,c.id); });
+        it.querySelector('.rv-del').addEventListener('click',function(){ comments=comments.filter(function(x){return x.id!==c.id;}); refresh(); });
+        list.appendChild(it);
+      });
+    }
+    renderMarkers();
+  }
+  function flash(el){ var o=el.style.outline; el.style.outline='3px solid #DB0011'; setTimeout(function(){ el.style.outline=o; },700); }
+
+  // ---- export --------------------------------------------------------------
+  function buildPrompt(){
+    var lines=[];
+    lines.push('# '+DOC_TITLE+' — review edits ('+comments.length+')');
+    lines.push('');
+    lines.push('Apply the following change requests'+(DOC_FILE?(' to `'+DOC_FILE+'`'):'')+'. Each item is pinned to a component; treat the bracketed location as the target and use the selector to disambiguate.');
+    lines.push('');
+    comments.forEach(function(c,i){
+      var loc=(c.section?('['+c.section+'] '):'')+c.desc;
+      lines.push((i+1)+'. '+loc);
+      lines.push('   - '+c.text.replace(/\n/g,'\n     '));
+      lines.push('   - selector: `'+c.path+'`');
+      lines.push('');
+    });
+    return lines.join('\n');
+  }
+  function openExport(){ exportText.value=buildPrompt(); exportModal.classList.add('rv-show'); setTimeout(function(){ exportText.focus(); exportText.select(); },0); }
+  document.getElementById('rv-export-btn').addEventListener('click',openExport);
+  document.getElementById('rv-export-close').addEventListener('click',function(){ exportModal.classList.remove('rv-show'); });
+  exportModal.addEventListener('click',function(e){ if(e.target===exportModal) exportModal.classList.remove('rv-show'); });
+  document.getElementById('rv-export-copy').addEventListener('click',function(){
+    exportText.select();
+    var ok=false; try{ ok=document.execCommand('copy'); }catch(e){}
+    if(navigator.clipboard){ navigator.clipboard.writeText(exportText.value).catch(function(){}); ok=true; }
+    var b=document.getElementById('rv-export-copy'); var t=b.textContent; b.textContent=ok?'Copied ✓':'Select + ⌘C'; setTimeout(function(){ b.textContent=t; },1400);
+  });
+  document.getElementById('rv-export-download').addEventListener('click',function(){
+    var blob=new Blob([buildPrompt()],{type:'text/markdown'});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+    a.download=(DOC_TITLE.replace(/[^\w-]+/g,'-')||'review')+'-comments.md'; a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); },1000);
+  });
+
+  // ---- review-mode wiring --------------------------------------------------
+  var hoverEl=null;
+  function setActive(on){
+    active=on; document.body.classList.toggle('rv-active',on);
+    fab.classList.toggle('rv-on',on); fab.setAttribute('aria-pressed',on?'true':'false');
+    fab.querySelector('.rv-label').textContent=on?'Reviewing':'Review';
+    if(on){ panel.classList.add('rv-open'); } else { clearHover(); }
+  }
+  function clearHover(){ if(hoverEl){ hoverEl.removeAttribute('data-rv-hover'); hoverEl=null; } }
+  fab.addEventListener('click',function(){ setActive(!active); });
+  document.getElementById('rv-panel-close').addEventListener('click',function(){ panel.classList.remove('rv-open'); });
+  document.getElementById('rv-clear').addEventListener('click',function(){ if(comments.length&&confirm('Delete all '+comments.length+' comments?')){ comments=[]; refresh(); } });
+
+  document.addEventListener('mousemove',function(e){
+    if(!active || dragging) return;
+    var t=e.target;
+    if(isRvNode(t)){ clearHover(); return; }
+    if(t!==hoverEl){ clearHover(); hoverEl=t; if(hoverEl&&hoverEl.setAttribute) hoverEl.setAttribute('data-rv-hover',''); }
+  },true);
+
+  // capture clicks in review mode so the host page's own handlers/nav don't fire
+  document.addEventListener('click',function(e){
+    if(!active) return;
+    if(isRvNode(e.target)) return;           // let overlay UI work normally
+    e.preventDefault(); e.stopPropagation();
+    clearHover();
+    openComposer(e.target, null);
+  },true);
+
+  window.addEventListener('scroll',function(){ renderMarkers(); drawNoodle(); },true);
+  window.addEventListener('resize',function(){ renderMarkers(); drawNoodle(); },true);
+  setInterval(function(){ renderMarkers(); drawNoodle(); },600);   // keep pins + noodle glued as the page reflows
+
+  refresh();
+})();
+</script>
+<!-- ===================== END APOLLO REVIEW OVERLAY ===================== -->
+
+</body></html>

@@ -9,7 +9,7 @@ only in the artefact it governs dies the first time that artefact is rewritten �
 **This index is generated from the filesystem**, because a hand-maintained list of runbooks is exactly
 the thing that rots when someone adds the tenth one and forgets the list.
 
-**9 runbooks**, last generated 2026-07-18.
+**10 runbooks**, last generated 2026-07-18.
 
 ### `_RUNBOOK-capture-ritual.md`
 **Runbook — end-of-session capture ritual**
@@ -20,6 +20,11 @@ The insurance policy decided in `notes/_SEAWORTHINESS-PLAN_2026-07-05.md` ("The 
 **Runbook — compose a screen from canon (the composition layer)**
 
 and* every snippet consumes. Composition becomes objective **selection + layout**; a composed screen cannot silently drift because it has no component CSS of its own. --- ## What's in `canon/canon.css` (4 layers, top → bottom) 1.…
+
+### `_RUNBOOK-consult.md`
+**Runbook — consult (the read-side query tool)**
+
+(This doc must be reachable from `GOOD-MORNING.md` for the standing-instructions reachability gate to see it — that wiring is the parent session's job, not this one's; see the build note at the bottom.)
 
 ### `_RUNBOOK-criteria-contract.md`
 **Runbook — compile a criteria contract from a brief**

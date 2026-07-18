@@ -65,14 +65,22 @@ STEPS = [
     ("reverse-text edge-extremity check {#col26-020} (advisory)", "_validate_edge_extremity.py"),
     ("compliance verification edges — applies_to vs verified_by (advisory)", "compliance/_build_verification_edges.py"),
     ("external automatable-check refs — axe-core import (advisory)", "compliance/_import_axe_rules.py"),
+    # The consult read-side tool (reviews/CONSOLIDATION-AUDIT-2026-07-18.html §3): a
+    # problem-domain query index over rules/rulings/assertions/gates/ADRs/defects/open
+    # items, plus a CLI that answers "what governs X?" in one step. Index regenerates every
+    # build so it cannot rot; the selftest is advisory until the tool has earned trust.
+    ("consult index — problem-domain query surface", "_build_consult_index.py"),
+    ("consult tool selftest (advisory)", "_consult.py", ["--selftest"]),
     ("integrity lint (gate)", "_build_integrity.py"),
 ]
 
 rc = 0
-for i, (label, rel) in enumerate(STEPS, 1):
+for i, step in enumerate(STEPS, 1):
+    label, rel = step[0], step[1]
+    extra_args = list(step[2]) if len(step) > 2 else []
     path = os.path.join(HERE, rel)
     print(f"\n=== [{i}/{len(STEPS)}] {label} — {rel} ===")
-    r = subprocess.run([sys.executable, path])
+    r = subprocess.run([sys.executable, path] + extra_args)
     if r.returncode != 0:
         # Gating steps: integrity lint AND the contrast audits. They run to the
         # end (so you get every report) then the build exits non-zero.

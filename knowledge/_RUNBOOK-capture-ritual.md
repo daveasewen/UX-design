@@ -15,9 +15,14 @@ only for pure Q&A sessions that touched nothing. If in doubt, run it; it's cheap
 
 ## The five steps, in order
 
-1. **Refresh `_LIVE-STATE.md`.** Update LIVE / SUPERSEDED-DEAD / OPEN / PLANNED-TARGET sections for
-   anything that changed this session. Bump the `*Last refreshed: YYYY-MM-DD*` line at the top to
-   today. If a ruling killed something, tombstone the artifact **and** log the propagation gap in the
+1. **Refresh `_LIVE-STATE.md`** — and its siblings where touched: `_FUTURE-STATE.md` (ideas /
+   side-quests / resurrection candidates) and `_DECISION-HISTORY/` (narrative >10 lines relocates
+   there at write time — the spine discipline, ruled 2026-07-18). Update LIVE / SUPERSEDED-DEAD /
+   OPEN / PLANNED-TARGET for anything that changed. Bump the `*Last refreshed:*` line —
+   ⚠️ **take the date from running `date`, never from the session's own belief**: the T-D12 handoff
+   self-dated "2026-07-19" while its commits landed 07-18 evening; commit timestamps caught it.
+   Confident false inscription of something as small as a date still poisons the record.
+   If a ruling killed something, tombstone the artifact **and** log the propagation gap in the
    same pass (supersession discipline, non-negotiable per `AGENTS.md`).
 2. **Write/refresh `GOOD-MORNING.md`.** The cold-start entry point for the *next* session — write it
    for a reader with zero memory of this one. **Required structure, in order:**
@@ -50,23 +55,16 @@ only for pure Q&A sessions that touched nothing. If in doubt, run it; it's cheap
    check that a memory-only rule was ever mirrored, which makes this step the weakest link in the chain
    and the one to do deliberately rather than at speed.
 
-   **MIRROR-ON-WRITE (revised 2026-07-18 — this step no longer depends on Dave).** The old text here
-   said the agent *cannot* copy the memory directory because "`Glob` refuses application-internal paths".
-   **That was tested and is false:** `Glob` returns all 109 files and `Read`/`Write`/`Edit` work on them
-   normally. Only the **bash sandbox** is confined to the mount; the claim conflated bash with the file
-   tools, and the cost was that every memory write hung off Dave remembering an rsync.
-   ⇒ **PROVISIONAL — mirror-on-write.** Write the copy into `knowledge/_agent-memory/store/` in the
-   same pass as the memory write, rather than batching it here.
-   ⚠️ **BUT DO NOT TREAT THIS AS SETTLED — Dave challenged the whole premise the same day, correctly.**
-   *"why are we doing this, surely this isn't the usual way it works?"* It is not. The evidence:
-   **store held 115 files against 110 live** — the mirror already contains five memories that no longer
-   exist, i.e. it has already become the third source of truth its own README forbids. And the deeper
-   point: the mirror exists because we do not trust our own rule that *"memory is an accelerator, the
-   repo is the record"*. If that rule held, losing memory would cost nothing worth backing up. **The
-   mirror is a symptom of the normalisation failure, not a fix for it.**
-   ⇒ **OPEN QUESTION for the consolidation session: should the mirror be DELETED rather than
-   maintained?** Do not invest further in mirroring machinery until that is ruled. Mirror-on-write is
-   the least-bad interim behaviour, not an endorsement.
+   **THE MIRROR IS DELETED — RULED (Dave, 2026-07-18, consolidation session; the open question this
+   step used to carry is settled).** `knowledge/_agent-memory/store/` had become the third source of
+   truth its own README forbade (115 stored vs 110 live, five ghosts, three known-unmirrored
+   changes). It exists no more; there is **no mirror-on-write and no rsync**. Final dated snapshot,
+   non-authoritative, recovery-only: `_retired/agent-memory-snapshot-2026-07-18/`.
+   ⇒ **The rule that replaces it: durable content is INSCRIBED, not photocopied.** If something in
+   memory must survive — a rule, a rationale, a threshold, a convention — write it into its proper
+   repo home *in the same pass*: rules → `GOOD-MORNING.md` §A / a runbook / a guidelines `{#id}`;
+   checkable facts → `knowledge/_assertions.json`; rulings → the decisions ledgers. Memory then stays
+   what it is declared to be: an accelerator, genuinely disposable, because the repo is the record.
 
    **Also: if you wrote a checkable claim about the environment, register it.** Anything of the form
    "X exists / X is missing / there are N of Y" belongs in `knowledge/_assertions.json` with a predicate,
