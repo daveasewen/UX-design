@@ -54,6 +54,7 @@ STEPS = [
     ("pro-forma no-hardcode styling gate (DEF-004)", "_validate_no_hardcode.py"),
     ("4px-grid gate (DEF-005)", "_validate_grid.py"),
     ("DataViz chart gate (semantic SVG + tokens + table spine)", "_validate_dataviz.py"),
+    ("reverse-text edge-extremity check {#col26-020} (advisory)", "_validate_edge_extremity.py"),
     ("compliance verification edges — applies_to vs verified_by (advisory)", "compliance/_build_verification_edges.py"),
     ("external automatable-check refs — axe-core import (advisory)", "compliance/_import_axe_rules.py"),
     ("integrity lint (gate)", "_build_integrity.py"),

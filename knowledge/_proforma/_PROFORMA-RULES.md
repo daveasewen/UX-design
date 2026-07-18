@@ -114,7 +114,16 @@ the real asset files + manifest + `splice.py`) is filled by each tranche at thre
 tokens/sprite/manifest can't drift. Control glyphs render `currentColor`; the 4 status badges keep their
 real brand fills (colour = meaning).
 
-*Open to confirm with Dave: (a) near-black shade (#1A1A1A); (b) two finesse taste-calls — T4 tooltip
+*~~(a) near-black shade (#1A1A1A)~~ — **CONFIRMED + PROMOTED 2026-07-18** as `surface/digital-black`
+in `semantic-colour.json` (Dave: "it can be called digital black or something, that's probably how I'll
+remember it"). It is a **CONDITIONAL** substitute for the brand black `#000000`: use it only where
+light/reverse text sits ON the ground — pure black remains brand-canon and correct for borders, marks and
+rules carrying no reverse text. Rationale (recorded at last — it had been applied since ~07-04 with the
+reason written down nowhere): `#000` maximises the luminance step against white (21:1), driving halation;
+`#1A1A1A` cuts it ~17% to 17.4:1. This is the neutral-ground lever of rule `{#col26-020}`; its
+coloured-ground twin is the saturation ceiling ≤0.72. See `tokens/_proposals/neutral-blacks.proposals.json`.*
+
+*Open to confirm with Dave: (b) two finesse taste-calls — T4 tooltip
 info-badge (one blue dot) and T2 upload completed-bar going teal (both defensible as colour=meaning);
 (c) whether a MODE-rule gate (monochrome/square) is wanted, or mode rules stay rules-not-gates.*
 

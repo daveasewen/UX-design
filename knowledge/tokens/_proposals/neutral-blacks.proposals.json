@@ -1,5 +1,5 @@
 {
-  "$README": "HOLDING PEN for the NEUTRAL BLACKS and the digital-substitution rule (Dave 2026-07-18: 'keep all three, pure black is in the brand, maybe we have some way to substitute in digital. I just want to keep it for when we build the query bot for the KB'). ALL THREE VALUES ARE KEPT — this is NOT a pick-one. #000000 is a genuine brand value (color/black, color/grey/black) and is load-bearing across 12+ semantic tokens, so #1A1A1A was never a replacement for it: it is a CONDITIONAL DIGITAL SUBSTITUTE, applied when light text sits ON the dark ground and pure black's maximum luminance step causes halation. Recorded in typed form specifically so the future KB query layer can answer 'which black do we use, and when?' without a human re-deriving it — the failure this record exists to prevent already happened once: #1A1A1A has been in production use since ~2026-07-04 via _PROFORMA-RULES.md rule 1, and when Dave asked on 07-18 where it was stored, the VALUE was findable but the RATIONALE had never been written down. Statuses: 'brand-canon' = published brand value, not ours to change; 'in-use-ungoverned' = applied in the library but in no token store and gated by nothing; 'proposed' = ungoverned until Dave promotes (derivation governance — the engine never derives-and-promotes). STATUS 2026-07-18: the near-black IS NOW PROMOTED (surface/digital-black, Dave's ruling); pure black and #333333 were already brand-canon. What remains open is rebinding the 10 literal usages to the token, and the rule's gate.",
+  "$README": "HOLDING PEN for the NEUTRAL BLACKS and the digital-substitution rule (Dave 2026-07-18: 'keep all three, pure black is in the brand, maybe we have some way to substitute in digital. I just want to keep it for when we build the query bot for the KB'). ALL THREE VALUES ARE KEPT — this is NOT a pick-one. #000000 is a genuine brand value (color/black, color/grey/black) and is load-bearing across 12+ semantic tokens, so #1A1A1A was never a replacement for it: it is a CONDITIONAL DIGITAL SUBSTITUTE, applied when light text sits ON the dark ground and pure black's maximum luminance step causes halation. Recorded in typed form specifically so the future KB query layer can answer 'which black do we use, and when?' without a human re-deriving it — the failure this record exists to prevent already happened once: #1A1A1A has been in production use since ~2026-07-04 via _PROFORMA-RULES.md rule 1, and when Dave asked on 07-18 where it was stored, the VALUE was findable but the RATIONALE had never been written down. Statuses: 'brand-canon' = published brand value, not ours to change; 'in-use-ungoverned' = applied in the library but in no token store and gated by nothing; 'proposed' = ungoverned until Dave promotes (derivation governance — the engine never derives-and-promotes). STATUS 2026-07-18: the near-black IS NOW PROMOTED (surface/digital-black, Dave's ruling); pure black and #333333 were already brand-canon. The rule is now written into the KB prose as {#col26-020}/{#col26-021} and checked by _validate_edge_extremity.py (advisory). What remains open: triaging its 25 findings, rebinding the 10 literal usages, and applying the Figma style description.",
   "$provenance": {
     "raised_by": "Dave, 2026-07-18, during the reverse-text-on-chroma investigation",
     "trigger": "badge count read as 'spidery' after the type retrofit collapsed it 700->500; Dave recalled 'a new black value that helped with halation, not #000' and asked whether it was stored anywhere",
@@ -13,7 +13,7 @@
   },
   "$theRule": {
     "name": "reduce the extremity of the edge",
-    "status": "QUANTIFIED 2026-07-18 — thresholds set from Dave's observation on specimen v2. Not yet gated.",
+    "status": "QUANTIFIED + GATED (advisory) 2026-07-18 — rule {#col26-020} in colour-standards-2026.md, indexed; check in _validate_edge_extremity.py, wired into _build_all.py as step 24/27. Blocking status after the 25 findings are triaged (dv-019 precedent).",
     "statement": "Where light text meets a dark or saturated ground, legibility is degraded by the EXTREMITY of the edge, not by insufficient contrast. The mitigation is to reduce that extremity — never to add more contrast, which makes it worse.",
     "twoLevers": {
       "chroma": "on COLOURED grounds — drop saturation (observed: 1.00 -> 0.72 stops the strain; Dave 2026-07-18, controlled against a near-equal-lightness pair so lightness is excluded as the driver)",
@@ -26,8 +26,9 @@
       "$doNotMerge": "A future reader may try to fold this into dv-019. Do not — dv-019 would then fire on pairs that do not shimmer, and this one would still miss white-on-red."
     },
     "openQuestions": [
-      "SCOPE (Q5, still open) — badges only, or every light-on-chroma surface: solid RAG banners, primary buttons, pressed states, tags.",
-      "Gate it — the rule now has numbers and is therefore gateable; nothing enforces it yet.",
+      "Triage the 25 advisory findings, then decide whether the check becomes blocking.",
+      "Rebind the 10 literal #1A1A1A usages to surface/digital-black (the token exists now; the literals do not reference it).",
+      "Apply the Figma style description — see $carriers.figmaStyleDescription. Dave's action; the styles panel is the only place a designer sees the condition.",
       "Does 'step back from the extreme' generalise to other maximal values — pure-white grounds in dark mode, sat-1.00 grounds of any hue?"
     ],
     "thresholds": {
@@ -44,7 +45,12 @@
     "$correctionsThisRuling": [
       "The 700->500 collapse was NOT the cause of the spidery badge. Dave's ruling puts the minimum at Medium (500) for 12–16px, so the badge weight was always sufficient — the GROUND was the fault. At sat 1.00 it strained at any weight; at sat 0.72 Medium holds.",
       "type25-008 ('Emphasis = Univers Bold only') was wrongly invoked earlier in the session as requiring 700 on the badge. That rule governs emphasising keywords within running text, not badge counts. It does not apply here."
-    ]
+    ],
+    "$scopeQ5": {
+      "answer": "LIBRARY-WIDE — answered empirically, not by opinion.",
+      "evidence": "_validate_edge_extremity.py first run found 25 findings across 9+ components: EDGE-CHROMA ×14, EDGE-BLACK ×9, EDGE-WEIGHT ×2 — in Modals (.btn.primary), Selection-controls (pressed chips), Tab-bar (.menu-fab current), Tabs (.ovcount), Video-player (.bigplay, .bar), Icon-button (primary/secondary/pressed), Input-fields + Tranche-6 (12px tooltips at weight 400). Badges were never the scope; they were just the instance Dave happened to look at.",
+      "status": "advisory — 25 to triage before it earns blocking status (dv-019 precedent)"
+    }
   },
   "blacks": {
     "$description": "All three kept. They are not alternatives — they answer different questions.",
@@ -108,5 +114,18 @@
     "If tokenised: what is its semantic name? It is not 'black' — it is a conditional substitute, and naming it 'black' would hide the condition that makes it correct.",
     "Confirm the near-black shade itself — _PROFORMA-RULES.md has been asking since ~07-04 and it has never been answered.",
     "Does the substitution rule generalise beyond black, i.e. is 'step back from the extreme' a rule about ALL maximal values (pure white grounds in dark mode; sat 1.00 grounds)?"
-  ]
+  ],
+  "$carriers": {
+    "$why": "Dave 2026-07-18: 'in the KB if we store it in prose or if we have styles in Figma I think this meaning is useful.' The hex is portable; the CONDITION is not. Any carrier that holds #1A1A1A without the condition will produce confidently wrong advice — someone picks 'digital black' for a border, where pure black was already correct. Rule {#col26-021} states this; these are the actual strings to use.",
+    "dtcgToken": "semantic-colour.json → surface/digital-black — condition lives in $note, $condition, $substitutesFor, $rule. DONE 2026-07-18.",
+    "kbProse": "guidelines/colour-standards-2026.md → {#col26-020} (the rule) + {#col26-021} (carry-the-condition). Both indexed in _rules-index.json. DONE 2026-07-18.",
+    "figmaStyleDescription": {
+      "$status": "TO DO — needs applying in the Figma library by Dave",
+      "$styleName": "digital black",
+      "$hex": "#1A1A1A",
+      "$descriptionToPaste": "Digital black #1A1A1A. Use ONLY where light/reverse text sits on this ground — it replaces pure black in that one case. Pure black #000000 stays correct for borders, marks, rules and any surface with no reverse text. Why: #000 maximises the luminance step against white (21:1) which causes halation — text reads as though it vibrates. #1A1A1A cuts the step ~17% (17.4:1) and settles it. Adding contrast makes halation worse, not better. Rule col26-020.",
+      "$note": "Figma style descriptions are the ONLY place a designer picking from the styles panel will see the condition. A style called 'digital black' with an empty description is the failure mode this whole record exists to prevent — it reads like a free second black."
+    },
+    "queryBot": "tokens/_proposals/neutral-blacks.proposals.json → $forTheKBQueryBot.answerable — natural-language Q&A pairs. DONE 2026-07-18."
+  }
 }

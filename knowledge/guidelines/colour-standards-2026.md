@@ -83,6 +83,33 @@ palette. Values: brand core below; supporting values already penned with contras
 - Never rely on colour alone to convey meaning. [existing 1.4.1 rule —
   `digital-accessibility-standards.md`; gated]
 
+## Reverse text on strong grounds — the edge-extremity rule
+
+- **NEW APOLLO-ADDED RULE — reduce the extremity of the edge.** Where light/reverse text sits on a
+  dark or saturated ground, legibility is degraded by the **extremity of the edge**, not by
+  insufficient contrast — the bright field blooms across a high-chroma or maximal-luminance
+  boundary (halation/irradiation) and small text reads as though it is vibrating. **The mitigation
+  is to reduce that extremity; adding contrast makes it worse.** Two levers by ground type:
+  **(a) coloured ground → CHROMA: ground saturation ≤0.72**; **(b) neutral ground → LUMINANCE
+  EXTREMITY: use `surface/digital-black` (#1A1A1A, 17.4:1 against white) in place of pure black
+  (#000000, 21:1) wherever reverse text sits on it** — pure black stays correct for borders, marks
+  and rules carrying no reverse text. **(c) both grounds → SIZE×WEIGHT minimum**, which FALLS as
+  size rises: **12/14/16px = Medium (500); 20px = Light (300); below 12px is off-ramp and not
+  permitted.** Thresholds set from observation (Dave 2026-07-18, specimen v1+v2), not theory —
+  he picked sat 0.72 as the first ladder step that reads clean, with 0.78/0.84/1.00 straining.
+  **DISTINCT from {#dv-019} — do not merge:** vibrating boundaries needs two *saturated
+  near-complementary* colours at near-equal value and scores white-on-red 0/3 legs, correctly;
+  this is its sibling, not the same effect. [ADVISORY-derivable → gate check in
+  `_validate_edge_extremity.py`; APOLLO-ADDED rule] {#col26-020}
+- **Carry the condition with the value, in every store.** `surface/digital-black` is a
+  **conditional** substitute, and its name deliberately favours recall over precision (Dave: *"it
+  can be called digital black or something, that's probably how I'll remember it"*). The name alone
+  reads like a second black free to pick. So wherever the value is stored — DTCG token `$note`,
+  **KB prose**, or a **Figma colour style description** — the condition ("use only where reverse
+  text sits on this ground; pure black remains correct elsewhere") must travel with it. A carrier
+  that holds the hex but drops the condition will produce confidently wrong advice.
+  [ADVISORY-derivable — token `$note` / Figma style description presence check] {#col26-021}
+
 ## Usage contexts (all [TASTE], useful for register/contract framing)
 
 - **Marketing** — red anchors key moments; clear hierarchy; adjust intensity per application.
