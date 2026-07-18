@@ -6,12 +6,12 @@ Every selector appended to a composite list is a GLOBAL rule. Registry: `canon/_
 |---:|---|---|---|
 | 11 | class | `.btn` | PASS |
 | 6 | class | `.stateLabel` | PASS |
+| 5 | class | `.spec-h` | PASS |
 | 4 | class | `.chip` | PASS |
 | 4 | scoped-element | `.seg button` | PASS |
 | 3 | class | `.label` | PASS |
 | 3 | scoped-element | `.search input` | PASS |
 | 2 | class | `.avatar` | PASS |
-| 2 | class | `.spec-h` | PASS |
 | 1 | class | `.action-bar .btn` | PASS |
 | 1 | class | `.badge` | PASS |
 | 1 | class | `.confirm .btn` | PASS |

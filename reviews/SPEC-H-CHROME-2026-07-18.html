@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Specimen-chrome section labels — treatment decision</title>
+<style>
+  :root{
+    --uf:"Univers Next HSBC","HSBC_MtUnivers_Latin","Helvetica Neue",Arial,sans-serif;
+    --text:#111; --muted:#5b6770; --line:#e6e8ea; --line-2:#d3d7da;
+    --accent:#db0011; --ok:#2b7e4f; --warn:#c58900; --info:#306ec6; --bg-soft:#f6f7f8;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:var(--uf); color:var(--text); background:#fff; line-height:1.4;
+       max-width:1080px; margin:0 auto; padding:48px 40px 120px;}
+
+  /* ---- doc chrome ---- */
+  .eyebrow{font-size:12px; font-weight:500; letter-spacing:.02em; color:var(--accent); margin-bottom:6px;}
+  h1{font-size:32px; font-weight:300; line-height:1.15; margin-bottom:10px;}
+  .lede{font-size:16px; color:var(--muted); max-width:60ch; margin-bottom:8px;}
+  .meta{font-size:12px; color:var(--muted); margin-bottom:40px;}
+  h3.section{font-size:12px; font-weight:500; letter-spacing:.04em; text-transform:none;
+       color:var(--text); border-top:2px solid var(--text); padding-top:8px; margin:48px 0 20px;}
+  .note{font-size:13px; color:var(--muted); max-width:70ch; margin:0 0 20px;}
+  .note b{color:var(--text); font-weight:500;}
+  ul.reasons{list-style:none; max-width:74ch; margin:0 0 8px;}
+  ul.reasons li{position:relative; padding-left:18px; font-size:14px; margin-bottom:9px; color:var(--text);}
+  ul.reasons li::before{content:""; position:absolute; left:0; top:8px; width:6px; height:6px; background:var(--accent);}
+  ul.reasons li span{color:var(--muted);}
+
+  .decision{background:var(--bg-soft); border-left:3px solid var(--accent); padding:16px 20px; margin:0 0 8px; max-width:78ch;}
+  .decision .k{font-size:11px; font-weight:600; letter-spacing:.06em; color:var(--accent); display:block; margin-bottom:4px;}
+  .decision .v{font-size:15px;}
+
+  /* ---- the label treatment under test ---- */
+  .spec-h{font-family:var(--uf); font-size:12px; font-weight:400; line-height:1; color:var(--text); margin:0 0 12px;}
+  .spec-h--muted-colour{color:var(--muted);}     /* alt 2, for comparison */
+  .spec-h--opacity{opacity:.55;}                  /* current, rejected */
+
+  /* ---- comparison strip ---- */
+  .cmp{display:flex; gap:40px; flex-wrap:wrap; margin-bottom:8px;}
+  .cmp .cell{width:300px;}
+  .cmp .cap{font-size:11px; color:var(--muted); margin-top:10px;}
+  .cmp .cap b{color:var(--text); font-weight:500;}
+  .cmp .reject{color:var(--accent);}
+
+  /* ---- shared mock component styling (mirrors the reference specimens) ---- */
+  .block{border:1px solid var(--line);}
+  .row{display:flex; align-items:center; gap:14px; padding:13px 16px; border-bottom:1px solid var(--line); background:#fff;
+       transition:background .12s ease;}
+  .row:last-child{border-bottom:0;}
+  .row .name{font-size:16px;}
+  .row .desc{margin-left:auto; font-size:14px; color:var(--muted);}
+  .dot{width:9px; height:9px; flex:none;}
+  .dot.ok{background:var(--ok);} .dot.warn{background:var(--warn);}
+  .dot.err{background:var(--accent);} .dot.info{background:var(--info);} .dot.neu{background:var(--muted);}
+
+  /* explicit interaction states, rendered statically so they're all visible at once */
+  .row.is-hover{background:var(--bg-soft);}
+  .row.is-press{background:#eceef0;}
+  .row.is-focus{outline:2px solid var(--info); outline-offset:-2px;}
+  .row.is-selected{background:#eef4fb; box-shadow:inset 3px 0 0 var(--info);}
+  .row.is-disabled{opacity:.5;}
+  .state-tag{margin-left:8px; font-size:11px; color:var(--muted);}
+
+  /* live row — real hover/focus so the states can be felt too */
+  .row.live{cursor:pointer;}
+  .row.live:hover{background:var(--bg-soft);}
+  .row.live:active{background:#eceef0;}
+  .row.live:focus-visible{outline:2px solid var(--info); outline-offset:-2px;}
+
+  /* status chips + segmented control to show more state kinds */
+  .chips{display:flex; gap:8px; padding:14px 16px; flex-wrap:wrap;}
+  .chip{font-size:12px; padding:5px 10px; border:1px solid var(--line-2); background:#fff;}
+  .chip.sel{border-color:var(--text); background:var(--text); color:#fff;}
+  .seg{display:inline-flex; border:1px solid var(--line-2);}
+  .seg button{font-family:var(--uf); font-size:14px; padding:8px 16px; border:0; background:#fff; cursor:pointer; border-right:1px solid var(--line-2);}
+  .seg button:last-child{border-right:0;}
+  .seg button[aria-selected="true"]{background:var(--text); color:#fff;}
+  .seg button:hover:not([aria-selected="true"]){background:var(--bg-soft);}
+
+  .demoblock{margin-bottom:30px; max-width:520px;}
+  .scope{font-size:13px; color:var(--muted); max-width:74ch;}
+  .scope code{font-family:ui-monospace,Menlo,monospace; font-size:12px; background:var(--bg-soft); padding:1px 5px;}
+  table.files{border-collapse:collapse; font-size:13px; margin:12px 0; width:100%; max-width:640px;}
+  table.files th, table.files td{border:1px solid var(--line); padding:7px 11px; text-align:left;}
+  table.files th{background:var(--bg-soft); font-weight:500;}
+</style>
+</head>
+<body>
+
+  <div class="eyebrow">Apollo · type-binding tidy · T-D13 follow-on</div>
+  <h1>Specimen-chrome section labels — treatment</h1>
+  <p class="lede">The little headings that caption each demo inside a reference file — "Inline — dot + label",
+     "Transaction list — live". This picks one treatment for all of them, and shows it above real components in
+     every state.</p>
+  <p class="meta">Review copy · 2026-07-18 · demo scaffolding only — no product / component impact</p>
+
+  <div class="decision">
+    <span class="k">PROPOSED — for your sign-off</span>
+    <span class="v"><b>Full strength, no muting.</b> 12px, <code>--text</code>, weight 400. Opacity muting dropped
+      entirely. Each label stays a semantic <code>&lt;h2&gt;</code> (document structure / screen-reader
+      navigation) — only the visual weight changes.</span>
+  </div>
+
+  <h3 class="section">WHY NOT MUTED</h3>
+  <ul class="reasons">
+    <li>The current fade is <code style="font-size:12px">opacity:.55</code> — <span>opacity is untokenised, so it
+      dodges the contrast gate entirely and can't be governed.</span></li>
+    <li>Opacity multiplies whatever is behind it — <span>on any tinted or dark specimen surface it goes muddy and
+      unpredictable, unlike a real colour.</span></li>
+    <li>A section label is document structure, not a de-emphasised aside — <span>full strength reads honestly as
+      "this is a section," which is what an <code style="font-size:12px">&lt;h2&gt;</code> is.</span></li>
+  </ul>
+
+  <h3 class="section">THE THREE, SIDE BY SIDE</h3>
+  <div class="cmp">
+    <div class="cell">
+      <h2 class="spec-h">Inline — dot + label</h2>
+      <div class="block"><div class="row"><span class="dot ok"></span><span class="name">Approved</span><span class="desc">£250.00</span></div></div>
+      <p class="cap"><b>1 · Full strength</b> — proposed. 12px, --text.</p>
+    </div>
+    <div class="cell">
+      <h2 class="spec-h spec-h--muted-colour">Inline — dot + label</h2>
+      <div class="block"><div class="row"><span class="dot ok"></span><span class="name">Approved</span><span class="desc">£250.00</span></div></div>
+      <p class="cap">2 · Muted via colour token — quieter, still tokenised.</p>
+    </div>
+    <div class="cell">
+      <h2 class="spec-h spec-h--opacity">Inline — dot + label</h2>
+      <div class="block"><div class="row"><span class="dot ok"></span><span class="name">Approved</span><span class="desc">£250.00</span></div></div>
+      <p class="cap reject">3 · Opacity .55 — current, rejected.</p>
+    </div>
+  </div>
+
+  <h3 class="section">IN CONTEXT — FULL-STRENGTH LABELS ABOVE EVERY STATE</h3>
+  <p class="note">Everything below uses the <b>proposed</b> full-strength label. States are rendered
+     explicitly so you can see them all at once; the last block is <b>live</b> — hover, press and tab into it.</p>
+
+  <div class="demoblock">
+    <h2 class="spec-h">Status badge — five semantic states</h2>
+    <div class="block">
+      <div class="row"><span class="dot ok"></span><span class="name">Approved</span><span class="desc">success</span></div>
+      <div class="row"><span class="dot warn"></span><span class="name">Action needed</span><span class="desc">warning</span></div>
+      <div class="row"><span class="dot err"></span><span class="name">Declined</span><span class="desc">error</span></div>
+      <div class="row"><span class="dot info"></span><span class="name">Processing</span><span class="desc">info</span></div>
+      <div class="row"><span class="dot neu"></span><span class="name">Draft</span><span class="desc">neutral</span></div>
+    </div>
+  </div>
+
+  <div class="demoblock">
+    <h2 class="spec-h">Transaction list — interaction states</h2>
+    <div class="block">
+      <div class="row"><span class="name">Jane Smith</span><span class="desc">default</span></div>
+      <div class="row is-hover"><span class="name">Acme Ltd</span><span class="desc">hover</span></div>
+      <div class="row is-press"><span class="name">Northwind</span><span class="desc">pressed</span></div>
+      <div class="row is-focus"><span class="name">Globex</span><span class="desc">focus-visible</span></div>
+      <div class="row is-selected"><span class="name">Initech</span><span class="desc">selected</span></div>
+      <div class="row is-disabled"><span class="name">Umbrella</span><span class="desc">disabled</span></div>
+    </div>
+  </div>
+
+  <div class="demoblock">
+    <h2 class="spec-h">Segmented control + chips — selected states</h2>
+    <div class="seg" role="tablist" aria-label="View">
+      <button role="tab" aria-selected="true">All</button>
+      <button role="tab" aria-selected="false">Incoming</button>
+      <button role="tab" aria-selected="false">Outgoing</button>
+    </div>
+    <div class="block" style="margin-top:14px;">
+      <div class="chips">
+        <span class="chip sel">Active</span>
+        <span class="chip">Closed</span>
+        <span class="chip">Archived</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="demoblock">
+    <h2 class="spec-h">Live — hover · press · Tab</h2>
+    <div class="block">
+      <div class="row live" tabindex="0"><span class="name">Jane Smith</span><span class="desc">try me</span></div>
+      <div class="row live" tabindex="0"><span class="name">Acme Ltd</span><span class="desc">try me</span></div>
+    </div>
+  </div>
+
+  <h3 class="section">SCOPE — WHAT ACTUALLY CHANGES</h3>
+  <p class="scope">A single standalone utility <code>.spec-h</code> (12px / --text / weight 400), defined once and
+     <b>not</b> part of any canon type composite — specimen chrome isn't product type. Each affected file's
+     inline <code>h2{…}</code> loses its <code>font-size</code> + <code>opacity</code>; margins stay. Files touched:</p>
+  <table class="files">
+    <tr><th>file</th><th>now</th><th>after</th></tr>
+    <tr><td>Avatar, Badge, Links, Notifications, Selection-controls, Tags</td><td>h2 12px, opacity .55</td><td>.spec-h 12px, no opacity</td></tr>
+    <tr><td>List-items, Status-indicator</td><td>.spec-h 14px (from earlier fix)</td><td>.spec-h 12px full-strength</td></tr>
+    <tr><td>Button</td><td>h2 14px, opacity .6</td><td>.spec-h 12px, no opacity</td></tr>
+  </table>
+  <p class="scope">No effect on any component, token, or product output. Blast-radius gate stays green;
+     <code>.spec-h</code> is a scoped class, not a global element. Nothing is committed until you sign this off.</p>
+
+</body>
+</html>

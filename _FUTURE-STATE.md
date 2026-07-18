@@ -63,12 +63,14 @@ status (`idea` / `parked` / `resurrection-candidate` / `graduated→LIVE`).
   case) rather than proxying via file membership. *Feeds:* the type-binding guard-rail. *Status:*
   idea — promote once the v1 has bedded in (cf. consult tool's fuzzy→rigorous path).
 
-- **Harmonise specimen-chrome section labels onto `.spec-h`.** Reference-file section labels are
-  inconsistent: List-items + Status-indicator now use `.spec-h` (14px, via the caption composite),
-  while older files hardcode `h2{font-size:12px; opacity:.55}`. A pass could move all specimen chrome
-  onto one `.spec-h` treatment — but note this is a *visible* change (12→14px + the muting), not a
-  no-op, and it's demo scaffolding, not product. *Feeds:* the type-binding tidy / T-D13 follow-on.
-  *Status:* idea — surfaced 2026-07-18 during the h2 burndown; decide treatment before sweeping.
+- ~~**Harmonise specimen-chrome section labels onto `.spec-h`.**~~ **GRADUATED 2026-07-18** — Dave
+  ruled full-strength, no muting (opacity dropped); all 9 files now 12px/opacity-1. See T-D13.
+- **Reference files don't uniformly `<link>` canon/type.css.** Found during the harmonisation: only
+  5 of the touched specimens link the canon sheet; 4 (Avatar, Links, Selection-controls, Tags) are
+  self-contained and can't consume canon classes without re-introducing global blast radius. A
+  cold-blooded pass could give every reference file a consistent canon link + local override
+  discipline. *Feeds:* specimen-doc consistency. *Status:* idea — not urgent; the specimens render
+  correctly as-is.
 
 ## Standing register elsewhere (pointers, not copies)
 

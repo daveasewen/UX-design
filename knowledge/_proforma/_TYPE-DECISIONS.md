@@ -952,6 +952,18 @@ after; controls Avatar 12px / Confirmation 24px unchanged). Gate radius for `h2`
 *Open convention debt:* specimen chrome is inconsistent — the 2 migrated files use `.spec-h` (14px)
 while older reference files hardcode `h2{12px opacity:.55}`. Harmonisation tracked in `_FUTURE-STATE`.
 
+**✅ Specimen-chrome harmonisation DONE (2026-07-18, Dave signed off on `reviews/SPEC-H-CHROME-2026-07-18`).**
+Ruling: **full strength, no muting** — 12px, `--text`, weight 400, **opacity dropped entirely**
+(opacity is untokenised and dodges the contrast gate; on tint it goes muddy). Each label stays a
+semantic `<h2>` — only visual weight changed. `.spec-h` is now a **standalone** utility in type.css,
+NOT joined to a composite (specimen scaffolding is not product type). Applied across 9 reference
+files, all section labels now 12px / opacity 1 (computed-style verified in real Chromium).
+*Deviation worth recording:* only 5 of the files actually `<link>` `canon/type.css`, so only those
+carry the `.spec-h` class; the 4 self-contained files (Avatar, Links, Selection-controls,
+Tags) keep a **local** `h2{12px}` rule with opacity removed — forcing them onto `.spec-h` would mean
+linking type.css into them, which re-introduces the very global blast radius T-D13 just closed. Same
+pixels, two mechanisms, by design. The link-inconsistency itself is logged to `_FUTURE-STATE`.
+
 **Known v1 limit:** the gate matches selectors structurally (class/element presence per file), not by
 full CSS cascade, and gates on the file *set*; a same-count file *swap* inside the acknowledged set
 would pass. Good enough for advisory→blocking bed-in (cf. the consult tool's fuzzy enforcement
