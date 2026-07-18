@@ -71,3 +71,33 @@ nothing above #DB0011).
 **Gate note:** until the standard moves, the state-contrast sweep will keep reporting
 the 2 Selection-controls dark text fails — they are this entry's signature, not a
 regression. Treat "36/38 clean + ds-002 signature" as the known-good sweep state.
+
+---
+
+## ds-003 — demo-chrome type is not bound to the canon ramp (deferred, not exempt)
+
+**Status:** OPEN — deliberate deferral, Dave ruling 2026-07-18. Logged so it is a known
+debt rather than a silent gate exemption.
+
+**Finding:** `_validate_type_composites.py` (DEF-006) gates **component scope only**. The
+reference pages carry a second population of text — `.demo-controls` toggle buttons and
+harness furniture used to demo component states — which the gate counts but does not
+block: **78 raw font declarations** across the 38 snippets, dominated by 13px on
+`.demo-controls` and `.demo-controls button`. This scaffolding never reaches a product
+screen, so binding it to composites buys nothing at ship time.
+
+**Why it is logged and not just exempted:** the exemption is a **selector-name
+convention** (`CHROME_SEL` in the gate). Nothing stops a real component from being named
+`.demo-*` and hiding behind it. The exemption is therefore a soft edge on an otherwise
+blocking gate, and worth revisiting rather than forgetting.
+
+**Recommendation:** when the reference-page harness is next touched, bind the chrome to
+the ramp too and delete `CHROME_SEL` — the gate then has no selector-based carve-out at
+all. Until then, treat "component scope green + 78 chrome advisory" as the known-good
+state, the same way ds-002 has a signature.
+
+**Blast radius if adopted:** 78 declarations across 38 snippet files; no product surface
+changes; no canon.css regeneration needed (chrome is not promoted into canon).
+
+**Artifacts:** `_validate_type_composites.py` (`CHROME_SEL`, advisory line in `run()`) ·
+`reviews/TYPE-RETROFIT-2026-07-18.html` §4.

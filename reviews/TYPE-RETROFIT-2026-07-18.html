@@ -1,0 +1,127 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Type retrofit &mdash; review</title>
+<style>
+:root{--ink:#1c1c1c;--mut:#6b6b6b;--line:#e4e4e4;--bg:#fff;--rec:#0b7a34;--tie:#b25000;--arrow:#8a1f1f;--exempt:#3a5bd9;--red:#db0011;}
+*{box-sizing:border-box}
+body{font-family:"Univers Next for HSBC","Helvetica Neue",Arial,sans-serif;color:var(--ink);margin:0;padding:40px;max-width:1040px;line-height:1.5;background:#fafafa}
+h1{font-size:32px;font-weight:300;margin:0 0 4px}
+h2{font-size:20px;font-weight:500;margin:40px 0 4px;padding-top:16px;border-top:2px solid var(--ink)}
+.sub{color:var(--mut);font-size:14px;margin:0 0 24px}
+.lead{font-size:15px;background:#fff;border:1px solid var(--line);border-left:3px solid var(--red);padding:16px 20px;margin:20px 0}
+table{width:100%;border-collapse:collapse;background:#fff;margin:12px 0 8px;font-size:13px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:500;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--mut);background:#f4f4f4}
+td:last-child{width:120px;color:var(--mut)}
+code{font-family:ui-monospace,Menlo,monospace;font-size:12px;background:#f2f2f2;padding:1px 5px;border-radius:3px}
+.rec{color:var(--rec);font-weight:600} .tie{color:var(--tie);font-weight:600}
+.tieflag{color:var(--tie);font-size:11px;font-weight:600} .arrow{color:var(--arrow);font-weight:600;font-size:12px}
+.exempt{color:var(--exempt);font-weight:600}
+.rules{background:#fff;border:1px solid var(--line);padding:4px 20px 16px;margin:16px 0}
+.rules li{margin:12px 0;font-size:14px} .rules b{font-weight:600}
+.num{background:#fff;border:1px solid var(--line);display:flex;gap:0;margin:16px 0}
+.num div{padding:12px 18px;border-right:1px solid var(--line);flex:1}
+.num div:last-child{border-right:0}
+.num b{display:block;font-size:26px;font-weight:300;line-height:1.1}
+.num span{font-size:11px;color:var(--mut);letter-spacing:.03em;text-transform:uppercase}
+.foot{color:var(--mut);font-size:12px;margin-top:40px;border-top:1px solid var(--line);padding-top:12px}
+</style></head><body>
+<h1>Type retrofit &mdash; review</h1>
+<p class="sub">Apollo SDS &middot; queue&nbsp;#2 &middot; 2026-07-18 &middot; sibling to the 4px-grid retrofit. The grid retrofit snapped <b>dimensions</b>; this one governs <b>text</b>. Pin a comment on any row to rule; the four global rules resolve most of it.</p>
+<div class="num">
+<div><b>721</b><span>raw font decls to rebind</span></div>
+<div><b>50</b><span>files not pulling type.css</span></div>
+<div><b>412</b><span>off-ramp values</span></div>
+<div><b>17</b><span>distinct rulings needed</span></div>
+</div>
+<div class="lead"><b>Read me first.</b> Type was promoted to canon on 07-17, but the library was never rebound to it: <b>0 of 50</b> component files reference a composite. This doc asks for <b>17 rulings</b>, not 412 &mdash; the off-ramp values collapse to 15 distinct sizes and 2 weights. Rule the four global rules first, then override per row where design intent differs. <b>canon.css is generated</b> &mdash; every fix lands in the source snippet, then regenerate. Nothing is applied yet.</div>
+<h2>Global rules &mdash; rule these once</h2>
+<ol class="rules">
+<li><b>Rule 1 &mdash; tie direction.</b> Where a size sits exactly between two ramp steps (13, 15, 18, 22, 26, 30) snap: <b>[ &nbsp;up&nbsp; ] &nbsp;[ &nbsp;down&nbsp; ] &nbsp;[ &nbsp;up for text, down for dense UI&nbsp; ]</b>. <i>Recommended: up for text, down for dense UI.</i> &nbsp;<span class="tieflag">&larr; pin your pick</span></li>
+<li><b>Rule 2 &mdash; weights 600 and 700 have no composite.</b> <b>88</b> declarations use 600 and <b>8</b> use 700; the ramp stops at 500. Either <b>collapse both to 500</b> (recommended &mdash; 500 is the canon emphasis step, and a narrower vocabulary is the point) or <b>extend type.css with a 600</b>. <b>[ collapse / extend ]</b> <span class="tieflag">&larr; this is the biggest single call in the doc</span></li>
+<li><b>Rule 3 &mdash; intrinsic scale is not text.</b> Avatar initials, badge counts and similar set <code>font-size</code> to scale a glyph inside a fixed box &mdash; the size is driven by the box, not the type ramp. DEF-005 already carves out the equivalent case (a height equal to a width = intrinsic square size). Propose the same carve-out here: <b>exempt, governed by icon/avatar scale</b>. <b>[ exempt / gate them anyway ]</b></li>
+<li><b>Rule 4 &mdash; inline <code>style=""</code> attributes.</b> <b>18</b> violations come from inline styles, which cannot take a composite class without a markup change. <b>[ promote to classes / accept as a documented exception ]</b></li>
+</ol>
+<h2>1 &middot; Off-ramp sizes &mdash; 15 rulings</h2>
+<p class="sub">Grouped by value. Fix in the source snippet, then regenerate canon.css.</p>
+<table><thead><tr><th>Value</th><th>N</th><th>Files (&times;count)</th><th>Proposed</th><th>Why</th><th>Your ruling</th></tr></thead><tbody>
+<tr><td><b>13px</b></td><td>112</td><td>canon&times;20, Tranche-8&times;14, Tranche-5&times;9, Masthead&times;8, Tranche-2&times;8, Tranche-1&times;7 &hellip; +21</td><td><span class="tie">&rarr; 14px</span> <span class="tieflag">TIE &mdash; needs direction</span></td><td>Between 12 and 14. Overwhelmingly labels and captions — 14 keeps label legibility; 12 is the denser read.</td><td></td></tr>
+<tr><td><b>15px</b></td><td>75</td><td>canon&times;21, Tranche-1&times;6, Tranche-4&times;5, Tranche-6&times;5, Masthead&times;4, Tranche-2&times;4 &hellip; +17</td><td><span class="tie">&rarr; 16px</span> <span class="tieflag">TIE &mdash; needs direction</span></td><td>Between 14 and 16. Mostly body and button text — 16 is <code>.t-cm-label</code> / <code>.t-ed-body</code>.</td><td></td></tr>
+<tr><td><b>11px</b></td><td>58</td><td>DataViz&times;7, Tranche-8&times;7, Masthead&times;6, Tranche-6&times;6, canon&times;4, Tranche-3&times;4 &hellip; +13</td><td><span class="rec">&rarr; 12px</span></td><td>12 is the floor of the ramp; there is no step below it.</td><td></td></tr>
+<tr><td><b>22px</b></td><td>12</td><td>canon&times;4, DataViz&times;3, Avatar&times;1, Cards&times;1, Countdown-timer&times;1, Modals&times;1 &hellip; +1</td><td><span class="tie">&rarr; 24px</span> <span class="tieflag">TIE &mdash; needs direction</span></td><td>Between 20 and 24. Mixed: card <code>h3</code> reads as heading-3 (24); <code>.avatar.lg</code> is intrinsic scale — see rule 3.</td><td></td></tr>
+<tr><td><b>13.5px</b></td><td>11</td><td>Tranche-4&times;5, Tranche-2&times;3, Tranche-5&times;3</td><td><span class="rec">&rarr; 14px</span></td><td>Sub-pixel size — almost certainly unintended. Snaps clean.</td><td></td></tr>
+<tr><td><b>19px</b></td><td>10</td><td>DataViz&times;1, Masthead&times;1, Tranche-1&times;1, Tranche-2&times;1, Tranche-3&times;1, Tranche-4&times;1 &hellip; +4</td><td><span class="rec">&rarr; 20px</span></td><td>All ten are the same selector (<code>.h h2</code>) — one ruling clears the row.</td><td></td></tr>
+<tr><td><b>18px</b></td><td>8</td><td>canon&times;3, Headers&times;1, Hero&times;1, Navigations&times;1, Tranche-5&times;1, Tranche-8&times;1</td><td><span class="tie">&rarr; 20px</span> <span class="tieflag">TIE &mdash; needs direction</span></td><td>Between 16 and 20. <code>.av-lg</code> is intrinsic scale (rule 3); the header/hero text is heading-4 territory (20).</td><td></td></tr>
+<tr><td><b>17px</b></td><td>8</td><td>Masthead&times;2, Tranche-1&times;2, canon&times;1, Summary&times;1, Tranche-7&times;1, Tranche-8&times;1</td><td><span class="rec">&rarr; 16px</span></td><td>Nearest step is 16. These are summary-total and drawer titles — emphasis should come from weight, not a +1px bump.</td><td></td></tr>
+<tr><td><b>12.5px</b></td><td>8</td><td>Tranche-3&times;3, Tranche-5&times;2, Masthead&times;1, Tranche-4&times;1, Tranche-7&times;1</td><td><span class="rec">&rarr; 12px</span></td><td>Sub-pixel — snaps clean to the ramp floor.</td><td></td></tr>
+<tr><td><b>33px</b></td><td>4</td><td>canon&times;2, Headers&times;1, Hero&times;1</td><td><span class="rec">&rarr; 32px</span></td><td>Clean: <code>.t-ed-heading-1</code>.</td><td></td></tr>
+<tr><td><b>10px</b></td><td>3</td><td>Button&times;1, Icon-button&times;1, Tranche-8&times;1</td><td><span class="rec">&rarr; 12px</span></td><td>Below the ramp floor. Note 10px fails the accessibility floor anyway.</td><td></td></tr>
+<tr><td><b>57px</b></td><td>2</td><td>canon&times;1, Hero&times;1</td><td><span class="rec">&rarr; 52px</span></td><td>Clean: <code>.t-ed-display-1</code>.</td><td></td></tr>
+<tr><td><b>30px</b></td><td>2</td><td>canon&times;1, Account-card&times;1</td><td><span class="tie">&rarr; 32px</span> <span class="tieflag">TIE &mdash; needs direction</span></td><td>Between 28 and 32. Account-card balance is a figure — <code>.t-cm-heading</code> (32) or <code>.t-ed-heading-2</code> (28).</td><td></td></tr>
+<tr><td><b>10.5px</b></td><td>2</td><td>Tranche-4&times;1, Tranche-5&times;1</td><td><span class="rec">&rarr; 12px</span></td><td>Sub-pixel, below the floor.</td><td></td></tr>
+<tr><td><b>26px</b></td><td>1</td><td>canon&times;1</td><td><span class="tie">&rarr; 24px</span> <span class="tieflag">TIE &mdash; needs direction</span></td><td>Between 24 and 28. Single occurrence: <code>.c-stat-cell__value</code>.</td><td></td></tr>
+</tbody></table>
+<h2>2 &middot; Off-ramp weights &mdash; 2 rulings</h2>
+<p class="sub">See rule 2. These have no composite to bind to at all &mdash; the ramp does not contain them.</p>
+<table><thead><tr><th>Value</th><th>N</th><th>Files (&times;count)</th><th>Proposed</th><th>Why</th><th>Your ruling</th></tr></thead><tbody>
+<tr><td><b>600</b></td><td>88</td><td>Tranche-8&times;18, Masthead&times;11, Tranche-2&times;10, Tranche-5&times;9, canon&times;8, Tranche-7&times;7 &hellip; +11</td><td><span class="tie">&rarr; 500</span> <span class="tieflag">no composite exists</span></td><td>There is <b>no 600 composite</b>. 500 is the canon emphasis weight (the <code>.em</code> step). Alternative: extend the ramp with a 600 — but that widens the vocabulary.</td><td></td></tr>
+<tr><td><b>700</b></td><td>8</td><td>canon&times;2, DataViz&times;2, Badge&times;1, Navigations&times;1, Tranche-4&times;1, Tranche-5&times;1</td><td><span class="tie">&rarr; 500</span> <span class="tieflag">no composite exists</span></td><td>There is <b>no 700 composite</b> either. Same call as 600.</td><td></td></tr>
+</tbody></table>
+<h2>3 &middot; Rebinding load &mdash; where the work sits</h2>
+<p class="sub">TYPE-002: every raw font declaration in component scope, to be replaced by a composite class. No ruling needed per row &mdash; this is the mechanical sweep, shown so the scale is visible. The deciding rule: <b>single-line &rarr; Component (<code>.t-cm-*</code>); wrapping &rarr; Editorial (<code>.t-ed-*</code>)</b>. Multi-line Component text drifts off-grid (the N1 caveat).</p>
+<table><thead><tr><th>File</th><th>Raw font decls</th><th>Pulls type.css?</th></tr></thead><tbody>
+<tr><td><code>canon</code></td><td>151</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Tranche-8</code></td><td>53</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Masthead</code></td><td>42</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Tranche-2</code></td><td>38</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>DataViz</code></td><td>37</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Tranche-5</code></td><td>37</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Tranche-4</code></td><td>34</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Tranche-7</code></td><td>33</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Tranche-1</code></td><td>31</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Tranche-3</code></td><td>31</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Tranche-6</code></td><td>29</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Input-fields</code></td><td>18</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Table</code></td><td>15</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Cards</code></td><td>12</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>List-items</code></td><td>10</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Links</code></td><td>9</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Notifications</code></td><td>7</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Selection-controls</code></td><td>7</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Tabs</code></td><td>7</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Account-card</code></td><td>6</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Avatar</code></td><td>6</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Dropdown</code></td><td>6</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Status-indicator</code></td><td>6</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Summary</code></td><td>6</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Tags</code></td><td>6</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Eyebrow</code></td><td>5</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Hero</code></td><td>5</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Breadcrumbs</code></td><td>4</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Button</code></td><td>4</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Confirmation</code></td><td>4</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Divider</code></td><td>4</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Headers</code></td><td>4</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Modals</code></td><td>4</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Navigations</code></td><td>4</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Progress-tracker</code></td><td>4</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Icon-button</code></td><td>4</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Accordion</code></td><td>3</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Action-bar</code></td><td>3</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Badge</code></td><td>3</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Countdown-timer</code></td><td>3</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Pagination</code></td><td>3</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Search-field</code></td><td>3</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Slider</code></td><td>3</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Tab-bar</code></td><td>3</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Tooltip</code></td><td>3</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Video-player</code></td><td>3</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Loading-indicator</code></td><td>2</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Quick-actions</code></td><td>2</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>Reorder</code></td><td>2</td><td><span class="arrow">no</span></td></tr>
+<tr><td><code>View-options</code></td><td>2</td><td><span class="arrow">no</span></td></tr>
+</tbody></table>
+<h2>4 &middot; Out of scope (logged, not gated)</h2>
+<p class="sub">Demo-chrome &mdash; <code>.demo-controls</code> and reference-page harness furniture. Your ruling 2026-07-18: gate component scope now, log the chrome as a known deferral rather than a silent exemption. Recorded in <code>knowledge/_DS-IMPROVEMENTS.md</code>.</p>
+<p class="foot">Generated by <code>reviews/gen_type_retrofit.py</code> from the live output of <code>_validate_type_composites.py --inventory</code> &middot; ramp read from <code>canon/type.css</code> (12, 14, 16, 20, 24, 28, 32, 40, 52px; weights 250, 300, 350, 400, 500) &middot; nothing applied yet &mdash; this is a proposal for your sign-off.</p>
+</body></html>
