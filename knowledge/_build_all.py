@@ -35,6 +35,7 @@ STEPS = [
     ("token blast-radius + graph report", "tokens/_build_blast_radius.py"),
     ("guideline rules index (gate)", "guidelines/gen_rules_index.py"),
     ("runbook index (generated)", "gen_runbook_index.py"),
+    ("standing-instructions reachability gate", "_validate_standing_instructions.py"),
     ("cross-reference index", "_build_xref_index.py"),
     ("sutherland acceptance fixtures", "_build_sutherland_fixtures.py"),
     ("states-completeness probe (advisory)", "_build_states_probe.py"),
@@ -104,6 +105,9 @@ for i, (label, rel) in enumerate(STEPS, 1):
             rc = rc or r.returncode
         elif "surface" in label:
             print(f"\n❌ dark-surface gate failed (exit {r.returncode}) — see knowledge/_DARK-SURFACE-AUDIT.md")
+            rc = rc or r.returncode
+        elif "standing-instructions" in label:
+            print(f"\n❌ standing-instructions gate failed (exit {r.returncode}) — a standing doc is unreachable from GOOD-MORNING/_RUNBOOKS, or GOOD-MORNING has lost part of its structure. A rule nothing points to will not survive the next cold session.")
             rc = rc or r.returncode
         elif "rules index" in label:
             print(f"\n❌ rules-index gate failed (exit {r.returncode}) — duplicate/missing/malformed rule IDs in guidelines/")

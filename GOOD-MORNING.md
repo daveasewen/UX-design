@@ -87,7 +87,7 @@ _LIVE-STATE.md        LIVE / DEAD / OPEN — read second, always
 
 ## The one command that matters
 ```
-python3 knowledge/_build_all.py     # 28 steps, all gates, exits non-zero on any failure
+python3 knowledge/_build_all.py     # 29 steps, all gates, exits non-zero on any failure
 ```
 Gates: a11y · contrast · state-contrast · icon-source · coverage · integrity · rules-index ·
 **DEF-003** no-JS-motion · **DEF-004** no-hardcoded-styling · **DEF-005** 4px grid · pro-forma · DataViz ·
@@ -121,7 +121,8 @@ it would red the build until the 721 rebinds land.
 - **Ask what Dave valued in prior work BEFORE proposing mine-vs-fresh.** Change-by-change; this cost a reverted T6.
 - **Decision-heavy or material-referring choices ship as a review-template HTML** (`_make_review.py`), not as
   `AskUserQuestion` — that tool is for simple questions only.
-- **Log rulings in the per-pillar `_<PILLAR>-DECISIONS.md` ledger**, with the WHY, so iterative feedback survives.
+- **Log rulings in the per-pillar decisions ledger**, with the WHY, so iterative feedback survives —
+  `_proforma/_TYPE-DECISIONS.md` and `_proforma/_DATAVIZ-DECISIONS.md` today; one per pillar as they appear.
 - **Surface spin-off candidates mid-chat** — reusable tools worth generalising; register in `_LIVE-STATE`.
 - **Suggest reflection checkpoints**; run the capture ritual unasked at session end.
 
