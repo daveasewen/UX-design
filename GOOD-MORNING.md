@@ -125,6 +125,11 @@ it would red the build until the 721 rebinds land.
   `_proforma/_TYPE-DECISIONS.md` and `_proforma/_DATAVIZ-DECISIONS.md` today; one per pillar as they appear.
 - **Surface spin-off candidates mid-chat** — reusable tools worth generalising; register in `_LIVE-STATE`.
 - **Suggest reflection checkpoints**; run the capture ritual unasked at session end.
+- **Memory is NOT backed up.** It lives outside the repo (),
+  is invisible to the shell and every gate, and dies with the Cowork space. **Memory is an accelerator; the repo is
+  the record.** Mirror instructions: `knowledge/_agent-memory/README.md` — Dave's one rsync, worth running whenever
+  memories changed.
+
 
 ## The other standing documents
 `AGENTS.md` (repo agent contract, git split, supersession) · `MODEL-ROUTING.md` (which model for which work) ·

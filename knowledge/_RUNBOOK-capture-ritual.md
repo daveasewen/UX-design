@@ -49,6 +49,12 @@ only for pure Q&A sessions that touched nothing. If in doubt, run it; it's cheap
    memory. `_validate_standing_instructions.py` enforces reachability **repo-side only**; nothing can
    check that a memory-only rule was ever mirrored, which makes this step the weakest link in the chain
    and the one to do deliberately rather than at speed.
+
+   **If memories changed this session, flag the mirror to Dave.** The agent cannot copy the memory
+   directory (shell can't reach outside the connected folder; `Glob` refuses application-internal paths).
+   It is Dave's one command, and it is in `knowledge/_agent-memory/README.md`. Say so explicitly at
+   handoff rather than assuming he remembers — 95 memories currently sit in one un-backed-up directory
+   keyed to a single Cowork space UUID.
 4. **Record decision nodes with supersession discipline.** Any new ruling gets logged where decisions
    live (ADR, charter section, or `_LIVE-STATE`), cross-linked both ways, seeded as `unaudited`
    per the decision-audit method (`_RUNBOOK-decision-audit.md`) — never self-promoted to `vouched`.
