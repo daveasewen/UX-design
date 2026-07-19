@@ -68,6 +68,11 @@ A **governed design-system engine**: canon (tokens + gated components) + criteri
   **push through GitHub Desktop only** — never push from the terminal (it hangs
   on credentials), never commit in Desktop, keep Desktop closed during commits.
   One tool on the auth layer. (Supersedes the 07-02 terminal-only push ruling.)
+- **Parallel sessions (RULED 2026-07-19):** when >1 session is live, exactly ONE is the
+  **CONDUCTOR** that writes the handoff files (`GOOD-MORNING`/`_LIVE-STATE`/`MEMORY`/`_FUTURE-STATE`)
+  and commits; the rest are **WORKERS** that make only new files and hand up a receipt (never write
+  handoff files, never rewrite `MEMORY.md`). One live session self-conducts. Full:
+  `knowledge/_RUNBOOK-parallel-conductor.md`.
 - **Supersession discipline (non-negotiable).** Any ruling that changes a definition
   or retires an approach must, in the same pass: (a) **tombstone** every artifact it
   kills — a `⚠️ SUPERSEDED <date> — Superseded-by: <ref>` banner at the top of the file
