@@ -291,8 +291,9 @@ Then spec cell/bar as gated components (**cells need more vertical padding** —
    (list in §B). Correctness; do first of these.
 2. **Plugin-disable pass** — Dave's toggle in Settings › Capabilities (Figma / pdf-viewer / cowork-plugin-mgmt /
    design connectors): the biggest single context-baseline cut.
-3. **Promote the conductor pattern** → `_RUNBOOK-parallel-conductor.md` + an `AGENTS.md` clause (worker vs
-   conductor; never write handoff files as a worker). Do it in a single-session slot (edits shared `AGENTS.md`).
+3. ✅ **DONE — conductor pattern promoted** → `_RUNBOOK-parallel-conductor.md` + `AGENTS.md` clause, now with
+   the **"read good morning"** role trigger (AskUserQuestion Worker/Conductor/Solo; conductor reads workers via
+   `session_info`, zero receipts to paste). Commits `a75b452` + `1efb0aa`.
 4. **Corpus densify = DON'T** (settled — near-dead lever); keep the adversary gate.
 
 ## 5. Carry-overs still open (prior sessions)
@@ -304,5 +305,7 @@ advisory) · multi-size countdown · 🕓 Latin webfont pack (waiting on brand, 
 > `reviews/RAG-LIGHT-FILLS-2026-07-19-v1…v9-LOCKED` (+ `.REVIEW`), `reviews/_rag_light_fills_calc.py`. Shared
 > handoff: `_LIVE-STATE.md`, `_FUTURE-STATE.md`, `GOOD-MORNING.md`. Merged from the parallel session (its main
 > work already in `e7f8b87`): `knowledge/_RUNBOOK-densify-adversarial.md` + `notes/_PARALLEL-SESSIONS-conductor.md`.
-> `_to_delete/_dense_test/` is gitignored — excluded. Build state unchanged (no gated sources). **You push via
-> GitHub Desktop.** **Next session model: Sonnet** (token promotion + component build — enactment, not ruling).
+> `_to_delete/_dense_test/` is gitignored — excluded. Build state unchanged (no gated sources).
+> **Follow-on commits (this session, post-merge — also to push):** `a75b452` (conductor-pattern runbook +
+> `AGENTS.md` clause) · `1efb0aa` ("read good morning" role trigger). **You push via GitHub Desktop.**
+> **Next session model: Sonnet** (token promotion + component build — enactment, not ruling).

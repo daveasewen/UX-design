@@ -51,10 +51,27 @@ only engages at two or more.
 1. **Read the other sessions directly** — `mcp__session_info__list_sessions` → `read_transcript` on
    each worker; distill what each did. This is the DEFAULT (Dave pastes nothing). A written receipt is
    only a fallback if a session isn't readable.
-2. Merge into ONE `GOOD-MORNING` (a §B per session, one shared §C), refresh `_LIVE-STATE`, apply any
-   memory/rule from the receipts.
+2. Merge into ONE `GOOD-MORNING` structured as a **strand menu + per-strand lanes** — never a flat
+   mega-list (see below). Refresh `_LIVE-STATE`, apply any memory/rule from the receipts.
 3. Make ONE commit (follow `_RUNBOOK-git-commit.md` lock dance); hand Dave a paste-ready summary.
 4. Dave pushes via GitHub Desktop only.
+
+## Structuring the merged handoff — N strands, never a mega list
+
+With 2–N parallel sessions, do NOT flatten them into one queue Dave has to wade. Lay `GOOD-MORNING`
+out so he **picks a lane**:
+
+- **§A Orientation** — shared, unchanged (whole-project context; not per-strand).
+- **STRAND MENU** — one line per session: *name · one-line status · its single next action*. This is
+  the chooser; Dave reads it and picks one.
+- **Per-strand LANES** — each session gets its own short, self-contained block (what landed · next
+  action · its commit). A reader takes one lane and ignores the rest.
+- **Shared carry-overs + ONE commit note** at the end.
+
+A strand drops off the menu once its work is done (collapses to a one-line closed note). If a lane
+grows big, graduate it to its own `_handoffs/<strand>.md` and leave just its menu line + link —
+`GOOD-MORNING` stays a thin router. The rule: **a reader should never scroll an unrelated strand to
+find their own.**
 
 ## Guardrails
 
