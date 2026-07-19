@@ -7,15 +7,18 @@
 
 ## ⬛ DO THESE TWO FIRST (10 seconds)
 
-> **RENAME YESTERDAY'S CHAT → `The blast-radius gate, and the Tag atom`** *(it opened to build the
-> binding blast-radius gate — and did, closing open-001 — then the gate's own logic carried the
-> session outward: the h2 landmine defused (radius 25→0), specimen chrome harmonised, and while
-> building the Tag atom you asked for (3 variants × 2 sizes) it surfaced ds-005 — a cross-component
-> descender-clip finding that also hits buttons.)*
+> **RENAME THIS CHAT → `The button-label audit that became a gate`** *(it opened as the ds-005
+> button-label clip audit — a Sonnet-scoped sweep — and the buttons came back CLEAN: `.btn`/`.cta`/`.qbtn`
+> centre their labels and never truncate, so no clip (null result). But the sweep surfaced the real
+> instances elsewhere: 7 truncating labels (Tranche-2/3/4/7/8 + Masthead `.dd-title`/`.navitem-tx`) that
+> DO clip descenders (render-confirmed: "Savings"→"Savin*q*s"). You ruled against a case-by-case patch AND
+> against blanket-CSS — "do it right": a blocking descender-clip GATE, keeping cap-alphabetic as the
+> default. ds-005 GATED + CLOSED; commit `3af1696`.)*
 
-> **TITLE TODAY'S CHAT →** `The button-label clip audit`
-> Next session = ds-005 follow-on (audit `.btn/.cta` labels for the same clip) + the remaining §2
-> small picks. **Sonnet** for the audit sweep; **Opus** if a real ruling surfaces. Per §C.
+> **TITLE TODAY'S CHAT →** `Clearing the small-picks desk`
+> Next session = the §2 small picks now ds-005 is closed (`.num` 24px rung · `{#dv-017}`(a) ·
+> Tag colour/RAG) + the non-`/1` / DEF-006 batch. **Sonnet** for the batch; **Opus** if a ruling
+> surfaces. Per §C.
 
 *Standing practice: every handoff carries both names — retrospective + forward. Step 4b in
 `_RUNBOOK-capture-ritual.md`.*
@@ -97,12 +100,13 @@ _retired/             reverted/retired work with residual value (incl. the memor
 
 ## The one command that matters
 ```
-python3 knowledge/_build_all.py     # 31 steps, all gates, exits non-zero on any failure
+python3 knowledge/_build_all.py     # 34 steps, all gates, exits non-zero on any failure
 ```
-Gates (33 steps): a11y · contrast · state-contrast · icon-source · coverage · integrity · rules-index ·
+Gates (34 steps): a11y · contrast · state-contrast · icon-source · coverage · integrity · rules-index ·
 assertions · standing-instructions · **DEF-003** no-JS-motion · **DEF-004** no-hardcoded-styling ·
-**DEF-005** 4px grid · **type-binding blast-radius** (NEW — guards `canon/type.css`, registry
-`canon/_type-bindings.json`) · pro-forma · DataViz · consult-index + selftest (advisory) ·
+**DEF-005** 4px grid · **type-binding blast-radius** (guards `canon/type.css`, registry
+`canon/_type-bindings.json`) · **descender-clip** (NEW — ds-005; truncating labels must carry
+`text-box-edge:text text`) · pro-forma · DataViz · consult-index + selftest (advisory) ·
 edge-extremity (advisory). **DEF-006 type-composites exists but is NOT wired** (deliberate — see the non-`/1` batch).
 
 ## Rules that actually bite
@@ -118,10 +122,13 @@ edge-extremity (advisory). **DEF-006 type-composites exists but is NOT wired** (
 - **Every selector appended to `canon/type.css` is GLOBAL** (T-D9 binding). New ones must be registered
   in `canon/_type-bindings.json` or the blast-radius gate fails (UNREGISTERED / ESCAPED / UNWAIVED-BARE).
   Run `_validate_type_blast_radius.py --update` for intentional growth, then review the diff.
-- **Label trimming near an icon** (`_DS-IMPROVEMENTS` ds-005): trimmed truncating labels — stacked, no
-  icon → `text-box-edge:text text`; **icon+label control (tag/button/CTA) → `cap alphabetic` + label
-  `overflow:visible`** into the control's slack (clip-safe AND icon-aligned). `text text` next to an
-  icon misaligns it; `cap alphabetic` + label `overflow:hidden` clips descenders. Audit button labels.
+- **Truncating labels clip descenders — GATED** (`_DS-IMPROVEMENTS` ds-005, closed 07-19): any label that
+  truncates (`text-overflow:ellipsis`) MUST carry `text-box-edge:text text`, or the descender-clip gate reds
+  the build. `text text` keeps the ellipsis AND stops the clip; **cap-alphabetic stays the default wherever a
+  label does NOT truncate** — it's the icon-alignment mechanism, not a defect. Short non-truncating icon atoms
+  (tags) use `cap alphabetic` + `overflow:visible`. ⚠️ **The scattered `text text` overrides ARE the fix, not
+  an inconsistency — the gate + its docstring say so; do not "clean them up".** Buttons audited clean (they
+  never truncate).
 - **Icons: real assets only** — render-verify before binding; filenames lie.
 - **4px grid** (DEF-005) · **sentence case** · **square corners in mono** · **red = primary-action
   accent, once per screen** (brand modes) · **weights: five licensed only — 100/300/400/500/700,
@@ -197,82 +204,66 @@ Chrome needs ~17 libs via `apt-get download` → `dpkg -x` → `LD_LIBRARY_PATH`
 
 ---
 
-# §B · THIS SESSION (2026-07-19, "A gate for the blast radius")
+# §B · THIS SESSION (2026-07-19 late, "The button-label audit that became a gate")
 
-**Opened to build the one gate open-001 was waiting for. Built it — then its own logic pulled the
-session through a chain: the gate names a danger, so we defused the biggest instance of it, then the
-next, and building the component you asked for surfaced a fresh cross-component finding.**
+**Opened as the ds-005 follow-on — a Sonnet-scoped sweep to audit `.btn`/`.cta`/`.qbtn` for the descender
+clip. The buttons came back CLEAN. But the sweep found the clip live elsewhere, and your ruling turned a
+recurring one-line patch into a permanent gate.**
 
-## What LANDED (five commits, `fd473d1`→`a7944cb`)
+## What LANDED (one commit, `3af1696`)
 
-- **🔴→✅ The type-binding blast-radius gate — closes open-001.** `_validate_type_blast_radius.py`
-  (blocking, build step 26/33) + registry `canon/_type-bindings.json`. Every selector appended to a
-  global type composite is recorded with its acknowledged blast radius; the gate fails on a new
-  UNREGISTERED selector, an ESCAPED radius, or a new UNWAIVED bare-element. **Day-one-green by design**
-  (your call): current debt registered + waived, not hidden — so it bites new unscoped bindings without
-  a red build on known work. Bite-tested three ways. Ruling: **T-D13** in `_TYPE-DECISIONS.md`.
-- **The `h2` landmine defused — radius 25→0.** The "25-file" bare global `h2` was really a **2-file
-  intentional binding in disguise** (22 files override it; Confirmation is a class). Namespaced to a
-  scoped `.spec-h`; **visual no-op, computed-style verified**.
-- **Specimen chrome harmonised — full strength, no muting** (you ruled out opacity; it dodges the
-  contrast gate). All 9 spec-doc section labels → 12px/opacity-1. 5 files use `.spec-h`; 4 self-contained
-  files keep a local rule (linking canon into them would re-open the blast radius).
-- **⭐ ds-005 logged — a KEEP finding, cross-component.** `cap alphabetic` trim aligns a label to an
-  adjacent icon but **clips descenders under `overflow:hidden`** — the gated **Tags** component renders
-  "Savin*q*s" today. `text text` unclips but misaligns the icon. Fix for icon+label controls: `cap
-  alphabetic` + label `overflow:visible`. Inscribed in `_DS-IMPROVEMENTS` ds-005 + the §A rule; memory
-  `leading-trim-label-decision` extended. **You flagged it hits buttons — hence next session's title.**
-- **The Tag atom, your spec, wired into canon.** 3 variants (dismissible/bordered/plain) × 2 sizes
-  (`.tag`/`.tag--sm`), the live clip fixed, Account-card/List-items confirmed already-conforming. The
-  masthead descriptor `.h .tag` → `.h .subtitle` (it's spec chrome, not a component). Colour/RAG deferred.
+- **Buttons CLEAN — null result.** `.btn`/`.cta`/`.qbtn` centre their labels (`justify-content:center`,
+  no `overflow:hidden` on any label) → they never truncate → no clip. ds-005's "next-most-likely" suspects
+  don't carry the condition. The sheet returned null, as a good instrument should.
+- **The real debt was 7 truncating labels — render-confirmed** (real HSBC cut) that `cap alphabetic` +
+  `overflow:hidden` clips descenders: "Savings"→"Savin*q*s". Instances: Masthead `.dd-title` (live) +
+  `.navitem-tx` (defined-but-unused here — nav labels render as `.menulink`, which don't truncate — fixed
+  defensively), plus `.dp-title`/`.uz-name` (T2), `.sel-value`/`.sel-opt-lbl` (T3), `.crumb-current` (T4),
+  `.navitem-tx` (T7/T8). List-items + canon were already safe.
+- **🔴→✅ New blocking gate `_validate_descender_clip.py` (step 27/34).** Every `text-overflow:ellipsis`
+  label must carry `text-box-edge:text text` (or `overflow:visible`). High-precision — keys off `ellipsis`,
+  so containers + sr-only patterns are ignored. Bite-tested both ways; selftest covers same-rule /
+  comma-group / overflow-visible overrides + container/sr-only exclusion. **All 7 fixed, ZERO waivers.**
+- **Provenance against false-fixing (your explicit ask).** Inline `/* ds-005 */` comments · ds-005
+  GATED+CLOSED in the ledger · gate indexed in consult · and a "these overrides ARE the fix, do not remove"
+  note in the gate docstring **and** the red-build message. A cold session can't quietly revert them.
 
-## What I got wrong (honesty over tidiness)
+## The ruling (yours, this session)
 
-- **I hand-rolled the label trim twice instead of consulting the strategy** — `line-height:1` +
-  `overflow:hidden`, then a half-right `text text` — before reusing the canon `text-box-trim`. You
-  caught both ("we had a strategy for this already"). The **stale-reading failure recurred**: I ran
-  CONSULT for the collision but not for the rendering. ds-005 is the durable outcome; the lesson is
-  consult for the *mechanics* too, not just the decision.
-- I proposed `.h .eyebrow` for the rename — but `.eyebrow` is a live component; it would have recreated
-  the very overload we were removing. Caught by a collision check before renaming.
+- **"do it right — use your suggestion": GATE the condition, don't blanket the CSS.** Blanket `text text`
+  would have undone cap-alphabetic alignment everywhere; the gate enforces the rule only where a label
+  truncates, keeping cap-alphabetic as the default. Logged as the ds-005 decision-tree extension.
 
-## What to watch
+## What I got wrong / watch
 
-- **The Tag atom is wired but not review-gated as a full component** — the variant CSS is in canon; a
-  proper gated-component pass (states, a11y, the `_RUNBOOK-gated-component` checklist) hasn't run on the
-  new variants. Fine for now; flag before it's called "done".
-- ds-005's fix trades away per-label ellipsis (overflow:visible). Acceptable for short atoms; a control
-  needing ellipsis **and** an icon **and** descenders at once is unsolved — noted in ds-005.
+- My first instinct was apply-and-commit; you redirected twice — first to reflect the ellipsis+icon+
+  descender trilemma back before editing (right), then to gate rather than patch (righter). **Lesson: when
+  a fix recurs across files, the durable move is the gate, not the Nth patch.**
+- `.navitem-tx` is defined-but-unused in the demo files — fixed defensively; flag if the side-nav variant
+  gets instantiated for real.
 
 ---
 
 # §C · QUEUE
 
-## 1. 🟠 ds-005 follow-on — audit button labels — **next session**
-The descender-clip finding hits any icon+label control that truncates a label. Confirmed live in Tags
-(now fixed). **Audit `.btn`/`.cta`/`.qbtn` labels for `overflow:hidden` + descenders**; apply the ds-005
-fix where they clip. Bounded sweep — **Sonnet**; **Opus** only if a real ruling surfaces. `_DS-IMPROVEMENTS`
-ds-005 has the decision tree + the gate candidate (a render-time descender-clip check).
-
-## 2. Small picks — yours, no analysis needed
+## 1. Small picks — desk-clear — **next session** (yours, no analysis needed)
 | what | detail |
 |---|---|
-| ~~`.tag` collision~~ | **RESOLVED this session** — 3 variants × 2 sizes; masthead renamed; clip fixed. |
 | **`.num` 24px** | add a Component rung at 24, or snap to 20/32? |
 | **`{#dv-017}`(a)** | the rule permits a palette it also excludes |
 | **Tag colour/RAG** | deferred by you — layer status colour onto the atom when ready. |
 
-## 3. The non-`/1` batch (Sonnet)
+## 2. The non-`/1` batch (Sonnet)
 61 shorthands in snippets + the tranche bulk; things move; DEF-006 stays unwired until it lands.
 
-## 4. Consult protocol — bed it in
-Use it at the top of every design task **including the mechanics, not just the decision** (this session's
-lesson). Paste receipts; grow the lexicon per miss. Promote receipt-check advisory→blocking once trusted.
+## 3. Consult protocol — bed it in
+Use it at the top of every design task **including the mechanics, not just the decision**. Paste receipts;
+grow the lexicon per miss. Promote receipt-check advisory→blocking once trusted.
 
-## 5. 🕓 Waiting on brand — the Latin webfont pack
+## 4. 🕓 Waiting on brand — the Latin webfont pack
 Unchanged: files land in `knowledge/assets/fonts/` + Ultralight scope confirmed. Not yours to chase.
 
-> **COMMIT STATE:** five commits in-sandbox (`fd473d1`, `141e8a0`, `f488c50`, `88a9dd5`, `a7944cb`),
-> locks clear; **you push via GitHub Desktop**. Build green, **33 steps**; DEF-006 unwired by design.
-> **Next session model: Sonnet** (button-label audit is a sweep). Review specimens in `reviews/`
-> (`TAG-COMPONENT`, `TAG-COLLISION`, `SPEC-H-CHROME`) are the session's record.
+> **COMMIT STATE:** work committed in-sandbox at `3af1696` (the gate + 7 fixes); the ritual docs
+> (`_LIVE-STATE`, `GOOD-MORNING`, `_DS-IMPROVEMENTS`, memory) commit next. Locks clear; **you push via
+> GitHub Desktop**. Build green, **34 steps**; DEF-006 unwired by design. **Next session model: Sonnet**
+> (small-picks desk-clear). Session record: `reviews/` + `_DS-IMPROVEMENTS` ds-005 + this handoff.

@@ -17,7 +17,7 @@ narrative, relocated verbatim (how we got here; see its README for the rules + R
 > tripwire ~500 lines. Edits to this file are reachability-relevant — run
 > `python3 knowledge/_validate_standing_instructions.py` (STAND-002) after touching it.
 
-*Last refreshed: **2026-07-19 — "A gate for the blast radius": blast-radius gate built (closes open-001), h2 namespaced, specimen chrome harmonised, ds-005 logged, Tag atom (3 variants × 2 sizes) wired**. Previous: **2026-07-18 late** — R-D4 matting rungs ruled + first RAG role-token promotion. Earlier: **2026-07-18 Fable consolidation** — consolidated
+*Last refreshed: **2026-07-19 late — "The button-label audit that became a gate": ds-005 GATED + CLOSED — new blocking descender-clip gate (`_validate_descender_clip.py`, build step 27/34); 7 truncating labels fixed with ZERO waivers; `.btn`/`.cta`/`.qbtn` audited CLEAN (null result); commit `3af1696`**. Previous: **2026-07-19 — "A gate for the blast radius"**: blast-radius gate built (closes open-001), h2 namespaced, specimen chrome harmonised, ds-005 logged, Tag atom (3 variants × 2 sizes) wired. Earlier: **2026-07-18 late** — R-D4 matting rungs ruled + first RAG role-token promotion. Earlier: **2026-07-18 Fable consolidation** — consolidated
 1104 → ~450 lines per the classification Dave ruled via markup (11 pins) on
 `reviews/CONSOLIDATION-AUDIT-2026-07-18.html`. Nothing deleted: ~580 lines relocated verbatim to
 `_DECISION-HISTORY/`, duplicates reduced to pointers, two entries removed on their own recorded
@@ -239,6 +239,10 @@ ignore a red build.
   variants (dismissible/bordered/plain) × 2 sizes (`.tag`/`.tag--sm`), `.tag--plain` for borderless;
   colour/RAG deferred. Masthead descriptor renamed `.h .tag` → `.h .subtitle` (specimen chrome, not a
   component). Live Tags descender clip fixed via ds-005. Specimen: `reviews/TAG-COMPONENT-2026-07-18`.
+  **ds-005 now GATED + CLOSED (07-19):** `_validate_descender_clip.py` (step 27/34) forces
+  `text-box-edge:text text` on every truncating label; the button follow-on audit found `.btn`/`.cta`/`.qbtn`
+  CLEAN (they never truncate — null result), the real debt was 7 labels in Tranche-2/3/4/7/8 + Masthead
+  `.dd-title`/`.navitem-tx`, all fixed zero-waivers. Removing an override now reds the build.
 - **`.num` at 24px/400** — no Component rung at 24px (ramp: 12/14/16/20/32/40/52). Add or snap?
 - **Family A (reverse on near-black), 12 decls** — held at 500. Re-specimen on a FULL dark surface.
 
