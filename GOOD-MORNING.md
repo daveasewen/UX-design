@@ -17,16 +17,17 @@ whole semantic-grey set into rulings (R-D16) against the new Mono ramp.*
 
 ## ⬛ DO THESE TWO FIRST (10 seconds)
 
-> **RENAME THIS CHAT → `Apollo Mono: the money atom, digital-black as the new #000, and the greys ruled onto the ramp`**
-> *(opened as a components worker, promoted to conductor mid-session; built Amount-display + figure rungs, ruled
-> digital-black the general new #000 and swept 38 components, surfaced all 79 semantic greys and Dave ruled them
-> onto the mono ramp as R-D16, then caught a STAND-002 red build in the capture ritual.)*
+> **RENAME THIS CHAT → `Apollo Mono: R-D16 enacted, snippets styled by tokens, and the three-tier stack (elevation exemplar)`**
+> *(read good-morning solo; enacted R-D16 — greys onto the ramp + 2 a11y carve-outs; built `gen_snippet_tokens.py`
+> so snippets are styled BY the tokens, no hand-sync; Dave ruled the strict THREE-TIER token architecture → wrote
+> `_STANDARDS.md` + `_validate_token_tiers.py` gate + dark-elevation as the exemplar (`surface/raised #1F1F1F`,
+> dialled on a live tuner). Two commits pushed. Then turned composer: scoped Tranche-9 + wrote the T1–T8 tokenize brief.)*
 
-> **TITLE TODAY'S CHAT →** `Enact the Mono grey wiring (R-D16), then OTP/PIN`
-> Everything for R-D16 is ruled and recorded — this is pure enactment: write the Mono grey values into
-> `semantic-colour.json`, **sync the 38 component declarations** to the tokens (like the `#1A1A1A` ground sweep),
-> regenerate `canon.css`, re-gate; annotate `col25-011` with the Mono override. Then the next P1 atom, **OTP/PIN**.
-> **Sonnet** — enactment, not ruling.
+> **TITLE TODAY'S CHAT →** `Tranche 9 · Secure entry — build it token-driven (composer); kick the T1–T8 tokenize worker`
+> Build **T9 · Secure entry** (OTP/PIN, password Show/Hide + strength, memorable-word, re-auth) as the FIRST
+> **token-driven** tranche — it carries a `#token-manifest` + current values (mirror T6's format, add the manifest).
+> In parallel kick the worker brief `notes/_BRIEF-tranche-tokenize-T1-T8.md`. First ruling owed: the **mono
+> primary-action token** (`action/primary/*`) — no token exists for the near-black primary button. **Opus** (build + ruling).
 
 *Standing practice: every handoff carries both names — retrospective + forward. Step 4b in
 `_RUNBOOK-capture-ritual.md`.*
@@ -174,91 +175,79 @@ TTFs to `~/.fonts` + `fc-cache -f`; CSS `font-family:"HSBC_MtUnivers_Latin"`. Fu
 
 ---
 
-# §B · THIS SESSION (2026-07-19, "Apollo Mono: the money atom, digital-black as the new #000, and the greys ruled onto the ramp")
+# §B · THIS SESSION (2026-07-19 afternoon, "R-D16 enacted, snippets styled by tokens, three-tier stack")
 
-## What LANDED (this session)
-- **✅ `Amount-display` — first P1 money atom, BUILT + gated.** Money-format primitive (currency-before-no-space
-  copy-025, tabular figures, U+2212 sign, redacted state); snippet + meta + review; monochrome (colour deferred).
-  Added figure rungs **`.t-cm-figure-4/5/6`** (32/16/14, tabular); atom fully composite-bound (no raw font). COMMITTED.
-- **★ "Digital black `#1A1A1A` is the new `#000`" (Dave) — GENERAL, not just reverse-text.** Swept all 38 components'
-  dark grounds + `background/default` dark → `#1A1A1A` (shadows/overlays stay pure `#000`). COMMITTED. `#1A1A1A`=`mono/4`.
-- **★ R-D16 — every semantic grey RULED onto `color/mono/*`** (sheet `reviews/APOLLO-MONO-SEMANTIC-GREYS-2026-07-19-v1`):
-  text ink→`mono/4 #1A1A1A` (**SUPERSEDES `col25-011`** for Mono; Grey-8=Legacy) · **DROP** secondary text grey
-  (hierarchy=weight/size) · `#767676`→`mono/8` · tinted `#D7D8D6`→`mono/12` · mechanical maps approved. **RULED,
-  enactment PENDING (Sonnet — §C1).** CONSULT surfaced col25-011 (didn't retread the binned-sheet mistake).
-- **✅ STAND-002 red build CAUGHT + FIXED.** The prior GOOD-MORNING rewrite dropped the standing-docs reachability
-  list → 5 docs orphaned → build committed red. Restored the list in §A; build green. The gate did its job.
-- Dossier: `_DECISION-HISTORY/2026-07-19-amount-display-and-mono-greys.md` (the why/how).
-
-## Same-day PRIOR strand (already committed + pushed — context)
-- **✅ RAG fills PROMOTED** to `semantic-colour.json` `*-background` + `canon.css`: light `#5DAC7B`/`#7DABCD`,
-  dark `#43AD6F`/`#5F92B9`, breach `#B92F1E` mode-stable, watch `#F0B13A`. `rag/text` polarity enacted via the
-  existing `RULED_PAIR_EXCLUSIONS` (white×green/blue forbidden, like amber). **Components NOT rebound** — they
-  render RAG as dots (glyphs, R-D6 fine) + chips (tints); `-background` fills await the §1 manifestation pick.
-- **★ FOUR-THEME ARCHITECTURE inscribed — R-D15.** One token store, one baseline library, 4 themes
-  (Legacy/Mono/Console/Supercharge). Baseline = **Apollo Mono, "very mono"** (colour only in RAG + data-vis).
-  Legacy carries teals + brand `grey/100–800`. Closed a memory-only-inscription gap (memory had R-D15, ledger
-  didn't). Ledger `_proforma/_RAG-DECISIONS.md`; memory `four-theme-architecture`.
-- **★ Apollo Mono grey ramp = `color/mono/1…15`.** Dual-end brightness curve (γ=1.7, 15 stable index steps),
-  packing resolution to both ends, thinning mid-greys; `#1A1A1A` = `mono/4`. Dave dialled it live on the tuner
-  `reviews/APOLLO-MONO-GREY-CURVE-2026-07-19-v2.html`. In `colour.json` + canon; build green.
-- **✅ `gen_rules_index` truncation FIXED** (the `chunk[:500]` cap) — full rule text now flows to
-  `_RECONCILIATION.md` + `_consult.py` (icon-015 was losing ~2300 chars). Worker-verified.
-- **Grey-tint standing check** banked (memory `feedback-grey-tint-check`).
+## What LANDED (this session — TWO commits, both pushed)
+- **✅ R-D16 ENACTED — commit `dba719b`, pushed.** 90 semantic greys re-based onto `color/mono/*` (text ink
+  `#1A1A1A`, secondary collapsed to the single ink, mechanical dark greys); `$alias` repointed to `color/mono/N`.
+  **★ TWO a11y carve-outs the contrast gate FORCED** (provenance `_proforma/_RAG-DECISIONS.md` R-D16 — do NOT
+  revert to nearest-step): dark borders/dividers → `mono/8 #808080` (`mono/7` = 2.76:1 on the `#1A1A1A` ground);
+  text-bearing pressed fills → `mono/7 #626262` (white label on `mono/8` = 3.95). Residual `#333` UI → `#1A1A1A`;
+  `text/on-inverse` + 6 data-vis greys LEFT. `col25-011` annotated.
+- **★ `gen_snippet_tokens.py` (NEW) — snippets are STYLED BY the tokens** (Dave: "the snippets need to be styled by
+  the tokens"). Projects `semantic-colour.json` → each snippet's `[data-theme]` blocks + `canon.css .cn-*` via the
+  snippet's own `#token-manifest`. Idempotent, self-verifying, `driftAllow`-aware, fails loud. No more hand-sync.
+- **★★ THREE-TIER TOKEN ARCHITECTURE RULED (Dave) — component → semantic → primitive; a component NEVER references
+  a primitive.** NEW standing hub **`_STANDARDS.md`** (§1) + ADR `_DECISION-HISTORY/2026-07-19-token-tier-architecture.md`
+  + memory `token-tier-architecture`. Storage: `$alias` = source of truth, `$value` = gate-verified cache. NEW
+  blocking gate **`_validate_token_tiers.py`** (component→semantic + `$value == resolve($alias)`), wired in (now 35 steps).
+- **★ Dark elevation = the 3-tier reference example — commit `e69b75f`, pushed.** Primitives `color/mono/raise-1/2/3`
+  = `#1F1F1F / #232323 / #272727` (Dave dialled on the **v2 live tuner**) → semantic `surface/raised`, `surface/subtle`,
+  `surface/raised-hover` → the 9 surface components R-D16 flattened onto the ground. Press recedes to ground (valid).
+  `gen_canon_tokens.py` emits the real `var()` chain.
+- **Live-controller preference banked** (memory `feedback-live-controller`): for feel-dials default to a slider tuner.
 
 ## What I got wrong / watch
-- **Retread a settled ruling.** Built a whole review sheet to "decide" the RAG text/glyph model — but R-D6 +
-  `type26-013` + R-D12 B already governed it. Skipped CONSULT. Dave: *"the decision is made already… read
-  deeper, i don't want to retread old footsteps."* Sheet binned (`_to_delete/binned-review-docs/`). **Lesson:
-  CONSULT first, every time.**
-- **Over-checkpointed early**, then course-corrected. Dave wants momentum; reflect-back should be tight.
+- **Mis-called `gen_canon_tokens.py` "orphaned"** — it's in `canon/`, I looked in `knowledge/`. Corrected. Verify a
+  path before declaring something missing.
+- **Nearly over-deferred the component work** (kept doing foundations); Dave rightly pushed to build. Momentum.
+- **Fuel gauge UNDER-reads:** the Haiku reading said GREEN 23.5% but the transcript export compacts tool results (a
+  single file read this session was bigger than the whole transcript it counted) → treat as a floor; real fill is
+  higher (low-mid amber). Candidate fix: gauge from something closer to the live window.
 
-## Merged from the two workers (receipts in `notes/_receipts/`)
-- **rules-index worker:** the truncation fix (verified) + hardened `_RUNBOOK-git-commit.md` (step 0.5) &
-  `_RUNBOOK-parallel-conductor.md` (step 2.5) with the `notes/_receipts/` convention + `_HOW-TO-RUN-SESSIONS.md`.
-- **components-expansion worker:** rebound **all 38 components' dark grounds to `#1A1A1A`**, added money number
-  styles (14/16), and built the new **`Amount-display`** component (meta + snippet + review). Build green.
-  **★ Large change — eyeball the diff before pushing** (worker flagged it "to review when fresh").
+## Composer setup (session tail — turned conductor at Dave's "you're the boss now")
+- **Tranche 9 · Secure entry & verification PICKED** (OTP/PIN, password Show/Hide + strength, memorable-word,
+  re-auth). Icons verified in the sprite (`security-password/secure-key/secure/face/digital-identity`); password
+  toggle = **"Show/Hide" text** (no eye glyph — more device-agnostic, tov-038). NOT built (queued §C1).
+- **Worker brief WRITTEN:** `notes/_BRIEF-tranche-tokenize-T1-T8.md` — the 8 tranches hardcode pre-R-D16 values with
+  no manifest (drifted); tokenize them (add `#token-manifest`, project via `gen_snippet_tokens`, gate, receipt).
+  Worktree-isolated, **no-commit**, receipt for the composer to reconcile.
 
 ---
 
 # §C · QUEUE
 
-## 1. ★ ENACT R-D16 — the Mono greys onto the ramp (Sonnet, next real deliverable — RULED, just execute)
-The rulings are made (**R-D16**, ledger `_proforma/_RAG-DECISIONS.md`); this is pure enactment. Steps:
-(1) write the Mono grey values into `tokens/semantic-colour.json` — text ink `#1A1A1A`, **drop** secondary
-(collapse to ink), `#767676`→`#808080`, `#D7D8D6`→`#E1E1E1`, mechanical maps (`#1D1D1D`→`#1A1A1A`, `#EDEDED`→`#F0F0F0`,
-`#707070`→`#626262`, `#404040`→`#484848`, `#9B9B9B`→`#9D9D9D`, …); (2) **sync the 38 component declarations to the
-tokens** (same shape as the `#1A1A1A` ground sweep — change the declared hex, or the gate drifts); (3) regen
-`canon.css`; (4) re-gate. (5) **Propagation owed:** annotate `col25-011` / `guidelines/colour-usage.md` with the
-Mono override (text = `#1A1A1A`; Grey-8 = Legacy). ⚠️ Dropping secondary makes muted text full-ink — a visible
-change; that's the ruling. Sheet + `reviews/gen_mono_grey_sheet.py` carry the full table.
+## 1. ★ BUILD Tranche-9 · Secure entry (composer, next real deliverable)
+The **first token-driven tranche**: carries a `#token-manifest` + the CURRENT token values (mirror T6's format —
+`_proforma/Tranche-6-interactive.html` — but add the manifest so it's projectable, per `_STANDARDS.md` §4).
+Components: **OTP/PIN** (segmented numeric boxes, auto-advance, paste, error/complete) · **password** (Show/Hide
+text toggle + strength meter) · **memorable-word / security field** · **re-auth prompt**. Real sprite icons only.
+Monochrome; the one hue is the RAG error state (like T1's amount-input error). Gate green.
 
-## 2. §1 RAG manifestation pick, then the status-component build (Sonnet)
-Decision sheet built earlier (`reviews/RAG-STATUS-MANIFESTATION-2026-07-19-v1`): dot+label (canon) · filled
-cell/badge · bar. Awaiting Dave's pick. Only the filled-cell manifestation consumes the new `-background` fills;
-that's when the component rebind happens. Then spec cell/bar as gated components (cells need more vertical
-padding, R-D11 note).
+## 2. ★ KICK the T1–T8 tokenize worker
+Brief: `notes/_BRIEF-tranche-tokenize-T1-T8.md`. Worktree-isolated subagent (values are ruled → mechanical +
+flagged). It files a receipt in `notes/_receipts/`; composer reconciles the worktree + commits (git-commit runbook
+step 0.5 — account for every dirty path, never blind `git add -A` with a worker live).
 
-## 3. Gates owed
-- **Amber rules gate** (rules 1+2 still unenforced). · **Component RAG rebind** behind the blast-radius gate
-  (waits on the manifestation pick).
+## 3. ★ RULING owed — the mono PRIMARY-ACTION token (surfaced by the tranche work)
+The near-black primary button (`--pri/--pri-h/--pri-lbl` in the tranches) has **no semantic token** — likely needs
+new `action/primary/*` tokens. Also the ambiguous tranche vars (`--disi`, `--line2`, `--surf`, `--scrim`,
+`--shadow`) flagged in the brief for a binding decision.
 
-## 4. Parked (`_FUTURE-STATE`)
-Broader colour/theming build (Console + Supercharge palettes; the 4-theme toggle machinery) — "deal with colours
-later." · **Apollo Labs** (the grey-ramp + OKLCh tuners → Layer-2 in-browser controls). · Bulk type-binding for
-~338 elements · compliance edges (27 unverified `verified_by`, advisory) · 🕓 Latin webfont (waiting on brand).
+## 4. Deferred store migration + latent bugs
+The REST of the store is still 2-tier (components alias primitives) — migrate onto proper tiers deliberately
+(elevation proved the pattern). `_validate_token_tiers` **advisory** lists **4 legacy alias bugs** to fix:
+`border/strong`, `form/border/default`, `form/border/pressed` (dark) → alias should be `color/mono/8`;
+`primary/border/hover` (dark).
 
-## 5. After R-D16 — the next P1 atom
-**OTP/PIN entry** is next on the P1 foundations list (the banking-auth atom generic systems lack). The
-38-component `#1A1A1A` ground sweep is already committed + pushed; a fresh-eyes glance at it in the diff is still
-worth it.
+## 5. Carry-forward (still open, pre-today) + memory
+§1 RAG manifestation pick + status-component build · amber rules gate · component RAG rebind (blast-radius). Parked
+(`_FUTURE-STATE`): broader colour/theming, Apollo Labs tuners, bulk type-binding, compliance edges, Latin webfont.
+**Memory index compaction is DUE** (~19.6KB; the hook flagged it) — run it early next session or in the ritual.
 
-> **COMMIT STATE — this chat's commit.** *(The prior 3-strand conductor commit — RAG fills, R-D15, mono ramp,
-> Amount-display, the 38-component `#1A1A1A` sweep — is ALREADY committed + pushed.)* **This commit (docs +
-> review only, NO gated-code change — build GREEN 34/34):** `_proforma/_RAG-DECISIONS.md` (R-D16),
-> `reviews/APOLLO-MONO-SEMANTIC-GREYS-2026-07-19-v1.html` + `.REVIEW.html` + `reviews/gen_mono_grey_sheet.py`,
-> `_DECISION-HISTORY/2026-07-19-amount-display-and-mono-greys.md`, `_LIVE-STATE.md`, `GOOD-MORNING.md` (incl. the
-> **STAND-002 FIX** — restored the standing-docs reachability list the prior rewrite dropped). No token/snippet
-> edits here — R-D16 is ruled, not yet enacted. **You push via GitHub Desktop.**
-> **Next session model: Sonnet** (enact R-D16, then OTP/PIN).
+> **COMMIT STATE.** **TWO commits this session, BOTH pushed by Dave:** `dba719b` (R-D16 enacted + snippets styled by
+> tokens + `gen_snippet_tokens.py`) and `e69b75f` (three-tier token architecture + `_STANDARDS.md` + elevation
+> exemplar + `_validate_token_tiers.py`). **THIS wrap commit (docs/handoff only, build GREEN 35/35):**
+> `notes/_BRIEF-tranche-tokenize-T1-T8.md`, `_LIVE-STATE.md`, `GOOD-MORNING.md` (+ memory files, outside the repo).
+> No gated-code change. **You push via GitHub Desktop.**
+> **Next session model: Opus** (T9 build + the mono-primary ruling); the tokenize worker can be Sonnet.

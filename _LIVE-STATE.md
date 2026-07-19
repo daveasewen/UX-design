@@ -11,6 +11,15 @@ mis-dated itself a day forward; commit timestamps caught it).*
 half of the state machine, Dave's ask 2026-07-18) · **`_DECISION-HISTORY/`** — dated per-thread
 narrative, relocated verbatim (how we got here; see its README for the rules + RESURRECT tags).*
 
+## ⏱ LATEST DELTA — 2026-07-19 PM (this session; two commits pushed: `dba719b`, `e69b75f`)
+- **LIVE:** R-D16 **ENACTED** — semantic greys seated on `color/mono/*`; two a11y carve-outs (dark borders `mono/8 #808080`, text-bearing pressed fills `mono/7 #626262`) — **do NOT revert to nearest-step** (provenance `_proforma/_RAG-DECISIONS.md` R-D16).
+- **LIVE:** snippets are **STYLED BY the tokens** — `knowledge/gen_snippet_tokens.py` projects the store into snippet `[data-theme]` blocks + `canon.css .cn-*` via each `#token-manifest`. Run it after any token change; the old hand-sync step is **DEAD**.
+- **LIVE / NEW STANDARD:** strict **three-tier token stack** — primitive → semantic → component; a component **NEVER references a primitive**. Home `_STANDARDS.md` (§1, standing/gated); gate `_validate_token_tiers.py`; `$alias`=source of truth, `$value`=gate-verified cache.
+- **LIVE:** dark-elevation tokens `color/mono/raise-1/2/3` (`#1F1F1F / #232323 / #272727`) → semantic `surface/raised | subtle | raised-hover` → the 9 flattened surface components (the 3-tier **reference example**).
+- **OPEN / RULING OWED:** the mono **primary-action** colour has **no semantic token** (`action/primary/*` likely) — surfaced by the tranche work.
+- **OPEN / TARGET:** **Tranche-9 · Secure entry** PICKED, not built (GOOD-MORNING §C1). Worker brief to **tokenize T1–T8** (drifted, still 2-tier) at `notes/_BRIEF-tranche-tokenize-T1-T8.md`.
+- **OPEN:** rest of the store still 2-tier → deferred migration; 4 legacy alias bugs (advisory in `_validate_token_tiers`).
+
 > **SPINE DISCIPLINE (ruled 2026-07-18, Fable consolidation session — supersedes the "1044 lines"
 > banner):** state lines live here; **narrative longer than ~10 lines goes to `_DECISION-HISTORY/` at
 > write time, in the same pass.** Split entries end `History: _DECISION-HISTORY/<file>`. Advisory
