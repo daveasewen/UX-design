@@ -131,3 +131,41 @@ resolved later the same session, and a further correction surfaced:*
   colour-set on BOTH grounds before calling it mode-stable.*
 - **Process:** the narrative dossier itself became a **closing-ritual step (1b)** this session, and the idea of
   wiring dossiers into the decision graph (why/how node-set) was registered (`_FUTURE-STATE`).
+
+---
+
+## SESSION 3 (2026-07-19, later — "RAG light fills: proving per-mode, and a tuner") — marked continuation
+
+*Separate session, appended not merged (archive rule). This is the LIGHT-fill pass R-D11 parked. Ledger: R-D12…R-D14.*
+
+**The arc, and the WHY behind each move:**
+
+1. **The salience metric inverts on white — a real method finding.** Reconstructed the R-D9 salience metric
+   (mean OKLab dist of fill+text from page) into `reviews/_rag_light_fills_calc.py`. On white it MIS-RANKS: white
+   text sits at zero distance from a white page, so it penalises the very cell (breach) that should shout. ⇒ on
+   white, order the ramp by **fill-vs-page + chroma**, not the dark-page salience metric. The metric is
+   ground-shaped, not universal.
+2. **Amber is the structural blocker — then it isn't.** Amber's identity is lightness, so on white it can't hold a
+   fill boundary (1.90) without a border or going brown (R-D3-barred). I built v1/v2 around solving that. **Dave
+   killed borders** (*"cant have lines its not part of the aesthetic"* — R-D12 A) and **corrected me on amber**:
+   *"amber is fine, it has a label that carries the meaning… we've ruled on this already."* That is R-D6 Ruling A,
+   which I'd walked past — the **stale-reading failure mode** the CONSULT step exists to prevent. The deeper reframe
+   (Dave: *"its not just about the colour"*): a status cell is a **labelled component**, so fill contrast is a
+   **salience/scan lever, not an accessibility floor** — the floor is the label. This reframed everything after.
+3. **Black text on the states (R-D12 B)** — Dave: *"black text… reinforces the salience"* (red loud/white, states
+   calm/black). Forced green/blue lighter (the R-D4 values were too dark for black text, < AA).
+4. **The tuning spiral, and the tuner.** Green "pop"→desaturate, blue purple→lighter→"toward true blue". After
+   several round-trips Dave asked for *"a saturation slider, make it wide so i can fine tune"* → built an in-browser
+   **OKLCh tuner** (v6), then a **two-mode tuner** (v7) when he said *"we need to adjust on dark too."* Ramp-guard
+   reds if green ≤ blue on that ground. Lesson: past a couple of colour round-trips, **give the eye a live control**
+   — it's faster and it's a reusable artefact (→ Apollo Labs).
+5. **Per-mode PROVEN, not asserted.** Dave floated a mode-stable pair (#5EAE7C/#5898C6); it inverted on white. Then
+   *"I want blue… same hue [as dark], changed my mind from the purple."* An exhaustive pair search settled it:
+   **the instant green leads blue on white, blue leads on dark** — "louder" is darker on white but lighter on dark,
+   so green can't lead on both. R-D11's per-mode claim is now a proof, not a lean.
+6. **Locked (R-D14):** light green `#5DAC7B` / blue `#7DABCD` (H241, Option C); dark held at R-D10 (Option C's green
+   came down to L0.68 ≈ dark's L0.67, so the modes harmonise without re-cutting dark). Red/amber mode-stable.
+   Next: token promotion (Sonnet, blast-radius gate).
+
+**Meta-lesson repeated from Session 1's tail:** *prove a colour set on BOTH grounds* — this time we did, and it
+turned an assertion into a proof. And: **check the ruling before designing a solution** (amber, again).

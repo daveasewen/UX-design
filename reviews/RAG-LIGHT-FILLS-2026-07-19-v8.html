@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RAG light fills v8 — blue re-hued to match dark (no purple) · 2026-07-19</title>
+<style>
+  :root{
+    --uf:"Univers Next HSBC","HSBC_MtUnivers_Latin","Helvetica Neue",Arial,sans-serif;
+    --pg:#fff; --tx:#111; --mut:#5b6770; --ln:#e6e8ea; --sf:#f6f7f8; --accent:#db0011;
+    --d-red:#B92F1E; --d-amber:#F0B13A; --d-green:#43AD6F; --d-blue:#5F92B9; --muted:#767676;
+  }
+  body.dark{ --pg:#1A1A1A; --tx:#f2f2f2; --mut:#9aa4ad; --ln:#2c2c2c; --sf:#212121; }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:var(--uf); color:var(--tx); background:var(--pg); line-height:1.45; max-width:1000px; margin:0 auto; padding:0 40px 150px; transition:background .16s,color .16s;}
+  :is(button,a,span,small,b,i,th,td,li,figcaption,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+  .docbar{position:sticky; top:0; z-index:50; display:flex; gap:18px; align-items:center; flex-wrap:wrap; background:var(--pg); border-bottom:1px solid var(--ln); padding:12px 0; margin-bottom:26px;}
+  .docbar button{font:inherit; font-size:12px; padding:7px 12px; border:1px solid var(--tx); background:transparent; color:var(--tx); cursor:pointer;}
+  .docbar .grp{display:flex; gap:8px; align-items:center; font-size:12px; color:var(--mut);}
+  .docbar .rd{font-variant-numeric:tabular-nums; font-weight:500; color:var(--tx); min-width:52px;}
+  .eyebrow{font-size:12px; font-weight:500; color:var(--accent); margin-bottom:6px;}
+  h1{font-size:30px; font-weight:300; line-height:1.12; margin-bottom:10px;}
+  .lede{font-size:15px; color:var(--mut); max-width:80ch; margin-bottom:6px;} .lede b{color:var(--tx); font-weight:500;}
+  .meta{font-size:12px; color:var(--mut); margin-bottom:8px;}
+  h3.section{font-size:11px; font-weight:600; letter-spacing:.06em; border-top:2px solid var(--tx); padding-top:8px; margin:40px 0 8px; text-transform:uppercase;}
+  .note{font-size:13px; max-width:84ch; margin:8px 0 14px;} .note b{font-weight:600;} .muted{color:var(--mut);}
+  code{font-family:ui-monospace,Menlo,monospace; font-size:.85em; background:var(--sf); padding:1px 5px;}
+  .card{border:1px solid var(--ln); border-radius:5px; padding:18px 20px; margin:14px 0; max-width:940px;}
+  .card.pick{border-color:#1a8a52; box-shadow:0 0 0 1px #1a8a52 inset;}
+  .card h4{font-size:14px; margin-bottom:4px;}
+  .card h4 .badge{font-size:10px; border-radius:2px; padding:1px 6px; margin-left:8px; letter-spacing:.03em; color:#1a8a52; border:1px solid #1a8a52;}
+  body.dark .card h4 .badge{color:#7fd6a0; border-color:#7fd6a0;}
+  .card .desc{font-size:12.5px; color:var(--mut); margin-bottom:14px; max-width:84ch;}
+  table.rag{border-collapse:collapse; font-size:12.5px; width:100%; max-width:520px;}
+  table.rag th{text-align:left; color:var(--mut); font-size:11px; font-weight:600; padding:5px 10px; border-bottom:1px solid var(--ln);}
+  table.rag td{padding:7px 10px; border-bottom:1px solid var(--ln); font-variant-numeric:tabular-nums;}
+  .cell{display:inline-block; min-width:82px; text-align:center; padding:6px 12px; font-size:11px; font-weight:500; border-radius:2px;}
+  .strip{display:flex; gap:0; max-width:520px; margin-top:14px; border:1px solid var(--ln);}
+  .strip .cell{flex:1; min-width:0; border-radius:0; padding:11px 4px;}
+  .cred{background:#B92F1E;color:#fff;} .camb{background:#F0B13A;color:#000;}
+  body.dark .cred{background:var(--d-red);} body.dark .camb{background:var(--d-amber);}
+  /* option greens/blues (light); collapse to R-D10 in dark */
+  .a .cgrn{background:#55A674;color:#000;} .a .cblu{background:#7DABCD;color:#000;}
+  .b .cgrn{background:#4CA871;color:#000;} .b .cblu{background:#86B1D0;color:#000;}
+  .c .cgrn{background:#5DAC7B;color:#000;} .c .cblu{background:#7DABCD;color:#000;}
+  body.dark .cgrn{background:var(--d-green);color:#000;} body.dark .cblu{background:var(--d-blue);color:#000;}
+  .nums{font-size:11px; color:var(--mut); margin-top:12px; font-variant-numeric:tabular-nums; max-width:84ch;} .nums b{color:var(--tx); font-weight:500;}
+  .decision{border:1px solid var(--ln); border-left:3px solid var(--tx); padding:18px 20px; margin:20px 0; max-width:940px; background:var(--sf);}
+  .decision h5{font-size:13px; font-weight:600; margin-bottom:10px;} .opt{font-size:13px;margin:8px 0;} .opt b{font-weight:600;}
+  .rec{background:#fff8e6; color:#3a2f00; border:1px solid #f0d78a; padding:11px 14px; font-size:13px; margin:12px 0 4px;}
+  body.dark .rec{background:#2a2410; color:#f0e2b0; border-color:#5c4d17;}
+  .call{font-size:13px; font-weight:600; margin-top:12px;}
+  .prov{font-size:11px; color:var(--mut); border-top:1px solid var(--ln); margin-top:40px; padding-top:12px; max-width:940px;}
+</style>
+</head>
+<body>
+  <div class="docbar">
+    <button type="button" id="theme">◐ Light / dark</button>
+    <div class="grp">Responsive width <input type="range" id="vw" min="360" max="1000" value="1000" step="20"> <span class="rd" id="vwr">full</span></div>
+    <span class="muted" style="font-size:11px">this is the WHITE correction; toggle dark to see it collapse to R-D10 (dark stays per-mode)</span>
+  </div>
+
+  <div class="eyebrow">Apollo · RAG status · light fills v8 (R-D12)</div>
+  <h1>Blue re-hued to match dark — correcting green + blue on white</h1>
+  <p class="lede">You dropped the purple: light blue now takes the <b>dark blue's hue (H241)</b>. On white that forces a small
+     correction, because green has to out-contrast blue against the page and <b>one lever does it</b> — green sits a touch
+     <b>darker</b> (more presence), blue goes <b>lighter and calmer</b> (recedes). Three pairs below, all blue H241, all black text.</p>
+  <p class="meta">Decision · 2026-07-19 · blue H241 (was H266 purple) · derivation <code>reviews/_rag_light_fills_calc.py</code></p>
+
+  <p class="note"><b>Why these are light-only.</b> I searched every pair: the moment green leads blue on <i>white</i>, blue leads green
+     on <i>dark</i> — because "louder" means darker on white but lighter on dark, and green can't be both. So there's no single
+     mode-stable green/blue that keeps healthy › info on both grounds. These are the <b>light</b> values; dark keeps its own
+     (the v7 dark tuner / R-D10). Red + amber stay mode-stable.</p>
+
+  <h3 class="section">Option A · balanced <span style="font-weight:400;color:var(--mut);font-size:11px">— my steer</span></h3>
+  <div class="card pick a">
+    <h4>Green <code>#55A674</code> · Blue <code>#7DABCD</code> <span class="badge">STEER</span></h4>
+    <p class="desc">Green with real presence (mid-tone, readable), blue clearly calmer and hue-matched. Comfortable margin.</p>
+    <table class="rag"><thead><tr><th>Counterparty</th><th>Util.</th><th>Status</th></tr></thead><tbody>
+      <tr><td>Trbovlje AG</td><td>103%</td><td><span class="cell cred">Breach</span></td></tr>
+      <tr><td>Novara Holdings</td><td>88%</td><td><span class="cell camb">Watch</span></td></tr>
+      <tr><td>Meridian Capital</td><td>62%</td><td><span class="cell cgrn">Healthy</span></td></tr>
+      <tr><td>Sundara Trust</td><td>41%</td><td><span class="cell cblu">Info</span></td></tr>
+    </tbody></table>
+    <div class="strip"><span class="cell cred">Breach</span><span class="cell camb">Watch</span><span class="cell cgrn">Healthy</span><span class="cell cblu">Info</span></div>
+    <p class="nums">fill/white — green <b>2.96</b> › blue <b>2.45</b> (green leads by 0.51 ✓) · labels green <b>7.1</b> / blue <b>8.6</b>.</p>
+  </div>
+
+  <h3 class="section">Option B · more separation</h3>
+  <div class="card b">
+    <h4>Green <code>#4CA871</code> · Blue <code>#86B1D0</code></h4>
+    <p class="desc">Punchier green, airier blue — the widest gap between the two, blue at its most recessive.</p>
+    <table class="rag"><thead><tr><th>Counterparty</th><th>Util.</th><th>Status</th></tr></thead><tbody>
+      <tr><td>Trbovlje AG</td><td>103%</td><td><span class="cell cred">Breach</span></td></tr>
+      <tr><td>Novara Holdings</td><td>88%</td><td><span class="cell camb">Watch</span></td></tr>
+      <tr><td>Meridian Capital</td><td>62%</td><td><span class="cell cgrn">Healthy</span></td></tr>
+      <tr><td>Sundara Trust</td><td>41%</td><td><span class="cell cblu">Info</span></td></tr>
+    </tbody></table>
+    <div class="strip"><span class="cell cred">Breach</span><span class="cell camb">Watch</span><span class="cell cgrn">Healthy</span><span class="cell cblu">Info</span></div>
+    <p class="nums">fill/white — green <b>2.94</b> › blue <b>2.28</b> (leads by 0.66 ✓) · labels green <b>7.2</b> / blue <b>9.2</b>. Blue is very light.</p>
+  </div>
+
+  <h3 class="section">Option C · gentle / closest to your paler green</h3>
+  <div class="card c">
+    <h4>Green <code>#5DAC7B</code> · Blue <code>#7DABCD</code></h4>
+    <p class="desc">Softer, closer to the paler green you'd locked; smaller margin, calmest overall pairing.</p>
+    <table class="rag"><thead><tr><th>Counterparty</th><th>Util.</th><th>Status</th></tr></thead><tbody>
+      <tr><td>Trbovlje AG</td><td>103%</td><td><span class="cell cred">Breach</span></td></tr>
+      <tr><td>Novara Holdings</td><td>88%</td><td><span class="cell camb">Watch</span></td></tr>
+      <tr><td>Meridian Capital</td><td>62%</td><td><span class="cell cgrn">Healthy</span></td></tr>
+      <tr><td>Sundara Trust</td><td>41%</td><td><span class="cell cblu">Info</span></td></tr>
+    </tbody></table>
+    <div class="strip"><span class="cell cred">Breach</span><span class="cell camb">Watch</span><span class="cell cgrn">Healthy</span><span class="cell cblu">Info</span></div>
+    <p class="nums">fill/white — green <b>2.74</b> › blue <b>2.45</b> (leads by 0.29 ✓, tighter) · labels green <b>7.7</b> / blue <b>8.6</b>.</p>
+  </div>
+
+  <div class="decision">
+    <h5>Pick the white pair (blue is H241 in all three)</h5>
+    <p class="opt"><b>A</b> #55A674 / #7DABCD — balanced &nbsp;·&nbsp; <b>B</b> #4CA871 / #86B1D0 — more gap &nbsp;·&nbsp; <b>C</b> #5DAC7B / #7DABCD — gentle</p>
+    <div class="rec"><b>My steer: A.</b> Green reads as a confident green and blue is unmistakably calmer and hue-true; the 0.5 margin
+       keeps healthy › info clear without either shouting. B if you want blue really recessive; C if you want green paler.</div>
+    <p class="call">Pick one and I'll set it as the light pair and drop it into the tuner (blue hue 241) for any last nudge — then reconcile with the dark set.</p>
+  </div>
+
+  <div class="prov">
+    <b>Provenance.</b> Blue hue changed H266→H241 (matches dark blue; drops the purple lean). All three keep green darker than blue on
+     white so healthy › info holds (fill-vs-white); every label ≥ AA (black text). Exhaustive pair search confirms no single green/blue
+     holds the ramp on both grounds → per-mode fills (R-D11). Red <code>#B92F1E</code>/white + amber <code>#F0B13A</code>/black stay
+     mode-stable. No lines (R-D12). Dark green/blue still live in the v7 tuner. Numbers from <code>reviews/_rag_light_fills_calc.py</code>.
+  </div>
+
+  <script>
+    var body=document.body;
+    document.getElementById('theme').addEventListener('click',function(){ body.classList.toggle('dark'); });
+    var vw=document.getElementById('vw'), vwr=document.getElementById('vwr');
+    vw.addEventListener('input',function(){ var v=+vw.value; if(v>=1000){body.style.maxWidth='';vwr.textContent='full';} else {body.style.maxWidth=v+'px';vwr.textContent=v+'px';} });
+  </script>
+</body>
+</html>

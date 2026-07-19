@@ -78,6 +78,14 @@ status (`idea` / `parked` / `resurrection-candidate` / `graduated→LIVE`).
   experiment]] above is the internal precursor; Apollo Labs is its public form. *Guardrail:* portability +
   no licensed-font / brand-confidential leakage before any public release (ties `univers-webfont-blocker`).
   *Status:* idea — spin-out candidate; surfaced mid-RAG, do not gold-plate before the RAG bands land.
+  - **★ THE TWO-MODE OKLCh TUNER is the Labs UI prototype (2026-07-19).** Built to settle the RAG light fills:
+    `reviews/RAG-LIGHT-FILLS-2026-07-19-v7` — wide saturation + fine lightness sliders **per hue, per mode**, hue
+    held, live hex + WCAG contrast + **a ramp-order guard that reds when the hierarchy breaks**, each mode judged
+    against its own ground. Dave: *"give me a saturation slider, make it wide so i can fine tune"* → *"i could do
+    this for days."* This is exactly Labs' interaction model (paste palette → tune → live a11y read). Also a
+    **Layer-2 in-browser control** for the design-time loop generally ([[dataviz-pillar-progress]]). Lesson banked:
+    past ~2 colour round-trips, give the eye a live control instead of another static version. Port the OKLCh↔hex +
+    contrast + ramp-guard JS from that file as the Labs seed.
 
 ## Type / font procurement targets
 

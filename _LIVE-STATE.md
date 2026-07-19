@@ -17,7 +17,7 @@ narrative, relocated verbatim (how we got here; see its README for the rules + R
 > tripwire ~500 lines. Edits to this file are reachability-relevant — run
 > `python3 knowledge/_validate_standing_instructions.py` (STAND-002) after touching it.
 
-*Last refreshed: **2026-07-19 — "RAG colour: halation, the salience ramp & the astigmatism instrument"**: RAG DARK set LOCKED (R-D5…R-D11, dossier `_DECISION-HISTORY/2026-07-19-rag-colour-halation-ramp.md`) — breach `#B92F1E` white / watch `#F0B13A` / healthy `#43AD6F` / info `#5F92B9`, uniform Medium 500, red+amber carve-outs, green+blue ramp-tuned; halation bloom/dance MODEL built (`reviews/_rag_bloom_model.py`); the SALIENCE-RAMP reframe (status ≠ isoluminant); ⚠️ R-D11 correction = status FILLS are ground-relative → LIGHT-mode fills REOPENED; §1 manifestation decision sheet built; capture ritual gained **step 1b NARRATIVE DOSSIER**; Apollo Labs + whole-palette sweep + dual-observer principle + ~450 weight target registered in `_FUTURE-STATE`. Previous: **2026-07-19 (later) — "Small picks, and an edit-mode μX with legs"**: §1 `.num` RULED + enacted (T-D14 — `.t-cm-figure-3` 24/500 rung, countdown numeral bound via CLASS = first composite in markup, ASSERT-003 retired, build green 34 steps); §2 dv-017 visual built (`reviews/DV017-DELTA-VS-RAG-2026-07-19-v1`) awaiting Dave's wording confirm; μX in-context edit-mode prototype v1→v3 built + registered in `_FUTURE-STATE` (universal to all components · controls derived from meta · TIERED to the strict↔creative register, prompt-only at the creative extreme); review conventions inscribed (live variant/state spread + light/dark + responsive slider; versioning `-vN` not overwrite). Previous: **2026-07-19 late — "The button-label audit that became a gate": ds-005 GATED + CLOSED — new blocking descender-clip gate (`_validate_descender_clip.py`, build step 27/34); 7 truncating labels fixed with ZERO waivers; `.btn`/`.cta`/`.qbtn` audited CLEAN (null result); commit `3af1696`**. Previous: **2026-07-19 — "A gate for the blast radius"**: blast-radius gate built (closes open-001), h2 namespaced, specimen chrome harmonised, ds-005 logged, Tag atom (3 variants × 2 sizes) wired. Earlier: **2026-07-18 late** — R-D4 matting rungs ruled + first RAG role-token promotion. Earlier: **2026-07-18 Fable consolidation** — consolidated
+*Last refreshed: **2026-07-19 — "RAG light fills: proving per-mode, and a tuner I could use for days"**: LIGHT-mode RAG fills LOCKED (R-D12…R-D14) — light green `#5DAC7B` / blue `#7DABCD` (H241), dark stays R-D10; red+amber mode-stable, green+blue **per-mode PROVEN** (exhaustive search: no single pair holds green›blue on both grounds). Rulings: R-D12 (NO lines, aesthetic + black-text states) · R-D13 (light locked, dark reopened-then-held) · R-D14 (full reconciled set). Reframe: fill contrast = **salience lever not a floor** (label carries meaning, R-D6 — I over-raised amber-washout, Dave corrected). Built: derivation `reviews/_rag_light_fills_calc.py`, sheets v1→v9-LOCKED, ★ **two-mode in-browser OKLCh tuner** (ramp-guard) = Apollo Labs / Layer-2 candidate. NEXT = token promotion (Sonnet, behind blast-radius gate). **CONDUCTOR-MERGED with a parallel session ("Context gauge + adversarial densify", committed `e7f8b87`):** context fuel-gauge `knowledge/_context_gauge.py` + `_RUNBOOK-context-gauge.md` (Red >70% fires the ritual); adversarial-densify method (`_RUNBOOK-densify-adversarial.md` — FINDING: rewording near-dead corpus-wide, DON'T corpus-densify, keep the adversary gate); memory index pruned → `MEMORY-ARCHIVE.md`; **★ BUG: `gen_rules_index.py` silently truncates 11+ `_RECONCILIATION.md` entries mid-sentence** (OPEN, see below); conductor pattern `notes/_PARALLEL-SESSIONS-conductor.md`. Previous: **2026-07-19 — "RAG colour: halation, the salience ramp & the astigmatism instrument"**: RAG DARK set LOCKED (R-D5…R-D11, dossier `_DECISION-HISTORY/2026-07-19-rag-colour-halation-ramp.md`) — breach `#B92F1E` white / watch `#F0B13A` / healthy `#43AD6F` / info `#5F92B9`, uniform Medium 500, red+amber carve-outs, green+blue ramp-tuned; halation bloom/dance MODEL built (`reviews/_rag_bloom_model.py`); the SALIENCE-RAMP reframe (status ≠ isoluminant); ⚠️ R-D11 correction = status FILLS are ground-relative → LIGHT-mode fills REOPENED; §1 manifestation decision sheet built; capture ritual gained **step 1b NARRATIVE DOSSIER**; Apollo Labs + whole-palette sweep + dual-observer principle + ~450 weight target registered in `_FUTURE-STATE`. Previous: **2026-07-19 (later) — "Small picks, and an edit-mode μX with legs"**: §1 `.num` RULED + enacted (T-D14 — `.t-cm-figure-3` 24/500 rung, countdown numeral bound via CLASS = first composite in markup, ASSERT-003 retired, build green 34 steps); §2 dv-017 visual built (`reviews/DV017-DELTA-VS-RAG-2026-07-19-v1`) awaiting Dave's wording confirm; μX in-context edit-mode prototype v1→v3 built + registered in `_FUTURE-STATE` (universal to all components · controls derived from meta · TIERED to the strict↔creative register, prompt-only at the creative extreme); review conventions inscribed (live variant/state spread + light/dark + responsive slider; versioning `-vN` not overwrite). Previous: **2026-07-19 late — "The button-label audit that became a gate": ds-005 GATED + CLOSED — new blocking descender-clip gate (`_validate_descender_clip.py`, build step 27/34); 7 truncating labels fixed with ZERO waivers; `.btn`/`.cta`/`.qbtn` audited CLEAN (null result); commit `3af1696`**. Previous: **2026-07-19 — "A gate for the blast radius"**: blast-radius gate built (closes open-001), h2 namespaced, specimen chrome harmonised, ds-005 logged, Tag atom (3 variants × 2 sizes) wired. Earlier: **2026-07-18 late** — R-D4 matting rungs ruled + first RAG role-token promotion. Earlier: **2026-07-18 Fable consolidation** — consolidated
 1104 → ~450 lines per the classification Dave ruled via markup (11 pins) on
 `reviews/CONSOLIDATION-AUDIT-2026-07-18.html`. Nothing deleted: ~580 lines relocated verbatim to
 `_DECISION-HISTORY/`, duplicates reduced to pointers, two entries removed on their own recorded
@@ -129,11 +129,17 @@ Latin webfont" rests on absence of files, not on any document.
   isoluminant→RAMP-tuned pair.** Key rulings: R-D6 (halation = 3rd axis: bloom vs dance, thickness selects
   the mode; glyph-contrast-by-role) · R-D7 (red locked, weight polarity→uniform 500) · R-D9 (status colour
   is a SALIENCE RAMP, not isoluminant — loudness descends with severity) · R-D10 (set locked).
-- **⚠️ R-D11 CORRECTION (2026-07-19): status FILLS are NOT mode-stable — the salience ramp is GROUND-RELATIVE
-  and inverts light↔dark** (on white the light fills wash out and the deep-red alarm goes quietest). The DARK
-  set stands; **the LIGHT-mode fill set is REOPENED** — needs its own ground-aware pass. See OPEN.
-- **⚠️ NOT YET GATED.** Both amber rules are mechanically checkable and unenforced. R-D10 dark tokens NOT yet
-  promoted/rebound (awaits blast-radius gate + the light-fill pass + §1 manifestation pick).
+- **✅ LIGHT FILLS LOCKED (2026-07-19, R-D12…R-D14) — full set now reconciled.** R-D11 (fills are ground-relative)
+  RESOLVED: **light green `#5DAC7B` · light blue `#7DABCD`** (H241, black text); dark stays R-D10 (`#43AD6F`/`#5F92B9`);
+  red `#B92F1E`/white + amber `#F0B13A`/`#C58900` mode-stable. **NO lines** (R-D12 A, aesthetic); **black text on states**
+  (R-D12 B). **Fill contrast = salience lever, NOT a floor** — the LABEL carries meaning (R-D6), so amber-soft-on-white is
+  ruled fine (I over-raised it; Dave corrected). **★ Per-mode PROVEN, not asserted:** exhaustive search shows no single
+  green/blue keeps green›blue on both grounds (loud=darker on white, lighter on dark). Reconciled table + arc: ledger
+  R-D12…R-D14; sign-off `reviews/RAG-LIGHT-FILLS-2026-07-19-v9-LOCKED`; derivation `reviews/_rag_light_fills_calc.py`;
+  ★ **two-mode in-browser TUNER** (v6→v7, OKLCh, ramp-guard) = Apollo Labs / Layer-2 controls candidate.
+- **⚠️ NOT YET GATED / NOT PROMOTED.** Both amber rules unenforced. **Token promotion is the next task (Sonnet):** write
+  `rag/healthy` `rag/info` per-mode + `rag/breach` `rag/watch` stable to `tokens/semantic-colour.json`, rebind behind the
+  blast-radius gate. This is the last open before RAG colour is fully done.
 
 - **Project name = Apollo** (renamed from *Promenaut* repo-wide 2026-07-14; "Apollo" singular
   preferred, "Apollo SDS" acceptable). History: `_DECISION-HISTORY/2026-07-14-rename-and-restructure.md`.
@@ -230,6 +236,14 @@ Latin webfont" rests on absence of files, not on any document.
 
 ## OPEN — propagation gaps + parked threads
 
+### 🔴 OPEN — `gen_rules_index.py` silently TRUNCATES rules (2026-07-19, parallel session)
+Found during the densify session: `gen_rules_index.py` cuts 11+ entries mid-sentence in
+`knowledge/guidelines/_RECONCILIATION.md` — mot-007, neuro-041/042, pict-014, tov-016, type26-015/026/029,
+webf-017, ctkb-015, icon-015. **Silent data loss in the generated rules index** = a correctness bug (the
+consult/rules-index tooling under-reports these rules). Chase separately, before relying on rules-index
+completeness. Fix candidate: the truncation/length cap in the generator. Receipt: parallel session
+"Context gauge + adversarial densify".
+
 ### ✅ CLOSED (2026-07-18) — the binding mechanism's BLAST RADIUS now has a gate
 `_validate_type_blast_radius.py` (blocking, wired into `_build_all.py`) + registry
 `canon/_type-bindings.json`. Bites on any UNREGISTERED / ESCAPED / UNWAIVED-BARE appended selector;
@@ -250,10 +264,9 @@ ignore a red build.
   the pin export named the hue, not the row (the overlay row-identity debt biting again).
 - ~~**`{#dv-017}`(a) CONTRADICTION**~~ **RESOLVED R-D5 (2026-07-19): split the clause** — directional deltas
   red/green ONLY; RAG status a separate concern (R-D3). Enacted in `data-visualisation.md`.
-- **★ RAG light-mode FILLS — REOPENED (R-D11, 2026-07-19).** The dark set (R-D10) is locked, but it was tuned
-  on the dark page and the salience ramp is GROUND-RELATIVE — on white the light fills wash out and breach goes
-  quietest. **Next: derive a ground-aware LIGHT-mode fill set** (breach must shout, none wash out), then
-  reconcile the two modes. Fills are per-mode, NOT mode-stable. (Dot+label form may still be near-mode-stable.)
+- ~~**★ RAG light-mode FILLS — REOPENED (R-D11)**~~ **RESOLVED + LOCKED 2026-07-19 (R-D14).** Light green `#5DAC7B` /
+  blue `#7DABCD` (H241), dark stays R-D10; per-mode proven. See LIVE → RAG. **Only open piece: the token promotion**
+  (`rag/*` per-mode + rebind behind the blast-radius gate) — Sonnet-appropriate, deferred.
 - **§1 RAG manifestation — OPEN.** Which forms are canon: Status-indicator dot+label (existing canon) · filled
   cell/badge · bar/edge; tags+pills EXCLUDED by canon (ctkt). Decision sheet built
   (`reviews/RAG-STATUS-MANIFESTATION-2026-07-19-v1`), awaiting Dave's canon pick (A / A+B / A+B+C). Then a

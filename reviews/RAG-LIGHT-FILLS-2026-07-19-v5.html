@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RAG light-mode fills v5 — green + blue micro-tuned · 2026-07-19</title>
+<style>
+  :root{
+    --uf:"Univers Next HSBC","HSBC_MtUnivers_Latin","Helvetica Neue",Arial,sans-serif;
+    --pg:#fff; --tx:#111; --mut:#5b6770; --ln:#e6e8ea; --sf:#f6f7f8; --accent:#db0011;
+    --d-red:#B92F1E; --d-amber:#F0B13A; --d-green:#43AD6F; --d-blue:#5F92B9;
+    --muted:#767676;
+  }
+  body.dark{ --pg:#1A1A1A; --tx:#f2f2f2; --mut:#9aa4ad; --ln:#2c2c2c; --sf:#212121; }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:var(--uf); color:var(--tx); background:var(--pg); line-height:1.45; max-width:1000px; margin:0 auto; padding:0 40px 150px; transition:background .16s,color .16s;}
+  :is(button,a,span,small,b,i,th,td,li,figcaption,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+  .docbar{position:sticky; top:0; z-index:50; display:flex; gap:18px; align-items:center; flex-wrap:wrap; background:var(--pg); border-bottom:1px solid var(--ln); padding:12px 0; margin-bottom:26px;}
+  .docbar button{font:inherit; font-size:12px; padding:7px 12px; border:1px solid var(--tx); background:transparent; color:var(--tx); cursor:pointer;}
+  .docbar .grp{display:flex; gap:8px; align-items:center; font-size:12px; color:var(--mut);}
+  .docbar .rd{font-variant-numeric:tabular-nums; font-weight:500; color:var(--tx); min-width:52px;}
+  .eyebrow{font-size:12px; font-weight:500; color:var(--accent); margin-bottom:6px;}
+  h1{font-size:30px; font-weight:300; line-height:1.12; margin-bottom:10px;}
+  .lede{font-size:15px; color:var(--mut); max-width:80ch; margin-bottom:6px;} .lede b{color:var(--tx); font-weight:500;}
+  .meta{font-size:12px; color:var(--mut); margin-bottom:8px;}
+  h3.section{font-size:11px; font-weight:600; letter-spacing:.06em; border-top:2px solid var(--tx); padding-top:8px; margin:44px 0 8px; text-transform:uppercase;}
+  .note{font-size:13px; max-width:84ch; margin:8px 0 14px;} .note b{font-weight:600;} .muted{color:var(--mut);}
+  code{font-family:ui-monospace,Menlo,monospace; font-size:.85em; background:var(--sf); padding:1px 5px;}
+
+  .card{border:1px solid var(--ln); border-radius:5px; padding:18px 20px; margin:14px 0; max-width:940px;}
+  .card h4{font-size:14px; margin-bottom:4px;}
+  .card h4 .badge{font-size:10px; border-radius:2px; padding:1px 6px; margin-left:8px; letter-spacing:.03em;}
+  .badge.lead{color:#1a8a52; border:1px solid #1a8a52;} body.dark .badge.lead{color:#7fd6a0; border-color:#7fd6a0;}
+  .badge.fail{color:#b3402f; border:1px solid #d99;}
+  .badge.open{color:#8a6d00; border:1px solid #d9c37a;} body.dark .badge.open{color:#e8c766; border-color:#6b5a1e;}
+  .card .desc{font-size:12.5px; color:var(--mut); margin-bottom:14px; max-width:84ch;}
+  .card .desc b{color:var(--tx); font-weight:500;}
+
+  table.rag{border-collapse:collapse; font-size:12.5px; width:100%; max-width:560px;}
+  table.rag caption{caption-side:top; text-align:left; font-size:11px; color:var(--mut); padding-bottom:6px;}
+  table.rag th{text-align:left; color:var(--mut); font-size:11px; font-weight:600; padding:5px 10px; border-bottom:1px solid var(--ln);}
+  table.rag td{padding:7px 10px; border-bottom:1px solid var(--ln); font-variant-numeric:tabular-nums;}
+  /* filled cell — NO border/line (R-D12 A); extra vertical padding (R-D11) */
+  .cell{display:inline-block; min-width:82px; text-align:center; padding:6px 12px; font-size:11px; font-weight:500; border-radius:2px;}
+
+  .strip{display:flex; gap:0; max-width:560px; margin-top:16px; border:1px solid var(--ln);}
+  .strip .cell{flex:1; min-width:0; border-radius:0; padding:11px 4px;}
+
+  /* CONTROL — R-D10 dark set on white (the failing baseline) */
+  .ctl .c-red{background:#B92F1E;color:#fff;} .ctl .c-amber{background:#F0B13A;color:#000;}
+  .ctl .c-green{background:#43AD6F;color:#000;} .ctl .c-blue{background:#5F92B9;color:#000;}
+
+  /* THE REVISED SET (R-D12): red white text, states BLACK text, NO lines.
+     blue defaults to the green-lean candidate; the ladder below compares all three. */
+  .set .c-red{background:#B92F1E;color:#fff;}
+  .set .c-amber{background:#F0B13A;color:#000;}
+  .set .c-green{background:#57966E;color:#000;}   /* popped lightness, less saturation */
+  .set .c-blue{background:#7A91C7;color:#000;}   /* nudged toward true blue + a wee bit lighter */
+
+  /* before/after chips */
+  .g-was{background:#439A67;color:#000;} .g-now{background:#57966E;color:#000;}
+  .b-was{background:#7D8CC2;color:#000;} .b-now{background:#7A91C7;color:#000;}
+
+  /* DARK MODE: every fill collapses to the locked R-D10 set */
+  body.dark .c-red{background:var(--d-red);color:#fff;}
+  body.dark .c-amber{background:var(--d-amber);color:#000;}
+  body.dark .c-green{background:var(--d-green);color:#000;}
+  body.dark .c-blue,body.dark .b-was,body.dark .b-now{background:var(--d-blue);color:#000;}
+  body.dark .g-was,body.dark .g-now{background:var(--d-green);color:#000;}
+
+  .nums{font-size:11px; color:var(--mut); margin-top:12px; font-variant-numeric:tabular-nums; max-width:84ch;}
+  .nums b{color:var(--tx); font-weight:500;}
+  .warn{color:#b3402f;} body.dark .warn{color:#e8836f;}
+  .bluerow{display:flex; gap:22px; flex-wrap:wrap; margin-top:6px;}
+  .bluerow figure{margin:0;} .bluerow .cell{min-width:120px;}
+  .bluerow figcaption{font-size:11px; color:var(--mut); margin-top:6px; max-width:20ch;} .bluerow figcaption b{color:var(--tx);}
+
+  .decision{border:1px solid var(--ln); border-left:3px solid var(--tx); padding:18px 20px; margin:20px 0; max-width:940px; background:var(--sf);}
+  .decision h5{font-size:13px; font-weight:600; margin-bottom:10px;}
+  .opt{font-size:13px;margin:8px 0;} .opt b{font-weight:600;}
+  .rec{background:#fff8e6; color:#3a2f00; border:1px solid #f0d78a; padding:11px 14px; font-size:13px; margin:12px 0 4px;}
+  body.dark .rec{background:#2a2410; color:#f0e2b0; border-color:#5c4d17;}
+  .call{font-size:13px; font-weight:600; margin-top:12px;}
+  .prov{font-size:11px; color:var(--mut); border-top:1px solid var(--ln); margin-top:44px; padding-top:12px; max-width:940px;}
+</style>
+</head>
+<body>
+  <div class="docbar">
+    <button type="button" id="theme">◐ Light / dark</button>
+    <div class="grp">Responsive width <input type="range" id="vw" min="360" max="1000" value="1000" step="20"> <span class="rd" id="vwr">full</span></div>
+    <span class="muted" style="font-size:11px">default = LIGHT; toggle DARK to confirm every fill collapses to the locked R-D10</span>
+  </div>
+
+  <div class="eyebrow">Apollo · RAG status · light-mode fills v5 (R-D12)</div>
+  <h1>Light-mode fills — micro-tuned</h1>
+  <p class="lede">Two small moves: blue nudged <b>a tad toward true blue</b> and a wee bit lighter — <b><code>#7A91C7</code></b>;
+     green kept its popped lightness but <b>less saturated</b> — <b><code>#57966E</code></b>. Green still leads blue in salience, so
+     healthy › info holds. Everything else settled: red white text; states black text; no lines; amber as-is (R-D6). This is looking
+     final — eyeball it and nod to promote.</p>
+  <p class="meta">Decision · 2026-07-19 · supersedes v4 · derivation <code>reviews/_rag_light_fills_calc.py</code> · blue #7A91C7 · green #57966E</p>
+
+  <h3 class="section">1 · The revised set on white</h3>
+  <p class="note">Red white text; green, blue, amber all black text; no strokes. Green/blue re-seated slightly lighter than the
+     R-D4 values so <b>black text clears AA</b> (that part <i>is</i> a floor — the label text must be readable). The <b>fill</b>
+     contrasts below are a salience/scan measure, not a pass/fail — meaning is in the label (R-D6, icon-013).
+     <span class="muted">Toggle dark — collapses to R-D10.</span></p>
+  <div class="card set">
+    <h4>Resolved light fills <span class="badge lead">R-D12</span></h4>
+    <p class="desc">Green <code>#57966E</code>, blue <code>#7A91C7</code>. Before/after in §2.</p>
+    <table class="rag">
+      <caption>Counterparty limit utilisation — status column</caption>
+      <thead><tr><th>Counterparty</th><th>Utilisation</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>Trbovlje AG</td><td>103%</td><td><span class="cell c-red">Breach</span></td></tr>
+        <tr><td>Novara Holdings</td><td>88%</td><td><span class="cell c-amber">Watch</span></td></tr>
+        <tr><td>Meridian Capital</td><td>62%</td><td><span class="cell c-green">Healthy</span></td></tr>
+        <tr><td>Sundara Trust</td><td>41%</td><td><span class="cell c-blue">Info</span></td></tr>
+      </tbody>
+    </table>
+    <div class="strip"><span class="cell c-red">Breach</span><span class="cell c-amber">Watch</span><span class="cell c-green">Healthy</span><span class="cell c-blue">Info</span></div>
+    <p class="nums">fill-vs-white (salience, not a floor) — breach <b>6.02</b> · watch <b>1.90</b> · healthy <b>3.50</b> · info <b>3.13</b>.
+       Label contrast (this <i>is</i> the floor) — watch <b>11.1</b> · healthy <b>6.0</b> · info <b>6.7</b> · breach white <b>6.0</b> (all ≥ AA).
+       Green (3.50) still leads blue (3.13), so healthy › info holds.</p>
+  </div>
+
+  <h3 class="section">2 · The two micro-tweaks</h3>
+  <p class="note">Both small. Green loses saturation (calmer, keeps the popped lightness); blue steps back off the purple toward true
+     blue and lightens a hair. Toggle dark to confirm both still collapse to R-D10.</p>
+  <div class="card">
+    <div class="bluerow">
+      <figure><span class="cell g-was" style="display:block">Healthy</span>
+        <figcaption><b>v4 green</b> <code>#439A67</code><br>C 0.115</figcaption></figure>
+      <figure><span class="cell g-now" style="display:block;outline:2px solid var(--tx);outline-offset:2px">Healthy</span>
+        <figcaption><b>less saturated</b> <code>#57966E</code><br>C 0.090 · fill/white 3.50</figcaption></figure>
+      <figure><span class="cell b-was" style="display:block">Info</span>
+        <figcaption><b>v4 blue</b> <code>#7D8CC2</code><br>H272 (purple-lean)</figcaption></figure>
+      <figure><span class="cell b-now" style="display:block;outline:2px solid var(--tx);outline-offset:2px">Info</span>
+        <figcaption><b>toward blue, lighter</b> <code>#7A91C7</code><br>H266 · fill/white 3.13</figcaption></figure>
+    </div>
+    <p class="nums">Green desaturation is free on the ramp — luminance barely moves, so green still leads blue. Black labels 6.0 / 6.7,
+       both clear. If either wants another nudge, say which way; otherwise this is the set.</p>
+  </div>
+
+  <h3 class="section">3 · Amber — already ruled, no action</h3>
+  <p class="note">Amber's soft fill on white is <b>fine and settled</b> — R-D6 Ruling A: <i>"when paired with a label the contrast is
+     less important."</i> The label carries the meaning (icon-013: never colour alone), so the fill is reinforcement. It stays
+     <code>#F0B13A</code>, black text, no line. Not a question. <span class="muted">(Recorded here only so v2 is self-contained; the
+     ruling stands from R-D3 + R-D6.)</span></p>
+
+  <div class="decision">
+    <h5>The set — nod to promote</h5>
+    <p class="opt"><b>breach</b> <code>#B92F1E</code> / white &nbsp;·&nbsp; <b>watch</b> <code>#F0B13A</code> / black &nbsp;·&nbsp;
+       <b>healthy</b> <code>#57966E</code> / black &nbsp;·&nbsp; <b>info</b> <code>#7A91C7</code> / black &nbsp;·&nbsp; no lines</p>
+    <div class="rec"><b>My steer:</b> this is the set. Both tweaks are in, the ramp holds, labels clear AA. Unless a hue still reads
+       off to you, I'd lock it.</div>
+    <p class="call">Nod it (or name the last nudge) and I reconcile both modes into the token table — ready for the Sonnet promotion behind the blast-radius gate.</p>
+  </div>
+
+  <div class="prov">
+    <b>Provenance.</b> R-D12 (no lines + black-text states) applied. Green/blue re-seated lighter because black text on the R-D4
+     values fell below AA (green #2B7E4F 4.20, blue #306EC6 4.17). Values: red <code>#B92F1E</code> (R-D1/R-D7) · amber
+     <code>#F0B13A</code> (R-D3, soft on white, no line) · green popped <code>#439A67</code> (blk 6.06 / white 3.47) · blue
+     <code>#7D8CC2</code> (purple-lean lightened; blk 6.40 / white 3.28). Green kept above blue so healthy › info holds; more-pop
+     <code>#36A467</code> offered but ties the ramp. Derivation + all measured numbers in
+     <code>reviews/_rag_light_fills_calc.py</code>. Dark toggle collapses to the locked R-D10 (<code>#B92F1E</code> /
+     <code>#F0B13A</code> / <code>#43AD6F</code> / <code>#5F92B9</code>). No tokens promoted; the light-fill set goes behind the
+     blast-radius gate after these three calls. Dot+label form's white behaviour = separate §1 manifestation question.
+  </div>
+
+  <script>
+    var body=document.body;
+    document.getElementById('theme').addEventListener('click',function(){ body.classList.toggle('dark'); });
+    var vw=document.getElementById('vw'), vwr=document.getElementById('vwr');
+    vw.addEventListener('input',function(){ var v=+vw.value; if(v>=1000){body.style.maxWidth='';vwr.textContent='full';} else {body.style.maxWidth=v+'px';vwr.textContent=v+'px';} });
+  </script>
+</body>
+</html>

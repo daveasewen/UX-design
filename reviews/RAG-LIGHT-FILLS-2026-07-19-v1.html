@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RAG light-mode fills — the reopened set (R-D11) · 2026-07-19</title>
+<style>
+  :root{
+    --uf:"Univers Next HSBC","HSBC_MtUnivers_Latin","Helvetica Neue",Arial,sans-serif;
+    --pg:#fff; --tx:#111; --mut:#5b6770; --ln:#e6e8ea; --sf:#f6f7f8; --accent:#db0011;
+    /* R-D10 LOCKED DARK SET — every candidate collapses to this when you toggle to dark */
+    --d-red:#B92F1E; --d-amber:#F0B13A; --d-amber-gl:#C58900; --d-green:#43AD6F; --d-blue:#5F92B9;
+    --muted:#767676;
+  }
+  body.dark{ --pg:#1A1A1A; --tx:#f2f2f2; --mut:#9aa4ad; --ln:#2c2c2c; --sf:#212121; }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:var(--uf); color:var(--tx); background:var(--pg); line-height:1.45; max-width:1000px; margin:0 auto; padding:0 40px 150px; transition:background .16s,color .16s;}
+  :is(button,a,span,small,b,i,th,td,li,figcaption,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+  .docbar{position:sticky; top:0; z-index:50; display:flex; gap:18px; align-items:center; flex-wrap:wrap; background:var(--pg); border-bottom:1px solid var(--ln); padding:12px 0; margin-bottom:26px;}
+  .docbar button{font:inherit; font-size:12px; padding:7px 12px; border:1px solid var(--tx); background:transparent; color:var(--tx); cursor:pointer;}
+  .docbar .grp{display:flex; gap:8px; align-items:center; font-size:12px; color:var(--mut);}
+  .docbar .rd{font-variant-numeric:tabular-nums; font-weight:500; color:var(--tx); min-width:52px;}
+  .eyebrow{font-size:12px; font-weight:500; color:var(--accent); margin-bottom:6px;}
+  h1{font-size:30px; font-weight:300; line-height:1.12; margin-bottom:10px;}
+  .lede{font-size:15px; color:var(--mut); max-width:80ch; margin-bottom:6px;} .lede b{color:var(--tx); font-weight:500;}
+  .meta{font-size:12px; color:var(--mut); margin-bottom:8px;}
+  h3.section{font-size:11px; font-weight:600; letter-spacing:.06em; border-top:2px solid var(--tx); padding-top:8px; margin:44px 0 8px; text-transform:uppercase;}
+  .note{font-size:13px; max-width:84ch; margin:8px 0 14px;} .note b{font-weight:600;} .muted{color:var(--mut);}
+  code{font-family:ui-monospace,Menlo,monospace; font-size:.85em; background:var(--sf); padding:1px 5px;}
+
+  .card{border:1px solid var(--ln); border-radius:5px; padding:18px 20px; margin:14px 0; max-width:940px;}
+  .card h4{font-size:14px; margin-bottom:4px;}
+  .card h4 .badge{font-size:10px; border-radius:2px; padding:1px 6px; margin-left:8px; letter-spacing:.03em;}
+  .badge.lead{color:#1a8a52; border:1px solid #1a8a52;} body.dark .badge.lead{color:#7fd6a0; border-color:#7fd6a0;}
+  .badge.fail{color:#b3402f; border:1px solid #d99;}
+  .badge.alt{color:var(--mut); border:1px solid var(--ln);}
+  .card .desc{font-size:12.5px; color:var(--mut); margin-bottom:14px; max-width:84ch;}
+  .card .desc b{color:var(--tx); font-weight:500;}
+
+  /* the specimen: a real counterparty-exposure dashboard, status column filled */
+  table.rag{border-collapse:collapse; font-size:12.5px; width:100%; max-width:560px;}
+  table.rag caption{caption-side:top; text-align:left; font-size:11px; color:var(--mut); padding-bottom:6px;}
+  table.rag th{text-align:left; color:var(--mut); font-size:11px; font-weight:600; padding:5px 10px; border-bottom:1px solid var(--ln);}
+  table.rag td{padding:7px 10px; border-bottom:1px solid var(--ln); font-variant-numeric:tabular-nums;}
+  .cell{display:inline-block; min-width:82px; text-align:center; padding:5px 12px; font-size:11px; font-weight:500; border-radius:2px;}
+  /* the R-D11 note: filled cells were reading tight top/bottom — extra vertical padding baked in */
+
+  /* dense scan strip — the ramp read at a glance */
+  .strip{display:flex; gap:0; max-width:560px; margin-top:16px; border:1px solid var(--ln);}
+  .strip .cell{flex:1; min-width:0; border-radius:0; padding:10px 4px;}
+
+  /* ---- CONTROL: the R-D10 dark set painted on white (the failing baseline) ---- */
+  .ctl .c-red  {background:#B92F1E;color:#fff;}
+  .ctl .c-amber{background:#F0B13A;color:#000;}
+  .ctl .c-green{background:#43AD6F;color:#000;}
+  .ctl .c-blue {background:#5F92B9;color:#000;}
+
+  /* ---- STRATEGY 0 (LEAD): restore R-D4 light values (white text) + amber border ---- */
+  .s0 .c-red  {background:#B92F1E;color:#fff;}
+  .s0 .c-amber{background:#F0B13A;color:#000;border:1.5px solid #C58900;}
+  .s0 .c-green{background:#2B7E4F;color:#fff;}
+  .s0 .c-blue {background:#306EC6;color:#fff;}
+
+  /* ---- STRATEGY B: keep the R-D10 hues + a darker border per hue (mode continuity) ---- */
+  .sb .c-red  {background:#B92F1E;color:#fff;}
+  .sb .c-amber{background:#F0B13A;color:#000;border:1.5px solid #C58900;}
+  .sb .c-green{background:#43AD6F;color:#000;border:1.5px solid #00783E;}
+  .sb .c-blue {background:#5F92B9;color:#000;border:1.5px solid #36688D;}
+
+  /* DARK MODE: every candidate collapses to the locked R-D10 set (identical everywhere),
+     so toggling proves the two modes reconcile to one dark truth. */
+  body.dark .c-red  {background:var(--d-red);color:#fff;border-color:transparent;}
+  body.dark .c-amber{background:var(--d-amber);color:#000;border-color:transparent;}
+  body.dark .c-green{background:var(--d-green);color:#000;border-color:transparent;}
+  body.dark .c-blue {background:var(--d-blue);color:#000;border-color:transparent;}
+
+  .nums{font-size:11px; color:var(--mut); margin-top:12px; font-variant-numeric:tabular-nums; max-width:84ch;}
+  .nums b{color:var(--tx); font-weight:500;}
+  .warn{color:#b3402f;} body.dark .warn{color:#e8836f;}
+
+  .decision{border:1px solid var(--ln); border-left:3px solid var(--tx); padding:18px 20px; margin:20px 0; max-width:940px; background:var(--sf);}
+  .decision h5{font-size:13px; font-weight:600; margin-bottom:10px;}
+  .opt{font-size:13px;margin:8px 0;} .opt b{font-weight:600;}
+  .rec{background:#fff8e6; color:#3a2f00; border:1px solid #f0d78a; padding:11px 14px; font-size:13px; margin:12px 0 4px;}
+  body.dark .rec{background:#2a2410; color:#f0e2b0; border-color:#5c4d17;}
+  .call{font-size:13px; font-weight:600; margin-top:12px;}
+  .prov{font-size:11px; color:var(--mut); border-top:1px solid var(--ln); margin-top:44px; padding-top:12px; max-width:940px;}
+</style>
+</head>
+<body>
+  <div class="docbar">
+    <button type="button" id="theme">◐ Light / dark</button>
+    <div class="grp">Responsive width <input type="range" id="vw" min="360" max="1000" value="1000" step="20"> <span class="rd" id="vwr">full</span></div>
+    <span class="muted" style="font-size:11px">default = LIGHT (this is the reopened ground); toggle DARK to confirm every set collapses to the locked R-D10</span>
+  </div>
+
+  <div class="eyebrow">Apollo · RAG status · light-mode fills (R-D11)</div>
+  <h1>The light-mode fill set — reopened</h1>
+  <p class="lede">The dark set is <b>locked</b> (R-D10). But it was tuned entirely on the dark page, and your white-page
+     screenshot caught the flaw: <b>salience is contrast-with-ground, so the ramp inverts light↔dark</b> (R-D11). On white the
+     light fills wash out and the deep-red breach becomes the <i>quietest</i> cell. Status <b>fills are per-mode</b> — this sheet
+     derives the <b>light</b> set. Colours for the dark page are done; this is the last reopened piece.</p>
+  <p class="meta">Decision · 2026-07-19 · derivation <code>reviews/_rag_light_fills_calc.py</code> · consult receipt: R-D3/R-D4/R-D8/R-D9/R-D10/R-D11 · icon-013 · col26-018</p>
+
+  <h3 class="section">1 · The problem — the locked set, painted on white</h3>
+  <p class="note">This is the R-D10 set exactly as locked, on the white page. The numbers are measured, not asserted.
+     <b>The ramp is backwards:</b> amber/green barely separate from the page (fill-vs-white &lt; 3 = washout), and the alarm
+     recedes. <span class="muted">Toggle to dark — the very same values are correct there.</span></p>
+  <div class="card ctl">
+    <h4>R-D10 dark set on white <span class="badge fail">FAILING BASELINE</span></h4>
+    <p class="desc">The control. If a candidate below doesn't visibly beat this on the white page, it isn't worth the divergence.</p>
+    <table class="rag">
+      <caption>Counterparty limit utilisation — status column</caption>
+      <thead><tr><th>Counterparty</th><th>Utilisation</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>Trbovlje AG</td><td>103%</td><td><span class="cell c-red">Breach</span></td></tr>
+        <tr><td>Novara Holdings</td><td>88%</td><td><span class="cell c-amber">Watch</span></td></tr>
+        <tr><td>Meridian Capital</td><td>62%</td><td><span class="cell c-green">Healthy</span></td></tr>
+        <tr><td>Sundara Trust</td><td>41%</td><td><span class="cell c-blue">Info</span></td></tr>
+      </tbody>
+    </table>
+    <div class="strip"><span class="cell c-red">Breach</span><span class="cell c-amber">Watch</span><span class="cell c-green">Healthy</span><span class="cell c-blue">Info</span></div>
+    <p class="nums">fill-vs-white — breach <b>6.02</b> · watch <b class="warn">1.90</b> · healthy <b class="warn">2.82</b> · info <b>3.33</b>.
+       Salience order on white flips to info › healthy › watch › breach — <b class="warn">backwards</b>.</p>
+  </div>
+
+  <h3 class="section">2 · The two contenders — this is the real design question</h3>
+  <p class="note">Both fix the boundary. They differ on one thing: <b>do the light fills match the dark ones, or are they optimised
+     per-mode?</b> Amber is the same in both — its identity is lightness, so on white it can't hold a boundary without a border
+     (going darker makes it brown, which R-D3 already rejected). Everything gets the <b>R-D11 extra vertical padding</b>.</p>
+
+  <div class="card s0">
+    <h4>Option 0 · Per-mode optimised — restore the R-D4 light values <span class="badge lead">MY STEER</span></h4>
+    <p class="desc">Green + blue go back to the values <b>already built and ruled for the white page</b> (R-D4:
+       <code>#2B7E4F</code> / <code>#306EC6</code>, white text) — the dark-ramp re-seated them lighter <i>for the dark page only</i>.
+       Deeper fills + white text hold their boundary cleanly and read as one confident family. Amber keeps <code>#F0B13A</code>
+       + its ruled glyph <code>#C58900</code> as a hairline border.</p>
+    <table class="rag">
+      <caption>Counterparty limit utilisation — status column</caption>
+      <thead><tr><th>Counterparty</th><th>Utilisation</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>Trbovlje AG</td><td>103%</td><td><span class="cell c-red">Breach</span></td></tr>
+        <tr><td>Novara Holdings</td><td>88%</td><td><span class="cell c-amber">Watch</span></td></tr>
+        <tr><td>Meridian Capital</td><td>62%</td><td><span class="cell c-green">Healthy</span></td></tr>
+        <tr><td>Sundara Trust</td><td>41%</td><td><span class="cell c-blue">Info</span></td></tr>
+      </tbody>
+    </table>
+    <div class="strip"><span class="cell c-red">Breach</span><span class="cell c-amber">Watch</span><span class="cell c-green">Healthy</span><span class="cell c-blue">Info</span></div>
+    <p class="nums">fill-vs-white — breach <b>6.02</b> · watch <b>1.90</b> (border <b>3.02</b>) · healthy <b>5.00</b> · info <b>5.03</b>.
+       Text on fill all ≥ AA. <b>Cost:</b> green/blue no longer match dark mode — two values per hue.
+       <b>Watch caveat:</b> even bordered, pale amber can't out-shout the states — it leans on black text + the border, not raw loudness.</p>
+  </div>
+
+  <div class="card sb">
+    <h4>Option B · Mode continuity — keep the R-D10 hues, add a border <span class="badge alt">ALT</span></h4>
+    <p class="desc">The light fills stay the <b>exact same hues as dark mode</b> (<code>#43AD6F</code> / <code>#5F92B9</code>, black
+       text) — visual continuity between modes, fewer tokens. Each light fill gets a darker border in its own glyph value so it
+       reads on white. Trade: the fills themselves are pale on white, so the border is doing the work, and the family looks lighter
+       / less emphatic than Option 0.</p>
+    <table class="rag">
+      <caption>Counterparty limit utilisation — status column</caption>
+      <thead><tr><th>Counterparty</th><th>Utilisation</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>Trbovlje AG</td><td>103%</td><td><span class="cell c-red">Breach</span></td></tr>
+        <tr><td>Novara Holdings</td><td>88%</td><td><span class="cell c-amber">Watch</span></td></tr>
+        <tr><td>Meridian Capital</td><td>62%</td><td><span class="cell c-green">Healthy</span></td></tr>
+        <tr><td>Sundara Trust</td><td>41%</td><td><span class="cell c-blue">Info</span></td></tr>
+      </tbody>
+    </table>
+    <div class="strip"><span class="cell c-red">Breach</span><span class="cell c-amber">Watch</span><span class="cell c-green">Healthy</span><span class="cell c-blue">Info</span></div>
+    <p class="nums">border-vs-white — breach <b>6.57</b> · watch <b>3.02</b> · healthy <b>5.59</b> · info <b>5.96</b>.
+       Fills stay pale (2.8–3.3) so the boundary is the border, not the fill. <b>Benefit:</b> one hue per mode; dark and light look
+       related. <b>Cost:</b> a bordered pale family reads quieter than Option 0's solid fills.</p>
+  </div>
+
+  <div class="decision">
+    <h5>The decision — which light-mode fill set, and is the amber caveat acceptable</h5>
+    <p class="opt"><b>Option 0 (per-mode):</b> darker green/blue + white text (restore R-D4); solid, emphatic; two values per hue.</p>
+    <p class="opt"><b>Option B (continuity):</b> same hues as dark + borders; lighter, related across modes; one value per hue.</p>
+    <p class="opt"><b>Amber, either way:</b> pale fill + border + black text. Accept that watch leans on its label/border rather than
+       out-shouting the states on white? <span class="muted">(The alternative — a louder watch — means a darker amber, i.e. brown, which R-D3 barred.)</span></p>
+    <div class="rec"><b>My steer: Option 0.</b> The green/blue values were already ruled for white; restoring them is the smallest true
+       correction, and solid fills carry a status column better than bordered pale ones. Borders can still be added to Option 0 later
+       if you want extra definition. If mode-to-mode continuity matters more than emphasis, Option B is the pick.</div>
+    <p class="call">Pin a set (0 / B / neither), and say whether the amber caveat is acceptable. Then I reconcile the two modes into
+       the token table and it's ready for the Sonnet promotion behind the blast-radius gate.</p>
+  </div>
+
+  <div class="prov">
+    <b>Provenance.</b> Derivation <code>reviews/_rag_light_fills_calc.py</code> (same OKLab/contrast maths as the dark set; the
+     salience metric was reconstructed and, importantly, <b>mis-ranks on white</b> — white text sits at zero distance from a white
+     page, so it penalises the very cell that should shout; on white, order by fill-vs-page + chroma, not the dark-page salience).
+     Values: red <code>#B92F1E</code> (R-D1/R-D7, mode-stable) · amber <code>#F0B13A</code> + glyph <code>#C58900</code> (R-D3) ·
+     Option 0 green <code>#2B7E4F</code> / blue <code>#306EC6</code> (R-D4 light) · Option B green <code>#43AD6F</code> / blue
+     <code>#5F92B9</code> (R-D10). A third option (per-mode re-cut, ramp by depth) was computed and rejected — green fell to 4.38
+     text contrast, below AA. No tokens promoted; the light-fill promotion + any border rule go behind the blast-radius gate after
+     this ruling. The <b>dot+label</b> form's white-page behaviour is a separate manifestation question (§1 sheet), not settled here.
+  </div>
+
+  <script>
+    var body=document.body;
+    document.getElementById('theme').addEventListener('click',function(){ body.classList.toggle('dark'); });
+    var vw=document.getElementById('vw'), vwr=document.getElementById('vwr');
+    vw.addEventListener('input',function(){ var v=+vw.value; if(v>=1000){body.style.maxWidth='';vwr.textContent='full';} else {body.style.maxWidth=v+'px';vwr.textContent=v+'px';} });
+  </script>
+</body>
+</html>

@@ -32,18 +32,30 @@ claim). The fix: pit two agents against each other so the fidelity check is acti
    FAIL) · WORTH-IT judgement.
 4. **Reconcile** (main agent): apply the adversary's fixes, then write the file. If FAIL, loop 2.
 
-## When it's worth it — the prose-heaviness rule
+## When it's worth it — TESTED 2026-07-19, and the answer is: rarely, in THIS corpus
 
-Payoff scales with how much filler a file carries:
+Measured across 8 files (memory index · 3 runbooks · 4 KB docs). The hypothesis that prose-heavy
+files densify well **did not survive contact with evidence** — the whole corpus is already written in
+Dave's terse, hand-annotated style, so there is almost no filler to cut:
 
-- **Already-terse files (indexes, token tables): DON'T reword — PRUNE.** On `MEMORY.md` the reword
-  saved only ~10–12%, all from stripping articles, and *introduced* 3 meaning-losses: a bad trade.
-  The real lever there was relocating historical/closed entries to a not-auto-loaded archive.
-- **Prose-heavy files (runbooks, GOOD-MORNING §A, dossiers, guidelines): DO densify.** More filler to
-  cut, fewer load-bearing single tokens, so the same 10–12% is both safer and higher-yield — and it
-  compounds across the corpus (the "muckle"). Densify to *precise prose*, not bullet-shorthand, so a
-  dossier's reasoning arc and narrative voice survive (density ≠ summarization; see
-  `feedback-adversarial-densify`).
+- **Memory index:** ~10–12%, but purely from stripping articles, and it *introduced* 3 meaning-losses
+  → bad trade. Real lever there = **prune** historical entries to a not-auto-loaded archive.
+- **Internal runbooks:** 3–9% (command/table-heavy ones ~3%; the one quote/narrative file ~9%).
+- **KB prose:** ~2.8% average; one file (`_RECONCILIATION.md`) *grew* after mandatory fidelity fixes.
+
+⇒ **Do NOT run a corpus-wide densify pass.** Yield is thin and the risk is real (below). The efficiency
+levers that actually move the needle are elsewhere: **disable unused plugins** (baseline — the biggest
+single cut) and **prune/archive dead content** (tiering — load less, don't reword what loads).
+
+## What the test DID prove — keep the adversary, retire the densifier
+
+The adversary half earned its keep twice. On the index it caught 3 silent meaning-losses. On
+`_RECONCILIATION.md` it caught **11 fabricated sentence-completions** — the densifier "helpfully"
+finished sentences that the *source* truncates mid-line (a real `gen_rules_index.py` truncation bug,
+to be fixed separately, not a compression matter). Lesson: **any** rewrite of KB / derived content
+MUST pass a diff-against-source adversary, because a naive pass will invent text to complete broken
+input. The gate is the keeper; the densify is not. Density ≠ summarization still holds for dossiers —
+but the point is moot if you're not running the densifier in the first place.
 
 ## Guardrails
 

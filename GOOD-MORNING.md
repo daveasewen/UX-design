@@ -1,25 +1,31 @@
 # Good morning, Dave ☕
 
-*Briefing — written 2026-07-19 14:31 (date from `date`, per the ritual rule), session
-**"RAG colour: halation, the salience ramp & the astigmatism instrument"** — opened to nail RAG dark-mode
-colours and turned into a piece of original colour-accessibility method (halation model, the salience-ramp
-reframe, the astigmatism-as-instrument principle), then a component pivot.*
+*Briefing — written 2026-07-19 16:20 (date from `date`, per the ritual rule), session
+**"RAG light fills: proving per-mode, and a tuner I could use for days"** — took the R-D11 parked piece
+(light-mode fills) all the way to a locked, reconciled set, turned a per-mode assertion into a proof, and
+built a two-mode in-browser colour tuner along the way.*
+
+> ✅ **TWO SESSIONS this round — merged by conductor (this session).** A parallel session ("Context gauge +
+> adversarial densify") ran the same day and handed up a RECEIPT (the single-writer **conductor pattern** it
+> wrote — `notes/_PARALLEL-SESSIONS-conductor.md`). Both strands are folded into §B/§C below and committed
+> together. Its main work landed in its own commit `e7f8b87`; its two trailing files + this handoff are in the
+> conductor commit.
 
 ---
 
 ## ⬛ DO THESE TWO FIRST (10 seconds)
 
-> **RENAME THIS CHAT → `RAG colour: halation, the salience ramp & the astigmatism instrument`** *(opened as
-> "back to the components"; the RAG-colours review it started with became a full colour-accessibility method
-> session — the halation bloom/dance model, the salience-RAMP reframe (status ≠ isoluminant), red/amber as the
-> two carve-outs, weight→uniform 500, and the R-D11 catch that status fills are ground-relative. Ended pivoting
-> to the status component. Nine review versions + a findings dossier.)*
+> **RENAME THIS CHAT → `RAG light fills: proving per-mode, and a tuner I could use for days`** *(opened on
+> "read good morning"; became the light-fill pass R-D11 had parked. Locked the light set, PROVED green/blue
+> must be per-mode by exhaustive search, reframed fill-contrast as a salience lever not a floor, and built a
+> live two-mode OKLCh tuner. Nine review versions v1→v9-LOCKED. Ledger R-D12…R-D14.)*
 
-> **TITLE TODAY'S CHAT →** `Light-mode RAG fills + nail the status component`
-> The RAG **dark** set is LOCKED (R-D10); the **light-mode fills are reopened** (R-D11 — the ramp is
-> ground-relative, tuned only on dark). First: derive the light-mode fill set (ground-aware), then make the
-> **§1 manifestation** canon pick (sheet built: `reviews/RAG-STATUS-MANIFESTATION-2026-07-19-v1`) and build the
-> status component. **Sonnet** for the build; **Opus** only if a ruling surfaces. Per §C.
+> **TITLE TODAY'S CHAT →** `Promote the RAG tokens + nail the status component`
+> RAG colour is DONE (light + dark locked, R-D14). Next is the **token promotion** — write `rag/*` (breach +
+> watch mode-stable; healthy + info per-mode: light `#5DAC7B`/`#7DABCD`, dark `#43AD6F`/`#5F92B9`) to
+> `tokens/semantic-colour.json`, rebind **behind the blast-radius gate**, run `_build_all.py`. Then the **§1
+> manifestation** pick (sheet `reviews/RAG-STATUS-MANIFESTATION-2026-07-19-v1`) + status-component build.
+> **Sonnet** for all of it — it's enactment, not ruling. Per §C.
 
 *Standing practice: every handoff carries both names — retrospective + forward. Step 4b in
 `_RUNBOOK-capture-ritual.md`.*
@@ -199,72 +205,104 @@ Chrome needs ~17 libs via `apt-get download` → `dpkg -x` → `LD_LIBRARY_PATH`
 - **Sheets are instruments, not proposals** — build them able to return a **null result**.
 - **A specimen must reproduce the CONDITION its rule names, not merely the ELEMENT.**
 - **Thresholds come from what Dave can SEE**, not from theory.
-- **Dave commits via GitHub Desktop.** Claude commits in-sandbox per `_RUNBOOK-git-commit.md`.
-  ⚠️ The sandbox cannot unlink — to revert: `git show HEAD:<path> > <path>`; renames (`mv`) work.
+- **Dave commits via GitHub Desktop.** Claude commits in-sandbox per `_RUNBOOK-git-commit.md` — **run it, don't
+  improvise git.** ⚠️ **DO NOT misread the lock error.** `unable to unlink … *.lock` / `tmp_obj_*` /
+  `index.lock: Operation not permitted` is the sandbox **delete-guard**, NOT GitHub Desktop holding the repo and
+  NOT "sandbox can't commit". The dance: **clear · stage · clear · commit · clear**, moving every `.git/*.lock`
+  aside with **`mv` (never `rm`)**, and **judge success by HEAD advancing, not by the warnings** (the commit lands
+  despite them). To revert: `git show HEAD:<path> > <path>` (`git checkout` can't unlink); the bulk revert form
+  also reverts your uncommitted TOOLING — park it first. Full procedure + gotchas: `_RUNBOOK-git-commit.md`.
+  *(Inscribed 2026-07-19 after I stalled on exactly this misread — the runbook was referenced but I didn't run it.)*
 - **Comms:** exec summary + numbered next steps first, detail below.
 
 ---
 
-# §B · THIS SESSION (2026-07-19, "RAG colour: halation, the salience ramp & the astigmatism instrument")
+# §B · THIS SESSION (2026-07-19 later, "RAG light fills: proving per-mode, and a tuner I could use for days")
 
-**Opened to nail the RAG dark-mode colours. It became a piece of original colour-accessibility method, then a
-pivot to the status component. Nine review versions (`RAG-COLOURS-…-v1…v9`) + a findings dossier
-(`_DECISION-HISTORY/2026-07-19-rag-colour-halation-ramp.md` — read it, it holds the WHY).**
+**Took the light-mode fill set R-D11 had parked all the way to LOCKED + reconciled, turned the per-mode claim into
+a proof, and built a live two-mode colour tuner. Rulings R-D12…R-D14; ledger `_proforma/_RAG-DECISIONS.md`.
+Narrative arc (why + how, dead-ends included): dossier `_DECISION-HISTORY/2026-07-19-rag-colour-halation-ramp.md`
+Session 3. Sheets v1→v9-LOCKED + derivation `reviews/_rag_light_fills_calc.py`.**
 
-## What LANDED (rulings R-D5…R-D11; ledger `_proforma/_RAG-DECISIONS.md`)
+## What LANDED
 
-- **RAG DARK set LOCKED (R-D10):** breach `#B92F1E` white · watch `#F0B13A`/`#C58900` black · healthy
-  `#43AD6F` black · info `#5F92B9` black (cyan-shifted for astigmatic legibility). Weight **uniform Medium
-  500**. Marks icon/label-paired (never bare coloured text on dark). **Red = carve-out (deep + white,
-  instability) · amber = carve-out (lightness) · green+blue = the stable pair, ramp-tuned.**
-- **Three principle-level findings** (now in memory + the dossier):
-  - **Halation is a THIRD colour axis (R-D6):** *bloom* (thick fields, luminance-step lever) vs *dance* (thin
-    strokes, saturation lever); **stroke thickness selects the mode.** First-cut model `reviews/_rag_bloom_model.py`.
-  - **Status colour is a SALIENCE RAMP, not isoluminant (R-D9):** loudness descends with severity (categorical
-    data stays isoluminant; status ramps). Dave's reframe.
-  - **The astigmatism-as-instrument + dual-observer principle:** calibrate to the most sensitive eye; serve it
-    without breaking the typical viewer, flag divergence.
-- **Weight polarity → uniform 500 (R-D7);** glyph-contrast-by-role (R-D6: label-paired glyph relaxes, meaning-
-  carrying glyph must meet 4.5).
-- **Process improvement:** the **narrative dossier became capture-ritual step 1b** (record why+how, not just
-  what) — Dave's ask; and dossiers registered as a future decision-graph node-set. `_FUTURE-STATE` gained
-  **Apollo Labs** (public a11y tool: isoluminant + ramp + halation), the **whole-palette sweep**, the
-  **dual-observer principle**, and a **~450 weight** font-procurement target.
+- **✅ LIGHT fills LOCKED (R-D14):** light **green `#5DAC7B`** · **blue `#7DABCD`** (H241, black text). Dark stays
+  R-D10 (`#43AD6F`/`#5F92B9`). Red `#B92F1E`/white + amber `#F0B13A`/`#C58900` mode-stable. **NO lines** (R-D12 A) ·
+  **black text on states** (R-D12 B). Verified both grounds: every label ≥ AA, green › blue in both.
+- **★ Per-mode PROVEN, not asserted.** Exhaustive pair search: no single green/blue keeps green › blue on both
+  grounds ("louder" = darker on white, lighter on dark → green can't lead on both). R-D11's thesis is now a proof.
+- **Reframe (Dave):** *"its not just about the colour"* — a status cell is a **labelled component**, so fill
+  contrast is a **salience/scan lever, NOT an accessibility floor** (the floor is the LABEL, R-D6). This dissolved
+  the "washout" worry entirely.
+- **★ Built a two-mode in-browser OKLCh TUNER** (v6→v7): wide saturation + fine lightness sliders per hue, live
+  hex + contrast + a **ramp-guard** that reds if green ≤ blue on that ground. Dave: *"i could do this for days."*
+  Strong **Apollo Labs / Layer-2 controls** candidate (registered).
+- **Method finding:** the R-D9 salience metric **inverts on white** (white text = zero distance from a white page,
+  so it penalises the cell that should shout) → on white, order by fill-vs-page + chroma. Recorded in the calc tool.
 
 ## What I got wrong / watch
 
-- **Called the set "mode-stable" and tuned it only on the DARK page.** Dave's screenshot of the filled cells on
-  WHITE caught it: **the salience ramp is GROUND-RELATIVE and inverts (R-D11)** — on white the light fills wash
-  out and the deep-red alarm goes quietest. ⇒ status **FILLS are per-mode, not mode-stable**; the LIGHT-mode
-  fill set is REOPENED. Lesson: prove a colour set on BOTH grounds before calling it mode-stable.
-- Nothing gated was touched (review docs, ledgers, memory, runbook, `_FUTURE-STATE`, dossier) — so **build
-  state is unchanged from prev green**; no `_build_all.py` run needed this session. The R-D10 **token
-  promotion** is the next thing that will hit the blast-radius gate — deferred.
+- **Re-raised amber-on-white as an open question when R-D6 had already ruled it** (label carries meaning). Dave:
+  *"amber is fine… we've ruled on this already, please check."* Classic **stale-reading failure** — the CONSULT
+  step exists for exactly this; I should have checked R-D6 before flagging. Corrected in v2 + the ledger.
+- **The tuner emerged from too many colour round-trips.** Lesson banked: past ~2 colour round-trips, give the eye
+  a live control rather than another static version.
+- **Nothing gated touched** — build state unchanged from prev green; no `_build_all.py` run needed. The **token
+  promotion** is the first thing that hits the blast-radius gate (deferred, Sonnet).
+
+## Parallel strand — "Context gauge + adversarial densify" (session 2, merged from its receipt)
+
+- **Context fuel-gauge built:** `knowledge/_context_gauge.py` + `_RUNBOOK-context-gauge.md` (tally +
+  out-of-band confirm; **Red >70% fires the capture ritual mid-session**). Committed `e7f8b87`.
+- **Adversarial densify method:** `_RUNBOOK-densify-adversarial.md` (densifier → adversary gate). **KEY FINDING:
+  rewording is a near-dead lever corpus-wide** (ops 3–9%, KB ~2.8% — already terse). **DON'T run a corpus
+  densify**; KEEP the adversary gate (it caught 3 losses + 11 fabrications). Real levers = disable unused
+  plugins (baseline) + prune/archive (tiering). Memory index pruned; 6 entries → `MEMORY-ARCHIVE.md`.
+- **★ REAL BUG found (chase separately):** `gen_rules_index.py` **silently truncates 11+ entries mid-sentence**
+  in `knowledge/guidelines/_RECONCILIATION.md` (mot-007, neuro-041/042, pict-014, tov-016, type26-015/026/029,
+  webf-017, ctkb-015, icon-015). Silent data loss in the rules index — correctness issue.
+- Its memories already surgically updated (`feedback-context-gauge`, `feedback-adversarial-densify`, MEMORY
+  index + archive) — conductor did NOT touch those. The **conductor pattern itself** (`notes/_PARALLEL-SESSIONS-conductor.md`)
+  is this round's process artefact: single writer for shared state; workers emit receipts. Promote to a runbook
+  + `AGENTS.md` clause in a single-session slot.
 
 ---
 
 # §C · QUEUE
 
-## 1. ★ LIGHT-mode RAG fills — the next real deliverable (R-D11)
-The dark set is locked but ground-relative. Derive a **ground-aware LIGHT-mode fill set** (breach must shout on
-white, none wash out), then reconcile the two modes. Fills are per-mode. **Opus** (ruling-shaped).
+## 1. ★ RAG token promotion — the next real deliverable (Sonnet, behind the blast-radius gate)
+RAG colour is DONE (R-D14). Promote to `tokens/semantic-colour.json` `rag/*`: **breach `#B92F1E` + watch
+`#F0B13A`/`#C58900` mode-stable; healthy + info PER-MODE** — light `#5DAC7B`/`#7DABCD`, dark `#43AD6F`/`#5F92B9`;
+all states black text, breach white; **no lines**. Rebind components, run `_build_all.py`, expect the blast-radius
+gate to bite (that's the point). Also build the **amber gate** (rules 1+2, still unenforced). Reconciled table in
+ledger R-D14 + `reviews/RAG-LIGHT-FILLS-2026-07-19-v9-LOCKED`.
 
 ## 2. §1 RAG manifestation — canon pick, then the status component build (Sonnet)
 Decision sheet built (`reviews/RAG-STATUS-MANIFESTATION-2026-07-19-v1`): Status-indicator dot+label (existing
 canon) · filled cell/badge · bar/edge; tags+pills EXCLUDED by canon. Awaiting Dave's pick (A / A+B / A+B+C).
-Then **Sonnet build**: rebind Status-indicator to R-D10 tokens, spec cell/bar as gated components (**cells need
-more vertical padding** — Dave). Once light fills land too → promote R-D10 tokens behind the blast-radius gate.
+Then spec cell/bar as gated components (**cells need more vertical padding** — Dave, R-D11 note).
 
 ## 3. Parked in `_FUTURE-STATE` (not urgent)
-Apollo Labs · whole-palette isoluminant+halation sweep · edge-triage interface · ~450 variable-weight target.
+**Apollo Labs** (the tuner + isoluminant/ramp/halation engine) · whole-palette sweep · edge-triage interface ·
+~450 variable-weight target · dual-observer principle.
 
-## 4. Carry-overs still open (prior sessions)
+## 4. From the parallel session (gauge / densify) — merged queue
+1. **Fix `gen_rules_index.py` truncation bug** — silent mid-sentence data loss for 11+ rules in the index
+   (list in §B). Correctness; do first of these.
+2. **Plugin-disable pass** — Dave's toggle in Settings › Capabilities (Figma / pdf-viewer / cowork-plugin-mgmt /
+   design connectors): the biggest single context-baseline cut.
+3. **Promote the conductor pattern** → `_RUNBOOK-parallel-conductor.md` + an `AGENTS.md` clause (worker vs
+   conductor; never write handoff files as a worker). Do it in a single-session slot (edits shared `AGENTS.md`).
+4. **Corpus densify = DON'T** (settled — near-dead lever); keep the adversary gate.
+
+## 5. Carry-overs still open (prior sessions)
 Bulk type-binding for ~338 elements (T-D9/T-D11/T-D14) · compliance edges (27 unverified `verified_by`,
 advisory) · multi-size countdown · 🕓 Latin webfont pack (waiting on brand, not yours to chase).
 
-> **COMMIT STATE — ONE commit this session, docs only (NO gated code):** `_RAG-DECISIONS.md` (R-D5…R-D11),
-> `_DECISION-HISTORY/2026-07-19-rag-colour-halation-ramp.md` (new dossier), `_RUNBOOK-capture-ritual.md` (step
-> 1b), `_LIVE-STATE.md`, `_FUTURE-STATE.md`, `GOOD-MORNING.md`, `reviews/RAG-COLOURS-…-v1…v9` +
-> `RAG-STATUS-MANIFESTATION-…-v1` (+ `.REVIEW` copies), `reviews/_rag_colours_calc.py` + `_rag_bloom_model.py`.
-> Build state unchanged (no gated sources). **You push via GitHub Desktop.** Paste-ready summary in chat.
-> **Next session model: Opus** (light-fill ruling) → **Sonnet** (component build).
+> **COMMIT STATE — ONE conductor commit, docs only (NO gated code).** RAG strand: `_proforma/_RAG-DECISIONS.md`
+> (R-D12…R-D14), `_DECISION-HISTORY/2026-07-19-rag-colour-halation-ramp.md` (Session-3 continuation),
+> `reviews/RAG-LIGHT-FILLS-2026-07-19-v1…v9-LOCKED` (+ `.REVIEW`), `reviews/_rag_light_fills_calc.py`. Shared
+> handoff: `_LIVE-STATE.md`, `_FUTURE-STATE.md`, `GOOD-MORNING.md`. Merged from the parallel session (its main
+> work already in `e7f8b87`): `knowledge/_RUNBOOK-densify-adversarial.md` + `notes/_PARALLEL-SESSIONS-conductor.md`.
+> `_to_delete/_dense_test/` is gitignored — excluded. Build state unchanged (no gated sources). **You push via
+> GitHub Desktop.** **Next session model: Sonnet** (token promotion + component build — enactment, not ruling).

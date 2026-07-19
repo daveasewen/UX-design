@@ -488,3 +488,104 @@ light-page fills are the reopened piece.
   tight top/bottom). Bump the cell/tag vertical padding when speccing the filled-cell + Status components.
 - Rebind Status-indicator (dot+label) to R-D10 dark tokens; the filled-cell + bar forms await the §1 canon pick.
 - Light-mode fill set is OPEN (R-D11 ground-relative correction).
+
+---
+
+## R-D12 — light-fills direction: NO LINES + black-text states (2026-07-19)
+
+Source: Dave's 3 review edits on `reviews/RAG-LIGHT-FILLS-2026-07-19-v1` (the light-fills derivation).
+
+### Ruling A — NO borders/lines on the fills — RULED (aesthetic)
+Dave, on the mode-continuity option: *"nope, cant have lines its not part of the aesthetic."* ⇒ **Filled status
+cells carry NO stroke/border.** This **kills Option B** (the mode-continuity/border approach) outright, AND
+removes the amber hairline border that Option 0 leaned on. The boundary must come from the FILL alone.
+**Consequence:** amber's identity is lightness, so with no border it cannot reach fill-vs-white ≥3 while staying
+amber (deepening only reaches 2.52 at L0.72 before it goes ochre/brown, R-D3-barred). So on white the watch fill
+is soft and leans on its black label (11:1). **This is NOT a new problem or a call — R-D6 Ruling A already
+governs it:** *"when paired with a label the contrast is less important."* Meaning is in the label (icon-013), so
+the fill is reinforcement, not the signal. ⚠️ **I initially over-raised this as an open question in v2; Dave
+corrected — *"amber is fine, it has a label that carries the meaning… we've ruled on this already."*** The wider
+point: a status cell is a **labelled component**, so fill-vs-page contrast is a **salience/scan lever, not an
+accessibility floor** (the floor is the LABEL's contrast). Stale-reading catch — should have CONSULTed R-D6
+before flagging. Amber stays `#F0B13A` black text, no line: settled.
+
+### Ruling B — black text on green + blue in light mode — RULED
+Dave: *"no must be black text on colour for the blue and green this reinforces the salience."* ⇒ **In light mode
+the state fills (green, blue) carry BLACK text, matching amber; only breach/red carries white.** The polarity
+(loud/white breach vs calm/black states) reinforces the salience ramp. **Consequence:** black text needs the
+fill light enough (blk/fill ≥4.5) while the fill still separates from white (≥3) — a narrow window. The R-D4
+values are too dark for black text (green #2B7E4F blk 4.20, blue #306EC6 blk 4.17, both < AA), so green/blue
+re-seat slightly lighter: **green ≈ `#429363`** (blk 5.59, white 3.76) holds cleanly. So Option 0's "restore
+R-D4 values" is superseded — the HUES stay but the lightness is tuned for black-text-on-white.
+
+### OPEN → v2 eyeball (`RAG-LIGHT-FILLS-2026-07-19-v2`)
+- **Blue — CONFIRMED `#7D8CC2`** (purple-lean, lightened). Dave on v3: *"this one"* on the highlighted pick.
+  H272, L0.65; black label 6.40, fill/white 3.28. The "lighter is fine" only holds because fill contrast is
+  salience not a floor (the reframe) — the label carries meaning.
+- **Green — POPPED, then desaturated; blue nudged toward true blue.** v3→v5 arc: green *"pop a bit more, go a bit
+  lighter"* → `#439A67`; then *"this with less saturation"* → **`#57966E`** (L0.62 C0.090, fill/white 3.50). Blue
+  *"move a tad to the blue, lighten a wee bit"* → **`#7A91C7`** (H266 from 272, L0.66; fill/white 3.13). **Constraint
+  surfaced (first of its kind):** green must stay ABOVE blue in salience or the ramp order healthy›info ties — so
+  green's pop is bounded by blue, not by contrast or the label floor. Green desaturation is *free* on the ramp
+  (luminance-driven), so calming green doesn't cost its lead.
+- **★ LIVE TUNER built (v6→v7).** Dave: *"give me a saturation slider, make it wide so i can fine tune."* In-browser
+  OKLCh tuner — wide saturation + fine lightness sliders for green & blue (hue held), live hex + fill/ground +
+  black-label floor + a ramp-order guard that reds if green ≤ blue. Red/amber locked. Reusable pattern → Apollo
+  Labs / Layer-2 in-browser controls ([[dataviz-pillar-progress]], [[vision-contextual-dashboard]]).
+
+---
+
+## R-D13 — LIGHT fills locked; DARK reopened to match (2026-07-19)
+
+- **LIGHT fills LOCKED off the tuner** (Dave gave the hex): **green `#6AB887`** (L0.72 C0.106), **blue `#8DA9EB`**
+  (L0.74 C0.101), both black text. Verified: labels 8.82 / 9.01 (≫ 4.5 floor); ramp green 2.38 > blue 2.33 on white
+  (healthy›info holds). These are **notably paler than the R-D10 dark values** — a pastel light palette. Fine on
+  white: fill contrast is the salience lever, meaning is in the label (R-D6). Watch stays soft (amber carve-out,
+  ruled).
+- **★ DARK reopened to MATCH.** Dave: *"we need to adjust on dark too."* The locked light palette is paler than the
+  R-D10 dark green/blue (#43AD6F / #5F92B9), so dark needs re-tuning for family coherence. Built a **two-mode
+  tuner** (`RAG-LIGHT-FILLS-2026-07-19-v7`): a second panel on its own #1A1A1A ground with its own ramp guard
+  (green must lead blue on dark = fill-vs-darkpage). Red + amber remain mode-stable; green + blue are per-mode
+  (the R-D11 thesis, now fully realised — **four green/blue values, two per hue per mode**). **DARK green/blue
+  pins PENDING** (Dave to lock off the v7 dark tuner). Reconciliation into the token table waits on the dark lock.
+- **Reconciled table (light locked; dark pending):**
+
+| severity | light fill | dark fill | text | mode |
+|---|---|---|---|---|
+| breach | `#B92F1E` | `#B92F1E` | white | mode-stable |
+| watch | `#F0B13A` (glyph `#C58900`) | `#F0B13A` | black | mode-stable |
+| healthy | **`#6AB887`** | *pending v7 dark pin* (R-D10 `#43AD6F`) | black | per-mode |
+| info | **`#8DA9EB`** | *pending v7 dark pin* (R-D10 `#5F92B9`) | black | per-mode |
+
+- Closes the **R-D11 light-fill open** (light half done). Dark-match is the last open before token promotion.
+
+---
+
+## R-D14 — RAG light fills LOCKED; full set reconciled (2026-07-19)
+
+- **Blue un-purpled.** Dave: *"I want the blue on white to have the same hue, I've changed my mind from the slight
+  purple."* Light blue hue H266→**H241** (matches dark blue; drops the purple lean).
+- **LIGHT set LOCKED — Option C** (Dave: *"c is the one, lets lock it"*, off `RAG-LIGHT-FILLS-2026-07-19-v8`):
+  **green `#5DAC7B`** (L0.68 C0.108 H155), **blue `#7DABCD`** (L0.72 C0.070 H241). Green leads blue on white
+  (fill/white 2.74 > 2.45) so healthy›info holds; labels 7.65 / 8.58 (≫ floor). Black text; no lines.
+- **★ IMPOSSIBILITY PROVEN (not asserted).** Exhaustive pair search: **no single green/blue keeps green›blue on
+  BOTH grounds** — "louder" = darker on white but lighter on dark, so green can't lead on both. ⇒ green/blue are
+  **necessarily per-mode**. This is R-D11's thesis, now demonstrated. (Dave's mode-stable try #5EAE7C/#5898C6
+  inverted on white — the evidence.)
+- **DARK held at R-D10** (`#43AD6F` / `#5F92B9`): Option C's green came *down* to L0.68, landing close to dark's
+  L0.67 (blues share the hue family), so the modes harmonise without re-cutting dark. *(Reconciliation call —
+  pending Dave's ok; the v7 dark tuner stands if he wants dark moved.)*
+
+### FINAL RECONCILED SET — ready for token promotion (Sonnet, behind the blast-radius gate)
+| severity | token | LIGHT fill | DARK fill | text | mode |
+|---|---|---|---|---|---|
+| breach | `rag/breach` | `#B92F1E` | `#B92F1E` | white | mode-stable |
+| watch | `rag/watch` (+ glyph `#C58900`) | `#F0B13A` | `#F0B13A` | black | mode-stable |
+| healthy | `rag/healthy` | **`#5DAC7B`** | `#43AD6F` | black | per-mode |
+| info | `rag/info` | **`#7DABCD`** | `#5F92B9` | black | per-mode |
+
+No lines (R-D12 A). Fill contrast = salience lever, meaning in the label (R-D6); amber soft on white is ruled fine.
+**Next:** promote to `tokens/semantic-colour.json` rag/* + rebind behind the blast-radius gate (deferred to a
+Sonnet session). Closes R-D11 entirely.
+- Green value `#429363` confirm (black text, label contrast 5.6).
+- ~~Amber accept?~~ **NOT open — R-D6 governs (label carries meaning); over-raised, Dave corrected.**
