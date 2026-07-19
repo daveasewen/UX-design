@@ -218,11 +218,10 @@ edit-mode "μX" concept from a one-line control idea into a registered product d
   markup") was met, and the assertion gate STOPPED the build the instant "0 bound" flipped, exactly as
   designed. Ledger `_TYPE-DECISIONS` **T-D14**. ⚠️ The **bulk** binding mechanism for the other ~338 is
   still OPEN — this was one collision-forced case, not a general ruling.
-- **§2 dv-017 — VISUAL built, awaiting your wording confirm.** `reviews/DV017-DELTA-VS-RAG-2026-07-19-v1`.
-  Directional deltas (real arrow assets, both types, red/green ONLY) vs RAG status hues at the RULED values.
-  It confirms your amber recollection: bg **#F0B13A** (black text, the centre of your four candidates) vs glyph
-  **#C58900** — amber is the one hue whose two roles diverge. Recommendation = split the clause. **NOT enacted
-  — you asked to see it first.**
+- **§2 dv-017 — RULED + ENACTED (R-D5).** You confirmed the visual (`reviews/DV017-DELTA-VS-RAG-2026-07-19-v1`) —
+  "good for me". Split the clause: directional deltas are red/green ONLY; RAG status is a separate concern → R-D3.
+  Patched `data-visualisation.md`; rules-index regenerated; build green. The visual also confirmed your amber
+  recollection (bg **#F0B13A** black-text vs glyph **#C58900** — amber's two roles diverge). Manifestation + dark opens → the RAG review.
 - **μX in-context edit-mode prototype (v1→v3).** Select a component → its controls dock beside it, no sidebar;
   **two grab bars** (move component in a DOM stack · move controls); **arrow keys** reorder; controls float +
   anchor (v3 fixed a v2 overlap where they sat on the component). Registered in `_FUTURE-STATE`: **universal**
@@ -230,7 +229,17 @@ edit-mode "μX" concept from a one-line control idea into a registered product d
   (prompt-only at the creative extreme → more structured controls toward strict; direction CONFIRMED by Dave).
 - **Three review conventions inscribed** (memory + `_REVIEW-SIGNOFF.md`): specimens show the component ALIVE +
   full variant/state spread from its meta · every review carries a light/dark toggle + responsive slider ·
-  **version `-vN`, never overwrite** (recovered an overwritten v1 from its REVIEW copy).
+  **version `-vN` by DEFAULT** — overwrite only when Dave says "don't version this one" (refined 2026-07-19).
+- **Then the magpie took flight (this all landed AFTER commit `cef3d25`).** The compliance **KG edges diagram**,
+  built as a generator (`knowledge/compliance/_build_kg_diagram.py` → `reviews/KG-COMPLIANCE-DIAGRAM-2026-07-19-v1`):
+  SC↔component edges colour-coded by verification — **only 4 of 31 SCs carry a live `verified_by` edge** (27
+  unverified; 13 are axe-core "easy wins"). Embedded into the knowledge-usage trace
+  (`_KNOWLEDGE-USAGE-TRACE-2026-07-19-v3`, promoted to a native `#s-edges` section under the node graph + nav item).
+  `_FUTURE-STATE` gained the **edge-triage interface** (chat is bad UX for per-item triage; a μX sibling).
+  `MODEL-ROUTING` gained the **"scope once (expensive brain), run at scale (trusted hands)"** pattern — Opus writes
+  *a mini brief for the brief*, Fable/Sonnet execute by stakes. And `working-style-divergent` was **reframed**:
+  **"the recursive magpie" = how WE work together**, a symbiotic **"symbiotech"** creature (Dave's divergence + my
+  convergence = two organs of one animal).
 
 ## What I got wrong / watch
 
@@ -245,16 +254,17 @@ edit-mode "μX" concept from a one-line control idea into a registered product d
 
 # §C · QUEUE
 
-## 1. Confirm §2 dv-017 wording — quick, yours
-Visual is built (`reviews/DV017-DELTA-VS-RAG-2026-07-19-v1`). Say yes → I patch `data-visualisation.md`,
-rebuild the rules-index, log the R-D ruling. Manifestation stays for the RAG review.
-
-## 2. RAG-colours review — the next real deliverable (Dave's ask: "settle it once and for all")
+## 1. RAG-colours review — the next real deliverable (Dave: "let's do this next / settle it once and for all")
 Ruled values exist (R-D1/R-D3/R-D4) but three things are OPEN: dark-mode **green** has no ruled value
 (incumbent #1AA05C fails white text 3.37), dark red/blue as glyph-on-text fail 4.5, and the real
-**manifestation** (cell / pill / dot / bar). Build a dedicated review. Home: `_FUTURE-STATE`.
+**manifestation** (cell / pill / dot / bar — the source of the earlier dv-017 confusion). Dedicated versioned review. Home: `_FUTURE-STATE`.
 
-## 3. Tag colour/RAG — parked, blocked by #2
+## 2. Compliance edges — 27 unverified `verified_by` (advisory, NOT blocking)
+Diagram built (`reviews/KG-COMPLIANCE-DIAGRAM-*`, embedded in the trace). Not urgent — the compliance graph is
+advisory. Dave's steer: build the **edge-triage interface** first (`_FUTURE-STATE`) so the edges become cheap
+batch work. Model per `MODEL-ROUTING`: Opus specs → Fable (high-trust batch) / Sonnet (mechanical) rattles through.
+
+## 3. Tag colour/RAG — parked, blocked by #1
 Unblocks the moment RAG lands, then one gated pass on `Tags.reference` using the R-D3 status tokens.
 
 ## 4. Multi-size countdown + the BULK binding mechanism
@@ -263,9 +273,10 @@ type-binding mechanism for ~338 elements remains unruled — T-D9 / T-D11 / **T-
 
 ## 5. 🕓 Waiting on brand — the Latin webfont pack (not yours to chase)
 
-> **COMMIT STATE:** §1 code (`type.css`, `Countdown-timer.reference.html`, regenerated `canon.css`) +
-> assertion retirement (`_assertions.json`, `_validate_assertions.py`) + all ledgers/state/memory + the new
-> review docs are committed in-sandbox at **`<hash — see chat>`**; ritual docs commit with them. Build green,
-> **34 steps**. Locks clear; **you push via GitHub Desktop**. **Next session model: Sonnet** (component build);
-> **Opus** if a ruling surfaces. Session record: `reviews/SMALL-PICKS-DESK-*` · `reviews/EDIT-MODE-UX-PROTOTYPE-*`
-> · `reviews/DV017-DELTA-VS-RAG-*` · `_TYPE-DECISIONS` T-D14 · `_FUTURE-STATE` · this handoff.
+> **COMMIT STATE — TWO commits this session:** (1) **`cef3d25`** = the §1/§2 mop-up (`type.css`,
+> `Countdown-timer.reference.html`, regenerated `canon.css`, assertion retirement, ledgers, ritual docs). (2) the
+> session-close commit **`<hash — see chat>`** = the KG diagram + generator, trace v2/v3 + embed, `MODEL-ROUTING`
+> pattern, `_FUTURE-STATE` entries. Build green, **34 steps**. Locks clear; **you push BOTH via GitHub Desktop**.
+> **Next session model: Sonnet** (component build); **Opus** if a ruling surfaces. Session record:
+> `reviews/SMALL-PICKS-DESK-*` · `reviews/EDIT-MODE-UX-PROTOTYPE-*` · `reviews/DV017-DELTA-VS-RAG-*` ·
+> `reviews/KG-COMPLIANCE-DIAGRAM-*` · `_TYPE-DECISIONS` T-D14 · `_RAG-DECISIONS` R-D5 · `_FUTURE-STATE` · this handoff.

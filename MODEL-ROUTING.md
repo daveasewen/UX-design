@@ -3,7 +3,7 @@
 > Operating reference: name a session's work, get its model. Consulted at session start
 > (per the session-title ritual) and used as the **delegation rule** inside a session.
 > Supersedes the `model-selection-by-phase` memory (now points here). Unaudited — Dave's to tune.
-> *Last updated: 2026-07-13.*
+> *Last updated: 2026-07-19 (added the "scope once, run at scale" worked pattern).*
 
 ## The tiers (Dave's real economy)
 
@@ -34,6 +34,26 @@ A chat runs on **one model**; it changes only when you deliberately `/model`. No
 - **Mode 3 — handoff pre-selects the next model.** `GOOD-MORNING.md` ends with "next session = <work> → <model>", so cold-start the choice is already made (you still action it via the selector).
 
 **Biggest saving for Dave specifically:** you default to Opus for complex work, and manual switching is hard in Cowork — so **Modes 2 + 3 carry the weight**: Mode 2 (auto-delegate the donkey work off Opus) saves more than any clever switching, and reserving Fable for genuinely big high-trust jobs keeps the premium spent where it pays.
+
+## Worked pattern — scope once (expensive brain), run at scale (trusted hands)
+
+The highest-leverage shape for a **big repetitive job** (e.g. verifying all 27 unverified `verified_by`
+edges): **Opus writes the brief + spec** — which items qualify, how each check works, the pass bar, the
+output format, the edge cases — and then **one model rattles through the whole batch against that spec**.
+**The spec is the hinge:** it converts an exploratory judgment problem into a hands-off execution one.
+
+- **Who runs the batch is set by STAKES, not size.** High-stakes-at-scale — a mistake across the whole
+  scope is costly and you won't review each item — → **Fable**, one confident sweep. Mechanical and
+  cheaply re-checkable — e.g. a build gate re-tests every wired check, so a slip is caught anyway — →
+  **Sonnet**. Reach for Fable when the spec is subtle and you want to trust the entire pass; Sonnet when
+  the safety net already exists.
+- **The guardrails still hold** (rules 2 + 5): the executor never self-promotes its output — **Opus or
+  Dave vouches it** — and any adversarial check uses a peer-or-stronger model, never a weaker one.
+- **Mnemonic:** *expensive brain scopes it once, trusted hands run the scope* — Opus writes **a mini
+  brief for the brief** (Dave's phrase): the spec IS a brief, produced by the pricey model, that the
+  batch model then executes against.
+
+*Recorded 2026-07-19 (Dave, from the compliance-edges routing discussion).*
 
 ## Entry points
 `AGENTS.md` (How to work → model routing) · the session-title / capture ritual · memory `model-selection-by-phase`.

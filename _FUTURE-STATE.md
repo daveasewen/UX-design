@@ -72,6 +72,15 @@ status (`idea` / `parked` / `resurrection-candidate` / `graduated→LIVE`).
   dot / bar) is undecided — the source of the dv-017 confusion. *Feeds:* the RAG token promotion +
   component rebind (after the blast-radius gate). *Source:* `knowledge/_proforma/_RAG-DECISIONS.md`
   R-D1..R-D4 "Still open". *Status:* queued — next review deliverable.
+- **Edge-triage interface (Dave, 2026-07-19: "chat might not be the best ux")** — a small purpose-built UI to work
+  the compliance graph's **27 unverified `verified_by` edges**, one SC at a time: show the claim (`applies_to`), the
+  available axe-core rule (13 are "easy wins"), a verdict (wire a check / already covered by a bespoke gate / bespoke
+  needed / n-a), and mark state — persisted back to the graph. The task is per-item, stateful and visual, which is
+  exactly what chat is bad at. **This is a sibling of the μX concept** (proximate, task-specific controls; interface >
+  chat for repetitive triage) and the natural step-2 after the KG **diagram** (`reviews/KG-COMPLIANCE-DIAGRAM-2026-07-19-v1`,
+  built this session — see the gap) → the interface acts on it. *Feeds:* the harness + compliance moat. *Model:* Opus to
+  design + decide per-SC; delegate the mechanical check-wiring down; a batched "verify all 27" hands-off pass could be a
+  Fable job later (per `MODEL-ROUTING.md` — Fable = big high-trust-at-scale, not iterative triage). *Status:* idea → prototype next if Dave wants.
 - **In-context edit-mode controls (Dave's "μX" concept)** — the harness edit mode (post-generation) surfaces a
   component's controls **proximate to the component itself**, as a floating overlay docked to the selected
   component's state — **only** the controls that component exposes, **no sidebar unless absolutely needed**. Dave
