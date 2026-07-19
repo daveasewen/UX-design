@@ -11,14 +11,14 @@ mis-dated itself a day forward; commit timestamps caught it).*
 half of the state machine, Dave's ask 2026-07-18) · **`_DECISION-HISTORY/`** — dated per-thread
 narrative, relocated verbatim (how we got here; see its README for the rules + RESURRECT tags).*
 
-## ⏱ LATEST DELTA — 2026-07-19 PM (this session; two commits pushed: `dba719b`, `e69b75f`)
-- **LIVE:** R-D16 **ENACTED** — semantic greys seated on `color/mono/*`; two a11y carve-outs (dark borders `mono/8 #808080`, text-bearing pressed fills `mono/7 #626262`) — **do NOT revert to nearest-step** (provenance `_proforma/_RAG-DECISIONS.md` R-D16).
-- **LIVE:** snippets are **STYLED BY the tokens** — `knowledge/gen_snippet_tokens.py` projects the store into snippet `[data-theme]` blocks + `canon.css .cn-*` via each `#token-manifest`. Run it after any token change; the old hand-sync step is **DEAD**.
-- **LIVE / NEW STANDARD:** strict **three-tier token stack** — primitive → semantic → component; a component **NEVER references a primitive**. Home `_STANDARDS.md` (§1, standing/gated); gate `_validate_token_tiers.py`; `$alias`=source of truth, `$value`=gate-verified cache.
-- **LIVE:** dark-elevation tokens `color/mono/raise-1/2/3` (`#1F1F1F / #232323 / #272727`) → semantic `surface/raised | subtle | raised-hover` → the 9 flattened surface components (the 3-tier **reference example**).
-- **OPEN / RULING OWED:** the mono **primary-action** colour has **no semantic token** (`action/primary/*` likely) — surfaced by the tranche work.
-- **OPEN / TARGET:** **Tranche-9 · Secure entry** PICKED, not built (GOOD-MORNING §C1). Worker brief to **tokenize T1–T8** (drifted, still 2-tier) at `notes/_BRIEF-tranche-tokenize-T1-T8.md`.
-- **OPEN:** rest of the store still 2-tier → deferred migration; 4 legacy alias bugs (advisory in `_validate_token_tiers`).
+## ⏱ LATEST DELTA — 2026-07-19 (evening) — "Tranche-9 secure entry + all tranches tokenised"
+- **LIVE:** **Tranche-9 · Secure entry** BUILT + gated (build green 35/35) — `knowledge/_proforma/Tranche-9-interactive.html`. OTP/PIN (segmented, auto-advance, paste), password (**Show/Hide text** toggle + **mono** strength ramp + requirement checklist), memorable-word partial entry, re-auth card (+ device-agnostic biometric alt). Monochrome; the one hue = `rag/error` dot; carries a `#token-manifest`. **NOT yet Dave-reviewed.**
+- **LIVE:** **T1–T8 TOKENISED** (Sonnet worker) — each now carries a `#token-manifest`; `gen_snippet_tokens.py` projects **all 9 tranches** (`Tranche-[1-9]`), closing the pre-R-D16 hardcode drift. Receipt: `notes/_receipts/2026-07-19-worker-tranche-tokenize.md`.
+- **OPEN / RULING OWED (sharpened):** mono **primary-action** token gap. Worker VERIFIED that binding `--pri-lbl`→`text/reverse` gives **1.0:1 in dark** (primary ground inverts by mode; `text/reverse` is flat white). Interim across T1–T9: `--pri`→`text/default`; `--pri-h`/`--pri-lbl`/`--icon-rev` kept as safe **local literals** (flagged). Fix = mint `action/primary/{background,background-hover,label}` (+ an `icon/on-inverse`); `text/on-inverse` (#FFFFFF/#333333) is the ready label candidate — **Dave's call** (promotion is his).
+- **NOTE (visible delta):** tokenisation made `--focus` resolve to the real **blue** focus-ring (`focus/ring` #305A85/#4587A7) across all tranches — was mono near-black in T6. Functional a11y token; flag if a mono focus ring is wanted.
+- **OPEN (carried):** rest of the store still 2-tier → deferred migration; 4 legacy alias bugs (advisory in `_validate_token_tiers`).
+
+*Prior delta (2026-07-19 PM, commits `dba719b`+`e69b75f`): R-D16 enacted (greys on `color/mono/*`, +2 a11y carve-outs — do NOT revert to nearest-step), snippets styled BY tokens, strict 3-tier token stack + dark-elevation exemplar — all LIVE below / in `_STANDARDS.md`.*
 
 > **SPINE DISCIPLINE (ruled 2026-07-18, Fable consolidation session — supersedes the "1044 lines"
 > banner):** state lines live here; **narrative longer than ~10 lines goes to `_DECISION-HISTORY/` at

@@ -20,5 +20,7 @@
 
 ## ✓ _proforma/Tranche-8-interactive.html — PASS
 
+## ✓ _proforma/Tranche-9-interactive.html — PASS
+
 ---
 Rule: motion/spacing/styling is CSS + token governed; JS is behaviour-only (portability + Figma transfer).

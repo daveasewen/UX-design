@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apollo pro-forma · Tranche 9 · Secure entry &amp; verification</title>
+<!-- MONOCHROME pro-forma base. Primary = near-black (#1A1A1A)/near-white; colour = MEANING ONLY.
+     TRANCHE 9 colour rule: the ONE hue is the RAG ERROR state (dot in the status row). Everything else — including
+     password STRENGTH and "verified" confirmation — is expressed in MONO (fill ramps + ink marks), not red/amber/green.
+     TOKEN-DRIVEN: theme-block values are a PROJECTION of the token store via #token-manifest (gen_snippet_tokens.py). Do
+     NOT hand-edit theme values — edit the token store and re-project. Local literals (--pri-h/--pri-lbl/--icon-rev) are
+     an intentional gap pending action/primary/* — see #token-manifest knownFindings.
+     ICONS: real HSBC assets only (sprite below — see #icon-manifest). No invented glyphs.
+     Password reveal = "Show/Hide" TEXT toggle (no eye glyph — device-agnostic, tov-038). Behaviours are LIVE. -->
+<style>
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+  :root{ --btn-grow:1.02; --btn-press:0.98; --ib-grow:1.045; --ib-press:0.955; --card-grow:1.007; --card-press:0.993;  /* interaction motion — scale factors; buttons/ib size-scoped for ~1px/side travel; all CSS-governed, mode-overridable */
+    --bw-sm:1px; --bw-md:2px; --bw-lg:4px; --bw-1_5:1.5px; --radius:0; --radius-round:50%; --radius-pill:999px;  /* structural → KB semantic-scale; radius is a MODE token (0=mono/square) */
+    --space-1:1px; --space-2:2px; --space-3:3px; --space-4:4px; --space-5:5px; --space-6:6px; --space-7:7px; --space-8:8px; --space-9:9px; --space-10:10px; --space-11:11px; --space-12:12px; --space-13:13px; --space-14:14px; --space-16:16px; --space-18:18px; --space-20:20px; --space-22:22px; --space-24:24px; --space-26:26px; --space-28:28px; --space-30:30px; --space-34:34px; --space-48:48px; --space-56:56px; --space-80:80px;  /* spacing scale → KB semantic-scale; mode-overridable */
+    --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+    --ease:160ms cubic-bezier(.4,0,.2,1); --spring:280ms cubic-bezier(.5,1.4,.4,1); --press:90ms cubic-bezier(0,0,.58,1); }
+  /* ===== theme blocks — values PROJECTED from the token store via #token-manifest (do not hand-edit) ===== */
+  [data-theme="light"]{
+    --page:#FFFFFF; --raised:#FFFFFF; --ink:#1A1A1A; --ink2:#1A1A1A; --disi:#E1E1E1; --line:#E1E1E1; --line2:#F0F0F0;
+    --surf:#F0F0F0; --fbord:#808080; --fborda:#000000; --fbordd:#E1E1E1;
+    --pri:#1A1A1A; --pri-h:#000000; --pri-lbl:#FFFFFF; --icon:#1A1A1A; --icon-rev:#FFFFFF; --focus:#305A85;
+    --scrim:#00000080; --shadow:#00000033;
+    --err:#A8000B; --err-t:#F9F2F3; --warn:#FFBB33; --warn-t:#FFF8EA; --success:#00847F; --success-t:#E5F2F2; --info:#305A85; --info-t:#EBEFF4;
+  }
+  [data-theme="dark"]{
+    --page:#1A1A1A; --raised:#1F1F1F; --ink:#FFFFFF; --ink2:#FFFFFF; --disi:#808080; --line:#808080; --line2:#808080;
+    --surf:#1F1F1F; --fbord:#808080; --fborda:#FFFFFF; --fbordd:#484848;
+    --pri:#FFFFFF; --pri-h:#E1E1E1; --pri-lbl:#1A1A1A; --icon:#FFFFFF; --icon-rev:#1A1A1A; --focus:#4587A7;
+    --scrim:#00000080; --shadow:#000000D9;
+    --err:#DB0011; --err-t:#260005; --warn:#FFBB33; --warn-t:#221701; --success:#00847F; --success-t:#001615; --info:#4587A7; --info-t:#000D1B;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:var(--font); background:var(--page); color:var(--ink); -webkit-font-smoothing:antialiased;
+    transition:background var(--ease), color var(--ease); line-height:1.5;}
+  .wrap{max-width:920px; margin:0 auto; padding:0 var(--space-28) var(--space-80);}
+  .top{position:sticky; top:0; z-index:20; background:var(--page); border-bottom:var(--bw-sm) solid var(--line2);
+    display:flex; align-items:center; justify-content:space-between; padding:var(--space-14) var(--space-28); margin:0 calc(-1 * var(--space-28)) var(--space-8); gap:var(--space-12); flex-wrap:wrap;}
+  .top .t{font:500 16px/1 var(--font);} .top .t small{color:var(--ink2); font-weight:400; margin-left:var(--space-8);}
+  .ctrls{display:flex;align-items:center;gap:var(--space-16);}
+  .wctl{display:flex;align-items:center;gap:var(--space-8);font:400 12px/1 var(--font);color:var(--ink2);}
+  .wctl input[type=range]{accent-color:var(--ink);width:120px;} .wctl b{color:var(--ink);font-weight:500;min-width:40px;text-align:right;}
+  .tgl{font:500 14px/1 var(--font); padding:var(--space-9) var(--space-14); border:var(--bw-sm) solid var(--line); background:transparent; color:var(--ink); cursor:pointer;}
+  .tgl:focus-visible{outline:var(--bw-md) solid var(--focus); outline-offset:2px;}
+  .frame{container-type:inline-size; width:var(--fw,100%); max-width:100%; margin:0; transition:width .08s linear;}
+  section{padding:var(--space-34) 0; border-top:var(--bw-sm) solid var(--line2);}
+  .h{display:flex; align-items:baseline; gap:var(--space-12); margin-bottom:var(--space-6); flex-wrap:wrap;}
+  .h h2{font:500 20px/1.2 var(--font); margin:0;} .h .subtitle{font:500 12px/1 var(--font); color:var(--ink2); text-transform:capitalize;}
+  .sub{color:var(--ink2); font:400 14px/1.5 var(--font); margin:0 0 var(--space-20); max-width:64ch;}
+  .row{display:flex; gap:var(--space-16); flex-wrap:wrap; align-items:center;}
+  .grouplbl{font:500 12px/1 var(--font);color:var(--ink2);margin:var(--space-24) 0 var(--space-12);}
+  .grouplbl:first-of-type{margin-top:0;}
+  .hintline{font:400 12px/1.5 var(--font);color:var(--ink2);margin:var(--space-14) 0 0;max-width:60ch;}
+  .mt14{margin-top:var(--space-14);} .mt18{margin-top:var(--space-18);}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:calc(-1 * var(--space-1));overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+
+  /* ---------- buttons (base, shared) ---------- */
+  .btn{height:44px; padding:0 var(--space-20); border:var(--bw-sm) solid transparent; border-radius:var(--radius); font:500 16px/1 var(--font); cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:var(--space-8);
+    transition:background var(--ease), border-color var(--ease), transform var(--spring), filter var(--press);}
+  .btn:focus-visible{outline:var(--bw-md) solid var(--focus); outline-offset:2px;}
+  .btn svg{width:18px;height:18px;fill:currentColor;stroke:none;}
+  .btn:hover{transform:scale(var(--btn-grow));}
+  .btn.full{width:100%;} .btn.full:hover{transform:none;}
+  .btn:active{transform:scale(var(--btn-press)); filter:brightness(.85); transition:transform var(--press), filter var(--press);}
+  .btn:disabled{cursor:not-allowed;opacity:1;} .btn:disabled:hover,.btn[aria-disabled="true"]:hover{transform:none; filter:none;}
+  .btn.pri{background:var(--pri); color:var(--pri-lbl); border-color:var(--pri);} .btn.pri:hover{background:var(--pri-h); border-color:var(--pri-h);}
+  .btn.pri:disabled{background:var(--disi);border-color:var(--disi);color:var(--page);}
+  .btn.ghost{background:transparent; color:var(--ink); border-color:var(--line);} .btn.ghost:hover{background:var(--surf); border-color:var(--ink);}
+  .btn.sm{height:36px;padding:0 var(--space-14);font-size:14px;}
+  .btn.link{height:auto;padding:var(--space-4) var(--space-6);border:0;background:transparent;color:var(--ink);text-decoration:underline;font:500 14px/1.3 var(--font);}
+  .btn.link:hover{transform:none;} .btn.link:disabled{color:var(--disi);text-decoration:none;}
+  .actionbar{display:flex; gap:var(--space-12); justify-content:flex-end; align-items:center;}
+
+  /* ---------- field atoms (shared with T6) ---------- */
+  .f-label{display:block;font:500 14px/1.3 var(--font);color:var(--ink);margin-bottom:var(--space-6);}
+  .f-label .req{font-weight:400;color:var(--ink);margin-left:var(--space-4);} /* ink marker, not red */
+  .f-hint{display:block;font:400 12px/1.4 var(--font);color:var(--ink2);margin-top:var(--space-6);}
+  .f-group{display:flex;flex-direction:column;max-width:360px;}
+  .f-msg{display:flex;align-items:center;gap:var(--space-8);margin-top:var(--space-8);font:400 12px/1.4 var(--font);color:var(--ink);min-height:1.4em;} /* text colour NEVER changes — the DOT carries the signal */
+  .f-dot{width:var(--space-16);height:var(--space-16);flex:none;display:inline-flex;align-items:center;justify-content:center;}
+  .f-dot svg{width:var(--space-16);height:var(--space-16);}
+  .f-msg.is-error .f-dot{color:var(--err);--mark:var(--page);}   /* THE one hue */
+  .f-msg.is-ok .f-dot{color:var(--ink);--mark:var(--page);}      /* verified is MONO — ink circle, page-knockout check */
+  .f-field{display:flex;align-items:center;min-height:52px;gap:var(--space-8);border:var(--bw-sm) solid var(--fbord);border-radius:var(--radius);
+    background:transparent;padding:0 var(--space-16);font:400 16px/1.5 var(--font);color:var(--ink);transition:border-color var(--ease), background var(--ease);}
+  .f-field input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:inherit;outline:none;}
+  .f-field input::placeholder{color:var(--ink2);font-weight:500;}
+  .f-field:hover:not(:focus-within){background:var(--surf);}
+  .f-field:focus-within{border-color:var(--fborda);background:var(--page);}
+  .f-field:has(input:focus-visible){outline:var(--bw-md) solid var(--focus);outline-offset:var(--space-2);}
+  :root[data-modality="pointer"] .f-field:has(:focus-visible){outline:none;}
+  .f-field:has(:disabled){border-color:var(--fbordd);background:var(--surf);}
+  .f-field.is-error{border-color:var(--fborda);} /* mono — RAG signal lives in .f-msg */
+  .f-lead{flex:none;display:inline-flex;align-items:center;color:var(--ink2);}
+  .f-lead svg{width:var(--space-18);height:var(--space-18);fill:currentColor;}
+
+  /* ===================== Tranche 9 · Secure entry & verification ===================== */
+
+  /* ---------- A · One-time passcode / PIN (segmented atom) ---------- */
+  .otp{display:flex;gap:var(--space-8);flex-wrap:wrap;align-items:center;}
+  .otp .cell{width:48px;height:56px;text-align:center;font:500 24px/1 var(--font);font-variant-numeric:tabular-nums;
+    color:var(--ink);background:transparent;border:var(--bw-sm) solid var(--fbord);border-radius:var(--radius);
+    transition:border-color var(--ease), background var(--ease);-moz-appearance:textfield;}
+  .otp .cell::-webkit-outer-spin-button,.otp .cell::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+  .otp .cell:hover:not(:focus){background:var(--surf);}
+  .otp .cell:focus{outline:none;border-color:var(--fborda);background:var(--page);}
+  .otp .cell:focus-visible{outline:var(--bw-md) solid var(--focus);outline-offset:2px;}
+  .otp .cell:disabled{color:var(--disi);border-color:var(--fbordd);background:var(--surf);cursor:not-allowed;}
+  .otp .cell.filled{font-weight:500;}
+  .otp .sep{align-self:center;color:var(--ink2);font:400 20px/1 var(--font);}
+  .otp.is-error .cell{border-color:var(--fborda);}          /* mono — colour is in the message */
+  .otp.is-done .cell{border-color:var(--fbordd);}
+  .resend{display:flex;align-items:center;gap:var(--space-8);margin-top:var(--space-16);font:400 13px/1.4 var(--font);color:var(--ink2);}
+  .resend button{background:transparent;border:0;color:var(--ink);font:500 13px/1 var(--font);text-decoration:underline;cursor:pointer;padding:var(--space-4);}
+  .resend button:disabled{color:var(--disi);text-decoration:none;cursor:default;}
+  .resend .count{font-variant-numeric:tabular-nums;color:var(--ink);font-weight:500;}
+
+  /* ---------- B · Password + strength (atom → molecule) ---------- */
+  .pw-field{max-width:360px;padding-right:0;}
+  .pw-field input{padding-right:var(--space-8);}
+  .pw-toggle{flex:none;align-self:stretch;background:transparent;border:0;border-left:var(--bw-sm) solid var(--line);
+    color:var(--ink);font:500 13px/1 var(--font);padding:0 var(--space-14);cursor:pointer;min-width:60px;transition:background var(--ease);}
+  .pw-toggle:hover{background:var(--surf);}
+  .pw-toggle:focus-visible{outline:var(--bw-md) solid var(--focus);outline-offset:-2px;}
+  .pw-strength{max-width:360px;margin-top:var(--space-12);}
+  .pw-bars{display:flex;gap:var(--space-6);}
+  .pw-bars span{flex:1;height:8px;background:var(--line);transition:background var(--ease);}
+  .pw-bars span.on{background:var(--ink);}                   /* MONO fill ramp — strength is NOT a colour signal */
+  .pw-meta{display:flex;justify-content:space-between;gap:var(--space-8);margin-top:var(--space-6);font:400 12px/1.4 var(--font);color:var(--ink2);}
+  .pw-meta b{font-weight:500;color:var(--ink);}
+  .pw-reqs{list-style:none;margin:var(--space-14) 0 0;padding:0;display:flex;flex-direction:column;gap:var(--space-8);max-width:360px;}
+  .pw-reqs li{display:flex;align-items:center;gap:var(--space-8);font:400 13px/1.4 var(--font);color:var(--ink2);transition:color var(--ease);}
+  .pw-reqs li .rq{width:16px;height:16px;flex:none;display:inline-flex;align-items:center;justify-content:center;color:var(--ink2);}
+  .pw-reqs li .rq .ring{width:12px;height:12px;border:var(--bw-1_5) solid currentColor;border-radius:var(--radius-round);}
+  .pw-reqs li .rq svg{width:16px;height:16px;fill:currentColor;display:none;}
+  .pw-reqs li.met{color:var(--ink);}
+  .pw-reqs li.met .rq .ring{display:none;}
+  .pw-reqs li.met .rq svg{display:block;}
+
+  /* ---------- C · Memorable word — partial character entry (molecule) ---------- */
+  .memword{display:flex;gap:var(--space-8);flex-wrap:wrap;align-items:flex-end;}
+  .mw-pos{display:flex;flex-direction:column;align-items:center;gap:var(--space-6);}
+  .mw-pos .cap{font:400 11px/1 var(--font);color:var(--ink2);}
+  .mw-pos.req .cap{color:var(--ink);font-weight:500;}
+  .mw-cell{width:44px;height:52px;text-align:center;font:500 20px/1 var(--font);border:var(--bw-sm) solid var(--fbord);
+    background:transparent;color:var(--ink);border-radius:var(--radius);transition:border-color var(--ease),background var(--ease);}
+  .mw-cell:focus{outline:none;border-color:var(--fborda);background:var(--page);}
+  .mw-cell:focus-visible{outline:var(--bw-md) solid var(--focus);outline-offset:2px;}
+  .mw-cell:disabled{border-style:dashed;border-color:var(--fbordd);color:var(--disi);background:transparent;cursor:not-allowed;}
+
+  /* ---------- D · Re-authentication prompt (organism / card) ---------- */
+  .reauth{max-width:440px;border:var(--bw-sm) solid var(--line);background:var(--raised);padding:var(--space-24);border-radius:var(--radius);}
+  .reauth .ra-head{display:flex;align-items:center;gap:var(--space-14);margin-bottom:var(--space-12);}
+  .reauth .ra-ic{width:44px;height:44px;flex:none;display:inline-flex;align-items:center;justify-content:center;color:var(--ink);border:var(--bw-sm) solid var(--line);}
+  .reauth .ra-ic svg{width:26px;height:26px;fill:currentColor;}
+  .reauth h3{font:500 18px/1.2 var(--font);margin:0;}
+  .reauth .ra-sub{font:400 14px/1.5 var(--font);color:var(--ink2);margin:0 0 var(--space-18);max-width:48ch;}
+  .reauth .actionbar{margin-top:var(--space-20);}
+  .reauth .ra-alt{display:flex;justify-content:center;margin-top:var(--space-14);padding-top:var(--space-16);border-top:var(--bw-sm) solid var(--line2);}
+
+  .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:var(--pri);color:var(--pri-lbl);
+    padding:var(--space-12) var(--space-18);font:500 14px/1 var(--font);opacity:0;visibility:hidden;transition:opacity var(--ease),transform var(--ease),visibility var(--ease);z-index:60;}
+  .toast.on{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}
+
+  @container (max-width:440px){
+    .f-group,.pw-field,.pw-strength,.pw-reqs,.reauth{max-width:100%;}
+    .actionbar{flex-direction:column; align-items:stretch;} .actionbar .btn{width:100%;} .actionbar .btn.pri{order:-1;}
+    .otp .cell{width:40px;height:48px;font-size:20px;}
+  }
+  @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
+</style>
+</head>
+<body data-theme="light">
+  <div class="top">
+    <span class="t">Apollo pro-forma <small>Tranche 9 · Secure entry &amp; verification · monochrome · real icons · interactive</small></span>
+    <span class="ctrls">
+      <label class="wctl">Width <input type="range" id="fw" min="320" max="920" value="920"><b id="fwv">full</b></label>
+      <button class="tgl" id="themeToggle" type="button">◐ Light / dark</button>
+    </span>
+  </div>
+  <div class="wrap">
+  <div class="frame" id="frame">
+
+    <section aria-labelledby="s-otp">
+      <div class="h"><h2 id="s-otp">One-time passcode</h2><span class="subtitle">atom</span></div>
+      <p class="sub">Segmented entry for a code sent by SMS or authenticator. Type to auto-advance, paste the whole code to fill every box at once, and use <b>Backspace</b> to step back. The boxes stay monochrome — the only colour is the RAG error dot when a code doesn't match.</p>
+
+      <p class="grouplbl">Live — 6-digit code</p>
+      <div class="f-group" style="max-width:none">
+        <span class="f-label" id="otp6-label"><span class="f-lead" aria-hidden="true" style="margin-right:var(--space-8)"><svg><use href="#i-secure-key"/></svg></span>Enter the 6-digit code</span>
+        <div class="otp" id="otp6" role="group" aria-labelledby="otp6-label" aria-describedby="otp6-msg">
+          <input class="cell" inputmode="numeric" autocomplete="one-time-code" maxlength="1" aria-label="Digit 1 of 6">
+          <input class="cell" inputmode="numeric" maxlength="1" aria-label="Digit 2 of 6">
+          <input class="cell" inputmode="numeric" maxlength="1" aria-label="Digit 3 of 6">
+          <input class="cell" inputmode="numeric" maxlength="1" aria-label="Digit 4 of 6">
+          <input class="cell" inputmode="numeric" maxlength="1" aria-label="Digit 5 of 6">
+          <input class="cell" inputmode="numeric" maxlength="1" aria-label="Digit 6 of 6">
+        </div>
+        <p class="f-msg" id="otp6-msg" role="status" aria-live="polite"></p>
+        <div class="resend">
+          <span>Didn't get it?</span>
+          <button type="button" id="otp-resend" disabled>Resend code</button>
+          <span id="otp-resend-wait">in <span class="count" id="otp-count">30</span>s</span>
+        </div>
+        <p class="f-hint">Demo code: <b>123456</b> — enter it to see the verified state, anything else shows the error.</p>
+      </div>
+
+      <p class="grouplbl mt18">Live — 4-digit PIN (masked)</p>
+      <div class="f-group" style="max-width:none">
+        <label class="f-label" for="pin1">Enter your PIN</label>
+        <div class="otp" id="pin4" role="group" aria-label="4-digit PIN" aria-describedby="pin4-msg">
+          <input class="cell" id="pin1" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 1 of 4">
+          <input class="cell" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 2 of 4">
+          <input class="cell" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 3 of 4">
+          <input class="cell" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 4 of 4">
+        </div>
+        <p class="f-msg" id="pin4-msg" role="status" aria-live="polite"></p>
+        <p class="f-hint">Demo PIN: <b>1234</b>.</p>
+      </div>
+
+      <p class="grouplbl mt18">State gallery</p>
+      <div class="row">
+        <div><span class="f-hint" style="margin:0 0 var(--space-6)">Default</span>
+          <div class="otp"><input class="cell" value="" readonly tabindex="-1"><input class="cell" readonly tabindex="-1"><input class="cell" readonly tabindex="-1"><input class="cell" readonly tabindex="-1"></div></div>
+        <div><span class="f-hint" style="margin:0 0 var(--space-6)">Filled</span>
+          <div class="otp is-done"><input class="cell filled" value="4" readonly tabindex="-1"><input class="cell filled" value="8" readonly tabindex="-1"><input class="cell filled" value="1" readonly tabindex="-1"><input class="cell filled" value="9" readonly tabindex="-1"></div></div>
+        <div><span class="f-hint" style="margin:0 0 var(--space-6)">Error</span>
+          <div class="otp is-error"><input class="cell filled" value="0" readonly tabindex="-1"><input class="cell filled" value="0" readonly tabindex="-1"><input class="cell filled" value="0" readonly tabindex="-1"><input class="cell filled" value="0" readonly tabindex="-1"></div></div>
+      </div>
+    </section>
+
+    <section aria-labelledby="s-pw">
+      <div class="h"><h2 id="s-pw">Password &amp; strength</h2><span class="subtitle">molecule</span></div>
+      <p class="sub">Reveal is a plain <b>Show / Hide</b> text control, not an eye glyph — it reads on any device and to any assistive tech. Strength and the requirement checklist are shown in <b>mono</b>: a filling bar ramp and ink ticks, never a red-amber-green colour scale.</p>
+
+      <p class="grouplbl">Create a password</p>
+      <div class="f-group" style="max-width:360px">
+        <label class="f-label" for="pw-new">New password <span class="req">(required)</span></label>
+        <div class="f-field pw-field">
+          <span class="f-lead" aria-hidden="true"><svg><use href="#i-password"/></svg></span>
+          <input id="pw-new" type="password" autocomplete="new-password" placeholder="Choose a strong password" aria-describedby="pw-strength-lbl pw-reqs">
+          <button class="pw-toggle" id="pw-toggle" type="button" aria-pressed="false" aria-controls="pw-new">Show</button>
+        </div>
+        <div class="pw-strength" aria-hidden="false">
+          <div class="pw-bars" id="pw-bars"><span></span><span></span><span></span><span></span></div>
+          <p class="pw-meta" id="pw-strength-lbl"><span>Password strength</span><b id="pw-strength-word">—</b></p>
+        </div>
+        <ul class="pw-reqs" id="pw-reqs" aria-label="Password requirements">
+          <li data-req="len"><span class="rq" aria-hidden="true"><span class="ring"></span><svg><use href="#i-check"/></svg></span>At least 8 characters</li>
+          <li data-req="num"><span class="rq" aria-hidden="true"><span class="ring"></span><svg><use href="#i-check"/></svg></span>A number</li>
+          <li data-req="sym"><span class="rq" aria-hidden="true"><span class="ring"></span><svg><use href="#i-check"/></svg></span>A symbol (!&#64;#…)</li>
+          <li data-req="case"><span class="rq" aria-hidden="true"><span class="ring"></span><svg><use href="#i-check"/></svg></span>Upper &amp; lower case</li>
+        </ul>
+      </div>
+
+      <p class="grouplbl mt18">Confirm password</p>
+      <div class="f-group" style="max-width:360px">
+        <label class="f-label" for="pw-confirm">Re-enter password <span class="req">(required)</span></label>
+        <div class="f-field pw-field" id="pw-confirm-field">
+          <input id="pw-confirm" type="password" autocomplete="new-password" placeholder="Type it again" aria-describedby="pw-confirm-msg">
+          <button class="pw-toggle" id="pw-confirm-toggle" type="button" aria-pressed="false" aria-controls="pw-confirm">Show</button>
+        </div>
+        <p class="f-msg" id="pw-confirm-msg" role="status" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <section aria-labelledby="s-mem">
+      <div class="h"><h2 id="s-mem">Memorable word</h2><span class="subtitle">molecule</span></div>
+      <p class="sub">The partial-entry security pattern: you're asked for specific characters of your memorable word, not the whole thing. Only the requested positions are active — the rest are shown dashed and masked so the position is clear without revealing length.</p>
+      <div class="f-group" style="max-width:none">
+        <span class="f-label" id="mw-label"><span class="f-lead" aria-hidden="true" style="margin-right:var(--space-8)"><svg><use href="#i-secure"/></svg></span>Enter the 2nd, 4th and 6th characters</span>
+        <div class="memword" id="memword" role="group" aria-labelledby="mw-label" aria-describedby="mw-msg">
+          <div class="mw-pos"><span class="cap">1</span><input class="mw-cell" value="•" disabled aria-label="Character 1, not required"></div>
+          <div class="mw-pos req"><span class="cap">2nd</span><input class="mw-cell" type="password" inputmode="text" maxlength="1" aria-label="Character 2, required"></div>
+          <div class="mw-pos"><span class="cap">3</span><input class="mw-cell" value="•" disabled aria-label="Character 3, not required"></div>
+          <div class="mw-pos req"><span class="cap">4th</span><input class="mw-cell" type="password" inputmode="text" maxlength="1" aria-label="Character 4, required"></div>
+          <div class="mw-pos"><span class="cap">5</span><input class="mw-cell" value="•" disabled aria-label="Character 5, not required"></div>
+          <div class="mw-pos req"><span class="cap">6th</span><input class="mw-cell" type="password" inputmode="text" maxlength="1" aria-label="Character 6, required"></div>
+          <div class="mw-pos"><span class="cap">7</span><input class="mw-cell" value="•" disabled aria-label="Character 7, not required"></div>
+        </div>
+        <p class="f-msg" id="mw-msg" role="status" aria-live="polite"></p>
+        <div class="actionbar" style="justify-content:flex-start;max-width:360px;margin-top:var(--space-16)">
+          <button class="btn pri sm" id="mw-verify" type="button">Verify</button>
+          <a class="btn link sm" href="#s-mem" onclick="return false">Forgotten your word?</a>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="s-reauth">
+      <div class="h"><h2 id="s-reauth">Re-authentication</h2><span class="subtitle">organism</span></div>
+      <p class="sub">A step-up prompt shown before a sensitive action — confirming a payee, changing a limit. Composes the field atoms, buttons and a security glyph into one self-contained card, with a device-agnostic biometric alternative.</p>
+      <div class="reauth" role="group" aria-labelledby="ra-title">
+        <div class="ra-head">
+          <span class="ra-ic" aria-hidden="true"><svg><use href="#i-identity"/></svg></span>
+          <div>
+            <h3 id="ra-title">Confirm it's you</h3>
+          </div>
+        </div>
+        <p class="ra-sub">For your security, re-enter your password to confirm this payment of <b>&pound;1,250.00</b> to Meridian Ltd.</p>
+        <div class="f-group" style="max-width:none">
+          <label class="f-label" for="ra-pw">Password</label>
+          <div class="f-field pw-field" id="ra-field">
+            <input id="ra-pw" type="password" autocomplete="current-password" placeholder="Your password" aria-describedby="ra-msg">
+            <button class="pw-toggle" id="ra-toggle" type="button" aria-pressed="false" aria-controls="ra-pw">Show</button>
+          </div>
+          <p class="f-msg" id="ra-msg" role="status" aria-live="polite"></p>
+        </div>
+        <div class="actionbar">
+          <button class="btn ghost" id="ra-cancel" type="button">Cancel</button>
+          <button class="btn pri" id="ra-confirm" type="button">Confirm payment</button>
+        </div>
+        <div class="ra-alt">
+          <button class="btn ghost sm" id="ra-bio" type="button"><svg aria-hidden="true"><use href="#i-face"/></svg>Use fingerprint or face</button>
+        </div>
+      </div>
+      <p class="hintline">Demo password: <b>correcthorse</b>. The biometric button stands in for a platform authenticator (WebAuthn) — wording stays device-agnostic.</p>
+    </section>
+
+  </div>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-check" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.82617 15.685L0.0761719 9.93502L0.924172 9.08802L5.82617 13.988L17.0762 2.73901L17.9242 3.58701L5.82617 15.685Z" fill="currentColor"/></symbol>
+    <symbol id="i-close" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.2 7H18V1.2L16.8 0V4.536C15.25 1.829 12.343 0 9 0C4.03 0 0 4.029 0 9C0 13.971 4.03 18 9 18C13.97 18 18 13.971 18 9H16.8C16.8 13.301 13.301 16.8 9 16.8C4.699 16.8 1.2 13.301 1.2 9C1.2 4.699 4.699 1.2 9 1.2C12.16 1.2 14.88 3.092 16.103 5.8H11L12.2 7Z" fill="currentColor"/></symbol>
+    <symbol id="i-error" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.30911 1.68194L0.109113 15.7999C-0.199887 16.3319 0.184113 16.9999 0.800113 16.9999H17.2001C17.8161 16.9999 18.2001 16.3319 17.8911 15.7999L9.69111 1.68194C9.38311 1.15094 8.61711 1.15094 8.30911 1.68194Z" fill="currentColor"/> <path d="M9.9001 5H8.1001V11H9.9001V5Z" style="fill:var(--mark)"/> <path d="M9 14.8259C9.69036 14.8259 10.25 14.2663 10.25 13.5759C10.25 12.8856 9.69036 12.3259 9 12.3259C8.30964 12.3259 7.75 12.8856 7.75 13.5759C7.75 14.2663 8.30964 14.8259 9 14.8259Z" style="fill:var(--mark)"/></symbol>
+    <symbol id="i-success" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/> <path d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z" style="fill:var(--mark)"/></symbol>
+    <symbol id="i-secure-key" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.8 8.6C5.242 8.6 5.6 8.242 5.6 7.8C5.6 7.358 5.242 7 4.8 7C4.358 7 4 7.358 4 7.8C4 8.242 4.358 8.6 4.8 8.6ZM4.8 15C5.242 15 5.6 14.642 5.6 14.2C5.6 13.758 5.242 13.4 4.8 13.4C4.358 13.4 4 13.758 4 14.2C4 14.642 4.358 15 4.8 15ZM4.8 11.8C5.242 11.8 5.6 11.442 5.6 11C5.6 10.558 5.242 10.2 4.8 10.2C4.358 10.2 4 10.558 4 11C4 11.442 4.358 11.8 4.8 11.8ZM9 8.6C9.442 8.6 9.8 8.242 9.8 7.8C9.8 7.358 9.442 7 9 7C8.558 7 8.2 7.358 8.2 7.8C8.2 8.242 8.558 8.6 9 8.6ZM9 15C9.442 15 9.8 14.642 9.8 14.2C9.8 13.758 9.442 13.4 9 13.4C8.558 13.4 8.2 13.758 8.2 14.2C8.2 14.642 8.558 15 9 15ZM9 11.8C9.442 11.8 9.8 11.442 9.8 11C9.8 10.558 9.442 10.2 9 10.2C8.558 10.2 8.2 10.558 8.2 11C8.2 11.442 8.558 11.8 9 11.8ZM13.2 8.6C13.642 8.6 14 8.242 14 7.8C14 7.358 13.642 7 13.2 7C12.758 7 12.4 7.358 12.4 7.8C12.4 8.242 12.758 8.6 13.2 8.6ZM13.2 15C13.642 15 14 14.642 14 14.2C14 13.758 13.642 13.4 13.2 13.4C12.758 13.4 12.4 13.758 12.4 14.2C12.4 14.642 12.758 15 13.2 15ZM13.2 11.8C13.642 11.8 14 11.442 14 11C14 10.558 13.642 10.2 13.2 10.2C12.758 10.2 12.4 10.558 12.4 11C12.4 11.442 12.758 11.8 13.2 11.8ZM17 1.5C17 0.675 16.325 0 15.5 0H2.5C1.675 0 1 0.675 1 1.5V16.5C1 17.325 1.675 18 2.5 18H15.5C16.325 18 17 17.325 17 16.5V1.5ZM15.8 16.5C15.8 16.663 15.663 16.8 15.5 16.8H2.5C2.337 16.8 2.2 16.663 2.2 16.5V5H15.8V16.5ZM15.8 3.8H2.2V1.5C2.2 1.337 2.337 1.2 2.5 1.2H15.5C15.663 1.2 15.8 1.337 15.8 1.5V3.8Z" fill="currentColor"/></symbol>
+    <symbol id="i-password" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.2 1.2H15.8V2.8H17V0H1V2.8H2.2V1.2ZM8.997 16.746C7.326 16.219 5.105 15.183 3.664 13.2H2.24C3.624 15.551 6.058 17.151 9 18C11.657 17.233 13.9 15.496 15.329 13.2H13.872C12.676 14.828 10.99 16.093 8.997 16.746ZM16.5 4H1.5C0.675 4 0 4.675 0 5.5V10.5C0 11.325 0.675 12 1.5 12H16.5C17.325 12 18 11.325 18 10.5V5.5C18 4.675 17.325 4 16.5 4ZM16.8 10.5C16.8 10.663 16.663 10.8 16.5 10.8H1.5C1.337 10.8 1.2 10.663 1.2 10.5V5.5C1.2 5.337 1.337 5.2 1.5 5.2H16.5C16.663 5.2 16.8 5.337 16.8 5.5V10.5ZM12 9H15V7.8H12V9ZM4.3 6.7C3.582 6.7 3 7.282 3 8C3 8.718 3.582 9.3 4.3 9.3C5.018 9.3 5.6 8.718 5.6 8C5.6 7.282 5.018 6.7 4.3 6.7ZM9 6.7C8.282 6.7 7.7 7.282 7.7 8C7.7 8.718 8.282 9.3 9 9.3C9.718 9.3 10.3 8.718 10.3 8C10.3 7.282 9.718 6.7 9 6.7Z" fill="currentColor"/></symbol>
+    <symbol id="i-secure" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.5 5.734H14V4C14 1.8 12.2 0 10 0H8C5.8 0 4 1.8 4 4V5.734H2.5C1.675 5.734 1 6.409 1 7.234V16.5C1 17.325 1.675 18 2.5 18H15.5C16.325 18 17 17.325 17 16.5V7.234C17 6.409 16.325 5.734 15.5 5.734ZM5.2 4C5.2 2.456 6.456 1.2 8 1.2H10C11.544 1.2 12.8 2.456 12.8 4V5.734H11.6V4C11.6 3.118 10.882 2.4 10 2.4H8C7.118 2.4 6.4 3.118 6.4 4V5.734H5.2V4ZM10.4 4V5.734H7.6V4C7.6 3.783 7.783 3.6 8 3.6H10C10.217 3.6 10.4 3.783 10.4 4ZM15.8 16.5C15.8 16.663 15.663 16.8 15.5 16.8H2.5C2.337 16.8 2.2 16.663 2.2 16.5V7.234C2.2 7.071 2.337 6.934 2.5 6.934H15.5C15.663 6.934 15.8 7.071 15.8 7.234V16.5ZM8.4 14H9.6V10H8.4V14Z" fill="currentColor"/></symbol>
+    <symbol id="i-identity" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 9.738C11.094 9.738 12.047 7.796 12.047 5.991C12.047 3.81 10.851 2.4 9 2.4C7.14 2.4 5.938 3.809 5.938 5.991C5.938 7.856 6.885 9.738 9 9.738ZM9 3.6C10.714 3.6 10.847 5.431 10.847 5.992C10.847 6.938 10.458 8.54 9 8.54C7.191 8.54 7.139 6.253 7.139 5.992C7.139 5.431 7.273 3.6 9 3.6ZM0 0V7.247C0 12.927 3.803 16.5 9 18C14.198 16.5 18 11.711 18 6.031V0H0ZM8.997 16.746C7.534 16.29 5.693 15.483 4.164 14.108L4.391 13.547C4.511 13.251 4.672 12.997 4.871 12.792C5.363 12.286 5.955 11.896 6.636 11.627L9 13.99L11.36 11.632C12.037 11.901 12.626 12.29 13.113 12.792C13.312 12.997 13.474 13.251 13.593 13.547L13.686 13.776C12.417 15.116 10.821 16.158 8.997 16.746ZM16.8 6.031C16.8 8.517 15.965 10.866 14.539 12.771C14.382 12.47 14.201 12.19 13.975 11.956C13.27 11.229 12.401 10.695 11.392 10.368L11.042 10.254L9 12.293L6.957 10.251L6.608 10.363C5.595 10.689 4.721 11.225 4.011 11.956C3.702 12.273 3.456 12.657 3.279 13.098L3.252 13.165C2.048 11.729 1.2 9.813 1.2 7.247V1.2H16.8V6.031Z" fill="currentColor"/></symbol>
+    <symbol id="i-face" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.2 16V12H0V16C0 17.1 0.9 18 2 18H6V16.8H2C1.566 16.8 1.2 16.434 1.2 16ZM1.2 2C1.2 1.566 1.566 1.2 2 1.2H6V0H2C0.9 0 0 0.9 0 2V6H1.2V2ZM16.8 16C16.8 16.434 16.434 16.8 16 16.8H12V18H16C17.1 18 18 17.1 18 16V12H16.8V16ZM16 0H12V1.2H16C16.434 1.2 16.8 1.566 16.8 2V6H18V2C18 0.9 17.1 0 16 0ZM5 6C5 6.552 5.448 7 6 7C6.552 7 7 6.552 7 6C7 5.448 6.552 5 6 5C5.448 5 5 5.448 5 6ZM12 7C12.552 7 13 6.552 13 6C13 5.448 12.552 5 12 5C11.448 5 11 5.448 11 6C11 6.552 11.448 7 12 7ZM11.598 11.387C10.148 12.694 7.852 12.694 6.402 11.387L5.598 12.278C6.544 13.131 7.752 13.6 9 13.6C10.248 13.6 11.456 13.131 12.402 12.278L11.598 11.387Z" fill="currentColor"/></symbol>
+  </svg>
+  <script type="application/json" id="icon-manifest">{"source":"knowledge/assets/icons","icons":{"i-check":"status-icons/yes.svg","i-close":"global-controls/close.svg","i-refresh":"global-controls/refresh.svg","i-error":"status-icons/error.svg","i-success":"status-icons/success.svg","i-secure-key":"informative/security-secure-key.svg","i-password":"informative/security-password.svg","i-secure":"global-controls/security-secure.svg","i-identity":"media/security-digital-identity.svg","i-face":"media/security-face.svg"}}</script>
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Tranche-9-secure-entry",
+    "vars": {
+      "--page": "background/default", "--raised": "surface/raised", "--ink": "text/default", "--ink2": "text/secondary",
+      "--disi": "text/disabled", "--line": "border/subtle", "--line2": "divider/border/break", "--surf": "surface/subtle",
+      "--fbord": "form/border/default", "--fborda": "form/border/active", "--fbordd": "form/border/disabled",
+      "--pri": "text/default", "--icon": "icon/default", "--focus": "focus/ring",
+      "--scrim": "overlay/version1", "--shadow": "elevation/functional",
+      "--err": "rag/error", "--err-t": "rag/error-tint", "--warn": "rag/warning", "--warn-t": "rag/warning-tint",
+      "--success": "rag/success", "--success-t": "rag/success-tint", "--info": "rag/information", "--info-t": "rag/information-tint"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "form/border/default", "bg": "background/default", "context": "non-text" },
+      { "fg": "rag/error", "bg": "background/default", "context": "non-text" }
+    ],
+    "variantsCovered": {
+      "otp": ["6-digit (numeric)", "4-digit PIN (masked)", "states: default / filled / error / verified"],
+      "password": ["show/hide text toggle", "mono strength ramp", "requirement checklist", "confirm/match"],
+      "memorableWord": ["partial-character entry (2nd/4th/6th), disabled dashed positions"],
+      "reAuth": ["step-up card + password re-entry + device-agnostic biometric alt"]
+    },
+    "knownFindings": [
+      "COLOUR RULE: the only hue is rag/error (the status dot on a mismatch). Password STRENGTH and 'verified' are MONO by design — a fill ramp and ink marks, not a red/amber/green scale — per the Apollo Mono colour carve-out and this tranche's brief.",
+      "LOCAL LITERALS (intentionally NOT bound — a real token gap): --pri-lbl (#FFFFFF light / #1A1A1A dark) and --icon-rev sit on the mode-INVERTING primary surface; text/reverse is flat white in both modes and would give 1.0:1 in dark (worker-verified on T1-T8). --pri-h is a hover with no token. These await new action/primary/* (+ an icon/on-inverse) semantic tokens — Dave's ruling. Kept as safe literals meanwhile.",
+      "--pri is bound to text/default as a tier-legal INTERIM (near-black/near-white matches the button ground by mode). Correct fix is a dedicated action/primary/* semantic token.",
+      "--focus now resolves to the real blue focus-ring tokens (#305A85 / #4587A7), not mono — a functional a11y affordance, consistent with T1-T8 after tokenisation. Flag if a mono focus ring is wanted at the token level.",
+      "Reveal is a Show/Hide TEXT control (tov-038, device-agnostic) — deliberately not the eye glyph T6 uses.",
+      "Near-not-exact bindings inherited from the shared mapping: --disi→text/disabled, --line2→divider/border/break, --surf→surface/subtle, --scrim→overlay/version1, --shadow→elevation/functional."
+    ],
+    "requiredAria": ["role=\"group\"", "aria-labelledby", "aria-describedby", "aria-label (per OTP cell)", "aria-live=\"polite\"", "aria-pressed (toggles)", "autocomplete=\"one-time-code\""]
+  }
+  </script>
+
+<script>
+  var body=document.body;
+  document.getElementById('themeToggle').onclick=function(){body.setAttribute('data-theme',body.getAttribute('data-theme')==='dark'?'light':'dark');};
+  var fw=document.getElementById('fw'),fwv=document.getElementById('fwv'),frame=document.getElementById('frame');
+  fw.addEventListener('input',function(){var v=+fw.value; frame.style.setProperty('--fw', v>=920?'100%':v+'px'); fwv.textContent=v>=920?'full':v+'px';});
+  var toast=document.getElementById('toast'),tt;
+  function showToast(m){toast.textContent=m;toast.classList.add('on');clearTimeout(tt);tt=setTimeout(function(){toast.classList.remove('on');},1800);}
+
+  // modality — Tab announces keyboard focus, pointer suppresses it
+  (function(){
+    var root=document.documentElement;
+    document.addEventListener('mousedown',function(){ root.setAttribute('data-modality','pointer'); },true);
+    document.addEventListener('touchstart',function(){ root.setAttribute('data-modality','pointer'); },true);
+    document.addEventListener('keydown',function(e){ if(e.key==='Tab'){ root.setAttribute('data-modality','keyboard'); } },true);
+  })();
+
+  function msgHTML(kind,text){
+    var use = kind==='error' ? '#i-error' : '#i-success';
+    return '<span class="f-dot" aria-hidden="true"><svg><use href="'+use+'"/></svg></span>'+text;
+  }
+
+  /* ===================== Tranche 9 · Secure entry ===================== */
+  (function(){
+
+    /* ---------------- A · OTP / PIN segmented entry ---------------- */
+    function wireOtp(groupId, msgId, expected, doneWord){
+      var group=document.getElementById(groupId); if(!group) return;
+      var msg=document.getElementById(msgId);
+      var cells=[].slice.call(group.querySelectorAll('.cell'));
+      function value(){ return cells.map(function(c){return c.value;}).join(''); }
+      function clearState(){ group.classList.remove('is-error','is-done'); if(msg){msg.className='f-msg';msg.innerHTML='';} }
+      function evaluate(){
+        cells.forEach(function(c){ c.classList.toggle('filled', c.value!==''); });
+        if(value().length===cells.length){
+          if(value()===expected){
+            group.classList.remove('is-error'); group.classList.add('is-done');
+            if(msg){ msg.className='f-msg is-ok'; msg.innerHTML=msgHTML('ok', doneWord); }
+          } else {
+            group.classList.add('is-error'); group.classList.remove('is-done');
+            if(msg){ msg.className='f-msg is-error'; msg.innerHTML=msgHTML('error','That code doesn’t match. Check and try again.'); }
+          }
+        } else {
+          clearState();
+        }
+      }
+      cells.forEach(function(cell,i){
+        cell.addEventListener('input',function(){
+          cell.value=cell.value.replace(/[^0-9A-Za-z]/g,'').slice(-1);
+          if(cell.value && i<cells.length-1) cells[i+1].focus();
+          evaluate();
+        });
+        cell.addEventListener('keydown',function(e){
+          if(e.key==='Backspace' && !cell.value && i>0){ cells[i-1].focus(); }
+          else if(e.key==='ArrowLeft' && i>0){ e.preventDefault(); cells[i-1].focus(); }
+          else if(e.key==='ArrowRight' && i<cells.length-1){ e.preventDefault(); cells[i+1].focus(); }
+        });
+        cell.addEventListener('paste',function(e){
+          e.preventDefault();
+          var data=(e.clipboardData||window.clipboardData).getData('text').replace(/[^0-9A-Za-z]/g,'');
+          for(var j=0;j<cells.length;j++){ cells[j].value = data[j]||''; }
+          var last=Math.min(data.length,cells.length)-1; if(last>=0) cells[last].focus();
+          evaluate();
+        });
+      });
+    }
+    wireOtp('otp6','otp6-msg','123456','Code verified.');
+    wireOtp('pin4','pin4-msg','1234','PIN accepted.');
+
+    /* resend countdown */
+    (function(){
+      var btn=document.getElementById('otp-resend'), wait=document.getElementById('otp-resend-wait'), count=document.getElementById('otp-count');
+      if(!btn) return;
+      var n=30, timer;
+      function tick(){
+        n--; if(count) count.textContent=n;
+        if(n<=0){ clearInterval(timer); btn.disabled=false; if(wait) wait.style.display='none'; }
+      }
+      timer=setInterval(tick,1000);
+      btn.addEventListener('click',function(){
+        if(btn.disabled) return;
+        n=30; if(count) count.textContent=n; if(wait) wait.style.display=''; btn.disabled=true;
+        clearInterval(timer); timer=setInterval(tick,1000);
+        showToast('New code sent');
+      });
+    })();
+
+    /* ---------------- Show/Hide text toggles ---------------- */
+    function wireToggle(btnId, inputId){
+      var btn=document.getElementById(btnId), input=document.getElementById(inputId);
+      if(!btn||!input) return;
+      btn.addEventListener('click',function(){
+        var shown = input.type==='text';
+        input.type = shown ? 'password' : 'text';
+        btn.textContent = shown ? 'Show' : 'Hide';
+        btn.setAttribute('aria-pressed', shown ? 'false' : 'true');
+        btn.setAttribute('aria-label', (shown?'Show':'Hide')+' password');
+      });
+    }
+    wireToggle('pw-toggle','pw-new');
+    wireToggle('pw-confirm-toggle','pw-confirm');
+    wireToggle('ra-toggle','ra-pw');
+
+    /* ---------------- B · password strength (MONO) + requirements ---------------- */
+    (function(){
+      var input=document.getElementById('pw-new'); if(!input) return;
+      var bars=[].slice.call(document.querySelectorAll('#pw-bars span'));
+      var word=document.getElementById('pw-strength-word');
+      var reqs=document.getElementById('pw-reqs');
+      var tests={
+        len:function(v){return v.length>=8;},
+        num:function(v){return /[0-9]/.test(v);},
+        sym:function(v){return /[^A-Za-z0-9]/.test(v);},
+        case:function(v){return /[a-z]/.test(v) && /[A-Z]/.test(v);}
+      };
+      var words=['','Weak','Fair','Good','Strong'];
+      function draw(){
+        var v=input.value, passed=0, key;
+        for(key in tests){ if(tests[key](v)) passed++; }
+        [].forEach.call(reqs.children,function(li){
+          li.classList.toggle('met', tests[li.getAttribute('data-req')](v));
+        });
+        var score = v.length===0 ? 0 : passed;
+        bars.forEach(function(b,i){ b.classList.toggle('on', i<score); });
+        word.textContent = v.length===0 ? '—' : words[score];
+      }
+      input.addEventListener('input',draw);
+      draw();
+    })();
+
+    /* confirm-password match */
+    (function(){
+      var a=document.getElementById('pw-new'), b=document.getElementById('pw-confirm'),
+          field=document.getElementById('pw-confirm-field'), msg=document.getElementById('pw-confirm-msg');
+      if(!a||!b||!msg) return;
+      function check(){
+        if(b.value===''){ field.classList.remove('is-error'); msg.className='f-msg'; msg.innerHTML=''; return; }
+        if(a.value===b.value){ field.classList.remove('is-error'); msg.className='f-msg is-ok'; msg.innerHTML=msgHTML('ok','Passwords match.'); }
+        else { field.classList.add('is-error'); msg.className='f-msg is-error'; msg.innerHTML=msgHTML('error','Passwords don’t match yet.'); }
+      }
+      b.addEventListener('input',check);
+      a.addEventListener('input',function(){ if(b.value!=='') check(); });
+    })();
+
+    /* ---------------- C · memorable word ---------------- */
+    (function(){
+      var group=document.getElementById('memword'), msg=document.getElementById('mw-msg'), verify=document.getElementById('mw-verify');
+      if(!group||!verify) return;
+      var active=[].slice.call(group.querySelectorAll('.mw-cell:not(:disabled)'));
+      active.forEach(function(cell,i){
+        cell.addEventListener('input',function(){
+          cell.value=cell.value.slice(-1);
+          if(cell.value && i<active.length-1) active[i+1].focus();
+        });
+        cell.addEventListener('keydown',function(e){ if(e.key==='Backspace' && !cell.value && i>0) active[i-1].focus(); });
+      });
+      verify.addEventListener('click',function(){
+        var filled=active.every(function(c){return c.value!=='';});
+        if(filled){ msg.className='f-msg is-ok'; msg.innerHTML=msgHTML('ok','Memorable word verified.'); showToast('Verified'); }
+        else { msg.className='f-msg is-error'; msg.innerHTML=msgHTML('error','Enter all three requested characters.'); active[0].focus(); }
+      });
+    })();
+
+    /* ---------------- D · re-authentication ---------------- */
+    (function(){
+      var input=document.getElementById('ra-pw'), field=document.getElementById('ra-field'), msg=document.getElementById('ra-msg'),
+          confirm=document.getElementById('ra-confirm'), cancel=document.getElementById('ra-cancel'), bio=document.getElementById('ra-bio');
+      if(!confirm) return;
+      confirm.addEventListener('click',function(){
+        if(input.value==='correcthorse'){
+          field.classList.remove('is-error'); msg.className='f-msg is-ok'; msg.innerHTML=msgHTML('ok','Identity confirmed.');
+          showToast('Payment confirmed');
+        } else {
+          field.classList.add('is-error'); msg.className='f-msg is-error';
+          msg.innerHTML=msgHTML('error', input.value==='' ? 'Enter your password to confirm.' : 'That password is incorrect.');
+          input.focus();
+        }
+      });
+      if(cancel) cancel.addEventListener('click',function(){ input.value=''; field.classList.remove('is-error'); msg.className='f-msg'; msg.innerHTML=''; showToast('Cancelled'); });
+      if(bio) bio.addEventListener('click',function(){ showToast('Waiting for biometrics…'); });
+    })();
+
+  })();
+</script>
+</body>
+</html>

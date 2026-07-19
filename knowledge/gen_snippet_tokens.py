@@ -11,6 +11,14 @@ token change; the _validate_snippets.py fidelity gate then passes BY CONSTRUCTIO
 This is the generator side of the guard: _validate_snippets.py checks the invariant,
 this script establishes it.
 
+ALSO projects knowledge/_proforma/Tranche-1..8-interactive.html (2026-07-19 worker task,
+notes/_BRIEF-tranche-tokenize-T1-T8.md). The tranches carry the same bare
+`[data-theme="mode"]{ }` block shape and the same `#token-manifest` mechanism as
+snippets, so `process()`/`selfcheck()` apply unchanged — only the file glob differs.
+Scoped to Tranche-1..8 ONLY (bracket range, not a bare `*`) so a future Tranche-9 is not
+silently swept in before it is ready. project_canon() stays snippet-only (tranches have
+no `.cn-<slug>` canon.css block to project into).
+
 Robust by design:
   * FAILS LOUD (exit non-zero) if a manifest token path does not resolve in the stores.
   * Respects `driftAllow` {var:[modes]} in the manifest — those declarations are an
@@ -29,6 +37,7 @@ import json, os, re, sys, glob
 HERE = os.path.dirname(os.path.abspath(__file__))
 TOK  = os.path.join(HERE, "tokens")
 SNIP = os.path.join(HERE, "snippets")
+PROFORMA = os.path.join(HERE, "_proforma")
 CANON = os.path.join(HERE, "canon", "canon.css")
 SPINE_END = "AUTO-GENERATED TOKENS END ===== */"
 
@@ -195,7 +204,12 @@ def project_canon(write):
 def main():
     check_only = "--check" in sys.argv
     quiet = "--quiet" in sys.argv
-    files = sorted(glob.glob(os.path.join(SNIP, "*.reference.html")))
+    snip_files = sorted(glob.glob(os.path.join(SNIP, "*.reference.html")))
+    # bracket range, not a bare `Tranche-*` — deliberately enumerated so a stray
+    # copy/backup file can never be swept in. Tranche-9 (secure entry) added by the
+    # conductor 2026-07-19 once it landed with its own #token-manifest.
+    tranche_files = sorted(glob.glob(os.path.join(PROFORMA, "Tranche-[1-9]-interactive.html")))
+    files = snip_files + tranche_files
     tot_changed = tot_checks = 0
     all_fails, all_warns, drift_fails = [], [], []
     for f in files:
@@ -211,8 +225,8 @@ def main():
     canon_changed, canon_fails = project_canon(write=not check_only)
     all_fails += canon_fails
 
-    print(f"\ngen_snippet_tokens: {tot_checks} manifest bindings across {len(files)} snippets; "
-          f"{tot_changed} snippet value(s) {'would change' if check_only else 'projected'}; "
+    print(f"\ngen_snippet_tokens: {tot_checks} manifest bindings across {len(snip_files)} snippets + "
+          f"{len(tranche_files)} tranches; {tot_changed} value(s) {'would change' if check_only else 'projected'}; "
           f"{canon_changed} canon.css literal(s) {'would change' if check_only else 'projected'}.")
     if all_warns:
         print("WARNINGS:"); [print("  ! " + w) for w in all_warns]
@@ -223,9 +237,9 @@ def main():
     if all_fails or drift_fails:
         sys.exit(1)
     if check_only and (tot_changed or canon_changed):
-        print("--check: snippets/canon are OUT OF SYNC with tokens (run without --check).")
+        print("--check: snippets/tranches/canon are OUT OF SYNC with tokens (run without --check).")
         sys.exit(1)
-    print("OK — snippets + canon.css in sync with tokens.")
+    print("OK — snippets + tranches + canon.css in sync with tokens.")
 
 if __name__ == "__main__":
     main()
