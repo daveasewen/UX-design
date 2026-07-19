@@ -17,15 +17,24 @@ Why: handoff files are *rewritten*, so two writers = last-writer-wins, silent cl
 disjoint commits merge cleanly; the only git hazard is `.git/index.lock` if two commits fire at once
 (serialize — see `_RUNBOOK-git-commit.md`).
 
-## Quickstart (the two phrases)
+## The trigger — "read good morning" (zero copy-paste)
 
-- **To each work session:** *"You're a WORKER — build X. Make only your own new files. Don't write
-  GOOD-MORNING or commit it. Give me a RECEIPT when done."*
-- **To the one you pick as boss:** *"You're the CONDUCTOR — here are the receipts [paste], merge them,
-  write the one GOOD-MORNING, make one commit."*
+Dave opens every session by saying **"read good morning"** (optionally with a role word). On that
+trigger the session:
 
-That's the whole ceremony. **N=1: if only one session is live, ignore all this** — a lone session is
-its own conductor and writes its handoff as normal. This only engages at two or more.
+1. Reads `GOOD-MORNING.md` as usual, AND resolves its role:
+   - If Dave named one ("…worker" / "…conductor" / "…solo"), take it.
+   - Else check `mcp__session_info__list_sessions`: if **>1 session looks active**, fire
+     **AskUserQuestion** — *Worker · Conductor · Solo* — one click. If only one, proceed **Solo**
+     silently (no question).
+2. Acts on the role (checklists below).
+
+**Dave's entire job:** say **"read good morning"** in each chat, click the role if asked, and hit
+**Push** in GitHub Desktop at the end. **No phrases to paste, no receipts to shuttle** — a conductor
+reads the other sessions itself (below).
+
+**N=1:** a lone session is Solo — its own conductor, writes its handoff as normal. The role machinery
+only engages at two or more.
 
 ## Worker checklist
 
@@ -34,13 +43,14 @@ its own conductor and writes its handoff as normal. This only engages at two or 
    append**, never a rewrite (a rule you must record → put it in the receipt, let the conductor inscribe).
 3. Commit only your OWN disjoint files if you must, serialized; when in doubt, don't commit — hand
    files up.
-4. End with a **RECEIPT**: what landed · what's open · files touched · proposed §C queue lines · any
-   memory/rule to record · what's committed vs uncommitted.
+4. Optionally leave a short **RECEIPT** (what landed · open · files touched · proposed §C lines ·
+   commit state) — a convenience only; the conductor can read you directly, so it is NOT required.
 
 ## Conductor checklist
 
-1. Gather the receipts. (Don't need the workers still open — `mcp__session_info__list_sessions` +
-   `read_transcript` read other sessions directly; the same out-of-band hook the context-gauge uses.)
+1. **Read the other sessions directly** — `mcp__session_info__list_sessions` → `read_transcript` on
+   each worker; distill what each did. This is the DEFAULT (Dave pastes nothing). A written receipt is
+   only a fallback if a session isn't readable.
 2. Merge into ONE `GOOD-MORNING` (a §B per session, one shared §C), refresh `_LIVE-STATE`, apply any
    memory/rule from the receipts.
 3. Make ONE commit (follow `_RUNBOOK-git-commit.md` lock dance); hand Dave a paste-ready summary.

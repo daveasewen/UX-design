@@ -71,7 +71,10 @@ A **governed design-system engine**: canon (tokens + gated components) + criteri
 - **Parallel sessions (RULED 2026-07-19):** when >1 session is live, exactly ONE is the
   **CONDUCTOR** that writes the handoff files (`GOOD-MORNING`/`_LIVE-STATE`/`MEMORY`/`_FUTURE-STATE`)
   and commits; the rest are **WORKERS** that make only new files and hand up a receipt (never write
-  handoff files, never rewrite `MEMORY.md`). One live session self-conducts. Full:
+  handoff files, never rewrite `MEMORY.md`). One live session self-conducts. **Trigger — Dave's
+  opener "read good morning":** the session reads GOOD-MORNING and resolves its role — if >1 session
+  is live, fire `AskUserQuestion` (Worker/Conductor/Solo); if solo, proceed silently. The conductor
+  reads the other sessions via `session_info` (no receipts to paste). Dave only clicks + pushes. Full:
   `knowledge/_RUNBOOK-parallel-conductor.md`.
 - **Supersession discipline (non-negotiable).** Any ruling that changes a definition
   or retires an approach must, in the same pass: (a) **tombstone** every artifact it
