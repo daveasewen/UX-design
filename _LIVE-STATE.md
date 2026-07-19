@@ -447,6 +447,13 @@ registered against the review-layer-as-product thread (and `_FUTURE-STATE.md` fe
 
 *Intended end-states with a path. Ideas not yet in flight live in **`_FUTURE-STATE.md`**.*
 
+- **🎯 Full consolidated review page (Apollo Mono baseline)** — Dave reviews the whole Mono baseline in **ONE
+  big review page when the build-out is "done"**, not piecemeal (*"I just need to get this nailed"*, 2026-07-19).
+  Running backlog + method: `knowledge/_REVIEW-SIGNOFF.md` top block. Covers T1–T9 as they render post-tokenise,
+  the tokenise deltas (divider `#3A3A3A→#808080` · blue focus · near-white primary), and the open decisions
+  (mono primary-action token · success mono-vs-teal · focus blue-vs-mono) + DataViz sign-off + T9 first review.
+  Memory `full-review-pending`.
+
 - **🎯 Gates-as-a-service → close the agentic loop** (Dave 2026-07-14). Expose Apollo's validators as
   callable tools (MCP) so a host agent runs them mid-task (generate → check → fix → re-check) — the
   verifier is the expensive, differentiated half, already built. Removes the per-designer Python

@@ -3,6 +3,25 @@
 Durable record of the component-by-component interaction review (gallery frontier).
 **Once a component is ✅ signed off, it is locked — we do not reopen it.**
 
+---
+
+## ⬛ PENDING — FULL CONSOLIDATED REVIEW (Apollo Mono baseline) — added 2026-07-19
+Dave will run **one big review page** over the whole Mono baseline **when the build-out is "done"** — *"I just
+need to get this nailed"* (2026-07-19). **Do NOT drip-review the tranches piecemeal — accumulate everything into
+that single pass.** Running list of what it must cover:
+- **Tranches T1–T9 as they render NOW (post-tokenisation).** The per-component sign-offs below are dated
+  2026-06-29/30 and **predate the Mono ramp + R-D16 + the tokenise sweep** — they do not cover current values.
+- **Tokenise deltas to eyeball (2026-07-19):** dark divider lightened + more prominent (`--line2` `#3A3A3A → #808080`);
+  focus ring now **blue** (`focus/ring` #305A85/#4587A7), was mono near-black; primary button dark slightly brighter
+  near-white (`#F2F2F2 → #FFFFFF`).
+- **Open decisions to close in-review:** mono **primary-action** token (mint `action/primary/*` + `icon/on-inverse`,
+  or adopt `text/on-inverse`); **success/verified kept MONO** (ink check) vs teal; **blue-vs-mono focus ring**.
+- **Also owed:** DataViz sign-off (parked "good enough"); **Tranche-9 first review**; Masthead/Hero/Headers revisits
+  already flagged below.
+
+Method + template controls (live variant/state spread from meta · light/dark toggle · responsive slider · comment
+overlay) per the **Method** section. Pointer in `_LIVE-STATE.md` PLANNED/TARGET; memory `full-review-pending`.
+
 ## Method (per component)
 1. Review the **HTML snippet** (`snippets/<Name>.reference.html`) live in a browser — check interactivity, responsiveness, visuals. (Source of truth; fully interactive; theme toggle + `@media` + reduced-motion built in.)
 2. Dave points at issues → fix the **snippet** (never canon.css directly).
