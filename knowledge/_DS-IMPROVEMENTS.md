@@ -138,6 +138,13 @@ move on** — the standing rule for DS defects.
 
 **Status:** LOGGED 2026-07-18 (Dave: *"a finding we have to keep… it applies to buttons"*). Confirmed
 live in the gated Tags component; fix proven on the Tag specimen in real Chromium.
+**GATED + CLOSED 2026-07-19** — Dave: *"do it right — use your suggestion"* (gate, don't blanket the CSS)
+and *"I don't want other sessions viewing it as a bug and trying to fix it"*. `_validate_descender_clip.py`
+is now a blocking build step (27/34): every truncating label (`text-overflow:ellipsis`) must carry
+`text-box-edge:text text` (or `overflow:visible`). Day-one-green with ZERO waivers — the full current debt
+(7 truncating labels across Tranche-2/3/4/7/8, plus Masthead `.dd-title`/`.navitem-tx`; List-items + canon
+were already safe) was fixed, not waived. Removing any override now turns the build red and points back
+here — so a cold session cannot "fix" the override away without the gate stopping it.
 
 **Finding.** The canon leading-trim strategy applies `text-box-trim:trim-both; text-box-edge:cap alphabetic`
 to label elements. `cap alphabetic` trims the box to cap-height…baseline — which is *exactly* what makes a
@@ -160,6 +167,9 @@ do cleanly today — revisit if it arises).
 **Decision tree — trimmed truncating labels:**
 - Stacked text, NO adjacent icon (List-items `.title/.desc`) → `text-box-edge:text text` (keeps ellipsis, no clip; alignment N/A). *Already applied.*
 - Icon+label control (tag, button, CTA, chip) → `cap alphabetic` + label `overflow:visible` into the control's slack. *New.*
+- Icon+label control that ALSO TRUNCATES (ellipsis label — nav rows, dropdown titles) → `text-box-edge:text text`. *Added 2026-07-19.* The `overflow:visible` fix above kills the ellipsis, so it's wrong for a truncating label. `text text` keeps `overflow:hidden` (ellipsis survives) AND stops the descender clip (the box now spans the full glyph, so the baseline no longer cuts g/y/p). Cost: the icon-alignment half — `text text` centres the taller box, so cap-height text sits a hair differently against the icon; **acceptable at nav-row scale (44px)**, same trade List-items already took. This resolves the "ellipsis + icon + descenders" trilemma flagged as unsolved above: it is soluble via `text text` when alignment can flex; only unsolved if pixel-perfect icon alignment AND ellipsis AND descenders are all non-negotiable at once.
+
+**Button audit outcome (2026-07-19).** `.btn`/`.cta`/`.qbtn` labels audited (the ds-005 recommendation-3): **CLEAN — null result.** Canonical buttons centre their labels with no `overflow:hidden`, so they carry neither the clip nor the truncation. The live truncating icon+label label was instead in the **Masthead** — `.dd-title` (mobile drawer header): render-confirmed clipping ("Savings"→"Savin*q*s") on the exact selectors, and after the fix `getComputedStyle` reads `text-box-edge:text` + `overflow:hidden` (ellipsis kept). `.navitem-tx` (side-nav row) carries the same CSS condition but is **defined-but-unused in this demo file** (nav labels here render as `.menulink`, which don't truncate — clean); it was fixed defensively so the atom is correct wherever the side-nav variant is instantiated. Build green, 33 steps.
 
 **Blast radius.** Icon+label pairing is pervasive — **24** snippet/tranche files pair an icon with a label
 under the global trim. Only those that **truncate** a label (`overflow:hidden` on the label) clip today;

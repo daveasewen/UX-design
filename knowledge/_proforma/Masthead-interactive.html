@@ -142,6 +142,9 @@
   .navitem-ic{flex:none;display:inline-flex;width:20px;height:20px;color:var(--icon);}
   .navitem-ic svg{width:18px;height:18px;fill:currentColor;}
   .navitem-tx{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  /* ds-005: truncating label next to an icon — cap alphabetic + overflow:hidden clips descenders (g/y/p).
+     text text uses the full glyph box so descenders survive, ellipsis kept. Alignment cost marginal at 44px row. */
+  .navitem-tx{text-box-edge:text text;}
 
   /* .menugroup / .menulink — mega-menu grouped links: a heading + a <ul> of links, NOT role=menu */
   .menugroup{display:flex;flex-direction:column;gap:var(--space-4);min-width:160px;}
@@ -304,6 +307,7 @@
   .dd-head{display:flex;align-items:center;gap:var(--space-8);padding:var(--space-10);
     border-bottom:var(--bw-sm) solid var(--line);position:sticky;top:0;background:var(--raised);z-index:1;}
   .dd-title{font:500 16px/1.2 var(--font);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 var(--space-4);}
+  .dd-title{text-box-edge:text text;} /* ds-005: truncating title, descenders survive (see .navitem-tx) */
   .dd-search{display:flex;align-items:center;gap:var(--space-10);margin:var(--space-12) var(--space-12) var(--space-4);
     padding:var(--space-10) var(--space-12);border:var(--bw-sm) solid var(--line);border-radius:var(--radius);background:var(--surf);}
   .dd-search svg{width:var(--space-18);height:var(--space-18);fill:var(--icon);flex:none;}
