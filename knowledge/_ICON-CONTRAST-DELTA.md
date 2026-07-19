@@ -6,7 +6,7 @@
 gate (check 3, bite-tested). This advisory continues as the exhaustive/state×theme
 watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 
-**Headline: 0 declared dead-zone · 24 exhaustive (upper bound) · 0 roundel fails (<3:1) · 0 mark fails (<4.5 vs roundel, light).**
+**Headline: 0 declared dead-zone · 27 exhaustive (upper bound) · 0 roundel fails (<3:1) · 0 mark fails (<4.5 vs roundel, light).**
 
 ## 1. Declared icon pairs (the concrete promotion cost)
 
@@ -27,9 +27,9 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | Pagination.reference.html | icon/default | background/default | light | 17.4 | pass-4.5 |
 | Pagination.reference.html | icon/default | background/default | dark | 17.4 | pass-4.5 |
 | Quick-actions.reference.html | icon/default | tertiary/background/default | light | 17.4 | pass-4.5 |
-| Quick-actions.reference.html | icon/default | tertiary/background/default | dark | 17.4 | pass-4.5 |
+| Quick-actions.reference.html | icon/default | tertiary/background/default | dark | 16.48 | pass-4.5 |
 | Reorder.reference.html | icon/default | tertiary/background/default | light | 17.4 | pass-4.5 |
-| Reorder.reference.html | icon/default | tertiary/background/default | dark | 17.4 | pass-4.5 |
+| Reorder.reference.html | icon/default | tertiary/background/default | dark | 16.48 | pass-4.5 |
 | Search-field.reference.html | icon/default | background/default | light | 17.4 | pass-4.5 |
 | Search-field.reference.html | icon/default | background/default | dark | 17.4 | pass-4.5 |
 
@@ -77,6 +77,9 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | icon/default-reverse | secondary/background/disabled | light | 1.31 | below-3(gated) |
 | icon/default-reverse | secondary/background/hover | dark | 1.14 | below-3(gated) |
 | icon/default-reverse | secondary/background/pressed | dark | 1.31 | below-3(gated) |
+| icon/default-reverse | surface/raised | light | 1.0 | below-3(gated) |
+| icon/default-reverse | surface/raised-hover | light | 1.14 | below-3(gated) |
+| icon/default-reverse | surface/subtle | light | 1.14 | below-3(gated) |
 | icon/default-reverse | table/column/background | light | 1.14 | below-3(gated) |
 | icon/default-reverse | table/header/background | light | 1.14 | below-3(gated) |
 | icon/default-reverse | tabs/background | light | 1.0 | below-3(gated) |
@@ -92,7 +95,7 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | icon/disabled (allowlisted) | blur/background-surface | dark | None | unresolved |
 | icon/disabled (allowlisted) | data-vis/surface/primary | light | 1.31 | below-3(gated) |
 | icon/disabled (allowlisted) | form/background/hover | light | 1.15 | below-3(gated) |
-| icon/disabled (allowlisted) | form/background/hover | dark | 4.41 | DEAD-ZONE |
+| icon/disabled (allowlisted) | form/background/hover | dark | 3.98 | DEAD-ZONE |
 | icon/disabled (allowlisted) | form/background/pressed | light | 3.02 | DEAD-ZONE |
 | icon/disabled (allowlisted) | form/background/pressed | dark | 2.32 | below-3(gated) |
 | icon/disabled (allowlisted) | primary/background/default | light | 3.99 | DEAD-ZONE |
@@ -109,35 +112,41 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | icon/disabled (allowlisted) | rag/warning-background | light | 1.45 | below-3(gated) |
 | icon/disabled (allowlisted) | rag/warning-background | dark | 2.08 | below-3(gated) |
 | icon/disabled (allowlisted) | scrollbar/background | light | 1.15 | below-3(gated) |
-| icon/disabled (allowlisted) | scrollbar/background | dark | 4.41 | DEAD-ZONE |
+| icon/disabled (allowlisted) | scrollbar/background | dark | 4.17 | DEAD-ZONE |
 | icon/disabled (allowlisted) | secondary/background/default | dark | 3.95 | DEAD-ZONE |
 | icon/disabled (allowlisted) | secondary/background/disabled | light | 1.0 | below-3(gated) |
 | icon/disabled (allowlisted) | secondary/background/disabled | dark | 2.32 | below-3(gated) |
 | icon/disabled (allowlisted) | secondary/background/hover | dark | 3.47 | DEAD-ZONE |
 | icon/disabled (allowlisted) | secondary/background/pressed | dark | 3.02 | DEAD-ZONE |
 | icon/disabled (allowlisted) | surface/digital-black | dark | 4.41 | DEAD-ZONE |
+| icon/disabled (allowlisted) | surface/raised | light | 1.31 | below-3(gated) |
+| icon/disabled (allowlisted) | surface/raised | dark | 4.17 | DEAD-ZONE |
+| icon/disabled (allowlisted) | surface/raised-hover | light | 1.15 | below-3(gated) |
+| icon/disabled (allowlisted) | surface/raised-hover | dark | 3.98 | DEAD-ZONE |
+| icon/disabled (allowlisted) | surface/subtle | light | 1.15 | below-3(gated) |
+| icon/disabled (allowlisted) | surface/subtle | dark | 4.17 | DEAD-ZONE |
 | icon/disabled (allowlisted) | table/column/background | light | 1.15 | below-3(gated) |
-| icon/disabled (allowlisted) | table/column/background | dark | 4.41 | DEAD-ZONE |
+| icon/disabled (allowlisted) | table/column/background | dark | 4.17 | DEAD-ZONE |
 | icon/disabled (allowlisted) | table/header/background | light | 1.15 | below-3(gated) |
-| icon/disabled (allowlisted) | table/header/background | dark | 4.41 | DEAD-ZONE |
+| icon/disabled (allowlisted) | table/header/background | dark | 4.17 | DEAD-ZONE |
 | icon/disabled (allowlisted) | tabs/background | light | 1.31 | below-3(gated) |
-| icon/disabled (allowlisted) | tabs/background | dark | 4.41 | DEAD-ZONE |
+| icon/disabled (allowlisted) | tabs/background | dark | 4.17 | DEAD-ZONE |
 | icon/disabled (allowlisted) | tabs/overflow-background | light | 1.31 | below-3(gated) |
-| icon/disabled (allowlisted) | tabs/overflow-background | dark | 4.41 | DEAD-ZONE |
+| icon/disabled (allowlisted) | tabs/overflow-background | dark | 4.17 | DEAD-ZONE |
 | icon/disabled (allowlisted) | tertiary/background/active | dark | 4.41 | DEAD-ZONE |
 | icon/disabled (allowlisted) | tertiary/background/default | light | 1.31 | below-3(gated) |
-| icon/disabled (allowlisted) | tertiary/background/default | dark | 4.41 | DEAD-ZONE |
+| icon/disabled (allowlisted) | tertiary/background/default | dark | 4.17 | DEAD-ZONE |
 | icon/disabled (allowlisted) | tertiary/background/disabled | light | 1.0 | below-3(gated) |
 | icon/disabled (allowlisted) | tertiary/background/disabled | dark | 2.32 | below-3(gated) |
 | icon/disabled (allowlisted) | tertiary/background/hover | light | 1.15 | below-3(gated) |
-| icon/disabled (allowlisted) | tertiary/background/hover | dark | 4.41 | DEAD-ZONE |
+| icon/disabled (allowlisted) | tertiary/background/hover | dark | 3.98 | DEAD-ZONE |
 | icon/disabled (allowlisted) | tertiary/background/pressed | dark | 4.41 | DEAD-ZONE |
 | icon/disabled (allowlisted) | timer/background | light | 1.0 | below-3(gated) |
 | icon/disabled (allowlisted) | timer/background | dark | 2.32 | below-3(gated) |
 | icon/disabled (allowlisted) | tooltip/background | light | 1.31 | below-3(gated) |
 | icon/disabled (allowlisted) | tooltip/background | dark | 4.41 | DEAD-ZONE |
 
-_(87 of 192 exhaustive combos already clear 4.5:1; 6 transparent/composite surfaces skipped (alpha — true contrast needs the render path) — omitted.)_
+_(96 of 210 exhaustive combos already clear 4.5:1; 6 transparent/composite surfaces skipped (alpha — true contrast needs the render path) — omitted.)_
 
 ## 3. Roundel vs surface — rag/* pairs at the ROUNDEL threshold (≥3:1, ruled policy)
 

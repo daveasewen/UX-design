@@ -1,0 +1,125 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apollo Mono — dark surface elevation (v2, dial the subtle step)</title>
+<style>
+  :root{
+    --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+    --ground:#1A1A1A; --m5:#313131;
+    --surface:#212121; --hover:#272727; --pressed:#2C2C2C;   /* set live by JS */
+  }
+  *{box-sizing:border-box}
+  body{margin:0;padding:2.5rem;background:var(--ground);color:#fff;font-family:var(--font);-webkit-font-smoothing:antialiased;line-height:1.5}
+  h1{font:400 26px/1.2 var(--font);margin:0 0 6px}
+  h2{font:500 13px/1 var(--font);letter-spacing:.04em;margin:30px 0 12px}
+  .sub{color:#B7B7B7;font-size:14px;max-width:76ch;margin-bottom:6px}
+  code{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#E1E1E1}
+
+  .tuner{border:1px solid #ffffff1f;padding:18px 20px;margin:14px 0 6px;max-width:720px;background:#ffffff08}
+  .tuner .rowc{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  input[type=range]{flex:1;min-width:240px;accent-color:#fff}
+  .val{font:500 13px/1 var(--font);color:#fff;white-space:nowrap}
+  .tokens{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+  .tok{border:1px solid #ffffff14;padding:10px 12px}
+  .tok .sw{height:34px;border:1px solid #ffffff26;margin-bottom:8px}
+  .tok .nm{font-size:11px;color:#9D9D9D}
+  .tok .hx{font-family:ui-monospace,Menlo,monospace;font-size:13px;color:#fff}
+  .tok .use{font-size:11px;color:#B7B7B7;margin-top:2px}
+  .ref{display:flex;gap:8px;align-items:center;margin-top:12px;font-size:11px;color:#9D9D9D}
+  .ref span{display:inline-block;width:26px;height:14px;border:1px solid #ffffff22;vertical-align:middle}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:10px}
+  .col h3{font:500 14px/1 var(--font);margin:0 0 4px}
+  .col .tag{font-size:11px;padding:2px 7px;border:1px solid #808080;color:#B7B7B7;display:inline-block;margin-bottom:14px}
+  .panel{border:1px solid #ffffff14;padding:20px}
+  .lbl{font-size:11px;color:#9D9D9D;margin:18px 0 7px}.lbl:first-child{margin-top:0}
+  .flat .card,.flat .tab,.flat .btn.ter{background:var(--ground)}
+  .live .card,.live .tab,.live .btn.ter{background:var(--surface)}
+  .live .tabs .tab.hoverst,.live .btn.ter.hoverst{background:var(--hover)}
+  .live .btn.ter.press{background:var(--pressed)}
+  .card{padding:16px;border:1px solid #ffffff1a}.card .t{font-size:14px;font-weight:500}.card .d{font-size:12px;color:#B7B7B7;margin-top:3px}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .btn{height:40px;padding:0 18px;display:inline-flex;align-items:center;justify-content:center;font:500 14px/1 var(--font);cursor:default}
+  .btn.ter{color:#fff;border:1px solid #808080}
+  .tabs{display:flex;gap:2px;border-bottom:1px solid #808080}
+  .tab{padding:10px 16px;font-size:13px;color:#fff;border:1px solid transparent;border-bottom:none}
+  .tab.active{box-shadow:inset 0 2px 0 #DB0011}
+  table{border-collapse:collapse;width:100%;font-size:13px;margin-top:2px}
+  td{padding:8px 12px;border:1px solid #ffffff14}
+  .live thead td{background:var(--surface)}
+  thead td{font-weight:500}tbody tr td:first-child{color:#B7B7B7}
+  .note{margin-top:8px;font-size:12px;color:#B7B7B7}
+  .rec{border-left:3px solid #fff;background:#ffffff0a;padding:14px 16px;margin-top:26px;font-size:13px;max-width:80ch}
+  .rec b{color:#fff}
+</style></head>
+<body>
+  <h1>Dark surface elevation — dial the subtle step</h1>
+  <p class="sub">v1 direction accepted (raise, don't flatten), but <b>subtler</b> — "it's not called mono for nothing." The neutral mono ramp jumps <code>mono/4 #1A1A1A</code> (ground) straight to <code>mono/5 #313131</code> with nothing between, so a subtle raise needs a <b>dedicated dark-elevation token family</b>. Slide it below until the lift is just enough to separate a surface from the ground without shouting. Light mode is unaffected (surfaces already sit on white).</p>
+
+  <div class="tuner">
+    <div class="rowc">
+      <label class="val" for="r">Elevation step</label>
+      <input id="r" type="range" min="3" max="24" value="7">
+      <span class="val" id="rv">+7</span>
+    </div>
+    <div class="tokens">
+      <div class="tok"><div class="sw" id="sw1"></div><div class="nm">surface/raised</div><div class="hx" id="hx1">#212121</div><div class="use">cards · tertiary · tabs · table header · tooltip</div></div>
+      <div class="tok"><div class="sw" id="sw2"></div><div class="nm">surface/raised-hover</div><div class="hx" id="hx2">#272727</div><div class="use">hover states</div></div>
+      <div class="tok"><div class="sw" id="sw3"></div><div class="nm">surface/raised-pressed</div><div class="hx" id="hx3">#2C2C2C</div><div class="use">pressed / active</div></div>
+    </div>
+    <div class="ref"><span style="background:#1A1A1A"></span> ground #1A1A1A (mono/4) &nbsp;·&nbsp; <span style="background:#313131"></span> mono/5 #313131 (v1 — too much)</div>
+  </div>
+
+  <div class="grid">
+    <div class="col flat">
+      <h3>Current — flat</h3><div class="tag">surfaces = ground #1A1A1A</div>
+      <div class="panel">
+        <div class="lbl">Card / tertiary panel</div>
+        <div class="card"><div class="t">Account summary</div><div class="d">Sort code 40-00-00 · **** 4471</div></div>
+        <div class="lbl">Tertiary button — default · hover · pressed</div>
+        <div class="row"><span class="btn ter">Manage</span><span class="btn ter hoverst">Manage</span><span class="btn ter press">Manage</span></div>
+        <div class="lbl">Tabs</div>
+        <div class="tabs"><div class="tab active">Balances</div><div class="tab">Payments</div><div class="tab hoverst">Statements</div></div>
+        <div class="note">Edges and states vanish into the ground.</div>
+      </div>
+    </div>
+    <div class="col live">
+      <h3>Proposed — raised (live)</h3><div class="tag" id="livetag">surface #212121 · hover #272727 · pressed #2C2C2C</div>
+      <div class="panel">
+        <div class="lbl">Card / tertiary panel</div>
+        <div class="card"><div class="t">Account summary</div><div class="d">Sort code 40-00-00 · **** 4471</div></div>
+        <div class="lbl">Tertiary button — default · hover · pressed</div>
+        <div class="row"><span class="btn ter">Manage</span><span class="btn ter hoverst">Manage</span><span class="btn ter press">Manage</span></div>
+        <div class="lbl">Tabs</div>
+        <div class="tabs"><div class="tab active">Balances</div><div class="tab">Payments</div><div class="tab hoverst">Statements</div></div>
+        <div class="lbl">Table — header + rows</div>
+        <table><thead><tr><td>Date</td><td>Description</td><td>Amount</td></tr></thead>
+        <tbody><tr><td>19 Jul</td><td>Transfer</td><td>&minus;120.00</td></tr><tr><td>18 Jul</td><td>Salary</td><td>2,400.00</td></tr></tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <div class="rec">
+    <b>How to use:</b> slide until the raise is just perceptible — my starting point is <code>+7</code> (a couple notches below mono/5). Tell me the value you land on (the readout above), or just say the default's good. <b>What ships:</b> a new dark-elevation token family — <code>surface/raised</code> / <code>surface/raised-hover</code> / <code>surface/raised-pressed</code> — and the flattened tokens (<code>tertiary/background/*</code>, <code>tabs/*</code>, <code>table/*</code>, <code>tooltip</code>, <code>form/background/hover</code>, <code>scrollbar</code>) re-point their <b>dark</b> values to it. One regenerate + re-gate.
+  </div>
+
+  <script>
+  const g=26, r=document.getElementById('r');
+  const hx=n=>'#'+[n,n,n].map(x=>x.toString(16).padStart(2,'0')).join('').toUpperCase();
+  function upd(){
+    const R=+r.value;
+    const s=g+R, h=g+Math.round(R*1.8), p=g+Math.round(R*2.6);
+    document.documentElement.style.setProperty('--surface',hx(s));
+    document.documentElement.style.setProperty('--hover',hx(h));
+    document.documentElement.style.setProperty('--pressed',hx(p));
+    document.getElementById('rv').textContent='+'+R;
+    document.getElementById('hx1').textContent=hx(s);
+    document.getElementById('hx2').textContent=hx(h);
+    document.getElementById('hx3').textContent=hx(p);
+    document.getElementById('sw1').style.background=hx(s);
+    document.getElementById('sw2').style.background=hx(h);
+    document.getElementById('sw3').style.background=hx(p);
+    document.getElementById('livetag').textContent='surface '+hx(s)+' · hover '+hx(h)+' · pressed '+hx(p);
+  }
+  r.addEventListener('input',upd); upd();
+  </script>
+</body></html>

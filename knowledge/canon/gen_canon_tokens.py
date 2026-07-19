@@ -56,6 +56,24 @@ def fmt_value(var, val, ttype):
 def walk(node, path, out):
     """Collect (var_name, mode_or_None, css_value) from a DTCG tree."""
     if isinstance(node, dict):
+        # Three-tier reference: a token that $alias-references a SEMANTIC token (not a
+        # primitive color/*) emits the var() chain, so canon.css carries the reference at
+        # runtime instead of a baked hex. Primitive-aliased tokens keep emitting their $value.
+        if "$alias" in node and ("light" in node or "dark" in node):
+            var = "--" + "-".join(path)
+            alias = node["$alias"] if isinstance(node.get("$alias"), dict) else {}
+            for mode in ("light", "dark"):
+                m = node.get(mode)
+                if not isinstance(m, dict):
+                    continue
+                tgt = alias.get(mode)
+                if isinstance(tgt, str) and not tgt.startswith("color/"):
+                    css = "var(--" + "-".join(normalize(s) for s in tgt.split("/")) + ")"
+                else:
+                    css = fmt_value(var, m.get("$value"), m.get("$type"))
+                if css is not None:
+                    out.append((var, mode, css))
+            return
         if "$value" in node:
             segs = path[:]
             mode = None
