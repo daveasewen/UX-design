@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RAG colours v5 — mode-stable, green/blue options side by side · 2026-07-19</title>
+<style>
+  :root{
+    --uf:"Univers Next HSBC","HSBC_MtUnivers_Latin","Helvetica Neue",Arial,sans-serif;
+    --pg:#fff; --tx:#111; --mut:#5b6770; --ln:#e6e8ea; --sf:#f6f7f8; --accent:#db0011;
+    --dpg:#1A1A1A; --dtx:#f2f2f2; --dmut:#9aa4ad; --dln:#2c2c2c;
+  }
+  body.dark{ --pg:#111; --tx:#f2f2f2; --mut:#9aa4ad; --ln:#2c2c2c; --sf:#1a1a1a; }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:var(--uf); color:var(--tx); background:var(--pg); line-height:1.45; max-width:1000px; margin:0 auto; padding:0 40px 140px; transition:background .16s,color .16s;}
+  :is(button,a,span,small,b,i,th,td,li,figcaption,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+  .docbar{position:sticky; top:0; z-index:50; display:flex; gap:18px; align-items:center; flex-wrap:wrap; background:var(--pg); border-bottom:1px solid var(--ln); padding:12px 0; margin-bottom:26px;}
+  .docbar button{font:inherit; font-size:12px; padding:7px 12px; border:1px solid var(--tx); background:transparent; color:var(--tx); cursor:pointer;}
+  .docbar .grp{display:flex; gap:8px; align-items:center; font-size:12px; color:var(--mut);}
+  .docbar .rd{font-variant-numeric:tabular-nums; font-weight:500; color:var(--tx); min-width:52px;}
+  .eyebrow{font-size:12px; font-weight:500; color:var(--accent); margin-bottom:6px;}
+  h1{font-size:30px; font-weight:300; line-height:1.12; margin-bottom:10px;}
+  .lede{font-size:15px; color:var(--mut); max-width:76ch; margin-bottom:6px;} .lede b{color:var(--tx); font-weight:500;}
+  .meta{font-size:12px; color:var(--mut); margin-bottom:8px;}
+  h3.section{font-size:11px; font-weight:600; letter-spacing:.06em; border-top:2px solid var(--tx); padding-top:8px; margin:40px 0 8px; text-transform:uppercase;}
+  .note{font-size:13px; max-width:82ch; margin:8px 0 14px;} .note b{font-weight:600;} .muted{color:var(--mut);}
+  code{font-family:ui-monospace,Menlo,monospace; font-size:.85em; background:var(--sf); padding:1px 5px;}
+
+  .cols{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin:16px 0;}
+  @media(max-width:720px){ .cols{grid-template-columns:1fr;} }
+  .col{background:var(--dpg); border:1px solid var(--dln); border-radius:6px; padding:16px; color:var(--dtx);}
+  .col.rec{border-color:#7fd6a0; border-width:2px;}
+  .col h4{font-size:12px; letter-spacing:.04em; margin-bottom:2px;}
+  .col .sub{font-size:10.5px; color:var(--dmut); margin-bottom:14px; font-variant-numeric:tabular-nums;}
+  .rec-badge{display:inline-block; font-size:9.5px; color:#7fd6a0; border:1px solid #7fd6a0; border-radius:2px; padding:1px 5px; margin-left:6px; letter-spacing:.03em;}
+  /* status stack */
+  .st{display:flex; align-items:center; gap:10px; margin:8px 0;}
+  .st .cell{min-width:82px; text-align:center; padding:5px 12px; font-size:12px; font-weight:500; border-radius:2px;}
+  .st .who{font-size:12px; color:var(--dtx); font-weight:400;}
+  .st .u{font-size:11px; color:var(--dmut); font-variant-numeric:tabular-nums; margin-left:auto;}
+  .cc{font-size:10px; color:var(--dmut); margin-top:12px; font-variant-numeric:tabular-nums; border-top:1px solid var(--dln); padding-top:8px;}
+  .cc b{color:var(--dtx);}
+
+  .decision{border:1px solid var(--ln); border-left:3px solid var(--tx); padding:16px 18px; margin:16px 0; max-width:900px; background:var(--sf);}
+  .decision h5{font-size:13px; font-weight:600; margin-bottom:10px;}
+  .rec{background:#fff8e6; color:#3a2f00; border:1px solid #f0d78a; padding:11px 14px; font-size:13px; margin:12px 0 4px;}
+  body.dark .rec{background:#2a2410; color:#f0e2b0; border-color:#5c4d17;}
+  .call{font-size:13px; font-weight:600; margin-top:10px;}
+  .prov{font-size:11px; color:var(--mut); border-top:1px solid var(--ln); margin-top:40px; padding-top:12px; max-width:900px;}
+</style>
+</head>
+<body>
+  <div class="docbar">
+    <button type="button" id="theme">◐ Light / dark</button>
+    <div class="grp">Responsive width <input type="range" id="vw" min="360" max="1000" value="1000" step="20"> <span class="rd" id="vwr">full</span></div>
+    <span class="muted" style="font-size:11px">mode-stable = these render identically in light &amp; dark — toggle to confirm</span>
+  </div>
+
+  <div class="eyebrow">Apollo · RAG colours · v5 — mode-stable, green/blue side by side</div>
+  <h1>One RAG set, both modes — pin the green &amp; blue</h1>
+  <p class="lede">You chose <b>mode-stable</b>: one value per hue, light and dark the same. Red <code>#B92F1E</code> and amber
+     are locked; only <b>green</b> and <b>blue</b> have a choice, across a tiny range. Three options side by side — the
+     <b>light value</b> (truest "same both modes"), the <b>split</b> (midpoint), and the <b>Band-A</b> cut (very slightly
+     darker/matched). All four cells are the live status at Medium 500 on <code>#1A1A1A</code>. Toggle the theme — mode-stable
+     means nothing moves.</p>
+  <p class="meta">Review v5 · 2026-07-19 · red #B92F1E + amber locked · green/blue spread is small — this is a fine pick, not a big one</p>
+
+  <div class="cols">
+    <!-- LIGHT / mode-stable -->
+    <div class="col rec">
+      <h4>Light value <span class="rec-badge">TRUEST MODE-STABLE</span></h4>
+      <div class="sub">green #2B7E4F · blue #306EC6 — the existing light-mode values, reused</div>
+      <div class="st"><span class="cell" style="background:#B92F1E;color:#fff">Breach</span><span class="who">Trbovlje AG</span><span class="u">103%</span></div>
+      <div class="st"><span class="cell" style="background:#F0B13A;color:#000">Watch</span><span class="who">Novara</span><span class="u">88%</span></div>
+      <div class="st"><span class="cell" style="background:#2B7E4F;color:#fff">Healthy</span><span class="who">Meridian</span><span class="u">62%</span></div>
+      <div class="st"><span class="cell" style="background:#306EC6;color:#fff">Info</span><span class="who">Sundara</span><span class="u">watch</span></div>
+      <div class="cc">green white <b>5.00</b> · blue white <b>5.03</b> · zero new tokens</div>
+    </div>
+    <!-- SPLIT -->
+    <div class="col">
+      <h4>Split the difference</h4>
+      <div class="sub">green #22824F · blue #286ECD — midpoint (OKLab)</div>
+      <div class="st"><span class="cell" style="background:#B92F1E;color:#fff">Breach</span><span class="who">Trbovlje AG</span><span class="u">103%</span></div>
+      <div class="st"><span class="cell" style="background:#F0B13A;color:#000">Watch</span><span class="who">Novara</span><span class="u">88%</span></div>
+      <div class="st"><span class="cell" style="background:#22824F;color:#fff">Healthy</span><span class="who">Meridian</span><span class="u">62%</span></div>
+      <div class="st"><span class="cell" style="background:#286ECD;color:#fff">Info</span><span class="who">Sundara</span><span class="u">watch</span></div>
+      <div class="cc">green white <b>4.80</b> · blue white <b>5.00</b> · 2 new tokens</div>
+    </div>
+    <!-- BAND A -->
+    <div class="col">
+      <h4>Band-A cut</h4>
+      <div class="sub">green #14874E · blue #1F6ED5 — matched at L≈0.55</div>
+      <div class="st"><span class="cell" style="background:#B92F1E;color:#fff">Breach</span><span class="who">Trbovlje AG</span><span class="u">103%</span></div>
+      <div class="st"><span class="cell" style="background:#F0B13A;color:#000">Watch</span><span class="who">Novara</span><span class="u">88%</span></div>
+      <div class="st"><span class="cell" style="background:#14874E;color:#fff">Healthy</span><span class="who">Meridian</span><span class="u">62%</span></div>
+      <div class="st"><span class="cell" style="background:#1F6ED5;color:#fff">Info</span><span class="who">Sundara</span><span class="u">watch</span></div>
+      <div class="cc">green white <b>4.56</b> · blue white <b>4.94</b> · 2 new tokens</div>
+    </div>
+  </div>
+
+  <p class="note muted" style="font-size:12px">The three greens: <code>#2B7E4F</code> → <code>#22824F</code> → <code>#14874E</code>
+     (getting a hair deeper/greener). The three blues barely move (<code>#306EC6</code> → <code>#286ECD</code> → <code>#1F6ED5</code>).
+     Whichever you pick, all pass white text and sit at low bloom on dark.</p>
+
+  <h3 class="section">Where this lands</h3>
+  <div class="decision">
+    <h5>Pin green &amp; blue — then the colour set is fully ruled</h5>
+    <div class="rec"><b>My steer: the light value (truest mode-stable).</b> It makes "one set, both modes" literally true,
+       needs <b>zero new tokens</b> (green/blue already exist as light values), and closes the dark-green null by reuse rather
+       than a new cut. The split and Band-A are barely distinguishable and cost two new tokens — worth it only if a slightly
+       deeper green reads better to your eye.</div>
+    <p class="call">Pick a column for green/blue (you can mix — e.g. light blue + split green). Then only §1 manifestation
+       remains before I promote the set to tokens.</p>
+  </div>
+
+  <div class="prov">
+    <b>Provenance.</b> Mode-stable chosen 2026-07-19. Red <code>#B92F1E</code> (R-D7), amber <code>#F0B13A</code>/<code>#C58900</code>
+    (R-D3) locked. Green/blue options: light values (R-D4), Band-A (v2 isoluminant sweep L≈0.55), split = OKLab midpoint.
+    Contrast WCAG 2.1; all fills clear white text 4.5 (amber black). Weight uniform Medium 500 (R-D7). Marks icon/label-paired
+    (R-D6). This supersedes R-D8's separate dark green/blue if the light values are chosen. Promotion to tokens awaits this pin
+    + §1, then the blast-radius gate.
+  </div>
+
+  <script>
+    var body=document.body;
+    document.getElementById('theme').addEventListener('click',function(){ body.classList.toggle('dark'); });
+    var vw=document.getElementById('vw'), vwr=document.getElementById('vwr');
+    vw.addEventListener('input',function(){ var v=+vw.value; if(v>=1000){body.style.maxWidth='';vwr.textContent='full';} else {body.style.maxWidth=v+'px';vwr.textContent=v+'px';} });
+    body.classList.add('dark');
+  </script>
+</body>
+</html>

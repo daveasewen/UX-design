@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RAG colours v3 — red carve-out + text weight (eyeball rig) · 2026-07-19</title>
+<style>
+  :root{
+    --uf:"Univers Next HSBC","HSBC_MtUnivers_Latin","Helvetica Neue",Arial,sans-serif;
+    --pg:#fff; --tx:#111; --mut:#5b6770; --ln:#e6e8ea; --sf:#f6f7f8; --accent:#db0011;
+    --dpg:#1A1A1A; --dtx:#f2f2f2; --dmut:#9aa4ad; --dln:#2c2c2c;
+  }
+  body.dark{ --pg:#111; --tx:#f2f2f2; --mut:#9aa4ad; --ln:#2c2c2c; --sf:#1a1a1a; }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:var(--uf); color:var(--tx); background:var(--pg); line-height:1.45; max-width:1000px; margin:0 auto; padding:0 40px 140px; transition:background .16s,color .16s;}
+  :is(button,a,span,small,b,i,th,td,li,figcaption,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+  .docbar{position:sticky; top:0; z-index:50; display:flex; gap:18px; align-items:center; flex-wrap:wrap; background:var(--pg); border-bottom:1px solid var(--ln); padding:12px 0; margin-bottom:26px;}
+  .docbar button{font:inherit; font-size:12px; padding:7px 12px; border:1px solid var(--tx); background:transparent; color:var(--tx); cursor:pointer;}
+  .docbar .grp{display:flex; gap:8px; align-items:center; font-size:12px; color:var(--mut);}
+  .docbar .rd{font-variant-numeric:tabular-nums; font-weight:500; color:var(--tx); min-width:52px;}
+  .eyebrow{font-size:12px; font-weight:500; color:var(--accent); margin-bottom:6px;}
+  h1{font-size:30px; font-weight:300; line-height:1.12; margin-bottom:10px;}
+  .lede{font-size:15px; color:var(--mut); max-width:76ch; margin-bottom:6px;} .lede b{color:var(--tx); font-weight:500;}
+  .meta{font-size:12px; color:var(--mut); margin-bottom:8px;}
+  h3.section{font-size:11px; font-weight:600; letter-spacing:.06em; border-top:2px solid var(--tx); padding-top:8px; margin:44px 0 8px; text-transform:uppercase;}
+  .note{font-size:13px; max-width:82ch; margin:8px 0 14px;} .note b{font-weight:600;} .muted{color:var(--mut);}
+  code{font-family:ui-monospace,Menlo,monospace; font-size:.85em; background:var(--sf); padding:1px 5px;}
+
+  .darkstrip{background:var(--dpg); color:var(--dtx); border:1px solid var(--dln); border-radius:6px; padding:20px; margin:14px 0;}
+  .darkstrip .cap{font-size:11px; color:var(--dmut); text-transform:uppercase; letter-spacing:.06em; margin-bottom:14px;}
+
+  /* red ladder */
+  .ladder{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+  @media(max-width:720px){ .ladder{grid-template-columns:repeat(2,1fr);} }
+  .rc{border:1px solid var(--dln); border-radius:4px; overflow:hidden;}
+  .rc .big{height:74px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:15px; font-weight:500; letter-spacing:.01em;}
+  .rc .cellrow{display:flex; gap:6px; align-items:center; padding:8px 10px 4px;}
+  .rc .cell{min-width:70px; text-align:center; padding:3px 8px; font-size:11px; font-weight:600; color:#fff; border-radius:2px;}
+  .rc .m{padding:6px 10px 10px; font-size:10.5px; color:var(--dmut); font-variant-numeric:tabular-nums; line-height:1.5;}
+  .rc .m b{color:var(--dtx);}
+  .rc.star{border-color:#f0c862; border-width:2px;}
+  .rc.star .tagline{color:#f0c862; font-weight:700;}
+
+  /* weight matrix */
+  .wmx{width:100%; border-collapse:collapse; margin-top:4px;}
+  .wmx th{font-size:10.5px; color:var(--dmut); text-transform:uppercase; letter-spacing:.05em; font-weight:600; padding:6px 10px; text-align:left; border-bottom:1px solid var(--dln);}
+  .wmx td{padding:9px 10px; border-bottom:1px solid var(--dln); vertical-align:middle;}
+  .wmx .wlab{font-size:11px; color:var(--dmut); white-space:nowrap;}
+  .sample{display:inline-block; padding:7px 14px; border-radius:3px; font-size:15px;}
+  .s-page{color:#fff; background:transparent;}
+  .s-red{color:#fff; background:#B92F1E;}
+  .s-amber{color:#000; background:#F0B13A;}
+  .bl{font-size:10px; color:var(--dmut); font-variant-numeric:tabular-nums; margin-left:8px;}
+
+  .decision{border:1px solid var(--ln); border-left:3px solid var(--tx); padding:16px 18px; margin:16px 0; max-width:900px; background:var(--sf);}
+  .decision h5{font-size:13px; font-weight:600; margin-bottom:10px;}
+  .opt{font-size:13px; margin:7px 0;} .opt b{font-weight:600;}
+  .rec{background:#fff8e6; color:#3a2f00; border:1px solid #f0d78a; padding:11px 14px; font-size:13px; margin:12px 0 4px;}
+  body.dark .rec{background:#2a2410; color:#f0e2b0; border-color:#5c4d17;}
+  .call{font-size:13px; font-weight:600; margin-top:10px;}
+  .prov{font-size:11px; color:var(--mut); border-top:1px solid var(--ln); margin-top:40px; padding-top:12px; max-width:900px;}
+</style>
+</head>
+<body>
+  <div class="docbar">
+    <button type="button" id="theme">◐ Light / dark</button>
+    <div class="grp">Responsive width <input type="range" id="vw" min="360" max="1000" value="1000" step="20"> <span class="rd" id="vwr">full</span></div>
+    <span class="muted" style="font-size:11px">view on DARK to judge — specimens sit on <code>#1A1A1A</code></span>
+  </div>
+
+  <div class="eyebrow">Apollo · RAG colours · v3 — the red carve-out + text weight</div>
+  <h1>Red, deep — and how heavy the text sits</h1>
+  <p class="lede">You confirmed the shape: <b>red carves out</b> (breach must be unmissable; red is the hue that vibrates
+     most, and your astigmatism sees it first), and the lever is to go <b>deep + white text</b>, not desaturate. §R lays out
+     the deep-red ladder to <b>pin the one</b>. §W adds the axis you asked to settle — <b>text weight</b> — because the
+     dark-mode light-bleed rule is the same halation problem: on a bright ground strokes fatten, on colour they barely move.
+     Everything live; toggle to dark and lean in.</p>
+  <p class="meta">Review v3 · 2026-07-19 · red hue 30° · model <code>reviews/_rag_bloom_model.py</code> · weights = the five licensed (100/300/400/500/700 — no 600) · instrument, a "none" is valid</p>
+
+  <!-- ===== §R RED LADDER ===== -->
+  <h3 class="section">§R · The deep-red ladder — pin the breach red (white text)</h3>
+  <p class="note">Deeper red <b>raises</b> white-text contrast <b>and</b> lowers bloom together — the readable direction and the
+     calm direction are the same way. Trade-off is only <b>identity</b>: too deep and "red/danger" edges toward maroon. Each fill
+     is the <b>Breach</b> status cell at extent. <b>★ <code>#B92F1E</code> is your light-mode red</b> — picking it makes red
+     mode-stable (one red, both themes).</p>
+
+  <div class="darkstrip">
+    <div class="cap">Breach fill · white text · on #1A1A1A — which red is unmissable AND sits still?</div>
+    <div class="ladder">
+      <div class="rc"><div class="big" style="background:#CC4333">Breach</div>
+        <div class="cellrow"><span class="cell" style="background:#CC4333">Breach</span><span class="cell" style="background:#CC4333;font-weight:400">103%</span></div>
+        <div class="m"><b>#CC4333</b> · current dark red<br>white <b>4.75</b> · bloom <b>2.8</b> — the incumbent, brightest/most bloom</div></div>
+
+      <div class="rc"><div class="big" style="background:#C33A2B">Breach</div>
+        <div class="cellrow"><span class="cell" style="background:#C33A2B">Breach</span><span class="cell" style="background:#C33A2B;font-weight:400">103%</span></div>
+        <div class="m"><b>#C33A2B</b> · Band A<br>white <b>5.30</b> · bloom <b>2.1</b> — you: "most readable, blooms"</div></div>
+
+      <div class="rc star"><div class="big" style="background:#B92F1E">Breach</div>
+        <div class="cellrow"><span class="cell" style="background:#B92F1E">Breach</span><span class="cell" style="background:#B92F1E;font-weight:400">103%</span></div>
+        <div class="m"><span class="tagline">★ #B92F1E · mode-stable</span><br>white <b>6.02</b> · bloom <b>1.4</b> — your light-mode red, both themes</div></div>
+
+      <div class="rc"><div class="big" style="background:#AC3124">Breach</div>
+        <div class="cellrow"><span class="cell" style="background:#AC3124">Breach</span><span class="cell" style="background:#AC3124;font-weight:400">103%</span></div>
+        <div class="m"><b>#AC3124</b> · deeper<br>white <b>6.52</b> · bloom <b>1.1</b></div></div>
+
+      <div class="rc"><div class="big" style="background:#A8000B">Breach</div>
+        <div class="cellrow"><span class="cell" style="background:#A8000B">Breach</span><span class="cell" style="background:#A8000B;font-weight:400">103%</span></div>
+        <div class="m"><b>#A8000B</b> · error/600 primitive<br>white <b>7.87</b> · bloom <b>0.6</b> — very readable, very calm</div></div>
+
+      <div class="rc"><div class="big" style="background:#8E1A10">Breach</div>
+        <div class="cellrow"><span class="cell" style="background:#8E1A10">Breach</span><span class="cell" style="background:#8E1A10;font-weight:400">103%</span></div>
+        <div class="m"><b>#8E1A10</b> · very deep<br>white <b>9.11</b> · bloom <b>0.4</b> — calmest; identity edging to maroon?</div></div>
+    </div>
+  </div>
+
+  <div class="decision">
+    <h5>§R decision — the breach red</h5>
+    <div class="rec"><b>My steer: ★ <code>#B92F1E</code>.</b> It's already your light-mode red, so red goes <b>mode-stable</b> —
+       one value, both themes, one less thing to maintain — and it sits deep enough (white 6.02, bloom 1.4) to be far calmer
+       than today's <code>#CC4333</code> while staying vividly "danger". If you want calmer still, <code>#A8000B</code> is the
+       next rung; if you find <code>#B92F1E</code> not vivid enough on dark, <code>#C33A2B</code> is the brighter side.</div>
+    <p class="call">Pin the red — and confirm mode-stable (one red) vs a dark-specific value.</p>
+  </div>
+
+  <!-- ===== §W WEIGHT ===== -->
+  <h3 class="section">§W · Text weight — settling the dark-mode light-bleed rule</h3>
+  <p class="note">Light-on-dark makes strokes <b>bloom heavier</b> (canon: "icon strokes appear heavier"), so the dark-mode
+     fix is to step the weight <b>down</b>. Your idea: that doesn't apply on colour. The model agrees and the rig shows it —
+     bloom (how much the stroke fattens) is high on the dark page, nearly as high on the deep red, and <b>small on a light
+     fill</b>. Read each row as a weight; watch where the white text visibly thickens.</p>
+
+  <div class="darkstrip">
+    <div class="cap">Same word, four weights, three grounds — where do the strokes fatten? (bloom index in grey)</div>
+    <table class="wmx">
+      <thead><tr><th>weight</th><th>white on dark PAGE</th><th>white on RED #B92F1E</th><th>black on AMBER #F0B13A</th></tr></thead>
+      <tbody>
+        <tr><td class="wlab">300 Light<br><span style="font-size:9.5px">headline-only</span></td>
+          <td><span class="sample s-page" style="font-weight:300">Breach</span><span class="bl">16.4</span></td>
+          <td><span class="sample s-red" style="font-weight:300">Breach</span><span class="bl">14.5</span></td>
+          <td><span class="sample s-amber" style="font-weight:300">Watch</span><span class="bl">4.2</span></td></tr>
+        <tr><td class="wlab">400 Regular<br><span style="font-size:9.5px">body floor</span></td>
+          <td><span class="sample s-page" style="font-weight:400">Breach</span><span class="bl">21.1</span></td>
+          <td><span class="sample s-red" style="font-weight:400">Breach</span><span class="bl">18.7</span></td>
+          <td><span class="sample s-amber" style="font-weight:400">Watch</span><span class="bl">5.4</span></td></tr>
+        <tr><td class="wlab">500 Medium</td>
+          <td><span class="sample s-page" style="font-weight:500">Breach</span><span class="bl">25.4</span></td>
+          <td><span class="sample s-red" style="font-weight:500">Breach</span><span class="bl">22.5</span></td>
+          <td><span class="sample s-amber" style="font-weight:500">Watch</span><span class="bl">6.5</span></td></tr>
+        <tr><td class="wlab">700 Bold</td>
+          <td><span class="sample s-page" style="font-weight:700">Breach</span><span class="bl">31.9</span></td>
+          <td><span class="sample s-red" style="font-weight:700">Breach</span><span class="bl">28.2</span></td>
+          <td><span class="sample s-amber" style="font-weight:700">Watch</span><span class="bl">8.1</span></td></tr>
+      </tbody>
+    </table>
+    <p class="note" style="color:var(--dmut);margin:12px 0 0;font-size:11.5px">Page &amp; red climb steeply (16→32) — the stroke
+       fattens, so on those grounds a <b>lighter</b> dark-mode weight reads truer. Amber (a light fill) stays ~4–8 — <b>flat</b>,
+       so <b>no step-down on colour</b>. NB the real HSBC cut shows this more than the fallback font.</p>
+  </div>
+
+  <div class="decision">
+    <h5>§W decision — the dark-mode weight rule</h5>
+    <p class="opt"><b>A · Step-down on the page only:</b> in dark mode, light text on the dark page drops one weight step
+       (e.g. label 500→400); text on a coloured fill keeps its light-mode weight. Matches the model + your instinct.</p>
+    <p class="opt"><b>B · No step-down anywhere:</b> keep light-mode weights everywhere; accept the page bloom. Simplest rule,
+       ignores the effect you can see.</p>
+    <p class="opt"><b>C · Step-down everywhere in dark:</b> the blunt current-canon reading; over-lightens text on colour where
+       it isn't needed.</p>
+    <div class="rec"><b>Recommendation: A.</b> The compensation should track the bloom, and the bloom is on the dark page,
+       not on colour. This becomes a TYPE ruling (T-D) and pairs with R-D6. Which weights step where is your eye's call —
+       tell me the pair (e.g. "labels 500 on colour, 400 on page").</p>
+    <p class="call">Pick A / B / C, and name the weight pair you want for labels (on page vs on colour).</p>
+  </div>
+
+  <div class="prov">
+    <b>Provenance.</b> Red candidates hue 30°, contrast WCAG 2.1; bloom index = <code>reviews/_rag_bloom_model.py</code>
+    (v0 heuristic, stroke width from font-weight ≈ 300→1.0px / 400→1.35 / 500→1.7 / 700→2.3px). Weights: five licensed only
+    (100/300/400/500/700 — no 600); body floor 400 (300 headline-only per the body-weight rule). Feeds R-D6 (halation axis)
+    + a new TYPE ruling for the weight rule. Calibration target = the most sensitive observer (your astigmatism). Nothing
+    promoted to tokens yet — awaits your pins, then the blast-radius gate. ⚠️ Fallback font in most browsers understates the
+    effect; the real Univers cut shows it fully.
+  </div>
+
+  <script>
+    var body=document.body;
+    document.getElementById('theme').addEventListener('click',function(){ body.classList.toggle('dark'); });
+    var vw=document.getElementById('vw'), vwr=document.getElementById('vwr');
+    vw.addEventListener('input',function(){ var v=+vw.value; if(v>=1000){body.style.maxWidth='';vwr.textContent='full';} else {body.style.maxWidth=v+'px';vwr.textContent=v+'px';} });
+    // default to dark — this sheet is about the dark ground
+    body.classList.add('dark');
+  </script>
+</body>
+</html>

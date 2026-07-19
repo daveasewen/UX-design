@@ -17,7 +17,7 @@ narrative, relocated verbatim (how we got here; see its README for the rules + R
 > tripwire ~500 lines. Edits to this file are reachability-relevant — run
 > `python3 knowledge/_validate_standing_instructions.py` (STAND-002) after touching it.
 
-*Last refreshed: **2026-07-19 (later) — "Small picks, and an edit-mode μX with legs"**: §1 `.num` RULED + enacted (T-D14 — `.t-cm-figure-3` 24/500 rung, countdown numeral bound via CLASS = first composite in markup, ASSERT-003 retired, build green 34 steps); §2 dv-017 visual built (`reviews/DV017-DELTA-VS-RAG-2026-07-19-v1`) awaiting Dave's wording confirm; μX in-context edit-mode prototype v1→v3 built + registered in `_FUTURE-STATE` (universal to all components · controls derived from meta · TIERED to the strict↔creative register, prompt-only at the creative extreme); review conventions inscribed (live variant/state spread + light/dark + responsive slider; versioning `-vN` not overwrite). Previous: **2026-07-19 late — "The button-label audit that became a gate": ds-005 GATED + CLOSED — new blocking descender-clip gate (`_validate_descender_clip.py`, build step 27/34); 7 truncating labels fixed with ZERO waivers; `.btn`/`.cta`/`.qbtn` audited CLEAN (null result); commit `3af1696`**. Previous: **2026-07-19 — "A gate for the blast radius"**: blast-radius gate built (closes open-001), h2 namespaced, specimen chrome harmonised, ds-005 logged, Tag atom (3 variants × 2 sizes) wired. Earlier: **2026-07-18 late** — R-D4 matting rungs ruled + first RAG role-token promotion. Earlier: **2026-07-18 Fable consolidation** — consolidated
+*Last refreshed: **2026-07-19 — "RAG colour: halation, the salience ramp & the astigmatism instrument"**: RAG DARK set LOCKED (R-D5…R-D11, dossier `_DECISION-HISTORY/2026-07-19-rag-colour-halation-ramp.md`) — breach `#B92F1E` white / watch `#F0B13A` / healthy `#43AD6F` / info `#5F92B9`, uniform Medium 500, red+amber carve-outs, green+blue ramp-tuned; halation bloom/dance MODEL built (`reviews/_rag_bloom_model.py`); the SALIENCE-RAMP reframe (status ≠ isoluminant); ⚠️ R-D11 correction = status FILLS are ground-relative → LIGHT-mode fills REOPENED; §1 manifestation decision sheet built; capture ritual gained **step 1b NARRATIVE DOSSIER**; Apollo Labs + whole-palette sweep + dual-observer principle + ~450 weight target registered in `_FUTURE-STATE`. Previous: **2026-07-19 (later) — "Small picks, and an edit-mode μX with legs"**: §1 `.num` RULED + enacted (T-D14 — `.t-cm-figure-3` 24/500 rung, countdown numeral bound via CLASS = first composite in markup, ASSERT-003 retired, build green 34 steps); §2 dv-017 visual built (`reviews/DV017-DELTA-VS-RAG-2026-07-19-v1`) awaiting Dave's wording confirm; μX in-context edit-mode prototype v1→v3 built + registered in `_FUTURE-STATE` (universal to all components · controls derived from meta · TIERED to the strict↔creative register, prompt-only at the creative extreme); review conventions inscribed (live variant/state spread + light/dark + responsive slider; versioning `-vN` not overwrite). Previous: **2026-07-19 late — "The button-label audit that became a gate": ds-005 GATED + CLOSED — new blocking descender-clip gate (`_validate_descender_clip.py`, build step 27/34); 7 truncating labels fixed with ZERO waivers; `.btn`/`.cta`/`.qbtn` audited CLEAN (null result); commit `3af1696`**. Previous: **2026-07-19 — "A gate for the blast radius"**: blast-radius gate built (closes open-001), h2 namespaced, specimen chrome harmonised, ds-005 logged, Tag atom (3 variants × 2 sizes) wired. Earlier: **2026-07-18 late** — R-D4 matting rungs ruled + first RAG role-token promotion. Earlier: **2026-07-18 Fable consolidation** — consolidated
 1104 → ~450 lines per the classification Dave ruled via markup (11 pins) on
 `reviews/CONSOLIDATION-AUDIT-2026-07-18.html`. Nothing deleted: ~580 lines relocated verbatim to
 `_DECISION-HISTORY/`, duplicates reduced to pointers, two entries removed on their own recorded
@@ -121,7 +121,19 @@ Latin webfont" rests on absence of files, not on any document.
   contrast gate refused the known-failing incumbent dark (3.37) — dark leaf lands with the
   dark-green ruling. Gate model gained `RULED_PAIR_EXCLUSIONS` (white text × amber fill is
   forbidden by rule 1, so the audit no longer tests it). Ledger: R-D4.
-- **⚠️ NOT YET GATED.** Both amber rules are mechanically checkable and unenforced.
+- **★ DARK SET LOCKED (2026-07-19, R-D5…R-D11).** Full arc: `_DECISION-HISTORY/2026-07-19-rag-colour-halation-ramp.md`.
+  Dark-mode RAG (mode-stable for red/amber; per §note below for green/blue): **breach `#B92F1E` white ·
+  watch `#F0B13A`/`#C58900` black · healthy `#43AD6F` black · info `#5F92B9` black** (cyan-shifted for
+  astigmatic legibility). Weight uniform Medium 500. Marks icon/label-paired (never bare coloured text on
+  dark). **Red = carve-out (deep+white, instability); amber = carve-out (lightness); green+blue = the
+  isoluminant→RAMP-tuned pair.** Key rulings: R-D6 (halation = 3rd axis: bloom vs dance, thickness selects
+  the mode; glyph-contrast-by-role) · R-D7 (red locked, weight polarity→uniform 500) · R-D9 (status colour
+  is a SALIENCE RAMP, not isoluminant — loudness descends with severity) · R-D10 (set locked).
+- **⚠️ R-D11 CORRECTION (2026-07-19): status FILLS are NOT mode-stable — the salience ramp is GROUND-RELATIVE
+  and inverts light↔dark** (on white the light fills wash out and the deep-red alarm goes quietest). The DARK
+  set stands; **the LIGHT-mode fill set is REOPENED** — needs its own ground-aware pass. See OPEN.
+- **⚠️ NOT YET GATED.** Both amber rules are mechanically checkable and unenforced. R-D10 dark tokens NOT yet
+  promoted/rebound (awaits blast-radius gate + the light-fill pass + §1 manifestation pick).
 
 - **Project name = Apollo** (renamed from *Promenaut* repo-wide 2026-07-14; "Apollo" singular
   preferred, "Apollo SDS" acceptable). History: `_DECISION-HISTORY/2026-07-14-rename-and-restructure.md`.
@@ -236,11 +248,16 @@ ignore a red build.
 - ~~Matting rung for green + blue~~ — **RULED R-D4 (2026-07-18): both matted 15%** (`#2B7E4F` /
   `#306EC6`), red as-is; role tokens promoted (see LIVE → RAG). Rung came from a direct readback —
   the pin export named the hue, not the row (the overlay row-identity debt biting again).
-- **`{#dv-017}`(a) CONTRADICTION** — permits red/green for deltas while naming "RAG-style cells";
-  RAG includes amber. The rule permits a palette it also excludes. **Visual built 2026-07-19**
-  (`reviews/DV017-DELTA-VS-RAG-2026-07-19-v1`) — recommendation = split the clause (deltas red/green-ONLY;
-  RAG status → R-D3, amber valid). **AWAITING Dave's wording confirm** (he asked to see it first). The full RAG
-  manifestation + dark-mode opens = the separate **RAG-colours review** (queued, `_FUTURE-STATE`).
+- ~~**`{#dv-017}`(a) CONTRADICTION**~~ **RESOLVED R-D5 (2026-07-19): split the clause** — directional deltas
+  red/green ONLY; RAG status a separate concern (R-D3). Enacted in `data-visualisation.md`.
+- **★ RAG light-mode FILLS — REOPENED (R-D11, 2026-07-19).** The dark set (R-D10) is locked, but it was tuned
+  on the dark page and the salience ramp is GROUND-RELATIVE — on white the light fills wash out and breach goes
+  quietest. **Next: derive a ground-aware LIGHT-mode fill set** (breach must shout, none wash out), then
+  reconcile the two modes. Fills are per-mode, NOT mode-stable. (Dot+label form may still be near-mode-stable.)
+- **§1 RAG manifestation — OPEN.** Which forms are canon: Status-indicator dot+label (existing canon) · filled
+  cell/badge · bar/edge; tags+pills EXCLUDED by canon (ctkt). Decision sheet built
+  (`reviews/RAG-STATUS-MANIFESTATION-2026-07-19-v1`), awaiting Dave's canon pick (A / A+B / A+B+C). Then a
+  Sonnet build: rebind Status-indicator to R-D10, spec cell/bar as gated components (cells need more vertical padding).
 - ~~**`.tag` COLLISION**~~ **RESOLVED 2026-07-18.** Was three things under one name: the tag component
   (14px), a smaller reuse (12px), and a masthead descriptor `.h .tag`. Ruled (Dave): tag atom = 3
   variants (dismissible/bordered/plain) × 2 sizes (`.tag`/`.tag--sm`), `.tag--plain` for borderless;

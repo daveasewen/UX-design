@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RAG colours v6 — red alone in white? · 2026-07-19</title>
+<style>
+  :root{
+    --uf:"Univers Next HSBC","HSBC_MtUnivers_Latin","Helvetica Neue",Arial,sans-serif;
+    --pg:#fff; --tx:#111; --mut:#5b6770; --ln:#e6e8ea; --sf:#f6f7f8; --accent:#db0011;
+    --dpg:#1A1A1A; --dtx:#f2f2f2; --dmut:#9aa4ad; --dln:#2c2c2c;
+  }
+  body.dark{ --pg:#111; --tx:#f2f2f2; --mut:#9aa4ad; --ln:#2c2c2c; --sf:#1a1a1a; }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:var(--uf); color:var(--tx); background:var(--pg); line-height:1.45; max-width:960px; margin:0 auto; padding:0 40px 140px; transition:background .16s,color .16s;}
+  :is(button,a,span,small,b,i,th,td,li,figcaption,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+  .docbar{position:sticky; top:0; z-index:50; display:flex; gap:18px; align-items:center; flex-wrap:wrap; background:var(--pg); border-bottom:1px solid var(--ln); padding:12px 0; margin-bottom:26px;}
+  .docbar button{font:inherit; font-size:12px; padding:7px 12px; border:1px solid var(--tx); background:transparent; color:var(--tx); cursor:pointer;}
+  .docbar .grp{display:flex; gap:8px; align-items:center; font-size:12px; color:var(--mut);}
+  .docbar .rd{font-variant-numeric:tabular-nums; font-weight:500; color:var(--tx); min-width:52px;}
+  .eyebrow{font-size:12px; font-weight:500; color:var(--accent); margin-bottom:6px;}
+  h1{font-size:30px; font-weight:300; line-height:1.12; margin-bottom:10px;}
+  .lede{font-size:15px; color:var(--mut); max-width:76ch; margin-bottom:6px;} .lede b{color:var(--tx); font-weight:500;}
+  .meta{font-size:12px; color:var(--mut); margin-bottom:8px;}
+  h3.section{font-size:11px; font-weight:600; letter-spacing:.06em; border-top:2px solid var(--tx); padding-top:8px; margin:40px 0 8px; text-transform:uppercase;}
+  .note{font-size:13px; max-width:82ch; margin:8px 0 14px;} .note b{font-weight:600;} .muted{color:var(--mut);}
+  code{font-family:ui-monospace,Menlo,monospace; font-size:.85em; background:var(--sf); padding:1px 5px;}
+
+  .cols{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:16px 0;}
+  @media(max-width:680px){ .cols{grid-template-columns:1fr;} }
+  .col{background:var(--dpg); border:1px solid var(--dln); border-radius:6px; padding:18px; color:var(--dtx);}
+  .col h4{font-size:13px; margin-bottom:2px;}
+  .col .sub{font-size:11px; color:var(--dmut); margin-bottom:16px;}
+  .st{display:flex; align-items:center; gap:10px; margin:9px 0;}
+  .st .cell{min-width:84px; text-align:center; padding:6px 12px; font-size:12px; font-weight:500; border-radius:2px;}
+  .st .who{font-size:12.5px; color:var(--dtx); font-weight:400;}
+  .st .u{font-size:11px; color:var(--dmut); font-variant-numeric:tabular-nums; margin-left:auto;}
+  .cc{font-size:10.5px; color:var(--dmut); margin-top:14px; font-variant-numeric:tabular-nums; border-top:1px solid var(--dln); padding-top:9px; line-height:1.6;}
+  .cc b{color:var(--dtx);}
+
+  .decision{border:1px solid var(--ln); border-left:3px solid var(--tx); padding:16px 18px; margin:16px 0; max-width:900px; background:var(--sf);}
+  .decision h5{font-size:13px; font-weight:600; margin-bottom:10px;}
+  .opt{font-size:13px;margin:7px 0;} .opt b{font-weight:600;}
+  .rec{background:#fff8e6; color:#3a2f00; border:1px solid #f0d78a; padding:11px 14px; font-size:13px; margin:12px 0 4px;}
+  body.dark .rec{background:#2a2410; color:#f0e2b0; border-color:#5c4d17;}
+  .call{font-size:13px; font-weight:600; margin-top:10px;}
+  .prov{font-size:11px; color:var(--mut); border-top:1px solid var(--ln); margin-top:40px; padding-top:12px; max-width:900px;}
+</style>
+</head>
+<body>
+  <div class="docbar">
+    <button type="button" id="theme">◐ Light / dark</button>
+    <div class="grp">Responsive width <input type="range" id="vw" min="360" max="960" value="960" step="20"> <span class="rd" id="vwr">full</span></div>
+    <span class="muted" style="font-size:11px">both sets are mode-stable — toggle, nothing moves</span>
+  </div>
+
+  <div class="eyebrow">Apollo · RAG colours · v6 — should red stand alone in white?</div>
+  <h1>Red alone in white — or everyone in white?</h1>
+  <p class="lede">Your idea: make <b>red the only white-text hue</b>, so white-on-red reads as <i>the</i> alarm and everything
+     else is quieter black-on-colour. It works — but green and blue must lift slightly to carry black text (they fail it now:
+     4.20 / 4.17). The lift is small (<code>#2B7E4F→#398C5B</code>, <code>#306EC6→#3D7CD5</code>). Both sets stay mode-stable.
+     Which hierarchy reads right?</p>
+  <p class="meta">Review v6 · 2026-07-19 · red #B92F1E + amber locked · green/blue = the only variable · all pass AA</p>
+
+  <div class="cols">
+    <div class="col">
+      <h4>Set 1 · Everyone in white <span class="muted" style="font-size:10px">(what you picked in v5)</span></h4>
+      <div class="sub">red · green · blue = white text · amber = black</div>
+      <div class="st"><span class="cell" style="background:#B92F1E;color:#fff">Breach</span><span class="who">Trbovlje AG</span><span class="u">103%</span></div>
+      <div class="st"><span class="cell" style="background:#F0B13A;color:#000">Watch</span><span class="who">Novara</span><span class="u">88%</span></div>
+      <div class="st"><span class="cell" style="background:#2B7E4F;color:#fff">Healthy</span><span class="who">Meridian</span><span class="u">62%</span></div>
+      <div class="st"><span class="cell" style="background:#306EC6;color:#fff">Info</span><span class="who">Sundara</span><span class="u">watch</span></div>
+      <div class="cc">green #2B7E4F white <b>5.00</b> · blue #306EC6 white <b>5.03</b><br><b>zero new tokens</b> · red is deep but not uniquely white</div>
+    </div>
+
+    <div class="col">
+      <h4>Set 2 · Red alone in white <span class="muted" style="font-size:10px">(your idea)</span></h4>
+      <div class="sub">red = white text · green · blue · amber = black</div>
+      <div class="st"><span class="cell" style="background:#B92F1E;color:#fff">Breach</span><span class="who">Trbovlje AG</span><span class="u">103%</span></div>
+      <div class="st"><span class="cell" style="background:#F0B13A;color:#000">Watch</span><span class="who">Novara</span><span class="u">88%</span></div>
+      <div class="st"><span class="cell" style="background:#398C5B;color:#000">Healthy</span><span class="who">Meridian</span><span class="u">62%</span></div>
+      <div class="st"><span class="cell" style="background:#3D7CD5;color:#000">Info</span><span class="who">Sundara</span><span class="u">watch</span></div>
+      <div class="cc">green #398C5B black <b>5.08</b> · blue #3D7CD5 black <b>5.04</b><br>2 new tokens · <b>red = the lone white alarm</b>, green/blue a touch lighter</div>
+    </div>
+  </div>
+
+  <p class="note muted" style="font-size:12px">Watch the <b>Breach</b> row across the two: on the right, red is the only white
+     text in the set, so it reads as the exception — the alarm. Cost: green/blue lift slightly (and, being mode-stable, that
+     lift shows in light mode too, changing today's ruled green/blue).</p>
+
+  <div class="decision">
+    <h5>The call — red's hierarchy</h5>
+    <p class="opt"><b>Set 1:</b> everyone white (amber aside). Simplest, zero new tokens, keeps the ruled light green/blue.
+       Red is distinguished by <i>depth</i>, not by being the only white text.</p>
+    <p class="opt"><b>Set 2:</b> red alone in white — a clear "error is different" signal (a common, legible pattern). Costs a
+       small green/blue lift (2 new tokens, and it re-cuts the light-mode green/blue too).</p>
+    <div class="rec"><b>Toss-up — your eye decides.</b> Set 2 gives red genuine hierarchical weight and matches your instinct
+       ("red is a warning"); the accessibility cost is nil (all still AA). Set 1 is the lower-churn path. If the alarm-reading
+       of Set 2 lands for you, I'd lean it — the semantics are worth two tokens.</div>
+    <p class="call">Pick Set 1 or Set 2. Then only §1 manifestation remains before token promotion.</p>
+  </div>
+
+  <div class="prov">
+    <b>Provenance.</b> Red <code>#B92F1E</code> (R-D7), amber (R-D3) locked; green/blue mode-stable (v5). Set 2 green
+    <code>#398C5B</code> / blue <code>#3D7CD5</code> = minimal lift on the same hue to clear black text ≥5.0 (WCAG 1.4.3).
+    Set 2 re-cuts the light-mode green/blue (they become black-text) — a change to R-D4 to note if chosen. Weight 500 (R-D7),
+    marks icon/label-paired (R-D6). Nothing promoted yet; awaits this pin + §1, then the blast-radius gate.
+  </div>
+
+  <script>
+    var body=document.body;
+    document.getElementById('theme').addEventListener('click',function(){ body.classList.toggle('dark'); });
+    var vw=document.getElementById('vw'), vwr=document.getElementById('vwr');
+    vw.addEventListener('input',function(){ var v=+vw.value; if(v>=960){body.style.maxWidth='';vwr.textContent='full';} else {body.style.maxWidth=v+'px';vwr.textContent=v+'px';} });
+    body.classList.add('dark');
+  </script>
+</body>
+</html>

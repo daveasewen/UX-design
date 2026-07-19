@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RAG status manifestation — which forms are canon · 2026-07-19</title>
+<style>
+  :root{
+    --uf:"Univers Next HSBC","HSBC_MtUnivers_Latin","Helvetica Neue",Arial,sans-serif;
+    --pg:#fff; --tx:#111; --mut:#5b6770; --ln:#e6e8ea; --sf:#f6f7f8; --accent:#db0011;
+    --dpg:#1A1A1A; --dtx:#f2f2f2; --dmut:#9aa4ad; --dln:#2c2c2c;
+    --red:#B92F1E; --amber:#F0B13A; --amber-gl:#C58900; --green:#43AD6F; --blue:#5F92B9; --muted:#767676;
+  }
+  body.dark{ --pg:#111; --tx:#f2f2f2; --mut:#9aa4ad; --ln:#2c2c2c; --sf:#1a1a1a; }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:var(--uf); color:var(--tx); background:var(--pg); line-height:1.45; max-width:980px; margin:0 auto; padding:0 40px 140px; transition:background .16s,color .16s;}
+  :is(button,a,span,small,b,i,th,td,li,figcaption,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+  .docbar{position:sticky; top:0; z-index:50; display:flex; gap:18px; align-items:center; flex-wrap:wrap; background:var(--pg); border-bottom:1px solid var(--ln); padding:12px 0; margin-bottom:26px;}
+  .docbar button{font:inherit; font-size:12px; padding:7px 12px; border:1px solid var(--tx); background:transparent; color:var(--tx); cursor:pointer;}
+  .docbar .grp{display:flex; gap:8px; align-items:center; font-size:12px; color:var(--mut);}
+  .docbar .rd{font-variant-numeric:tabular-nums; font-weight:500; color:var(--tx); min-width:52px;}
+  .eyebrow{font-size:12px; font-weight:500; color:var(--accent); margin-bottom:6px;}
+  h1{font-size:30px; font-weight:300; line-height:1.12; margin-bottom:10px;}
+  .lede{font-size:15px; color:var(--mut); max-width:76ch; margin-bottom:6px;} .lede b{color:var(--tx); font-weight:500;}
+  .meta{font-size:12px; color:var(--mut); margin-bottom:8px;}
+  h3.section{font-size:11px; font-weight:600; letter-spacing:.06em; border-top:2px solid var(--tx); padding-top:8px; margin:40px 0 8px; text-transform:uppercase;}
+  .note{font-size:13px; max-width:82ch; margin:8px 0 14px;} .note b{font-weight:600;} .muted{color:var(--mut);}
+  code{font-family:ui-monospace,Menlo,monospace; font-size:.85em; background:var(--sf); padding:1px 5px;}
+
+  .card{border:1px solid var(--ln); border-radius:5px; padding:16px 18px; margin:12px 0; max-width:900px;}
+  .card h4{font-size:13px; margin-bottom:3px;} .card h4 .canon{font-size:10px; color:#1a8a52; border:1px solid #1a8a52; border-radius:2px; padding:1px 6px; margin-left:8px; letter-spacing:.03em;}
+  body.dark .card h4 .canon{color:#7fd6a0; border-color:#7fd6a0;}
+  .card h4 .excl{font-size:10px; color:#b3402f; border:1px solid #d99; border-radius:2px; padding:1px 6px; margin-left:8px; letter-spacing:.03em;}
+  .card .desc{font-size:12.5px; color:var(--mut); margin-bottom:12px;}
+
+  /* forms */
+  .dotl{display:inline-flex; align-items:center; gap:8px; font-size:13px;}
+  .dot{width:10px; height:10px; border-radius:50%; flex:none;}
+  table.rag{border-collapse:collapse; font-size:12.5px; width:100%; max-width:520px;}
+  table.rag th{text-align:left; color:var(--mut); font-size:11px; font-weight:600; padding:4px 10px; border-bottom:1px solid var(--ln);}
+  table.rag td{padding:6px 10px; border-bottom:1px solid var(--ln); font-variant-numeric:tabular-nums;}
+  .cell{display:inline-block; min-width:76px; text-align:center; padding:3px 10px; font-size:11px; font-weight:500; border-radius:2px;}
+  .bar{display:flex; align-items:center; gap:10px; padding:8px 12px 8px 0; border-left:4px solid var(--muted); font-size:12.5px; margin:5px 0; background:var(--sf);}
+  .bar .l{padding-left:12px;}
+  .tag{display:inline-block; padding:2px 9px; font-size:11px; border:1px solid var(--ln); border-radius:2px; color:var(--mut); background:var(--sf);}
+  .pill{display:inline-block; padding:3px 12px; font-size:11px; border:1px solid var(--mut); border-radius:11px; color:var(--tx);}
+  .strike{opacity:.5;}
+
+  .decision{border:1px solid var(--ln); border-left:3px solid var(--tx); padding:16px 18px; margin:18px 0; max-width:900px; background:var(--sf);}
+  .decision h5{font-size:13px; font-weight:600; margin-bottom:10px;}
+  .opt{font-size:13px;margin:7px 0;} .opt b{font-weight:600;}
+  .rec{background:#fff8e6; color:#3a2f00; border:1px solid #f0d78a; padding:11px 14px; font-size:13px; margin:12px 0 4px;}
+  body.dark .rec{background:#2a2410; color:#f0e2b0; border-color:#5c4d17;}
+  .call{font-size:13px; font-weight:600; margin-top:10px;}
+  .prov{font-size:11px; color:var(--mut); border-top:1px solid var(--ln); margin-top:40px; padding-top:12px; max-width:900px;}
+</style>
+</head>
+<body>
+  <div class="docbar">
+    <button type="button" id="theme">◐ Light / dark</button>
+    <div class="grp">Responsive width <input type="range" id="vw" min="360" max="980" value="980" step="20"> <span class="rd" id="vwr">full</span></div>
+    <span class="muted" style="font-size:11px">colours = the locked RAG set (R-D10); toggle to check both modes</span>
+  </div>
+
+  <div class="eyebrow">Apollo · RAG status · which forms are canon</div>
+  <h1>How is a RAG status drawn?</h1>
+  <p class="lede">Colours are settled (R-D10). This decides the <b>manifestation</b> — which components carry status, and when.
+     Canon already answers most of it: the <b>Status-indicator</b> (dot + label) is the existing RAG-coded form; <b>tags</b> and
+     <b>pills</b> are explicitly <i>not</i> for status. The open question is whether we <b>also</b> canonise a filled <b>cell</b>
+     (dense tables) and a <b>bar</b> (cards) — and how they map to surfaces.</p>
+  <p class="meta">Decision · 2026-07-19 · surveyed: status-indicator / badge / tags metas + common-toolkit-tags-chips · locked colours R-D10 · icon-013 (never colour alone)</p>
+
+  <div class="card">
+    <h4>Form A · Status-indicator — dot + label <span class="canon">EXISTING CANON</span></h4>
+    <p class="desc">The component that already exists and is RAG-coded (approved / pending / declined / cancelled + disabled).
+       Label carries the meaning, so per <b>R-D6</b> the dot's contrast relaxes — it can be the pure vivid hue. Lightest touch;
+       best for inline / lists / accessibility. Just needs rebinding to the R-D10 tokens.</p>
+    <span class="dotl"><span class="dot" style="background:var(--green)"></span>Approved</span>&nbsp;&nbsp;
+    <span class="dotl"><span class="dot" style="background:var(--amber)"></span>Pending</span>&nbsp;&nbsp;
+    <span class="dotl"><span class="dot" style="background:var(--red)"></span>Declined</span>&nbsp;&nbsp;
+    <span class="dotl"><span class="dot" style="background:var(--blue)"></span>Informational</span>&nbsp;&nbsp;
+    <span class="dotl"><span class="dot" style="background:var(--muted)"></span>Disabled</span>
+  </div>
+
+  <div class="card">
+    <h4>Form B · Filled cell / badge <span class="canon">PROPOSE</span></h4>
+    <p class="desc">The salience-ramp fills (R-D8/R-D10): the whole cell carries the status. For dense tables / dashboards where
+       a column IS the status and scan speed matters. This is where the fill colours, black/white text and the ramp live.</p>
+    <table class="rag">
+      <thead><tr><th>Counterparty</th><th>Utilisation</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>Meridian Capital</td><td>62%</td><td><span class="cell" style="background:var(--green);color:#000">Healthy</span></td></tr>
+        <tr><td>Novara Holdings</td><td>88%</td><td><span class="cell" style="background:var(--amber);color:#000">Watch</span></td></tr>
+        <tr><td>Trbovlje AG</td><td>103%</td><td><span class="cell" style="background:var(--red);color:#fff">Breach</span></td></tr>
+        <tr><td>Sundara Trust</td><td>—</td><td><span class="cell" style="background:var(--blue);color:#000">Info</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h4>Form C · Bar / edge accent <span class="canon">PROPOSE</span></h4>
+    <p class="desc">Left-edge accent for <b>cards</b> and grouped rows where the whole object has a status. Colour + label (icon-013).</p>
+    <div class="bar" style="border-left-color:var(--green)"><span class="l"><b>Meridian Capital</b> · Healthy · 62%</span></div>
+    <div class="bar" style="border-left-color:var(--amber)"><span class="l"><b>Novara Holdings</b> · Watch · 88%</span></div>
+    <div class="bar" style="border-left-color:var(--red)"><span class="l"><b>Trbovlje AG</b> · Breach · 103%</span></div>
+  </div>
+
+  <div class="card">
+    <h4>Excluded by existing canon — do not re-litigate <span class="excl">RULED ELSEWHERE</span></h4>
+    <p class="desc">Shown struck-through so the boundary is explicit:</p>
+    <p><span class="tag strike">Tag: Breach</span> &nbsp;<span class="muted" style="font-size:12px">✗ Tags surface KEYWORD DESCRIPTORS, not status (ctkt — "don't use tag styles for metadata that isn't a keyword descriptor").</span></p>
+    <p style="margin-top:8px"><span class="pill strike">Breach</span> &nbsp;<span class="muted" style="font-size:12px">✗ Pills/Chips are FUNCTIONAL (selection/filter); "don't represent process status with pills" (ctkt-018).</span></p>
+  </div>
+
+  <div class="decision">
+    <h5>The decision — which forms are canon, and their surface map</h5>
+    <p class="opt"><b>A · Status-indicator (dot+label):</b> confirm as canon, rebind to R-D10 tokens. <span class="muted">(existing component)</span></p>
+    <p class="opt"><b>B · Filled cell/badge:</b> canonise for tables/dashboards? This is where the ramp + fill rules apply.</p>
+    <p class="opt"><b>C · Bar/edge:</b> canonise for cards / grouped objects?</p>
+    <div class="rec"><b>My steer: all three, context-scoped</b> — A for inline / lists / anywhere a single status sits in text; B for
+       status <i>columns</i> in dense tables (scan speed); C for cards. Tags/pills stay excluded. If you'd rather ship <b>only</b>
+       the existing dot+label (A) and treat B/C as later, that's the minimal path.</p>
+    <p class="call">Pick the canon set (A / A+B / A+B+C) and confirm the surface map. Then it's a Sonnet build: rebind
+       Status-indicator + spec the cell/bar as gated components.</p>
+  </div>
+
+  <div class="prov">
+    <b>Provenance.</b> Colours = R-D10 locked set. Taxonomy surveyed: `status-indicator.meta.json` (RAG-coded dot+label —
+    existing), `tags.meta.json` + `common-toolkit-tags-chips.md` (tags = keyword descriptors, pills = functional, both
+    excluded from status), `badge.meta.json` (activity dot/count, not RAG state). icon-013: never colour alone — every form
+    here carries a label. No tokens promoted yet; the R-D10 rebind + any new cell/bar components go behind the blast-radius gate.
+  </div>
+
+  <script>
+    var body=document.body;
+    document.getElementById('theme').addEventListener('click',function(){ body.classList.toggle('dark'); });
+    var vw=document.getElementById('vw'), vwr=document.getElementById('vwr');
+    vw.addEventListener('input',function(){ var v=+vw.value; if(v>=980){body.style.maxWidth='';vwr.textContent='full';} else {body.style.maxWidth=v+'px';vwr.textContent=v+'px';} });
+  </script>
+</body>
+</html>

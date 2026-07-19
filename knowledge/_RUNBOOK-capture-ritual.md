@@ -13,7 +13,7 @@ in a *reliable* end-of-session distillation instead, because that's where the ac
 At the end of **every** session that changed project state — decisions, rulings, code, docs. Skip
 only for pure Q&A sessions that touched nothing. If in doubt, run it; it's cheap.
 
-## The five steps, in order
+## The steps, in order (1, 1b, 2, 3, 4, 4b, 5)
 
 1. **Refresh `_LIVE-STATE.md`** — and its siblings where touched: `_FUTURE-STATE.md` (ideas /
    side-quests / resurrection candidates) and `_DECISION-HISTORY/` (narrative >10 lines relocates
@@ -24,6 +24,20 @@ only for pure Q&A sessions that touched nothing. If in doubt, run it; it's cheap
    Confident false inscription of something as small as a date still poisons the record.
    If a ruling killed something, tombstone the artifact **and** log the propagation gap in the
    same pass (supersession discipline, non-negotiable per `AGENTS.md`).
+1b. **Author the session NARRATIVE DOSSIER — the why and how, not just the what.** *(Added 2026-07-19,
+   Dave: "a narrative dossier would be good for many chats, I like recording the why and how not just
+   saving the what — maybe this should be part of the closing ritual." Model example:
+   `_DECISION-HISTORY/2026-07-19-rag-colour-halation-ramp.md`.)*
+   For any session that produced real **reasoning** — a method, a multi-step decision arc, findings, a
+   design exploration — write a dated `_DECISION-HISTORY/YYYY-MM-DD-<thread>.md` that records the ARC:
+   the why behind each finding, the dead-ends and corrections, how the thinking moved, not only the final
+   values. **This complements, never replaces, the terse records:** the ledgers / ADRs / `_LIVE-STATE`
+   hold the WHAT (the ruling + its pin); the dossier holds the WHY and HOW (the narrative that the ledger
+   line can't carry and that evaporates with the chat). Group by finding, each with its rationale; end with
+   the resolved state and what's still open. Obey the archive rules (`_DECISION-HISTORY/README.md`): **lands
+   whole, dated from `date`, never silently edited after; both-way links** to its spine entry and ledger.
+   **Trigger:** substantive/reasoning-heavy sessions. **Skip** for trivial or purely mechanical ones — the
+   test is "would a cold reader need to know *why* we did this, not just *what* we landed on?" If yes, write it.
 2. **Write/refresh `GOOD-MORNING.md`.** The cold-start entry point for the *next* session — write it
    for a reader with zero memory of this one. **Required structure, in order:**
    - **The two names first** (see step 4b) — rename + next title, at the very top.
@@ -93,7 +107,7 @@ only for pure Q&A sessions that touched nothing. If in doubt, run it; it's cheap
 
 ## What "done" looks like
 
-All five steps complete = the session is safely captured. The transcript never has to be the source
+All steps complete = the session is safely captured. The transcript never has to be the source
 of truth — a cold-start agent can reconstruct full context from `GOOD-MORNING` → `_LIVE-STATE` →
 `knowledge/README.md` → `MEMORY.md` alone.
 

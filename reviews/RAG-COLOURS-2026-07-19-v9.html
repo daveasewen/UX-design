@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RAG colours v9 — the blue readability push · 2026-07-19</title>
+<style>
+  :root{
+    --uf:"Univers Next HSBC","HSBC_MtUnivers_Latin","Helvetica Neue",Arial,sans-serif;
+    --pg:#fff; --tx:#111; --mut:#5b6770; --ln:#e6e8ea; --sf:#f6f7f8; --accent:#db0011;
+    --dpg:#1A1A1A; --dtx:#f2f2f2; --dmut:#9aa4ad; --dln:#2c2c2c;
+  }
+  body.dark{ --pg:#111; --tx:#f2f2f2; --mut:#9aa4ad; --ln:#2c2c2c; --sf:#1a1a1a; }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:var(--uf); color:var(--tx); background:var(--pg); line-height:1.45; max-width:960px; margin:0 auto; padding:0 40px 140px; transition:background .16s,color .16s;}
+  :is(button,a,span,small,b,i,th,td,li,figcaption,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+  .docbar{position:sticky; top:0; z-index:50; display:flex; gap:18px; align-items:center; flex-wrap:wrap; background:var(--pg); border-bottom:1px solid var(--ln); padding:12px 0; margin-bottom:26px;}
+  .docbar button{font:inherit; font-size:12px; padding:7px 12px; border:1px solid var(--tx); background:transparent; color:var(--tx); cursor:pointer;}
+  .docbar .grp{display:flex; gap:8px; align-items:center; font-size:12px; color:var(--mut);}
+  .docbar .rd{font-variant-numeric:tabular-nums; font-weight:500; color:var(--tx); min-width:52px;}
+  .eyebrow{font-size:12px; font-weight:500; color:var(--accent); margin-bottom:6px;}
+  h1{font-size:30px; font-weight:300; line-height:1.12; margin-bottom:10px;}
+  .lede{font-size:15px; color:var(--mut); max-width:76ch; margin-bottom:6px;} .lede b{color:var(--tx); font-weight:500;}
+  .meta{font-size:12px; color:var(--mut); margin-bottom:8px;}
+  h3.section{font-size:11px; font-weight:600; letter-spacing:.06em; border-top:2px solid var(--tx); padding-top:8px; margin:36px 0 8px; text-transform:uppercase;}
+  .note{font-size:13px; max-width:82ch; margin:8px 0 14px;} .note b{font-weight:600;} .muted{color:var(--mut);}
+  code{font-family:ui-monospace,Menlo,monospace; font-size:.85em; background:var(--sf); padding:1px 5px;}
+
+  .strip{background:var(--dpg); border:1px solid var(--dln); border-radius:6px; padding:20px; margin:12px 0; color:var(--dtx);}
+  .strip .cap{font-size:11px; color:var(--dmut); text-transform:uppercase; letter-spacing:.06em; margin-bottom:14px;}
+  /* big readable info cells */
+  .bopts{display:grid; grid-template-columns:repeat(3,1fr); gap:14px;}
+  @media(max-width:700px){ .bopts{grid-template-columns:1fr 1fr;} }
+  .b{border:1px solid var(--dln); border-radius:5px; overflow:hidden;}
+  .b.rec{border-color:#7fd6a0; border-width:2px;}
+  .b .big{padding:14px 10px; font-size:15px; font-weight:500; text-align:center;}
+  .b .row{padding:6px 10px 2px; font-size:11px;}
+  .b .m{padding:4px 10px 10px; font-size:10.5px; color:var(--dmut); font-variant-numeric:tabular-nums; line-height:1.55;}
+  .b .m b{color:var(--dtx);}
+  .tagpop{font-size:9.5px; letter-spacing:.03em; padding:1px 5px; border-radius:2px; border:1px solid var(--dmut); color:var(--dmut);}
+  .readbar{height:6px; border-radius:3px; background:#2c2c2c; margin-top:5px; overflow:hidden;}
+  .readbar i{display:block; height:100%; background:#7fd6a0;}
+
+  .ramp{display:flex; gap:8px; align-items:center; margin:10px 0; flex-wrap:wrap;}
+  .ramp .c{padding:5px 12px; font-size:12px; font-weight:500; border-radius:2px;}
+  .decision{border:1px solid var(--ln); border-left:3px solid var(--tx); padding:16px 18px; margin:16px 0; max-width:900px; background:var(--sf);}
+  .decision h5{font-size:13px; font-weight:600; margin-bottom:10px;}
+  .opt{font-size:13px;margin:6px 0;}
+  .rec-box{background:#fff8e6; color:#3a2f00; border:1px solid #f0d78a; padding:11px 14px; font-size:13px; margin:12px 0 4px;}
+  body.dark .rec-box{background:#2a2410; color:#f0e2b0; border-color:#5c4d17;}
+  .call{font-size:13px; font-weight:600; margin-top:10px;}
+  .prov{font-size:11px; color:var(--mut); border-top:1px solid var(--ln); margin-top:36px; padding-top:12px; max-width:900px;}
+</style>
+</head>
+<body>
+  <div class="docbar">
+    <button type="button" id="theme">◐ Light / dark</button>
+    <div class="grp">Responsive width <input type="range" id="vw" min="360" max="960" value="960" step="20"> <span class="rd" id="vwr">full</span></div>
+    <span class="muted" style="font-size:11px">read the word "Information" in each — which one is crisp for you?</span>
+  </div>
+
+  <div class="eyebrow">Apollo · RAG colours · v9 — blue, made readable</div>
+  <h1>Blue — the readable point</h1>
+  <p class="lede">Blue is the hard hue: short wavelength + astigmatism = the edge blurs whatever we do. The lever that
+     actually helps is <b>text luminance contrast</b> (the luminance channel stays sharp when colour blurs) and <b>lower
+     chroma</b> (less colour edge to smear). The catch: both make blue <i>lighter</i>, which raises its loudness toward
+     green. Readability wins — pick the crispest, and I'll re-seat green above it to keep the ramp.</p>
+  <p class="meta">Review v9 · 2026-07-19 · blue readability push · green re-seats to whichever blue you pick · red/amber fixed</p>
+
+  <div class="strip">
+    <div class="cap">Info cell · read the label · green fill = readability (text contrast), tag = ramp position</div>
+    <div class="bopts">
+      <div class="b"><div class="big" style="background:#527EBE;color:#000">Information</div>
+        <div class="row"><span class="tagpop">calm · sal 30</span></div>
+        <div class="m"><b>#527EBE</b> v8 · black 5.09<div class="readbar"><i style="width:51%"></i></div>you: still not readable enough</div></div>
+      <div class="b rec"><div class="big" style="background:#7594C0;color:#000">Information</div>
+        <div class="row"><span class="tagpop">near green · sal 33</span></div>
+        <div class="m"><b>#7594C0</b> ★ light-desat · black 6.75<div class="readbar"><i style="width:68%"></i></div>C0.075 · stabler edge</div></div>
+      <div class="b"><div class="big" style="background:#5F92B9;color:#000">Information</div>
+        <div class="row"><span class="tagpop">calm-ish · sal 32</span></div>
+        <div class="m"><b>#5F92B9</b> cyan-shift · black 6.30<div class="readbar"><i style="width:63%"></i></div>toward teal — often focuses better</div></div>
+      <div class="b"><div class="big" style="background:#89A0C1;color:#000">Information</div>
+        <div class="row"><span class="tagpop">= green · sal 35</span></div>
+        <div class="m"><b>#89A0C1</b> lighter-grey · black 7.86<div class="readbar"><i style="width:79%"></i></div>most readable, but greyer &amp; = green loud</div></div>
+      <div class="b"><div class="big" style="background:#22569F;color:#fff">Information</div>
+        <div class="row"><span class="tagpop">loud · sal 53</span></div>
+        <div class="m"><b>#22569F</b> deep + WHITE text · white 7.24<div class="readbar"><i style="width:72%"></i></div>very crisp, but breaks "red alone in white" &amp; jumps the ramp</div></div>
+    </div>
+  </div>
+
+  <div class="strip">
+    <div class="cap">the ramp with your blue re-seated (example: light-desat blue + green bumped to stay above)</div>
+    <div class="ramp">
+      <span class="c" style="background:#B92F1E;color:#fff">Breach 57</span>
+      <span class="muted">›</span>
+      <span class="c" style="background:#F0B13A;color:#000">Watch 41</span>
+      <span class="muted">›</span>
+      <span class="c" style="background:#43AD6F;color:#000">Healthy 36</span>
+      <span class="muted">›</span>
+      <span class="c" style="background:#7594C0;color:#000">Info 33</span>
+    </div>
+    <p class="note" style="color:var(--dmut);margin:6px 0 0;font-size:11.5px">If you pick a readable (lighter) blue, green lifts to
+       <b>#43AD6F</b> (sal ~36) so the order holds. Red &amp; amber still shout well clear. The bottom of the ramp just sits a little
+       higher — still monotonic.</p>
+  </div>
+
+  <div class="decision">
+    <h5>Pick the blue you can read</h5>
+    <p class="opt"><b>My steer: <code>#7594C0</code> (light-desat) or <code>#5F92B9</code> (cyan-shift).</b> Both are clearly more
+       readable than v8's blue, stay recognisably blue, and keep black text (so "red alone in white" holds). Cyan-shift often
+       reads sharpest for astigmatism — worth comparing directly.</p>
+    <p class="opt"><b>If neither is crisp enough:</b> <code>#89A0C1</code> (greyer, most readable) or the deep white-text
+       <code>#22569F</code> (crispest, but blue then joins red in white and climbs the ramp — a real trade).</p>
+    <div class="rec-box">Whichever you pick, green re-seats above it and the ramp holds. Then only the red-vs-page 2.89 flag
+       and §1 manifestation remain.</div>
+    <p class="call">Which blue reads crispest to you — with and without glasses?</p>
+  </div>
+
+  <div class="prov">
+    <b>Provenance.</b> Blue hue 257° (cyan-shift 242°); readability driven by text luminance contrast + reduced chroma
+    (astigmatism = chromatic-edge blur, worst at short wavelengths). Salience = OKLab cell-vs-page. All options black-text
+    ≥5.0 / white-text option ≥7 (1.4.3), ≥3:1 vs page (1.4.11). Green re-seats to hold the R-D9 ramp order. Mode-stable.
+    Nothing promoted yet.
+  </div>
+
+  <script>
+    var body=document.body;
+    document.getElementById('theme').addEventListener('click',function(){ body.classList.toggle('dark'); });
+    var vw=document.getElementById('vw'), vwr=document.getElementById('vwr');
+    vw.addEventListener('input',function(){ var v=+vw.value; if(v>=960){body.style.maxWidth='';vwr.textContent='full';} else {body.style.maxWidth=v+'px';vwr.textContent=v+'px';} });
+    body.classList.add('dark');
+  </script>
+</body>
+</html>

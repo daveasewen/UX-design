@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RAG colours v7 — the resolved set · 2026-07-19</title>
+<style>
+  :root{
+    --uf:"Univers Next HSBC","HSBC_MtUnivers_Latin","Helvetica Neue",Arial,sans-serif;
+    --pg:#fff; --tx:#111; --mut:#5b6770; --ln:#e6e8ea; --sf:#f6f7f8; --accent:#db0011;
+    --dpg:#1A1A1A; --dtx:#f2f2f2; --dmut:#9aa4ad; --dln:#2c2c2c;
+  }
+  body.dark{ --pg:#111; --tx:#f2f2f2; --mut:#9aa4ad; --ln:#2c2c2c; --sf:#1a1a1a; }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:var(--uf); color:var(--tx); background:var(--pg); line-height:1.45; max-width:960px; margin:0 auto; padding:0 40px 140px; transition:background .16s,color .16s;}
+  :is(button,a,span,small,b,i,th,td,li,figcaption,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+  .docbar{position:sticky; top:0; z-index:50; display:flex; gap:18px; align-items:center; flex-wrap:wrap; background:var(--pg); border-bottom:1px solid var(--ln); padding:12px 0; margin-bottom:26px;}
+  .docbar button{font:inherit; font-size:12px; padding:7px 12px; border:1px solid var(--tx); background:transparent; color:var(--tx); cursor:pointer;}
+  .docbar .grp{display:flex; gap:8px; align-items:center; font-size:12px; color:var(--mut);}
+  .docbar .rd{font-variant-numeric:tabular-nums; font-weight:500; color:var(--tx); min-width:52px;}
+  .eyebrow{font-size:12px; font-weight:500; color:var(--accent); margin-bottom:6px;}
+  h1{font-size:30px; font-weight:300; line-height:1.12; margin-bottom:10px;}
+  .lede{font-size:15px; color:var(--mut); max-width:76ch; margin-bottom:6px;} .lede b{color:var(--tx); font-weight:500;}
+  .meta{font-size:12px; color:var(--mut); margin-bottom:8px;}
+  h3.section{font-size:11px; font-weight:600; letter-spacing:.06em; border-top:2px solid var(--tx); padding-top:8px; margin:40px 0 8px; text-transform:uppercase;}
+  .note{font-size:13px; max-width:82ch; margin:8px 0 14px;} .note b{font-weight:600;} .muted{color:var(--mut);}
+  code{font-family:ui-monospace,Menlo,monospace; font-size:.85em; background:var(--sf); padding:1px 5px;}
+
+  .set{background:var(--dpg); border:1px solid var(--dln); border-radius:6px; padding:20px; color:var(--dtx); margin:14px 0;}
+  .set .cap{font-size:11px; color:var(--dmut); text-transform:uppercase; letter-spacing:.06em; margin-bottom:14px;}
+  .st{display:flex; align-items:center; gap:12px; margin:10px 0;}
+  .st .cell{min-width:88px; text-align:center; padding:7px 14px; font-size:12.5px; font-weight:500; border-radius:2px;}
+  .st .who{font-size:13px; color:var(--dtx); font-weight:400;}
+  .st .u{font-size:11px; color:var(--dmut); font-variant-numeric:tabular-nums; margin-left:auto;}
+
+  table.spec{width:100%; border-collapse:collapse; margin-top:6px; font-size:12px;}
+  table.spec th{text-align:left; font-size:10.5px; color:var(--mut); text-transform:uppercase; letter-spacing:.04em; font-weight:600; padding:6px 10px; border-bottom:1px solid var(--ln);}
+  table.spec td{padding:7px 10px; border-bottom:1px solid var(--ln); font-variant-numeric:tabular-nums;}
+  table.spec .sw{display:inline-block; width:14px; height:14px; border-radius:2px; vertical-align:-2px; margin-right:6px;}
+  .ok{color:#1a8a52; font-weight:600;} body.dark .ok{color:#7fd6a0;}
+  .warn{color:#b8791a; font-weight:600;} body.dark .warn{color:#f0c862;}
+  .tagc{font-size:10px; color:var(--mut);}
+
+  .flag{background:#fdf3e6;color:#5a3a12;border:1px solid #f0c98a;padding:12px 15px;font-size:12.5px;max-width:900px;margin:14px 0;border-radius:3px;}
+  body.dark .flag{background:#2a2210;color:#f0d8a8;border-color:#5c4a17;}
+  .decision{border:1px solid var(--ln); border-left:3px solid var(--tx); padding:16px 18px; margin:16px 0; max-width:900px; background:var(--sf);}
+  .decision h5{font-size:13px; font-weight:600; margin-bottom:10px;}
+  .opt{font-size:13px;margin:6px 0;}
+  .call{font-size:13px; font-weight:600; margin-top:10px;}
+  .prov{font-size:11px; color:var(--mut); border-top:1px solid var(--ln); margin-top:40px; padding-top:12px; max-width:900px;}
+</style>
+</head>
+<body>
+  <div class="docbar">
+    <button type="button" id="theme">◐ Light / dark</button>
+    <div class="grp">Responsive width <input type="range" id="vw" min="360" max="960" value="960" step="20"> <span class="rd" id="vwr">full</span></div>
+    <span class="muted" style="font-size:11px">mode-stable — one set both themes; toggle to confirm</span>
+  </div>
+
+  <div class="eyebrow">Apollo · RAG colours · v7 — the resolved set</div>
+  <h1>The RAG set — resolved</h1>
+  <p class="lede">Set 2, isoluminated. <b>Red alone in white</b> (the alarm); green, blue, amber carry <b>black text</b>. Green and
+     blue — the stable pair — are now <b>isoluminant</b> (both OKLab L 0.59) and each clears a <b>≥3:1 boundary with the page</b>.
+     Red and amber stay as the two carve-outs (deep / light) by design. One value per hue, both modes.</p>
+  <p class="meta">Review v7 · 2026-07-19 · R-D3/R-D7 locked + Set 2 (v6) + isoluminant green/blue · all AA · one flag on red ↓</p>
+
+  <div class="set">
+    <div class="cap">The set · Medium 500 · on #1A1A1A</div>
+    <div class="st"><span class="cell" style="background:#B92F1E;color:#fff">Breach</span><span class="who">Trbovlje AG · limit breach</span><span class="u">103%</span></div>
+    <div class="st"><span class="cell" style="background:#F0B13A;color:#000">Watch</span><span class="who">Novara Holdings · watch</span><span class="u">88%</span></div>
+    <div class="st"><span class="cell" style="background:#3E9060;color:#000">Healthy</span><span class="who">Meridian Capital · healthy</span><span class="u">62%</span></div>
+    <div class="st"><span class="cell" style="background:#3D7CD5;color:#000">Info</span><span class="who">Sundara Trust · informational</span><span class="u">note</span></div>
+  </div>
+
+  <h3 class="section">The numbers</h3>
+  <table class="spec">
+    <thead><tr><th>hue · role</th><th>value</th><th>text</th><th>text contrast</th><th>vs page #1A1A1A</th><th>OKLab L</th></tr></thead>
+    <tbody>
+      <tr><td><span class="sw" style="background:#B92F1E"></span>red · breach</td><td><code>#B92F1E</code></td><td>white</td><td class="ok">6.02 ✓</td><td class="warn">2.89 ⚠</td><td>0.52 · carve-out</td></tr>
+      <tr><td><span class="sw" style="background:#F0B13A"></span>amber · watch</td><td><code>#F0B13A</code></td><td>black</td><td class="ok">11.06 ✓</td><td class="ok">9.16 ✓</td><td>0.80 · carve-out</td></tr>
+      <tr><td><span class="sw" style="background:#3E9060"></span>green · healthy</td><td><code>#3E9060</code></td><td>black</td><td class="ok">5.36 ✓</td><td class="ok">4.44 ✓</td><td><b>0.59</b> · pair</td></tr>
+      <tr><td><span class="sw" style="background:#3D7CD5"></span>blue · info</td><td><code>#3D7CD5</code></td><td>black</td><td class="ok">5.04 ✓</td><td class="ok">4.18 ✓</td><td><b>0.59</b> · pair</td></tr>
+    </tbody>
+  </table>
+  <p class="note muted" style="font-size:12px">Green &amp; blue share <b>L 0.59</b> — isoluminant, matched intensity. Amber (0.80)
+     and red (0.52) are the carve-outs and sit outside the match on purpose: amber must stay light (its identity), red must stay
+     deep (unmissable + low bloom). Amber's glyph value <code>#C58900</code> is unchanged (R-D3).</p>
+
+  <div class="flag"><b>One flag — red vs the page = 2.89, just under 3:1.</b> Because red is deliberately <b>deep</b> (low bloom,
+     mode-stable), its fill edge against the dark page is subtle. The <b>white text (6.02) carries the signal</b>, so this isn't a
+     legibility fail — but if you want the breach <i>cell boundary</i> itself to clear 3:1 on the page, red would need to lift a
+     touch (e.g. toward <code>#C33A2B</code>, page 3.1) — which reopens the deep-red ruling. My steer: <b>keep #B92F1E</b>; the
+     text is the signal and the deep red is what you chose for calm. Your call.</div>
+
+  <div class="decision">
+    <h5>Confirm the set</h5>
+    <p class="opt">✓ Red <code>#B92F1E</code> white · amber <code>#F0B13A</code>/<code>#C58900</code> black · green
+       <code>#3E9060</code> black · blue <code>#3D7CD5</code> black · weight 500 · marks icon/label-paired.</p>
+    <p class="opt">The only judgement left in the colour set is the <b>red-vs-page flag</b> above (keep deep, or lift for a 3:1 boundary).</p>
+    <p class="call">Confirm "keep red deep" (or say lift it), and the colour set is fully ruled → I promote to tokens. Then §1 manifestation.</p>
+  </div>
+
+  <div class="prov">
+    <b>Provenance.</b> Red <code>#B92F1E</code> (R-D7), amber (R-D3) locked. Set 2 = red-alone-in-white (v6 pin). Green
+    <code>#3E9060</code> / blue <code>#3D7CD5</code>: same hues as the mode-stable light values, lifted to a shared L 0.59 so
+    they are (a) isoluminant, (b) black-text ≥5.0 (1.4.3), (c) ≥3:1 vs the page (1.4.11). Mode-stable — this re-cuts the
+    light-mode green/blue (note for R-D4). Weight 500 (R-D7), marks R-D6. Nothing promoted yet; awaits this confirm + §1, then
+    the blast-radius gate.
+  </div>
+
+  <script>
+    var body=document.body;
+    document.getElementById('theme').addEventListener('click',function(){ body.classList.toggle('dark'); });
+    var vw=document.getElementById('vw'), vwr=document.getElementById('vwr');
+    vw.addEventListener('input',function(){ var v=+vw.value; if(v>=960){body.style.maxWidth='';vwr.textContent='full';} else {body.style.maxWidth=v+'px';vwr.textContent=v+'px';} });
+    body.classList.add('dark');
+  </script>
+</body>
+</html>

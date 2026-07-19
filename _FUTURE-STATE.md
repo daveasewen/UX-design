@@ -44,8 +44,69 @@ status (`idea` / `parked` / `resurrection-candidate` / `graduated→LIVE`).
 - **DataViz method → colleague presentation** — Dave 2026-07-18: "much of it deserves to be a
   presentation to colleagues." Material: the method dossier + V7 sheet + the vibration rule story.
   *Feeds:* Dispatch/advocacy. *Source:* `_DECISION-HISTORY/2026-07-16-dataviz-v7-arc.md`. *Status:* idea.
+- **★ EXPERIMENT — isoluminant sweep across the WHOLE base Apollo palette, across the bands** — Dave,
+  2026-07-19, during the RAG-colours review: *"run this across the whole base Apollo colour palette,
+  across the bands."* Take the isoluminant band method built for RAG red/green/blue (match OKLCh **L**
+  across hues, hue held, chroma capped to gamut, WCAG contrast measured vs white / black / `#1A1A1A`)
+  and apply it to **every hue family × step** in `knowledge/tokens/colour.json` — re-cut each colour to
+  sit at each band's shared lightness, to see how the full palette behaves under intensity-matching.
+  **⚠️ Second axis to measure (Dave surfaced it in the same review): HALATION / bloom.** Intensity-match
+  is one dimension; edge-extremity is another — *"thin lines and colour dance, thicker ones bloom… that's
+  the halation effect."* Bright/high-step colours on the dark ground bloom (fills) or shimmer (thin
+  strokes/text). The sweep should carry a bloom/edge-extremity read alongside contrast, tying to the
+  existing edge-extremity advisory gate + the digital-black rationale (`color/black` `$note`, memory
+  `attribute-the-diff` / `dark-rag-token-gaps`). *Why held:* Dave said "schedule after this RAG stuff" —
+  runs once the RAG bands are ruled (R-D6). *Feeds:* Discover/colour-foundations + the DataViz/RAG
+  palette work. *Source:* `reviews/_rag_colours_calc.py` (the sweep engine) + `reviews/RAG-COLOURS-2026-07-19-v1`
+  review comments. *Status:* idea — queued next after RAG.
+
+## Spin-outs (public-facing, beyond the internal engine)
+
+- **★ APOLLO LABS — a public a11y / colour-science microtool ("Ally")** — Dave, 2026-07-19, riding off
+  the isoluminant + halation work: *"we might just be on the edge of a really cool a11y tool here… spin
+  out Apollo Labs as a side project for public consumption, good promotional material for HSBC."* The
+  idea: a small public web tool that runs the palette analysis live — paste/import a palette → isoluminant
+  band re-cut (match OKLCh L across hues, for CATEGORICAL palettes) **+** **salience-RAMP ordering** (loudness
+  descends with hierarchy, for STATUS palettes — Dave 2026-07-19: *"this is good for colour palettes"*, the ramp
+  reframe ENRICHES Labs, doesn't retire it) **+** halation / edge-extremity read (bloom on fills, shimmer on thin
+  strokes) **+** WCAG contrast per ground. A demonstrable, sharable artefact of serious accessibility
+  craft. *Why it matters:* doubles as **HSBC promotional material** (shows the bank leading on digital
+  accessibility) and as an external face for the Apollo method. *Feeds:* the **accessibility aspiration**
+  (most digitally accessible bank — memory `accessibility-aspiration`, ADR-0004) + Dispatch/advocacy +
+  the spin-off-candidates thread (memory `spin-off-candidates`, `capability-gap-and-obsolescence`).
+  *Engine already half-built:* `reviews/_rag_colours_calc.py` (isoluminant sweep) — the [[isoluminant sweep
+  experiment]] above is the internal precursor; Apollo Labs is its public form. *Guardrail:* portability +
+  no licensed-font / brand-confidential leakage before any public release (ties `univers-webfont-blocker`).
+  *Status:* idea — spin-out candidate; surfaced mid-RAG, do not gold-plate before the RAG bands land.
+
+## Type / font procurement targets
+
+- **★ Variable Univers cut — target a ~440–460 weight rung** — Dave, 2026-07-19, in the RAG weight rig:
+  *"shame there wasn't a weight in between."* The licensed cut is five STATIC weights (100/300/400/500/700 —
+  no 600, no 450) and there is no variable-webfont licence, so the 400↔500 gap can't be bridged now. If a
+  variable Univers is ever procured, **~450** is the value the halation weight-rule wants for the mid case.
+  *Feeds:* the dark-mode weight ruling (R-D7) + brand font procurement. *Ties:* `univers-webfont-blocker`.
+  *Status:* idea — needs licence, not ours to force.
+- **★ Dual-observer calibration principle (astigmatic vs corrected)** — Dave, 2026-07-19: *"mixed weight
+  might be better for me but weird for normally sighted."* Optimising to the most sensitive eye can diverge
+  from the typical viewer. The principle: **serve the sensitive observer without breaking the typical one —
+  and flag where they diverge.** Directly shapes **Apollo Labs** (report BOTH observers, mark the gap) and
+  the weight ruling (polarity as hard token vs soft guideline). *Feeds:* accessibility aspiration + Apollo
+  Labs. *Source:* `reviews/RAG-COLOURS-2026-07-19-v4` §W3. *Status:* principle — apply going forward.
 
 ## Feature ideas (product, not yet specced)
+
+- **★ Narrative dossiers as a NODE-SET in the decision graph** — Dave, 2026-07-19, right after making the
+  dossier a closing-ritual step (1b): *"it might have to be wired into the KB or the state manager or a
+  separate graph or something, not sure but it's some kind of set of nodes for sure."* The dossiers
+  (`_DECISION-HISTORY/*.md`) are the **why/how layer**: the ledgers/ADRs hold the WHAT (ruling + pin =
+  "what" nodes); the dossier holds the reasoning ARC that connects them (why/how = the edges + rationale
+  nodes). **Mechanism OPEN** — wire into the KB, the state-manager, or a separate graph; not yet decided.
+  Natural fit with **ADR-0007 temporal decision-graph** (memory `pm-knowledge-graph-direction`), the
+  **research-KG** side-quest above, and the **graphify** tool (memory `graphify-tool`); the `_capture_gate.py`
+  MVP is where the parsing machinery would live. *Feeds:* Discover / PM-KG. *Status:* idea — node-shaped,
+  mechanism TBD; harvest dossiers KG-friendly as we write them so the later wiring is cheap.
+
 
 - **Tiered access to canon commits** — DS-admin → domain-admin → standard; sandbox open to all,
   commits tiered (Dave, 07-05; captured in the derivation-governance amend thread). *Feeds:*

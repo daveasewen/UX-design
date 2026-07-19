@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RAG colours v2 — balancing the dark set (bloom &amp; dance) · 2026-07-19</title>
+<style>
+  :root{
+    --uf:"Univers Next HSBC","HSBC_MtUnivers_Latin","Helvetica Neue",Arial,sans-serif;
+    --pg:#fff; --tx:#111; --mut:#5b6770; --ln:#e6e8ea; --sf:#f6f7f8; --accent:#db0011;
+    /* ruled RAG — LIGHT (R-D1/R-D3/R-D4) */
+    --red-bg:#B92F1E; --red-gl:#B92F1E;
+    --amber-bg:#F0B13A; --amber-gl:#C58900;
+    --green-bg:#2B7E4F; --green-gl:#2B7E4F;
+    --blue-bg:#306EC6; --blue-gl:#306EC6;
+    /* the always-dark specimen ground (R-D1 §5 digital black) */
+    --dpg:#1A1A1A; --dtx:#f2f2f2; --dmut:#9aa4ad; --dln:#2c2c2c;
+  }
+  body.dark{
+    --pg:#111; --tx:#f2f2f2; --mut:#9aa4ad; --ln:#2c2c2c; --sf:#1a1a1a;
+    --red-bg:#CC4333; --red-gl:#CC4333;          /* R-D1 dark */
+    --amber-bg:#F0B13A; --amber-gl:#C58900;        /* mode-stable */
+    --green-bg:#2B7E4F; --green-gl:#2B7E4F;         /* dark OPEN — placeholder at light value */
+    --blue-bg:#2674DC; --blue-gl:#2674DC;           /* R-D1 dark */
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:var(--uf); color:var(--tx); background:var(--pg); line-height:1.45; max-width:980px; margin:0 auto; padding:0 40px 140px; transition:background .16s,color .16s;}
+  :is(button,a,span,small,b,i,th,td,li,figcaption,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+  .docbar{position:sticky; top:0; z-index:50; display:flex; gap:18px; align-items:center; flex-wrap:wrap; background:var(--pg); border-bottom:1px solid var(--ln); padding:12px 0; margin-bottom:26px;}
+  .docbar button{font:inherit; font-size:12px; padding:7px 12px; border:1px solid var(--tx); background:transparent; color:var(--tx); cursor:pointer;}
+  .docbar .grp{display:flex; gap:8px; align-items:center; font-size:12px; color:var(--mut);}
+  .docbar .rd{font-variant-numeric:tabular-nums; font-weight:600; color:var(--tx); min-width:52px;}
+  .eyebrow{font-size:12px; font-weight:500; color:var(--accent); margin-bottom:6px;}
+  h1{font-size:30px; font-weight:300; line-height:1.12; margin-bottom:10px;}
+  .lede{font-size:15px; color:var(--mut); max-width:74ch; margin-bottom:6px;}
+  .lede b{color:var(--tx); font-weight:600;}
+  .meta{font-size:12px; color:var(--mut); margin-bottom:8px;}
+  h3.section{font-size:11px; font-weight:600; letter-spacing:.06em; border-top:2px solid var(--tx); padding-top:8px; margin:44px 0 8px; text-transform:uppercase;}
+  .note{font-size:13px; max-width:82ch; margin:8px 0 14px;} .note b{font-weight:600;} .muted{color:var(--mut);}
+  code{font-family:ui-monospace,Menlo,monospace; font-size:.85em; background:var(--sf); padding:1px 5px;}
+
+  /* ---- §1 manifestation ---- */
+  .manif{display:grid; grid-template-columns:repeat(2,1fr); gap:22px; max-width:900px; margin:14px 0;}
+  .mcard{border:1px solid var(--ln); border-radius:4px; overflow:hidden;}
+  .mcard .hd{display:flex; justify-content:space-between; align-items:baseline; padding:9px 12px; border-bottom:1px solid var(--ln); background:var(--sf);}
+  .mcard .hd .id{font-size:11px; font-weight:700; letter-spacing:.05em;}
+  .mcard .hd .nm{font-size:12px; color:var(--mut);}
+  .mcard .bd{padding:14px 12px;}
+  table.rag{width:100%; border-collapse:collapse; font-size:12.5px;}
+  table.rag th{text-align:left; font-weight:600; color:var(--mut); font-size:11px; padding:3px 8px; border-bottom:1px solid var(--ln);}
+  table.rag td{padding:5px 8px; border-bottom:1px solid var(--ln); font-variant-numeric:tabular-nums;}
+  /* cell fill */
+  .cell{display:inline-block; min-width:76px; text-align:center; padding:3px 10px; font-size:11px; font-weight:600; border-radius:2px;}
+  .cell.r{background:var(--red-bg); color:#fff;} .cell.a{background:var(--amber-bg); color:#000;}
+  .cell.g{background:var(--green-bg); color:#fff;} .cell.b{background:var(--blue-bg); color:#fff;}
+  /* pill / badge */
+  .pill{display:inline-flex; align-items:center; gap:6px; padding:2px 9px; font-size:11px; font-weight:600; border-radius:11px;}
+  .pill.r{background:var(--red-bg); color:#fff;} .pill.a{background:var(--amber-bg); color:#000;}
+  .pill.g{background:var(--green-bg); color:#fff;} .pill.b{background:var(--blue-bg); color:#fff;}
+  /* dot + label */
+  .dotl{display:inline-flex; align-items:center; gap:7px; font-size:12.5px;}
+  .dot{width:10px; height:10px; border-radius:50%; flex:none;}
+  .dot.r{background:var(--red-gl);} .dot.a{background:var(--amber-gl);}
+  .dot.g{background:var(--green-gl);} .dot.b{background:var(--blue-gl);}
+  /* bar / edge accent */
+  .bar{display:flex; align-items:center; gap:10px; padding:6px 10px 6px 0; border-left:4px solid var(--mut); font-size:12.5px; margin:3px 0; background:var(--sf);}
+  .bar.r{border-left-color:var(--red-bg);} .bar.a{border-left-color:var(--amber-bg);}
+  .bar.g{border-left-color:var(--green-bg);} .bar.b{border-left-color:var(--blue-bg);}
+  .bar .lbl{padding-left:10px;}
+
+  /* ---- §2/§3 always-dark specimen strip ---- */
+  .darkstrip{background:var(--dpg); color:var(--dtx); border:1px solid var(--dln); border-radius:6px; padding:18px; margin:14px 0;}
+  .darkstrip .cap{font-size:11px; color:var(--dmut); text-transform:uppercase; letter-spacing:.06em; margin-bottom:12px;}
+  .cand{display:grid; grid-template-columns:64px 1fr; gap:16px; align-items:center; padding:12px 0; border-top:1px solid var(--dln);}
+  .cand:first-of-type{border-top:0;}
+  .cand .tag{font-size:12px; font-weight:700;}
+  .cand .tag small{display:block; font-weight:400; color:var(--dmut); font-size:10.5px; margin-top:2px;}
+  .cand .demo{display:flex; gap:18px; align-items:center; flex-wrap:wrap;}
+  .swfill{min-width:120px; text-align:center; padding:8px 14px; font-size:12px; font-weight:600; border-radius:3px;}
+  .swglyph{display:inline-flex; align-items:center; gap:7px; font-size:13px;}
+  .swglyph .dot{width:11px; height:11px;}
+  .swglyph .ico{width:15px; height:15px;}
+  .cmeta{font-size:11px; color:var(--dmut); font-variant-numeric:tabular-nums;}
+  .pass{color:#7fd6a0; font-weight:600;} .fail{color:#f2938a; font-weight:600;}
+  .recdot{color:#f0c862; font-weight:700;}
+
+  .amberflag{background:#fff8e6; color:#3a2f00; border:1px solid #f0d78a; padding:11px 14px; font-size:12.5px; max-width:900px; margin:12px 0;}
+  body.dark .amberflag{background:#2a2410; color:#f0e2b0; border-color:#5c4d17;}
+  .openflag{background:#fdecec; color:#5a1512; border:1px solid #f2b8b8; padding:11px 14px; font-size:12.5px; max-width:900px; margin:12px 0;}
+  body.dark .openflag{background:#3a1512; color:#f2b8b8; border-color:#7a2a25;}
+
+  .decision{border:1px solid var(--ln); border-left:3px solid var(--tx); padding:16px 18px; margin:16px 0; max-width:900px; background:var(--sf);}
+  .decision h5{font-size:13px; font-weight:600; margin-bottom:10px;}
+  .opt{font-size:13px; margin:7px 0; padding-left:2px;}
+  .opt b{font-weight:600;}
+  .rec{background:#fff8e6; color:#3a2f00; border:1px solid #f0d78a; padding:11px 14px; font-size:13px; margin:12px 0 4px;}
+  body.dark .rec{background:#2a2410; color:#f0e2b0; border-color:#5c4d17;}
+  .call{font-size:13px; font-weight:600; margin-top:10px;}
+  .prov{font-size:11px; color:var(--mut); border-top:1px solid var(--ln); margin-top:40px; padding-top:12px; max-width:900px;}
+  .prov code{font-size:.9em;}
+</style>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="ic-flag" viewBox="0 0 16 16"><path d="M3 1v14M3 2h9l-2 3 2 3H3" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+    <symbol id="ic-check" viewBox="0 0 16 16"><path d="M3 8.5l3.5 3.5L13 4.5" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+  </svg>
+
+  <div class="docbar">
+    <button type="button" id="theme">◐ Light / dark</button>
+    <div class="grp">Responsive width <input type="range" id="vw" min="360" max="980" value="980" step="20"> <span class="rd" id="vwr">full</span></div>
+    <span class="muted" style="font-size:11px">§2 &amp; §3 specimens sit on the dark page always — that's the condition their rule names</span>
+  </div>
+
+  <div class="eyebrow">Apollo · RAG colours · v2 — getting the dark set to sit still</div>
+  <h1>RAG status — balancing the dark set</h1>
+  <p class="lede">v1 settled the values and you steered us to <b>isoluminance</b> (matched intensity). v2 adds the axis that
+     revealed: <b>halation</b> — <i>bloom</i> on thick fields, <i>dance</i> on thin strokes. New below: a <b>saturation-capped
+     Band B</b> (the dance lever), a first-cut <b>bloom / dance model</b> that includes stroke thickness (§3, R-D6), and the
+     <b>glyph-contrast-by-role</b> rule folded into §1. The goal is to get the set to <b>sit still</b> — calibrated to the eye
+     that sees the shimmer most.</p>
+  <p class="meta">Review v2 · 2026-07-19 · builds on R-D1–R-D5, rules R-D6 · model <code>reviews/_rag_bloom_model.py</code> · instrument — "none of these" is a valid result · §2/§3 specimens sit on dark always</p>
+
+  <!-- ============ §1 ============ -->
+  <h3 class="section">§1 · Manifestation — how does a RAG status actually get drawn?</h3>
+  <p class="note">Same data, four forms. Dave's earlier confusion came from a <i>status-cell example standing in for
+     "RAG"</i> — but the cell is only one manifestation. One dataset: a set of counterparty exposure limits, each with a
+     health status. <b>Which form(s) are canon — and does it depend on the surface?</b></p>
+
+  <div class="manif">
+    <!-- A · CELL -->
+    <div class="mcard">
+      <div class="hd"><span class="id">M1 · CELL</span><span class="nm">filled cell · background role</span></div>
+      <div class="bd">
+        <table class="rag">
+          <thead><tr><th>Counterparty</th><th>Utilisation</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Meridian Capital</td><td>62%</td><td><span class="cell g">Healthy</span></td></tr>
+            <tr><td>Novara Holdings</td><td>88%</td><td><span class="cell a">Watch</span></td></tr>
+            <tr><td>Trbovlje AG</td><td>103%</td><td><span class="cell r">Breach</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- B · PILL -->
+    <div class="mcard">
+      <div class="hd"><span class="id">M2 · PILL</span><span class="nm">rounded badge · inline in flow</span></div>
+      <div class="bd">
+        <table class="rag">
+          <thead><tr><th>Counterparty</th><th>Utilisation</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Meridian Capital</td><td>62%</td><td><span class="pill g">Healthy</span></td></tr>
+            <tr><td>Novara Holdings</td><td>88%</td><td><span class="pill a">Watch</span></td></tr>
+            <tr><td>Trbovlje AG</td><td>103%</td><td><span class="pill r">Breach</span></td></tr>
+          </tbody>
+        </table>
+        <p class="note muted" style="margin:10px 0 0;font-size:11px">Note: rounded — in <b>Apollo mono</b> corners are square. Shown rounded only to contrast the form.</p>
+      </div>
+    </div>
+    <!-- C · DOT + LABEL -->
+    <div class="mcard">
+      <div class="hd"><span class="id">M3 · DOT + LABEL</span><span class="nm">glyph role · colour = belt, label = braces</span></div>
+      <div class="bd">
+        <table class="rag">
+          <thead><tr><th>Counterparty</th><th>Utilisation</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Meridian Capital</td><td>62%</td><td><span class="dotl"><span class="dot g"></span>Healthy</span></td></tr>
+            <tr><td>Novara Holdings</td><td>88%</td><td><span class="dotl"><span class="dot" style="background:#F0B13A"></span>Watch <span class="muted" style="font-size:10.5px">← brighter amber, label carries it (R-D6)</span></span></td></tr>
+            <tr><td>Trbovlje AG</td><td>103%</td><td><span class="dotl"><span class="dot r"></span>Breach</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- D · BAR -->
+    <div class="mcard">
+      <div class="hd"><span class="id">M4 · BAR / EDGE</span><span class="nm">left-edge accent · card &amp; row</span></div>
+      <div class="bd">
+        <div class="bar g"><span class="lbl"><b>Meridian Capital</b> · 62% · Healthy</span></div>
+        <div class="bar a"><span class="lbl"><b>Novara Holdings</b> · 88% · Watch</span></div>
+        <div class="bar r"><span class="lbl"><b>Trbovlje AG</b> · 103% · Breach</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="decision">
+    <h5>§1 decision — pick the canon manifestation(s)</h5>
+    <p class="opt"><b>M1 Cell</b> — strongest scan in dense tables; the fill carries the meaning. Needs the background role + text-colour rules (white, amber-black).</p>
+    <p class="opt"><b>M2 Pill</b> — same fill, softer; reads as a tag. (Square in mono.)</p>
+    <p class="opt"><b>M3 Dot + label</b> — the "belt &amp; braces" form: never colour alone (icon-013). Lightest touch, best for accessibility, works inline in prose. <b>R-D6 (your ruling):</b> because the label carries the meaning, the dot's contrast can relax — the brighter amber is fine here. Contrast only becomes strict when the <i>glyph itself</i> carries the meaning (arrows = direction, colour-only status, or a bare-number label).</p>
+    <p class="opt"><b>M4 Bar / edge</b> — for cards and grouped rows where the whole object has a status.</p>
+    <div class="rec"><b>My read (yours to overrule):</b> these are <b>context-scoped, not competing</b> — M1 for table status columns, M3 for inline / dense / accessibility-first, M4 for cards. M2 only if a tag pattern already exists. If you'd rather name <b>one</b> canonical form, say which.</div>
+    <p class="call">Your call: which form(s) are canon, and is the mapping to surface right?</p>
+  </div>
+
+  <!-- ============ §2 ============ -->
+  <h3 class="section">§2 · Dark mode — a balanced (isoluminant) RAG set</h3>
+  <p class="note">Your steer: <b>match the intensity across the hues</b> in dark mode. The term is <b>isoluminant</b> —
+     holding the same perceptual lightness (OKLCh <b>L</b>) across red / green / blue so none reads brighter or muddier
+     than the others (<b>amber excluded</b> — it's the carve-out and stays <code>#F0B13A</code> / <code>#C58900</code>).
+     Doing this reveals the real structure: <b>you can't get both roles at one lightness.</b> White-text-on-fill wants the
+     hues <i>dark</i>; a mark on the dark page wants them <i>light</i>. So a matched set lands as one of <b>two bands</b>,
+     each internally balanced — measured on the real ground <code>#1A1A1A</code>:</p>
+
+  <div class="darkstrip">
+    <div class="cap">Band A — matched at L≈0.55 · white text on the fills · marks stay icon / label</div>
+    <div class="cand">
+      <div class="tag">A·fill<small>white text</small></div>
+      <div class="demo">
+        <span class="swfill" style="background:#C33A2B;color:#fff">Breach</span>
+        <span class="swfill" style="background:#14874E;color:#fff">Healthy</span>
+        <span class="swfill" style="background:#1F6ED5;color:#fff">Info</span>
+        <span class="swfill" style="background:#F0B13A;color:#000">Watch</span>
+        <span class="cmeta">white 5.30 / 4.56 / 4.94 <span class="pass">✓</span> · amber black 11.06 <span class="pass">✓</span></span>
+      </div>
+    </div>
+    <div class="cand">
+      <div class="tag">A·mark<small>on page</small></div>
+      <div class="demo">
+        <span class="swglyph"><span class="dot" style="background:#C33A2B"></span><span style="color:#f2f2f2">Breach</span></span>
+        <span class="swglyph"><span class="dot" style="background:#14874E"></span><span style="color:#f2f2f2">Healthy</span></span>
+        <span class="swglyph"><span class="dot" style="background:#1F6ED5"></span><span style="color:#f2f2f2">Info</span></span>
+        <span class="cmeta">marks on #1A1A1A 3.28 / 3.82 / 3.52 — <span class="pass">icon ✓ 3:1</span>, <span class="fail">text ✗ 4.5</span> → label carries it</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="darkstrip">
+    <div class="cap">Band B — matched at L≈0.64 · black text on the fills · marks self-sufficient as text</div>
+    <div class="cand">
+      <div class="tag">B·fill<small>black text</small></div>
+      <div class="demo">
+        <span class="swfill" style="background:#E35847;color:#000">Breach</span>
+        <span class="swfill" style="background:#3CA368;color:#000">Healthy</span>
+        <span class="swfill" style="background:#3E8AF4;color:#000">Info</span>
+        <span class="swfill" style="background:#F0B13A;color:#000">Watch</span>
+        <span class="cmeta">black 5.75 / 6.63 / 6.15 <span class="pass">✓</span> · amber black 11.06 <span class="pass">✓</span> — <b>all four black text</b></span>
+      </div>
+    </div>
+    <div class="cand">
+      <div class="tag">B·mark<small>on page</small></div>
+      <div class="demo">
+        <span class="swglyph"><span class="dot" style="background:#E35847"></span><span style="color:#E35847;font-weight:600">Breach</span></span>
+        <span class="swglyph"><span class="dot" style="background:#3CA368"></span><span style="color:#3CA368;font-weight:600">Healthy</span></span>
+        <span class="swglyph"><span class="dot" style="background:#3E8AF4"></span><span style="color:#3E8AF4;font-weight:600">Info</span></span>
+        <span class="cmeta">marks on #1A1A1A 4.77 / 5.50 / 5.09 — <span class="pass">text ✓ 4.5</span>, self-sufficient</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="darkstrip" style="border-color:#f0c862">
+    <div class="cap" style="color:#f0c862">Band B — SATURATION-CAPPED (the dance lever · chroma ×0.72, L &amp; hue held) · NEW v2</div>
+    <div class="cand">
+      <div class="tag">B′·fill<small>black text</small></div>
+      <div class="demo">
+        <span class="swfill" style="background:#CE6B5D;color:#000">Breach</span>
+        <span class="swfill" style="background:#5B9D73;color:#000">Healthy</span>
+        <span class="swfill" style="background:#588DD8;color:#000">Info</span>
+        <span class="swfill" style="background:#F0B13A;color:#000">Watch</span>
+        <span class="cmeta">black 5.89 / 6.52 / 6.22 <span class="pass">✓</span> — contrast barely moved</span>
+      </div>
+    </div>
+    <div class="cand">
+      <div class="tag">B′·mark<small>on page</small></div>
+      <div class="demo">
+        <span class="swglyph"><span class="dot" style="background:#CE6B5D"></span><span style="color:#CE6B5D;font-weight:600">Breach</span></span>
+        <span class="swglyph"><span class="dot" style="background:#5B9D73"></span><span style="color:#5B9D73;font-weight:600">Healthy</span></span>
+        <span class="swglyph"><span class="dot" style="background:#588DD8"></span><span style="color:#588DD8;font-weight:600">Info</span></span>
+        <span class="cmeta">marks 4.88 / 5.40 / 5.15 <span class="pass">✓</span> · <b>dance −28%</b> (98→71 / 72→51 / 97→70) — should sit stiller</span>
+      </div>
+    </div>
+  </div>
+  <p class="note muted" style="margin-top:6px"><b>Compare B and B′ with the theme on dark and lean in</b> — B′ pulls the chroma
+     back to calm the shimmer while the black-text contrast holds. This is the saturation lever from §3; your astigmatism is
+     the judge of how far to pull it.</p>
+
+  <div class="amberflag"><b>What each band costs.</b> <b>Band A</b> keeps the light-mode logic (white text on fills) and
+     changes the least — but red/blue nudge slightly darker off their R-D1 dark values (<code>#CC4333→#C33A2B</code>,
+     <code>#2674DC→#1F6ED5</code>) to sit at the matched L, and bare coloured RAG <i>text</i> on dark stays disallowed
+     (marks are icons or label-paired — the "belt &amp; braces", icon-013). <b>Band B</b> is the more unified end: every
+     fill takes black text, so <b>amber stops being a carve-out in dark mode</b> and marks work as bare text — but the
+     fills read lighter/pastel and it moves red/blue further from their ruled values. Both bands are <b>equally
+     balanced</b>; the choice is which role you privilege.</div>
+
+  <div class="decision">
+    <h5>§2 decision — the balanced dark set</h5>
+    <p class="opt"><b>Band A:</b> matched white-text fills; marks icon / label-paired. Closest to light mode and to the
+       existing dark red/blue intent; smallest change. But white-on-dark-fill still blooms (§3) — the light-bleed edge stays.</p>
+    <p class="opt"><b>Band B:</b> matched black-text fills; marks self-sufficient as text. Maximally unified (amber no longer
+       special) — but uncapped, the saturated fills/marks <b>dance</b> (§3).</p>
+    <p class="opt"><b>Band B′ (sat-capped):</b> Band B with the dance lever pulled — chroma −28% at ~zero contrast cost.
+       The most likely to <b>sit still</b> for you, and it makes black-text fills bloom least (§3 step-down finding).</p>
+    <p class="opt"><b>Hold red/blue as ruled, cut green only:</b> least churn; gives up the balance.</p>
+    <div class="rec"><b>Recommendation flips to Band B′.</b> Once halation is on the table, the black-text-on-light-fill
+       combo blooms least, sat-capping calms the dance, and it unifies the text colour — the most likely to sit still to a
+       sensitive eye. Band A remains the conservative pick if you'd rather not move red/blue far. <b>This is the one to
+       eyeball on dark.</b></div>
+    <p class="call">Your call: A, B, or B′ — and if B′, is the ×0.72 cap right, or pull further / less?</p>
+  </div>
+
+  <!-- ============ §3 ============ -->
+  <h3 class="section">§3 · The balance model — bloom &amp; dance, by stroke thickness (R-D6 · Apollo Labs seed)</h3>
+  <p class="note">Your question: <i>a calculation that includes line thickness.</i> WCAG's flat 4.5 ignores it; this does not.
+     Halation has <b>two modes</b>, and thickness (as degrees of visual angle) selects which: <b>thin → dance</b> (saturated
+     colour shimmers at a high-frequency edge), <b>thick → bloom</b> (a bright field spills across its border). Both levers are
+     already in canon — luminance step (bloom) and the saturation ceiling (dance). First-cut indices (0–100, relative), grounded
+     in the contrast-sensitivity function + chromatic aberration. <b>v0 — to be calibrated against your eye, not taken as final.</b></p>
+
+  <div class="darkstrip">
+    <div class="cap">Model sanity — it reproduces what you described</div>
+    <table class="rag" style="color:var(--dtx)">
+      <thead><tr><th style="color:var(--dmut)">element on #1A1A1A</th><th style="color:var(--dmut)">bloom</th><th style="color:var(--dmut)">dance</th><th style="color:var(--dmut)">reads as</th></tr></thead>
+      <tbody style="font-variant-numeric:tabular-nums">
+        <tr><td style="border-color:#2c2c2c">white text · 2px</td><td style="border-color:#2c2c2c">28.8</td><td style="border-color:#2c2c2c">0.0</td><td style="border-color:#2c2c2c">mild bloom, no shimmer</td></tr>
+        <tr><td style="border-color:#2c2c2c">white FILL · 40px</td><td style="border-color:#2c2c2c"><b>100</b></td><td style="border-color:#2c2c2c">0.0</td><td style="border-color:#2c2c2c">the bloom reference</td></tr>
+        <tr><td style="border-color:#2c2c2c">saturated blue text · 1px</td><td style="border-color:#2c2c2c">0.5</td><td style="border-color:#2c2c2c"><b>100</b></td><td style="border-color:#2c2c2c">the dance reference</td></tr>
+        <tr><td style="border-color:#2c2c2c">same blue as a 40px FILL</td><td style="border-color:#2c2c2c">3.1</td><td style="border-color:#2c2c2c">1.1</td><td style="border-color:#2c2c2c">thick kills the dance</td></tr>
+      </tbody>
+    </table>
+    <p class="note" style="color:var(--dmut);margin:10px 0 0;font-size:11.5px">Same blue: <b>dances at 1px, calm as a fill.</b> That's
+       thickness selecting the mode — the thing the flat ratio can't see.</p>
+  </div>
+
+  <div class="darkstrip">
+    <div class="cap">Your step-down-on-colour hypothesis — the model's verdict (bloom @2px text)</div>
+    <table class="rag" style="color:var(--dtx)">
+      <thead><tr><th style="color:var(--dmut)">text on…</th><th style="color:var(--dmut)">luminance step</th><th style="color:var(--dmut)">bloom</th></tr></thead>
+      <tbody style="font-variant-numeric:tabular-nums">
+        <tr><td style="border-color:#2c2c2c">white on the dark PAGE</td><td style="border-color:#2c2c2c">0.99</td><td style="border-color:#2c2c2c"><b>28.8</b></td></tr>
+        <tr><td style="border-color:#2c2c2c">white on RED fill (Band A #C33A2B)</td><td style="border-color:#2c2c2c">0.85</td><td style="border-color:#2c2c2c">24.7</td></tr>
+        <tr><td style="border-color:#2c2c2c">black on GREEN fill (Band B #3CA368)</td><td style="border-color:#2c2c2c">0.28</td><td style="border-color:#2c2c2c"><b class="pass">2.3</b></td></tr>
+        <tr><td style="border-color:#2c2c2c">black on AMBER fill #F0B13A</td><td style="border-color:#2c2c2c">0.50</td><td style="border-color:#2c2c2c" class="pass">7.3</td></tr>
+      </tbody>
+    </table>
+    <p class="note" style="color:var(--dmut);margin:10px 0 0;font-size:11.5px"><b>You were right — with a condition.</b> The dark-mode
+       weight step-<i>down</i> compensates for bloom-thinning. On <b>black-text/light fills</b> (Band B, amber) bloom is ~2–7 vs 29
+       on the page → <b>step-down unneeded</b>. On <b>white-text/dark fills</b> (Band A) it's still ~25 → may still apply. So the rule
+       tracks the band — another reason B′ is clean. Lands as a TYPE ruling once the band is set.</p>
+  </div>
+
+  <div class="rec"><b>This model is the Apollo Labs engine.</b> Paste a palette → isoluminant re-cut + bloom/dance by thickness +
+     WCAG per ground. Calibrated to the most sensitive observer, it's a real accessibility instrument — and good HSBC promo.
+     Queued in <code>_FUTURE-STATE</code>; the whole-palette sweep runs after these bands land.</div>
+
+  <div class="decision">
+    <h5>§3 — what I need from your eye</h5>
+    <p class="call">On dark, lean in and compare <b>B vs B′</b>: does the cap make them sit still? Is ×0.72 right, or pull
+       further / less? And does the model's ranking match what you actually see — that's the calibration.</p>
+  </div>
+
+  <div class="prov">
+    <b>Provenance.</b> Ruled inputs: R-D1 (light values + white-text-universal), R-D3 (amber carve-out + belt/braces),
+    R-D4 (matting rungs + promotion), R-D5 (deltas ≠ RAG). Contrast measured WCAG 2.1 (sRGB relative luminance);
+    candidates cut in OKLCh with hue held (green 154.9°, red 30.0°, blue 257.4°); <b>isoluminant</b> bands = a shared L
+    swept across the trio with chroma capped to gamut — script <code>reviews/_rag_colours_calc.py</code>.
+    Thresholds: 4.5 text (1.4.3) · 3.0 non-text/icon (1.4.11). Dark ground <code>#1A1A1A</code> = the digital black (R-D1 §5).
+    §3 bloom/dance model <code>reviews/_rag_bloom_model.py</code> (v0 heuristic — CSF + chromatic aberration; spatial
+    frequency from stroke width via visual angle). Rulings this sheet enacts: <b>R-D6</b> (glyph-contrast-by-role +
+    halation as a third axis). Calibration target = the most sensitive observer (astigmatism). Nothing is promoted to the
+    token store — that waits on your ruling, then the blast-radius gate.
+  </div>
+
+  <script>
+    var body=document.body;
+    document.getElementById('theme').addEventListener('click',function(){ body.classList.toggle('dark'); });
+    var vw=document.getElementById('vw'), vwr=document.getElementById('vwr');
+    vw.addEventListener('input',function(){ var v=+vw.value; if(v>=980){body.style.maxWidth='';vwr.textContent='full';} else {body.style.maxWidth=v+'px';vwr.textContent=v+'px';} });
+  </script>
+</body>
+</html>

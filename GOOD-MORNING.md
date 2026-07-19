@@ -1,23 +1,25 @@
 # Good morning, Dave ☕
 
-*Briefing — written end of 2026-07-19 00:46 (date from `date`, per the ritual rule), session
-**"A gate for the blast radius"** — built the gate, then rode it through a chain of cleanups.*
+*Briefing — written 2026-07-19 14:31 (date from `date`, per the ritual rule), session
+**"RAG colour: halation, the salience ramp & the astigmatism instrument"** — opened to nail RAG dark-mode
+colours and turned into a piece of original colour-accessibility method (halation model, the salience-ramp
+reframe, the astigmatism-as-instrument principle), then a component pivot.*
 
 ---
 
 ## ⬛ DO THESE TWO FIRST (10 seconds)
 
-> **RENAME THIS CHAT → `Small picks, and an edit-mode μX with legs`** *(opened as "clearing the
-> small-picks desk" — and the picks got cleared: §1 `.num` 24px rung RULED + enacted (T-D14), §2 dv-017
-> got a visual. But it grew a bigger thing: Dave's in-context **edit-mode "μX" concept** — when you select
-> a component its own controls dock beside it (no sidebar), prototyped v1→v3, and registered in
-> `_FUTURE-STATE` as universal-to-all-components, meta-derived, and TIERED to the strict↔creative register.
-> Plus the review workflow got three inscribed conventions.)*
+> **RENAME THIS CHAT → `RAG colour: halation, the salience ramp & the astigmatism instrument`** *(opened as
+> "back to the components"; the RAG-colours review it started with became a full colour-accessibility method
+> session — the halation bloom/dance model, the salience-RAMP reframe (status ≠ isoluminant), red/amber as the
+> two carve-outs, weight→uniform 500, and the R-D11 catch that status fills are ground-relative. Ended pivoting
+> to the status component. Nine review versions + a findings dossier.)*
 
-> **TITLE TODAY'S CHAT →** `Back to the components`
-> Dave wants back on components. Two quick things wait first (§C): **confirm the §2 dv-017 wording** (the
-> visual is built — `reviews/DV017-DELTA-VS-RAG-2026-07-19-v1`), and the queued **RAG-colours review**.
-> **Sonnet** for component build; **Opus** if a ruling surfaces. Per §C.
+> **TITLE TODAY'S CHAT →** `Light-mode RAG fills + nail the status component`
+> The RAG **dark** set is LOCKED (R-D10); the **light-mode fills are reopened** (R-D11 — the ramp is
+> ground-relative, tuned only on dark). First: derive the light-mode fill set (ground-aware), then make the
+> **§1 manifestation** canon pick (sheet built: `reviews/RAG-STATUS-MANIFESTATION-2026-07-19-v1`) and build the
+> status component. **Sonnet** for the build; **Opus** only if a ruling surfaces. Per §C.
 
 *Standing practice: every handoff carries both names — retrospective + forward. Step 4b in
 `_RUNBOOK-capture-ritual.md`.*
@@ -203,80 +205,66 @@ Chrome needs ~17 libs via `apt-get download` → `dpkg -x` → `LD_LIBRARY_PATH`
 
 ---
 
-# §B · THIS SESSION (2026-07-19 later, "Small picks, and an edit-mode μX with legs")
+# §B · THIS SESSION (2026-07-19, "RAG colour: halation, the salience ramp & the astigmatism instrument")
 
-**Opened to clear the §C small-picks desk. Cleared §1, built a §2 visual — and grew Dave's in-context
-edit-mode "μX" concept from a one-line control idea into a registered product direction.**
+**Opened to nail the RAG dark-mode colours. It became a piece of original colour-accessibility method, then a
+pivot to the status component. Nine review versions (`RAG-COLOURS-…-v1…v9`) + a findings dossier
+(`_DECISION-HISTORY/2026-07-19-rag-colour-halation-ramp.md` — read it, it holds the WHY).**
 
-## What LANDED (build GREEN, 34 steps)
+## What LANDED (rulings R-D5…R-D11; ledger `_proforma/_RAG-DECISIONS.md`)
 
-- **§1 `.num` 24px rung — RULED + ENACTED (T-D14).** New composite **`.t-cm-figure-3` (24px/500)** added to
-  `canon/type.css`; the Countdown numeral is now bound to it — the **FIRST composite bound in MARKUP**, via a
-  **class on the element**. Forced to a class (not the T-D9 selector-list) because bare `.num` collides with
-  `.cn-table td.num` (table cells would jump to 24px). **Zero-visual-change** (500 = the shipped weight).
-  **ASSERT-003 retired** — its `clears_when` ("a binding mechanism is ruled + first composite bound in
-  markup") was met, and the assertion gate STOPPED the build the instant "0 bound" flipped, exactly as
-  designed. Ledger `_TYPE-DECISIONS` **T-D14**. ⚠️ The **bulk** binding mechanism for the other ~338 is
-  still OPEN — this was one collision-forced case, not a general ruling.
-- **§2 dv-017 — RULED + ENACTED (R-D5).** You confirmed the visual (`reviews/DV017-DELTA-VS-RAG-2026-07-19-v1`) —
-  "good for me". Split the clause: directional deltas are red/green ONLY; RAG status is a separate concern → R-D3.
-  Patched `data-visualisation.md`; rules-index regenerated; build green. The visual also confirmed your amber
-  recollection (bg **#F0B13A** black-text vs glyph **#C58900** — amber's two roles diverge). Manifestation + dark opens → the RAG review.
-- **μX in-context edit-mode prototype (v1→v3).** Select a component → its controls dock beside it, no sidebar;
-  **two grab bars** (move component in a DOM stack · move controls); **arrow keys** reorder; controls float +
-  anchor (v3 fixed a v2 overlap where they sat on the component). Registered in `_FUTURE-STATE`: **universal**
-  to all components · control set **derived from each meta** · **TIERED to the strict↔creative register**
-  (prompt-only at the creative extreme → more structured controls toward strict; direction CONFIRMED by Dave).
-- **Three review conventions inscribed** (memory + `_REVIEW-SIGNOFF.md`): specimens show the component ALIVE +
-  full variant/state spread from its meta · every review carries a light/dark toggle + responsive slider ·
-  **version `-vN` by DEFAULT** — overwrite only when Dave says "don't version this one" (refined 2026-07-19).
-- **Then the magpie took flight (this all landed AFTER commit `cef3d25`).** The compliance **KG edges diagram**,
-  built as a generator (`knowledge/compliance/_build_kg_diagram.py` → `reviews/KG-COMPLIANCE-DIAGRAM-2026-07-19-v1`):
-  SC↔component edges colour-coded by verification — **only 4 of 31 SCs carry a live `verified_by` edge** (27
-  unverified; 13 are axe-core "easy wins"). Embedded into the knowledge-usage trace
-  (`_KNOWLEDGE-USAGE-TRACE-2026-07-19-v3`, promoted to a native `#s-edges` section under the node graph + nav item).
-  `_FUTURE-STATE` gained the **edge-triage interface** (chat is bad UX for per-item triage; a μX sibling).
-  `MODEL-ROUTING` gained the **"scope once (expensive brain), run at scale (trusted hands)"** pattern — Opus writes
-  *a mini brief for the brief*, Fable/Sonnet execute by stakes. And `working-style-divergent` was **reframed**:
-  **"the recursive magpie" = how WE work together**, a symbiotic **"symbiotech"** creature (Dave's divergence + my
-  convergence = two organs of one animal).
+- **RAG DARK set LOCKED (R-D10):** breach `#B92F1E` white · watch `#F0B13A`/`#C58900` black · healthy
+  `#43AD6F` black · info `#5F92B9` black (cyan-shifted for astigmatic legibility). Weight **uniform Medium
+  500**. Marks icon/label-paired (never bare coloured text on dark). **Red = carve-out (deep + white,
+  instability) · amber = carve-out (lightness) · green+blue = the stable pair, ramp-tuned.**
+- **Three principle-level findings** (now in memory + the dossier):
+  - **Halation is a THIRD colour axis (R-D6):** *bloom* (thick fields, luminance-step lever) vs *dance* (thin
+    strokes, saturation lever); **stroke thickness selects the mode.** First-cut model `reviews/_rag_bloom_model.py`.
+  - **Status colour is a SALIENCE RAMP, not isoluminant (R-D9):** loudness descends with severity (categorical
+    data stays isoluminant; status ramps). Dave's reframe.
+  - **The astigmatism-as-instrument + dual-observer principle:** calibrate to the most sensitive eye; serve it
+    without breaking the typical viewer, flag divergence.
+- **Weight polarity → uniform 500 (R-D7);** glyph-contrast-by-role (R-D6: label-paired glyph relaxes, meaning-
+  carrying glyph must meet 4.5).
+- **Process improvement:** the **narrative dossier became capture-ritual step 1b** (record why+how, not just
+  what) — Dave's ask; and dossiers registered as a future decision-graph node-set. `_FUTURE-STATE` gained
+  **Apollo Labs** (public a11y tool: isoluminant + ramp + halation), the **whole-palette sweep**, the
+  **dual-observer principle**, and a **~450 weight** font-procurement target.
 
 ## What I got wrong / watch
 
-- Presented the first small-picks doc as PLAIN html — skipped the `_make_review.py` overlay my OWN memory
-  already mandated. Dave corrected it; the overlay is non-optional now.
-- v2 μX put the inspector INSIDE the component's 380px stack slot → it overflowed onto the component. v3
-  floats + anchors it (Re-dock snaps it back).
-- Overwrote the small-picks doc rev1→rev2 *before* the "version this" rule landed; rev1 was unrecoverable
-  (its review copy had already been regenerated). Versioned from here.
+- **Called the set "mode-stable" and tuned it only on the DARK page.** Dave's screenshot of the filled cells on
+  WHITE caught it: **the salience ramp is GROUND-RELATIVE and inverts (R-D11)** — on white the light fills wash
+  out and the deep-red alarm goes quietest. ⇒ status **FILLS are per-mode, not mode-stable**; the LIGHT-mode
+  fill set is REOPENED. Lesson: prove a colour set on BOTH grounds before calling it mode-stable.
+- Nothing gated was touched (review docs, ledgers, memory, runbook, `_FUTURE-STATE`, dossier) — so **build
+  state is unchanged from prev green**; no `_build_all.py` run needed this session. The R-D10 **token
+  promotion** is the next thing that will hit the blast-radius gate — deferred.
 
 ---
 
 # §C · QUEUE
 
-## 1. RAG-colours review — the next real deliverable (Dave: "let's do this next / settle it once and for all")
-Ruled values exist (R-D1/R-D3/R-D4) but three things are OPEN: dark-mode **green** has no ruled value
-(incumbent #1AA05C fails white text 3.37), dark red/blue as glyph-on-text fail 4.5, and the real
-**manifestation** (cell / pill / dot / bar — the source of the earlier dv-017 confusion). Dedicated versioned review. Home: `_FUTURE-STATE`.
+## 1. ★ LIGHT-mode RAG fills — the next real deliverable (R-D11)
+The dark set is locked but ground-relative. Derive a **ground-aware LIGHT-mode fill set** (breach must shout on
+white, none wash out), then reconcile the two modes. Fills are per-mode. **Opus** (ruling-shaped).
 
-## 2. Compliance edges — 27 unverified `verified_by` (advisory, NOT blocking)
-Diagram built (`reviews/KG-COMPLIANCE-DIAGRAM-*`, embedded in the trace). Not urgent — the compliance graph is
-advisory. Dave's steer: build the **edge-triage interface** first (`_FUTURE-STATE`) so the edges become cheap
-batch work. Model per `MODEL-ROUTING`: Opus specs → Fable (high-trust batch) / Sonnet (mechanical) rattles through.
+## 2. §1 RAG manifestation — canon pick, then the status component build (Sonnet)
+Decision sheet built (`reviews/RAG-STATUS-MANIFESTATION-2026-07-19-v1`): Status-indicator dot+label (existing
+canon) · filled cell/badge · bar/edge; tags+pills EXCLUDED by canon. Awaiting Dave's pick (A / A+B / A+B+C).
+Then **Sonnet build**: rebind Status-indicator to R-D10 tokens, spec cell/bar as gated components (**cells need
+more vertical padding** — Dave). Once light fills land too → promote R-D10 tokens behind the blast-radius gate.
 
-## 3. Tag colour/RAG — parked, blocked by #1
-Unblocks the moment RAG lands, then one gated pass on `Tags.reference` using the R-D3 status tokens.
+## 3. Parked in `_FUTURE-STATE` (not urgent)
+Apollo Labs · whole-palette isoluminant+halation sweep · edge-triage interface · ~450 variable-weight target.
 
-## 4. Multi-size countdown + the BULK binding mechanism
-20/24/32 numeral binding lands when the timer gains size variants (ties to the μX size control). The general
-type-binding mechanism for ~338 elements remains unruled — T-D9 / T-D11 / **T-D14**.
+## 4. Carry-overs still open (prior sessions)
+Bulk type-binding for ~338 elements (T-D9/T-D11/T-D14) · compliance edges (27 unverified `verified_by`,
+advisory) · multi-size countdown · 🕓 Latin webfont pack (waiting on brand, not yours to chase).
 
-## 5. 🕓 Waiting on brand — the Latin webfont pack (not yours to chase)
-
-> **COMMIT STATE — TWO commits this session:** (1) **`cef3d25`** = the §1/§2 mop-up (`type.css`,
-> `Countdown-timer.reference.html`, regenerated `canon.css`, assertion retirement, ledgers, ritual docs). (2) the
-> session-close commit **`<hash — see chat>`** = the KG diagram + generator, trace v2/v3 + embed, `MODEL-ROUTING`
-> pattern, `_FUTURE-STATE` entries. Build green, **34 steps**. Locks clear; **you push BOTH via GitHub Desktop**.
-> **Next session model: Sonnet** (component build); **Opus** if a ruling surfaces. Session record:
-> `reviews/SMALL-PICKS-DESK-*` · `reviews/EDIT-MODE-UX-PROTOTYPE-*` · `reviews/DV017-DELTA-VS-RAG-*` ·
-> `reviews/KG-COMPLIANCE-DIAGRAM-*` · `_TYPE-DECISIONS` T-D14 · `_RAG-DECISIONS` R-D5 · `_FUTURE-STATE` · this handoff.
+> **COMMIT STATE — ONE commit this session, docs only (NO gated code):** `_RAG-DECISIONS.md` (R-D5…R-D11),
+> `_DECISION-HISTORY/2026-07-19-rag-colour-halation-ramp.md` (new dossier), `_RUNBOOK-capture-ritual.md` (step
+> 1b), `_LIVE-STATE.md`, `_FUTURE-STATE.md`, `GOOD-MORNING.md`, `reviews/RAG-COLOURS-…-v1…v9` +
+> `RAG-STATUS-MANIFESTATION-…-v1` (+ `.REVIEW` copies), `reviews/_rag_colours_calc.py` + `_rag_bloom_model.py`.
+> Build state unchanged (no gated sources). **You push via GitHub Desktop.** Paste-ready summary in chat.
+> **Next session model: Opus** (light-fill ruling) → **Sonnet** (component build).

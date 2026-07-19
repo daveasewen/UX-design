@@ -271,3 +271,220 @@ Enacted in `knowledge/guidelines/data-visualisation.md` `{#dv-017}`(a); rules-in
 opens (green has no ruled dark value; dark red/blue fail 4.5 as glyph-on-text) are **NOT settled here** — they
 are the dedicated **RAG-colours review**, which Dave ruled the next deliverable (2026-07-19: *"lets do this next"*).
 Home: `_FUTURE-STATE`. This was the source of Dave's earlier confusion (the status-cell example ≠ real manifestation).
+
+---
+
+## R-D6 — glyph contrast by role + halation as a third axis (2026-07-19)
+
+Source: Dave's markup of `reviews/RAG-COLOURS-2026-07-19-v1.REVIEW.html` (4 pins) + in-chat confirmations
+("correct" / "also correct"). Two rulings RULED; a model direction and two hypotheses OPEN.
+
+### Ruling A — glyph contrast is RELATIVE to whether the glyph carries the meaning — RULED
+Dave (pin 3, on the M3 dot+label): *"when paired with a label the contrast is less important so the brighter
+yellow is fine here. It's only when the glyphs have meaning and the label is a number or the label doesn't
+carry the meaning that it matters, like arrows for instance."*
+
+> **THE RULE:** When a status glyph is **paired with a text label that carries the meaning**, the glyph's
+> colour is reinforcement — it need only meet the **3:1 non-text** floor (1.4.11), and a brighter/less-
+> contrasty hue is acceptable (use-of-colour 1.4.1 is satisfied by the label). When the **glyph itself
+> carries the meaning** — arrows = direction, colour is the sole status signal, or the label is a bare
+> number/value that does not encode status — the glyph must meet **4.5 text** (1.4.3).
+
+Refines R-D3 "belt & braces" and `{#icon-013}`. **Gate-able:** the check is "does a text sibling carry the
+status word?" — flag lone/meaning-carrying coloured glyphs below 4.5. Not yet built.
+
+### Ruling B — halation is a THIRD design axis, beyond hue and intensity — RULED
+Dave: bloom/shimmer is real and *"another dimension to this"*; *"thin lines and colour dance, thicker ones
+bloom… that's the halation effect."* Confirmed as evidence for Band A / a saturation ceiling.
+
+Two failure modes, and the levers were ALREADY in canon (`color/black` `$note`: "reduce the extremity of the
+edge — the neutral-ground lever [luminance step] · its coloured-ground twin is the saturation ceiling ≤0.72"):
+- **BLOOM** (irradiation) — bright feature spills across its edge; light-on-dark reads HEAVIER
+  (`web-foundations` light-bleed compensation; `common-toolkit-foundations` "icon strokes appear heavier").
+  Grows with bright-side luminance × step; **visible on thick fields.** Lever: lower the luminance step.
+- **DANCE** (chromatic edge instability) — saturated colour at a **thin/high-spatial-frequency** edge, worst
+  when luminance contrast is low. The chromatic channel is low-pass (~4 c/deg). Lever: saturation ceiling.
+
+> **THE NEW DIMENSION — spatial frequency / stroke width.** WCAG's flat 4.5 ignores it; APCA only approximates
+> it via size/weight tables. **Thickness (in degrees of visual angle) selects which mode you get** — thin →
+> dance, thick → bloom. First-cut model: `reviews/_rag_bloom_model.py` (bloom & dance indices, 0..100,
+> grounded in CSF + chromatic aberration; v0 heuristic). Sanity: white-fill = bloom 100, sat-blue-1px-text =
+> dance 100, and dance collapses when the same blue is a thick fill — matches the observation.
+
+**CALIBRATION INSTRUMENT — Dave's astigmatism.** Astigmatism smears edges directionally → heightened
+sensitivity to bloom/dance → a stricter test. *"This is where my astigmatism is actually a benefit."*
+Thresholds come from what the **most sensitive** observer can still see sit still → an accessibility
+gold-standard, consistent with the accessibility aspiration (ADR-0004) and the dataviz delta astigmatism rule.
+This is the **Apollo Labs** engine ([[_FUTURE-STATE]] spin-out).
+
+### OPEN (leans, pending v2 markup + Dave's eye — NOT ruled)
+1. **Sat-capped Band B.** Chroma → 0.72× drops dance ~28% (red 98→71, blue 97→70, green 72→51) at ~zero
+   contrast cost (black-on-fill 5.75→5.89). Built into v2 for Dave to eyeball.
+2. **Step-DOWN-on-colour hypothesis** (Dave: "the font step-up in dark mode maybe doesn't apply for text on
+   colour"). Model: **supported for BLACK text on LIGHT fills** (bloom 2–7 vs 29 on the page → step-down
+   unneeded) but **marginal for WHITE text on DARK Band-A fills** (bloom ~25 → may still apply). Depends on
+   the luminance step, so it tracks the band. → a TYPE ruling once the band lands; home `_TYPE-DECISIONS`.
+3. **Band choice** (A white-text fills / B black-text fills / sat-capped B) and **§1 manifestation** — still
+   Dave's call on v2.
+
+---
+
+## R-D7 — red carve-out LOCKED + the weight-polarity finding (2026-07-19)
+
+Source: Dave's markup of `reviews/RAG-COLOURS-2026-07-19-v3` (red ladder + weight matrix) and `-v4`.
+
+### Red — RULED (locked)
+Dave, on the deep-red ladder: *"they are all blooming but this is the best balance of the right colour and
+white text"* → **red = `#B92F1E`, white text, MODE-STABLE (one value, light + dark).** This is already the
+light-mode ruled red (R-D1), so light and dark red unify. **Red carves out of the isoluminant set** — a
+second carve-out beside amber, for a DIFFERENT reason: amber = lightness/contrast; **red = perceptual
+instability** (long-wavelength → worst chromatic aberration; astigmatism sees it first — *"in my experience
+red is an issue"*). The lever for red is **depth, not desaturation**: deeper red RAISES white-text contrast
+AND lowers bloom together (desaturation, the v2 B′ cap, cost readability — Dave: "calmer but less readable").
+⇒ **The "balanced dark set" is really green+blue matched (isoluminant); red and amber each carve out.**
+
+### Weight polarity — FINDING (lean, pending Dave's glasses/no-glasses look)
+Dave picked **400 Regular** on the dark page / red and **500 Medium** on amber — *"weird"*. It is not weird,
+it is **polarity**: the BRIGHT side blooms into the DARK side.
+- **Light text on a bright/dark ground** (page, red) → stroke FATTENS → step **DOWN** (400).
+- **Dark text on a light fill** (amber, green, blue) → fill blooms inward, THINS the text → step **UP** (500).
+Consistent across all grounds (model: bloom 400→500 climbs on every ground; direction = sign of fg−bg
+luminance). Lands as a **TYPE ruling** paired with R-D6 once Dave confirms after the glasses test. My bloom
+index measured magnitude; **added a polarity term** (who-thins-whom). Sheet: `-v4`, §W2/§W3.
+
+### OPEN
+- Confirm the weight-polarity rule (or uniform 500) — needs Dave's astigmatic vs corrected look + the
+  mixed-vs-uniform panel (v4 §W3). **Dual-observer tension:** mixed may help astigmatism but read "weird" to
+  normally-sighted → the calibration principle (serve the sensitive without breaking the typical).
+- Green/blue band (A / B / B′, v2) and §1 manifestation — still Dave's call.
+- The missing ~450 rung (see _FUTURE-STATE) — licensed cut has no weight between 400 and 500.
+
+### Weight — RESOLVED (2026-07-19, after the v4 side-by-side + glasses look)
+Dave: *"I think medium is best on balance."* ⇒ **RAG status text = uniform Medium (500), both grounds, both
+modes.** The polarity finding (down on bright ground, up on light fill) is REAL and retained as the WHY, but
+the SHIPPED rule is **one weight, not a split** — chosen "on balance": simpler, and it resolves the
+dual-observer tension (a mixed split could read "weird for normally sighted"; uniform 500 serves both). So the
+dual-observer principle lands as **uniform**, with polarity kept as rationale, not a token. → mirror as a
+TYPE ruling (T-D) when the RAG tokens are enacted. *(If Dave meant keep the 400/500 split, correct here — read
+as uniform 500.)*
+
+---
+
+## R-D8 — green/blue = Band A; the dark set closes (2026-07-19)
+
+Dave, on the consistency argument (all fills white-text except amber, red prominent): *"that's actually okay
+considering that red is a warning."* ⇒ **Green + blue take Band A (isoluminant, white text on darker fills).**
+Red's distinct prominence (deep, white text, unmissable) is APPROPRIATE to its warning role, not an inconsistency.
+
+**THE DARK SET — now complete (pending §1 manifestation):**
+| hue | dark fill | text | notes |
+|---|---|---|---|
+| red | `#B92F1E` | white | mode-stable, carve-out (R-D7) |
+| amber | `#F0B13A` bg / `#C58900` glyph | black | carve-out (R-D3) |
+| green | **`#14874E`** | white | Band A, L≈0.55 — **closes the dark-green NULL** (open since R-D1) |
+| blue | **`#1F6ED5`** | white | Band A, L≈0.55 |
+
+- **All fills white text except amber.** Green+blue are the matched stable pair (R-D8), red carves out but sits
+  near their L, amber is the lone black-text hue. Consistent with [[colour-stability-red-yellow-problem]].
+- **Marks/glyphs on dark:** icon (≥3:1) or label-paired — never bare coloured text (R-D6 Band-A rule).
+- **Weight:** uniform Medium 500 (R-D7 resolution).
+- **CLOSES:** dark-green null · dark red/blue glyph-as-text (→ R-D6 usage rule) · band choice · weight.
+- **STILL OPEN:** §1 manifestation (cell / pill / dot+label / bar). Then enact token promotion (green dark
+  `#14874E`, blue dark `#1F6ED5`, red mode-stable) behind the blast-radius gate.
+
+*(Values from the v2 isoluminant sweep, Band A L≈0.55: green #14874E white 4.56, blue #1F6ED5 white 4.94. If
+Dave wants green/blue nudged to red's exact L for a fully even trio, that's a re-cut — not requested.)*
+
+---
+
+## R-D9 — RAG is a salience RAMP, not isoluminant (2026-07-19)
+
+Dave: *"so it's not isoluminance for this, it's actually a ramp."* ⇒ **Status colour is a SALIENCE RAMP —
+loudness descends with severity: red › amber › green › blue.** Isoluminance was the wrong target: it's for
+CATEGORICAL data (no category should dominate — the dataviz series rule). Status has a HIERARCHY, so intensity
+must TRACK it. See [[colour-salience-ramp-vs-isoluminant]].
+
+**Why this emerged:** the v7 isoluminant set left green (salience 30.3) sitting BELOW blue (31.0) — Dave felt
+green was recessive and blue over-loud. Reframing to a ramp fixed it: lift green above blue, drop blue to calm.
+
+**Salience metric** = mean OKLab distance of (fill, text) from the page. Resolved ramp (pending Dave's final
+green/blue pin on v8):
+| severity | value | text | salience |
+|---|---|---|---|
+| breach | `#B92F1E` | white | 56.6 shout |
+| watch | `#F0B13A` | black | 40.9 shout |
+| healthy | `#36A467` | black | 33.1 present |
+| info | `#527EBE` | black | 30.3 calm |
+
+Big step warnings→states (the loud break = "warning vs not"), gentle step healthy→info. Red+amber are the
+carve-outs topping the ramp; green lifted (was too recessive), blue calmed via **lower chroma** (also fixes
+Dave's astigmatic legibility — a saturated blue edge is what blurs). Supersedes v7's flat green/blue.
+
+### OPEN
+- Final green (#36A467 / lighter) + blue (#527EBE / calmest #5D7FB0) pin — v8 eyeball.
+- Red-vs-page 2.89 flag (keep deep, steer keep).
+- §1 manifestation. Then token promotion.
+
+---
+
+## R-D10 — RAG dark set LOCKED (2026-07-19)
+
+Blue nailed to the readable-calm point + green re-seated to hold the ramp (Dave: "let's get blue nailed,
+refocus to components"). Final mode-stable set, all AA, monotonic salience ramp:
+
+| severity | value | text | text-contrast | vs page | salience |
+|---|---|---|---|---|---|
+| breach | `#B92F1E` | white | 6.02 | 2.89 | 56.6 |
+| watch | `#F0B13A` bg / `#C58900` glyph | black | 11.06 | 9.16 | 40.9 |
+| healthy | `#43AD6F` | black | 7.45 | 6.17 | 34.5 |
+| info | `#5F92B9` (cyan-shifted, astigmatism-readable) | black | 6.30 | 5.22 | 32.4 |
+
+- **Red-vs-page 2.89 flag — RESOLVED: keep deep.** White text (6.02) carries the signal; the deep red is the
+  low-bloom, mode-stable value Dave chose. The subtle cell-boundary is acceptable (arguably desirable — calm).
+- Weight uniform Medium 500. Marks icon/label-paired. Red alone in white; green/blue/amber black text.
+- **Blue = cyan-shift `#5F92B9`** (hue ~242°): moved off the short-wavelength blue that astigmatism blurs
+  worst; black text 6.30; stays recognisably info-blue; sits below green (ramp holds).
+- **Green re-seated to `#43AD6F`** (sal 34.5) so healthy stays clearly above info.
+- SUPERSEDES the v2 Band-A green/blue and the v7/v8 intermediate values. Full arc:
+  `_DECISION-HISTORY/2026-07-19-rag-colour-halation-ramp.md`.
+
+### Enactment (deferred — next session, Sonnet-appropriate)
+Promote `#B92F1E` / `#43AD6F` / `#5F92B9` to `tokens/semantic-colour.json` rag/* (mode-stable), rebind behind
+the blast-radius gate. **STILL OPEN: §1 manifestation** (cell / pill / dot+label / bar) — reframed as a
+COMPONENT/pattern task, not a colour one.
+
+---
+
+## R-D11 — CORRECTION: status FILLS are not mode-stable; the salience ramp is GROUND-RELATIVE (2026-07-19)
+
+Dave's screenshot of the Form-B filled cells on the LIGHT page exposed it: the R-D10 set was tuned entirely
+against the dark page (#1A1A1A), and **on white the ramp INVERTS**.
+
+Measured on WHITE:
+| sev | fill | text | fill-vs-white | note |
+|---|---|---|---|---|
+| breach | `#B92F1E` | white | 6.02 | but now the QUIETEST cell — the alarm recedes |
+| watch | `#F0B13A` | black | 1.90 | fill barely separates from the page |
+| healthy | `#43AD6F` | black | 2.82 | washed out (<3) |
+| info | `#5F92B9` | black | 3.33 | weak boundary; cyan-desat blue looks pale on white |
+
+**Salience order flips by ground:** on DARK breach›watch›healthy›info (correct); on WHITE
+info›healthy›watch›breach (backwards — the alarm is quietest, info loudest). So Dave's "red and green aren't
+working, blue especially" = the light fills wash out and the deep-red alarm no longer shouts.
+
+**THE CORRECTION:** **R-D8/R-D10's "mode-stable fills" claim is WRONG for the FILL role.** Salience =
+contrast-with-ground, which inverts between light and dark, so a fill ramp tuned for one ground cannot hold on
+the other. **Status FILLS need PER-MODE values** (light-mode fills must be darker/more saturated to hold their
+boundary against white AND to order the ramp correctly). The **dot+label (glyph-on-page)** form may still be
+near-mode-stable — its salience is the glyph vs page, a smaller object — but the FILLS are not.
+
+**PARKED (both tired, late 2026-07-19):** derive the LIGHT-mode fill set next session (ground-aware ramp:
+tune red/amber/green/blue as fills on WHITE so breach shouts and none wash out), then reconcile the two modes.
+The DARK set (R-D10) stands for dark; light needs its own pass. Colours for the dark page are DONE; the
+light-page fills are the reopened piece.
+
+### Component-build notes carried out of this session (for the Sonnet build)
+- **Filled status cells/tags need more VERTICAL padding** (Dave, 2026-07-19, on the Form-B cells — they read too
+  tight top/bottom). Bump the cell/tag vertical padding when speccing the filled-cell + Status components.
+- Rebind Status-indicator (dot+label) to R-D10 dark tokens; the filled-cell + bar forms await the §1 canon pick.
+- Light-mode fill set is OPEN (R-D11 ground-relative correction).

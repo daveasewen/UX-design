@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RAG colours v8 — the salience ramp · 2026-07-19</title>
+<style>
+  :root{
+    --uf:"Univers Next HSBC","HSBC_MtUnivers_Latin","Helvetica Neue",Arial,sans-serif;
+    --pg:#fff; --tx:#111; --mut:#5b6770; --ln:#e6e8ea; --sf:#f6f7f8; --accent:#db0011;
+    --dpg:#1A1A1A; --dtx:#f2f2f2; --dmut:#9aa4ad; --dln:#2c2c2c;
+  }
+  body.dark{ --pg:#111; --tx:#f2f2f2; --mut:#9aa4ad; --ln:#2c2c2c; --sf:#1a1a1a; }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:var(--uf); color:var(--tx); background:var(--pg); line-height:1.45; max-width:960px; margin:0 auto; padding:0 40px 140px; transition:background .16s,color .16s;}
+  :is(button,a,span,small,b,i,th,td,li,figcaption,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+  .docbar{position:sticky; top:0; z-index:50; display:flex; gap:18px; align-items:center; flex-wrap:wrap; background:var(--pg); border-bottom:1px solid var(--ln); padding:12px 0; margin-bottom:26px;}
+  .docbar button{font:inherit; font-size:12px; padding:7px 12px; border:1px solid var(--tx); background:transparent; color:var(--tx); cursor:pointer;}
+  .docbar .grp{display:flex; gap:8px; align-items:center; font-size:12px; color:var(--mut);}
+  .docbar .rd{font-variant-numeric:tabular-nums; font-weight:500; color:var(--tx); min-width:52px;}
+  .eyebrow{font-size:12px; font-weight:500; color:var(--accent); margin-bottom:6px;}
+  h1{font-size:30px; font-weight:300; line-height:1.12; margin-bottom:10px;}
+  .lede{font-size:15px; color:var(--mut); max-width:76ch; margin-bottom:6px;} .lede b{color:var(--tx); font-weight:500;}
+  .meta{font-size:12px; color:var(--mut); margin-bottom:8px;}
+  h3.section{font-size:11px; font-weight:600; letter-spacing:.06em; border-top:2px solid var(--tx); padding-top:8px; margin:40px 0 8px; text-transform:uppercase;}
+  .note{font-size:13px; max-width:82ch; margin:8px 0 14px;} .note b{font-weight:600;} .muted{color:var(--mut);}
+  code{font-family:ui-monospace,Menlo,monospace; font-size:.85em; background:var(--sf); padding:1px 5px;}
+
+  .ramp{background:var(--dpg); border:1px solid var(--dln); border-radius:6px; padding:20px; margin:14px 0; color:var(--dtx);}
+  .ramp .cap{font-size:11px; color:var(--dmut); text-transform:uppercase; letter-spacing:.06em; margin-bottom:16px;}
+  .rr{display:flex; align-items:center; gap:12px; margin:11px 0;}
+  .rr .cell{min-width:88px; text-align:center; padding:7px 14px; font-size:12.5px; font-weight:500; border-radius:2px;}
+  .rr .bar{height:16px; border-radius:2px; flex:none;}
+  .rr .lab{font-size:11px; color:var(--dmut); font-variant-numeric:tabular-nums; white-space:nowrap;}
+  .rr .sev{font-size:12px; color:var(--dtx); min-width:64px;}
+
+  .tune{background:var(--dpg); border:1px solid var(--dln); border-radius:6px; padding:18px; margin:12px 0; color:var(--dtx);}
+  .tune .cap{font-size:11px; color:var(--dmut); text-transform:uppercase; letter-spacing:.06em; margin-bottom:12px;}
+  .opts{display:flex; gap:12px; flex-wrap:wrap;}
+  .o{border:1px solid var(--dln); border-radius:4px; overflow:hidden; width:150px;}
+  .o.rec{border-color:#7fd6a0; border-width:2px;}
+  .o .sw{height:52px; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:500;}
+  .o .m{padding:7px 9px; font-size:10.5px; color:var(--dmut); font-variant-numeric:tabular-nums; line-height:1.5;}
+  .o .m b{color:var(--dtx);}
+
+  .decision{border:1px solid var(--ln); border-left:3px solid var(--tx); padding:16px 18px; margin:16px 0; max-width:900px; background:var(--sf);}
+  .decision h5{font-size:13px; font-weight:600; margin-bottom:10px;}
+  .rec-box{background:#fff8e6; color:#3a2f00; border:1px solid #f0d78a; padding:11px 14px; font-size:13px; margin:12px 0 4px;}
+  body.dark .rec-box{background:#2a2410; color:#f0e2b0; border-color:#5c4d17;}
+  .call{font-size:13px; font-weight:600; margin-top:10px;}
+  .prov{font-size:11px; color:var(--mut); border-top:1px solid var(--ln); margin-top:40px; padding-top:12px; max-width:900px;}
+</style>
+</head>
+<body>
+  <div class="docbar">
+    <button type="button" id="theme">◐ Light / dark</button>
+    <div class="grp">Responsive width <input type="range" id="vw" min="360" max="960" value="960" step="20"> <span class="rd" id="vwr">full</span></div>
+    <span class="muted" style="font-size:11px">mode-stable · view on dark</span>
+  </div>
+
+  <div class="eyebrow">Apollo · RAG colours · v8 — the salience ramp</div>
+  <h1>RAG is a ramp, not a flat set</h1>
+  <p class="lede">Your reframe: status colour isn't <b>isoluminant</b> — it's a <b>salience ramp</b>. Isoluminance is for
+     <i>categorical</i> data (no category should dominate). Status has a <b>hierarchy</b> — breach must out-shout info — so
+     loudness should <b>descend with severity</b>: red › amber › green › blue. Below, the ramp made explicit, with green
+     lifted to sit above blue and blue calmed (which also fixes its astigmatic legibility).</p>
+  <p class="meta">Review v8 · 2026-07-19 · supersedes v7's flat isoluminant green/blue · salience = cell-vs-page loudness (OKLab) · all AA</p>
+
+  <div class="ramp">
+    <div class="cap">The ramp — loudness descends with severity (bar = salience vs #1A1A1A)</div>
+    <div class="rr"><span class="sev">Breach</span><span class="cell" style="background:#B92F1E;color:#fff">Breach</span><span class="bar" style="width:57%;background:#B92F1E"></span><span class="lab">56.6 · shout</span></div>
+    <div class="rr"><span class="sev">Watch</span><span class="cell" style="background:#F0B13A;color:#000">Watch</span><span class="bar" style="width:41%;background:#F0B13A"></span><span class="lab">40.9 · shout</span></div>
+    <div class="rr"><span class="sev">Healthy</span><span class="cell" style="background:#36A467;color:#000">Healthy</span><span class="bar" style="width:33%;background:#36A467"></span><span class="lab">33.1 · present</span></div>
+    <div class="rr"><span class="sev">Info</span><span class="cell" style="background:#527EBE;color:#000">Info</span><span class="bar" style="width:30%;background:#527EBE"></span><span class="lab">30.3 · calm</span></div>
+  </div>
+  <p class="note muted" style="font-size:12px">Big step from the warnings (red/amber) down to the states (green/blue), then a gentle
+     step healthy→info — which mirrors the semantics: the loud break is "warning vs not". Red &amp; amber are the carve-outs and
+     top the ramp; green &amp; blue are tuned to sit below, in order.</p>
+
+  <h3 class="section">Tune green — "pop more" (it was sitting below blue)</h3>
+  <div class="tune">
+    <div class="cap">green · black text · on #1A1A1A</div>
+    <div class="opts">
+      <div class="o"><div class="sw" style="background:#3E9060;color:#000">Healthy</div><div class="m"><b>#3E9060</b> v7<br>sal 30.3 · below blue</div></div>
+      <div class="o rec"><div class="sw" style="background:#36A467;color:#000">Healthy</div><div class="m"><b>#36A467</b> ★ pop<br>sal 33.1 · blk 6.66 · vivid+lighter</div></div>
+      <div class="o"><div class="sw" style="background:#4AA16D;color:#000">Healthy</div><div class="m"><b>#4AA16D</b> lighter<br>sal 32.8 · blk 6.61</div></div>
+    </div>
+  </div>
+
+  <h3 class="section">Tune blue — keep calm, fix readability (lower chroma = stabler edge)</h3>
+  <div class="tune">
+    <div class="cap">blue · black text · on #1A1A1A · chroma pulled back for your astigmatism</div>
+    <div class="opts">
+      <div class="o"><div class="sw" style="background:#3D7CD5;color:#000">Info</div><div class="m"><b>#3D7CD5</b> v7<br>sal 31.0 · C0.15 · saturated</div></div>
+      <div class="o rec"><div class="sw" style="background:#527EBE;color:#000">Info</div><div class="m"><b>#527EBE</b> ★ calmed<br>sal 30.3 · C0.11 · still clearly blue</div></div>
+      <div class="o"><div class="sw" style="background:#5D7FB0;color:#000">Info</div><div class="m"><b>#5D7FB0</b> calmest<br>sal 30.0 · C0.085 · greyer/slate</div></div>
+    </div>
+  </div>
+
+  <div class="decision">
+    <h5>The resolved ramp</h5>
+    <div class="rec-box"><b>red #B92F1E (white) › amber #F0B13A (black) › green #36A467 (black) › blue #527EBE (black).</b>
+       Monotonic salience 56.6 › 40.9 › 33.1 › 30.3. Red &amp; amber shout (warnings), green present, blue calm + legible.
+       Weight 500, marks icon/label-paired, mode-stable, all AA.</div>
+    <p class="call">Confirm green (#36A467 or lighter) and blue (#527EBE or calmest #5D7FB0) — and the red-vs-page 2.89 flag from
+       v7 (keep deep, I steer keep). Then the colour set is fully ruled → tokens.</p>
+  </div>
+
+  <div class="prov">
+    <b>Provenance.</b> The RAMP principle (status = salience ramp; categorical = isoluminant) — Dave 2026-07-19. Salience =
+    mean OKLab distance of (fill, text) from the page. Red #B92F1E (R-D7), amber (R-D3) fixed at the top; green/blue tuned on
+    their hues to descend in order while holding black-text ≥5.0 (1.4.3) and ≥3:1 vs page (1.4.11). Supersedes v7 isoluminant
+    green/blue; re-cuts light-mode green/blue (mode-stable). Nothing promoted yet; awaits this confirm + §1, then the gate.
+  </div>
+
+  <script>
+    var body=document.body;
+    document.getElementById('theme').addEventListener('click',function(){ body.classList.toggle('dark'); });
+    var vw=document.getElementById('vw'), vwr=document.getElementById('vwr');
+    vw.addEventListener('input',function(){ var v=+vw.value; if(v>=960){body.style.maxWidth='';vwr.textContent='full';} else {body.style.maxWidth=v+'px';vwr.textContent=v+'px';} });
+    body.classList.add('dark');
+  </script>
+</body>
+</html>
