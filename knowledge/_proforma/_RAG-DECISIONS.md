@@ -249,5 +249,25 @@ time (incumbent keys never name-matched "background") — the gate seeing amber 
 all is new coverage, and it bit correctly both times.
 
 ### Still open after R-D4
-Dark-mode green fix · dark-mode red/blue text-glyph lift · the `dv-017` contradiction · the amber
-gate (rules 1+2) · component rebinding to the new role tokens (AFTER the blast-radius gate).
+Dark-mode green fix · dark-mode red/blue text-glyph lift · ~~the `dv-017` contradiction~~ (**RULED R-D5**) ·
+the amber gate (rules 1+2) · component rebinding to the new role tokens (AFTER the blast-radius gate).
+
+---
+
+## R-D5 — the `dv-017`(a) contradiction, RESOLVED (2026-07-19)
+
+**Dave, on `reviews/DV017-DELTA-VS-RAG-2026-07-19-v1`: *"good for me."*** The rule listed "RAG-style cells"
+among the red/green **delta indicators**, but RAG includes amber and R-D3 rule 2 bars amber as a directional
+colour — a palette the rule both permitted and excluded.
+
+**RULED — split the clause (wording only, no values change):**
+- **Directional deltas** (gain/loss) are **red/green ONLY** — amber has no direction.
+- **RAG status** (health / watch / within-tolerance) is a **SEPARATE concern**, governed by R-D3 (red/amber/green
+  backgrounds, black text where ruled). Its **component manifestation is specified separately** — NOT by the delta clause.
+
+Enacted in `knowledge/guidelines/data-visualisation.md` `{#dv-017}`(a); rules-index regenerates on build.
+
+⚠️ **This is wording only.** The *actual* RAG manifestation (cell / pill / dot+label / bar) and the dark-mode
+opens (green has no ruled dark value; dark red/blue fail 4.5 as glyph-on-text) are **NOT settled here** — they
+are the dedicated **RAG-colours review**, which Dave ruled the next deliverable (2026-07-19: *"lets do this next"*).
+Home: `_FUTURE-STATE`. This was the source of Dave's earlier confusion (the status-cell example ≠ real manifestation).

@@ -7,18 +7,17 @@
 
 ## ⬛ DO THESE TWO FIRST (10 seconds)
 
-> **RENAME THIS CHAT → `The button-label audit that became a gate`** *(it opened as the ds-005
-> button-label clip audit — a Sonnet-scoped sweep — and the buttons came back CLEAN: `.btn`/`.cta`/`.qbtn`
-> centre their labels and never truncate, so no clip (null result). But the sweep surfaced the real
-> instances elsewhere: 7 truncating labels (Tranche-2/3/4/7/8 + Masthead `.dd-title`/`.navitem-tx`) that
-> DO clip descenders (render-confirmed: "Savings"→"Savin*q*s"). You ruled against a case-by-case patch AND
-> against blanket-CSS — "do it right": a blocking descender-clip GATE, keeping cap-alphabetic as the
-> default. ds-005 GATED + CLOSED; commit `3af1696`.)*
+> **RENAME THIS CHAT → `Small picks, and an edit-mode μX with legs`** *(opened as "clearing the
+> small-picks desk" — and the picks got cleared: §1 `.num` 24px rung RULED + enacted (T-D14), §2 dv-017
+> got a visual. But it grew a bigger thing: Dave's in-context **edit-mode "μX" concept** — when you select
+> a component its own controls dock beside it (no sidebar), prototyped v1→v3, and registered in
+> `_FUTURE-STATE` as universal-to-all-components, meta-derived, and TIERED to the strict↔creative register.
+> Plus the review workflow got three inscribed conventions.)*
 
-> **TITLE TODAY'S CHAT →** `Clearing the small-picks desk`
-> Next session = the §2 small picks now ds-005 is closed (`.num` 24px rung · `{#dv-017}`(a) ·
-> Tag colour/RAG) + the non-`/1` / DEF-006 batch. **Sonnet** for the batch; **Opus** if a ruling
-> surfaces. Per §C.
+> **TITLE TODAY'S CHAT →** `Back to the components`
+> Dave wants back on components. Two quick things wait first (§C): **confirm the §2 dv-017 wording** (the
+> visual is built — `reviews/DV017-DELTA-VS-RAG-2026-07-19-v1`), and the queued **RAG-colours review**.
+> **Sonnet** for component build; **Opus** if a ruling surfaces. Per §C.
 
 *Standing practice: every handoff carries both names — retrospective + forward. Step 4b in
 `_RUNBOOK-capture-ritual.md`.*
@@ -204,66 +203,69 @@ Chrome needs ~17 libs via `apt-get download` → `dpkg -x` → `LD_LIBRARY_PATH`
 
 ---
 
-# §B · THIS SESSION (2026-07-19 late, "The button-label audit that became a gate")
+# §B · THIS SESSION (2026-07-19 later, "Small picks, and an edit-mode μX with legs")
 
-**Opened as the ds-005 follow-on — a Sonnet-scoped sweep to audit `.btn`/`.cta`/`.qbtn` for the descender
-clip. The buttons came back CLEAN. But the sweep found the clip live elsewhere, and your ruling turned a
-recurring one-line patch into a permanent gate.**
+**Opened to clear the §C small-picks desk. Cleared §1, built a §2 visual — and grew Dave's in-context
+edit-mode "μX" concept from a one-line control idea into a registered product direction.**
 
-## What LANDED (one commit, `3af1696`)
+## What LANDED (build GREEN, 34 steps)
 
-- **Buttons CLEAN — null result.** `.btn`/`.cta`/`.qbtn` centre their labels (`justify-content:center`,
-  no `overflow:hidden` on any label) → they never truncate → no clip. ds-005's "next-most-likely" suspects
-  don't carry the condition. The sheet returned null, as a good instrument should.
-- **The real debt was 7 truncating labels — render-confirmed** (real HSBC cut) that `cap alphabetic` +
-  `overflow:hidden` clips descenders: "Savings"→"Savin*q*s". Instances: Masthead `.dd-title` (live) +
-  `.navitem-tx` (defined-but-unused here — nav labels render as `.menulink`, which don't truncate — fixed
-  defensively), plus `.dp-title`/`.uz-name` (T2), `.sel-value`/`.sel-opt-lbl` (T3), `.crumb-current` (T4),
-  `.navitem-tx` (T7/T8). List-items + canon were already safe.
-- **🔴→✅ New blocking gate `_validate_descender_clip.py` (step 27/34).** Every `text-overflow:ellipsis`
-  label must carry `text-box-edge:text text` (or `overflow:visible`). High-precision — keys off `ellipsis`,
-  so containers + sr-only patterns are ignored. Bite-tested both ways; selftest covers same-rule /
-  comma-group / overflow-visible overrides + container/sr-only exclusion. **All 7 fixed, ZERO waivers.**
-- **Provenance against false-fixing (your explicit ask).** Inline `/* ds-005 */` comments · ds-005
-  GATED+CLOSED in the ledger · gate indexed in consult · and a "these overrides ARE the fix, do not remove"
-  note in the gate docstring **and** the red-build message. A cold session can't quietly revert them.
-
-## The ruling (yours, this session)
-
-- **"do it right — use your suggestion": GATE the condition, don't blanket the CSS.** Blanket `text text`
-  would have undone cap-alphabetic alignment everywhere; the gate enforces the rule only where a label
-  truncates, keeping cap-alphabetic as the default. Logged as the ds-005 decision-tree extension.
+- **§1 `.num` 24px rung — RULED + ENACTED (T-D14).** New composite **`.t-cm-figure-3` (24px/500)** added to
+  `canon/type.css`; the Countdown numeral is now bound to it — the **FIRST composite bound in MARKUP**, via a
+  **class on the element**. Forced to a class (not the T-D9 selector-list) because bare `.num` collides with
+  `.cn-table td.num` (table cells would jump to 24px). **Zero-visual-change** (500 = the shipped weight).
+  **ASSERT-003 retired** — its `clears_when` ("a binding mechanism is ruled + first composite bound in
+  markup") was met, and the assertion gate STOPPED the build the instant "0 bound" flipped, exactly as
+  designed. Ledger `_TYPE-DECISIONS` **T-D14**. ⚠️ The **bulk** binding mechanism for the other ~338 is
+  still OPEN — this was one collision-forced case, not a general ruling.
+- **§2 dv-017 — VISUAL built, awaiting your wording confirm.** `reviews/DV017-DELTA-VS-RAG-2026-07-19-v1`.
+  Directional deltas (real arrow assets, both types, red/green ONLY) vs RAG status hues at the RULED values.
+  It confirms your amber recollection: bg **#F0B13A** (black text, the centre of your four candidates) vs glyph
+  **#C58900** — amber is the one hue whose two roles diverge. Recommendation = split the clause. **NOT enacted
+  — you asked to see it first.**
+- **μX in-context edit-mode prototype (v1→v3).** Select a component → its controls dock beside it, no sidebar;
+  **two grab bars** (move component in a DOM stack · move controls); **arrow keys** reorder; controls float +
+  anchor (v3 fixed a v2 overlap where they sat on the component). Registered in `_FUTURE-STATE`: **universal**
+  to all components · control set **derived from each meta** · **TIERED to the strict↔creative register**
+  (prompt-only at the creative extreme → more structured controls toward strict; direction CONFIRMED by Dave).
+- **Three review conventions inscribed** (memory + `_REVIEW-SIGNOFF.md`): specimens show the component ALIVE +
+  full variant/state spread from its meta · every review carries a light/dark toggle + responsive slider ·
+  **version `-vN`, never overwrite** (recovered an overwritten v1 from its REVIEW copy).
 
 ## What I got wrong / watch
 
-- My first instinct was apply-and-commit; you redirected twice — first to reflect the ellipsis+icon+
-  descender trilemma back before editing (right), then to gate rather than patch (righter). **Lesson: when
-  a fix recurs across files, the durable move is the gate, not the Nth patch.**
-- `.navitem-tx` is defined-but-unused in the demo files — fixed defensively; flag if the side-nav variant
-  gets instantiated for real.
+- Presented the first small-picks doc as PLAIN html — skipped the `_make_review.py` overlay my OWN memory
+  already mandated. Dave corrected it; the overlay is non-optional now.
+- v2 μX put the inspector INSIDE the component's 380px stack slot → it overflowed onto the component. v3
+  floats + anchors it (Re-dock snaps it back).
+- Overwrote the small-picks doc rev1→rev2 *before* the "version this" rule landed; rev1 was unrecoverable
+  (its review copy had already been regenerated). Versioned from here.
 
 ---
 
 # §C · QUEUE
 
-## 1. Small picks — desk-clear — **next session** (yours, no analysis needed)
-| what | detail |
-|---|---|
-| **`.num` 24px** | add a Component rung at 24, or snap to 20/32? |
-| **`{#dv-017}`(a)** | the rule permits a palette it also excludes |
-| **Tag colour/RAG** | deferred by you — layer status colour onto the atom when ready. |
+## 1. Confirm §2 dv-017 wording — quick, yours
+Visual is built (`reviews/DV017-DELTA-VS-RAG-2026-07-19-v1`). Say yes → I patch `data-visualisation.md`,
+rebuild the rules-index, log the R-D ruling. Manifestation stays for the RAG review.
 
-## 2. The non-`/1` batch (Sonnet)
-61 shorthands in snippets + the tranche bulk; things move; DEF-006 stays unwired until it lands.
+## 2. RAG-colours review — the next real deliverable (Dave's ask: "settle it once and for all")
+Ruled values exist (R-D1/R-D3/R-D4) but three things are OPEN: dark-mode **green** has no ruled value
+(incumbent #1AA05C fails white text 3.37), dark red/blue as glyph-on-text fail 4.5, and the real
+**manifestation** (cell / pill / dot / bar). Build a dedicated review. Home: `_FUTURE-STATE`.
 
-## 3. Consult protocol — bed it in
-Use it at the top of every design task **including the mechanics, not just the decision**. Paste receipts;
-grow the lexicon per miss. Promote receipt-check advisory→blocking once trusted.
+## 3. Tag colour/RAG — parked, blocked by #2
+Unblocks the moment RAG lands, then one gated pass on `Tags.reference` using the R-D3 status tokens.
 
-## 4. 🕓 Waiting on brand — the Latin webfont pack
-Unchanged: files land in `knowledge/assets/fonts/` + Ultralight scope confirmed. Not yours to chase.
+## 4. Multi-size countdown + the BULK binding mechanism
+20/24/32 numeral binding lands when the timer gains size variants (ties to the μX size control). The general
+type-binding mechanism for ~338 elements remains unruled — T-D9 / T-D11 / **T-D14**.
 
-> **COMMIT STATE:** work committed in-sandbox at `3af1696` (the gate + 7 fixes); the ritual docs
-> (`_LIVE-STATE`, `GOOD-MORNING`, `_DS-IMPROVEMENTS`, memory) commit next. Locks clear; **you push via
-> GitHub Desktop**. Build green, **34 steps**; DEF-006 unwired by design. **Next session model: Sonnet**
-> (small-picks desk-clear). Session record: `reviews/` + `_DS-IMPROVEMENTS` ds-005 + this handoff.
+## 5. 🕓 Waiting on brand — the Latin webfont pack (not yours to chase)
+
+> **COMMIT STATE:** §1 code (`type.css`, `Countdown-timer.reference.html`, regenerated `canon.css`) +
+> assertion retirement (`_assertions.json`, `_validate_assertions.py`) + all ledgers/state/memory + the new
+> review docs are committed in-sandbox at **`<hash — see chat>`**; ritual docs commit with them. Build green,
+> **34 steps**. Locks clear; **you push via GitHub Desktop**. **Next session model: Sonnet** (component build);
+> **Opus** if a ruling surfaces. Session record: `reviews/SMALL-PICKS-DESK-*` · `reviews/EDIT-MODE-UX-PROTOTYPE-*`
+> · `reviews/DV017-DELTA-VS-RAG-*` · `_TYPE-DECISIONS` T-D14 · `_FUTURE-STATE` · this handoff.

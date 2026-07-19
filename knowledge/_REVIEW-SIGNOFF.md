@@ -11,6 +11,10 @@ Durable record of the component-by-component interaction review (gallery frontie
 
 Issue types we're hunting: **missing interaction decisions** (motion / hover / pressed / focus / open-close), **incomplete / missing** (states, variants, dropped sub-parts), **finesse** (spacing, hierarchy, proportion, colour nuance).
 
+**Review specimens show the component ALIVE + its full variant/state spread (Dave, 2026-07-19).** A review doc that features a component must present it as a *live, working* example and show *every variant and state it carries* — never one frozen instance. The spread is not invented: **read it from the component's meta** (`components/<name>.meta.json` — `props` / `variants` / sizes / documented states), then add theme (light+dark) and motion states (normal / active / reduced-motion). A pick (type size, colour, spacing) can only be judged across the component's real range. A variant that plainly exists but is absent from the meta is itself a finding. Then obey the standard review-doc rule: build clean in `reviews/`, inject the overlay with `_make_review.py`, present the `.REVIEW.html`.
+
+**Template controls — every review carries a light/dark toggle + a responsive-width slider (Dave, 2026-07-19).** The spread shows the variants; the controls let Dave stress the component across theme and viewport. Durable target: bake both into `_review/_review-overlay.html` so every generated review inherits them (tracked in `_FUTURE-STATE`); until then add them to each doc's chrome by hand.
+
 Legend: ⬜ pending · 🔧 in fix · ✅ signed off (locked)
 
 ---

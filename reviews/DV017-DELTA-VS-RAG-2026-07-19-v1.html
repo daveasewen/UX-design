@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dv-017 — directional deltas vs RAG status · 2026-07-19</title>
+<style>
+  :root{
+    --uf:"Univers Next HSBC","HSBC_MtUnivers_Latin","Helvetica Neue",Arial,sans-serif;
+    --pg:#fff; --tx:#111; --mut:#5b6770; --ln:#e6e8ea; --sf:#f6f7f8; --accent:#db0011;
+    /* ruled RAG — LIGHT (R-D1/R-D3/R-D4) */
+    --red-bg:#B92F1E; --red-gl:#B92F1E;
+    --amber-bg:#F0B13A; --amber-gl:#C58900;
+    --green-bg:#2B7E4F; --green-gl:#2B7E4F;
+    --blue-bg:#306EC6; --blue-gl:#306EC6;
+  }
+  body.dark{
+    --pg:#111; --tx:#f2f2f2; --mut:#9aa4ad; --ln:#2c2c2c; --sf:#1a1a1a;
+    --red-bg:#CC4333; --red-gl:#CC4333;          /* R-D1 dark */
+    --amber-bg:#F0B13A; --amber-gl:#C58900;        /* mode-stable */
+    --green-bg:#2B7E4F; --green-gl:#2B7E4F;         /* dark OPEN — shown at light value */
+    --blue-bg:#2674DC; --blue-gl:#2674DC;           /* R-D1 dark */
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:var(--uf); color:var(--tx); background:var(--pg); line-height:1.45; max-width:960px; margin:0 auto; padding:0 40px 120px; transition:background .16s,color .16s;}
+  :is(button,a,span,small,b,i,th,td,li,figcaption,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+  .docbar{position:sticky; top:0; z-index:50; display:flex; gap:18px; align-items:center; flex-wrap:wrap; background:var(--pg); border-bottom:1px solid var(--ln); padding:12px 0; margin-bottom:30px;}
+  .docbar button{font:inherit; font-size:12px; padding:7px 12px; border:1px solid var(--tx); background:transparent; color:var(--tx); cursor:pointer;}
+  .docbar .grp{display:flex; gap:8px; align-items:center; font-size:12px; color:var(--mut);}
+  .docbar .rd{font-variant-numeric:tabular-nums; font-weight:600; color:var(--tx); min-width:52px;}
+  .eyebrow{font-size:12px; font-weight:500; color:var(--accent); margin-bottom:6px;}
+  h1{font-size:30px; font-weight:300; line-height:1.12; margin-bottom:10px;}
+  .lede{font-size:15px; color:var(--mut); max-width:72ch; margin-bottom:6px;}
+  .meta{font-size:12px; color:var(--mut); margin-bottom:8px;}
+  h3.section{font-size:11px; font-weight:600; letter-spacing:.06em; border-top:2px solid var(--tx); padding-top:8px; margin:40px 0 8px; text-transform:uppercase;}
+  .note{font-size:13px; max-width:80ch; margin:8px 0 14px;} .note b{font-weight:600;} .muted{color:var(--mut);}
+  code{font-family:ui-monospace,Menlo,monospace; font-size:.85em; background:var(--sf); padding:1px 5px;}
+
+  .row{display:flex; gap:14px; flex-wrap:wrap; align-items:center; margin:10px 0;}
+  .delta{display:inline-flex; align-items:center; gap:6px; font-size:16px; font-weight:500; font-variant-numeric:tabular-nums;}
+  .delta svg{width:.8em; height:.8em;}
+  .delta.up{color:var(--green-gl);} .delta.down{color:var(--red-gl);}
+
+  /* hue cards */
+  .cards{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; max-width:820px; margin:6px 0 4px;}
+  .card{border:1px solid var(--ln); border-radius:4px; overflow:hidden;}
+  .card .fill{height:56px; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600;}
+  .card .fr{background:var(--red-bg); color:#fff;} .card .fa{background:var(--amber-bg); color:#000;}
+  .card .fg{background:var(--green-bg); color:#fff;} .card .fb{background:var(--blue-bg); color:#fff;}
+  .card .meta2{padding:8px 10px; font-size:11px; color:var(--mut);}
+  .card .meta2 b{color:var(--tx); font-variant-numeric:tabular-nums;}
+  .glyphline{display:flex; align-items:center; gap:6px; margin-top:6px;}
+  .g-swatch{width:14px; height:14px; border-radius:2px; border:1px solid var(--ln);}
+  .amberflag{background:#fff8e6; color:#3a2f00; border:1px solid #f0d78a; padding:11px 14px; font-size:12.5px; max-width:820px; margin:12px 0;}
+  body.dark .amberflag{background:#2a2410; color:#f0e2b0; border-color:#5c4d17;}
+  .openflag{background:#fdecec; color:#5a1512; border:1px solid #f2b8b8; padding:11px 14px; font-size:12.5px; max-width:820px; margin:12px 0;}
+  body.dark .openflag{background:#3a1512; color:#f2b8b8; border-color:#7a2a25;}
+
+  .decision{border:1px solid var(--ln); border-left:3px solid var(--tx); padding:16px 18px; margin:14px 0; max-width:840px; background:var(--sf);}
+  .decision h5{font-size:13px; font-weight:600; margin-bottom:8px;}
+  .opt{font-size:13px; margin:5px 0;}
+  .rec{background:#fff8e6; color:#3a2f00; border:1px solid #f0d78a; padding:11px 14px; font-size:13px; margin:10px 0 4px;}
+  body.dark .rec{background:#2a2410; color:#f0e2b0; border-color:#5c4d17;}
+  .call{font-size:13px; font-weight:600; margin-top:8px;}
+</style>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="ar-up" viewBox="0 0 18 18"><path d="M16 12L2 12L9 5L16 12Z" fill="currentColor"/></symbol>
+    <symbol id="ar-down" viewBox="0 0 18 18"><path d="M2 6H16L9 13L2 6Z" fill="currentColor"/></symbol>
+    <symbol id="ar-up-low" viewBox="0 0 18 7"><path d="M0 7H18L9 0L0 7Z" fill="currentColor"/></symbol>
+    <symbol id="ar-down-low" viewBox="0 0 18 7"><path d="M0 0H18L9 7L0 0Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <div class="docbar">
+    <button type="button" id="theme">◐ Light / dark</button>
+    <div class="grp">Responsive width <input type="range" id="vw" min="360" max="960" value="960" step="20"> <span class="rd" id="vwr">full</span></div>
+    <span class="muted" style="font-size:11px">template controls — light/dark + responsive</span>
+  </div>
+
+  <div class="eyebrow">Apollo · dv-017 · the visual you asked for</div>
+  <h1>Directional deltas vs RAG status</h1>
+  <p class="lede">The dv-017 question is <b>only about wording</b>: should "RAG-style cells" come out of the red/green
+     <i>delta-indicator</i> list? These are two different things. Colours below are the <b>ruled</b> values — and they
+     confirm the amber split you flagged.</p>
+  <p class="meta">Visual · 2026-07-19 · ruled RAG tokens (R-D1/R-D3/R-D4) · toggle theme to see dark values</p>
+
+  <h3 class="section">A · Directional deltas — red / green ONLY (amber has no direction)</h3>
+  <p class="note">Gain / loss. Sign + arrow mandatory (dv-011). Real arrow assets, both types:</p>
+  <div class="row">
+    <span class="delta up"><svg><use href="#ar-up"/></svg>+2.4%</span>
+    <span class="delta down"><svg><use href="#ar-down"/></svg>−1.1%</span>
+    <span class="muted" style="font-size:12px">type A · <code>arrow-up</code> / <code>arrow-down</code> (full)</span>
+  </div>
+  <div class="row">
+    <span class="delta up"><svg><use href="#ar-up-low"/></svg>+2.4%</span>
+    <span class="delta down"><svg><use href="#ar-down-low"/></svg>−1.1%</span>
+    <span class="muted" style="font-size:12px">type B · <code>arrow-*-low</code> (flat)</span>
+  </div>
+  <p class="note muted" style="font-size:12px">There is no amber arrow — a delta is a <i>direction</i>, and amber has none. (Delta colours shown at <code>rag/*-glyph</code>; dedicated <code>data/delta-*</code> may differ — RAG review.)</p>
+
+  <h3 class="section">B · RAG status hues — the ruled values (your check)</h3>
+  <p class="note">Status, not direction: health / watch / tolerance. <b>Green <code>#2B7E4F</code></b> and
+     <b>blue <code>#306EC6</code></b> are exactly as you remembered (matted 15%, R-D4). And yes —</p>
+  <div class="cards">
+    <div class="card">
+      <div class="fill fr">Breach · white text</div>
+      <div class="meta2">error · bg <b id="v-red">#B92F1E</b><div class="glyphline"><span class="g-swatch" style="background:var(--red-gl)"></span> glyph = same value</div></div>
+    </div>
+    <div class="card">
+      <div class="fill fa">Watch · black text</div>
+      <div class="meta2">warning · bg <b>#F0B13A</b><div class="glyphline"><span class="g-swatch" style="background:var(--amber-gl)"></span> glyph = <b>#C58900</b> — DIFFERENT</div></div>
+    </div>
+    <div class="card">
+      <div class="fill fg">Healthy · white text</div>
+      <div class="meta2">success · bg <b id="v-green">#2B7E4F</b><div class="glyphline"><span class="g-swatch" style="background:var(--green-gl)"></span> glyph = same value</div></div>
+    </div>
+    <div class="card">
+      <div class="fill fb">Info · white text</div>
+      <div class="meta2">information · bg <b id="v-blue">#306EC6</b><div class="glyphline"><span class="g-swatch" style="background:var(--blue-gl)"></span> glyph = same value</div></div>
+    </div>
+  </div>
+  <div class="amberflag"><b>Amber is the one hue whose two roles diverge — and you're right.</b> Background
+     <b>#F0B13A</b> (always black text, 9.16 ink) is the centre of your four candidates
+     (F7B326 / EFB64F / F0AD19 / E8B048). But it's only ~1.9:1 on white, so it fails as a standalone glyph/mark
+     (needs ≥3:1, WCAG 1.4.11) — hence the darker glyph <b>#C58900</b> (3.02 on white · 6.25 on #111). Red / green /
+     blue each use one value for both roles; only amber splits. <i>"For amber we only have the belt."</i></div>
+  <div class="openflag"><b>Still OPEN (→ the separate RAG review):</b> dark-mode <b>green</b> has no ruled value (incumbent
+     #1AA05C fails white text 3.37 — shown here at the light value); dark red/blue as glyph-on-text fail 4.5; and the real
+     <b>manifestation</b> (cell / pill / dot / bar) isn't decided. This sheet shows the <i>colours</i>, not the final manifestation.</p></div>
+
+  <h3 class="section">C · The decision — wording only</h3>
+  <div class="decision">
+    <h5>Split the clause in {#dv-017}(a)</h5>
+    <p class="opt"><b>Before:</b> "delta INDICATORS (text, arrows, spark end-values, <b>RAG-style cells</b>) may carry red/green…"</p>
+    <p class="opt"><b>After:</b> "delta INDICATORS (text, arrows, spark end-values) may carry red/green… <b>Directional deltas are red/green ONLY — amber has no direction (R-D3 rule 2). RAG status is a separate concern, governed by R-D3; its manifestation is specified separately.</b>"</p>
+    <div class="rec"><b>Recommendation: adopt the split.</b> No values change — it just stops the rule from listing an amber-inclusive form (RAG) under a red/green-only heading.</div>
+    <p class="call">Your call: confirm the wording. (RAG manifestation + the dark opens = the separate review.)</p>
+  </div>
+
+  <script>
+    var body=document.body;
+    document.getElementById('theme').addEventListener('click',function(){
+      body.classList.toggle('dark');
+      var d=body.classList.contains('dark');
+      document.getElementById('v-red').textContent=d?'#CC4333':'#B92F1E';
+      document.getElementById('v-blue').textContent=d?'#2674DC':'#306EC6';
+      document.getElementById('v-green').textContent=d?'#2B7E4F (dark OPEN)':'#2B7E4F';
+    });
+    var vw=document.getElementById('vw'), vwr=document.getElementById('vwr');
+    vw.addEventListener('input',function(){ var v=+vw.value; if(v>=960){body.style.maxWidth='';vwr.textContent='full';} else {body.style.maxWidth=v+'px';vwr.textContent=v+'px';} });
+  </script>
+</body>
+</html>

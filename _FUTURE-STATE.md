@@ -55,6 +55,59 @@ status (`idea` / `parked` / `resurrection-candidate` / `graduated→LIVE`).
 - **Review-overlay upgrades as product** — row-identity capture (the method debt), image paste,
   dictation, export. *Feeds:* Craft phase — the overlay IS the product surface. *Status:* idea,
   method-debt half already logged in `_LIVE-STATE` OPEN.
+  - **NEW (Dave, 2026-07-19): bake the template controls into the overlay** — every review must carry a
+    **light/dark toggle** and a **responsive-width slider** by default. Applied by hand in
+    `reviews/SMALL-PICKS-DESK-2026-07-19.html` this session; the durable fix is to add both to
+    `_review/_review-overlay.html` so `_make_review.py` injects them everywhere (theme toggle needs a
+    body-level `.dark`/`data-theme` convention docs opt into). *Status:* idea → do before the next batch of reviews.
+- **Countdown numeral snap-slider prototype** — a continuous size input (dial 48–200px) that snaps the
+  dial to the **4px grid** and the numeral to the nearest **type-ramp rung** (16/20/24/32/40/52). Working
+  prototype in `reviews/SMALL-PICKS-DESK-2026-07-19.html` §1 (comment 3). *Why held:* Dave "might be
+  interesting to prototype" — generalises to a **responsive-on-grid component** pattern (size once, stay
+  on-grid + on-scale at every viewport). *Feeds:* Create/Craft — responsive token binding. *Status:* prototype built, idea for generalisation.
+- **RAG colours — settle once and for all (dedicated review)** — Dave 2026-07-19: "we need to settle the
+  RAG colours once and for all… a separate review." Ruled values exist (R-D1/R-D3/R-D4 role pairs) but
+  three things are OPEN: dark-mode **green** has no ruled value (incumbent #1AA05C fails white text 3.37),
+  dark **red/blue as glyph-on-text** fail 4.5 (pass 1.4.11 icons), and the **manifestation** (cell / pill /
+  dot / bar) is undecided — the source of the dv-017 confusion. *Feeds:* the RAG token promotion +
+  component rebind (after the blast-radius gate). *Source:* `knowledge/_proforma/_RAG-DECISIONS.md`
+  R-D1..R-D4 "Still open". *Status:* queued — next review deliverable.
+- **In-context edit-mode controls (Dave's "μX" concept)** — the harness edit mode (post-generation) surfaces a
+  component's controls **proximate to the component itself**, as a floating overlay docked to the selected
+  component's state — **only** the controls that component exposes, **no sidebar unless absolutely needed**. Dave
+  2026-07-19: *"when I select the component very specific controls are surfaced under the actual component selected
+  state… the parameters you can change are proximate to the component you are editing."* The panel carries a **grab
+  bar** (drag to reposition — the checkered strip in his sketch). This is the real home of the **snap-slider** idea
+  above (the review-doc slider was a proxy) and of every per-component control set. *Feeds:* **Apollo Create/Craft —
+  the harness interface** (the eventual front-end, cf. iteration-machine mock). *Source:* Dave's sketch +
+  message 2026-07-19; prototype at `reviews/EDIT-MODE-UX-PROTOTYPE-2026-07-19-v2.html`. *Status:* prototype built, develop later.
+  - **rev 2 (Dave, 2026-07-19): the component is movable too — TWO grab bars.** One grab bar moves the component,
+    one moves its controls. Crucially: **no absolute positioning — movement snaps to DOM containers** (the component
+    reorders between slots in a layout stack), and **arrow keys ↑ ↓ move it in the stack**. The inspector snaps to a
+    dock (below / beside the component) and travels with it. Dave: *"I'd like to be able to move the component too…
+    No absolute positioning it should snap to the doms containers and we could use the arrow keys to move it in a
+    stack."* Kinship with the **Reorder** component ([[portfolio-interactions-invite]]) — the stack-reorder mechanics transfer.
+  - **UNIVERSAL (Dave, 2026-07-19): every component gets this kind of control set** — not just the countdown. In edit
+    mode, selecting *any* component surfaces its own proximate controls + the two grab bars (move component in the
+    stack · move the controls). The per-component control set is **derived from the component's meta** — its `props` /
+    `variants` / sizes ARE the controls (e.g. Button → variant/size/label/icon/state; Tag → variant/size/dismissible;
+    Countdown → style/size/max-time). So `components/<name>.meta.json` becomes the source of truth for the edit-mode
+    inspector, the same way it already drives the review-spec spread ([[feedback-review-live-variant-spread]]). The
+    shared machinery (grab bars, stack reorder, arrow-key move, dock-snap, 4px/ramp snapping) is component-agnostic;
+    only the control list changes per meta. *Status:* principle set — build the generic inspector against the meta when the harness UI is specced.
+  - **TIERED to the strict↔creative register (Dave, 2026-07-19): the controls exposed depend on the tier.** The several
+    tiers that run between **strict** and **creative** each reveal a **different level of controls** — and *only* the
+    controls that tier permits. At the **most open extreme, there are essentially no structured controls — just a prompt
+    box** for freeform edits; the **tiers below progressively reveal** specific controls (e.g. "just the colour palette"),
+    exposing only what's available at that level. Dave: *"at the extreme level there will be no controls really, although
+    [there] is a prompt box so you can make edits… in the tiers below it'll reveal say just the colour palette, but only
+    the controls that are available to those levels will be exposed."* So the inspector's control set = **(component meta:
+    what's possible) ∩ (register tier: what's permitted)** — and at the free end that intersection collapses to the prompt
+    box. This is the [[product-shape-flexing-engine]] / [[register-inference-ramp]] governance made visible in the UI: the
+    same dials that constrain generation constrain which knobs the user sees. *Feeds:* [[multi-mode-product-vision]] —
+    strict / creative / component-dev / explore. **Direction CONFIRMED (Dave, 2026-07-19):** the prompt-only extreme is
+    the **most creative / open** end; moving toward strict progressively reveals more structured, permitted controls.
+    *Status:* principle captured + confirmed.
 
 - **Blast-radius gate v2 — cascade-aware.** T-D13's gate matches selectors structurally
   (class/element presence per file) and gates on the file *set*, so a same-count file *swap* inside

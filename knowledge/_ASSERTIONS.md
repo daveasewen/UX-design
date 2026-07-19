@@ -24,16 +24,6 @@
 - asserted in: `knowledge/_proforma/_TYPE-DECISIONS.md`, `memory:sandbox-html-rendering`, `memory:univers-measured-facts`
 - last verified: 2026-07-18
 
-## ✓ ASSERT-003 — state
-
-**Claim:** The type COMPOSITES are bound in ZERO files — .t-cm-* / .t-ed-* appear in no markup.
-
-- check: `0 composite class usage(s) in markup`
-- consequence: TYPE-002 binding is NOT a mechanical CSS edit. It needs a binding-mechanism ruling (markup class vs CSS composition vs build-time inlining). I under-scoped this on 2026-07-18 and said 339 were 'safely bindable'.
-- clears when: A binding mechanism is ruled and the first composite is bound in markup.
-- asserted in: `GOOD-MORNING.md`, `knowledge/_proforma/_TYPE-DECISIONS.md`
-- last verified: 2026-07-18
-
 ## ✓ ASSERT-004 — regression
 
 **Claim:** No text-transform:uppercase survives in the pro-forma surface (type26-019, BLOCKING).

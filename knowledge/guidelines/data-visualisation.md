@@ -51,12 +51,16 @@ Choose by the data's needs; research beyond the common types where warranted. [T
   to chart fills] {#dv-017}
   ⚠ **SCOPED OVERRIDE + RESOLUTIONS (RULED+CONFIRMED Dave 2026-07-16; record =
   `reviews/DATAVIZ-SERIES-RENDERS-2026-07-16.html` REV 3):**
-  (a) **Gain/loss deltas** — delta INDICATORS (text, arrows, spark end-values, RAG-style cells) may
+  (a) **Gain/loss deltas** — delta INDICATORS (text, arrows, spark end-values) may
   carry red/green semantic colour (`data/delta-*` in `semantic-colour.json`; derived values, not HSBC
   Red) as a conscious exception to col26-012 (no HSBC Red with the supporting palette in charts) and
   to the 07-14 red-once-per-screen rule — deltas are DATA SEMANTICS, not actions, and do not count
   against the once-per-screen budget. **Series fills remain palette-only ({#dv-017} unchanged).**
   Sign + arrow mandatory ({#dv-011}); both red/green pairs value-split per the vibration rule below.
+  **Directional deltas are red/green ONLY — amber has no direction (R-D3 rule 2). RAG status is a SEPARATE
+  concern** (health / watch / within-tolerance, not gain/loss): governed by R-D3 — red / amber / green
+  backgrounds with black text where ruled — and its component manifestation is specified separately, NOT by
+  this delta clause. (Split RULED Dave 2026-07-19; record `reviews/DV017-DELTA-VS-RAG-2026-07-19-v1`; R-D5.)
   (b) **V7 series assignment RESOLVED** — `data/series-1…5` (mode-stable, dv-014 held across the
   theme switch) + `data/series-high-contrast/*` (per-chart rebind), in `semantic-colour.json`.
   (c) **NEW APOLLO-ADDED RULE — avoid vibrating boundaries** (not ingested-HSBC; source: Tuts+

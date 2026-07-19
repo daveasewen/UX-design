@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Small picks — desk · 2026-07-19</title>
+<style>
+  :root{
+    --uf:"Univers Next HSBC","HSBC_MtUnivers_Latin","Helvetica Neue",Arial,sans-serif;
+    --pg:#fff; --tx:#111; --mut:#5b6770; --ln:#e6e8ea; --sf:#f6f7f8; --accent:#db0011;
+    /* countdown stage */
+    --track:#D7D8D6; --fill:#000; --ntext:#333;
+    /* ruled RAG (R-D1/R-D3/R-D4) */
+    --rag-red:#B92F1E; --rag-amber:#F0B13A; --rag-amber-glyph:#C58900; --rag-green:#2B7E4F;
+  }
+  body.dark{
+    --pg:#111; --tx:#f2f2f2; --mut:#9aa4ad; --ln:#2c2c2c; --sf:#1a1a1a;
+    --track:#404040; --fill:#fff; --ntext:#fff;
+    --rag-red:#CC4333; /* dark ruled */
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:var(--uf); color:var(--tx); background:var(--pg); line-height:1.45;
+       max-width:1080px; margin:0 auto; padding:0 40px 140px; transition:background .16s,color .16s;}
+  :is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  /* ---- doc control bar (template convention: theme toggle + responsive slider) ---- */
+  .docbar{position:sticky; top:0; z-index:50; display:flex; gap:18px; align-items:center; flex-wrap:wrap;
+    background:var(--pg); border-bottom:1px solid var(--ln); padding:12px 0; margin-bottom:32px;}
+  .docbar button{font:inherit; font-size:12px; padding:7px 12px; border:1px solid var(--tx); background:transparent; color:var(--tx); cursor:pointer;}
+  .docbar .grp{display:flex; gap:8px; align-items:center; font-size:12px; color:var(--mut);}
+  .docbar input[type=range]{accent-color:var(--accent);}
+  .docbar .rd{font-variant-numeric:tabular-nums; font-weight:600; color:var(--tx); min-width:56px;}
+
+  .eyebrow{font-size:12px; font-weight:500; color:var(--accent); margin-bottom:6px; letter-spacing:.02em;}
+  h1{font-size:34px; font-weight:300; line-height:1.12; margin-bottom:12px;}
+  .lede{font-size:16px; color:var(--mut); max-width:72ch; margin-bottom:6px;}
+  .meta{font-size:12px; color:var(--mut); margin-bottom:8px;}
+  h3.section{font-size:11px; font-weight:600; letter-spacing:.06em; color:var(--tx);
+       border-top:2px solid var(--tx); padding-top:8px; margin:44px 0 18px; text-transform:uppercase;}
+  h4{font-size:12px; font-weight:600; letter-spacing:.04em; color:var(--mut); margin:22px 0 12px; text-transform:uppercase;}
+  .note{font-size:13px; color:var(--tx); max-width:82ch; margin:0 0 14px;}
+  .note b{font-weight:500;}
+  .muted{color:var(--mut);}
+  code{font-family:ui-monospace,Menlo,monospace; font-size:.85em; background:var(--sf); padding:1px 5px;}
+
+  .decision{border:1px solid var(--ln); border-left:3px solid var(--tx); padding:16px 18px; margin:14px 0 8px; max-width:880px; background:var(--sf);}
+  .decision h5{font-size:13px; font-weight:600; margin-bottom:8px;}
+  .opt{font-size:13px; margin:5px 0; padding-left:18px; text-indent:-18px;}
+  .opt b{font-weight:600;}
+  .rec{background:#fff8e6; color:#3a2f00; border:1px solid #f0d78a; padding:11px 14px; font-size:13px; margin:10px 0 4px;}
+  .call{font-size:13px; font-weight:600; margin-top:8px;}
+  .flag{background:#fdecec; color:#5a1512; border:1px solid #f2b8b8; padding:11px 14px; font-size:13px; margin:10px 0; max-width:880px;}
+  .parked{background:var(--sf); border:1px solid var(--ln); padding:11px 14px; font-size:13px; margin:10px 0; max-width:880px;}
+
+  /* ============ countdown ============ */
+  .stage{border:1px solid var(--ln); padding:24px; margin-bottom:14px; background:var(--pg);}
+  .matrix{display:grid; grid-template-columns:120px repeat(3,1fr); gap:18px 24px; align-items:end; max-width:820px;}
+  .matrix .mh{font-size:11px; font-weight:600; letter-spacing:.04em; color:var(--mut); text-transform:uppercase; align-self:center;}
+  .matrix .rowh{font-size:12px; font-weight:600; color:var(--tx); align-self:center;}
+  .cell{display:flex; flex-direction:column; align-items:center; gap:8px; padding-bottom:6px;}
+  .cell .cap{font-size:10px; color:var(--mut); font-variant-numeric:tabular-nums;}
+
+  .dial{position:relative;}
+  .dial .ring{position:absolute; inset:0; transform:rotate(-90deg);}
+  .dial .ring circle{fill:none;}
+  .dial .ring .track{stroke:var(--track);}
+  .dial .ring .fill{stroke:var(--fill); stroke-linecap:butt;}
+  .dial .num{position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    line-height:1; color:var(--ntext); font-variant-numeric:tabular-nums; font-weight:500;}
+  .num20{font-size:20px;} .num24{font-size:24px;} .num32{font-size:32px;}
+  .inline-row{display:inline-flex; align-items:center; gap:10px; color:var(--ntext);}
+  .inline-row .val{font-variant-numeric:tabular-nums; font-weight:500; line-height:1;}
+  .undec{color:var(--ntext); font-variant-numeric:tabular-nums; font-weight:500; line-height:1;}
+  .rung-new{color:var(--accent);}
+
+  /* slider prototype */
+  .proto{border:1px dashed var(--accent); padding:20px 22px; margin:16px 0; max-width:820px; display:flex; gap:34px; align-items:center; flex-wrap:wrap;}
+  .proto .live{display:flex; flex-direction:column; align-items:center; gap:10px; min-width:210px;}
+  .proto .ctl{flex:1; min-width:260px;}
+  .proto .ctl label{font-size:12px; color:var(--mut); display:block; margin-bottom:8px;}
+  .proto .ctl input[type=range]{width:100%; accent-color:var(--accent);}
+  .proto .readout{font-size:13px; margin-top:12px; font-variant-numeric:tabular-nums;}
+  .proto .readout b{font-weight:600;}
+  .proto .readout .snap{color:var(--accent); font-weight:600;}
+
+  /* ============ dv-017 / rag ============ */
+  .ragrow{display:flex; gap:14px; flex-wrap:wrap; align-items:center; margin:6px 0 4px;}
+  .delta{display:inline-flex; align-items:center; gap:6px; font-size:15px; font-weight:500; font-variant-numeric:tabular-nums;}
+  .delta svg{width:.8em; height:.8em;}
+  .delta.up{color:var(--rag-green);} .delta.down{color:var(--rag-red);}
+  .swatch{display:inline-flex; align-items:center; height:30px; padding:0 14px; font-size:12px; font-weight:600; border-radius:0;}
+  .sw-r{background:var(--rag-red); color:#fff;}
+  .sw-a{background:var(--rag-amber); color:#000;}
+  .sw-g{background:var(--rag-green); color:#fff;}
+  .rag-tag{display:inline-flex; align-items:center; gap:.5em; height:2.15em; padding:0 .77em; border:1px solid; font:400 14px/1 var(--uf); border-radius:0; color:var(--tx);}
+  .rag-tag .dot{width:.55em; height:.55em; border-radius:50%;}
+  .rag-tag.g{border-color:var(--rag-green);} .rag-tag.g .dot{background:var(--rag-green);}
+  .rag-tag.a{border-color:var(--rag-amber-glyph);} .rag-tag.a .dot{background:var(--rag-amber-glyph);}
+  .rag-tag.r{border-color:var(--rag-red);} .rag-tag.r .dot{background:var(--rag-red);}
+</style>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="ar-up" viewBox="0 0 18 18"><path d="M16 12L2 12L9 5L16 12Z" fill="currentColor"/></symbol>
+    <symbol id="ar-down" viewBox="0 0 18 18"><path d="M2 6H16L9 13L2 6Z" fill="currentColor"/></symbol>
+    <symbol id="ar-up-low" viewBox="0 0 18 7"><path d="M0 7H18L9 0L0 7Z" fill="currentColor"/></symbol>
+    <symbol id="ar-down-low" viewBox="0 0 18 7"><path d="M0 0H18L9 7L0 0Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <div class="docbar">
+    <button type="button" id="theme">◐ Light / dark</button>
+    <div class="grp">Responsive width <input type="range" id="vw" min="360" max="1080" value="1080" step="20"> <span class="rd" id="vwr">full</span></div>
+    <span class="muted" style="font-size:11px">template controls — every review carries these (light/dark + responsive)</span>
+  </div>
+
+  <div class="eyebrow">Apollo · clearing the small-picks desk</div>
+  <h1>Small picks — desk <span class="muted" style="font-size:14px;font-weight:400">· rev 2</span></h1>
+  <p class="lede">Your 9 comments applied. Countdown now shows the full <b>3 styles × 3 sizes</b> spread with numerals
+     on the type ramp + a snapping-slider prototype; dv-017 reframed to the wording question only; RAG colours pulled
+     from the <b>ruled</b> tokens. <b>Nothing wired into canon.</b></p>
+  <p class="meta">Review · 2026-07-19 rev 2 · real HSBC cut · light+dark + responsive slider (template convention) · overlay for comments</p>
+
+  <!-- ============================ 1 ============================ -->
+  <h3 class="section">1 · Countdown timer — the numeral's type rung</h3>
+  <p class="note"><b>Comments 1, 2, 4:</b> full spread below — <b>3 styles</b> (stacked / inline / undecorated) ×
+     <b>3 sizes</b> = 9, numerals snapped to the type ramp. <b>20</b> and <b>32</b> are existing rungs; the medium
+     <b class="rung-new">24</b> (red) is the <b>proposed new rung</b> — the pick. Medium-stacked is live.</p>
+
+  <div class="stage" id="stage">
+    <div class="matrix">
+      <div class="mh"></div><div class="mh">Small · 20px</div><div class="mh">Medium · <span class="rung-new">24px ◂ new</span></div><div class="mh">Large · 32px</div>
+
+      <div class="rowh">Stacked</div>
+      <div class="cell">
+        <div class="dial" style="width:64px;height:64px"><svg class="ring" viewBox="0 0 64 64"><circle class="track" cx="32" cy="32" r="27" stroke-width="5"/><circle class="fill" cx="32" cy="32" r="27" stroke-width="5" stroke-dasharray="170" stroke-dashoffset="60"/></svg><span class="num num20">0:40</span></div>
+        <span class="cap">dial 64</span>
+      </div>
+      <div class="cell">
+        <div class="dial" style="width:84px;height:84px"><svg class="ring" viewBox="0 0 84 84"><circle class="track" cx="42" cy="42" r="36" stroke-width="6"/><circle class="fill" cx="42" cy="42" r="36" stroke-width="6" stroke-dasharray="226" stroke-dashoffset="158" id="livefill"/></svg><span class="num num24" id="livenum">0:10</span></div>
+        <span class="cap">dial 84 · LIVE</span>
+      </div>
+      <div class="cell">
+        <div class="dial" style="width:104px;height:104px"><svg class="ring" viewBox="0 0 104 104"><circle class="track" cx="52" cy="52" r="45" stroke-width="7"/><circle class="fill" cx="52" cy="52" r="45" stroke-width="7" stroke-dasharray="283" stroke-dashoffset="40"/></svg><span class="num num32">1:12</span></div>
+        <span class="cap">dial 104</span>
+      </div>
+
+      <div class="rowh">Inline</div>
+      <div class="cell"><div class="inline-row"><div class="dial" style="width:32px;height:32px"><svg class="ring" viewBox="0 0 32 32"><circle class="track" cx="16" cy="16" r="13" stroke-width="3"/><circle class="fill" cx="16" cy="16" r="13" stroke-width="3" stroke-dasharray="82" stroke-dashoffset="28"/></svg></div><span class="val num20">0:40</span></div><span class="cap">ring + value</span></div>
+      <div class="cell"><div class="inline-row"><div class="dial" style="width:40px;height:40px"><svg class="ring" viewBox="0 0 40 40"><circle class="track" cx="20" cy="20" r="16" stroke-width="4"/><circle class="fill" cx="20" cy="20" r="16" stroke-width="4" stroke-dasharray="100" stroke-dashoffset="34"/></svg></div><span class="val num24">0:40</span></div><span class="cap">ring + value</span></div>
+      <div class="cell"><div class="inline-row"><div class="dial" style="width:48px;height:48px"><svg class="ring" viewBox="0 0 48 48"><circle class="track" cx="24" cy="24" r="20" stroke-width="5"/><circle class="fill" cx="24" cy="24" r="20" stroke-width="5" stroke-dasharray="126" stroke-dashoffset="42"/></svg></div><span class="val num32">0:40</span></div><span class="cap">ring + value</span></div>
+
+      <div class="rowh">Undecorated</div>
+      <div class="cell"><span class="undec num20">0:40</span><span class="cap">value only</span></div>
+      <div class="cell"><span class="undec num24">0:40</span><span class="cap">value only</span></div>
+      <div class="cell"><span class="undec num32">0:40</span><span class="cap">value only</span></div>
+    </div>
+    <p class="note" style="margin-top:22px;opacity:.8"><b>Motion / states:</b> ring static-full until the final 5s → one ≤5s sweep (no pause control needed, WCAG 2.2.2); reduced-motion suppresses the sweep, number still ticks; 0:00 = complete. Colour never changes by time (no RAG escalation).</p>
+  </div>
+
+  <h4>Comment 3 · prototype — scale to any size, snap to 4px grid + type scale</h4>
+  <div class="proto">
+    <div class="live">
+      <div class="dial" id="pdial" style="width:84px;height:84px"><svg class="ring" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet"><circle class="track" cx="50" cy="50" r="43" stroke-width="6"/><circle class="fill" cx="50" cy="50" r="43" stroke-width="6" stroke-dasharray="270" stroke-dashoffset="95"/></svg><span class="num" id="pnum" style="font-size:24px">0:24</span></div>
+      <span class="cap muted">drag the slider →</span>
+    </div>
+    <div class="ctl">
+      <label>Dial size — continuous input <span class="muted">48–200px</span></label>
+      <input type="range" id="pslider" min="48" max="200" value="84" step="1">
+      <div class="readout">dial <b><span id="pdialpx">84</span>px</b> → snapped to 4px grid <span class="snap" id="pdialsnap">84px</span> · numeral → nearest ramp rung <span class="snap" id="pnumsnap">24px</span></div>
+      <p class="note muted" style="margin:10px 0 0;font-size:12px">Ramp rungs: 16 / 20 / 24 / 32 / 40 / 52. Two boundaries + two snap rules = the countdown stays on-grid and on-scale at any size. Registered as a FUTURE-STATE prototype.</p>
+    </div>
+  </div>
+
+  <div class="flag"><b>Spot-check:</b> the meta records the time text as <code>font-5/medium</code> = 16px, but the canon reference renders 24px — so "medium" already sits a step above the token note. The 9-cell spread shows the numeral wants <b>three</b> ramp values, so a single fixed rung only holds at one size.</div>
+  <div class="decision">
+    <h5>Decision · the numeral's type</h5>
+    <p class="opt"><b>Add 24 to the ramp</b> → rungs near this range become 16 / 20 / 24 / 32; countdown binds small 20 / medium 24 / large 32 (all on-ramp). <span class="muted">Recommended — it's what the snap-slider needs too.</span></p>
+    <p class="opt"><b>Or</b> stay off-ramp at a fixed 24 (one rung, single size) · <b>or</b> avoid 24 entirely and snap medium to 20 or 32.</p>
+    <div class="rec"><b>Recommendation: add 24 to the ramp.</b> It's the value the design uses, it makes the 3-size spread land cleanly, and it's the rung the slider prototype snaps to. Then bind <code>.num</code> small/med/large → 20/24/32.</div>
+    <p class="call">Your call: add 24 to the ramp (+ 20/24/32 binding)? — and confirm the timer ships multi-size.</p>
+  </div>
+
+  <!-- ============================ 2 ============================ -->
+  <h3 class="section">2 · dv-017(a) — deltas vs RAG (wording only)</h3>
+  <p class="note"><b>Comment 7 — the actual question, narrowed:</b> should <b>"RAG-style cells"</b> be removed from
+     the red/green <i>delta-indicator</i> list in <code>{#dv-017}</code>(a)? That's the whole ask. It's a
+     <b>wording</b> fix — <i>not</i> a decision about how RAG manifests as a component (that's comment 6's separate review).</p>
+
+  <h4>Comment 5 · delta indicators — real arrow assets, two types</h4>
+  <div class="ragrow">
+    <span class="delta up"><svg><use href="#ar-up"/></svg>+2.4%</span>
+    <span class="delta down"><svg><use href="#ar-down"/></svg>−1.1%</span>
+    <span class="muted" style="font-size:12px">type A · <code>arrow-up</code> / <code>arrow-down</code> (full triangle)</span>
+  </div>
+  <div class="ragrow">
+    <span class="delta up"><svg><use href="#ar-up-low"/></svg>+2.4%</span>
+    <span class="delta down"><svg><use href="#ar-down-low"/></svg>−1.1%</span>
+    <span class="muted" style="font-size:12px">type B · <code>arrow-up-low</code> / <code>arrow-down-low</code> (flat)</span>
+  </div>
+  <p class="note" style="font-size:12px"><b>Colours to confirm:</b> shown at ruled <code>rag/success-glyph</code> #2B7E4F / <code>rag/error-glyph</code> #B92F1E. The dedicated <code>data/delta-*</code> values may differ — part of comment 6's review.</p>
+
+  <h4>Comment 6 · the three ruled RAG hues <span class="muted" style="text-transform:none;font-weight:400">— correct text colour per hue; manifestation TBD</span></h4>
+  <div class="ragrow">
+    <span class="swatch sw-r">Red · white text</span>
+    <span class="swatch sw-a">Amber · black text</span>
+    <span class="swatch sw-g">Green · white text</span>
+    <span class="muted" style="font-size:12px">ruled R-D1/R-D3/R-D4 · red 6.02 · amber 11.06 · green 5.00</span>
+  </div>
+  <div class="flag"><b>Comment 6 — settle RAG once and for all → its own review.</b> The values are ruled, but three things are still
+     <b>OPEN</b>: dark-mode green has no ruled value (incumbent #1AA05C fails), dark red/blue as glyph-on-text fail 4.5, and
+     the <b>real manifestation</b> (cell? pill? dot? bar?) isn't decided — which is exactly comment 7's confusion. I'll build a
+     dedicated <b>RAG-colours review</b> next.</div>
+  <div class="decision">
+    <h5>Decision · split the clause (wording)</h5>
+    <p class="opt"><b>Before:</b> "delta INDICATORS (text, arrows, spark end-values, <b>RAG-style cells</b>) may carry red/green…"</p>
+    <p class="opt"><b>After:</b> "delta INDICATORS (text, arrows, spark end-values) may carry red/green… <b>Directional deltas are red/green ONLY — amber has no direction (R-D3 rule 2). RAG status is a separate concern (health/watch/tolerance), governed by R-D3; its manifestation is specified separately.</b>"</p>
+    <div class="rec"><b>Recommendation: adopt the split now</b> (removes the contradiction, no values involved); the RAG manifestation + open colours go to the separate review.</div>
+    <p class="call">Your call: confirm the wording (this is the only thing being decided in §2).</p>
+  </div>
+
+  <!-- ============================ 3 ============================ -->
+  <h3 class="section">3 · Tag colour / RAG — parked</h3>
+  <p class="note"><b>Comment 8:</b> preview now uses the <b>ruled glyph</b> colours (dot + border). Shape looks right; the
+     colours are correct-as-ruled but <b>await the §2 separate RAG review</b> to settle manifestation + the dark-mode opens.</p>
+  <div class="ragrow">
+    <span class="rag-tag g"><span class="dot"></span>Healthy</span>
+    <span class="rag-tag a"><span class="dot"></span>Watch</span>
+    <span class="rag-tag r"><span class="dot"></span>Breach</span>
+    <span class="muted" style="font-size:12px">dot+border = ruled glyph #2B7E4F / #C58900 / #B92F1E · text stays default ink</span>
+  </div>
+  <div class="parked"><b>Parked</b>, unblocks when the RAG review lands, then one gated pass on <code>Tags.reference</code>. <b>Your call:</b> park (default), or take now.</div>
+
+  <script>
+    var body=document.body;
+    document.getElementById('theme').addEventListener('click',function(){ body.classList.toggle('dark'); });
+    // responsive width slider (template convention)
+    var vw=document.getElementById('vw'), vwr=document.getElementById('vwr');
+    vw.addEventListener('input',function(){
+      var v=+vw.value;
+      if(v>=1080){ body.style.maxWidth=''; vwr.textContent='full'; }
+      else { body.style.maxWidth=v+'px'; vwr.textContent=v+'px'; }
+    });
+
+    // live medium timer
+    var fill=document.getElementById('livefill'), num=document.getElementById('livenum');
+    var C=2*Math.PI*36, TOTAL=10, SWEEP=5, s, swept;
+    fill.style.strokeDasharray=C;
+    function reset(){ s=TOTAL; swept=false; fill.style.transition='none'; fill.style.strokeDashoffset='0'; render(); }
+    function render(){ num.textContent='0:'+String(s).padStart(2,'0'); }
+    function tick(){ if(s<=0){reset();return;} s--; if(s===SWEEP&&!swept){swept=true; requestAnimationFrame(function(){fill.style.transition='stroke-dashoffset '+SWEEP+'s linear'; fill.style.strokeDashoffset=C;});} render(); }
+    reset(); setInterval(tick,1000);
+
+    // comment 3 prototype — dial snaps 4px, numeral snaps to ramp
+    var RUNGS=[16,20,24,32,40,52];
+    function nearest(v,arr){ return arr.reduce(function(a,b){ return Math.abs(b-v)<Math.abs(a-v)?b:a; }); }
+    var ps=document.getElementById('pslider'), pdial=document.getElementById('pdial'), pnum=document.getElementById('pnum'),
+        pdialpx=document.getElementById('pdialpx'), pdialsnap=document.getElementById('pdialsnap'), pnumsnap=document.getElementById('pnumsnap');
+    function proto(){
+      var raw=+ps.value, snap=Math.round(raw/4)*4, numer=nearest(snap*0.2857, RUNGS);
+      pdial.style.width=snap+'px'; pdial.style.height=snap+'px';
+      pnum.style.fontSize=numer+'px';
+      pdialpx.textContent=raw; pdialsnap.textContent=snap+'px'; pnumsnap.textContent=numer+'px';
+    }
+    ps.addEventListener('input',proto); proto();
+  </script>
+</body>
+</html>

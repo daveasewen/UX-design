@@ -1,149 +1,130 @@
 {
- "$comment": [
-  "ASSERTION REGISTRY \u2014 environment claims that can rot, each with a machine-checkable predicate.",
-  "",
-  "WHY THIS EXISTS. Dave, 2026-07-18: 'how do we fix this permanently?' \u2014 after a memory file",
-  "asserted 'the sandbox has NO Univers font' for sixteen months while the licensed fonts sat in",
-  "the repo. The claim was TRUE when written and silently became false. Nothing caught it because",
-  "it lived in prose, in a place no gate could read, and because nothing re-tests claims.",
-  "",
-  "THE INSIGHT. That claim was mechanically checkable the whole time \u2014 os.path.exists(). It did not",
-  "rot for want of thinking; it rotted because a checkable claim was stored as unverifiable prose.",
-  "So: every environment claim that CAN be reduced to a predicate MUST carry one, and the predicate",
-  "gets re-evaluated on every build. Judgement and rulings do not belong here \u2014 they are not the",
-  "kind of thing that goes stale by itself. Facts about the world are.",
-  "",
-  "WHAT MAKES THIS DIFFERENT FROM _validate_standing_instructions.py. That gate is REFERENTIAL \u2014",
-  "is everything reachable from the spine. This one is VERACIOUS \u2014 is what we say still true.",
-  "A doc can be perfectly reachable and perfectly wrong.",
-  "",
-  "THE KEY FIELD IS 'asserted_in'. When a predicate flips, the gate names every document that now",
-  "contains a false statement. That is what was missing on 07-18: the 'no Univers' claim sat in at",
-  "least five places and nothing connected them, so correcting one left four wrong.",
-  "",
-  "MEMORY ENTRIES CAN BE LISTED as 'memory:<slug>'. The gate cannot READ them (memory lives outside",
-  "the repo, invisible to the shell), but it CAN name them in the failure so the human knows what to",
-  "go and fix. That converts an invisible dependency into a visible instruction.",
-  "",
-  "PREDICATE VERBS \u2014 deliberately tiny, no eval, no arbitrary code:",
-  "  path_exists   {glob}            at least one match",
-  "  path_absent   {glob}            zero matches",
-  "  glob_count    {glob, op, n}     op in eq|gte|lte",
-  "  file_contains {path, needle}",
-  "  file_lacks    {path, needle}",
-  "",
-  "'recheck_days' on a BLOCKER: a blocker stops work, and therefore stops the work that would",
-  "disprove it \u2014 the highest-rot-risk claim in the system. Past its window the gate warns even",
-  "while the predicate still holds, so somebody re-tests it deliberately."
- ],
- "assertions": [
-  {
-   "id": "ASSERT-001",
-   "kind": "blocker",
-   "claim": "No Latin Univers WEBFONT pack is present. Only the five SCRIPT companions have webfonts.",
-   "predicate": {
-    "verb": "path_absent",
-    "glob": "knowledge/assets/fonts/**/*[Ll]atin*.woff*"
-   },
-   "consequence": "Shareable real-face material is blocked by ASSET DELIVERY, not permission \u2014 there is nothing to embed. Licence side is renewal-pending; Dave assesses the gap as procedural and low-risk (ruled 2026-07-18, do not re-litigate). REFRAMED from 'blocker' the same week: within-HSBC distribution is CLOSED, ruled 'leave'.",
-   "clears_when": "The Latin webfont files (WOFF + WOFF2) physically land in knowledge/assets/fonts/. Watch for Ultralight in the pack \u2014 a sixth weight below Thin = a TYPE RULING, not an asset drop.",
-   "asserted_in": [
-    "knowledge/_proforma/_TYPE-DECISIONS.md",
-    "_LIVE-STATE.md",
-    "GOOD-MORNING.md",
-    "memory:univers-webfont-blocker"
-   ],
-   "recheck_days": 30,
-   "last_verified": "2026-07-18",
-   "provenance": "Verified 2026-07-18 by enumerating knowledge/assets/fonts/: five script webfont packs, ten woff/woff2 each, zero Latin."
-  },
-  {
-   "id": "ASSERT-002",
-   "kind": "environment",
-   "claim": "The licensed Latin Univers DESKTOP set IS present and readable (TTF + OTF).",
-   "predicate": {
-    "verb": "path_exists",
-    "glob": "knowledge/assets/fonts/_desktop/TTF/HSBC_MtUnivers_Latin-Rg.ttf"
-   },
-   "consequence": "Real-face rendering and metric measurement are available in-sandbox. Any doc still claiming 'the sandbox has no Univers' is STALE.",
-   "asserted_in": [
-    "knowledge/_proforma/_TYPE-DECISIONS.md",
-    "memory:sandbox-html-rendering",
-    "memory:univers-measured-facts"
-   ],
-   "last_verified": "2026-07-18",
-   "provenance": "The exact claim that rotted for 16 months in the opposite direction. Files dated 2024-03-25; the 'no Univers' note post-dates them. This assertion exists so the inverse can never rot silently again."
-  },
-  {
-   "id": "ASSERT-003",
-   "kind": "state",
-   "claim": "The type COMPOSITES are bound in ZERO files \u2014 .t-cm-* / .t-ed-* appear in no markup.",
-   "predicate": {
-    "verb": "glob_count",
-    "glob": "knowledge/snippets/*.html",
-    "op": "gte",
-    "n": 1
-   },
-   "consequence": "TYPE-002 binding is NOT a mechanical CSS edit. It needs a binding-mechanism ruling (markup class vs CSS composition vs build-time inlining). I under-scoped this on 2026-07-18 and said 339 were 'safely bindable'.",
-   "clears_when": "A binding mechanism is ruled and the first composite is bound in markup.",
-   "asserted_in": [
-    "GOOD-MORNING.md",
-    "knowledge/_proforma/_TYPE-DECISIONS.md"
-   ],
-   "last_verified": "2026-07-18",
-   "provenance": "Predicate is a placeholder sentinel \u2014 the real check (count of .t-cm-*/.t-ed-* class usages in markup == 0) is implemented natively in _validate_assertions.py as ASSERT-003-NATIVE, because a glob cannot express it."
-  },
-  {
-   "id": "ASSERT-004",
-   "kind": "regression",
-   "claim": "No text-transform:uppercase survives in the pro-forma surface (type26-019, BLOCKING).",
-   "predicate": {
-    "verb": "file_lacks",
-    "path": "knowledge/_proforma/Tranche-3-interactive.html",
-    "needle": "text-transform:uppercase"
-   },
-   "consequence": "The gate in _validate_proforma.py is the primary enforcement; this is a belt-and-braces canary on the file that carried two of the five breaches.",
-   "asserted_in": [
-    "knowledge/_validate_proforma.py",
-    "memory:gate-glob-scope-rule"
-   ],
-   "last_verified": "2026-07-18",
-   "provenance": "Closed 2026-07-18. The rule was blocking since 07-02 but its gate globbed snippets/ only."
-  },
-  {
-   "id": "ASSERT-005",
-   "kind": "environment",
-   "claim": "Licensed font binaries are gitignored and must never be committed.",
-   "predicate": {
-    "verb": "file_contains",
-    "path": ".gitignore",
-    "needle": "knowledge/assets/fonts/"
-   },
-   "consequence": "Keeps font binaries out of future commits. NOTE the 2026-07-18 reframe: the four files already embedding base64 woff2 at 24accd0 are CLOSED, ruled 'leave' (private repo, HSBC-only recipients) — no git rm, no BFG. And WebfontUserGuide-2024.pdf is generic Monotype guidance, NOT an entitlement record; the entitlement sits with brand/procurement, unseen.",
-   "asserted_in": [
-    ".gitignore",
-    "knowledge/_proforma/_TYPE-DECISIONS.md",
-    "memory:univers-webfont-blocker"
-   ],
-   "last_verified": "2026-07-18",
-   "provenance": "Four files committed at 24accd0 still embed base64 Univers; repo is private, so exposure is low but non-zero. Dave's call on remediation."
-  },
-  {
-   "id": "ASSERT-006",
-   "claim": "The HSBC Latin Univers DESKTOP TTFs are present and installable for real-font sandbox rendering. Renders are NOT layout-only.",
-   "why": "A memory file asserted 'the sandbox has NO Univers font \u2014 renders verify layout, not brand type' for sixteen months. It was true when written. On 2026-07-18 I repeated it THREE times in one session before Dave asked 'can't you use the desktop fonts in assets?'. ASSERT-002 already recorded the desktop set as present and already named this memory in asserted_in \u2014 but the gate only fires when a predicate FLIPS, so a document known to be wrong RIGHT NOW was never chased. This assertion states the OPERATIONAL conclusion, not just the file's existence, so the claim that actually rotted is the one under test.",
-   "kind": "environment",
-   "predicate": {
-    "verb": "path_exists",
-    "glob": "knowledge/assets/fonts/_desktop/TTF/HSBC_MtUnivers_Latin-Rg.ttf"
-   },
-   "asserted_in": [
-    "GOOD-MORNING.md",
-    "memory:sandbox-html-rendering",
-    "knowledge/_RUNBOOK-capture-ritual.md"
-   ],
-   "note": "Recipe: mkdir -p ~/.fonts && cp knowledge/assets/fonts/_desktop/TTF/*.ttf ~/.fonts/ && fc-cache -f ; CSS family 'HSBC_MtUnivers_Latin'. ALWAYS the HSBC cut, never stock Univers Next Pro (both are in _desktop/; Dave's ruling 2026-07-18). DESKTOP licence renders, it does not ship \u2014 ASSERT-001 (no Latin WEBFONT) is untouched by this.",
-   "last_verified": "2026-07-18"
-  }
- ]
+  "$comment": [
+    "ASSERTION REGISTRY — environment claims that can rot, each with a machine-checkable predicate.",
+    "",
+    "WHY THIS EXISTS. Dave, 2026-07-18: 'how do we fix this permanently?' — after a memory file",
+    "asserted 'the sandbox has NO Univers font' for sixteen months while the licensed fonts sat in",
+    "the repo. The claim was TRUE when written and silently became false. Nothing caught it because",
+    "it lived in prose, in a place no gate could read, and because nothing re-tests claims.",
+    "",
+    "THE INSIGHT. That claim was mechanically checkable the whole time — os.path.exists(). It did not",
+    "rot for want of thinking; it rotted because a checkable claim was stored as unverifiable prose.",
+    "So: every environment claim that CAN be reduced to a predicate MUST carry one, and the predicate",
+    "gets re-evaluated on every build. Judgement and rulings do not belong here — they are not the",
+    "kind of thing that goes stale by itself. Facts about the world are.",
+    "",
+    "WHAT MAKES THIS DIFFERENT FROM _validate_standing_instructions.py. That gate is REFERENTIAL —",
+    "is everything reachable from the spine. This one is VERACIOUS — is what we say still true.",
+    "A doc can be perfectly reachable and perfectly wrong.",
+    "",
+    "THE KEY FIELD IS 'asserted_in'. When a predicate flips, the gate names every document that now",
+    "contains a false statement. That is what was missing on 07-18: the 'no Univers' claim sat in at",
+    "least five places and nothing connected them, so correcting one left four wrong.",
+    "",
+    "MEMORY ENTRIES CAN BE LISTED as 'memory:<slug>'. The gate cannot READ them (memory lives outside",
+    "the repo, invisible to the shell), but it CAN name them in the failure so the human knows what to",
+    "go and fix. That converts an invisible dependency into a visible instruction.",
+    "",
+    "PREDICATE VERBS — deliberately tiny, no eval, no arbitrary code:",
+    "  path_exists   {glob}            at least one match",
+    "  path_absent   {glob}            zero matches",
+    "  glob_count    {glob, op, n}     op in eq|gte|lte",
+    "  file_contains {path, needle}",
+    "  file_lacks    {path, needle}",
+    "",
+    "'recheck_days' on a BLOCKER: a blocker stops work, and therefore stops the work that would",
+    "disprove it — the highest-rot-risk claim in the system. Past its window the gate warns even",
+    "while the predicate still holds, so somebody re-tests it deliberately."
+  ],
+  "assertions": [
+    {
+      "id": "ASSERT-001",
+      "kind": "blocker",
+      "claim": "No Latin Univers WEBFONT pack is present. Only the five SCRIPT companions have webfonts.",
+      "predicate": {
+        "verb": "path_absent",
+        "glob": "knowledge/assets/fonts/**/*[Ll]atin*.woff*"
+      },
+      "consequence": "Shareable real-face material is blocked by ASSET DELIVERY, not permission — there is nothing to embed. Licence side is renewal-pending; Dave assesses the gap as procedural and low-risk (ruled 2026-07-18, do not re-litigate). REFRAMED from 'blocker' the same week: within-HSBC distribution is CLOSED, ruled 'leave'.",
+      "clears_when": "The Latin webfont files (WOFF + WOFF2) physically land in knowledge/assets/fonts/. Watch for Ultralight in the pack — a sixth weight below Thin = a TYPE RULING, not an asset drop.",
+      "asserted_in": [
+        "knowledge/_proforma/_TYPE-DECISIONS.md",
+        "_LIVE-STATE.md",
+        "GOOD-MORNING.md",
+        "memory:univers-webfont-blocker"
+      ],
+      "recheck_days": 30,
+      "last_verified": "2026-07-18",
+      "provenance": "Verified 2026-07-18 by enumerating knowledge/assets/fonts/: five script webfont packs, ten woff/woff2 each, zero Latin."
+    },
+    {
+      "id": "ASSERT-002",
+      "kind": "environment",
+      "claim": "The licensed Latin Univers DESKTOP set IS present and readable (TTF + OTF).",
+      "predicate": {
+        "verb": "path_exists",
+        "glob": "knowledge/assets/fonts/_desktop/TTF/HSBC_MtUnivers_Latin-Rg.ttf"
+      },
+      "consequence": "Real-face rendering and metric measurement are available in-sandbox. Any doc still claiming 'the sandbox has no Univers' is STALE.",
+      "asserted_in": [
+        "knowledge/_proforma/_TYPE-DECISIONS.md",
+        "memory:sandbox-html-rendering",
+        "memory:univers-measured-facts"
+      ],
+      "last_verified": "2026-07-18",
+      "provenance": "The exact claim that rotted for 16 months in the opposite direction. Files dated 2024-03-25; the 'no Univers' note post-dates them. This assertion exists so the inverse can never rot silently again."
+    },
+    {
+      "id": "ASSERT-004",
+      "kind": "regression",
+      "claim": "No text-transform:uppercase survives in the pro-forma surface (type26-019, BLOCKING).",
+      "predicate": {
+        "verb": "file_lacks",
+        "path": "knowledge/_proforma/Tranche-3-interactive.html",
+        "needle": "text-transform:uppercase"
+      },
+      "consequence": "The gate in _validate_proforma.py is the primary enforcement; this is a belt-and-braces canary on the file that carried two of the five breaches.",
+      "asserted_in": [
+        "knowledge/_validate_proforma.py",
+        "memory:gate-glob-scope-rule"
+      ],
+      "last_verified": "2026-07-18",
+      "provenance": "Closed 2026-07-18. The rule was blocking since 07-02 but its gate globbed snippets/ only."
+    },
+    {
+      "id": "ASSERT-005",
+      "kind": "environment",
+      "claim": "Licensed font binaries are gitignored and must never be committed.",
+      "predicate": {
+        "verb": "file_contains",
+        "path": ".gitignore",
+        "needle": "knowledge/assets/fonts/"
+      },
+      "consequence": "Keeps font binaries out of future commits. NOTE the 2026-07-18 reframe: the four files already embedding base64 woff2 at 24accd0 are CLOSED, ruled 'leave' (private repo, HSBC-only recipients) — no git rm, no BFG. And WebfontUserGuide-2024.pdf is generic Monotype guidance, NOT an entitlement record; the entitlement sits with brand/procurement, unseen.",
+      "asserted_in": [
+        ".gitignore",
+        "knowledge/_proforma/_TYPE-DECISIONS.md",
+        "memory:univers-webfont-blocker"
+      ],
+      "last_verified": "2026-07-18",
+      "provenance": "Four files committed at 24accd0 still embed base64 Univers; repo is private, so exposure is low but non-zero. Dave's call on remediation."
+    },
+    {
+      "id": "ASSERT-006",
+      "claim": "The HSBC Latin Univers DESKTOP TTFs are present and installable for real-font sandbox rendering. Renders are NOT layout-only.",
+      "why": "A memory file asserted 'the sandbox has NO Univers font — renders verify layout, not brand type' for sixteen months. It was true when written. On 2026-07-18 I repeated it THREE times in one session before Dave asked 'can't you use the desktop fonts in assets?'. ASSERT-002 already recorded the desktop set as present and already named this memory in asserted_in — but the gate only fires when a predicate FLIPS, so a document known to be wrong RIGHT NOW was never chased. This assertion states the OPERATIONAL conclusion, not just the file's existence, so the claim that actually rotted is the one under test.",
+      "kind": "environment",
+      "predicate": {
+        "verb": "path_exists",
+        "glob": "knowledge/assets/fonts/_desktop/TTF/HSBC_MtUnivers_Latin-Rg.ttf"
+      },
+      "asserted_in": [
+        "GOOD-MORNING.md",
+        "memory:sandbox-html-rendering",
+        "knowledge/_RUNBOOK-capture-ritual.md"
+      ],
+      "note": "Recipe: mkdir -p ~/.fonts && cp knowledge/assets/fonts/_desktop/TTF/*.ttf ~/.fonts/ && fc-cache -f ; CSS family 'HSBC_MtUnivers_Latin'. ALWAYS the HSBC cut, never stock Univers Next Pro (both are in _desktop/; Dave's ruling 2026-07-18). DESKTOP licence renders, it does not ship — ASSERT-001 (no Latin WEBFONT) is untouched by this.",
+      "last_verified": "2026-07-18"
+    }
+  ]
 }

@@ -33,7 +33,9 @@
   .ring .track{stroke:var(--track);}
   .ring .fill{stroke:var(--fill); stroke-linecap:butt;}                        /* BUTT terminals — no rounded caps */
   .num{position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-    font:500 24px/1 var(--font); color:var(--text); font-variant-numeric:tabular-nums;}   /* number CENTRED in the roundel */
+    /* type: t-cm-figure-3 (24px/500) bound via CLASS on the element (T-D9/ds-005, RULED 2026-07-19);
+       bare `.num` can't be appended to type.css globally — it collides with `.cn-table td.num`. Box stays local. */
+    color:var(--text); font-variant-numeric:tabular-nums;}   /* number CENTRED in the roundel */
   .label{/* type: t-cm-caption (bound in canon/type.css - T-D9/T-D12) */ color:var(--text); opacity:.7;}          /* subtitle = REGULAR (was 300/light) */
   @media(prefers-reduced-motion:reduce){ .ring .fill{transition:none !important;} }
 </style>
@@ -44,7 +46,7 @@
   <div class="timer">
     <div class="dial" role="timer" aria-live="polite" aria-label="Session timeout countdown">
       <svg class="ring" data-bespoke="countdown progress ring — functional SVG graphic (track + animated stroke-dashoffset fill), not a library icon" viewBox="0 0 84 84" aria-hidden="true"><circle class="track" cx="42" cy="42" r="36"/><circle class="fill" cx="42" cy="42" r="36"/></svg>
-      <span class="num" id="t">0:10</span>
+      <span class="num t-cm-figure-3" id="t">0:10</span>
     </div>
     <span class="label">until session timeout</span>
   </div>

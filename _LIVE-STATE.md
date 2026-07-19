@@ -17,7 +17,7 @@ narrative, relocated verbatim (how we got here; see its README for the rules + R
 > tripwire ~500 lines. Edits to this file are reachability-relevant — run
 > `python3 knowledge/_validate_standing_instructions.py` (STAND-002) after touching it.
 
-*Last refreshed: **2026-07-19 late — "The button-label audit that became a gate": ds-005 GATED + CLOSED — new blocking descender-clip gate (`_validate_descender_clip.py`, build step 27/34); 7 truncating labels fixed with ZERO waivers; `.btn`/`.cta`/`.qbtn` audited CLEAN (null result); commit `3af1696`**. Previous: **2026-07-19 — "A gate for the blast radius"**: blast-radius gate built (closes open-001), h2 namespaced, specimen chrome harmonised, ds-005 logged, Tag atom (3 variants × 2 sizes) wired. Earlier: **2026-07-18 late** — R-D4 matting rungs ruled + first RAG role-token promotion. Earlier: **2026-07-18 Fable consolidation** — consolidated
+*Last refreshed: **2026-07-19 (later) — "Small picks, and an edit-mode μX with legs"**: §1 `.num` RULED + enacted (T-D14 — `.t-cm-figure-3` 24/500 rung, countdown numeral bound via CLASS = first composite in markup, ASSERT-003 retired, build green 34 steps); §2 dv-017 visual built (`reviews/DV017-DELTA-VS-RAG-2026-07-19-v1`) awaiting Dave's wording confirm; μX in-context edit-mode prototype v1→v3 built + registered in `_FUTURE-STATE` (universal to all components · controls derived from meta · TIERED to the strict↔creative register, prompt-only at the creative extreme); review conventions inscribed (live variant/state spread + light/dark + responsive slider; versioning `-vN` not overwrite). Previous: **2026-07-19 late — "The button-label audit that became a gate": ds-005 GATED + CLOSED — new blocking descender-clip gate (`_validate_descender_clip.py`, build step 27/34); 7 truncating labels fixed with ZERO waivers; `.btn`/`.cta`/`.qbtn` audited CLEAN (null result); commit `3af1696`**. Previous: **2026-07-19 — "A gate for the blast radius"**: blast-radius gate built (closes open-001), h2 namespaced, specimen chrome harmonised, ds-005 logged, Tag atom (3 variants × 2 sizes) wired. Earlier: **2026-07-18 late** — R-D4 matting rungs ruled + first RAG role-token promotion. Earlier: **2026-07-18 Fable consolidation** — consolidated
 1104 → ~450 lines per the classification Dave ruled via markup (11 pins) on
 `reviews/CONSOLIDATION-AUDIT-2026-07-18.html`. Nothing deleted: ~580 lines relocated verbatim to
 `_DECISION-HISTORY/`, duplicates reduced to pointers, two entries removed on their own recorded
@@ -94,7 +94,11 @@ Latin webfont" rests on absence of files, not on any document.
   entire project must be portable… a package, pulled from a repo"*). The 49-file inline sweep was
   solving a problem that does not exist.
 - **`type.css` is HAND-AUTHORED.** The "generated" header was false provenance; removed.
-- **Bound so far: `.btn` only**, pixel-diff verified as a no-op.
+- **Bound so far: `.btn` (selector-list) + Countdown `.num` (CLASS).** **T-D14 (2026-07-19):** new rung
+  `.t-cm-figure-3` (24px/500) added to the ramp; the countdown numeral is the **first composite bound in
+  MARKUP** — via a class on the element, because bare `.num` can't go global (collides with `.cn-table td.num`).
+  Zero-visual-change (500 = shipped value). **ASSERT-003 retired** (clears_when met). ⚠️ **The BULK binding
+  mechanism for the remaining ~338 stays OPEN** — this was one collision-forced case, NOT a general ruling. Ledger: T-D14.
 - **Unchanged from 07-17:** CSS cap-trim · 4px slot · slot min `ceil(cap + 2·descender)` snapped to
   4px · descender guard baked INTO the slot · stacks use `gap`, **never padding**.
 
@@ -233,7 +237,10 @@ ignore a red build.
   `#306EC6`), red as-is; role tokens promoted (see LIVE → RAG). Rung came from a direct readback —
   the pin export named the hue, not the row (the overlay row-identity debt biting again).
 - **`{#dv-017}`(a) CONTRADICTION** — permits red/green for deltas while naming "RAG-style cells";
-  RAG includes amber. The rule permits a palette it also excludes.
+  RAG includes amber. The rule permits a palette it also excludes. **Visual built 2026-07-19**
+  (`reviews/DV017-DELTA-VS-RAG-2026-07-19-v1`) — recommendation = split the clause (deltas red/green-ONLY;
+  RAG status → R-D3, amber valid). **AWAITING Dave's wording confirm** (he asked to see it first). The full RAG
+  manifestation + dark-mode opens = the separate **RAG-colours review** (queued, `_FUTURE-STATE`).
 - ~~**`.tag` COLLISION**~~ **RESOLVED 2026-07-18.** Was three things under one name: the tag component
   (14px), a smaller reuse (12px), and a masthead descriptor `.h .tag`. Ruled (Dave): tag atom = 3
   variants (dismissible/bordered/plain) × 2 sizes (`.tag`/`.tag--sm`), `.tag--plain` for borderless;
@@ -243,7 +250,8 @@ ignore a red build.
   `text-box-edge:text text` on every truncating label; the button follow-on audit found `.btn`/`.cta`/`.qbtn`
   CLEAN (they never truncate — null result), the real debt was 7 labels in Tranche-2/3/4/7/8 + Masthead
   `.dd-title`/`.navitem-tx`, all fixed zero-waivers. Removing an override now reds the build.
-- **`.num` at 24px/400** — no Component rung at 24px (ramp: 12/14/16/20/32/40/52). Add or snap?
+- ~~**`.num` at 24px**~~ **RULED T-D14 (2026-07-19):** added `.t-cm-figure-3` (24/500) to the ramp;
+  countdown numeral bound via class; build green (34 steps). Multi-size 20/24/32 lands with countdown size variants.
 - **Family A (reverse on near-black), 12 decls** — held at 500. Re-specimen on a FULL dark surface.
 
 ### Gates owed — rules that exist but do not bite

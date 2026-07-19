@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Edit-mode μX — in-context component controls (prototype)</title>
+<style>
+  :root{
+    --uf:"Univers Next HSBC","HSBC_MtUnivers_Latin","Helvetica Neue",Arial,sans-serif;
+    --ui:-apple-system,"Segoe UI",Roboto,sans-serif;
+    --sel:#0d99ff; --accent:#db0011;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:var(--ui); color:#111; background:#e9eaec;}
+
+  .explain{max-width:920px; margin:0 auto; padding:26px 28px 8px;}
+  .explain .eyebrow{font-family:var(--uf); font-size:12px; font-weight:500; color:var(--accent); letter-spacing:.02em; margin-bottom:6px;}
+  .explain h1{font-family:var(--uf); font-size:26px; font-weight:300; margin-bottom:8px;}
+  .explain p{font-size:13.5px; color:#3d444b; max-width:76ch; line-height:1.5;}
+  .explain .hint{margin-top:10px; font-size:12.5px; color:#5b6770;}
+  .explain .hint b{color:#111;}
+
+  /* ---- canvas / artboard ---- */
+  .canvas{position:relative; margin:18px 0 0; padding:56px 0 40px;
+    background:#f4f5f6;
+    background-image:linear-gradient(#e6e8ea 1px,transparent 1px),linear-gradient(90deg,#e6e8ea 1px,transparent 1px);
+    background-size:28px 28px; border-top:1px solid #d5d7da; border-bottom:1px solid #d5d7da;}
+  .frame-label{position:absolute; top:14px; left:50%; transform:translateX(-50%); font-size:12px; color:#8a9098;}
+
+  /* ---- the STACK — a DOM container; children occupy slots (no absolute positioning) ---- */
+  .stack{width:380px; margin:0 auto; display:flex; flex-direction:column; gap:12px; background:#fff;
+    border:1px solid #dfe1e4; padding:16px;}
+  .block{background:#f0f1f3; border:1px solid #e2e4e7; color:#8a9098; font-size:12px;
+    padding:16px; text-align:center; letter-spacing:.02em;}
+
+  /* the selected unit = component (+ its docked inspector) travelling together in the stack */
+  .unit{display:flex; gap:12px; outline:2px solid var(--sel); outline-offset:3px; background:#fff;}
+  .unit[data-dock="bottom"]{flex-direction:column; align-items:stretch;}
+  .unit[data-dock="right"]{flex-direction:row; align-items:flex-start;}
+  .unit.lifting{opacity:.55;}
+  .unit.kbflash{outline-color:var(--accent);}
+
+  /* the GRAB BAR — checkered strip, both the component's and the inspector's */
+  .grab{height:20px; cursor:grab; display:flex; align-items:center; justify-content:center; flex:0 0 auto;
+    background-image:
+      linear-gradient(45deg,#cfd3d7 25%,transparent 25%,transparent 75%,#cfd3d7 75%),
+      linear-gradient(45deg,#cfd3d7 25%,transparent 25%,transparent 75%,#cfd3d7 75%);
+    background-size:10px 10px; background-position:0 0,5px 5px; background-color:#edeff1; border:1px solid #e2e4e7;}
+  .grab:active{cursor:grabbing;}
+  .grab .pill{width:30px; height:4px; border-radius:2px; background:#9aa0a6;}
+  .grab .gtag{position:absolute; font-size:9px; color:#9aa0a6; letter-spacing:.05em; text-transform:uppercase; transform:translateX(64px);}
+
+  .component-wrap{flex:1; min-width:0; display:flex; flex-direction:column;}
+  /* countdown component (theme-aware) */
+  .cdbox{display:flex; align-items:center; justify-content:center; padding:34px 20px; background:#fff;}
+  .unit[data-theme="dark"] .cdbox{background:#111;}
+  .unit[data-theme="light"]{--track:#D7D8D6; --fill:#000; --ntext:#333;}
+  .unit[data-theme="dark"]{--track:#404040; --fill:#fff; --ntext:#fff;}
+  .cd{display:inline-flex; flex-direction:column; align-items:center; gap:12px;}
+  .cd.inline{flex-direction:row; gap:12px;}
+  .dial{position:relative;}
+  .dial .ring{position:absolute; inset:0; transform:rotate(-90deg);}
+  .dial .ring circle{fill:none;}
+  .dial .ring .track{stroke:var(--track);}
+  .dial .ring .fill{stroke:var(--fill); stroke-linecap:butt; transition:stroke-dashoffset .9s linear;}
+  .dial .num{position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    line-height:1; color:var(--ntext); font-family:var(--uf); font-weight:500; font-variant-numeric:tabular-nums;}
+  .cd .val{font-family:var(--uf); font-weight:500; font-variant-numeric:tabular-nums; color:var(--ntext); line-height:1;}
+  .cd .label{font-family:var(--uf); font-size:13px; color:var(--ntext); opacity:.7;}
+
+  /* ---- inspector (docked to the component; no absolute rest position) ---- */
+  .inspector{width:266px; flex:0 0 auto; background:#fff; border:1px solid #cfd3d8;
+    box-shadow:0 8px 26px rgba(20,28,40,.16); border-radius:8px; overflow:hidden; user-select:none;}
+  .unit[data-dock="bottom"] .inspector{width:auto;}
+  .insp-head{display:flex; align-items:center; justify-content:space-between; padding:8px 12px 3px;}
+  .insp-head .name{font-size:12px; font-weight:700; color:#111;}
+  .insp-head .kind{font-size:10.5px; color:#8a9098; text-transform:uppercase; letter-spacing:.04em;}
+  .insp-body{padding:5px 12px 13px; display:flex; flex-direction:column; gap:13px;}
+  .ctl{display:flex; flex-direction:column; gap:6px;}
+  .ctl > .lab{font-size:11px; color:#5b6770; display:flex; justify-content:space-between; align-items:baseline;}
+  .ctl > .lab b{font-size:11.5px; color:#111; font-variant-numeric:tabular-nums; font-weight:600;}
+  .ctl input[type=range]{width:100%; accent-color:var(--sel);}
+  .snapline{font-size:10.5px; color:#8a9098;}
+  .snapline .s{color:var(--accent); font-weight:600;}
+  .seg{display:flex; border:1px solid #d5d8dc; border-radius:6px; overflow:hidden;}
+  .seg button{flex:1; font:inherit; font-size:11.5px; padding:6px 4px; border:0; background:#fff; color:#3d444b; cursor:pointer; border-left:1px solid #eceef0;}
+  .seg button:first-child{border-left:0;}
+  .seg button.on{background:var(--sel); color:#fff;}
+  .stepper{display:flex; align-items:center; border:1px solid #d5d8dc; border-radius:6px; overflow:hidden; width:fit-content;}
+  .stepper button{width:30px; height:30px; border:0; background:#f4f5f6; font-size:16px; line-height:1; cursor:pointer; color:#111;}
+  .stepper .field{min-width:92px; text-align:center; font-size:13px; font-variant-numeric:tabular-nums; padding:0 8px;}
+  .stepper .field b{font-weight:600;}
+  .toggle{display:flex; align-items:center; gap:8px; font-size:11.5px; color:#3d444b;}
+  .toggle .sw{width:34px; height:18px; border-radius:9px; background:#c8ccd1; position:relative; cursor:pointer; transition:background .15s;}
+  .toggle .sw::after{content:""; position:absolute; top:2px; left:2px; width:14px; height:14px; border-radius:50%; background:#fff; transition:left .15s;}
+  .toggle .sw.on{background:var(--sel);} .toggle .sw.on::after{left:18px;}
+
+  .foot{max-width:920px; margin:14px auto 40px; padding:0 28px;}
+  .foot p{font-size:12px; color:#5b6770; line-height:1.5;}
+  .foot code{font-family:ui-monospace,Menlo,monospace; font-size:.9em; background:#fff; padding:1px 5px; border:1px solid #e2e4e7;}
+</style>
+</head>
+<body>
+  <div class="explain">
+    <div class="eyebrow">Apollo · harness · edit mode — prototype (rev 2)</div>
+    <h1>In-context component controls — the μX concept</h1>
+    <p>Selecting a component surfaces <b>its own controls in place</b> (no sidebar). Now there are <b>two grab bars</b>:
+       one moves the <b>component</b> within the layout <b>stack</b>, one moves its <b>controls</b>. Movement is
+       <b>DOM-flow, not absolute</b> — the component snaps between slots; <b>arrow keys ↑ ↓</b> reorder it in the stack.</p>
+    <p class="hint"><b>Try it:</b> drag the <b>component grab bar</b> to reorder it among the blocks · press <b>↑ / ↓</b> to
+       move it a slot · drag the <b>controls grab bar</b> — the panel snaps to dock below or beside the component ·
+       Size / Style / Max&nbsp;time / Theme update live.</p>
+  </div>
+
+  <div class="canvas" id="canvas">
+    <span class="frame-label">Frame 1 — a composed screen (stack)</span>
+    <div class="stack" id="stack">
+      <div class="block">Page header</div>
+      <div class="block">Balance summary</div>
+
+      <div class="unit" id="unit" data-dock="bottom" data-theme="light" tabindex="0">
+        <div class="component-wrap">
+          <div class="grab" id="compGrab" title="Drag to move the component in the stack (or use ↑ ↓)"><span class="pill"></span></div>
+          <div class="cdbox">
+            <div class="cd" id="cd">
+              <div class="dial" id="dial">
+                <svg class="ring" id="ring" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+                  <circle class="track" cx="50" cy="50" r="43" stroke-width="6"/>
+                  <circle class="fill" id="fill" cx="50" cy="50" r="43" stroke-width="6"/>
+                </svg>
+                <span class="num" id="num">0:30</span>
+              </div>
+              <span class="label" id="cdlabel">until session timeout</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="inspector" id="inspector">
+          <div class="grab" id="inspGrab" title="Drag to dock the controls below or beside"><span class="pill"></span></div>
+          <div class="insp-head"><span class="name">Countdown timer</span><span class="kind">controls</span></div>
+          <div class="insp-body">
+            <div class="ctl">
+              <span class="lab">Size <b><span id="dpx">84</span> px</b></span>
+              <input type="range" id="size" min="48" max="200" value="84" step="1">
+              <span class="snapline">dial → 4px grid <span class="s" id="dsnap">84px</span> · numeral → ramp <span class="s" id="nsnap">24px</span></span>
+            </div>
+            <div class="ctl">
+              <span class="lab">Style</span>
+              <div class="seg" id="seg">
+                <button data-style="stacked" class="on">Stacked</button>
+                <button data-style="inline">Inline</button>
+                <button data-style="undecorated">Value</button>
+              </div>
+            </div>
+            <div class="ctl">
+              <span class="lab">Max time</span>
+              <div class="stepper">
+                <button id="minus" aria-label="decrease">–</button>
+                <span class="field">Max time: <b id="maxt">30</b></span>
+                <button id="plus" aria-label="increase">+</button>
+              </div>
+            </div>
+            <div class="ctl">
+              <span class="lab">Theme</span>
+              <label class="toggle"><span class="sw" id="themesw"></span> Dark</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">Primary action</div>
+      <div class="block">Legal footer</div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <p>Prototype only — the pattern, not a final control set. Component moves by <b>DOM reorder</b> (grab bar drag or ↑ ↓),
+       never absolute coordinates; the inspector <b>snaps to a dock</b> (below / beside), travelling with its component.
+       The <code>Size</code> control is the small-picks snap-slider, now in its real home. Registered in
+       <code>_FUTURE-STATE</code> as the harness "μX" concept.</p>
+  </div>
+
+  <script>
+    var RUNGS=[16,20,24,32,40,52];
+    function nearest(v){ return RUNGS.reduce(function(a,b){ return Math.abs(b-v)<Math.abs(a-v)?b:a; }); }
+    var state={ style:'stacked', dial:84, max:30, dark:false, t:30 };
+
+    var unit=document.getElementById('unit'), stack=document.getElementById('stack'),
+        cd=document.getElementById('cd'), dial=document.getElementById('dial'),
+        fill=document.getElementById('fill'), num=document.getElementById('num'), cdlabel=document.getElementById('cdlabel');
+    var R=43, C=2*Math.PI*R; fill.style.strokeDasharray=C;
+
+    function fmt(s){ var m=Math.floor(s/60); return m+':'+String(s%60).padStart(2,'0'); }
+    function apply(){
+      var d=state.dial, numer=nearest(d*0.2857);
+      dial.style.width=d+'px'; dial.style.height=d+'px'; num.style.fontSize=numer+'px';
+      cd.className='cd'+(state.style==='inline'?' inline':'');
+      dial.style.display=(state.style==='undecorated')?'none':'';
+      cdlabel.style.display=(state.style==='stacked')?'':'none';
+      var v=cd.querySelector('.val');
+      if(state.style==='inline'||state.style==='undecorated'){
+        if(!v){ v=document.createElement('span'); v.className='val'; cd.appendChild(v); }
+        v.style.display=''; v.style.fontSize=numer+'px'; v.textContent=fmt(state.t); num.style.display='none';
+      } else { if(v) v.style.display='none'; num.style.display=''; }
+      unit.setAttribute('data-theme', state.dark?'dark':'light');
+      document.getElementById('dpx').textContent=d;
+      document.getElementById('dsnap').textContent=(Math.round(d/4)*4)+'px';
+      document.getElementById('nsnap').textContent=numer+'px';
+      document.getElementById('maxt').textContent=state.max;
+    }
+    function renderTime(){
+      num.textContent=fmt(state.t);
+      var v=cd.querySelector('.val'); if(v && v.style.display!=='none') v.textContent=fmt(state.t);
+      fill.style.strokeDashoffset=C*(1-state.t/state.max);
+    }
+
+    document.getElementById('size').addEventListener('input',function(){ state.dial=Math.round(+this.value/4)*4; apply(); });
+    document.getElementById('seg').addEventListener('click',function(e){
+      var b=e.target.closest('button'); if(!b) return;
+      [].forEach.call(this.children,function(x){x.classList.remove('on');}); b.classList.add('on');
+      state.style=b.dataset.style; apply();
+    });
+    document.getElementById('plus').addEventListener('click',function(){ state.max=Math.min(600,state.max+5); if(state.t>state.max)state.t=state.max; apply(); renderTime(); });
+    document.getElementById('minus').addEventListener('click',function(){ state.max=Math.max(5,state.max-5); if(state.t>state.max)state.t=state.max; apply(); renderTime(); });
+    document.getElementById('themesw').addEventListener('click',function(){ this.classList.toggle('on'); state.dark=this.classList.contains('on'); apply(); });
+
+    // ===== COMPONENT grab bar → reorder the unit within the DOM stack (snap to slots) =====
+    var compGrab=document.getElementById('compGrab'), moving=false;
+    function slotsExceptUnit(){ return [].slice.call(stack.children).filter(function(c){ return c!==unit; }); }
+    function reorderTo(clientY){
+      var placed=false;
+      slotsExceptUnit().forEach(function(c){
+        var r=c.getBoundingClientRect(), mid=r.top+r.height/2;
+        if(!placed && clientY<mid){ stack.insertBefore(unit,c); placed=true; }
+      });
+      if(!placed) stack.appendChild(unit);
+    }
+    compGrab.addEventListener('mousedown',function(e){ moving=true; unit.classList.add('lifting'); e.preventDefault(); });
+    document.addEventListener('mousemove',function(e){ if(moving) reorderTo(e.clientY); });
+    document.addEventListener('mouseup',function(){ if(moving){ moving=false; unit.classList.remove('lifting'); } });
+
+    // ===== arrow keys → move the unit one slot in the stack =====
+    function flash(){ unit.classList.add('kbflash'); setTimeout(function(){ unit.classList.remove('kbflash'); },220); }
+    unit.addEventListener('keydown',function(e){
+      if(e.key==='ArrowUp'){ var p=unit.previousElementSibling; if(p){ stack.insertBefore(unit,p); flash(); } e.preventDefault(); }
+      else if(e.key==='ArrowDown'){ var n=unit.nextElementSibling; if(n){ stack.insertBefore(n,unit); flash(); } e.preventDefault(); }
+    });
+    unit.focus();
+
+    // ===== INSPECTOR grab bar → drag, then SNAP to a dock (below / beside) — no absolute rest =====
+    var inspGrab=document.getElementById('inspGrab'), inspector=document.getElementById('inspector'), idrag=false, sx=0, sy=0;
+    inspGrab.addEventListener('mousedown',function(e){ idrag=true; sx=e.clientX; sy=e.clientY; inspector.style.transition='none'; e.preventDefault(); e.stopPropagation(); });
+    document.addEventListener('mousemove',function(e){ if(!idrag) return; inspector.style.transform='translate('+(e.clientX-sx)+'px,'+(e.clientY-sy)+'px)'; });
+    document.addEventListener('mouseup',function(e){
+      if(!idrag) return; idrag=false;
+      var dx=e.clientX-sx, dy=e.clientY-sy;
+      inspector.style.transition='transform .16s ease'; inspector.style.transform='';   // snap back to docked flow
+      // decide dock: mostly-horizontal drag → beside; else below
+      unit.setAttribute('data-dock', (Math.abs(dx)>Math.abs(dy) && Math.abs(dx)>40) ? 'right' : 'bottom');
+    });
+
+    apply(); renderTime();
+    setInterval(function(){ state.t=(state.t<=0)?state.max:state.t-1; renderTime(); },1000);
+  </script>
+</body>
+</html>

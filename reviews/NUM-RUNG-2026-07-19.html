@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>.num at 24px — add a Component rung, or snap?</title>
+<style>
+  :root{
+    --uf:"Univers Next HSBC","HSBC_MtUnivers_Latin","Helvetica Neue",Arial,sans-serif;
+    --text:#333333; --muted:#5b6770; --line:#e6e8ea; --bg-soft:#f6f7f8; --accent:#db0011;
+    --track:#e6e8ea; --fill:#333333;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:var(--uf); color:#111; background:#fff; line-height:1.4;
+       max-width:1040px; margin:0 auto; padding:48px 40px 120px;}
+  :is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+  .eyebrow{font-size:12px; font-weight:500; color:var(--accent); margin-bottom:6px;}
+  h1{font-size:32px; font-weight:300; line-height:1.15; margin-bottom:10px;}
+  .lede{font-size:16px; color:var(--muted); max-width:66ch; margin-bottom:8px;}
+  .meta{font-size:12px; color:var(--muted); margin-bottom:40px;}
+  h3.section{font-size:12px; font-weight:500; letter-spacing:.04em; color:#111;
+       border-top:2px solid #111; padding-top:8px; margin:46px 0 20px;}
+  .note{font-size:13px; color:#111; max-width:78ch; margin:0 0 14px;}
+  .note b{font-weight:500;}
+  .muted{color:var(--muted);}
+  code{font-family:ui-monospace,Menlo,monospace; font-size:.86em; background:var(--bg-soft); padding:1px 5px;}
+
+  /* ---- the roundel, straight from Countdown-timer.reference ---- */
+  .row{display:flex; gap:56px; align-items:flex-start; flex-wrap:wrap; margin-bottom:8px;}
+  .opt{display:flex; flex-direction:column; align-items:center; gap:14px; width:180px;}
+  .dial{position:relative; width:84px; height:84px;}
+  .ring{position:absolute; inset:0; width:84px; height:84px; transform:rotate(-90deg);}
+  .ring circle{fill:none; stroke-width:6;}
+  .ring .track{stroke:var(--track);}
+  .ring .fill{stroke:var(--fill); stroke-linecap:butt;}
+  .num{position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    line-height:1; color:var(--text); font-variant-numeric:tabular-nums; font-weight:500;}
+  .n20 .num{font-size:20px;}
+  .n24 .num{font-size:24px;}
+  .n32 .num{font-size:32px;}
+  .cap{font-size:12px; color:#111; font-weight:500; text-align:center;}
+  .cap small{display:block; color:var(--muted); font-weight:400; margin-top:3px; max-width:150px;}
+  .tick{display:inline-block; font-size:11px; color:var(--accent); font-weight:500; margin-top:4px;}
+
+  /* bare numerals — pure type, no roundel */
+  .bare{display:flex; gap:56px; align-items:baseline; flex-wrap:wrap; padding:8px 0 4px;}
+  .bare div{display:flex; flex-direction:column; gap:6px;}
+  .bare .lbl{font-size:11px; color:var(--muted);}
+  .bn{font-weight:500; font-variant-numeric:tabular-nums; line-height:1;}
+
+  table.opts{border-collapse:collapse; font-size:13px; margin:6px 0 18px; width:100%; max-width:820px;}
+  table.opts th, table.opts td{border:1px solid var(--line); padding:9px 12px; text-align:left; vertical-align:top;}
+  table.opts th{background:var(--bg-soft); font-weight:500;}
+  table.opts code{background:#fff;}
+  .lean{background:#fff8e6; border:1px solid #f0d78a; padding:14px 16px; max-width:820px; font-size:13px; margin:8px 0 0;}
+</style>
+</head>
+<body>
+  <div class="eyebrow">Apollo · type system · small pick</div>
+  <h1>.num at 24px — add a rung, or snap?</h1>
+  <p class="lede">The Countdown-timer number renders <code>font:500 24px/1</code>. There is <b>no Component
+     composite at 24px</b> — the ramp runs 12 / 14 / 16 / 20 / 32 / 40 / 52. Three ways to close the gap,
+     shown in the real 84px roundel below (partial ring, the "0:10" case).</p>
+  <p class="meta">Review · 2026-07-19 · real HSBC cut · <b>nothing changes until you pick</b></p>
+
+  <h3 class="section">IN THE ROUNDEL — the number the rule governs</h3>
+  <div class="row">
+    <div class="opt n20">
+      <div class="dial">
+        <svg class="ring" viewBox="0 0 84 84" aria-hidden="true"><circle class="track" cx="42" cy="42" r="36"/><circle class="fill" cx="42" cy="42" r="36" stroke-dasharray="226" stroke-dashoffset="158"/></svg>
+        <span class="num">0:10</span>
+      </div>
+      <div class="cap">B · snap to 20<small>reuse <code>.t-cm-section-label</code> (20 / 500)</small></div>
+    </div>
+    <div class="opt n24">
+      <div class="dial">
+        <svg class="ring" viewBox="0 0 84 84" aria-hidden="true"><circle class="track" cx="42" cy="42" r="36"/><circle class="fill" cx="42" cy="42" r="36" stroke-dasharray="226" stroke-dashoffset="158"/></svg>
+        <span class="num">0:10</span>
+      </div>
+      <div class="cap">A · keep 24 (new rung)<small>the value it was designed at<span class="tick">◂ my lean</span></small></div>
+    </div>
+    <div class="opt n32">
+      <div class="dial">
+        <svg class="ring" viewBox="0 0 84 84" aria-hidden="true"><circle class="track" cx="42" cy="42" r="36"/><circle class="fill" cx="42" cy="42" r="36" stroke-dasharray="226" stroke-dashoffset="158"/></svg>
+        <span class="num">0:10</span>
+      </div>
+      <div class="cap">C · snap to 32<small>reuse <code>.t-cm-heading</code> (32 / 400 — note lighter weight)</small></div>
+    </div>
+  </div>
+
+  <h3 class="section">BARE NUMERALS — the pure type step</h3>
+  <div class="bare">
+    <div><span class="lbl">20px</span><span class="bn" style="font-size:20px">0:10</span></div>
+    <div><span class="lbl">24px</span><span class="bn" style="font-size:24px">0:10</span></div>
+    <div><span class="lbl">32px</span><span class="bn" style="font-size:32px">0:10</span></div>
+  </div>
+
+  <h3 class="section">THE THREE OPTIONS</h3>
+  <table class="opts">
+    <tr><th>option</th><th>what it means</th><th>cost</th></tr>
+    <tr>
+      <td><b>A · keep 24</b><br><span class="muted">new rung</span></td>
+      <td>Add a Component composite at 24px (a numeric/figure rung, 500 weight). Bind <code>.num</code> to it.</td>
+      <td>Widens the type ramp by one step — a <b>ruling</b>, not a sweep (every <code>type.css</code> selector is global). The figure ramp becomes 52 / 40 / 24.</td>
+    </tr>
+    <tr>
+      <td><b>B · snap to 20</b></td>
+      <td>Reuse <code>.t-cm-section-label</code> (20 / 500). Weight already matches. Number drops 4px.</td>
+      <td>No new rung. Conflates a numeric display with a label composite; slightly smaller in the roundel.</td>
+    </tr>
+    <tr>
+      <td><b>C · snap to 32</b></td>
+      <td>Reuse <code>.t-cm-heading</code> (32 / 400). Number grows 8px.</td>
+      <td>No new rung, but <b>weight shifts 500 → 400</b> and a 4-char string gets tight in the 84px roundel.</td>
+    </tr>
+  </table>
+
+  <div class="lean"><b>My lean: A (keep 24, add a rung).</b> The countdown number is a <b>figure</b> (display numeral),
+     not a label — it belongs on the figure ramp (52 / 40 / …), and 24 reads as purpose-built in the roundel where
+     20 feels slightly under and 32 crowds the width and drops to weight 400. But this is a see-it call, and adding a
+     rung is deliberate type-system growth — so it's yours. If you prefer no new rung, <b>B</b> is the safer snap
+     (weight already matches).</div>
+
+</body>
+</html>

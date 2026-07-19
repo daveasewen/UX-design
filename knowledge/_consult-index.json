@@ -3,12 +3,12 @@
   "count": 557,
   "byKind": {
     "rule": 465,
-    "ruling": 22,
-    "assertion": 6,
+    "ruling": 24,
+    "assertion": 5,
     "gate": 20,
     "adr": 7,
     "defect": 8,
-    "open-item": 29
+    "open-item": 28
   },
   "records": [
     {
@@ -1862,7 +1862,7 @@
     {
       "id": "dv-019",
       "kind": "rule",
-      "text": "Only palette colours in charts (print/digital palette, or the programme toolkit). Now: the unified supporting palette. [BLOCKING-derivable — the compose gate's 0-rogue-hex, applied to chart fills] {#dv-017} ⚠ SCOPED OVERRIDE + RESOLUTIONS (RULED+CONFIRMED Dave 2026-07-16; record = `reviews/DATAVIZ-SERIES-RENDERS-2026-07-16.html` REV 3): (a) Gain/loss deltas — delta INDICATORS (text, arrows, spark end-values, RAG-style cells) may carry red/green semantic colour (`data/delta-*` in `semantic-colour",
+      "text": "Only palette colours in charts (print/digital palette, or the programme toolkit). Now: the unified supporting palette. [BLOCKING-derivable — the compose gate's 0-rogue-hex, applied to chart fills] {#dv-017} ⚠ SCOPED OVERRIDE + RESOLUTIONS (RULED+CONFIRMED Dave 2026-07-16; record = `reviews/DATAVIZ-SERIES-RENDERS-2026-07-16.html` REV 3): (a) Gain/loss deltas — delta INDICATORS (text, arrows, spark end-values) may carry red/green semantic colour (`data/delta-*` in `semantic-colour.json`; derived v",
       "file": "knowledge/guidelines/data-visualisation.md",
       "status": "ADVISORY",
       "bite": null
@@ -3828,6 +3828,14 @@
       "bite": null
     },
     {
+      "id": "T-D14",
+      "kind": "ruling",
+      "text": "⭐ T-D14 — RULED: the .num 24px rung added + first composite binding (2026-07-19). Dave, mopping up the small-picks desk (review reviews/SMALL-PICKS-DESK-2026-07-19-*): *\"Enact now — add 24 + bind.\"* Enacted: New composite .t-cm-figure-3 — 24px / 500 / line-height:1 / --slot:28px. Closes the ds-005 gap (no Component rung existed at 24; ramp was 12/14/16/20/32/40/52). Weight 500 PRESERVES the countdown numeral's shipped value — a *zero-visual-change* enactment. figure-1/2 are 300 because large display reads light; a small numeric display needs the weight-up (weight is per-role in the component composites, not monotonic — cf. heading 400 / section-label 500). Named figure-3 per the ramp Dave reviewed (\"the figure ramp becomes 52/40/24\"). First composite bound in MARKUP. The Countdown numeral binds .t-cm-figure-3 via a class on the element (<span class=\"num t-cm-figure-3\">), its raw font:500 24px/1 shorthand removed. Mechanism was FORCED, not freely chosen: bare .num cannot be appended to the globally-linked type.css — it collides with .cn-table td.num (table numeric cells would jump to 24px). Class-on-element is collision-proof and carries no blast radius (no global selector added, no _type-bindings.json entry). ASSERT-003 RETIRED (its clears_when — \"a binding mechanism is ruled and the first composite is bound in markup\" — is now met). Removed from _assertions.json; native check unregistered in _validate_assertions.py (function kept as a tombstone). This is the assertion gate working: it STOPPED the build the moment the \"0 bound in markup\" claim flipped, and forced this documented ruling instead of a silent edit. STILL OPEN (re-homed from ASSERT-003 — do not lose) The BULK binding mechanism is NOT ruled. This is ONE element, forced by a collision. The general question — how the remaining ~338 TYPE-002 elements bind (markup class vs selector-list append vs build-time inline) — remains open, per T-D9/T-D11. Binding at scale is still an architectural decision, not a mechanical sweep. Multi-size 20/24/32. Dave approved binding the numeral small/med/large → 20/24/32, but the Countdown snippet is single-size today. The 20/32 rungs already exist; the multi-size binding lands when the timer gains size variants (ties to the μX size control / _FUTURE-STATE). ⚠️ Weight watch: section-label(20) is 500, heading(32) is 400 — a numeral scaling 20→32 would drift 500→400 unless a consistent numeric-weight ramp is ruled then.",
+      "file": "knowledge/_proforma/_TYPE-DECISIONS.md",
+      "status": "RULED",
+      "bite": null
+    },
+    {
       "id": "R-D1",
       "kind": "ruling",
       "text": "R-D1 — RAG promotion, round one (2026-07-18). Source: reviews/RAG-PROMOTION-2026-07-18.html, 12 pins. ⚠️ PIN ORDER IS NOT ROW ORDER — corrected against the numbers In §5 the four pins mapped to rows in order and read perfectly. In §1 they did not. Taken in order, pin 2 (\"good with white text\") would have landed on amber, whose delta #C58720 gives white 3.06:1 — below AA for normal text. And pin 4 (\"bad with both\") would have landed on blue, which passes with white at 4.60:1. Recomputed every pair from the hex. Only ONE hue fails with both white and #333: amber (white 3.06 · #333 4.13, both large-text-only). That is also exactly the trap GOOD-MORNING flagged. So the marks are: > METHOD, keep it: pin ORDER records the order Dave marked things, not the order they appear. > §5 agreed by coincidence. Resolve pins against the DATA, never against sequence. T-D10 was > settled by pin POSITION; this one had to be settled by arithmetic. Both beat the pin's text. §1 · Light mode — RULED | hue | delta | white | ruling | |---|---|---|---| | red | #B92F1E | 6.02 PASS | good with white | | green | #16864E | 4.61 PASS | good with white | | blue | #2573DC | 4.60 PASS | good with white | | amber | #C58720 | 3.06 FAIL | \"bad with both white and black, we have to fix this\" | ⭐ THE BIG ONE — the dark-text variant is DROPPED. Dave, three times: *\"good with white text, we don't need the black text version.\"* White is the RAG text colour, universally. This kills a whole variant axis: no #333-on-RAG anywhere, so the amber #333 4.13 trap stops being a variant to maintain and becomes moot. Simplification, not a constraint. §2 · Dark mode — RULED red #CC4333 white 4.75 good · blue #2674DC white 4.55 (unmarked, passes) · amber #C0831F white 3.23 — problem, fix · green #1AA05C white 3.37 — problem, fix. §5 · The near-black — RULED, all four | value | ruling | why (Dave's words) | |---|---|---| | #000000 | RETAIN IN THE KB | *\"black must be retained in the KB so that it's the source of truth… there will be a query bot for the KB, so as this is a brand colour it must be kept.\"* Not a usage ruling — a SOURCE-OF-TRUTH ruling. The KB answers questions about the brand, so it must carry the brand's real black even where screens use something else. | | #1A1A1A | THE DIGITAL BLACK | *\"a replacement on screens, for screens. We'll use this a lot in apollo mono.\"* | | #1D1D1D | DROP | *\"don't need this\"* — color/grey/dark-mode/600 is not needed alongside the digital black. | | #333333 | CANON, STAYS | *\"This is canon and stays.\"* | §1 · Incumbents — RULED (pin 12) *\"we're ditching all of the incumbents for new components but they must remain when we create legacy components, they will be in a theme in the future.\"* ⇒ Deltas win for all NEW work. Incumbent values are NOT deleted — they are retired into a future legacy theme. Tombstone, do not remove. Consistent with _retired/ (tracked, residual value) vs _to_delete/. ---",
@@ -3854,7 +3862,15 @@
     {
       "id": "R-D4",
       "kind": "ruling",
-      "text": "R-D4 — Matting rungs RULED + first token promotion (2026-07-18). The rungs — RULED Source: Dave's second markup of reviews/RAG-MATTING-2026-07-18.html (3 pins) plus a direct readback — the pins named the hue but not the step (every row shares td.ask; the R-D2 ⛔ OPEN predicted exactly this), so the rung came from an explicit in-chat pick, not inference: | hue | pick | value | note | |---|---|---|---| | green | matted 15% | #2B7E4F | L 0.530 · C 0.109 · H 154.9° · white 5.00 | | blue | matted 15% | #306EC6 | L 0.544 · C 0.151 · H 257.8° · white 5.03 | | red | as-is | #B92F1E (R-D1) | Dave: leave; no matting pass on red | | amber | — | absorbed by R-D3 | pin \"this for glyphs, not backgrounds\" = the R-D2/R-D3 split, already ruled | Q1 resolved implicitly: one matting level (15%) across green + blue. Q3 resolved: red as-is. Q0/Q2 were overtaken by R-D3 (the AMBER-MATRIX sheet — reviews/AMBER-MATRIX-2026-07-18.html — is where the amber background was re-cut; Dave's \"there was definitely work done on this\" verified against that sheet and R-D3). First token promotion — ENACTED (additive) tokens/semantic-colour.json gains the R-D2 role pairs as NEW flat keys under rag/ (<hue>-background + <hue>-glyph), values per R-D1/R-D3/R-D4. Incumbent keys (error/warning/success/information + tints) are UNTOUCHED — they are the future legacy theme (R-D1 pin 12). No component rebinds yet — that waits for the blast-radius gate, so this promotion is zero-visual-change by construction. Dark-mode is promoted only where ruled: red #CC4333 (R-D1) · amber pair mode-stable (R-D3) · blue dark #2674DC (passes 4.55 for white text; glyph-as-text on #111 4.15 stays OPEN) · green is promoted LIGHT-ONLY — the first enactment attempt carried the incumbent dark 1AA05C with an OPEN flag and the contrast gate refused it (3.37 vs 4.5): a known-failing value behind a prose flag is exactly the pattern the gates exist to stop. The dark leaf lands with the dark-green ruling. No unruled value was invented. Gate model extended, not weakened: the promotion also added RULED_PAIR_EXCLUSIONS to _contrast_utils.py — white rag/text × rag/warning-background is a pairing R-D3 rule 1 forbids outright, so the audit no longer tests a state that cannot occur (reason string carries the ledger ref). Note the promotion made the fills VISIBLE to the surface-resolver for the first time (incumbent keys never name-matched \"background\") — the gate seeing amber and dark-green at all is new coverage, and it bit correctly both times. Still open after R-D4 Dark-mode green fix · dark-mode red/blue text-glyph lift · the dv-017 contradiction · the amber gate (rules 1+2) · component rebinding to the new role tokens (AFTER the blast-radius gate).",
+      "text": "R-D4 — Matting rungs RULED + first token promotion (2026-07-18). The rungs — RULED Source: Dave's second markup of reviews/RAG-MATTING-2026-07-18.html (3 pins) plus a direct readback — the pins named the hue but not the step (every row shares td.ask; the R-D2 ⛔ OPEN predicted exactly this), so the rung came from an explicit in-chat pick, not inference: | hue | pick | value | note | |---|---|---|---| | green | matted 15% | #2B7E4F | L 0.530 · C 0.109 · H 154.9° · white 5.00 | | blue | matted 15% | #306EC6 | L 0.544 · C 0.151 · H 257.8° · white 5.03 | | red | as-is | #B92F1E (R-D1) | Dave: leave; no matting pass on red | | amber | — | absorbed by R-D3 | pin \"this for glyphs, not backgrounds\" = the R-D2/R-D3 split, already ruled | Q1 resolved implicitly: one matting level (15%) across green + blue. Q3 resolved: red as-is. Q0/Q2 were overtaken by R-D3 (the AMBER-MATRIX sheet — reviews/AMBER-MATRIX-2026-07-18.html — is where the amber background was re-cut; Dave's \"there was definitely work done on this\" verified against that sheet and R-D3). First token promotion — ENACTED (additive) tokens/semantic-colour.json gains the R-D2 role pairs as NEW flat keys under rag/ (<hue>-background + <hue>-glyph), values per R-D1/R-D3/R-D4. Incumbent keys (error/warning/success/information + tints) are UNTOUCHED — they are the future legacy theme (R-D1 pin 12). No component rebinds yet — that waits for the blast-radius gate, so this promotion is zero-visual-change by construction. Dark-mode is promoted only where ruled: red #CC4333 (R-D1) · amber pair mode-stable (R-D3) · blue dark #2674DC (passes 4.55 for white text; glyph-as-text on #111 4.15 stays OPEN) · green is promoted LIGHT-ONLY — the first enactment attempt carried the incumbent dark 1AA05C with an OPEN flag and the contrast gate refused it (3.37 vs 4.5): a known-failing value behind a prose flag is exactly the pattern the gates exist to stop. The dark leaf lands with the dark-green ruling. No unruled value was invented. Gate model extended, not weakened: the promotion also added RULED_PAIR_EXCLUSIONS to _contrast_utils.py — white rag/text × rag/warning-background is a pairing R-D3 rule 1 forbids outright, so the audit no longer tests a state that cannot occur (reason string carries the ledger ref). Note the promotion made the fills VISIBLE to the surface-resolver for the first time (incumbent keys never name-matched \"background\") — the gate seeing amber and dark-green at all is new coverage, and it bit correctly both times. Still open after R-D4 Dark-mode green fix · dark-mode red/blue text-glyph lift · ~~the dv-017 contradiction~~ (RULED R-D5) · the amber gate (rules 1+2) · component rebinding to the new role tokens (AFTER the blast-radius gate). ---",
+      "file": "knowledge/_proforma/_RAG-DECISIONS.md",
+      "status": "RULED",
+      "bite": null
+    },
+    {
+      "id": "R-D5",
+      "kind": "ruling",
+      "text": "R-D5 — the dv-017(a) contradiction, RESOLVED (2026-07-19). Dave, on reviews/DV017-DELTA-VS-RAG-2026-07-19-v1: *\"good for me.\"* The rule listed \"RAG-style cells\" among the red/green delta indicators, but RAG includes amber and R-D3 rule 2 bars amber as a directional colour — a palette the rule both permitted and excluded. RULED — split the clause (wording only, no values change): Directional deltas (gain/loss) are red/green ONLY — amber has no direction. RAG status (health / watch / within-tolerance) is a SEPARATE concern, governed by R-D3 (red/amber/green backgrounds, black text where ruled). Its component manifestation is specified separately — NOT by the delta clause. Enacted in knowledge/guidelines/data-visualisation.md {#dv-017}(a); rules-index regenerates on build. ⚠️ This is wording only. The *actual* RAG manifestation (cell / pill / dot+label / bar) and the dark-mode opens (green has no ruled dark value; dark red/blue fail 4.5 as glyph-on-text) are NOT settled here — they are the dedicated RAG-colours review, which Dave ruled the next deliverable (2026-07-19: *\"lets do this next\"*). Home: _FUTURE-STATE. This was the source of Dave's earlier confusion (the status-cell example ≠ real manifestation).",
       "file": "knowledge/_proforma/_RAG-DECISIONS.md",
       "status": "RULED",
       "bite": null
@@ -3921,14 +3937,6 @@
       "text": "The licensed Latin Univers DESKTOP set IS present and readable (TTF + OTF). Real-face rendering and metric measurement are available in-sandbox. Any doc still claiming 'the sandbox has no Univers' is STALE.",
       "file": "knowledge/_assertions.json",
       "status": "environment",
-      "bite": null
-    },
-    {
-      "id": "ASSERT-003",
-      "kind": "assertion",
-      "text": "The type COMPOSITES are bound in ZERO files — .t-cm-* / .t-ed-* appear in no markup. TYPE-002 binding is NOT a mechanical CSS edit. It needs a binding-mechanism ruling (markup class vs CSS composition vs build-time inlining). I under-scoped this on 2026-07-18 and said 339 were 'safely bindable'.",
-      "file": "knowledge/_assertions.json",
-      "status": "state",
       "bite": null
     },
     {
@@ -4270,7 +4278,7 @@
     {
       "id": "open-005",
       "kind": "open-item",
-      "text": ".num at 24px/400 — no Component rung at 24px (ramp: 12/14/16/20/32/40/52). Add or snap?",
+      "text": "Family A (reverse on near-black), 12 decls — held at 500. Re-specimen on a FULL dark surface.",
       "file": "_LIVE-STATE.md",
       "status": "OPEN",
       "bite": null
@@ -4278,7 +4286,7 @@
     {
       "id": "open-006",
       "kind": "open-item",
-      "text": "Family A (reverse on near-black), 12 decls — held at 500. Re-specimen on a FULL dark surface.",
+      "text": "Gates owed — rules that exist but do not bite",
       "file": "_LIVE-STATE.md",
       "status": "OPEN",
       "bite": null
@@ -4286,7 +4294,7 @@
     {
       "id": "open-007",
       "kind": "open-item",
-      "text": "Gates owed — rules that exist but do not bite",
+      "text": "Amber rules 1 + 2 (R-D3) · type.css load order · DEF-006 (see above) · dark-mode green",
       "file": "_LIVE-STATE.md",
       "status": "OPEN",
       "bite": null
@@ -4294,7 +4302,7 @@
     {
       "id": "open-008",
       "kind": "open-item",
-      "text": "Amber rules 1 + 2 (R-D3) · type.css load order · DEF-006 (see above) · dark-mode green",
+      "text": "⚠️ METHOD DEBT — the review overlay loses row identity",
       "file": "_LIVE-STATE.md",
       "status": "OPEN",
       "bite": null
@@ -4302,7 +4310,7 @@
     {
       "id": "open-009",
       "kind": "open-item",
-      "text": "⚠️ METHOD DEBT — the review overlay loses row identity",
+      "text": "🔴 GAP (2026-07-17, measured) — the library does NOT use the canon type ramp. Type was promoted",
       "file": "_LIVE-STATE.md",
       "status": "OPEN",
       "bite": null
@@ -4310,7 +4318,7 @@
     {
       "id": "open-010",
       "kind": "open-item",
-      "text": "🔴 GAP (2026-07-17, measured) — the library does NOT use the canon type ramp. Type was promoted",
+      "text": "✅ Icon SOURCE canvas normalised to 18×18 (2026-07-17, ruled option A — fix the assets, we own",
       "file": "_LIVE-STATE.md",
       "status": "OPEN",
       "bite": null
@@ -4318,7 +4326,7 @@
     {
       "id": "open-011",
       "kind": "open-item",
-      "text": "✅ Icon SOURCE canvas normalised to 18×18 (2026-07-17, ruled option A — fix the assets, we own",
+      "text": "🔵 SCHEDULED (Dave 2026-07-17) — ICON SCALE onto the 4px grid (step 0 above done). Icon render",
       "file": "_LIVE-STATE.md",
       "status": "OPEN",
       "bite": null
@@ -4326,7 +4334,7 @@
     {
       "id": "open-012",
       "kind": "open-item",
-      "text": "🔵 SCHEDULED (Dave 2026-07-17) — ICON SCALE onto the 4px grid (step 0 above done). Icon render",
+      "text": "🟢 RULE 16 (2026-07-16) — component documentation is part of \"done\": Swiss dossier in",
       "file": "_LIVE-STATE.md",
       "status": "OPEN",
       "bite": null
@@ -4334,7 +4342,7 @@
     {
       "id": "open-013",
       "kind": "open-item",
-      "text": "🟢 RULE 16 (2026-07-16) — component documentation is part of \"done\": Swiss dossier in",
+      "text": "🟡 PARKED — round-one DataViz kit BUILT + reviewed, \"good enough for now\", NOT signed off",
       "file": "_LIVE-STATE.md",
       "status": "OPEN",
       "bite": null
@@ -4342,7 +4350,7 @@
     {
       "id": "open-014",
       "kind": "open-item",
-      "text": "🟡 PARKED — round-one DataViz kit BUILT + reviewed, \"good enough for now\", NOT signed off",
+      "text": "DataViz foundations — RATIFIED + PROMOTED (2026-07-16): method dossier ratified (semantic SVG +",
       "file": "_LIVE-STATE.md",
       "status": "OPEN",
       "bite": null
@@ -4350,7 +4358,7 @@
     {
       "id": "open-015",
       "kind": "open-item",
-      "text": "DataViz foundations — RATIFIED + PROMOTED (2026-07-16): method dossier ratified (semantic SVG +",
+      "text": "🟢 Masthead — SHIPPED as an MLP (review complete, Dave \"done at last\", 2026-07-16; MLP status",
       "file": "_LIVE-STATE.md",
       "status": "OPEN",
       "bite": null
@@ -4358,7 +4366,7 @@
     {
       "id": "open-016",
       "kind": "open-item",
-      "text": "🟢 Masthead — SHIPPED as an MLP (review complete, Dave \"done at last\", 2026-07-16; MLP status",
+      "text": "⚠️ PROPAGATION GAP (partially closed): ADR-0006 + notes/_VISION-iteration-machine_2026-07-03.html",
       "file": "_LIVE-STATE.md",
       "status": "OPEN",
       "bite": null
@@ -4366,7 +4374,7 @@
     {
       "id": "open-017",
       "kind": "open-item",
-      "text": "⚠️ PROPAGATION GAP (partially closed): ADR-0006 + notes/_VISION-iteration-machine_2026-07-03.html",
+      "text": "Worked spread — DONE 2026-07-05, two instances (Sonnet + Opus re-run). First",
       "file": "_LIVE-STATE.md",
       "status": "OPEN",
       "bite": null
@@ -4374,7 +4382,7 @@
     {
       "id": "open-018",
       "kind": "open-item",
-      "text": "Worked spread — DONE 2026-07-05, two instances (Sonnet + Opus re-run). First",
+      "text": "🟠 GENERATION SHAPE — RULED (Dave, 2026-07-10): rule-tuning + inference tiering LEAD; the",
       "file": "_LIVE-STATE.md",
       "status": "OPEN",
       "bite": null
@@ -4382,7 +4390,7 @@
     {
       "id": "open-019",
       "kind": "open-item",
-      "text": "🟠 GENERATION SHAPE — RULED (Dave, 2026-07-10): rule-tuning + inference tiering LEAD; the",
+      "text": "Named-not-built harness machinery (§9/§9a): isolated generation · divergence probe (formal",
       "file": "_LIVE-STATE.md",
       "status": "OPEN",
       "bite": null
@@ -4390,7 +4398,7 @@
     {
       "id": "open-020",
       "kind": "open-item",
-      "text": "Named-not-built harness machinery (§9/§9a): isolated generation · divergence probe (formal",
+      "text": "PM-KG MVP (ADR-0007): _build_live_state.py + the staleness gate + _capture_gate.py — own",
       "file": "_LIVE-STATE.md",
       "status": "OPEN",
       "bite": null
@@ -4398,7 +4406,7 @@
     {
       "id": "open-021",
       "kind": "open-item",
-      "text": "PM-KG MVP (ADR-0007): _build_live_state.py + the staleness gate + _capture_gate.py — own",
+      "text": "✅ Decision-corpus audit — TIER A CLEAN 2026-07-05 (ADR-0007 §5; method",
       "file": "_LIVE-STATE.md",
       "status": "OPEN",
       "bite": null
@@ -4406,7 +4414,7 @@
     {
       "id": "open-022",
       "kind": "open-item",
-      "text": "✅ Decision-corpus audit — TIER A CLEAN 2026-07-05 (ADR-0007 §5; method",
+      "text": "⭐ Harness modes + dials exploration (from the 07-05 defer): flexible to a degree — clean",
       "file": "_LIVE-STATE.md",
       "status": "OPEN",
       "bite": null
@@ -4414,7 +4422,7 @@
     {
       "id": "open-023",
       "kind": "open-item",
-      "text": "⭐ Harness modes + dials exploration (from the 07-05 defer): flexible to a degree — clean",
+      "text": "⭐ TOV = digital-editorial spin-off + future content audit (§4b defer): genuinely useful for",
       "file": "_LIVE-STATE.md",
       "status": "OPEN",
       "bite": null
@@ -4422,7 +4430,7 @@
     {
       "id": "open-024",
       "kind": "open-item",
-      "text": "⭐ TOV = digital-editorial spin-off + future content audit (§4b defer): genuinely useful for",
+      "text": "⭐ Charter §4 language-strip (HARD follow-up): strip §4's interpretive prose",
       "file": "_LIVE-STATE.md",
       "status": "OPEN",
       "bite": null
@@ -4430,7 +4438,7 @@
     {
       "id": "open-025",
       "kind": "open-item",
-      "text": "⭐ Charter §4 language-strip (HARD follow-up): strip §4's interpretive prose",
+      "text": "⭐ Unified DS knowledge-graph + ingestion, done right (from ADR-0003 defer). The whole corpus is",
       "file": "_LIVE-STATE.md",
       "status": "OPEN",
       "bite": null
@@ -4438,7 +4446,7 @@
     {
       "id": "open-026",
       "kind": "open-item",
-      "text": "⭐ Unified DS knowledge-graph + ingestion, done right (from ADR-0003 defer). The whole corpus is",
+      "text": "Seaworthiness plan — DONE 2026-07-05 → notes/_SEAWORTHINESS-PLAN_2026-07-05.md (the",
       "file": "_LIVE-STATE.md",
       "status": "OPEN",
       "bite": null
@@ -4446,21 +4454,13 @@
     {
       "id": "open-027",
       "kind": "open-item",
-      "text": "Seaworthiness plan — DONE 2026-07-05 → notes/_SEAWORTHINESS-PLAN_2026-07-05.md (the",
-      "file": "_LIVE-STATE.md",
-      "status": "OPEN",
-      "bite": null
-    },
-    {
-      "id": "open-028",
-      "kind": "open-item",
       "text": "D2 — novel-screen test — THE #1 unlock. Waiting on a colleague's brief (their brief-v2 + own",
       "file": "_LIVE-STATE.md",
       "status": "OPEN",
       "bite": null
     },
     {
-      "id": "open-029",
+      "id": "open-028",
       "kind": "open-item",
       "text": "Toolkit tranche 2 (Dropdowns ×4) — parallel cheap-model workstream. Memory",
       "file": "_LIVE-STATE.md",

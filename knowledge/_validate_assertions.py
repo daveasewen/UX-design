@@ -130,7 +130,12 @@ def native_composites_unbound():
     return n == 0, f"{n} composite class usage(s) in markup"
 
 
-NATIVE = {"ASSERT-003": native_composites_unbound}
+# ASSERT-003 RETIRED 2026-07-19 — its clears_when ("a binding mechanism is ruled and the first
+# composite is bound in markup") was MET: Dave ruled the .num 24 rung; the countdown numeral is now
+# bound to .t-cm-figure-3 via a markup class (collision-forced — bare `.num` hits `.cn-table td.num`).
+# The BULK binding mechanism for the remaining elements stays open — re-homed in _TYPE-DECISIONS T-D14,
+# not guarded by an assertion. `native_composites_unbound` kept as a tombstone; unregistered below.
+NATIVE = {}
 
 
 # ---------------------------------------------------------------- runner

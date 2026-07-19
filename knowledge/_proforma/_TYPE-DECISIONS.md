@@ -977,5 +977,36 @@ things. That is not mechanical and needs its own reviewed batch. Wiring DEF-006 
 turn the build red on known, unruled work.
 
 ### Carried, unchanged
-`.tag` collision (one atom one size, or `.tag--sm`?) · `.num` at 24px with no Component rung ·
-both still awaiting a pick.
+`.tag` collision (one atom one size, or `.tag--sm`?) — still awaiting a pick.
+*(The `.num` 24px pick is now RULED — see T-D14 below.)*
+
+---
+
+## ⭐ T-D14 — RULED: the `.num` 24px rung added + first composite binding (2026-07-19)
+
+**Dave, mopping up the small-picks desk (review `reviews/SMALL-PICKS-DESK-2026-07-19-*`): *"Enact now — add 24
++ bind."*** Enacted:
+
+- **New composite `.t-cm-figure-3` — 24px / 500 / line-height:1 / `--slot:28px`.** Closes the ds-005 gap (no
+  Component rung existed at 24; ramp was 12/14/16/20/32/40/52). **Weight 500 PRESERVES the countdown numeral's
+  shipped value** — a *zero-visual-change* enactment. figure-1/2 are 300 because large display reads light; a small
+  numeric display needs the weight-up (weight is per-role in the component composites, not monotonic — cf. heading 400
+  / section-label 500). Named `figure-3` per the ramp Dave reviewed ("the figure ramp becomes 52/40/24").
+- **First composite bound in MARKUP.** The Countdown numeral binds `.t-cm-figure-3` via a **class on the element**
+  (`<span class="num t-cm-figure-3">`), its raw `font:500 24px/1` shorthand removed. **Mechanism was FORCED, not
+  freely chosen:** bare `.num` cannot be appended to the globally-linked type.css — it collides with `.cn-table td.num`
+  (table numeric cells would jump to 24px). Class-on-element is collision-proof and carries no blast radius (no global
+  selector added, no `_type-bindings.json` entry).
+- **ASSERT-003 RETIRED** (its `clears_when` — "a binding mechanism is ruled and the first composite is bound in
+  markup" — is now met). Removed from `_assertions.json`; native check unregistered in `_validate_assertions.py`
+  (function kept as a tombstone). This is the assertion gate working: it STOPPED the build the moment the "0 bound in
+  markup" claim flipped, and forced this documented ruling instead of a silent edit.
+
+### STILL OPEN (re-homed from ASSERT-003 — do not lose)
+- **The BULK binding mechanism is NOT ruled.** This is ONE element, forced by a collision. The general question —
+  how the remaining ~338 TYPE-002 elements bind (markup class vs selector-list append vs build-time inline) — remains
+  open, per T-D9/T-D11. Binding at scale is still an architectural decision, not a mechanical sweep.
+- **Multi-size 20/24/32.** Dave approved binding the numeral small/med/large → 20/24/32, but the Countdown snippet is
+  single-size today. The 20/32 rungs already exist; the multi-size binding lands **when the timer gains size variants**
+  (ties to the μX size control / `_FUTURE-STATE`). ⚠️ Weight watch: section-label(20) is 500, heading(32) is 400 — a
+  numeral scaling 20→32 would drift 500→400 unless a consistent numeric-weight ramp is ruled then.
