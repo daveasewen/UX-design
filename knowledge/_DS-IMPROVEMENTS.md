@@ -184,3 +184,12 @@ descender is cut inside a trimmed+clipped label (cheap static approximation: tri
 
 **Artifacts:** `reviews/TAG-COMPONENT-2026-07-18.html` (specimen + fix) · the 5-way alignment comparison
 (`outputs/tag-align-test`) · memory `leading-trim-label-decision` (gotcha 2, extended here).
+
+## ds-006 — `_make_review.py` drops snippet review copies INTO the gated `snippets/` dir (2026-07-19)
+`_make_review.py` co-locates the review copy next to its source. For a **snippet** source
+(`snippets/<X>.reference.html`) the copy lands as `snippets/<X>.reference.REVIEW.html` — inside a dir the
+**grid + blast-radius gates scan** (they glob `snippets/*.html`; only the snippet gate uses `*.reference.html`).
+The overlay's own chrome (5px/14px padding, extra `.stateLabel`) then reds the build. **Workaround used:** move
+the copy to `knowledge/_review/` (no gate scans there), as done for `Amount-display`. **Proper fix:** teach
+`out_path()` to send snippet sources to `_review/` too (like `_proforma/` sources), OR have the grid +
+blast-radius globs exclude `*.REVIEW.html`. Low effort; do next time `_make_review` is touched.

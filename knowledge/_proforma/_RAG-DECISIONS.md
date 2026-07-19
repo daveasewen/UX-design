@@ -650,3 +650,29 @@ Renames captured: Apollo UI → **Apollo Console**; SC = **Apollo Supercharge**;
 > first." Never auto-swap. Flagged so far: `rag/text/on-light` **#333** (fails AA on the dark fills 4.48/3.79;
 > #000 clears 7.45/6.30) · `rag/neutral` **#767676**. Coloured `-tint` washes are out of scope. See
 > [[feedback-grey-tint-check]].
+
+## R-D16 — Apollo Mono semantic greys seated on the `color/mono/*` ramp (2026-07-19)
+Dave ruled on the review sheet `reviews/APOLLO-MONO-SEMANTIC-GREYS-2026-07-19-v1` (5 pins). The 79 semantic
+greys were surfaced against the new ramp (grey-tint check — nothing auto-swapped). Rulings:
+
+1. **Primary text ink → `mono/4` `#1A1A1A`** (the "make it black" option). Covers `text/default`,
+   `icon/default`, `rag/text/on-light` (light values `#333` → `#1A1A1A`; dark stays white).
+   **★ SUPERSEDES `col25-011`** ("typography = white or Grey-8 `#333` only") **for Apollo Mono** — Mono text
+   ink is digital-black; **Grey-8 stays Legacy-only.** Also clears the grey-tint flag on `rag/text/on-light`.
+2. **Secondary text → DROPPED.** Mono carries **no second text grey**; `text/secondary` collapses to the
+   single ink (light `#1A1A1A`, dark `#FFFFFF`). Muted/caption hierarchy = **weight + size, not colour**
+   ("very mono"). Visible change library-wide (muted text goes full-ink).
+3. **UI grey `#767676` (Grey-6) → `mono/8` `#808080`.** Borders/pressed fills/scrollbar/`rag/neutral`.
+   `#808080` = 3.9:1 on white — fine as border/UI (3:1), below AA-text; `rag/neutral` is label-paired (R-D6)
+   so OK. Clears the grey-tint flag on `rag/neutral`.
+4. **Tinted `#D7D8D6` → `mono/12` `#E1E1E1`.** It was non-neutral (faint green cast); now a pure step.
+   Borders/dividers/disabled fills.
+5. **Mechanical nearest-step maps → APPROVED** ("all good"): `#1D1D1D`/`#212121`→`mono/4`,
+   `#EDEDED`/`#F3F3F3`→`mono/13`, `#707070`/`#696969`/`#6C6C6C`→`mono/7`, `#404040`/`#474747`→`mono/6`,
+   `#9B9B9B`→`mono/9`, `#787878`→`mono/8`. Already-exact (`#000`/`#1A1A1A`/`#808080`/`#B7B7B7`/`#FFF`) unchanged.
+
+**Status: RULED, NOT YET ENACTED.** Enactment (Sonnet, next real deliverable) = write the Mono grey values into
+`tokens/semantic-colour.json`, **sync the 38 component declarations to the tokens** (like the `#1A1A1A`
+ground sweep), regenerate `canon/canon.css`, re-gate. **Propagation owed:** annotate `col25-011` /
+`colour-usage.md` with the Mono override (text = `#1A1A1A`; Grey-8 = Legacy). Sheet + `gen_mono_grey_sheet.py`
+carry the full table + contrasts.

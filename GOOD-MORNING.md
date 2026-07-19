@@ -1,30 +1,32 @@
 # Good morning, Dave ☕
 
-*Briefing — written 2026-07-19 (date from `date`, per the ritual rule), session
-**"Apollo Mono: RAG promoted, the four-theme architecture, and a grey ramp on a curve"** — promoted the R-D14
-RAG fills into the token store, made the four-theme model explicit and inscribed it (R-D15), and built Apollo
-Mono's neutral grey ramp as a dual-end curve you dialled on a live tuner.*
+*Briefing — written 2026-07-19 19:46 (date from `date`), session
+**"Apollo Mono: the money atom, digital-black as the new #000, and the greys ruled onto the ramp"** — built the
+first P1 money-format atom, ruled digital-black the GENERAL new `#000` (swept all 38 components), and turned the
+whole semantic-grey set into rulings (R-D16) against the new Mono ramp.*
 
-> ✅ **CONDUCTOR session — THREE strands merged into one commit.** Two workers ran in parallel and handed up
-> receipts (`notes/_receipts/`): the **rules-index worker** (truncation fix + parallel-session runbook
-> hardening) and the **components-expansion worker** (library-wide dark-ground rebind to `#1A1A1A`, money
-> number styles, new `Amount-display` component). The shared tree entangles all three through generated files
-> (canon.css, audits), so they land together — see COMMIT STATE. **The components rebind touched all 38
-> components — eyeball it in the diff before pushing.**
+> ✅ **CONDUCTOR (continued).** The same-day PRIOR strand is already committed + pushed (RAG fills promoted,
+> four-theme **R-D15**, the `color/mono/1–15` grey ramp — see §A). **This session** then added the
+> **`Amount-display`** P1 atom + figure rungs `.t-cm-figure-4/5/6`, the **digital-black `#1A1A1A` library sweep**
+> (all 38 components' dark grounds — committed), and **R-D16** (every semantic grey ruled onto the Mono ramp —
+> RULED, enactment PENDING). It also **caught + fixed a STAND-002 red build** the prior GOOD-MORNING rewrite had
+> committed (it dropped the standing-docs reachability list). This chat's own commit = R-D16 + the grey review
+> sheet + these handoff updates — see COMMIT STATE.
 
 ---
 
 ## ⬛ DO THESE TWO FIRST (10 seconds)
 
-> **RENAME THIS CHAT → `Apollo Mono: RAG promoted, the four-theme architecture, and a grey ramp on a curve`**
-> *(opened on "read good morning" as conductor; promoted RAG fills, inscribed the 4-theme/Mono architecture as
-> R-D15, and locked the `color/mono/1–15` grey ramp off a live curve tuner. Also fixed a review-doc over-produce
-> misstep — see §B "what I got wrong".)*
+> **RENAME THIS CHAT → `Apollo Mono: the money atom, digital-black as the new #000, and the greys ruled onto the ramp`**
+> *(opened as a components worker, promoted to conductor mid-session; built Amount-display + figure rungs, ruled
+> digital-black the general new #000 and swept 38 components, surfaced all 79 semantic greys and Dave ruled them
+> onto the mono ramp as R-D16, then caught a STAND-002 red build in the capture ritual.)*
 
-> **TITLE TODAY'S CHAT →** `Apollo Mono baseline — greys to semantics, then the manifestation`
-> Mono is the baseline we're building: very mono, colour only in RAG + data-vis. Next is wiring the new
-> `color/mono/*` ramp into **semantic** greys (text/surface/border roles alias the index steps), then the §1
-> RAG manifestation pick + status-component build. **Sonnet** — enactment, not ruling.
+> **TITLE TODAY'S CHAT →** `Enact the Mono grey wiring (R-D16), then OTP/PIN`
+> Everything for R-D16 is ruled and recorded — this is pure enactment: write the Mono grey values into
+> `semantic-colour.json`, **sync the 38 component declarations** to the tokens (like the `#1A1A1A` ground sweep),
+> regenerate `canon.css`, re-gate; annotate `col25-011` with the Mono override. Then the next P1 atom, **OTP/PIN**.
+> **Sonnet** — enactment, not ruling.
 
 *Standing practice: every handoff carries both names — retrospective + forward. Step 4b in
 `_RUNBOOK-capture-ritual.md`.*
@@ -140,6 +142,15 @@ python3 knowledge/_build_all.py     # 34 steps, all gates, exits non-zero on any
   session end; **stamp dates from `date`**. **Memory accelerates; the repo is the record** — inscribe durable
   content in its repo home, never memory-only.
 
+## The other standing documents (REACHABILITY-GATED by `_validate_standing_instructions.py` STAND-002 — keep every one referenced here)
+`AGENTS.md` · `MODEL-ROUTING.md` · `_FUTURE-STATE.md` · `_DECISION-HISTORY/README.md` ·
+`knowledge/_proforma/_PROFORMA-RULES.md` · `knowledge/_proforma/_TYPE-DECISIONS.md` (T-D1…T-D16) ·
+`knowledge/_proforma/_RAG-DECISIONS.md` (R-D1…R-D16) · `knowledge/_proforma/_DATAVIZ-DECISIONS.md` ·
+`knowledge/_DS-IMPROVEMENTS.md` · `knowledge/_ICON-GAPS.md` · `knowledge/_ASSERTIONS.md` +
+`knowledge/_assertions.json` · `knowledge/guidelines/_rules-index.json`. **Runbooks** are indexed by the
+generated `knowledge/_RUNBOOKS.md`. *(This list was dropped in a from-scratch GOOD-MORNING rewrite and STAND-002
+red-flagged it — do not prune it.)*
+
 ## Parallel-session model (you were CONDUCTOR this round)
 On "read good morning", role is picked (Worker / Conductor / Solo). **ONE conductor** is the single writer for
 shared state (commit + `GOOD-MORNING`/`_LIVE-STATE`); **workers** emit receipts to `notes/_receipts/` and don't
@@ -163,9 +174,23 @@ TTFs to `~/.fonts` + `fc-cache -f`; CSS `font-family:"HSBC_MtUnivers_Latin"`. Fu
 
 ---
 
-# §B · THIS SESSION (2026-07-19, "Apollo Mono: RAG promoted, the four-theme architecture, and a grey ramp on a curve")
+# §B · THIS SESSION (2026-07-19, "Apollo Mono: the money atom, digital-black as the new #000, and the greys ruled onto the ramp")
 
-## What LANDED
+## What LANDED (this session)
+- **✅ `Amount-display` — first P1 money atom, BUILT + gated.** Money-format primitive (currency-before-no-space
+  copy-025, tabular figures, U+2212 sign, redacted state); snippet + meta + review; monochrome (colour deferred).
+  Added figure rungs **`.t-cm-figure-4/5/6`** (32/16/14, tabular); atom fully composite-bound (no raw font). COMMITTED.
+- **★ "Digital black `#1A1A1A` is the new `#000`" (Dave) — GENERAL, not just reverse-text.** Swept all 38 components'
+  dark grounds + `background/default` dark → `#1A1A1A` (shadows/overlays stay pure `#000`). COMMITTED. `#1A1A1A`=`mono/4`.
+- **★ R-D16 — every semantic grey RULED onto `color/mono/*`** (sheet `reviews/APOLLO-MONO-SEMANTIC-GREYS-2026-07-19-v1`):
+  text ink→`mono/4 #1A1A1A` (**SUPERSEDES `col25-011`** for Mono; Grey-8=Legacy) · **DROP** secondary text grey
+  (hierarchy=weight/size) · `#767676`→`mono/8` · tinted `#D7D8D6`→`mono/12` · mechanical maps approved. **RULED,
+  enactment PENDING (Sonnet — §C1).** CONSULT surfaced col25-011 (didn't retread the binned-sheet mistake).
+- **✅ STAND-002 red build CAUGHT + FIXED.** The prior GOOD-MORNING rewrite dropped the standing-docs reachability
+  list → 5 docs orphaned → build committed red. Restored the list in §A; build green. The gate did its job.
+- Dossier: `_DECISION-HISTORY/2026-07-19-amount-display-and-mono-greys.md` (the why/how).
+
+## Same-day PRIOR strand (already committed + pushed — context)
 - **✅ RAG fills PROMOTED** to `semantic-colour.json` `*-background` + `canon.css`: light `#5DAC7B`/`#7DABCD`,
   dark `#43AD6F`/`#5F92B9`, breach `#B92F1E` mode-stable, watch `#F0B13A`. `rag/text` polarity enacted via the
   existing `RULED_PAIR_EXCLUSIONS` (white×green/blue forbidden, like amber). **Components NOT rebound** — they
@@ -199,11 +224,15 @@ TTFs to `~/.fonts` + `fc-cache -f`; CSS `font-family:"HSBC_MtUnivers_Latin"`. Fu
 
 # §C · QUEUE
 
-## 1. ★ Wire `color/mono/*` into SEMANTIC greys (Sonnet, next real deliverable)
-The ramp is a primitive. Next: semantic grey roles (text ink, surfaces, borders, dividers) **alias** the index
-steps per the Mono theme — e.g. body ink → `mono/2`-ish, `#1A1A1A` (`mono/4`) as digital-black surface, etc.
-Fold in the **grey-tint check** (memory `feedback-grey-tint-check`): the flagged `#333` (`grey/800`) and
-`#767676` (`grey/600`) get ruled toward black/ramp positions — surface each, don't auto-swap.
+## 1. ★ ENACT R-D16 — the Mono greys onto the ramp (Sonnet, next real deliverable — RULED, just execute)
+The rulings are made (**R-D16**, ledger `_proforma/_RAG-DECISIONS.md`); this is pure enactment. Steps:
+(1) write the Mono grey values into `tokens/semantic-colour.json` — text ink `#1A1A1A`, **drop** secondary
+(collapse to ink), `#767676`→`#808080`, `#D7D8D6`→`#E1E1E1`, mechanical maps (`#1D1D1D`→`#1A1A1A`, `#EDEDED`→`#F0F0F0`,
+`#707070`→`#626262`, `#404040`→`#484848`, `#9B9B9B`→`#9D9D9D`, …); (2) **sync the 38 component declarations to the
+tokens** (same shape as the `#1A1A1A` ground sweep — change the declared hex, or the gate drifts); (3) regen
+`canon.css`; (4) re-gate. (5) **Propagation owed:** annotate `col25-011` / `guidelines/colour-usage.md` with the
+Mono override (text = `#1A1A1A`; Grey-8 = Legacy). ⚠️ Dropping secondary makes muted text full-ink — a visible
+change; that's the ruling. Sheet + `reviews/gen_mono_grey_sheet.py` carry the full table.
 
 ## 2. §1 RAG manifestation pick, then the status-component build (Sonnet)
 Decision sheet built earlier (`reviews/RAG-STATUS-MANIFESTATION-2026-07-19-v1`): dot+label (canon) · filled
@@ -220,17 +249,16 @@ Broader colour/theming build (Console + Supercharge palettes; the 4-theme toggle
 later." · **Apollo Labs** (the grey-ramp + OKLCh tuners → Layer-2 in-browser controls). · Bulk type-binding for
 ~338 elements · compliance edges (27 unverified `verified_by`, advisory) · 🕓 Latin webfont (waiting on brand).
 
-## 5. From the components worker
-Next in its P1 list = **OTP/PIN entry** component. The 38-component `#1A1A1A` rebind wants a fresh-eyes review.
+## 5. After R-D16 — the next P1 atom
+**OTP/PIN entry** is next on the P1 foundations list (the banking-auth atom generic systems lack). The
+38-component `#1A1A1A` ground sweep is already committed + pushed; a fresh-eyes glance at it in the diff is still
+worth it.
 
-> **COMMIT STATE — ONE conductor commit, THREE strands (shared tree entangles them via generated files).**
-> **Mine:** `tokens/semantic-colour.json` (RAG fills), `tokens/colour.json` (mono ramp), `_contrast_utils.py`
-> (RAG exclusion), `_proforma/_RAG-DECISIONS.md` (R-D15), `canon/canon.css` (regen), grey-ramp tuners
-> `reviews/APOLLO-MONO-GREY-CURVE-2026-07-19-v1/v2.html`, `_LIVE-STATE.md`, `GOOD-MORNING.md`. **rules-index
-> worker:** `gen_rules_index.py` + regen (`_rules-index.json`, `_RECONCILIATION.md`, `_consult-index.json`),
-> `_RUNBOOK-git-commit.md`, `_RUNBOOK-parallel-conductor.md`, `notes/_receipts/`, `_HOW-TO-RUN-SESSIONS.md`.
-> **components worker:** all 38 `snippets/*.reference.html`, `canon/type.css` + `_type-bindings.json`,
-> `_proforma/*-interactive.html` + `Icon-button`, new `Amount-display` (snippet + `amount-display.meta.json` +
-> `_review/`). Plus regenerated audit/index artifacts. Build green 34/34. `_to_delete/` gitignored (binned
-> review docs live there). **You push via GitHub Desktop — review the 38-component rebind in the diff first.**
-> **Next session model: Sonnet** (semantic-grey wiring + manifestation — enactment).
+> **COMMIT STATE — this chat's commit.** *(The prior 3-strand conductor commit — RAG fills, R-D15, mono ramp,
+> Amount-display, the 38-component `#1A1A1A` sweep — is ALREADY committed + pushed.)* **This commit (docs +
+> review only, NO gated-code change — build GREEN 34/34):** `_proforma/_RAG-DECISIONS.md` (R-D16),
+> `reviews/APOLLO-MONO-SEMANTIC-GREYS-2026-07-19-v1.html` + `.REVIEW.html` + `reviews/gen_mono_grey_sheet.py`,
+> `_DECISION-HISTORY/2026-07-19-amount-display-and-mono-greys.md`, `_LIVE-STATE.md`, `GOOD-MORNING.md` (incl. the
+> **STAND-002 FIX** — restored the standing-docs reachability list the prior rewrite dropped). No token/snippet
+> edits here — R-D16 is ruled, not yet enacted. **You push via GitHub Desktop.**
+> **Next session model: Sonnet** (enact R-D16, then OTP/PIN).
