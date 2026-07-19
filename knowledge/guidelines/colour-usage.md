@@ -77,8 +77,15 @@ source receipt (F1) — the biggest single finding of this tranche.
   governs** — the bank's own export post-dates the page; the page rule is treated
   as marketing-surface/stale guidance. Grey 7 stays as text/secondary; delta map
   notes the tension for the 2026 grey specs to settle definitively.
-  [ADVISORY — ruled: token store governs; re-check when col26-001's grey specs
-  publish] {#col25-011}
+  **★ R-D16 SUPERSEDES this for Apollo Mono (2026-07-19):** Mono text ink =
+  digital-black `#1A1A1A` (`color/mono/4`), NOT Grey-8. `text/secondary`
+  COLLAPSES to that single ink (dark `#FFFFFF`) — de-emphasis is weight + size,
+  not a second grey ("very mono"). Grey-8 `#333333` stays **Legacy-theme only**.
+  The mechanical grey→ramp seating and its two a11y carve-outs (dark borders on
+  `mono/8`; text-bearing pressed fills on `mono/7`) are recorded in
+  `_proforma/_RAG-DECISIONS.md` R-D16.
+  [ADVISORY — ruled: token store governs; Apollo Mono = R-D16; re-check when
+  col26-001's grey specs publish] {#col25-011}
 - **Grey usage: lighter greys as solid backgrounds; never the grey palette in
   isolation without brand-palette colours; greys as fallback background when other
   colours can't reach contrast.** [TASTE + the contrast part already gated]

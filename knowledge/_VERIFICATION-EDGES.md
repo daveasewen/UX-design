@@ -24,7 +24,7 @@
 | Component | Snippet | Verdict | Pairs checked |
 |---|---|---|---|
 | Badge | `Badge.reference.html` | ✅ pass | primary/background/default on background/default (light) = 5.22:1 (pass); primary/background/default on background/default (dark) = 3.33:1 (pass) |
-| Links | `Links.reference.html` | ✅ pass | primary/background/default on background/default (light) = 5.22:1 (pass); primary/background/default on background/default (dark) = 3.33:1 (pass); icon/default on background/default (light) = 12.63:1 (pass); icon/default on background/default (dark) = 17.4:1 (pass) |
+| Links | `Links.reference.html` | ✅ pass | primary/background/default on background/default (light) = 5.22:1 (pass); primary/background/default on background/default (dark) = 3.33:1 (pass); icon/default on background/default (light) = 17.4:1 (pass); icon/default on background/default (dark) = 17.4:1 (pass) |
 
 ### 1.4.3
 

@@ -671,8 +671,38 @@ greys were surfaced against the new ramp (grey-tint check — nothing auto-swapp
    `#EDEDED`/`#F3F3F3`→`mono/13`, `#707070`/`#696969`/`#6C6C6C`→`mono/7`, `#404040`/`#474747`→`mono/6`,
    `#9B9B9B`→`mono/9`, `#787878`→`mono/8`. Already-exact (`#000`/`#1A1A1A`/`#808080`/`#B7B7B7`/`#FFF`) unchanged.
 
-**Status: RULED, NOT YET ENACTED.** Enactment (Sonnet, next real deliverable) = write the Mono grey values into
-`tokens/semantic-colour.json`, **sync the 38 component declarations to the tokens** (like the `#1A1A1A`
-ground sweep), regenerate `canon/canon.css`, re-gate. **Propagation owed:** annotate `col25-011` /
-`colour-usage.md` with the Mono override (text = `#1A1A1A`; Grey-8 = Legacy). Sheet + `gen_mono_grey_sheet.py`
-carry the full table + contrasts.
+**Status: ✅ ENACTED 2026-07-19** (see enactment notes below). Original plan: write the Mono grey values into
+`tokens/semantic-colour.json`, sync the component declarations, regenerate `canon/canon.css`, re-gate, annotate
+`col25-011`. Sheet + `gen_mono_grey_sheet.py` carry the full table + contrasts.
+
+### Enactment notes (2026-07-19)
+**Method changed — snippets are now STYLED BY the tokens, not hand-synced** (Dave's ruling mid-enactment: "the
+snippets need to be styled by the tokens"). New generator **`knowledge/gen_snippet_tokens.py`** projects
+`semantic-colour.json` into each snippet's `[data-theme]` blocks via the snippet's own `#token-manifest`, and
+into `canon.css` `.cn-*` literal declarations. It is idempotent, self-verifying, respects `driftAllow`, and
+FAILS LOUD on any unresolved token. `canon/gen_canon_tokens.py` (the existing, NOT-orphaned spine generator —
+it lives in `canon/`) regenerates the token spine. Re-run both after any token change; `_validate_snippets.py`
+then passes by construction. 86 token values re-based; 245 snippet values projected; build green 34/34.
+
+**★ TWO a11y CARVE-OUTS the contrast gate forced (do NOT "correct" these back to nearest-step — they are the
+fix, provenance here):**
+1. **Dark borders/dividers → `mono/8 #808080`, NOT the nearest-step `mono/7 #626262`.** `mono/7` is 2.76:1 on
+   the `#1A1A1A` ground → fails 1.4.11 (needs 3:1); `mono/8` = 4.39:1. Also matches rule 3 ("borders → mono/8").
+   Tokens (dark): `border/subtle`, `divider/border/{break,section,subsection,subsectionInset}`, `table/border`,
+   `tooltip/border`, `data-vis/border/on-dark/{baseline-2,gridline}`.
+2. **Text-bearing pressed fills → `mono/7 #626262`, NOT rule-3's `mono/8 #808080`.** White label on `mono/8` =
+   3.95:1 → fails 4.5:1; `mono/7` = 6.18:1. Matches the review sheet's "keep text uses darker" note. Tokens
+   (light): `tertiary/background/pressed`, `secondary/background/pressed` (latter was a gate blind-spot — same
+   white-label defect, fixed proactively).
+
+**OPEN — 11 `#333333` (Grey-8) non-text residuals left in place (rule 1 covered only text/icon ink).** Need a
+ruling: usually→`#1A1A1A` per the Mono pattern, but data-vis is separately governed. UI (5): `primary/border/hover`,
+`secondary/background/hover`, `secondary/border/hover` (light); `tertiary/border/disabled`, `text/on-inverse`
+(dark). data-vis (6): `data-vis/border/on-light/*` + `on-dark/baseline-2,gridline` (light). `text/on-inverse` is
+a signed-off calibrated label — likely leave.
+
+**WATCH — dark surface/ground flattening.** The ruled mechanical maps send `#1D1D1D`/`#212121` (tertiary bg,
+tabs, table, tooltip, form hover, scrollbar) → `mono/4 #1A1A1A`, which is now also the page ground → those dark
+surfaces/hover states merge with the ground (no elevation/state separation by fill). Faithful to the maps + the
+digital-black ground, but likely unintended; the dark-surface flatness gate does NOT catch surface==ground (only
+dark==#FFFFFF) — a gate blind-spot. Revert = one-line token edit + regenerate.

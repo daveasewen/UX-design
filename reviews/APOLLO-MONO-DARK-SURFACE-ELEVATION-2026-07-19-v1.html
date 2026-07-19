@@ -1,0 +1,127 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apollo Mono — dark surface elevation (R-D16 flattening) — review</title>
+<style>
+  :root{
+    --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+    --m3:#0F0F0F; --m4:#1A1A1A; --m5:#313131; --m6:#484848; --m8:#808080; --m15:#FFFFFF;
+    --ground:#1A1A1A;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;padding:2.5rem;background:var(--ground);color:#FFFFFF;font-family:var(--font);-webkit-font-smoothing:antialiased;line-height:1.5}
+  h1{font:400 26px/1.2 var(--font);margin:0 0 6px}
+  h2{font:500 13px/1 var(--font);letter-spacing:.04em;margin:34px 0 14px;color:#FFFFFF}
+  .sub{color:#B7B7B7;font-size:14px;max-width:74ch;margin-bottom:8px}
+  code{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#E1E1E1}
+  .ramp{display:flex;gap:4px;margin:10px 0 4px;max-width:560px}
+  .ramp div{flex:1;text-align:center;font-size:10px;color:#B7B7B7;padding-top:4px}
+  .ramp .sw{height:40px;border:1px solid #ffffff22;margin-bottom:4px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:10px}
+  .col h3{font:500 14px/1 var(--font);margin:0 0 4px}
+  .col .tag{font-size:11px;padding:2px 7px;border:1px solid #808080;color:#B7B7B7;display:inline-block;margin-bottom:14px}
+  .panel{border:1px solid #ffffff14;padding:20px;border-radius:0}
+  .lbl{font-size:11px;color:#9D9D9D;margin:18px 0 7px;text-transform:none}
+  .lbl:first-child{margin-top:0}
+  /* CURRENT (flat): surfaces resolve to the ground -> invisible edges, states identical */
+  .flat .card,.flat .tab,.flat .th,.flat .btn.ter{background:var(--m4)}
+  /* PROPOSED (raised): surface m5, hover/pressed m6 */
+  .raise .card,.raise .tab,.raise .th,.raise .btn.ter{background:var(--m5)}
+  .raise .tabs .tab.hoverst,.raise .btn.ter.hoverst,.raise .btn.ter.press{background:var(--m6)}
+  .card{padding:16px;border:1px solid #ffffff1a}
+  .card .t{font-size:14px;font-weight:500}
+  .card .d{font-size:12px;color:#B7B7B7;margin-top:3px}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .btn{height:40px;padding:0 18px;display:inline-flex;align-items:center;justify-content:center;font:500 14px/1 var(--font);border-radius:0;cursor:default}
+  .btn.ter{color:#FFFFFF;border:1px solid #808080}
+  .btn.state{font-size:10px;color:#9D9D9D}
+  .tabs{display:flex;gap:2px;border-bottom:1px solid #808080}
+  .tab{padding:10px 16px;font-size:13px;color:#FFFFFF;border:1px solid transparent;border-bottom:none}
+  .tab.active{border-color:#DB0011 transparent transparent;box-shadow:inset 0 2px 0 #DB0011}
+  table{border-collapse:collapse;width:100%;font-size:13px;margin-top:2px}
+  .th td{background:inherit}
+  td{padding:8px 12px;border:1px solid #ffffff14}
+  thead td{font-weight:500;color:#FFFFFF}
+  tbody tr td:first-child{color:#B7B7B7}
+  .note{margin-top:8px;font-size:12px;color:#B7B7B7}
+  .rec{border-left:3px solid #FFFFFF;background:#ffffff0a;padding:14px 16px;margin-top:28px;font-size:13px;max-width:78ch}
+  .rec b{color:#fff}
+  .affected{font-size:12px;color:#B7B7B7;max-width:80ch}
+  .affected code{color:#E1E1E1}
+</style></head>
+<body>
+  <h1>Apollo Mono — dark-mode surface elevation</h1>
+  <p class="sub">R-D16's mechanical maps seat the old dark surface greys <code>#1D1D1D</code>/<code>#212121</code> on the nearest ramp step, <code>mono/4&nbsp;#1A1A1A</code>. But <code>#1A1A1A</code> is now also the <b>page ground</b> (digital-black). So raised and interactive surfaces resolve to the ground and lose their edge — and their hover/pressed states stop being visible. This is a dark-mode-only question: <b>should these surfaces get a distinct ramp step, or is a flat "very mono" surface intended?</b></p>
+
+  <h2>The ramp around the ground</h2>
+  <div class="ramp">
+    <div><div class="sw" style="background:var(--m3)"></div>mono/3<br>#0F0F0F</div>
+    <div><div class="sw" style="background:var(--m4);outline:2px solid #DB0011;outline-offset:-2px"></div>mono/4<br>#1A1A1A · GROUND</div>
+    <div><div class="sw" style="background:var(--m5)"></div>mono/5<br>#313131</div>
+    <div><div class="sw" style="background:var(--m6)"></div>mono/6<br>#484848</div>
+  </div>
+  <p class="note">Ground is <code>mono/4</code>. A raised surface reads clearly one step up at <code>mono/5</code>; a hover/pressed step at <code>mono/6</code>.</p>
+
+  <div class="grid">
+    <div class="col flat">
+      <h3>Current — R-D16 (flat)</h3>
+      <div class="tag">surfaces = mono/4 = ground</div>
+      <div class="panel">
+        <div class="lbl">Card / tertiary panel on the page</div>
+        <div class="card"><div class="t">Account summary</div><div class="d">Sort code 40-00-00 · **** 4471</div></div>
+
+        <div class="lbl">Tertiary button — default · hover · pressed</div>
+        <div class="row">
+          <span class="btn ter">Manage</span>
+          <span class="btn ter hoverst">Manage</span>
+          <span class="btn ter press">Manage</span>
+        </div>
+        <div class="note">Fill is invisible against the ground; hover &amp; pressed look identical to default.</div>
+
+        <div class="lbl">Tabs</div>
+        <div class="tabs">
+          <div class="tab active">Balances</div><div class="tab">Payments</div><div class="tab hoverst">Statements</div>
+        </div>
+
+        <div class="lbl">Table — header + column</div>
+        <table><thead><tr><td class="th">Date</td><td class="th">Description</td><td class="th">Amount</td></tr></thead>
+        <tbody><tr><td>19 Jul</td><td>Transfer</td><td>&minus;120.00</td></tr>
+        <tr><td>18 Jul</td><td>Salary</td><td>2,400.00</td></tr></tbody></table>
+        <div class="note">Header and zebra column vanish into the ground.</div>
+      </div>
+    </div>
+
+    <div class="col raise">
+      <h3>Proposed — raised</h3>
+      <div class="tag">surface mono/5 · hover/pressed mono/6</div>
+      <div class="panel">
+        <div class="lbl">Card / tertiary panel on the page</div>
+        <div class="card"><div class="t">Account summary</div><div class="d">Sort code 40-00-00 · **** 4471</div></div>
+
+        <div class="lbl">Tertiary button — default · hover · pressed</div>
+        <div class="row">
+          <span class="btn ter">Manage</span>
+          <span class="btn ter hoverst">Manage</span>
+          <span class="btn ter press">Manage</span>
+        </div>
+        <div class="note">Surface reads as raised; hover &amp; pressed are legible state changes.</div>
+
+        <div class="lbl">Tabs</div>
+        <div class="tabs">
+          <div class="tab active">Balances</div><div class="tab">Payments</div><div class="tab hoverst">Statements</div>
+        </div>
+
+        <div class="lbl">Table — header + column</div>
+        <table><thead><tr><td class="th">Date</td><td class="th">Description</td><td class="th">Amount</td></tr></thead>
+        <tbody><tr><td>19 Jul</td><td>Transfer</td><td>&minus;120.00</td></tr>
+        <tr><td>18 Jul</td><td>Salary</td><td>2,400.00</td></tr></tbody></table>
+        <div class="note">Header and zebra column are distinguishable.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rec">
+    <b>Recommendation:</b> give dark raised/interactive surfaces a distinct step — <b>surface <code>mono/5 #313131</code>, hover/pressed <code>mono/6 #484848</code></b> — so elevation and state feedback survive in dark mode. Keep true backgrounds (page, and any full-bleed section) on the <code>mono/4</code> ground. If a fully flat "very mono" dark surface is the intent, we leave it and the states carry on borders/type alone.
+    <br><br><b>Affected dark tokens</b> (currently <code>#1A1A1A</code>): <span class="affected"><code>tertiary/background/{default,hover,pressed,active}</code>, <code>tabs/{background,pressed}</code>, <code>table/{header,column}/background</code>, <code>tooltip/background</code>, <code>form/background/hover</code>, <code>scrollbar/background</code>. Also <code>tertiary/border/disabled</code> (dark) now equals the ground.</span>
+    <br><br>Whatever you rule is a one-line-per-token edit → regenerate → re-gate (the generator makes it cheap).
+  </div>
+</body></html>

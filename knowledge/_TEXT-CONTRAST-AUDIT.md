@@ -8,8 +8,8 @@
 
 | Token | Dark value | Surface | Contrast | Reason |
 |---|---|---|---|---|
-| `tertiary/text/disabled` | `#767676` | `#404040` | 2.28:1 | Disabled text — exempt from WCAG 1.4.3 (inactive UI component). |
-| `text/disabled` | `#767676` | `#1D1D1D` | 3.71:1 | Disabled text — exempt from WCAG 1.4.3 (inactive UI component). |
+| `tertiary/text/disabled` | `#808080` | `#484848` | 2.32:1 | Disabled text — exempt from WCAG 1.4.3 (inactive UI component). |
+| `text/disabled` | `#808080` | `#1D1D1D` | 4.27:1 | Disabled text — exempt from WCAG 1.4.3 (inactive UI component). |
 
 ## Skipped — light-mode-only tokens
 
@@ -24,11 +24,11 @@
 |---|---|---|---|---|
 | `icon/default` | `#FFFFFF` | `#1D1D1D` | 16.86:1 | ✅ OK |
 | `icon/default-reverse` | `#FFFFFF` | `#1D1D1D` | 16.86:1 | ✅ OK |
-| `icon/disabled` | `#767676` | `#1D1D1D` | 3.71:1 | ✅ OK |
+| `icon/disabled` | `#808080` | `#1D1D1D` | 4.27:1 | ✅ OK |
 | `rag/text/on-dark` | `#FFFFFF` | `#B92F1E` | 6.02:1 | ✅ OK |
-| `tertiary/text/disabled` | `#767676` | `#404040` | 2.28:1 | 🟡 ALLOWED |
-| `tertiary/text/pressed` | `#FFFFFF` | `#404040` | 10.37:1 | ✅ OK |
+| `tertiary/text/disabled` | `#808080` | `#484848` | 2.32:1 | 🟡 ALLOWED |
+| `tertiary/text/pressed` | `#FFFFFF` | `#484848` | 9.15:1 | ✅ OK |
 | `text/default` | `#FFFFFF` | `#1D1D1D` | 16.86:1 | ✅ OK |
-| `text/disabled` | `#767676` | `#1D1D1D` | 3.71:1 | 🟡 ALLOWED |
+| `text/disabled` | `#808080` | `#1D1D1D` | 4.27:1 | 🟡 ALLOWED |
 | `text/reverse` | `#FFFFFF` | `#1D1D1D` | 16.86:1 | ✅ OK |
-| `text/secondary` | `#9B9B9B` | `#1D1D1D` | 6.07:1 | ✅ OK |
+| `text/secondary` | `#FFFFFF` | `#1D1D1D` | 16.86:1 | ✅ OK |

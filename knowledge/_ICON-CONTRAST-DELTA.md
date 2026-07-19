@@ -6,31 +6,31 @@
 gate (check 3, bite-tested). This advisory continues as the exhaustive/state×theme
 watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 
-**Headline: 0 declared dead-zone · 22 exhaustive (upper bound) · 0 roundel fails (<3:1) · 0 mark fails (<4.5 vs roundel, light).**
+**Headline: 0 declared dead-zone · 24 exhaustive (upper bound) · 0 roundel fails (<3:1) · 0 mark fails (<4.5 vs roundel, light).**
 
 ## 1. Declared icon pairs (the concrete promotion cost)
 
 | snippet | fg | bg | mode | ratio | verdict |
 |---|---|---|---|---|---|
-| Accordion.reference.html | icon/default | background/default | light | 12.63 | pass-4.5 |
+| Accordion.reference.html | icon/default | background/default | light | 17.4 | pass-4.5 |
 | Accordion.reference.html | icon/default | background/default | dark | 17.4 | pass-4.5 |
-| Headers.reference.html | icon/default | background/default | light | 12.63 | pass-4.5 |
+| Headers.reference.html | icon/default | background/default | light | 17.4 | pass-4.5 |
 | Headers.reference.html | icon/default | background/default | dark | 17.4 | pass-4.5 |
-| Input-fields.reference.html | icon/default | background/default | light | 12.63 | pass-4.5 |
+| Input-fields.reference.html | icon/default | background/default | light | 17.4 | pass-4.5 |
 | Input-fields.reference.html | icon/default | background/default | dark | 17.4 | pass-4.5 |
-| Links.reference.html | icon/default | background/default | light | 12.63 | pass-4.5 |
+| Links.reference.html | icon/default | background/default | light | 17.4 | pass-4.5 |
 | Links.reference.html | icon/default | background/default | dark | 17.4 | pass-4.5 |
-| Loading-indicator.reference.html | icon/default | background/default | light | 12.63 | pass-4.5 |
+| Loading-indicator.reference.html | icon/default | background/default | light | 17.4 | pass-4.5 |
 | Loading-indicator.reference.html | icon/default | background/default | dark | 17.4 | pass-4.5 |
-| Navigations.reference.html | icon/default | background/default | light | 12.63 | pass-4.5 |
+| Navigations.reference.html | icon/default | background/default | light | 17.4 | pass-4.5 |
 | Navigations.reference.html | icon/default | background/default | dark | 17.4 | pass-4.5 |
-| Pagination.reference.html | icon/default | background/default | light | 12.63 | pass-4.5 |
+| Pagination.reference.html | icon/default | background/default | light | 17.4 | pass-4.5 |
 | Pagination.reference.html | icon/default | background/default | dark | 17.4 | pass-4.5 |
-| Quick-actions.reference.html | icon/default | tertiary/background/default | light | 12.63 | pass-4.5 |
-| Quick-actions.reference.html | icon/default | tertiary/background/default | dark | 16.86 | pass-4.5 |
-| Reorder.reference.html | icon/default | tertiary/background/default | light | 12.63 | pass-4.5 |
-| Reorder.reference.html | icon/default | tertiary/background/default | dark | 16.86 | pass-4.5 |
-| Search-field.reference.html | icon/default | background/default | light | 12.63 | pass-4.5 |
+| Quick-actions.reference.html | icon/default | tertiary/background/default | light | 17.4 | pass-4.5 |
+| Quick-actions.reference.html | icon/default | tertiary/background/default | dark | 17.4 | pass-4.5 |
+| Reorder.reference.html | icon/default | tertiary/background/default | light | 17.4 | pass-4.5 |
+| Reorder.reference.html | icon/default | tertiary/background/default | dark | 17.4 | pass-4.5 |
+| Search-field.reference.html | icon/default | background/default | light | 17.4 | pass-4.5 |
 | Search-field.reference.html | icon/default | background/default | dark | 17.4 | pass-4.5 |
 
 ## 2. Exhaustive icon/* × surfaces (upper bound — verify co-occurrence before treating as defect)
@@ -39,31 +39,32 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 |---|---|---|---|---|
 | icon/default | blur/background-surface | light | None | unresolved |
 | icon/default | blur/background-surface | dark | None | unresolved |
-| icon/default | data-vis/surface/secondary | light | 1.66 | below-3(gated) |
-| icon/default | form/background/pressed | light | 2.78 | below-3(gated) |
-| icon/default | primary/background/default | light | 2.42 | below-3(gated) |
-| icon/default | primary/background/hover | light | 1.91 | below-3(gated) |
-| icon/default | primary/background/pressed | light | 1.66 | below-3(gated) |
+| icon/default | data-vis/surface/secondary | light | 1.21 | below-3(gated) |
+| icon/default | form/background/pressed | light | 4.41 | DEAD-ZONE |
+| icon/default | primary/background/default | light | 3.33 | DEAD-ZONE |
+| icon/default | primary/background/hover | light | 2.63 | below-3(gated) |
+| icon/default | primary/background/pressed | light | 1.21 | below-3(gated) |
 | icon/default | primary/background/pressed | dark | 1.0 | below-3(gated) |
-| icon/default | rag/error-background | light | 2.1 | below-3(gated) |
+| icon/default | rag/error-background | light | 2.89 | below-3(gated) |
 | icon/default | rag/information-background | dark | 3.33 | DEAD-ZONE |
 | icon/default | rag/success-background | dark | 2.82 | below-3(gated) |
 | icon/default | rag/warning-background | dark | 1.9 | below-3(gated) |
-| icon/default | secondary/background/default | light | 1.66 | below-3(gated) |
+| icon/default | secondary/background/default | light | 1.21 | below-3(gated) |
 | icon/default | secondary/background/default | dark | 1.0 | below-3(gated) |
 | icon/default | secondary/background/hover | light | 1.0 | below-3(gated) |
-| icon/default | secondary/background/hover | dark | 1.17 | below-3(gated) |
-| icon/default | secondary/background/pressed | light | 2.78 | below-3(gated) |
-| icon/default | secondary/background/pressed | dark | 1.43 | below-3(gated) |
-| icon/default | surface/digital-black | light | 1.38 | below-3(gated) |
-| icon/default | tertiary/background/active | light | 1.66 | below-3(gated) |
-| icon/default | tertiary/background/pressed | light | 2.78 | below-3(gated) |
+| icon/default | secondary/background/hover | dark | 1.14 | below-3(gated) |
+| icon/default | secondary/background/pressed | light | 2.85 | below-3(gated) |
+| icon/default | secondary/background/pressed | dark | 1.31 | below-3(gated) |
+| icon/default | surface/digital-black | light | 1.0 | below-3(gated) |
+| icon/default | tertiary/background/active | light | 1.21 | below-3(gated) |
+| icon/default | tertiary/background/pressed | light | 2.85 | below-3(gated) |
 | icon/default-reverse | background/default | light | 1.0 | below-3(gated) |
 | icon/default-reverse | blur/background-surface | light | None | unresolved |
 | icon/default-reverse | blur/background-surface | dark | None | unresolved |
 | icon/default-reverse | data-vis/surface/primary | light | 1.0 | below-3(gated) |
-| icon/default-reverse | form/background/hover | light | 1.11 | below-3(gated) |
-| icon/default-reverse | primary/background/disabled | light | 1.43 | below-3(gated) |
+| icon/default-reverse | form/background/hover | light | 1.14 | below-3(gated) |
+| icon/default-reverse | form/background/pressed | light | 3.95 | DEAD-ZONE |
+| icon/default-reverse | primary/background/disabled | light | 1.31 | below-3(gated) |
 | icon/default-reverse | primary/background/pressed | dark | 1.0 | below-3(gated) |
 | icon/default-reverse | rag/information-background | light | 2.45 | below-3(gated) |
 | icon/default-reverse | rag/information-background | dark | 3.33 | DEAD-ZONE |
@@ -71,71 +72,70 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | icon/default-reverse | rag/success-background | dark | 2.82 | below-3(gated) |
 | icon/default-reverse | rag/warning-background | light | 1.9 | below-3(gated) |
 | icon/default-reverse | rag/warning-background | dark | 1.9 | below-3(gated) |
-| icon/default-reverse | scrollbar/background | light | 1.17 | below-3(gated) |
+| icon/default-reverse | scrollbar/background | light | 1.14 | below-3(gated) |
 | icon/default-reverse | secondary/background/default | dark | 1.0 | below-3(gated) |
-| icon/default-reverse | secondary/background/disabled | light | 1.43 | below-3(gated) |
-| icon/default-reverse | secondary/background/hover | dark | 1.17 | below-3(gated) |
-| icon/default-reverse | secondary/background/pressed | dark | 1.43 | below-3(gated) |
-| icon/default-reverse | table/column/background | light | 1.11 | below-3(gated) |
-| icon/default-reverse | table/header/background | light | 1.17 | below-3(gated) |
+| icon/default-reverse | secondary/background/disabled | light | 1.31 | below-3(gated) |
+| icon/default-reverse | secondary/background/hover | dark | 1.14 | below-3(gated) |
+| icon/default-reverse | secondary/background/pressed | dark | 1.31 | below-3(gated) |
+| icon/default-reverse | table/column/background | light | 1.14 | below-3(gated) |
+| icon/default-reverse | table/header/background | light | 1.14 | below-3(gated) |
 | icon/default-reverse | tabs/background | light | 1.0 | below-3(gated) |
 | icon/default-reverse | tabs/overflow-background | light | 1.0 | below-3(gated) |
 | icon/default-reverse | tertiary/background/default | light | 1.0 | below-3(gated) |
-| icon/default-reverse | tertiary/background/disabled | light | 1.43 | below-3(gated) |
-| icon/default-reverse | tertiary/background/hover | light | 1.11 | below-3(gated) |
-| icon/default-reverse | timer/background | light | 1.43 | below-3(gated) |
+| icon/default-reverse | tertiary/background/disabled | light | 1.31 | below-3(gated) |
+| icon/default-reverse | tertiary/background/hover | light | 1.14 | below-3(gated) |
+| icon/default-reverse | timer/background | light | 1.31 | below-3(gated) |
 | icon/default-reverse | tooltip/background | light | 1.0 | below-3(gated) |
-| icon/disabled (allowlisted) | background/default | light | 1.43 | below-3(gated) |
-| icon/disabled (allowlisted) | background/default | dark | 3.83 | DEAD-ZONE |
+| icon/disabled (allowlisted) | background/default | light | 1.31 | below-3(gated) |
+| icon/disabled (allowlisted) | background/default | dark | 4.41 | DEAD-ZONE |
 | icon/disabled (allowlisted) | blur/background-surface | light | None | unresolved |
 | icon/disabled (allowlisted) | blur/background-surface | dark | None | unresolved |
-| icon/disabled (allowlisted) | data-vis/surface/primary | light | 1.43 | below-3(gated) |
-| icon/disabled (allowlisted) | form/background/hover | light | 1.29 | below-3(gated) |
-| icon/disabled (allowlisted) | form/background/hover | dark | 3.55 | DEAD-ZONE |
-| icon/disabled (allowlisted) | form/background/pressed | light | 3.18 | DEAD-ZONE |
-| icon/disabled (allowlisted) | form/background/pressed | dark | 2.05 | below-3(gated) |
-| icon/disabled (allowlisted) | primary/background/default | light | 3.65 | DEAD-ZONE |
-| icon/disabled (allowlisted) | primary/background/default | dark | 1.15 | below-3(gated) |
+| icon/disabled (allowlisted) | data-vis/surface/primary | light | 1.31 | below-3(gated) |
+| icon/disabled (allowlisted) | form/background/hover | light | 1.15 | below-3(gated) |
+| icon/disabled (allowlisted) | form/background/hover | dark | 4.41 | DEAD-ZONE |
+| icon/disabled (allowlisted) | form/background/pressed | light | 3.02 | DEAD-ZONE |
+| icon/disabled (allowlisted) | form/background/pressed | dark | 2.32 | below-3(gated) |
+| icon/disabled (allowlisted) | primary/background/default | light | 3.99 | DEAD-ZONE |
+| icon/disabled (allowlisted) | primary/background/default | dark | 1.32 | below-3(gated) |
 | icon/disabled (allowlisted) | primary/background/disabled | light | 1.0 | below-3(gated) |
-| icon/disabled (allowlisted) | primary/background/disabled | dark | 2.28 | below-3(gated) |
-| icon/disabled (allowlisted) | primary/background/hover | dark | 1.46 | below-3(gated) |
-| icon/disabled (allowlisted) | rag/error-background | light | 4.21 | DEAD-ZONE |
-| icon/disabled (allowlisted) | rag/error-background | dark | 1.33 | below-3(gated) |
-| icon/disabled (allowlisted) | rag/information-background | light | 1.71 | below-3(gated) |
-| icon/disabled (allowlisted) | rag/information-background | dark | 1.36 | below-3(gated) |
-| icon/disabled (allowlisted) | rag/success-background | light | 1.92 | below-3(gated) |
-| icon/disabled (allowlisted) | rag/success-background | dark | 1.61 | below-3(gated) |
-| icon/disabled (allowlisted) | rag/warning-background | light | 1.33 | below-3(gated) |
-| icon/disabled (allowlisted) | rag/warning-background | dark | 2.39 | below-3(gated) |
-| icon/disabled (allowlisted) | scrollbar/background | light | 1.22 | below-3(gated) |
-| icon/disabled (allowlisted) | scrollbar/background | dark | 3.55 | DEAD-ZONE |
+| icon/disabled (allowlisted) | primary/background/disabled | dark | 2.32 | below-3(gated) |
+| icon/disabled (allowlisted) | primary/background/hover | dark | 1.67 | below-3(gated) |
+| icon/disabled (allowlisted) | primary/background/pressed | dark | 3.95 | DEAD-ZONE |
+| icon/disabled (allowlisted) | rag/error-background | dark | 1.52 | below-3(gated) |
+| icon/disabled (allowlisted) | rag/information-background | light | 1.87 | below-3(gated) |
+| icon/disabled (allowlisted) | rag/information-background | dark | 1.18 | below-3(gated) |
+| icon/disabled (allowlisted) | rag/success-background | light | 2.1 | below-3(gated) |
+| icon/disabled (allowlisted) | rag/success-background | dark | 1.4 | below-3(gated) |
+| icon/disabled (allowlisted) | rag/warning-background | light | 1.45 | below-3(gated) |
+| icon/disabled (allowlisted) | rag/warning-background | dark | 2.08 | below-3(gated) |
+| icon/disabled (allowlisted) | scrollbar/background | light | 1.15 | below-3(gated) |
+| icon/disabled (allowlisted) | scrollbar/background | dark | 4.41 | DEAD-ZONE |
+| icon/disabled (allowlisted) | secondary/background/default | dark | 3.95 | DEAD-ZONE |
 | icon/disabled (allowlisted) | secondary/background/disabled | light | 1.0 | below-3(gated) |
-| icon/disabled (allowlisted) | secondary/background/disabled | dark | 2.28 | below-3(gated) |
-| icon/disabled (allowlisted) | secondary/background/hover | dark | 3.88 | DEAD-ZONE |
-| icon/disabled (allowlisted) | secondary/background/pressed | light | 3.18 | DEAD-ZONE |
-| icon/disabled (allowlisted) | secondary/background/pressed | dark | 3.18 | DEAD-ZONE |
-| icon/disabled (allowlisted) | surface/digital-black | dark | 3.83 | DEAD-ZONE |
-| icon/disabled (allowlisted) | table/column/background | light | 1.29 | below-3(gated) |
-| icon/disabled (allowlisted) | table/column/background | dark | 3.71 | DEAD-ZONE |
-| icon/disabled (allowlisted) | table/header/background | light | 1.22 | below-3(gated) |
-| icon/disabled (allowlisted) | table/header/background | dark | 3.55 | DEAD-ZONE |
-| icon/disabled (allowlisted) | tabs/background | light | 1.43 | below-3(gated) |
-| icon/disabled (allowlisted) | tabs/background | dark | 3.71 | DEAD-ZONE |
-| icon/disabled (allowlisted) | tabs/overflow-background | light | 1.43 | below-3(gated) |
-| icon/disabled (allowlisted) | tabs/overflow-background | dark | 3.71 | DEAD-ZONE |
-| icon/disabled (allowlisted) | tertiary/background/active | dark | 3.71 | DEAD-ZONE |
-| icon/disabled (allowlisted) | tertiary/background/default | light | 1.43 | below-3(gated) |
-| icon/disabled (allowlisted) | tertiary/background/default | dark | 3.71 | DEAD-ZONE |
+| icon/disabled (allowlisted) | secondary/background/disabled | dark | 2.32 | below-3(gated) |
+| icon/disabled (allowlisted) | secondary/background/hover | dark | 3.47 | DEAD-ZONE |
+| icon/disabled (allowlisted) | secondary/background/pressed | dark | 3.02 | DEAD-ZONE |
+| icon/disabled (allowlisted) | surface/digital-black | dark | 4.41 | DEAD-ZONE |
+| icon/disabled (allowlisted) | table/column/background | light | 1.15 | below-3(gated) |
+| icon/disabled (allowlisted) | table/column/background | dark | 4.41 | DEAD-ZONE |
+| icon/disabled (allowlisted) | table/header/background | light | 1.15 | below-3(gated) |
+| icon/disabled (allowlisted) | table/header/background | dark | 4.41 | DEAD-ZONE |
+| icon/disabled (allowlisted) | tabs/background | light | 1.31 | below-3(gated) |
+| icon/disabled (allowlisted) | tabs/background | dark | 4.41 | DEAD-ZONE |
+| icon/disabled (allowlisted) | tabs/overflow-background | light | 1.31 | below-3(gated) |
+| icon/disabled (allowlisted) | tabs/overflow-background | dark | 4.41 | DEAD-ZONE |
+| icon/disabled (allowlisted) | tertiary/background/active | dark | 4.41 | DEAD-ZONE |
+| icon/disabled (allowlisted) | tertiary/background/default | light | 1.31 | below-3(gated) |
+| icon/disabled (allowlisted) | tertiary/background/default | dark | 4.41 | DEAD-ZONE |
 | icon/disabled (allowlisted) | tertiary/background/disabled | light | 1.0 | below-3(gated) |
-| icon/disabled (allowlisted) | tertiary/background/disabled | dark | 2.28 | below-3(gated) |
-| icon/disabled (allowlisted) | tertiary/background/hover | light | 1.29 | below-3(gated) |
-| icon/disabled (allowlisted) | tertiary/background/hover | dark | 3.55 | DEAD-ZONE |
-| icon/disabled (allowlisted) | tertiary/background/pressed | light | 3.18 | DEAD-ZONE |
-| icon/disabled (allowlisted) | tertiary/background/pressed | dark | 3.71 | DEAD-ZONE |
+| icon/disabled (allowlisted) | tertiary/background/disabled | dark | 2.32 | below-3(gated) |
+| icon/disabled (allowlisted) | tertiary/background/hover | light | 1.15 | below-3(gated) |
+| icon/disabled (allowlisted) | tertiary/background/hover | dark | 4.41 | DEAD-ZONE |
+| icon/disabled (allowlisted) | tertiary/background/pressed | dark | 4.41 | DEAD-ZONE |
 | icon/disabled (allowlisted) | timer/background | light | 1.0 | below-3(gated) |
-| icon/disabled (allowlisted) | timer/background | dark | 2.28 | below-3(gated) |
-| icon/disabled (allowlisted) | tooltip/background | light | 1.43 | below-3(gated) |
-| icon/disabled (allowlisted) | tooltip/background | dark | 3.71 | DEAD-ZONE |
+| icon/disabled (allowlisted) | timer/background | dark | 2.32 | below-3(gated) |
+| icon/disabled (allowlisted) | tooltip/background | light | 1.31 | below-3(gated) |
+| icon/disabled (allowlisted) | tooltip/background | dark | 4.41 | DEAD-ZONE |
 
 _(87 of 192 exhaustive combos already clear 4.5:1; 6 transparent/composite surfaces skipped (alpha — true contrast needs the render path) — omitted.)_
 
@@ -165,7 +165,7 @@ _(87 of 192 exhaustive combos already clear 4.5:1; 6 transparent/composite surfa
 | Status-indicator.reference.html | rag/error | background/default | dark | 3.33 | pass-3(roundel) |
 | Status-indicator.reference.html | rag/information | background/default | light | 7.17 | pass-3(roundel) |
 | Status-indicator.reference.html | rag/information | background/default | dark | 4.37 | pass-3(roundel) |
-| Status-indicator.reference.html | rag/neutral | background/default | light | 4.54 | pass-3(roundel) |
+| Status-indicator.reference.html | rag/neutral | background/default | light | 3.95 | pass-3(roundel) |
 | Status-indicator.reference.html | rag/neutral | background/default | dark | 17.4 | pass-3(roundel) |
 | (policy audit — exhaustive) | rag/warning | background/default | light | 1.69 | exempt(amber convention) |
 | (policy audit — exhaustive) | rag/warning | rag/warning-tint | light | 1.6 | exempt(amber convention) |
