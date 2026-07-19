@@ -13,6 +13,13 @@ in a *reliable* end-of-session distillation instead, because that's where the ac
 At the end of **every** session that changed project state — decisions, rulings, code, docs. Skip
 only for pure Q&A sessions that touched nothing. If in doubt, run it; it's cheap.
 
+**Also run it mid-session when the context gauge reads Red (>70%)** — don't wait for a natural end.
+The gauge (`_RUNBOOK-context-gauge.md`) exists precisely to fire this ritual *while there's still
+clean budget to author the handoff well*; a `GOOD-MORNING.md` written at 95% full is the confidently
+wrong handoff we most want to avoid. Red cue line, ready to use:
+> **Title this chat: `<retrospective title>` — context is Red (~NN%). Running the capture ritual, then
+> open fresh with: `<forward title>`.**
+
 ## The steps, in order (1, 1b, 2, 3, 4, 4b, 5)
 
 1. **Refresh `_LIVE-STATE.md`** — and its siblings where touched: `_FUTURE-STATE.md` (ideas /
@@ -136,4 +143,5 @@ next layer once PM-KG infrastructure exists to build it on.
 
 `notes/_SEAWORTHINESS-PLAN_2026-07-05.md` (§ "The capture ritual / gate" — origin of this spec) ·
 `_LIVE-STATE.md` · `GOOD-MORNING.md` · `MEMORY.md` · `AGENTS.md` (supersession discipline, git split) ·
-`_RUNBOOK-decision-audit.md` (validation-state discipline for step 4).
+`_RUNBOOK-decision-audit.md` (validation-state discipline for step 4) ·
+`_RUNBOOK-context-gauge.md` (the fuel gauge that decides *when* to fire this ritual mid-session).
