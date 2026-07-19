@@ -18,6 +18,18 @@ from an already-clean `.git`. (Corrected 2026-07-18 after step 1 failed on a 12-
    for L in $(find .git -name '*.lock'); do mv "$L" _to_delete/_stale_locks/; done
    find .git -name '*.lock'      # expect: none — if not, stop; do not stage
    ```
+0.5. **Account for every dirty path BEFORE you stage** (added 2026-07-19). `git add -A` is a blunt
+   sweep — it will commit a worker's half-finished experiment or a broken artifact as readily as your
+   own work, and a *selective* add silently drops worker dirt. Neither failure is otherwise guarded.
+   Reconcile first:
+   ```
+   git status --short            # every path below must be explained
+   ```
+   Confirm you can name WHY each dirty path exists (yours, or a known worker's). Any path you can't
+   account for → **stop**: `ls notes/_receipts/` and read the sibling sessions
+   (`mcp__session_info__list_sessions` → transcript) before committing. This matters most with parallel
+   sessions live — the working tree is shared, so their changes are already in yours. Companion:
+   `_RUNBOOK-parallel-conductor.md` conductor step 2.5.
 1. **Stage** (this may print `unable to unlink … tmp_obj_*` warnings — harmless, ignore):
    ```
    git add -A

@@ -39,7 +39,11 @@ def rule_text(txt: str, tag_start: int) -> str:
     chunk = re.sub(r'\s+', ' ', chunk).strip()
     chunk = re.sub(r'^(\-|\d+\.)\s*', '', chunk)
     chunk = chunk.replace('**', '')
-    return chunk[:500]
+    # No length cap: rule_text is already bounded to a single bullet/paragraph by
+    # the walk-back above. A fixed char cap silently truncated long rules mid-
+    # sentence in _RECONCILIATION.md and made their tails unsearchable in
+    # _consult.py (fixed 2026-07-19). Full text flows to both consumers.
+    return chunk
 
 def main() -> int:
     rules, errors, seen = [], [], {}

@@ -1,11 +1,11 @@
 # Type-binding blast-radius gate — guards canon/type.css
 
-Every selector appended to a composite list is a GLOBAL rule. Registry: `canon/_type-bindings.json`. Corpus: snippets + _proforma (49 files).
+Every selector appended to a composite list is a GLOBAL rule. Registry: `canon/_type-bindings.json`. Corpus: snippets + _proforma (50 files).
 
 | radius | kind | selector | status |
 |---:|---|---|---|
 | 11 | class | `.btn` | PASS |
-| 6 | class | `.stateLabel` | PASS |
+| 7 | class | `.stateLabel` | PASS |
 | 5 | class | `.spec-h` | PASS |
 | 4 | class | `.chip` | PASS |
 | 4 | scoped-element | `.seg button` | PASS |

@@ -1,31 +1,30 @@
 # Good morning, Dave ☕
 
-*Briefing — written 2026-07-19 16:20 (date from `date`, per the ritual rule), session
-**"RAG light fills: proving per-mode, and a tuner I could use for days"** — took the R-D11 parked piece
-(light-mode fills) all the way to a locked, reconciled set, turned a per-mode assertion into a proof, and
-built a two-mode in-browser colour tuner along the way.*
+*Briefing — written 2026-07-19 (date from `date`, per the ritual rule), session
+**"Apollo Mono: RAG promoted, the four-theme architecture, and a grey ramp on a curve"** — promoted the R-D14
+RAG fills into the token store, made the four-theme model explicit and inscribed it (R-D15), and built Apollo
+Mono's neutral grey ramp as a dual-end curve you dialled on a live tuner.*
 
-> ✅ **TWO SESSIONS this round — merged by conductor (this session).** A parallel session ("Context gauge +
-> adversarial densify") ran the same day and handed up a RECEIPT (the single-writer **conductor pattern** it
-> wrote — `notes/_PARALLEL-SESSIONS-conductor.md`). Both strands are folded into §B/§C below and committed
-> together. Its main work landed in its own commit `e7f8b87`; its two trailing files + this handoff are in the
-> conductor commit.
+> ✅ **CONDUCTOR session — THREE strands merged into one commit.** Two workers ran in parallel and handed up
+> receipts (`notes/_receipts/`): the **rules-index worker** (truncation fix + parallel-session runbook
+> hardening) and the **components-expansion worker** (library-wide dark-ground rebind to `#1A1A1A`, money
+> number styles, new `Amount-display` component). The shared tree entangles all three through generated files
+> (canon.css, audits), so they land together — see COMMIT STATE. **The components rebind touched all 38
+> components — eyeball it in the diff before pushing.**
 
 ---
 
 ## ⬛ DO THESE TWO FIRST (10 seconds)
 
-> **RENAME THIS CHAT → `RAG light fills: proving per-mode, and a tuner I could use for days`** *(opened on
-> "read good morning"; became the light-fill pass R-D11 had parked. Locked the light set, PROVED green/blue
-> must be per-mode by exhaustive search, reframed fill-contrast as a salience lever not a floor, and built a
-> live two-mode OKLCh tuner. Nine review versions v1→v9-LOCKED. Ledger R-D12…R-D14.)*
+> **RENAME THIS CHAT → `Apollo Mono: RAG promoted, the four-theme architecture, and a grey ramp on a curve`**
+> *(opened on "read good morning" as conductor; promoted RAG fills, inscribed the 4-theme/Mono architecture as
+> R-D15, and locked the `color/mono/1–15` grey ramp off a live curve tuner. Also fixed a review-doc over-produce
+> misstep — see §B "what I got wrong".)*
 
-> **TITLE TODAY'S CHAT →** `Promote the RAG tokens + nail the status component`
-> RAG colour is DONE (light + dark locked, R-D14). Next is the **token promotion** — write `rag/*` (breach +
-> watch mode-stable; healthy + info per-mode: light `#5DAC7B`/`#7DABCD`, dark `#43AD6F`/`#5F92B9`) to
-> `tokens/semantic-colour.json`, rebind **behind the blast-radius gate**, run `_build_all.py`. Then the **§1
-> manifestation** pick (sheet `reviews/RAG-STATUS-MANIFESTATION-2026-07-19-v1`) + status-component build.
-> **Sonnet** for all of it — it's enactment, not ruling. Per §C.
+> **TITLE TODAY'S CHAT →** `Apollo Mono baseline — greys to semantics, then the manifestation`
+> Mono is the baseline we're building: very mono, colour only in RAG + data-vis. Next is wiring the new
+> `color/mono/*` ramp into **semantic** greys (text/surface/border roles alias the index steps), then the §1
+> RAG manifestation pick + status-component build. **Sonnet** — enactment, not ruling.
 
 *Standing practice: every handoff carries both names — retrospective + forward. Step 4b in
 `_RUNBOOK-capture-ritual.md`.*
@@ -45,30 +44,25 @@ Then `_LIVE-STATE.md` → the decision files it points to.*
 >
 > **The trust hierarchy is the tattoo/Polaroid distinction:** repo rules + runbooks + ledgers = tattoos
 > (durable, survive any single rewrite) · `GOOD-MORNING` + `_LIVE-STATE` = Polaroids (working state,
-> rewritten often) · the chat = gone by morning. **Never let a durable rule live only on a Polaroid** —
-> that is how §A's own standing instruction nearly died on 2026-07-18.
+> rewritten often) · the chat = gone by morning. **Never let a durable rule live only on a Polaroid.**
 >
 > **The real danger is not forgetting — it is confident false inscription.** Records carry provenance
 > and confidence, not just content. Corrections get inscribed as loudly as the original claim. **Mark
-> what was OBSERVED versus what was INFERRED.** It reaches even the small things: the T-D12 handoff
-> dated itself "2026-07-19" while its commits landed 07-18 evening — so the ritual now stamps dates
-> from `date`, never from the session's own belief.
+> what was OBSERVED versus what was INFERRED.** The ritual stamps dates from `date`, never from belief.
+> *(This session caught a live example: the `four-theme-architecture` memory referenced "R-D15" that had
+> never been inscribed in the ledger — a memory-only record, the anti-pattern. Now inscribed + dated.)*
 >
-> **The SECOND failure mode costs more: a stale READING of our own rules.** Three times in one day a
-> solution was designed to a problem the system had already answered. `_validate_assertions.py`
-> catches a fact that flips; **nothing used to catch a rule we forgot we had — now something does:**
-> ⇒ **Before designing anything, CONSULT: `python3 knowledge/_consult.py "<what you're about to
-> design>"`** (557 records: rules · rulings · assertions · gates + where each bites). Paste the
-> receipt (query + retrieved ids) into the work's review sheet or meta. Advisory tier for now;
-> lexicon grows one line per miss. Runbook: `knowledge/_RUNBOOK-consult.md`.
+> **The SECOND failure mode costs more: a stale READING of our own rules.** ⇒ **Before designing anything,
+> CONSULT: `python3 knowledge/_consult.py "<what you're about to design>"`** (rules · rulings · assertions ·
+> gates + where each bites). *(This session's misstep: I built a review sheet to "decide" the RAG text/glyph
+> model when R-D6 + `type26-013` + R-D12 B already governed it — skipped CONSULT, retread settled ground.
+> Dave caught it. The sheet was binned. CONSULT is not optional.)* Runbook: `knowledge/_RUNBOOK-consult.md`.
 
 > **STANDING SECTION — carry it into every handoff, from 2026-07-17 on.** At Dave's request:
-> *"orientate a new starter — wider context helps."* Written new-starter style: assume the reader has
-> no context and no memory of prior sessions. **Update it when the shape of the project changes, not
-> every session — but never drop it, and never shorten it to a label.** *(Also step 2 of
-> `_RUNBOOK-capture-ritual.md`, so it no longer depends on this file surviving. It is
-> reachability-gated by `_validate_standing_instructions.py` — the gate caught a dropped reference
-> again on 2026-07-18, which is the system working.)*
+> *"orientate a new starter — wider context helps."* New-starter style: assume the reader has no context.
+> **Update it when the shape of the project changes, not every session — but never drop it, and never
+> shorten it to a label.** *(Also step 2 of `_RUNBOOK-capture-ritual.md`; reachability-gated by
+> `_validate_standing_instructions.py`.)*
 
 ## What Apollo is
 A **governed design-system engine** for agentic UI generation. The bet: *generation is a commodity* — the value
@@ -80,232 +74,163 @@ is the layer around any generator. Two principles run through everything:
 Tagline: **"lovable on rails."** Four phases: **Discover** → **Create** (what's being built now) → **Craft**
 (the review-overlay docs ARE this) → **Dispatch**.
 
-## The three libraries = ONE skeleton, three modes
-One component skeleton; **modes are token-override sets**. Adding a library = adding a mode, **never forking**.
-- **Apollo mono** — monochrome base (square, near-black primary, colour = meaning only). *"Pro-forma" = Apollo mono.*
-- **Apollo UI** — the branded HSBC library. · **Apollo SC** — Supercharge, the prior branded work.
+## ★ ONE token store · ONE baseline library · FOUR themes (R-D15, 2026-07-19 — firmed up this session)
+The library is **theme-agnostic**: components bind a semantic role ("success", a grey ink); the **active theme's
+override set** decides the hex. Nothing hardcodes a theme's colour. **Adding a theme = adding an override set,
+never forking.** The four themes (Dave's canonical order):
+- **Apollo Legacy** — carries the **teals** (`rag/success` #00847F …) AND the HSBC brand grey scale
+  `color/grey/100–800`. Retained for legacy interfaces; superseded over time, never deleted.
+- **★ Apollo Mono** — the baseline we build NOW. **"Very mono": monochrome throughout — colour appears ONLY
+  in RAG status + data-vis.** Its neutral scale = the new `color/mono/1–15` ramp (NOT `color/grey/*`).
+- **Apollo Console** (was Apollo UI, the branded HSBC library) · **Apollo Supercharge** (SC, the brand-uplift
+  work). Both carry the broader new-colour palette — that's the **parked** colour/theming build ("later").
 
 ## Where things live
 ```
 knowledge/            THE ENGINE
-  tokens/             DTCG token stores — the retrieval source (_proposals/ = holding pen)
-  snippets/           38 gated reference components = CANON
-  components/*.meta.json   per-component CRITERIA
+  tokens/             DTCG token stores — the retrieval source
+    colour.json       primitives: brand grey/100-800 (Legacy) + NEW color/mono/1-15 (Mono ramp)
+    semantic-colour.json  rag/*-background now = R-D14 fills (promoted this session)
+  snippets/           38 gated reference components = CANON (all now on #1A1A1A dark grounds)
   canon/              canon.css (GENERATED between AUTO markers) + type.css (HAND-AUTHORED composites)
-  guidelines/         the rules, each with a stable {#id} + destiny tag; _rules-index.json (465, generated)
-  _proforma/          Apollo mono tranches T1–T8 + Masthead + DataViz + the decisions ledgers
-  _review/            review-overlay copies (+ _make_review.py). Gates never scan here.
-  _consult.py         ★ NEW — "what governs X?" in one step; index generated every build
-  _assertions.json    environment claims + predicates, re-tested every build
-  _validate_*.py      the gates; orchestrated by _build_all.py (31 steps)
-reviews/              consumable outputs + the review sheets you mark up
-_LIVE-STATE.md        LIVE / DEAD / OPEN / TARGETS — read second, always (402 lines, spine discipline)
-_FUTURE-STATE.md      ★ NEW — side-quests, ideas, RESURRECTION candidates (the forward ledger)
-_DECISION-HISTORY/    ★ NEW — dated narrative, relocated verbatim; RESURRECT tags; see its README
-_retired/             reverted/retired work with residual value (incl. the memory-mirror snapshot)
+  guidelines/         the rules, each {#id} + destiny tag; _rules-index.json (465, generated)
+  _proforma/          Apollo Mono tranches T1–T8 + Masthead + DataViz + the decisions ledgers
+  _consult.py         ★ "what governs X?" — RUN IT before designing (index generated every build)
+  _validate_*.py      the gates; orchestrated by _build_all.py (34 steps)
+reviews/              consumable outputs + the review sheets you mark up (+ the grey-ramp tuner)
+notes/_receipts/      ★ conventioned worker-receipt dir (parallel-session reconcile trail)
+_LIVE-STATE.md        LIVE / DEAD / OPEN / TARGETS — read second, always
+_FUTURE-STATE.md      side-quests, ideas, RESURRECTION candidates
+_DECISION-HISTORY/    dated narrative, relocated verbatim
 ```
 
 ## The one command that matters
 ```
 python3 knowledge/_build_all.py     # 34 steps, all gates, exits non-zero on any failure
 ```
-Gates (34 steps): a11y · contrast · state-contrast · icon-source · coverage · integrity · rules-index ·
-assertions · standing-instructions · **DEF-003** no-JS-motion · **DEF-004** no-hardcoded-styling ·
-**DEF-005** 4px grid · **type-binding blast-radius** (guards `canon/type.css`, registry
-`canon/_type-bindings.json`) · **descender-clip** (NEW — ds-005; truncating labels must carry
-`text-box-edge:text text`) · pro-forma · DataViz · consult-index + selftest (advisory) ·
-edge-extremity (advisory). **DEF-006 type-composites exists but is NOT wired** (deliberate — see the non-`/1` batch).
 
-## Rules that actually bite
-- **CONSULT before designing** (see the Memento block above) — then **survey before build**: grep
-  `snippets/` + metas + tranches before building anything.
-- **⚠️ canon.css** — "generated, never hand-edit" applies only *between the AUTO markers*; the `.c-*`
-  layer above is hand-authored. **type.css is HAND-AUTHORED** throughout.
-- **TYPE and BOX are separate lists** (T-D12). `.t-cm-<size>` = type incl. `line-height:1`, safe
-  anywhere. `.t-cm-slot` = box, **opt-in, only where the element already declares flex.** Widening is
-  a ruling, never a sweep.
-- **A diff you cannot attribute is not evidence.** Isolate with a control (`NO_SNAP` pattern) before
-  judging.
-- **Every selector appended to `canon/type.css` is GLOBAL** (T-D9 binding). New ones must be registered
-  in `canon/_type-bindings.json` or the blast-radius gate fails (UNREGISTERED / ESCAPED / UNWAIVED-BARE).
-  Run `_validate_type_blast_radius.py --update` for intentional growth, then review the diff.
-- **Truncating labels clip descenders — GATED** (`_DS-IMPROVEMENTS` ds-005, closed 07-19): any label that
-  truncates (`text-overflow:ellipsis`) MUST carry `text-box-edge:text text`, or the descender-clip gate reds
-  the build. `text text` keeps the ellipsis AND stops the clip; **cap-alphabetic stays the default wherever a
-  label does NOT truncate** — it's the icon-alignment mechanism, not a defect. Short non-truncating icon atoms
-  (tags) use `cap alphabetic` + `overflow:visible`. ⚠️ **The scattered `text text` overrides ARE the fix, not
-  an inconsistency — the gate + its docstring say so; do not "clean them up".** Buttons audited clean (they
-  never truncate).
-- **Icons: real assets only** — render-verify before binding; filenames lie.
-- **4px grid** (DEF-005) · **sentence case** · **square corners in mono** · **red = primary-action
-  accent, once per screen** (brand modes) · **weights: five licensed only — 100/300/400/500/700,
-  THERE IS NO 600.**
-- **A rule is only as wide as its gate's glob.** Bite-test every check.
-- **Theme-dependent alias blocks use the same selector list as the tokens they wrap — never bare
-  `:root`** (inscribed 2026-07-18; `_RUNBOOK-compose-from-canon.md`).
-- **Run the gate as the LAST step before presenting** — a hand-built "canon" claim is what the gate
-  exists to check (same runbook).
+## Rules that actually bite (unchanged core + this session's)
+- **CONSULT before designing** (see the Memento block) — then **survey before build**. *(Both cost me this
+  session — I skipped CONSULT and retread the RAG text/glyph model. Don't.)*
+- **Grey-tint standing check** (NEW, Dave 2026-07-19): when a grey turns up (grey ink, mid-grey), **surface it**
+  with its numbers — Dave usually rules "make it black" but **checks first; never auto-swap.** Memory
+  `feedback-grey-tint-check`.
+- **type26-013 (BLOCKING): white type is red-only (emphasis); black/dark-grey everything else.** This governs
+  RAG text — white on breach, black on every other state. Not a per-case decision.
+- **R-D6: glyph contrast is by ROLE** — a glyph paired with a meaning-carrying label needs only 3:1; a glyph that
+  carries the meaning alone (arrow, bare number) needs 4.5. Colour is secondary when a label is present.
+- **`RULED_PAIR_EXCLUSIONS`** (in `_contrast_utils.py`): pairs a *ruling* forbids (white text × amber/green/blue
+  fill) are excluded from the audit — they can't occur, so testing them is testing a non-existent state.
+- **canon.css** — generated only *between* the AUTO markers; type.css is HAND-AUTHORED throughout.
+- **Every selector appended to `canon/type.css` is GLOBAL** — register in `_type-bindings.json` or the
+  blast-radius gate fails.
+- **Icons: real assets only** · **4px grid** · **sentence case** · **square corners in Mono** · **weights: five
+  licensed only — 100/300/400/500/700, NO 600.**
 - **Derivation governance** — the engine never derives-and-promotes. **Promotion is Dave's alone.**
-- **ATOMISE** — build at the true atomic level and compose up.
-- **Supersession discipline** — tombstone + propagation gap in the same pass (`AGENTS.md`).
-- **Spine discipline** (NEW 2026-07-18) — state lines in `_LIVE-STATE`; narrative >10 lines goes to
-  `_DECISION-HISTORY/` at write time.
+- **Spine discipline** — state lines in `_LIVE-STATE`; narrative >10 lines → `_DECISION-HISTORY/` at write time.
 
-## Standing instructions for the agent (not the artefact)
-- **Announce the model/routing split at the START of every substantive task, unprompted** (`MODEL-ROUTING.md`).
-- **Verify before asking.** Answer state-questions by reading the repo or running the gates — not by asking Dave.
-- **Reflect back before recording.** Restate the interpretation and confirm firmness **before** writing a ruling
-  into a ledger. British understatement — "quite good" is not approval. **A lean is not a ruling.**
-- **Ask what Dave valued in prior work BEFORE proposing mine-vs-fresh.** Change-by-change.
-- **Decision-heavy or material-referring choices ship as a review-template HTML** (`_make_review.py`), not as
-  `AskUserQuestion`.
-- **Log rulings in the per-pillar decisions ledger**, with the WHY.
-- **Surface spin-off candidates mid-chat**; register ideas/side-quests in `_FUTURE-STATE.md`.
-- **Suggest reflection checkpoints**; run the capture ritual unasked at session end; **stamp dates
-  from `date`**.
-- **Memory is an accelerator; the repo is the record.** The repo mirror of memory was DELETED by
-  ruling 2026-07-18 (snapshot in `_retired/`): durable content gets **inscribed** in its proper repo
-  home in the same pass — never photocopied, never memory-only.
+## Standing instructions for the agent
+- **Announce the model/routing split at the START of every substantive task** (`MODEL-ROUTING.md`).
+- **Verify before asking** (read the repo / run the gates). **Reflect back before recording** a ruling — a lean
+  is not a ruling; British understatement, "quite good" is not approval.
+- **Decision-heavy / material-referring choices ship as a review-template HTML** (`_make_review.py`) — but only
+  for GENUINELY OPEN questions. *(Don't build one to re-decide something already ruled — that's this session's
+  binned misstep.)*
+- **Surface spin-off candidates**; register ideas in `_FUTURE-STATE.md`. **Run the capture ritual unasked** at
+  session end; **stamp dates from `date`**. **Memory accelerates; the repo is the record** — inscribe durable
+  content in its repo home, never memory-only.
 
-## The other standing documents
-*(REACHABILITY-GATED by `_validate_standing_instructions.py` (STAND-002) — every one of these must
-stay referenced from the cold-start spine. Do not prune this list.)*
-
-`AGENTS.md` (repo agent contract, git split, supersession) · `MODEL-ROUTING.md` ·
-`_FUTURE-STATE.md` (forward ledger) · `_DECISION-HISTORY/README.md` (the archive's rules) ·
-`knowledge/_proforma/_PROFORMA-RULES.md` · `knowledge/_proforma/_TYPE-DECISIONS.md` (T-D1…T-D12) ·
-`knowledge/_proforma/_RAG-DECISIONS.md` (R-D1…R-D3) · `knowledge/_proforma/_DATAVIZ-DECISIONS.md` ·
-`notes/_FABLE-BRIEF-consolidation.md` (**executed 2026-07-18** — kept for its §7 candidate list) ·
-`knowledge/_DS-IMPROVEMENTS.md` · `knowledge/_ICON-GAPS.md` · `knowledge/_ASSERTIONS.md` +
-`knowledge/_assertions.json` (6 live) · `knowledge/guidelines/_rules-index.json` (465 rules) ·
-`_retired/` (tracked; vs `_to_delete/`, gitignored).
-
-**Runbooks** — the method written down so a cold agent can operate the engine:
-`_RUNBOOK-capture-ritual.md` (end of session — step 3 amended 07-18: inscribe, don't mirror) ·
-`_RUNBOOK-consult.md` (★ NEW — the pre-flight protocol) · `_RUNBOOK-git-commit.md` (**the sandbox
-lock dance — read before any git**) · `_RUNBOOK-gated-component.md` · `_RUNBOOK-compose-from-canon.md`
-(now carries the two inscribed restyle lessons) · `_RUNBOOK-toolkit-tranche.md` ·
-`_RUNBOOK-criteria-contract.md` · `_RUNBOOK-decision-audit.md` · `_RUNBOOK-reconcile-dark-tokens.md` ·
-`_RUNBOOK-onboard-code-library.md`.
-**`knowledge/_RUNBOOKS.md` is the runbook of runbooks** — GENERATED each build, so it cannot rot.
+## Parallel-session model (you were CONDUCTOR this round)
+On "read good morning", role is picked (Worker / Conductor / Solo). **ONE conductor** is the single writer for
+shared state (commit + `GOOD-MORNING`/`_LIVE-STATE`); **workers** emit receipts to `notes/_receipts/` and don't
+run git. Conductor reconciles the shared tree before committing (`_RUNBOOK-git-commit.md` step 0.5 /
+`_RUNBOOK-parallel-conductor.md` step 2.5 — **account for every dirty path; never blind `git add -A` with
+workers live**). Both were HARDENED this round by the rules-index worker.
 
 ## Renders — REAL FONT, in-sandbox
-Renders use the real HSBC cut (never stock Univers Next Pro — both are in `assets/fonts/_desktop/`):
-```bash
-pip3 install playwright --break-system-packages
-NODE_TLS_REJECT_UNAUTHORIZED=0 python3 -m playwright install chromium
-mkdir -p ~/.fonts && cp knowledge/assets/fonts/_desktop/TTF/*.ttf ~/.fonts/ && fc-cache -f
-# CSS: font-family:"HSBC_MtUnivers_Latin"  ·  verify: document.fonts.check('16px HSBC_MtUnivers_Latin')
-```
-Chrome needs ~17 libs via `apt-get download` → `dpkg -x` → `LD_LIBRARY_PATH`; full recipe in memory
-`sandbox-html-rendering`. ⚠️ The browser cache can be wiped between bash calls — just re-run.
+Playwright headless-shell works on ARM64: `apt-get download` the ~19 libs → `dpkg -x` → point
+`LD_LIBRARY_PATH` at `.../aarch64-linux-gnu` + set `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=1`. Copy the HSBC
+TTFs to `~/.fonts` + `fc-cache -f`; CSS `font-family:"HSBC_MtUnivers_Latin"`. Full recipe: memory
+`sandbox-html-rendering`. HTML is what Dave reviews; PNGs are for my own verification.
 
 ## How we work
 - **Review loop:** every doc ships **clean source + REVIEW copy** (`_make_review.py <file>`).
-- **Sheets are instruments, not proposals** — build them able to return a **null result**.
-- **A specimen must reproduce the CONDITION its rule names, not merely the ELEMENT.**
-- **Thresholds come from what Dave can SEE**, not from theory.
+- **Live tuners beat static versions past ~2 colour round-trips** — give the eye a control (the grey-ramp tuner
+  this session, the OKLCh tuner before it). Apollo Labs / Layer-2 candidate.
 - **Dave commits via GitHub Desktop.** Claude commits in-sandbox per `_RUNBOOK-git-commit.md` — **run it, don't
-  improvise git.** ⚠️ **DO NOT misread the lock error.** `unable to unlink … *.lock` / `tmp_obj_*` /
-  `index.lock: Operation not permitted` is the sandbox **delete-guard**, NOT GitHub Desktop holding the repo and
-  NOT "sandbox can't commit". The dance: **clear · stage · clear · commit · clear**, moving every `.git/*.lock`
-  aside with **`mv` (never `rm`)**, and **judge success by HEAD advancing, not by the warnings** (the commit lands
-  despite them). To revert: `git show HEAD:<path> > <path>` (`git checkout` can't unlink); the bulk revert form
-  also reverts your uncommitted TOOLING — park it first. Full procedure + gotchas: `_RUNBOOK-git-commit.md`.
-  *(Inscribed 2026-07-19 after I stalled on exactly this misread — the runbook was referenced but I didn't run it.)*
+  improvise git.** The `unable to unlink … *.lock` warnings are the delete-guard, not failure; judge by HEAD.
 - **Comms:** exec summary + numbered next steps first, detail below.
 
 ---
 
-# §B · THIS SESSION (2026-07-19 later, "RAG light fills: proving per-mode, and a tuner I could use for days")
-
-**Took the light-mode fill set R-D11 had parked all the way to LOCKED + reconciled, turned the per-mode claim into
-a proof, and built a live two-mode colour tuner. Rulings R-D12…R-D14; ledger `_proforma/_RAG-DECISIONS.md`.
-Narrative arc (why + how, dead-ends included): dossier `_DECISION-HISTORY/2026-07-19-rag-colour-halation-ramp.md`
-Session 3. Sheets v1→v9-LOCKED + derivation `reviews/_rag_light_fills_calc.py`.**
+# §B · THIS SESSION (2026-07-19, "Apollo Mono: RAG promoted, the four-theme architecture, and a grey ramp on a curve")
 
 ## What LANDED
-
-- **✅ LIGHT fills LOCKED (R-D14):** light **green `#5DAC7B`** · **blue `#7DABCD`** (H241, black text). Dark stays
-  R-D10 (`#43AD6F`/`#5F92B9`). Red `#B92F1E`/white + amber `#F0B13A`/`#C58900` mode-stable. **NO lines** (R-D12 A) ·
-  **black text on states** (R-D12 B). Verified both grounds: every label ≥ AA, green › blue in both.
-- **★ Per-mode PROVEN, not asserted.** Exhaustive pair search: no single green/blue keeps green › blue on both
-  grounds ("louder" = darker on white, lighter on dark → green can't lead on both). R-D11's thesis is now a proof.
-- **Reframe (Dave):** *"its not just about the colour"* — a status cell is a **labelled component**, so fill
-  contrast is a **salience/scan lever, NOT an accessibility floor** (the floor is the LABEL, R-D6). This dissolved
-  the "washout" worry entirely.
-- **★ Built a two-mode in-browser OKLCh TUNER** (v6→v7): wide saturation + fine lightness sliders per hue, live
-  hex + contrast + a **ramp-guard** that reds if green ≤ blue on that ground. Dave: *"i could do this for days."*
-  Strong **Apollo Labs / Layer-2 controls** candidate (registered).
-- **Method finding:** the R-D9 salience metric **inverts on white** (white text = zero distance from a white page,
-  so it penalises the cell that should shout) → on white, order by fill-vs-page + chroma. Recorded in the calc tool.
+- **✅ RAG fills PROMOTED** to `semantic-colour.json` `*-background` + `canon.css`: light `#5DAC7B`/`#7DABCD`,
+  dark `#43AD6F`/`#5F92B9`, breach `#B92F1E` mode-stable, watch `#F0B13A`. `rag/text` polarity enacted via the
+  existing `RULED_PAIR_EXCLUSIONS` (white×green/blue forbidden, like amber). **Components NOT rebound** — they
+  render RAG as dots (glyphs, R-D6 fine) + chips (tints); `-background` fills await the §1 manifestation pick.
+- **★ FOUR-THEME ARCHITECTURE inscribed — R-D15.** One token store, one baseline library, 4 themes
+  (Legacy/Mono/Console/Supercharge). Baseline = **Apollo Mono, "very mono"** (colour only in RAG + data-vis).
+  Legacy carries teals + brand `grey/100–800`. Closed a memory-only-inscription gap (memory had R-D15, ledger
+  didn't). Ledger `_proforma/_RAG-DECISIONS.md`; memory `four-theme-architecture`.
+- **★ Apollo Mono grey ramp = `color/mono/1…15`.** Dual-end brightness curve (γ=1.7, 15 stable index steps),
+  packing resolution to both ends, thinning mid-greys; `#1A1A1A` = `mono/4`. Dave dialled it live on the tuner
+  `reviews/APOLLO-MONO-GREY-CURVE-2026-07-19-v2.html`. In `colour.json` + canon; build green.
+- **✅ `gen_rules_index` truncation FIXED** (the `chunk[:500]` cap) — full rule text now flows to
+  `_RECONCILIATION.md` + `_consult.py` (icon-015 was losing ~2300 chars). Worker-verified.
+- **Grey-tint standing check** banked (memory `feedback-grey-tint-check`).
 
 ## What I got wrong / watch
+- **Retread a settled ruling.** Built a whole review sheet to "decide" the RAG text/glyph model — but R-D6 +
+  `type26-013` + R-D12 B already governed it. Skipped CONSULT. Dave: *"the decision is made already… read
+  deeper, i don't want to retread old footsteps."* Sheet binned (`_to_delete/binned-review-docs/`). **Lesson:
+  CONSULT first, every time.**
+- **Over-checkpointed early**, then course-corrected. Dave wants momentum; reflect-back should be tight.
 
-- **Re-raised amber-on-white as an open question when R-D6 had already ruled it** (label carries meaning). Dave:
-  *"amber is fine… we've ruled on this already, please check."* Classic **stale-reading failure** — the CONSULT
-  step exists for exactly this; I should have checked R-D6 before flagging. Corrected in v2 + the ledger.
-- **The tuner emerged from too many colour round-trips.** Lesson banked: past ~2 colour round-trips, give the eye
-  a live control rather than another static version.
-- **Nothing gated touched** — build state unchanged from prev green; no `_build_all.py` run needed. The **token
-  promotion** is the first thing that hits the blast-radius gate (deferred, Sonnet).
-
-## Parallel strand — "Context gauge + adversarial densify" (session 2, merged from its receipt)
-
-- **Context fuel-gauge built:** `knowledge/_context_gauge.py` + `_RUNBOOK-context-gauge.md` (tally +
-  out-of-band confirm; **Red >70% fires the capture ritual mid-session**). Committed `e7f8b87`.
-- **Adversarial densify method:** `_RUNBOOK-densify-adversarial.md` (densifier → adversary gate). **KEY FINDING:
-  rewording is a near-dead lever corpus-wide** (ops 3–9%, KB ~2.8% — already terse). **DON'T run a corpus
-  densify**; KEEP the adversary gate (it caught 3 losses + 11 fabrications). Real levers = disable unused
-  plugins (baseline) + prune/archive (tiering). Memory index pruned; 6 entries → `MEMORY-ARCHIVE.md`.
-- **★ REAL BUG found (chase separately):** `gen_rules_index.py` **silently truncates 11+ entries mid-sentence**
-  in `knowledge/guidelines/_RECONCILIATION.md` (mot-007, neuro-041/042, pict-014, tov-016, type26-015/026/029,
-  webf-017, ctkb-015, icon-015). Silent data loss in the rules index — correctness issue.
-- Its memories already surgically updated (`feedback-context-gauge`, `feedback-adversarial-densify`, MEMORY
-  index + archive) — conductor did NOT touch those. The **conductor pattern itself** (`notes/_PARALLEL-SESSIONS-conductor.md`)
-  is this round's process artefact: single writer for shared state; workers emit receipts. Promote to a runbook
-  + `AGENTS.md` clause in a single-session slot.
+## Merged from the two workers (receipts in `notes/_receipts/`)
+- **rules-index worker:** the truncation fix (verified) + hardened `_RUNBOOK-git-commit.md` (step 0.5) &
+  `_RUNBOOK-parallel-conductor.md` (step 2.5) with the `notes/_receipts/` convention + `_HOW-TO-RUN-SESSIONS.md`.
+- **components-expansion worker:** rebound **all 38 components' dark grounds to `#1A1A1A`**, added money number
+  styles (14/16), and built the new **`Amount-display`** component (meta + snippet + review). Build green.
+  **★ Large change — eyeball the diff before pushing** (worker flagged it "to review when fresh").
 
 ---
 
 # §C · QUEUE
 
-## 1. ★ RAG token promotion — the next real deliverable (Sonnet, behind the blast-radius gate)
-RAG colour is DONE (R-D14). Promote to `tokens/semantic-colour.json` `rag/*`: **breach `#B92F1E` + watch
-`#F0B13A`/`#C58900` mode-stable; healthy + info PER-MODE** — light `#5DAC7B`/`#7DABCD`, dark `#43AD6F`/`#5F92B9`;
-all states black text, breach white; **no lines**. Rebind components, run `_build_all.py`, expect the blast-radius
-gate to bite (that's the point). Also build the **amber gate** (rules 1+2, still unenforced). Reconciled table in
-ledger R-D14 + `reviews/RAG-LIGHT-FILLS-2026-07-19-v9-LOCKED`.
+## 1. ★ Wire `color/mono/*` into SEMANTIC greys (Sonnet, next real deliverable)
+The ramp is a primitive. Next: semantic grey roles (text ink, surfaces, borders, dividers) **alias** the index
+steps per the Mono theme — e.g. body ink → `mono/2`-ish, `#1A1A1A` (`mono/4`) as digital-black surface, etc.
+Fold in the **grey-tint check** (memory `feedback-grey-tint-check`): the flagged `#333` (`grey/800`) and
+`#767676` (`grey/600`) get ruled toward black/ramp positions — surface each, don't auto-swap.
 
-## 2. §1 RAG manifestation — canon pick, then the status component build (Sonnet)
-Decision sheet built (`reviews/RAG-STATUS-MANIFESTATION-2026-07-19-v1`): Status-indicator dot+label (existing
-canon) · filled cell/badge · bar/edge; tags+pills EXCLUDED by canon. Awaiting Dave's pick (A / A+B / A+B+C).
-Then spec cell/bar as gated components (**cells need more vertical padding** — Dave, R-D11 note).
+## 2. §1 RAG manifestation pick, then the status-component build (Sonnet)
+Decision sheet built earlier (`reviews/RAG-STATUS-MANIFESTATION-2026-07-19-v1`): dot+label (canon) · filled
+cell/badge · bar. Awaiting Dave's pick. Only the filled-cell manifestation consumes the new `-background` fills;
+that's when the component rebind happens. Then spec cell/bar as gated components (cells need more vertical
+padding, R-D11 note).
 
-## 3. Parked in `_FUTURE-STATE` (not urgent)
-**Apollo Labs** (the tuner + isoluminant/ramp/halation engine) · whole-palette sweep · edge-triage interface ·
-~450 variable-weight target · dual-observer principle.
+## 3. Gates owed
+- **Amber rules gate** (rules 1+2 still unenforced). · **Component RAG rebind** behind the blast-radius gate
+  (waits on the manifestation pick).
 
-## 4. From the parallel session (gauge / densify) — merged queue
-1. **Fix `gen_rules_index.py` truncation bug** — silent mid-sentence data loss for 11+ rules in the index
-   (list in §B). Correctness; do first of these.
-2. **Plugin-disable pass** — Dave's toggle in Settings › Capabilities (Figma / pdf-viewer / cowork-plugin-mgmt /
-   design connectors): the biggest single context-baseline cut.
-3. ✅ **DONE — conductor pattern promoted** → `_RUNBOOK-parallel-conductor.md` + `AGENTS.md` clause, now with
-   the **"read good morning"** role trigger (AskUserQuestion Worker/Conductor/Solo; conductor reads workers via
-   `session_info`, zero receipts to paste). Commits `a75b452` + `1efb0aa`.
-4. **Corpus densify = DON'T** (settled — near-dead lever); keep the adversary gate.
+## 4. Parked (`_FUTURE-STATE`)
+Broader colour/theming build (Console + Supercharge palettes; the 4-theme toggle machinery) — "deal with colours
+later." · **Apollo Labs** (the grey-ramp + OKLCh tuners → Layer-2 in-browser controls). · Bulk type-binding for
+~338 elements · compliance edges (27 unverified `verified_by`, advisory) · 🕓 Latin webfont (waiting on brand).
 
-## 5. Carry-overs still open (prior sessions)
-Bulk type-binding for ~338 elements (T-D9/T-D11/T-D14) · compliance edges (27 unverified `verified_by`,
-advisory) · multi-size countdown · 🕓 Latin webfont pack (waiting on brand, not yours to chase).
+## 5. From the components worker
+Next in its P1 list = **OTP/PIN entry** component. The 38-component `#1A1A1A` rebind wants a fresh-eyes review.
 
-> **COMMIT STATE — ONE conductor commit, docs only (NO gated code).** RAG strand: `_proforma/_RAG-DECISIONS.md`
-> (R-D12…R-D14), `_DECISION-HISTORY/2026-07-19-rag-colour-halation-ramp.md` (Session-3 continuation),
-> `reviews/RAG-LIGHT-FILLS-2026-07-19-v1…v9-LOCKED` (+ `.REVIEW`), `reviews/_rag_light_fills_calc.py`. Shared
-> handoff: `_LIVE-STATE.md`, `_FUTURE-STATE.md`, `GOOD-MORNING.md`. Merged from the parallel session (its main
-> work already in `e7f8b87`): `knowledge/_RUNBOOK-densify-adversarial.md` + `notes/_PARALLEL-SESSIONS-conductor.md`.
-> `_to_delete/_dense_test/` is gitignored — excluded. Build state unchanged (no gated sources).
-> **Follow-on commits (this session, post-merge — also to push):** `a75b452` (conductor-pattern runbook +
-> `AGENTS.md` clause) · `1efb0aa` ("read good morning" role trigger). **You push via GitHub Desktop.**
-> **Next session model: Sonnet** (token promotion + component build — enactment, not ruling).
+> **COMMIT STATE — ONE conductor commit, THREE strands (shared tree entangles them via generated files).**
+> **Mine:** `tokens/semantic-colour.json` (RAG fills), `tokens/colour.json` (mono ramp), `_contrast_utils.py`
+> (RAG exclusion), `_proforma/_RAG-DECISIONS.md` (R-D15), `canon/canon.css` (regen), grey-ramp tuners
+> `reviews/APOLLO-MONO-GREY-CURVE-2026-07-19-v1/v2.html`, `_LIVE-STATE.md`, `GOOD-MORNING.md`. **rules-index
+> worker:** `gen_rules_index.py` + regen (`_rules-index.json`, `_RECONCILIATION.md`, `_consult-index.json`),
+> `_RUNBOOK-git-commit.md`, `_RUNBOOK-parallel-conductor.md`, `notes/_receipts/`, `_HOW-TO-RUN-SESSIONS.md`.
+> **components worker:** all 38 `snippets/*.reference.html`, `canon/type.css` + `_type-bindings.json`,
+> `_proforma/*-interactive.html` + `Icon-button`, new `Amount-display` (snippet + `amount-display.meta.json` +
+> `_review/`). Plus regenerated audit/index artifacts. Build green 34/34. `_to_delete/` gitignored (binned
+> review docs live there). **You push via GitHub Desktop — review the 38-component rebind in the diff first.**
+> **Next session model: Sonnet** (semantic-grey wiring + manifestation — enactment).

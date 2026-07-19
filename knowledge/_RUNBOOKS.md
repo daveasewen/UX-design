@@ -9,7 +9,7 @@ only in the artefact it governs dies the first time that artefact is rewritten �
 **This index is generated from the filesystem**, because a hand-maintained list of runbooks is exactly
 the thing that rots when someone adds the tenth one and forgets the list.
 
-**10 runbooks**, last generated 2026-07-19.
+**13 runbooks**, last generated 2026-07-19.
 
 ### `_RUNBOOK-capture-ritual.md`
 **Runbook — end-of-session capture ritual**
@@ -26,6 +26,11 @@ and* every snippet consumes. Composition becomes objective **selection + layout*
 
 (This doc must be reachable from `GOOD-MORNING.md` for the standing-instructions reachability gate to see it — that wiring is the parent session's job, not this one's; see the build note at the bottom.)
 
+### `_RUNBOOK-context-gauge.md`
+**Runbook — context gauge ("fuel gauge")**
+
+Stood up 2026-07-19 at Dave's request: "I can tell when you're getting 'tired' — I need a method of estimating token use … a hook for when we reach some threshold, run the ritual and move to a new context window." This runbook is the…
+
 ### `_RUNBOOK-criteria-contract.md`
 **Runbook — compile a criteria contract from a brief**
 
@@ -35,6 +40,11 @@ Written 2026-07-02 (window work, G2 from the north-star mock). The operating mod
 **Runbook — decision-corpus correctness audit**
 
 The method for moving decision nodes from `unaudited` → `vouched` (or `amend` / `overturn` / `retire`). Designed 2026-07-05 in a loaded session; **executed only in fresh, batched sessions.*
+
+### `_RUNBOOK-densify-adversarial.md`
+**Runbook — adversarial densification (lossless context-file compression)**
+
+Stood up 2026-07-19 (Dave: "maybe an adversarial set of agents might sharpen things up" + "many a mickle macks a muckle" — 10–12%/file across the whole corpus adds up). Sibling to `_RUNBOOK-context-gauge.md`: the gauge lowers WHEN we…
 
 ### `_RUNBOOK-gated-component.md`
 **Runbook — build a gated component**
@@ -50,6 +60,11 @@ Why this exists: the sandbox mount runs a **delete-guard** — git can create `.
 **Runbook — onboard a new code library (add a binding spoke)**
 
 The repeatable procedure for connecting the design canon to a **consuming code library** (Sutherland React today; others later). Written 2026-06-22 (Dave decision) so the system — not anyone's memory — knows what to do when a new…
+
+### `_RUNBOOK-parallel-conductor.md`
+**Runbook — parallel sessions: worker vs conductor (single-writer for shared state)**
+
+Origin 2026-07-19: two Cowork sessions ran at once and BOTH tried to commit + rewrite `GOOD-MORNING.md`. Dave's diagnosis: "I should be running a cold agent from the main chat." The receipt→conductor→one-commit path was then proven live…
 
 ### `_RUNBOOK-reconcile-dark-tokens.md`
 **Runbook — reconcile a dark token group**

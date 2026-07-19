@@ -2,7 +2,7 @@
 
 > Every assertion in the component metas that is **not** directly observed canon. Formalises the in-prose confidence convention (Graphify-borrow #1). 🔴 **review** = verify before trusting; 🟡 **inferred** = reasoned, lower urgency. `asserted` items (the default) are not listed. Generated — regenerate after editing metas: `python3 knowledge/_build_review_queue.py`. Vocabulary in `_CONFIDENCE.md`; machine detail in `_REVIEW-QUEUE.json`.
 
-**Totals:** 123 items across 31 components — 117 🔴 review, 6 🟡 inferred. By category: anti-pattern 51, token-rebind 29, accessibility 26, other 17.
+**Totals:** 125 items across 32 components — 119 🔴 review, 6 🟡 inferred. By category: anti-pattern 51, token-rebind 29, accessibility 26, other 19.
 
 Most-flagged components: Account card (9), Confirmation (9), Action bar (7), Badge (6), Eyebrow (6), Tab-bar (6), Countdown timer (5), Dropdown (5).
 
@@ -232,7 +232,7 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 - 🔴 `antiPatterns` — REVIEW (inferred): labels in UPPERCASE — house type rule is sentence case.
 - 🔴 `antiPatterns` — REVIEW (inferred): applying the pills variant's rounding/elevation to the standard bar — those are fenced to the exploratory pills variant; the standard bar stays flat/angular.
 
-## Other (17)
+## Other (19)
 
 **Account card**
 - 🔴 `tokens.$balance-type-finding` — REVIEW: the balance uses a display/amount type (30px / line-height 1.1 / tabular-nums / -0.01em) with NO dedicated typography token. The gap report flagged 'display/amount type + money-format' as missing — confirm the size/role and add a…
@@ -243,6 +243,10 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 
 **Action bar**
 - 🔴 `provenance.$note` — REVIEW: no Figma node yet — surfaced by the journey gap report (the .c-actionbar hand-util) and Button.meta commonPatterns. Needs a design owner + Figma source before promotion from candidate to gated.
+
+**Amount display**
+- 🔴 `tokens.$directional-out-of-scope` — REVIEW: directional gain/loss colour (data/delta/gain + data/delta/loss) is deliberately NOT bound here — colour is handled in the RAG/delta workstream and layers on as an opt-in modifier later. Contrast note kept for when it lands: dark…
+- 🔴 `provenance.$note` — REVIEW: surfaced as a P1 foundation in reviews/ITINERARY-2026-07-14-apollo-component-library and by the account-card $balance-type-finding. Needs a design owner + Figma source before promotion from candidate to gated.
 
 **Button**
 - 🟡 `props.$note` — default height 44px; 'Large' variant exists for primary (and likely all types) — confirm Large height.

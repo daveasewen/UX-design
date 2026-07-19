@@ -9,7 +9,7 @@
 | SC | Result | Granularity | Coverage |
 |---|---|---|---|
 | 1.4.11 | ✅ pass | component | 8/8 applies_to components have a bound audited token or a gated snippet contrastPair |
-| 1.4.3 | ✅ pass | component | 18/18 applies_to components have a bound audited token |
+| 1.4.3 | ✅ pass | component | 19/19 applies_to components have a bound audited token |
 | 2.3.3 | ✅ pass | component | — |
 | 2.5.8 | ✅ pass | component | — |
 
@@ -23,12 +23,12 @@
 
 | Component | Snippet | Verdict | Pairs checked |
 |---|---|---|---|
-| Badge | `Badge.reference.html` | ✅ pass | primary/background/default on background/default (light) = 5.22:1 (pass); primary/background/default on background/default (dark) = 4.02:1 (pass) |
-| Links | `Links.reference.html` | ✅ pass | primary/background/default on background/default (light) = 5.22:1 (pass); primary/background/default on background/default (dark) = 4.02:1 (pass); icon/default on background/default (light) = 12.63:1 (pass); icon/default on background/default (dark) = 21.0:1 (pass) |
+| Badge | `Badge.reference.html` | ✅ pass | primary/background/default on background/default (light) = 5.22:1 (pass); primary/background/default on background/default (dark) = 3.33:1 (pass) |
+| Links | `Links.reference.html` | ✅ pass | primary/background/default on background/default (light) = 5.22:1 (pass); primary/background/default on background/default (dark) = 3.33:1 (pass); icon/default on background/default (light) = 12.63:1 (pass); icon/default on background/default (dark) = 17.4:1 (pass) |
 
 ### 1.4.3
 
-18/18 applies_to components have a bound audited token. 18 pass, 0 fail, 0 not_covered.
+19/19 applies_to components have a bound audited token. 19 pass, 0 fail, 0 not_covered.
 
 
 ## Unverified (applies_to only)

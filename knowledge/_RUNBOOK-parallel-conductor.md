@@ -43,8 +43,10 @@ only engages at two or more.
    append**, never a rewrite (a rule you must record → put it in the receipt, let the conductor inscribe).
 3. Commit only your OWN disjoint files if you must, serialized; when in doubt, don't commit — hand
    files up.
-4. Optionally leave a short **RECEIPT** (what landed · open · files touched · proposed §C lines ·
-   commit state) — a convenience only; the conductor can read you directly, so it is NOT required.
+4. Leave a short **RECEIPT** at the fixed path **`notes/_receipts/<date>-<session-slug>-<topic>.md`**
+   (what landed · open · files touched · proposed §C lines · commit state). The session-slug in the
+   filename means two workers physically cannot collide. The conductor can also read you directly via
+   `session_info`; the receipt is the durable fallback and the anchor its reconcile step (2.5) looks for.
 
 ## Conductor checklist
 
@@ -53,6 +55,10 @@ only engages at two or more.
    only a fallback if a session isn't readable.
 2. Merge into ONE `GOOD-MORNING` structured as a **strand menu + per-strand lanes** — never a flat
    mega-list (see below). Refresh `_LIVE-STATE`, apply any memory/rule from the receipts.
+2.5 **Reconcile the working tree before committing.** `git status --short`; every dirty path is yours
+   or a known worker's — cross-check against `ls notes/_receipts/`. **Never blind-`git add -A` with
+   workers live**; account for each path first. (Same check as `_RUNBOOK-git-commit.md` step 0.5,
+   restated here because the conductor is the one holding the commit.)
 3. Make ONE commit (follow `_RUNBOOK-git-commit.md` lock dance); hand Dave a paste-ready summary.
 4. Dave pushes via GitHub Desktop only.
 
@@ -78,6 +84,10 @@ find their own.**
 - Never two `git` operations at the same instant (lock contention). Serialize.
 - `MEMORY.md` = append surgically, never rewrite, so parallel sessions don't clobber the index.
 - A worker never edits shared canon mid-flight — it proposes via the receipt; the conductor decides.
+- **Nothing clashes by construction, not by good behaviour:** workers write only NEW files at
+  `notes/_receipts/<date>-<session-slug>-<topic>.md` (unique name = no collision); ONE conductor writes
+  the handoff + commits; commits are serialized. The only rule left to *trust* is "one conductor" — the
+  rest is enforced by naming, location, and the reconcile step (2.5).
 
 ## Entry points
 

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apollo Mono grey ramp — curve tuner · 2026-07-19</title>
+<style>
+  :root{
+    --uf:"Univers Next HSBC","HSBC_MtUnivers_Latin","Helvetica Neue",Arial,sans-serif;
+    --pg:#fff; --tx:#111; --mut:#5b6770; --ln:#e6e8ea; --sf:#f6f7f8; --accent:#db0011; --ok:#1a7f4b;
+  }
+  body.dark{ --pg:#1A1A1A; --tx:#f2f2f2; --mut:#9aa4ad; --ln:#2c2c2c; --sf:#212121; }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:var(--uf); color:var(--tx); background:var(--pg); line-height:1.45; max-width:960px; margin:0 auto; padding:0 40px 120px; transition:background .16s,color .16s;}
+  :is(button,a,span,small,b,i,th,td,li,output,label):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+  .docbar{position:sticky; top:0; z-index:50; display:flex; gap:18px; align-items:center; flex-wrap:wrap; background:var(--pg); border-bottom:1px solid var(--ln); padding:12px 0; margin-bottom:24px;}
+  .docbar button{font:inherit; font-size:12px; padding:7px 12px; border:1px solid var(--tx); background:transparent; color:var(--tx); cursor:pointer;}
+  .eyebrow{font-size:12px; font-weight:500; color:var(--accent); margin-bottom:6px;}
+  h1{font-size:28px; font-weight:300; line-height:1.12; margin-bottom:10px;}
+  .lede{font-size:14px; color:var(--mut); max-width:80ch; margin-bottom:6px;} .lede b{color:var(--tx); font-weight:500;}
+  h3.section{font-size:11px; font-weight:600; letter-spacing:.06em; border-top:2px solid var(--tx); padding-top:8px; margin:30px 0 12px; text-transform:uppercase;}
+  .controls{display:flex; gap:28px; flex-wrap:wrap; align-items:center; padding:14px 18px; border:1px solid var(--ln); border-radius:6px; background:var(--sf); margin-bottom:8px;}
+  .ctl{display:flex; flex-direction:column; gap:4px; font-size:12px; min-width:180px;}
+  .ctl label{color:var(--mut); font-weight:600; display:flex; justify-content:space-between;}
+  .ctl output{color:var(--tx); font-variant-numeric:tabular-nums;}
+  input[type=range]{width:100%; accent-color:var(--accent);}
+  .ramp{display:flex; flex-direction:column; border:1px solid var(--ln); border-radius:6px; overflow:hidden; margin-top:14px;}
+  .step{display:flex; align-items:center; gap:14px; height:40px; padding:0 14px; font-size:12px; font-variant-numeric:tabular-nums;}
+  .step .chip{width:120px; height:100%; flex:none;}
+  .step .nm{width:120px; font-weight:600;}
+  .step .hx{width:90px; color:var(--mut);}
+  .step .br{width:120px; color:var(--mut);}
+  .step.anchor{outline:2px solid var(--accent); outline-offset:-2px;}
+  .step.anchor .nm{color:var(--accent);}
+  .swatchbar{display:flex; height:60px; border:1px solid var(--ln); margin-top:6px;}
+  .swatchbar span{flex:1;}
+  code,.mono{font-family:ui-monospace,Menlo,monospace; font-size:.85em;}
+  #exportbox{width:100%; margin-top:10px; font-family:ui-monospace,Menlo,monospace; font-size:12px; padding:10px; border:1px solid var(--ln); background:var(--sf); color:var(--tx); min-height:88px;}
+  .hint{font-size:12px; color:var(--mut); margin-top:6px;}
+</style>
+</head>
+<body>
+  <div class="docbar">
+    <button type="button" id="theme">◐ Light / dark</button>
+    <span style="font-size:11px;color:var(--mut)">Dial the curve. γ&gt;1 pushes steps into the darks (thins the useless mid-greys). The step nearest #1A1A1A is ringed.</span>
+  </div>
+
+  <div class="eyebrow">Apollo Mono · neutral ramp · tuner</div>
+  <h1>Grey ramp — curve tuner</h1>
+  <p class="lede">The first cut was 21 <b>linear</b> steps; the mid-greys are low-value. This curves the ramp so resolution
+     concentrates in the <b>darks</b> (near-blacks do the work in a very-mono system), thins the middle, and keeps
+     black + white as endpoints. <b>Pinned through <span class="mono">#1A1A1A</span></b>. Dial γ and the step count until it
+     feels right, then hit <b>Copy</b> and hand me the set — I'll lock it as <span class="mono">color/mono/*</span>.</p>
+
+  <h3 class="section">Controls</h3>
+  <div class="controls">
+    <div class="ctl">
+      <label>Steps <output id="nOut">9</output></label>
+      <input type="range" id="n" min="5" max="15" step="1" value="9">
+    </div>
+    <div class="ctl">
+      <label>Curve γ (dark-weight) <output id="gOut">2.0</output></label>
+      <input type="range" id="g" min="1" max="3.5" step="0.1" value="2.0">
+    </div>
+    <div class="ctl" style="min-width:220px">
+      <label>Pin #1A1A1A as a step <output id="pOut">on</output></label>
+      <input type="checkbox" id="pin" checked style="width:auto;align-self:flex-start;transform:scale(1.3);margin-top:4px">
+    </div>
+  </div>
+  <div class="swatchbar" id="bar"></div>
+
+  <h3 class="section">Steps</h3>
+  <div class="ramp" id="ramp"></div>
+  <p class="hint" id="summary"></p>
+
+  <h3 class="section">Export — hand me this</h3>
+  <textarea id="exportbox" readonly></textarea>
+  <button type="button" id="copy" class="docbar" style="margin-top:8px;border:1px solid var(--tx);background:transparent;color:var(--tx);padding:7px 14px;font-size:12px;cursor:pointer">Copy</button>
+
+  <script>
+    const ANCHOR_B = 26/255*100; // #1A1A1A brightness ≈ 10.2%
+    const hx = b => { const v = Math.round(b/100*255); const h = v.toString(16).padStart(2,'0').toUpperCase(); return '#'+h+h+h; };
+    const $ = id => document.getElementById(id);
+
+    function build(){
+      const N = +$('n').value, G = +$('g').value, pin = $('pin').checked;
+      $('nOut').textContent = N; $('gOut').textContent = G.toFixed(1); $('pOut').textContent = pin?'on':'off';
+      // brightness_i = 100 * (i/(N-1))^gamma  -> dark-weighted when gamma>1
+      let bs = [];
+      for(let i=0;i<N;i++) bs.push(100*Math.pow(i/(N-1), G));
+      // snap the nearest interior step to the #1A1A1A anchor
+      let anchorIdx = -1;
+      if(pin){
+        let best=1, bd=1e9;
+        for(let i=1;i<N-1;i++){ const d=Math.abs(bs[i]-ANCHOR_B); if(d<bd){bd=d;best=i;} }
+        bs[best]=ANCHOR_B; anchorIdx=best;
+      }
+      const rows = bs.map((b,i)=>({b, hex:hx(b), anchor:i===anchorIdx}));
+
+      // swatch bar
+      $('bar').innerHTML = rows.map(r=>`<span style="background:${r.hex}"></span>`).join('');
+
+      // step list
+      $('ramp').innerHTML = rows.map((r,i)=>`
+        <div class="step${r.anchor?' anchor':''}" style="background:${i<rows.length/2?'transparent':'transparent'}">
+          <div class="chip" style="background:${r.hex}"></div>
+          <div class="nm">mono/${Math.round(r.b)}</div>
+          <div class="hx mono">${r.hex}</div>
+          <div class="br">bright ${r.b.toFixed(1)}%</div>
+        </div>`).join('');
+
+      // summary: how many steps below 25% brightness (the useful dark band)
+      const darks = rows.filter(r=>r.b<=25).length;
+      $('summary').textContent = `${N} steps · ${darks} in the dark band (≤25% brightness) · ${rows.filter(r=>r.b>25&&r.b<75).length} mid · endpoints black + white. #1A1A1A ${pin?'pinned':'not pinned'}.`;
+
+      // export
+      $('exportbox').value = 'Apollo Mono grey ramp (curved) — γ='+G.toFixed(1)+', steps='+N+'\n'
+        + rows.map(r=>`mono/${Math.round(r.b)}  ${r.hex}  (bright ${r.b.toFixed(1)}%)`).join('\n');
+    }
+
+    ['n','g','pin'].forEach(id=>$(id).addEventListener('input',build));
+    $('theme').addEventListener('click',()=>document.body.classList.toggle('dark'));
+    $('copy').addEventListener('click',()=>{ $('exportbox').select(); document.execCommand&&document.execCommand('copy'); });
+    build();
+  </script>
+</body>
+</html>

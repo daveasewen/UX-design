@@ -137,9 +137,22 @@ Latin webfont" rests on absence of files, not on any document.
   green/blue keeps green›blue on both grounds (loud=darker on white, lighter on dark). Reconciled table + arc: ledger
   R-D12…R-D14; sign-off `reviews/RAG-LIGHT-FILLS-2026-07-19-v9-LOCKED`; derivation `reviews/_rag_light_fills_calc.py`;
   ★ **two-mode in-browser TUNER** (v6→v7, OKLCh, ramp-guard) = Apollo Labs / Layer-2 controls candidate.
-- **⚠️ NOT YET GATED / NOT PROMOTED.** Both amber rules unenforced. **Token promotion is the next task (Sonnet):** write
-  `rag/healthy` `rag/info` per-mode + `rag/breach` `rag/watch` stable to `tokens/semantic-colour.json`, rebind behind the
-  blast-radius gate. This is the last open before RAG colour is fully done.
+- **✅ FILLS PROMOTED (2026-07-19, this session).** R-D14 fills written to `semantic-colour.json` `*-background`
+  + propagated to `canon.css`: light `#5DAC7B`/`#7DABCD`, dark `#43AD6F`/`#5F92B9`, breach `#B92F1E` now mode-stable,
+  watch `#F0B13A`. `rag/text` polarity (white on breach, black on states — `type26-013`+R-D12 B) enacted via the
+  **existing `RULED_PAIR_EXCLUSIONS`** (white×green/blue forbidden, like amber). Build green. **NOT rebound** — components
+  render RAG as dots (glyphs, bind incumbents, R-D6 fine) + chips (tints); the `-background` fills await the §1
+  manifestation pick. **Both amber rules still unenforced (gate owed).**
+- **★ FOUR-THEME ARCHITECTURE — R-D15 (2026-07-19).** ONE token store + ONE baseline library, toggling **4 themes:
+  Apollo Legacy · Mono · Console (UI) · Supercharge (SC)**. Components bind theme-agnostic roles; theme override sets
+  supply the hex. **Apollo Legacy** alone carries the teals AND the HSBC brand `color/grey/100–800`. **The baseline we
+  build now = Apollo Mono, "very mono": monochrome throughout, colour ONLY in RAG + data-vis.** Broader colour/theming
+  build PARKED ("deal with colours later"). Ledger R-D15; memory `four-theme-architecture`.
+- **★ Apollo Mono grey ramp = `color/mono/1…15`** (2026-07-19, R-D15). Dual-end brightness curve (γ=1.7, 15 stable
+  index steps, black→white), packing resolution to both ends, thinning mid-greys; `#1A1A1A` = `mono/4`. Keys are index
+  (theme-remappable); per-step brightness in the token `$description`. In `colour.json` + canon; build green. Tuner:
+  `reviews/APOLLO-MONO-GREY-CURVE-2026-07-19-v2.html`. **Grey-tint standing check** (memory `feedback-grey-tint-check`):
+  surface greys (`#333`=`grey/800`, `#767676`=`grey/600`) before changing — Dave usually rules black, but confirm.
 
 - **Project name = Apollo** (renamed from *Promenaut* repo-wide 2026-07-14; "Apollo" singular
   preferred, "Apollo SDS" acceptable). History: `_DECISION-HISTORY/2026-07-14-rename-and-restructure.md`.
@@ -236,13 +249,13 @@ Latin webfont" rests on absence of files, not on any document.
 
 ## OPEN — propagation gaps + parked threads
 
-### 🔴 OPEN — `gen_rules_index.py` silently TRUNCATES rules (2026-07-19, parallel session)
-Found during the densify session: `gen_rules_index.py` cuts 11+ entries mid-sentence in
-`knowledge/guidelines/_RECONCILIATION.md` — mot-007, neuro-041/042, pict-014, tov-016, type26-015/026/029,
-webf-017, ctkb-015, icon-015. **Silent data loss in the generated rules index** = a correctness bug (the
-consult/rules-index tooling under-reports these rules). Chase separately, before relying on rules-index
-completeness. Fix candidate: the truncation/length cap in the generator. Receipt: parallel session
-"Context gauge + adversarial densify".
+### ✅ CLOSED (2026-07-19) — `gen_rules_index.py` truncation fixed
+The `chunk[:500]` cap in `rule_text()` was cutting 11+ rules mid-sentence in `_RECONCILIATION.md` and making
+their tails unsearchable in `_consult.py` (`icon-015` alone lost ~2300 chars). **Fix: cap removed** — the
+walk-back already bounds `rule_text` to one bullet/paragraph, so full text now flows to both consumers.
+Verified independently by the rules-index worker (465 rules intact, longest icon-015=2833, old-cap
+fingerprint gone). Provenance comment in the generator so a cold session won't "restore" the cap. Receipt:
+`notes/_receipts/2026-07-19-worker-rules-index-truncation.md`.
 
 ### ✅ CLOSED (2026-07-18) — the binding mechanism's BLAST RADIUS now has a gate
 `_validate_type_blast_radius.py` (blocking, wired into `_build_all.py`) + registry

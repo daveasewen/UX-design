@@ -2,7 +2,7 @@
 
 > Generated derived view over `knowledge/` (Graphify-inspired; no external dependency). Regenerate after editing component metas or tokens: `python3 knowledge/tokens/_build_blast_radius.py`. Authored canon stays the source of truth; this is a generated dashboard.
 
-**Totals:** 38 components · 742 tokens defined · 88 tokens referenced by components · compliance: 31 rules x 38 components (31 SCs).
+**Totals:** 39 components · 758 tokens defined · 90 tokens referenced by components · compliance: 31 rules x 39 components (31 SCs).
 
 ## God-nodes — highest token blast radius
 
@@ -10,15 +10,15 @@ Change one of these and the listed number of components is affected. Use before 
 
 | Token | Blast | Example components |
 |---|---|---|
-| `text/default` | 34 | Accordion, Account card, Avatar, Breadcrumbs, Button, Cards… |
+| `text/default` | 35 | Accordion, Account card, Amount display, Avatar, Breadcrumbs, Button… |
 | `icon/default` | 20 | Accordion, Avatar, Button, Cards, Dropdown, Headers… |
 | `text/reverse` | 17 | Action bar, Avatar, Badge, Button, Cards, Confirmation… |
+| `background/default` | 14 | Accordion, Amount display, Cards, Dropdown, Input fields, Modals… |
 | `icon/default-reverse` | 14 | Avatar, Button, Cards, Dropdown, Hero, Input fields… |
-| `background/default` | 13 | Accordion, Cards, Dropdown, Input fields, Modals, Navigations… |
-| `typography/font-family/default` | 12 | Account card, Action bar, Avatar, Badge, Breadcrumbs, Button… |
+| `typography/font-family/default` | 13 | Account card, Action bar, Amount display, Avatar, Badge, Breadcrumbs… |
 | `tertiary/background/default` | 11 | Account card, Action bar, Button, Cards, List items, Modals… |
+| `border/subtle` | 10 | Accordion, Account card, Action bar, Amount display, Avatar, Cards… |
 | `text/disabled` | 10 | Avatar, Button, Dropdown, Input fields, Links, List items… |
-| `border/subtle` | 9 | Accordion, Account card, Action bar, Avatar, Cards, Hero… |
 | `icon/disabled` | 9 | Avatar, Badge, Button, Dropdown, Input fields, Links… |
 | `tertiary/background/hover` | 9 | Accordion, Avatar, Button, Cards, Confirmation, List items… |
 | `divider/border/subsection` | 8 | Divider, Dropdown, Input fields, Navigations, Pagination, Search field… |
@@ -30,15 +30,15 @@ Change one of these and the listed number of components is affected. Use before 
 
 | Group | Components |
 |---|---|
-| `text/` | 36 |
+| `text/` | 37 |
 | `icon/` | 22 |
 | `tertiary/` | 18 |
-| `background/` | 13 |
-| `typography/` | 12 |
+| `background/` | 14 |
+| `typography/` | 13 |
+| `border/` | 10 |
 | `form/` | 10 |
 | `rag/` | 10 |
 | `divider/` | 10 |
-| `border/` | 9 |
 | `primary/` | 9 |
 | `elevation/` | 8 |
 | `padding/` | 7 |
@@ -52,6 +52,7 @@ Change one of these and the listed number of components is affected. Use before 
 | `image/` | 2 |
 | `border-width/` | 2 |
 | `layout/` | 2 |
+| `data/` | 1 |
 | `timer/` | 1 |
 | `gap/` | 1 |
 | `progress/` | 1 |
@@ -87,15 +88,15 @@ Components whose `tokens` block still references a `(depricate)` token (count = 
 
 ## Orphans — defined tokens not referenced by any component meta
 
-654 of 742 defined tokens are unreferenced at the component layer. **Expected** for primitives and scale steps (consumed via semantic aliases, not bound directly); worth scanning the *semantic* groups for genuinely-dead tokens. By group:
+668 of 758 defined tokens are unreferenced at the component layer. **Expected** for primitives and scale steps (consumed via semantic aliases, not bound directly); worth scanning the *semantic* groups for genuinely-dead tokens. By group:
 
 | Group | Unreferenced |
 |---|---|
-| `color/` | 190 |
+| `color/` | 205 |
 | `data-vis/` | 90 |
-| `rag/` | 44 |
-| `data/` | 42 |
+| `rag/` | 45 |
 | `typography/` | 42 |
+| `data/` | 40 |
 | `gap/` | 27 |
 | `tabs/` | 20 |
 | `primary/` | 19 |

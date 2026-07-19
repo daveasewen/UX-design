@@ -120,6 +120,16 @@ RULED_PAIR_EXCLUSIONS = {
             "ink (#1A1A1A — 9.16:1); white RAG text on amber is forbidden by ruling, so "
             "this pair cannot occur. The amber-rules gate (owed) enforces the ruling "
             "itself; this entry only stops the audit testing a state the ruling forbids.",
+        "rag/success-background":
+            "R-D12 B + type26-013 (BLOCKING): white typography is reserved for HSBC "
+            "Red/supporting reds for emphasis; every other status fill carries BLACK "
+            "text. White RAG text on the green healthy fill is forbidden by ruling, so "
+            "this pair cannot occur — the label (black) is the readable channel; fill "
+            "colour is secondary when paired with a label (R-D6).",
+        "rag/information-background":
+            "R-D12 B + type26-013 (BLOCKING): white type is red-only (emphasis); the "
+            "blue info fill carries BLACK text. White RAG text on info is forbidden by "
+            "ruling, so this pair cannot occur (R-D6 — colour secondary to the label).",
     },
 }
 

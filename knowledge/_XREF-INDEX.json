@@ -10,7 +10,7 @@
     "focus-indicators.md"
   ],
   "totals": {
-    "components": 38,
+    "components": 39,
     "with_deprecated_bindings": 19,
     "god_node_count": 18
   },
@@ -163,6 +163,54 @@
           "REVIEW (inferred): rounding the buttons or the bar — brand is square/angular.",
           "REVIEW (inferred): relying on the CSS reorder while leaving DOM order such that keyboard focus reaches Confirm before Cancel — keep DOM order logical (2.4.3)."
         ]
+      },
+      "deprecated_bindings": [],
+      "deprecated_count": 0
+    },
+    "Amount display": {
+      "name": "Amount display",
+      "category": "atom",
+      "figma_node": "",
+      "tokens": [
+        "background/default",
+        "border/subtle",
+        "data/delta/gain",
+        "data/delta/loss",
+        "text/default",
+        "text/secondary",
+        "typography/font-family/default"
+      ],
+      "token_count": 7,
+      "god_nodes_touched": [
+        "background/default",
+        "border/subtle",
+        "text/default",
+        "text/secondary",
+        "typography/font-family/default"
+      ],
+      "wcag_sc": [
+        "1.3.1",
+        "1.4.1",
+        "1.4.10",
+        "1.4.3"
+      ],
+      "guidelines": [
+        "accessibility.md",
+        "digital-accessibility-standards.md",
+        "colour-usage.md",
+        "dark-mode.md",
+        "focus-indicators.md"
+      ],
+      "anti_patterns": {
+        "asserted": [
+          "Putting a space between the currency symbol/code and the amount (copy-025 — a space risks the amount wrapping to a different line).",
+          "Using proportional (non-tabular) figures — money columns must align; the atom sets font-variant-numeric:tabular-nums.",
+          "Using a hyphen-minus (-) instead of U+2212 MINUS (−) for negatives.",
+          "Conveying credit/debit or gain/loss by COLOUR alone — this atom is monochrome; when directional colour is added it must be redundant with a sign/caret (1.4.1).",
+          "Hard-coding the display size instead of binding to the .t-cm-figure-4 composite once it is vouched.",
+          "Hiding a balance with opacity — use the redacted variant (a real token colour + aria-label), never an opacity tint (it drifts per surface)."
+        ],
+        "inferred_review": []
       },
       "deprecated_bindings": [],
       "deprecated_count": 0

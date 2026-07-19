@@ -1,0 +1,66 @@
+{
+  "name": "Amount display",
+  "interactive": false,
+  "stateModel": "simple",
+  "category": "atom",
+  "purpose": "The money-format PRIMITIVE: renders a currency value consistently — currency symbol/code before the amount with no space (copy-025), tabular lining figures so columns of money align, an unambiguous U+2212 minus for negatives, and a redacted privacy state. Monochrome by design; directional gain/loss colour is owned by the RAG/delta colour workstream and layers on later. Everything from account balances to transaction rows to data-grid numeric cells composes on this atom.",
+  "props": [
+    { "name": "size", "type": "enum", "values": ["display", "default", "small"], "default": "default", "$note": "display = 32px, bound to the .t-cm-figure-4 composite (the display/amount token); default = 16px inline body; small = 14px dense rows/tables." },
+    { "name": "sign", "type": "enum", "values": ["none", "negative"], "default": "none", "$note": "Negative renders a leading U+2212 MINUS in monochrome text — never a colour cue. Positive normally carries no sign." },
+    { "name": "redacted", "type": "boolean", "default": false, "$note": "Privacy mask: the value is replaced by dots (aria-hidden) and the element carries role=img + an aria-label giving context (e.g. 'Balance hidden')." }
+  ],
+  "variants": [
+    { "name": "display", "use": "Hero balance / headline figure at 32px, bound to .t-cm-figure-4." },
+    { "name": "default", "use": "Inline body amount at 16px (in prose, list rows, summaries)." },
+    { "name": "small", "use": "Dense numeric contexts at 14px (tables, ledger rows)." },
+    { "name": "redacted", "use": "Value hidden for privacy; meaning carried by aria-label." }
+  ],
+  "tokens": {
+    "text": "text/default",
+    "muted": "text/secondary",
+    "border": "border/subtle",
+    "page": "background/default",
+    "font-family": "typography/font-family/default",
+    "type-display": "composite .t-cm-figure-4 (32px / 400 / line-height 1 / tabular-nums) — the display/amount type token, PREPARED 2026-07-19 awaiting Dave's vouch",
+    "$directional-out-of-scope": "REVIEW: directional gain/loss colour (data/delta/gain + data/delta/loss) is deliberately NOT bound here — colour is handled in the RAG/delta workstream and layers on as an opt-in modifier later. Contrast note kept for when it lands: dark-loss #CC4333 = 4.42:1 fails AA-text, so a directional treatment must keep the numeric value monochrome and carry direction by caret + sign (avd-001)."
+  },
+  "relationships": {
+    "livesInside": ["Account card", "Table", "Summary", "List-items", "Transaction / ledger row (gap)", "KPI / trend tile (gap)"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["account balance headline", "right-aligned money column in a table", "transaction amount in a statement row", "inline amount in body copy"]
+  },
+  "accessibility": {
+    "role": "Passive text by default. The redacted variant uses role=\"img\" + aria-label so the masked value announces its meaning ('Balance hidden') rather than reading the dots.",
+    "screenReader": "The U+2212 minus reads as 'minus'. Currency symbol/code precedes the value (copy-025). A screen reader reads '£3,248.55' acceptably; a consuming component may add an explicit aria-label (e.g. 'Balance £3,248.55') where the surrounding context needs it.",
+    "colourIndependence": "No meaning is carried by colour anywhere in this atom (it is monochrome); sign and magnitude are text. When the directional modifier lands from the colour workstream, direction must remain carried by caret + sign, not colour alone (1.4.1).",
+    "relatedSC": ["1.4.3 Contrast (Minimum)", "1.3.1 Info and Relationships", "1.4.1 Use of Color", "1.4.10 Reflow"]
+  },
+  "antiPatterns": [
+    "Putting a space between the currency symbol/code and the amount (copy-025 — a space risks the amount wrapping to a different line).",
+    "Using proportional (non-tabular) figures — money columns must align; the atom sets font-variant-numeric:tabular-nums.",
+    "Using a hyphen-minus (-) instead of U+2212 MINUS (−) for negatives.",
+    "Conveying credit/debit or gain/loss by COLOUR alone — this atom is monochrome; when directional colour is added it must be redundant with a sign/caret (1.4.1).",
+    "Hard-coding the display size instead of binding to the .t-cm-figure-4 composite once it is vouched.",
+    "Hiding a balance with opacity — use the redacted variant (a real token colour + aria-label), never an opacity tint (it drifts per surface)."
+  ],
+  "dimensions": {
+    "$note": "Sizes are the type ramp, not per-component invention.",
+    "display": "32px (.t-cm-figure-4, --slot 40px)",
+    "default": "16px",
+    "small": "14px",
+    "tracking-display": "-0.01em optical",
+    "tracking-body": "-0.005em optical"
+  },
+  "tokenValidation": {
+    "date": "2026-07-19",
+    "against": "canon token store (semantic-colour.json + type.css composites); declared values match in light + dark.",
+    "result": "PASS (monochrome — text/default + text/secondary on background/default, both AA-text in both modes). 1 PREPARED type promotion (.t-cm-figure-4) awaiting Dave's vouch.",
+    "$note": "P1-foundation candidate from the ITINERARY-2026-07-14 build list ('Amount / currency display + money format'). Resolves the account-card $balance-type-finding. No Figma node yet — needs a design owner before promotion from candidate to gated."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": "",
+    "$note": "REVIEW: surfaced as a P1 foundation in reviews/ITINERARY-2026-07-14-apollo-component-library and by the account-card $balance-type-finding. Needs a design owner + Figma source before promotion from candidate to gated."
+  }
+}

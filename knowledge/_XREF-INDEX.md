@@ -2,7 +2,7 @@
 
 > One traversable record per component joining **tokens · god-nodes · WCAG SCs · guidelines · anti-patterns · deprecated bindings**. Generated derived view over the canon (Graphify-borrow #4); regenerate after editing metas/tokens/compliance KG/the guideline map: `python3 knowledge/_build_xref_index.py`. Machine-readable detail in `_XREF-INDEX.json`.
 
-**Totals:** 38 components · 19 with deprecated bindings · 18 god-nodes (blast≥7).
+**Totals:** 39 components · 19 with deprecated bindings · 18 god-nodes (blast≥7).
 
 **Global guidelines (apply to every component):** accessibility, digital-accessibility-standards, colour-usage, dark-mode, focus-indicators.
 
@@ -11,6 +11,7 @@
 | Accordion | mol | 8 | background/default, border/subtle, icon/default, background/hover… | 1.4.3, 2.1.1, 2.4.7, 2.5.8, 4.1.2 | elevation, contextual-help |  |
 | Account card | mol | 10 | border/subtle, border/default, rag/success, background/default… | 1.3.1, 1.4.1, 1.4.11, 1.4.3 | — |  |
 | Action bar | mol | 9 | border/subtle, background/default, background/default, text/reverse… | 1.4.10, 1.4.3, 2.4.3 | — |  |
+| Amount display | ato | 7 | background/default, border/subtle, text/default, text/secondary… | 1.3.1, 1.4.1, 1.4.10, 1.4.3 | — |  |
 | Avatar | ato | 12 | border/subtle, icon/default, icon/default-reverse, icon/disabled… | 1.1.1, 1.4.10, 1.4.4, 2.4.7, 2.5.8 | imagery, hexagon-masks, typography-usage | 6 |
 | Badge | ato | 6 | color/primary, icon/disabled, background/default, text/reverse… | 1.4.1, 1.4.11, 4.1.2 | typography-usage |  |
 | Breadcrumbs | mol | 2 | text/default, font-family/default | 1.4.1, 2.4.7, 2.4.8, 4.1.2 | platform-web, tone-of-voice |  |

@@ -589,3 +589,64 @@ No lines (R-D12 A). Fill contrast = salience lever, meaning in the label (R-D6);
 Sonnet session). Closes R-D11 entirely.
 - Green value `#429363` confirm (black text, label contrast 5.6).
 - ~~Amber accept?~~ **NOT open — R-D6 governs (label carries meaning); over-raised, Dave corrected.**
+
+---
+
+## R-D15 — RAG promoted + the FOUR-THEME architecture (2026-07-19)
+
+Source: Dave. The four-theme architecture was already captured in agent memory (`four-theme-architecture`)
+from a prior session but had **never been inscribed in this ledger** (a memory-only record — the anti-pattern;
+ledger stopped at R-D14). This entry closes that gap AND folds in today's refinements (the Apollo Mono
+"very mono" scope + the confirmed theme renames). Provenance: architecture = prior ruling; Mono-scope + rename
+detail = 2026-07-19.
+
+### The architecture — RULED (firm, Dave stated it definitively and named the themes)
+> **ONE token store + ONE baseline component library, toggling between FOUR themes** (Dave, 2026-07-19:
+> "yes one token store with 4 themes"). Components bind a **theme-agnostic semantic role** ("success"); the
+> active theme's override set decides the hex. Nothing hardcodes a theme's colour. The four themes, in Dave's
+> canonical order: **Apollo Legacy · Apollo Mono · Apollo Console (UI) · Apollo Supercharge (SC).**
+> - **Apollo Legacy** is the ONLY theme carrying the **teals** (`rag/success` #00847F, `rag/error`
+>   #A8000B, `rag/warning` #FFBB33, `rag/neutral` #767676, `rag/information`) **AND the HSBC brand grey scale
+>   `color/grey/100–800`** (Dave, 2026-07-19: "color/grey/100–800 — this stays for Apollo Legacy"). They are
+>   retained + tokenised for legacy interfaces — **not deleted** (confirms R-D1 pin 12; supersedes the vaguer
+>   "future legacy theme" note). New supersedes Legacy over time; both coexist under the toggle.
+> - **Apollo Mono's neutral scale is the new `color/mono/*` ramp** (added 2026-07-19), NOT `color/grey/*`.
+>   **LOCKED — dual-end brightness curve, γ=1.7, 15 steps** (Dave dialled it on the tuner
+>   `reviews/APOLLO-MONO-GREY-CURVE-2026-07-19-v2.html`): steps pack toward black AND white, thinning the
+>   low-value mid-greys; black + white are endpoints; **pinned through `#1A1A1A` = `mono/4`**. **Keys are a
+>   STABLE index 1–15** (Dave: "just do 1-15, they will be remapped as a theme") — so a future curve re-tune
+>   won't break aliases; themes remap semantic roles onto these indices. Set: `mono/1` #000000 · `2` #050505 ·
+>   `3` #0F0F0F · `4` #1A1A1A · `5` #313131 · `6` #484848 · `7` #626262 · `8` #808080 · `9` #9D9D9D · `10`
+>   #B7B7B7 · `11` #CECECE · `12` #E1E1E1 · `13` #F0F0F0 · `14` #FAFAFA · `15` #FFFFFF (per-step brightness in
+>   the token `$description`). In `tokens/colour.json` + canon; build green. (First cut 21 linear, then
+>   brightness-keyed — both superseded.)
+> - **Console / Supercharge / Mono use the NEW colours** for RAG (R-D14 green/amber/red/blue), never teal.
+> - **★ The baseline we are building IS Apollo Mono — and Mono is "very mono": monochrome throughout
+>   (near-black · greys→black per [[feedback-grey-tint-check]] · black), colour appears ONLY in RAG status
+>   and data-vis** (Dave, 2026-07-19: *"we are mono… it is very mono for now, only rags and data vis hold
+>   colour"*). This supersedes the earlier "baseline default = new colours" phrasing — the baseline is NOT
+>   broadly colourful; new colour is confined to the two meaning-carrying channels. Console/Supercharge carry
+>   the broader brand palette; that's the later colour pass.
+> - End-state = full tokenised 4-theme toggle. **We build Mono now; the broader colour/theming BUILD is
+>   PARKED** ("we'll deal with colours later"). RAG is the first coloured slice; it proves the Legacy-vs-new split.
+
+Renames captured: Apollo UI → **Apollo Console**; SC = **Apollo Supercharge**; **Apollo Mono**; + **Apollo Legacy** (new).
+
+### What was ENACTED this session (values only — no component rebind; that waits for the colour pass)
+- **Fills promoted** to `tokens/semantic-colour.json` `*-background` + propagated to `canon/canon.css`
+  (light `#5DAC7B`/`#7DABCD`, dark `#43AD6F`/`#5F92B9`, breach `#B92F1E` now mode-stable, watch `#F0B13A`).
+  These are the **baseline/new** theme's RAG fills.
+- **`rag/text` polarity** (white on breach, black on all states — `type26-013` + R-D12 B) enacted in the
+  contrast audit via the **existing `RULED_PAIR_EXCLUSIONS`** mechanism: white RAG text on green/blue is a
+  **forbidden pair** (mirrors the amber exclusion already there). Build green on contrast. **No new ruling —
+  the model was already governed;** the review sheet I built to "decide" it re-litigated settled rulings and
+  was binned (stale-reading catch — [[stale-reading-failure-mode]]; CONSULT was skipped, then run).
+- Components **NOT rebound** — they render RAG as dots (glyphs, bind incumbents, R-D6 fine) + chips (tints).
+  The `-background` fills have no consumers until the §1 manifestation (filled cell) is picked. Rebind =
+  theme-resolution, folded into the parked colour pass.
+
+### Grey-tints — STANDING CHECK (Dave, 2026-07-19)
+> When we find a **grey tint / grey ink**, SURFACE it — Dave "will usually say make it black, but we check
+> first." Never auto-swap. Flagged so far: `rag/text/on-light` **#333** (fails AA on the dark fills 4.48/3.79;
+> #000 clears 7.45/6.30) · `rag/neutral` **#767676**. Coloured `-tint` washes are out of scope. See
+> [[feedback-grey-tint-check]].
