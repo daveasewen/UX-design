@@ -1,26 +1,30 @@
 # Good morning, Dave ☕
 
-> ## ★ LATEST — 2026-07-20 (evening 4): a bad-day non-start. READ THIS FIRST, it supersedes the two names below.
-> **RENAME THIS CHAT →** `Bad-day non-start — Mono teal→green sweep MAPPED (non-uniform) + captured; 0 files edited, go fresh`
-> **NEXT (fresh) CHAT TITLE →** `Mono teal→green sweep (Sonnet) — run the verified map: --success vars ×9 + migrate T2–5 badge; reds held`
+> ## ★ LATEST — 2026-07-20 (evening 5): the Mono teal→green sweep is DONE. READ THIS FIRST, it supersedes the block + the two names below.
+> **RENAME THIS CHAT →** `Mono teal→green sweep DONE (Sonnet exec, Opus vouched) — proforma teal→0, committed d6e3d89; red tuner next`
+> **NEXT (fresh) CHAT TITLE →** `Red tuner (Dave-in-the-loop) — rule Mono rag/error #B92F1E + tabs/active + progress/complete, then flip theme-provenance gate to blocking`
 >
-> This morning's session flailed instead of running the sweep — I mined competing greens from the decision
-> **prose** (`#6AB887` R-D13 vs `#2B7E4F`/`#5DAC7B` in the store) instead of trusting the **Mono spine** (the
-> token store IS Apollo Mono, the base). Dave restated the architecture repeatedly; we agreed to capture + go
-> fresh. **Nothing was edited — clean tree, HEAD `dc41468`.**
+> The pre-flighted sweep executed cleanly in one pass — **Mode-2 delegation** (a Sonnet subagent ran the
+> verified map; Opus verified the diff, re-ran the build, and vouched — routing rule 5). **Committed `d6e3d89`
+> — ahead 1, Dave to push via GitHub Desktop.** Build green 37/37; theme-provenance teal `#00847F` in
+> `_proforma`: **22 → 0**.
 >
-> ★ **The one durable rule this cost us: TRUST THE SPINE, DON'T MINE THE PROSE.** The DTCG token store,
-> resolved under the active theme (= Apollo Mono base), is the single source of truth. The ingested-Legacy
-> decision docs carry competing/dead values (the ingest tokenisation is rubbish) — retrieval, not recall.
+> **What changed (all in `knowledge/_proforma/`):** Change 1 — `--success`/`--success-t` vars on all 9
+> (Masthead + Tranche-2…9): light `#2B7E4F`/`#DCEDE3`, dark `#4A9568`/`#12291D` (= `rag/success` + `-tint`,
+> R-D18). Change 2 — `#i-success` badge on Tranche-2…5 only: hardcoded circle `#00847F` + white tick →
+> tokenised `currentColor` circle + `style="fill:var(--mark)"` tick (the T6–9/Masthead pattern). Regenerated
+> `_review` copies (3 updated + 6 created). **Reds / warning / info HELD** (untouched) — that's the red tuner.
 >
-> ★ **The verified sweep map + the full failure narrative:
-> `_DECISION-HISTORY/2026-07-20-mono-sweep-map-and-bad-day.md`.** In brief for the fresh session: 9 `_proforma`
-> files (Masthead + T2–9; **T1 has none**). **All 9:** `--success` var teal→ light `#2B7E4F` / dark `#4A9568`;
-> `--success-t`→ `#DCEDE3` / `#12291D`. **T2–5 ONLY:** migrate the `#i-success` symbol from hardcoded
-> `circle #00847F + white tick` to the newer sibling pattern `circle currentColor + path style="fill:var(--mark)"`
-> (T6–9 + Masthead already done). Reds / warning / info **HELD** (red tuner). Then regen `_review` via
-> `_make_review.py` + `_build_all.py` green (gate teal → 0). Sonnet-tier once the map's in hand.
-> **Spine flag (separate, not the sweep):** `text/on-success` = `color/black` should be `color/mono/4`
+> ★ **The open dark-`--success` sub-decision is CLOSED: green `#4A9568`** (small inline dot), NOT the white
+> flip — verified against the aligned `snippets/Status-indicator`. The prior handoff's "tick → black under
+> type26-013" worry does not bite this small dot (it uses `--mark=--page`); that's the big-roundel case.
+>
+> ★ **NEXT = the red tuner (§C·2, Dave-in-the-loop).** All red is held pending a live controller: bare
+> `rag/error` (Mono `#B92F1E`) + owed Mono `tabs/active` + `progress/complete` (each needs a non-red Mono
+> value). Only after red is ruled → flip `_validate_theme_provenance.py` to blocking. **Also still open (Sonnet-able,
+> not blocked on Dave): the 27 drifting snippet aligns + grey inks — §C·1b.** Full arc: sweep map
+> `_DECISION-HISTORY/2026-07-20-mono-sweep-map-and-bad-day.md`; state `_LIVE-STATE.md` LATEST DELTA (evening 5).
+> **Spine flag (separate, for the token/red session):** `text/on-success` = `color/black` should be `color/mono/4`
 > (`#1A1A1A`) digital black.
 
 ---
@@ -254,8 +258,12 @@ them by the book. New memory `feedback-read-the-runbook` (read the runbook, not 
 
 # §C · QUEUE
 
-## 1. ★ Mono-alignment sweep — teal→green FIRST (Sonnet, cold start; read `_STYLE-PROVENANCE.md` §A-AUTH)
-The 88-component consolidation is RULED (align = 39) — clusters no longer need ruling. Start the sweep:
+## 1. Mono-alignment sweep — ✅ (a) proforma teal→green DONE (evening 5, `d6e3d89`); (b) grey inks + 27 snippet aligns REMAIN
+**✅ (a) DONE this session** — proforma teal→green (Masthead + Tranche-2…9): `--success` light `#2B7E4F`/dark `#4A9568`,
+tints `#DCEDE3`/`#12291D`; `#i-success` badge tokenised on T2–5; dark-`--success` sub-decision CLOSED = green `#4A9568`
+(small dot, not the white flip); `_review` regenerated; teal in `_proforma` 22→0; build green 37/37. **STILL REMAINING
+(Sonnet-able, not blocked on Dave):** the 27 drifting snippets + (b) grey inks. Original brief kept below for those:
+The 88-component consolidation is RULED (align = 39) — clusters no longer need ruling. Remaining sweep items:
 **(a) teal→green** — Masthead + `Tranche-2…9` (T1 has none): `#00847F` success → Mono `rag/success-glyph #4A9568`
 (dark ground), **prefer tokenising over a hardcode**. ⚠️ **OPEN sub-decision, don't blind-swap:** the `#i-success` SVG
 is a filled circle with a WHITE tick — under **type26-013** it likely becomes BLACK (cf. `on-success`=black); rule it
@@ -280,8 +288,10 @@ Supercharge override sets (fill null slots when palettes ruled). **T9 secure ent
 test** (ADR-0008 #1). **`designer-skills-v1`** revisit. Full-review backlog (`_REVIEW-SIGNOFF.md`). Parked
 (`_FUTURE-STATE`): broader colour/theming, Apollo Labs tuners, bulk type-binding.
 
-> **COMMIT STATE.** **✅ ALL PUSHED — HEAD `4d0716b`, 0 ahead / 0 behind, tree clean.** This session =
-> `6af6501` (pre-flight + capture ritual, record de-risked §A-AUTH, dossier, handoff) + `4d0716b` (state-manager
-> freshness-check fix). Build green 37/37. Two pre-existing info notes remain in `_LIVE-STATE-CHECK.md` (a
-> `_NEXT-SESSION.md` dead-artifact mention + one orphan supersession edge) — tidy when convenient, not blocking.
-> **Next session model: Sonnet** for the teal→green sweep; the red tuner (§2) is Dave-in-the-loop.
+> **COMMIT STATE.** **HEAD `d6e3d89` — ahead 1, tree clean; Dave to push via GitHub Desktop.** Recent line:
+> `4d0716b` (evening 3: state-manager freshness fix) → `2cf1ad7` (evening 4: bad-day non-start capture +
+> verified sweep map, 0 code edits) → `d6e3d89` (evening 5: the teal→green sweep — 9 `_proforma` + regen
+> `_review`, teal in `_proforma` 22→0). Build green 37/37. Two pre-existing info notes remain in
+> `_LIVE-STATE-CHECK.md` (a `_NEXT-SESSION.md` dead-artifact mention + one orphan supersession edge) — tidy
+> when convenient, not blocking. **Next session model: Opus** — the red tuner (§C·2) is Dave-in-the-loop
+> judgment on a live controller, not throughput.
