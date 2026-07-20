@@ -55,6 +55,7 @@ STEPS = [
     ("dark-surface flatness gate", "_validate_dark_surfaces.py"),
     ("snippet gate", "_validate_snippets.py"),
     ("Legacy-colour leakage gate (Mono) — no Legacy-only colour in a Mono surface", "_validate_legacy_leak.py"),
+    ("theme-provenance gate (ADR-0011/R-D19) — no foreign-theme hex in a Mono surface (advisory)", "_validate_theme_provenance.py"),
     ("token-tier gate (_STANDARDS.md §1)", "_validate_token_tiers.py"),
     ("icon-source gate", "_validate_icons.py"),
     ("a11y gate", "_validate_a11y.py"),

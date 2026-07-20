@@ -5,6 +5,31 @@ session that produced it. Sibling to `_TYPE-DECISIONS.md` / `_DATAVIZ-DECISIONS.
 
 ---
 
+## R-D19 — Red belongs to a THEME, not to Mono: Legacy red vs the Mono status red (2026-07-20). Source: Dave.
+**Ruling (verbatim intent):** *"these reds are valid for Legacy only — we have a new red for Mono and it is
+only used for status and RAG."* Reflected back and confirmed: red-as-**action/navigation** is an **Apollo
+Legacy** signal; **Apollo Mono** carries its **own** red, used **only for status/RAG** (+ dataviz signal),
+never for CTAs, tabs, or progress.
+
+**The two reds, pinned:**
+- **Legacy red** = `#DB0011` (brand primary) and `#A8000B` (Legacy error, light). Roles that currently hold it:
+  `primary/background`, `primary/border`, `tabs/active`, `progress/complete`, and the bare `rag/error`
+  (light `#A8000B` / dark `#DB0011`). **Valid in Apollo Legacy's override set only.**
+- **Mono red** = `#B92F1E` — the ruled RAG **breach** value (R-D7/R-D14, WHITE text, mode-stable) and the
+  dataviz **loss** signal (`data/delta/loss`). **This is Mono's only red, and only status/RAG/dataviz may
+  use it.** It is a *different colour* from Legacy's `#DB0011`, deliberately (salience-ramp re-seat, R-D11).
+
+**Consequence — this is the root of the "too loose" state.** Any Legacy red resolving in an **Apollo Mono**
+surface is **drift**, not a pending choice. The bare `rag/error` red, `tabs/active`, `progress/complete`, and
+any `primary/*` red bound by a Mono component must be re-homed to the Mono value (or to a Legacy override the
+Mono theme does not select). Enforcement is the theme-provenance gate (below) + **ADR-0011** (four-theme
+override sets), which is what makes "red = Legacy" mechanically true rather than a manual chase.
+
+**Backlog opened (each needs its Mono value ruled before its Legacy red can be gate-seeded):** `tabs/active`
+(Mono = ink indicator, not red — unruled), `progress/complete` (Mono = ink/green — unruled), bare `rag/error`
+Mono red = `#B92F1E` (ready, but the bare-role rebind waits with error/warning/info per R-D17). Tracked in
+`knowledge/_STYLE-PROVENANCE.md`.
+
 ## R-D18 — Success GREEN set completed; teal fully evicted from Mono (2026-07-20). Source: Dave, on the live tuner.
 Ruled the open green slots on `reviews/RAG-SUCCESS-GREEN-2026-07-20-v1.html` (OKLCh sliders + live contrast +
 salience guard). Settled:
