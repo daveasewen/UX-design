@@ -1,34 +1,38 @@
 # Good morning, Dave ☕
 
-*Briefing — refreshed 2026-07-20 ~17:30 BST (date from `date`), session
-**"Button rebind → Legacy-colour leak gate + RAG success green (R-D18) + Icon button"** — opened to clear the
-`button/*` snippet-rebind blocker so Dave could build components; became a hunt for a whole class of Legacy-colour
-leakage (a new build-blocking gate caught 7 surfaces), a RAG green ruling on a live tuner, an ADR (nullable flex
-slots), and the first built component (Icon button). Committed `528e205` + `8f3f07c`, build green 36/36.*
+*Briefing — refreshed 2026-07-20 ~18:35 BST (date from `date`), session
+**"Style consolidation → four-theme token architecture"** — opened as good-morning, became the consolidation of
+`snippets`/`_proforma`/`_review`/`_fitness-test` onto Apollo Mono. The pivot: **the token store had no theme
+dimension**, so Legacy and Mono shared the same flat roles — that was the "too loose" root cause. Ruled **R-D19**
+(red is themed), wrote **ADR-0011** (themes = override sets), built the **`_STYLE-PROVENANCE.md`** record, a visual
+review screen, and an advisory **theme-provenance gate**. Committed `a1b9fbb`, build green 37/37.*
 
-> ✅ **SOLO / self-conductor.** No other live session — single writer for shared state. **This session**
-> minted the Mono **primary-action** token ladder (closes the owed ruling), formalised **ADR-0009** (colour =
-> universal per-state substrate · opacity = optional operational layer · mechanism a per-state set
-> {colour|opacity|both} · chromatic modes are override sets), fixed the **invisible disabled label** + **3
-> Legacy border greys**, and promoted **live-controls-in-reviews** to a standing principle. Narrative arc in
-> `_DECISION-HISTORY/2026-07-20-mono-primary-state-styling.md`. See COMMIT STATE.
+> ✅ **SOLO / self-conductor.** No other live session — single writer for shared state. **This session** found the
+> missing theme layer, ruled red as Legacy-owned (Mono's only red = `#B92F1E`, status/RAG/dataviz), mechanised the
+> four themes as semantic-tier override sets (Console/Supercharge = nullable slots), and stood up the record + gate
+> that make "align to Mono" enforceable rather than a manual chase. Also built the per-cluster **visual review
+> screen** (Dave: "duplicate patterns I need to compare visually") + review overlay. Narrative arc:
+> `_DECISION-HISTORY/2026-07-20-style-consolidation-four-themes.md`. See COMMIT STATE.
 
 ---
 
 ## ⬛ DO THESE TWO FIRST (10 seconds)
 
-> **RENAME THIS CHAT → `Button rebind → Legacy-colour leak gate + RAG success green (R-D18) + Icon button built`**
-> *(Rebound `Button` onto the Mono `button/*` ladder [red-free primary, 0.70-opacity hover, B-D4 disabled-label
-> fold]; success → R-D14 green fill + `text/on-success` [B-D6]. Dave's teal catch → built the **Legacy-colour
-> leakage gate** [`_validate_legacy_leak.py`, R-D17] — caught 7 leaking surfaces. Ruled the **success green set**
-> on a live tuner [R-D18: glyph dark `#4A9568`, tints, bare role rebased] → 0 leaks. Wrote **ADR-0010** [nullable
-> flex slots]. Built **Icon button** [first build-out component, gated]. Commits `528e205` + `8f3f07c`, green 36/36.)*
+> **RENAME THIS CHAT → `Four-theme token architecture (ADR-0011) + red=Legacy (R-D19) + style-provenance record & gate`**
+> *(Opened as good-morning; became a consolidation of `snippets`/`_proforma`/`_review`/`_fitness-test` onto Apollo
+> Mono. Root cause of the "too loose" drift: **the token store had no theme dimension** — Legacy red/teal/grey and
+> Mono shared the same flat roles. Ruled **R-D19** [red is themed: Legacy `#DB0011`/`#A8000B` = Legacy only; Mono's
+> one red `#B92F1E` = status/RAG/dataviz only]. Wrote **ADR-0011** [themes = semantic-tier override sets; Mono base,
+> Legacy override, Console/Supercharge nullable slots]. Built the record `_STYLE-PROVENANCE.md`, the v2 visual review
+> screen [+ overlay], and an **advisory** theme-provenance gate [68 hardcoded foreign hexes / 61 Mono files].
+> Commit `a1b9fbb`, build green 37/37.)*
 
-> **TITLE TODAY'S CHAT →** `Component build-out — next P1 (Textarea / Empty state) on the Mono ladder`
-> Foundations are settled and committed. **Go straight to building** (§C queue #1): pick the next P1 base from the
-> itinerary — strongest clean picks are **Textarea** and **Empty state** (monochrome, no colour entanglement).
-> **Alert / inline callout** is high-value but pulls in the still-Legacy `rag/error`/`warning`/`information` roles
-> (§C #2) — do that only when ready to rule them. 39 P1 gaps remain. **Opus** for token-precise work; build-out varies.
+> **TITLE TODAY'S CHAT →** `Style consolidation — rule the clusters + Mono values for tabs/active & progress/complete`
+> **Start at the review screen:** open `reviews/STYLE-CONSOLIDATION-REVIEW-2026-07-20-v2.REVIEW.html` (overlay: pin
+> keep/migrate/archive per cluster). Then the two rulings owed (§C #1): **Mono values for `tabs/active` +
+> `progress/complete`** — they only ever held Legacy red, and Mono ≠ red, so each needs a value ruled before its
+> Legacy red can be gate-seeded blocking. That unblocks the **Sonnet sweep** aligning 19 snippets + 12 tranches
+> against ADR-0011 (§C #2). Full picture: `knowledge/_STYLE-PROVENANCE.md` §backlog. **Opus** for the rulings.
 
 *Standing practice: every handoff carries both names — retrospective + forward. Step 4b in
 `_RUNBOOK-capture-ritual.md`.*
@@ -78,7 +82,11 @@ is the layer around any generator. Two principles run through everything:
 Tagline: **"lovable on rails."** Four phases: **Discover** → **Create** (what's being built now) → **Craft**
 (the review-overlay docs ARE this) → **Dispatch**.
 
-## ★ ONE token store · ONE baseline library · FOUR themes (R-D15, 2026-07-19 — firmed up this session)
+## ★ ONE token store · ONE baseline library · FOUR themes (R-D15 → wired as **ADR-0011** override sets, 2026-07-20)
+*Themes are **override sets at the semantic tier** (Mono = base · Legacy = populated override · Console + Supercharge =
+declared nullable slots). Registry `tokens/themes/_themes.json`; record `knowledge/_STYLE-PROVENANCE.md`; advisory
+theme-provenance gate. **Red is themed (R-D19):** Legacy red `#DB0011`/`#A8000B` = Legacy only; Mono's only red
+`#B92F1E` = status/RAG/dataviz only.*
 The library is **theme-agnostic**: components bind a semantic role ("success", a grey ink); the **active theme's
 override set** decides the hex. Nothing hardcodes a theme's colour. **Adding a theme = adding an override set,
 never forking.** The four themes (Dave's canonical order):
@@ -147,9 +155,9 @@ python3 knowledge/_build_all.py     # 34 steps, all gates, exits non-zero on any
 ## The other standing documents (REACHABILITY-GATED by `_validate_standing_instructions.py` STAND-002 — keep every one referenced here)
 `_STANDARDS.md` (★ the standards hub — 3-tier tokens, WCAG floor, authoring rules) · `AGENTS.md` · `MODEL-ROUTING.md` · `_FUTURE-STATE.md` · `_DECISION-HISTORY/README.md` ·
 `knowledge/_proforma/_PROFORMA-RULES.md` · `knowledge/_proforma/_TYPE-DECISIONS.md` (T-D1…T-D16) ·
-`knowledge/_proforma/_RAG-DECISIONS.md` (R-D1…R-D16) · `knowledge/_proforma/_DATAVIZ-DECISIONS.md` ·
+`knowledge/_proforma/_RAG-DECISIONS.md` (R-D1…R-D19; R-D19 = red is themed) · `knowledge/_STYLE-PROVENANCE.md` (theme-era record) · `knowledge/_proforma/_DATAVIZ-DECISIONS.md` ·
 `knowledge/_proforma/_BUTTON-DECISIONS.md` (B-D1…B-D5; Mono primary + state-styling, ADR-0009) ·
-`docs/decisions/ADR-0009-state-styling-architecture.md` ·
+`docs/decisions/ADR-0009-state-styling-architecture.md` · `docs/decisions/ADR-0010-token-schema-nullable-flex-slots.md` · `docs/decisions/ADR-0011-four-theme-token-architecture.md` ·
 `knowledge/_DS-IMPROVEMENTS.md` · `knowledge/_ICON-GAPS.md` · `knowledge/_ASSERTIONS.md` +
 `knowledge/_assertions.json` · `knowledge/guidelines/_rules-index.json`. **Runbooks** are indexed by the
 generated `knowledge/_RUNBOOKS.md`. *(This list was dropped in a from-scratch GOOD-MORNING rewrite and STAND-002
@@ -178,61 +186,62 @@ TTFs to `~/.fonts` + `fc-cache -f`; CSS `font-family:"HSBC_MtUnivers_Latin"`. Fu
 
 ---
 
-# §B · THIS SESSION (2026-07-20, "Button rebind → Legacy-colour leak gate + RAG success green + Icon button")
+# §B · THIS SESSION (2026-07-20, "Style consolidation → four-theme token architecture")
 
-*Full narrative arc (why/how, dead-ends, corrections): `_DECISION-HISTORY/2026-07-20-button-rebind-legacy-leak-gate.md`.*
+*Full narrative arc (why/how, the mid-turn corrections): `_DECISION-HISTORY/2026-07-20-style-consolidation-four-themes.md`.*
 
-## What LANDED (commits `528e205` + `8f3f07c`, build green 36/36)
-- **✅ `Button` rebound onto the Mono `button/*` ladder.** Primary monochrome (no red); hover = **operational 0.70
-  opacity** over the page (color-mix; stored colour-equiv kept, ADR-0009/B-D3); **B-D4 disabled-label fold across all
-  four tiers** (`label/disabled` → `text/on-disabled` `#9D9D9D`/`#808080` — the siblings had drifted onto
-  `text/disabled` `#E1E1E1` == the disabled ground = invisible). Success → R-D14 **green fill** + new per-mode
-  `text/on-success` (black label, type26-013) — **B-D6**.
-- **✅ Legacy-colour LEAKAGE GATE — `_validate_legacy_leak.py`, build-blocking (R-D17).** No Mono surface may resolve
-  to a Legacy-only colour (seeded with the ruled teal `#00847F`). **Caught 7 leaking surfaces**, two unenumerated
-  (Reorder, Status-indicator). Root cause: `color/green/600` literally holds the teal; all four bare `rag/*` roles are
-  Legacy-drifted. Wired into `_build_all.py`.
-- **✅ RAG success GREEN set completed on a live tuner (R-D18).** Dave ruled glyph dark `#4A9568`, tints
-  `#DCEDE3`/`#12291D`, bare `rag/success` role rebased off the teal → tracks the glyph. Swept all 7 components;
-  **gate now 0 waived / 0 leaks** — teal fully evicted from Mono. Tuner: `reviews/RAG-SUCCESS-GREEN-2026-07-20-v1.html`.
-- **✅ ADR-0010 — token schema: explicit nullable placeholder slots for the dimensions we flex** (Dave's idea, refined
-  to "the ones we flex, style-builder in view"). `null` = declared-but-unset; a "no null under a live binding" gate is
-  the companion to the leak gate. Pilot = the RAG green set.
-- **✅ FIRST BUILD-OUT COMPONENT — Icon button, gated.** Promoted from proforma onto the Mono `button/*` ladder; real
-  HSBC sprite glyphs; glyphs at 4.5:1 (icon-015); 44px target; mandatory aria-label; visible disabled glyph.
+## What LANDED (commit `a1b9fbb`, build green 37/37)
+- **✅ ADR-0011 — the four themes are now an ARCHITECTURE, not just intent.** Themes = **override sets at the semantic
+  tier**: Apollo Mono = base · Apollo Legacy = populated override (reds/teal/grey ramp) · Apollo Console + Supercharge =
+  **declared nullable slots** (ADR-0010 pattern). Registry `tokens/themes/_themes.json` = single source of truth for
+  hex→theme ownership. **Root cause it fixes:** the semantic store had NO theme dimension (only light/dark), so Legacy
+  red + Mono lived in the same flat roles — the "too loose" cause.
+- **✅ R-D19 — red is THEMED.** Legacy red `#DB0011`/`#A8000B` = Apollo **Legacy only** (CTA, `tabs/active`,
+  `progress/complete`, Legacy error). Apollo **Mono's only red = `#B92F1E`**, status/RAG/dataviz **only**, never
+  action/nav. Any Legacy red in a Mono surface = **drift** (a definition, not a judgement). Source: Dave.
+- **✅ THE RECORD — `knowledge/_STYLE-PROVENANCE.md`** (Dave: "clear record … too loose"). Classifies every artefact by
+  theme-era; scopes library (align) vs `_fitness-test` (exploration=mine · research=preserve · **SME journeys=ignore**).
+  Machine mirror `reviews/_style-clusters.json`.
+- **✅ VISUAL REVIEW SCREEN — `reviews/STYLE-CONSOLIDATION-REVIEW-2026-07-20-v2.html`** (+ overlay copy
+  `…-v2.REVIEW.html`). Per-cluster picker, wrapping grid (no h-scroll), Open↗/⤢-fullscreen per variant, old
+  exploration beside canon. (v1 COMPARE = first cut, superseded — was a horizontal strip Dave rejected.)
+- **✅ ADVISORY GATE — `_validate_theme_provenance.py`** (wired into `_build_all.py`). Flags **hardcoded** foreign-theme
+  hexes in Mono surfaces — the blind spot the token leak gate can't see. First run: **68 across 61 files** →
+  `_THEME-PROVENANCE-GATE.md`. Advisory now; **blocking after migration** (ADR-0011).
 
 ## What I got wrong (see the dossier)
-Framed the interaction-motion tokenisation as a **shared** scale ramp; Dave corrected — it's **per-component** (+2px
-hover / −2px press on the component's target size, already gated by DEF-003). And I **waited to be asked** about
-context instead of self-firing the gauge — the proactive rule existed and I didn't apply it (now sharpened: flag at
-**Amber**, per Dave, not just Red).
+Offered shallow itinerary picks at the open ("dig deeper"). Over-corrected `_fitness-test` to "all test pages" — Dave:
+"there's good work in there" (it's exploration + research + journeys, not one bin). Shipped v1 as a horizontal-scroll
+strip before Dave asked for a real review screen. And the raw drift scan over-reported twice (counted comment/manifest
+hexes + the *ruled* Mono red) — fixed by stripping comments + excluding ruled colours before judging ([[attribute-the-diff]]).
 
 ---
 
 # §C · QUEUE
 
-## 1. ★ COMPONENT BUILD-OUT — go straight to it (foundations are settled)
-The button blocker is cleared, tokens + gates committed. Pick the next P1 base from the itinerary
-(`reviews/ITINERARY-2026-07-14-apollo-component-library.xlsx`; 38 gated, **39 P1 gaps left**). Cleanest monochrome
-picks with no colour entanglement: **Textarea**, **Empty state**. Follow "survey before build" (grep snippets/metas)
-+ the Icon-button promote as the pattern (rebind onto `button/*` where relevant, gate to green, register the meta).
+## 1. ★ RULE THE CLUSTERS + the two owed Mono values (start here)
+Open the review screen (overlay) `reviews/STYLE-CONSOLIDATION-REVIEW-2026-07-20-v2.REVIEW.html` and rule each duplicate
+cluster keep/migrate/archive. Then the **two rulings owed** so the gate can go blocking: **Mono values for
+`tabs/active` + `progress/complete`** — both only ever held Legacy red, and Mono ≠ red (R-D19), so each needs its own
+value (ink indicator? green?) before its Legacy red can be seeded. **Opus** (token-precise). Full context:
+`knowledge/_STYLE-PROVENANCE.md` §backlog.
 
-## 2. RAG error/warning/info roles — still Legacy-drifted (the leak gate's next seeds)
-The bare `rag/error` (`#A8000B`/`#DB0011`), `rag/warning` (`#FFBB33`), `rag/information` (navy) roles are identically
-Legacy-drifted (R-D17); the R-D14 values live in their `-background`/`-glyph` tokens. Same fix pattern as success:
-rule the set on a tuner → rebind the components → seed `LEGACY_ONLY_HEXES`. **Needed before Alert / Banner / Toast**
-(they consume these roles). Dave's rulings.
+## 2. Mono-alignment sweep (Sonnet, against ADR-0011)
+Re-home the drift: **19 snippets** (mostly bare `rag/error` red + a few grey inks) + **12 proforma tranches**
+(pre-R-D18 teal + Legacy red) onto Mono values; then **regenerate the `_review` copies** (`_make_review.py`) since
+they're derivative. Then flip `_validate_theme_provenance.py` to **blocking**. Ties to §3 (RAG roles).
 
-## 3. ADR-0010 rollout (staged)
-Build the "no null under a live binding" gate + roll explicit nullable slots across the anticipated flex dimensions.
-Ties to the style-builder (ADR-0009) + `$extensions.apollo.state`.
+## 3. RAG error/warning/info roles — still Legacy-drifted (R-D17, unchanged)
+Bare `rag/error` (`#A8000B`/`#DB0011`), `rag/warning` (`#FFBB33`), `rag/information` (navy) still resolve Legacy; R-D14
+values live in their `-background`/`-glyph` tokens. Rule the sets on a tuner → rebind → these become Mono overrides.
+**Needed before Alert / Banner / Toast.** This is the same work as §2's snippet red.
 
 ## 4. Parked / carry-forward
-**Primary-hover ≈ secondary** grey collision (parked, `_FUTURE-STATE`). **T9 secure entry** awaits review. **Sutherland
-field test** (ADR-0008 #1) — repo not available. **`designer-skills-v1`** revisit. Full-review backlog
-(`_REVIEW-SIGNOFF.md`). Parked (`_FUTURE-STATE`): broader colour/theming, Apollo Labs tuners, bulk type-binding.
+Console + Supercharge override sets (fill their null slots when palettes ruled). **T9 secure entry** awaits review.
+**Sutherland field test** (ADR-0008 #1). **`designer-skills-v1`** revisit. Full-review backlog (`_REVIEW-SIGNOFF.md`).
+Parked (`_FUTURE-STATE`): broader colour/theming, Apollo Labs tuners, bulk type-binding.
 
-> **COMMIT STATE.** **✅ `528e205`** (button rebind + leak gate + RAG green, 34 files) and **✅ `8f3f07c`** (Icon button,
-> 29 files). Build GREEN 36/36, leak gate 0/0, tier gate 0 strict. **NOT yet pushed — Dave pushes via GitHub Desktop.**
-> A capture-ritual follow-up commit (this handoff + `_LIVE-STATE` + dossier) is the third small commit — fold all into
-> one push. **Next session model: Opus** for token-precise work; build-out varies by task.
+> **COMMIT STATE.** **✅ `a1b9fbb`** (four-theme architecture + R-D19 + record + review + advisory gate, 13 files, build
+> green 37/37). **NOT yet pushed — Dave pushes via GitHub Desktop.** A capture-ritual follow-up commit (this handoff +
+> dossier + `_LIVE-STATE` refresh line + the v2.REVIEW overlay copy) is the second small commit — **fold both into one
+> push.** **Next session model: Opus** for the two Mono-value rulings; the alignment sweep (§2) is Sonnet.
