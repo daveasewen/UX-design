@@ -111,6 +111,12 @@ CONTRAST_ALLOWLIST = {
     "button/secondary/label/disabled": "Disabled button label — exempt from WCAG 1.4.3 (inactive UI component).",
     "button/tertiary/label/disabled":  "Disabled button label — exempt from WCAG 1.4.3 (inactive UI component).",
     "button/quaternary/label/disabled": "Disabled button label — exempt from WCAG 1.4.3 (inactive UI component).",
+    # Mono PRIMARY (2026-07-20): disabled label + the shared disabled-label ink it aliases.
+    # text/on-disabled is a deliberately-ghosted (2.3–3.0:1) disabled ink — visible but
+    # exempt from 1.4.3 on the inactive-component basis (fixes the invisible-label bug where
+    # text/disabled #E1E1E1 == the disabled ground). See semantic-colour.json $note.
+    "button/primary/label/disabled": "Disabled button label — exempt from WCAG 1.4.3 (inactive UI component).",
+    "text/on-disabled": "Disabled label ink — visible ghost, exempt from WCAG 1.4.3 (inactive UI component).",
 }
 
 # Pairs FORBIDDEN BY RULING — not exemptions from contrast, but pairings that are

@@ -27,6 +27,9 @@ SEMANTIC_ELEVATION = ["surface/raised", "surface/subtle", "surface/raised-hover"
 SEMANTIC_ACTION = [
     "surface/action", "surface/action-hover", "surface/action-pressed", "surface/action-disabled",
     "surface/transparent", "text/on-action", "border/action-strong",
+    # Mono primary action (2026-07-20) — the near-black/near-white inverting ground + its icon ink.
+    "surface/action-primary", "surface/action-primary-hover", "surface/action-primary-pressed",
+    "icon/on-inverse", "text/on-disabled",
 ]
 COMPONENTS_ON_SEMANTIC = {
     "tertiary/background/default": "surface/raised",
@@ -54,6 +57,14 @@ COMPONENTS_ON_SEMANTIC = {
     "button/quaternary/background/hover": "surface/raised-hover",
     "button/quaternary/label/default": "text/default",
     "button/quaternary/label/disabled": "text/disabled",
+    # Mono PRIMARY (2026-07-20) — completes the button/* ladder. No red (Mono is monochrome).
+    "button/primary/background/default": "surface/action-primary",
+    "button/primary/background/hover": "surface/action-primary-hover",
+    "button/primary/background/pressed": "surface/action-primary-pressed",
+    "button/primary/background/disabled": "surface/action-disabled",
+    "button/primary/label/default": "text/on-inverse",
+    "button/primary/label/disabled": "text/on-disabled",
+    "button/primary/icon/default": "icon/on-inverse",
 }
 MIGRATED = set(SEMANTIC_ELEVATION) | set(SEMANTIC_ACTION) | set(COMPONENTS_ON_SEMANTIC)
 

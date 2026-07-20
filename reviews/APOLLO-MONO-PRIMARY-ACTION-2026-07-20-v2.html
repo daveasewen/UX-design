@@ -1,0 +1,230 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apollo Mono — primary-action token (live editor)</title>
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<style>
+  :root{--font:"Univers Next for HSBC","Helvetica Neue",Arial,sans-serif;--sel:#1273EB;}
+  body{margin:0;padding:2.2rem;font-family:var(--font);background:#FFFFFF;color:#1A1A1A;-webkit-font-smoothing:antialiased}
+  *{box-sizing:border-box}
+  h1{font:400 27px/1.2 var(--font);margin:0 0 6px} .sub{color:#545454;font-size:14px;margin-bottom:22px;max-width:76ch}
+  h2{font:500 13px/1 var(--font);letter-spacing:.05em;text-transform:uppercase;color:#767676;margin:30px 0 12px}
+  code{font-family:ui-monospace,Menlo,monospace;font-size:12px}
+  .wrap{display:grid;grid-template-columns:1fr 300px;gap:22px;align-items:start}
+  @media (max-width:900px){.wrap{grid-template-columns:1fr}}
+  /* preview panes */
+  .panes{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media (max-width:620px){.panes{grid-template-columns:1fr}}
+  .pane{border:1px solid #CECECE;padding:18px;border-radius:2px}
+  .pane.light{background:#FFFFFF} .pane.dark{background:#1A1A1A;border-color:#484848}
+  .pane .pl{font-size:11px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:14px}
+  .pane.light .pl{color:#767676} .pane.dark .pl{color:#9D9D9D}
+  .row{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end}
+  .col{text-align:center}
+  .cap{font-size:10.5px;margin-top:7px;display:block}
+  .pane.light .cap{color:#767676} .pane.dark .cap{color:#9D9D9D}
+  .btn{font:500 15px/1 var(--font);padding:13px 22px;border:1px solid transparent;border-radius:0;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:background .12s,opacity .12s}
+  .btn .ico{width:15px;height:15px;display:inline-block;border:2px solid currentColor;border-radius:50%}
+  .btn.foc{outline:2px solid var(--sel);outline-offset:2px}
+  /* inspector / control panel */
+  .insp{border:1px solid #cfd3d8;border-radius:8px;box-shadow:0 8px 26px rgba(20,28,40,.10);overflow:hidden;position:sticky;top:16px}
+  .insp .grab{height:16px;background:repeating-linear-gradient(45deg,#e9edf2 0 6px,#f6f8fa 6px 12px);border-bottom:1px solid #eceff3}
+  .insp h3{font:500 13px/1 var(--font);margin:0;padding:12px 14px 4px} .insp .kind{font-size:10.5px;color:#9aa2ac;padding:0 14px 10px;text-transform:uppercase;letter-spacing:.06em}
+  .ctl{padding:11px 14px;border-top:1px solid #eef1f4}
+  .ctl label{display:block;font-size:12px;font-weight:500;margin-bottom:7px}
+  .ctl .hint{font-size:11px;color:#767676;margin-top:6px;line-height:1.35}
+  .seg{display:flex;gap:0;border:1px solid #cfd3d8;border-radius:6px;overflow:hidden}
+  .seg button{flex:1;font:inherit;font-size:11.5px;padding:8px 4px;background:#fff;border:0;border-right:1px solid #eef1f4;cursor:pointer;color:#333}
+  .seg button:last-child{border-right:0}
+  .seg button[aria-pressed="true"]{background:var(--sel);color:#fff}
+  .seg button:disabled{color:#b8bec6;cursor:not-allowed;background:#f7f8fa}
+  input[type=range]{width:100%;accent-color:var(--sel)}
+  .rngval{font-variant-numeric:tabular-nums;font-size:12px;color:#333;float:right}
+  /* tables */
+  table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:4px} th{text-align:left;color:#767676;font-weight:400;font-size:10.5px;border-bottom:1px solid #E1E1E1;padding:4px 8px 4px 0}
+  td{padding:6px 8px 6px 0;border-bottom:1px solid #EDEDED;vertical-align:middle} td.c{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .sw{display:inline-block;width:18px;height:18px;vertical-align:middle;border:1px solid #00000018}
+  .ok{color:#1F7A46} .bad{color:#B92F1E;font-weight:500}
+  pre.exp{background:#0F0F0F;color:#F0F0F0;padding:14px 16px;border-radius:6px;font-size:11.5px;line-height:1.5;overflow:auto;margin-top:8px}
+  .foot{margin-top:26px;font-size:12px;color:#767676;border-top:1px solid #E1E1E1;padding-top:12px;max-width:82ch}
+  .principle{border-left:3px solid #C58900;background:#F0B13A14;padding:9px 13px;font-size:12.5px;margin:14px 0 0}
+</style></head>
+<body>
+  <h1>Apollo Mono — the primary-action token · <span style="color:#767676;font-weight:400">live editor</span></h1>
+  <div class="sub">Mono is monochrome UI — colour lives only in dataviz, RAG and status — so the primary action carries <b>no red</b> (that's Legacy-only). Set the open choices with the controls on the right; the buttons, the resolved tokens and the contrast all update live. When it looks right, I read the settled values straight off the export block — no round-trip.</div>
+
+  <div class="wrap">
+    <div>
+      <h2>Live preview — both modes at once</h2>
+      <div class="panes">
+        <div class="pane light" id="paneL">
+          <div class="pl">Light</div>
+          <div class="row">
+            <div class="col"><button class="btn" id="L-def" type="button">Continue<span class="ico"></span></button><span class="cap">default</span></div>
+            <div class="col"><button class="btn" id="L-hov" type="button">Continue<span class="ico"></span></button><span class="cap">hover</span></div>
+            <div class="col"><button class="btn" id="L-prs" type="button">Continue<span class="ico"></span></button><span class="cap">pressed</span></div>
+            <div class="col"><button class="btn foc" id="L-foc" type="button">Continue<span class="ico"></span></button><span class="cap">focus</span></div>
+            <div class="col"><button class="btn" id="L-dis" type="button" disabled>Continue<span class="ico"></span></button><span class="cap">disabled</span></div>
+          </div>
+        </div>
+        <div class="pane dark" id="paneD">
+          <div class="pl">Dark</div>
+          <div class="row">
+            <div class="col"><button class="btn" id="D-def" type="button">Continue<span class="ico"></span></button><span class="cap">default</span></div>
+            <div class="col"><button class="btn" id="D-hov" type="button">Continue<span class="ico"></span></button><span class="cap">hover</span></div>
+            <div class="col"><button class="btn" id="D-prs" type="button">Continue<span class="ico"></span></button><span class="cap">pressed</span></div>
+            <div class="col"><button class="btn foc" id="D-foc" type="button">Continue<span class="ico"></span></button><span class="cap">focus</span></div>
+            <div class="col"><button class="btn" id="D-dis" type="button" disabled>Continue<span class="ico"></span></button><span class="cap">disabled</span></div>
+          </div>
+        </div>
+      </div>
+
+      <h2>Resolved tokens (update live)</h2>
+      <table id="tok"><thead><tr><th>token</th><th>light</th><th></th><th>dark</th><th></th><th>label contrast</th></tr></thead><tbody></tbody></table>
+
+      <h2>Export — my settled choices</h2>
+      <pre class="exp" id="exp"></pre>
+      <div class="principle"><b>Principle (new, for all reviews):</b> a review carries a <b>control per open choice</b> so you edit the decision in place. The comment overlay stays for anything the controls don't cover.</div>
+    </div>
+
+    <!-- INSPECTOR -->
+    <div class="insp">
+      <div class="grab"></div>
+      <h3>Primary button</h3><div class="kind">controls</div>
+
+      <div class="ctl">
+        <label>Light ground (default)</label>
+        <div class="seg" id="c-lg">
+          <button data-v="#1A1A1A" data-a="mono/4">m4 · 1A1A1A</button>
+          <button data-v="#0F0F0F" data-a="mono/3">m3 · 0F0F0F</button>
+          <button data-v="#000000" data-a="mono/1">m1 · 000</button>
+        </div>
+        <div class="hint">Near-black. m4 is the Mono canonical near-black.</div>
+      </div>
+
+      <div class="ctl">
+        <label>Dark ground (default) — inverts to near-white</label>
+        <div class="seg" id="c-dg">
+          <button data-v="#FAFAFA" data-a="mono/14">m14 · FAFAFA</button>
+          <button data-v="#FFFFFF" data-a="mono/15">m15 · FFF</button>
+          <button data-v="#F0F0F0" data-a="mono/13">m13 · F0F0F0</button>
+        </div>
+        <div class="hint" id="dg-hint"></div>
+      </div>
+
+      <div class="ctl">
+        <label>Hover signal <span class="rngval" id="op-val"></span></label>
+        <div class="seg" id="c-hov" style="margin-bottom:9px">
+          <button data-v="opacity">Opacity</button>
+          <button data-v="none">None</button>
+          <button data-v="elevate" disabled title="webf-011: buttons are level-0, never elevated">Elevate ✕</button>
+        </div>
+        <input type="range" id="op" min="0.80" max="1.00" step="0.01" value="0.92">
+        <div class="hint">No ground-colour change on hover (that keeps pressed as the sole colour state). Elevation is barred — <code>webf-011</code>.</div>
+      </div>
+
+      <div class="ctl">
+        <label>Pressed behaviour</label>
+        <div class="seg" id="c-prs">
+          <button data-v="recede">Recede</button>
+          <button data-v="invert">Label-invert</button>
+        </div>
+        <div class="hint" id="prs-hint"></div>
+      </div>
+
+      <div class="ctl">
+        <label>Label token</label>
+        <div class="seg" id="c-lbl">
+          <button data-v="on-inverse">on-inverse<br>(#FFF / #333)</button>
+          <button data-v="on-action">on-action<br>(#FFF / #000)</button>
+        </div>
+        <div class="hint">Both clear AA. on-inverse already names "primary pressed" in its spec.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">Nothing enacted from this sheet until you're happy. Defaults shown = the rulings you already gave (m4 light, m14 dark, opacity hover, recede pressed, on-inverse label). Contrast is label-on-ground, recomputed live per mode; anything under 4.5:1 turns red. On your sign-off I mint <code>surface/action-primary*</code> + <code>button/primary/*</code> + <code>icon/on-inverse</code> to match, regenerate <code>canon.css</code>, re-gate, and record the ruling. Sheet v2 · 2026-07-20.</div>
+
+<script>
+(function(){
+  var RAMP={ '#000000':'mono/1','#050505':'mono/2','#0F0F0F':'mono/3','#1A1A1A':'mono/4','#313131':'mono/5','#484848':'mono/6','#626262':'mono/7','#808080':'mono/8','#9D9D9D':'mono/9','#B7B7B7':'mono/10','#CECECE':'mono/11','#E1E1E1':'mono/12','#F0F0F0':'mono/13','#FAFAFA':'mono/14','#FFFFFF':'mono/15' };
+  // state (defaults = Dave's rulings)
+  var S={ lg:'#1A1A1A', dg:'#FAFAFA', hov:'opacity', op:0.92, prs:'recede', lbl:'on-inverse' };
+  // fixed label/icon token values
+  function label(mode){ return S.lbl==='on-inverse' ? (mode==='L'?'#FFFFFF':'#333333') : (mode==='L'?'#FFFFFF':'#000000'); }
+  // pressed grounds: recede = lighten in light / darken in dark; invert handled separately
+  function pressedBg(mode){ if(S.prs==='invert'){ return mode==='L'?'#000000':'#FFFFFF'; } return mode==='L'?'#313131':'#E1E1E1'; }
+  function pressedLabel(mode){ if(S.prs==='invert'){ return mode==='L'?'#FFFFFF':'#333333'; } return label(mode); }
+  function ground(mode){ return mode==='L'?S.lg:S.dg; }
+  var disBg={L:'#E1E1E1',D:'#484848'}, disLbl={L:'#E1E1E1',D:'#808080'};
+
+  // WCAG contrast
+  function lin(c){c/=255;return c<=0.03928?c/12.92:Math.pow((c+0.055)/1.055,2.4);}
+  function L(hex){hex=hex.replace('#','');var r=parseInt(hex.substr(0,2),16),g=parseInt(hex.substr(2,2),16),b=parseInt(hex.substr(4,2),16);return 0.2126*lin(r)+0.7152*lin(g)+0.0722*lin(b);}
+  function ratio(a,b){var la=L(a),lb=L(b),hi=Math.max(la,lb),lo=Math.min(la,lb);return (hi+0.05)/(lo+0.05);}
+  function fmt(n){return n.toFixed(2)+':1';}
+  function cclass(n){return n>=4.5?'ok':'bad';}
+
+  function paint(){
+    // buttons
+    [['L','L'],['D','D']].forEach(function(p){ var m=p[0];
+      var g=ground(m), lb=label(m);
+      set(m+'-def',g,lb,1);
+      // hover
+      var hb=g, ho=1;
+      if(S.hov==='opacity') ho=S.op;
+      set(m+'-hov',hb,lb,ho);
+      set(m+'-prs',pressedBg(m),pressedLabel(m),1);
+      set(m+'-foc',g,lb,1);
+      set(m+'-dis',disBg[m],disLbl[m],1);
+    });
+    // token table
+    var rows=[
+      ['surface/action-primary','background/default', S.lg, RAMP[S.lg], S.dg, RAMP[S.dg], true],
+      ['surface/action-primary-pressed','pressed', pressedBg('L'), RAMP[pressedBg('L')], pressedBg('D'), RAMP[pressedBg('D')], true],
+      ['(label) text/'+S.lbl,'label', label('L'), '', label('D'), '', false],
+      ['icon/on-inverse','icon', label('L'), '', label('D'), '', false]
+    ];
+    var tb=document.querySelector('#tok tbody'); tb.innerHTML='';
+    rows.forEach(function(r){
+      var cL=ratio(label('L'), r===rows[0]?S.lg:(r===rows[1]?pressedBg('L'):S.lg));
+      var cD=ratio(label('D'), r===rows[0]?S.dg:(r===rows[1]?pressedBg('D'):S.dg));
+      var showC = r[6];
+      var tr=document.createElement('tr');
+      tr.innerHTML='<td><code>'+r[0]+'</code></td>'+
+        '<td class="c"><span class="sw" style="background:'+r[2]+'"></span> '+(r[3]||'')+'</td><td class="c">'+r[2]+'</td>'+
+        '<td class="c"><span class="sw" style="background:'+r[4]+'"></span> '+(r[5]||'')+'</td><td class="c">'+r[4]+'</td>'+
+        '<td class="c">'+(showC?('<span class="'+cclass(cL)+'">'+fmt(cL)+'</span> L · <span class="'+cclass(cD)+'">'+fmt(cD)+'</span> D'):'—')+'</td>';
+      tb.appendChild(tr);
+    });
+    // hover opacity readout
+    document.getElementById('op-val').textContent = S.hov==='opacity' ? ('α '+S.op.toFixed(2)) : '';
+    document.getElementById('op').disabled = S.hov!=='opacity';
+    document.getElementById('dg-hint').innerHTML = S.dg==='#FFFFFF' ? 'Pure white — max emphasis, but needs a <code>$darkNote</code> flatness exemption & can bloom.' : (S.dg==='#FAFAFA'?'One notch off white — calmer, no exemption needed.':'Softer still — least emphasis.');
+    document.getElementById('prs-hint').innerHTML = S.prs==='invert' ? 'Legacy-style: ground to black/white + label flips. Heavier press.' : "Ground shifts one step toward mid (can't pass the near-black/white default). Quiet.";
+    // export
+    var hovLine = S.hov==='opacity' ? ('hover        : opacity '+S.op.toFixed(2)+' (no colour token)') : (S.hov==='none'?'hover        : none':'hover        : elevate (BARRED by webf-011)');
+    document.getElementById('exp').textContent =
+'ACTION/PRIMARY — Apollo Mono  (light / dark)\n'+
+'  background/default : '+S.lg+'  '+RAMP[S.lg]+'   /   '+S.dg+'  '+RAMP[S.dg]+'\n'+
+'  '+hovLine+'\n'+
+'  background/pressed : '+pressedBg('L')+'  '+RAMP[pressedBg('L')]+'   /   '+pressedBg('D')+'  '+RAMP[pressedBg('D')]+(S.prs==='invert'?'   [+label invert]':'')+'\n'+
+'  background/disabled: #E1E1E1 mono/12   /   #484848 mono/6   (reuse surface/action-disabled)\n'+
+'  label              : text/'+S.lbl+'  '+label('L')+' / '+label('D')+'\n'+
+'  icon               : icon/on-inverse  '+label('L')+' / '+label('D')+'\n'+
+'  red?               : NO — Mono is monochrome (colour only in dataviz/RAG/status)';
+  }
+  function set(id,bg,fg,op){ var el=document.getElementById(id); if(!el)return; el.style.background=bg; el.style.color=fg; el.style.opacity=op; }
+
+  // wire segmented controls
+  function seg(id,key,after){ var box=document.getElementById(id); var btns=[].slice.call(box.querySelectorAll('button'));
+    function sync(){ btns.forEach(function(b){ b.setAttribute('aria-pressed', String(b.dataset.v===String(S[key]))); }); }
+    btns.forEach(function(b){ if(b.disabled)return; b.onclick=function(){ S[key]=b.dataset.v; sync(); paint(); if(after)after(); }; });
+    sync();
+  }
+  seg('c-lg','lg'); seg('c-dg','dg'); seg('c-hov','hov'); seg('c-prs','prs'); seg('c-lbl','lbl');
+  document.getElementById('op').oninput=function(){ S.op=parseFloat(this.value); paint(); };
+  // map ground segs by data-v (they store hex in data-v)
+  paint();
+})();
+</script>
+</body></html>

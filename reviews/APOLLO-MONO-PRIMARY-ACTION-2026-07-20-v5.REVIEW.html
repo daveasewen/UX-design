@@ -1,0 +1,602 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apollo Mono — primary-action token (live editor · state-styling)</title>
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<style>
+  :root{--font:"Univers Next for HSBC","Helvetica Neue",Arial,sans-serif;--sel:#1273EB;}
+  body{margin:0;padding:2.2rem;font-family:var(--font);background:#FFFFFF;color:#1A1A1A;-webkit-font-smoothing:antialiased}
+  *{box-sizing:border-box}
+  h1{font:400 27px/1.2 var(--font);margin:0 0 6px} .sub{color:#545454;font-size:14px;margin-bottom:22px;max-width:82ch}
+  h2{font:500 13px/1 var(--font);letter-spacing:.05em;text-transform:uppercase;color:#767676;margin:28px 0 12px}
+  code{font-family:ui-monospace,Menlo,monospace;font-size:12px}
+  .wrap{display:grid;grid-template-columns:1fr 300px;gap:22px;align-items:start}
+  @media (max-width:900px){.wrap{grid-template-columns:1fr}}
+  .panes{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media (max-width:640px){.panes{grid-template-columns:1fr}}
+  .pane{border:1px solid #CECECE;padding:18px;border-radius:2px}
+  .pane.light{background:#FFFFFF} .pane.dark{background:#0F0F0F;border-color:#484848;color:#FAFAFA}
+  .pl{font-size:11px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:14px;color:#9aa2ac}
+  .demo{border:1px solid #E1E1E1;border-radius:6px;padding:16px;background:#FFFFFF}
+  .pane.dark .demo{border-color:#3a3a3a;background:#1A1A1A}
+  .demo-t{font-weight:500;font-size:15px;margin-bottom:4px}
+  .demo-b{font-size:13px;color:#767676;margin-bottom:16px} .pane.dark .demo-b{color:#9D9D9D}
+  .demo-a{display:flex;gap:10px;justify-content:flex-end;align-items:center}
+  .btn{font:500 15px/1 var(--font);padding:12px 20px;border:1px solid transparent;border-radius:0;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+  .btn .ico{width:14px;height:14px;display:inline-block;border:2px solid currentColor;border-radius:50%}
+  .btn.ghost{background:transparent;color:#1A1A1A;border-color:#808080} .pane.dark .btn.ghost{color:#FAFAFA;border-color:#808080}
+  .btn.pri{background:var(--pa-bg);color:var(--pa-label)}
+  .btn.pri:hover{background:var(--pa-hover)}
+  .btn.pri:active{background:var(--pa-pressed)}
+  .btn.pri:focus-visible{outline:2px solid var(--sel);outline-offset:2px}
+  .btn.pri[disabled]{background:var(--pa-dis);color:var(--pa-dislbl);cursor:not-allowed}
+  .try{font-size:11px;color:#9aa2ac;margin-top:12px}
+  .strip{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px dashed #E1E1E1}
+  .pane.dark .strip{border-color:#3a3a3a}
+  .st{text-align:center} .st .cap{font-size:10px;color:#9aa2ac;display:block;margin-top:6px}
+  .sbtn{font:500 13px/1 var(--font);padding:9px 14px;border-radius:0;border:1px solid transparent;display:inline-block}
+  .insp{border:1px solid #cfd3d8;border-radius:8px;box-shadow:0 8px 26px rgba(20,28,40,.10);overflow:hidden;position:sticky;top:16px}
+  .insp .grab{height:15px;background:repeating-linear-gradient(45deg,#e9edf2 0 6px,#f6f8fa 6px 12px);border-bottom:1px solid #eceff3}
+  .insp h3{font:500 13px/1 var(--font);margin:0;padding:12px 14px 3px} .insp .kind{font-size:10px;color:#9aa2ac;padding:0 14px 9px;text-transform:uppercase;letter-spacing:.06em}
+  .grp{padding:11px 14px;border-top:1px solid #eef1f4}
+  .grp>label{display:block;font-size:12px;font-weight:500;margin-bottom:8px}
+  .aa{font-size:10px;color:#1F7A46;font-weight:500;float:right}
+  .mode2{display:grid;grid-template-columns:14px 1fr;gap:6px 8px;align-items:center}
+  .mode2 .ml{font-size:10px;color:#9aa2ac;text-transform:uppercase}
+  .ramp{display:flex;gap:2px} .ramp .rs{width:15px;height:20px;border:1px solid #00000018;cursor:pointer;padding:0;border-radius:0;position:relative}
+  .ramp .rs[aria-pressed="true"]{outline:2px solid var(--sel);outline-offset:1px;z-index:2}
+  .ramp .rs:disabled{cursor:not-allowed;opacity:.32}
+  .ramp .rs:disabled::after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,transparent 44%,#B92F1E 45% 55%,transparent 56%)}
+  .seg{display:flex;border:1px solid #cfd3d8;border-radius:6px;overflow:hidden;margin-bottom:9px}
+  .seg button{flex:1;font:inherit;font-size:11.5px;padding:7px 4px;background:#fff;border:0;border-right:1px solid #eef1f4;cursor:pointer;color:#333}
+  .seg button:last-child{border-right:0} .seg button[aria-pressed="true"]{background:var(--sel);color:#fff}
+  input[type=range]{width:100%;accent-color:var(--sel)}
+  .rngrow{display:flex;justify-content:space-between;font-size:11px;color:#767676;margin-top:5px}
+  .derived{font-size:11px;color:#333;margin-top:7px;line-height:1.4}
+  .locked{padding:10px 14px;border-top:1px solid #eef1f4;font-size:11.5px;color:#9aa2ac}
+  .locked b{color:#767676;font-weight:500} .lockrow{display:flex;align-items:center;gap:6px;margin-top:5px}
+  .msw{width:13px;height:13px;display:inline-block;border:1px solid #00000018}
+  table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:4px} th{text-align:left;color:#767676;font-weight:400;font-size:10.5px;border-bottom:1px solid #E1E1E1;padding:4px 8px 4px 0}
+  td{padding:6px 8px 6px 0;border-bottom:1px solid #EDEDED;vertical-align:middle} td.c{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .sw{display:inline-block;width:17px;height:17px;vertical-align:middle;border:1px solid #00000018}
+  .ok{color:#1F7A46} .bad{color:#B92F1E;font-weight:500}
+  pre.exp{background:#0F0F0F;color:#F0F0F0;padding:14px 16px;border-radius:6px;font-size:11.5px;line-height:1.5;overflow:auto;margin-top:8px}
+  .chroma{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-top:10px;padding:16px;border:1px dashed #B7B7B7;border-radius:4px;background:#FAFAFA}
+  .cbtn{font:500 14px/1 var(--font);padding:11px 18px;border:0;border-radius:0;color:#fff;cursor:pointer}
+  .foot{margin-top:26px;font-size:12px;color:#767676;border-top:1px solid #E1E1E1;padding-top:12px;max-width:84ch}
+  .principle{border-left:3px solid #C58900;background:#F0B13A14;padding:9px 13px;font-size:12.5px;margin:14px 0 0}
+</style></head>
+<body>
+  <h1>Apollo Mono — primary-action · <span style="color:#767676;font-weight:400">state-styling editor</span></h1>
+  <div class="sub">Per <b>ADR-0009</b>: the colour token is the universal substrate; opacity is an optional operational layer; a state can render as <b>colour, opacity, or both</b>. Set hover's mechanism below. Everything is ramp-locked and AA-clamped — only passing selections are possible. The chromatic strip at the bottom shows the <i>same skeleton</i> as a different (non-Mono) mode.</div>
+
+  <div class="wrap">
+    <div>
+      <h2>Live — hover &amp; press it (Apollo Mono)</h2>
+      <div class="panes">
+        <div class="pane light" id="paneL">
+          <div class="pl">Light</div>
+          <div class="demo"><div class="demo-t">Confirm transfer</div><div class="demo-b">You're sending £2,400 to Acme Ltd. This can't be undone.</div>
+            <div class="demo-a"><button class="btn ghost" type="button">Cancel</button><button class="btn pri" type="button">Confirm<span class="ico"></span></button></div></div>
+          <div class="try" id="tryL">↳ hover mechanism shown live</div>
+          <div class="strip">
+            <div class="st"><span class="sbtn" id="Ls-d">Confirm</span><span class="cap">default</span></div>
+            <div class="st"><span class="sbtn" id="Ls-h">Confirm</span><span class="cap">hover ≈</span></div>
+            <div class="st"><span class="sbtn" id="Ls-p">Confirm</span><span class="cap">pressed</span></div>
+            <div class="st"><span class="sbtn" id="Ls-x">Confirm</span><span class="cap">disabled</span></div>
+          </div>
+        </div>
+        <div class="pane dark" id="paneD">
+          <div class="pl">Dark</div>
+          <div class="demo"><div class="demo-t">Confirm transfer</div><div class="demo-b">You're sending £2,400 to Acme Ltd. This can't be undone.</div>
+            <div class="demo-a"><button class="btn ghost" type="button">Cancel</button><button class="btn pri" type="button">Confirm<span class="ico"></span></button></div></div>
+          <div class="try" id="tryD">↳ hover mechanism shown live</div>
+          <div class="strip">
+            <div class="st"><span class="sbtn" id="Ds-d">Confirm</span><span class="cap">default</span></div>
+            <div class="st"><span class="sbtn" id="Ds-h">Confirm</span><span class="cap">hover ≈</span></div>
+            <div class="st"><span class="sbtn" id="Ds-p">Confirm</span><span class="cap">pressed</span></div>
+            <div class="st"><span class="sbtn" id="Ds-x">Confirm</span><span class="cap">disabled</span></div>
+          </div>
+        </div>
+      </div>
+
+      <h2>Resolved tokens (update live)</h2>
+      <table id="tok"><thead><tr><th>token</th><th>light</th><th></th><th>dark</th><th></th><th>label contrast</th></tr></thead><tbody></tbody></table>
+
+      <h2>Same skeleton, a chromatic mode <span style="color:#9aa2ac;font-weight:400;text-transform:none;letter-spacing:0">— illustration, not Mono</span></h2>
+      <div class="chroma">
+        <button class="cbtn" id="cb" type="button">Continue</button>
+        <div style="font-size:12px;color:#545454;line-height:1.5">mechanism <code>[colour]</code>, distinct hues — <b>hover it, press it</b>.<br>default <span id="cx-d">red</span> · hover <span id="cx-h">blue</span> · active <span id="cx-p">green</span> — all pass AA with the white label.</div>
+      </div>
+
+      <h2>Export — my settled values</h2>
+      <pre class="exp" id="exp"></pre>
+      <div class="principle"><b>ADR-0009 made visible.</b> Colour is always stored (portable, and is how a chromatic mode works); opacity is an optional operational layer; you choose the mechanism. AA is enforced whichever you pick.</div>
+    </div>
+
+    <div class="insp">
+      <div class="grab"></div>
+      <h3>Primary button — colour</h3><div class="kind">ramp-locked · AA-only</div>
+      <div class="grp"><label>Ground — default</label><div class="mode2"><span class="ml">L</span><div class="ramp" data-role="def" data-mode="L"></div><span class="ml">D</span><div class="ramp" data-role="def" data-mode="D"></div></div></div>
+      <div class="grp">
+        <label>Hover — mechanism <span class="aa" id="hov-aa">AA ✓</span></label>
+        <div class="seg" id="c-mech"><button data-v="opacity">Opacity</button><button data-v="colour">Colour</button><button data-v="both">Both</button></div>
+        <div id="op-wrap"><input type="range" id="op" min="0.70" max="1.00" step="0.01" value="0.90"><div class="rngrow"><span>more fade</span><span id="op-read">α 0.90</span><span>solid</span></div></div>
+        <div id="col-wrap" style="margin-top:8px"><div class="mode2"><span class="ml">L</span><div class="ramp" data-role="hovC" data-mode="L"></div><span class="ml">D</span><div class="ramp" data-role="hovC" data-mode="D"></div></div></div>
+        <div class="derived" id="hov-derived"></div>
+      </div>
+      <div class="grp"><label>Ground — pressed</label><div class="mode2"><span class="ml">L</span><div class="ramp" data-role="prs" data-mode="L"></div><span class="ml">D</span><div class="ramp" data-role="prs" data-mode="D"></div></div></div>
+      <div class="locked">
+        <b>Locked — shared tokens</b>
+        <div class="lockrow"><span class="msw" style="background:#FFFFFF"></span><span class="msw" style="background:#333333"></span> label · <code>text/on-inverse</code></div>
+        <div class="lockrow"><span class="msw" style="background:#808080"></span><span class="msw" style="background:#808080"></span> disabled label · <code>text/on-disabled</code> <span style="color:#1F7A46">(now visible)</span></div>
+        <div class="lockrow"><span class="msw" style="background:#E1E1E1"></span><span class="msw" style="background:#484848"></span> disabled fill · <code>surface/action-disabled</code></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">Nothing enacted until you're happy. Hover stores a colour token always (portable / chromatic-ready) and, when the mechanism includes opacity, a <code>hover-opacity</code> value (operational). Disabled label fixed to a visible ghost (<code>#808080</code>, ~3:1) — was invisible. Page bg for fades = <code>background/default</code> (#FFFFFF / #1A1A1A). Sheet v5 · 2026-07-20 · ADR-0009.</div>
+
+<script>
+(function(){
+  var RAMP=[['#000000','m1'],['#050505','m2'],['#0F0F0F','m3'],['#1A1A1A','m4'],['#313131','m5'],['#484848','m6'],['#626262','m7'],['#808080','m8'],['#9D9D9D','m9'],['#B7B7B7','m10'],['#CECECE','m11'],['#E1E1E1','m12'],['#F0F0F0','m13'],['#FAFAFA','m14'],['#FFFFFF','m15']];
+  var STEP={}; RAMP.forEach(function(r){STEP[r[0]]=r[1];});
+  var PBG={L:'#FFFFFF',D:'#1A1A1A'}, LBL={L:'#FFFFFF',D:'#333333'}, DIS={L:'#E1E1E1',D:'#484848'}, DISLBL={L:'#808080',D:'#808080'};
+  var S={ def:{L:'#1A1A1A',D:'#FAFAFA'}, prs:{L:'#000000',D:'#FFFFFF'}, mech:'opacity', alpha:0.90, hovC:{L:'#626262',D:'#B7B7B7'} };
+  function hx(h){h=h.replace('#','');return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)];}
+  function toHex(a){return '#'+a.map(function(v){v=Math.max(0,Math.min(255,Math.round(v)));return ('0'+v.toString(16)).slice(-2).toUpperCase();}).join('');}
+  function lin(c){c/=255;return c<=0.03928?c/12.92:Math.pow((c+0.055)/1.055,2.4);}
+  function Lum(h){var a=hx(h);return 0.2126*lin(a[0])+0.7152*lin(a[1])+0.0722*lin(a[2]);}
+  function ratio(a,b){var la=Lum(a),lb=Lum(b),hi=Math.max(la,lb),lo=Math.min(la,lb);return (hi+0.05)/(lo+0.05);}
+  function fmt(n){return n.toFixed(2)+':1';} function cc(n){return n>=4.5?'ok':'bad';}
+  function flatten(fg,bg,a){var f=hx(fg),b=hx(bg);return toHex([0,1,2].map(function(i){return f[i]*a+b[i]*(1-a);}));}
+  function rgba(hex,a){var c=hx(hex);return 'rgba('+c[0]+','+c[1]+','+c[2]+','+a+')';}
+  function passes(mode,step){return ratio(LBL[mode],step)>=4.5;}
+  function snapPass(hex,mode){var best=null,bd=1e9;RAMP.forEach(function(r){if(!passes(mode,r[0]))return;var d=Math.abs(Lum(r[0])-Lum(hex));if(d<bd){bd=d;best=r[0];}});return best;}
+  // effective hover ground colour per mode, by mechanism
+  function hovEff(mode){
+    if(S.mech==='colour') return S.hovC[mode];
+    if(S.mech==='both') return flatten(S.hovC[mode],PBG[mode],S.alpha);
+    return flatten(S.def[mode],PBG[mode],S.alpha); // opacity
+  }
+  function hovStored(mode){ return S.mech==='opacity'? snapPass(hovEff(mode),mode) : S.hovC[mode]; }
+  function baseFor(mode){ return S.mech==='both'? S.hovC[mode] : S.def[mode]; }
+  function alphaFloor(){var fl=0.70;for(var a=0.70;a<=1.001;a+=0.01){var okL=ratio(LBL.L,flatten(baseFor('L'),PBG.L,a))>=4.5,okD=ratio(LBL.D,flatten(baseFor('D'),PBG.D,a))>=4.5;if(okL&&okD){fl=a;break;}}return Math.round(fl*100)/100;}
+
+  function build(){
+    document.querySelectorAll('.ramp').forEach(function(box){
+      var role=box.dataset.role, mode=box.dataset.mode; box.innerHTML='';
+      RAMP.forEach(function(r){var b=document.createElement('button');b.className='rs';b.style.background=r[0];
+        if(!passes(mode,r[0])){b.disabled=true;b.title=r[1]+' · '+r[0]+' — fails AA ('+fmt(ratio(LBL[mode],r[0]))+')';}
+        else{b.title=r[1]+' · '+r[0]+' — '+fmt(ratio(LBL[mode],r[0]));b.onclick=function(){S[role][mode]=r[0];paint();};}
+        box.appendChild(b);});
+    });
+    // chromatic demo (mechanism=colour, distinct hues; all pass white label)
+    var CH={d:'#B92F1E',h:'#0A57B3',p:'#1C6B3F'}, cb=document.getElementById('cb');
+    cb.style.background=CH.d;
+    cb.onmouseenter=function(){cb.style.background=CH.h;}; cb.onmouseleave=function(){cb.style.background=CH.d;};
+    cb.onmousedown=function(){cb.style.background=CH.p;}; cb.onmouseup=function(){cb.style.background=CH.h;};
+  }
+  function paint(){
+    var mech=S.mech;
+    document.getElementById('op-wrap').style.display=(mech==='opacity'||mech==='both')?'':'none';
+    document.getElementById('col-wrap').style.display=(mech==='colour'||mech==='both')?'':'none';
+    var floor=alphaFloor(), op=document.getElementById('op');
+    op.min=floor; if(S.alpha<floor){S.alpha=floor;op.value=floor;}
+    var pL=document.getElementById('paneL'), pD=document.getElementById('paneD');
+    function hoverCss(m){ if(mech==='colour')return S.hovC[m]; if(mech==='both')return rgba(S.hovC[m],S.alpha); return rgba(S.def[m],S.alpha); }
+    function vars(p,m){p.style.setProperty('--pa-bg',S.def[m]);p.style.setProperty('--pa-hover',hoverCss(m));p.style.setProperty('--pa-pressed',S.prs[m]);p.style.setProperty('--pa-label',LBL[m]);p.style.setProperty('--pa-dis',DIS[m]);p.style.setProperty('--pa-dislbl',DISLBL[m]);}
+    vars(pL,'L'); vars(pD,'D');
+    var mlbl={opacity:'opacity (fill fades)',colour:'solid colour',both:'colour + opacity'}[mech];
+    document.getElementById('tryL').innerHTML='↳ hover = <b>'+mlbl+'</b>'; document.getElementById('tryD').innerHTML='↳ hover = <b>'+mlbl+'</b>';
+    function ss(id,bg,fg){var e=document.getElementById(id);e.style.background=bg;e.style.color=fg;}
+    ['L','D'].forEach(function(m){ss(m+'s-d',S.def[m],LBL[m]);ss(m+'s-h',hovEff(m),LBL[m]);ss(m+'s-p',S.prs[m],LBL[m]);ss(m+'s-x',DIS[m],DISLBL[m]);});
+    document.querySelectorAll('.ramp').forEach(function(box){var role=box.dataset.role,mode=box.dataset.mode,cur=S[role][mode];
+      [].slice.call(box.children).forEach(function(b,i){b.setAttribute('aria-pressed',String(RAMP[i][0]===cur));});});
+    document.querySelectorAll('.seg#c-mech button').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.v===mech));});
+    document.getElementById('op-read').textContent='α '+S.alpha.toFixed(2);
+    var hL=hovStored('L'),hD=hovStored('D');
+    var opTxt=(mech==='opacity'||mech==='both')?('opacity '+S.alpha.toFixed(2)+' · '):'';
+    document.getElementById('hov-derived').innerHTML=opTxt+'stored colour: <b>'+STEP[hL]+' '+hL+'</b> L · <b>'+STEP[hD]+' '+hD+'</b> D';
+    document.getElementById('hov-aa').textContent='AA ✓'+((mech==='opacity'||mech==='both')?(' (floor α '+floor.toFixed(2)+')'):'');
+    var rows=[['background/default','def',S.def.L,S.def.D],['background/hover','hovS',hL,hD],['background/pressed','prs',S.prs.L,S.prs.D]];
+    var tb=document.querySelector('#tok tbody');tb.innerHTML='';
+    rows.forEach(function(r){var vl=r[2],vd=r[3];var cL=ratio(LBL.L,hovEff('L')),cD=ratio(LBL.D,hovEff('D'));
+      if(r[1]!=='hovS'){cL=ratio(LBL.L,vl);cD=ratio(LBL.D,vd);}
+      var tr=document.createElement('tr');
+      tr.innerHTML='<td><code>'+r[0]+'</code></td>'+
+        '<td class="c"><span class="sw" style="background:'+vl+'"></span> '+STEP[vl]+'</td><td class="c">'+vl+'</td>'+
+        '<td class="c"><span class="sw" style="background:'+vd+'"></span> '+STEP[vd]+'</td><td class="c">'+vd+'</td>'+
+        '<td class="c"><span class="'+cc(cL)+'">'+fmt(cL)+'</span> L · <span class="'+cc(cD)+'">'+fmt(cD)+'</span> D</td>';
+      tb.appendChild(tr);});
+    var mechArr = mech==='both'?'[colour, opacity]':(mech==='opacity'?'[opacity]':'[colour]');
+    document.getElementById('exp').textContent=
+'BUTTON/PRIMARY — Apollo Mono   (light / dark) · ADR-0009\n'+
+'  background/default : '+S.def.L+' '+STEP[S.def.L]+' / '+S.def.D+' '+STEP[S.def.D]+'\n'+
+'  hover.mechanism    : '+mechArr+'\n'+
+((mech==='opacity'||mech==='both')?('  hover.opacity      : '+S.alpha.toFixed(2)+'   (operational)\n'):'')+
+'  hover (colour)     : '+hL+' '+STEP[hL]+' / '+hD+' '+STEP[hD]+'   (stored — portable / chromatic-ready)\n'+
+'  background/pressed : '+S.prs.L+' '+STEP[S.prs.L]+' / '+S.prs.D+' '+STEP[S.prs.D]+'\n'+
+'  disabled fill/label: #E1E1E1·#484848 / #808080 (locked; label now VISIBLE)\n'+
+'  label / icon       : #FFFFFF / #333333 (locked — text·icon/on-inverse)\n'+
+'  all resolved states pass WCAG AA · no red (Mono is monochrome)';
+  }
+  document.getElementById('op').oninput=function(){S.alpha=parseFloat(this.value);paint();};
+  document.querySelectorAll('.seg#c-mech button').forEach(function(b){b.onclick=function(){S.mech=b.dataset.v;paint();};});
+  build(); paint();
+})();
+</script>
+<meta name="rv-doc" content="APOLLO MONO PRIMARY ACTION 2026 07 20 v5">
+<meta name="rv-file" content="reviews/APOLLO-MONO-PRIMARY-ACTION-2026-07-20-v5.html">
+<!-- APOLLO-REVIEW-OVERLAY -->
+<!-- ============================================================================
+     APOLLO REVIEW OVERLAY — reusable comment layer for pro-forma review files.
+     Self-contained (no external deps, no browser storage). Drop this whole block
+     in before </body> of ANY interactive HTML to add: a Review-mode toggle,
+     click-a-component-to-pin-a-comment, a DRAGGABLE comment box that opens beside
+     the target (not over it) with a NOODLE leader-line + dot back to the commented
+     element, a comments panel, and Export → a structured numbered prompt
+     (copy / download) to paste back for the edits.
+     Injected by _make_review.py. All ids/classes are `rv-` prefixed to avoid
+     clashing with the host page. Nothing here is scanned by the component gates.
+     ========================================================================= -->
+<style id="rv-style">
+  #rv-fab{position:fixed;right:16px;bottom:16px;z-index:2147483000;display:inline-flex;align-items:center;gap:8px;
+    height:40px;padding:0 16px;border:1.5px solid #1A1A1A;border-radius:999px;background:#fff;color:#1A1A1A;
+    font:600 13px/1 -apple-system,Segoe UI,Roboto,sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.14);}
+  #rv-fab .rv-dot{width:8px;height:8px;border-radius:50%;background:#B7B7B7;}
+  #rv-fab.rv-on{background:#1A1A1A;color:#fff;border-color:#1A1A1A;}
+  #rv-fab.rv-on .rv-dot{background:#37D67A;}
+  #rv-fab .rv-count{min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#DB0011;color:#fff;
+    font:700 11px/18px -apple-system,Segoe UI,Roboto,sans-serif;text-align:center;display:none;}
+  #rv-fab .rv-count.rv-has{display:inline-block;}
+  /* review mode: crosshair + hover outline on the host content */
+  body.rv-active [data-rv-hover]{outline:2px solid #DB0011 !important;outline-offset:1px;cursor:crosshair;}
+  body.rv-active{scroll-behavior:auto;}
+  /* pinned markers layer */
+  #rv-markers{position:fixed;inset:0;z-index:2147482000;pointer-events:none;}
+  .rv-pin{position:fixed;transform:translate(-50%,-50%);width:22px;height:22px;border-radius:50% 50% 50% 2px;
+    background:#DB0011;color:#fff;font:700 12px/22px -apple-system,Segoe UI,Roboto,sans-serif;text-align:center;
+    box-shadow:0 2px 6px rgba(0,0,0,.3);pointer-events:auto;cursor:pointer;border:2px solid #fff;}
+  /* composer popover */
+  #rv-composer{position:fixed;z-index:2147483600;width:300px;max-width:92vw;background:#fff;border:1px solid #D7D8D6;
+    border-radius:8px;box-shadow:0 12px 40px rgba(0,0,0,.22);padding:12px;display:none;
+    font:400 13px/1.45 -apple-system,Segoe UI,Roboto,sans-serif;color:#1A1A1A;}
+  #rv-composer.rv-show{display:block;}
+  #rv-composer .rv-target{font:600 12px/1.3 inherit;color:#333;margin:0 0 8px;padding-left:16px;word-break:break-word;
+    cursor:move;user-select:none;position:relative;}
+  #rv-composer .rv-target::before{content:'';position:absolute;left:2px;top:1px;width:7px;height:12px;opacity:.55;
+    background:radial-gradient(circle,#666 1px,transparent 1.4px);background-size:3px 4px;}
+  /* noodle: leader line from the commented element to the composer box */
+  #rv-noodle{position:fixed;inset:0;z-index:2147483500;pointer-events:none;overflow:visible;}
+  #rv-noodle path{fill:none;stroke:#DB0011;stroke-width:1.5;opacity:.9;}
+  #rv-noodle circle{fill:#DB0011;stroke:#fff;stroke-width:1.5;}
+  #rv-noodle rect{fill:rgba(219,0,17,.06);stroke:#DB0011;stroke-width:2;opacity:.95;}
+  #rv-composer textarea{width:100%;box-sizing:border-box;min-height:76px;resize:vertical;padding:8px;
+    border:1px solid #B7B7B7;border-radius:6px;font:inherit;color:#1A1A1A;outline:none;}
+  #rv-composer textarea:focus{border-color:#1A1A1A;}
+  #rv-composer .rv-row{display:flex;gap:8px;justify-content:flex-end;margin-top:8px;}
+  .rv-btn{height:32px;padding:0 14px;border-radius:6px;border:1px solid #1A1A1A;background:#fff;color:#1A1A1A;
+    font:600 12px/1 -apple-system,Segoe UI,Roboto,sans-serif;cursor:pointer;}
+  .rv-btn.rv-primary{background:#1A1A1A;color:#fff;}
+  .rv-btn.rv-danger{border-color:#DB0011;color:#DB0011;}
+  .rv-btn:disabled{opacity:.4;cursor:not-allowed;}
+  /* comments panel */
+  #rv-panel{position:fixed;top:0;right:0;bottom:0;width:340px;max-width:88vw;z-index:2147483200;background:#fff;
+    border-left:1px solid #D7D8D6;box-shadow:-8px 0 30px rgba(0,0,0,.16);transform:translateX(100%);
+    transition:transform .18s ease;display:flex;flex-direction:column;
+    font:400 13px/1.45 -apple-system,Segoe UI,Roboto,sans-serif;color:#1A1A1A;}
+  #rv-panel.rv-open{transform:translateX(0);}
+  #rv-panel .rv-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px 16px;border-bottom:1px solid #EEE;}
+  #rv-panel .rv-head strong{font:700 14px/1 inherit;}
+  #rv-panel .rv-list{flex:1;overflow:auto;padding:8px 12px;}
+  #rv-panel .rv-empty{color:#8A8A8A;padding:24px 8px;text-align:center;}
+  .rv-item{border:1px solid #EEE;border-radius:8px;padding:10px;margin:0 0 8px;}
+  .rv-item .rv-item-h{display:flex;align-items:center;gap:8px;margin:0 0 4px;}
+  .rv-item .rv-num{flex:none;width:20px;height:20px;border-radius:50%;background:#1A1A1A;color:#fff;font:700 11px/20px inherit;text-align:center;}
+  .rv-item .rv-loc{font:600 12px/1.3 inherit;color:#333;word-break:break-word;}
+  .rv-item .rv-txt{color:#1A1A1A;white-space:pre-wrap;word-break:break-word;margin:2px 0 8px;}
+  .rv-item .rv-acts{display:flex;gap:8px;}
+  .rv-item .rv-link{background:none;border:0;padding:0;color:#333;text-decoration:underline;cursor:pointer;font:600 12px/1 inherit;}
+  .rv-item .rv-link.rv-del{color:#DB0011;}
+  #rv-panel .rv-foot{border-top:1px solid #EEE;padding:12px 16px;display:flex;gap:8px;}
+  #rv-panel .rv-foot .rv-btn{flex:1;height:38px;}
+  /* export modal */
+  #rv-export{position:fixed;inset:0;z-index:2147483600;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;padding:24px;}
+  #rv-export.rv-show{display:flex;}
+  #rv-export .rv-card{width:720px;max-width:100%;max-height:86vh;background:#fff;border-radius:10px;display:flex;flex-direction:column;overflow:hidden;
+    font:400 13px/1.45 -apple-system,Segoe UI,Roboto,sans-serif;color:#1A1A1A;}
+  #rv-export .rv-card-h{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #EEE;}
+  #rv-export textarea{flex:1;margin:0;border:0;outline:none;resize:none;padding:16px;font:400 12.5px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;color:#1A1A1A;min-height:320px;}
+  #rv-export .rv-card-f{display:flex;gap:8px;justify-content:flex-end;padding:12px 16px;border-top:1px solid #EEE;}
+  .rv-x{background:none;border:0;font-size:20px;line-height:1;cursor:pointer;color:#666;padding:4px;}
+  @media print{#rv-fab,#rv-panel,#rv-composer,#rv-markers,#rv-export{display:none !important;}}
+</style>
+
+<button id="rv-fab" type="button" aria-pressed="false" title="Toggle review mode">
+  <span class="rv-dot" aria-hidden="true"></span><span class="rv-label">Review</span><span class="rv-count" id="rv-count">0</span>
+</button>
+<div id="rv-markers" aria-hidden="true"></div>
+<svg id="rv-noodle" aria-hidden="true"><rect id="rv-noodle-box" rx="3" style="display:none"/><path id="rv-noodle-path"/><circle id="rv-noodle-dot" r="3.5" style="display:none"/></svg>
+<div id="rv-composer" role="dialog" aria-label="Add comment">
+  <p class="rv-target" id="rv-composer-target" title="Drag to move"></p>
+  <textarea id="rv-composer-text" placeholder="Describe the change you want here…" aria-label="Comment"></textarea>
+  <div class="rv-row">
+    <button class="rv-btn rv-danger" id="rv-composer-del" type="button" style="margin-right:auto;display:none;">Delete</button>
+    <button class="rv-btn" id="rv-composer-cancel" type="button">Cancel</button>
+    <button class="rv-btn rv-primary" id="rv-composer-save" type="button">Save</button>
+  </div>
+</div>
+<aside id="rv-panel" aria-label="Review comments">
+  <div class="rv-head"><strong>Comments (<span id="rv-panel-count">0</span>)</strong>
+    <button class="rv-x" id="rv-panel-close" type="button" aria-label="Close panel">×</button></div>
+  <div class="rv-list" id="rv-list"><p class="rv-empty">Turn on <b>Review</b>, then click any component to pin a comment.</p></div>
+  <div class="rv-foot">
+    <button class="rv-btn" id="rv-clear" type="button">Clear all</button>
+    <button class="rv-btn rv-primary" id="rv-export-btn" type="button">Export prompt</button>
+  </div>
+</aside>
+<div id="rv-export" role="dialog" aria-label="Export prompt" aria-modal="true">
+  <div class="rv-card">
+    <div class="rv-card-h"><strong>Edit prompt — copy &amp; paste back</strong><button class="rv-x" id="rv-export-close" type="button" aria-label="Close">×</button></div>
+    <textarea id="rv-export-text" readonly spellcheck="false"></textarea>
+    <div class="rv-card-f">
+      <button class="rv-btn" id="rv-export-download" type="button">Download .md</button>
+      <button class="rv-btn rv-primary" id="rv-export-copy" type="button">Copy to clipboard</button>
+    </div>
+  </div>
+</div>
+
+<script id="rv-script">
+(function(){
+  "use strict";
+  function meta(n){ var m=document.querySelector('meta[name="'+n+'"]'); return m?m.getAttribute('content'):''; }
+  var DOC_TITLE = meta('rv-doc') || (document.title||"Review").replace(/\s+·.*$/,"").trim();
+  var DOC_FILE = meta('rv-file') || '';
+  var comments = [];            // {id, section, desc, path, text, el}
+  var seq = 0;
+  var active = false, editingId = null, pendingEl = null, composerEl = null, dragging = false;
+
+  var fab=document.getElementById('rv-fab'),
+      countEl=document.getElementById('rv-count'),
+      markers=document.getElementById('rv-markers'),
+      composer=document.getElementById('rv-composer'),
+      cTarget=document.getElementById('rv-composer-target'),
+      cText=document.getElementById('rv-composer-text'),
+      cSave=document.getElementById('rv-composer-save'),
+      cCancel=document.getElementById('rv-composer-cancel'),
+      cDel=document.getElementById('rv-composer-del'),
+      panel=document.getElementById('rv-panel'),
+      list=document.getElementById('rv-list'),
+      panelCount=document.getElementById('rv-panel-count'),
+      exportModal=document.getElementById('rv-export'),
+      exportText=document.getElementById('rv-export-text');
+
+  function isRvNode(n){ return n && n.closest && n.closest('#rv-fab,#rv-panel,#rv-composer,#rv-markers,#rv-export'); }
+
+  // ---- element description -------------------------------------------------
+  function cleanHead(s){ return (s||'').replace(/\s+/g,' ').replace(/^(\d+)(?=\D)/,'$1 ').trim(); }
+  function sectionName(el){
+    var sec = el.closest && el.closest('section[aria-labelledby]');
+    if(sec){ var h=document.getElementById(sec.getAttribute('aria-labelledby')); if(h) return cleanHead(h.textContent); }
+    var anySec = el.closest && el.closest('section'); if(anySec){ var hh=anySec.querySelector('h1,h2,h3'); if(hh) return cleanHead(hh.textContent); }
+    // fallback for FLAT docs (dossiers with no <section> wrappers): nearest preceding heading in document order
+    var heads=[].slice.call(document.querySelectorAll('h1,h2,h3')), best='';
+    for(var i=0;i<heads.length;i++){
+      if(heads[i]===el || (el.compareDocumentPosition(heads[i]) & Node.DOCUMENT_POSITION_PRECEDING)){
+        best=cleanHead(heads[i].textContent);
+      }
+    }
+    return best;
+  }
+  function descOf(el){
+    var aria=(el.getAttribute&&el.getAttribute('aria-label'))||'';
+    var own=(aria||el.textContent||'').replace(/\s+/g,' ').trim();
+    if(own.length>48) own=own.slice(0,48)+'…';
+    var tag=el.tagName?el.tagName.toLowerCase():'el';
+    var cls=(typeof el.className==='string'&&el.className)?'.'+el.className.split(/\s+/)[0]:'';
+    return own ? own+' ('+tag+cls+')' : tag+cls;
+  }
+  function pathOf(el){
+    var parts=[], n=el, depth=0;
+    while(n && n.nodeType===1 && n!==document.body && depth<5){
+      var s=n.tagName.toLowerCase();
+      if(n.id){ s='#'+n.id; parts.unshift(s); break; }
+      if(typeof n.className==='string' && n.className.trim()) s+='.'+n.className.trim().split(/\s+/)[0];
+      parts.unshift(s); n=n.parentElement; depth++;
+    }
+    return parts.join(' > ');
+  }
+
+  // ---- markers -------------------------------------------------------------
+  function renderMarkers(){
+    markers.innerHTML='';
+    comments.forEach(function(c,i){
+      if(!c.el||!c.el.getBoundingClientRect) return;
+      var r=c.el.getBoundingClientRect();
+      if(r.width===0&&r.height===0) return;
+      var pin=document.createElement('button');
+      pin.className='rv-pin'; pin.type='button'; pin.textContent=(i+1);
+      pin.style.left=(r.right-6)+'px'; pin.style.top=(r.top+8)+'px';
+      pin.title=c.text||'(empty)';
+      pin.addEventListener('click',function(e){ e.stopPropagation(); openComposer(c.el,c.id); });
+      markers.appendChild(pin);
+    });
+  }
+
+  // ---- composer ------------------------------------------------------------
+  function openComposer(el, id){
+    editingId=(id!=null)?id:null; pendingEl=el;
+    var sec=sectionName(el), d=descOf(el);
+    cTarget.textContent=(sec?('['+sec+'] '):'')+d;
+    var existing=id!=null?comments.filter(function(c){return c.id===id;})[0]:null;
+    cText.value=existing?existing.text:'';
+    cDel.style.display=existing?'inline-flex':'none';
+    // default placement: beside the element (not over it); drag + noodle handle the rest
+    var r=el.getBoundingClientRect(), cw=312, ch=200, gap=14, left, top;
+    if(window.innerWidth-r.right > cw+gap) left=r.right+gap;                 // room on the right
+    else if(r.left > cw+gap) left=r.left-cw-gap;                            // else the left
+    else left=Math.min(window.innerWidth-cw-8, Math.max(8, r.left));        // else clamp
+    top=Math.min(window.innerHeight-ch, Math.max(8, r.top));
+    composer.style.top=top+'px'; composer.style.left=left+'px';
+    composer.classList.add('rv-show');
+    composerEl=el;
+    setTimeout(function(){ cText.focus(); drawNoodle(); },0);
+  }
+  function closeComposer(){ composer.classList.remove('rv-show'); pendingEl=null; editingId=null; composerEl=null; drawNoodle(); }
+
+  // ---- noodle (leader line) + drag ----------------------------------------
+  var noodlePath=document.getElementById('rv-noodle-path'), noodleDot=document.getElementById('rv-noodle-dot'),
+      noodleBox=document.getElementById('rv-noodle-box');
+  function drawNoodle(){
+    if(!composerEl || !composer.classList.contains('rv-show') || !noodlePath){
+      if(noodlePath) noodlePath.removeAttribute('d');
+      if(noodleDot) noodleDot.style.display='none';
+      if(noodleBox) noodleBox.style.display='none';
+      return;
+    }
+    var r=composerEl.getBoundingClientRect(), cr=composer.getBoundingClientRect();
+    // 1) highlight the EXACT element being commented on (its precise bounds)
+    noodleBox.setAttribute('x', r.left); noodleBox.setAttribute('y', r.top);
+    noodleBox.setAttribute('width', Math.max(0, r.width)); noodleBox.setAttribute('height', Math.max(0, r.height));
+    noodleBox.style.display='';
+    // 2) anchor the noodle to the element's BORDER edge facing the composer (never the centre)
+    var ecx=r.left+r.width/2, ecy=r.top+r.height/2, ccx=cr.left+cr.width/2, ccy=cr.top+cr.height/2;
+    var dx=ccx-ecx, dy=ccy-ecy, ex, ey;
+    if(Math.abs(dx) >= Math.abs(dy)){                           // composer is more to the side → left/right edge
+      ex = dx>=0 ? r.right : r.left;
+      ey = Math.min(Math.max(ccy, r.top+4), r.bottom-4);
+    } else {                                                    // composer is more above/below → top/bottom edge
+      ey = dy>=0 ? r.bottom : r.top;
+      ex = Math.min(Math.max(ccx, r.left+4), r.right-4);
+    }
+    // 3) composer-side anchor: nearest edge of the box to the element anchor
+    var cx = (ex<cr.left) ? cr.left : (ex>cr.right ? cr.right : Math.min(Math.max(ex,cr.left),cr.right));
+    var cy = Math.min(Math.max(ey, cr.top+8), cr.bottom-8);
+    var mx = ex+(cx-ex)*0.5;
+    noodlePath.setAttribute('d','M'+ex+','+ey+' C'+mx+','+ey+' '+mx+','+cy+' '+cx+','+cy);
+    noodleDot.setAttribute('cx',ex); noodleDot.setAttribute('cy',ey); noodleDot.style.display='';
+  }
+  cTarget.addEventListener('mousedown',function(e){
+    dragging=true; var cr=composer.getBoundingClientRect();
+    composer._dx=e.clientX-cr.left; composer._dy=e.clientY-cr.top;
+    e.preventDefault(); e.stopPropagation();
+  });
+  document.addEventListener('mousemove',function(e){
+    if(!dragging) return;
+    var left=Math.min(window.innerWidth-composer.offsetWidth-8, Math.max(8, e.clientX-composer._dx));
+    var top =Math.min(window.innerHeight-40, Math.max(8, e.clientY-composer._dy));
+    composer.style.left=left+'px'; composer.style.top=top+'px'; drawNoodle();
+  },true);
+  document.addEventListener('mouseup',function(){ dragging=false; },true);
+  cSave.addEventListener('click',function(){
+    var txt=cText.value.trim(); if(!txt){ closeComposer(); return; }
+    if(editingId!=null){
+      comments.forEach(function(c){ if(c.id===editingId) c.text=txt; });
+    } else if(pendingEl){
+      comments.push({id:++seq, section:sectionName(pendingEl), desc:descOf(pendingEl), path:pathOf(pendingEl), text:txt, el:pendingEl});
+    }
+    closeComposer(); refresh();
+  });
+  cCancel.addEventListener('click',closeComposer);
+  cDel.addEventListener('click',function(){ if(editingId!=null){ comments=comments.filter(function(c){return c.id!==editingId;}); } closeComposer(); refresh(); });
+  cText.addEventListener('keydown',function(e){ if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)){ cSave.click(); } if(e.key==='Escape'){ closeComposer(); } });
+
+  // ---- panel list ----------------------------------------------------------
+  function refresh(){
+    countEl.textContent=comments.length; countEl.classList.toggle('rv-has',comments.length>0);
+    panelCount.textContent=comments.length;
+    if(!comments.length){ list.innerHTML='<p class="rv-empty">Turn on <b>Review</b>, then click any component to pin a comment.</p>'; }
+    else {
+      list.innerHTML='';
+      comments.forEach(function(c,i){
+        var it=document.createElement('div'); it.className='rv-item';
+        var loc=(c.section?('['+c.section+'] '):'')+c.desc;
+        it.innerHTML='<div class="rv-item-h"><span class="rv-num">'+(i+1)+'</span><span class="rv-loc"></span></div>'+
+          '<div class="rv-txt"></div>'+
+          '<div class="rv-acts"><button class="rv-link rv-goto" type="button">Reveal</button>'+
+          '<button class="rv-link rv-edit" type="button">Edit</button>'+
+          '<button class="rv-link rv-del" type="button">Delete</button></div>';
+        it.querySelector('.rv-loc').textContent=loc;
+        it.querySelector('.rv-txt').textContent=c.text;
+        it.querySelector('.rv-goto').addEventListener('click',function(){ if(c.el&&c.el.scrollIntoView){ c.el.scrollIntoView({block:'center'}); flash(c.el);} });
+        it.querySelector('.rv-edit').addEventListener('click',function(){ if(c.el) openComposer(c.el,c.id); });
+        it.querySelector('.rv-del').addEventListener('click',function(){ comments=comments.filter(function(x){return x.id!==c.id;}); refresh(); });
+        list.appendChild(it);
+      });
+    }
+    renderMarkers();
+  }
+  function flash(el){ var o=el.style.outline; el.style.outline='3px solid #DB0011'; setTimeout(function(){ el.style.outline=o; },700); }
+
+  // ---- export --------------------------------------------------------------
+  function buildPrompt(){
+    var lines=[];
+    lines.push('# '+DOC_TITLE+' — review edits ('+comments.length+')');
+    lines.push('');
+    lines.push('Apply the following change requests'+(DOC_FILE?(' to `'+DOC_FILE+'`'):'')+'. Each item is pinned to a component; treat the bracketed location as the target and use the selector to disambiguate.');
+    lines.push('');
+    comments.forEach(function(c,i){
+      var loc=(c.section?('['+c.section+'] '):'')+c.desc;
+      lines.push((i+1)+'. '+loc);
+      lines.push('   - '+c.text.replace(/\n/g,'\n     '));
+      lines.push('   - selector: `'+c.path+'`');
+      lines.push('');
+    });
+    return lines.join('\n');
+  }
+  function openExport(){ exportText.value=buildPrompt(); exportModal.classList.add('rv-show'); setTimeout(function(){ exportText.focus(); exportText.select(); },0); }
+  document.getElementById('rv-export-btn').addEventListener('click',openExport);
+  document.getElementById('rv-export-close').addEventListener('click',function(){ exportModal.classList.remove('rv-show'); });
+  exportModal.addEventListener('click',function(e){ if(e.target===exportModal) exportModal.classList.remove('rv-show'); });
+  document.getElementById('rv-export-copy').addEventListener('click',function(){
+    exportText.select();
+    var ok=false; try{ ok=document.execCommand('copy'); }catch(e){}
+    if(navigator.clipboard){ navigator.clipboard.writeText(exportText.value).catch(function(){}); ok=true; }
+    var b=document.getElementById('rv-export-copy'); var t=b.textContent; b.textContent=ok?'Copied ✓':'Select + ⌘C'; setTimeout(function(){ b.textContent=t; },1400);
+  });
+  document.getElementById('rv-export-download').addEventListener('click',function(){
+    var blob=new Blob([buildPrompt()],{type:'text/markdown'});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+    a.download=(DOC_TITLE.replace(/[^\w-]+/g,'-')||'review')+'-comments.md'; a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); },1000);
+  });
+
+  // ---- review-mode wiring --------------------------------------------------
+  var hoverEl=null;
+  function setActive(on){
+    active=on; document.body.classList.toggle('rv-active',on);
+    fab.classList.toggle('rv-on',on); fab.setAttribute('aria-pressed',on?'true':'false');
+    fab.querySelector('.rv-label').textContent=on?'Reviewing':'Review';
+    if(on){ panel.classList.add('rv-open'); } else { clearHover(); }
+  }
+  function clearHover(){ if(hoverEl){ hoverEl.removeAttribute('data-rv-hover'); hoverEl=null; } }
+  fab.addEventListener('click',function(){ setActive(!active); });
+  document.getElementById('rv-panel-close').addEventListener('click',function(){ panel.classList.remove('rv-open'); });
+  document.getElementById('rv-clear').addEventListener('click',function(){ if(comments.length&&confirm('Delete all '+comments.length+' comments?')){ comments=[]; refresh(); } });
+
+  document.addEventListener('mousemove',function(e){
+    if(!active || dragging) return;
+    var t=e.target;
+    if(isRvNode(t)){ clearHover(); return; }
+    if(t!==hoverEl){ clearHover(); hoverEl=t; if(hoverEl&&hoverEl.setAttribute) hoverEl.setAttribute('data-rv-hover',''); }
+  },true);
+
+  // capture clicks in review mode so the host page's own handlers/nav don't fire
+  document.addEventListener('click',function(e){
+    if(!active) return;
+    if(isRvNode(e.target)) return;           // let overlay UI work normally
+    e.preventDefault(); e.stopPropagation();
+    clearHover();
+    openComposer(e.target, null);
+  },true);
+
+  window.addEventListener('scroll',function(){ renderMarkers(); drawNoodle(); },true);
+  window.addEventListener('resize',function(){ renderMarkers(); drawNoodle(); },true);
+  setInterval(function(){ renderMarkers(); drawNoodle(); },600);   // keep pins + noodle glued as the page reflows
+
+  refresh();
+})();
+</script>
+<!-- ===================== END APOLLO REVIEW OVERLAY ===================== -->
+
+</body></html>

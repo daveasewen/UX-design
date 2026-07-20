@@ -1,0 +1,228 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apollo Mono — primary-action token (live editor · state-styling)</title>
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<style>
+  :root{--font:"Univers Next for HSBC","Helvetica Neue",Arial,sans-serif;--sel:#1273EB;}
+  body{margin:0;padding:2.2rem;font-family:var(--font);background:#FFFFFF;color:#1A1A1A;-webkit-font-smoothing:antialiased}
+  *{box-sizing:border-box}
+  h1{font:400 27px/1.2 var(--font);margin:0 0 6px} .sub{color:#545454;font-size:14px;margin-bottom:22px;max-width:82ch}
+  h2{font:500 13px/1 var(--font);letter-spacing:.05em;text-transform:uppercase;color:#767676;margin:28px 0 12px}
+  code{font-family:ui-monospace,Menlo,monospace;font-size:12px}
+  .wrap{display:grid;grid-template-columns:1fr 300px;gap:22px;align-items:start}
+  @media (max-width:900px){.wrap{grid-template-columns:1fr}}
+  .panes{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media (max-width:640px){.panes{grid-template-columns:1fr}}
+  .pane{border:1px solid #CECECE;padding:18px;border-radius:2px}
+  .pane.light{background:#FFFFFF} .pane.dark{background:#0F0F0F;border-color:#484848;color:#FAFAFA}
+  .pl{font-size:11px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:14px;color:#9aa2ac}
+  .demo{border:1px solid #E1E1E1;border-radius:6px;padding:16px;background:#FFFFFF}
+  .pane.dark .demo{border-color:#3a3a3a;background:#1A1A1A}
+  .demo-t{font-weight:500;font-size:15px;margin-bottom:4px}
+  .demo-b{font-size:13px;color:#767676;margin-bottom:16px} .pane.dark .demo-b{color:#9D9D9D}
+  .demo-a{display:flex;gap:10px;justify-content:flex-end;align-items:center}
+  .btn{font:500 15px/1 var(--font);padding:12px 20px;border:1px solid transparent;border-radius:0;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+  .btn .ico{width:14px;height:14px;display:inline-block;border:2px solid currentColor;border-radius:50%}
+  .btn.ghost{background:transparent;color:#1A1A1A;border-color:#808080} .pane.dark .btn.ghost{color:#FAFAFA;border-color:#808080}
+  .btn.pri{background:var(--pa-bg);color:var(--pa-label)}
+  .btn.pri:hover{background:var(--pa-hover)}
+  .btn.pri:active{background:var(--pa-pressed)}
+  .btn.pri:focus-visible{outline:2px solid var(--sel);outline-offset:2px}
+  .btn.pri[disabled]{background:var(--pa-dis);color:var(--pa-dislbl);cursor:not-allowed}
+  .try{font-size:11px;color:#9aa2ac;margin-top:12px}
+  .strip{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px dashed #E1E1E1}
+  .pane.dark .strip{border-color:#3a3a3a}
+  .st{text-align:center} .st .cap{font-size:10px;color:#9aa2ac;display:block;margin-top:6px}
+  .sbtn{font:500 13px/1 var(--font);padding:9px 14px;border-radius:0;border:1px solid transparent;display:inline-block}
+  .insp{border:1px solid #cfd3d8;border-radius:8px;box-shadow:0 8px 26px rgba(20,28,40,.10);overflow:hidden;position:sticky;top:16px}
+  .insp .grab{height:15px;background:repeating-linear-gradient(45deg,#e9edf2 0 6px,#f6f8fa 6px 12px);border-bottom:1px solid #eceff3}
+  .insp h3{font:500 13px/1 var(--font);margin:0;padding:12px 14px 3px} .insp .kind{font-size:10px;color:#9aa2ac;padding:0 14px 9px;text-transform:uppercase;letter-spacing:.06em}
+  .grp{padding:11px 14px;border-top:1px solid #eef1f4}
+  .grp>label{display:block;font-size:12px;font-weight:500;margin-bottom:8px}
+  .aa{font-size:10px;color:#1F7A46;font-weight:500;float:right}
+  .mode2{display:grid;grid-template-columns:14px 1fr;gap:6px 8px;align-items:center}
+  .mode2 .ml{font-size:10px;color:#9aa2ac;text-transform:uppercase}
+  .ramp{display:flex;gap:2px} .ramp .rs{width:15px;height:20px;border:1px solid #00000018;cursor:pointer;padding:0;border-radius:0;position:relative}
+  .ramp .rs[aria-pressed="true"]{outline:2px solid var(--sel);outline-offset:1px;z-index:2}
+  .ramp .rs:disabled{cursor:not-allowed;opacity:.32}
+  .ramp .rs:disabled::after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,transparent 44%,#B92F1E 45% 55%,transparent 56%)}
+  .seg{display:flex;border:1px solid #cfd3d8;border-radius:6px;overflow:hidden;margin-bottom:9px}
+  .seg button{flex:1;font:inherit;font-size:11.5px;padding:7px 4px;background:#fff;border:0;border-right:1px solid #eef1f4;cursor:pointer;color:#333}
+  .seg button:last-child{border-right:0} .seg button[aria-pressed="true"]{background:var(--sel);color:#fff}
+  input[type=range]{width:100%;accent-color:var(--sel)}
+  .rngrow{display:flex;justify-content:space-between;font-size:11px;color:#767676;margin-top:5px}
+  .derived{font-size:11px;color:#333;margin-top:7px;line-height:1.4}
+  .locked{padding:10px 14px;border-top:1px solid #eef1f4;font-size:11.5px;color:#9aa2ac}
+  .locked b{color:#767676;font-weight:500} .lockrow{display:flex;align-items:center;gap:6px;margin-top:5px}
+  .msw{width:13px;height:13px;display:inline-block;border:1px solid #00000018}
+  table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:4px} th{text-align:left;color:#767676;font-weight:400;font-size:10.5px;border-bottom:1px solid #E1E1E1;padding:4px 8px 4px 0}
+  td{padding:6px 8px 6px 0;border-bottom:1px solid #EDEDED;vertical-align:middle} td.c{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .sw{display:inline-block;width:17px;height:17px;vertical-align:middle;border:1px solid #00000018}
+  .ok{color:#1F7A46} .bad{color:#B92F1E;font-weight:500}
+  pre.exp{background:#0F0F0F;color:#F0F0F0;padding:14px 16px;border-radius:6px;font-size:11.5px;line-height:1.5;overflow:auto;margin-top:8px}
+  .chroma{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-top:10px;padding:16px;border:1px dashed #B7B7B7;border-radius:4px;background:#FAFAFA}
+  .cbtn{font:500 14px/1 var(--font);padding:11px 18px;border:0;border-radius:0;color:#fff;cursor:pointer}
+  .foot{margin-top:26px;font-size:12px;color:#767676;border-top:1px solid #E1E1E1;padding-top:12px;max-width:84ch}
+  .principle{border-left:3px solid #C58900;background:#F0B13A14;padding:9px 13px;font-size:12.5px;margin:14px 0 0}
+</style></head>
+<body>
+  <h1>Apollo Mono — primary-action · <span style="color:#767676;font-weight:400">state-styling editor</span></h1>
+  <div class="sub">Per <b>ADR-0009</b>: the colour token is the universal substrate; opacity is an optional operational layer; a state can render as <b>colour, opacity, or both</b>. Set hover's mechanism below. Everything is ramp-locked and AA-clamped — only passing selections are possible. The chromatic strip at the bottom shows the <i>same skeleton</i> as a different (non-Mono) mode.</div>
+
+  <div class="wrap">
+    <div>
+      <h2>Live — hover &amp; press it (Apollo Mono)</h2>
+      <div class="panes">
+        <div class="pane light" id="paneL">
+          <div class="pl">Light</div>
+          <div class="demo"><div class="demo-t">Confirm transfer</div><div class="demo-b">You're sending £2,400 to Acme Ltd. This can't be undone.</div>
+            <div class="demo-a"><button class="btn ghost" type="button">Cancel</button><button class="btn pri" type="button">Confirm<span class="ico"></span></button></div></div>
+          <div class="try" id="tryL">↳ hover mechanism shown live</div>
+          <div class="strip">
+            <div class="st"><span class="sbtn" id="Ls-d">Confirm</span><span class="cap">default</span></div>
+            <div class="st"><span class="sbtn" id="Ls-h">Confirm</span><span class="cap">hover ≈</span></div>
+            <div class="st"><span class="sbtn" id="Ls-p">Confirm</span><span class="cap">pressed</span></div>
+            <div class="st"><span class="sbtn" id="Ls-x">Confirm</span><span class="cap">disabled</span></div>
+          </div>
+        </div>
+        <div class="pane dark" id="paneD">
+          <div class="pl">Dark</div>
+          <div class="demo"><div class="demo-t">Confirm transfer</div><div class="demo-b">You're sending £2,400 to Acme Ltd. This can't be undone.</div>
+            <div class="demo-a"><button class="btn ghost" type="button">Cancel</button><button class="btn pri" type="button">Confirm<span class="ico"></span></button></div></div>
+          <div class="try" id="tryD">↳ hover mechanism shown live</div>
+          <div class="strip">
+            <div class="st"><span class="sbtn" id="Ds-d">Confirm</span><span class="cap">default</span></div>
+            <div class="st"><span class="sbtn" id="Ds-h">Confirm</span><span class="cap">hover ≈</span></div>
+            <div class="st"><span class="sbtn" id="Ds-p">Confirm</span><span class="cap">pressed</span></div>
+            <div class="st"><span class="sbtn" id="Ds-x">Confirm</span><span class="cap">disabled</span></div>
+          </div>
+        </div>
+      </div>
+
+      <h2>Resolved tokens (update live)</h2>
+      <table id="tok"><thead><tr><th>token</th><th>light</th><th></th><th>dark</th><th></th><th>label contrast</th></tr></thead><tbody></tbody></table>
+
+      <h2>Same skeleton, a chromatic mode <span style="color:#9aa2ac;font-weight:400;text-transform:none;letter-spacing:0">— illustration, not Mono</span></h2>
+      <div class="chroma">
+        <button class="cbtn" id="cb" type="button">Continue</button>
+        <div style="font-size:12px;color:#545454;line-height:1.5">mechanism <code>[colour]</code>, distinct hues — <b>hover it, press it</b>.<br>default <span id="cx-d">red</span> · hover <span id="cx-h">blue</span> · active <span id="cx-p">green</span> — all pass AA with the white label.</div>
+      </div>
+
+      <h2>Export — my settled values</h2>
+      <pre class="exp" id="exp"></pre>
+      <div class="principle"><b>ADR-0009 made visible.</b> Colour is always stored (portable, and is how a chromatic mode works); opacity is an optional operational layer; you choose the mechanism. AA is enforced whichever you pick.</div>
+    </div>
+
+    <div class="insp">
+      <div class="grab"></div>
+      <h3>Primary button — colour</h3><div class="kind">ramp-locked · AA-only</div>
+      <div class="grp"><label>Ground — default</label><div class="mode2"><span class="ml">L</span><div class="ramp" data-role="def" data-mode="L"></div><span class="ml">D</span><div class="ramp" data-role="def" data-mode="D"></div></div></div>
+      <div class="grp">
+        <label>Hover — mechanism <span class="aa" id="hov-aa">AA ✓</span></label>
+        <div class="seg" id="c-mech"><button data-v="opacity">Opacity</button><button data-v="colour">Colour</button><button data-v="both">Both</button></div>
+        <div id="op-wrap"><input type="range" id="op" min="0.70" max="1.00" step="0.01" value="0.90"><div class="rngrow"><span>more fade</span><span id="op-read">α 0.90</span><span>solid</span></div></div>
+        <div id="col-wrap" style="margin-top:8px"><div class="mode2"><span class="ml">L</span><div class="ramp" data-role="hovC" data-mode="L"></div><span class="ml">D</span><div class="ramp" data-role="hovC" data-mode="D"></div></div></div>
+        <div class="derived" id="hov-derived"></div>
+      </div>
+      <div class="grp"><label>Ground — pressed</label><div class="mode2"><span class="ml">L</span><div class="ramp" data-role="prs" data-mode="L"></div><span class="ml">D</span><div class="ramp" data-role="prs" data-mode="D"></div></div></div>
+      <div class="locked">
+        <b>Locked — shared tokens</b>
+        <div class="lockrow"><span class="msw" style="background:#FFFFFF"></span><span class="msw" style="background:#333333"></span> label · <code>text/on-inverse</code></div>
+        <div class="lockrow"><span class="msw" style="background:#808080"></span><span class="msw" style="background:#808080"></span> disabled label · <code>text/on-disabled</code> <span style="color:#1F7A46">(now visible)</span></div>
+        <div class="lockrow"><span class="msw" style="background:#E1E1E1"></span><span class="msw" style="background:#484848"></span> disabled fill · <code>surface/action-disabled</code></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">Nothing enacted until you're happy. Hover stores a colour token always (portable / chromatic-ready) and, when the mechanism includes opacity, a <code>hover-opacity</code> value (operational). Disabled label fixed to a visible ghost (<code>#808080</code>, ~3:1) — was invisible. Page bg for fades = <code>background/default</code> (#FFFFFF / #1A1A1A). Sheet v5 · 2026-07-20 · ADR-0009.</div>
+
+<script>
+(function(){
+  var RAMP=[['#000000','m1'],['#050505','m2'],['#0F0F0F','m3'],['#1A1A1A','m4'],['#313131','m5'],['#484848','m6'],['#626262','m7'],['#808080','m8'],['#9D9D9D','m9'],['#B7B7B7','m10'],['#CECECE','m11'],['#E1E1E1','m12'],['#F0F0F0','m13'],['#FAFAFA','m14'],['#FFFFFF','m15']];
+  var STEP={}; RAMP.forEach(function(r){STEP[r[0]]=r[1];});
+  var PBG={L:'#FFFFFF',D:'#1A1A1A'}, LBL={L:'#FFFFFF',D:'#333333'}, DIS={L:'#E1E1E1',D:'#484848'}, DISLBL={L:'#808080',D:'#808080'};
+  var S={ def:{L:'#1A1A1A',D:'#FAFAFA'}, prs:{L:'#000000',D:'#FFFFFF'}, mech:'opacity', alpha:0.90, hovC:{L:'#626262',D:'#B7B7B7'} };
+  function hx(h){h=h.replace('#','');return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)];}
+  function toHex(a){return '#'+a.map(function(v){v=Math.max(0,Math.min(255,Math.round(v)));return ('0'+v.toString(16)).slice(-2).toUpperCase();}).join('');}
+  function lin(c){c/=255;return c<=0.03928?c/12.92:Math.pow((c+0.055)/1.055,2.4);}
+  function Lum(h){var a=hx(h);return 0.2126*lin(a[0])+0.7152*lin(a[1])+0.0722*lin(a[2]);}
+  function ratio(a,b){var la=Lum(a),lb=Lum(b),hi=Math.max(la,lb),lo=Math.min(la,lb);return (hi+0.05)/(lo+0.05);}
+  function fmt(n){return n.toFixed(2)+':1';} function cc(n){return n>=4.5?'ok':'bad';}
+  function flatten(fg,bg,a){var f=hx(fg),b=hx(bg);return toHex([0,1,2].map(function(i){return f[i]*a+b[i]*(1-a);}));}
+  function rgba(hex,a){var c=hx(hex);return 'rgba('+c[0]+','+c[1]+','+c[2]+','+a+')';}
+  function passes(mode,step){return ratio(LBL[mode],step)>=4.5;}
+  function snapPass(hex,mode){var best=null,bd=1e9;RAMP.forEach(function(r){if(!passes(mode,r[0]))return;var d=Math.abs(Lum(r[0])-Lum(hex));if(d<bd){bd=d;best=r[0];}});return best;}
+  // effective hover ground colour per mode, by mechanism
+  function hovEff(mode){
+    if(S.mech==='colour') return S.hovC[mode];
+    if(S.mech==='both') return flatten(S.hovC[mode],PBG[mode],S.alpha);
+    return flatten(S.def[mode],PBG[mode],S.alpha); // opacity
+  }
+  function hovStored(mode){ return S.mech==='opacity'? snapPass(hovEff(mode),mode) : S.hovC[mode]; }
+  function baseFor(mode){ return S.mech==='both'? S.hovC[mode] : S.def[mode]; }
+  function alphaFloor(){var fl=0.70;for(var a=0.70;a<=1.001;a+=0.01){var okL=ratio(LBL.L,flatten(baseFor('L'),PBG.L,a))>=4.5,okD=ratio(LBL.D,flatten(baseFor('D'),PBG.D,a))>=4.5;if(okL&&okD){fl=a;break;}}return Math.round(fl*100)/100;}
+
+  function build(){
+    document.querySelectorAll('.ramp').forEach(function(box){
+      var role=box.dataset.role, mode=box.dataset.mode; box.innerHTML='';
+      RAMP.forEach(function(r){var b=document.createElement('button');b.className='rs';b.style.background=r[0];
+        if(!passes(mode,r[0])){b.disabled=true;b.title=r[1]+' · '+r[0]+' — fails AA ('+fmt(ratio(LBL[mode],r[0]))+')';}
+        else{b.title=r[1]+' · '+r[0]+' — '+fmt(ratio(LBL[mode],r[0]));b.onclick=function(){S[role][mode]=r[0];paint();};}
+        box.appendChild(b);});
+    });
+    // chromatic demo (mechanism=colour, distinct hues; all pass white label)
+    var CH={d:'#B92F1E',h:'#0A57B3',p:'#1C6B3F'}, cb=document.getElementById('cb');
+    cb.style.background=CH.d;
+    cb.onmouseenter=function(){cb.style.background=CH.h;}; cb.onmouseleave=function(){cb.style.background=CH.d;};
+    cb.onmousedown=function(){cb.style.background=CH.p;}; cb.onmouseup=function(){cb.style.background=CH.h;};
+  }
+  function paint(){
+    var mech=S.mech;
+    document.getElementById('op-wrap').style.display=(mech==='opacity'||mech==='both')?'':'none';
+    document.getElementById('col-wrap').style.display=(mech==='colour'||mech==='both')?'':'none';
+    var floor=alphaFloor(), op=document.getElementById('op');
+    op.min=floor; if(S.alpha<floor){S.alpha=floor;op.value=floor;}
+    var pL=document.getElementById('paneL'), pD=document.getElementById('paneD');
+    function hoverCss(m){ if(mech==='colour')return S.hovC[m]; if(mech==='both')return rgba(S.hovC[m],S.alpha); return rgba(S.def[m],S.alpha); }
+    function vars(p,m){p.style.setProperty('--pa-bg',S.def[m]);p.style.setProperty('--pa-hover',hoverCss(m));p.style.setProperty('--pa-pressed',S.prs[m]);p.style.setProperty('--pa-label',LBL[m]);p.style.setProperty('--pa-dis',DIS[m]);p.style.setProperty('--pa-dislbl',DISLBL[m]);}
+    vars(pL,'L'); vars(pD,'D');
+    var mlbl={opacity:'opacity (fill fades)',colour:'solid colour',both:'colour + opacity'}[mech];
+    document.getElementById('tryL').innerHTML='↳ hover = <b>'+mlbl+'</b>'; document.getElementById('tryD').innerHTML='↳ hover = <b>'+mlbl+'</b>';
+    function ss(id,bg,fg){var e=document.getElementById(id);e.style.background=bg;e.style.color=fg;}
+    ['L','D'].forEach(function(m){ss(m+'s-d',S.def[m],LBL[m]);ss(m+'s-h',hovEff(m),LBL[m]);ss(m+'s-p',S.prs[m],LBL[m]);ss(m+'s-x',DIS[m],DISLBL[m]);});
+    document.querySelectorAll('.ramp').forEach(function(box){var role=box.dataset.role,mode=box.dataset.mode,cur=S[role][mode];
+      [].slice.call(box.children).forEach(function(b,i){b.setAttribute('aria-pressed',String(RAMP[i][0]===cur));});});
+    document.querySelectorAll('.seg#c-mech button').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.v===mech));});
+    document.getElementById('op-read').textContent='α '+S.alpha.toFixed(2);
+    var hL=hovStored('L'),hD=hovStored('D');
+    var opTxt=(mech==='opacity'||mech==='both')?('opacity '+S.alpha.toFixed(2)+' · '):'';
+    document.getElementById('hov-derived').innerHTML=opTxt+'stored colour: <b>'+STEP[hL]+' '+hL+'</b> L · <b>'+STEP[hD]+' '+hD+'</b> D';
+    document.getElementById('hov-aa').textContent='AA ✓'+((mech==='opacity'||mech==='both')?(' (floor α '+floor.toFixed(2)+')'):'');
+    var rows=[['background/default','def',S.def.L,S.def.D],['background/hover','hovS',hL,hD],['background/pressed','prs',S.prs.L,S.prs.D]];
+    var tb=document.querySelector('#tok tbody');tb.innerHTML='';
+    rows.forEach(function(r){var vl=r[2],vd=r[3];var cL=ratio(LBL.L,hovEff('L')),cD=ratio(LBL.D,hovEff('D'));
+      if(r[1]!=='hovS'){cL=ratio(LBL.L,vl);cD=ratio(LBL.D,vd);}
+      var tr=document.createElement('tr');
+      tr.innerHTML='<td><code>'+r[0]+'</code></td>'+
+        '<td class="c"><span class="sw" style="background:'+vl+'"></span> '+STEP[vl]+'</td><td class="c">'+vl+'</td>'+
+        '<td class="c"><span class="sw" style="background:'+vd+'"></span> '+STEP[vd]+'</td><td class="c">'+vd+'</td>'+
+        '<td class="c"><span class="'+cc(cL)+'">'+fmt(cL)+'</span> L · <span class="'+cc(cD)+'">'+fmt(cD)+'</span> D</td>';
+      tb.appendChild(tr);});
+    var mechArr = mech==='both'?'[colour, opacity]':(mech==='opacity'?'[opacity]':'[colour]');
+    document.getElementById('exp').textContent=
+'BUTTON/PRIMARY — Apollo Mono   (light / dark) · ADR-0009\n'+
+'  background/default : '+S.def.L+' '+STEP[S.def.L]+' / '+S.def.D+' '+STEP[S.def.D]+'\n'+
+'  hover.mechanism    : '+mechArr+'\n'+
+((mech==='opacity'||mech==='both')?('  hover.opacity      : '+S.alpha.toFixed(2)+'   (operational)\n'):'')+
+'  hover (colour)     : '+hL+' '+STEP[hL]+' / '+hD+' '+STEP[hD]+'   (stored — portable / chromatic-ready)\n'+
+'  background/pressed : '+S.prs.L+' '+STEP[S.prs.L]+' / '+S.prs.D+' '+STEP[S.prs.D]+'\n'+
+'  disabled fill/label: #E1E1E1·#484848 / #808080 (locked; label now VISIBLE)\n'+
+'  label / icon       : #FFFFFF / #333333 (locked — text·icon/on-inverse)\n'+
+'  all resolved states pass WCAG AA · no red (Mono is monochrome)';
+  }
+  document.getElementById('op').oninput=function(){S.alpha=parseFloat(this.value);paint();};
+  document.querySelectorAll('.seg#c-mech button').forEach(function(b){b.onclick=function(){S.mech=b.dataset.v;paint();};});
+  build(); paint();
+})();
+</script>
+</body></html>

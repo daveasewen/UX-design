@@ -2,7 +2,7 @@
 
 > Brand red, RAG status, interactive-state, and border tokens tested at **3:1** (WCAG 1.4.11) against the worst-case (lightest) dark surface resolved from the store — page default `#1A1A1A` + raised island `#1D1D1D`. `on-light` tokens excluded (light-only). Border tokens included since 2026-07-14 (1.4.11 explicitly covers UI-component boundaries). `*/disabled` tokens excluded — WCAG 1.4.11 itself exempts inactive components.
 
-**Result:** 36 pass · 0 allowed exception(s) · **0 gating failure(s)** · 5 skipped (light-only).
+**Result:** 38 pass · 0 allowed exception(s) · **0 gating failure(s)** · 5 skipped (light-only).
 
 ## Skipped — light-mode-only tokens
 
@@ -21,6 +21,8 @@
 | `border/action-strong` | `#FFFFFF` | `#1D1D1D` | 16.86:1 | ✅ OK |
 | `border/strong` | `#808080` | `#1D1D1D` | 4.27:1 | ✅ OK |
 | `border/subtle` | `#808080` | `#1D1D1D` | 4.27:1 | ✅ OK |
+| `button/primary/icon/default` | `#333333` | `#FFFFFF` | 12.63:1 | ✅ OK |
+| `button/primary/label/default` | `#333333` | `#FFFFFF` | 12.63:1 | ✅ OK |
 | `button/tertiary/border/default` | `#FFFFFF` | `#1D1D1D` | 16.86:1 | ✅ OK |
 | `data-vis/border/on-dark/baseline-1` | `#FFFFFF` | `#1D1D1D` | 16.86:1 | ✅ OK |
 | `data-vis/border/on-dark/baseline-2` | `#808080` | `#1D1D1D` | 4.27:1 | ✅ OK |

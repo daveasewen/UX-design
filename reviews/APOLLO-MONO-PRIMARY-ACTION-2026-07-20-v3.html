@@ -1,0 +1,191 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apollo Mono — primary-action token (live editor)</title>
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<style>
+  :root{--font:"Univers Next for HSBC","Helvetica Neue",Arial,sans-serif;--sel:#1273EB;}
+  body{margin:0;padding:2.2rem;font-family:var(--font);background:#FFFFFF;color:#1A1A1A;-webkit-font-smoothing:antialiased}
+  *{box-sizing:border-box}
+  h1{font:400 27px/1.2 var(--font);margin:0 0 6px} .sub{color:#545454;font-size:14px;margin-bottom:22px;max-width:78ch}
+  h2{font:500 13px/1 var(--font);letter-spacing:.05em;text-transform:uppercase;color:#767676;margin:28px 0 12px}
+  code{font-family:ui-monospace,Menlo,monospace;font-size:12px}
+  .wrap{display:grid;grid-template-columns:1fr 288px;gap:22px;align-items:start}
+  @media (max-width:900px){.wrap{grid-template-columns:1fr}}
+  /* live demo panes */
+  .panes{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media (max-width:640px){.panes{grid-template-columns:1fr}}
+  .pane{border:1px solid #CECECE;padding:18px;border-radius:2px}
+  .pane.light{background:#FFFFFF} .pane.dark{background:#1A1A1A;border-color:#484848;color:#FAFAFA}
+  .pl{font-size:11px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:14px;color:#9aa2ac}
+  /* realistic mini-context card */
+  .demo{border:1px solid #E1E1E1;border-radius:6px;padding:16px}
+  .pane.dark .demo{border-color:#3a3a3a;background:#0F0F0F}
+  .demo-t{font-weight:500;font-size:15px;margin-bottom:4px}
+  .demo-b{font-size:13px;color:#767676;margin-bottom:16px} .pane.dark .demo-b{color:#9D9D9D}
+  .demo-a{display:flex;gap:10px;justify-content:flex-end;align-items:center}
+  .btn{font:500 15px/1 var(--font);padding:12px 20px;border:1px solid transparent;border-radius:0;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+  .btn .ico{width:14px;height:14px;display:inline-block;border:2px solid currentColor;border-radius:50%}
+  .btn.ghost{background:transparent;color:#1A1A1A;border-color:#808080} .pane.dark .btn.ghost{color:#FAFAFA;border-color:#808080}
+  /* THE live primary — real :hover / :active off the chosen tokens */
+  .btn.pri{background:var(--pa-bg);color:var(--pa-label)}
+  .btn.pri:hover{background:var(--pa-hover)}
+  .btn.pri:active{background:var(--pa-pressed)}
+  .btn.pri:focus-visible{outline:2px solid var(--sel);outline-offset:2px}
+  .btn.pri[disabled]{background:var(--pa-dis);color:var(--pa-dislbl);cursor:not-allowed}
+  .try{font-size:11px;color:#9aa2ac;margin-top:12px}
+  /* static state strip (secondary reference) */
+  .strip{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px dashed #E1E1E1}
+  .pane.dark .strip{border-color:#3a3a3a}
+  .st{text-align:center} .st .cap{font-size:10px;color:#9aa2ac;display:block;margin-top:6px}
+  .sbtn{font:500 13px/1 var(--font);padding:9px 14px;border-radius:0;border:1px solid transparent;display:inline-block}
+  /* inspector */
+  .insp{border:1px solid #cfd3d8;border-radius:8px;box-shadow:0 8px 26px rgba(20,28,40,.10);overflow:hidden;position:sticky;top:16px}
+  .insp .grab{height:15px;background:repeating-linear-gradient(45deg,#e9edf2 0 6px,#f6f8fa 6px 12px);border-bottom:1px solid #eceff3}
+  .insp h3{font:500 13px/1 var(--font);margin:0;padding:12px 14px 3px} .insp .kind{font-size:10px;color:#9aa2ac;padding:0 14px 9px;text-transform:uppercase;letter-spacing:.06em}
+  .grp{padding:10px 14px;border-top:1px solid #eef1f4}
+  .grp>label{display:block;font-size:12px;font-weight:500;margin-bottom:8px}
+  .mode2{display:grid;grid-template-columns:14px 1fr;gap:6px 8px;align-items:center}
+  .mode2 .ml{font-size:10px;color:#9aa2ac;text-transform:uppercase}
+  .ramp{display:flex;gap:2px} .ramp .rs{width:15px;height:20px;border:1px solid #00000018;cursor:pointer;padding:0;border-radius:0}
+  .ramp .rs[aria-pressed="true"]{outline:2px solid var(--sel);outline-offset:1px;z-index:1}
+  .locked{padding:10px 14px;border-top:1px solid #eef1f4;font-size:11.5px;color:#9aa2ac}
+  .locked b{color:#767676;font-weight:500} .lockrow{display:flex;align-items:center;gap:6px;margin-top:5px}
+  .msw{width:13px;height:13px;display:inline-block;border:1px solid #00000018}
+  /* tables + export */
+  table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:4px} th{text-align:left;color:#767676;font-weight:400;font-size:10.5px;border-bottom:1px solid #E1E1E1;padding:4px 8px 4px 0}
+  td{padding:6px 8px 6px 0;border-bottom:1px solid #EDEDED;vertical-align:middle} td.c{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .sw{display:inline-block;width:17px;height:17px;vertical-align:middle;border:1px solid #00000018}
+  .ok{color:#1F7A46} .bad{color:#B92F1E;font-weight:500}
+  pre.exp{background:#0F0F0F;color:#F0F0F0;padding:14px 16px;border-radius:6px;font-size:11.5px;line-height:1.5;overflow:auto;margin-top:8px}
+  .foot{margin-top:26px;font-size:12px;color:#767676;border-top:1px solid #E1E1E1;padding-top:12px;max-width:82ch}
+  .principle{border-left:3px solid #C58900;background:#F0B13A14;padding:9px 13px;font-size:12.5px;margin:14px 0 0}
+</style></head>
+<body>
+  <h1>Apollo Mono — the primary-action token · <span style="color:#767676;font-weight:400">live editor</span></h1>
+  <div class="sub">Mono is monochrome UI — colour lives only in dataviz, RAG and status — so the primary action carries <b>no red</b>. This is a real button: <b>hover it, press it</b>. The controls (right) are locked to the mono ramp and expose only what's yours to set here — the three grounds, per mode. Everything updates live; your dialed values become the spec via the export block.</div>
+
+  <div class="wrap">
+    <div>
+      <h2>Live example — hover &amp; press it</h2>
+      <div class="panes">
+        <div class="pane light" id="paneL">
+          <div class="pl">Light</div>
+          <div class="demo">
+            <div class="demo-t">Confirm transfer</div>
+            <div class="demo-b">You're sending £2,400 to Acme Ltd. This can't be undone.</div>
+            <div class="demo-a"><button class="btn ghost" type="button">Cancel</button><button class="btn pri" type="button">Confirm<span class="ico"></span></button></div>
+          </div>
+          <div class="try">↳ real <code>:hover</code> / <code>:active</code> off the chosen tokens</div>
+          <div class="strip">
+            <div class="st"><span class="sbtn" id="Ls-d">Confirm</span><span class="cap">default</span></div>
+            <div class="st"><span class="sbtn" id="Ls-h">Confirm</span><span class="cap">hover</span></div>
+            <div class="st"><span class="sbtn" id="Ls-p">Confirm</span><span class="cap">pressed</span></div>
+            <div class="st"><span class="sbtn" id="Ls-x">Confirm</span><span class="cap">disabled</span></div>
+          </div>
+        </div>
+        <div class="pane dark" id="paneD">
+          <div class="pl">Dark</div>
+          <div class="demo">
+            <div class="demo-t">Confirm transfer</div>
+            <div class="demo-b">You're sending £2,400 to Acme Ltd. This can't be undone.</div>
+            <div class="demo-a"><button class="btn ghost" type="button">Cancel</button><button class="btn pri" type="button">Confirm<span class="ico"></span></button></div>
+          </div>
+          <div class="try">↳ real <code>:hover</code> / <code>:active</code> off the chosen tokens</div>
+          <div class="strip">
+            <div class="st"><span class="sbtn" id="Ds-d">Confirm</span><span class="cap">default</span></div>
+            <div class="st"><span class="sbtn" id="Ds-h">Confirm</span><span class="cap">hover</span></div>
+            <div class="st"><span class="sbtn" id="Ds-p">Confirm</span><span class="cap">pressed</span></div>
+            <div class="st"><span class="sbtn" id="Ds-x">Confirm</span><span class="cap">disabled</span></div>
+          </div>
+        </div>
+      </div>
+
+      <h2>Resolved tokens (update live)</h2>
+      <table id="tok"><thead><tr><th>token</th><th>light</th><th></th><th>dark</th><th></th><th>label contrast</th></tr></thead><tbody></tbody></table>
+
+      <h2>Export — my settled colours</h2>
+      <pre class="exp" id="exp"></pre>
+      <div class="principle"><b>Controls = the tokens.</b> Only the editable grounds are exposed, locked to the ramp. Label, icon and disabled reference shared tokens, so they're shown locked below the controls, not editable here.</div>
+    </div>
+
+    <!-- INSPECTOR -->
+    <div class="insp">
+      <div class="grab"></div>
+      <h3>Primary button — colour</h3><div class="kind">controls · locked to mono ramp</div>
+      <div class="grp"><label>Ground — default</label><div class="mode2"><span class="ml">L</span><div class="ramp" data-role="def" data-mode="L"></div><span class="ml">D</span><div class="ramp" data-role="def" data-mode="D"></div></div></div>
+      <div class="grp"><label>Ground — hover</label><div class="mode2"><span class="ml">L</span><div class="ramp" data-role="hov" data-mode="L"></div><span class="ml">D</span><div class="ramp" data-role="hov" data-mode="D"></div></div></div>
+      <div class="grp"><label>Ground — pressed</label><div class="mode2"><span class="ml">L</span><div class="ramp" data-role="prs" data-mode="L"></div><span class="ml">D</span><div class="ramp" data-role="prs" data-mode="D"></div></div></div>
+      <div class="locked">
+        <b>Locked — shared tokens (not editable here)</b>
+        <div class="lockrow"><span class="msw" style="background:#FFFFFF"></span><span class="msw" style="background:#333333"></span> label · <code>text/on-inverse</code></div>
+        <div class="lockrow"><span class="msw" style="background:#FFFFFF"></span><span class="msw" style="background:#333333"></span> icon · <code>icon/on-inverse</code></div>
+        <div class="lockrow"><span class="msw" style="background:#E1E1E1"></span><span class="msw" style="background:#484848"></span> disabled · <code>surface/action-disabled</code></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">Nothing enacted until you're happy. Defaults = near-black/near-white inverting ground; hover intensifies (darker L, brighter D); pressed recedes. Contrast is label-on-ground, recomputed live per mode; under 4.5:1 turns red. On sign-off I write your values into <code>surface/action-primary{,-hover,-pressed}</code> + <code>button/primary/*</code>, regenerate <code>canon.css</code>, re-gate, record the ruling. Sheet v3 · 2026-07-20.</div>
+
+<script>
+(function(){
+  var RAMP=[['#000000','m1'],['#050505','m2'],['#0F0F0F','m3'],['#1A1A1A','m4'],['#313131','m5'],['#484848','m6'],['#626262','m7'],['#808080','m8'],['#9D9D9D','m9'],['#B7B7B7','m10'],['#CECECE','m11'],['#E1E1E1','m12'],['#F0F0F0','m13'],['#FAFAFA','m14'],['#FFFFFF','m15']];
+  var STEP={}; RAMP.forEach(function(r){STEP[r[0]]=r[1];});
+  // editable state (defaults = current rulings)
+  var S={ def:{L:'#1A1A1A',D:'#FAFAFA'}, hov:{L:'#0F0F0F',D:'#FFFFFF'}, prs:{L:'#313131',D:'#E1E1E1'} };
+  var LBL={L:'#FFFFFF',D:'#333333'}, DIS={L:'#E1E1E1',D:'#484848'}, DISLBL={L:'#E1E1E1',D:'#808080'};
+  // contrast
+  function lin(c){c/=255;return c<=0.03928?c/12.92:Math.pow((c+0.055)/1.055,2.4);}
+  function Lum(h){h=h.replace('#','');return 0.2126*lin(parseInt(h.substr(0,2),16))+0.7152*lin(parseInt(h.substr(2,2),16))+0.0722*lin(parseInt(h.substr(4,2),16));}
+  function ratio(a,b){var la=Lum(a),lb=Lum(b),hi=Math.max(la,lb),lo=Math.min(la,lb);return (hi+0.05)/(lo+0.05);}
+  function fmt(n){return n.toFixed(2)+':1';} function cc(n){return n>=4.5?'ok':'bad';}
+
+  function build(){ // build ramp pickers
+    [].slice.call(document.querySelectorAll('.ramp')).forEach(function(box){
+      var role=box.dataset.role, mode=box.dataset.mode; box.innerHTML='';
+      RAMP.forEach(function(r){ var b=document.createElement('button'); b.className='rs'; b.style.background=r[0]; b.title=r[1]+' · '+r[0];
+        b.onclick=function(){ S[role][mode]=r[0]; paint(); };
+        box.appendChild(b);
+      });
+    });
+  }
+  function paint(){
+    // live buttons via CSS vars per pane
+    var pL=document.getElementById('paneL'), pD=document.getElementById('paneD');
+    pL.style.setProperty('--pa-bg',S.def.L); pL.style.setProperty('--pa-hover',S.hov.L); pL.style.setProperty('--pa-pressed',S.prs.L); pL.style.setProperty('--pa-label',LBL.L); pL.style.setProperty('--pa-dis',DIS.L); pL.style.setProperty('--pa-dislbl',DISLBL.L);
+    pD.style.setProperty('--pa-bg',S.def.D); pD.style.setProperty('--pa-hover',S.hov.D); pD.style.setProperty('--pa-pressed',S.prs.D); pD.style.setProperty('--pa-label',LBL.D); pD.style.setProperty('--pa-dis',DIS.D); pD.style.setProperty('--pa-dislbl',DISLBL.D);
+    // static strip
+    function ss(id,bg,fg){var e=document.getElementById(id);e.style.background=bg;e.style.color=fg;}
+    ['L','D'].forEach(function(m){ ss(m+'s-d',S.def[m],LBL[m]); ss(m+'s-h',S.hov[m],LBL[m]); ss(m+'s-p',S.prs[m],LBL[m]); ss(m+'s-x',DIS[m],DISLBL[m]); });
+    // ramp selected rings
+    [].slice.call(document.querySelectorAll('.ramp')).forEach(function(box){
+      var role=box.dataset.role, mode=box.dataset.mode, cur=S[role][mode];
+      [].slice.call(box.children).forEach(function(b,i){ b.setAttribute('aria-pressed', String(RAMP[i][0]===cur)); });
+    });
+    // token table
+    var rows=[['surface/action-primary','def'],['surface/action-primary-hover','hov'],['surface/action-primary-pressed','prs']];
+    var tb=document.querySelector('#tok tbody'); tb.innerHTML='';
+    rows.forEach(function(r){ var role=r[1];
+      var cL=ratio(LBL.L,S[role].L), cD=ratio(LBL.D,S[role].D);
+      var tr=document.createElement('tr');
+      tr.innerHTML='<td><code>'+r[0]+'</code></td>'+
+        '<td class="c"><span class="sw" style="background:'+S[role].L+'"></span> '+STEP[S[role].L]+'</td><td class="c">'+S[role].L+'</td>'+
+        '<td class="c"><span class="sw" style="background:'+S[role].D+'"></span> '+STEP[S[role].D]+'</td><td class="c">'+S[role].D+'</td>'+
+        '<td class="c"><span class="'+cc(cL)+'">'+fmt(cL)+'</span> L · <span class="'+cc(cD)+'">'+fmt(cD)+'</span> D</td>';
+      tb.appendChild(tr);
+    });
+    // dark near-white note flag
+    var dgFlag=(S.def.D==='#FFFFFF'||S.hov.D==='#FFFFFF');
+    document.getElementById('exp').textContent =
+'BUTTON/PRIMARY — Apollo Mono   (light / dark, ramp step)\n'+
+'  background/default : '+S.def.L+' '+STEP[S.def.L]+'   /   '+S.def.D+' '+STEP[S.def.D]+'\n'+
+'  background/hover   : '+S.hov.L+' '+STEP[S.hov.L]+'   /   '+S.hov.D+' '+STEP[S.hov.D]+'   (stored token — colour, not opacity)\n'+
+'  background/pressed : '+S.prs.L+' '+STEP[S.prs.L]+'   /   '+S.prs.D+' '+STEP[S.prs.D]+'\n'+
+'  background/disabled: #E1E1E1 m12  /  #484848 m6   (locked — surface/action-disabled)\n'+
+'  label / icon       : #FFFFFF / #333333            (locked — text·icon/on-inverse)\n'+
+'  red?               : NO — Mono is monochrome (colour only in dataviz/RAG/status)'+
+(dgFlag?'\n  note: a #FFFFFF ground needs a $darkNote flatness exemption (can bloom).':'');
+  }
+  build(); paint();
+})();
+</script>
+</body></html>

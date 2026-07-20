@@ -129,6 +129,21 @@ status (`idea` / `parked` / `resurrection-candidate` / `graduated→LIVE`).
     `reviews/SMALL-PICKS-DESK-2026-07-19.html` this session; the durable fix is to add both to
     `_review/_review-overlay.html` so `_make_review.py` injects them everywhere (theme toggle needs a
     body-level `.dark`/`data-theme` convention docs opt into). *Status:* idea → do before the next batch of reviews.
+  - **★ PRINCIPLE (Dave, 2026-07-20): every review carries a DECISION CONTROL per open choice — the reviewer
+    EDITS the choice in place, not a question round-trip.** Dave: *"add a selector and any other controls so I
+    can edit the choices rather than us going back and forward, add this as a principle for all review."* So a
+    review sheet is a **live editor**: each open question becomes a control (segmented selector / slider / toggle);
+    the live specimen, the resolved-token table and the contrast readout all recompute as the control moves; an
+    **export block** emits the settled values for the agent to read straight off (no AskUserQuestion loop). This is
+    the review-sheet expression of the **μX / in-context edit-mode controls** concept below — the "edit designs" file
+    — and generalises [[feedback-live-controller]] from "how-much" feel-dials to *all* open review choices. Controls
+    are bounded by the rules (e.g. an "Elevate" hover option is shown **disabled** with the `webf-011` reason, so the
+    sheet teaches the constraint while offering the choice). Reference implementation: **`reviews/APOLLO-MONO-PRIMARY-ACTION-2026-07-20-v2.html`**
+    (segmented selectors for ground/hover/pressed/label + opacity slider + live token table + export). The comment
+    overlay stays for anything the controls don't cover. *Feeds:* Craft — the review overlay as product surface.
+    *Status:* principle set → fold the generic control-injection into `_make_review.py` / the overlay when the next
+    review batch lands; the per-choice control list derives from the decision, the same way the edit-mode inspector
+    derives from `<name>.meta.json`.
 - **Countdown numeral snap-slider prototype** — a continuous size input (dial 48–200px) that snaps the
   dial to the **4px grid** and the numeral to the nearest **type-ramp rung** (16/20/24/32/40/52). Working
   prototype in `reviews/SMALL-PICKS-DESK-2026-07-19.html` §1 (comment 3). *Why held:* Dave "might be
@@ -186,6 +201,22 @@ status (`idea` / `parked` / `resurrection-candidate` / `graduated→LIVE`).
     strict / creative / component-dev / explore. **Direction CONFIRMED (Dave, 2026-07-19):** the prompt-only extreme is
     the **most creative / open** end; moving toward strict progressively reveals more structured, permitted controls.
     *Status:* principle captured + confirmed.
+
+- **★ Style-builder interface (Dave, 2026-07-20)** — a UI where a user configures **per-state styling**
+  for a component: for each interaction state (default / hover / pressed / disabled) pick the **render
+  mechanism** — `colour`, `opacity`, or **both** (Dave: *"we still allow the user to select either or
+  both"*) — and the values, all **within the AA guarantee** (the builder only offers passing selections;
+  the Mono primary editor already demonstrates this — disabled failing ramp steps + a contrast-clamped
+  opacity dial). This is the harness-side home of **ADR-0009** (state styling: colour = universal
+  substrate, opacity = optional operational layer). It's a specialisation of the **μX / in-context
+  edit-mode inspector** above — the per-state control set derives from the token skeleton
+  (`$extensions.apollo.state`) the same way the inspector derives from `<name>.meta.json`; and it inherits
+  the **live-controls-in-reviews** discipline ([[feedback-live-controller]]). A fully chromatic mode
+  (red default / blue hover / green active) is just an override set the builder edits. Reference editors:
+  `reviews/APOLLO-MONO-PRIMARY-ACTION-2026-07-20-v4.html` (opacity+colour+AA) and the v5 mechanism-switch
+  sheet. *Feeds:* Craft / the harness; the four-theme model (R-D15). *Status:* principle set + ADR-0009
+  accepted → build the generic per-state builder when the harness UI is specced; migrate opacity to a
+  first-class number token then.
 
 - **Blast-radius gate v2 — cascade-aware.** T-D13's gate matches selectors structurally
   (class/element presence per file) and gates on the file *set*, so a same-count file *swap* inside

@@ -1,0 +1,123 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apollo Mono — primary-action token (review)</title>
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<style>
+  :root{--font:"Univers Next for HSBC","Helvetica Neue",Arial,sans-serif;}
+  [data-theme="light"]{--bg:#FFFFFF;--fg:#1A1A1A;--mut:#545454;--line:#CECECE;--card:#FAFAFA;
+    /* proposed action/primary/* — LIGHT */
+    --pa-bg:#1A1A1A;--pa-hover:#000000;--pa-pressed:#313131;--pa-disabled:#E1E1E1;--pa-label:#FFFFFF;--pa-label-disabled:#9D9D9D;}
+  [data-theme="dark"]{--bg:#1A1A1A;--fg:#FFFFFF;--mut:#9D9D9D;--line:#484848;--card:#0F0F0F;
+    /* proposed action/primary/* — DARK (ground inverts) */
+    --pa-bg:#FFFFFF;--pa-hover:#F0F0F0;--pa-pressed:#E1E1E1;--pa-disabled:#484848;--pa-label:#333333;--pa-label-disabled:#808080;}
+  *{box-sizing:border-box} body{margin:0;padding:2.5rem;font-family:var(--font);background:var(--bg);color:var(--fg);-webkit-font-smoothing:antialiased}
+  h1{font:400 28px/1.2 var(--font);margin:0 0 6px} .sub{color:var(--mut);font-size:14px;margin-bottom:24px;max-width:74ch}
+  .controls{display:flex;gap:8px;margin-bottom:24px} .controls button{font:inherit;font-size:13px;padding:8px 12px;border:1px solid var(--mut);background:transparent;color:var(--fg);cursor:pointer}
+  h2{font:500 14px/1 var(--font);letter-spacing:.04em;margin:34px 0 12px;color:var(--fg)}
+  .banner{border-left:3px solid var(--fg);padding:10px 14px;background:var(--card);font-size:13px;margin:16px 0 8px;max-width:80ch}
+  .card{border:1px solid var(--line);padding:20px;margin-bottom:12px;background:var(--card)}
+  .note{margin-top:12px;font-size:12px;color:var(--fg)}
+  .tag{font-size:11px;border:1px solid var(--mut);padding:2px 6px;color:var(--mut)}
+  code{font-family:ui-monospace,Menlo,monospace;font-size:12px}
+  table{width:100%;border-collapse:collapse;font-size:13px} th{text-align:left;color:var(--mut);font-weight:400;font-size:11px;border-bottom:1px solid var(--line);padding:4px 10px 4px 0}
+  td{padding:7px 10px 7px 0;border-bottom:1px solid var(--line);vertical-align:middle} td.c{font-variant-numeric:tabular-nums;white-space:nowrap} td.w{color:var(--mut);font-size:12px}
+  .sw{display:inline-block;vertical-align:middle;border-radius:0}
+  /* the live button — square corners (Mono), type composite for the label */
+  .stage{display:flex;gap:14px;flex-wrap:wrap;align-items:center;padding:22px;border:1px dashed var(--line);background:var(--bg);margin-bottom:4px}
+  .stage.on-card{background:var(--card)}
+  .btn{font:500 15px/1 var(--font);padding:13px 22px;border:1px solid transparent;border-radius:0;cursor:pointer;background:var(--pa-bg);color:var(--pa-label);display:inline-flex;align-items:center;gap:8px}
+  .btn.h{background:var(--pa-hover)} .btn.p{background:var(--pa-pressed)}
+  .btn.d{background:var(--pa-disabled);color:var(--pa-label-disabled);cursor:not-allowed}
+  .btn.f{outline:2px solid #1273EB;outline-offset:2px}
+  .btn .ico{width:15px;height:15px;display:inline-block;border:2px solid currentColor;border-radius:50%;position:relative}
+  .cap{font-size:11px;color:var(--mut);margin-top:6px;display:block}
+  .staterow{display:flex;gap:26px;flex-wrap:wrap}
+  .statecol{text-align:center}
+  .q{border-left:3px solid #C58900;background:#F0B13A18;padding:10px 14px;font-size:13px;margin:8px 0}
+  .foot{margin-top:28px;font-size:12px;color:var(--mut);border-top:1px solid var(--line);padding-top:12px;max-width:80ch}
+  .rec{font-weight:500}
+</style></head>
+<body data-theme="light">
+  <div class="controls"><button id="tt" type="button">◐ Toggle light / dark</button></div>
+  <h1>Apollo Mono — the primary-action token</h1>
+  <div class="sub">Every button tier now resolves through the 3-tier stack — <b>except the primary action, which has no Mono token.</b> The only <code>primary/*</code> group today is <b>Legacy red</b>, and red is Legacy-only, so Mono's highest-emphasis button is orphaned. Proposal below: a near-black ground in light that <b>inverts to near-white in dark</b>, label carried by the existing <code>text/on-inverse</code>. Nothing is enacted — toggle the theme, then rule on the three amber questions. Pin a comment anywhere.</div>
+
+  <h2>Live — the proposed primary button, all states</h2>
+  <div class="card">
+    <div class="stage">
+      <div class="staterow">
+        <div class="statecol"><button class="btn" type="button">Continue<span class="ico"></span></button><span class="cap">default</span></div>
+        <div class="statecol"><button class="btn h" type="button">Continue<span class="ico"></span></button><span class="cap">hover</span></div>
+        <div class="statecol"><button class="btn p" type="button">Continue<span class="ico"></span></button><span class="cap">pressed</span></div>
+        <div class="statecol"><button class="btn f" type="button">Continue<span class="ico"></span></button><span class="cap">focus</span></div>
+        <div class="statecol"><button class="btn d" type="button" disabled>Continue<span class="ico"></span></button><span class="cap">disabled</span></div>
+      </div>
+    </div>
+    <span class="cap">Rendered with the proposed hexes for the <b id="modelabel">light</b> mode. Square corners + weight-500 label per Mono. Real hover/press is live too — mouse over the default button:</span>
+    <div class="stage on-card" style="margin-top:14px">
+      <button class="btn live" type="button">Hover / press me — live<span class="ico"></span></button>
+      <span class="cap" style="margin:0">↳ uses <code>:hover</code> / <code>:active</code> with the proposed hover + pressed values</span>
+    </div>
+  </div>
+
+  <h2>Proposed token model</h2>
+  <div class="card">
+    <table>
+      <thead><tr><th>token</th><th>light</th><th></th><th>dark</th><th></th><th>label contrast</th></tr></thead>
+      <tbody>
+        <tr><td><code>action/primary/background/default</code></td>
+            <td class="c"><span class="sw" style="background:#1A1A1A;width:22px;height:22px"></span> mono/4</td><td class="c">#1A1A1A</td>
+            <td class="c"><span class="sw" style="background:#FFFFFF;width:22px;height:22px;border:1px solid #00000022"></span> mono/15</td><td class="c">#FFFFFF</td>
+            <td class="c">17.4:1 L · 12.6:1 D</td></tr>
+        <tr><td><code>action/primary/background/hover</code></td>
+            <td class="c"><span class="sw" style="background:#000000;width:22px;height:22px"></span> mono/1</td><td class="c">#000000</td>
+            <td class="c"><span class="sw" style="background:#F0F0F0;width:22px;height:22px;border:1px solid #00000022"></span> mono/13</td><td class="c">#F0F0F0</td>
+            <td class="c">21.0:1 L · 11.1:1 D</td></tr>
+        <tr><td><code>action/primary/background/pressed</code></td>
+            <td class="c"><span class="sw" style="background:#313131;width:22px;height:22px"></span> mono/5</td><td class="c">#313131</td>
+            <td class="c"><span class="sw" style="background:#E1E1E1;width:22px;height:22px;border:1px solid #00000022"></span> mono/12</td><td class="c">#E1E1E1</td>
+            <td class="c">13.0:1 L · 9.7:1 D</td></tr>
+        <tr><td><code>action/primary/background/disabled</code> <span class="tag">reuse</span></td>
+            <td class="c"><span class="sw" style="background:#E1E1E1;width:22px;height:22px;border:1px solid #00000022"></span> mono/12</td><td class="c">#E1E1E1</td>
+            <td class="c"><span class="sw" style="background:#484848;width:22px;height:22px"></span> mono/6</td><td class="c">#484848</td>
+            <td class="c">exempt</td></tr>
+        <tr><td><code>action/primary/label</code> → <code>text/on-inverse</code> <span class="tag">exists</span></td>
+            <td class="c"><span class="sw" style="background:#FFFFFF;width:22px;height:22px;border:1px solid #00000022"></span> white</td><td class="c">#FFFFFF</td>
+            <td class="c"><span class="sw" style="background:#333333;width:22px;height:22px"></span> grey/800</td><td class="c">#333333</td>
+            <td class="c">—</td></tr>
+        <tr><td><code>icon/on-inverse</code> <span class="tag">mint</span></td>
+            <td class="c"><span class="sw" style="background:#FFFFFF;width:22px;height:22px;border:1px solid #00000022"></span> white</td><td class="c">#FFFFFF</td>
+            <td class="c"><span class="sw" style="background:#333333;width:22px;height:22px"></span> grey/800</td><td class="c">#333333</td>
+            <td class="c">matches label</td></tr>
+      </tbody>
+    </table>
+    <div class="note">▸ Tier discipline: <code>action/primary/*</code> (component) → aliases the mono ramp primitives above. Label reuses <code>text/on-inverse</code> (already white/​#333). Only <code>icon/on-inverse</code> is genuinely new. Disabled reuses <code>surface/action-disabled</code> + <code>text/disabled</code> — shared with secondary, no new leaf.</div>
+  </div>
+
+  <h2>Three questions for your ruling</h2>
+
+  <div class="card">
+    <div class="q"><b>Q1 · Dark-mode ground — pure white or off-white?</b> <span class="rec">Proposed: pure <code>#FFFFFF</code> (mono/15)</span> for maximum emphasis. Cost: it trips the dark-surface flatness gate, so it needs a <code>$darkNote</code> exemption (same mechanism <code>border/action-strong</code> already carries) and can bloom slightly against the dark page. Alternative: <code>#FAFAFA</code> (mono/14) — one notch down, no exemption, calmer. Toggle to dark and judge the bloom.</div>
+  </div>
+  <div class="card">
+    <div class="q"><b>Q2 · Light-mode hover — darken to black?</b> Default is already near-black <code>#1A1A1A</code>, so hover can only go one way. <span class="rec">Proposed: darken to <code>#000000</code></span> (mono/1). It's a subtle shift — perceptible but quiet. Alternative: keep the ground and signal hover another way (elevation/opacity), or don't distinguish hover on the primary at all. Hover the live button above to feel it.</div>
+  </div>
+  <div class="card">
+    <div class="q"><b>Q3 · Pressed — lighten, or invert the label?</b> <span class="rec">Proposed: lighten the ground to <code>#313131</code></span> (mono/5), label stays white — a "recede" press, since we can't go darker than default. Alternative: the Legacy-primary behaviour (ground to black + <b>invert</b> the label to dark) — but that's a heavier, more theatrical press. Which reads as "Mono"?</div>
+  </div>
+
+  <div class="foot">Nothing enacted. On your ruling I mint <code>action/primary/{background/default,hover,pressed,disabled}</code> + <code>icon/on-inverse</code> in <code>semantic-colour.json</code> (3-tier, aliasing the ramp), rebind the primary button snippet off Legacy-red onto it, regenerate <code>canon.css</code>, and re-gate — then record the ruling in the token decisions ledger. Contrast figures are label-on-ground, both modes. Sheet v1 · 2026-07-20.</div>
+
+  <script>
+    var tt=document.getElementById('tt'), ml=document.getElementById('modelabel');
+    tt.onclick=function(){var b=document.body,d=b.getAttribute('data-theme')==='dark';b.setAttribute('data-theme',d?'light':'dark');ml.textContent=d?'light':'dark';};
+    // live hover/press on the .live button via inline style swap
+    var lv=document.querySelector('.btn.live');
+    var cs=getComputedStyle(document.body);
+    function pa(n){return getComputedStyle(document.body).getPropertyValue('--pa-'+n).trim();}
+    lv.addEventListener('mouseenter',function(){this.style.background=pa('hover');});
+    lv.addEventListener('mouseleave',function(){this.style.background='';});
+    lv.addEventListener('mousedown',function(){this.style.background=pa('pressed');});
+    lv.addEventListener('mouseup',function(){this.style.background=pa('hover');});
+  </script>
+</body></html>
