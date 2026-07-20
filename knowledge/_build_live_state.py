@@ -112,7 +112,10 @@ def main():
     findings = []  # (severity, check, msg)
 
     # ---- 1. freshness drift ----
-    m = re.search(r"Last refreshed:\s*(\d{4}-\d{2}-\d{2})", md)
+    # tolerate markdown around the date (e.g. bold `**2026-07-20**`): skip any
+    # non-digit chars on the same line between the label and the date (fixes the
+    # long-silent freshness blindness — the stamp is always bolded, 2026-07-20).
+    m = re.search(r"Last refreshed:[^\d\n]*(\d{4}-\d{2}-\d{2})", md)
     stamp = m.group(1) if m else None
     tracked = []
     if os.path.isdir(DECISIONS):
