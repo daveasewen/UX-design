@@ -198,62 +198,65 @@ TTFs to `~/.fonts` + `fc-cache -f`; CSS `font-family:"HSBC_MtUnivers_Latin"`. Fu
 
 ---
 
-# §B · THIS SESSION (2026-07-20, "Style consolidation → four-theme token architecture")
+# §B · THIS SESSION (2026-07-20, evening 3 — "Pre-flight for the Mono alignment sweep")
 
-*Full narrative arc (why/how, the mid-turn corrections): `_DECISION-HISTORY/2026-07-20-style-consolidation-four-themes.md`.*
+*Full narrative arc (why/how, both procedure corrections): `_DECISION-HISTORY/2026-07-20-preflight-mono-sweep.md`.
+The four-theme session that preceded this one: `_DECISION-HISTORY/2026-07-20-style-consolidation-four-themes.md`.*
 
-## What LANDED (commit `a1b9fbb`, build green 37/37)
-- **✅ ADR-0011 — the four themes are now an ARCHITECTURE, not just intent.** Themes = **override sets at the semantic
-  tier**: Apollo Mono = base · Apollo Legacy = populated override (reds/teal/grey ramp) · Apollo Console + Supercharge =
-  **declared nullable slots** (ADR-0010 pattern). Registry `tokens/themes/_themes.json` = single source of truth for
-  hex→theme ownership. **Root cause it fixes:** the semantic store had NO theme dimension (only light/dark), so Legacy
-  red + Mono lived in the same flat roles — the "too loose" cause.
-- **✅ R-D19 — red is THEMED.** Legacy red `#DB0011`/`#A8000B` = Apollo **Legacy only** (CTA, `tabs/active`,
-  `progress/complete`, Legacy error). Apollo **Mono's only red = `#B92F1E`**, status/RAG/dataviz **only**, never
-  action/nav. Any Legacy red in a Mono surface = **drift** (a definition, not a judgement). Source: Dave.
-- **✅ THE RECORD — `knowledge/_STYLE-PROVENANCE.md`** (Dave: "clear record … too loose"). Classifies every artefact by
-  theme-era; scopes library (align) vs `_fitness-test` (exploration=mine · research=preserve · **SME journeys=ignore**).
-  Machine mirror `reviews/_style-clusters.json`.
-- **✅ VISUAL REVIEW SCREEN — `reviews/STYLE-CONSOLIDATION-REVIEW-2026-07-20-v2.html`** (+ overlay copy
-  `…-v2.REVIEW.html`). Per-cluster picker, wrapping grid (no h-scroll), Open↗/⤢-fullscreen per variant, old
-  exploration beside canon. (v1 COMPARE = first cut, superseded — was a horizontal strip Dave rejected.)
-- **✅ ADVISORY GATE — `_validate_theme_provenance.py`** (wired into `_build_all.py`). Flags **hardcoded** foreign-theme
-  hexes in Mono surfaces — the blind spot the token leak gate can't see. First run: **68 across 61 files** →
-  `_THEME-PROVENANCE-GATE.md`. Advisory now; **blocking after migration** (ADR-0011).
+## What LANDED (commits `6af6501` + `4d0716b`, build green 37/37, all pushed) — ZERO canon/token/component edits
+Opened good-morning to run the sweep; Dave's steer ("be careful, I don't want to lose anything" + context discipline)
+turned it into a pre-flight + record-repair. Deliberately no canon edits — the sweep goes to a fresh session.
+- **✅ INTEGRITY — nothing lost.** All 88 round-1→3 consolidation rulings are durable (21 clustered in
+  `reviews/_style-consolidation-decisions-2026-07-20.json`; 20 singletons in the generator's `SINGLETON_RULINGS`).
+  Authoritative **align = 39** = 27 snippets + 1 `_review` (reconciled tab/stepper) + 11 `_proforma`.
+- **✅ THE RECORD DE-RISKED — `knowledge/_STYLE-PROVENANCE.md` §A-AUTH.** The mid-doc pre-round-3 "backlog A" was
+  STALE — it named Hero/Navigations/Progress-tracker/Tabs as align targets (round 3 **archived** all four) and listed
+  Notifications (which is keep-legacy: its `#A8000B` is *correct* Legacy red). Marked it superseded (struck-through,
+  kept for audit); wrote **§A-AUTH** = the authoritative 39-item align list + DO-NOT-ALIGN (5 archived) + DO-NOT-CONVERT
+  (Notifications) + per-item drift type. Machine source of truth = the generator + JSON.
+- **✅ STATE-MANAGER FIX — the freshness-drift check can read the stamp again** (`_build_live_state.py`, `4d0716b`).
+  Its regex expected a bare date, but every `Last refreshed:` stamp is bolded (`**2026-07-20**`), so the drift-catcher
+  had been silently blind for multiple sessions. One-line fix (`[^\d\n]*` before the date); verified it still fires on a
+  genuinely stale stamp. `_LIVE-STATE-CHECK.md`: 1 warning → 0 (2 pre-existing info notes remain).
 
-## What I got wrong (see the dossier)
-Offered shallow itinerary picks at the open ("dig deeper"). Over-corrected `_fitness-test` to "all test pages" — Dave:
-"there's good work in there" (it's exploration + research + journeys, not one bin). Shipped v1 as a horizontal-scroll
-strip before Dave asked for a real review screen. And the raw drift scan over-reported twice (counted comment/manifest
-hexes + the *ruled* Mono red) — fixed by stripping comments + excluding ruled colours before judging ([[attribute-the-diff]]).
+## What I got wrong (both caught by Dave — see the dossier)
+Improvised git — and misdiagnosed the delete-guard's 0-byte `index.lock` as "GitHub Desktop is open" — instead of running
+`_RUNBOOK-git-commit.md`; hand-rolled the handoff instead of running `_RUNBOOK-capture-ritual.md`. Same failure:
+reconstructing a *procedure* from memory hooks — the "context rot" Dave flags. Corrected: re-read both runbooks and ran
+them by the book. New memory `feedback-read-the-runbook` (read the runbook, not the hook).
 
 ---
 
 # §C · QUEUE
 
-## 1. ★ RULE THE CLUSTERS + the two owed Mono values (start here)
-Open the review screen (overlay) `reviews/STYLE-CONSOLIDATION-REVIEW-2026-07-20-v2.REVIEW.html` and rule each duplicate
-cluster keep/migrate/archive. Then the **two rulings owed** so the gate can go blocking: **Mono values for
-`tabs/active` + `progress/complete`** — both only ever held Legacy red, and Mono ≠ red (R-D19), so each needs its own
-value (ink indicator? green?) before its Legacy red can be seeded. **Opus** (token-precise). Full context:
-`knowledge/_STYLE-PROVENANCE.md` §backlog.
+## 1. ★ Mono-alignment sweep — teal→green FIRST (Sonnet, cold start; read `_STYLE-PROVENANCE.md` §A-AUTH)
+The 88-component consolidation is RULED (align = 39) — clusters no longer need ruling. Start the sweep:
+**(a) teal→green** — Masthead + `Tranche-2…9` (T1 has none): `#00847F` success → Mono `rag/success-glyph #4A9568`
+(dark ground), **prefer tokenising over a hardcode**. ⚠️ **OPEN sub-decision, don't blind-swap:** the `#i-success` SVG
+is a filled circle with a WHITE tick — under **type26-013** it likely becomes BLACK (cf. `on-success`=black); rule it
+(one-control tuner) before touching the tick. **(b) grey inks** (`Avatar`,`Quick-actions`)→`color/mono/*` **via the
+grey-tint check** (surface numbers to Dave FIRST — never auto-swap). **(c) regenerate** `_review` copies
+(`_make_review.py`). **DO NOT ALIGN** the 5 archived files (Hero, Navigations, Progress-tracker, Tab-bar, Tabs,
++`_proforma/Icon-button`); **DO NOT CONVERT** Notifications (its `#A8000B` is correct Legacy red).
 
-## 2. Mono-alignment sweep (Sonnet, against ADR-0011)
-Re-home the drift: **19 snippets** (mostly bare `rag/error` red + a few grey inks) + **12 proforma tranches**
-(pre-R-D18 teal + Legacy red) onto Mono values; then **regenerate the `_review` copies** (`_make_review.py`) since
-they're derivative. Then flip `_validate_theme_provenance.py` to **blocking**. Ties to §3 (RAG roles).
+## 2. The red tuner + the two owed Mono values (Dave-in-the-loop — R-D19, feedback-live-controller)
+ALL red is HELD until ruled on a live tuner: bare `rag/error` (Mono `#B92F1E`, rebinds with error/warning/info per
+R-D17) + the two owed Mono values `tabs/active` + `progress/complete` (each needs its own **non-red** Mono value — ink?
+green?). Only after red is ruled → flip `_validate_theme_provenance.py` to **blocking**.
 
 ## 3. RAG error/warning/info roles — still Legacy-drifted (R-D17, unchanged)
 Bare `rag/error` (`#A8000B`/`#DB0011`), `rag/warning` (`#FFBB33`), `rag/information` (navy) still resolve Legacy; R-D14
-values live in their `-background`/`-glyph` tokens. Rule the sets on a tuner → rebind → these become Mono overrides.
-**Needed before Alert / Banner / Toast.** This is the same work as §2's snippet red.
+values live in their `-background`/`-glyph` tokens. Rule the sets on the §2 tuner → rebind → these become Mono overrides.
+**Needed before Alert / Banner / Toast.** Same work as §2's red.
 
 ## 4. Parked / carry-forward
-Console + Supercharge override sets (fill their null slots when palettes ruled). **T9 secure entry** awaits review.
-**Sutherland field test** (ADR-0008 #1). **`designer-skills-v1`** revisit. Full-review backlog (`_REVIEW-SIGNOFF.md`).
-Parked (`_FUTURE-STATE`): broader colour/theming, Apollo Labs tuners, bulk type-binding.
+**Duplicate-dedup pass** (relocate the archived files out of Mono scope so the gate stops scanning them). Console +
+Supercharge override sets (fill null slots when palettes ruled). **T9 secure entry** awaits review. **Sutherland field
+test** (ADR-0008 #1). **`designer-skills-v1`** revisit. Full-review backlog (`_REVIEW-SIGNOFF.md`). Parked
+(`_FUTURE-STATE`): broader colour/theming, Apollo Labs tuners, bulk type-binding.
 
-> **COMMIT STATE.** **✅ `a1b9fbb`** (four-theme architecture + R-D19 + record + review + advisory gate, 13 files, build
-> green 37/37). **NOT yet pushed — Dave pushes via GitHub Desktop.** A capture-ritual follow-up commit (this handoff +
-> dossier + `_LIVE-STATE` refresh line + the v2.REVIEW overlay copy) is the second small commit — **fold both into one
-> push.** **Next session model: Opus** for the two Mono-value rulings; the alignment sweep (§2) is Sonnet.
+> **COMMIT STATE.** **✅ ALL PUSHED — HEAD `4d0716b`, 0 ahead / 0 behind, tree clean.** This session =
+> `6af6501` (pre-flight + capture ritual, record de-risked §A-AUTH, dossier, handoff) + `4d0716b` (state-manager
+> freshness-check fix). Build green 37/37. Two pre-existing info notes remain in `_LIVE-STATE-CHECK.md` (a
+> `_NEXT-SESSION.md` dead-artifact mention + one orphan supersession edge) — tidy when convenient, not blocking.
+> **Next session model: Sonnet** for the teal→green sweep; the red tuner (§2) is Dave-in-the-loop.
