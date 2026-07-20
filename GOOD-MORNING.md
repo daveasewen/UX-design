@@ -1,5 +1,30 @@
 # Good morning, Dave ☕
 
+> ## ★ LATEST — 2026-07-20 (evening 4): a bad-day non-start. READ THIS FIRST, it supersedes the two names below.
+> **RENAME THIS CHAT →** `Bad-day non-start — Mono teal→green sweep MAPPED (non-uniform) + captured; 0 files edited, go fresh`
+> **NEXT (fresh) CHAT TITLE →** `Mono teal→green sweep (Sonnet) — run the verified map: --success vars ×9 + migrate T2–5 badge; reds held`
+>
+> This morning's session flailed instead of running the sweep — I mined competing greens from the decision
+> **prose** (`#6AB887` R-D13 vs `#2B7E4F`/`#5DAC7B` in the store) instead of trusting the **Mono spine** (the
+> token store IS Apollo Mono, the base). Dave restated the architecture repeatedly; we agreed to capture + go
+> fresh. **Nothing was edited — clean tree, HEAD `dc41468`.**
+>
+> ★ **The one durable rule this cost us: TRUST THE SPINE, DON'T MINE THE PROSE.** The DTCG token store,
+> resolved under the active theme (= Apollo Mono base), is the single source of truth. The ingested-Legacy
+> decision docs carry competing/dead values (the ingest tokenisation is rubbish) — retrieval, not recall.
+>
+> ★ **The verified sweep map + the full failure narrative:
+> `_DECISION-HISTORY/2026-07-20-mono-sweep-map-and-bad-day.md`.** In brief for the fresh session: 9 `_proforma`
+> files (Masthead + T2–9; **T1 has none**). **All 9:** `--success` var teal→ light `#2B7E4F` / dark `#4A9568`;
+> `--success-t`→ `#DCEDE3` / `#12291D`. **T2–5 ONLY:** migrate the `#i-success` symbol from hardcoded
+> `circle #00847F + white tick` to the newer sibling pattern `circle currentColor + path style="fill:var(--mark)"`
+> (T6–9 + Masthead already done). Reds / warning / info **HELD** (red tuner). Then regen `_review` via
+> `_make_review.py` + `_build_all.py` green (gate teal → 0). Sonnet-tier once the map's in hand.
+> **Spine flag (separate, not the sweep):** `text/on-success` = `color/black` should be `color/mono/4`
+> (`#1A1A1A`) digital black.
+
+---
+
 *Briefing — refreshed 2026-07-20 ~18:35 BST (date from `date`), session
 **"Style consolidation → four-theme token architecture"** — opened as good-morning, became the consolidation of
 `snippets`/`_proforma`/`_review`/`_fitness-test` onto Apollo Mono. The pivot: **the token store had no theme
