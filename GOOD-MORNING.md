@@ -232,9 +232,10 @@ The REST of the store is still 2-tier (components alias primitives) — migrate 
 type-binding, compliance edges, Latin webfont. Earlier open items: §1 RAG manifestation pick + status-component
 build · amber rules gate · component RAG rebind (blast-radius).
 
-> **COMMIT STATE.** Prior sessions' commits are already pushed (`ded4900` button ladder, `200c2ec` canonical-core
-> first-principle note). **THIS session's wrap commit (docs/handoff only, build GREEN):**
-> `docs/decisions/ADR-0008-canonical-core-and-adapters.md`, `GOOD-MORNING.md`, `_LIVE-STATE.md` (+ memory files,
-> outside the repo). No gated-code change. **You push via GitHub Desktop.**
+> **COMMIT STATE.** **✅ committed `24d1331` + PUSHED** — `docs/decisions/ADR-0008-canonical-core-and-adapters.md`,
+> `GOOD-MORNING.md`, `_LIVE-STATE.md` + two regenerated build artifacts (`_LIVE-STATE-CHECK.md` now 8 ADRs,
+> `_consult-index.json`). Build GREEN 35/35, STAND-002 reachable, no gated-code change. Memory files updated
+> outside the repo (compaction + ADR pointer). A tiny capture-ritual follow-up commit (this commit-state stamp +
+> the `_LIVE-STATE` refreshed line) may sit uncommitted — fold it into the next push.
 > **Next session model: Opus** for the Sutherland field test / mono-primary ruling; the `designer-skills-v1`
 > revisit can be Sonnet.
