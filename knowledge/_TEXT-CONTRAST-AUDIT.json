@@ -4,14 +4,25 @@
   "default_dark_surface": "#1A1A1A",
   "raised_dark_surface": "#1D1D1D",
   "totals": {
-    "text_icon_tokens": 10,
-    "ok": 8,
-    "allowed_exceptions": 2,
+    "text_icon_tokens": 16,
+    "ok": 13,
+    "allowed_exceptions": 3,
     "poor_contrast": 0,
-    "skipped_light_only": 2
+    "skipped_light_only": 3
   },
   "poor_contrast": [],
   "allowed_exceptions": [
+    {
+      "token": "button/secondary/label/disabled",
+      "dark_value": "#808080",
+      "surface": "#B7B7B7",
+      "surface_label": "button/secondary",
+      "contrast_ratio": 1.97,
+      "threshold": 3.0,
+      "context": "ui",
+      "status": "ALLOWED",
+      "allowlist_reason": "Disabled button label — exempt from WCAG 1.4.3 (inactive UI component)."
+    },
     {
       "token": "tertiary/text/disabled",
       "dark_value": "#808080",
@@ -42,12 +53,83 @@
       "reason": "light-mode-only (on-light); excluded from dark audit"
     },
     {
+      "token": "text/on-action",
+      "dark_value": "#000000",
+      "reason": "sits ONLY on surface/action (button/secondary fill), never the page/raised ground; validated per-component via button/secondary/label/default (10.47:1 dark) — same shape as text/on-inverse above"
+    },
+    {
       "token": "text/on-inverse",
       "dark_value": "#333333",
       "reason": "sits on an inverting surface (secondary/pressed buttons), not the page; validated per-component via snippet contrast pairs"
     }
   ],
   "tokens": {
+    "button/quaternary/label/default": {
+      "token": "button/quaternary/label/default",
+      "dark_value": "#FFFFFF",
+      "surface": "#232323",
+      "surface_label": "button/quaternary",
+      "contrast_ratio": 15.72,
+      "threshold": 3.0,
+      "context": "ui",
+      "status": "OK",
+      "allowlist_reason": null
+    },
+    "button/quaternary/label/disabled": {
+      "token": "button/quaternary/label/disabled",
+      "dark_value": "#808080",
+      "surface": "#232323",
+      "surface_label": "button/quaternary",
+      "contrast_ratio": 3.98,
+      "threshold": 3.0,
+      "context": "ui",
+      "status": "OK",
+      "allowlist_reason": null
+    },
+    "button/secondary/label/default": {
+      "token": "button/secondary/label/default",
+      "dark_value": "#000000",
+      "surface": "#B7B7B7",
+      "surface_label": "button/secondary",
+      "contrast_ratio": 10.47,
+      "threshold": 3.0,
+      "context": "ui",
+      "status": "OK",
+      "allowlist_reason": null
+    },
+    "button/secondary/label/disabled": {
+      "token": "button/secondary/label/disabled",
+      "dark_value": "#808080",
+      "surface": "#B7B7B7",
+      "surface_label": "button/secondary",
+      "contrast_ratio": 1.97,
+      "threshold": 3.0,
+      "context": "ui",
+      "status": "ALLOWED",
+      "allowlist_reason": "Disabled button label — exempt from WCAG 1.4.3 (inactive UI component)."
+    },
+    "button/tertiary/label/default": {
+      "token": "button/tertiary/label/default",
+      "dark_value": "#FFFFFF",
+      "surface": "#232323",
+      "surface_label": "button/tertiary",
+      "contrast_ratio": 15.72,
+      "threshold": 3.0,
+      "context": "ui",
+      "status": "OK",
+      "allowlist_reason": null
+    },
+    "button/tertiary/label/disabled": {
+      "token": "button/tertiary/label/disabled",
+      "dark_value": "#808080",
+      "surface": "#232323",
+      "surface_label": "button/tertiary",
+      "contrast_ratio": 3.98,
+      "threshold": 3.0,
+      "context": "ui",
+      "status": "OK",
+      "allowlist_reason": null
+    },
     "icon/default": {
       "token": "icon/default",
       "dark_value": "#FFFFFF",

@@ -62,6 +62,23 @@
         "light": "color/mono/8",
         "dark": "color/grey/dark-mode/200"
       }
+    },
+    "action-strong": {
+      "light": {
+        "$value": "#1A1A1A",
+        "$type": "color"
+      },
+      "dark": {
+        "$value": "#FFFFFF",
+        "$type": "color"
+      },
+      "$alias": {
+        "light": "color/mono/4",
+        "dark": "color/white"
+      },
+      "$note": "Digi-black outline in light, white in dark — matches the Mono ladder's mode-inverting surfaces (cf. surface/action). 17.4:1 against surface/action-derived grounds both modes. Distinct from border/strong (#808080/#808080) — that token serves a different, non-inverting use.",
+      "$darkNote": "INTENTIONAL inversion: the outline-button border is white on dark (light=#1A1A1A digi-black), matching the Mono ladder's mode-inverting surfaces (cf. surface/action). Not a flat-white defect — it's a 1px border, not a fill; 17.4:1 against background/default both modes. Mirrors button/tertiary/border/default, which this token now backs.",
+      "$description": "Semantic middle layer for button/tertiary outline border — 2026-07-20 three-tier insert."
     }
   },
   "divider": {
@@ -695,6 +712,119 @@
       }
     }
   },
+  "button": {
+    "$description": "DEDICATED button-ladder tokens (Dave, 2026-07-19: 'look at the tokens in the canon for inspiration' — mirrors the surface/secondary/tertiary DTCG shape). Apollo Mono's button ladder is secondary (grey filled) / tertiary (outline) / quaternary (undecorated text) — there is NO button/primary here: red primary is Apollo LEGACY only, parked. Added as a NEW group rather than recolouring the existing secondary/* and tertiary/* tokens, which are OVERLOADED: secondary/background is also the checkbox/radio/tab-bar CHECKED fill, and tertiary/background is SURFACES (aliased to surface/raised, used by cards/modals/panels/slider). Recolouring either would have broken those other consumers. All values a11y-verified and ruled by Dave — do not invent, round, or adjust. 2026-07-20: re-pointed onto the semantic middle layer (surface/action*, text/on-action, border/action-strong) so button/* is a proper three-tier stack (component → semantic → primitive, _STANDARDS.md §1) instead of aliasing primitives directly. Non-disabled resolved values are UNCHANGED by this pass. Disabled leaves (contrast-exempt per WCAG spec) were re-pointed onto the pre-existing text/disabled and border/subtle semantics and now carry those semantics' resolved values — a small, deliberate value shift on 4 disabled leaves only; see notes on each.",
+    "secondary": {
+      "background": {
+        "default": {
+          "light": { "$value": "#626262", "$type": "color" },
+          "dark": { "$value": "#808080", "$type": "color" },
+          "$alias": { "light": "surface/action", "dark": "surface/action" }
+        },
+        "hover": {
+          "light": { "$value": "#484848", "$type": "color" },
+          "dark": { "$value": "#9D9D9D", "$type": "color" },
+          "$alias": { "light": "surface/action-hover", "dark": "surface/action-hover" }
+        },
+        "pressed": {
+          "light": { "$value": "#313131", "$type": "color" },
+          "dark": { "$value": "#B7B7B7", "$type": "color" },
+          "$alias": { "light": "surface/action-pressed", "dark": "surface/action-pressed" }
+        },
+        "disabled": {
+          "light": { "$value": "#E1E1E1", "$type": "color" },
+          "dark": { "$value": "#484848", "$type": "color" },
+          "$alias": { "light": "surface/action-disabled", "dark": "surface/action-disabled" },
+          "$note": "Disabled — contrast-exempt per WCAG spec."
+        }
+      },
+      "label": {
+        "default": {
+          "light": { "$value": "#FFFFFF", "$type": "color" },
+          "dark": { "$value": "#000000", "$type": "color" },
+          "$alias": { "light": "text/on-action", "dark": "text/on-action" },
+          "$note": "INTENTIONAL PER-MODE FLIP, not a bug: white label on the light-mode grey fill, black label on the dark-mode grey fill. Verified 6.1:1 (light) / 5.32:1 (dark) against button/secondary/background/default."
+        },
+        "disabled": {
+          "light": { "$value": "#E1E1E1", "$type": "color" },
+          "dark": { "$value": "#808080", "$type": "color" },
+          "$alias": { "light": "text/disabled", "dark": "text/disabled" },
+          "$note": "Disabled — contrast-exempt per WCAG spec. 2026-07-20: re-pointed onto the existing text/disabled semantic (was a bespoke mono/9 #9D9D9D in light); light value now #E1E1E1 to match. Contrast-exempt so no accessibility impact."
+        }
+      }
+    },
+    "tertiary": {
+      "background": {
+        "default": {
+          "light": { "$value": "#FFFFFF00", "$type": "color" },
+          "dark": { "$value": "#FFFFFF00", "$type": "color" },
+          "$alias": { "light": "surface/transparent", "dark": "surface/transparent" },
+          "$note": "Outline button: transparent interior, shows the ground."
+        },
+        "hover": {
+          "light": { "$value": "#F0F0F0", "$type": "color" },
+          "dark": { "$value": "#232323", "$type": "color" },
+          "$alias": { "light": "surface/raised-hover", "dark": "surface/raised-hover" }
+        }
+      },
+      "border": {
+        "default": {
+          "light": { "$value": "#1A1A1A", "$type": "color" },
+          "dark": { "$value": "#FFFFFF", "$type": "color" },
+          "$alias": { "light": "border/action-strong", "dark": "border/action-strong" },
+          "$note": "Digi-black outline in light, white in dark. Verified 17.4:1 against background/default both modes.",
+          "$darkNote": "INTENTIONAL inversion: the tertiary/outline button border is white on dark (light=#1A1A1A digi-black), matching the Mono ladder's mode-inverting surfaces (cf. secondary/background). Not a flat-white defect — it's a 1px border, not a fill; 17.4:1 against background/default both modes."
+        },
+        "disabled": {
+          "light": { "$value": "#E1E1E1", "$type": "color" },
+          "dark": { "$value": "#808080", "$type": "color" },
+          "$alias": { "light": "border/subtle", "dark": "border/subtle" },
+          "$note": "Disabled — contrast-exempt per WCAG spec. 2026-07-20: re-pointed onto the existing border/subtle semantic (was a bespoke mono/6 #484848 in dark); dark value now #808080 to match. Contrast-exempt so no accessibility impact."
+        }
+      },
+      "label": {
+        "default": {
+          "light": { "$value": "#1A1A1A", "$type": "color" },
+          "dark": { "$value": "#FFFFFF", "$type": "color" },
+          "$alias": { "light": "text/default", "dark": "text/default" }
+        },
+        "disabled": {
+          "light": { "$value": "#E1E1E1", "$type": "color" },
+          "dark": { "$value": "#808080", "$type": "color" },
+          "$alias": { "light": "text/disabled", "dark": "text/disabled" },
+          "$note": "Disabled — contrast-exempt per WCAG spec. 2026-07-20: re-pointed onto the existing text/disabled semantic (was a bespoke mono/10 #B7B7B7 in light); light value now #E1E1E1 to match. Contrast-exempt so no accessibility impact."
+        }
+      }
+    },
+    "quaternary": {
+      "background": {
+        "default": {
+          "light": { "$value": "#FFFFFF00", "$type": "color" },
+          "dark": { "$value": "#FFFFFF00", "$type": "color" },
+          "$alias": { "light": "surface/transparent", "dark": "surface/transparent" },
+          "$note": "Undecorated text button: transparent interior, shows the ground."
+        },
+        "hover": {
+          "light": { "$value": "#F0F0F0", "$type": "color" },
+          "dark": { "$value": "#232323", "$type": "color" },
+          "$alias": { "light": "surface/raised-hover", "dark": "surface/raised-hover" }
+        }
+      },
+      "label": {
+        "default": {
+          "light": { "$value": "#1A1A1A", "$type": "color" },
+          "dark": { "$value": "#FFFFFF", "$type": "color" },
+          "$alias": { "light": "text/default", "dark": "text/default" }
+        },
+        "disabled": {
+          "light": { "$value": "#E1E1E1", "$type": "color" },
+          "dark": { "$value": "#808080", "$type": "color" },
+          "$alias": { "light": "text/disabled", "dark": "text/disabled" },
+          "$note": "Disabled — contrast-exempt per WCAG spec. 2026-07-20: re-pointed onto the existing text/disabled semantic (was a bespoke mono/10 #B7B7B7 in light); light value now #E1E1E1 to match. Contrast-exempt so no accessibility impact."
+        }
+      }
+    }
+  },
   "secondary": {
     "background": {
       "default": {
@@ -1139,6 +1269,22 @@
         "light": "color/mono/12",
         "dark": "color/mono/8"
       }
+    },
+    "on-action": {
+      "light": {
+        "$value": "#FFFFFF",
+        "$type": "color"
+      },
+      "dark": {
+        "$value": "#000000",
+        "$type": "color"
+      },
+      "$alias": {
+        "light": "color/white",
+        "dark": "color/black"
+      },
+      "$note": "INTENTIONAL PER-MODE FLIP, not a bug: white label on the light-mode grey fill, black label on the dark-mode grey fill. Verified 6.1:1 (light) / 5.32:1 (dark) against surface/action. Distinct from text/on-inverse (dark #333333) — that token serves a different set of inverting surfaces; do not collapse the two.",
+      "$description": "Semantic middle layer for button/secondary label — 2026-07-20 three-tier insert."
     },
     "on-inverse": {
       "light": {
@@ -2039,6 +2185,82 @@
         "light": "color/mono/13",
         "dark": "color/mono/raise-2"
       }
+    },
+    "action": {
+      "light": {
+        "$value": "#626262",
+        "$type": "color"
+      },
+      "dark": {
+        "$value": "#808080",
+        "$type": "color"
+      },
+      "$alias": {
+        "light": "color/mono/7",
+        "dark": "color/mono/8"
+      },
+      "$description": "Semantic middle layer for the button/secondary filled ground (2026-07-20 three-tier insert — _STANDARDS.md §1). Same resolved values as the prior direct-to-primitive button/secondary/background/default alias; only the reference chain changed."
+    },
+    "action-hover": {
+      "light": {
+        "$value": "#484848",
+        "$type": "color"
+      },
+      "dark": {
+        "$value": "#9D9D9D",
+        "$type": "color"
+      },
+      "$alias": {
+        "light": "color/mono/6",
+        "dark": "color/mono/9"
+      },
+      "$description": "Semantic middle layer for the button/secondary filled hover ground (2026-07-20 three-tier insert)."
+    },
+    "action-pressed": {
+      "light": {
+        "$value": "#313131",
+        "$type": "color"
+      },
+      "dark": {
+        "$value": "#B7B7B7",
+        "$type": "color"
+      },
+      "$alias": {
+        "light": "color/mono/5",
+        "dark": "color/mono/10"
+      },
+      "$description": "Semantic middle layer for the button/secondary filled pressed ground (2026-07-20 three-tier insert)."
+    },
+    "action-disabled": {
+      "light": {
+        "$value": "#E1E1E1",
+        "$type": "color"
+      },
+      "dark": {
+        "$value": "#484848",
+        "$type": "color"
+      },
+      "$alias": {
+        "light": "color/mono/12",
+        "dark": "color/mono/6"
+      },
+      "$note": "Disabled — contrast-exempt per WCAG spec.",
+      "$description": "Semantic middle layer for the button/secondary filled disabled ground (2026-07-20 three-tier insert)."
+    },
+    "transparent": {
+      "light": {
+        "$value": "#FFFFFF00",
+        "$type": "color"
+      },
+      "dark": {
+        "$value": "#FFFFFF00",
+        "$type": "color"
+      },
+      "$alias": {
+        "light": "color/grey/transparent/white-0",
+        "dark": "color/grey/transparent/white-0"
+      },
+      "$description": "Semantic middle layer for outline/undecorated button interiors (tertiary, quaternary) — shows the ground beneath. 2026-07-20 three-tier insert."
     }
   }
 }

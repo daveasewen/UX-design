@@ -22,6 +22,12 @@ SEM = json.load(open(os.path.join(ROOT, "tokens", "semantic-colour.json")))
 
 # --- the three-tier migrated set (STRICT). Grow this as the store migrates. ---
 SEMANTIC_ELEVATION = ["surface/raised", "surface/subtle", "surface/raised-hover"]
+# button/* three-tier insert (2026-07-20): the semantic middle layer added under surface/*, text/*,
+# border/* so button/secondary/tertiary/quaternary stop aliasing primitives directly.
+SEMANTIC_ACTION = [
+    "surface/action", "surface/action-hover", "surface/action-pressed", "surface/action-disabled",
+    "surface/transparent", "text/on-action", "border/action-strong",
+]
 COMPONENTS_ON_SEMANTIC = {
     "tertiary/background/default": "surface/raised",
     "tertiary/background/hover": "surface/raised-hover",
@@ -32,8 +38,24 @@ COMPONENTS_ON_SEMANTIC = {
     "table/column/background": "surface/subtle",
     "scrollbar/background": "surface/subtle",
     "form/background/hover": "surface/raised-hover",
+    "button/secondary/background/default": "surface/action",
+    "button/secondary/background/hover": "surface/action-hover",
+    "button/secondary/background/pressed": "surface/action-pressed",
+    "button/secondary/background/disabled": "surface/action-disabled",
+    "button/secondary/label/default": "text/on-action",
+    "button/secondary/label/disabled": "text/disabled",
+    "button/tertiary/background/default": "surface/transparent",
+    "button/tertiary/background/hover": "surface/raised-hover",
+    "button/tertiary/border/default": "border/action-strong",
+    "button/tertiary/border/disabled": "border/subtle",
+    "button/tertiary/label/default": "text/default",
+    "button/tertiary/label/disabled": "text/disabled",
+    "button/quaternary/background/default": "surface/transparent",
+    "button/quaternary/background/hover": "surface/raised-hover",
+    "button/quaternary/label/default": "text/default",
+    "button/quaternary/label/disabled": "text/disabled",
 }
-MIGRATED = set(SEMANTIC_ELEVATION) | set(COMPONENTS_ON_SEMANTIC)
+MIGRATED = set(SEMANTIC_ELEVATION) | set(SEMANTIC_ACTION) | set(COMPONENTS_ON_SEMANTIC)
 
 
 def node_at(path):
@@ -113,7 +135,7 @@ for path, n in hits:
                     strict_fail.append(f"{path} ({mode}): component references a PRIMITIVE '{tgt}' — must reference a semantic token")
                 elif tgt != COMPONENTS_ON_SEMANTIC[path]:
                     strict_fail.append(f"{path} ({mode}): expected semantic '{COMPONENTS_ON_SEMANTIC[path]}', found '{tgt}'")
-            elif path in SEMANTIC_ELEVATION and not tgt.startswith("color/"):
+            elif path in (SEMANTIC_ELEVATION + SEMANTIC_ACTION) and not tgt.startswith("color/"):
                 strict_fail.append(f"{path} ({mode}): semantic token must reference a PRIMITIVE, found '{tgt}'")
 
 # primitives exist

@@ -18,13 +18,13 @@
   [data-theme="light"]{
     --page:#FFFFFF; --raised:#FFFFFF; --ink:#1A1A1A; --ink2:#1A1A1A; --disi:#E1E1E1; --line:#E1E1E1; --line2:#F0F0F0;
     --surf:#F0F0F0; --fbord:#808080; --fborda:#000000; --fbordd:#E1E1E1;
-    --pri:#1A1A1A; --pri-h:#000000; --pri-lbl:#FFFFFF; --icon:#1A1A1A; --icon-rev:#FFFFFF; --focus:#305A85;
+    --pri:#626262; --pri-h:#484848; --pri-lbl:#FFFFFF; --icon:#1A1A1A; --icon-rev:#FFFFFF; --ter-border:#1A1A1A; --focus:#305A85;
     --err:#A8000B; --err-t:#F9F2F3; --scrim:#00000080; --shadow:#00000033;
   }
   [data-theme="dark"]{
     --page:#1A1A1A; --raised:#1F1F1F; --ink:#FFFFFF; --ink2:#FFFFFF; --disi:#808080; --line:#808080; --line2:#808080;
     --surf:#1F1F1F; --fbord:#808080; --fborda:#FFFFFF; --fbordd:#484848;
-    --pri:#FFFFFF; --pri-h:#FFFFFF; --pri-lbl:#1A1A1A; --icon:#FFFFFF; --icon-rev:#1A1A1A; --focus:#4587A7;
+    --pri:#808080; --pri-h:#9D9D9D; --pri-lbl:#000000; --icon:#FFFFFF; --icon-rev:#000000; --ter-border:#FFFFFF; --focus:#4587A7;
     --err:#DB0011; --err-t:#260005; --scrim:#00000080; --shadow:#000000D9;
   }
   *{box-sizing:border-box;}
@@ -55,7 +55,7 @@
   .btn:active{transform:scale(var(--btn-press)); filter:brightness(.85); transition:transform var(--press), filter var(--press);}
   .btn:disabled:hover,.btn[aria-disabled="true"]:hover{transform:none; filter:none;}
   .btn.pri{background:var(--pri); color:var(--pri-lbl); border-color:var(--pri);} .btn.pri:hover{background:var(--pri-h); border-color:var(--pri-h);}
-  .btn.ghost{background:transparent; color:var(--ink); border-color:var(--line);} .btn.ghost:hover{background:var(--surf); border-color:var(--ink);}
+  .btn.ghost{background:transparent; color:var(--ink); border-color:var(--ter-border);} .btn.ghost:hover{background:var(--surf); border-color:var(--ink);}
 
   .ib{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;padding:0;border:var(--bw-sm) solid transparent;border-radius:var(--radius);
     background:transparent;cursor:pointer;transition:background var(--ease),transform var(--spring),filter var(--press),border-color var(--ease);}
@@ -65,7 +65,7 @@
   .ib:disabled{cursor:not-allowed;} .ib:disabled:hover{transform:none;filter:none;}
   .ib.pri{background:var(--pri);color:var(--icon-rev);border-color:var(--pri);} .ib.pri:hover{background:var(--pri-h);}
   .ib.sec{background:var(--pri);color:var(--icon-rev);border-color:var(--pri);}
-  .ib.ter{background:transparent;color:var(--icon);border-color:var(--line);} .ib.ter:hover{background:var(--surf);border-color:var(--ink);}
+  .ib.ter{background:transparent;color:var(--icon);border-color:var(--ter-border);} .ib.ter:hover{background:var(--surf);border-color:var(--ink);}
   .ib.ghost{background:transparent;color:var(--icon);} .ib.ghost:hover{background:var(--surf);}
   .ib:disabled{background:var(--surf);color:var(--disi);border-color:var(--fbordd);}
   .ib.ghost:disabled{background:transparent;}
@@ -254,7 +254,7 @@
   <script type="application/json" id="icon-manifest">{"source": "knowledge/assets/icons", "icons": {"i-add": "global-controls/add.svg", "i-dl": "global-controls/download.svg", "i-edit": "global-controls/edit.svg", "i-search": "global-controls/search.svg", "i-trash": "global-controls/delete.svg", "i-star": "global-controls/favourite-star.svg", "i-star-fill": "global-controls/favourite-star-active.svg", "i-close": "global-controls/close.svg", "i-check": "status-icons/yes.svg", "i-txn": "products-and-services/transaction-history.svg", "i-error": "status-icons/error.svg"}}</script>
   <script type="application/json" id="token-manifest">
 {
-  "component": "Apollo pro-forma — Tranche 1 (interactive)",
+  "component": "Apollo pro-forma \u2014 Tranche 1 (interactive)",
   "type": "pro-forma tranche",
   "vars": {
     "--page": "background/default",
@@ -268,24 +268,44 @@
     "--fbord": "form/border/default",
     "--fborda": "form/border/active",
     "--fbordd": "form/border/disabled",
-    "--pri": "text/default",
+    "--pri": "button/secondary/background/default",
     "--icon": "icon/default",
     "--focus": "focus/ring",
     "--scrim": "overlay/version1",
     "--shadow": "elevation/functional",
     "--err": "rag/error",
-    "--err-t": "rag/error-tint"
+    "--err-t": "rag/error-tint",
+    "--pri-h": "button/secondary/background/hover",
+    "--pri-lbl": "button/secondary/label/default",
+    "--icon-rev": "button/secondary/label/default",
+    "--ter-border": "button/tertiary/border/default"
   },
   "knownFindings": [
-    "GAP (no semantic token yet): the mono PRIMARY-ACTION surface (--pri/--pri-h/--pri-lbl) and its icon twin (--icon-rev) have no dedicated action/primary/* tokens. --pri is bound to text/default (light #1A1A1A exact match; dark #FFFFFF vs prior literal #F2F2F2, slightly brighter near-white) as the brief's suggested interim. --pri-h has no token (brief said leave literal) and stays a local literal.",
-    "DEVIATION (proven, not a judgment call): --pri-lbl was NOT bound to the brief's suggested text/reverse. text/reverse resolves flat #FFFFFF in BOTH modes, but --pri (the surface --pri-lbl sits on) INVERTS lightness by mode (near-black bg in light theme, near-white bg in dark theme). Binding would put #FFFFFF label text on a #FFFFFF-resolved dark-mode button = 1.0:1 contrast, i.e. the label vanishes. Checked with WCAG relative-luminance maths. Left as the existing literal (light #FFFFFF / dark #1A1A1A, 17.4:1) pending a ruling. Candidate: token store's own text/on-inverse (light #FFFFFF / dark #333333, 12.6:1) is purpose-built for exactly 'labels on surfaces whose lightness inverts between modes' per its own $note, which explicitly names this failure mode.",
-    "DEVIATION (same landmine, found by inspection): --icon-rev was on the brief's CLEAN list as icon/default-reverse, but that token is ALSO flat #FFFFFF both modes, and --icon-rev is used exclusively as the icon colour on the SAME --pri surface (.ib.pri, .ib.sec, checkbox indeterminate fill, back-to-top button, active floating tab) — identical 1.0:1 dark-mode break. No icon/on-inverse token exists in the store. Left as the existing literal (light #FFFFFF / dark #1A1A1A); flagging as a genuine store gap alongside --pri-lbl, likely resolved together.",
-    "FLAG (near, not exact, per brief) --disi -> text/disabled: shifts lighter (light #B7B7B7->#E1E1E1, dark #767676->#808080); disabled is contrast-exempt (_STANDARDS.md §3).",
+    "FLAG (near, not exact, per brief) --disi -> text/disabled: shifts lighter (light #B7B7B7->#E1E1E1, dark #767676->#808080); disabled is contrast-exempt (_STANDARDS.md \u00a73).",
     "FLAG (near, not exact, per brief) --line2 -> divider/border/break: light close (#EDEDED->#F0F0F0); dark shifts notably lighter (#3A3A3A->#808080).",
     "FLAG (near, not exact, per brief) --surf -> surface/subtle: light close (#F3F3F3->#F0F0F0); dark close (#212121->#1F1F1F, the new raise-1 elevation primitive).",
     "FLAG (near, not exact, per brief) --scrim -> overlay/version1: light #00000066->#00000080, dark #00000099->#00000080.",
     "FLAG (near, not exact, per brief) --shadow -> elevation/functional: light #00000026->#00000033; dark matches exactly (#000000D9->#000000D9).",
-    "Tranche-1 does not declare --warn/--warn-t/--success/--success-t/--info/--info-t at all (smaller base variant) — absent from vars here by original design, not a binding gap."
+    "Tranche-1 does not declare --warn/--warn-t/--success/--success-t/--info/--info-t at all (smaller base variant) \u2014 absent from vars here by original design, not a binding gap.",
+    "RESOLVED 2026-07-19 (worker: button/* tier tokens, notes/_receipts/2026-07-19-worker-button-tier-tokens.md): --pri/--pri-h/--pri-lbl/--icon-rev are no longer local literals \u2014 they bind to the new button/secondary/* semantic-tier tokens (button/secondary/background/default, button/secondary/background/hover, button/secondary/label/default). button/secondary/label/default is an INTENTIONAL per-mode flip (white label light / black label dark) that resolves the exact landmine this file previously worked around with local literals \u2014 the --pri surface inverts lightness by mode, so a flat-white label would go 1.0:1 in dark; the new token is verified 6.1:1 light / 5.32:1 dark instead. --icon-rev shares the same token (used on the same --pri surface: .ib.pri/.ib.sec, checkbox indeterminate fill, back-to-top button, active floating tab). FLAG (blast radius, for Dave): --pri is a SHARED css var \u2014 this tranche also reuses it for NON-button accents (progress fills, tab underline/indicators, checkbox/radio checked state, avatar badges, tooltip/banner fills, stepper dots). Repointing --pri's manifest binding recolours ALL of these from near-black/near-white to the mid-grey button/secondary fill, not just .btn.pri/.ib.pri \u2014 this was the explicit brief instruction, but confirm the wider blast radius is the intended outcome, not an oversight.",
+    "ADDED 2026-07-19: --ter-border -> button/tertiary/border/default (digi-black outline #1A1A1A in light, #FFFFFF in dark; verified 17.4:1 against background/default both modes). Applied to the outline button's border-color only (.btn.ghost and .ib.ter was var(--line), the low-contrast subtle-border token) \u2014 gives the Mono tertiary button its ruled border. Hover border-color (var(--ink)) is unchanged, out of scope this pass."
+  ],
+  "contrastPairs": [
+    {
+      "fg": "button/secondary/label/default",
+      "bg": "button/secondary/background/default",
+      "context": "text"
+    },
+    {
+      "fg": "button/secondary/background/default",
+      "bg": "background/default",
+      "context": "non-text"
+    },
+    {
+      "fg": "button/tertiary/border/default",
+      "bg": "background/default",
+      "context": "non-text"
+    }
   ]
 }
   </script>

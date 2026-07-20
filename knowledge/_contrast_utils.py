@@ -104,6 +104,13 @@ CONTRAST_ALLOWLIST = {
     "tertiary/text/disabled": "Disabled text — exempt from WCAG 1.4.3 (inactive UI component).",
     "icon/disabled":          "Disabled icon — exempt from WCAG 1.4.3/1.4.11 (inactive component).",
     "tertiary/icon/disabled": "Disabled icon — exempt from WCAG 1.4.3/1.4.11 (inactive component).",
+    # button/* tier tokens (2026-07-19, notes/_receipts/2026-07-19-worker-button-tier-tokens.md):
+    # disabled-state labels on the new button ladder, exempt on the same basis as the
+    # entries above (WCAG 1.4.3/1.4.11 disabled-component exemption; declared exempt in
+    # the token store's own $note on each leaf).
+    "button/secondary/label/disabled": "Disabled button label — exempt from WCAG 1.4.3 (inactive UI component).",
+    "button/tertiary/label/disabled":  "Disabled button label — exempt from WCAG 1.4.3 (inactive UI component).",
+    "button/quaternary/label/disabled": "Disabled button label — exempt from WCAG 1.4.3 (inactive UI component).",
 }
 
 # Pairs FORBIDDEN BY RULING — not exemptions from contrast, but pairings that are
@@ -147,7 +154,20 @@ def is_light_only(token_name):
 def _leaf_dark_hex(node):
     d = node.get("dark") if isinstance(node, dict) else None
     v = (d.get("$value") if isinstance(d, dict) else d)
-    return v.upper() if isinstance(v, str) and v.startswith("#") else None
+    if not (isinstance(v, str) and v.startswith("#")):
+        return None
+    # 8-digit RRGGBBAA with AA=00 (e.g. #FFFFFF00) is fully TRANSPARENT — not an
+    # opaque paint surface, so it isn't a real "worst-case surface" a co-located
+    # label sits on (the outline/text button's transparent fill shows whatever is
+    # behind it; that's already covered by the default_dark/raised_dark fallback
+    # candidates below). Filtering it here — rather than teaching hex_to_rgb to
+    # swallow alpha — keeps hex_to_rgb strict everywhere else it's called.
+    # Found 2026-07-19 (button/* tier tokens): button/tertiary + button/quaternary
+    # co-locate a transparent background with a label leaf in the same group, the
+    # first token group to do so; hex_to_rgb crashed on the 8-digit value.
+    if len(v) == 9 and v.upper().endswith("00"):
+        return None
+    return v.upper() if len(v) == 7 else None
 
 def load_dark_surfaces(sem_leaves):
     """Map every surface/background token -> its dark hex, to resolve the real
@@ -181,6 +201,8 @@ def resolve_dark_surface(token_name, surfaces, default_dark, raised_dark):
         return (None, "light-mode-only (on-light); excluded from dark audit")
     if "on-inverse" in token_name:
         return (None, "sits on an inverting surface (secondary/pressed buttons), not the page; validated per-component via snippet contrast pairs")
+    if token_name == "text/on-action":
+        return (None, "sits ONLY on surface/action (button/secondary fill), never the page/raised ground; validated per-component via button/secondary/label/default (10.47:1 dark) — same shape as text/on-inverse above")
     grp = _group_prefix(token_name)
     excluded = _excluded_surfaces(token_name)
     candidates = [hx for nm, hx in surfaces.items()

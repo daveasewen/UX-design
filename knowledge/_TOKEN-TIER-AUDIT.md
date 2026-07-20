@@ -1,7 +1,7 @@
 # Token-tier gate (_STANDARDS.md §1)
 
 **Result:** 0 strict failure(s) · 4 advisory (legacy, not gated).
-Migrated three-tier set: 12 token(s).
+Migrated three-tier set: 35 token(s).
 
 ## Advisory — legacy tokens (consistency, not yet gated)
 

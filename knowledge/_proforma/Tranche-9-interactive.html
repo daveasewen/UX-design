@@ -23,14 +23,14 @@
   [data-theme="light"]{
     --page:#FFFFFF; --raised:#FFFFFF; --ink:#1A1A1A; --ink2:#1A1A1A; --disi:#E1E1E1; --line:#E1E1E1; --line2:#F0F0F0;
     --surf:#F0F0F0; --fbord:#808080; --fborda:#000000; --fbordd:#E1E1E1;
-    --pri:#1A1A1A; --pri-h:#000000; --pri-lbl:#FFFFFF; --icon:#1A1A1A; --icon-rev:#FFFFFF; --focus:#305A85;
+    --pri:#626262; --pri-h:#484848; --pri-lbl:#FFFFFF; --icon:#1A1A1A; --icon-rev:#FFFFFF; --ter-border:#1A1A1A; --focus:#305A85;
     --scrim:#00000080; --shadow:#00000033;
     --err:#A8000B; --err-t:#F9F2F3; --warn:#FFBB33; --warn-t:#FFF8EA; --success:#00847F; --success-t:#E5F2F2; --info:#305A85; --info-t:#EBEFF4;
   }
   [data-theme="dark"]{
     --page:#1A1A1A; --raised:#1F1F1F; --ink:#FFFFFF; --ink2:#FFFFFF; --disi:#808080; --line:#808080; --line2:#808080;
     --surf:#1F1F1F; --fbord:#808080; --fborda:#FFFFFF; --fbordd:#484848;
-    --pri:#FFFFFF; --pri-h:#E1E1E1; --pri-lbl:#1A1A1A; --icon:#FFFFFF; --icon-rev:#1A1A1A; --focus:#4587A7;
+    --pri:#808080; --pri-h:#9D9D9D; --pri-lbl:#000000; --icon:#FFFFFF; --icon-rev:#000000; --ter-border:#FFFFFF; --focus:#4587A7;
     --scrim:#00000080; --shadow:#000000D9;
     --err:#DB0011; --err-t:#260005; --warn:#FFBB33; --warn-t:#221701; --success:#00847F; --success-t:#001615; --info:#4587A7; --info-t:#000D1B;
   }
@@ -69,7 +69,7 @@
   .btn:disabled{cursor:not-allowed;opacity:1;} .btn:disabled:hover,.btn[aria-disabled="true"]:hover{transform:none; filter:none;}
   .btn.pri{background:var(--pri); color:var(--pri-lbl); border-color:var(--pri);} .btn.pri:hover{background:var(--pri-h); border-color:var(--pri-h);}
   .btn.pri:disabled{background:var(--disi);border-color:var(--disi);color:var(--page);}
-  .btn.ghost{background:transparent; color:var(--ink); border-color:var(--line);} .btn.ghost:hover{background:var(--surf); border-color:var(--ink);}
+  .btn.ghost{background:transparent; color:var(--ink); border-color:var(--ter-border);} .btn.ghost:hover{background:var(--surf); border-color:var(--ink);}
   .btn.sm{height:36px;padding:0 var(--space-14);font-size:14px;}
   .btn.link{height:auto;padding:var(--space-4) var(--space-6);border:0;background:transparent;color:var(--ink);text-decoration:underline;font:500 14px/1.3 var(--font);}
   .btn.link:hover{transform:none;} .btn.link:disabled{color:var(--disi);text-decoration:none;}
@@ -340,38 +340,107 @@
   </svg>
   <script type="application/json" id="icon-manifest">{"source":"knowledge/assets/icons","icons":{"i-check":"status-icons/yes.svg","i-close":"global-controls/close.svg","i-refresh":"global-controls/refresh.svg","i-error":"status-icons/error.svg","i-success":"status-icons/success.svg","i-secure-key":"informative/security-secure-key.svg","i-password":"informative/security-password.svg","i-secure":"global-controls/security-secure.svg","i-identity":"media/security-digital-identity.svg","i-face":"media/security-face.svg"}}</script>
   <script type="application/json" id="token-manifest">
-  {
-    "component": "Tranche-9-secure-entry",
-    "vars": {
-      "--page": "background/default", "--raised": "surface/raised", "--ink": "text/default", "--ink2": "text/secondary",
-      "--disi": "text/disabled", "--line": "border/subtle", "--line2": "divider/border/break", "--surf": "surface/subtle",
-      "--fbord": "form/border/default", "--fborda": "form/border/active", "--fbordd": "form/border/disabled",
-      "--pri": "text/default", "--icon": "icon/default", "--focus": "focus/ring",
-      "--scrim": "overlay/version1", "--shadow": "elevation/functional",
-      "--err": "rag/error", "--err-t": "rag/error-tint", "--warn": "rag/warning", "--warn-t": "rag/warning-tint",
-      "--success": "rag/success", "--success-t": "rag/success-tint", "--info": "rag/information", "--info-t": "rag/information-tint"
+{
+  "component": "Tranche-9-secure-entry",
+  "vars": {
+    "--page": "background/default",
+    "--raised": "surface/raised",
+    "--ink": "text/default",
+    "--ink2": "text/secondary",
+    "--disi": "text/disabled",
+    "--line": "border/subtle",
+    "--line2": "divider/border/break",
+    "--surf": "surface/subtle",
+    "--fbord": "form/border/default",
+    "--fborda": "form/border/active",
+    "--fbordd": "form/border/disabled",
+    "--pri": "button/secondary/background/default",
+    "--icon": "icon/default",
+    "--focus": "focus/ring",
+    "--scrim": "overlay/version1",
+    "--shadow": "elevation/functional",
+    "--err": "rag/error",
+    "--err-t": "rag/error-tint",
+    "--warn": "rag/warning",
+    "--warn-t": "rag/warning-tint",
+    "--success": "rag/success",
+    "--success-t": "rag/success-tint",
+    "--info": "rag/information",
+    "--info-t": "rag/information-tint",
+    "--pri-h": "button/secondary/background/hover",
+    "--pri-lbl": "button/secondary/label/default",
+    "--icon-rev": "button/secondary/label/default",
+    "--ter-border": "button/tertiary/border/default"
+  },
+  "contrastPairs": [
+    {
+      "fg": "text/default",
+      "bg": "background/default",
+      "context": "text"
     },
-    "contrastPairs": [
-      { "fg": "text/default", "bg": "background/default", "context": "text" },
-      { "fg": "form/border/default", "bg": "background/default", "context": "non-text" },
-      { "fg": "rag/error", "bg": "background/default", "context": "non-text" }
-    ],
-    "variantsCovered": {
-      "otp": ["6-digit (numeric)", "4-digit PIN (masked)", "states: default / filled / error / verified"],
-      "password": ["show/hide text toggle", "mono strength ramp", "requirement checklist", "confirm/match"],
-      "memorableWord": ["partial-character entry (2nd/4th/6th), disabled dashed positions"],
-      "reAuth": ["step-up card + password re-entry + device-agnostic biometric alt"]
+    {
+      "fg": "form/border/default",
+      "bg": "background/default",
+      "context": "non-text"
     },
-    "knownFindings": [
-      "COLOUR RULE: the only hue is rag/error (the status dot on a mismatch). Password STRENGTH and 'verified' are MONO by design — a fill ramp and ink marks, not a red/amber/green scale — per the Apollo Mono colour carve-out and this tranche's brief.",
-      "LOCAL LITERALS (intentionally NOT bound — a real token gap): --pri-lbl (#FFFFFF light / #1A1A1A dark) and --icon-rev sit on the mode-INVERTING primary surface; text/reverse is flat white in both modes and would give 1.0:1 in dark (worker-verified on T1-T8). --pri-h is a hover with no token. These await new action/primary/* (+ an icon/on-inverse) semantic tokens — Dave's ruling. Kept as safe literals meanwhile.",
-      "--pri is bound to text/default as a tier-legal INTERIM (near-black/near-white matches the button ground by mode). Correct fix is a dedicated action/primary/* semantic token.",
-      "--focus now resolves to the real blue focus-ring tokens (#305A85 / #4587A7), not mono — a functional a11y affordance, consistent with T1-T8 after tokenisation. Flag if a mono focus ring is wanted at the token level.",
-      "Reveal is a Show/Hide TEXT control (tov-038, device-agnostic) — deliberately not the eye glyph T6 uses.",
-      "Near-not-exact bindings inherited from the shared mapping: --disi→text/disabled, --line2→divider/border/break, --surf→surface/subtle, --scrim→overlay/version1, --shadow→elevation/functional."
+    {
+      "fg": "rag/error",
+      "bg": "background/default",
+      "context": "non-text"
+    },
+    {
+      "fg": "button/secondary/label/default",
+      "bg": "button/secondary/background/default",
+      "context": "text"
+    },
+    {
+      "fg": "button/secondary/background/default",
+      "bg": "background/default",
+      "context": "non-text"
+    },
+    {
+      "fg": "button/tertiary/border/default",
+      "bg": "background/default",
+      "context": "non-text"
+    }
+  ],
+  "variantsCovered": {
+    "otp": [
+      "6-digit (numeric)",
+      "4-digit PIN (masked)",
+      "states: default / filled / error / verified"
     ],
-    "requiredAria": ["role=\"group\"", "aria-labelledby", "aria-describedby", "aria-label (per OTP cell)", "aria-live=\"polite\"", "aria-pressed (toggles)", "autocomplete=\"one-time-code\""]
-  }
+    "password": [
+      "show/hide text toggle",
+      "mono strength ramp",
+      "requirement checklist",
+      "confirm/match"
+    ],
+    "memorableWord": [
+      "partial-character entry (2nd/4th/6th), disabled dashed positions"
+    ],
+    "reAuth": [
+      "step-up card + password re-entry + device-agnostic biometric alt"
+    ]
+  },
+  "knownFindings": [
+    "COLOUR RULE: the only hue is rag/error (the status dot on a mismatch). Password STRENGTH and 'verified' are MONO by design \u2014 a fill ramp and ink marks, not a red/amber/green scale \u2014 per the Apollo Mono colour carve-out and this tranche's brief.",
+    "--focus now resolves to the real blue focus-ring tokens (#305A85 / #4587A7), not mono \u2014 a functional a11y affordance, consistent with T1-T8 after tokenisation. Flag if a mono focus ring is wanted at the token level.",
+    "Reveal is a Show/Hide TEXT control (tov-038, device-agnostic) \u2014 deliberately not the eye glyph T6 uses.",
+    "Near-not-exact bindings inherited from the shared mapping: --disi\u2192text/disabled, --line2\u2192divider/border/break, --surf\u2192surface/subtle, --scrim\u2192overlay/version1, --shadow\u2192elevation/functional.",
+    "RESOLVED 2026-07-19 (worker: button/* tier tokens, notes/_receipts/2026-07-19-worker-button-tier-tokens.md): --pri/--pri-h/--pri-lbl/--icon-rev are no longer local literals \u2014 they bind to the new button/secondary/* semantic-tier tokens (button/secondary/background/default, button/secondary/background/hover, button/secondary/label/default). button/secondary/label/default is an INTENTIONAL per-mode flip (white label light / black label dark) that resolves the exact landmine this file previously worked around with local literals \u2014 the --pri surface inverts lightness by mode, so a flat-white label would go 1.0:1 in dark; the new token is verified 6.1:1 light / 5.32:1 dark instead. --icon-rev shares the same token (used on the same --pri surface: .ib.pri/.ib.sec, checkbox indeterminate fill, back-to-top button, active floating tab). FLAG (blast radius, for Dave): --pri is a SHARED css var \u2014 this tranche also reuses it for NON-button accents (progress fills, tab underline/indicators, checkbox/radio checked state, avatar badges, tooltip/banner fills, stepper dots). Repointing --pri's manifest binding recolours ALL of these from near-black/near-white to the mid-grey button/secondary fill, not just .btn.pri/.ib.pri \u2014 this was the explicit brief instruction, but confirm the wider blast radius is the intended outcome, not an oversight.",
+    "ADDED 2026-07-19: --ter-border -> button/tertiary/border/default (digi-black outline #1A1A1A in light, #FFFFFF in dark; verified 17.4:1 against background/default both modes). Applied to the outline button's border-color only (.btn.ghost was var(--line), the low-contrast subtle-border token) \u2014 gives the Mono tertiary button its ruled border. Hover border-color (var(--ink)) is unchanged, out of scope this pass."
+  ],
+  "requiredAria": [
+    "role=\"group\"",
+    "aria-labelledby",
+    "aria-describedby",
+    "aria-label (per OTP cell)",
+    "aria-live=\"polite\"",
+    "aria-pressed (toggles)",
+    "autocomplete=\"one-time-code\""
+  ]
+}
   </script>
 
 <script>

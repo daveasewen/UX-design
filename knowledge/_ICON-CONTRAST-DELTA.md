@@ -6,7 +6,7 @@
 gate (check 3, bite-tested). This advisory continues as the exhaustive/state×theme
 watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 
-**Headline: 0 declared dead-zone · 27 exhaustive (upper bound) · 0 roundel fails (<3:1) · 0 mark fails (<4.5 vs roundel, light).**
+**Headline: 0 declared dead-zone · 33 exhaustive (upper bound) · 0 roundel fails (<3:1) · 0 mark fails (<4.5 vs roundel, light).**
 
 ## 1. Declared icon pairs (the concrete promotion cost)
 
@@ -39,6 +39,12 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 |---|---|---|---|---|
 | icon/default | blur/background-surface | light | None | unresolved |
 | icon/default | blur/background-surface | dark | None | unresolved |
+| icon/default | button/secondary/background/default | light | 2.85 | below-3(gated) |
+| icon/default | button/secondary/background/default | dark | 3.95 | DEAD-ZONE |
+| icon/default | button/secondary/background/hover | light | 1.9 | below-3(gated) |
+| icon/default | button/secondary/background/hover | dark | 2.71 | below-3(gated) |
+| icon/default | button/secondary/background/pressed | light | 1.34 | below-3(gated) |
+| icon/default | button/secondary/background/pressed | dark | 2.01 | below-3(gated) |
 | icon/default | data-vis/surface/secondary | light | 1.21 | below-3(gated) |
 | icon/default | form/background/pressed | light | 4.41 | DEAD-ZONE |
 | icon/default | primary/background/default | light | 3.33 | DEAD-ZONE |
@@ -55,12 +61,24 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | icon/default | secondary/background/hover | dark | 1.14 | below-3(gated) |
 | icon/default | secondary/background/pressed | light | 2.85 | below-3(gated) |
 | icon/default | secondary/background/pressed | dark | 1.31 | below-3(gated) |
+| icon/default | surface/action | light | 2.85 | below-3(gated) |
+| icon/default | surface/action | dark | 3.95 | DEAD-ZONE |
+| icon/default | surface/action-hover | light | 1.9 | below-3(gated) |
+| icon/default | surface/action-hover | dark | 2.71 | below-3(gated) |
+| icon/default | surface/action-pressed | light | 1.34 | below-3(gated) |
+| icon/default | surface/action-pressed | dark | 2.01 | below-3(gated) |
 | icon/default | surface/digital-black | light | 1.0 | below-3(gated) |
 | icon/default | tertiary/background/active | light | 1.21 | below-3(gated) |
 | icon/default | tertiary/background/pressed | light | 2.85 | below-3(gated) |
 | icon/default-reverse | background/default | light | 1.0 | below-3(gated) |
 | icon/default-reverse | blur/background-surface | light | None | unresolved |
 | icon/default-reverse | blur/background-surface | dark | None | unresolved |
+| icon/default-reverse | button/quaternary/background/hover | light | 1.14 | below-3(gated) |
+| icon/default-reverse | button/secondary/background/default | dark | 3.95 | DEAD-ZONE |
+| icon/default-reverse | button/secondary/background/disabled | light | 1.31 | below-3(gated) |
+| icon/default-reverse | button/secondary/background/hover | dark | 2.71 | below-3(gated) |
+| icon/default-reverse | button/secondary/background/pressed | dark | 2.01 | below-3(gated) |
+| icon/default-reverse | button/tertiary/background/hover | light | 1.14 | below-3(gated) |
 | icon/default-reverse | data-vis/surface/primary | light | 1.0 | below-3(gated) |
 | icon/default-reverse | form/background/hover | light | 1.14 | below-3(gated) |
 | icon/default-reverse | form/background/pressed | light | 3.95 | DEAD-ZONE |
@@ -77,6 +95,10 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | icon/default-reverse | secondary/background/disabled | light | 1.31 | below-3(gated) |
 | icon/default-reverse | secondary/background/hover | dark | 1.14 | below-3(gated) |
 | icon/default-reverse | secondary/background/pressed | dark | 1.31 | below-3(gated) |
+| icon/default-reverse | surface/action | dark | 3.95 | DEAD-ZONE |
+| icon/default-reverse | surface/action-disabled | light | 1.31 | below-3(gated) |
+| icon/default-reverse | surface/action-hover | dark | 2.71 | below-3(gated) |
+| icon/default-reverse | surface/action-pressed | dark | 2.01 | below-3(gated) |
 | icon/default-reverse | surface/raised | light | 1.0 | below-3(gated) |
 | icon/default-reverse | surface/raised-hover | light | 1.14 | below-3(gated) |
 | icon/default-reverse | surface/subtle | light | 1.14 | below-3(gated) |
@@ -93,6 +115,15 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | icon/disabled (allowlisted) | background/default | dark | 4.41 | DEAD-ZONE |
 | icon/disabled (allowlisted) | blur/background-surface | light | None | unresolved |
 | icon/disabled (allowlisted) | blur/background-surface | dark | None | unresolved |
+| icon/disabled (allowlisted) | button/quaternary/background/hover | light | 1.15 | below-3(gated) |
+| icon/disabled (allowlisted) | button/quaternary/background/hover | dark | 3.98 | DEAD-ZONE |
+| icon/disabled (allowlisted) | button/secondary/background/default | dark | 1.0 | below-3(gated) |
+| icon/disabled (allowlisted) | button/secondary/background/disabled | light | 1.0 | below-3(gated) |
+| icon/disabled (allowlisted) | button/secondary/background/disabled | dark | 2.32 | below-3(gated) |
+| icon/disabled (allowlisted) | button/secondary/background/hover | dark | 1.46 | below-3(gated) |
+| icon/disabled (allowlisted) | button/secondary/background/pressed | dark | 1.97 | below-3(gated) |
+| icon/disabled (allowlisted) | button/tertiary/background/hover | light | 1.15 | below-3(gated) |
+| icon/disabled (allowlisted) | button/tertiary/background/hover | dark | 3.98 | DEAD-ZONE |
 | icon/disabled (allowlisted) | data-vis/surface/primary | light | 1.31 | below-3(gated) |
 | icon/disabled (allowlisted) | form/background/hover | light | 1.15 | below-3(gated) |
 | icon/disabled (allowlisted) | form/background/hover | dark | 3.98 | DEAD-ZONE |
@@ -118,6 +149,11 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | icon/disabled (allowlisted) | secondary/background/disabled | dark | 2.32 | below-3(gated) |
 | icon/disabled (allowlisted) | secondary/background/hover | dark | 3.47 | DEAD-ZONE |
 | icon/disabled (allowlisted) | secondary/background/pressed | dark | 3.02 | DEAD-ZONE |
+| icon/disabled (allowlisted) | surface/action | dark | 1.0 | below-3(gated) |
+| icon/disabled (allowlisted) | surface/action-disabled | light | 1.0 | below-3(gated) |
+| icon/disabled (allowlisted) | surface/action-disabled | dark | 2.32 | below-3(gated) |
+| icon/disabled (allowlisted) | surface/action-hover | dark | 1.46 | below-3(gated) |
+| icon/disabled (allowlisted) | surface/action-pressed | dark | 1.97 | below-3(gated) |
 | icon/disabled (allowlisted) | surface/digital-black | dark | 4.41 | DEAD-ZONE |
 | icon/disabled (allowlisted) | surface/raised | light | 1.31 | below-3(gated) |
 | icon/disabled (allowlisted) | surface/raised | dark | 4.17 | DEAD-ZONE |
@@ -146,7 +182,7 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | icon/disabled (allowlisted) | tooltip/background | light | 1.31 | below-3(gated) |
 | icon/disabled (allowlisted) | tooltip/background | dark | 4.41 | DEAD-ZONE |
 
-_(96 of 210 exhaustive combos already clear 4.5:1; 6 transparent/composite surfaces skipped (alpha — true contrast needs the render path) — omitted.)_
+_(120 of 288 exhaustive combos already clear 4.5:1; 24 transparent/composite surfaces skipped (alpha — true contrast needs the render path) — omitted.)_
 
 ## 3. Roundel vs surface — rag/* pairs at the ROUNDEL threshold (≥3:1, ruled policy)
 
