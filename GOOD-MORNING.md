@@ -1,8 +1,8 @@
 # Good morning, Dave ☕
 
 > ## ★ LATEST — 2026-07-20 (evening 5): the Mono teal→green sweep is DONE. READ THIS FIRST, it supersedes the block + the two names below.
-> **RENAME THIS CHAT →** `Mono teal→green sweep DONE (Sonnet exec, Opus vouched) — proforma teal→0, committed d6e3d89; red tuner next`
-> **NEXT (fresh) CHAT TITLE →** `Red tuner (Dave-in-the-loop) — rule Mono rag/error #B92F1E + tabs/active + progress/complete, then flip theme-provenance gate to blocking`
+> **RENAME THIS CHAT →** `Teal→green sweep DONE (d6e3d89) + sharpened the "red tuner" → it's error/warning/info COMPLETION; tuner deferred to a fresh session`
+> **NEXT (fresh) CHAT TITLE →** `Complete Mono error/warning/info sets (clone the R-D18 success tuner: per-mode graphic confirm + re-hue tints off Legacy) → rebind bare roles → unblocks Alert/Banner/Toast`
 >
 > The pre-flighted sweep executed cleanly in one pass — **Mode-2 delegation** (a Sonnet subagent ran the
 > verified map; Opus verified the diff, re-ran the build, and vouched — routing rule 5). **Committed `d6e3d89`
@@ -19,13 +19,20 @@
 > flip — verified against the aligned `snippets/Status-indicator`. The prior handoff's "tick → black under
 > type26-013" worry does not bite this small dot (it uses `--mark=--page`); that's the big-roundel case.
 >
-> ★ **NEXT = the red tuner (§C·2, Dave-in-the-loop).** All red is held pending a live controller: bare
-> `rag/error` (Mono `#B92F1E`) + owed Mono `tabs/active` + `progress/complete` (each needs a non-red Mono
-> value). Only after red is ruled → flip `_validate_theme_provenance.py` to blocking. **Also still open (Sonnet-able,
-> not blocked on Dave): the 27 drifting snippet aligns + grey inks — §C·1b.** Full arc: sweep map
-> `_DECISION-HISTORY/2026-07-20-mono-sweep-map-and-bad-day.md`; state `_LIVE-STATE.md` LATEST DELTA (evening 5).
-> **Spine flag (separate, for the token/red session):** `text/on-success` = `color/black` should be `color/mono/4`
-> (`#1A1A1A`) digital black.
+> ★ **NEXT = the RAG-completion tuner (§C·2, Dave-in-the-loop) — reframed this session, read before building.**
+> The label "red tuner" is misleading: **Mono's status *signal* colours are already ruled** — breach red
+> `#B92F1E` (R-D7), watch amber `#F0B13A` (R-D11), info blue `#5F92B9` (R-D10), success green (R-D18). **DO NOT
+> re-decide them** (that's the binned-misstep trap). What's genuinely open is **completing the `error`/`warning`/
+> `information` sets the way R-D18 did success**: the bare roles + their `-tint` slots still hold Legacy hexes
+> (`error` `#A8000B`/`#DB0011`, `warning` `#FFBB33`, `information` navy; tints `#F9F2F3` etc., `semantic-colour.json`
+> ~L549–643). Per set: confirm the per-mode graphic value + **re-hue the tint off Legacy**, then rebind the bare
+> role. **Clone the proven tuner `reviews/RAG-SUCCESS-GREEN-2026-07-20-v1.html`.** This unblocks **Alert/Banner/
+> Toast** (§C·3). **Deferred (forward-looking — their components are archived, nothing consumes them yet):**
+> `tabs/active` (Mono = ink indicator) + `progress/complete` (ink/green). Only after the sets are ruled → rebind →
+> flip `_validate_theme_provenance.py` to blocking. **Also open (Sonnet-able, not blocked on Dave): 27 snippet
+> aligns + grey inks — §C·1b.** Arc: sweep map `_DECISION-HISTORY/2026-07-20-mono-sweep-map-and-bad-day.md`;
+> state `_LIVE-STATE.md` LATEST DELTA (evening 5). **Spine flag (separate):** `text/on-success` = `color/black`
+> should be `color/mono/4` (`#1A1A1A`) digital black.
 
 ---
 
@@ -272,15 +279,18 @@ grey-tint check** (surface numbers to Dave FIRST — never auto-swap). **(c) reg
 (`_make_review.py`). **DO NOT ALIGN** the 5 archived files (Hero, Navigations, Progress-tracker, Tab-bar, Tabs,
 +`_proforma/Icon-button`); **DO NOT CONVERT** Notifications (its `#A8000B` is correct Legacy red).
 
-## 2. The red tuner + the two owed Mono values (Dave-in-the-loop — R-D19, feedback-live-controller)
-ALL red is HELD until ruled on a live tuner: bare `rag/error` (Mono `#B92F1E`, rebinds with error/warning/info per
-R-D17) + the two owed Mono values `tabs/active` + `progress/complete` (each needs its own **non-red** Mono value — ink?
-green?). Only after red is ruled → flip `_validate_theme_provenance.py` to **blocking**.
-
-## 3. RAG error/warning/info roles — still Legacy-drifted (R-D17, unchanged)
-Bare `rag/error` (`#A8000B`/`#DB0011`), `rag/warning` (`#FFBB33`), `rag/information` (navy) still resolve Legacy; R-D14
-values live in their `-background`/`-glyph` tokens. Rule the sets on the §2 tuner → rebind → these become Mono overrides.
-**Needed before Alert / Banner / Toast.** Same work as §2's red.
+## 2. ★ RAG-completion tuner — finish error/warning/info like R-D18 did success (Dave-in-the-loop; feedback-live-controller)
+**Reframed evening 5 (was "the red tuner").** The Mono status *signal* colours are ALREADY ruled — breach red
+`#B92F1E` (R-D7), watch amber `#F0B13A` (R-D11), info blue `#5F92B9` (R-D10), success green (R-D18). **DO NOT
+re-decide them.** The genuine open work: the bare `error`/`warning`/`information` roles + their `-tint` slots still
+resolve **Legacy** (`error` `#A8000B`/`#DB0011`, `warning` `#FFBB33`, `information` navy `#305A85`/`#4587A7`; tints
+`#F9F2F3`/`#FFF8EA`/… — `semantic-colour.json` ~L549–643). **Per set, exactly the R-D18 move:** confirm the per-mode
+graphic value against the ruled signal colour + **re-hue the `-tint` off Legacy** (success went `#E5F2F2`→`#DCEDE3`),
+then rebind the bare role off its Legacy alias. **Clone `reviews/RAG-SUCCESS-GREEN-2026-07-20-v1.html`** (OKLCh
+sliders + live contrast + salience guard). Unblocks **Alert / Banner / Toast**. Then flip `_validate_theme_provenance.py`
+to **blocking**. **Deferred (§2b, forward-looking):** `tabs/active` (Mono = ink indicator, not red) + `progress/complete`
+(ink/green) — both **unruled** but their consumer components (Tabs/Tab-bar/Progress-tracker) are archived, so nothing
+binds them yet; rule when those components are rebuilt.
 
 ## 4. Parked / carry-forward
 **Duplicate-dedup pass** (relocate the archived files out of Mono scope so the gate stops scanning them). Console +
