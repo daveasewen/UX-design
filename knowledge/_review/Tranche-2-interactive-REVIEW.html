@@ -963,5 +963,379 @@
   })();
 
 </script>
+<meta name="rv-doc" content="Tranche 2">
+<meta name="rv-file" content="knowledge/_proforma/Tranche-2-interactive.html">
+<!-- APOLLO-REVIEW-OVERLAY -->
+<!-- ============================================================================
+     APOLLO REVIEW OVERLAY — reusable comment layer for pro-forma review files.
+     Self-contained (no external deps, no browser storage). Drop this whole block
+     in before </body> of ANY interactive HTML to add: a Review-mode toggle,
+     click-a-component-to-pin-a-comment, a DRAGGABLE comment box that opens beside
+     the target (not over it) with a NOODLE leader-line + dot back to the commented
+     element, a comments panel, and Export → a structured numbered prompt
+     (copy / download) to paste back for the edits.
+     Injected by _make_review.py. All ids/classes are `rv-` prefixed to avoid
+     clashing with the host page. Nothing here is scanned by the component gates.
+     ========================================================================= -->
+<style id="rv-style">
+  #rv-fab{position:fixed;right:16px;bottom:16px;z-index:2147483000;display:inline-flex;align-items:center;gap:8px;
+    height:40px;padding:0 16px;border:1.5px solid #1A1A1A;border-radius:999px;background:#fff;color:#1A1A1A;
+    font:600 13px/1 -apple-system,Segoe UI,Roboto,sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.14);}
+  #rv-fab .rv-dot{width:8px;height:8px;border-radius:50%;background:#B7B7B7;}
+  #rv-fab.rv-on{background:#1A1A1A;color:#fff;border-color:#1A1A1A;}
+  #rv-fab.rv-on .rv-dot{background:#37D67A;}
+  #rv-fab .rv-count{min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#DB0011;color:#fff;
+    font:700 11px/18px -apple-system,Segoe UI,Roboto,sans-serif;text-align:center;display:none;}
+  #rv-fab .rv-count.rv-has{display:inline-block;}
+  /* review mode: crosshair + hover outline on the host content */
+  body.rv-active [data-rv-hover]{outline:2px solid #DB0011 !important;outline-offset:1px;cursor:crosshair;}
+  body.rv-active{scroll-behavior:auto;}
+  /* pinned markers layer */
+  #rv-markers{position:fixed;inset:0;z-index:2147482000;pointer-events:none;}
+  .rv-pin{position:fixed;transform:translate(-50%,-50%);width:22px;height:22px;border-radius:50% 50% 50% 2px;
+    background:#DB0011;color:#fff;font:700 12px/22px -apple-system,Segoe UI,Roboto,sans-serif;text-align:center;
+    box-shadow:0 2px 6px rgba(0,0,0,.3);pointer-events:auto;cursor:pointer;border:2px solid #fff;}
+  /* composer popover */
+  #rv-composer{position:fixed;z-index:2147483600;width:300px;max-width:92vw;background:#fff;border:1px solid #D7D8D6;
+    border-radius:8px;box-shadow:0 12px 40px rgba(0,0,0,.22);padding:12px;display:none;
+    font:400 13px/1.45 -apple-system,Segoe UI,Roboto,sans-serif;color:#1A1A1A;}
+  #rv-composer.rv-show{display:block;}
+  #rv-composer .rv-target{font:600 12px/1.3 inherit;color:#333;margin:0 0 8px;padding-left:16px;word-break:break-word;
+    cursor:move;user-select:none;position:relative;}
+  #rv-composer .rv-target::before{content:'';position:absolute;left:2px;top:1px;width:7px;height:12px;opacity:.55;
+    background:radial-gradient(circle,#666 1px,transparent 1.4px);background-size:3px 4px;}
+  /* noodle: leader line from the commented element to the composer box */
+  #rv-noodle{position:fixed;inset:0;z-index:2147483500;pointer-events:none;overflow:visible;}
+  #rv-noodle path{fill:none;stroke:#DB0011;stroke-width:1.5;opacity:.9;}
+  #rv-noodle circle{fill:#DB0011;stroke:#fff;stroke-width:1.5;}
+  #rv-noodle rect{fill:rgba(219,0,17,.06);stroke:#DB0011;stroke-width:2;opacity:.95;}
+  #rv-composer textarea{width:100%;box-sizing:border-box;min-height:76px;resize:vertical;padding:8px;
+    border:1px solid #B7B7B7;border-radius:6px;font:inherit;color:#1A1A1A;outline:none;}
+  #rv-composer textarea:focus{border-color:#1A1A1A;}
+  #rv-composer .rv-row{display:flex;gap:8px;justify-content:flex-end;margin-top:8px;}
+  .rv-btn{height:32px;padding:0 14px;border-radius:6px;border:1px solid #1A1A1A;background:#fff;color:#1A1A1A;
+    font:600 12px/1 -apple-system,Segoe UI,Roboto,sans-serif;cursor:pointer;}
+  .rv-btn.rv-primary{background:#1A1A1A;color:#fff;}
+  .rv-btn.rv-danger{border-color:#DB0011;color:#DB0011;}
+  .rv-btn:disabled{opacity:.4;cursor:not-allowed;}
+  /* comments panel */
+  #rv-panel{position:fixed;top:0;right:0;bottom:0;width:340px;max-width:88vw;z-index:2147483200;background:#fff;
+    border-left:1px solid #D7D8D6;box-shadow:-8px 0 30px rgba(0,0,0,.16);transform:translateX(100%);
+    transition:transform .18s ease;display:flex;flex-direction:column;
+    font:400 13px/1.45 -apple-system,Segoe UI,Roboto,sans-serif;color:#1A1A1A;}
+  #rv-panel.rv-open{transform:translateX(0);}
+  #rv-panel .rv-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px 16px;border-bottom:1px solid #EEE;}
+  #rv-panel .rv-head strong{font:700 14px/1 inherit;}
+  #rv-panel .rv-list{flex:1;overflow:auto;padding:8px 12px;}
+  #rv-panel .rv-empty{color:#8A8A8A;padding:24px 8px;text-align:center;}
+  .rv-item{border:1px solid #EEE;border-radius:8px;padding:10px;margin:0 0 8px;}
+  .rv-item .rv-item-h{display:flex;align-items:center;gap:8px;margin:0 0 4px;}
+  .rv-item .rv-num{flex:none;width:20px;height:20px;border-radius:50%;background:#1A1A1A;color:#fff;font:700 11px/20px inherit;text-align:center;}
+  .rv-item .rv-loc{font:600 12px/1.3 inherit;color:#333;word-break:break-word;}
+  .rv-item .rv-txt{color:#1A1A1A;white-space:pre-wrap;word-break:break-word;margin:2px 0 8px;}
+  .rv-item .rv-acts{display:flex;gap:8px;}
+  .rv-item .rv-link{background:none;border:0;padding:0;color:#333;text-decoration:underline;cursor:pointer;font:600 12px/1 inherit;}
+  .rv-item .rv-link.rv-del{color:#DB0011;}
+  #rv-panel .rv-foot{border-top:1px solid #EEE;padding:12px 16px;display:flex;gap:8px;}
+  #rv-panel .rv-foot .rv-btn{flex:1;height:38px;}
+  /* export modal */
+  #rv-export{position:fixed;inset:0;z-index:2147483600;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;padding:24px;}
+  #rv-export.rv-show{display:flex;}
+  #rv-export .rv-card{width:720px;max-width:100%;max-height:86vh;background:#fff;border-radius:10px;display:flex;flex-direction:column;overflow:hidden;
+    font:400 13px/1.45 -apple-system,Segoe UI,Roboto,sans-serif;color:#1A1A1A;}
+  #rv-export .rv-card-h{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #EEE;}
+  #rv-export textarea{flex:1;margin:0;border:0;outline:none;resize:none;padding:16px;font:400 12.5px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;color:#1A1A1A;min-height:320px;}
+  #rv-export .rv-card-f{display:flex;gap:8px;justify-content:flex-end;padding:12px 16px;border-top:1px solid #EEE;}
+  .rv-x{background:none;border:0;font-size:20px;line-height:1;cursor:pointer;color:#666;padding:4px;}
+  @media print{#rv-fab,#rv-panel,#rv-composer,#rv-markers,#rv-export{display:none !important;}}
+</style>
+
+<button id="rv-fab" type="button" aria-pressed="false" title="Toggle review mode">
+  <span class="rv-dot" aria-hidden="true"></span><span class="rv-label">Review</span><span class="rv-count" id="rv-count">0</span>
+</button>
+<div id="rv-markers" aria-hidden="true"></div>
+<svg id="rv-noodle" aria-hidden="true"><rect id="rv-noodle-box" rx="3" style="display:none"/><path id="rv-noodle-path"/><circle id="rv-noodle-dot" r="3.5" style="display:none"/></svg>
+<div id="rv-composer" role="dialog" aria-label="Add comment">
+  <p class="rv-target" id="rv-composer-target" title="Drag to move"></p>
+  <textarea id="rv-composer-text" placeholder="Describe the change you want here…" aria-label="Comment"></textarea>
+  <div class="rv-row">
+    <button class="rv-btn rv-danger" id="rv-composer-del" type="button" style="margin-right:auto;display:none;">Delete</button>
+    <button class="rv-btn" id="rv-composer-cancel" type="button">Cancel</button>
+    <button class="rv-btn rv-primary" id="rv-composer-save" type="button">Save</button>
+  </div>
+</div>
+<aside id="rv-panel" aria-label="Review comments">
+  <div class="rv-head"><strong>Comments (<span id="rv-panel-count">0</span>)</strong>
+    <button class="rv-x" id="rv-panel-close" type="button" aria-label="Close panel">×</button></div>
+  <div class="rv-list" id="rv-list"><p class="rv-empty">Turn on <b>Review</b>, then click any component to pin a comment.</p></div>
+  <div class="rv-foot">
+    <button class="rv-btn" id="rv-clear" type="button">Clear all</button>
+    <button class="rv-btn rv-primary" id="rv-export-btn" type="button">Export prompt</button>
+  </div>
+</aside>
+<div id="rv-export" role="dialog" aria-label="Export prompt" aria-modal="true">
+  <div class="rv-card">
+    <div class="rv-card-h"><strong>Edit prompt — copy &amp; paste back</strong><button class="rv-x" id="rv-export-close" type="button" aria-label="Close">×</button></div>
+    <textarea id="rv-export-text" readonly spellcheck="false"></textarea>
+    <div class="rv-card-f">
+      <button class="rv-btn" id="rv-export-download" type="button">Download .md</button>
+      <button class="rv-btn rv-primary" id="rv-export-copy" type="button">Copy to clipboard</button>
+    </div>
+  </div>
+</div>
+
+<script id="rv-script">
+(function(){
+  "use strict";
+  function meta(n){ var m=document.querySelector('meta[name="'+n+'"]'); return m?m.getAttribute('content'):''; }
+  var DOC_TITLE = meta('rv-doc') || (document.title||"Review").replace(/\s+·.*$/,"").trim();
+  var DOC_FILE = meta('rv-file') || '';
+  var comments = [];            // {id, section, desc, path, text, el}
+  var seq = 0;
+  var active = false, editingId = null, pendingEl = null, composerEl = null, dragging = false;
+
+  var fab=document.getElementById('rv-fab'),
+      countEl=document.getElementById('rv-count'),
+      markers=document.getElementById('rv-markers'),
+      composer=document.getElementById('rv-composer'),
+      cTarget=document.getElementById('rv-composer-target'),
+      cText=document.getElementById('rv-composer-text'),
+      cSave=document.getElementById('rv-composer-save'),
+      cCancel=document.getElementById('rv-composer-cancel'),
+      cDel=document.getElementById('rv-composer-del'),
+      panel=document.getElementById('rv-panel'),
+      list=document.getElementById('rv-list'),
+      panelCount=document.getElementById('rv-panel-count'),
+      exportModal=document.getElementById('rv-export'),
+      exportText=document.getElementById('rv-export-text');
+
+  function isRvNode(n){ return n && n.closest && n.closest('#rv-fab,#rv-panel,#rv-composer,#rv-markers,#rv-export'); }
+
+  // ---- element description -------------------------------------------------
+  function cleanHead(s){ return (s||'').replace(/\s+/g,' ').replace(/^(\d+)(?=\D)/,'$1 ').trim(); }
+  function sectionName(el){
+    var sec = el.closest && el.closest('section[aria-labelledby]');
+    if(sec){ var h=document.getElementById(sec.getAttribute('aria-labelledby')); if(h) return cleanHead(h.textContent); }
+    var anySec = el.closest && el.closest('section'); if(anySec){ var hh=anySec.querySelector('h1,h2,h3'); if(hh) return cleanHead(hh.textContent); }
+    // fallback for FLAT docs (dossiers with no <section> wrappers): nearest preceding heading in document order
+    var heads=[].slice.call(document.querySelectorAll('h1,h2,h3')), best='';
+    for(var i=0;i<heads.length;i++){
+      if(heads[i]===el || (el.compareDocumentPosition(heads[i]) & Node.DOCUMENT_POSITION_PRECEDING)){
+        best=cleanHead(heads[i].textContent);
+      }
+    }
+    return best;
+  }
+  function descOf(el){
+    var aria=(el.getAttribute&&el.getAttribute('aria-label'))||'';
+    var own=(aria||el.textContent||'').replace(/\s+/g,' ').trim();
+    if(own.length>48) own=own.slice(0,48)+'…';
+    var tag=el.tagName?el.tagName.toLowerCase():'el';
+    var cls=(typeof el.className==='string'&&el.className)?'.'+el.className.split(/\s+/)[0]:'';
+    return own ? own+' ('+tag+cls+')' : tag+cls;
+  }
+  function pathOf(el){
+    var parts=[], n=el, depth=0;
+    while(n && n.nodeType===1 && n!==document.body && depth<5){
+      var s=n.tagName.toLowerCase();
+      if(n.id){ s='#'+n.id; parts.unshift(s); break; }
+      if(typeof n.className==='string' && n.className.trim()) s+='.'+n.className.trim().split(/\s+/)[0];
+      parts.unshift(s); n=n.parentElement; depth++;
+    }
+    return parts.join(' > ');
+  }
+
+  // ---- markers -------------------------------------------------------------
+  function renderMarkers(){
+    markers.innerHTML='';
+    comments.forEach(function(c,i){
+      if(!c.el||!c.el.getBoundingClientRect) return;
+      var r=c.el.getBoundingClientRect();
+      if(r.width===0&&r.height===0) return;
+      var pin=document.createElement('button');
+      pin.className='rv-pin'; pin.type='button'; pin.textContent=(i+1);
+      pin.style.left=(r.right-6)+'px'; pin.style.top=(r.top+8)+'px';
+      pin.title=c.text||'(empty)';
+      pin.addEventListener('click',function(e){ e.stopPropagation(); openComposer(c.el,c.id); });
+      markers.appendChild(pin);
+    });
+  }
+
+  // ---- composer ------------------------------------------------------------
+  function openComposer(el, id){
+    editingId=(id!=null)?id:null; pendingEl=el;
+    var sec=sectionName(el), d=descOf(el);
+    cTarget.textContent=(sec?('['+sec+'] '):'')+d;
+    var existing=id!=null?comments.filter(function(c){return c.id===id;})[0]:null;
+    cText.value=existing?existing.text:'';
+    cDel.style.display=existing?'inline-flex':'none';
+    // default placement: beside the element (not over it); drag + noodle handle the rest
+    var r=el.getBoundingClientRect(), cw=312, ch=200, gap=14, left, top;
+    if(window.innerWidth-r.right > cw+gap) left=r.right+gap;                 // room on the right
+    else if(r.left > cw+gap) left=r.left-cw-gap;                            // else the left
+    else left=Math.min(window.innerWidth-cw-8, Math.max(8, r.left));        // else clamp
+    top=Math.min(window.innerHeight-ch, Math.max(8, r.top));
+    composer.style.top=top+'px'; composer.style.left=left+'px';
+    composer.classList.add('rv-show');
+    composerEl=el;
+    setTimeout(function(){ cText.focus(); drawNoodle(); },0);
+  }
+  function closeComposer(){ composer.classList.remove('rv-show'); pendingEl=null; editingId=null; composerEl=null; drawNoodle(); }
+
+  // ---- noodle (leader line) + drag ----------------------------------------
+  var noodlePath=document.getElementById('rv-noodle-path'), noodleDot=document.getElementById('rv-noodle-dot'),
+      noodleBox=document.getElementById('rv-noodle-box');
+  function drawNoodle(){
+    if(!composerEl || !composer.classList.contains('rv-show') || !noodlePath){
+      if(noodlePath) noodlePath.removeAttribute('d');
+      if(noodleDot) noodleDot.style.display='none';
+      if(noodleBox) noodleBox.style.display='none';
+      return;
+    }
+    var r=composerEl.getBoundingClientRect(), cr=composer.getBoundingClientRect();
+    // 1) highlight the EXACT element being commented on (its precise bounds)
+    noodleBox.setAttribute('x', r.left); noodleBox.setAttribute('y', r.top);
+    noodleBox.setAttribute('width', Math.max(0, r.width)); noodleBox.setAttribute('height', Math.max(0, r.height));
+    noodleBox.style.display='';
+    // 2) anchor the noodle to the element's BORDER edge facing the composer (never the centre)
+    var ecx=r.left+r.width/2, ecy=r.top+r.height/2, ccx=cr.left+cr.width/2, ccy=cr.top+cr.height/2;
+    var dx=ccx-ecx, dy=ccy-ecy, ex, ey;
+    if(Math.abs(dx) >= Math.abs(dy)){                           // composer is more to the side → left/right edge
+      ex = dx>=0 ? r.right : r.left;
+      ey = Math.min(Math.max(ccy, r.top+4), r.bottom-4);
+    } else {                                                    // composer is more above/below → top/bottom edge
+      ey = dy>=0 ? r.bottom : r.top;
+      ex = Math.min(Math.max(ccx, r.left+4), r.right-4);
+    }
+    // 3) composer-side anchor: nearest edge of the box to the element anchor
+    var cx = (ex<cr.left) ? cr.left : (ex>cr.right ? cr.right : Math.min(Math.max(ex,cr.left),cr.right));
+    var cy = Math.min(Math.max(ey, cr.top+8), cr.bottom-8);
+    var mx = ex+(cx-ex)*0.5;
+    noodlePath.setAttribute('d','M'+ex+','+ey+' C'+mx+','+ey+' '+mx+','+cy+' '+cx+','+cy);
+    noodleDot.setAttribute('cx',ex); noodleDot.setAttribute('cy',ey); noodleDot.style.display='';
+  }
+  cTarget.addEventListener('mousedown',function(e){
+    dragging=true; var cr=composer.getBoundingClientRect();
+    composer._dx=e.clientX-cr.left; composer._dy=e.clientY-cr.top;
+    e.preventDefault(); e.stopPropagation();
+  });
+  document.addEventListener('mousemove',function(e){
+    if(!dragging) return;
+    var left=Math.min(window.innerWidth-composer.offsetWidth-8, Math.max(8, e.clientX-composer._dx));
+    var top =Math.min(window.innerHeight-40, Math.max(8, e.clientY-composer._dy));
+    composer.style.left=left+'px'; composer.style.top=top+'px'; drawNoodle();
+  },true);
+  document.addEventListener('mouseup',function(){ dragging=false; },true);
+  cSave.addEventListener('click',function(){
+    var txt=cText.value.trim(); if(!txt){ closeComposer(); return; }
+    if(editingId!=null){
+      comments.forEach(function(c){ if(c.id===editingId) c.text=txt; });
+    } else if(pendingEl){
+      comments.push({id:++seq, section:sectionName(pendingEl), desc:descOf(pendingEl), path:pathOf(pendingEl), text:txt, el:pendingEl});
+    }
+    closeComposer(); refresh();
+  });
+  cCancel.addEventListener('click',closeComposer);
+  cDel.addEventListener('click',function(){ if(editingId!=null){ comments=comments.filter(function(c){return c.id!==editingId;}); } closeComposer(); refresh(); });
+  cText.addEventListener('keydown',function(e){ if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)){ cSave.click(); } if(e.key==='Escape'){ closeComposer(); } });
+
+  // ---- panel list ----------------------------------------------------------
+  function refresh(){
+    countEl.textContent=comments.length; countEl.classList.toggle('rv-has',comments.length>0);
+    panelCount.textContent=comments.length;
+    if(!comments.length){ list.innerHTML='<p class="rv-empty">Turn on <b>Review</b>, then click any component to pin a comment.</p>'; }
+    else {
+      list.innerHTML='';
+      comments.forEach(function(c,i){
+        var it=document.createElement('div'); it.className='rv-item';
+        var loc=(c.section?('['+c.section+'] '):'')+c.desc;
+        it.innerHTML='<div class="rv-item-h"><span class="rv-num">'+(i+1)+'</span><span class="rv-loc"></span></div>'+
+          '<div class="rv-txt"></div>'+
+          '<div class="rv-acts"><button class="rv-link rv-goto" type="button">Reveal</button>'+
+          '<button class="rv-link rv-edit" type="button">Edit</button>'+
+          '<button class="rv-link rv-del" type="button">Delete</button></div>';
+        it.querySelector('.rv-loc').textContent=loc;
+        it.querySelector('.rv-txt').textContent=c.text;
+        it.querySelector('.rv-goto').addEventListener('click',function(){ if(c.el&&c.el.scrollIntoView){ c.el.scrollIntoView({block:'center'}); flash(c.el);} });
+        it.querySelector('.rv-edit').addEventListener('click',function(){ if(c.el) openComposer(c.el,c.id); });
+        it.querySelector('.rv-del').addEventListener('click',function(){ comments=comments.filter(function(x){return x.id!==c.id;}); refresh(); });
+        list.appendChild(it);
+      });
+    }
+    renderMarkers();
+  }
+  function flash(el){ var o=el.style.outline; el.style.outline='3px solid #DB0011'; setTimeout(function(){ el.style.outline=o; },700); }
+
+  // ---- export --------------------------------------------------------------
+  function buildPrompt(){
+    var lines=[];
+    lines.push('# '+DOC_TITLE+' — review edits ('+comments.length+')');
+    lines.push('');
+    lines.push('Apply the following change requests'+(DOC_FILE?(' to `'+DOC_FILE+'`'):'')+'. Each item is pinned to a component; treat the bracketed location as the target and use the selector to disambiguate.');
+    lines.push('');
+    comments.forEach(function(c,i){
+      var loc=(c.section?('['+c.section+'] '):'')+c.desc;
+      lines.push((i+1)+'. '+loc);
+      lines.push('   - '+c.text.replace(/\n/g,'\n     '));
+      lines.push('   - selector: `'+c.path+'`');
+      lines.push('');
+    });
+    return lines.join('\n');
+  }
+  function openExport(){ exportText.value=buildPrompt(); exportModal.classList.add('rv-show'); setTimeout(function(){ exportText.focus(); exportText.select(); },0); }
+  document.getElementById('rv-export-btn').addEventListener('click',openExport);
+  document.getElementById('rv-export-close').addEventListener('click',function(){ exportModal.classList.remove('rv-show'); });
+  exportModal.addEventListener('click',function(e){ if(e.target===exportModal) exportModal.classList.remove('rv-show'); });
+  document.getElementById('rv-export-copy').addEventListener('click',function(){
+    exportText.select();
+    var ok=false; try{ ok=document.execCommand('copy'); }catch(e){}
+    if(navigator.clipboard){ navigator.clipboard.writeText(exportText.value).catch(function(){}); ok=true; }
+    var b=document.getElementById('rv-export-copy'); var t=b.textContent; b.textContent=ok?'Copied ✓':'Select + ⌘C'; setTimeout(function(){ b.textContent=t; },1400);
+  });
+  document.getElementById('rv-export-download').addEventListener('click',function(){
+    var blob=new Blob([buildPrompt()],{type:'text/markdown'});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+    a.download=(DOC_TITLE.replace(/[^\w-]+/g,'-')||'review')+'-comments.md'; a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); },1000);
+  });
+
+  // ---- review-mode wiring --------------------------------------------------
+  var hoverEl=null;
+  function setActive(on){
+    active=on; document.body.classList.toggle('rv-active',on);
+    fab.classList.toggle('rv-on',on); fab.setAttribute('aria-pressed',on?'true':'false');
+    fab.querySelector('.rv-label').textContent=on?'Reviewing':'Review';
+    if(on){ panel.classList.add('rv-open'); } else { clearHover(); }
+  }
+  function clearHover(){ if(hoverEl){ hoverEl.removeAttribute('data-rv-hover'); hoverEl=null; } }
+  fab.addEventListener('click',function(){ setActive(!active); });
+  document.getElementById('rv-panel-close').addEventListener('click',function(){ panel.classList.remove('rv-open'); });
+  document.getElementById('rv-clear').addEventListener('click',function(){ if(comments.length&&confirm('Delete all '+comments.length+' comments?')){ comments=[]; refresh(); } });
+
+  document.addEventListener('mousemove',function(e){
+    if(!active || dragging) return;
+    var t=e.target;
+    if(isRvNode(t)){ clearHover(); return; }
+    if(t!==hoverEl){ clearHover(); hoverEl=t; if(hoverEl&&hoverEl.setAttribute) hoverEl.setAttribute('data-rv-hover',''); }
+  },true);
+
+  // capture clicks in review mode so the host page's own handlers/nav don't fire
+  document.addEventListener('click',function(e){
+    if(!active) return;
+    if(isRvNode(e.target)) return;           // let overlay UI work normally
+    e.preventDefault(); e.stopPropagation();
+    clearHover();
+    openComposer(e.target, null);
+  },true);
+
+  window.addEventListener('scroll',function(){ renderMarkers(); drawNoodle(); },true);
+  window.addEventListener('resize',function(){ renderMarkers(); drawNoodle(); },true);
+  setInterval(function(){ renderMarkers(); drawNoodle(); },600);   // keep pins + noodle glued as the page reflows
+
+  refresh();
+})();
+</script>
+<!-- ===================== END APOLLO REVIEW OVERLAY ===================== -->
+
 </body>
 </html>
