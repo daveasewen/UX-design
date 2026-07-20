@@ -2,7 +2,7 @@
 
 > Every assertion in the component metas that is **not** directly observed canon. Formalises the in-prose confidence convention (Graphify-borrow #1). 🔴 **review** = verify before trusting; 🟡 **inferred** = reasoned, lower urgency. `asserted` items (the default) are not listed. Generated — regenerate after editing metas: `python3 knowledge/_build_review_queue.py`. Vocabulary in `_CONFIDENCE.md`; machine detail in `_REVIEW-QUEUE.json`.
 
-**Totals:** 125 items across 32 components — 119 🔴 review, 6 🟡 inferred. By category: anti-pattern 51, token-rebind 29, accessibility 26, other 19.
+**Totals:** 126 items across 33 components — 120 🔴 review, 6 🟡 inferred. By category: anti-pattern 52, token-rebind 29, accessibility 26, other 19.
 
 Most-flagged components: Account card (9), Confirmation (9), Action bar (7), Badge (6), Eyebrow (6), Tab-bar (6), Countdown timer (5), Dropdown (5).
 
@@ -137,7 +137,7 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 **Summary**
 - 🔴 `accessibility.screenReader` — REVIEW (inferred): confirm amounts read naturally (e.g. '£250.00' as 'two hundred and fifty pounds'); the value carries meaning, not its right-alignment.
 
-## Anti-patterns — confirm or promote to asserted (51)
+## Anti-patterns — confirm or promote to asserted (52)
 
 **Accordion**
 - 🔴 `antiPatterns` — REVIEW (inferred): hiding required or critical information inside a collapsed panel
@@ -207,6 +207,9 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 
 **Hero**
 - 🔴 `antiPatterns` — REVIEW (inferred): autoplaying background video with sound / no pause control
+
+**Icon button**
+- 🔴 `antiPatterns` — REVIEW (inferred): using an icon button where a labelled Button is clearer (unfamiliar action)
 
 **Loading indicator**
 - 🔴 `antiPatterns` — REVIEW (inferred): using an indeterminate spinner where a determinate progress bar (known duration) would be clearer

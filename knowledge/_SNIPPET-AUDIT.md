@@ -49,6 +49,9 @@
 ## Hero.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
+## Icon-button.reference.html — ✅ PASS
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
+
 ## Input-fields.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 

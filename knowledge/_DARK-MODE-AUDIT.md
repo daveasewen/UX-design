@@ -2,7 +2,7 @@
 
 > Which components re-theme correctly in dark mode. **LEAK** = binds a raw colour *primitive* directly (single-valued, no dark variant — a real defect; the P3 family). *flat* = binds a semantic token whose dark value equals its light value (frequently intentional — reverse text, RAG, brand red — confirm per case). Derived view over the colour stores + blast-radius; regenerate: `python3 knowledge/_build_dark_mode_audit.py`. Detail in `_DARK-MODE-AUDIT.json`.
 
-**Coverage:** 32/39 components clean · 7 leak a primitive. Store: 178 semantic colour tokens (light+dark), 55 flat (dark==light), 192 primitives.
+**Coverage:** 33/40 components clean · 7 leak a primitive. Store: 178 semantic colour tokens (light+dark), 55 flat (dark==light), 192 primitives.
 
 ## Primitive leaks — fix before dark mode
 
@@ -35,6 +35,7 @@ Each raw primitive bound directly, and the components binding it. Rebind to a se
 | Eyebrow | ✅ clean | — | — |
 | Headers | ✅ clean | — | — |
 | Hero | 🔴 LEAK | `color/grey/transparent/white-75`, `color/primary` | `icon/default-reverse`, `primary/background/default`, `text/reverse` |
+| Icon button | ✅ clean | — | `icon/default-reverse` |
 | Input fields | ✅ clean | — | `form/background/default`, `form/border/default`, `icon/default-reverse`, `text/reverse` |
 | Links | 🔴 LEAK | `color/primary` | `icon/default-reverse`, `primary/background/default`, `text/reverse` |
 | List items | 🔴 LEAK | `color/primary` | `icon/default-reverse`, `image/opacity/default`, `image/opacity/disabled`, `text/reverse` |

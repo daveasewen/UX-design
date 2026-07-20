@@ -8,7 +8,7 @@
 
 | SC | Result | Granularity | Coverage |
 |---|---|---|---|
-| 1.4.11 | ✅ pass | component | 8/8 applies_to components have a bound audited token or a gated snippet contrastPair |
+| 1.4.11 | ✅ pass | component | 9/9 applies_to components have a bound audited token or a gated snippet contrastPair |
 | 1.4.3 | ✅ pass | component | 19/19 applies_to components have a bound audited token |
 | 2.3.3 | ✅ pass | component | — |
 | 2.5.8 | ✅ pass | component | — |
@@ -17,7 +17,7 @@
 
 ### 1.4.11
 
-8/8 applies_to components have a bound audited token or a gated snippet contrastPair. 8 pass, 0 fail, 0 not_covered.
+9/9 applies_to components have a bound audited token or a gated snippet contrastPair. 9 pass, 0 fail, 0 not_covered.
 
 **Resolved via secondary evidence** (no bound border token, but the component's own reference snippet declares a "ui"/"icon"-context contrastPair that the blocking snippet gate (`_validate_snippets.py`, check 3) already checks every build):
 

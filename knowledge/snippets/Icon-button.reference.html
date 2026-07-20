@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Icon button — reference implementation (gated)</title>
+<!--
+  CANONICAL REFERENCE for Icon button (icon-only trigger; 4 emphasis levels × states × both themes). Atom.
+  Bound onto the Apollo Mono button/* ladder — the SAME tokens the labelled Button gates green on — so the
+  two atoms stay in lock-step (primary monochrome NO red; hover = operational 0.70 opacity over the page,
+  ADR-0009/B-D3; disabled glyph a visible ghost via text/on-disabled, B-D4).
+
+  Icon-only invariants the labelled Button doesn't carry:
+   - ACCESSIBLE NAME is mandatory (no visible label) → aria-label on every instance (4.1.2 / 2.4.4).
+   - TARGET SIZE ≥ 44×44 (2.5.8) even though the glyph is 20px — padding makes the hit area.
+   - The glyph carries the action ALONE, so it's held to 4.5:1 (icon-015, Dave: "icons alone should have the
+     small-text equivalent contrast") — NOT the 3:1 pictogram floor.
+
+  ICONS: real HSBC library glyphs (assets/icons/global-controls/{add,download,edit,search,close}.svg) embedded
+  as a <symbol> sprite (filled paths, fill:currentColor) — byte-matched by _validate_icons.py. Square corners.
+  Motion = the size-scoped scale-physics: hover +2px / press −2px on the 44px target (self-documenting calc).
+-->
+<style>
+  :root{
+    --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+    --ease:160ms cubic-bezier(.4,0,.2,1);
+    --spring:300ms cubic-bezier(.5,1.6,.4,1);
+    --press:90ms cubic-bezier(0,0,.58,1);
+    --target:44px; --glyph:20px;
+  }
+  [data-theme="light"]{
+    /* PRIMARY — Mono monochrome (button/primary/*) */
+    --pri-default:#1A1A1A; --pri-hover:#626262; --pri-pressed:#000000; --pri-disabled:#E1E1E1;
+    --pri-glyph:#FFFFFF;
+    /* SECONDARY (button/secondary/*) */
+    --sec-default:#626262; --sec-hover:#484848; --sec-pressed:#313131; --sec-disabled:#E1E1E1;
+    --sec-glyph:#FFFFFF;
+    /* TERTIARY — outlined (button/tertiary/*) */
+    --ter-hover:#F0F0F0; --ter-border:#1A1A1A; --ter-border-disabled:#E1E1E1; --ter-glyph:#1A1A1A;
+    /* QUATERNARY — ghost (button/quaternary/*) */
+    --quat-hover:#F0F0F0; --quat-glyph:#1A1A1A;
+    /* shared */
+    --glyph-disabled:#9D9D9D; --page:#FFFFFF; --text-default:#1A1A1A;
+  }
+  [data-theme="dark"]{
+    --pri-default:#FAFAFA; --pri-hover:#B7B7B7; --pri-pressed:#FFFFFF; --pri-disabled:#484848;
+    --pri-glyph:#333333;
+    --sec-default:#808080; --sec-hover:#9D9D9D; --sec-pressed:#B7B7B7; --sec-disabled:#484848;
+    --sec-glyph:#000000;
+    --ter-hover:#232323; --ter-border:#FFFFFF; --ter-border-disabled:#808080; --ter-glyph:#FFFFFF;
+    --quat-hover:#232323; --quat-glyph:#FFFFFF;
+    --glyph-disabled:#808080; --page:#1A1A1A; --text-default:#FFFFFF;
+  }
+
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page);
+    color:var(--text-default); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--glyph-disabled);
+    background:transparent; color:var(--text-default); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--text-default); outline-offset:2px;}
+  h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+  .row{display:flex; gap:16px; flex-wrap:wrap; align-items:center;}
+  .cap{font-size:12px; opacity:.45; width:100%; margin-top:8px;}
+
+  /* the atom — 44×44 hit area, 20px glyph, square corners */
+  .iconbtn{
+    width:var(--target); height:var(--target); min-width:var(--target); min-height:var(--target);
+    display:inline-flex; align-items:center; justify-content:center;
+    padding:0; border:0; border-radius:0; cursor:pointer; background:transparent;
+    transition:background var(--ease), border-color var(--ease), transform var(--spring), filter var(--press);
+  }
+  .iconbtn svg{width:var(--glyph); height:var(--glyph); display:block; fill:currentColor; pointer-events:none;}
+  .iconbtn:focus-visible{outline:2px solid var(--text-default); outline-offset:2px;}
+  /* Size-scoped scale-physics: hover = +2px, press = −2px on the 44px target (self-documenting calc; ~2px). */
+  .iconbtn:hover{transform:scale(calc(1 + 2/44));}
+  .iconbtn:active{transform:scale(calc(1 - 2/44)); filter:brightness(.94); transition:transform var(--press), filter var(--press);}
+  .iconbtn:disabled{cursor:not-allowed; opacity:1;}
+  .iconbtn:disabled:hover,.iconbtn:disabled:active{transform:none; filter:none;}
+
+  /* PRIMARY — monochrome fill, inverse glyph; hover = operational 0.70 opacity over the page (ADR-0009/B-D3);
+     --pri-hover holds the stored colour-equivalent (#626262/#B7B7B7) for colour-only consumers. */
+  .iconbtn.primary{background:var(--pri-default); color:var(--pri-glyph);}
+  .iconbtn.primary:hover{background:color-mix(in srgb, var(--pri-default) 70%, var(--page));}
+  .iconbtn.primary.is-pressed{background:var(--pri-pressed);}
+  .iconbtn.primary:disabled{background:var(--pri-disabled); color:var(--glyph-disabled);}
+
+  /* SECONDARY — solid grey fill, inverse glyph */
+  .iconbtn.secondary{background:var(--sec-default); color:var(--sec-glyph);}
+  .iconbtn.secondary:hover{background:var(--sec-hover);}
+  .iconbtn.secondary.is-pressed{background:var(--sec-pressed);}
+  .iconbtn.secondary:disabled{background:var(--sec-disabled); color:var(--glyph-disabled);}
+
+  /* TERTIARY — outlined; glyph inverts with theme */
+  .iconbtn.tertiary{background:transparent; color:var(--ter-glyph); border:1px solid var(--ter-border);}
+  .iconbtn.tertiary:hover{background:var(--ter-hover);}
+  .iconbtn.tertiary.is-pressed{background:var(--ter-hover);}
+  .iconbtn.tertiary:disabled{background:transparent; color:var(--glyph-disabled); border-color:var(--ter-border-disabled);}
+
+  /* QUATERNARY — borderless ghost; tertiary tint on hover/press */
+  .iconbtn.quaternary{background:transparent; color:var(--quat-glyph);}
+  .iconbtn.quaternary:hover{background:var(--quat-hover);}
+  .iconbtn.quaternary.is-pressed{background:var(--quat-hover);}
+  .iconbtn.quaternary:disabled{background:transparent; color:var(--glyph-disabled);}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; }
+    .iconbtn:hover,.iconbtn:active{ transform:none !important; filter:none !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls">
+    <button id="themeToggle" type="button">◐ Toggle theme</button>
+    <span>Icon button — canonical reference (atom · 4 emphasis levels)</span>
+  </div>
+
+  <!-- real HSBC library glyphs (assets/icons/global-controls/*), filled, fill:currentColor -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="ib-add" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M18 8.4H9.6V0H8.4V8.4H0V9.6H8.4V18H9.6V9.6H18V8.4Z" fill="currentColor"/></symbol>
+    <symbol id="ib-download" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.8 12V15.8H2.2V12H1V17H17V12H15.8ZM14 8.848V7.151L9.6 11.551V1H8.4V11.551L4 7.151V8.848L9 13.849L14 8.848Z" fill="currentColor"/></symbol>
+    <symbol id="ib-edit" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M17.368 1.584L16.416 0.632C15.994 0.211 15.441 0 14.889 0C14.337 0 13.784 0.211 13.362 0.632L2.954 11.041L0 18L6.959 15.046L17.368 4.638C18.211 3.795 18.211 2.427 17.368 1.584ZM6.276 14.032L2.265 15.734L3.967 11.723L12.421 3.269L14.729 5.577L6.276 14.032ZM16.519 3.789L15.578 4.73L13.27 2.422L14.211 1.481C14.392 1.3 14.633 1.2 14.889 1.2C15.145 1.2 15.386 1.3 15.567 1.481L16.519 2.433C16.893 2.807 16.893 3.415 16.519 3.789Z" fill="currentColor"/></symbol>
+    <symbol id="ib-search" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.19675 12.803C3.66075 14.268 5.58075 15 7.49975 15C9.23175 15 10.9598 14.398 12.3577 13.206L17.1257 17.973L17.9748 17.125L13.2067 12.357C15.7197 9.41 15.5898 4.981 12.8048 2.196C11.3388 0.732 9.41875 0 7.49975 0C5.58075 0 3.66075 0.732 2.19675 2.197C-0.73225 5.126 -0.73225 9.874 2.19675 12.803ZM1.19975 7.5C1.19975 5.817 1.85575 4.235 3.04475 3.045C4.23375 1.855 5.81675 1.2 7.49975 1.2C9.18275 1.2 10.7648 1.855 11.9548 3.045C14.4108 5.501 14.4108 9.498 11.9548 11.955C10.7648 13.145 9.18275 13.8 7.49975 13.8C5.81675 13.8 4.23475 13.145 3.04475 11.955C1.85475 10.765 1.19975 9.183 1.19975 7.5Z" fill="currentColor"/></symbol>
+    <symbol id="ib-close" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <h2>Primary</h2>
+  <div class="row">
+    <button class="iconbtn primary" aria-label="Add"><svg><use href="#ib-add"/></svg></button>
+    <button class="iconbtn primary is-pressed" aria-label="Add"><svg><use href="#ib-add"/></svg></button>
+    <button class="iconbtn primary" disabled aria-label="Add"><svg><use href="#ib-add"/></svg></button>
+    <span class="cap">Default · pressed · disabled — hit area 44×44, glyph 20 (hover me — fill fades 0.70)</span>
+  </div>
+
+  <h2>Secondary</h2>
+  <div class="row">
+    <button class="iconbtn secondary" aria-label="Download"><svg><use href="#ib-download"/></svg></button>
+    <button class="iconbtn secondary is-pressed" aria-label="Download"><svg><use href="#ib-download"/></svg></button>
+    <button class="iconbtn secondary" disabled aria-label="Download"><svg><use href="#ib-download"/></svg></button>
+    <span class="cap">Default · pressed · disabled (hover me)</span>
+  </div>
+
+  <h2>Tertiary (outlined)</h2>
+  <div class="row">
+    <button class="iconbtn tertiary" aria-label="Edit"><svg><use href="#ib-edit"/></svg></button>
+    <button class="iconbtn tertiary is-pressed" aria-label="Edit"><svg><use href="#ib-edit"/></svg></button>
+    <button class="iconbtn tertiary" disabled aria-label="Edit"><svg><use href="#ib-edit"/></svg></button>
+    <span class="cap">Default · pressed · disabled (hover me)</span>
+  </div>
+
+  <h2>Quaternary (ghost)</h2>
+  <div class="row">
+    <button class="iconbtn quaternary" aria-label="Search"><svg><use href="#ib-search"/></svg></button>
+    <button class="iconbtn quaternary is-pressed" aria-label="Search"><svg><use href="#ib-search"/></svg></button>
+    <button class="iconbtn quaternary" disabled aria-label="Close"><svg><use href="#ib-close"/></svg></button>
+    <span class="cap">Default · pressed · disabled (hover me)</span>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Icon button",
+    "vars": {
+      "--pri-default": "button/primary/background/default",
+      "--pri-hover": "button/primary/background/hover",
+      "--pri-pressed": "button/primary/background/pressed",
+      "--pri-disabled": "button/primary/background/disabled",
+      "--pri-glyph": "button/primary/icon/default",
+      "--sec-default": "button/secondary/background/default",
+      "--sec-hover": "button/secondary/background/hover",
+      "--sec-pressed": "button/secondary/background/pressed",
+      "--sec-disabled": "button/secondary/background/disabled",
+      "--sec-glyph": "button/secondary/label/default",
+      "--ter-hover": "button/tertiary/background/hover",
+      "--ter-border": "button/tertiary/border/default",
+      "--ter-border-disabled": "button/tertiary/border/disabled",
+      "--ter-glyph": "button/tertiary/label/default",
+      "--quat-hover": "button/quaternary/background/hover",
+      "--quat-glyph": "button/quaternary/label/default",
+      "--glyph-disabled": "text/on-disabled",
+      "--page": "background/default",
+      "--text-default": "text/default"
+    },
+    "contrastPairs": [
+      { "fg": "button/primary/icon/default",    "bg": "button/primary/background/default",   "context": "icon" },
+      { "fg": "button/primary/icon/default",    "bg": "button/primary/background/hover",     "context": "icon" },
+      { "fg": "button/primary/icon/default",    "bg": "button/primary/background/pressed",   "context": "icon" },
+      { "fg": "button/secondary/label/default", "bg": "button/secondary/background/default", "context": "text" },
+      { "fg": "button/secondary/label/default", "bg": "button/secondary/background/hover",   "context": "text" },
+      { "fg": "button/tertiary/label/default",  "bg": "background/default",                  "context": "text" },
+      { "fg": "button/tertiary/border/default", "bg": "background/default",                  "context": "ui" },
+      { "fg": "button/quaternary/label/default","bg": "background/default",                  "context": "text" }
+    ],
+    "requiredAria": ["<button", "aria-label", "disabled"],
+    "$note": "Disabled glyph = text/on-disabled (#9D9D9D/#808080) — contrast-EXEMPT (WCAG 1.4.3 inactive) but a deliberately visible ghost, never == its disabled ground (B-D4). Hence not a contrast pair."
+  }
+  </script>
+  <script>document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });</script>
+</body>
+</html>

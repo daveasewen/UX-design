@@ -2,7 +2,7 @@
 
 *GATE (build-failing as of 2026-06-24). Each inline `<svg>` path is matched to the library. **library** = byte-matches a real glyph · **bespoke** = inside `<svg data-bespoke="reason">`, a deliberately custom shape (control glyph / animated / focus mark), verified · **UNKNOWN** = neither (possibly invented → use the library SVG, or mark it `data-bespoke`). Shape-only icons (`<circle>`/`<rect>`/`<ellipse>`/`<polygon>` with no `<path>`, e.g. a 3-dot kebab) are now flagged too.*
 
-**0 UNKNOWN path(s)** across 39 snippet(s) (17 verified-bespoke). Library glyphs indexed: 746.
+**0 UNKNOWN path(s)** across 40 snippet(s) (17 verified-bespoke). Library glyphs indexed: 746.
 
 | # | Snippet | paths | library | bespoke | UNKNOWN | declares | status |
 |---|---------|------:|--------:|--------:|--------:|:--------:|--------|
@@ -22,29 +22,30 @@
 | 14 | Eyebrow | 0 | 0 | 0 | 0 | — | — no inline svg paths |
 | 15 | Headers | 2 | 2 | 0 | 0 | yes | ✅ verified |
 | 16 | Hero | 1 | 1 | 0 | 0 | — | ✅ verified |
-| 17 | Input-fields | 6 | 6 | 0 | 0 | yes | ✅ verified |
-| 18 | Links | 6 | 6 | 0 | 0 | yes | ✅ verified |
-| 19 | List-items | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 20 | Loading-indicator | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 21 | Modals | 1 | 1 | 0 | 0 | — | ✅ verified |
-| 22 | Navigations | 2 | 2 | 0 | 0 | — | ✅ verified |
-| 23 | Notifications | 9 | 9 | 0 | 0 | yes | ✅ verified |
-| 24 | Pagination | 2 | 2 | 0 | 0 | — | ✅ verified |
-| 25 | Progress-tracker | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 26 | Quick-actions | 4 | 4 | 0 | 0 | — | ✅ verified |
-| 27 | Reorder | 18 | 18 | 0 | 0 | — | ✅ verified |
-| 28 | Search-field | 2 | 2 | 0 | 0 | — | ✅ verified |
-| 29 | Selection-controls | 7 | 0 | 7 | 0 | — | ✅ verified · 7 bespoke |
-| 30 | Slider | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 31 | Status-indicator | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 32 | Summary | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 33 | Tab-bar | 11 | 11 | 0 | 0 | yes | ✅ verified |
-| 34 | Table | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 35 | Tabs | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 36 | Tags | 1 | 1 | 0 | 0 | yes | ✅ verified |
-| 37 | Tooltip | 3 | 3 | 0 | 0 | — | ✅ verified |
-| 38 | Video-player | 4 | 4 | 0 | 0 | — | ✅ verified |
-| 39 | View-options | 2 | 2 | 0 | 0 | — | ✅ verified |
+| 17 | Icon-button | 5 | 5 | 0 | 0 | — | ✅ verified |
+| 18 | Input-fields | 6 | 6 | 0 | 0 | yes | ✅ verified |
+| 19 | Links | 6 | 6 | 0 | 0 | yes | ✅ verified |
+| 20 | List-items | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 21 | Loading-indicator | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 22 | Modals | 1 | 1 | 0 | 0 | — | ✅ verified |
+| 23 | Navigations | 2 | 2 | 0 | 0 | — | ✅ verified |
+| 24 | Notifications | 9 | 9 | 0 | 0 | yes | ✅ verified |
+| 25 | Pagination | 2 | 2 | 0 | 0 | — | ✅ verified |
+| 26 | Progress-tracker | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 27 | Quick-actions | 4 | 4 | 0 | 0 | — | ✅ verified |
+| 28 | Reorder | 18 | 18 | 0 | 0 | — | ✅ verified |
+| 29 | Search-field | 2 | 2 | 0 | 0 | — | ✅ verified |
+| 30 | Selection-controls | 7 | 0 | 7 | 0 | — | ✅ verified · 7 bespoke |
+| 31 | Slider | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 32 | Status-indicator | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 33 | Summary | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 34 | Tab-bar | 11 | 11 | 0 | 0 | yes | ✅ verified |
+| 35 | Table | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 36 | Tabs | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 37 | Tags | 1 | 1 | 0 | 0 | yes | ✅ verified |
+| 38 | Tooltip | 3 | 3 | 0 | 0 | — | ✅ verified |
+| 39 | Video-player | 4 | 4 | 0 | 0 | — | ✅ verified |
+| 40 | View-options | 2 | 2 | 0 | 0 | — | ✅ verified |
 
 ## UNKNOWN detail
 

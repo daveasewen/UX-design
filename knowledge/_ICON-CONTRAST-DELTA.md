@@ -18,6 +18,12 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | Button.reference.html | button/primary/icon/default | button/primary/background/default | dark | 12.1 | pass-4.5 |
 | Headers.reference.html | icon/default | background/default | light | 17.4 | pass-4.5 |
 | Headers.reference.html | icon/default | background/default | dark | 17.4 | pass-4.5 |
+| Icon-button.reference.html | button/primary/icon/default | button/primary/background/default | light | 17.4 | pass-4.5 |
+| Icon-button.reference.html | button/primary/icon/default | button/primary/background/default | dark | 12.1 | pass-4.5 |
+| Icon-button.reference.html | button/primary/icon/default | button/primary/background/hover | light | 6.1 | pass-4.5 |
+| Icon-button.reference.html | button/primary/icon/default | button/primary/background/hover | dark | 6.3 | pass-4.5 |
+| Icon-button.reference.html | button/primary/icon/default | button/primary/background/pressed | light | 21.0 | pass-4.5 |
+| Icon-button.reference.html | button/primary/icon/default | button/primary/background/pressed | dark | 12.63 | pass-4.5 |
 | Input-fields.reference.html | icon/default | background/default | light | 17.4 | pass-4.5 |
 | Input-fields.reference.html | icon/default | background/default | dark | 17.4 | pass-4.5 |
 | Links.reference.html | icon/default | background/default | light | 17.4 | pass-4.5 |

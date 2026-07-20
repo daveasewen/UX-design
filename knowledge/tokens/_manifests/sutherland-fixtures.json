@@ -1,7 +1,7 @@
 {
   "$description": "Sutherland acceptance fixtures — per component, the contract a React implementation must satisfy to match the gated reference. Generated from snippet manifests + metas; regenerated each build.",
   "generated": "by _build_sutherland_fixtures.py",
-  "componentCount": 39,
+  "componentCount": 40,
   "fixtures": [
     {
       "component": "Accordion",
@@ -1166,6 +1166,118 @@
             ],
             "default": "image",
             "$note": "Background/secondary asset type."
+          }
+        ]
+      }
+    },
+    {
+      "component": "Icon button",
+      "category": "atom",
+      "referenceSnippet": "snippets/Icon-button.reference.html",
+      "meta": "components/icon-button.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--pri-default": "button/primary/background/default",
+          "--pri-hover": "button/primary/background/hover",
+          "--pri-pressed": "button/primary/background/pressed",
+          "--pri-disabled": "button/primary/background/disabled",
+          "--pri-glyph": "button/primary/icon/default",
+          "--sec-default": "button/secondary/background/default",
+          "--sec-hover": "button/secondary/background/hover",
+          "--sec-pressed": "button/secondary/background/pressed",
+          "--sec-disabled": "button/secondary/background/disabled",
+          "--sec-glyph": "button/secondary/label/default",
+          "--ter-hover": "button/tertiary/background/hover",
+          "--ter-border": "button/tertiary/border/default",
+          "--ter-border-disabled": "button/tertiary/border/disabled",
+          "--ter-glyph": "button/tertiary/label/default",
+          "--quat-hover": "button/quaternary/background/hover",
+          "--quat-glyph": "button/quaternary/label/default",
+          "--glyph-disabled": "text/on-disabled",
+          "--page": "background/default",
+          "--text-default": "text/default"
+        },
+        "requiredAria": [
+          "<button",
+          "aria-label",
+          "disabled"
+        ],
+        "contrastPairs": [
+          {
+            "fg": "button/primary/icon/default",
+            "bg": "button/primary/background/default",
+            "context": "icon"
+          },
+          {
+            "fg": "button/primary/icon/default",
+            "bg": "button/primary/background/hover",
+            "context": "icon"
+          },
+          {
+            "fg": "button/primary/icon/default",
+            "bg": "button/primary/background/pressed",
+            "context": "icon"
+          },
+          {
+            "fg": "button/secondary/label/default",
+            "bg": "button/secondary/background/default",
+            "context": "text"
+          },
+          {
+            "fg": "button/secondary/label/default",
+            "bg": "button/secondary/background/hover",
+            "context": "text"
+          },
+          {
+            "fg": "button/tertiary/label/default",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "button/tertiary/border/default",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "button/quaternary/label/default",
+            "bg": "background/default",
+            "context": "text"
+          }
+        ],
+        "props": [
+          {
+            "name": "type",
+            "type": "enum",
+            "values": [
+              "primary",
+              "secondary",
+              "tertiary",
+              "quaternary"
+            ],
+            "default": "quaternary",
+            "$note": "Emphasis mirrors Button. Quaternary (ghost) is the most common icon-button in toolbars/inputs; primary icon-only is rare (reserve for a single decisive action e.g. a FAB-like add)."
+          },
+          {
+            "name": "state",
+            "type": "enum",
+            "values": [
+              "default",
+              "hover",
+              "pressed",
+              "focus",
+              "disabled"
+            ],
+            "default": "default"
+          },
+          {
+            "name": "glyph",
+            "type": "string",
+            "$note": "Icon id from the assets/icons sprite; drives the accessible name unless aria-label overrides."
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "$note": "REQUIRED accessible name (aria-label / visually-hidden text). Icon-only = no visible label, so the name is non-optional (4.1.2 / 2.4.4)."
           }
         ]
       }
