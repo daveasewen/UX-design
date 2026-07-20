@@ -1,33 +1,35 @@
 # Good morning, Dave ☕
 
-*Briefing — written 2026-07-19 19:46 (date from `date`), session
-**"Apollo Mono: the money atom, digital-black as the new #000, and the greys ruled onto the ramp"** — built the
-first P1 money-format atom, ruled digital-black the GENERAL new `#000` (swept all 38 components), and turned the
-whole semantic-grey set into rulings (R-D16) against the new Mono ramp.*
+*Briefing — refreshed 2026-07-20 (date from `date`), session
+**"Canonical-core ADR + doc/memory housekeeping"** — the record itself was overdue: this file had gone TWO
+sessions stale (still listed T9 / tokenize as "do first" when both had long landed). This session cleaned that
+up, drafted the **ADR-0008 canonical-core/adapter strategy** Dave had approved but that ran out of context to
+write, and compacted the memory index.*
 
-> ✅ **CONDUCTOR (continued).** The same-day PRIOR strand is already committed + pushed (RAG fills promoted,
-> four-theme **R-D15**, the `color/mono/1–15` grey ramp — see §A). **This session** then added the
-> **`Amount-display`** P1 atom + figure rungs `.t-cm-figure-4/5/6`, the **digital-black `#1A1A1A` library sweep**
-> (all 38 components' dark grounds — committed), and **R-D16** (every semantic grey ruled onto the Mono ramp —
-> RULED, enactment PENDING). It also **caught + fixed a STAND-002 red build** the prior GOOD-MORNING rewrite had
-> committed (it dropped the standing-docs reachability list). This chat's own commit = R-D16 + the grey review
-> sheet + these handoff updates — see COMMIT STATE.
+> ✅ **SOLO / self-conductor.** No other live session this round — single writer for shared state. The two
+> strands that landed BEFORE this session (both committed + pushed): the **button ladder as a 3-tier token
+> stack** (`button/{secondary,tertiary,quaternary}` → `surface/action*` → `color/mono/*`, commit `ded4900`)
+> and the **★ canonical-core STRATEGY LOCK** (Apollo = canonical source, consumers via automated adapters —
+> commit `200c2ec` carried the first-principle note). **This session** turned that strategy into the formal
+> **ADR-0008**, refreshed this handoff + `_LIVE-STATE`, and ran the memory compaction that was flagged DUE.
+> See COMMIT STATE.
 
 ---
 
 ## ⬛ DO THESE TWO FIRST (10 seconds)
 
-> **RENAME THIS CHAT → `Apollo Mono: R-D16 enacted, snippets styled by tokens, and the three-tier stack (elevation exemplar)`**
-> *(read good-morning solo; enacted R-D16 — greys onto the ramp + 2 a11y carve-outs; built `gen_snippet_tokens.py`
-> so snippets are styled BY the tokens, no hand-sync; Dave ruled the strict THREE-TIER token architecture → wrote
-> `_STANDARDS.md` + `_validate_token_tiers.py` gate + dark-elevation as the exemplar (`surface/raised #1F1F1F`,
-> dialled on a live tuner). Two commits pushed. Then turned composer: scoped Tranche-9 + wrote the T1–T8 tokenize brief.)*
+> **RENAME THIS CHAT → `Canonical-core ADR-0008, GOOD-MORNING un-stale, memory compacted`**
+> *(read good-morning solo; drafted **`docs/decisions/ADR-0008-canonical-core-and-adapters.md`** — Apollo =
+> canonical source, consumers via automated adapters, "diverge for quality, keep every divergence machine-mappable",
+> the button ladder as its reference divergence; refreshed this handoff + `_LIVE-STATE`; compacted the ~20KB memory
+> index. Housekeeping session — no gated-code change; build stays green.)*
 
-> **TITLE TODAY'S CHAT →** `Tranche 9 · Secure entry — build it token-driven (composer); kick the T1–T8 tokenize worker`
-> Build **T9 · Secure entry** (OTP/PIN, password Show/Hide + strength, memorable-word, re-auth) as the FIRST
-> **token-driven** tranche — it carries a `#token-manifest` + current values (mirror T6's format, add the manifest).
-> In parallel kick the worker brief `notes/_BRIEF-tranche-tokenize-T1-T8.md`. First ruling owed: the **mono
-> primary-action token** (`action/primary/*`) — no token exists for the near-black primary button. **Opus** (build + ruling).
+> **TITLE TODAY'S CHAT →** `Sutherland field-test + designer-skills-v1 revisit; or the mono primary-action ruling`
+> Pick the next real deliverable from the now-current §C queue. Strongest candidates: **(a)** the ground-truth
+> Sutherland field test (run Apollo in VS Code beside the real Sutherland repo → build the real Apollo↔Sutherland
+> map — case #1 for "serve any codebase", per ADR-0008); **(b)** revisit **`designer-skills-v1`** before it ships
+> (it assumes no-Python; the strategy now says designers run the full architecture); **(c)** the owed **mono
+> primary-action token ruling** (`action/primary/*`). **Opus** for (a)/(c); (b) is Sonnet-grade.
 
 *Standing practice: every handoff carries both names — retrospective + forward. Step 4b in
 `_RUNBOOK-capture-ritual.md`.*
@@ -175,79 +177,64 @@ TTFs to `~/.fonts` + `fc-cache -f`; CSS `font-family:"HSBC_MtUnivers_Latin"`. Fu
 
 ---
 
-# §B · THIS SESSION (2026-07-19 afternoon, "R-D16 enacted, snippets styled by tokens, three-tier stack")
+# §B · THIS SESSION (2026-07-20, "Canonical-core ADR + doc/memory housekeeping")
 
-## What LANDED (this session — TWO commits, both pushed)
-- **✅ R-D16 ENACTED — commit `dba719b`, pushed.** 90 semantic greys re-based onto `color/mono/*` (text ink
-  `#1A1A1A`, secondary collapsed to the single ink, mechanical dark greys); `$alias` repointed to `color/mono/N`.
-  **★ TWO a11y carve-outs the contrast gate FORCED** (provenance `_proforma/_RAG-DECISIONS.md` R-D16 — do NOT
-  revert to nearest-step): dark borders/dividers → `mono/8 #808080` (`mono/7` = 2.76:1 on the `#1A1A1A` ground);
-  text-bearing pressed fills → `mono/7 #626262` (white label on `mono/8` = 3.95). Residual `#333` UI → `#1A1A1A`;
-  `text/on-inverse` + 6 data-vis greys LEFT. `col25-011` annotated.
-- **★ `gen_snippet_tokens.py` (NEW) — snippets are STYLED BY the tokens** (Dave: "the snippets need to be styled by
-  the tokens"). Projects `semantic-colour.json` → each snippet's `[data-theme]` blocks + `canon.css .cn-*` via the
-  snippet's own `#token-manifest`. Idempotent, self-verifying, `driftAllow`-aware, fails loud. No more hand-sync.
-- **★★ THREE-TIER TOKEN ARCHITECTURE RULED (Dave) — component → semantic → primitive; a component NEVER references
-  a primitive.** NEW standing hub **`_STANDARDS.md`** (§1) + ADR `_DECISION-HISTORY/2026-07-19-token-tier-architecture.md`
-  + memory `token-tier-architecture`. Storage: `$alias` = source of truth, `$value` = gate-verified cache. NEW
-  blocking gate **`_validate_token_tiers.py`** (component→semantic + `$value == resolve($alias)`), wired in (now 35 steps).
-- **★ Dark elevation = the 3-tier reference example — commit `e69b75f`, pushed.** Primitives `color/mono/raise-1/2/3`
-  = `#1F1F1F / #232323 / #272727` (Dave dialled on the **v2 live tuner**) → semantic `surface/raised`, `surface/subtle`,
-  `surface/raised-hover` → the 9 surface components R-D16 flattened onto the ground. Press recedes to ground (valid).
-  `gen_canon_tokens.py` emits the real `var()` chain.
-- **Live-controller preference banked** (memory `feedback-live-controller`): for feel-dials default to a slider tuner.
+## What LANDED (this session — housekeeping, no gated-code change)
+- **✅ ADR-0008 DRAFTED — `docs/decisions/ADR-0008-canonical-core-and-adapters.md`.** Turns Dave's 2026-07-20
+  strategy lock into the formal anchor: **Apollo = canonical source** (well-formed superset, not a mirror of any
+  consumer); **quality is the vote-winner, never inherit a flaw to match a consumer** (proof = the decoupled
+  `button/*` tier instead of the overloaded `secondary`=checkbox token); **respect but don't follow** — consumers
+  reached by an automated adapter layer (seed: `tokens/_manifests/sutherland-diffs.json` + hub-and-spoke
+  `codeBindings`); operating principle **"diverge for quality, keep every divergence machine-mappable"**; designers
+  run the **full architecture** (revisit `designer-skills-v1`). Extends ADR-0002/0005/0006.
+- **✅ GOOD-MORNING un-staled.** It had gone two sessions stale (listed T9/tokenize as "do first" — both done).
+  Refreshed to current truth; §A orientation + the STAND-002 standing-docs list left intact.
+- **✅ Memory index compacted** — was flagged DUE (~20KB). (See COMMIT STATE for what moved.)
 
-## What I got wrong / watch
-- **Mis-called `gen_canon_tokens.py` "orphaned"** — it's in `canon/`, I looked in `knowledge/`. Corrected. Verify a
-  path before declaring something missing.
-- **Nearly over-deferred the component work** (kept doing foundations); Dave rightly pushed to build. Momentum.
-- **Fuel gauge UNDER-reads:** the Haiku reading said GREEN 23.5% but the transcript export compacts tool results (a
-  single file read this session was bigger than the whole transcript it counted) → treat as a floor; real fill is
-  higher (low-mid amber). Candidate fix: gauge from something closer to the live window.
-
-## Composer setup (session tail — turned conductor at Dave's "you're the boss now")
-- **Tranche 9 · Secure entry & verification PICKED** (OTP/PIN, password Show/Hide + strength, memorable-word,
-  re-auth). Icons verified in the sprite (`security-password/secure-key/secure/face/digital-identity`); password
-  toggle = **"Show/Hide" text** (no eye glyph — more device-agnostic, tov-038). NOT built (queued §C1).
-- **Worker brief WRITTEN:** `notes/_BRIEF-tranche-tokenize-T1-T8.md` — the 8 tranches hardcode pre-R-D16 values with
-  no manifest (drifted); tokenize them (add `#token-manifest`, project via `gen_snippet_tokens`, gate, receipt).
-  Worktree-isolated, **no-commit**, receipt for the composer to reconcile.
+## For context — what landed in the TWO sessions just BEFORE this one (already pushed)
+- **Button ladder → 3-tier tokens (commit `ded4900`).** `button/{secondary,tertiary,quaternary}` → `surface/action*`
+  · `text/on-action` · `border/action-strong` → `color/mono/*`; tier gate enforces it. Secondary = grey filled
+  per-mode (L `#626262`/white · D `#808080`/black, label flips by mode); red primary = **Legacy only**. The
+  overloaded legacy `secondary/tertiary/primary` were left UNTOUCHED (they carry checked-state/surface roles).
+- **Tranche-9 · Secure entry BUILT + gated** (OTP/PIN, password Show/Hide + strength, memorable-word, re-auth) and
+  **T1–T8 all tokenised** (each carries a `#token-manifest`; `gen_snippet_tokens.py` projects all 9). **T9 NOT yet
+  Dave-reviewed.** The visible focus-ring went blue on tokenisation (`focus/ring`) — flag if a mono ring is wanted.
+- **Canonical-core strategy LOCKED (Dave 2026-07-20)** — now formalised as ADR-0008 above.
 
 ---
 
 # §C · QUEUE
 
-## 1. ★ BUILD Tranche-9 · Secure entry (composer, next real deliverable)
-The **first token-driven tranche**: carries a `#token-manifest` + the CURRENT token values (mirror T6's format —
-`_proforma/Tranche-6-interactive.html` — but add the manifest so it's projectable, per `_STANDARDS.md` §4).
-Components: **OTP/PIN** (segmented numeric boxes, auto-advance, paste, error/complete) · **password** (Show/Hide
-text toggle + strength meter) · **memorable-word / security field** · **re-auth prompt**. Real sprite icons only.
-Monochrome; the one hue is the RAG error state (like T1's amount-input error). Gate green.
+## 1. ★ Ground-truth Sutherland field test (ADR-0008 case #1)
+Run Apollo in **VS Code + Copilot beside the real Sutherland repo** → read the actual components/tokens → build the
+real Apollo↔Sutherland map, and field-test "serve any codebase" against it. Doubles as the first live-fire of the
+designer pack. Seed already exists: `tokens/_manifests/sutherland-diffs.json` + hub-and-spoke `codeBindings`.
 
-## 2. ★ KICK the T1–T8 tokenize worker
-Brief: `notes/_BRIEF-tranche-tokenize-T1-T8.md`. Worktree-isolated subagent (values are ruled → mechanical +
-flagged). It files a receipt in `notes/_receipts/`; composer reconciles the worktree + commits (git-commit runbook
-step 0.5 — account for every dirty path, never blind `git add -A` with a worker live).
+## 2. ★ Revisit `designer-skills-v1` before it ships
+It was shaped around a **no-Python** assumption that ADR-0008 decision 5 overturns — designers run the full
+architecture (gates + generators, in-editor), not a guidance-only cut. Reshape before release. **Sonnet-grade.**
 
-## 3. ★ RULING owed — the mono PRIMARY-ACTION token (surfaced by the tranche work)
-The near-black primary button (`--pri/--pri-h/--pri-lbl` in the tranches) has **no semantic token** — likely needs
-new `action/primary/*` tokens. Also the ambiguous tranche vars (`--disi`, `--line2`, `--surf`, `--scrim`,
-`--shadow`) flagged in the brief for a binding decision.
+## 3. ★ RULING owed — the mono PRIMARY-ACTION token
+The near-black primary button has **no semantic token**; the worker verified `--pri-lbl`→`text/reverse` gives
+1.0:1 in dark (primary ground inverts by mode). Fix = mint `action/primary/{background,background-hover,label}`
+(+ an `icon/on-inverse`); `text/on-inverse` (#FFFFFF/#333333) is the ready label candidate. **Promotion is Dave's.**
 
 ## 4. Deferred store migration + latent bugs
 The REST of the store is still 2-tier (components alias primitives) — migrate onto proper tiers deliberately
 (elevation proved the pattern). `_validate_token_tiers` **advisory** lists **4 legacy alias bugs** to fix:
 `border/strong`, `form/border/default`, `form/border/pressed` (dark) → alias should be `color/mono/8`;
-`primary/border/hover` (dark).
+`primary/border/hover` (dark). Also the legacy `secondary/tertiary` → `button/*` migration + snippet-button rebind
+(the eventual adapter/cleanup — flagged in `notes/_receipts/2026-07-20-worker-button-3tier.md`).
 
-## 5. Carry-forward (still open, pre-today) + memory
-§1 RAG manifestation pick + status-component build · amber rules gate · component RAG rebind (blast-radius). Parked
-(`_FUTURE-STATE`): broader colour/theming, Apollo Labs tuners, bulk type-binding, compliance edges, Latin webfont.
-**Memory index compaction is DUE** (~19.6KB; the hook flagged it) — run it early next session or in the ritual.
+## 5. Review backlog + carry-forward
+**T9 secure entry awaits Dave review**; the button-ladder greys/tiers go on the full-review backlog
+(`knowledge/_REVIEW-SIGNOFF.md`). Parked (`_FUTURE-STATE`): broader colour/theming, Apollo Labs tuners, bulk
+type-binding, compliance edges, Latin webfont. Earlier open items: §1 RAG manifestation pick + status-component
+build · amber rules gate · component RAG rebind (blast-radius).
 
-> **COMMIT STATE.** **TWO commits this session, BOTH pushed by Dave:** `dba719b` (R-D16 enacted + snippets styled by
-> tokens + `gen_snippet_tokens.py`) and `e69b75f` (three-tier token architecture + `_STANDARDS.md` + elevation
-> exemplar + `_validate_token_tiers.py`). **THIS wrap commit (docs/handoff only, build GREEN 35/35):**
-> `notes/_BRIEF-tranche-tokenize-T1-T8.md`, `_LIVE-STATE.md`, `GOOD-MORNING.md` (+ memory files, outside the repo).
-> No gated-code change. **You push via GitHub Desktop.**
-> **Next session model: Opus** (T9 build + the mono-primary ruling); the tokenize worker can be Sonnet.
+> **COMMIT STATE.** Prior sessions' commits are already pushed (`ded4900` button ladder, `200c2ec` canonical-core
+> first-principle note). **THIS session's wrap commit (docs/handoff only, build GREEN):**
+> `docs/decisions/ADR-0008-canonical-core-and-adapters.md`, `GOOD-MORNING.md`, `_LIVE-STATE.md` (+ memory files,
+> outside the repo). No gated-code change. **You push via GitHub Desktop.**
+> **Next session model: Opus** for the Sutherland field test / mono-primary ruling; the `designer-skills-v1`
+> revisit can be Sonnet.
