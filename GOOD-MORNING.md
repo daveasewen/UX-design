@@ -1,10 +1,10 @@
 # Good morning, Dave ☕
 
-*Briefing — refreshed 2026-07-20 evening (date from `date`), session
-**"Mono primary-action token + ADR-0009 state-styling (live-editor loop)"** — opened to clear token debt so
-Dave could build more components; the owed **mono primary-action ruling** grew into a full **state-styling
-architecture** (ADR-0009) via a fast live-editor loop (v1→v7). Primary ladder minted + settled, two bugs
-fixed, all committed (`b895c40`), build green 35/35.*
+*Briefing — refreshed 2026-07-20 ~17:30 BST (date from `date`), session
+**"Button rebind → Legacy-colour leak gate + RAG success green (R-D18) + Icon button"** — opened to clear the
+`button/*` snippet-rebind blocker so Dave could build components; became a hunt for a whole class of Legacy-colour
+leakage (a new build-blocking gate caught 7 surfaces), a RAG green ruling on a live tuner, an ADR (nullable flex
+slots), and the first built component (Icon button). Committed `528e205` + `8f3f07c`, build green 36/36.*
 
 > ✅ **SOLO / self-conductor.** No other live session — single writer for shared state. **This session**
 > minted the Mono **primary-action** token ladder (closes the owed ruling), formalised **ADR-0009** (colour =
@@ -17,18 +17,18 @@ fixed, all committed (`b895c40`), build green 35/35.*
 
 ## ⬛ DO THESE TWO FIRST (10 seconds)
 
-> **RENAME THIS CHAT → `Mono primary-action token + ADR-0009 state-styling (live-editor loop)`**
-> *(minted `button/primary/*` — completes the button ladder, monochrome NO red [B-D1]; settled on the v7 live
-> editor: default #1A1A1A/#FAFAFA · hover opacity 0.70 (colour-equiv #626262/#B7B7B7) · pressed #000000/#FFFFFF ·
-> disabled label #9D9D9D/#808080. Wrote **ADR-0009 state-styling**; fixed the invisible disabled label + 3 Legacy
-> border greys; promoted **live-controls-in-reviews** to a principle. Commit `b895c40`, build green 35/35.)*
+> **RENAME THIS CHAT → `Button rebind → Legacy-colour leak gate + RAG success green (R-D18) + Icon button built`**
+> *(Rebound `Button` onto the Mono `button/*` ladder [red-free primary, 0.70-opacity hover, B-D4 disabled-label
+> fold]; success → R-D14 green fill + `text/on-success` [B-D6]. Dave's teal catch → built the **Legacy-colour
+> leakage gate** [`_validate_legacy_leak.py`, R-D17] — caught 7 leaking surfaces. Ruled the **success green set**
+> on a live tuner [R-D18: glyph dark `#4A9568`, tints, bare role rebased] → 0 leaks. Wrote **ADR-0010** [nullable
+> flex slots]. Built **Icon button** [first build-out component, gated]. Commits `528e205` + `8f3f07c`, green 36/36.)*
 
-> **TITLE TODAY'S CHAT →** `button/* snippet rebind (render Mono red-free + opacity hover) — then carry on the component build-out`
-> Pick the next real deliverable from the now-current §C queue. **Strongest = the `button/*` snippet rebind**
-> (queue #1): the tokens are minted but the *rendered* Mono button still shows **red primary** and hover isn't
-> operationally opacity yet — this is the blocker to clear before building more components on the primary. Then
-> the wider **component build-out** Dave came in for. Also live: **T9 secure-entry review**, the parked **Sutherland
-> field test** (repo not yet available) + **designer-skills-v1** revisit. **Opus** for the rebind; build-out varies.
+> **TITLE TODAY'S CHAT →** `Component build-out — next P1 (Textarea / Empty state) on the Mono ladder`
+> Foundations are settled and committed. **Go straight to building** (§C queue #1): pick the next P1 base from the
+> itinerary — strongest clean picks are **Textarea** and **Empty state** (monochrome, no colour entanglement).
+> **Alert / inline callout** is high-value but pulls in the still-Legacy `rag/error`/`warning`/`information` roles
+> (§C #2) — do that only when ready to rule them. 39 P1 gaps remain. **Opus** for token-precise work; build-out varies.
 
 *Standing practice: every handoff carries both names — retrospective + forward. Step 4b in
 `_RUNBOOK-capture-ritual.md`.*
@@ -178,59 +178,61 @@ TTFs to `~/.fonts` + `fc-cache -f`; CSS `font-family:"HSBC_MtUnivers_Latin"`. Fu
 
 ---
 
-# §B · THIS SESSION (2026-07-20 evening, "Mono primary-action token + ADR-0009 state-styling")
+# §B · THIS SESSION (2026-07-20, "Button rebind → Legacy-colour leak gate + RAG success green + Icon button")
 
-## What LANDED (committed `b895c40`, build green 35/35)
-- **✅ Mono PRIMARY-ACTION ruling CLOSED — `button/primary/*` minted, completing the button ladder.** Component →
-  semantic (`surface/action-primary{,-hover,-pressed}`, `icon/on-inverse`, `text/on-disabled`) → `color/mono/*`.
-  **Monochrome — NO red** (B-D1: red is *out of bounds* for Mono, not just Legacy-only). Settled values (Dave, on
-  the v7 live editor): default `#1A1A1A`/`#FAFAFA` · hover **opacity 0.70** + colour-equiv `#626262`/`#B7B7B7` ·
-  pressed `#000000`/`#FFFFFF` · disabled fill `#E1E1E1`/`#484848`, label `#9D9D9D`/`#808080`. Ledger:
-  **`knowledge/_proforma/_BUTTON-DECISIONS.md`** (B-D1…B-D5, in the STAND-002 list).
-- **✅ ADR-0009 — state-styling architecture.** Colour token = universal per-state substrate (chromatic modes =
-  override sets); opacity = optional operational layer; **mechanism a per-state set `{colour|opacity|both}`**;
-  colour-alone first-class; AA invariant. Wired **non-breaking** via `$extensions.apollo.state` on the hover token.
-- **✅ Two bugs fixed.** (a) **invisible disabled label** (`text/disabled` `#E1E1E1` == the disabled ground) →
-  minted `text/on-disabled` visible ghost, **exempt but never invisible** (B-D4). (b) **3 dark border greys** off
-  the Legacy primitive → `color/mono/8` (`border/strong`, `form/border/{default,pressed}`). Legacy alias advisories
-  now **1** (was 4; the remaining `primary/border/hover` dark = Legacy red, intentionally left).
-- **✅ Principle: live-controls-in-reviews** — every review carries a *decision control per open choice*; Dave edits
-  in place, not an AskUserQuestion round-trip. In `_FUTURE-STATE` + memory; the v7 editor is the reference impl.
-  **Style-builder interface** added to `_FUTURE-STATE` (harness-side home of ADR-0009).
+*Full narrative arc (why/how, dead-ends, corrections): `_DECISION-HISTORY/2026-07-20-button-rebind-legacy-leak-gate.md`.*
+
+## What LANDED (commits `528e205` + `8f3f07c`, build green 36/36)
+- **✅ `Button` rebound onto the Mono `button/*` ladder.** Primary monochrome (no red); hover = **operational 0.70
+  opacity** over the page (color-mix; stored colour-equiv kept, ADR-0009/B-D3); **B-D4 disabled-label fold across all
+  four tiers** (`label/disabled` → `text/on-disabled` `#9D9D9D`/`#808080` — the siblings had drifted onto
+  `text/disabled` `#E1E1E1` == the disabled ground = invisible). Success → R-D14 **green fill** + new per-mode
+  `text/on-success` (black label, type26-013) — **B-D6**.
+- **✅ Legacy-colour LEAKAGE GATE — `_validate_legacy_leak.py`, build-blocking (R-D17).** No Mono surface may resolve
+  to a Legacy-only colour (seeded with the ruled teal `#00847F`). **Caught 7 leaking surfaces**, two unenumerated
+  (Reorder, Status-indicator). Root cause: `color/green/600` literally holds the teal; all four bare `rag/*` roles are
+  Legacy-drifted. Wired into `_build_all.py`.
+- **✅ RAG success GREEN set completed on a live tuner (R-D18).** Dave ruled glyph dark `#4A9568`, tints
+  `#DCEDE3`/`#12291D`, bare `rag/success` role rebased off the teal → tracks the glyph. Swept all 7 components;
+  **gate now 0 waived / 0 leaks** — teal fully evicted from Mono. Tuner: `reviews/RAG-SUCCESS-GREEN-2026-07-20-v1.html`.
+- **✅ ADR-0010 — token schema: explicit nullable placeholder slots for the dimensions we flex** (Dave's idea, refined
+  to "the ones we flex, style-builder in view"). `null` = declared-but-unset; a "no null under a live binding" gate is
+  the companion to the leak gate. Pilot = the RAG green set.
+- **✅ FIRST BUILD-OUT COMPONENT — Icon button, gated.** Promoted from proforma onto the Mono `button/*` ladder; real
+  HSBC sprite glyphs; glyphs at 4.5:1 (icon-015); 44px target; mandatory aria-label; visible disabled glyph.
 
 ## What I got wrong (see the dossier)
-Matched the sibling buttons on disabled and imported their **invisible-label** bug; over-constrained the disabled
-control with a hard 2:1 guard (Dave's exempt call — made it informational instead). Arc, dead-ends + corrections:
-`_DECISION-HISTORY/2026-07-20-mono-primary-state-styling.md`.
+Framed the interaction-motion tokenisation as a **shared** scale ramp; Dave corrected — it's **per-component** (+2px
+hover / −2px press on the component's target size, already gated by DEF-003). And I **waited to be asked** about
+context instead of self-firing the gauge — the proactive rule existed and I didn't apply it (now sharpened: flag at
+**Amber**, per Dave, not just Red).
 
 ---
 
 # §C · QUEUE
 
-## 1. ★ `button/*` SNIPPET REBIND — the blocker before more component work
-Tokens are minted but the **rendered** Mono button still shows **red primary** and hover isn't operationally
-opacity yet. Rebind the button snippet(s) off the legacy/red vars onto `button/{primary,secondary,tertiary,
-quaternary}/*`, render hover as the **0.70 opacity** (per ADR-0009), and the disabled label via `text/on-disabled`.
-Batched across all tiers (the secondary/tertiary/quaternary rebind was also deferred — `notes/_receipts/2026-07-20-worker-button-3tier.md`).
-**Do this before building more components on the primary.** **Opus.**
+## 1. ★ COMPONENT BUILD-OUT — go straight to it (foundations are settled)
+The button blocker is cleared, tokens + gates committed. Pick the next P1 base from the itinerary
+(`reviews/ITINERARY-2026-07-14-apollo-component-library.xlsx`; 38 gated, **39 P1 gaps left**). Cleanest monochrome
+picks with no colour entanglement: **Textarea**, **Empty state**. Follow "survey before build" (grep snippets/metas)
++ the Icon-button promote as the pattern (rebind onto `button/*` where relevant, gate to green, register the meta).
 
-## 2. Component build-out (what Dave came in for)
-After the rebind, continue growing the library. Also flagged: the **other button tiers likely share the
-invisible-disabled-label defect** (`button/{secondary,tertiary,quaternary}/label/disabled` → `text/disabled`) — fold
-the `text/on-disabled` fix across them in the same pass.
+## 2. RAG error/warning/info roles — still Legacy-drifted (the leak gate's next seeds)
+The bare `rag/error` (`#A8000B`/`#DB0011`), `rag/warning` (`#FFBB33`), `rag/information` (navy) roles are identically
+Legacy-drifted (R-D17); the R-D14 values live in their `-background`/`-glyph` tokens. Same fix pattern as success:
+rule the set on a tuner → rebind the components → seed `LEGACY_ONLY_HEXES`. **Needed before Alert / Banner / Toast**
+(they consume these roles). Dave's rulings.
 
-## 3. Deferred token work
-Opacity → a **first-class number/opacity token** (currently `$extensions.apollo.state`) with the style-builder.
-Rest of the store still 2-tier (deferred migration). The style-builder interface itself (`_FUTURE-STATE`).
+## 3. ADR-0010 rollout (staged)
+Build the "no null under a live binding" gate + roll explicit nullable slots across the anticipated flex dimensions.
+Ties to the style-builder (ADR-0009) + `$extensions.apollo.state`.
 
 ## 4. Parked / carry-forward
-**T9 secure entry awaits Dave review.** **Sutherland field test** (ADR-0008 case #1) — repo not yet available.
-**`designer-skills-v1`** revisit (no-Python assumption overturned). Full-review backlog (`_REVIEW-SIGNOFF.md`).
-Parked (`_FUTURE-STATE`): broader colour/theming, Apollo Labs tuners, bulk type-binding, compliance edges, Latin webfont.
+**Primary-hover ≈ secondary** grey collision (parked, `_FUTURE-STATE`). **T9 secure entry** awaits review. **Sutherland
+field test** (ADR-0008 #1) — repo not available. **`designer-skills-v1`** revisit. Full-review backlog
+(`_REVIEW-SIGNOFF.md`). Parked (`_FUTURE-STATE`): broader colour/theming, Apollo Labs tuners, bulk type-binding.
 
-> **COMMIT STATE.** **✅ committed `b895c40`** (35 files: `semantic-colour.json`, `_contrast_utils.py`,
-> `_validate_token_tiers.py`, `ADR-0009`, `_BUTTON-DECISIONS.md`, `_FUTURE-STATE`, `GOOD-MORNING`, the v1–v7 editor
-> sheets + regenerated build artifacts). Build GREEN 35/35, tier gate 0 strict. **NOT yet pushed — Dave pushes via
-> GitHub Desktop.** A capture-ritual follow-up commit (this handoff refresh + `_LIVE-STATE` + the dossier) will be a
-> second small commit — fold both into one push.
-> **Next session model: Opus** for the snippet rebind; component build-out varies by task.
+> **COMMIT STATE.** **✅ `528e205`** (button rebind + leak gate + RAG green, 34 files) and **✅ `8f3f07c`** (Icon button,
+> 29 files). Build GREEN 36/36, leak gate 0/0, tier gate 0 strict. **NOT yet pushed — Dave pushes via GitHub Desktop.**
+> A capture-ritual follow-up commit (this handoff + `_LIVE-STATE` + dossier) is the third small commit — fold all into
+> one push. **Next session model: Opus** for token-precise work; build-out varies by task.

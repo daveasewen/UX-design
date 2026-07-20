@@ -40,7 +40,7 @@ of substantive turns. No tooling, roughly ±15%. Reckoning (round to nearest 5k)
 Bands as fraction of the ~200k window:
 
 - 🟢 **GREEN  <45%** (<~90k) — work freely.
-- 🟡 **AMBER  45–60%** (~90–120k) — get economical, pre-stage the handoff, confirm before the next big read.
+- 🟡 **AMBER  45–60%** (~90–120k) — get economical, pre-stage the handoff, confirm before the next big read. **PROACTIVELY surface the band to Dave here and offer to start wrapping / capture soon — do NOT wait to be asked** (Dave, 2026-07-20: *"I would set it at amber too"*; the agent suggesting session-end from the estimate, unprompted, is the whole point — silence while the tally climbs is the failure mode).
 - 🔴 **RED  >60%** (>~120k) — **fire the trigger** (below).
 
 ### Half 2 — accurate, out-of-band: confirm at Amber
