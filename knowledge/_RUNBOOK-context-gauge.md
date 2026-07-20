@@ -19,8 +19,8 @@ Two facts that shape the method:
    tool list, the `MEMORY.md` index, every file read, and every tool-result dump all spend it —
    usually **more** than the agent's own word-generation does. In our sessions the real fuel-burners
    are canon file reads, review-round renders, and long review back-and-forths.
-2. **Degradation shows up well before 100%** ("context rot"). Fine under ~45%, watch it 45–70%,
-   move by ~70%. We do not wait for full.
+2. **Degradation shows up well before 100%** ("context rot"). Fine under ~45%, watch it 45–60%,
+   move by ~60%. We do not wait for full.
 
 ## The gauge is two halves
 
@@ -40,8 +40,8 @@ of substantive turns. No tooling, roughly ±15%. Reckoning (round to nearest 5k)
 Bands as fraction of the ~200k window:
 
 - 🟢 **GREEN  <45%** (<~90k) — work freely.
-- 🟡 **AMBER  45–70%** (~90–140k) — get economical, pre-stage the handoff, confirm before the next big read.
-- 🔴 **RED  >70%** (>~140k) — **fire the trigger** (below).
+- 🟡 **AMBER  45–60%** (~90–120k) — get economical, pre-stage the handoff, confirm before the next big read.
+- 🔴 **RED  >60%** (>~120k) — **fire the trigger** (below).
 
 ### Half 2 — accurate, out-of-band: confirm at Amber
 

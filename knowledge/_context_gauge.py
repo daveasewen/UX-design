@@ -30,7 +30,7 @@ DEFAULT_BASELINE = 35_000  # this Cowork env starts heavy; re-measure if it chan
 # Band edges as fraction of window. Green: work freely. Amber: get economical, pre-stage
 # the handoff. Red: fire the trigger — run the capture ritual, open a fresh session.
 AMBER_AT = 0.45
-RED_AT = 0.70
+RED_AT = 0.60
 
 
 def estimate_tokens(text: str) -> tuple[int, str]:

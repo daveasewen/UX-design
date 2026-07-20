@@ -24,6 +24,11 @@ Last substantive update: 2026-07-19 (token-tier architecture ratified; elevation
    proves the cache equals its source. This is the Style Dictionary model and it is the project default.
 4. **Accessibility is a floor, not a target.** WCAG 2.2 AA is the minimum, applied as a build gate, not a
    review checklist. Where a ruling and the floor conflict, the floor wins and the ruling is re-cut.
+5. **Canonical, not conformant** (Dave 2026-07-20). Apollo is the **canonical source of truth** — it serves or
+   replaces any codebase; consumers (Sutherland React, Common Toolkit, others) are reached by **automated adapters**,
+   never by bending our architecture to theirs. **Diverge for quality; keep every divergence expressible as an
+   automated transform** (respect ≠ follow). Quality beats conformance; if forced, we build what's right and map
+   after the fact. Memory `apollo-canonical-core-adapters`; formal ADR owed.
 
 ---
 
