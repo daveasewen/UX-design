@@ -209,6 +209,8 @@ def resolve_dark_surface(token_name, surfaces, default_dark, raised_dark):
         return (None, "sits on an inverting surface (secondary/pressed buttons), not the page; validated per-component via snippet contrast pairs")
     if token_name == "text/on-action":
         return (None, "sits ONLY on surface/action (button/secondary fill), never the page/raised ground; validated per-component via button/secondary/label/default (10.47:1 dark) — same shape as text/on-inverse above")
+    if token_name == "text/on-success":
+        return (None, "sits ONLY on rag/success-background (the R-D14 green success fill), never the page/raised ground; validated per-component via the Button success contrast pair (black on green = 7.65:1 light / 7.45:1 dark) — same shape as text/on-action above")
     grp = _group_prefix(token_name)
     excluded = _excluded_surfaces(token_name)
     candidates = [hx for nm, hx in surfaces.items()

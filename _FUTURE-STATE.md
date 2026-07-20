@@ -34,6 +34,48 @@ status (`idea` / `parked` / `resurrection-candidate` / `graduated→LIVE`).
 - **Portfolio-interactions craft pass** — the wow pass on the Reorder testbed; don't gold-plate before
   the ask. *Feeds:* Craft. *Source:* memory `portfolio-interactions-invite`. *Status:* idea.
 
+## Apollo Mono button-colour finessing — parked 2026-07-20 (Dave)
+
+Raised by Dave right after the `button/*` snippet rebind landed (build green 35/35). Both are
+COLOUR-only finessing, deliberately parked so we could carry on to component build-out — the rebind's
+token wiring is settled; these are value/perception tweaks on top.
+
+- **Primary hover ≈ secondary default (collision).** Dave: *"hover-primary is very similar to the
+  secondary button, might be a little confusing."* Confirmed numerically: primary hover flattens to
+  ~`#5F5F5F` (stored equiv `#626262`) and **secondary default is `#626262`** — essentially the same
+  grey. Two different buttons in two different states read identically. *Fix space:* re-tune the primary
+  hover opacity/colour, or shift the secondary default step, so the emphasis hierarchy stays legible.
+  *Feeds:* Craft / Apollo Mono. *Status:* parked.
+- **"Done" success state — RESOLVED 2026-07-20 (B-D6).** Was on the Legacy teal `#00847F`; now the R-D14
+  green fill `rag/success-background` `#5DAC7B`/`#43AD6F` + black label (`text/on-success`). *Status:* done.
+
+## Legacy-colour leakage — gate live, RAG green set to COMPLETE (2026-07-20)
+
+The teal-in-Mono leak (B-D6/R-D17) is now guarded by **`_validate_legacy_leak.py`** (build-blocking; seeded
+with the ruled teal `#00847F`). It caught **7** teal-binding surfaces; Button is fixed, the other seven are
+**waived with provenance** pending the work below.
+
+- **Complete the R-D14 green set, then rebind the 7 — DONE 2026-07-20 (R-D18).** Dave ruled the green set
+  on the live tuner (glyph dark `#4A9568`, tints `#DCEDE3`/`#12291D`, bare role rebased). All seven rebound,
+  all gate waivers cleared, teal fully evicted from Mono. *Status:* done.
+- **Seed the gate with error/warning/info once ruled.** The bare `rag/error`/`warning`/`information` roles
+  are identically Legacy-drifted (R-D17). Add each Legacy hex to `LEGACY_ONLY_HEXES` as its R-D14 replacement
+  is ruled + complete both modes. *Status:* idea.
+
+## Token schema: explicit nullable placeholder slots for anticipated flex (2026-07-20, Dave)
+
+Dave's direction: *"we always have to think about max flexibility and save all possible values for the
+architecture… the value can be a value or null, like placeholders"* — refined to *"probably not every
+possible parameter but the ones we need to flex; I envisage a style builder in the future."* So: reserve
+**explicit, nullable** slots on tokens for the dimensions we anticipate flexing (per-mode already; per-theme,
+per-state mechanism, opacity), where `null` = *"slot declared, value not yet set"* — NOT a blanket dense
+schema. *Why it fits us:* the teal leak was a **silently missing** dark green; an explicit `dark: null`
+placeholder would make that hole machine-visible and let a gate fail any *live-component-bound* token whose
+mode-slot is null. Needs: a clear null semantic (undecided vs intentionally-inherit) + that "no null under a
+live binding" gate. *Feeds:* the **style-builder interface** (ADR-0009 — where a user configures mechanism +
+values per state within the AA guarantee); pairs with `$extensions.apollo.state`. *Status:* **written up → `docs/decisions/ADR-0010-token-schema-nullable-flex-slots.md`**
+(direction accepted; null-gate + slot rollout staged, pilot = the RAG green set). *Provenance:* this session.
+
 ## Side-quests (captured in `_LIVE-STATE` 07-16, now homed here)
 
 - **Research knowledge-graph** — KG over the research corpus (dataviz desk research, nav catalog,

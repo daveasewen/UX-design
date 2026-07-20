@@ -518,7 +518,11 @@
         "$value": "#2B7E4F",
         "$type": "color"
       },
-      "$note": "Same value both roles (R-D2). Light-only for the same reason as success-background."
+      "dark": {
+        "$value": "#4A9568",
+        "$type": "color"
+      },
+      "$note": "R-D18 (Dave, 2026-07-20, live tuner): graphic-strength success green — on-page indicator. Light #2B7E4F (5.0:1 on white), dark #4A9568 (4.8:1 on #1A1A1A) — the previously-MISSING dark slot, now ruled (ADR-0010 pilot: the hole is closed with a real value, not left absent). Green leads info-blue on dark (4.8 > 3.82); on light effectively tied with blue (5.0 vs 5.03) — Dave saw the salience guard and held."
     },
     "information-background": {
       "light": {
@@ -600,31 +604,29 @@
     },
     "success": {
       "light": {
-        "$value": "#00847F",
+        "$value": "#2B7E4F",
         "$type": "color"
       },
       "dark": {
-        "$value": "#00847F",
+        "$value": "#4A9568",
         "$type": "color"
       },
       "$alias": {
-        "light": "color/green/600",
-        "dark": "color/green/600"
-      }
+        "light": "rag/success-glyph",
+        "dark": "rag/success-glyph"
+      },
+      "$note": "R-D18 (Dave, 2026-07-20): bare success ROLE rebased off the Legacy teal (#00847F, color/green/600) onto the R-D14 graphic green — it tracks rag/success-glyph (the on-page indicator strength). Teal is Apollo Legacy's alone (R-D15). This de-teals the seven components that bound the bare role."
     },
     "success-tint": {
       "light": {
-        "$value": "#E5F2F2",
+        "$value": "#DCEDE3",
         "$type": "color"
       },
       "dark": {
-        "$value": "#001615",
+        "$value": "#12291D",
         "$type": "color"
       },
-      "$alias": {
-        "light": "color/green/100",
-        "dark": "color/green/dark/green-tint"
-      }
+      "$note": "R-D18 (Dave, 2026-07-20, live tuner): success TINT background — re-hued off the Legacy teal (was #E5F2F2 / #001615) to green. Dark text on light tint 14.31:1, light text on dark tint 14.79:1. $alias dropped — the old green/100 + green-tint primitives still hold teal (Legacy); this token now carries its own R-D14 green values (matches the -background/-glyph direct-value pattern)."
     },
     "information": {
       "light": {
@@ -807,7 +809,7 @@
         },
         "disabled": {
           "light": {
-            "$value": "#E1E1E1",
+            "$value": "#9D9D9D",
             "$type": "color"
           },
           "dark": {
@@ -815,10 +817,10 @@
             "$type": "color"
           },
           "$alias": {
-            "light": "text/disabled",
-            "dark": "text/disabled"
+            "light": "text/on-disabled",
+            "dark": "text/on-disabled"
           },
-          "$note": "Disabled — contrast-exempt per WCAG spec. 2026-07-20: re-pointed onto the existing text/disabled semantic (was a bespoke mono/9 #9D9D9D in light); light value now #E1E1E1 to match. Contrast-exempt so no accessibility impact."
+          "$note": "Disabled — contrast-exempt per WCAG spec. 2026-07-20 (B-D4 fold): re-pointed onto text/on-disabled (was text/disabled #E1E1E1 in light, which equalled the disabled ground → invisible). Now mono/9 #9D9D9D light / mono/8 #808080 dark — exempt but a faint-but-visible ghost, per B-D4."
         }
       }
     },
@@ -904,7 +906,7 @@
         },
         "disabled": {
           "light": {
-            "$value": "#E1E1E1",
+            "$value": "#9D9D9D",
             "$type": "color"
           },
           "dark": {
@@ -912,10 +914,10 @@
             "$type": "color"
           },
           "$alias": {
-            "light": "text/disabled",
-            "dark": "text/disabled"
+            "light": "text/on-disabled",
+            "dark": "text/on-disabled"
           },
-          "$note": "Disabled — contrast-exempt per WCAG spec. 2026-07-20: re-pointed onto the existing text/disabled semantic (was a bespoke mono/10 #B7B7B7 in light); light value now #E1E1E1 to match. Contrast-exempt so no accessibility impact."
+          "$note": "Disabled — contrast-exempt per WCAG spec. 2026-07-20 (B-D4 fold): re-pointed onto text/on-disabled (was text/disabled #E1E1E1 in light, which equalled the disabled ground → invisible). Now mono/9 #9D9D9D light / mono/8 #808080 dark — exempt but a faint-but-visible ghost, per B-D4."
         }
       }
     },
@@ -968,7 +970,7 @@
         },
         "disabled": {
           "light": {
-            "$value": "#E1E1E1",
+            "$value": "#9D9D9D",
             "$type": "color"
           },
           "dark": {
@@ -976,10 +978,10 @@
             "$type": "color"
           },
           "$alias": {
-            "light": "text/disabled",
-            "dark": "text/disabled"
+            "light": "text/on-disabled",
+            "dark": "text/on-disabled"
           },
-          "$note": "Disabled — contrast-exempt per WCAG spec. 2026-07-20: re-pointed onto the existing text/disabled semantic (was a bespoke mono/10 #B7B7B7 in light); light value now #E1E1E1 to match. Contrast-exempt so no accessibility impact."
+          "$note": "Disabled — contrast-exempt per WCAG spec. 2026-07-20 (B-D4 fold): re-pointed onto text/on-disabled (was text/disabled #E1E1E1 in light, which equalled the disabled ground → invisible). Now mono/9 #9D9D9D light / mono/8 #808080 dark — exempt but a faint-but-visible ghost, per B-D4."
         }
       }
     },
@@ -1585,6 +1587,21 @@
         "dark": "color/mono/8"
       },
       "$note": "Disabled LABEL ink — a visible ghost. Dave-settled 2026-07-20: light #9D9D9D (m9, ~1.7:1 on the #E1E1E1 fill — faint but perceptible), dark #808080 (m8, ~2.3:1 on #484848). Contrast-EXEMPT (WCAG 1.4.3 inactive component) but deliberately perceivable — invisible is not acceptable (B-D4)."
+    },
+    "on-success": {
+      "light": {
+        "$value": "#000000",
+        "$type": "color"
+      },
+      "dark": {
+        "$value": "#000000",
+        "$type": "color"
+      },
+      "$alias": {
+        "light": "color/black",
+        "dark": "color/black"
+      },
+      "$note": "Label ink on a success (R-D14 green) fill. type26-013: white type is red-only, so success carries BLACK. 2026-07-20: black on rag/success-background = 7.65:1 light / 7.45:1 dark. Kept PER-MODE deliberately (both #000000 today) so a future RAG can diverge light/dark independently without a structural change (Dave: tokens must stay flexible)."
     },
     "on-action": {
       "light": {

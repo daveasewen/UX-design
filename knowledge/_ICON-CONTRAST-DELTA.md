@@ -14,6 +14,8 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 |---|---|---|---|---|---|
 | Accordion.reference.html | icon/default | background/default | light | 17.4 | pass-4.5 |
 | Accordion.reference.html | icon/default | background/default | dark | 17.4 | pass-4.5 |
+| Button.reference.html | button/primary/icon/default | button/primary/background/default | light | 17.4 | pass-4.5 |
+| Button.reference.html | button/primary/icon/default | button/primary/background/default | dark | 12.1 | pass-4.5 |
 | Headers.reference.html | icon/default | background/default | light | 17.4 | pass-4.5 |
 | Headers.reference.html | icon/default | background/default | dark | 17.4 | pass-4.5 |
 | Input-fields.reference.html | icon/default | background/default | light | 17.4 | pass-4.5 |
@@ -279,24 +281,22 @@ _(173 of 440 exhaustive combos already clear 4.5:1; 32 transparent/composite sur
 
 | snippet | fg | bg | mode | ratio | verdict |
 |---|---|---|---|---|---|
-| Button.reference.html | rag/success | background/default | light | 4.56 | pass-3(roundel) |
-| Button.reference.html | rag/success | background/default | dark | 3.82 | pass-3(roundel) |
-| Confirmation.reference.html | rag/success | background/default | light | 4.56 | pass-3(roundel) |
-| Confirmation.reference.html | rag/success | background/default | dark | 3.82 | pass-3(roundel) |
+| Confirmation.reference.html | rag/success | background/default | light | 5.0 | pass-3(roundel) |
+| Confirmation.reference.html | rag/success | background/default | dark | 4.8 | pass-3(roundel) |
 | Input-fields.reference.html | rag/error | background/default | light | 7.87 | pass-3(roundel) |
 | Input-fields.reference.html | rag/error | background/default | dark | 3.33 | pass-3(roundel) |
-| Input-fields.reference.html | rag/success | background/default | light | 4.56 | pass-3(roundel) |
-| Input-fields.reference.html | rag/success | background/default | dark | 3.82 | pass-3(roundel) |
-| List-items.reference.html | rag/success | rag/success-tint | light | 3.98 | pass-3(roundel) |
-| List-items.reference.html | rag/success | rag/success-tint | dark | 4.09 | pass-3(roundel) |
+| Input-fields.reference.html | rag/success | background/default | light | 5.0 | pass-3(roundel) |
+| Input-fields.reference.html | rag/success | background/default | dark | 4.8 | pass-3(roundel) |
+| List-items.reference.html | rag/success | rag/success-tint | light | 4.11 | pass-3(roundel) |
+| List-items.reference.html | rag/success | rag/success-tint | dark | 4.26 | pass-3(roundel) |
 | List-items.reference.html | rag/error | rag/error-tint | light | 7.13 | pass-3(roundel) |
 | List-items.reference.html | rag/error | rag/error-tint | dark | 3.71 | pass-3(roundel) |
 | List-items.reference.html | rag/information | rag/information-tint | light | 6.21 | pass-3(roundel) |
 | List-items.reference.html | rag/information | rag/information-tint | dark | 4.92 | pass-3(roundel) |
-| Reorder.reference.html | rag/success | background/default | light | 4.56 | pass-3(roundel) |
-| Reorder.reference.html | rag/success | background/default | dark | 3.82 | pass-3(roundel) |
-| Status-indicator.reference.html | rag/success | background/default | light | 4.56 | pass-3(roundel) |
-| Status-indicator.reference.html | rag/success | background/default | dark | 3.82 | pass-3(roundel) |
+| Reorder.reference.html | rag/success | background/default | light | 5.0 | pass-3(roundel) |
+| Reorder.reference.html | rag/success | background/default | dark | 4.8 | pass-3(roundel) |
+| Status-indicator.reference.html | rag/success | background/default | light | 5.0 | pass-3(roundel) |
+| Status-indicator.reference.html | rag/success | background/default | dark | 4.8 | pass-3(roundel) |
 | Status-indicator.reference.html | rag/error | background/default | light | 7.87 | pass-3(roundel) |
 | Status-indicator.reference.html | rag/error | background/default | dark | 3.33 | pass-3(roundel) |
 | Status-indicator.reference.html | rag/information | background/default | light | 7.17 | pass-3(roundel) |
@@ -310,9 +310,9 @@ _(173 of 440 exhaustive combos already clear 4.5:1; 32 transparent/composite sur
 
 | roundel | mark treatment (● = active in canon) | mode | ratio | verdict |
 |---|---|---|---|---|
-| rag/success roundel | tint-knockout | light | 3.98 | FAIL-mark<4.5 |
-| rag/success roundel | ● white mark | light | 4.56 | pass-4.5 |
-| rag/success roundel | #333 mark | light | 2.77 | FAIL-mark<4.5 |
+| rag/success roundel | tint-knockout | light | 4.11 | FAIL-mark<4.5 |
+| rag/success roundel | ● white mark | light | 5.0 | pass-4.5 |
+| rag/success roundel | #333 mark | light | 2.53 | FAIL-mark<4.5 |
 | rag/error roundel | ● tint-knockout | light | 7.13 | pass-4.5 |
 | rag/error roundel | white mark | light | 7.87 | pass-4.5 |
 | rag/error roundel | #333 mark | light | 1.61 | FAIL-mark<4.5 |

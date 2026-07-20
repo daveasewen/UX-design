@@ -2,7 +2,7 @@
 
 > Each text/icon token is tested against the **worst-case (lightest) dark surface it can sit on**, resolved from the store — page default `#1A1A1A` + raised island `#1D1D1D`, or the token's own group surfaces. `on-light` tokens are excluded (light-only). Disabled-state tokens are allowlisted (reported, not gated). Text needs 4.5:1, icons/UI need 3:1.
 
-**Result:** 16 pass · 4 allowed exception(s) · **0 gating failure(s)** · 4 skipped (light-only).
+**Result:** 16 pass · 4 allowed exception(s) · **0 gating failure(s)** · 5 skipped (light-only).
 
 ## Allowed exceptions (reported, not gated)
 
@@ -21,6 +21,7 @@
 | `rag/text/on-light` | light-mode-only (on-light); excluded from dark audit |
 | `text/on-action` | sits ONLY on surface/action (button/secondary fill), never the page/raised ground; validated per-component via button/secondary/label/default (10.47:1 dark) — same shape as text/on-inverse above |
 | `text/on-inverse` | sits on an inverting surface (secondary/pressed buttons), not the page; validated per-component via snippet contrast pairs |
+| `text/on-success` | sits ONLY on rag/success-background (the R-D14 green success fill), never the page/raised ground; validated per-component via the Button success contrast pair (black on green = 7.65:1 light / 7.45:1 dark) — same shape as text/on-action above |
 
 ## All audited text/icon tokens
 

@@ -6,29 +6,36 @@
 <title>Button — reference implementation (gated)</title>
 <!--
   CANONICAL REFERENCE for Button (4 emphasis levels × states × both themes).
-  Colours = resolved semantic tokens (primary/* secondary/* tertiary/* text/* rag/success),
-  validated against the store by _validate_snippets.py. Buttons are mode-aware: the same
-  tokens carry light+dark, so on-dark = on-light bindings (per Button.meta tokenValidation).
+  Colours = resolved Apollo Mono component tokens (button/{primary,secondary,tertiary,quaternary}/*),
+  validated against the store by _validate_snippets.py. Buttons are mode-aware: the same tokens carry
+  light+dark, so on-dark = on-light bindings (per Button.meta tokenValidation).
+
+  REBOUND 2026-07-20 onto the Mono button/* ladder (was the Legacy red primary/* + bespoke greys):
+   • PRIMARY is now MONOCHROME — NO red (B-D1). Fill button/primary/background/* → surface/action-primary*
+     → color/mono/*. Default #1A1A1A/#FAFAFA · pressed #000000/#FFFFFF.
+   • PRIMARY HOVER = operational OPACITY 0.70 (ADR-0009 / B-D3): the fill fades over the page. The colour
+     equivalent (#626262/#B7B7B7, button/primary/background/hover) is STORED for colour-only / chromatic
+     consumers and bound in the manifest; the render uses the opacity mechanism. Sibling tiers keep a
+     COLOUR hover (distinct greys) — the per-state mechanism is selectable, exactly as ADR-0009 says.
+   • DISABLED LABELS are visible again (B-D4): label/disabled → text/on-disabled (#9D9D9D/#808080), a
+     faint-but-visible ghost. The old text/disabled #E1E1E1 equalled the disabled ground → invisible.
+     This snippet renders the B-D4 fold across all four tiers.
+   • Two former defects are resolved by the new tokens: dark tertiary border is now #FFFFFF (was ~1.9:1
+     #474747), and primary pressed no longer needs the white-on-white label patch (per-mode token flip).
+
+  NOTE / open token gap: the new model has no tertiary/quaternary background/PRESSED token (only hover).
+  Pressed on those two tiers reuses the hover tint here; the scale-physics :active darken conveys depth.
+  Flagged, not silently invented — pending a canon decision on a pressed-tint token for the ghost tiers.
 
   MOTION (promoted 2026-06-22): Refined scale-physics — grow toward the cursor on hover + press
   recede/darken, expressed through SCALE only (no shadow, no translate; brand stays flat/angular).
-  Chosen over the unrestrained 3D-depress. See Button.meta `motion` + _PROMOTION-QUEUE.md.
+  The scale-factor + duration/easing vars are LOCAL here pending the interaction-motion token rollout.
 
   RESPONSIVE (promoted 2026-06-24 — Dim 11): the action-bar (confirm/cancel pair, button.meta
   commonPatterns) reflows via container-query — inline + right-aligned on a wide container; at
   ≤420px container (incl. 320px / WCAG 1.4.10) it stacks, each button goes full-width, the PRIMARY
   is promoted to the top (mobile priority), and hover-grow is disabled (a full-bleed grow overflows
   — the .full rule). Drag the "Action-bar width" slider to see both. See Button.meta `responsive`.
-
-  THREE token gaps this build surfaces (flagged, NOT silently fixed — see the notes panel):
-   1. Inverting-button label: secondary (all states) + primary PRESSED invert their fill to
-      a light colour in dark, but the bound label text/reverse is flat #FFFFFF → white-on-white.
-      Rendered here with a PROPOSED mode-aware --label-invert (#FFF light / #333 dark), LOCAL to
-      this snippet, pending a canon decision.
-   2. Tertiary (outlined) border in dark: tertiary/border/default dark #474747 is ~1.9:1 on the
-      tertiary fill — the defining outline is nearly invisible. Shown faithfully (the defect).
-   3. text/reverse is flat (#FFF/#FFF); fine for primary (always white on red) but wrong for the
-      inverting variants — root cause of #1.
 -->
 <!-- TYPE-001 · canon type composites. MUST come BEFORE the component <style> below: `.btn` is
      bound by being appended to `.t-cm` / `.t-cm-button`'s selector lists (T-D9), and both are
@@ -47,32 +54,39 @@
     --btn-grow:1.04; --btn-press:0.95;           /* interaction motion — CSS scale-factor tokens (tokenised 2026-07-15; formerly runtime JS-computed) */
   }
   [data-theme="light"]{
-    --pri-default:#DB0011; --pri-hover:#BA1110; --pri-pressed:#000000; --pri-disabled:#E1E1E1;
-    --sec-default:#000000; --sec-hover:#1A1A1A; --sec-pressed:#626262; --sec-disabled:#D7D8D6;
-    --ter-default:#FFFFFF; --ter-hover:#F0F0F0; --ter-pressed:#767676; --ter-disabled:#D7D8D6;
-    --ter-border:#000000; --ter-border-disabled:#D7D8D6;
-    --text-default:#1A1A1A; --text-disabled:#D7D8D6; --text-reverse:#FFFFFF;
-    --success:#00847F; --page:#FFFFFF; --surface:#F0F0F0;
-    --label-invert:#FFFFFF;            /* PROPOSED token (local) — see notes */
+    /* PRIMARY — Mono monochrome (button/primary/*) */
+    --pri-default:#1A1A1A; --pri-hover:#626262; --pri-pressed:#000000; --pri-disabled:#E1E1E1;
+    --pri-label:#FFFFFF; --pri-label-disabled:#9D9D9D; --pri-icon:#FFFFFF;
+    /* SECONDARY (button/secondary/*) */
+    --sec-default:#626262; --sec-hover:#484848; --sec-pressed:#313131; --sec-disabled:#E1E1E1;
+    --sec-label:#FFFFFF; --sec-label-disabled:#9D9D9D;
+    /* TERTIARY — outlined (button/tertiary/*) */
+    --ter-hover:#F0F0F0; --ter-border:#1A1A1A; --ter-border-disabled:#E1E1E1;
+    --ter-label:#1A1A1A; --ter-label-disabled:#9D9D9D;
+    /* QUATERNARY — ghost (button/quaternary/*) */
+    --quat-hover:#F0F0F0; --quat-label:#1A1A1A; --quat-label-disabled:#9D9D9D;
+    /* page + supporting — success = R-D14 Mono green FILL (rag/success-background), NOT the Legacy teal; black label (type26-013) */
+    --success:#5DAC7B; --success-fg:#000000; --page:#FFFFFF; --surface:#F0F0F0;
   }
   [data-theme="dark"]{
-    --pri-default:#DB0011; --pri-hover:#BA1110; --pri-pressed:#FFFFFF; --pri-disabled:#484848;
-    --sec-default:#FFFFFF; --sec-hover:#F0F0F0; --sec-pressed:#E1E1E1; --sec-disabled:#404040;
-    --ter-default:#1F1F1F; --ter-hover:#232323; --ter-pressed:#1D1D1D; --ter-disabled:#404040;
-    --ter-border:#808080; --ter-border-disabled:#333333;
-    --text-default:#FFFFFF; --text-disabled:#767676; --text-reverse:#FFFFFF;
-    --success:#00847F; --page:#1A1A1A; --surface:#232323;
-    --label-invert:#333333;            /* text/on-inverse (now canonical) */
+    --pri-default:#FAFAFA; --pri-hover:#B7B7B7; --pri-pressed:#FFFFFF; --pri-disabled:#484848;
+    --pri-label:#333333; --pri-label-disabled:#808080; --pri-icon:#333333;
+    --sec-default:#808080; --sec-hover:#9D9D9D; --sec-pressed:#B7B7B7; --sec-disabled:#484848;
+    --sec-label:#000000; --sec-label-disabled:#808080;
+    --ter-hover:#232323; --ter-border:#FFFFFF; --ter-border-disabled:#808080;
+    --ter-label:#FFFFFF; --ter-label-disabled:#808080;
+    --quat-hover:#232323; --quat-label:#FFFFFF; --quat-label-disabled:#808080;
+    --success:#43AD6F; --success-fg:#000000; --page:#1A1A1A; --surface:#232323;
   }
 
   *{box-sizing:border-box;}
   body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page);
-    color:var(--text-default); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+    color:var(--ter-label); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
   .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
-  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--text-disabled);
-    background:transparent; color:var(--text-default); cursor:pointer;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--ter-border-disabled);
+    background:transparent; color:var(--ter-label); cursor:pointer;}
   .demo-controls label{display:flex; gap:.5rem; align-items:center;}
-  .demo-controls input[type=range]{accent-color:var(--text-default);}
+  .demo-controls input[type=range]{accent-color:var(--ter-label);}
   h2{/* sentence case — type26-019 sweep (Dave ruling 2026-07-02): no uppercase, caps tracking removed with it */ margin:1.75rem 0 .6rem;}
   .row{display:flex; gap:16px; flex-wrap:wrap; align-items:center;}
   .cap{font-size:12px; /* sentence case — type26-019 sweep (Dave ruling 2026-07-02): no uppercase, caps tracking removed with it */ opacity:.45; width:100%; margin-top:2px;}
@@ -83,7 +97,7 @@
   .btn{height:var(--h); min-width:96px; padding:0 var(--pad-x); border:0; border-radius:0; cursor:pointer;
     justify-content:center;
     gap:8px; transition:background var(--ease), border-color var(--ease), transform var(--spring), filter var(--press);}
-  .btn:focus-visible{outline:2px solid var(--text-default); outline-offset:2px;}
+  .btn:focus-visible{outline:2px solid var(--ter-label); outline-offset:2px;}
 
   /* Refined scale-physics (promoted 2026-06-22) — dimensionality through SCALE: grows toward the cursor on
      hover, press recedes + darkens to read as depth. No shadow, no translate (brand stays flat/angular).
@@ -93,32 +107,35 @@
   .btn:active{transform:scale(var(--btn-press)); filter:brightness(.85); transition:transform var(--press), filter var(--press);}
   .btn:disabled:hover,.btn.is-disabled:hover{transform:none; filter:none;}   /* disabled stays put */
 
-  /* PRIMARY — red fill, white label; pressed inverts (label flips via --label-invert) */
-  .btn.primary{background:var(--pri-default); color:var(--text-reverse);}
-  .btn.primary:hover{background:var(--pri-hover);}
-  .btn.primary.is-pressed{background:var(--pri-pressed); color:var(--label-invert);}
+  /* PRIMARY — Mono monochrome fill, inverse label; pressed inverts via the per-mode token flip.
+     HOVER renders as operational OPACITY 0.70 over the page (ADR-0009 / B-D3): color-mix flattens the
+     default fill at 70% over --page. --pri-hover holds the STORED colour-equivalent (#626262/#B7B7B7)
+     for colour-only / chromatic consumers — bound in the manifest, not used for the opacity render. */
+  .btn.primary{background:var(--pri-default); color:var(--pri-label);}
+  .btn.primary:hover{background:color-mix(in srgb, var(--pri-default) 70%, var(--page));}
+  .btn.primary.is-pressed{background:var(--pri-pressed);}
   /* opacity:1 overrides the browser's native disabled fade so the token colour shows true */
   .btn:disabled{opacity:1;}
-  .btn.primary.is-disabled{background:var(--pri-disabled); color:var(--label-invert); cursor:not-allowed;}
-  .btn.primary.is-success{background:var(--success); color:var(--text-reverse);}
+  .btn.primary.is-disabled{background:var(--pri-disabled); color:var(--pri-label-disabled); cursor:not-allowed;}
+  .btn.primary.is-success{background:var(--success); color:var(--success-fg);}
 
-  /* SECONDARY — inverting; label uses --label-invert in all states */
-  .btn.secondary{background:var(--sec-default); color:var(--label-invert);}
+  /* SECONDARY — solid grey fill, inverse label (button/secondary/*) */
+  .btn.secondary{background:var(--sec-default); color:var(--sec-label);}
   .btn.secondary:hover{background:var(--sec-hover);}
   .btn.secondary.is-pressed{background:var(--sec-pressed);}
-  .btn.secondary.is-disabled{background:var(--sec-disabled); color:var(--label-invert); cursor:not-allowed;}
+  .btn.secondary.is-disabled{background:var(--sec-disabled); color:var(--sec-label-disabled); cursor:not-allowed;}
 
-  /* TERTIARY — outlined; label text/default (inverts with theme) */
-  .btn.tertiary{background:var(--ter-default); color:var(--text-default); border:1px solid var(--ter-border);}
+  /* TERTIARY — outlined; label inverts with theme (button/tertiary/*) */
+  .btn.tertiary{background:transparent; color:var(--ter-label); border:1px solid var(--ter-border);}
   .btn.tertiary:hover{background:var(--ter-hover);}
-  .btn.tertiary.is-pressed{background:var(--ter-pressed); color:var(--text-reverse);}
-  .btn.tertiary.is-disabled{background:var(--ter-disabled); color:var(--label-invert); border-color:var(--ter-border-disabled); cursor:not-allowed;}
+  .btn.tertiary.is-pressed{background:var(--ter-hover);}                       /* pressed reuses hover tint — no pressed-bg token yet (see notes) */
+  .btn.tertiary.is-disabled{background:transparent; color:var(--ter-label-disabled); border-color:var(--ter-border-disabled); cursor:not-allowed;}
 
-  /* QUATERNARY — borderless ghost; transparent default, tertiary tints on hover/press */
-  .btn.quaternary{background:transparent; color:var(--text-default);}
-  .btn.quaternary:hover{background:var(--ter-hover);}
-  .btn.quaternary.is-pressed{background:var(--ter-pressed); color:var(--text-reverse);}
-  .btn.quaternary.is-disabled{background:transparent; color:var(--text-disabled); cursor:not-allowed;}
+  /* QUATERNARY — borderless ghost; transparent default, tertiary tints on hover/press (button/quaternary/*) */
+  .btn.quaternary{background:transparent; color:var(--quat-label);}
+  .btn.quaternary:hover{background:var(--quat-hover);}
+  .btn.quaternary.is-pressed{background:var(--quat-hover);}                    /* pressed reuses hover tint — no pressed-bg token yet (see notes) */
+  .btn.quaternary.is-disabled{background:transparent; color:var(--quat-label-disabled); cursor:not-allowed;}
 
   .spin{width:16px; height:16px; border:2px solid currentColor; border-right-color:transparent; border-radius:50%; animation:s .7s linear infinite;}
   @keyframes s{to{transform:rotate(360deg);}}
@@ -128,7 +145,7 @@
      OWN width, not the viewport (house style: Cards/Table). max-width:100% → also reflows on a narrow
      screen; the slider drives --demo-width so both states are visible without resizing. */
   .bar-wrap{ width:var(--demo-width, 560px); max-width:100%; container-type:inline-size;
-    border:1px solid var(--text-disabled); padding:16px; background:var(--surface); }
+    border:1px solid var(--ter-border-disabled); padding:16px; background:var(--surface); }
   .actionbar{ display:flex; gap:12px; justify-content:flex-end; align-items:center; }
   @container (max-width: 420px){
     .actionbar{ flex-direction:column; align-items:stretch; }   /* stack */
@@ -158,7 +175,7 @@
     <button class="btn primary is-disabled" disabled>Example</button>
     <button class="btn primary"><span class="spin"></span>Loading</button>
     <button class="btn primary is-success">Done</button>
-    <span class="cap">Default · pressed · disabled · processing · success (hover me)</span>
+    <span class="cap">Default · pressed · disabled · processing · success (hover me — fill fades 0.70)</span>
   </div>
 
   <h2 class="spec-h">Secondary</h2>
@@ -198,31 +215,43 @@
   {
     "component": "Button",
     "vars": {
-      "--pri-default": "primary/background/default",
-      "--pri-hover": "primary/background/hover",
-      "--pri-disabled": "primary/background/disabled",
-      "--sec-hover": "secondary/background/hover",
-      "--sec-pressed": "secondary/background/pressed",
-      "--ter-default": "tertiary/background/default",
-      "--ter-hover": "tertiary/background/hover",
-      "--ter-border": "tertiary/border/default",
-      "--text-default": "text/default",
-      "--text-reverse": "text/reverse",
-      "--label-invert": "text/on-inverse",
-      "--success": "rag/success",
+      "--pri-default": "button/primary/background/default",
+      "--pri-hover": "button/primary/background/hover",
+      "--pri-pressed": "button/primary/background/pressed",
+      "--pri-disabled": "button/primary/background/disabled",
+      "--pri-label": "button/primary/label/default",
+      "--pri-label-disabled": "button/primary/label/disabled",
+      "--pri-icon": "button/primary/icon/default",
+      "--sec-default": "button/secondary/background/default",
+      "--sec-hover": "button/secondary/background/hover",
+      "--sec-pressed": "button/secondary/background/pressed",
+      "--sec-disabled": "button/secondary/background/disabled",
+      "--sec-label": "button/secondary/label/default",
+      "--sec-label-disabled": "button/secondary/label/disabled",
+      "--ter-hover": "button/tertiary/background/hover",
+      "--ter-border": "button/tertiary/border/default",
+      "--ter-border-disabled": "button/tertiary/border/disabled",
+      "--ter-label": "button/tertiary/label/default",
+      "--ter-label-disabled": "button/tertiary/label/disabled",
+      "--quat-hover": "button/quaternary/background/hover",
+      "--quat-label": "button/quaternary/label/default",
+      "--quat-label-disabled": "button/quaternary/label/disabled",
+      "--success": "rag/success-background",
+      "--success-fg": "text/on-success",
       "--page": "background/default",
-      "--surface": "tertiary/background/hover"
+      "--surface": "button/tertiary/background/hover"
     },
     "contrastPairs": [
-      { "fg": "text/reverse",   "bg": "primary/background/default",   "context": "text" },
-      { "fg": "text/reverse",   "bg": "primary/background/hover",     "context": "text" },
-      { "fg": "text/on-inverse","bg": "secondary/background/default", "context": "text" },
-      { "fg": "text/on-inverse","bg": "secondary/background/hover",   "context": "text" },
-      { "fg": "rag/success",    "bg": "background/default",           "context": "ui" },
-      { "fg": "text/default",   "bg": "tertiary/background/default",  "context": "text" },
-      { "fg": "text/default",   "bg": "tertiary/background/hover",    "context": "text" },
-      { "fg": "tertiary/border/default", "bg": "tertiary/background/default", "context": "ui" },
-      { "fg": "text/default",   "bg": "background/default",           "context": "text" }
+      { "fg": "button/primary/label/default",   "bg": "button/primary/background/default",   "context": "text" },
+      { "fg": "button/primary/label/default",   "bg": "button/primary/background/hover",     "context": "text" },
+      { "fg": "button/primary/label/default",   "bg": "button/primary/background/pressed",   "context": "text" },
+      { "fg": "button/primary/icon/default",    "bg": "button/primary/background/default",   "context": "icon" },
+      { "fg": "button/secondary/label/default", "bg": "button/secondary/background/default", "context": "text" },
+      { "fg": "button/secondary/label/default", "bg": "button/secondary/background/hover",   "context": "text" },
+      { "fg": "button/tertiary/label/default",  "bg": "background/default",                  "context": "text" },
+      { "fg": "button/tertiary/border/default", "bg": "background/default",                  "context": "ui" },
+      { "fg": "button/quaternary/label/default","bg": "background/default",                  "context": "text" },
+      { "fg": "text/on-success",                 "bg": "rag/success-background",              "context": "text" }
     ],
     "requiredAria": ["<button", "disabled"]
   }

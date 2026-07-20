@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RAG success green — live tuner (rule the open slots)</title>
+<style>
+  :root{
+    --font:"Univers Next for HSBC","Helvetica Neue",Arial,sans-serif;
+    --page:#FFFFFF; --ink:#1A1A1A; --mut:#626262; --line:#E1E1E1; --card:#F7F7F7;
+    /* LOCKED R-D14 references (not tunable here) */
+    --bg-green-l:#5DAC7B; --bg-green-d:#43AD6F;
+    /* blue salience references (R-D14 glyph blues) */
+    --blue-l:#306EC6; --blue-d:#2674DC;
+  }
+  body.dark{ --page:#1A1A1A; --ink:#FAFAFA; --mut:#9D9D9D; --line:#333333; --card:#232323; }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:var(--font);background:var(--page);color:var(--ink);
+    -webkit-font-smoothing:antialiased;transition:background .18s,color .18s;}
+  header{position:sticky;top:0;z-index:5;background:var(--page);border-bottom:1px solid var(--line);
+    padding:16px 24px;display:flex;gap:16px;align-items:baseline;flex-wrap:wrap;}
+  header h1{font-size:18px;margin:0;font-weight:500;}
+  header .sub{font-size:12px;color:var(--mut);max-width:640px;}
+  button.tgl{font:inherit;font-size:12px;padding:7px 12px;border:1px solid var(--line);
+    background:transparent;color:var(--ink);cursor:pointer;border-radius:0;}
+  main{display:grid;grid-template-columns:minmax(340px,420px) 1fr;gap:0;align-items:start;}
+  @media(max-width:860px){ main{grid-template-columns:1fr;} }
+  .controls{padding:20px 24px;border-right:1px solid var(--line);}
+  .preview{padding:20px 24px;}
+  h2{font-size:13px;margin:0 0 4px;font-weight:500;text-transform:none;}
+  .slot{border:1px solid var(--line);padding:14px;margin-bottom:14px;background:var(--card);}
+  .slot .top{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+  .sw{width:34px;height:34px;border:1px solid var(--line);flex:0 0 auto;}
+  .slot .name{font-size:13px;font-weight:500;}
+  .slot .hex{font-size:12px;color:var(--mut);font-variant-numeric:tabular-nums;}
+  .locked{opacity:.72;}
+  .locked .name::after{content:" · locked (R-D14)";color:var(--mut);font-weight:400;font-size:11px;}
+  .row{display:grid;grid-template-columns:16px 1fr 42px;gap:8px;align-items:center;font-size:11px;margin:5px 0;}
+  .row label{color:var(--mut);}
+  input[type=range]{width:100%;accent-color:var(--ink);}
+  .val{text-align:right;font-variant-numeric:tabular-nums;color:var(--mut);}
+  .reads{margin-top:8px;font-size:11px;display:flex;flex-direction:column;gap:3px;}
+  .read{display:flex;justify-content:space-between;gap:8px;}
+  .badge{font-size:10px;padding:1px 6px;border-radius:2px;font-weight:600;}
+  .pass{background:#1f7a44;color:#fff;} .fail{background:#b3261e;color:#fff;}
+  .warn{background:#F0B13A;color:#000;}
+  /* preview */
+  .ctx{border:1px solid var(--line);padding:20px;margin-bottom:16px;}
+  .ctx h3{font-size:11px;color:var(--mut);margin:0 0 12px;font-weight:400;text-transform:none;}
+  .ind{display:flex;align-items:center;gap:10px;margin:10px 0;font-size:14px;}
+  .dot{width:12px;height:12px;border-radius:50%;flex:0 0 auto;}
+  .chk{width:20px;height:20px;flex:0 0 auto;}
+  .tintpanel{padding:12px 14px;margin:10px 0;font-size:13px;border-left:3px solid;}
+  .fillbadge{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 14px;font-size:13px;font-weight:500;color:#000;}
+  .salience{border:1px solid var(--line);padding:12px 14px;font-size:12px;margin-top:6px;}
+  .salience .bar{height:8px;margin:4px 0;}
+  textarea{width:100%;height:150px;font-family:ui-monospace,monospace;font-size:11px;
+    border:1px solid var(--line);background:var(--page);color:var(--ink);padding:10px;}
+  .note{font-size:11px;color:var(--mut);margin-top:6px;}
+  code{font-family:ui-monospace,monospace;font-size:11px;background:var(--card);padding:1px 4px;}
+</style>
+</head>
+<body>
+<header>
+  <h1>RAG success green — live tuner</h1>
+  <button class="tgl" id="theme" type="button">◐ Toggle light / dark</button>
+  <span class="sub">Rule the <b>open green slots</b> so the seven waived components can rebind off the Legacy teal (R-D17).
+    Fills are locked (R-D14). Tune the <b>glyph</b> (on-page indicator, needs ≥3:1 + must out-shout info-blue — the salience ramp) and the
+    <b>tint</b> backgrounds (were teal; label needs ≥4.5:1). Drag, watch the badges, then copy the export.</span>
+</header>
+<main>
+  <section class="controls" id="controls"><!-- slots injected --></section>
+  <section class="preview">
+    <h2>Live preview — current mode</h2>
+    <div class="ctx" id="ctxIndicator">
+      <h3>On-page success indicator (glyph) — role needs ≥3:1 on the page</h3>
+      <div class="ind"><span class="dot" id="pDot"></span> <svg class="chk" id="pChk" viewBox="0 0 20 20"><path id="pChkP" d="M4 10.5l4 4 8-9" fill="none" stroke-width="2.4" stroke-linecap="square"/></svg> <span>Payment confirmed</span></div>
+      <div class="reads" id="rIndicator"></div>
+    </div>
+    <div class="ctx" id="ctxTint">
+      <h3>Success tint panel — label on the tint needs ≥4.5:1</h3>
+      <div class="tintpanel" id="pTint"><b>Done.</b> Your transfer of £1,240.00 has been sent.</div>
+      <div class="reads" id="rTint"></div>
+    </div>
+    <div class="ctx">
+      <h3>Success fill (locked R-D14) — black label, already ruled (B-D6)</h3>
+      <span class="fillbadge" id="pFill">✓ Done</span>
+      <div class="reads" id="rFill"></div>
+    </div>
+    <div class="ctx">
+      <h3>Salience ramp guard — green must out-shout info-blue on this ground (R-D9 / R-D11)</h3>
+      <div class="salience" id="pSal"></div>
+    </div>
+    <h2 style="margin-top:18px">Export — settled values</h2>
+    <textarea id="export" readonly></textarea>
+    <div class="note">Bare <code>rag/success</code> role rebases to the <b>glyph</b> green both modes (that's the on-page role). Fills stay R-D14. Paste this back to me and I'll apply the tokens + clear the seven gate waivers.</div>
+  </section>
+</main>
+<script>
+// ---------- OKLCh <-> sRGB ----------
+function srgb2lin(c){return c<=0.04045?c/12.92:Math.pow((c+0.055)/1.055,2.4);}
+function lin2srgb(c){return c<=0.0031308?12.92*c:1.055*Math.pow(c,1/2.4)-0.055;}
+function lin2oklab(r,g,b){
+  const l=Math.cbrt(0.4122214708*r+0.5363325363*g+0.0514459929*b);
+  const m=Math.cbrt(0.2119034982*r+0.6806995451*g+0.1073969566*b);
+  const s=Math.cbrt(0.0883024619*r+0.2817188376*g+0.6299787005*b);
+  return [0.2104542553*l+0.7936177850*m-0.0040720468*s,
+          1.9779984951*l-2.4285922050*m+0.4505937099*s,
+          0.0259040371*l+0.7827717662*m-0.8086757660*s];
+}
+function oklab2lin(L,a,b){
+  const l=Math.pow(L+0.3963377774*a+0.2158037573*b,3);
+  const m=Math.pow(L-0.1055613458*a-0.0638541728*b,3);
+  const s=Math.pow(L-0.0894841775*a-1.2914855480*b,3);
+  return [ 4.0767416621*l-3.3077115913*m+0.2309699292*s,
+          -1.2684380046*l+2.6097574011*m-0.3413193965*s,
+          -0.0041960863*l-0.7034186147*m+1.7076147010*s];
+}
+function hex2rgb(h){h=h.replace('#','');return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)];}
+function rgb2hex(r,g,b){return '#'+[r,g,b].map(x=>Math.max(0,Math.min(255,Math.round(x))).toString(16).padStart(2,'0')).join('').toUpperCase();}
+function hex2oklch(hex){
+  const [r,g,b]=hex2rgb(hex).map(x=>srgb2lin(x/255));
+  const [L,a,bb]=lin2oklab(r,g,b);
+  const C=Math.sqrt(a*a+bb*bb); let H=Math.atan2(bb,a)*180/Math.PI; if(H<0)H+=360;
+  return {L,C,H};
+}
+function inGamut(r,g,b){return r>=-0.0001&&r<=1.0001&&g>=-0.0001&&g<=1.0001&&b>=-0.0001&&b<=1.0001;}
+function oklch2hex(L,C,H){
+  const hr=H*Math.PI/180; let a=C*Math.cos(hr), b=C*Math.sin(hr);
+  let lo=0,hi=1,rgb=oklab2lin(L,a,b);
+  if(!inGamut(...rgb)){ // reduce chroma until in gamut
+    let clo=0,chi=C;
+    for(let i=0;i<24;i++){const cm=(clo+chi)/2;const aa=cm*Math.cos(hr),bb=cm*Math.sin(hr);
+      if(inGamut(...oklab2lin(L,aa,bb)))clo=cm;else chi=cm;}
+    a=clo*Math.cos(hr);b=clo*Math.sin(hr);rgb=oklab2lin(L,a,b);
+  }
+  return rgb2hex(...rgb.map(x=>lin2srgb(x)*255));
+}
+// ---------- WCAG contrast ----------
+function lum(hex){const [r,g,b]=hex2rgb(hex).map(x=>{x/=255;return x<=0.03928?x/12.92:Math.pow((x+0.055)/1.055,2.4);});return 0.2126*r+0.7152*g+0.0722*b;}
+function contrast(a,b){const la=lum(a),lb=lum(b);const hi=Math.max(la,lb),lo=Math.min(la,lb);return (hi+0.05)/(lo+0.05);}
+function badge(r,need){const v=r.toFixed(2)+':1';const ok=r>=need;return `<span class="badge ${ok?'pass':'fail'}">${ok?'PASS':'FAIL'} ${v}</span>`;}
+
+// ---------- state ----------
+const SLOTS={
+  glyphL:{name:'glyph · light',hex:'#2B7E4F',tunable:true},
+  glyphD:{name:'glyph · dark',hex:'#3FB574',tunable:true,dark:true},
+  tintL :{name:'tint · light',hex:'#E4F3EA',tunable:true},
+  tintD :{name:'tint · dark',hex:'#12291D',tunable:true,dark:true},
+  bgL   :{name:'fill · light',hex:'#5DAC7B',tunable:false},
+  bgD   :{name:'fill · dark',hex:'#43AD6F',tunable:false,dark:true},
+};
+for(const k in SLOTS){const s=SLOTS[k];const o=hex2oklch(s.hex);s.L=o.L;s.C=o.C;s.H=o.H;}
+
+function ctrls(){
+  const c=document.getElementById('controls');c.innerHTML='';
+  for(const k in SLOTS){const s=SLOTS[k];
+    const div=document.createElement('div');div.className='slot'+(s.tunable?'':' locked');
+    div.innerHTML=`<div class="top"><span class="sw" id="sw_${k}"></span>
+      <span class="name">${s.name}</span><span class="hex" id="hex_${k}"></span></div>`+
+      (s.tunable?`
+      <div class="row"><label>L</label><input type="range" id="L_${k}" min="0" max="1" step="0.001" value="${s.L}"><span class="val" id="Lv_${k}"></span></div>
+      <div class="row"><label>C</label><input type="range" id="C_${k}" min="0" max="0.2" step="0.001" value="${s.C}"><span class="val" id="Cv_${k}"></span></div>
+      <div class="row"><label>H</label><input type="range" id="H_${k}" min="90" max="200" step="0.5" value="${s.H}"><span class="val" id="Hv_${k}"></span></div>`:'');
+    c.appendChild(div);
+    if(s.tunable){['L','C','H'].forEach(ax=>{document.getElementById(ax+'_'+k).addEventListener('input',e=>{s[ax]=parseFloat(e.target.value);s.hex=oklch2hex(s.L,s.C,s.H);render();});});}
+  }
+}
+function render(){
+  const dark=document.body.classList.contains('dark');
+  const page=dark?'#1A1A1A':'#FFFFFF';
+  const glyph=dark?SLOTS.glyphD.hex:SLOTS.glyphL.hex;
+  const tint =dark?SLOTS.tintD.hex :SLOTS.tintL.hex;
+  const fill =dark?SLOTS.bgD.hex   :SLOTS.bgL.hex;
+  const tintText=dark?'#FAFAFA':'#1A1A1A';
+  const blue=dark?getComputedStyle(document.body).getPropertyValue('--blue-d').trim():getComputedStyle(document.body).getPropertyValue('--blue-l').trim();
+  // swatches + hex
+  for(const k in SLOTS){const s=SLOTS[k];const sw=document.getElementById('sw_'+k);if(sw)sw.style.background=s.hex;
+    const hx=document.getElementById('hex_'+k);if(hx)hx.textContent=s.hex;
+    if(s.tunable){document.getElementById('Lv_'+k).textContent=s.L.toFixed(3);document.getElementById('Cv_'+k).textContent=s.C.toFixed(3);document.getElementById('Hv_'+k).textContent=Math.round(s.H);
+      ['L','C','H'].forEach(ax=>document.getElementById(ax+'_'+k).value=s[ax]);}
+  }
+  // indicator
+  document.getElementById('pDot').style.background=glyph;
+  document.getElementById('pChkP').setAttribute('stroke',glyph);
+  const cg=contrast(glyph,page);
+  document.getElementById('rIndicator').innerHTML=`<div class="read"><span>glyph ${glyph} on page ${page}</span>${badge(cg,3)}</div>`;
+  // tint
+  const pt=document.getElementById('pTint');pt.style.background=tint;pt.style.color=tintText;pt.style.borderLeftColor=glyph;
+  const ct=contrast(tintText,tint);
+  document.getElementById('rTint').innerHTML=`<div class="read"><span>label ${tintText} on tint ${tint}</span>${badge(ct,4.5)}</div>`;
+  // fill (black label locked)
+  const pf=document.getElementById('pFill');pf.style.background=fill;
+  const cf=contrast('#000000',fill);
+  document.getElementById('rFill').innerHTML=`<div class="read"><span>black label on fill ${fill}</span>${badge(cf,4.5)}</div>`;
+  // salience
+  const cb=contrast(blue,page);
+  const lead=cg>cb;
+  document.getElementById('pSal').innerHTML=
+    `<div class="bar" style="background:${glyph}"></div><div class="read"><span>green ${glyph} vs page</span><b>${cg.toFixed(2)}:1</b></div>`+
+    `<div class="bar" style="background:${blue}"></div><div class="read"><span>info-blue ${blue} vs page</span><b>${cb.toFixed(2)}:1</b></div>`+
+    `<div class="read" style="margin-top:6px"><span>green out-shouts blue?</span><span class="badge ${lead?'pass':'warn'}">${lead?'YES — ramp holds':'NO — green ≤ blue, nudge green'}</span></div>`;
+  // export
+  const exp={
+    "rag/success-glyph":{light:SLOTS.glyphL.hex,dark:SLOTS.glyphD.hex},
+    "rag/success-tint":{light:SLOTS.tintL.hex,dark:SLOTS.tintD.hex},
+    "rag/success (bare role, rebased to glyph)":{light:SLOTS.glyphL.hex,dark:SLOTS.glyphD.hex},
+    "rag/success-background (LOCKED R-D14)":{light:SLOTS.bgL.hex,dark:SLOTS.bgD.hex},
+    "_checks":{
+      "glyph≥3 light":contrast(SLOTS.glyphL.hex,'#FFFFFF').toFixed(2),
+      "glyph≥3 dark":contrast(SLOTS.glyphD.hex,'#1A1A1A').toFixed(2),
+      "tint-label≥4.5 light":contrast('#1A1A1A',SLOTS.tintL.hex).toFixed(2),
+      "tint-label≥4.5 dark":contrast('#FAFAFA',SLOTS.tintD.hex).toFixed(2)
+    }
+  };
+  document.getElementById('export').value=JSON.stringify(exp,null,2);
+}
+document.getElementById('theme').addEventListener('click',()=>{document.body.classList.toggle('dark');render();});
+ctrls();render();
+</script>
+</body>
+</html>

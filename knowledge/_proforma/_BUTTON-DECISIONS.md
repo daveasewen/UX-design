@@ -64,3 +64,17 @@ label / icon       : #FFFFFF / #333333           (text·icon/on-inverse)
 ```
 Tokens synced to this; build green 35/35. Snippet rebind (render these operationally, incl. the 0.70
 opacity hover) remains the deferred batched `button/*` pass (queue #4).
+
+---
+
+## B-D6 — Mono success button = R-D14 GREEN fill, black label (2026-07-20). Source: Dave. FIRM.
+The snippet rebind landed the `button/*` colours + operational-opacity primary hover (Mono, no red),
+and folded the B-D4 disabled-label fix across all four tiers (siblings' `label/disabled` → `text/on-disabled`,
+so light disabled labels are visible `#9D9D9D` not the invisible `#E1E1E1`). Then Dave caught the success
+("Done") state still on the **Legacy teal** `#00847F`. Ruling: Mono success = the **R-D14 green FILL**
+`rag/success-background` `#5DAC7B`/`#43AD6F`, with a **black** label per **type26-013** (white type is
+red-only). Minted **`text/on-success`** (semantic, per-mode, both `#000000` today, alias `color/black`) —
+kept per-mode deliberately so a future RAG can diverge light/dark without a structural change (Dave: tokens
+must stay flexible). Black-on-green = 7.65:1 light / 7.45:1 dark; carve-out added in `_contrast_utils.py`
+(on-success sits ONLY on the green fill, never the page ground — same shape as `text/on-action`). Build
+green. **Leakage prevention → R-D17 + the new `_validate_legacy_leak.py` gate.**

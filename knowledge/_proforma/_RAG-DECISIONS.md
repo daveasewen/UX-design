@@ -5,6 +5,50 @@ session that produced it. Sibling to `_TYPE-DECISIONS.md` / `_DATAVIZ-DECISIONS.
 
 ---
 
+## R-D18 — Success GREEN set completed; teal fully evicted from Mono (2026-07-20). Source: Dave, on the live tuner.
+Ruled the open green slots on `reviews/RAG-SUCCESS-GREEN-2026-07-20-v1.html` (OKLCh sliders + live contrast +
+salience guard). Settled:
+- **`rag/success-glyph`** (on-page indicator): light `#2B7E4F` (5.0:1 on white), **dark `#4A9568`** (4.8:1 on
+  `#1A1A1A`) — the previously-MISSING dark slot, now filled (ADR-0010 pilot realised).
+- **`rag/success-tint`** (message bg): light `#DCEDE3`, dark `#12291D` — re-hued off the Legacy teal
+  (`#E5F2F2`/`#001615`); labels 14.31:1 / 14.79:1.
+- **`rag/success`** bare role: rebased off `color/green/600` (teal) → tracks `rag/success-glyph` (values
+  `#2B7E4F`/`#4A9568`). `rag/success-background` unchanged (R-D14 `#5DAC7B`/`#43AD6F`).
+
+**Salience:** green leads info-blue on dark (4.8 > 3.82 ✓); on light it's effectively tied (green 5.0 vs blue
+5.03) — Dave saw the guard flag it and **held** (a 0.03 hair, not worth darkening the green).
+
+**Effect:** the seven components that bound the bare teal role (Button already done + Account-card, Confirmation,
+Input-fields, List-items, Notifications, Reorder, Status-indicator) now resolve green; their snippet hexes were
+swept to match. **Leakage gate: 0 waived, 0 leaks.** Teal `#00847F` no longer resolves in any Mono surface.
+Bare `rag/error`/`warning`/`information` roles remain Legacy-drifted (see R-D17) — their own future rulings.
+
+## R-D17 — The bare `rag/*` roles are Legacy-drifted; teal leak gated (2026-07-20). Source: Dave.
+**Finding.** The bare RAG *role* tokens all still resolve to **Legacy** values, while the R-D14 palette
+lives only in the `-background`/`-glyph` tokens: `rag/success` → `color/green/600` = **`#00847F` teal**;
+`rag/error` = `#A8000B`/`#DB0011`; `rag/warning` = `#FFBB33`; `rag/information` = navy. So any Mono component
+binding a bare role renders a Legacy colour. This is how the Mono "Done" button showed teal (→ B-D6).
+
+**Ruled now (success only).** Mono success = R-D14 green (B-D6). The teal is **Legacy's alone** (R-D15).
+
+**Gate (Dave: "how do we stop this leakage").** New build-blocking **`_validate_legacy_leak.py`**: every
+reference-snippet manifest binding is resolved in both modes; any hex in `LEGACY_ONLY_HEXES` (seeded with the
+ruled teal `#00847F`) is a leak. It immediately caught **7** teal-binding surfaces — two we hadn't enumerated
+(**Reorder**, **Status-indicator**) plus Account-card, Confirmation, Input-fields, List-items, Notifications.
+Button is FIXED (green); the other seven are **WAIVED with provenance** because a clean rebind needs the
+R-D14 green **completed** — see debt below. Registry grows as each Legacy colour is ruled (error/warning/info
+not yet ruled → not seeded).
+
+**DEBT — R-D14 green set is INCOMPLETE (blocks the source-fix of the 7).** `rag/success-glyph` has **no dark
+value** (light `#2B7E4F` only); `rag/success-tint` dark is still teal `#001615`; the bare `rag/success` role
+still teal. To rebind on-page success *indicators* (which need the darker glyph-strength green to pass 3:1 on
+white) we need Dave to rule the **dark glyph-green + tint greens**. Until then the 7 stay waived. `-background`
+(`#5DAC7B`/`#43AD6F`) is complete both modes — that's why the button (a fill) could be fixed cleanly.
+
+**Flexibility (Dave, 2026-07-20).** Tokens must stay flexible — a future RAG may set **light ≠ dark**
+independently (not just shades). `text/on-success` was minted per-mode for exactly this. See the
+placeholder-slots / style-builder direction in `_FUTURE-STATE.md`.
+
 ## R-D1 — RAG promotion, round one (2026-07-18)
 
 Source: `reviews/RAG-PROMOTION-2026-07-18.html`, 12 pins.

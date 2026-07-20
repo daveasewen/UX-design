@@ -46,17 +46,17 @@ COMPONENTS_ON_SEMANTIC = {
     "button/secondary/background/pressed": "surface/action-pressed",
     "button/secondary/background/disabled": "surface/action-disabled",
     "button/secondary/label/default": "text/on-action",
-    "button/secondary/label/disabled": "text/disabled",
+    "button/secondary/label/disabled": "text/on-disabled",  # B-D4 fold 2026-07-20: was text/disabled (#E1E1E1==ground, invisible)
     "button/tertiary/background/default": "surface/transparent",
     "button/tertiary/background/hover": "surface/raised-hover",
     "button/tertiary/border/default": "border/action-strong",
     "button/tertiary/border/disabled": "border/subtle",
     "button/tertiary/label/default": "text/default",
-    "button/tertiary/label/disabled": "text/disabled",
+    "button/tertiary/label/disabled": "text/on-disabled",  # B-D4 fold 2026-07-20: was text/disabled (#E1E1E1==ground, invisible)
     "button/quaternary/background/default": "surface/transparent",
     "button/quaternary/background/hover": "surface/raised-hover",
     "button/quaternary/label/default": "text/default",
-    "button/quaternary/label/disabled": "text/disabled",
+    "button/quaternary/label/disabled": "text/on-disabled",  # B-D4 fold 2026-07-20: was text/disabled (#E1E1E1==ground, invisible)
     # Mono PRIMARY (2026-07-20) — completes the button/* ladder. No red (Mono is monochrome).
     "button/primary/background/default": "surface/action-primary",
     "button/primary/background/hover": "surface/action-primary-hover",

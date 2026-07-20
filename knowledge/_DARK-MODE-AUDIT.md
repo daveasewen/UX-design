@@ -2,7 +2,7 @@
 
 > Which components re-theme correctly in dark mode. **LEAK** = binds a raw colour *primitive* directly (single-valued, no dark variant — a real defect; the P3 family). *flat* = binds a semantic token whose dark value equals its light value (frequently intentional — reverse text, RAG, brand red — confirm per case). Derived view over the colour stores + blast-radius; regenerate: `python3 knowledge/_build_dark_mode_audit.py`. Detail in `_DARK-MODE-AUDIT.json`.
 
-**Coverage:** 32/39 components clean · 7 leak a primitive. Store: 177 semantic colour tokens (light+dark), 55 flat (dark==light), 192 primitives.
+**Coverage:** 32/39 components clean · 7 leak a primitive. Store: 178 semantic colour tokens (light+dark), 55 flat (dark==light), 192 primitives.
 
 ## Primitive leaks — fix before dark mode
 
@@ -20,15 +20,15 @@ Each raw primitive bound directly, and the components binding it. Rebind to a se
 | Component | Status | Primitive leaks | Flat semantics (confirm) |
 |---|---|---|---|
 | Accordion | ✅ clean | — | — |
-| Account card | ✅ clean | — | `form/border/default`, `rag/success`, `rag/warning` |
+| Account card | ✅ clean | — | `form/border/default`, `rag/warning` |
 | Action bar | ✅ clean | — | `primary/background/default`, `primary/background/hover`, `text/reverse` |
 | Amount display | ✅ clean | — | — |
 | Avatar | ✅ clean | — | `icon/default-reverse`, `image/opacity/default`, `image/opacity/disabled`, `text/reverse` |
 | Badge | 🔴 LEAK | `color/primary` | `primary/background/default`, `text/reverse` |
 | Breadcrumbs | ✅ clean | — | — |
-| Button | ✅ clean | — | `icon/default-reverse`, `primary/background/default`, `primary/background/hover`, `rag/success`, `text/reverse` |
+| Button | ✅ clean | — | `icon/default-reverse`, `primary/background/default`, `primary/background/hover`, `text/reverse` |
 | Cards | 🔴 LEAK | `color/primary` | `icon/default-reverse`, `text/reverse` |
-| Confirmation | ✅ clean | — | `primary/background/default`, `primary/background/hover`, `rag/success`, `text/reverse` |
+| Confirmation | ✅ clean | — | `primary/background/default`, `primary/background/hover`, `text/reverse` |
 | Countdown timer | ✅ clean | — | — |
 | Divider | ✅ clean | — | — |
 | Dropdown | ✅ clean | — | `form/background/default`, `form/border/default`, `icon/default-reverse`, `text/reverse` |
@@ -37,19 +37,19 @@ Each raw primitive bound directly, and the components binding it. Rebind to a se
 | Hero | 🔴 LEAK | `color/grey/transparent/white-75`, `color/primary` | `icon/default-reverse`, `primary/background/default`, `text/reverse` |
 | Input fields | ✅ clean | — | `form/background/default`, `form/border/default`, `icon/default-reverse`, `text/reverse` |
 | Links | 🔴 LEAK | `color/primary` | `icon/default-reverse`, `primary/background/default`, `text/reverse` |
-| List items | 🔴 LEAK | `color/primary` | `icon/default-reverse`, `image/opacity/default`, `image/opacity/disabled`, `rag/success`, `text/reverse` |
+| List items | 🔴 LEAK | `color/primary` | `icon/default-reverse`, `image/opacity/default`, `image/opacity/disabled`, `text/reverse` |
 | Loading indicator | ✅ clean | — | `icon/default-reverse`, `text/reverse` |
 | Modals | ✅ clean | — | `icon/default-reverse`, `overlay/version1`, `primary/background/default`, `text/reverse` |
 | Navigations | 🔴 LEAK | `color/black`, `color/primary`, `color/white` | `overlay/version1`, `primary/border/default` |
-| Notifications | ✅ clean | — | `icon/default-reverse`, `rag/success`, `rag/text/on-dark`, `rag/text/on-light`, `rag/warning` |
+| Notifications | ✅ clean | — | `icon/default-reverse`, `rag/text/on-dark`, `rag/text/on-light`, `rag/warning` |
 | Pagination | ✅ clean | — | `form/background/default` |
 | Progress tracker | ✅ clean | — | `progress/complete` |
 | Quick actions | ✅ clean | — | — |
-| Reorder | ✅ clean | — | `rag/success` |
+| Reorder | ✅ clean | — | — |
 | Search field | ✅ clean | — | `form/background/default`, `form/border/default`, `text/reverse` |
 | Selection controls | ✅ clean | — | `form/background/default`, `form/border/default`, `icon/default-reverse`, `text/reverse` |
 | Slider | ✅ clean | — | `form/border/default` |
-| Status indicator | ✅ clean | — | `rag/success`, `rag/warning` |
+| Status indicator | ✅ clean | — | `rag/warning` |
 | Summary | ✅ clean | — | — |
 | Tab-bar | ✅ clean | — | — |
 | Table | ✅ clean | — | — |

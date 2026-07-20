@@ -54,6 +54,7 @@ STEPS = [
     ("icon contrast delta — brand 4.5 vs 3 (advisory)", "_build_icon_contrast_delta.py"),
     ("dark-surface flatness gate", "_validate_dark_surfaces.py"),
     ("snippet gate", "_validate_snippets.py"),
+    ("Legacy-colour leakage gate (Mono) — no Legacy-only colour in a Mono surface", "_validate_legacy_leak.py"),
     ("token-tier gate (_STANDARDS.md §1)", "_validate_token_tiers.py"),
     ("icon-source gate", "_validate_icons.py"),
     ("a11y gate", "_validate_a11y.py"),
@@ -95,6 +96,9 @@ for i, step in enumerate(STEPS, 1):
             rc = rc or r.returncode
         elif "snippet" in label:
             print(f"\n❌ snippet gate failed (exit {r.returncode}) — see knowledge/_SNIPPET-AUDIT.md")
+            rc = rc or r.returncode
+        elif "leakage" in label:
+            print(f"\n❌ Legacy-colour leakage gate failed (exit {r.returncode}) — a Mono surface resolves to a Legacy-only colour (e.g. the success teal #00847F). Rebind onto the R-D14 token (rag/*-background / -glyph); do NOT add the hex to exceptions. See knowledge/_LEGACY-LEAK-GATE.md")
             rc = rc or r.returncode
         elif "token-tier" in label:
             print(f"\n❌ token-tier gate failed (exit {r.returncode}) — a component references a primitive, or a $value drifted from its $alias; see knowledge/_TOKEN-TIER-AUDIT.md")
