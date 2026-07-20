@@ -298,10 +298,10 @@ Supercharge override sets (fill null slots when palettes ruled). **T9 secure ent
 test** (ADR-0008 #1). **`designer-skills-v1`** revisit. Full-review backlog (`_REVIEW-SIGNOFF.md`). Parked
 (`_FUTURE-STATE`): broader colour/theming, Apollo Labs tuners, bulk type-binding.
 
-> **COMMIT STATE.** **HEAD `d6e3d89` — ahead 1, tree clean; Dave to push via GitHub Desktop.** Recent line:
-> `4d0716b` (evening 3: state-manager freshness fix) → `2cf1ad7` (evening 4: bad-day non-start capture +
-> verified sweep map, 0 code edits) → `d6e3d89` (evening 5: the teal→green sweep — 9 `_proforma` + regen
-> `_review`, teal in `_proforma` 22→0). Build green 37/37. Two pre-existing info notes remain in
-> `_LIVE-STATE-CHECK.md` (a `_NEXT-SESSION.md` dead-artifact mention + one orphan supersession edge) — tidy
-> when convenient, not blocking. **Next session model: Opus** — the red tuner (§C·2) is Dave-in-the-loop
-> judgment on a live controller, not throughput.
+> **COMMIT STATE.** **HEAD `03e8619` (+ this COMMIT-STATE touch-up) — ahead 4, tree clean; Dave to push ALL via
+> GitHub Desktop.** This session (evening 5): `d6e3d89` (teal→green sweep — 9 `_proforma` + regen `_review`, teal
+> 22→0) + `7ee467b` (capture: sweep done, handoff repointed) + `03e8619` (capture: next-task reframe). Prior:
+> `2cf1ad7` (evening 4 bad-day + sweep map) · `4d0716b` (evening 3 state-manager fix). Build green 37/37. Two
+> pre-existing info notes remain in `_LIVE-STATE-CHECK.md` — tidy when convenient, not blocking. **Next session
+> model: Opus** — the RAG-completion tuner (§C·2) is Dave-in-the-loop judgment on a live controller, not
+> throughput; the bare-role rebind after it + the 27 snippet aligns (§C·1b) are Sonnet.
