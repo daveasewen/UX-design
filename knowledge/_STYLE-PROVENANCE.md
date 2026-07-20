@@ -72,11 +72,42 @@ fullscreen per variant): 20 component clusters render old
 
 ## ★ Mono-alignment backlog (the drift to re-home)
 
-**A. Snippets carrying Legacy drift (19)** — re-home to Mono values:
-`Action-bar, Badge, Cards, Confirmation, Dropdown, Hero, Input-fields, Links, List-items, Modals,
-Navigations, Notifications, Progress-tracker, Selection-controls, Status-indicator, Tabs, Video-player`
-(legacy-red) · `Avatar, Quick-actions` (legacy-grey). *Much of the red is the bare `rag/error` role —
-blocked on the error/warning/info ruling (R-D17); grey inks re-home to `color/mono/*`.*
+> **⚠️ CORRECTION 2026-07-20 (evening 3) — the round-3 rulings supersede the old "backlog A" list below.**
+> The authoritative align worklist is now **§A-AUTH** (this block). The machine source of truth is the
+> generator `reviews/gen_style_consolidation_review.py` (`SINGLETON_RULINGS` + cluster data) → tally
+> `reviews/_style-consolidation-decisions-2026-07-20.json`. Do NOT sweep from the pre-round-3 prose list —
+> it named Hero / Navigations / Progress-tracker / Tabs as align targets, but round 3 **archived** all four,
+> and kept **Notifications** as legacy-reference (its Legacy red is correct, not drift). Old list retained
+> struck-through for audit trail.
+
+**§A-AUTH. Authoritative align list — 39 items** (verdict `align`; verified against JSON tally + generator):
+
+- **Snippets (27):** `Accordion, Action-bar, Avatar, Badge, Breadcrumbs, Cards, Confirmation,
+  Countdown-timer, Divider, Dropdown, Eyebrow, Headers, Input-fields, Links, List-items,
+  Loading-indicator, Modals, Pagination, Quick-actions, Reorder, Search-field, Selection-controls,
+  Slider, Status-indicator, Summary, Video-player, View-options`.
+- **_review (1):** `Reconciled-tab-and-stepper-2026-07-17.html` — the tab (+stepper) canon.
+- **_proforma (11):** `DataViz-interactive, Masthead-interactive, Tranche-1 … Tranche-9`.
+
+**DO NOT ALIGN — archived (kept, not deleted; relocation is the later dedup pass):**
+`snippets/Hero, snippets/Navigations, snippets/Progress-tracker, snippets/Tab-bar, snippets/Tabs,
+_proforma/Icon-button.reference` (+ all `_fitness-test` showcases). These still appear in the advisory
+gate scan (`MONO_DIRS` is dir-wide) — that's expected until they physically leave `snippets/_proforma/_review`.
+
+**DO NOT CONVERT — keep-legacy:** `snippets/Notifications.reference` — its `#A8000B` is legitimate
+Apollo Legacy red (no active Mono notification canon exists yet). Retag as Legacy theme; never re-home.
+
+**What each align item's drift actually is (from the gate report `_THEME-PROVENANCE-GATE.md`):**
+- **UNBLOCKED now (ruled):** `_proforma` teal `#00847F` → R-D18 green · Legacy grey inks (`Avatar`,
+  `Quick-actions`) → `color/mono/*` (R-D16) — *but grey re-homing triggers the grey-tint standing check:
+  surface each with its numbers before swapping.* · `_review` copies = regenerate from source (`_make_review.py`).
+- **BLOCKED on a ruling (held for a tuner):** bare `rag/error` red (most snippet red) → needs the
+  error/warning/info set ruled (R-D17); `tabs/active` + `progress/complete` → each needs its own Mono value.
+
+<sub>SUPERSEDED (pre-round-3, kept for audit): ~~A. Snippets carrying Legacy drift (19): Action-bar, Badge,
+Cards, Confirmation, Dropdown, Hero, Input-fields, Links, List-items, Modals, Navigations, Notifications,
+Progress-tracker, Selection-controls, Status-indicator, Tabs, Video-player (legacy-red); Avatar,
+Quick-actions (legacy-grey).~~</sub>
 
 **B. Pro-forma tranches (12)** — all carry pre-R-D18 teal + Legacy red; align in one T1–T9 sweep
 (Sonnet, against ADR-0011), then regenerate the `_review` copies.
