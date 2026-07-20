@@ -94,3 +94,31 @@ leak gate can't see. Report: `knowledge/_THEME-PROVENANCE-GATE.md` each build.
 
 **Standing rule:** a new library file is Mono unless recorded here otherwise; adding it puts it in the
 gate's scope. Promotion of the gate to blocking is tracked in ADR-0011.
+
+---
+
+## Consolidation rulings — COMPLETE 2026-07-20 (committed `4e5b1b6`)
+
+All 88 clustered/singleton components ruled across three review rounds (screens v3→v5, overlay copies).
+Machine ledger: `reviews/_style-consolidation-decisions-2026-07-20.json`. Reproduce:
+`python3 reviews/gen_style_consolidation_review.py`.
+
+**Tally:** keep 7 · align 39 · experiment 2 · keep-legacy 1 · archive 32 · 7 review duplicates hidden.
+
+**Verdict vocabulary:** keep (Mono-clean canon) · align (keep + re-home drift to Mono) · experiment
+(valuable, keep but NOT canon — the two icon-weight probes) · keep-legacy (reference only, not active
+Mono canon) · archive (superseded, kept not deleted) · hidden (`-REVIEW`/`.REVIEW` duplicates).
+
+**Recategorised by filename** (the "Tabs mess"): `cards-selectable`→Cards · `table-*`→new Table cluster.
+
+**Retirements — WHY (retire canon deliberately):**
+- **Tabs** — `Tab-bar.reference` + `Tabs.reference` archived; the reconciled tab+stepper
+  (`_review/Reconciled-tab-and-stepper-2026-07-17.html`) is now the tab canon (align).
+- **Progress / stepper** — whole cluster archived; the stepper lives inside that reconciled model.
+- **Notifications** — `Notifications.reference` kept as **legacy reference only**; no active Mono
+  notification canon remains (a new Mono notification is a future build).
+- **Singletons** — Navigations + Hero archived; the other 18 → align.
+
+**NEXT (carry-forward):** (1) Mono **alignment sweep** on the 39 `align` items → regenerate `_review`
+copies → flip `_validate_theme_provenance.py` to **blocking**. (2) **Duplicate-dedup pass** (Dave: "there
+may be duplicates, deal with later"). Both are Sonnet-tier.

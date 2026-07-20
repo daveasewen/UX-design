@@ -27,12 +27,16 @@ review screen, and an advisory **theme-provenance gate**. Committed `a1b9fbb`, b
 > screen [+ overlay], and an **advisory** theme-provenance gate [68 hardcoded foreign hexes / 61 Mono files].
 > Commit `a1b9fbb`, build green 37/37.)*
 
-> **TITLE TODAY'S CHAT →** `Style consolidation — rule the clusters + Mono values for tabs/active & progress/complete`
-> **Start at the review screen:** open `reviews/STYLE-CONSOLIDATION-REVIEW-2026-07-20-v2.REVIEW.html` (overlay: pin
-> keep/migrate/archive per cluster). Then the two rulings owed (§C #1): **Mono values for `tabs/active` +
-> `progress/complete`** — they only ever held Legacy red, and Mono ≠ red, so each needs a value ruled before its
-> Legacy red can be gate-seeded blocking. That unblocks the **Sonnet sweep** aligning 19 snippets + 12 tranches
-> against ADR-0011 (§C #2). Full picture: `knowledge/_STYLE-PROVENANCE.md` §backlog. **Opus** for the rulings.
+> **TITLE TODAY'S CHAT →** `Mono alignment sweep — re-home the 39 align items, then flip theme-provenance gate blocking`
+> **✅ STYLE-CONSOLIDATION RULINGS COMPLETE (committed `4e5b1b6`, 2026-07-20).** All 88 components ruled across 3
+> review rounds — see `reviews/STYLE-CONSOLIDATION-REVIEW-2026-07-20-v5.REVIEW.html` (100%) + machine ledger
+> `reviews/_style-consolidation-decisions-2026-07-20.json`; regenerate via `reviews/gen_style_consolidation_review.py`.
+> Tally: keep 7 · align 39 · experiment 2 · legacy-ref 1 · archive 32 · 7 dupes hidden. WHY/retirements in
+> `knowledge/_STYLE-PROVENANCE.md` (bottom).
+> **NEXT (Sonnet):** the **Mono alignment sweep** — re-home the 39 `align` items onto Mono values, regenerate the
+> `_review` copies, then flip `_validate_theme_provenance.py` to **blocking**. Then the **duplicate-dedup pass** Dave
+> flagged. **Honour the retirements:** Tab-bar + Tabs snippets → reconciled tab+stepper is canon; Progress/stepper
+> cluster archived (stepper lives in that model); Notifications = legacy-ref only.
 
 *Standing practice: every handoff carries both names — retrospective + forward. Step 4b in
 `_RUNBOOK-capture-ritual.md`.*
