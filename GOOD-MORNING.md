@@ -1,35 +1,34 @@
 # Good morning, Dave ☕
 
-*Briefing — refreshed 2026-07-20 (date from `date`), session
-**"Canonical-core ADR + doc/memory housekeeping"** — the record itself was overdue: this file had gone TWO
-sessions stale (still listed T9 / tokenize as "do first" when both had long landed). This session cleaned that
-up, drafted the **ADR-0008 canonical-core/adapter strategy** Dave had approved but that ran out of context to
-write, and compacted the memory index.*
+*Briefing — refreshed 2026-07-20 evening (date from `date`), session
+**"Mono primary-action token + ADR-0009 state-styling (live-editor loop)"** — opened to clear token debt so
+Dave could build more components; the owed **mono primary-action ruling** grew into a full **state-styling
+architecture** (ADR-0009) via a fast live-editor loop (v1→v7). Primary ladder minted + settled, two bugs
+fixed, all committed (`b895c40`), build green 35/35.*
 
-> ✅ **SOLO / self-conductor.** No other live session this round — single writer for shared state. The two
-> strands that landed BEFORE this session (both committed + pushed): the **button ladder as a 3-tier token
-> stack** (`button/{secondary,tertiary,quaternary}` → `surface/action*` → `color/mono/*`, commit `ded4900`)
-> and the **★ canonical-core STRATEGY LOCK** (Apollo = canonical source, consumers via automated adapters —
-> commit `200c2ec` carried the first-principle note). **This session** turned that strategy into the formal
-> **ADR-0008**, refreshed this handoff + `_LIVE-STATE`, and ran the memory compaction that was flagged DUE.
-> See COMMIT STATE.
+> ✅ **SOLO / self-conductor.** No other live session — single writer for shared state. **This session**
+> minted the Mono **primary-action** token ladder (closes the owed ruling), formalised **ADR-0009** (colour =
+> universal per-state substrate · opacity = optional operational layer · mechanism a per-state set
+> {colour|opacity|both} · chromatic modes are override sets), fixed the **invisible disabled label** + **3
+> Legacy border greys**, and promoted **live-controls-in-reviews** to a standing principle. Narrative arc in
+> `_DECISION-HISTORY/2026-07-20-mono-primary-state-styling.md`. See COMMIT STATE.
 
 ---
 
 ## ⬛ DO THESE TWO FIRST (10 seconds)
 
-> **RENAME THIS CHAT → `Canonical-core ADR-0008, GOOD-MORNING un-stale, memory compacted`**
-> *(read good-morning solo; drafted **`docs/decisions/ADR-0008-canonical-core-and-adapters.md`** — Apollo =
-> canonical source, consumers via automated adapters, "diverge for quality, keep every divergence machine-mappable",
-> the button ladder as its reference divergence; refreshed this handoff + `_LIVE-STATE`; compacted the ~20KB memory
-> index. Housekeeping session — no gated-code change; build stays green.)*
+> **RENAME THIS CHAT → `Mono primary-action token + ADR-0009 state-styling (live-editor loop)`**
+> *(minted `button/primary/*` — completes the button ladder, monochrome NO red [B-D1]; settled on the v7 live
+> editor: default #1A1A1A/#FAFAFA · hover opacity 0.70 (colour-equiv #626262/#B7B7B7) · pressed #000000/#FFFFFF ·
+> disabled label #9D9D9D/#808080. Wrote **ADR-0009 state-styling**; fixed the invisible disabled label + 3 Legacy
+> border greys; promoted **live-controls-in-reviews** to a principle. Commit `b895c40`, build green 35/35.)*
 
-> **TITLE TODAY'S CHAT →** `Sutherland field-test + designer-skills-v1 revisit; or the mono primary-action ruling`
-> Pick the next real deliverable from the now-current §C queue. Strongest candidates: **(a)** the ground-truth
-> Sutherland field test (run Apollo in VS Code beside the real Sutherland repo → build the real Apollo↔Sutherland
-> map — case #1 for "serve any codebase", per ADR-0008); **(b)** revisit **`designer-skills-v1`** before it ships
-> (it assumes no-Python; the strategy now says designers run the full architecture); **(c)** the owed **mono
-> primary-action token ruling** (`action/primary/*`). **Opus** for (a)/(c); (b) is Sonnet-grade.
+> **TITLE TODAY'S CHAT →** `button/* snippet rebind (render Mono red-free + opacity hover) — then carry on the component build-out`
+> Pick the next real deliverable from the now-current §C queue. **Strongest = the `button/*` snippet rebind**
+> (queue #1): the tokens are minted but the *rendered* Mono button still shows **red primary** and hover isn't
+> operationally opacity yet — this is the blocker to clear before building more components on the primary. Then
+> the wider **component build-out** Dave came in for. Also live: **T9 secure-entry review**, the parked **Sutherland
+> field test** (repo not yet available) + **designer-skills-v1** revisit. **Opus** for the rebind; build-out varies.
 
 *Standing practice: every handoff carries both names — retrospective + forward. Step 4b in
 `_RUNBOOK-capture-ritual.md`.*
@@ -179,65 +178,59 @@ TTFs to `~/.fonts` + `fc-cache -f`; CSS `font-family:"HSBC_MtUnivers_Latin"`. Fu
 
 ---
 
-# §B · THIS SESSION (2026-07-20, "Canonical-core ADR + doc/memory housekeeping")
+# §B · THIS SESSION (2026-07-20 evening, "Mono primary-action token + ADR-0009 state-styling")
 
-## What LANDED (this session — housekeeping, no gated-code change)
-- **✅ ADR-0008 DRAFTED — `docs/decisions/ADR-0008-canonical-core-and-adapters.md`.** Turns Dave's 2026-07-20
-  strategy lock into the formal anchor: **Apollo = canonical source** (well-formed superset, not a mirror of any
-  consumer); **quality is the vote-winner, never inherit a flaw to match a consumer** (proof = the decoupled
-  `button/*` tier instead of the overloaded `secondary`=checkbox token); **respect but don't follow** — consumers
-  reached by an automated adapter layer (seed: `tokens/_manifests/sutherland-diffs.json` + hub-and-spoke
-  `codeBindings`); operating principle **"diverge for quality, keep every divergence machine-mappable"**; designers
-  run the **full architecture** (revisit `designer-skills-v1`). Extends ADR-0002/0005/0006.
-- **✅ GOOD-MORNING un-staled.** It had gone two sessions stale (listed T9/tokenize as "do first" — both done).
-  Refreshed to current truth; §A orientation + the STAND-002 standing-docs list left intact.
-- **✅ Memory index compacted** — was flagged DUE (~20KB). (See COMMIT STATE for what moved.)
+## What LANDED (committed `b895c40`, build green 35/35)
+- **✅ Mono PRIMARY-ACTION ruling CLOSED — `button/primary/*` minted, completing the button ladder.** Component →
+  semantic (`surface/action-primary{,-hover,-pressed}`, `icon/on-inverse`, `text/on-disabled`) → `color/mono/*`.
+  **Monochrome — NO red** (B-D1: red is *out of bounds* for Mono, not just Legacy-only). Settled values (Dave, on
+  the v7 live editor): default `#1A1A1A`/`#FAFAFA` · hover **opacity 0.70** + colour-equiv `#626262`/`#B7B7B7` ·
+  pressed `#000000`/`#FFFFFF` · disabled fill `#E1E1E1`/`#484848`, label `#9D9D9D`/`#808080`. Ledger:
+  **`knowledge/_proforma/_BUTTON-DECISIONS.md`** (B-D1…B-D5, in the STAND-002 list).
+- **✅ ADR-0009 — state-styling architecture.** Colour token = universal per-state substrate (chromatic modes =
+  override sets); opacity = optional operational layer; **mechanism a per-state set `{colour|opacity|both}`**;
+  colour-alone first-class; AA invariant. Wired **non-breaking** via `$extensions.apollo.state` on the hover token.
+- **✅ Two bugs fixed.** (a) **invisible disabled label** (`text/disabled` `#E1E1E1` == the disabled ground) →
+  minted `text/on-disabled` visible ghost, **exempt but never invisible** (B-D4). (b) **3 dark border greys** off
+  the Legacy primitive → `color/mono/8` (`border/strong`, `form/border/{default,pressed}`). Legacy alias advisories
+  now **1** (was 4; the remaining `primary/border/hover` dark = Legacy red, intentionally left).
+- **✅ Principle: live-controls-in-reviews** — every review carries a *decision control per open choice*; Dave edits
+  in place, not an AskUserQuestion round-trip. In `_FUTURE-STATE` + memory; the v7 editor is the reference impl.
+  **Style-builder interface** added to `_FUTURE-STATE` (harness-side home of ADR-0009).
 
-## For context — what landed in the TWO sessions just BEFORE this one (already pushed)
-- **Button ladder → 3-tier tokens (commit `ded4900`).** `button/{secondary,tertiary,quaternary}` → `surface/action*`
-  · `text/on-action` · `border/action-strong` → `color/mono/*`; tier gate enforces it. Secondary = grey filled
-  per-mode (L `#626262`/white · D `#808080`/black, label flips by mode); red primary = **Legacy only**. The
-  overloaded legacy `secondary/tertiary/primary` were left UNTOUCHED (they carry checked-state/surface roles).
-- **Tranche-9 · Secure entry BUILT + gated** (OTP/PIN, password Show/Hide + strength, memorable-word, re-auth) and
-  **T1–T8 all tokenised** (each carries a `#token-manifest`; `gen_snippet_tokens.py` projects all 9). **T9 NOT yet
-  Dave-reviewed.** The visible focus-ring went blue on tokenisation (`focus/ring`) — flag if a mono ring is wanted.
-- **Canonical-core strategy LOCKED (Dave 2026-07-20)** — now formalised as ADR-0008 above.
+## What I got wrong (see the dossier)
+Matched the sibling buttons on disabled and imported their **invisible-label** bug; over-constrained the disabled
+control with a hard 2:1 guard (Dave's exempt call — made it informational instead). Arc, dead-ends + corrections:
+`_DECISION-HISTORY/2026-07-20-mono-primary-state-styling.md`.
 
 ---
 
 # §C · QUEUE
 
-## 1. ★ Ground-truth Sutherland field test (ADR-0008 case #1)
-Run Apollo in **VS Code + Copilot beside the real Sutherland repo** → read the actual components/tokens → build the
-real Apollo↔Sutherland map, and field-test "serve any codebase" against it. Doubles as the first live-fire of the
-designer pack. Seed already exists: `tokens/_manifests/sutherland-diffs.json` + hub-and-spoke `codeBindings`.
+## 1. ★ `button/*` SNIPPET REBIND — the blocker before more component work
+Tokens are minted but the **rendered** Mono button still shows **red primary** and hover isn't operationally
+opacity yet. Rebind the button snippet(s) off the legacy/red vars onto `button/{primary,secondary,tertiary,
+quaternary}/*`, render hover as the **0.70 opacity** (per ADR-0009), and the disabled label via `text/on-disabled`.
+Batched across all tiers (the secondary/tertiary/quaternary rebind was also deferred — `notes/_receipts/2026-07-20-worker-button-3tier.md`).
+**Do this before building more components on the primary.** **Opus.**
 
-## 2. ★ Revisit `designer-skills-v1` before it ships
-It was shaped around a **no-Python** assumption that ADR-0008 decision 5 overturns — designers run the full
-architecture (gates + generators, in-editor), not a guidance-only cut. Reshape before release. **Sonnet-grade.**
+## 2. Component build-out (what Dave came in for)
+After the rebind, continue growing the library. Also flagged: the **other button tiers likely share the
+invisible-disabled-label defect** (`button/{secondary,tertiary,quaternary}/label/disabled` → `text/disabled`) — fold
+the `text/on-disabled` fix across them in the same pass.
 
-## 3. ★ RULING owed — the mono PRIMARY-ACTION token
-The near-black primary button has **no semantic token**; the worker verified `--pri-lbl`→`text/reverse` gives
-1.0:1 in dark (primary ground inverts by mode). Fix = mint `action/primary/{background,background-hover,label}`
-(+ an `icon/on-inverse`); `text/on-inverse` (#FFFFFF/#333333) is the ready label candidate. **Promotion is Dave's.**
+## 3. Deferred token work
+Opacity → a **first-class number/opacity token** (currently `$extensions.apollo.state`) with the style-builder.
+Rest of the store still 2-tier (deferred migration). The style-builder interface itself (`_FUTURE-STATE`).
 
-## 4. Deferred store migration + latent bugs
-The REST of the store is still 2-tier (components alias primitives) — migrate onto proper tiers deliberately
-(elevation proved the pattern). `_validate_token_tiers` **advisory** lists **4 legacy alias bugs** to fix:
-`border/strong`, `form/border/default`, `form/border/pressed` (dark) → alias should be `color/mono/8`;
-`primary/border/hover` (dark). Also the legacy `secondary/tertiary` → `button/*` migration + snippet-button rebind
-(the eventual adapter/cleanup — flagged in `notes/_receipts/2026-07-20-worker-button-3tier.md`).
+## 4. Parked / carry-forward
+**T9 secure entry awaits Dave review.** **Sutherland field test** (ADR-0008 case #1) — repo not yet available.
+**`designer-skills-v1`** revisit (no-Python assumption overturned). Full-review backlog (`_REVIEW-SIGNOFF.md`).
+Parked (`_FUTURE-STATE`): broader colour/theming, Apollo Labs tuners, bulk type-binding, compliance edges, Latin webfont.
 
-## 5. Review backlog + carry-forward
-**T9 secure entry awaits Dave review**; the button-ladder greys/tiers go on the full-review backlog
-(`knowledge/_REVIEW-SIGNOFF.md`). Parked (`_FUTURE-STATE`): broader colour/theming, Apollo Labs tuners, bulk
-type-binding, compliance edges, Latin webfont. Earlier open items: §1 RAG manifestation pick + status-component
-build · amber rules gate · component RAG rebind (blast-radius).
-
-> **COMMIT STATE.** **✅ committed `24d1331` + PUSHED** — `docs/decisions/ADR-0008-canonical-core-and-adapters.md`,
-> `GOOD-MORNING.md`, `_LIVE-STATE.md` + two regenerated build artifacts (`_LIVE-STATE-CHECK.md` now 8 ADRs,
-> `_consult-index.json`). Build GREEN 35/35, STAND-002 reachable, no gated-code change. Memory files updated
-> outside the repo (compaction + ADR pointer). A tiny capture-ritual follow-up commit (this commit-state stamp +
-> the `_LIVE-STATE` refreshed line) may sit uncommitted — fold it into the next push.
-> **Next session model: Opus** for the Sutherland field test / mono-primary ruling; the `designer-skills-v1`
-> revisit can be Sonnet.
+> **COMMIT STATE.** **✅ committed `b895c40`** (35 files: `semantic-colour.json`, `_contrast_utils.py`,
+> `_validate_token_tiers.py`, `ADR-0009`, `_BUTTON-DECISIONS.md`, `_FUTURE-STATE`, `GOOD-MORNING`, the v1–v7 editor
+> sheets + regenerated build artifacts). Build GREEN 35/35, tier gate 0 strict. **NOT yet pushed — Dave pushes via
+> GitHub Desktop.** A capture-ritual follow-up commit (this handoff refresh + `_LIVE-STATE` + the dossier) will be a
+> second small commit — fold both into one push.
+> **Next session model: Opus** for the snippet rebind; component build-out varies by task.
