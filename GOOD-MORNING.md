@@ -1,52 +1,38 @@
 # Good morning, Dave ☕
 
-> ## ★ LATEST — 2026-07-21 (night, OPUS solo): the component **BUILD-OUT STRATEGY** is authored → **`_BUILDOUT-STRATEGY-2026-07-21.md`** — READ IT FIRST, it's the execution seed for the next 2 days (burn ~50% token budget before Thu-night renewal). **3 phases:** (0) clean room [SERIAL] = build the `[data-apollo-theme]` resolution layer (colour + neutral-ramp + **shape/radius**) + a universal review harness (4 themes × light/dark × responsive × variant spread) + the **showroom** folder; (1) finalise the 40 existing Mono components [PARALLEL]; (2) build the ~50 itinerary gaps at pace [PARALLEL]. **Fable model = conductor + 2 Fable workers**, fenced by the 38 gates + harness + an Opus verify pass. Also landed: **ADR-0007 part 2 BUILT** (`_LIVE-STATE` now regenerates its decision-node lifecycle block from the graph parse; green 38/38), **gauge thresholds aligned** (amber 0.50 / red 0.60 + a drift fixed), **conflict gate stays advisory** (criterion recorded). Dave's theme rulings = **slot-population under ADR-0011 + ADR-0010, NOT a new ADR** (Console/Supercharge inherit Mono; per-theme flex on greys+radius+input-error; Console=rounded; null placeholder slots on Mono). Finding: canon.css **hardcodes `border-radius:0`** → de-hardcode = a Phase-1 task. **This block supersedes the names + detail below.**
-> **RENAME THIS CHAT →** `Build-out strategy + ADR-0007 part 2: 3-phase plan (clean room → finalise 40 → build at pace), Fable conductor+2-worker model, showroom ruled · gauge aligned · conflict gate advisory [OPUS]`
-> **TITLE THE NEXT (fresh) CHAT →** `Apollo build-out Phase 0 — theme-resolution layer (colour+radius) + universal 4-theme×mode review harness + showroom folder [conductor + 2 Fable workers]`
+> ## ★ LATEST — 2026-07-21 (late night, FABLE conductor): **PHASE 0 IS BUILT.** The theme-resolution layer is LIVE — one attribute (`data-apollo-theme`) switches all four themes; **Console renders rounded, Legacy renders red-CTA + teal, Supercharge proven ≡ Mono by pixel-diff**; radius is a real flex slot (37 canon hardcodes evicted); the **showroom exists** (`showroom/index.html` — open it: 40 harness pages, each 4 themes × light/dark side-by-side × width slider × live variant spread). Four new BLOCKING build steps (projection sync · cascade sync · radius gate · showroom sync) → **build green 42/42**. The projector run also surfaced + fixed **silent drift** (T1–T9 still on pre-R-D20 error reds; 4 stale `.cn-button` literals) — that class of rot is now gated forever. Rulings today: **Legacy = square (Dave)** · Console **8px = PROVISIONAL, Dave to rule on the harness** · Legacy `text/on-success` kept **black** (AA) vs historical white-on-teal — **Dave's call queued**. Phase 1 is GO.
+> **RENAME THIS CHAT →** `Apollo build-out Phase 0 BUILT — theme cascade live (4 themes × 40 components), radius flex slot + showroom + universal harness, 4 new gates, 42/42 [FABLE conductor]`
+> **TITLE THE NEXT (fresh) CHAT →** `Apollo build-out Phase 1 — finalise the 40 through the harness: radius migration (21-file ratchet in _RADIUS-GATE.md) + theme-response audit + showroom sign-off [conductor + 2 Fable workers]`
 >
-> **★ RULED (Dave, same day, on the v1 sheet): ALL 8 recommendations accepted.** ADR-0012 **accepted** ·
-> **C1** = R-D2's role-uniformity claim confirmed superseded · **C2** = R-D7 bounded to the fill role — both
-> recorded as **R-D21** in `_RAG-DECISIONS.md` (the FIRST entry carrying an `Edges:` line — edge-at-ruling-time
-> starts now) · seed resolutions flipped queued→ruled(ref=R-D21) · `_build_decision_graph.py` **wired advisory**
-> into `_build_all.py` (step 11/38). Graph now: **70 nodes · 92 edges · 0 queued · 0 warnings**; build green 38/38.
-> **This session closed RED (~80% context)** — the inscription pass runs fresh, per the gauge runbook.
+> **Phase-1 worker brief, turnkey:** per component — (1) rebind radius onto the token (snippet CSS +
+> theme-block declarations + manifest `border-radius/default`) and add the file to `MIGRATED_SNIPPETS`
+> in `_validate_radius.py` **in the same change**; (2) eyeball its showroom page across 4 themes × both
+> modes; (3) `python3 knowledge/gen_snippet_tokens.py && python3 knowledge/canon/gen_theme_cascade.py &&
+> python3 knowledge/gen_showroom.py` then full build green; (4) receipt to `notes/_receipts/`, no git
+> (conductor commits). The 21-file worklist is enumerated in `knowledge/_RADIUS-GATE.md`.
 >
-> **What landed this session (FABLE, cold — the pinned decision-graph session; build green 37/37 untouched):**
-> - **The audit, done by reading not grepping:** 69 nodes / 88 edges (the "~35" estimate was ~2× light). Found
->   THREE edge vocabularies already live (DataViz front-matter `refines/governs/gated_by` · ADR `Extends/Relates` ·
->   target-doc §6) → reconciled via **alias map in the generated view; source files keep their syntax**.
-> - **ADR-0012 (proposed):** 7 edge types + `scope=`/`claim=` qualifiers (audit-forced: R-D16 supersedes
->   col25-011 *for Mono only*; R-D11 kills only R-D10's mode-stable *claim* → **AMENDED** state) +
->   **`diverges-from`** for recorded deliberate divergence (DEF-005⇹DEF-006 "do not reconcile" — without it the
->   conflict gate would flag that pair forever).
-> - **`knowledge/_build_decision_graph.py`** — generator (LIVE/AMENDED/DEAD/OPEN · reconciliation view ·
->   what-touches-this · validation rollup → `_DECISION-GRAPH.md`) + conflict gate (`--strict`). Selftest bites on
->   unresolved/open/orphan; queued + divergence stay green. Seed: `notes/_decision-graph-seed-2026-07-21.json`.
-> - **Sub-call resolved by the audit:** the expensive half of edge-authoring is the JUDGMENT, and the audit did
->   it (the seed). Inscription is mechanical + machine-verifiable → recommend **Sonnet transcribes, generator
->   diffs against the seed** (Decision 7).
->
-> **Carried open (unchanged from the morning):** theme-provenance gate advisory (58 hexes / 67 files, parked
-> cleanup); `tabs/active` + `progress/complete` unruled; Notifications Legacy retag; `text/on-success` →
-> `color/mono/4` spine flag. Errata E1 (GOOD-MORNING's "T-D1…T-D16" vs real T-D1..14) **fixed this capture**.
+> **✅ Dave's parallel worker DELIVERED mid-capture: designer pack v2 SHIPPED** (`Apollo-designer-skills-v2.zip`,
+> baked KB from `7071538`, no script in the zip per Dave's ruling, 4 skills refreshed for
+> type-composites/themes/drift checks; receipt `notes/_receipts/2026-07-21-worker-designer-pack-v2.md`,
+> verification green). Committed separately by the conductor. **Follow-on (cheap): v2.1 re-bake after this
+> push so the pack picks up the theme override sets** — the packed `_themes.json` references them but they
+> were untracked at the worker's bake commit; 2 commands per the receipt.
 
 ---
 
-*Briefing — refreshed 2026-07-21 ~15:50 BST (date from `date`), session
-**"Decision-graph: audit → ADR-0012 convention → generator + conflict gate"** — the pinned FABLE cold session,
-run exactly to its brief; reflect-back guardrail held end-to-end (no ledger inscription, gate unwired).
-**SOLO / self-conductor.** All names + the full landed list are in the ★ LATEST block above — that block is
-authoritative; the sections below are the standing orientation (§A) + this-session detail (§B) + queue (§C).*
+*Briefing — refreshed 2026-07-21 ~20:12 BST (date from `date`), session **"Apollo build-out Phase 0"**
+(FABLE conductor; Dave's designer-skills-v2 worker parallel). Ran `_BUILDOUT-STRATEGY-2026-07-21.md`
+Phase 0 serially, CONSULT-first, exit gate met + render-verified. All names + the landed list are in the
+★ LATEST block above; §A = standing orientation · §B = this session · §C = queue.*
 
 ## ⬛ DO THIS FIRST
 
-> The two names are at the top (★ LATEST). **Dave's action gates everything: rule on the 8-control sheet**
-> `reviews/DECISION-GRAPH-CONVENTION-2026-07-21-v1.REVIEW.html` (defaults = recommendations; the export block
-> emits a paste-ready ruling set for the next chat). **Next session (Sonnet-able):** enact the rulings —
-> inscribe the seed's edges into ledger entries/ADR headers (generator verifies the diff against
-> `notes/_decision-graph-seed-2026-07-21.json`), wire `_build_decision_graph.py` advisory into `_build_all.py`,
-> add the edge-at-ruling-time step to the capture ritual. Turnkey context: ADR-0012 + the seed + dossier
-> `_DECISION-HISTORY/2026-07-21-decision-graph-edge-convention.md`.
+> **Open `showroom/index.html` in your browser** — that's Phase 0, live: pick any component, flip the four
+> themes, both grounds side-by-side, drag the width. Then three quick rulings queued for you (§C·2):
+> **Console's radius px** (8 is my placeholder — the harness shows it), **Legacy `text/on-success`**
+> (black AA-pass as-built vs historical white-on-teal AA-fail), and **fold-or-keep for the 12 pro-forma
+> tranches**. Then spin **Phase 1** with the next-chat title above — the worker brief is turnkey in the
+> ★ LATEST block, the 21-file worklist is `knowledge/_RADIUS-GATE.md`.
 
 *Standing practice: every handoff carries both names — retrospective + forward. Step 4b in
 `_RUNBOOK-capture-ritual.md`.*
@@ -117,13 +103,18 @@ knowledge/            THE ENGINE
   tokens/             DTCG token stores — the retrieval source
     colour.json       primitives: brand grey/100-800 (Legacy) + NEW color/mono/1-15 (Mono ramp)
     semantic-colour.json  rag/*-background now = R-D14 fills (promoted this session)
+    themes/           ★ the four override sets (ADR-0011): _themes.json registry + apollo-*.overrides.json
   snippets/           38 gated reference components = CANON (all now on #1A1A1A dark grounds)
-  canon/              canon.css (GENERATED between AUTO markers) + type.css (HAND-AUTHORED composites)
+  canon/              canon.css (three AUTO blocks: token spine · components · ★ AUTO-THEMES cascade)
+                      + type.css (HAND-AUTHORED composites) + the generators (gen_canon_tokens ·
+                      ★ gen_theme_cascade — the [data-apollo-theme] layer)
   guidelines/         the rules, each {#id} + destiny tag; _rules-index.json (465, generated)
   _proforma/          Apollo Mono tranches T1–T8 + Masthead + DataViz + the decisions ledgers
   _consult.py         ★ "what governs X?" — RUN IT before designing (index generated every build)
-  _validate_*.py      the gates; orchestrated by _build_all.py (34 steps)
-reviews/              consumable outputs + the review sheets you mark up (+ the grey-ramp tuner)
+  _validate_*.py      the gates; orchestrated by _build_all.py (42 steps)
+  gen_showroom.py     ★ generates showroom/ from snippets + tokens + cascade — never hand-edit showroom
+showroom/             ★ THE LIBRARY, browsable (RULED 2026-07-21): 40 harness pages + categorised index
+reviews/              scratch/archive (demoted by the showroom ruling) + the review sheets you mark up
 notes/_receipts/      ★ conventioned worker-receipt dir (parallel-session reconcile trail)
 _LIVE-STATE.md        LIVE / DEAD / OPEN / TARGETS — read second, always
 _FUTURE-STATE.md      side-quests, ideas, RESURRECTION candidates
@@ -132,7 +123,7 @@ _DECISION-HISTORY/    dated narrative, relocated verbatim
 
 ## The one command that matters
 ```
-python3 knowledge/_build_all.py     # 34 steps, all gates, exits non-zero on any failure
+python3 knowledge/_build_all.py     # 42 steps, all gates, exits non-zero on any failure
 ```
 
 ## Rules that actually bite (unchanged core + this session's)
@@ -201,59 +192,73 @@ TTFs to `~/.fonts` + `fc-cache -f`; CSS `font-family:"HSBC_MtUnivers_Latin"`. Fu
 
 ---
 
-# §B · THIS SESSION (2026-07-21 afternoon, FABLE cold — "the decision-graph edge convention")
+# §B · THIS SESSION (2026-07-21 late night, FABLE conductor — "Phase 0: the theme-resolution layer")
 
-*Full narrative arc (why/how, five findings): `_DECISION-HISTORY/2026-07-21-decision-graph-edge-convention.md`.
-The morning session's arc (R-D20 + R-D6 A′): `_DECISION-HISTORY/2026-07-21-rag-completion-and-decision-graph.md`.*
+*Full narrative arc (six findings + the bug): `_DECISION-HISTORY/2026-07-21-phase0-theme-resolution-layer.md`.*
 
-## What LANDED (new files only — no ledger/canon edits; build green 37/37 untouched)
-The pinned Fable session, run to its brief: **audit → convention → build**, reflect-back guardrail held.
-- **✅ The audit** — all 4 ledgers read in full + 11 ADRs + the REVIEW register: **69 nodes / 88 edges**
-  (census corrected from "~35"). Regex found 38 candidate lines; the read found 88 real edges — verbless prose
-  relations are invisible to pattern matching, which is why inscription verifies against the seed, never re-derives.
-- **✅ ADR-0012 (proposed)** — 7 edge types + `scope=`/`claim=` qualifiers + **AMENDED** lifecycle state +
-  `diverges-from`; alias map reconciles the three pre-existing vocabularies without rewriting sources.
-- **✅ `_build_decision_graph.py` + seed + rulings sheet** — generator + `--strict` conflict gate (selftest green,
-  runs clean: 2 conflicts queued, 1 divergence intentional); `notes/_decision-graph-seed-2026-07-21.json`;
-  `reviews/DECISION-GRAPH-CONVENTION-2026-07-21-v1.html` (+ .REVIEW) with 8 controls + export block.
-- **🟡 Queued for Dave:** C1 (R-D2 role-uniformity claim vs R-D18/R-D20 splits) · C2 (R-D7 mode-stable scope vs
-  R-D20 per-mode error-glyph). Errata E1 (this file's T-D range) fixed in this capture.
+## What LANDED (build 38/38 → 42/42 green)
+- **✅ Theme override sets** — `tokens/themes/apollo-legacy.overrides.json` (21 paths, every value from the
+  R-D16/R-D18/R-D20 eviction records + registry ownsHexes, per-line `$note` provenance) ·
+  `apollo-console.overrides.json` (radius 8px PROVISIONAL) · `apollo-supercharge.overrides.json` (deliberately
+  empty = renders as Mono) · registry gains `attr` + `declaredSlots` (Mono null slots kept OUT of the live
+  store until the ADR-0010 §3 gate exists).
+- **✅ `canon/gen_theme_cascade.py`** — the `[data-apollo-theme]` cascade into canon.css (AUTO-THEMES block):
+  root canonical vars + per-component re-projections via each snippet's #token-manifest (root vars can't reach
+  the projected literals in `.cn-*` — the survey finding that shaped the design). Both modes always emitted;
+  specificity proof in the docstring; selftest green.
+- **✅ Radius de-hardcoded** — 37 canon declarations → `var(--border-radius-default)`; Button migrated
+  end-to-end (proof); both `resolve()` fns route layout.json; 50%/999px circle+pill idioms stay literal.
+- **✅ `gen_showroom.py` → `showroom/`** — 40 generated harness pages + categorised index; theme switch ×
+  light/dark panes × width slider × live variant spread; `#theme=` carries index→page (hashchange fixed).
+- **✅ Four new BLOCKING build steps** — projection sync · cascade sync · radius gate (strict/advisory
+  ratchet, 21-file worklist) · showroom sync.
+- **🐛 Caught + fixed same hour:** `project_canon` stomped AUTO-THEMES values on re-run (optional-prefix
+  regex) — fenced in the projector; the new cascade `--check` is what caught it. Also caught: silent
+  projection drift (T1–T9 pre-R-D20 error reds + 4 stale canon literals) — corrected to ruled values,
+  committed separately for attribution.
+- **✅ Exit gate verified in-sandbox** (headless shell + real HSBC TTFs): Legacy red CTA + teal (needed
+  `rag/success-background` added — caught AT the gate) · Console rounded · Supercharge ≡ Mono by pixel-diff.
 
 ## Process notes
-CONSULT ran but its lexicon is design-layer (it expanded the query to "dataviz") — the decisions layer has no
-consult surface, which is itself evidence for the build; folding the graph JSON into the consult index is queued.
-Survey-before-build caught the DataViz front-matter prototype + the ADR header proto-edges before any invention.
-Capture ritual + git runbook read and followed, not reconstructed.
+CONSULT + survey ran FIRST and paid for themselves twice (the projected-literal finding; the manifests as the
+theme join). Both runbooks read + followed at capture. Conductor discipline held: every dirty path named
+before staging; Dave's parallel worker tree (designer-skills-v2/) left untouched, receipt awaited.
 
 ---
 
 # §C · QUEUE
 
-## 1. ★ NEXT SESSION (SONNET, fresh) — the inscription pass (mechanical, generator-verified)
-~~Sheet rulings~~ **DONE same day** (all 8 accepted; R-D21; ADR-0012 accepted; gate wired advisory 38/38).
-What remains is pure transcription: inscribe the seed's edges (`notes/_decision-graph-seed-2026-07-21.json`)
-as `Edges:` lines into ledger entries + ADR header lines per the accepted grammar (R-D21 is the live template);
-**verify by generator diff against the seed — never re-derive** (regex found 38 of the 88 real edges; prose
-relations are invisible to patterns). Then: add the edge-at-ruling-time step to `_RUNBOOK-capture-ritual.md`
-step 4 · fold the graph JSON into the consult index (kills the "CONSULT is design-layer-only" gap) · teach the
-generator to parse the inscribed lines (its `parse_inline_edges` hook is stubbed ready) and cross-check both
-sources. Horizon (separate session): ADR-0007 part 2 — generate `_LIVE-STATE` LIVE/DEAD blocks from the parse.
+## 1. ★ NEXT SESSION — Phase 1: finalise the 40 (conductor + 2 Fable workers)
+The worker brief is turnkey in the ★ LATEST block. Batching: split the 21 radius-hardcode files
+(`knowledge/_RADIUS-GATE.md`) between the two workers; per component also audit its showroom page across
+4 themes × both modes (does anything bind a role Legacy should override but doesn't? — the Button
+success-background miss is the pattern to hunt) and sign off into the showroom. Conductor reconciles +
+commits per `_RUNBOOK-parallel-conductor.md`. **Reconcile Dave's designer-skills-v2 worker (receipt) first.**
+Then Phase 2: the ~50 itinerary gaps at pace.
 
-## 2. RAG follow-ons (not blocked on Dave; Sonnet-able)
-Seed the Legacy error/amber/navy hexes into `LEGACY_ONLY_HEXES` (needs a Notifications waiver in the leak gate) + flip
-`_validate_theme_provenance.py` advisory→blocking — **both gated on** the broader foreign-hex cleanup (58 hexes / 67
-files, the parked archived-file relocation). `tabs/active` + `progress/complete` still unruled (archived consumers).
-Notifications Legacy-theme retag = future build. Small spine flag: `text/on-success` = `color/black` should be
-`color/mono/4` (`#1A1A1A`).
+## 2. Rulings queued for Dave (all visible in the harness — open `showroom/button.html`)
+**(a) Console radius value** — 8px is my provisional; flip themes on any page and rule the px (one edit in
+`apollo-console.overrides.json` + regenerate). **(b) Legacy `text/on-success`** — kept BLACK as-built
+(6.06:1 AA-pass on teal); historical Legacy was white-on-teal (3.47:1 AA-fail) — your call whether
+historical fidelity outranks AA inside the Legacy theme. **(c) Pro-forma tranches** — fold into the
+finalised set or stay a pattern library (strategy doc open confirmation). **(d)** Later, with (a): Legacy
+`rag/warning` amber #FFBB33 is in the override set from the eviction record — sanity-check it in the
+harness when a warning-bearing component migrates.
 
-## 3. Parked / carry-forward
-**Duplicate-dedup pass** (relocate archived files out of Mono scope). Console + Supercharge override sets (when palettes
-ruled). **T9 secure entry** awaits review. **Sutherland field test** (ADR-0008 #1). **`designer-skills-v1`** revisit.
-Full-review backlog (`_REVIEW-SIGNOFF.md`). Parked (`_FUTURE-STATE`): broader colour/theming, Apollo Labs tuners, bulk
-type-binding, `icon-015` mark-vs-roundel mechanisation (supercharge).
+## 3. RAG follow-ons (unchanged; Sonnet-able)
+Seed Legacy error/amber/navy into `LEGACY_ONLY_HEXES` (+ Notifications waiver) + flip
+`_validate_theme_provenance.py` advisory→blocking — both gated on the broader foreign-hex cleanup (58/67,
+parked archived-file relocation). `tabs/active` + `progress/complete` unruled (archived consumers).
+Notifications Legacy retag. Spine flag: `text/on-success` `color/black` → `color/mono/4`.
 
-> **COMMIT STATE.** Morning commits pushed. This session: `8bff16a` (the convention package) + the acceptance
-> commit (ADR-0012 accepted · R-D21 · seed resolutions · gate wired 38/38 · spine refresh) — **ahead 2, Dave to
-> push via GitHub Desktop.** Build green **38/38**. **Next session model: SONNET, fresh** — the inscription pass
-> is mechanical with a machine check; no sheet round-trip needed (all rulings recorded in R-D21 + ADR-0012).
-> This session closed **RED (~80%)** per the gauge — do not reopen it for the inscription.
+## 4. Parked / carry-forward
+Mono null slots into the live store once the ADR-0010 §3 gate is built. Console/Supercharge palettes (when
+ruled — the hooks are live). **Designer pack v2.1 re-bake** (post-push, picks up the override sets — receipt
+has the 2 commands). Dedup pass. T9 review. Sutherland field test (ADR-0008 #1). Full-review backlog.
+`_FUTURE-STATE`: Apollo Labs tuners, bulk type-binding, icon-015 mechanisation.
+
+> **COMMIT STATE.** Ahead of origin by **5**: the two pre-session commits (`4a6f442` + `7071538`) +
+> this session's three — `d32a763` (T1–T9 projection catch-up to ruled values) · the Phase-0 commit
+> (theme layer + gates + showroom + this capture) · the worker's designer-pack v2 (folded by the
+> conductor from the receipt) — **Dave pushes via GitHub Desktop.** Build green **42/42**.
+> Next session: **Phase 1, conductor + 2 Fable workers** per the strategy.

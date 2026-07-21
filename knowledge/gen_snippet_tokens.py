@@ -40,6 +40,7 @@ SNIP = os.path.join(HERE, "snippets")
 PROFORMA = os.path.join(HERE, "_proforma")
 CANON = os.path.join(HERE, "canon", "canon.css")
 SPINE_END = "AUTO-GENERATED TOKENS END ===== */"
+THEMES_START = "/* ===== AUTO-THEMES START ===== */"
 
 _STORES = {}
 def store(fname):
@@ -47,17 +48,32 @@ def store(fname):
         _STORES[fname] = json.load(open(os.path.join(TOK, fname)))
     return _STORES[fname]
 
+def _fmt(val):
+    """CSS-format a resolved token value: numbers are px except 0 (matches
+    gen_canon_tokens fmt_value for the layout namespace); strings pass through."""
+    if isinstance(val, (int, float)):
+        return "0" if val == 0 else f"{val}px"
+    return val
+
 def resolve(path, mode):
-    """token path + mode -> resolved hex/value. Raises KeyError if unresolvable."""
-    src = "colour.json" if path.startswith("color/") else "semantic-colour.json"
+    """token path + mode -> resolved hex/value. Raises KeyError if unresolvable.
+    Routes color/* to colour.json, the layout namespaces (border-radius/*, …) to
+    layout.json (Phase-0 shape de-hardcode — snippets bind radius via manifest),
+    everything else to semantic-colour.json."""
+    if path.startswith("color/"):
+        src = "colour.json"
+    elif path.startswith(("border-radius/", "border-width/", "focus-ring/", "layout/", "breakpoint/")):
+        src = "layout.json"
+    else:
+        src = "semantic-colour.json"
     node = store(src)
     for key in path.split("/"):
         node = node[key]                      # KeyError => caught by caller (fail loud)
     # leaf may be {light:{$value}, dark:{$value}} or a modeless {$value}
     if mode in node and isinstance(node[mode], dict) and "$value" in node[mode]:
-        return node[mode]["$value"]
+        return _fmt(node[mode]["$value"])
     if "$value" in node:
-        return node["$value"]
+        return _fmt(node["$value"])
     raise KeyError(f"{path} has no '{mode}' value")
 
 MANIFEST_RE = re.compile(r'<script[^>]*id="token-manifest"[^>]*>(.*?)</script>', re.S)
@@ -167,6 +183,16 @@ def project_canon(write):
         return 0, ["canon.css spine marker missing"]
     cut = i + len(SPINE_END)
     spine, body = css[:cut], css[cut:]
+    # AUTO-THEMES fence (Phase 0, 2026-07-21): gen_theme_cascade.py re-projects the SAME
+    # manifest vars inside [data-apollo-theme] blocks at THEME-OVERRIDE values. The bare
+    # `.cn-<slug>{` in those selectors also matches this function's regex (optional-prefix),
+    # so an unfenced run stomps Legacy red back to Mono ink — caught live 2026-07-21
+    # (order-dependence bite: cascade --check failed after a projection re-run). Everything
+    # from the AUTO-THEMES marker on is the cascade generator's output — never touch it.
+    tstart = body.find(THEMES_START)
+    themes_tail = ""
+    if tstart >= 0:
+        body, themes_tail = body[:tstart], body[tstart:]
     changed = 0
     for f in sorted(glob.glob(os.path.join(SNIP, "*.reference.html"))):
         mm = MANIFEST_RE.search(open(f).read())
@@ -198,7 +224,7 @@ def project_canon(write):
             return prefix + head + blk + tail
         body = brx.sub(repl, body)
     if write and changed:
-        open(CANON, "w").write(spine + body)
+        open(CANON, "w").write(spine + body + themes_tail)
     return changed, []
 
 def main():

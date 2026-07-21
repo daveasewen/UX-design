@@ -1,0 +1,348 @@
+#!/usr/bin/env python3
+"""
+gen_showroom.py — the generated, browsable component library (RULED, Dave 2026-07-21).
+
+One separate file per component + one master categorised index (showroom/), assembled
+FROM the canon (snippets + tokens + the theme cascade stay the gated source) so it
+cannot rot. reviews/ is demoted to scratch; THIS is the human-navigable library.
+
+Each component page is the UNIVERSAL REVIEW HARNESS (build-out Phase 0):
+  * theme switch — all four [data-apollo-theme] slots (ADR-0011); Console/Supercharge
+    render as Mono where their override sets are empty, labelled as such
+  * light + dark panes SIDE BY SIDE (both grounds always visible)
+  * responsive width slider driving both panes
+  * the snippet's own live variant/state spread inside each pane
+  * open-↗ per pane (current theme × mode baked into a standalone doc)
+
+Mechanism: the reference snippet document is embedded VERBATIM (base64) with ONE
+generated addition — the per-snippet theme CSS from gen_theme_cascade.snippet_theme_css()
+(the [data-apollo-theme] re-projection of its own manifest vars). Panes render it in
+same-origin srcdoc iframes; the chrome sets html[data-apollo-theme] + body[data-theme].
+
+Deterministic (no timestamps) so `--check` can verify the showroom regenerates
+byte-identically — wired into _build_all.py like every other generated surface.
+
+Usage:
+  python3 knowledge/gen_showroom.py            # write showroom/
+  python3 knowledge/gen_showroom.py --check    # verify in sync (build gate)
+"""
+import base64, glob, html as htmlmod, json, os, re, sys
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(HERE)
+SNIP = os.path.join(HERE, "snippets")
+OUTD = os.path.join(ROOT, "showroom")
+sys.path.insert(0, os.path.join(HERE, "canon"))
+import gen_theme_cascade as cascade
+
+MANIFEST_RE = re.compile(r'<script[^>]*id="token-manifest"[^>]*>(.*?)</script>', re.S)
+
+# ---------------------------------------------------------------- catalogue
+# slug -> category (editable judgment map; unlisted slugs land in 'More').
+CATEGORIES = [
+    ("Actions",           ["button", "icon-button", "action-bar", "quick-actions", "links"]),
+    ("Forms and input",   ["input-fields", "search-field", "selection-controls", "slider",
+                           "dropdown", "reorder", "view-options"]),
+    ("Navigation",        ["navigations", "breadcrumbs", "pagination", "tabs", "tab-bar"]),
+    ("Feedback and status", ["notifications", "status-indicator", "badge", "loading-indicator",
+                           "progress-tracker", "tooltip", "confirmation", "modals",
+                           "countdown-timer"]),
+    ("Data and content",  ["table", "cards", "list-items", "account-card", "amount-display",
+                           "summary", "accordion"]),
+    ("Identity and display", ["avatar", "tags", "eyebrow", "headers", "hero", "divider",
+                           "video-player"]),
+]
+CAT_OF = {slug: cat for cat, slugs in CATEGORIES for slug in slugs}
+
+def slug_of(fname):
+    return re.sub(r'[^a-z0-9]+', '-',
+                  os.path.basename(fname).replace('.reference.html', '').lower()).strip('-')
+
+def label_of(slug):
+    return slug.replace("-", " ").capitalize()
+
+# ---------------------------------------------------------------- chrome CSS/JS
+CHROME_CSS = """
+  :root{--ink:#1A1A1A; --page:#FAFAFA; --line:#E1E1E1; --mid:#808080; --dark:#1A1A1A;}
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+    background:var(--page); color:var(--ink); -webkit-font-smoothing:antialiased;}
+  header{display:flex; gap:16px; align-items:center; flex-wrap:wrap; padding:16px 24px;
+    background:#FFFFFF; border-bottom:1px solid var(--line); position:sticky; top:0; z-index:5;}
+  header h1{font-size:18px; font-weight:500; margin:0 16px 0 0;}
+  header a.back{color:var(--mid); text-decoration:none; font-size:13px;}
+  header a.back:hover{color:var(--ink); text-decoration:underline;}
+  .seg{display:inline-flex; border:1px solid var(--ink);}
+  .seg button{font:inherit; font-size:13px; padding:8px 14px; border:0; background:transparent;
+    color:var(--ink); cursor:pointer; border-right:1px solid var(--line);}
+  .seg button:last-child{border-right:0;}
+  .seg button[aria-pressed="true"]{background:var(--ink); color:#FFFFFF;}
+  .seg button:focus-visible{outline:2px solid #305A85; outline-offset:2px;}
+  .note{font-size:12px; color:var(--mid);}
+  .wctl{display:flex; gap:8px; align-items:center; font-size:13px;}
+  .wctl input[type=range]{width:180px; accent-color:var(--ink);}
+  main{padding:24px; display:grid; grid-template-columns:1fr 1fr; gap:24px;}
+  @media (max-width:1100px){ main{grid-template-columns:1fr;} }
+  .pane{min-width:0;}
+  .pane .bar{display:flex; justify-content:space-between; align-items:center; margin:0 0 8px;}
+  .pane .bar .t{font-size:13px; font-weight:500;}
+  .pane .bar button{font:inherit; font-size:12px; padding:4px 10px; border:1px solid var(--line);
+    background:#FFFFFF; color:var(--ink); cursor:pointer;}
+  .pane .bar button:hover{border-color:var(--ink);}
+  .frame{border:1px solid var(--line); background:#FFFFFF; overflow:auto; resize:vertical; height:72vh;}
+  .frame.dark{background:var(--dark);}
+  .frame iframe{display:block; width:100%; height:100%; border:0; margin:0 auto;}
+"""
+
+PAGE_TMPL = """<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__LABEL__ · Apollo showroom</title>
+<style>__CSS__</style>
+</head>
+<body>
+<header>
+  <a class="back" href="index.html">← Library</a>
+  <h1>__LABEL__</h1>
+  <div class="seg" id="themes" role="group" aria-label="Theme">__THEME_BTNS__</div>
+  <div class="wctl"><label for="w">Width</label>
+    <input id="w" type="range" min="320" max="1600" step="20" value="1600">
+    <span id="wv">full</span></div>
+  <span class="note" id="themenote"></span>
+</header>
+<main>
+  <div class="pane">
+    <div class="bar"><span class="t">Light</span><button data-open="light">Open ↗</button></div>
+    <div class="frame light"><iframe id="f-light" title="__LABEL__ — light"></iframe></div>
+  </div>
+  <div class="pane">
+    <div class="bar"><span class="t">Dark</span><button data-open="dark">Open ↗</button></div>
+    <div class="frame dark"><iframe id="f-dark" title="__LABEL__ — dark"></iframe></div>
+  </div>
+</main>
+<script id="payload" type="application/octet-stream">__B64__</script>
+<script>
+(function(){
+  var THEMES=__THEMES_JSON__;                       // [{attr,label,hits,note}]
+  var b64=document.getElementById('payload').textContent.trim();
+  var src=new TextDecoder().decode(Uint8Array.from(atob(b64),function(c){return c.charCodeAt(0)}));
+  var frames={light:document.getElementById('f-light'),dark:document.getElementById('f-dark')};
+  var state={theme:'mono',w:null};
+
+  function hash(){ var h={}; location.hash.replace(/^#/,'').split('&').forEach(function(kv){
+      var p=kv.split('='); if(p[0]) h[p[0]]=decodeURIComponent(p[1]||''); }); return h; }
+  function setHash(){ var parts=['theme='+state.theme]; if(state.w) parts.push('w='+state.w);
+    history.replaceState(null,'','#'+parts.join('&')); }
+
+  function apply(mode){
+    var f=frames[mode]; if(!f) return;
+    try{
+      var d=f.contentDocument; if(!d||!d.documentElement) return;
+      d.documentElement.setAttribute('data-apollo-theme',state.theme);
+      if(d.body) d.body.setAttribute('data-theme',mode);
+    }catch(e){}
+  }
+  function applyAll(){ apply('light'); apply('dark');
+    var t=THEMES.find(function(x){return x.attr===state.theme});
+    document.getElementById('themenote').textContent=t&&t.note?t.note:'';
+    document.querySelectorAll('#themes button').forEach(function(b){
+      b.setAttribute('aria-pressed', String(b.dataset.theme===state.theme)); });
+    setHash(); }
+
+  Object.keys(frames).forEach(function(mode){
+    frames[mode].addEventListener('load',function(){ apply(mode); });
+    frames[mode].srcdoc=src;
+  });
+
+  document.getElementById('themes').addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b) return;
+    state.theme=b.dataset.theme; applyAll();
+  });
+
+  var w=document.getElementById('w'), wv=document.getElementById('wv');
+  function setW(){ var full=(+w.value>=1600); state.w=full?null:+w.value;
+    Object.keys(frames).forEach(function(m){ frames[m].style.width=full?'100%':w.value+'px'; });
+    wv.textContent=full?'full':w.value+'px'; setHash(); }
+  w.addEventListener('input',setW);
+
+  document.querySelectorAll('[data-open]').forEach(function(b){
+    b.addEventListener('click',function(){
+      var mode=b.dataset.open;
+      var doc=src.replace(/(<body[^>]*data-theme=")[a-z]+(")/,'$1'+mode+'$2')
+                 .replace(/<html/,'<html data-apollo-theme="'+state.theme+'" ');
+      window.open(URL.createObjectURL(new Blob([doc],{type:'text/html'})));
+    });
+  });
+
+  function initFromHash(){ var h=hash();
+    if(h.theme&&THEMES.some(function(t){return t.attr===h.theme})) state.theme=h.theme;
+    if(h.w){ w.value=h.w; setW(); }
+    applyAll(); }
+  window.addEventListener('hashchange',initFromHash);
+  initFromHash();
+})();
+</script>
+</body>
+</html>
+"""
+
+INDEX_TMPL = """<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apollo component library · showroom</title>
+<style>__CSS__
+  .intro{padding:24px 24px 0; max-width:820px;}
+  .intro p{font-size:14px; color:var(--mid); line-height:1.5; margin:4px 0 0;}
+  section{padding:8px 24px 16px;}
+  section h2{font-size:15px; font-weight:500; margin:24px 0 12px; padding-top:16px;
+    border-top:1px solid var(--line);}
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:12px;}
+  a.card{display:block; padding:14px 16px; background:#FFFFFF; border:1px solid var(--line);
+    text-decoration:none; color:var(--ink); transition:border-color 140ms;}
+  a.card:hover{border-color:var(--ink);}
+  a.card .n{font-size:15px; font-weight:500;}
+  a.card .m{font-size:12px; color:var(--mid); margin-top:6px;}
+</style>
+</head>
+<body>
+<header>
+  <h1>Apollo component library</h1>
+  <div class="seg" id="themes" role="group" aria-label="Theme">__THEME_BTNS__</div>
+  <span class="note">Theme carries into every component page. Mono is the base; Legacy differs; Console renders as Mono with rounded corners; Supercharge renders as Mono.</span>
+</header>
+<div class="intro">
+  <p>Generated from the gated canon (snippets + tokens + theme cascade) — regenerate with
+  <code>python3 knowledge/gen_showroom.py</code>; never hand-edit. Each page: four themes ×
+  light/dark side by side × responsive width × the component's full live variant spread.</p>
+</div>
+__SECTIONS__
+<script>
+(function(){
+  var theme='mono';
+  function relink(){ document.querySelectorAll('a.card').forEach(function(a){
+      a.href=a.dataset.slug+'.html#theme='+theme; }); }
+  document.getElementById('themes').addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b) return;
+    theme=b.dataset.theme;
+    document.querySelectorAll('#themes button').forEach(function(x){
+      x.setAttribute('aria-pressed', String(x.dataset.theme===theme)); });
+    relink();
+  });
+  relink();
+})();
+</script>
+</body>
+</html>
+"""
+
+# ---------------------------------------------------------------- generation
+def theme_meta(themes, manifest_vars):
+    """Per-page theme metadata: hits = how many of this component's vars the theme
+    re-binds; note = what actually renders."""
+    out = []
+    for t in themes:
+        hits = len(cascade.component_overrides(manifest_vars, t))
+        if t["status"] == "base":
+            note = ""
+        elif not t["overrides"]:
+            note = t["label"] + " has an empty override set — renders as Mono."
+        elif hits == 0:
+            note = t["label"] + " overrides nothing this component binds — renders as Mono."
+        else:
+            note = t["label"] + ": " + str(hits) + " var(s) re-bound."
+        out.append({"attr": t["attr"], "label": t["label"], "hits": hits, "note": note})
+    return out
+
+def theme_buttons(themes):
+    return "".join(
+        '<button data-theme="%s" aria-pressed="%s">%s</button>'
+        % (t["attr"], "true" if t["attr"] == "mono" else "false",
+           htmlmod.escape(t["label"].replace("Apollo ", "")))
+        for t in themes)
+
+def build_pages():
+    """-> {relpath: content} for the whole showroom."""
+    themes = cascade.load_themes()
+    btns = theme_buttons(themes)
+    files, cards = {}, {}
+    for f in sorted(glob.glob(os.path.join(SNIP, "*.reference.html"))):
+        src = open(f).read()
+        mm = MANIFEST_RE.search(src)
+        varmap = json.loads(mm.group(1)).get("vars", {}) if mm else {}
+        slug = slug_of(f)
+        theme_css = cascade.snippet_theme_css(varmap)
+        payload = src
+        inject = ("\n<style id=\"apollo-theme-cascade\">\n/* generated by gen_showroom.py from "
+                  "tokens/themes/*.json — the [data-apollo-theme] re-projection of this "
+                  "snippet's manifest vars */\n" + theme_css + "\n</style>\n")
+        if "</body>" in payload:
+            payload = payload.replace("</body>", inject + "</body>", 1)
+        else:
+            payload += inject
+        b64 = base64.b64encode(payload.encode("utf-8")).decode("ascii")
+        meta = theme_meta(themes, varmap)
+        page = (PAGE_TMPL
+                .replace("__LABEL__", htmlmod.escape(label_of(slug)))
+                .replace("__CSS__", CHROME_CSS)
+                .replace("__THEME_BTNS__", btns)
+                .replace("__THEMES_JSON__", json.dumps(meta))
+                .replace("__B64__", b64))
+        files[slug + ".html"] = page
+        legacy_hits = next((m["hits"] for m in meta if m["attr"] == "legacy"), 0)
+        cards[slug] = {"label": label_of(slug),
+                       "cat": CAT_OF.get(slug, "More"),
+                       "meta": ("%d token(s) · Legacy re-binds %d" % (len(varmap), legacy_hits))}
+    # index
+    sections = []
+    cats = [c for c, _ in CATEGORIES] + (["More"] if any(v["cat"] == "More" for v in cards.values()) else [])
+    for cat in cats:
+        slugs = sorted(s for s, v in cards.items() if v["cat"] == cat)
+        if not slugs:
+            continue
+        grid = "".join(
+            '<a class="card" data-slug="%s" href="%s.html"><span class="n">%s</span>'
+            '<span class="m">%s</span></a>'
+            % (s, s, htmlmod.escape(cards[s]["label"]), htmlmod.escape(cards[s]["meta"]))
+            for s in slugs)
+        sections.append('<section><h2>%s · %d</h2><div class="grid">%s</div></section>'
+                        % (htmlmod.escape(cat), len(slugs), grid))
+    files["index.html"] = (INDEX_TMPL
+                           .replace("__CSS__", CHROME_CSS)
+                           .replace("__THEME_BTNS__", btns)
+                           .replace("__SECTIONS__", "\n".join(sections)))
+    return files
+
+def main():
+    files = build_pages()
+    check = "--check" in sys.argv
+    stale = []
+    for rel, content in sorted(files.items()):
+        path = os.path.join(OUTD, rel)
+        cur = open(path).read() if os.path.exists(path) else None
+        if cur != content:
+            stale.append(rel)
+            if not check:
+                os.makedirs(OUTD, exist_ok=True)
+                open(path, "w").write(content)
+    # prune orphans (a renamed/removed snippet must not leave a rotting page)
+    orphans = [os.path.basename(p) for p in glob.glob(os.path.join(OUTD, "*.html"))
+               if os.path.basename(p) not in files]
+    if not check:
+        for o in orphans:
+            os.remove(os.path.join(OUTD, o))
+    if check:
+        if stale or orphans:
+            print("gen_showroom --check: OUT OF SYNC — stale: %s orphaned: %s\n"
+                  "Run: python3 knowledge/gen_showroom.py" % (stale[:6], orphans[:6]))
+            sys.exit(1)
+        print("gen_showroom --check OK — %d page(s) + index in sync." % (len(files) - 1))
+        return
+    print("gen_showroom: %d page(s) + index -> showroom/ (%d written, %d orphan(s) pruned)"
+          % (len(files) - 1, len(stale), len(orphans)))
+
+if __name__ == "__main__":
+    main()

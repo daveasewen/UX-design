@@ -2,7 +2,7 @@
 
 Scanned **67** Mono-designated library files (snippets, _proforma, _review). Foreign-theme hexes checked: #00847F, #A8000B, #DB0011.
 
-**58** hardcoded foreign-theme colour(s) found in live CSS (comments + token-manifests excluded).
+**45** hardcoded foreign-theme colour(s) found in live CSS (comments + token-manifests excluded).
 
 | Area | File | Hex | ×  | Belongs to |
 |---|---|---|---|---|
@@ -20,25 +20,12 @@ Scanned **67** Mono-designated library files (snippets, _proforma, _review). For
 | snippets | Navigations.reference.html | `#DB0011` | 2 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
 | _proforma | Masthead-interactive.html | `#A8000B` | 1 | Apollo Legacy: Legacy error red (light) |
 | _proforma | Masthead-interactive.html | `#DB0011` | 1 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
-| _proforma | Tranche-7-interactive.html | `#A8000B` | 1 | Apollo Legacy: Legacy error red (light) |
-| _proforma | Tranche-7-interactive.html | `#DB0011` | 1 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
-| _proforma | Tranche-8-interactive.html | `#A8000B` | 1 | Apollo Legacy: Legacy error red (light) |
-| _proforma | Tranche-8-interactive.html | `#DB0011` | 1 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
-| _proforma | Tranche-3-interactive.html | `#A8000B` | 2 | Apollo Legacy: Legacy error red (light) |
-| _proforma | Tranche-3-interactive.html | `#DB0011` | 1 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
-| _proforma | Tranche-6-interactive.html | `#A8000B` | 1 | Apollo Legacy: Legacy error red (light) |
-| _proforma | Tranche-6-interactive.html | `#DB0011` | 1 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
-| _proforma | Tranche-9-interactive.html | `#A8000B` | 1 | Apollo Legacy: Legacy error red (light) |
-| _proforma | Tranche-9-interactive.html | `#DB0011` | 1 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
-| _proforma | Tranche-2-interactive.html | `#A8000B` | 2 | Apollo Legacy: Legacy error red (light) |
-| _proforma | Tranche-2-interactive.html | `#DB0011` | 1 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
-| _proforma | Tranche-5-interactive.html | `#A8000B` | 2 | Apollo Legacy: Legacy error red (light) |
-| _proforma | Tranche-5-interactive.html | `#DB0011` | 1 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
-| _proforma | Tranche-1-interactive.html | `#A8000B` | 2 | Apollo Legacy: Legacy error red (light) |
-| _proforma | Tranche-1-interactive.html | `#DB0011` | 1 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
+| _proforma | Tranche-3-interactive.html | `#A8000B` | 1 | Apollo Legacy: Legacy error red (light) |
+| _proforma | Tranche-2-interactive.html | `#A8000B` | 1 | Apollo Legacy: Legacy error red (light) |
+| _proforma | Tranche-5-interactive.html | `#A8000B` | 1 | Apollo Legacy: Legacy error red (light) |
+| _proforma | Tranche-1-interactive.html | `#A8000B` | 1 | Apollo Legacy: Legacy error red (light) |
 | _proforma | Icon-button.reference.html | `#DB0011` | 2 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
-| _proforma | Tranche-4-interactive.html | `#A8000B` | 2 | Apollo Legacy: Legacy error red (light) |
-| _proforma | Tranche-4-interactive.html | `#DB0011` | 1 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
+| _proforma | Tranche-4-interactive.html | `#A8000B` | 1 | Apollo Legacy: Legacy error red (light) |
 | _review | Masthead-interactive-REVIEW.html | `#A8000B` | 1 | Apollo Legacy: Legacy error red (light) |
 | _review | Masthead-interactive-REVIEW.html | `#DB0011` | 11 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
 | _review | Tranche-2-interactive-REVIEW.html | `#A8000B` | 2 | Apollo Legacy: Legacy error red (light) |

@@ -46,6 +46,7 @@ SNIP = os.path.join(ROOT, "snippets")
 TOK = os.path.join(ROOT, "tokens")
 
 sem = json.load(open(os.path.join(TOK, "semantic-colour.json")))
+layout = json.load(open(os.path.join(TOK, "layout.json")))
 
 # Brand exemption (type26-019): uppercase is allowed for acronyms only. Runs made
 # ENTIRELY of these pass; anything else in a 2+ word caps run is a gate failure.
@@ -76,7 +77,20 @@ BARE_LINK_TEXT = {
 
 
 def resolve(token, mode):
-    """tokens/active + 'dark' -> '#1D1D1D' (uppercased), or None."""
+    """tokens/active + 'dark' -> '#1D1D1D' (uppercased), or None. Layout-namespace
+    paths (border-radius/* …, Phase-0 shape de-hardcode) resolve from layout.json
+    to a CSS-formatted string ('0' / '8px') so snippets can bind radius via manifest."""
+    if token.startswith(("border-radius/", "border-width/", "focus-ring/", "layout/", "breakpoint/")):
+        n = layout
+        for k in token.split("/"):
+            n = n.get(k) if isinstance(n, dict) else None
+            if n is None:
+                return None
+        m = n.get(mode) if isinstance(n.get(mode), dict) else n
+        v = m.get("$value") if isinstance(m, dict) else None
+        if isinstance(v, (int, float)):
+            return "0" if v == 0 else f"{v}px"
+        return str(v) if v is not None else None
     n = sem
     for k in token.split("/"):
         n = n.get(k) if isinstance(n, dict) else None
@@ -92,9 +106,17 @@ def theme_block(css, theme):
     return m.group(1) if m else ""
 
 
-def var_value(block, var):
+def var_value(block, var, hexonly=True):
+    """Declared value of --var in a theme block. hexonly=True (default) keeps the
+    original colour-token behaviour; hexonly=False captures any literal value
+    (used when the token's canon value is non-hex, e.g. a radius)."""
     m = re.search(re.escape(var) + r'\s*:\s*(#[0-9A-Fa-f]{6,8})', block)
-    return m.group(1).upper() if m else None
+    if m:
+        return m.group(1).upper()
+    if not hexonly:
+        m = re.search(re.escape(var) + r'\s*:\s*([^;]+);', block)
+        return m.group(1).strip() if m else None
+    return None
 
 
 def validate(path):
@@ -119,8 +141,9 @@ def validate(path):
     drift_reason = drift_allow.get("$reason", "intentional (see snippet comment)")
     for var, token in manifest.get("vars", {}).items():
         for mode, block in (("light", light), ("dark", dark)):
-            declared = var_value(block, var)
             canon = resolve(token, mode)
+            declared = var_value(block, var,
+                                 hexonly=(canon is None or str(canon).startswith("#")))
             if canon is None:
                 errors.append(f"{name}: token '{token}' not found in store")
             elif declared is None:

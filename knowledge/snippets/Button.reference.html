@@ -67,6 +67,8 @@
     --quat-hover:#F0F0F0; --quat-label:#1A1A1A; --quat-label-disabled:#9D9D9D;
     /* page + supporting — success = R-D14 Mono green FILL (rag/success-background), NOT the Legacy teal; black label (type26-013) */
     --success:#5DAC7B; --success-fg:#000000; --page:#FFFFFF; --surface:#F0F0F0;
+    /* shape — the ADR-0010 theme flex slot (Mono square). Bound via manifest to border-radius/default. */
+    --border-radius-default:0;
   }
   [data-theme="dark"]{
     --pri-default:#FAFAFA; --pri-hover:#B7B7B7; --pri-pressed:#FFFFFF; --pri-disabled:#484848;
@@ -77,6 +79,7 @@
     --ter-label:#FFFFFF; --ter-label-disabled:#808080;
     --quat-hover:#232323; --quat-label:#FFFFFF; --quat-label-disabled:#808080;
     --success:#43AD6F; --success-fg:#000000; --page:#1A1A1A; --surface:#232323;
+    --border-radius-default:0;
   }
 
   *{box-sizing:border-box;}
@@ -94,7 +97,7 @@
   /* TYPE-002 · type comes from the canon composite — `.btn` is appended to `.t-cm` and
      `.t-cm-button` in canon/type.css (T-D9). font-family / size / weight / line-height /
      inline-flex / align-items / cap-trim all arrive from there. Do NOT re-declare them here. */
-  .btn{height:var(--h); min-width:96px; padding:0 var(--pad-x); border:0; border-radius:0; cursor:pointer;
+  .btn{height:var(--h); min-width:96px; padding:0 var(--pad-x); border:0; border-radius:var(--border-radius-default); cursor:pointer;
     justify-content:center;
     gap:8px; transition:background var(--ease), border-color var(--ease), transform var(--spring), filter var(--press);}
   .btn:focus-visible{outline:2px solid var(--ter-label); outline-offset:2px;}
@@ -239,7 +242,8 @@
       "--success": "rag/success-background",
       "--success-fg": "text/on-success",
       "--page": "background/default",
-      "--surface": "button/tertiary/background/hover"
+      "--surface": "button/tertiary/background/hover",
+      "--border-radius-default": "border-radius/default"
     },
     "contrastPairs": [
       { "fg": "button/primary/label/default",   "bg": "button/primary/background/default",   "context": "text" },

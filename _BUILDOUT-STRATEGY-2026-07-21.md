@@ -134,6 +134,11 @@ shape (no hardcodes) · an Opus verification pass vouches a batch before commit.
 
 ## Open confirmations for the execution session
 
-- Showroom-vs-reorg for the clean folder (showroom assumed).
-- Whether the 12 pro-forma tranches fold into the finalised set or stay as a pattern library.
-- Legacy's own corner radius (Mono square, Console rounded — Legacy = ? likely rounded/HSBC).
+- ~~Showroom-vs-reorg~~ **RULED (Dave, 2026-07-21): showroom** — built, `showroom/`.
+- Whether the 12 pro-forma tranches fold into the finalised set or stay as a pattern library. **STILL OPEN.**
+- ~~Legacy's own corner radius~~ **RULED (Dave, 2026-07-21, Phase-0 session): Legacy = SQUARE, same as
+  Mono** (not the guessed "likely rounded"). In `apollo-legacy.overrides.json`.
+
+> **PHASE 0: DONE (2026-07-21 late night, Fable conductor).** Cascade + radius flex slot + harness +
+> showroom + 4 blocking gates; build 42/42; exit gate render-verified (Console rounded, Supercharge ≡
+> Mono by pixel-diff). Arc: `_DECISION-HISTORY/2026-07-21-phase0-theme-resolution-layer.md`. Phase 1 next.

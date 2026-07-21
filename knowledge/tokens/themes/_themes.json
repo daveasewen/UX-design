@@ -9,6 +9,7 @@
       "role": "Retained for legacy interfaces; superseded over time, never deleted.",
       "status": "populated",
       "overrideSet": "themes/apollo-legacy.overrides.json",
+      "attr": "legacy",
       "neutralRamp": "color/grey/100-800",
       "ownsHexes": {
         "#DB0011": "Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark)",
@@ -22,32 +23,48 @@
       "role": "★ The baseline built now — 'very mono': monochrome throughout, colour ONLY in RAG status + dataviz.",
       "status": "base",
       "overrideSet": null,
+      "attr": "mono",
       "neutralRamp": "color/mono/1-15",
       "ownsHexes": {
         "#B92F1E": "Mono's only red — RAG breach + dataviz loss ONLY (R-D19, R-D7/R-D14). Never action/nav."
-      }
+      },
+      "declaredSlots": {
+        "input/error-condition": null
+      },
+      "declaredSlotsNote": "Dave 2026-07-21: declare null placeholder slots on Mono NOW for anticipated flex (the input error-condition colour especially) so a value can be added any time — per-theme or in Mono itself — without re-architecting (ADR-0010 declared-but-unset). Declared HERE (registry), not in the live store: the ADR-0010 §3 no-null-under-live-binding gate is still staged, so nulls do not enter semantic-colour.json until it is built. Namespace finalised at population time."
     },
     "apollo-console": {
       "label": "Apollo Console",
       "order": 3,
-      "role": "Branded HSBC library (was Apollo UI). Broader new-colour palette.",
-      "status": "nullable-declared",
-      "overrideSet": null,
+      "role": "Branded HSBC library (was Apollo UI). Inherits Mono's palette (Dave 2026-07-21); dataviz + status/RAG identical to Mono. Live divergence NOW: rounded corners.",
+      "status": "mono-inheriting",
+      "overrideSet": "themes/apollo-console.overrides.json",
+      "attr": "console",
       "neutralRamp": null,
-      "ownsHexes": {}
+      "ownsHexes": {},
+      "declaredSlots": {
+        "ui-greys/neutral-ramp": null,
+        "input/error-condition": null
+      }
     },
     "apollo-supercharge": {
       "label": "Apollo Supercharge",
       "order": 4,
-      "role": "Brand-uplift rework. Broader new-colour palette.",
-      "status": "nullable-declared",
-      "overrideSet": null,
+      "role": "Brand-uplift rework. Inherits Mono's palette in full (Dave 2026-07-21); renders as Mono until a divergence is ruled.",
+      "status": "mono-inheriting",
+      "overrideSet": "themes/apollo-supercharge.overrides.json",
+      "attr": "supercharge",
       "neutralRamp": null,
-      "ownsHexes": {}
+      "ownsHexes": {},
+      "declaredSlots": {
+        "ui-greys/neutral-ramp": null,
+        "input/error-condition": null
+      }
     }
   },
   "notes": {
     "resolution": "resolve(role, mode, theme): theme override wins; else base (Mono). Components stay theme-blind.",
+    "cascade": "Rendered by canon/gen_theme_cascade.py into canon.css (AUTO-THEMES block): [data-apollo-theme=\"<attr>\"] root-level canonical vars + per-component vars via each snippet's #token-manifest; dark values on the [data-apollo-theme][data-theme=dark] combo (and descendant form). Mono = base, no block emitted. Divergence axes are theme-overridable, NEVER hardcoded (Dave 2026-07-21): colour, neutral ramp, shape/border-radius, anticipated input error-condition.",
     "gate": "A Mono-designated surface (see _STYLE-PROVENANCE.md) must not resolve to, or hardcode, another theme's ownsHexes.",
     "backlog": "tabs/active and progress/complete need a Mono value ruled (R-D19) before their Legacy red can be gate-seeded as blocking."
   }

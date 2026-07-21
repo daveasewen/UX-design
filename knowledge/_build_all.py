@@ -57,7 +57,18 @@ STEPS = [
     ("indicator/accent contrast audit", "_build_indicator_contrast_audit.py"),
     ("icon contrast delta — brand 4.5 vs 3 (advisory)", "_build_icon_contrast_delta.py"),
     ("dark-surface flatness gate", "_validate_dark_surfaces.py"),
+    # Projection-sync gate (2026-07-21): snippets/tranches/canon literals must match the
+    # token stores BY GENERATION. The tranches sat on pre-R-D20 Legacy error reds and
+    # canon's .cn-button literals on pre-B-D values for a day+ because the projector only
+    # ran manually and nothing checked — caught during Phase 0. This closes that hole.
+    ("token projection sync — snippets/tranches/canon literals (gen_snippet_tokens)", "gen_snippet_tokens.py", ["--check", "--quiet"]),
     ("snippet gate", "_validate_snippets.py"),
+    # Phase-0 theme layer (2026-07-21): the AUTO-THEMES cascade in canon.css must
+    # regenerate byte-identically from tokens/themes/*.json + snippet manifests
+    # (same spine principle as the token block — generated, so it cannot drift).
+    ("theme cascade sync — [data-apollo-theme] layer (ADR-0011)", "canon/gen_theme_cascade.py", ["--check"]),
+    ("radius gate — no hardcoded border-radius; shape is a theme flex slot (ADR-0010)", "_validate_radius.py"),
+    ("showroom sync — generated component library (RULED 2026-07-21)", "gen_showroom.py", ["--check"]),
     ("Legacy-colour leakage gate (Mono) — no Legacy-only colour in a Mono surface", "_validate_legacy_leak.py"),
     ("theme-provenance gate (ADR-0011/R-D19) — no foreign-theme hex in a Mono surface (advisory)", "_validate_theme_provenance.py"),
     ("token-tier gate (_STANDARDS.md §1)", "_validate_token_tiers.py"),
@@ -101,6 +112,18 @@ for i, step in enumerate(STEPS, 1):
             rc = rc or r.returncode
         elif "snippet" in label:
             print(f"\n❌ snippet gate failed (exit {r.returncode}) — see knowledge/_SNIPPET-AUDIT.md")
+            rc = rc or r.returncode
+        elif "projection sync" in label:
+            print(f"\n❌ token projection out of sync (exit {r.returncode}) — a store value changed without re-projection (or a manifest path is unresolvable). Run: python3 knowledge/gen_snippet_tokens.py")
+            rc = rc or r.returncode
+        elif "theme cascade" in label:
+            print(f"\n❌ theme-cascade sync failed (exit {r.returncode}) — canon.css AUTO-THEMES is out of sync with tokens/themes/*.json (+ manifests). Run: python3 knowledge/canon/gen_theme_cascade.py")
+            rc = rc or r.returncode
+        elif "radius gate" in label:
+            print(f"\n❌ radius gate failed (exit {r.returncode}) — a hardcoded border-radius literal on a strict surface. Shape is theme-flexed (ADR-0010): bind var(--border-radius-default); 50%/999px circle+pill idioms are exempt. See knowledge/_RADIUS-GATE.md")
+            rc = rc or r.returncode
+        elif "showroom" in label:
+            print(f"\n❌ showroom sync failed (exit {r.returncode}) — showroom/ is stale against the snippets/tokens/cascade. Run: python3 knowledge/gen_showroom.py")
             rc = rc or r.returncode
         elif "leakage" in label:
             print(f"\n❌ Legacy-colour leakage gate failed (exit {r.returncode}) — a Mono surface resolves to a Legacy-only colour (e.g. the success teal #00847F). Rebind onto the R-D14 token (rag/*-background / -glyph); do NOT add the hex to exceptions. See knowledge/_LEGACY-LEAK-GATE.md")
