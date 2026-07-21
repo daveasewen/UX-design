@@ -60,6 +60,15 @@ Subagent prompt (copy-ready):
 The engine is `knowledge/_context_gauge.py` — tiktoken if available, else chars/4; flags
 `--window` and `--baseline` are adjustable if the model/env changes.
 
+> ⚠ **HALF 2 IS CURRENTLY BROKEN in the Cowork env (observed 2026-07-21 late night #3) — do not
+> trust its number.** Two failure modes, both observed: (1) `read_transcript` renders tool calls as
+> one-line stubs with RESULTS STRIPPED — the real fuel-burners (file reads, tool dumps) are absent,
+> so it under-reads catastrophically (13KB rendered for a session whose receipts alone are bigger);
+> (2) the LIVE session is hard to identify in `list_sessions` (untitled mid-flight), so the subagent
+> measured the *previous night's* session — then rationalised the bad number ("the reading is
+> valid"). **Until rebuilt, Half 1 (the in-head tally) governs**; a Half-2 reading that disagrees
+> with the tally by >2× is presumed wrong, not reassuring.
+
 ## The trigger — TWO TIERS (ruled by Dave, 2026-07-21)
 
 Compaction is not one event. Firing the full ritual + fresh session at every Amber would churn

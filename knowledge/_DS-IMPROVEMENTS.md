@@ -210,3 +210,12 @@ exposure.
 prose trips the census (Badge + Tags each carried one). Worker reworded the prose (doc fix); checker logic
 untouched (was shared with a live parallel worker). **Fix:** strip HTML comments in `check_text` + extend
 the selftest with a prose-trip case. Matters before Phase-2 fan-out (~50 new files will carry header prose).
+
+## ds-009 — CONSULT corpus omits `_BUTTON-DECISIONS.md` (2026-07-21, architecture session)
+`_build_consult_index.py` indexes the TYPE/RAG/DATAVIZ ledgers + ADRs + guidelines + OPEN items, but
+not `_proforma/_BUTTON-DECISIONS.md` — B-D1…B-D5 (Mono primary, disabled visibility, ADR-0009 wiring)
+are unfindable via `_consult.py` (verified: a direct B-D1 query returns nothing). Any future ledger
+addition repeats this silently. **Fix:** add the ledger to the corpus list + a selftest asserting every
+`_proforma/_*-DECISIONS.md` on disk is indexed (catches the NEXT new ledger, not just this one).
+Secondary (already a `_FUTURE-STATE` path): keyword retrieval misses cross-vocabulary queries —
+"composition/organisms" doesn't reach ADR-0010/0011's "override sets/nullable slots"; fuzzy→rigorous.

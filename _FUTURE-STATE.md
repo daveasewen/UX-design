@@ -289,9 +289,12 @@ values per state within the AA guarantee); pairs with `$extensions.apollo.state`
   `gen_theme_cascade.py` (override the base → every role follows; dial a role → it wins) is the
   generator's core resolution semantic, already live.
 
-- **★ Tiered flex at the COMPONENT-TYPE level — ARCHITECTURE SESSION QUEUED (Dave, 2026-07-21 late
+- ~~**★ Tiered flex at the COMPONENT-TYPE level — ARCHITECTURE SESSION QUEUED**~~ **GRADUATED
+  2026-07-21 (same day, late night #3) → RULED as ADR-0013** — component-type tier carries shared
+  VALUES and shared RULES (generated partials); one registry; mechanism lands before Phase-2.
+  Original record kept below for the audit trail. *(Dave, 2026-07-21 late
   evening; recorded deliberately WITHOUT exploration, his instruction: "lets not explore now but we
-  need to record this and explore later").** The same flexibility the semantic radius tier gives
+  need to record this and explore later").* The same flexibility the semantic radius tier gives
   (default → role) will be needed **per component TYPE** as well: *"I could imagine that segmented
   controls share the same radius"* — i.e. a type-level grouping (e.g. all segmented controls) sitting
   in the **component token tier**, between the semantic role and the individual component binding, so
@@ -306,8 +309,10 @@ values per state within the AA guarantee); pairs with `$extensions.apollo.state`
   *Open architecture questions for that session:* where type-groups live (token schema? meta?
   a `component-type` axis in the 3-tier stack?); fallback order (component → type-group → semantic
   role → default); how the cascade generator + manifests express type membership; interaction with
-  ADR-0010 nullable slots + the token-tier gate. *Status:* recorded 2026-07-21, decide-in-dedicated-
-  session; do NOT enact piecemeal during Phase 1 — workers keep binding semantic ROLE tokens.
+  ADR-0010 nullable slots + the token-tier gate. *Status:* **GRADUATED — ruled 2026-07-21 late
+  night #3 as ADR-0013**; the open questions above are answered there (registry
+  `knowledge/component-types.json` · fallback component → type-group → semantic role → default ·
+  ratchet-style gate + selftests). Build = the queued clean-room session per ADR-0013 Consequences.
 
 - **Blast-radius gate v2 — cascade-aware.** T-D13's gate matches selectors structurally
   (class/element presence per file) and gates on the file *set*, so a same-count file *swap* inside
