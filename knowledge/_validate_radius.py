@@ -39,6 +39,7 @@ STRICT_FILES = [
 # (CSS + manifest + theme-block declarations) and adding it here is ONE change.
 MIGRATED_SNIPPETS = {
     "Button.reference.html",
+    "Cards.reference.html",
 }
 
 ADVISORY_GLOBS = [

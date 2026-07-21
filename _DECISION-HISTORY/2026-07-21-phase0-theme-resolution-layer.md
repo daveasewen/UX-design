@@ -91,3 +91,29 @@ sync · cascade sync · radius gate · showroom sync), all blocking, all selftes
 build **42/42**. Still open → §C of `GOOD-MORNING.md` (Console px ruling · Legacy on-success ·
 21-file radius migration · tranches fold-or-stay · Mono null-slot store entry once the ADR-0010 §3
 gate exists).
+
+---
+
+## ADDENDUM — same evening (after Dave's push + review): the radius becomes a TIER
+
+*Appended explicitly per the archive rules (dated, not a silent edit). Dave, on the pushed result:
+"the 8px can't be universal, the radii will be different on cards and buttons for instance, remember
+flexibility is key, also remember that ultimately we will build a theme generator from this, maximum
+flexibility."*
+
+**Finding 7 — one flex slot per dimension is the wrong grain; the grain is the ROLE.** Enacted
+immediately so Phase 1 migrates 21 files once, not twice: `layout.json` border-radius grew semantic
+roles — `default` (the theme's base) + `control` / `surface` / `indicator`, each `$alias`-falling-back
+to default (taxonomy = agent-PROVISIONAL, three roles by current canon evidence, extend by evidence
+not speculation). `gen_canon_tokens` now emits modeless alias CHAINS
+(`--border-radius-control: var(--border-radius-default)`), and `gen_theme_cascade` gained **generic
+alias-aware resolution** — the true `resolve(role, mode, theme)` ADR-0011 promised: a theme
+overriding the base cascades into every role that follows it; a role override wins. (Generic across
+stores, so colour alias chains propagate too — Legacy's ink now correctly reaches roles that alias
+`text/default`, e.g. icons.) Canon rebound by role (final census: 21 control / 8 surface /
+8 indicator; three hand-corrections over the classifier — `.close`, `.overflow__trigger`,
+`.overflow__item` are buttons, not surfaces; `.cn-tabs .indicator` left as control, worker may
+refine). **Cards migrated as the second proof**; Console demo = default 8 + surface 12 (both
+provisional) — **render-verified: Console cards 12px against buttons 8px, Dave's own example, live.**
+The theme-generator horizon is inscribed in `_FUTURE-STATE.md` (style-builder entry, widened): themes
+are data, the builder edits override sets, role-granular slots are its dials.

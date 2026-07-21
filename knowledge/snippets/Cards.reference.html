@@ -31,9 +31,9 @@
 :is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 
   :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
-  [data-theme="light"]{ --surface:#FFFFFF; --border:#E1E1E1; --text:#1A1A1A; --muted:#1A1A1A; --icon:#1A1A1A; --accent:#DB0011; --hover:#F0F0F0; --focus:#305A85; --page:#FFFFFF;
+  [data-theme="light"]{ --surface:#FFFFFF; --border:#E1E1E1; --text:#1A1A1A; --muted:#1A1A1A; --icon:#1A1A1A; --accent:#DB0011; --hover:#F0F0F0; --focus:#305A85; --page:#FFFFFF; --border-radius-surface:0;
     --checked:#000000; --ctrl-border:#808080; --pressed:#626262; --reverse:#FFFFFF; }
-  [data-theme="dark"]{ --surface:#1F1F1F; --border:#808080; --text:#FFFFFF; --muted:#FFFFFF; --icon:#FFFFFF; --accent:#DB0011; --hover:#232323; --focus:#4587A7; --page:#1A1A1A;
+  [data-theme="dark"]{ --surface:#1F1F1F; --border:#808080; --text:#FFFFFF; --muted:#FFFFFF; --icon:#FFFFFF; --accent:#DB0011; --hover:#232323; --focus:#4587A7; --page:#1A1A1A; --border-radius-surface:0;
     --checked:#FFFFFF; --ctrl-border:#808080; --pressed:#1A1A1A; --reverse:#FFFFFF; }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
@@ -54,7 +54,7 @@
   a.arrow:focus-visible{outline:none;} a.arrow:focus-visible .lbl{box-shadow:inset 0 -3px 0 var(--text);}
 
   /* ---- card base ---- */
-  .card{background:var(--surface); border:1px solid var(--border); border-radius:0; container-type:inline-size; display:flex; flex-direction:column;}
+  .card{background:var(--surface); border:1px solid var(--border); border-radius:var(--border-radius-surface); container-type:inline-size; display:flex; flex-direction:column;}
 
   /* type 1 — Action card */
   .card.action{padding-top:12px;}
@@ -72,7 +72,7 @@
   .qbtn:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
 
   /* type 2 — Link card (whole card clickable) */
-  a.linkcard{display:flex; gap:16px; padding:16px; border-radius:0; background:var(--surface); border:1px solid var(--border); text-decoration:none; color:var(--text); transition:background var(--ease);}   /* card surface + subtle border, like the family */
+  a.linkcard{display:flex; gap:16px; padding:16px; border-radius:var(--border-radius-surface); background:var(--surface); border:1px solid var(--border); text-decoration:none; color:var(--text); transition:background var(--ease);}   /* card surface + subtle border, like the family */
   a.linkcard:hover{background:var(--hover);}                      /* hover state */
   a.linkcard:active{background:var(--pressed); color:var(--reverse);}   /* pressed (per meta: tertiary/background/pressed + reverse text) */
   a.linkcard:hover p, .card.opt:hover p{color:var(--text);}            /* dark hover: text/secondary is 3.34:1 on #474747 -> text/default (9.29:1) */
@@ -179,7 +179,8 @@
   <script type="application/json" id="token-manifest">
   {
     "component": "Cards",
-    "vars": { "--surface": "tertiary/background/default", "--border": "border/subtle", "--text": "text/default", "--muted": "text/secondary", "--icon": "icon/default", "--accent": "primary/background/default", "--hover": "tertiary/background/hover", "--focus": "focus/ring", "--page": "background/default", "--checked": "secondary/background/default", "--ctrl-border": "form/border/default", "--pressed": "tertiary/background/pressed", "--reverse": "text/reverse" },
+    "vars": {
+      "--border-radius-surface": "border-radius/surface", "--surface": "tertiary/background/default", "--border": "border/subtle", "--text": "text/default", "--muted": "text/secondary", "--icon": "icon/default", "--accent": "primary/background/default", "--hover": "tertiary/background/hover", "--focus": "focus/ring", "--page": "background/default", "--checked": "secondary/background/default", "--ctrl-border": "form/border/default", "--pressed": "tertiary/background/pressed", "--reverse": "text/reverse" },
     "contrastPairs": [
       { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
       { "fg": "text/secondary", "bg": "tertiary/background/default", "context": "text" },

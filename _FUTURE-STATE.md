@@ -279,6 +279,15 @@ values per state within the AA guarantee); pairs with `$extensions.apollo.state`
   sheet. *Feeds:* Craft / the harness; the four-theme model (R-D15). *Status:* principle set + ADR-0009
   accepted → build the generic per-state builder when the harness UI is specced; migrate opacity to a
   first-class number token then.
+  **→ Widened to a THEME GENERATOR (Dave, 2026-07-21 evening, Phase-0 session):** *"ultimately we will
+  build a theme generator from this, maximum flexibility."* The builder's output IS an override set
+  (`tokens/themes/*.overrides.json`) — themes are data, the cascade generator renders them, so the
+  generator UI = dials over the flex-slot schema. Consequence already enacted: **radius became a semantic
+  TIER** (default + control/surface/indicator roles, alias-fallback chain, `layout.json`) because "one
+  radius can't be universal — cards differ from buttons"; every future flex dimension should land as
+  role-granular slots with a base fallback for the same reason. The alias-aware resolution in
+  `gen_theme_cascade.py` (override the base → every role follows; dial a role → it wins) is the
+  generator's core resolution semantic, already live.
 
 - **Blast-radius gate v2 — cascade-aware.** T-D13's gate matches selectors structurally
   (class/element presence per file) and gates on the file *set*, so a same-count file *swap* inside

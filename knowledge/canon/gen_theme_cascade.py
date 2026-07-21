@@ -87,6 +87,72 @@ def base_value(path, mode):
         return node["$value"]
     raise KeyError(f"{path} has no '{mode}' value in base store")
 
+# ---------------------------------------------------------------- alias map
+def _walk_aliases(node, path, out):
+    if not isinstance(node, dict):
+        return
+    if "$alias" in node:
+        a = node["$alias"]
+        if isinstance(a, str):
+            out[path] = {"modeless": a}
+        elif isinstance(a, dict):
+            out[path] = {m: a[m] for m in MODES if a.get(m)}
+        return
+    if "$value" in node:
+        return
+    for k, v in node.items():
+        if not k.startswith("$"):
+            _walk_aliases(v, f"{path}/{k}" if path else k, out)
+
+def alias_map():
+    """{path: {'modeless': target} | {'light': t, 'dark': t}} across all stores.
+    The base store's OWN $alias edges — what lets a theme override of an alias
+    TARGET cascade to every path that follows it (semantic radius tier, Dave
+    2026-07-21 evening: roles fall back to default unless dialed themselves)."""
+    out = {}
+    for f in ("colour.json", "semantic-colour.json", "layout.json"):
+        for k, v in _store(f).items():
+            if not k.startswith("$"):
+                _walk_aliases(v, k, out)
+    return out
+
+def _expand_aliases(entry, amap):
+    """Materialise EFFECTIVE overrides: any aliased path not itself overridden,
+    whose target (transitively) is, inherits the theme value — unless the result
+    equals the base value (no-op emissions are skipped, keeps blocks minimal).
+    A path's own override always wins (checked first). Fixed-point for chains."""
+    ov = entry["overrides"]
+    if not ov:
+        return
+    for _ in range(len(amap) + 1):
+        changed = False
+        for path, al in amap.items():
+            if path in ov:
+                continue
+            if "modeless" in al:
+                t = ov.get(al["modeless"])
+                if t:
+                    base = css_value(path, base_value(path, "light"))
+                    val = t.get("modeless") or t.get("light")
+                    if val != base:
+                        ov[path] = dict(t)
+                        changed = True
+            else:
+                pair, hit = {}, False
+                for m in MODES:
+                    t = ov.get(al.get(m)) if al.get(m) else None
+                    if t:
+                        pair[m] = t.get(m) or t.get("modeless")
+                        hit = True
+                if hit:
+                    for m in MODES:
+                        pair.setdefault(m, css_value(path, base_value(path, m)))
+                    if any(pair[m] != css_value(path, base_value(path, m)) for m in MODES):
+                        ov[path] = pair
+                        changed = True
+        if not changed:
+            break
+
 # ---------------------------------------------------------------- themes
 def normalize(seg):
     return re.sub(r"[^a-z0-9]+", "-", str(seg).lower()).strip("-")
@@ -128,6 +194,9 @@ def load_themes():
                 elif "$value" in node:
                     entry["overrides"][path] = {"modeless": css_value(path, node["$value"])}
         out.append(entry)
+    amap = alias_map()
+    for entry in out:
+        _expand_aliases(entry, amap)
     return out
 
 # ---------------------------------------------------------------- manifests

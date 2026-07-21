@@ -1,5 +1,5 @@
 {
-  "$description": "Layout — grid (web/app margin/gutter/columns) + border-width + border-radius, re-based from Figma native export (collection 'semantic-scale', modes scale-1/2/3). Breakpoint definitions and scale->viewport mapping are PRESERVED from the Breakpoints-page doc (not carried in the variable export). Source: _raw/semantic-scale/.",
+  "$description": "Layout \u2014 grid (web/app margin/gutter/columns) + border-width + border-radius, re-based from Figma native export (collection 'semantic-scale', modes scale-1/2/3). Breakpoint definitions and scale->viewport mapping are PRESERVED from the Breakpoints-page doc (not carried in the variable export). Source: _raw/semantic-scale/.",
   "breakpoint": {
     "xs": {
       "$value": "320px",
@@ -94,9 +94,28 @@
     }
   },
   "border-radius": {
+    "$description": "Shape tier (ADR-0010 flex slots; Dave 2026-07-21 evening: one radius CANNOT be universal \u2014 radii differ by component role, cards vs buttons; maximum flexibility, the horizon is a THEME GENERATOR where every slot is a dial). 'default' = the theme's base radius; the ROLE tokens alias it, so a theme may set ONE value (default \u2014 everything follows) or dial roles independently (Console: surface differs from control). Components bind ROLE tokens, never 'default' directly and never literals (radius gate). Role taxonomy PROVISIONAL (agent, 2026-07-21): control/surface/indicator \u2014 extend by evidence during Phase 1, not speculation. 50%/999px circle+pill idioms stay literal (deliberately round in every theme).",
     "default": {
       "$value": 0,
       "$type": "number"
+    },
+    "control": {
+      "$alias": "border-radius/default",
+      "$value": 0,
+      "$type": "number",
+      "$note": "Interactive elements: buttons, inputs, selects, chips/tags, selection boxes."
+    },
+    "surface": {
+      "$alias": "border-radius/default",
+      "$value": 0,
+      "$type": "number",
+      "$note": "Containers: cards, dialogs/modals, menus/dropdown panels, tooltips, tables, notifications."
+    },
+    "indicator": {
+      "$alias": "border-radius/default",
+      "$value": 0,
+      "$type": "number",
+      "$note": "Small status/utility marks: status chips, non-pill badges, progress tracks, kbd hints."
     }
   },
   "border-width": {
@@ -114,7 +133,7 @@
     }
   },
   "focus": {
-    "$description": "Keyboard focus-indicator geometry. No canonical Figma primitive — see semantic-colour.json focus group and guidelines/focus-indicators.md. SIGNED OFF as canon by Dave 2026-06-20 (was tagged review). Ring colour lives in semantic-colour.json (focus/ring).",
+    "$description": "Keyboard focus-indicator geometry. No canonical Figma primitive \u2014 see semantic-colour.json focus group and guidelines/focus-indicators.md. SIGNED OFF as canon by Dave 2026-06-20 (was tagged review). Ring colour lives in semantic-colour.json (focus/ring).",
     "ring-width": {
       "$value": 2,
       "$type": "number",
@@ -124,7 +143,7 @@
     "ring-offset": {
       "$value": 2,
       "$type": "number",
-      "$description": "Gap between the element edge and the ring, px — keeps the ring clear of the component fill.",
+      "$description": "Gap between the element edge and the ring, px \u2014 keeps the ring clear of the component fill.",
       "$confidence": "asserted"
     }
   }

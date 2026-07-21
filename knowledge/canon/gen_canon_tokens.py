@@ -81,7 +81,15 @@ def walk(node, path, out):
                 mode = segs[-1]
                 segs = segs[:-1]
             var = "--" + "-".join(segs)
-            css = fmt_value(var, node["$value"], node.get("$type"))
+            # MODELESS alias (added 2026-07-21, semantic radius tier): a modeless token
+            # whose $alias names a non-primitive path emits the var() CHAIN, not the baked
+            # $value — so a theme override of the alias TARGET cascades to every role that
+            # follows it (Dave: one radius can't be universal; roles fall back to default).
+            alias = node.get("$alias")
+            if isinstance(alias, str) and not alias.startswith("color/"):
+                css = "var(--" + "-".join(normalize(s) for s in alias.split("/")) + ")"
+            else:
+                css = fmt_value(var, node["$value"], node.get("$type"))
             if css is not None:
                 out.append((var, mode, css))
             return

@@ -4,12 +4,22 @@
 > **RENAME THIS CHAT →** `Apollo build-out Phase 0 BUILT — theme cascade live (4 themes × 40 components), radius flex slot + showroom + universal harness, 4 new gates, 42/42 [FABLE conductor]`
 > **TITLE THE NEXT (fresh) CHAT →** `Apollo build-out Phase 1 — finalise the 40 through the harness: radius migration (21-file ratchet in _RADIUS-GATE.md) + theme-response audit + showroom sign-off [conductor + 2 Fable workers]`
 >
-> **Phase-1 worker brief, turnkey:** per component — (1) rebind radius onto the token (snippet CSS +
-> theme-block declarations + manifest `border-radius/default`) and add the file to `MIGRATED_SNIPPETS`
-> in `_validate_radius.py` **in the same change**; (2) eyeball its showroom page across 4 themes × both
-> modes; (3) `python3 knowledge/gen_snippet_tokens.py && python3 knowledge/canon/gen_theme_cascade.py &&
-> python3 knowledge/gen_showroom.py` then full build green; (4) receipt to `notes/_receipts/`, no git
-> (conductor commits). The 21-file worklist is enumerated in `knowledge/_RADIUS-GATE.md`.
+> **★ AMENDED same evening (Dave, on the pushed result): radius is a semantic TIER — "8px can't be
+> universal; cards differ from buttons; maximum flexibility; ultimately we build a THEME GENERATOR."**
+> Enacted before Phase 1: `layout.json` now carries **default + control/surface/indicator** roles
+> (alias-fallback → default; taxonomy PROVISIONAL-agent, refine by evidence); the cascade is
+> **alias-aware** (dial the base, roles follow; dial a role, it wins); canon rebound by role; **Cards
+> migrated as the second proof — render-verified Console: cards 12px vs buttons 8px.**
+>
+> **Phase-1 worker brief, turnkey:** per component — (1) rebind radius onto the **ROLE token**
+> (`border-radius/control|surface|indicator` — judgment call per element, see the canon census in the
+> dossier addendum; snippet CSS + theme-block declarations + manifest) and add the file to
+> `MIGRATED_SNIPPETS` in `_validate_radius.py` **in the same change**; (2) eyeball its showroom page
+> across 4 themes × both modes — hunt roles the theme SHOULD override but doesn't (the Button
+> success-background miss + the Cards red-accent drift are the patterns); (3) `python3
+> knowledge/gen_snippet_tokens.py && python3 knowledge/canon/gen_theme_cascade.py && python3
+> knowledge/gen_showroom.py` then full build green; (4) receipt to `notes/_receipts/`, no git
+> (conductor commits). The 20-file worklist is enumerated in `knowledge/_RADIUS-GATE.md`.
 >
 > **✅ Dave's parallel worker DELIVERED mid-capture: designer pack v2 SHIPPED** (`Apollo-designer-skills-v2.zip`,
 > baked KB from `7071538`, no script in the zip per Dave's ruling, 4 skills refreshed for
@@ -237,8 +247,9 @@ commits per `_RUNBOOK-parallel-conductor.md`. **Reconcile Dave's designer-skills
 Then Phase 2: the ~50 itinerary gaps at pace.
 
 ## 2. Rulings queued for Dave (all visible in the harness — open `showroom/button.html`)
-**(a) Console radius value** — 8px is my provisional; flip themes on any page and rule the px (one edit in
-`apollo-console.overrides.json` + regenerate). **(b) Legacy `text/on-success`** — kept BLACK as-built
+**(a) Console radius values** — now TWO dials, both provisional-mine: base/default 8px (controls follow) +
+surface 12px (cards/dialogs rounder — your own example, demonstrated on `showroom/cards.html`); rule the
+values (+ the role taxonomy if you want different cuts) in `apollo-console.overrides.json` + regenerate. **(b) Legacy `text/on-success`** — kept BLACK as-built
 (6.06:1 AA-pass on teal); historical Legacy was white-on-teal (3.47:1 AA-fail) — your call whether
 historical fidelity outranks AA inside the Legacy theme. **(c) Pro-forma tranches** — fold into the
 finalised set or stay a pattern library (strategy doc open confirmation). **(d)** Later, with (a): Legacy
