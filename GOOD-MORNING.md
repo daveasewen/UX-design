@@ -1,86 +1,50 @@
 # Good morning, Dave ☕
 
-> ## ★ LATEST — 2026-07-20 (evening 5): the Mono teal→green sweep is DONE. READ THIS FIRST, it supersedes the block + the two names below.
-> **RENAME THIS CHAT →** `Teal→green sweep DONE (d6e3d89) + sharpened the "red tuner" → it's error/warning/info COMPLETION; tuner deferred to a fresh session`
-> **NEXT (fresh) CHAT TITLE →** `Complete Mono error/warning/info sets (clone the R-D18 success tuner: per-mode graphic confirm + re-hue tints off Legacy) → rebind bare roles → unblocks Alert/Banner/Toast`
+> ## ★ LATEST — 2026-07-21 (good-morning): RAG sets COMPLETE (R-D20) + glyph rule sharpened (R-D6 A′) + the decision-graph tasked to Fable. READ THIS FIRST — it supersedes the block + names below.
+> **RENAME THIS CHAT →** `RAG error/warning/info completed (R-D20, 1a5bc94) + R-D6 A′ glyph-contrast sharpening (1bb09f9) + decision-graph audit tasked to Fable`
+> **TITLE THE NEXT (fresh) CHAT →** `Decision-graph: audit the record corpus → author the typed-edge convention (ADR-0007's unbuilt half) → generator + conflict gate [FABLE, cold]`
 >
-> The pre-flighted sweep executed cleanly in one pass — **Mode-2 delegation** (a Sonnet subagent ran the
-> verified map; Opus verified the diff, re-ran the build, and vouched — routing rule 5). **Committed `d6e3d89`
-> — ahead 1, Dave to push via GitHub Desktop.** Build green 37/37; theme-provenance teal `#00847F` in
-> `_proforma`: **22 → 0**.
+> **★ NEXT SESSION = FABLE, cold.** The decision-graph edge convention (ADR-0007's unbuilt generator half). Brief is
+> in `_FUTURE-STATE.md` (★ Decision-graph section) + `_DECISION-HISTORY/2026-07-21-rag-completion-and-decision-graph.md`
+> (thread 3). Shape: audit the ~35 decision nodes (4 ledgers + 11 ADRs + REVIEW rules) whose cross-refs are prose →
+> author typed edges (`refines · supersedes · subsumes · bounds · conflicts-with · verified-by` + status + validation)
+> → build the generator (LIVE/DEAD/OPEN + reconciliation view + "what-touches-this" map) + a **conflict gate**. **Two
+> guardrails:** genuine conflicts the audit surfaces are **queued for Dave, never auto-resolved** (promotion is Dave's,
+> routing rule 2); open sub-call — Fable authors all edges vs stops at spec+gate and hands edge-authoring to Sonnet —
+> **decided after the audit**. Why Fable: big/high-stakes/hands-off, wrong taxonomy = corpus-wide rot. Why now: today's
+> icon-011↔R-D6↔R-D3 reconciliation was hand archaeology — the pain that justifies the build.
 >
-> **What changed (all in `knowledge/_proforma/`):** Change 1 — `--success`/`--success-t` vars on all 9
-> (Masthead + Tranche-2…9): light `#2B7E4F`/`#DCEDE3`, dark `#4A9568`/`#12291D` (= `rag/success` + `-tint`,
-> R-D18). Change 2 — `#i-success` badge on Tranche-2…5 only: hardcoded circle `#00847F` + white tick →
-> tokenised `currentColor` circle + `style="fill:var(--mark)"` tick (the T6–9/Masthead pattern). Regenerated
-> `_review` copies (3 updated + 6 created). **Reds / warning / info HELD** (untouched) — that's the red tuner.
+> **What landed today (2 commits, ahead 2, Dave to push via GitHub Desktop; build green 37/37):**
+> - **R-D20 (`1a5bc94`)** — error/warning/information sets completed, the R-D18 success move for the last three. Dave
+>   ruled the message tints on a cloned live tuner: error `#F1E0DC`/`#2C120D` · warning `#F6E5CC`/`#3C2C13` (lifted the
+>   dark to stay amber, not brown) · info `#D6E3EC`/`#092131`. Bare roles rebased off Legacy → track the glyph.
+>   **6 Mono snippets swept**; **Notifications NOT converted** (Legacy ref, §A-AUTH — `driftAllow`-waived). Unblocks
+>   Alert/Banner/Toast. Signal colours were already ruled and were NOT re-decided.
+> - **R-D6 A′ (`1bb09f9`)** — Dave sharpened glyph-contrast: the only coloured icons are RAG statuses, each labelled or
+>   black/white-marked → colour is never the sole channel → **no status glyph is held to 4.5**; the 3:1 floor governs.
+>   4.5's live domain = the meaning-exclusive glyph (arrow-as-datum). Bounds `{#icon-011}`; subsumes the R-D3 amber
+>   exemption. Reconciled corpus-wide.
 >
-> ★ **The open dark-`--success` sub-decision is CLOSED: green `#4A9568`** (small inline dot), NOT the white
-> flip — verified against the aligned `snippets/Status-indicator`. The prior handoff's "tick → black under
-> type26-013" worry does not bite this small dot (it uses `--mark=--page`); that's the big-roundel case.
->
-> ★ **NEXT = the RAG-completion tuner (§C·2, Dave-in-the-loop) — reframed this session, read before building.**
-> The label "red tuner" is misleading: **Mono's status *signal* colours are already ruled** — breach red
-> `#B92F1E` (R-D7), watch amber `#F0B13A` (R-D11), info blue `#5F92B9` (R-D10), success green (R-D18). **DO NOT
-> re-decide them** (that's the binned-misstep trap). What's genuinely open is **completing the `error`/`warning`/
-> `information` sets the way R-D18 did success**: the bare roles + their `-tint` slots still hold Legacy hexes
-> (`error` `#A8000B`/`#DB0011`, `warning` `#FFBB33`, `information` navy; tints `#F9F2F3` etc., `semantic-colour.json`
-> ~L549–643). Per set: confirm the per-mode graphic value + **re-hue the tint off Legacy**, then rebind the bare
-> role. **Clone the proven tuner `reviews/RAG-SUCCESS-GREEN-2026-07-20-v1.html`.** This unblocks **Alert/Banner/
-> Toast** (§C·3). **Deferred (forward-looking — their components are archived, nothing consumes them yet):**
-> `tabs/active` (Mono = ink indicator) + `progress/complete` (ink/green). Only after the sets are ruled → rebind →
-> flip `_validate_theme_provenance.py` to blocking. **Also open (Sonnet-able, not blocked on Dave): 27 snippet
-> aligns + grey inks — §C·1b.** Arc: sweep map `_DECISION-HISTORY/2026-07-20-mono-sweep-map-and-bad-day.md`;
-> state `_LIVE-STATE.md` LATEST DELTA (evening 5). **Spine flag (separate):** `text/on-success` = `color/black`
-> should be `color/mono/4` (`#1A1A1A`) digital black.
+> **Still open (NOT this session's next):** theme-provenance gate stays **advisory** (58 foreign hexes / 67 files —
+> parked archived-file cleanup); `tabs/active` + `progress/complete` unruled (archived consumers); Notifications
+> Legacy-theme retag (future build). **Spine flag (small, separate):** `text/on-success` = `color/black` should be
+> `color/mono/4` (`#1A1A1A`) digital black.
 
 ---
 
-*Briefing — refreshed 2026-07-20 ~18:35 BST (date from `date`), session
-**"Style consolidation → four-theme token architecture"** — opened as good-morning, became the consolidation of
-`snippets`/`_proforma`/`_review`/`_fitness-test` onto Apollo Mono. The pivot: **the token store had no theme
-dimension**, so Legacy and Mono shared the same flat roles — that was the "too loose" root cause. Ruled **R-D19**
-(red is themed), wrote **ADR-0011** (themes = override sets), built the **`_STYLE-PROVENANCE.md`** record, a visual
-review screen, and an advisory **theme-provenance gate**. Committed `a1b9fbb`, build green 37/37.*
+*Briefing — refreshed 2026-07-21 ~15:20 BST (date from `date`), session
+**"RAG completion (R-D20) + glyph-contrast sharpening (R-D6 A′) + decision-graph tasked to Fable"** — opened as a
+good-morning; ran the RAG-completion tuner (Dave ruled the three message tints), then Dave sharpened the glyph
+rule, then desk research on the record structure itself. **SOLO / self-conductor.** All names + the full landed
+list are in the ★ LATEST block above — that block is authoritative; the sections below are the standing
+orientation (§A) + this-session detail (§B) + queue (§C).*
 
-> ✅ **SOLO / self-conductor.** No other live session — single writer for shared state. **This session** found the
-> missing theme layer, ruled red as Legacy-owned (Mono's only red = `#B92F1E`, status/RAG/dataviz), mechanised the
-> four themes as semantic-tier override sets (Console/Supercharge = nullable slots), and stood up the record + gate
-> that make "align to Mono" enforceable rather than a manual chase. Also built the per-cluster **visual review
-> screen** (Dave: "duplicate patterns I need to compare visually") + review overlay. Narrative arc:
-> `_DECISION-HISTORY/2026-07-20-style-consolidation-four-themes.md`. See COMMIT STATE.
+## ⬛ DO THIS FIRST
 
----
-
-## ⬛ DO THESE TWO FIRST (10 seconds)
-
-> **RENAME THIS CHAT → `Four-theme token architecture (ADR-0011) + red=Legacy (R-D19) + style-provenance record & gate`**
-> *(Opened as good-morning; became a consolidation of `snippets`/`_proforma`/`_review`/`_fitness-test` onto Apollo
-> Mono. Root cause of the "too loose" drift: **the token store had no theme dimension** — Legacy red/teal/grey and
-> Mono shared the same flat roles. Ruled **R-D19** [red is themed: Legacy `#DB0011`/`#A8000B` = Legacy only; Mono's
-> one red `#B92F1E` = status/RAG/dataviz only]. Wrote **ADR-0011** [themes = semantic-tier override sets; Mono base,
-> Legacy override, Console/Supercharge nullable slots]. Built the record `_STYLE-PROVENANCE.md`, the v2 visual review
-> screen [+ overlay], and an **advisory** theme-provenance gate [68 hardcoded foreign hexes / 61 Mono files].
-> Commit `a1b9fbb`, build green 37/37.)*
-
-> **TITLE THIS CHAT →** `Pre-flight for Mono sweep — record de-risked, worklist pinned (§A-AUTH), sweep handed to fresh Sonnet session`
-> **TITLE THE NEXT (fresh) CHAT →** `Mono alignment sweep — teal→green (Masthead + T2–9), grey inks, regen _review; red held for a tuner`
-> **✅ STYLE-CONSOLIDATION RULINGS COMPLETE (committed `4e5b1b6`).** All 88 components ruled; authoritative align list is
-> now **`knowledge/_STYLE-PROVENANCE.md` §A-AUTH** (the mid-doc "backlog A" was stale — superseded this session).
-> Machine source of truth: `reviews/gen_style_consolidation_review.py` (`SINGLETON_RULINGS` + clusters) →
-> `reviews/_style-consolidation-decisions-2026-07-20.json`. Tally: keep 7 · **align 39** · experiment 2 · legacy-ref 1 · archive 32 · 7 dupes hidden.
->
-> **★ START HERE next session (Sonnet, cold) — read `_STYLE-PROVENANCE.md` §A-AUTH first, it's turnkey:**
-> **(a) teal→green** — Masthead + `Tranche-2…9` (T1 has none): `#00847F` success → Mono `rag/success-glyph #4A9568`
-> (dark ground), **prefer tokenising over a hardcode**. ⚠️ **OPEN sub-decision, don't blind-swap:** the `#i-success`
-> SVG is a filled circle with a WHITE tick — under **type26-013** it likely becomes BLACK (cf. `on-success`=black);
-> rule it (a one-control tuner) before touching the tick. **(b) grey inks** (`Avatar`,`Quick-actions`)→`color/mono/*`
-> **via the grey-tint check** (surface the numbers to Dave BEFORE swapping — never auto-swap). **(c) regenerate**
-> `_review` copies via `_make_review.py`. **HELD for a tuner (all red):** bare `rag/error` (R-D17), plus the two owed
-> Mono values `tabs/active` + `progress/complete` (R-D19). Only after red is ruled → flip
-> `_validate_theme_provenance.py` to **blocking**. **DO NOT ALIGN** the 5 archived files (Hero, Navigations,
-> Progress-tracker, Tab-bar, Tabs, +`_proforma/Icon-button`); **DO NOT CONVERT** Notifications (its `#A8000B` is
-> correct Legacy red). Then the **duplicate-dedup pass** Dave flagged.
+> The two names are at the top (★ LATEST). **Next session opens on FABLE, cold** — the decision-graph edge
+> convention. Everything a cold reader needs to start it is in `_FUTURE-STATE.md` (★ Decision-graph) +
+> `_DECISION-HISTORY/2026-07-21-rag-completion-and-decision-graph.md` (thread 3). Don't start it inside a loaded
+> session — it's a fresh-context audit (routing rule 6).
 
 *Standing practice: every handoff carries both names — retrospective + forward. Step 4b in
 `_RUNBOOK-capture-ritual.md`.*
@@ -234,74 +198,63 @@ TTFs to `~/.fonts` + `fc-cache -f`; CSS `font-family:"HSBC_MtUnivers_Latin"`. Fu
 
 ---
 
-# §B · THIS SESSION (2026-07-20, evening 3 — "Pre-flight for the Mono alignment sweep")
+# §B · THIS SESSION (2026-07-21, good-morning — "RAG completion + glyph sharpening + the decision-graph question")
 
-*Full narrative arc (why/how, both procedure corrections): `_DECISION-HISTORY/2026-07-20-preflight-mono-sweep.md`.
-The four-theme session that preceded this one: `_DECISION-HISTORY/2026-07-20-style-consolidation-four-themes.md`.*
+*Full narrative arc (why/how, all three threads): `_DECISION-HISTORY/2026-07-21-rag-completion-and-decision-graph.md`.*
 
-## What LANDED (commits `6af6501` + `4d0716b`, build green 37/37, all pushed) — ZERO canon/token/component edits
-Opened good-morning to run the sweep; Dave's steer ("be careful, I don't want to lose anything" + context discipline)
-turned it into a pre-flight + record-repair. Deliberately no canon edits — the sweep goes to a fresh session.
-- **✅ INTEGRITY — nothing lost.** All 88 round-1→3 consolidation rulings are durable (21 clustered in
-  `reviews/_style-consolidation-decisions-2026-07-20.json`; 20 singletons in the generator's `SINGLETON_RULINGS`).
-  Authoritative **align = 39** = 27 snippets + 1 `_review` (reconciled tab/stepper) + 11 `_proforma`.
-- **✅ THE RECORD DE-RISKED — `knowledge/_STYLE-PROVENANCE.md` §A-AUTH.** The mid-doc pre-round-3 "backlog A" was
-  STALE — it named Hero/Navigations/Progress-tracker/Tabs as align targets (round 3 **archived** all four) and listed
-  Notifications (which is keep-legacy: its `#A8000B` is *correct* Legacy red). Marked it superseded (struck-through,
-  kept for audit); wrote **§A-AUTH** = the authoritative 39-item align list + DO-NOT-ALIGN (5 archived) + DO-NOT-CONVERT
-  (Notifications) + per-item drift type. Machine source of truth = the generator + JSON.
-- **✅ STATE-MANAGER FIX — the freshness-drift check can read the stamp again** (`_build_live_state.py`, `4d0716b`).
-  Its regex expected a bare date, but every `Last refreshed:` stamp is bolded (`**2026-07-20**`), so the drift-catcher
-  had been silently blind for multiple sessions. One-line fix (`[^\d\n]*` before the date); verified it still fires on a
-  genuinely stale stamp. `_LIVE-STATE-CHECK.md`: 1 warning → 0 (2 pre-existing info notes remain).
+## What LANDED (commits `1a5bc94` + `1bb09f9`, build green 37/37, ahead 2 — Dave to push)
+Opened as a good-morning; Dave green-lit the queued RAG-completion tuner, then two follow-on questions turned it into
+three threads.
+- **✅ R-D20 — error/warning/information sets completed** (the R-D18 success move for the last three). CONSULT +
+  token survey first; cloned the success tuner to three sets (glyph + fill locked, only the message **tint** open).
+  Dave ruled the tints on the live controller: error `#F1E0DC`/`#2C120D` · warning `#F6E5CC`/`#3C2C13` (lifted the
+  dark seed to keep it **amber, not brown** — the one judgement the tuner surfaced) · info `#D6E3EC`/`#092131`. Bare
+  roles rebased off Legacy → track the glyph; `$alias` dropped on the tints. **6 Mono snippets swept**; **Notifications
+  NOT converted** — it's a Legacy reference (§A-AUTH), so its RAG vars are `driftAllow`-waived, not swept. Unblocks
+  Alert/Banner/Toast.
+- **✅ R-D6 A′ — glyph-contrast sharpening.** Dave's instinct was right (it's R-D6 Ruling A verbatim): the only
+  coloured icons are RAG statuses, each labelled or black/white-marked, so colour is never the sole channel → no
+  status glyph is held to 4.5; the 3:1 floor governs. 4.5's live domain = the meaning-exclusive glyph. Bounded
+  `{#icon-011}`, subsumed the R-D3 amber roundel-leg exemption, reconciled corpus-wide (also folded into `{#icon-015}`
+  so `_RECONCILIATION.md` regenerates it).
+- **✅ Decision-graph desk research → tasked to Fable.** The manual icon-011↔R-D6↔R-D3 reconciliation exposed that
+  records cross-reference in prose. Research confirmed ADR-0007 already decided the fix (temporal decision-graph);
+  the unbuilt half = the typed-edge convention + generator + conflict gate. Rejected replicate (rot) + graph-DB
+  (tool-temptation). Pinned as the next (Fable, cold) session — see ★ LATEST + `_FUTURE-STATE.md`.
 
-## What I got wrong (both caught by Dave — see the dossier)
-Improvised git — and misdiagnosed the delete-guard's 0-byte `index.lock` as "GitHub Desktop is open" — instead of running
-`_RUNBOOK-git-commit.md`; hand-rolled the handoff instead of running `_RUNBOOK-capture-ritual.md`. Same failure:
-reconstructing a *procedure* from memory hooks — the "context rot" Dave flags. Corrected: re-read both runbooks and ran
-them by the book. New memory `feedback-read-the-runbook` (read the runbook, not the hook).
+## Process notes
+Both runbooks (`_RUNBOOK-git-commit.md`, this capture ritual) run by the book — no reconstructing from hooks. One small
+catch: tried to hand-edit the **generated** `_RECONCILIATION.md`; the rebuild wiped it — correct mechanism is to edit the
+REVIEW-tagged rule and let it regenerate.
 
 ---
 
 # §C · QUEUE
 
-## 1. Mono-alignment sweep — ✅ (a) proforma teal→green DONE (evening 5, `d6e3d89`); (b) grey inks + 27 snippet aligns REMAIN
-**✅ (a) DONE this session** — proforma teal→green (Masthead + Tranche-2…9): `--success` light `#2B7E4F`/dark `#4A9568`,
-tints `#DCEDE3`/`#12291D`; `#i-success` badge tokenised on T2–5; dark-`--success` sub-decision CLOSED = green `#4A9568`
-(small dot, not the white flip); `_review` regenerated; teal in `_proforma` 22→0; build green 37/37. **STILL REMAINING
-(Sonnet-able, not blocked on Dave):** the 27 drifting snippets + (b) grey inks. Original brief kept below for those:
-The 88-component consolidation is RULED (align = 39) — clusters no longer need ruling. Remaining sweep items:
-**(a) teal→green** — Masthead + `Tranche-2…9` (T1 has none): `#00847F` success → Mono `rag/success-glyph #4A9568`
-(dark ground), **prefer tokenising over a hardcode**. ⚠️ **OPEN sub-decision, don't blind-swap:** the `#i-success` SVG
-is a filled circle with a WHITE tick — under **type26-013** it likely becomes BLACK (cf. `on-success`=black); rule it
-(one-control tuner) before touching the tick. **(b) grey inks** (`Avatar`,`Quick-actions`)→`color/mono/*` **via the
-grey-tint check** (surface numbers to Dave FIRST — never auto-swap). **(c) regenerate** `_review` copies
-(`_make_review.py`). **DO NOT ALIGN** the 5 archived files (Hero, Navigations, Progress-tracker, Tab-bar, Tabs,
-+`_proforma/Icon-button`); **DO NOT CONVERT** Notifications (its `#A8000B` is correct Legacy red).
+## 1. ★ NEXT (FABLE, cold) — the decision-graph edge convention (ADR-0007's unbuilt half)
+Audit the ~35 decision nodes (4 ledgers + 11 ADRs + REVIEW rules) whose cross-refs are prose → author typed edges
+(`refines · supersedes · subsumes · bounds · conflicts-with · verified-by` + `status` + `validation`) → build the
+generator (LIVE/DEAD/OPEN + **reconciliation view** + "what-touches-this" map) + a **conflict gate**. **Guardrails:**
+conflicts the audit surfaces are **queued for Dave, never auto-resolved** (routing rule 2); open sub-call — Fable
+authors all edges vs stops at spec+gate and hands edge-authoring to Sonnet — **decided after the audit**. Turnkey brief:
+`_FUTURE-STATE.md` (★ Decision-graph) + dossier thread 3 + `docs/decisions/ADR-0007` + `notes/_STATE-MACHINE-TARGET.md`.
 
-## 2. ★ RAG-completion tuner — finish error/warning/info like R-D18 did success (Dave-in-the-loop; feedback-live-controller)
-**Reframed evening 5 (was "the red tuner").** The Mono status *signal* colours are ALREADY ruled — breach red
-`#B92F1E` (R-D7), watch amber `#F0B13A` (R-D11), info blue `#5F92B9` (R-D10), success green (R-D18). **DO NOT
-re-decide them.** The genuine open work: the bare `error`/`warning`/`information` roles + their `-tint` slots still
-resolve **Legacy** (`error` `#A8000B`/`#DB0011`, `warning` `#FFBB33`, `information` navy `#305A85`/`#4587A7`; tints
-`#F9F2F3`/`#FFF8EA`/… — `semantic-colour.json` ~L549–643). **Per set, exactly the R-D18 move:** confirm the per-mode
-graphic value against the ruled signal colour + **re-hue the `-tint` off Legacy** (success went `#E5F2F2`→`#DCEDE3`),
-then rebind the bare role off its Legacy alias. **Clone `reviews/RAG-SUCCESS-GREEN-2026-07-20-v1.html`** (OKLCh
-sliders + live contrast + salience guard). Unblocks **Alert / Banner / Toast**. Then flip `_validate_theme_provenance.py`
-to **blocking**. **Deferred (§2b, forward-looking):** `tabs/active` (Mono = ink indicator, not red) + `progress/complete`
-(ink/green) — both **unruled** but their consumer components (Tabs/Tab-bar/Progress-tracker) are archived, so nothing
-binds them yet; rule when those components are rebuilt.
+## 2. RAG follow-ons (not blocked on Dave; Sonnet-able)
+Seed the Legacy error/amber/navy hexes into `LEGACY_ONLY_HEXES` (needs a Notifications waiver in the leak gate) + flip
+`_validate_theme_provenance.py` advisory→blocking — **both gated on** the broader foreign-hex cleanup (58 hexes / 67
+files, the parked archived-file relocation). `tabs/active` + `progress/complete` still unruled (archived consumers).
+Notifications Legacy-theme retag = future build. Small spine flag: `text/on-success` = `color/black` should be
+`color/mono/4` (`#1A1A1A`).
 
-## 4. Parked / carry-forward
-**Duplicate-dedup pass** (relocate the archived files out of Mono scope so the gate stops scanning them). Console +
-Supercharge override sets (fill null slots when palettes ruled). **T9 secure entry** awaits review. **Sutherland field
-test** (ADR-0008 #1). **`designer-skills-v1`** revisit. Full-review backlog (`_REVIEW-SIGNOFF.md`). Parked
-(`_FUTURE-STATE`): broader colour/theming, Apollo Labs tuners, bulk type-binding.
+## 3. Parked / carry-forward
+**Duplicate-dedup pass** (relocate archived files out of Mono scope). Console + Supercharge override sets (when palettes
+ruled). **T9 secure entry** awaits review. **Sutherland field test** (ADR-0008 #1). **`designer-skills-v1`** revisit.
+Full-review backlog (`_REVIEW-SIGNOFF.md`). Parked (`_FUTURE-STATE`): broader colour/theming, Apollo Labs tuners, bulk
+type-binding, `icon-015` mark-vs-roundel mechanisation (supercharge).
 
-> **COMMIT STATE.** **HEAD `03e8619` (+ this COMMIT-STATE touch-up) — ahead 4, tree clean; Dave to push ALL via
-> GitHub Desktop.** This session (evening 5): `d6e3d89` (teal→green sweep — 9 `_proforma` + regen `_review`, teal
-> 22→0) + `7ee467b` (capture: sweep done, handoff repointed) + `03e8619` (capture: next-task reframe). Prior:
-> `2cf1ad7` (evening 4 bad-day + sweep map) · `4d0716b` (evening 3 state-manager fix). Build green 37/37. Two
-> pre-existing info notes remain in `_LIVE-STATE-CHECK.md` — tidy when convenient, not blocking. **Next session
-> model: Opus** — the RAG-completion tuner (§C·2) is Dave-in-the-loop judgment on a live controller, not
-> throughput; the bare-role rebind after it + the 27 snippet aligns (§C·1b) are Sonnet.
+> **COMMIT STATE.** **HEAD `1bb09f9` — ahead 2, Dave to push via GitHub Desktop** (+ this capture commit, which will be
+> ahead 3). Today: `1a5bc94` (R-D20 — tokens + 6 snippets swept + Notifications waived) · `1bb09f9` (R-D6 A′ — glyph
+> rule + reconciliation). Build green 37/37; `_LIVE-STATE-CHECK.md` 2 pre-existing info notes (not blocking). **Next
+> session model: FABLE, cold** — the decision-graph audit is big/high-stakes/hands-off (routing rule 6: judgment/audit
+> runs cold + on the decide tier; here the decide tier is Fable, not Opus, per Dave). Set Fable to its **highest
+> reasoning level** — this is an architecture + corpus-audit job where depth pays.

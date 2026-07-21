@@ -58,9 +58,29 @@ with the ruled teal `#00847F`). It caught **7** teal-binding surfaces; Button is
 - **Complete the R-D14 green set, then rebind the 7 — DONE 2026-07-20 (R-D18).** Dave ruled the green set
   on the live tuner (glyph dark `#4A9568`, tints `#DCEDE3`/`#12291D`, bare role rebased). All seven rebound,
   all gate waivers cleared, teal fully evicted from Mono. *Status:* done.
-- **Seed the gate with error/warning/info once ruled.** The bare `rag/error`/`warning`/`information` roles
-  are identically Legacy-drifted (R-D17). Add each Legacy hex to `LEGACY_ONLY_HEXES` as its R-D14 replacement
-  is ruled + complete both modes. *Status:* idea.
+- **Seed the gate with error/warning/info once ruled — roles now RULED (R-D20, 2026-07-21).** The three sets
+  are complete + Mono; 6 Mono snippets swept, Notifications waived (Legacy ref). *Still open:* seed the Legacy
+  error/amber/navy hexes into `LEGACY_ONLY_HEXES` (needs a Notifications waiver in the leak gate, since it holds
+  them legitimately), and flip `_validate_theme_provenance.py` from advisory to blocking — both gated on the
+  broader foreign-hex cleanup (58 hexes / 67 files). *Status:* idea.
+
+## ★ Decision-graph — typed edges over the record corpus (ADR-0007's unbuilt half) — tasked to Fable (2026-07-21, Dave)
+
+*Why held:* today's icon-011↔R-D6↔R-D3 reconciliation was done by hand because decision records cross-reference
+in **prose**, not queryable edges — so recall = keyword search (consult) and reconciliation = manual archaeology.
+Desk research confirmed this is **already decided** (ADR-0007 temporal decision-graph; slice 1 / staleness gate
+built) — the missing half is the edge convention + generator + conflict gate. *What it feeds:* Apollo PM layer /
+the `_STATE-MACHINE-TARGET` context machine. *The slice:* (1) typed-edge front-matter on ~35 decision nodes
+(4 ledgers + 11 ADRs + REVIEW rules): `refines · supersedes · subsumes · bounds · conflicts-with · verified-by`
++ `status` + `validation` (unaudited→vouched); (2) generator → LIVE/DEAD/OPEN ledger + **reconciliation view**
+(auto-surface any conflicts-with edge lacking a resolution) + per-node "what-touches-this" map; (3) **conflict
+gate** — A bounds/conflicts B with no recorded resolution → build flags it (icon-011 vs R-D6 would have lit up).
+*Rejected alternatives:* replicate-across-records (rot engine — denormalise only in generated views); graph DB
+(tool-temptation — text-based KG gets 80%, per ADR-0007 + the July-2026 external scan). *Routing:* **Fable, fresh
+cold session** (big/high-stakes/hands-off); guardrails — conflicts it surfaces are **queued for Dave's ruling,
+not auto-resolved** (promotion is Dave's); open sub-call (author all edges in one Fable sweep vs stop at spec+gate
+and hand edge-authoring to Sonnet) decided *after* the audit. *Source:* `_DECISION-HISTORY/2026-07-21-rag-completion-and-decision-graph.md`;
+ADR-0007 + `notes/_STATE-MACHINE-TARGET.md`. *Status:* **tasked — next session.**
 
 ## Token schema: explicit nullable placeholder slots for anticipated flex (2026-07-20, Dave)
 
