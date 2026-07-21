@@ -289,6 +289,26 @@ values per state within the AA guarantee); pairs with `$extensions.apollo.state`
   `gen_theme_cascade.py` (override the base → every role follows; dial a role → it wins) is the
   generator's core resolution semantic, already live.
 
+- **★ Tiered flex at the COMPONENT-TYPE level — ARCHITECTURE SESSION QUEUED (Dave, 2026-07-21 late
+  evening; recorded deliberately WITHOUT exploration, his instruction: "lets not explore now but we
+  need to record this and explore later").** The same flexibility the semantic radius tier gives
+  (default → role) will be needed **per component TYPE** as well: *"I could imagine that segmented
+  controls share the same radius"* — i.e. a type-level grouping (e.g. all segmented controls) sitting
+  in the **component token tier**, between the semantic role and the individual component binding, so
+  a theme (or the generator) can dial a component FAMILY without touching either the global role or
+  each component. His framing, verbatim anchors: **"this will be the same for borders and other
+  parameters"** (the pattern generalises across flex dimensions — radius, border, and beyond, so the
+  eventual shape is *tiered application in the component token level* as a general schema, not a
+  radius feature); **"mono doesn't really need this flexibility, but others might, and the generator
+  will"** (Mono stays simple — the tier exists for other themes and ABOVE ALL as generator dials; do
+  not complicate Mono's own store to serve it). **The semantic roles as built are FINE ("these are
+  fine semantically")** — the component-type tier slots UNDER them, it does not replace them.
+  *Open architecture questions for that session:* where type-groups live (token schema? meta?
+  a `component-type` axis in the 3-tier stack?); fallback order (component → type-group → semantic
+  role → default); how the cascade generator + manifests express type membership; interaction with
+  ADR-0010 nullable slots + the token-tier gate. *Status:* recorded 2026-07-21, decide-in-dedicated-
+  session; do NOT enact piecemeal during Phase 1 — workers keep binding semantic ROLE tokens.
+
 - **Blast-radius gate v2 — cascade-aware.** T-D13's gate matches selectors structurally
   (class/element presence per file) and gates on the file *set*, so a same-count file *swap* inside
   an acknowledged radius passes, and it doesn't reason about real cascade/specificity. The rigorous

@@ -247,14 +247,22 @@ commits per `_RUNBOOK-parallel-conductor.md`. **Reconcile Dave's designer-skills
 Then Phase 2: the ~50 itinerary gaps at pace.
 
 ## 2. Rulings queued for Dave (all visible in the harness — open `showroom/button.html`)
-**(a) Console radius values** — now TWO dials, both provisional-mine: base/default 8px (controls follow) +
-surface 12px (cards/dialogs rounder — your own example, demonstrated on `showroom/cards.html`); rule the
-values (+ the role taxonomy if you want different cuts) in `apollo-console.overrides.json` + regenerate. **(b) Legacy `text/on-success`** — kept BLACK as-built
+**(a) Console radius values** — two dials, values provisional-mine: base/default 8px (controls follow) +
+surface 12px (demonstrated on `showroom/cards.html`). **Role taxonomy RATIFIED** (Dave 2026-07-21: "these
+are fine semantically") — only the px values await ruling, in `apollo-console.overrides.json` + regenerate. **(b) Legacy `text/on-success`** — kept BLACK as-built
 (6.06:1 AA-pass on teal); historical Legacy was white-on-teal (3.47:1 AA-fail) — your call whether
 historical fidelity outranks AA inside the Legacy theme. **(c) Pro-forma tranches** — fold into the
 finalised set or stay a pattern library (strategy doc open confirmation). **(d)** Later, with (a): Legacy
 `rag/warning` amber #FFBB33 is in the override set from the eviction record — sanity-check it in the
 harness when a warning-bearing component migrates.
+
+## 2b. ★ QUEUED ARCHITECTURE SESSION (dedicated, NOT Phase 1): the component-type flex tier
+Dave, 2026-07-21 late evening — recorded WITHOUT exploration on his instruction ("lets not explore now
+but we need to record this and explore later"). The flexibility must also apply **per component TYPE**
+(e.g. segmented controls share one radius) — a type-group tier in the **component token level**, under
+the ratified semantic roles; the pattern generalises to **borders and other parameters**; Mono doesn't
+need it, other themes might, **the theme generator will**. Full record + the open questions:
+`_FUTURE-STATE.md` (tiered-flex entry). Phase-1 workers keep binding semantic ROLE tokens meanwhile.
 
 ## 3. RAG follow-ons (unchanged; Sonnet-able)
 Seed Legacy error/amber/navy into `LEGACY_ONLY_HEXES` (+ Notifications waiver) + flip
