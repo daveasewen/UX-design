@@ -33,6 +33,21 @@ trigger the session:
 **Push** in GitHub Desktop at the end. **No phrases to paste, no receipts to shuttle** — a conductor
 reads the other sessions itself (below).
 
+**⚠ Titles are LABELS, never role assignments (added 2026-07-21 after a live misfire).** A handoff's
+forward title may describe the phase topology (`[conductor + 2 Fable workers]`) — a fresh session that
+reads that text as its role will self-seat as a SECOND conductor (it happened; Dave caught it from the
+rogue session's routing announcement; the fix was a one-line stand-down that re-seated it as a worker).
+**The role comes from Dave's opener line only.** If your opener carries no role word, resolve per the
+trigger steps above — never from the chat title, never from §C's description of the coming session.
+
+**The DIVVY PLAN (standing practice, Dave 2026-07-21: "always be thinking about how to divvy up the
+tasks in the handoffs, whether it's with subagents or parallel chats").** Every handoff's forward plan
+names: what parallelises · lane count + model per lane · what stays SERIAL · **every shared file, each
+assigned to ONE lane** (or the conductor). Shared-file races (two workers editing one registry) merged
+clean on 2026-07-21 by good behaviour, not by construction — naming the file per lane makes it
+construction. Workers may absorb LIVE Dave rulings mid-flight: receipt them with verbatim quotes so
+the conductor can inscribe from the receipt alone.
+
 **N=1:** a lone session is Solo — its own conductor, writes its handoff as normal. The role machinery
 only engages at two or more.
 

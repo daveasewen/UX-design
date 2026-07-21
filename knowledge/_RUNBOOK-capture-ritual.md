@@ -111,6 +111,11 @@ wrong handoff we most want to avoid. Red cue line, ready to use:
    Write them as ready-to-use lines, not as a suggestion needing reformatting. Claude cannot rename a
    conversation itself — no tool for it — so the line exists to make Dave's action one copy, not a
    re-read of the whole handoff to work out what the session became.
+   ⚠ **Titles are LABELS, never role assignments** (2026-07-21: a forward title's `[conductor + 2
+   workers]` seated a second conductor). If the coming session runs the parallel model, say so in the
+   §C brief and let the ROLE come from Dave's opener line — and include the **DIVVY PLAN** (lanes ·
+   model per lane · serial set · shared files assigned per lane) in the forward brief, per
+   `_RUNBOOK-parallel-conductor.md`.
 
 5. **Commit + push.** Claude commits in terminal with a paste-ready summary + description, clears any
    stale `.git/*.lock` files. **Dave pushes via GitHub Desktop only** — never terminal push, never a
