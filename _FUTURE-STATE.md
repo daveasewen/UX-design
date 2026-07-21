@@ -338,3 +338,16 @@ values per state within the AA guarantee); pairs with `$extensions.apollo.state`
   embedding · cockroach-doc pattern: `_LIVE-STATE.md` → SPIN-OFF section (ruled home).
 - **Fable-session candidates** — `notes/_FABLE-BRIEF-consolidation.md` §7 (gate-glob audit, decision
   audit runs, KB structure).
+
+- **★ SPINE COMPACTION — cold-start context bloat (Dave, 2026-07-21 late night #3: "we need to solve
+  the bloat of all the context loading up each session").** Measured: orientation costs ~70k (~35% of
+  the window) before any work — ~35-40k is the fixed Cowork baseline (bear it), but ~25k is
+  `_LIVE-STATE.md` alone (~45k tokens, 633 lines, 8+ PRIOR deltas that never roll off and are mostly
+  DUPLICATED in `_DECISION-HISTORY` already). Fix, two parts: **(1) delta retention rule** — LATEST +
+  ≤2 priors stay in-file; older deltas relocate to `_DECISION-HISTORY` at capture time (mostly
+  deletion; the History pointers already exist) — add to `_RUNBOOK-capture-ritual.md` step 1 + the
+  `_capture_gate.py` spec; **(2) cold-read discipline** — a fresh session reads LATEST delta + OPEN
+  section only, full file on demand (inscribe in GOOD-MORNING's read-order line). Claws back
+  ~15-20k/session. Mechanical, Sonnet-able — fold into the ruling-batch window's enact-queue or run
+  as a chore. Related: `memory-compaction-mechanics` (same pattern, repo-side); MEMORY.md index
+  (~6k auto-load) is due its own densify pass under the adversarial-densify gate.
