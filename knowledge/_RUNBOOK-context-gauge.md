@@ -19,7 +19,7 @@ Two facts that shape the method:
    tool list, the `MEMORY.md` index, every file read, and every tool-result dump all spend it —
    usually **more** than the agent's own word-generation does. In our sessions the real fuel-burners
    are canon file reads, review-round renders, and long review back-and-forths.
-2. **Degradation shows up well before 100%** ("context rot"). Fine under ~45%, watch it 45–60%,
+2. **Degradation shows up well before 100%** ("context rot"). Fine under ~50%, watch it 50–60%,
    move by ~60%. We do not wait for full.
 
 ## The gauge is two halves
@@ -39,8 +39,8 @@ of substantive turns. No tooling, roughly ±15%. Reckoning (round to nearest 5k)
 
 Bands as fraction of the ~200k window:
 
-- 🟢 **GREEN  <45%** (<~90k) — work freely.
-- 🟡 **AMBER  45–60%** (~90–120k) — get economical, pre-stage the handoff, confirm before the next big read. **PROACTIVELY surface the band to Dave here and offer to start wrapping / capture soon — do NOT wait to be asked** (Dave, 2026-07-20: *"I would set it at amber too"*; the agent suggesting session-end from the estimate, unprompted, is the whole point — silence while the tally climbs is the failure mode). **★ Also fire the light SPINE-FLUSH here (Amber tier, ruled 2026-07-21 — see trigger below): write current state to `_LIVE-STATE.md` now, WITHOUT ending the session.**
+- 🟢 **GREEN  <50%** (<~100k) — work freely.
+- 🟡 **AMBER  50–60%** (~100–120k) — get economical, pre-stage the handoff, confirm before the next big read. **PROACTIVELY surface the band to Dave here and offer to start wrapping / capture soon — do NOT wait to be asked** (Dave, 2026-07-20: *"I would set it at amber too"*; the agent suggesting session-end from the estimate, unprompted, is the whole point — silence while the tally climbs is the failure mode). **★ Also fire the light SPINE-FLUSH here (Amber tier, ruled 2026-07-21 — see trigger below): write current state to `_LIVE-STATE.md` now, WITHOUT ending the session.**
 - 🔴 **RED  >60%** (>~120k) — **fire the full trigger** (below): the complete capture ritual + fresh session.
 
 ### Half 2 — accurate, out-of-band: confirm at Amber

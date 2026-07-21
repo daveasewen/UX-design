@@ -97,9 +97,21 @@ index; `_LIVE-STATE` = the supersession ledger / graph view.
     tombstone consistency · ADR lifecycle contradiction · orphan supersession edge) → writes
     `_LIVE-STATE-CHECK.md`. Advisory by default (`--strict` gates); wired non-gating into
     `_build_all.py` (per §5 anti-laundering: it enforces *consistency*, never *validity*). Negative-
-    tested (catches all 5 injected drifts) and clean on the live ledger. **Still deferred:** the
-    *generator* half (walking front-matter edges to regenerate LIVE/DEAD blocks) — needs the
-    front-matter edge convention on ADRs first; the gate parses the existing prose markers for now.
+    tested (catches all 5 injected drifts) and clean on the live ledger.
+  - **✅ GENERATOR HALF BUILT 2026-07-21 (ADR-0007 part 2).** The blocker named above — "needs the
+    front-matter edge convention on ADRs first" — cleared once ADR-0012 was accepted and all 94
+    edges were inscribed (`4a6f442`). `_build_live_state.py` now consumes the parsed graph
+    (`knowledge/_decision-graph.json`, produced by `_build_decision_graph.py`) and **regenerates the
+    decision-node lifecycle block** (LIVE / AMENDED / DEAD / OPEN, with supersession + dead-claim
+    annotations) between the `AUTO-DECISION-LIFECYCLE` markers in `_LIVE-STATE.md`. The spine now
+    *shows* the do-not-build-on set to a cold session without opening the graph doc. Deterministic
+    (no volatile date → no spurious build diff), idempotent, verified an exact derived view of the
+    graph state (55/6/8/1). `_build_all.py` reordered so the graph runs before the live-state builder.
+    Generation covers decision NODES; the staleness gate still guards the hand-authored prose
+    (freshness stamp, artifact tombstones, ADR lifecycle) it doesn't own. **Still open:** ADR-0007
+    §5's correctness-audit (unaudited→vouched) is untouched by this — generation is consistency, not
+    validity. Horizon: generate the LIVE/DEAD *prose* sections too, once the artifact-tombstones are
+    themselves edge-modelled.
 - Every ruling now has a two-step close: record the edge (front-matter/tombstone) **and** update
   `_LIVE-STATE`. This is the AGENTS supersession discipline made systematic.
 - Low-regret and reversible: it reuses the existing generator+gate machinery; if it doesn't earn

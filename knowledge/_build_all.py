@@ -45,8 +45,11 @@ STEPS = [
     ("cross-reference index", "_build_xref_index.py"),
     ("sutherland acceptance fixtures", "_build_sutherland_fixtures.py"),
     ("states-completeness probe (advisory)", "_build_states_probe.py"),
-    ("_LIVE-STATE staleness gate (advisory, ADR-0007)", "_build_live_state.py"),
+    # decision-graph runs FIRST so its parsed `_decision-graph.json` is fresh when the
+    # _LIVE-STATE builder below consumes it to (re)generate the decision-node lifecycle
+    # block (ADR-0007 part 2 — generation, not just the staleness gate).
     ("decision-graph — typed edges + conflict gate (advisory, ADR-0012)", "_build_decision_graph.py"),
+    ("_LIVE-STATE staleness gate + lifecycle-block generation (advisory, ADR-0007)", "_build_live_state.py"),
     ("advisory signals — prose rules (advisory)", "_validate_advisory.py"),
     ("review queue", "_build_review_queue.py"),
     ("dark-mode coverage audit", "_build_dark_mode_audit.py"),
