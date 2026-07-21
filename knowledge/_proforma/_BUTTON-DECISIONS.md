@@ -13,6 +13,8 @@ carve-out" — it is **out of bounds for Mono, full stop**. The Mono primary is 
 **monochrome** button: near-black ground in light that **inverts to near-white in dark**. The legacy
 red `primary/*` group is untouched (Legacy theme keeps it). Rule of thumb recorded.
 
+Edges: bounds(R-D15)
+
 ## B-D2 — Mono primary token ladder minted; completes `button/*` (2026-07-20).
 Following the 3-tier stack (component → semantic → primitive, `_STANDARDS.md §1`), same shape as the
 secondary/tertiary/quaternary ladder:
@@ -25,6 +27,8 @@ Registered in `_validate_token_tiers.py` (0 strict failures). **Snippet rebind d
 button snippet still renders red primary until the batched `button/*` snippet rebind (queue #4); this
 ruling lands the *token* foundation.
 
+Edges: verified-by(knowledge/_validate_token_tiers.py)
+
 ## B-D3 — Hover = dual token; mechanism is selectable (2026-07-20). → ADR-0009.
 Dave, iterated: hover is stored as **both** a colour token (`…/hover`, portable / chromatic-ready) **and**
 an operational opacity (`…/hover-opacity`), *"still both but operationally different."* A theme/consumer
@@ -34,6 +38,8 @@ value is the ramp-snapped opaque equivalent). Carried now as `$extensions.apollo
 migrates to a first-class number/opacity token with the style-builder. Architecture formalised in
 **ADR-0009**; a fully chromatic mode (red default / blue hover / green active) is the same skeleton with
 mechanism `[colour]`.
+
+Edges: refines(ADR-0009)
 
 ## B-D4 — Disabled label: contrast-exempt BUT must stay visible to sighted users (2026-07-20). Source: Dave.
 Dave: *"it doesn't have to [be] accessible but invisible for normal sighted people isn't acceptable."*
@@ -49,6 +55,8 @@ Dave: *"can I only have selections that pass Ally."* The review editor only offe
 ramp steps failing label contrast are struck out & unclickable; the hover opacity dial is clamped to the
 range where the flattened ground still passes. AA is a property of the *resolved* state, enforced at
 selection time (per ADR-0004 / ADR-0009 §4).
+
+Edges: refines(ADR-0004)
 
 ---
 
@@ -78,3 +86,5 @@ kept per-mode deliberately so a future RAG can diverge light/dark without a stru
 must stay flexible). Black-on-green = 7.65:1 light / 7.45:1 dark; carve-out added in `_contrast_utils.py`
 (on-success sits ONLY on the green fill, never the page ground — same shape as `text/on-action`). Build
 green. **Leakage prevention → R-D17 + the new `_validate_legacy_leak.py` gate.**
+
+Edges: refines(R-D14) · verified-by(type26-013)

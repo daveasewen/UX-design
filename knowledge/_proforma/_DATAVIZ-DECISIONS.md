@@ -26,6 +26,7 @@ Source of these rulings: the exported review comment-pins on the REVIEW copy (ba
 - **DV-D01 · Consolidate to ONE file.** All chart types live on one interactive file
   (`DataViz-interactive.html`), Tranche-N convention — not one file per type. *(Supersedes the dossier
   §07 "one HTML per component".)*
+  Edges: supersedes(DV:DOSSIER.s07)
 - **DV-D02 · Responsive = compress width, never scale proportionally, and TEXT MUST NOT SCALE.**
   Enacted as a runtime `fit()` (the method's geometry node at runtime): fixed height + non-scaling
   text, only horizontal positions relayout to container width. Cartesian charts only; horizontal bar
@@ -36,6 +37,7 @@ Source of these rulings: the exported review comment-pins on the REVIEW copy (ba
 - **DV-D04 · Chevron/hash texture is reserved for GAUGE-type charts only** — NOT stacked series.
   *(Supersedes the dossier's "chevron proves itself on the stacked column"; capability kept in the
   generator, switched off.)* Batch 2 #5.
+  Edges: supersedes(DV:DOSSIER.chevron)
 - **DV-D05 · Type = the KB scale (`typography.json`: font-5/6/7 = 16/14/12 + weights
   regular/medium/bold).** Display sizes (font-1..4) are the two new Figma display types still to land;
   they will be **4px-grid adjustments** only. `--fs-display` (40px) is a 4px-grid placeholder that maps
@@ -43,6 +45,7 @@ Source of these rulings: the exported review comment-pins on the REVIEW copy (ba
   Batch 2 #1 + Dave's clarification.
 - **DV-D06 · Delta indicators** may use gain/loss colour with sign + arrow (dv-019 override), exempt
   from red-once-per-screen. *(From the ratified dossier; unchanged.)*
+  Edges: bounds(dv-019)
 
 ---
 

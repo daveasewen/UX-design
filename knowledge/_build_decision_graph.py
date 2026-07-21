@@ -55,11 +55,224 @@ def load_seed():
     return seed.get("nodes", {}), edges, seed.get("errata", [])
 
 
+LEDGER_FILES = [
+    os.path.join(ROOT, "knowledge", "_proforma", "_RAG-DECISIONS.md"),
+    os.path.join(ROOT, "knowledge", "_proforma", "_TYPE-DECISIONS.md"),
+    os.path.join(ROOT, "knowledge", "_proforma", "_BUTTON-DECISIONS.md"),
+    os.path.join(ROOT, "knowledge", "_proforma", "_DATAVIZ-DECISIONS.md"),
+]
+# RULING 2 (2026-07-21 finishing pass): the 9 non-ledger edges are inscribed at
+# SOURCE — in the file where that node actually lives — not in a ledger. Same
+# `Edges:` grammar, same `_parse_ledger_file` walker (it's generic over headings
+# + `{#id}` anchors), just pointed at these extra homes.
+EXTRA_INLINE_FILES = [
+    os.path.join(ROOT, "knowledge", "_FIXED-FLEX-CHARTER.md"),               # CHARTER.S9
+    os.path.join(ROOT, "knowledge", "guidelines", "common-toolkit-buttons.md"),   # ctkb-015
+    os.path.join(ROOT, "knowledge", "guidelines", "illustration-standards.md"),   # ill-007
+    os.path.join(ROOT, "knowledge", "guidelines", "motion-standards.md"),         # mot-007
+    os.path.join(ROOT, "knowledge", "guidelines", "typography-standards-2026.md"),# type26-015
+    os.path.join(ROOT, "knowledge", "guidelines", "web-foundations.md"),          # webf-032
+    # NOTE: DEF-006/DEF-005 and TYPE:2026-07-18:sat-ceiling already live in
+    # _TYPE-DECISIONS.md, already in LEDGER_FILES above — no separate entry needed.
+]
+ADR_DIR = os.path.join(ROOT, "docs", "decisions")
+
+QUAL_KEYS = ("scope", "claim", "resolution", "reason", "ref")
+QUAL_KEY_RE = re.compile(r'(?:^|,\s*)(' + '|'.join(QUAL_KEYS) + r')=')
+CALL_RE = re.compile(r'^([a-zA-Z][\w-]*)\((.*)\)$', re.DOTALL)
+# Extended 2026-07-21 (finishing pass) to recognise the RULING-2 minted anchors
+# (CHARTER.S9, DEF-006, TYPE:2026-07-18:sat-ceiling) alongside the original ledger IDs.
+NODE_TOKEN = r'R-D\d+(?:\.\w+)?|T-D\d+|B-D\d+|DV-D\d+|CHARTER\.\w+|DEF-\d+|TYPE:[\w:.-]+'
+BULLET_ID_RE = re.compile(r'^-\s+\*\*(DV-D\d+)\b')
+PAREN_ID_RE = re.compile(r'\((' + NODE_TOKEN + r')\)')
+ANY_ID_RE = re.compile(r'\b(' + NODE_TOKEN + r')\b')
+# `{#ctkb-015}` style markdown attribute anchors — how guideline-rule REVIEW
+# items carry their own id (ADR-0012 §1: "guideline rules `{#id}`"). Works on
+# any line (heading or plain bullet), unlike the heading-only Paren/Any checks.
+# Anchored at END OF LINE ONLY: the ledgers cite OTHER rules mid-prose in the
+# same `{#id}` shape, backtick-wrapped (`` `{#dv-017}` ``, never the line's last
+# token) — e.g. R-D3 says "`{#dv-017}`(a) permits...". Requiring end-of-line
+# is what tells "this bullet's own anchor" apart from "a citation of some other
+# rule in passing" (found live in `_RAG-DECISIONS.md`/`_TYPE-DECISIONS.md` while
+# wiring this in — same class of trap as the ADR Status-prose one).
+ANCHOR_HASH_RE = re.compile(r'\{#([a-zA-Z][\w.:-]*)\}\s*$')
+EDGES_LINE_RE = re.compile(r'^\s*Edges:\s*(.+)$')
+ADR_TITLE_RE = re.compile(r'^#\s*(ADR-\d+)\b')
+# ADR header native-syntax fields (RULING 1, 2026-07-21 finishing pass). Captures
+# ONLY the text between the field's own bold label and the next bold label (or
+# end of the header paragraph) — never the whole header block — so a `**Status:**`
+# parenthetical that name-drops rule IDs in prose (ADR-0012's own header does this
+# with R-D2/R-D7/R-D21) is never misread as an edge.
+ADR_TOKEN = r'ADR-\d{4}'
+HEADER_ID_RE = re.compile(r'\b(' + ADR_TOKEN + '|' + NODE_TOKEN + r')\b')
+EXTENDS_FIELD_RE = re.compile(
+    r'\*\*Extends:\*\*\s*(.*?)(?=\*\*Relates:\*\*|\*\*Method:\*\*|\*\*Status:\*\*|$)', re.DOTALL)
+RELATES_FIELD_RE = re.compile(
+    r'\*\*Relates:\*\*\s*(.*?)(?=\*\*Method:\*\*|\*\*Extends:\*\*|\*\*Status:\*\*|$)', re.DOTALL)
+
+
+def _parse_call(tok):
+    """Parse one `type(to[, k=v]*)` call. Handles nested parens in values (T-D8's
+    claim carries them) and commas embedded in a qualifier's own text (R-D20's
+    claim text contains a comma) by locating qualifier boundaries via the known
+    key set rather than splitting blindly on ','."""
+    m = CALL_RE.match(tok.strip())
+    if not m:
+        return None
+    etype, inner = m.group(1), m.group(2)
+    etype = ALIASES.get(etype, etype)
+    key_matches = list(QUAL_KEY_RE.finditer(inner))
+    if key_matches:
+        to = inner[:key_matches[0].start()].strip().rstrip(",").strip()
+    else:
+        to = inner.strip()
+    e = {"type": etype, "to": to}
+    for i, km in enumerate(key_matches):
+        start = km.end()
+        end = key_matches[i + 1].start() if i + 1 < len(key_matches) else len(inner)
+        e[km.group(1)] = inner[start:end].strip()
+    return e
+
+
+def parse_edges_line(text, from_node):
+    """`text` is everything after 'Edges:' on one line — one or more
+    ` · `-separated `type(target, k=v)` calls, all attributed to `from_node`."""
+    edges = []
+    for tok in re.split(r'\s*·\s*', text.strip()):
+        if not tok:
+            continue
+        e = _parse_call(tok)
+        if e is None:
+            continue
+        e["from"] = from_node
+        edges.append(e)
+    return edges
+
+
+def _scan_current_node(line, current):
+    """Track which node an upcoming `Edges:` line belongs to, walking a ledger
+    top-down. Ledger sections are `## R-D21 — …` / `### Ruling A — … (R-D6.A)`
+    style headings; DataViz's standing-decisions block is a flat bullet list
+    (`- **DV-D01 · …**`). A heading that only *mentions* another node in passing
+    (e.g. `## OPEN — carried out of R-D1`) can reassign `current` here, but that
+    is harmless in practice: no `Edges:` line is ever inscribed inside such a
+    section, only directly under the node's own heading/bullet.
+
+    Extended 2026-07-21 (finishing pass, RULING 2) for the non-ledger homes:
+    guideline REVIEW rules carry their id as a `{#ctkb-015}` markdown attribute
+    anchor at the end of an ordinary bullet (not a heading), and the charter /
+    pre-T-D type-ledger sections get a minted `(CHARTER.S9)` / `(TYPE:…)` tag
+    appended to their own heading, same convention as `(R-D6.A)`. The anchor
+    check runs on every line (heading or not) so it catches both shapes."""
+    b = BULLET_ID_RE.match(line)
+    if b:
+        return b.group(1)
+    h = ANCHOR_HASH_RE.search(line)
+    if h:
+        return h.group(1)
+    if not line.startswith("#"):
+        return current
+    p = PAREN_ID_RE.search(line)
+    if p:
+        return p.group(1)
+    a = ANY_ID_RE.search(line)
+    if a:
+        return a.group(1)
+    return current
+
+
+def _parse_ledger_file(path):
+    edges = []
+    if not os.path.isfile(path):
+        return edges
+    current = None
+    with open(path, encoding="utf-8") as f:
+        for line in f:
+            line = line.rstrip("\n")
+            current = _scan_current_node(line, current)
+            m = EDGES_LINE_RE.match(line)
+            if m and current:
+                edges.extend(parse_edges_line(m.group(1), current))
+    return edges
+
+
+def _adr_header_text(lines, adr_title_idx):
+    """The ADR header is the markdown paragraph right after the `# ADR-00NN`
+    title: one or more soft-wrapped lines (no blank line between them) ending at
+    the first blank line or EOF. Joining them with spaces gives one string to
+    regex the `**Extends:**`/`**Relates:**` fields out of — this is what keeps a
+    multi-line header (ADR-0012's own, 7 lines) working the same as a one-liner."""
+    i = adr_title_idx + 1
+    n = len(lines)
+    while i < n and lines[i].strip() == "":
+        i += 1
+    header_lines = []
+    while i < n and lines[i].strip() != "":
+        header_lines.append(lines[i])
+        i += 1
+    return " ".join(header_lines)
+
+
+def _parse_adr_header_fields(adr_id, header_text):
+    """RULING 1 (2026-07-21 finishing pass): the 18 ADR→ADR/R-D edges are
+    inscribed as native `**Extends:**` (→ refines) / `**Relates:**` (→ relates)
+    header fields, not inline `Edges:` lines — matching how ADR-0012's own
+    header already does it. Extracts ONLY the text between each field's own
+    label and the next bold label (or end of the header paragraph), so prose
+    elsewhere in the header (e.g. a `**Status:**` parenthetical that name-drops
+    R-D2/R-D7/R-D21) is never in scope — the field boundary IS the guard, not a
+    keyword blocklist."""
+    edges = []
+    em = EXTENDS_FIELD_RE.search(header_text)
+    if em:
+        for tok in HEADER_ID_RE.findall(em.group(1)):
+            edges.append({"from": adr_id, "type": "refines", "to": tok})
+    rm = RELATES_FIELD_RE.search(header_text)
+    if rm:
+        for tok in HEADER_ID_RE.findall(rm.group(1)):
+            edges.append({"from": adr_id, "type": "relates", "to": tok})
+    return edges
+
+
+def _parse_adr_file(path):
+    """ADR headers carry native `Extends:`/`Relates:` relations — parsed
+    per-field by `_parse_adr_header_fields` (RULING 1). Also still picks up any
+    explicit inline `Edges:` line in the body (same grammar as the ledgers),
+    for the rare case an ADR needs an edge type the header grammar can't say
+    (e.g. `verified-by`, `diverges-from`) — none do yet, kept for symmetry."""
+    edges = []
+    if not os.path.isfile(path):
+        return edges
+    with open(path, encoding="utf-8") as f:
+        lines = [l.rstrip("\n") for l in f]
+    adr_id = None
+    for idx, line in enumerate(lines):
+        t = ADR_TITLE_RE.match(line)
+        if t:
+            adr_id = t.group(1)
+            edges.extend(_parse_adr_header_fields(adr_id, _adr_header_text(lines, idx)))
+    for line in lines:
+        m = EDGES_LINE_RE.match(line)
+        if m and adr_id:
+            edges.extend(parse_edges_line(m.group(1), adr_id))
+    return edges
+
+
 def parse_inline_edges():
-    """Post-inscription hook: parse `Edges: type(target, k=v) · …` lines from ledgers/ADRs.
-    Returns [] until inscription lands (ADR-0012 acceptance gates it). Kept so the interface
-    is stable and the inscription diff can be verified against the seed."""
-    return []
+    """Post-inscription hook: parse `Edges: type(target, k=v) · …` lines from the
+    4 decision ledgers + the RULING-2 non-ledger homes (charter, guideline files),
+    plus every ADR's native `Extends:`/`Relates:` header fields (RULING 1) and any
+    inline `Edges:` line it carries. This is the mechanical half of ADR-0012 §7 —
+    reads what Sonnet's inscription pass wrote, in the SAME edge shape
+    `load_seed()` produces, so `--verify` can diff the two sets directly."""
+    edges = []
+    for path in LEDGER_FILES + EXTRA_INLINE_FILES:
+        edges.extend(_parse_ledger_file(path))
+    if os.path.isdir(ADR_DIR):
+        for fn in sorted(os.listdir(ADR_DIR)):
+            if fn.startswith("ADR-") and fn.endswith(".md"):
+                edges.extend(_parse_adr_file(os.path.join(ADR_DIR, fn)))
+    return edges
 
 
 def classify(nodes, edges):
@@ -131,8 +344,14 @@ def fmt_edge(e, direction="out"):
 
 
 def main():
-    nodes, edges, errata = load_seed()
-    edges += parse_inline_edges()
+    nodes, seed_edges, errata = load_seed()
+    inline_edges = parse_inline_edges()
+    # Merge, not concatenate: once an edge is inscribed inline it is the SAME edge as its
+    # seed entry (that is what --verify checks), not a second one. Key on (from,type,to)+
+    # qualifiers so a fully-inscribed corpus doesn't silently double every edge count.
+    merged = {_edge_key(e): e for e in seed_edges}
+    merged.update({_edge_key(e): e for e in inline_edges})
+    edges = list(merged.values())
     state, inbound = classify(nodes, edges)
     findings = check(nodes, edges)
     adj = what_touches(nodes, edges)
@@ -236,6 +455,46 @@ def main():
     return len(warns)
 
 
+def _edge_key(e):
+    return (e.get("from"), e.get("type"), e.get("to")) + tuple(e.get(k) for k in QUAL_KEYS)
+
+
+def verify():
+    """--verify / --diff: diff inline-parsed edges (what's actually inscribed)
+    against the seed (the audited judgment) by (from, type, to) + qualifiers.
+    Acceptance test per ADR-0012 §7: inscription is done when this is empty.
+    Any remainder is either a real gap or a deliberate hold documented in the
+    worker receipt (e.g. edges whose `from` has no ruled ledger-file home, or
+    ADR edges left in native Extends:/Relates: syntax, not double-inscribed)."""
+    seed_nodes, seed_edges, _ = load_seed()
+    inline_edges = parse_inline_edges()
+    seed_by_key = {_edge_key(e): e for e in seed_edges}
+    inline_by_key = {_edge_key(e): e for e in inline_edges}
+    seed_only = sorted(set(seed_by_key) - set(inline_by_key))
+    inline_only = sorted(set(inline_by_key) - set(seed_by_key))
+    matched = set(seed_by_key) & set(inline_by_key)
+
+    print(f"decision graph --verify: seed {len(seed_edges)} edges · inscribed {len(inline_edges)} "
+          f"edges parsed · {len(matched)} matched")
+    if seed_only:
+        print(f"  {len(seed_only)} edge(s) in SEED but NOT inscribed:")
+        for k in seed_only:
+            e = seed_by_key[k]
+            print(f"    - {fmt_edge(e, 'in')} (from {e['from']})" if False else
+                  f"    - {e['from']} —{e['type']}→ {e.get('to')} "
+                  + "".join(f"{k}={e[k]} " for k in QUAL_KEYS if e.get(k)))
+    if inline_only:
+        print(f"  {len(inline_only)} edge(s) INSCRIBED but NOT in seed (unexpected — check for a typo "
+              f"or an invented edge):")
+        for k in inline_only:
+            e = inline_by_key[k]
+            print(f"    - {e['from']} —{e['type']}→ {e.get('to')} "
+                  + "".join(f"{k}={e[k]} " for k in QUAL_KEYS if e.get(k)))
+    if not seed_only and not inline_only:
+        print("  ZERO mismatch — inscribed corpus == seed.")
+    return len(seed_only) + len(inline_only)
+
+
 def selftest():
     """Bite-test: an open conflict and an orphan structural target must each fail strict."""
     nodes = {"A": {"title": "a"}, "B": {"title": "b"}}
@@ -257,5 +516,7 @@ def selftest():
 if __name__ == "__main__":
     if "--selftest" in sys.argv:
         sys.exit(selftest())
+    if "--verify" in sys.argv or "--diff" in sys.argv:
+        sys.exit(verify())
     warns = main()
     sys.exit(warns if "--strict" in sys.argv else 0)

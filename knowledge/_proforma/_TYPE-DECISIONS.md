@@ -293,7 +293,7 @@ all** — the library was using weights the canon does not contain. **WHY collap
 step (the `.em` variant), and a narrower vocabulary is the entire point of a ramp; adding a 600 would widen the
 vocabulary to accommodate drift rather than correct it.
 
-### Rule 3 — avatars/badges are GATED AS TEXT. No intrinsic-scale carve-out. ⚠️ DELIBERATE DIVERGENCE
+### Rule 3 — avatars/badges are GATED AS TEXT. No intrinsic-scale carve-out. ⚠️ DELIBERATE DIVERGENCE (DEF-006)
 DEF-005 exempts an intrinsic square (`height` == `width`) as icon/avatar scale rather than layout rhythm — see
 the grid retrofit entry above. **DEF-006 does NOT mirror that exemption.** Avatar initials and badge counts set
 `font-size` to size a glyph in a fixed box, which is the same *shape* of argument, and Dave still ruled them in
@@ -301,6 +301,8 @@ scope. **WHY it matters:** a future reader will spot DEF-005 and DEF-006 disagre
 try to "reconcile" them. Do not. The rules govern different things — a box's dimensions vs. the type inside it —
 and the divergence is intended. Consequence: 22→24 and 18→20 visibly resize avatars and badges; renders required
 before commit.
+
+Edges: diverges-from(DEF-005, reason=DEF-005 exempts intrinsic squares (box dims); DEF-006 gates the type inside them — ruled deliberate 2026-07-18, do not reconcile)
 
 ### Rule 4 — inline `style=""`: disaggregated first, then ruled three ways
 The gate reported 18 violations; that is **12 elements** (a `font:` shorthand raises both TYPE-002 and TYPE-003).
@@ -393,10 +395,12 @@ only a preference — the equivalent of dv-019's 135°) · Q5 scope (badges vs e
 The minimum weight **falls as size rises** — larger type carries more stroke mass. Q3 = yes, size matters,
 so the rule cannot be expressed as "reverse text must be ≥N".
 
-### Q-new ANSWERED — the saturation ceiling is **≤ 0.72**
+### Q-new ANSWERED — the saturation ceiling is **≤ 0.72** (TYPE:2026-07-18:sat-ceiling)
 Dave picked `#B92F1E` (sat 0.72) as the first ladder row that reads clean; 0.78 / 0.84 / 1.00 do not.
 **This is the gate's number** — the equivalent of `dv-019`'s 135° hue leg, and for the same reason: derived
 from an observation, not from theory. The rule was un-gateable without it.
+
+Edges: supersedes(TYPE:2026-07-18:badge-A8000B) · refines(col26-020)
 
 ### ⚠️ TWO CORRECTIONS TO EARLIER CLAIMS IN THIS SESSION (mine, both)
 1. **The `700→500` collapse did NOT cause the spidery badge.** The ruling puts the minimum at Medium (500)
@@ -512,6 +516,8 @@ Dave supplied Univers Next Pro mid-session; both families measured against each 
 Line boxes are only **8%** apart — but the **baseline sits ~11 percentage points lower in the box** in
 our cut, because HSBC folded the lineGap into ascent. **That is what the cap-trim and grid-slot work
 depends on**, so stock-Univers line-height advice does not transfer.
+
+Edges: verified-by(fontTools-measurement)
 
 ## ⚠️ T-D4 — THREE CORRECTIONS I MADE TODAY (all mine; all "tidy first answer, wrong")
 
@@ -687,6 +693,8 @@ question does not arise for buttons. **Re-ask it per composite** when the other 
 **Q1 — still not ruled.** Dave leaned (d); the blocker is cleared; but the lean was given before
 this evidence and must be re-marked, not assumed.
 
+Edges: supersedes(T-D7, claim=the .txt-child-required inference (80% kills (d))) · verified-by(outputs/trimtest.html)
+
 ---
 
 ## T-D9 — RULED: binding mechanism = (d), hand-maintained (2026-07-18)
@@ -734,6 +742,8 @@ variant B fails.
 ### Open, carried
 - The stack demo in `trimtest2.png` seats text higher in the slot than expected. Does not affect
   the A/B/D result. **Noted, not chased.**
+
+Edges: refines(T-D8) · supersedes(TYPE:2026-07-17:composite-txt-child)
 
 ---
 
@@ -786,6 +796,8 @@ relaxed on an instrument we cannot vouch for.
 Under the T-D9 binding mechanism, "snap to 400" **is** the rebind: the 88 selectors are appended to
 the existing `.t-cm-caption` / `.t-cm-legal` / `.t-cm-label` selector lists and their raw
 `font-weight:500` is deleted. **The ruling and the rebind are the same edit.**
+
+Edges: verified-by(pin-position-method)
 
 ---
 
@@ -914,6 +926,8 @@ the base rule and both `@supports` branches. The writer patched only the first, 
 selectors got flex + min-height but no cap-trim: a different bug wearing the same clothes. Fixed:
 the slot list patches every occurrence.
 
+Edges: supersedes(T-D11, claim=the unified .t-cm composite (type+box conflated)) · verified-by(pixel-diff-21-files)
+
 ### ✅ T-D13 — CLOSED: the blast-radius gate is built (2026-07-18)
 The mechanism's blast radius — bare, unscoped selectors in a globally-linked stylesheet, held only
 by component-CSS load order across ~460 selectors — now has its guard-rail. **This did NOT reopen
@@ -969,6 +983,8 @@ full CSS cascade, and gates on the file *set*; a same-count file *swap* inside t
 would pass. Good enough for advisory→blocking bed-in (cf. the consult tool's fuzzy enforcement
 column); the rigorous cascade-aware version is a `_FUTURE-STATE` candidate.
 
+Edges: refines(T-D9) · verified-by(knowledge/_validate_type_blast_radius.py)
+
 ### Where this leaves DEF-006
 780 → **729** violations (TYPE-001 49→28 as 21 files gained their `<link>`). **Still unwired, and
 deliberately so** — the remaining 690 TYPE-002 are the 257 non-`/1` declarations plus the pro-forma
@@ -1010,3 +1026,5 @@ turn the build red on known, unruled work.
   single-size today. The 20/32 rungs already exist; the multi-size binding lands **when the timer gains size variants**
   (ties to the μX size control / `_FUTURE-STATE`). ⚠️ Weight watch: section-label(20) is 500, heading(32) is 400 — a
   numeral scaling 20→32 would drift 500→400 unless a consistent numeric-weight ramp is ruled then.
+
+Edges: refines(T-D12)

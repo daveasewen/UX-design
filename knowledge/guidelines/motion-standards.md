@@ -60,6 +60,7 @@ live in the AE toolkit). [structure]
    should cite it. NOT self-resolvable — Dave's call whether to (a) treat brand-film rules
    as out-of-scope for micro-interactions, or (b) constrain future promotions.
    [REVIEW] {#mot-007}
+   Edges: conflicts-with(canon-spring-physics, resolution=deferred)
 2. **Easing values are toolkit-locked.** The only retrievable curve facts are the three
    named ease families — no beziers published. Our `motion/easing/standard` etc. remain the
    operative source; if the AE toolkit's curves are ever needed, that's an asset-pipeline

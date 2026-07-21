@@ -98,11 +98,13 @@
     {"from": "ADR-0010", "type": "refines", "to": "ADR-0009"},
     {"from": "ADR-0010", "type": "refines", "to": "R-D15"},
     {"from": "ADR-0010", "type": "relates", "to": "R-D17", "note": "leak gate = companion; pilot = RAG green set"},
+    {"from": "ADR-0010", "type": "refines", "to": "ADR-0004", "note": "audit-miss reconciled 2026-07-21: nullable slots preserve the WCAG AA floor; declared in ADR-0010 header, omitted by the Fable seed audit"},
     {"from": "ADR-0011", "type": "refines", "to": "R-D15", "note": "mechanises the intent as override sets"},
     {"from": "ADR-0011", "type": "refines", "to": "ADR-0009"},
     {"from": "ADR-0011", "type": "refines", "to": "ADR-0010"},
     {"from": "ADR-0011", "type": "refines", "to": "ADR-0008"},
     {"from": "ADR-0011", "type": "relates", "to": "R-D19"},
+    {"from": "ADR-0011", "type": "relates", "to": "R-D17", "note": "audit-miss reconciled 2026-07-21: leak gate guards theme colour boundaries; declared in ADR-0011 header, omitted by the Fable seed audit"},
     {"from": "ADR-0012", "type": "refines", "to": "ADR-0007", "note": "the unbuilt first half authored"},
 
     {"from": "R-D2", "type": "refines", "to": "R-D1", "note": "token shape for the R-D1 hues"},
@@ -184,6 +186,7 @@
     {"from": "webf-032", "type": "conflicts-with", "to": "4px-base-unit-standard", "resolution": "interim", "ref": "toolkit-wins stance"}
   ],
   "errata": [
-    {"id": "E1", "what": "GOOD-MORNING standing list says '_TYPE-DECISIONS.md (T-D1…T-D16)'; the ledger holds T-D1..T-D14. Fix the range at the next capture refresh.", "severity": "small"}
+    {"id": "E1", "what": "GOOD-MORNING standing list says '_TYPE-DECISIONS.md (T-D1…T-D16)'; the ledger holds T-D1..T-D14. Fix the range at the next capture refresh.", "severity": "small"},
+    {"id": "E2", "what": "Audit-miss (self-caught during 2026-07-21 inscription): the Fable seed omitted two edges already declared in ratified ADR headers — ADR-0010 refines ADR-0004 (WCAG AA floor) and ADR-0011 relates R-D17 (Legacy-leak gate). The inscription worker initially trimmed the ADR headers to match the incomplete seed; reconciled the correct way instead — headers restored, both edges added to the seed (94 edges total). Lesson: on ADR-header vs seed disagreement, the ratified header wins; add to seed, never delete from the header.", "severity": "medium"}
   ]
 }

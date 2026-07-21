@@ -1,6 +1,6 @@
 # ADR-0011 — Four-theme token architecture: themes as override sets, not forks
 
-**Date:** 2026-07-20 · **Status:** accepted (Dave — "we need to wire this up properly with the themes") — architecture ratified; migration staged · **Extends:** R-D15 (four-theme architecture, the intent), ADR-0009 (state-styling / override sets), ADR-0010 (nullable flex slots), ADR-0008 (canonical core) · **Relates:** R-D19 (Legacy red vs Mono red), R-D17 + `_validate_legacy_leak.py` (Legacy-colour leakage gate)
+**Date:** 2026-07-20 · **Status:** accepted (Dave — "we need to wire this up properly with the themes") — architecture ratified; migration staged · **Extends:** R-D15 (four-theme architecture, the intent), ADR-0009 (state-styling / override sets), ADR-0010 (nullable flex slots), ADR-0008 (canonical core) · **Relates:** R-D19 (Legacy red vs Mono red) · R-D17 + `_validate_legacy_leak.py` (Legacy-colour leakage gate)
 
 ## Context
 

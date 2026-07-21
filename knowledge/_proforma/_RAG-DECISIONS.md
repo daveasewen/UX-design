@@ -61,6 +61,8 @@ values, R-D19 — their consumer components are archived). The theme-provenance 
 it to blocking still needs the broader foreign-hex cleanup (58 hexes / 67 files remain, down from 68), which is
 the parked archived-file relocation, not this ruling.
 
+Edges: refines(R-D17) · refines(R-D18) · bounds(R-D19) · conflicts-with(R-D2, claim=red/green/blue hold the SAME value in both roles, resolution=ruled, ref=R-D21) · conflicts-with(R-D7, claim=red = mode-stable, one value light+dark, resolution=ruled, ref=R-D21)
+
 ## R-D19 — Red belongs to a THEME, not to Mono: Legacy red vs the Mono status red (2026-07-20). Source: Dave.
 **Ruling (verbatim intent):** *"these reds are valid for Legacy only — we have a new red for Mono and it is
 only used for status and RAG."* Reflected back and confirmed: red-as-**action/navigation** is an **Apollo
@@ -86,6 +88,8 @@ override sets), which is what makes "red = Legacy" mechanically true rather than
 Mono red = `#B92F1E` (ready, but the bare-role rebind waits with error/warning/info per R-D17). Tracked in
 `knowledge/_STYLE-PROVENANCE.md`.
 
+Edges: bounds(R-D15) · relates(R-D7)
+
 ## R-D18 — Success GREEN set completed; teal fully evicted from Mono (2026-07-20). Source: Dave, on the live tuner.
 Ruled the open green slots on `reviews/RAG-SUCCESS-GREEN-2026-07-20-v1.html` (OKLCh sliders + live contrast +
 salience guard). Settled:
@@ -103,6 +107,8 @@ salience guard). Settled:
 Input-fields, List-items, Notifications, Reorder, Status-indicator) now resolve green; their snippet hexes were
 swept to match. **Leakage gate: 0 waived, 0 leaks.** Teal `#00847F` no longer resolves in any Mono surface.
 Bare `rag/error`/`warning`/`information` roles remain Legacy-drifted (see R-D17) — their own future rulings.
+
+Edges: refines(R-D17) · relates(ADR-0010)
 
 ## R-D17 — The bare `rag/*` roles are Legacy-drifted; teal leak gated (2026-07-20). Source: Dave.
 **Finding.** The bare RAG *role* tokens all still resolve to **Legacy** values, while the R-D14 palette
@@ -129,6 +135,8 @@ white) we need Dave to rule the **dark glyph-green + tint greens**. Until then t
 **Flexibility (Dave, 2026-07-20).** Tokens must stay flexible — a future RAG may set **light ≠ dark**
 independently (not just shades). `text/on-success` was minted per-mode for exactly this. See the
 placeholder-slots / style-builder direction in `_FUTURE-STATE.md`.
+
+Edges: refines(R-D15) · verified-by(knowledge/_validate_legacy_leak.py) · relates(B-D6)
 
 ## R-D1 — RAG promotion, round one (2026-07-18)
 
@@ -267,6 +275,8 @@ and "no longer one nudge from failing AA" are **one move, not two**.
 4. Dark-mode red `#CC4333` (3.97) and blue `#2674DC` (4.15) as GLYPHS on `#111` — pass 1.4.11 for
    icons, **fail 4.5 for text**. Dark-mode glyph tokens may need their own lift.
 
+Edges: refines(R-D1)
+
 ---
 
 ## R-D3 — AMBER, SOLVED (2026-07-18)
@@ -333,6 +343,8 @@ where a status chip and a chart series share a dashboard.
 - The `dv-017` RAG-cell contradiction above.
 - Build the amber gate.
 
+Edges: refines(R-D2) · conflicts-with(dv-017, resolution=ruled, ref=R-D5)
+
 ---
 
 ## R-D4 — Matting rungs RULED + first token promotion (2026-07-18)
@@ -377,6 +389,8 @@ all is new coverage, and it bit correctly both times.
 Dark-mode green fix · dark-mode red/blue text-glyph lift · ~~the `dv-017` contradiction~~ (**RULED R-D5**) ·
 the amber gate (rules 1+2) · component rebinding to the new role tokens (AFTER the blast-radius gate).
 
+Edges: refines(R-D2) · verified-by(contrast-gate)
+
 ---
 
 ## R-D5 — the `dv-017`(a) contradiction, RESOLVED (2026-07-19)
@@ -397,6 +411,8 @@ opens (green has no ruled dark value; dark red/blue fail 4.5 as glyph-on-text) a
 are the dedicated **RAG-colours review**, which Dave ruled the next deliverable (2026-07-19: *"lets do this next"*).
 Home: `_FUTURE-STATE`. This was the source of Dave's earlier confusion (the status-cell example ≠ real manifestation).
 
+Edges: bounds(dv-017)
+
 ---
 
 ## R-D6 — glyph contrast by role + halation as a third axis (2026-07-19)
@@ -404,7 +420,7 @@ Home: `_FUTURE-STATE`. This was the source of Dave's earlier confusion (the stat
 Source: Dave's markup of `reviews/RAG-COLOURS-2026-07-19-v1.REVIEW.html` (4 pins) + in-chat confirmations
 ("correct" / "also correct"). Two rulings RULED; a model direction and two hypotheses OPEN.
 
-### Ruling A — glyph contrast is RELATIVE to whether the glyph carries the meaning — RULED
+### Ruling A — glyph contrast is RELATIVE to whether the glyph carries the meaning — RULED (R-D6.A)
 Dave (pin 3, on the M3 dot+label): *"when paired with a label the contrast is less important so the brighter
 yellow is fine here. It's only when the glyphs have meaning and the label is a number or the label doesn't
 carry the meaning that it matters, like arrows for instance."*
@@ -418,7 +434,9 @@ carry the meaning that it matters, like arrows for instance."*
 Refines R-D3 "belt & braces" and `{#icon-013}`. **Gate-able:** the check is "does a text sibling carry the
 status word?" — flag lone/meaning-carrying coloured glyphs below 4.5. Not yet built.
 
-### Ruling A′ — sharpened: in THIS system no status glyph ever carries meaning by colour alone (2026-07-21). Source: Dave.
+Edges: refines(R-D3) · refines(icon-013)
+
+### Ruling A′ — sharpened: in THIS system no status glyph ever carries meaning by colour alone (2026-07-21). Source: Dave. (R-D6.A2)
 Dave, reflecting on the amber `#C58900` passing at 3:1: *"the only coloured icons are the statuses, and the
 warning roundel has a black exclamation mark — even in this case there is enough contrast. So the only glyphs
 that need to conform to the contrast rule are ones where the meaning is carried exclusively by the glyph, like
@@ -442,6 +460,8 @@ policy (`{#icon-015}` "icons 4.5 · pictograms 3 · chart/RAG indicators 3"). Al
 roundel-leg exemption** (2026-07-02): the `#F0B13A`-on-white 1.9:1 "failure" was never a real fail because the
 colour is not the channel — this ruling states the principle the exemption was reaching for. Scope note added to
 `{#icon-011}`; reconciliation logged.
+
+Edges: refines(R-D6.A) · bounds(icon-011) · subsumes(icon-015, claim=amber roundel-leg exemption 2026-07-02)
 
 ### Ruling B — halation is a THIRD design axis, beyond hue and intensity — RULED
 Dave: bloom/shimmer is real and *"another dimension to this"*; *"thin lines and colour dance, thicker ones
@@ -518,6 +538,8 @@ dual-observer principle lands as **uniform**, with polarity kept as rationale, n
 TYPE ruling (T-D) when the RAG tokens are enacted. *(If Dave meant keep the 400/500 split, correct here — read
 as uniform 500.)*
 
+Edges: supersedes(R-D1, scope=fill role, claim=dark red #CC4333 as the status-fill red) · refines(R-D6.B)
+
 ---
 
 ## R-D8 — green/blue = Band A; the dark set closes (2026-07-19)
@@ -544,6 +566,8 @@ Red's distinct prominence (deep, white text, unmissable) is APPROPRIATE to its w
 
 *(Values from the v2 isoluminant sweep, Band A L≈0.55: green #14874E white 4.56, blue #1F6ED5 white 4.94. If
 Dave wants green/blue nudged to red's exact L for a fully even trio, that's a re-cut — not requested.)*
+
+Edges: refines(R-D1)
 
 ---
 
@@ -575,6 +599,8 @@ Dave's astigmatic legibility — a saturated blue edge is what blurs). Supersede
 - Red-vs-page 2.89 flag (keep deep, steer keep).
 - §1 manifestation. Then token promotion.
 
+Edges: supersedes(R-D8, claim=isoluminant framing for status)
+
 ---
 
 ## R-D10 — RAG dark set LOCKED (2026-07-19)
@@ -602,6 +628,8 @@ refocus to components"). Final mode-stable set, all AA, monotonic salience ramp:
 Promote `#B92F1E` / `#43AD6F` / `#5F92B9` to `tokens/semantic-colour.json` rag/* (mode-stable), rebind behind
 the blast-radius gate. **STILL OPEN: §1 manifestation** (cell / pill / dot+label / bar) — reframed as a
 COMPONENT/pattern task, not a colour one.
+
+Edges: supersedes(R-D8, claim=Band-A green/blue values) · refines(R-D9)
 
 ---
 
@@ -639,13 +667,15 @@ light-page fills are the reopened piece.
 - Rebind Status-indicator (dot+label) to R-D10 dark tokens; the filled-cell + bar forms await the §1 canon pick.
 - Light-mode fill set is OPEN (R-D11 ground-relative correction).
 
+Edges: supersedes(R-D10, scope=fill role; dark values stay ruled, claim=fills are mode-stable)
+
 ---
 
 ## R-D12 — light-fills direction: NO LINES + black-text states (2026-07-19)
 
 Source: Dave's 3 review edits on `reviews/RAG-LIGHT-FILLS-2026-07-19-v1` (the light-fills derivation).
 
-### Ruling A — NO borders/lines on the fills — RULED (aesthetic)
+### Ruling A — NO borders/lines on the fills — RULED (aesthetic) (R-D12.A)
 Dave, on the mode-continuity option: *"nope, cant have lines its not part of the aesthetic."* ⇒ **Filled status
 cells carry NO stroke/border.** This **kills Option B** (the mode-continuity/border approach) outright, AND
 removes the amber hairline border that Option 0 leaned on. The boundary must come from the FILL alone.
@@ -659,7 +689,9 @@ point: a status cell is a **labelled component**, so fill-vs-page contrast is a 
 accessibility floor** (the floor is the LABEL's contrast). Stale-reading catch — should have CONSULTed R-D6
 before flagging. Amber stays `#F0B13A` black text, no line: settled.
 
-### Ruling B — black text on green + blue in light mode — RULED
+Edges: refines(R-D11) · verified-by(R-D6.A)
+
+### Ruling B — black text on green + blue in light mode — RULED (R-D12.B)
 Dave: *"no must be black text on colour for the blue and green this reinforces the salience."* ⇒ **In light mode
 the state fills (green, blue) carry BLACK text, matching amber; only breach/red carries white.** The polarity
 (loud/white breach vs calm/black states) reinforces the salience ramp. **Consequence:** black text needs the
@@ -667,6 +699,8 @@ fill light enough (blk/fill ≥4.5) while the fill still separates from white (�
 values are too dark for black text (green #2B7E4F blk 4.20, blue #306EC6 blk 4.17, both < AA), so green/blue
 re-seat slightly lighter: **green ≈ `#429363`** (blk 5.59, white 3.76) holds cleanly. So Option 0's "restore
 R-D4 values" is superseded — the HUES stay but the lightness is tuned for black-text-on-white.
+
+Edges: supersedes(R-D4, claim=green/blue rung values for light fills)
 
 ### OPEN → v2 eyeball (`RAG-LIGHT-FILLS-2026-07-19-v2`)
 - **Blue — CONFIRMED `#7D8CC2`** (purple-lean, lightened). Dave on v3: *"this one"* on the highlighted pick.
@@ -709,6 +743,8 @@ R-D4 values" is superseded — the HUES stay but the lightness is tuned for blac
 
 - Closes the **R-D11 light-fill open** (light half done). Dark-match is the last open before token promotion.
 
+Edges: refines(R-D12.B)
+
 ---
 
 ## R-D14 — RAG light fills LOCKED; full set reconciled (2026-07-19)
@@ -739,6 +775,8 @@ No lines (R-D12 A). Fill contrast = salience lever, meaning in the label (R-D6);
 Sonnet session). Closes R-D11 entirely.
 - Green value `#429363` confirm (black text, label contrast 5.6).
 - ~~Amber accept?~~ **NOT open — R-D6 governs (label carries meaning); over-raised, Dave corrected.**
+
+Edges: supersedes(R-D13, claim=light green/blue values (#6AB887/#8DA9EB → #5DAC7B/#7DABCD)) · refines(R-D11) · verified-by(reviews/_rag_light_fills_calc.py)
 
 ---
 
@@ -801,6 +839,8 @@ Renames captured: Apollo UI → **Apollo Console**; SC = **Apollo Supercharge**;
 > #000 clears 7.45/6.30) · `rag/neutral` **#767676**. Coloured `-tint` washes are out of scope. See
 > [[feedback-grey-tint-check]].
 
+Edges: refines(R-D1) · supersedes(R-D1, claim=the vaguer 'future legacy theme' phrasing)
+
 ## R-D16 — Apollo Mono semantic greys seated on the `color/mono/*` ramp (2026-07-19)
 Dave ruled on the review sheet `reviews/APOLLO-MONO-SEMANTIC-GREYS-2026-07-19-v1` (5 pins). The 79 semantic
 greys were surfaced against the new ramp (grey-tint check — nothing auto-swapped). Rulings:
@@ -856,3 +896,5 @@ tabs, table, tooltip, form hover, scrollbar) → `mono/4 #1A1A1A`, which is now 
 surfaces/hover states merge with the ground (no elevation/state separation by fill). Faithful to the maps + the
 digital-black ground, but likely unintended; the dark-surface flatness gate does NOT catch surface==ground (only
 dark==#FFFFFF) — a gate blind-spot. Revert = one-line token edit + regenerate.
+
+Edges: supersedes(col25-011, scope=mono) · verified-by(contrast-gate)

@@ -121,7 +121,7 @@ old T3 lacked.
 
 ---
 
-## 9. Register = an inference ramp (ranked curbs) — ratified 2026-07-03 (Dave)
+## 9. Register = an inference ramp (ranked curbs) — ratified 2026-07-03 (Dave) (CHARTER.S9)
 
 Register is **not a look; it is the level of inference** the engine is licensed to use —
 realised as a ramp that lifts curbs down to a floor that never moves. This supersedes the
@@ -170,6 +170,8 @@ Sober→balanced turns *inference* on; balanced→expressive *releases the found
    screen (dense data, safety-critical — e.g. payments) has a *narrow road*, so the bands
    *should* look alike; that is not a failed spread. The probe accounts for how much flex the
    screen actually carries.
+
+Edges: supersedes(ADR-0006, claim=cool-warm-hot register framing)
 
 ### 9a. Provenance of "reads HSBC" + the two working modes — ratified 2026-07-04 (Dave)
 

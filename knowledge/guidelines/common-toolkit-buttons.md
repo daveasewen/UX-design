@@ -115,6 +115,7 @@ feeds the finish-Button-★ item.*
   gated. [REVIEW — Dave to rule after the channels probe: inline buttons =
   tertiary (app-standard reading) or quaternary-alone allowed (guide
   reading)?] {#ctkb-015}
+  Edges: conflicts-with(app-inline-button-standard, resolution=deferred, ref=Dave 2026-07-03 — probe create.hsbc at channels ingestion)
 
 ## Census and tokens
 

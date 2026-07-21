@@ -183,6 +183,7 @@ tokens, breakpoint/scale modes); the value here is (a) receipts for what we alre
    (grey ramp, icon sizes) says keep it operative, but it's a real toolkit-vs-standard
    contradiction. [REVIEW — same class as icon-016; prune or exempt at refresh
    settlement] {#webf-032}
+   Edges: conflicts-with(4px-base-unit-standard, resolution=interim, ref=toolkit-wins stance)
 5. **font-1..4 sizes are TScale-mode-dependent — check the export carries them.**
    `typography.json` has fixed sizes only for font-5..7 (correct — S5–S7 are invariant);
    font-1..4 sizes/leading must vary by scale mode. If the semantic-scale export didn't

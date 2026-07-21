@@ -15,6 +15,7 @@ one but its palette rules are already partially superseded; tensions marked inli
   (see `colour-standards-2026.md`). Under the refresh this rule inverts from "separate palettes"
   to "one palette, shared". Old rule kept for pre-refresh work only. [REVIEW — enforcement must
   key off which standard a brief targets] {#ill-007}
+  Edges: conflicts-with(colour-standards-2026, resolution=ruled)
 - Limit the number of colours within an illustration; use HSBC Red tactically to draw focus.
   [ADVISORY-derivable — distinct-fill count] {#ill-002}
 - Build illustrations from **geometric shapes** — squares, circles, triangles. [TASTE] {#ill-003}

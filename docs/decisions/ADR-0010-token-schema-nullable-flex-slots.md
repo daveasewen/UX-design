@@ -1,6 +1,6 @@
 # ADR-0010 — Token schema: explicit nullable slots for the dimensions we flex
 
-**Date:** 2026-07-20 · **Status:** accepted (Dave) — direction ratified; implementation staged (pilot: the RAG green set) · **Extends:** ADR-0009 (state-styling / style-builder), R-D15 (four-theme architecture), ADR-0004 (WCAG 2.2 AA floor) · **Relates:** R-D17 + `_validate_legacy_leak.py` (the Legacy-colour leakage gate)
+**Date:** 2026-07-20 · **Status:** accepted (Dave) — direction ratified; implementation staged (pilot: the RAG green set) · **Extends:** ADR-0009 (state-styling / style-builder) · R-D15 (four-theme architecture) · ADR-0004 (WCAG 2.2 AA floor) · **Relates:** R-D17 + `_validate_legacy_leak.py` (the Legacy-colour leakage gate)
 
 ## Context
 

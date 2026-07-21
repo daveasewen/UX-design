@@ -89,6 +89,7 @@ renders with fallbacks regardless, see `_ROBUSTNESS-PORTABILITY.md`).
   until ruled** (conservative reading holds by default). Candidate mechanisations noted for
   the pass: text-free-zone gate (no text node over gradient surface) vs worst-point contrast
   sampling (≥4.5:1 at the ramp's weakest point, render-based). [REVIEW] {#type26-015}
+  Edges: conflicts-with(CHARTER.S4-gradients, resolution=parked, ref=component-finessing pass, with mot-007)
 
 ### Kerning and leading
 - Latin headlines: **−15 to −30 tracking; leading = size +3pt** (50pt → 53pt). Latin body:
