@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Decision-graph convention — audit + rulings sheet · 2026-07-21 · v1</title>
+<style>
+  :root{
+    --page:#FFFFFF; --ink:#1A1A1A; --ink-2:#484848; --line:#E1E1E1; --panel:#F0F0F0;
+    --queued:#F0B13A; --breach:#B92F1E; --font:"HSBC_MtUnivers_Latin","Univers Next",system-ui,Helvetica,Arial,sans-serif;
+  }
+  body.dark{ --page:#1A1A1A; --ink:#FFFFFF; --ink-2:#B7B7B7; --line:#484848; --panel:#0F0F0F; }
+  *{box-sizing:border-box; margin:0}
+  body{background:var(--page); color:var(--ink); font-family:var(--font); line-height:1.5; padding:32px 16px 96px}
+  main{max-width:var(--w,880px); margin:0 auto; transition:max-width .15s}
+  h1{font-size:24px; font-weight:500; line-height:1.2; margin-bottom:8px}
+  h2{font-size:16px; font-weight:500; margin:40px 0 12px; padding-top:16px; border-top:2px solid var(--ink)}
+  h3{font-size:14px; font-weight:500; margin:20px 0 8px}
+  p,li{font-size:14px; color:var(--ink)}
+  .sub{color:var(--ink-2); font-size:12px}
+  .meta{font-size:12px; color:var(--ink-2); margin-bottom:24px}
+  table{border-collapse:collapse; width:100%; margin:12px 0; font-size:13px}
+  th,td{border:1px solid var(--line); padding:8px 10px; text-align:left; vertical-align:top}
+  th{font-weight:500; background:var(--panel)}
+  code,.mono{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:12px}
+  .panel{border:1px solid var(--line); padding:16px; margin:12px 0; background:var(--panel)}
+  .chip{display:inline-block; font-size:11px; font-weight:500; padding:2px 8px; border:1px solid var(--ink); margin-right:6px}
+  .chip.q{background:var(--queued); color:#1A1A1A; border-color:var(--queued)}
+  .ctrlbar{position:sticky; top:0; z-index:5; background:var(--page); border-bottom:1px solid var(--line);
+           padding:10px 0; margin-bottom:24px; display:flex; gap:20px; align-items:center; flex-wrap:wrap}
+  .ctrlbar label{font-size:12px; color:var(--ink-2); display:flex; gap:8px; align-items:center}
+  button{font-family:var(--font); font-size:12px; font-weight:500; background:var(--ink); color:var(--page);
+         border:0; padding:8px 14px; cursor:pointer}
+  button.ghost{background:transparent; color:var(--ink); border:1px solid var(--ink)}
+  .decision{border:2px solid var(--ink); padding:16px; margin:16px 0; background:var(--page)}
+  .decision h3{margin-top:0; display:flex; align-items:baseline; gap:8px}
+  .decision .opts{display:flex; flex-direction:column; gap:8px; margin:10px 0}
+  .decision label.opt{display:flex; gap:10px; align-items:flex-start; font-size:13px; cursor:pointer;
+                      padding:8px 10px; border:1px solid var(--line)}
+  .decision label.opt:has(input:checked){border-color:var(--ink); background:var(--panel)}
+  .decision input[type=radio]{margin-top:2px; accent-color:var(--ink)}
+  .decision textarea{width:100%; min-height:36px; font-family:var(--font); font-size:13px; padding:8px;
+                     border:1px solid var(--line); background:var(--page); color:var(--ink)}
+  .rec{font-size:10px; font-weight:500; letter-spacing:.04em; padding:1px 6px; background:var(--ink); color:var(--page)}
+  .edge{font-family:ui-monospace,Menlo,monospace; font-size:12px; background:var(--panel); padding:2px 6px}
+  pre{background:var(--panel); border:1px solid var(--line); padding:12px; font-size:12px; overflow-x:auto;
+      font-family:ui-monospace,Menlo,monospace; line-height:1.55; margin:10px 0}
+  #export{position:fixed; bottom:0; left:0; right:0; background:var(--ink); color:var(--page); padding:10px 16px;
+          display:flex; gap:16px; align-items:center; font-size:12px; z-index:9}
+  #export .n{font-weight:500}
+  #exportText{display:none}
+  .q-flag{color:var(--breach); font-weight:500}
+  ul{padding-left:20px; margin:8px 0}
+</style>
+</head>
+<body>
+<main>
+  <div class="ctrlbar">
+    <strong style="font-size:12px">DECISION-GRAPH CONVENTION · v1</strong>
+    <label><input type="checkbox" id="darkT"> dark</label>
+    <label>width <input type="range" id="widthT" min="480" max="1400" value="880" step="20">
+      <span id="widthV" class="mono">880</span></label>
+    <span class="sub">8 decisions · every control feeds the export block below</span>
+  </div>
+
+  <h1>Decision-graph edge convention — the audit, the proposal, and your 8 calls</h1>
+  <p class="meta">Fable session · 2026-07-21 · sources: all 4 ledgers read in full + 11 ADRs + the REVIEW-rule register ·
+  siblings: <span class="mono">docs/decisions/ADR-0012</span> (the draft convention) ·
+  <span class="mono">notes/_decision-graph-seed-2026-07-21.json</span> (the 88 audited edges) ·
+  <span class="mono">knowledge/_DECISION-GRAPH.md</span> (generated preview — live output, not a mock).
+  <strong>Nothing is inscribed into any ledger until you rule here.</strong></p>
+
+  <h2>§1 · What the audit found (30-second version)</h2>
+  <ul>
+    <li><strong>69 nodes, 88 edges</strong> once actually counted — the "~35 nodes" estimate was ~2× light.
+        Primary set: 20 R-D · 14 T-D · 6 B-D · 6 DV-D · 11 ADRs (+ 35 REVIEW rules, already generated into the
+        reconciliation register; a pre-T-D narrative era in TYPE; ~39 DataViz batch pins).</li>
+    <li><strong>Three edge vocabularies already live in the corpus</strong> — DataViz front-matter
+        (<span class="edge">refines/governs/gated_by</span>), ADR headers (<span class="edge">Extends/Relates</span>),
+        and the state-machine target's nine types. The convention reconciles them; it does not invent a fourth.</li>
+    <li><strong>The subtle cases the naive taxonomy misses:</strong> scoped supersession
+        (<span class="edge">R-D16 supersedes col25-011 scope=mono</span>) · claim-level supersession inside a live node
+        (<span class="edge">R-D11 supersedes R-D10 claim=fills-mode-stable</span> — R-D10's dark values stay ruled) ·
+        <strong>deliberate divergence</strong> (DEF-005 vs DEF-006 — your record says "do not reconcile"; the gate must
+        know that or it flags the pair forever).</li>
+    <li><strong>Two genuine conflicts surfaced</strong> — queued for you in §4, not auto-resolved.</li>
+    <li><strong>The generator + gate already run</strong> (selftest green; strict green with the 2 queued items
+        surfaced loudly). Wiring into the build waits on your acceptance.</li>
+  </ul>
+
+  <h2>§2 · The proposed taxonomy (7 types + qualifiers)</h2>
+  <table>
+    <tr><th>edge</th><th>meaning</th><th>real exemplar from the audit</th></tr>
+    <tr><td class="edge">supersedes(X)</td><td>X (or a claim/scope of it) no longer operative</td><td class="mono">R-D14 supersedes R-D13 (light values)</td></tr>
+    <tr><td class="edge">refines(X)</td><td>sharpens / extends / answers an open of X — X stays live</td><td class="mono">R-D6.A′ refines R-D6.A · ADR-0011 refines R-D15</td></tr>
+    <tr><td class="edge">subsumes(X)</td><td>absorbs X's content; X remains, pointing here</td><td class="mono">R-D6.A′ subsumes icon-015's amber exemption</td></tr>
+    <tr><td class="edge">bounds(X)</td><td>limits X's scope without killing it</td><td class="mono">R-D6.A′ bounds icon-011's "all instances"</td></tr>
+    <tr><td class="edge">conflicts-with(X, resolution=…)</td><td>recorded tension; resolution <strong>mandatory</strong>: ruled·interim·deferred·parked·queued·open</td><td class="mono">R-D3 ↔ dv-017, resolution=ruled (ref R-D5)</td></tr>
+    <tr><td class="edge">diverges-from(X, reason=…)</td><td><strong>deliberate</strong> divergence — never "reconciled", never flagged</td><td class="mono">DEF-006 ⇹ DEF-005 (box dims vs type inside)</td></tr>
+    <tr><td class="edge">verified-by(A)</td><td>evidence artifact / gate backing the node</td><td class="mono">T-D12 verified-by the 21-file pixel diff</td></tr>
+  </table>
+  <p class="sub">Qualifiers: <span class="edge">scope=</span> (theme/role-confined) · <span class="edge">claim=</span>
+  (the specific dead assertion, node stays live) · <span class="edge">ref=</span> (where resolved). Untyped
+  <span class="edge">relates</span> kept for weak links, no gate semantics. Gate: fails on
+  resolution=open/missing or an unresolvable target; <span class="edge">queued</span> = yours, surfaced not failed.</p>
+
+  <div class="decision" id="d1">
+    <h3>Decision 1 · Deliberate divergence: own edge type? <span class="chip">taxonomy</span></h3>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="d1" value="own-type" checked>
+        <span><strong>Own type <span class="edge">diverges-from</span></strong> <span class="rec">RECOMMENDED</span> —
+        self-documenting; calling it a "conflict (intentional)" invites the exact reconciliation your DEF-005/006 note forbids.</span></label>
+      <label class="opt"><input type="radio" name="d1" value="fold-in">
+        <span><strong>Fold into <span class="edge">conflicts-with(resolution=intentional)</span></strong> — one type fewer; the gate treats intentional as resolved.</span></label>
+    </div>
+    <textarea data-note="d1" placeholder="notes (optional)"></textarea>
+  </div>
+
+  <div class="decision" id="d2">
+    <h3>Decision 2 · The three existing vocabularies <span class="chip">taxonomy</span></h3>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="d2" value="normalise-in-view" checked>
+        <span><strong>Alias map, normalise in the generated view</strong> <span class="rec">RECOMMENDED</span> —
+        source files keep their native syntax (Extends→refines · gated_by→verified-by · governs→bounds).
+        ADR-0008's "diverge-but-keep-machine-mappable", applied to our own record.</span></label>
+      <label class="opt"><input type="radio" name="d2" value="rewrite">
+        <span><strong>Rewrite all sources to the one grammar</strong> — cleaner grep, but touches 12+ files and
+        breaks the DataViz front-matter prototype for no behavioural gain.</span></label>
+    </div>
+    <textarea data-note="d2" placeholder="notes (optional)"></textarea>
+  </div>
+
+  <div class="decision" id="d3">
+    <h3>Decision 3 · Node granularity <span class="chip">census</span></h3>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="d3" value="ids-plus-anchors" checked>
+        <span><strong>ID'd units are nodes; anchors minted at need</strong> <span class="rec">RECOMMENDED</span> —
+        pre-T-D era + batch pins get a lightweight anchor only when an edge actually lands on them
+        (<span class="edge">TYPE:2026-07-18:sat-ceiling</span>). No retro-renumbering. Don't over-build ahead of use.</span></label>
+      <label class="opt"><input type="radio" name="d3" value="retro-number">
+        <span><strong>Retro-number everything</strong> (T-D15+… for the pre-era, DV pins as DV-D07+) — uniform IDs, but
+        rewrites history's own naming and inflates the corpus ~2× for edges nothing points at.</span></label>
+    </div>
+    <textarea data-note="d3" placeholder="notes (optional)"></textarea>
+  </div>
+
+  <div class="decision" id="d4">
+    <h3>Decision 4 · Where edges live in a ledger entry <span class="chip">syntax</span></h3>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="d4" value="visible-line" checked>
+        <span><strong>Visible one-liner at entry end</strong> <span class="rec">RECOMMENDED</span> —
+        <span class="edge">Edges: supersedes(R-D8, claim=…) · verified-by(…)</span> — human-readable (the repo's stated
+        value), grep-stable, and the reader sees the graph without running anything.</span></label>
+      <label class="opt"><input type="radio" name="d4" value="html-comment">
+        <span><strong>HTML comment (invisible)</strong> — keeps prose clean, but hides exactly the relationships the
+        convention exists to surface.</span></label>
+    </div>
+    <textarea data-note="d4" placeholder="notes (optional)"></textarea>
+  </div>
+
+  <h2>§4 · The conflict queue — yours to rule <span class="chip q">QUEUED</span></h2>
+  <p>The audit's two genuine catches. These are exactly what the gate would have flagged automatically —
+  they're queued as <span class="edge">resolution=queued</span> and <span class="q-flag">nothing self-resolves</span>.</p>
+
+  <div class="decision" id="d5">
+    <h3>Decision 5 · C1 — R-D2's role-uniformity claim <span class="chip q">conflict</span></h3>
+    <p class="sub">R-D2 (07-18): <em>"red/green/blue hold the SAME value in both roles [background + glyph]; only amber
+    diverges."</em> Since then: success-glyph <span class="mono">#2B7E4F/#4A9568</span> ≠ success-background
+    <span class="mono">#5DAC7B/#43AD6F</span> (R-D18/R-D14), and error-glyph dark <span class="mono">#CC4333</span> ≠
+    error fill <span class="mono">#B92F1E</span> (R-D20). The uniformity claim died in practice but was never marked.</p>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="d5" value="confirm-superseded" checked>
+        <span><strong>Confirm superseded</strong> <span class="rec">RECOMMENDED</span> — record
+        <span class="edge">R-D14/R-D18/R-D20 supersedes(R-D2, claim=role-uniformity)</span>; the per-role split is the
+        evolved truth (glyphs need glyph-strength contrast, fills need salience — different jobs, different values).</span></label>
+      <label class="opt"><input type="radio" name="d5" value="genuine-conflict">
+        <span><strong>Genuine conflict — reopen</strong>: the divergence was unintended; green/error values should
+        re-unify per role. (Would reopen R-D18/R-D20 values.)</span></label>
+    </div>
+    <textarea data-note="d5" placeholder="notes (optional)"></textarea>
+  </div>
+
+  <div class="decision" id="d6">
+    <h3>Decision 6 · C2 — R-D7's "red = mode-stable, one value" <span class="chip q">conflict</span></h3>
+    <p class="sub">R-D7 (07-19) rules red mode-stable <span class="mono">#B92F1E</span>, "one value, light + dark".
+    R-D20 (07-21) sets <span class="mono">rag/error-glyph</span> per-mode <span class="mono">#B92F1E/#CC4333</span>.
+    Likely reading: R-D7 governs the status <strong>fill</strong>; the glyph role diverges — but that bound was never recorded.</p>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="d6" value="bound-to-fill" checked>
+        <span><strong>Bound R-D7 to the fill role</strong> <span class="rec">RECOMMENDED</span> — record
+        <span class="edge">R-D20 bounds(R-D7, scope=fill-role)</span>; glyph red may be per-mode
+        (<span class="mono">#CC4333</span> lifts glyph contrast on dark, per the R-D1 dark ruling it inherits).</span></label>
+      <label class="opt"><input type="radio" name="d6" value="glyph-mode-stable">
+        <span><strong>Glyph should also be mode-stable <span class="mono">#B92F1E</span></strong> — re-rule the R-D20
+        error-glyph dark value. (Note: <span class="mono">#B92F1E</span> on <span class="mono">#1A1A1A</span> is lower-contrast
+        than <span class="mono">#CC4333</span>; would want the tuner.)</span></label>
+    </div>
+    <textarea data-note="d6" placeholder="notes (optional)"></textarea>
+  </div>
+
+  <p class="sub">Also logged, no ruling needed: <strong>E1</strong> — GOOD-MORNING's standing list says "T-D1…T-D16";
+  the ledger holds T-D1..T-D14 (fixed at next capture refresh). The register's five known tensions (mot-007, ctkb-015,
+  type26-015, webf-032, ill-007) enter the graph with their existing resolution states — no re-litigation.</p>
+
+  <h2>§5 · Routing + wiring</h2>
+
+  <div class="decision" id="d7">
+    <h3>Decision 7 · Who inscribes the seed's 88 edges into the files <span class="chip">routing</span></h3>
+    <p class="sub">The audit resolved the open sub-call's premise: edge <em>judgment</em> wasn't mechanical (scoped/claim
+    supersession, divergence) — so it's already done, by Fable, in the seed. What's left is transcription.</p>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="d7" value="sonnet-inscribes" checked>
+        <span><strong>Sonnet inscribes from the seed; generator verifies</strong> <span class="rec">RECOMMENDED</span> —
+        mechanical transcription with a machine check (inscribed edges must diff-match the seed). Cheap, safe, next session.</span></label>
+      <label class="opt"><input type="radio" name="d7" value="fable-next">
+        <span><strong>Fable next session</strong> — if you want the same eyes on the inscription pass too.</span></label>
+      <label class="opt"><input type="radio" name="d7" value="fable-now">
+        <span><strong>This session continues into inscription</strong> — budget note: the audit + build consumed most of
+        this session's clean context; a fresh pass is the better-rested option.</span></label>
+    </div>
+    <textarea data-note="d7" placeholder="notes (optional)"></textarea>
+  </div>
+
+  <div class="decision" id="d8">
+    <h3>Decision 8 · Gate wiring <span class="chip">gates</span></h3>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="d8" value="advisory-now" checked>
+        <span><strong>Wire advisory into <span class="mono">_build_all.py</span> on acceptance</strong>
+        <span class="rec">RECOMMENDED</span> — ADR-0005 §5: advisory earns blocking by bite-test. Day-one green-and-honest
+        (the 2 queued conflicts surface, don't fail). Selftest already proves it bites on open/unresolved/orphan.</span></label>
+      <label class="opt"><input type="radio" name="d8" value="after-inscription">
+        <span><strong>Wait until inscription lands</strong> — gate only what's in the files, not the seed.</span></label>
+    </div>
+    <textarea data-note="d8" placeholder="notes (optional)"></textarea>
+  </div>
+
+  <h2>§6 · The generated view — live output, not a mock</h2>
+  <p class="sub">Snapshot of <span class="mono">knowledge/_DECISION-GRAPH.md</span> §① as generated from the seed just now.
+  Full file in the repo — lifecycle ledger (LIVE 53 · AMENDED 6 · DEAD 8 · OPEN 2), what-touches-this per node, validation rollup.</p>
+  <pre>★ QUEUED FOR DAVE (never auto-resolved)
+ 🟡 R-D20 conflicts-with R-D2 — claim: "red/green/blue hold the SAME value in both roles"
+ 🟡 R-D20 conflicts-with R-D7 — claim: "red = mode-stable, one value light+dark"
+
+Registered tensions with a recorded resolution (6)
+ R-D3 ↔ dv-017 — ruled (ref: R-D5)          ill-007 ↔ colour-standards-2026 — ruled
+ mot-007 ↔ canon-spring-physics — deferred   ctkb-015 ↔ app-inline-standard — deferred
+ type26-015 ↔ CHARTER.S4 — parked            webf-032 ↔ 4px-base-unit — interim
+
+Deliberate divergences (intentional — the gate never flags these)
+ DEF-006 ⇹ DEF-005 — box dims vs type inside; ruled deliberate 2026-07-18, do not reconcile
+
+Sample what-touches-this (the icon-011 question, answered by generation):
+ icon-011  ← R-D6.A′ —bounds→ ("all instances" live scope = meaning-exclusive glyph)
+ R-D10     ← R-D11 —supersedes (claim=fills-mode-stable; dark values stay ruled)
+ R-D2      ← R-D20 —conflicts-with (resolution=queued) · ← R-D3 —refines→</pre>
+
+  <div id="export">
+    <span class="n">EXPORT</span>
+    <span id="exportSummary">8 selections pending</span>
+    <button id="copyBtn">Copy ruling block</button>
+    <button class="ghost" id="previewBtn">Preview</button>
+  </div>
+  <pre id="exportText"></pre>
+</main>
+
+<script>
+(function(){
+  var dark=document.getElementById('darkT'), w=document.getElementById('widthT'), wv=document.getElementById('widthV');
+  dark.addEventListener('change',function(){document.body.classList.toggle('dark',dark.checked);});
+  w.addEventListener('input',function(){document.querySelector('main').style.setProperty('--w',w.value+'px');wv.textContent=w.value;});
+
+  var QUESTIONS=[
+    ['d1','Divergence type','own-type: keep `diverges-from` as its own edge type','fold-in: express as conflicts-with(resolution=intentional)'],
+    ['d2','Vocabulary','normalise-in-view: alias map, sources keep native syntax','rewrite: convert all sources to one grammar'],
+    ['d3','Granularity','ids-plus-anchors: ID’d units + anchors at need','retro-number: mint IDs for pre-era + pins'],
+    ['d4','Syntax home','visible-line: `Edges:` line at entry end','html-comment: invisible comment'],
+    ['d5','C1 R-D2 uniformity','confirm-superseded: record supersedes(R-D2, claim=role-uniformity)','genuine-conflict: reopen R-D18/R-D20 values'],
+    ['d6','C2 R-D7 scope','bound-to-fill: record bounds(R-D7, scope=fill-role)','glyph-mode-stable: re-rule error-glyph dark'],
+    ['d7','Inscription routing','sonnet-inscribes: Sonnet transcribes, generator verifies','fable-next / fable-now'],
+    ['d8','Gate wiring','advisory-now: wire advisory on acceptance','after-inscription: wait for the files']
+  ];
+  function collect(){
+    var out=['DECISION-GRAPH CONVENTION — RULINGS (sheet v1, 2026-07-21)','Paste-ready for the agent. Unchanged defaults = the recommendation.',''];
+    QUESTIONS.forEach(function(q){
+      var sel=document.querySelector('input[name="'+q[0]+'"]:checked');
+      var note=document.querySelector('textarea[data-note="'+q[0]+'"]');
+      out.push(q[0].toUpperCase()+' · '+q[1]+' = '+(sel?sel.value:'(unset)'));
+      if(note && note.value.trim()) out.push('   note: '+note.value.trim());
+    });
+    out.push('','Effect of defaults: ADR-0012 ACCEPTED as drafted; C1 recorded as superseded claim;');
+    out.push('C2 recorded as fill-role bound; seed inscription -> Sonnet w/ generator verification;');
+    out.push('gate wired advisory into _build_all.py.');
+    return out.join('\n');
+  }
+  function refresh(){
+    var n=document.querySelectorAll('.decision input:checked').length;
+    document.getElementById('exportSummary').textContent=n+'/8 selected · defaults = recommendations';
+    document.getElementById('exportText').textContent=collect();
+  }
+  document.querySelectorAll('.decision input,.decision textarea').forEach(function(el){
+    el.addEventListener('change',refresh); el.addEventListener('input',refresh);
+  });
+  document.getElementById('copyBtn').addEventListener('click',function(){
+    navigator.clipboard.writeText(collect()).then(function(){
+      document.getElementById('copyBtn').textContent='Copied ✓';
+      setTimeout(function(){document.getElementById('copyBtn').textContent='Copy ruling block';},1500);
+    });
+  });
+  document.getElementById('previewBtn').addEventListener('click',function(){
+    var p=document.getElementById('exportText');
+    p.style.display=(p.style.display==='block')?'none':'block';
+    if(p.style.display==='block'){refresh(); p.scrollIntoView({behavior:'smooth'});}
+  });
+  refresh();
+})();
+</script>
+</body>
+</html>

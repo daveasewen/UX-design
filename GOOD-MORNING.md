@@ -1,50 +1,52 @@
 # Good morning, Dave ☕
 
-> ## ★ LATEST — 2026-07-21 (good-morning): RAG sets COMPLETE (R-D20) + glyph rule sharpened (R-D6 A′) + the decision-graph tasked to Fable. READ THIS FIRST — it supersedes the block + names below.
-> **RENAME THIS CHAT →** `RAG error/warning/info completed (R-D20, 1a5bc94) + R-D6 A′ glyph-contrast sharpening (1bb09f9) + decision-graph audit tasked to Fable`
-> **TITLE THE NEXT (fresh) CHAT →** `Decision-graph: audit the record corpus → author the typed-edge convention (ADR-0007's unbuilt half) → generator + conflict gate [FABLE, cold]`
+> ## ★ LATEST — 2026-07-21 (afternoon, FABLE): decision-graph convention AUTHORED — ADR-0012 proposed, generator + conflict gate BUILT, 8 rulings + 2 conflicts wait on YOUR SHEET. READ THIS FIRST — it supersedes the block + names below.
+> **RENAME THIS CHAT →** `Decision-graph: corpus audited (69 nodes/88 edges) → ADR-0012 edge convention + generator/conflict gate built → 8 rulings + 2 conflicts queued on the sheet [FABLE]`
+> **TITLE THE NEXT (fresh) CHAT →** `Decision-graph: enact the sheet rulings → inscribe the seed edges (Sonnet, generator-verified) + wire the advisory gate`
 >
-> **★ NEXT SESSION = FABLE, cold.** The decision-graph edge convention (ADR-0007's unbuilt generator half). Brief is
-> in `_FUTURE-STATE.md` (★ Decision-graph section) + `_DECISION-HISTORY/2026-07-21-rag-completion-and-decision-graph.md`
-> (thread 3). Shape: audit the ~35 decision nodes (4 ledgers + 11 ADRs + REVIEW rules) whose cross-refs are prose →
-> author typed edges (`refines · supersedes · subsumes · bounds · conflicts-with · verified-by` + status + validation)
-> → build the generator (LIVE/DEAD/OPEN + reconciliation view + "what-touches-this" map) + a **conflict gate**. **Two
-> guardrails:** genuine conflicts the audit surfaces are **queued for Dave, never auto-resolved** (promotion is Dave's,
-> routing rule 2); open sub-call — Fable authors all edges vs stops at spec+gate and hands edge-authoring to Sonnet —
-> **decided after the audit**. Why Fable: big/high-stakes/hands-off, wrong taxonomy = corpus-wide rot. Why now: today's
-> icon-011↔R-D6↔R-D3 reconciliation was hand archaeology — the pain that justifies the build.
+> **★ DAVE'S ACTION FIRST: rule on `reviews/DECISION-GRAPH-CONVENTION-2026-07-21-v1.REVIEW.html`** — 8 decision
+> controls, **defaults = my recommendations**, live export block (copy the ruling block into the next chat).
+> The two that are genuinely yours: **C1** — R-D2 ruled "red/green/blue hold the SAME value in both roles", but
+> R-D18/R-D20 split glyph vs background values (recommend: confirm claim superseded); **C2** — R-D7 "red =
+> mode-stable, one value" vs R-D20's per-mode error-glyph `#B92F1E`/`#CC4333` (recommend: bound R-D7 to the
+> fill role). **Nothing is inscribed into any ledger and the gate is NOT wired until you rule.**
 >
-> **What landed today (2 commits, ahead 2, Dave to push via GitHub Desktop; build green 37/37):**
-> - **R-D20 (`1a5bc94`)** — error/warning/information sets completed, the R-D18 success move for the last three. Dave
->   ruled the message tints on a cloned live tuner: error `#F1E0DC`/`#2C120D` · warning `#F6E5CC`/`#3C2C13` (lifted the
->   dark to stay amber, not brown) · info `#D6E3EC`/`#092131`. Bare roles rebased off Legacy → track the glyph.
->   **6 Mono snippets swept**; **Notifications NOT converted** (Legacy ref, §A-AUTH — `driftAllow`-waived). Unblocks
->   Alert/Banner/Toast. Signal colours were already ruled and were NOT re-decided.
-> - **R-D6 A′ (`1bb09f9`)** — Dave sharpened glyph-contrast: the only coloured icons are RAG statuses, each labelled or
->   black/white-marked → colour is never the sole channel → **no status glyph is held to 4.5**; the 3:1 floor governs.
->   4.5's live domain = the meaning-exclusive glyph (arrow-as-datum). Bounds `{#icon-011}`; subsumes the R-D3 amber
->   exemption. Reconciled corpus-wide.
+> **What landed this session (FABLE, cold — the pinned decision-graph session; build green 37/37 untouched):**
+> - **The audit, done by reading not grepping:** 69 nodes / 88 edges (the "~35" estimate was ~2× light). Found
+>   THREE edge vocabularies already live (DataViz front-matter `refines/governs/gated_by` · ADR `Extends/Relates` ·
+>   target-doc §6) → reconciled via **alias map in the generated view; source files keep their syntax**.
+> - **ADR-0012 (proposed):** 7 edge types + `scope=`/`claim=` qualifiers (audit-forced: R-D16 supersedes
+>   col25-011 *for Mono only*; R-D11 kills only R-D10's mode-stable *claim* → **AMENDED** state) +
+>   **`diverges-from`** for recorded deliberate divergence (DEF-005⇹DEF-006 "do not reconcile" — without it the
+>   conflict gate would flag that pair forever).
+> - **`knowledge/_build_decision_graph.py`** — generator (LIVE/AMENDED/DEAD/OPEN · reconciliation view ·
+>   what-touches-this · validation rollup → `_DECISION-GRAPH.md`) + conflict gate (`--strict`). Selftest bites on
+>   unresolved/open/orphan; queued + divergence stay green. Seed: `notes/_decision-graph-seed-2026-07-21.json`.
+> - **Sub-call resolved by the audit:** the expensive half of edge-authoring is the JUDGMENT, and the audit did
+>   it (the seed). Inscription is mechanical + machine-verifiable → recommend **Sonnet transcribes, generator
+>   diffs against the seed** (Decision 7).
 >
-> **Still open (NOT this session's next):** theme-provenance gate stays **advisory** (58 foreign hexes / 67 files —
-> parked archived-file cleanup); `tabs/active` + `progress/complete` unruled (archived consumers); Notifications
-> Legacy-theme retag (future build). **Spine flag (small, separate):** `text/on-success` = `color/black` should be
-> `color/mono/4` (`#1A1A1A`) digital black.
+> **Carried open (unchanged from the morning):** theme-provenance gate advisory (58 hexes / 67 files, parked
+> cleanup); `tabs/active` + `progress/complete` unruled; Notifications Legacy retag; `text/on-success` →
+> `color/mono/4` spine flag. Errata E1 (GOOD-MORNING's "T-D1…T-D16" vs real T-D1..14) **fixed this capture**.
 
 ---
 
-*Briefing — refreshed 2026-07-21 ~15:20 BST (date from `date`), session
-**"RAG completion (R-D20) + glyph-contrast sharpening (R-D6 A′) + decision-graph tasked to Fable"** — opened as a
-good-morning; ran the RAG-completion tuner (Dave ruled the three message tints), then Dave sharpened the glyph
-rule, then desk research on the record structure itself. **SOLO / self-conductor.** All names + the full landed
-list are in the ★ LATEST block above — that block is authoritative; the sections below are the standing
-orientation (§A) + this-session detail (§B) + queue (§C).*
+*Briefing — refreshed 2026-07-21 ~15:50 BST (date from `date`), session
+**"Decision-graph: audit → ADR-0012 convention → generator + conflict gate"** — the pinned FABLE cold session,
+run exactly to its brief; reflect-back guardrail held end-to-end (no ledger inscription, gate unwired).
+**SOLO / self-conductor.** All names + the full landed list are in the ★ LATEST block above — that block is
+authoritative; the sections below are the standing orientation (§A) + this-session detail (§B) + queue (§C).*
 
 ## ⬛ DO THIS FIRST
 
-> The two names are at the top (★ LATEST). **Next session opens on FABLE, cold** — the decision-graph edge
-> convention. Everything a cold reader needs to start it is in `_FUTURE-STATE.md` (★ Decision-graph) +
-> `_DECISION-HISTORY/2026-07-21-rag-completion-and-decision-graph.md` (thread 3). Don't start it inside a loaded
-> session — it's a fresh-context audit (routing rule 6).
+> The two names are at the top (★ LATEST). **Dave's action gates everything: rule on the 8-control sheet**
+> `reviews/DECISION-GRAPH-CONVENTION-2026-07-21-v1.REVIEW.html` (defaults = recommendations; the export block
+> emits a paste-ready ruling set for the next chat). **Next session (Sonnet-able):** enact the rulings —
+> inscribe the seed's edges into ledger entries/ADR headers (generator verifies the diff against
+> `notes/_decision-graph-seed-2026-07-21.json`), wire `_build_decision_graph.py` advisory into `_build_all.py`,
+> add the edge-at-ruling-time step to the capture ritual. Turnkey context: ADR-0012 + the seed + dossier
+> `_DECISION-HISTORY/2026-07-21-decision-graph-edge-convention.md`.
 
 *Standing practice: every handoff carries both names — retrospective + forward. Step 4b in
 `_RUNBOOK-capture-ritual.md`.*
@@ -166,8 +168,9 @@ python3 knowledge/_build_all.py     # 34 steps, all gates, exits non-zero on any
 
 ## The other standing documents (REACHABILITY-GATED by `_validate_standing_instructions.py` STAND-002 — keep every one referenced here)
 `_STANDARDS.md` (★ the standards hub — 3-tier tokens, WCAG floor, authoring rules) · `AGENTS.md` · `MODEL-ROUTING.md` · `_FUTURE-STATE.md` · `_DECISION-HISTORY/README.md` ·
-`knowledge/_proforma/_PROFORMA-RULES.md` · `knowledge/_proforma/_TYPE-DECISIONS.md` (T-D1…T-D16) ·
-`knowledge/_proforma/_RAG-DECISIONS.md` (R-D1…R-D19; R-D19 = red is themed) · `knowledge/_STYLE-PROVENANCE.md` (theme-era record) · `knowledge/_proforma/_DATAVIZ-DECISIONS.md` ·
+`knowledge/_proforma/_PROFORMA-RULES.md` · `knowledge/_proforma/_TYPE-DECISIONS.md` (T-D1…T-D14) ·
+`knowledge/_proforma/_RAG-DECISIONS.md` (R-D1…R-D20; R-D19 = red is themed) · `knowledge/_STYLE-PROVENANCE.md` (theme-era record) · `knowledge/_proforma/_DATAVIZ-DECISIONS.md` ·
+`docs/decisions/ADR-0012-decision-graph-edge-convention.md` (PROPOSED — the edge convention; seed `notes/_decision-graph-seed-2026-07-21.json`, generator `knowledge/_build_decision_graph.py`) ·
 `knowledge/_proforma/_BUTTON-DECISIONS.md` (B-D1…B-D5; Mono primary + state-styling, ADR-0009) ·
 `docs/decisions/ADR-0009-state-styling-architecture.md` · `docs/decisions/ADR-0010-token-schema-nullable-flex-slots.md` · `docs/decisions/ADR-0011-four-theme-token-architecture.md` ·
 `knowledge/_DS-IMPROVEMENTS.md` · `knowledge/_ICON-GAPS.md` · `knowledge/_ASSERTIONS.md` +
@@ -198,46 +201,45 @@ TTFs to `~/.fonts` + `fc-cache -f`; CSS `font-family:"HSBC_MtUnivers_Latin"`. Fu
 
 ---
 
-# §B · THIS SESSION (2026-07-21, good-morning — "RAG completion + glyph sharpening + the decision-graph question")
+# §B · THIS SESSION (2026-07-21 afternoon, FABLE cold — "the decision-graph edge convention")
 
-*Full narrative arc (why/how, all three threads): `_DECISION-HISTORY/2026-07-21-rag-completion-and-decision-graph.md`.*
+*Full narrative arc (why/how, five findings): `_DECISION-HISTORY/2026-07-21-decision-graph-edge-convention.md`.
+The morning session's arc (R-D20 + R-D6 A′): `_DECISION-HISTORY/2026-07-21-rag-completion-and-decision-graph.md`.*
 
-## What LANDED (commits `1a5bc94` + `1bb09f9`, build green 37/37, ahead 2 — Dave to push)
-Opened as a good-morning; Dave green-lit the queued RAG-completion tuner, then two follow-on questions turned it into
-three threads.
-- **✅ R-D20 — error/warning/information sets completed** (the R-D18 success move for the last three). CONSULT +
-  token survey first; cloned the success tuner to three sets (glyph + fill locked, only the message **tint** open).
-  Dave ruled the tints on the live controller: error `#F1E0DC`/`#2C120D` · warning `#F6E5CC`/`#3C2C13` (lifted the
-  dark seed to keep it **amber, not brown** — the one judgement the tuner surfaced) · info `#D6E3EC`/`#092131`. Bare
-  roles rebased off Legacy → track the glyph; `$alias` dropped on the tints. **6 Mono snippets swept**; **Notifications
-  NOT converted** — it's a Legacy reference (§A-AUTH), so its RAG vars are `driftAllow`-waived, not swept. Unblocks
-  Alert/Banner/Toast.
-- **✅ R-D6 A′ — glyph-contrast sharpening.** Dave's instinct was right (it's R-D6 Ruling A verbatim): the only
-  coloured icons are RAG statuses, each labelled or black/white-marked, so colour is never the sole channel → no
-  status glyph is held to 4.5; the 3:1 floor governs. 4.5's live domain = the meaning-exclusive glyph. Bounded
-  `{#icon-011}`, subsumed the R-D3 amber roundel-leg exemption, reconciled corpus-wide (also folded into `{#icon-015}`
-  so `_RECONCILIATION.md` regenerates it).
-- **✅ Decision-graph desk research → tasked to Fable.** The manual icon-011↔R-D6↔R-D3 reconciliation exposed that
-  records cross-reference in prose. Research confirmed ADR-0007 already decided the fix (temporal decision-graph);
-  the unbuilt half = the typed-edge convention + generator + conflict gate. Rejected replicate (rot) + graph-DB
-  (tool-temptation). Pinned as the next (Fable, cold) session — see ★ LATEST + `_FUTURE-STATE.md`.
+## What LANDED (new files only — no ledger/canon edits; build green 37/37 untouched)
+The pinned Fable session, run to its brief: **audit → convention → build**, reflect-back guardrail held.
+- **✅ The audit** — all 4 ledgers read in full + 11 ADRs + the REVIEW register: **69 nodes / 88 edges**
+  (census corrected from "~35"). Regex found 38 candidate lines; the read found 88 real edges — verbless prose
+  relations are invisible to pattern matching, which is why inscription verifies against the seed, never re-derives.
+- **✅ ADR-0012 (proposed)** — 7 edge types + `scope=`/`claim=` qualifiers + **AMENDED** lifecycle state +
+  `diverges-from`; alias map reconciles the three pre-existing vocabularies without rewriting sources.
+- **✅ `_build_decision_graph.py` + seed + rulings sheet** — generator + `--strict` conflict gate (selftest green,
+  runs clean: 2 conflicts queued, 1 divergence intentional); `notes/_decision-graph-seed-2026-07-21.json`;
+  `reviews/DECISION-GRAPH-CONVENTION-2026-07-21-v1.html` (+ .REVIEW) with 8 controls + export block.
+- **🟡 Queued for Dave:** C1 (R-D2 role-uniformity claim vs R-D18/R-D20 splits) · C2 (R-D7 mode-stable scope vs
+  R-D20 per-mode error-glyph). Errata E1 (this file's T-D range) fixed in this capture.
 
 ## Process notes
-Both runbooks (`_RUNBOOK-git-commit.md`, this capture ritual) run by the book — no reconstructing from hooks. One small
-catch: tried to hand-edit the **generated** `_RECONCILIATION.md`; the rebuild wiped it — correct mechanism is to edit the
-REVIEW-tagged rule and let it regenerate.
+CONSULT ran but its lexicon is design-layer (it expanded the query to "dataviz") — the decisions layer has no
+consult surface, which is itself evidence for the build; folding the graph JSON into the consult index is queued.
+Survey-before-build caught the DataViz front-matter prototype + the ADR header proto-edges before any invention.
+Capture ritual + git runbook read and followed, not reconstructed.
 
 ---
 
 # §C · QUEUE
 
-## 1. ★ NEXT (FABLE, cold) — the decision-graph edge convention (ADR-0007's unbuilt half)
-Audit the ~35 decision nodes (4 ledgers + 11 ADRs + REVIEW rules) whose cross-refs are prose → author typed edges
-(`refines · supersedes · subsumes · bounds · conflicts-with · verified-by` + `status` + `validation`) → build the
-generator (LIVE/DEAD/OPEN + **reconciliation view** + "what-touches-this" map) + a **conflict gate**. **Guardrails:**
-conflicts the audit surfaces are **queued for Dave, never auto-resolved** (routing rule 2); open sub-call — Fable
-authors all edges vs stops at spec+gate and hands edge-authoring to Sonnet — **decided after the audit**. Turnkey brief:
-`_FUTURE-STATE.md` (★ Decision-graph) + dossier thread 3 + `docs/decisions/ADR-0007` + `notes/_STATE-MACHINE-TARGET.md`.
+## 0. ★ DAVE — rule on the decision-graph sheet
+`reviews/DECISION-GRAPH-CONVENTION-2026-07-21-v1.REVIEW.html`: 8 controls, defaults = recommendations, export
+block emits the paste-ready ruling set. C1 + C2 are the two genuinely-yours calls; the rest confirm defaults.
+
+## 1. ★ NEXT SESSION (Sonnet-able, after the sheet) — enact the decision-graph rulings
+Inscribe the seed's edges (`notes/_decision-graph-seed-2026-07-21.json`) into ledger entries + ADR headers per
+the accepted grammar; **verify by generator diff against the seed** (never re-derive); flip ADR-0012 proposed→
+accepted; wire `_build_decision_graph.py` **advisory** into `_build_all.py` (37→38 steps); add the
+edge-at-ruling-time step to `_RUNBOOK-capture-ritual.md` step 4; record C1/C2 resolutions per Dave's picks;
+fold the graph JSON into the consult index (kills the "CONSULT is design-layer-only" gap). Horizon (separate):
+ADR-0007 part 2 — generate `_LIVE-STATE` LIVE/DEAD blocks from the same parse.
 
 ## 2. RAG follow-ons (not blocked on Dave; Sonnet-able)
 Seed the Legacy error/amber/navy hexes into `LEGACY_ONLY_HEXES` (needs a Notifications waiver in the leak gate) + flip
@@ -252,9 +254,8 @@ ruled). **T9 secure entry** awaits review. **Sutherland field test** (ADR-0008 #
 Full-review backlog (`_REVIEW-SIGNOFF.md`). Parked (`_FUTURE-STATE`): broader colour/theming, Apollo Labs tuners, bulk
 type-binding, `icon-015` mark-vs-roundel mechanisation (supercharge).
 
-> **COMMIT STATE.** **HEAD `1bb09f9` — ahead 2, Dave to push via GitHub Desktop** (+ this capture commit, which will be
-> ahead 3). Today: `1a5bc94` (R-D20 — tokens + 6 snippets swept + Notifications waived) · `1bb09f9` (R-D6 A′ — glyph
-> rule + reconciliation). Build green 37/37; `_LIVE-STATE-CHECK.md` 2 pre-existing info notes (not blocking). **Next
-> session model: FABLE, cold** — the decision-graph audit is big/high-stakes/hands-off (routing rule 6: judgment/audit
-> runs cold + on the decide tier; here the decide tier is Fable, not Opus, per Dave). Set Fable to its **highest
-> reasoning level** — this is an architecture + corpus-audit job where depth pays.
+> **COMMIT STATE.** Morning commits (`1a5bc94` · `1bb09f9` · capture `b9aef79`) are **PUSHED** (verified level with
+> origin at this session's open). This session adds ONE capture commit (new files: ADR-0012 + seed + generator +
+> sheet pair + dossier + these spine refreshes) — **ahead 1, Dave to push via GitHub Desktop.** Build green 37/37
+> (graph generator deliberately NOT wired — Decision 8 on the sheet). **Next session model: Sonnet** (enactment is
+> mechanical + generator-verified), opened AFTER Dave's sheet rulings; paste the sheet's export block into it.
