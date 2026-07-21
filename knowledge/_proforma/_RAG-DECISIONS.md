@@ -5,6 +5,41 @@ session that produced it. Sibling to `_TYPE-DECISIONS.md` / `_DATAVIZ-DECISIONS.
 
 ---
 
+## R-D20 — error / warning / information sets COMPLETED; the last Legacy RAG hexes evicted from Mono (2026-07-20). Source: Dave, on the live tuner.
+Ruled the open tint slots on `reviews/RAG-ERROR-WARNING-INFO-2026-07-20-v1.html` (the R-D18 success tuner cloned
+to three sets: OKLCh sliders + live label-contrast + salience-ramp guard). This closes the R-D17 debt for the
+three non-success sets exactly the way R-D18 closed it for success.
+
+**The signal colours were already ruled and were NOT re-decided** — breach red `#B92F1E` (R-D7), watch amber
+`#F0B13A` fill / `#C58900` glyph (R-D3/R-D11), info blue `#5F92B9` fill / `#306EC6`·`#2674DC` glyph (R-D10/R-D14).
+Only two things per set were open, and both are now settled:
+
+- **Message TINT (the panel background), re-hued off Legacy toward the Mono signal hue:**
+  | set | tint light (was Legacy) | tint dark (was Legacy) | label contrast |
+  |---|---|---|---|
+  | error | **`#F1E0DC`** (was `#F9F2F3`) | **`#2C120D`** (was `#260005`) | 13.62 / 16.77 |
+  | warning | **`#F6E5CC`** (was `#FFF8EA`) | **`#3C2C13`** (was `#221701`) | 14.09 / 12.88 |
+  | information | **`#D6E3EC`** (was `#EBEFF4`) | **`#092131`** (was `#000D1B`) | 13.31 / 15.80 |
+  Dave lifted the warning-dark seed (`#261700`→`#3C2C13`) to keep it reading **amber, not brown** — the one
+  judgement call the tuner surfaced. `$alias` dropped on all three tint tokens (they carry their own Mono
+  values, matching the `-background`/`-glyph`/`success-tint` direct-value pattern).
+
+- **Bare ROLE rebased off its Legacy alias onto the glyph** (the on-page indicator role), as `rag/success` did:
+  `rag/error` → `rag/error-glyph` (`#B92F1E`/`#CC4333`); `rag/warning` → `rag/warning-glyph` (`#C58900`);
+  `rag/information` → `rag/information-glyph` (`#306EC6`/`#2674DC`). Legacy red/amber/navy are Apollo Legacy's
+  alone (R-D19).
+
+**Effect.** Six Mono snippets that bound the bare roles were swept to match (Account-card, Dropdown,
+Input-fields, List-items, Selection-controls, Status-indicator) — parallel to the seven de-tealed for success.
+**Notifications was NOT converted** (§A-AUTH DO-NOT-CONVERT): it is an Apollo **Legacy reference** — its
+`#A8000B`/`#FFBB33`/`#305A85` are legitimate Legacy hexes, so its RAG vars are `driftAllow`-waived in the snippet
+gate, with the proper long-term fix being a retag to the Legacy theme (future build). Build green 37/37.
+
+**Unblocks Alert / Banner / Toast** (§C·3). **Still deferred:** `tabs/active` + `progress/complete` (unruled Mono
+values, R-D19 — their consumer components are archived). The theme-provenance gate stays **advisory** — flipping
+it to blocking still needs the broader foreign-hex cleanup (58 hexes / 67 files remain, down from 68), which is
+the parked archived-file relocation, not this ruling.
+
 ## R-D19 — Red belongs to a THEME, not to Mono: Legacy red vs the Mono status red (2026-07-20). Source: Dave.
 **Ruling (verbatim intent):** *"these reds are valid for Legacy only — we have a new red for Mono and it is
 only used for status and RAG."* Reflected back and confirmed: red-as-**action/navigation** is an **Apollo

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RAG error / warning / information — live tuner (complete the sets, R-D18 clone)</title>
+<style>
+  :root{
+    --font:"Univers Next for HSBC","Helvetica Neue",Arial,sans-serif;
+    --page:#FFFFFF; --ink:#1A1A1A; --mut:#626262; --line:#E1E1E1; --card:#F7F7F7;
+  }
+  body.dark{ --page:#1A1A1A; --ink:#FAFAFA; --mut:#9D9D9D; --line:#333333; --card:#232323; }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:var(--font);background:var(--page);color:var(--ink);
+    -webkit-font-smoothing:antialiased;transition:background .18s,color .18s;}
+  header{position:sticky;top:0;z-index:5;background:var(--page);border-bottom:1px solid var(--line);
+    padding:16px 24px;display:flex;gap:16px;align-items:baseline;flex-wrap:wrap;}
+  header h1{font-size:18px;margin:0;font-weight:500;}
+  header .sub{font-size:12px;color:var(--mut);max-width:720px;line-height:1.5;}
+  button.tgl{font:inherit;font-size:12px;padding:7px 12px;border:1px solid var(--line);
+    background:transparent;color:var(--ink);cursor:pointer;border-radius:0;}
+  .tabs{display:flex;gap:0;border-bottom:1px solid var(--line);position:sticky;top:57px;z-index:4;background:var(--page);}
+  .tabs button{font:inherit;font-size:13px;font-weight:500;padding:10px 20px;border:0;border-bottom:2px solid transparent;
+    background:transparent;color:var(--mut);cursor:pointer;}
+  .tabs button.on{color:var(--ink);border-bottom-color:var(--ink);}
+  main{display:grid;grid-template-columns:minmax(340px,430px) 1fr;gap:0;align-items:start;}
+  @media(max-width:900px){ main{grid-template-columns:1fr;} }
+  .controls{padding:20px 24px;border-right:1px solid var(--line);}
+  .preview{padding:20px 24px;}
+  h2{font-size:13px;margin:0 0 4px;font-weight:500;}
+  .slot{border:1px solid var(--line);padding:14px;margin-bottom:14px;background:var(--card);}
+  .slot .top{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+  .sw{width:34px;height:34px;border:1px solid var(--line);flex:0 0 auto;}
+  .slot .name{font-size:13px;font-weight:500;}
+  .slot .hex{font-size:12px;color:var(--mut);font-variant-numeric:tabular-nums;margin-left:auto;}
+  .locked{opacity:.74;}
+  .locked .name .tag{color:var(--mut);font-weight:400;font-size:11px;}
+  .row{display:grid;grid-template-columns:16px 1fr 46px;gap:8px;align-items:center;font-size:11px;margin:5px 0;}
+  .row label{color:var(--mut);}
+  input[type=range]{width:100%;accent-color:var(--ink);}
+  .val{text-align:right;font-variant-numeric:tabular-nums;color:var(--mut);}
+  .reads{margin-top:8px;font-size:11px;display:flex;flex-direction:column;gap:3px;}
+  .read{display:flex;justify-content:space-between;gap:8px;}
+  .badge{font-size:10px;padding:1px 6px;border-radius:2px;font-weight:600;white-space:nowrap;}
+  .pass{background:#1f7a44;color:#fff;} .fail{background:#b3261e;color:#fff;}
+  .warn{background:#F0B13A;color:#000;}
+  .ctx{border:1px solid var(--line);padding:20px;margin-bottom:16px;}
+  .ctx h3{font-size:11px;color:var(--mut);margin:0 0 12px;font-weight:400;}
+  .ind{display:flex;align-items:center;gap:10px;margin:10px 0;font-size:14px;}
+  .dot{width:12px;height:12px;border-radius:50%;flex:0 0 auto;}
+  .gl{width:20px;height:20px;flex:0 0 auto;}
+  .tintpanel{padding:12px 14px;margin:10px 0;font-size:13px;border-left:3px solid;line-height:1.5;}
+  .fillbadge{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 14px;font-size:13px;font-weight:500;}
+  .salience{border:1px solid var(--line);padding:12px 14px;font-size:12px;margin-top:6px;}
+  .salience .bar{height:8px;margin:4px 0;}
+  textarea{width:100%;height:220px;font-family:ui-monospace,monospace;font-size:11px;
+    border:1px solid var(--line);background:var(--page);color:var(--ink);padding:10px;}
+  .note{font-size:11px;color:var(--mut);margin-top:6px;line-height:1.5;}
+  code{font-family:ui-monospace,monospace;font-size:11px;background:var(--card);padding:1px 4px;}
+</style>
+</head>
+<body>
+<header>
+  <h1>RAG error / warning / information — live tuner</h1>
+  <button class="tgl" id="theme" type="button">◐ Toggle light / dark</button>
+  <span class="sub">Same move R-D18 made for success, for the last three sets. The <b>signal colours are already ruled</b> —
+    breach red <code>#B92F1E</code> (R-D7), watch amber <code>#F0B13A</code>/glyph <code>#C58900</code> (R-D3/R-D11),
+    info blue <code>#5F92B9</code> (R-D10). <b>Don't re-decide those.</b> The one genuinely open slot per set is the
+    <b>message tint</b> (the panel background — currently still Legacy). Tune the two tints, confirm the locked glyph/fill
+    read right, then copy the export back to me and I'll rebind the bare role + re-hue the tint off Legacy.</span>
+</header>
+<div class="tabs" id="tabs"></div>
+<main>
+  <section class="controls" id="controls"></section>
+  <section class="preview">
+    <h2>Live preview — <span id="setName"></span>, current mode</h2>
+    <div class="ctx">
+      <h3>On-page indicator (glyph) — ruled Mono value · needs ≥3:1 on the page</h3>
+      <div class="ind"><span class="dot" id="pDot"></span>
+        <svg class="gl" id="pGl" viewBox="0 0 20 20"><path id="pGlP" fill="none" stroke-width="2.2" stroke-linecap="square"/></svg>
+        <span id="pGlLabel"></span></div>
+      <div class="reads" id="rInd"></div>
+    </div>
+    <div class="ctx">
+      <h3>Message tint panel — THE OPEN SLOT · label on tint needs ≥4.5:1</h3>
+      <div class="tintpanel" id="pTint"></div>
+      <div class="reads" id="rTint"></div>
+    </div>
+    <div class="ctx">
+      <h3>Status fill (locked) — ruled Mono signal colour</h3>
+      <span class="fillbadge" id="pFill"></span>
+      <div class="reads" id="rFill"></div>
+    </div>
+    <div class="ctx">
+      <h3>Salience ramp — most-severe should shout loudest on this ground (red › amber › blue, R-D9/R-D11)</h3>
+      <div class="salience" id="pSal"></div>
+    </div>
+    <h2 style="margin-top:18px">Export — all three sets (settled values)</h2>
+    <textarea id="export" readonly></textarea>
+    <div class="note">Bare roles <code>rag/error</code> / <code>rag/warning</code> / <code>rag/information</code> rebase off their
+      Legacy alias to track the <b>glyph</b> (the on-page indicator role) — exactly as <code>rag/success</code> did. Fills + glyphs
+      are locked (already ruled). Paste this back and I'll apply the tokens, then flip <code>_validate_theme_provenance.py</code> to blocking.</div>
+  </section>
+</main>
+<script>
+// ---------- OKLCh <-> sRGB ----------
+function srgb2lin(c){return c<=0.04045?c/12.92:Math.pow((c+0.055)/1.055,2.4);}
+function lin2srgb(c){return c<=0.0031308?12.92*c:1.055*Math.pow(c,1/2.4)-0.055;}
+function lin2oklab(r,g,b){
+  const l=Math.cbrt(0.4122214708*r+0.5363325363*g+0.0514459929*b);
+  const m=Math.cbrt(0.2119034982*r+0.6806995451*g+0.1073969566*b);
+  const s=Math.cbrt(0.0883024619*r+0.2817188376*g+0.6299787005*b);
+  return [0.2104542553*l+0.7936177850*m-0.0040720468*s,
+          1.9779984951*l-2.4285922050*m+0.4505937099*s,
+          0.0259040371*l+0.7827717662*m-0.8086757660*s];
+}
+function oklab2lin(L,a,b){
+  const l=Math.pow(L+0.3963377774*a+0.2158037573*b,3);
+  const m=Math.pow(L-0.1055613458*a-0.0638541728*b,3);
+  const s=Math.pow(L-0.0894841775*a-1.2914855480*b,3);
+  return [ 4.0767416621*l-3.3077115913*m+0.2309699292*s,
+          -1.2684380046*l+2.6097574011*m-0.3413193965*s,
+          -0.0041960863*l-0.7034186147*m+1.7076147010*s];
+}
+function hex2rgb(h){h=h.replace('#','');return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)];}
+function rgb2hex(r,g,b){return '#'+[r,g,b].map(x=>Math.max(0,Math.min(255,Math.round(x))).toString(16).padStart(2,'0')).join('').toUpperCase();}
+function hex2oklch(hex){
+  const [r,g,b]=hex2rgb(hex).map(x=>srgb2lin(x/255));
+  const [L,a,bb]=lin2oklab(r,g,b);
+  const C=Math.sqrt(a*a+bb*bb); let H=Math.atan2(bb,a)*180/Math.PI; if(H<0)H+=360;
+  return {L,C,H};
+}
+function inGamut(r,g,b){return r>=-0.0001&&r<=1.0001&&g>=-0.0001&&g<=1.0001&&b>=-0.0001&&b<=1.0001;}
+function oklch2hex(L,C,H){
+  const hr=H*Math.PI/180; let a=C*Math.cos(hr), b=C*Math.sin(hr);
+  let rgb=oklab2lin(L,a,b);
+  if(!inGamut(...rgb)){
+    let clo=0,chi=C;
+    for(let i=0;i<24;i++){const cm=(clo+chi)/2;const aa=cm*Math.cos(hr),bb=cm*Math.sin(hr);
+      if(inGamut(...oklab2lin(L,aa,bb)))clo=cm;else chi=cm;}
+    a=clo*Math.cos(hr);b=clo*Math.sin(hr);rgb=oklab2lin(L,a,b);
+  }
+  return rgb2hex(...rgb.map(x=>lin2srgb(x)*255));
+}
+function lum(hex){const [r,g,b]=hex2rgb(hex).map(x=>{x/=255;return x<=0.03928?x/12.92:Math.pow((x+0.055)/1.055,2.4);});return 0.2126*r+0.7152*g+0.0722*b;}
+function contrast(a,b){const la=lum(a),lb=lum(b);const hi=Math.max(la,lb),lo=Math.min(la,lb);return (hi+0.05)/(lo+0.05);}
+function badge(r,need){const v=r.toFixed(2)+':1';const ok=r>=need;return `<span class="badge ${ok?'pass':'fail'}">${ok?'PASS':'FAIL'} ${v}</span>`;}
+
+// glyph SVG paths per set
+const GLYPHS={
+  error:'M10 3l7 12H3z M10 8v3.2 M10 12.8v.2',       // triangle-ish; simple bang below
+  warning:'M10 3l7 12H3z M10 8v3.2 M10 12.8v.2',
+  information:'M10 3a7 7 0 100 14 7 7 0 000-14z'
+};
+// Use simple, legible marks: error = ✕ , warning = ! , information = i
+const MARK={error:'M5 5l10 10 M15 5L5 15', warning:'M10 4v8 M10 15v.2', information:'M10 5v.2 M10 9v6'};
+
+// ---------- three sets ----------
+// glyph + fill = LOCKED ruled Mono values. tint = TUNABLE (the open slot).
+const SETS={
+  error:{
+    label:'Error', title:'Couldn’t send — check your connection and try again.',
+    glyphL:'#B92F1E', glyphD:'#CC4333',                 // R-D10 breach red
+    fillL:'#B92F1E',  fillD:'#B92F1E', fillText:'#FFFFFF', fillLabel:'Error',   // white text (breach, type26-013)
+    tintL:{hex:'#FAE2DD'}, tintD:{hex:'#2C120D'},        // proposed seeds, re-hued off Legacy #F9F2F3 / #260005
+    legacyTintL:'#F9F2F3', legacyTintD:'#260005', legacyRole:'#A8000B / #DB0011'
+  },
+  warning:{
+    label:'Warning', title:'Your session expires in 2 minutes.',
+    glyphL:'#C58900', glyphD:'#C58900',                 // R-D3 amber glyph
+    fillL:'#F0B13A',  fillD:'#F0B13A', fillText:'#000000', fillLabel:'Warning', // black text (amber carve-out)
+    tintL:{hex:'#F3E6D4'}, tintD:{hex:'#261700'},        // re-hued off Legacy #FFF8EA / #221701
+    legacyTintL:'#FFF8EA', legacyTintD:'#221701', legacyRole:'#FFBB33'
+  },
+  information:{
+    label:'Information', title:'Your statement for June is ready to download.',
+    glyphL:'#306EC6', glyphD:'#2674DC',                 // R-D14 glyph blue
+    fillL:'#7DABCD',  fillD:'#5F92B9', fillText:'#000000', fillLabel:'Info',    // black text (pastel blue)
+    tintL:{hex:'#D8EBF9'}, tintD:{hex:'#041D2E'},        // re-hued off Legacy #EBEFF4 / #000D1B
+    legacyTintL:'#EBEFF4', legacyTintD:'#000D1B', legacyRole:'#305A85 / #4587A7'
+  }
+};
+// hydrate tint OKLCh
+for(const k in SETS){for(const t of ['tintL','tintD']){const o=hex2oklch(SETS[k][t].hex);SETS[k][t].L=o.L;SETS[k][t].C=o.C;SETS[k][t].H=o.H;}}
+let CUR='error';
+
+function tabs(){
+  const t=document.getElementById('tabs');t.innerHTML='';
+  for(const k in SETS){const b=document.createElement('button');b.textContent=SETS[k].label;
+    b.className=(k===CUR?'on':'');b.onclick=()=>{CUR=k;tabs();ctrls();render();};t.appendChild(b);}
+}
+function lockedSlot(name,tag,hex){
+  return `<div class="slot locked"><div class="top"><span class="sw" style="background:${hex}"></span>
+    <span class="name">${name} <span class="tag">· ${tag}</span></span><span class="hex">${hex}</span></div></div>`;
+}
+function ctrls(){
+  const S=SETS[CUR];const c=document.getElementById('controls');
+  let html=`<h2 style="margin-bottom:12px">${S.label} — slots</h2>`;
+  html+=lockedSlot('glyph · light','ruled R-D10',S.glyphL);
+  html+=lockedSlot('glyph · dark','ruled R-D10',S.glyphD);
+  html+=lockedSlot('fill · light','ruled',S.fillL);
+  html+=lockedSlot('fill · dark','ruled',S.fillD);
+  for(const t of ['tintL','tintD']){const s=S[t];const nm=t==='tintL'?'tint · light':'tint · dark';
+    html+=`<div class="slot"><div class="top"><span class="sw" id="sw_${t}"></span>
+      <span class="name">${nm} <span class="tag" style="color:var(--mut);font-weight:400;font-size:11px">· OPEN</span></span><span class="hex" id="hex_${t}"></span></div>
+      <div class="row"><label>L</label><input type="range" id="L_${t}" min="0" max="1" step="0.001" value="${s.L}"><span class="val" id="Lv_${t}"></span></div>
+      <div class="row"><label>C</label><input type="range" id="C_${t}" min="0" max="0.1" step="0.001" value="${s.C}"><span class="val" id="Cv_${t}"></span></div>
+      <div class="row"><label>H</label><input type="range" id="H_${t}" min="0" max="360" step="1" value="${s.H}"><span class="val" id="Hv_${t}"></span></div>
+      <div class="note">was Legacy <code>${t==='tintL'?S.legacyTintL:S.legacyTintD}</code></div></div>`;
+  }
+  c.innerHTML=html;
+  for(const t of ['tintL','tintD']){['L','C','H'].forEach(ax=>{
+    document.getElementById(ax+'_'+t).addEventListener('input',e=>{const s=SETS[CUR][t];
+      s[ax]=parseFloat(e.target.value);s.hex=oklch2hex(s.L,s.C,s.H);render();});});}
+}
+function render(){
+  const S=SETS[CUR];
+  const dark=document.body.classList.contains('dark');
+  const page=dark?'#1A1A1A':'#FFFFFF';
+  const glyph=dark?S.glyphD:S.glyphL;
+  const tintSlot=dark?S.tintD:S.tintL;
+  const tint=tintSlot.hex;
+  const fill=dark?S.fillD:S.fillL;
+  const tintText=dark?'#FAFAFA':'#1A1A1A';
+  document.getElementById('setName').textContent=S.label;
+  // swatches
+  for(const t of ['tintL','tintD']){const s=S[t];
+    const sw=document.getElementById('sw_'+t);if(sw)sw.style.background=s.hex;
+    const hx=document.getElementById('hex_'+t);if(hx)hx.textContent=s.hex;
+    document.getElementById('Lv_'+t).textContent=s.L.toFixed(3);
+    document.getElementById('Cv_'+t).textContent=s.C.toFixed(3);
+    document.getElementById('Hv_'+t).textContent=Math.round(s.H);
+  }
+  // indicator
+  document.getElementById('pDot').style.background=glyph;
+  const p=document.getElementById('pGlP');p.setAttribute('d',MARK[CUR]);p.setAttribute('stroke',glyph);
+  document.getElementById('pGlLabel').textContent=S.label+' indicator';
+  const cg=contrast(glyph,page);
+  document.getElementById('rInd').innerHTML=`<div class="read"><span>glyph ${glyph} on page ${page}</span>${badge(cg,3)}</div>`;
+  // tint panel
+  const pt=document.getElementById('pTint');pt.style.background=tint;pt.style.color=tintText;pt.style.borderLeftColor=glyph;
+  pt.innerHTML=`<b>${S.label}.</b> ${S.title}`;
+  const ct=contrast(tintText,tint);
+  document.getElementById('rTint').innerHTML=`<div class="read"><span>label ${tintText} on tint ${tint}</span>${badge(ct,4.5)}</div>`;
+  // fill
+  const pf=document.getElementById('pFill');pf.style.background=fill;pf.style.color=S.fillText;pf.textContent=S.fillLabel;
+  const cf=contrast(S.fillText,fill);
+  document.getElementById('rFill').innerHTML=`<div class="read"><span>${S.fillText==='#FFFFFF'?'white':'black'} label on fill ${fill}</span>${badge(cf,4.5)}</div>`;
+  // salience: red vs amber vs blue fills on this ground
+  const redF=dark?SETS.error.fillD:SETS.error.fillL;
+  const ambF=dark?SETS.warning.fillD:SETS.warning.fillL;
+  const bluF=dark?SETS.information.fillD:SETS.information.fillL;
+  const cr=contrast(redF,page),ca=contrast(ambF,page),cbl=contrast(bluF,page);
+  const ramp=(cr>=ca)&&(ca>=cbl);
+  document.getElementById('pSal').innerHTML=
+    `<div class="bar" style="background:${redF}"></div><div class="read"><span>error red ${redF} vs page</span><b>${cr.toFixed(2)}:1</b></div>`+
+    `<div class="bar" style="background:${ambF}"></div><div class="read"><span>warning amber ${ambF} vs page</span><b>${ca.toFixed(2)}:1</b></div>`+
+    `<div class="bar" style="background:${bluF}"></div><div class="read"><span>info blue ${bluF} vs page</span><b>${cbl.toFixed(2)}:1</b></div>`+
+    `<div class="read" style="margin-top:6px"><span>red ≥ amber ≥ blue?</span><span class="badge ${ramp?'pass':'warn'}">${ramp?'YES — ramp holds':'NO — order breaks on this ground'}</span></div>`+
+    `<div class="note" style="margin-top:6px">Note: on the LIGHT page the breach-red fill is the QUIETEST cell by pure contrast (R-D11) — that’s ground-relative and expected; the alarm reads by hue, not luminance. Judge by eye.</div>`;
+  // export
+  const exp={};
+  for(const k in SETS){const s=SETS[k];exp['rag/'+k+'-tint']={light:s.tintL.hex,dark:s.tintD.hex};}
+  for(const k in SETS){const s=SETS[k];exp['rag/'+k+' (bare role → glyph)']={light:s.glyphL,dark:s.glyphD};}
+  exp._locked_confirm={
+    'error-glyph':{light:SETS.error.glyphL,dark:SETS.error.glyphD},
+    'warning-glyph':{light:SETS.warning.glyphL,dark:SETS.warning.glyphD},
+    'information-glyph':{light:SETS.information.glyphL,dark:SETS.information.glyphD}
+  };
+  exp._tint_label_contrast={};
+  for(const k in SETS){const s=SETS[k];exp._tint_label_contrast[k]={
+    light:contrast('#1A1A1A',s.tintL.hex).toFixed(2),dark:contrast('#FAFAFA',s.tintD.hex).toFixed(2)};}
+  document.getElementById('export').value=JSON.stringify(exp,null,2);
+}
+document.getElementById('theme').addEventListener('click',()=>{document.body.classList.toggle('dark');render();});
+tabs();ctrls();render();
+</script>
+</body>
+</html>

@@ -2,28 +2,18 @@
 
 Scanned **67** Mono-designated library files (snippets, _proforma, _review). Foreign-theme hexes checked: #00847F, #A8000B, #DB0011.
 
-**68** hardcoded foreign-theme colour(s) found in live CSS (comments + token-manifests excluded).
+**58** hardcoded foreign-theme colour(s) found in live CSS (comments + token-manifests excluded).
 
 | Area | File | Hex | ×  | Belongs to |
 |---|---|---|---|---|
-| snippets | Dropdown.reference.html | `#A8000B` | 1 | Apollo Legacy: Legacy error red (light) |
-| snippets | Dropdown.reference.html | `#DB0011` | 1 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
 | snippets | Tabs.reference.html | `#DB0011` | 2 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
 | snippets | Modals.reference.html | `#DB0011` | 2 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
 | snippets | Progress-tracker.reference.html | `#DB0011` | 2 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
-| snippets | Selection-controls.reference.html | `#A8000B` | 1 | Apollo Legacy: Legacy error red (light) |
-| snippets | Selection-controls.reference.html | `#DB0011` | 1 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
-| snippets | Status-indicator.reference.html | `#A8000B` | 1 | Apollo Legacy: Legacy error red (light) |
-| snippets | Status-indicator.reference.html | `#DB0011` | 1 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
 | snippets | Notifications.reference.html | `#A8000B` | 2 | Apollo Legacy: Legacy error red (light) |
 | snippets | Links.reference.html | `#DB0011` | 2 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
 | snippets | Hero.reference.html | `#DB0011` | 4 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
-| snippets | List-items.reference.html | `#A8000B` | 1 | Apollo Legacy: Legacy error red (light) |
-| snippets | List-items.reference.html | `#DB0011` | 1 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
 | snippets | Cards.reference.html | `#DB0011` | 2 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
 | snippets | Action-bar.reference.html | `#DB0011` | 2 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
-| snippets | Input-fields.reference.html | `#A8000B` | 1 | Apollo Legacy: Legacy error red (light) |
-| snippets | Input-fields.reference.html | `#DB0011` | 1 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
 | snippets | Badge.reference.html | `#DB0011` | 2 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
 | snippets | Confirmation.reference.html | `#DB0011` | 2 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
 | snippets | Video-player.reference.html | `#DB0011` | 1 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |

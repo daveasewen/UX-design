@@ -6,7 +6,7 @@
 gate (check 3, bite-tested). This advisory continues as the exhaustive/state×theme
 watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 
-**Headline: 0 declared dead-zone · 42 exhaustive (upper bound) · 0 roundel fails (<3:1) · 0 mark fails (<4.5 vs roundel, light).**
+**Headline: 0 declared dead-zone · 42 exhaustive (upper bound) · 0 roundel fails (<3:1) · 2 mark fails (<4.5 vs roundel, light).**
 
 ## 1. Declared icon pairs (the concrete promotion cost)
 
@@ -289,28 +289,28 @@ _(173 of 440 exhaustive combos already clear 4.5:1; 32 transparent/composite sur
 |---|---|---|---|---|---|
 | Confirmation.reference.html | rag/success | background/default | light | 5.0 | pass-3(roundel) |
 | Confirmation.reference.html | rag/success | background/default | dark | 4.8 | pass-3(roundel) |
-| Input-fields.reference.html | rag/error | background/default | light | 7.87 | pass-3(roundel) |
-| Input-fields.reference.html | rag/error | background/default | dark | 3.33 | pass-3(roundel) |
+| Input-fields.reference.html | rag/error | background/default | light | 6.02 | pass-3(roundel) |
+| Input-fields.reference.html | rag/error | background/default | dark | 3.66 | pass-3(roundel) |
 | Input-fields.reference.html | rag/success | background/default | light | 5.0 | pass-3(roundel) |
 | Input-fields.reference.html | rag/success | background/default | dark | 4.8 | pass-3(roundel) |
 | List-items.reference.html | rag/success | rag/success-tint | light | 4.11 | pass-3(roundel) |
 | List-items.reference.html | rag/success | rag/success-tint | dark | 4.26 | pass-3(roundel) |
-| List-items.reference.html | rag/error | rag/error-tint | light | 7.13 | pass-3(roundel) |
-| List-items.reference.html | rag/error | rag/error-tint | dark | 3.71 | pass-3(roundel) |
-| List-items.reference.html | rag/information | rag/information-tint | light | 6.21 | pass-3(roundel) |
-| List-items.reference.html | rag/information | rag/information-tint | dark | 4.92 | pass-3(roundel) |
+| List-items.reference.html | rag/error | rag/error-tint | light | 4.71 | pass-3(roundel) |
+| List-items.reference.html | rag/error | rag/error-tint | dark | 3.68 | pass-3(roundel) |
+| List-items.reference.html | rag/information | rag/information-tint | light | 3.85 | pass-3(roundel) |
+| List-items.reference.html | rag/information | rag/information-tint | dark | 3.62 | pass-3(roundel) |
 | Reorder.reference.html | rag/success | background/default | light | 5.0 | pass-3(roundel) |
 | Reorder.reference.html | rag/success | background/default | dark | 4.8 | pass-3(roundel) |
 | Status-indicator.reference.html | rag/success | background/default | light | 5.0 | pass-3(roundel) |
 | Status-indicator.reference.html | rag/success | background/default | dark | 4.8 | pass-3(roundel) |
-| Status-indicator.reference.html | rag/error | background/default | light | 7.87 | pass-3(roundel) |
-| Status-indicator.reference.html | rag/error | background/default | dark | 3.33 | pass-3(roundel) |
-| Status-indicator.reference.html | rag/information | background/default | light | 7.17 | pass-3(roundel) |
-| Status-indicator.reference.html | rag/information | background/default | dark | 4.37 | pass-3(roundel) |
+| Status-indicator.reference.html | rag/error | background/default | light | 6.02 | pass-3(roundel) |
+| Status-indicator.reference.html | rag/error | background/default | dark | 3.66 | pass-3(roundel) |
+| Status-indicator.reference.html | rag/information | background/default | light | 5.03 | pass-3(roundel) |
+| Status-indicator.reference.html | rag/information | background/default | dark | 3.82 | pass-3(roundel) |
 | Status-indicator.reference.html | rag/neutral | background/default | light | 3.95 | pass-3(roundel) |
 | Status-indicator.reference.html | rag/neutral | background/default | dark | 17.4 | pass-3(roundel) |
-| (policy audit — exhaustive) | rag/warning | background/default | light | 1.69 | exempt(amber convention) |
-| (policy audit — exhaustive) | rag/warning | rag/warning-tint | light | 1.6 | exempt(amber convention) |
+| (policy audit — exhaustive) | rag/warning | background/default | light | 3.02 | pass-3(roundel) |
+| (policy audit — exhaustive) | rag/warning | rag/warning-tint | light | 2.44 | exempt(amber convention) |
 
 ## 4. Internal mark vs roundel fill (≥4.5:1, ruled policy; dark = white roundel + black mark)
 
@@ -319,15 +319,15 @@ _(173 of 440 exhaustive combos already clear 4.5:1; 32 transparent/composite sur
 | rag/success roundel | tint-knockout | light | 4.11 | FAIL-mark<4.5 |
 | rag/success roundel | ● white mark | light | 5.0 | pass-4.5 |
 | rag/success roundel | #333 mark | light | 2.53 | FAIL-mark<4.5 |
-| rag/error roundel | ● tint-knockout | light | 7.13 | pass-4.5 |
-| rag/error roundel | white mark | light | 7.87 | pass-4.5 |
-| rag/error roundel | #333 mark | light | 1.61 | FAIL-mark<4.5 |
-| rag/warning roundel | tint-knockout | light | 1.6 | FAIL-mark<4.5 |
-| rag/warning roundel | white mark | light | 1.69 | FAIL-mark<4.5 |
-| rag/warning roundel | ● #333 mark | light | 7.47 | pass-4.5 |
-| rag/information roundel | ● tint-knockout | light | 6.21 | pass-4.5 |
-| rag/information roundel | white mark | light | 7.17 | pass-4.5 |
-| rag/information roundel | #333 mark | light | 1.76 | FAIL-mark<4.5 |
+| rag/error roundel | ● tint-knockout | light | 4.71 | pass-4.5 |
+| rag/error roundel | white mark | light | 6.02 | pass-4.5 |
+| rag/error roundel | #333 mark | light | 2.1 | FAIL-mark<4.5 |
+| rag/warning roundel | tint-knockout | light | 2.44 | FAIL-mark<4.5 |
+| rag/warning roundel | white mark | light | 3.02 | FAIL-mark<4.5 |
+| rag/warning roundel | ● #333 mark | light | 4.18 | FAIL-mark<4.5 |
+| rag/information roundel | ● tint-knockout | light | 3.85 | FAIL-mark<4.5 |
+| rag/information roundel | white mark | light | 5.03 | pass-4.5 |
+| rag/information roundel | #333 mark | light | 2.51 | FAIL-mark<4.5 |
 | WHITE roundel (policy dark) | ● BLACK mark | dark | 21.0 | pass-4.5 |
 
 Policy (Dave, 2026-07-02 eve): roundel = indicator (3:1); internal mark = small-text
