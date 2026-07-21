@@ -62,8 +62,14 @@ guidelines) + **tappable area**.
 
 - **Icons require 4.5:1 contrast in all instances** — "like text", labelled or not.
   [BLOCKING-derivable — ⚠ gate delta: our icon checks target 3:1 (WCAG 1.4.11); the brand
-  standard is stricter. Enters advisory until Dave rules on promotion — see Findings]
-  {#icon-011}
+  standard is stricter. Enters advisory until Dave rules on promotion — see Findings.
+  ⚠ SCOPE (R-D6 Ruling A′, Dave 2026-07-21): this stark "all instances" reading is bounded to
+  the **meaning-exclusive glyph** (an arrow whose direction is the datum, or a coloured mark
+  whose only sibling is a bare number). The only coloured icons in Apollo are the RAG statuses,
+  and each is labelled or drawn with a black/white internal mark that passes on its own — none
+  makes colour the sole carrier of meaning — so status roundels/dots answer to the 3:1 indicator
+  floor (`{#icon-015}`: icons 4.5 · pictograms 3 · chart/RAG indicators 3), not 4.5. See
+  `_proforma/_RAG-DECISIONS.md` R-D6.] {#icon-011}
 - Code: icon **with** label → `alt=""` (null); icon **without** label → `alt` = icon name.
   [BLOCKING-derivable — alt-attribute pattern check on snippets] {#icon-012}
 - RAG-coloured notification/status icons: maintain contrast against actual background;
@@ -119,9 +125,13 @@ guidelines) + **tappable area**.
    (Dave: "icons alone should have the small-text equivalent contrast at least") —
    declared icon/* pairs held to 4.5:1 in `_validate_snippets.py` check 3, dead-zone
    bite-tested (icon/default on data-vis blue-3, 3.66/3.45), suite 17/17, sweep cost 0.
-   Pictograms + RAG graphic indicators stay 3:1 (roundel policy). Still open: (b)
-   mechanise the mark-vs-roundel check once marks are tokenised. [REVIEW — mark
-   tokenisation, deferred to supercharge] {#icon-015}
+   Pictograms + RAG graphic indicators stay 3:1 (roundel policy). ✅ PRINCIPLE SHARPENED
+   2026-07-21 (Dave, R-D6 Ruling A′): the only coloured icons in Apollo are RAG statuses,
+   each labelled or drawn with a passing black/white internal mark — colour is never the sole
+   channel — so the 4.5 rule's live domain is the meaning-exclusive glyph (arrow-as-datum,
+   coloured mark beside a bare number). This subsumes the amber roundel-leg exemption and bounds
+   `{#icon-011}`'s "all instances" reading. Still open: (b) mechanise the mark-vs-roundel check
+   once marks are tokenised. [REVIEW — mark tokenisation, deferred to supercharge] {#icon-015}
 2. **Size floor tension.** Site: minimum 16px (thicker-weight set below that). Toolkit
    tokens: `xsmall = 12px`. Consistent only if xsmall implies the thicker-weight set —
    toolkit doesn't say. 📌 RULED (Dave, desk pickup): the full 12–48 range is permitted

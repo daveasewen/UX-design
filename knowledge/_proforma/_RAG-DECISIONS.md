@@ -397,6 +397,31 @@ carry the meaning that it matters, like arrows for instance."*
 Refines R-D3 "belt & braces" and `{#icon-013}`. **Gate-able:** the check is "does a text sibling carry the
 status word?" — flag lone/meaning-carrying coloured glyphs below 4.5. Not yet built.
 
+### Ruling A′ — sharpened: in THIS system no status glyph ever carries meaning by colour alone (2026-07-21). Source: Dave.
+Dave, reflecting on the amber `#C58900` passing at 3:1: *"the only coloured icons are the statuses, and the
+warning roundel has a black exclamation mark — even in this case there is enough contrast. So the only glyphs
+that need to conform to the contrast rule are ones where the meaning is carried exclusively by the glyph, like
+an arrow and a figure."* Reflected back and confirmed firm.
+
+> **THE SHARPENING.** The **only** coloured glyphs in Apollo are the **RAG statuses**, and every one is either
+> (a) sat beside a **meaning-carrying label**, or (b) drawn as a **black mark on the coloured fill** (the
+> warning roundel's `!` — black on `#F0B13A` = **11.06:1**, ample). Neither ever makes **colour** the sole
+> carrier of meaning. Therefore **no status glyph is held to 4.5** — the 3:1 non-text floor governs the coloured
+> roundel/dot, and the internal mark passes on its own (black-on-amber, white-on-dark). The 4.5 text rule's
+> **entire live domain** is the **meaning-exclusive glyph**: an arrow whose direction *is* the datum, or a
+> coloured mark whose only sibling is a bare number/value (dataviz deltas). **Guard kept in the wording:** this
+> holds *because* a status ships with a label **or** a passing black/white mark — a bare coloured dot with
+> neither would fail use-of-colour (1.4.1) independent of contrast. So the operative test is "labelled **or**
+> contrast-passing mark," which every status already satisfies.
+
+**Resolves the standing tension** between `{#icon-011}` ("icons 4.5 in all instances, labelled or not") and this
+ruling: `{#icon-011}` reads stark, but its **real live scope** is the meaning-exclusive glyph — coloured icons
+= statuses = always labelled or black/white-marked, so they answer to the 3:1 indicator floor per the roundel
+policy (`{#icon-015}` "icons 4.5 · pictograms 3 · chart/RAG indicators 3"). Also subsumes the **R-D3 amber
+roundel-leg exemption** (2026-07-02): the `#F0B13A`-on-white 1.9:1 "failure" was never a real fail because the
+colour is not the channel — this ruling states the principle the exemption was reaching for. Scope note added to
+`{#icon-011}`; reconciliation logged.
+
 ### Ruling B — halation is a THIRD design axis, beyond hue and intensity — RULED
 Dave: bloom/shimmer is real and *"another dimension to this"*; *"thin lines and colour dance, thicker ones
 bloom… that's the halation effect."* Confirmed as evidence for Band A / a saturation ceiling.
