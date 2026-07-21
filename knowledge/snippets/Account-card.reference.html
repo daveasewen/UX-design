@@ -20,10 +20,13 @@
   [data-theme="light"]{
     --surface:#FFFFFF; --border:#E1E1E1; --text:#1A1A1A; --muted:#1A1A1A; --page:#FFFFFF;
     --tag-border:#808080; --ok:#2B7E4F; --ok-tint:#DCEDE3; --warn:#C58900; --warn-tint:#F6E5CC;
+    /* shape — semantic radius tier (ADR-0010): card shell=surface, tag/chip atoms=indicator (matches canon census) */
+    --border-radius-surface:0; --border-radius-indicator:0;
   }
   [data-theme="dark"]{
     --surface:#1F1F1F; --border:#808080; --text:#FFFFFF; --muted:#FFFFFF; --page:#1A1A1A;
     --tag-border:#808080; --ok:#4A9568; --ok-tint:#12291D; --warn:#C58900; --warn-tint:#3C2C13;
+    --border-radius-surface:0; --border-radius-indicator:0;
   }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
@@ -33,7 +36,7 @@
   .stateLabel{/* type: t-cm-legal (bound in canon/type.css - T-D9/T-D12) */ color:var(--muted); margin:1.5rem 0 .5rem;}
 
   /* ---- Account card ---- */
-  .account-card{ background:var(--surface); border:1px solid var(--border); border-radius:0; padding:16px;
+  .account-card{ background:var(--surface); border:1px solid var(--border); border-radius:var(--border-radius-surface); padding:16px;
     display:flex; flex-direction:column; gap:8px; max-width:380px; }
   .account-card .label{ font:400 14px/1.3 var(--font); color:var(--muted); }
   .account-card .balance{ font:400 32px/1.1 var(--font); color:var(--text); font-variant-numeric:tabular-nums; letter-spacing:-.01em; }
@@ -41,10 +44,10 @@
 
   /* ---- reused Tags atom (SQUARE outline; from Tags.reference) ---- */
   .tag{ display:inline-flex; align-items:center; height:24px; padding:0 8px; border:1px solid var(--tag-border);
-    border-radius:0; font:400 12px/1 var(--font); color:var(--text); white-space:nowrap; }
+    border-radius:var(--border-radius-indicator); font:400 12px/1 var(--font); color:var(--text); white-space:nowrap; }
 
   /* ---- reused Status-indicator chip (RAG tint; from Status-indicator.reference) ---- */
-  .chip{ display:inline-flex; align-items:center; gap:8px; height:24px; padding:0 8px; border-radius:0;
+  .chip{ display:inline-flex; align-items:center; gap:8px; height:24px; padding:0 8px; border-radius:var(--border-radius-indicator);
     /* type: t-cm-legal + .t-cm-slot (bound in canon/type.css - T-D9/T-D12) */ color:var(--text); white-space:nowrap; }
   .chip .dot{ width:8px; height:8px; border-radius:50%; flex:none; }
   .chip.ok{ background:var(--ok-tint); }   .chip.ok .dot{ background:var(--ok); }
@@ -91,6 +94,8 @@
     "vars": {
       "--surface": "tertiary/background/default",
       "--border": "border/subtle",
+      "--border-radius-surface": "border-radius/surface",
+      "--border-radius-indicator": "border-radius/indicator",
       "--text": "text/default",
       "--muted": "text/secondary",
       "--tag-border": "form/border/default",

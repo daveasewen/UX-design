@@ -5,8 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tags — reference implementation (gated)</title>
 <!--
-  CANONICAL REFERENCE for Tags (gated). SQUARE chips — Tags are NOT an angular-rule exemption
-  (only Badge + Avatar are), so border-radius:0. Outlined (form/border/default) on a transparent
+  CANONICAL REFERENCE for Tags (gated). SQUARE chips in Mono — Tags are NOT an angular-rule
+  exemption (only Badge + Avatar are). Corners bind the CONTROL radius role (border-radius/control
+  — Mono resolves 0; themes flex it, ADR-0010; control keeps tags in lock-step with the
+  Selection-controls chips they are shape-kin to). Outlined (form/border/default) on a transparent
   fill — avoids the deprecated non-interactive surface tokens the meta still binds (rebind noted).
   Variants: static, dismissible (× is a real focusable button), and link.
 
@@ -25,8 +27,9 @@
 :is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 
   :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:220ms cubic-bezier(.4,0,.2,1); }
-  [data-theme="light"]{ --border:#808080; --text:#1A1A1A; --icon:#1A1A1A; --hover:#F0F0F0; --focus:#305A85; --page:#FFFFFF; }
-  [data-theme="dark"]{ --border:#808080; --text:#FFFFFF; --icon:#FFFFFF; --hover:#232323; --focus:#4587A7; --page:#1A1A1A; }
+  /* shape — semantic radius tier (ADR-0010 flex slots): the chip binds the CONTROL role. */
+  [data-theme="light"]{ --border:#808080; --text:#1A1A1A; --icon:#1A1A1A; --hover:#F0F0F0; --focus:#305A85; --page:#FFFFFF; --border-radius-control:0; }
+  [data-theme="dark"]{ --border:#808080; --text:#FFFFFF; --icon:#FFFFFF; --hover:#232323; --focus:#4587A7; --page:#1A1A1A; --border-radius-control:0; }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text);
     -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
@@ -39,7 +42,7 @@
   .row{display:flex; gap:12px; flex-wrap:wrap; align-items:center;}
 
   /* em-based chip — every dimension tracks the label font-size (scales with type) */
-  .tag{display:inline-flex; align-items:center; gap:.46em; height:2.15em; padding:0 .77em; border:1px solid var(--border); border-radius:0; /* SQUARE */
+  .tag{display:inline-flex; align-items:center; gap:.46em; height:2.15em; padding:0 .77em; border:1px solid var(--border); border-radius:var(--border-radius-control); /* CONTROL role — Mono square */
     background:transparent; color:var(--text); font:400 14px/1 var(--font); max-width:100%; white-space:nowrap; overflow:hidden;
     transition:max-width var(--ease), opacity var(--ease), margin var(--ease), padding var(--ease), border-width var(--ease), background 140ms ease, transform 150ms cubic-bezier(.4,0,.2,1);}
   /* label overflow:VISIBLE (was hidden) — keeps cap/alphabetic icon alignment AND stops descenders
@@ -114,7 +117,7 @@
   <script type="application/json" id="token-manifest">
   {
     "component": "Tags",
-    "vars": { "--focus": "focus/ring", "--border": "form/border/default", "--text": "text/default", "--icon": "icon/default", "--hover": "form/background/hover", "--page": "background/default" },
+    "vars": { "--focus": "focus/ring", "--border": "form/border/default", "--text": "text/default", "--icon": "icon/default", "--hover": "form/background/hover", "--page": "background/default", "--border-radius-control": "border-radius/control" },
     "contrastPairs": [
       { "fg": "text/default", "bg": "background/default", "context": "text" },
       { "fg": "form/border/default", "bg": "background/default", "context": "ui" }

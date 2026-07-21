@@ -23,9 +23,12 @@
     --spring:300ms cubic-bezier(.5,1.6,.4,1);   /* motion/easing/spring + motion/duration/spring — grow/release */
     --press:90ms cubic-bezier(0,0,.58,1); }      /* motion/duration/press + motion/easing/out — snappy depress */
   [data-theme="light"]{ --surface:#FFFFFF; --border:#E1E1E1; --page:#FFFFFF;
-    --pri:#DB0011; --pri-hover:#BA1110; --on-pri:#FFFFFF; --sec:#000000; --sec-hover:#1A1A1A; --label-invert:#FFFFFF; --text:#1A1A1A; --ter-border:#000000; --ter-hover:#F0F0F0; }
+    --pri:#1A1A1A; --pri-hover:#626262; --on-pri:#FFFFFF; --sec:#000000; --sec-hover:#1A1A1A; --label-invert:#FFFFFF; --text:#1A1A1A; --ter-border:#000000; --ter-hover:#F0F0F0;
+    /* shape — semantic radius tier (ADR-0010): bar buttons=control */
+    --border-radius-control:0; }
   [data-theme="dark"]{ --surface:#1F1F1F; --border:#808080; --page:#1A1A1A;
-    --pri:#DB0011; --pri-hover:#BA1110; --on-pri:#FFFFFF; --sec:#FFFFFF; --sec-hover:#F0F0F0; --label-invert:#333333; --text:#FFFFFF; --ter-border:#808080; --ter-hover:#232323; }
+    --pri:#FAFAFA; --pri-hover:#B7B7B7; --on-pri:#333333; --sec:#FFFFFF; --sec-hover:#F0F0F0; --label-invert:#333333; --text:#FFFFFF; --ter-border:#808080; --ter-hover:#232323;
+    --border-radius-control:0; }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
   .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
@@ -40,7 +43,7 @@
   .action-bar{ display:flex; gap:12px; justify-content:flex-end; align-items:center; padding:12px 16px; background:var(--surface); border-top:1px solid var(--border); }
   .action-bar--sticky{ position:sticky; bottom:0; }   /* pin to the bottom of a scrolling flow */
   /* buttons = the Button atom (reused); scale-physics through SCALE only, brand stays flat/angular */
-  .action-bar .btn{ height:44px; min-width:96px; padding:0 20px; border:0; border-radius:0; cursor:pointer; /* type: t-cm-button + .t-cm-slot (bound in canon/type.css - T-D9/T-D12) */
+  .action-bar .btn{ height:44px; min-width:96px; padding:0 20px; border:0; border-radius:var(--border-radius-control); cursor:pointer; /* type: t-cm-button + .t-cm-slot (bound in canon/type.css - T-D9/T-D12) */
     display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:background var(--ease), transform var(--spring), filter var(--press); }
   .action-bar .btn:focus-visible{ outline:2px solid var(--text); outline-offset:2px; }
   .action-bar .btn:hover{ transform:scale(1.04); }                                  /* grow toward the cursor */
@@ -92,19 +95,20 @@
       "--surface": "tertiary/background/default",
       "--border": "border/subtle",
       "--page": "background/default",
-      "--pri": "primary/background/default",
-      "--pri-hover": "primary/background/hover",
-      "--on-pri": "text/reverse",
+      "--pri": "button/primary/background/default",
+      "--pri-hover": "button/primary/background/hover",
+      "--on-pri": "button/primary/label/default",
       "--sec": "secondary/background/default",
       "--sec-hover": "secondary/background/hover",
       "--label-invert": "text/on-inverse",
       "--text": "text/default",
       "--ter-border": "tertiary/border/default",
-      "--ter-hover": "tertiary/background/hover"
+      "--ter-hover": "tertiary/background/hover",
+      "--border-radius-control": "border-radius/control"
     },
     "contrastPairs": [
-      { "fg": "text/reverse", "bg": "primary/background/default", "context": "text" },
-      { "fg": "text/reverse", "bg": "primary/background/hover", "context": "text" },
+      { "fg": "button/primary/label/default", "bg": "button/primary/background/default", "context": "text" },
+      { "fg": "button/primary/label/default", "bg": "button/primary/background/hover", "context": "text" },
       { "fg": "text/on-inverse", "bg": "secondary/background/default", "context": "text" },
       { "fg": "text/on-inverse", "bg": "secondary/background/hover", "context": "text" },
       { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },

@@ -193,3 +193,20 @@ The overlay's own chrome (5px/14px padding, extra `.stateLabel`) then reds the b
 the copy to `knowledge/_review/` (no gate scans there), as done for `Amount-display`. **Proper fix:** teach
 `out_path()` to send snippet sources to `_review/` too (like `_proforma/` sources), OR have the grid +
 blast-radius globs exclude `*.REVIEW.html`. Low effort; do next time `_make_review` is touched.
+
+## ds-007 — R-D17 leak gate misses snippet-RESOLVED Legacy values (2026-07-21, Phase-1 worker B finding 6)
+Three Mono surfaces (Action-bar/Modals/Confirmation mirrors + Links arrow + Tabs active) resolved base
+`#DB0011` via still-bound pre-ladder roles (`primary/background/default`, `tabs/active`) and the leak gate
+stayed green — its scope evidently covers hardcoded hexes/override sets, not what a snippet's bound role
+RESOLVES to in the Mono base. Same shape as the declared-pairs contrast blind spot (gates check what's
+declared, not what renders). The mirrors were rebound same evening (Dave ruled, worker-B addendum), so the
+live instances are gone; the GAP remains for future bindings. **Fix candidate:** extend
+`_validate_legacy_leak.py` to resolve every manifest-bound role per snippet against the Mono base and flag
+`LEGACY_ONLY_HEXES` resolutions. Do when the ~50-gap fan-out starts (Phase 2) — new components multiply the
+exposure.
+
+## ds-008 — `_validate_radius.py` counts prose in HTML comments as declarations (2026-07-21, Phase-1 worker A F0)
+`strip_comments` removes CSS `/* */` only, not HTML `<!-- -->` — "border-radius:0" in a snippet's header
+prose trips the census (Badge + Tags each carried one). Worker reworded the prose (doc fix); checker logic
+untouched (was shared with a live parallel worker). **Fix:** strip HTML comments in `check_text` + extend
+the selftest with a prose-trip case. Matters before Phase-2 fan-out (~50 new files will carry header prose).

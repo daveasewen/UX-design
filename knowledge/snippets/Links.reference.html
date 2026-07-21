@@ -8,8 +8,8 @@
   CANONICAL REFERENCE for text Links (gated). Links are distinguished by an UNDERLINE,
   not colour alone (1.4.1). Keyboard focus = a thickened underline via :focus-visible in
   the link's own colour (text/default) — the link variant of the focus standard, no blue.
-  The directional arrow uses the brand red via the SEMANTIC primary/background/default
-  (#DB0011 both modes); the meta currently binds the color/primary primitive — rebind noted.
+  The directional arrow binds button/primary/background/default (REBOUND 2026-07-21, Dave:
+  primary = the B-D1 mono ladder always — ink in Mono, red only via the Legacy override set).
 
   FAMILY: arrow, back, ICON, inline — all four types present. Icon link is the only type with a
   modelled disabled state; its glyph is the real library download glyph (assets/icons/global-controls/
@@ -29,8 +29,11 @@
 :is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 
   :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --fs:16px; --ease:140ms ease; }
-  [data-theme="light"]{ --text:#1A1A1A; --text-disabled:#E1E1E1; --arrow:#DB0011; --icon:#1A1A1A; --page:#FFFFFF; }
-  [data-theme="dark"]{ --text:#FFFFFF; --text-disabled:#808080; --arrow:#DB0011; --icon:#FFFFFF; --page:#1A1A1A; }
+  [data-theme="light"]{ --text:#1A1A1A; --text-disabled:#E1E1E1; --arrow:#1A1A1A; --icon:#1A1A1A; --page:#FFFFFF;
+    /* shape — semantic radius tier (ADR-0010): link focus-ring shape=control */
+    --border-radius-control:0; }
+  [data-theme="dark"]{ --text:#FFFFFF; --text-disabled:#808080; --arrow:#FAFAFA; --icon:#FFFFFF; --page:#1A1A1A;
+    --border-radius-control:0; }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text);
     font-size:var(--fs); line-height:1.6; -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
@@ -43,7 +46,7 @@
 
   /* INLINE link — underline, not colour (1.4.1); hover/pressed = thicker underline (combined state) */
   a.lnk{color:var(--text); text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px; cursor:pointer;
-    border-radius:0; transition:text-decoration-thickness var(--ease);}
+    border-radius:var(--border-radius-control); transition:text-decoration-thickness var(--ease);}
   a.lnk:hover{text-decoration-thickness:2px;}
   a.lnk:active{text-decoration-thickness:2px;}                                   /* pressed == hover (combined state) */
   /* keyboard focus = thick underline, own colour, no blue ring */
@@ -139,13 +142,14 @@
     "vars": {
       "--text": "text/default",
       "--text-disabled": "text/disabled",
-      "--arrow": "primary/background/default",
+      "--arrow": "button/primary/background/default",
       "--icon": "icon/default",
-      "--page": "background/default"
+      "--page": "background/default",
+      "--border-radius-control": "border-radius/control"
     },
     "contrastPairs": [
       { "fg": "text/default", "bg": "background/default", "context": "text" },
-      { "fg": "primary/background/default", "bg": "background/default", "context": "ui" },
+      { "fg": "button/primary/background/default", "bg": "background/default", "context": "ui" },
       { "fg": "icon/default", "bg": "background/default", "context": "ui" }
     ],
     "icons": { "download": "global-controls/download.svg" },

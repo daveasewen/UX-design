@@ -864,34 +864,31 @@
   --press: 90ms cubic-bezier(0,0,.58,1);
   --btn-grow: 1.04;
   --btn-press: 0.95;
-  --pri-default: var(--primary-background-default);
-  --pri-hover: var(--primary-background-hover);
-  --pri-disabled: var(--primary-background-disabled);
-  --sec-hover: var(--secondary-background-hover);
-  --sec-pressed: var(--secondary-background-pressed);
-  --ter-default: var(--tertiary-background-default);
-  --ter-hover: var(--tertiary-background-hover);
-  --ter-border: var(--tertiary-border-default);
-  --label-invert: var(--text-on-inverse);
-  --success: var(--rag-success);
+  --pri-default: var(--button-primary-background-default);
+  --pri-hover: var(--button-primary-background-hover);
+  --pri-pressed: var(--button-primary-background-pressed);
+  --pri-disabled: var(--button-primary-background-disabled);
+  --pri-label: var(--button-primary-label-default);
+  --pri-label-disabled: var(--button-primary-label-disabled);
+  --pri-icon: var(--button-primary-icon-default);
+  --sec-default: var(--button-secondary-background-default);
+  --sec-hover: var(--button-secondary-background-hover);
+  --sec-pressed: var(--button-secondary-background-pressed);
+  --sec-disabled: var(--button-secondary-background-disabled);
+  --sec-label: var(--button-secondary-label-default);
+  --sec-label-disabled: var(--button-secondary-label-disabled);
+  --ter-hover: var(--button-tertiary-background-hover);
+  --ter-border: var(--button-tertiary-border-default);
+  --ter-border-disabled: var(--button-tertiary-border-disabled);
+  --ter-label: var(--button-tertiary-label-default);
+  --ter-label-disabled: var(--button-tertiary-label-disabled);
+  --quat-hover: var(--button-quaternary-background-hover);
+  --quat-label: var(--button-quaternary-label-default);
+  --quat-label-disabled: var(--button-quaternary-label-disabled);
+  --success: var(--rag-success-background);
+  --success-fg: var(--text-on-success);
   --page: var(--background-default);
-  --surface: var(--tertiary-background-hover);
-  --pri-pressed: #000000;
-  --sec-default: #626262;
-  --sec-disabled: #E1E1E1;
-  --ter-pressed: #808080;
-  --ter-disabled: #E1E1E1;
-  --ter-border-disabled: #E1E1E1;
-  --text-disabled: #E1E1E1;
-}
-[data-theme="dark"] .cn-button{
-  --pri-pressed: #FFFFFF;
-  --sec-default: #808080;
-  --sec-disabled: #484848;
-  --ter-pressed: #1A1A1A;
-  --ter-disabled: #484848;
-  --ter-border-disabled: #808080;
-  --text-disabled: #808080;
+  --surface: var(--button-tertiary-background-hover);
 }
 .cn-button below: `.btn` is
      bound by being appended to `.t-cm` / `.t-cm-button`'s selector lists (T-D9), .cn-button and both are
@@ -909,7 +906,7 @@
 .cn-button .btn{height:var(--h); min-width:96px; padding:0 var(--pad-x); border:0; border-radius:var(--border-radius-control); cursor:pointer;
     justify-content:center;
     gap:8px; transition:background var(--ease), border-color var(--ease), transform var(--spring), filter var(--press);}
-.cn-button .btn:focus-visible{outline:2px solid var(--text-default); outline-offset:2px;}
+.cn-button .btn:focus-visible{outline:2px solid var(--ter-label); outline-offset:2px;}
 /* Refined scale-physics (promoted 2026-06-22) — dimensionality through SCALE: grows toward the cursor on
      hover, press recedes + darkens to read as depth. No shadow, no translate (brand stays flat/angular).
      --btn-grow/--btn-press are CSS scale-factor tokens (tokenised 2026-07-15; formerly runtime JS-computed, constant regardless of viewport). */
@@ -919,29 +916,34 @@
 .cn-button .btn:active{transform:scale(var(--btn-press)); filter:brightness(.85); transition:transform var(--press), filter var(--press);}
 .cn-button .btn:disabled:hover, .cn-button .btn.is-disabled:hover{transform:none; filter:none;}
 /* disabled stays put */
-/* PRIMARY — red fill, white label; pressed inverts (label flips via --label-invert) */
-.cn-button .btn.primary{background:var(--pri-default); color:var(--text-reverse);}
-.cn-button .btn.primary:hover{background:var(--pri-hover);}
-.cn-button .btn.primary.is-pressed{background:var(--pri-pressed); color:var(--label-invert);}
+/* PRIMARY — Mono monochrome fill, inverse label; pressed inverts via the per-mode token flip.
+     HOVER renders as operational OPACITY 0.70 over the page (ADR-0009 / B-D3): color-mix flattens the
+     default fill at 70% over --page. --pri-hover holds the STORED colour-equivalent (#626262/#B7B7B7)
+     for colour-only / chromatic consumers — bound in the manifest, not used for the opacity render. */
+.cn-button .btn.primary{background:var(--pri-default); color:var(--pri-label);}
+.cn-button .btn.primary:hover{background:color-mix(in srgb, var(--pri-default) 70%, var(--page));}
+.cn-button .btn.primary.is-pressed{background:var(--pri-pressed);}
 /* opacity:1 overrides the browser's native disabled fade so the token colour shows true */
 .cn-button .btn:disabled{opacity:1;}
-.cn-button .btn.primary.is-disabled{background:var(--pri-disabled); color:var(--label-invert); cursor:not-allowed;}
-.cn-button .btn.primary.is-success{background:var(--success); color:var(--text-reverse);}
-/* SECONDARY — inverting; label uses --label-invert in all states */
-.cn-button .btn.secondary{background:var(--sec-default); color:var(--label-invert);}
+.cn-button .btn.primary.is-disabled{background:var(--pri-disabled); color:var(--pri-label-disabled); cursor:not-allowed;}
+.cn-button .btn.primary.is-success{background:var(--success); color:var(--success-fg);}
+/* SECONDARY — solid grey fill, inverse label (button/secondary/*) */
+.cn-button .btn.secondary{background:var(--sec-default); color:var(--sec-label);}
 .cn-button .btn.secondary:hover{background:var(--sec-hover);}
 .cn-button .btn.secondary.is-pressed{background:var(--sec-pressed);}
-.cn-button .btn.secondary.is-disabled{background:var(--sec-disabled); color:var(--label-invert); cursor:not-allowed;}
-/* TERTIARY — outlined; label text/default (inverts with theme) */
-.cn-button .btn.tertiary{background:var(--ter-default); color:var(--text-default); border:1px solid var(--ter-border);}
+.cn-button .btn.secondary.is-disabled{background:var(--sec-disabled); color:var(--sec-label-disabled); cursor:not-allowed;}
+/* TERTIARY — outlined; label inverts with theme (button/tertiary/*) */
+.cn-button .btn.tertiary{background:transparent; color:var(--ter-label); border:1px solid var(--ter-border);}
 .cn-button .btn.tertiary:hover{background:var(--ter-hover);}
-.cn-button .btn.tertiary.is-pressed{background:var(--ter-pressed); color:var(--text-reverse);}
-.cn-button .btn.tertiary.is-disabled{background:var(--ter-disabled); color:var(--label-invert); border-color:var(--ter-border-disabled); cursor:not-allowed;}
-/* QUATERNARY — borderless ghost; transparent default, tertiary tints on hover/press */
-.cn-button .btn.quaternary{background:transparent; color:var(--text-default);}
-.cn-button .btn.quaternary:hover{background:var(--ter-hover);}
-.cn-button .btn.quaternary.is-pressed{background:var(--ter-pressed); color:var(--text-reverse);}
-.cn-button .btn.quaternary.is-disabled{background:transparent; color:var(--text-disabled); cursor:not-allowed;}
+.cn-button .btn.tertiary.is-pressed{background:var(--ter-hover);}
+/* pressed reuses hover tint — no pressed-bg token yet (see notes) */
+.cn-button .btn.tertiary.is-disabled{background:transparent; color:var(--ter-label-disabled); border-color:var(--ter-border-disabled); cursor:not-allowed;}
+/* QUATERNARY — borderless ghost; transparent default, tertiary tints on hover/press (button/quaternary/*) */
+.cn-button .btn.quaternary{background:transparent; color:var(--quat-label);}
+.cn-button .btn.quaternary:hover{background:var(--quat-hover);}
+.cn-button .btn.quaternary.is-pressed{background:var(--quat-hover);}
+/* pressed reuses hover tint — no pressed-bg token yet (see notes) */
+.cn-button .btn.quaternary.is-disabled{background:transparent; color:var(--quat-label-disabled); cursor:not-allowed;}
 .cn-button .spin{width:16px; height:16px; border:2px solid currentColor; border-right-color:transparent; border-radius:50%; animation:cn-button-s .7s linear infinite;}
 @keyframes cn-button-s{to{transform:rotate(360deg);}}
 /* ── RESPONSIVE action bar (Dim 11 reflow) ─────────────────────────────────────────────────────
@@ -949,7 +951,7 @@
      OWN width, not the viewport (house style: Cards/Table). max-width:100% → also reflows on a narrow
      screen; the slider drives --demo-width so both states are visible without resizing. */
 .cn-button .bar-wrap{width:var(--demo-width, 560px); max-width:100%; container-type:inline-size;
-    border:1px solid var(--text-disabled); padding:16px; background:var(--surface);}
+    border:1px solid var(--ter-border-disabled); padding:16px; background:var(--surface);}
 .cn-button .actionbar{display:flex; gap:12px; justify-content:flex-end; align-items:center;}
 @container (max-width: 420px){
 .cn-button .actionbar{flex-direction:column; align-items:stretch;}
@@ -1263,26 +1265,30 @@
 /* ============================================================
    Notifications  (from snippets/Notifications.reference.html)
    Aria: role="alert", role="status", aria-label
-   Drift: Global SOLID banners keep light rag accent fills in dark for white-text contrast: rag/information dark (#4587A7, now color/blue/400 — the info ACCENT, fine for borders/icons/focus) is only 4.0:1 under white text as a solid fill, so the dark global fill uses blue/600 #305A85; --err likewise kept at the deeper #A8000B. Token blue/400 dangling-alias/illustration-leak now FIXED; remaining gap = no dedicated dark rag-SURFACE token. See dark-rag-token-gaps.
+   Drift: LEGACY REFERENCE (R-D19 / _STYLE-PROVENANCE §A-AUTH): Notifications is kept as an Apollo LEGACY reference — no active Mono notification canon exists yet. Its RAG values are legitimate Legacy hexes (error #A8000B/#DB0011, amber #FFBB33, navy #305A85/#4587A7 + their Legacy tints), NOT drift from the Mono roles they nominally bind. R-D20 rebased those bare roles onto Mono, so every RAG var now reads as drift here; waived because the ruling is 'do not convert — retag to the Legacy theme' (a future build). (Prior note retained: global solid banners kept the deeper light accents in dark for white-text contrast; blue/400 dangling-alias fixed; remaining gap = no dedicated dark rag-SURFACE token — see dark-rag-token-gaps.)
    Scope: .cn-notifications   ============================================================ */
 .cn-notifications{
   --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
   --ease: 140ms ease;
   --err: #A8000B;
-  --warn: var(--rag-warning);
+  --warn: #FFBB33;
   --ok: var(--rag-success);
   --info: #305A85;
-  --err-t: var(--rag-error-tint);
-  --warn-t: var(--rag-warning-tint);
+  --err-t: #F9F2F3;
+  --warn-t: #FFF8EA;
   --ok-t: var(--rag-success-tint);
-  --info-t: var(--rag-information-tint);
+  --info-t: #EBEFF4;
   --text: var(--text-default);
   --page: var(--background-default);
   --shadow: rgba(0,0,0,.18);
 }
 [data-theme="dark"] .cn-notifications{
   --err: #A8000B;
+  --warn: #FFBB33;
   --info: #305A85;
+  --err-t: #260005;
+  --warn-t: #221701;
+  --info-t: #000D1B;
   --shadow: rgba(0,0,0,.55);
 }
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
@@ -1391,9 +1397,9 @@
   --overlay: var(--overlay-version1);
   --text: var(--text-default);
   --icon: var(--icon-default);
-  --pri: var(--primary-background-default);
-  --pri-hover: var(--primary-background-hover);
-  --on-pri: var(--text-reverse);
+  --pri: var(--button-primary-background-default);
+  --pri-hover: var(--button-primary-background-hover);
+  --on-pri: var(--button-primary-label-default);
   --sec-bd: var(--tertiary-border-default);
   --sec-hover: var(--tertiary-background-hover);
   --focus: var(--focus-ring);
@@ -1630,14 +1636,14 @@
 .cn-badge{
   --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
   --ease: 140ms ease;
-  --surface: var(--primary-background-default);
+  --surface: var(--badge-background);
   --number: var(--text-reverse);
   --host: var(--text-default);
   --page: var(--background-default);
-  --disabled: #E1E1E1;
+  --disabled: #D7D8D6;
 }
 [data-theme="dark"] .cn-badge{
-  --disabled: #808080;
+  --disabled: #767676;
 }
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
    enhancement; headings/body excluded. Added 2026-06-29. */
@@ -1669,7 +1675,7 @@
   --fs: 16px;
   --ease: 140ms ease;
   --text: var(--text-default);
-  --arrow: var(--primary-background-default);
+  --arrow: var(--button-primary-background-default);
   --icon: var(--icon-default);
   --page: var(--background-default);
 }
@@ -1745,10 +1751,11 @@
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
    enhancement; headings/body excluded. Added 2026-06-29. */
 .cn-tags :is(button, .cn-tags a, .cn-tags label, .cn-tags span, .cn-tags small, .cn-tags strong, .cn-tags em, .cn-tags b, .cn-tags i, .cn-tags th, .cn-tags td, .cn-tags dt, .cn-tags dd, .cn-tags li, .cn-tags figcaption, .cn-tags legend, .cn-tags caption, .cn-tags summary, .cn-tags output, .cn-tags time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+/* shape — semantic radius tier (ADR-0010 flex slots): the chip binds the CONTROL role. */
 .cn-tags h2{font-size:12px; /* sentence case — type26-019 sweep (Dave ruling 2026-07-02): no uppercase, caps tracking removed with it */ margin:1.5rem 0 .8rem;}
 .cn-tags .row{display:flex; gap:12px; flex-wrap:wrap; align-items:center;}
 /* em-based chip — every dimension tracks the label font-size (scales with type) */
-.cn-tags .tag{display:inline-flex; align-items:center; gap:.46em; height:2.15em; padding:0 .77em; border:1px solid var(--border); border-radius:var(--border-radius-control); /* Mono square — radius is the ADR-0010 theme flex slot */
+.cn-tags .tag{display:inline-flex; align-items:center; gap:.46em; height:2.15em; padding:0 .77em; border:1px solid var(--border); border-radius:var(--border-radius-control); /* CONTROL role — Mono square */
     background:transparent; color:var(--text); font:400 14px/1 var(--font); max-width:100%; white-space:nowrap; overflow:hidden;
     transition:max-width var(--ease), opacity var(--ease), margin var(--ease), padding var(--ease), border-width var(--ease), background 140ms ease, transform 150ms cubic-bezier(.4,0,.2,1);}
 /* label overflow:VISIBLE (was hidden) — keeps cap/alphabetic icon alignment AND stops descenders
@@ -1834,10 +1841,10 @@
 .cn-status-indicator .inf .dot{background:var(--info);}
 .cn-status-indicator .stat.is-disabled{color:var(--disabled);}
 .cn-status-indicator .stat.is-disabled .dot{background:var(--disabled);}
-/* ---- form B: tint chip (radius = theme flex slot, Mono square; label is text/default → all tints AA) ---- */
+/* ---- form B: tint chip (INDICATOR radius role — Mono square; label is text/default → all tints AA) ---- */
 .cn-status-indicator .chips{display:flex; flex-wrap:wrap; gap:12px;}
 .cn-status-indicator .chip{display:inline-flex; align-items:center; gap:8px; height:24px; padding:0 8px; border-radius:var(--border-radius-indicator); /* type: t-cm-legal + .t-cm-slot (bound in canon/type.css - T-D9/T-D12) */ color:var(--label); white-space:nowrap;}
-/* SAME spec as List-items .status — this atom IS that badge */
+/* SAME spec as List-items .status — this atom IS that badge (both bind the indicator role) */
 .cn-status-indicator .chip .dot{width:8px; height:8px;}
 .cn-status-indicator .chip.ok{background:var(--success-tint);}
 .cn-status-indicator .chip.warn{background:var(--warning-tint);}
@@ -1871,10 +1878,10 @@
   --text: var(--text-default);
   --icon: var(--icon-default);
   --page: var(--background-default);
-  --ring: #E1E1E1;
+  --ring: #D7D8D6;
 }
 [data-theme="dark"] .cn-avatar{
-  --ring: #484848;
+  --ring: #404040;
 }
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
    enhancement; headings/body excluded. Added 2026-06-29. */
@@ -2063,7 +2070,7 @@
 .cn-tabs .tab:disabled{opacity:.35; cursor:not-allowed;}
 .cn-tabs .tab:focus-visible{outline:2px solid var(--focus-ring); outline-offset:-3px;}
 .cn-tabs .indicator{position:absolute; bottom:calc(-1 * var(--track-h)); height:var(--indicator-h);
-    background:var(--tabs-active); border-radius:var(--border-radius-control); transition:left var(--move), width var(--move), opacity var(--fade);}
+    background:var(--tabs-active); border-radius:var(--border-radius-indicator); transition:left var(--move), width var(--move), opacity var(--fade);}
 @media (prefers-reduced-motion: reduce){
 .cn-tabs .indicator{transition:opacity var(--fade);}
 .cn-tabs .panel{animation:none !important;}
@@ -2433,11 +2440,11 @@
   --border: var(--border-subtle);
   --focus: var(--focus-ring);
   --page: var(--background-default);
-  --pressed: #808080;
+  --pressed: #767676;
   --on-pressed: #FFFFFF;
 }
 [data-theme="dark"] .cn-quick-actions{
-  --pressed: #484848;
+  --pressed: #474747;
 }
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
    enhancement; headings/body excluded. Added 2026-06-29. */
@@ -2480,17 +2487,17 @@
   --error: var(--rag-error);
   --page: var(--background-default);
   --field-bg: #FFFFFF00;
-  --border-disabled: #E1E1E1;
-  --item-hover: #F0F0F0;
-  --item-pressed: #808080;
-  --text-disabled: #E1E1E1;
+  --border-disabled: #D7D8D6;
+  --item-hover: #F3F3F3;
+  --item-pressed: #767676;
+  --text-disabled: #D7D8D6;
   --text-reverse: #FFFFFF;
 }
 [data-theme="dark"] .cn-dropdown{
-  --border-disabled: #484848;
-  --item-hover: #1A1A1A;
-  --item-pressed: #484848;
-  --text-disabled: #808080;
+  --border-disabled: #404040;
+  --item-hover: #212121;
+  --item-pressed: #474747;
+  --text-disabled: #767676;
 }
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
    enhancement; headings/body excluded. Added 2026-06-29. */
@@ -2541,7 +2548,7 @@
   --accent: var(--primary-background-default);
   --focus: var(--focus-ring);
   --page: var(--background-default);
-  --muted: #808080;
+  --muted: #767676;
 }
 [data-theme="dark"] .cn-hero{
   --muted: #9a9a9a;
@@ -2584,13 +2591,16 @@
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
    enhancement; headings/body excluded. Added 2026-06-29. */
 .cn-slider :is(button, .cn-slider a, .cn-slider label, .cn-slider span, .cn-slider small, .cn-slider strong, .cn-slider em, .cn-slider b, .cn-slider i, .cn-slider th, .cn-slider td, .cn-slider dt, .cn-slider dd, .cn-slider li, .cn-slider figcaption, .cn-slider legend, .cn-slider caption, .cn-slider summary, .cn-slider output, .cn-slider time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+/* shape — semantic radius tier (ADR-0010 flex slots). The TRACK is a progress rail = INDICATOR
+     role (per-element judgment; brief flagged track vs thumb). The thumb is a circle (50%) by
+     design and stays literal. */
 .cn-slider .field{max-width:360px;}
 .cn-slider .field label{display:block; font:500 14px/1.3 var(--font); margin-bottom:12px;}
 .cn-slider .field .val{float:right; font-weight:400;}
 .cn-slider input[type=range]{-webkit-appearance:none; appearance:none; width:100%; height:24px; background:transparent; cursor:pointer;}
 .cn-slider input[type=range]::-webkit-slider-runnable-track{height:4px; border-radius:var(--border-radius-indicator); background:linear-gradient(var(--filled),var(--filled)) 0/var(--pct,50%) 100% no-repeat var(--unfilled);}
-.cn-slider input[type=range]::-moz-range-track{height:4px; background:var(--unfilled);}
-.cn-slider input[type=range]::-moz-range-progress{height:4px; background:var(--filled);}
+.cn-slider input[type=range]::-moz-range-track{height:4px; border-radius:var(--border-radius-indicator); background:var(--unfilled);}
+.cn-slider input[type=range]::-moz-range-progress{height:4px; border-radius:var(--border-radius-indicator); background:var(--filled);}
 .cn-slider input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; appearance:none; width:20px; height:20px; margin-top:-8px; border-radius:50%; background:var(--handle); border:2px solid var(--handle-bd);}
 .cn-slider input[type=range]::-moz-range-thumb{width:20px; height:20px; border-radius:50%; background:var(--handle); border:2px solid var(--handle-bd);}
 .cn-slider input[type=range]:focus-visible{outline:none;}
@@ -2717,31 +2727,38 @@
 /* ============================================================
    Video-player  (from snippets/Video-player.reference.html)
    Aria: aria-label, role="slider"
+   Drift: ON-SCRIM EXCEPTION (Dave 2026-07-21): the bigplay glyph sits on --onvideo-fill (text/reverse — LIGHT in both modes), so the dark-mode label value #333333 applies in BOTH modes; the light-mode ladder value #FFFFFF would be white-on-white. Pending Dave's eyeball per _REVIEW-SIGNOFF.
    Scope: .cn-video-player   ============================================================ */
 .cn-video-player{
   --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
   --ease: 140ms ease;
-  --controls: #FFFFFF;
-  --accent: #DB0011;
-  --scrim: #000000D9;
-  --focus: #4d9fff;
   --spring: 300ms cubic-bezier(.5,1.6,.4,1);
   --press: 90ms cubic-bezier(0,0,.58,1);
   --text: var(--text-default);
+  --muted: var(--text-secondary);
   --page: var(--background-default);
-  --muted: #808080;
+  --accent: var(--button-primary-background-default);
+  --accent-label: #333333;
+  --onvideo-fill: var(--text-reverse);
+  --controls: var(--text-reverse);
+  --scrim: var(--overlay-version2);
+  --focus: var(--focus-ring);
 }
 [data-theme="dark"] .cn-video-player{
-  --muted: #9a9a9a;
+  --accent-label: #333333;
 }
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
    enhancement; headings/body excluded. Added 2026-06-29. */
 .cn-video-player :is(button, .cn-video-player a, .cn-video-player label, .cn-video-player span, .cn-video-player small, .cn-video-player strong, .cn-video-player em, .cn-video-player b, .cn-video-player i, .cn-video-player th, .cn-video-player td, .cn-video-player dt, .cn-video-player dd, .cn-video-player li, .cn-video-player figcaption, .cn-video-player legend, .cn-video-player caption, .cn-video-player summary, .cn-video-player output, .cn-video-player time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 /* Button motion tokens */
 .cn-video-player .player{position:relative; width:100%; max-width:560px; aspect-ratio:16/9; background:linear-gradient(135deg,#2a2a30,#0e0e12); overflow:hidden;}
-.cn-video-player .bigplay{position:absolute; inset:0; margin:auto; width:64px; height:64px; border:0; border-radius:var(--border-radius-control); background:var(--accent); color:#fff; cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
+.cn-video-player .bigplay{position:absolute; inset:0; margin:auto; width:64px; height:64px; border:0; border-radius:var(--border-radius-control); background:var(--onvideo-fill); color:var(--accent-label); cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
     transition:transform var(--spring), filter var(--press);}
-/* SQUARE — brand angular; carries the Button scale-physics */
+/* SQUARE — brand angular; carries the Button scale-physics.
+    ON-SCRIM EXCEPTION (Dave 2026-07-21, on the 1.2:1 light-mode fail): the play button sits on the
+    VIDEO (always-dark, arbitrary frames) — it joins the on-video control family (reverse fill BOTH
+    modes, 14-19:1 vs the demo gradient; glyph #333333 on white 12.6:1), NOT the page-mode primary
+    ladder. The themed accent remains on the scrub .played. */
 .cn-video-player .bigplay svg{width:26px; height:26px; fill:currentColor;}
 .cn-video-player .bigplay:hover{transform:scale(1.08);}
 /* grow toward the cursor */
@@ -2840,9 +2857,9 @@
   --surface: var(--tertiary-background-default);
   --border: var(--border-subtle);
   --page: var(--background-default);
-  --pri: var(--primary-background-default);
-  --pri-hover: var(--primary-background-hover);
-  --on-pri: var(--text-reverse);
+  --pri: var(--button-primary-background-default);
+  --pri-hover: var(--button-primary-background-hover);
+  --on-pri: var(--button-primary-label-default);
   --sec: var(--secondary-background-default);
   --sec-hover: var(--secondary-background-hover);
   --label-invert: var(--text-on-inverse);
@@ -2892,6 +2909,51 @@
 }
 
 /* ============================================================
+   Amount-display  (from snippets/Amount-display.reference.html)
+   Aria: role="img", aria-label, aria-hidden="true"
+   Finding: copy-025 enforced: currency symbol/code precedes the value with NO space (£500, GBP500) — a space risks the amount wrapping to a different line.
+   Finding: Display size = 32px, ON the sanctioned ramp (12/14/16/20/32/40/52; apply_type_snap maps 30->32, so the account-card finding's '30px' was loose). Bound to the NEW .t-cm-figure-4 composite (display/amount token) via the class on the element — this atom is its first consumer. PREPARED, awaiting Dave's vouch. Resolves the account-card $balance-type-finding.
+   Finding: tabular-nums: on the atom AND on the new figure-4 composite. figure-1/2/3 do NOT carry it yet — follow-up proposal to add font-variant-numeric:tabular-nums to the whole figure family (they are all numeric displays).
+   Finding: FULLY on the component FIGURE ramp: display -> .t-cm-figure-4 (32) · default -> .t-cm-figure-5 (16) · small -> .t-cm-figure-6 (14). No raw font sizing on the atom; every size is a 4px-snapped canon figure composite with cap/leading-trim, each carrying font-variant-numeric:tabular-nums intrinsically. figure-5/6 were added this pass (PREPARED, awaiting Dave's vouch) so money amounts render as true numeric figures at every size, not borrowed label/caption styles.
+   Finding: Dark ground = digital black #1A1A1A — 'digital black is the new #000' (Dave 2026-07-19). background/default dark now = #1A1A1A in the store (swept library-wide, page grounds only; shadows/overlays stay pure #000).
+   Finding: COLOUR OUT OF SCOPE: directional gain/loss (green/red delta) is deliberately not built here — it is owned by the RAG/delta colour workstream and layers on later. This atom is monochrome money-format only.
+   Finding: Sign uses U+2212 MINUS (−), not hyphen-minus, so it reads 'minus' and aligns as a figure.
+   Scope: .cn-amount-display   ============================================================ */
+.cn-amount-display{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 140ms ease;
+  --text: var(--text-default);
+  --muted: var(--text-secondary);
+  --border: var(--border-subtle);
+  --page: var(--background-default);
+}
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Matches the canon snippet skeleton. */
+.cn-amount-display :is(button, .cn-amount-display a, .cn-amount-display label, .cn-amount-display span, .cn-amount-display small, .cn-amount-display strong, .cn-amount-display em, .cn-amount-display b, .cn-amount-display i, .cn-amount-display th, .cn-amount-display td, .cn-amount-display dt, .cn-amount-display dd, .cn-amount-display li, .cn-amount-display figcaption, .cn-amount-display legend, .cn-amount-display caption, .cn-amount-display summary, .cn-amount-display output, .cn-amount-display time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+/* ============================================================
+     Amount display — the money-format primitive (monochrome)
+     ============================================================ */
+/* base: layout + numeric rendering only. NO font-size on the base, so the display size can be
+     supplied by the .t-cm-figure-4 composite (loaded first via <link>) without the base overriding it. */
+/* base: COLOUR + layout + numeric rendering only. TYPE (family, size, weight, line-height, 4px slot)
+     comes from the canon COMPONENT composites bound on each element — display -> .t-cm-figure-4 (32) ·
+     default -> .t-cm-label (16) · small -> .t-cm-caption (14). Leading-trim is the shared text-box-trim
+     block above. The atom carries NO raw font sizing; text lives on the 4px-snapped canon ramp. */
+.cn-amount-display .amount{color:var(--text); display:inline-flex; align-items:baseline; white-space:nowrap;
+    font-variant-numeric:tabular-nums; letter-spacing:-.005em;}
+.cn-amount-display .amount--display{letter-spacing:-.01em;}
+/* tighter optical tracking at the display size */
+/* redacted (privacy) — value masked; context via aria-label on the element */
+.cn-amount-display .amount--redacted{color:var(--muted); letter-spacing:.08em;}
+/* right-aligned tabular column — proves the figures line up (the reason they are tabular) */
+.cn-amount-display .col-demo{display:inline-flex; flex-direction:column; gap:8px; align-items:flex-end;
+    border-left:1px solid var(--border); padding-left:16px;}
+.cn-amount-display .prose{font:400 16px/1.5 var(--font); max-width:52ch; color:var(--text);}
+@media (prefers-reduced-motion: reduce){
+
+}
+
+/* ============================================================
    Confirmation  (from snippets/Confirmation.reference.html)
    Aria: role="group", aria-labelledby, aria-hidden="true"
    Reuses: Button (primary + ghost)
@@ -2905,9 +2967,9 @@
   --text: var(--text-default);
   --muted: var(--text-secondary);
   --page: var(--background-default);
-  --pri: var(--primary-background-default);
-  --pri-hover: var(--primary-background-hover);
-  --on-pri: var(--text-reverse);
+  --pri: var(--button-primary-background-default);
+  --pri-hover: var(--button-primary-background-hover);
+  --on-pri: var(--button-primary-label-default);
   --ghost-hover: var(--tertiary-background-hover);
 }
 [data-theme="dark"] .cn-confirmation{
@@ -2971,6 +3033,75 @@
 /* WCAG 2.3.3 — honour reduced-motion (no motion here, kept for consistency across snippets) */
 @media (prefers-reduced-motion: reduce){
 
+}
+
+/* ============================================================
+   Icon-button  (from snippets/Icon-button.reference.html)
+   Aria: <button, aria-label, disabled
+   Scope: .cn-icon-button   ============================================================ */
+.cn-icon-button{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 160ms cubic-bezier(.4,0,.2,1);
+  --spring: 300ms cubic-bezier(.5,1.6,.4,1);
+  --press: 90ms cubic-bezier(0,0,.58,1);
+  --target: 44px;
+  --glyph: 20px;
+  --pri-default: var(--button-primary-background-default);
+  --pri-hover: var(--button-primary-background-hover);
+  --pri-pressed: var(--button-primary-background-pressed);
+  --pri-disabled: var(--button-primary-background-disabled);
+  --pri-glyph: var(--button-primary-icon-default);
+  --sec-default: var(--button-secondary-background-default);
+  --sec-hover: var(--button-secondary-background-hover);
+  --sec-pressed: var(--button-secondary-background-pressed);
+  --sec-disabled: var(--button-secondary-background-disabled);
+  --sec-glyph: var(--button-secondary-label-default);
+  --ter-hover: var(--button-tertiary-background-hover);
+  --ter-border: var(--button-tertiary-border-default);
+  --ter-border-disabled: var(--button-tertiary-border-disabled);
+  --ter-glyph: var(--button-tertiary-label-default);
+  --quat-hover: var(--button-quaternary-background-hover);
+  --quat-glyph: var(--button-quaternary-label-default);
+  --glyph-disabled: var(--text-on-disabled);
+  --page: var(--background-default);
+}
+.cn-icon-button h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-icon-button .row{display:flex; gap:16px; flex-wrap:wrap; align-items:center;}
+/* the atom — 44×44 hit area, 20px glyph, corners on the CONTROL radius role */
+.cn-icon-button .iconbtn{width:var(--target); height:var(--target); min-width:var(--target); min-height:var(--target);
+    display:inline-flex; align-items:center; justify-content:center;
+    padding:0; border:0; border-radius:var(--border-radius-control); cursor:pointer; background:transparent;
+    transition:background var(--ease), border-color var(--ease), transform var(--spring), filter var(--press);}
+.cn-icon-button .iconbtn svg{width:var(--glyph); height:var(--glyph); display:block; fill:currentColor; pointer-events:none;}
+.cn-icon-button .iconbtn:focus-visible{outline:2px solid var(--text-default); outline-offset:2px;}
+/* Size-scoped scale-physics: hover = +2px, press = −2px on the 44px target (self-documenting calc; ~2px). */
+.cn-icon-button .iconbtn:hover{transform:scale(calc(1 + 2/44));}
+.cn-icon-button .iconbtn:active{transform:scale(calc(1 - 2/44)); filter:brightness(.94); transition:transform var(--press), filter var(--press);}
+.cn-icon-button .iconbtn:disabled{cursor:not-allowed; opacity:1;}
+.cn-icon-button .iconbtn:disabled:hover, .cn-icon-button .iconbtn:disabled:active{transform:none; filter:none;}
+/* PRIMARY — monochrome fill, inverse glyph; hover = operational 0.70 opacity over the page (ADR-0009/B-D3);
+     --pri-hover holds the stored colour-equivalent (#626262/#B7B7B7) for colour-only consumers. */
+.cn-icon-button .iconbtn.primary{background:var(--pri-default); color:var(--pri-glyph);}
+.cn-icon-button .iconbtn.primary:hover{background:color-mix(in srgb, var(--pri-default) 70%, var(--page));}
+.cn-icon-button .iconbtn.primary.is-pressed{background:var(--pri-pressed);}
+.cn-icon-button .iconbtn.primary:disabled{background:var(--pri-disabled); color:var(--glyph-disabled);}
+/* SECONDARY — solid grey fill, inverse glyph */
+.cn-icon-button .iconbtn.secondary{background:var(--sec-default); color:var(--sec-glyph);}
+.cn-icon-button .iconbtn.secondary:hover{background:var(--sec-hover);}
+.cn-icon-button .iconbtn.secondary.is-pressed{background:var(--sec-pressed);}
+.cn-icon-button .iconbtn.secondary:disabled{background:var(--sec-disabled); color:var(--glyph-disabled);}
+/* TERTIARY — outlined; glyph inverts with theme */
+.cn-icon-button .iconbtn.tertiary{background:transparent; color:var(--ter-glyph); border:1px solid var(--ter-border);}
+.cn-icon-button .iconbtn.tertiary:hover{background:var(--ter-hover);}
+.cn-icon-button .iconbtn.tertiary.is-pressed{background:var(--ter-hover);}
+.cn-icon-button .iconbtn.tertiary:disabled{background:transparent; color:var(--glyph-disabled); border-color:var(--ter-border-disabled);}
+/* QUATERNARY — borderless ghost; tertiary tint on hover/press */
+.cn-icon-button .iconbtn.quaternary{background:transparent; color:var(--quat-glyph);}
+.cn-icon-button .iconbtn.quaternary:hover{background:var(--quat-hover);}
+.cn-icon-button .iconbtn.quaternary.is-pressed{background:var(--quat-hover);}
+.cn-icon-button .iconbtn.quaternary:disabled{background:transparent; color:var(--glyph-disabled);}
+@media (prefers-reduced-motion: reduce){
+.cn-icon-button .iconbtn:hover, .cn-icon-button .iconbtn:active{transform:none !important; filter:none !important;}
 }
 
 /* ============================================================
@@ -3070,8 +3201,9 @@
    edit the override sets and re-run. Theme attr goes on <html> or any
    ancestor of the [data-theme] element; Mono is the base (no block).
    Attrs: legacy=apollo-legacy, mono=apollo-mono, console=apollo-console, supercharge=apollo-supercharge */
-/* ---- Apollo Legacy  [data-apollo-theme="legacy"]  (24 override path(s), apollo-legacy.overrides) ---- */
+/* ---- Apollo Legacy  [data-apollo-theme="legacy"]  (27 override path(s), apollo-legacy.overrides) ---- */
 [data-apollo-theme="legacy"]{
+  --badge-background: #DB0011;
   --border-radius-default: 0;
   --border-subtle: #D7D8D6;
   --button-primary-background-default: #DB0011;
@@ -3082,7 +3214,9 @@
   --button-quaternary-label-default: #333333;
   --button-tertiary-border-disabled: #D7D8D6;
   --button-tertiary-label-default: #333333;
+  --progress-complete: #DB0011;
   --rag-error: #A8000B;
+  --rag-error-background: #A8000B;
   --rag-error-glyph: #A8000B;
   --rag-information: #305A85;
   --rag-information-glyph: #305A85;
@@ -3099,6 +3233,7 @@
 }
 [data-apollo-theme="legacy"][data-theme="dark"],
 [data-apollo-theme="legacy"] [data-theme="dark"]{
+  --badge-background: #DB0011;
   --border-subtle: #404040;
   --button-primary-background-default: #DB0011;
   --button-primary-background-disabled: #484848;
@@ -3108,7 +3243,9 @@
   --button-quaternary-label-default: #FFFFFF;
   --button-tertiary-border-disabled: #404040;
   --button-tertiary-label-default: #FFFFFF;
+  --progress-complete: #DB0011;
   --rag-error: #DB0011;
+  --rag-error-background: #DB0011;
   --rag-error-glyph: #DB0011;
   --rag-information: #4587A7;
   --rag-information-glyph: #4587A7;
@@ -3153,11 +3290,17 @@
 }
 [data-apollo-theme="legacy"] .cn-action-bar{
   --border: #D7D8D6;
+  --on-pri: #FFFFFF;
+  --pri: #DB0011;
+  --pri-hover: #BA1110;
   --text: #333333;
 }
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-action-bar,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-action-bar{
   --border: #404040;
+  --on-pri: #FFFFFF;
+  --pri: #DB0011;
+  --pri-hover: #BA1110;
   --text: #FFFFFF;
 }
 [data-apollo-theme="legacy"] .cn-amount-display{
@@ -3180,10 +3323,12 @@
 }
 [data-apollo-theme="legacy"] .cn-badge{
   --host: #333333;
+  --surface: #DB0011;
 }
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-badge,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-badge{
   --host: #FFFFFF;
+  --surface: #DB0011;
 }
 [data-apollo-theme="legacy"] .cn-breadcrumbs{
   --text: #333333;
@@ -3228,12 +3373,18 @@
 }
 [data-apollo-theme="legacy"] .cn-confirmation{
   --muted: #545454;
+  --on-pri: #FFFFFF;
+  --pri: #DB0011;
+  --pri-hover: #BA1110;
   --success: #00847F;
   --text: #333333;
 }
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-confirmation,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-confirmation{
   --muted: #9B9B9B;
+  --on-pri: #FFFFFF;
+  --pri: #DB0011;
+  --pri-hover: #BA1110;
   --success: #00847F;
   --text: #FFFFFF;
 }
@@ -3316,10 +3467,12 @@
   --text: #FFFFFF;
 }
 [data-apollo-theme="legacy"] .cn-links{
+  --arrow: #DB0011;
   --text: #333333;
 }
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-links,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-links{
+  --arrow: #DB0011;
   --text: #FFFFFF;
 }
 [data-apollo-theme="legacy"] .cn-list-items{
@@ -3353,10 +3506,16 @@
   --text: #FFFFFF;
 }
 [data-apollo-theme="legacy"] .cn-modals{
+  --on-pri: #FFFFFF;
+  --pri: #DB0011;
+  --pri-hover: #BA1110;
   --text: #333333;
 }
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-modals,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-modals{
+  --on-pri: #FFFFFF;
+  --pri: #DB0011;
+  --pri-hover: #BA1110;
   --text: #FFFFFF;
 }
 [data-apollo-theme="legacy"] .cn-navigations{
@@ -3395,11 +3554,13 @@
   --text: #FFFFFF;
 }
 [data-apollo-theme="legacy"] .cn-progress-tracker{
+  --complete: #DB0011;
   --muted: #545454;
   --text: #333333;
 }
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-progress-tracker,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-progress-tracker{
+  --complete: #DB0011;
   --muted: #9B9B9B;
   --text: #FFFFFF;
 }
@@ -3516,10 +3677,16 @@
   --text: #FFFFFF;
 }
 [data-apollo-theme="legacy"] .cn-video-player{
+  --accent: #DB0011;
+  --accent-label: #FFFFFF;
+  --muted: #545454;
   --text: #333333;
 }
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-video-player,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-video-player{
+  --accent: #DB0011;
+  --accent-label: #FFFFFF;
+  --muted: #9B9B9B;
   --text: #FFFFFF;
 }
 [data-apollo-theme="legacy"] .cn-view-options{
@@ -3537,6 +3704,22 @@
   --border-radius-indicator: 8px;
   --border-radius-surface: 12px;
 }
+[data-apollo-theme="console"] .cn-account-card{
+  --border-radius-indicator: 8px;
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-account-card,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-account-card{
+  --border-radius-indicator: 8px;
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"] .cn-action-bar{
+  --border-radius-control: 8px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-action-bar,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-action-bar{
+  --border-radius-control: 8px;
+}
 [data-apollo-theme="console"] .cn-button{
   --border-radius-control: 8px;
 }
@@ -3550,6 +3733,150 @@
 [data-apollo-theme="console"][data-theme="dark"] .cn-cards,
 [data-apollo-theme="console"] [data-theme="dark"] .cn-cards{
   --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"] .cn-confirmation{
+  --border-radius-control: 8px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-confirmation,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-confirmation{
+  --border-radius-control: 8px;
+}
+[data-apollo-theme="console"] .cn-dropdown{
+  --border-radius-control: 8px;
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-dropdown,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-dropdown{
+  --border-radius-control: 8px;
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"] .cn-icon-button{
+  --border-radius-control: 8px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-icon-button,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-icon-button{
+  --border-radius-control: 8px;
+}
+[data-apollo-theme="console"] .cn-input-fields{
+  --border-radius-control: 8px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-input-fields,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-input-fields{
+  --border-radius-control: 8px;
+}
+[data-apollo-theme="console"] .cn-links{
+  --border-radius-control: 8px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-links,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-links{
+  --border-radius-control: 8px;
+}
+[data-apollo-theme="console"] .cn-list-items{
+  --border-radius-indicator: 8px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-list-items,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-list-items{
+  --border-radius-indicator: 8px;
+}
+[data-apollo-theme="console"] .cn-modals{
+  --border-radius-control: 8px;
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-modals,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-modals{
+  --border-radius-control: 8px;
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"] .cn-notifications{
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-notifications,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-notifications{
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"] .cn-progress-tracker{
+  --border-radius-control: 8px;
+  --border-radius-indicator: 8px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-progress-tracker,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-progress-tracker{
+  --border-radius-control: 8px;
+  --border-radius-indicator: 8px;
+}
+[data-apollo-theme="console"] .cn-selection-controls{
+  --border-radius-control: 8px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-selection-controls,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-selection-controls{
+  --border-radius-control: 8px;
+}
+[data-apollo-theme="console"] .cn-slider{
+  --border-radius-indicator: 8px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-slider,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-slider{
+  --border-radius-indicator: 8px;
+}
+[data-apollo-theme="console"] .cn-status-indicator{
+  --border-radius-control: 8px;
+  --border-radius-indicator: 8px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-status-indicator,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-status-indicator{
+  --border-radius-control: 8px;
+  --border-radius-indicator: 8px;
+}
+[data-apollo-theme="console"] .cn-table{
+  --border-radius-control: 8px;
+  --border-radius-indicator: 8px;
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-table,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-table{
+  --border-radius-control: 8px;
+  --border-radius-indicator: 8px;
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"] .cn-tabs{
+  --border-radius-control: 8px;
+  --border-radius-indicator: 8px;
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-tabs,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-tabs{
+  --border-radius-control: 8px;
+  --border-radius-indicator: 8px;
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"] .cn-tags{
+  --border-radius-control: 8px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-tags,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-tags{
+  --border-radius-control: 8px;
+}
+[data-apollo-theme="console"] .cn-video-player{
+  --border-radius-control: 8px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-video-player,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-video-player{
+  --border-radius-control: 8px;
+}
+
+/* ---- Apollo Supercharge  [data-apollo-theme="supercharge"]  (1 override path(s), apollo-supercharge.overrides) ---- */
+[data-apollo-theme="supercharge"]{
+  --progress-complete: #B92F1E;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"],
+[data-apollo-theme="supercharge"] [data-theme="dark"]{
+  --progress-complete: #CC4333;
+}
+[data-apollo-theme="supercharge"] .cn-progress-tracker{
+  --complete: #B92F1E;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-progress-tracker,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-progress-tracker{
+  --complete: #CC4333;
 }
 
 /* ===== AUTO-THEMES END ===== */

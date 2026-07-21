@@ -45,6 +45,7 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 
 | fg | bg | mode | ratio | verdict |
 |---|---|---|---|---|
+| icon/default | badge/background | light | 2.89 | below-3(gated) |
 | icon/default | blur/background-surface | light | None | unresolved |
 | icon/default | blur/background-surface | dark | None | unresolved |
 | icon/default | button/primary/background/default | light | 1.0 | below-3(gated) |
@@ -140,6 +141,7 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | icon/default-reverse | tooltip/background | light | 1.0 | below-3(gated) |
 | icon/disabled (allowlisted) | background/default | light | 1.31 | below-3(gated) |
 | icon/disabled (allowlisted) | background/default | dark | 4.41 | DEAD-ZONE |
+| icon/disabled (allowlisted) | badge/background | dark | 1.2 | below-3(gated) |
 | icon/disabled (allowlisted) | blur/background-surface | light | None | unresolved |
 | icon/disabled (allowlisted) | blur/background-surface | dark | None | unresolved |
 | icon/disabled (allowlisted) | button/primary/background/default | dark | 3.78 | DEAD-ZONE |
@@ -218,6 +220,7 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | icon/disabled (allowlisted) | tooltip/background | dark | 4.41 | DEAD-ZONE |
 | icon/on-inverse | background/default | light | 1.0 | below-3(gated) |
 | icon/on-inverse | background/default | dark | 1.38 | below-3(gated) |
+| icon/on-inverse | badge/background | dark | 2.66 | below-3(gated) |
 | icon/on-inverse | blur/background-surface | light | None | unresolved |
 | icon/on-inverse | blur/background-surface | dark | None | unresolved |
 | icon/on-inverse | button/primary/background/disabled | light | 1.31 | below-3(gated) |
@@ -281,7 +284,7 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | icon/on-inverse | tooltip/background | light | 1.0 | below-3(gated) |
 | icon/on-inverse | tooltip/background | dark | 1.38 | below-3(gated) |
 
-_(173 of 440 exhaustive combos already clear 4.5:1; 32 transparent/composite surfaces skipped (alpha — true contrast needs the render path) — omitted.)_
+_(178 of 448 exhaustive combos already clear 4.5:1; 32 transparent/composite surfaces skipped (alpha — true contrast needs the render path) — omitted.)_
 
 ## 3. Roundel vs surface — rag/* pairs at the ROUNDEL threshold (≥3:1, ruled policy)
 

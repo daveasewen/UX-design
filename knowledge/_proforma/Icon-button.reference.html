@@ -12,7 +12,8 @@
    - TARGET SIZE ≥ 44×44 (2.5.8) even when the glyph is 20px — padding makes the hit area.
    - The glyph is NON-TEXT → 1.4.11 at 3:1 (context "ui"), not 4.5:1.
   Colours = resolved semantic tokens (primary/* secondary/* tertiary/* icon/*), light+dark, the SAME
-  bindings Button gates green on. Square corners (angular rule). Motion = Button's scale-physics,
+  bindings Button gates green on. Corners bind the CONTROL radius role (border-radius/control — Mono
+  resolves 0, the angular rule; themes flex it, ADR-0010). Motion = Button's scale-physics,
   reduced-motion honoured.
   $finding (icon source): glyphs here are inline line-SVGs for the proof render; final gate-green
   rebases them onto the assets/icons/ <symbol> sprite (per icon-source rule + _validate_icons.py),
@@ -37,6 +38,8 @@
     --icon-disabled-ink:#B7B7B7;   /* tertiary/text/disabled — muted but NEVER == the disabled surface */
     --text-default:#333333; --page:#FFFFFF; --surface:#F3F3F3;
     --icon-on-invert:#FFFFFF;
+    /* shape — semantic radius tier (ADR-0010 flex slots). Icon button = CONTROL role. */
+    --border-radius-control:0;
   }
   [data-theme="dark"]{
     --pri-default:#DB0011; --pri-hover:#BA1110; --pri-pressed:#FFFFFF; --pri-disabled:#404040;
@@ -47,6 +50,7 @@
     --icon-disabled-ink:#767676;   /* tertiary/text/disabled (dark) — present on the dark disabled fill */
     --text-default:#FFFFFF; --page:#1A1A1A; --surface:#212121;
     --icon-on-invert:#333333;
+    --border-radius-control:0;
   }
 
   *{box-sizing:border-box;}
@@ -64,7 +68,7 @@
   .iconbtn{
     width:var(--target); height:var(--target); min-width:var(--target); min-height:var(--target);
     display:inline-flex; align-items:center; justify-content:center;
-    padding:0; border:0; border-radius:0; cursor:pointer; background:transparent;
+    padding:0; border:0; border-radius:var(--border-radius-control); cursor:pointer; background:transparent;
     transition:background var(--ease), border-color var(--ease), transform var(--spring), filter var(--press);
   }
   .iconbtn svg{width:var(--glyph); height:var(--glyph); display:block; fill:none;
@@ -175,7 +179,8 @@
       "--icon-disabled": "icon/disabled",
       "--icon-disabled-ink": "tertiary/text/disabled",
       "--text-default": "text/default",
-      "--page": "background/default"
+      "--page": "background/default",
+      "--border-radius-control": "border-radius/control"
     },
     "glyphPresence": [
       { "glyph": "icon/default-reverse", "surface": "primary/background/default",   "state": "default" },

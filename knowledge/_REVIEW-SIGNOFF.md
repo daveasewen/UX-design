@@ -18,6 +18,17 @@ that single pass.** Running list of what it must cover:
   or adopt `text/on-inverse`); **success/verified kept MONO** (ink check) vs teal; **blue-vs-mono focus ring**.
 - **Also owed:** DataViz sign-off (parked "good enough"); **Tranche-9 first review**; Masthead/Hero/Headers revisits
   already flagged below.
+- **Video-player re-themed — ★ FAST FOLLOWER, do NOT hold for the consolidated pass (Dave 2026-07-21
+  end-of-session: "fine-ish for now, lets make it a fast follower"):** primary action
+  now the B-D1 ladder ink (red = Legacy-only via override); `--muted` bound to `text/secondary` — a **deliberate
+  darkening** #767676/#9a9a9a → #1A1A1A/#FFFFFF (Dave: *"resolve to the near black... we can review later"*);
+  focus ring → `focus/ring` (was rogue #4d9fff); scrim/controls tokenised (`overlay/version2` / `text/reverse`).
+  **Eyeball in-review:** the darkened caption/timestamp weight; **the bigplay ON-SCRIM treatment — ENACTED
+  same evening** (Dave: "yes but let me eyeball") — light-mode ink fill measured **1.2:1** vs the video (fail;
+  the old red was itself 2.7:1) → play button now joins the on-video control family: reverse fill BOTH modes
+  (14–19:1) + #333333 glyph (12.6:1, driftAllow'd), themed accent stays on the scrub. **Applies in ALL themes —
+  Legacy's play button is white now too (its scrub stays red) — confirm at eyeball.** Also review the scrub
+  played-bar contrast against its track (pre-existing, all themes). Worker-B receipt 2026-07-21 has probe values.
 
 Method + template controls (live variant/state spread from meta · light/dark toggle · responsive slider · comment
 overlay) per the **Method** section. Pointer in `_LIVE-STATE.md` PLANNED/TARGET; memory `full-review-pending`.

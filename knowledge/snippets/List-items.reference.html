@@ -36,6 +36,8 @@
     --success:#2B7E4F; --warning:#C58900; --error:#B92F1E; --info:#306EC6;
     --success-tint:#DCEDE3; --warning-tint:#F6E5CC; --error-tint:#F1E0DC; --info-tint:#D6E3EC;
     --tag-border:#808080; --avatar:#F0F0F0; --focus:#305A85; --page:#FFFFFF;
+    /* shape — semantic radius tier (ADR-0010): tag/status atoms=indicator (matches canon census) */
+    --border-radius-indicator:0;
   }
   [data-theme="dark"]{
     --surface:#1F1F1F; --hover:#232323; --pressed:#1A1A1A; --disabled-surface:#484848;
@@ -44,6 +46,7 @@
     --success:#4A9568; --warning:#C58900; --error:#CC4333; --info:#2674DC;
     --success-tint:#12291D; --warning-tint:#3C2C13; --error-tint:#2C120D; --info-tint:#092131;
     --tag-border:#808080; --avatar:#232323; --focus:#4587A7; --page:#1A1A1A;
+    --border-radius-indicator:0;
   }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
@@ -61,7 +64,7 @@
 
   /* ---- canonical tag atom (SQUARE outline; from Tags.reference) ---- */
   .tag{display:inline-flex; align-items:center; height:24px; padding:0 8px; border:1px solid var(--tag-border);
-    border-radius:0; font:400 12px/1 var(--font); color:var(--text); white-space:nowrap;}
+    border-radius:var(--border-radius-indicator); font:400 12px/1 var(--font); color:var(--text); white-space:nowrap;}
 
   /* ---- list + row ---- */
   ul.list{list-style:none; margin:0; padding:0; background:var(--surface); border:1px solid var(--divider);}
@@ -83,7 +86,7 @@
   /* status detail = the Status-indicator atom (form B): SQUARE RAG tint badge, neutral text/default label + RAG dot.
      Label-on-tint is AA for every RAG (11-19:1); the warning dot is < 3:1 standalone (1.4.11) so meaning is carried
      by the label (1.4.1). flex:none so it hugs the right; the title takes the slack and truncates. */
-  .status{flex:none; display:inline-flex; align-items:center; gap:8px; height:24px; padding:0 8px; border-radius:0; /* type: t-cm-legal + .t-cm-slot (bound in canon/type.css - T-D9/T-D12) */ color:var(--text); white-space:nowrap;}
+  .status{flex:none; display:inline-flex; align-items:center; gap:8px; height:24px; padding:0 8px; border-radius:var(--border-radius-indicator); /* type: t-cm-legal + .t-cm-slot (bound in canon/type.css - T-D9/T-D12) */ color:var(--text); white-space:nowrap;}
   .status .dot{width:8px; height:8px; border-radius:50%; flex:none;}
   .status.ok{background:var(--success-tint);}   .status.ok .dot{background:var(--success);}
   .status.warn{background:var(--warning-tint);} .status.warn .dot{background:var(--warning);}
@@ -206,7 +209,7 @@
   {
     "component": "List items",
     "type": "transaction",
-    "vars": { "--surface":"tertiary/background/default", "--hover":"tertiary/background/hover", "--pressed":"tertiary/background/pressed", "--disabled-surface":"tertiary/background/disabled", "--text":"text/default", "--muted":"text/secondary", "--reverse":"text/reverse", "--disabled-text":"text/disabled", "--icon":"icon/default", "--divider":"divider/border/section", "--success":"rag/success", "--warning":"rag/warning", "--error":"rag/error", "--info":"rag/information", "--success-tint":"rag/success-tint", "--warning-tint":"rag/warning-tint", "--error-tint":"rag/error-tint", "--info-tint":"rag/information-tint", "--tag-border":"form/border/default", "--avatar":"tertiary/background/hover", "--focus":"focus/ring", "--page":"background/default" },
+    "vars": { "--surface":"tertiary/background/default", "--hover":"tertiary/background/hover", "--pressed":"tertiary/background/pressed", "--disabled-surface":"tertiary/background/disabled", "--text":"text/default", "--muted":"text/secondary", "--reverse":"text/reverse", "--disabled-text":"text/disabled", "--icon":"icon/default", "--divider":"divider/border/section", "--success":"rag/success", "--warning":"rag/warning", "--error":"rag/error", "--info":"rag/information", "--success-tint":"rag/success-tint", "--warning-tint":"rag/warning-tint", "--error-tint":"rag/error-tint", "--info-tint":"rag/information-tint", "--tag-border":"form/border/default", "--avatar":"tertiary/background/hover", "--focus":"focus/ring", "--page":"background/default", "--border-radius-indicator":"border-radius/indicator" },
     "contrastPairs": [
       { "fg":"text/default", "bg":"tertiary/background/default", "context":"text" },
       { "fg":"text/secondary", "bg":"tertiary/background/default", "context":"text" },

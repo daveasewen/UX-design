@@ -128,6 +128,7 @@
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
 ## Video-player.reference.html — ✅ PASS
+- 🟡 Video-player.reference.html: ALLOWED drift --accent-label (light) = #333333 (token button/primary/label/default = #FFFFFF) — ON-SCRIM EXCEPTION (Dave 2026-07-21): the bigplay glyph sits on --onvideo-fill (text/reverse — LIGHT in both modes), so the dark-mode label value #333333 applies in BOTH modes; the light-mode ladder value #FFFFFF would be white-on-white. Pending Dave's eyeball per _REVIEW-SIGNOFF.
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
 ## View-options.reference.html — ✅ PASS

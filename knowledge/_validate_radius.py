@@ -40,6 +40,25 @@ STRICT_FILES = [
 MIGRATED_SNIPPETS = {
     "Button.reference.html",
     "Cards.reference.html",
+    "Tabs.reference.html",
+    "Modals.reference.html",
+    "Account-card.reference.html",
+    "Table.reference.html",
+    "List-items.reference.html",
+    "Action-bar.reference.html",
+    "Confirmation.reference.html",
+    "Links.reference.html",
+    "Video-player.reference.html",
+    "Notifications.reference.html",
+    "Input-fields.reference.html",
+    "Selection-controls.reference.html",
+    "Dropdown.reference.html",
+    "Slider.reference.html",
+    "Icon-button.reference.html",
+    "Badge.reference.html",
+    "Tags.reference.html",
+    "Status-indicator.reference.html",
+    "Progress-tracker.reference.html",
 }
 
 ADVISORY_GLOBS = [

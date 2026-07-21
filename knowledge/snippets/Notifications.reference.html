@@ -31,14 +31,17 @@
   [data-theme="light"]{
     --err:#A8000B; --warn:#FFBB33; --ok:#2B7E4F; --info:#305A85;
     --err-t:#F9F2F3; --warn-t:#FFF8EA; --ok-t:#DCEDE3; --info-t:#EBEFF4;
-    --text:#1A1A1A; --page:#FFFFFF; --shadow:rgba(0,0,0,.18); }
+    --text:#1A1A1A; --page:#FFFFFF; --shadow:rgba(0,0,0,.18);
+    /* shape — semantic radius tier (ADR-0010): banner shell=surface. RADIUS ONLY — Legacy RAG colours untouched (§A-AUTH keep-legacy). */
+    --border-radius-surface:0; }
   [data-theme="dark"]{
     /* INTERIM (Dave 2026-06-24): rag ACCENTS (stroke/surface) use LIGHT values in dark — the dark
        rag/information aliases a MISSING color/blue/400 (illustration-palette leak #4587A7, fails
        contrast). Tints stay dark. See [[dark-rag-token-gaps]] — revisit at token level. */
     --err:#A8000B; --warn:#FFBB33; --ok:#4A9568; --info:#305A85;
     --err-t:#260005; --warn-t:#221701; --ok-t:#12291D; --info-t:#000D1B;
-    --text:#FFFFFF; --page:#1A1A1A; --shadow:rgba(0,0,0,.55); }
+    --text:#FFFFFF; --page:#1A1A1A; --shadow:rgba(0,0,0,.55);
+    --border-radius-surface:0; }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
   .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
@@ -57,7 +60,7 @@
   .info{ --accent:var(--info); --tint:var(--info-t); --gtext:#FFFFFF; }
 
   /* shared banner */
-  .note{ --line:24px; --text-shift:7px; display:flex; gap:8px; align-items:flex-start; padding:12px 16px; margin:12px 0; border-radius:0; overflow:hidden;
+  .note{ --line:24px; --text-shift:7px; display:flex; gap:8px; align-items:flex-start; padding:12px 16px; margin:12px 0; border-radius:var(--border-radius-surface); overflow:hidden;
     transition:max-height .3s ease, opacity .2s ease, margin .3s ease, padding .3s ease, border-width .3s ease; }
   .note .ic{ flex:none; height:var(--line,24px); display:inline-flex; align-items:center; }   /* centre the icon to the FIRST line — holds position when the copy wraps */
   .note .ic svg{ width:20px; height:20px; display:block; fill:currentColor; }
@@ -192,7 +195,7 @@
     "component": "Notifications",
     "vars": { "--err": "rag/error", "--warn": "rag/warning", "--ok": "rag/success", "--info": "rag/information",
               "--err-t": "rag/error-tint", "--warn-t": "rag/warning-tint", "--ok-t": "rag/success-tint", "--info-t": "rag/information-tint",
-              "--text": "text/default", "--page": "background/default" },
+              "--text": "text/default", "--page": "background/default", "--border-radius-surface": "border-radius/surface" },
     "contrastPairs": [
       { "fg": "text/default", "bg": "rag/error-tint",       "context": "text" },
       { "fg": "text/default", "bg": "rag/warning-tint",     "context": "text" },

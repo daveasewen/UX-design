@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RULING SHEET — Mono text/secondary: keep the R-D16 collapse, or seat a dim? (v1, 2026-07-21)</title>
+<!--
+  DECISION SHEET (live controller — feedback-live-controller / decisions-as-review-doc).
+  Built at Dave's ask, Phase-1 session 2026-07-21, Worker A (receipt:
+  notes/_receipts/2026-07-21-worker-A-radius-phase1.md). Version v1 — never overwrite (-vN rule).
+
+  THE QUESTION. Dave saw the projector line "--muted bound to text/secondary resolved to
+  #1A1A1A light / #FFFFFF dark, per your ruling" and asked to see it to rule. That resolution IS
+  R-D16 (2026-07-19) rendering live: "Apollo Mono COLLAPSES secondary text to the single ink —
+  de-emphasis is weight + size, not colour ('very mono'). Value now mirrors text/default. Legacy
+  retains the dimmer #545454/#9B9B9B as its own theme override."
+  Options: A keep the collapse (as-ruled) · B seat a Mono dim pair off the color/mono ramp ·
+  C custom pair. Scope: MONO ONLY — Legacy's dim is ruled and untouched either way.
+  If B/C is chosen: text/secondary re-seats, R-D16 gains an AMENDED edge (ADR-0012) — the
+  conductor inscribes; promotion is Dave's.
+-->
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+         --ink:#1A1A1A; --paper:#FFFFFF; }
+  *{box-sizing:border-box;} body{margin:0;font-family:var(--font);background:#F0F0F0;color:var(--ink);}
+  header{background:var(--ink);color:#FFF;padding:20px 28px;}
+  header h1{font-size:18px;font-weight:500;margin:0 0 6px;}
+  header p{font-size:13px;margin:0;max-width:70ch;opacity:.85;}
+  .asruled{display:inline-block;margin-top:10px;padding:3px 10px;border:1px solid #FFF;font-size:11px;letter-spacing:.02em;}
+
+  .controls{position:sticky;top:0;z-index:9;background:#FFF;border-bottom:2px solid var(--ink);
+    padding:14px 28px;display:flex;flex-wrap:wrap;gap:22px;align-items:center;font-size:13px;}
+  .controls fieldset{border:0;padding:0;margin:0;display:flex;gap:14px;align-items:center;}
+  .controls legend{font-weight:500;padding:0 6px 0 0;float:left;}
+  .controls label{display:inline-flex;gap:5px;align-items:center;cursor:pointer;}
+  .controls select,.controls input[type=text]{font:inherit;padding:4px 6px;border:1px solid #767676;background:#FFF;}
+  .controls input[type=text]{width:86px;}
+  .off{opacity:.35;pointer-events:none;}
+
+  .panes{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+  .pane{padding:26px 28px 30px;}
+  .pane.light{background:#FFFFFF;color:#1A1A1A;}
+  .pane.dark{background:#1A1A1A;color:#FFFFFF;}
+  .pane h2{font-size:12px;font-weight:400;letter-spacing:.04em;margin:0 0 18px;opacity:.6;}
+
+  /* Progress-tracker specimen (cloned from snippets/Progress-tracker.reference.html) */
+  .pt{max-width:520px;}
+  .pt .head{display:flex;gap:10px;align-items:baseline;margin-bottom:8px;font-size:14px;}
+  .pt .count{font-weight:500;}
+  .pt .title{font-weight:400;color:var(--sec);}
+  .pt .track{height:4px;background:var(--inc);border-radius:0;overflow:hidden;}
+  .pt .fill{display:block;height:100%;width:40%;background:var(--comp);border-radius:0;}
+  .pane.light .pt{--comp:#B92F1E;--inc:#F0F0F0;}
+  .pane.dark  .pt{--comp:#CC4333;--inc:#484848;}
+
+  /* text-hierarchy strip — real roles only (text/default 500/400 vs text/secondary 400) */
+  .strip{margin:26px 0 0;max-width:520px;font-size:14px;line-height:1.5;}
+  .strip .p{font-weight:500;}
+  .strip .s{font-weight:400;color:var(--sec);}
+  .strip .cap{font-size:11px;opacity:.55;margin-top:4px;}
+
+  .readout{margin-top:24px;font-size:12px;border-collapse:collapse;}
+  .readout td{padding:3px 14px 3px 0;}
+  .chip{display:inline-block;padding:1px 8px;font-size:11px;border:1px solid currentColor;}
+  .pass{color:#2B7E4F;} .fail{color:#B92F1E;font-weight:500;}
+  .pane.dark .pass{color:#4A9568;} .pane.dark .fail{color:#CC4333;}
+
+  .legacy{background:#FFF;border-top:2px solid var(--ink);padding:22px 28px 30px;}
+  .legacy h2{font-size:12px;font-weight:500;margin:0 0 4px;}
+  .legacy p{font-size:12px;margin:0 0 16px;color:#545454;max-width:70ch;}
+  .legacy .duo{display:grid;grid-template-columns:1fr 1fr;gap:0;max-width:900px;border:1px solid #D7D8D6;}
+  .legacy .duo .cell{padding:18px 20px;}
+  .legacy .duo .cell.l{background:#FFF;color:#333;}
+  .legacy .duo .cell.d{background:#1A1A1A;color:#FFF;}
+  .legacy .cell .s{font-weight:400;}
+  .legacy .cell.l .s{color:#545454;} .legacy .cell.d .s{color:#9B9B9B;}
+
+  .export{background:var(--ink);color:#FFF;padding:22px 28px 30px;}
+  .export h2{font-size:12px;font-weight:500;margin:0 0 10px;letter-spacing:.04em;}
+  .export textarea{width:100%;max-width:900px;height:110px;font:12px/1.5 ui-monospace,Menlo,monospace;
+    background:#000;color:#E1E1E1;border:1px solid #484848;padding:12px;}
+  footer{padding:16px 28px 34px;font-size:11px;color:#545454;max-width:86ch;}
+</style>
+</head>
+<body>
+<header>
+  <h1>Mono <code>text/secondary</code> — keep the R-D16 collapse, or seat a dim?</h1>
+  <p>The projector line you flagged (<code>--muted → text/secondary → #1A1A1A / #FFFFFF</code>) is
+  R-D16 rendering live: Mono collapses secondary text to the single ink; de-emphasis is weight +
+  size, not colour. Below is that collapse on the real consumer you pointed at, with a live dial
+  for the alternative. Legacy's ruled dim is shown for comparison and is untouched by this.</p>
+  <span class="asruled">AS-RULED TODAY: option A (R-D16 collapse) · 11 snippet consumers</span>
+</header>
+
+<div class="controls">
+  <fieldset id="optSet">
+    <legend>Ruling</legend>
+    <label><input type="radio" name="opt" value="keep" checked> <strong>A</strong> keep collapse (as-ruled)</label>
+    <label><input type="radio" name="opt" value="ramp"> <strong>B</strong> dim off the mono ramp</label>
+    <label><input type="radio" name="opt" value="hex"> <strong>C</strong> custom pair</label>
+  </fieldset>
+  <fieldset id="rampSet" class="off">
+    <legend>Ramp</legend>
+    <label>light <select id="rampL"></select></label>
+    <label>dark <select id="rampD"></select></label>
+  </fieldset>
+  <fieldset id="hexSet" class="off">
+    <legend>Hex</legend>
+    <label>light <input type="text" id="hexL" value="#626262"></label>
+    <label>dark <input type="text" id="hexD" value="#B7B7B7"></label>
+  </fieldset>
+</div>
+
+<div class="panes">
+  <section class="pane light" id="paneL">
+    <h2>Mono · light · #FFFFFF</h2>
+    <div class="pt">
+      <div class="head"><span class="count">Step 2 of 5</span><span class="title">Review your payment</span></div>
+      <div class="track"><span class="fill"></span></div>
+    </div>
+    <div class="strip">
+      <div class="p">Current account · 40-12-34 5678</div>
+      <div class="s">Available balance updated 21 July, 21:40</div>
+      <div class="cap">text/default 500 over text/secondary 400 — the de-emphasis pair</div>
+    </div>
+    <table class="readout">
+      <tr><td>secondary : page</td><td id="rL1">—</td><td id="cL1"></td></tr>
+      <tr><td>Δ secondary : ink</td><td id="rL2">—</td><td><span style="opacity:.55">(no floor — separation read)</span></td></tr>
+    </table>
+  </section>
+  <section class="pane dark" id="paneD">
+    <h2>Mono · dark · #1A1A1A</h2>
+    <div class="pt">
+      <div class="head"><span class="count">Step 2 of 5</span><span class="title">Review your payment</span></div>
+      <div class="track"><span class="fill"></span></div>
+    </div>
+    <div class="strip">
+      <div class="p">Current account · 40-12-34 5678</div>
+      <div class="s">Available balance updated 21 July, 21:40</div>
+      <div class="cap">text/default 500 over text/secondary 400 — the de-emphasis pair</div>
+    </div>
+    <table class="readout">
+      <tr><td>secondary : page</td><td id="rD1">—</td><td id="cD1"></td></tr>
+      <tr><td>Δ secondary : ink</td><td id="rD2">—</td><td><span style="opacity:.55">(no floor — separation read)</span></td></tr>
+    </table>
+  </section>
+</div>
+
+<div class="legacy">
+  <h2>Legacy comparison — ruled override, unchanged by this ruling</h2>
+  <p>Legacy retains its dimmer pair #545454 light (7.46:1) / #9B9B9B dark (6.53:1) per its own
+  override set. This is what a dim step looks like when a theme carries one.</p>
+  <div class="duo">
+    <div class="cell l"><div style="font-weight:500">Step 2 of 5 <span class="s" style="font-weight:400">Review your payment</span></div></div>
+    <div class="cell d"><div style="font-weight:500">Step 2 of 5 <span class="s" style="font-weight:400">Review your payment</span></div></div>
+  </div>
+</div>
+
+<div class="export">
+  <h2>EXPORT — ledger-ready (updates live)</h2>
+  <textarea id="out" readonly></textarea>
+</div>
+
+<footer>
+  Provenance: R-D16 note in tokens/semantic-colour.json (verbatim in the header comment) ·
+  grey-tint standing check satisfied (all numbers surfaced live above) · floors: 4.5:1 body text ·
+  scope Mono only; if B/C is ruled, text/secondary re-seats + R-D16 gains an AMENDED edge
+  (ADR-0012) and the 11 consumers re-project via gen_snippet_tokens — conductor inscribes;
+  no git from this sheet. Worker A, 2026-07-21.
+</footer>
+
+<script>
+(function(){
+  var RAMP=[["mono/5","#313131"],["mono/6","#484848"],["mono/7","#626262"],["mono/8","#808080"],
+            ["mono/9","#9D9D9D"],["mono/10","#B7B7B7"],["mono/11","#CECECE"],["mono/12","#E1E1E1"]];
+  var INK_L="#1A1A1A", INK_D="#FFFFFF", PAGE_L="#FFFFFF", PAGE_D="#1A1A1A";
+
+  function lum(hex){
+    var m=/^#?([0-9a-f]{6})$/i.exec(hex.trim()); if(!m) return null;
+    var v=[0,2,4].map(function(i){ var c=parseInt(m[1].substr(i,2),16)/255;
+      return c<=0.03928 ? c/12.92 : Math.pow((c+0.055)/1.055,2.4); });
+    return 0.2126*v[0]+0.7152*v[1]+0.0722*v[2];
+  }
+  function ratio(a,b){ var la=lum(a),lb=lum(b); if(la==null||lb==null) return null;
+    var hi=Math.max(la,lb),lo=Math.min(la,lb); return (hi+0.05)/(lo+0.05); }
+  function fmt(r){ return r==null ? "?" : (Math.round(r*100)/100).toFixed(2)+":1"; }
+
+  var rampL=document.getElementById('rampL'), rampD=document.getElementById('rampD');
+  RAMP.forEach(function(p){
+    var oL=new Option(p[0]+"  "+p[1],p[1]); var oD=new Option(p[0]+"  "+p[1],p[1]);
+    rampL.add(oL); rampD.add(oD);
+  });
+  rampL.value="#626262"; rampD.value="#B7B7B7";
+
+  function current(){
+    var opt=document.querySelector('input[name=opt]:checked').value;
+    if(opt==="keep") return {opt:opt,l:INK_L,d:INK_D};
+    if(opt==="ramp") return {opt:opt,l:rampL.value,d:rampD.value,
+      nl:rampL.options[rampL.selectedIndex].text.split("  ")[0],
+      nd:rampD.options[rampD.selectedIndex].text.split("  ")[0]};
+    return {opt:opt,l:document.getElementById('hexL').value,d:document.getElementById('hexD').value};
+  }
+
+  function chip(el,r){ el.innerHTML = r==null ? "" :
+    (r>=4.5 ? '<span class="chip pass">AA pass</span>' : '<span class="chip fail">AA FAIL</span>'); }
+
+  function apply(){
+    var c=current();
+    document.getElementById('rampSet').classList.toggle('off', c.opt!=="ramp");
+    document.getElementById('hexSet').classList.toggle('off', c.opt!=="hex");
+    document.getElementById('paneL').style.setProperty('--sec', c.l);
+    document.getElementById('paneD').style.setProperty('--sec', c.d);
+    var r1=ratio(c.l,PAGE_L), r2=ratio(c.l,INK_L), r3=ratio(c.d,PAGE_D), r4=ratio(c.d,INK_D);
+    document.getElementById('rL1').textContent=fmt(r1); chip(document.getElementById('cL1'),r1);
+    document.getElementById('rL2').textContent=fmt(r2);
+    document.getElementById('rD1').textContent=fmt(r3); chip(document.getElementById('cD1'),r3);
+    document.getElementById('rD2').textContent=fmt(r4);
+    var out;
+    if(c.opt==="keep"){
+      out="RULING (pick one, then this line goes to the ledger):\n"+
+          "text/secondary (Mono): KEEP the R-D16 collapse — single ink #1A1A1A/#FFFFFF; "+
+          "de-emphasis stays weight+size. No token change. R-D16 stands unamended.";
+    } else {
+      var src=c.opt==="ramp" ? (c.nl+" / "+c.nd) : "custom";
+      out="RULING (pick one, then this line goes to the ledger):\n"+
+          "text/secondary (Mono): RE-SEAT to "+c.l+" light / "+c.d+" dark ("+src+").\n"+
+          "  vs page: "+fmt(r1)+" light, "+fmt(r3)+" dark (floor 4.5) · Δ vs ink: "+fmt(r2)+" / "+fmt(r4)+"\n"+
+          "  Token edit: text/secondary $value+$alias; R-D16 -> AMENDED (ADR-0012 edge); "+
+          "11 consumers re-project.\n"+
+          '  JSON: {"light":"'+c.l+'","dark":"'+c.d+'"}';
+    }
+    document.getElementById('out').value=out;
+  }
+
+  document.querySelectorAll('input[name=opt]').forEach(function(r){r.addEventListener('change',apply);});
+  [rampL,rampD,document.getElementById('hexL'),document.getElementById('hexD')].forEach(function(el){
+    el.addEventListener('input',apply); el.addEventListener('change',apply);
+  });
+  apply();
+})();
+</script>
+</body>
+</html>

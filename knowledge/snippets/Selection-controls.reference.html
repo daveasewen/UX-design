@@ -22,9 +22,10 @@
   and the checkbox/radio/switch here. This REBINDS the Figma chip-selected fill off the deprecated
   interactive(depricate)/on-light/surface/active/* black (see selection-controls.meta tokenValidation).
 
-  CORNERS: checkbox + chips are SQUARE (border-radius:0, brand angular rule); radio is round (a circle)
-  and switch is a rounded pill — round by design, like Badge/Avatar. Tokens resolved light+dark from
-  the store; only PASSING contrast pairs are declared.
+  CORNERS: checkbox + chips bind the CONTROL radius role (border-radius/control — Mono resolves 0,
+  the brand angular rule; themes flex it per ADR-0010). Radio is round (a circle) and switch is a
+  rounded pill — round BY DESIGN in every theme (50%/999px idioms stay literal), like Badge/Avatar.
+  Tokens resolved light+dark from the store; only PASSING contrast pairs are declared.
 -->
 <style>
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
@@ -44,6 +45,9 @@
     --chip-hover:#F0F0F0;         /* form/background/hover */
     --chip-pressed:#808080;       /* form/background/pressed */
     --reverse:#FFFFFF;            /* text/reverse */
+    /* shape — semantic radius tier (ADR-0010 flex slots). Checkbox + chips bind the CONTROL role;
+       radio (50%) + switch (999px) are round by design and stay literal. */
+    --border-radius-control:0;
   }
   [data-theme="dark"]{
     --ctrl-border:#808080; --ctrl-border-active:#FFFFFF; --ctrl-border-disabled:#484848;
@@ -51,12 +55,13 @@
     --glyph:#333333;              /* text/on-inverse (inverts) */
     --label:#FFFFFF; --label-disabled:#808080; --error:#CC4333; --focus:#4587A7; --page:#1A1A1A;
     --chip-hover:#232323; --chip-pressed:#484848; --reverse:#FFFFFF;
+    --border-radius-control:0;
   }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--label);
     -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
   .demo-controls{margin-bottom:1.5rem; display:flex; gap:1rem; align-items:center; flex-wrap:wrap; font-size:13px;}
-  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border-radius:0; cursor:pointer;
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border-radius:var(--border-radius-control); cursor:pointer;
     border:1px solid var(--ctrl-border); background:transparent; color:var(--label);}
   .demo-controls button:hover{background:var(--chip-hover);}
   .demo-controls button:active{transform:translateY(1px);}
@@ -72,7 +77,7 @@
   .field input:disabled + label{cursor:not-allowed; color:var(--label-disabled);}
 
   /* ---- checkbox (square) ---- */
-  .box{width:22px; height:22px; flex:none; border:2px solid var(--ctrl-border); border-radius:0; background:transparent;
+  .box{width:22px; height:22px; flex:none; border:2px solid var(--ctrl-border); border-radius:var(--border-radius-control); background:transparent;
     display:flex; align-items:center; justify-content:center; transition:background var(--ease), border-color var(--ease);}
   .box svg{width:14px; height:14px;}
   .box path,.box rect{stroke:var(--glyph); stroke-width:2.4; fill:none;}
@@ -114,7 +119,7 @@
 
   /* ---- chips (square, brand angular) ---- */
   .chips{display:flex; flex-wrap:wrap; gap:8px;}
-  .chip{display:inline-flex; align-items:center; gap:8px; padding:4px 12px; border-radius:0;
+  .chip{display:inline-flex; align-items:center; gap:8px; padding:4px 12px; border-radius:var(--border-radius-control);
     border:1px solid var(--ctrl-border); background:transparent; color:var(--label);
     font:500 var(--chip-fs)/20px var(--font); cursor:pointer; white-space:nowrap; min-height:32px;
     transition:background var(--ease), color var(--ease), border-color var(--ease);}
@@ -127,7 +132,7 @@
   .chip[aria-pressed="true"] .star,.chip[aria-checked="true"] .star{fill:currentColor;}
   .chip:disabled{border-color:var(--ctrl-border-disabled); color:var(--label-disabled); cursor:not-allowed; background:transparent;}
   .chip .x{display:inline-flex; position:relative; width:18px; height:18px; align-items:center; justify-content:center;
-    border:0; background:transparent; color:inherit; padding:0; font:inherit; line-height:1; cursor:pointer; border-radius:0;}
+    border:0; background:transparent; color:inherit; padding:0; font:inherit; line-height:1; cursor:pointer; border-radius:var(--border-radius-control);}
   .chip .x::before{content:""; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:24px; height:24px;}  /* 24×24 hit target (2.5.8 floor; aid-009 ruling 2026-07-03 — Tooltip house pattern; 44 would overlap adjacent chips) */
   .chip .x:hover{opacity:.6;}
   .chip .x:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
@@ -222,7 +227,8 @@
       "--ctrl-border": "form/border/default", "--ctrl-border-active": "form/border/active", "--ctrl-border-disabled": "form/border/disabled",
       "--checked": "secondary/background/default", "--glyph": "text/on-inverse",
       "--label": "text/default", "--label-disabled": "text/disabled", "--error": "rag/error", "--page": "background/default",
-      "--chip-hover": "form/background/hover", "--chip-pressed": "form/background/pressed", "--reverse": "text/reverse"
+      "--chip-hover": "form/background/hover", "--chip-pressed": "form/background/pressed", "--reverse": "text/reverse",
+      "--border-radius-control": "border-radius/control"
     },
     "contrastPairs": [
       { "fg": "text/default",  "bg": "background/default",          "context": "text" },

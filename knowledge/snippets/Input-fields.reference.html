@@ -41,6 +41,9 @@
     --success:#2B7E4F;              /* rag/success */
     --focus:#305A85;                /* focus/ring */
     --page:#FFFFFF;                 /* background/default */
+    /* shape — semantic radius tier (ADR-0010 flex slots; roles fall back to border-radius/default).
+       Fields + in-field buttons bind the CONTROL role. */
+    --border-radius-control:0;
   }
   [data-theme="dark"]{
     --field-bg-default:#FFFFFF00;   /* form/background/default (transparent, alpha restored) */
@@ -56,13 +59,14 @@
     --success:#4A9568;              /* rag/success */
     --focus:#4587A7;                /* focus/ring */
     --page:#1A1A1A;                 /* background/default */
+    --border-radius-control:0;
   }
 
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text);
     -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
   .demo-controls{margin-bottom:2rem; display:flex; gap:.75rem; align-items:center; flex-wrap:wrap; font-size:13px;}
-  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border-radius:0; cursor:pointer;
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border-radius:var(--border-radius-control); cursor:pointer;
     border:1px solid var(--border-default); background:transparent; color:var(--text);}
   .demo-controls button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
   h2.sec{font:500 16px/1.3 var(--font); /* sentence case — type26-019 sweep (Dave ruling 2026-07-02): no uppercase, caps tracking removed with it */ color:var(--text);
@@ -80,7 +84,7 @@
 
   /* (?) optional help label — a real button, accessible name + tooltip */
   .help-btn{position:relative; width:18px; height:18px; padding:0; border:0; background:transparent;
-    color:var(--icon); cursor:pointer; display:inline-flex; align-items:center; justify-content:center; border-radius:0;}
+    color:var(--icon); cursor:pointer; display:inline-flex; align-items:center; justify-content:center; border-radius:var(--border-radius-control);}
   .help-btn:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
   .help-btn:active{transform:scale(.92);}
   .help-btn .tip{position:absolute; left:50%; transform:translateX(-50%); bottom:calc(100% + 8px);
@@ -90,7 +94,7 @@
 
   /* ---------- BOXED field ---------- */
   .box{display:flex; align-items:center; gap:16px; padding:8px 16px;
-    border:1px solid var(--border-default); background:var(--field-bg-default); border-radius:0; position:relative;
+    border:1px solid var(--border-default); background:var(--field-bg-default); border-radius:var(--border-radius-control); position:relative;
     transition:border-color var(--ease), background var(--ease), box-shadow var(--ease); color:var(--icon);}
     /* padding was 9/11 (optically centred FOR the active state's 4px bar) — re-centred to 10/10
        (Dave 2026-07-02): text is TRUE-centred at REST and never moves; while active the bar makes
@@ -151,7 +155,7 @@
   .uctrl{position:relative;}
   .uctrl input{width:100%; height:52px; padding:0 28px 0 2px; font:400 16px/52px var(--font);
     color:var(--text); background:var(--field-bg-default); border:0; border-bottom:1px solid var(--border-default);
-    border-radius:0; outline:none; transition:background var(--ease), border-color var(--ease);}
+    border-radius:var(--border-radius-control); outline:none; transition:background var(--ease), border-color var(--ease);}
   .uctrl input::placeholder{color:var(--text); opacity:1; font-weight:400;}
   .uctrl input:hover:not(:focus){background:var(--field-bg-hover);}
   .uctrl::after{content:""; position:absolute; left:0; bottom:0; height:3px; width:100%;
@@ -321,7 +325,8 @@
       "--error": "rag/error",
       "--success": "rag/success",
       "--focus": "focus/ring",
-      "--page": "background/default"
+      "--page": "background/default",
+      "--border-radius-control": "border-radius/control"
     },
     "contrastPairs": [
       { "fg": "text/default",        "bg": "background/default", "context": "text" },

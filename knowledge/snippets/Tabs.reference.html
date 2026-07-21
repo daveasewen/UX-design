@@ -29,19 +29,22 @@
     --tabs-overflow-border:#000000; --tabs-overflow-background:#FFFFFF;
     --text-default:#1A1A1A; --text-reverse:#FFFFFF;
     --tertiary-hover:#F0F0F0; --tertiary-pressed:#626262; --focus-ring:#305A85; --page:#FFFFFF;
+    /* shape — semantic radius tier (ADR-0010): tabs/buttons=control, menu=surface, active bar=indicator */
+    --border-radius-control:0; --border-radius-surface:0; --border-radius-indicator:0;
   }
   [data-theme="dark"]{
     --tabs-active:#DB0011; --tabs-background:#1F1F1F; --tabs-standard-border:#808080;
     --tabs-overflow-border:#808080; --tabs-overflow-background:#1F1F1F;
     --text-default:#FFFFFF; --text-reverse:#FFFFFF;
     --tertiary-hover:#232323; --tertiary-pressed:#1A1A1A; --focus-ring:#4587A7; --page:#1A1A1A;
+    --border-radius-control:0; --border-radius-surface:0; --border-radius-indicator:0;
   }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; font-family:var(--font); font-size:var(--fs); line-height:var(--lh);
     background:var(--page); color:var(--text-default); -webkit-font-smoothing:antialiased;
     transition:background var(--fade), color var(--fade);}
   .demo-controls{margin-bottom:1.75rem; display:flex; gap:1rem; align-items:center; flex-wrap:wrap; font-size:13px;}
-  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border-radius:0; cursor:pointer;
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border-radius:var(--border-radius-control); cursor:pointer;
     border:1px solid var(--tabs-standard-border); background:var(--tabs-background); color:var(--text-default);}
   .demo-controls label{display:flex; gap:.5rem; align-items:center;}
   .demo-controls input[type=range]{accent-color:var(--tabs-active);}
@@ -49,7 +52,7 @@
   .tabs{ width:var(--demo-width, 640px); max-width:100%; }
   .tablist{position:relative; display:flex; gap:var(--tab-gap); align-items:stretch;
     background:var(--tabs-background); border-bottom:var(--track-h) solid var(--tabs-standard-border);}
-  .tab{position:relative; appearance:none; border:0; background:transparent; border-radius:0; flex:0 0 auto;
+  .tab{position:relative; appearance:none; border:0; background:transparent; border-radius:var(--border-radius-control); flex:0 0 auto;
     font:inherit; font-weight:var(--weight); color:var(--text-default); opacity:.75;
     height:var(--tab-h); padding:0 var(--tab-pad-x); display:inline-flex; align-items:center; gap:8px;
     cursor:pointer; white-space:nowrap; transition:opacity var(--fade), background var(--fade);}
@@ -61,27 +64,27 @@
   .tab:focus-visible{outline:2px solid var(--focus-ring); outline-offset:-3px;}
 
   .indicator{position:absolute; bottom:calc(-1 * var(--track-h)); height:var(--indicator-h);
-    background:var(--tabs-active); border-radius:0; transition:left var(--move), width var(--move), opacity var(--fade);}
+    background:var(--tabs-active); border-radius:var(--border-radius-indicator); transition:left var(--move), width var(--move), opacity var(--fade);}
   @media (prefers-reduced-motion: reduce){ .indicator{transition:opacity var(--fade);} .panel{animation:none !important;} }
 
   .overflow{position:relative; margin-left:auto; display:flex;}
   .overflow[hidden]{display:none;}
   .overflow__trigger{appearance:none; font:inherit; font-weight:var(--weight); height:var(--tab-h);
     padding:0 16px; display:inline-flex; align-items:center; gap:8px; background:transparent;
-    color:var(--text-default); border:0; cursor:pointer; border-radius:0; opacity:.75; white-space:nowrap;}
+    color:var(--text-default); border:0; cursor:pointer; border-radius:var(--border-radius-control); opacity:.75; white-space:nowrap;}
   .overflow__trigger:hover{background:var(--tertiary-hover); opacity:1;}
   .overflow__trigger:focus-visible{outline:2px solid var(--focus-ring); outline-offset:-3px;}
   .ovcount{display:inline-flex; align-items:center; justify-content:center; min-width:18px; height:18px;
     padding:0 4px; background:var(--tabs-active); color:var(--text-reverse); font-size:12px; font-weight:500;
     border-radius:999px;}                                      /* round badge */
   .overflow__menu{position:absolute; right:0; top:calc(100% + 6px); min-width:220px;
-    background:var(--tabs-overflow-background); border:1px solid var(--tabs-overflow-border); border-radius:0;
+    background:var(--tabs-overflow-background); border:1px solid var(--tabs-overflow-border); border-radius:var(--border-radius-surface);
     box-shadow:0 8px 28px rgba(0,0,0,.28); padding:4px; margin:0; list-style:none; z-index:20;
     opacity:0; transform:translateY(-6px); pointer-events:none; transition:opacity var(--fade), transform var(--fade);}
   .overflow__menu[data-open="true"]{opacity:1; transform:none; pointer-events:auto;}
   .overflow__item{display:flex; width:100%; align-items:center; text-align:left; appearance:none; border:0;
     background:transparent; color:var(--text-default); font:inherit; cursor:pointer; padding:12px 12px;
-    min-height:44px; border-radius:0;}
+    min-height:44px; border-radius:var(--border-radius-control);}
   .overflow__item:hover{background:var(--tertiary-hover);}
   .overflow__item:focus-visible{outline:2px solid var(--focus-ring); outline-offset:-2px;}
   .overflow__item:disabled{opacity:.35; cursor:not-allowed;}
@@ -132,7 +135,9 @@
       "--tabs-standard-border": "tabs/standard-border", "--tabs-overflow-border": "tabs/overflow-border",
       "--tabs-overflow-background": "tabs/overflow-background", "--text-default": "text/default",
       "--text-reverse": "text/reverse", "--tertiary-hover": "tertiary/background/hover",
-      "--tertiary-pressed": "tertiary/background/pressed", "--focus-ring": "focus/ring", "--page": "background/default"
+      "--tertiary-pressed": "tertiary/background/pressed", "--focus-ring": "focus/ring", "--page": "background/default",
+      "--border-radius-control": "border-radius/control", "--border-radius-surface": "border-radius/surface",
+      "--border-radius-indicator": "border-radius/indicator"
     },
     "contrastPairs": [
       { "fg": "text/default", "bg": "tabs/background", "context": "text" },

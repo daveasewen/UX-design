@@ -20,9 +20,12 @@
 
   :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; --press:90ms cubic-bezier(0,0,.58,1); }
   [data-theme="light"]{ --success:#2B7E4F; --text:#1A1A1A; --muted:#1A1A1A; --page:#FFFFFF;
-    --pri:#DB0011; --pri-hover:#BA1110; --on-pri:#FFFFFF; --ghost-hover:#F0F0F0; }
+    --pri:#1A1A1A; --pri-hover:#626262; --on-pri:#FFFFFF; --ghost-hover:#F0F0F0;
+    /* shape — semantic radius tier (ADR-0010): buttons=control */
+    --border-radius-control:0; }
   [data-theme="dark"]{ --success:#FFFFFF; --text:#FFFFFF; --muted:#FFFFFF; --page:#1A1A1A;
-    --pri:#DB0011; --pri-hover:#BA1110; --on-pri:#FFFFFF; --ghost-hover:#232323; }
+    --pri:#FAFAFA; --pri-hover:#B7B7B7; --on-pri:#333333; --ghost-hover:#232323;
+    --border-radius-control:0; }
     /* --success dark = WHITE (driftAllow, not rag/success): RAG ROUNDEL POLICY (Dave 2026-07-02
        eve) — dark roundels go WHITE with a BLACK mark. The tick is a page-cutout, so it turns
        black automatically (was #00847F + black cutout = 2.77, failed the ≥4.5 mark leg). */
@@ -39,7 +42,7 @@
   .confirm__msg{ font:400 16px/1.5 var(--font); color:var(--muted); margin:0; }
   .confirm__actions{ display:flex; flex-direction:column; gap:12px; width:100%; margin-top:12px; }
   /* actions = Button atom (reused); full-width so press-only physics (no hover-grow — would overflow) */
-  .confirm .btn{ height:44px; min-width:96px; width:100%; padding:0 20px; border:0; border-radius:0; cursor:pointer; /* type: t-cm-button + .t-cm-slot (bound in canon/type.css - T-D9/T-D12) */
+  .confirm .btn{ height:44px; min-width:96px; width:100%; padding:0 20px; border:0; border-radius:var(--border-radius-control); cursor:pointer; /* type: t-cm-button + .t-cm-slot (bound in canon/type.css - T-D9/T-D12) */
     display:inline-flex; align-items:center; justify-content:center; transition:background var(--ease), filter var(--press); }
   .confirm .btn:focus-visible{ outline:2px solid var(--text); outline-offset:2px; }
   .confirm .btn:active{ filter:brightness(.9); }
@@ -90,18 +93,19 @@
       "--text": "text/default",
       "--muted": "text/secondary",
       "--page": "background/default",
-      "--pri": "primary/background/default",
-      "--pri-hover": "primary/background/hover",
-      "--on-pri": "text/reverse",
-      "--ghost-hover": "tertiary/background/hover"
+      "--pri": "button/primary/background/default",
+      "--pri-hover": "button/primary/background/hover",
+      "--on-pri": "button/primary/label/default",
+      "--ghost-hover": "tertiary/background/hover",
+      "--border-radius-control": "border-radius/control"
     },
     "driftAllow": { "--success": ["dark"], "$reason": "RAG ROUNDEL POLICY (Dave 2026-07-02 eve): dark roundels are WHITE with a BLACK mark — icon shape + label carry meaning. The glyph's tick is a page-cutout, so white shape + black page = 21:1 (rag/success #00847F with a black cutout was 2.77, failing the >=4.5 mark leg). Light keeps rag/success." },
     "contrastPairs": [
       { "fg": "rag/success", "bg": "background/default", "context": "ui" },
       { "fg": "text/default", "bg": "background/default", "context": "text" },
       { "fg": "text/secondary", "bg": "background/default", "context": "text" },
-      { "fg": "text/reverse", "bg": "primary/background/default", "context": "text" },
-      { "fg": "text/reverse", "bg": "primary/background/hover", "context": "text" },
+      { "fg": "button/primary/label/default", "bg": "button/primary/background/default", "context": "text" },
+      { "fg": "button/primary/label/default", "bg": "button/primary/background/hover", "context": "text" },
       { "fg": "text/default", "bg": "tertiary/background/hover", "context": "text" }
     ],
     "requiredAria": ["role=\"group\"", "aria-labelledby", "aria-hidden=\"true\""]

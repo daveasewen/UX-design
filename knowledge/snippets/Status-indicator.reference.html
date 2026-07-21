@@ -30,11 +30,15 @@
     --success:#2B7E4F; --warning:#C58900; --error:#B92F1E; --neutral:#808080; --info:#306EC6;
     --success-tint:#DCEDE3; --warning-tint:#F6E5CC; --error-tint:#F1E0DC; --info-tint:#D6E3EC;
     --label:#1A1A1A; --disabled:#E1E1E1; --divider:#E1E1E1; --focus:#305A85; --page:#FFFFFF;
+    /* shape — semantic radius tier (ADR-0010 flex slots). Tint chip = INDICATOR (same atom as
+       List-items .status, which binds indicator); the simulate button = CONTROL; dots 50% literal. */
+    --border-radius-control:0; --border-radius-indicator:0;
   }
   [data-theme="dark"]{
     --success:#4A9568; --warning:#C58900; --error:#CC4333; --neutral:#FFFFFF; --info:#2674DC;
     --success-tint:#12291D; --warning-tint:#3C2C13; --error-tint:#2C120D; --info-tint:#092131;
     --label:#FFFFFF; --disabled:#808080; --divider:#808080; --focus:#4587A7; --page:#1A1A1A;
+    --border-radius-control:0; --border-radius-indicator:0;
   }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--label); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
@@ -53,9 +57,9 @@
   .neu .dot{background:var(--neutral);} .inf .dot{background:var(--info);}
   .stat.is-disabled{color:var(--disabled);} .stat.is-disabled .dot{background:var(--disabled);}
 
-  /* ---- form B: square tint chip (border-radius:0; label is text/default → all tints AA) ---- */
+  /* ---- form B: tint chip (INDICATOR radius role — Mono square; label is text/default → all tints AA) ---- */
   .chips{display:flex; flex-wrap:wrap; gap:12px;}
-  .chip{display:inline-flex; align-items:center; gap:8px; height:24px; padding:0 8px; border-radius:0; /* type: t-cm-legal + .t-cm-slot (bound in canon/type.css - T-D9/T-D12) */ color:var(--label); white-space:nowrap;} /* SAME spec as List-items .status — this atom IS that badge */
+  .chip{display:inline-flex; align-items:center; gap:8px; height:24px; padding:0 8px; border-radius:var(--border-radius-indicator); /* type: t-cm-legal + .t-cm-slot (bound in canon/type.css - T-D9/T-D12) */ color:var(--label); white-space:nowrap;} /* SAME spec as List-items .status — this atom IS that badge (both bind the indicator role) */
   .chip .dot{width:8px; height:8px;}
   .chip.ok{background:var(--success-tint);} .chip.warn{background:var(--warning-tint);}
   .chip.err{background:var(--error-tint);} .chip.inf{background:var(--info-tint);}
@@ -63,7 +67,7 @@
   /* ---- form C: live announced status ---- */
   .live{display:flex; align-items:center; gap:16px; flex-wrap:wrap; padding:12px 16px; border:1px solid var(--divider);}
   .live .now{display:flex; align-items:center; gap:12px; font:500 16px/1.3 var(--font); min-width:160px;}
-  .sim{/* type: t-cm-caption (bound in canon/type.css - T-D9/T-D12) */ padding:8px 16px; border:1px solid var(--neutral); background:transparent; color:var(--label); cursor:pointer; border-radius:0;}
+  .sim{/* type: t-cm-caption (bound in canon/type.css - T-D9/T-D12) */ padding:8px 16px; border:1px solid var(--neutral); background:transparent; color:var(--label); cursor:pointer; border-radius:var(--border-radius-control);}
   .sim:hover{border-color:var(--label);}
   .sim:active{transform:translateY(1px);}
   .sim:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
@@ -117,7 +121,8 @@
     "vars": {
       "--success":"rag/success", "--warning":"rag/warning", "--error":"rag/error", "--neutral":"rag/neutral", "--info":"rag/information",
       "--success-tint":"rag/success-tint", "--warning-tint":"rag/warning-tint", "--error-tint":"rag/error-tint", "--info-tint":"rag/information-tint",
-      "--label":"text/default", "--disabled":"text/disabled", "--divider":"divider/border/section", "--focus":"focus/ring", "--page":"background/default"
+      "--label":"text/default", "--disabled":"text/disabled", "--divider":"divider/border/section", "--focus":"focus/ring", "--page":"background/default",
+      "--border-radius-control":"border-radius/control", "--border-radius-indicator":"border-radius/indicator"
     },
     "contrastPairs": [
       { "fg":"text/default", "bg":"background/default", "context":"text" },

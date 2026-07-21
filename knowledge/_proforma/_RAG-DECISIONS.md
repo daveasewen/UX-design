@@ -5,6 +5,41 @@ session that produced it. Sibling to `_TYPE-DECISIONS.md` / `_DATAVIZ-DECISIONS.
 
 ---
 
+## R-D22 — `progress/complete` = INK (progress is structure, not status) + Badge mints the component slot `badge/background`; the Mono red-drift pair CLOSED (2026-07-21). Source: Dave, live on the showroom harness (Phase-1 worker-A session; verbatim quotes preserved from the worker receipt).
+
+Phase-1's theme-response audit found the last two Mono surfaces resolving Legacy `#DB0011` (the R-D19
+drift class): `progress/complete` (flat both modes, pre-R-D19 "brand red" note) and Badge's `--surface`
+(via the OLD bare `primary/*` ladder — a path no theme override reaches, so Badge rendered `#DB0011` in
+all four themes by accident of wiring, not by ruling).
+
+**The trail — three moves in one evening, inscribed whole so no intermediate state reads as final:**
+
+1. **First ruling:** *"resolve this to the newer red status color"* — the WHY, verbatim: *"mono is named
+   mono for the very reason it only uses colour with intent, rag, status and dataviz only."* Both seated
+   on the Mono status red. Dave's contrast hunt (*"is there a red value for glyphs that carry meaning
+   like arrows etc"*) answered by arithmetic: **black FAILS both reds** (3.49:1 on `#B92F1E` · 4.42:1 on
+   `#CC4333`); **white passes both** (6.02 / 4.75) — breach-is-white survives on numbers, not habit.
+2. **Progress refined on the harness:** *"i think this is the right behavior and in mono and console it
+   should be black. the colours in legacy and supercharge are fine."* → **`progress/complete` = the ink
+   pair `#1A1A1A`/`#FFFFFF`** (`$alias` `mono/4` + white, mirroring `text/default`; literal black is
+   invisible on the dark page — interpretation reflected back before enacting). Console inherits Mono;
+   **Legacy keeps `#DB0011` via its override set; Supercharge gains its FIRST override**
+   (`#B92F1E`/`#CC4333`, the exact pair on screen at ruling time — the file's "deliberately empty"
+   description superseded for this one path). **Progress is STRUCTURE, not status.**
+3. **Badge:** *"the colours are fine apart from Legacy, it should be the legacy primary red on both
+   light and dark."* → minted **`badge/background`** (component tier, the `button/primary/*` precedent):
+   Mono `$alias` bare `rag/error` (per-mode `#B92F1E`/`#CC4333`, numeral WHITE); **Legacy overrides it
+   flat `#DB0011` both modes — brand-primary, deliberately NOT the Legacy error pair** (the slot exists
+   precisely so badge ≠ error can diverge per theme). Known fidelity condition: white numeral on
+   `#DB0011` ≈ 4.02:1 → **joins Legacy `text/on-success` (white-on-teal) as the Legacy
+   fidelity-vs-AA family — rule the family together, queued.**
+
+**Closes** the OWED `progress/complete` Mono ruling (deferred since R-D19/R-D20). **`tabs/active` is now
+the LAST unruled red** (archived consumer). Verified: cascade 32 paths / 61 projections in sync; canon
+projections spot-checked by worker AND conductor independently; full build green.
+
+Edges: refines(R-D19, scope=progress-complete+badge) · relates(ADR-0011) · relates(B-D1) · verified-by(showroom/progress-tracker.html) · verified-by(showroom/badge.html)
+
 ## R-D21 — the decision-graph audit's two conflicts RESOLVED: role-uniformity superseded + red's mode-stability bounded to the fill (2026-07-21). Source: Dave, on the ADR-0012 rulings sheet ("I'm happy with all the recommendations").
 The ADR-0012 corpus audit surfaced two live tensions, queued (never auto-resolved) and ruled on
 `reviews/DECISION-GRAPH-CONVENTION-2026-07-21-v1.REVIEW.html`:
@@ -896,5 +931,11 @@ tabs, table, tooltip, form hover, scrollbar) → `mono/4 #1A1A1A`, which is now 
 surfaces/hover states merge with the ground (no elevation/state separation by fill). Faithful to the maps + the
 digital-black ground, but likely unintended; the dark-surface flatness gate does NOT catch surface==ground (only
 dark==#FFFFFF) — a gate blind-spot. Revert = one-line token edit + regenerate.
+
+**RECONFIRMED 2026-07-21 (Dave, live controller `reviews/MONO-SECONDARY-INK-2026-07-21-v1.html`):** the
+rule-2 `text/secondary` collapse was re-examined when the Phase-1 projector made it visible on
+Progress-tracker (`--muted` → single ink). Ruling, verbatim from the sheet export: *"KEEP the R-D16
+collapse — single ink #1A1A1A/#FFFFFF; de-emphasis stays weight+size. No token change. R-D16 stands
+unamended."* Nothing changed in the store.
 
 Edges: supersedes(col25-011, scope=mono) · verified-by(contrast-gate)

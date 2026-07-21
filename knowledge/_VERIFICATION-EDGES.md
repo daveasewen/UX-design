@@ -23,8 +23,8 @@
 
 | Component | Snippet | Verdict | Pairs checked |
 |---|---|---|---|
-| Badge | `Badge.reference.html` | ✅ pass | primary/background/default on background/default (light) = 5.22:1 (pass); primary/background/default on background/default (dark) = 3.33:1 (pass) |
-| Links | `Links.reference.html` | ✅ pass | primary/background/default on background/default (light) = 5.22:1 (pass); primary/background/default on background/default (dark) = 3.33:1 (pass); icon/default on background/default (light) = 17.4:1 (pass); icon/default on background/default (dark) = 17.4:1 (pass) |
+| Badge | `Badge.reference.html` | ✅ pass | badge/background on background/default (light) = 6.02:1 (pass); badge/background on background/default (dark) = 3.66:1 (pass) |
+| Links | `Links.reference.html` | ✅ pass | button/primary/background/default on background/default (light) = 17.4:1 (pass); button/primary/background/default on background/default (dark) = 16.67:1 (pass); icon/default on background/default (light) = 17.4:1 (pass); icon/default on background/default (dark) = 17.4:1 (pass) |
 
 ### 1.4.3
 

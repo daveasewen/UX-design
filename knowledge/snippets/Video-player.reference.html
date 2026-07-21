@@ -4,10 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Video player — reference implementation (gated)</title>
-<!-- CANONICAL REFERENCE for Video player (gated) — BASELINE. Controls overlaid on the video sit on a
-     dark scrim so the white controls (icon/default-reverse) keep contrast regardless of the frame;
-     play/scrub accent = primary red. Caption/label = text/default on the page. Full captions/quality/
-     fullscreen behaviour is a starting point — extend per the meta. -->
+<!-- CANONICAL REFERENCE for Video player (gated) — BASELINE, PROVISIONAL (Dave 2026-07-21: needs
+     work; re-themed + flagged in _REVIEW-SIGNOFF for the consolidated Mono pass). Controls overlaid
+     on the video sit on a dark scrim so the white controls keep contrast regardless of the frame;
+     play/scrub accent = button/primary ladder (ink in Mono; red only via the Legacy override).
+     Caption/label = text/default on the page. Full captions/quality/fullscreen behaviour is a
+     starting point — extend per the meta. -->
 <link rel="stylesheet" href="../canon/type.css">
 <style>
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
@@ -15,18 +17,30 @@
 :is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 
   :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
-  [data-theme="light"]{ --text:#1A1A1A; --muted:#767676; --page:#FFFFFF; }
-  [data-theme="dark"]{ --text:#FFFFFF; --muted:#9a9a9a; --page:#1A1A1A; }
-  :root{ --controls:#FFFFFF; --accent:#DB0011; --scrim:#000000D9; --focus:#4d9fff;
-    --spring:300ms cubic-bezier(.5,1.6,.4,1); --press:90ms cubic-bezier(0,0,.58,1); }   /* Button motion tokens */
+  [data-theme="light"]{ --text:#1A1A1A; --muted:#1A1A1A; --page:#FFFFFF;
+    /* shape — semantic radius tier (ADR-0010): big play button=control */
+    --border-radius-control:0;
+    /* THEMED 2026-07-21 (Dave, in-session): primary action = B-D1 mono ladder (Legacy override
+       restores the red CTA); focus = focus/ring (was rogue #4d9fff); scrim = overlay/version2;
+       controls = text/reverse; --muted = text/secondary (Dave: "resolve to the near black" —
+       deliberate darkening from #767676/#9a9a9a; flagged in _REVIEW-SIGNOFF for the Mono pass). */
+    --accent:#1A1A1A; --accent-label:#333333; --onvideo-fill:#FFFFFF; --controls:#FFFFFF; --scrim:#000000D9; --focus:#305A85; }
+  [data-theme="dark"]{ --text:#FFFFFF; --muted:#FFFFFF; --page:#1A1A1A;
+    --border-radius-control:0;
+    --accent:#FAFAFA; --accent-label:#333333; --onvideo-fill:#FFFFFF; --controls:#FFFFFF; --scrim:#000000D9; --focus:#4587A7; }
+  :root{ --spring:300ms cubic-bezier(.5,1.6,.4,1); --press:90ms cubic-bezier(0,0,.58,1); }   /* Button motion tokens */
   *{box-sizing:border-box;}
   body{margin:0; padding:2rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
   .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
   .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--muted); background:transparent; color:var(--text); cursor:pointer;}
   .demo-controls button:focus-visible{outline:2px solid var(--muted); outline-offset:2px;}
   .player{position:relative; width:100%; max-width:560px; aspect-ratio:16/9; background:linear-gradient(135deg,#2a2a30,#0e0e12); overflow:hidden;}
-  .bigplay{position:absolute; inset:0; margin:auto; width:64px; height:64px; border:0; border-radius:0; background:var(--accent); color:#fff; cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
-    transition:transform var(--spring), filter var(--press);}   /* SQUARE — brand angular; carries the Button scale-physics */
+  .bigplay{position:absolute; inset:0; margin:auto; width:64px; height:64px; border:0; border-radius:var(--border-radius-control); background:var(--onvideo-fill); color:var(--accent-label); cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
+    transition:transform var(--spring), filter var(--press);}   /* SQUARE — brand angular; carries the Button scale-physics.
+    ON-SCRIM EXCEPTION (Dave 2026-07-21, on the 1.2:1 light-mode fail): the play button sits on the
+    VIDEO (always-dark, arbitrary frames) — it joins the on-video control family (reverse fill BOTH
+    modes, 14-19:1 vs the demo gradient; glyph #333333 on white 12.6:1), NOT the page-mode primary
+    ladder. The themed accent remains on the scrub .played. */
   .bigplay svg{width:26px; height:26px; fill:currentColor;}
   .bigplay:hover{transform:scale(1.08);}                                   /* grow toward the cursor */
   .bigplay:active{transform:scale(.92); filter:brightness(.85); transition:transform var(--press), filter var(--press);}   /* snappy depress + darken */
@@ -65,7 +79,10 @@
   <script type="application/json" id="token-manifest">
   {
     "component": "Video player",
-    "vars": { "--text": "text/default", "--page": "background/default" },
+    "vars": { "--text": "text/default", "--muted": "text/secondary", "--page": "background/default", "--border-radius-control": "border-radius/control",
+      "--accent": "button/primary/background/default", "--accent-label": "button/primary/label/default",
+      "--onvideo-fill": "text/reverse", "--controls": "text/reverse", "--scrim": "overlay/version2", "--focus": "focus/ring" },
+    "driftAllow": { "--accent-label": ["light"], "$reason": "ON-SCRIM EXCEPTION (Dave 2026-07-21): the bigplay glyph sits on --onvideo-fill (text/reverse — LIGHT in both modes), so the dark-mode label value #333333 applies in BOTH modes; the light-mode ladder value #FFFFFF would be white-on-white. Pending Dave's eyeball per _REVIEW-SIGNOFF." },
     "contrastPairs": [
       { "fg": "text/default", "bg": "background/default", "context": "text" }
     ],
