@@ -40,8 +40,8 @@ of substantive turns. No tooling, roughly ±15%. Reckoning (round to nearest 5k)
 Bands as fraction of the ~200k window:
 
 - 🟢 **GREEN  <45%** (<~90k) — work freely.
-- 🟡 **AMBER  45–60%** (~90–120k) — get economical, pre-stage the handoff, confirm before the next big read. **PROACTIVELY surface the band to Dave here and offer to start wrapping / capture soon — do NOT wait to be asked** (Dave, 2026-07-20: *"I would set it at amber too"*; the agent suggesting session-end from the estimate, unprompted, is the whole point — silence while the tally climbs is the failure mode).
-- 🔴 **RED  >60%** (>~120k) — **fire the trigger** (below).
+- 🟡 **AMBER  45–60%** (~90–120k) — get economical, pre-stage the handoff, confirm before the next big read. **PROACTIVELY surface the band to Dave here and offer to start wrapping / capture soon — do NOT wait to be asked** (Dave, 2026-07-20: *"I would set it at amber too"*; the agent suggesting session-end from the estimate, unprompted, is the whole point — silence while the tally climbs is the failure mode). **★ Also fire the light SPINE-FLUSH here (Amber tier, ruled 2026-07-21 — see trigger below): write current state to `_LIVE-STATE.md` now, WITHOUT ending the session.**
+- 🔴 **RED  >60%** (>~120k) — **fire the full trigger** (below): the complete capture ritual + fresh session.
 
 ### Half 2 — accurate, out-of-band: confirm at Amber
 
@@ -60,7 +60,24 @@ Subagent prompt (copy-ready):
 The engine is `knowledge/_context_gauge.py` — tiktoken if available, else chars/4; flags
 `--window` and `--baseline` are adjustable if the model/env changes.
 
-## The trigger — wired to the existing ritual
+## The trigger — TWO TIERS (ruled by Dave, 2026-07-21)
+
+Compaction is not one event. Firing the full ritual + fresh session at every Amber would churn
+sessions needlessly; never flushing until Red risks losing state to a crash or an abrupt end. So the
+trigger is **tiered** — a cheap save at Amber, the full handoff at Red:
+
+- 🟡 **AMBER → light SPINE-FLUSH (no session end).** Do capture-ritual **step 1 only** — refresh
+  `_LIVE-STATE.md` (and `_FUTURE-STATE`/`_DECISION-HISTORY` if touched), stamped from `date`. This
+  makes the current state durable *now*, so if the session ends abruptly the loss is bounded. The
+  session continues — do NOT write `GOOD-MORNING`, do NOT rename, do NOT open a fresh window. Repeat
+  the flush if the session runs long and state moves materially. *(Rationale: this is our hand-rolled
+  equivalent of platform context-compaction — keep the invariants in high-signal text, cheaply, before
+  the window is under pressure. Native equivalents now exist — memory tool GA · context-editing ·
+  compaction beta — but aren't exposed as Cowork knobs, so the ritual stays the mechanism.)*
+- 🔴 **RED → the FULL trigger + fresh session** (below). Everything the Amber flush already saved makes
+  this handoff faster and safer to author.
+
+## The Red trigger — wired to the existing ritual
 
 At **Red** (confirmed, or high-confidence tally), the agent says, as a ready-to-use line:
 

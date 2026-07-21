@@ -398,3 +398,4 @@
 
 ## ⑤ Errata (fix at next capture)
 - **E1** — GOOD-MORNING standing list says '_TYPE-DECISIONS.md (T-D1…T-D16)'; the ledger holds T-D1..T-D14. Fix the range at the next capture refresh.
+- **E2** — Audit-miss (self-caught during 2026-07-21 inscription): the Fable seed omitted two edges already declared in ratified ADR headers — ADR-0010 refines ADR-0004 (WCAG AA floor) and ADR-0011 relates R-D17 (Legacy-leak gate). The inscription worker initially trimmed the ADR headers to match the incomplete seed; reconciled the correct way instead — headers restored, both edges added to the seed (94 edges total). Lesson: on ADR-header vs seed disagreement, the ratified header wins; add to seed, never delete from the header.

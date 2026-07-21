@@ -1,8 +1,8 @@
 # Good morning, Dave ☕
 
-> ## ★ LATEST — 2026-07-21 (afternoon, FABLE): ADR-0012 ACCEPTED same day ("happy with all the recommendations") — R-D21 recorded, gate wired advisory, build 38/38. NEXT = the Sonnet inscription pass. READ THIS FIRST — it supersedes the block + names below.
-> **RENAME THIS CHAT →** `Decision-graph: corpus audited (69→70 nodes/92 edges) → ADR-0012 authored + ACCEPTED → R-D21 (C1+C2 ruled) + conflict gate wired advisory 38/38 [FABLE]`
-> **TITLE THE NEXT (fresh) CHAT →** `Decision-graph inscription: transcribe the seed's Edges lines into ledgers/ADR headers (SONNET, mechanical) → verify by generator diff → ADR-0007 part 2 next`
+> ## ★ LATEST — 2026-07-21 (evening, SONNET workers + OPUS conductor): decision-graph edges INSCRIBED — all **94/94 verified**, build green 38/38, committed `4a6f442` (Dave to push). Parser `parse_inline_edges()` + a `--verify` diff mode built (a latent double-count bug fixed). **Caught + reconciled an audit-miss (erratum E2):** the Fable seed had omitted two edges already declared in ratified ADR headers — ADR-0010→ADR-0004 (WCAG floor) + ADR-0011→R-D17 (leak gate); a worker first trimmed the headers to fit the seed → **reversed** (ratified header wins; both edges added to the seed, 92→94). NEXT = ADR-0007 part 2. READ THIS FIRST — it supersedes the block + names below.
+> **RENAME THIS CHAT →** `Decision-graph inscription: 94/94 edges inscribed + parser/verify built → audit-miss caught + reconciled (E2, header-wins rule) → committed 4a6f442 [SONNET+OPUS]`
+> **TITLE THE NEXT (fresh) CHAT →** `Decision-graph: ADR-0007 part 2 (remaining temporal-graph scope) · conflict gate advisory→blocking? · Dave's amber-tier context-gauge proposal`
 >
 > **★ RULED (Dave, same day, on the v1 sheet): ALL 8 recommendations accepted.** ADR-0012 **accepted** ·
 > **C1** = R-D2's role-uniformity claim confirmed superseded · **C2** = R-D7 bounded to the fill role — both
