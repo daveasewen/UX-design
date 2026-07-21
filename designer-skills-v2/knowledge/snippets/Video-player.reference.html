@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video player — reference implementation (gated)</title>
+<!-- CANONICAL REFERENCE for Video player (gated) — BASELINE. Controls overlaid on the video sit on a
+     dark scrim so the white controls (icon/default-reverse) keep contrast regardless of the frame;
+     play/scrub accent = primary red. Caption/label = text/default on the page. Full captions/quality/
+     fullscreen behaviour is a starting point — extend per the meta. -->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
+  [data-theme="light"]{ --text:#1A1A1A; --muted:#767676; --page:#FFFFFF; }
+  [data-theme="dark"]{ --text:#FFFFFF; --muted:#9a9a9a; --page:#1A1A1A; }
+  :root{ --controls:#FFFFFF; --accent:#DB0011; --scrim:#000000D9; --focus:#4d9fff;
+    --spring:300ms cubic-bezier(.5,1.6,.4,1); --press:90ms cubic-bezier(0,0,.58,1); }   /* Button motion tokens */
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--muted); background:transparent; color:var(--text); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--muted); outline-offset:2px;}
+  .player{position:relative; width:100%; max-width:560px; aspect-ratio:16/9; background:linear-gradient(135deg,#2a2a30,#0e0e12); overflow:hidden;}
+  .bigplay{position:absolute; inset:0; margin:auto; width:64px; height:64px; border:0; border-radius:0; background:var(--accent); color:#fff; cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
+    transition:transform var(--spring), filter var(--press);}   /* SQUARE — brand angular; carries the Button scale-physics */
+  .bigplay svg{width:26px; height:26px; fill:currentColor;}
+  .bigplay:hover{transform:scale(1.08);}                                   /* grow toward the cursor */
+  .bigplay:active{transform:scale(.92); filter:brightness(.85); transition:transform var(--press), filter var(--press);}   /* snappy depress + darken */
+  .bigplay:focus-visible{outline:3px solid var(--focus); outline-offset:3px;}
+  .bar{position:absolute; left:0; right:0; bottom:0; display:flex; align-items:center; gap:12px; padding:8px 12px; background:linear-gradient(transparent, var(--scrim)); color:var(--controls);}
+  .bar button{width:32px; height:32px; border:0; background:transparent; color:var(--controls); cursor:pointer; display:inline-flex; align-items:center; justify-content:center;}
+  .bar button svg{width:18px; height:18px; fill:currentColor;}
+  .bar button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .scrub{flex:1; height:4px; background:rgba(255,255,255,.3); position:relative;}
+  .scrub .played{position:absolute; left:0; top:0; bottom:0; width:35%; background:var(--accent);}
+  .time{/* type: t-cm-legal (bound in canon/type.css - T-D9/T-D12) */ color:var(--controls); min-width:78px; text-align:right;}
+  .caption{margin-top:16px; font:500 14px/1.4 var(--font); color:var(--text);}
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+    .bigplay:hover,.bigplay:active{ transform:none !important; filter:none !important; }   /* no scale-physics under reduced-motion */
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Video player — canonical reference (baseline)</span></div>
+
+  <div class="player" role="group" aria-label="Video player">
+    <button class="bigplay" aria-label="Play video"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M2.39922 2.08L14.3992 9L2.39922 15.92V2.08ZM1.19922 0V18L16.7992 9L1.19922 0Z"/></svg></button>
+    <div class="bar">
+      <button aria-label="Play"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M2.39922 2.08L14.3992 9L2.39922 15.92V2.08ZM1.19922 0V18L16.7992 9L1.19922 0Z"/></svg></button>
+      <div class="scrub" role="slider" aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="35"><span class="played"></span></div>
+      <span class="time">1:12 / 3:24</span>
+      <button aria-label="Mute"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M11.89 6.299C12.566 7 12.988 7.95 12.988 9C12.988 10.098 12.529 11.087 11.796 11.796L12.644 12.644C13.594 11.717 14.188 10.428 14.188 9C14.188 7.619 13.632 6.37 12.738 5.45L11.89 6.299ZM15.214 2.974L14.366 3.822C15.676 5.158 16.488 6.985 16.488 9C16.488 11.062 15.638 12.929 14.272 14.272L15.12 15.12C16.703 13.559 17.688 11.393 17.688 9C17.688 6.654 16.742 4.527 15.214 2.974ZM0 5V13H5L10 18V0L5 5H0ZM8.8 2.897V15.103L5.497 11.8H1.2V6.2H5.497L8.8 2.897Z"/></svg></button>
+      <button aria-label="Fullscreen"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.139 11.709L6.291 10.861L2.2 14.952V10.8L1 12V17H6L7.2 15.8H3.048L7.139 11.709ZM15.8 14.952L11.709 10.862L10.861 11.71L14.952 15.8H10.8L12 17H17V12L15.8 10.8V14.952ZM12 1L10.8 2.2H14.952L10.862 6.29L11.71 7.138L15.8 3.048V7.2L17 6V1H12ZM1 1V6L2.2 7.2V3.048L6.291 7.138L7.139 6.29L3.048 2.2H7.2L6 1H1Z"/></svg></button>
+    </div>
+  </div>
+  <p class="caption">How to set up a standing order — 3:24</p>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Video player",
+    "vars": { "--text": "text/default", "--page": "background/default" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" }
+    ],
+    "requiredAria": ["aria-label", "role=\"slider\""]
+  }
+  </script>
+  <script>document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });</script>
+</body>
+</html>

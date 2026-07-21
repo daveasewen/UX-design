@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Table — reference implementation (gated)</title>
+<!--
+  CANONICAL REFERENCE for the Table (★, payments-journey). Promoted 2026-06-22 (Dave). Gated:
+  _validate_snippets.py fails the build if a CSS var value drifts from the token store, required ARIA
+  is missing, or a contrast pair falls below threshold — edit tokens in the store, not here.
+  Real anatomy + VARIANT MATRIX from Figma (file mI8hvIkV98nquoqWzKh5Kn, Section 65540:46962).
+  Real anatomy + VARIANT MATRIX from Figma (file mI8hvIkV98nquoqWzKh5Kn, Section 65540:46962):
+    • headerType:  first-row · first-column · first-row-and-column   (prop: headerType)
+    • orientation: horizontal (data table)  ·  VERTICAL = the responsive card-collapse  (prop: orientation)
+    • cellAlign:   left · right (numeric)                            (prop: cellAlign)
+    • sub-header:  secondary header on table/column/background (#F3F3F3) — same fill as a row header.
+
+  RESPONSIVE = CARD-COLLAPSE (per Figma "Version=vertical", node 2137:115845 et al.), NOT horizontal
+  scroll. At narrow container width each row reflows into a card: the column headers repeat as grey
+  labels beside each value ([table/header label | background/default value], 50/50), and a row-header
+  (when present) becomes the card's title bar. Header association via <th scope> is preserved in the
+  DOM at every width (1.3.1 + 1.4.10 reflow to 320px).
+
+  DECISION A (2026-06-22): Table is interactive:false — a STATIC semantic data table. AT is earned the
+  PASSIVE way: <caption> + <th scope> + a focusable region (role=region/tabindex/aria-label). No sort
+  bolted on. The headerType switcher below toggles the three structural variants (real <th scope>
+  re-scoping), and the card-collapse adapts to each.
+
+  Tokens resolved light+dark from the validated table/* group (clean, 2026-06-18). SQUARE corners.
+  TYPE: headers = font-5 medium (500); cell data = font-5 REGULAR (400). Figma specs data as light
+  (350), but Univers Light renders too thin in Chrome (Dave, 2026-06-22) — promoted to regular. Flag
+  for the token store: a data-text weight token, or accept the deviation.
+-->
+<style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  :root{
+    --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+    --ease:140ms ease;
+    --cell-py:10px; --cell-px:12px; --fs:16px; --lh:24px;   /* font-5 / Figma cell padding ~9-11 x 12 */
+    --label-col:42%;                                         /* card-collapse label width */
+  }
+  [data-theme="light"]{
+    --header:#F0F0F0; --colhdr:#F0F0F0; --cell:#FFFFFF; --border:#E1E1E1;
+    --text:#1A1A1A; --muted:#1A1A1A; --hover:#F0F0F0; --focus:#305A85; --page:#FFFFFF;
+  }
+  [data-theme="dark"]{
+    --header:#1F1F1F; --colhdr:#1F1F1F; --cell:#1A1A1A; --border:#808080;
+    --text:#FFFFFF; --muted:#FFFFFF; --hover:#232323; --focus:#4587A7; --page:#1A1A1A;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+
+  /* ---- demo controls ---- */
+  .demo-controls{margin-bottom:1.5rem; display:flex; gap:1rem 1.25rem; align-items:center; flex-wrap:wrap; font-size:13px;}
+  .demo-controls > button{font:inherit; font-size:13px; padding:8px 12px; border-radius:0; cursor:pointer;
+    border:1px solid var(--border); background:transparent; color:var(--text); transition:background var(--ease);}
+  .demo-controls > button:hover{background:var(--hover);}
+  .demo-controls > button:active{transform:translateY(1px);}
+  .demo-controls > button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .demo-controls label{display:flex; gap:.5rem; align-items:center;}
+  .demo-controls input[type=range]{accent-color:var(--focus);}
+
+  /* segmented control — headerType variant switcher (the active segment is disabled = a real state) */
+  .seg{display:inline-flex; border:1px solid var(--border);}
+  .seg button{font:inherit; font-size:14px; padding:8px 12px; border:0; border-left:1px solid var(--border);
+    background:transparent; color:var(--text); cursor:pointer; transition:background var(--ease);}
+  .seg button:first-child{border-left:0;}
+  .seg button:hover{background:var(--hover);}
+  .seg button:active{transform:translateY(1px);}
+  .seg button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .seg button[aria-pressed="true"]{background:var(--header); font-weight:500;}
+  .seg button:disabled{cursor:default;}              /* the current variant can't be re-selected */
+
+  /* ---- the table (horizontal / data-table form) ---- */
+  .wrap{ width:var(--demo-width, 760px); max-width:100%; container-type:inline-size; }
+  .scroll{overflow-x:auto; transition:box-shadow var(--ease);}
+  .scroll:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+
+  table{border-collapse:collapse; width:100%; background:var(--cell); border:1px solid var(--border); border-radius:0;}
+  caption{text-align:left; font:500 14px/1.4 var(--font); padding:0 2px 8px; color:var(--text);}
+  caption .sub{display:block; font-weight:400; font-size:12px; color:var(--muted); margin-top:2px;}
+  th,td{padding:var(--cell-py) var(--cell-px); border:1px solid var(--border);
+    font:400 var(--fs)/var(--lh) var(--font); text-align:left; vertical-align:top;}  /* data = REGULAR (Figma spec is light/350, but Univers Light renders too thin in Chrome) */
+  thead th{background:var(--header); font-weight:500;}                       /* table/header/background, medium */
+  tbody th[scope="row"]{background:var(--colhdr); font-weight:500;}          /* row header = table/column fill (= sub-header) */
+  td.num, th.num{text-align:right; font-variant-numeric:tabular-nums;}       /* cellAlign=right for numeric */
+  tbody tr{transition:background var(--ease);}
+  tbody tr:hover td, tbody tr:hover th[scope="row"]{background:var(--hover);} /* row hover affordance */
+
+  /* first-column-header variant: no column-header row */
+  table[data-headers="column"] thead{display:none;}
+  /* first-row-header variant: the first cell is plain data, not a row header */
+  table[data-headers="row"] tbody th[data-first]{background:var(--cell); font-weight:400;}
+
+  .hint{margin-top:12px; font:400 12px/1.5 var(--font); color:var(--muted); max-width:60ch;}
+  .hint kbd{font:inherit; border:1px solid var(--border); padding:1px 4px; border-radius:0;}
+
+  /* ============ CARD-COLLAPSE (Figma "vertical") — the canonical responsive behaviour ============ */
+  @container (max-width: 600px){
+    .scroll{overflow:visible;}
+    table{border:0; width:100%;}
+    thead{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap;} /* kept for AT */
+    tbody, tbody tr, tbody th, tbody td{display:block; width:auto;}
+
+    tbody tr{border:1px solid var(--border); margin-bottom:16px;}   /* each record = a card, separated by a gap */
+    tbody tr:last-child{margin-bottom:0;}
+
+    /* row header (when present) = the card's title bar */
+    tbody th[scope="row"]{background:var(--colhdr); font-weight:500; border:0; border-bottom:1px solid var(--border);
+      padding:var(--cell-py) var(--cell-px);}
+
+    /* data cell = [grey label | white value], 50/50 — matches the Figma vertical anatomy */
+    tbody td{display:flex; align-items:stretch; border:0; border-bottom:1px solid var(--border); padding:0;}
+    tbody tr > td:last-child{border-bottom:0;}
+    tbody td::before{content:attr(data-label); flex:0 0 var(--label-col); background:var(--header);
+      font-weight:500; padding:var(--cell-py) var(--cell-px); border-right:1px solid var(--border);}
+    tbody td .v{flex:1; padding:var(--cell-py) var(--cell-px);}
+    tbody td.num, tbody td.num .v{text-align:left;}                 /* card view: numeric cell reads LEFT — the label (::before) AND value, like every other cell (was inheriting the horizontal right-align) */
+
+    /* first-row variant: the first cell acts as data too — give it a label, drop the title styling */
+    table[data-headers="row"] tbody th[data-first]{display:flex; align-items:stretch; border:0;
+      border-bottom:1px solid var(--border); padding:0; background:var(--cell); font-weight:400;}
+    table[data-headers="row"] tbody th[data-first]::before{content:attr(data-label); flex:0 0 var(--label-col);
+      background:var(--header); font-weight:500; padding:var(--cell-py) var(--cell-px); border-right:1px solid var(--border);}
+    table[data-headers="row"] tbody th[data-first] .v{flex:1; padding:var(--cell-py) var(--cell-px);}
+
+    /* first-column variant: no column headers exist, so no per-cell labels — values stack under the title */
+    table[data-headers="column"] tbody td::before{display:none;}
+    table[data-headers="column"] tbody td .v{padding-left:var(--cell-px);}
+
+    .hint .wide{display:none;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{transition-duration:.01ms !important; animation-duration:.01ms !important; scroll-behavior:auto !important;}
+  }
+</style>
+</head>
+<body data-theme="light">
+
+  <div class="demo-controls">
+    <button id="themeToggle" type="button">◐ Toggle theme</button>
+    <div class="seg" role="group" aria-label="Header type">
+      <button type="button" data-mode="both"   aria-pressed="true"  disabled>Row + column</button>
+      <button type="button" data-mode="row"     aria-pressed="false">Column only</button>
+      <button type="button" data-mode="column"  aria-pressed="false">Row only</button>
+    </div>
+    <label>Container width <input id="w" type="range" min="300" max="900" value="760"> <span id="wv">760</span>px</label>
+  </div>
+
+  <div class="wrap" id="wrap">
+    <!-- focusable region (passive AT, decision a) -->
+    <div class="scroll" role="region" aria-label="Account balances at 19 June 2026, scrollable" tabindex="0">
+      <table id="tbl" data-headers="both">
+        <caption>Account balances<span class="sub">As at 19 June 2026 · all figures in GBP</span></caption>
+        <thead>
+          <tr>
+            <th scope="col">Account</th>
+            <th scope="col">Type</th>
+            <th scope="col">Sort code</th>
+            <th scope="col">Account number</th>
+            <th scope="col" class="num">Available balance</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row" data-first data-label="Account"><span class="v">Current account</span></th>
+            <td data-label="Type"><span class="v">Personal</span></td>
+            <td data-label="Sort code"><span class="v">••-••-08</span></td>
+            <td data-label="Account number"><span class="v">•••• 4821</span></td>
+            <td data-label="Available balance" class="num"><span class="v">£2,140.50</span></td>
+          </tr>
+          <tr>
+            <th scope="row" data-first data-label="Account"><span class="v">Savings account</span></th>
+            <td data-label="Type"><span class="v">Instant access</span></td>
+            <td data-label="Sort code"><span class="v">••-••-08</span></td>
+            <td data-label="Account number"><span class="v">•••• 9032</span></td>
+            <td data-label="Available balance" class="num"><span class="v">£8,500.00</span></td>
+          </tr>
+          <tr>
+            <th scope="row" data-first data-label="Account"><span class="v">Joint account</span></th>
+            <td data-label="Type"><span class="v">Personal</span></td>
+            <td data-label="Sort code"><span class="v">••-••-08</span></td>
+            <td data-label="Account number"><span class="v">•••• 5567</span></td>
+            <td data-label="Available balance" class="num"><span class="v">£1,024.75</span></td>
+          </tr>
+          <tr>
+            <th scope="row" data-first data-label="Account"><span class="v">Credit card</span></th>
+            <td data-label="Type"><span class="v">Mastercard</span></td>
+            <td data-label="Sort code"><span class="v">••-••-08</span></td>
+            <td data-label="Account number"><span class="v">•••• 1190</span></td>
+            <td data-label="Available balance" class="num"><span class="v">−£312.18</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="hint">
+      <span class="wide">Drag the width down (or view narrow) to watch rows collapse into cards — column headers repeat as labels, the account name becomes the card title. </span>
+      Header type switches the <code>scope</code> structure live; the scroll region is focusable: <kbd>Tab</kbd> to it, then <kbd>←</kbd>/<kbd>→</kbd> to pan when wide.
+    </p>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Table",
+    "vars": {
+      "--header": "table/header/background", "--colhdr": "table/column/background",
+      "--cell": "background/default", "--border": "table/border",
+      "--text": "text/default", "--muted": "text/secondary",
+      "--hover": "tertiary/background/hover", "--focus": "focus/ring", "--page": "background/default"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "text/default", "bg": "table/header/background", "context": "text" },
+      { "fg": "text/default", "bg": "table/column/background", "context": "text" }
+    ],
+    "variantsCovered": {
+      "headerType": ["first-row", "first-column", "first-row-and-column"],
+      "orientation": ["horizontal (data table)", "vertical (= card-collapse responsive form)"],
+      "cellAlign": ["left", "right (numeric)"],
+      "subHeader": "row-header / sub-header share table/column/background (#F3F3F3 / #1D1D1D)"
+    },
+    "knownFindings": [
+      "PASSIVE (interactive:false) — no sort/selection by design; AT = caption + th scope (1.3.1) + focusable role=region (reach + pan).",
+      "Responsive = card-collapse per Figma vertical variant (not horizontal scroll). th scope preserved in DOM at all widths; reflows to 320px (1.4.10).",
+      "first-column variant has no column headers, so collapsed cards show bare values under the row-header title (matches Figma).",
+      "TYPE deviation: cell data promoted from Figma light (350) to regular (400) — Univers Light renders too thin in Chrome (Dave, 2026-06-22). Candidate token-store flag."
+    ],
+    "requiredAria": ["<caption", "scope=\"col\"", "scope=\"row\"", "role=\"region\"", "aria-label"]
+  }
+  </script>
+
+  <script>
+    // theme
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      const b = document.body;
+      b.setAttribute('data-theme', b.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+
+    // headerType variant switcher — re-scopes the real table so AT structure matches the visual
+    const tbl = document.getElementById('tbl');
+    const segButtons = Array.from(document.querySelectorAll('.seg button'));
+    function setMode(mode){
+      tbl.setAttribute('data-headers', mode);
+      const cols = tbl.querySelectorAll('thead th');
+      const firsts = tbl.querySelectorAll('tbody th[data-first]');
+      // column headers: scoped in 'both' and 'row'; presentational in 'column' (no header row)
+      cols.forEach(c => { if (mode === 'column') c.removeAttribute('scope'); else c.setAttribute('scope','col'); });
+      // first body cell: a row header in 'both'/'column'; a plain data cell in 'row'
+      firsts.forEach(f => { if (mode === 'row') f.removeAttribute('scope'); else f.setAttribute('scope','row'); });
+      segButtons.forEach(b => {
+        const on = b.dataset.mode === mode;
+        b.setAttribute('aria-pressed', String(on));
+        b.disabled = on;                       // can't re-select the current variant (a real :disabled state)
+      });
+    }
+    segButtons.forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+
+    // width — lets the reviewer watch the card-collapse happen
+    const w = document.getElementById('w'), wv = document.getElementById('wv'), wrap = document.getElementById('wrap');
+    w.addEventListener('input', () => { wrap.style.setProperty('--demo-width', w.value + 'px'); wv.textContent = w.value; });
+  </script>
+</body>
+</html>

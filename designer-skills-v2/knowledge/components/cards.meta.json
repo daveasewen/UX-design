@@ -1,0 +1,226 @@
+{
+  "name": "Cards",
+  "category": "molecule",
+  "purpose": "A family of container components that group related content (and optionally an action) into a bordered surface. Five types covering interactive and static use, with and without imagery.",
+  "$family": "This file covers the whole Card family; each type is a separate Figma component.",
+  "props": [
+    {
+      "name": "type",
+      "type": "enum",
+      "values": [
+        "actions",
+        "basic",
+        "basic-non-interactive",
+        "image-with-border",
+        "image-without-border"
+      ],
+      "default": "basic"
+    },
+    {
+      "name": "state",
+      "type": "enum",
+      "values": [
+        "default",
+        "hover",
+        "pressed"
+      ],
+      "default": "default",
+      "$note": "Interactive types only (basic, actions). Non-interactive/image-static types are default-only."
+    },
+    {
+      "name": "content",
+      "type": "enum",
+      "values": [
+        "iconTitleDescription",
+        "iconDescription",
+        "iconTitle",
+        "titleDescription",
+        "title"
+      ],
+      "default": "titleDescription",
+      "$note": "Content combinations seen on actions/basic cards."
+    }
+  ],
+  "variants": [
+    {
+      "name": "actions",
+      "$displayName": "Action card",
+      "$aliases": ["action"],
+      "$nameNote": "`name` is the Figma-namespace variant value (the canonical hub label). $displayName is ours (library-independent). Code-library names live in codeBindings.",
+      "use": "Card presenting an item with an action affordance (chevron). Content combos: icon/title/description in various pairings. Static surface (background/default)."
+    },
+    {
+      "name": "basic",
+      "$displayName": "Link card",
+      "$aliases": ["link"],
+      "use": "Interactive card (default/hover/pressed). Background shifts via tertiary/background tints on interaction. Built as a whole-card link (single tab stop)."
+    },
+    {
+      "name": "basic-non-interactive",
+      "$displayName": "Static card",
+      "$aliases": [],
+      "use": "Static version of basic — no hover/pressed; background/default."
+    },
+    {
+      "name": "image-with-border",
+      "$displayName": "Media card",
+      "$aliases": ["media"],
+      "use": "Card with an image plus headline (font-3) and optional headline link; bordered. Responsive image scales (3/5/6/7/8/9)."
+    },
+    {
+      "name": "image-without-border",
+      "$displayName": "Media card (borderless)",
+      "$aliases": [],
+      "use": "Image card without a border; responsive image scales."
+    }
+  ],
+  "tokens": {
+    "common": {
+      "border": "border/subtle",
+      "border-width": "border-width/small",
+      "padding": "padding/responsive/medium (16) + padding/fixed/medium (16); large 20 on image cards",
+      "title": "text/default @ font-5/medium",
+      "description": "font-5/light (font-6/light on actions cards)",
+      "icon": "icon/default",
+      "link-arrow-colour": "color/primary",
+      "arrow-icon-size": "em-scaled chevron (.85em) — tracks the headline/label type size",
+      "arrow-padding": "flex-centred (align-items:center; gap:4px) — no fixed padding tokens (legacy padding/arrow retired 2026-07-17)"
+    },
+    "actions": {
+      "background": "background/default"
+    },
+    "basic": {
+      "background-default": "tertiary/background/default",
+      "background-hover": "tertiary/background/hover",
+      "background-pressed": "tertiary/background/pressed",
+      "text-reverse-on-pressed": "text/reverse + icon/default-reverse",
+      "depricate": "tertiary/text/default (depricate)"
+    },
+    "basic-non-interactive": {
+      "background": "background/default"
+    },
+    "image-with-border": {
+      "background": "background/default",
+      "headline": "font-3/regular"
+    },
+    "image-without-border": {
+      "background": "background/default (expected — not exhaustively queried)"
+    },
+    "$finding": "(2026-06-20, RESOLVED) Secondary/sub text now uses the new text/secondary token (#545454 light / #9B9B9B dark, ~7.6:1 both) — was a literal. Token tagged review pending Dave sign-off."
+  },
+  "relationships": {
+    "livesInside": [
+      "Page",
+      "Grid",
+      "List",
+      "Carousel",
+      "Dashboard"
+    ],
+    "mustNotNeighbour": [],
+    "commonPatterns": [
+      "card grid",
+      "content teaser linking to detail",
+      "selectable option card"
+    ]
+  },
+  "accessibility": {
+    "interactive": "REVIEW (inferred): an interactive card should be a single focusable control (or have one clear primary link); avoid nested interactive elements that create multiple tab stops with unclear order",
+    "focus": "Visible focus state on interactive cards (basic/actions); use native focus",
+    "pressedContrast": "On pressed, basic card background goes #767676 and text/icon flip to reverse — ensure contrast holds",
+    "relatedSC": [
+      "2.1.1 Keyboard",
+      "2.4.7 Focus Visible",
+      "1.4.3 Contrast (Minimum)",
+      "1.4.11 Non-text Contrast"
+    ]
+  },
+  "antiPatterns": [
+    "REVIEW (inferred): nesting multiple independent links/buttons inside an interactive (basic) card",
+    "REVIEW (inferred): using an interactive card style for non-interactive content (use basic-non-interactive)",
+    "Leaving Card Basic bound to tertiary/text/default (depricate) — rebind to text/default"
+  ],
+  "tokenValidation": {
+    "date": "2026-06-17",
+    "against": "token store re-based on Figma native variable export",
+    "result": "PASS — 4 of 5 types clean; 1 deprecated binding on Card Basic",
+    "depricateUsage": {
+      "tokens": [
+        {
+          "token": "tertiary/text/default (depricate)",
+          "usedBy": "Card Basic (interactive)",
+          "value": "#545454",
+          "rebind": "text/default (#333333 — value change, confirm)"
+        }
+      ],
+      "note": "Recurring deprecated token — also used by Button tertiary/quaternary. Interactive cards use tertiary/background/* for state tints (like quaternary buttons); static/image cards use background/default and are clean.",
+      "auditedNodes": [
+        "Card Basic 2298:52812",
+        "Card Actions 2298:53366",
+        "Card Basic non-interactive 796:79732",
+        "Card Image with border 862:21004"
+      ],
+      "notQueried": [
+        "Card Image without border 257:77227 — expected clean (static image card)"
+      ]
+    },
+    "ignored": "specs/* annotation scaffolding."
+  },
+  "build": {
+    "$status": "PROMOTED 2026-06-22 — gated reference is snippets/Cards.reference.html. Brought to prototype-grade 9.0/9 (board: 8 at 9/9). Build green via _build_all.py.",
+    "$prototypeGrade9": "Added square corners (declared), a container-query reflow, the link card PRESSED state, the media headline as a real link (font-3 regular), and a 4th pattern: SELECTABLE option cards (radiogroup + roving keys, reuses the Selection-controls radio atom). The selectable variant supplies the honest keydown for AT — BAND-AID for the native-<a> gap; root-cause = decision B (see _RUBRIC-prototype-grade.md).",
+    "$stateContrastFixes": "Dave's visual review caught state-contrast misses the gate did NOT (it only checks DECLARED pairs): dark HOVER (text/secondary 3.34 + red arrow 1.78 on #474747) and PRESSED (description 1.67 + arrow 1.15 + a dark icon on #767676). Fixed -> hover: description/arrow text/default (9.29); pressed: icon/arrow/description text/reverse (4.54). Both now declared so the gate enforces them. Root cause = the too-light dark hover surface #474747 (the parked List-items $darkFinding); systemic fix = darken that token.",
+    "referenceImplements": "3 of the 5 library types, chosen as the representative canonical set. The other two (basic-non-interactive, image-without-border) are documented in `variants` and derive from these (drop the interaction / drop the border).",
+    "types": [
+      {
+        "built": "action",
+        "libraryVariant": "actions",
+        "figmaNode": "11746:45268",
+        "semantics": "<article> — static surface, not itself focusable",
+        "content": "icon (informative/card-details) + title + description + right-aligned quaternary action buttons",
+        "tokens": "surface background/default; border border/subtle; text text/default; icon icon/default; buttons focus focus/ring"
+      },
+      {
+        "built": "link",
+        "libraryVariant": "basic (interactive)",
+        "figmaNode": "2298:52812",
+        "semantics": "<a> — the whole card is one link (single focusable control, single tab stop; avoids the nested-interactive anti-pattern)",
+        "content": "icon + arrow-link title + description; hover shifts surface to tertiary/background/hover",
+        "tokens": "surface tertiary/background/default -> hover tertiary/background/hover; focus focus/ring; accent primary/background/default"
+      },
+      {
+        "built": "media",
+        "libraryVariant": "image-with-border",
+        "figmaNode": "862:21004",
+        "semantics": "<article> — static surface",
+        "content": "image + headline (font-3, red arrow tip) + description + stacked arrow links",
+        "tokens": "surface background/default; border border/subtle; description text/secondary"
+      }
+    ],
+    "loadingState": "Skeleton placeholder card (aria-busy + aria-label, pulse honours prefers-reduced-motion). Transient state, kept as <div> (not a content article).",
+    "reusedAtoms": "Every in-card link reuses the canonical arrow-link atom from Links.reference.html (red tip, underline-on-hover, inset focus underline) — same primitive, not a custom glyph.",
+    "semanticsRule": "Static cards (action, media) use <article>; the interactive link card is a single <a>. Required by the snippet manifest (requiredAria includes <article).",
+    "$resolved": "NAMING (decided 2026-06-22, Dave): hub-and-spoke. The Figma node ID is the canonical identity; each variant's Figma value is its `name`; friendly labels are `$displayName`/`$aliases` (library-independent, ours); each consuming code library is a spoke in `codeBindings` with its own names. No global 'formal name' — names map through the node, never to each other. Procedure for a new library: _RUNBOOK-onboard-code-library.md."
+  },
+  "codeBindings": {
+    "$model": "Hub-and-spoke. HUB = provenance.figma_node (the only library-independent identity; never renamed). Each key below is one consuming code library (a SPOKE). A library's component/variant names MAY differ from the Figma names — map them here, do not normalise. Populate from Code Connect (get_code_connect_map), never by guessing; tag unverified spokes with $status. See _RUNBOOK-onboard-code-library.md.",
+    "sutherland-react": {
+      "library": "HSBC Sutherland (React component library)",
+      "component": "TODO — confirm in Sutherland repo / via Code Connect (may differ from Figma 'Cards')",
+      "variantProp": "TODO — the prop that selects type (may not be called 'type')",
+      "variantValues": {
+        "actions": "TODO",
+        "basic": "TODO",
+        "basic-non-interactive": "TODO",
+        "image-with-border": "TODO",
+        "image-without-border": "TODO"
+      },
+      "$status": "unverified — Sutherland naming not yet inspectable this session; Sutherland token/library migration is Parked until its JSON lands (~late June/early July 2026, see README Parked). Fill from get_code_connect_map once wired.",
+      "$source": "to be populated by Code Connect; do not guess"
+    }
+  },
+  "provenance": {
+    "source": "figma",
+    "figma_node": "Cgbtrmfp15ruNFkIAClpkI:2298:53278",
+    "code_path": ""
+  }
+}

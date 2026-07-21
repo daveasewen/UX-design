@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Badge — reference implementation (gated)</title>
+<!--
+  CANONICAL REFERENCE for Badge (gated). A small passive indicator: a count or a dot, on
+  brand red with white text. Badge is a documented EXEMPTION to the angular brand rule —
+  it is FULLY ROUND (border-radius:999px). Avatar is the only other exemption.
+  Surface uses the SEMANTIC primary/background/default (#DB0011 both modes); the meta binds
+  the color/primary primitive — rebind noted. Red stays red in dark (passes on the page).
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
+  [data-theme="light"]{ --surface:#DB0011; --number:#FFFFFF; --host:#1A1A1A; --page:#FFFFFF; --disabled:#D7D8D6; }
+  [data-theme="dark"]{ --surface:#DB0011; --number:#FFFFFF; --host:#FFFFFF; --page:#1A1A1A; --disabled:#767676; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--host);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:2rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--disabled); background:transparent; color:var(--host); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--host); outline-offset:2px;}
+  h2{/* sentence case — type26-019 sweep (Dave ruling 2026-07-02): no uppercase, caps tracking removed with it */ margin:1.5rem 0 1rem;}
+  .row{display:flex; gap:40px; align-items:center;}
+
+  /* host element (e.g. an icon button) with a positioned badge */
+  .host{position:relative; width:40px; height:40px; display:inline-flex; align-items:center; justify-content:center;}
+  .host svg{width:34px; height:34px; fill:var(--host);}
+  .badge{position:absolute; top:-6px; right:-8px; min-width:24px; height:24px; padding:0 8px; border-radius:999px;  /* EXEMPTION: round */
+    background:var(--surface); color:var(--number); /* type: t-cm-caption + .t-cm-slot (bound in canon/type.css - T-D9/T-D12) */ display:inline-flex; align-items:center; justify-content:center;
+    border:2px solid var(--page);}   /* thin page-coloured ring so it reads when overlapping the glyph */
+  .badge.dot{min-width:0; width:20px; height:20px; padding:0; top:-4px; right:-6px;}   /* active state: prominent red dot */
+  /* standalone number badge */
+  .badge.standalone{position:static; border:0; height:24px;}
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Badge — canonical reference (round exemption)</span></div>
+
+  <h2 class="spec-h">On an element</h2>
+  <div class="row">
+    <span class="host"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M17.2931 13.293L15.0001 11V6.252C15.0001 2.967 12.4681 0.102 9.18507 0.003C9.12307 0.001 9.06107 0 9.00007 0C5.68607 0 3.00007 2.686 3.00007 6V11L0.707069 13.293C0.0770694 13.923 0.523069 15 1.41407 15H6.56207C6.52707 15.162 6.50007 15.327 6.50007 15.5C6.50007 16.881 7.61907 18 9.00007 18C10.3811 18 11.5001 16.881 11.5001 15.5C11.5001 15.327 11.4731 15.162 11.4381 15H16.5861C17.4771 15 17.9231 13.923 17.2931 13.293ZM10.3001 15.5C10.3001 16.217 9.71707 16.8 9.00007 16.8C8.28307 16.8 7.70007 16.217 7.70007 15.5C7.70007 15.319 7.74907 15.154 7.81907 15H10.1821C10.2511 15.154 10.3001 15.319 10.3001 15.5ZM1.89707 13.8L3.84807 11.848L4.20007 11.497V6C4.20007 3.353 6.35307 1.2 9.00007 1.2L9.14807 1.202C11.7131 1.279 13.8001 3.544 13.8001 6.252V11.497L14.1521 11.848L16.1041 13.8H1.89707Z"/></svg><span class="badge" aria-label="3 unread notifications">3</span></span>
+    <span class="host"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M17.2931 13.293L15.0001 11V6.252C15.0001 2.967 12.4681 0.102 9.18507 0.003C9.12307 0.001 9.06107 0 9.00007 0C5.68607 0 3.00007 2.686 3.00007 6V11L0.707069 13.293C0.0770694 13.923 0.523069 15 1.41407 15H6.56207C6.52707 15.162 6.50007 15.327 6.50007 15.5C6.50007 16.881 7.61907 18 9.00007 18C10.3811 18 11.5001 16.881 11.5001 15.5C11.5001 15.327 11.4731 15.162 11.4381 15H16.5861C17.4771 15 17.9231 13.923 17.2931 13.293ZM10.3001 15.5C10.3001 16.217 9.71707 16.8 9.00007 16.8C8.28307 16.8 7.70007 16.217 7.70007 15.5C7.70007 15.319 7.74907 15.154 7.81907 15H10.1821C10.2511 15.154 10.3001 15.319 10.3001 15.5ZM1.89707 13.8L3.84807 11.848L4.20007 11.497V6C4.20007 3.353 6.35307 1.2 9.00007 1.2L9.14807 1.202C11.7131 1.279 13.8001 3.544 13.8001 6.252V11.497L14.1521 11.848L16.1041 13.8H1.89707Z"/></svg><span class="badge" aria-label="99+ unread">99+</span></span>
+    <span class="host"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M17.2931 13.293L15.0001 11V6.252C15.0001 2.967 12.4681 0.102 9.18507 0.003C9.12307 0.001 9.06107 0 9.00007 0C5.68607 0 3.00007 2.686 3.00007 6V11L0.707069 13.293C0.0770694 13.923 0.523069 15 1.41407 15H6.56207C6.52707 15.162 6.50007 15.327 6.50007 15.5C6.50007 16.881 7.61907 18 9.00007 18C10.3811 18 11.5001 16.881 11.5001 15.5C11.5001 15.327 11.4731 15.162 11.4381 15H16.5861C17.4771 15 17.9231 13.923 17.2931 13.293ZM10.3001 15.5C10.3001 16.217 9.71707 16.8 9.00007 16.8C8.28307 16.8 7.70007 16.217 7.70007 15.5C7.70007 15.319 7.74907 15.154 7.81907 15H10.1821C10.2511 15.154 10.3001 15.319 10.3001 15.5ZM1.89707 13.8L3.84807 11.848L4.20007 11.497V6C4.20007 3.353 6.35307 1.2 9.00007 1.2L9.14807 1.202C11.7131 1.279 13.8001 3.544 13.8001 6.252V11.497L14.1521 11.848L16.1041 13.8H1.89707Z"/></svg><span class="badge dot" aria-label="New activity"></span></span>
+  </div>
+
+  <h2 class="spec-h">Standalone</h2>
+  <div class="row">
+    <span class="badge standalone" aria-label="5 items">5</span>
+    <span class="badge standalone" aria-label="New">New</span>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Badge",
+    "vars": {
+      "--surface": "primary/background/default",
+      "--number": "text/reverse",
+      "--host": "text/default",
+      "--page": "background/default"
+    },
+    "contrastPairs": [
+      { "fg": "text/reverse", "bg": "primary/background/default", "context": "text" },
+      { "fg": "primary/background/default", "bg": "background/default", "context": "ui" }
+    ],
+    "requiredAria": ["aria-label"]
+  }
+  </script>
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body;
+      b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+  </script>
+</body>
+</html>

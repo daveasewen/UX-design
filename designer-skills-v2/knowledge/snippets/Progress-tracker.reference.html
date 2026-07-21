@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Progress tracker — reference implementation (gated)</title>
+<!--
+  CANONICAL REFERENCE for Progress tracker (gated). Reworked 2026-06-29 to the Figma node 1784-86051:
+  an inline label "Step N of M" (medium) + "Progress title" (regular/secondary) on ONE line, above a thin
+  full-width track whose RED fill grows proportionally (current/total) — a continuous bar, not segments.
+  PASSIVE status display (interactive:false, like Table/Status-indicator): AT via role="progressbar" +
+  aria-valuenow/min/max + aria-valuetext + an aria-live "Step X of Y" announcement + accessible name. A real
+  Back/Next control drives it (honest hover/active/focus/disabled). Colour is never the only cue — the
+  "Step X of Y" text carries progress (1.4.1). Tokens resolved light+dark from progress/* + tertiary/* + text/*.
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:300ms cubic-bezier(.4,0,.2,1); }
+  [data-theme="light"]{
+    --complete:#DB0011; --incomplete:#F0F0F0; --text:#1A1A1A; --muted:#1A1A1A; --page:#FFFFFF;
+    --btn-border:#000000; --btn-hover:#F0F0F0; --btn-dis-text:#E1E1E1; --btn-dis-border:#E1E1E1; --focus:#305A85;
+  }
+  [data-theme="dark"]{
+    --complete:#DB0011; --incomplete:#484848; --text:#FFFFFF; --muted:#FFFFFF; --page:#1A1A1A;
+    --btn-border:#808080; --btn-hover:#232323; --btn-dis-text:#808080; --btn-dis-border:#1A1A1A; --focus:#4587A7;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:2rem; display:flex; gap:1rem; align-items:center; flex-wrap:wrap; font-size:13px;}
+  .demo-controls > button{font:inherit; font-size:13px; padding:8px 12px; border-radius:0; cursor:pointer;
+    border:1px solid var(--btn-border); background:transparent; color:var(--text);}
+  .demo-controls > button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .demo-controls label{display:flex; gap:.5rem; align-items:center;} .demo-controls input[type=range]{accent-color:var(--focus);}
+
+  .pt{ width:var(--demo-width, 520px); max-width:100%; container-type:inline-size; }
+  /* inline label: "Step N of M" (medium) + "Progress title" (regular, secondary) on one line */
+  .pt .head{display:flex; align-items:baseline; gap:12px; margin:0 0 12px; flex-wrap:wrap;}
+  .pt .count{font:500 16px/1.3 var(--font); color:var(--text); white-space:nowrap;}
+  .pt .title{font:400 16px/1.3 var(--font); color:var(--muted);}
+
+  /* continuous track — red fill grows to current/total (no segment gaps) */
+  .track{position:relative; width:100%; height:4px; background:var(--incomplete); border-radius:0; overflow:hidden;}
+  .track .fill{position:absolute; left:0; top:0; height:100%; width:0; background:var(--complete); transition:width var(--ease);}
+
+  .nav{display:flex; gap:12px; margin-top:20px;}
+  .nav button{/* type: t-cm-button (bound in canon/type.css - T-D9/T-D12) */ padding:12px 16px; border-radius:0; cursor:pointer;
+    border:1px solid var(--btn-border); background:transparent; color:var(--text);
+    transition:background var(--ease), border-color var(--ease);}
+  .nav button:hover{background:var(--btn-hover);}
+  .nav button:active{transform:translateY(1px);}
+  .nav button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .nav button:disabled{color:var(--btn-dis-text); border-color:var(--btn-dis-border); cursor:not-allowed; background:transparent;}
+
+  @container (max-width: 380px){
+    .nav{flex-direction:column;} .nav button{width:100%;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls">
+    <button id="themeToggle" type="button">◐ Toggle theme</button>
+    <label>Container width <input id="w" type="range" min="300" max="640" value="520"> <span id="wv">520</span>px</label>
+  </div>
+
+  <div class="pt" id="pt">
+    <div class="head">
+      <span class="count" id="ptCount" aria-live="polite">Step 2 of 5</span>
+      <span class="title">Review your payment</span>
+    </div>
+    <div class="track" id="track" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"
+         aria-valuetext="Step 2 of 5" aria-label="Payment setup progress">
+      <span class="fill" id="fill"></span>
+    </div>
+    <div class="nav">
+      <button id="back" type="button">◂ Back</button>
+      <button id="next" type="button">Next ▸</button>
+    </div>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Progress tracker",
+    "vars": {
+      "--complete": "progress/complete", "--incomplete": "progress/incomplete",
+      "--text": "text/default", "--muted": "text/secondary", "--page": "background/default",
+      "--btn-border": "tertiary/border/default", "--btn-hover": "tertiary/background/hover",
+      "--btn-dis-text": "text/disabled", "--btn-dis-border": "tertiary/border/disabled", "--focus": "focus/ring"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "progress/complete", "bg": "background/default", "context": "ui" }
+    ],
+    "knownFindings": [
+      "Reworked to Figma 1784-86051: inline 'Step N of M' (medium) + 'Progress title' (regular/secondary), above a CONTINUOUS red progress bar (current/total) — not the prior segmented track.",
+      "PASSIVE (interactive:false) — AT via role=progressbar + aria-valuenow/min/max + aria-valuetext + aria-live; a real Back/Next drives it.",
+      "Colour is not the only cue: the 'Step X of Y' label carries progress (1.4.1)."
+    ],
+    "requiredAria": ["role=\"progressbar\"", "aria-valuenow", "aria-valuetext", "aria-live"]
+  }
+  </script>
+
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      const b = document.body; b.setAttribute('data-theme', b.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+    const w = document.getElementById('w'), wv = document.getElementById('wv'), pt = document.getElementById('pt');
+    w.addEventListener('input', () => { pt.style.setProperty('--demo-width', w.value + 'px'); wv.textContent = w.value; });
+
+    const TOTAL = 5; let current = 2;
+    const track = document.getElementById('track'), fill = document.getElementById('fill');
+    const count = document.getElementById('ptCount'), back = document.getElementById('back'), next = document.getElementById('next');
+    function render(){
+      fill.style.width = (current / TOTAL * 100) + '%';                    // continuous red fill to current/total
+      track.setAttribute('aria-valuenow', current);
+      track.setAttribute('aria-valuetext', `Step ${current} of ${TOTAL}`);
+      count.textContent = `Step ${current} of ${TOTAL}`;                   // aria-live announces the change
+      back.disabled = current <= 1; next.disabled = current >= TOTAL;
+    }
+    back.addEventListener('click', () => { if (current > 1) { current--; render(); } });
+    next.addEventListener('click', () => { if (current < TOTAL) { current++; render(); } });
+    render();
+  </script>
+</body>
+</html>

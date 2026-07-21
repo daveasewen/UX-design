@@ -1,0 +1,88 @@
+{
+  "name": "Tooltip",
+  "category": "molecule",
+  "$platform": "browser",
+  "purpose": "Provides contextual help relating to an element or area of a page — a small floating panel with a directional tip (pointer) revealed on hover/focus of a trigger (often a help icon).",
+  "props": [
+    {
+      "name": "tip",
+      "type": "enum",
+      "values": [
+        "top",
+        "bottom"
+      ],
+      "default": "top",
+      "$note": "Which edge the pointer sits on (tooltip above vs below the trigger)."
+    },
+    {
+      "name": "tipAlignment",
+      "type": "enum",
+      "values": [
+        "centre",
+        "left",
+        "right"
+      ],
+      "default": "centre",
+      "$note": "Horizontal position of the pointer along that edge."
+    }
+  ],
+  "tokens": {
+    "surface": "background/default (#ffffff)",
+    "border": "divider/border/section (#d7d8d6)",
+    "text": "text/default (#333333) @ font-6/regular",
+    "elevation": "elevation/functional (DROP_SHADOW blur 16)",
+    "$rebind-finding": "(2026-06-19) border binds divider/border/section (#404040) which is ~1.3:1 on the dark page (near-invisible outline). Rebind to elevation/border (#767676, ~4.6:1) — the canonical dark-elevation token (shadow in light, outline in dark), as used by Dropdown."
+  },
+  "relationships": {
+    "livesInside": [
+      "Field label (help icon)",
+      "Page content",
+      "Toolbar"
+    ],
+    "triggeredBy": [
+      "Help/info icon",
+      "focusable element"
+    ],
+    "mustNotNeighbour": [],
+    "commonPatterns": [
+      "help-icon tooltip",
+      "contextual hint on hover/focus"
+    ]
+  },
+  "accessibility": {
+    "trigger": "Tooltip must be reachable by keyboard — show on focus as well as hover; associate via aria-describedby on the trigger",
+    "dismiss": "Per WCAG 1.4.13 Content on Hover or Focus: dismissable (Esc), hoverable (can move pointer onto it), and persistent (stays until dismissed/blur)",
+    "content": "Keep to short supplementary help; don't put essential-only info or interactive controls inside a tooltip",
+    "contrast": "Text on white + the border/shadow must meet contrast (1.4.3 / 1.4.11)",
+    "relatedSC": [
+      "1.4.13 Content on Hover or Focus",
+      "4.1.2 Name Role Value",
+      "1.4.3 Contrast",
+      "2.1.1 Keyboard",
+      "2.4.11 Focus Not Obscured (Minimum)"
+    ]
+  },
+  "antiPatterns": [
+    "Tooltip that only appears on hover (not keyboard focus)",
+    "Putting essential information or interactive elements only inside a tooltip",
+    "Non-dismissable / non-hoverable tooltip (fails 1.4.13)"
+  ],
+  "tokenValidation": {
+    "date": "2026-06-18",
+    "against": "token store re-based on Figma native variable export",
+    "result": "PASS — CLEAN, no deprecated tokens.",
+    "depricateUsage": {
+      "tokens": [],
+      "note": "None. Surface background/default + border divider/border/section + text/default + elevation/functional."
+    },
+    "auditedNodes": [
+      "Tooltip 1887:91573 (6 tip/alignment variants)"
+    ],
+    "ignored": "specs/* annotation scaffolding."
+  },
+  "provenance": {
+    "source": "figma",
+    "figma_node": "Cgbtrmfp15ruNFkIAClpkI:422:11754",
+    "code_path": ""
+  }
+}

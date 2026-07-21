@@ -1,0 +1,169 @@
+{
+  "name": "Headers",
+  "category": "molecule",
+  "purpose": "App-only header components that title and frame a screen or section. Three types: Header Content (a row with an optional action), Header Section Titles (a small section label, optionally with an index and amount), and Headers Display (a large display header with optional image and a processing state).",
+  "$family": "Covers the Headers family (app only); each type is a separate Figma component.",
+  "$platform": "app only",
+  "props": [
+    {
+      "name": "type",
+      "type": "enum",
+      "values": [
+        "content",
+        "section-titles",
+        "display"
+      ],
+      "default": "content"
+    },
+    {
+      "name": "action",
+      "type": "enum",
+      "values": [
+        "button",
+        "close",
+        "none"
+      ],
+      "default": "none",
+      "$note": "Header Content only."
+    },
+    {
+      "name": "index",
+      "type": "boolean",
+      "values": [
+        "false",
+        "true"
+      ],
+      "default": "false",
+      "$note": "Header Section Titles — show a leading index."
+    },
+    {
+      "name": "amount",
+      "type": "boolean",
+      "values": [
+        "false",
+        "true"
+      ],
+      "default": "false",
+      "$note": "Header Section Titles — show an amount/count."
+    },
+    {
+      "name": "state",
+      "type": "enum",
+      "values": [
+        "default",
+        "processing"
+      ],
+      "default": "default",
+      "$note": "Headers Display."
+    },
+    {
+      "name": "image",
+      "type": "boolean",
+      "values": [
+        "false",
+        "true"
+      ],
+      "default": "false",
+      "$note": "Headers Display — with/without an image."
+    }
+  ],
+  "variants": [
+    {
+      "name": "content",
+      "use": "Header row: title (font-4) + an optional trailing action — a Button (font-5 medium) or a Close icon."
+    },
+    {
+      "name": "section-titles",
+      "use": "Compact section label (font-6 medium), optionally with an index and/or amount."
+    },
+    {
+      "name": "display",
+      "use": "Large display header (font-1) with optional image; has a processing state."
+    }
+  ],
+  "tokens": {
+    "content": {
+      "title": "text/default @ font-4/regular",
+      "button-label": "font-5/medium",
+      "close-icon": "icon/default"
+    },
+    "section-titles": {
+      "title": "text/default @ font-6/medium",
+      "surface (DEPRECATED)": "non-interactive (depricate)/surface/neutral-2"
+    },
+    "display": {
+      "title": "text/default @ font-1/regular",
+      "icon": "icon/default",
+      "surface (DEPRECATED)": "non-interactive (depricate)/surface/white",
+      "border (DEPRECATED)": "non-interactive (depricate)/border/on-light/neutral-2"
+    },
+    "font-family": "typography/font-family/default",
+    "$finding": "(2026-06-20) BASELINE: content header + display title. Section-title / search / collapsing-display variants are a starting point — extend per the meta."
+  },
+  "relationships": {
+    "livesInside": [
+      "App screen",
+      "Modal/Sheet",
+      "Section"
+    ],
+    "mustNotNeighbour": [],
+    "commonPatterns": [
+      "screen title with back/close",
+      "section heading with count",
+      "display/hero header with image"
+    ]
+  },
+  "accessibility": {
+    "headingSemantics": "REVIEW (inferred): map header titles to the correct heading level (h1/h2…) for screen-reader structure; display header is typically the screen's h1",
+    "action": "Close/Button action must have an accessible name and 44px target",
+    "processing": "REVIEW (inferred): the Headers Display processing state should announce status (aria-live)",
+    "relatedSC": [
+      "1.3.1 Info and Relationships",
+      "2.4.6 Headings and Labels",
+      "4.1.3 Status Messages",
+      "2.5.8 Target Size (Minimum)"
+    ]
+  },
+  "antiPatterns": [
+    "REVIEW (inferred): using a display header where a section title suffices (visual-hierarchy inflation)",
+    "Leaving Section Titles / Headers Display bound to the deprecated non-interactive surface/border tokens (see tokenValidation)"
+  ],
+  "tokenValidation": {
+    "date": "2026-06-17",
+    "against": "token store re-based on Figma native variable export",
+    "result": "PASS — Header Content clean; Section Titles + Headers Display each carry deprecated surface/border tokens",
+    "depricateUsage": {
+      "tokens": [
+        {
+          "token": "non-interactive (depricate)/surface/white",
+          "usedBy": "Headers Display",
+          "value": "#FFFFFF",
+          "rebind": "background/default"
+        },
+        {
+          "token": "non-interactive (depricate)/border/on-light/neutral-2",
+          "usedBy": "Headers Display",
+          "value": "#EDEDED",
+          "rebind": "divider/border/subsection (or border/subtle — confirm)"
+        },
+        {
+          "token": "non-interactive (depricate)/surface/neutral-2",
+          "usedBy": "Header Section Titles",
+          "value": "#EDEDED",
+          "rebind": "REVIEW — no live subtle-surface token (same gap family as Avatar surfaces)"
+        }
+      ],
+      "auditedNodes": [
+        "Header Content 2298:118820 (clean)",
+        "Header Section Titles 2298:119098",
+        "Headers Display 2298:119395"
+      ]
+    },
+    "ignored": "specs/* annotation scaffolding."
+  },
+  "provenance": {
+    "source": "figma",
+    "figma_node": "Cgbtrmfp15ruNFkIAClpkI:2298:118794",
+    "code_path": ""
+  }
+}

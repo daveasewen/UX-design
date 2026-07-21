@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Headers — reference implementation (gated)</title>
+<!-- CANONICAL REFERENCE for Headers (gated) — app screen headers. Content header (back + title + action)
+     and a display title shown. text/default + icon/default on background/default. The full set (section
+     titles, search header, large/collapsing display) is a starting point — extend per the meta. -->
+<style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
+  [data-theme="light"]{ --surface:#FFFFFF; --text:#1A1A1A; --icon:#1A1A1A; --rule:#E1E1E1; --hover:#F0F0F0; --focus:#305A85; --page:#FFFFFF; }
+  [data-theme="dark"]{ --surface:#1A1A1A; --text:#FFFFFF; --icon:#FFFFFF; --rule:#808080; --hover:#232323; --focus:#4587A7; --page:#1A1A1A; }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{padding:1.25rem 1.5rem 0; display:flex; gap:.75rem; align-items:center; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--icon); background:transparent; color:var(--text); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .frame{max-width:420px; margin:20px 1.5rem; border:1px solid var(--rule);}
+  .content-header{display:flex; align-items:center; gap:8px; height:56px; padding:0 8px; background:var(--surface); border-bottom:1px solid var(--rule);}
+  .content-header button{width:40px; height:40px; border:0; background:transparent; color:var(--icon); cursor:pointer; display:inline-flex; align-items:center; justify-content:center;}
+  .content-header button:hover{background:var(--hover);} .content-header svg{width:20px; height:20px; fill:currentColor;}
+  .content-header button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .content-header h1{flex:1; margin:0; font:400 20px/1.2 var(--font); text-align:center;}
+  .display{padding:24px 16px;}
+  .display h1{margin:0; font:400 32px/1.1 var(--font); letter-spacing:-.01em;}
+  .display p{margin:8px 0 0; font:400 16px/1.5 var(--font); opacity:.8;}   /* subtitle = REGULAR (was 300/light — too thin, Dave 2026-06-29) */
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Headers — canonical reference</span></div>
+
+  <div class="frame">
+    <header class="content-header">
+      <button aria-label="Back"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.8483 17L5.85034 9L13.8483 1H12.1523L4.15234 9L12.1523 17H13.8483Z"/></svg></button>
+      <h1>Statements</h1>
+      <button aria-label="More options"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 3C9.828 3 10.5 2.328 10.5 1.5C10.5 0.672 9.828 0 9 0C8.171 0 7.5 0.672 7.5 1.5C7.5 2.328 8.171 3 9 3ZM9 15C8.171 15 7.5 15.672 7.5 16.5C7.5 17.328 8.171 18 9 18C9.828 18 10.5 17.328 10.5 16.5C10.5 15.672 9.828 15 9 15ZM9 7.5C8.171 7.5 7.5 8.172 7.5 9C7.5 9.828 8.171 10.5 9 10.5C9.828 10.5 10.5 9.828 10.5 9C10.5 8.172 9.828 7.5 9 7.5Z" fill="currentColor"/></svg></button>
+    </header>
+    <div class="display"><h1>Good morning, Jordan</h1><p>Here's a summary of your accounts.</p></div>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Headers",
+    "vars": { "--surface": "background/default", "--text": "text/default", "--icon": "icon/default", "--rule": "divider/border/section", "--hover": "form/background/hover", "--focus": "focus/ring", "--page": "background/default" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "icon/default", "bg": "background/default", "context": "ui" }
+    ],
+    "icons": { "menu-more-vertical": "global-controls/menu-more-vertical.svg" },
+    "requiredAria": ["<h1", "aria-label"]
+  }
+  </script>
+  <script>document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });</script>
+</body>
+</html>

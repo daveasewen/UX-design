@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tabs — responsive (simple, exploration)</title>
+<!--
+  CANONICAL REFERENCE IMPLEMENTATION for the Tabs component (responsive promoted 2026-06-21).
+  Authored gated snippet. Colour values are resolved canonical token values; the embedded
+  #token-manifest maps every CSS var to its token, and _validate_snippets.py fails the build if
+  any value drifts from the store, required ARIA is missing, or a contrast pair falls below threshold.
+  Edit tokens in the store, not here. Adds: responsive overflow (tabs collapse into "More" when they
+  do not fit, selected stays visible, reflows to 320px / WCAG 1.4.10), round count badge, softer press.
+  Conservative motion only — no collapse animation.
+-->
+<style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  :root{
+    --font: "Univers Next for HSBC", "Helvetica Neue", Arial, Helvetica, sans-serif;
+    --fs:16px; --lh:24px; --weight:500;
+    --tab-h:48px; --tab-pad-x:20px; --tab-gap:4px; --indicator-h:3px; --track-h:1px;
+    --move:220ms cubic-bezier(.4,0,.2,1); --fade:140ms ease;
+  }
+  [data-theme="light"]{
+    --tabs-active:#DB0011; --tabs-background:#FFFFFF; --tabs-standard-border:#E1E1E1;
+    --tabs-overflow-border:#000000; --tabs-overflow-background:#FFFFFF;
+    --text-default:#1A1A1A; --text-reverse:#FFFFFF;
+    --tertiary-hover:#F0F0F0; --tertiary-pressed:#626262; --focus-ring:#305A85; --page:#FFFFFF;
+  }
+  [data-theme="dark"]{
+    --tabs-active:#DB0011; --tabs-background:#1F1F1F; --tabs-standard-border:#808080;
+    --tabs-overflow-border:#808080; --tabs-overflow-background:#1F1F1F;
+    --text-default:#FFFFFF; --text-reverse:#FFFFFF;
+    --tertiary-hover:#232323; --tertiary-pressed:#1A1A1A; --focus-ring:#4587A7; --page:#1A1A1A;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; font-family:var(--font); font-size:var(--fs); line-height:var(--lh);
+    background:var(--page); color:var(--text-default); -webkit-font-smoothing:antialiased;
+    transition:background var(--fade), color var(--fade);}
+  .demo-controls{margin-bottom:1.75rem; display:flex; gap:1rem; align-items:center; flex-wrap:wrap; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border-radius:0; cursor:pointer;
+    border:1px solid var(--tabs-standard-border); background:var(--tabs-background); color:var(--text-default);}
+  .demo-controls label{display:flex; gap:.5rem; align-items:center;}
+  .demo-controls input[type=range]{accent-color:var(--tabs-active);}
+
+  .tabs{ width:var(--demo-width, 640px); max-width:100%; }
+  .tablist{position:relative; display:flex; gap:var(--tab-gap); align-items:stretch;
+    background:var(--tabs-background); border-bottom:var(--track-h) solid var(--tabs-standard-border);}
+  .tab{position:relative; appearance:none; border:0; background:transparent; border-radius:0; flex:0 0 auto;
+    font:inherit; font-weight:var(--weight); color:var(--text-default); opacity:.75;
+    height:var(--tab-h); padding:0 var(--tab-pad-x); display:inline-flex; align-items:center; gap:8px;
+    cursor:pointer; white-space:nowrap; transition:opacity var(--fade), background var(--fade);}
+  .tab[hidden]{display:none;}                                  /* collapsed into "More" — instant */
+  .tab:hover{background:var(--tertiary-hover); opacity:1;}
+  .tab:active{background:var(--tertiary-hover);}               /* softer press (no dark inversion) */
+  .tab[aria-selected="true"]{opacity:1;}
+  .tab:disabled{opacity:.35; cursor:not-allowed;}
+  .tab:focus-visible{outline:2px solid var(--focus-ring); outline-offset:-3px;}
+
+  .indicator{position:absolute; bottom:calc(-1 * var(--track-h)); height:var(--indicator-h);
+    background:var(--tabs-active); border-radius:0; transition:left var(--move), width var(--move), opacity var(--fade);}
+  @media (prefers-reduced-motion: reduce){ .indicator{transition:opacity var(--fade);} .panel{animation:none !important;} }
+
+  .overflow{position:relative; margin-left:auto; display:flex;}
+  .overflow[hidden]{display:none;}
+  .overflow__trigger{appearance:none; font:inherit; font-weight:var(--weight); height:var(--tab-h);
+    padding:0 16px; display:inline-flex; align-items:center; gap:8px; background:transparent;
+    color:var(--text-default); border:0; cursor:pointer; border-radius:0; opacity:.75; white-space:nowrap;}
+  .overflow__trigger:hover{background:var(--tertiary-hover); opacity:1;}
+  .overflow__trigger:focus-visible{outline:2px solid var(--focus-ring); outline-offset:-3px;}
+  .ovcount{display:inline-flex; align-items:center; justify-content:center; min-width:18px; height:18px;
+    padding:0 4px; background:var(--tabs-active); color:var(--text-reverse); font-size:12px; font-weight:500;
+    border-radius:999px;}                                      /* round badge */
+  .overflow__menu{position:absolute; right:0; top:calc(100% + 6px); min-width:220px;
+    background:var(--tabs-overflow-background); border:1px solid var(--tabs-overflow-border); border-radius:0;
+    box-shadow:0 8px 28px rgba(0,0,0,.28); padding:4px; margin:0; list-style:none; z-index:20;
+    opacity:0; transform:translateY(-6px); pointer-events:none; transition:opacity var(--fade), transform var(--fade);}
+  .overflow__menu[data-open="true"]{opacity:1; transform:none; pointer-events:auto;}
+  .overflow__item{display:flex; width:100%; align-items:center; text-align:left; appearance:none; border:0;
+    background:transparent; color:var(--text-default); font:inherit; cursor:pointer; padding:12px 12px;
+    min-height:44px; border-radius:0;}
+  .overflow__item:hover{background:var(--tertiary-hover);}
+  .overflow__item:focus-visible{outline:2px solid var(--focus-ring); outline-offset:-2px;}
+  .overflow__item:disabled{opacity:.35; cursor:not-allowed;}
+
+  .panel{padding:1.75rem .25rem; color:var(--text-default); animation:fade var(--fade); max-width:52ch;}
+  .panel[hidden]{display:none;}
+  .panel h2{margin:0 0 .5rem; font-size:20px;}
+  .panel p{margin:0; opacity:.8;}
+  @keyframes fade{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:none;}}
+</style>
+</head>
+<body data-theme="light">
+
+  <div class="demo-controls">
+    <button id="themeToggle" type="button">◐ Toggle theme</button>
+    <label>Container width <input id="w" type="range" min="280" max="760" value="640"> <span id="wv">640</span>px</label>
+  </div>
+
+  <div class="tabs">
+    <div class="tablist" role="tablist" aria-label="Account views">
+      <button class="tab" role="tab" id="t1" aria-selected="true"  aria-controls="p1" tabindex="0">Overview</button>
+      <button class="tab" role="tab" id="t2" aria-selected="false" aria-controls="p2" tabindex="-1">Transactions</button>
+      <button class="tab" role="tab" id="t3" aria-selected="false" aria-controls="p3" tabindex="-1">Statements</button>
+      <button class="tab" role="tab" id="t4" aria-selected="false" aria-controls="p4" tabindex="-1">Payments</button>
+      <button class="tab" role="tab" id="t5" aria-selected="false" aria-controls="p5" tabindex="-1">Documents</button>
+      <button class="tab" role="tab" id="t6" aria-selected="false" aria-controls="p6" tabindex="-1" disabled>Settings</button>
+
+      <div class="overflow" hidden>
+        <button class="overflow__trigger" id="ovTrigger" aria-haspopup="true" aria-expanded="false" aria-label="More tabs">More ▾</button>
+        <ul class="overflow__menu" id="ovMenu" role="menu" aria-labelledby="ovTrigger"></ul>
+      </div>
+      <span class="indicator" aria-hidden="true"></span>
+    </div>
+
+    <div class="panel" role="tabpanel" id="p1" aria-labelledby="t1" tabindex="0"><h2>Overview</h2><p>A summary of balances, recent activity, and quick actions for the selected account.</p></div>
+    <div class="panel" role="tabpanel" id="p2" aria-labelledby="t2" tabindex="0" hidden><h2>Transactions</h2><p>Every debit and credit, searchable and filterable.</p></div>
+    <div class="panel" role="tabpanel" id="p3" aria-labelledby="t3" tabindex="0" hidden><h2>Statements</h2><p>Monthly and annual statements available to download.</p></div>
+    <div class="panel" role="tabpanel" id="p4" aria-labelledby="t4" tabindex="0" hidden><h2>Payments</h2><p>Scheduled, pending and completed payments in one place.</p></div>
+    <div class="panel" role="tabpanel" id="p5" aria-labelledby="t5" tabindex="0" hidden><h2>Documents</h2><p>Letters, certificates and downloads for this account.</p></div>
+    <div class="panel" role="tabpanel" id="p6" aria-labelledby="t6" tabindex="0" hidden><h2>Settings</h2><p>Account preferences. (Shown disabled as a state demo.)</p></div>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Tabs",
+    "vars": {
+      "--tabs-active": "tabs/active", "--tabs-background": "tabs/background",
+      "--tabs-standard-border": "tabs/standard-border", "--tabs-overflow-border": "tabs/overflow-border",
+      "--tabs-overflow-background": "tabs/overflow-background", "--text-default": "text/default",
+      "--text-reverse": "text/reverse", "--tertiary-hover": "tertiary/background/hover",
+      "--tertiary-pressed": "tertiary/background/pressed", "--focus-ring": "focus/ring", "--page": "background/default"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "tabs/background", "context": "text" },
+      { "fg": "tabs/active",  "bg": "tabs/background", "context": "ui" },
+      { "fg": "focus/ring",   "bg": "tabs/background", "context": "ui" }
+    ],
+    "requiredAria": ["role=\"tablist\"", "role=\"tab\"", "role=\"tabpanel\"", "aria-selected"]
+  }
+  </script>
+
+  <script>
+    const tabsEl   = document.querySelector('.tabs');
+    const tablist  = document.querySelector('.tablist');
+    const allTabs  = Array.from(tablist.querySelectorAll('[role="tab"]'));
+    const overflow = document.querySelector('.overflow');
+    const trigger  = document.getElementById('ovTrigger');
+    const menu     = document.getElementById('ovMenu');
+    const indicator= document.querySelector('.indicator');
+
+    const panelOf = t => document.getElementById(t.getAttribute('aria-controls'));
+    const selectedTab = () => allTabs.find(t => t.getAttribute('aria-selected') === 'true') || allTabs[0];
+    const focusable = () => allTabs.filter(t => !t.hidden && !t.disabled);
+
+    function positionIndicator(){
+      const s = selectedTab();
+      if (s.hidden){ indicator.style.opacity = '0'; return; }
+      indicator.style.opacity = '1';
+      indicator.style.left  = s.offsetLeft + 'px';
+      indicator.style.width = s.offsetWidth + 'px';
+    }
+
+    function buildMenu(hidden){
+      menu.innerHTML = '';
+      hidden.forEach(t => {
+        const li = document.createElement('li');
+        const b = document.createElement('button');
+        b.className = 'overflow__item'; b.type = 'button'; b.setAttribute('role','menuitem');
+        b.textContent = t.textContent; b.disabled = t.disabled;
+        b.addEventListener('click', () => { if (!t.disabled){ select(t); setMenu(false); } });
+        li.appendChild(b); menu.appendChild(li);
+      });
+    }
+
+    // simple responsive overflow: show all, then hide from the right until it fits (selected stays)
+    function fit(){
+      allTabs.forEach(t => t.hidden = false);
+      overflow.hidden = true;
+      if (tablist.scrollWidth <= tablist.clientWidth){ buildMenu([]); positionIndicator(); return; }
+      overflow.hidden = false;
+      const sel = selectedTab(); const hid = [];
+      for (let i = allTabs.length - 1; i >= 0 && tablist.scrollWidth > tablist.clientWidth; i--){
+        if (allTabs[i] === sel) continue;
+        allTabs[i].hidden = true; hid.unshift(allTabs[i]);
+      }
+      buildMenu(hid);
+      trigger.innerHTML = 'More <span class="ovcount">' + hid.length + '</span>';
+      trigger.setAttribute('aria-label', hid.length + ' more tab' + (hid.length !== 1 ? 's' : ''));
+      positionIndicator();
+    }
+
+    function select(t){
+      allTabs.forEach(x => { const on = x === t; x.setAttribute('aria-selected', on); x.tabIndex = on ? 0 : -1; panelOf(x).hidden = !on; });
+      fit();
+    }
+
+    allTabs.forEach(tab => {
+      tab.addEventListener('click', () => !tab.disabled && select(tab));
+      tab.addEventListener('keydown', e => {
+        const l = focusable(); const i = l.indexOf(tab); let n = null;
+        if (e.key === 'ArrowRight') n = (i + 1) % l.length;
+        else if (e.key === 'ArrowLeft') n = (i - 1 + l.length) % l.length;
+        else if (e.key === 'Home') n = 0; else if (e.key === 'End') n = l.length - 1;
+        if (n !== null){ e.preventDefault(); l[n].focus(); select(l[n]); }
+      });
+    });
+
+    const setMenu = o => { menu.setAttribute('data-open', String(o)); trigger.setAttribute('aria-expanded', String(o));
+      if (o){ const f = menu.querySelector('[role="menuitem"]:not(:disabled)'); if (f) f.focus(); } };
+    trigger.addEventListener('click', () => setMenu(menu.getAttribute('data-open') !== 'true'));
+    menu.addEventListener('keydown', e => {
+      const items = Array.from(menu.querySelectorAll('[role="menuitem"]:not(:disabled)'));
+      const i = items.indexOf(document.activeElement);
+      if (e.key === 'ArrowDown'){ e.preventDefault(); items[(i + 1) % items.length].focus(); }
+      else if (e.key === 'ArrowUp'){ e.preventDefault(); items[(i - 1 + items.length) % items.length].focus(); }
+      else if (e.key === 'Escape'){ setMenu(false); trigger.focus(); }
+    });
+    document.addEventListener('click', e => { if (!e.target.closest('.overflow')) setMenu(false); });
+
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      const b = document.body; b.setAttribute('data-theme', b.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); });
+    const w = document.getElementById('w'), wv = document.getElementById('wv');
+    w.addEventListener('input', () => { tabsEl.style.setProperty('--demo-width', w.value + 'px'); wv.textContent = w.value; });
+
+    new ResizeObserver(() => fit()).observe(tabsEl);
+    requestAnimationFrame(fit);
+  </script>
+</body>
+</html>

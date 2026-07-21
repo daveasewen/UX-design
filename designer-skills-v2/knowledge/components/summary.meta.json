@@ -1,0 +1,46 @@
+{
+  "name": "Summary",
+  "interactive": false,
+  "category": "molecule",
+  "purpose": "A key/value list for confirming details before or after an action (a payment review, a receipt). Name on the left (text/secondary), value on the right (text/default, tabular-nums), hairline dividers between rows, with an optional emphasised total row. Surfaced as a missing pattern by the journey gap report.",
+  "props": [
+    { "name": "total", "type": "boolean", "default": false, "$note": "Emphasise the final row as a total (heavier weight, larger size)." }
+  ],
+  "variants": [
+    { "name": "default", "use": "Plain name→value rows." },
+    { "name": "with-total", "use": "Adds an emphasised total row as the last row." }
+  ],
+  "tokens": {
+    "muted": "text/secondary",
+    "text": "text/default",
+    "divider": "divider/border/subsection",
+    "font-family": "typography/font-family/default"
+  },
+  "relationships": {
+    "livesInside": ["Confirmation screen", "Receipt", "Review step of a flow"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["payment review (To / Amount / Date / Reference)", "order summary with total"]
+  },
+  "behaviour": "Passive display list — no states.",
+  "accessibility": {
+    "role": "Semantic <dl>/<dt>/<dd> so assistive tech announces each name→value pair as a group (1.3.1). Each row wraps one dt+dd in a div.",
+    "screenReader": "REVIEW (inferred): confirm amounts read naturally (e.g. '£250.00' as 'two hundred and fifty pounds'); the value carries meaning, not its right-alignment.",
+    "relatedSC": ["1.3.1 Info and Relationships", "1.4.3 Contrast (Minimum)", "1.4.10 Reflow"]
+  },
+  "antiPatterns": [
+    "REVIEW (inferred): using a <table> for a simple two-column name/value list — a description list (dl) is the correct structure.",
+    "REVIEW (inferred): centre-aligning values — keep keys left / values right so amounts align on a common edge.",
+    "REVIEW (inferred): conveying the total only by size — it must also read as 'Total' in the key (1.3.1)."
+  ],
+  "tokenValidation": {
+    "date": "2026-06-30",
+    "against": "canon token store (semantic-colour.json); declared values match in light + dark (passes _validate_snippets).",
+    "result": "PASS (colour); no open token questions (reuses divider/border/subsection)."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": "",
+    "$note": "REVIEW: no Figma node yet — surfaced by the journey gap report (the .c-summary hand-util). Needs a design owner + Figma source before promotion from candidate to gated."
+  }
+}

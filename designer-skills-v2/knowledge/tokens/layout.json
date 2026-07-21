@@ -1,0 +1,131 @@
+{
+  "$description": "Layout — grid (web/app margin/gutter/columns) + border-width + border-radius, re-based from Figma native export (collection 'semantic-scale', modes scale-1/2/3). Breakpoint definitions and scale->viewport mapping are PRESERVED from the Breakpoints-page doc (not carried in the variable export). Source: _raw/semantic-scale/.",
+  "breakpoint": {
+    "xs": {
+      "$value": "320px",
+      "$type": "dimension",
+      "$description": "Extra Small (fluid). 320-479."
+    },
+    "s": {
+      "$value": "480px",
+      "$type": "dimension",
+      "$description": "Small (fluid). 480-759."
+    },
+    "ms": {
+      "$value": "760px",
+      "$type": "dimension",
+      "$description": "Medium Small (fluid). 760-959."
+    },
+    "m": {
+      "$value": "960px",
+      "$type": "dimension",
+      "$description": "Medium (fluid). 960-1279."
+    },
+    "l": {
+      "$value": "1280px",
+      "$type": "dimension",
+      "$description": "Large. 1280-1599."
+    },
+    "xl": {
+      "$value": "1600px",
+      "$type": "dimension",
+      "$description": "Extra Large. 1600+. Marketing only."
+    }
+  },
+  "scale": {
+    "$description": "Responsive scale modes (Figma variable modes). AUTHORITATIVE viewport mapping (Dave): scale-1 = 320-959, scale-2 = 960-1599, scale-3 = 1600+. Plus scale-1-200 = 200% accessibility text-zoom variant of scale-1 (see typography.json).",
+    "scale-1": {
+      "$value": [
+        "xs",
+        "s",
+        "ms"
+      ],
+      "$type": "other",
+      "$description": "320-959px."
+    },
+    "scale-2": {
+      "$value": [
+        "m",
+        "l"
+      ],
+      "$type": "other",
+      "$description": "960-1599px."
+    },
+    "scale-3": {
+      "$value": [
+        "xl"
+      ],
+      "$type": "other",
+      "$description": "1600px+."
+    }
+  },
+  "layout": {
+    "web": {
+      "margin": {
+        "scale-1": 16,
+        "scale-2": 20,
+        "scale-3": 40,
+        "$type": "number"
+      },
+      "gutter": {
+        "scale-1": 16,
+        "scale-2": 20,
+        "scale-3": 40,
+        "$type": "number"
+      },
+      "columns": {
+        "$value": 12,
+        "$type": "number"
+      }
+    },
+    "app": {
+      "margin": {
+        "$value": 16,
+        "$type": "number"
+      },
+      "gutter": {
+        "$value": 16,
+        "$type": "number"
+      },
+      "columns": {
+        "$value": 12,
+        "$type": "number"
+      }
+    }
+  },
+  "border-radius": {
+    "default": {
+      "$value": 0,
+      "$type": "number"
+    }
+  },
+  "border-width": {
+    "small": {
+      "$value": 1,
+      "$type": "number"
+    },
+    "medium": {
+      "$value": 2,
+      "$type": "number"
+    },
+    "large": {
+      "$value": 4,
+      "$type": "number"
+    }
+  },
+  "focus": {
+    "$description": "Keyboard focus-indicator geometry. No canonical Figma primitive — see semantic-colour.json focus group and guidelines/focus-indicators.md. SIGNED OFF as canon by Dave 2026-06-20 (was tagged review). Ring colour lives in semantic-colour.json (focus/ring).",
+    "ring-width": {
+      "$value": 2,
+      "$type": "number",
+      "$description": "Outline thickness, px. Equals border-width/medium.",
+      "$confidence": "asserted"
+    },
+    "ring-offset": {
+      "$value": 2,
+      "$type": "number",
+      "$description": "Gap between the element edge and the ring, px — keeps the ring clear of the component fill.",
+      "$confidence": "asserted"
+    }
+  }
+}

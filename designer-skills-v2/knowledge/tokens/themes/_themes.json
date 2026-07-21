@@ -1,0 +1,54 @@
+{
+  "$description": "Apollo theme registry (ADR-0011). One baseline library, four themes as override sets at the semantic tier. Mono = base; Legacy = populated override; Console + Supercharge = declared nullable slots (ADR-0010). This file is the single source of truth for which colour belongs to which theme, consumed by _validate_theme_provenance.py.",
+  "$schemaVersion": "1.0.0",
+  "activeBase": "apollo-mono",
+  "themes": {
+    "apollo-legacy": {
+      "label": "Apollo Legacy",
+      "order": 1,
+      "role": "Retained for legacy interfaces; superseded over time, never deleted.",
+      "status": "populated",
+      "overrideSet": "themes/apollo-legacy.overrides.json",
+      "neutralRamp": "color/grey/100-800",
+      "ownsHexes": {
+        "#DB0011": "Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark)",
+        "#A8000B": "Legacy error red (light)",
+        "#00847F": "Legacy success/status teal (R-D15)"
+      }
+    },
+    "apollo-mono": {
+      "label": "Apollo Mono",
+      "order": 2,
+      "role": "★ The baseline built now — 'very mono': monochrome throughout, colour ONLY in RAG status + dataviz.",
+      "status": "base",
+      "overrideSet": null,
+      "neutralRamp": "color/mono/1-15",
+      "ownsHexes": {
+        "#B92F1E": "Mono's only red — RAG breach + dataviz loss ONLY (R-D19, R-D7/R-D14). Never action/nav."
+      }
+    },
+    "apollo-console": {
+      "label": "Apollo Console",
+      "order": 3,
+      "role": "Branded HSBC library (was Apollo UI). Broader new-colour palette.",
+      "status": "nullable-declared",
+      "overrideSet": null,
+      "neutralRamp": null,
+      "ownsHexes": {}
+    },
+    "apollo-supercharge": {
+      "label": "Apollo Supercharge",
+      "order": 4,
+      "role": "Brand-uplift rework. Broader new-colour palette.",
+      "status": "nullable-declared",
+      "overrideSet": null,
+      "neutralRamp": null,
+      "ownsHexes": {}
+    }
+  },
+  "notes": {
+    "resolution": "resolve(role, mode, theme): theme override wins; else base (Mono). Components stay theme-blind.",
+    "gate": "A Mono-designated surface (see _STYLE-PROVENANCE.md) must not resolve to, or hardcode, another theme's ownsHexes.",
+    "backlog": "tabs/active and progress/complete need a Mono value ruled (R-D19) before their Legacy red can be gate-seeded as blocking."
+  }
+}

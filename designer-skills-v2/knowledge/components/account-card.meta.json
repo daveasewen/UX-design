@@ -1,0 +1,57 @@
+{
+  "name": "Account card",
+  "interactive": false,
+  "category": "molecule",
+  "purpose": "A passive summary card for a single account: the account label (name · masked number), its balance in the display/amount type, and an optional meta row showing account type (Tags atom) and a RAG status (Status-indicator chip). Surfaced as a missing pattern by the payments-journey gap report.",
+  "props": [
+    { "name": "status", "type": "enum", "values": ["none", "ok", "warn", "err", "info"], "default": "none", "$note": "Optional RAG status chip in the meta row; meaning carried by the label text, not the dot." },
+    { "name": "tag", "type": "boolean", "default": false, "$note": "Optional account-type tag (Tags atom)." }
+  ],
+  "variants": [
+    { "name": "default", "use": "Label + balance + meta row (type tag + status chip)." },
+    { "name": "minimal", "use": "Label + balance only (no meta row)." }
+  ],
+  "tokens": {
+    "surface": "tertiary/background/default",
+    "border": "border/subtle",
+    "text": "text/default",
+    "muted": "text/secondary",
+    "tag-border": "form/border/default",
+    "status-ok": "rag/success",
+    "status-ok-tint": "rag/success-tint",
+    "status-warn": "rag/warning",
+    "status-warn-tint": "rag/warning-tint",
+    "font-family": "typography/font-family/default",
+    "$balance-type-finding": "REVIEW: the balance uses a display/amount type (30px / line-height 1.1 / tabular-nums / -0.01em) with NO dedicated typography token. The gap report flagged 'display/amount type + money-format' as missing — confirm the size/role and add a token, or bind to an existing display type."
+  },
+  "relationships": {
+    "livesInside": ["Dashboard / accounts screen", "Account list"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["account balance summary on a dashboard", "tappable account row that opens account detail (REVIEW: interactive variant?)"]
+  },
+  "behaviour": {
+    "passive": "REVIEW: drafted as a passive display card (no states). Decide whether an INTERACTIVE variant is needed (whole card tappable → account detail), which would add hover/pressed/focus like the Cards link variant + a focusable role."
+  },
+  "accessibility": {
+    "role": "role=\"group\" with aria-labelledby pointing at the account label, so the card is announced as a single unit.",
+    "screenReader": "REVIEW (inferred): the status dot is decorative (aria-hidden) — meaning is in the chip label text. Confirm the masked number ('···4821') reads acceptably, and whether the balance needs an explicit aria-label (e.g. 'Balance £3,248.55').",
+    "relatedSC": ["1.4.1 Use of Color", "1.4.3 Contrast (Minimum)", "1.4.11 Non-text Contrast", "1.3.1 Info and Relationships"]
+  },
+  "antiPatterns": [
+    "REVIEW (inferred): conveying account status by the dot colour alone — keep the meaning in the label (1.4.1).",
+    "REVIEW (inferred): rounding the card corners — cards are square (angular rule; Badge + Avatar are the only round exemptions).",
+    "REVIEW (inferred): hard-coding the balance type instead of a display/amount token once one exists."
+  ],
+  "tokenValidation": {
+    "date": "2026-06-29",
+    "against": "canon token store (semantic-colour.json); declared values match in light + dark (passes _validate_snippets).",
+    "result": "PASS (colour); 1 OPEN type-token question (display/amount).",
+    "$note": "REVIEW: this is a CANDIDATE from the gap report, not yet reconciled against a Figma component. If HSBC already has an account/balance card, bind to its node + tokens; if net-new, it needs design review + a Figma source."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": "",
+    "$note": "REVIEW: no Figma node yet — surfaced by knowledge/_PAYMENTS-JOURNEY-GAPS.md. Needs a design owner + Figma source before promotion from candidate to gated."
+  }
+}

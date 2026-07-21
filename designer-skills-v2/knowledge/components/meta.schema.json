@@ -1,0 +1,117 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "component_meta",
+  "description": "One node in the component graph. The machine-readable layer that lets agents use the component without guessing. Edges are expressed via `relationships`. Reconciled 2026-06-18 to the authored canon: load-bearing fields (name/category/purpose/props/tokens/relationships/accessibility/antiPatterns/tokenValidation/provenance) are required and typed; `accessibility` is an open map of guidance strings (relatedSC is the typed array exception); `tokens` values may be a string or a nested object; `tokenValidation` is an open audit log; `$`-prefixed annotation keys are allowed anywhere.",
+  "type": "object",
+  "required": ["name", "category", "purpose", "props", "tokens", "relationships", "accessibility", "antiPatterns", "tokenValidation", "provenance"],
+  "definitions": {
+    "tokenBinding": {
+      "description": "a token binding: either a prose string naming the bound token(s), or a nested group of bindings",
+      "oneOf": [
+        { "type": "string" },
+        { "type": "object", "additionalProperties": { "$ref": "#/definitions/tokenBinding" } }
+      ]
+    }
+  },
+  "properties": {
+    "name": { "type": "string" },
+    "category": { "enum": ["atom", "molecule", "organism", "template", "page"] },
+    "purpose": { "type": "string", "description": "what it is for, in English the agent can reason about" },
+    "props": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "type"],
+        "patternProperties": { "^\\$": {} },
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string" },
+          "type": { "type": "string" },
+          "values": { "type": "array", "items": { "type": "string" } },
+          "default": {}
+        }
+      }
+    },
+    "variants": {
+      "type": "array",
+      "description": "optional — not every component has named variants",
+      "items": {
+        "type": "object",
+        "required": ["name", "use"],
+        "patternProperties": { "^\\$": {} },
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string" },
+          "use": { "type": "string", "description": "one-line reason this variant exists" }
+        }
+      }
+    },
+    "tokens": {
+      "type": "object",
+      "description": "token bindings by intent; value is a prose string or a nested group",
+      "additionalProperties": { "$ref": "#/definitions/tokenBinding" }
+    },
+    "relationships": {
+      "type": "object",
+      "description": "graph edges",
+      "additionalProperties": false,
+      "properties": {
+        "livesInside": { "type": "array", "items": { "type": "string" } },
+        "mustNotNeighbour": { "type": "array", "items": { "type": "string" } },
+        "commonPatterns": { "type": "array", "items": { "type": "string" } },
+        "triggeredBy": { "type": "array", "items": { "type": "string" }, "description": "elements that activate this component (e.g. a tooltip's trigger)" }
+      }
+    },
+    "accessibility": {
+      "type": "object",
+      "description": "how the component behaves for AT. An open map of named guidance strings; relatedSC is the typed array of WCAG SCs this component must satisfy.",
+      "required": ["relatedSC"],
+      "properties": {
+        "relatedSC": { "type": "array", "items": { "type": "string" }, "description": "WCAG 2.2 SCs this component must satisfy (validated by _build_integrity.py)" }
+      },
+      "patternProperties": { "^\\$": {} },
+      "additionalProperties": { "type": "string" }
+    },
+    "antiPatterns": {
+      "type": "array",
+      "description": "explicit 'never do this' rules — the most load-bearing field. Prefix a string with REVIEW to mark it review-tier (see _CONFIDENCE.md).",
+      "items": { "type": "string" }
+    },
+    "tokenValidation": {
+      "type": "object",
+      "description": "audit log of this component's tokens against the store (deprecated-token usage, rebind targets, ignored primitives). Open shape.",
+      "required": ["date", "against", "result"],
+      "additionalProperties": true
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["source"],
+      "patternProperties": { "^\\$": {} },
+      "additionalProperties": false,
+      "properties": {
+        "source": { "enum": ["figma", "code", "both", "gap-report"], "description": "where the component's authority comes from. 'gap-report' = a candidate surfaced by a journey/gap report, not yet reconciled to a Figma node or code path (figma_node stays empty until a design owner binds it)." },
+        "figma_node": { "type": "string" },
+        "code_path": { "type": "string" }
+      }
+    },
+    "subComponents": { "description": "optional breakdown of internal parts", "type": ["object", "array"] },
+    "motion": { "description": "optional motion/interaction spec; per-part behaviour referencing motion/* tokens (duration, easing) + reduced-motion rule", "type": "object" },
+    "responsive": { "description": "optional reflow/adaptation spec (rubric Dim 11) — how the component adapts to available width: the responsive unit, breakpoint(s), stacking/full-width/reorder rules, verified down to 320px (WCAG 1.4.10). Added 2026-06-24 (Button promotion). Open shape.", "type": "object" },
+    "dimensions": {
+      "description": "optional geometry/measurement spec — the sizes a generator would otherwise have to invent (height, padding, indicator/border widths, gaps, target size). Values are px numbers or strings naming a layout/spacing token. Added 2026-06-19 (fitness-test fix #3). Open shape; prefer token references over raw numbers where a token exists.",
+      "type": "object"
+    },
+    "behaviour": { "description": "optional behavioural notes", "type": ["object", "array", "string"] },
+    "usage": { "description": "optional usage notes", "type": ["object", "array", "string"] },
+    "build": { "description": "optional build/implementation notes", "type": ["object", "array", "string"] },
+    "graphicIndicator": { "description": "optional graphic/indicator notes", "type": ["object", "array", "string"] },
+    "codeBindings": {
+      "description": "optional hub-and-spoke map of this design component to consuming code libraries. HUB = the Figma node identity (provenance.figma_node) — the only library-independent key; never renamed. Each KEY here is one consuming library (a SPOKE), e.g. 'sutherland-react'; its value records that library's own component name + variant->prop mapping, which may differ from the Figma names (different libraries, built by different humans, use different conventions). RULES: never bind logic on a friendly/display name; never normalise names across libraries (map them through the node, not to a 'winner'); populate a spoke from Code Connect (get_code_connect_map), not by guessing; tag every unverified spoke with $status. Display names live per-variant ($displayName/$aliases) and are yours, so they are stable across all libraries. Procedure to add a new library: _RUNBOOK-onboard-code-library.md. Added 2026-06-22 (Dave decision).",
+      "type": "object"
+    },
+    "interactive": { "type": "boolean", "description": "optional — false marks a PASSIVE component (no hover/active/keyboard by design; e.g. Status-indicator, Divider, Badge, Loading-indicator). The prototype-grade scorer then credits AT via role/aria-live/label rather than a keyboard handler (decided 2026-06-22, rubric option A). Default true." },
+    "stateModel": { "enum": ["simple", "full"], "description": "optional — 'simple' declares the component genuinely has only default + hover/pressed + focus (no selected/checked/disabled/expanded/current by design, e.g. Tags). The prototype-grade scorer then credits the states signal when those applicable states are implemented (:hover + :active + :focus-visible), instead of requiring >=4 enumerated selectors it can never have (Decision C, 2026-06-24). Default = full." }
+  },
+  "patternProperties": { "^\\$": {} },
+  "additionalProperties": false
+}

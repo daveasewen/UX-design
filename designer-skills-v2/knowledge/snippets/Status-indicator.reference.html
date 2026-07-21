@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Status indicator — reference implementation (gated)</title>
+<!--
+  CANONICAL REFERENCE IMPLEMENTATION for the Status indicator (promoted 2026-06-22).
+  Authored gated snippet. Colour values are resolved canonical token values; the embedded
+  #token-manifest maps every CSS var to its token, and _validate_snippets.py fails the build if
+  any value drifts from the store, required ARIA is missing, or a contrast pair falls below threshold.
+  Edit tokens in the store, not here.
+  A PASSIVE RAG atom (Figma node 2298:164342): a coloured dot + a text LABEL. Two canonical forms —
+  (A) inline dot + label, (B) square tint chip. FORM B IS THE SAME PRIMITIVE used as the status detail
+  in List-items transaction rows — one atom, reused (cross-referenced in both metas). Form C demonstrates
+  the live aria-live status announcement (4.1.3), the component's actual job.
+  Passive by design: no hover/active/keyboard (it is an anti-pattern to make it interactive); its AT story
+  is role="status" + aria-live + the label carrying meaning (1.4.1). See the meta ($build + findings) for
+  the two token-level findings: the amber dot is < 3:1 standalone (use form B), and rag/neutral-tint is
+  missing (so the neutral/cancelled status has no chip form).
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
+  [data-theme="light"]{
+    --success:#2B7E4F; --warning:#C58900; --error:#B92F1E; --neutral:#808080; --info:#306EC6;
+    --success-tint:#DCEDE3; --warning-tint:#F6E5CC; --error-tint:#F1E0DC; --info-tint:#D6E3EC;
+    --label:#1A1A1A; --disabled:#E1E1E1; --divider:#E1E1E1; --focus:#305A85; --page:#FFFFFF;
+  }
+  [data-theme="dark"]{
+    --success:#4A9568; --warning:#C58900; --error:#CC4333; --neutral:#FFFFFF; --info:#2674DC;
+    --success-tint:#12291D; --warning-tint:#3C2C13; --error-tint:#2C120D; --info-tint:#092131;
+    --label:#FFFFFF; --disabled:#808080; --divider:#808080; --focus:#4587A7; --page:#1A1A1A;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--label); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  h2{/* type: t-cm-caption (bound in canon/type.css - T-D9/T-D12) */ /* sentence case — type26-019 sweep (Dave ruling 2026-07-02): no uppercase, caps tracking removed with it */ margin:0 0 16px;}
+  .demo-controls{margin-bottom:1.75rem; display:flex; gap:1rem; align-items:center; flex-wrap:wrap; font-size:13px;}
+  .demo-controls button.tg{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--neutral); background:transparent; color:var(--label); cursor:pointer;}
+  .demo-controls button.tg:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .demo-controls label{display:flex; gap:.5rem; align-items:center;} .demo-controls input[type=range]{accent-color:var(--info);}
+
+  .wrap{ width:var(--demo-width, 460px); max-width:100%; margin-bottom:2.5rem; container-type:inline-size; }
+
+  /* ---- form A: inline dot + label ---- */
+  .stat{display:flex; align-items:center; gap:12px; margin:12px 0; font:400 16px/1.3 var(--font); color:var(--label);}
+  .dot{width:12px; height:12px; border-radius:50%; flex:none;} /* round (intentional — a status dot, not the angular-square rule) */
+  .ok .dot{background:var(--success);} .warn .dot{background:var(--warning);} .err .dot{background:var(--error);}
+  .neu .dot{background:var(--neutral);} .inf .dot{background:var(--info);}
+  .stat.is-disabled{color:var(--disabled);} .stat.is-disabled .dot{background:var(--disabled);}
+
+  /* ---- form B: square tint chip (border-radius:0; label is text/default → all tints AA) ---- */
+  .chips{display:flex; flex-wrap:wrap; gap:12px;}
+  .chip{display:inline-flex; align-items:center; gap:8px; height:24px; padding:0 8px; border-radius:0; /* type: t-cm-legal + .t-cm-slot (bound in canon/type.css - T-D9/T-D12) */ color:var(--label); white-space:nowrap;} /* SAME spec as List-items .status — this atom IS that badge */
+  .chip .dot{width:8px; height:8px;}
+  .chip.ok{background:var(--success-tint);} .chip.warn{background:var(--warning-tint);}
+  .chip.err{background:var(--error-tint);} .chip.inf{background:var(--info-tint);}
+
+  /* ---- form C: live announced status ---- */
+  .live{display:flex; align-items:center; gap:16px; flex-wrap:wrap; padding:12px 16px; border:1px solid var(--divider);}
+  .live .now{display:flex; align-items:center; gap:12px; font:500 16px/1.3 var(--font); min-width:160px;}
+  .sim{/* type: t-cm-caption (bound in canon/type.css - T-D9/T-D12) */ padding:8px 16px; border:1px solid var(--neutral); background:transparent; color:var(--label); cursor:pointer; border-radius:0;}
+  .sim:hover{border-color:var(--label);}
+  .sim:active{transform:translateY(1px);}
+  .sim:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .sim:disabled{color:var(--disabled); border-color:var(--disabled); cursor:not-allowed;}
+
+  @container (max-width: 360px){ .live{ flex-direction:column; align-items:flex-start; } .live .now{ min-width:0; } }
+  @media (prefers-reduced-motion: reduce){ *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; } }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls">
+    <button class="tg" id="themeToggle" type="button">◐ Toggle theme</button>
+    <label>Width <input id="w" type="range" min="300" max="640" value="460"> <span id="wv">460</span>px</label>
+  </div>
+
+  <!-- ===== A. Inline dot + label (label carries meaning — 1.4.1) ===== -->
+  <div class="wrap">
+    <h2 class="spec-h">Inline — dot + label</h2>
+    <div class="stat ok"><span class="dot" aria-hidden="true"></span><span>Approved</span></div>
+    <div class="stat warn"><span class="dot" aria-hidden="true"></span><span>Pending review</span></div>
+    <div class="stat err"><span class="dot" aria-hidden="true"></span><span>Declined</span></div>
+    <div class="stat inf"><span class="dot" aria-hidden="true"></span><span>In progress</span></div>
+    <div class="stat neu"><span class="dot" aria-hidden="true"></span><span>Cancelled</span></div>
+    <div class="stat ok is-disabled"><span class="dot" aria-hidden="true"></span><span>Approved (disabled)</span></div>
+  </div>
+
+  <!-- ===== B. Tint chip (square; robust for prominent/standalone use) — same atom as List-items status ===== -->
+  <div class="wrap">
+    <h2 class="spec-h">Tint chip — square, fully AA</h2>
+    <div class="chips">
+      <span class="chip ok"><span class="dot" aria-hidden="true"></span>Approved</span>
+      <span class="chip warn"><span class="dot" aria-hidden="true"></span>Pending review</span>
+      <span class="chip err"><span class="dot" aria-hidden="true"></span>Declined</span>
+      <span class="chip inf"><span class="dot" aria-hidden="true"></span>In progress</span>
+      <span class="stat neu" style="margin:0"><span class="dot" aria-hidden="true"></span><span>Cancelled (no chip — rag/neutral-tint gap)</span></span>
+    </div>
+  </div>
+
+  <!-- ===== C. Live announced status change (4.1.3 — the component's actual job) ===== -->
+  <div class="wrap">
+    <h2 class="spec-h">Live update — announced to AT</h2>
+    <div class="live">
+      <span class="now ok" id="now" role="status" aria-live="polite"><span class="dot" aria-hidden="true"></span><span id="nowLabel">Approved</span></span>
+      <button class="sim" id="sim" type="button">Simulate update</button>
+    </div>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Status indicator",
+    "vars": {
+      "--success":"rag/success", "--warning":"rag/warning", "--error":"rag/error", "--neutral":"rag/neutral", "--info":"rag/information",
+      "--success-tint":"rag/success-tint", "--warning-tint":"rag/warning-tint", "--error-tint":"rag/error-tint", "--info-tint":"rag/information-tint",
+      "--label":"text/default", "--disabled":"text/disabled", "--divider":"divider/border/section", "--focus":"focus/ring", "--page":"background/default"
+    },
+    "contrastPairs": [
+      { "fg":"text/default", "bg":"background/default", "context":"text" },
+      { "fg":"rag/success", "bg":"background/default", "context":"ui" },
+      { "fg":"rag/error", "bg":"background/default", "context":"ui" },
+      { "fg":"rag/information", "bg":"background/default", "context":"ui" },
+      { "fg":"rag/neutral", "bg":"background/default", "context":"ui" },
+      { "fg":"text/default", "bg":"rag/success-tint", "context":"text" },
+      { "fg":"text/default", "bg":"rag/warning-tint", "context":"text" },
+      { "fg":"text/default", "bg":"rag/error-tint", "context":"text" },
+      { "fg":"text/default", "bg":"rag/information-tint", "context":"text" }
+    ],
+    "knownFindings": [
+      "rag/warning dot = 1.69:1 on white (< 3:1) — meaning carried by the label (1.4.1); use the tint chip (form B) when warning must stand alone. NOT declared as a passing pair.",
+      "rag/neutral-tint missing from the store — neutral/cancelled has no chip form (token gap; add rag/neutral-tint to complete the RAG tint set)",
+      "PASSIVE atom: no hover/active/keyboard by design (anti-pattern to make it interactive); AT = role=status + aria-live (4.1.3) + label (1.4.1)"
+    ],
+    "reuses": ["used as the status detail in List items transaction rows — same tint-chip primitive"],
+    "requiredAria": ["aria-hidden", "role=\"status\"", "aria-live"]
+  }
+  </script>
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    const w=document.getElementById('w'), wv=document.getElementById('wv');
+    w.addEventListener('input', ()=>{ document.querySelectorAll('.wrap').forEach(el=>el.style.setProperty('--demo-width', w.value+'px')); wv.textContent=w.value; });
+
+    // Live status cycle — demonstrates the aria-live announcement (4.1.3). The button disables briefly (a real :disabled state).
+    const cycle=[['ok','Approved'],['warn','Pending review'],['inf','In progress'],['err','Declined'],['neu','Cancelled']];
+    let idx=0; const now=document.getElementById('now'), lbl=document.getElementById('nowLabel'), sim=document.getElementById('sim');
+    sim.addEventListener('click', ()=>{
+      sim.disabled=true;
+      setTimeout(()=>{ idx=(idx+1)%cycle.length; const [cls,text]=cycle[idx];
+        now.className='now '+cls; lbl.textContent=text; sim.disabled=false; }, 450);
+    });
+  </script>
+</body>
+</html>

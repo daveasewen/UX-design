@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Action bar — reference candidate (gap-pattern → review)</title>
+<!-- CANDIDATE REFERENCE for Action bar (surfaced by the journey gap report; NOT yet design-reviewed —
+     meta carries REVIEW flags). A footer bar that pins a screen/flow's actions — a tertiary Back on the
+     LEFT, then the secondary + primary pair on the RIGHT (e.g. Back / Cancel / Confirm payment). Buttons
+     are the Button atom (reused verbatim — same scale-physics).
+     RESPONSIVE (container-query, mirrors Button.responsive): inline on a wide container (Back left, pair right);
+     at ≤420px container (incl. 320px / WCAG 1.4.10) it STACKS, buttons go full-width, the PRIMARY is
+     promoted to the TOP and the tertiary Back drops to the BOTTOM (mobile priority). Square, flat. Drag "Bar width" to see the reflow without
+     resizing. Scale-physics disabled when stacked full-width (a full-bleed grow overflows) + reduced-motion. -->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-30. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+    --ease:160ms cubic-bezier(.4,0,.2,1);
+    --spring:300ms cubic-bezier(.5,1.6,.4,1);   /* motion/easing/spring + motion/duration/spring — grow/release */
+    --press:90ms cubic-bezier(0,0,.58,1); }      /* motion/duration/press + motion/easing/out — snappy depress */
+  [data-theme="light"]{ --surface:#FFFFFF; --border:#E1E1E1; --page:#FFFFFF;
+    --pri:#DB0011; --pri-hover:#BA1110; --on-pri:#FFFFFF; --sec:#000000; --sec-hover:#1A1A1A; --label-invert:#FFFFFF; --text:#1A1A1A; --ter-border:#000000; --ter-hover:#F0F0F0; }
+  [data-theme="dark"]{ --surface:#1F1F1F; --border:#808080; --page:#1A1A1A;
+    --pri:#DB0011; --pri-hover:#BA1110; --on-pri:#FFFFFF; --sec:#FFFFFF; --sec-hover:#F0F0F0; --label-invert:#333333; --text:#FFFFFF; --ter-border:#808080; --ter-hover:#232323; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--border); background:transparent; color:var(--text); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--text); outline-offset:2px;}
+  .demo-controls label{display:flex; gap:.5rem; align-items:center;}
+  .demo-controls input[type=range]{accent-color:var(--text);}
+  .stateLabel{/* type: t-cm-legal (bound in canon/type.css - T-D9/T-D12) */ color:var(--text); opacity:.7; margin:1.5rem 0 .5rem;}
+
+  /* ---- Action bar ---- */
+  .action-bar-region{ width:var(--demo-width, 100%); max-width:100%; container-type:inline-size; }   /* container-query boundary */
+  .action-bar{ display:flex; gap:12px; justify-content:flex-end; align-items:center; padding:12px 16px; background:var(--surface); border-top:1px solid var(--border); }
+  .action-bar--sticky{ position:sticky; bottom:0; }   /* pin to the bottom of a scrolling flow */
+  /* buttons = the Button atom (reused); scale-physics through SCALE only, brand stays flat/angular */
+  .action-bar .btn{ height:44px; min-width:96px; padding:0 20px; border:0; border-radius:0; cursor:pointer; /* type: t-cm-button + .t-cm-slot (bound in canon/type.css - T-D9/T-D12) */
+    display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:background var(--ease), transform var(--spring), filter var(--press); }
+  .action-bar .btn:focus-visible{ outline:2px solid var(--text); outline-offset:2px; }
+  .action-bar .btn:hover{ transform:scale(1.04); }                                  /* grow toward the cursor */
+  .action-bar .btn:active{ transform:scale(.96); filter:brightness(.9); transition:transform var(--press), filter var(--press); }   /* depress + darken */
+  .action-bar .btn.primary{ background:var(--pri); color:var(--on-pri); }
+  .action-bar .btn.primary:hover{ background:var(--pri-hover); }
+  .action-bar .btn.secondary{ background:var(--sec); color:var(--label-invert); }
+  .action-bar .btn.secondary:hover{ background:var(--sec-hover); }
+  .action-bar .btn.tertiary{ background:var(--surface); color:var(--text); border:1px solid var(--ter-border); margin-right:auto; }   /* outlined "Back" — auto margin pins it LEFT, pushing the pair right */
+  .action-bar .btn.tertiary:hover{ background:var(--ter-hover); }
+  /* reflow: stack + full-width + primary-to-top at a narrow container (mobile priority) */
+  @container (max-width:420px){
+    .action-bar{ flex-direction:column; align-items:stretch; }
+    .action-bar .btn{ width:100%; }
+    .action-bar .btn.primary{ order:-1; }                 /* primary to the TOP (mobile priority) */
+    .action-bar .btn.tertiary{ order:1; margin-right:0; } /* Back drops to the BOTTOM */
+    .action-bar .btn:hover{ transform:none; }   /* full-width can't grow — would overflow */
+  }
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+    .action-bar .btn:hover,.action-bar .btn:active{ transform:none !important; filter:none !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls">
+    <button id="themeToggle" type="button">◐ Toggle theme</button>
+    <label>Bar width <input id="w" type="range" min="300" max="640" value="560"> <span id="wv">560</span>px</label>
+    <span>Action bar — canonical reference</span>
+  </div>
+
+  <div class="stateLabel">default · Back + Cancel + Confirm (drag width → ≤420px stacks: primary top, Back bottom)</div>
+  <div class="action-bar-region" id="region">
+    <div class="action-bar">
+      <button class="btn tertiary" type="button">Back</button>
+      <button class="btn secondary" type="button">Cancel</button>
+      <button class="btn primary" type="button">Confirm payment</button>
+    </div>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Action bar",
+    "type": "molecule",
+    "reuses": ["Button (primary + secondary)"],
+    "vars": {
+      "--surface": "tertiary/background/default",
+      "--border": "border/subtle",
+      "--page": "background/default",
+      "--pri": "primary/background/default",
+      "--pri-hover": "primary/background/hover",
+      "--on-pri": "text/reverse",
+      "--sec": "secondary/background/default",
+      "--sec-hover": "secondary/background/hover",
+      "--label-invert": "text/on-inverse",
+      "--text": "text/default",
+      "--ter-border": "tertiary/border/default",
+      "--ter-hover": "tertiary/background/hover"
+    },
+    "contrastPairs": [
+      { "fg": "text/reverse", "bg": "primary/background/default", "context": "text" },
+      { "fg": "text/reverse", "bg": "primary/background/hover", "context": "text" },
+      { "fg": "text/on-inverse", "bg": "secondary/background/default", "context": "text" },
+      { "fg": "text/on-inverse", "bg": "secondary/background/hover", "context": "text" },
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "tertiary/border/default", "bg": "tertiary/background/default", "context": "ui" },
+      { "fg": "text/default", "bg": "tertiary/background/hover", "context": "text" }
+    ],
+    "requiredAria": ["<button"]
+  }
+  </script>
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    const w=document.getElementById('w'), wv=document.getElementById('wv'), region=document.getElementById('region');
+    function setW(){ region.style.setProperty('--demo-width', w.value+'px'); wv.textContent=w.value; }
+    w.addEventListener('input', setW); setW();
+  </script>
+</body>
+</html>

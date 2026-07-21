@@ -1,0 +1,82 @@
+{
+  "id": "wcag-1.4.3-contrast-minimum",
+  "sc": "1.4.3",
+  "title": "Contrast (Minimum)",
+  "level": "AA",
+  "wcag_versions": [
+    "2.0",
+    "2.1",
+    "2.2"
+  ],
+  "applies_to": [
+    "Accordion",
+    "Account card",
+    "Action bar",
+    "Amount display",
+    "Button",
+    "Cards",
+    "Confirmation",
+    "Eyebrow",
+    "Hero",
+    "Links",
+    "List items",
+    "Modals",
+    "Notifications",
+    "Status indicator",
+    "Summary",
+    "Tab-bar",
+    "Tags",
+    "Tooltip",
+    "Video player"
+  ],
+  "check": {
+    "type": "automated",
+    "description": "Text and images of text meet a contrast ratio of at least 4.5:1 (3:1 for large text >=18pt or >=14pt bold).",
+    "threshold": "4.5:1 normal / 3:1 large"
+  },
+  "severity": "serious",
+  "sources": {
+    "wcag_url": "https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html",
+    "en301549_clause": "9.1.4.3",
+    "internal_policy_ref": "HSBC digital accessibility framework — WCAG 2.2 AA minimum, governed by Group Digital Experience and Accessibility (mandatory on all HSBC digital projects). GTB brand: grey-6 (#767676) is the minimum text colour on white (~4.48:1)."
+  },
+  "verified_by": {
+    "script": "_build_surface_contrast_audit.py + tokens/_build_blast_radius.py",
+    "artifact": "_TEXT-CONTRAST-AUDIT.json",
+    "mechanism": "Every text/icon token in the store is contrast-checked at 4.5:1 against its worst-case dark surface (gates the build); joined down to component granularity via the token blast-radius reverse index.",
+    "granularity": "component",
+    "result": "pass",
+    "checked": "2026-07-21",
+    "per_component": {
+      "Accordion": "pass",
+      "Account card": "pass",
+      "Action bar": "pass",
+      "Amount display": "pass",
+      "Button": "pass",
+      "Cards": "pass",
+      "Confirmation": "pass",
+      "Eyebrow": "pass",
+      "Hero": "pass",
+      "Links": "pass",
+      "List items": "pass",
+      "Modals": "pass",
+      "Notifications": "pass",
+      "Status indicator": "pass",
+      "Summary": "pass",
+      "Tab-bar": "pass",
+      "Tags": "pass",
+      "Tooltip": "pass",
+      "Video player": "pass"
+    },
+    "coverage": "19/19 applies_to components have a bound audited token"
+  },
+  "external_automatable_refs": [
+    {
+      "source": "axe-core",
+      "source_version": "4.12.1",
+      "rule_id": "color-contrast",
+      "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+      "url": "https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=axeAPI"
+    }
+  ]
+}

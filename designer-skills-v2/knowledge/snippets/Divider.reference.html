@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Divider — reference implementation (gated)</title>
+<!-- CANONICAL REFERENCE for Divider (gated). A horizontal rule; weight matches the hierarchy of the
+     separation (subsection < section < break). Decorative by default → role="separator". divider/* dark
+     values were reconciled (sweep 2026-06-19). Passive component. -->
+<style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
+  [data-theme="light"]{ --section:#E1E1E1; --subsection:#F0F0F0; --break:#F0F0F0; --text:#1A1A1A; --page:#FFFFFF; }
+  [data-theme="dark"]{ --section:#808080; --subsection:#808080; --break:#808080; --text:#FFFFFF; --page:#1A1A1A; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:1.75rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--section); background:transparent; color:var(--text); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--text); outline-offset:2px;}
+  h2{font:400 16px/1.4 var(--font); margin:0;} p{margin:.4rem 0 0; opacity:.7; font-size:14px; max-width:52ch;}
+  hr{border:0; margin:20px 0;}
+  hr.section{border-top:1px solid var(--section);}
+  hr.subsection{border-top:1px solid var(--subsection);}
+  hr.break{border-top:1px solid var(--break);}
+  .label{font-size:12px; /* sentence case — type26-019 sweep (Dave ruling 2026-07-02): no uppercase, caps tracking removed with it */ opacity:.5;}
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Divider — canonical reference</span></div>
+
+  <h2>Account summary</h2><p>Content above the section divider.</p>
+  <span class="label">Section</span><hr class="section" role="separator">
+  <h2>Recent transactions</h2><p>Content above a subsection divider.</p>
+  <span class="label">Subsection</span><hr class="subsection" role="separator">
+  <p>A lighter separation within a group.</p>
+  <span class="label">Break</span><hr class="break" role="separator">
+  <p>Final block.</p>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Divider",
+    "vars": { "--section": "divider/border/section", "--subsection": "divider/border/subsection", "--break": "divider/border/break", "--text": "text/default", "--page": "background/default" },
+    "contrastPairs": [],
+    "requiredAria": ["role=\"separator\""]
+  }
+  </script>
+  <script>document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });</script>
+</body>
+</html>

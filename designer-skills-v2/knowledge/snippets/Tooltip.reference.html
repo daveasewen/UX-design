@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tooltip — reference implementation (gated)</title>
+<!--
+  CANONICAL REFERENCE for Tooltip (gated).
+  CANON RULE (2026-06-29, Dave): the tooltip TRIGGER icon (the ⓘ help glyph) appears ONLY at the END of a
+  LABEL — never inline within body copy. Tooltips annotate labels, not running text.
+  SPACE-AWARE (per Figma node 1887-92040 — tipTop/tipBottom × centre/left/right): on open the tip flips
+  ABOVE/BELOW and aligns CENTRE/LEFT/RIGHT to stay inside the viewport; the tail always points at the trigger.
+  Shown on hover AND keyboard focus (1.4.13); role=tooltip + aria-describedby; Escape/blur dismiss.
+  Elevation is mode-aware like Dropdown: shadow in light, a grey OUTLINE in dark (elevation/border #767676).
+-->
+<style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:150ms ease; }
+  [data-theme="light"]{ --surface:#FFFFFF; --tip-border:#FFFFFF00; --shadow:#00000033; --text:#1A1A1A; --trigger:#333333; --page:#FFFFFF; --focus:#305A85; }
+  [data-theme="dark"]{ --surface:#1A1A1A; --tip-border:#808080; --shadow:#000000D9; --text:#FFFFFF; --trigger:#FFFFFF; --page:#1A1A1A; --focus:#4587A7; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:2.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--trigger); background:transparent; color:var(--text); cursor:pointer;}
+  p{max-width:60ch; line-height:1.6;}
+  .row{display:flex; margin:36px 0;}
+
+  /* a LABEL with the trigger at its END (the canon rule) */
+  .lbl{display:inline-flex; align-items:center; gap:8px; font:500 16px/1.4 var(--font); color:var(--text);}
+  .tip-wrap{position:relative; display:inline-flex;}
+  .trigger{position:relative; width:22px; height:22px; padding:0; border:0; background:transparent; color:var(--trigger); cursor:help; display:inline-flex; align-items:center; justify-content:center;}
+  .trigger::before{content:""; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:24px; height:24px;}  /* 24×24 hit target (2.5.8) */
+  .trigger svg{width:22px; height:22px; display:block;}
+  .trigger:focus-visible{outline:2px solid var(--focus); outline-offset:2px; border-radius:50%;}
+
+  /* the tip — position:fixed, JS-placed on open so it can flip/align to the viewport without being clipped */
+  .tip{--tail-x:50%; position:fixed; z-index:50; width:max-content; max-width:240px; background:var(--surface); color:var(--text);
+    border:1px solid var(--tip-border); padding:8px 12px; font:400 14px/1.4 var(--font); box-shadow:0 0 16px var(--shadow);
+    opacity:0; pointer-events:none; transition:opacity var(--ease);}
+  .tip.show{opacity:1; pointer-events:auto;}
+  .tip::after{content:""; position:absolute; left:var(--tail-x,50%); width:10px; height:10px; background:var(--surface); border:1px solid var(--tip-border);}
+  .tip.pos-above::after{ top:100%;    transform:translate(-50%,-50%) rotate(45deg); border-top:0; border-left:0; }   /* tip ABOVE → tail points down */
+  .tip.pos-below::after{ bottom:100%; transform:translate(-50%,-50%) rotate(45deg); border-bottom:0; border-right:0; } /* tip BELOW → tail points up */
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Tooltip — canonical reference · icon at end of label · space-aware</span></div>
+
+  <p>The trigger sits at the <strong>end of a label</strong> (never inside body text). Hover or tab to the icon;
+     the tip flips above/below and shifts left/right to stay on-screen. Try the ones near the top and right edges.</p>
+
+  <!-- near the TOP of the scroll area → tip should flip BELOW -->
+  <div class="row" style="justify-content:flex-start;">
+    <span class="lbl">Available balance
+      <span class="tip-wrap"><button class="trigger" aria-describedby="tt1" aria-label="What is available balance?"><svg viewBox="0 0 18 18" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.029 0 0 4.03 0 9C0 13.97 4.029 18 9 18C13.971 18 18 13.97 18 9C18 4.03 13.971 0 9 0ZM9 16.8C4.699 16.8 1.2 13.301 1.2 9C1.2 4.699 4.699 1.2 9 1.2C13.301 1.2 16.8 4.699 16.8 9C16.8 13.301 13.301 16.8 9 16.8ZM8.999 12.5C8.447 12.5 7.999 12.948 7.999 13.5C7.999 14.052 8.447 14.5 8.999 14.5C9.551 14.5 9.999 14.052 9.999 13.5C9.999 12.948 9.552 12.5 8.999 12.5ZM9.604 3.539C8.75 3.363 7.875 3.569 7.207 4.113C6.54 4.656 6.157 5.46 6.157 6.319H7.357C7.357 5.823 7.578 5.358 7.964 5.044C8.356 4.726 8.851 4.607 9.36 4.714C9.996 4.847 10.514 5.391 10.62 6.037C10.709 6.575 10.542 7.101 10.162 7.48L9.013 8.629C8.75 8.894 8.4 9.324 8.4 10.011V11H9.6V10.011C9.6 9.835 9.642 9.699 9.862 9.478L11.01 8.33C11.667 7.674 11.956 6.768 11.804 5.842C11.616 4.7 10.732 3.775 9.604 3.539Z" fill="currentColor"/></svg></button>
+      <span class="tip" role="tooltip" id="tt1">The funds you can spend right now, after pending transactions are deducted.</span></span>
+    </span>
+  </div>
+
+  <!-- pushed to the RIGHT edge → tip should align so its tail sits near the right -->
+  <div class="row" style="justify-content:flex-end; margin-top:120px;">
+    <span class="lbl">Interest rate (AER)
+      <span class="tip-wrap"><button class="trigger" aria-describedby="tt2" aria-label="What is AER?"><svg viewBox="0 0 18 18" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.029 0 0 4.03 0 9C0 13.97 4.029 18 9 18C13.971 18 18 13.97 18 9C18 4.03 13.971 0 9 0ZM9 16.8C4.699 16.8 1.2 13.301 1.2 9C1.2 4.699 4.699 1.2 9 1.2C13.301 1.2 16.8 4.699 16.8 9C16.8 13.301 13.301 16.8 9 16.8ZM8.999 12.5C8.447 12.5 7.999 12.948 7.999 13.5C7.999 14.052 8.447 14.5 8.999 14.5C9.551 14.5 9.999 14.052 9.999 13.5C9.999 12.948 9.552 12.5 8.999 12.5ZM9.604 3.539C8.75 3.363 7.875 3.569 7.207 4.113C6.54 4.656 6.157 5.46 6.157 6.319H7.357C7.357 5.823 7.578 5.358 7.964 5.044C8.356 4.726 8.851 4.607 9.36 4.714C9.996 4.847 10.514 5.391 10.62 6.037C10.709 6.575 10.542 7.101 10.162 7.48L9.013 8.629C8.75 8.894 8.4 9.324 8.4 10.011V11H9.6V10.011C9.6 9.835 9.642 9.699 9.862 9.478L11.01 8.33C11.667 7.674 11.956 6.768 11.804 5.842C11.616 4.7 10.732 3.775 9.604 3.539Z" fill="currentColor"/></svg></button>
+      <span class="tip" role="tooltip" id="tt2">Annual Equivalent Rate — shows the interest if it were paid and compounded once each year.</span></span>
+    </span>
+  </div>
+
+  <!-- centred, plenty of room → tip above, centre -->
+  <div class="row" style="justify-content:center; margin-top:120px;">
+    <span class="lbl">Sort code
+      <span class="tip-wrap"><button class="trigger" aria-describedby="tt3" aria-label="What is a sort code?"><svg viewBox="0 0 18 18" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.029 0 0 4.03 0 9C0 13.97 4.029 18 9 18C13.971 18 18 13.97 18 9C18 4.03 13.971 0 9 0ZM9 16.8C4.699 16.8 1.2 13.301 1.2 9C1.2 4.699 4.699 1.2 9 1.2C13.301 1.2 16.8 4.699 16.8 9C16.8 13.301 13.301 16.8 9 16.8ZM8.999 12.5C8.447 12.5 7.999 12.948 7.999 13.5C7.999 14.052 8.447 14.5 8.999 14.5C9.551 14.5 9.999 14.052 9.999 13.5C9.999 12.948 9.552 12.5 8.999 12.5ZM9.604 3.539C8.75 3.363 7.875 3.569 7.207 4.113C6.54 4.656 6.157 5.46 6.157 6.319H7.357C7.357 5.823 7.578 5.358 7.964 5.044C8.356 4.726 8.851 4.607 9.36 4.714C9.996 4.847 10.514 5.391 10.62 6.037C10.709 6.575 10.542 7.101 10.162 7.48L9.013 8.629C8.75 8.894 8.4 9.324 8.4 10.011V11H9.6V10.011C9.6 9.835 9.642 9.699 9.862 9.478L11.01 8.33C11.667 7.674 11.956 6.768 11.804 5.842C11.616 4.7 10.732 3.775 9.604 3.539Z" fill="currentColor"/></svg></button>
+      <span class="tip" role="tooltip" id="tt3">The six-digit number that identifies your bank and branch.</span></span>
+    </span>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Tooltip",
+    "vars": { "--focus": "focus/ring", "--surface": "background/default", "--tip-border": "elevation/border", "--shadow": "elevation/functional", "--text": "text/default", "--page": "background/default" },
+    "contrastPairs": [ { "fg": "text/default", "bg": "background/default", "context": "text" } ],
+    "requiredAria": ["role=\"tooltip\"", "aria-describedby"]
+  }
+  </script>
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+
+    document.querySelectorAll('.tip-wrap').forEach(w=>{
+      const trg=w.querySelector('.trigger'), tip=w.querySelector('.tip');
+      function place(){
+        tip.style.visibility='hidden'; tip.classList.add('show');           // measure with layout applied
+        const r=trg.getBoundingClientRect(), tw=tip.offsetWidth, th=tip.offsetHeight, gap=12, pad=10;
+        const above = r.top >= th+gap+pad;                                   // enough room above? else flip below
+        const top = above ? r.top-th-gap : r.bottom+gap;
+        const cx = r.left + r.width/2;                                       // trigger centre
+        let left = cx - tw/2;                                                // prefer centred
+        if(left < pad) left = pad;                                           // clamp to viewport → tail drifts left
+        else if(left+tw > innerWidth-pad) left = innerWidth-pad-tw;          // clamp right → tail drifts right
+        tip.style.left=left+'px'; tip.style.top=top+'px';
+        tip.style.setProperty('--tail-x', (cx-left)+'px');                   // tail always points at the trigger
+        tip.className = 'tip show '+(above?'pos-above':'pos-below');
+        tip.style.visibility='';
+      }
+      const show=()=>place(), hide=()=>tip.classList.remove('show');
+      trg.addEventListener('mouseenter', show); trg.addEventListener('focus', show);
+      trg.addEventListener('mouseleave', hide); trg.addEventListener('blur', hide);
+      trg.addEventListener('keydown', e=>{ if(e.key==='Escape'){ hide(); trg.blur(); } });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+{
+  "id": "wcag-2.3.3-animation-from-interactions",
+  "sc": "2.3.3",
+  "title": "Animation from Interactions",
+  "level": "AAA",
+  "wcag_versions": [
+    "2.1",
+    "2.2"
+  ],
+  "applies_to": [
+    "Countdown timer",
+    "Hero",
+    "Loading indicator"
+  ],
+  "check": {
+    "type": "semi-automated",
+    "description": "Motion animation triggered by interaction can be disabled (respect prefers-reduced-motion) unless essential."
+  },
+  "severity": "minor",
+  "sources": {
+    "wcag_url": "https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions.html",
+    "en301549_clause": "9.2.3.3",
+    "internal_policy_ref": "HSBC digital accessibility framework — WCAG 2.2 AA minimum, governed by Group Digital Experience and Accessibility (mandatory on all HSBC digital projects)."
+  },
+  "verified_by": {
+    "script": "_validate_a11y.py",
+    "artifact": "_A11Y-GATE.md",
+    "mechanism": "Every reference snippet is scanned for transition/animation/@keyframes usage; if present, a prefers-reduced-motion escape hatch is required. Gates the build per snippet (= per component).",
+    "granularity": "component",
+    "result": "pass",
+    "checked": "2026-07-21"
+  },
+  "external_automatable_refs": []
+}

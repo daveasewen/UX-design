@@ -1,0 +1,66 @@
+{
+  "name": "Divider",
+  "interactive": false,
+  "category": "atom",
+  "purpose": "A horizontal rule that separates content, with weights matching the hierarchy of the separation (within a subsection, between sections, or a stronger break). On-light and on-dark.",
+  "props": [
+    { "name": "variant", "type": "enum", "values": ["subsection", "subsection-inset", "section", "break"], "default": "subsection", "$note": "subsection/subsection-inset/section = 1px; break = 4px. subsection-inset is indented by padding/responsive/medium." },
+    { "name": "surface", "type": "enum", "values": ["on-light", "on-dark"], "default": "on-light" }
+  ],
+  "variants": [
+    { "name": "subsection", "use": "Lightest 1px rule separating items within a subsection (#ededed light)." },
+    { "name": "subsection-inset", "use": "As subsection but inset/indented by padding/responsive/medium (16)." },
+    { "name": "section", "use": "Slightly stronger 1px rule between sections (#d7d8d6 light)." },
+    { "name": "break", "use": "Thicker 4px rule for a stronger visual break." }
+  ],
+  "tokens": {
+    "on-light": {
+      "subsection": "divider/border/subsection",
+      "subsection-inset": "divider/border/subsectionInset",
+      "section": "divider/border/section",
+      "break": "divider/border/break"
+    },
+    "on-dark": {
+      "subsection/inset/break (DEPRECATED)": "non-interactive (depricate)/border/on-light/neutral-3",
+      "section (DEPRECATED)": "non-interactive (depricate)/border/on-light/neutral-6"
+    },
+    "inset-padding": "padding/responsive/medium",
+    "thickness": "subsection/inset/section = 1px; break = 4px (border-width not tokenised here — literal heights)"
+  },
+  "relationships": {
+    "livesInside": ["List", "Card", "Form", "Menu", "Page section", "Accordion"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["separating list rows", "grouping form fields", "section breaks in long content"]
+  },
+  "build": {
+    "flexibleWidth": "Build with flexible widths to accommodate different screen sizes (per the Dividers guide)."
+  },
+  "accessibility": {
+    "semantics": "REVIEW (inferred): decorative dividers should be hidden from assistive tech; if a divider conveys a meaningful grouping boundary, expose it as a separator (role=separator)",
+    "contrast": "Divider colours are subtle by design (1.x:1) — acceptable for non-essential decoration, but don't rely on a divider alone to convey structure",
+    "relatedSC": ["1.3.1 Info and Relationships", "1.4.11 Non-text Contrast (if functional)"]
+  },
+  "antiPatterns": [
+    "REVIEW (inferred): overusing dividers where whitespace would group content adequately",
+    "Leaving the on-dark divider bound to the deprecated non-interactive border tokens — rebind to the mode-aware divider/border/* (see tokenValidation)"
+  ],
+  "tokenValidation": {
+    "date": "2026-06-17",
+    "against": "token store re-based on Figma native variable export",
+    "result": "PASS — on-light clean; on-dark uses 2 deprecated tokens",
+    "depricateUsage": {
+      "tokens": [
+        "non-interactive (depricate)/border/on-light/neutral-3 (#D7D8D6) — on-dark subsection/inset/break",
+        "non-interactive (depricate)/border/on-light/neutral-6 (#767676) — on-dark section"
+      ],
+      "migrationPath": "The live divider/border/* tokens are MODE-AWARE (carry dark values too), so the on-dark divider should rebind to the SAME divider/border/* tokens as on-light rather than the deprecated non-interactive borders. Same fix-pattern as Button on-dark. (These deprecated border neutrals also block Avatar — no standalone live equivalent, but divider/border/* covers the divider case.)",
+      "auditedNodes": ["On Light: Divider 2120:31011", "On Dark: Divider 2120:31002"]
+    },
+    "ignored": "specs/* annotation scaffolding."
+  },
+  "provenance": {
+    "source": "figma",
+    "figma_node": "Cgbtrmfp15ruNFkIAClpkI:2120:30972",
+    "code_path": ""
+  }
+}

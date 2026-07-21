@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Summary — reference candidate (gap-pattern → review)</title>
+<!-- CANDIDATE REFERENCE for Summary (surfaced by the journey gap report; NOT yet design-reviewed —
+     meta carries REVIEW flags). A key/value list for confirming details before/after an action (a
+     payment review, a receipt). Semantic <dl>/<dt>/<dd> so AT announces name→value pairs (1.3.1).
+     Key = text/secondary (left), value = text/default (right, tabular-nums). Hairline divider between
+     rows; an optional emphasised TOTAL row. Leading-trim ON for tight row rhythm. -->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-30. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
+  [data-theme="light"]{ --muted:#1A1A1A; --text:#1A1A1A; --divider:#F0F0F0; --page:#FFFFFF; }
+  [data-theme="dark"]{ --muted:#FFFFFF; --text:#FFFFFF; --divider:#808080; --page:#1A1A1A; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:1.75rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--muted); background:transparent; color:var(--text); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--text); outline-offset:2px;}
+  .stateLabel{/* type: t-cm-legal (bound in canon/type.css - T-D9/T-D12) */ color:var(--muted); margin:1.75rem 0 .5rem;}
+
+  /* ---- Summary (key/value list) ---- */
+  .summary{ display:flex; flex-direction:column; max-width:420px; margin:0; }
+  .summary__row{ display:flex; justify-content:space-between; gap:16px; padding:12px 0; border-bottom:1px solid var(--divider); }
+  .summary__row:last-child{ border-bottom:0; }
+  .summary__k{ color:var(--muted); font:400 16px/1.4 var(--font); margin:0; }
+  .summary__v{ color:var(--text); font:500 16px/1.4 var(--font); font-variant-numeric:tabular-nums; text-align:right; margin:0; }
+  /* emphasised total row */
+  .summary__row--total{ padding-top:12px; }
+  .summary__row--total .summary__k, .summary__row--total .summary__v{ font-weight:500; font-size:16px; }
+
+  /* WCAG 2.3.3 — honour reduced-motion (no motion here, kept for consistency across snippets) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Summary — canonical reference</span></div>
+
+  <div class="stateLabel">default · key / value rows</div>
+  <dl class="summary">
+    <div class="summary__row"><dt class="summary__k">To</dt><dd class="summary__v">Jane Smith</dd></div>
+    <div class="summary__row"><dt class="summary__k">Amount</dt><dd class="summary__v">£250.00</dd></div>
+    <div class="summary__row"><dt class="summary__k">Date</dt><dd class="summary__v">30 Jun 2026</dd></div>
+    <div class="summary__row"><dt class="summary__k">Reference</dt><dd class="summary__v">INV-2026-0412</dd></div>
+  </dl>
+
+  <div class="stateLabel">with total · emphasised final row</div>
+  <dl class="summary">
+    <div class="summary__row"><dt class="summary__k">Subtotal</dt><dd class="summary__v">£240.00</dd></div>
+    <div class="summary__row"><dt class="summary__k">Fee</dt><dd class="summary__v">£10.00</dd></div>
+    <div class="summary__row summary__row--total"><dt class="summary__k">Total</dt><dd class="summary__v">£250.00</dd></div>
+  </dl>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Summary",
+    "type": "molecule",
+    "vars": { "--muted": "text/secondary", "--text": "text/default", "--divider": "divider/border/subsection", "--page": "background/default" },
+    "contrastPairs": [
+      { "fg": "text/secondary", "bg": "background/default", "context": "text" },
+      { "fg": "text/default", "bg": "background/default", "context": "text" }
+    ],
+    "requiredAria": []
+  }
+  </script>
+  <script>document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });</script>
+</body>
+</html>

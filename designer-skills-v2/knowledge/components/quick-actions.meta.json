@@ -1,0 +1,66 @@
+{
+  "name": "Quick actions",
+  "category": "molecule",
+  "$platform": "app only",
+  "purpose": "A configurable row/grid of shortcut buttons giving fast access to common tasks. Each item is an icon or avatar with a short label; items can be reordered via a drag handle.",
+  "props": [
+    { "name": "variant", "type": "enum", "values": ["icon", "avatar"], "default": "icon" },
+    { "name": "state", "type": "enum", "values": ["default", "pressed", "disabled"], "default": "default", "$note": "App component — no hover state." },
+    { "name": "reorder", "type": "boolean", "values": ["false", "true"], "default": "false", "$note": "Reorder handle variant (drag to reorder)." }
+  ],
+  "variants": [
+    { "name": "icon", "use": "Icon shortcut + font-7 label." },
+    { "name": "avatar", "use": "Avatar shortcut + font-7 label (e.g. payee/contact)." }
+  ],
+  "tokens": {
+    "label": "text/default (#333) @ font-7/medium; disabled text/disabled (#d7d8d6)",
+    "icon": "icon/default (#333)",
+    "item-surface (DEPRECATED)": "interactive (depricate)/on-light/surface/primary/default #fff (default) / pressed #767676 / disabled #fff",
+    "pressed-foreground (DEPRECATED)": "text/on-dark (depricate)/pressed + icon/on-dark (depricate)/pressed (#fff)",
+    "chip-tint (DEPRECATED)": "non-interactive (depricate)/surface/neutral-1 (#f3f3f3)",
+    "chip-border (DEPRECATED)": "non-interactive (depricate)/border/on-light/neutral-2 (#ededed)"
+  },
+  "relationships": {
+    "livesInside": ["App home / dashboard", "Account screen"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["shortcut grid on app home", "reorderable favourites / quick links"]
+  },
+  "accessibility": {
+    "label": "Each action needs an accessible name (the visible label); icon/avatar alone is insufficient",
+    "pressed": "Pressed state flips to a dark surface with reverse text/icon — ensure contrast holds; expose pressed/selected to AT",
+    "reorder": "Drag-to-reorder must have a keyboard/AT-accessible alternative (move up/down) and announce the new position",
+    "targetArea": "Action tiles min 44px target",
+    "relatedSC": ["1.1.1 Non-text Content", "4.1.2 Name Role Value", "2.5.8 Target Size (Minimum)", "2.1.1 Keyboard", "2.5.7 Dragging Movements (reorder handle)"]
+  },
+  "antiPatterns": [
+    "Icon-only quick actions without a label / accessible name",
+    "Drag-only reordering with no keyboard alternative",
+    "Leaving the item surfaces/borders on the deprecated tokens — migrate to background/default + tertiary/background/pressed + divider/border/subsection (see tokenValidation)"
+  ],
+  "tokenValidation": {
+    "date": "2026-06-18",
+    "against": "token store re-based on Figma native variable export",
+    "result": "DEPRECATED — same surface set as List items / Navigations; all clean rebinds except the neutral-1 chip tint (no live equivalent).",
+    "depricateUsage": {
+      "tokens": [
+        { "token": "interactive (depricate)/on-light/surface/primary/default", "value": "#FFFFFF", "usedBy": "item default surface", "rebind": "background/default (or tertiary/background/default)" },
+        { "token": "interactive (depricate)/on-light/surface/primary/pressed", "value": "#767676", "usedBy": "item pressed surface", "rebind": "tertiary/background/pressed" },
+        { "token": "interactive (depricate)/on-light/surface/primary/disabled", "value": "#FFFFFF", "usedBy": "item disabled surface", "rebind": "background/default (or tertiary/background/disabled)" },
+        { "token": "text/on-dark (depricate)/pressed (depricate)", "value": "#FFFFFF", "usedBy": "pressed label", "rebind": "text/reverse" },
+        { "token": "icon/on-dark (depricate)/pressed (depricate)", "value": "#FFFFFF", "usedBy": "pressed icon", "rebind": "icon/default-reverse" },
+        { "token": "non-interactive (depricate)/border/on-light/neutral-2", "value": "#EDEDED", "usedBy": "chip border", "rebind": "divider/border/subsection" }
+      ],
+      "blockersNoEquivalent": [
+        { "token": "non-interactive (depricate)/surface/neutral-1", "value": "#F3F3F3", "usedBy": "item chip tint", "rebind": "REVIEW — no live subtle-surface (Avatar/Headers/List/Nav gap family)" }
+      ],
+      "note": "Identical pattern to List items (Item/Badge rows) and Navigations: surface/primary/* → background/default | tertiary/background/*; on-dark/pressed → reverse; neutral-1 tint = the recurring no-equivalent subtle-surface blocker. See $interactive_namespace_note.",
+      "auditedNodes": [".Quick action items 2298:158881", "Quick actions 1914:93496"]
+    },
+    "ignored": "specs/* annotation scaffolding."
+  },
+  "provenance": {
+    "source": "figma",
+    "figma_node": "Cgbtrmfp15ruNFkIAClpkI:2298:158483",
+    "code_path": ""
+  }
+}

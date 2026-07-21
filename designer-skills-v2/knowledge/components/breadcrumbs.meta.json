@@ -1,0 +1,49 @@
+{
+  "name": "Breadcrumbs",
+  "category": "molecule",
+  "purpose": "Secondary navigation showing the user's location within the site hierarchy and letting them step back to ancestor pages. A row of breadcrumb levels (links) separated by a divider, ending in the current page (a non-link).",
+  "props": [
+    { "name": "state", "type": "enum", "values": ["default", "hover-pressed", "no-link"], "default": "default", "$note": "Per .Breadcrumb level. 'no-link' = the current/last item (non-clickable). Hover and Pressed share a single combined state." }
+  ],
+  "variants": [
+    { "name": "default", "use": "A clickable ancestor level (Small Print Link, font-6 regular)." },
+    { "name": "hover-pressed", "use": "Interactive feedback for a level on hover/press. Shares text colour with default — differentiated by link styling (e.g. underline), not colour." },
+    { "name": "no-link", "use": "The current page — the final crumb, rendered as plain Small Print (non-link)." }
+  ],
+  "tokens": {
+    "text": "text/default",
+    "type": "font-6/regular",
+    "type-style-link": "Small Print Link (font-6-regular-link)",
+    "type-style-plain": "Small Print (font-6-regular)",
+    "font-family": "typography/font-family/default",
+    "separator": "A '/' (forward slash) text character between levels, in the same text/default + font-6 styling (confirmed by Dave). Not an icon."
+  },
+  "relationships": {
+    "livesInside": ["Page header", "Masthead", "Content area (top of page)"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["site hierarchy path", "back-navigation to parent sections"]
+  },
+  "accessibility": {
+    "focus": "When tabbed to, every focusable level must show a visible outline; use default native focus states",
+    "targetArea": "Each level has a defined target area (spec shows per-level target/focus areas); confirm min 44×44 where applicable",
+    "structure": "REVIEW (inferred): mark up as a nav landmark labelled 'Breadcrumb' with an ordered list; current page exposed via aria-current='page' (matches the 'no-link' state)",
+    "relatedSC": ["2.4.7 Focus Visible", "2.4.8 Location", "1.4.1 Use of Color", "4.1.2 Name, Role, Value"]
+  },
+  "antiPatterns": [
+    "REVIEW (inferred): making the current page (no-link) a clickable link",
+    "REVIEW (inferred): relying on colour alone to show the hover/pressed state — here states share text/default (#333333), so a non-colour cue (underline) is required (see WCAG state-contrast guidance)",
+    "REVIEW (inferred): using breadcrumbs as the primary navigation rather than a secondary location aid"
+  ],
+  "tokenValidation": {
+    "date": "2026-06-17",
+    "against": "token store re-based on Figma native variable export",
+    "result": "PASS — no deprecated tokens",
+    "notes": "All three states bind text/default (#333333) at font-6 regular; no colour differentiation between default / hover-pressed / no-link. State differentiation relies on link styling (underline) + interactivity, not colour. Hover and Pressed are a single combined state — per the WCAG state-contrast rule, active/pressed normally warrants stronger differentiation than hover; flag for review. specs/* annotation styles ignored.",
+    "depricateUsage": "NONE"
+  },
+  "provenance": {
+    "source": "figma",
+    "figma_node": "Cgbtrmfp15ruNFkIAClpkI:41590:108466",
+    "code_path": ""
+  }
+}

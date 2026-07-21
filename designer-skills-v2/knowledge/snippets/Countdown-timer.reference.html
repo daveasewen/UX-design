@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Countdown timer — reference implementation (gated)</title>
+<!-- CANONICAL REFERENCE for Countdown timer (gated). A circular indicator (timer/background track +
+     timer/foreground fill) with the time readout CENTRED in the ring. role=timer + aria-live; time text
+     not by colour alone (1.4.1).
+     A11Y / MOTION (2026-06-29): WCAG 2.2.2 requires a pause for auto animation that runs > 5s. Rather than
+     bolt on a pause control, the depleting RING animation is INTRODUCED ONLY IN THE FINAL 5 SECONDS (a single
+     ≤5s sweep) — before that the ring is static-full and only the centred number ticks (a per-second text
+     update, not a >5s animation). So no pause control is required. Butt stroke terminals (no rounded caps).
+     Reduced-motion: the sweep is suppressed (ring jumps), the number still ticks. -->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
+  [data-theme="light"]{ --track:#E1E1E1; --fill:#000000; --text:#1A1A1A; --page:#FFFFFF; }
+  [data-theme="dark"]{ --track:#484848; --fill:#FFFFFF; --text:#FFFFFF; --page:#1A1A1A; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:2rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--track); background:transparent; color:var(--text); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--text); outline-offset:2px;}
+  .timer{display:inline-flex; flex-direction:column; align-items:center; gap:12px;}
+  .dial{position:relative; width:84px; height:84px;}                          /* ring + centred number share this box */
+  .ring{position:absolute; inset:0; width:84px; height:84px; transform:rotate(-90deg);}   /* rotate so depletion starts at 12 o'clock */
+  .ring circle{fill:none; stroke-width:6;}
+  .ring .track{stroke:var(--track);}
+  .ring .fill{stroke:var(--fill); stroke-linecap:butt;}                        /* BUTT terminals — no rounded caps */
+  .num{position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    /* type: t-cm-figure-3 (24px/500) bound via CLASS on the element (T-D9/ds-005, RULED 2026-07-19);
+       bare `.num` can't be appended to type.css globally — it collides with `.cn-table td.num`. Box stays local. */
+    color:var(--text); font-variant-numeric:tabular-nums;}   /* number CENTRED in the roundel */
+  .label{/* type: t-cm-caption (bound in canon/type.css - T-D9/T-D12) */ color:var(--text); opacity:.7;}          /* subtitle = REGULAR (was 300/light) */
+  @media(prefers-reduced-motion:reduce){ .ring .fill{transition:none !important;} }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Countdown timer — canonical reference (ring sweeps only in the final 5s)</span></div>
+
+  <div class="timer">
+    <div class="dial" role="timer" aria-live="polite" aria-label="Session timeout countdown">
+      <svg class="ring" data-bespoke="countdown progress ring — functional SVG graphic (track + animated stroke-dashoffset fill), not a library icon" viewBox="0 0 84 84" aria-hidden="true"><circle class="track" cx="42" cy="42" r="36"/><circle class="fill" cx="42" cy="42" r="36"/></svg>
+      <span class="num t-cm-figure-3" id="t">0:10</span>
+    </div>
+    <span class="label">until session timeout</span>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Countdown timer",
+    "vars": { "--track": "timer/background", "--fill": "timer/foreground", "--text": "text/default", "--page": "background/default" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "timer/foreground", "bg": "timer/background", "context": "ui" }
+    ],
+    "requiredAria": ["role=\"timer\"", "aria-live"]
+  }
+  </script>
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+
+    const fill=document.querySelector('.fill'), num=document.getElementById('t');
+    const C=2*Math.PI*36;                 // ring circumference (~226.19)
+    const TOTAL=10, SWEEP=5;              // demo total; the ring animates only the final SWEEP seconds
+    fill.style.strokeDasharray=C;
+    let s, swept;
+    function reset(){ s=TOTAL; swept=false; fill.style.transition='none'; fill.style.strokeDashoffset='0'; render(); }
+    function render(){ num.textContent='0:'+String(s).padStart(2,'0'); }
+    function tick(){
+      if(s<=0){ reset(); return; }
+      s--;
+      if(s===SWEEP && !swept){            // introduce the depleting animation ONLY at 5s to go (a single ≤5s sweep)
+        swept=true;
+        requestAnimationFrame(()=>{ fill.style.transition='stroke-dashoffset '+SWEEP+'s linear'; fill.style.strokeDashoffset=C; });
+      }
+      render();
+    }
+    reset();
+    setInterval(tick, 1000);
+  </script>
+</body>
+</html>

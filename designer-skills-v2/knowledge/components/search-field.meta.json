@@ -1,0 +1,57 @@
+{
+  "name": "Search field",
+  "category": "molecule",
+  "purpose": "A text input specialised for search, with a search icon, optional label/help text, and an optional predictive-search (autocomplete) dropdown that suggests matching results as the user types.",
+  "props": [
+    { "name": "state", "type": "enum", "values": ["default", "hover", "active"], "default": "default" },
+    { "name": "predictive", "type": "boolean", "values": ["false", "true"], "default": "false", "$note": "Predictive-search menu open below the field (single-select list, scrollable)." },
+    { "name": "label", "type": "boolean", "values": ["false", "true"], "default": "true", "$note": "Optional field label + help text + tooltip (Input label)." }
+  ],
+  "tokens": {
+    "field-background": "form/background/default (transparent #ffffff00), hover form/background/hover (#f3f3f3); active field surface background/default (#ffffff)",
+    "field-border": "form/border/default (#767676), active form/border/active (#000000)",
+    "active-bottom-stroke (DEPRECATED effect)": "INNER_SHADOW 'bottom stroke/active' bound to interactive (depricate)/on-light/border/active/default (#000) → rebind form/border/active",
+    "text": "text/default (#333) @ font-5 medium (value) / light (placeholder, help text)",
+    "icon": "icon/default (#333) — search glyph",
+    "predictive-menu": "background/default surface + elevation/functional (DROP_SHADOW blur 16) + divider/border/subsection (#ededed item dividers) + scrollbar/foreground #767676 / scrollbar/background #ededed",
+    "predictive-item (.Select items)": "tertiary/background/default #fff / hover #f3f3f3 / pressed #767676 + text/default / text/reverse (pressed)"
+  },
+  "relationships": {
+    "livesInside": ["Masthead search flyout", "Page / toolbar", "Filter bar", "Form"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["search input with icon", "autocomplete / predictive search", "type-ahead filter"]
+  },
+  "accessibility": {
+    "label": "Field needs a programmatic label (search label); placeholder is not a label",
+    "role": "Use role=search / combobox semantics for predictive search; expose aria-expanded + aria-activedescendant for the suggestion list",
+    "focus": "Visible focus outline on tab (per HSBC Accessibility Framework); target area covers the whole trigger + tooltip icon",
+    "textSize": "Must not break at 400% text zoom; don't disable browser pinch-and-zoom",
+    "announce": "Suggestion results should be announced (aria-live) as they update",
+    "targetArea": "Trigger / suggestion rows min 44px target",
+    "relatedSC": ["1.3.5 Identify Input Purpose", "3.3.2 Labels or Instructions", "4.1.2", "2.4.7 Focus Visible", "1.4.4 Resize Text", "1.4.10 Reflow", "2.4.11 Focus Not Obscured (Minimum)"]
+  },
+  "antiPatterns": [
+    "Using placeholder as the only label",
+    "Disabling pinch-and-zoom or breaking layout at 400% text size",
+    "Predictive list without combobox/listbox semantics + keyboard navigation",
+    "Leaving the active bottom-stroke bound to the deprecated token — rebind to form/border/active (see tokenValidation)"
+  ],
+  "tokenValidation": {
+    "date": "2026-06-18",
+    "against": "token store re-based on Figma native variable export",
+    "result": "PASS — same FORM pattern as Input fields: chrome on form/*; only the active 'bottom stroke' inner-shadow effect still binds 1 deprecated token (clean rebind). Predictive list items + menu fully live.",
+    "depricateUsage": {
+      "tokens": [
+        { "token": "interactive (depricate)/on-light/border/active/default", "value": "#000000", "usedBy": "Search field active 'bottom stroke' inner-shadow effect", "rebind": "form/border/active (identical)" }
+      ],
+      "note": "Identical to Input fields / Dropdown: the field chrome uses live form/* but the active underline EFFECT still references the deprecated border token. Predictive-search list items use the live tertiary/background/* state set (clean); menu surface/divider/scrollbar/elevation all live.",
+      "auditedNodes": ["Search Field 1942:87726", ".Select items 1942:88057 (clean)", ".List single-select 1942:88846 (clean)"]
+    },
+    "ignored": "specs/* annotation scaffolding."
+  },
+  "provenance": {
+    "source": "figma",
+    "figma_node": "Cgbtrmfp15ruNFkIAClpkI:1903:89362",
+    "code_path": ""
+  }
+}

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cards — reference implementation (gated)</title>
+<!--
+  CANONICAL REFERENCE IMPLEMENTATION for the Cards component (promoted 2026-06-22).
+  Authored gated snippet. Colour values are resolved canonical token values; the embedded
+  #token-manifest maps every CSS var to its token, and _validate_snippets.py fails the build if
+  any value drifts from the store, required ARIA is missing, or a contrast pair falls below threshold.
+  Edit tokens in the store, not here.
+  FOUR demonstrated card patterns (Figma nodes 11746:45268, 2298:52812, 862:21004):
+    • Action card  — icon + title + description + quaternary action buttons (static surface; <article>)
+    • Link card    — whole card is the link (<a>); bordered surface; hover + PRESSED states
+    • Media card   — image + title-LINK (font-3 regular) + description + arrow links (static; <article>)
+    • Selectable cards — single-select radiogroup (roving Arrow/Home/End + aria-checked) reusing the
+                     Selection-controls radio atom; BAND-AID supplying the honest keydown for the
+                     native-<a> AT gap (root-cause fix = decision B, see Cards.meta build + the rubric).
+  Every card link reuses the CANONICAL arrow-link atom from Links.reference.html (red tip,
+  underline-on-hover, keyboard focus) — same primitive, not a custom glyph. Plus a loading state.
+  Responsive grid + a container-query reflow, dark mode, square corners, reduced-motion.
+  STATE CONTRAST (a11y): on hover description/arrow → text/default; on pressed icon/arrow/description →
+  text/reverse — both states failed contrast on the dark hover (#474747) / pressed (#767676) greys
+  until fixed (now declared as contrast pairs). Root cause flagged: the dark hover surface is too light.
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
+  [data-theme="light"]{ --surface:#FFFFFF; --border:#E1E1E1; --text:#1A1A1A; --muted:#1A1A1A; --icon:#1A1A1A; --accent:#DB0011; --hover:#F0F0F0; --focus:#305A85; --page:#FFFFFF;
+    --checked:#000000; --ctrl-border:#808080; --pressed:#626262; --reverse:#FFFFFF; }
+  [data-theme="dark"]{ --surface:#1F1F1F; --border:#808080; --text:#FFFFFF; --muted:#FFFFFF; --icon:#FFFFFF; --accent:#DB0011; --hover:#232323; --focus:#4587A7; --page:#1A1A1A;
+    --checked:#FFFFFF; --ctrl-border:#808080; --pressed:#1A1A1A; --reverse:#FFFFFF; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:1.75rem; display:flex; gap:1rem; align-items:center; flex-wrap:wrap; font-size:13px;}
+  .demo-controls button.tg{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--muted); background:transparent; color:var(--text); cursor:pointer;}
+  .demo-controls button.tg:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .demo-controls label{display:flex; gap:.5rem; align-items:center;} .demo-controls input[type=range]{accent-color:var(--accent);}
+
+  .wrap{ width:var(--demo-width, 760px); max-width:100%; }
+  .row{ display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:20px; }   /* responsive, no JS */
+
+  /* ---- canonical arrow-link atom (verbatim from Links.reference.html) ---- */
+  a.arrow{display:inline-flex; align-items:center; gap:4px; text-decoration:none; color:var(--text); font-weight:500;}
+  a.arrow .tip{display:inline-flex; color:var(--accent); transition:transform var(--ease);}
+  a.arrow .tip svg{width:.85em; height:.85em; display:block; fill:currentColor;}
+  a.arrow:hover .tip{transform:translateX(3px);}
+  a.arrow:hover .lbl{text-decoration:underline; text-underline-offset:3px;}
+  a.arrow:focus-visible{outline:none;} a.arrow:focus-visible .lbl{box-shadow:inset 0 -3px 0 var(--text);}
+
+  /* ---- card base ---- */
+  .card{background:var(--surface); border:1px solid var(--border); border-radius:0; container-type:inline-size; display:flex; flex-direction:column;}
+
+  /* type 1 — Action card */
+  .card.action{padding-top:12px;}
+  .card.action .body{display:flex; gap:16px; padding:0 16px;}
+  .card.action .ic{flex:0 0 auto; color:var(--icon);}
+  .card.action h3{margin:0 0 4px; font:500 16px/1.5 var(--font);}
+  .card.action p{margin:0; font:400 14px/1.43 var(--font); color:var(--text);}
+  .card.action .actions{display:flex; justify-content:flex-end; margin-top:8px;}
+  /* undecorated (ghost) action buttons — NOT links: STANDARD button size (h44 / pad20, per Button canon),
+     bg tint on hover, fill on press; no underline */
+  .qbtn{appearance:none; border:0; background:transparent; height:44px; min-width:96px; padding:0 20px;
+    display:inline-flex; align-items:center; justify-content:center; /* type: t-cm-button + .t-cm-slot (bound in canon/type.css - T-D9/T-D12) */ color:var(--text); cursor:pointer; transition:background var(--ease);}
+  .qbtn:hover{background:var(--hover);}
+  .qbtn:active{background:var(--pressed); color:var(--reverse);}
+  .qbtn:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+
+  /* type 2 — Link card (whole card clickable) */
+  a.linkcard{display:flex; gap:16px; padding:16px; border-radius:0; background:var(--surface); border:1px solid var(--border); text-decoration:none; color:var(--text); transition:background var(--ease);}   /* card surface + subtle border, like the family */
+  a.linkcard:hover{background:var(--hover);}                      /* hover state */
+  a.linkcard:active{background:var(--pressed); color:var(--reverse);}   /* pressed (per meta: tertiary/background/pressed + reverse text) */
+  a.linkcard:hover p, .card.opt:hover p{color:var(--text);}            /* dark hover: text/secondary is 3.34:1 on #474747 -> text/default (9.29:1) */
+  a.linkcard:active p, a.linkcard:active .ttl .tip{color:var(--reverse);}   /* pressed #767676: text/secondary 1.67 + red 1.15 fail -> text/reverse (4.54:1) */
+  a.linkcard:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  a.linkcard .ic{flex:0 0 auto; color:var(--icon);}
+  a.linkcard .ttl{font-weight:500; display:inline-flex; align-items:center; gap:4px;}
+  a.linkcard .ttl .tip{color:var(--accent); display:inline-flex;}
+  a.linkcard .ttl .tip svg{width:.85em; height:.85em; fill:currentColor;}
+  a.linkcard:hover .ttl{text-decoration:underline; text-underline-offset:3px;}
+  a.linkcard:hover .ttl .tip{transform:translateX(3px); transition:transform var(--ease); color:var(--text);}   /* red arrow 1.78:1 on #474747 -> text/default on hover */
+  a.linkcard p{margin:4px 0 0; font:400 14px/1.43 var(--font); color:var(--muted);}
+  /* pressed: flip ICON + arrow + description to reverse — MUST come after the :hover .tip rule to win when pressed (press = hover+active) */
+  a.linkcard:active .ic, a.linkcard:active .ttl .tip, a.linkcard:active p{color:var(--reverse);}
+
+  /* type 3 — Media card */
+  .card.media .img{aspect-ratio:16/10; background:linear-gradient(135deg,var(--hover),var(--border)); }
+  .card.media .body{padding:16px; display:flex; flex-direction:column; gap:8px;}
+  .card.media h3{margin:0; font:400 24px/1.2 var(--font);}   /* headline = font-3 REGULAR (Univers Light renders too thin in Chrome) */
+  .card.media h3 a.headline{color:var(--text); text-decoration:none; display:inline-flex; align-items:center; gap:8px;}
+  .card.media h3 a.headline:hover{text-decoration:underline; text-underline-offset:3px;}
+  .card.media h3 a.headline:hover .tip{transform:translateX(3px); transition:transform var(--ease);}
+  .card.media h3 a.headline:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .card.media h3 .tip{color:var(--accent); display:inline-flex;} .card.media h3 .tip svg{width:.7em; height:.7em; fill:currentColor;}
+  .card.media p{margin:0; font:400 14px/1.5 var(--font); color:var(--muted);}
+  .card.media .links{display:flex; flex-direction:column; gap:8px; margin-top:4px;}
+
+  /* loading skeleton */
+  .card.loading{padding:16px; gap:12px;}
+  .sk{background:var(--border); height:12px; animation:pulse 1.4s ease-in-out infinite;}
+  .sk.title{height:16px; width:55%;} .sk.line{width:100%;} .sk.line.short{width:78%;}
+  @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:.5;}}
+
+  /* type 4 — Selectable option cards (radiogroup; reuses the Selection-controls radio atom) */
+  .optgroup{display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:20px;}
+  .card.opt{flex-direction:row; gap:12px; padding:16px; align-items:flex-start; cursor:pointer;}
+  .card.opt:hover{background:var(--hover);}
+  .card.opt:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .card.opt .radio{width:22px; height:22px; flex:0 0 auto; border:2px solid var(--ctrl-border); border-radius:50%; display:flex; align-items:center; justify-content:center; margin-top:1px; transition:border-color var(--ease);}
+  .card.opt .radio .dot{width:12px; height:12px; border-radius:50%; background:var(--checked); transform:scale(0); transition:transform var(--ease);}
+  .card.opt[aria-checked="true"], .card.opt[aria-checked="true"] .radio{border-color:var(--text);}
+  .card.opt[aria-checked="true"] .radio .dot{transform:scale(1);}
+  .card.opt h3{margin:0 0 4px; font:500 16px/1.4 var(--font);} .card.opt p{margin:0; font:400 14px/1.43 var(--font); color:var(--muted);}
+
+  /* responsive — internal card reflow when a card itself gets narrow (auto-fit handles the grid) */
+  @container (max-width: 300px){ .card.action .actions{flex-direction:column; align-items:stretch;} .card.action .qbtn{text-align:left;} }
+
+  @media (prefers-reduced-motion: reduce){ *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; } }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls">
+    <button class="tg" id="themeToggle" type="button">◐ Toggle theme</button>
+    <label>Width <input id="w" type="range" min="300" max="900" value="760"> <span id="wv">760</span>px</label>
+  </div>
+
+  <div class="wrap"><div class="row">
+
+    <!-- Type 1: Action card (static surface → <article>) -->
+    <article class="card action">
+      <div class="body">
+        <span class="ic" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 18 18" fill="currentColor" xmlns="http://www.w3.org/2000/svg" data-icon="informative/card-details"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.497 0H4.5C3.66992 0 2.997 0.672573 2.997 1.50223V5.46022C3.3849 5.28193 3.78867 5.14038 4.203 5.03743V4.20086H16.803V10.4976C16.7981 10.663 16.6625 10.7946 16.497 10.7945H13.095C13.163 11.1898 13.1991 11.5898 13.203 11.9909H16.497C16.8948 11.9933 17.2771 11.837 17.5592 11.5567C17.8414 11.2764 18 10.8952 18 10.4976V1.50223C18 0.672573 17.3271 0 16.497 0ZM16.803 2.99547H4.203V1.50223C4.20293 1.33677 4.33453 1.20126 4.5 1.19639H16.497C16.666 1.19639 16.803 1.33332 16.803 1.50223V2.99547ZM15.003 5.99994V7.19633H11.997V5.99994H15.003ZM5.742 9.04039C6.09964 8.91031 6.49634 9.08477 6.642 9.43619C6.74891 9.67226 6.71694 9.94801 6.55884 10.1534C6.40073 10.3588 6.14225 10.4603 5.88655 10.4175C5.63085 10.3747 5.41955 10.1946 5.337 9.94893C5.20213 9.58639 5.38212 9.18261 5.742 9.04039ZM6.642 10.9924V14.9954H5.4V10.9924H6.642ZM6.003 7.19633C4.05753 7.19269 2.30176 8.36171 1.55557 10.1575C0.809387 11.9533 1.22 14.0215 2.59566 15.3965C3.97132 16.7715 6.04065 17.1819 7.83734 16.4361C9.63403 15.6903 10.8036 13.9354 10.8 11.9909C10.795 9.34498 8.65026 7.20128 6.003 7.19633ZM6.003 5.99994C8.43181 5.99994 10.6213 7.46276 11.5499 9.70589C12.4785 11.949 11.9633 14.5304 10.2446 16.2457C8.52586 17.9609 5.94239 18.472 3.69951 17.5405C1.45664 16.609 -0.00363459 14.4185 6.79458e-06 11.9909C5.00082e-06 10.4004 0.632749 8.87525 1.75879 7.75147C2.88483 6.62769 4.41174 5.99755 6.003 5.99994Z" fill="currentColor"/></svg></span>
+        <div><h3>Title</h3><p>Description.</p></div>
+      </div>
+      <div class="actions"><button class="qbtn" type="button">Action 1</button><button class="qbtn" type="button">Action 2</button></div>
+    </article>
+
+    <!-- Type 2: Link card (whole card is the link → stays <a>) -->
+    <a class="linkcard" href="#" aria-label="Example link">
+      <span class="ic" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 18 18" fill="currentColor" xmlns="http://www.w3.org/2000/svg" data-icon="informative/card-details"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.497 0H4.5C3.66992 0 2.997 0.672573 2.997 1.50223V5.46022C3.3849 5.28193 3.78867 5.14038 4.203 5.03743V4.20086H16.803V10.4976C16.7981 10.663 16.6625 10.7946 16.497 10.7945H13.095C13.163 11.1898 13.1991 11.5898 13.203 11.9909H16.497C16.8948 11.9933 17.2771 11.837 17.5592 11.5567C17.8414 11.2764 18 10.8952 18 10.4976V1.50223C18 0.672573 17.3271 0 16.497 0ZM16.803 2.99547H4.203V1.50223C4.20293 1.33677 4.33453 1.20126 4.5 1.19639H16.497C16.666 1.19639 16.803 1.33332 16.803 1.50223V2.99547ZM15.003 5.99994V7.19633H11.997V5.99994H15.003ZM5.742 9.04039C6.09964 8.91031 6.49634 9.08477 6.642 9.43619C6.74891 9.67226 6.71694 9.94801 6.55884 10.1534C6.40073 10.3588 6.14225 10.4603 5.88655 10.4175C5.63085 10.3747 5.41955 10.1946 5.337 9.94893C5.20213 9.58639 5.38212 9.18261 5.742 9.04039ZM6.642 10.9924V14.9954H5.4V10.9924H6.642ZM6.003 7.19633C4.05753 7.19269 2.30176 8.36171 1.55557 10.1575C0.809387 11.9533 1.22 14.0215 2.59566 15.3965C3.97132 16.7715 6.04065 17.1819 7.83734 16.4361C9.63403 15.6903 10.8036 13.9354 10.8 11.9909C10.795 9.34498 8.65026 7.20128 6.003 7.19633ZM6.003 5.99994C8.43181 5.99994 10.6213 7.46276 11.5499 9.70589C12.4785 11.949 11.9633 14.5304 10.2446 16.2457C8.52586 17.9609 5.94239 18.472 3.69951 17.5405C1.45664 16.609 -0.00363459 14.4185 6.79458e-06 11.9909C5.00082e-06 10.4004 0.632749 8.87525 1.75879 7.75147C2.88483 6.62769 4.41174 5.99755 6.003 5.99994Z" fill="currentColor"/></svg></span>
+      <div>
+        <span class="ttl">Example link <span class="tip" aria-hidden="true"><svg viewBox="0 0 18 18"><path d="M5 17L5 1L13 9L5 17Z"/></svg></span></span>
+        <p>Description.</p>
+      </div>
+    </a>
+
+    <!-- Type 3: Media card (static surface → <article>) -->
+    <article class="card media">
+      <div class="img" role="img" aria-label="Cannon Beach at dusk"></div>
+      <div class="body">
+        <h3><a class="headline" href="#">Title with a link <span class="tip" aria-hidden="true"><svg viewBox="0 0 18 18"><path d="M5 17L5 1L13 9L5 17Z"/></svg></span></a></h3>
+        <p>Switch off the elements you don't need. Replace links that wrap with the multiline versions.</p>
+        <div class="links">
+          <a class="arrow" href="#"><span class="lbl">Example link one</span><span class="tip" aria-hidden="true"><svg viewBox="0 0 18 18"><path d="M5 17L5 1L13 9L5 17Z"/></svg></span></a>
+          <a class="arrow" href="#"><span class="lbl">Example link two</span><span class="tip" aria-hidden="true"><svg viewBox="0 0 18 18"><path d="M5 17L5 1L13 9L5 17Z"/></svg></span></a>
+        </div>
+      </div>
+    </article>
+
+    <!-- Loading state -->
+    <div class="card loading" aria-busy="true" aria-label="Loading"><span class="sk title"></span><span class="sk line"></span><span class="sk line short"></span></div>
+
+  </div></div>
+
+  <div class="wrap" style="margin-top:20px;">
+    <p style="font:500 14px/1.3 var(--font); margin:0 0 12px; opacity:.7;">Selectable cards (single-select)</p>
+    <div class="optgroup" role="radiogroup" aria-label="Choose an account type">
+      <div class="card opt" role="radio" aria-checked="true" tabindex="0"><span class="radio" aria-hidden="true"><span class="dot"></span></span><div><h3>Current account</h3><p>Everyday spending with a contactless debit card.</p></div></div>
+      <div class="card opt" role="radio" aria-checked="false" tabindex="-1"><span class="radio" aria-hidden="true"><span class="dot"></span></span><div><h3>Savings account</h3><p>Set money aside and earn interest.</p></div></div>
+      <div class="card opt" role="radio" aria-checked="false" tabindex="-1"><span class="radio" aria-hidden="true"><span class="dot"></span></span><div><h3>Joint account</h3><p>Share an account with someone you trust.</p></div></div>
+    </div>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Cards",
+    "vars": { "--surface": "tertiary/background/default", "--border": "border/subtle", "--text": "text/default", "--muted": "text/secondary", "--icon": "icon/default", "--accent": "primary/background/default", "--hover": "tertiary/background/hover", "--focus": "focus/ring", "--page": "background/default", "--checked": "secondary/background/default", "--ctrl-border": "form/border/default", "--pressed": "tertiary/background/pressed", "--reverse": "text/reverse" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/secondary", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "primary/background/default", "bg": "tertiary/background/default", "context": "ui" },
+      { "fg": "text/default", "bg": "tertiary/background/hover", "context": "text" },
+      { "fg": "text/reverse", "bg": "tertiary/background/pressed", "context": "text" }
+    ],
+    "requiredAria": ["<article", "<a ", "aria-label", "aria-busy", "role=\"radiogroup\"", "aria-checked"]
+  }
+  </script>
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    const w=document.getElementById('w'), wv=document.getElementById('wv');
+    w.addEventListener('input', ()=>{ document.querySelector('.wrap').style.setProperty('--demo-width', w.value+'px'); wv.textContent=w.value; });
+    // Selectable cards — radiogroup with roving Arrow/Home/End (reuses the Selection-controls radio model)
+    const grp=document.querySelector('.optgroup'), opts=[...grp.querySelectorAll('[role="radio"]')];
+    function selOpt(i){ opts.forEach((o,j)=>{ const on=i===j; o.setAttribute('aria-checked', on); o.tabIndex=on?0:-1; }); opts[i].focus(); }
+    opts.forEach((o,i)=>{ o.addEventListener('click', ()=>selOpt(i));
+      o.addEventListener('keydown', e=>{ let n=null;
+        if(e.key==='ArrowRight'||e.key==='ArrowDown') n=(i+1)%opts.length;
+        else if(e.key==='ArrowLeft'||e.key==='ArrowUp') n=(i-1+opts.length)%opts.length;
+        else if(e.key==='Home') n=0; else if(e.key==='End') n=opts.length-1;
+        else if(e.key===' '||e.key==='Enter'){ e.preventDefault(); selOpt(i); return; }
+        if(n!==null){ e.preventDefault(); selOpt(n); } }); });
+  </script>
+</body>
+</html>

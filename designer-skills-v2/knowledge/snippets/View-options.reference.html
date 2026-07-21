@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>View options — reference implementation (gated)</title>
+<!-- CANONICAL REFERENCE for View options (gated). A segmented view switcher (list/grid/etc).
+     Selected segment uses the inverting fill (secondary/background/default + text/on-inverse) — same
+     pattern as Selection controls — rather than the marginal tertiary/background/pressed the meta binds
+     (rebind noted). Selection exposed via aria-pressed, not colour alone (1.4.1).
+     MOTION (promoted 2026-06-29): the selected fill is a SLIDING indicator — it animates horizontally
+     between segments (left+width set by JS from the pressed button's box), mirroring the Tabs indicator.
+     Label colour transitions on the SAME easing as the slide, so on-fill contrast stays correct through
+     the move (no white-on-white mid-slide). Reduced-motion: the slide + colour change become instant. -->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:200ms cubic-bezier(.4,0,.2,1); }
+  [data-theme="light"]{ --surface:#FFFFFF; --hover:#F0F0F0; --sel:#000000; --on-sel:#FFFFFF; --text:#1A1A1A; --icon:#1A1A1A; --border:#808080; --focus:#305A85; --page:#FFFFFF; }
+  [data-theme="dark"]{ --surface:#1F1F1F; --hover:#232323; --sel:#FFFFFF; --on-sel:#333333; --text:#FFFFFF; --icon:#FFFFFF; --border:#808080; --focus:#4587A7; --page:#1A1A1A; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:2rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--border); background:transparent; color:var(--text); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  /* segmented switcher with a SLIDING selected-fill */
+  .seg{position:relative; display:inline-flex; border:1px solid var(--border); background:var(--surface);}
+  .seg .ind{position:absolute; top:0; bottom:0; left:0; width:0; background:var(--sel); z-index:0;
+    transition:left var(--ease), width var(--ease);}                         /* the active fill that slides */
+  .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; gap:8px; height:40px; padding:0 16px;
+    border:0; background:transparent; color:var(--text); /* type: t-cm-caption + .t-cm-slot (bound in canon/type.css - T-D9/T-D12) */ cursor:pointer; transition:color var(--ease);}
+  /* NO inter-button divider — one border frames the whole control, so the fill slides edge-to-edge and the
+     active fill aligns exactly to a button box (the old 1px divider offset the indicator measurement). */
+  .seg button:not([aria-pressed="true"]):hover{background:var(--hover);}     /* hover only on inactive (active sits over the fill) */
+  .seg button[aria-pressed="true"]{color:var(--on-sel);}                     /* fill now comes from the sliding .ind behind */
+  .seg button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px; z-index:2;}
+  .seg svg{width:16px; height:16px; fill:currentColor;}
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+    .seg .ind{ transition:none !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>View options — canonical reference</span></div>
+
+  <div class="seg" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M0 15.6H18V14.4H0V15.6ZM0 2.40002V3.60002H18V2.40002H0ZM0 9.60002H18V8.40002H0V9.60002Z"/></svg>List</button>
+    <button type="button" aria-pressed="false"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M1 8H8V1H1V8ZM1 17H8V10H1V17ZM10 1V8H17V1H10ZM10 17H17V10H10V17Z"/></svg>Grid</button>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "View options",
+    "vars": { "--surface": "tertiary/background/default", "--hover": "tertiary/background/hover", "--sel": "secondary/background/default", "--on-sel": "text/on-inverse", "--text": "text/default", "--icon": "icon/default", "--border": "form/border/default", "--focus": "focus/ring", "--page": "background/default" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/on-inverse", "bg": "secondary/background/default", "context": "text" },
+      { "fg": "form/border/default", "bg": "background/default", "context": "ui" }
+    ],
+    "requiredAria": ["aria-pressed"]
+  }
+  </script>
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    const seg=document.querySelector('.seg'), ind=seg.querySelector('.ind');
+    function moveInd(){ const a=seg.querySelector('button[aria-pressed="true"]'); if(!a) return;
+      ind.style.left=a.offsetLeft+'px'; ind.style.width=a.offsetWidth+'px'; }
+    seg.querySelectorAll('button').forEach(b=> b.addEventListener('click', ()=>{
+      seg.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed', String(x===b))); moveInd(); }));
+    addEventListener('resize', moveInd);
+    moveInd();   /* initial position (widths depend on font/trim, so measure after layout) */
+  </script>
+</body>
+</html>

@@ -1,0 +1,208 @@
+{
+  "name": "Tags",
+  "category": "atom",
+  "purpose": "Surface keyword descriptors that tell the user about an item's content composition and its relationship to a broader content structure. Static Tag (label) or interactive Tag link, with or without a background fill.",
+  "stateModel": "simple",
+  "$stateModel-note": "Tags genuinely have only default + hover/pressed (combined) + focus — no selected/checked/disabled/expanded/current by design. Declared simple so the prototype-grade scorer credits the states signal for the full applicable set (:hover + :active + :focus-visible) rather than demanding >=4 enumerated selectors it can't have (rubric Decision C, 2026-06-24).",
+  "props": [
+    {
+      "name": "type",
+      "type": "enum",
+      "values": [
+        "tag",
+        "tag-link"
+      ],
+      "default": "tag",
+      "$note": "Tag = static label; Tag link = interactive (navigates/filters), has hover/pressed."
+    },
+    {
+      "name": "size",
+      "type": "enum",
+      "values": [
+        "small",
+        "extra-small"
+      ],
+      "default": "small"
+    },
+    {
+      "name": "background",
+      "type": "boolean",
+      "values": [
+        "true",
+        "false"
+      ],
+      "default": "true",
+      "$note": "Background=true draws a filled chip; false is text-only."
+    },
+    {
+      "name": "mode",
+      "type": "enum",
+      "values": [
+        "on-light",
+        "on-dark"
+      ],
+      "default": "on-light"
+    },
+    {
+      "name": "state",
+      "type": "enum",
+      "values": [
+        "default",
+        "hover-pressed"
+      ],
+      "default": "default",
+      "$note": "Tag link only (hover & pressed combined)."
+    }
+  ],
+  "variants": [
+    {
+      "name": "tag",
+      "use": "Static keyword label; font-6 (small) / font-7 (extra-small); optional filled chip."
+    },
+    {
+      "name": "tag-link",
+      "use": "Interactive tag (filter/navigate); font-6/7 regular-link; default + hover/pressed."
+    }
+  ],
+  "tokens": {
+    "label": "text/default (#333, on-light) | text/reverse (#fff, on-dark) @ font-6/regular (small) / font-7/regular (xs); link uses font-6/7 regular-link",
+    "tag-fill (background=true, DEPRECATED)": "on-light non-interactive (depricate)/surface/neutral-2 (#ededed) | on-dark non-interactive (depricate)/surface/black (#000)",
+    "tag-link-chip (DEPRECATED)": "on-light interactive (depricate)/on-light/surface/primary/default #fff + /hover #f3f3f3 + border/high-contrast/default+hover #767676; on-dark interactive (depricate)/on-dark/surface/primary/default #333 + /hover #767676 + border/high-contrast #d7d8d6",
+    "link-hover-text (DEPRECATED)": "text/on-light (depricate)/hover #333 / text/on-dark (depricate)/hover #fff → text/default | text/reverse",
+    "$finding": "(2026-06-19) Tags are SQUARE — NOT an angular-rule exemption (only Badge + Avatar are). Reference uses an outlined chip (form/border/default + transparent fill), rebinding off the deprecated non-interactive surface fills. Dismiss × is a real focusable button with aria-label."
+  },
+  "motion": {
+    "$status": "PROMOTED 2026-06-24 (Dave) from _fitness-test/tags-chip-animation.html (V1 of the dismiss exploration). Applied to INTERACTIVE chips only — static keyword tags stay still.",
+    "tag-link": "Press physics echoing Button: hover scale(1.05) attract, press scale(.97); transform ~150ms / press ~90ms.",
+    "dismiss-x": "Tactile cross — hover scale(1.4) (grows past rest), press scale(1.15); ~130ms / press ~90ms.",
+    "dismiss-exit": "V1 collapse + fade — the chip pins its width then collapses max-width/padding/border to 0 and fades, so neighbours reflow smoothly (~220ms).",
+    "reducedMotion": "All transforms neutralised under prefers-reduced-motion; the dismiss still collapses (layout, not decoration).",
+    "$note": "Concrete values not yet tokenised into motion/* (the scales are chip-specific); tokenisation tracked in _PROMOTION-QUEUE.md. Chip is em-based so the motion scales with type."
+  },
+  "responsive": {
+    "$status": "PROMOTED 2026-06-24 (Dave) — closes Dim 11 to reach prototype-grade 9/9.",
+    "rule": "Single tags are intrinsically fluid (rows wrap). The responsive unit is the applied-filters BAR: chips wrap on a wide container; long labels truncate (ellipsis + title= holds the full text) so they never overflow.",
+    "breakpoint": "container <= 360px (container-query on the bar): applied-filter chips go FULL-WIDTH rows with the label ellipsised and the × pinned right. Verified to 320px / WCAG 1.4.10, 0 horizontal overflow.",
+    "$note": "Built/verified in _fitness-test/tags-responsive.html."
+  },
+  "relationships": {
+    "livesInside": [
+      "Card",
+      "Article / content item",
+      "Filter bar",
+      "List"
+    ],
+    "mustNotNeighbour": [],
+    "commonPatterns": [
+      "keyword/category tag",
+      "clickable filter tag",
+      "tag list on a card"
+    ]
+  },
+  "accessibility": {
+    "linkPurpose": "Tag link must have a clear accessible name and behave as a link/button; static Tag is non-interactive text",
+    "contrast": "Filled chip + label must meet contrast in both modes; text-only tags must be distinguishable from body text if interactive",
+    "targetArea": "Tag link min 44px target despite small visual size",
+    "relatedSC": [
+      "2.4.4 Link Purpose",
+      "1.4.3 Contrast",
+      "1.4.1 Use of Color",
+      "2.5.8 Target Size (Minimum)"
+    ]
+  },
+  "antiPatterns": [
+    "Making static Tags look interactive (or vice versa)",
+    "Tag link hit target below 44px",
+    "Leaving tag fills/chips on the deprecated surface tokens — light/dark tag fills have no live subtle-surface equivalent (see tokenValidation)"
+  ],
+  "tokenValidation": {
+    "date": "2026-06-18",
+    "against": "token store re-based on Figma native variable export",
+    "result": "DEPRECATED — no dedicated tag/* token group. Tag-link chips use the form-trigger set (clean rebinds); the filled-tag backgrounds hit the recurring no-equivalent subtle-surface blocker (light + on-dark).",
+    "depricateUsage": {
+      "tokens": [
+        {
+          "token": "interactive (depricate)/on-light/surface/primary/default",
+          "value": "#FFFFFF",
+          "usedBy": "Tag link chip (on-light)",
+          "rebind": "background/default"
+        },
+        {
+          "token": "interactive (depricate)/on-light/surface/primary/hover",
+          "value": "#F3F3F3",
+          "usedBy": "Tag link hover (on-light)",
+          "rebind": "form/background/hover"
+        },
+        {
+          "token": "interactive (depricate)/on-light/border/high-contrast/default",
+          "value": "#767676",
+          "usedBy": "Tag link border (on-light)",
+          "rebind": "form/border/default"
+        },
+        {
+          "token": "interactive (depricate)/on-light/border/high-contrast/hover",
+          "value": "#767676",
+          "usedBy": "Tag link border hover (on-light)",
+          "rebind": "form/border/default"
+        },
+        {
+          "token": "text/on-light (depricate)/hover (depricate)",
+          "value": "#333333",
+          "usedBy": "Tag link label hover (on-light)",
+          "rebind": "text/default"
+        },
+        {
+          "token": "text/on-dark (depricate)/hover (depricate)",
+          "value": "#FFFFFF",
+          "usedBy": "Tag link label hover (on-dark)",
+          "rebind": "text/reverse"
+        },
+        {
+          "token": "interactive (depricate)/on-dark/surface/primary/default",
+          "value": "#333333",
+          "usedBy": "Tag link chip (on-dark)",
+          "rebind": "REVIEW — on-dark surface, no clean live equivalent"
+        },
+        {
+          "token": "interactive (depricate)/on-dark/surface/primary/hover",
+          "value": "#767676",
+          "usedBy": "Tag link hover (on-dark)",
+          "rebind": "REVIEW — on-dark surface"
+        },
+        {
+          "token": "interactive (depricate)/on-dark/border/high-contrast/default",
+          "value": "#D7D8D6",
+          "usedBy": "Tag link border (on-dark)",
+          "rebind": "REVIEW — on-dark border"
+        }
+      ],
+      "blockersNoEquivalent": [
+        {
+          "token": "non-interactive (depricate)/surface/neutral-2",
+          "value": "#EDEDED",
+          "usedBy": "filled static Tag (on-light)",
+          "rebind": "REVIEW — no live subtle-surface (Avatar/Headers/List/Nav/Quick-actions gap family)"
+        },
+        {
+          "token": "non-interactive (depricate)/surface/black",
+          "value": "#000000",
+          "usedBy": "filled static Tag (on-dark)",
+          "rebind": "REVIEW — no live on-dark surface (Avatar/Hero/List gap)"
+        }
+      ],
+      "note": "No tag/* semantic group exists. On-light tag links rebind cleanly to the form-trigger family; on-dark tag links + filled tag backgrounds (neutral-2 light / black dark) hit the recurring no-equivalent surface blockers. A dedicated tag/* group (or the missing subtle-surface family) would clean this up.",
+      "auditedNodes": [
+        "On Light Tag 413:12198",
+        "On Dark Tag 2348:64312",
+        "On Light Tag link 414:11661",
+        "On Dark Tag link 2346:64245"
+      ]
+    },
+    "ignored": "specs/* annotation scaffolding."
+  },
+  "provenance": {
+    "source": "figma",
+    "figma_node": "Cgbtrmfp15ruNFkIAClpkI:413:10962",
+    "code_path": ""
+  }
+}

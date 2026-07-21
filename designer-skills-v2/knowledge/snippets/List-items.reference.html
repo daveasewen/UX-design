@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>List items — Transaction row (reference implementation, gated)</title>
+<!--
+  CANONICAL REFERENCE IMPLEMENTATION for the List items — TRANSACTION row (promoted 2026-06-22).
+  Authored gated snippet. Colour values are resolved canonical token values; the embedded
+  #token-manifest maps every CSS var to its token, and _validate_snippets.py fails the build if
+  any value drifts, required ARIA is missing, or a contrast pair falls below threshold.
+  Real anatomy from Figma (node 1508:76284): leading avatar + title/description + trailing detail
+  (TAG chip OR STATUS badge) + amount. Reuses CANONICAL primitives: .avatar (Avatar.reference),
+  .tag (Tags.reference), Status-indicator (the status detail = form B), and the Loading-indicator
+  spinner (processing). States: default / hover / pressed / disabled / processing.
+
+  LAYOUT (reworked 2026-06-29): each row is the avatar + a TWO-LINE body. Line 1 = title | status,
+  line 2 = description | amount — each line is its own flex row (align-items:center, space-between),
+  so the left labels and the right tag/status+amount stay ALIGNED. The inter-line gap is the single
+  density token (--label-gap), so changing density scales BOTH sides together (it doesn't just shift
+  the right column down). Truncating labels use text-box-edge:text text so descenders aren't clipped.
+  DENSITY: default = roomy (--label-gap 12 / --row-h 76); Compact toggle = the former default (8 / 64).
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease;
+    --row-h:76px; --row-pad:14px; --label-gap:12px; }   /* DEFAULT density (roomy). Compact toggle tightens these to the former default. */
+  [data-theme="light"]{
+    --surface:#FFFFFF; --hover:#F0F0F0; --pressed:#626262; --disabled-surface:#E1E1E1;
+    --text:#1A1A1A; --muted:#1A1A1A; --reverse:#FFFFFF; --disabled-text:#E1E1E1;
+    --icon:#1A1A1A; --icon-rev:#FFFFFF; --divider:#E1E1E1;
+    --success:#2B7E4F; --warning:#C58900; --error:#B92F1E; --info:#306EC6;
+    --success-tint:#DCEDE3; --warning-tint:#F6E5CC; --error-tint:#F1E0DC; --info-tint:#D6E3EC;
+    --tag-border:#808080; --avatar:#F0F0F0; --focus:#305A85; --page:#FFFFFF;
+  }
+  [data-theme="dark"]{
+    --surface:#1F1F1F; --hover:#232323; --pressed:#1A1A1A; --disabled-surface:#484848;
+    --text:#FFFFFF; --muted:#FFFFFF; --reverse:#FFFFFF; --disabled-text:#808080;
+    --icon:#FFFFFF; --icon-rev:#FFFFFF; --divider:#808080;
+    --success:#4A9568; --warning:#C58900; --error:#CC4333; --info:#2674DC;
+    --success-tint:#12291D; --warning-tint:#3C2C13; --error-tint:#2C120D; --info-tint:#092131;
+    --tag-border:#808080; --avatar:#232323; --focus:#4587A7; --page:#1A1A1A;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  h2{/* type: t-cm-caption (bound in canon/type.css - T-D9/T-D12) */ /* sentence case — type26-019 sweep (Dave ruling 2026-07-02): no uppercase, caps tracking removed with it */ margin:0 0 12px;}
+  .demo-controls{margin-bottom:1.75rem; display:flex; gap:1rem; align-items:center; flex-wrap:wrap; font-size:13px;}
+  .demo-controls button.tg{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--muted); background:transparent; color:var(--text); cursor:pointer;}
+  .demo-controls button.tg:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .demo-controls label{display:flex; gap:.5rem; align-items:center;} .demo-controls input[type=range]{accent-color:var(--success);}
+
+  .wrap{ width:var(--demo-width, 460px); max-width:100%; margin-bottom:2.5rem; container-type:inline-size; }
+
+  /* ---- canonical avatar atom (round; from Avatar.reference) ---- */
+  .avatar{flex:none; border-radius:50%; background:var(--avatar); color:var(--text); width:36px; height:36px;
+    display:inline-flex; align-items:center; justify-content:center; /* type: t-cm-caption + .t-cm-slot (bound in canon/type.css - T-D9/T-D12) */}
+
+  /* ---- canonical tag atom (SQUARE outline; from Tags.reference) ---- */
+  .tag{display:inline-flex; align-items:center; height:24px; padding:0 8px; border:1px solid var(--tag-border);
+    border-radius:0; font:400 12px/1 var(--font); color:var(--text); white-space:nowrap;}
+
+  /* ---- list + row ---- */
+  ul.list{list-style:none; margin:0; padding:0; background:var(--surface); border:1px solid var(--divider);}
+  ul.list li + li{border-top:1px solid var(--divider);}
+  .row{display:flex; align-items:center; gap:16px; width:100%; min-height:var(--row-h,76px); padding:var(--row-pad,14px) 16px;
+    background:transparent; border:0; cursor:pointer; text-align:left; color:var(--text);
+    font:500 16px/1.35 var(--font); transition:background var(--ease), box-shadow var(--ease);}
+
+  /* TWO-LINE body — line 1: title | status,  line 2: desc | amount. One gap (--label-gap) drives both. */
+  .row .body{flex:1; min-width:0; display:flex; flex-direction:column; gap:var(--label-gap,12px);}
+  .row .line{display:flex; align-items:center; gap:12px; min-width:0;}                 /* a label/value pair on one baseline row */
+  .row .title{flex:1; min-width:0; font:500 16px/1.35 var(--font); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .row .desc{flex:1; min-width:0; font:400 14px/1.3 var(--font); color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .row .amount{flex:none; font:500 16px/1.2 var(--font); font-variant-numeric:tabular-nums; white-space:nowrap; margin-left:auto;}
+  /* truncating labels: keep the trim's tightness but use the FULL text box (text/text) so descenders (g,y,p)
+     are NOT clipped by overflow:hidden — cap/alphabetic put the box at the baseline and clipped them (2026-06-29). */
+  .row .title, .row .desc{ text-box-edge:text text; }
+
+  /* status detail = the Status-indicator atom (form B): SQUARE RAG tint badge, neutral text/default label + RAG dot.
+     Label-on-tint is AA for every RAG (11-19:1); the warning dot is < 3:1 standalone (1.4.11) so meaning is carried
+     by the label (1.4.1). flex:none so it hugs the right; the title takes the slack and truncates. */
+  .status{flex:none; display:inline-flex; align-items:center; gap:8px; height:24px; padding:0 8px; border-radius:0; /* type: t-cm-legal + .t-cm-slot (bound in canon/type.css - T-D9/T-D12) */ color:var(--text); white-space:nowrap;}
+  .status .dot{width:8px; height:8px; border-radius:50%; flex:none;}
+  .status.ok{background:var(--success-tint);}   .status.ok .dot{background:var(--success);}
+  .status.warn{background:var(--warning-tint);} .status.warn .dot{background:var(--warning);}
+  .status.err{background:var(--error-tint);}    .status.err .dot{background:var(--error);}
+  .status.inf{background:var(--info-tint);}     .status.inf .dot{background:var(--info);}
+  .row .tag{flex:none;}
+
+  /* states */
+  .row:hover, .row.is-hover{background:var(--hover);}
+  .row:hover .avatar, .row.is-hover .avatar{background:var(--surface);} /* white disk on hover so the avatar separates from the hover tint */
+  .row:active, .row.is-pressed{background:var(--pressed); color:var(--reverse); box-shadow:inset 0 0 0 2px rgba(127,127,127,.45);} /* inset = non-colour press signal, survives dark collapse */
+  .row:active .desc, .row.is-pressed .desc{color:var(--reverse);}
+  .row:active .avatar, .row.is-pressed .avatar{background:transparent; color:var(--reverse); box-shadow:inset 0 0 0 1px var(--reverse);}
+  .row:active .tag, .row.is-pressed .tag{color:var(--reverse); border-color:var(--reverse);}
+  .row:active .status, .row.is-pressed .status{background:transparent; color:var(--reverse); box-shadow:inset 0 0 0 1px var(--reverse);}
+  .row:active .status .dot, .row.is-pressed .status .dot{background:var(--reverse);}
+  .row:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .row[aria-disabled="true"], .row.is-disabled, .row:disabled{color:var(--disabled-text); cursor:not-allowed; background:transparent;}
+  .row[aria-disabled="true"] .desc, .row.is-disabled .desc, .row:disabled .desc{color:var(--disabled-text);}
+  .row[aria-disabled="true"] .avatar, .row.is-disabled .avatar, .row:disabled .avatar{background:var(--disabled-surface); color:var(--reverse);}
+  .row[aria-disabled="true"] .tag, .row.is-disabled .tag, .row:disabled .tag{color:var(--disabled-text); border-color:var(--disabled-surface);}
+  .row[aria-disabled="true"] .status, .row.is-disabled .status, .row:disabled .status{background:transparent; color:var(--disabled-text); box-shadow:inset 0 0 0 1px var(--disabled-surface);}
+  .row[aria-disabled="true"] .status .dot, .row.is-disabled .status .dot, .row:disabled .status .dot{background:var(--disabled-surface);}
+
+  /* processing = Loading-indicator PRIMITIVE — mirrors snippets/Loading-indicator.reference.html */
+  .spin{flex:none; width:18px; height:18px; border:2px solid var(--icon); border-right-color:transparent; border-radius:50%; animation:spin .8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  .stateLabel{/* type: t-cm-legal (bound in canon/type.css - T-D9/T-D12) */ color:var(--muted); padding:0 16px 4px;}
+
+  @media (prefers-reduced-motion: reduce){ *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; } }
+  @media (prefers-reduced-motion: reduce){ .spin{ animation-duration:2.4s !important; animation-iteration-count:infinite !important; } } /* slow, don't STOP — status still conveyed (2.2.2) */
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls">
+    <button class="tg" id="themeToggle" type="button">◐ Toggle theme</button>
+    <label>Width <input id="w" type="range" min="300" max="640" value="460"> <span id="wv">460</span>px</label>
+    <label><input type="checkbox" id="dense"> Compact density</label>
+  </div>
+
+  <!-- ===== A. Live interactive list (hover / click / Tab to focus) ===== -->
+  <div class="wrap">
+    <h2 class="spec-h">Transaction list — live (hover · press · Tab)</h2>
+    <ul class="list" id="liveList">
+      <li><button class="row" type="button">
+        <span class="avatar" role="img" aria-label="Amazon">AZ</span>
+        <span class="body">
+          <span class="line"><span class="title">Amazon</span><span class="status warn"><span class="dot" aria-hidden="true"></span>Pending</span></span>
+          <span class="line"><span class="desc">22 Jun · Shopping</span><span class="amount">−1,234.00 HKD</span></span>
+        </span>
+      </button></li>
+      <li><button class="row" type="button">
+        <span class="avatar" role="img" aria-label="Pret a Manger">PM</span>
+        <span class="body">
+          <span class="line"><span class="title">Pret a Manger</span><span class="status err"><span class="dot" aria-hidden="true"></span>Declined</span></span>
+          <span class="line"><span class="desc">21 Jun · Eating out</span><span class="amount">−48.50 HKD</span></span>
+        </span>
+      </button></li>
+      <li><button class="row" type="button">
+        <span class="avatar" role="img" aria-label="Salary">£</span>
+        <span class="body">
+          <span class="line"><span class="title">Monthly salary</span><span class="status ok"><span class="dot" aria-hidden="true"></span>Received</span></span>
+          <span class="line"><span class="desc">20 Jun · Income</span><span class="amount">+32,000.00 HKD</span></span>
+        </span>
+      </button></li>
+      <li><button class="row" type="button">
+        <span class="avatar" role="img" aria-label="Transport for London">TfL</span>
+        <span class="body">
+          <span class="line"><span class="title">Transport for London — a long merchant name that should truncate cleanly</span><span class="tag">Travel</span></span>
+          <span class="line"><span class="desc">20 Jun · Travel</span><span class="amount">−6.80 HKD</span></span>
+        </span>
+      </button></li>
+    </ul>
+  </div>
+
+  <!-- ===== B. All states at once (forced, so transient states are visible) ===== -->
+  <div class="wrap">
+    <h2 class="spec-h">All five states — status badge (tag shown in the live list above)</h2>
+    <ul class="list">
+      <li><div class="stateLabel">default</div><button class="row" type="button">
+        <span class="avatar" role="img" aria-label="Amazon">AZ</span>
+        <span class="body">
+          <span class="line"><span class="title">Amazon</span><span class="status ok"><span class="dot" aria-hidden="true"></span>Approved</span></span>
+          <span class="line"><span class="desc">22 Jun · Shopping</span><span class="amount">−1,234.00 HKD</span></span>
+        </span>
+      </button></li>
+      <li><div class="stateLabel">hover (web)</div><button class="row is-hover" type="button">
+        <span class="avatar" role="img" aria-label="Amazon">AZ</span>
+        <span class="body">
+          <span class="line"><span class="title">Amazon</span><span class="status ok"><span class="dot" aria-hidden="true"></span>Approved</span></span>
+          <span class="line"><span class="desc">22 Jun · Shopping</span><span class="amount">−1,234.00 HKD</span></span>
+        </span>
+      </button></li>
+      <li><div class="stateLabel">pressed — avatar + status reversed out</div><button class="row is-pressed" type="button">
+        <span class="avatar" role="img" aria-label="Amazon">AZ</span>
+        <span class="body">
+          <span class="line"><span class="title">Amazon</span><span class="status ok"><span class="dot" aria-hidden="true"></span>Approved</span></span>
+          <span class="line"><span class="desc">22 Jun · Shopping</span><span class="amount">−1,234.00 HKD</span></span>
+        </span>
+      </button></li>
+      <li><div class="stateLabel">disabled (native :disabled)</div><button class="row" type="button" disabled>
+        <span class="avatar" role="img" aria-label="Amazon">AZ</span>
+        <span class="body">
+          <span class="line"><span class="title">Amazon</span><span class="status ok"><span class="dot" aria-hidden="true"></span>Approved</span></span>
+          <span class="line"><span class="desc">22 Jun · Shopping</span><span class="amount">−1,234.00 HKD</span></span>
+        </span>
+      </button></li>
+      <li><div class="stateLabel">processing</div><button class="row" type="button" aria-busy="true">
+        <span class="avatar" role="img" aria-label="Amazon">AZ</span>
+        <span class="body">
+          <span class="line"><span class="title">Amazon</span><span class="spin" aria-hidden="true"></span></span>
+          <span class="line"><span class="desc" aria-live="polite">Processing…</span></span>
+        </span>
+      </button></li>
+    </ul>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "List items",
+    "type": "transaction",
+    "vars": { "--surface":"tertiary/background/default", "--hover":"tertiary/background/hover", "--pressed":"tertiary/background/pressed", "--disabled-surface":"tertiary/background/disabled", "--text":"text/default", "--muted":"text/secondary", "--reverse":"text/reverse", "--disabled-text":"text/disabled", "--icon":"icon/default", "--divider":"divider/border/section", "--success":"rag/success", "--warning":"rag/warning", "--error":"rag/error", "--info":"rag/information", "--success-tint":"rag/success-tint", "--warning-tint":"rag/warning-tint", "--error-tint":"rag/error-tint", "--info-tint":"rag/information-tint", "--tag-border":"form/border/default", "--avatar":"tertiary/background/hover", "--focus":"focus/ring", "--page":"background/default" },
+    "contrastPairs": [
+      { "fg":"text/default", "bg":"tertiary/background/default", "context":"text" },
+      { "fg":"text/secondary", "bg":"tertiary/background/default", "context":"text" },
+      { "fg":"text/reverse", "bg":"tertiary/background/pressed", "context":"text" },
+      { "fg":"text/default", "bg":"rag/success-tint", "context":"text" },
+      { "fg":"text/default", "bg":"rag/warning-tint", "context":"text" },
+      { "fg":"text/default", "bg":"rag/error-tint", "context":"text" },
+      { "fg":"text/default", "bg":"rag/information-tint", "context":"text" },
+      { "fg":"rag/success", "bg":"rag/success-tint", "context":"ui" },
+      { "fg":"rag/error", "bg":"rag/error-tint", "context":"ui" },
+      { "fg":"rag/information", "bg":"rag/information-tint", "context":"ui" }
+    ],
+    "knownFindings": [
+      "LAYOUT 2026-06-29: row is avatar + two-line body (title|status / desc|amount) so left labels and right tag/status+amount align; one density gap scales both sides.",
+      "pressed surface == default in dark (#1D1D1D) — press also signalled by inset, not colour",
+      "status detail = Status-indicator atom (RAG tint chip): neutral label is AA on every tint; the WARNING dot is < 3:1 standalone (1.4.11) so meaning is carried by the label (1.4.1). Pressed reverses the chip out.",
+      "text/secondary on tertiary/background/hover (dark) 3.34 < 4.5 — flagged token-level (see meta $finding)"
+    ],
+    "requiredAria": ["<ul", "<li", "<button", "aria-busy", "aria-live", "aria-disabled", "aria-label"],
+    "reuses": ["Avatar (round primitive)", "Tags (square chip)", "Loading indicator (spinner primitive)", "Status indicator (RAG tint chip — form B)"]
+  }
+  </script>
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    const w=document.getElementById('w'), wv=document.getElementById('wv');
+    w.addEventListener('input', ()=>{ document.querySelectorAll('.wrap').forEach(el=>el.style.setProperty('--demo-width', w.value+'px')); wv.textContent=w.value; });
+    document.getElementById('dense').addEventListener('change', e=>{ const r=document.documentElement.style;
+      if(e.target.checked){ r.setProperty('--row-h','64px'); r.setProperty('--row-pad','10px'); r.setProperty('--label-gap','8px'); }   /* compact = the former default */
+      else { r.removeProperty('--row-h'); r.removeProperty('--row-pad'); r.removeProperty('--label-gap'); } });                          /* default = roomy (:root) */
+
+    /* roving keyboard navigation on the live list — Arrow Up/Down + Home/End move focus between rows. */
+    const live=document.getElementById('liveList'); const rows=[...live.querySelectorAll('.row')].filter(r=>!r.disabled);
+    rows.forEach((r,i)=> r.tabIndex = i===0?0:-1);
+    live.addEventListener('keydown', e=>{
+      const i=rows.indexOf(document.activeElement); if(i<0) return;
+      let j=null;
+      if(e.key==='ArrowDown') j=Math.min(i+1, rows.length-1);
+      else if(e.key==='ArrowUp') j=Math.max(i-1, 0);
+      else if(e.key==='Home') j=0;
+      else if(e.key==='End') j=rows.length-1;
+      if(j!==null){ e.preventDefault(); rows[i].tabIndex=-1; rows[j].tabIndex=0; rows[j].focus(); }
+    });
+  </script>
+</body>
+</html>

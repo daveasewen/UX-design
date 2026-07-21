@@ -1,0 +1,48 @@
+{
+  "name": "Reorder",
+  "category": "atom",
+  "purpose": "Drag-and-drop affordances for reordering items in a list: a grab handle (default/hover) and a drop-zone highlight that shows where the dragged item will land. Used by reorderable lists (e.g. List items, Quick actions).",
+  "props": [
+    { "name": "element", "type": "enum", "values": ["drag-handle", "drop-zone-highlight"], "default": "drag-handle" },
+    { "name": "state", "type": "enum", "values": ["default", "hover"], "default": "default", "$note": "Drag handle; hover web only. Cursor shows grab → grabbed during drag." }
+  ],
+  "variants": [
+    { "name": "drag-handle", "use": "Grab handle (icon/default); hover fills the target with tertiary/background/hover. Cursor changes grab→grabbed while dragging." },
+    { "name": "drop-zone-highlight", "use": "Green insertion line/zone (rag/success) marking where the item will drop." }
+  ],
+  "tokens": {
+    "handle-icon": "icon/default (#333333)",
+    "handle-hover-surface": "tertiary/background/hover (#f3f3f3)",
+    "drop-zone-highlight": "rag/success (#00847f — green insertion indicator)"
+  },
+  "relationships": {
+    "livesInside": ["List items (reorderable)", "Quick actions", "Editable list / settings"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["drag-to-reorder list", "drag handle + drop indicator"]
+  },
+  "accessibility": {
+    "keyboardAlt": "Drag-to-reorder MUST have a keyboard/AT-accessible alternative (e.g. move up/down controls) and announce the new position (4.1.2/2.1.1)",
+    "handleName": "The drag handle needs an accessible name (e.g. 'Reorder <item>')",
+    "dropZone": "The green drop indicator must not be the only cue — announce target position to AT; green alone should not carry meaning (1.4.1)",
+    "targetArea": "Handle hit target ~40px; aim for 44px",
+    "relatedSC": ["2.1.1 Keyboard", "4.1.2 Name Role Value", "1.4.1 Use of Color", "2.5.8 Target Size (Minimum)", "2.5.7 Dragging Movements"]
+  },
+  "antiPatterns": [
+    "Drag-only reordering with no keyboard alternative",
+    "Conveying the drop target by the green highlight colour alone",
+    "Unlabelled drag handle (icon with no accessible name)"
+  ],
+  "tokenValidation": {
+    "date": "2026-06-18",
+    "against": "token store re-based on Figma native variable export",
+    "result": "PASS — CLEAN, no deprecated tokens.",
+    "depricateUsage": { "tokens": [], "note": "None. Handle = icon/default + tertiary/background/hover; drop-zone = rag/success." },
+    "auditedNodes": ["Reorder drag handle 918:66624", "Reorder drop zone highlight 964:71277"],
+    "ignored": "specs/* annotation scaffolding."
+  },
+  "provenance": {
+    "source": "figma",
+    "figma_node": "Cgbtrmfp15ruNFkIAClpkI:843:78381",
+    "code_path": ""
+  }
+}

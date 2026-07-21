@@ -1,0 +1,114 @@
+{
+  "name": "Badge",
+  "interactive": false,
+  "category": "atom",
+  "purpose": "A small visual indicator that passively notifies users of new activity relating to a specific UI element, directing them to find out more (e.g. a badge by the inbox link when a new message arrives). Two forms: a simple dot, or a number for a count. Can also sit on an icon.",
+  "props": [
+    {
+      "name": "version",
+      "type": "enum",
+      "values": [
+        "simple",
+        "number"
+      ],
+      "default": "simple"
+    },
+    {
+      "name": "state",
+      "type": "enum",
+      "values": [
+        "default",
+        "disabled"
+      ],
+      "default": "default"
+    },
+    {
+      "name": "size",
+      "type": "enum",
+      "values": [
+        "small",
+        "medium",
+        "large"
+      ],
+      "default": "medium",
+      "$note": "Only on the '.Badge on icon' variant — small 10px, medium 13px, large 20px. The standalone Badge is 12px (simple) / 20px (number)."
+    }
+  ],
+  "variants": [
+    {
+      "name": "simple",
+      "use": "A dot indicating new activity without a count (standalone 12px; on-icon 10/13/20px)."
+    },
+    {
+      "name": "number",
+      "use": "A badge showing a count of items (standalone 20px). Number text uses text/reverse on the primary fill, weight medium."
+    },
+    {
+      "name": "on-icon",
+      "use": "Badge positioned on an icon; sizes small/medium/large to match icon size. NOTE: currently binds a deprecated surround token — see tokens / tokenValidation."
+    }
+  ],
+  "tokens": {
+    "surface": "color/primary",
+    "number-text": "text/reverse",
+    "number-text-weight": "typography/font-weight/medium",
+    "font-family": "typography/font-family/default",
+    "disabled": "icon/disabled",
+    "on-icon-surround (DEPRECATED)": "interactive (depricate)/on-light/surface/primary/default",
+    "$rebind-finding": "(2026-06-19) surface binds the color/primary PRIMITIVE; rebind to the semantic primary/background/default (#DB0011 both modes) so it is mode-aware/canonical. Badge stays red in dark (white text passes). Round corners = documented angular-rule exemption (Badge + Avatar only)."
+  },
+  "relationships": {
+    "livesInside": [
+      "Icon",
+      "Navigation item",
+      "Tab",
+      "Link",
+      "Button",
+      "Avatar"
+    ],
+    "mustNotNeighbour": [],
+    "commonPatterns": [
+      "new-message indicator on inbox",
+      "unread count on navigation",
+      "notification dot on an icon button"
+    ]
+  },
+  "behaviour": {
+    "appearing": "If a badge already exists when a page is navigated to, it should be included in the page load. If created after load, it may appear with subtle animated motion to attract attention (see the relevant toolkits for motion).",
+    "passive": "Badges are passive indicators — they notify but are not themselves interactive controls; the element they attach to is the actionable target."
+  },
+  "accessibility": {
+    "role": "REVIEW: badge is a decorative/status adornment on a host element; the host element (link/button/icon) is the focusable control",
+    "screenReader": "REVIEW (inferred): a colour dot alone is not accessible — expose the meaning in text (e.g. 'Inbox, 1 new message'); for the number version, ensure the count is announced. Confirm how this is implemented in code.",
+    "relatedSC": [
+      "1.4.1 Use of Color",
+      "1.4.11 Non-text Contrast",
+      "4.1.2 Name, Role, Value"
+    ]
+  },
+  "antiPatterns": [
+    "REVIEW (inferred): using a badge to convey critical information that must not be missed — it's a passive indicator, not an alert",
+    "REVIEW (inferred): showing a number badge where a count is not meaningful (use the simple dot instead)",
+    "REVIEW (inferred): hard-coding the badge fill instead of binding color/primary (and, once migrated, a semantic primary surface token)",
+    "REVIEW (inferred): leaving the on-icon badge bound to the deprecated surround token (see tokenValidation)"
+  ],
+  "tokenValidation": {
+    "date": "2026-06-17",
+    "against": "token store re-based on Figma native variable export",
+    "result": "PASS with 1 DEPRECATED binding",
+    "depricateUsage": {
+      "component": ".Badge on icon (node 2450:109105)",
+      "token": "interactive (depricate)/on-light/surface/primary/default",
+      "resolves": "light #FFFFFF / dark #000000",
+      "recommendedRebind": "background/default",
+      "note": "FIRST depricate-in-use hit from the component audit. Rebind this layer to background/default BEFORE the deprecated-token bulk-delete, or the white surround detaches. Value-match was ambiguous (background/default vs data-vis/surface/primary); background/default is the semantically correct white surface."
+    },
+    "primitiveBinding": "The badge fill binds the PRIMITIVE color/primary (#DB0011) directly rather than a semantic token (e.g. a primary/background/* ). Flag for Dave — consider a semantic alias.",
+    "ignored": "specs/specs-surface-white and specs/specs-component-stroke (#7B61FF) are Figma annotation scaffolding, not real component tokens."
+  },
+  "provenance": {
+    "source": "figma",
+    "figma_node": "Cgbtrmfp15ruNFkIAClpkI:617:78931",
+    "code_path": ""
+  }
+}

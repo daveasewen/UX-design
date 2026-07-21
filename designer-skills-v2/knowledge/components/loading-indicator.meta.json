@@ -1,0 +1,51 @@
+{
+  "name": "Loading indicator",
+  "interactive": false,
+  "category": "atom",
+  "purpose": "An animated spinner that signals the system is working on a request, giving progress feedback for activities such as downloading, uploading or processing. Indeterminate (no percentage).",
+  "props": [
+    { "name": "platform", "type": "enum", "values": ["web", "ios", "android"], "default": "web" },
+    { "name": "size", "type": "enum", "values": ["large", "medium", "small", "extra-small"], "default": "medium", "$note": "Web offers all four; iOS & Android offer large/medium/extra-small (no small)." },
+    { "name": "mode", "type": "enum", "values": ["on-light", "on-dark"], "default": "on-light" },
+    { "name": "label", "type": "boolean", "values": ["false", "true"], "default": "false", "$note": "Optional caption (e.g. 'Loading') in font-5/6 regular." }
+  ],
+  "tokens": {
+    "spinner": "icon/default (#333333) on light | icon/default-reverse (#ffffff) on dark",
+    "label": "text/default | text/reverse @ font-5/regular or font-6/regular",
+    "$note": "The rotating arc is a vector animation; only the stroke colour is tokenised."
+  },
+  "relationships": {
+    "livesInside": ["Button (loading)", "Dialog", "Card", "Page", "Inline content area", "Pull-to-refresh"],
+    "mustNotNeighbour": ["another Loading indicator (only one on screen at a time)"],
+    "commonPatterns": ["inline content loading", "button processing state", "full-page/section load"]
+  },
+  "accessibility": {
+    "announce": "A tag/label MUST be added so screen readers announce what is happening while the indicator animates (don't rely on the visual spin alone)",
+    "skeletonAltText": "Skeleton loaders need proper alternative text — an alt attribute for static text, or an aria live-region for dynamic updates",
+    "motion": "REVIEW (inferred): continuous animation should respect prefers-reduced-motion",
+    "status": "Expose as a status/progressbar role (indeterminate) with an accessible name",
+    "relatedSC": ["4.1.3 Status Messages", "1.1.1 Non-text Content", "2.3.3 Animation from Interactions", "2.2.2 Pause, Stop, Hide"]
+  },
+  "antiPatterns": [
+    "Showing more than one spinner on screen at the same time (ambiguous about what is loading)",
+    "Animating without an accessible label/status so AT users get no feedback",
+    "REVIEW (inferred): using an indeterminate spinner where a determinate progress bar (known duration) would be clearer"
+  ],
+  "usage": {
+    "centring": "Centre the spinner within its container. If the container's final height is unknown because content is still loading, centre horizontally only.",
+    "platformParity": "Web / iOS / Android variants exist; pick the platform-native one."
+  },
+  "tokenValidation": {
+    "date": "2026-06-18",
+    "against": "token store re-based on Figma native variable export",
+    "result": "PASS — CLEAN, no deprecated tokens. Spinner = icon/default / icon/default-reverse; label = text/default / text/reverse (font-5/6 regular).",
+    "depricateUsage": { "tokens": [], "note": "None — fully migrated across Web/iOS/Android, on-light/dark." },
+    "auditedNodes": ["On Light: Web 489:15993", "On Dark: Web 640:103192", "On Light: iOS 2298:163608", "On Dark: iOS 644:79231"],
+    "ignored": "specs/* annotation scaffolding."
+  },
+  "provenance": {
+    "source": "figma",
+    "figma_node": "Cgbtrmfp15ruNFkIAClpkI:486:17029",
+    "code_path": ""
+  }
+}

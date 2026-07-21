@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "apollo/knowledge/compliance_rule",
+  "title": "compliance_rule",
+  "description": "One node/edge-set in the compliance graph: a checkable rule linking a WCAG SC to components, an automated check, severity and legal source.",
+  "type": "object",
+  "required": ["id", "sc", "title", "level", "applies_to", "check", "severity", "sources"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string" },
+    "sc": { "type": "string", "description": "WCAG success criterion, e.g. 1.4.3" },
+    "title": { "type": "string" },
+    "level": { "enum": ["A", "AA", "AAA"] },
+    "wcag_versions": { "type": "array", "items": { "enum": ["2.0", "2.1", "2.2"] } },
+    "applies_to": {
+      "type": "array",
+      "description": "component categories or specific components this rule governs — the CLAIMED edge (asserted by the component metas, not machine-checked).",
+      "items": { "type": "string" }
+    },
+    "check": {
+      "type": "object",
+      "required": ["type", "description"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "enum": ["automated", "semi-automated", "manual"] },
+        "description": { "type": "string" },
+        "threshold": { "type": "string" }
+      }
+    },
+    "verified_by": {
+      "type": ["object", "null"],
+      "description": "The VERIFIED edge — orthogonal to applies_to. Null means this rule has no executable check wired into the build yet (applies_to is asserted only). Non-null means an executable, gating-or-advisory check runs in knowledge/_build_all.py and its current result is recorded here. Populated by knowledge/compliance/_build_verification_edges.py, which runs AFTER the audits/gates it reads (contrast audits, a11y gate) so the result reflects the current build, not a stale claim. Granularity note: today's mechanisms check at TOKEN or SNIPPET granularity, not always at the exact per-component-instance granularity applies_to implies — see 'granularity' field.",
+      "additionalProperties": false,
+      "required": ["script", "artifact", "mechanism", "granularity", "result", "checked"],
+      "properties": {
+        "script": { "type": "string", "description": "generator/validator that produces the evidence, relative to knowledge/" },
+        "artifact": { "type": "string", "description": "report file the result was read from, relative to knowledge/" },
+        "mechanism": { "type": "string", "description": "one line: what is actually being checked and how" },
+        "granularity": { "enum": ["component", "token", "aggregate"], "description": "component = checked per named component instance (e.g. per snippet, or a token-level check joined down via the blast-radius index); token = checked on the design-token store only, not yet joined to components; aggregate = one pass/fail for the whole rule, not split by component" },
+        "result": { "enum": ["pass", "fail"], "description": "pass = 0 non-allowlisted failures against this SC at the last build run" },
+        "checked": { "type": "string", "description": "ISO date this verified_by entry was last (re)computed" },
+        "per_component": {
+          "type": "object",
+          "description": "Only present when granularity is component AND the check is itself token-level (e.g. 1.4.3/1.4.11) — component name -> pass/fail/not_covered, derived via the token blast-radius join. not_covered = applies_to claims this SC but no bound audited token was found for this component (a real gap, not a silent pass).",
+          "additionalProperties": { "enum": ["pass", "fail", "not_covered"] }
+        },
+        "coverage": { "type": "string", "description": "one-line note on how many applies_to components got a real per-component verdict vs fell through as not_covered" },
+        "note": { "type": "string" }
+      }
+    },
+    "external_automatable_refs": {
+      "type": "array",
+      "description": "Off-the-shelf automatable checks that EXIST for this SC (currently: axe-core OSS rules), independent of whether verified_by shows we've wired one up ourselves. Populated by knowledge/compliance/_import_axe_rules.py from the vendored snapshot in compliance/_vendor/. Empty array = no known OSS coverage found (genuinely manual/bespoke territory today, not a scan failure).",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source", "rule_id"],
+        "properties": {
+          "source": { "type": "string" },
+          "source_version": { "type": "string" },
+          "rule_id": { "type": "string" },
+          "description": { "type": "string" },
+          "url": { "type": "string" }
+        }
+      }
+    },
+    "severity": { "enum": ["minor", "serious", "critical"] },
+    "sources": {
+      "type": "object",
+      "required": ["wcag_url"],
+      "additionalProperties": false,
+      "properties": {
+        "wcag_url": { "type": "string" },
+        "en301549_clause": { "type": "string" },
+        "internal_policy_ref": { "type": "string" }
+      }
+    }
+  }
+}

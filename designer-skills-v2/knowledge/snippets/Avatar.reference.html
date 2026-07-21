@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Avatar — reference implementation (gated)</title>
+<!--
+  CANONICAL REFERENCE for Avatar (gated). FULLY ROUND — Avatar is one of the two documented
+  exemptions to the angular brand rule (the other is Badge). Initials or icon on a neutral
+  surface; the meta still binds deprecated non-interactive surface/border tokens — rebound here
+  to the live tertiary/background/hover (surface) + border/subtle (ring). Sizes small/medium/large.
+-->
+<style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
+  [data-theme="light"]{ --surface:#F0F0F0; --ring:#D7D8D6; --text:#1A1A1A; --icon:#1A1A1A; --focus:#305A85; --page:#FFFFFF; }
+  [data-theme="dark"]{ --surface:#232323; --ring:#404040; --text:#FFFFFF; --icon:#FFFFFF; --focus:#4587A7; --page:#1A1A1A; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:2rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--ring); background:transparent; color:var(--text); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  h2{font-size:12px; /* sentence case — type26-019 sweep (Dave ruling 2026-07-02): no uppercase, caps tracking removed with it */ margin:1.5rem 0 1rem;}
+  .row{display:flex; gap:20px; align-items:center;}
+  .avatar{border-radius:50%; /* EXEMPTION: round */ background:var(--surface); color:var(--text);
+    display:inline-flex; align-items:center; justify-content:center; font-weight:500; overflow:hidden;}
+  .avatar.sm{width:32px; height:32px; font-size:14px;} .avatar.md{width:44px; height:44px; font-size:16px;} .avatar.lg{width:64px; height:64px; font-size:24px;}
+  .avatar svg{width:60%; height:60%; fill:var(--icon);}
+  a.avatar{cursor:pointer; text-decoration:none;} a.avatar:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Avatar — canonical reference (round exemption)</span></div>
+
+  <h2>Initials</h2>
+  <div class="row">
+    <span class="avatar sm" role="img" aria-label="Jordan Lee">JL</span>
+    <span class="avatar md" role="img" aria-label="Priya Anand">PA</span>
+    <span class="avatar lg" role="img" aria-label="Sam Okafor">SO</span>
+  </div>
+
+  <h2>Icon (no name)</h2>
+  <div class="row">
+    <span class="avatar md" role="img" aria-label="Guest user"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.191 12.775C15.993 12.286 15.713 11.831 15.345 11.453C14.47 10.552 13.375 9.87 12.083 9.451L9.01 12.524L5.932 9.445C4.633 9.864 3.533 10.548 2.654 11.453C2.286 11.832 2.006 12.286 1.808 12.775L0 17.25H18L16.191 12.775ZM2.921 13.225C3.07 12.857 3.27 12.542 3.515 12.29C4.11 11.677 4.82 11.191 5.63 10.84L9.012 14.221L12.386 10.847C13.19 11.197 13.894 11.681 14.485 12.29C14.73 12.542 14.93 12.857 15.079 13.226L16.221 16.051H1.779L2.921 13.225ZM9.01 9.25C11.459 9.25 12.5 6.952 12.5 4.891C12.5 2.751 11.479 0.75 9.01 0.75C6.541 0.75 5.5 2.732 5.5 4.891C5.5 7.011 6.52 9.25 9.01 9.25ZM9.01 1.95C11.077 1.95 11.3 4.007 11.3 4.891C11.3 6.064 10.818 8.05 9.01 8.05C6.811 8.05 6.7 5.419 6.7 4.891C6.7 4.007 6.925 1.95 9.01 1.95Z"/></svg></span>
+  </div>
+
+  <h2>Interactive (links to profile)</h2>
+  <div class="row">
+    <a class="avatar md" href="#" aria-label="Open Jordan Lee's profile">JL</a>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Avatar",
+    "vars": { "--focus": "focus/ring", "--surface": "tertiary/background/hover", "--text": "text/default", "--icon": "icon/default", "--page": "background/default" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "tertiary/background/hover", "context": "text" }
+    ],
+    "requiredAria": ["role=\"img\"", "aria-label"]
+  }
+  </script>
+  <script>document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });</script>
+</body>
+</html>

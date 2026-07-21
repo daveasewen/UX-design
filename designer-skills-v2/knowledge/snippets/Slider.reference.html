@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Slider — reference implementation (gated)</title>
+<!-- CANONICAL REFERENCE for Slider (gated). Native range input styled: unfilled track scrollbar/background,
+     filled scrollbar/foreground, handle background/default + border/subtle, focus ring. Value also shown
+     as text (not colour/position alone, 1.4.1). NOTE/finding: the faint handle border + filled-track
+     contrast are ~<3:1 in places — perceptibility leans on handle position + the numeric value. -->
+<style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
+  [data-theme="light"]{ --filled:#808080; --unfilled:#F0F0F0; --handle:#FFFFFF; --handle-bd:#808080; --text:#1A1A1A; --focus:#305A85; --page:#FFFFFF; }
+  [data-theme="dark"]{ --filled:#FFFFFF; --unfilled:#1F1F1F; --handle:#1F1F1F; --handle-bd:#808080; --text:#FFFFFF; --focus:#4587A7; --page:#1A1A1A; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:2rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--filled); background:transparent; color:var(--text); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .field{max-width:360px;} .field label{display:block; font:500 14px/1.3 var(--font); margin-bottom:12px;}
+  .field .val{float:right; font-weight:400;}
+  input[type=range]{-webkit-appearance:none; appearance:none; width:100%; height:24px; background:transparent; cursor:pointer;}
+  input[type=range]::-webkit-slider-runnable-track{height:4px; border-radius:0; background:linear-gradient(var(--filled),var(--filled)) 0/var(--pct,50%) 100% no-repeat var(--unfilled);}
+  input[type=range]::-moz-range-track{height:4px; background:var(--unfilled);}
+  input[type=range]::-moz-range-progress{height:4px; background:var(--filled);}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; appearance:none; width:20px; height:20px; margin-top:-8px; border-radius:50%; background:var(--handle); border:2px solid var(--handle-bd);}
+  input[type=range]::-moz-range-thumb{width:20px; height:20px; border-radius:50%; background:var(--handle); border:2px solid var(--handle-bd);}
+  input[type=range]:focus-visible{outline:none;}
+  input[type=range]:focus-visible::-webkit-slider-thumb{outline:2px solid var(--focus); outline-offset:2px;}
+  input[type=range]:focus-visible::-moz-range-thumb{outline:2px solid var(--focus); outline-offset:2px;}
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Slider — canonical reference</span></div>
+
+  <div class="field">
+    <label for="r1">Monthly budget <span class="val" id="v">£600</span></label>
+    <input type="range" id="r1" min="0" max="1000" step="50" value="600" aria-label="Monthly budget in pounds" style="--pct:60%;">
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Slider",
+    "vars": { "--filled": "scrollbar/foreground", "--unfilled": "scrollbar/background", "--handle": "tertiary/background/default", "--handle-bd": "form/border/default", "--text": "text/default", "--focus": "focus/ring", "--page": "background/default" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" }
+    ],
+    "requiredAria": ["type=\"range\"", "aria-label"]
+  }
+  </script>
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    const r=document.getElementById('r1'), v=document.getElementById('v');
+    r.addEventListener('input', ()=>{ v.textContent='£'+r.value; r.style.setProperty('--pct',(r.value/10)+'%'); });
+  </script>
+</body>
+</html>

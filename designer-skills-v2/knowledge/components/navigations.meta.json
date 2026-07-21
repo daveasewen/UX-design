@@ -1,0 +1,195 @@
+{
+  "name": "Navigations",
+  "category": "organism",
+  "purpose": "The global and local navigation family: the web Masthead (logged out / logged in, with main-nav flyout, search flyout and user flyout), in-page Anchors, and the app-only Navigation bars (bottom tab bar and top bar). Lets users move around the site/app and access search and account.",
+  "$family": "Covers the 'Navigations' canvas: Masthead ×2 + 3 flyouts, Anchors, Navigation bar bottom (app), Navigation bar top (app).",
+  "props": [
+    {
+      "name": "type",
+      "type": "enum",
+      "values": [
+        "masthead",
+        "anchors",
+        "nav-bar-bottom",
+        "nav-bar-top"
+      ],
+      "default": "masthead"
+    },
+    {
+      "name": "auth",
+      "type": "enum",
+      "values": [
+        "logged-out",
+        "logged-in"
+      ],
+      "default": "logged-out",
+      "$note": "Masthead only."
+    },
+    {
+      "name": "flyout",
+      "type": "enum",
+      "values": [
+        "none",
+        "main",
+        "search",
+        "user"
+      ],
+      "default": "none",
+      "$note": "Masthead flyouts: main nav (closed/scroll/open), search, user."
+    },
+    {
+      "name": "breakpoint",
+      "type": "enum",
+      "values": [
+        "xl",
+        "l",
+        "m",
+        "ms",
+        "s",
+        "xs"
+      ],
+      "default": "l",
+      "$note": "Masthead/Anchors fully responsive; app nav bars are mobile."
+    }
+  ],
+  "variants": [
+    {
+      "name": "masthead",
+      "use": "Web global header. Logged-out & logged-in; opens a main-nav flyout (closed/scroll/open), a search flyout and a user flyout. Carries logo (color/primary), elevation/functional shadow."
+    },
+    {
+      "name": "anchors",
+      "use": "In-page anchor navigation; active anchor marked by a brand-red underline indicator."
+    },
+    {
+      "name": "nav-bar-bottom",
+      "use": "App-only bottom tab bar (.Nav Item × Nav Bar); icon + font-6 label."
+    },
+    {
+      "name": "nav-bar-top",
+      "use": "App-only top bar (iOS Nav Bar Top); title + actions, active indicator."
+    }
+  ],
+  "tokens": {
+    "masthead-surface": "background/default (#fff) [bound via deprecated surface tokens — see tokenValidation]",
+    "logo": "color/primary (#db0011), color/black, color/white",
+    "text": "text/default @ font-5 light/medium; nav labels font-5; tab labels font-6/7",
+    "icon": "icon/default (#333) [main-nav/masthead bind deprecated icon hover]",
+    "secondary-button-border": "tertiary/border/default (#000000)",
+    "divider/border": "border/subtle, divider/border/subsection [bound via deprecated neutral-2/3 — see tokenValidation]",
+    "active-indicator (anchors/top-bar)": "brand red underline — bound to interactive (depricate)/on-light/border/brand-1/default (#db0011) → primary/border/default | color/primary",
+    "elevation": "elevation/functional (DROP_SHADOW blur 16) — masthead/flyout/anchor/top-bar shadow",
+    "flyout-overlay": "overlay/version1 (#00000080) + blur/overlay (12) BACKGROUND_BLUR (search & user flyouts)",
+    "layout": "layout/web/margin+gutter 16 (masthead) / 40 (search field grid), columns 12; padding/responsive + padding/fixed/large 20",
+    "$finding": "(2026-06-20) BASELINE flagged for review: a web masthead only. Full family (logged-in/out, mega-menu, mobile drawer, app tab-bar) + the deprecated surface tokens not covered. Design decision, not derivable from canon."
+  },
+  "relationships": {
+    "livesInside": [
+      "Page (top)",
+      "App screen (top & bottom)"
+    ],
+    "mustNotNeighbour": [],
+    "commonPatterns": [
+      "global masthead with mega/flyout nav",
+      "search overlay",
+      "account/user menu",
+      "in-page anchor nav",
+      "app bottom tab bar"
+    ]
+  },
+  "accessibility": {
+    "landmarks": "Use <nav> landmarks with accessible names (primary, account, etc.); masthead logo links home",
+    "flyout": "Flyouts/menus must be keyboard-operable, trap focus while open, close on Esc, and expose aria-expanded on the trigger",
+    "activeState": "Active anchor/tab must not rely on the red underline colour alone (1.4.1) — expose aria-current",
+    "search": "Search field needs a label; results/overlay announced",
+    "targetArea": "Tab/nav items min 44px target",
+    "relatedSC": [
+      "1.3.1",
+      "2.4.1 Bypass Blocks",
+      "2.4.5 Multiple Ways",
+      "1.4.1 Use of Color",
+      "4.1.2",
+      "2.1.2 No Keyboard Trap",
+      "2.5.8 Target Size (Minimum)",
+      "2.4.11 Focus Not Obscured (Minimum)"
+    ]
+  },
+  "antiPatterns": [
+    "Marking the active nav/anchor with colour (red underline) only — pair with aria-current",
+    "Flyout/search overlay without focus trap or Esc dismissal",
+    "Leaving masthead/flyout/anchor surfaces & borders on the deprecated tokens — migrate (see tokenValidation)"
+  ],
+  "tokenValidation": {
+    "date": "2026-06-18",
+    "against": "token store re-based on Figma native variable export",
+    "result": "PASS (values resolve) — but DEPRECATED-HEAVY: navigation is the least-migrated family so far. Standard rebinds are clean; two namespace flags below.",
+    "depricateUsage": {
+      "tokens": [
+        {
+          "token": "interactive (depricate)/on-light/surface/primary/default",
+          "value": "#FFFFFF",
+          "usedBy": "masthead, main-nav flyout, search flyout, anchors, both app nav bars (row/surface)",
+          "rebind": "background/default (or tertiary/background/default)"
+        },
+        {
+          "token": "non-interactive (depricate)/surface/white",
+          "value": "#FFFFFF",
+          "usedBy": "masthead, flyouts",
+          "rebind": "background/default"
+        },
+        {
+          "token": "non-interactive (depricate)/border/on-light/neutral-3",
+          "value": "#D7D8D6",
+          "usedBy": "masthead, main-nav flyout, search flyout",
+          "rebind": "border/subtle (identical)"
+        },
+        {
+          "token": "icon/on-light (depricate)/hover-1 (depricate)",
+          "value": "#333333",
+          "usedBy": "masthead, main-nav flyout icon hover",
+          "rebind": "icon/default"
+        },
+        {
+          "token": "non-interactive (depricate)/border/on-light/neutral-2",
+          "value": "#EDEDED",
+          "usedBy": "Anchors, top nav bar divider",
+          "rebind": "divider/border/subsection"
+        },
+        {
+          "token": "interactive (depricate)/on-light/border/brand-1/default",
+          "value": "#DB0011",
+          "usedBy": "Anchors + top nav bar active-indicator underline",
+          "rebind": "primary/border/default | color/primary"
+        }
+      ],
+      "blockersNoEquivalent": [
+        {
+          "token": "non-interactive (depricate)/surface/neutral-1",
+          "value": "#F3F3F3",
+          "usedBy": "user flyout surface tint",
+          "rebind": "REVIEW — no live subtle-surface (Avatar/Headers/List gap family)"
+        }
+      ],
+      "namespaceFlags": [
+        "LIVE 'interactive/on-light/*' namespace seen on the SEARCH FLYOUT (interactive/on-light/surface/primary/default #fff, interactive/on-light/border/active/default #000, interactive/on-light/surface/brand-1/default #db0011 + /disabled #d7d8d6) — these are the un-suffixed mirror of the 'interactive (depricate)/on-light/*' tokens and look like the intended migration target, BUT they are ABSENT from the canonical variable export/store. Likely Sutherland-mode or an uncaptured collection. ACTION: confirm whether interactive/on-light/* is canon (then it's the bulk rebind target for the depricate interactive set) or Sutherland leakage. See [[sutherland-figma-mapping]].",
+        "Raw/legacy refs: bottom nav bar uses a non-tokenised shadow 'DAY/colour-level-shadow-1' (#0000001A, 0/2/6) instead of elevation/functional; colour/neutral/grey-1 primitive (bottom nav) is absent from the re-based store (primitive-name mismatch / leak)."
+      ],
+      "auditedNodes": [
+        "Masthead logged-out 41407:55826",
+        "Masthead logged-in 41407:56533",
+        "Main-nav flyout 41407:55820",
+        "Search flyout 41407:57863",
+        "User flyout 41407:58386",
+        "Anchors 41414:77665",
+        "Nav Bar bottom 2298:150479",
+        "Nav Bar top iOS 2298:151913"
+      ]
+    },
+    "ignored": "specs/* annotation scaffolding."
+  },
+  "provenance": {
+    "source": "figma",
+    "figma_node": "Cgbtrmfp15ruNFkIAClpkI:41404:53897",
+    "code_path": ""
+  }
+}

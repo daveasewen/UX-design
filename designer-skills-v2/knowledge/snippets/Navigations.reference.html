@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Navigations — reference implementation (gated)</title>
+<!-- CANONICAL REFERENCE for Navigations (gated) — BASELINE, FLAGGED FOR REVIEW. A web masthead:
+     logo + primary nav (aria-current) + actions, on background/default with a bottom rule. The full
+     family (logged-in/out, mega-menu, mobile drawer, app tab-bar, deprecated surface tokens) is NOT
+     covered here — this is a token-faithful starting point for Dave to extend. -->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
+  [data-theme="light"]{ --surface:#FFFFFF; --text:#1A1A1A; --icon:#1A1A1A; --rule:#E1E1E1; --logo:#DB0011; --hover:#F0F0F0; --focus:#305A85; --page:#FFFFFF; }
+  [data-theme="dark"]{ --surface:#1A1A1A; --text:#FFFFFF; --icon:#FFFFFF; --rule:#808080; --logo:#DB0011; --hover:#232323; --focus:#4587A7; --page:#1A1A1A; }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{padding:1.25rem 2rem 0; display:flex; gap:.75rem; align-items:center; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--icon); background:transparent; color:var(--text); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .masthead{display:flex; align-items:center; gap:28px; height:64px; padding:0 2rem; background:var(--surface); border-bottom:1px solid var(--rule);}
+  .logo{font-weight:500; font-size:20px; color:var(--logo); letter-spacing:-.01em;}
+  nav.main{display:flex; gap:4px; margin-right:auto;}
+  nav.main a{padding:0 12px; height:64px; display:inline-flex; align-items:center; color:var(--text); text-decoration:none; /* type: t-cm-button + .t-cm-slot (bound in canon/type.css - T-D9/T-D12) */}
+  nav.main a:hover{background:var(--hover);}
+  nav.main a[aria-current="page"]{box-shadow:inset 0 -3px 0 var(--logo);}
+  nav.main a:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .actions{display:flex; gap:8px;}
+  .actions button{width:44px; height:44px; border:0; background:transparent; color:var(--icon); cursor:pointer; display:inline-flex; align-items:center; justify-content:center;}
+  .actions button:hover{background:var(--hover);} .actions svg{width:22px; height:22px; fill:currentColor;}
+  .actions button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Navigations — canonical reference (baseline, flagged)</span></div>
+  <header class="masthead">
+    <span class="logo" aria-label="HSBC">HSBC</span>
+    <nav class="main" aria-label="Primary">
+      <a href="#" aria-current="page">Accounts</a><a href="#">Payments</a><a href="#">Cards</a><a href="#">Support</a>
+    </nav>
+    <div class="actions">
+      <button aria-label="Search"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.19675 12.803C3.66075 14.268 5.58075 15 7.49975 15C9.23175 15 10.9598 14.398 12.3577 13.206L17.1257 17.973L17.9748 17.125L13.2067 12.357C15.7197 9.41 15.5898 4.981 12.8048 2.196C11.3388 0.732 9.41875 0 7.49975 0C5.58075 0 3.66075 0.732 2.19675 2.197C-0.73225 5.126 -0.73225 9.874 2.19675 12.803ZM1.19975 7.5C1.19975 5.817 1.85575 4.235 3.04475 3.045C4.23375 1.855 5.81675 1.2 7.49975 1.2C9.18275 1.2 10.7648 1.855 11.9548 3.045C14.4108 5.501 14.4108 9.498 11.9548 11.955C10.7648 13.145 9.18275 13.8 7.49975 13.8C5.81675 13.8 4.23475 13.145 3.04475 11.955C1.85475 10.765 1.19975 9.183 1.19975 7.5Z"/></svg></button>
+      <button aria-label="Account"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.191 12.775C15.993 12.286 15.713 11.831 15.345 11.453C14.47 10.552 13.375 9.87 12.083 9.451L9.01 12.524L5.932 9.445C4.633 9.864 3.533 10.548 2.654 11.453C2.286 11.832 2.006 12.286 1.808 12.775L0 17.25H18L16.191 12.775ZM2.921 13.225C3.07 12.857 3.27 12.542 3.515 12.29C4.11 11.677 4.82 11.191 5.63 10.84L9.012 14.221L12.386 10.847C13.19 11.197 13.894 11.681 14.485 12.29C14.73 12.542 14.93 12.857 15.079 13.226L16.221 16.051H1.779L2.921 13.225ZM9.01 9.25C11.459 9.25 12.5 6.952 12.5 4.891C12.5 2.751 11.479 0.75 9.01 0.75C6.541 0.75 5.5 2.732 5.5 4.891C5.5 7.011 6.52 9.25 9.01 9.25ZM9.01 1.95C11.077 1.95 11.3 4.007 11.3 4.891C11.3 6.064 10.818 8.05 9.01 8.05C6.811 8.05 6.7 5.419 6.7 4.891C6.7 4.007 6.925 1.95 9.01 1.95Z"/></svg></button>
+    </div>
+  </header>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Navigations",
+    "vars": { "--surface": "background/default", "--text": "text/default", "--icon": "icon/default", "--rule": "divider/border/section", "--logo": "primary/background/default", "--hover": "form/background/hover", "--focus": "focus/ring", "--page": "background/default" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "icon/default", "bg": "background/default", "context": "ui" }
+    ],
+    "requiredAria": ["<nav", "aria-current", "aria-label"]
+  }
+  </script>
+  <script>document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });</script>
+</body>
+</html>
