@@ -1,15 +1,15 @@
 # Good morning, Dave ☕
 
-> ## ★ LATEST — 2026-07-21 (afternoon, FABLE): decision-graph convention AUTHORED — ADR-0012 proposed, generator + conflict gate BUILT, 8 rulings + 2 conflicts wait on YOUR SHEET. READ THIS FIRST — it supersedes the block + names below.
-> **RENAME THIS CHAT →** `Decision-graph: corpus audited (69 nodes/88 edges) → ADR-0012 edge convention + generator/conflict gate built → 8 rulings + 2 conflicts queued on the sheet [FABLE]`
-> **TITLE THE NEXT (fresh) CHAT →** `Decision-graph: enact the sheet rulings → inscribe the seed edges (Sonnet, generator-verified) + wire the advisory gate`
+> ## ★ LATEST — 2026-07-21 (afternoon, FABLE): ADR-0012 ACCEPTED same day ("happy with all the recommendations") — R-D21 recorded, gate wired advisory, build 38/38. NEXT = the Sonnet inscription pass. READ THIS FIRST — it supersedes the block + names below.
+> **RENAME THIS CHAT →** `Decision-graph: corpus audited (69→70 nodes/92 edges) → ADR-0012 authored + ACCEPTED → R-D21 (C1+C2 ruled) + conflict gate wired advisory 38/38 [FABLE]`
+> **TITLE THE NEXT (fresh) CHAT →** `Decision-graph inscription: transcribe the seed's Edges lines into ledgers/ADR headers (SONNET, mechanical) → verify by generator diff → ADR-0007 part 2 next`
 >
-> **★ DAVE'S ACTION FIRST: rule on `reviews/DECISION-GRAPH-CONVENTION-2026-07-21-v1.REVIEW.html`** — 8 decision
-> controls, **defaults = my recommendations**, live export block (copy the ruling block into the next chat).
-> The two that are genuinely yours: **C1** — R-D2 ruled "red/green/blue hold the SAME value in both roles", but
-> R-D18/R-D20 split glyph vs background values (recommend: confirm claim superseded); **C2** — R-D7 "red =
-> mode-stable, one value" vs R-D20's per-mode error-glyph `#B92F1E`/`#CC4333` (recommend: bound R-D7 to the
-> fill role). **Nothing is inscribed into any ledger and the gate is NOT wired until you rule.**
+> **★ RULED (Dave, same day, on the v1 sheet): ALL 8 recommendations accepted.** ADR-0012 **accepted** ·
+> **C1** = R-D2's role-uniformity claim confirmed superseded · **C2** = R-D7 bounded to the fill role — both
+> recorded as **R-D21** in `_RAG-DECISIONS.md` (the FIRST entry carrying an `Edges:` line — edge-at-ruling-time
+> starts now) · seed resolutions flipped queued→ruled(ref=R-D21) · `_build_decision_graph.py` **wired advisory**
+> into `_build_all.py` (step 11/38). Graph now: **70 nodes · 92 edges · 0 queued · 0 warnings**; build green 38/38.
+> **This session closed RED (~80% context)** — the inscription pass runs fresh, per the gauge runbook.
 >
 > **What landed this session (FABLE, cold — the pinned decision-graph session; build green 37/37 untouched):**
 > - **The audit, done by reading not grepping:** 69 nodes / 88 edges (the "~35" estimate was ~2× light). Found
@@ -229,17 +229,15 @@ Capture ritual + git runbook read and followed, not reconstructed.
 
 # §C · QUEUE
 
-## 0. ★ DAVE — rule on the decision-graph sheet
-`reviews/DECISION-GRAPH-CONVENTION-2026-07-21-v1.REVIEW.html`: 8 controls, defaults = recommendations, export
-block emits the paste-ready ruling set. C1 + C2 are the two genuinely-yours calls; the rest confirm defaults.
-
-## 1. ★ NEXT SESSION (Sonnet-able, after the sheet) — enact the decision-graph rulings
-Inscribe the seed's edges (`notes/_decision-graph-seed-2026-07-21.json`) into ledger entries + ADR headers per
-the accepted grammar; **verify by generator diff against the seed** (never re-derive); flip ADR-0012 proposed→
-accepted; wire `_build_decision_graph.py` **advisory** into `_build_all.py` (37→38 steps); add the
-edge-at-ruling-time step to `_RUNBOOK-capture-ritual.md` step 4; record C1/C2 resolutions per Dave's picks;
-fold the graph JSON into the consult index (kills the "CONSULT is design-layer-only" gap). Horizon (separate):
-ADR-0007 part 2 — generate `_LIVE-STATE` LIVE/DEAD blocks from the same parse.
+## 1. ★ NEXT SESSION (SONNET, fresh) — the inscription pass (mechanical, generator-verified)
+~~Sheet rulings~~ **DONE same day** (all 8 accepted; R-D21; ADR-0012 accepted; gate wired advisory 38/38).
+What remains is pure transcription: inscribe the seed's edges (`notes/_decision-graph-seed-2026-07-21.json`)
+as `Edges:` lines into ledger entries + ADR header lines per the accepted grammar (R-D21 is the live template);
+**verify by generator diff against the seed — never re-derive** (regex found 38 of the 88 real edges; prose
+relations are invisible to patterns). Then: add the edge-at-ruling-time step to `_RUNBOOK-capture-ritual.md`
+step 4 · fold the graph JSON into the consult index (kills the "CONSULT is design-layer-only" gap) · teach the
+generator to parse the inscribed lines (its `parse_inline_edges` hook is stubbed ready) and cross-check both
+sources. Horizon (separate session): ADR-0007 part 2 — generate `_LIVE-STATE` LIVE/DEAD blocks from the parse.
 
 ## 2. RAG follow-ons (not blocked on Dave; Sonnet-able)
 Seed the Legacy error/amber/navy hexes into `LEGACY_ONLY_HEXES` (needs a Notifications waiver in the leak gate) + flip
@@ -254,8 +252,8 @@ ruled). **T9 secure entry** awaits review. **Sutherland field test** (ADR-0008 #
 Full-review backlog (`_REVIEW-SIGNOFF.md`). Parked (`_FUTURE-STATE`): broader colour/theming, Apollo Labs tuners, bulk
 type-binding, `icon-015` mark-vs-roundel mechanisation (supercharge).
 
-> **COMMIT STATE.** Morning commits (`1a5bc94` · `1bb09f9` · capture `b9aef79`) are **PUSHED** (verified level with
-> origin at this session's open). This session adds ONE capture commit (new files: ADR-0012 + seed + generator +
-> sheet pair + dossier + these spine refreshes) — **ahead 1, Dave to push via GitHub Desktop.** Build green 37/37
-> (graph generator deliberately NOT wired — Decision 8 on the sheet). **Next session model: Sonnet** (enactment is
-> mechanical + generator-verified), opened AFTER Dave's sheet rulings; paste the sheet's export block into it.
+> **COMMIT STATE.** Morning commits pushed. This session: `8bff16a` (the convention package) + the acceptance
+> commit (ADR-0012 accepted · R-D21 · seed resolutions · gate wired 38/38 · spine refresh) — **ahead 2, Dave to
+> push via GitHub Desktop.** Build green **38/38**. **Next session model: SONNET, fresh** — the inscription pass
+> is mechanical with a machine check; no sheet round-trip needed (all rulings recorded in R-D21 + ADR-0012).
+> This session closed **RED (~80%)** per the gauge — do not reopen it for the inscription.

@@ -5,6 +5,27 @@ session that produced it. Sibling to `_TYPE-DECISIONS.md` / `_DATAVIZ-DECISIONS.
 
 ---
 
+## R-D21 — the decision-graph audit's two conflicts RESOLVED: role-uniformity superseded + red's mode-stability bounded to the fill (2026-07-21). Source: Dave, on the ADR-0012 rulings sheet ("I'm happy with all the recommendations").
+The ADR-0012 corpus audit surfaced two live tensions, queued (never auto-resolved) and ruled on
+`reviews/DECISION-GRAPH-CONVENTION-2026-07-21-v1.REVIEW.html`:
+
+1. **C1 — R-D2's "red/green/blue hold the SAME value in both roles" claim is SUPERSEDED** (claim only —
+   R-D2's background/glyph token *shape* stands). The per-role split is the evolved truth: glyphs need
+   glyph-strength contrast on the page, fills need salience against it — different jobs, different values.
+   Evidence that decided it: success-glyph `#2B7E4F`/`#4A9568` ≠ success-background `#5DAC7B`/`#43AD6F`
+   (R-D18/R-D14); error-glyph dark `#CC4333` ≠ error fill `#B92F1E` (R-D20). Amber stops being "the only
+   divergent hue" — it was only the first.
+2. **C2 — R-D7's "red = mode-stable, one value light+dark" is BOUNDED to the FILL role.** The status/fill
+   red stays one value (`#B92F1E`, both modes, white text). The **glyph** role may diverge per-mode:
+   `rag/error-glyph` = `#B92F1E`/`#CC4333` (R-D20) — the dark lift inherits R-D1's dark-red ruling and buys
+   glyph contrast on `#1A1A1A`. No values change; the scope is now recorded instead of implied.
+
+**This entry is the first written under the ADR-0012 edge convention** (accepted same day, all
+recommendations): edges below in the ruled grammar; the corpus-wide inscription of the audited seed
+(`notes/_decision-graph-seed-2026-07-21.json`) is the queued Sonnet pass, generator-verified.
+
+Edges: supersedes(R-D2, claim=role-uniformity) · bounds(R-D7, scope=fill-role) · refines(ADR-0012) · verified-by(reviews/DECISION-GRAPH-CONVENTION-2026-07-21-v1.REVIEW.html)
+
 ## R-D20 — error / warning / information sets COMPLETED; the last Legacy RAG hexes evicted from Mono (2026-07-20). Source: Dave, on the live tuner.
 Ruled the open tint slots on `reviews/RAG-ERROR-WARNING-INFO-2026-07-20-v1.html` (the R-D18 success tuner cloned
 to three sets: OKLCh sliders + live label-contrast + salience-ramp guard). This closes the R-D17 debt for the

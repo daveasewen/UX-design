@@ -59,7 +59,7 @@
   },
   "ADR-0012": {
    "title": "Decision-graph edge convention",
-   "status": "proposed",
+   "status": "accepted",
    "validation": "unaudited"
   },
   "R-D1": {
@@ -158,6 +158,10 @@
   },
   "R-D20": {
    "title": "Error/warning/info sets completed",
+   "status": "accepted"
+  },
+  "R-D21": {
+   "title": "Audit conflicts resolved: role-uniformity superseded + red bounded to fill",
    "status": "accepted"
   },
   "T-D1": {
@@ -638,17 +642,44 @@
    "from": "R-D20",
    "type": "conflicts-with",
    "to": "R-D2",
-   "resolution": "queued",
+   "resolution": "ruled",
+   "ref": "R-D21",
    "claim": "red/green/blue hold the SAME value in both roles",
-   "note": "QUEUED FOR DAVE \u2014 glyph vs background values now diverge for green and for error-dark; R-D2's uniformity claim is un-superseded"
+   "note": "RULED 2026-07-21 (sheet v1): claim confirmed superseded \u2014 per-role split is the evolved truth"
   },
   {
    "from": "R-D20",
    "type": "conflicts-with",
    "to": "R-D7",
-   "resolution": "queued",
+   "resolution": "ruled",
+   "ref": "R-D21",
    "claim": "red = mode-stable, one value light+dark",
-   "note": "QUEUED FOR DAVE \u2014 error-glyph is per-mode #B92F1E/#CC4333; likely fix = bound R-D7 to the fill role, needs the ruling recorded"
+   "note": "RULED 2026-07-21 (sheet v1): R-D7 bounded to the fill role; glyph may diverge per-mode"
+  },
+  {
+   "from": "R-D21",
+   "type": "supersedes",
+   "to": "R-D2",
+   "claim": "role-uniformity",
+   "note": "background/glyph token shape stands; the same-value claim is dead"
+  },
+  {
+   "from": "R-D21",
+   "type": "bounds",
+   "to": "R-D7",
+   "scope": "fill-role",
+   "note": "status/fill red stays one value; glyph role per-mode"
+  },
+  {
+   "from": "R-D21",
+   "type": "refines",
+   "to": "ADR-0012",
+   "note": "first ruling written under the accepted convention"
+  },
+  {
+   "from": "R-D21",
+   "type": "verified-by",
+   "to": "reviews/DECISION-GRAPH-CONVENTION-2026-07-21-v1.REVIEW.html"
   },
   {
    "from": "T-D3",
@@ -838,7 +869,7 @@
   "ADR-0009": "LIVE",
   "ADR-0010": "LIVE",
   "ADR-0011": "LIVE",
-  "ADR-0012": "OPEN",
+  "ADR-0012": "LIVE",
   "R-D1": "AMENDED",
   "R-D2": "AMENDED",
   "R-D3": "AMENDED",
@@ -862,6 +893,7 @@
   "R-D18": "LIVE",
   "R-D19": "LIVE",
   "R-D20": "LIVE",
+  "R-D21": "LIVE",
   "T-D1": "LIVE",
   "T-D2": "LIVE",
   "T-D3": "LIVE",
@@ -897,16 +929,5 @@
   "DV:DOSSIER.s07": "DEAD",
   "DV:DOSSIER.chevron": "DEAD"
  },
- "findings": [
-  {
-   "sev": "i",
-   "code": "conflict-queued",
-   "msg": "R-D20 conflicts-with R-D2 \u2014 QUEUED FOR DAVE: red/green/blue hold the SAME value in both roles"
-  },
-  {
-   "sev": "i",
-   "code": "conflict-queued",
-   "msg": "R-D20 conflicts-with R-D7 \u2014 QUEUED FOR DAVE: red = mode-stable, one value light+dark"
-  }
- ]
+ "findings": []
 }

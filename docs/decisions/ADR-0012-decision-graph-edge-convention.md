@@ -1,9 +1,12 @@
 # ADR-0012 — Decision-graph edge convention: typed edges on the record corpus
 
-**Date:** 2026-07-21 · **Status:** **proposed** (drafted by the Fable audit session; Dave accepts/amends on
-`reviews/DECISION-GRAPH-CONVENTION-2026-07-21-v1.REVIEW.html`) · **Extends:** ADR-0007 (temporal decision-graph
-— this is its unbuilt first half) · **Relates:** `notes/_STATE-MACHINE-TARGET.md` §6 · `_build_live_state.py`
-(slice 1) · `knowledge/guidelines/_RECONCILIATION.md` (the generated REVIEW-rule register)
+**Date:** 2026-07-21 · **Status:** **accepted** (Dave, 2026-07-21, same day — *"I'm happy with all the
+recommendations"* on the v1 sheet: all 8 controls at their recommended defaults. C1 → R-D2's role-uniformity
+claim confirmed superseded; C2 → R-D7 bounded to the fill role; both recorded as **R-D21** in
+`_RAG-DECISIONS.md`. Gate wired advisory the same day; seed inscription → Sonnet, generator-verified.) ·
+**Extends:** ADR-0007 (temporal decision-graph — this is its unbuilt first half) · **Relates:**
+`notes/_STATE-MACHINE-TARGET.md` §6 · `_build_live_state.py` (slice 1) ·
+`knowledge/guidelines/_RECONCILIATION.md` (the generated REVIEW-rule register)
 
 ## Context
 
