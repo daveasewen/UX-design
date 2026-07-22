@@ -56,13 +56,21 @@ def overlay_block(label, rv_file):
 CATEGORIES = [
     ("Actions",           ["button", "icon-button", "action-bar", "quick-actions", "links"]),
     ("Forms and input",   ["input-fields", "search-field", "selection-controls", "slider",
-                           "dropdown", "reorder", "view-options"]),
+                           "dropdown", "reorder", "view-options",
+                           # Phase-2 wave 1 (worker A + Account-selector from B's lane):
+                           "form-layout", "amount-input", "textarea", "secure-entry",
+                           "account-selector"]),
     ("Navigation",        ["navigations", "breadcrumbs", "pagination", "tabs", "tab-bar"]),
     ("Feedback and status", ["notifications", "status-indicator", "badge", "loading-indicator",
                            "progress-tracker", "tooltip", "confirmation", "modals",
-                           "countdown-timer"]),
+                           "countdown-timer",
+                           # Phase-2 wave 1 (worker B — an Overlays split is queued for Dave):
+                           "alert", "toast", "banner", "skeleton-loader", "empty-state",
+                           "drawer", "popover", "modal-lightbox"]),
     ("Data and content",  ["table", "cards", "list-items", "account-card", "amount-display",
-                           "summary", "accordion"]),
+                           "summary", "accordion",
+                           # Phase-2 wave 1 (worker B):
+                           "stat-card"]),
     ("Identity and display", ["avatar", "tags", "eyebrow", "headers", "hero", "divider",
                            "video-player"]),
 ]

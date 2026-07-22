@@ -8,8 +8,8 @@
 
 | SC | Result | Granularity | Coverage |
 |---|---|---|---|
-| 1.4.11 | ✅ pass | component | 9/9 applies_to components have a bound audited token or a gated snippet contrastPair |
-| 1.4.3 | ✅ pass | component | 19/19 applies_to components have a bound audited token |
+| 1.4.11 | ✅ pass | component | 15/15 applies_to components have a bound audited token or a gated snippet contrastPair |
+| 1.4.3 | ✅ pass | component | 25/25 applies_to components have a bound audited token |
 | 2.3.3 | ✅ pass | component | — |
 | 2.5.8 | ✅ pass | component | — |
 
@@ -17,18 +17,19 @@
 
 ### 1.4.11
 
-9/9 applies_to components have a bound audited token or a gated snippet contrastPair. 9 pass, 0 fail, 0 not_covered.
+15/15 applies_to components have a bound audited token or a gated snippet contrastPair. 15 pass, 0 fail, 0 not_covered.
 
 **Resolved via secondary evidence** (no bound border token, but the component's own reference snippet declares a "ui"/"icon"-context contrastPair that the blocking snippet gate (`_validate_snippets.py`, check 3) already checks every build):
 
 | Component | Snippet | Verdict | Pairs checked |
 |---|---|---|---|
+| Alert | `Alert.reference.html` | ✅ pass | rag/error on rag/error-tint (light) = 4.71:1 (pass); rag/error on rag/error-tint (dark) = 3.68:1 (pass); rag/success on rag/success-tint (light) = 4.11:1 (pass); rag/success on rag/success-tint (dark) = 4.26:1 (pass); rag/information on rag/information-tint (light) = 3.85:1 (pass); rag/information on rag/information-tint (dark) = 3.62:1 (pass) |
 | Badge | `Badge.reference.html` | ✅ pass | badge/background on background/default (light) = 6.02:1 (pass); badge/background on background/default (dark) = 3.66:1 (pass) |
 | Links | `Links.reference.html` | ✅ pass | button/primary/background/default on background/default (light) = 17.4:1 (pass); button/primary/background/default on background/default (dark) = 16.67:1 (pass); icon/default on background/default (light) = 17.4:1 (pass); icon/default on background/default (dark) = 17.4:1 (pass) |
 
 ### 1.4.3
 
-19/19 applies_to components have a bound audited token. 19 pass, 0 fail, 0 not_covered.
+25/25 applies_to components have a bound audited token. 25 pass, 0 fail, 0 not_covered.
 
 
 ## Unverified (applies_to only)

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Popover — reference implementation (gated)</title>
+<!--
+  CANONICAL REFERENCE for Popover (Apollo MONO). Rich anchored content on CLICK — the interactive
+  sibling of Tooltip (surveyed first, untouched): a Tooltip ANNOTATES a label with plain text on
+  hover/focus; a Popover OPENS on activation and can hold structured, focusable content (title,
+  body, link, dismiss). If the content is a sentence of help text, it is a Tooltip; if the user
+  can act inside it, it is a Popover. Built 2026-07-22 (Phase-2 worker B).
+
+  CHROME: the Tooltip/Dropdown anchored-overlay elevation recipe — background/default surface,
+  shadow in light, grey OUTLINE in dark (elevation/border), tail pointing at the trigger.
+  SPACE-AWARE like Tooltip (flips above/below, clamps to the viewport, tail tracks the trigger).
+  SEMANTICS: non-modal dialog — container role="dialog" + aria-labelledby (NO aria-modal: the page
+  stays interactive); trigger carries aria-expanded + aria-controls + aria-haspopup="dialog".
+  Focus moves to the popover on open, Esc/outside-click/toggle close and return focus. Tab is NOT
+  trapped (non-modal) — leaving the popover closes it.
+  PRESSABLES (close ×, inline link-button): NO local press physics (ADR-0013 ratchet) — colour-only
+  states (active > hover); empty AUTO-PARTIAL pair below awaits conductor registration
+  ($members proposal in the worker receipt; --phys-size:24).
+  TYPE: composites via markup class (T-D14) — title .t-ed-body .em; body .t-ed-body-small.
+  ICON: close from global-controls (byte-matched). Trigger buttons are demo chrome.
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:150ms ease;
+    --spring:300ms cubic-bezier(.5,1.6,.4,1); --press:90ms cubic-bezier(0,0,.58,1); }
+  [data-theme="light"]{ --surface:#FFFFFF; --pop-border:#FFFFFF00; --shadow:#00000033; --text:#1A1A1A;
+    --page:#FFFFFF; --focus:#305A85; --hoverbg:#F0F0F0;
+    --border-radius-surface:0; --press-travel:2; --press-darken:0.94; }
+  [data-theme="dark"]{ --surface:#1A1A1A; --pop-border:#808080; --shadow:#000000D9; --text:#FFFFFF;
+    --page:#1A1A1A; --focus:#4587A7; --hoverbg:#232323;
+    --border-radius-surface:0; --press-travel:2; --press-darken:0.94; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page); color:var(--text);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
+  .demo-controls button, .pop-trigger{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--text);
+    background:transparent; color:var(--text); cursor:pointer; transition:background var(--ease);}
+  .demo-controls button:hover, .pop-trigger:hover{background:var(--hoverbg);}
+  .demo-controls button:focus-visible, .pop-trigger:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  p.intro{max-width:60ch; line-height:1.6; opacity:.85;}
+  .row{display:flex; margin:36px 0; gap:16px; flex-wrap:wrap;}
+
+  /* the popover — fixed, JS-placed; tail tracks the trigger (Tooltip mechanics) */
+  .pop{--tail-x:50%; position:fixed; z-index:50; width:max-content; max-width:320px;
+    background:var(--surface); color:var(--text); border:1px solid var(--pop-border);
+    border-radius:var(--border-radius-surface); box-shadow:0 0 16px var(--shadow); padding:16px;
+    opacity:0; pointer-events:none; transition:opacity var(--ease);}
+  .pop.show{opacity:1; pointer-events:auto;}
+  .pop::after{content:""; position:absolute; left:var(--tail-x,50%); width:10px; height:10px;
+    background:var(--surface); border:1px solid var(--pop-border);}
+  .pop.pos-above::after{ top:100%;    transform:translate(-50%,-50%) rotate(45deg); border-top:0; border-left:0; }
+  .pop.pos-below::after{ bottom:100%; transform:translate(-50%,-50%) rotate(45deg); border-bottom:0; border-right:0; }
+
+  .pop-head{display:flex; align-items:flex-start; gap:8px; margin-bottom:8px;}
+  .pop-head .t-ed-body{margin:0; flex:1 1 auto;}
+  .pop-body{margin:0 0 12px;}
+  .pop a{color:inherit; font-weight:500; text-decoration:underline; text-underline-offset:3px;
+    text-decoration-thickness:1px; cursor:pointer; transition:text-decoration-thickness var(--ease);}
+  .pop a:hover, .pop a:active{text-decoration-thickness:2px;}
+  .pop a:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  /* close × — 24px visual, 44px hit target; colour-only states pending partial injection */
+  .pop .x{position:relative; flex:none; display:inline-flex; width:24px; height:24px; margin:-4px -4px 0 0;
+    padding:0; border:0; background:transparent; color:inherit; cursor:pointer; align-items:center;
+    justify-content:center; border-radius:var(--border-radius-surface); transition:background var(--ease), transform var(--spring);}
+  .pop .x::before{content:""; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:44px; height:44px;}
+  .pop .x svg{width:14px; height:14px; fill:currentColor;}
+  .pop .x:hover{background:var(--hoverbg);}
+  .pop .x:active{background:var(--hoverbg); filter:brightness(var(--press-darken));}
+  .pop .x:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  /* ===== AUTO-PARTIAL press-physics START (button-family) ===== */
+/* INJECTED from Button.reference.html (partial "press-physics", group button-family —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+  .pop .x:hover{transform:scale(calc(1 + var(--press-travel)/var(--phys-size)));}
+  .pop .x.full:hover{transform:none;}                                           /* full-width can't grow — would overflow */
+  .pop .x:active{transform:scale(calc(1 - var(--press-travel)/var(--phys-size))); filter:brightness(var(--press-darken)); transition:transform var(--press), filter var(--press);}
+  .pop .x:disabled:hover,.pop .x.is-disabled:hover{transform:none; filter:none;}   /* disabled stays put */
+  /* WCAG 2.3.3 — the partial carries its OWN reduced-motion override (ADR-0013: rides inside, never per-file) */
+  @media (prefers-reduced-motion: reduce){
+    .pop .x:hover,.pop .x:active{ transform:none !important; filter:none !important; }
+  }
+  /* ===== AUTO-PARTIAL press-physics END ===== */
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
+      animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+    .pop .x:active{filter:none !important;}
+  }
+</style>
+</head>
+<body data-theme="light">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="po-close" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <div class="demo-controls">
+    <button id="themeToggle" type="button">◐ Toggle theme</button>
+    <span>Popover — canonical reference (Mono · click-anchored rich content · non-modal)</span>
+  </div>
+
+  <p class="intro">A popover opens on activation and can hold focusable content — Tooltip's interactive
+  sibling. It flips above/below the trigger, clamps to the viewport, and closes on Escape, outside
+  click, or toggling the trigger. Focus is not trapped: it is a non-modal dialog.</p>
+
+  <div class="row">
+    <span class="popwrap">
+      <button class="pop-trigger" aria-haspopup="dialog" aria-expanded="false" aria-controls="pop1">Why we ask for this</button>
+      <div class="pop" role="dialog" aria-labelledby="pt1" id="pop1">
+        <div class="pop-head"><p class="t-ed-body em" id="pt1">Why we ask for this</p>
+          <button class="x" type="button" aria-label="Close popover"><svg aria-hidden="true"><use href="#po-close"/></svg></button></div>
+        <p class="pop-body t-ed-body-small">Your tax residency determines which reporting rules apply to the account. We only share what the regulation requires.</p>
+        <a href="#">Read the full policy</a>
+      </div>
+    </span>
+
+    <span class="popwrap">
+      <button class="pop-trigger" aria-haspopup="dialog" aria-expanded="false" aria-controls="pop2">Fee breakdown</button>
+      <div class="pop" role="dialog" aria-labelledby="pt2" id="pop2">
+        <div class="pop-head"><p class="t-ed-body em" id="pt2">Fee breakdown</p>
+          <button class="x" type="button" aria-label="Close popover"><svg aria-hidden="true"><use href="#po-close"/></svg></button></div>
+        <p class="pop-body t-ed-body-small">Transfer fee £2.00 plus a currency conversion margin of 0.4%. No fee is charged by the receiving bank on this route.</p>
+        <a href="#">Compare transfer options</a>
+      </div>
+    </span>
+  </div>
+
+  <div class="row" style="justify-content:flex-end; margin-top:120px;">
+    <span class="popwrap">
+      <button class="pop-trigger" aria-haspopup="dialog" aria-expanded="false" aria-controls="pop3">Near the right edge</button>
+      <div class="pop" role="dialog" aria-labelledby="pt3" id="pop3">
+        <div class="pop-head"><p class="t-ed-body em" id="pt3">Space-aware placement</p>
+          <button class="x" type="button" aria-label="Close popover"><svg aria-hidden="true"><use href="#po-close"/></svg></button></div>
+        <p class="pop-body t-ed-body-small">This popover clamps to the viewport edge while the tail keeps pointing at its trigger — the Tooltip placement mechanics, shared.</p>
+      </div>
+    </span>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Popover",
+    "vars": { "--surface": "background/default", "--pop-border": "elevation/border", "--shadow": "elevation/functional",
+              "--text": "text/default", "--page": "background/default", "--focus": "focus/ring",
+              "--hoverbg": "tertiary/background/hover", "--border-radius-surface": "border-radius/surface",
+              "--press-travel": "component-type/button-family/press-travel", "--press-darken": "component-type/button-family/press-darken" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" }
+    ],
+    "icons": { "close": "global-controls/close.svg" },
+    "requiredAria": ["role=\"dialog\"", "aria-labelledby", "aria-expanded", "aria-controls", "aria-haspopup", "aria-label"],
+    "$note": "Non-modal by design: no aria-modal, no focus trap, no scrim — leaving the popover closes it. Distinct from Tooltip (hover/focus plain-text annotation) and Modals (interruptive, trapped). Pressables await button-family registration; colour-only states meanwhile."
+  }
+  </script>
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    let openWrap=null;
+    function closePop(w){
+      if(!w) return;
+      const trg=w.querySelector('.pop-trigger'), pop=w.querySelector('.pop');
+      pop.classList.remove('show'); trg.setAttribute('aria-expanded','false');
+      if(openWrap===w) openWrap=null;
+    }
+    document.querySelectorAll('.popwrap').forEach(w=>{
+      const trg=w.querySelector('.pop-trigger'), pop=w.querySelector('.pop');
+      function place(){
+        pop.style.visibility='hidden'; pop.classList.add('show');
+        const r=trg.getBoundingClientRect(), tw=pop.offsetWidth, th=pop.offsetHeight, gap=12, pad=10;
+        const above = r.top >= th+gap+pad;
+        const top = above ? r.top-th-gap : r.bottom+gap;
+        const cx = r.left + r.width/2;
+        let left = cx - tw/2;
+        if(left < pad) left = pad;
+        else if(left+tw > innerWidth-pad) left = innerWidth-pad-tw;
+        pop.style.left=left+'px'; pop.style.top=top+'px';
+        pop.style.setProperty('--tail-x',(cx-left)+'px');
+        pop.className='pop show '+(above?'pos-above':'pos-below');
+        pop.style.visibility='';
+      }
+      trg.addEventListener('click', ()=>{
+        const isOpen=pop.classList.contains('show');
+        closePop(openWrap);
+        if(!isOpen){ place(); trg.setAttribute('aria-expanded','true'); openWrap=w;
+          const f=pop.querySelector('a,button'); if(f) f.focus(); }
+        else trg.focus();
+      });
+      w.querySelector('.x').addEventListener('click', ()=>{ closePop(w); trg.focus(); });
+      pop.addEventListener('focusout', e=>{ if(!w.contains(e.relatedTarget)) closePop(w); });
+    });
+    document.addEventListener('keydown', e=>{
+      if(e.key==='Escape' && openWrap){ const t=openWrap.querySelector('.pop-trigger'); closePop(openWrap); t.focus(); }
+    });
+    document.addEventListener('click', e=>{ if(openWrap && !openWrap.contains(e.target)) closePop(openWrap); });
+  </script>
+</body>
+</html>

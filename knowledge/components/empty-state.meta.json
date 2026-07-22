@@ -1,0 +1,67 @@
+{
+  "name": "Empty state",
+  "category": "molecule",
+  "purpose": "What a region says when it has nothing to show. Three postures: first-run (nothing exists yet — invite the first action with a primary button), no-results (a search/filter matched nothing — offer the cheap way back as a link), and quiet (legitimately nothing to do — say so and stop). Text-led with an optional real library glyph as a muted anchor; an empty state is a state, not an event.",
+  "props": [
+    { "name": "posture", "type": "enum", "values": ["first-run", "no-results", "quiet"], "default": "quiet" },
+    { "name": "title", "type": "string", "$note": "Carries the meaning (.t-ed-heading-4 .em); the glyph is decorative." },
+    { "name": "body", "type": "string", "$note": "One or two sentences, 0.6 ink (house caption treatment); explain and point forward, never blame." },
+    { "name": "glyph", "type": "string", "$note": "Optional REAL library glyph id (icon-source rule) at 48px, 0.4 ink, aria-hidden." },
+    { "name": "action", "type": "string", "$note": "ONE action max: primary button (first-run) or link (no-results). Quiet takes none." }
+  ],
+  "variants": [
+    { "name": "first-run", "use": "Nothing exists yet; the primary button starts the first item ('Add a payee')." },
+    { "name": "no-results", "use": "Filter/search empty; a LINK clears it — the way back is cheap, not a commitment." },
+    { "name": "quiet", "use": "All caught up; title + one line, no action." }
+  ],
+  "tokens": {
+    "font-family": "type composites via markup class — title .t-ed-heading-4 .em; body .t-ed-body-small; button .t-cm-button + .t-cm-slot",
+    "frame": "border/subtle DASHED + border-radius/surface (reads as 'reserved space', distinct from a card's solid border)",
+    "glyph": "text/default at 0.4 ink, 48px — real assets only (informative/task, global-controls/search); NO spot-illustration set exists (icon gap logged in receipt)",
+    "action": "canon Button mirror under .ebtn (namespaced — the .btn type.css blast radius must not escape): button/primary/* with the 0.70 color-mix hover (ADR-0009/B-D3)",
+    "states": "colour-only pending button-family partial injection (ADR-0013)",
+    "motion": "component-type/button-family/{press-travel,press-darken} bound for the pending partial"
+  },
+  "motion": {
+    "entry": "None — an empty state is already there when the region renders.",
+    "reducedMotion": "Nothing to reduce beyond the standard collapse.",
+    "tokens": ["component-type/button-family/press-travel", "component-type/button-family/press-darken"]
+  },
+  "responsive": {
+    "rule": "Centred column, max 480px, fluid below; copy max 40ch; padding 48/24 holds to small sizes.",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": ["Table", "List-items regions", "Cards", "Search results", "Notification centres", "Dashboards"],
+    "mustNotNeighbour": ["Skeleton loader (loading and empty are different claims — never both)", "A second action (an empty region is not a menu)"],
+    "commonPatterns": ["first payee/goal/document", "search miss with clear-filter", "caught-up inbox"],
+    "triggeredBy": ["zero-length data", "filter/search miss", "cleared queue"]
+  },
+  "accessibility": {
+    "role": "A labelled <section aria-labelledby> — no live region: state, not event (nothing announces).",
+    "name": "The title is the region's accessible name; glyphs aria-hidden.",
+    "keyboard": "The single action/link is tabbable and Enter/Space-operable.",
+    "focus": "Visible :focus-visible (focus/ring) on the action.",
+    "nonText": "The glyph conveys nothing (decorative, sub-3:1 by design at 0.4 ink); meaning is entirely in the text.",
+    "relatedSC": ["1.3.1 Info and Relationships", "2.4.6 Headings and Labels", "2.4.7 Focus Visible", "2.5.8 Target Size (Minimum)"]
+  },
+  "antiPatterns": [
+    "A skeleton where the truth is 'empty' (loading is a different claim)",
+    "Multiple actions or a button where a link suffices (no-results wants the cheap way back)",
+    "Blame copy ('You have no…' reads as fault; say what can happen next)",
+    "An invented illustration (icon-source rule — real assets only; the spot-illustration set is a logged gap)",
+    "Announcing the empty state via a live region (it is not an event)",
+    "Re-implementing press physics locally on the action (ADR-0013 ratchet)"
+  ],
+  "tokenValidation": {
+    "date": "2026-07-22",
+    "against": "token store (semantic-colour.json) via #token-manifest",
+    "result": "PASS — bound vars match resolved light+dark; declared pairs 21:1/16.9:1 and 12.6:1/11.7:1.",
+    "$note": "Built Phase-2 wave 1 (worker B). Action awaits button-family $members registration; spot-illustration icon gap in the receipt."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": ""
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "name": "Form layout",
+  "interactive": true,
+  "category": "organism",
+  "purpose": "Composes Input-fields field groups (label · help · boxed field · message) into a whole form: fieldset/legend structure, proximity-grouped field pairs, inline validation per field plus a form-level error summary with focus management, and an action bar on the Mono button ladder. Itinerary row 13 (P1) — the biggest single gap; built Phase-2 wave 1.",
+  "props": [
+    { "name": "errorSummary", "type": "boolean", "default": true, "$note": "Form-level summary (ctkn-020 exact title string), role=alert, links focus the failing field." },
+    { "name": "pairRow", "type": "boolean", "default": false, "$note": "Two related fields side by side (proximity, aid-004); stacks below 520px." },
+    { "name": "help", "type": "boolean", "default": false, "$note": "One-sentence hint above the field (copy-041: never hyperlinks)." },
+    { "name": "optionalMarker", "type": "boolean", "default": false, "$note": "'(optional)' ink marker beside the label — required is the default, unmarked (intro line states it)." }
+  ],
+  "variants": [
+    { "name": "default", "use": "Single-column form, action bar right-aligned, primary right." },
+    { "name": "narrow", "use": "Below 520px: pair rows stack; action bar stacks with primary promoted to the top (Tranche-6)." }
+  ],
+  "$states": ["default", "hover", "active (focus-within)", "completed", "disabled", "error (inline)", "error (form-level summary)", "valid (confirmation message)"],
+  "$consumes": ["Input-fields (field anatomy — change it there)", "Button ladder (action bar)"],
+  "tokens": {
+    "field": "form/background|border sets (Input-fields lock-step)",
+    "error": "rag/error + rag/error-tint (R-D20); message TEXT stays text/default — colour is never the only channel",
+    "success": "rag/success (valid-state roundel)",
+    "buttons": "button/primary/* + button/quaternary/* ladder",
+    "radius": "border-radius/control",
+    "motion": "component-type/button-family/press-travel + press-darken (B-D7; injection pending conductor registration)",
+    "$input-error-slot": "OPEN (ADR-0010): the anticipated per-theme input-error flex slot is NOT yet declared in tokens — this organism binds the semantic rag/error role and should follow the slot when declared."
+  },
+  "relationships": {
+    "livesInside": ["Payment / payee journeys", "Onboarding", "Any data-entry screen"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["add-a-payee", "make-a-payment", "profile edit"]
+  },
+  "behaviour": {
+    "validation": "Validate on submit; per-field errors + summary together. A field's error lifts as soon as its value re-validates (input event). Focus moves to the summary (tabindex=-1) on failure; summary links focus their field.",
+    "masking": "Sort code groups digits 00-00-00 as typed (Tranche-6 mask pattern)."
+  },
+  "accessibility": {
+    "structure": "fieldset + legend name the form region; every input has a real <label for>; help/messages joined via aria-describedby.",
+    "errors": "aria-invalid on failing inputs; inline messages aria-live=polite; the summary is role=alert and receives focus — WCAG 3.3.1 Error Identification, 3.3.2 Labels or Instructions, 2.4.3 Focus Order. (3.3.3 Error Suggestion is met by the 'Enter…, like…' message copy — SC not in the compliance lookup yet, so kept out of relatedSC.)",
+    "colour": "Error text is ink; the rag colour lives in the stroke + roundel only (1.4.1 Use of Colour). Roundel mark knocks to its ground (policy).",
+    "relatedSC": ["1.3.1", "1.4.1", "1.4.3", "2.1.1 Keyboard", "2.4.3", "2.4.7 Focus Visible", "3.3.1 Error Identification", "3.3.2 Labels or Instructions", "4.1.3"]
+  },
+  "tokenValidation": {
+    "date": "2026-07-22",
+    "against": "current store (semantic-colour.json + component-types.json)",
+    "result": "PASS — new build, no deprecated tokens: field chrome binds live form/* set, error set = R-D20 rag/error*, buttons = the Mono button/* ladder, radius = control role, motion = component-type/button-family params (values byte-identical to Button's blocks).",
+    "$note": "input-error per-theme flex slot (ADR-0010, Dave's buildout ruling) is NOT yet declared in the store — binding rag/error until it lands; receipt-flagged."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "$note": "Itinerary row 13 (P1), Phase-2 wave 1 worker A. Anatomy authority = the gated Input-fields snippet (Figma 65570:211753 via that file); organism structure = Tranche-6 (near-canonical, ruling 3). No dedicated Figma node bound yet."
+  },
+  "antiPatterns": [
+    "Red error message text (message stays ink — colour is never the only channel).",
+    "Placeholder-as-label (copy-040: placeholders empty except data-entry formats).",
+    "Hyperlinks inside help text (copy-041).",
+    "Disabling the submit button instead of validating on submit (errors must be announced, not silently prevented).",
+    "Local press-physics CSS on the action buttons (ADR-0013: physics arrives via the injected partial)."
+  ]
+}

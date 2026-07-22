@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Banner — reference implementation (gated)</title>
+<!--
+  CANONICAL REFERENCE for Banner (Apollo MONO). The page-level, persistent third of the feedback
+  family: full-width, sits above the content it governs, stays until the condition clears. Alert =
+  in-flow sibling · Toast = transient sibling. Built 2026-07-22 (Phase-2 worker B).
+
+  CHROME: SOLID RAG fill (the Legacy 'global notification' model translated onto the R-D20 Mono
+  -background tokens — the same fills Button's is-success already uses, so solid RAG surfaces are
+  established Mono vocabulary):
+    error       = rag/error-background #B92F1E (mode-stable, R-D7) + rag/text/on-dark WHITE — the
+                  ONE white-type surface (type26-013: white type is red-only). 6.02:1.
+    warning     = rag/warning-background #F0B13A + rag/text/on-light near-black (R-D3 always-black-
+                  on-amber). 9.16:1.
+    success     = rag/success-background + text/on-success BLACK (B-D6 precedent). 7.65/7.45:1.
+    information = rag/information-background + rag/text/on-light. 7.11/5.22:1.
+  Each ink binds its most specific ruled role — nothing minted, nothing re-decided.
+
+  GLYPHS: reverse-knockout on the solid fill (shape = the variant's ink, mark = the fill showing
+  through, --mark:var(--fill)) — the Legacy global-banner icon mechanic; every leg ≥4.5 both modes.
+  CONTENT SHAPE (kept from the Legacy family): title · description · optional inline link, then
+  EITHER up to two ghost actions OR a dismiss × — never both.
+  ACTIONS: full-size ghost buttons (44px), overlay hover — white overlay on dark fills, black
+  overlay on light fills (amber/success/information), active > hover. Pressables carry NO local
+  press physics (ADR-0013 ratchet) — empty AUTO-PARTIAL pair below awaits conductor registration
+  ($members proposal in the worker receipt; --phys-size:120 = the Button geometry).
+  TYPE: composites via markup class (T-D14): copy .t-ed-body (.em title); actions .t-cm-button +
+  .t-cm-slot. RESPONSIVE: actions stack full-width ≤480px container (1.4.10, verified to 320).
+  ROLES: error = role="alert"; the rest role="status". Icons byte-matched (_validate_icons.py).
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease;
+    --spring:300ms cubic-bezier(.5,1.6,.4,1); --press:90ms cubic-bezier(0,0,.58,1); }
+  [data-theme="light"]{
+    --err-bg:#B92F1E; --warn-bg:#F0B13A; --ok-bg:#5DAC7B; --info-bg:#7DABCD;
+    --on-dark:#FFFFFF; --on-light:#1A1A1A; --on-ok:#000000;
+    --text:#1A1A1A; --page:#FFFFFF;
+    --border-radius-surface:0;
+    --press-travel:2; --press-darken:0.94;
+  }
+  [data-theme="dark"]{
+    --err-bg:#B92F1E; --warn-bg:#F0B13A; --ok-bg:#43AD6F; --info-bg:#5F92B9;
+    --on-dark:#FFFFFF; --on-light:#1A1A1A; --on-ok:#000000;
+    --text:#FFFFFF; --page:#1A1A1A;
+    --border-radius-surface:0;
+    --press-travel:2; --press-darken:0.94;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page); color:var(--text);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--text);
+    background:transparent; color:var(--text); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--text); outline-offset:2px;}
+  .demo-controls label{display:flex; gap:.5rem; align-items:center;}
+  .demo-controls input[type=range]{accent-color:var(--text);}
+  h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+
+  .bwrap{ width:var(--demo-width, 720px); max-width:100%; container-type:inline-size; }
+
+  /* per-variant fill + ink — each ink is its most specific ruled role (see header) */
+  .banner.err{ --fill:var(--err-bg); --ink:var(--on-dark); }
+  .banner.warn{ --fill:var(--warn-bg); --ink:var(--on-light); }
+  .banner.ok{ --fill:var(--ok-bg); --ink:var(--on-ok); }
+  .banner.info{ --fill:var(--info-bg); --ink:var(--on-light); }
+
+  /* the banner — full-width solid fill, SURFACE radius role */
+  .banner{ display:flex; gap:8px; align-items:flex-start; padding:12px 16px; margin:12px 0;
+    background:var(--fill); color:var(--ink); border-radius:var(--border-radius-surface); }
+  .banner .ic{ flex:none; height:24px; display:inline-flex; align-items:center; color:var(--ink); --mark:var(--fill); }
+  .banner .ic svg{ width:20px; height:20px; display:block; fill:currentColor; }
+  .banner .main{ flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:8px; }
+  .banner .main p{ margin:0; }
+  .banner .main a{ color:inherit; font-weight:500; text-decoration:underline; text-underline-offset:3px;
+    text-decoration-thickness:1px; cursor:pointer; transition:text-decoration-thickness var(--ease); }
+  .banner .main a:hover, .banner .main a:active{ text-decoration-thickness:2px; }
+  .banner .main a:focus-visible{ outline:2px solid currentColor; outline-offset:2px; }
+
+  /* actions — ghost buttons on the fill; overlay direction follows the ink (white ink → white
+     overlay, dark ink → black overlay); active > hover (WCAG state contrast) */
+  .banner .actions{ display:flex; gap:8px; justify-content:flex-end; margin-top:8px; margin-right:-16px; }
+  .banner .actions .abtn{ appearance:none; border:0; background:transparent; color:var(--ink);
+    height:44px; min-width:96px; padding:0 20px; justify-content:center; cursor:pointer;
+    border-radius:var(--border-radius-surface); transition:background var(--ease), transform var(--spring); }
+  .banner .actions .abtn:hover{ background:color-mix(in srgb, var(--ink) 14%, transparent); }
+  .banner .actions .abtn:active{ background:color-mix(in srgb, var(--ink) 22%, transparent); }
+  .banner .actions .abtn:focus-visible{ outline:2px solid var(--ink); outline-offset:-2px; }
+  .banner:has(.actions){ padding-bottom:0; }   /* actions sit flush to the bottom edge (Legacy global mechanic) */
+
+  /* dismiss × — 24px visual, 44px hit target; colour-only states pending partial injection */
+  .banner .x{ --phys-size:24;            /* LOCAL geometry override — 24px control (conductor, wave-1 reconcile) */
+    position:relative; flex:none; display:inline-flex; width:24px; height:24px; padding:0; border:0;
+    background:transparent; color:inherit; cursor:pointer; align-items:center; justify-content:center;
+    border-radius:var(--border-radius-surface); transition:background var(--ease), transform var(--spring); }
+  .banner .x::before{ content:""; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:44px; height:44px; }
+  .banner .x svg{ width:16px; height:16px; fill:currentColor; }
+  .banner .x:hover{ background:color-mix(in srgb, var(--ink) 14%, transparent); }
+  .banner .x:active{ background:color-mix(in srgb, var(--ink) 22%, transparent); }
+  .banner .x:focus-visible{ outline:2px solid currentColor; outline-offset:2px; }
+  /* ===== AUTO-PARTIAL press-physics START (button-family) ===== */
+/* INJECTED from Button.reference.html (partial "press-physics", group button-family —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+  :is(.banner .x, .banner .actions .abtn):hover{transform:scale(calc(1 + var(--press-travel)/var(--phys-size)));}
+  :is(.banner .x, .banner .actions .abtn).full:hover{transform:none;}                                           /* full-width can't grow — would overflow */
+  :is(.banner .x, .banner .actions .abtn):active{transform:scale(calc(1 - var(--press-travel)/var(--phys-size))); filter:brightness(var(--press-darken)); transition:transform var(--press), filter var(--press);}
+  :is(.banner .x, .banner .actions .abtn):disabled:hover,:is(.banner .x, .banner .actions .abtn).is-disabled:hover{transform:none; filter:none;}   /* disabled stays put */
+  /* WCAG 2.3.3 — the partial carries its OWN reduced-motion override (ADR-0013: rides inside, never per-file) */
+  @media (prefers-reduced-motion: reduce){
+    :is(.banner .x, .banner .actions .abtn):hover,:is(.banner .x, .banner .actions .abtn):active{ transform:none !important; filter:none !important; }
+  }
+  /* ===== AUTO-PARTIAL press-physics END ===== */
+  .banner.removing{ display:none; }
+
+  @container (max-width: 480px){
+    .banner .actions{ flex-direction:column; gap:8px; align-items:stretch; }
+    .banner .actions .abtn{ width:100%; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
+      animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="bn-error" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.30911 1.68194L0.109113 15.7999C-0.199887 16.3319 0.184113 16.9999 0.800113 16.9999H17.2001C17.8161 16.9999 18.2001 16.3319 17.8911 15.7999L9.69111 1.68194C9.38311 1.15094 8.61711 1.15094 8.30911 1.68194Z" fill="currentColor"/><path style="fill:var(--mark)" d="M9.9001 5H8.1001V11H9.9001V5Z"/><path style="fill:var(--mark)" d="M9 14.8259C9.69036 14.8259 10.25 14.2663 10.25 13.5759C10.25 12.8856 9.69036 12.3259 9 12.3259C8.30964 12.3259 7.75 12.8856 7.75 13.5759C7.75 14.2663 8.30964 14.8259 9 14.8259Z"/></symbol>
+    <symbol id="bn-warning" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M9.90107 3.80005H8.10107V9.80005H9.90107V3.80005Z"/><path style="fill:var(--mark)" d="M9.00078 14.2C9.66352 14.2 10.2008 13.6628 10.2008 13C10.2008 12.3373 9.66352 11.8 9.00078 11.8C8.33804 11.8 7.80078 12.3373 7.80078 13C7.80078 13.6628 8.33804 14.2 9.00078 14.2Z"/></symbol>
+    <symbol id="bn-success" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z"/></symbol>
+    <symbol id="bn-info" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M9 6.25C9.69036 6.25 10.25 5.69036 10.25 5C10.25 4.30964 9.69036 3.75 9 3.75C8.30964 3.75 7.75 4.30964 7.75 5C7.75 5.69036 8.30964 6.25 9 6.25Z"/><path style="fill:var(--mark)" d="M9.89912 8.25H8.09912V14.25H9.89912V8.25Z"/></symbol>
+    <symbol id="bn-close" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <div class="demo-controls">
+    <button id="themeToggle" type="button">◐ Toggle theme</button>
+    <label>Width <input id="w" type="range" min="320" max="720" value="720"> <span id="wv">720</span>px</label>
+    <span>Banner — canonical reference (Mono · page-level · persistent)</span>
+  </div>
+
+  <div class="bwrap" id="bwrap">
+
+    <h2>Message only</h2>
+    <div class="banner info" role="status"><span class="ic"><svg aria-hidden="true"><use href="#bn-info"/></svg></span><div class="main"><p class="t-ed-body"><strong class="em">Planned maintenance.</strong> Some services pause briefly on Sunday morning. <a href="#">See affected services</a></p></div></div>
+
+    <h2>Dismissible</h2>
+    <div class="banner ok" role="status"><span class="ic"><svg aria-hidden="true"><use href="#bn-success"/></svg></span><div class="main"><p class="t-ed-body"><strong class="em">Profile updated.</strong> Your new contact details are active everywhere.</p></div><button class="x" aria-label="Dismiss banner"><svg aria-hidden="true"><use href="#bn-close"/></svg></button></div>
+    <div class="banner warn" role="status"><span class="ic"><svg aria-hidden="true"><use href="#bn-warning"/></svg></span><div class="main"><p class="t-ed-body"><strong class="em">Card expiring soon.</strong> The card ending 4021 expires this month. <a href="#">Order a replacement</a></p></div><button class="x" aria-label="Dismiss banner"><svg aria-hidden="true"><use href="#bn-close"/></svg></button></div>
+
+    <h2>With actions — error (the one white-type surface, type26-013) · never actions and dismiss together</h2>
+    <div class="banner err" role="alert"><span class="ic"><svg aria-hidden="true"><use href="#bn-error"/></svg></span><div class="main"><p class="t-ed-body"><strong class="em">We could not verify this device.</strong> Confirm the sign-in attempt to keep your account protected.</p><span class="actions"><button class="abtn t-cm-button t-cm-slot" type="button">Confirm it was me</button><button class="abtn t-cm-button t-cm-slot" type="button">Secure my account</button></span></div></div>
+
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Banner",
+    "vars": { "--err-bg": "rag/error-background", "--warn-bg": "rag/warning-background", "--ok-bg": "rag/success-background", "--info-bg": "rag/information-background",
+              "--on-dark": "rag/text/on-dark", "--on-light": "rag/text/on-light", "--on-ok": "text/on-success",
+              "--text": "text/default", "--page": "background/default", "--border-radius-surface": "border-radius/surface",
+              "--press-travel": "component-type/button-family/press-travel", "--press-darken": "component-type/button-family/press-darken" },
+    "contrastPairs": [
+      { "fg": "rag/text/on-dark",  "bg": "rag/error-background",       "context": "text" },
+      { "fg": "rag/text/on-light", "bg": "rag/warning-background",     "context": "text" },
+      { "fg": "text/on-success",   "bg": "rag/success-background",     "context": "text" },
+      { "fg": "rag/text/on-light", "bg": "rag/information-background", "context": "text" },
+      { "fg": "rag/text/on-dark",  "bg": "rag/error-background",       "context": "icon" },
+      { "fg": "rag/text/on-light", "bg": "rag/warning-background",     "context": "icon" }
+    ],
+    "icons": { "error": "status-icons/error.svg", "warning": "status-icons/warning.svg", "success": "status-icons/success.svg", "information": "status-icons/information.svg", "close": "global-controls/close.svg" },
+    "requiredAria": ["role=\"alert\"", "role=\"status\"", "aria-label"],
+    "$note": "White type appears ONLY on the error fill (#B92F1E — red, type26-013 compliant, 6.02:1). Amber/success/information carry ruled dark inks (R-D3 / B-D6 / rag/text/on-light), 5.22–9.16:1 both modes. Glyphs are reverse-knockout (shape = ink, mark = fill) so every icon leg matches its declared text pair. Fill-vs-page is undeclared by design: a page-level surface is not an indicator (1.4.11 does not set a floor for large surface boundaries)."
+  }
+  </script>
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    const w=document.getElementById('w'), wv=document.getElementById('wv'), bw=document.getElementById('bwrap');
+    w.addEventListener('input', ()=>{ bw.style.setProperty('--demo-width', w.value+'px'); wv.textContent=w.value; });
+    document.querySelectorAll('.banner .x').forEach(x=> x.addEventListener('click', ()=> x.closest('.banner').classList.add('removing')));
+  </script>
+</body>
+</html>

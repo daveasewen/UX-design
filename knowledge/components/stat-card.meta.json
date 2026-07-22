@@ -1,0 +1,68 @@
+{
+  "name": "Stat card",
+  "category": "molecule",
+  "purpose": "The dashboard tile for one headline number: label · value · delta · period on a card surface. Promotes the big-number pattern the fitness-test journeys improvised (sme-payments .flow blocks) into canon, composing the Amount-display money-format primitive (verbatim) on the Cards surface recipe. One tile, one claim — a board is a grid of these.",
+  "props": [
+    { "name": "label", "type": "string", "$note": ".t-cm-caption at 0.6 ink; names the metric, sentence case." },
+    { "name": "value", "type": "string", "$note": "The Amount-display primitive markup unchanged: figure composites, tabular-nums, currency before value no space (copy-025), U+2212 minus. Plain counts render without currency." },
+    { "name": "size", "type": "enum", "values": ["display", "compact"], "default": "display", "$note": "display = .t-cm-figure-4 (32px) · compact = .t-cm-figure-3 (24px, T-D14) for dense boards." },
+    { "name": "delta", "type": "string", "$note": "Signed change + direction word ('+12.4% up'); .t-cm-figure-6 in INK. Direction = arrow + sign + wording, never colour alone." },
+    { "name": "direction", "type": "enum", "values": ["up", "down", "flat"], "default": "flat", "$note": "R-D5: directional deltas are red/green ONLY. The arrow glyph wears rag/success or rag/error (3:1 floor, R-D6 A′ — labelled); flat = no arrow, 'No change'." },
+    { "name": "period", "type": "string", "$note": ".t-cm-legal at 0.6 ink ('vs February', 'this month')." }
+  ],
+  "variants": [
+    { "name": "display", "use": "Primary board tiles — 32px value." },
+    { "name": "compact", "use": "Dense boards / sidebars — 24px value." },
+    { "name": "flat", "use": "No movement: 'No change', full ink, no arrow." }
+  ],
+  "tokens": {
+    "font-family": "type composites via markup class — label .t-cm-caption · value .t-cm-figure-4/.t-cm-figure-3 · delta .t-cm-figure-6 · period .t-cm-legal",
+    "surface": "tertiary/background/default + border/subtle + border-radius/surface (the Cards recipe)",
+    "value": "text/default — monochrome money format (the Amount-display atom's scope)",
+    "delta-arrow": "rag/success / rag/error (R-D5 red/green only; 5.0/4.8 · 6.02/3.66 vs the surface — ≥3:1 both modes)",
+    "delta-text": "text/default — NEVER coloured (dark rag/error 3.66 fails 4.5 as text)",
+    "$survey": "Promoted from fitness-test improvisations; Amount-display + Cards mined, untouched."
+  },
+  "motion": {
+    "none": "Passive tile — no interactive states, no press physics markers. A linked/tappable variant is a receipt question, not improvised.",
+    "reducedMotion": "Standard collapse only.",
+    "tokens": []
+  },
+  "responsive": {
+    "rule": "Board grid auto-fills minmax(240px,1fr); tiles are fluid; tabular figures keep columns aligned.",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": ["Dashboards", "Summary", "Account overview pages"],
+    "mustNotNeighbour": ["A chart making the identical claim in the same view (pick one headline form)"],
+    "commonPatterns": ["cash-flow board", "spend summary", "operations counters"],
+    "triggeredBy": []
+  },
+  "accessibility": {
+    "role": "role=\"group\" + aria-label naming metric and period, so the tile reads as one unit.",
+    "name": "aria-label carries 'metric, period'; arrows aria-hidden (sign + wording carry direction).",
+    "keyboard": "Nothing focusable in the passive form.",
+    "focus": "n/a (passive).",
+    "nonText": "Delta arrows ≥3:1 vs the surface both modes (1.4.11); direction never rests on colour alone (arrow + sign + wording).",
+    "relatedSC": ["1.4.1 Use of Color", "1.4.11 Non-text Contrast", "1.3.1 Info and Relationships"]
+  },
+  "antiPatterns": [
+    "Coloured delta TEXT (dark rag/error fails 4.5 as text — the arrow wears the colour)",
+    "Amber as a direction (R-D5: red/green only; amber is status, not direction)",
+    "Colour as the only direction channel (arrow + sign + wording, always)",
+    "Re-implementing the money format locally (compose the Amount-display primitive)",
+    "A tile making two claims (one metric per card)",
+    "Proportional (non-tabular) figures in a board (columns shear)"
+  ],
+  "tokenValidation": {
+    "date": "2026-07-22",
+    "against": "token store (semantic-colour.json) via #token-manifest — value markup inherits Amount-display (gated)",
+    "result": "PASS — bound vars match resolved light+dark; text 21:1/15.4:1; arrows 5.0/6.02 light · 4.8/3.66 dark (≥3 ui).",
+    "$note": "Built Phase-2 wave 1 (worker B). Composes Amount-display verbatim; linked-tile variant queued as a receipt question."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": ""
+  }
+}

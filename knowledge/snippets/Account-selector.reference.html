@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Account selector — reference implementation (gated)</title>
+<!--
+  CANONICAL REFERENCE for Account selector / masked account chip (Apollo MONO). Two promoted
+  forms, built 2026-07-22 (Phase-2 worker B) from surveyed prior art (all mined, none modified):
+   • SELECTOR — the from/to account picker of every payment flow: a combobox trigger showing the
+     chosen account (name · masked number · balance) opening a LISTBOX of rich account rows.
+     Combobox/listbox mechanics + the field chrome mined from snippets/Dropdown (form/* tokens;
+     menu elevation mode-aware: shadow in light, grey outline in dark). Balance rendering =
+     the Amount-display primitive verbatim (figure composites, tabular, copy-025).
+   • MASKED ACCOUNT CHIP — the compact inline token of a chosen account for confirmation rows
+     and form summaries ("From · Current account ···4821"). Promoted from snippets/Account-card's
+     label convention: MIDDLE-DOT TRIPLE + last four (···4821), never the full number.
+     Namespaced .acchip (the .chip classname is type.css-bound with an acknowledged blast
+     radius this file must not join).
+  TYPE via composite markup classes (T-D14): trigger/option names .t-cm-label (.em when
+  selected) · masked numbers .t-cm-legal at 0.6 ink · balances .t-cm-figure-5/6 (tabular).
+  PRESS PHYSICS: none, deliberately — this is a FORM CONTROL (Input-fields/Dropdown family), not
+  a button-family member; whether fields get their own component-type group is a receipt question
+  (Worker A owns the forms lane). Colour states only: hover form/background/hover, active border
+  form/border/active (active > hover, the Dropdown pattern).
+  A11y: label + role="combobox" trigger (aria-haspopup/expanded/controls/labelledby) + listbox
+  with aria-selected; ↑↓ Home End navigate, Enter selects, Esc closes and returns focus; masked
+  numbers are read as digits via aria-label ("ending 4821"). Chevron = real library glyph.
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
+  [data-theme="light"]{
+    --border:#808080; --border-active:#000000; --hoverbg:#F0F0F0;
+    --menu-surface:#FFFFFF; --menu-border:#FFFFFF00; --shadow:#00000033;
+    --text:#1A1A1A; --page:#FFFFFF; --focus:#305A85;
+    --border-radius-control:0; --border-radius-surface:0; --border-radius-indicator:0;
+  }
+  [data-theme="dark"]{
+    --border:#808080; --border-active:#FFFFFF; --hoverbg:#232323;
+    --menu-surface:#1A1A1A; --menu-border:#808080; --shadow:#000000D9;
+    --text:#FFFFFF; --page:#1A1A1A; --focus:#4587A7;
+    --border-radius-control:0; --border-radius-surface:0; --border-radius-indicator:0;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page); color:var(--text);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--border);
+    background:transparent; color:var(--text); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+
+  .as{position:relative; width:360px; max-width:100%;}
+  .as-label{display:block; margin:0 0 4px; opacity:.6;}
+
+  /* the trigger — field chrome (Dropdown recipe): underline border, active bottom accent */
+  .as-trigger{width:100%; min-height:44px; display:flex; align-items:center; gap:8px; padding:8px 12px;
+    border:1px solid var(--border); border-radius:var(--border-radius-control); background:transparent;
+    color:var(--text); cursor:pointer; text-align:left; transition:background var(--ease), border-color var(--ease);}
+  .as-trigger:hover{background:var(--hoverbg);}
+  .as-trigger[aria-expanded="true"]{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--border-active);}
+  .as-trigger:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .as-trigger .who{flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:4px;}
+  .as-trigger .mask16{opacity:.6;}
+  .as-trigger .bal{flex:none; font-variant-numeric:tabular-nums;}
+  .as-trigger .chev{flex:none; width:16px; height:16px; transition:transform var(--ease);}
+  .as-trigger .chev svg{width:16px; height:16px; display:block; fill:currentColor;}
+  .as-trigger[aria-expanded="true"] .chev{transform:rotate(180deg);}
+
+  /* the menu — listbox; elevation mode-aware (shadow light, outline dark) */
+  .as-menu{position:absolute; top:100%; left:0; right:0; margin:4px 0 0; padding:4px 0; list-style:none;
+    background:var(--menu-surface); border:1px solid var(--menu-border); border-radius:var(--border-radius-surface);
+    box-shadow:0 0 16px var(--shadow); z-index:20; display:none;}
+  .as-menu.open{display:block;}
+  .as-opt{display:flex; align-items:center; gap:8px; padding:12px; cursor:pointer;}
+  .as-opt .who{flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:4px;}
+  .as-opt .mask16{opacity:.6;}
+  .as-opt .bal{flex:none; font-variant-numeric:tabular-nums;}
+  .as-opt:hover{background:var(--hoverbg);}
+  .as-opt[aria-selected="true"]{background:var(--hoverbg); box-shadow:inset 4px 0 0 0 var(--border-active);}
+  .as-opt.kb-focus{outline:2px solid var(--focus); outline-offset:-2px;}
+
+  /* the masked account chip — namespaced .acchip (never .chip: type.css blast radius) */
+  .acchip{display:inline-flex; align-items:center; gap:8px; height:24px; padding:0 8px;
+    border:1px solid var(--border); border-radius:var(--border-radius-indicator); color:var(--text); white-space:nowrap;}
+  .acchip .mask16{opacity:.6;}
+  .chiprow{display:flex; gap:8px; align-items:center; flex-wrap:wrap;}
+  .chiprow .ctx{opacity:.6;}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
+      animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="as-chev" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M17 4.15198L9 12.15L1 4.15198V5.84798L9 13.848L17 5.84798V4.15198Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <div class="demo-controls">
+    <button id="themeToggle" type="button">◐ Toggle theme</button>
+    <span>Account selector — canonical reference (Mono · combobox + masked chip)</span>
+  </div>
+
+  <h2>Selector — from-account picker (combobox → listbox of account rows)</h2>
+  <div class="as">
+    <span class="as-label t-cm-caption" id="asLabel">From account</span>
+    <button class="as-trigger" id="asTrigger" role="combobox" aria-haspopup="listbox" aria-expanded="false"
+      aria-controls="asMenu" aria-labelledby="asLabel asTrigger">
+      <span class="who"><span class="t-cm-label em" id="asName">Current account</span>
+        <span class="mask16 t-cm-legal" id="asMask" aria-label="Account ending 4821">···4821</span></span>
+      <span class="bal t-cm-figure-5" id="asBal"><span>£</span><span>3,248.55</span></span>
+      <span class="chev" aria-hidden="true"><svg><use href="#as-chev"/></svg></span>
+    </button>
+    <ul class="as-menu" id="asMenu" role="listbox" aria-labelledby="asLabel" tabindex="-1">
+      <li class="as-opt" role="option" aria-selected="true" data-name="Current account" data-mask="···4821" data-bal="3,248.55">
+        <span class="who"><span class="t-cm-label em">Current account</span><span class="mask16 t-cm-legal" aria-label="Account ending 4821">···4821</span></span>
+        <span class="bal t-cm-figure-6"><span>£</span><span>3,248.55</span></span></li>
+      <li class="as-opt" role="option" aria-selected="false" data-name="Savings" data-mask="···9930" data-bal="12,000.00">
+        <span class="who"><span class="t-cm-label">Savings</span><span class="mask16 t-cm-legal" aria-label="Account ending 9930">···9930</span></span>
+        <span class="bal t-cm-figure-6"><span>£</span><span>12,000.00</span></span></li>
+      <li class="as-opt" role="option" aria-selected="false" data-name="Joint account" data-mask="···2245" data-bal="860.20">
+        <span class="who"><span class="t-cm-label">Joint account</span><span class="mask16 t-cm-legal" aria-label="Account ending 2245">···2245</span></span>
+        <span class="bal t-cm-figure-6"><span>£</span><span>860.20</span></span></li>
+    </ul>
+  </div>
+
+  <h2>Masked account chip — confirmation rows and form summaries</h2>
+  <div class="chiprow">
+    <span class="ctx t-cm-caption">From</span>
+    <span class="acchip t-cm-legal" role="group" aria-label="From account, Current account ending 4821"><span>Current account</span><span class="mask16" aria-hidden="true">···4821</span></span>
+    <span class="ctx t-cm-caption">to</span>
+    <span class="acchip t-cm-legal" role="group" aria-label="To account, Savings ending 9930"><span>Savings</span><span class="mask16" aria-hidden="true">···9930</span></span>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Account selector",
+    "vars": { "--border": "form/border/default", "--border-active": "form/border/active", "--hoverbg": "form/background/hover",
+              "--menu-surface": "background/default", "--menu-border": "elevation/border", "--shadow": "elevation/functional",
+              "--text": "text/default", "--page": "background/default", "--focus": "focus/ring",
+              "--border-radius-control": "border-radius/control", "--border-radius-surface": "border-radius/surface",
+              "--border-radius-indicator": "border-radius/indicator" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "text/default", "bg": "form/background/hover", "context": "text" },
+      { "fg": "form/border/default", "bg": "background/default", "context": "ui" }
+    ],
+    "icons": { "chevron-down": "arrows-and-chevrons/chevron-down.svg" },
+    "requiredAria": ["role=\"combobox\"", "aria-haspopup", "aria-expanded", "aria-controls", "role=\"listbox\"", "role=\"option\"", "aria-selected", "aria-label"],
+    "$note": "Masked convention promoted from Account-card: middle-dot triple + last four (···4821), never the full number; screen readers get 'ending 4821' via aria-label. .acchip is namespaced (the .chip classname is type.css-bound). NO press physics by design — this is a form control (Dropdown/Input-fields family); whether fields get their own component-type group is raised in the worker receipt, not improvised."
+  }
+  </script>
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    const trigger=document.getElementById('asTrigger'), menu=document.getElementById('asMenu');
+    const opts=[...menu.querySelectorAll('.as-opt')];
+    let kb=-1;
+    function setKb(i){
+      opts.forEach(o=>o.classList.remove('kb-focus'));
+      kb=i; if(kb>=0){ opts[kb].classList.add('kb-focus'); opts[kb].scrollIntoView({block:'nearest'}); }
+    }
+    function openMenu(){ menu.classList.add('open'); trigger.setAttribute('aria-expanded','true');
+      setKb(opts.findIndex(o=>o.getAttribute('aria-selected')==='true')); menu.focus(); }
+    function closeMenu(refocus){ menu.classList.remove('open'); trigger.setAttribute('aria-expanded','false'); setKb(-1);
+      if(refocus) trigger.focus(); }
+    function select(i){
+      opts.forEach((o,j)=>{ o.setAttribute('aria-selected', String(i===j));
+        o.querySelector('.t-cm-label').classList.toggle('em', i===j); });
+      const o=opts[i];
+      document.getElementById('asName').textContent=o.dataset.name;
+      const mask=document.getElementById('asMask');
+      mask.textContent=o.dataset.mask; mask.setAttribute('aria-label','Account ending '+o.dataset.mask.replace(/[^0-9]/g,''));
+      document.getElementById('asBal').innerHTML='<span>£</span><span>'+o.dataset.bal+'</span>';
+      closeMenu(true);
+    }
+    trigger.addEventListener('click', ()=> menu.classList.contains('open') ? closeMenu(true) : openMenu());
+    opts.forEach((o,i)=> o.addEventListener('click', ()=>select(i)));
+    menu.addEventListener('keydown', e=>{
+      if(e.key==='Escape'){ closeMenu(true); return; }
+      if(e.key==='ArrowDown'){ e.preventDefault(); setKb(Math.min(kb+1, opts.length-1)); }
+      else if(e.key==='ArrowUp'){ e.preventDefault(); setKb(Math.max(kb-1, 0)); }
+      else if(e.key==='Home'){ e.preventDefault(); setKb(0); }
+      else if(e.key==='End'){ e.preventDefault(); setKb(opts.length-1); }
+      else if(e.key==='Enter' || e.key===' '){ e.preventDefault(); if(kb>=0) select(kb); }
+      else if(e.key==='Tab'){ closeMenu(false); }
+    });
+    document.addEventListener('click', e=>{ if(menu.classList.contains('open') && !e.target.closest('.as')) closeMenu(false); });
+  </script>
+</body>
+</html>

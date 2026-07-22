@@ -1,0 +1,71 @@
+{
+  "name": "Banner",
+  "category": "molecule",
+  "purpose": "The page-level, persistent member of the feedback family: a full-width solid RAG surface that sits above the content it governs and stays until the condition clears or the user dismisses it. Use for conditions that apply to the whole page or session (service outage, device verification, expiring card) — not for in-flow validation (Alert) or transient confirmations (Toast).",
+  "props": [
+    { "name": "status", "type": "enum", "values": ["error", "warning", "success", "information"], "default": "information", "$note": "Binds the R-D20 rag/{status}-background fill + its most specific ruled ink (see tokens). Error renders role=\"alert\"." },
+    { "name": "title", "type": "string", "$note": "Bold lead-in (.t-ed-body .em). Sentence case." },
+    { "name": "message", "type": "string" },
+    { "name": "link", "type": "string", "$note": "Optional inline link, descriptive text (aca-004)." },
+    { "name": "actions", "type": "array", "$note": "Up to two ghost actions — mutually exclusive with dismiss (Legacy family shape rule kept)." },
+    { "name": "dismissible", "type": "boolean", "default": false }
+  ],
+  "variants": [
+    { "name": "error", "use": "Page/session-level failure needing action; the ONE white-type surface (type26-013 — white is red-only; fill #B92F1E, 6.02:1); assertive." },
+    { "name": "warning", "use": "Page-level caution; amber always carries near-black ink (R-D3)." },
+    { "name": "success", "use": "Page-level confirmation that should persist; black ink (text/on-success, B-D6 precedent)." },
+    { "name": "information", "use": "Service notice; rag/text/on-light ink." }
+  ],
+  "tokens": {
+    "font-family": "type composites via markup class — copy .t-ed-body (.em title); actions .t-cm-button + .t-cm-slot",
+    "surface": "rag/{error,warning,success,information}-background — the R-D20 solid fills (Mono precedent: Button is-success)",
+    "ink": "error = rag/text/on-dark (white, red-only surface) · warning + information = rag/text/on-light · success = text/on-success. 5.22–9.16:1 both modes.",
+    "glyph": "reverse-knockout — shape = the variant ink, internal mark = the fill (--mark), so icon legs match the declared text pairs",
+    "radius": "border-radius/surface",
+    "states": "action/dismiss overlays = color-mix of the INK at 14%/22% (active > hover); press physics pending button-family partial injection (ADR-0013)",
+    "motion": "component-type/button-family/{press-travel,press-darken} bound for the pending partial"
+  },
+  "motion": {
+    "dismiss": "Immediate removal (page-level surfaces do not animate away by default).",
+    "reducedMotion": "All transitions collapse under prefers-reduced-motion.",
+    "tokens": ["component-type/button-family/press-travel", "component-type/button-family/press-darken"]
+  },
+  "responsive": {
+    "rule": "Full-width fluid; actions stack full-width at ≤480px container (verified to 320px, 1.4.10). Icon anchors to the first text line.",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": ["Page shell (above content)", "Section heads"],
+    "mustNotNeighbour": ["A second banner (one page-level message at a time)", "Alert/Toast carrying the identical message"],
+    "commonPatterns": ["service outage notice", "security verification prompt", "expiry warnings"],
+    "triggeredBy": ["session state", "service status", "account conditions"]
+  },
+  "accessibility": {
+    "role": "role=\"alert\" for error (assertive); role=\"status\" otherwise (4.1.3).",
+    "name": "Dismiss carries aria-label=\"Dismiss banner\"; glyphs aria-hidden (title carries meaning — colour never the sole channel).",
+    "keyboard": "Link, actions and dismiss are tabbable; Enter/Space activate.",
+    "focus": "Visible :focus-visible outlines (2px ink) on link, actions and dismiss.",
+    "target": "Actions 44px tall; dismiss 44×44 via ::before (2.5.8).",
+    "nonText": "Glyph legs ≥4.5:1 (they reuse the text pairs); banner fill vs page carries no indicator floor — the surface is not an indicator (1.4.11).",
+    "relatedSC": ["1.4.1 Use of Color", "1.4.3 Contrast (Minimum)", "1.4.10 Reflow", "2.5.8 Target Size (Minimum)", "4.1.3 Status Messages"]
+  },
+  "antiPatterns": [
+    "Actions AND dismiss on the same banner (family shape rule: either, never both)",
+    "White type on any fill except the red error fill (type26-013)",
+    "Two banners stacked (one page-level message at a time; queue or consolidate)",
+    "Using a banner for in-flow form validation (Alert) or transient confirmation (Toast)",
+    "Re-implementing press physics locally on actions/dismiss (ADR-0013 ratchet)",
+    "Hardcoding RAG hexes instead of rag/*-background roles"
+  ],
+  "tokenValidation": {
+    "date": "2026-07-22",
+    "against": "token store (semantic-colour.json, R-D20 -background fills + ruled inks) via #token-manifest",
+    "result": "PASS — bound vars match resolved light+dark; declared text pairs 5.22–9.16:1 both modes; icon legs reuse the text pairs (reverse-knockout).",
+    "$note": "Built Phase-2 wave 1 (worker B). Pressables await button-family $members registration (conductor); empty AUTO-PARTIAL pair in place."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": ""
+  }
+}

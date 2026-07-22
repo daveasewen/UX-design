@@ -2,7 +2,7 @@
 
 > Generated derived view over `knowledge/` (Graphify-inspired; no external dependency). Regenerate after editing component metas or tokens: `python3 knowledge/tokens/_build_blast_radius.py`. Authored canon stays the source of truth; this is a generated dashboard.
 
-**Totals:** 40 components · 926 tokens defined · 98 tokens referenced by components · compliance: 31 rules x 40 components (31 SCs).
+**Totals:** 54 components · 926 tokens defined · 102 tokens referenced by components · compliance: 31 rules x 54 components (31 SCs).
 
 ## God-nodes — highest token blast radius
 
@@ -10,56 +10,56 @@ Change one of these and the listed number of components is affected. Use before 
 
 | Token | Blast | Example components |
 |---|---|---|
-| `text/default` | 36 | Accordion, Account card, Amount display, Avatar, Breadcrumbs, Button… |
-| `icon/default` | 21 | Accordion, Avatar, Button, Cards, Dropdown, Headers… |
+| `text/default` | 45 | Accordion, Account card, Alert, Amount display, Amount input, Avatar… |
+| `icon/default` | 22 | Accordion, Avatar, Button, Cards, Dropdown, Headers… |
+| `background/default` | 17 | Accordion, Account selector, Amount display, Cards, Dropdown, Input fields… |
 | `text/reverse` | 17 | Action bar, Avatar, Badge, Button, Cards, Confirmation… |
+| `tertiary/background/default` | 16 | Account card, Action bar, Button, Cards, Drawer, Icon button… |
 | `icon/default-reverse` | 15 | Avatar, Button, Cards, Dropdown, Hero, Icon button… |
-| `background/default` | 14 | Accordion, Amount display, Cards, Dropdown, Input fields, Modals… |
+| `border/subtle` | 14 | Accordion, Account card, Action bar, Amount display, Avatar, Cards… |
+| `elevation/functional` | 13 | Account selector, Drawer, Dropdown, Input fields, Modal lightbox, Navigations… |
+| `tertiary/background/hover` | 13 | Accordion, Avatar, Button, Cards, Confirmation, Icon button… |
 | `typography/font-family/default` | 13 | Account card, Action bar, Amount display, Avatar, Badge, Breadcrumbs… |
-| `tertiary/background/default` | 12 | Account card, Action bar, Button, Cards, Icon button, List items… |
-| `border/subtle` | 10 | Accordion, Account card, Action bar, Amount display, Avatar, Cards… |
+| `rag/success` | 11 | Account card, Amount input, Button, Confirmation, Form layout, List items… |
 | `icon/disabled` | 10 | Avatar, Badge, Button, Dropdown, Icon button, Input fields… |
-| `tertiary/background/hover` | 10 | Accordion, Avatar, Button, Cards, Confirmation, Icon button… |
+| `rag/error` | 10 | Amount input, Dropdown, Form layout, Input fields, Notifications, Secure entry… |
 | `text/disabled` | 10 | Avatar, Button, Dropdown, Input fields, Links, List items… |
-| `divider/border/subsection` | 8 | Divider, Dropdown, Input fields, Navigations, Pagination, Search field… |
-| `elevation/functional` | 8 | Dropdown, Input fields, Navigations, Notifications, Search field, Tab-bar… |
-| `form/border/default` | 8 | Account card, Dropdown, Input fields, Search field, Selection controls, Slider… |
-| `primary/background/default` | 8 | Action bar, Badge, Button, Confirmation, Hero, Links… |
+| `form/border/default` | 9 | Account card, Account selector, Dropdown, Input fields, Search field, Selection controls… |
 
 ## Token-group reach (components using each group)
 
 | Group | Components |
 |---|---|
-| `text/` | 38 |
-| `icon/` | 23 |
-| `tertiary/` | 19 |
-| `background/` | 14 |
+| `text/` | 48 |
+| `tertiary/` | 25 |
+| `icon/` | 24 |
+| `background/` | 17 |
+| `rag/` | 16 |
+| `border/` | 14 |
 | `typography/` | 13 |
-| `border/` | 10 |
-| `form/` | 10 |
-| `rag/` | 10 |
+| `elevation/` | 13 |
+| `border-radius/` | 12 |
+| `form/` | 11 |
 | `divider/` | 10 |
 | `primary/` | 9 |
-| `elevation/` | 8 |
 | `padding/` | 7 |
 | `secondary/` | 7 |
 | `color/` | 7 |
+| `overlay/` | 5 |
 | `scale/` | 3 |
 | `scrollbar/` | 3 |
 | `blur/` | 3 |
 | `focus/` | 3 |
-| `overlay/` | 3 |
 | `image/` | 2 |
 | `border-width/` | 2 |
+| `button/` | 2 |
 | `layout/` | 2 |
 | `data/` | 1 |
 | `timer/` | 1 |
-| `button/` | 1 |
 | `gap/` | 1 |
 | `progress/` | 1 |
 | `table/` | 1 |
 | `tabs/` | 1 |
-| `border-radius/` | 1 |
 
 ## Deprecated tokens still bound (migration worklist)
 
@@ -89,7 +89,7 @@ Components whose `tokens` block still references a `(depricate)` token (count = 
 
 ## Orphans — defined tokens not referenced by any component meta
 
-828 of 926 defined tokens are unreferenced at the component layer. **Expected** for primitives and scale steps (consumed via semantic aliases, not bound directly); worth scanning the *semantic* groups for genuinely-dead tokens. By group:
+824 of 926 defined tokens are unreferenced at the component layer. **Expected** for primitives and scale steps (consumed via semantic aliases, not bound directly); worth scanning the *semantic* groups for genuinely-dead tokens. By group:
 
 | Group | Unreferenced |
 |---|---|
@@ -105,7 +105,7 @@ Components whose `tokens` block still references a `(depricate)` token (count = 
 | `primary/` | 19 |
 | `secondary/` | 19 |
 | `tertiary/` | 18 |
-| `text/` | 18 |
+| `text/` | 17 |
 | `icon/` | 16 |
 | `elevation/` | 15 |
 | `form/` | 15 |
@@ -123,7 +123,6 @@ Components whose `tokens` block still references a `(depricate)` token (count = 
 | `scrollbar/` | 4 |
 | `timer/` | 4 |
 | `badge/` | 3 |
-| `border-radius/` | 3 |
 | `layout/` | 3 |
 | `scale/` | 3 |
 | `background/` | 2 |

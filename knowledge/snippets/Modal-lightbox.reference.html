@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Modal lightbox — reference implementation (gated)</title>
+<!--
+  CANONICAL REFERENCE for the Modal LIGHTBOX (Apollo MONO) — the media/document viewer member of
+  the modal family. Built 2026-07-22 (Phase-2 worker B). EXTENDS snippets/Modals (dialog mechanics:
+  scrim, trap, Esc, inert page, focus return — mined, file untouched per fence). Where the dialog
+  asks a question, the lightbox SHOWS a thing: statement page, cheque image, document preview —
+  centred stage, caption bar, previous/next, close. Receipt proposes the eventual fold of the
+  modal family (dialog + lightbox) into one snippet once Dave rules the shape.
+
+  CHROME: overlay/version1 scrim (dim, never blur — the Modals ruling). All controls + the caption
+  sit on SURFACE TILES (tertiary/background/default + elevation/border + functional shadow), never
+  bare on the scrim — token-clean contrast in both modes, and no white-on-scrim type (type26-013:
+  white type is red-only). Stage media in this reference = decorative placeholder blocks
+  (aria-hidden); real consumers supply imagery — captions carry the information.
+  CONTROLS: close ×, previous, next = Icon-button geometry (44×44 target, 18px glyph). Pressables
+  carry NO local press physics (ADR-0013 ratchet): colour-only states meanwhile (active > hover);
+  empty AUTO-PARTIAL pair below awaits conductor registration ($members proposal in the worker
+  receipt; --phys-size:44 = the Icon-button geometry).
+  ICONS: real library glyphs — arrows-and-chevrons/chevron-{left,right}.svg (the Pagination paths,
+  byte-matched) + global-controls/close.svg.
+  A11y: role="dialog" + aria-modal + aria-label; focus trapped; ← → navigate; Esc closes; focus
+  returns to the trigger; page inert; the caption + counter update a polite live region.
+  TYPE: composites via markup class — caption .t-ed-body-small; counter .t-cm-legal.
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+    --ease:160ms cubic-bezier(.4,0,.2,1); --fade:140ms ease; --phys-size:44;
+    --spring:300ms cubic-bezier(.5,1.6,.4,1); --press:90ms cubic-bezier(0,0,.58,1); }
+  [data-theme="light"]{ --surface:#FFFFFF; --elev-bd:#FFFFFF00; --shadow:#00000033; --overlay:#00000080;
+    --text:#1A1A1A; --icon:#1A1A1A; --hoverbg:#F0F0F0; --focus:#305A85; --page:#FFFFFF; --media:#F0F0F0; --media2:#E1E1E1;
+    --border-radius-control:0; --border-radius-surface:0;
+    --press-travel:2; --press-darken:0.94; }
+  [data-theme="dark"]{ --surface:#1F1F1F; --elev-bd:#808080; --shadow:#000000D9; --overlay:#00000080;
+    --text:#FFFFFF; --icon:#FFFFFF; --hoverbg:#232323; --focus:#4587A7; --page:#1A1A1A; --media:#232323; --media2:#484848;
+    --border-radius-control:0; --border-radius-surface:0;
+    --press-travel:2; --press-darken:0.94; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page); color:var(--text);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--text);
+    background:transparent; color:var(--text); cursor:pointer; transition:background var(--ease);}
+  .demo-controls button:hover{background:var(--hoverbg);}
+  .demo-controls button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .demo-controls button:disabled{opacity:.4; cursor:not-allowed;}
+  .bg-content{opacity:.85; max-width:60ch; line-height:1.6;}
+
+  /* overlay */
+  .lb-overlay{position:fixed; inset:0; background:var(--overlay); display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:16px; padding:24px; z-index:10;
+    opacity:0; visibility:hidden; transition:opacity var(--fade), visibility var(--fade);}
+  .lb-overlay.open{opacity:1; visibility:visible;}
+
+  /* control tiles — Icon-button geometry on a surface tile (never bare on the scrim) */
+  .lb-ctl{width:44px; height:44px; min-width:44px; border:1px solid var(--elev-bd); border-radius:var(--border-radius-control);
+    background:var(--surface); color:var(--icon); cursor:pointer; display:inline-flex; align-items:center;
+    justify-content:center; box-shadow:0 2px 8px var(--shadow); transition:background var(--ease), transform var(--spring);}
+  .lb-ctl svg{width:18px; height:18px; display:block; fill:currentColor;}
+  .lb-ctl:hover{background:var(--hoverbg);}
+  .lb-ctl:active{background:var(--hoverbg); filter:brightness(var(--press-darken));}
+  .lb-ctl:disabled{opacity:.4; cursor:not-allowed; filter:none;}
+  .lb-ctl:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  /* ===== AUTO-PARTIAL press-physics START (button-family) ===== */
+/* INJECTED from Button.reference.html (partial "press-physics", group button-family —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+  .lb-ctl:hover{transform:scale(calc(1 + var(--press-travel)/var(--phys-size)));}
+  .lb-ctl.full:hover{transform:none;}                                           /* full-width can't grow — would overflow */
+  .lb-ctl:active{transform:scale(calc(1 - var(--press-travel)/var(--phys-size))); filter:brightness(var(--press-darken)); transition:transform var(--press), filter var(--press);}
+  .lb-ctl:disabled:hover,.lb-ctl.is-disabled:hover{transform:none; filter:none;}   /* disabled stays put */
+  /* WCAG 2.3.3 — the partial carries its OWN reduced-motion override (ADR-0013: rides inside, never per-file) */
+  @media (prefers-reduced-motion: reduce){
+    .lb-ctl:hover,.lb-ctl:active{ transform:none !important; filter:none !important; }
+  }
+  /* ===== AUTO-PARTIAL press-physics END ===== */
+
+  .lb-top{width:100%; max-width:720px; display:flex; justify-content:flex-end;}
+  .lb-row{width:100%; max-width:720px; display:flex; align-items:center; gap:16px;}
+  .lb-stage{flex:1 1 auto; min-width:0;}
+  /* the media placeholder — decorative (aria-hidden); real consumers supply imagery */
+  .lb-media{width:100%; height:400px; background:linear-gradient(135deg, var(--media) 0%, var(--media2) 100%);
+    border:1px solid var(--elev-bd); border-radius:var(--border-radius-surface); box-shadow:0 0 24px var(--shadow);}
+  /* caption bar — on a surface tile, never on the scrim */
+  .lb-caption{width:100%; max-width:720px; display:flex; align-items:center; gap:12px;
+    background:var(--surface); border:1px solid var(--elev-bd); border-radius:var(--border-radius-surface);
+    box-shadow:0 2px 8px var(--shadow); padding:12px 16px;}
+  .lb-caption p{margin:0; flex:1 1 auto; min-width:0;}
+  .lb-caption .count{flex:none; opacity:.7;}
+
+  @media (max-width:560px){ .lb-row{gap:8px;} .lb-media{height:280px;} }
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; scroll-behavior:auto !important; }
+    .lb-ctl:active{filter:none !important;}
+  }
+</style>
+</head>
+<body data-theme="light">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="lb-prev" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.8483 17L5.85034 9L13.8483 1H12.1523L4.15234 9L12.1523 17H13.8483Z" fill="currentColor"/></symbol>
+    <symbol id="lb-next" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.15234 17L12.1503 9L4.15234 1H5.84834L13.8483 9L5.84834 17H4.15234Z" fill="currentColor"/></symbol>
+    <symbol id="lb-close" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <div class="page" id="page">
+    <div class="demo-controls">
+      <button id="themeToggle" type="button">◐ Toggle theme</button>
+      <button id="open" type="button" aria-haspopup="dialog">View statement pages…</button>
+    </div>
+    <p class="bg-content">The lightbox is the modal family's viewer: it shows a thing rather than asking a
+      question. Dialog mechanics are inherited from Modals — trapped focus, Escape, inert background,
+      focus return — plus previous/next navigation with arrow keys and a captioned stage.</p>
+  </div>
+
+  <div class="lb-overlay" id="lb" role="dialog" aria-modal="true" aria-label="Statement viewer">
+    <div class="lb-top">
+      <button class="lb-ctl" id="lbClose" type="button" aria-label="Close viewer"><svg aria-hidden="true"><use href="#lb-close"/></svg></button>
+    </div>
+    <div class="lb-row">
+      <button class="lb-ctl" id="lbPrev" type="button" aria-label="Previous page"><svg aria-hidden="true"><use href="#lb-prev"/></svg></button>
+      <div class="lb-stage"><div class="lb-media" id="lbMedia" aria-hidden="true"></div></div>
+      <button class="lb-ctl" id="lbNext" type="button" aria-label="Next page"><svg aria-hidden="true"><use href="#lb-next"/></svg></button>
+    </div>
+    <div class="lb-caption" role="status">
+      <p class="t-ed-body-small" id="lbCap">March statement — page 1: account summary.</p>
+      <span class="count t-cm-legal" id="lbCount">1 of 3</span>
+    </div>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Modal lightbox",
+    "vars": {
+      "--surface": "tertiary/background/default", "--elev-bd": "elevation/border", "--shadow": "elevation/functional",
+      "--overlay": "overlay/version1", "--text": "text/default", "--icon": "icon/default",
+      "--hoverbg": "tertiary/background/hover", "--focus": "focus/ring", "--page": "background/default",
+      "--media": "tertiary/background/hover", "--media2": "button/primary/background/disabled",
+      "--border-radius-control": "border-radius/control", "--border-radius-surface": "border-radius/surface",
+      "--press-travel": "component-type/button-family/press-travel", "--press-darken": "component-type/button-family/press-darken"
+    },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "icon/default", "bg": "tertiary/background/default", "context": "icon" }
+    ],
+    "icons": { "chevron-left": "arrows-and-chevrons/chevron-left.svg", "chevron-right": "arrows-and-chevrons/chevron-right.svg", "close": "global-controls/close.svg" },
+    "requiredAria": ["role=\"dialog\"", "aria-modal", "aria-label", "role=\"status\""],
+    "$note": "Controls and caption sit on surface tiles, never bare on the scrim — token-clean contrast both modes and no white-on-scrim type (type26-013). Media blocks are decorative placeholders (aria-hidden); captions carry the information. Extends Modals without touching it (fence) — the receipt proposes the family fold. --media2 binds button/primary/background/disabled purely as a neutral gradient stop (decorative — the resolved #E1E1E1/#484848 greys, no disabled semantics implied)."
+  }
+  </script>
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      const b = document.body; b.setAttribute('data-theme', b.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+    const pages=[
+      {cap:'March statement — page 1: account summary.'},
+      {cap:'March statement — page 2: transactions in detail.'},
+      {cap:'March statement — page 3: interest and charges.'}
+    ];
+    let idx=0;
+    const lb=document.getElementById('lb'), page=document.getElementById('page'), openBtn=document.getElementById('open');
+    const cap=document.getElementById('lbCap'), count=document.getElementById('lbCount');
+    const prev=document.getElementById('lbPrev'), next=document.getElementById('lbNext');
+    const focusable=()=>[...lb.querySelectorAll('button')].filter(el=>!el.disabled);
+    function render(){
+      cap.textContent=pages[idx].cap; count.textContent=(idx+1)+' of '+pages.length;
+      prev.disabled = idx===0; next.disabled = idx===pages.length-1;
+    }
+    function open(){
+      idx=0; render();
+      page.inert=true; page.setAttribute('aria-hidden','true'); openBtn.disabled=true;
+      requestAnimationFrame(()=>requestAnimationFrame(()=>lb.classList.add('open')));
+      setTimeout(()=>document.getElementById('lbClose').focus(), 60);
+    }
+    function close(){
+      lb.classList.remove('open'); page.inert=false; page.removeAttribute('aria-hidden');
+      openBtn.disabled=false; openBtn.focus();
+    }
+    openBtn.addEventListener('click', open);
+    document.getElementById('lbClose').addEventListener('click', close);
+    prev.addEventListener('click', ()=>{ if(idx>0){ idx--; render(); } });
+    next.addEventListener('click', ()=>{ if(idx<pages.length-1){ idx++; render(); } });
+    document.addEventListener('keydown', e=>{
+      if(!lb.classList.contains('open')) return;
+      if(e.key==='Escape'){ close(); return; }
+      if(e.key==='ArrowLeft' && !prev.disabled){ idx--; render(); return; }
+      if(e.key==='ArrowRight' && !next.disabled){ idx++; render(); return; }
+      if(e.key==='Tab'){ const f=focusable(), a=f[0], z=f[f.length-1];
+        if(e.shiftKey && document.activeElement===a){ e.preventDefault(); z.focus(); }
+        else if(!e.shiftKey && document.activeElement===z){ e.preventDefault(); a.focus(); } }
+    });
+  </script>
+</body>
+</html>

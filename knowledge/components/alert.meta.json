@@ -1,0 +1,71 @@
+{
+  "name": "Alert",
+  "category": "molecule",
+  "purpose": "An in-flow status callout that interrupts nothing: it sits inside the page or form it refers to and stays until resolved or dismissed. The Mono successor to the Legacy Notifications 'contextual' placement — tinted RAG surface, full 1px accent border, status glyph, title + description + optional inline link + optional dismiss. Use Toast for transient confirmations and Banner for page-level persistent messages; use inline field validation (Input-fields) for single-control errors.",
+  "props": [
+    { "name": "status", "type": "enum", "values": ["error", "warning", "success", "information"], "default": "information", "$note": "Binds the R-D20 rag/{status} + rag/{status}-tint pair. Error renders role=\"alert\" (assertive); the rest role=\"status\" (polite)." },
+    { "name": "title", "type": "string", "$note": "Optional bold lead-in (.t-ed-body .em, weight 500). Sentence case." },
+    { "name": "message", "type": "string" },
+    { "name": "link", "type": "string", "$note": "Optional inline action link — descriptive text, never 'click here' (aca-004)." },
+    { "name": "dismissible", "type": "boolean", "default": false, "$note": "Adds the 24px × in a 44px hit target. Static alerts persist with the task." }
+  ],
+  "variants": [
+    { "name": "error", "use": "Something failed and needs the user's attention now; assertive announcement." },
+    { "name": "warning", "use": "Caution or approaching deadline; amber surface always carries a near-black mark (R-D3)." },
+    { "name": "success", "use": "In-flow confirmation that persists (contrast with Toast's transient success)." },
+    { "name": "information", "use": "Neutral guidance or service notice." }
+  ],
+  "tokens": {
+    "font-family": "type composites via markup class — message .t-ed-body (16/24); title emphasis .t-ed-body .em (500)",
+    "surface": "rag/{error,warning,success,information}-tint (R-D20 ruled tints)",
+    "accent": "rag/{error,warning,success,information} (glyph-tracking bare roles, R-D20)",
+    "text": "text/default on every tint (13.3–17.5:1 both modes)",
+    "radius": "border-radius/surface (Mono 0; themes flex, ADR-0010)",
+    "dismiss": "colour-only states pending button-family partial injection (ADR-0013); hover/active = currentColor mixes at 10%/16%",
+    "motion": "component-type/button-family/{press-travel,press-darken} bound for the pending partial; dismiss collapse honours prefers-reduced-motion",
+    "$roundel": "Light marks: error = tint knockout (4.71) · warning = near-black (5.76, R-D3) · success/information = white (5.0/5.03 — knockouts fail the 4.5 mark leg). Dark = white shape + black mark (2026-07-02 ruling, structural). Warning shape-vs-tint (2.44) exempt from the 3:1 shape leg by R-D3/R-D6 A′ convention."
+  },
+  "motion": {
+    "dismiss": "max-height/opacity collapse 300ms; removed from the DOM on transitionend.",
+    "reducedMotion": "All transitions collapse to .01ms under prefers-reduced-motion.",
+    "tokens": ["component-type/button-family/press-travel", "component-type/button-family/press-darken"]
+  },
+  "responsive": {
+    "rule": "Fluid to its container; icon and dismiss anchor to the FIRST text line (24px boxes matching the .t-ed-body line box) and hold position as copy wraps. Verified to 300px via the demo width slider (1.4.10).",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": ["Forms", "Cards", "Modals", "Page sections", "Summary"],
+    "mustNotNeighbour": ["Toast (same message twice)", "Banner carrying the identical message"],
+    "commonPatterns": ["form-level validation summary", "service notice above content", "in-flow success confirmation"],
+    "triggeredBy": ["form submission", "service state change", "session events"]
+  },
+  "accessibility": {
+    "role": "role=\"alert\" for error (assertive); role=\"status\" for warning/success/information (polite).",
+    "name": "Dismiss control carries aria-label=\"Dismiss alert\"; status glyphs are aria-hidden (title text carries the meaning — colour never the sole channel, icon-013).",
+    "keyboard": "Link and dismiss are in tab order; Enter/Space activate; dismiss removes the alert and does not trap focus.",
+    "focus": "Visible :focus-visible outlines on link and dismiss (2px currentColor).",
+    "target": "Dismiss hit area 44×44 via ::before although the visual control is 24px (2.5.8).",
+    "nonText": "Status shape ≥3:1 vs tint (error 4.71 / success 4.11 / information 3.85; amber exempt per R-D3/R-D6 A′); internal mark ≥4.5 vs shape in both modes.",
+    "relatedSC": ["1.4.1 Use of Color", "1.4.3 Contrast (Minimum)", "1.4.10 Reflow", "1.4.11 Non-text Contrast", "2.5.8 Target Size (Minimum)", "4.1.3 Status Messages"]
+  },
+  "antiPatterns": [
+    "Colour as the only status channel (glyph shape + title text are mandatory companions)",
+    "role=\"alert\" on non-error statuses (assertive interruptions for polite news)",
+    "Auto-dismissing an error alert (errors persist until resolved or dismissed by the user)",
+    "Re-implementing press physics locally on the dismiss control (ADR-0013 ratchet)",
+    "Hardcoding RAG hexes instead of the rag/* roles (Legacy-leak gate class)",
+    "Stacking an alert and a toast carrying the same message"
+  ],
+  "tokenValidation": {
+    "date": "2026-07-22",
+    "against": "token store (semantic-colour.json, R-D20 values) via #token-manifest",
+    "result": "PASS — all bound vars match resolved light+dark; declared contrast pairs text ≥13.3:1, ui ≥3.62:1 both modes. Warning ui pair undeclared by convention (R-D3/R-D6 A′ exemption, noted in manifest $note).",
+    "$note": "Built Phase-2 wave 1 (worker B). Dismiss control awaits button-family $members registration (conductor) — empty AUTO-PARTIAL pair in place; colour-only states meanwhile."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": ""
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "name": "Popover",
+  "category": "molecule",
+  "purpose": "Rich anchored content that opens on CLICK — Tooltip's interactive sibling. Where a Tooltip annotates a label with plain text on hover/focus, a Popover holds structured, focusable content (title, body, link, dismiss) as a non-modal dialog anchored to its trigger. If the user can act inside it, it is a Popover; if it is a sentence of help text, it is a Tooltip; if it must interrupt, it is a Modal.",
+  "props": [
+    { "name": "title", "type": "string", "$note": "Labels the dialog (aria-labelledby); .t-ed-body .em." },
+    { "name": "content", "type": "string", "$note": ".t-ed-body-small body; may include one descriptive link (aca-004)." },
+    { "name": "placement", "type": "enum", "values": ["auto"], "default": "auto", "$note": "Space-aware (the Tooltip mechanics, shared): flips above/below, clamps to viewport, tail tracks the trigger." },
+    { "name": "dismissible", "type": "boolean", "default": true, "$note": "Close ×, Esc, outside click, trigger toggle, or focus leaving — all close it." }
+  ],
+  "variants": [
+    { "name": "explainer", "use": "Why-we-ask / policy context beside a form field, with a follow-up link." },
+    { "name": "detail", "use": "Fee breakdowns, calculation detail — structured content too rich for a tooltip." }
+  ],
+  "tokens": {
+    "font-family": "type composites via markup class — title .t-ed-body .em; body .t-ed-body-small",
+    "surface": "background/default + elevation/border (dark outline) + elevation/functional shadow — the Tooltip/Dropdown anchored-overlay recipe",
+    "text": "text/default",
+    "radius": "border-radius/surface",
+    "states": "close × colour-only pending button-family partial injection (ADR-0013): hover tertiary/background/hover, active adds the token darken",
+    "motion": "component-type/button-family/{press-travel,press-darken} bound for the pending partial"
+  },
+  "motion": {
+    "entry": "Opacity fade 150ms; placement is instant (no slide).",
+    "reducedMotion": "Fade collapses to .01ms; active darken removed.",
+    "tokens": ["component-type/button-family/press-travel", "component-type/button-family/press-darken"]
+  },
+  "responsive": {
+    "rule": "max-width 320px; clamps to the viewport with 10px padding; tail keeps pointing at the trigger at any clamp.",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": ["Forms (beside fields)", "Table cells", "Summary rows", "Cards"],
+    "mustNotNeighbour": ["Tooltip on the same trigger", "A second open popover (one at a time)"],
+    "commonPatterns": ["why-we-ask explainer", "fee breakdown", "definition with follow-up link"],
+    "triggeredBy": ["labelled trigger button click"]
+  },
+  "accessibility": {
+    "role": "Non-modal dialog: role=\"dialog\" + aria-labelledby, NO aria-modal. Trigger: aria-haspopup=\"dialog\" + aria-expanded + aria-controls.",
+    "name": "Title labels the dialog; close carries aria-label=\"Close popover\".",
+    "keyboard": "Focus moves to the first focusable on open; Tab is NOT trapped — focus leaving closes it; Esc closes and returns focus to the trigger.",
+    "focus": "Visible :focus-visible (focus/ring) on trigger, link and close.",
+    "target": "Close 44×44 via ::before (visual 24px) (2.5.8).",
+    "nonText": "Dark-mode outline = elevation/border ≥3:1 vs page (the anchored-overlay recipe).",
+    "relatedSC": ["1.4.13 Content on Hover or Focus", "2.1.2 No Keyboard Trap", "2.4.3 Focus Order", "2.4.7 Focus Visible", "2.5.8 Target Size (Minimum)", "4.1.2 Name, Role, Value"]
+  },
+  "antiPatterns": [
+    "Opening on hover (that is Tooltip; popovers are click-committed)",
+    "aria-modal / focus trap on a popover (non-modal by definition — use Modals to interrupt)",
+    "Popover content that scrolls (too much content — use a Drawer or Modal)",
+    "A popover as the only path to essential content (it is dismissible and anchored)",
+    "Two popovers open at once",
+    "Re-implementing press physics locally on the close control (ADR-0013 ratchet)"
+  ],
+  "tokenValidation": {
+    "date": "2026-07-22",
+    "against": "token store (semantic-colour.json) via #token-manifest — surface recipe mirrors Tooltip (gated green)",
+    "result": "PASS — bound vars match resolved light+dark; text pair 21:1/16.9:1.",
+    "$note": "Built Phase-2 wave 1 (worker B). Close × awaits button-family $members registration; colour-only states meanwhile."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": ""
+  }
+}

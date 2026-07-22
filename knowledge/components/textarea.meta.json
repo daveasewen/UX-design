@@ -1,0 +1,50 @@
+{
+  "name": "Textarea",
+  "interactive": true,
+  "category": "atom",
+  "purpose": "Multi-line text entry — the Input-fields boxed state channel stretched vertically. Vertical-only resize, live counter that warns by weight (never colour-alone) at 90% of the limit with polite announcements. Itinerary row 20 (P1); built Phase-2 wave 1.",
+  "props": [
+    { "name": "maxlength", "type": "number", "default": 300, "$note": "Drives the counter; remaining count announced politely at 90% and at the limit." },
+    { "name": "rows", "type": "number", "default": 4, "$note": "Initial height; min-height 96px (4px grid), user resize vertical-only." },
+    { "name": "counter", "type": "boolean", "default": true },
+    { "name": "optionalMarker", "type": "boolean", "default": false, "$note": "'(optional)' ink marker beside the label." }
+  ],
+  "$states": ["default", "hover", "active (focus-within)", "completed (weight 500)", "disabled (resize off)", "error"],
+  "tokens": {
+    "field": "form/background|border sets (Input-fields lock-step)",
+    "error": "rag/error (R-D20); message TEXT stays text/default",
+    "radius": "border-radius/control",
+    "type": ".t-ed-body on the textarea (multi-line 16/24) · .t-cm-label label · .t-ed-body-small help · .t-cm-legal counter"
+  },
+  "relationships": {
+    "livesInside": ["Form layout", "Messaging / secure message journeys", "Payment notes"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["notes to approvers", "reason for payment", "secure message body"]
+  },
+  "behaviour": {
+    "resize": "vertical only (horizontal resize breaks the layout grid); disabled turns resize off.",
+    "counter": "n/max updates on input; is-warn (weight 500) at ≥90%; aria-live region announces remaining at 90% and at the limit."
+  },
+  "accessibility": {
+    "label": "Real <label for>; help + counter joined via aria-describedby.",
+    "counter": "Visual counter aria-hidden is avoided — the live region carries the announcement so the count is not read on every keystroke (4.1.3 Status Messages, polite).",
+    "errors": "aria-invalid + ink message with rag roundel (1.4.1 Use of Colour).",
+    "relatedSC": ["1.3.1", "1.4.1", "1.4.3", "2.1.1 Keyboard", "2.4.7 Focus Visible", "3.3.1 Error Identification", "3.3.2 Labels or Instructions", "4.1.3"]
+  },
+  "antiPatterns": [
+    "Colour-only counter warning (weight change + announcement, never colour-alone).",
+    "Horizontal or free resize (vertical only).",
+    "Placeholder-as-label (copy-040: placeholder default is EMPTY).",
+    "Red error message text (message stays ink).",
+    "Auto-growing height without a max (the page must not scroll-jump as the user types)."
+  ],
+  "tokenValidation": {
+    "date": "2026-07-22",
+    "against": "current store (semantic-colour.json)",
+    "result": "PASS — new build, no deprecated tokens: live form/* chrome, R-D20 error set, control radius role, composite type throughout."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "$note": "Itinerary row 20 (P1), Phase-2 wave 1 worker A. Pattern-matches gated Input-fields exactly (per the brief); Tranche-6 textarea = structural prior art (ruling 3). No dedicated Figma node bound yet."
+  }
+}

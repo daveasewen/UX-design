@@ -1,0 +1,66 @@
+{
+  "name": "Modal lightbox",
+  "category": "organism",
+  "purpose": "The viewer member of the modal family: shows a thing (statement page, cheque image, document preview) rather than asking a question. Inherits the dialog mechanics from Modals — dim scrim, trapped focus, Escape, inert page, focus return — and adds a captioned stage with previous/next navigation. Extends Modals as a separate snippet (fence); the receipt proposes the eventual family fold.",
+  "props": [
+    { "name": "items", "type": "array", "$note": "The viewable set; each item = media + caption. Counter announces position ('1 of 3')." },
+    { "name": "label", "type": "string", "$note": "Dialog accessible name via aria-label (e.g. 'Statement viewer')." },
+    { "name": "startIndex", "type": "number", "default": 0 }
+  ],
+  "variants": [
+    { "name": "document", "use": "Multi-page statement/document preview with page captions." },
+    { "name": "image", "use": "Single or few images (cheque deposit, ID capture review); prev/next hidden when single." }
+  ],
+  "tokens": {
+    "font-family": "type composites via markup class — caption .t-ed-body-small; counter .t-cm-legal",
+    "scrim": "overlay/version1 — dim, never blur (Modals ruling)",
+    "tiles": "controls + caption sit on tertiary/background/default tiles with elevation/border + elevation/functional shadow — never bare on the scrim (token-clean contrast; no white-on-scrim type, type26-013)",
+    "controls": "Icon-button geometry (44×44, 18px glyph icon/default); colour-only states pending button-family partial injection (ADR-0013)",
+    "media": "decorative placeholder gradient tertiary/background/hover → button/primary/background/disabled (neutral greys, aria-hidden; consumers supply real imagery)",
+    "radius": "control (tiles) + surface (stage, caption)",
+    "motion": "component-type/button-family/{press-travel,press-darken} bound for the pending partial"
+  },
+  "motion": {
+    "entry": "Overlay fades (motion/duration/fade); stage does not transform.",
+    "reducedMotion": "Fade collapses; active darken removed (2.3.3).",
+    "tokens": ["component-type/button-family/press-travel", "component-type/button-family/press-darken"]
+  },
+  "responsive": {
+    "rule": "Stage max-width 720px, fluid below; media 400px → 280px at ≤560px; controls keep the 44px target at every size.",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": ["Page shell (fixed overlay layer)"],
+    "mustNotNeighbour": ["An open Modals dialog or Drawer (one modal surface at a time)"],
+    "commonPatterns": ["statement page viewer", "cheque image review", "document preview from a list row"],
+    "triggeredBy": ["document/thumbnail activation", "list row 'view' actions"]
+  },
+  "accessibility": {
+    "role": "role=\"dialog\" + aria-modal=\"true\" + aria-label; caption bar is role=\"status\" (polite) so page changes announce.",
+    "name": "aria-label names the viewer; every control has an aria-label; media placeholders aria-hidden (captions carry the information).",
+    "keyboard": "Focus trapped; ← → navigate pages; Esc closes; focus returns to trigger; ends disable their control (no wrap — position stays truthful).",
+    "focus": "Visible :focus-visible (focus/ring) on all controls; first focus lands on close.",
+    "target": "All controls 44×44 (2.5.8).",
+    "nonText": "Glyphs icon/default on surface tiles — 21:1/16.9:1 (1.4.11).",
+    "relatedSC": ["1.4.11 Non-text Contrast", "2.1.1 Keyboard", "2.1.2 No Keyboard Trap", "2.4.3 Focus Order", "2.5.8 Target Size (Minimum)", "4.1.2 Name, Role, Value", "4.1.3 Status Messages"]
+  },
+  "antiPatterns": [
+    "Controls or captions bare on the scrim (contrast unguaranteed; white-on-scrim type breaks type26-013)",
+    "Backdrop blur (dim preserves page glance — Modals ruling)",
+    "Wrapping prev/next silently (position lies; disable at the ends)",
+    "Meaning carried by the media alone (captions are mandatory)",
+    "A lightbox for a yes/no decision (that is the Modals dialog)",
+    "Re-implementing press physics locally on the controls (ADR-0013 ratchet)"
+  ],
+  "tokenValidation": {
+    "date": "2026-07-22",
+    "against": "token store (semantic-colour.json) via #token-manifest — dialog bindings mirror Modals (gated green)",
+    "result": "PASS — bound vars match resolved light+dark; declared pairs 21:1/16.9:1 both modes.",
+    "$note": "Built Phase-2 wave 1 (worker B). Controls await button-family $members registration (--phys-size:44); receipt proposes the modal-family fold."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": ""
+  }
+}

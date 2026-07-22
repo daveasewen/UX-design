@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Toast — reference implementation (gated)</title>
+<!--
+  CANONICAL REFERENCE for Toast / snackbar (Apollo MONO). Transient sibling of Alert (in-flow) and
+  Banner (page-level): appears on an event, confirms or nudges, then leaves. Built 2026-07-22
+  (Phase-2 worker B); RAG bindings are R-D20 retrievals — nothing re-decided.
+
+  NO ERROR VARIANT — deliberate, inherited from the Legacy snackbar family ("Snackbar omits error"):
+  errors demand persistent attention and route to Alert (role="alert"); a toast that vanishes cannot
+  satisfy that. Statuses here: success · information · warning · plain (statusless message, e.g.
+  "Copied"). All toasts are role="status" (polite) — never assertive (4.1.3).
+
+  CHROME (distinct from Alert's tinted callout): ELEVATED raised surface — tertiary/background/default
+  + elevation/border (dark-mode hairline; transparent in light, where elevation/functional shadow
+  carries the lift — the Tooltip/Modals elevation recipe, webf-011 level-1 sticky content).
+  Status glyph sits directly on the raised surface: light 3.02 (amber) / 5.0 / 5.03 · dark ≥3.55 —
+  all clear the 3:1 indicator floor (R-D6 A′: glyphs are labelled/marked, not meaning-exclusive).
+  Roundel marks knock out to the SURFACE (--mark:var(--surface)); dark keeps the coloured shape
+  (passes ≥3:1 on the raised ground) with the same surface knockout — the tint-surface white-shape
+  ruling targets tinted grounds, not elevated neutral ones (receipt-flagged for Dave).
+
+  TYPE: canon composites via markup class (T-D14): message .t-ed-body; action = .t-cm-button +
+  .t-cm-slot. ACTION + DISMISS are pressables: NO local press physics (ADR-0013 ratchet) — colour-
+  only states meanwhile (active > hover), empty AUTO-PARTIAL pair below awaits conductor
+  registration into button-family ($members proposal in the worker receipt; --phys-size:44).
+  BEHAVIOUR: auto-dismiss 6s; hover/focus-within PAUSES the timer (2.2.1 pattern); dismiss × always
+  present so the user is never raced. Entry/exit motion honours prefers-reduced-motion.
+  ICONS: real library glyphs via <symbol> sprite (byte-matched, _validate_icons.py).
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease;
+    --spring:300ms cubic-bezier(.5,1.6,.4,1); --press:90ms cubic-bezier(0,0,.58,1); }
+  [data-theme="light"]{
+    --warn:#C58900; --ok:#2B7E4F; --info:#306EC6;
+    --surface:#FFFFFF; --elev-bd:#FFFFFF00; --shadow:#00000033;
+    --text:#1A1A1A; --page:#FFFFFF;
+    --border-radius-surface:0;
+    --press-travel:2; --press-darken:0.94;
+  }
+  [data-theme="dark"]{
+    --warn:#C58900; --ok:#4A9568; --info:#2674DC;
+    --surface:#1F1F1F; --elev-bd:#808080; --shadow:#000000D9;
+    --text:#FFFFFF; --page:#1A1A1A;
+    --border-radius-surface:0;
+    --press-travel:2; --press-darken:0.94;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page); color:var(--text);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--text);
+    background:transparent; color:var(--text); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--text); outline-offset:2px;}
+  h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+
+  /* per-status glyph colour (no tint surfaces here — elevation is the chrome) */
+  .toast.warn{ --accent:var(--warn); }
+  .toast.ok{ --accent:var(--ok); }
+  .toast.info{ --accent:var(--info); }
+
+  /* the toast — elevated raised surface, SURFACE radius role */
+  .toast{ display:flex; gap:8px; align-items:flex-start; width:360px; max-width:100%;
+    padding:12px 16px; background:var(--surface); border:1px solid var(--elev-bd);
+    border-radius:var(--border-radius-surface); box-shadow:0 2px 16px var(--shadow); color:var(--text); }
+  .toast .ic{ flex:none; height:24px; display:inline-flex; align-items:center; color:var(--accent); --mark:var(--surface); }
+  .toast .ic svg{ width:20px; height:20px; display:block; fill:currentColor; }
+  .toast .msg{ flex:1 1 auto; min-width:0; margin:0; }
+  /* action — ghost text button on the raised surface; colour-only states pending partial injection */
+  .toast .act{ flex:none; border:0; background:transparent; color:var(--text); height:44px; padding:0 12px;
+    margin:-10px 0 -10px 4px; justify-content:center; cursor:pointer;
+    text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px;
+    border-radius:var(--border-radius-surface); transition:background var(--ease), text-decoration-thickness var(--ease), transform var(--spring); }
+  .toast .act:hover{ background:color-mix(in srgb, currentColor 10%, transparent); text-decoration-thickness:2px; }
+  .toast .act:active{ background:color-mix(in srgb, currentColor 16%, transparent); }
+  .toast .act:focus-visible{ outline:2px solid currentColor; outline-offset:-2px; }
+  /* dismiss × — 24px visual, 44px hit target (2.5.8); colour-only states pending partial injection */
+  .toast .x{ --phys-size:24;             /* LOCAL geometry override — 24px control (conductor, wave-1 reconcile) */
+    position:relative; flex:none; display:inline-flex; width:24px; height:24px; padding:0; border:0;
+    background:transparent; color:inherit; cursor:pointer; align-items:center; justify-content:center;
+    border-radius:var(--border-radius-surface); transition:background var(--ease), transform var(--spring); }
+  .toast .x::before{ content:""; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:44px; height:44px; }
+  .toast .x svg{ width:16px; height:16px; fill:currentColor; }
+  .toast .x:hover{ background:color-mix(in srgb, currentColor 10%, transparent); }
+  .toast .x:active{ background:color-mix(in srgb, currentColor 16%, transparent); }
+  .toast .x:focus-visible{ outline:2px solid currentColor; outline-offset:2px; }
+  /* ===== AUTO-PARTIAL press-physics START (button-family) ===== */
+/* INJECTED from Button.reference.html (partial "press-physics", group button-family —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+  :is(.toast .x, .toast .act):hover{transform:scale(calc(1 + var(--press-travel)/var(--phys-size)));}
+  :is(.toast .x, .toast .act).full:hover{transform:none;}                                           /* full-width can't grow — would overflow */
+  :is(.toast .x, .toast .act):active{transform:scale(calc(1 - var(--press-travel)/var(--phys-size))); filter:brightness(var(--press-darken)); transition:transform var(--press), filter var(--press);}
+  :is(.toast .x, .toast .act):disabled:hover,:is(.toast .x, .toast .act).is-disabled:hover{transform:none; filter:none;}   /* disabled stays put */
+  /* WCAG 2.3.3 — the partial carries its OWN reduced-motion override (ADR-0013: rides inside, never per-file) */
+  @media (prefers-reduced-motion: reduce){
+    :is(.toast .x, .toast .act):hover,:is(.toast .x, .toast .act):active{ transform:none !important; filter:none !important; }
+  }
+  /* ===== AUTO-PARTIAL press-physics END ===== */
+
+  /* live region — bottom-left stack (fixed); newest at the bottom, 8px rhythm */
+  .toast-region{ position:fixed; left:24px; bottom:24px; display:flex; flex-direction:column; gap:8px; z-index:10; }
+  .toast-region .toast{ animation:toast-in 200ms ease; }
+  .toast-region .toast.leaving{ opacity:0; transition:opacity 200ms ease; }
+  @keyframes toast-in{ from{ opacity:0; transform:translateY(8px);} to{ opacity:1; transform:none;} }
+
+  /* static specimens (always-visible variant spread for review panes) */
+  .spec{ display:flex; flex-direction:column; gap:8px; }
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
+      animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+    .toast-region .toast{ animation:none; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="to-warning" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M9.90107 3.80005H8.10107V9.80005H9.90107V3.80005Z"/><path style="fill:var(--mark)" d="M9.00078 14.2C9.66352 14.2 10.2008 13.6628 10.2008 13C10.2008 12.3373 9.66352 11.8 9.00078 11.8C8.33804 11.8 7.80078 12.3373 7.80078 13C7.80078 13.6628 8.33804 14.2 9.00078 14.2Z"/></symbol>
+    <symbol id="to-success" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z"/></symbol>
+    <symbol id="to-info" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M9 6.25C9.69036 6.25 10.25 5.69036 10.25 5C10.25 4.30964 9.69036 3.75 9 3.75C8.30964 3.75 7.75 4.30964 7.75 5C7.75 5.69036 8.30964 6.25 9 6.25Z"/><path style="fill:var(--mark)" d="M9.89912 8.25H8.09912V14.25H9.89912V8.25Z"/></symbol>
+    <symbol id="to-close" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <div class="demo-controls">
+    <button id="themeToggle" type="button">◐ Toggle theme</button>
+    <button id="spawnOk" type="button">Spawn success</button>
+    <button id="spawnInfo" type="button">Spawn information</button>
+    <span>Toast — canonical reference (Mono · transient · no error variant)</span>
+  </div>
+
+  <h2>Anatomy — statuses (static specimens)</h2>
+  <div class="spec">
+    <div class="toast ok" role="status"><span class="ic"><svg aria-hidden="true"><use href="#to-success"/></svg></span><p class="msg t-ed-body">Payment sent.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast info" role="status"><span class="ic"><svg aria-hidden="true"><use href="#to-info"/></svg></span><p class="msg t-ed-body">Draft saved automatically.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast warn" role="status"><span class="ic"><svg aria-hidden="true"><use href="#to-warning"/></svg></span><p class="msg t-ed-body">Connection is unstable.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast" role="status"><p class="msg t-ed-body">Copied to clipboard.</p><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+  </div>
+
+  <h2>With action — the action must also live somewhere persistent (never toast-only)</h2>
+  <div class="spec">
+    <div class="toast ok" role="status"><span class="ic"><svg aria-hidden="true"><use href="#to-success"/></svg></span><p class="msg t-ed-body">Message archived.</p><button class="act t-cm-button t-cm-slot" type="button">Undo</button><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+    <div class="toast info" role="status"><span class="ic"><svg aria-hidden="true"><use href="#to-info"/></svg></span><p class="msg t-ed-body">New version available.</p><button class="act t-cm-button t-cm-slot" type="button">Refresh</button><button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button></div>
+  </div>
+
+  <h2>Live region — spawn from the controls above; hover pauses the 6s timer</h2>
+  <div class="toast-region" id="toastRegion"></div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Toast",
+    "vars": { "--warn": "rag/warning", "--ok": "rag/success", "--info": "rag/information",
+              "--surface": "tertiary/background/default", "--elev-bd": "elevation/border", "--shadow": "elevation/functional",
+              "--text": "text/default", "--page": "background/default", "--border-radius-surface": "border-radius/surface",
+              "--press-travel": "component-type/button-family/press-travel", "--press-darken": "component-type/button-family/press-darken" },
+    "contrastPairs": [
+      { "fg": "text/default",    "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "rag/warning",     "bg": "tertiary/background/default", "context": "ui" },
+      { "fg": "rag/success",     "bg": "tertiary/background/default", "context": "ui" },
+      { "fg": "rag/information", "bg": "tertiary/background/default", "context": "ui" }
+    ],
+    "icons": { "warning": "status-icons/warning.svg", "success": "status-icons/success.svg", "information": "status-icons/information.svg", "close": "global-controls/close.svg" },
+    "requiredAria": ["role=\"status\"", "aria-label"],
+    "$note": "No error variant by design (snackbar precedent — errors persist, route to Alert). Glyphs sit on the raised surface and clear the 3:1 indicator floor both modes (light amber 3.02 is the narrowest); marks knock out to the surface. Dark keeps coloured shapes on the elevated neutral ground — the white-shape dark ruling targets TINTED grounds; flagged in the worker receipt for confirmation."
+  }
+  </script>
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    const region=document.getElementById('toastRegion');
+    const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function spawn(status, msg, glyph){
+      const t=document.createElement('div'); t.className='toast '+status; t.setAttribute('role','status');
+      t.innerHTML=(glyph?'<span class="ic"><svg aria-hidden="true"><use href="#'+glyph+'"/></svg></span>':'')+
+        '<p class="msg t-ed-body">'+msg+'</p>'+
+        '<button class="x" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button>';
+      region.appendChild(t);
+      let remain=6000, started=Date.now(), timer=setTimeout(leave, remain), paused=false;
+      function leave(){ if(RM){ t.remove(); return; } t.classList.add('leaving'); t.addEventListener('transitionend', ()=>t.remove(), {once:true}); }
+      function pause(){ if(paused) return; paused=true; clearTimeout(timer); remain-=Date.now()-started; }
+      function resume(){ if(!paused) return; paused=false; started=Date.now(); timer=setTimeout(leave, Math.max(remain,1000)); }
+      t.addEventListener('mouseenter', pause); t.addEventListener('mouseleave', resume);
+      t.addEventListener('focusin', pause); t.addEventListener('focusout', resume);
+      t.querySelector('.x').addEventListener('click', ()=>{ clearTimeout(timer); leave(); });
+    }
+    document.getElementById('spawnOk').addEventListener('click', ()=>spawn('ok','Payment sent.','to-success'));
+    document.getElementById('spawnInfo').addEventListener('click', ()=>spawn('info','Draft saved automatically.','to-info'));
+  </script>
+</body>
+</html>

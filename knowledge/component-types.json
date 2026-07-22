@@ -2,7 +2,7 @@
   "$description": "ADR-0013 — the component-type tier: ONE registry, both halves. (1) VALUES: this file is a token store — a path component-type/<group>/<param> resolves here, and each parameter $alias-references its semantic home (the alias hop: component var -> type-group -> semantic role -> default; $value is the gated cache, _STANDARDS.md §1 convention). (2) RULES: the $-keys carry the structural halves — $members (who consumes, with their selector map) and $partials (named rule-blocks injected from a source atom into consumers between AUTO-PARTIAL markers by gen_component_partials.py; sync gated in _build_all). Groups accrete from OBSERVED duplication only, never speculation (ADR-0013 ruling 3). Every member must carry the partial's AUTO-PARTIAL markers, the required vars, and the $manifestBinds manifest bindings — gen_component_partials.py --check fails the build otherwise.",
   "component-type": {
     "button-family": {
-      "$description": "Press-physics controls sharing one interaction-motion definition (ADR-0013 ruling 3 first population). B-D7 (Dave, 2026-07-22): the Icon-button SIZE-SCOPED model is the family canon — travel is PIXEL-TRUE, scale(calc(1 ± travel/--phys-size)), darken 0.94 — superseding Button's proportional 1.04/0.95 + 0.85 (rule shape survives: grow toward cursor, press recede + darken, disabled stays put, reduced-motion snaps). Motion is a THEME DIAL: Legacy + Supercharge override travel->0 darken->1 (colour-only state feedback); Mono + Console carry the movement (Console inherits, not fenced — RULED, Dave 2026-07-22: 'Console and mono can share the motion tokens for now'; divergence later = a deliberate override). --phys-size = the member's LOCAL characteristic-size number (geometry, like --h; buttons ~120 wide, icon button 44 — the Tranche-1 size-scoping). Survey ground truth at ruling time: 13/40 snippets carried a local button recipe, 7 carried the scale-press by copy, 4 pressed with translateY(1px).",
+      "$description": "Press-physics controls sharing one interaction-motion definition (ADR-0013 ruling 3 first population). B-D7 (Dave, 2026-07-22): the Icon-button SIZE-SCOPED model is the family canon — travel is PIXEL-TRUE, scale(calc(1 ± travel/--phys-size)), darken 0.94 — superseding Button's proportional 1.04/0.95 + 0.85 (rule shape survives: grow toward cursor, press recede + darken, disabled stays put, reduced-motion snaps). Motion is a THEME DIAL: Legacy + Supercharge override travel->0 darken->1 (colour-only state feedback); Mono + Console carry the movement (Console inherits, not fenced — RULED, Dave 2026-07-22: 'Console and mono can share the motion tokens for now'; divergence later = a deliberate override). --phys-size = the member's LOCAL characteristic-size number (geometry, like --h; buttons ~120 wide, icon button 44 — the Tranche-1 size-scoping). Survey ground truth at ruling time: 13/40 snippets carried a local button recipe, 7 carried the scale-press by copy, 4 pressed with translateY(1px). MULTI-CONTROL members register an :is() selector list (wave-1 convention, 2026-07-22) — a bare comma list would leave rewritten pseudo-classes bound to the last selector only; mixed sizes inside one member = a LOCAL --phys-size override on the smaller control (Drawer's .sheet .close 44 vs .dbtn 120 — geometry, not a token).",
       "$members": {
         "Button": {
           "role": "source"
@@ -15,6 +15,33 @@
         },
         "Icon-button": {
           "selector": ".iconbtn"
+        },
+        "Form-layout": {
+          "selector": ".fl-btn"
+        },
+        "Secure-entry": {
+          "selector": ".se-btn"
+        },
+        "Alert": {
+          "selector": ".alert .x"
+        },
+        "Toast": {
+          "selector": ":is(.toast .x, .toast .act)"
+        },
+        "Banner": {
+          "selector": ":is(.banner .x, .banner .actions .abtn)"
+        },
+        "Drawer": {
+          "selector": ":is(.dbtn, .sheet .close)"
+        },
+        "Popover": {
+          "selector": ".pop .x"
+        },
+        "Modal-lightbox": {
+          "selector": ".lb-ctl"
+        },
+        "Empty-state": {
+          "selector": ".ebtn"
         }
       },
       "$partials": {

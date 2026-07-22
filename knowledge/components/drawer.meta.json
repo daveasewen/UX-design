@@ -1,0 +1,68 @@
+{
+  "name": "Drawer",
+  "category": "organism",
+  "purpose": "A page-edge side sheet for focused sub-tasks that keep page context visible: detail inspection, filters, secondary forms. Shares the modal dialog's mechanics (scrim, focus trap, inert background, Esc/close/return-focus — mined from Modals) but docks to the edge instead of centring, so the page remains glanceable. Use Modals for decisions that must interrupt; a Drawer for adjacent detail.",
+  "props": [
+    { "name": "title", "type": "string", "$note": "Header title (.t-ed-heading-4 .em); labels the dialog via aria-labelledby." },
+    { "name": "side", "type": "enum", "values": ["right"], "default": "right", "$note": "Right is the canon dock (detail/inspector pattern). A left variant would mirror trivially but is not canon until a consumer demands it." },
+    { "name": "width", "type": "number", "default": 400, "$note": "400px, full-width ≤480px viewport." },
+    { "name": "actions", "type": "array", "$note": "Footer actions — primary FIRST, left-aligned (Modals' corrected order); stack full-width at small sizes." }
+  ],
+  "variants": [
+    { "name": "detail", "use": "Read-mostly inspection of a row/card (transaction details) with document-level actions." },
+    { "name": "task", "use": "A short form completed without leaving the page; the primary action commits and closes." }
+  ],
+  "tokens": {
+    "font-family": "type composites via markup class — title .t-ed-heading-4 .em (400); body .t-ed-body / .t-ed-body-small; buttons .t-cm-button + .t-cm-slot",
+    "surface": "tertiary/background/default + elevation/border + elevation/functional shadow (webf-011 level-1 'drawer')",
+    "scrim": "overlay/version1 — dim, never blur (Modals ruling)",
+    "buttons": "canon Button mirror under .dbtn (namespaced — the .btn type.css binding must not escape its acknowledged blast radius): button/primary/* + tertiary/* roles",
+    "divider": "border/subtle above the footer",
+    "radius": "surface (sheet) + control (buttons, close)",
+    "states": "colour-only pending button-family partial injection (ADR-0013); close × active adds the token darken (no transform)",
+    "motion": "component-type/button-family/{press-travel,press-darken} bound for the pending partial"
+  },
+  "motion": {
+    "entry": "Sheet slides translateX(100%)→0 on motion/easing/spring; scrim fades (motion/duration/fade).",
+    "reducedMotion": "Slide removed — the sheet appears/disappears without transform (2.3.3).",
+    "tokens": ["component-type/button-family/press-travel", "component-type/button-family/press-darken"]
+  },
+  "responsive": {
+    "rule": "400px sheet, full-width ≤480px; footer actions stack full-width there. Body scrolls independently; header and footer are fixed within the sheet.",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": ["Page shell (fixed edge layer)"],
+    "mustNotNeighbour": ["A second drawer or open modal (one modal surface at a time)"],
+    "commonPatterns": ["row → detail inspector", "filter panel", "quick-create form"],
+    "triggeredBy": ["table/list row activation", "filter buttons", "toolbar actions"]
+  },
+  "accessibility": {
+    "role": "role=\"dialog\" + aria-modal=\"true\" + aria-labelledby + aria-describedby.",
+    "name": "Title labels the dialog; close carries aria-label=\"Close drawer\".",
+    "keyboard": "Focus moves in on open; Tab trapped within; Esc closes; focus returns to the trigger; background inert.",
+    "focus": "Visible :focus-visible (focus/ring) on every control; trigger disabled while open.",
+    "target": "Close × 44×44 via ::before (visual 36px); buttons 44px tall (2.5.8).",
+    "nonText": "Secondary button border ≥3:1 vs the sheet surface both modes (1.4.11).",
+    "relatedSC": ["1.3.2 Meaningful Sequence", "2.1.2 No Keyboard Trap", "2.4.3 Focus Order", "2.4.7 Focus Visible", "2.5.8 Target Size (Minimum)", "4.1.2 Name, Role, Value"]
+  },
+  "antiPatterns": [
+    "A drawer for a blocking decision (that is a modal — centred, interruptive)",
+    "Scrim click closing a drawer with unsaved form input (confirm first)",
+    "Right-aligned actions (family order is primary-first, left-aligned)",
+    "Using the .btn classname in a new consumer (type.css blast-radius escape)",
+    "Re-implementing press physics locally (ADR-0013 ratchet)",
+    "Backdrop blur instead of dim (legibility/low-vision cost — Modals ruling)"
+  ],
+  "tokenValidation": {
+    "date": "2026-07-22",
+    "against": "token store (semantic-colour.json) via #token-manifest — bindings mirror Modals (gated green)",
+    "result": "PASS — bound vars match resolved light+dark; declared pairs pass both modes (text ≥14.9, primary label ≥12.6, border ≥3.94).",
+    "$note": "Built Phase-2 wave 1 (worker B). Buttons + close await button-family $members registration (conductor); empty AUTO-PARTIAL pair in place."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": ""
+  }
+}

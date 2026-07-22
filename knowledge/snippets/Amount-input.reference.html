@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Amount input — reference implementation (gated)</title>
+<!--
+  CANONICAL REFERENCE for Amount (number/currency) input. Built 2026-07-22 (Phase-2 wave 1,
+  worker A) — itinerary row 17 (P1), banking-critical.
+
+  PROVENANCE: field chrome = the gated Input-fields BOXED language verbatim (its featured example
+  IS a GBP amount field — this atom is that pattern given its own contract). Money-format
+  conventions MINED from the gated Amount-display: currency code BEFORE the value, no space
+  (copy-025); symbol £ closed up; negatives use the TYPOGRAPHIC MINUS − never a hyphen; values
+  group thousands + always carry 2 decimals; numerals are FIGURE composites with tabular-nums
+  (.t-cm-figure-5 standard entry · .t-cm-figure-4 display entry) so columns and counters align.
+  Formatting behaviour: digits + one separator accepted while typing; on blur the value normalises
+  (grouping + .00); inputmode=decimal brings the numeric keypad.
+  TYPE = canon composites only. ICONS: error/success roundels (status-icons/, byte-matched).
+  Error colour = R-D20 rag/error* set; message text stays INK. No buttons — no partials here.
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+  :root{
+    --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+    --ease:200ms cubic-bezier(.4,0,.2,1);
+  }
+  [data-theme="light"]{
+    --page:#FFFFFF;                 /* background/default */
+    --text:#1A1A1A;                 /* text/default */
+    --text-disabled:#E1E1E1;        /* text/disabled */
+    --field-bg-default:#FFFFFF00;   /* form/background/default */
+    --field-bg-hover:#F0F0F0;       /* form/background/hover */
+    --border-default:#808080;       /* form/border/default */
+    --border-active:#000000;        /* form/border/active */
+    --border-disabled:#E1E1E1;      /* form/border/disabled */
+    --icon:#1A1A1A;                 /* icon/default */
+    --icon-disabled:#E1E1E1;        /* icon/disabled */
+    --error:#B92F1E;                /* rag/error */
+    --success:#2B7E4F;              /* rag/success */
+    --focus:#305A85;                /* focus/ring */
+    --border-radius-control:0;      /* border-radius/control */
+  }
+  [data-theme="dark"]{
+    --page:#1A1A1A;
+    --text:#FFFFFF;
+    --text-disabled:#808080;
+    --field-bg-default:#FFFFFF00;
+    --field-bg-hover:#232323;
+    --border-default:#808080;
+    --border-active:#FFFFFF;
+    --border-disabled:#484848;
+    --icon:#FFFFFF;
+    --icon-disabled:#808080;
+    --error:#CC4333;
+    --success:#4A9568;
+    --focus:#4587A7;
+    --border-radius-control:0;
+  }
+
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:2rem; display:flex; gap:.75rem; align-items:center; flex-wrap:wrap; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border-radius:var(--border-radius-control); cursor:pointer;
+    border:1px solid var(--border-default); background:transparent; color:var(--text);}
+  .demo-controls button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  h2.sec{font:500 16px/1.3 var(--font); color:var(--text); opacity:.6; margin:2.5rem 0 .35rem;}
+  p.note{font:400 14px/1.5 var(--font); color:var(--text); opacity:.75; margin:0 0 1.5rem; max-width:60ch;}
+  .icn{width:18px; height:18px; display:block; flex-shrink:0;}
+
+  /* ---------- field group (Input-fields anatomy — change it there) ---------- */
+  .ai-group{max-width:380px; margin:0 0 32px;}
+  .ai-lblrow{display:flex; gap:8px; align-items:center; margin:0 0 4px;}
+  .ai-lblrow label{color:var(--text);}
+  .ai-help{color:var(--text); margin:0 0 8px;}
+  .ai-box{display:flex; align-items:center; gap:16px; padding:8px 16px;
+    border:1px solid var(--border-default); background:var(--field-bg-default); border-radius:var(--border-radius-control); position:relative;
+    transition:border-color var(--ease), background var(--ease), box-shadow var(--ease); color:var(--icon);}
+  .ai-box .ai-cur{color:var(--text); white-space:nowrap; flex-shrink:0;}
+  .ai-box input{flex:1; min-width:0; border:0; background:transparent; outline:none; padding:0; color:var(--text);}
+  .ai-box input::placeholder{color:var(--text); opacity:1; font-weight:400;}
+  .ai-box:hover:not(:focus-within){background:var(--field-bg-hover);}
+  .ai-box:focus-within{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--border-active); background:var(--page);}
+  .ai-box input:focus{outline:none;}
+  .ai-box:has(input:focus-visible){outline:2px solid var(--focus); outline-offset:2px;}
+  :root[data-modality="pointer"] .ai-box:has(input:focus-visible){outline:none;}
+
+  /* display size — the payment-journey hero entry; figure-4 type (32) on both prefix + value */
+  .ai-box.ai-display{padding:16px;}
+
+  /* states */
+  .ai-group.is-completed .ai-box input{font-weight:500;}
+  .ai-group.is-error .ai-box{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--error); background:var(--page);}
+  [data-theme="dark"] .ai-group.is-error .ai-box{border-color:var(--error);}   /* dark: error border goes full red (Input-fields, Dave 2026-07-02) */
+  .ai-group.is-error .ai-box input{font-weight:500;}
+  .ai-box input:disabled{color:var(--text-disabled); cursor:not-allowed;}
+  .ai-group.is-disabled .ai-box{border-color:var(--border-disabled); color:var(--icon-disabled);}
+  .ai-group.is-disabled .ai-lblrow label, .ai-group.is-disabled .ai-help, .ai-group.is-disabled .ai-cur{color:var(--text-disabled);}
+
+  .ai-msg{display:flex; gap:8px; align-items:flex-start; margin:8px 0 0;}
+  .ai-msg:empty{display:none;}
+  .ai-msg .ic{flex-shrink:0; padding-top:4px; color:var(--error); --mark:var(--page);}   /* rag roundel policy */
+  [data-theme="dark"] .ai-msg .ic{color:#FFFFFF;}   /* policy dark: WHITE shape + black mark */
+  .ai-msg.is-ok .ic{color:var(--success);}
+  .ai-msg p{flex:1; min-width:0; color:var(--text); margin:0;}   /* message stays INK */
+
+  .gallery{display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:24px 32px; max-width:760px;}
+  .gallery .cap{font:400 12px/1.3 var(--font); color:var(--text); opacity:.55; margin:0 0 8px;}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; scroll-behavior:auto !important; }
+  }
+  @media (max-width:480px){
+    body{padding:1.25rem;}
+    .ai-group, .gallery{max-width:none;}
+    .gallery{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body data-theme="light">
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="ic-error" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.30911 1.68194L0.109113 15.7999C-0.199887 16.3319 0.184113 16.9999 0.800113 16.9999H17.2001C17.8161 16.9999 18.2001 16.3319 17.8911 15.7999L9.69111 1.68194C9.38311 1.15094 8.61711 1.15094 8.30911 1.68194Z" fill="currentColor"/><path style="fill:var(--mark)" d="M9.9001 5H8.1001V11H9.9001V5Z"/><path style="fill:var(--mark)" d="M9 14.8259C9.69036 14.8259 10.25 14.2663 10.25 13.5759C10.25 12.8856 9.69036 12.3259 9 12.3259C8.30964 12.3259 7.75 12.8856 7.75 13.5759C7.75 14.2663 8.30964 14.8259 9 14.8259Z"/></symbol>
+    <symbol id="ic-success" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z"/></symbol>
+  </svg>
+
+  <div class="demo-controls">
+    <button id="themeToggle" type="button">◐ Toggle theme</button>
+    <span>Amount input — currency entry · standard + display sizes · normalises on blur</span>
+  </div>
+
+  <!-- ================= LIVE — standard ================= -->
+  <h2 class="sec">Standard — live</h2>
+  <p class="note">Currency code sits BEFORE the value, closed up (copy-025). Type digits — separators are
+    accepted while typing; on blur the value normalises to grouped thousands + two decimals. Numerals are
+    tabular figures (.t-cm-figure-5), so amounts align in any column.</p>
+
+  <div class="ai-group" id="live-std">
+    <div class="ai-lblrow"><label class="t-cm-label" for="a1">Amount</label></div>
+    <p class="ai-help t-ed-body-small" id="a1help">How much would you like to pay?</p>
+    <div class="ai-box">
+      <span class="ai-cur t-cm-label" aria-hidden="true">GBP</span>
+      <input id="a1" class="t-cm-figure-5" type="text" inputmode="decimal" placeholder="0.00"
+        aria-describedby="a1help a1msg" data-amount>
+    </div>
+    <div class="ai-msg" id="a1msg" aria-live="polite"></div>
+  </div>
+
+  <!-- ================= LIVE — display size ================= -->
+  <h2 class="sec">Display — live (payment-journey hero)</h2>
+  <p class="note">The prominent "how much" entry: figure-4 type (32px) on both the symbol and the value —
+    the entry twin of Amount-display's display size.</p>
+  <div class="ai-group" id="live-dsp">
+    <div class="ai-lblrow"><label class="t-cm-label" for="a2">You send</label></div>
+    <div class="ai-box ai-display">
+      <span class="ai-cur t-cm-figure-4" aria-hidden="true">£</span>
+      <input id="a2" class="t-cm-figure-4" type="text" inputmode="decimal" placeholder="0.00"
+        aria-label="Amount you send, in pounds" data-amount>
+    </div>
+  </div>
+
+  <!-- ================= STATES ================= -->
+  <h2 class="sec" style="margin-top:2.75rem;">States — standard</h2>
+  <div class="gallery">
+    <div>
+      <p class="cap">Default</p>
+      <div class="ai-group"><div class="ai-box"><span class="ai-cur t-cm-label" aria-hidden="true">GBP</span><input class="t-cm-figure-5" type="text" placeholder="0.00" aria-label="Default example"></div></div>
+    </div>
+    <div>
+      <p class="cap">Completed — grouped, 2dp</p>
+      <div class="ai-group is-completed"><div class="ai-box"><span class="ai-cur t-cm-label" aria-hidden="true">GBP</span><input class="t-cm-figure-5" type="text" value="12,000.00" tabindex="-1" aria-label="Completed example"></div></div>
+    </div>
+    <div>
+      <p class="cap">Disabled</p>
+      <div class="ai-group is-disabled"><div class="ai-box"><span class="ai-cur t-cm-label" aria-hidden="true">GBP</span><input class="t-cm-figure-5" type="text" placeholder="0.00" disabled aria-label="Disabled example"></div></div>
+    </div>
+    <div>
+      <p class="cap">Error — message stays ink</p>
+      <div class="ai-group is-error">
+        <div class="ai-box"><span class="ai-cur t-cm-label" aria-hidden="true">GBP</span><input class="t-cm-figure-5" type="text" value="abc" aria-invalid="true" aria-describedby="g-err" tabindex="-1"></div>
+        <div class="ai-msg" id="g-err"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-error"/></svg></span><p class="t-ed-body">Enter an amount, like 250.00.</p></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap">Valid — confirmation</p>
+      <div class="ai-group">
+        <div class="ai-box"><span class="ai-cur t-cm-label" aria-hidden="true">GBP</span><input class="t-cm-figure-5" type="text" value="250.00" tabindex="-1" aria-label="Valid example"></div>
+        <div class="ai-msg is-ok"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-success"/></svg></span><p class="t-ed-body">Within your available balance.</p></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap">Negative — typographic minus (−), display of a debit</p>
+      <div class="ai-group is-completed"><div class="ai-box"><span class="ai-cur t-cm-label" aria-hidden="true">GBP</span><input class="t-cm-figure-5" type="text" value="−842.10" tabindex="-1" aria-label="Negative example"></div></div>
+    </div>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Amount input",
+    "vars": {
+      "--page": "background/default",
+      "--text": "text/default",
+      "--text-disabled": "text/disabled",
+      "--field-bg-default": "form/background/default",
+      "--field-bg-hover": "form/background/hover",
+      "--border-default": "form/border/default",
+      "--border-active": "form/border/active",
+      "--border-disabled": "form/border/disabled",
+      "--icon": "icon/default",
+      "--icon-disabled": "icon/disabled",
+      "--error": "rag/error",
+      "--success": "rag/success",
+      "--focus": "focus/ring",
+      "--border-radius-control": "border-radius/control"
+    },
+    "contrastPairs": [
+      { "fg": "text/default",        "bg": "background/default", "context": "text" },
+      { "fg": "form/border/default", "bg": "background/default", "context": "ui" },
+      { "fg": "form/border/active",  "bg": "background/default", "context": "ui" },
+      { "fg": "rag/error",           "bg": "background/default", "context": "ui" },
+      { "fg": "rag/success",         "bg": "background/default", "context": "ui" },
+      { "fg": "icon/default",        "bg": "background/default", "context": "ui" }
+    ],
+    "requiredAria": ["aria-invalid", "aria-describedby", "inputmode"],
+    "icons": {
+      "$source": "assets/icons/ (HSBC library) via <symbol> sprite — not invented",
+      "error": "status-icons/error.svg", "success": "status-icons/success.svg"
+    }
+  }
+  </script>
+
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      const b = document.body; b.setAttribute('data-theme', b.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+    const root = document.documentElement;
+    addEventListener('keydown', e => { if (e.key === 'Tab') root.dataset.modality = 'keyboard'; });
+    addEventListener('mousedown', () => root.dataset.modality = 'pointer');
+    addEventListener('touchstart', () => root.dataset.modality = 'pointer', { passive:true });
+
+    // amount behaviour: digits + separators while typing; normalise on blur (grouping + 2dp)
+    document.querySelectorAll('input[data-amount]').forEach(inp => {
+      inp.addEventListener('input', () => {
+        inp.value = inp.value.replace(/[^\d.,]/g, '');
+      });
+      inp.addEventListener('blur', () => {
+        const raw = inp.value.replace(/,/g, '');
+        if (!raw || isNaN(parseFloat(raw))) return;
+        const n = parseFloat(raw);
+        inp.value = n.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const grp = inp.closest('.ai-group');
+        if (grp) grp.classList.add('is-completed');
+      });
+      inp.addEventListener('focus', () => {
+        const grp = inp.closest('.ai-group');
+        if (grp) grp.classList.remove('is-completed');
+      });
+    });
+
+    // live validation on the standard example
+    const a1 = document.getElementById('a1'), a1msg = document.getElementById('a1msg'), g1 = document.getElementById('live-std');
+    const errIcon = '<span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-error"/></svg></span>';
+    a1.addEventListener('blur', () => {
+      const v = a1.value.replace(/,/g, '');
+      const bad = v !== '' && (!/^\d+(\.\d{1,2})?$/.test(v) || parseFloat(v) <= 0);
+      g1.classList.toggle('is-error', bad);
+      a1.setAttribute('aria-invalid', bad ? 'true' : 'false');
+      a1msg.innerHTML = bad ? errIcon + '<p class="t-ed-body">Enter an amount, like 250.00.</p>' : '';
+    });
+  </script>
+</body>
+</html>

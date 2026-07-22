@@ -2962,6 +2962,61 @@
 }
 
 /* ============================================================
+   Account-selector  (from snippets/Account-selector.reference.html)
+   Aria: role="combobox", aria-haspopup, aria-expanded, aria-controls, role="listbox", role="option", aria-selected, aria-label
+   Scope: .cn-account-selector   ============================================================ */
+.cn-account-selector{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 140ms ease;
+  --border: var(--form-border-default);
+  --border-active: var(--form-border-active);
+  --hoverbg: var(--form-background-hover);
+  --menu-surface: var(--background-default);
+  --menu-border: var(--elevation-border);
+  --shadow: var(--elevation-functional);
+  --text: var(--text-default);
+  --page: var(--background-default);
+  --focus: var(--focus-ring);
+}
+.cn-account-selector h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-account-selector .as{position:relative; width:360px; max-width:100%;}
+.cn-account-selector .as-label{display:block; margin:0 0 4px; opacity:.6;}
+/* the trigger — field chrome (Dropdown recipe): underline border, active bottom accent */
+.cn-account-selector .as-trigger{width:100%; min-height:44px; display:flex; align-items:center; gap:8px; padding:8px 12px;
+    border:1px solid var(--border); border-radius:var(--border-radius-control); background:transparent;
+    color:var(--text); cursor:pointer; text-align:left; transition:background var(--ease), border-color var(--ease);}
+.cn-account-selector .as-trigger:hover{background:var(--hoverbg);}
+.cn-account-selector .as-trigger[aria-expanded="true"]{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--border-active);}
+.cn-account-selector .as-trigger:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+.cn-account-selector .as-trigger .who{flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:4px;}
+.cn-account-selector .as-trigger .mask16{opacity:.6;}
+.cn-account-selector .as-trigger .bal{flex:none; font-variant-numeric:tabular-nums;}
+.cn-account-selector .as-trigger .chev{flex:none; width:16px; height:16px; transition:transform var(--ease);}
+.cn-account-selector .as-trigger .chev svg{width:16px; height:16px; display:block; fill:currentColor;}
+.cn-account-selector .as-trigger[aria-expanded="true"] .chev{transform:rotate(180deg);}
+/* the menu — listbox; elevation mode-aware (shadow light, outline dark) */
+.cn-account-selector .as-menu{position:absolute; top:100%; left:0; right:0; margin:4px 0 0; padding:4px 0; list-style:none;
+    background:var(--menu-surface); border:1px solid var(--menu-border); border-radius:var(--border-radius-surface);
+    box-shadow:0 0 16px var(--shadow); z-index:20; display:none;}
+.cn-account-selector .as-menu.open{display:block;}
+.cn-account-selector .as-opt{display:flex; align-items:center; gap:8px; padding:12px; cursor:pointer;}
+.cn-account-selector .as-opt .who{flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:4px;}
+.cn-account-selector .as-opt .mask16{opacity:.6;}
+.cn-account-selector .as-opt .bal{flex:none; font-variant-numeric:tabular-nums;}
+.cn-account-selector .as-opt:hover{background:var(--hoverbg);}
+.cn-account-selector .as-opt[aria-selected="true"]{background:var(--hoverbg); box-shadow:inset 4px 0 0 0 var(--border-active);}
+.cn-account-selector .as-opt.kb-focus{outline:2px solid var(--focus); outline-offset:-2px;}
+/* the masked account chip — namespaced .acchip (never .chip: type.css blast radius) */
+.cn-account-selector .acchip{display:inline-flex; align-items:center; gap:8px; height:24px; padding:0 8px;
+    border:1px solid var(--border); border-radius:var(--border-radius-indicator); color:var(--text); white-space:nowrap;}
+.cn-account-selector .acchip .mask16{opacity:.6;}
+.cn-account-selector .chiprow{display:flex; gap:8px; align-items:center; flex-wrap:wrap;}
+.cn-account-selector .chiprow .ctx{opacity:.6;}
+@media (prefers-reduced-motion: reduce){
+
+}
+
+/* ============================================================
    Action-bar  (from snippets/Action-bar.reference.html)
    Aria: <button
    Reuses: Button (primary + secondary)
@@ -3026,6 +3081,88 @@
 }
 
 /* ============================================================
+   Alert  (from snippets/Alert.reference.html)
+   Aria: role="alert", role="status", aria-label
+   Scope: .cn-alert   ============================================================ */
+.cn-alert{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 140ms ease;
+  --spring: 300ms cubic-bezier(.5,1.6,.4,1);
+  --press: 90ms cubic-bezier(0,0,.58,1);
+  --err: var(--rag-error);
+  --warn: var(--rag-warning);
+  --ok: var(--rag-success);
+  --info: var(--rag-information);
+  --err-t: var(--rag-error-tint);
+  --warn-t: var(--rag-warning-tint);
+  --ok-t: var(--rag-success-tint);
+  --info-t: var(--rag-information-tint);
+  --text: var(--text-default);
+  --page: var(--background-default);
+  --press-travel: var(--component-type-button-family-press-travel);
+  --press-darken: var(--component-type-button-family-press-darken);
+}
+.cn-alert h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-alert .awrap{width:var(--demo-width, 560px); max-width:100%;}
+/* per-status tokens — accent (glyph/border) + tint (surface); retrieval only, R-D20 */
+.cn-alert .alert.err{--accent:var(--err); --tint:var(--err-t);}
+.cn-alert .alert.warn{--accent:var(--warn); --tint:var(--warn-t);}
+.cn-alert .alert.ok{--accent:var(--ok); --tint:var(--ok-t);}
+.cn-alert .alert.info{--accent:var(--info); --tint:var(--info-t);}
+/* the callout shell — tinted surface, full 1px accent border, SURFACE radius role */
+.cn-alert .alert{display:flex; gap:8px; align-items:flex-start; padding:12px 16px; margin:12px 0;
+    background:var(--tint); border:1px solid var(--accent); border-radius:var(--border-radius-surface);
+    color:var(--text); overflow:hidden;
+    transition:max-height .3s ease, opacity .2s ease, margin .3s ease, padding .3s ease, border-width .3s ease;}
+/* icon centres on the FIRST text line (24px = one .t-ed-body line box) and holds position when copy wraps */
+.cn-alert .alert .ic{flex:none; height:24px; display:inline-flex; align-items:center; color:var(--accent); --mark:var(--tint);}
+.cn-alert .alert .ic svg{width:20px; height:20px; display:block; fill:currentColor;}
+.cn-alert .alert.warn .ic{--mark:#1A1A1A;}
+/* amber mark = always near-black (R-D3); tint knockout would sit at 2.44 */
+.cn-alert .alert.ok .ic{--mark:#FFFFFF;}
+/* white mark 5.0 — tint knockout 4.11 < 4.5 (roundel policy mark leg) */
+.cn-alert .alert.info .ic{--mark:#FFFFFF;}
+/* white mark 5.03 — tint knockout 3.85 < 4.5 */
+/* DARK roundel policy (Dave 2026-07-02 eve — structural): white shape + black mark, both legs 21:1 */
+.cn-alert .alert .main{flex:1 1 auto; min-width:0; margin:0;}
+.cn-alert .alert .main a{color:inherit; font-weight:500; text-decoration:underline; text-underline-offset:3px;
+    text-decoration-thickness:1px; cursor:pointer; transition:text-decoration-thickness var(--ease);}
+.cn-alert .alert .main a:hover, .cn-alert .alert .main a:active{text-decoration-thickness:2px;}
+.cn-alert .alert .main a:focus-visible{outline:2px solid currentColor; outline-offset:2px;}
+/* dismiss × — 24px visual control in a 44px hit target (2.5.8). Colour-only state feedback
+     (active > hover, WCAG state-contrast); press physics arrives via the injected family partial
+     once the conductor registers this selector (ADR-0013 — no local re-implementation). */
+.cn-alert .alert .x{position:relative; flex:none; display:inline-flex; width:24px; height:24px; padding:0; border:0;
+    background:transparent; color:inherit; cursor:pointer; align-items:center; justify-content:center;
+    border-radius:var(--border-radius-surface); transition:background var(--ease), transform var(--spring);}
+.cn-alert .alert .x::before{content:""; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:44px; height:44px;}
+.cn-alert .alert .x svg{width:16px; height:16px; fill:currentColor;}
+.cn-alert .alert .x:hover{background:color-mix(in srgb, currentColor 10%, transparent);}
+.cn-alert .alert .x:active{background:color-mix(in srgb, currentColor 16%, transparent);}
+.cn-alert .alert .x:focus-visible{outline:2px solid currentColor; outline-offset:2px;}
+/* ===== AUTO-PARTIAL press-physics START (button-family) ===== */
+/* INJECTED from Button.reference.html (partial "press-physics", group button-family —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+.cn-alert .alert .x:hover{transform:scale(calc(1 + var(--press-travel)/var(--phys-size)));}
+.cn-alert .alert .x.full:hover{transform:none;}
+/* full-width can't grow — would overflow */
+.cn-alert .alert .x:active{transform:scale(calc(1 - var(--press-travel)/var(--phys-size))); filter:brightness(var(--press-darken)); transition:transform var(--press), filter var(--press);}
+.cn-alert .alert .x:disabled:hover, .cn-alert .alert .x.is-disabled:hover{transform:none; filter:none;}
+/* disabled stays put */
+/* WCAG 2.3.3 — the partial carries its OWN reduced-motion override (ADR-0013: rides inside, never per-file) */
+@media (prefers-reduced-motion: reduce){
+.cn-alert .alert .x:hover, .cn-alert .alert .x:active{transform:none !important; filter:none !important;}
+}
+/* ===== AUTO-PARTIAL press-physics END ===== */
+.cn-alert .alert.removing{max-height:0 !important; opacity:0; margin-top:0; margin-bottom:0;
+    padding-top:0; padding-bottom:0; border-width:0;}
+@media (prefers-reduced-motion: reduce){
+
+}
+
+/* ============================================================
    Amount-display  (from snippets/Amount-display.reference.html)
    Aria: role="img", aria-label, aria-hidden="true"
    Finding: copy-025 enforced: currency symbol/code precedes the value with NO space (£500, GBP500) — a space risks the amount wrapping to a different line.
@@ -3066,6 +3203,157 @@
 .cn-amount-display .col-demo{display:inline-flex; flex-direction:column; gap:8px; align-items:flex-end;
     border-left:1px solid var(--border); padding-left:16px;}
 .cn-amount-display .prose{font:400 16px/1.5 var(--font); max-width:52ch; color:var(--text);}
+@media (prefers-reduced-motion: reduce){
+
+}
+
+/* ============================================================
+   Amount-input  (from snippets/Amount-input.reference.html)
+   Aria: aria-invalid, aria-describedby, inputmode
+   Scope: .cn-amount-input   ============================================================ */
+.cn-amount-input{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 200ms cubic-bezier(.4,0,.2,1);
+  --page: var(--background-default);
+  --text: var(--text-default);
+  --field-bg-default: var(--form-background-default);
+  --field-bg-hover: var(--form-background-hover);
+  --border-default: var(--form-border-default);
+  --border-active: var(--form-border-active);
+  --border-disabled: var(--form-border-disabled);
+  --icon: var(--icon-default);
+  --error: var(--rag-error);
+  --success: var(--rag-success);
+  --focus: var(--focus-ring);
+}
+.cn-amount-input h2.sec{font:500 16px/1.3 var(--font); color:var(--text); opacity:.6; margin:2.5rem 0 .35rem;}
+.cn-amount-input p.note{font:400 14px/1.5 var(--font); color:var(--text); opacity:.75; margin:0 0 1.5rem; max-width:60ch;}
+.cn-amount-input .icn{width:18px; height:18px; display:block; flex-shrink:0;}
+/* ---------- field group (Input-fields anatomy — change it there) ---------- */
+.cn-amount-input .ai-group{max-width:380px; margin:0 0 32px;}
+.cn-amount-input .ai-lblrow{display:flex; gap:8px; align-items:center; margin:0 0 4px;}
+.cn-amount-input .ai-lblrow label{color:var(--text);}
+.cn-amount-input .ai-help{color:var(--text); margin:0 0 8px;}
+.cn-amount-input .ai-box{display:flex; align-items:center; gap:16px; padding:8px 16px;
+    border:1px solid var(--border-default); background:var(--field-bg-default); border-radius:var(--border-radius-control); position:relative;
+    transition:border-color var(--ease), background var(--ease), box-shadow var(--ease); color:var(--icon);}
+.cn-amount-input .ai-box .ai-cur{color:var(--text); white-space:nowrap; flex-shrink:0;}
+.cn-amount-input .ai-box input{flex:1; min-width:0; border:0; background:transparent; outline:none; padding:0; color:var(--text);}
+.cn-amount-input .ai-box input::placeholder{color:var(--text); opacity:1; font-weight:400;}
+.cn-amount-input .ai-box:hover:not(:focus-within){background:var(--field-bg-hover);}
+.cn-amount-input .ai-box:focus-within{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--border-active); background:var(--page);}
+.cn-amount-input .ai-box input:focus{outline:none;}
+.cn-amount-input .ai-box:has(input:focus-visible){outline:2px solid var(--focus); outline-offset:2px;}
+:root[data-modality="pointer"] .cn-amount-input .ai-box:has(input:focus-visible){outline:none;}
+/* display size — the payment-journey hero entry; figure-4 type (32) on both prefix + value */
+.cn-amount-input .ai-box.ai-display{padding:16px;}
+/* states */
+.cn-amount-input .ai-group.is-completed .ai-box input{font-weight:500;}
+.cn-amount-input .ai-group.is-error .ai-box{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--error); background:var(--page);}
+/* dark: error border goes full red (Input-fields, Dave 2026-07-02) */
+.cn-amount-input .ai-group.is-error .ai-box input{font-weight:500;}
+.cn-amount-input .ai-box input:disabled{color:var(--text-disabled); cursor:not-allowed;}
+.cn-amount-input .ai-group.is-disabled .ai-box{border-color:var(--border-disabled); color:var(--icon-disabled);}
+.cn-amount-input .ai-group.is-disabled .ai-lblrow label, .cn-amount-input .ai-group.is-disabled .ai-help, .cn-amount-input .ai-group.is-disabled .ai-cur{color:var(--text-disabled);}
+.cn-amount-input .ai-msg{display:flex; gap:8px; align-items:flex-start; margin:8px 0 0;}
+.cn-amount-input .ai-msg:empty{display:none;}
+.cn-amount-input .ai-msg .ic{flex-shrink:0; padding-top:4px; color:var(--error); --mark:var(--page);}
+/* rag roundel policy */
+/* policy dark: WHITE shape + black mark */
+.cn-amount-input .ai-msg.is-ok .ic{color:var(--success);}
+.cn-amount-input .ai-msg p{flex:1; min-width:0; color:var(--text); margin:0;}
+/* message stays INK */
+.cn-amount-input .gallery{display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:24px 32px; max-width:760px;}
+.cn-amount-input .gallery .cap{font:400 12px/1.3 var(--font); color:var(--text); opacity:.55; margin:0 0 8px;}
+@media (prefers-reduced-motion: reduce){
+
+}
+@media (max-width:480px){
+.cn-amount-input .ai-group, .cn-amount-input .gallery{max-width:none;}
+.cn-amount-input .gallery{grid-template-columns:1fr;}
+}
+
+/* ============================================================
+   Banner  (from snippets/Banner.reference.html)
+   Aria: role="alert", role="status", aria-label
+   Scope: .cn-banner   ============================================================ */
+.cn-banner{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 140ms ease;
+  --spring: 300ms cubic-bezier(.5,1.6,.4,1);
+  --press: 90ms cubic-bezier(0,0,.58,1);
+  --err-bg: var(--rag-error-background);
+  --warn-bg: var(--rag-warning-background);
+  --ok-bg: var(--rag-success-background);
+  --info-bg: var(--rag-information-background);
+  --on-dark: var(--rag-text-on-dark);
+  --on-light: var(--rag-text-on-light);
+  --on-ok: var(--text-on-success);
+  --text: var(--text-default);
+  --page: var(--background-default);
+  --press-travel: var(--component-type-button-family-press-travel);
+  --press-darken: var(--component-type-button-family-press-darken);
+}
+.cn-banner h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-banner .bwrap{width:var(--demo-width, 720px); max-width:100%; container-type:inline-size;}
+/* per-variant fill + ink — each ink is its most specific ruled role (see header) */
+.cn-banner .banner.err{--fill:var(--err-bg); --ink:var(--on-dark);}
+.cn-banner .banner.warn{--fill:var(--warn-bg); --ink:var(--on-light);}
+.cn-banner .banner.ok{--fill:var(--ok-bg); --ink:var(--on-ok);}
+.cn-banner .banner.info{--fill:var(--info-bg); --ink:var(--on-light);}
+/* the banner — full-width solid fill, SURFACE radius role */
+.cn-banner .banner{display:flex; gap:8px; align-items:flex-start; padding:12px 16px; margin:12px 0;
+    background:var(--fill); color:var(--ink); border-radius:var(--border-radius-surface);}
+.cn-banner .banner .ic{flex:none; height:24px; display:inline-flex; align-items:center; color:var(--ink); --mark:var(--fill);}
+.cn-banner .banner .ic svg{width:20px; height:20px; display:block; fill:currentColor;}
+.cn-banner .banner .main{flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:8px;}
+.cn-banner .banner .main p{margin:0;}
+.cn-banner .banner .main a{color:inherit; font-weight:500; text-decoration:underline; text-underline-offset:3px;
+    text-decoration-thickness:1px; cursor:pointer; transition:text-decoration-thickness var(--ease);}
+.cn-banner .banner .main a:hover, .cn-banner .banner .main a:active{text-decoration-thickness:2px;}
+.cn-banner .banner .main a:focus-visible{outline:2px solid currentColor; outline-offset:2px;}
+/* actions — ghost buttons on the fill; overlay direction follows the ink (white ink → white
+     overlay, dark ink → black overlay); active > hover (WCAG state contrast) */
+.cn-banner .banner .actions{display:flex; gap:8px; justify-content:flex-end; margin-top:8px; margin-right:-16px;}
+.cn-banner .banner .actions .abtn{appearance:none; border:0; background:transparent; color:var(--ink);
+    height:44px; min-width:96px; padding:0 20px; justify-content:center; cursor:pointer;
+    border-radius:var(--border-radius-surface); transition:background var(--ease), transform var(--spring);}
+.cn-banner .banner .actions .abtn:hover{background:color-mix(in srgb, var(--ink) 14%, transparent);}
+.cn-banner .banner .actions .abtn:active{background:color-mix(in srgb, var(--ink) 22%, transparent);}
+.cn-banner .banner .actions .abtn:focus-visible{outline:2px solid var(--ink); outline-offset:-2px;}
+.cn-banner .banner:has(.actions){padding-bottom:0;}
+/* actions sit flush to the bottom edge (Legacy global mechanic) */
+/* dismiss × — 24px visual, 44px hit target; colour-only states pending partial injection */
+.cn-banner .banner .x{--phys-size:24;            /* LOCAL geometry override — 24px control (conductor, wave-1 reconcile) */
+    position:relative; flex:none; display:inline-flex; width:24px; height:24px; padding:0; border:0;
+    background:transparent; color:inherit; cursor:pointer; align-items:center; justify-content:center;
+    border-radius:var(--border-radius-surface); transition:background var(--ease), transform var(--spring);}
+.cn-banner .banner .x::before{content:""; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:44px; height:44px;}
+.cn-banner .banner .x svg{width:16px; height:16px; fill:currentColor;}
+.cn-banner .banner .x:hover{background:color-mix(in srgb, var(--ink) 14%, transparent);}
+.cn-banner .banner .x:active{background:color-mix(in srgb, var(--ink) 22%, transparent);}
+.cn-banner .banner .x:focus-visible{outline:2px solid currentColor; outline-offset:2px;}
+/* ===== AUTO-PARTIAL press-physics START (button-family) ===== */
+/* INJECTED from Button.reference.html (partial "press-physics", group button-family —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+.cn-banner :is(.banner .x, .cn-banner .banner .actions .abtn):hover{transform:scale(calc(1 + var(--press-travel)/var(--phys-size)));}
+.cn-banner :is(.banner .x, .cn-banner .banner .actions .abtn).full:hover{transform:none;}
+/* full-width can't grow — would overflow */
+.cn-banner :is(.banner .x, .cn-banner .banner .actions .abtn):active{transform:scale(calc(1 - var(--press-travel)/var(--phys-size))); filter:brightness(var(--press-darken)); transition:transform var(--press), filter var(--press);}
+.cn-banner :is(.banner .x, .cn-banner .banner .actions .abtn):disabled:hover, .cn-banner :is(.banner .x, .cn-banner .banner .actions .abtn).is-disabled:hover{transform:none; filter:none;}
+/* disabled stays put */
+/* WCAG 2.3.3 — the partial carries its OWN reduced-motion override (ADR-0013: rides inside, never per-file) */
+@media (prefers-reduced-motion: reduce){
+.cn-banner :is(.banner .x, .cn-banner .banner .actions .abtn):hover, .cn-banner :is(.banner .x, .cn-banner .banner .actions .abtn):active{transform:none !important; filter:none !important;}
+}
+/* ===== AUTO-PARTIAL press-physics END ===== */
+.cn-banner .banner.removing{display:none;}
+@container (max-width: 480px){
+.cn-banner .banner .actions{flex-direction:column; gap:8px; align-items:stretch;}
+.cn-banner .banner .actions .abtn{width:100%;}
+}
 @media (prefers-reduced-motion: reduce){
 
 }
@@ -3132,6 +3420,162 @@
 }
 
 /* ============================================================
+   Drawer  (from snippets/Drawer.reference.html)
+   Aria: role="dialog", aria-modal, aria-labelledby, aria-describedby, aria-label
+   Scope: .cn-drawer   ============================================================ */
+.cn-drawer{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 160ms cubic-bezier(.4,0,.2,1);
+  --spring: 300ms cubic-bezier(.5,1.6,.4,1);
+  --fade: 140ms ease;
+  --press: 90ms cubic-bezier(0,0,.58,1);
+  --phys-size: 120;
+  --surface: var(--tertiary-background-default);
+  --elev-bd: var(--elevation-border);
+  --shadow: var(--elevation-functional);
+  --overlay: var(--overlay-version1);
+  --text: var(--text-default);
+  --icon: var(--icon-default);
+  --pri: var(--button-primary-background-default);
+  --pri-hover: var(--button-primary-background-hover);
+  --on-pri: var(--button-primary-label-default);
+  --sec-bd: var(--tertiary-border-default);
+  --sec-hover: var(--tertiary-background-hover);
+  --focus: var(--focus-ring);
+  --page: var(--background-default);
+  --line: var(--border-subtle);
+  --press-travel: var(--component-type-button-family-press-travel);
+  --press-darken: var(--component-type-button-family-press-darken);
+}
+/* LOCAL geometry — text buttons ≈120 (B-D7 divisor) */
+.cn-drawer h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-drawer .bg-content{opacity:.85; max-width:60ch; line-height:1.6;}
+/* canon Button mirror — namespaced .dbtn (see header); type via composite classes in markup */
+.cn-drawer .dbtn{height:44px; min-width:96px; padding:0 20px; border:0; border-radius:var(--border-radius-control);
+    cursor:pointer; justify-content:center; transition:background var(--ease), transform var(--spring);}
+.cn-drawer .dbtn.primary{background:var(--pri); color:var(--on-pri);}
+.cn-drawer .dbtn.primary:hover{background:var(--pri-hover);}
+.cn-drawer .dbtn.secondary{background:transparent; color:var(--text); border:1px solid var(--sec-bd);}
+.cn-drawer .dbtn.secondary:hover{background:var(--sec-hover);}
+.cn-drawer .dbtn:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+/* ===== AUTO-PARTIAL press-physics START (button-family) ===== */
+/* INJECTED from Button.reference.html (partial "press-physics", group button-family —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+.cn-drawer :is(.dbtn, .cn-drawer .sheet .close):hover{transform:scale(calc(1 + var(--press-travel)/var(--phys-size)));}
+.cn-drawer :is(.dbtn, .cn-drawer .sheet .close).full:hover{transform:none;}
+/* full-width can't grow — would overflow */
+.cn-drawer :is(.dbtn, .cn-drawer .sheet .close):active{transform:scale(calc(1 - var(--press-travel)/var(--phys-size))); filter:brightness(var(--press-darken)); transition:transform var(--press), filter var(--press);}
+.cn-drawer :is(.dbtn, .cn-drawer .sheet .close):disabled:hover, .cn-drawer :is(.dbtn, .cn-drawer .sheet .close).is-disabled:hover{transform:none; filter:none;}
+/* disabled stays put */
+/* WCAG 2.3.3 — the partial carries its OWN reduced-motion override (ADR-0013: rides inside, never per-file) */
+@media (prefers-reduced-motion: reduce){
+.cn-drawer :is(.dbtn, .cn-drawer .sheet .close):hover, .cn-drawer :is(.dbtn, .cn-drawer .sheet .close):active{transform:none !important; filter:none !important;}
+}
+/* ===== AUTO-PARTIAL press-physics END ===== */
+/* scrim + sheet */
+.cn-drawer .scrim{position:fixed; inset:0; background:var(--overlay); opacity:0; visibility:hidden;
+    transition:opacity var(--fade), visibility var(--fade); z-index:5;}
+.cn-drawer .scrim.open{opacity:1; visibility:visible;}
+.cn-drawer .sheet{position:fixed; top:0; right:0; bottom:0; width:400px; max-width:100%; z-index:6;
+    background:var(--surface); border-left:1px solid var(--elev-bd); border-radius:var(--border-radius-surface);
+    box-shadow:0 0 24px var(--shadow); display:flex; flex-direction:column;
+    transform:translateX(100%); visibility:hidden; transition:transform var(--spring), visibility var(--spring);}
+.cn-drawer .sheet.open{transform:none; visibility:visible;}
+.cn-drawer .sheet-head{display:flex; align-items:flex-start; gap:8px; padding:24px 24px 16px;}
+.cn-drawer .sheet-head h3{margin:0; flex:1 1 auto;}
+.cn-drawer .sheet-body{flex:1 1 auto; overflow-y:auto; padding:0 24px;}
+.cn-drawer .sheet-body p{margin:0 0 16px;}
+.cn-drawer .sheet-foot{display:flex; gap:12px; justify-content:flex-start; padding:16px 24px 24px;
+    border-top:1px solid var(--line);}
+/* primary first, left-aligned (Modals order) */
+.cn-drawer .sheet .close{--phys-size:36;                  /* LOCAL geometry override — 36px control (conductor,
+                                                    wave-1 reconcile: receipt said 44, the file measures 36;
+                                                    pixel-true travel wants the element's own size) */
+    position:relative; flex:none; width:36px; height:36px; margin:-4px -8px 0 0; border:0;
+    border-radius:var(--border-radius-control); background:transparent; color:var(--icon); cursor:pointer;
+    display:inline-flex; align-items:center; justify-content:center; transition:background var(--ease), transform var(--spring);}
+.cn-drawer .sheet .close::before{content:""; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:44px; height:44px;}
+.cn-drawer .sheet .close:hover{background:var(--sec-hover);}
+.cn-drawer .sheet .close:active{background:var(--sec-hover); filter:brightness(var(--press-darken));}
+.cn-drawer .sheet .close svg{width:14px; height:14px; fill:currentColor;}
+.cn-drawer .sheet .close:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+/* static anatomy specimen — the sheet, in-flow, for review panes */
+.cn-drawer .specimen{position:static; transform:none; visibility:visible; width:400px; max-width:100%;
+    height:auto; border:1px solid var(--line); box-shadow:none; z-index:auto;}
+@media (max-width:480px){
+.cn-drawer .sheet{width:100%;}
+.cn-drawer .sheet-foot{flex-direction:column;}
+.cn-drawer .sheet-foot .dbtn{width:100%;}
+}
+@media (prefers-reduced-motion: reduce){
+.cn-drawer .sheet{transform:none; transition:visibility .01ms;}
+.cn-drawer .sheet:not(.open){display:none;}
+.cn-drawer .close:active{filter:none !important;}
+}
+
+/* ============================================================
+   Empty-state  (from snippets/Empty-state.reference.html)
+   Aria: aria-labelledby, aria-hidden="true"
+   Scope: .cn-empty-state   ============================================================ */
+.cn-empty-state{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 140ms ease;
+  --spring: 300ms cubic-bezier(.5,1.6,.4,1);
+  --press: 90ms cubic-bezier(0,0,.58,1);
+  --text: var(--text-default);
+  --page: var(--background-default);
+  --line: var(--border-subtle);
+  --pri: var(--button-primary-background-default);
+  --pri-hover: var(--button-primary-background-hover);
+  --on-pri: var(--button-primary-label-default);
+  --focus: var(--focus-ring);
+  --press-travel: var(--component-type-button-family-press-travel);
+  --press-darken: var(--component-type-button-family-press-darken);
+}
+.cn-empty-state h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+/* the empty state — centred column inside whatever region is empty */
+.cn-empty-state .empty{display:flex; flex-direction:column; align-items:center; text-align:center;
+    gap:12px; padding:48px 24px; max-width:480px; margin:0 auto;
+    border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
+.cn-empty-state .empty .glyph{width:48px; height:48px; color:var(--text); opacity:.4;}
+.cn-empty-state .empty .glyph svg{width:48px; height:48px; display:block; fill:currentColor;}
+.cn-empty-state .empty h3{margin:0;}
+.cn-empty-state .empty p{margin:0; opacity:.6; max-width:40ch;}
+.cn-empty-state .empty .gap{height:4px;}
+/* one grid step between copy and action */
+/* primary action — canon Button mirror, namespaced .ebtn (see header); colour-only states */
+.cn-empty-state .ebtn{height:44px; min-width:96px; padding:0 20px; border:0; border-radius:var(--border-radius-control);
+    background:var(--pri); color:var(--on-pri); cursor:pointer; justify-content:center;
+    transition:background var(--ease), transform var(--spring);}
+.cn-empty-state .ebtn:hover{background:color-mix(in srgb, var(--pri) 70%, var(--page));}
+.cn-empty-state .ebtn:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+/* ===== AUTO-PARTIAL press-physics START (button-family) ===== */
+/* INJECTED from Button.reference.html (partial "press-physics", group button-family —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+.cn-empty-state .ebtn:hover{transform:scale(calc(1 + var(--press-travel)/var(--phys-size)));}
+.cn-empty-state .ebtn.full:hover{transform:none;}
+/* full-width can't grow — would overflow */
+.cn-empty-state .ebtn:active{transform:scale(calc(1 - var(--press-travel)/var(--phys-size))); filter:brightness(var(--press-darken)); transition:transform var(--press), filter var(--press);}
+.cn-empty-state .ebtn:disabled:hover, .cn-empty-state .ebtn.is-disabled:hover{transform:none; filter:none;}
+/* disabled stays put */
+/* WCAG 2.3.3 — the partial carries its OWN reduced-motion override (ADR-0013: rides inside, never per-file) */
+@media (prefers-reduced-motion: reduce){
+.cn-empty-state .ebtn:hover, .cn-empty-state .ebtn:active{transform:none !important; filter:none !important;}
+}
+/* ===== AUTO-PARTIAL press-physics END ===== */
+.cn-empty-state .empty a{color:inherit; font-weight:500; text-decoration:underline; text-underline-offset:3px;
+    text-decoration-thickness:1px; cursor:pointer; transition:text-decoration-thickness var(--ease);}
+.cn-empty-state .empty a:hover, .cn-empty-state .empty a:active{text-decoration-thickness:2px;}
+.cn-empty-state .empty a:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+@media (prefers-reduced-motion: reduce){
+
+}
+
+/* ============================================================
    Eyebrow  (from snippets/Eyebrow.reference.html)
    Scope: .cn-eyebrow   ============================================================ */
 .cn-eyebrow{
@@ -3150,6 +3594,156 @@
 /* WCAG 2.3.3 — honour reduced-motion (no motion here, kept for consistency across snippets) */
 @media (prefers-reduced-motion: reduce){
 
+}
+
+/* ============================================================
+   Form-layout  (from snippets/Form-layout.reference.html)
+   Aria: aria-invalid, aria-describedby, role="alert"
+   Scope: .cn-form-layout   ============================================================ */
+.cn-form-layout{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 200ms cubic-bezier(.4,0,.2,1);
+  --spring: 300ms cubic-bezier(.5,1.6,.4,1);
+  --press: 90ms cubic-bezier(0,0,.58,1);
+  --page: var(--background-default);
+  --text: var(--text-default);
+  --field-bg-default: var(--form-background-default);
+  --field-bg-hover: var(--form-background-hover);
+  --border-default: var(--form-border-default);
+  --border-active: var(--form-border-active);
+  --border-disabled: var(--form-border-disabled);
+  --icon: var(--icon-default);
+  --error: var(--rag-error);
+  --error-tint: var(--rag-error-tint);
+  --success: var(--rag-success);
+  --focus: var(--focus-ring);
+  --pri-default: var(--button-primary-background-default);
+  --pri-hover: var(--button-primary-background-hover);
+  --pri-pressed: var(--button-primary-background-pressed);
+  --pri-disabled: var(--button-primary-background-disabled);
+  --pri-label: var(--button-primary-label-default);
+  --pri-label-disabled: var(--button-primary-label-disabled);
+  --quat-hover: var(--button-quaternary-background-hover);
+  --quat-label: var(--button-quaternary-label-default);
+  --quat-label-disabled: var(--button-quaternary-label-disabled);
+  --press-travel: var(--component-type-button-family-press-travel);
+  --press-darken: var(--component-type-button-family-press-darken);
+}
+.cn-form-layout h2.sec{font:500 16px/1.3 var(--font); color:var(--text); opacity:.6; margin:2.5rem 0 .35rem;}
+.cn-form-layout p.note{font:400 14px/1.5 var(--font); color:var(--text); opacity:.75; margin:0 0 1.5rem; max-width:60ch;}
+.cn-form-layout .icn{width:18px; height:18px; display:block; flex-shrink:0;}
+/* ---------- field group (label + help + box + message) — Input-fields anatomy ---------- */
+.cn-form-layout .fl-form{max-width:420px;}
+.cn-form-layout .fl-form fieldset{border:0; margin:0; padding:0; min-width:0;}
+.cn-form-layout .fl-form legend{color:var(--text); margin:0 0 8px; padding:0;}
+.cn-form-layout .fl-intro{color:var(--text); margin:0 0 24px;}
+.cn-form-layout .fl-group{margin:0 0 32px;}
+.cn-form-layout .fl-lblrow{display:flex; gap:8px; align-items:center; margin:0 0 4px;}
+.cn-form-layout .fl-lblrow label{color:var(--text);}
+.cn-form-layout .fl-opt{color:var(--text);}
+/* "(optional)" — ink marker, never colour (Tranche-6 .req precedent) */
+.cn-form-layout .fl-help{color:var(--text); margin:0 0 8px;}
+/* (?) help — a real button, accessible name + tooltip (Input-fields pattern) */
+.cn-form-layout .fl-tip{position:relative; width:18px; height:18px; padding:0; border:0; background:transparent;
+    color:var(--icon); cursor:pointer; display:inline-flex; align-items:center; justify-content:center; border-radius:var(--border-radius-control);}
+.cn-form-layout .fl-tip:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+.cn-form-layout .fl-tip .tipbody{position:absolute; left:50%; transform:translateX(-50%); bottom:calc(100% + 8px);
+    background:var(--text); color:var(--page); font:500 12px/16px var(--font); padding:4px 8px; width:max-content;   /* 500: the 12px edge-weight floor */
+    max-width:220px; text-align:left; opacity:0; visibility:hidden; transition:opacity var(--ease); pointer-events:none; z-index:2;}
+.cn-form-layout .fl-tip:hover .tipbody, .cn-form-layout .fl-tip:focus-visible .tipbody{opacity:1; visibility:visible;}
+/* the boxed field — Input-fields lock-step (change it THERE) */
+.cn-form-layout .fl-box{display:flex; align-items:center; gap:16px; padding:8px 16px;
+    border:1px solid var(--border-default); background:var(--field-bg-default); border-radius:var(--border-radius-control); position:relative;
+    transition:border-color var(--ease), background var(--ease), box-shadow var(--ease); color:var(--icon);}
+.cn-form-layout .fl-box .fl-prefix{color:var(--text); white-space:nowrap; flex-shrink:0;}
+.cn-form-layout .fl-box input{flex:1; min-width:0; border:0; background:transparent; outline:none; padding:0;
+    font:400 16px/24px var(--font); color:var(--text);}
+.cn-form-layout .fl-box input::placeholder{color:var(--text); opacity:1; font-weight:400;}
+.cn-form-layout .fl-box:hover:not(:focus-within){background:var(--field-bg-hover);}
+.cn-form-layout .fl-box:focus-within{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--border-active); background:var(--page);}
+.cn-form-layout .fl-box input:focus{outline:none;}
+.cn-form-layout .fl-box:has(input:focus-visible){outline:2px solid var(--focus); outline-offset:2px;}
+:root[data-modality="pointer"] .cn-form-layout .fl-box:has(input:focus-visible){outline:none;}
+/* states */
+.cn-form-layout .fl-group.is-completed .fl-box input{font-weight:500;}
+.cn-form-layout .fl-group.is-error .fl-box{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--error); background:var(--page);}
+/* dark: error border goes full red (Input-fields, Dave 2026-07-02) */
+.cn-form-layout .fl-group.is-error .fl-box input{font-weight:500;}
+.cn-form-layout .fl-box input:disabled{color:var(--text-disabled); cursor:not-allowed;}
+.cn-form-layout .fl-group.is-disabled .fl-box{border-color:var(--border-disabled); color:var(--icon-disabled);}
+.cn-form-layout .fl-group.is-disabled .fl-lblrow label, .cn-form-layout .fl-group.is-disabled .fl-help, .cn-form-layout .fl-group.is-disabled .fl-prefix, .cn-form-layout .fl-group.is-disabled .fl-count{color:var(--text-disabled);}
+.cn-form-layout .fl-count{color:var(--text); text-align:right; margin:8px 0 0;}
+.cn-form-layout .fl-msg{display:flex; gap:8px; align-items:flex-start; margin:8px 0 0;}
+.cn-form-layout .fl-msg:empty{display:none;}
+.cn-form-layout .fl-msg .ic{flex-shrink:0; padding-top:4px; color:var(--error); --mark:var(--page);}
+/* rag roundel policy: shape = rag colour, mark knocks to page */
+/* policy dark: WHITE shape + black mark */
+.cn-form-layout .fl-msg.is-ok .ic{color:var(--success);}
+.cn-form-layout .fl-msg p{flex:1; min-width:0; color:var(--text); margin:0;}
+/* message text stays INK — colour is never the only channel */
+/* two-column row — proximity-grouped pairs (sort code + account number); stacks narrow */
+.cn-form-layout .fl-row{display:grid; grid-template-columns:1fr 1fr; gap:0 16px; align-items:start;}
+@media (max-width:520px){
+.cn-form-layout .fl-row{grid-template-columns:1fr;}
+}
+/* ---------- form-level error summary (ctkn-020) ---------- */
+.cn-form-layout .fl-summary{display:none; border:1px solid var(--error); border-left:4px solid var(--error);
+    background:var(--error-tint); padding:16px; margin:0 0 32px; border-radius:var(--border-radius-control);}
+.cn-form-layout .fl-summary.is-open{display:block;}
+.cn-form-layout .fl-summary .fl-sumtitle{display:flex; gap:8px; align-items:flex-start; color:var(--text); margin:0 0 8px;}
+.cn-form-layout .fl-summary .ic{flex-shrink:0; color:var(--error); --mark:var(--error-tint);}
+/* roundel mark knocks to the tint ground */
+.cn-form-layout .fl-summary ul{margin:0; padding:0 0 0 24px; color:var(--text);}
+.cn-form-layout .fl-summary li{margin:0 0 4px;}
+.cn-form-layout .fl-summary li:last-child{margin-bottom:0;}
+.cn-form-layout .fl-summary a{color:var(--text); text-decoration:underline; text-underline-offset:2px;}
+.cn-form-layout .fl-summary a:hover{text-decoration-thickness:2px;}
+.cn-form-layout .fl-summary a:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+/* ---------- action bar — button-family candidates (ADR-0013; registration = conductor) ---------- */
+.cn-form-layout .fl-actions{display:flex; gap:12px; justify-content:flex-end; align-items:center; margin:8px 0 0;}
+.cn-form-layout .fl-btn{height:44px; min-width:96px; padding:0 20px; border:0; border-radius:var(--border-radius-control); cursor:pointer;
+    justify-content:center; gap:8px;
+    --phys-size:120;   /* LOCAL geometry (B-D7): text buttons ≈120 wide — divides the pixel-true travel */
+    transition:background var(--ease), border-color var(--ease), transform var(--spring), filter var(--press);}
+.cn-form-layout .fl-btn:focus-visible{outline:2px solid var(--quat-label); outline-offset:2px;}
+/* ===== AUTO-PARTIAL press-physics START (button-family) ===== */
+/* INJECTED from Button.reference.html (partial "press-physics", group button-family —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+.cn-form-layout .fl-btn:hover{transform:scale(calc(1 + var(--press-travel)/var(--phys-size)));}
+.cn-form-layout .fl-btn.full:hover{transform:none;}
+/* full-width can't grow — would overflow */
+.cn-form-layout .fl-btn:active{transform:scale(calc(1 - var(--press-travel)/var(--phys-size))); filter:brightness(var(--press-darken)); transition:transform var(--press), filter var(--press);}
+.cn-form-layout .fl-btn:disabled:hover, .cn-form-layout .fl-btn.is-disabled:hover{transform:none; filter:none;}
+/* disabled stays put */
+/* WCAG 2.3.3 — the partial carries its OWN reduced-motion override (ADR-0013: rides inside, never per-file) */
+@media (prefers-reduced-motion: reduce){
+.cn-form-layout .fl-btn:hover, .cn-form-layout .fl-btn:active{transform:none !important; filter:none !important;}
+}
+/* ===== AUTO-PARTIAL press-physics END ===== */
+.cn-form-layout .fl-btn.fl-primary{background:var(--pri-default); color:var(--pri-label);}
+.cn-form-layout .fl-btn.fl-primary:hover{background:color-mix(in srgb, var(--pri-default) 70%, var(--page));}
+/* B-D3 operational 0.70 opacity over the page */
+.cn-form-layout .fl-btn.fl-primary:active{background:var(--pri-pressed);}
+.cn-form-layout .fl-btn.fl-primary:disabled{background:var(--pri-disabled); color:var(--pri-label-disabled); cursor:not-allowed;}
+.cn-form-layout .fl-btn.fl-ghost{background:transparent; color:var(--quat-label);}
+.cn-form-layout .fl-btn.fl-ghost:hover{background:var(--quat-hover);}
+.cn-form-layout .fl-btn.fl-ghost:active{background:var(--quat-hover);}
+.cn-form-layout .fl-btn.fl-ghost:disabled{background:transparent; color:var(--quat-label-disabled); cursor:not-allowed;}
+@media (max-width:520px){
+.cn-form-layout .fl-actions{flex-direction:column-reverse; align-items:stretch;}
+/* stack: primary promoted to the top (Tranche-6) */
+.cn-form-layout .fl-btn{width:100%;}
+}
+.cn-form-layout .gallery{display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:24px 32px; max-width:760px;}
+.cn-form-layout .gallery .cap{font:400 12px/1.3 var(--font); color:var(--text); opacity:.55; margin:0 0 8px;}
+@media (prefers-reduced-motion: reduce){
+
+}
+@media (max-width:480px){
+.cn-form-layout .fl-form, .cn-form-layout .gallery{max-width:none;}
+.cn-form-layout .gallery{grid-template-columns:1fr;}
 }
 
 /* ============================================================
@@ -3239,6 +3833,315 @@
 }
 
 /* ============================================================
+   Modal-lightbox  (from snippets/Modal-lightbox.reference.html)
+   Aria: role="dialog", aria-modal, aria-label, role="status"
+   Scope: .cn-modal-lightbox   ============================================================ */
+.cn-modal-lightbox{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 160ms cubic-bezier(.4,0,.2,1);
+  --fade: 140ms ease;
+  --phys-size: 44;
+  --spring: 300ms cubic-bezier(.5,1.6,.4,1);
+  --press: 90ms cubic-bezier(0,0,.58,1);
+  --surface: var(--tertiary-background-default);
+  --elev-bd: var(--elevation-border);
+  --shadow: var(--elevation-functional);
+  --overlay: var(--overlay-version1);
+  --text: var(--text-default);
+  --icon: var(--icon-default);
+  --hoverbg: var(--tertiary-background-hover);
+  --focus: var(--focus-ring);
+  --page: var(--background-default);
+  --media: var(--tertiary-background-hover);
+  --media2: var(--button-primary-background-disabled);
+  --press-travel: var(--component-type-button-family-press-travel);
+  --press-darken: var(--component-type-button-family-press-darken);
+}
+.cn-modal-lightbox .bg-content{opacity:.85; max-width:60ch; line-height:1.6;}
+/* overlay */
+.cn-modal-lightbox .lb-overlay{position:fixed; inset:0; background:var(--overlay); display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:16px; padding:24px; z-index:10;
+    opacity:0; visibility:hidden; transition:opacity var(--fade), visibility var(--fade);}
+.cn-modal-lightbox .lb-overlay.open{opacity:1; visibility:visible;}
+/* control tiles — Icon-button geometry on a surface tile (never bare on the scrim) */
+.cn-modal-lightbox .lb-ctl{width:44px; height:44px; min-width:44px; border:1px solid var(--elev-bd); border-radius:var(--border-radius-control);
+    background:var(--surface); color:var(--icon); cursor:pointer; display:inline-flex; align-items:center;
+    justify-content:center; box-shadow:0 2px 8px var(--shadow); transition:background var(--ease), transform var(--spring);}
+.cn-modal-lightbox .lb-ctl svg{width:18px; height:18px; display:block; fill:currentColor;}
+.cn-modal-lightbox .lb-ctl:hover{background:var(--hoverbg);}
+.cn-modal-lightbox .lb-ctl:active{background:var(--hoverbg); filter:brightness(var(--press-darken));}
+.cn-modal-lightbox .lb-ctl:disabled{opacity:.4; cursor:not-allowed; filter:none;}
+.cn-modal-lightbox .lb-ctl:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+/* ===== AUTO-PARTIAL press-physics START (button-family) ===== */
+/* INJECTED from Button.reference.html (partial "press-physics", group button-family —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+.cn-modal-lightbox .lb-ctl:hover{transform:scale(calc(1 + var(--press-travel)/var(--phys-size)));}
+.cn-modal-lightbox .lb-ctl.full:hover{transform:none;}
+/* full-width can't grow — would overflow */
+.cn-modal-lightbox .lb-ctl:active{transform:scale(calc(1 - var(--press-travel)/var(--phys-size))); filter:brightness(var(--press-darken)); transition:transform var(--press), filter var(--press);}
+.cn-modal-lightbox .lb-ctl:disabled:hover, .cn-modal-lightbox .lb-ctl.is-disabled:hover{transform:none; filter:none;}
+/* disabled stays put */
+/* WCAG 2.3.3 — the partial carries its OWN reduced-motion override (ADR-0013: rides inside, never per-file) */
+@media (prefers-reduced-motion: reduce){
+.cn-modal-lightbox .lb-ctl:hover, .cn-modal-lightbox .lb-ctl:active{transform:none !important; filter:none !important;}
+}
+/* ===== AUTO-PARTIAL press-physics END ===== */
+.cn-modal-lightbox .lb-top{width:100%; max-width:720px; display:flex; justify-content:flex-end;}
+.cn-modal-lightbox .lb-row{width:100%; max-width:720px; display:flex; align-items:center; gap:16px;}
+.cn-modal-lightbox .lb-stage{flex:1 1 auto; min-width:0;}
+/* the media placeholder — decorative (aria-hidden); real consumers supply imagery */
+.cn-modal-lightbox .lb-media{width:100%; height:400px; background:linear-gradient(135deg, var(--media) 0%, var(--media2) 100%);
+    border:1px solid var(--elev-bd); border-radius:var(--border-radius-surface); box-shadow:0 0 24px var(--shadow);}
+/* caption bar — on a surface tile, never on the scrim */
+.cn-modal-lightbox .lb-caption{width:100%; max-width:720px; display:flex; align-items:center; gap:12px;
+    background:var(--surface); border:1px solid var(--elev-bd); border-radius:var(--border-radius-surface);
+    box-shadow:0 2px 8px var(--shadow); padding:12px 16px;}
+.cn-modal-lightbox .lb-caption p{margin:0; flex:1 1 auto; min-width:0;}
+.cn-modal-lightbox .lb-caption .count{flex:none; opacity:.7;}
+@media (max-width:560px){
+.cn-modal-lightbox .lb-row{gap:8px;}
+.cn-modal-lightbox .lb-media{height:280px;}
+}
+@media (prefers-reduced-motion: reduce){
+.cn-modal-lightbox .lb-ctl:active{filter:none !important;}
+}
+
+/* ============================================================
+   Popover  (from snippets/Popover.reference.html)
+   Aria: role="dialog", aria-labelledby, aria-expanded, aria-controls, aria-haspopup, aria-label
+   Scope: .cn-popover   ============================================================ */
+.cn-popover{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 150ms ease;
+  --spring: 300ms cubic-bezier(.5,1.6,.4,1);
+  --press: 90ms cubic-bezier(0,0,.58,1);
+  --surface: var(--background-default);
+  --pop-border: var(--elevation-border);
+  --shadow: var(--elevation-functional);
+  --text: var(--text-default);
+  --page: var(--background-default);
+  --focus: var(--focus-ring);
+  --hoverbg: var(--tertiary-background-hover);
+  --press-travel: var(--component-type-button-family-press-travel);
+  --press-darken: var(--component-type-button-family-press-darken);
+}
+.cn-popover p.intro{max-width:60ch; line-height:1.6; opacity:.85;}
+.cn-popover .row{display:flex; margin:36px 0; gap:16px; flex-wrap:wrap;}
+/* the popover — fixed, JS-placed; tail tracks the trigger (Tooltip mechanics) */
+.cn-popover .pop{--tail-x:50%; position:fixed; z-index:50; width:max-content; max-width:320px;
+    background:var(--surface); color:var(--text); border:1px solid var(--pop-border);
+    border-radius:var(--border-radius-surface); box-shadow:0 0 16px var(--shadow); padding:16px;
+    opacity:0; pointer-events:none; transition:opacity var(--ease);}
+.cn-popover .pop.show{opacity:1; pointer-events:auto;}
+.cn-popover .pop::after{content:""; position:absolute; left:var(--tail-x,50%); width:10px; height:10px;
+    background:var(--surface); border:1px solid var(--pop-border);}
+.cn-popover .pop.pos-above::after{top:100%;    transform:translate(-50%,-50%) rotate(45deg); border-top:0; border-left:0;}
+.cn-popover .pop.pos-below::after{bottom:100%; transform:translate(-50%,-50%) rotate(45deg); border-bottom:0; border-right:0;}
+.cn-popover .pop-head{display:flex; align-items:flex-start; gap:8px; margin-bottom:8px;}
+.cn-popover .pop-head .t-ed-body{margin:0; flex:1 1 auto;}
+.cn-popover .pop-body{margin:0 0 12px;}
+.cn-popover .pop a{color:inherit; font-weight:500; text-decoration:underline; text-underline-offset:3px;
+    text-decoration-thickness:1px; cursor:pointer; transition:text-decoration-thickness var(--ease);}
+.cn-popover .pop a:hover, .cn-popover .pop a:active{text-decoration-thickness:2px;}
+.cn-popover .pop a:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+/* close × — 24px visual, 44px hit target; colour-only states pending partial injection */
+.cn-popover .pop .x{position:relative; flex:none; display:inline-flex; width:24px; height:24px; margin:-4px -4px 0 0;
+    padding:0; border:0; background:transparent; color:inherit; cursor:pointer; align-items:center;
+    justify-content:center; border-radius:var(--border-radius-surface); transition:background var(--ease), transform var(--spring);}
+.cn-popover .pop .x::before{content:""; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:44px; height:44px;}
+.cn-popover .pop .x svg{width:14px; height:14px; fill:currentColor;}
+.cn-popover .pop .x:hover{background:var(--hoverbg);}
+.cn-popover .pop .x:active{background:var(--hoverbg); filter:brightness(var(--press-darken));}
+.cn-popover .pop .x:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+/* ===== AUTO-PARTIAL press-physics START (button-family) ===== */
+/* INJECTED from Button.reference.html (partial "press-physics", group button-family —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+.cn-popover .pop .x:hover{transform:scale(calc(1 + var(--press-travel)/var(--phys-size)));}
+.cn-popover .pop .x.full:hover{transform:none;}
+/* full-width can't grow — would overflow */
+.cn-popover .pop .x:active{transform:scale(calc(1 - var(--press-travel)/var(--phys-size))); filter:brightness(var(--press-darken)); transition:transform var(--press), filter var(--press);}
+.cn-popover .pop .x:disabled:hover, .cn-popover .pop .x.is-disabled:hover{transform:none; filter:none;}
+/* disabled stays put */
+/* WCAG 2.3.3 — the partial carries its OWN reduced-motion override (ADR-0013: rides inside, never per-file) */
+@media (prefers-reduced-motion: reduce){
+.cn-popover .pop .x:hover, .cn-popover .pop .x:active{transform:none !important; filter:none !important;}
+}
+/* ===== AUTO-PARTIAL press-physics END ===== */
+@media (prefers-reduced-motion: reduce){
+.cn-popover .pop .x:active{filter:none !important;}
+}
+
+/* ============================================================
+   Secure-entry  (from snippets/Secure-entry.reference.html)
+   Aria: role="group", aria-label, aria-describedby, autocomplete="one-time-code"
+   Scope: .cn-secure-entry   ============================================================ */
+.cn-secure-entry{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 200ms cubic-bezier(.4,0,.2,1);
+  --spring: 300ms cubic-bezier(.5,1.6,.4,1);
+  --press: 90ms cubic-bezier(0,0,.58,1);
+  --page: var(--background-default);
+  --text: var(--text-default);
+  --field-bg-default: var(--form-background-default);
+  --field-bg-hover: var(--form-background-hover);
+  --border-default: var(--form-border-default);
+  --border-active: var(--form-border-active);
+  --border-disabled: var(--form-border-disabled);
+  --icon: var(--icon-default);
+  --error: var(--rag-error);
+  --success: var(--rag-success);
+  --focus: var(--focus-ring);
+  --quat-hover: var(--button-quaternary-background-hover);
+  --quat-label: var(--button-quaternary-label-default);
+  --quat-label-disabled: var(--button-quaternary-label-disabled);
+  --press-travel: var(--component-type-button-family-press-travel);
+  --press-darken: var(--component-type-button-family-press-darken);
+}
+.cn-secure-entry h2.sec{font:500 16px/1.3 var(--font); color:var(--text); opacity:.6; margin:2.5rem 0 .35rem;}
+.cn-secure-entry p.note{font:400 14px/1.5 var(--font); color:var(--text); opacity:.75; margin:0 0 1.5rem; max-width:60ch;}
+.cn-secure-entry .icn{width:18px; height:18px; display:block; flex-shrink:0;}
+/* ---------- the code group ---------- */
+.cn-secure-entry .se-group{margin:0 0 32px;}
+.cn-secure-entry .se-lblrow{display:flex; gap:8px; align-items:center; margin:0 0 8px; color:var(--text);}
+.cn-secure-entry .se-lblrow .ic-lead{display:inline-flex; color:var(--icon); flex-shrink:0;}
+.cn-secure-entry .se-cells{display:flex; gap:8px; flex-wrap:wrap; align-items:center;}
+.cn-secure-entry .se-cell{width:48px; height:56px; text-align:center; padding:0;
+    border:1px solid var(--border-default); background:var(--field-bg-default); border-radius:var(--border-radius-control);
+    color:var(--text); caret-color:var(--text);
+    transition:border-color var(--ease), background var(--ease);}
+.cn-secure-entry .se-cell::-webkit-outer-spin-button, .cn-secure-entry .se-cell::-webkit-inner-spin-button{-webkit-appearance:none; margin:0;}
+.cn-secure-entry .se-cell:hover:not(:focus){background:var(--field-bg-hover);}
+.cn-secure-entry .se-cell:focus{outline:none; border-color:var(--border-active); background:var(--page);}
+.cn-secure-entry .se-cell:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+:root[data-modality="pointer"] .cn-secure-entry .se-cell:focus-visible{outline:none;}
+.cn-secure-entry .se-cell:disabled{color:var(--text-disabled); border-color:var(--border-disabled); background:var(--field-bg-hover); cursor:not-allowed;}
+.cn-secure-entry .se-sep{color:var(--text); flex-shrink:0;}
+.cn-secure-entry .se-group.is-done .se-cell{border-color:var(--border-disabled);}
+.cn-secure-entry .se-group.is-error .se-cell{border-color:var(--border-active);}
+/* mono — the RAG signal lives in the message */
+/* dark: red border reads (Input-fields error precedent) */
+.cn-secure-entry .se-msg{display:flex; gap:8px; align-items:flex-start; margin:8px 0 0;}
+.cn-secure-entry .se-msg:empty{display:none;}
+.cn-secure-entry .se-msg .ic{flex-shrink:0; padding-top:4px; color:var(--error); --mark:var(--page);}
+/* rag roundel policy */
+/* policy dark: WHITE shape + black mark */
+.cn-secure-entry .se-msg.is-ok .ic{color:var(--success);}
+.cn-secure-entry .se-msg p{flex:1; min-width:0; color:var(--text); margin:0;}
+/* message stays INK */
+/* resend — quaternary ghost; button-family candidate (registration = conductor) */
+.cn-secure-entry .se-resendrow{display:flex; gap:8px; align-items:center; margin:16px 0 0;}
+.cn-secure-entry .se-btn{height:44px; min-width:96px; padding:0 20px; border:0; border-radius:var(--border-radius-control); cursor:pointer;
+    justify-content:center; gap:8px; background:transparent; color:var(--quat-label);
+    --phys-size:120;   /* LOCAL geometry (B-D7) */
+    transition:background var(--ease), border-color var(--ease), transform var(--spring), filter var(--press);}
+/* ===== AUTO-PARTIAL press-physics START (button-family) ===== */
+/* INJECTED from Button.reference.html (partial "press-physics", group button-family —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+.cn-secure-entry .se-btn:hover{transform:scale(calc(1 + var(--press-travel)/var(--phys-size)));}
+.cn-secure-entry .se-btn.full:hover{transform:none;}
+/* full-width can't grow — would overflow */
+.cn-secure-entry .se-btn:active{transform:scale(calc(1 - var(--press-travel)/var(--phys-size))); filter:brightness(var(--press-darken)); transition:transform var(--press), filter var(--press);}
+.cn-secure-entry .se-btn:disabled:hover, .cn-secure-entry .se-btn.is-disabled:hover{transform:none; filter:none;}
+/* disabled stays put */
+/* WCAG 2.3.3 — the partial carries its OWN reduced-motion override (ADR-0013: rides inside, never per-file) */
+@media (prefers-reduced-motion: reduce){
+.cn-secure-entry .se-btn:hover, .cn-secure-entry .se-btn:active{transform:none !important; filter:none !important;}
+}
+/* ===== AUTO-PARTIAL press-physics END ===== */
+.cn-secure-entry .se-btn:hover{background:var(--quat-hover);}
+.cn-secure-entry .se-btn:active{background:var(--quat-hover);}
+.cn-secure-entry .se-btn:focus-visible{outline:2px solid var(--quat-label); outline-offset:2px;}
+.cn-secure-entry .se-btn:disabled{background:transparent; color:var(--quat-label-disabled); cursor:not-allowed;}
+.cn-secure-entry .se-wait{color:var(--text);}
+.cn-secure-entry .gallery{display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:24px 32px; max-width:760px;}
+.cn-secure-entry .gallery .cap{font:400 12px/1.3 var(--font); color:var(--text); opacity:.55; margin:0 0 8px;}
+@media (prefers-reduced-motion: reduce){
+
+}
+@media (max-width:480px){
+.cn-secure-entry .gallery{max-width:none; grid-template-columns:1fr;}
+.cn-secure-entry .se-cell{width:40px; height:48px;}
+/* numeral HOLDS figure-3 (deliberate delta from T9's 20px downshift) */
+}
+
+/* ============================================================
+   Skeleton-loader  (from snippets/Skeleton-loader.reference.html)
+   Aria: role="status", aria-busy, aria-hidden="true"
+   Scope: .cn-skeleton-loader   ============================================================ */
+.cn-skeleton-loader{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 140ms ease;
+  --bone: var(--tertiary-background-hover);
+  --page: var(--background-default);
+  --text: var(--text-default);
+  --line: var(--border-subtle);
+}
+.cn-skeleton-loader h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-skeleton-loader .visually-hidden{position:absolute; width:1px; height:1px; margin:-1px; padding:0; border:0;
+    clip:rect(0 0 0 0); clip-path:inset(50%); overflow:hidden; white-space:nowrap;}
+/* the bone — one element, shimmer rides the background */
+.cn-skeleton-loader .bone{display:block; background:var(--bone); border-radius:var(--border-radius-indicator);
+    background-image:linear-gradient(90deg, var(--bone) 0%, color-mix(in srgb, var(--bone) 50%, var(--page)) 50%, var(--bone) 100%);
+    background-size:200% 100%; background-position:200% 0; animation:cn-skeleton-loader-shimmer 1.4s linear infinite;}
+@keyframes cn-skeleton-loader-shimmer{ to{ background-position:-200% 0; } }
+/* shape kit — heights on the 4px grid, widths mirror typical content */
+.cn-skeleton-loader .bone.line{height:16px;}
+.cn-skeleton-loader .bone.body{height:24px;}
+.cn-skeleton-loader .bone.circle{width:44px; height:44px; border-radius:50%;}
+/* avatar idiom — 50% literal */
+.cn-skeleton-loader .bone.media{height:160px;}
+.cn-skeleton-loader .bone.control{height:44px; width:120px;}
+.cn-skeleton-loader .skwrap{width:var(--demo-width, 560px); max-width:100%; display:flex; flex-direction:column; gap:8px;}
+.cn-skeleton-loader .sk-row{display:flex; gap:12px; align-items:center;}
+.cn-skeleton-loader .sk-col{flex:1 1 auto; display:flex; flex-direction:column; gap:8px;}
+.cn-skeleton-loader .sk-card{border:1px solid var(--line); border-radius:var(--border-radius-surface); padding:16px;
+    display:flex; flex-direction:column; gap:12px;}
+@media (prefers-reduced-motion: reduce){
+.cn-skeleton-loader .bone{animation:none; background-image:none;}
+/* static bones — shape alone reads as loading (2.3.3) */
+}
+
+/* ============================================================
+   Stat-card  (from snippets/Stat-card.reference.html)
+   Aria: role="group", aria-label, aria-hidden="true"
+   Scope: .cn-stat-card   ============================================================ */
+.cn-stat-card{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 140ms ease;
+  --surface: var(--tertiary-background-default);
+  --border: var(--border-subtle);
+  --text: var(--text-default);
+  --page: var(--background-default);
+  --up: var(--rag-success);
+  --down: var(--rag-error);
+}
+.cn-stat-card h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-stat-card .board{display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); gap:16px; max-width:800px;}
+/* the tile — Cards surface recipe */
+.cn-stat-card .stat-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--border-radius-surface);
+    padding:16px; display:flex; flex-direction:column; gap:8px;}
+.cn-stat-card .stat-card .lbl16{margin:0; opacity:.6;}
+/* the value — Amount-display pattern verbatim (figure composites, tabular, copy-025) */
+.cn-stat-card .amt{color:var(--text); display:inline-flex; align-items:baseline; white-space:nowrap;
+    font-variant-numeric:tabular-nums; letter-spacing:-.01em;}
+/* the delta row — arrow wears the R-D5 colour (3:1 floor, labelled); text stays ink */
+.cn-stat-card .delta{display:flex; align-items:center; gap:4px;}
+.cn-stat-card .delta .arrow{flex:none; width:16px; height:16px; display:inline-flex; align-items:center;}
+.cn-stat-card .delta .arrow svg{width:16px; height:16px; display:block; fill:currentColor;}
+.cn-stat-card .delta.up .arrow{color:var(--up);}
+.cn-stat-card .delta.down .arrow{color:var(--down);}
+.cn-stat-card .delta .per{opacity:.6; margin-left:4px;}
+@media (prefers-reduced-motion: reduce){
+
+}
+
+/* ============================================================
    Summary  (from snippets/Summary.reference.html)
    Scope: .cn-summary   ============================================================ */
 .cn-summary{
@@ -3324,6 +4227,150 @@
 /* WCAG 2.3.3 — honour reduced-motion (minimal motion here, kept for consistency) */
 @media (prefers-reduced-motion: reduce){
 .cn-tab-bar .seg .ind{transition:none !important;}
+}
+
+/* ============================================================
+   Textarea  (from snippets/Textarea.reference.html)
+   Aria: aria-invalid, aria-describedby
+   Scope: .cn-textarea   ============================================================ */
+.cn-textarea{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 200ms cubic-bezier(.4,0,.2,1);
+  --page: var(--background-default);
+  --text: var(--text-default);
+  --field-bg-default: var(--form-background-default);
+  --field-bg-hover: var(--form-background-hover);
+  --border-default: var(--form-border-default);
+  --border-active: var(--form-border-active);
+  --border-disabled: var(--form-border-disabled);
+  --icon: var(--icon-default);
+  --error: var(--rag-error);
+  --focus: var(--focus-ring);
+}
+.cn-textarea h2.sec{font:500 16px/1.3 var(--font); color:var(--text); opacity:.6; margin:2.5rem 0 .35rem;}
+.cn-textarea p.note{font:400 14px/1.5 var(--font); color:var(--text); opacity:.75; margin:0 0 1.5rem; max-width:60ch;}
+.cn-textarea .icn{width:18px; height:18px; display:block; flex-shrink:0;}
+/* ---------- field group (Input-fields anatomy, stretched vertically) ---------- */
+.cn-textarea .tx-group{max-width:480px; margin:0 0 32px;}
+.cn-textarea .tx-lblrow{display:flex; gap:8px; align-items:center; margin:0 0 4px;}
+.cn-textarea .tx-lblrow label{color:var(--text);}
+.cn-textarea .tx-opt{color:var(--text);}
+.cn-textarea .tx-help{color:var(--text); margin:0 0 8px;}
+.cn-textarea .tx-box{display:flex; align-items:stretch; padding:8px 16px;
+    border:1px solid var(--border-default); background:var(--field-bg-default); border-radius:var(--border-radius-control); position:relative;
+    transition:border-color var(--ease), background var(--ease), box-shadow var(--ease); color:var(--icon);}
+.cn-textarea .tx-box textarea{flex:1; min-width:0; border:0; background:transparent; outline:none; padding:0;
+    color:var(--text); resize:vertical; min-height:96px; font-family:inherit;}
+.cn-textarea .tx-box textarea::placeholder{color:var(--text); opacity:1; font-weight:400;}
+.cn-textarea .tx-box:hover:not(:focus-within){background:var(--field-bg-hover);}
+.cn-textarea .tx-box:focus-within{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--border-active); background:var(--page);}
+.cn-textarea .tx-box textarea:focus{outline:none;}
+.cn-textarea .tx-box:has(textarea:focus-visible){outline:2px solid var(--focus); outline-offset:2px;}
+:root[data-modality="pointer"] .cn-textarea .tx-box:has(textarea:focus-visible){outline:none;}
+/* states */
+.cn-textarea .tx-group.is-completed .tx-box textarea{font-weight:500;}
+.cn-textarea .tx-group.is-error .tx-box{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--error); background:var(--page);}
+/* dark: error border goes full red (Input-fields, Dave 2026-07-02) */
+.cn-textarea .tx-box textarea:disabled{color:var(--text-disabled); cursor:not-allowed; resize:none;}
+.cn-textarea .tx-group.is-disabled .tx-box{border-color:var(--border-disabled); color:var(--icon-disabled);}
+.cn-textarea .tx-group.is-disabled .tx-lblrow label, .cn-textarea .tx-group.is-disabled .tx-help, .cn-textarea .tx-group.is-disabled .tx-count{color:var(--text-disabled);}
+.cn-textarea .tx-foot{display:flex; gap:16px; align-items:flex-start; margin:8px 0 0;}
+.cn-textarea .tx-foot .tx-help{margin:0; flex:1; min-width:0;}
+.cn-textarea .tx-count{color:var(--text); white-space:nowrap; margin-left:auto;}
+.cn-textarea .tx-count.is-warn{font-weight:500;}
+/* 90% of the limit — weight, never colour-alone */
+.cn-textarea .tx-msg{display:flex; gap:8px; align-items:flex-start; margin:8px 0 0;}
+.cn-textarea .tx-msg:empty{display:none;}
+.cn-textarea .tx-msg .ic{flex-shrink:0; padding-top:4px; color:var(--error); --mark:var(--page);}
+/* rag roundel policy */
+/* policy dark: WHITE shape + black mark */
+.cn-textarea .tx-msg p{flex:1; min-width:0; color:var(--text); margin:0;}
+/* message stays INK */
+.cn-textarea .gallery{display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:24px 32px; max-width:760px;}
+.cn-textarea .gallery .cap{font:400 12px/1.3 var(--font); color:var(--text); opacity:.55; margin:0 0 8px;}
+@media (prefers-reduced-motion: reduce){
+
+}
+@media (max-width:480px){
+.cn-textarea .tx-group, .cn-textarea .gallery{max-width:none;}
+.cn-textarea .gallery{grid-template-columns:1fr;}
+}
+
+/* ============================================================
+   Toast  (from snippets/Toast.reference.html)
+   Aria: role="status", aria-label
+   Scope: .cn-toast   ============================================================ */
+.cn-toast{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 140ms ease;
+  --spring: 300ms cubic-bezier(.5,1.6,.4,1);
+  --press: 90ms cubic-bezier(0,0,.58,1);
+  --warn: var(--rag-warning);
+  --ok: var(--rag-success);
+  --info: var(--rag-information);
+  --surface: var(--tertiary-background-default);
+  --elev-bd: var(--elevation-border);
+  --shadow: var(--elevation-functional);
+  --text: var(--text-default);
+  --page: var(--background-default);
+  --press-travel: var(--component-type-button-family-press-travel);
+  --press-darken: var(--component-type-button-family-press-darken);
+}
+.cn-toast h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+/* per-status glyph colour (no tint surfaces here — elevation is the chrome) */
+.cn-toast .toast.warn{--accent:var(--warn);}
+.cn-toast .toast.ok{--accent:var(--ok);}
+.cn-toast .toast.info{--accent:var(--info);}
+/* the toast — elevated raised surface, SURFACE radius role */
+.cn-toast .toast{display:flex; gap:8px; align-items:flex-start; width:360px; max-width:100%;
+    padding:12px 16px; background:var(--surface); border:1px solid var(--elev-bd);
+    border-radius:var(--border-radius-surface); box-shadow:0 2px 16px var(--shadow); color:var(--text);}
+.cn-toast .toast .ic{flex:none; height:24px; display:inline-flex; align-items:center; color:var(--accent); --mark:var(--surface);}
+.cn-toast .toast .ic svg{width:20px; height:20px; display:block; fill:currentColor;}
+.cn-toast .toast .msg{flex:1 1 auto; min-width:0; margin:0;}
+/* action — ghost text button on the raised surface; colour-only states pending partial injection */
+.cn-toast .toast .act{flex:none; border:0; background:transparent; color:var(--text); height:44px; padding:0 12px;
+    margin:-10px 0 -10px 4px; justify-content:center; cursor:pointer;
+    text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px;
+    border-radius:var(--border-radius-surface); transition:background var(--ease), text-decoration-thickness var(--ease), transform var(--spring);}
+.cn-toast .toast .act:hover{background:color-mix(in srgb, currentColor 10%, transparent); text-decoration-thickness:2px;}
+.cn-toast .toast .act:active{background:color-mix(in srgb, currentColor 16%, transparent);}
+.cn-toast .toast .act:focus-visible{outline:2px solid currentColor; outline-offset:-2px;}
+/* dismiss × — 24px visual, 44px hit target (2.5.8); colour-only states pending partial injection */
+.cn-toast .toast .x{--phys-size:24;             /* LOCAL geometry override — 24px control (conductor, wave-1 reconcile) */
+    position:relative; flex:none; display:inline-flex; width:24px; height:24px; padding:0; border:0;
+    background:transparent; color:inherit; cursor:pointer; align-items:center; justify-content:center;
+    border-radius:var(--border-radius-surface); transition:background var(--ease), transform var(--spring);}
+.cn-toast .toast .x::before{content:""; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:44px; height:44px;}
+.cn-toast .toast .x svg{width:16px; height:16px; fill:currentColor;}
+.cn-toast .toast .x:hover{background:color-mix(in srgb, currentColor 10%, transparent);}
+.cn-toast .toast .x:active{background:color-mix(in srgb, currentColor 16%, transparent);}
+.cn-toast .toast .x:focus-visible{outline:2px solid currentColor; outline-offset:2px;}
+/* ===== AUTO-PARTIAL press-physics START (button-family) ===== */
+/* INJECTED from Button.reference.html (partial "press-physics", group button-family —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+.cn-toast :is(.toast .x, .cn-toast .toast .act):hover{transform:scale(calc(1 + var(--press-travel)/var(--phys-size)));}
+.cn-toast :is(.toast .x, .cn-toast .toast .act).full:hover{transform:none;}
+/* full-width can't grow — would overflow */
+.cn-toast :is(.toast .x, .cn-toast .toast .act):active{transform:scale(calc(1 - var(--press-travel)/var(--phys-size))); filter:brightness(var(--press-darken)); transition:transform var(--press), filter var(--press);}
+.cn-toast :is(.toast .x, .cn-toast .toast .act):disabled:hover, .cn-toast :is(.toast .x, .cn-toast .toast .act).is-disabled:hover{transform:none; filter:none;}
+/* disabled stays put */
+/* WCAG 2.3.3 — the partial carries its OWN reduced-motion override (ADR-0013: rides inside, never per-file) */
+@media (prefers-reduced-motion: reduce){
+.cn-toast :is(.toast .x, .cn-toast .toast .act):hover, .cn-toast :is(.toast .x, .cn-toast .toast .act):active{transform:none !important; filter:none !important;}
+}
+/* ===== AUTO-PARTIAL press-physics END ===== */
+/* live region — bottom-left stack (fixed); newest at the bottom, 8px rhythm */
+.cn-toast .toast-region{position:fixed; left:24px; bottom:24px; display:flex; flex-direction:column; gap:8px; z-index:10;}
+.cn-toast .toast-region .toast{animation:cn-toast-toast-in 200ms ease;}
+.cn-toast .toast-region .toast.leaving{opacity:0; transition:opacity 200ms ease;}
+@keyframes cn-toast-toast-in{ from{ opacity:0; transform:translateY(8px);} to{ opacity:1; transform:none;} }
+/* static specimens (always-visible variant spread for review panes) */
+.cn-toast .spec{display:flex; flex-direction:column; gap:8px;}
+@media (prefers-reduced-motion: reduce){
+.cn-toast .toast-region .toast{animation:none;}
 }
 
 /* ===== AUTO-COMPONENTS END ===== */
@@ -3431,6 +4478,13 @@
   --warn: #FFBB33;
   --warn-tint: #221701;
 }
+[data-apollo-theme="legacy"] .cn-account-selector{
+  --text: #333333;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-account-selector,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-account-selector{
+  --text: #FFFFFF;
+}
 [data-apollo-theme="legacy"] .cn-action-bar{
   --border: #D7D8D6;
   --on-pri: #FFFFFF;
@@ -3446,6 +4500,31 @@
   --pri-hover: #BA1110;
   --text: #FFFFFF;
 }
+[data-apollo-theme="legacy"] .cn-alert{
+  --err: #A8000B;
+  --info: #305A85;
+  --info-t: #EBEFF4;
+  --ok: #00847F;
+  --ok-t: #E5F2F2;
+  --press-darken: 1;
+  --press-travel: 0;
+  --text: #333333;
+  --warn: #FFBB33;
+  --warn-t: #FFF8EA;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-alert,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-alert{
+  --err: #DB0011;
+  --info: #4587A7;
+  --info-t: #000D1B;
+  --ok: #00847F;
+  --ok-t: #001615;
+  --press-darken: 1;
+  --press-travel: 0;
+  --text: #FFFFFF;
+  --warn: #FFBB33;
+  --warn-t: #221701;
+}
 [data-apollo-theme="legacy"] .cn-amount-display{
   --border: #D7D8D6;
   --muted: #545454;
@@ -3455,6 +4534,17 @@
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-amount-display{
   --border: #404040;
   --muted: #9B9B9B;
+  --text: #FFFFFF;
+}
+[data-apollo-theme="legacy"] .cn-amount-input{
+  --error: #A8000B;
+  --success: #00847F;
+  --text: #333333;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-amount-input,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-amount-input{
+  --error: #DB0011;
+  --success: #00847F;
   --text: #FFFFFF;
 }
 [data-apollo-theme="legacy"] .cn-avatar{
@@ -3472,6 +4562,21 @@
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-badge{
   --host: #FFFFFF;
   --surface: #DB0011;
+}
+[data-apollo-theme="legacy"] .cn-banner{
+  --err-bg: #A8000B;
+  --ok-bg: #00847F;
+  --press-darken: 1;
+  --press-travel: 0;
+  --text: #333333;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-banner,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-banner{
+  --err-bg: #DB0011;
+  --ok-bg: #00847F;
+  --press-darken: 1;
+  --press-travel: 0;
+  --text: #FFFFFF;
 }
 [data-apollo-theme="legacy"] .cn-breadcrumbs{
   --text: #333333;
@@ -3549,6 +4654,25 @@
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-divider{
   --text: #FFFFFF;
 }
+[data-apollo-theme="legacy"] .cn-drawer{
+  --line: #D7D8D6;
+  --on-pri: #FFFFFF;
+  --press-darken: 1;
+  --press-travel: 0;
+  --pri: #DB0011;
+  --pri-hover: #BA1110;
+  --text: #333333;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-drawer,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-drawer{
+  --line: #404040;
+  --on-pri: #FFFFFF;
+  --press-darken: 1;
+  --press-travel: 0;
+  --pri: #DB0011;
+  --pri-hover: #BA1110;
+  --text: #FFFFFF;
+}
 [data-apollo-theme="legacy"] .cn-dropdown{
   --error: #A8000B;
   --text: #333333;
@@ -3558,6 +4682,25 @@
   --error: #DB0011;
   --text: #FFFFFF;
 }
+[data-apollo-theme="legacy"] .cn-empty-state{
+  --line: #D7D8D6;
+  --on-pri: #FFFFFF;
+  --press-darken: 1;
+  --press-travel: 0;
+  --pri: #DB0011;
+  --pri-hover: #BA1110;
+  --text: #333333;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-empty-state,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-empty-state{
+  --line: #404040;
+  --on-pri: #FFFFFF;
+  --press-darken: 1;
+  --press-travel: 0;
+  --pri: #DB0011;
+  --pri-hover: #BA1110;
+  --text: #FFFFFF;
+}
 [data-apollo-theme="legacy"] .cn-eyebrow{
   --muted: #545454;
   --text: #333333;
@@ -3565,6 +4708,33 @@
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-eyebrow,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-eyebrow{
   --muted: #9B9B9B;
+  --text: #FFFFFF;
+}
+[data-apollo-theme="legacy"] .cn-form-layout{
+  --error: #A8000B;
+  --press-darken: 1;
+  --press-travel: 0;
+  --pri-default: #DB0011;
+  --pri-disabled: #E1E1E1;
+  --pri-hover: #BA1110;
+  --pri-label: #FFFFFF;
+  --pri-pressed: #000000;
+  --quat-label: #333333;
+  --success: #00847F;
+  --text: #333333;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-form-layout,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-form-layout{
+  --error: #DB0011;
+  --press-darken: 1;
+  --press-travel: 0;
+  --pri-default: #DB0011;
+  --pri-disabled: #484848;
+  --pri-hover: #BA1110;
+  --pri-label: #FFFFFF;
+  --pri-pressed: #FFFFFF;
+  --quat-label: #FFFFFF;
+  --success: #00847F;
   --text: #FFFFFF;
 }
 [data-apollo-theme="legacy"] .cn-headers{
@@ -3656,6 +4826,19 @@
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-loading-indicator{
   --text: #FFFFFF;
 }
+[data-apollo-theme="legacy"] .cn-modal-lightbox{
+  --media2: #E1E1E1;
+  --press-darken: 1;
+  --press-travel: 0;
+  --text: #333333;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-modal-lightbox,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-modal-lightbox{
+  --media2: #484848;
+  --press-darken: 1;
+  --press-travel: 0;
+  --text: #FFFFFF;
+}
 [data-apollo-theme="legacy"] .cn-modals{
   --on-pri: #FFFFFF;
   --press-darken: 1;
@@ -3708,6 +4891,17 @@
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-pagination{
   --text: #FFFFFF;
 }
+[data-apollo-theme="legacy"] .cn-popover{
+  --press-darken: 1;
+  --press-travel: 0;
+  --text: #333333;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-popover,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-popover{
+  --press-darken: 1;
+  --press-travel: 0;
+  --text: #FFFFFF;
+}
 [data-apollo-theme="legacy"] .cn-progress-tracker{
   --complete: #DB0011;
   --muted: #545454;
@@ -3748,6 +4942,23 @@
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-search-field{
   --text: #FFFFFF;
 }
+[data-apollo-theme="legacy"] .cn-secure-entry{
+  --error: #A8000B;
+  --press-darken: 1;
+  --press-travel: 0;
+  --quat-label: #333333;
+  --success: #00847F;
+  --text: #333333;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-secure-entry,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-secure-entry{
+  --error: #DB0011;
+  --press-darken: 1;
+  --press-travel: 0;
+  --quat-label: #FFFFFF;
+  --success: #00847F;
+  --text: #FFFFFF;
+}
 [data-apollo-theme="legacy"] .cn-selection-controls{
   --error: #A8000B;
   --label: #333333;
@@ -3757,12 +4968,34 @@
   --error: #DB0011;
   --label: #FFFFFF;
 }
+[data-apollo-theme="legacy"] .cn-skeleton-loader{
+  --line: #D7D8D6;
+  --text: #333333;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-skeleton-loader,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-skeleton-loader{
+  --line: #404040;
+  --text: #FFFFFF;
+}
 [data-apollo-theme="legacy"] .cn-slider{
   --text: #333333;
 }
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-slider,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-slider{
   --text: #FFFFFF;
+}
+[data-apollo-theme="legacy"] .cn-stat-card{
+  --border: #D7D8D6;
+  --down: #A8000B;
+  --text: #333333;
+  --up: #00847F;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-stat-card,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-stat-card{
+  --border: #404040;
+  --down: #DB0011;
+  --text: #FFFFFF;
+  --up: #00847F;
 }
 [data-apollo-theme="legacy"] .cn-status-indicator{
   --error: #A8000B;
@@ -3830,6 +5063,32 @@
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-tags{
   --text: #FFFFFF;
 }
+[data-apollo-theme="legacy"] .cn-textarea{
+  --error: #A8000B;
+  --text: #333333;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-textarea,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-textarea{
+  --error: #DB0011;
+  --text: #FFFFFF;
+}
+[data-apollo-theme="legacy"] .cn-toast{
+  --info: #305A85;
+  --ok: #00847F;
+  --press-darken: 1;
+  --press-travel: 0;
+  --text: #333333;
+  --warn: #FFBB33;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-toast,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-toast{
+  --info: #4587A7;
+  --ok: #00847F;
+  --press-darken: 1;
+  --press-travel: 0;
+  --text: #FFFFFF;
+  --warn: #FFBB33;
+}
 [data-apollo-theme="legacy"] .cn-tooltip{
   --text: #333333;
 }
@@ -3874,12 +5133,44 @@
   --border-radius-indicator: 8px;
   --border-radius-surface: 12px;
 }
+[data-apollo-theme="console"] .cn-account-selector{
+  --border-radius-control: 8px;
+  --border-radius-indicator: 8px;
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-account-selector,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-account-selector{
+  --border-radius-control: 8px;
+  --border-radius-indicator: 8px;
+  --border-radius-surface: 12px;
+}
 [data-apollo-theme="console"] .cn-action-bar{
   --border-radius-control: 8px;
 }
 [data-apollo-theme="console"][data-theme="dark"] .cn-action-bar,
 [data-apollo-theme="console"] [data-theme="dark"] .cn-action-bar{
   --border-radius-control: 8px;
+}
+[data-apollo-theme="console"] .cn-alert{
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-alert,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-alert{
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"] .cn-amount-input{
+  --border-radius-control: 8px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-amount-input,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-amount-input{
+  --border-radius-control: 8px;
+}
+[data-apollo-theme="console"] .cn-banner{
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-banner,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-banner{
+  --border-radius-surface: 12px;
 }
 [data-apollo-theme="console"] .cn-button{
   --border-radius-control: 8px;
@@ -3902,6 +5193,15 @@
 [data-apollo-theme="console"] [data-theme="dark"] .cn-confirmation{
   --border-radius-control: 8px;
 }
+[data-apollo-theme="console"] .cn-drawer{
+  --border-radius-control: 8px;
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-drawer,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-drawer{
+  --border-radius-control: 8px;
+  --border-radius-surface: 12px;
+}
 [data-apollo-theme="console"] .cn-dropdown{
   --border-radius-control: 8px;
   --border-radius-surface: 12px;
@@ -3910,6 +5210,22 @@
 [data-apollo-theme="console"] [data-theme="dark"] .cn-dropdown{
   --border-radius-control: 8px;
   --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"] .cn-empty-state{
+  --border-radius-control: 8px;
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-empty-state,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-empty-state{
+  --border-radius-control: 8px;
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"] .cn-form-layout{
+  --border-radius-control: 8px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-form-layout,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-form-layout{
+  --border-radius-control: 8px;
 }
 [data-apollo-theme="console"] .cn-icon-button{
   --border-radius-control: 8px;
@@ -3939,6 +5255,15 @@
 [data-apollo-theme="console"] [data-theme="dark"] .cn-list-items{
   --border-radius-indicator: 8px;
 }
+[data-apollo-theme="console"] .cn-modal-lightbox{
+  --border-radius-control: 8px;
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-modal-lightbox,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-modal-lightbox{
+  --border-radius-control: 8px;
+  --border-radius-surface: 12px;
+}
 [data-apollo-theme="console"] .cn-modals{
   --border-radius-control: 8px;
   --border-radius-surface: 12px;
@@ -3955,6 +5280,13 @@
 [data-apollo-theme="console"] [data-theme="dark"] .cn-notifications{
   --border-radius-surface: 12px;
 }
+[data-apollo-theme="console"] .cn-popover{
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-popover,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-popover{
+  --border-radius-surface: 12px;
+}
 [data-apollo-theme="console"] .cn-progress-tracker{
   --border-radius-control: 8px;
   --border-radius-indicator: 8px;
@@ -3964,6 +5296,13 @@
   --border-radius-control: 8px;
   --border-radius-indicator: 8px;
 }
+[data-apollo-theme="console"] .cn-secure-entry{
+  --border-radius-control: 8px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-secure-entry,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-secure-entry{
+  --border-radius-control: 8px;
+}
 [data-apollo-theme="console"] .cn-selection-controls{
   --border-radius-control: 8px;
 }
@@ -3971,12 +5310,28 @@
 [data-apollo-theme="console"] [data-theme="dark"] .cn-selection-controls{
   --border-radius-control: 8px;
 }
+[data-apollo-theme="console"] .cn-skeleton-loader{
+  --border-radius-indicator: 8px;
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-skeleton-loader,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-skeleton-loader{
+  --border-radius-indicator: 8px;
+  --border-radius-surface: 12px;
+}
 [data-apollo-theme="console"] .cn-slider{
   --border-radius-indicator: 8px;
 }
 [data-apollo-theme="console"][data-theme="dark"] .cn-slider,
 [data-apollo-theme="console"] [data-theme="dark"] .cn-slider{
   --border-radius-indicator: 8px;
+}
+[data-apollo-theme="console"] .cn-stat-card{
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-stat-card,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-stat-card{
+  --border-radius-surface: 12px;
 }
 [data-apollo-theme="console"] .cn-status-indicator{
   --border-radius-control: 8px;
@@ -4015,6 +5370,20 @@
 [data-apollo-theme="console"][data-theme="dark"] .cn-tags,
 [data-apollo-theme="console"] [data-theme="dark"] .cn-tags{
   --border-radius-control: 8px;
+}
+[data-apollo-theme="console"] .cn-textarea{
+  --border-radius-control: 8px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-textarea,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-textarea{
+  --border-radius-control: 8px;
+}
+[data-apollo-theme="console"] .cn-toast{
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-toast,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-toast{
+  --border-radius-surface: 12px;
 }
 [data-apollo-theme="console"] .cn-video-player{
   --border-radius-control: 8px;
@@ -4274,6 +5643,25 @@
   --tag-border: #524842;
   --text: #F7F6F4;
 }
+[data-apollo-theme="supercharge"] .cn-account-selector{
+  --border: #524842;
+  --border-active: #000000;
+  --hoverbg: #DFDEDC;
+  --menu-border: #FFFFFF00;
+  --menu-surface: #F7F6F4;
+  --page: #F7F6F4;
+  --text: #13110E;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-account-selector,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-account-selector{
+  --border: #524842;
+  --border-active: #F7F6F4;
+  --hoverbg: #2E2A25;
+  --menu-border: #524842;
+  --menu-surface: #1A1A1A;
+  --page: #1A1A1A;
+  --text: #F7F6F4;
+}
 [data-apollo-theme="supercharge"] .cn-action-bar{
   --border: #CDC8C6;
   --page: #F7F6F4;
@@ -4297,6 +5685,19 @@
   --ter-hover: #2E2A25;
   --text: #F7F6F4;
 }
+[data-apollo-theme="supercharge"] .cn-alert{
+  --page: #F7F6F4;
+  --press-darken: 1;
+  --press-travel: 0;
+  --text: #13110E;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-alert,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-alert{
+  --page: #1A1A1A;
+  --press-darken: 1;
+  --press-travel: 0;
+  --text: #F7F6F4;
+}
 [data-apollo-theme="supercharge"] .cn-amount-display{
   --border: #CDC8C6;
   --muted: #13110E;
@@ -4309,6 +5710,29 @@
   --muted: #F7F6F4;
   --page: #1A1A1A;
   --text: #F7F6F4;
+}
+[data-apollo-theme="supercharge"] .cn-amount-input{
+  --border-active: #000000;
+  --border-default: #524842;
+  --border-disabled: #CDC8C6;
+  --field-bg-hover: #DFDEDC;
+  --icon: #13110E;
+  --icon-disabled: #CDC8C6;
+  --page: #F7F6F4;
+  --text: #13110E;
+  --text-disabled: #CDC8C6;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-amount-input,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-amount-input{
+  --border-active: #F7F6F4;
+  --border-default: #524842;
+  --border-disabled: #413934;
+  --field-bg-hover: #2E2A25;
+  --icon: #F7F6F4;
+  --icon-disabled: #524842;
+  --page: #1A1A1A;
+  --text: #F7F6F4;
+  --text-disabled: #524842;
 }
 [data-apollo-theme="supercharge"] .cn-avatar{
   --icon: #13110E;
@@ -4333,6 +5757,21 @@
   --host: #F7F6F4;
   --number: #F7F6F4;
   --page: #1A1A1A;
+}
+[data-apollo-theme="supercharge"] .cn-banner{
+  --on-light: #13110E;
+  --page: #F7F6F4;
+  --press-darken: 1;
+  --press-travel: 0;
+  --text: #13110E;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-banner,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-banner{
+  --on-light: #13110E;
+  --page: #1A1A1A;
+  --press-darken: 1;
+  --press-travel: 0;
+  --text: #F7F6F4;
 }
 [data-apollo-theme="supercharge"] .cn-breadcrumbs{
   --page: #F7F6F4;
@@ -4460,6 +5899,35 @@
   --subsection: #524842;
   --text: #F7F6F4;
 }
+[data-apollo-theme="supercharge"] .cn-drawer{
+  --elev-bd: #FFFFFF00;
+  --icon: #13110E;
+  --line: #CDC8C6;
+  --page: #F7F6F4;
+  --press-darken: 1;
+  --press-travel: 0;
+  --pri: #13110E;
+  --pri-hover: #493F39;
+  --sec-bd: #000000;
+  --sec-hover: #DFDEDC;
+  --surface: #F7F6F4;
+  --text: #13110E;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-drawer,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-drawer{
+  --elev-bd: #524842;
+  --icon: #F7F6F4;
+  --line: #524842;
+  --page: #1A1A1A;
+  --press-darken: 1;
+  --press-travel: 0;
+  --pri: #F0EFED;
+  --pri-hover: #806E65;
+  --sec-bd: #524842;
+  --sec-hover: #2E2A25;
+  --surface: #2A2621;
+  --text: #F7F6F4;
+}
 [data-apollo-theme="supercharge"] .cn-dropdown{
   --border: #524842;
   --border-active: #000000;
@@ -4483,6 +5951,25 @@
   --page: #1A1A1A;
   --text: #F7F6F4;
 }
+[data-apollo-theme="supercharge"] .cn-empty-state{
+  --line: #CDC8C6;
+  --page: #F7F6F4;
+  --press-darken: 1;
+  --press-travel: 0;
+  --pri: #13110E;
+  --pri-hover: #493F39;
+  --text: #13110E;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-empty-state,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-empty-state{
+  --line: #524842;
+  --page: #1A1A1A;
+  --press-darken: 1;
+  --press-travel: 0;
+  --pri: #F0EFED;
+  --pri-hover: #806E65;
+  --text: #F7F6F4;
+}
 [data-apollo-theme="supercharge"] .cn-eyebrow{
   --muted: #13110E;
   --page: #F7F6F4;
@@ -4493,6 +5980,49 @@
   --muted: #F7F6F4;
   --page: #1A1A1A;
   --text: #F7F6F4;
+}
+[data-apollo-theme="supercharge"] .cn-form-layout{
+  --border-active: #000000;
+  --border-default: #524842;
+  --border-disabled: #CDC8C6;
+  --field-bg-hover: #DFDEDC;
+  --icon: #13110E;
+  --icon-disabled: #CDC8C6;
+  --page: #F7F6F4;
+  --press-darken: 1;
+  --press-travel: 0;
+  --pri-default: #13110E;
+  --pri-disabled: #CDC8C6;
+  --pri-hover: #493F39;
+  --pri-label-disabled: #635750;
+  --pri-pressed: #000000;
+  --quat-hover: #DFDEDC;
+  --quat-label: #13110E;
+  --quat-label-disabled: #635750;
+  --text: #13110E;
+  --text-disabled: #CDC8C6;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-form-layout,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-form-layout{
+  --border-active: #F7F6F4;
+  --border-default: #524842;
+  --border-disabled: #413934;
+  --field-bg-hover: #2E2A25;
+  --icon: #F7F6F4;
+  --icon-disabled: #524842;
+  --page: #1A1A1A;
+  --press-darken: 1;
+  --press-travel: 0;
+  --pri-default: #F0EFED;
+  --pri-disabled: #413934;
+  --pri-hover: #806E65;
+  --pri-label-disabled: #524842;
+  --pri-pressed: #F7F6F4;
+  --quat-hover: #2E2A25;
+  --quat-label: #F7F6F4;
+  --quat-label-disabled: #524842;
+  --text: #F7F6F4;
+  --text-disabled: #524842;
 }
 [data-apollo-theme="supercharge"] .cn-headers{
   --hover: #DFDEDC;
@@ -4645,6 +6175,31 @@
   --spinner: #F7F6F4;
   --text: #F7F6F4;
 }
+[data-apollo-theme="supercharge"] .cn-modal-lightbox{
+  --elev-bd: #FFFFFF00;
+  --hoverbg: #DFDEDC;
+  --icon: #13110E;
+  --media: #DFDEDC;
+  --media2: #CDC8C6;
+  --page: #F7F6F4;
+  --press-darken: 1;
+  --press-travel: 0;
+  --surface: #F7F6F4;
+  --text: #13110E;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-modal-lightbox,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-modal-lightbox{
+  --elev-bd: #524842;
+  --hoverbg: #2E2A25;
+  --icon: #F7F6F4;
+  --media: #2E2A25;
+  --media2: #413934;
+  --page: #1A1A1A;
+  --press-darken: 1;
+  --press-travel: 0;
+  --surface: #2A2621;
+  --text: #F7F6F4;
+}
 [data-apollo-theme="supercharge"] .cn-modals{
   --elev-bd: #FFFFFF00;
   --icon: #13110E;
@@ -4717,6 +6272,25 @@
   --on-pressed: #F7F6F4;
   --page: #1A1A1A;
   --pressed: #13110E;
+  --text: #F7F6F4;
+}
+[data-apollo-theme="supercharge"] .cn-popover{
+  --hoverbg: #DFDEDC;
+  --page: #F7F6F4;
+  --pop-border: #FFFFFF00;
+  --press-darken: 1;
+  --press-travel: 0;
+  --surface: #F7F6F4;
+  --text: #13110E;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-popover,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-popover{
+  --hoverbg: #2E2A25;
+  --page: #1A1A1A;
+  --pop-border: #524842;
+  --press-darken: 1;
+  --press-travel: 0;
+  --surface: #1A1A1A;
   --text: #F7F6F4;
 }
 [data-apollo-theme="supercharge"] .cn-progress-tracker{
@@ -4797,6 +6371,39 @@
   --page: #1A1A1A;
   --text: #F7F6F4;
 }
+[data-apollo-theme="supercharge"] .cn-secure-entry{
+  --border-active: #000000;
+  --border-default: #524842;
+  --border-disabled: #CDC8C6;
+  --field-bg-hover: #DFDEDC;
+  --icon: #13110E;
+  --icon-disabled: #CDC8C6;
+  --page: #F7F6F4;
+  --press-darken: 1;
+  --press-travel: 0;
+  --quat-hover: #DFDEDC;
+  --quat-label: #13110E;
+  --quat-label-disabled: #635750;
+  --text: #13110E;
+  --text-disabled: #CDC8C6;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-secure-entry,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-secure-entry{
+  --border-active: #F7F6F4;
+  --border-default: #524842;
+  --border-disabled: #413934;
+  --field-bg-hover: #2E2A25;
+  --icon: #F7F6F4;
+  --icon-disabled: #524842;
+  --page: #1A1A1A;
+  --press-darken: 1;
+  --press-travel: 0;
+  --quat-hover: #2E2A25;
+  --quat-label: #F7F6F4;
+  --quat-label-disabled: #524842;
+  --text: #F7F6F4;
+  --text-disabled: #524842;
+}
 [data-apollo-theme="supercharge"] .cn-selection-controls{
   --chip-hover: #DFDEDC;
   --chip-pressed: #524842;
@@ -4820,6 +6427,19 @@
   --page: #1A1A1A;
   --reverse: #F7F6F4;
 }
+[data-apollo-theme="supercharge"] .cn-skeleton-loader{
+  --bone: #DFDEDC;
+  --line: #CDC8C6;
+  --page: #F7F6F4;
+  --text: #13110E;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-skeleton-loader,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-skeleton-loader{
+  --bone: #2E2A25;
+  --line: #524842;
+  --page: #1A1A1A;
+  --text: #F7F6F4;
+}
 [data-apollo-theme="supercharge"] .cn-slider{
   --filled: #524842;
   --handle: #F7F6F4;
@@ -4836,6 +6456,19 @@
   --page: #1A1A1A;
   --text: #F7F6F4;
   --unfilled: #2A2621;
+}
+[data-apollo-theme="supercharge"] .cn-stat-card{
+  --border: #CDC8C6;
+  --page: #F7F6F4;
+  --surface: #F7F6F4;
+  --text: #13110E;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-stat-card,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-stat-card{
+  --border: #524842;
+  --page: #1A1A1A;
+  --surface: #2A2621;
+  --text: #F7F6F4;
 }
 [data-apollo-theme="supercharge"] .cn-status-indicator{
   --disabled: #CDC8C6;
@@ -4939,6 +6572,46 @@
   --hover: #2E2A25;
   --icon: #F7F6F4;
   --page: #1A1A1A;
+  --text: #F7F6F4;
+}
+[data-apollo-theme="supercharge"] .cn-textarea{
+  --border-active: #000000;
+  --border-default: #524842;
+  --border-disabled: #CDC8C6;
+  --field-bg-hover: #DFDEDC;
+  --icon: #13110E;
+  --icon-disabled: #CDC8C6;
+  --page: #F7F6F4;
+  --text: #13110E;
+  --text-disabled: #CDC8C6;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-textarea,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-textarea{
+  --border-active: #F7F6F4;
+  --border-default: #524842;
+  --border-disabled: #413934;
+  --field-bg-hover: #2E2A25;
+  --icon: #F7F6F4;
+  --icon-disabled: #524842;
+  --page: #1A1A1A;
+  --text: #F7F6F4;
+  --text-disabled: #524842;
+}
+[data-apollo-theme="supercharge"] .cn-toast{
+  --elev-bd: #FFFFFF00;
+  --page: #F7F6F4;
+  --press-darken: 1;
+  --press-travel: 0;
+  --surface: #F7F6F4;
+  --text: #13110E;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-toast,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-toast{
+  --elev-bd: #524842;
+  --page: #1A1A1A;
+  --press-darken: 1;
+  --press-travel: 0;
+  --surface: #2A2621;
   --text: #F7F6F4;
 }
 [data-apollo-theme="supercharge"] .cn-tooltip{

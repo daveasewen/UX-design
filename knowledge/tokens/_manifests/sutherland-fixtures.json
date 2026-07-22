@@ -1,7 +1,7 @@
 {
   "$description": "Sutherland acceptance fixtures — per component, the contract a React implementation must satisfy to match the gated reference. Generated from snippet manifests + metas; regenerated each build.",
   "generated": "by _build_sutherland_fixtures.py",
-  "componentCount": 40,
+  "componentCount": 54,
   "fixtures": [
     {
       "component": "Accordion",
@@ -155,6 +155,82 @@
       }
     },
     {
+      "component": "Account selector",
+      "category": "molecule",
+      "referenceSnippet": "snippets/Account-selector.reference.html",
+      "meta": "components/account-selector.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--border": "form/border/default",
+          "--border-active": "form/border/active",
+          "--hoverbg": "form/background/hover",
+          "--menu-surface": "background/default",
+          "--menu-border": "elevation/border",
+          "--shadow": "elevation/functional",
+          "--text": "text/default",
+          "--page": "background/default",
+          "--focus": "focus/ring",
+          "--border-radius-control": "border-radius/control",
+          "--border-radius-surface": "border-radius/surface",
+          "--border-radius-indicator": "border-radius/indicator"
+        },
+        "requiredAria": [
+          "role=\"combobox\"",
+          "aria-haspopup",
+          "aria-expanded",
+          "aria-controls",
+          "role=\"listbox\"",
+          "role=\"option\"",
+          "aria-selected",
+          "aria-label"
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "text/default",
+            "bg": "form/background/hover",
+            "context": "text"
+          },
+          {
+            "fg": "form/border/default",
+            "bg": "background/default",
+            "context": "ui"
+          }
+        ],
+        "props": [
+          {
+            "name": "accounts",
+            "type": "array",
+            "$note": "Rows of {name, masked, balance}; balances render via the Amount-display primitive (tabular figures, copy-025)."
+          },
+          {
+            "name": "selected",
+            "type": "number",
+            "default": 0
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "$note": "Field label above the trigger ('From account'); part of the combobox accessible name."
+          },
+          {
+            "name": "form",
+            "type": "enum",
+            "values": [
+              "selector",
+              "chip"
+            ],
+            "default": "selector",
+            "$note": "Chip = read-only inline token (role=group + aria-label); selector = the interactive picker."
+          }
+        ]
+      }
+    },
+    {
       "component": "Action bar",
       "category": "molecule",
       "referenceSnippet": "snippets/Action-bar.reference.html",
@@ -231,6 +307,105 @@
       }
     },
     {
+      "component": "Alert",
+      "category": "molecule",
+      "referenceSnippet": "snippets/Alert.reference.html",
+      "meta": "components/alert.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--err": "rag/error",
+          "--warn": "rag/warning",
+          "--ok": "rag/success",
+          "--info": "rag/information",
+          "--err-t": "rag/error-tint",
+          "--warn-t": "rag/warning-tint",
+          "--ok-t": "rag/success-tint",
+          "--info-t": "rag/information-tint",
+          "--text": "text/default",
+          "--page": "background/default",
+          "--border-radius-surface": "border-radius/surface",
+          "--press-travel": "component-type/button-family/press-travel",
+          "--press-darken": "component-type/button-family/press-darken"
+        },
+        "requiredAria": [
+          "role=\"alert\"",
+          "role=\"status\"",
+          "aria-label"
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "rag/error-tint",
+            "context": "text"
+          },
+          {
+            "fg": "text/default",
+            "bg": "rag/warning-tint",
+            "context": "text"
+          },
+          {
+            "fg": "text/default",
+            "bg": "rag/success-tint",
+            "context": "text"
+          },
+          {
+            "fg": "text/default",
+            "bg": "rag/information-tint",
+            "context": "text"
+          },
+          {
+            "fg": "rag/error",
+            "bg": "rag/error-tint",
+            "context": "ui"
+          },
+          {
+            "fg": "rag/success",
+            "bg": "rag/success-tint",
+            "context": "ui"
+          },
+          {
+            "fg": "rag/information",
+            "bg": "rag/information-tint",
+            "context": "ui"
+          }
+        ],
+        "props": [
+          {
+            "name": "status",
+            "type": "enum",
+            "values": [
+              "error",
+              "warning",
+              "success",
+              "information"
+            ],
+            "default": "information",
+            "$note": "Binds the R-D20 rag/{status} + rag/{status}-tint pair. Error renders role=\"alert\" (assertive); the rest role=\"status\" (polite)."
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "$note": "Optional bold lead-in (.t-ed-body .em, weight 500). Sentence case."
+          },
+          {
+            "name": "message",
+            "type": "string"
+          },
+          {
+            "name": "link",
+            "type": "string",
+            "$note": "Optional inline action link — descriptive text, never 'click here' (aca-004)."
+          },
+          {
+            "name": "dismissible",
+            "type": "boolean",
+            "default": false,
+            "$note": "Adds the 24px × in a 44px hit target. Static alerts persist with the task."
+          }
+        ]
+      }
+    },
+    {
       "component": "Amount display",
       "category": "atom",
       "referenceSnippet": "snippets/Amount-display.reference.html",
@@ -286,6 +461,91 @@
             "type": "boolean",
             "default": false,
             "$note": "Privacy mask: the value is replaced by dots (aria-hidden) and the element carries role=img + an aria-label giving context (e.g. 'Balance hidden')."
+          }
+        ]
+      }
+    },
+    {
+      "component": "Amount input",
+      "category": "atom",
+      "referenceSnippet": "snippets/Amount-input.reference.html",
+      "meta": "components/amount-input.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--page": "background/default",
+          "--text": "text/default",
+          "--text-disabled": "text/disabled",
+          "--field-bg-default": "form/background/default",
+          "--field-bg-hover": "form/background/hover",
+          "--border-default": "form/border/default",
+          "--border-active": "form/border/active",
+          "--border-disabled": "form/border/disabled",
+          "--icon": "icon/default",
+          "--icon-disabled": "icon/disabled",
+          "--error": "rag/error",
+          "--success": "rag/success",
+          "--focus": "focus/ring",
+          "--border-radius-control": "border-radius/control"
+        },
+        "requiredAria": [
+          "aria-invalid",
+          "aria-describedby",
+          "inputmode"
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "form/border/default",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "form/border/active",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "rag/error",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "rag/success",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "icon/default",
+            "bg": "background/default",
+            "context": "ui"
+          }
+        ],
+        "props": [
+          {
+            "name": "size",
+            "type": "enum",
+            "values": [
+              "standard",
+              "display"
+            ],
+            "default": "standard",
+            "$note": "standard = .t-cm-figure-5 (16); display = .t-cm-figure-4 (32) — the payment-journey hero entry."
+          },
+          {
+            "name": "currency",
+            "type": "string",
+            "default": "GBP",
+            "$note": "Code before the value, no space (copy-025); symbol (£) closed up. Prefix is aria-hidden — the accessible name carries the currency."
+          },
+          {
+            "name": "min",
+            "type": "number",
+            "default": 0,
+            "$note": "Validation floor; zero and negatives rejected on entry (a debit renders with the typographic minus −, display only)."
           }
         ]
       }
@@ -413,6 +673,103 @@
             ],
             "default": "medium",
             "$note": "Only on the '.Badge on icon' variant — small 10px, medium 13px, large 20px. The standalone Badge is 12px (simple) / 20px (number)."
+          }
+        ]
+      }
+    },
+    {
+      "component": "Banner",
+      "category": "molecule",
+      "referenceSnippet": "snippets/Banner.reference.html",
+      "meta": "components/banner.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--err-bg": "rag/error-background",
+          "--warn-bg": "rag/warning-background",
+          "--ok-bg": "rag/success-background",
+          "--info-bg": "rag/information-background",
+          "--on-dark": "rag/text/on-dark",
+          "--on-light": "rag/text/on-light",
+          "--on-ok": "text/on-success",
+          "--text": "text/default",
+          "--page": "background/default",
+          "--border-radius-surface": "border-radius/surface",
+          "--press-travel": "component-type/button-family/press-travel",
+          "--press-darken": "component-type/button-family/press-darken"
+        },
+        "requiredAria": [
+          "role=\"alert\"",
+          "role=\"status\"",
+          "aria-label"
+        ],
+        "contrastPairs": [
+          {
+            "fg": "rag/text/on-dark",
+            "bg": "rag/error-background",
+            "context": "text"
+          },
+          {
+            "fg": "rag/text/on-light",
+            "bg": "rag/warning-background",
+            "context": "text"
+          },
+          {
+            "fg": "text/on-success",
+            "bg": "rag/success-background",
+            "context": "text"
+          },
+          {
+            "fg": "rag/text/on-light",
+            "bg": "rag/information-background",
+            "context": "text"
+          },
+          {
+            "fg": "rag/text/on-dark",
+            "bg": "rag/error-background",
+            "context": "icon"
+          },
+          {
+            "fg": "rag/text/on-light",
+            "bg": "rag/warning-background",
+            "context": "icon"
+          }
+        ],
+        "props": [
+          {
+            "name": "status",
+            "type": "enum",
+            "values": [
+              "error",
+              "warning",
+              "success",
+              "information"
+            ],
+            "default": "information",
+            "$note": "Binds the R-D20 rag/{status}-background fill + its most specific ruled ink (see tokens). Error renders role=\"alert\"."
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "$note": "Bold lead-in (.t-ed-body .em). Sentence case."
+          },
+          {
+            "name": "message",
+            "type": "string"
+          },
+          {
+            "name": "link",
+            "type": "string",
+            "$note": "Optional inline link, descriptive text (aca-004)."
+          },
+          {
+            "name": "actions",
+            "type": "array",
+            "$note": "Up to two ghost actions — mutually exclusive with dismiss (Legacy family shape rule kept)."
+          },
+          {
+            "name": "dismissible",
+            "type": "boolean",
+            "default": false
           }
         ]
       }
@@ -862,6 +1219,85 @@
       }
     },
     {
+      "component": "Drawer",
+      "category": "organism",
+      "referenceSnippet": "snippets/Drawer.reference.html",
+      "meta": "components/drawer.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--surface": "tertiary/background/default",
+          "--elev-bd": "elevation/border",
+          "--shadow": "elevation/functional",
+          "--overlay": "overlay/version1",
+          "--text": "text/default",
+          "--icon": "icon/default",
+          "--pri": "button/primary/background/default",
+          "--pri-hover": "button/primary/background/hover",
+          "--on-pri": "button/primary/label/default",
+          "--sec-bd": "tertiary/border/default",
+          "--sec-hover": "tertiary/background/hover",
+          "--focus": "focus/ring",
+          "--page": "background/default",
+          "--line": "border/subtle",
+          "--border-radius-control": "border-radius/control",
+          "--border-radius-surface": "border-radius/surface",
+          "--press-travel": "component-type/button-family/press-travel",
+          "--press-darken": "component-type/button-family/press-darken"
+        },
+        "requiredAria": [
+          "role=\"dialog\"",
+          "aria-modal",
+          "aria-labelledby",
+          "aria-describedby",
+          "aria-label"
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "tertiary/background/default",
+            "context": "text"
+          },
+          {
+            "fg": "button/primary/label/default",
+            "bg": "button/primary/background/default",
+            "context": "text"
+          },
+          {
+            "fg": "tertiary/border/default",
+            "bg": "tertiary/background/default",
+            "context": "ui"
+          }
+        ],
+        "props": [
+          {
+            "name": "title",
+            "type": "string",
+            "$note": "Header title (.t-ed-heading-4 .em); labels the dialog via aria-labelledby."
+          },
+          {
+            "name": "side",
+            "type": "enum",
+            "values": [
+              "right"
+            ],
+            "default": "right",
+            "$note": "Right is the canon dock (detail/inspector pattern). A left variant would mirror trivially but is not canon until a consumer demands it."
+          },
+          {
+            "name": "width",
+            "type": "number",
+            "default": 400,
+            "$note": "400px, full-width ≤480px viewport."
+          },
+          {
+            "name": "actions",
+            "type": "array",
+            "$note": "Footer actions — primary FIRST, left-aligned (Modals' corrected order); stack full-width at small sizes."
+          }
+        ]
+      }
+    },
+    {
       "component": "Dropdown",
       "category": "molecule",
       "referenceSnippet": "snippets/Dropdown.reference.html",
@@ -982,6 +1418,75 @@
       }
     },
     {
+      "component": "Empty state",
+      "category": "molecule",
+      "referenceSnippet": "snippets/Empty-state.reference.html",
+      "meta": "components/empty-state.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--text": "text/default",
+          "--page": "background/default",
+          "--line": "border/subtle",
+          "--pri": "button/primary/background/default",
+          "--pri-hover": "button/primary/background/hover",
+          "--on-pri": "button/primary/label/default",
+          "--focus": "focus/ring",
+          "--border-radius-control": "border-radius/control",
+          "--border-radius-surface": "border-radius/surface",
+          "--press-travel": "component-type/button-family/press-travel",
+          "--press-darken": "component-type/button-family/press-darken"
+        },
+        "requiredAria": [
+          "aria-labelledby",
+          "aria-hidden=\"true\""
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "button/primary/label/default",
+            "bg": "button/primary/background/default",
+            "context": "text"
+          }
+        ],
+        "props": [
+          {
+            "name": "posture",
+            "type": "enum",
+            "values": [
+              "first-run",
+              "no-results",
+              "quiet"
+            ],
+            "default": "quiet"
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "$note": "Carries the meaning (.t-ed-heading-4 .em); the glyph is decorative."
+          },
+          {
+            "name": "body",
+            "type": "string",
+            "$note": "One or two sentences, 0.6 ink (house caption treatment); explain and point forward, never blame."
+          },
+          {
+            "name": "glyph",
+            "type": "string",
+            "$note": "Optional REAL library glyph id (icon-source rule) at 48px, 0.4 ink, aria-hidden."
+          },
+          {
+            "name": "action",
+            "type": "string",
+            "$note": "ONE action max: primary button (first-run) or link (no-results). Quiet takes none."
+          }
+        ]
+      }
+    },
+    {
       "component": "Eyebrow",
       "category": "atom",
       "referenceSnippet": "snippets/Eyebrow.reference.html",
@@ -1010,6 +1515,140 @@
             "name": "text",
             "type": "string",
             "$note": "The kicker label; keep it to 1–3 words."
+          }
+        ]
+      }
+    },
+    {
+      "component": "Form layout",
+      "category": "organism",
+      "referenceSnippet": "snippets/Form-layout.reference.html",
+      "meta": "components/form-layout.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--page": "background/default",
+          "--text": "text/default",
+          "--text-disabled": "text/disabled",
+          "--field-bg-default": "form/background/default",
+          "--field-bg-hover": "form/background/hover",
+          "--border-default": "form/border/default",
+          "--border-active": "form/border/active",
+          "--border-disabled": "form/border/disabled",
+          "--icon": "icon/default",
+          "--icon-disabled": "icon/disabled",
+          "--error": "rag/error",
+          "--error-tint": "rag/error-tint",
+          "--success": "rag/success",
+          "--focus": "focus/ring",
+          "--pri-default": "button/primary/background/default",
+          "--pri-hover": "button/primary/background/hover",
+          "--pri-pressed": "button/primary/background/pressed",
+          "--pri-disabled": "button/primary/background/disabled",
+          "--pri-label": "button/primary/label/default",
+          "--pri-label-disabled": "button/primary/label/disabled",
+          "--quat-hover": "button/quaternary/background/hover",
+          "--quat-label": "button/quaternary/label/default",
+          "--quat-label-disabled": "button/quaternary/label/disabled",
+          "--border-radius-control": "border-radius/control",
+          "--press-travel": "component-type/button-family/press-travel",
+          "--press-darken": "component-type/button-family/press-darken"
+        },
+        "requiredAria": [
+          "aria-invalid",
+          "aria-describedby",
+          "role=\"alert\""
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "text/default",
+            "bg": "rag/error-tint",
+            "context": "text"
+          },
+          {
+            "fg": "form/border/default",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "form/border/active",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "rag/error",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "rag/error",
+            "bg": "rag/error-tint",
+            "context": "ui"
+          },
+          {
+            "fg": "rag/success",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "icon/default",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "button/primary/label/default",
+            "bg": "button/primary/background/default",
+            "context": "text"
+          },
+          {
+            "fg": "button/primary/label/default",
+            "bg": "button/primary/background/hover",
+            "context": "text"
+          },
+          {
+            "fg": "button/primary/label/default",
+            "bg": "button/primary/background/pressed",
+            "context": "text"
+          },
+          {
+            "fg": "button/quaternary/label/default",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "button/quaternary/label/default",
+            "bg": "button/quaternary/background/hover",
+            "context": "text"
+          }
+        ],
+        "props": [
+          {
+            "name": "errorSummary",
+            "type": "boolean",
+            "default": true,
+            "$note": "Form-level summary (ctkn-020 exact title string), role=alert, links focus the failing field."
+          },
+          {
+            "name": "pairRow",
+            "type": "boolean",
+            "default": false,
+            "$note": "Two related fields side by side (proximity, aid-004); stacks below 520px."
+          },
+          {
+            "name": "help",
+            "type": "boolean",
+            "default": false,
+            "$note": "One-sentence hint above the field (copy-041: never hyperlinks)."
+          },
+          {
+            "name": "optionalMarker",
+            "type": "boolean",
+            "default": false,
+            "$note": "'(optional)' ink marker beside the label — required is the default, unmarked (intro line states it)."
           }
         ]
       }
@@ -1721,6 +2360,66 @@
       }
     },
     {
+      "component": "Modal lightbox",
+      "category": "organism",
+      "referenceSnippet": "snippets/Modal-lightbox.reference.html",
+      "meta": "components/modal-lightbox.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--surface": "tertiary/background/default",
+          "--elev-bd": "elevation/border",
+          "--shadow": "elevation/functional",
+          "--overlay": "overlay/version1",
+          "--text": "text/default",
+          "--icon": "icon/default",
+          "--hoverbg": "tertiary/background/hover",
+          "--focus": "focus/ring",
+          "--page": "background/default",
+          "--media": "tertiary/background/hover",
+          "--media2": "button/primary/background/disabled",
+          "--border-radius-control": "border-radius/control",
+          "--border-radius-surface": "border-radius/surface",
+          "--press-travel": "component-type/button-family/press-travel",
+          "--press-darken": "component-type/button-family/press-darken"
+        },
+        "requiredAria": [
+          "role=\"dialog\"",
+          "aria-modal",
+          "aria-label",
+          "role=\"status\""
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "tertiary/background/default",
+            "context": "text"
+          },
+          {
+            "fg": "icon/default",
+            "bg": "tertiary/background/default",
+            "context": "icon"
+          }
+        ],
+        "props": [
+          {
+            "name": "items",
+            "type": "array",
+            "$note": "The viewable set; each item = media + caption. Counter announces position ('1 of 3')."
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "$note": "Dialog accessible name via aria-label (e.g. 'Statement viewer')."
+          },
+          {
+            "name": "startIndex",
+            "type": "number",
+            "default": 0
+          }
+        ]
+      }
+    },
+    {
       "component": "Modals",
       "category": "organism",
       "referenceSnippet": "snippets/Modals.reference.html",
@@ -2050,6 +2749,68 @@
       }
     },
     {
+      "component": "Popover",
+      "category": "molecule",
+      "referenceSnippet": "snippets/Popover.reference.html",
+      "meta": "components/popover.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--surface": "background/default",
+          "--pop-border": "elevation/border",
+          "--shadow": "elevation/functional",
+          "--text": "text/default",
+          "--page": "background/default",
+          "--focus": "focus/ring",
+          "--hoverbg": "tertiary/background/hover",
+          "--border-radius-surface": "border-radius/surface",
+          "--press-travel": "component-type/button-family/press-travel",
+          "--press-darken": "component-type/button-family/press-darken"
+        },
+        "requiredAria": [
+          "role=\"dialog\"",
+          "aria-labelledby",
+          "aria-expanded",
+          "aria-controls",
+          "aria-haspopup",
+          "aria-label"
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "background/default",
+            "context": "text"
+          }
+        ],
+        "props": [
+          {
+            "name": "title",
+            "type": "string",
+            "$note": "Labels the dialog (aria-labelledby); .t-ed-body .em."
+          },
+          {
+            "name": "content",
+            "type": "string",
+            "$note": ".t-ed-body-small body; may include one descriptive link (aca-004)."
+          },
+          {
+            "name": "placement",
+            "type": "enum",
+            "values": [
+              "auto"
+            ],
+            "default": "auto",
+            "$note": "Space-aware (the Tooltip mechanics, shared): flips above/below, clamps to viewport, tail tracks the trigger."
+          },
+          {
+            "name": "dismissible",
+            "type": "boolean",
+            "default": true,
+            "$note": "Close ×, Esc, outside click, trigger toggle, or focus leaving — all close it."
+          }
+        ]
+      }
+    },
+    {
       "component": "Progress tracker",
       "category": "molecule",
       "referenceSnippet": "snippets/Progress-tracker.reference.html",
@@ -2321,6 +3082,107 @@
       }
     },
     {
+      "component": "Secure entry",
+      "category": "molecule",
+      "referenceSnippet": "snippets/Secure-entry.reference.html",
+      "meta": "components/secure-entry.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--page": "background/default",
+          "--text": "text/default",
+          "--text-disabled": "text/disabled",
+          "--field-bg-default": "form/background/default",
+          "--field-bg-hover": "form/background/hover",
+          "--border-default": "form/border/default",
+          "--border-active": "form/border/active",
+          "--border-disabled": "form/border/disabled",
+          "--icon": "icon/default",
+          "--icon-disabled": "icon/disabled",
+          "--error": "rag/error",
+          "--success": "rag/success",
+          "--focus": "focus/ring",
+          "--quat-hover": "button/quaternary/background/hover",
+          "--quat-label": "button/quaternary/label/default",
+          "--quat-label-disabled": "button/quaternary/label/disabled",
+          "--border-radius-control": "border-radius/control",
+          "--press-travel": "component-type/button-family/press-travel",
+          "--press-darken": "component-type/button-family/press-darken"
+        },
+        "requiredAria": [
+          "role=\"group\"",
+          "aria-label",
+          "aria-describedby",
+          "autocomplete=\"one-time-code\""
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "form/border/default",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "form/border/active",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "rag/error",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "rag/success",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "icon/default",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "button/quaternary/label/default",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "button/quaternary/label/default",
+            "bg": "button/quaternary/background/hover",
+            "context": "text"
+          }
+        ],
+        "props": [
+          {
+            "name": "length",
+            "type": "enum",
+            "values": [
+              "4",
+              "6"
+            ],
+            "default": "6",
+            "$note": "6-digit OTP (separator dot after 3) or 4-digit PIN."
+          },
+          {
+            "name": "masked",
+            "type": "boolean",
+            "default": false,
+            "$note": "PIN cells are type=password; OTP cells are visible text."
+          },
+          {
+            "name": "resend",
+            "type": "boolean",
+            "default": true,
+            "$note": "Ghost button unlocked by a countdown; button-family membership candidate (ADR-0013)."
+          }
+        ]
+      }
+    },
+    {
       "component": "Selection controls",
       "category": "molecule",
       "referenceSnippet": "snippets/Selection-controls.reference.html",
@@ -2432,6 +3294,54 @@
       }
     },
     {
+      "component": "Skeleton loader",
+      "category": "molecule",
+      "referenceSnippet": "snippets/Skeleton-loader.reference.html",
+      "meta": "components/skeleton-loader.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--bone": "tertiary/background/hover",
+          "--page": "background/default",
+          "--text": "text/default",
+          "--line": "border/subtle",
+          "--border-radius-surface": "border-radius/surface",
+          "--border-radius-indicator": "border-radius/indicator"
+        },
+        "requiredAria": [
+          "role=\"status\"",
+          "aria-busy",
+          "aria-hidden=\"true\""
+        ],
+        "contrastPairs": [],
+        "props": [
+          {
+            "name": "shape",
+            "type": "enum",
+            "values": [
+              "line",
+              "body",
+              "circle",
+              "media",
+              "control"
+            ],
+            "default": "line",
+            "$note": "The bone kit: 16px caption line · 24px body line · 44px avatar circle (50% idiom) · 160px media block · 44×120 control block. Compose to mirror the target component."
+          },
+          {
+            "name": "width",
+            "type": "string",
+            "$note": "Per-bone width, mirrors expected content length (staggered widths read more honestly than uniform bars)."
+          },
+          {
+            "name": "shimmer",
+            "type": "boolean",
+            "default": true,
+            "$note": "Background-position sweep 1.4s; removed entirely under prefers-reduced-motion (static bones still read as loading)."
+          }
+        ]
+      }
+    },
+    {
       "component": "Slider",
       "category": "molecule",
       "referenceSnippet": "snippets/Slider.reference.html",
@@ -2489,6 +3399,88 @@
               "pressed"
             ],
             "default": "default"
+          }
+        ]
+      }
+    },
+    {
+      "component": "Stat card",
+      "category": "molecule",
+      "referenceSnippet": "snippets/Stat-card.reference.html",
+      "meta": "components/stat-card.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--surface": "tertiary/background/default",
+          "--border": "border/subtle",
+          "--text": "text/default",
+          "--page": "background/default",
+          "--up": "rag/success",
+          "--down": "rag/error",
+          "--border-radius-surface": "border-radius/surface"
+        },
+        "requiredAria": [
+          "role=\"group\"",
+          "aria-label",
+          "aria-hidden=\"true\""
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "tertiary/background/default",
+            "context": "text"
+          },
+          {
+            "fg": "rag/success",
+            "bg": "tertiary/background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "rag/error",
+            "bg": "tertiary/background/default",
+            "context": "ui"
+          }
+        ],
+        "props": [
+          {
+            "name": "label",
+            "type": "string",
+            "$note": ".t-cm-caption at 0.6 ink; names the metric, sentence case."
+          },
+          {
+            "name": "value",
+            "type": "string",
+            "$note": "The Amount-display primitive markup unchanged: figure composites, tabular-nums, currency before value no space (copy-025), U+2212 minus. Plain counts render without currency."
+          },
+          {
+            "name": "size",
+            "type": "enum",
+            "values": [
+              "display",
+              "compact"
+            ],
+            "default": "display",
+            "$note": "display = .t-cm-figure-4 (32px) · compact = .t-cm-figure-3 (24px, T-D14) for dense boards."
+          },
+          {
+            "name": "delta",
+            "type": "string",
+            "$note": "Signed change + direction word ('+12.4% up'); .t-cm-figure-6 in INK. Direction = arrow + sign + wording, never colour alone."
+          },
+          {
+            "name": "direction",
+            "type": "enum",
+            "values": [
+              "up",
+              "down",
+              "flat"
+            ],
+            "default": "flat",
+            "$note": "R-D5: directional deltas are red/green ONLY. The arrow glyph wears rag/success or rag/error (3:1 floor, R-D6 A′ — labelled); flat = no arrow, 'No change'."
+          },
+          {
+            "name": "period",
+            "type": "string",
+            "$note": ".t-cm-legal at 0.6 ink ('vs February', 'this month')."
           }
         ]
       }
@@ -2929,6 +3921,156 @@
             ],
             "default": "default",
             "$note": "Tag link only (hover & pressed combined)."
+          }
+        ]
+      }
+    },
+    {
+      "component": "Textarea",
+      "category": "atom",
+      "referenceSnippet": "snippets/Textarea.reference.html",
+      "meta": "components/textarea.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--page": "background/default",
+          "--text": "text/default",
+          "--text-disabled": "text/disabled",
+          "--field-bg-default": "form/background/default",
+          "--field-bg-hover": "form/background/hover",
+          "--border-default": "form/border/default",
+          "--border-active": "form/border/active",
+          "--border-disabled": "form/border/disabled",
+          "--icon": "icon/default",
+          "--icon-disabled": "icon/disabled",
+          "--error": "rag/error",
+          "--focus": "focus/ring",
+          "--border-radius-control": "border-radius/control"
+        },
+        "requiredAria": [
+          "aria-invalid",
+          "aria-describedby"
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "form/border/default",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "form/border/active",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "rag/error",
+            "bg": "background/default",
+            "context": "ui"
+          }
+        ],
+        "props": [
+          {
+            "name": "maxlength",
+            "type": "number",
+            "default": 300,
+            "$note": "Drives the counter; remaining count announced politely at 90% and at the limit."
+          },
+          {
+            "name": "rows",
+            "type": "number",
+            "default": 4,
+            "$note": "Initial height; min-height 96px (4px grid), user resize vertical-only."
+          },
+          {
+            "name": "counter",
+            "type": "boolean",
+            "default": true
+          },
+          {
+            "name": "optionalMarker",
+            "type": "boolean",
+            "default": false,
+            "$note": "'(optional)' ink marker beside the label."
+          }
+        ]
+      }
+    },
+    {
+      "component": "Toast",
+      "category": "molecule",
+      "referenceSnippet": "snippets/Toast.reference.html",
+      "meta": "components/toast.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--warn": "rag/warning",
+          "--ok": "rag/success",
+          "--info": "rag/information",
+          "--surface": "tertiary/background/default",
+          "--elev-bd": "elevation/border",
+          "--shadow": "elevation/functional",
+          "--text": "text/default",
+          "--page": "background/default",
+          "--border-radius-surface": "border-radius/surface",
+          "--press-travel": "component-type/button-family/press-travel",
+          "--press-darken": "component-type/button-family/press-darken"
+        },
+        "requiredAria": [
+          "role=\"status\"",
+          "aria-label"
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "tertiary/background/default",
+            "context": "text"
+          },
+          {
+            "fg": "rag/warning",
+            "bg": "tertiary/background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "rag/success",
+            "bg": "tertiary/background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "rag/information",
+            "bg": "tertiary/background/default",
+            "context": "ui"
+          }
+        ],
+        "props": [
+          {
+            "name": "status",
+            "type": "enum",
+            "values": [
+              "success",
+              "information",
+              "warning",
+              "plain"
+            ],
+            "default": "plain",
+            "$note": "No error (snackbar precedent). Plain = statusless message ('Copied to clipboard.'), no glyph."
+          },
+          {
+            "name": "message",
+            "type": "string"
+          },
+          {
+            "name": "action",
+            "type": "string",
+            "$note": "Optional single text action (e.g. Undo). The same action MUST exist somewhere persistent — a toast is missable by design."
+          },
+          {
+            "name": "duration",
+            "type": "number",
+            "default": 6000,
+            "$note": "Auto-dismiss ms; timer pauses on hover/focus-within (2.2.1 pattern). Dismiss × always present."
           }
         ]
       }

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alert — reference implementation (gated)</title>
+<!--
+  CANONICAL REFERENCE for Alert / inline callout (Apollo MONO — the first Mono notification canon).
+  Built 2026-07-22 (Phase-2 worker B) — UNBLOCKED by R-D20: binds the ruled rag/{error,warning,
+  success,information} + -tint sets. NOTHING re-decided here; every colour is a retrieval.
+  snippets/Notifications is the LEGACY REFERENCE (§A-AUTH do-not-convert) — mined for SHAPE only
+  (contextual placement: tinted surface, full 1px accent border, icon · title · description ·
+  inline link · dismiss ×). This file is its Mono successor for the in-flow callout placement;
+  Toast (transient) and Banner (page-level) are sibling snippets.
+
+  RAG ROUNDEL POLICY applied to the MONO values (Dave 2026-07-02; R-D6 A′):
+   - LIGHT: shape = status glyph colour on the tint (err 4.71 · ok 4.11 · info 3.85 ≥3:1; amber 2.44
+     EXEMPT by convention — icon shape + label carry the meaning, R-D3/R-D6 A′, so the warning
+     shape-vs-tint pair is deliberately NOT declared below). Internal mark ≥4.5 vs shape:
+     err = tint knockout (4.71) · warning = near-black mark (5.76, R-D3 always-black-on-amber) ·
+     success + information = WHITE mark (5.0 / 5.03 — their tint knockouts sit at 4.11/3.85, the
+     same fix Notifications recorded for Legacy success).
+   - DARK: white shape + black mark (Dave 2026-07-02 eve ruling — structural, 21:1 both legs;
+     with the R-D20 dark values a knockout mark would fail on error at 4.42). Literal #FFFFFF/
+     #000000 per the ruling, mirroring the Legacy reference's enactment.
+  Colour is NEVER the sole channel: distinct glyph shapes (triangle/circle) + title text (icon-013).
+
+  TEXT on tints = text/default (13.3–17.5:1 across all four tints, both modes — R-D20 values).
+  TYPE: canon composites via markup CLASS (T-D14 pattern — no type.css edit, blast radius zero):
+  message = .t-ed-body (16/24 editorial, multi-line copy); title emphasis via .t-ed-body .em (500).
+  DISMISS ×: icon-only control, 24px visual in a 44px hit area (::before, 2.5.8). NO local press
+  physics (ADR-0013 ratchet — never re-type a sub-atom): colour-only hover/active meanwhile
+  (active > hover), and an EMPTY AUTO-PARTIAL pair below awaits conductor registration into
+  button-family ($members proposal in the worker receipt; --phys-size:24 = the visible control).
+  ICONS: real library status glyphs (status-icons/*.svg + global-controls/close.svg) via <symbol>
+  sprite, byte-matched by _validate_icons.py; inner marks use style="fill:var(--mark)".
+  ROLES: error = role="alert" (assertive — something is wrong now); warning/success/information =
+  role="status" (polite). Dismiss animation honours prefers-reduced-motion.
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease;
+    --spring:300ms cubic-bezier(.5,1.6,.4,1); --press:90ms cubic-bezier(0,0,.58,1); }
+  [data-theme="light"]{
+    --err:#B92F1E; --warn:#C58900; --ok:#2B7E4F; --info:#306EC6;
+    --err-t:#F1E0DC; --warn-t:#F6E5CC; --ok-t:#DCEDE3; --info-t:#D6E3EC;
+    --text:#1A1A1A; --page:#FFFFFF;
+    --border-radius-surface:0;
+    --press-travel:2; --press-darken:0.94;
+  }
+  [data-theme="dark"]{
+    --err:#CC4333; --warn:#C58900; --ok:#4A9568; --info:#2674DC;
+    --err-t:#2C120D; --warn-t:#3C2C13; --ok-t:#12291D; --info-t:#092131;
+    --text:#FFFFFF; --page:#1A1A1A;
+    --border-radius-surface:0;
+    --press-travel:2; --press-darken:0.94;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page); color:var(--text);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--text);
+    background:transparent; color:var(--text); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--text); outline-offset:2px;}
+  .demo-controls label{display:flex; gap:.5rem; align-items:center;}
+  .demo-controls input[type=range]{accent-color:var(--text);}
+  h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+
+  .awrap{ width:var(--demo-width, 560px); max-width:100%; }
+
+  /* per-status tokens — accent (glyph/border) + tint (surface); retrieval only, R-D20 */
+  .alert.err{ --accent:var(--err); --tint:var(--err-t); }
+  .alert.warn{ --accent:var(--warn); --tint:var(--warn-t); }
+  .alert.ok{ --accent:var(--ok); --tint:var(--ok-t); }
+  .alert.info{ --accent:var(--info); --tint:var(--info-t); }
+
+  /* the callout shell — tinted surface, full 1px accent border, SURFACE radius role */
+  .alert{ display:flex; gap:8px; align-items:flex-start; padding:12px 16px; margin:12px 0;
+    background:var(--tint); border:1px solid var(--accent); border-radius:var(--border-radius-surface);
+    color:var(--text); overflow:hidden;
+    transition:max-height .3s ease, opacity .2s ease, margin .3s ease, padding .3s ease, border-width .3s ease; }
+  /* icon centres on the FIRST text line (24px = one .t-ed-body line box) and holds position when copy wraps */
+  .alert .ic{ flex:none; height:24px; display:inline-flex; align-items:center; color:var(--accent); --mark:var(--tint); }
+  .alert .ic svg{ width:20px; height:20px; display:block; fill:currentColor; }
+  .alert.warn .ic{ --mark:#1A1A1A; }   /* amber mark = always near-black (R-D3); tint knockout would sit at 2.44 */
+  .alert.ok .ic{ --mark:#FFFFFF; }     /* white mark 5.0 — tint knockout 4.11 < 4.5 (roundel policy mark leg) */
+  .alert.info .ic{ --mark:#FFFFFF; }   /* white mark 5.03 — tint knockout 3.85 < 4.5 */
+  /* DARK roundel policy (Dave 2026-07-02 eve — structural): white shape + black mark, both legs 21:1 */
+  [data-theme="dark"] .alert .ic{ color:#FFFFFF; --mark:#000000; }
+
+  .alert .main{ flex:1 1 auto; min-width:0; margin:0; }
+  .alert .main a{ color:inherit; font-weight:500; text-decoration:underline; text-underline-offset:3px;
+    text-decoration-thickness:1px; cursor:pointer; transition:text-decoration-thickness var(--ease); }
+  .alert .main a:hover, .alert .main a:active{ text-decoration-thickness:2px; }
+  .alert .main a:focus-visible{ outline:2px solid currentColor; outline-offset:2px; }
+
+  /* dismiss × — 24px visual control in a 44px hit target (2.5.8). Colour-only state feedback
+     (active > hover, WCAG state-contrast); press physics arrives via the injected family partial
+     once the conductor registers this selector (ADR-0013 — no local re-implementation). */
+  .alert .x{ position:relative; flex:none; display:inline-flex; width:24px; height:24px; padding:0; border:0;
+    background:transparent; color:inherit; cursor:pointer; align-items:center; justify-content:center;
+    border-radius:var(--border-radius-surface); transition:background var(--ease), transform var(--spring); }
+  .alert .x::before{ content:""; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:44px; height:44px; }
+  .alert .x svg{ width:16px; height:16px; fill:currentColor; }
+  .alert .x:hover{ background:color-mix(in srgb, currentColor 10%, transparent); }
+  .alert .x:active{ background:color-mix(in srgb, currentColor 16%, transparent); }
+  .alert .x:focus-visible{ outline:2px solid currentColor; outline-offset:2px; }
+  /* ===== AUTO-PARTIAL press-physics START (button-family) ===== */
+/* INJECTED from Button.reference.html (partial "press-physics", group button-family —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+  .alert .x:hover{transform:scale(calc(1 + var(--press-travel)/var(--phys-size)));}
+  .alert .x.full:hover{transform:none;}                                           /* full-width can't grow — would overflow */
+  .alert .x:active{transform:scale(calc(1 - var(--press-travel)/var(--phys-size))); filter:brightness(var(--press-darken)); transition:transform var(--press), filter var(--press);}
+  .alert .x:disabled:hover,.alert .x.is-disabled:hover{transform:none; filter:none;}   /* disabled stays put */
+  /* WCAG 2.3.3 — the partial carries its OWN reduced-motion override (ADR-0013: rides inside, never per-file) */
+  @media (prefers-reduced-motion: reduce){
+    .alert .x:hover,.alert .x:active{ transform:none !important; filter:none !important; }
+  }
+  /* ===== AUTO-PARTIAL press-physics END ===== */
+  .alert.removing{ max-height:0 !important; opacity:0; margin-top:0; margin-bottom:0;
+    padding-top:0; padding-bottom:0; border-width:0; }
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
+      animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="al-error" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.30911 1.68194L0.109113 15.7999C-0.199887 16.3319 0.184113 16.9999 0.800113 16.9999H17.2001C17.8161 16.9999 18.2001 16.3319 17.8911 15.7999L9.69111 1.68194C9.38311 1.15094 8.61711 1.15094 8.30911 1.68194Z" fill="currentColor"/><path style="fill:var(--mark)" d="M9.9001 5H8.1001V11H9.9001V5Z"/><path style="fill:var(--mark)" d="M9 14.8259C9.69036 14.8259 10.25 14.2663 10.25 13.5759C10.25 12.8856 9.69036 12.3259 9 12.3259C8.30964 12.3259 7.75 12.8856 7.75 13.5759C7.75 14.2663 8.30964 14.8259 9 14.8259Z"/></symbol>
+    <symbol id="al-warning" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M9.90107 3.80005H8.10107V9.80005H9.90107V3.80005Z"/><path style="fill:var(--mark)" d="M9.00078 14.2C9.66352 14.2 10.2008 13.6628 10.2008 13C10.2008 12.3373 9.66352 11.8 9.00078 11.8C8.33804 11.8 7.80078 12.3373 7.80078 13C7.80078 13.6628 8.33804 14.2 9.00078 14.2Z"/></symbol>
+    <symbol id="al-success" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z"/></symbol>
+    <symbol id="al-info" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M9 6.25C9.69036 6.25 10.25 5.69036 10.25 5C10.25 4.30964 9.69036 3.75 9 3.75C8.30964 3.75 7.75 4.30964 7.75 5C7.75 5.69036 8.30964 6.25 9 6.25Z"/><path style="fill:var(--mark)" d="M9.89912 8.25H8.09912V14.25H9.89912V8.25Z"/></symbol>
+    <symbol id="al-close" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <div class="demo-controls">
+    <button id="themeToggle" type="button">◐ Toggle theme</button>
+    <label>Width <input id="w" type="range" min="300" max="560" value="560"> <span id="wv">560</span>px</label>
+    <span>Alert — canonical reference (Mono · in-flow callout)</span>
+  </div>
+
+  <div class="awrap" id="awrap">
+
+    <h2>Dismissible — title · description · link</h2>
+    <div class="alert err" role="alert"><span class="ic"><svg aria-hidden="true"><use href="#al-error"/></svg></span><p class="main t-ed-body"><strong class="em">Payment failed.</strong> The payment could not be processed. <a href="#">Review payment details</a></p><button class="x" aria-label="Dismiss alert"><svg aria-hidden="true"><use href="#al-close"/></svg></button></div>
+    <div class="alert warn" role="status"><span class="ic"><svg aria-hidden="true"><use href="#al-warning"/></svg></span><p class="main t-ed-body"><strong class="em">Statement overdue.</strong> Your March statement is ready to review. <a href="#">Open March statement</a></p><button class="x" aria-label="Dismiss alert"><svg aria-hidden="true"><use href="#al-close"/></svg></button></div>
+    <div class="alert ok" role="status"><span class="ic"><svg aria-hidden="true"><use href="#al-success"/></svg></span><p class="main t-ed-body"><strong class="em">Payment sent.</strong> The transfer has been completed. <a href="#">View receipt</a></p><button class="x" aria-label="Dismiss alert"><svg aria-hidden="true"><use href="#al-close"/></svg></button></div>
+    <div class="alert info" role="status"><span class="ic"><svg aria-hidden="true"><use href="#al-info"/></svg></span><p class="main t-ed-body"><strong class="em">Planned maintenance.</strong> Some services pause briefly on Sunday morning. <a href="#">See affected services</a></p><button class="x" aria-label="Dismiss alert"><svg aria-hidden="true"><use href="#al-close"/></svg></button></div>
+
+    <h2>Static — no dismiss (message persists with the task)</h2>
+    <div class="alert err" role="alert"><span class="ic"><svg aria-hidden="true"><use href="#al-error"/></svg></span><p class="main t-ed-body"><strong class="em">Session expiring.</strong> Save your work before continuing.</p></div>
+    <div class="alert info" role="status"><span class="ic"><svg aria-hidden="true"><use href="#al-info"/></svg></span><p class="main t-ed-body">A single-line informational callout with no title.</p></div>
+
+    <h2>Wrapping — icon and dismiss hold the first line</h2>
+    <div class="alert warn" role="status"><span class="ic"><svg aria-hidden="true"><use href="#al-warning"/></svg></span><p class="main t-ed-body"><strong class="em">Verify your details.</strong> We could not confirm the mobile number saved to this profile. Confirm the number is still active, or update it, so security codes reach the right device. <a href="#">Update contact details</a></p><button class="x" aria-label="Dismiss alert"><svg aria-hidden="true"><use href="#al-close"/></svg></button></div>
+
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Alert",
+    "vars": { "--err": "rag/error", "--warn": "rag/warning", "--ok": "rag/success", "--info": "rag/information",
+              "--err-t": "rag/error-tint", "--warn-t": "rag/warning-tint", "--ok-t": "rag/success-tint", "--info-t": "rag/information-tint",
+              "--text": "text/default", "--page": "background/default", "--border-radius-surface": "border-radius/surface",
+              "--press-travel": "component-type/button-family/press-travel", "--press-darken": "component-type/button-family/press-darken" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "rag/error-tint",        "context": "text" },
+      { "fg": "text/default", "bg": "rag/warning-tint",      "context": "text" },
+      { "fg": "text/default", "bg": "rag/success-tint",      "context": "text" },
+      { "fg": "text/default", "bg": "rag/information-tint",  "context": "text" },
+      { "fg": "rag/error",       "bg": "rag/error-tint",       "context": "ui" },
+      { "fg": "rag/success",     "bg": "rag/success-tint",     "context": "ui" },
+      { "fg": "rag/information", "bg": "rag/information-tint", "context": "ui" }
+    ],
+    "icons": { "error": "status-icons/error.svg", "warning": "status-icons/warning.svg", "success": "status-icons/success.svg", "information": "status-icons/information.svg", "close": "global-controls/close.svg" },
+    "requiredAria": ["role=\"alert\"", "role=\"status\"", "aria-label"],
+    "$note": "The warning shape-vs-tint pair (2.44) is deliberately undeclared: amber is EXEMPT from the 3:1 shape leg by convention (R-D3 / R-D6 A′ — icon shape + label carry meaning; the always-black internal mark passes 5.76). Dark-mode roundels are white-shape/black-mark literals per the 2026-07-02 dark roundel ruling."
+  }
+  </script>
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    const w=document.getElementById('w'), wv=document.getElementById('wv'), aw=document.getElementById('awrap');
+    w.addEventListener('input', ()=>{ aw.style.setProperty('--demo-width', w.value+'px'); wv.textContent=w.value; });
+    document.querySelectorAll('.alert .x').forEach(x=> x.addEventListener('click', ()=>{
+      const n=x.closest('.alert'); n.style.maxHeight=n.offsetHeight+'px';
+      requestAnimationFrame(()=> n.classList.add('removing'));
+      n.addEventListener('transitionend', ev=>{ if(ev.propertyName==='max-height') n.remove(); }, {once:true});
+    }));
+  </script>
+</body>
+</html>

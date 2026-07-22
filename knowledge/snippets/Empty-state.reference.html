@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Empty state — reference implementation (gated)</title>
+<!--
+  CANONICAL REFERENCE for Empty state (Apollo MONO). What a region says when it has nothing to
+  show: first-run (nothing exists yet — invite the first action), no-results (a filter/search
+  matched nothing — offer the way back), and quiet (legitimately nothing to do). Built 2026-07-22
+  (Phase-2 worker B).
+
+  VISUAL ANCHOR: the icon library carries NO spot-illustration set, so this layout is TEXT-LED
+  with an optional REAL library glyph at 48px as a muted anchor (icon-source rule — never invent;
+  informative/task.svg + global-controls/search.svg, byte-matched). A dedicated empty-state
+  spot-illustration set is logged as an ICON GAP in the worker receipt (_ICON-GAPS.md candidate).
+  The glyph is decorative (aria-hidden) — the title carries the meaning.
+
+  LAYOUT: centred column, 480px max — glyph 48px · title (.t-ed-heading-4 .em) · body
+  (.t-ed-body-small, 0.6 ink like the house caption treatment) · ONE action. First-run takes a
+  primary Button (namespaced .ebtn — the .btn classname's type.css blast radius must not escape;
+  composites via markup class); no-results takes a LINK ('Clear search' — the way back is cheap,
+  not a commitment). Never more than one action: an empty region is not a menu.
+  PRESSABLE: no local press physics (ADR-0013 ratchet) — colour-only states, empty AUTO-PARTIAL
+  pair awaits conductor registration ($members proposal in receipt; --phys-size:120).
+  A11y: the region is a plain landmark-friendly <section aria-labelledby>; nothing announces —
+  an empty state is a state, not an event (no live region). Action/link fully keyboard-operable.
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease;
+    --spring:300ms cubic-bezier(.5,1.6,.4,1); --press:90ms cubic-bezier(0,0,.58,1); }
+  [data-theme="light"]{ --text:#1A1A1A; --page:#FFFFFF; --line:#E1E1E1;
+    --pri:#1A1A1A; --pri-hover:#626262; --on-pri:#FFFFFF; --focus:#305A85;
+    --border-radius-control:0; --border-radius-surface:0;
+    --press-travel:2; --press-darken:0.94; }
+  [data-theme="dark"]{ --text:#FFFFFF; --page:#1A1A1A; --line:#808080;
+    --pri:#FAFAFA; --pri-hover:#B7B7B7; --on-pri:#333333; --focus:#4587A7;
+    --border-radius-control:0; --border-radius-surface:0;
+    --press-travel:2; --press-darken:0.94; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page); color:var(--text);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--text);
+    background:transparent; color:var(--text); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+
+  /* the empty state — centred column inside whatever region is empty */
+  .empty{ display:flex; flex-direction:column; align-items:center; text-align:center;
+    gap:12px; padding:48px 24px; max-width:480px; margin:0 auto;
+    border:1px dashed var(--line); border-radius:var(--border-radius-surface); }
+  .empty .glyph{ width:48px; height:48px; color:var(--text); opacity:.4; }
+  .empty .glyph svg{ width:48px; height:48px; display:block; fill:currentColor; }
+  .empty h3{ margin:0; }
+  .empty p{ margin:0; opacity:.6; max-width:40ch; }
+  .empty .gap{ height:4px; }   /* one grid step between copy and action */
+
+  /* primary action — canon Button mirror, namespaced .ebtn (see header); colour-only states */
+  .ebtn{ height:44px; min-width:96px; padding:0 20px; border:0; border-radius:var(--border-radius-control);
+    background:var(--pri); color:var(--on-pri); cursor:pointer; justify-content:center;
+    transition:background var(--ease), transform var(--spring); }
+  .ebtn:hover{ background:color-mix(in srgb, var(--pri) 70%, var(--page)); }
+  .ebtn:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }
+  /* ===== AUTO-PARTIAL press-physics START (button-family) ===== */
+/* INJECTED from Button.reference.html (partial "press-physics", group button-family —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+  .ebtn:hover{transform:scale(calc(1 + var(--press-travel)/var(--phys-size)));}
+  .ebtn.full:hover{transform:none;}                                           /* full-width can't grow — would overflow */
+  .ebtn:active{transform:scale(calc(1 - var(--press-travel)/var(--phys-size))); filter:brightness(var(--press-darken)); transition:transform var(--press), filter var(--press);}
+  .ebtn:disabled:hover,.ebtn.is-disabled:hover{transform:none; filter:none;}   /* disabled stays put */
+  /* WCAG 2.3.3 — the partial carries its OWN reduced-motion override (ADR-0013: rides inside, never per-file) */
+  @media (prefers-reduced-motion: reduce){
+    .ebtn:hover,.ebtn:active{ transform:none !important; filter:none !important; }
+  }
+  /* ===== AUTO-PARTIAL press-physics END ===== */
+
+  .empty a{ color:inherit; font-weight:500; text-decoration:underline; text-underline-offset:3px;
+    text-decoration-thickness:1px; cursor:pointer; transition:text-decoration-thickness var(--ease); }
+  .empty a:hover, .empty a:active{ text-decoration-thickness:2px; }
+  .empty a:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
+      animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="es-task" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M8 8.2H13V7H8V8.2ZM5 8.2H6.2V7H5V8.2ZM8 11.2H13V10H8V11.2ZM5 11.2H6.2V10H5V11.2ZM8 14.2H13V13H8V14.2ZM5 14.2H6.2V13H5V14.2ZM13 2L11 0H7L5 2H1V18H17V2H13ZM6.2 2.497L7.497 1.2H10.503L11.8 2.497V3.8H6.2V2.497ZM15.8 16.8H2.2V3.2H5V5H13V3.2H15.8V16.8Z" fill="currentColor"/></symbol>
+    <symbol id="es-search" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.19675 12.803C3.66075 14.268 5.58075 15 7.49975 15C9.23175 15 10.9598 14.398 12.3577 13.206L17.1257 17.973L17.9748 17.125L13.2067 12.357C15.7197 9.41 15.5898 4.981 12.8048 2.196C11.3388 0.732 9.41875 0 7.49975 0C5.58075 0 3.66075 0.732 2.19675 2.197C-0.73225 5.126 -0.73225 9.874 2.19675 12.803ZM1.19975 7.5C1.19975 5.817 1.85575 4.235 3.04475 3.045C4.23375 1.855 5.81675 1.2 7.49975 1.2C9.18275 1.2 10.7648 1.855 11.9548 3.045C14.4108 5.501 14.4108 9.498 11.9548 11.955C10.7648 13.145 9.18275 13.8 7.49975 13.8C5.81675 13.8 4.23475 13.145 3.04475 11.955C1.85475 10.765 1.19975 9.183 1.19975 7.5Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <div class="demo-controls">
+    <button id="themeToggle" type="button">◐ Toggle theme</button>
+    <span>Empty state — canonical reference (Mono · text-led · one action)</span>
+  </div>
+
+  <h2>First-run — nothing exists yet, invite the first action</h2>
+  <section class="empty" aria-labelledby="es1">
+    <span class="glyph" aria-hidden="true"><svg><use href="#es-task"/></svg></span>
+    <h3 class="t-ed-heading-4 em" id="es1">No saved payees yet</h3>
+    <p class="t-ed-body-small">Add a payee once and future payments take seconds.</p>
+    <span class="gap"></span>
+    <button class="ebtn t-cm-button t-cm-slot" type="button">Add a payee</button>
+  </section>
+
+  <h2>No results — the filter matched nothing, offer the way back</h2>
+  <section class="empty" aria-labelledby="es2">
+    <span class="glyph" aria-hidden="true"><svg><use href="#es-search"/></svg></span>
+    <h3 class="t-ed-heading-4 em" id="es2">No transactions match</h3>
+    <p class="t-ed-body-small">Nothing in this account matches "gym" for March. Try a different word or widen the date range.</p>
+    <span class="gap"></span>
+    <a href="#">Clear the search</a>
+  </section>
+
+  <h2>Quiet — legitimately nothing to do, no action</h2>
+  <section class="empty" aria-labelledby="es3">
+    <h3 class="t-ed-heading-4 em" id="es3">You're all caught up</h3>
+    <p class="t-ed-body-small">New notifications will appear here.</p>
+  </section>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Empty state",
+    "vars": { "--text": "text/default", "--page": "background/default", "--line": "border/subtle",
+              "--pri": "button/primary/background/default", "--pri-hover": "button/primary/background/hover",
+              "--on-pri": "button/primary/label/default", "--focus": "focus/ring",
+              "--border-radius-control": "border-radius/control", "--border-radius-surface": "border-radius/surface",
+              "--press-travel": "component-type/button-family/press-travel", "--press-darken": "component-type/button-family/press-darken" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "button/primary/label/default", "bg": "button/primary/background/default", "context": "text" }
+    ],
+    "icons": { "task": "informative/task.svg", "search": "global-controls/search.svg" },
+    "requiredAria": ["aria-labelledby", "aria-hidden=\"true\""],
+    "$note": "Text-led by necessity: the icon library has no spot-illustration set (icon gap logged in the worker receipt). Glyphs are decorative anchors (aria-hidden, 0.4 ink) — titles carry the meaning. Body copy at 0.6 ink = the house caption treatment; the empty region is a STATE not an event, so nothing announces (no live region). One action maximum."
+  }
+  </script>
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+  </script>
+</body>
+</html>

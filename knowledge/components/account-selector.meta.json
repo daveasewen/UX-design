@@ -1,0 +1,66 @@
+{
+  "name": "Account selector",
+  "category": "molecule",
+  "purpose": "The from/to account picker of every payment flow plus its compact inline token. Two forms: a SELECTOR (combobox trigger showing the chosen account — name, masked number, balance — opening a listbox of rich account rows; the Dropdown field mechanics with account-shaped options) and a MASKED ACCOUNT CHIP (the chosen account as an inline token for confirmation rows and form summaries). Masked convention promoted from Account-card: middle-dot triple + last four (···4821), never the full number.",
+  "props": [
+    { "name": "accounts", "type": "array", "$note": "Rows of {name, masked, balance}; balances render via the Amount-display primitive (tabular figures, copy-025)." },
+    { "name": "selected", "type": "number", "default": 0 },
+    { "name": "label", "type": "string", "$note": "Field label above the trigger ('From account'); part of the combobox accessible name." },
+    { "name": "form", "type": "enum", "values": ["selector", "chip"], "default": "selector", "$note": "Chip = read-only inline token (role=group + aria-label); selector = the interactive picker." }
+  ],
+  "variants": [
+    { "name": "selector", "use": "Choosing among the user's accounts in payment/transfer forms." },
+    { "name": "chip", "use": "Restating the chosen account in confirmations and summaries — compact, read-only." }
+  ],
+  "tokens": {
+    "font-family": "type composites via markup class — names .t-cm-label (.em selected) · masked .t-cm-legal at 0.6 ink · balances .t-cm-figure-5/6 (tabular) · field label .t-cm-caption",
+    "field": "form/border/default · active form/border/active (border + inset accent, the Dropdown pattern) · hover form/background/hover",
+    "menu": "background/default + elevation/border (dark outline) + elevation/functional shadow — mode-aware elevation (Dropdown recipe)",
+    "selected": "form/background/hover fill + inset form/border/active accent + .em name",
+    "chip": "form/border/default outline on the INDICATOR radius role (the Account-card tag spec, namespaced .acchip — .chip is type.css-bound)",
+    "radius": "control (trigger) · surface (menu) · indicator (chip)",
+    "$physics": "NO press physics by design — form-control family (Dropdown/Input-fields), not button-family; a possible field component-type group is raised in the receipt."
+  },
+  "motion": {
+    "chevron": "Rotates 180° on open (140ms); menu shows/hides without transform.",
+    "reducedMotion": "Standard collapse.",
+    "tokens": []
+  },
+  "responsive": {
+    "rule": "Trigger 360px max-width 100%; menu matches trigger width; rows keep name left, balance right, tabular figures aligned.",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": ["Payment forms", "Transfer flows", "Confirmation summaries", "Standing-order setup"],
+    "mustNotNeighbour": ["A raw <select> for the same choice (rich rows exist for a reason)"],
+    "commonPatterns": ["from/to account pair", "chip restating the choice in the confirm step"],
+    "triggeredBy": ["payment/transfer journeys"]
+  },
+  "accessibility": {
+    "role": "Trigger role=\"combobox\" + aria-haspopup=\"listbox\" + aria-expanded + aria-controls + aria-labelledby (label + value); menu role=\"listbox\"; rows role=\"option\" + aria-selected. Chip: role=\"group\" + aria-label.",
+    "name": "Masked numbers announce as 'ending 4821' via aria-label — dots are visual only.",
+    "keyboard": "↑ ↓ Home End move; Enter/Space select; Esc closes and returns focus; Tab closes and moves on.",
+    "focus": "Visible :focus-visible (focus/ring) on the trigger; keyboard row focus = 2px inset ring.",
+    "nonText": "Field border form/border/default ≥3:1 vs page both modes (1.4.11); selection is never colour-alone (fill + inset accent + weight).",
+    "relatedSC": ["1.4.1 Use of Color", "1.4.11 Non-text Contrast", "2.1.1 Keyboard", "2.4.7 Focus Visible", "4.1.2 Name, Role, Value"]
+  },
+  "antiPatterns": [
+    "Showing a full account number anywhere (masked convention: ···last-four only)",
+    "Masked dots with no screen-reader equivalent (aria-label 'ending NNNN' is mandatory)",
+    "Selection carried by colour alone (fill + inset accent + weight, always)",
+    "Using the .chip classname (type.css blast-radius escape — .acchip is the namespace)",
+    "Press physics on a form control (field family, not button-family)",
+    "Proportional figures for balances (columns shear — tabular always)"
+  ],
+  "tokenValidation": {
+    "date": "2026-07-22",
+    "against": "token store (semantic-colour.json) via #token-manifest — field bindings mirror Dropdown (gated green)",
+    "result": "PASS — bound vars match resolved light+dark; text pairs ≥14.9:1; border 3.94/3.94 (ui ≥3).",
+    "$note": "Built Phase-2 wave 1 (worker B). Field component-type group question raised in the receipt (Worker A owns the forms lane)."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": ""
+  }
+}

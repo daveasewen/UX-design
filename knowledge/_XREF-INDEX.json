@@ -10,9 +10,9 @@
     "focus-indicators.md"
   ],
   "totals": {
-    "components": 40,
+    "components": 54,
     "with_deprecated_bindings": 19,
-    "god_node_count": 18
+    "god_node_count": 20
   },
   "components": {
     "Accordion": {
@@ -119,6 +119,52 @@
       "deprecated_bindings": [],
       "deprecated_count": 0
     },
+    "Account selector": {
+      "name": "Account selector",
+      "category": "molecule",
+      "figma_node": "",
+      "tokens": [
+        "background/default",
+        "elevation/border",
+        "elevation/functional",
+        "form/background/hover",
+        "form/border/active",
+        "form/border/default"
+      ],
+      "token_count": 6,
+      "god_nodes_touched": [
+        "background/default",
+        "elevation/functional",
+        "form/border/default"
+      ],
+      "wcag_sc": [
+        "1.4.1",
+        "1.4.11",
+        "2.1.1",
+        "2.4.7",
+        "4.1.2"
+      ],
+      "guidelines": [
+        "accessibility.md",
+        "digital-accessibility-standards.md",
+        "colour-usage.md",
+        "dark-mode.md",
+        "focus-indicators.md"
+      ],
+      "anti_patterns": {
+        "asserted": [
+          "Showing a full account number anywhere (masked convention: ···last-four only)",
+          "Masked dots with no screen-reader equivalent (aria-label 'ending NNNN' is mandatory)",
+          "Selection carried by colour alone (fill + inset accent + weight, always)",
+          "Using the .chip classname (type.css blast-radius escape — .acchip is the namespace)",
+          "Press physics on a form control (field family, not button-family)",
+          "Proportional figures for balances (columns shear — tabular always)"
+        ],
+        "inferred_review": []
+      },
+      "deprecated_bindings": [],
+      "deprecated_count": 0
+    },
     "Action bar": {
       "name": "Action bar",
       "category": "molecule",
@@ -167,6 +213,48 @@
       "deprecated_bindings": [],
       "deprecated_count": 0
     },
+    "Alert": {
+      "name": "Alert",
+      "category": "molecule",
+      "figma_node": "",
+      "tokens": [
+        "border-radius/surface",
+        "text/default"
+      ],
+      "token_count": 2,
+      "god_nodes_touched": [
+        "border-radius/surface",
+        "text/default"
+      ],
+      "wcag_sc": [
+        "1.4.1",
+        "1.4.10",
+        "1.4.11",
+        "1.4.3",
+        "2.5.8",
+        "4.1.3"
+      ],
+      "guidelines": [
+        "accessibility.md",
+        "digital-accessibility-standards.md",
+        "colour-usage.md",
+        "dark-mode.md",
+        "focus-indicators.md"
+      ],
+      "anti_patterns": {
+        "asserted": [
+          "Colour as the only status channel (glyph shape + title text are mandatory companions)",
+          "role=\"alert\" on non-error statuses (assertive interruptions for polite news)",
+          "Auto-dismissing an error alert (errors persist until resolved or dismissed by the user)",
+          "Re-implementing press physics locally on the dismiss control (ADR-0013 ratchet)",
+          "Hardcoding RAG hexes instead of the rag/* roles (Legacy-leak gate class)",
+          "Stacking an alert and a toast carrying the same message"
+        ],
+        "inferred_review": []
+      },
+      "deprecated_bindings": [],
+      "deprecated_count": 0
+    },
     "Amount display": {
       "name": "Amount display",
       "category": "atom",
@@ -209,6 +297,52 @@
           "Conveying credit/debit or gain/loss by COLOUR alone — this atom is monochrome; when directional colour is added it must be redundant with a sign/caret (1.4.1).",
           "Hard-coding the display size instead of binding to the .t-cm-figure-4 composite once it is vouched.",
           "Hiding a balance with opacity — use the redacted variant (a real token colour + aria-label), never an opacity tint (it drifts per surface)."
+        ],
+        "inferred_review": []
+      },
+      "deprecated_bindings": [],
+      "deprecated_count": 0
+    },
+    "Amount input": {
+      "name": "Amount input",
+      "category": "atom",
+      "figma_node": null,
+      "tokens": [
+        "border-radius/control",
+        "rag/error",
+        "rag/success",
+        "text/default"
+      ],
+      "token_count": 4,
+      "god_nodes_touched": [
+        "rag/error",
+        "rag/success",
+        "text/default"
+      ],
+      "wcag_sc": [
+        "1.3.1",
+        "1.3.5",
+        "1.4.1",
+        "1.4.3",
+        "2.1.1",
+        "2.4.7",
+        "3.3.1",
+        "3.3.2"
+      ],
+      "guidelines": [
+        "accessibility.md",
+        "digital-accessibility-standards.md",
+        "colour-usage.md",
+        "dark-mode.md",
+        "focus-indicators.md"
+      ],
+      "anti_patterns": {
+        "asserted": [
+          "type=number (spinners + exponent entry + silent clamping — use text + inputmode=decimal).",
+          "Hyphen for negative amounts (typographic minus − only, and only in display of debits — entry rejects negatives).",
+          "Currency symbol AFTER the value, or a space between code and value (copy-025).",
+          "Proportional numerals for money (figures must be tabular).",
+          "Red error message text (message stays ink)."
         ],
         "inferred_review": []
       },
@@ -345,6 +479,48 @@
           "REVIEW (inferred): hard-coding the badge fill instead of binding color/primary (and, once migrated, a semantic primary surface token)",
           "REVIEW (inferred): leaving the on-icon badge bound to the deprecated surround token (see tokenValidation)"
         ]
+      },
+      "deprecated_bindings": [],
+      "deprecated_count": 0
+    },
+    "Banner": {
+      "name": "Banner",
+      "category": "molecule",
+      "figma_node": "",
+      "tokens": [
+        "border-radius/surface",
+        "rag/text/on-dark",
+        "rag/text/on-light",
+        "text/on-success"
+      ],
+      "token_count": 4,
+      "god_nodes_touched": [
+        "border-radius/surface"
+      ],
+      "wcag_sc": [
+        "1.4.1",
+        "1.4.10",
+        "1.4.3",
+        "2.5.8",
+        "4.1.3"
+      ],
+      "guidelines": [
+        "accessibility.md",
+        "digital-accessibility-standards.md",
+        "colour-usage.md",
+        "dark-mode.md",
+        "focus-indicators.md"
+      ],
+      "anti_patterns": {
+        "asserted": [
+          "Actions AND dismiss on the same banner (family shape rule: either, never both)",
+          "White type on any fill except the red error fill (type26-013)",
+          "Two banners stacked (one page-level message at a time; queue or consolidate)",
+          "Using a banner for in-flow form validation (Alert) or transient confirmation (Toast)",
+          "Re-implementing press physics locally on actions/dismiss (ADR-0013 ratchet)",
+          "Hardcoding RAG hexes instead of rag/*-background roles"
+        ],
+        "inferred_review": []
       },
       "deprecated_bindings": [],
       "deprecated_count": 0
@@ -664,6 +840,52 @@
       ],
       "deprecated_count": 2
     },
+    "Drawer": {
+      "name": "Drawer",
+      "category": "organism",
+      "figma_node": "",
+      "tokens": [
+        "border/subtle",
+        "elevation/border",
+        "elevation/functional",
+        "overlay/version1",
+        "tertiary/background/default"
+      ],
+      "token_count": 5,
+      "god_nodes_touched": [
+        "border/subtle",
+        "elevation/functional",
+        "tertiary/background/default"
+      ],
+      "wcag_sc": [
+        "1.3.2",
+        "2.1.2",
+        "2.4.3",
+        "2.4.7",
+        "2.5.8",
+        "4.1.2"
+      ],
+      "guidelines": [
+        "accessibility.md",
+        "digital-accessibility-standards.md",
+        "colour-usage.md",
+        "dark-mode.md",
+        "focus-indicators.md"
+      ],
+      "anti_patterns": {
+        "asserted": [
+          "A drawer for a blocking decision (that is a modal — centred, interruptive)",
+          "Scrim click closing a drawer with unsaved form input (confirm first)",
+          "Right-aligned actions (family order is primary-first, left-aligned)",
+          "Using the .btn classname in a new consumer (type.css blast-radius escape)",
+          "Re-implementing press physics locally (ADR-0013 ratchet)",
+          "Backdrop blur instead of dim (legibility/low-vision cost — Modals ruling)"
+        ],
+        "inferred_review": []
+      },
+      "deprecated_bindings": [],
+      "deprecated_count": 0
+    },
     "Dropdown": {
       "name": "Dropdown",
       "category": "molecule",
@@ -698,6 +920,7 @@
         "icon/default",
         "icon/default-reverse",
         "icon/disabled",
+        "rag/error",
         "text/default",
         "text/disabled",
         "text/reverse"
@@ -777,6 +1000,48 @@
       ],
       "deprecated_count": 9
     },
+    "Empty state": {
+      "name": "Empty state",
+      "category": "molecule",
+      "figma_node": "",
+      "tokens": [
+        "border-radius/surface",
+        "border/subtle",
+        "text/default"
+      ],
+      "token_count": 3,
+      "god_nodes_touched": [
+        "border-radius/surface",
+        "border/subtle",
+        "text/default"
+      ],
+      "wcag_sc": [
+        "1.3.1",
+        "2.4.6",
+        "2.4.7",
+        "2.5.8"
+      ],
+      "guidelines": [
+        "accessibility.md",
+        "digital-accessibility-standards.md",
+        "colour-usage.md",
+        "dark-mode.md",
+        "focus-indicators.md"
+      ],
+      "anti_patterns": {
+        "asserted": [
+          "A skeleton where the truth is 'empty' (loading is a different claim)",
+          "Multiple actions or a button where a link suffices (no-results wants the cheap way back)",
+          "Blame copy ('You have no…' reads as fault; say what can happen next)",
+          "An invented illustration (icon-source rule — real assets only; the spot-illustration set is a logged gap)",
+          "Announcing the empty state via a live region (it is not an event)",
+          "Re-implementing press physics locally on the action (ADR-0013 ratchet)"
+        ],
+        "inferred_review": []
+      },
+      "deprecated_bindings": [],
+      "deprecated_count": 0
+    },
     "Eyebrow": {
       "name": "Eyebrow",
       "category": "atom",
@@ -812,6 +1077,54 @@
           "REVIEW (inferred): using an accent/brand-red eyebrow on a light surface — 13px red on white fails 1.4.3 (text < 4.5:1); keep it text/secondary.",
           "REVIEW (inferred): writing a sentence in the eyebrow — it is a 1–3 word kicker, not a subtitle."
         ]
+      },
+      "deprecated_bindings": [],
+      "deprecated_count": 0
+    },
+    "Form layout": {
+      "name": "Form layout",
+      "category": "organism",
+      "figma_node": null,
+      "tokens": [
+        "border-radius/control",
+        "rag/error",
+        "rag/error-tint",
+        "rag/success",
+        "text/default"
+      ],
+      "token_count": 5,
+      "god_nodes_touched": [
+        "rag/error",
+        "rag/success",
+        "text/default"
+      ],
+      "wcag_sc": [
+        "1.3.1",
+        "1.4.1",
+        "1.4.3",
+        "2.1.1",
+        "2.4.3",
+        "2.4.7",
+        "3.3.1",
+        "3.3.2",
+        "4.1.3"
+      ],
+      "guidelines": [
+        "accessibility.md",
+        "digital-accessibility-standards.md",
+        "colour-usage.md",
+        "dark-mode.md",
+        "focus-indicators.md"
+      ],
+      "anti_patterns": {
+        "asserted": [
+          "Red error message text (message stays ink — colour is never the only channel).",
+          "Placeholder-as-label (copy-040: placeholders empty except data-entry formats).",
+          "Hyperlinks inside help text (copy-041).",
+          "Disabling the submit button instead of validating on submit (errors must be announced, not silently prevented).",
+          "Local press-physics CSS on the action buttons (ADR-0013: physics arrives via the injected partial)."
+        ],
+        "inferred_review": []
       },
       "deprecated_bindings": [],
       "deprecated_count": 0
@@ -1074,6 +1387,7 @@
         "icon/default",
         "icon/default-reverse",
         "icon/disabled",
+        "rag/error",
         "text/default",
         "text/disabled",
         "text/reverse"
@@ -1304,6 +1618,56 @@
       "deprecated_bindings": [],
       "deprecated_count": 0
     },
+    "Modal lightbox": {
+      "name": "Modal lightbox",
+      "category": "organism",
+      "figma_node": "",
+      "tokens": [
+        "button/primary/background/disabled",
+        "elevation/border",
+        "elevation/functional",
+        "icon/default",
+        "overlay/version1",
+        "tertiary/background/default",
+        "tertiary/background/hover"
+      ],
+      "token_count": 7,
+      "god_nodes_touched": [
+        "elevation/functional",
+        "icon/default",
+        "tertiary/background/default",
+        "tertiary/background/hover"
+      ],
+      "wcag_sc": [
+        "1.4.11",
+        "2.1.1",
+        "2.1.2",
+        "2.4.3",
+        "2.5.8",
+        "4.1.2",
+        "4.1.3"
+      ],
+      "guidelines": [
+        "accessibility.md",
+        "digital-accessibility-standards.md",
+        "colour-usage.md",
+        "dark-mode.md",
+        "focus-indicators.md"
+      ],
+      "anti_patterns": {
+        "asserted": [
+          "Controls or captions bare on the scrim (contrast unguaranteed; white-on-scrim type breaks type26-013)",
+          "Backdrop blur (dim preserves page glance — Modals ruling)",
+          "Wrapping prev/next silently (position lies; disable at the ends)",
+          "Meaning carried by the media alone (captions are mandatory)",
+          "A lightbox for a yes/no decision (that is the Modals dialog)",
+          "Re-implementing press physics locally on the controls (ADR-0013 ratchet)"
+        ],
+        "inferred_review": []
+      },
+      "deprecated_bindings": [],
+      "deprecated_count": 0
+    },
     "Modals": {
       "name": "Modals",
       "category": "organism",
@@ -1484,6 +1848,7 @@
         "elevation/functional",
         "icon/default",
         "icon/default-reverse",
+        "rag/error",
         "rag/success",
         "text/default"
       ],
@@ -1615,6 +1980,55 @@
         }
       ],
       "deprecated_count": 7
+    },
+    "Popover": {
+      "name": "Popover",
+      "category": "molecule",
+      "figma_node": "",
+      "tokens": [
+        "background/default",
+        "border-radius/surface",
+        "elevation/border",
+        "elevation/functional",
+        "tertiary/background/hover",
+        "text/default"
+      ],
+      "token_count": 6,
+      "god_nodes_touched": [
+        "background/default",
+        "border-radius/surface",
+        "elevation/functional",
+        "tertiary/background/hover",
+        "text/default"
+      ],
+      "wcag_sc": [
+        "1.4.13",
+        "2.1.2",
+        "2.4.3",
+        "2.4.7",
+        "2.5.8",
+        "4.1.2"
+      ],
+      "guidelines": [
+        "accessibility.md",
+        "digital-accessibility-standards.md",
+        "colour-usage.md",
+        "dark-mode.md",
+        "focus-indicators.md"
+      ],
+      "anti_patterns": {
+        "asserted": [
+          "Opening on hover (that is Tooltip; popovers are click-committed)",
+          "aria-modal / focus trap on a popover (non-modal by definition — use Modals to interrupt)",
+          "Popover content that scrolls (too much content — use a Drawer or Modal)",
+          "A popover as the only path to essential content (it is dismissible and anchored)",
+          "Two popovers open at once",
+          "Re-implementing press physics locally on the close control (ADR-0013 ratchet)"
+        ],
+        "inferred_review": []
+      },
+      "deprecated_bindings": [],
+      "deprecated_count": 0
     },
     "Progress tracker": {
       "name": "Progress tracker",
@@ -1833,6 +2247,52 @@
       ],
       "deprecated_count": 1
     },
+    "Secure entry": {
+      "name": "Secure entry",
+      "category": "molecule",
+      "figma_node": null,
+      "tokens": [
+        "border-radius/control",
+        "rag/error",
+        "rag/success",
+        "text/default"
+      ],
+      "token_count": 4,
+      "god_nodes_touched": [
+        "rag/error",
+        "rag/success",
+        "text/default"
+      ],
+      "wcag_sc": [
+        "1.3.1",
+        "1.4.1",
+        "1.4.3",
+        "2.1.1",
+        "2.4.7",
+        "3.3.1",
+        "3.3.2",
+        "4.1.3"
+      ],
+      "guidelines": [
+        "accessibility.md",
+        "digital-accessibility-standards.md",
+        "colour-usage.md",
+        "dark-mode.md",
+        "focus-indicators.md"
+      ],
+      "anti_patterns": {
+        "asserted": [
+          "A single invisible input painted as cells (breaks per-digit AT announcement and caret behaviour).",
+          "Blocking paste (paste is the OTP happy path).",
+          "Red cell borders in light mode as the only signal (the message carries the error; dark mode red border follows the Input-fields error precedent).",
+          "Local press-physics CSS on the resend button (ADR-0013: physics arrives via the injected partial).",
+          "Auto-submitting on fill without announcing the result (verify must reach the live region)."
+        ],
+        "inferred_review": []
+      },
+      "deprecated_bindings": [],
+      "deprecated_count": 0
+    },
     "Selection controls": {
       "name": "Selection controls",
       "category": "molecule",
@@ -1859,6 +2319,7 @@
         "icon/default",
         "icon/default-reverse",
         "icon/disabled",
+        "rag/error",
         "text/default",
         "text/disabled",
         "text/reverse"
@@ -1956,6 +2417,50 @@
       ],
       "deprecated_count": 13
     },
+    "Skeleton loader": {
+      "name": "Skeleton loader",
+      "category": "molecule",
+      "figma_node": "",
+      "tokens": [
+        "background/default",
+        "border-radius/indicator",
+        "border-radius/surface",
+        "border/subtle",
+        "tertiary/background/hover"
+      ],
+      "token_count": 5,
+      "god_nodes_touched": [
+        "background/default",
+        "border-radius/surface",
+        "border/subtle",
+        "tertiary/background/hover"
+      ],
+      "wcag_sc": [
+        "1.4.11",
+        "2.3.3",
+        "4.1.3"
+      ],
+      "guidelines": [
+        "accessibility.md",
+        "digital-accessibility-standards.md",
+        "colour-usage.md",
+        "dark-mode.md",
+        "focus-indicators.md"
+      ],
+      "anti_patterns": {
+        "asserted": [
+          "A spinner inside a skeleton (the loader atom is a separate queued group — never both signals at once)",
+          "Bones that do not match the incoming layout (the layout jump returns and the skeleton lied)",
+          "Announcing every bone to screen readers (one region-level status announcement only)",
+          "Keeping the shimmer under prefers-reduced-motion",
+          "Uniform full-width bars for text (staggered widths read as content, uniform bars read as decoration)",
+          "Skeleton for sub-300ms loads (flash of placeholder is worse than nothing)"
+        ],
+        "inferred_review": []
+      },
+      "deprecated_bindings": [],
+      "deprecated_count": 0
+    },
     "Slider": {
       "name": "Slider",
       "category": "molecule",
@@ -2014,6 +2519,53 @@
       ],
       "deprecated_count": 1
     },
+    "Stat card": {
+      "name": "Stat card",
+      "category": "molecule",
+      "figma_node": "",
+      "tokens": [
+        "border-radius/surface",
+        "border/subtle",
+        "rag/error",
+        "rag/success",
+        "tertiary/background/default",
+        "text/default"
+      ],
+      "token_count": 6,
+      "god_nodes_touched": [
+        "border-radius/surface",
+        "border/subtle",
+        "rag/error",
+        "rag/success",
+        "tertiary/background/default",
+        "text/default"
+      ],
+      "wcag_sc": [
+        "1.3.1",
+        "1.4.1",
+        "1.4.11"
+      ],
+      "guidelines": [
+        "accessibility.md",
+        "digital-accessibility-standards.md",
+        "colour-usage.md",
+        "dark-mode.md",
+        "focus-indicators.md"
+      ],
+      "anti_patterns": {
+        "asserted": [
+          "Coloured delta TEXT (dark rag/error fails 4.5 as text — the arrow wears the colour)",
+          "Amber as a direction (R-D5: red/green only; amber is status, not direction)",
+          "Colour as the only direction channel (arrow + sign + wording, always)",
+          "Re-implementing the money format locally (compose the Amount-display primitive)",
+          "A tile making two claims (one metric per card)",
+          "Proportional (non-tabular) figures in a board (columns shear)"
+        ],
+        "inferred_review": []
+      },
+      "deprecated_bindings": [],
+      "deprecated_count": 0
+    },
     "Status indicator": {
       "name": "Status indicator",
       "category": "atom",
@@ -2031,6 +2583,7 @@
       ],
       "token_count": 9,
       "god_nodes_touched": [
+        "rag/error",
         "rag/success",
         "text/default",
         "text/disabled"
@@ -2357,6 +2910,96 @@
         }
       ],
       "deprecated_count": 9
+    },
+    "Textarea": {
+      "name": "Textarea",
+      "category": "atom",
+      "figma_node": null,
+      "tokens": [
+        "border-radius/control",
+        "rag/error",
+        "text/default"
+      ],
+      "token_count": 3,
+      "god_nodes_touched": [
+        "rag/error",
+        "text/default"
+      ],
+      "wcag_sc": [
+        "1.3.1",
+        "1.4.1",
+        "1.4.3",
+        "2.1.1",
+        "2.4.7",
+        "3.3.1",
+        "3.3.2",
+        "4.1.3"
+      ],
+      "guidelines": [
+        "accessibility.md",
+        "digital-accessibility-standards.md",
+        "colour-usage.md",
+        "dark-mode.md",
+        "focus-indicators.md"
+      ],
+      "anti_patterns": {
+        "asserted": [
+          "Colour-only counter warning (weight change + announcement, never colour-alone).",
+          "Horizontal or free resize (vertical only).",
+          "Placeholder-as-label (copy-040: placeholder default is EMPTY).",
+          "Red error message text (message stays ink).",
+          "Auto-growing height without a max (the page must not scroll-jump as the user types)."
+        ],
+        "inferred_review": []
+      },
+      "deprecated_bindings": [],
+      "deprecated_count": 0
+    },
+    "Toast": {
+      "name": "Toast",
+      "category": "molecule",
+      "figma_node": "",
+      "tokens": [
+        "border-radius/surface",
+        "elevation/border",
+        "elevation/functional",
+        "tertiary/background/default",
+        "text/default"
+      ],
+      "token_count": 5,
+      "god_nodes_touched": [
+        "border-radius/surface",
+        "elevation/functional",
+        "tertiary/background/default",
+        "text/default"
+      ],
+      "wcag_sc": [
+        "1.4.1",
+        "1.4.11",
+        "2.2.1",
+        "2.5.8",
+        "4.1.3"
+      ],
+      "guidelines": [
+        "accessibility.md",
+        "digital-accessibility-standards.md",
+        "colour-usage.md",
+        "dark-mode.md",
+        "focus-indicators.md"
+      ],
+      "anti_patterns": {
+        "asserted": [
+          "An error toast (errors persist — use Alert with role=\"alert\")",
+          "An action that exists ONLY in the toast (missable by design — Undo must also live in the persistent UI)",
+          "Auto-dismiss with no dismiss control and no pause-on-hover/focus",
+          "role=\"alert\" / assertive announcement for a polite confirmation",
+          "Stacking unlimited toasts (queue beyond ~3)",
+          "Re-implementing press physics locally on action/dismiss (ADR-0013 ratchet)"
+        ],
+        "inferred_review": []
+      },
+      "deprecated_bindings": [],
+      "deprecated_count": 0
     },
     "Tooltip": {
       "name": "Tooltip",

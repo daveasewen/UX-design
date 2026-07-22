@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skeleton loader — reference implementation (gated)</title>
+<!--
+  CANONICAL REFERENCE for Skeleton loader (Apollo MONO). Perceived-performance placeholder: grey
+  blocks that mirror the SHAPE of incoming content so the layout never jumps. Built 2026-07-22
+  (Phase-2 worker B). This is NOT the loader atom (spinners/progress are a queued registry group,
+  GOOD-MORNING §C·3b) — no spinners here, blocks + shimmer only. Use Loading-indicator when there
+  is no known layout to mirror; use Skeleton when there is.
+
+  COLOUR: one token pair does everything — tertiary/background/hover (#F0F0F0/#232323) as the bone
+  colour on background/default. Skeletons are DELIBERATELY low-contrast (decorative, aria-hidden;
+  1.4.11 does not apply to placeholders that convey no information) — no contrast pairs declared.
+  SHIMMER: a background-position sweep over a 3-stop gradient (bone → color-mix 50% bone/page →
+  bone), 1.4s linear infinite. prefers-reduced-motion: reduce → animation REMOVED, static bones
+  (2.3.3) — the state still reads as loading (shape alone carries it).
+  SHAPES: text lines + avatar circle (50% idiom, literal) + media block + control block. Bones bind
+  the INDICATOR radius role; card shells the SURFACE role (Mono resolves 0; themes flex, ADR-0010).
+  A11Y: each skeleton region is ONE status message — role="status" + aria-busy="true" on the region,
+  a visually-hidden "Loading content" for screen readers, every bone aria-hidden. When content
+  arrives, aria-busy flips false and the sr-text is removed (demo simulates this).
+  TYPE: no visible component text (bones are text-free by definition); demo chrome only.
+  4px GRID throughout: line bones 16px tall (caption) / 24px (body), gaps 8/12/16, media 160px.
+-->
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
+  [data-theme="light"]{
+    --bone:#F0F0F0; --page:#FFFFFF; --text:#1A1A1A; --line:#E1E1E1;
+    --border-radius-surface:0; --border-radius-indicator:0;
+  }
+  [data-theme="dark"]{
+    --bone:#232323; --page:#1A1A1A; --text:#FFFFFF; --line:#808080;
+    --border-radius-surface:0; --border-radius-indicator:0;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page); color:var(--text);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--text);
+    background:transparent; color:var(--text); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--text); outline-offset:2px;}
+  h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+  .cap{font-size:12px; opacity:.45; width:100%; margin-top:8px;}
+
+  .visually-hidden{ position:absolute; width:1px; height:1px; margin:-1px; padding:0; border:0;
+    clip:rect(0 0 0 0); clip-path:inset(50%); overflow:hidden; white-space:nowrap; }
+
+  /* the bone — one element, shimmer rides the background */
+  .bone{ display:block; background:var(--bone); border-radius:var(--border-radius-indicator);
+    background-image:linear-gradient(90deg, var(--bone) 0%, color-mix(in srgb, var(--bone) 50%, var(--page)) 50%, var(--bone) 100%);
+    background-size:200% 100%; background-position:200% 0; animation:shimmer 1.4s linear infinite; }
+  @keyframes shimmer{ to{ background-position:-200% 0; } }
+
+  /* shape kit — heights on the 4px grid, widths mirror typical content */
+  .bone.line{ height:16px; }
+  .bone.body{ height:24px; }
+  .bone.circle{ width:44px; height:44px; border-radius:50%; }   /* avatar idiom — 50% literal */
+  .bone.media{ height:160px; }
+  .bone.control{ height:44px; width:120px; }
+
+  .skwrap{ width:var(--demo-width, 560px); max-width:100%; display:flex; flex-direction:column; gap:8px; }
+  .sk-row{ display:flex; gap:12px; align-items:center; }
+  .sk-col{ flex:1 1 auto; display:flex; flex-direction:column; gap:8px; }
+  .sk-card{ border:1px solid var(--line); border-radius:var(--border-radius-surface); padding:16px;
+    display:flex; flex-direction:column; gap:12px; }
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
+      animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+    .bone{ animation:none; background-image:none; }   /* static bones — shape alone reads as loading (2.3.3) */
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls">
+    <button id="themeToggle" type="button">◐ Toggle theme</button>
+    <button id="resolveDemo" type="button">Simulate content arriving</button>
+    <span>Skeleton loader — canonical reference (Mono · blocks + shimmer, no spinners)</span>
+  </div>
+
+  <h2>Text block — heading + three lines</h2>
+  <div class="skwrap" role="status" aria-busy="true">
+    <span class="visually-hidden">Loading content</span>
+    <span class="bone body" style="width:40%" aria-hidden="true"></span>
+    <span class="bone line" aria-hidden="true"></span>
+    <span class="bone line" aria-hidden="true"></span>
+    <span class="bone line" style="width:65%" aria-hidden="true"></span>
+  </div>
+
+  <h2>List rows — avatar + two lines (mirrors List-items)</h2>
+  <div class="skwrap" role="status" aria-busy="true">
+    <span class="visually-hidden">Loading content</span>
+    <div class="sk-row"><span class="bone circle" aria-hidden="true"></span><div class="sk-col"><span class="bone line" style="width:45%" aria-hidden="true"></span><span class="bone line" style="width:70%" aria-hidden="true"></span></div></div>
+    <div class="sk-row"><span class="bone circle" aria-hidden="true"></span><div class="sk-col"><span class="bone line" style="width:55%" aria-hidden="true"></span><span class="bone line" style="width:60%" aria-hidden="true"></span></div></div>
+    <div class="sk-row"><span class="bone circle" aria-hidden="true"></span><div class="sk-col"><span class="bone line" style="width:40%" aria-hidden="true"></span><span class="bone line" style="width:75%" aria-hidden="true"></span></div></div>
+  </div>
+
+  <h2>Card — media + copy + control (mirrors Cards)</h2>
+  <div class="skwrap" id="cardDemo" role="status" aria-busy="true">
+    <span class="visually-hidden">Loading content</span>
+    <div class="sk-card">
+      <span class="bone media" aria-hidden="true"></span>
+      <span class="bone body" style="width:50%" aria-hidden="true"></span>
+      <span class="bone line" aria-hidden="true"></span>
+      <span class="bone line" style="width:80%" aria-hidden="true"></span>
+      <span class="bone control" aria-hidden="true"></span>
+    </div>
+  </div>
+  <span class="cap">Bones mirror the incoming layout so nothing jumps on arrival; reduced-motion serves static bones.</span>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Skeleton loader",
+    "vars": { "--bone": "tertiary/background/hover", "--page": "background/default", "--text": "text/default",
+              "--line": "border/subtle",
+              "--border-radius-surface": "border-radius/surface", "--border-radius-indicator": "border-radius/indicator" },
+    "contrastPairs": [],
+    "requiredAria": ["role=\"status\"", "aria-busy", "aria-hidden=\"true\""],
+    "$note": "No contrast pairs by design: bones are decorative placeholders (aria-hidden, convey no information — 1.4.11 exempt) and deliberately low-contrast. The loading STATE is announced by the region's role=status + visually-hidden text, not by the bones. Not the loader atom: no spinners here (that group is queued, GOOD-MORNING §C·3b)."
+  }
+  </script>
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    // Simulate resolution: aria-busy flips false, sr-text removed, bones swap for content
+    document.getElementById('resolveDemo').addEventListener('click', ()=>{
+      const region=document.getElementById('cardDemo');
+      region.setAttribute('aria-busy','false');
+      region.querySelector('.visually-hidden').remove();
+      region.innerHTML='<div class="sk-card"><p style="margin:0">Content has arrived — the card now renders its real copy in the same footprint the bones reserved.</p></div>';
+    });
+  </script>
+</body>
+</html>

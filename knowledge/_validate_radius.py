@@ -59,6 +59,21 @@ MIGRATED_SNIPPETS = {
     "Tags.reference.html",
     "Status-indicator.reference.html",
     "Progress-tracker.reference.html",
+    # Phase-2 wave 1 (2026-07-22) — born on role tokens, strict from birth:
+    "Form-layout.reference.html",
+    "Amount-input.reference.html",
+    "Textarea.reference.html",
+    "Secure-entry.reference.html",
+    "Alert.reference.html",
+    "Toast.reference.html",
+    "Banner.reference.html",
+    "Skeleton-loader.reference.html",
+    "Drawer.reference.html",
+    "Popover.reference.html",
+    "Modal-lightbox.reference.html",
+    "Empty-state.reference.html",
+    "Stat-card.reference.html",
+    "Account-selector.reference.html",
 }
 
 ADVISORY_GLOBS = [

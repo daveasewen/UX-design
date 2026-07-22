@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stat card — reference implementation (gated)</title>
+<!--
+  CANONICAL REFERENCE for Stat / metric card (Apollo MONO). The dashboard tile that promotes the
+  big-number pattern the fitness-test journeys kept improvising (sme-payments `.flow` blocks —
+  surveyed): label · value · delta · period, on a card surface. Built 2026-07-22 (Phase-2 worker
+  B), mining snippets/Amount-display (the money-format primitive — value markup + figure
+  composites reused VERBATIM) and snippets/Cards (surface recipe). Both files untouched.
+
+  VALUE: the Amount-display atom, unchanged — .t-cm-figure-4 (32px display, tabular) or
+  .t-cm-figure-3 (24px compact, T-D14); currency before the value, no space (copy-025);
+  U+2212 minus. DELTA (R-D5): directional deltas are RED/GREEN ONLY (amber has no direction) —
+  the ARROW GLYPH carries the colour (rag/error / rag/success, ≥3:1 both modes: 6.02/3.66 ·
+  5.0/4.8 — R-D6 A′ 3:1 floor, the glyph is LABELLED by the signed value); the delta VALUE +
+  period stay in ink (dark rag/error 3.66 would fail 4.5 as text — so the text never wears the
+  colour; direction is carried three ways: arrow + sign + wording, never colour alone).
+  FLAT deltas: no arrow, "No change", full ink.
+  TYPE: composites via markup class — label .t-cm-caption (0.6 ink, house treatment) · value
+  figure-4/figure-3 · delta .t-cm-figure-6 (tabular) · period .t-cm-legal.
+  PASSIVE atom — no interactive states, no press markers (a linked/tappable variant is a receipt
+  question, not improvised here). Icons: real library arrows (byte-matched).
+  RESPONSIVE: tiles grid auto-fills 240px+; the compact size is for dense boards.
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:140ms ease; }
+  [data-theme="light"]{
+    --surface:#FFFFFF; --border:#E1E1E1; --text:#1A1A1A; --page:#FFFFFF;
+    --up:#2B7E4F; --down:#B92F1E;
+    --border-radius-surface:0;
+  }
+  [data-theme="dark"]{
+    --surface:#1F1F1F; --border:#808080; --text:#FFFFFF; --page:#1A1A1A;
+    --up:#4A9568; --down:#CC4333;
+    --border-radius-surface:0;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page); color:var(--text);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--text);
+    background:transparent; color:var(--text); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--text); outline-offset:2px;}
+  h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+
+  .board{display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); gap:16px; max-width:800px;}
+
+  /* the tile — Cards surface recipe */
+  .stat-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--border-radius-surface);
+    padding:16px; display:flex; flex-direction:column; gap:8px;}
+  .stat-card .lbl16{margin:0; opacity:.6;}
+
+  /* the value — Amount-display pattern verbatim (figure composites, tabular, copy-025) */
+  .amt{color:var(--text); display:inline-flex; align-items:baseline; white-space:nowrap;
+    font-variant-numeric:tabular-nums; letter-spacing:-.01em;}
+
+  /* the delta row — arrow wears the R-D5 colour (3:1 floor, labelled); text stays ink */
+  .delta{display:flex; align-items:center; gap:4px;}
+  .delta .arrow{flex:none; width:16px; height:16px; display:inline-flex; align-items:center;}
+  .delta .arrow svg{width:16px; height:16px; display:block; fill:currentColor;}
+  .delta.up .arrow{color:var(--up);}
+  .delta.down .arrow{color:var(--down);}
+  .delta .per{opacity:.6; margin-left:4px;}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
+      animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="sc-up" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 12L2 12L9 5L16 12Z" fill="currentColor"/></symbol>
+    <symbol id="sc-down" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2 6H16L9 13L2 6Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <div class="demo-controls">
+    <button id="themeToggle" type="button">◐ Toggle theme</button>
+    <span>Stat card — canonical reference (Mono · label · value · delta · period)</span>
+  </div>
+
+  <h2>Display size — figure-4 value (32px)</h2>
+  <div class="board">
+    <div class="stat-card" role="group" aria-label="Net cash flow, March">
+      <p class="lbl16 t-cm-caption">Net cash flow</p>
+      <span class="amt t-cm-figure-4"><span>+£</span><span>2,450.00</span></span>
+      <span class="delta up"><span class="arrow" aria-hidden="true"><svg><use href="#sc-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="per t-cm-legal">vs February</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Card spend, March">
+      <p class="lbl16 t-cm-caption">Card spend</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>9,200.00</span></span>
+      <span class="delta down"><span class="arrow" aria-hidden="true"><svg><use href="#sc-down"/></svg></span><span class="t-cm-figure-6">−3.1% down</span><span class="per t-cm-legal">vs February</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Pending payments">
+      <p class="lbl16 t-cm-caption">Pending payments</p>
+      <span class="amt t-cm-figure-4"><span>£</span><span>1,180.55</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">vs February</span></span>
+    </div>
+  </div>
+
+  <h2>Compact — figure-3 value (24px, dense boards)</h2>
+  <div class="board">
+    <div class="stat-card" role="group" aria-label="Active payees">
+      <p class="lbl16 t-cm-caption">Active payees</p>
+      <span class="amt t-cm-figure-3"><span>34</span></span>
+      <span class="delta up"><span class="arrow" aria-hidden="true"><svg><use href="#sc-up"/></svg></span><span class="t-cm-figure-6">+2 up</span><span class="per t-cm-legal">this month</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Failed payments">
+      <p class="lbl16 t-cm-caption">Failed payments</p>
+      <span class="amt t-cm-figure-3"><span>3</span></span>
+      <span class="delta down"><span class="arrow" aria-hidden="true"><svg><use href="#sc-down"/></svg></span><span class="t-cm-figure-6">−1 down</span><span class="per t-cm-legal">this month</span></span>
+    </div>
+    <div class="stat-card" role="group" aria-label="Approvals waiting">
+      <p class="lbl16 t-cm-caption">Approvals waiting</p>
+      <span class="amt t-cm-figure-3"><span>7</span></span>
+      <span class="delta"><span class="t-cm-figure-6">No change</span><span class="per t-cm-legal">this week</span></span>
+    </div>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Stat card",
+    "vars": { "--surface": "tertiary/background/default", "--border": "border/subtle", "--text": "text/default",
+              "--page": "background/default", "--up": "rag/success", "--down": "rag/error",
+              "--border-radius-surface": "border-radius/surface" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "rag/success", "bg": "tertiary/background/default", "context": "ui" },
+      { "fg": "rag/error",   "bg": "tertiary/background/default", "context": "ui" }
+    ],
+    "icons": { "arrow-up": "arrows-and-chevrons/arrow-up.svg", "arrow-down": "arrows-and-chevrons/arrow-down.svg" },
+    "requiredAria": ["role=\"group\"", "aria-label", "aria-hidden=\"true\""],
+    "$note": "R-D5: directional deltas are red/green ONLY. The ARROW wears the colour (3:1 glyph floor, R-D6 A′ — it is labelled by the signed value); delta text stays ink because dark rag/error (3.66) fails 4.5 as text. Direction is carried by arrow + sign + wording — never colour alone. Value markup = the Amount-display primitive verbatim (figure composites, tabular, copy-025, U+2212). Passive atom; a linked/tappable variant is a receipt question."
+  }
+  </script>
+  <script>document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });</script>
+</body>
+</html>
