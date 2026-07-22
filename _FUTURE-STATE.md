@@ -61,6 +61,12 @@ shouldn't change; Mono, Supercharge AND Console are all in design development.**
   faithful reproduction (R-D24 posture — "Legacy shouldn't change" = the DESIGN is frozen, our
   rendering of it can be corrected) may need its mechanism switched to opacity. VERIFY against the
   as-built source first — don't flip on the recollection. *Feeds:* Legacy fidelity.
+  **★ THE REFERENCE (Dave, 2026-07-22: "This is legacy… record as the reference"):**
+  `https://www.figma.com/design/mI8hvIkV98nquoqWzKh5Kn/HSBC-Common-Toolkit--MCP-?node-id=65884-68326`
+  — the Common Toolkit file (same file as Modals' anatomy source, node 65884-68326 = the Legacy
+  button states). Deliberately NOT fetched at record time; the finesse session pulls this node
+  (Figma MCP / get_design_context) and reads the actual state mechanism + values off it — OBSERVED
+  provenance, the ADR-0014 warm-ramp precedent.
 - **Supercharge mechanism: keep the opacity OPTION open** — Dave: *"keep the option open for
   supercharge but it probably wont change"* (stays colour by default; the ADR-0014 snap gate already
   permits opacity where it snaps to a warm step, so the option IS structurally open — nothing to build,
