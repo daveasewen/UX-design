@@ -252,7 +252,15 @@ mono.onload=()=>{ const md=mono.contentDocument;
   function meta(n){ var m=document.querySelector('meta[name="'+n+'"]'); return m?m.getAttribute('content'):''; }
   var DOC_TITLE = meta('rv-doc') || (document.title||"Review").replace(/\s+·.*$/,"").trim();
   var DOC_FILE = meta('rv-file') || '';
-  var comments = [];            // {id, section, desc, path, text, el}
+  // ctx = the viewing state a pin was made under (mode · theme), read from the host
+  // doc's live attributes at save time. Empty on docs that carry neither (harmless).
+  // In two-pane harnesses (showroom light/dark) this is what keeps exports unambiguous.
+  function ctxOf(){
+    var m=(document.body&&document.body.getAttribute('data-theme'))||'';
+    var t=document.documentElement.getAttribute('data-apollo-theme')||'';
+    return [m,t].filter(Boolean).join(' · ');
+  }
+  var comments = [];            // {id, ctx, section, desc, path, text, el}
   var seq = 0;
   var active = false, editingId = null, pendingEl = null, composerEl = null, dragging = false;
 
@@ -393,7 +401,7 @@ mono.onload=()=>{ const md=mono.contentDocument;
     if(editingId!=null){
       comments.forEach(function(c){ if(c.id===editingId) c.text=txt; });
     } else if(pendingEl){
-      comments.push({id:++seq, section:sectionName(pendingEl), desc:descOf(pendingEl), path:pathOf(pendingEl), text:txt, el:pendingEl});
+      comments.push({id:++seq, ctx:ctxOf(), section:sectionName(pendingEl), desc:descOf(pendingEl), path:pathOf(pendingEl), text:txt, el:pendingEl});
     }
     closeComposer(); refresh();
   });
@@ -410,7 +418,7 @@ mono.onload=()=>{ const md=mono.contentDocument;
       list.innerHTML='';
       comments.forEach(function(c,i){
         var it=document.createElement('div'); it.className='rv-item';
-        var loc=(c.section?('['+c.section+'] '):'')+c.desc;
+        var loc=(c.ctx?('['+c.ctx+'] '):'')+(c.section?('['+c.section+'] '):'')+c.desc;
         it.innerHTML='<div class="rv-item-h"><span class="rv-num">'+(i+1)+'</span><span class="rv-loc"></span></div>'+
           '<div class="rv-txt"></div>'+
           '<div class="rv-acts"><button class="rv-link rv-goto" type="button">Reveal</button>'+
@@ -433,10 +441,10 @@ mono.onload=()=>{ const md=mono.contentDocument;
     var lines=[];
     lines.push('# '+DOC_TITLE+' — review edits ('+comments.length+')');
     lines.push('');
-    lines.push('Apply the following change requests'+(DOC_FILE?(' to `'+DOC_FILE+'`'):'')+'. Each item is pinned to a component; treat the bracketed location as the target and use the selector to disambiguate.');
+    lines.push('Apply the following change requests'+(DOC_FILE?(' to `'+DOC_FILE+'`'):'')+'. Each item is pinned to a component; treat the bracketed location as the target and use the selector to disambiguate. A leading [mode · theme] bracket is the viewing state the comment was pinned under.');
     lines.push('');
     comments.forEach(function(c,i){
-      var loc=(c.section?('['+c.section+'] '):'')+c.desc;
+      var loc=(c.ctx?('['+c.ctx+'] '):'')+(c.section?('['+c.section+'] '):'')+c.desc;
       lines.push((i+1)+'. '+loc);
       lines.push('   - '+c.text.replace(/\n/g,'\n     '));
       lines.push('   - selector: `'+c.path+'`');

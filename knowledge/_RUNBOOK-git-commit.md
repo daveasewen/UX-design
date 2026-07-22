@@ -46,8 +46,10 @@ from an already-clean `.git`. (Corrected 2026-07-18 after step 1 failed on a 12-
    **the commit still lands** — verify by the HEAD hash, not the warnings:
    ```
    git -c user.name="Claude" -c user.email="claude@anthropic.com" commit -F <msgfile>
-   git log --oneline -1          # confirm the new hash is HEAD
+   git log --oneline -1          # confirm the new hash is HEAD — and the MESSAGE is yours
    ```
+   ⚠ **Write `<msgfile>` under a dir this session owns (outputs/), with a UNIQUE name, and `head -1`
+   it before `-F`.** Never a fixed `/tmp` name — see the 2026-07-22 gotcha below.
 4. **Clear the lock git just re-created**, as the *last* action (any git command, even `status`,
    respawns `index.lock`). Do NOT run another git command after this:
    ```
@@ -73,6 +75,15 @@ from an already-clean `.git`. (Corrected 2026-07-18 after step 1 failed on a 12-
   his machine when convenient. Never commit `_to_delete/`.
 - **Big/licensed binaries** (fonts, raw exports) must be gitignored before `git add -A` — check
   `git status --short` for anything under `knowledge/assets/fonts/` or `knowledge/tokens/_raw/`.
+- **The stale-msgfile trap (bitten 2026-07-22).** `/tmp` persists across sessions and a file there can
+  be OWNED-UNWRITABLE by a later session. Sequence that bit: heredoc to `/tmp/msg.txt` failed
+  ("Permission denied") but the command chain continued, and `git commit -F /tmp/msg.txt` silently read
+  **yesterday's message from the stale file** — 43 files inscribed under the previous session's text.
+  Confident-false-inscription, in git. Caught same minute (`git log -1` showed the wrong headline);
+  fixed by `--amend -F` from a fresh uniquely-named file under outputs/. Rules: unique msgfile name in
+  a session-owned dir · `head -1` the file before `-F` · after committing, read the MESSAGE back, not
+  just the hash. (Amend is safe only while the commit is unpushed — check `git status -sb` ahead-count
+  first; if Desktop might be open, confirm the bad commit didn't just get pushed.)
 - If commits must be frequent/reliable, re-run the task **"On your computer"** (desktop app → Run
   this task) so the terminal has real unlink permissions and this dance isn't needed.
 
