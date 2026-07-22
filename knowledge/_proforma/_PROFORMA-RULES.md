@@ -6,6 +6,12 @@ during the build (Dave: "let's build these rules as we go along, they will be us
 
 Status: WORKING DRAFT — started 2026-07-14 during Tranche 1. Confirm/adjust with Dave before it hardens.
 
+> **RULED 2026-07-22 (Dave): the pro-forma tranches ARE Apollo Mono under another name — fold them into
+> the canonical Mono set as near-canonical.** *"Pro-forma is Mono in a different name so yes."* Caveat:
+> **some tranche components duplicate existing Mono components** — the fold-in carries a **reconcile/dedup
+> pass** (side-by-side compare; Dave rules by eye where they diverge). Not a separate pattern library.
+> Tracked in `_LIVE-STATE.md`; see the dedup task.
+
 ---
 
 ## Base rules (the monochrome floor)

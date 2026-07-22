@@ -5,6 +5,46 @@ session that produced it. Sibling to `_TYPE-DECISIONS.md` / `_DATAVIZ-DECISIONS.
 
 ---
 
+## R-D23 — Tabs (Mono): ink bar · SEPARATE red-status badge · opacity-snap inactive; Legacy keeps red (2026-07-22). Source: Dave, live on the tabs review v4 (`reviews/TABS-ACTIVE-ink-vs-legacy-2026-07-21-v4.html`).
+
+`tabs/active` was the last Mono surface resolving a Legacy red (the R-D19 drift class, flagged at R-D22).
+Ruled by the R-D22 logic — **selection is structure, not status** — so the active-tab underline becomes
+the **ink pair** (`#1A1A1A`/`#FFFFFF`, `$alias` `mono/4` + white); the Legacy override keeps `#DB0011`.
+
+Three parts, ruled together on the harness:
+1. **Bar = ink** (Mono) / red (Legacy).
+2. **Badge is its OWN slot** (not shared with the bar): `tabs/badge/background` = Mono status red
+   `#B92F1E` (white numeral, 6.02:1 — legal on red per type26-013) / Legacy `#DB0011`. Splitting the slot
+   dissolves the type26-013 tension a black badge would have caused (a white numeral is red-only).
+3. **Inactive-tab de-emphasis = opacity, snapped** — the primary-action button-hover mechanism (sheet v7):
+   an operational α fades ink over the surface and **snaps to the nearest AA-passing mono rung**; two tokens
+   stored (`tabs/inactive.opacity` operational + `tabs/inactive` portable colour). At α 0.70 → **mono/7 light
+   / mono/10 dark** (both AA). **Weight is CONSTANT across states** (Dave: active differs by the bar, not a
+   heavier label). Legacy mechanism = `[none]` (no opacity; bar-only differentiation) per R-D24.
+
+Not yet enacted in tokens — lands with the theming clean-room (per-theme mechanism, brief
+`notes/_briefs/2026-07-22-theme-primitives-architecture-brief.md`).
+Edges: refines(R-D22) · sibling(button-sheet-v7, ADR-0009) · verified-by(contrast-gate)
+
+---
+
+## R-D24 — Apollo Legacy is EXEMPT from the AA floor: it conforms to the existing HSBC system as-built (2026-07-22). Source: Dave.
+
+Ruling, reflected back + confirmed: *"No AA for Legacy in this case, it should conform to what exists
+already (the clue is in the name)."* Apollo Legacy is a **faithful reproduction of the existing legacy
+interfaces**, not a redesign — so the AA floor (ADR-0004 / `_STANDARDS.md` §3) does **not** gate it. Its
+historically sub-AA pairs stand as-built (e.g. white-on-teal `text/on-success` 3.47:1 · badge
+white-on-`#DB0011` ~4.02:1).
+
+**Scope: Legacy ONLY.** Mono, Console and Supercharge keep the AA floor unchanged — the "most accessible
+bank" aspiration (ADR-0004) is untouched; Legacy is the single named exception, superseded over time not
+perfected. **Enactment (theming clean-room):** Legacy pairs are recorded in the audit as **EXEMPTED
+(documented), not as passes** — a theme-level carve-out via the `RULED_PAIR_EXCLUSIONS` mechanism
+(tag `theme=legacy`, reason = this ruling).
+Edges: carve-out(ADR-0004, `_STANDARDS.md` §3) · scope(theme=legacy) · enacted-by(theming-clean-room)
+
+---
+
 ## R-D22 — `progress/complete` = INK (progress is structure, not status) + Badge mints the component slot `badge/background`; the Mono red-drift pair CLOSED (2026-07-21). Source: Dave, live on the showroom harness (Phase-1 worker-A session; verbatim quotes preserved from the worker receipt).
 
 Phase-1's theme-response audit found the last two Mono surfaces resolving Legacy `#DB0011` (the R-D19

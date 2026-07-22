@@ -48,6 +48,11 @@ could engineer 3 to align completely to one we choose."* Two sibling pairs:
 **3. Ink per theme** (`text/default` resolves per active theme):
 - Mono `#1A1A1A` / `#FFFFFF` · **Legacy `#333333`** (grey-8) · **Supercharge `#13110E`** (Dave: "I think we can use"). Dark-mode inks per theme TBD (Legacy dark likely off the dark-mode grey set).
 
+**4. Legacy is EXEMPT from the AA floor (R-D24).** It reproduces the existing HSBC legacy system as-built,
+so its sub-AA pairs stand. **Enact:** record Legacy pairs as *exempted* (not passes) via
+`RULED_PAIR_EXCLUSIONS` tagged `theme=legacy`. Mono/Console/Supercharge keep the floor. This is the theme
+carve-out the state-mechanism + contrast gates must respect once per-theme ramps land.
+
 ## Architecture questions for the Fable pass
 1. Token-schema home for per-theme neutral ramps under ADR-0011 — naming (`color/supercharge/*`?), and confirm every semantic role aliases to the **active theme's** ramp (retrieval-not-recall holds).
 2. Make **state-mechanism a theme property** (Mono=opacity, Legacy/SC=colour); parameterise `snapPass` by the active ramp so a warm theme snaps to warm steps.

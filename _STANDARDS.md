@@ -119,6 +119,10 @@ the `$alias`, so the cascade — not a baked hex — carries the value at runtim
 - Every interactive state (hover/pressed/active) must be **more** than a single-colour change and must
   itself clear the floor.
 - Aspiration (ADR-0004): the most digitally accessible bank. AA is the floor, not the ceiling.
+- **Theme carve-out (R-D24): Apollo Legacy is EXEMPT from this floor** — it faithfully reproduces the
+  existing HSBC legacy interfaces, so its historically sub-AA pairs stand as-built and are recorded as
+  *exempted* (not passes) via `RULED_PAIR_EXCLUSIONS` tagged `theme=legacy`. Mono / Console / Supercharge
+  are unaffected — the floor holds for every theme except Legacy.
 
 ---
 
