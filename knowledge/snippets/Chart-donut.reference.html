@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Donut chart — reference implementation (gated)</title>
+<!--
+  CANONICAL REFERENCE for Donut chart (Apollo MONO) — composition / proportion, with centre total.
+  ⚠ PROVISIONAL-AGENT PROMOTION (Phase-2 wave 2, worker D, 2026-07-22): promoted as OBSERVED from
+  the PARKED round-one dataviz kit (_proforma/DataViz-interactive.html, 9 review rounds — Dave has
+  NOT signed the kit off). Provisional until his dataviz sign-off; the pro-forma file is untouched.
+
+  WHAT PROMOTED (OBSERVED, kit geometry verbatim): ring ro100/ri60 arc paths; ≤6 slices
+  (dv-pie-009 — 5 here); segments sum to the displayed centre total (dv-pie-010, data-total);
+  2px page-coloured separating strokes (dv-004); TWO of the kit's three labelling variants —
+  SPIDER (letter on a short leader outside the ring, ink) + DIRECT (name + value in place, no
+  legend); vertical right-hand legend [swatch][letter][name] (Batch 1 #4); leaders = hairline
+  border ink; centre total.
+  WHAT NEWLY JUDGED (receipted): the kit's third variant — letters ON segments — is NOT promoted:
+  its letters are #FFFFFF on series fills, and white type is red-only (type26-013 BLOCKING);
+  Dave's Batch-2 #7 left the three variants "to compare", so the two ink-labelled variants
+  graduate and the on-segment variant stays kit-side pending his pick. Centre total promoted
+  22px → .t-cm-figure-3 (24px/500 — DV-D05: no 22 on the KB ramp). Direct-label value line
+  promoted weight 600 → 500 (brand: no 600 weight, weights 100/300/400/500/700). The kit's
+  radial-sweep entry + label sequencing are JS-driven (rAF) — NOT promotable under the static
+  contract; specimens bake the full arcs visible (the kit itself leaves baked arcs for
+  no-JS/reduced-motion). Table = native <details>.
+  RULES: dv-017 var() fills only · dv-016 ≥3:1 rendered both modes · dv-pie-009/010 · dv-004 ·
+  arcs (A) are legal in donuts, no C/S/Q/T curves elsewhere (dv-line-011) · composites-only type ·
+  sentence case. Empty state consumes the Empty-state pattern by reference.
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:160ms cubic-bezier(.4,0,.2,1); }
+  [data-theme="light"]{
+    --page:#FFFFFF; --ink:#1A1A1A; --line:#E1E1E1;
+    --data-series-1:#766682; --data-series-2:#A45C3A; --data-series-3:#577C78; --data-series-4:#7F7B45; --data-series-5:#A37E94;
+    --border-radius-surface:0;
+  }
+  [data-theme="dark"]{
+    --page:#1A1A1A; --ink:#FFFFFF; --line:#808080;
+    --data-series-1:#766682; --data-series-2:#A45C3A; --data-series-3:#577C78; --data-series-4:#7F7B45; --data-series-5:#A37E94;
+    --border-radius-surface:0;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page); color:var(--ink);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--ink);
+    background:transparent; color:var(--ink); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+  h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+  .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+
+  figure.dv{margin:0;}
+  .dv-stage{overflow-x:auto; padding-bottom:4px;}
+  .dv-donut-row{display:flex; gap:28px; align-items:center; flex-wrap:wrap;}
+  .dv-svg{display:block; overflow:visible;}
+
+  path.dv-series{transition:filter var(--ease);}
+  path.dv-series:hover{filter:brightness(1.12);}
+  [data-theme="dark"] path.dv-series:hover{filter:brightness(1.22);}
+
+  .dv-leader{stroke:var(--line); stroke-width:1; fill:none;}
+  text.dv-key-el{opacity:1;}
+  text.dv-val{fill:var(--ink);}
+  text.dv-direct{fill:var(--ink);}
+  text.dv-direct .amt{font-weight:500;}   /* kit 600 → 500: no 600 weight on brand (receipted) */
+
+  .dv-legend{list-style:none; display:flex; margin:0; padding:0;}
+  .dv-legend.vert{flex-direction:column; gap:12px;}
+  .dv-legend li{display:flex; align-items:center; gap:8px; color:var(--ink);}
+  .dv-legend .sw{width:12px; height:12px; flex:none;}
+  .dv-legend .dv-key{font-weight:700; opacity:.6; min-width:12px; font-variant-numeric:tabular-nums;}
+
+  details.dv-tabledetails{margin:8px 0 0;}
+  details.dv-tabledetails summary{cursor:pointer; opacity:.6; width:max-content;}
+  details.dv-tabledetails summary:hover{opacity:1; text-decoration:underline; text-underline-offset:3px;}
+  details.dv-tabledetails summary:focus-visible{outline:2px solid var(--ink); outline-offset:2px; opacity:1;}
+  table.dv-table{border-collapse:collapse; margin-top:8px; color:var(--ink);}
+  table.dv-table caption{text-align:left; opacity:.6; margin-bottom:4px;}
+  table.dv-table th,table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
+  table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
+  table.dv-table thead th{opacity:.6; font-weight:500;}
+
+  .dv-empty-frame{width:400px; height:260px; display:flex; align-items:center; justify-content:center;
+    border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
+  .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
+    padding:24px; max-width:320px;}
+  .dv-empty-frame .empty h3{margin:0;}
+  .dv-empty-frame .empty p{margin:0; opacity:.6; max-width:40ch;}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
+      animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls">
+    <button id="themeToggle" type="button">◐ Toggle theme</button>
+    <span>Donut chart — canonical reference (Mono · spider letters + legend · direct labels · no data)</span>
+  </div>
+
+  <h2>Spider letters + legend — letter on a leader, names in the legend</h2>
+  <figure class="dv" data-dv-type="donut" data-total="2320" data-surface="page" data-labelling="spider" role="group" aria-labelledby="cd1-h">
+    <figcaption id="cd1-h" class="sr-only">Spend by category this month, pounds</figcaption>
+    <div class="dv-stage"><div class="dv-donut-row">
+      <svg class="dv-svg" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 300 260" width="300" height="260" role="img" aria-label="Spend by category. Total 2320.">
+        <path class="dv-series dv-donut-seg" fill="var(--data-series-1)" stroke="var(--page)" stroke-width="2" d="M150.00 30.00 A100 100 0 0 1 203.86 214.26 L182.31 180.55 A60 60 0 0 0 150.00 70.00 Z"><title>Housing: 950 (41%)</title></path>
+        <path class="dv-series dv-donut-seg" fill="var(--data-series-2)" stroke="var(--page)" stroke-width="2" d="M203.86 214.26 A100 100 0 0 1 96.14 214.26 L117.69 180.55 A60 60 0 0 0 182.31 180.55 Z"><title>Groceries: 420 (18%)</title></path>
+        <path class="dv-series dv-donut-seg" fill="var(--data-series-3)" stroke="var(--page)" stroke-width="2" d="M96.14 214.26 A100 100 0 0 1 51.79 148.84 L91.07 141.31 A60 60 0 0 0 117.69 180.55 Z"><title>Savings: 300 (13%)</title></path>
+        <path class="dv-series dv-donut-seg" fill="var(--data-series-4)" stroke="var(--page)" stroke-width="2" d="M51.79 148.84 A100 100 0 0 1 62.95 80.78 L97.77 100.47 A60 60 0 0 0 91.07 141.31 Z"><title>Leisure: 260 (11%)</title></path>
+        <path class="dv-series dv-donut-seg" fill="var(--data-series-5)" stroke="var(--page)" stroke-width="2" d="M62.95 80.78 A100 100 0 0 1 150.00 30.00 L150.00 70.00 A60 60 0 0 0 97.77 100.47 Z"><title>Other: 390 (17%)</title></path>
+        <polyline class="dv-leader" points="247.9,101.4 258.5,98.3"/>
+        <text class="dv-key-el t-cm-legal" fill="var(--ink)" x="267.1" y="102.3" text-anchor="middle">A</text>
+        <polyline class="dv-leader" points="150.0,232.0 150.0,243.0"/>
+        <text class="dv-key-el t-cm-legal" fill="var(--ink)" x="150.0" y="247.0" text-anchor="middle">B</text>
+        <polyline class="dv-leader" points="65.6,187.2 56.5,193.4"/>
+        <text class="dv-key-el t-cm-legal" fill="var(--ink)" x="49.0" y="197.4" text-anchor="middle">C</text>
+        <polyline class="dv-leader" points="49.3,113.5 38.5,111.7"/>
+        <text class="dv-key-el t-cm-legal" fill="var(--ink)" x="29.6" y="115.7" text-anchor="middle">D</text>
+        <polyline class="dv-leader" points="98.6,41.9 93.1,32.4"/>
+        <text class="dv-key-el t-cm-legal" fill="var(--ink)" x="88.5" y="36.4" text-anchor="middle">E</text>
+        <text class="dv-val t-cm-figure-3" fill="var(--ink)" x="150" y="138" text-anchor="middle">2320</text>
+      </svg>
+      <ul class="dv-legend vert t-cm-legal">
+        <li><span class="sw" style="background:var(--data-series-1)"></span><span class="dv-key">A</span> Housing</li>
+        <li><span class="sw" style="background:var(--data-series-2)"></span><span class="dv-key">B</span> Groceries</li>
+        <li><span class="sw" style="background:var(--data-series-3)"></span><span class="dv-key">C</span> Savings</li>
+        <li><span class="sw" style="background:var(--data-series-4)"></span><span class="dv-key">D</span> Leisure</li>
+        <li><span class="sw" style="background:var(--data-series-5)"></span><span class="dv-key">E</span> Other</li>
+      </ul>
+    </div></div>
+    <details class="dv-tabledetails">
+      <summary class="t-cm-legal">View as table</summary>
+      <table class="dv-table t-cm-legal">
+        <caption>Spend by category this month, pounds</caption>
+        <thead><tr><th scope="col">Category</th><th scope="col">Amount (£)</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Housing</th><td>950</td></tr>
+          <tr><th scope="row">Groceries</th><td>420</td></tr>
+          <tr><th scope="row">Savings</th><td>300</td></tr>
+          <tr><th scope="row">Leisure</th><td>260</td></tr>
+          <tr><th scope="row">Other</th><td>390</td></tr>
+        </tbody>
+      </table>
+    </details>
+  </figure>
+
+  <h2>Direct labels — name and value in place, no legend</h2>
+  <figure class="dv" data-dv-type="donut" data-total="2320" data-surface="page" data-labelling="direct" role="group" aria-labelledby="cd2-h">
+    <figcaption id="cd2-h" class="sr-only">Spend by category this month, pounds, directly labelled</figcaption>
+    <div class="dv-stage"><div class="dv-chart-area">
+      <svg class="dv-svg" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 400 260" width="440" height="286" role="img" aria-label="Spend by category. Total 2320.">
+        <path class="dv-series dv-donut-seg" fill="var(--data-series-1)" stroke="var(--page)" stroke-width="2" d="M200.00 28.00 A100 100 0 0 1 253.86 212.26 L232.31 178.55 A60 60 0 0 0 200.00 68.00 Z"><title>Housing: 950 (41%)</title></path>
+        <path class="dv-series dv-donut-seg" fill="var(--data-series-2)" stroke="var(--page)" stroke-width="2" d="M253.86 212.26 A100 100 0 0 1 146.14 212.26 L167.69 178.55 A60 60 0 0 0 232.31 178.55 Z"><title>Groceries: 420 (18%)</title></path>
+        <path class="dv-series dv-donut-seg" fill="var(--data-series-3)" stroke="var(--page)" stroke-width="2" d="M146.14 212.26 A100 100 0 0 1 101.79 146.84 L141.07 139.31 A60 60 0 0 0 167.69 178.55 Z"><title>Savings: 300 (13%)</title></path>
+        <path class="dv-series dv-donut-seg" fill="var(--data-series-4)" stroke="var(--page)" stroke-width="2" d="M101.79 146.84 A100 100 0 0 1 112.95 78.78 L147.77 98.47 A60 60 0 0 0 141.07 139.31 Z"><title>Leisure: 260 (11%)</title></path>
+        <path class="dv-series dv-donut-seg" fill="var(--data-series-5)" stroke="var(--page)" stroke-width="2" d="M112.95 78.78 A100 100 0 0 1 200.00 28.00 L200.00 68.00 A60 60 0 0 0 147.77 98.47 Z"><title>Other: 390 (17%)</title></path>
+        <polyline class="dv-leader" points="296.0,99.9 309.4,96.0 360.0,96.0"/>
+        <text class="dv-direct t-cm-legal" fill="var(--ink)" x="364.0" y="94.0" text-anchor="start">A · Housing<tspan class="amt" x="364.0" dy="13">£950 · 41%</tspan></text>
+        <polyline class="dv-leader" points="200.0,228.0 200.0,242.0 360.0,242.0"/>
+        <text class="dv-direct t-cm-legal" fill="var(--ink)" x="364.0" y="240.0" text-anchor="start">B · Groceries<tspan class="amt" x="364.0" dy="13">£420 · 18%</tspan></text>
+        <polyline class="dv-leader" points="117.2,184.1 105.6,192.0 40.0,192.0"/>
+        <text class="dv-direct t-cm-legal" fill="var(--ink)" x="36.0" y="190.0" text-anchor="end">C · Savings<tspan class="amt" x="36.0" dy="13">£300 · 13%</tspan></text>
+        <polyline class="dv-leader" points="101.3,111.8 87.5,109.6 40.0,109.6"/>
+        <text class="dv-direct t-cm-legal" fill="var(--ink)" x="36.0" y="107.6" text-anchor="end">D · Leisure<tspan class="amt" x="36.0" dy="13">£260 · 11%</tspan></text>
+        <polyline class="dv-leader" points="149.6,41.6 142.6,29.5 40.0,29.5"/>
+        <text class="dv-direct t-cm-legal" fill="var(--ink)" x="36.0" y="27.5" text-anchor="end">E · Other<tspan class="amt" x="36.0" dy="13">£390 · 17%</tspan></text>
+        <text class="dv-val t-cm-figure-3" fill="var(--ink)" x="200" y="136" text-anchor="middle">2320</text>
+      </svg>
+    </div></div>
+    <details class="dv-tabledetails">
+      <summary class="t-cm-legal">View as table</summary>
+      <table class="dv-table t-cm-legal">
+        <caption>Spend by category this month, pounds</caption>
+        <thead><tr><th scope="col">Category</th><th scope="col">Amount (£)</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Housing</th><td>950</td></tr>
+          <tr><th scope="row">Groceries</th><td>420</td></tr>
+          <tr><th scope="row">Savings</th><td>300</td></tr>
+          <tr><th scope="row">Leisure</th><td>260</td></tr>
+          <tr><th scope="row">Other</th><td>390</td></tr>
+        </tbody>
+      </table>
+    </details>
+  </figure>
+
+  <h2>No data — the Empty-state pattern, consumed by reference</h2>
+  <div class="dv-stage"><div class="dv-empty-frame" role="group" aria-label="Spend by category, no data">
+    <div class="empty">
+      <h3 class="t-cm-caption">No data to display</h3>
+      <p class="t-cm-legal">Spend by category appears here once transactions arrive.</p>
+    </div>
+  </div></div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Donut chart",
+    "vars": { "--page": "background/default", "--ink": "text/default", "--line": "border/subtle",
+              "--data-series-1": "data/series/1", "--data-series-2": "data/series/2", "--data-series-3": "data/series/3",
+              "--data-series-4": "data/series/4", "--data-series-5": "data/series/5",
+              "--border-radius-surface": "border-radius/surface" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "data/series/1", "bg": "background/default", "context": "ui" },
+      { "fg": "data/series/2", "bg": "background/default", "context": "ui" },
+      { "fg": "data/series/3", "bg": "background/default", "context": "ui" },
+      { "fg": "data/series/4", "bg": "background/default", "context": "ui" },
+      { "fg": "data/series/5", "bg": "background/default", "context": "ui" }
+    ],
+    "icons": {},
+    "requiredAria": ["role=\"group\"", "aria-labelledby", "role=\"img\"", "aria-label"],
+    "$note": "PROVISIONAL-AGENT promotion of the PARKED dataviz kit (9 rounds, not signed off). Two of Dave's three Batch-2 #7 labelling variants promoted (spider + direct, both ink); letters-ON-segments held back — white letters on series fills collide with type26-013 white-type-red-only (receipted for his pick). Centre total 22px → figure-3 24/500 (DV-D05); direct value line 600 → 500 (no 600 on brand). The radial sweep + label sequencing are JS (rAF) — kit-side Layer-2; specimens bake visible arcs (the kit's own no-JS state). dv-pie-009 ≤6 slices · dv-pie-010 sum-to-total · dv-004 2px page strokes all hold."
+  }
+  </script>
+  <script>document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });</script>
+</body>
+</html>

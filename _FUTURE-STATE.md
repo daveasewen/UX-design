@@ -12,7 +12,16 @@ graduates OUT of here into `_LIVE-STATE` OPEN/TARGET when work starts. Refresh w
 **Entry format:** what · why it's held · what it feeds (Apollo phase/mode) · source/provenance pointer ·
 status (`idea` / `parked` / `resurrection-candidate` / `graduated→LIVE`).
 
-## Resurrection candidates — experiments to re-evaluate once the factory is built
+## Showroom index: visual component thumbnails on the catalogue cards (Dave, 2026-07-22 wave-2 window)
+Dave's ask, deferred at Amber gauge (his hot-clause: "just note it as a change"): each index card
+carries a VISUAL of the component, not just name+meta. The count-in-header half SHIPPED same session
+(big 40px numeral, self-updating). Thumbnails need a real design decision, not a quick edit:
+(a) live mini-iframes = pages need a `#bare` chrome-less mode first or cards show harness header;
+(b) static PNGs = blocked on the render-verify path (headless-shell refusal, standing);
+(c) hand-rolled CSS glyphs = drift-prone duplication, against retrieval-not-recall.
+Recommended shape when picked up: (a) — add `#bare` to the page chrome (hides header/controls,
+shows the light pane only), cards embed `<iframe loading="lazy" src="<slug>.html#bare">` scaled;
+zero new artefacts, reuses the live pages. Natural slot: Dave's post-buildout tidy pass.
 
 - **The restyle saga + generate-then-normalise lineage** — the two-pass "generate free → constrain +
   verify" experiments and the ungoverned diagnostic pieces. *Why held:* Dave 2026-07-18: "definitely

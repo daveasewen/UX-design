@@ -1,0 +1,73 @@
+{
+  "name": "Bar chart",
+  "category": "organism",
+  "purpose": "Categorical comparison as vertical columns or horizontal bars — the round-one dataviz kit's bar family graduated into canon. Semantic SVG in the DOM, styled by tokens, animated by CSS, described by a real table (the ratified dataviz method). PROVISIONAL-AGENT: promoted from the PARKED kit (9 review rounds, not signed off); every value is OBSERVED kit geometry unless receipted as newly judged.",
+  "props": [
+    { "name": "orientation", "type": "enum", "values": ["column", "bar"], "default": "column", "$note": "column = vertical (negatives permitted by dv-bar-007); bar = horizontal (positives only — dv-bar-007 blocks negative horizontals)." },
+    { "name": "series", "type": "enum", "values": ["categorical", "status"], "default": "categorical", "$note": "categorical = data/series/1–5 (mode-stable isoluminant set, R-D9); status = the salience RAMP red › amber › green › blue on rag/* (R-D9 — loudness tracks severity; NEVER the isoluminant set for status)." },
+    { "name": "data", "type": "table", "$note": "A real <table class=\"dv-table\"> inside the figure — the a11y spine AND the tabular alternative (dv-005). Surfaced by a native <details> disclosure (zero JS)." },
+    { "name": "empty", "type": "boolean", "default": false, "$note": "No-data state consumes the Empty-state pattern by reference: dashed frame, title carries the meaning, no glyph (spot-illustration set is a logged icon gap)." }
+  ],
+  "variants": [
+    { "name": "column categorical", "use": "Compare categories; single series keeps ONE colour across every chart of the same data (dv-014)." },
+    { "name": "bar categorical", "use": "Long category names / many categories; same data = same series colour as the column (journey consistency)." },
+    { "name": "column status", "use": "Counts by state (R-D9 ramp order, direct-labelled — the status word sits under each bar, colour never alone R-D6 A′)." },
+    { "name": "no data", "use": "Empty-state pattern in the chart frame." }
+  ],
+  "tokens": {
+    "font-family": "type composites via markup class — axis ticks + table .t-cm-legal (kit's 11px promoted to the 12px KB step, DV-D05) · category labels .t-cm-caption",
+    "series-categorical": "data/series/1–5 — mode-stable candidate C (V7 RULED); ≥3.17:1 vs both mode surfaces",
+    "series-status": "rag/error · rag/warning (graphic-grade #C58900, R-D3) · rag/success · rag/information — R-D9's resolved ramp greens/blues are NOT yet token-promoted (receipted gap)",
+    "axis": "text/default at 0.6 alpha (house treatment; effective ≈4.6:1 light / 5.5:1 dark) — kit's #545454/#9B9B9B have no post-R-D16 semantic home",
+    "gridlines": "text/default at per-mode alpha .10/.16 (reproduces the kit's reviewed quiet grid; data/grid role token = receipted gap; gridline contrast is ADVISORY by DV-D03)",
+    "baseline": "border/action-strong (ink-grade axis line, mode-inverting)",
+    "surface": "background/default (charts sit on the page, data-surface=\"page\")",
+    "$survey": "Promoted from _proforma/DataViz-interactive.html (PARKED, fence intact); Empty-state + Stat-card conventions consumed by reference."
+  },
+  "motion": {
+    "entry": "Bars grow from the baseline (scaleY/scaleX, transform-box:fill-box), 760ms cubic-bezier(.22,.61,.36,1), 45ms stagger — kit-reviewed values, CSS only (DEF-003).",
+    "hover": "brightness(1.12) light / (1.22) dark emphasis; <title> carries the value natively.",
+    "reducedMotion": "Entry animation is inside prefers-reduced-motion:no-preference; global collapse also present.",
+    "tokens": []
+  },
+  "responsive": {
+    "rule": "DV-D02: compress width, NEVER scale proportionally — text must not scale. Static answer: fixed 580×260 geometry + horizontal scroll in .dv-stage. The kit's runtime fit() relayout is JS Layer-2, not promoted.",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": ["Dashboards", "Insights and spending views", "Reports"],
+    "mustNotNeighbour": ["A Stat-card making the identical claim in the same view", "A second chart re-using these series colours for DIFFERENT data (dv-014)"],
+    "commonPatterns": ["spend by category", "counts by status", "monthly comparison"],
+    "triggeredBy": []
+  },
+  "accessibility": {
+    "role": "figure role=\"group\" + aria-labelledby → sr-only figcaption; svg role=\"img\" with a full-sentence data aria-label.",
+    "name": "The figcaption names the chart; the svg aria-label reads the data; each rect carries a <title>.",
+    "keyboard": "Only the <details> summary is focusable (native disclosure); the figure itself is passive.",
+    "focus": "summary:focus-visible = 2px ink outline, offset 2 (house pattern).",
+    "nonText": "Series fills ≥3:1 vs the page both modes (dv-016 BLOCKING, computed from resolved values); status meaning carried by the label under each bar, never colour alone (R-D6 A′, direct-labelled).",
+    "relatedSC": ["1.4.1 Use of Color", "1.4.11 Non-text Contrast", "1.3.1 Info and Relationships", "1.4.13 Content on Hover"]
+  },
+  "antiPatterns": [
+    "Status data on the isoluminant categorical set (R-D9: status is a salience RAMP)",
+    "Negative values on a horizontal bar (dv-bar-007 — verticals only)",
+    "A non-zero baseline (dv-bar-009: data-domain-min=\"0\" always)",
+    "Gradient/3D/shadow fills (dv-009 flat fills only)",
+    "Raw hex series fills (dv-017 — var() tokens only)",
+    "Curved series paths (dv-line-011)",
+    "More than one chevron pattern, or chevron outside gauges (DV-D04)",
+    "A chart without its real data table (dv-005)",
+    "Scaling the whole SVG down responsively (DV-D02 — text must never scale)"
+  ],
+  "tokenValidation": {
+    "date": "2026-07-22",
+    "against": "token store (semantic-colour.json) via #token-manifest",
+    "result": "PASS — series 1–5 ≥3.17:1 both modes; status fills ≥3:1 both modes (amber = graphic-grade #C58900 by design, R-D3); axis effective ≈4.6/5.5:1; ink 17.4:1.",
+    "$note": "Built Phase-2 wave 2 (worker D). PROVISIONAL-AGENT pending Dave's dataviz sign-off — kit is PARKED, promotion is his. Grouped/stacked variants NOT promoted this pass (receipted follow-on)."
+  },
+  "provenance": {
+    "source": "proforma-promotion",
+    "figma_node": "",
+    "code_path": "knowledge/_proforma/DataViz-interactive.html"
+  }
+}

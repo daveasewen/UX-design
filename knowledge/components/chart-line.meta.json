@@ -1,0 +1,68 @@
+{
+  "name": "Line chart",
+  "category": "organism",
+  "purpose": "Trend over time as straight-segment polylines, single- or multi-series — the round-one dataviz kit's line family graduated into canon. Semantic SVG styled by tokens, animated by CSS, described by a real table. PROVISIONAL-AGENT: promoted from the PARKED kit (9 review rounds, not signed off); geometry, easing and marker cadence are OBSERVED kit values.",
+  "props": [
+    { "name": "series", "type": "number", "$note": "1–5; each series carries colour (data/series/N) + MARKER SHAPE (dv-line-002: circle r4.2 · square 8.4 · diamond ±4.9) + letter key A/B/C repeated in the legend (§04.3) — colour is never the only channel (dv-011)." },
+    { "name": "data", "type": "table", "$note": "Real <table class=\"dv-table\"> in the figure (dv-005), surfaced by native <details>." },
+    { "name": "markers", "type": "enum", "values": ["background", "white"], "default": "background", "$note": "Promoted default = BACKGROUND mode (series-colour fill + page stroke at line width 2.5 — theme-adaptive, no absolute white on dark). The kit's White/Background comparison toggle is UNRESOLVED — receipted for Dave; flipping is a CSS pair swap." },
+    { "name": "empty", "type": "boolean", "default": false, "$note": "No-data state = the Empty-state pattern by reference." }
+  ],
+  "variants": [
+    { "name": "single series", "use": "One measure over time; markers on every point, month labels along x." },
+    { "name": "multi-series", "use": "2–5 measures; shapes + letters + legend names carry identity alongside colour." },
+    { "name": "no data", "use": "Empty-state pattern in the chart frame." }
+  ],
+  "tokens": {
+    "font-family": "type composites via markup class — axis ticks + legend + table .t-cm-legal · month labels .t-cm-caption",
+    "series": "data/series/1–3 bound here (mode-stable candidate C); measured 4.61–5.26:1 light / 3.31–3.78:1 dark vs the page (dv-016 ≥3:1 BLOCKING clean)",
+    "markers": "fill = the series token, stroke = background/default (page) at 2.5 — the halation-aware choice on dark (R-D6 bloom/dance axis)",
+    "axis": "text/default at 0.6 alpha; baseline = border/action-strong; gridlines = text/default at per-mode alpha .10/.16 (kit greys have no post-R-D16 home — receipted)",
+    "surface": "background/default (data-surface=\"page\")",
+    "$survey": "Promoted from _proforma/DataViz-interactive.html (PARKED, fence intact); legend statics mirror the kit's layout minus its JS toggles."
+  },
+  "motion": {
+    "entry": "Lines draw via stroke-dasharray with pathLength=2400 (Batch 9 — the dash spans the full 2400ms timeline, rescale-immune), 2400ms cubic-bezier(.33,0,.3,1) (Batch 6); all series draw SIMULTANEOUSLY (Batch 4); markers land on the Batch-8 EASED cadence (delays follow the line's easing — 0·369·507·…·2400ms), each as the drawing head passes it.",
+    "hover": "<title> carries point values natively.",
+    "reducedMotion": "Draw + fade sit inside prefers-reduced-motion:no-preference; global collapse also present.",
+    "tokens": []
+  },
+  "responsive": {
+    "rule": "DV-D02: compress width, never scale — text must not scale. Static answer: fixed 580×260 + horizontal scroll. The kit's runtime fit() is JS Layer-2, not promoted.",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": ["Dashboards", "Balance and trend views", "Reports"],
+    "mustNotNeighbour": ["A second chart re-using these series colours for DIFFERENT data in the same journey (dv-014)"],
+    "commonPatterns": ["balance trend", "balances by product", "12-month performance"],
+    "triggeredBy": []
+  },
+  "accessibility": {
+    "role": "figure role=\"group\" + aria-labelledby → sr-only figcaption; svg role=\"img\" with a data-summary aria-label.",
+    "name": "Figcaption names the chart; polyline + marker <title>s carry series and point values; the real table is the full data surface.",
+    "keyboard": "Only the <details> summary is focusable; the figure is passive.",
+    "focus": "summary:focus-visible = 2px ink outline, offset 2.",
+    "nonText": "Series strokes ≥3:1 vs the page both modes (dv-016); series identity = shape + letter + name, never colour alone (dv-line-002 / §04.3 / 1.4.1).",
+    "relatedSC": ["1.4.1 Use of Color", "1.4.11 Non-text Contrast", "1.3.1 Info and Relationships", "1.4.13 Content on Hover"]
+  },
+  "antiPatterns": [
+    "Curved/smoothed series paths (dv-line-011 — straight segments only)",
+    "Colour as the only series identity (shapes + letters + names, always)",
+    "White-fill markers hardcoded on dark (halation; the promoted default is series fill + page stroke)",
+    "A fixed stroke-dasharray without pathLength (the Batch-9 root cause — line finishes early, nodes trail)",
+    "Raw hex strokes (dv-017)",
+    "Scaling the SVG proportionally at narrow widths (DV-D02 — text must never scale)",
+    "A chart without its real data table (dv-005)"
+  ],
+  "tokenValidation": {
+    "date": "2026-07-22",
+    "against": "token store (semantic-colour.json) via #token-manifest",
+    "result": "PASS — series 1–3 ≥3.31:1 both modes; ink/baseline 17.4:1; axis effective ≈4.5/6.9:1 (alpha-composited, computed).",
+    "$note": "Built Phase-2 wave 2 (worker D). PROVISIONAL-AGENT pending Dave's dataviz sign-off. Sparkline is its own snippet (Chart-sparkline); KPI-with-spark composition = Stat-card seam, receipted."
+  },
+  "provenance": {
+    "source": "proforma-promotion",
+    "figma_node": "",
+    "code_path": "knowledge/_proforma/DataViz-interactive.html"
+  }
+}

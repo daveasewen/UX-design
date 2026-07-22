@@ -1,0 +1,62 @@
+{
+  "name": "Date-range picker",
+  "interactive": true,
+  "category": "organism",
+  "purpose": "Statement periods and transaction search: a From/To pair of Input-fields date fields sharing one anchored calendar panel. First pick starts the range, second completes it, an earlier pick restarts it; endpoints render as the ink knockout with a neutral tint between, and a live region announces the range. Itinerary row 15 (P1); built Phase-2 wave 2 (worker A continuation), extending the Date-picker built the same session.",
+  "props": [
+    { "name": "from/to", "type": "string", "default": "", "$note": "DD/MM/YYYY each; both fields validate independently on blur (Date-picker rules) plus the cross-field order check." },
+    { "name": "help", "type": "boolean", "default": true, "$note": "Format hint per field (copy-040)." }
+  ],
+  "variants": [
+    { "name": "pair row", "use": "From/To side by side (Form-layout pair-row precedent); stacks below 520px." },
+    { "name": "open", "use": "One shared panel under the pair — same elevation recipe and geometry as Date-picker." }
+  ],
+  "$states": ["default", "hover", "active (focus-within)", "completed pair", "disabled", "field error", "cross-field error (end before start)", "panel open", "range painting (start / in-range / end)", "today ring"],
+  "$consumes": ["Date-picker (panel + grid + keyboard model — change it there)", "Input-fields (field anatomy)", "Form-layout (pair row)", "Popover elevation recipe", "Icon-button geometry (44×44 nav)"],
+  "tokens": {
+    "field": "form/background|border sets (Input-fields lock-step)",
+    "panel": "background/default + elevation/border + elevation/functional; border-radius/surface",
+    "range": "endpoints = ink knockout (text/default + background/default); in-range = form/background/hover — the neutral tint, no new colour minted",
+    "error": "rag/error (R-D20); message text stays text/default",
+    "radius": "border-radius/control + border-radius/surface",
+    "motion": "component-type/button-family/press-travel + press-darken (B-D7) on .dr-nav — injection pending conductor registration",
+    "$input-error-slot": "OPEN (ADR-0010): still undeclared — binds semantic rag/error (A-Q2)."
+  },
+  "relationships": {
+    "livesInside": ["Statement download journeys", "Transaction search / filters", "Reporting"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["statement-period", "transaction-search", "custom-reporting-window"]
+  },
+  "behaviour": {
+    "protocol": "No selection → pick sets start. Start only → a later pick sets end (and closes); an EARLIER pick restarts the range. Complete pair → any pick restarts. From-field always mirrors start, To mirrors end.",
+    "open": "Either tail button (aria-haspopup=dialog); the view seeds from that field's value (else start, else today); focus returns to the opening button on close.",
+    "keyboard": "Identical to Date-picker: arrows/Home/End/PageUp/PageDown(+Shift=year)/Enter/Escape, roving tabindex.",
+    "validation": "Per-field DD/MM/YYYY on blur; a complete out-of-order pair errors the To field — 'Enter an end date after the start date.' Errors lift on re-validation or on a valid calendar pick."
+  },
+  "accessibility": {
+    "structure": "Two real <label for> fields; one non-modal dialog serves both (both tail buttons carry aria-haspopup/aria-expanded); grid = role=grid with full-date aria-labels.",
+    "range": "Endpoints carry aria-selected; every cell's aria-label states its range role (start/end/in range); a polite live region announces range progress — the tint is never the only channel (1.4.1).",
+    "focus": "Two-tier focus (Input-fields decision B); focus returns to the opening tail button on Escape/completion.",
+    "relatedSC": ["1.3.1", "1.4.1", "1.4.3", "2.1.1 Keyboard", "2.1.2 No Keyboard Trap", "2.4.3", "2.4.7 Focus Visible", "3.3.1 Error Identification", "3.3.2 Labels or Instructions", "4.1.2", "4.1.3"],
+    "$note": "3.2.1/3.2.2 met (panel opens from buttons only, typing never changes context — acd-019) but out of relatedSC: not in the compliance lookup (Form-layout precedent)."
+  },
+  "antiPatterns": [
+    "Two independent single-date pickers with no shared panel or cross-field check (order errors surface too late).",
+    "Auto-swapping an out-of-order pair silently (the user meant something — error and let them correct, 3.3.1).",
+    "Tint-only range indication (aria-labels + live region carry it — 1.4.1).",
+    "Opening the calendar on input focus (context change — tail buttons only).",
+    "Local press-physics CSS on .dr-nav (ADR-0013: injected partial only).",
+    "Press physics on day cells (selection targets, not buttons)."
+  ],
+  "tokenValidation": {
+    "date": "2026-07-22",
+    "against": "current store (semantic-colour.json + component-types.json)",
+    "result": "PASS — new build, no deprecated tokens: field chrome = live form/* set, error = R-D20 rag/error, panel = elevation pair, range tint = form/background/hover (existing role), radius = control + surface, motion = component-type/button-family params.",
+    "$note": "input-error flex slot still undeclared — binds rag/error (A-Q2)."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "$note": "Itinerary row 15 (P1), Phase-2 wave 2 worker A continuation. Extends the same-session Date-picker (which chains to Input-fields + Popover recipe + Icon-button). Range protocol = banking convention (restart-on-earlier-pick), recorded here as the reference behaviour. No dedicated Figma node bound yet."
+  },
+  "$partials": "4 × .dr-nav = button-family membership candidates (empty markers + --phys-size:44); $members proposed via receipt. Day cells deliberately NOT members."
+}

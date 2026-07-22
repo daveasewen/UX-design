@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sparkline — reference implementation (gated)</title>
+<!--
+  CANONICAL REFERENCE for Sparkline (Apollo MONO) — the axis-free inline trend line.
+  ⚠ PROVISIONAL-AGENT PROMOTION (Phase-2 wave 2, worker D, 2026-07-22): promoted as OBSERVED from
+  the PARKED round-one dataviz kit (_proforma/DataViz-interactive.html, 9 review rounds — Dave has
+  NOT signed the kit off). Provisional until his dataviz sign-off; the pro-forma file is untouched.
+
+  WHAT PROMOTED (OBSERVED, kit values verbatim): TWO scales —
+  STANDALONE: 580×90 viewBox rendered 340×64 (preserveAspectRatio:none is safe — a spark carries
+  NO text, so DV-D02's text-never-scales is vacuously held; wide/flat aspect 6.4:1, dv-line-009),
+  baseline hairline, stroke 2.5, pathLength=2400 draw, endpoint dot r3.5, real 12-month table.
+  INLINE (the KPI/Stat-card scale): 200×48 viewBox at 44px height, stroke 2, 1000ms draw, endpoint
+  dot r3 fading in as the draw lands, aria-hidden — DECORATIVE at this scale; the composed value
+  (Stat-card's Amount-display) carries the meaning.
+  COMPOSITION SEAM (receipted, not built): the kit composes this inline spark INSIDE the KPI tile.
+  Canon already has Stat-card (wave 1, PASSIVE atom, no spark slot). Composing spark-into-Stat-card
+  is a Stat-card variant decision — NOT improvised here (never re-type a sub-atom; ADR-0013
+  accretion is propose-don't-promote). The inline-scale specimen below is the spark HALF of that
+  seam, ready to compose.
+  WHAT NEWLY JUDGED (receipted): baseline = ink at grid alpha (as the other chart snippets — kit
+  greys have no post-R-D16 home). No markers beyond the endpoint dot (kit-faithful); no axis, no
+  legend (axis-free by definition — the table carries the data).
+  RULES: dv-017 var() strokes only · dv-016 series ≥3:1 both modes · dv-line-011 straight ·
+  dv-line-009 wide aspect · dv-005 table on the standalone figure · DEF-003 CSS-only motion ·
+  composites-only type. Empty state = compact Empty-state-pattern adaptation (dashed frame,
+  title carries meaning — receipted as a scale adaptation).
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:160ms cubic-bezier(.4,0,.2,1);
+    --draw:1000ms cubic-bezier(.22,.61,.36,1); --draw-slow:2400ms cubic-bezier(.33,0,.3,1); }
+  [data-theme="light"]{
+    --page:#FFFFFF; --ink:#1A1A1A; --line:#E1E1E1;
+    --data-series-1:#766682;
+    --grid-alpha:.10;
+    --border-radius-surface:0;
+  }
+  [data-theme="dark"]{
+    --page:#1A1A1A; --ink:#FFFFFF; --line:#808080;
+    --data-series-1:#766682;
+    --grid-alpha:.16;
+    --border-radius-surface:0;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page); color:var(--ink);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--ink);
+    background:transparent; color:var(--ink); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+  h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+  .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+
+  figure.dv{margin:0;}
+  .dv-stage{overflow-x:auto; padding-bottom:4px;}
+
+  /* standalone spark — 340×64 render of the 580×90 frame (kit); no text inside, so non-uniform scale is safe */
+  .spark-standalone{display:block; width:340px; height:64px; overflow:visible;}
+  .dv-grid{stroke:var(--ink); stroke-opacity:var(--grid-alpha); stroke-width:1; vector-effect:non-scaling-stroke;}
+  .spark-standalone .dv-series{fill:none; stroke:var(--data-series-1); stroke-width:2.5;
+    stroke-linejoin:round; stroke-linecap:round; vector-effect:non-scaling-stroke;}
+  .spark-standalone circle.dv-series{fill:var(--data-series-1); stroke:none;}
+
+  /* inline spark — the KPI / Stat-card scale (200×48 @ 44px, stroke 2, dot r3) */
+  .spark-inline{display:block; width:200px; height:44px; overflow:visible;}
+  .spark-inline .dv-base{stroke:var(--ink); stroke-opacity:var(--grid-alpha); stroke-width:1; vector-effect:non-scaling-stroke;}
+  .spark-inline .dv-series{fill:none; stroke:var(--data-series-1); stroke-width:2;
+    stroke-linecap:round; stroke-linejoin:round; vector-effect:non-scaling-stroke;}
+  .spark-inline .dv-end{fill:var(--data-series-1);}
+  .spark-caption{opacity:.6; margin:4px 0 0;}
+
+  /* entry motion — CSS only (DEF-003): the draw, at each scale's reviewed pace */
+  @media (prefers-reduced-motion:no-preference){
+    .dv-animate .spark-standalone polyline.dv-series{stroke-dasharray:2400; stroke-dashoffset:2400; animation:dvDraw var(--draw-slow) forwards;}
+    .dv-animate .spark-standalone circle.dv-series{opacity:0; animation:dvFade var(--ease) both; animation-delay:2400ms;}
+    .dv-animate .spark-inline .dv-series{stroke-dasharray:600; stroke-dashoffset:600; animation:dvDrawShort var(--draw) forwards;}
+    .dv-animate .spark-inline .dv-end{opacity:0; animation:dvFade var(--ease) both; animation-delay:1000ms;}
+  }
+  @keyframes dvDraw{to{stroke-dashoffset:0;}}
+  @keyframes dvDrawShort{to{stroke-dashoffset:0;}}
+  @keyframes dvFade{from{opacity:0;} to{opacity:1;}}
+
+  details.dv-tabledetails{margin:8px 0 0;}
+  details.dv-tabledetails summary{cursor:pointer; opacity:.6; width:max-content;}
+  details.dv-tabledetails summary:hover{opacity:1; text-decoration:underline; text-underline-offset:3px;}
+  details.dv-tabledetails summary:focus-visible{outline:2px solid var(--ink); outline-offset:2px; opacity:1;}
+  table.dv-table{border-collapse:collapse; margin-top:8px; color:var(--ink);}
+  table.dv-table caption{text-align:left; opacity:.6; margin-bottom:4px;}
+  table.dv-table th,table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
+  table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
+  table.dv-table thead th{opacity:.6; font-weight:500;}
+
+  .dv-empty-frame{width:340px; height:64px; display:flex; align-items:center; justify-content:center;
+    border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
+  .dv-empty-frame p{margin:0; opacity:.6;}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
+      animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls">
+    <button id="themeToggle" type="button">◐ Toggle theme</button>
+    <button id="replay" type="button">↻ Replay motion</button>
+    <span>Sparkline — canonical reference (Mono · standalone · inline scale · no data)</span>
+  </div>
+
+  <h2>Standalone — axis-free trend with its data table</h2>
+  <figure class="dv dv-animate" data-dv-type="spark" data-surface="page" role="group" aria-labelledby="cs1-h">
+    <figcaption id="cs1-h" class="sr-only">Twelve-month trend, indexed</figcaption>
+    <div class="dv-stage">
+      <svg class="dv-svg spark-standalone" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 90" preserveAspectRatio="none" role="img" aria-label="Twelve-month trend, rising from 82 to 104.">
+        <line class="dv-grid" x1="4" y1="86" x2="576" y2="86" stroke="var(--ink)"/>
+        <polyline class="dv-series" pathLength="2400" fill="none" stroke="var(--data-series-1)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" points="4.0,79.2 56.0,86.0 108.0,68.9 160.0,75.8 212.0,58.7 264.0,51.8 316.0,62.1 368.0,45.0 420.0,34.8 472.0,41.6 524.0,24.5 576.0,4.0"><title>Trend</title></polyline>
+        <circle class="dv-series" cx="576.0" cy="4.0" r="3.5" fill="var(--data-series-1)"/>
+      </svg>
+    </div>
+    <details class="dv-tabledetails">
+      <summary class="t-cm-legal">View as table</summary>
+      <table class="dv-table t-cm-legal">
+        <caption>Twelve-month trend, indexed</caption>
+        <thead><tr><th scope="col">Month</th><th scope="col">Trend</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Jan</th><td>82</td></tr><tr><th scope="row">Feb</th><td>80</td></tr>
+          <tr><th scope="row">Mar</th><td>85</td></tr><tr><th scope="row">Apr</th><td>83</td></tr>
+          <tr><th scope="row">May</th><td>88</td></tr><tr><th scope="row">Jun</th><td>90</td></tr>
+          <tr><th scope="row">Jul</th><td>87</td></tr><tr><th scope="row">Aug</th><td>92</td></tr>
+          <tr><th scope="row">Sep</th><td>95</td></tr><tr><th scope="row">Oct</th><td>93</td></tr>
+          <tr><th scope="row">Nov</th><td>98</td></tr><tr><th scope="row">Dec</th><td>104</td></tr>
+        </tbody>
+      </table>
+    </details>
+  </figure>
+
+  <h2>Inline scale — as composed in a KPI tile (the Stat-card seam, receipted)</h2>
+  <div class="dv-animate">
+    <svg class="spark-inline" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+      <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+      <polyline class="dv-series" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0"/>
+      <circle class="dv-end" cx="197" cy="3.0" r="3"/>
+    </svg>
+    <p class="spark-caption t-cm-legal">Twelve-month trend — decorative at this scale (aria-hidden); the composed tile's value carries the meaning.</p>
+  </div>
+
+  <h2>No data — compact Empty-state adaptation</h2>
+  <div class="dv-empty-frame" role="group" aria-label="Trend, no data">
+    <p class="t-cm-legal">No trend data yet</p>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Sparkline",
+    "vars": { "--page": "background/default", "--ink": "text/default", "--line": "border/subtle",
+              "--data-series-1": "data/series/1",
+              "--border-radius-surface": "border-radius/surface" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "data/series/1", "bg": "background/default", "context": "ui" }
+    ],
+    "icons": {},
+    "requiredAria": ["role=\"group\"", "aria-labelledby", "role=\"img\"", "aria-label", "aria-hidden=\"true\""],
+    "$note": "PROVISIONAL-AGENT promotion of the PARKED dataviz kit (9 rounds, not signed off). Two OBSERVED scales: standalone 340×64 (580×90 frame, stroke 2.5, r3.5 dot, 2400ms draw) and inline 200×48@44px (stroke 2, r3 dot, 1000ms draw, aria-hidden decorative). preserveAspectRatio:none is safe — no text in a spark (DV-D02 vacuous). COMPOSITION SEAM receipted: the kit composes the inline spark inside its KPI tile; canon's Stat-card (wave 1) is a passive atom with no spark slot — composing them = a Stat-card variant decision for Dave/conductor, not improvised here. Baseline/base = ink at grid alpha (receipted judgment, as siblings)."
+  }
+  </script>
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    document.getElementById('replay').addEventListener('click', ()=>{ document.querySelectorAll('.dv-animate').forEach(f=>{ f.classList.remove('dv-animate'); void f.offsetWidth; f.classList.add('dv-animate'); }); });
+  </script>
+</body>
+</html>

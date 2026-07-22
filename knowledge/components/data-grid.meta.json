@@ -1,0 +1,71 @@
+{
+  "name": "Data grid",
+  "interactive": true,
+  "category": "organism",
+  "purpose": "The interactive data table: sort, filter, row selection and edit-in-place for data-dense fintech screens (transactions, payees, batch approvals). The distinct component the gated Table's rubric decision A anticipated (2026-06-22: 'if a sortable table is ever needed it should be a distinct component') — Table stays the PASSIVE semantic table; the grid owns interaction on the ARIA grid pattern. Peer shapes: Carbon DataTable, Ant Table, AG-Grid.",
+  "props": [
+    { "name": "columns", "type": "array", "$note": "Column defs: key · label · numeric (right-aligned, .t-cm-figure-5 tabular) · sortable · editable. Sort headers are full-cell buttons riding .t-cm-button (16/500 — Table's header weight via composite)." },
+    { "name": "selection", "type": "enum", "values": ["none", "multi"], "default": "multi", "$note": "Leading checkbox column (Selection-controls anatomy); header checkbox = page scope, indeterminate when partial." },
+    { "name": "filters", "type": "array", "$note": "Search-committed terms rendered as dismissible chips (Tags recipe, namespaced .fchip); terms AND-combine across text columns." },
+    { "name": "pageSize", "type": "enum", "values": ["8", "12", "24"], "default": "8", "$note": "Footer: range read-out · rows-per-page select · pagination (Pagination recipe: 44px targets, aria-current border)." },
+    { "name": "state", "type": "enum", "values": ["live", "loading", "empty"], "default": "live", "$note": "loading = aria-busy + Skeleton bones (by reference); empty = message + clear-filters recovery action." }
+  ],
+  "subComponents": {
+    "sort-header": { "use": "Full-cell button in columnheader; aria-sort cycles none→ascending→descending; glyphs sort/chevron-up/chevron-down (library). Carries .full — cell-bound, hover grow would overflow (Button's own guard)." },
+    "selection-checkbox": { "use": "22×22 box, tick/mixed bespoke control glyphs, checked = secondary/background/default + text/on-inverse (Selection-controls verbatim anatomy; colour states only — form-control precedent)." },
+    "filter-field": { "use": "Search-field boxed chrome (FIELD-CHROME-COPY — receipted field-family accretion evidence). Enter commits the term as a chip." },
+    "applied-chip": { "use": "Dismissible Tags recipe, namespaced .fchip (.tag/.chip are type.css-bound blast radii). Dismiss × = 24px button-family member; Tags' tactile × motion deliberately NOT copied (motion belongs to the partial, B-D7)." },
+    "edit-cell": { "use": "Reference column; Enter/F2/double-click opens; editing chrome = field ACTIVE recipe (border/active 4px bottom stroke + page fill); Esc cancels, Enter/blur commits; announced." },
+    "pagination": { "use": "Prev/next chevrons + page numbers; current = tertiary/border/default + .t-cm-button (500 via composite, not raw weight); inverting colour press (tertiary/background/pressed + text/reverse)." }
+  },
+  "tokens": {
+    "row-chrome": "table/header/background · table/column/background · table/border — consumed from Table unchanged; cells background/default; row hover tertiary/background/hover",
+    "selected-row": "form/background/hover tint + 4px inset start bar form/border/active + checked box (never colour alone); distinct semantic source from hover so themes can split them",
+    "field-chrome": "form/border/default · form/border/active · form/background/hover (Search-field/Input-fields recipe — accretion evidence)",
+    "type": "composites only via markup class — headers .t-cm-button · data .t-cm-label · amounts .t-cm-figure-5 (tabular) · captions .t-cm-caption · editor/search .t-cm-input",
+    "physics": "component-type/button-family/press-travel + press-darken (manifest-bound); --phys-size 120 root, 44 .pbtn, 24 .fchip .x",
+    "radius": "border-radius/control · surface · indicator role tokens (Mono resolves 0; themes flex, ADR-0010)",
+    "$survey": "Mined, never modified: Table (visual canon — row chrome, density, weights), Search-field (field chrome, BY COPY — receipted accretion evidence), Tags (chip recipe), Selection-controls (checkbox anatomy), Pagination (footer recipe), Skeleton-loader (bones, by reference), Account-selector (aria-selected idiom), Icon-button/Button (physics geometry + marker protocol)."
+  },
+  "motion": {
+    "press": "Sort headers, chip dismiss ×, clear-filters, pagination = button-family members; empty AUTO-PARTIAL markers await injection on registration (ADR-0013; $members proposal in the worker receipt). No local press-shaped CSS anywhere.",
+    "reducedMotion": "Global collapse + static bones; the injected partial carries its own override.",
+    "tokens": ["motion/press/travel", "motion/press/darken (via component-type/button-family/*)"]
+  },
+  "responsive": {
+    "rule": "Horizontal scroll region + sticky header — a DELIBERATE divergence from Table's card-collapse: collapsing to cards orphans the columnheader/aria-sort relationships the grid's AT contract depends on (peer-grid shape). Reflow duty is met by the passive Table; min-width 640px, container width demo-controlled to 320px.",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": ["Transaction histories", "Payee management", "Batch approval screens", "Back-office consoles"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["transactions with filter chips + pagination", "multi-select then bulk action", "inline reference editing"]
+  },
+  "accessibility": {
+    "semantics": "Native <table> + role=grid; aria-rowcount/aria-rowindex track the FILTERED set across pages; columnheaders carry aria-sort; rows carry aria-selected.",
+    "keyboard": "APG grid: ONE tab stop, roving tabindex over cells — arrows move, Home/End row ends, Ctrl+Home/End grid ends; Enter/Space activates the cell's widget (sort · checkbox · edit); F2/double-click edits; Esc cancels. Widgets inside cells are tabindex=-1 so Tab exits the grid.",
+    "announcements": "Visually-hidden role=status (polite) narrates sort, selection counts, filter apply/remove, page, edit commit/cancel; the visible results count is aria-live too.",
+    "states": "Selected = tint + inset bar + checked box (1.4.1); loading = aria-busy + role=status text, bones aria-hidden (decorative); empty offers a real recovery action; focus ring 2px focus/ring, offset -2 (axs-004).",
+    "editing": "Editor is a labelled text input ('Edit reference for <payee>'); commit/cancel announced; grid navigation suspended while editing (keys stay in the editor).",
+    "relatedSC": ["1.3.1 Info and Relationships", "1.4.1 Use of Color", "2.1.1 Keyboard", "4.1.2 Name Role Value", "1.4.11 Non-text Contrast"]
+  },
+  "antiPatterns": [
+    "Bolting sort/selection onto the passive Table (decision A: they are distinct components)",
+    "Card-collapse on an interactive grid (orphans columnheader/aria-sort AT relationships)",
+    "Sort direction by colour or icon-opacity alone (aria-sort + distinct glyphs here; icons stay full-ink, icon-011)",
+    "Selection shown by tint alone (bar + checkbox carry it structurally)",
+    "Local press physics on grid controls (button-family partial territory — the ratchet bites)",
+    "A second tab stop inside the grid (widgets are reached from cells, not Tab)"
+  ],
+  "tokenValidation": {
+    "date": "2026-07-22",
+    "against": "token store (semantic-colour.json + layout.json + component-types.json) via #token-manifest",
+    "result": "PASS expected at build — every bound var resolved from the store this session (retrieval receipted in the worker receipt); contrast pairs declared for text on all three row grounds + reverse-on-pressed + on-inverse glyph + three ui borders/icons.",
+    "$note": "Built Phase-2 wave 2 (worker C, Data-grid lane, itinerary row 51). Open: error/validation state awaits the input-error null-slot ruling (A-Q2); density toggle + column show/hide deferred (View-options territory); virtualised rows out of scope for a reference snippet."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": ""
+  }
+}

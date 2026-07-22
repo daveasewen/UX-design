@@ -334,7 +334,12 @@ def check_file(path):
     return results, file_adv
 
 def discover():
-    return sorted(f for f in glob.glob(os.path.join(PROFORMA_DIR, "*.html")) if SIGNATURE in open(f).read())
+    # _proforma review surfaces carry the APOLLO-DATAVIZ signature; canon chart SNIPPETS are
+    # discovered by filename (wave-2 conductor, 2026-07-22 — the new-surface rule: worker D's
+    # Chart-* snippets verified by gate-import pre-wiring, this glob makes it standing).
+    proforma = (f for f in glob.glob(os.path.join(PROFORMA_DIR, "*.html")) if SIGNATURE in open(f).read())
+    snippets = glob.glob(os.path.join(HERE, "snippets", "Chart-*.reference.html"))
+    return sorted(set(proforma) | set(snippets))
 
 def main():
     files = discover()

@@ -1,7 +1,7 @@
 {
   "$description": "Sutherland acceptance fixtures — per component, the contract a React implementation must satisfy to match the gated reference. Generated from snippet manifests + metas; regenerated each build.",
   "generated": "by _build_sutherland_fixtures.py",
-  "componentCount": 54,
+  "componentCount": 64,
   "fixtures": [
     {
       "component": "Accordion",
@@ -775,6 +775,121 @@
       }
     },
     {
+      "component": "Bar chart",
+      "category": "organism",
+      "referenceSnippet": "snippets/Chart-bar.reference.html",
+      "meta": "components/chart-bar.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--page": "background/default",
+          "--ink": "text/default",
+          "--baseline": "border/action-strong",
+          "--line": "border/subtle",
+          "--data-series-1": "data/series/1",
+          "--data-series-2": "data/series/2",
+          "--data-series-3": "data/series/3",
+          "--data-series-4": "data/series/4",
+          "--data-series-5": "data/series/5",
+          "--status-breach": "rag/error",
+          "--status-watch": "rag/warning",
+          "--status-healthy": "rag/success",
+          "--status-info": "rag/information",
+          "--border-radius-surface": "border-radius/surface"
+        },
+        "requiredAria": [
+          "role=\"group\"",
+          "aria-labelledby",
+          "role=\"img\"",
+          "aria-label"
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "data/series/1",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series/2",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series/3",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series/4",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series/5",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "rag/error",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "rag/warning",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "rag/success",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "rag/information",
+            "bg": "background/default",
+            "context": "ui"
+          }
+        ],
+        "props": [
+          {
+            "name": "orientation",
+            "type": "enum",
+            "values": [
+              "column",
+              "bar"
+            ],
+            "default": "column",
+            "$note": "column = vertical (negatives permitted by dv-bar-007); bar = horizontal (positives only — dv-bar-007 blocks negative horizontals)."
+          },
+          {
+            "name": "series",
+            "type": "enum",
+            "values": [
+              "categorical",
+              "status"
+            ],
+            "default": "categorical",
+            "$note": "categorical = data/series/1–5 (mode-stable isoluminant set, R-D9); status = the salience RAMP red › amber › green › blue on rag/* (R-D9 — loudness tracks severity; NEVER the isoluminant set for status)."
+          },
+          {
+            "name": "data",
+            "type": "table",
+            "$note": "A real <table class=\"dv-table\"> inside the figure — the a11y spine AND the tabular alternative (dv-005). Surfaced by a native <details> disclosure (zero JS)."
+          },
+          {
+            "name": "empty",
+            "type": "boolean",
+            "default": false,
+            "$note": "No-data state consumes the Empty-state pattern by reference: dashed frame, title carries the meaning, no glyph (spot-illustration set is a logged icon gap)."
+          }
+        ]
+      }
+    },
+    {
       "component": "Breadcrumbs",
       "category": "molecule",
       "referenceSnippet": "snippets/Breadcrumbs.reference.html",
@@ -1177,6 +1292,332 @@
       }
     },
     {
+      "component": "Data grid",
+      "category": "organism",
+      "referenceSnippet": "snippets/Data-grid.reference.html",
+      "meta": "components/data-grid.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--header": "table/header/background",
+          "--cell": "background/default",
+          "--border": "table/border",
+          "--text": "text/default",
+          "--icon": "icon/default",
+          "--hover": "tertiary/background/hover",
+          "--page": "background/default",
+          "--focus": "focus/ring",
+          "--fborder": "form/border/default",
+          "--bar": "form/border/active",
+          "--fhover": "form/background/hover",
+          "--selbg": "form/background/hover",
+          "--checked": "secondary/background/default",
+          "--onchk": "text/on-inverse",
+          "--disabled": "text/disabled",
+          "--pressedbg": "tertiary/background/pressed",
+          "--onpressed": "text/reverse",
+          "--currentbd": "tertiary/border/default",
+          "--bone": "tertiary/background/hover",
+          "--press-travel": "component-type/button-family/press-travel",
+          "--press-darken": "component-type/button-family/press-darken",
+          "--border-radius-control": "border-radius/control",
+          "--border-radius-surface": "border-radius/surface",
+          "--border-radius-indicator": "border-radius/indicator"
+        },
+        "requiredAria": [
+          "role=\"grid\"",
+          "aria-sort",
+          "aria-selected",
+          "aria-rowcount",
+          "aria-rowindex",
+          "aria-current",
+          "aria-busy",
+          "aria-live",
+          "role=\"status\"",
+          "aria-label"
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "text/default",
+            "bg": "table/header/background",
+            "context": "text"
+          },
+          {
+            "fg": "text/default",
+            "bg": "tertiary/background/hover",
+            "context": "text"
+          },
+          {
+            "fg": "text/default",
+            "bg": "form/background/hover",
+            "context": "text"
+          },
+          {
+            "fg": "text/reverse",
+            "bg": "tertiary/background/pressed",
+            "context": "text"
+          },
+          {
+            "fg": "text/on-inverse",
+            "bg": "secondary/background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "form/border/default",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "tertiary/border/default",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "icon/default",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "icon/default",
+            "bg": "table/header/background",
+            "context": "ui"
+          }
+        ],
+        "props": [
+          {
+            "name": "columns",
+            "type": "array",
+            "$note": "Column defs: key · label · numeric (right-aligned, .t-cm-figure-5 tabular) · sortable · editable. Sort headers are full-cell buttons riding .t-cm-button (16/500 — Table's header weight via composite)."
+          },
+          {
+            "name": "selection",
+            "type": "enum",
+            "values": [
+              "none",
+              "multi"
+            ],
+            "default": "multi",
+            "$note": "Leading checkbox column (Selection-controls anatomy); header checkbox = page scope, indeterminate when partial."
+          },
+          {
+            "name": "filters",
+            "type": "array",
+            "$note": "Search-committed terms rendered as dismissible chips (Tags recipe, namespaced .fchip); terms AND-combine across text columns."
+          },
+          {
+            "name": "pageSize",
+            "type": "enum",
+            "values": [
+              "8",
+              "12",
+              "24"
+            ],
+            "default": "8",
+            "$note": "Footer: range read-out · rows-per-page select · pagination (Pagination recipe: 44px targets, aria-current border)."
+          },
+          {
+            "name": "state",
+            "type": "enum",
+            "values": [
+              "live",
+              "loading",
+              "empty"
+            ],
+            "default": "live",
+            "$note": "loading = aria-busy + Skeleton bones (by reference); empty = message + clear-filters recovery action."
+          }
+        ]
+      }
+    },
+    {
+      "component": "Date picker",
+      "category": "molecule",
+      "referenceSnippet": "snippets/Date-picker.reference.html",
+      "meta": "components/date-picker.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--page": "background/default",
+          "--text": "text/default",
+          "--text-disabled": "text/disabled",
+          "--field-bg-default": "form/background/default",
+          "--field-bg-hover": "form/background/hover",
+          "--border-default": "form/border/default",
+          "--border-active": "form/border/active",
+          "--border-disabled": "form/border/disabled",
+          "--icon": "icon/default",
+          "--icon-disabled": "icon/disabled",
+          "--error": "rag/error",
+          "--success": "rag/success",
+          "--focus": "focus/ring",
+          "--pop-border": "elevation/border",
+          "--shadow": "elevation/functional",
+          "--border-radius-control": "border-radius/control",
+          "--border-radius-surface": "border-radius/surface",
+          "--press-travel": "component-type/button-family/press-travel",
+          "--press-darken": "component-type/button-family/press-darken"
+        },
+        "requiredAria": [
+          "aria-haspopup",
+          "aria-expanded",
+          "role=\"dialog\"",
+          "role=\"grid\"",
+          "aria-selected",
+          "aria-invalid",
+          "aria-describedby"
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "text/default",
+            "bg": "form/background/hover",
+            "context": "text"
+          },
+          {
+            "fg": "background/default",
+            "bg": "text/default",
+            "context": "text"
+          },
+          {
+            "fg": "form/border/default",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "form/border/active",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "rag/error",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "icon/default",
+            "bg": "background/default",
+            "context": "ui"
+          }
+        ],
+        "props": [
+          {
+            "name": "value",
+            "type": "string",
+            "default": "",
+            "$note": "DD/MM/YYYY (en-GB). Typing is free text — validated on blur, never masked mid-entry (acd-019: no auto-anything)."
+          },
+          {
+            "name": "help",
+            "type": "boolean",
+            "default": true,
+            "$note": "Format hint above the field — 'Format: DD/MM/YYYY.' (copy-040: placeholder carries the format only)."
+          },
+          {
+            "name": "minDate/maxDate",
+            "type": "date",
+            "default": "none",
+            "$note": "Out-of-range days render disabled (kept out of the live demo; disabled cell treatment = text/disabled)."
+          }
+        ]
+      }
+    },
+    {
+      "component": "Date-range picker",
+      "category": "organism",
+      "referenceSnippet": "snippets/Date-range-picker.reference.html",
+      "meta": "components/date-range-picker.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--page": "background/default",
+          "--text": "text/default",
+          "--text-disabled": "text/disabled",
+          "--field-bg-default": "form/background/default",
+          "--field-bg-hover": "form/background/hover",
+          "--border-default": "form/border/default",
+          "--border-active": "form/border/active",
+          "--border-disabled": "form/border/disabled",
+          "--icon": "icon/default",
+          "--icon-disabled": "icon/disabled",
+          "--error": "rag/error",
+          "--focus": "focus/ring",
+          "--pop-border": "elevation/border",
+          "--shadow": "elevation/functional",
+          "--border-radius-control": "border-radius/control",
+          "--border-radius-surface": "border-radius/surface",
+          "--press-travel": "component-type/button-family/press-travel",
+          "--press-darken": "component-type/button-family/press-darken"
+        },
+        "requiredAria": [
+          "aria-haspopup",
+          "aria-expanded",
+          "role=\"dialog\"",
+          "role=\"grid\"",
+          "aria-selected",
+          "aria-live",
+          "aria-invalid",
+          "aria-describedby"
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "text/default",
+            "bg": "form/background/hover",
+            "context": "text"
+          },
+          {
+            "fg": "background/default",
+            "bg": "text/default",
+            "context": "text"
+          },
+          {
+            "fg": "form/border/default",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "form/border/active",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "rag/error",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "icon/default",
+            "bg": "background/default",
+            "context": "ui"
+          }
+        ],
+        "props": [
+          {
+            "name": "from/to",
+            "type": "string",
+            "default": "",
+            "$note": "DD/MM/YYYY each; both fields validate independently on blur (Date-picker rules) plus the cross-field order check."
+          },
+          {
+            "name": "help",
+            "type": "boolean",
+            "default": true,
+            "$note": "Format hint per field (copy-040)."
+          }
+        ]
+      }
+    },
+    {
       "component": "Divider",
       "category": "atom",
       "referenceSnippet": "snippets/Divider.reference.html",
@@ -1214,6 +1655,91 @@
               "on-dark"
             ],
             "default": "on-light"
+          }
+        ]
+      }
+    },
+    {
+      "component": "Donut chart",
+      "category": "organism",
+      "referenceSnippet": "snippets/Chart-donut.reference.html",
+      "meta": "components/chart-donut.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--page": "background/default",
+          "--ink": "text/default",
+          "--line": "border/subtle",
+          "--data-series-1": "data/series/1",
+          "--data-series-2": "data/series/2",
+          "--data-series-3": "data/series/3",
+          "--data-series-4": "data/series/4",
+          "--data-series-5": "data/series/5",
+          "--border-radius-surface": "border-radius/surface"
+        },
+        "requiredAria": [
+          "role=\"group\"",
+          "aria-labelledby",
+          "role=\"img\"",
+          "aria-label"
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "data/series/1",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series/2",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series/3",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series/4",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series/5",
+            "bg": "background/default",
+            "context": "ui"
+          }
+        ],
+        "props": [
+          {
+            "name": "labelling",
+            "type": "enum",
+            "values": [
+              "spider",
+              "direct"
+            ],
+            "default": "spider",
+            "$note": "spider = letter on a short leader outside the ring + vertical legend [swatch][letter][name]; direct = name + value in place, no legend (its own colour-independent channel). The kit's third variant — letters ON segments — is NOT promoted: white letters on series fills collide with type26-013 white-type-red-only; Dave's Batch-2 #7 comparison stays open (receipted)."
+          },
+          {
+            "name": "slices",
+            "type": "number",
+            "$note": "Maximum 6 (dv-pie-009); more → combine smallest into 'Other'. Values must sum to the displayed centre total (dv-pie-010, data-total attr)."
+          },
+          {
+            "name": "total",
+            "type": "string",
+            "$note": "Centre total — .t-cm-figure-3 (24px/500; kit's 22px promoted to the ramp step, DV-D05)."
+          },
+          {
+            "name": "empty",
+            "type": "boolean",
+            "default": false,
+            "$note": "No-data state = the Empty-state pattern by reference."
           }
         ]
       }
@@ -1515,6 +2041,110 @@
             "name": "text",
             "type": "string",
             "$note": "The kicker label; keep it to 1–3 words."
+          }
+        ]
+      }
+    },
+    {
+      "component": "File upload",
+      "category": "organism",
+      "referenceSnippet": "snippets/File-upload.reference.html",
+      "meta": "components/file-upload.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--page": "background/default",
+          "--text": "text/default",
+          "--text-disabled": "text/disabled",
+          "--field-bg-hover": "form/background/hover",
+          "--border-default": "form/border/default",
+          "--border-active": "form/border/active",
+          "--border-disabled": "form/border/disabled",
+          "--icon": "icon/default",
+          "--icon-disabled": "icon/disabled",
+          "--error": "rag/error",
+          "--success": "rag/success",
+          "--focus": "focus/ring",
+          "--sec-default": "button/secondary/background/default",
+          "--sec-hover": "button/secondary/background/hover",
+          "--sec-pressed": "button/secondary/background/pressed",
+          "--sec-disabled": "button/secondary/background/disabled",
+          "--sec-label": "button/secondary/label/default",
+          "--sec-label-disabled": "button/secondary/label/disabled",
+          "--border-radius-control": "border-radius/control",
+          "--press-travel": "component-type/button-family/press-travel",
+          "--press-darken": "component-type/button-family/press-darken"
+        },
+        "requiredAria": [
+          "role=\"progressbar\"",
+          "aria-valuenow",
+          "aria-live",
+          "aria-describedby"
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "form/border/default",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "form/border/active",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "rag/error",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "rag/success",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "icon/default",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "button/secondary/label/default",
+            "bg": "button/secondary/background/default",
+            "context": "text"
+          },
+          {
+            "fg": "button/secondary/label/default",
+            "bg": "button/secondary/background/hover",
+            "context": "text"
+          },
+          {
+            "fg": "button/secondary/label/default",
+            "bg": "button/secondary/background/pressed",
+            "context": "text"
+          }
+        ],
+        "props": [
+          {
+            "name": "accept",
+            "type": "string",
+            "default": ".pdf,.jpg,.jpeg,.png",
+            "$note": "Mirrored in the help line — 'PDF, JPG or PNG, up to 10MB each.' (constraints stated up front, 3.3.2)."
+          },
+          {
+            "name": "maxSize",
+            "type": "number",
+            "default": 10485760,
+            "$note": "Oversize files stage as error rows with a suggestive message — never silently dropped (3.3.1/3.3.3)."
+          },
+          {
+            "name": "multiple",
+            "type": "boolean",
+            "default": true,
+            "$note": "Single-file journeys set false; the zone copy stays plural-neutral."
           }
         ]
       }
@@ -2032,6 +2662,80 @@
             ],
             "default": "unselected",
             "$note": ".Date calendar day cell."
+          }
+        ]
+      }
+    },
+    {
+      "component": "Line chart",
+      "category": "organism",
+      "referenceSnippet": "snippets/Chart-line.reference.html",
+      "meta": "components/chart-line.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--page": "background/default",
+          "--ink": "text/default",
+          "--baseline": "border/action-strong",
+          "--line": "border/subtle",
+          "--data-series-1": "data/series/1",
+          "--data-series-2": "data/series/2",
+          "--data-series-3": "data/series/3",
+          "--border-radius-surface": "border-radius/surface"
+        },
+        "requiredAria": [
+          "role=\"group\"",
+          "aria-labelledby",
+          "role=\"img\"",
+          "aria-label"
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "data/series/1",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series/2",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series/3",
+            "bg": "background/default",
+            "context": "ui"
+          }
+        ],
+        "props": [
+          {
+            "name": "series",
+            "type": "number",
+            "$note": "1–5; each series carries colour (data/series/N) + MARKER SHAPE (dv-line-002: circle r4.2 · square 8.4 · diamond ±4.9) + letter key A/B/C repeated in the legend (§04.3) — colour is never the only channel (dv-011)."
+          },
+          {
+            "name": "data",
+            "type": "table",
+            "$note": "Real <table class=\"dv-table\"> in the figure (dv-005), surfaced by native <details>."
+          },
+          {
+            "name": "markers",
+            "type": "enum",
+            "values": [
+              "background",
+              "white"
+            ],
+            "default": "background",
+            "$note": "Promoted default = BACKGROUND mode (series-colour fill + page stroke at line width 2.5 — theme-adaptive, no absolute white on dark). The kit's White/Background comparison toggle is UNRESOLVED — receipted for Dave; flipping is a CSS pair swap."
+          },
+          {
+            "name": "empty",
+            "type": "boolean",
+            "default": false,
+            "$note": "No-data state = the Empty-state pattern by reference."
           }
         ]
       }
@@ -3404,6 +4108,63 @@
       }
     },
     {
+      "component": "Sparkline",
+      "category": "molecule",
+      "referenceSnippet": "snippets/Chart-sparkline.reference.html",
+      "meta": "components/chart-sparkline.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--page": "background/default",
+          "--ink": "text/default",
+          "--line": "border/subtle",
+          "--data-series-1": "data/series/1",
+          "--border-radius-surface": "border-radius/surface"
+        },
+        "requiredAria": [
+          "role=\"group\"",
+          "aria-labelledby",
+          "role=\"img\"",
+          "aria-label",
+          "aria-hidden=\"true\""
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "data/series/1",
+            "bg": "background/default",
+            "context": "ui"
+          }
+        ],
+        "props": [
+          {
+            "name": "scale",
+            "type": "enum",
+            "values": [
+              "standalone",
+              "inline"
+            ],
+            "default": "standalone",
+            "$note": "standalone = 340×64 render of the 580×90 frame, stroke 2.5, endpoint dot r3.5, role=img + table; inline = 200×48 at 44px, stroke 2, dot r3, aria-hidden (decorative — the composed value carries meaning)."
+          },
+          {
+            "name": "data",
+            "type": "table",
+            "$note": "Standalone carries a real <table> (dv-005); inline defers to the composed tile's value + period."
+          },
+          {
+            "name": "empty",
+            "type": "boolean",
+            "default": false,
+            "$note": "Compact Empty-state adaptation: dashed frame + single title line (receipted scale adaptation of the pattern)."
+          }
+        ]
+      }
+    },
+    {
       "component": "Stat card",
       "category": "molecule",
       "referenceSnippet": "snippets/Stat-card.reference.html",
@@ -3581,6 +4342,134 @@
               "disabled"
             ],
             "default": "default"
+          }
+        ]
+      }
+    },
+    {
+      "component": "Stepper",
+      "category": "organism",
+      "referenceSnippet": "snippets/Stepper.reference.html",
+      "meta": "components/stepper.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--page": "background/default",
+          "--text": "text/default",
+          "--text-disabled": "text/disabled",
+          "--muted": "text/secondary",
+          "--complete": "progress/complete",
+          "--incomplete": "progress/incomplete",
+          "--on-complete": "text/on-inverse",
+          "--field-bg-default": "form/background/default",
+          "--field-bg-hover": "form/background/hover",
+          "--border-default": "form/border/default",
+          "--border-active": "form/border/active",
+          "--icon": "icon/default",
+          "--error": "rag/error",
+          "--focus": "focus/ring",
+          "--pri-default": "button/primary/background/default",
+          "--pri-hover": "button/primary/background/hover",
+          "--pri-pressed": "button/primary/background/pressed",
+          "--pri-disabled": "button/primary/background/disabled",
+          "--pri-label": "button/primary/label/default",
+          "--pri-label-disabled": "button/primary/label/disabled",
+          "--quat-hover": "button/quaternary/background/hover",
+          "--quat-label": "button/quaternary/label/default",
+          "--quat-label-disabled": "button/quaternary/label/disabled",
+          "--border-radius-control": "border-radius/control",
+          "--border-radius-indicator": "border-radius/indicator",
+          "--press-travel": "component-type/button-family/press-travel",
+          "--press-darken": "component-type/button-family/press-darken"
+        },
+        "requiredAria": [
+          "aria-current",
+          "role=\"progressbar\"",
+          "aria-valuenow",
+          "aria-valuetext",
+          "aria-live",
+          "aria-invalid",
+          "aria-describedby"
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "text/secondary",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "text/on-inverse",
+            "bg": "progress/complete",
+            "context": "text"
+          },
+          {
+            "fg": "progress/complete",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "form/border/default",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "form/border/active",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "rag/error",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "button/primary/label/default",
+            "bg": "button/primary/background/default",
+            "context": "text"
+          },
+          {
+            "fg": "button/primary/label/default",
+            "bg": "button/primary/background/hover",
+            "context": "text"
+          },
+          {
+            "fg": "button/primary/label/default",
+            "bg": "button/primary/background/pressed",
+            "context": "text"
+          },
+          {
+            "fg": "button/quaternary/label/default",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "button/quaternary/label/default",
+            "bg": "button/quaternary/background/hover",
+            "context": "text"
+          }
+        ],
+        "props": [
+          {
+            "name": "steps",
+            "type": "array",
+            "default": "4 named steps",
+            "$note": "Name + panel per step; the dots render from it, the collapsed head shows 'Step n of m' + the step title."
+          },
+          {
+            "name": "gate",
+            "type": "function",
+            "default": "per-step validators",
+            "$note": "Next runs the current step's validator; failure = field error + focus, no advance (3.3.1)."
+          },
+          {
+            "name": "backNavigation",
+            "type": "boolean",
+            "default": true,
+            "$note": "Completed dots are real buttons; current and future steps are never clickable."
           }
         ]
       }
@@ -3995,6 +4884,94 @@
             "type": "boolean",
             "default": false,
             "$note": "'(optional)' ink marker beside the label."
+          }
+        ]
+      }
+    },
+    {
+      "component": "Time picker",
+      "category": "molecule",
+      "referenceSnippet": "snippets/Time-picker.reference.html",
+      "meta": "components/time-picker.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--page": "background/default",
+          "--text": "text/default",
+          "--text-disabled": "text/disabled",
+          "--field-bg-default": "form/background/default",
+          "--field-bg-hover": "form/background/hover",
+          "--border-default": "form/border/default",
+          "--border-active": "form/border/active",
+          "--border-disabled": "form/border/disabled",
+          "--icon": "icon/default",
+          "--icon-disabled": "icon/disabled",
+          "--error": "rag/error",
+          "--focus": "focus/ring",
+          "--menu-border": "elevation/border",
+          "--shadow": "elevation/functional",
+          "--border-radius-control": "border-radius/control",
+          "--border-radius-surface": "border-radius/surface"
+        },
+        "requiredAria": [
+          "role=\"combobox\"",
+          "aria-haspopup",
+          "aria-expanded",
+          "role=\"listbox\"",
+          "role=\"option\"",
+          "aria-selected",
+          "aria-invalid",
+          "aria-describedby"
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "text/default",
+            "bg": "form/background/hover",
+            "context": "text"
+          },
+          {
+            "fg": "form/border/default",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "form/border/active",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "rag/error",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "icon/default",
+            "bg": "background/default",
+            "context": "ui"
+          }
+        ],
+        "props": [
+          {
+            "name": "value",
+            "type": "string",
+            "default": "",
+            "$note": "HH:MM 24-hour. Free typing accepts any valid minute (14:37); the list offers the 48 half-hour slots."
+          },
+          {
+            "name": "step",
+            "type": "number",
+            "default": 30,
+            "$note": "Slot interval in minutes (30 = the reference; 15 doubles the list)."
+          },
+          {
+            "name": "help",
+            "type": "boolean",
+            "default": true,
+            "$note": "'24-hour format, like 14:30.' — the format hint doubles as the 3.3.3 suggestion."
           }
         ]
       }

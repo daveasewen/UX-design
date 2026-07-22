@@ -1,0 +1,65 @@
+{
+  "name": "Sparkline",
+  "category": "molecule",
+  "purpose": "The axis-free inline trend line — a line chart reduced to pure shape, at two reviewed scales: standalone (with its data table) and inline (the KPI/Stat-card scale, decorative). Graduated from the round-one dataviz kit. PROVISIONAL-AGENT: promoted from the PARKED kit (9 review rounds, not signed off).",
+  "props": [
+    { "name": "scale", "type": "enum", "values": ["standalone", "inline"], "default": "standalone", "$note": "standalone = 340×64 render of the 580×90 frame, stroke 2.5, endpoint dot r3.5, role=img + table; inline = 200×48 at 44px, stroke 2, dot r3, aria-hidden (decorative — the composed value carries meaning)." },
+    { "name": "data", "type": "table", "$note": "Standalone carries a real <table> (dv-005); inline defers to the composed tile's value + period." },
+    { "name": "empty", "type": "boolean", "default": false, "$note": "Compact Empty-state adaptation: dashed frame + single title line (receipted scale adaptation of the pattern)." }
+  ],
+  "variants": [
+    { "name": "standalone", "use": "A trend cell in tables/boards where the shape itself is the claim; table = the data surface." },
+    { "name": "inline", "use": "Inside a KPI tile next to an Amount-display value (the Stat-card seam — see $note)." },
+    { "name": "no data", "use": "Compact dashed frame, title carries meaning." }
+  ],
+  "tokens": {
+    "font-family": "type composites via markup class — caption + table .t-cm-legal",
+    "series": "data/series/1 (mode-stable candidate C; 5.26:1 light / 3.31:1 dark vs the page — dv-016 clean)",
+    "baseline": "text/default at grid alpha .10/.16 (hairline; kit greys have no post-R-D16 home — receipted)",
+    "surface": "background/default",
+    "$survey": "Promoted from _proforma/DataViz-interactive.html (PARKED, fence intact): the spark figure (580×90, dv-line-009 wide aspect 6.4:1) + the KPI .spark-inline (200×48)."
+  },
+  "motion": {
+    "entry": "Draw via stroke-dasharray — standalone pathLength=2400 at 2400ms (the line-family pace); inline 600-dash at 1000ms (kit's --draw); endpoint dot fades in as the draw lands. CSS only (DEF-003).",
+    "reducedMotion": "Draw + fade inside prefers-reduced-motion:no-preference; global collapse present.",
+    "tokens": []
+  },
+  "responsive": {
+    "rule": "preserveAspectRatio:none is SAFE here — a spark contains no text, so DV-D02's text-never-scales is vacuously held (the kit's own exception). Fixed render sizes; the stage scrolls if narrower.",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": ["Stat-card / KPI tiles (the receipted seam)", "Table trend columns", "Dashboards"],
+    "mustNotNeighbour": ["An axis-bearing line chart of the same data in the same view (pick one form)"],
+    "commonPatterns": ["KPI with trend", "12-month mini-trend", "table trend column"],
+    "triggeredBy": []
+  },
+  "accessibility": {
+    "role": "Standalone: figure role=\"group\" + sr-only figcaption, svg role=\"img\" with a trend-summary aria-label. Inline: aria-hidden — decorative; the composed value + period carry the meaning.",
+    "name": "Standalone aria-label summarises the trend ('rising from 82 to 104'); the table is the full data surface.",
+    "keyboard": "Only the <details> summary is focusable.",
+    "focus": "summary:focus-visible = 2px ink outline, offset 2.",
+    "nonText": "Series stroke ≥3:1 vs the page both modes (dv-016).",
+    "relatedSC": ["1.4.11 Non-text Contrast", "1.3.1 Info and Relationships", "1.1.1 Non-text Content"]
+  },
+  "antiPatterns": [
+    "Axis, gridlines or labels on a spark (it is axis-free by definition — that is a line chart)",
+    "A tall/square spark (dv-line-009 — wide/flat, ≥2.5:1 aspect)",
+    "An inline spark that is NOT aria-hidden (double-announcing decorative shape)",
+    "A standalone spark without its table (dv-005 — the shape alone is not data)",
+    "Re-typing the Stat-card tile to demo composition (the seam is a Stat-card variant decision — never re-type a sub-atom)",
+    "Curved smoothing (dv-line-011)",
+    "Raw hex strokes (dv-017)"
+  ],
+  "tokenValidation": {
+    "date": "2026-07-22",
+    "against": "token store (semantic-colour.json) via #token-manifest",
+    "result": "PASS — data/series/1 5.26/3.31:1; ink 17.4:1 both modes.",
+    "$note": "Built Phase-2 wave 2 (worker D). PROVISIONAL-AGENT pending Dave's dataviz sign-off. The Stat-card composition seam is RECEIPTED, not built (Stat-card is a wave-1 passive atom with no spark slot — its variant decision belongs to Dave/conductor)."
+  },
+  "provenance": {
+    "source": "proforma-promotion",
+    "figma_node": "",
+    "code_path": "knowledge/_proforma/DataViz-interactive.html"
+  }
+}

@@ -2,7 +2,7 @@
 
 > Generated derived view over `knowledge/` (Graphify-inspired; no external dependency). Regenerate after editing component metas or tokens: `python3 knowledge/tokens/_build_blast_radius.py`. Authored canon stays the source of truth; this is a generated dashboard.
 
-**Totals:** 54 components · 926 tokens defined · 102 tokens referenced by components · compliance: 31 rules x 54 components (31 SCs).
+**Totals:** 64 components · 926 tokens defined · 104 tokens referenced by components · compliance: 31 rules x 64 components (31 SCs).
 
 ## God-nodes — highest token blast radius
 
@@ -10,41 +10,42 @@ Change one of these and the listed number of components is affected. Use before 
 
 | Token | Blast | Example components |
 |---|---|---|
-| `text/default` | 45 | Accordion, Account card, Alert, Amount display, Amount input, Avatar… |
-| `icon/default` | 22 | Accordion, Avatar, Button, Cards, Dropdown, Headers… |
-| `background/default` | 17 | Accordion, Account selector, Amount display, Cards, Dropdown, Input fields… |
-| `text/reverse` | 17 | Action bar, Avatar, Badge, Button, Cards, Confirmation… |
+| `text/default` | 54 | Accordion, Account card, Alert, Amount display, Amount input, Avatar… |
+| `background/default` | 25 | Accordion, Account selector, Amount display, Bar chart, Cards, Data grid… |
+| `icon/default` | 24 | Accordion, Avatar, Button, Cards, Dropdown, File upload… |
+| `text/reverse` | 18 | Action bar, Avatar, Badge, Button, Cards, Confirmation… |
+| `elevation/functional` | 16 | Account selector, Date picker, Date-range picker, Drawer, Dropdown, Input fields… |
+| `rag/error` | 16 | Amount input, Bar chart, Date picker, Date-range picker, Dropdown, File upload… |
 | `tertiary/background/default` | 16 | Account card, Action bar, Button, Cards, Drawer, Icon button… |
+| `border/subtle` | 15 | Accordion, Account card, Action bar, Amount display, Avatar, Cards… |
 | `icon/default-reverse` | 15 | Avatar, Button, Cards, Dropdown, Hero, Icon button… |
-| `border/subtle` | 14 | Accordion, Account card, Action bar, Amount display, Avatar, Cards… |
-| `elevation/functional` | 13 | Account selector, Drawer, Dropdown, Input fields, Modal lightbox, Navigations… |
-| `tertiary/background/hover` | 13 | Accordion, Avatar, Button, Cards, Confirmation, Icon button… |
+| `tertiary/background/hover` | 14 | Accordion, Avatar, Button, Cards, Confirmation, Data grid… |
+| `rag/success` | 13 | Account card, Amount input, Bar chart, Button, Confirmation, File upload… |
 | `typography/font-family/default` | 13 | Account card, Action bar, Amount display, Avatar, Badge, Breadcrumbs… |
-| `rag/success` | 11 | Account card, Amount input, Button, Confirmation, Form layout, List items… |
-| `icon/disabled` | 10 | Avatar, Badge, Button, Dropdown, Icon button, Input fields… |
-| `rag/error` | 10 | Amount input, Dropdown, Form layout, Input fields, Notifications, Secure entry… |
-| `text/disabled` | 10 | Avatar, Button, Dropdown, Input fields, Links, List items… |
-| `form/border/default` | 9 | Account card, Account selector, Dropdown, Input fields, Search field, Selection controls… |
+| `form/border/default` | 11 | Account card, Account selector, Data grid, Dropdown, File upload, Input fields… |
+| `border-radius/control` | 10 | Amount input, Data grid, Date picker, Date-range picker, File upload, Form layout… |
+| `border-radius/surface` | 10 | Alert, Banner, Date picker, Date-range picker, Empty state, Popover… |
 
 ## Token-group reach (components using each group)
 
 | Group | Components |
 |---|---|
-| `text/` | 48 |
-| `tertiary/` | 25 |
-| `icon/` | 24 |
-| `background/` | 17 |
-| `rag/` | 16 |
-| `border/` | 14 |
+| `text/` | 58 |
+| `tertiary/` | 26 |
+| `icon/` | 26 |
+| `background/` | 25 |
+| `rag/` | 22 |
+| `border-radius/` | 18 |
+| `border/` | 17 |
+| `form/` | 16 |
+| `elevation/` | 16 |
 | `typography/` | 13 |
-| `elevation/` | 13 |
-| `border-radius/` | 12 |
-| `form/` | 11 |
 | `divider/` | 10 |
 | `primary/` | 9 |
+| `secondary/` | 8 |
 | `padding/` | 7 |
-| `secondary/` | 7 |
 | `color/` | 7 |
+| `data/` | 5 |
 | `overlay/` | 5 |
 | `scale/` | 3 |
 | `scrollbar/` | 3 |
@@ -52,13 +53,12 @@ Change one of these and the listed number of components is affected. Use before 
 | `focus/` | 3 |
 | `image/` | 2 |
 | `border-width/` | 2 |
+| `table/` | 2 |
 | `button/` | 2 |
 | `layout/` | 2 |
-| `data/` | 1 |
+| `progress/` | 2 |
 | `timer/` | 1 |
 | `gap/` | 1 |
-| `progress/` | 1 |
-| `table/` | 1 |
 | `tabs/` | 1 |
 
 ## Deprecated tokens still bound (migration worklist)
@@ -89,7 +89,7 @@ Components whose `tokens` block still references a `(depricate)` token (count = 
 
 ## Orphans — defined tokens not referenced by any component meta
 
-824 of 926 defined tokens are unreferenced at the component layer. **Expected** for primitives and scale steps (consumed via semantic aliases, not bound directly); worth scanning the *semantic* groups for genuinely-dead tokens. By group:
+822 of 926 defined tokens are unreferenced at the component layer. **Expected** for primitives and scale steps (consumed via semantic aliases, not bound directly); worth scanning the *semantic* groups for genuinely-dead tokens. By group:
 
 | Group | Unreferenced |
 |---|---|
@@ -98,7 +98,7 @@ Components whose `tokens` block still references a `(depricate)` token (count = 
 | `button/` | 64 |
 | `rag/` | 46 |
 | `typography/` | 42 |
-| `data/` | 40 |
+| `data/` | 39 |
 | `surface/` | 36 |
 | `gap/` | 27 |
 | `tabs/` | 26 |
@@ -110,8 +110,8 @@ Components whose `tokens` block still references a `(depricate)` token (count = 
 | `elevation/` | 15 |
 | `form/` | 15 |
 | `motion/` | 12 |
-| `border/` | 8 |
 | `divider/` | 8 |
+| `border/` | 7 |
 | `breakpoint/` | 6 |
 | `padding/` | 6 |
 | `table/` | 6 |

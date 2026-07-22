@@ -1,0 +1,61 @@
+{
+  "name": "Stepper",
+  "interactive": true,
+  "category": "organism",
+  "purpose": "The interactive multi-step flow driver (Progress-tracker is display-only): step content panels, validation-gated Next, back-navigation on completed dots, and the same dots↔track responsive collapse. Back/Next ride the Mono button ladder as the journey's real actions. Itinerary row 34 (P1); built Phase-2 wave 2 (worker A continuation).",
+  "props": [
+    { "name": "steps", "type": "array", "default": "4 named steps", "$note": "Name + panel per step; the dots render from it, the collapsed head shows 'Step n of m' + the step title." },
+    { "name": "gate", "type": "function", "default": "per-step validators", "$note": "Next runs the current step's validator; failure = field error + focus, no advance (3.3.1)." },
+    { "name": "backNavigation", "type": "boolean", "default": true, "$note": "Completed dots are real buttons; current and future steps are never clickable." }
+  ],
+  "variants": [
+    { "name": "wide (dots)", "use": "Progress-tracker's dots stepper — 28px dots, 4px connector, done = fill + check, current = inset ring; done dots become buttons." },
+    { "name": "narrow (track)", "use": "≤520px container: the 1784-86051 head + continuous 4px track (same collapse as Progress-tracker)." }
+  ],
+  "$states": ["step done (button, check dot)", "step current (ring + aria-current)", "step future (numbered, inert)", "panel visible/hidden", "field error (gated Next)", "Back disabled (step 1)", "Next→Confirm (last step)"],
+  "$consumes": ["Progress-tracker (dots + track visuals — change them THERE; receipt-flagged duplication, fold-or-partial question queued)", "Input-fields (gated field language)", "Button ladder (Back = quaternary ghost, Next = primary)"],
+  "tokens": {
+    "steps": "progress/complete + progress/incomplete + text/on-inverse (R-D22: progress is STRUCTURE — ink pair, never status colour)",
+    "field": "form/background|border sets (Input-fields lock-step); error = rag/error (R-D20), message text stays text/default",
+    "buttons": "button/primary/* + button/quaternary/* ladder",
+    "radius": "border-radius/control (buttons, step focus) + border-radius/indicator (track)",
+    "motion": "component-type/button-family/press-travel + press-darken (B-D7) on .st-nav buttons — injection pending conductor registration"
+  },
+  "relationships": {
+    "livesInside": ["Payment / transfer journeys", "Onboarding", "Any multi-step form"],
+    "mustNotNeighbour": ["A second progress indicator for the same flow (one source of step truth)"],
+    "commonPatterns": ["payment-setup", "account-opening", "application-forms"]
+  },
+  "behaviour": {
+    "advance": "Next validates the current step; failure errors the field and focuses it (no advance); success advances and moves focus to the new panel's heading. Last step relabels Next→Confirm.",
+    "back": "Back button or any completed dot returns to that step (values retained); Back disabled on step 1.",
+    "collapse": "Same container-query breakpoint as Progress-tracker (520px): dots ↔ head+track, one state drives both renderings.",
+    "announcements": "A persistent sr-only aria-live region announces every step change ('Step n of m: name') — whichever rendering is visible (Progress-tracker pattern)."
+  },
+  "accessibility": {
+    "structure": "Steps in an <ol> (sequence semantics); aria-current=step on the current li; done dots = real buttons with 'Go back to step n (completed)' labels; panels are labelled sections; collapsed form = role=progressbar with aria-valuetext.",
+    "focus": "Programmatic focus to the new panel heading (tabindex=-1) on every navigation — context change is announced and located (2.4.3); gated failure focuses the field.",
+    "colour": "Done/current are never colour-alone: check glyph, ring, weight, aria state all carry it (1.4.1). Progress = ink (R-D22).",
+    "relatedSC": ["1.3.1", "1.4.1", "1.4.3", "2.1.1 Keyboard", "2.4.3", "2.4.7 Focus Visible", "3.3.1 Error Identification", "3.3.2 Labels or Instructions", "4.1.3"],
+    "$note": "3.2.2 met (Next is the only advance trigger — typing never navigates) but out of relatedSC: not in the compliance lookup (Form-layout precedent)."
+  },
+  "antiPatterns": [
+    "Clickable FUTURE steps (skipping unvalidated steps breaks the gate; only completed steps navigate).",
+    "Disabling Next instead of validating on press (errors must be announced, not silently prevented — Form-layout precedent).",
+    "Status colours on step state (progress is STRUCTURE = ink pair, R-D22).",
+    "A second stepper/progress bar for the same flow.",
+    "Local press-physics CSS on .st-nav buttons (ADR-0013: injected partial only).",
+    "Press physics on dot buttons (structural navigation markers, the Tabs class)."
+  ],
+  "tokenValidation": {
+    "date": "2026-07-22",
+    "against": "current store (semantic-colour.json + component-types.json)",
+    "result": "PASS — new build, no deprecated tokens: step visuals = progress/complete|incomplete + text/on-inverse (R-D22 set), field = live form/* + R-D20 rag/error, buttons = Mono ladder, radius = control + indicator roles, motion = component-type/button-family params (values byte-identical to Button's blocks).",
+    "$note": "Consumed state weight-shifts from Progress-tracker (.dot 500, current label 500, count 500) on composite-bound text — the Input-fields is-completed precedent; receipt-noted."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "$note": "Itinerary row 34 (P1), Phase-2 wave 2 worker A continuation. Step visuals consumed from the gated Progress-tracker (ADR-0013 reworked dots + 1784-86051 collapse) — OBSERVED duplication receipt-flagged with a fold-or-partial question (the B-Q2 modal-family shape). Nav = Form-layout action-bar ladder; field = Input-fields language. No dedicated Figma node bound yet."
+  },
+  "$partials": ".st-nav button (Back/Next) = button-family candidates: empty markers + --phys-size:120; Progress-tracker's `.nav button` = the registered selector precedent. Done-dot buttons deliberately NOT members. Registration = conductor's, via receipt."
+}

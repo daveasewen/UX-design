@@ -1,0 +1,63 @@
+{
+  "name": "Date picker",
+  "interactive": true,
+  "category": "molecule",
+  "purpose": "Core banking date input: an Input-fields boxed field (free typing, validates on blur) plus an anchored calendar panel opened from the tail button — month grid with full keyboard navigation, month/year paging, ink-knockout selection and a structural today ring. Itinerary row 14 (P1); built Phase-2 wave 2 (worker A continuation).",
+  "props": [
+    { "name": "value", "type": "string", "default": "", "$note": "DD/MM/YYYY (en-GB). Typing is free text — validated on blur, never masked mid-entry (acd-019: no auto-anything)." },
+    { "name": "help", "type": "boolean", "default": true, "$note": "Format hint above the field — 'Format: DD/MM/YYYY.' (copy-040: placeholder carries the format only)." },
+    { "name": "minDate/maxDate", "type": "date", "default": "none", "$note": "Out-of-range days render disabled (kept out of the live demo; disabled cell treatment = text/disabled)." }
+  ],
+  "variants": [
+    { "name": "closed", "use": "The resting field — indistinguishable from Input-fields with a calendar tail." },
+    { "name": "open", "use": "Anchored panel below the field: elevation recipe (shadow light / grey outline dark), 336px, 7×40px columns on the 4px grid." }
+  ],
+  "$states": ["default", "hover", "active (focus-within)", "completed", "disabled", "error", "panel open", "day hover", "day selected (ink knockout)", "today (structural ring + aria-current)"],
+  "$consumes": ["Input-fields (field anatomy + tail-btn — change it there)", "Popover elevation recipe (panel chrome)", "Icon-button geometry (44×44 nav)"],
+  "tokens": {
+    "field": "form/background|border sets (Input-fields lock-step)",
+    "panel": "background/default + elevation/border + elevation/functional; border-radius/surface",
+    "selection": "ink knockout — text/default fill + background/default numeral (tooltip precedent); today ring = form/border/active",
+    "error": "rag/error (R-D20); message text stays text/default",
+    "radius": "border-radius/control (field, cells, nav) + border-radius/surface (panel)",
+    "motion": "component-type/button-family/press-travel + press-darken (B-D7) on .dp-nav — injection pending conductor registration",
+    "$input-error-slot": "OPEN (ADR-0010): still undeclared — binds semantic rag/error, follows the slot when declared (A-Q2)."
+  },
+  "relationships": {
+    "livesInside": ["Form layout", "Payment / transfer journeys", "Appointment booking"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["payment-date", "date-of-birth", "statement-range (see Date-range picker)"]
+  },
+  "behaviour": {
+    "open": "Tail button only (aria-haspopup=dialog + aria-expanded); focus lands on the focusable day (typed value, else today). Typing NEVER opens the panel.",
+    "keyboard": "Arrows move by day/week (crossing month edges pages the view) · Home/End = week edges · PageUp/PageDown = month, +Shift = year · Enter/Space selects · Escape closes and returns focus to the tail button. Roving tabindex — one tab stop in the grid.",
+    "select": "Writes DD/MM/YYYY into the input, clears any error, closes, returns focus.",
+    "validation": "On blur (not while the panel is open): empty = no error; malformed or impossible dates (31/02) error with 'Enter a real date, like …' (ctkn-020 'Enter…' + 3.3.3 suggestion). Error lifts as soon as the value re-validates."
+  },
+  "accessibility": {
+    "structure": "Real <label for>; help + message joined via aria-describedby; panel = role=dialog (non-modal) with aria-label; grid = role=grid, day buttons = gridcells with full-date aria-labels.",
+    "states": "aria-selected on the chosen day; aria-current=date on today (the ring is never the only channel — aria carries it); aria-invalid + ink message text on error (1.4.1).",
+    "focus": "Two-tier focus (Input-fields decision B): aesthetic focus-within + :focus-visible ring with input-modality suppression; grid ring inset to survive the 4px gap.",
+    "relatedSC": ["1.3.1", "1.4.1", "1.4.3", "2.1.1 Keyboard", "2.1.2 No Keyboard Trap", "2.4.3", "2.4.7 Focus Visible", "3.3.1 Error Identification", "3.3.2 Labels or Instructions", "4.1.2"],
+    "$note": "3.2.1 On Focus / 3.2.2 On Input are met (panel opens from the button only, typing never triggers context change — acd-019) but those SCs aren't in the compliance lookup yet, so kept out of relatedSC (Form-layout precedent)."
+  },
+  "antiPatterns": [
+    "Opening the calendar on input focus (context change on focus — the panel opens from the tail button only).",
+    "Masking or auto-correcting the date mid-entry (acd-019: no auto-anything; validate on blur).",
+    "Colour-alone selected/today marking (selected = fill + weight + aria-selected; today = ring + aria-current).",
+    "type=\"date\" native input (unstylable, inconsistent AT behaviour — text + inputmode=numeric is the pattern).",
+    "Local press-physics CSS on .dp-nav (ADR-0013: physics arrives via the injected partial).",
+    "Press physics on day cells (selection targets, not buttons)."
+  ],
+  "tokenValidation": {
+    "date": "2026-07-22",
+    "against": "current store (semantic-colour.json + component-types.json)",
+    "result": "PASS — new build, no deprecated tokens: field chrome = live form/* set (Input-fields lock-step), error = R-D20 rag/error, panel = elevation/border + elevation/functional, radius = control + surface roles, motion = component-type/button-family params (values byte-identical to Button's blocks).",
+    "$note": "input-error per-theme flex slot (ADR-0010) still undeclared — binding rag/error until it lands (A-Q2, receipt-flagged)."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "$note": "Itinerary row 14 (P1), Phase-2 wave 2 worker A continuation. Field anatomy authority = the gated Input-fields snippet (incl. its calendar tail-btn); panel chrome = the Popover/Dropdown elevation recipe; nav geometry = Icon-button. No calendar-panel prior art existed anywhere in snippets/_proforma (surveyed) — panel composition is new, from surveyed parts. No dedicated Figma node bound yet."
+  },
+  "$partials": "4 × .dp-nav (month/year paging) = button-family membership candidates: empty AUTO-PARTIAL markers + --phys-size:44 in the snippet; $members registration proposed via worker receipt (conductor-only). Day cells deliberately NOT members — selection targets, not buttons."
+}

@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>File upload — reference implementation (gated)</title>
+<!--
+  CANONICAL REFERENCE for File upload / dropzone (organism). Built 2026-07-22 (Phase-2 wave 2,
+  worker A continuation) — itinerary row 18, document journeys.
+
+  PROVENANCE (survey before build):
+   - No dropzone prior art exists in snippets/_proforma (surveyed) — composed from surveyed parts:
+     label/help/message anatomy = Input-fields (via Form-layout, lock-step) · buttons = the Mono
+     button/* ladder (browse = secondary; per-file remove = the 24px close idiom, Toast/Banner
+     precedent) · file-type glyphs = byte-matched library SVGs (upload/document/pdf/close).
+   - Dropzone surface: 1px DASHED form/border/default resting (the affordance convention),
+     drag-over = SOLID form/border/active + hover fill — same border/fill tokens as the field
+     chrome, no new colours.
+   - Per-file PROGRESS BAR: no determinate indicator exists anywhere in the library
+     (Loading-indicator is spinner-only; the loader ATOM is queued to the button-states finesse
+     pass and deliberately NOT minted here — brief). Built inline: 4px track = form/background/
+     hover, fill = text/default INK — progress is STRUCTURE, not status (the R-D22 ruling's
+     spirit); rag colour appears only at the outcome (success/error roundels). Receipt-flagged
+     as accretion evidence if other lanes need determinate bars.
+   - Error copy: "Enter" doesn't fit uploads; failure messages stay imperative + suggestive
+     ("Remove the file and try a smaller version") — message text INK, roundel carries the colour.
+   - MEMBERS (ADR-0013): .fu-browse (text button, --phys-size:120) + .fu-remove (24px X,
+     LOCAL --phys-size:24 — the wave-1 mixed-size idiom). ONE empty marker pair covers the region;
+     proposed selector = :is(.fu-browse, .fu-remove) per the wave-1 multi-control convention.
+   - acd-019: nothing auto-submits; choosing files only stages them.
+  TYPE = composites only: .t-cm-label label · .t-ed-body-small help/rows · .t-cm-legal sizes ·
+  .t-cm-button browse. A-Q1 label-weight question rides. ICONS: all library byte-matched.
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+  :root{
+    --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+    --ease:200ms cubic-bezier(.4,0,.2,1);
+    --spring:300ms cubic-bezier(.5,1.6,.4,1);   /* motion/easing/spring + motion/duration/spring (matchValues pin, ADR-0013) */
+    --press:90ms cubic-bezier(0,0,.58,1);        /* motion/duration/press + motion/easing/out */
+  }
+  [data-theme="light"]{
+    --page:#FFFFFF;                 /* background/default */
+    --text:#1A1A1A;                 /* text/default */
+    --text-disabled:#E1E1E1;        /* text/disabled */
+    --field-bg-hover:#F0F0F0;       /* form/background/hover */
+    --border-default:#808080;       /* form/border/default */
+    --border-active:#000000;        /* form/border/active */
+    --border-disabled:#E1E1E1;      /* form/border/disabled */
+    --icon:#1A1A1A;                 /* icon/default */
+    --icon-disabled:#E1E1E1;        /* icon/disabled */
+    --error:#B92F1E;                /* rag/error */
+    --success:#2B7E4F;              /* rag/success */
+    --focus:#305A85;                /* focus/ring */
+    --sec-default:#626262;          /* button/secondary/background/default */
+    --sec-hover:#484848;            /* button/secondary/background/hover */
+    --sec-pressed:#313131;          /* button/secondary/background/pressed */
+    --sec-disabled:#E1E1E1;         /* button/secondary/background/disabled */
+    --sec-label:#FFFFFF;            /* button/secondary/label/default */
+    --sec-label-disabled:#9D9D9D;   /* button/secondary/label/disabled */
+    --border-radius-control:0;      /* border-radius/control */
+    --press-travel:2; --press-darken:0.94;   /* component-type/button-family (B-D7) */
+  }
+  [data-theme="dark"]{
+    --page:#1A1A1A;
+    --text:#FFFFFF;
+    --text-disabled:#808080;
+    --field-bg-hover:#232323;
+    --border-default:#808080;
+    --border-active:#FFFFFF;
+    --border-disabled:#484848;
+    --icon:#FFFFFF;
+    --icon-disabled:#808080;
+    --error:#CC4333;
+    --success:#4A9568;
+    --focus:#4587A7;
+    --sec-default:#808080;
+    --sec-hover:#9D9D9D;
+    --sec-pressed:#B7B7B7;
+    --sec-disabled:#484848;
+    --sec-label:#000000;
+    --sec-label-disabled:#808080;
+    --border-radius-control:0;
+    --press-travel:2; --press-darken:0.94;
+  }
+
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:2rem; display:flex; gap:.75rem; align-items:center; flex-wrap:wrap; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border-radius:var(--border-radius-control); cursor:pointer;
+    border:1px solid var(--border-default); background:transparent; color:var(--text);}
+  .demo-controls button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  h2.sec{font:500 16px/1.3 var(--font); color:var(--text); opacity:.6; margin:2.5rem 0 .35rem;}
+  p.note{font:400 14px/1.5 var(--font); color:var(--text); opacity:.75; margin:0 0 1.5rem; max-width:60ch;}
+  .icn{width:18px; height:18px; display:block; flex-shrink:0;}
+  .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;}
+
+  /* ---------- label + help — Input-fields anatomy ---------- */
+  .fu{max-width:420px;}
+  .fu-lblrow{display:flex; gap:8px; align-items:center; margin:0 0 4px;}
+  .fu-lblrow label{color:var(--text);}
+  .fu-help{color:var(--text); margin:0 0 8px;}
+
+  /* ---------- the dropzone ---------- */
+  .fu-zone{border:1px dashed var(--border-default); border-radius:var(--border-radius-control);
+    padding:24px 16px; text-align:center; color:var(--icon);
+    transition:border-color var(--ease), background var(--ease);}
+  .fu-zone .icn{width:24px; height:24px; margin:0 auto 8px;}
+  .fu-zone p{margin:0 0 4px; color:var(--text);}
+  .fu-zone .fu-or{margin:0 0 12px; color:var(--text); opacity:.6;}
+  .fu-zone.is-over{border-style:solid; border-color:var(--border-active); background:var(--field-bg-hover);}
+  .fu.is-disabled .fu-zone{border-color:var(--border-disabled); color:var(--icon-disabled);}
+  .fu.is-disabled .fu-zone p, .fu.is-disabled .fu-lblrow label, .fu.is-disabled .fu-help{color:var(--text-disabled);}
+  .fu-input{position:absolute; width:1px; height:1px; opacity:0; overflow:hidden; clip:rect(0 0 0 0);}
+
+  /* browse — Mono secondary (button-family candidate) */
+  .fu-browse{height:44px; min-width:96px; padding:0 20px; border:0; border-radius:var(--border-radius-control); cursor:pointer;
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    background:var(--sec-default); color:var(--sec-label);
+    --phys-size:120;   /* LOCAL geometry (B-D7): text buttons ≈120 wide */
+    transition:background var(--ease), transform var(--spring), filter var(--press);}
+  .fu-browse:hover{background:var(--sec-hover);}
+  .fu-browse:active{background:var(--sec-pressed);}
+  .fu-browse:disabled{background:var(--sec-disabled); color:var(--sec-label-disabled); cursor:not-allowed;}
+  .fu-browse:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+
+  /* ---------- staged-file rows ---------- */
+  .fu-list{list-style:none; margin:16px 0 0; padding:0;}
+  .fu-row{display:flex; align-items:center; gap:12px; padding:12px 0;
+    border-bottom:1px solid var(--field-bg-hover);}
+  .fu-row .ftype{flex-shrink:0; color:var(--icon);}
+  .fu-row .fmain{flex:1; min-width:0;}
+  .fu-row .fname{display:flex; align-items:baseline; gap:8px; color:var(--text);}
+  .fu-row .fname .nm{overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    text-box-edge:text text;}   /* ds-005: descender-safe trim on a truncating label — the override IS the fix */
+  .fu-row .fname .sz{flex-shrink:0; color:var(--text); opacity:.6;}
+  .fu-row .fstate{flex-shrink:0; display:inline-flex; align-items:center; gap:8px;}
+  .fu-row .fstate .ic{color:var(--success); --mark:var(--page);}
+  .fu-row.is-error .fstate .ic{color:var(--error);}
+  [data-theme="dark"] .fu-row .fstate .ic{color:#FFFFFF;}   /* policy dark: WHITE shape + black mark */
+  .fu-row .fmsg{display:flex; gap:8px; align-items:flex-start; margin:4px 0 0; color:var(--text);}
+  .fu-row .fmsg p{margin:0;}   /* message text stays INK */
+
+  /* per-file determinate progress — ink on neutral (progress is STRUCTURE, not status) */
+  .fu-bar{height:4px; background:var(--field-bg-hover); margin:8px 0 0; overflow:hidden;}
+  .fu-bar b{display:block; height:100%; width:0; background:var(--text); transition:width 160ms linear;}
+
+  /* per-file remove — the 24px close idiom (Toast/Banner precedent; button-family candidate) */
+  .fu-remove{position:relative; width:24px; height:24px; padding:0; border:0; background:transparent;
+    color:var(--icon); cursor:pointer; flex-shrink:0; display:inline-flex; align-items:center; justify-content:center;
+    border-radius:var(--border-radius-control);
+    --phys-size:24;   /* LOCAL geometry (B-D7): the smaller control carries its own size */
+    transition:transform var(--spring), filter var(--press);}
+  .fu-remove .icn{width:14px; height:14px;}
+  .fu-remove::before{content:""; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:36px; height:36px;}                                /* extended hit target */
+  .fu-remove:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  /* ===== AUTO-PARTIAL press-physics START (button-family) ===== */
+/* INJECTED from Button.reference.html (partial "press-physics", group button-family —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+  :is(.fu-browse, .fu-remove):hover{transform:scale(calc(1 + var(--press-travel)/var(--phys-size)));}
+  :is(.fu-browse, .fu-remove).full:hover{transform:none;}                                           /* full-width can't grow — would overflow */
+  :is(.fu-browse, .fu-remove):active{transform:scale(calc(1 - var(--press-travel)/var(--phys-size))); filter:brightness(var(--press-darken)); transition:transform var(--press), filter var(--press);}
+  :is(.fu-browse, .fu-remove):disabled:hover,:is(.fu-browse, .fu-remove).is-disabled:hover{transform:none; filter:none;}   /* disabled stays put */
+  /* WCAG 2.3.3 — the partial carries its OWN reduced-motion override (ADR-0013: rides inside, never per-file) */
+  @media (prefers-reduced-motion: reduce){
+    :is(.fu-browse, .fu-remove):hover,:is(.fu-browse, .fu-remove):active{ transform:none !important; filter:none !important; }
+  }
+  /* ===== AUTO-PARTIAL press-physics END ===== */
+
+  .gallery{display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:24px 32px; max-width:760px;}
+  .gallery .cap{font:400 12px/1.3 var(--font); color:var(--text); opacity:.55; margin:0 0 8px;}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; scroll-behavior:auto !important; }
+  }
+  @media (max-width:480px){
+    body{padding:1.25rem;}
+    .fu, .gallery{max-width:none;}
+    .gallery{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body data-theme="light">
+
+  <!-- ===== HSBC icon-library sprite (real SVGs from assets/icons/, defined once) ===== -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="ic-upload" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.8 12V15.8H2.2V12H1V17H17V12H15.8ZM8.4 13.849H9.6V3.297L14 7.697V6.001L9 1L4 6.001V7.698L8.4 3.298V13.849Z" fill="currentColor"/></symbol>
+    <symbol id="ic-document" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.9891 0H0.789062V18H16.7891V3.8L12.9891 0ZM15.0921 3.8H12.9891V1.697L15.0921 3.8ZM15.5891 16.8H1.98906V1.2H11.7891V5H15.5891V16.8Z" fill="currentColor"/></symbol>
+    <symbol id="ic-pdf" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.69006 9.378H3.37306V10.176H3.64006C4.18706 10.176 4.26106 9.967 4.26106 9.763C4.26106 9.489 4.09506 9.378 3.69006 9.378ZM12.9891 0H2.78906V5.8H3.98906V1.2H11.7891V5H15.5891V16.8H3.98906V15.2H2.78906V18H16.7891V3.8L12.9891 0ZM12.9891 3.8V1.697L15.0921 3.8H12.9891ZM12.7891 13.99V7.01C12.7891 7.004 12.7851 7 12.7791 7H0.799062C0.793062 7 0.789062 7.004 0.789062 7.01V13.99C0.789062 13.995 0.793062 14 0.799062 14H12.7791C12.7851 14 12.7891 13.995 12.7891 13.99ZM4.54906 10.77L4.54806 10.771C4.37706 10.84 4.14306 10.877 3.89006 10.877H3.37306V12.15H2.46106V8.676H3.77606C4.09806 8.676 4.43606 8.692 4.72006 8.883C5.02206 9.088 5.18106 9.404 5.18106 9.795C5.18206 10.239 4.94506 10.604 4.54906 10.77ZM6.60206 12.151H5.47406V8.676H6.71206C7.98706 8.676 8.63406 9.255 8.63406 10.398C8.63306 11.952 7.54806 12.151 6.60206 12.151ZM11.3691 9.383H9.90606V10.058H11.2831V10.76H9.90606V12.152H9.00706V8.676H11.3691V9.383ZM6.64806 9.378H6.38506V11.449H6.62006C7.37906 11.449 7.70306 11.137 7.70306 10.406C7.70306 9.675 7.39806 9.378 6.64806 9.378Z" fill="currentColor"/></symbol>
+    <symbol id="ic-close" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"/></symbol>
+    <symbol id="ic-error" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.30911 1.68194L0.109113 15.7999C-0.199887 16.3319 0.184113 16.9999 0.800113 16.9999H17.2001C17.8161 16.9999 18.2001 16.3319 17.8911 15.7999L9.69111 1.68194C9.38311 1.15094 8.61711 1.15094 8.30911 1.68194Z" fill="currentColor"/><path style="fill:var(--mark)" d="M9.9001 5H8.1001V11H9.9001V5Z"/><path style="fill:var(--mark)" d="M9 14.8259C9.69036 14.8259 10.25 14.2663 10.25 13.5759C10.25 12.8856 9.69036 12.3259 9 12.3259C8.30964 12.3259 7.75 12.8856 7.75 13.5759C7.75 14.2663 8.30964 14.8259 9 14.8259Z"/></symbol>
+    <symbol id="ic-success" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z"/></symbol>
+  </svg>
+
+  <div class="demo-controls">
+    <button id="themeToggle" type="button">◐ Toggle theme</button>
+    <span>File upload — drag files onto the zone or browse · uploads simulate · third file errors (size) for the demo</span>
+  </div>
+
+  <!-- ================= LIVE ================= -->
+  <h2 class="sec">Upload your documents — live</h2>
+  <p class="note">Choosing files only stages them (nothing auto-submits). The bar is ink on neutral —
+    progress is structure, not status; colour arrives only with the outcome roundel. Remove is the
+    24px close idiom with an extended hit target.</p>
+
+  <div class="fu" id="live-fu">
+    <div class="fu-lblrow"><label class="t-cm-label" for="fu-input">Supporting documents</label></div>
+    <p class="fu-help t-ed-body-small" id="fu-help">PDF, JPG or PNG, up to 10MB each.</p>
+    <div class="fu-zone" id="fu-zone">
+      <svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-upload"/></svg>
+      <p class="t-ed-body">Drag and drop your documents here</p>
+      <p class="fu-or t-ed-body-small">or</p>
+      <button type="button" class="fu-browse t-cm-button" id="fu-browse" aria-describedby="fu-help">Browse files</button>
+      <input class="fu-input" type="file" id="fu-input" multiple accept=".pdf,.jpg,.jpeg,.png" aria-describedby="fu-help">
+    </div>
+    <ul class="fu-list" id="fu-list" aria-label="Staged files"></ul>
+    <span class="sr-only" id="fu-announce" aria-live="polite"></span>
+  </div>
+
+  <!-- ================= STATE GALLERY ================= -->
+  <h2 class="sec" style="margin-top:2.75rem;">States</h2>
+  <div class="gallery">
+    <div>
+      <p class="cap">Drag-over</p>
+      <div class="fu">
+        <div class="fu-zone is-over">
+          <svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-upload"/></svg>
+          <p class="t-ed-body">Drop to add your documents</p>
+          <p class="fu-or t-ed-body-small">or</p>
+          <button type="button" class="fu-browse t-cm-button" tabindex="-1">Browse files</button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <p class="cap">Disabled</p>
+      <div class="fu is-disabled">
+        <div class="fu-lblrow"><label class="t-cm-label">Supporting documents</label></div>
+        <p class="fu-help t-ed-body-small">Available after we verify your identity.</p>
+        <div class="fu-zone">
+          <svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-upload"/></svg>
+          <p class="t-ed-body">Drag and drop your documents here</p>
+          <p class="fu-or t-ed-body-small">or</p>
+          <button type="button" class="fu-browse t-cm-button" disabled>Browse files</button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <p class="cap">Row states — uploading · done · error</p>
+      <div class="fu">
+        <ul class="fu-list">
+          <li class="fu-row">
+            <span class="ftype" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-pdf"/></svg></span>
+            <div class="fmain">
+              <p class="fname t-ed-body-small"><span class="nm">statement-june.pdf</span> <span class="sz t-cm-legal">1.2MB</span></p>
+              <div class="fu-bar" role="progressbar" aria-valuenow="62" aria-valuemin="0" aria-valuemax="100" aria-label="Uploading statement-june.pdf"><b style="width:62%"></b></div>
+            </div>
+            <button type="button" class="fu-remove" tabindex="-1" aria-label="Remove statement-june.pdf"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg></button>
+          </li>
+          <li class="fu-row">
+            <span class="ftype" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-document"/></svg></span>
+            <div class="fmain">
+              <p class="fname t-ed-body-small"><span class="nm">proof-of-address.png</span> <span class="sz t-cm-legal">840KB</span></p>
+            </div>
+            <span class="fstate"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-success"/></svg></span><span class="sr-only">Uploaded</span></span>
+            <button type="button" class="fu-remove" tabindex="-1" aria-label="Remove proof-of-address.png"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg></button>
+          </li>
+          <li class="fu-row is-error">
+            <span class="ftype" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-pdf"/></svg></span>
+            <div class="fmain">
+              <p class="fname t-ed-body-small"><span class="nm">contract-signed.pdf</span> <span class="sz t-cm-legal">14.8MB</span></p>
+              <div class="fmsg"><span class="ic fstate" aria-hidden="true" style="color:var(--error)"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-error"/></svg></span><p class="t-ed-body-small">This file is over 10MB. Remove it and try a smaller version.</p></div>
+            </div>
+            <button type="button" class="fu-remove" tabindex="-1" aria-label="Remove contract-signed.pdf"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg></button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "File upload",
+    "vars": {
+      "--page": "background/default",
+      "--text": "text/default",
+      "--text-disabled": "text/disabled",
+      "--field-bg-hover": "form/background/hover",
+      "--border-default": "form/border/default",
+      "--border-active": "form/border/active",
+      "--border-disabled": "form/border/disabled",
+      "--icon": "icon/default",
+      "--icon-disabled": "icon/disabled",
+      "--error": "rag/error",
+      "--success": "rag/success",
+      "--focus": "focus/ring",
+      "--sec-default": "button/secondary/background/default",
+      "--sec-hover": "button/secondary/background/hover",
+      "--sec-pressed": "button/secondary/background/pressed",
+      "--sec-disabled": "button/secondary/background/disabled",
+      "--sec-label": "button/secondary/label/default",
+      "--sec-label-disabled": "button/secondary/label/disabled",
+      "--border-radius-control": "border-radius/control",
+      "--press-travel": "component-type/button-family/press-travel",
+      "--press-darken": "component-type/button-family/press-darken"
+    },
+    "contrastPairs": [
+      { "fg": "text/default",        "bg": "background/default", "context": "text" },
+      { "fg": "form/border/default", "bg": "background/default", "context": "ui" },
+      { "fg": "form/border/active",  "bg": "background/default", "context": "ui" },
+      { "fg": "rag/error",           "bg": "background/default", "context": "ui" },
+      { "fg": "rag/success",         "bg": "background/default", "context": "ui" },
+      { "fg": "icon/default",        "bg": "background/default", "context": "ui" },
+      { "fg": "button/secondary/label/default", "bg": "button/secondary/background/default", "context": "text" },
+      { "fg": "button/secondary/label/default", "bg": "button/secondary/background/hover",   "context": "text" },
+      { "fg": "button/secondary/label/default", "bg": "button/secondary/background/pressed", "context": "text" }
+    ],
+    "requiredAria": ["role=\"progressbar\"", "aria-valuenow", "aria-live", "aria-describedby"],
+    "icons": {
+      "$source": "assets/icons/ (HSBC library) via <symbol> sprite — not invented",
+      "upload": "global-controls/upload.svg", "close": "global-controls/close.svg",
+      "document": "media/document.svg", "pdf": "media/document-pdf.svg",
+      "error": "status-icons/error.svg", "success": "status-icons/success.svg"
+    },
+    "$partials-note": "TWO button-family membership candidates, mixed sizes (the wave-1 idiom): .fu-browse (--phys-size:120) + .fu-remove (LOCAL --phys-size:24, the smaller control). ONE empty AUTO-PARTIAL marker pair covers the region; proposed $members selector = :is(.fu-browse, .fu-remove) per the wave-1 multi-control convention. Registration = conductor's, via receipt."
+  }
+  </script>
+
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      const b = document.body; b.setAttribute('data-theme', b.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+    const root = document.documentElement;
+    addEventListener('keydown', e => { if (e.key === 'Tab') root.dataset.modality = 'keyboard'; });
+    addEventListener('mousedown', () => root.dataset.modality = 'pointer');
+    addEventListener('touchstart', () => root.dataset.modality = 'pointer', { passive:true });
+
+    // ---------- staging + simulated upload ----------
+    const zone = document.getElementById('fu-zone');
+    const browse = document.getElementById('fu-browse');
+    const fileInput = document.getElementById('fu-input');
+    const list = document.getElementById('fu-list');
+    const announce = document.getElementById('fu-announce');
+    const MAX = 10 * 1024 * 1024;
+    let n = 0;
+
+    const fmtSize = b => b >= 1024*1024 ? (b/1048576).toFixed(1) + 'MB' : Math.max(1, Math.round(b/1024)) + 'KB';
+    const glyph = name => /\.pdf$/i.test(name) ? 'ic-pdf' : 'ic-document';
+
+    browse.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', () => { stage([...fileInput.files]); fileInput.value = ''; });
+
+    ['dragenter','dragover'].forEach(ev => zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.add('is-over'); }));
+    ['dragleave','drop'].forEach(ev => zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.remove('is-over'); }));
+    zone.addEventListener('drop', e => stage([...e.dataTransfer.files]));
+
+    function stage(files){
+      files.forEach(f => {
+        n++;
+        const id = 'fr-' + n;
+        const li = document.createElement('li');
+        li.className = 'fu-row'; li.id = id;
+        const tooBig = f.size > MAX;
+        li.innerHTML =
+          '<span class="ftype" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#' + glyph(f.name) + '"/></svg></span>' +
+          '<div class="fmain">' +
+            '<p class="fname t-ed-body-small"><span class="nm">' + f.name + '</span> <span class="sz t-cm-legal">' + fmtSize(f.size) + '</span></p>' +
+            (tooBig ? '' : '<div class="fu-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Uploading ' + f.name + '"><b></b></div>') +
+          '</div>' +
+          '<button type="button" class="fu-remove" aria-label="Remove ' + f.name + '"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg></button>';
+        list.appendChild(li);
+        li.querySelector('.fu-remove').addEventListener('click', () => {
+          li.remove(); announce.textContent = f.name + ' removed.';
+        });
+        if (tooBig){
+          li.classList.add('is-error');
+          li.querySelector('.fmain').insertAdjacentHTML('beforeend',
+            '<div class="fmsg"><span class="ic fstate" aria-hidden="true" style="color:var(--error)"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-error"/></svg></span><p class="t-ed-body-small">This file is over 10MB. Remove it and try a smaller version.</p></div>');
+          announce.textContent = f.name + ' could not be added: over 10MB.';
+          return;
+        }
+        announce.textContent = f.name + ' added, uploading.';
+        simulate(li, f.name);
+      });
+    }
+
+    function simulate(li, name){
+      const bar = li.querySelector('.fu-bar'), fill = bar.querySelector('b');
+      let p = 0;
+      const t = setInterval(() => {
+        p = Math.min(p + 8 + Math.random() * 14, 100);
+        bar.setAttribute('aria-valuenow', Math.round(p));
+        fill.style.width = p + '%';
+        if (p >= 100){
+          clearInterval(t);
+          bar.remove();
+          li.querySelector('.fmain').insertAdjacentHTML('afterend',
+            '<span class="fstate"><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-success"/></svg></span><span class="sr-only">Uploaded</span></span>');
+          announce.textContent = name + ' uploaded.';
+        }
+      }, 180);
+    }
+  </script>
+</body>
+</html>

@@ -2,7 +2,7 @@
 
 > Which components re-theme correctly in dark mode. **LEAK** = binds a raw colour *primitive* directly (single-valued, no dark variant — a real defect; the P3 family). *flat* = binds a semantic token whose dark value equals its light value (frequently intentional — reverse text, RAG, brand red — confirm per case). Derived view over the colour stores + blast-radius; regenerate: `python3 knowledge/_build_dark_mode_audit.py`. Detail in `_DARK-MODE-AUDIT.json`.
 
-**Coverage:** 47/54 components clean · 7 leak a primitive. Store: 181 semantic colour tokens (light+dark), 53 flat (dark==light), 225 primitives.
+**Coverage:** 57/64 components clean · 7 leak a primitive. Store: 181 semantic colour tokens (light+dark), 53 flat (dark==light), 225 primitives.
 
 ## Primitive leaks — fix before dark mode
 
@@ -29,21 +29,28 @@ Each raw primitive bound directly, and the components binding it. Rebind to a se
 | Avatar | ✅ clean | — | `icon/default-reverse`, `image/opacity/default`, `image/opacity/disabled`, `text/reverse` |
 | Badge | 🔴 LEAK | `color/primary` | `primary/background/default`, `text/reverse` |
 | Banner | ✅ clean | — | `rag/text/on-dark`, `rag/text/on-light`, `text/on-success` |
+| Bar chart | ✅ clean | — | `data/series/1`, `rag/warning` |
 | Breadcrumbs | ✅ clean | — | — |
 | Button | ✅ clean | — | `icon/default-reverse`, `primary/background/default`, `primary/background/hover`, `text/reverse` |
 | Cards | 🔴 LEAK | `color/primary` | `icon/default-reverse`, `text/reverse` |
 | Confirmation | ✅ clean | — | `primary/background/default`, `primary/background/hover`, `text/reverse` |
 | Countdown timer | ✅ clean | — | — |
+| Data grid | ✅ clean | — | `form/border/default`, `text/reverse` |
+| Date picker | ✅ clean | — | — |
+| Date-range picker | ✅ clean | — | — |
 | Divider | ✅ clean | — | — |
+| Donut chart | ✅ clean | — | `data/series/1` |
 | Drawer | ✅ clean | — | `overlay/version1` |
 | Dropdown | ✅ clean | — | `form/background/default`, `form/border/default`, `icon/default-reverse`, `text/reverse` |
 | Empty state | ✅ clean | — | — |
 | Eyebrow | ✅ clean | — | — |
+| File upload | ✅ clean | — | `form/border/default` |
 | Form layout | ✅ clean | — | — |
 | Headers | ✅ clean | — | — |
 | Hero | 🔴 LEAK | `color/grey/transparent/white-75`, `color/primary` | `icon/default-reverse`, `primary/background/default`, `text/reverse` |
 | Icon button | ✅ clean | — | `icon/default-reverse` |
 | Input fields | ✅ clean | — | `form/background/default`, `form/border/default`, `icon/default-reverse`, `text/reverse` |
+| Line chart | ✅ clean | — | `data/series/1` |
 | Links | 🔴 LEAK | `color/primary` | `icon/default-reverse`, `primary/background/default`, `text/reverse` |
 | List items | 🔴 LEAK | `color/primary` | `icon/default-reverse`, `image/opacity/default`, `image/opacity/disabled`, `text/reverse` |
 | Loading indicator | ✅ clean | — | `icon/default-reverse`, `text/reverse` |
@@ -61,14 +68,17 @@ Each raw primitive bound directly, and the components binding it. Rebind to a se
 | Selection controls | ✅ clean | — | `form/background/default`, `form/border/default`, `icon/default-reverse`, `text/reverse` |
 | Skeleton loader | ✅ clean | — | — |
 | Slider | ✅ clean | — | `form/border/default` |
+| Sparkline | ✅ clean | — | `data/series/1` |
 | Stat card | ✅ clean | — | — |
 | Status indicator | ✅ clean | — | `rag/warning` |
+| Stepper | ✅ clean | — | — |
 | Summary | ✅ clean | — | — |
 | Tab-bar | ✅ clean | — | — |
 | Table | ✅ clean | — | — |
 | Tabs | 🔴 LEAK | `color/primary` | `text/reverse` |
 | Tags | ✅ clean | — | `form/border/default`, `text/reverse` |
 | Textarea | ✅ clean | — | — |
+| Time picker | ✅ clean | — | — |
 | Toast | ✅ clean | — | — |
 | Tooltip | ✅ clean | — | — |
 | Video player | ✅ clean | — | `icon/default-reverse`, `overlay/version2`, `primary/background/default` |

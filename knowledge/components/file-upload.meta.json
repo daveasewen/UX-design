@@ -1,0 +1,62 @@
+{
+  "name": "File upload",
+  "interactive": true,
+  "category": "organism",
+  "purpose": "Document journeys: a dashed dropzone (drag-and-drop or browse) staging files into rows with per-file determinate progress, outcome roundels, ink error messages and a 24px remove control. Nothing auto-submits. Itinerary row 18 (P1); built Phase-2 wave 2 (worker A continuation).",
+  "props": [
+    { "name": "accept", "type": "string", "default": ".pdf,.jpg,.jpeg,.png", "$note": "Mirrored in the help line — 'PDF, JPG or PNG, up to 10MB each.' (constraints stated up front, 3.3.2)." },
+    { "name": "maxSize", "type": "number", "default": 10485760, "$note": "Oversize files stage as error rows with a suggestive message — never silently dropped (3.3.1/3.3.3)." },
+    { "name": "multiple", "type": "boolean", "default": true, "$note": "Single-file journeys set false; the zone copy stays plural-neutral." }
+  ],
+  "variants": [
+    { "name": "resting", "use": "1px dashed form/border/default zone, upload glyph, browse = Mono secondary." },
+    { "name": "drag-over", "use": "Solid form/border/active + hover fill — same field-chrome tokens, no new colours." }
+  ],
+  "$states": ["resting", "drag-over", "disabled", "row uploading (ink bar + aria-valuenow)", "row done (success roundel)", "row error (error roundel + ink message)", "row removed (announced)"],
+  "$consumes": ["Input-fields (label/help/message anatomy)", "Button ladder (browse = secondary)", "Toast/Banner 24px close idiom (remove)"],
+  "tokens": {
+    "zone": "form/border/default dashed → form/border/active + form/background/hover on drag-over",
+    "progress": "track = form/background/hover, fill = text/default INK — progress is STRUCTURE, not status (R-D22 spirit); no determinate indicator existed anywhere in the library (Loading-indicator is spinner-only; loader atom queued, NOT minted here)",
+    "outcome": "rag/success + rag/error roundels (R-D20); message text stays text/default",
+    "buttons": "button/secondary/* ladder (browse); remove = icon/default",
+    "radius": "border-radius/control",
+    "motion": "component-type/button-family/press-travel + press-darken (B-D7) on browse + remove — injection pending conductor registration"
+  },
+  "relationships": {
+    "livesInside": ["Onboarding document checks", "Mortgage / lending journeys", "Dispute evidence", "Form layout"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["proof-of-identity", "proof-of-address", "supporting-evidence"]
+  },
+  "behaviour": {
+    "staging": "Drop or browse stages files (acd-019: nothing auto-submits); each valid file simulates upload with a determinate bar (aria-valuenow updates), then swaps to the success roundel. Oversize files stage as error rows immediately.",
+    "remove": "Per-row 24px close (36px extended hit target); removal announced via the polite live region.",
+    "announcements": "Added / uploading / uploaded / could-not-add / removed all pass through one aria-live region (4.1.3)."
+  },
+  "accessibility": {
+    "structure": "Real <label for> on the hidden file input; the browse button proxies its click; constraints in help text joined via aria-describedby; rows in a labelled list.",
+    "progress": "role=progressbar with aria-valuenow/min/max + per-file aria-label; completion swaps to a roundel + sr-only 'Uploaded'.",
+    "colour": "Error/success roundels are never the only channel — messages stay ink, announcements name the file (1.4.1). Dark roundels follow the WHITE-shape policy.",
+    "keyboard": "Browse is a real button; drag-and-drop always has the browse equivalent (2.1.1); remove buttons are labelled per file.",
+    "relatedSC": ["1.3.1", "1.4.1", "1.4.3", "2.1.1 Keyboard", "2.4.7 Focus Visible", "3.3.1 Error Identification", "3.3.2 Labels or Instructions", "4.1.3"],
+    "$note": "3.2.2 met (staging only, no auto-submit) but out of relatedSC: not in the compliance lookup (Form-layout precedent)."
+  },
+  "antiPatterns": [
+    "Drag-and-drop as the ONLY path (keyboard/AT users need the browse button — 2.1.1).",
+    "Auto-submitting on file choice (staging only; submission belongs to the form's action bar).",
+    "Silently rejecting oversize/wrong-type files (stage an error row and say why + what to do).",
+    "A spinner instead of the determinate bar (upload progress is knowable — show it; the loader atom is queued for indeterminate states).",
+    "Green/red progress fills (progress is structure = ink; colour arrives with the outcome).",
+    "Local press-physics CSS on browse/remove (ADR-0013: injected partial only)."
+  ],
+  "tokenValidation": {
+    "date": "2026-07-22",
+    "against": "current store (semantic-colour.json + component-types.json)",
+    "result": "PASS — new build, no deprecated tokens: zone/field chrome = live form/* set, outcomes = R-D20 rag pair, browse = button/secondary/* ladder, radius = control role, motion = component-type/button-family params (values byte-identical to Button's blocks).",
+    "$note": "Progress bar uses existing roles only (form/background/hover + text/default) — no bar tokens minted; flagged as accretion evidence if other lanes need determinate bars."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "$note": "Itinerary row 18 (P1), Phase-2 wave 2 worker A continuation. No dropzone prior art existed in snippets/_proforma (surveyed) — composed from surveyed parts: Input-fields anatomy, Button secondary ladder, Toast/Banner 24px close idiom. All glyphs library byte-matched (verified against assets/icons/ in the wave-1 session). No dedicated Figma node bound yet."
+  },
+  "$partials": "TWO button-family candidates, mixed sizes (wave-1 idiom): .fu-browse (--phys-size:120) + .fu-remove (LOCAL --phys-size:24). One empty marker pair; proposed selector :is(.fu-browse, .fu-remove). Registration = conductor's, via receipt."
+}

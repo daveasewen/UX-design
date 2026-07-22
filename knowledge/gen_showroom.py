@@ -57,9 +57,12 @@ CATEGORIES = [
     ("Actions",           ["button", "icon-button", "action-bar", "quick-actions", "links"]),
     ("Forms and input",   ["input-fields", "search-field", "selection-controls", "slider",
                            "dropdown", "reorder", "view-options",
-                           # Phase-2 wave 1 (worker A + Account-selector from B's lane):
+                           # Phase-2 wave 1 (worker A + Account-selector from B's lane)
+                           # + wave 2 A-continuation (registered by the CONDUCTOR from receipts —
+                           # workers never edit this file):
                            "form-layout", "amount-input", "textarea", "secure-entry",
-                           "account-selector"]),
+                           "account-selector", "date-picker", "date-range-picker",
+                           "time-picker", "file-upload", "stepper"]),
     ("Navigation",        ["navigations", "breadcrumbs", "pagination", "tabs", "tab-bar"]),
     ("Feedback and status", ["notifications", "status-indicator", "badge", "loading-indicator",
                            "progress-tracker", "tooltip", "confirmation", "modals",
@@ -69,10 +72,13 @@ CATEGORIES = [
                            "drawer", "popover", "modal-lightbox"]),
     ("Data and content",  ["table", "cards", "list-items", "account-card", "amount-display",
                            "summary", "accordion",
-                           # Phase-2 wave 1 (worker B):
-                           "stat-card"]),
+                           # Phase-2 wave 1 (worker B) + wave 2 (worker C):
+                           "stat-card", "data-grid"]),
     ("Identity and display", ["avatar", "tags", "eyebrow", "headers", "hero", "divider",
                            "video-player"]),
+    # Phase-2 wave 2 (worker D's lane; bucket cut by the conductor — provisional-agent
+    # pending Dave's dataviz sign-off):
+    ("Charts",            ["chart-bar", "chart-line", "chart-donut", "chart-sparkline"]),
 ]
 CAT_OF = {slug: cat for cat, slugs in CATEGORIES for slug in slugs}
 
@@ -217,6 +223,9 @@ INDEX_TMPL = """<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Apollo component library · showroom</title>
 <style>__CSS__
+  .count{display:inline-flex; align-items:baseline; gap:8px; font-size:13px; color:var(--mid);}
+  .count strong{font-size:40px; font-weight:300; line-height:1; color:var(--ink);
+    font-variant-numeric:tabular-nums; letter-spacing:-1px;}
   .intro{padding:24px 24px 0; max-width:820px;}
   .intro p{font-size:14px; color:var(--mid); line-height:1.5; margin:4px 0 0;}
   section{padding:8px 24px 16px;}
@@ -233,6 +242,7 @@ INDEX_TMPL = """<!doctype html>
 <body>
 <header>
   <h1>Apollo component library</h1>
+  <span class="count" aria-label="__COUNT__ components"><strong>__COUNT__</strong> components</span>
   <div class="seg" id="themes" role="group" aria-label="Theme">__THEME_BTNS__</div>
   <span class="note">Theme carries into every component page. Mono is the base; Legacy differs; Console renders as Mono with rounded corners; Supercharge renders as Mono.</span>
 </header>
@@ -339,6 +349,7 @@ def build_pages():
     files["index.html"] = (INDEX_TMPL
                            .replace("__CSS__", CHROME_CSS)
                            .replace("__THEME_BTNS__", btns)
+                           .replace("__COUNT__", str(len(cards)))
                            .replace("__SECTIONS__", "\n".join(sections)))
     return files
 

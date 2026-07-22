@@ -1,0 +1,70 @@
+{
+  "name": "Donut chart",
+  "category": "organism",
+  "purpose": "Composition / proportion as a ring with a centre total — the round-one dataviz kit's donut graduated into canon. Semantic SVG arc paths styled by tokens, described by a real table. PROVISIONAL-AGENT: promoted from the PARKED kit (9 review rounds, not signed off); ring geometry and both labelling variants are OBSERVED kit values.",
+  "props": [
+    { "name": "labelling", "type": "enum", "values": ["spider", "direct"], "default": "spider", "$note": "spider = letter on a short leader outside the ring + vertical legend [swatch][letter][name]; direct = name + value in place, no legend (its own colour-independent channel). The kit's third variant — letters ON segments — is NOT promoted: white letters on series fills collide with type26-013 white-type-red-only; Dave's Batch-2 #7 comparison stays open (receipted)." },
+    { "name": "slices", "type": "number", "$note": "Maximum 6 (dv-pie-009); more → combine smallest into 'Other'. Values must sum to the displayed centre total (dv-pie-010, data-total attr)." },
+    { "name": "total", "type": "string", "$note": "Centre total — .t-cm-figure-3 (24px/500; kit's 22px promoted to the ramp step, DV-D05)." },
+    { "name": "empty", "type": "boolean", "default": false, "$note": "No-data state = the Empty-state pattern by reference." }
+  ],
+  "variants": [
+    { "name": "spider + legend", "use": "Default composition view; letters bridge chart ↔ legend (§04.3)." },
+    { "name": "direct labels", "use": "Self-contained view (print/export-friendly); name + £value · % on each leader." },
+    { "name": "no data", "use": "Empty-state pattern in the chart frame." }
+  ],
+  "tokens": {
+    "font-family": "type composites via markup class — letters + labels + legend + table .t-cm-legal · centre total .t-cm-figure-3",
+    "series": "data/series/1–5 (mode-stable candidate C); measured 3.52–5.26:1 light / 3.31–4.95:1 dark vs the page (dv-016 clean)",
+    "separation": "stroke = background/default (page) at 2px on every segment (dv-004 — gapless surfaces need surface-coloured separation)",
+    "leaders": "border/subtle hairlines (decorative)",
+    "labels": "text/default (ink) — spider letters and direct labels never sit ON the fills",
+    "surface": "background/default (data-surface=\"page\")",
+    "$survey": "Promoted from _proforma/DataViz-interactive.html (PARKED, fence intact). Direct value line weight: kit 600 → 500 (no 600 on brand — receipted correction)."
+  },
+  "motion": {
+    "entry": "NONE in the specimen — the kit's radial sequential sweep (Batch 3 #7, ease-in first / ease-out last Batch 7) and label sequencing are JS-driven (requestAnimationFrame); not promotable under the static contract (DEF-003-static). Specimens bake the full arcs visible — the kit's own no-JS/reduced-motion state. Receipted as Layer-2.",
+    "hover": "brightness(1.12/1.22) emphasis + <title> values.",
+    "reducedMotion": "Global collapse present (only hover transitions exist).",
+    "tokens": []
+  },
+  "responsive": {
+    "rule": "DV-D02 excluded donuts from width-compression (compressing a circle distorts) — fixed geometry; .dv-stage scrolls if the container is narrower.",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": ["Dashboards", "Spending breakdowns", "Portfolio composition views"],
+    "mustNotNeighbour": ["A second composition chart of the same data (pick one)", "Charts re-using these series colours for different data (dv-014)"],
+    "commonPatterns": ["spend by category", "portfolio mix", "budget composition"],
+    "triggeredBy": []
+  },
+  "accessibility": {
+    "role": "figure role=\"group\" + aria-labelledby → sr-only figcaption; svg role=\"img\", aria-label carries subject + total.",
+    "name": "Figcaption names the chart; every segment carries a <title> with name, value and percentage; the real table is the full data surface.",
+    "keyboard": "Only the <details> summary is focusable; the figure is passive.",
+    "focus": "summary:focus-visible = 2px ink outline, offset 2.",
+    "nonText": "Segment fills ≥3:1 vs the page both modes; identity = letter/name + position + table, never colour alone (1.4.1); 2px page strokes keep adjacent segments separable.",
+    "relatedSC": ["1.4.1 Use of Color", "1.4.11 Non-text Contrast", "1.3.1 Info and Relationships"]
+  },
+  "antiPatterns": [
+    "More than 6 slices (dv-pie-009 — combine into 'Other')",
+    "Segment values that don't sum to the centre total (dv-pie-010)",
+    "Gapless segments without the 2px page stroke (dv-004)",
+    "White letters on segment fills (type26-013 — white type is red-only; label in ink outside the ring)",
+    "600-weight emphasis (brand weights are 100/300/400/500/700)",
+    "Gradient or 3D ring fills (dv-009)",
+    "A donut without its real data table (dv-005)",
+    "Proportionally scaling the ring down (DV-D02 donut exclusion — it distorts)"
+  ],
+  "tokenValidation": {
+    "date": "2026-07-22",
+    "against": "token store (semantic-colour.json) via #token-manifest",
+    "result": "PASS — series 1–5 ≥3.31:1 both modes; ink 17.4:1; sum 2320 = data-total; 5 slices.",
+    "$note": "Built Phase-2 wave 2 (worker D). PROVISIONAL-AGENT pending Dave's dataviz sign-off. No progress-ring variant — the kit has none (nothing invented); the loader atom stays queued (§C·4b)."
+  },
+  "provenance": {
+    "source": "proforma-promotion",
+    "figma_node": "",
+    "code_path": "knowledge/_proforma/DataViz-interactive.html"
+  }
+}

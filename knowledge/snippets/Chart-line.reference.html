@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Line chart — reference implementation (gated)</title>
+<!--
+  CANONICAL REFERENCE for Line chart (Apollo MONO) — single- and multi-series.
+  ⚠ PROVISIONAL-AGENT PROMOTION (Phase-2 wave 2, worker D, 2026-07-22): promoted as OBSERVED from
+  the PARKED round-one dataviz kit (_proforma/DataViz-interactive.html, 9 review rounds — Dave has
+  NOT signed the kit off). Provisional until his dataviz sign-off; the pro-forma file is untouched.
+
+  WHAT PROMOTED (OBSERVED, kit values verbatim): 580×260 frame, plot 46→568 / 14→230; straight
+  polylines only (dv-line-011), stroke 2.5 round-join/cap, pathLength=2400 (the Batch-9 fix — the
+  dash-draw spans the whole timeline, immune to rescale); per-series MARKER SHAPES (dv-line-002:
+  circle r4.2 · square 8.4 · diamond ±4.9) + letters A/B/C repeated in the legend (§04.3); the
+  Batch-8 EASED marker cadence (delays 0·369·507·616·716·815·921·1041·1183·1365·1628·2400ms — nodes
+  land as the drawing head passes, fast through the middle); draw = 2400ms cubic-bezier(.33,0,.3,1)
+  (Batch 6 slower+gentler); lines + symbols build SIMULTANEOUSLY (Batch 4 supersession).
+  WHAT NEWLY JUDGED (receipted): markers promoted in the kit's BACKGROUND mode — series-colour fill
+  + page-colour stroke at line width (the White/Background comparison toggle is UNRESOLVED in the
+  parked kit; background mode is theme-adaptive and adds no absolute white on dark — halation-aware,
+  R-D6 bloom/dance axis; the open comparison is receipted for Dave). Axis/label/grid inks = ink at
+  alpha (as Chart-bar — kit greys have no post-R-D16 home). Legend promoted as a STATIC list — the
+  kit's series-toggle buttons are JS Layer-2, deliberately not promoted (no pressables, no press
+  physics). Table = native <details> (drawer is Layer-2). DV-D02 static answer: fixed geometry +
+  horizontal scroll; text never scales.
+  RULES: dv-017 var() strokes/fills only · dv-016 ≥3:1 rendered both modes (series measured
+  3.31–5.26 dark/light floor-clean) · colour never the only channel — shape + letter + name
+  (dv-011/dv-line-002) · composites-only type (DV-D05 12px step) · DEF-003 CSS-only motion.
+  Empty state consumes the Empty-state pattern by reference.
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:160ms cubic-bezier(.4,0,.2,1);
+    --draw-slow:2400ms cubic-bezier(.33,0,.3,1); }
+  [data-theme="light"]{
+    --page:#FFFFFF; --ink:#1A1A1A; --baseline:#1A1A1A; --line:#E1E1E1;
+    --data-series-1:#766682; --data-series-2:#A45C3A; --data-series-3:#577C78;
+    --grid-alpha:.10; --axis-alpha:.6;
+    --border-radius-surface:0;
+  }
+  [data-theme="dark"]{
+    --page:#1A1A1A; --ink:#FFFFFF; --baseline:#FFFFFF; --line:#808080;
+    --data-series-1:#766682; --data-series-2:#A45C3A; --data-series-3:#577C78;
+    --grid-alpha:.16; --axis-alpha:.6;
+    --border-radius-surface:0;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page); color:var(--ink);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--ink);
+    background:transparent; color:var(--ink); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+  h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+  .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+
+  figure.dv{margin:0;}
+  .dv-stage{overflow-x:auto; padding-bottom:4px;}   /* DV-D02 static: fixed geometry, scroll — text never scales */
+  .dv-chart-area{width:580px;}
+  .dv-svg{display:block; width:580px; height:260px; overflow:visible;}
+
+  .dv-grid{stroke:var(--ink); stroke-opacity:var(--grid-alpha); stroke-width:1;}
+  line.dv-axis{stroke:var(--baseline); stroke-width:1;}
+  text.dv-axis,text.dv-label{opacity:var(--axis-alpha);}
+
+  /* markers — BACKGROUND mode promoted: series-colour fill + page stroke at line width (2.5) */
+  .dv-mk{fill:var(--sc); stroke:var(--page); stroke-width:2.5; vector-effect:non-scaling-stroke;}
+
+  /* entry motion — CSS only (DEF-003): lines draw (Batch 9 pathLength), markers land on the eased cadence (Batch 8) */
+  @media (prefers-reduced-motion:no-preference){
+    .dv-animate polyline.dv-series{stroke-dasharray:2400; stroke-dashoffset:2400; animation:dvDraw var(--draw-slow) forwards;}
+    .dv-animate g.dv-marker{opacity:0; animation:dvFade var(--ease) both;}
+  }
+  @keyframes dvDraw{to{stroke-dashoffset:0;}}
+  @keyframes dvFade{from{opacity:0;} to{opacity:1;}}
+
+  .dv-legend{list-style:none; display:flex; flex-wrap:wrap; justify-content:center; gap:16px; margin:16px 0 0; padding:0;}  /* kit 14px → 16px: the 4px-grid gate bites resurrections too (stepper precedent) */
+  .dv-legend li{display:flex; align-items:center; gap:8px; color:var(--ink);}
+  .dv-legend .sw{width:12px; height:12px; flex:none;}
+  .dv-legend .dv-key{font-weight:700; opacity:.6; min-width:12px; font-variant-numeric:tabular-nums;}
+
+  details.dv-tabledetails{margin:8px 0 0;}
+  details.dv-tabledetails summary{cursor:pointer; opacity:.6; width:max-content;}
+  details.dv-tabledetails summary:hover{opacity:1; text-decoration:underline; text-underline-offset:3px;}
+  details.dv-tabledetails summary:focus-visible{outline:2px solid var(--ink); outline-offset:2px; opacity:1;}
+  table.dv-table{border-collapse:collapse; margin-top:8px; color:var(--ink);}
+  table.dv-table caption{text-align:left; opacity:.6; margin-bottom:4px;}
+  table.dv-table th,table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
+  table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
+  table.dv-table thead th{opacity:.6; font-weight:500;}
+
+  .dv-empty-frame{width:580px; height:260px; display:flex; align-items:center; justify-content:center;
+    border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
+  .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
+    padding:24px; max-width:480px;}
+  .dv-empty-frame .empty h3{margin:0;}
+  .dv-empty-frame .empty p{margin:0; opacity:.6; max-width:40ch;}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
+      animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls">
+    <button id="themeToggle" type="button">◐ Toggle theme</button>
+    <button id="replay" type="button">↻ Replay motion</button>
+    <span>Line chart — canonical reference (Mono · single series · multi-series · no data)</span>
+  </div>
+
+  <h2>Line — single series</h2>
+  <figure class="dv dv-animate" data-dv-type="line" data-surface="page" role="group" aria-labelledby="cl1-h">
+    <figcaption id="cl1-h" class="sr-only">Account balance by month, pounds thousands</figcaption>
+    <div class="dv-stage"><div class="dv-chart-area">
+      <svg class="dv-svg" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 260" role="img" aria-label="Balance over the year. January 82 rising to December 104, pounds thousands.">
+        <line class="dv-grid" x1="46" y1="230" x2="568" y2="230" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="38" y="233" text-anchor="end">0</text>
+        <line class="dv-grid" x1="46" y1="158" x2="568" y2="158" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="38" y="161" text-anchor="end">50</text>
+        <line class="dv-grid" x1="46" y1="86" x2="568" y2="86" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="38" y="89" text-anchor="end">100</text>
+        <line class="dv-grid" x1="46" y1="14" x2="568" y2="14" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="38" y="17" text-anchor="end">150</text>
+        <line class="dv-axis" x1="46" y1="230" x2="568" y2="230" stroke="var(--baseline)"/>
+        <polyline class="dv-series" pathLength="2400" fill="none" stroke="var(--data-series-1)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" points="46.0,111.9 93.5,114.8 140.9,107.6 188.4,110.5 235.8,103.3 283.3,100.4 330.7,104.7 378.2,97.5 425.6,93.2 473.1,96.1 520.5,88.9 568.0,80.2"><title>Balance</title></polyline>
+        <g class="dv-marker" style="animation-delay:0ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="46.0" cy="111.9" r="4.2"><title>Jan: 82</title></circle></g>
+        <g class="dv-marker" style="animation-delay:369ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="93.5" cy="114.8" r="4.2"><title>Feb: 80</title></circle></g>
+        <g class="dv-marker" style="animation-delay:507ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="140.9" cy="107.6" r="4.2"><title>Mar: 85</title></circle></g>
+        <g class="dv-marker" style="animation-delay:616ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="188.4" cy="110.5" r="4.2"><title>Apr: 83</title></circle></g>
+        <g class="dv-marker" style="animation-delay:716ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="235.8" cy="103.3" r="4.2"><title>May: 88</title></circle></g>
+        <g class="dv-marker" style="animation-delay:815ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="283.3" cy="100.4" r="4.2"><title>Jun: 90</title></circle></g>
+        <g class="dv-marker" style="animation-delay:921ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="330.7" cy="104.7" r="4.2"><title>Jul: 87</title></circle></g>
+        <g class="dv-marker" style="animation-delay:1041ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="378.2" cy="97.5" r="4.2"><title>Aug: 92</title></circle></g>
+        <g class="dv-marker" style="animation-delay:1183ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="425.6" cy="93.2" r="4.2"><title>Sep: 95</title></circle></g>
+        <g class="dv-marker" style="animation-delay:1365ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="473.1" cy="96.1" r="4.2"><title>Oct: 93</title></circle></g>
+        <g class="dv-marker" style="animation-delay:1628ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="520.5" cy="88.9" r="4.2"><title>Nov: 98</title></circle></g>
+        <g class="dv-marker" style="animation-delay:2400ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="568.0" cy="80.2" r="4.2"><title>Dec: 104</title></circle></g>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="46" y="246" text-anchor="middle">Jan</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="93.5" y="246" text-anchor="middle">Feb</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="140.9" y="246" text-anchor="middle">Mar</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="188.4" y="246" text-anchor="middle">Apr</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="235.8" y="246" text-anchor="middle">May</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="283.3" y="246" text-anchor="middle">Jun</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="330.7" y="246" text-anchor="middle">Jul</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="378.2" y="246" text-anchor="middle">Aug</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="425.6" y="246" text-anchor="middle">Sep</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="473.1" y="246" text-anchor="middle">Oct</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="520.5" y="246" text-anchor="middle">Nov</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="568" y="246" text-anchor="middle">Dec</text>
+      </svg>
+    </div></div>
+    <details class="dv-tabledetails">
+      <summary class="t-cm-legal">View as table</summary>
+      <table class="dv-table t-cm-legal">
+        <caption>Account balance by month, pounds thousands</caption>
+        <thead><tr><th scope="col">Month</th><th scope="col">Balance</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Jan</th><td>82</td></tr><tr><th scope="row">Feb</th><td>80</td></tr>
+          <tr><th scope="row">Mar</th><td>85</td></tr><tr><th scope="row">Apr</th><td>83</td></tr>
+          <tr><th scope="row">May</th><td>88</td></tr><tr><th scope="row">Jun</th><td>90</td></tr>
+          <tr><th scope="row">Jul</th><td>87</td></tr><tr><th scope="row">Aug</th><td>92</td></tr>
+          <tr><th scope="row">Sep</th><td>95</td></tr><tr><th scope="row">Oct</th><td>93</td></tr>
+          <tr><th scope="row">Nov</th><td>98</td></tr><tr><th scope="row">Dec</th><td>104</td></tr>
+        </tbody>
+      </table>
+    </details>
+  </figure>
+
+  <h2>Multi-series — shapes + letters (colour never the only channel)</h2>
+  <figure class="dv dv-animate" data-dv-type="multiline" data-surface="page" role="group" aria-labelledby="cl2-h">
+    <figcaption id="cl2-h" class="sr-only">Balances by product by month, pounds thousands</figcaption>
+    <div class="dv-stage"><div class="dv-chart-area">
+      <svg class="dv-svg" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 260" role="img" aria-label="Balances by product over the year: Current, Savings and Investments, pounds thousands.">
+        <line class="dv-grid" x1="46" y1="230" x2="568" y2="230" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="38" y="233" text-anchor="end">0</text>
+        <line class="dv-grid" x1="46" y1="158" x2="568" y2="158" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="38" y="161" text-anchor="end">50</text>
+        <line class="dv-grid" x1="46" y1="86" x2="568" y2="86" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="38" y="89" text-anchor="end">100</text>
+        <line class="dv-grid" x1="46" y1="14" x2="568" y2="14" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="38" y="17" text-anchor="end">150</text>
+        <line class="dv-axis" x1="46" y1="230" x2="568" y2="230" stroke="var(--baseline)"/>
+        <polyline class="dv-series" data-series-group="1" pathLength="2400" fill="none" stroke="var(--data-series-1)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" points="46.0,212.7 93.5,214.2 140.9,211.3 188.4,212.7 235.8,209.8 283.3,211.3 330.7,208.4 378.2,209.8 425.6,207.0 473.1,208.4 520.5,205.5 568.0,204.1"><title>Current</title></polyline>
+        <polyline class="dv-series" data-series-group="2" pathLength="2400" fill="none" stroke="var(--data-series-2)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" points="46.0,111.9 93.5,114.8 140.9,107.6 188.4,110.5 235.8,103.3 283.3,100.4 330.7,104.7 378.2,97.5 425.6,93.2 473.1,96.1 520.5,88.9 568.0,80.2"><title>Savings</title></polyline>
+        <polyline class="dv-series" data-series-group="3" pathLength="2400" fill="none" stroke="var(--data-series-3)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" points="46.0,172.4 93.5,169.5 140.9,171.0 188.4,165.2 235.8,166.6 283.3,160.9 330.7,162.3 378.2,155.1 425.6,150.8 473.1,153.7 520.5,146.5 568.0,140.7"><title>Investments</title></polyline>
+        <g class="dv-marker" data-series-group="1" style="animation-delay:0ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="46.0" cy="212.7" r="4.2"><title>A · Current · Jan: 12</title></circle></g>
+        <g class="dv-marker" data-series-group="1" style="animation-delay:369ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="93.5" cy="214.2" r="4.2"><title>A · Current · Feb: 11</title></circle></g>
+        <g class="dv-marker" data-series-group="1" style="animation-delay:507ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="140.9" cy="211.3" r="4.2"><title>A · Current · Mar: 13</title></circle></g>
+        <g class="dv-marker" data-series-group="1" style="animation-delay:616ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="188.4" cy="212.7" r="4.2"><title>A · Current · Apr: 12</title></circle></g>
+        <g class="dv-marker" data-series-group="1" style="animation-delay:716ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="235.8" cy="209.8" r="4.2"><title>A · Current · May: 14</title></circle></g>
+        <g class="dv-marker" data-series-group="1" style="animation-delay:815ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="283.3" cy="211.3" r="4.2"><title>A · Current · Jun: 13</title></circle></g>
+        <g class="dv-marker" data-series-group="1" style="animation-delay:921ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="330.7" cy="208.4" r="4.2"><title>A · Current · Jul: 15</title></circle></g>
+        <g class="dv-marker" data-series-group="1" style="animation-delay:1041ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="378.2" cy="209.8" r="4.2"><title>A · Current · Aug: 14</title></circle></g>
+        <g class="dv-marker" data-series-group="1" style="animation-delay:1183ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="425.6" cy="207.0" r="4.2"><title>A · Current · Sep: 16</title></circle></g>
+        <g class="dv-marker" data-series-group="1" style="animation-delay:1365ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="473.1" cy="208.4" r="4.2"><title>A · Current · Oct: 15</title></circle></g>
+        <g class="dv-marker" data-series-group="1" style="animation-delay:1628ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="520.5" cy="205.5" r="4.2"><title>A · Current · Nov: 17</title></circle></g>
+        <g class="dv-marker" data-series-group="1" style="animation-delay:2400ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="568.0" cy="204.1" r="4.2"><title>A · Current · Dec: 18</title></circle></g>
+        <g class="dv-marker" data-series-group="2" style="animation-delay:0ms"><rect class="dv-mk" style="--sc:var(--data-series-2)" x="41.8" y="107.7" width="8.4" height="8.4"><title>B · Savings · Jan: 82</title></rect></g>
+        <g class="dv-marker" data-series-group="2" style="animation-delay:369ms"><rect class="dv-mk" style="--sc:var(--data-series-2)" x="89.3" y="110.6" width="8.4" height="8.4"><title>B · Savings · Feb: 80</title></rect></g>
+        <g class="dv-marker" data-series-group="2" style="animation-delay:507ms"><rect class="dv-mk" style="--sc:var(--data-series-2)" x="136.7" y="103.4" width="8.4" height="8.4"><title>B · Savings · Mar: 85</title></rect></g>
+        <g class="dv-marker" data-series-group="2" style="animation-delay:616ms"><rect class="dv-mk" style="--sc:var(--data-series-2)" x="184.2" y="106.3" width="8.4" height="8.4"><title>B · Savings · Apr: 83</title></rect></g>
+        <g class="dv-marker" data-series-group="2" style="animation-delay:716ms"><rect class="dv-mk" style="--sc:var(--data-series-2)" x="231.6" y="99.1" width="8.4" height="8.4"><title>B · Savings · May: 88</title></rect></g>
+        <g class="dv-marker" data-series-group="2" style="animation-delay:815ms"><rect class="dv-mk" style="--sc:var(--data-series-2)" x="279.1" y="96.2" width="8.4" height="8.4"><title>B · Savings · Jun: 90</title></rect></g>
+        <g class="dv-marker" data-series-group="2" style="animation-delay:921ms"><rect class="dv-mk" style="--sc:var(--data-series-2)" x="326.5" y="100.5" width="8.4" height="8.4"><title>B · Savings · Jul: 87</title></rect></g>
+        <g class="dv-marker" data-series-group="2" style="animation-delay:1041ms"><rect class="dv-mk" style="--sc:var(--data-series-2)" x="374.0" y="93.3" width="8.4" height="8.4"><title>B · Savings · Aug: 92</title></rect></g>
+        <g class="dv-marker" data-series-group="2" style="animation-delay:1183ms"><rect class="dv-mk" style="--sc:var(--data-series-2)" x="421.4" y="89.0" width="8.4" height="8.4"><title>B · Savings · Sep: 95</title></rect></g>
+        <g class="dv-marker" data-series-group="2" style="animation-delay:1365ms"><rect class="dv-mk" style="--sc:var(--data-series-2)" x="468.9" y="91.9" width="8.4" height="8.4"><title>B · Savings · Oct: 93</title></rect></g>
+        <g class="dv-marker" data-series-group="2" style="animation-delay:1628ms"><rect class="dv-mk" style="--sc:var(--data-series-2)" x="516.3" y="84.7" width="8.4" height="8.4"><title>B · Savings · Nov: 98</title></rect></g>
+        <g class="dv-marker" data-series-group="2" style="animation-delay:2400ms"><rect class="dv-mk" style="--sc:var(--data-series-2)" x="563.8" y="76.0" width="8.4" height="8.4"><title>B · Savings · Dec: 104</title></rect></g>
+        <g class="dv-marker" data-series-group="3" style="animation-delay:0ms"><polygon class="dv-mk" style="--sc:var(--data-series-3)" points="46.0,167.5 50.9,172.4 46.0,177.3 41.1,172.4"><title>C · Investments · Jan: 40</title></polygon></g>
+        <g class="dv-marker" data-series-group="3" style="animation-delay:369ms"><polygon class="dv-mk" style="--sc:var(--data-series-3)" points="93.5,164.6 98.4,169.5 93.5,174.4 88.6,169.5"><title>C · Investments · Feb: 42</title></polygon></g>
+        <g class="dv-marker" data-series-group="3" style="animation-delay:507ms"><polygon class="dv-mk" style="--sc:var(--data-series-3)" points="140.9,166.1 145.8,171.0 140.9,175.9 136.0,171.0"><title>C · Investments · Mar: 41</title></polygon></g>
+        <g class="dv-marker" data-series-group="3" style="animation-delay:616ms"><polygon class="dv-mk" style="--sc:var(--data-series-3)" points="188.4,160.3 193.3,165.2 188.4,170.1 183.5,165.2"><title>C · Investments · Apr: 45</title></polygon></g>
+        <g class="dv-marker" data-series-group="3" style="animation-delay:716ms"><polygon class="dv-mk" style="--sc:var(--data-series-3)" points="235.8,161.7 240.7,166.6 235.8,171.5 230.9,166.6"><title>C · Investments · May: 44</title></polygon></g>
+        <g class="dv-marker" data-series-group="3" style="animation-delay:815ms"><polygon class="dv-mk" style="--sc:var(--data-series-3)" points="283.3,156.0 288.2,160.9 283.3,165.8 278.4,160.9"><title>C · Investments · Jun: 48</title></polygon></g>
+        <g class="dv-marker" data-series-group="3" style="animation-delay:921ms"><polygon class="dv-mk" style="--sc:var(--data-series-3)" points="330.7,157.4 335.6,162.3 330.7,167.2 325.8,162.3"><title>C · Investments · Jul: 47</title></polygon></g>
+        <g class="dv-marker" data-series-group="3" style="animation-delay:1041ms"><polygon class="dv-mk" style="--sc:var(--data-series-3)" points="378.2,150.2 383.1,155.1 378.2,160.0 373.3,155.1"><title>C · Investments · Aug: 52</title></polygon></g>
+        <g class="dv-marker" data-series-group="3" style="animation-delay:1183ms"><polygon class="dv-mk" style="--sc:var(--data-series-3)" points="425.6,145.9 430.5,150.8 425.6,155.7 420.7,150.8"><title>C · Investments · Sep: 55</title></polygon></g>
+        <g class="dv-marker" data-series-group="3" style="animation-delay:1365ms"><polygon class="dv-mk" style="--sc:var(--data-series-3)" points="473.1,148.8 478.0,153.7 473.1,158.6 468.2,153.7"><title>C · Investments · Oct: 53</title></polygon></g>
+        <g class="dv-marker" data-series-group="3" style="animation-delay:1628ms"><polygon class="dv-mk" style="--sc:var(--data-series-3)" points="520.5,141.6 525.4,146.5 520.5,151.4 515.6,146.5"><title>C · Investments · Nov: 58</title></polygon></g>
+        <g class="dv-marker" data-series-group="3" style="animation-delay:2400ms"><polygon class="dv-mk" style="--sc:var(--data-series-3)" points="568.0,135.8 572.9,140.7 568.0,145.6 563.1,140.7"><title>C · Investments · Dec: 62</title></polygon></g>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="46" y="246" text-anchor="middle">Jan</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="93.5" y="246" text-anchor="middle">Feb</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="140.9" y="246" text-anchor="middle">Mar</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="188.4" y="246" text-anchor="middle">Apr</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="235.8" y="246" text-anchor="middle">May</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="283.3" y="246" text-anchor="middle">Jun</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="330.7" y="246" text-anchor="middle">Jul</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="378.2" y="246" text-anchor="middle">Aug</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="425.6" y="246" text-anchor="middle">Sep</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="473.1" y="246" text-anchor="middle">Oct</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="520.5" y="246" text-anchor="middle">Nov</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="568" y="246" text-anchor="middle">Dec</text>
+      </svg>
+    </div></div>
+    <ul class="dv-legend center t-cm-legal">
+      <li><span class="sw" style="background:var(--data-series-1)"></span><span class="dv-key">A</span> Current</li>
+      <li><span class="sw" style="background:var(--data-series-2)"></span><span class="dv-key">B</span> Savings</li>
+      <li><span class="sw" style="background:var(--data-series-3)"></span><span class="dv-key">C</span> Investments</li>
+    </ul>
+    <details class="dv-tabledetails">
+      <summary class="t-cm-legal">View as table</summary>
+      <table class="dv-table t-cm-legal">
+        <caption>Balances by product by month, pounds thousands</caption>
+        <thead><tr><th scope="col">Month</th><th scope="col">Current</th><th scope="col">Savings</th><th scope="col">Investments</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Jan</th><td>12</td><td>82</td><td>40</td></tr>
+          <tr><th scope="row">Feb</th><td>11</td><td>80</td><td>42</td></tr>
+          <tr><th scope="row">Mar</th><td>13</td><td>85</td><td>41</td></tr>
+          <tr><th scope="row">Apr</th><td>12</td><td>83</td><td>45</td></tr>
+          <tr><th scope="row">May</th><td>14</td><td>88</td><td>44</td></tr>
+          <tr><th scope="row">Jun</th><td>13</td><td>90</td><td>48</td></tr>
+          <tr><th scope="row">Jul</th><td>15</td><td>87</td><td>47</td></tr>
+          <tr><th scope="row">Aug</th><td>14</td><td>92</td><td>52</td></tr>
+          <tr><th scope="row">Sep</th><td>16</td><td>95</td><td>55</td></tr>
+          <tr><th scope="row">Oct</th><td>15</td><td>93</td><td>53</td></tr>
+          <tr><th scope="row">Nov</th><td>17</td><td>98</td><td>58</td></tr>
+          <tr><th scope="row">Dec</th><td>18</td><td>104</td><td>62</td></tr>
+        </tbody>
+      </table>
+    </details>
+  </figure>
+
+  <h2>No data — the Empty-state pattern, consumed by reference</h2>
+  <div class="dv-stage"><div class="dv-empty-frame" role="group" aria-label="Balance over the year, no data">
+    <div class="empty">
+      <h3 class="t-cm-caption">No data to display</h3>
+      <p class="t-cm-legal">Balances appear here once the account has activity for the selected period.</p>
+    </div>
+  </div></div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Line chart",
+    "vars": { "--page": "background/default", "--ink": "text/default", "--baseline": "border/action-strong",
+              "--line": "border/subtle",
+              "--data-series-1": "data/series/1", "--data-series-2": "data/series/2", "--data-series-3": "data/series/3",
+              "--border-radius-surface": "border-radius/surface" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "data/series/1", "bg": "background/default", "context": "ui" },
+      { "fg": "data/series/2", "bg": "background/default", "context": "ui" },
+      { "fg": "data/series/3", "bg": "background/default", "context": "ui" }
+    ],
+    "icons": {},
+    "requiredAria": ["role=\"group\"", "aria-labelledby", "role=\"img\"", "aria-label"],
+    "$note": "PROVISIONAL-AGENT promotion of the PARKED dataviz kit (9 rounds, not signed off). Straight polylines only (dv-line-011); per-series marker shapes + letters + names — colour never the only channel (dv-line-002/dv-011/§04.3). Markers promoted in the kit's BACKGROUND mode (series fill + page stroke; the White/Background toggle comparison is UNRESOLVED kit-side — receipted for Dave). Batch-8 eased marker cadence + Batch-9 pathLength draw lifted verbatim. Legend is STATIC — the kit's series toggles are JS Layer-2, not promoted (no pressables). Axis/grid = ink at alpha (receipted judgment, as Chart-bar)."
+  }
+  </script>
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    document.getElementById('replay').addEventListener('click', ()=>{ document.querySelectorAll('figure.dv').forEach(f=>{ f.classList.remove('dv-animate'); void f.offsetWidth; f.classList.add('dv-animate'); }); });
+  </script>
+</body>
+</html>

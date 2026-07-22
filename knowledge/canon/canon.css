@@ -3359,6 +3359,242 @@
 }
 
 /* ============================================================
+   Chart-bar  (from snippets/Chart-bar.reference.html)
+   Aria: role="group", aria-labelledby, role="img", aria-label
+   Scope: .cn-chart-bar   ============================================================ */
+.cn-chart-bar{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 160ms cubic-bezier(.4,0,.2,1);
+  --grow: 760ms cubic-bezier(.22,.61,.36,1);
+  --page: var(--background-default);
+  --ink: var(--text-default);
+  --baseline: var(--border-action-strong);
+  --line: var(--border-subtle);
+  --status-breach: var(--rag-error);
+  --status-watch: var(--rag-warning);
+  --status-healthy: var(--rag-success);
+  --status-info: var(--rag-information);
+  --grid-alpha: .10;
+  --axis-alpha: .6;
+}
+[data-theme="dark"] .cn-chart-bar{
+  --grid-alpha: .16;
+}
+.cn-chart-bar h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-chart-bar .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+.cn-chart-bar figure.dv{margin:0;}
+.cn-chart-bar .dv-stage{overflow-x:auto; padding-bottom:4px;}
+/* DV-D02 static: fixed geometry, scroll — text never scales */
+.cn-chart-bar .dv-chart-area{width:580px;}
+.cn-chart-bar .dv-svg{display:block; width:580px; height:260px; overflow:visible;}
+.cn-chart-bar .dv-grid{stroke:var(--ink); stroke-opacity:var(--grid-alpha); stroke-width:1;}
+.cn-chart-bar line.dv-axis{stroke:var(--baseline); stroke-width:1;}
+.cn-chart-bar text.dv-axis, .cn-chart-bar text.dv-label{opacity:var(--axis-alpha);}
+.cn-chart-bar rect.dv-series{transition:filter var(--ease);}
+.cn-chart-bar rect.dv-series:hover{filter:brightness(1.12);}
+/* entry motion — CSS only (DEF-003); kit-reviewed grow-from-baseline, staggered inline delays */
+@media (prefers-reduced-motion:no-preference){
+.cn-chart-bar .dv-animate rect.dv-series[data-grow="up"]{transform-box:fill-box; transform-origin:bottom; animation:cn-chart-bar-dvGrowY var(--grow) both;}
+.cn-chart-bar .dv-animate rect.dv-series[data-grow="right"]{transform-box:fill-box; transform-origin:left; animation:cn-chart-bar-dvGrowX var(--grow) both;}
+}
+@keyframes cn-chart-bar-dvGrowY{from{transform:scaleY(0);}}
+@keyframes cn-chart-bar-dvGrowX{from{transform:scaleX(0);}}
+/* table affordance — native disclosure (zero JS); the kit's drawer overlay is Layer-2 */
+.cn-chart-bar details.dv-tabledetails{margin:8px 0 0;}
+.cn-chart-bar details.dv-tabledetails summary{cursor:pointer; opacity:.6; width:max-content;}
+.cn-chart-bar details.dv-tabledetails summary:hover{opacity:1; text-decoration:underline; text-underline-offset:3px;}
+.cn-chart-bar details.dv-tabledetails summary:focus-visible{outline:2px solid var(--ink); outline-offset:2px; opacity:1;}
+.cn-chart-bar table.dv-table{border-collapse:collapse; margin-top:8px; color:var(--ink);}
+.cn-chart-bar table.dv-table caption{text-align:left; opacity:.6; margin-bottom:4px;}
+.cn-chart-bar table.dv-table th, .cn-chart-bar table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
+.cn-chart-bar table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
+.cn-chart-bar table.dv-table thead th{opacity:.6; font-weight:500;}
+/* empty / no-data — the Empty-state pattern consumed by reference (dashed frame, title carries meaning) */
+.cn-chart-bar .dv-empty-frame{width:580px; height:260px; display:flex; align-items:center; justify-content:center;
+    border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
+.cn-chart-bar .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
+    padding:24px; max-width:480px;}
+.cn-chart-bar .dv-empty-frame .empty h3{margin:0;}
+.cn-chart-bar .dv-empty-frame .empty p{margin:0; opacity:.6; max-width:40ch;}
+@media (prefers-reduced-motion: reduce){
+
+}
+
+/* ============================================================
+   Chart-donut  (from snippets/Chart-donut.reference.html)
+   Aria: role="group", aria-labelledby, role="img", aria-label
+   Scope: .cn-chart-donut   ============================================================ */
+.cn-chart-donut{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 160ms cubic-bezier(.4,0,.2,1);
+  --page: var(--background-default);
+  --ink: var(--text-default);
+  --line: var(--border-subtle);
+}
+.cn-chart-donut h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-chart-donut .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+.cn-chart-donut figure.dv{margin:0;}
+.cn-chart-donut .dv-stage{overflow-x:auto; padding-bottom:4px;}
+.cn-chart-donut .dv-donut-row{display:flex; gap:28px; align-items:center; flex-wrap:wrap;}
+.cn-chart-donut .dv-svg{display:block; overflow:visible;}
+.cn-chart-donut path.dv-series{transition:filter var(--ease);}
+.cn-chart-donut path.dv-series:hover{filter:brightness(1.12);}
+.cn-chart-donut .dv-leader{stroke:var(--line); stroke-width:1; fill:none;}
+.cn-chart-donut text.dv-key-el{opacity:1;}
+.cn-chart-donut text.dv-val{fill:var(--ink);}
+.cn-chart-donut text.dv-direct{fill:var(--ink);}
+.cn-chart-donut text.dv-direct .amt{font-weight:500;}
+/* kit 600 → 500: no 600 weight on brand (receipted) */
+.cn-chart-donut .dv-legend{list-style:none; display:flex; margin:0; padding:0;}
+.cn-chart-donut .dv-legend.vert{flex-direction:column; gap:12px;}
+.cn-chart-donut .dv-legend li{display:flex; align-items:center; gap:8px; color:var(--ink);}
+.cn-chart-donut .dv-legend .sw{width:12px; height:12px; flex:none;}
+.cn-chart-donut .dv-legend .dv-key{font-weight:700; opacity:.6; min-width:12px; font-variant-numeric:tabular-nums;}
+.cn-chart-donut details.dv-tabledetails{margin:8px 0 0;}
+.cn-chart-donut details.dv-tabledetails summary{cursor:pointer; opacity:.6; width:max-content;}
+.cn-chart-donut details.dv-tabledetails summary:hover{opacity:1; text-decoration:underline; text-underline-offset:3px;}
+.cn-chart-donut details.dv-tabledetails summary:focus-visible{outline:2px solid var(--ink); outline-offset:2px; opacity:1;}
+.cn-chart-donut table.dv-table{border-collapse:collapse; margin-top:8px; color:var(--ink);}
+.cn-chart-donut table.dv-table caption{text-align:left; opacity:.6; margin-bottom:4px;}
+.cn-chart-donut table.dv-table th, .cn-chart-donut table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
+.cn-chart-donut table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
+.cn-chart-donut table.dv-table thead th{opacity:.6; font-weight:500;}
+.cn-chart-donut .dv-empty-frame{width:400px; height:260px; display:flex; align-items:center; justify-content:center;
+    border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
+.cn-chart-donut .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
+    padding:24px; max-width:320px;}
+.cn-chart-donut .dv-empty-frame .empty h3{margin:0;}
+.cn-chart-donut .dv-empty-frame .empty p{margin:0; opacity:.6; max-width:40ch;}
+@media (prefers-reduced-motion: reduce){
+
+}
+
+/* ============================================================
+   Chart-line  (from snippets/Chart-line.reference.html)
+   Aria: role="group", aria-labelledby, role="img", aria-label
+   Scope: .cn-chart-line   ============================================================ */
+.cn-chart-line{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 160ms cubic-bezier(.4,0,.2,1);
+  --draw-slow: 2400ms cubic-bezier(.33,0,.3,1);
+  --page: var(--background-default);
+  --ink: var(--text-default);
+  --baseline: var(--border-action-strong);
+  --line: var(--border-subtle);
+  --grid-alpha: .10;
+  --axis-alpha: .6;
+}
+[data-theme="dark"] .cn-chart-line{
+  --grid-alpha: .16;
+}
+.cn-chart-line h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-chart-line .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+.cn-chart-line figure.dv{margin:0;}
+.cn-chart-line .dv-stage{overflow-x:auto; padding-bottom:4px;}
+/* DV-D02 static: fixed geometry, scroll — text never scales */
+.cn-chart-line .dv-chart-area{width:580px;}
+.cn-chart-line .dv-svg{display:block; width:580px; height:260px; overflow:visible;}
+.cn-chart-line .dv-grid{stroke:var(--ink); stroke-opacity:var(--grid-alpha); stroke-width:1;}
+.cn-chart-line line.dv-axis{stroke:var(--baseline); stroke-width:1;}
+.cn-chart-line text.dv-axis, .cn-chart-line text.dv-label{opacity:var(--axis-alpha);}
+/* markers — BACKGROUND mode promoted: series-colour fill + page stroke at line width (2.5) */
+.cn-chart-line .dv-mk{fill:var(--sc); stroke:var(--page); stroke-width:2.5; vector-effect:non-scaling-stroke;}
+/* entry motion — CSS only (DEF-003): lines draw (Batch 9 pathLength), markers land on the eased cadence (Batch 8) */
+@media (prefers-reduced-motion:no-preference){
+.cn-chart-line .dv-animate polyline.dv-series{stroke-dasharray:2400; stroke-dashoffset:2400; animation:cn-chart-line-dvDraw var(--draw-slow) forwards;}
+.cn-chart-line .dv-animate g.dv-marker{opacity:0; animation:cn-chart-line-dvFade var(--ease) both;}
+}
+@keyframes cn-chart-line-dvDraw{to{stroke-dashoffset:0;}}
+@keyframes cn-chart-line-dvFade{from{opacity:0;} to{opacity:1;}}
+.cn-chart-line .dv-legend{list-style:none; display:flex; flex-wrap:wrap; justify-content:center; gap:16px; margin:16px 0 0; padding:0;}
+/* kit 14px → 16px: the 4px-grid gate bites resurrections too (stepper precedent) */
+.cn-chart-line .dv-legend li{display:flex; align-items:center; gap:8px; color:var(--ink);}
+.cn-chart-line .dv-legend .sw{width:12px; height:12px; flex:none;}
+.cn-chart-line .dv-legend .dv-key{font-weight:700; opacity:.6; min-width:12px; font-variant-numeric:tabular-nums;}
+.cn-chart-line details.dv-tabledetails{margin:8px 0 0;}
+.cn-chart-line details.dv-tabledetails summary{cursor:pointer; opacity:.6; width:max-content;}
+.cn-chart-line details.dv-tabledetails summary:hover{opacity:1; text-decoration:underline; text-underline-offset:3px;}
+.cn-chart-line details.dv-tabledetails summary:focus-visible{outline:2px solid var(--ink); outline-offset:2px; opacity:1;}
+.cn-chart-line table.dv-table{border-collapse:collapse; margin-top:8px; color:var(--ink);}
+.cn-chart-line table.dv-table caption{text-align:left; opacity:.6; margin-bottom:4px;}
+.cn-chart-line table.dv-table th, .cn-chart-line table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
+.cn-chart-line table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
+.cn-chart-line table.dv-table thead th{opacity:.6; font-weight:500;}
+.cn-chart-line .dv-empty-frame{width:580px; height:260px; display:flex; align-items:center; justify-content:center;
+    border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
+.cn-chart-line .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
+    padding:24px; max-width:480px;}
+.cn-chart-line .dv-empty-frame .empty h3{margin:0;}
+.cn-chart-line .dv-empty-frame .empty p{margin:0; opacity:.6; max-width:40ch;}
+@media (prefers-reduced-motion: reduce){
+
+}
+
+/* ============================================================
+   Chart-sparkline  (from snippets/Chart-sparkline.reference.html)
+   Aria: role="group", aria-labelledby, role="img", aria-label, aria-hidden="true"
+   Scope: .cn-chart-sparkline   ============================================================ */
+.cn-chart-sparkline{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 160ms cubic-bezier(.4,0,.2,1);
+  --draw: 1000ms cubic-bezier(.22,.61,.36,1);
+  --draw-slow: 2400ms cubic-bezier(.33,0,.3,1);
+  --page: var(--background-default);
+  --ink: var(--text-default);
+  --line: var(--border-subtle);
+  --grid-alpha: .10;
+}
+[data-theme="dark"] .cn-chart-sparkline{
+  --grid-alpha: .16;
+}
+.cn-chart-sparkline h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-chart-sparkline .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+.cn-chart-sparkline figure.dv{margin:0;}
+.cn-chart-sparkline .dv-stage{overflow-x:auto; padding-bottom:4px;}
+/* standalone spark — 340×64 render of the 580×90 frame (kit); no text inside, so non-uniform scale is safe */
+.cn-chart-sparkline .spark-standalone{display:block; width:340px; height:64px; overflow:visible;}
+.cn-chart-sparkline .dv-grid{stroke:var(--ink); stroke-opacity:var(--grid-alpha); stroke-width:1; vector-effect:non-scaling-stroke;}
+.cn-chart-sparkline .spark-standalone .dv-series{fill:none; stroke:var(--data-series-1); stroke-width:2.5;
+    stroke-linejoin:round; stroke-linecap:round; vector-effect:non-scaling-stroke;}
+.cn-chart-sparkline .spark-standalone circle.dv-series{fill:var(--data-series-1); stroke:none;}
+/* inline spark — the KPI / Stat-card scale (200×48 @ 44px, stroke 2, dot r3) */
+.cn-chart-sparkline .spark-inline{display:block; width:200px; height:44px; overflow:visible;}
+.cn-chart-sparkline .spark-inline .dv-base{stroke:var(--ink); stroke-opacity:var(--grid-alpha); stroke-width:1; vector-effect:non-scaling-stroke;}
+.cn-chart-sparkline .spark-inline .dv-series{fill:none; stroke:var(--data-series-1); stroke-width:2;
+    stroke-linecap:round; stroke-linejoin:round; vector-effect:non-scaling-stroke;}
+.cn-chart-sparkline .spark-inline .dv-end{fill:var(--data-series-1);}
+.cn-chart-sparkline .spark-caption{opacity:.6; margin:4px 0 0;}
+/* entry motion — CSS only (DEF-003): the draw, at each scale's reviewed pace */
+@media (prefers-reduced-motion:no-preference){
+.cn-chart-sparkline .dv-animate .spark-standalone polyline.dv-series{stroke-dasharray:2400; stroke-dashoffset:2400; animation:cn-chart-sparkline-dvDraw var(--draw-slow) forwards;}
+.cn-chart-sparkline .dv-animate .spark-standalone circle.dv-series{opacity:0; animation:cn-chart-sparkline-dvFade var(--ease) both; animation-delay:2400ms;}
+.cn-chart-sparkline .dv-animate .spark-inline .dv-series{stroke-dasharray:600; stroke-dashoffset:600; animation:cn-chart-sparkline-dvDrawShort var(--draw) forwards;}
+.cn-chart-sparkline .dv-animate .spark-inline .dv-end{opacity:0; animation:cn-chart-sparkline-dvFade var(--ease) both; animation-delay:1000ms;}
+}
+@keyframes cn-chart-sparkline-dvDraw{to{stroke-dashoffset:0;}}
+@keyframes cn-chart-sparkline-dvDrawShort{to{stroke-dashoffset:0;}}
+@keyframes cn-chart-sparkline-dvFade{from{opacity:0;} to{opacity:1;}}
+.cn-chart-sparkline details.dv-tabledetails{margin:8px 0 0;}
+.cn-chart-sparkline details.dv-tabledetails summary{cursor:pointer; opacity:.6; width:max-content;}
+.cn-chart-sparkline details.dv-tabledetails summary:hover{opacity:1; text-decoration:underline; text-underline-offset:3px;}
+.cn-chart-sparkline details.dv-tabledetails summary:focus-visible{outline:2px solid var(--ink); outline-offset:2px; opacity:1;}
+.cn-chart-sparkline table.dv-table{border-collapse:collapse; margin-top:8px; color:var(--ink);}
+.cn-chart-sparkline table.dv-table caption{text-align:left; opacity:.6; margin-bottom:4px;}
+.cn-chart-sparkline table.dv-table th, .cn-chart-sparkline table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
+.cn-chart-sparkline table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
+.cn-chart-sparkline table.dv-table thead th{opacity:.6; font-weight:500;}
+.cn-chart-sparkline .dv-empty-frame{width:340px; height:64px; display:flex; align-items:center; justify-content:center;
+    border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
+.cn-chart-sparkline .dv-empty-frame p{margin:0; opacity:.6;}
+@media (prefers-reduced-motion: reduce){
+
+}
+
+/* ============================================================
    Confirmation  (from snippets/Confirmation.reference.html)
    Aria: role="group", aria-labelledby, aria-hidden="true"
    Reuses: Button (primary + ghost)
@@ -3417,6 +3653,473 @@
 @media (prefers-reduced-motion: reduce){
 .cn-confirmation .confirm .success, .cn-confirmation .confirm__title, .cn-confirmation .confirm__msg, .cn-confirmation .confirm__actions{animation:none !important;}
 .cn-confirmation .confirm .btn:active{filter:none !important;}
+}
+
+/* ============================================================
+   Data-grid  (from snippets/Data-grid.reference.html)
+   Aria: role="grid", aria-sort, aria-selected, aria-rowcount, aria-rowindex, aria-current, aria-busy, aria-live, role="status", aria-label
+   Finding: The INTERACTIVE sibling Table's rubric decision A anticipated (2026-06-22: 'if a sortable table is ever needed it should be a distinct component'). Table stays passive/semantic; the grid owns sort/filter/select/edit on the APG grid pattern.
+   Finding: Responsive = horizontal scroll + sticky header, a DELIBERATE divergence from Table's card-collapse: collapsing to cards orphans the columnheader/aria-sort relationships the grid's AT contract depends on (peer shape: Carbon/Ant/AG-Grid). Reflow duty lives with the passive Table.
+   Finding: Field chrome (search filter + edit-cell active stroke) is COPIED from Search-field/Input-fields — marked FIELD-CHROME-COPY, receipted as field-family accretion evidence (ADR-0013 ruling 3, cross-lane duplication now ≥8 files).
+   Finding: Loading bones re-state Skeleton-loader's recipe minimally (by-reference consumption forced into duplication — receipted; skeleton-family = accretion candidate).
+   Finding: No error/validation state in v1 — the input-error null slot (ADR-0010) is an open Dave question (wave-1 A-Q2); edit commits are unvalidated free text.
+   Finding: No density toggle in v1 (View-options territory) and no column show/hide — deferred; view-column glyph exists in the library when it lands.
+   Finding: --selbg and --bone resolve to the same hex as hovers in Mono; they bind DISTINCT semantic sources (form/background/hover, tertiary/background/hover) so themes can split them.
+   Scope: .cn-data-grid   ============================================================ */
+.cn-data-grid{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 140ms ease;
+  --spring: 300ms cubic-bezier(.5,1.6,.4,1);
+  --press: 90ms cubic-bezier(0,0,.58,1);
+  --phys-size: 120;
+  --cell-py: 10px;
+  --cell-px: 12px;
+  --header: var(--table-header-background);
+  --cell: var(--background-default);
+  --border: var(--table-border);
+  --text: var(--text-default);
+  --icon: var(--icon-default);
+  --hover: var(--tertiary-background-hover);
+  --page: var(--background-default);
+  --focus: var(--focus-ring);
+  --fborder: var(--form-border-default);
+  --bar: var(--form-border-active);
+  --fhover: var(--form-background-hover);
+  --selbg: var(--form-background-hover);
+  --checked: var(--secondary-background-default);
+  --onchk: var(--text-on-inverse);
+  --disabled: var(--text-disabled);
+  --pressedbg: var(--tertiary-background-pressed);
+  --onpressed: var(--text-reverse);
+  --currentbd: var(--tertiary-border-default);
+  --bone: var(--tertiary-background-hover);
+  --press-travel: var(--component-type-button-family-press-travel);
+  --press-darken: var(--component-type-button-family-press-darken);
+}
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. Added 2026-06-29. */
+.cn-data-grid :is(button, .cn-data-grid a, .cn-data-grid label, .cn-data-grid span, .cn-data-grid small, .cn-data-grid strong, .cn-data-grid em, .cn-data-grid b, .cn-data-grid i, .cn-data-grid th, .cn-data-grid td, .cn-data-grid dt, .cn-data-grid dd, .cn-data-grid li, .cn-data-grid figcaption, .cn-data-grid legend, .cn-data-grid caption, .cn-data-grid summary, .cn-data-grid output, .cn-data-grid time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+/* ---- demo controls (harness chrome, not the component) ---- */
+/* namespaced .dgseg — .seg is a type.css-bound blast radius this file must not join (gate-caught) */
+.cn-data-grid .dgseg{display:inline-flex; border:1px solid var(--fborder);}
+.cn-data-grid .dgseg button{font:inherit; padding:8px 12px; border:0; border-left:1px solid var(--fborder);
+    background:transparent; color:var(--text); cursor:pointer; transition:background var(--ease);}
+.cn-data-grid .dgseg button:first-child{border-left:0;}
+.cn-data-grid .dgseg button:hover{background:var(--hover);}
+.cn-data-grid .dgseg button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+.cn-data-grid .dgseg button[aria-pressed="true"]{background:var(--header); font-weight:500;}
+.cn-data-grid .dgseg button:disabled{cursor:default;}
+.cn-data-grid .visually-hidden{position:absolute; width:1px; height:1px; margin:-1px; padding:0; border:0;
+    clip:rect(0 0 0 0); clip-path:inset(50%); overflow:hidden; white-space:nowrap;}
+/* ================= THE GRID ================= */
+.cn-data-grid .dg{width:var(--demo-width, 760px); max-width:100%;}
+.cn-data-grid .dg-head{display:flex; align-items:baseline; gap:12px; margin-bottom:12px;}
+.cn-data-grid .dg-count{opacity:.6; margin-left:auto;}
+/* toolbar — search filter.
+     ===== FIELD-CHROME-COPY (from snippets/Search-field boxed + Input-fields active recipe;
+     field-family accretion evidence, ADR-0013 ruling 3 — see worker receipt) ===== */
+.cn-data-grid .dg-toolbar{display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:12px;}
+.cn-data-grid .dgsearch{position:relative; display:flex; align-items:center; height:48px; flex:1 1 240px; max-width:360px;
+    border:1px solid var(--fborder); border-radius:var(--border-radius-control); padding:0 8px;
+    transition:background var(--ease), border-color var(--ease), box-shadow var(--ease);}
+.cn-data-grid .dgsearch .mag{flex:none; display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px;
+    color:var(--icon); margin:0 12px 0 2px;}
+.cn-data-grid .dgsearch .mag svg{width:20px; height:20px; fill:currentColor;}
+.cn-data-grid .dgsearch input{flex:1; min-width:0; height:100%; border:0; background:transparent; color:var(--text); outline:none;}
+.cn-data-grid .dgsearch input::placeholder{color:var(--text); opacity:.5;}
+.cn-data-grid .dgsearch input[type="search"]::-webkit-search-cancel-button{-webkit-appearance:none; appearance:none;}
+.cn-data-grid .dgsearch:hover{background:var(--fhover);}
+.cn-data-grid .dgsearch:focus-within{border-color:var(--bar); box-shadow:inset 0 -4px 0 0 var(--bar); background:var(--page);}
+/* ===== FIELD-CHROME-COPY END ===== */
+.cn-data-grid .dgs-clear{flex:none; width:24px; height:24px; border:0; background:transparent; color:var(--icon); cursor:pointer;
+    display:inline-flex; align-items:center; justify-content:center;}
+/* form furniture — Search-field precedent, no press physics */
+.cn-data-grid .dgs-clear svg{width:12px; height:12px; fill:currentColor;}
+.cn-data-grid .dgs-clear:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+.cn-data-grid .dgsearch input:placeholder-shown ~ .dgs-clear{display:none;}
+/* applied filters — dismissible chips (Tags recipe: em-based, CONTROL radius role; namespaced
+     .fchip — .tag/.chip classnames are type.css-bound blast radii this file must not join) */
+.cn-data-grid .fbar{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:12px;}
+.cn-data-grid .fbar[hidden]{display:none;}
+.cn-data-grid .fchip{display:inline-flex; align-items:center; gap:.46em; height:2.15em; padding:0 .77em;
+    border:1px solid var(--fborder); border-radius:var(--border-radius-control); background:transparent; color:var(--text);
+    max-width:100%; white-space:nowrap;}
+.cn-data-grid .fchip .x{position:relative; display:inline-flex; width:24px; height:24px; padding:0; border:0; background:transparent;
+    color:var(--icon); cursor:pointer; align-items:center; justify-content:center; flex:0 0 auto;
+    --phys-size:24;   /* LOCAL override — the dismiss-× size (Toast/Banner idiom, pixel-true B-D7) */
+    transition:color var(--ease), transform var(--spring), filter var(--press);}
+.cn-data-grid .fchip .x svg{width:12px; height:12px; fill:currentColor;}
+.cn-data-grid .fchip .x:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+/* the scroll region — horizontal overflow, NOT card-collapse (see header comment) */
+.cn-data-grid .dg-scroll{overflow-x:auto; border:1px solid var(--border); border-radius:var(--border-radius-surface);}
+.cn-data-grid table{border-collapse:collapse; width:100%; min-width:640px; background:var(--cell);}
+.cn-data-grid th, .cn-data-grid td{padding:var(--cell-py) var(--cell-px); border:1px solid var(--border); text-align:left; vertical-align:middle;
+    color:var(--text);}
+.cn-data-grid thead th{background:var(--header); position:sticky; top:0; z-index:2; padding:0;}
+/* the sort button carries the padding */
+.cn-data-grid thead th.sel{padding:var(--cell-py) var(--cell-px);}
+.cn-data-grid td.num{text-align:right;}
+.cn-data-grid td.num .t-cm-figure-5{display:inline-block;}
+/* sort headers — full-cell buttons; type = .t-cm-button composite (16/500, the Table header weight) */
+.cn-data-grid .sort{display:flex; width:100%; min-height:44px; align-items:center; gap:8px; padding:var(--cell-py) var(--cell-px);
+    border:0; background:transparent; color:var(--text); cursor:pointer; text-align:left;
+    transition:background var(--ease), transform var(--spring), filter var(--press);}
+.cn-data-grid .sort:hover{background:var(--hover);}
+.cn-data-grid .sort:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+.cn-data-grid .sort .ic{display:none; flex:none; width:16px; height:16px; margin-left:auto;}
+.cn-data-grid .sort .ic svg{width:16px; height:16px; display:block; fill:currentColor;}
+.cn-data-grid th[aria-sort="none"] .ic-none{display:inline-flex;}
+.cn-data-grid th[aria-sort="ascending"] .ic-asc{display:inline-flex;}
+.cn-data-grid th[aria-sort="descending"] .ic-desc{display:inline-flex;}
+/* rows — hover (Table's affordance) · selected = tint + inset start bar + checked box (never colour alone) */
+.cn-data-grid tbody tr{transition:background var(--ease);}
+.cn-data-grid tbody tr:hover td{background:var(--hover);}
+.cn-data-grid tbody tr[aria-selected="true"] td{background:var(--selbg); box-shadow:inset 0 1px 0 0 var(--border);}
+.cn-data-grid tbody tr[aria-selected="true"] td:first-child{box-shadow:inset 4px 0 0 0 var(--bar);}
+/* cell focus — the roving tab stop is the CELL */
+.cn-data-grid .dg :is(th, .cn-data-grid td):focus{outline:none;}
+.cn-data-grid .dg :is(th, .cn-data-grid td):focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+/* selection checkbox — Selection-controls anatomy (22×22 intrinsic square, tick/mixed bespoke
+     glyphs, checked = inverting fill). Colour states only: form-control precedent (Account-selector),
+     NO scale physics — that experiment stays Selection-controls' own. */
+.cn-data-grid .cbx{position:relative; display:inline-flex; width:22px; height:22px; vertical-align:middle;}
+.cn-data-grid .cbx input{position:absolute; inset:0; width:22px; height:22px; margin:0; opacity:0; cursor:pointer;}
+.cn-data-grid .cbx .box{width:22px; height:22px; flex:none; border:2px solid var(--fborder); border-radius:var(--border-radius-control);
+    background:transparent; display:inline-flex; align-items:center; justify-content:center;
+    transition:background var(--ease), border-color var(--ease);}
+.cn-data-grid .cbx .box svg{width:14px; height:14px;}
+.cn-data-grid .cbx .box path{stroke:var(--onchk); stroke-width:2.4; fill:none;}
+.cn-data-grid .cbx .box .tick, .cn-data-grid .cbx .box .mixed{display:none;}
+.cn-data-grid .cbx:hover .box{border-color:var(--bar);}
+.cn-data-grid .cbx input:checked ~ .box, .cn-data-grid .cbx input:indeterminate ~ .box{background:var(--checked); border-color:var(--checked);}
+.cn-data-grid .cbx input:checked ~ .box .tick{display:block;}
+.cn-data-grid .cbx input:indeterminate ~ .box .mixed{display:block;}
+.cn-data-grid .cbx input:focus-visible ~ .box{outline:2px solid var(--focus); outline-offset:2px;}
+/* edit-in-place — the Reference column. Edit affordance appears on hover/cell focus (full-ink
+     glyph, icon-011); editing chrome = the field ACTIVE recipe (border/active 4px bottom stroke
+     + page fill) — FIELD-CHROME-COPY (partial), see worker receipt. */
+.cn-data-grid td.edit .val{display:inline-flex; align-items:center; gap:8px; min-width:0;}
+.cn-data-grid td.edit .pen{display:none; flex:none; width:16px; height:16px; color:var(--icon);}
+.cn-data-grid td.edit .pen svg{width:16px; height:16px; display:block; fill:currentColor;}
+.cn-data-grid td.edit:hover .pen, .cn-data-grid td.edit:focus-visible .pen{display:inline-flex;}
+.cn-data-grid td.edit.editing{padding:0; background:var(--page); box-shadow:inset 0 -4px 0 0 var(--bar);}
+.cn-data-grid .dg-editor{width:100%; border:0; background:transparent; color:var(--text); outline:none;
+    padding:var(--cell-py) var(--cell-px);}
+/* loading — Skeleton-loader BY REFERENCE: the bone + shimmer recipe re-stated minimally
+     (receipted duplication; bones decorative/aria-hidden, state announced by role=status) */
+.cn-data-grid .bone{display:block; background:var(--bone); border-radius:var(--border-radius-indicator); height:16px;
+    background-image:linear-gradient(90deg, var(--bone) 0%, color-mix(in srgb, var(--bone) 50%, var(--page)) 50%, var(--bone) 100%);
+    background-size:200% 100%; background-position:200% 0; animation:cn-data-grid-dg-shimmer 1.4s linear infinite;}
+@keyframes cn-data-grid-dg-shimmer{ to{ background-position:-200% 0; } }
+.cn-data-grid .bone.sq{width:22px; height:22px;}
+/* empty (no matches) — message + a real recovery action */
+.cn-data-grid .dg-empty{padding:48px 24px; text-align:center;}
+.cn-data-grid .dg-empty .why{display:block; margin-bottom:4px;}
+.cn-data-grid .dg-empty .try{display:block; opacity:.6; margin-bottom:16px;}
+.cn-data-grid .clearbtn{display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:8px 16px;
+    border:1px solid var(--fborder); border-radius:var(--border-radius-control); background:transparent; color:var(--text);
+    cursor:pointer; transition:background var(--ease), border-color var(--ease), transform var(--spring), filter var(--press);}
+.cn-data-grid .clearbtn:hover{background:var(--hover);}
+.cn-data-grid .clearbtn:active{background:var(--pressedbg); color:var(--onpressed);}
+.cn-data-grid .clearbtn:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+/* footer — range read-out · rows-per-page · pagination (Pagination recipe: 44px targets,
+     aria-current border, inverting colour press; scale comes from the partial, never locally) */
+.cn-data-grid .dg-foot{display:flex; gap:12px 16px; align-items:center; flex-wrap:wrap; margin-top:12px;}
+.cn-data-grid .dg-range{opacity:.6;}
+.cn-data-grid .dg-pp{display:flex; gap:8px; align-items:center; margin-left:auto;}
+.cn-data-grid .dg-pp select{height:44px; padding:0 8px; border:1px solid var(--fborder); border-radius:var(--border-radius-control);
+    background:transparent; color:var(--text);}
+.cn-data-grid .dg-pp select:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+.cn-data-grid nav.dgpg ul{list-style:none; display:flex; gap:4px; align-items:center; margin:0; padding:0;}
+.cn-data-grid .pbtn{min-width:44px; height:44px; display:inline-flex; align-items:center; justify-content:center; padding:0 8px;
+    color:var(--text); cursor:pointer; border:1px solid transparent; border-radius:var(--border-radius-control); background:transparent;
+    --phys-size:44;   /* LOCAL override — icon-button geometry (pixel-true B-D7) */
+    transition:background var(--ease), color var(--ease), transform var(--spring), filter var(--press);}
+.cn-data-grid .pbtn:not([disabled]):hover{background:var(--hover);}
+.cn-data-grid .pbtn:not([disabled]):active{background:var(--pressedbg); color:var(--onpressed);}
+.cn-data-grid .pbtn:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+.cn-data-grid .pbtn[aria-current="page"]{border-color:var(--currentbd);}
+.cn-data-grid .pbtn[disabled]{color:var(--disabled); cursor:not-allowed;}
+.cn-data-grid .pbtn svg{width:16px; height:16px; fill:currentColor;}
+/* ===== AUTO-PARTIAL press-physics START (button-family) ===== */
+/* INJECTED from Button.reference.html (partial "press-physics", group button-family —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+.cn-data-grid :is(.dg .sort, .cn-data-grid .dg .fchip .x, .cn-data-grid .dg .clearbtn, .cn-data-grid .dg .pbtn):hover{transform:scale(calc(1 + var(--press-travel)/var(--phys-size)));}
+.cn-data-grid :is(.dg .sort, .cn-data-grid .dg .fchip .x, .cn-data-grid .dg .clearbtn, .cn-data-grid .dg .pbtn).full:hover{transform:none;}
+/* full-width can't grow — would overflow */
+.cn-data-grid :is(.dg .sort, .cn-data-grid .dg .fchip .x, .cn-data-grid .dg .clearbtn, .cn-data-grid .dg .pbtn):active{transform:scale(calc(1 - var(--press-travel)/var(--phys-size))); filter:brightness(var(--press-darken)); transition:transform var(--press), filter var(--press);}
+.cn-data-grid :is(.dg .sort, .cn-data-grid .dg .fchip .x, .cn-data-grid .dg .clearbtn, .cn-data-grid .dg .pbtn):disabled:hover, .cn-data-grid :is(.dg .sort, .cn-data-grid .dg .fchip .x, .cn-data-grid .dg .clearbtn, .cn-data-grid .dg .pbtn).is-disabled:hover{transform:none; filter:none;}
+/* disabled stays put */
+/* WCAG 2.3.3 — the partial carries its OWN reduced-motion override (ADR-0013: rides inside, never per-file) */
+@media (prefers-reduced-motion: reduce){
+.cn-data-grid :is(.dg .sort, .cn-data-grid .dg .fchip .x, .cn-data-grid .dg .clearbtn, .cn-data-grid .dg .pbtn):hover, .cn-data-grid :is(.dg .sort, .cn-data-grid .dg .fchip .x, .cn-data-grid .dg .clearbtn, .cn-data-grid .dg .pbtn):active{transform:none !important; filter:none !important;}
+}
+/* ===== AUTO-PARTIAL press-physics END ===== */
+.cn-data-grid .hint{margin-top:16px; font:400 12px/1.5 var(--font); color:var(--text); opacity:.6; max-width:64ch;}
+.cn-data-grid .hint kbd{font:inherit; border:1px solid var(--border); padding:1px 4px; border-radius:var(--border-radius-indicator);}
+@media (prefers-reduced-motion: reduce){
+.cn-data-grid .bone{animation:none; background-image:none;}
+/* static bones — shape alone reads as loading (2.3.3) */
+}
+
+/* ============================================================
+   Date-picker  (from snippets/Date-picker.reference.html)
+   Aria: aria-haspopup, aria-expanded, role="dialog", role="grid", aria-selected, aria-invalid, aria-describedby
+   Scope: .cn-date-picker   ============================================================ */
+.cn-date-picker{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 200ms cubic-bezier(.4,0,.2,1);
+  --spring: 300ms cubic-bezier(.5,1.6,.4,1);
+  --press: 90ms cubic-bezier(0,0,.58,1);
+  --page: var(--background-default);
+  --text: var(--text-default);
+  --field-bg-default: var(--form-background-default);
+  --field-bg-hover: var(--form-background-hover);
+  --border-default: var(--form-border-default);
+  --border-active: var(--form-border-active);
+  --border-disabled: var(--form-border-disabled);
+  --icon: var(--icon-default);
+  --error: var(--rag-error);
+  --success: var(--rag-success);
+  --focus: var(--focus-ring);
+  --pop-border: var(--elevation-border);
+  --shadow: var(--elevation-functional);
+  --press-travel: var(--component-type-button-family-press-travel);
+  --press-darken: var(--component-type-button-family-press-darken);
+}
+.cn-date-picker h2.sec{font:500 16px/1.3 var(--font); color:var(--text); opacity:.6; margin:2.5rem 0 .35rem;}
+.cn-date-picker p.note{font:400 14px/1.5 var(--font); color:var(--text); opacity:.75; margin:0 0 1.5rem; max-width:60ch;}
+.cn-date-picker .icn{width:18px; height:18px; display:block; flex-shrink:0;}
+/* ---------- field group — Input-fields anatomy (lock-step; change it THERE) ---------- */
+.cn-date-picker .dp{max-width:420px; position:relative;}
+.cn-date-picker .dp-lblrow{display:flex; gap:8px; align-items:center; margin:0 0 4px;}
+.cn-date-picker .dp-lblrow label{color:var(--text);}
+.cn-date-picker .dp-help{color:var(--text); margin:0 0 8px;}
+.cn-date-picker .dp-box{display:flex; align-items:center; gap:16px; padding:8px 16px;
+    border:1px solid var(--border-default); background:var(--field-bg-default); border-radius:var(--border-radius-control); position:relative;
+    transition:border-color var(--ease), background var(--ease), box-shadow var(--ease); color:var(--icon);}
+.cn-date-picker .dp-box input{flex:1; min-width:0; border:0; background:transparent; outline:none; padding:0;
+    font:400 16px/24px var(--font); color:var(--text);}
+.cn-date-picker .dp-box input::placeholder{color:var(--text); opacity:1; font-weight:400;}
+.cn-date-picker .dp-box:hover:not(:focus-within){background:var(--field-bg-hover);}
+.cn-date-picker .dp-box:focus-within{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--border-active); background:var(--page);}
+.cn-date-picker .dp-box:has(input:focus-visible){outline:2px solid var(--focus); outline-offset:2px;}
+:root[data-modality="pointer"] .cn-date-picker .dp-box:has(input:focus-visible){outline:none;}
+/* calendar tail button — Input-fields' own tail-btn (24×24, extended hit target) */
+.cn-date-picker .dp-box .tail-btn{position:relative; display:inline-flex; align-items:center; justify-content:center;
+    width:24px; height:24px; padding:0; border:0; background:transparent; color:var(--icon);
+    cursor:pointer; flex-shrink:0;}
+.cn-date-picker .dp-box .tail-btn::before{content:""; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:36px; height:36px;}
+/* extended hit target — 44 would spill the 46px box */
+.cn-date-picker .dp-box .tail-btn:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+/* states */
+.cn-date-picker .dp.is-completed .dp-box input{font-weight:500;}
+.cn-date-picker .dp.is-error .dp-box{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--error); background:var(--page);}
+/* dark: error border goes full red (Input-fields, Dave 2026-07-02) */
+.cn-date-picker .dp.is-error .dp-box input{font-weight:500;}
+.cn-date-picker .dp-box input:disabled{color:var(--text-disabled); cursor:not-allowed;}
+.cn-date-picker .dp.is-disabled .dp-box{border-color:var(--border-disabled); color:var(--icon-disabled);}
+.cn-date-picker .dp.is-disabled .dp-lblrow label, .cn-date-picker .dp.is-disabled .dp-help{color:var(--text-disabled);}
+.cn-date-picker .dp.is-disabled .tail-btn{color:var(--icon-disabled); cursor:not-allowed;}
+.cn-date-picker .dp-msg{display:flex; gap:8px; align-items:flex-start; margin:8px 0 0;}
+.cn-date-picker .dp-msg:empty{display:none;}
+.cn-date-picker .dp-msg .ic{flex-shrink:0; padding-top:4px; color:var(--error); --mark:var(--page);}
+/* roundel: shape = rag colour, mark knocks to page */
+/* policy dark: WHITE shape + black mark */
+.cn-date-picker .dp-msg.is-ok .ic{color:var(--success);}
+.cn-date-picker .dp-msg p{flex:1; min-width:0; color:var(--text); margin:0;}
+/* message text stays INK */
+/* ---------- the calendar panel — anchored-overlay elevation recipe ---------- */
+.cn-date-picker .dp-panel{position:absolute; z-index:5; top:calc(100% + 8px); left:0; width:336px; max-width:100%;
+    background:var(--page); color:var(--text); border:1px solid var(--pop-border);
+    border-radius:var(--border-radius-surface); box-shadow:0 0 16px var(--shadow); padding:16px;
+    display:none;}
+.cn-date-picker .dp-panel.is-open{display:block;}
+.cn-date-picker .dp-panel.is-static{position:static; display:block; margin-top:8px;}
+/* gallery render */
+.cn-date-picker .dp-head{display:flex; align-items:center; gap:0; margin:0 0 8px;}
+.cn-date-picker .dp-title{flex:1; text-align:center; color:var(--text);}
+.cn-date-picker .dp-nav{width:44px; height:44px; display:inline-flex; align-items:center; justify-content:center;
+    padding:0; border:0; background:transparent; color:var(--icon); cursor:pointer;
+    border-radius:var(--border-radius-control);
+    --phys-size:44;   /* LOCAL geometry (B-D7): Icon-button precedent — divides the pixel-true travel */
+    transition:background var(--ease), transform var(--spring), filter var(--press);}
+.cn-date-picker .dp-nav:hover{background:var(--field-bg-hover);}
+.cn-date-picker .dp-nav:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+/* ===== AUTO-PARTIAL press-physics START (button-family) ===== */
+/* INJECTED from Button.reference.html (partial "press-physics", group button-family —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+.cn-date-picker .dp-nav:hover{transform:scale(calc(1 + var(--press-travel)/var(--phys-size)));}
+.cn-date-picker .dp-nav.full:hover{transform:none;}
+/* full-width can't grow — would overflow */
+.cn-date-picker .dp-nav:active{transform:scale(calc(1 - var(--press-travel)/var(--phys-size))); filter:brightness(var(--press-darken)); transition:transform var(--press), filter var(--press);}
+.cn-date-picker .dp-nav:disabled:hover, .cn-date-picker .dp-nav.is-disabled:hover{transform:none; filter:none;}
+/* disabled stays put */
+/* WCAG 2.3.3 — the partial carries its OWN reduced-motion override (ADR-0013: rides inside, never per-file) */
+@media (prefers-reduced-motion: reduce){
+.cn-date-picker .dp-nav:hover, .cn-date-picker .dp-nav:active{transform:none !important; filter:none !important;}
+}
+/* ===== AUTO-PARTIAL press-physics END ===== */
+.cn-date-picker .dp-week{display:grid; grid-template-columns:repeat(7,40px); gap:4px; margin:0 0 4px;}
+.cn-date-picker .dp-week span{display:flex; align-items:center; justify-content:center; height:24px; color:var(--text); opacity:.6;}
+.cn-date-picker .dp-grid{display:grid; grid-template-columns:repeat(7,40px); gap:4px;}
+.cn-date-picker .dp-day{width:40px; height:40px; display:inline-flex; align-items:center; justify-content:center;
+    padding:0; border:0; background:transparent; color:var(--text); cursor:pointer;
+    border-radius:var(--border-radius-control); position:relative;
+    transition:background var(--ease), color var(--ease);}
+.cn-date-picker .dp-day:hover{background:var(--field-bg-hover);}
+.cn-date-picker .dp-day:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+.cn-date-picker .dp-day.is-today{box-shadow:inset 0 0 0 2px var(--border-active);}
+/* today = structural ring, never colour-alone (numeral carries aria-current) */
+.cn-date-picker .dp-day[aria-selected="true"]{background:var(--text); color:var(--page); font-weight:500;}
+/* ink knockout — tooltip precedent */
+.cn-date-picker .dp-day:disabled{color:var(--text-disabled); cursor:not-allowed; background:transparent;}
+.cn-date-picker .dp-day.is-empty{visibility:hidden; pointer-events:none;}
+.cn-date-picker .gallery{display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:24px 32px; max-width:760px;}
+.cn-date-picker .gallery .cap{font:400 12px/1.3 var(--font); color:var(--text); opacity:.55; margin:0 0 8px;}
+@media (prefers-reduced-motion: reduce){
+
+}
+@media (max-width:480px){
+.cn-date-picker .dp, .cn-date-picker .gallery{max-width:none;}
+.cn-date-picker .gallery{grid-template-columns:1fr;}
+.cn-date-picker .dp-panel{width:100%; min-width:304px;}
+.cn-date-picker .dp-week, .cn-date-picker .dp-grid{grid-template-columns:repeat(7,minmax(36px,1fr));}
+.cn-date-picker .dp-day{width:100%;}
+}
+
+/* ============================================================
+   Date-range-picker  (from snippets/Date-range-picker.reference.html)
+   Aria: aria-haspopup, aria-expanded, role="dialog", role="grid", aria-selected, aria-live, aria-invalid, aria-describedby
+   Scope: .cn-date-range-picker   ============================================================ */
+.cn-date-range-picker{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 200ms cubic-bezier(.4,0,.2,1);
+  --spring: 300ms cubic-bezier(.5,1.6,.4,1);
+  --press: 90ms cubic-bezier(0,0,.58,1);
+  --page: var(--background-default);
+  --text: var(--text-default);
+  --field-bg-default: var(--form-background-default);
+  --field-bg-hover: var(--form-background-hover);
+  --border-default: var(--form-border-default);
+  --border-active: var(--form-border-active);
+  --border-disabled: var(--form-border-disabled);
+  --icon: var(--icon-default);
+  --error: var(--rag-error);
+  --focus: var(--focus-ring);
+  --pop-border: var(--elevation-border);
+  --shadow: var(--elevation-functional);
+  --press-travel: var(--component-type-button-family-press-travel);
+  --press-darken: var(--component-type-button-family-press-darken);
+}
+.cn-date-range-picker h2.sec{font:500 16px/1.3 var(--font); color:var(--text); opacity:.6; margin:2.5rem 0 .35rem;}
+.cn-date-range-picker p.note{font:400 14px/1.5 var(--font); color:var(--text); opacity:.75; margin:0 0 1.5rem; max-width:60ch;}
+.cn-date-range-picker .icn{width:18px; height:18px; display:block; flex-shrink:0;}
+.cn-date-range-picker .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;}
+/* ---------- pair of field groups — Input-fields anatomy in the Form-layout pair row ---------- */
+.cn-date-range-picker .dr{max-width:420px; position:relative;}
+.cn-date-range-picker .dr-row{display:grid; grid-template-columns:1fr 1fr; gap:0 16px; align-items:start;}
+@media (max-width:520px){
+.cn-date-range-picker .dr-row{grid-template-columns:1fr;}
+.cn-date-range-picker .dr-group + .dr-group{margin-top:24px;}
+}
+.cn-date-range-picker .dr-lblrow{display:flex; gap:8px; align-items:center; margin:0 0 4px;}
+.cn-date-range-picker .dr-lblrow label{color:var(--text);}
+.cn-date-range-picker .dr-help{color:var(--text); margin:0 0 8px;}
+.cn-date-range-picker .dr-box{display:flex; align-items:center; gap:16px; padding:8px 16px;
+    border:1px solid var(--border-default); background:var(--field-bg-default); border-radius:var(--border-radius-control); position:relative;
+    transition:border-color var(--ease), background var(--ease), box-shadow var(--ease); color:var(--icon);}
+.cn-date-range-picker .dr-box input{flex:1; min-width:0; border:0; background:transparent; outline:none; padding:0;
+    font:400 16px/24px var(--font); color:var(--text);}
+.cn-date-range-picker .dr-box input::placeholder{color:var(--text); opacity:1; font-weight:400;}
+.cn-date-range-picker .dr-box:hover:not(:focus-within){background:var(--field-bg-hover);}
+.cn-date-range-picker .dr-box:focus-within{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--border-active); background:var(--page);}
+.cn-date-range-picker .dr-box:has(input:focus-visible){outline:2px solid var(--focus); outline-offset:2px;}
+:root[data-modality="pointer"] .cn-date-range-picker .dr-box:has(input:focus-visible){outline:none;}
+.cn-date-range-picker .dr-box .tail-btn{position:relative; display:inline-flex; align-items:center; justify-content:center;
+    width:24px; height:24px; padding:0; border:0; background:transparent; color:var(--icon);
+    cursor:pointer; flex-shrink:0;}
+.cn-date-range-picker .dr-box .tail-btn::before{content:""; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:36px; height:36px;}
+.cn-date-range-picker .dr-box .tail-btn:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+.cn-date-range-picker .dr-group.is-completed .dr-box input{font-weight:500;}
+.cn-date-range-picker .dr-group.is-error .dr-box{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--error); background:var(--page);}
+.cn-date-range-picker .dr-group.is-error .dr-box input{font-weight:500;}
+.cn-date-range-picker .dr-group.is-disabled .dr-box{border-color:var(--border-disabled); color:var(--icon-disabled);}
+.cn-date-range-picker .dr-group.is-disabled .dr-lblrow label, .cn-date-range-picker .dr-group.is-disabled .dr-help{color:var(--text-disabled);}
+.cn-date-range-picker .dr-group.is-disabled .dr-box input:disabled{color:var(--text-disabled); cursor:not-allowed;}
+.cn-date-range-picker .dr-group.is-disabled .tail-btn{color:var(--icon-disabled); cursor:not-allowed;}
+.cn-date-range-picker .dr-msg{display:flex; gap:8px; align-items:flex-start; margin:8px 0 0;}
+.cn-date-range-picker .dr-msg:empty{display:none;}
+.cn-date-range-picker .dr-msg .ic{flex-shrink:0; padding-top:4px; color:var(--error); --mark:var(--page);}
+/* policy dark: WHITE shape + black mark */
+.cn-date-range-picker .dr-msg p{flex:1; min-width:0; color:var(--text); margin:0;}
+/* message text stays INK */
+/* ---------- shared panel — Date-picker chrome ---------- */
+.cn-date-range-picker .dr-panel{position:absolute; z-index:5; top:calc(100% + 8px); left:0; width:336px; max-width:100%;
+    background:var(--page); color:var(--text); border:1px solid var(--pop-border);
+    border-radius:var(--border-radius-surface); box-shadow:0 0 16px var(--shadow); padding:16px;
+    display:none;}
+.cn-date-range-picker .dr-panel.is-open{display:block;}
+.cn-date-range-picker .dr-panel.is-static{position:static; display:block; margin-top:8px;}
+.cn-date-range-picker .dr-anchor{position:relative;}
+.cn-date-range-picker .dr-head{display:flex; align-items:center; gap:0; margin:0 0 8px;}
+.cn-date-range-picker .dr-title{flex:1; text-align:center; color:var(--text);}
+.cn-date-range-picker .dr-nav{width:44px; height:44px; display:inline-flex; align-items:center; justify-content:center;
+    padding:0; border:0; background:transparent; color:var(--icon); cursor:pointer;
+    border-radius:var(--border-radius-control);
+    --phys-size:44;   /* LOCAL geometry (B-D7): Icon-button precedent */
+    transition:background var(--ease), transform var(--spring), filter var(--press);}
+.cn-date-range-picker .dr-nav:hover{background:var(--field-bg-hover);}
+.cn-date-range-picker .dr-nav:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+/* ===== AUTO-PARTIAL press-physics START (button-family) ===== */
+/* INJECTED from Button.reference.html (partial "press-physics", group button-family —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+.cn-date-range-picker .dr-nav:hover{transform:scale(calc(1 + var(--press-travel)/var(--phys-size)));}
+.cn-date-range-picker .dr-nav.full:hover{transform:none;}
+/* full-width can't grow — would overflow */
+.cn-date-range-picker .dr-nav:active{transform:scale(calc(1 - var(--press-travel)/var(--phys-size))); filter:brightness(var(--press-darken)); transition:transform var(--press), filter var(--press);}
+.cn-date-range-picker .dr-nav:disabled:hover, .cn-date-range-picker .dr-nav.is-disabled:hover{transform:none; filter:none;}
+/* disabled stays put */
+/* WCAG 2.3.3 — the partial carries its OWN reduced-motion override (ADR-0013: rides inside, never per-file) */
+@media (prefers-reduced-motion: reduce){
+.cn-date-range-picker .dr-nav:hover, .cn-date-range-picker .dr-nav:active{transform:none !important; filter:none !important;}
+}
+/* ===== AUTO-PARTIAL press-physics END ===== */
+.cn-date-range-picker .dr-week{display:grid; grid-template-columns:repeat(7,40px); gap:4px; margin:0 0 4px;}
+.cn-date-range-picker .dr-week span{display:flex; align-items:center; justify-content:center; height:24px; color:var(--text); opacity:.6;}
+.cn-date-range-picker .dr-grid{display:grid; grid-template-columns:repeat(7,40px); gap:4px;}
+.cn-date-range-picker .dr-day{width:40px; height:40px; display:inline-flex; align-items:center; justify-content:center;
+    padding:0; border:0; background:transparent; color:var(--text); cursor:pointer;
+    border-radius:var(--border-radius-control); position:relative;
+    transition:background var(--ease), color var(--ease);}
+.cn-date-range-picker .dr-day:hover{background:var(--field-bg-hover);}
+.cn-date-range-picker .dr-day:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+.cn-date-range-picker .dr-day.is-today{box-shadow:inset 0 0 0 2px var(--border-active);}
+.cn-date-range-picker .dr-day.in-range{background:var(--field-bg-hover);}
+/* the tint — never the only channel */
+.cn-date-range-picker .dr-day[aria-selected="true"]{background:var(--text); color:var(--page); font-weight:500;}
+/* endpoints = ink knockout */
+.cn-date-range-picker .dr-day:disabled{color:var(--text-disabled); cursor:not-allowed; background:transparent;}
+.cn-date-range-picker .dr-day.is-empty{visibility:hidden; pointer-events:none;}
+.cn-date-range-picker .gallery{display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:24px 32px; max-width:760px;}
+.cn-date-range-picker .gallery .cap{font:400 12px/1.3 var(--font); color:var(--text); opacity:.55; margin:0 0 8px;}
+@media (prefers-reduced-motion: reduce){
+
+}
+@media (max-width:480px){
+.cn-date-range-picker .dr, .cn-date-range-picker .gallery{max-width:none;}
+.cn-date-range-picker .gallery{grid-template-columns:1fr;}
+.cn-date-range-picker .dr-panel{width:100%; min-width:304px;}
+.cn-date-range-picker .dr-week, .cn-date-range-picker .dr-grid{grid-template-columns:repeat(7,minmax(36px,1fr));}
+.cn-date-range-picker .dr-day{width:100%;}
 }
 
 /* ============================================================
@@ -3594,6 +4297,122 @@
 /* WCAG 2.3.3 — honour reduced-motion (no motion here, kept for consistency across snippets) */
 @media (prefers-reduced-motion: reduce){
 
+}
+
+/* ============================================================
+   File-upload  (from snippets/File-upload.reference.html)
+   Aria: role="progressbar", aria-valuenow, aria-live, aria-describedby
+   Scope: .cn-file-upload   ============================================================ */
+.cn-file-upload{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 200ms cubic-bezier(.4,0,.2,1);
+  --spring: 300ms cubic-bezier(.5,1.6,.4,1);
+  --press: 90ms cubic-bezier(0,0,.58,1);
+  --page: var(--background-default);
+  --text: var(--text-default);
+  --field-bg-hover: var(--form-background-hover);
+  --border-default: var(--form-border-default);
+  --border-active: var(--form-border-active);
+  --border-disabled: var(--form-border-disabled);
+  --icon: var(--icon-default);
+  --error: var(--rag-error);
+  --success: var(--rag-success);
+  --focus: var(--focus-ring);
+  --sec-default: var(--button-secondary-background-default);
+  --sec-hover: var(--button-secondary-background-hover);
+  --sec-pressed: var(--button-secondary-background-pressed);
+  --sec-disabled: var(--button-secondary-background-disabled);
+  --sec-label: var(--button-secondary-label-default);
+  --sec-label-disabled: var(--button-secondary-label-disabled);
+  --press-travel: var(--component-type-button-family-press-travel);
+  --press-darken: var(--component-type-button-family-press-darken);
+}
+.cn-file-upload h2.sec{font:500 16px/1.3 var(--font); color:var(--text); opacity:.6; margin:2.5rem 0 .35rem;}
+.cn-file-upload p.note{font:400 14px/1.5 var(--font); color:var(--text); opacity:.75; margin:0 0 1.5rem; max-width:60ch;}
+.cn-file-upload .icn{width:18px; height:18px; display:block; flex-shrink:0;}
+.cn-file-upload .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;}
+/* ---------- label + help — Input-fields anatomy ---------- */
+.cn-file-upload .fu{max-width:420px;}
+.cn-file-upload .fu-lblrow{display:flex; gap:8px; align-items:center; margin:0 0 4px;}
+.cn-file-upload .fu-lblrow label{color:var(--text);}
+.cn-file-upload .fu-help{color:var(--text); margin:0 0 8px;}
+/* ---------- the dropzone ---------- */
+.cn-file-upload .fu-zone{border:1px dashed var(--border-default); border-radius:var(--border-radius-control);
+    padding:24px 16px; text-align:center; color:var(--icon);
+    transition:border-color var(--ease), background var(--ease);}
+.cn-file-upload .fu-zone .icn{width:24px; height:24px; margin:0 auto 8px;}
+.cn-file-upload .fu-zone p{margin:0 0 4px; color:var(--text);}
+.cn-file-upload .fu-zone .fu-or{margin:0 0 12px; color:var(--text); opacity:.6;}
+.cn-file-upload .fu-zone.is-over{border-style:solid; border-color:var(--border-active); background:var(--field-bg-hover);}
+.cn-file-upload .fu.is-disabled .fu-zone{border-color:var(--border-disabled); color:var(--icon-disabled);}
+.cn-file-upload .fu.is-disabled .fu-zone p, .cn-file-upload .fu.is-disabled .fu-lblrow label, .cn-file-upload .fu.is-disabled .fu-help{color:var(--text-disabled);}
+.cn-file-upload .fu-input{position:absolute; width:1px; height:1px; opacity:0; overflow:hidden; clip:rect(0 0 0 0);}
+/* browse — Mono secondary (button-family candidate) */
+.cn-file-upload .fu-browse{height:44px; min-width:96px; padding:0 20px; border:0; border-radius:var(--border-radius-control); cursor:pointer;
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    background:var(--sec-default); color:var(--sec-label);
+    --phys-size:120;   /* LOCAL geometry (B-D7): text buttons ≈120 wide */
+    transition:background var(--ease), transform var(--spring), filter var(--press);}
+.cn-file-upload .fu-browse:hover{background:var(--sec-hover);}
+.cn-file-upload .fu-browse:active{background:var(--sec-pressed);}
+.cn-file-upload .fu-browse:disabled{background:var(--sec-disabled); color:var(--sec-label-disabled); cursor:not-allowed;}
+.cn-file-upload .fu-browse:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+/* ---------- staged-file rows ---------- */
+.cn-file-upload .fu-list{list-style:none; margin:16px 0 0; padding:0;}
+.cn-file-upload .fu-row{display:flex; align-items:center; gap:12px; padding:12px 0;
+    border-bottom:1px solid var(--field-bg-hover);}
+.cn-file-upload .fu-row .ftype{flex-shrink:0; color:var(--icon);}
+.cn-file-upload .fu-row .fmain{flex:1; min-width:0;}
+.cn-file-upload .fu-row .fname{display:flex; align-items:baseline; gap:8px; color:var(--text);}
+.cn-file-upload .fu-row .fname .nm{overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    text-box-edge:text text;}
+/* ds-005: descender-safe trim on a truncating label — the override IS the fix */
+.cn-file-upload .fu-row .fname .sz{flex-shrink:0; color:var(--text); opacity:.6;}
+.cn-file-upload .fu-row .fstate{flex-shrink:0; display:inline-flex; align-items:center; gap:8px;}
+.cn-file-upload .fu-row .fstate .ic{color:var(--success); --mark:var(--page);}
+.cn-file-upload .fu-row.is-error .fstate .ic{color:var(--error);}
+/* policy dark: WHITE shape + black mark */
+.cn-file-upload .fu-row .fmsg{display:flex; gap:8px; align-items:flex-start; margin:4px 0 0; color:var(--text);}
+.cn-file-upload .fu-row .fmsg p{margin:0;}
+/* message text stays INK */
+/* per-file determinate progress — ink on neutral (progress is STRUCTURE, not status) */
+.cn-file-upload .fu-bar{height:4px; background:var(--field-bg-hover); margin:8px 0 0; overflow:hidden;}
+.cn-file-upload .fu-bar b{display:block; height:100%; width:0; background:var(--text); transition:width 160ms linear;}
+/* per-file remove — the 24px close idiom (Toast/Banner precedent; button-family candidate) */
+.cn-file-upload .fu-remove{position:relative; width:24px; height:24px; padding:0; border:0; background:transparent;
+    color:var(--icon); cursor:pointer; flex-shrink:0; display:inline-flex; align-items:center; justify-content:center;
+    border-radius:var(--border-radius-control);
+    --phys-size:24;   /* LOCAL geometry (B-D7): the smaller control carries its own size */
+    transition:transform var(--spring), filter var(--press);}
+.cn-file-upload .fu-remove .icn{width:14px; height:14px;}
+.cn-file-upload .fu-remove::before{content:""; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:36px; height:36px;}
+/* extended hit target */
+.cn-file-upload .fu-remove:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+/* ===== AUTO-PARTIAL press-physics START (button-family) ===== */
+/* INJECTED from Button.reference.html (partial "press-physics", group button-family —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+.cn-file-upload :is(.fu-browse, .cn-file-upload .fu-remove):hover{transform:scale(calc(1 + var(--press-travel)/var(--phys-size)));}
+.cn-file-upload :is(.fu-browse, .cn-file-upload .fu-remove).full:hover{transform:none;}
+/* full-width can't grow — would overflow */
+.cn-file-upload :is(.fu-browse, .cn-file-upload .fu-remove):active{transform:scale(calc(1 - var(--press-travel)/var(--phys-size))); filter:brightness(var(--press-darken)); transition:transform var(--press), filter var(--press);}
+.cn-file-upload :is(.fu-browse, .cn-file-upload .fu-remove):disabled:hover, .cn-file-upload :is(.fu-browse, .cn-file-upload .fu-remove).is-disabled:hover{transform:none; filter:none;}
+/* disabled stays put */
+/* WCAG 2.3.3 — the partial carries its OWN reduced-motion override (ADR-0013: rides inside, never per-file) */
+@media (prefers-reduced-motion: reduce){
+.cn-file-upload :is(.fu-browse, .cn-file-upload .fu-remove):hover, .cn-file-upload :is(.fu-browse, .cn-file-upload .fu-remove):active{transform:none !important; filter:none !important;}
+}
+/* ===== AUTO-PARTIAL press-physics END ===== */
+.cn-file-upload .gallery{display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:24px 32px; max-width:760px;}
+.cn-file-upload .gallery .cap{font:400 12px/1.3 var(--font); color:var(--text); opacity:.55; margin:0 0 8px;}
+@media (prefers-reduced-motion: reduce){
+
+}
+@media (max-width:480px){
+.cn-file-upload .fu, .cn-file-upload .gallery{max-width:none;}
+.cn-file-upload .gallery{grid-template-columns:1fr;}
 }
 
 /* ============================================================
@@ -4142,6 +4961,151 @@
 }
 
 /* ============================================================
+   Stepper  (from snippets/Stepper.reference.html)
+   Aria: aria-current, role="progressbar", aria-valuenow, aria-valuetext, aria-live, aria-invalid, aria-describedby
+   Scope: .cn-stepper   ============================================================ */
+.cn-stepper{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 200ms cubic-bezier(.4,0,.2,1);
+  --spring: 300ms cubic-bezier(.5,1.6,.4,1);
+  --press: 90ms cubic-bezier(0,0,.58,1);
+  --page: var(--background-default);
+  --text: var(--text-default);
+  --muted: var(--text-secondary);
+  --complete: var(--progress-complete);
+  --incomplete: var(--progress-incomplete);
+  --on-complete: var(--text-on-inverse);
+  --field-bg-default: var(--form-background-default);
+  --field-bg-hover: var(--form-background-hover);
+  --border-default: var(--form-border-default);
+  --border-active: var(--form-border-active);
+  --icon: var(--icon-default);
+  --error: var(--rag-error);
+  --focus: var(--focus-ring);
+  --pri-default: var(--button-primary-background-default);
+  --pri-hover: var(--button-primary-background-hover);
+  --pri-pressed: var(--button-primary-background-pressed);
+  --pri-disabled: var(--button-primary-background-disabled);
+  --pri-label: var(--button-primary-label-default);
+  --pri-label-disabled: var(--button-primary-label-disabled);
+  --quat-hover: var(--button-quaternary-background-hover);
+  --quat-label: var(--button-quaternary-label-default);
+  --quat-label-disabled: var(--button-quaternary-label-disabled);
+  --press-travel: var(--component-type-button-family-press-travel);
+  --press-darken: var(--component-type-button-family-press-darken);
+}
+.cn-stepper h2.sec{font:500 16px/1.3 var(--font); color:var(--text); opacity:.6; margin:2.5rem 0 .35rem;}
+.cn-stepper p.note{font:400 14px/1.5 var(--font); color:var(--text); opacity:.75; margin:0 0 1.5rem; max-width:60ch;}
+.cn-stepper .icn{width:18px; height:18px; display:block; flex-shrink:0;}
+.cn-stepper .sr-live{position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;}
+.cn-stepper .st{width:var(--demo-width, 520px); max-width:100%; container-type:inline-size;}
+/* ── DOTS — Progress-tracker's reworked visuals, interactive deltas only (change visuals THERE) ── */
+.cn-stepper .st ol.steps{list-style:none; display:flex; margin:0 0 4px; padding:0;}
+.cn-stepper .st ol.steps li{flex:1; display:flex; flex-direction:column; align-items:center; position:relative; text-align:center;}
+.cn-stepper .st ol.steps li::before{content:""; position:absolute; top:12px; left:-50%; width:100%; height:4px; background:var(--incomplete);}
+.cn-stepper .st ol.steps li:first-child::before{display:none;}
+.cn-stepper .st ol.steps li.done::before, .cn-stepper .st ol.steps li.current::before{background:var(--complete);}
+.cn-stepper .st .step{display:flex; flex-direction:column; align-items:center; gap:8px; border:0; background:transparent;
+    padding:0; margin:0; color:var(--text); width:100%; border-radius:var(--border-radius-control);}
+.cn-stepper .st button.step{cursor:pointer;}
+/* done steps only */
+.cn-stepper .st button.step:hover .step-label{text-decoration:underline; text-underline-offset:2px;}
+.cn-stepper .st button.step:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+.cn-stepper .st .dot{width:28px; height:28px; border-radius:50%; background:var(--incomplete); color:var(--text);
+    display:inline-flex; align-items:center; justify-content:center; font-weight:500; z-index:1;}
+/* 500: PT state emphasis, consumed */
+.cn-stepper .st .dot svg{width:14px; height:14px; fill:currentColor;}
+.cn-stepper .st li.done .dot{background:var(--complete); color:var(--on-complete);}
+.cn-stepper .st li.current .dot{background:var(--page); color:var(--text); box-shadow:inset 0 0 0 3px var(--complete);}
+.cn-stepper .st .step-label{opacity:.85; color:var(--text);}
+.cn-stepper .st li.current .step-label{font-weight:500; opacity:1;}
+/* PT state emphasis, consumed */
+/* ── COLLAPSED head + track (≤520px container) — Progress-tracker 1784-86051 form ── */
+.cn-stepper .st .collapse{display:none;}
+.cn-stepper .st .head{display:flex; align-items:baseline; gap:12px; margin:0 0 12px; flex-wrap:wrap;}
+.cn-stepper .st .count{color:var(--text); white-space:nowrap; font-weight:500;}
+/* PT state emphasis, consumed */
+.cn-stepper .st .title{color:var(--muted);}
+.cn-stepper .st .track{position:relative; width:100%; height:4px; background:var(--incomplete); border-radius:var(--border-radius-indicator); overflow:hidden;}
+.cn-stepper .st .track .fill{position:absolute; left:0; top:0; height:100%; width:0; background:var(--complete); transition:width var(--ease);}
+@container (max-width: 520px){
+.cn-stepper .st ol.steps{display:none;}
+.cn-stepper .st .collapse{display:block;}
+/* dots→line collapse */
+}
+/* ── step content panels ── */
+.cn-stepper .st-panel{margin:24px 0 0;}
+.cn-stepper .st-panel[hidden]{display:none;}
+.cn-stepper .st-panel h3{color:var(--text); margin:0 0 8px;}
+.cn-stepper .st-panel h3:focus{outline:none;}
+/* programmatic focus target; keyboard ring not needed on a non-tab-stop */
+.cn-stepper .st-panel p{color:var(--text); margin:0 0 16px; max-width:52ch;}
+/* the step-2 gated field — Input-fields language (change it THERE) */
+.cn-stepper .st-group{margin:0 0 8px; max-width:320px;}
+.cn-stepper .st-group .lbl{display:block; color:var(--text); margin:0 0 4px;}
+.cn-stepper .st-box{display:flex; align-items:center; gap:16px; padding:8px 16px;
+    border:1px solid var(--border-default); background:var(--field-bg-default); border-radius:var(--border-radius-control);
+    transition:border-color var(--ease), background var(--ease), box-shadow var(--ease); color:var(--icon);}
+.cn-stepper .st-box .pfx{color:var(--text); white-space:nowrap; flex-shrink:0;}
+.cn-stepper .st-box input{flex:1; min-width:0; border:0; background:transparent; outline:none; padding:0;
+    font:400 16px/24px var(--font); color:var(--text);}
+.cn-stepper .st-box:hover:not(:focus-within){background:var(--field-bg-hover);}
+.cn-stepper .st-box:focus-within{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--border-active); background:var(--page);}
+.cn-stepper .st-box:has(input:focus-visible){outline:2px solid var(--focus); outline-offset:2px;}
+:root[data-modality="pointer"] .cn-stepper .st-box:has(input:focus-visible){outline:none;}
+.cn-stepper .st-group.is-error .st-box{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--error); background:var(--page);}
+.cn-stepper .st-group.is-error .st-box input{font-weight:500;}
+.cn-stepper .st-msg{display:flex; gap:8px; align-items:flex-start; margin:8px 0 0;}
+.cn-stepper .st-msg:empty{display:none;}
+.cn-stepper .st-msg .ic{flex-shrink:0; padding-top:4px; color:var(--error); --mark:var(--page);}
+/* policy dark: WHITE shape + black mark */
+.cn-stepper .st-msg p{flex:1; min-width:0; color:var(--text); margin:0;}
+/* message text stays INK */
+/* ── nav — the journey's real actions on the Mono ladder (button-family candidates) ── */
+.cn-stepper .st-nav{display:flex; gap:12px; justify-content:flex-end; margin-top:24px;}
+.cn-stepper .st-nav button{height:44px; min-width:96px; padding:0 20px; border:0; border-radius:var(--border-radius-control); cursor:pointer;
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    --phys-size:120;   /* LOCAL geometry (B-D7): text buttons ≈120 wide */
+    transition:background var(--ease), transform var(--spring), filter var(--press);}
+.cn-stepper .st-nav button:focus-visible{outline:2px solid var(--quat-label); outline-offset:2px;}
+/* ===== AUTO-PARTIAL press-physics START (button-family) ===== */
+/* INJECTED from Button.reference.html (partial "press-physics", group button-family —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+.cn-stepper .st-nav button:hover{transform:scale(calc(1 + var(--press-travel)/var(--phys-size)));}
+.cn-stepper .st-nav button.full:hover{transform:none;}
+/* full-width can't grow — would overflow */
+.cn-stepper .st-nav button:active{transform:scale(calc(1 - var(--press-travel)/var(--phys-size))); filter:brightness(var(--press-darken)); transition:transform var(--press), filter var(--press);}
+.cn-stepper .st-nav button:disabled:hover, .cn-stepper .st-nav button.is-disabled:hover{transform:none; filter:none;}
+/* disabled stays put */
+/* WCAG 2.3.3 — the partial carries its OWN reduced-motion override (ADR-0013: rides inside, never per-file) */
+@media (prefers-reduced-motion: reduce){
+.cn-stepper .st-nav button:hover, .cn-stepper .st-nav button:active{transform:none !important; filter:none !important;}
+}
+/* ===== AUTO-PARTIAL press-physics END ===== */
+.cn-stepper .st-nav .st-primary{background:var(--pri-default); color:var(--pri-label);}
+.cn-stepper .st-nav .st-primary:hover{background:color-mix(in srgb, var(--pri-default) 70%, var(--page));}
+/* B-D3 operational 0.70 */
+.cn-stepper .st-nav .st-primary:active{background:var(--pri-pressed);}
+.cn-stepper .st-nav .st-primary:disabled{background:var(--pri-disabled); color:var(--pri-label-disabled); cursor:not-allowed;}
+.cn-stepper .st-nav .st-ghost{background:transparent; color:var(--quat-label);}
+.cn-stepper .st-nav .st-ghost:hover{background:var(--quat-hover);}
+.cn-stepper .st-nav .st-ghost:active{background:var(--quat-hover);}
+.cn-stepper .st-nav .st-ghost:disabled{background:transparent; color:var(--quat-label-disabled); cursor:not-allowed;}
+@container (max-width: 380px){
+.cn-stepper .st-nav{flex-direction:column-reverse;}
+.cn-stepper .st-nav button{width:100%;}
+/* stack: primary promoted (Tranche-6) */
+}
+@media (prefers-reduced-motion: reduce){
+
+}
+@media (max-width:480px){
+
+}
+
+/* ============================================================
    Summary  (from snippets/Summary.reference.html)
    Scope: .cn-summary   ============================================================ */
 .cn-summary{
@@ -4294,6 +5258,91 @@
 @media (max-width:480px){
 .cn-textarea .tx-group, .cn-textarea .gallery{max-width:none;}
 .cn-textarea .gallery{grid-template-columns:1fr;}
+}
+
+/* ============================================================
+   Time-picker  (from snippets/Time-picker.reference.html)
+   Aria: role="combobox", aria-haspopup, aria-expanded, role="listbox", role="option", aria-selected, aria-invalid, aria-describedby
+   Scope: .cn-time-picker   ============================================================ */
+.cn-time-picker{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 200ms cubic-bezier(.4,0,.2,1);
+  --page: var(--background-default);
+  --text: var(--text-default);
+  --field-bg-default: var(--form-background-default);
+  --field-bg-hover: var(--form-background-hover);
+  --border-default: var(--form-border-default);
+  --border-active: var(--form-border-active);
+  --border-disabled: var(--form-border-disabled);
+  --icon: var(--icon-default);
+  --error: var(--rag-error);
+  --focus: var(--focus-ring);
+  --menu-border: var(--elevation-border);
+  --shadow: var(--elevation-functional);
+}
+.cn-time-picker h2.sec{font:500 16px/1.3 var(--font); color:var(--text); opacity:.6; margin:2.5rem 0 .35rem;}
+.cn-time-picker p.note{font:400 14px/1.5 var(--font); color:var(--text); opacity:.75; margin:0 0 1.5rem; max-width:60ch;}
+.cn-time-picker .icn{width:18px; height:18px; display:block; flex-shrink:0;}
+/* ---------- field group — Input-fields anatomy (lock-step; change it THERE) ---------- */
+.cn-time-picker .tp{max-width:420px; position:relative;}
+.cn-time-picker .tp-lblrow{display:flex; gap:8px; align-items:center; margin:0 0 4px;}
+.cn-time-picker .tp-lblrow label{color:var(--text);}
+.cn-time-picker .tp-help{color:var(--text); margin:0 0 8px;}
+.cn-time-picker .tp-box{display:flex; align-items:center; gap:16px; padding:8px 16px;
+    border:1px solid var(--border-default); background:var(--field-bg-default); border-radius:var(--border-radius-control); position:relative;
+    transition:border-color var(--ease), background var(--ease), box-shadow var(--ease); color:var(--icon);}
+.cn-time-picker .tp-box input{flex:1; min-width:0; border:0; background:transparent; outline:none; padding:0;
+    font:400 16px/24px var(--font); color:var(--text);}
+.cn-time-picker .tp-box input::placeholder{color:var(--text); opacity:1; font-weight:400;}
+.cn-time-picker .tp-box:hover:not(:focus-within){background:var(--field-bg-hover);}
+.cn-time-picker .tp-box:focus-within{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--border-active); background:var(--page);}
+.cn-time-picker .tp-box:has(input:focus-visible){outline:2px solid var(--focus); outline-offset:2px;}
+:root[data-modality="pointer"] .cn-time-picker .tp-box:has(input:focus-visible){outline:none;}
+.cn-time-picker .tp-box .tail-btn{position:relative; display:inline-flex; align-items:center; justify-content:center;
+    width:24px; height:24px; padding:0; border:0; background:transparent; color:var(--icon);
+    cursor:pointer; flex-shrink:0;}
+.cn-time-picker .tp-box .tail-btn::before{content:""; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:36px; height:36px;}
+/* extended hit target — 44 would spill the 46px box */
+.cn-time-picker .tp-box .tail-btn:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+.cn-time-picker .tp.is-completed .tp-box input{font-weight:500;}
+.cn-time-picker .tp.is-error .tp-box{border-color:var(--border-active); box-shadow:inset 0 -4px 0 0 var(--error); background:var(--page);}
+/* dark: error border goes full red */
+.cn-time-picker .tp.is-error .tp-box input{font-weight:500;}
+.cn-time-picker .tp.is-disabled .tp-box{border-color:var(--border-disabled); color:var(--icon-disabled);}
+.cn-time-picker .tp.is-disabled .tp-lblrow label, .cn-time-picker .tp.is-disabled .tp-help{color:var(--text-disabled);}
+.cn-time-picker .tp.is-disabled .tp-box input:disabled{color:var(--text-disabled); cursor:not-allowed;}
+.cn-time-picker .tp.is-disabled .tail-btn{color:var(--icon-disabled); cursor:not-allowed;}
+.cn-time-picker .tp-msg{display:flex; gap:8px; align-items:flex-start; margin:8px 0 0;}
+.cn-time-picker .tp-msg:empty{display:none;}
+.cn-time-picker .tp-msg .ic{flex-shrink:0; padding-top:4px; color:var(--error); --mark:var(--page);}
+/* policy dark: WHITE shape + black mark */
+.cn-time-picker .tp-msg p{flex:1; min-width:0; color:var(--text); margin:0;}
+/* message text stays INK */
+/* ---------- slot list — Dropdown's listbox language (change it THERE) ---------- */
+.cn-time-picker .tp-menu{position:absolute; left:0; right:0; top:calc(100% + 6px); margin:0; padding:4px 0; list-style:none; z-index:20;
+    background:var(--page); border:1px solid var(--menu-border); border-radius:var(--border-radius-surface);
+    box-shadow:0 0 16px var(--shadow);   /* elevation/functional: X0 Y0 blur16 */
+    max-height:248px; overflow-y:auto;
+    opacity:0; transform:translateY(-6px); pointer-events:none; transition:opacity var(--ease), transform var(--ease);}
+.cn-time-picker .tp-menu[data-open="true"]{opacity:1; transform:none; pointer-events:auto;}
+.cn-time-picker .tp-menu.is-static{position:static; opacity:1; transform:none; pointer-events:auto; margin-top:8px;}
+.cn-time-picker .tp-opt{display:flex; align-items:center; justify-content:space-between; gap:8px; min-height:44px; padding:0 12px;
+    color:var(--text); cursor:pointer;}
+.cn-time-picker .tp-opt:hover{background:var(--field-bg-hover);}
+.cn-time-picker .tp-opt[aria-selected="true"]{font-weight:500;}
+.cn-time-picker .tp-opt .tick{width:16px; height:16px; opacity:0; flex-shrink:0;}
+.cn-time-picker .tp-opt[aria-selected="true"] .tick{opacity:1;}
+.cn-time-picker .tp-opt .tick path{stroke:var(--icon); stroke-width:2.4; fill:none;}
+.cn-time-picker .tp-opt:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+.cn-time-picker .gallery{display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:24px 32px; max-width:760px;}
+.cn-time-picker .gallery .cap{font:400 12px/1.3 var(--font); color:var(--text); opacity:.55; margin:0 0 8px;}
+@media (prefers-reduced-motion: reduce){
+
+}
+@media (max-width:480px){
+.cn-time-picker .tp, .cn-time-picker .gallery{max-width:none;}
+.cn-time-picker .gallery{grid-template-columns:1fr;}
 }
 
 /* ============================================================
@@ -4623,6 +5672,50 @@
   --muted: #9B9B9B;
   --text: #FFFFFF;
 }
+[data-apollo-theme="legacy"] .cn-chart-bar{
+  --ink: #333333;
+  --line: #D7D8D6;
+  --status-breach: #A8000B;
+  --status-healthy: #00847F;
+  --status-info: #305A85;
+  --status-watch: #FFBB33;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-chart-bar,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-chart-bar{
+  --ink: #FFFFFF;
+  --line: #404040;
+  --status-breach: #DB0011;
+  --status-healthy: #00847F;
+  --status-info: #4587A7;
+  --status-watch: #FFBB33;
+}
+[data-apollo-theme="legacy"] .cn-chart-donut{
+  --ink: #333333;
+  --line: #D7D8D6;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-chart-donut,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-chart-donut{
+  --ink: #FFFFFF;
+  --line: #404040;
+}
+[data-apollo-theme="legacy"] .cn-chart-line{
+  --ink: #333333;
+  --line: #D7D8D6;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-chart-line,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-chart-line{
+  --ink: #FFFFFF;
+  --line: #404040;
+}
+[data-apollo-theme="legacy"] .cn-chart-sparkline{
+  --ink: #333333;
+  --line: #D7D8D6;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-chart-sparkline,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-chart-sparkline{
+  --ink: #FFFFFF;
+  --line: #404040;
+}
 [data-apollo-theme="legacy"] .cn-confirmation{
   --muted: #545454;
   --on-pri: #FFFFFF;
@@ -4645,6 +5738,45 @@
 }
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-countdown-timer,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-countdown-timer{
+  --text: #FFFFFF;
+}
+[data-apollo-theme="legacy"] .cn-data-grid{
+  --press-darken: 1;
+  --press-travel: 0;
+  --text: #333333;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-data-grid,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-data-grid{
+  --press-darken: 1;
+  --press-travel: 0;
+  --text: #FFFFFF;
+}
+[data-apollo-theme="legacy"] .cn-date-picker{
+  --error: #A8000B;
+  --press-darken: 1;
+  --press-travel: 0;
+  --success: #00847F;
+  --text: #333333;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-date-picker,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-date-picker{
+  --error: #DB0011;
+  --press-darken: 1;
+  --press-travel: 0;
+  --success: #00847F;
+  --text: #FFFFFF;
+}
+[data-apollo-theme="legacy"] .cn-date-range-picker{
+  --error: #A8000B;
+  --press-darken: 1;
+  --press-travel: 0;
+  --text: #333333;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-date-range-picker,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-date-range-picker{
+  --error: #DB0011;
+  --press-darken: 1;
+  --press-travel: 0;
   --text: #FFFFFF;
 }
 [data-apollo-theme="legacy"] .cn-divider{
@@ -4708,6 +5840,21 @@
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-eyebrow,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-eyebrow{
   --muted: #9B9B9B;
+  --text: #FFFFFF;
+}
+[data-apollo-theme="legacy"] .cn-file-upload{
+  --error: #A8000B;
+  --press-darken: 1;
+  --press-travel: 0;
+  --success: #00847F;
+  --text: #333333;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-file-upload,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-file-upload{
+  --error: #DB0011;
+  --press-darken: 1;
+  --press-travel: 0;
+  --success: #00847F;
   --text: #FFFFFF;
 }
 [data-apollo-theme="legacy"] .cn-form-layout{
@@ -5018,6 +6165,35 @@
   --warning: #FFBB33;
   --warning-tint: #221701;
 }
+[data-apollo-theme="legacy"] .cn-stepper{
+  --complete: #DB0011;
+  --error: #A8000B;
+  --muted: #545454;
+  --press-darken: 1;
+  --press-travel: 0;
+  --pri-default: #DB0011;
+  --pri-disabled: #E1E1E1;
+  --pri-hover: #BA1110;
+  --pri-label: #FFFFFF;
+  --pri-pressed: #000000;
+  --quat-label: #333333;
+  --text: #333333;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-stepper,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-stepper{
+  --complete: #DB0011;
+  --error: #DB0011;
+  --muted: #9B9B9B;
+  --press-darken: 1;
+  --press-travel: 0;
+  --pri-default: #DB0011;
+  --pri-disabled: #484848;
+  --pri-hover: #BA1110;
+  --pri-label: #FFFFFF;
+  --pri-pressed: #FFFFFF;
+  --quat-label: #FFFFFF;
+  --text: #FFFFFF;
+}
 [data-apollo-theme="legacy"] .cn-summary{
   --muted: #545454;
   --text: #333333;
@@ -5069,6 +6245,15 @@
 }
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-textarea,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-textarea{
+  --error: #DB0011;
+  --text: #FFFFFF;
+}
+[data-apollo-theme="legacy"] .cn-time-picker{
+  --error: #A8000B;
+  --text: #333333;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-time-picker,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-time-picker{
   --error: #DB0011;
   --text: #FFFFFF;
 }
@@ -5186,12 +6371,69 @@
 [data-apollo-theme="console"] [data-theme="dark"] .cn-cards{
   --border-radius-surface: 12px;
 }
+[data-apollo-theme="console"] .cn-chart-bar{
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-chart-bar,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-chart-bar{
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"] .cn-chart-donut{
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-chart-donut,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-chart-donut{
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"] .cn-chart-line{
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-chart-line,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-chart-line{
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"] .cn-chart-sparkline{
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-chart-sparkline,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-chart-sparkline{
+  --border-radius-surface: 12px;
+}
 [data-apollo-theme="console"] .cn-confirmation{
   --border-radius-control: 8px;
 }
 [data-apollo-theme="console"][data-theme="dark"] .cn-confirmation,
 [data-apollo-theme="console"] [data-theme="dark"] .cn-confirmation{
   --border-radius-control: 8px;
+}
+[data-apollo-theme="console"] .cn-data-grid{
+  --border-radius-control: 8px;
+  --border-radius-indicator: 8px;
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-data-grid,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-data-grid{
+  --border-radius-control: 8px;
+  --border-radius-indicator: 8px;
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"] .cn-date-picker{
+  --border-radius-control: 8px;
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-date-picker,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-date-picker{
+  --border-radius-control: 8px;
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"] .cn-date-range-picker{
+  --border-radius-control: 8px;
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-date-range-picker,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-date-range-picker{
+  --border-radius-control: 8px;
+  --border-radius-surface: 12px;
 }
 [data-apollo-theme="console"] .cn-drawer{
   --border-radius-control: 8px;
@@ -5219,6 +6461,13 @@
 [data-apollo-theme="console"] [data-theme="dark"] .cn-empty-state{
   --border-radius-control: 8px;
   --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"] .cn-file-upload{
+  --border-radius-control: 8px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-file-upload,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-file-upload{
+  --border-radius-control: 8px;
 }
 [data-apollo-theme="console"] .cn-form-layout{
   --border-radius-control: 8px;
@@ -5342,6 +6591,15 @@
   --border-radius-control: 8px;
   --border-radius-indicator: 8px;
 }
+[data-apollo-theme="console"] .cn-stepper{
+  --border-radius-control: 8px;
+  --border-radius-indicator: 8px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-stepper,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-stepper{
+  --border-radius-control: 8px;
+  --border-radius-indicator: 8px;
+}
 [data-apollo-theme="console"] .cn-table{
   --border-radius-control: 8px;
   --border-radius-indicator: 8px;
@@ -5377,6 +6635,15 @@
 [data-apollo-theme="console"][data-theme="dark"] .cn-textarea,
 [data-apollo-theme="console"] [data-theme="dark"] .cn-textarea{
   --border-radius-control: 8px;
+}
+[data-apollo-theme="console"] .cn-time-picker{
+  --border-radius-control: 8px;
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-time-picker,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-time-picker{
+  --border-radius-control: 8px;
+  --border-radius-surface: 12px;
 }
 [data-apollo-theme="console"] .cn-toast{
   --border-radius-surface: 12px;
@@ -5856,6 +7123,54 @@
   --surface: #2A2621;
   --text: #F7F6F4;
 }
+[data-apollo-theme="supercharge"] .cn-chart-bar{
+  --baseline: #13110E;
+  --ink: #13110E;
+  --line: #CDC8C6;
+  --page: #F7F6F4;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-bar,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-bar{
+  --baseline: #FFFFFF;
+  --ink: #F7F6F4;
+  --line: #524842;
+  --page: #1A1A1A;
+}
+[data-apollo-theme="supercharge"] .cn-chart-donut{
+  --ink: #13110E;
+  --line: #CDC8C6;
+  --page: #F7F6F4;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-donut,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-donut{
+  --ink: #F7F6F4;
+  --line: #524842;
+  --page: #1A1A1A;
+}
+[data-apollo-theme="supercharge"] .cn-chart-line{
+  --baseline: #13110E;
+  --ink: #13110E;
+  --line: #CDC8C6;
+  --page: #F7F6F4;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-line,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-line{
+  --baseline: #FFFFFF;
+  --ink: #F7F6F4;
+  --line: #524842;
+  --page: #1A1A1A;
+}
+[data-apollo-theme="supercharge"] .cn-chart-sparkline{
+  --ink: #13110E;
+  --line: #CDC8C6;
+  --page: #F7F6F4;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-sparkline,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-sparkline{
+  --ink: #F7F6F4;
+  --line: #524842;
+  --page: #1A1A1A;
+}
 [data-apollo-theme="supercharge"] .cn-confirmation{
   --ghost-hover: #DFDEDC;
   --muted: #13110E;
@@ -5883,6 +7198,105 @@
   --page: #1A1A1A;
   --text: #F7F6F4;
   --track: #413934;
+}
+[data-apollo-theme="supercharge"] .cn-data-grid{
+  --bar: #000000;
+  --bone: #DFDEDC;
+  --border: #CDC8C6;
+  --cell: #F7F6F4;
+  --currentbd: #000000;
+  --disabled: #CDC8C6;
+  --fborder: #524842;
+  --fhover: #DFDEDC;
+  --header: #DFDEDC;
+  --hover: #DFDEDC;
+  --icon: #13110E;
+  --onpressed: #F7F6F4;
+  --page: #F7F6F4;
+  --press-darken: 1;
+  --press-travel: 0;
+  --pressedbg: #493F39;
+  --selbg: #DFDEDC;
+  --text: #13110E;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-data-grid,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-data-grid{
+  --bar: #F7F6F4;
+  --bone: #2E2A25;
+  --border: #524842;
+  --cell: #1A1A1A;
+  --currentbd: #524842;
+  --disabled: #524842;
+  --fborder: #524842;
+  --fhover: #2E2A25;
+  --header: #2A2621;
+  --hover: #2E2A25;
+  --icon: #F7F6F4;
+  --onpressed: #F7F6F4;
+  --page: #1A1A1A;
+  --press-darken: 1;
+  --press-travel: 0;
+  --pressedbg: #13110E;
+  --selbg: #2E2A25;
+  --text: #F7F6F4;
+}
+[data-apollo-theme="supercharge"] .cn-date-picker{
+  --border-active: #000000;
+  --border-default: #524842;
+  --border-disabled: #CDC8C6;
+  --field-bg-hover: #DFDEDC;
+  --icon: #13110E;
+  --icon-disabled: #CDC8C6;
+  --page: #F7F6F4;
+  --pop-border: #FFFFFF00;
+  --press-darken: 1;
+  --press-travel: 0;
+  --text: #13110E;
+  --text-disabled: #CDC8C6;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-date-picker,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-date-picker{
+  --border-active: #F7F6F4;
+  --border-default: #524842;
+  --border-disabled: #413934;
+  --field-bg-hover: #2E2A25;
+  --icon: #F7F6F4;
+  --icon-disabled: #524842;
+  --page: #1A1A1A;
+  --pop-border: #524842;
+  --press-darken: 1;
+  --press-travel: 0;
+  --text: #F7F6F4;
+  --text-disabled: #524842;
+}
+[data-apollo-theme="supercharge"] .cn-date-range-picker{
+  --border-active: #000000;
+  --border-default: #524842;
+  --border-disabled: #CDC8C6;
+  --field-bg-hover: #DFDEDC;
+  --icon: #13110E;
+  --icon-disabled: #CDC8C6;
+  --page: #F7F6F4;
+  --pop-border: #FFFFFF00;
+  --press-darken: 1;
+  --press-travel: 0;
+  --text: #13110E;
+  --text-disabled: #CDC8C6;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-date-range-picker,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-date-range-picker{
+  --border-active: #F7F6F4;
+  --border-default: #524842;
+  --border-disabled: #413934;
+  --field-bg-hover: #2E2A25;
+  --icon: #F7F6F4;
+  --icon-disabled: #524842;
+  --page: #1A1A1A;
+  --pop-border: #524842;
+  --press-darken: 1;
+  --press-travel: 0;
+  --text: #F7F6F4;
+  --text-disabled: #524842;
 }
 [data-apollo-theme="supercharge"] .cn-divider{
   --break: #DFDEDC;
@@ -5980,6 +7394,43 @@
   --muted: #F7F6F4;
   --page: #1A1A1A;
   --text: #F7F6F4;
+}
+[data-apollo-theme="supercharge"] .cn-file-upload{
+  --border-active: #000000;
+  --border-default: #524842;
+  --border-disabled: #CDC8C6;
+  --field-bg-hover: #DFDEDC;
+  --icon: #13110E;
+  --icon-disabled: #CDC8C6;
+  --page: #F7F6F4;
+  --press-darken: 1;
+  --press-travel: 0;
+  --sec-default: #493F39;
+  --sec-disabled: #CDC8C6;
+  --sec-hover: #413934;
+  --sec-label-disabled: #635750;
+  --sec-pressed: #312C26;
+  --text: #13110E;
+  --text-disabled: #CDC8C6;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-file-upload,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-file-upload{
+  --border-active: #F7F6F4;
+  --border-default: #524842;
+  --border-disabled: #413934;
+  --field-bg-hover: #2E2A25;
+  --icon: #F7F6F4;
+  --icon-disabled: #524842;
+  --page: #1A1A1A;
+  --press-darken: 1;
+  --press-travel: 0;
+  --sec-default: #524842;
+  --sec-disabled: #413934;
+  --sec-hover: #635750;
+  --sec-label-disabled: #524842;
+  --sec-pressed: #806E65;
+  --text: #F7F6F4;
+  --text-disabled: #524842;
 }
 [data-apollo-theme="supercharge"] .cn-form-layout{
   --border-active: #000000;
@@ -6485,6 +7936,51 @@
   --neutral: #FFFFFF;
   --page: #1A1A1A;
 }
+[data-apollo-theme="supercharge"] .cn-stepper{
+  --border-active: #000000;
+  --border-default: #524842;
+  --complete: #B92F1E;
+  --field-bg-hover: #DFDEDC;
+  --icon: #13110E;
+  --incomplete: #DFDEDC;
+  --muted: #13110E;
+  --page: #F7F6F4;
+  --press-darken: 1;
+  --press-travel: 0;
+  --pri-default: #13110E;
+  --pri-disabled: #CDC8C6;
+  --pri-hover: #493F39;
+  --pri-label-disabled: #635750;
+  --pri-pressed: #000000;
+  --quat-hover: #DFDEDC;
+  --quat-label: #13110E;
+  --quat-label-disabled: #635750;
+  --text: #13110E;
+  --text-disabled: #CDC8C6;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-stepper,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-stepper{
+  --border-active: #F7F6F4;
+  --border-default: #524842;
+  --complete: #CC4333;
+  --field-bg-hover: #2E2A25;
+  --icon: #F7F6F4;
+  --incomplete: #413934;
+  --muted: #F7F6F4;
+  --page: #1A1A1A;
+  --press-darken: 1;
+  --press-travel: 0;
+  --pri-default: #F0EFED;
+  --pri-disabled: #413934;
+  --pri-hover: #806E65;
+  --pri-label-disabled: #524842;
+  --pri-pressed: #F7F6F4;
+  --quat-hover: #2E2A25;
+  --quat-label: #F7F6F4;
+  --quat-label-disabled: #524842;
+  --text: #F7F6F4;
+  --text-disabled: #524842;
+}
 [data-apollo-theme="supercharge"] .cn-summary{
   --divider: #DFDEDC;
   --muted: #13110E;
@@ -6593,6 +8089,31 @@
   --field-bg-hover: #2E2A25;
   --icon: #F7F6F4;
   --icon-disabled: #524842;
+  --page: #1A1A1A;
+  --text: #F7F6F4;
+  --text-disabled: #524842;
+}
+[data-apollo-theme="supercharge"] .cn-time-picker{
+  --border-active: #000000;
+  --border-default: #524842;
+  --border-disabled: #CDC8C6;
+  --field-bg-hover: #DFDEDC;
+  --icon: #13110E;
+  --icon-disabled: #CDC8C6;
+  --menu-border: #FFFFFF00;
+  --page: #F7F6F4;
+  --text: #13110E;
+  --text-disabled: #CDC8C6;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-time-picker,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-time-picker{
+  --border-active: #F7F6F4;
+  --border-default: #524842;
+  --border-disabled: #413934;
+  --field-bg-hover: #2E2A25;
+  --icon: #F7F6F4;
+  --icon-disabled: #524842;
+  --menu-border: #524842;
   --page: #1A1A1A;
   --text: #F7F6F4;
   --text-disabled: #524842;

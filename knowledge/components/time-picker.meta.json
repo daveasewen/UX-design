@@ -1,0 +1,62 @@
+{
+  "name": "Time picker",
+  "interactive": true,
+  "category": "molecule",
+  "purpose": "Payments scheduling: an Input-fields boxed field (free 24-hour HH:MM typing, validates on blur) plus a listbox of 30-minute slots opened from the time tail button — Dropdown's list language, scrolled to the chosen or nearest slot. Itinerary row 16 (P1); built Phase-2 wave 2 (worker A continuation).",
+  "props": [
+    { "name": "value", "type": "string", "default": "", "$note": "HH:MM 24-hour. Free typing accepts any valid minute (14:37); the list offers the 48 half-hour slots." },
+    { "name": "step", "type": "number", "default": 30, "$note": "Slot interval in minutes (30 = the reference; 15 doubles the list)." },
+    { "name": "help", "type": "boolean", "default": true, "$note": "'24-hour format, like 14:30.' — the format hint doubles as the 3.3.3 suggestion." }
+  ],
+  "variants": [
+    { "name": "closed", "use": "Resting field with the time tail glyph." },
+    { "name": "open", "use": "Anchored listbox (~5.5 rows, scrolls): 44px options, tabular figures so the column aligns, selected = weight 500 + neutral tick." }
+  ],
+  "$states": ["default", "hover", "active (focus-within)", "completed", "disabled", "error", "list open", "option hover", "option selected (weight + tick)"],
+  "$consumes": ["Input-fields (field anatomy + tail-btn — change it there)", "Dropdown (listbox language: menu chrome, 44px options, weight+tick selection — change it there)"],
+  "tokens": {
+    "field": "form/background|border sets (Input-fields lock-step)",
+    "list": "background/default + elevation/border + elevation/functional; border-radius/surface; hover = form/background/hover",
+    "selection": "weight 500 + the neutral bespoke tick (icon/default stroke) — Dropdown precedent; list selection ≠ grid selection (Date-picker's ink knockout is the GRID treatment)",
+    "error": "rag/error (R-D20); message text stays text/default",
+    "radius": "border-radius/control (field) + border-radius/surface (list)",
+    "$input-error-slot": "OPEN (ADR-0010): still undeclared — binds semantic rag/error (A-Q2)."
+  },
+  "relationships": {
+    "livesInside": ["Payment scheduling", "Appointment booking", "Standing-order setup"],
+    "mustNotNeighbour": [],
+    "commonPatterns": ["payment-time (with Date picker)", "branch-appointment-slot"]
+  },
+  "behaviour": {
+    "open": "Tail button only (aria-haspopup=listbox); opening scrolls the selected — else nearest-to-now — slot to centre and focuses it. Typing NEVER opens the list (acd-019).",
+    "keyboard": "ArrowUp/Down move, Home/End jump, Enter/Space selects, Escape closes and returns focus to the tail button.",
+    "select": "Writes HH:MM, clears any error, closes, returns focus.",
+    "validation": "On blur: empty = no error; malformed or impossible times (25:70) error with 'Enter a time in 24-hour format, like 14:30.' Error lifts as soon as the value re-validates."
+  },
+  "accessibility": {
+    "structure": "Real <label for>; input = role=combobox with aria-expanded/aria-controls; list = role=listbox of role=option items; help + message via aria-describedby.",
+    "states": "aria-selected on the chosen slot (the tick + weight are never the only channel); aria-invalid + ink message on error (1.4.1).",
+    "focus": "Two-tier focus (Input-fields decision B); option ring inset (Dropdown precedent); focus returns to the tail button on close.",
+    "relatedSC": ["1.3.1", "1.4.1", "1.4.3", "2.1.1 Keyboard", "2.1.2 No Keyboard Trap", "2.4.3", "2.4.7 Focus Visible", "3.3.1 Error Identification", "3.3.2 Labels or Instructions", "4.1.2"],
+    "$note": "3.2.1/3.2.2 met (list opens from the button only) but out of relatedSC: not in the compliance lookup (Form-layout precedent)."
+  },
+  "antiPatterns": [
+    "12-hour AM/PM entry for payments (24-hour is the banking reference; ambiguity costs money).",
+    "type=\"time\" native input (unstylable, inconsistent AT/format behaviour — text + inputmode=numeric).",
+    "Auto-inserting the colon mid-entry (acd-019: no auto-anything; validate on blur).",
+    "Opening the list on input focus (context change — tail button only).",
+    "Proportional figures in the slot column (tabular .t-cm-figure-5 — the column must align).",
+    "Ink-knockout selection in the list (that's the GRID treatment; lists = Dropdown's weight + tick)."
+  ],
+  "tokenValidation": {
+    "date": "2026-07-22",
+    "against": "current store (semantic-colour.json + component-types.json)",
+    "result": "PASS — new build, no deprecated tokens: field chrome = live form/* set, error = R-D20 rag/error, list = elevation pair + form/background/hover, radius = control + surface roles. No motion params — zero pressables (no button-family candidates in this file).",
+    "$note": "input-error flex slot still undeclared — binds rag/error (A-Q2)."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "$note": "Itinerary row 16 (P1), Phase-2 wave 2 worker A continuation. Field anatomy = gated Input-fields; list language = gated Dropdown (incl. its data-bespoke neutral tick, same reason string). Pattern chosen by CONTROL TYPE: list selection = Dropdown's weight+tick, deliberately NOT the Date-picker grid knockout. No dedicated Figma node bound yet."
+  },
+  "$partials": "NONE — zero button-family candidates (tail-btn follows Input-fields, options are selection targets). No AUTO-PARTIAL markers in the file; conductor should expect no $members entry for Time-picker."
+}

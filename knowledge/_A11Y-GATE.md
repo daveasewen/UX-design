@@ -1,10 +1,13 @@
 # A11y gate — _validate_a11y.py
 
-**54 snippet(s)** · **0 failure(s)** · **5 warning(s)**
+**64 snippet(s)** · **0 failure(s)** · **6 warning(s)**
 
 Gating: reduced-motion (2.3.3) · target size <24 floor (2.5.8, aid-009 ruling 2026-07-03). Reported: target size 24–43 vs the 44×44 HSBC default (aid-009).
 
 Library bar (aqa-003, ruled 2026-07-03): the canon is LIBRARY-GRADE — guideline and recommendation tiers bind it, not just standards.
+
+## Data-grid
+- 🟡 warn — `.fchip .x` is 24×24px (<44 HSBC default, aid-009) — enlarge, expand hit area, or claim a 2.5.8 exception out
 
 ## Headers
 - 🟡 warn — `.content-header button` is 40×40px (<44 HSBC default, aid-009) — enlarge, expand hit area, or claim a 2.5.8 exception out

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bar chart — reference implementation (gated)</title>
+<!--
+  CANONICAL REFERENCE for Bar chart (Apollo MONO) — vertical column + horizontal bar.
+  ⚠ PROVISIONAL-AGENT PROMOTION (Phase-2 wave 2, worker D, 2026-07-22): every value and shape here
+  is promoted as OBSERVED from the PARKED round-one dataviz kit (_proforma/DataViz-interactive.html,
+  9 review rounds, "good enough" — Dave has NOT signed the kit off). Provisional until his dataviz
+  sign-off; the pro-forma file is untouched (fence).
+
+  WHAT PROMOTED (OBSERVED, kit geometry verbatim): 580×260 frame, plot 46→568 / 14→230, bar width
+  48.7, 36px horizontal-bar row pitch, grow-from-baseline entry motion (760ms, staggered 45ms),
+  hover brightness emphasis, <title> value surfacing, sr-only figcaption + full-sentence svg
+  aria-label, real data table per chart (dv-005).
+  WHAT NEWLY JUDGED (receipted, worker-D receipt 2026-07-22): axis/label/grid inks — the kit's
+  #545454/#9B9B9B/#EDEDED/#3A3A3A greys have no post-R-D16 semantic home, so axis+labels = ink at
+  0.6 (house treatment; effective ≈4.6:1 light / 5.5:1 dark, ≥3:1 floor met) and gridlines = ink at
+  per-mode alpha (.10/.16 — reproduces the reviewed quiet grid; a data/grid role token is a receipted
+  gap, promotion Dave's). Baseline = border/action-strong. Table affordance = native <details>
+  (the kit's drawer overlay is JS Layer-2 — not promoted). Single-series categorical keeps
+  data/series/1 in BOTH orientations (kit's horizontal used series-3 for the same data — corrected
+  to dv-014 journey-consistency; receipted). DV-D02 static answer: fixed geometry + horizontal
+  scroll — text NEVER scales; the kit's runtime fit() relayout is JS Layer-2.
+  STATUS VARIANT (R-D9): status colour is a salience RAMP — red › amber › green › blue, loudness
+  descending with severity; NOT the isoluminant categorical set. Fills bind rag/* (error ·
+  warning graphic-grade #C58900 per R-D3 · success · information); R-D9's resolved ramp values
+  (#36A467/#527EBE green/blue) are NOT yet token-promoted — receipted gap, retro-propagates as a
+  token edit. Bars are direct-labelled (status word under each bar — colour never alone, R-D6 A′).
+  RULES: dv-bar-009 zero baseline declared · dv-bar-007 no negative horizontals · dv-017 var()
+  fills only · dv-016 ≥3:1 rendered both modes · DEF-003 CSS-only motion · composites-only type
+  (DV-D05: kit's 11px promoted to the 12px KB step — legal composite).
+  Empty state consumes the Empty-state pattern by reference (dashed frame, title carries meaning,
+  no glyph — the spot-illustration set is a logged icon gap).
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:160ms cubic-bezier(.4,0,.2,1);
+    --grow:760ms cubic-bezier(.22,.61,.36,1); }
+  [data-theme="light"]{
+    --page:#FFFFFF; --ink:#1A1A1A; --baseline:#1A1A1A; --line:#E1E1E1;
+    --data-series-1:#766682; --data-series-2:#A45C3A; --data-series-3:#577C78; --data-series-4:#7F7B45; --data-series-5:#A37E94;
+    --status-breach:#B92F1E; --status-watch:#C58900; --status-healthy:#2B7E4F; --status-info:#306EC6;
+    --grid-alpha:.10; --axis-alpha:.6;
+    --border-radius-surface:0;
+  }
+  [data-theme="dark"]{
+    --page:#1A1A1A; --ink:#FFFFFF; --baseline:#FFFFFF; --line:#808080;
+    --data-series-1:#766682; --data-series-2:#A45C3A; --data-series-3:#577C78; --data-series-4:#7F7B45; --data-series-5:#A37E94;
+    --status-breach:#CC4333; --status-watch:#C58900; --status-healthy:#4A9568; --status-info:#2674DC;
+    --grid-alpha:.16; --axis-alpha:.6;
+    --border-radius-surface:0;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page); color:var(--ink);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--ink);
+    background:transparent; color:var(--ink); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+  h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+  .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+
+  figure.dv{margin:0;}
+  .dv-stage{overflow-x:auto; padding-bottom:4px;}   /* DV-D02 static: fixed geometry, scroll — text never scales */
+  .dv-chart-area{width:580px;}
+  .dv-svg{display:block; width:580px; height:260px; overflow:visible;}
+
+  .dv-grid{stroke:var(--ink); stroke-opacity:var(--grid-alpha); stroke-width:1;}
+  line.dv-axis{stroke:var(--baseline); stroke-width:1;}
+  text.dv-axis,text.dv-label{opacity:var(--axis-alpha);}
+
+  rect.dv-series{transition:filter var(--ease);}
+  rect.dv-series:hover{filter:brightness(1.12);}
+  [data-theme="dark"] rect.dv-series:hover{filter:brightness(1.22);}
+
+  /* entry motion — CSS only (DEF-003); kit-reviewed grow-from-baseline, staggered inline delays */
+  @media (prefers-reduced-motion:no-preference){
+    .dv-animate rect.dv-series[data-grow="up"]{transform-box:fill-box; transform-origin:bottom; animation:dvGrowY var(--grow) both;}
+    .dv-animate rect.dv-series[data-grow="right"]{transform-box:fill-box; transform-origin:left; animation:dvGrowX var(--grow) both;}
+  }
+  @keyframes dvGrowY{from{transform:scaleY(0);}}
+  @keyframes dvGrowX{from{transform:scaleX(0);}}
+
+  /* table affordance — native disclosure (zero JS); the kit's drawer overlay is Layer-2 */
+  details.dv-tabledetails{margin:8px 0 0;}
+  details.dv-tabledetails summary{cursor:pointer; opacity:.6; width:max-content;}
+  details.dv-tabledetails summary:hover{opacity:1; text-decoration:underline; text-underline-offset:3px;}
+  details.dv-tabledetails summary:focus-visible{outline:2px solid var(--ink); outline-offset:2px; opacity:1;}
+  table.dv-table{border-collapse:collapse; margin-top:8px; color:var(--ink);}
+  table.dv-table caption{text-align:left; opacity:.6; margin-bottom:4px;}
+  table.dv-table th,table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
+  table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
+  table.dv-table thead th{opacity:.6; font-weight:500;}
+
+  /* empty / no-data — the Empty-state pattern consumed by reference (dashed frame, title carries meaning) */
+  .dv-empty-frame{width:580px; height:260px; display:flex; align-items:center; justify-content:center;
+    border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
+  .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
+    padding:24px; max-width:480px;}
+  .dv-empty-frame .empty h3{margin:0;}
+  .dv-empty-frame .empty p{margin:0; opacity:.6; max-width:40ch;}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
+      animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls">
+    <button id="themeToggle" type="button">◐ Toggle theme</button>
+    <button id="replay" type="button">↻ Replay motion</button>
+    <span>Bar chart — canonical reference (Mono · column · horizontal · status ramp · no data)</span>
+  </div>
+
+  <h2>Column — categorical, single series</h2>
+  <figure class="dv dv-animate" data-dv-type="column" data-domain-min="0" data-surface="page" role="group" aria-labelledby="cb1-h">
+    <figcaption id="cb1-h" class="sr-only">Spend by category this month, pounds</figcaption>
+    <div class="dv-stage"><div class="dv-chart-area">
+      <svg class="dv-svg" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 260" role="img" aria-label="Spend by category. Groceries 420, Transport 180, Housing 950, Leisure 260, Utilities 210, Savings 300.">
+        <line class="dv-grid" x1="46" y1="230" x2="568" y2="230" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="38" y="233" text-anchor="end">0</text>
+        <line class="dv-grid" x1="46" y1="176" x2="568" y2="176" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="38" y="179" text-anchor="end">250</text>
+        <line class="dv-grid" x1="46" y1="122" x2="568" y2="122" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="38" y="125" text-anchor="end">500</text>
+        <line class="dv-grid" x1="46" y1="68" x2="568" y2="68" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="38" y="71" text-anchor="end">750</text>
+        <line class="dv-grid" x1="46" y1="14" x2="568" y2="14" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="38" y="17" text-anchor="end">1000</text>
+        <line class="dv-axis" x1="46" y1="230" x2="568" y2="230" stroke="var(--baseline)"/>
+        <rect class="dv-series" data-grow="up" style="animation-delay:0ms" fill="var(--data-series-1)" x="65.1" y="139.3" width="48.7" height="90.7"><title>Groceries: 420</title></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:45ms" fill="var(--data-series-1)" x="152.1" y="191.1" width="48.7" height="38.9"><title>Transport: 180</title></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:90ms" fill="var(--data-series-1)" x="239.1" y="24.8" width="48.7" height="205.2"><title>Housing: 950</title></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:135ms" fill="var(--data-series-1)" x="326.1" y="173.8" width="48.7" height="56.2"><title>Leisure: 260</title></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:180ms" fill="var(--data-series-1)" x="413.1" y="184.6" width="48.7" height="45.4"><title>Utilities: 210</title></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:225ms" fill="var(--data-series-1)" x="500.1" y="165.2" width="48.7" height="64.8"><title>Savings: 300</title></rect>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="89.5" y="246" text-anchor="middle">Groceries</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="176.5" y="246" text-anchor="middle">Transport</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="263.5" y="246" text-anchor="middle">Housing</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="350.5" y="246" text-anchor="middle">Leisure</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="437.5" y="246" text-anchor="middle">Utilities</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="524.5" y="246" text-anchor="middle">Savings</text>
+      </svg>
+    </div></div>
+    <details class="dv-tabledetails">
+      <summary class="t-cm-legal">View as table</summary>
+      <table class="dv-table t-cm-legal">
+        <caption>Spend by category this month, pounds</caption>
+        <thead><tr><th scope="col">Category</th><th scope="col">Amount (£)</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Groceries</th><td>420</td></tr>
+          <tr><th scope="row">Transport</th><td>180</td></tr>
+          <tr><th scope="row">Housing</th><td>950</td></tr>
+          <tr><th scope="row">Leisure</th><td>260</td></tr>
+          <tr><th scope="row">Utilities</th><td>210</td></tr>
+          <tr><th scope="row">Savings</th><td>300</td></tr>
+        </tbody>
+      </table>
+    </details>
+  </figure>
+
+  <h2>Horizontal bar — categorical, single series</h2>
+  <figure class="dv dv-animate" data-dv-type="bar" data-domain-min="0" data-surface="page" role="group" aria-labelledby="cb2-h">
+    <figcaption id="cb2-h" class="sr-only">Spend by category this month, pounds, horizontal</figcaption>
+    <div class="dv-stage"><div class="dv-chart-area">
+      <svg class="dv-svg" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 260" role="img" aria-label="Spend by category, horizontal. Groceries 420, Transport 180, Housing 950, Leisure 260, Utilities 210, Savings 300.">
+        <line class="dv-grid" x1="46" y1="14" x2="46" y2="230" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="46" y="246" text-anchor="middle">0</text>
+        <line class="dv-grid" x1="176.5" y1="14" x2="176.5" y2="230" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="176.5" y="246" text-anchor="middle">250</text>
+        <line class="dv-grid" x1="307" y1="14" x2="307" y2="230" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="307" y="246" text-anchor="middle">500</text>
+        <line class="dv-grid" x1="437.5" y1="14" x2="437.5" y2="230" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="437.5" y="246" text-anchor="middle">750</text>
+        <line class="dv-grid" x1="568" y1="14" x2="568" y2="230" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="568" y="246" text-anchor="middle">1000</text>
+        <line class="dv-axis" x1="46" y1="14" x2="46" y2="230" stroke="var(--baseline)"/>
+        <rect class="dv-series" data-grow="right" style="animation-delay:0ms" fill="var(--data-series-1)" x="46" y="21.9" width="219.2" height="20.2"><title>Groceries: 420</title></rect>
+        <rect class="dv-series" data-grow="right" style="animation-delay:45ms" fill="var(--data-series-1)" x="46" y="57.9" width="94" height="20.2"><title>Transport: 180</title></rect>
+        <rect class="dv-series" data-grow="right" style="animation-delay:90ms" fill="var(--data-series-1)" x="46" y="93.9" width="495.9" height="20.2"><title>Housing: 950</title></rect>
+        <rect class="dv-series" data-grow="right" style="animation-delay:135ms" fill="var(--data-series-1)" x="46" y="129.9" width="135.7" height="20.2"><title>Leisure: 260</title></rect>
+        <rect class="dv-series" data-grow="right" style="animation-delay:180ms" fill="var(--data-series-1)" x="46" y="165.9" width="109.6" height="20.2"><title>Utilities: 210</title></rect>
+        <rect class="dv-series" data-grow="right" style="animation-delay:225ms" fill="var(--data-series-1)" x="46" y="201.9" width="156.6" height="20.2"><title>Savings: 300</title></rect>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="38" y="35" text-anchor="end">Groceries</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="38" y="71" text-anchor="end">Transport</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="38" y="107" text-anchor="end">Housing</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="38" y="143" text-anchor="end">Leisure</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="38" y="179" text-anchor="end">Utilities</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="38" y="215" text-anchor="end">Savings</text>
+      </svg>
+    </div></div>
+    <details class="dv-tabledetails">
+      <summary class="t-cm-legal">View as table</summary>
+      <table class="dv-table t-cm-legal">
+        <caption>Spend by category this month, pounds</caption>
+        <thead><tr><th scope="col">Category</th><th scope="col">Amount (£)</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Groceries</th><td>420</td></tr>
+          <tr><th scope="row">Transport</th><td>180</td></tr>
+          <tr><th scope="row">Housing</th><td>950</td></tr>
+          <tr><th scope="row">Leisure</th><td>260</td></tr>
+          <tr><th scope="row">Utilities</th><td>210</td></tr>
+          <tr><th scope="row">Savings</th><td>300</td></tr>
+        </tbody>
+      </table>
+    </details>
+  </figure>
+
+  <h2>Status — salience ramp (R-D9: red › amber › green › blue, direct-labelled)</h2>
+  <figure class="dv dv-animate" data-dv-type="column" data-domain-min="0" data-surface="page" data-labelling="direct" role="group" aria-labelledby="cb3-h">
+    <figcaption id="cb3-h" class="sr-only">Payment exceptions by status</figcaption>
+    <div class="dv-stage"><div class="dv-chart-area">
+      <svg class="dv-svg" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 260" role="img" aria-label="Payment exceptions by status. Overdue 14, Needs attention 9, On track 32, Information 6.">
+        <line class="dv-grid" x1="46" y1="230" x2="568" y2="230" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="38" y="233" text-anchor="end">0</text>
+        <line class="dv-grid" x1="46" y1="176" x2="568" y2="176" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="38" y="179" text-anchor="end">10</text>
+        <line class="dv-grid" x1="46" y1="122" x2="568" y2="122" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="38" y="125" text-anchor="end">20</text>
+        <line class="dv-grid" x1="46" y1="68" x2="568" y2="68" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="38" y="71" text-anchor="end">30</text>
+        <line class="dv-grid" x1="46" y1="14" x2="568" y2="14" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="38" y="17" text-anchor="end">40</text>
+        <line class="dv-axis" x1="46" y1="230" x2="568" y2="230" stroke="var(--baseline)"/>
+        <rect class="dv-series" data-grow="up" style="animation-delay:0ms" fill="var(--status-breach)" x="86.9" y="154.4" width="48.7" height="75.6"><title>Overdue: 14</title></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:45ms" fill="var(--status-watch)" x="217.4" y="181.4" width="48.7" height="48.6"><title>Needs attention: 9</title></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:90ms" fill="var(--status-healthy)" x="347.9" y="57.2" width="48.7" height="172.8"><title>On track: 32</title></rect>
+        <rect class="dv-series" data-grow="up" style="animation-delay:135ms" fill="var(--status-info)" x="478.4" y="197.6" width="48.7" height="32.4"><title>Information: 6</title></rect>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="111.2" y="246" text-anchor="middle">Overdue</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="241.7" y="246" text-anchor="middle">Needs attention</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="372.2" y="246" text-anchor="middle">On track</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="502.7" y="246" text-anchor="middle">Information</text>
+      </svg>
+    </div></div>
+    <details class="dv-tabledetails">
+      <summary class="t-cm-legal">View as table</summary>
+      <table class="dv-table t-cm-legal">
+        <caption>Payment exceptions by status</caption>
+        <thead><tr><th scope="col">Status</th><th scope="col">Count</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Overdue</th><td>14</td></tr>
+          <tr><th scope="row">Needs attention</th><td>9</td></tr>
+          <tr><th scope="row">On track</th><td>32</td></tr>
+          <tr><th scope="row">Information</th><td>6</td></tr>
+        </tbody>
+      </table>
+    </details>
+  </figure>
+
+  <h2>No data — the Empty-state pattern, consumed by reference</h2>
+  <div class="dv-stage"><div class="dv-empty-frame" role="group" aria-label="Spend by category, no data">
+    <div class="empty">
+      <h3 class="t-cm-caption">No data to display</h3>
+      <p class="t-cm-legal">Spend appears here once transactions arrive for the selected period.</p>
+    </div>
+  </div></div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Bar chart",
+    "vars": { "--page": "background/default", "--ink": "text/default", "--baseline": "border/action-strong",
+              "--line": "border/subtle",
+              "--data-series-1": "data/series/1", "--data-series-2": "data/series/2", "--data-series-3": "data/series/3",
+              "--data-series-4": "data/series/4", "--data-series-5": "data/series/5",
+              "--status-breach": "rag/error", "--status-watch": "rag/warning", "--status-healthy": "rag/success",
+              "--status-info": "rag/information",
+              "--border-radius-surface": "border-radius/surface" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "data/series/1", "bg": "background/default", "context": "ui" },
+      { "fg": "data/series/2", "bg": "background/default", "context": "ui" },
+      { "fg": "data/series/3", "bg": "background/default", "context": "ui" },
+      { "fg": "data/series/4", "bg": "background/default", "context": "ui" },
+      { "fg": "data/series/5", "bg": "background/default", "context": "ui" },
+      { "fg": "rag/error", "bg": "background/default", "context": "ui" },
+      { "fg": "rag/warning", "bg": "background/default", "context": "ui" },
+      { "fg": "rag/success", "bg": "background/default", "context": "ui" },
+      { "fg": "rag/information", "bg": "background/default", "context": "ui" }
+    ],
+    "icons": {},
+    "requiredAria": ["role=\"group\"", "aria-labelledby", "role=\"img\"", "aria-label"],
+    "$note": "PROVISIONAL-AGENT promotion of the PARKED dataviz kit (9 rounds, not signed off). Categorical = data/series/* (mode-stable isoluminant, dv-014 held across orientations). Status = R-D9 salience ramp on rag/* — amber is the R-D3 graphic-grade #C58900; R-D9's resolved green/blue (#36A467/#527EBE) are NOT token-promoted yet (receipted gap; retro-propagates as a token edit). Axis/labels = ink at 0.6, gridlines = ink at per-mode alpha (kit greys have no post-R-D16 home — receipted). Bars carry no press physics (passive figures); the kit's tooltips/drawer/fit() are JS Layer-2, not promoted."
+  }
+  </script>
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    document.getElementById('replay').addEventListener('click', ()=>{ document.querySelectorAll('figure.dv').forEach(f=>{ f.classList.remove('dv-animate'); void f.offsetWidth; f.classList.add('dv-animate'); }); });
+  </script>
+</body>
+</html>

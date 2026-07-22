@@ -74,6 +74,17 @@ MIGRATED_SNIPPETS = {
     "Empty-state.reference.html",
     "Stat-card.reference.html",
     "Account-selector.reference.html",
+    # Phase-2 wave 2:
+    "Data-grid.reference.html",
+    "Date-picker.reference.html",
+    "Date-range-picker.reference.html",
+    "Time-picker.reference.html",
+    "File-upload.reference.html",
+    "Stepper.reference.html",
+    "Chart-bar.reference.html",
+    "Chart-line.reference.html",
+    "Chart-donut.reference.html",
+    "Chart-sparkline.reference.html",
 }
 
 ADVISORY_GLOBS = [
