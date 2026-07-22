@@ -49,6 +49,41 @@ token wiring is settled; these are value/perception tweaks on top.
 - **"Done" success state — RESOLVED 2026-07-20 (B-D6).** Was on the Legacy teal `#00847F`; now the R-D14
   green fill `rag/success-background` `#5DAC7B`/`#43AD6F` + black label (`text/on-success`). *Status:* done.
 
+### ★ Button-states finesse pass — queued 2026-07-22 (Dave, post-ADR-0013: "not now but note for a follow up")
+
+Raised right after the composition tier landed. **Theme posture stated in the same breath: Legacy
+shouldn't change; Mono, Supercharge AND Console are all in design development.** The pass, when it runs:
+
+- **Legacy state MECHANISM fidelity question.** Dave's observation: *"legacy button states seem to be
+  using opacity, we just use colours."* ⚠ INTERPRETIVE FLAG for the session that picks this up: the
+  as-built HSBC system's states may be OPACITY-based while our Legacy override set renders explicit
+  colours (registry `stateMechanism: explicit`, ADR-0014). If confirmed against the real system, the
+  faithful reproduction (R-D24 posture — "Legacy shouldn't change" = the DESIGN is frozen, our
+  rendering of it can be corrected) may need its mechanism switched to opacity. VERIFY against the
+  as-built source first — don't flip on the recollection. *Feeds:* Legacy fidelity.
+- **Supercharge mechanism: keep the opacity OPTION open** — Dave: *"keep the option open for
+  supercharge but it probably wont change"* (stays colour by default; the ADR-0014 snap gate already
+  permits opacity where it snaps to a warm step, so the option IS structurally open — nothing to build,
+  just don't foreclose it). *Feeds:* SC design development.
+- **Mono + Console pressed = DARKER pressed fill.** Dave: *"the pressed state for console and mono
+  should have a darker press colour for pressed."* Ties directly to the OPEN token gap flagged in
+  Button's header since the rebind: tertiary/quaternary have NO background/pressed token (pressed
+  reuses the hover tint) — and B-D7 just softened the physics darken to 0.94, so pressed reads less
+  distinct than before. Fix space: mint pressed tokens a step darker than hover across the four
+  emphasis tiers (primary already flips per-mode `#000000`/`#FFFFFF` — review whether that reads
+  "darker" in dark mode). AA invariant per ADR-0009 §4; active > hover per the WCAG state rule.
+  *Feeds:* Mono/Console design development.
+- **Loader ATOM for all loading states.** Dave: *"there should be a loader atom for all loading
+  states."* Button carries a local `.spin` spinner; Loading-indicator exists as its own snippet —
+  exactly the ADR-0013 accretion shape: one loader atom (likely Loading-indicator as source), a
+  `loader` partial/membership, consumers retrieve it (Button's `.spin` first proof). The ratchet
+  census is the discovery tool. *Feeds:* the component-type registry's second group candidate.
+
+*Why held:* Dave explicitly deferred — *"I'm not sure I want to do this now."* *Source:* in-chat
+2026-07-22 afternoon, post-ADR-0013 wrap; ledger context `_BUTTON-DECISIONS.md` B-D1…B-D7. *Status:*
+**queued (follow-up)** — a natural single session: mechanism-fidelity check + pressed-tint tuner
+(review HTML, Dave rules live) + loader-atom accretion.
+
 ## Legacy-colour leakage — gate live, RAG green set to COMPLETE (2026-07-20)
 
 The teal-in-Mono leak (B-D6/R-D17) is now guarded by **`_validate_legacy_leak.py`** (build-blocking; seeded

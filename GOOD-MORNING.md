@@ -256,6 +256,17 @@ F1 Legacy icon/default white · F2 Legacy `rag/error-tint` · tag-atom radius re
 6 locals · designer-pack v2.1 re-bake · pro-forma dedup pass (ruling 3) · composite motion tokens
 (would retire the matchValues pin) · enact whatever §C·1 changes · consider `--verify` blocking.
 
+## 3b. ★ QUEUED: button-states finesse pass (Dave 2026-07-22, "not now — follow up")
+Full brief in `_FUTURE-STATE.md` §button-states-finesse. Headlines: **Legacy state-mechanism fidelity
+question** (as-built may be OPACITY, we render colours — VERIFY against source, don't flip on
+recollection; "Legacy shouldn't change" = the design is frozen, our reproduction of it can be
+corrected) · **Mono+Console pressed = darker pressed fill** (ties to the open tertiary/quaternary
+pressed-token gap; B-D7's softer darken makes this more visible) · **SC keeps the opacity option
+open, probably won't change** · **loader ATOM for all loading states** (registry group candidate #2;
+Button's `.spin` = first consumer). Theme posture, Dave: Legacy frozen; Mono/SC/Console all in
+design development. Natural shape: one session = fidelity check + pressed-tint tuner (review HTML,
+rule live) + loader accretion.
+
 ## 4. Parked (unchanged)
 Legacy hex seeding + provenance-gate flip · Console/Supercharge chromatic palettes · T9 review ·
 Sutherland field test · full-review backlog (`_REVIEW-SIGNOFF.md`) · `_FUTURE-STATE` items.
