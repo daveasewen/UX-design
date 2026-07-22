@@ -5,6 +5,8 @@
 > **TITLE THE NEXT (fresh) CHAT →** `Apollo review pass — Dave eyeballs B-D7 motion + SC dark sheet + held whites + Console radius · enact tweaks · then queue the Phase-2 fan-out`
 > *(⚠ Titles are LABELS — the role word comes from your opener line, never from a title. Fresh session: read this file, then `_LIVE-STATE.md` top delta.)*
 >
+> **POST-WRAP ADDENDA (same afternoon, Dave in-chat — all captured, none enacted):** Console motion flag CLOSED (*"share for now"* → inheritance, not fence) · theme posture: **Legacy FROZEN; Mono + SC + Console in design development** · **★ button-states finesse pass QUEUED** (§C·3b — Legacy mechanism fidelity + Mono/Console darker pressed + SC opacity option + **loader atom**) · **the Legacy reference is PINNED:** Figma Common Toolkit `mI8hvIkV98nquoqWzKh5Kn` node `65884-68326` (in the `_FUTURE-STATE.md` brief; fetch-at-finesse-time, OBSERVED provenance).
+>
 > ---
 >
 > ## PRIOR — 2026-07-22 (morning→midday, FABLE solo): **ADR-0014 RULED + BUILT** — neutral DNA tier live, warm ramp PULLED (OBSERVED), anchor remap, snap gate (7 checks incl. the Ally text-state floor), Console fenced, seed reconciled. **Still awaiting you from that session:** `reviews/SC-DARK-MODE-2026-07-22-v1.REVIEW.html` (all provisional-agent) + the **4 held whites**.
@@ -271,6 +273,7 @@ rule live) + loader accretion.
 Legacy hex seeding + provenance-gate flip · Console/Supercharge chromatic palettes · T9 review ·
 Sutherland field test · full-review backlog (`_REVIEW-SIGNOFF.md`) · `_FUTURE-STATE` items.
 
-> **COMMIT STATE.** This wrap = **1 commit** on top of the morning's 4 — **Dave pushes 5 via
-> GitHub Desktop.** Build green **51/51** at wrap; registry + partials + gates + 4 migrated snippets +
-> canon + cascade + showroom all regenerated + in sync; seed 124/124 zero mismatch.
+> **COMMIT STATE.** The wrap's 5 are **PUSHED ✓** (Dave, same afternoon). Post-wrap = **4 small
+> commits pending push via GitHub Desktop**: `0eb0f9e` (Console motion = inheritance) · `0a83b4c`
+> (finesse pass queued + theme posture) · `c84035d` (Legacy Figma reference pinned) · + the
+> handoff-freshen commit carrying this line. Build green **51/51**; seed 124/124 zero mismatch.
