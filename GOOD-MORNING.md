@@ -239,8 +239,9 @@ live mid-build (reversal recorded as the ruling); everything landed the same ses
 dots↔line collapse through 520px) · Icon-button (identical) · `#theme=legacy` / `#theme=supercharge`
 (colour-only, zero movement). **(b) The morning's set:** SC dark sheet
 `reviews/SC-DARK-MODE-2026-07-22-v1.REVIEW.html` + 4 held whites (one line each) + Console radius px
-(8/12 provisional) + bigplay eyeball. **(c) Standing question:** should MOTION join the Console fence,
-or stay inherited? (One registry line either way.)
+(8/12 provisional) + bigplay eyeball. **(c) ~~Motion-fence question~~ RULED same day (Dave: "Console
+and mono can share the motion tokens for now") — sharing stays INHERITANCE, not fence; recorded in
+B-D7's closing flag.**
 
 ## 2. ★ PHASE-2 FAN-OUT (fresh window, PARALLEL — the mechanism it waited for is live)
 Conductor + 2 Fable workers per `_BUILDOUT-STRATEGY-2026-07-21.md`; ~50 itinerary gaps

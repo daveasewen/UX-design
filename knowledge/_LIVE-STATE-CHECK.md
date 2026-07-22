@@ -5,7 +5,7 @@
 **1 warning(s) · 2 note(s).** ⚠ drift detected — see below.
 
 ## 1 · Freshness drift
-- ⚠ `Last refreshed: 2026-07-21` is older than the newest decision-doc change (2026-07-22, `docs/decisions/ADR-0014-per-theme-neutral-primitives-state-snap.md`). Refresh the stamp + reconcile the ledger.
+- ⚠ `Last refreshed: 2026-07-21` is older than the newest decision-doc change (2026-07-22, `docs/decisions/ADR-0013-component-type-tier-composition.md`). Refresh the stamp + reconcile the ledger.
 
 ## 5 · Orphan supersession edge
 - i DEAD `The "stale-reading pattern" spine note (07-18)` → superseded-by "the **consult mechanism**" — target not resolvable to a known ADR/§/file.

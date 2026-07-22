@@ -90,7 +90,10 @@ Ruled during the ADR-0013 clean-room, in two beats — recorded both because the
    should be changeable in the future if finessing is needed."* **Motion is a THEME PROPERTY**: the Legacy +
    Supercharge override sets dial `travel→0, darken→1` (identity transforms — colour tokens alone carry
    state feedback); Mono carries the movement and Console inherits it (NOT added to the ADR-0014 locked
-   fence, which was ruled for colour — flag if it should be). Constraint, Dave verbatim: *"as long as we
+   fence, which was ruled for colour). **Flag CLOSED same day — Dave: *"Console and mono can share the
+   motion tokens for now"* ⇒ sharing stays INHERITANCE, not fence: Console carries no motion override;
+   divergence later = a deliberate override, no fence edit. Provisional posture ("for now") noted.**
+   Constraint, Dave verbatim: *"as long as we
    don't use any js we may tune later"* — everything is CSS custom properties + calc (DEF-003 posture);
    tuning = editing a token value, no rule changes.
 Enacted same hour: tokens `motion/press/{travel,darken}` + component-type tier caches
