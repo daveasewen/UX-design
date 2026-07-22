@@ -1,6 +1,13 @@
 # Good morning, Dave ☕
 
-> ## ★ LATEST — 2026-07-21 (late night #3, FABLE solo): **THE ARCHITECTURE CALL IS RULED — ADR-0013.** Composition = **generated partials** (atoms declare rule-blocks; a generator injects them into consuming snippets between AUTO-PARTIAL markers; sync + ratchet gates make local re-implementation a build failure) + the **component-type tier** — ONE registry (`knowledge/component-types.json`) carrying a group's **values (parameter tokens) AND rules (partials)**; resolution = one new hop in the alias chain (component → type-group → semantic role → default). **Mechanism lands BEFORE Phase-2 fan-out** — the radius ratchet priced retro-fit at 21 files/three sessions; fan-out first would re-book that at ~90. The T-D9/T-D12 symmetry sealed it: partials are the box-side twin of the type-composite system. Also: **ds-009** (CONSULT corpus omits `_BUTTON-DECISIONS.md` — B-D rulings were unfindable) and **the gauge's Half-2 measurement is BROKEN** (wrong session + stub transcripts — warning inscribed; in-head tally governs). Ruling batch was NOT run — it moved to the next window by the gauge call (~52% mid-Amber wrap).
+> ## ★ LATEST — 2026-07-22 (morning, Opus): **THEMING-ARCHITECTURE PIVOT → a FABLE clean-room is now the FRONT of the queue, ahead of the ADR-0013 build.** The tabs/active ruling surfaced that each theme carries its OWN neutral primitive ramp (Legacy = HSBC brand grey, exact hexes captured; Supercharge = own warm ramp, values pending a Figma pull; Mono neutral) and that the state mechanism is really ONE test — **opacity-for-states is allowed IFF the composite is engineered to snap to a primitive ramp step, else colour** (hueless Mono/Legacy → opacity clean; hued Supercharge → colour default). Spine: **one flexible DNA**, sibling pairs **{Mono,Console}** (shared palette/opacity/status/dataviz) + **{Legacy,Supercharge}** — any theme re-alignable to another. **Cold-start brief for the clean-room: `notes/_briefs/2026-07-22-theme-primitives-architecture-brief.md`.** Also RULED this morning: **tabs Mono = ink bar (`tabs/active` ink pair) · separate red badge (`#B92F1E`) · opacity-snap inactive (mono/7 light · mono/10 dark) · Legacy keeps red** — NOT yet inscribed to ledgers. **Still owed (cheap, any Opus/Sonnet window): ruling 2 (Legacy fidelity>AA, theme-scoped) + ruling 3 (pro-forma fold-in).** Console radius 8/12 provisional; bigplay deferred to the full review.
+> **RENAME THIS CHAT →** `Apollo ruling batch (tabs RULED) + theming-architecture pivot → Fable clean-room briefed [Opus]`
+> **TITLE THE NEXT (fresh) CHAT →** `Apollo theming clean-room [FABLE solo] — per-theme neutral ramps + opacity-snaps-to-primitive mechanism · siblings {Mono,Console}/{Legacy,Supercharge} · pull Supercharge ramp from Figma`
+> *(⚠ Titles are LABELS — the role word comes from your opener line, never from a title. Fresh session: read this file, then the brief above.)*
+>
+> ---
+>
+> ## PRIOR — 2026-07-21 (late night #3, FABLE solo): **THE ARCHITECTURE CALL IS RULED — ADR-0013.** Composition = **generated partials** (atoms declare rule-blocks; a generator injects them into consuming snippets between AUTO-PARTIAL markers; sync + ratchet gates make local re-implementation a build failure) + the **component-type tier** — ONE registry (`knowledge/component-types.json`) carrying a group's **values (parameter tokens) AND rules (partials)**; resolution = one new hop in the alias chain (component → type-group → semantic role → default). **Mechanism lands BEFORE Phase-2 fan-out** — the radius ratchet priced retro-fit at 21 files/three sessions; fan-out first would re-book that at ~90. The T-D9/T-D12 symmetry sealed it: partials are the box-side twin of the type-composite system. Also: **ds-009** (CONSULT corpus omits `_BUTTON-DECISIONS.md` — B-D rulings were unfindable) and **the gauge's Half-2 measurement is BROKEN** (wrong session + stub transcripts — warning inscribed; in-head tally governs). Ruling batch was NOT run — it moved to the next window by the gauge call (~52% mid-Amber wrap).
 > **RENAME THIS CHAT →** `Apollo architecture RULED — ADR-0013: composition = generated partials + component-type tier (one registry, values+rules) · mechanism BEFORE Phase-2 · ds-009 + gauge Half-2 broken [FABLE solo]`
 > **TITLE THE NEXT (fresh) CHAT →** `Apollo ruling batch on the showroom — Console px · Legacy AA-fidelity ×2 · pro-forma fold-or-keep · tabs/active · bigplay — then queue the ADR-0013 clean-room`
 > *(⚠ Titles are LABELS — the role word comes from your opener line, never from a title.)*
@@ -14,11 +21,13 @@ session · §C = queue.*
 
 ## ⬛ DO THIS FIRST
 
-> **1. Push 1 commit** (GitHub Desktop): the ADR-0013 wrap.
-> **2. The RULING BATCH is still owed (§C·1)** — all five items visible on the harness
-> (`showroom/index.html`). Short window, Opus. Then the enact-queue (§C·3).
-> **3. Then open the ADR-0013 CLEAN-ROOM (§C·2) as its own fresh window — Fable solo, SERIAL,
-> full budget** (the Phase-0 precedent). The build scope is pinned in ADR-0013's Consequences.
+> **1. ★ Open the FABLE THEMING CLEAN-ROOM (fresh solo window) — it is now the FRONT of the queue,
+> ahead of ADR-0013 (same token/theme layer).** Read `notes/_briefs/2026-07-22-theme-primitives-architecture-brief.md`,
+> then pull the Supercharge warm ramp from Figma (`DS3tkWgaM1OsJg9ZC7nVLK`, `get_design_context` on the
+> collection — `get_variable_defs` returns `{}` on the swatches). Design per-theme neutral ramps + the
+> opacity-snaps-to-primitive test into the token schema. SERIAL, full budget. Reflect back before inscribing.
+> **2. Cheap (Opus/Sonnet): inscribe the tabs Mono ruling + finish ruling batch 2 & 3** (§C·1).
+> **3. Then the ADR-0013 CLEAN-ROOM (§C·2) — Fable solo, SERIAL** (scope pinned in ADR-0013's Consequences).
 
 *Standing practice: every handoff carries both names — retrospective + forward — and a **DIVVY
 PLAN** (what parallelises, lanes + models, what stays serial, shared files per lane). This handoff's

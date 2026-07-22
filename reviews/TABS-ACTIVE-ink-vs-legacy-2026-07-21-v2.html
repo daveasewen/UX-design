@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>tabs/active — ink bar · red badge · opacity→grey snap · review v2 · 2026-07-21</title>
+<style>
+  :root{
+    --legacy-red:#DB0011; --mono-red:#B92F1E;
+    --ink-light:#1A1A1A; --ink-dark:#FFFFFF;
+    --page:#EDEDEB; --card:#FFFFFF; --line:#D7D8D6; --fg:#1A1A1A; --muted:#5B5B5B;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;padding:32px;background:var(--page);color:var(--fg);
+    font-family:"HSBC_MtUnivers_Latin","Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;transition:background .2s;}
+  .wrap{max-width:1120px;margin:0 auto;}
+  h1{font-size:22px;font-weight:500;margin:0 0 4px;letter-spacing:-0.01em;}
+  .sub{color:var(--muted);font-size:14px;margin:0 0 18px;}
+  .rulings{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--ink-light);
+    padding:14px 16px;font-size:13.5px;line-height:1.6;margin-bottom:20px;}
+  .rulings b{font-weight:500;} .rulings code{background:#F2F2F0;padding:1px 4px;border-radius:3px;font-size:12px;}
+  .toolbar{display:flex;gap:18px;align-items:center;margin-bottom:18px;font-size:13px;flex-wrap:wrap;
+    background:var(--card);border:1px solid var(--line);padding:12px 16px;border-radius:6px;}
+  .toolbar .grp{display:flex;gap:8px;align-items:center;}
+  .toolbar label{color:var(--muted);}
+  .toolbar button{font:inherit;font-size:13px;border:1px solid var(--line);background:#fff;color:var(--fg);padding:6px 13px;cursor:pointer;border-radius:4px;}
+  .toolbar button.on{background:var(--ink-light);color:#fff;border-color:var(--ink-light);}
+  .toolbar input[type=range]{width:150px;vertical-align:middle;accent-color:var(--ink-light);}
+  .readout{font-size:12.5px;color:var(--muted);margin-left:auto;text-align:right;line-height:1.5;}
+  .readout b{color:var(--fg);font-weight:500;} .warn{color:#8A0710;font-weight:500;}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  @media(max-width:780px){.grid{grid-template-columns:1fr;}}
+  .col h2{font-size:13px;font-weight:500;text-transform:uppercase;letter-spacing:0.06em;margin:0 0 8px;color:var(--muted);}
+  .tag{font-size:11px;padding:2px 7px;border-radius:3px;margin-left:6px;font-weight:500;}
+  .tag-cur{background:#F3D9DB;color:#8A0710;} .tag-prop{background:#E4E4E2;color:#1A1A1A;}
+
+  .demo{--surface:#FFFFFF;--border:#E1E1E1;--txt:#1A1A1A;--active:var(--legacy-red);--badge:var(--legacy-red);--inact:1;
+    background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:0 0 20px;overflow:hidden;transition:background .2s;}
+  .demo.dark{--surface:#1F1F1F;--border:#808080;--txt:#FFFFFF;}
+  /* Mono panel overrides */
+  .demo.mono{--active:var(--ink-light);--badge:var(--mono-red);}
+  .demo.mono.dark{--active:var(--ink-dark);}
+  .tablist{display:flex;position:relative;border-bottom:2px solid var(--border);padding:0 8px;}
+  .tab{position:relative;appearance:none;background:none;border:0;font:inherit;font-size:15px;font-weight:400;/* weight CONSTANT across states */
+    color:var(--txt);padding:16px 14px 14px;cursor:pointer;display:flex;align-items:center;gap:8px;}
+  .tab[aria-selected="false"]{opacity:var(--inact);}   /* Legacy: --inact=1 (no dimming) · Mono: tuned */
+  .tab[aria-selected="true"]{opacity:1;font-weight:400;}
+  .tab:disabled{opacity:.32;cursor:not-allowed;}
+  .indicator{position:absolute;bottom:-2px;height:3px;background:var(--active);border-radius:2px;
+    transition:left .22s cubic-bezier(.2,.7,.3,1),width .22s cubic-bezier(.2,.7,.3,1),background .18s;}
+  .badge{min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--badge);color:#FFFFFF;
+    font-size:11px;font-weight:500;display:inline-flex;align-items:center;justify-content:center;transition:background .18s;}
+  .panelbody{padding:20px 18px 0;color:var(--txt);font-size:14px;line-height:1.5;}
+  .panelbody h3{font-size:16px;font-weight:500;margin:0 0 6px;} .panelbody p{margin:0;opacity:.75;}
+
+  .note{margin-top:24px;background:var(--card);border:1px solid var(--line);padding:16px 18px;font-size:13.5px;line-height:1.6;}
+  .note h2{font-size:14px;font-weight:600;margin:0 0 8px;} .note code{background:#F2F2F0;padding:1px 4px;border-radius:3px;font-size:12px;}
+  .note ul{margin:8px 0 0;padding-left:18px;} .note li{margin:3px 0;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>tabs — ink bar · separate red badge · opacity→grey snap</h1>
+  <p class="sub">Ruling batch §C·1(d), v2 · your rulings rendered live · 2026-07-21</p>
+
+  <div class="rulings">
+    <b>Your rulings, applied:</b>
+    &nbsp;①&nbsp;<b>Bar</b>: Mono = ink · Legacy = red (as-is).
+    &nbsp;②&nbsp;<b>Badge</b> styled separately (own slot): Mono = <code>#B92F1E</code> status red · Legacy = <code>#DB0011</code>; white numeral.
+    &nbsp;③&nbsp;<b>Weight constant</b> across states — active differs by the bar, not a heavier label.
+    &nbsp;④&nbsp;<b>Opacity</b>: token kept; <b>Legacy = none</b> (inactive stays full-strength) · <b>Mono = tuned so ink×opacity over the surface snaps to a mono rung</b> (the R-D4 matting method).
+  </div>
+
+  <div class="toolbar">
+    <div class="grp"><label>Mode</label>
+      <button id="mLight" class="on" onclick="setMode('light')">Light</button>
+      <button id="mDark" onclick="setMode('dark')">Dark</button></div>
+    <div class="grp"><label>Inactive-tab target rung</label>
+      <input id="rung" type="range" min="6" max="10" step="1" value="7" oninput="apply()">
+      <span id="rungLbl" style="font-variant-numeric:tabular-nums;min-width:52px;">mono/7</span></div>
+    <div class="readout" id="readout"></div>
+  </div>
+
+  <div class="grid">
+    <div class="col">
+      <h2>Legacy<span class="tag tag-cur">as-is · red · no opacity</span></h2>
+      <div class="demo" id="demoLegacy">
+        <div class="tablist" role="tablist">
+          <button class="tab" role="tab" aria-selected="true">Overview</button>
+          <button class="tab" role="tab" aria-selected="false">Transactions <span class="badge">3</span></button>
+          <button class="tab" role="tab" aria-selected="false">Statements</button>
+          <button class="tab" role="tab" aria-selected="false" disabled>Settings</button>
+          <span class="indicator"></span>
+        </div>
+        <div class="panelbody"><h3>Overview</h3><p>Balances, recent activity and quick actions for the selected account.</p></div>
+      </div>
+    </div>
+
+    <div class="col">
+      <h2>Mono<span class="tag tag-prop">ink bar · red badge · snapped opacity</span></h2>
+      <div class="demo mono" id="demoMono">
+        <div class="tablist" role="tablist">
+          <button class="tab" role="tab" aria-selected="true">Overview</button>
+          <button class="tab" role="tab" aria-selected="false">Transactions <span class="badge">3</span></button>
+          <button class="tab" role="tab" aria-selected="false">Statements</button>
+          <button class="tab" role="tab" aria-selected="false" disabled>Settings</button>
+          <span class="indicator"></span>
+        </div>
+        <div class="panelbody"><h3>Overview</h3><p>Balances, recent activity and quick actions for the selected account.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <h2>The snap, explained</h2>
+    <p>Rather than an arbitrary <code>opacity:.62</code>, the inactive-tab opacity is <b>solved</b> so that
+    ink composited over the surface lands exactly on a named mono rung:
+    <code>&alpha; = (rung − surface) / (ink − surface)</code>. So the inactive label is a real token colour, not a blend artifact —
+    and it differs per mode because the surface and ink differ. Move the slider to pick the rung; the opacity is derived and shown above.</p>
+    <ul>
+      <li><b>Default = mono/7 light · mono/9 dark</b> (≈6:1, both AA-legible). Slider stays on rung 7 → light shows mono/7, dark shows mono/9 automatically at the matched contrast.</li>
+      <li>Legacy is untouched: full-strength inactive labels, red bar + red badge. Only differentiator is the bar — eyeball whether that reads for you.</li>
+      <li>Below mono/8 the inactive label drops under 4.5:1 — flagged in the readout if you go quieter.</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+  var RAMP={5:'#313131',6:'#484848',7:'#626262',8:'#808080',9:'#9D9D9D',10:'#B7B7B7',11:'#CECECE'};
+  var mode='light';
+  function hx(h){return [parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];}
+  function lin(c){c/=255;return c<=0.03928?c/12.92:Math.pow((c+0.055)/1.055,2.4);}
+  function Lum(h){var[r,g,b]=hx(h);return 0.2126*lin(r)+0.7152*lin(g)+0.0722*lin(b);}
+  function ratio(a,b){var la=Lum(a),lb=Lum(b),hi=Math.max(la,lb),lo=Math.min(la,lb);return (hi+0.05)/(lo+0.05);}
+  function alpha(ink,bg,target){return (hx(target)[0]-hx(bg)[0])/(hx(ink)[0]-hx(bg)[0]);}
+  // in dark mode, a light-side rung r maps to its mirror (r + 2) so contrast matches (7->9, 6->8, 8->10)
+  function darkRung(r){return Math.min(11, r+2);}
+
+  function apply(){
+    var r=parseInt(document.getElementById('rung').value,10);
+    document.getElementById('rungLbl').textContent='mono/'+r;
+    var ink   = mode==='dark' ? '#FFFFFF' : '#1A1A1A';
+    var surf  = mode==='dark' ? '#1F1F1F' : '#FFFFFF';
+    var rung  = mode==='dark' ? darkRung(r) : r;
+    var hex   = RAMP[rung];
+    var a     = alpha(ink,surf,hex);
+    // apply to Mono panel inactive tabs only
+    document.getElementById('demoMono').style.setProperty('--inact', a.toFixed(3));
+    var c=ratio(hex,surf);
+    var flag = c<4.5 ? ' <span class="warn">&lt;4.5:1 — below AA text</span>' : '';
+    document.getElementById('readout').innerHTML =
+      'Mono inactive → <b>mono/'+rung+' '+hex+'</b> · opacity <b>'+a.toFixed(3)+'</b> · '+c.toFixed(2)+':1'+flag+
+      '<br>ink '+ink+' over surface '+surf;
+    placeAll();
+  }
+  function setMode(m){
+    mode=m; var dark=m==='dark';
+    ['demoLegacy','demoMono'].forEach(id=>document.getElementById(id).classList.toggle('dark',dark));
+    document.getElementById('mLight').classList.toggle('on',!dark);
+    document.getElementById('mDark').classList.toggle('on',dark);
+    document.body.style.background = dark ? '#121212' : 'var(--page)';
+    apply();
+  }
+  function place(demo){var s=demo.querySelector('.tab[aria-selected="true"]'),i=demo.querySelector('.indicator');
+    if(s&&i){i.style.left=s.offsetLeft+'px';i.style.width=s.offsetWidth+'px';}}
+  function placeAll(){document.querySelectorAll('.demo').forEach(place);}
+  document.querySelectorAll('.demo').forEach(function(d){
+    d.querySelectorAll('.tab').forEach(function(t){t.addEventListener('click',function(){
+      if(t.disabled)return; d.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected','false'));
+      t.setAttribute('aria-selected','true'); place(d);});});
+  });
+  window.addEventListener('load',apply); window.addEventListener('resize',placeAll);
+</script>
+</body>
+</html>

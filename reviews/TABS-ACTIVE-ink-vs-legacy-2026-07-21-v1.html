@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>tabs/active — ink vs Legacy red · review v1 · 2026-07-21</title>
+<style>
+  :root{
+    --red:#DB0011;              /* Legacy tabs/active, both modes            */
+    --ink-light:#1A1A1A;        /* Mono ink light (mono/4, = progress/complete) */
+    --ink-dark:#FFFFFF;         /* Mono ink dark                             */
+    --page:#EDEDEB; --card:#FFFFFF; --line:#D7D8D6; --fg:#1A1A1A; --muted:#5B5B5B;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;padding:32px;background:var(--page);color:var(--fg);
+    font-family:"HSBC_MtUnivers_Latin","Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1080px;margin:0 auto;}
+  h1{font-size:22px;font-weight:500;margin:0 0 4px;letter-spacing:-0.01em;}
+  .sub{color:var(--muted);font-size:14px;margin:0 0 20px;}
+  .principle{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--ink-light);
+    padding:14px 16px;font-size:14px;line-height:1.5;margin-bottom:24px;}
+  .principle b{font-weight:500;}
+  .toolbar{display:flex;gap:8px;align-items:center;margin-bottom:20px;font-size:13px;}
+  .toolbar button{font:inherit;font-size:13px;border:1px solid var(--line);background:#fff;color:var(--fg);
+    padding:7px 14px;cursor:pointer;border-radius:4px;}
+  .toolbar button.on{background:var(--ink-light);color:#fff;border-color:var(--ink-light);}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  @media(max-width:760px){.grid{grid-template-columns:1fr;}}
+  .col h2{font-size:13px;font-weight:500;text-transform:uppercase;letter-spacing:0.06em;margin:0 0 8px;color:var(--muted);}
+  .col .tag{font-size:11px;padding:2px 7px;border-radius:3px;vertical-align:middle;margin-left:6px;font-weight:500;}
+  .tag-cur{background:#F3D9DB;color:#8A0710;}
+  .tag-prop{background:#E4E4E2;color:#1A1A1A;}
+
+  /* ---- rendered Tabs component ---- */
+  .demo{--surface:#FFFFFF;--border:#E1E1E1;--txt:#1A1A1A;--txt-dim:#6B6B6B;--active:var(--red);
+    background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:0 0 20px;overflow:hidden;}
+  .demo.dark{--surface:#1F1F1F;--border:#808080;--txt:#F5F5F5;--txt-dim:#B5B5B5;}
+  .demo.ink{--active:var(--ink-light);} .demo.ink.dark{--active:var(--ink-dark);}
+  .tablist{display:flex;gap:0;position:relative;border-bottom:2px solid var(--border);padding:0 8px;}
+  .tab{position:relative;appearance:none;background:none;border:0;font:inherit;font-size:15px;
+    color:var(--txt);opacity:.62;padding:16px 14px 14px;cursor:pointer;display:flex;align-items:center;gap:8px;}
+  .tab[aria-selected="true"]{opacity:1;font-weight:500;}
+  .tab:disabled{opacity:.32;cursor:not-allowed;}
+  .indicator{position:absolute;bottom:-2px;height:3px;background:var(--active);border-radius:2px;
+    transition:left .22s cubic-bezier(.2,.7,.3,1),width .22s cubic-bezier(.2,.7,.3,1),background .18s;}
+  .badge{min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--active);color:#FFFFFF;
+    font-size:11px;font-weight:500;display:inline-flex;align-items:center;justify-content:center;transition:background .18s;}
+  .demo.dark.ink .badge{color:#1A1A1A;}  /* ink-dark badge is white → dark numeral */
+  .panelbody{padding:20px 18px 0;color:var(--txt);font-size:14px;line-height:1.5;}
+  .panelbody h3{font-size:16px;font-weight:500;margin:0 0 6px;}
+  .panelbody p{margin:0;color:var(--txt-dim);}
+
+  .note{margin-top:26px;background:var(--card);border:1px solid var(--line);padding:16px 18px;font-size:14px;line-height:1.55;}
+  .note h2{font-size:14px;font-weight:600;margin:0 0 8px;}
+  .note .flag{color:#8A0710;font-weight:500;}
+  .swatchrow{display:flex;gap:18px;margin-top:10px;flex-wrap:wrap;}
+  .sw{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);}
+  .sw i{width:22px;height:22px;border-radius:4px;display:inline-block;border:1px solid rgba(0,0,0,.12);}
+  .ask{margin-top:22px;font-size:14px;line-height:1.6;background:#FBFBFA;border:1px dashed var(--line);padding:14px 16px;}
+  kbd{font:inherit;font-size:12px;background:#EDEDEB;border:1px solid var(--line);border-radius:3px;padding:1px 5px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>tabs/active — Mono ink vs Legacy red</h1>
+  <p class="sub">Ruling batch §C·1(d) · the last Legacy red still resolving in the Mono base · review v1 · 2026-07-21</p>
+
+  <div class="principle">
+    <b>The precedent (R-D22).</b> <code>progress/complete</code> was ruled <b>ink, not red</b> — "progress is
+    <b>structure, not status</b>" (<code>#1A1A1A</code> light / <code>#FFFFFF</code> dark; Legacy keeps <code>#DB0011</code>).
+    The active-tab bar marks <b>selection</b> — also structure, not status. Same logic says: in Mono it should be ink.
+    This page renders both so you can rule by eye. Legacy is untouched either way.
+  </div>
+
+  <div class="toolbar">
+    <span style="color:var(--muted)">Mode:</span>
+    <button id="mLight" class="on" onclick="setMode('light')">Light</button>
+    <button id="mDark" onclick="setMode('dark')">Dark</button>
+    <span style="color:var(--muted);margin-left:14px">Both panels switch together.</span>
+  </div>
+
+  <div class="grid">
+    <div class="col">
+      <h2>Current — Legacy red<span class="tag tag-cur">as-built</span></h2>
+      <div class="demo" id="demoCur">
+        <div class="tablist" role="tablist">
+          <button class="tab" role="tab" aria-selected="true">Overview</button>
+          <button class="tab" role="tab" aria-selected="false">Transactions <span class="badge">3</span></button>
+          <button class="tab" role="tab" aria-selected="false">Statements</button>
+          <button class="tab" role="tab" aria-selected="false" disabled>Settings</button>
+          <span class="indicator"></span>
+        </div>
+        <div class="panelbody"><h3>Overview</h3><p>Balances, recent activity and quick actions for the selected account.</p></div>
+      </div>
+    </div>
+
+    <div class="col">
+      <h2>Proposed — Mono ink<span class="tag tag-prop">R-D22 logic</span></h2>
+      <div class="demo ink" id="demoInk">
+        <div class="tablist" role="tablist">
+          <button class="tab" role="tab" aria-selected="true">Overview</button>
+          <button class="tab" role="tab" aria-selected="false">Transactions <span class="badge">3</span></button>
+          <button class="tab" role="tab" aria-selected="false">Statements</button>
+          <button class="tab" role="tab" aria-selected="false" disabled>Settings</button>
+          <span class="indicator"></span>
+        </div>
+        <div class="panelbody"><h3>Overview</h3><p>Balances, recent activity and quick actions for the selected account.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <h2>One knock-on to decide with it — the count badge</h2>
+    <p>The badge shares the <code>tabs/active</code> token. If the bar goes ink, the badge pill goes ink too — a black
+    pill with a white numeral. <span class="flag">That white numeral sits against type26-013</span> ("white type is
+    red-only"). Three honest options for the badge, independent of the bar:</p>
+    <div class="swatchrow">
+      <span class="sw"><i style="background:#1A1A1A"></i> Badge follows ink (white numeral — needs a type26-013 carve-out)</span>
+      <span class="sw"><i style="background:#DB0011"></i> Badge stays red (reads as a count/alert accent, not selection)</span>
+      <span class="sw"><i style="background:#fff"></i> Badge outline-only (ink ring + ink numeral — fully mono, quietest)</span>
+    </div>
+  </div>
+
+  <div class="ask">
+    <b>What I need from you:</b> (1) bar — <kbd>ink</kbd> or <kbd>keep red</kbd> in Mono? &nbsp; (2) badge — <kbd>ink</kbd>,
+    <kbd>red</kbd>, or <kbd>outline</kbd>? &nbsp;Legacy keeps <code>#DB0011</code> regardless. Tell me in chat and I'll
+    inscribe it (new R-D entry) and rewire the token.
+  </div>
+</div>
+
+<script>
+  function setMode(m){
+    var dark = m==='dark';
+    document.getElementById('demoCur').classList.toggle('dark',dark);
+    document.getElementById('demoInk').classList.toggle('dark',dark);
+    document.getElementById('mLight').classList.toggle('on',!dark);
+    document.getElementById('mDark').classList.toggle('on',dark);
+    document.body.style.background = dark ? '#111' : 'var(--page)';
+  }
+  // position each indicator under its selected tab
+  function place(demo){
+    var sel = demo.querySelector('.tab[aria-selected="true"]');
+    var ind = demo.querySelector('.indicator');
+    if(sel&&ind){ ind.style.left = sel.offsetLeft+'px'; ind.style.width = sel.offsetWidth+'px'; }
+  }
+  function placeAll(){ document.querySelectorAll('.demo').forEach(place); }
+  // click to move selection within a panel (so Dave can feel it)
+  document.querySelectorAll('.demo').forEach(function(d){
+    d.querySelectorAll('.tab').forEach(function(t){
+      t.addEventListener('click',function(){
+        if(t.disabled) return;
+        d.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected','false'));
+        t.setAttribute('aria-selected','true'); place(d);
+      });
+    });
+  });
+  window.addEventListener('load',placeAll);
+  window.addEventListener('resize',placeAll);
+</script>
+</body>
+</html>
