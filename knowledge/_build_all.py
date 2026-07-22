@@ -67,6 +67,11 @@ STEPS = [
     # regenerate byte-identically from tokens/themes/*.json + snippet manifests
     # (same spine principle as the token block — generated, so it cannot drift).
     ("theme cascade sync — [data-apollo-theme] layer (ADR-0011)", "canon/gen_theme_cascade.py", ["--check"]),
+    # ADR-0014 (2026-07-22): selftests are WIRED so they cannot rot — the supercharge-empty
+    # assertion sat stale-red for a day because --selftest only ran by hand.
+    ("theme cascade selftest (ADR-0014)", "canon/gen_theme_cascade.py", ["--selftest"]),
+    ("state-snap gate — opacity states snap to the active theme's ramp (ADR-0014)", "_validate_state_snap.py"),
+    ("state-snap selftest (ADR-0014)", "_validate_state_snap.py", ["--selftest"]),
     ("radius gate — no hardcoded border-radius; shape is a theme flex slot (ADR-0010)", "_validate_radius.py"),
     ("showroom sync — generated component library (RULED 2026-07-21)", "gen_showroom.py", ["--check"]),
     ("Legacy-colour leakage gate (Mono) — no Legacy-only colour in a Mono surface", "_validate_legacy_leak.py"),

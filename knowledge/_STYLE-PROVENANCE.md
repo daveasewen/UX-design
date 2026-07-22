@@ -153,3 +153,5 @@ Mono canon) · archive (superseded, kept not deleted) · hidden (`-REVIEW`/`.REV
 **NEXT (carry-forward):** (1) Mono **alignment sweep** on the 39 `align` items → regenerate `_review`
 copies → flip `_validate_theme_provenance.py` to **blocking**. (2) **Duplicate-dedup pass** (Dave: "there
 may be duplicates, deal with later"). Both are Sonnet-tier.
+
+> **2026-07-22 (ADR-0014):** Supercharge no longer renders-as-Mono — it carries its OWN warm neutral ramp (`color/warm/1-15`, OBSERVED Figma pull) through the neutral DNA tier; dark mode provisional-agent pending Dave (`reviews/SC-DARK-MODE-2026-07-22-v1.html`). Console LOCKED ≡ Mono on neutrals/opacity/status/dataviz (registry fence).

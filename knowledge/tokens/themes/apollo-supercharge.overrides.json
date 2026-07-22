@@ -1,13 +1,96 @@
 {
-  "$description": "Apollo Supercharge override set (ADR-0011). Supercharge INHERITS Mono's palette in full (Dave 2026-07-21) — this set is deliberately EMPTY: it exists so the divergence hooks are live (renders as Mono, labelled, in the harness) and a future brand-uplift palette is a token edit here, never a re-architecture. Anticipated flex slots are declared in _themes.json declaredSlots per ADR-0010.",
+  "$description": "Apollo Supercharge override set (ADR-0011 + ADR-0014). Since 2026-07-22 Supercharge carries its OWN warm neutral ramp: the neutral DNA tier (color/neutral/1-15) rebinds here onto color/warm/* — page, ink, surfaces, borders and disabled greys all follow by step index. Status/RAG + dataviz stay identical to Mono (only Legacy differs). State mechanism = colour by default (registry stateMechanism; opacity only where it snaps to a warm step). Dark-mode values are index-symmetric PROPOSALS (provisional-agent, Dave review sheet 2026-07-22) — 'we can always change.'",
   "$theme": "apollo-supercharge",
   "$attr": "supercharge",
   "$schemaVersion": "1.0.0",
   "overrides": {
     "progress/complete": {
-      "light": { "$value": "#B92F1E", "$type": "color" },
-      "dark":  { "$value": "#CC4333", "$type": "color" },
+      "light": {
+        "$value": "#B92F1E",
+        "$type": "color"
+      },
+      "dark": {
+        "$value": "#CC4333",
+        "$type": "color"
+      },
       "$note": "FIRST Supercharge divergence (Dave 2026-07-21, showroom progress-tracker review: 'in mono and console it should be black. the colours in legacy and supercharge are fine') — Mono/Console went to the ink pair; Supercharge KEEPS the status-red pair it displayed at ruling time. Supersedes this file's 'deliberately EMPTY' description for this one path; Supercharge ≡ Mono everywhere else."
+    },
+    "color/neutral/1": {
+      "$alias": "color/warm/1",
+      "$type": "color",
+      "$note": "warm/1 = #000000 = mono/1 — no-op by value; declared for the complete 15-step binding."
+    },
+    "color/neutral/2": {
+      "$alias": "color/warm/2",
+      "$type": "color"
+    },
+    "color/neutral/3": {
+      "$alias": "color/warm/3",
+      "$type": "color"
+    },
+    "color/neutral/4": {
+      "$alias": "color/warm/2",
+      "$type": "color",
+      "$note": "ADR-0014 ANCHOR REMAP (Dave ruled 2026-07-22: SC ink = #13110E, 'just use this we can always change'). neutral/4 is the Mono anchor step (ink = digital-black = action fill = mono/4); Supercharge's anchor is ITS step 2 — the warm ramp packs dark, so index-identity would land the anchor a shade light (warm/4 #25211C, L~33 vs mono/4 L~26). Every anchor-bound role (ink, dark page, primary action fill) follows this one line."
+    },
+    "color/neutral/5": {
+      "$alias": "color/warm/5",
+      "$type": "color"
+    },
+    "color/neutral/6": {
+      "$alias": "color/warm/6",
+      "$type": "color"
+    },
+    "color/neutral/7": {
+      "$alias": "color/warm/7",
+      "$type": "color"
+    },
+    "color/neutral/8": {
+      "$alias": "color/warm/8",
+      "$type": "color"
+    },
+    "color/neutral/9": {
+      "$alias": "color/warm/9",
+      "$type": "color"
+    },
+    "color/neutral/10": {
+      "$alias": "color/warm/10",
+      "$type": "color"
+    },
+    "color/neutral/11": {
+      "$alias": "color/warm/11",
+      "$type": "color"
+    },
+    "color/neutral/12": {
+      "$alias": "color/warm/12",
+      "$type": "color"
+    },
+    "color/neutral/13": {
+      "$alias": "color/warm/13",
+      "$type": "color"
+    },
+    "color/neutral/14": {
+      "$alias": "color/warm/14",
+      "$type": "color"
+    },
+    "color/neutral/15": {
+      "$alias": "color/warm/15",
+      "$type": "color"
+    },
+    "color/neutral/raise-1": {
+      "$value": "#2A2621",
+      "$type": "color",
+      "$note": "CALCULATED (provisional-agent, ADR-0014 review sheet): mono elevation deltas (+5/+9/+13 per channel over the dark ground) applied to warm/4 #25211C. Dave to review; 'we can always change.'"
+    },
+    "color/neutral/raise-2": {
+      "$value": "#2E2A25",
+      "$type": "color",
+      "$note": "CALCULATED (provisional-agent, ADR-0014 review sheet): mono elevation deltas (+5/+9/+13 per channel over the dark ground) applied to warm/4 #25211C. Dave to review; 'we can always change.'"
+    },
+    "color/neutral/raise-3": {
+      "$value": "#322E29",
+      "$type": "color",
+      "$note": "CALCULATED (provisional-agent, ADR-0014 review sheet): mono elevation deltas (+5/+9/+13 per channel over the dark ground) applied to warm/4 #25211C. Dave to review; 'we can always change.'"
     }
   }
 }

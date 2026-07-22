@@ -76,8 +76,11 @@ def _store_for(path):
         return _store("layout.json")
     return _store("semantic-colour.json")
 
-def base_value(path, mode):
-    """Resolve a token path + mode from the BASE (Mono) stores. Fail loud."""
+def base_value(path, mode, _depth=0):
+    """Resolve a token path + mode from the BASE (Mono) stores. Fail loud.
+    Chain-aware (ADR-0014): a pure-$alias node (no cached $value, e.g. the
+    color/neutral DNA tier before its cache is stamped) resolves through its
+    target, bounded against loops."""
     node = _store_for(path)
     for key in path.split("/"):
         node = node[key]                      # KeyError = fail loud in caller
@@ -85,6 +88,10 @@ def base_value(path, mode):
         return node[mode]["$value"]
     if "$value" in node:
         return node["$value"]
+    if "$alias" in node and isinstance(node["$alias"], str):
+        if _depth > 8:
+            raise KeyError(f"alias loop resolving {path}")
+        return base_value(node["$alias"], mode, _depth + 1)
     raise KeyError(f"{path} has no '{mode}' value in base store")
 
 # ---------------------------------------------------------------- alias map
@@ -191,6 +198,15 @@ def load_themes():
                         else:
                             pair[m] = css_value(path, base_value(path, m))  # fall back, never leak
                     entry["overrides"][path] = pair
+                elif "$alias" in node and isinstance(node["$alias"], str):
+                    # ADR-0014: an override may point at a base-store primitive (e.g. supercharge
+                    # binds color/neutral/N -> color/warm/N). Resolved to literals at load so the
+                    # primitive stays the single source (retrieval-not-recall); emission shape is
+                    # modeless when both modes agree.
+                    tgt = node["$alias"]
+                    vl = css_value(path, base_value(tgt, "light"))
+                    vd = css_value(path, base_value(tgt, "dark"))
+                    entry["overrides"][path] = {"modeless": vl} if vl == vd else {"light": vl, "dark": vd}
                 elif "$value" in node:
                     entry["overrides"][path] = {"modeless": css_value(path, node["$value"])}
         out.append(entry)
@@ -331,14 +347,32 @@ def selftest():
         for path, vals in t["overrides"].items():
             if "modeless" not in vals and ("light" not in vals or "dark" not in vals):
                 fails.append(f'{t["key"]}:{path} missing a mode')
-    # 4. the ruled facts: Legacy carries the CTA red; Console rounds; Supercharge = Mono
-    if themes["apollo-legacy"]["overrides"].get("button/primary/background/default", {}).get("light") != "#DB0011":
+    # 4. the ruled facts (ADR-0014 supersedes the pre-R-D22 "supercharge empty" assertion):
+    #    Legacy carries the CTA red + as-built tabs; Console rounds INSIDE its sibling fence;
+    #    Supercharge rides the warm DNA with the anchor remapped to its ink.
+    leg = themes["apollo-legacy"]["overrides"]
+    if leg.get("button/primary/background/default", {}).get("light") != "#DB0011":
         fails.append("legacy button/primary default light != #DB0011")
+    if leg.get("tabs/active", {}).get("modeless") != "#DB0011":
+        fails.append("legacy tabs/active must stay the as-built red #DB0011 (R-D23)")
     cr = themes["apollo-console"]["overrides"].get("border-radius/default", {})
     if not cr or cr.get("modeless") in (None, "0"):
         fails.append("console border-radius/default must be a non-zero modeless value")
-    if themes["apollo-supercharge"]["overrides"]:
-        fails.append("supercharge must be an EMPTY override set (renders as Mono)")
+    sc = themes["apollo-supercharge"]["overrides"]
+    if sc.get("color/neutral/2", {}).get("modeless") != "#13110E":
+        fails.append("supercharge neutral/2 must bind the warm ramp (#13110E, ADR-0014)")
+    if sc.get("color/neutral/4", {}).get("modeless") != "#13110E":
+        fails.append("supercharge ANCHOR remap neutral/4 -> warm/2 #13110E (Dave 2026-07-22) missing")
+    if sc.get("text/default", {}).get("light") != "#13110E":
+        fails.append("supercharge effective ink must expand to #13110E through the DNA tier")
+    if sc.get("progress/complete", {}).get("light") != "#B92F1E":
+        fails.append("supercharge progress/complete light != #B92F1E (R-D22)")
+    # 4b. the sibling fence (ADR-0014, LOCKED): Console may not diverge on DNA/status/dataviz paths
+    reg = json.load(open(os.path.join(TOK, "themes", "_themes.json")))
+    fence = (reg["themes"]["apollo-console"].get("fencedPaths") or {}).get("prefixes", [])
+    for path in themes["apollo-console"]["overrides"]:
+        if any(path.startswith(p) for p in fence):
+            fails.append(f"console override '{path}' breaches the sibling fence {fence}")
     # 5. idempotency
     if build_block()[0] != block:
         fails.append("generator is not deterministic")

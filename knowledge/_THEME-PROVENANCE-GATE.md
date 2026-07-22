@@ -2,11 +2,10 @@
 
 Scanned **67** Mono-designated library files (snippets, _proforma, _review). Foreign-theme hexes checked: #00847F, #A8000B, #DB0011.
 
-**38** hardcoded foreign-theme colour(s) found in live CSS (comments + token-manifests excluded).
+**37** hardcoded foreign-theme colour(s) found in live CSS (comments + token-manifests excluded).
 
 | Area | File | Hex | ×  | Belongs to |
 |---|---|---|---|---|
-| snippets | Tabs.reference.html | `#DB0011` | 2 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
 | snippets | Notifications.reference.html | `#A8000B` | 2 | Apollo Legacy: Legacy error red (light) |
 | snippets | Hero.reference.html | `#DB0011` | 4 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |
 | snippets | Cards.reference.html | `#DB0011` | 2 | Apollo Legacy: Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark) |

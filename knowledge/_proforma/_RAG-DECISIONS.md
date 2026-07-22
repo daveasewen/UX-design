@@ -5,6 +5,27 @@ session that produced it. Sibling to `_TYPE-DECISIONS.md` / `_DATAVIZ-DECISIONS.
 
 ---
 
+## R-D25 — Supercharge carries its OWN warm neutral ramp; ink = warm/2 #13110E; Console LOCKED ≡ Mono on the shared DNA layers (2026-07-22). Source: Dave, in-chat rulings on the ADR-0014 reflect-back.
+
+The theming clean-room's rulings, inscribed in full in **ADR-0014** (per-theme neutral primitives +
+the opacity-snaps-to-ramp state test) — this entry exists so colour-recall finds them in the ledger:
+
+1. **The neutral DNA tier** `color/neutral/1–15` + the warm primitive `color/warm/1–15` (OBSERVED,
+   Figma `DS3tkWgaM1OsJg9ZC7nVLK` swatches, 2026-07-22) — items 1–2, "cool".
+2. **SC ink = `warm/2 #13110E`** — *"just use this we can always change"* — enacted as the ANCHOR
+   REMAP (`neutral/4 → warm/2`): ink ≡ digital-black ≡ action fill move together. SC **dark-mode**
+   values are index-symmetric agent proposals for Dave's review sheet — *"lets calculate the dark
+   mode values and I can review."*
+3. **Console ≡ Mono on neutrals / interaction-opacity / status / dataviz — LOCKED**: *"lets lock
+   this in, they should be the same"* — enforced by the registry sibling FENCE + cascade selftest.
+4. **State mechanism = theme property** (Mono+Console opacity · SC colour · Legacy explicit) with
+   the blocking snap gate `_validate_state_snap.py` — item 3, "cool"; R-D23's tabs values are the
+   calibration consumers.
+
+Edges: refines(ADR-0011, scope=supercharge-neutrals) · refines(R-D19, scope=supercharge) · verified-by(theme-cascade-selftest) · verified-by(state-snap-gate)
+
+---
+
 ## R-D23 — Tabs (Mono): ink bar · SEPARATE red-status badge · opacity-snap inactive; Legacy keeps red (2026-07-22). Source: Dave, live on the tabs review v4 (`reviews/TABS-ACTIVE-ink-vs-legacy-2026-07-21-v4.html`).
 
 `tabs/active` was the last Mono surface resolving a Legacy red (the R-D19 drift class, flagged at R-D22).
@@ -41,7 +62,7 @@ bank" aspiration (ADR-0004) is untouched; Legacy is the single named exception, 
 perfected. **Enactment (theming clean-room):** Legacy pairs are recorded in the audit as **EXEMPTED
 (documented), not as passes** — a theme-level carve-out via the `RULED_PAIR_EXCLUSIONS` mechanism
 (tag `theme=legacy`, reason = this ruling).
-Edges: carve-out(ADR-0004, `_STANDARDS.md` §3) · scope(theme=legacy) · enacted-by(theming-clean-room)
+Edges: carve-out(ADR-0004, `_STANDARDS.md` §3, scope=theme=legacy) · enacted-by(ADR-0014)
 
 ---
 

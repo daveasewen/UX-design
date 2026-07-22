@@ -89,6 +89,7 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | icon/default | surface/action-primary-pressed | light | 1.21 | below-3(gated) |
 | icon/default | surface/action-primary-pressed | dark | 1.0 | below-3(gated) |
 | icon/default | surface/digital-black | light | 1.0 | below-3(gated) |
+| icon/default | tabs/badge/background | light | 2.89 | below-3(gated) |
 | icon/default | tertiary/background/active | light | 1.21 | below-3(gated) |
 | icon/default | tertiary/background/pressed | light | 2.85 | below-3(gated) |
 | icon/default-reverse | background/default | light | 1.0 | below-3(gated) |
@@ -204,6 +205,7 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | icon/disabled (allowlisted) | table/header/background | dark | 4.17 | DEAD-ZONE |
 | icon/disabled (allowlisted) | tabs/background | light | 1.31 | below-3(gated) |
 | icon/disabled (allowlisted) | tabs/background | dark | 4.17 | DEAD-ZONE |
+| icon/disabled (allowlisted) | tabs/badge/background | dark | 1.2 | below-3(gated) |
 | icon/disabled (allowlisted) | tabs/overflow-background | light | 1.31 | below-3(gated) |
 | icon/disabled (allowlisted) | tabs/overflow-background | dark | 4.17 | DEAD-ZONE |
 | icon/disabled (allowlisted) | tertiary/background/active | dark | 4.41 | DEAD-ZONE |
@@ -269,6 +271,7 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | icon/on-inverse | table/header/background | dark | 1.3 | below-3(gated) |
 | icon/on-inverse | tabs/background | light | 1.0 | below-3(gated) |
 | icon/on-inverse | tabs/background | dark | 1.3 | below-3(gated) |
+| icon/on-inverse | tabs/badge/background | dark | 2.66 | below-3(gated) |
 | icon/on-inverse | tabs/overflow-background | light | 1.0 | below-3(gated) |
 | icon/on-inverse | tabs/overflow-background | dark | 1.3 | below-3(gated) |
 | icon/on-inverse | tertiary/background/active | dark | 1.38 | below-3(gated) |
@@ -284,7 +287,7 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | icon/on-inverse | tooltip/background | light | 1.0 | below-3(gated) |
 | icon/on-inverse | tooltip/background | dark | 1.38 | below-3(gated) |
 
-_(178 of 448 exhaustive combos already clear 4.5:1; 32 transparent/composite surfaces skipped (alpha — true contrast needs the render path) — omitted.)_
+_(183 of 456 exhaustive combos already clear 4.5:1; 32 transparent/composite surfaces skipped (alpha — true contrast needs the render path) — omitted.)_
 
 ## 3. Roundel vs surface — rag/* pairs at the ROUNDEL threshold (≥3:1, ruled policy)
 

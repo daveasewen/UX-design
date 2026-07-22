@@ -1,39 +1,35 @@
 # Good morning, Dave ☕
 
-> ## ★ LATEST — 2026-07-22 (morning, Opus): **THEMING-ARCHITECTURE PIVOT → a FABLE clean-room is now the FRONT of the queue, ahead of the ADR-0013 build.** The tabs/active ruling surfaced that each theme carries its OWN neutral primitive ramp (Legacy = HSBC brand grey, exact hexes captured; Supercharge = own warm ramp, values pending a Figma pull; Mono neutral) and that the state mechanism is really ONE test — **opacity-for-states is allowed IFF the composite is engineered to snap to a primitive ramp step, else colour** (hueless Mono/Legacy → opacity clean; hued Supercharge → colour default). Spine: **one flexible DNA**, sibling pairs **{Mono,Console}** (shared palette/opacity/status/dataviz) + **{Legacy,Supercharge}** — any theme re-alignable to another. **Cold-start brief for the clean-room: `notes/_briefs/2026-07-22-theme-primitives-architecture-brief.md`.** Also RULED this morning: **tabs Mono = ink bar (`tabs/active` ink pair) · separate red badge (`#B92F1E`) · opacity-snap inactive (mono/7 light · mono/10 dark) · Legacy keeps red** — NOT yet inscribed to ledgers. **Still owed (cheap, any Opus/Sonnet window): ruling 2 (Legacy fidelity>AA, theme-scoped) + ruling 3 (pro-forma fold-in).** Console radius 8/12 provisional; bigplay deferred to the full review.
-> **RENAME THIS CHAT →** `Apollo ruling batch (tabs RULED) + theming-architecture pivot → Fable clean-room briefed [Opus]`
-> **TITLE THE NEXT (fresh) CHAT →** `Apollo theming clean-room [FABLE solo] — per-theme neutral ramps + opacity-snaps-to-primitive mechanism · siblings {Mono,Console}/{Legacy,Supercharge} · pull Supercharge ramp from Figma`
-> *(⚠ Titles are LABELS — the role word comes from your opener line, never from a title. Fresh session: read this file, then the brief above.)*
+> ## ★ LATEST — 2026-07-22 (morning→midday, FABLE solo): **THE THEMING CLEAN-ROOM RAN END-TO-END — ADR-0014 RULED + BUILT, build 45/45.** The **neutral DNA tier** (`color/neutral/1–15`) is live: ~100 semantic aliases rebound, Mono proven resolution-invariant 3 ways. The **warm ramp is PULLED and inscribed** (`color/warm/1–15`, Figma SVG-fill extraction; step 2 `#13110E` = your ink, confirmed a ramp step; light end `#F7F6F4` warm off-white). **Anchor remap** `neutral/4 → warm/2` (ink ≡ digital-black ≡ action fill). **State mechanism is a theme property** with the blocking **snap gate** (`_validate_state_snap.py`, calibrated on v7 + R-D23 tabs). **Console LOCKED ≡ Mono** (fence in the registry, selftest-enforced). **R-D23 + R-D24 enacted** in tokens/utils — the LAST Mono Legacy-red (`tabs/active`) is evicted. **Supercharge renders WARM end-to-end** (109 paths, 100 component projections). Graph seed reconciled — **zero mismatch** after finding 25 unfed edges spanning 3 sessions. **⚠ AWAITING YOU: `reviews/SC-DARK-MODE-2026-07-22-v1.html`** (SC dark = provisional-agent, no Figma source) **+ 4 held whites.** Render-verify owed (sandbox refused headless-shell). **⚠ RACE NOTE:** the morning Opus session committed its wrap (`5459a4b`, incl. **ruling 3 RULED: tranches fold in as near-canonical + dedup pass**) 14s into this session — reconciled cleanly, receipted; the morning batch is FULLY closed.
+> **RENAME THIS CHAT →** `Apollo theming clean-room BUILT — ADR-0014: neutral DNA tier + warm ramp + snap gate · anchor remap · R-D23/24/25 enacted · seed reconciled [FABLE solo]`
+> **TITLE THE NEXT (fresh) CHAT →** `Apollo post-ADR-0014 review — Dave rules SC dark sheet + 4 held whites + pro-forma fold-or-keep · enact tweaks · then queue the ADR-0013 clean-room [Opus]`
+> *(⚠ Titles are LABELS — the role word comes from your opener line, never from a title. Fresh session: read this file, then `_LIVE-STATE.md` top delta.)*
 >
 > ---
 >
-> ## PRIOR — 2026-07-21 (late night #3, FABLE solo): **THE ARCHITECTURE CALL IS RULED — ADR-0013.** Composition = **generated partials** (atoms declare rule-blocks; a generator injects them into consuming snippets between AUTO-PARTIAL markers; sync + ratchet gates make local re-implementation a build failure) + the **component-type tier** — ONE registry (`knowledge/component-types.json`) carrying a group's **values (parameter tokens) AND rules (partials)**; resolution = one new hop in the alias chain (component → type-group → semantic role → default). **Mechanism lands BEFORE Phase-2 fan-out** — the radius ratchet priced retro-fit at 21 files/three sessions; fan-out first would re-book that at ~90. The T-D9/T-D12 symmetry sealed it: partials are the box-side twin of the type-composite system. Also: **ds-009** (CONSULT corpus omits `_BUTTON-DECISIONS.md` — B-D rulings were unfindable) and **the gauge's Half-2 measurement is BROKEN** (wrong session + stub transcripts — warning inscribed; in-head tally governs). Ruling batch was NOT run — it moved to the next window by the gauge call (~52% mid-Amber wrap).
-> **RENAME THIS CHAT →** `Apollo architecture RULED — ADR-0013: composition = generated partials + component-type tier (one registry, values+rules) · mechanism BEFORE Phase-2 · ds-009 + gauge Half-2 broken [FABLE solo]`
-> **TITLE THE NEXT (fresh) CHAT →** `Apollo ruling batch on the showroom — Console px · Legacy AA-fidelity ×2 · pro-forma fold-or-keep · tabs/active · bigplay — then queue the ADR-0013 clean-room`
-> *(⚠ Titles are LABELS — the role word comes from your opener line, never from a title.)*
+> ## PRIOR — 2026-07-22 (early morning, Opus): tabs RULED (R-D23) + **R-D24** inscribed; **ruling 3 RULED in its wrap `5459a4b`** (*"Pro-forma is Mono in a different name so yes"* — fold in as near-canonical, dedup pass tracked). The morning batch is CLOSED; the dedup pass joins the queue.
 
 ---
 
-*Briefing — refreshed 2026-07-21 ~23:15 BST (date from `date`), session **"Apollo rulings + architecture"**
-(FABLE solo; the composition/atom-retrieval + flex-tier strategy call, taken first at Dave's
-instruction — the ruling batch moved to the next window). §A = standing orientation · §B = this
-session · §C = queue.*
+*Briefing — refreshed 2026-07-22 ~midday BST (date from `date`), session "Apollo theming clean-room"
+(FABLE solo; ADR-0014 designed → Dave ruled by number in-chat → built + gated same session).
+§A = standing orientation · §B = this session · §C = queue.*
 
 ## ⬛ DO THIS FIRST
 
-> **1. ★ Open the FABLE THEMING CLEAN-ROOM (fresh solo window) — it is now the FRONT of the queue,
-> ahead of ADR-0013 (same token/theme layer).** Read `notes/_briefs/2026-07-22-theme-primitives-architecture-brief.md`,
-> then pull the Supercharge warm ramp from Figma (`DS3tkWgaM1OsJg9ZC7nVLK`, `get_design_context` on the
-> collection — `get_variable_defs` returns `{}` on the swatches). Design per-theme neutral ramps + the
-> opacity-snaps-to-primitive test into the token schema. SERIAL, full budget. Reflect back before inscribing.
-> **2. Cheap (Opus/Sonnet): inscribe the tabs Mono ruling + finish ruling batch 2 & 3** (§C·1).
-> **3. Then the ADR-0013 CLEAN-ROOM (§C·2) — Fable solo, SERIAL** (scope pinned in ADR-0013's Consequences).
+> **1. ★ DAVE'S REVIEW PASS (cheap window, or rule live in any session):** open
+> `reviews/SC-DARK-MODE-2026-07-22-v1.REVIEW.html` (SC dark values + calculated raises — all
+> provisional-agent, "we can always change") · the **4 held whites** (`text/on-action`,
+> `text/on-inverse`, `icon/on-inverse`, `border/action-strong` — flip to warm = one line each) ·
+> `showroom/index.html#theme=supercharge` (the library, warm; Tabs page = bar/badge/fade) ·
+> **ruling 3: pro-forma tranches fold-or-keep** (§C·1).
+> **2. Then the ADR-0013 CLEAN-ROOM (fresh window, FABLE solo, SERIAL, full budget)** — unblocked,
+> scope pinned in ADR-0013's Consequences; ds-008 + ds-009 fixes ride with it (§C·2).
 
 *Standing practice: every handoff carries both names — retrospective + forward — and a **DIVVY
-PLAN** (what parallelises, lanes + models, what stays serial, shared files per lane). This handoff's
-plan is SERIAL: batch window (Opus) → clean-room (Fable solo) → only THEN the Phase-2 parallel
-fan-out (conductor + 2 workers). No shared-file overlap until fan-out. Steps 4b + 2 in
-`_RUNBOOK-capture-ritual.md`.*
+PLAN**. This handoff's plan is SERIAL: Dave's review pass (any model, cheap) → ADR-0013 clean-room
+(Fable solo) → only THEN the Phase-2 parallel fan-out (conductor + 2 workers). No shared-file
+overlap until fan-out. Steps 4b + 2 in `_RUNBOOK-capture-ritual.md`.*
 
 *Read: **§A Orientation** (skip if you're in context) → **§B This session** → **§C Queue**.
 Then `_LIVE-STATE.md` → the decision files it points to.*
@@ -51,18 +47,19 @@ Then `_LIVE-STATE.md` → the decision files it points to.*
 > **The trust hierarchy is the tattoo/Polaroid distinction:** repo rules + runbooks + ledgers = tattoos
 > (durable, survive any single rewrite) · `GOOD-MORNING` + `_LIVE-STATE` = Polaroids (working state,
 > rewritten often) · the chat = gone by morning. **Never let a durable rule live only on a Polaroid.**
+> *(Live example, 2026-07-22: this file said the tabs ruling was "NOT yet inscribed" — the ledger already
+> carried R-D23 AND R-D24. The ledger was right. Read the ledger.)*
 >
 > **The real danger is not forgetting — it is confident false inscription.** Records carry provenance
 > and confidence, not just content. Corrections get inscribed as loudly as the original claim. **Mark
 > what was OBSERVED versus what was INFERRED.** The ritual stamps dates from `date`, never from belief.
-> *(Live example, 2026-07-21 late night #3: the gauge's own out-of-band measurement read the WRONG
-> session off a stub transcript and reported 19% — then rationalised it. Caught against the in-head
-> tally, discarded, and the failure mode is now inscribed in the gauge runbook itself.)*
+> *(2026-07-22 instance: the warm ramp is OBSERVED (Figma pull, provenance in `colour.json`); every
+> Supercharge DARK value is INFERRED (no Figma source) and is marked provisional-agent on the sheet.)*
 >
 > **The SECOND failure mode costs more: a stale READING of our own rules.** ⇒ **Before designing anything,
 > CONSULT: `python3 knowledge/_consult.py "<what you're about to design>"`** (rules · rulings · assertions ·
-> gates + where each bites). Runbook: `knowledge/_RUNBOOK-consult.md`. *(And know its current blind spot:
-> ds-009 — `_BUTTON-DECISIONS.md` is not yet in its corpus; fix lands with the ADR-0013 session.)*
+> gates + where each bites). Runbook: `knowledge/_RUNBOOK-consult.md`. *(Blind spot ds-009 — the
+> `_BUTTON-DECISIONS.md` ledger is not in its corpus; fix lands with the ADR-0013 session.)*
 
 > **STANDING SECTION — carry it into every handoff, from 2026-07-17 on.** At Dave's request:
 > *"orientate a new starter — wider context helps."* New-starter style: assume the reader has no context.
@@ -80,188 +77,182 @@ is the layer around any generator. Two principles run through everything:
 Tagline: **"lovable on rails."** Four phases: **Discover** → **Create** (what's being built now) → **Craft**
 (the review-overlay docs ARE this) → **Dispatch**.
 
-## ★ ONE token store · ONE baseline library · FOUR themes (R-D15 → wired as **ADR-0011** override sets, 2026-07-20)
-*Themes are **override sets at the semantic tier** (Mono = base · Legacy = populated override · Console +
-Supercharge = declared nullable slots — **Supercharge carries its FIRST populated path since R-D22:**
-`progress/complete`). Registry `tokens/themes/_themes.json`; record `knowledge/_STYLE-PROVENANCE.md`; advisory
-theme-provenance gate. **Red is themed (R-D19):** Legacy red `#DB0011`/`#A8000B` = Legacy only; Mono's only red
-`#B92F1E` = status/RAG/dataviz only. Since R-D22, `tabs/active` is the LAST role still resolving a Legacy red in
-the Mono base (archived consumer).*
-The library is **theme-agnostic**: components bind a semantic role ("success", a grey ink); the **active theme's
-override set** decides the hex. Nothing hardcodes a theme's colour. **Adding a theme = adding an override set,
-never forking.** The four themes (Dave's canonical order):
-- **Apollo Legacy** — carries the **teals** (`rag/success` #00847F …) AND the HSBC brand grey scale
-  `color/grey/100–800`. Retained for legacy interfaces; superseded over time, never deleted.
-- **★ Apollo Mono** — the baseline we build NOW. **"Very mono": monochrome throughout — colour appears ONLY
-  in RAG status + data-vis.** Its neutral scale = the new `color/mono/1–15` ramp (NOT `color/grey/*`).
-- **Apollo Console** (was Apollo UI, the branded HSBC library) · **Apollo Supercharge** (SC, the brand-uplift
-  work). Both carry the broader new-colour palette — that's the **parked** colour/theming build ("later").
+## ★ ONE token store · ONE baseline library · FOUR themes (R-D15 → ADR-0011 → ★ ADR-0014, 2026-07-22)
+*Themes are **override sets at the semantic tier**, and since ADR-0014 they carry **their own neutral
+primitive ramps** through the **neutral DNA tier**: semantic roles alias `color/neutral/1–15` (never
+`color/mono/*` directly); base binds neutral→mono; a theme swaps its whole neutral substrate in one
+15-line override block. **Neutral indices are SEMANTIC POSITIONS** (neutral/4 = the anchor: ink ≡
+digital-black ≡ action fill) — themes bind by index and REMAP where their ramp's shape demands
+(Supercharge anchor → its step 2). **State mechanism is a THEME PROPERTY** (registry `stateMechanism`)
+with one test, gated blocking: opacity-for-states is allowed IFF the composite snaps to a step of the
+active theme's `neutralRamp` (`_validate_state_snap.py`). **Sibling pairs (Dave's spine):** {Mono,
+Console} share neutrals/opacity/status/dataviz — **Console is FENCED** from diverging (registry
+`fencedPaths`, selftest-enforced); {Legacy, Supercharge} are structural siblings, different palettes.
+**Red is themed (R-D19 → completed by R-D23):** zero Legacy reds remain in the Mono base.*
+The four themes (Dave's canonical order):
+- **Apollo Legacy** — faithful reproduction of the existing HSBC system: brand red `#DB0011`, teals,
+  `color/grey/*` (+ its 6-step dark set). **AA-EXEMPT as-built (R-D24)** — pairs surface as EXEMPTED
+  (documented), never passes. Does NOT ride the DNA tier (explicit per-path overrides). Never deleted.
+- **★ Apollo Mono** — the baseline we build NOW. "Very mono": colour ONLY in RAG status + dataviz.
+  Neutral scale = `color/mono/1–15`; only red `#B92F1E` (status/RAG/dataviz).
+- **Apollo Console** — branded HSBC library. **LOCKED ≡ Mono** on neutrals/opacity/status/dataviz
+  (fence); live divergence = rounded corners (radius overrides, values provisional). Chromatic layer parked.
+- **Apollo Supercharge** — brand-uplift. **Carries its OWN warm ramp** `color/warm/1–15` (OBSERVED,
+  Figma pull 2026-07-22; ink = `warm/2 #13110E`; light end `#F7F6F4` ≠ white). States = COLOUR by
+  default (hued ramp — fades drag hue off-ramp). **Dark mode = provisional-agent, awaiting Dave.**
 
 ## Where things live
 ```
 knowledge/            THE ENGINE
   tokens/             DTCG token stores — the retrieval source
-    colour.json       primitives: brand grey/100-800 (Legacy) + NEW color/mono/1-15 (Mono ramp)
-    semantic-colour.json  rag/* fills + progress/complete ink pair + component tiers
-    themes/           ★ the four override sets (ADR-0011): _themes.json registry + apollo-*.overrides.json
-  snippets/           40 gated reference components = CANON (all on role radius tokens since Phase 1)
-  canon/              canon.css (three AUTO blocks: token spine · components · ★ AUTO-THEMES cascade)
-                      + type.css (HAND-AUTHORED composites) + the generators (gen_canon_tokens ·
-                      gen_canon_components ⚠ NOT in the build YET — joins it per ADR-0013 ruling 4 ·
-                      ★ gen_theme_cascade — the [data-apollo-theme] layer)
-  guidelines/         the rules, each {#id} + destiny tag; _rules-index.json (465, generated)
+    colour.json       primitives: mono/1-15 · ★ neutral/1-15 (the DNA tier, aliases mono) ·
+                      ★ warm/1-15 (Supercharge, OBSERVED w/ provenance) · grey/100-800 + dark-mode/1-6 (Legacy)
+    semantic-colour.json  roles alias color/neutral/* (ADR-0014) + rag/* + component tiers + $extensions.apollo.state
+    themes/           the four override sets + _themes.json registry (★ now: stateMechanism ·
+                      load-bearing neutralRamp · siblingPairs · console fencedPaths)
+  snippets/           40 gated reference components = CANON
+  canon/              canon.css (token spine · components · AUTO-THEMES cascade — 147 paths) +
+                      type.css (HAND-AUTHORED) + generators (gen_canon_tokens · gen_theme_cascade —
+                      ★ override sets may carry $alias · gen_canon_components ⚠ joins the build per ADR-0013)
+  guidelines/         the rules, each {#id} + destiny tag; _rules-index.json (generated)
   _proforma/          Apollo Mono tranches T1–T9 + Masthead + DataViz + the decisions ledgers
   _consult.py         ★ "what governs X?" — RUN IT before designing (ds-009 blind spot: B-D ledger)
-  _validate_*.py      the gates; orchestrated by _build_all.py (42 steps)
-  gen_showroom.py     ★ generates showroom/ from snippets + tokens + cascade — never hand-edit showroom
-showroom/             ★ THE LIBRARY, browsable: 40 harness pages + categorised index
-reviews/              scratch/archive (demoted by the showroom ruling) + the review sheets you mark up
-notes/_receipts/      ★ conventioned worker-receipt dir (parallel-session reconcile trail)
-notes/_briefs/        ★ conductor-written worker briefs
+  _validate_*.py      the gates — ★ incl. _validate_state_snap.py (ADR-0014, blocking, selftest wired)
+  gen_showroom.py     ★ generates showroom/ — never hand-edit showroom
+showroom/             ★ THE LIBRARY, browsable: 40 harness pages + index (#theme=supercharge = warm)
+reviews/              review sheets — ★ AWAITING DAVE: SC-DARK-MODE-2026-07-22-v1(.REVIEW).html
+notes/_receipts/      worker-receipt dir · notes/_briefs/ conductor briefs
 _LIVE-STATE.md        LIVE / DEAD / OPEN / TARGETS — read second, always
 _FUTURE-STATE.md      side-quests, ideas, RESURRECTION candidates
-_DECISION-HISTORY/    dated narrative, relocated verbatim
+_DECISION-HISTORY/    dated narrative — ★ 2026-07-22 dossier = the clean-room arc + Figma method
 ```
 
 ## The one command that matters
 ```
-python3 knowledge/_build_all.py     # 42 steps, all gates, exits non-zero on any failure
+python3 knowledge/_build_all.py     # ★ 45 steps (42→45: cascade selftest + snap gate + snap selftest), exits non-zero on any failure
 ```
 
-## Rules that actually bite (unchanged core + this session's)
-- **CONSULT before designing** (see the Memento block) — then **survey before build**.
+## Rules that actually bite (core + this session's)
+- **CONSULT before designing** — then **survey before build**. *(This session it caught a stale-RED
+  selftest and two already-inscribed rulings the handoff denied.)*
+- **★ ADR-0014: semantic neutrals alias `color/neutral/*`, NEVER `color/mono/*` directly** — the DNA
+  tier is how themes re-align. Whites are classified: substrate → `neutral/15`; absolute (on-status,
+  dataviz, type26-013 emphasis) → `color/white`, pinned.
+- **★ ADR-0014: opacity states must SNAP** — stored colour = exact step of the active theme's ramp,
+  flatten within 8/255 luma (`_validate_state_snap.py`, blocking). Mechanism per theme: Mono+Console
+  opacity · SC colour · Legacy explicit (no fades).
+- **★ Selftests are BUILD STEPS** — a selftest that only runs by hand rots (the stale Supercharge-empty
+  assertion sat red a day). New gates ship selftests AND wire them.
 - **★ ADR-0013 (ruled, build pending): organisms RETRIEVE atom rules via partials — never re-type a
-  sub-atom.** Once the clean-room lands, a local re-implementation of a registered partial FAILS the
-  build (ratchet gate). Until then: do not add new local button recipes to any snippet.
-- **Grey-tint standing check** (Dave 2026-07-19): when a grey turns up, **surface it with its numbers** —
-  Dave usually rules "make it black" but **checks first; never auto-swap.**
-- **type26-013 (BLOCKING): white type is red-only (emphasis); black/dark-grey everything else.** R-D22's
-  arithmetic reconfirmed the badge numeral stays WHITE (black fails both Mono reds).
-- **R-D6: glyph contrast is by ROLE** — label-paired glyph 3:1; meaning-alone glyph 4.5.
-- **`RULED_PAIR_EXCLUSIONS`** (in `_contrast_utils.py`): ruling-forbidden pairs are excluded from the audit.
-- **canon.css** — generated only *between* the AUTO markers; type.css is HAND-AUTHORED throughout.
-  ⚠ **Until ADR-0013 ruling 4 is built, snippet RULE-text changes still need `gen_canon_components.py`
-  run by hand** (values self-heal via the projectors; rule text does NOT).
+  sub-atom.** Until the clean-room lands: no new local button recipes in any snippet.
+- **Grey-tint standing check:** surface a grey with its numbers; Dave usually rules "black" but CHECKS.
+  *(Generalised this session: the 4 held whites were surfaced, not auto-swapped.)*
+- **type26-013 (BLOCKING): white type is red-only (emphasis)** · **R-D6: glyph contrast by ROLE** ·
+  **`RULED_PAIR_EXCLUSIONS`** + ★ **`LEGACY_THEME_EXEMPTIONS`/`legacy_exemption()`** (R-D24 —
+  theme-aware audits MUST route Legacy pairs through it, recorded EXEMPTED never passed).
+- **canon.css** — generated only between AUTO markers; type.css HAND-AUTHORED. ⚠ Until ADR-0013 ruling 4
+  is built, snippet RULE-text changes still need `gen_canon_components.py` by hand.
 - **Every selector appended to `canon/type.css` is GLOBAL** — register in `_type-bindings.json` or the
   blast-radius gate fails.
-- **Icons: real assets only** · **4px grid** · **sentence case** · **square corners in Mono** (radius = ROLE
-  tokens `border-radius/control|surface|indicator`, taxonomy ratified, values per theme) · **weights: five
-  licensed only — 100/300/400/500/700, NO 600.**
+- **Icons: real assets only** · **4px grid** · **sentence case** · **square corners in Mono** (radius =
+  ROLE tokens, per-theme) · **weights: 100/300/400/500/700 only, NO 600.**
 - **Derivation governance** — the engine never derives-and-promotes. **Promotion is Dave's alone.**
-- **Spine discipline** — state lines in `_LIVE-STATE`; narrative >10 lines → `_DECISION-HISTORY/` at write time.
+  *(SC dark values are agent-derived and therefore AWAIT him.)*
+- **Spine discipline** — state lines in `_LIVE-STATE`; narrative >10 lines → `_DECISION-HISTORY/`.
+- **Inscription prose is PARSER-VISIBLE:** the decision-graph parser reads ADR headers/Edges lines —
+  a prose parenthetical naming a node creates a phantom edge (bitten 2026-07-22; header reworded).
 
 ## Standing instructions for the agent
 - **Announce the model/routing split at the START of every substantive task** (`MODEL-ROUTING.md`).
-- **Verify before asking** (read the repo / run the gates). **Reflect back before recording** a ruling — a lean
-  is not a ruling; British understatement, "quite good" is not approval.
-- **Decision-heavy / material-referring choices ship as a review-template HTML** (`_make_review.py`) — but only
-  for GENUINELY OPEN questions. (Architecture calls are the exception: the ADR-0012/0013 model — options +
-  firm recommendations in-chat, Dave rules, inscribe same hour.)
-- **Surface spin-off candidates**; register ideas in `_FUTURE-STATE.md`. **Run the capture ritual unasked**
-  at session end; **stamp dates from `date`**. **Memory accelerates; the repo is the record.**
+- **Verify before asking** (read repo / run gates) — **including your own flags** (the "Legacy dark ink
+  OPEN" flag was already answered in the override set). **Reflect back before recording** a ruling.
+- **Decision-heavy / material-referring choices ship as review HTML** (`knowledge/_review/_make_review.py`
+  — note the path; it is NOT at knowledge/ root). Architecture calls = the ADR-0012/0013/0014 model:
+  options + firm recommendations in-chat, Dave rules by number, inscribe same hour.
+- **Surface spin-off candidates**; register ideas in `_FUTURE-STATE.md`. **Run the capture ritual
+  unasked**; **stamp dates from `date`**. **Memory accelerates; the repo is the record.**
 
 ## The other standing documents (REACHABILITY-GATED by `_validate_standing_instructions.py` STAND-002 — keep every one referenced here)
-`_STANDARDS.md` (★ the standards hub — 3-tier tokens, WCAG floor, authoring rules) · `AGENTS.md` · `MODEL-ROUTING.md` · `_FUTURE-STATE.md` · `_DECISION-HISTORY/README.md` ·
+`_STANDARDS.md` (★ the standards hub) · `AGENTS.md` · `MODEL-ROUTING.md` · `_FUTURE-STATE.md` · `_DECISION-HISTORY/README.md` ·
 `knowledge/_proforma/_PROFORMA-RULES.md` · `knowledge/_proforma/_TYPE-DECISIONS.md` (T-D1…T-D14) ·
-`knowledge/_proforma/_RAG-DECISIONS.md` (R-D1…R-D22; R-D19 = red is themed; R-D22 = progress is structure) · `knowledge/_STYLE-PROVENANCE.md` (theme-era record) · `knowledge/_proforma/_DATAVIZ-DECISIONS.md` ·
-`docs/decisions/ADR-0012-decision-graph-edge-convention.md` (ACCEPTED — the edge convention; seed `notes/_decision-graph-seed-2026-07-21.json`, generator `knowledge/_build_decision_graph.py`) ·
-`docs/decisions/ADR-0013-component-type-tier-composition.md` (★ ACCEPTED 2026-07-21 — composition via
-generated partials + the component-type tier; build pending, §C·2) ·
-`knowledge/_proforma/_BUTTON-DECISIONS.md` (B-D1…B-D5; Mono primary + state-styling, ADR-0009 — ⚠ ds-009: not yet in the CONSULT corpus) ·
+`knowledge/_proforma/_RAG-DECISIONS.md` (R-D1…**R-D25**; R-D23 tabs · R-D24 Legacy AA-exempt · R-D25 = the ADR-0014 pointer) ·
+`knowledge/_STYLE-PROVENANCE.md` · `knowledge/_proforma/_DATAVIZ-DECISIONS.md` ·
+`docs/decisions/ADR-0012-decision-graph-edge-convention.md` (seed `notes/_decision-graph-seed-2026-07-21.json` —
+★ reconciled 2026-07-22, zero mismatch; feed it EVERY inscription, or `--verify` drifts silent) ·
+`docs/decisions/ADR-0013-component-type-tier-composition.md` (build = §C·2) ·
+**★ `docs/decisions/ADR-0014-per-theme-neutral-primitives-state-snap.md`** (the DNA tier + snap test — this session) ·
+`knowledge/_proforma/_BUTTON-DECISIONS.md` (B-D1…B-D5 — ⚠ ds-009: not in the CONSULT corpus) ·
 `docs/decisions/ADR-0009-state-styling-architecture.md` · `docs/decisions/ADR-0010-token-schema-nullable-flex-slots.md` · `docs/decisions/ADR-0011-four-theme-token-architecture.md` ·
-`knowledge/_DS-IMPROVEMENTS.md` (…ds-007 leak-resolve gap · ds-008 radius prose trip · ds-009 CONSULT corpus gap) · `knowledge/_ICON-GAPS.md` · `knowledge/_ASSERTIONS.md` +
-`knowledge/_assertions.json` · `knowledge/guidelines/_rules-index.json`. **Runbooks** are indexed by the
-generated `knowledge/_RUNBOOKS.md`. *(This list was dropped in a from-scratch GOOD-MORNING rewrite once and
-STAND-002 red-flagged it — do not prune it.)*
+`knowledge/_DS-IMPROVEMENTS.md` (ds-007 · ds-008 · ds-009) · `knowledge/_ICON-GAPS.md` · `knowledge/_ASSERTIONS.md` +
+`knowledge/_assertions.json` · `knowledge/guidelines/_rules-index.json`. **Runbooks** indexed by `knowledge/_RUNBOOKS.md`.
+*(This list was dropped in a rewrite once and STAND-002 red-flagged it — do not prune it.)*
 
-## Parallel-session model (PROVEN in full 2026-07-21 — conductor + 2 workers)
-On "read good morning", role is picked (Worker / Conductor / Solo). **ONE conductor** is the single writer for
-shared state (commit + `GOOD-MORNING`/`_LIVE-STATE`); **workers** emit receipts to `notes/_receipts/` and don't
-run git. Conductor reconciles the shared tree before committing (`_RUNBOOK-git-commit.md` step 0.5 /
-`_RUNBOOK-parallel-conductor.md` step 2.5 — **account for every dirty path; never blind `git add -A` with
-workers live**). **⚠ Titles are LABELS, never role assignments — the role word comes from Dave's opener line
-only.** **Every handoff carries a DIVVY PLAN:** lanes · model per lane · what stays serial · **shared files
-named and assigned to ONE lane**. Workers can absorb LIVE Dave rulings mid-flight — receipt them with verbatim
-quotes so the conductor can inscribe (R-D22 was written from a receipt).
+## Parallel-session model (PROVEN 2026-07-21)
+On "read good morning", role is picked (Worker / Conductor / Solo) — **from Dave's opener line ONLY;
+titles are labels.** ONE conductor = single writer for shared state; workers emit receipts to
+`notes/_receipts/`, no git. Conductor reconciles the shared tree before committing (never blind
+`git add -A` with workers live). Every handoff carries a **DIVVY PLAN**. Workers can absorb live Dave
+rulings mid-flight — receipt verbatim.
 
 ## Renders — REAL FONT, in-sandbox
-Playwright headless-shell works on ARM64: `apt-get download` the ~19 libs → `dpkg -x` → point
-`LD_LIBRARY_PATH` at `.../aarch64-linux-gnu` + set `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=1`. Copy the HSBC
-TTFs to `~/.fonts` + `fc-cache -f`; CSS `font-family:"HSBC_MtUnivers_Latin"`. Full recipe: memory
-`sandbox-html-rendering`. HTML is what Dave reviews; PNGs are for my own verification.
+Playwright headless-shell recipe: memory `sandbox-html-rendering` (apt-get download libs → dpkg -x →
+LD_LIBRARY_PATH + PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=1; HSBC TTFs → ~/.fonts). ⚠ **2026-07-22:
+this sandbox REFUSED the headless-shell download** (node error at install) — render-verify for the
+ADR-0014 work is OWED; verification stood on the 3 mechanical proofs + selftests. HTML is what Dave
+reviews; PNGs are for my own verification.
 
 ## How we work
-- **Review loop:** every doc ships **clean source + REVIEW copy** (`_make_review.py <file>`).
-- **Live tuners beat static versions past ~2 colour round-trips** — give the eye a control.
-- **Dave commits via GitHub Desktop.** Claude commits in-sandbox per `_RUNBOOK-git-commit.md` — **run it, don't
-  improvise git.** The `unable to unlink … *.lock` warnings are the delete-guard, not failure; judge by HEAD.
+- **Review loop:** every doc ships **clean source + REVIEW copy** (`knowledge/_review/_make_review.py <file>`).
+- **Live tuners beat static versions past ~2 colour round-trips.** Sheets read canon.css LIVE, never retype.
+- **Dave commits via GitHub Desktop.** Claude commits in-sandbox per `_RUNBOOK-git-commit.md` — run it,
+  don't improvise. `unable to unlink … *.lock` warnings = the delete-guard, not failure; judge by HEAD.
 - **Comms:** exec summary + numbered next steps first, detail below.
 
 ---
 
-# §B · THIS SESSION (2026-07-21 late night #3 — "the architecture call: ADR-0013 ruled in one pass")
+# §B · THIS SESSION (2026-07-22 — "the theming clean-room: ADR-0014 ruled + built in one pass")
 
-*Arc with the why: `_DECISION-HISTORY/2026-07-21-composition-architecture-call.md`. Dave took the
-strategy call BEFORE the ruling batch ("2 then 1"); the batch then moved to the next window when the
-gauge read mid-Amber.*
+*Arc with the why: `_DECISION-HISTORY/2026-07-22-theming-cleanroom-adr-0014.md`. Dave ruled the
+7-point reflect-back by number in-chat; everything below landed the same session.*
 
-## What LANDED (this wrap's commit)
-- **✅ ADR-0013 ACCEPTED + inscribed** — the four firm rulings (sequence · generated partials ·
-  one registry for values+rules · `gen_canon_components` into the build), decided under Dave's
-  stated principle: correctness over expedience. `_FUTURE-STATE` tiered-flex entry GRADUATED.
-- **✅ The case, quantified:** 13/40 local button recipes · 7 scale-press copies · 4 drifted
-  `translateY` (Selection-controls carries both). T-D9/T-D12 named as the precedent — partials =
-  the box-side twin of the type-composite system.
-- **✅ ds-009 logged** (CONSULT corpus omits `_BUTTON-DECISIONS.md`; B-D1…B-D5 unfindable —
-  surfaced by Dave's mid-flight question). Fix + selftest fold into the ADR-0013 session.
-- **✅ Gauge Half-2 found BROKEN + inscribed** (wrong session + stub transcript + the subagent
-  rationalising the bad number — the confident-false-inscription class, caught by the tally).
-  Warning now lives in `_RUNBOOK-context-gauge.md`; Half 1 governs.
-- **🐛 What I got wrong:** dispatched the runbook's Half-2 subagent prompt as-written and got
-  garbage back TWICE before discarding the instrument — the sniff test (3,250 tokens ≠ this
-  session) should have fired before the second dispatch, not after it.
+- **✅ ADR-0014** — neutral DNA tier (~100 rebinds, Mono invariant ×3 proofs) · warm ramp pulled
+  (SVG-fill extraction; ink=step 2 cross-check) · anchor remap (indices = semantic positions) ·
+  snap gate blocking + calibrated · sibling pairs + Console fence · selftests wired (build 42→45).
+- **✅ R-D23 + R-D24 enacted** (tabs tokens + Legacy as-built overrides + `legacy_exemption()`);
+  the last Mono Legacy-red evicted. **R-D25** inscribed as the ledger pointer.
+- **✅ Graph seed reconciled** — 25 unfed edges across 3 sessions found by hand-run `--verify`;
+  zero mismatch now; promote-verify-to-blocking queued as an open question.
+- **🐛 Wrong:** PNG-fetched an SVG; flagged an already-answered "OPEN"; a prose parenthetical made
+  a phantom edge. **Owed:** render-verify (sandbox refused headless-shell).
 
 ---
 
 # §C · QUEUE
 
-## 1. ★ THE RULING BATCH (Dave, on the harness — `showroom/index.html`; Opus window, short)
-**(a) Console radius px** — base/control 8 · surface 12, both still placeholders (roles ratified).
-**(b) Legacy fidelity-vs-AA family — TWO members, rule together:** `text/on-success` black-as-built
-(6.06:1 AA) vs historical white-on-teal (3.47:1 fail) · badge white-on-`#DB0011` (~4.02:1). One
-principle decides both: does historical fidelity outrank AA *inside the Legacy theme*?
-**(c) Pro-forma tranches** — fold into the finalised set or stay a pattern library.
-**(d) `tabs/active`** — the LAST unruled red (Mono = ink per §A-AUTH lean; archived consumer).
-**(e) Video-player bigplay** — on-scrim white enacted, your eyeball owed (incl. Legacy-white question).
+## 1. ★ DAVE'S REVIEW PASS (cheap; rule live or in an Opus window)
+**(a) SC dark sheet** `reviews/SC-DARK-MODE-2026-07-22-v1.REVIEW.html` — dark values, 3 calculated
+raises, all provisional-agent. **(b) The 4 held whites** (on-action / on-inverse ×2 /
+action-strong) — flip to warm is one line each. **(c) Showroom under `#theme=supercharge`** —
+whole-library warm eyeball; Tabs page = R-D23 bar/badge/fade. **(d) ~~Ruling 3~~ RULED in `5459a4b`** (fold in as
+near-canonical — the **reconcile/dedup pass** it mandates joins §C·3). **(e) Console radius px**
+(8/12 provisional) + **bigplay eyeball** — both still open from earlier queues.
 
-## 2. ★ THE ADR-0013 CLEAN-ROOM (fresh window, FABLE solo, SERIAL, full budget — Phase-0 precedent)
+## 2. ★ THE ADR-0013 CLEAN-ROOM (fresh window, FABLE solo, SERIAL, full budget)
 Scope pinned in ADR-0013 Consequences: `component-types.json` registry · partial generator
-(AUTO-PARTIAL injection + provenance comments) · sync gate + ratchet gate (+ selftests) ·
-`gen_canon_components` into `_build_all` (regenerate-always + `--check`) · ds-008 + ds-009 fixes ·
-motion tokens (button-family press factors) · proofs **Button → Modals → Progress-tracker**
-(Back/Next press VISIBLY changes translateY→scale — Dave's eyeball) **→ Icon-button**.
-**Exit gate:** change a factor once in Button; every consumer moves; no local recipe in the proofs;
-build green with new gates blocking. Rider: the stepper collapse (canon dots `273d18c~1`) folds into
-canon Progress-tracker here.
+(AUTO-PARTIAL injection) · sync + ratchet gates (+selftests) · `gen_canon_components` into
+`_build_all` · ds-008 + ds-009 fixes · motion tokens · proofs Button → Modals → Progress-tracker →
+Icon-button. Exit gate: change a factor once in Button; every consumer moves; build green.
 
-## 3. Enact-queue (cheap, post-rulings; Sonnet-able unless marked)
-**(a)** F1: Legacy `button/primary/icon/default` = #FFFFFF (mirror of the label override) — fixes
-Icon-button legacy-dark glyph ~1.8:1; render-verify then Dave promotes. **(b)** F2: Legacy
-`rag/error-tint` from the R-D20 eviction record. **(c)** Tag-atom radius role reconcile (canon
-splits by context; Dave lean or reflect-back). **(d)** F5: Dropdown's 6 manifest-dodging locals
-(Legacy-era greys) — needs Dave (values would visibly change). **(e)** Designer-pack **v2.1
-re-bake** (2 commands, in the v2 receipt). *(ds-008 + ds-009 + `gen_canon_components` wiring moved
-INTO §C·2 per ADR-0013.)*
+## 3. Enact-queue (cheap, post-rulings)
+F1 Legacy icon/default white · F2 Legacy `rag/error-tint` · tag-atom radius reconcile · F5
+Dropdown's 6 locals · designer-pack **v2.1 re-bake** · ★ NEW: enact whatever §C·1 changes
+(SC dark tweaks = token edits; white flips = one-liners) · consider `--verify` blocking.
 
-## 4. RAG follow-ons (unchanged) + parked
-Seed Legacy error/amber/navy into `LEGACY_ONLY_HEXES` + flip theme-provenance advisory→blocking —
-both still gated on the broader foreign-hex cleanup. Mono null slots await the ADR-0010 §3 gate.
-Console/Supercharge palettes parked (hooks live). Dedup pass. T9 review. Sutherland field test
-(ADR-0008 #1). Full-review backlog (`_REVIEW-SIGNOFF.md` — Video-player fast-follower).
-`_FUTURE-STATE`: Apollo Labs tuners, bulk type-binding, icon-015 mechanisation, μX edit-mode,
-blast-radius gate v2, style-builder.
+## 4. Parked (unchanged)
+Legacy hex seeding + provenance-gate flip (post foreign-hex cleanup) · Console/Supercharge
+chromatic palettes · dedup pass · T9 review · Sutherland field test · full-review backlog
+(`_REVIEW-SIGNOFF.md`) · `_FUTURE-STATE` items (theme-generator now has its substrate).
 
-> **COMMIT STATE.** This wrap = **1 commit ahead** (ADR-0013 + spine + dossier + runbook warning +
-> ds-009 + memory) — **Dave pushes via GitHub Desktop.** Build was green 42/42 at session start;
-> no token/snippet/generator files touched this session (docs + records only), so the build
-> contract is unchanged. Next: the ruling batch (§C·1), then the clean-room (§C·2).
+> **COMMIT STATE.** This wrap = **1 commit** on top of the morning's 2 — **Dave pushes 3 via
+> GitHub Desktop.** Build green **45/45** at wrap; tokens/generators/gates all touched this
+> session, projection + cascade + showroom all regenerated + in sync.

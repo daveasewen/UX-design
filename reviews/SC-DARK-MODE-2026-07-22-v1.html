@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" data-apollo-theme="supercharge">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Supercharge dark mode — calculated values for review (ADR-0014) · 2026-07-22 v1</title>
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+<style>
+  /* Sheet chrome only — every SWATCH and DEMO value below comes from canon.css root vars
+     (the [data-apollo-theme="supercharge"] cascade), never retyped. Retrieval, not recall. */
+  body{margin:0;font-family:"HSBC_MtUnivers_Latin","Univers Next",Arial,sans-serif;background:#FFF;color:#1A1A1A}
+  .wrap{max-width:1100px;margin:0 auto;padding:32px 24px 96px}
+  h1{font-size:22px;font-weight:500;margin:0 0 4px} h2{font-size:16px;font-weight:500;margin:40px 0 12px}
+  .meta{font-size:12px;color:#545454;margin-bottom:24px;line-height:1.5}
+  .ramp{display:flex;height:72px;border:1px solid #E1E1E1}
+  .ramp div{flex:1;position:relative}
+  .ramp span{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:9px;color:#767676;white-space:nowrap}
+  table{border-collapse:collapse;width:100%;font-size:12.5px;margin-top:8px}
+  th{text-align:left;font-weight:500;border-bottom:2px solid #1A1A1A;padding:6px 8px}
+  td{border-bottom:1px solid #E1E1E1;padding:6px 8px;vertical-align:top}
+  .sw{display:inline-block;width:14px;height:14px;border:1px solid rgba(0,0,0,.2);vertical-align:-2px;margin-right:6px;border-radius:0}
+  .tag{font-size:10px;padding:1px 6px;border:1px solid #B7B7B7;color:#545454;margin-left:6px;white-space:nowrap}
+  .panes{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media (max-width:760px){.panes{grid-template-columns:1fr}}
+  .pane{border:1px solid #E1E1E1;padding:24px;background:var(--background-default);color:var(--text-default)}
+  .pane h3{font-size:11px;font-weight:400;letter-spacing:.4px;margin:0 0 16px;opacity:.6;text-transform:none}
+  .demo-btn{display:inline-block;padding:10px 20px;background:var(--button-primary-background-default);color:var(--text-on-action,#FFF);font-size:14px;margin-right:8px;border:none}
+  .demo-card{background:var(--surface-raised);border:1px solid var(--border-subtle);padding:16px;margin-top:16px}
+  .demo-card .sec{color:var(--text-secondary);font-size:12px}
+  .demo-tabs{display:flex;gap:24px;margin-top:20px;border-bottom:1px solid var(--border-subtle)}
+  .demo-tabs .t{padding:8px 0 10px;font-size:14px;color:var(--tabs-inactive)}
+  .demo-tabs .t.on{color:var(--text-default);box-shadow:inset 0 -3px 0 0 var(--tabs-active)}
+  .demo-tabs .b{display:inline-block;min-width:18px;height:18px;border-radius:9px;background:var(--tabs-badge-background);color:#FFF;font-size:11px;text-align:center;line-height:18px;margin-left:6px}
+  .note{font-size:12px;color:#545454;line-height:1.55;max-width:72ch}
+  code{font-size:11.5px;background:#F0F0F0;padding:1px 4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Supercharge dark mode — calculated values for your review</h1>
+  <div class="meta">ADR-0014 clean-room, 2026-07-22. Ruling 4.1: <em>"lets calculate the dark mode values and I can
+  review, again we can always change."</em> Every swatch and demo below resolves LIVE from canon.css under
+  <code>[data-apollo-theme="supercharge"]</code> — nothing on this page is retyped. ⚠ The Figma sheet carries ONE
+  light-mode row only: <strong>every dark value here is an agent proposal</strong> (index-symmetric through the neutral
+  DNA + three calculated raise steps), not an observed brand value.</div>
+
+  <h2>The warm ramp as inscribed (color/warm/1–15 · Figma pull)</h2>
+  <div class="ramp" id="ramp"></div>
+  <div style="height:28px"></div>
+  <div class="note">Step 2 <code>#13110E</code> = your ink — the ANCHOR. Mono's anchor sits at index 4 (ink ≡
+  digital-black ≡ action fill = <code>mono/4</code>); index-identity would have put the SC anchor a shade light
+  (<code>warm/4</code>), so <code>neutral/4 → warm/2</code> is remapped — ink, dark page and primary fill move together.</div>
+
+  <h2>Light · Dark, side by side (live from the cascade)</h2>
+  <div class="panes">
+    <div class="pane" data-theme="light"><h3>supercharge · light</h3>
+      <div style="font-size:15px">Body ink on the warm page.</div>
+      <div style="margin-top:14px"><button class="demo-btn">Primary action</button></div>
+      <div class="demo-card">Raised surface <div class="sec">Secondary text on raised</div></div>
+      <div class="demo-tabs"><span class="t on">Active<span class="b">3</span></span><span class="t">Inactive</span><span class="t">Third</span></div>
+    </div>
+    <div class="pane" data-theme="dark"><h3>supercharge · dark (PROPOSED)</h3>
+      <div style="font-size:15px">Body ink on the warm-black page.</div>
+      <div style="margin-top:14px"><button class="demo-btn">Primary action</button></div>
+      <div class="demo-card">Raised surface (calculated raise) <div class="sec">Secondary text on raised</div></div>
+      <div class="demo-tabs"><span class="t on">Active<span class="b">3</span></span><span class="t">Inactive</span><span class="t">Third</span></div>
+    </div>
+  </div>
+
+  <h2>The proposed values, with their derivation</h2>
+  <table id="tbl">
+    <tr><th>role</th><th>SC light</th><th>SC dark (proposed)</th><th>Mono dark (reference)</th><th>derivation</th></tr>
+  </table>
+
+  <h2>Held pure white — your call, one line each to flip</h2>
+  <div class="note">Four whites stayed ABSOLUTE (pure <code>#FFFFFF</code> even under warm themes) because they read as
+  sitting <em>on</em> something rather than being the substrate: <code>text/on-action</code> (label on the primary fill),
+  <code>text/on-inverse</code>, <code>icon/on-inverse</code>, <code>border/action-strong</code>. Flipping any to
+  <code>neutral/15</code> makes it warm-white <code>#F7F6F4</code> under Supercharge (Mono unchanged either way).
+  The dataviz + RAG whites are pinned absolute by ruling (palette identical across Mono/Console/SC) and are not on offer.</div>
+
+<script>
+/* Read the LIVE cascade — the sheet displays what the engine resolves, not what I typed. */
+const cs = sel => { const el=document.createElement('div'); el.style.display='none';
+  document.documentElement.appendChild(el); const v=getComputedStyle(document.documentElement).getPropertyValue(sel).trim();
+  el.remove(); return v; };
+const dcs = (sel) => { /* resolve under a dark-mode probe */
+  const probe=document.createElement('div'); probe.setAttribute('data-theme','dark'); probe.style.display='none';
+  document.body.appendChild(probe); const v=getComputedStyle(probe).getPropertyValue(sel).trim(); probe.remove(); return v; };
+
+// ramp strip
+const ramp=document.getElementById('ramp');
+for(let i=1;i<=15;i++){ const v=cs('--color-warm-'+i)||'#F0F'; const d=document.createElement('div');
+  d.style.background=v; d.innerHTML='<span>'+i+' '+v+'</span>'; ramp.appendChild(d); }
+
+// value table
+const ROWS=[
+ ['page','--background-default','index 15 light / anchor dark'],
+ ['ink','--text-default','anchor: neutral/4 → warm/2 (ruled) / neutral/15 dark'],
+ ['secondary text','--text-secondary','index-symmetric'],
+ ['raised surface','--surface-raised','light: index · dark: CALCULATED raise (+5/ch over warm/2-anchor ground)'],
+ ['subtle surface','--surface-subtle','index / calculated raise'],
+ ['subtle border','--border-subtle','index-symmetric'],
+ ['primary action fill','--button-primary-background-default','anchor light / index dark'],
+ ['tabs · active bar','--tabs-active','R-D23 ink pair through the DNA'],
+ ['tabs · inactive','--tabs-inactive','v7 snap — under SC resolves stored COLOUR (mechanism: colour)'],
+ ['tabs · badge','--tabs-badge-background','chained to badge/background (status red, theme-fixed)'],
+];
+const tbl=document.getElementById('tbl');
+const mono=document.createElement('iframe'); // Mono reference resolved in an unthemed frame
+mono.style.display='none'; document.body.appendChild(mono);
+mono.srcdoc='<link rel="stylesheet" href="../knowledge/canon/canon.css">';
+mono.onload=()=>{ const md=mono.contentDocument;
+  const probe=md.createElement('div'); probe.setAttribute('data-theme','dark'); md.body.appendChild(probe);
+  for(const [label,v,how] of ROWS){
+    const l=cs(v), d=dcs(v), m=getComputedStyle(probe).getPropertyValue(v).trim();
+    const tr=document.createElement('tr');
+    tr.innerHTML='<td>'+label+' <code>'+v+'</code></td>'+
+      '<td><span class="sw" style="background:'+l+'"></span>'+l+'</td>'+
+      '<td><span class="sw" style="background:'+d+'"></span>'+d+'</td>'+
+      '<td><span class="sw" style="background:'+m+'"></span>'+m+'</td>'+
+      '<td class="note">'+how+'</td>';
+    tbl.appendChild(tr);
+  }
+};
+</script>
+</div>
+</body>
+</html>

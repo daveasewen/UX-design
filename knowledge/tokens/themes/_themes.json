@@ -15,6 +15,10 @@
         "#DB0011": "Legacy brand red — primary CTA, tabs/active, progress/complete, rag/error (dark)",
         "#A8000B": "Legacy error red (light)",
         "#00847F": "Legacy success/status teal (R-D15)"
+      },
+      "stateMechanism": {
+        "default": "explicit",
+        "$note": "Legacy = faithful reproduction (R-D24): states carry as-built explicit values, no operational fades (R-D23: tabs mechanism none — bar-only differentiation)."
       }
     },
     "apollo-mono": {
@@ -31,34 +35,58 @@
       "declaredSlots": {
         "input/error-condition": null
       },
-      "declaredSlotsNote": "Dave 2026-07-21: declare null placeholder slots on Mono NOW for anticipated flex (the input error-condition colour especially) so a value can be added any time — per-theme or in Mono itself — without re-architecting (ADR-0010 declared-but-unset). Declared HERE (registry), not in the live store: the ADR-0010 §3 no-null-under-live-binding gate is still staged, so nulls do not enter semantic-colour.json until it is built. Namespace finalised at population time."
+      "declaredSlotsNote": "Dave 2026-07-21: declare null placeholder slots on Mono NOW for anticipated flex (the input error-condition colour especially) so a value can be added any time — per-theme or in Mono itself — without re-architecting (ADR-0010 declared-but-unset). Declared HERE (registry), not in the live store: the ADR-0010 §3 no-null-under-live-binding gate is still staged, so nulls do not enter semantic-colour.json until it is built. Namespace finalised at population time.",
+      "stateMechanism": {
+        "default": "opacity",
+        "$note": "ADR-0014/ADR-0009: states render via operational alpha, stored colour = the ramp-snapped equivalent. Snap ramp = neutralRamp."
+      }
     },
     "apollo-console": {
       "label": "Apollo Console",
       "order": 3,
-      "role": "Branded HSBC library (was Apollo UI). Inherits Mono's palette (Dave 2026-07-21); dataviz + status/RAG identical to Mono. Live divergence NOW: rounded corners.",
+      "role": "Branded HSBC library (was Apollo UI). Sibling of Mono (ADR-0014, LOCKED 2026-07-22): shares Mono's neutral ramp, interaction-opacity values, status/RAG and dataviz — fenced below. Its broader branded CHROMATIC palette sits on top, parked. Live divergence NOW: rounded corners.",
       "status": "mono-inheriting",
       "overrideSet": "themes/apollo-console.overrides.json",
       "attr": "console",
-      "neutralRamp": null,
+      "neutralRamp": "color/mono/1-15",
       "ownsHexes": {},
       "declaredSlots": {
-        "ui-greys/neutral-ramp": null,
         "input/error-condition": null
+      },
+      "stateMechanism": {
+        "default": "opacity",
+        "$note": "Sibling of Mono — SAME opacity values, same snap ramp (color/mono/1-15). Fenced."
+      },
+      "fencedPaths": {
+        "$note": "ADR-0014 sibling fence (enforced by gen_theme_cascade --selftest): Console's override set may not touch these prefixes — divergence here would break the {mono,console} DNA. Ruled FIRM 2026-07-22.",
+        "prefixes": [
+          "rag/",
+          "color/neutral/",
+          "color/mono/",
+          "color/warm/",
+          "dataviz/",
+          "data-vis/",
+          "badge/",
+          "progress/",
+          "tabs/"
+        ]
       }
     },
     "apollo-supercharge": {
       "label": "Apollo Supercharge",
       "order": 4,
-      "role": "Brand-uplift rework. Inherits Mono's palette in full (Dave 2026-07-21); renders as Mono until a divergence is ruled.",
-      "status": "mono-inheriting",
+      "role": "Brand-uplift rework. Carries its OWN warm neutral ramp (color/warm/*, Figma pull 2026-07-22) via the neutral DNA tier; status/RAG + dataviz identical to Mono. Sibling of Legacy (ADR-0014).",
+      "status": "populated",
       "overrideSet": "themes/apollo-supercharge.overrides.json",
       "attr": "supercharge",
-      "neutralRamp": null,
+      "neutralRamp": "color/warm/1-15",
       "ownsHexes": {},
       "declaredSlots": {
-        "ui-greys/neutral-ramp": null,
         "input/error-condition": null
+      },
+      "stateMechanism": {
+        "default": "colour",
+        "$note": "ADR-0014: hued neutral ramp — a fade drags hue off-ramp, so states are COLOUR by default; opacity permissible only where the composite is engineered to snap to a color/warm step (the snap gate checks against the active theme's neutralRamp)."
       }
     }
   },
@@ -66,6 +94,20 @@
     "resolution": "resolve(role, mode, theme): theme override wins; else base (Mono). Components stay theme-blind.",
     "cascade": "Rendered by canon/gen_theme_cascade.py into canon.css (AUTO-THEMES block): [data-apollo-theme=\"<attr>\"] root-level canonical vars + per-component vars via each snippet's #token-manifest; dark values on the [data-apollo-theme][data-theme=dark] combo (and descendant form). Mono = base, no block emitted. Divergence axes are theme-overridable, NEVER hardcoded (Dave 2026-07-21): colour, neutral ramp, shape/border-radius, anticipated input error-condition.",
     "gate": "A Mono-designated surface (see _STYLE-PROVENANCE.md) must not resolve to, or hardcode, another theme's ownsHexes.",
-    "backlog": "tabs/active and progress/complete need a Mono value ruled (R-D19) before their Legacy red can be gate-seeded as blocking."
+    "backlog": "tabs/active and progress/complete need a Mono value ruled (R-D19) before their Legacy red can be gate-seeded as blocking.",
+    "neutralRamp": "ADR-0014: neutralRamp is LOAD-BEARING — it is the snap target for the state mechanism (_validate_state_snap.py) and the membership scale for a theme's neutral resolutions. The DNA tier color/neutral/1-15 aliases mono in the base; a theme rebinds neutral/* onto its own ramp (supercharge -> color/warm/*). Legacy stays explicit-per-path (reproduction, R-D24 posture) and does not ride the DNA tier."
+  },
+  "siblingPairs": {
+    "$note": "ADR-0014 spine (Dave 2026-07-22): all four themes share one flexible root DNA — 'at any point we could engineer 3 to align completely to one we choose.' Pairs: {mono, console} share neutral ramp, interaction-opacity values, status palette and dataviz (console FENCED from diverging — ruled FIRM: 'lets lock this in, they should be the same'); {legacy, supercharge} are structural siblings with different palettes.",
+    "pairs": [
+      [
+        "apollo-mono",
+        "apollo-console"
+      ],
+      [
+        "apollo-legacy",
+        "apollo-supercharge"
+      ]
+    ]
   }
 }

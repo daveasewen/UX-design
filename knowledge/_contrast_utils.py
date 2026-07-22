@@ -126,6 +126,30 @@ CONTRAST_ALLOWLIST = {
 # ledger reference in the reason. (Mechanism added 2026-07-18 with the R-D4 token
 # promotion — the amber role token was the first fill the surface-resolver ever
 # paired with the universal white RAG text.)
+# --- R-D24 (2026-07-22): Apollo Legacy is EXEMPT from the AA floor — it conforms to the
+# existing HSBC system AS-BUILT ("the clue is in the name"). Scope: theme=legacy ONLY; Mono,
+# Console and Supercharge keep the AA floor (ADR-0004 untouched). Any audit that resolves
+# pairs UNDER THE LEGACY THEME must route through this table and record hits as
+# EXEMPTED (documented) — never as passes. Enacted by the ADR-0014 clean-room.
+LEGACY_THEME_EXEMPTIONS = {
+    "theme": "legacy",
+    "ruling": "R-D24 (_proforma/_RAG-DECISIONS.md)",
+    "pairs": {
+        ("text/on-success", "rag/success"):
+            "historical white-on-teal #00847F, 3.47:1 as-built (vs the Mono-era black 6.06:1)",
+        ("badge/numeral", "badge/background"):
+            "white numeral on Legacy brand red #DB0011, ~4.02:1 as-built (R-D22 fidelity family)",
+    },
+}
+
+def legacy_exemption(token_name, ground_name):
+    """Return the R-D24 exemption note for a Legacy-theme pair, or None. Callers must
+    surface hits as EXEMPTED (documented) in their reports, not count them as passes."""
+    for (t, g), why in LEGACY_THEME_EXEMPTIONS["pairs"].items():
+        if token_name.startswith(t) and ground_name.startswith(g):
+            return f"{LEGACY_THEME_EXEMPTIONS['ruling']}: {why}"
+    return None
+
 RULED_PAIR_EXCLUSIONS = {
     "rag/text": {
         "rag/warning-background":
