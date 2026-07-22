@@ -12,6 +12,40 @@ graduates OUT of here into `_LIVE-STATE` OPEN/TARGET when work starts. Refresh w
 **Entry format:** what · why it's held · what it feeds (Apollo phase/mode) · source/provenance pointer ·
 status (`idea` / `parked` / `resurrection-candidate` / `graduated→LIVE`).
 
+## ★★ Live radius / corner tuner — Dave: "return to soon, we need it, don't let me forget" (2026-07-22)
+**What:** an in-browser tuner that dials `border-radius/{control · surface · indicator}` (and a future
+`data-mark` slot) **per theme**, live, with buttons/cards/chips/bars updating in place and the values
+exportable straight to the theme override sets. **Why it's wanted:** settling corner numbers by argument
+doesn't work — the uniform-4 Console misstep this session proved corners must be *tuned per component type,
+by eye* (buttons=4, cards=12, bars=square all live at once). The mechanism already exists (role tier +
+ADR-0013 component-type tier); the tuner is just the live controller over it. **Priority: SOON** — Dave
+flagged it explicitly and twice ("probably soon", "don't let me forget"). Not built now only to avoid
+derailing the chart build. **Pattern to reuse:** the "live controller + export" doctrine
+([[feedback-live-controller]]) and the OKLab heatmap tuner (`reviews/HEATMAP-RAMP-2026-07-22-v1.html`) as
+the interaction precedent. **Feeds:** Apollo interface / theme-generator horizon ([[four-theme-architecture]],
+[[product-shape-flexing-engine]]). **Status:** idea — return-to-soon (Dave's standing reminder).
+
+## ★ Heatmaps — PARKED, needs a dedicated live interpolation tool (Dave, 2026-07-22)
+**What:** heatmap chart type(s), deliberately deferred out of the chart build-out. **Why held (Dave's
+call):** heatmaps are two hard problems at once — (1) *data dimensionality* is unbounded (a heatmap can be
+5×5 or 100×100, so cell geometry, labelling, and the table spine can't be a single static lock-up like the
+bar/line kit), and (2) *colour is a continuous interpolation* across a ramp, not a fixed palette pull, so it
+can't be pre-baked into flat DTCG tokens the way the categorical series + RAG sets are. Both point the same
+way: **this wants a live, code-driven interpolation control — a real tool, not a snippet.** Dave: "all of this
+suggests when Apollo gets an interface, we'll need a dedicated tool for the interpolation… live, using code.
+We need to spec this carefully — just log the intention." **Intention logged; the careful spec is the
+follow-up, not now.** Scope note: "probably stick to one heatmap type" when we do build (not the full
+zoo of variants). **Seed already exists:** `reviews/HEATMAP-RAMP-2026-07-22-v1.html` — a working OKLab
+interpolation tuner (ramp anchors → perceptual interpolation → binned/continuous → hex export + a
+lightness-monotonic check). That tuner is the *proof-of-mechanism* for the eventual tool; my design read
+(monotonic lightness carries the data; large cells sit in the luminance "bloom" regime; warm-mono default,
+incandescent black→red→yellow→white only as an opt-in high-contrast variant because it crosses Dave's
+least-stable red+yellow hues) is captured there and in-chat 2026-07-22. **Feeds:** Apollo interface / the
+design-time interpolation tool ([[vision-contextual-dashboard]] neighbour; Layer-2 in-browser control
+lineage). **Depends on:** a new sequential `data/heat/*` token *class* (distinct from categorical-isoluminant
+and status-salience — a third dataviz colour class) — deferred with the type. **Source:** this session +
+the tuner file. **Status:** parked (intention logged; spec pending).
+
 ## Showroom index: visual component thumbnails on the catalogue cards (Dave, 2026-07-22 wave-2 window)
 Dave's ask, deferred at Amber gauge (his hot-clause: "just note it as a change"): each index card
 carries a VISUAL of the component, not just name+meta. The count-in-header half SHIPPED same session

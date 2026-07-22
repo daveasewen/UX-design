@@ -1,8 +1,10 @@
 # Good morning, Dave ☕
 
-> ## ★ LATEST — 2026-07-22 (evening, ONE FABLE CONDUCTOR session ran BOTH waves + 5 worker windows): **PHASE-2 WAVES 1+2 LANDED — 24 components in one day, library 40→64, registry 4→18 members, census 32→32 across everything, build 51/51.** Wave 1: A forms 4/9 + B feedback 10/11 (14 landed). Wave 2: **A-continuation 5/5 — the forms brief is COMPLETE 9/9** (incl. the library's FIRST calendar panel + first determinate progress bar) · **C Data-grid 1/1** (APG semantics, 4-control `:is()` member) · **D Charts 4/4 — the parked dataviz kit PROMOTED to canon snippets, ALL PROVISIONAL-AGENT awaiting your sign-off.** The ADR-0013 protocol compounds: wave-2 workers PRE-LANDED the partials contracts → injections clean first try; dataviz gate now WIRED to chart snippets; census never moved. **Gates earned their keep:** token-sync caught 4 recall-written values (Stepper) · blast-radius caught a `.seg` reuse · type26-013 blocked a white-letter donut variant. **A's fence-breach flag RESOLVED as misread of MY mid-wave absorb — fences held all day** (reconcile receipt has the full account). **⚠ AWAITING YOU: 16 numbered questions + the DATAVIZ SIGN-OFF (§C·2) + the standing eyeball set now spanning 24 new components (§C·3).** Field-family accretion evidence: **≥10 files, overwhelming.**
-> **RENAME THIS CHAT →** `Apollo Phase-2 CONDUCTED, both waves — 24 components (forms 9/9 · feedback 10 · Data-grid · Charts kit) · library 40→64 · registry 18 members · census zero-growth all day · 5 commits [FABLE conductor]`
-> **TITLE THE NEXT (fresh) CHAT →** `Apollo post-fan-out — Dave's ruling batch (16 Qs + dataviz sign-off + eyeball across 64) · then wave 3 survey (~26 gaps) or the templates+shells clean-room`
+> ## ★ LATEST — 2026-07-22 (evening, OPUS solo — scoping + quick wins, wrapped at Amber): **CHART-EXPANSION PROGRAMME SCOPED.** Mapped your wish-list vs the proforma kit: grouped/stacked bars already there → **promote** (= D-Q3); **8 net-new** — butterfly ×2 (h+v), scatter, histogram, box plot, pie, stacked area, bullet, candlestick. Each deliverable = a **lock-up** (chart + controls toolbar + legend + `<table>` spine) **projected across 4 themes × light/dark**. **Run mode YOU ruled: prove-one-then-wave — exemplar = SCATTER, built end-to-end next window for your eyeball, THEN I fan out the rest as worker lanes** (DV-D01: explore in `DataViz-interactive.html` → promote to `Chart-*.reference.html`). Also this session: **Console corner experiment** — you asked to try 4px; I wrongly flattened it *uniform*, you caught it ("corners tune per component type"); **RESTORED** buttons=4 / cards=12 / **bars square**; the "is this architectural?" answer = **no**, per-type tuning already lives in the role tier + the ADR-0013 component-type tier. **Heatmaps PARKED** — they need a live *interpolation tool*, not a snippet (intention logged `_FUTURE-STATE` ★; seed tuner `reviews/HEATMAP-RAMP-2026-07-22-v1.html`, OKLab). **DataViz labels snapped to the ramp** (11px → 12px/500). **★★ You told me not to let you forget the LIVE RADIUS/CORNER TUNER — logged, priority SOON.** Build green **51/51**. **⚠ STILL AWAITING YOU (unchanged): the 16-Q ruling batch + the DATAVIZ SIGN-OFF, §C·2.**
+>
+> ## PRIOR — 2026-07-22 (evening, ONE FABLE CONDUCTOR session ran BOTH waves + 5 worker windows): **PHASE-2 WAVES 1+2 LANDED — 24 components in one day, library 40→64, registry 4→18 members, census 32→32 across everything, build 51/51.** Wave 1: A forms 4/9 + B feedback 10/11 (14 landed). Wave 2: **A-continuation 5/5 — the forms brief is COMPLETE 9/9** (incl. the library's FIRST calendar panel + first determinate progress bar) · **C Data-grid 1/1** (APG semantics, 4-control `:is()` member) · **D Charts 4/4 — the parked dataviz kit PROMOTED to canon snippets, ALL PROVISIONAL-AGENT awaiting your sign-off.** The ADR-0013 protocol compounds: wave-2 workers PRE-LANDED the partials contracts → injections clean first try; dataviz gate now WIRED to chart snippets; census never moved. **Gates earned their keep:** token-sync caught 4 recall-written values (Stepper) · blast-radius caught a `.seg` reuse · type26-013 blocked a white-letter donut variant. **A's fence-breach flag RESOLVED as misread of MY mid-wave absorb — fences held all day** (reconcile receipt has the full account). **⚠ AWAITING YOU: 16 numbered questions + the DATAVIZ SIGN-OFF (§C·2) + the standing eyeball set now spanning 24 new components (§C·3).** Field-family accretion evidence: **≥10 files, overwhelming.**
+> **RENAME THIS CHAT →** `Apollo — chart-expansion scoped (prove-one-then-wave, exemplar=scatter) · Console corners fixed + architecture answered · heatmaps parked + tool intention logged · labels snapped · Opus solo, wrapped at Amber`
+> **TITLE THE NEXT (fresh) CHAT →** `Apollo charts — build the SCATTER exemplar end-to-end (lock-up + controls + 4-theme projection), eyeball, then fan out the 8 new types · heatmap parked · radius tuner queued SOON`
 > *(⚠ Titles are LABELS — the role word comes from your opener line, never from a title. Fresh session: read this file, then `_LIVE-STATE.md` top delta.)*
 >
 > ---
@@ -17,12 +19,15 @@ receipts in `notes/_receipts/2026-07-22-phase2-*`). §A = orientation · §B = s
 
 ## ⬛ DO THIS FIRST
 
-> **1. ★ DAVE: the RULING BATCH (§C·2)** — 16 numbered questions + the **DATAVIZ SIGN-OFF** (flips
-> D's 4 chart snippets provisional→canon). Rule by number, any window; everything retro-propagates.
-> The **field-family accretion** (Q6) is the material one — evidence ≥10 files.
-> **2. The eyeball set (§C·3)** — now spans all 24 new components × 4 themes (non-blocking, async
-> via pane pins).
-> **3. Then wave 3 or the templates+shells clean-room (§C·1)** — next session surveys and cuts.
+> **1. ★ BUILD THE SCATTER EXEMPLAR (§C·1a)** — the chart-expansion programme's prove-one-then-wave
+> step: scatter end-to-end (proforma section → `snippets/Chart-scatter.reference.html` → meta →
+> registration → showroom 4-theme projection), then hand to Dave to eyeball the **lock-up** shape
+> BEFORE fanning out the other 8. Fresh full-budget window (this session wrapped at Amber).
+> **2. ★ DAVE: the RULING BATCH (§C·2)** — 16 numbered + the **DATAVIZ SIGN-OFF**. Rule by number,
+> any window; all retro-propagate. **Field-family (Q6)** is the material one (≥10 files).
+> **3. The eyeball set (§C·3)** — 24 new components × 4 themes (non-blocking, async via pane pins).
+> **4. ★★ Radius/corner tuner (§C·1) — Dave: "return soon, don't let me forget."** Resurface it unprompted.
+> **5. Then wave 3 or the templates+shells clean-room** — after the chart programme / rulings.
 
 *Standing practice: every handoff carries both names — retrospective + forward — and a **DIVVY PLAN**.
 This handoff's plan: §C·1. Steps 4b + 2 in `_RUNBOOK-capture-ritual.md`.*
@@ -213,7 +218,13 @@ OWED; verification stood on mechanical proofs + selftests + gates. HTML is what 
 
 ---
 
-# §B · THIS SESSION (2026-07-22 evening — "Phase-2, BOTH waves: one conductor, five worker windows")
+# §B · THIS SESSION
+> ⓘ Most recent = the **Opus solo scoping + quick-wins window** (see the LATEST banner + dossier
+> `_DECISION-HISTORY/2026-07-22-chart-scoping-console-corners-heatmap-park.md`): chart programme scoped,
+> Console corners fixed + architecture answered, heatmaps parked, labels snapped, tuner logged. The
+> detailed narrative below is the **PRIOR Phase-2 waves** session, retained for context.
+
+## (prior) 2026-07-22 evening — "Phase-2, BOTH waves: one conductor, five worker windows"
 
 *The record lives in the receipts (5 worker + 2 conductor-reconcile, `notes/_receipts/2026-07-22-
 phase2-*`) — no separate dossier; the receipts ARE the narrative, judgment calls included.*
@@ -242,17 +253,27 @@ phase2-*`) — no separate dossier; the receipts ARE the narrative, judgment cal
 
 # §C · QUEUE
 
-## 1. ★ NEXT STRANDS (~~wave 2~~ DONE — pick one per window; role from the opener line)
-**(a) Wave 3 fan-out** — ~26 itinerary gaps remain (`reviews/ITINERARY-2026-07-14…`); the next
-conductor SURVEYS the itinerary + cuts lane briefs (wave-1/2 briefs = the pattern; candidates:
-navigation/menu family + remaining P2 depth). Serial set unchanged (registry · MIGRATED_SNIPPETS ·
-CATEGORIES · spine · git = conductor only, ONE commit; workers = NEW files + receipts, no git).
-**(b) Templates+shells clean-room (Layer-2, the load-bearing gap)** — solo Fable ADR-style session
-(the ADR-0013 precedent). Best AFTER the ruling batch: field-family, stepper-fold and delta-seam
-answers shape it.
-**(c) Enact window (cheap)** — absorb §C·2 rulings as token/registry edits + the §C·4 queue;
-new candidates: mint `data/axis`+`data/grid` · R-D9 ramp promotion · field-family group build if
-ruled yes · Stat-card `spark` slot (D's composition seam, pairs with B-Q6).
+## 1. ★ NEXT STRANDS (pick one per window; role from the opener line)
+**(a) ★ CHART-EXPANSION PROGRAMME — prove-one-then-wave (Dave ruled 2026-07-22, this session).**
+**STEP 1 (next window, solo — DO THIS FIRST):** build the **scatter** exemplar END-TO-END — proforma
+section in `_proforma/DataViz-interactive.html` (DV-D01) + promoted `snippets/Chart-scatter.reference.html`
+(composites-only type, role-token radius, dataviz tokens, controls toolbar + legend + `<table>` spine) +
+its `.meta` + registration (`MIGRATED_SNIPPETS` radius-strict · `CATEGORIES` "Charts") + regen
+cascade+showroom → build green (dataviz gate globs `Chart-*` automatically). Hand to Dave to eyeball the
+LOCK-UP before fanning out. **STEP 2 (wave) — DIVVY PLAN, the other 8 as fenced worker lanes** (NEW snippet
+files + receipts only, no git): **lane 1** butterfly-h + butterfly-v + histogram (bar-family geometry) ·
+**lane 2** box plot + bullet + candlestick (statistical/gauge; candlestick up/down = `data/delta/gain·loss`) ·
+**lane 3** pie (donut-family, dv-pie-009 ≤6, D-Q2 labelling) + stacked area (line-family) + **promote**
+grouped/stacked bars (D-Q3). Conductor = serial set (registry · MIGRATED_SNIPPETS · CATEGORIES · spine ·
+ONE commit). **Heatmap NOT in scope — parked** (`_FUTURE-STATE` ★). Model: Sonnet/Fable workers, Opus conducts.
+**(b) Wave 3 fan-out (component library)** — ~26 itinerary gaps remain (`reviews/ITINERARY-2026-07-14…`);
+conductor surveys + cuts lane briefs (wave-1/2 = the pattern; candidates: navigation/menu family + P2 depth).
+Serial set as always (registry · MIGRATED_SNIPPETS · CATEGORIES · spine · git = conductor only, ONE commit).
+**(c) Templates+shells clean-room (Layer-2, the load-bearing gap)** — solo Fable ADR-style session.
+Best AFTER the ruling batch: field-family, stepper-fold and delta-seam answers shape it.
+**(d) Enact window (cheap)** — absorb §C·2 rulings as token/registry edits + §C·4; new candidates: mint
+`data/axis`+`data/grid` · R-D9 ramp promotion · field-family group build if ruled · Stat-card `spark` slot ·
+**★★ the live radius/corner tuner (Dave: return SOON).**
 
 ## 2. ★ DAVE: THE RULING BATCH — 16 numbered + the ★ DATAVIZ SIGN-OFF (rule by number; all
 retro-propagate). **The sign-off first:** D promoted the PARKED kit verbatim into
@@ -330,7 +351,9 @@ Legacy hex seeding + provenance-gate flip · Console/Supercharge chromatic palet
 Sutherland field test · full-review backlog (`_REVIEW-SIGNOFF.md`) · `_FUTURE-STATE` items ·
 spot-illustration/empty-state icon set (`_ICON-GAPS.md`, wave-1's only gap).
 
-> **COMMIT STATE.** Everything pre-wave is **PUSHED ✓**. This wave = **2 commits pending push via
-> GitHub Desktop**: **`60e4dc1`** (Phase-2 wave 1 — 92 files, the 14 components + conductor serials)
-> + the wrap commit carrying this handoff. Build green **51/51** (54 snippets / 54 metas); census
-> 32→32; radius 35-strict clean.
+> **COMMIT STATE.** This Opus scoping session = **ONE wrap commit** (hash handed to Dave in-chat, paste-ready):
+> Console corner fix (`apollo-console.overrides.json` + regenerated `canon.css` cascade + all `showroom/*`),
+> DataViz label ramp-snap (`_proforma/DataViz-interactive.html`), `_FUTURE-STATE` (tuner ★★ + heatmap ★),
+> `_LIVE-STATE`, this handoff, the dossier, and the new `reviews/HEATMAP-RAMP-2026-07-22-v1.html`.
+> **No new snippets/components** (scoping only) — library stays **64**, census 32→32, build green **51/51**.
+> Any earlier pending Phase-2 commits: **Dave pushes all via GitHub Desktop** (verify ahead-count there).

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apollo · Heatmap colour ramp — live interpolation tuner (v1, 2026-07-22)</title>
+<style>
+  :root{
+    --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+    --page:#FFFFFF; --ink:#1A1A1A; --ink2:#545454; --line:#D7D8D6; --line2:#EDEDED; --raised:#F6F6F6;
+    --fs-7:12px; --fs-6:14px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:var(--font); background:var(--page); color:var(--ink); line-height:1.5;
+    -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1040px; margin:0 auto; padding:24px 28px 80px;}
+  h1{font:500 22px/1.2 var(--font); margin:0 0 4px;}
+  .lede{color:var(--ink2); font:400 14px/1.5 var(--font); margin:0 0 8px; max-width:78ch;}
+  .lede code{font-family:ui-monospace,Menlo,monospace; font-size:12px; background:var(--line2); padding:0 4px;}
+  h2{font:500 13px/1 var(--font); text-transform:none; letter-spacing:.01em; color:var(--ink2);
+    margin:28px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--line2);}
+  .panel{display:grid; grid-template-columns:1fr 300px; gap:28px; align-items:start;}
+  @media (max-width:820px){.panel{grid-template-columns:1fr;}}
+
+  /* ---- preview stage (its own light/dark ground) ---- */
+  .stage{padding:22px; border:1px solid var(--line); background:var(--stage-bg,#fff); transition:background .15s;}
+  .stage[data-bg="dark"]{--stage-bg:#1A1A1A; --stage-ink:#FFFFFF; --stage-ink2:#9B9B9B; --stage-line:#3A3A3A;}
+  .stage[data-bg="light"]{--stage-bg:#FFFFFF; --stage-ink:#1A1A1A; --stage-ink2:#545454; --stage-line:#EDEDED;}
+  .stage .cap{font:500 12px/1 var(--font); color:var(--stage-ink2); margin:0 0 12px;}
+  .hm{display:grid; gap:2px;}
+  .hm .cell{aspect-ratio:1/1; display:flex; align-items:center; justify-content:center;
+    font:500 11px/1 var(--font); font-variant-numeric:tabular-nums;}
+  .bar-wrap{margin-top:16px;}
+  .cbar{height:16px; width:100%; border:1px solid var(--stage-line);}
+  .ticks{display:flex; justify-content:space-between; font:400 11px/1 var(--font); color:var(--stage-ink2); margin-top:5px;}
+
+  /* ---- controls ---- */
+  .ctrls{border:1px solid var(--line); padding:16px; background:var(--raised);}
+  .grp{margin-bottom:16px;}
+  .grp:last-child{margin-bottom:0;}
+  .grp > label{display:block; font:500 12px/1 var(--font); color:var(--ink2); margin-bottom:7px;}
+  .seg{display:flex; flex-wrap:wrap; gap:6px;}
+  .seg button{font:500 12px/1 var(--font); padding:6px 10px; border:1px solid var(--line);
+    background:#fff; color:var(--ink); cursor:pointer;}
+  .seg button[aria-pressed="true"]{background:var(--ink); color:#fff; border-color:var(--ink);}
+  .seg button:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+  .chk{display:flex; align-items:center; gap:8px; font:400 13px/1.3 var(--font); color:var(--ink); cursor:pointer; margin-bottom:6px;}
+  .rampnote{font:400 11px/1.4 var(--font); color:var(--ink2); margin-top:7px; min-height:2.4em;}
+  .warn{color:#B92F1E;}
+  .mono{font:500 12px/1 var(--font);}
+  .mono.ok{color:#16864E;} .mono.bad{color:#B92F1E;}
+  pre.export{background:#1A1A1A; color:#F2F2F2; font-family:ui-monospace,Menlo,monospace; font-size:11px;
+    line-height:1.6; padding:12px 14px; overflow:auto; margin:0; white-space:pre-wrap; word-break:break-all;}
+  .swatches{display:flex; gap:0; margin-top:8px; border:1px solid var(--line);}
+  .swatches i{flex:1; height:26px; display:block;}
+  .note{font:400 12px/1.5 var(--font); color:var(--ink2); max-width:80ch; margin-top:22px;
+    border-top:1px solid var(--line2); padding-top:14px;}
+  .note b{color:var(--ink);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Heatmap colour ramp — live interpolation tuner</h1>
+  <p class="lede">Answering “can’t we interpolate — what range, black→red→yellow→white?”. Yes: anchors are interpolated
+    in <b>OKLab (perceptual)</b> so equal data steps read as equal steps. Pick a ramp, watch the heatmap + colour bar,
+    read the <b>lightness-monotonic</b> check, and copy the resolved stops as a <code>data/heat/*</code> token set. My
+    default pick is <b>Warm mono</b> — reasoning in the note below.</p>
+
+  <div class="panel">
+    <div>
+      <div class="stage" data-bg="light" id="stage">
+        <p class="cap" id="cap">Warm mono · perceptual · continuous</p>
+        <div class="hm" id="hm"></div>
+        <div class="bar-wrap">
+          <div class="cbar" id="cbar"></div>
+          <div class="ticks"><span>low</span><span>mid</span><span>high</span></div>
+        </div>
+      </div>
+      <div class="note" id="readnote"></div>
+    </div>
+
+    <div class="ctrls">
+      <div class="grp">
+        <label>Ramp</label>
+        <div class="seg" id="rampseg"></div>
+        <div class="rampnote" id="rampnote"></div>
+        <div class="swatches" id="swatches"></div>
+      </div>
+      <div class="grp">
+        <label>Interpolation</label>
+        <div class="seg" id="spaceseg">
+          <button data-space="oklab" aria-pressed="true">Perceptual (OKLab)</button>
+          <button data-space="srgb" aria-pressed="false">sRGB (naïve)</button>
+        </div>
+      </div>
+      <div class="grp">
+        <label>Steps</label>
+        <div class="seg" id="stepseg">
+          <button data-steps="0" aria-pressed="true">Continuous</button>
+          <button data-steps="5" aria-pressed="false">5</button>
+          <button data-steps="7" aria-pressed="false">7</button>
+          <button data-steps="9" aria-pressed="false">9</button>
+        </div>
+      </div>
+      <div class="grp">
+        <label>Background</label>
+        <div class="seg" id="bgseg">
+          <button data-bg="light" aria-pressed="true">Light</button>
+          <button data-bg="dark" aria-pressed="false">Dark</button>
+        </div>
+      </div>
+      <div class="grp">
+        <label class="chk"><input type="checkbox" id="rev"> Reverse ramp</label>
+        <label class="chk"><input type="checkbox" id="vals"> Show cell values (auto b/w text)</label>
+        <div class="mono" id="monocheck"></div>
+      </div>
+      <div class="grp">
+        <label>Export — <span id="exlabel">9</span> stops</label>
+        <pre class="export" id="export"></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---------- OKLab conversion (Björn Ottosson) ---------- */
+function srgbToLin(c){c/=255; return c<=0.04045 ? c/12.92 : Math.pow((c+0.055)/1.055,2.4);}
+function linToSrgb(c){c = c<=0.0031308 ? 12.92*c : 1.055*Math.pow(c,1/2.4)-0.055; return Math.max(0,Math.min(255,Math.round(c*255)));}
+function hexToLab(hex){
+  const r=srgbToLin(parseInt(hex.slice(1,3),16)), g=srgbToLin(parseInt(hex.slice(3,5),16)), b=srgbToLin(parseInt(hex.slice(5,7),16));
+  const l=0.4122214708*r+0.5363325363*g+0.0514459929*b,
+        m=0.2119034982*r+0.6806995451*g+0.1073969566*b,
+        s=0.0883024619*r+0.2817188376*g+0.6299787005*b;
+  const l_=Math.cbrt(l), m_=Math.cbrt(m), s_=Math.cbrt(s);
+  return [0.2104542553*l_+0.7936177850*m_-0.0040720468*s_,
+          1.9779984951*l_-2.4285922050*m_+0.4505937099*s_,
+          0.0259040371*l_+0.7827717662*m_-0.8086757660*s_];
+}
+function labToHex(L,a,b){
+  const l_=L+0.3963377774*a+0.2158037573*b, m_=L-0.1055613458*a-0.0638541728*b, s_=L-0.0894841775*a-1.2914855480*b;
+  const l=l_**3, m=m_**3, s=s_**3;
+  const r=linToSrgb(+4.0767416621*l-3.3077115913*m+0.2309699292*s),
+        g=linToSrgb(-1.2684380046*l+2.6097574011*m-0.3413193965*s),
+        bb=linToSrgb(-0.0041960863*l-0.7034186147*m+1.7076147010*s);
+  return '#'+[r,g,bb].map(v=>v.toString(16).padStart(2,'0')).join('').toUpperCase();
+}
+function hexToRgb(hex){return [parseInt(hex.slice(1,3),16),parseInt(hex.slice(3,5),16),parseInt(hex.slice(5,7),16)];}
+function rgbToHex(r,g,b){return '#'+[r,g,b].map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join('').toUpperCase();}
+
+/* ---------- ramps ---------- */
+const RAMPS = {
+  'warm-mono':   {label:'Warm mono', anchors:['#F7EFEC','#B92F1E','#2A0E09'],
+     note:'Warm off-white → brand red #B92F1E → near-black. Monotonic lightness, one hue family — a “heat” read without committing to yellow. My default.'},
+  'neutral':     {label:'Neutral mono', anchors:['#F2F2F2','#1A1A1A'],
+     note:'Pure luminance, no hue. Safest baseline — colourblind-proof, prints in greyscale, most “very-mono”. Lowest chromatic pop.'},
+  'incandescent':{label:'Incandescent', anchors:['#0A0A0A','#B92F1E','#F0B13A','#FBF6E9'],
+     note:'The classic black→red→yellow→white you named. Max discriminability, ⚠ runs through red + yellow (your least-stable hues) and is a lot of chroma for Mono — I’d keep it as an optional high-contrast variant, not the default.'},
+  'single-hue':  {label:'Single-hue', anchors:['#F3F1F5','#766682','#241E29'],
+     note:'Series-1 purple, light → deep. On-brand, monotonic lightness; purple leans on blue (stable for you). A calmer alternative to warm-mono.'},
+  'diverging':   {label:'Diverging (delta)', anchors:['#B92F1E','#EDEDED','#16864E'], diverging:true,
+     note:'loss → neutral → gain. Only for SIGNED data with a meaningful midpoint (correlations, variance) — reads as status, not magnitude.'}
+};
+let state = {ramp:'warm-mono', space:'oklab', steps:0, bg:'light', rev:false, vals:false};
+
+/* ---------- interpolation ---------- */
+function sample(ramp, t){ // t in [0,1] → hex
+  if(state.rev) t = 1-t;
+  const A = RAMPS[ramp].anchors;
+  const seg = (A.length-1);
+  const x = Math.max(0, Math.min(seg, t*seg));
+  const i = Math.min(seg-1, Math.floor(x));
+  const f = x - i;
+  if(state.space==='srgb'){
+    const c0=hexToRgb(A[i]), c1=hexToRgb(A[i+1]);
+    return rgbToHex(c0[0]+(c1[0]-c0[0])*f, c0[1]+(c1[1]-c0[1])*f, c0[2]+(c1[2]-c0[2])*f);
+  } else {
+    const l0=hexToLab(A[i]), l1=hexToLab(A[i+1]);
+    return labToHex(l0[0]+(l1[0]-l0[0])*f, l0[1]+(l1[1]-l0[1])*f, l0[2]+(l1[2]-l0[2])*f);
+  }
+}
+function colourFor(v){ // v 0..1
+  if(state.steps===0) return sample(state.ramp, v);
+  const n = state.steps;
+  const bin = Math.min(n-1, Math.floor(v*n));
+  return sample(state.ramp, (bin+0.5)/n);
+}
+function relLum(hex){const [r,g,b]=hexToRgb(hex).map(srgbToLin); return 0.2126*r+0.7152*g+0.0722*b;}
+
+/* ---------- data field (deterministic) ---------- */
+const COLS=12, ROWS=8, DATA=[];
+for(let y=0;y<ROWS;y++){for(let x=0;x<COLS;x++){
+  const g = x/(COLS-1)*0.5 + (1-y/(ROWS-1))*0.2;               // gentle gradient
+  const d1=Math.hypot(x-8,y-2)/6, d2=Math.hypot(x-3,y-6)/7;    // two hotspots
+  let v = g + 0.55*Math.exp(-d1*d1*3) + 0.35*Math.exp(-d2*d2*3);
+  DATA.push(Math.max(0,Math.min(1,v)));
+}}
+
+/* ---------- render ---------- */
+const hm=document.getElementById('hm'), cbar=document.getElementById('cbar'), cap=document.getElementById('cap'),
+      stage=document.getElementById('stage'), exportEl=document.getElementById('export'),
+      swatches=document.getElementById('swatches'), rampnote=document.getElementById('rampnote'),
+      monocheck=document.getElementById('monocheck'), readnote=document.getElementById('readnote'),
+      exlabel=document.getElementById('exlabel');
+
+function stops(n){const out=[];for(let i=0;i<n;i++)out.push(sample(state.ramp, n===1?0.5:i/(n-1)));return out;}
+
+function render(){
+  hm.style.gridTemplateColumns=`repeat(${COLS},1fr)`;
+  hm.innerHTML='';
+  DATA.forEach(v=>{
+    const c=document.createElement('div'); c.className='cell';
+    const col=colourFor(v); c.style.background=col;
+    if(state.vals){ c.textContent=Math.round(v*100); c.style.color = relLum(col)>0.45?'#000':'#FFF'; }
+    hm.appendChild(c);
+  });
+  // continuous colour bar (always continuous preview of the ramp itself)
+  const grad=[]; for(let i=0;i<=40;i++){ grad.push(sample(state.ramp,i/40)+' '+(i/40*100).toFixed(1)+'%'); }
+  cbar.style.background=`linear-gradient(90deg, ${grad.join(',')})`;
+  cap.textContent = `${RAMPS[state.ramp].label} · ${state.space==='oklab'?'perceptual':'sRGB'} · ${state.steps===0?'continuous':state.steps+' steps'}${state.rev?' · reversed':''}`;
+  // anchor swatches
+  swatches.innerHTML=''; RAMPS[state.ramp].anchors.forEach(a=>{const i=document.createElement('i');i.style.background=a;i.title=a;swatches.appendChild(i);});
+  rampnote.innerHTML = RAMPS[state.ramp].note.replace('⚠','<span class="warn">⚠</span>');
+  // export
+  const n = state.steps===0?9:state.steps; exlabel.textContent=n;
+  const st = stops(n);
+  exportEl.textContent = st.map((h,i)=>`data/heat/${String(i+1).padStart(2,'0')}  ${h}`).join('\n');
+  // lightness monotonic check (on 9 samples)
+  const Ls = stops(9).map(h=>relLum(h));
+  let mono=true; const asc = Ls[8]>Ls[0];
+  for(let i=1;i<Ls.length;i++){ if(asc ? Ls[i]<Ls[i-1]-0.002 : Ls[i]>Ls[i-1]+0.002){mono=false;break;} }
+  monocheck.innerHTML = mono ? '<span class="mono ok">✓ lightness is monotonic — reads in greyscale + stable for astigmatism</span>'
+                             : '<span class="mono bad">✗ lightness is NOT monotonic — value order is ambiguous in greyscale</span>';
+  readnote.innerHTML = `<b>Range you need:</b> ${RAMPS[state.ramp].anchors.length} anchor stop(s), interpolated; legend usually 5–7 bins. `+
+    `<b>Why perceptual:</b> toggle to sRGB and watch the mid-band go muddy — OKLab keeps the steps even. `+
+    `<b>Heatmap cells are large filled areas</b>, so they sit in the luminance-driven “bloom” regime, not the thin-line “dance” — which is why monotonic lightness matters more than chroma here.`;
+}
+
+/* ---------- wiring ---------- */
+function seg(id, attr, cb){document.querySelectorAll(`#${id} button`).forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll(`#${id} button`).forEach(x=>x.setAttribute('aria-pressed','false'));
+  b.setAttribute('aria-pressed','true'); cb(b.dataset[attr]); render();
+}));}
+// ramp buttons (built from RAMPS)
+const rampseg=document.getElementById('rampseg');
+Object.keys(RAMPS).forEach((k,i)=>{const b=document.createElement('button');b.dataset.ramp=k;b.textContent=RAMPS[k].label;b.setAttribute('aria-pressed', k===state.ramp?'true':'false');rampseg.appendChild(b);});
+seg('rampseg','ramp',v=>state.ramp=v);
+seg('spaceseg','space',v=>state.space=v);
+seg('stepseg','steps',v=>state.steps=+v);
+seg('bgseg','bg',v=>{state.bg=v; stage.setAttribute('data-bg',v);});
+document.getElementById('rev').addEventListener('change',e=>{state.rev=e.target.checked;render();});
+document.getElementById('vals').addEventListener('change',e=>{state.vals=e.target.checked;render();});
+render();
+</script>
+</body>
+</html>
