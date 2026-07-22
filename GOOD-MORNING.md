@@ -1,8 +1,8 @@
 # Good morning, Dave ☕
 
-> ## ★ LATEST — 2026-07-22 (evening, FABLE CONDUCTOR + 2 parallel FABLE workers): **PHASE-2 WAVE 1 LANDED — 14 components, library 40→54, button-family 4→13 members, census 32→32 ZERO GROWTH, build 51/51.** Worker A (forms & entry) landed 4/9 — **Form-layout · Amount-input · Textarea · Secure-entry** — clean gauge cut, 5 remain on the same brief. Worker B (feedback & data) landed 10/11 — **Alert · Toast · Banner · Skeleton-loader · Drawer · Popover · Modal-lightbox · Empty-state · Stat-card · Account-selector** (row 89 already existed as Amount-display — correctly not duplicated). Every one: composites-only type · role-token radius STRICT FROM BIRTH · receipted retrievals (R-D20/R-D3/R-D5/B-D6). **The ADR-0013 protocol worked first time out:** empty markers + receipts in, conductor registered 9 `$members` + injected physics + completed contracts (they fire only on registration — caught all 7, fails-loud proven) · **new convention inscribed: multi-control members = `:is()` selector lists; mixed sizes = local `--phys-size`** (Drawer close 36 — file beat the receipt's 44; Toast/Banner × 24). Fences held; ONE wave commit **`60e4dc1`** (92 files) + the wrap commit. **★ ACCRETION WATCH: field-family is the standout candidate** (cross-lane observed duplication, ≥7 files share field chrome — propose-don't-promote, §C·2). **⚠ AWAITING YOU: 7 wave questions (§C·2) + the standing eyeball set (§C·3, non-blocking).**
-> **RENAME THIS CHAT →** `Apollo Phase-2 wave 1 CONDUCTED — 14 components landed (A: 4 forms · B: 10 feedback) · button-family 4→13 · census zero-growth · :is() convention · one commit 60e4dc1 [FABLE conductor]`
-> **TITLE THE NEXT (fresh) CHAT →** `Apollo Phase-2 wave 2 — cut Data-grid + Charts briefs · A-continuation (5 forms items) · absorb Dave's wave-1 rulings · conductor + workers per §C·1 divvy`
+> ## ★ LATEST — 2026-07-22 (evening, ONE FABLE CONDUCTOR session ran BOTH waves + 5 worker windows): **PHASE-2 WAVES 1+2 LANDED — 24 components in one day, library 40→64, registry 4→18 members, census 32→32 across everything, build 51/51.** Wave 1: A forms 4/9 + B feedback 10/11 (14 landed). Wave 2: **A-continuation 5/5 — the forms brief is COMPLETE 9/9** (incl. the library's FIRST calendar panel + first determinate progress bar) · **C Data-grid 1/1** (APG semantics, 4-control `:is()` member) · **D Charts 4/4 — the parked dataviz kit PROMOTED to canon snippets, ALL PROVISIONAL-AGENT awaiting your sign-off.** The ADR-0013 protocol compounds: wave-2 workers PRE-LANDED the partials contracts → injections clean first try; dataviz gate now WIRED to chart snippets; census never moved. **Gates earned their keep:** token-sync caught 4 recall-written values (Stepper) · blast-radius caught a `.seg` reuse · type26-013 blocked a white-letter donut variant. **A's fence-breach flag RESOLVED as misread of MY mid-wave absorb — fences held all day** (reconcile receipt has the full account). **⚠ AWAITING YOU: 16 numbered questions + the DATAVIZ SIGN-OFF (§C·2) + the standing eyeball set now spanning 24 new components (§C·3).** Field-family accretion evidence: **≥10 files, overwhelming.**
+> **RENAME THIS CHAT →** `Apollo Phase-2 CONDUCTED, both waves — 24 components (forms 9/9 · feedback 10 · Data-grid · Charts kit) · library 40→64 · registry 18 members · census zero-growth all day · 5 commits [FABLE conductor]`
+> **TITLE THE NEXT (fresh) CHAT →** `Apollo post-fan-out — Dave's ruling batch (16 Qs + dataviz sign-off + eyeball across 64) · then wave 3 survey (~26 gaps) or the templates+shells clean-room`
 > *(⚠ Titles are LABELS — the role word comes from your opener line, never from a title. Fresh session: read this file, then `_LIVE-STATE.md` top delta.)*
 >
 > ---
@@ -11,18 +11,18 @@
 
 ---
 
-*Briefing — refreshed 2026-07-22 evening BST (date from `date`), session "Phase-2 wave 1 CONDUCTOR"
-(FABLE conductor + 2 parallel FABLE workers; receipts + reconcile receipt in `notes/_receipts/`).
-§A = standing orientation · §B = this session · §C = queue.*
+*Briefing — refreshed 2026-07-22 18:12 BST (date from `date`), session "Phase-2 CONDUCTOR, both
+waves" (one FABLE conductor + 5 FABLE worker windows across the day; all receipts + 2 reconcile
+receipts in `notes/_receipts/2026-07-22-phase2-*`). §A = orientation · §B = session · §C = queue.*
 
 ## ⬛ DO THIS FIRST
 
-> **1. ★ DAVE: the 7 wave-1 questions (§C·2)** — label weight · input-error slot · Toast dark glyphs ·
-> modal fold · figure vouch · field-family accretion · Overlays split. Rule by number in any window;
-> everything retro-propagates (token edits / registry entries — nothing blocks wave 2).
-> **2. Then wave 2 (fresh windows)** — DIVVY PLAN in §C·1. The two new lanes need briefs CUT FIRST
-> (Data grid 51 · Charts kit 53); A-continuation rides its existing brief.
-> **3. The standing eyeball set (§C·3)** stays open + NON-BLOCKING (your "foundations first" ruling).
+> **1. ★ DAVE: the RULING BATCH (§C·2)** — 16 numbered questions + the **DATAVIZ SIGN-OFF** (flips
+> D's 4 chart snippets provisional→canon). Rule by number, any window; everything retro-propagates.
+> The **field-family accretion** (Q6) is the material one — evidence ≥10 files.
+> **2. The eyeball set (§C·3)** — now spans all 24 new components × 4 themes (non-blocking, async
+> via pane pins).
+> **3. Then wave 3 or the templates+shells clean-room (§C·1)** — next session surveys and cuts.
 
 *Standing practice: every handoff carries both names — retrospective + forward — and a **DIVVY PLAN**.
 This handoff's plan: §C·1. Steps 4b + 2 in `_RUNBOOK-capture-ritual.md`.*
@@ -106,7 +106,7 @@ knowledge/            THE ENGINE
   ★ component-types.json  THE ADR-0013 REGISTRY — one file, both halves: component-type/<group>/<param>
                       tokens ($alias→semantic + cached $value) + $members (selector map) + $partials
                       (source atom · rootSelector · requires/matchValues/declarations · $manifestBinds)
-  snippets/           54 gated reference components = CANON (40 + Phase-2 wave 1's 14). Atoms carry
+  snippets/           64 gated reference components = CANON (40 + Phase-2's 24). Atoms carry
                       PARTIAL blocks; consumers carry generated AUTO-PARTIAL blocks (provenance-
                       commented, sync-gated). Multi-control members = :is() selector lists (wave-1
                       convention); mixed sizes = local --phys-size override
@@ -121,7 +121,7 @@ knowledge/            THE ENGINE
   _consult.py         "what governs X?" — RUN IT before designing (corpus now DISCOVERED, ds-009 closed)
   _validate_*.py      the gates — incl. _validate_state_snap.py (ADR-0014) + ★ _validate_partials.py
   gen_showroom.py     generates showroom/ — never hand-edit showroom
-showroom/             THE LIBRARY, browsable: 54 harness pages + index (#theme=… switches all four)
+showroom/             THE LIBRARY, browsable: 64 harness pages + index w/ live count (#theme=… all four)
 reviews/              review sheets — ★ AWAITING DAVE: SC-DARK-MODE-2026-07-22-v1(.REVIEW).html
 notes/_receipts/      worker-receipt dir · notes/_briefs/ conductor briefs
 _LIVE-STATE.md        LIVE / DEAD / OPEN / TARGETS — read second, always
@@ -213,45 +213,70 @@ OWED; verification stood on mechanical proofs + selftests + gates. HTML is what 
 
 ---
 
-# §B · THIS SESSION (2026-07-22 evening — "Phase-2 wave 1: conductor + 2 parallel Fable workers")
+# §B · THIS SESSION (2026-07-22 evening — "Phase-2, BOTH waves: one conductor, five worker windows")
 
-*The mechanical record lives in the three receipts (`notes/_receipts/2026-07-22-phase2-{worker-A-forms,
-worker-B-feedback,conductor-reconcile}.md`) — no separate dossier (conducting session; the receipts ARE
-the narrative, per-component judgment calls included).*
+*The record lives in the receipts (5 worker + 2 conductor-reconcile, `notes/_receipts/2026-07-22-
+phase2-*`) — no separate dossier; the receipts ARE the narrative, judgment calls included.*
 
-- **✅ 14 components landed** (A: 4 forms · B: 10 feedback/data), library 40→54, all strict-from-birth
-  (radius role tokens · composites-only type · receipted retrievals). A cut clean at the gauge with 5
-  remaining on the same brief; B finished the lane (row 89 already existed — correctly not rebuilt).
-- **✅ The ADR-0013 fan-out protocol proven live:** workers ship empty AUTO-PARTIAL markers + `$members`
-  proposals by receipt; conductor registers, injects, completes contracts. **Finding (by design, now
-  proven): contracts fire only on registration** — B's 7 pressables landed without `--spring`/`--press`;
-  the check caught every one, fails-loud. **Conventions minted at reconcile:** `:is()` selector lists
-  for multi-control members (bare comma lists mis-bind rewritten pseudo-classes) · local `--phys-size`
-  on the smaller control (Drawer close 36, Toast/Banner × 24 — pixel-true down to the 24px dismiss).
-- **✅ Quality bar held:** census 32→32 (ZERO press-shaped growth — the ratchet worked its first wave) ·
-  51/51 green serial · 92-file wave commit `60e4dc1` after a path-by-path reconcile (every dirty path
-  named against a receipt; the one build red was my own CATEGORIES edit landing stale — regen healed).
-- **🐛 Wrong/caught:** B's receipt said Drawer's close = 44px; the file measures 36 — file won
-  (attribute-the-diff). My first background-build attempt pkill'd itself (pattern matched my own
-  command line — sandbox lesson, receipted here). **Owed:** render-verify (headless-shell, unchanged).
+- **✅ 24 components in one day** (W1: A-forms 4 + B-feedback 10 · W2: A-continuation 5 — **forms
+  brief COMPLETE 9/9** — + C Data-grid + D Charts 4). Library 40→64, registry 4→18 members,
+  radius 45-strict, **census 32→32 across everything**, 51/51 green at every reconcile. Firsts:
+  calendar panel (Date-picker, composed from surveyed parts) · determinate progress bar
+  (File-upload, ink-on-neutral) · Charts = the parked kit PROMOTED (provisional-agent, sign-off
+  yours). Conventions minted: `:is()` multi-control members · local `--phys-size` on mixed sizes ·
+  `proforma-promotion` provenance class · dataviz gate wired to chart snippets (new-surface rule).
+- **✅ The protocol COMPOUNDS:** wave-1 absorb completed 7 lanes' contracts by hand (they fire only
+  on registration — fails-loud proven); wave-2 workers READ that lesson and pre-landed contracts →
+  both wave-2 absorbs injected clean first try. Fences held all day; A's wave-2 breach flag =
+  misread of MY mid-wave absorb of C (resolved + inscribed in the wave-2 reconcile receipt —
+  the name-every-path reflex worked, the inference didn't).
+- **✅ Dave's in-flight asks handled by the hot-clause:** showroom header count SHIPPED (live 64) ·
+  card thumbnails NOTED (`_FUTURE-STATE`, `#bare`-mode shape) · theme "outage" diagnosed as
+  wrong-file + payload-is-base64 (pages were correct; Legacy's small delta on data components =
+  architecture, not bug).
+- **🐛 Wrong/caught:** Drawer close 44→36 (file beat receipt) · my pkill self-match (twice-class,
+  receipted for the runbook) · one stale-cascade red per wave (my own serial edits, regen healed).
+  **Owed:** render-verify (headless-shell, standing).
 
 ---
 
 # §C · QUEUE
 
-## 1. ★ PHASE-2 WAVE 2 (fresh windows, PARALLEL — the DIVVY PLAN)
-**Lanes:** **A-continuation** (Fable) = the 5 remaining forms items on the EXISTING brief
-(`2026-07-22-phase2-worker-A-brief.md` items 5–9: Date picker · Date-range · Time picker · File
-upload · Interactive stepper; survey debt named in A's receipt — stepper visuals from
-Progress-tracker, calendar button from Input-fields tail, glyphs verified library-matched) ·
-**Data-grid lane** (Fable, itinerary row 51, ★ brief CUT → `2026-07-22-phase2-worker-C-brief.md`)
-and **Charts-kit lane** (Fable, row 53, ★ brief CUT → `2026-07-22-phase2-worker-D-brief.md` —
-promotes the PARKED dataviz kit as provisional-agent; Dave's sign-off still owed). **Serial set unchanged:** `component-types.json` · `MIGRATED_SNIPPETS` · `CATEGORIES` ·
-spine docs · git — conductor only, ONE commit. Workers = NEW files + receipts, no git. Role comes
-from Dave's opener line, never titles. After wave 2: P2 depth / **Layer-2 templates+shells (the
-load-bearing gap)**.
+## 1. ★ NEXT STRANDS (~~wave 2~~ DONE — pick one per window; role from the opener line)
+**(a) Wave 3 fan-out** — ~26 itinerary gaps remain (`reviews/ITINERARY-2026-07-14…`); the next
+conductor SURVEYS the itinerary + cuts lane briefs (wave-1/2 briefs = the pattern; candidates:
+navigation/menu family + remaining P2 depth). Serial set unchanged (registry · MIGRATED_SNIPPETS ·
+CATEGORIES · spine · git = conductor only, ONE commit; workers = NEW files + receipts, no git).
+**(b) Templates+shells clean-room (Layer-2, the load-bearing gap)** — solo Fable ADR-style session
+(the ADR-0013 precedent). Best AFTER the ruling batch: field-family, stepper-fold and delta-seam
+answers shape it.
+**(c) Enact window (cheap)** — absorb §C·2 rulings as token/registry edits + the §C·4 queue;
+new candidates: mint `data/axis`+`data/grid` · R-D9 ramp promotion · field-family group build if
+ruled yes · Stat-card `spark` slot (D's composition seam, pairs with B-Q6).
 
-## 2. ★ DAVE: WAVE-1 RULINGS (rule by number; all retro-propagate, nothing blocks wave 2)
+## 2. ★ DAVE: THE RULING BATCH — 16 numbered + the ★ DATAVIZ SIGN-OFF (rule by number; all
+retro-propagate). **The sign-off first:** D promoted the PARKED kit verbatim into
+Chart-bar/line/donut/sparkline — your review flips them provisional-agent→canon (open-014).
+**New this wave, 8–16:**
+8. **(A-Q5)** Calendar day-cells + Stepper done-dots carry NO press physics (judged selection
+   targets / structural markers, the Tabs class) — confirm, or extend the family.
+9. **(A-Q6)** File-upload built the library's FIRST determinate progress bar (ink-on-neutral,
+   R-D22 spirit) — accretion candidate when a second consumer appears.
+10. **(A-Q7)** Stepper consumes Progress-tracker's visuals by copy — fold to one snippet, or
+    accrete a stepper-visuals partial at a third consumer?
+11. **(A-Q8)** Date-range = restart-on-earlier-pick (inscribed as reference behaviour) — flag if
+    the HSBC source says swap-endpoints.
+12. **(D-Q1)** Line markers: Background fill (promoted default, theme-adaptive) vs White — the
+    kit toggle never ruled.
+13. **(D-Q2)** Donut labelling default: spider vs direct; letters-on-segments HELD (white letters
+    on series fills — type26-013).
+14. **(D-Q3)** Promote the kit's grouped/stacked bars next wave?
+15. **(D-Q4)** Status-watch amber light-mode = 3.02:1 vs page — the R-D3 graphic floor with zero
+    margin. Comfortable for charts, or lift?
+16. **(D-Q5)** TWO delta conventions now live (charts `data/delta/gain·loss` vs Stat-card's R-D5
+    rag arrows) — one canon convention, or a deliberate chart/card split?
+
+## 2b. WAVE-1 RULINGS 1–7 (unchanged, rule with the above)
 1. **Form-label weight** — the `.t-cm-label` composite renders 400; gated Input-fields labels are
    16/500. Rule 400 (Input-fields migrates later) or mint a 500 form-label composite (one type.css
    line + binding).
@@ -279,7 +304,8 @@ now live in every showroom pane, so it's async)
 **(a) B-D7 motion:** Button/Modals presses calm down · Progress-tracker scale press + dots↔line
 collapse through 520px · Icon-button identical · `#theme=legacy`/`#theme=supercharge` = colour-only.
 **(b)** SC dark sheet `reviews/SC-DARK-MODE-2026-07-22-v1.REVIEW.html` + 4 held whites + Console
-radius px + bigplay. **(c) NEW from wave 1:** the 14 new components across 4 themes × light/dark.
+radius px + bigplay. **(c) NEW from Phase-2:** all 24 new components across 4 themes × light/dark — the Charts 4 double
+as the dataviz sign-off (§C·2).
 
 ## 4. Enact-queue (cheap, post-rulings)
 F1 Legacy icon/default white · F2 Legacy `rag/error-tint` · tag-atom radius reconcile · F5 Dropdown's
