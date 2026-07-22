@@ -31,7 +31,7 @@
 | 23 | Navigations | 2 | 2 | 0 | 0 | — | ✅ verified |
 | 24 | Notifications | 9 | 9 | 0 | 0 | yes | ✅ verified |
 | 25 | Pagination | 2 | 2 | 0 | 0 | — | ✅ verified |
-| 26 | Progress-tracker | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 26 | Progress-tracker | 1 | 1 | 0 | 0 | — | ✅ verified |
 | 27 | Quick-actions | 4 | 4 | 0 | 0 | — | ✅ verified |
 | 28 | Reorder | 18 | 18 | 0 | 0 | — | ✅ verified |
 | 29 | Search-field | 2 | 2 | 0 | 0 | — | ✅ verified |

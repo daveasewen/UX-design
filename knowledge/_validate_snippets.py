@@ -47,6 +47,8 @@ TOK = os.path.join(ROOT, "tokens")
 
 sem = json.load(open(os.path.join(TOK, "semantic-colour.json")))
 layout = json.load(open(os.path.join(TOK, "layout.json")))
+motion_store = json.load(open(os.path.join(TOK, "motion.json")))
+ctypes_store = json.load(open(os.path.join(ROOT, "component-types.json")))  # ADR-0013 registry
 
 # Brand exemption (type26-019): uppercase is allowed for acronyms only. Runs made
 # ENTIRELY of these pass; anything else in a 2+ word caps run is a gate failure.
@@ -79,7 +81,9 @@ BARE_LINK_TEXT = {
 def resolve(token, mode):
     """tokens/active + 'dark' -> '#1D1D1D' (uppercased), or None. Layout-namespace
     paths (border-radius/* …, Phase-0 shape de-hardcode) resolve from layout.json
-    to a CSS-formatted string ('0' / '8px') so snippets can bind radius via manifest."""
+    to a CSS-formatted string ('0' / '8px') so snippets can bind radius via manifest.
+    motion/* + component-type/* (ADR-0013) resolve to UNITLESS number strings —
+    the scale-factor namespace (matches gen_snippet_tokens._fmt)."""
     if token.startswith(("border-radius/", "border-width/", "focus-ring/", "layout/", "breakpoint/")):
         n = layout
         for k in token.split("/"):
@@ -90,6 +94,17 @@ def resolve(token, mode):
         v = m.get("$value") if isinstance(m, dict) else None
         if isinstance(v, (int, float)):
             return "0" if v == 0 else f"{v}px"
+        return str(v) if v is not None else None
+    if token.startswith(("motion/", "component-type/")):
+        n = motion_store if token.startswith("motion/") else ctypes_store
+        for k in token.split("/"):
+            n = n.get(k) if isinstance(n, dict) else None
+            if n is None:
+                return None
+        m = n.get(mode) if isinstance(n.get(mode), dict) else n
+        v = m.get("$value") if isinstance(m, dict) else None
+        if isinstance(v, (int, float)):
+            return str(v)                      # scale factors are unitless
         return str(v) if v is not None else None
     n = sem
     for k in token.split("/"):

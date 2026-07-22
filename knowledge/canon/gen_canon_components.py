@@ -200,7 +200,8 @@ ORDER = ["Button","List-items","Cards","Headers","Navigations","Notifications","
  "Selection-controls","Search-field","Breadcrumbs","Pagination","Accordion","Tooltip","Quick-actions",
  "Dropdown","Hero","Slider","Reorder","Countdown-timer","View-options","Video-player","Loading-indicator"]
 
-def main():
+def build(css):
+    """(new_full_css, made_names) — the regenerated file content, side-effect free."""
     blocks = ["/* ===== AUTO-COMPONENTS START =====",
               "   Generated from knowledge/snippets/*.reference.html by gen_canon_components.py.",
               "   VERBATIM component CSS + decision comments; theme colours -> token refs;",
@@ -217,15 +218,34 @@ def main():
     blocks.append("/* ===== AUTO-COMPONENTS END ===== */")
     comp_css = "\n".join(blocks)
 
-    css = open(CANON).read()
     if "AUTO-COMPONENTS START" in css:
-        css = re.sub(r"/\* ===== AUTO-COMPONENTS START =====.*?AUTO-COMPONENTS END ===== \*/",
+        new = re.sub(r"/\* ===== AUTO-COMPONENTS START =====.*?AUTO-COMPONENTS END ===== \*/",
                      comp_css, css, flags=re.S)
     else:
-        css = css.rstrip() + "\n\n\n" + comp_css + "\n"
-    open(CANON, "w").write(css)
-    print(f"generated {len(made)} components -> .cn-<scope>")
-    print("components:", ", ".join(made))
+        new = css.rstrip() + "\n\n\n" + comp_css + "\n"
+    return new, made
+
+def main():
+    # ADR-0013 ruling 4: this projector joins _build_all — regenerate-always (snippet
+    # RULE-text changes self-heal into canon) + --check (determinism guard: a write step
+    # followed by --check catches non-idempotent generator bugs, the project_canon
+    # stomp class caught live 2026-07-21).
+    import sys
+    css = open(CANON).read()
+    new, made = build(css)
+    if "--check" in sys.argv:
+        if new != css:
+            print("gen_canon_components --check: canon.css AUTO-COMPONENTS is OUT OF SYNC with "
+                  "the snippets. Run: python3 knowledge/canon/gen_canon_components.py")
+            sys.exit(1)
+        print(f"gen_canon_components --check OK — {len(made)} components in sync.")
+        return
+    if new != css:
+        open(CANON, "w").write(new)
+        print(f"generated {len(made)} components -> .cn-<scope>")
+        print("components:", ", ".join(made))
+    else:
+        print(f"gen_canon_components: no change ({len(made)} components in sync).")
 
 if __name__ == "__main__":
     main()

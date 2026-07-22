@@ -70,6 +70,10 @@ DECL_RE  = re.compile(r'border-radius\s*:\s*([^;}]+)')
 OK_VALUE = re.compile(r'^(var\(.*\)|50%|999px|inherit)$')
 
 def strip_comments(text):
+    # ds-008 (fixed 2026-07-22, ADR-0013 session): HTML comments stripped TOO — snippet
+    # header prose like "border-radius:0" tripped the census (Badge + Tags each carried
+    # one; ~50 Phase-2 files will carry header prose). CSS comments were always stripped.
+    text = re.sub(r'<!--.*?-->', '', text, flags=re.S)
     return re.sub(r'/\*.*?\*/', '', text, flags=re.S)
 
 def check_text(text):
@@ -91,6 +95,8 @@ def selftest():
         fails.append("corner shorthand NOT flagged")
     if check_text("/* border-radius:0 in prose */ .x{border-radius:inherit;}"):
         fails.append("comment mention flagged (comments must be stripped)")
+    if check_text("<!-- header prose: SQUARE corners, border-radius:0 by brand -->\n.x{border-radius:var(--border-radius-control);}"):
+        fails.append("HTML-comment prose flagged (ds-008 — HTML comments must be stripped)")
     return fails
 
 def main():

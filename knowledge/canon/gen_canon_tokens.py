@@ -17,6 +17,8 @@ TOKENS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "tok
 CANON_CSS  = os.path.join(os.path.dirname(os.path.abspath(__file__)), "canon.css")
 
 # file -> (section label, var prefix). Prefix '' means use the token's own top keys.
+# Paths are relative to tokens/ — "../component-types.json" is the ADR-0013 registry at
+# knowledge/ root (its parameter halves are tokens; $members/$partials are skipped by walk).
 FILES = [
     ("colour.json",          "Primitive colour palette",        ""),
     ("semantic-colour.json", "Semantic colour (light / dark)",  ""),
@@ -24,13 +26,15 @@ FILES = [
     ("spacing.json",         "Spacing (gap / padding)",         ""),
     ("layout.json",          "Layout",                          ""),
     ("elevation.json",       "Elevation",                       ""),
-    ("motion.json",          "Motion (duration / easing)",      ""),
+    ("motion.json",          "Motion (duration / easing / scale)", ""),
     ("icon-scale.json",      "Icon scale",                      ""),
+    ("../component-types.json", "Component-type tier (ADR-0013)", ""),
 ]
 
 MODE_LEAVES = {"light", "dark"}
 FONT_STACK = '"Univers Next for HSBC", "Helvetica Neue", Arial, Helvetica, sans-serif'
-UNITLESS = ("weight", "opacity", "z-index", "line-height-ratio")  # number tokens that take no px
+UNITLESS = ("weight", "opacity", "z-index", "line-height-ratio",
+            "press-travel", "press-darken", "motion-press")  # number tokens that take no px (incl. ADR-0013/B-D7 press physics)
 
 def fmt_value(var, val, ttype):
     """Render a DTCG value as a CSS value string, by $type and path."""

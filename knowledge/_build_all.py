@@ -57,6 +57,17 @@ STEPS = [
     ("indicator/accent contrast audit", "_build_indicator_contrast_audit.py"),
     ("icon contrast delta — brand 4.5 vs 3 (advisory)", "_build_icon_contrast_delta.py"),
     ("dark-surface flatness gate", "_validate_dark_surfaces.py"),
+    # ADR-0013 composition tier (2026-07-22): the RULE half of retrieval. Partial sync
+    # fails loud on divergence (ruling 2 — manual regen preserves attribution); canon
+    # components REGENERATE-ALWAYS then determinism-check (ruling 4 — snippet RULE-text
+    # changes self-heal into canon; the --check catches non-idempotent generator bugs);
+    # the ratchet makes local re-implementation of a registered partial a build failure.
+    ("component-partials sync — AUTO-PARTIAL injection + contracts (ADR-0013)", "gen_component_partials.py", ["--check"]),
+    ("component-partials selftest (ADR-0013)", "gen_component_partials.py", ["--selftest"]),
+    ("canon components — regenerate from snippets (ADR-0013 ruling 4)", "canon/gen_canon_components.py"),
+    ("canon components determinism check (ADR-0013 ruling 4)", "canon/gen_canon_components.py", ["--check"]),
+    ("partial re-implementation ratchet (ADR-0013)", "_validate_partials.py"),
+    ("partial-ratchet selftest (ADR-0013)", "_validate_partials.py", ["--selftest"]),
     # Projection-sync gate (2026-07-21): snippets/tranches/canon literals must match the
     # token stores BY GENERATION. The tranches sat on pre-R-D20 Legacy error reds and
     # canon's .cn-button literals on pre-B-D values for a day+ because the projector only
@@ -123,6 +134,15 @@ for i, step in enumerate(STEPS, 1):
             rc = rc or r.returncode
         elif "theme cascade" in label:
             print(f"\n❌ theme-cascade sync failed (exit {r.returncode}) — canon.css AUTO-THEMES is out of sync with tokens/themes/*.json (+ manifests). Run: python3 knowledge/canon/gen_theme_cascade.py")
+            rc = rc or r.returncode
+        elif "component-partials" in label:
+            print(f"\n❌ component-partials gate failed (exit {r.returncode}) — an AUTO-PARTIAL block is out of sync with its source atom, or a member breaks the registry contract (vars / matchValues / manifest binds). Run: python3 knowledge/gen_component_partials.py — registry: knowledge/component-types.json (ADR-0013)")
+            rc = rc or r.returncode
+        elif "canon components" in label:
+            print(f"\n❌ canon components step failed (exit {r.returncode}) — .cn-* blocks diverged from the snippets or the generator is non-deterministic. Run: python3 knowledge/canon/gen_canon_components.py (ADR-0013 ruling 4)")
+            rc = rc or r.returncode
+        elif "ratchet" in label:
+            print(f"\n❌ partial ratchet failed (exit {r.returncode}) — a registry member re-implements a registered partial's rule locally. Consume the partial (AUTO-PARTIAL markers), never re-type the sub-atom. See knowledge/_PARTIALS-GATE.md (ADR-0013)")
             rc = rc or r.returncode
         elif "radius gate" in label:
             print(f"\n❌ radius gate failed (exit {r.returncode}) — a hardcoded border-radius literal on a strict surface. Shape is theme-flexed (ADR-0010): bind var(--border-radius-default); 50%/999px circle+pill idioms are exempt. See knowledge/_RADIUS-GATE.md")

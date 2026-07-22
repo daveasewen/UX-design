@@ -1,0 +1,61 @@
+{
+  "$description": "ADR-0013 — the component-type tier: ONE registry, both halves. (1) VALUES: this file is a token store — a path component-type/<group>/<param> resolves here, and each parameter $alias-references its semantic home (the alias hop: component var -> type-group -> semantic role -> default; $value is the gated cache, _STANDARDS.md §1 convention). (2) RULES: the $-keys carry the structural halves — $members (who consumes, with their selector map) and $partials (named rule-blocks injected from a source atom into consumers between AUTO-PARTIAL markers by gen_component_partials.py; sync gated in _build_all). Groups accrete from OBSERVED duplication only, never speculation (ADR-0013 ruling 3). Every member must carry the partial's AUTO-PARTIAL markers, the required vars, and the $manifestBinds manifest bindings — gen_component_partials.py --check fails the build otherwise.",
+  "component-type": {
+    "button-family": {
+      "$description": "Press-physics controls sharing one interaction-motion definition (ADR-0013 ruling 3 first population). B-D7 (Dave, 2026-07-22): the Icon-button SIZE-SCOPED model is the family canon — travel is PIXEL-TRUE, scale(calc(1 ± travel/--phys-size)), darken 0.94 — superseding Button's proportional 1.04/0.95 + 0.85 (rule shape survives: grow toward cursor, press recede + darken, disabled stays put, reduced-motion snaps). Motion is a THEME DIAL: Legacy + Supercharge override travel->0 darken->1 (colour-only state feedback); Mono + Console carry the movement (Console inherits, not fenced). --phys-size = the member's LOCAL characteristic-size number (geometry, like --h; buttons ~120 wide, icon button 44 — the Tranche-1 size-scoping). Survey ground truth at ruling time: 13/40 snippets carried a local button recipe, 7 carried the scale-press by copy, 4 pressed with translateY(1px).",
+      "$members": {
+        "Button": {
+          "role": "source"
+        },
+        "Modals": {
+          "selector": ".btn"
+        },
+        "Progress-tracker": {
+          "selector": ".nav button"
+        },
+        "Icon-button": {
+          "selector": ".iconbtn"
+        }
+      },
+      "$partials": {
+        "press-physics": {
+          "source": "Button",
+          "rootSelector": ".btn",
+          "requires": {
+            "vars": [
+              "--press-travel",
+              "--press-darken",
+              "--phys-size",
+              "--spring",
+              "--press"
+            ],
+            "matchValues": [
+              "--spring",
+              "--press"
+            ],
+            "declarations": [
+              "transform var(--spring)"
+            ]
+          },
+          "$manifestBinds": {
+            "--press-travel": "component-type/button-family/press-travel",
+            "--press-darken": "component-type/button-family/press-darken"
+          },
+          "$description": "hover grow + press recede/darken + full-width and disabled guards + reduced-motion override — single-sourced from Button's PARTIAL block. requires.vars must be declared by every consumer (--phys-size is local geometry, not a token); matchValues must equal the source atom's declared value (duration/easing composites — already tokens, pinned by match until composite manifest-binding exists); declarations are substrings the consumer's CSS must contain (the control's transition must carry the spring)."
+        }
+      },
+      "press-travel": {
+        "$alias": "motion/press/travel",
+        "$value": 2,
+        "$type": "number",
+        "$description": "type-group parameter — px of size change per interaction step (B-D7 pixel-true model). Cache of motion/press/travel; a theme may override the group without touching the semantic role, or the role to move every family at once."
+      },
+      "press-darken": {
+        "$alias": "motion/press/darken",
+        "$value": 0.94,
+        "$type": "number",
+        "$description": "type-group parameter — :active brightness factor. Cache of motion/press/darken."
+      }
+    }
+  }
+}

@@ -52,6 +52,21 @@ flex tier (`_FUTURE-STATE`, 2026-07-21) and the composition gap are one architec
   visibly changes `translateY`→scale: Dave's eyeball owed) **→ Icon-button** (lock-step atom).
   **Exit gate:** change a factor once in Button and every consumer moves; no local recipe remains
   in the proofs; build green with the new gates blocking.
+- **✅ BUILT 2026-07-22 (the clean-room ran end-to-end; build 45→51 green).** Registry
+  `knowledge/component-types.json` (path-addressable token store + `$members`/`$partials`) ·
+  `gen_component_partials.py` (injection + contracts + `--check`, selftest) · `_validate_partials.py`
+  ratchet (0 strict / 32-rule census = the accretion worklist) · `gen_canon_components` wired
+  regenerate-always + determinism `--check` · ds-008/ds-009 fixed (radius HTML-comment strip;
+  consult corpus DISCOVERED by glob + zero-yield fails the build) · all four proofs migrated ·
+  responsive-stepper collapse folded into Progress-tracker (dots resurrected from `273d18c~1`,
+  grid-corrected 13px→12px/4px) · **exit gate passed BOTH halves** (value dial 2→6: four consumers
+  moved, both modes; source rule-text probe: three consumers moved; clean reverts).
+  **Amendment absorbed mid-build — B-D7 (Dave):** the first population's factors are NOT the lifted
+  1.04/0.95 — the Icon-button size-scoped model became the family canon (`motion/press/travel` 2px
+  pixel-true + `darken` 0.94, `scale(calc(1 ± travel/--phys-size))`), and **motion is a THEME DIAL**
+  (Legacy + Supercharge override sets zero it; pure CSS, tunable later). Ledger: `_BUTTON-DECISIONS.md`
+  B-D7. Dave's eyeball owed: Button/Modals calm down · Progress-tracker press + stepper · Legacy/SC
+  movement-free.
 - **Phase-2 fan-out inherits the mechanism:** new organisms declare membership + consume partials,
   never re-type sub-atoms.
 - The queued responsive-stepper collapse (Tranche-1 canon dots, `273d18c~1`) folds into canon

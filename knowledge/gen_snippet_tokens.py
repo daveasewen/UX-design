@@ -48,10 +48,18 @@ def store(fname):
         _STORES[fname] = json.load(open(os.path.join(TOK, fname)))
     return _STORES[fname]
 
-def _fmt(val):
-    """CSS-format a resolved token value: numbers are px except 0 (matches
-    gen_canon_tokens fmt_value for the layout namespace); strings pass through."""
+def _unitless(path):
+    """Number tokens that take no px — the motion press-physics factors and the
+    component-type parameters that cache them (ADR-0013 / B-D7)."""
+    return (path.startswith("motion/press/")
+            or path.rsplit("/", 1)[-1] in ("press-travel", "press-darken"))
+
+def _fmt(val, path=""):
+    """CSS-format a resolved token value: numbers are px except 0 and the unitless
+    namespaces (matches gen_canon_tokens fmt_value); strings pass through."""
     if isinstance(val, (int, float)):
+        if _unitless(path):
+            return str(val)
         return "0" if val == 0 else f"{val}px"
     return val
 
@@ -59,11 +67,16 @@ def resolve(path, mode):
     """token path + mode -> resolved hex/value. Raises KeyError if unresolvable.
     Routes color/* to colour.json, the layout namespaces (border-radius/*, …) to
     layout.json (Phase-0 shape de-hardcode — snippets bind radius via manifest),
-    everything else to semantic-colour.json."""
+    motion/* to motion.json, component-type/* to the ADR-0013 registry at
+    knowledge/component-types.json, everything else to semantic-colour.json."""
     if path.startswith("color/"):
         src = "colour.json"
     elif path.startswith(("border-radius/", "border-width/", "focus-ring/", "layout/", "breakpoint/")):
         src = "layout.json"
+    elif path.startswith("motion/"):
+        src = "motion.json"
+    elif path.startswith("component-type/"):
+        src = "../component-types.json"       # the ADR-0013 registry (knowledge/ root)
     else:
         src = "semantic-colour.json"
     node = store(src)
@@ -71,9 +84,9 @@ def resolve(path, mode):
         node = node[key]                      # KeyError => caught by caller (fail loud)
     # leaf may be {light:{$value}, dark:{$value}} or a modeless {$value}
     if mode in node and isinstance(node[mode], dict) and "$value" in node[mode]:
-        return _fmt(node[mode]["$value"])
+        return _fmt(node[mode]["$value"], path)
     if "$value" in node:
-        return _fmt(node["$value"])
+        return _fmt(node["$value"], path)
     raise KeyError(f"{path} has no '{mode}' value")
 
 MANIFEST_RE = re.compile(r'<script[^>]*id="token-manifest"[^>]*>(.*?)</script>', re.S)

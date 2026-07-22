@@ -66,6 +66,8 @@ MODES  = ("light", "dark")
 _STORES = {}
 def _store(fname):
     if fname not in _STORES:
+        # "../component-types.json" = the ADR-0013 registry at knowledge/ root — a token
+        # store for its parameter halves ($members/$partials are structural, never walked).
         _STORES[fname] = json.load(open(os.path.join(TOK, fname)))
     return _STORES[fname]
 
@@ -74,6 +76,10 @@ def _store_for(path):
         return _store("colour.json")
     if path.startswith(("border-radius/", "border-width/", "breakpoint/", "layout/", "focus-ring/")):
         return _store("layout.json")
+    if path.startswith("motion/"):
+        return _store("motion.json")
+    if path.startswith("component-type/"):
+        return _store("../component-types.json")
     return _store("semantic-colour.json")
 
 def base_value(path, mode, _depth=0):
@@ -115,9 +121,13 @@ def alias_map():
     """{path: {'modeless': target} | {'light': t, 'dark': t}} across all stores.
     The base store's OWN $alias edges — what lets a theme override of an alias
     TARGET cascade to every path that follows it (semantic radius tier, Dave
-    2026-07-21 evening: roles fall back to default unless dialed themselves)."""
+    2026-07-21 evening: roles fall back to default unless dialed themselves).
+    Includes the ADR-0013 registry: component-type/<group>/<param> aliases its
+    semantic home (e.g. motion/scale/press-grow), so a theme override of the
+    semantic role cascades to every type-group parameter that follows it — the
+    component -> type-group -> semantic role -> default hop."""
     out = {}
-    for f in ("colour.json", "semantic-colour.json", "layout.json"):
+    for f in ("colour.json", "semantic-colour.json", "layout.json", "../component-types.json"):
         for k, v in _store(f).items():
             if not k.startswith("$"):
                 _walk_aliases(v, k, out)
@@ -168,9 +178,12 @@ def var_name(path):
     return "--" + "-".join(normalize(s) for s in path.split("/"))
 
 def css_value(path, val):
-    """Format an override $value for CSS. Numbers are px except 0 (matches
-    gen_canon_tokens fmt_value for the layout namespace)."""
+    """Format an override $value for CSS. Numbers are px except 0 and the
+    unitless namespaces — motion scale factors + the component-type parameters
+    that cache them (matches gen_canon_tokens fmt_value / gen_snippet_tokens)."""
     if isinstance(val, (int, float)):
+        if path.startswith("motion/press/") or path.rsplit("/", 1)[-1] in ("press-travel", "press-darken"):
+            return str(val)
         return "0" if val == 0 else f"{val}px"
     return str(val)
 

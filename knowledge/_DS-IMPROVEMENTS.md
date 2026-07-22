@@ -206,12 +206,20 @@ live instances are gone; the GAP remains for future bindings. **Fix candidate:**
 exposure.
 
 ## ds-008 — `_validate_radius.py` counts prose in HTML comments as declarations (2026-07-21, Phase-1 worker A F0)
+**FIXED + GATED 2026-07-22 (ADR-0013 session):** `strip_comments` now strips HTML `<!-- -->` before CSS
+`/* */`; selftest gained the prose-trip bite case. The sibling `_validate_partials.py` gate shipped with
+HTML-comment stripping from birth (its selftest case 6 cites this defect).
 `strip_comments` removes CSS `/* */` only, not HTML `<!-- -->` — "border-radius:0" in a snippet's header
 prose trips the census (Badge + Tags each carried one). Worker reworded the prose (doc fix); checker logic
 untouched (was shared with a live parallel worker). **Fix:** strip HTML comments in `check_text` + extend
 the selftest with a prose-trip case. Matters before Phase-2 fan-out (~50 new files will carry header prose).
 
 ## ds-009 — CONSULT corpus omits `_BUTTON-DECISIONS.md` (2026-07-21, architecture session)
+**FIXED 2026-07-22 (ADR-0013 session), stronger than specced:** the corpus is now DISCOVERED —
+`parse_rulings()` globs `_proforma/_*-DECISIONS.md` (no hardcoded list to forget), `RULING_ID_RE` is
+generic (`[A-Z]{1,3}-D\d+`), and a ledger yielding ZERO records fails the build loudly (the completeness
+assertion runs every build, not just on hand-run selftest). Verified live: B-D2/B-D4/B-D6 surface on a
+consult query. The secondary cross-vocabulary gap (keyword→fuzzy retrieval) stays a `_FUTURE-STATE` path.
 `_build_consult_index.py` indexes the TYPE/RAG/DATAVIZ ledgers + ADRs + guidelines + OPEN items, but
 not `_proforma/_BUTTON-DECISIONS.md` — B-D1…B-D5 (Mono primary, disabled visibility, ADR-0009 wiring)
 are unfindable via `_consult.py` (verified: a direct B-D1 query returns nothing). Any future ledger

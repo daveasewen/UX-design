@@ -27,9 +27,14 @@
   Pressed on those two tiers reuses the hover tint here; the scale-physics :active darken conveys depth.
   Flagged, not silently invented — pending a canon decision on a pressed-tint token for the ghost tiers.
 
-  MOTION (promoted 2026-06-22): Refined scale-physics — grow toward the cursor on hover + press
-  recede/darken, expressed through SCALE only (no shadow, no translate; brand stays flat/angular).
-  The scale-factor + duration/easing vars are LOCAL here pending the interaction-motion token rollout.
+  MOTION (promoted 2026-06-22; re-ruled B-D7 2026-07-22): Refined scale-physics — grow toward the
+  cursor on hover + press recede/darken, expressed through SCALE only (no shadow, no translate; brand
+  stays flat/angular). B-D7: travel is PIXEL-TRUE, the Icon-button size-scoped model propagated
+  family-wide — scale(calc(1 ± travel/--phys-size)), travel = motion/press/travel (2px), darken =
+  motion/press/darken (0.94); supersedes the proportional 1.04/0.95 + 0.85. Pure CSS, no JS (DEF-003).
+  MOTION IS A THEME DIAL: Legacy + Supercharge override travel→0 darken→1 (colour-only states).
+  The rules live in the PARTIAL press-physics block below — THIS FILE is the source of truth the
+  button-family consumers inject from (ADR-0013; registry knowledge/component-types.json).
 
   RESPONSIVE (promoted 2026-06-24 — Dim 11): the action-bar (confirm/cancel pair, button.meta
   commonPatterns) reflows via container-query — inline + right-aligned on a wide container; at
@@ -51,7 +56,7 @@
     --fs:16px; --weight:500; --h:44px; --pad-x:20px; --ease:160ms cubic-bezier(.4,0,.2,1);
     --spring:300ms cubic-bezier(.5,1.6,.4,1);   /* motion/easing/spring + motion/duration/spring — grow/release */
     --press:90ms cubic-bezier(0,0,.58,1);        /* motion/duration/press + motion/easing/out — snappy depress */
-    --btn-grow:1.04; --btn-press:0.95;           /* interaction motion — CSS scale-factor tokens (tokenised 2026-07-15; formerly runtime JS-computed) */
+    --phys-size:120;                             /* LOCAL geometry (like --h): the control's characteristic size in px — text buttons ≈120 wide (Tranche-1 size-scoping). Divides the B-D7 pixel-true travel: scale(calc(1 ± travel/size)). */
   }
   [data-theme="light"]{
     /* PRIMARY — Mono monochrome (button/primary/*) */
@@ -69,6 +74,8 @@
     --success:#5DAC7B; --success-fg:#000000; --page:#FFFFFF; --surface:#F0F0F0;
     /* shape — semantic radius tier (ADR-0010 flex slots; roles fall back to border-radius/default). Buttons bind the CONTROL role. */
     --border-radius-control:0;
+    /* interaction motion — B-D7 press physics via the component-type tier (ADR-0013): projector-maintained, theme-dialable (Legacy/SC → 0 and 1) */
+    --press-travel:2; --press-darken:0.94;
   }
   [data-theme="dark"]{
     --pri-default:#FAFAFA; --pri-hover:#B7B7B7; --pri-pressed:#FFFFFF; --pri-disabled:#484848;
@@ -80,6 +87,7 @@
     --quat-hover:#232323; --quat-label:#FFFFFF; --quat-label-disabled:#808080;
     --success:#43AD6F; --success-fg:#000000; --page:#1A1A1A; --surface:#232323;
     --border-radius-control:0;
+    --press-travel:2; --press-darken:0.94;
   }
 
   *{box-sizing:border-box;}
@@ -102,13 +110,21 @@
     gap:8px; transition:background var(--ease), border-color var(--ease), transform var(--spring), filter var(--press);}
   .btn:focus-visible{outline:2px solid var(--ter-label); outline-offset:2px;}
 
-  /* Refined scale-physics (promoted 2026-06-22) — dimensionality through SCALE: grows toward the cursor on
-     hover, press recedes + darkens to read as depth. No shadow, no translate (brand stays flat/angular).
-     --btn-grow/--btn-press are CSS scale-factor tokens (tokenised 2026-07-15; formerly runtime JS-computed, constant regardless of viewport). */
-  .btn:hover{transform:scale(var(--btn-grow));}
+  /* Refined scale-physics (promoted 2026-06-22; B-D7 2026-07-22) — dimensionality through SCALE:
+     grows toward the cursor on hover, press recedes + darkens to read as depth. No shadow, no
+     translate (brand stays flat/angular). Travel is PIXEL-TRUE (B-D7): ±var(--press-travel)px on
+     var(--phys-size), so big controls stop lunging; darken var(--press-darken). All factors are
+     tokens/vars — pure CSS, tunable per theme without rule changes (Legacy/SC dial travel to 0). */
+  /* ===== PARTIAL press-physics START (button-family — source of truth; consumers inject via gen_component_partials.py, ADR-0013) ===== */
+  .btn:hover{transform:scale(calc(1 + var(--press-travel)/var(--phys-size)));}
   .btn.full:hover{transform:none;}                                           /* full-width can't grow — would overflow */
-  .btn:active{transform:scale(var(--btn-press)); filter:brightness(.85); transition:transform var(--press), filter var(--press);}
+  .btn:active{transform:scale(calc(1 - var(--press-travel)/var(--phys-size))); filter:brightness(var(--press-darken)); transition:transform var(--press), filter var(--press);}
   .btn:disabled:hover,.btn.is-disabled:hover{transform:none; filter:none;}   /* disabled stays put */
+  /* WCAG 2.3.3 — the partial carries its OWN reduced-motion override (ADR-0013: rides inside, never per-file) */
+  @media (prefers-reduced-motion: reduce){
+    .btn:hover,.btn:active{ transform:none !important; filter:none !important; }
+  }
+  /* ===== PARTIAL press-physics END ===== */
 
   /* PRIMARY — Mono monochrome fill, inverse label; pressed inverts via the per-mode token flip.
      HOVER renders as operational OPACITY 0.70 over the page (ADR-0009 / B-D3): color-mix flattens the
@@ -157,10 +173,10 @@
     .actionbar .btn:hover{ transform:none; }                    /* full-width: press only, no grow (overflow) */
   }
 
-  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+  /* WCAG 2.3.3 / motion sensitivity — harness-level kill (the .btn scale-physics override
+     moved INTO the press-physics partial, where every consumer inherits it — ADR-0013) */
   @media (prefers-reduced-motion: reduce){
     *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
-    .btn:hover,.btn:active{ transform:none !important; filter:none !important; }   /* no scale-physics under reduced-motion */
   }
 </style>
 </head>
@@ -243,7 +259,9 @@
       "--success-fg": "text/on-success",
       "--page": "background/default",
       "--surface": "button/tertiary/background/hover",
-      "--border-radius-control": "border-radius/control"
+      "--border-radius-control": "border-radius/control",
+      "--press-travel": "component-type/button-family/press-travel",
+      "--press-darken": "component-type/button-family/press-darken"
     },
     "contrastPairs": [
       { "fg": "button/primary/label/default",   "bg": "button/primary/background/default",   "context": "text" },

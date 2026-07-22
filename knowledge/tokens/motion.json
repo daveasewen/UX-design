@@ -2,18 +2,89 @@
   "$description": "Motion tokens (DTCG). Durations + easing curves for component transitions. Added 2026-06-19 from the Tabs fitness test (Route A) — first motion tokens in the store; reference these from component `motion` blocks rather than hard-coding timings. Reduced-motion handling is a component rule, not a token.",
   "motion": {
     "duration": {
-      "instant": { "$value": "0ms", "$type": "duration", "$description": "no animation / reduced-motion fallback" },
-      "fast": { "$value": "120ms", "$type": "duration", "$description": "small state changes (hover, colour)" },
-      "fade": { "$value": "140ms", "$type": "duration", "$description": "panel/content fade-in" },
-      "standard": { "$value": "220ms", "$type": "duration", "$description": "primary moving elements (e.g. tab selected-indicator slide)" },
-      "press": { "$value": "90ms", "$type": "duration", "$description": "tactile/scale-physics press depress — snappy, no overshoot (ease-out). Added 2026-06-22 with Button Refined scale-physics." },
-      "spring": { "$value": "300ms", "$type": "duration", "$description": "scale-physics grow toward cursor + release; pairs with easing/spring overshoot. Added 2026-06-22." }
+      "instant": {
+        "$value": "0ms",
+        "$type": "duration",
+        "$description": "no animation / reduced-motion fallback"
+      },
+      "fast": {
+        "$value": "120ms",
+        "$type": "duration",
+        "$description": "small state changes (hover, colour)"
+      },
+      "fade": {
+        "$value": "140ms",
+        "$type": "duration",
+        "$description": "panel/content fade-in"
+      },
+      "standard": {
+        "$value": "220ms",
+        "$type": "duration",
+        "$description": "primary moving elements (e.g. tab selected-indicator slide)"
+      },
+      "press": {
+        "$value": "90ms",
+        "$type": "duration",
+        "$description": "tactile/scale-physics press depress — snappy, no overshoot (ease-out). Added 2026-06-22 with Button Refined scale-physics."
+      },
+      "spring": {
+        "$value": "300ms",
+        "$type": "duration",
+        "$description": "scale-physics grow toward cursor + release; pairs with easing/spring overshoot. Added 2026-06-22."
+      }
+    },
+    "press": {
+      "travel": {
+        "$value": 2,
+        "$type": "number",
+        "$description": "Press-physics TRAVEL — total px of size change per interaction step, applied as scale(calc(1 ± travel/control-size)) so movement is PIXEL-TRUE at every control size (B-D7, Dave 2026-07-22: the Icon-button size-scoped model propagates family-wide; supersedes Button's proportional 1.04/0.95). Unitless number of px. THEME DIAL: Legacy + Supercharge override to 0 — movement absent, state feedback is colour-only; Mono + Console keep 2. Consumed via the component-type tier (component-type/button-family/press-travel)."
+      },
+      "darken": {
+        "$value": 0.94,
+        "$type": "number",
+        "$description": "Press-physics DARKEN — filter:brightness() factor on :active (B-D7: the Icon-button value 0.94 propagates, superseding Button's 0.85). THEME DIAL: Legacy + Supercharge override to 1 (no darken). Unitless."
+      }
     },
     "easing": {
-      "standard": { "$value": { "x1": 0.4, "y1": 0, "x2": 0.2, "y2": 1 }, "$type": "cubicBezier", "$description": "default ease for entering/moving elements" },
-      "linear": { "$value": { "x1": 0, "y1": 0, "x2": 1, "y2": 1 }, "$type": "cubicBezier" },
-      "spring": { "$value": { "x1": 0.5, "y1": 1.6, "x2": 0.4, "y2": 1 }, "$type": "cubicBezier", "$description": "overshoot for scale-physics grow/settle (Button Refined; promoted 2026-06-22). Use sparingly — see _MOTION-THEMES.md theme 2 (Settle)." },
-      "out": { "$value": { "x1": 0, "y1": 0, "x2": 0.58, "y2": 1 }, "$type": "cubicBezier", "$description": "CSS ease-out — snappy press release, pairs with duration/press" }
+      "standard": {
+        "$value": {
+          "x1": 0.4,
+          "y1": 0,
+          "x2": 0.2,
+          "y2": 1
+        },
+        "$type": "cubicBezier",
+        "$description": "default ease for entering/moving elements"
+      },
+      "linear": {
+        "$value": {
+          "x1": 0,
+          "y1": 0,
+          "x2": 1,
+          "y2": 1
+        },
+        "$type": "cubicBezier"
+      },
+      "spring": {
+        "$value": {
+          "x1": 0.5,
+          "y1": 1.6,
+          "x2": 0.4,
+          "y2": 1
+        },
+        "$type": "cubicBezier",
+        "$description": "overshoot for scale-physics grow/settle (Button Refined; promoted 2026-06-22). Use sparingly — see _MOTION-THEMES.md theme 2 (Settle)."
+      },
+      "out": {
+        "$value": {
+          "x1": 0,
+          "y1": 0,
+          "x2": 0.58,
+          "y2": 1
+        },
+        "$type": "cubicBezier",
+        "$description": "CSS ease-out — snappy press release, pairs with duration/press"
+      }
     }
   }
 }

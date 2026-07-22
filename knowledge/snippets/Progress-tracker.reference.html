@@ -7,11 +7,23 @@
 <!--
   CANONICAL REFERENCE for Progress tracker (gated). Reworked 2026-06-29 to the Figma node 1784-86051:
   an inline label "Step N of M" (medium) + "Progress title" (regular/secondary) on ONE line, above a thin
-  full-width track whose RED fill grows proportionally (current/total) — a continuous bar, not segments.
+  full-width track whose fill grows proportionally (current/total) — a continuous bar, not segments.
   PASSIVE status display (interactive:false, like Table/Status-indicator): AT via role="progressbar" +
-  aria-valuenow/min/max + aria-valuetext + an aria-live "Step X of Y" announcement + accessible name. A real
-  Back/Next control drives it (honest hover/active/focus/disabled). Colour is never the only cue — the
-  "Step X of Y" text carries progress (1.4.1). Tokens resolved light+dark from progress/* + tertiary/* + text/*.
+  aria-valuenow/min/max + aria-valuetext + a persistent sr-only aria-live "Step X of Y" announcement +
+  accessible name. A real Back/Next control drives it (honest hover/active/focus/disabled). Colour is
+  never the only cue — the "Step X of Y" text carries progress (1.4.1).
+
+  RESPONSIVE STEPPER (folded in 2026-07-22, ADR-0013 Consequences — the queued dots→line collapse):
+  WIDE containers (>520px) render the DOTS stepper — resurrected from the pre-rework canon at
+  git 273d18c~1 (done = check on the complete fill · current = ringed number, aria-current="step" ·
+  upcoming = number), labels under each dot; NARROW (≤520px, the Tranche-1 breakpoint) collapses to
+  the 1784-86051 form above (Step N of M + continuous track). Both render from the same state; the
+  check glyph is the real library asset status-icons/yes.svg (byte-matched, icon gate). Weight 500
+  (no 600 — brand weights). progress/complete = INK pair per R-D22 (structure, not status).
+
+  PRESS PHYSICS (ADR-0013/B-D7, 2026-07-22): Back/Next were the drifted translateY(1px) press — now
+  the injected AUTO-PARTIAL press-physics block from Button (pixel-true scale travel, theme-dialable;
+  Legacy/Supercharge dial movement to zero). Sync-gated; never re-typed locally.
 -->
 <link rel="stylesheet" href="../canon/type.css">
 <style>
@@ -19,18 +31,27 @@
    enhancement; headings/body excluded. Added 2026-06-29. */
 :is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 
-  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:300ms cubic-bezier(.4,0,.2,1); }
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:300ms cubic-bezier(.4,0,.2,1);
+    --spring:300ms cubic-bezier(.5,1.6,.4,1);   /* motion/easing/spring + motion/duration/spring (= the button atom's) */
+    --press:90ms cubic-bezier(0,0,.58,1);        /* motion/duration/press + motion/easing/out */
+    --phys-size:120;                             /* LOCAL geometry — Back/Next are text buttons ≈120 wide; divides the B-D7 pixel-true travel (ADR-0013) */
+  }
   [data-theme="light"]{
     --complete:#1A1A1A; --incomplete:#F0F0F0; --text:#1A1A1A; --muted:#1A1A1A; --page:#FFFFFF;
+    --on-complete:#FFFFFF;
     --btn-border:#000000; --btn-hover:#F0F0F0; --btn-dis-text:#E1E1E1; --btn-dis-border:#E1E1E1; --focus:#305A85;
     /* shape — semantic radius tier (ADR-0010 flex slots). Track = INDICATOR (progress rail,
        same judgment as Slider); Back/Next + demo buttons = CONTROL. */
     --border-radius-control:0; --border-radius-indicator:0;
+    /* interaction motion — B-D7 via the component-type tier (ADR-0013): projector-maintained, theme-dialable */
+    --press-travel:2; --press-darken:0.94;
   }
   [data-theme="dark"]{
     --complete:#FFFFFF; --incomplete:#484848; --text:#FFFFFF; --muted:#FFFFFF; --page:#1A1A1A;
+    --on-complete:#333333;
     --btn-border:#808080; --btn-hover:#232323; --btn-dis-text:#808080; --btn-dis-border:#1A1A1A; --focus:#4587A7;
     --border-radius-control:0; --border-radius-indicator:0;
+    --press-travel:2; --press-darken:0.94;
   }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text);
@@ -42,21 +63,58 @@
   .demo-controls label{display:flex; gap:.5rem; align-items:center;} .demo-controls input[type=range]{accent-color:var(--focus);}
 
   .pt{ width:var(--demo-width, 520px); max-width:100%; container-type:inline-size; }
+  /* persistent announcement — visually hidden, lives OUTSIDE both renderings so step
+     changes announce whichever form is showing */
+  .sr-live{position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;}
+
+  /* ── DOTS STEPPER — wide containers (resurrected from canon@273d18c~1; fold-in ADR-0013) ── */
+  ol.steps{list-style:none; display:flex; margin:0 0 4px; padding:0;}
+  ol.steps li{flex:1; display:flex; flex-direction:column; align-items:center; gap:8px; position:relative; font:400 13px/1.3 var(--font); text-align:center;}
+  /* connector: 4px line (== track height), top 12 = dot-centred on the 4px grid (DEF-005;
+     the 273d18c~1 original's 3px/13px was pre-grid-gate — corrected on resurrection) */
+  ol.steps li::before{content:""; position:absolute; top:12px; left:-50%; width:100%; height:4px; background:var(--incomplete);}
+  ol.steps li:first-child::before{display:none;}
+  ol.steps li.done::before, ol.steps li.current::before{background:var(--complete);}
+  .dot{width:28px; height:28px; border-radius:50%; background:var(--incomplete); color:var(--text); display:inline-flex; align-items:center; justify-content:center; font-weight:500; z-index:1;}
+  .dot svg{width:14px; height:14px; fill:currentColor;}
+  li.done .dot{background:var(--complete); color:var(--on-complete);}
+  li.current .dot{background:var(--page); color:var(--text); box-shadow:inset 0 0 0 3px var(--complete);}
+  .step-label{opacity:.85;} li.current .step-label{font-weight:500; opacity:1;}
+
+  /* ── COLLAPSED form — the 1784-86051 head + continuous track (narrow containers) ── */
+  .collapse{display:none;}
   /* inline label: "Step N of M" (medium) + "Progress title" (regular, secondary) on one line */
   .pt .head{display:flex; align-items:baseline; gap:12px; margin:0 0 12px; flex-wrap:wrap;}
   .pt .count{font:500 16px/1.3 var(--font); color:var(--text); white-space:nowrap;}
   .pt .title{font:400 16px/1.3 var(--font); color:var(--muted);}
 
-  /* continuous track — red fill grows to current/total (no segment gaps) */
+  /* continuous track — fill grows to current/total (no segment gaps) */
   .track{position:relative; width:100%; height:4px; background:var(--incomplete); border-radius:var(--border-radius-indicator); overflow:hidden;}
   .track .fill{position:absolute; left:0; top:0; height:100%; width:0; background:var(--complete); transition:width var(--ease);}
+
+  @container (max-width: 520px){
+    ol.steps{display:none;} .collapse{display:block;}   /* dots→line collapse (Tranche-1 pattern) */
+  }
 
   .nav{display:flex; gap:12px; margin-top:20px;}
   .nav button{/* type: t-cm-button (bound in canon/type.css - T-D9/T-D12) */ padding:12px 16px; border-radius:var(--border-radius-control); cursor:pointer;
     border:1px solid var(--btn-border); background:transparent; color:var(--text);
-    transition:background var(--ease), border-color var(--ease);}
+    transition:background var(--ease), border-color var(--ease), transform var(--spring), filter var(--press);}
   .nav button:hover{background:var(--btn-hover);}
-  .nav button:active{transform:translateY(1px);}
+  /* ===== AUTO-PARTIAL press-physics START (button-family) ===== */
+/* INJECTED from Button.reference.html (partial "press-physics", group button-family —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+  .nav button:hover{transform:scale(calc(1 + var(--press-travel)/var(--phys-size)));}
+  .nav button.full:hover{transform:none;}                                           /* full-width can't grow — would overflow */
+  .nav button:active{transform:scale(calc(1 - var(--press-travel)/var(--phys-size))); filter:brightness(var(--press-darken)); transition:transform var(--press), filter var(--press);}
+  .nav button:disabled:hover,.nav button.is-disabled:hover{transform:none; filter:none;}   /* disabled stays put */
+  /* WCAG 2.3.3 — the partial carries its OWN reduced-motion override (ADR-0013: rides inside, never per-file) */
+  @media (prefers-reduced-motion: reduce){
+    .nav button:hover,.nav button:active{ transform:none !important; filter:none !important; }
+  }
+  /* ===== AUTO-PARTIAL press-physics END ===== */
   .nav button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
   .nav button:disabled{color:var(--btn-dis-text); border-color:var(--btn-dis-border); cursor:not-allowed; background:transparent;}
 
@@ -75,18 +133,36 @@
   </div>
 
   <div class="pt" id="pt">
-    <div class="head">
-      <span class="count" id="ptCount" aria-live="polite">Step 2 of 5</span>
-      <span class="title">Review your payment</span>
+    <span class="sr-live" id="ptLive" aria-live="polite">Step 2 of 5</span>
+
+    <!-- wide: the dots stepper (labels carry the step names; glyphs are decorative) -->
+    <ol class="steps" id="steps" aria-label="Payment setup progress">
+      <li class="done"><span class="dot" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#pt-check"/></svg></span><span class="step-label">Details</span></li>
+      <li class="current" aria-current="step"><span class="dot" aria-hidden="true">2</span><span class="step-label">Amount</span></li>
+      <li><span class="dot" aria-hidden="true">3</span><span class="step-label">Review</span></li>
+      <li><span class="dot" aria-hidden="true">4</span><span class="step-label">Confirm</span></li>
+      <li><span class="dot" aria-hidden="true">5</span><span class="step-label">Receipt</span></li>
+    </ol>
+
+    <!-- narrow (≤520px container): the 1784-86051 collapsed form -->
+    <div class="collapse">
+      <div class="head">
+        <span class="count" id="ptCount">Step 2 of 5</span>
+        <span class="title">Review your payment</span>
+      </div>
+      <div class="track" id="track" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"
+           aria-valuetext="Step 2 of 5" aria-label="Payment setup progress">
+        <span class="fill" id="fill"></span>
+      </div>
     </div>
-    <div class="track" id="track" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"
-         aria-valuetext="Step 2 of 5" aria-label="Payment setup progress">
-      <span class="fill" id="fill"></span>
-    </div>
+
     <div class="nav">
       <button id="back" type="button">◂ Back</button>
       <button id="next" type="button">Next ▸</button>
     </div>
+
+    <!-- real library glyph: assets/icons/status-icons/yes.svg (byte-matched by the icon gate) -->
+    <svg style="display:none" aria-hidden="true"><symbol id="pt-check" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.82617 15.685L0.0761719 9.93502L0.924172 9.08802L5.82617 13.988L17.0762 2.73901L17.9242 3.58701L5.82617 15.685Z" fill="currentColor"/></symbol></svg>
   </div>
 
   <script type="application/json" id="token-manifest">
@@ -95,20 +171,27 @@
     "vars": {
       "--complete": "progress/complete", "--incomplete": "progress/incomplete",
       "--text": "text/default", "--muted": "text/secondary", "--page": "background/default",
+      "--on-complete": "text/on-inverse",
       "--btn-border": "tertiary/border/default", "--btn-hover": "tertiary/background/hover",
       "--btn-dis-text": "text/disabled", "--btn-dis-border": "tertiary/border/disabled", "--focus": "focus/ring",
-      "--border-radius-control": "border-radius/control", "--border-radius-indicator": "border-radius/indicator"
+      "--border-radius-control": "border-radius/control", "--border-radius-indicator": "border-radius/indicator",
+      "--press-travel": "component-type/button-family/press-travel",
+      "--press-darken": "component-type/button-family/press-darken"
     },
     "contrastPairs": [
       { "fg": "text/default", "bg": "background/default", "context": "text" },
-      { "fg": "progress/complete", "bg": "background/default", "context": "ui" }
+      { "fg": "progress/complete", "bg": "background/default", "context": "ui" },
+      { "fg": "text/on-inverse", "bg": "progress/complete", "context": "icon" },
+      { "fg": "text/default", "bg": "progress/incomplete", "context": "text" }
     ],
     "knownFindings": [
-      "Reworked to Figma 1784-86051: inline 'Step N of M' (medium) + 'Progress title' (regular/secondary), above a CONTINUOUS red progress bar (current/total) — not the prior segmented track.",
-      "PASSIVE (interactive:false) — AT via role=progressbar + aria-valuenow/min/max + aria-valuetext + aria-live; a real Back/Next drives it.",
-      "Colour is not the only cue: the 'Step X of Y' label carries progress (1.4.1)."
+      "Reworked to Figma 1784-86051: inline 'Step N of M' (medium) + 'Progress title' (regular/secondary), above a CONTINUOUS progress bar (current/total) — not the prior segmented track.",
+      "RESPONSIVE STEPPER folded in 2026-07-22 (ADR-0013 Consequences): wide containers = the resurrected DOTS stepper (canon@273d18c~1, tokens rebound, weight 500); ≤520px container = the 1784-86051 collapsed form. Same state drives both; check glyph = status-icons/yes.svg.",
+      "PASSIVE (interactive:false) — AT via role=progressbar + aria-valuenow/min/max + aria-valuetext + a persistent sr-only aria-live; a real Back/Next drives it; wide form carries aria-current=step.",
+      "Colour is not the only cue: the 'Step X of Y' label / step labels carry progress (1.4.1).",
+      "B-D7 (2026-07-22): Back/Next press = the injected press-physics partial (was drifted translateY(1px)) — pixel-true scale travel, theme-dialable, movement zeroed in Legacy/Supercharge."
     ],
-    "requiredAria": ["role=\"progressbar\"", "aria-valuenow", "aria-valuetext", "aria-live"]
+    "requiredAria": ["role=\"progressbar\"", "aria-valuenow", "aria-valuetext", "aria-live", "aria-current"]
   }
   </script>
 
@@ -122,11 +205,23 @@
     const TOTAL = 5; let current = 2;
     const track = document.getElementById('track'), fill = document.getElementById('fill');
     const count = document.getElementById('ptCount'), back = document.getElementById('back'), next = document.getElementById('next');
+    const live = document.getElementById('ptLive');
+    const steps = [].slice.call(document.querySelectorAll('#steps li'));
     function render(){
-      fill.style.width = (current / TOTAL * 100) + '%';                    // continuous red fill to current/total
+      // collapsed form: continuous fill to current/total
+      fill.style.width = (current / TOTAL * 100) + '%';
       track.setAttribute('aria-valuenow', current);
       track.setAttribute('aria-valuetext', `Step ${current} of ${TOTAL}`);
-      count.textContent = `Step ${current} of ${TOTAL}`;                   // aria-live announces the change
+      count.textContent = `Step ${current} of ${TOTAL}`;
+      // wide form: dots — done = check (library glyph), current = ringed number
+      steps.forEach((li, i) => {
+        const n = i + 1, dot = li.querySelector('.dot');
+        li.classList.toggle('done', n < current);
+        li.classList.toggle('current', n === current);
+        if (n === current) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current');
+        dot.innerHTML = n < current ? '<svg viewBox="0 0 18 18"><use href="#pt-check"/></svg>' : String(n);
+      });
+      live.textContent = `Step ${current} of ${TOTAL}`;                    // persistent announcer (both forms)
       back.disabled = current <= 1; next.disabled = current >= TOTAL;
     }
     back.addEventListener('click', () => { if (current > 1) { current--; render(); } });

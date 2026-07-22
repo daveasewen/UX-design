@@ -327,13 +327,15 @@
   --table-border: #E1E1E1;
   --table-header-background: var(--surface-subtle);
   --table-column-background: var(--surface-subtle);
-  --tabs-active: #DB0011;
+  --tabs-active: #1A1A1A;
   --tabs-background: var(--surface-raised);
   --tabs-overflow-background: var(--surface-raised);
   --tabs-overflow-border: #000000;
   --tabs-standard-border: #E1E1E1;
   --tabs-hover: var(--surface-raised-hover);
   --tabs-pressed: #808080;
+  --tabs-badge-background: var(--badge-background);
+  --tabs-inactive: #626262;
   --tertiary-background-default: var(--surface-raised);
   --tertiary-background-hover: var(--surface-raised-hover);
   --tertiary-background-pressed: #626262;
@@ -498,13 +500,15 @@
   --elevation-functional-blur: 16px;
   --elevation-functional-spread: 0;
 
-  /* ---- Motion (duration / easing)  (motion.json) ---- */
+  /* ---- Motion (duration / easing / scale)  (motion.json) ---- */
   --motion-duration-instant: 0ms;
   --motion-duration-fast: 120ms;
   --motion-duration-fade: 140ms;
   --motion-duration-standard: 220ms;
   --motion-duration-press: 90ms;
   --motion-duration-spring: 300ms;
+  --motion-press-travel: 2;
+  --motion-press-darken: 0.94;
   --motion-easing-standard: cubic-bezier(0.4, 0, 0.2, 1);
   --motion-easing-linear: cubic-bezier(0, 0, 1, 1);
   --motion-easing-spring: cubic-bezier(0.5, 1.6, 0.4, 1);
@@ -519,6 +523,10 @@
   --icon-medium-width: 24px;
   --icon-large-height: 36px;
   --icon-large-width: 36px;
+
+  /* ---- Component-type tier (ADR-0013)  (../component-types.json) ---- */
+  --component-type-button-family-press-travel: var(--motion-press-travel);
+  --component-type-button-family-press-darken: var(--motion-press-darken);
 }
 
 [data-theme="dark"] {
@@ -608,13 +616,15 @@
   --table-border: #808080;
   --table-header-background: var(--surface-subtle);
   --table-column-background: var(--surface-subtle);
-  --tabs-active: #DB0011;
+  --tabs-active: #FFFFFF;
   --tabs-background: var(--surface-raised);
   --tabs-overflow-background: var(--surface-raised);
   --tabs-overflow-border: #808080;
   --tabs-standard-border: #808080;
   --tabs-hover: var(--surface-raised-hover);
   --tabs-pressed: #1A1A1A;
+  --tabs-badge-background: var(--badge-background);
+  --tabs-inactive: #B7B7B7;
   --tertiary-background-default: var(--surface-raised);
   --tertiary-background-hover: var(--surface-raised-hover);
   --tertiary-background-pressed: #1A1A1A;
@@ -897,8 +907,7 @@
   --ease: 160ms cubic-bezier(.4,0,.2,1);
   --spring: 300ms cubic-bezier(.5,1.6,.4,1);
   --press: 90ms cubic-bezier(0,0,.58,1);
-  --btn-grow: 1.04;
-  --btn-press: 0.95;
+  --phys-size: 120;
   --pri-default: var(--button-primary-background-default);
   --pri-hover: var(--button-primary-background-hover);
   --pri-pressed: var(--button-primary-background-pressed);
@@ -924,6 +933,8 @@
   --success-fg: var(--text-on-success);
   --page: var(--background-default);
   --surface: var(--button-tertiary-background-hover);
+  --press-travel: var(--component-type-button-family-press-travel);
+  --press-darken: var(--component-type-button-family-press-darken);
 }
 .cn-button below: `.btn` is
      bound by being appended to `.t-cm` / `.t-cm-button`'s selector lists (T-D9), .cn-button and both are
@@ -942,15 +953,23 @@
     justify-content:center;
     gap:8px; transition:background var(--ease), border-color var(--ease), transform var(--spring), filter var(--press);}
 .cn-button .btn:focus-visible{outline:2px solid var(--ter-label); outline-offset:2px;}
-/* Refined scale-physics (promoted 2026-06-22) — dimensionality through SCALE: grows toward the cursor on
-     hover, press recedes + darkens to read as depth. No shadow, no translate (brand stays flat/angular).
-     --btn-grow/--btn-press are CSS scale-factor tokens (tokenised 2026-07-15; formerly runtime JS-computed, constant regardless of viewport). */
-.cn-button .btn:hover{transform:scale(var(--btn-grow));}
+/* Refined scale-physics (promoted 2026-06-22; B-D7 2026-07-22) — dimensionality through SCALE:
+     grows toward the cursor on hover, press recedes + darkens to read as depth. No shadow, no
+     translate (brand stays flat/angular). Travel is PIXEL-TRUE (B-D7): ±var(--press-travel)px on
+     var(--phys-size), so big controls stop lunging; darken var(--press-darken). All factors are
+     tokens/vars — pure CSS, tunable per theme without rule changes (Legacy/SC dial travel to 0). */
+/* ===== PARTIAL press-physics START (button-family — source of truth; consumers inject via gen_component_partials.py, ADR-0013) ===== */
+.cn-button .btn:hover{transform:scale(calc(1 + var(--press-travel)/var(--phys-size)));}
 .cn-button .btn.full:hover{transform:none;}
 /* full-width can't grow — would overflow */
-.cn-button .btn:active{transform:scale(var(--btn-press)); filter:brightness(.85); transition:transform var(--press), filter var(--press);}
+.cn-button .btn:active{transform:scale(calc(1 - var(--press-travel)/var(--phys-size))); filter:brightness(var(--press-darken)); transition:transform var(--press), filter var(--press);}
 .cn-button .btn:disabled:hover, .cn-button .btn.is-disabled:hover{transform:none; filter:none;}
 /* disabled stays put */
+/* WCAG 2.3.3 — the partial carries its OWN reduced-motion override (ADR-0013: rides inside, never per-file) */
+@media (prefers-reduced-motion: reduce){
+.cn-button .btn:hover, .cn-button .btn:active{transform:none !important; filter:none !important;}
+}
+/* ===== PARTIAL press-physics END ===== */
 /* PRIMARY — Mono monochrome fill, inverse label; pressed inverts via the per-mode token flip.
      HOVER renders as operational OPACITY 0.70 over the page (ADR-0009 / B-D3): color-mix flattens the
      default fill at 70% over --page. --pri-hover holds the STORED colour-equivalent (#626262/#B7B7B7)
@@ -998,10 +1017,10 @@
 .cn-button .actionbar .btn:hover{transform:none;}
 /* full-width: press only, no grow (overflow) */
 }
-/* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
+/* WCAG 2.3.3 / motion sensitivity — harness-level kill (the .btn scale-physics override
+     moved INTO the press-physics partial, where every consumer inherits it — ADR-0013) */
 @media (prefers-reduced-motion: reduce){
-.cn-button .btn:hover, .cn-button .btn:active{transform:none !important; filter:none !important;}
-/* no scale-physics under reduced-motion */
+
 }
 
 /* ============================================================
@@ -1424,8 +1443,7 @@
   --spring: 300ms cubic-bezier(.5,1.6,.4,1);
   --press: 90ms cubic-bezier(0,0,.58,1);
   --fade: 140ms ease;
-  --btn-grow: 1.04;
-  --btn-press: 0.95;
+  --phys-size: 120;
   --surface: var(--tertiary-background-default);
   --elev-bd: var(--elevation-border);
   --shadow: var(--elevation-functional);
@@ -1439,11 +1457,13 @@
   --sec-hover: var(--tertiary-background-hover);
   --focus: var(--focus-ring);
   --page: var(--background-default);
+  --press-travel: var(--component-type-button-family-press-travel);
+  --press-darken: var(--component-type-button-family-press-darken);
 }
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
    enhancement; headings/body excluded. Added 2026-06-29. */
 .cn-modals :is(button, .cn-modals a, .cn-modals label, .cn-modals span, .cn-modals small, .cn-modals strong, .cn-modals em, .cn-modals b, .cn-modals i, .cn-modals th, .cn-modals td, .cn-modals dt, .cn-modals dd, .cn-modals li, .cn-modals figcaption, .cn-modals legend, .cn-modals caption, .cn-modals summary, .cn-modals output, .cn-modals time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
-/* interaction motion — CSS scale-factor tokens (tokenised 2026-07-15; formerly runtime JS-computed) */
+/* LOCAL geometry — text buttons ≈120 wide; divides the B-D7 pixel-true travel (ADR-0013) */
 .cn-modals .bg-content{opacity:.85; max-width:60ch; line-height:1.6;}
 /* canon Button, inherited (mirror of Button.reference.html) */
 .cn-modals .btn{height:44px; min-width:96px; padding:0 20px; border:0; border-radius:var(--border-radius-control); cursor:pointer;
@@ -1452,8 +1472,22 @@
 .cn-modals .btn.primary:hover{background:var(--pri-hover);}
 .cn-modals .btn.secondary{background:transparent; color:var(--text); border:1px solid var(--sec-bd);}
 .cn-modals .btn.secondary:hover{background:var(--sec-hover);}
-.cn-modals .btn:hover{transform:scale(var(--btn-grow));}
-.cn-modals .btn:active{transform:scale(var(--btn-press)); filter:brightness(.85); transition:transform var(--press), filter var(--press);}
+/* ===== AUTO-PARTIAL press-physics START (button-family) ===== */
+/* INJECTED from Button.reference.html (partial "press-physics", group button-family —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+.cn-modals .btn:hover{transform:scale(calc(1 + var(--press-travel)/var(--phys-size)));}
+.cn-modals .btn.full:hover{transform:none;}
+/* full-width can't grow — would overflow */
+.cn-modals .btn:active{transform:scale(calc(1 - var(--press-travel)/var(--phys-size))); filter:brightness(var(--press-darken)); transition:transform var(--press), filter var(--press);}
+.cn-modals .btn:disabled:hover, .cn-modals .btn.is-disabled:hover{transform:none; filter:none;}
+/* disabled stays put */
+/* WCAG 2.3.3 — the partial carries its OWN reduced-motion override (ADR-0013: rides inside, never per-file) */
+@media (prefers-reduced-motion: reduce){
+.cn-modals .btn:hover, .cn-modals .btn:active{transform:none !important; filter:none !important;}
+}
+/* ===== AUTO-PARTIAL press-physics END ===== */
 .cn-modals .btn:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
 /* overlay + dialog — scale + fade entrance (dim scrim) */
 .cn-modals .overlay{position:fixed; inset:0; background:var(--overlay); display:flex; align-items:center; justify-content:center; padding:24px;
@@ -1479,8 +1513,9 @@
 .cn-modals .dialog{max-width:none;}
 }
 @media (prefers-reduced-motion: reduce){
+/* .btn override now arrives via the injected press-physics partial (ADR-0013) */
 .cn-modals .dialog{transform:none !important;}
-.cn-modals .btn:hover, .cn-modals .btn:active, .cn-modals .close:active{transform:none !important; filter:none !important;}
+.cn-modals .close:active{transform:none !important; filter:none !important;}
 }
 
 /* ============================================================
@@ -1618,42 +1653,89 @@
 
 /* ============================================================
    Progress-tracker  (from snippets/Progress-tracker.reference.html)
-   Aria: role="progressbar", aria-valuenow, aria-valuetext, aria-live
-   Finding: Reworked to Figma 1784-86051: inline 'Step N of M' (medium) + 'Progress title' (regular/secondary), above a CONTINUOUS red progress bar (current/total) — not the prior segmented track.
-   Finding: PASSIVE (interactive:false) — AT via role=progressbar + aria-valuenow/min/max + aria-valuetext + aria-live; a real Back/Next drives it.
-   Finding: Colour is not the only cue: the 'Step X of Y' label carries progress (1.4.1).
+   Aria: role="progressbar", aria-valuenow, aria-valuetext, aria-live, aria-current
+   Finding: Reworked to Figma 1784-86051: inline 'Step N of M' (medium) + 'Progress title' (regular/secondary), above a CONTINUOUS progress bar (current/total) — not the prior segmented track.
+   Finding: RESPONSIVE STEPPER folded in 2026-07-22 (ADR-0013 Consequences): wide containers = the resurrected DOTS stepper (canon@273d18c~1, tokens rebound, weight 500); ≤520px container = the 1784-86051 collapsed form. Same state drives both; check glyph = status-icons/yes.svg.
+   Finding: PASSIVE (interactive:false) — AT via role=progressbar + aria-valuenow/min/max + aria-valuetext + a persistent sr-only aria-live; a real Back/Next drives it; wide form carries aria-current=step.
+   Finding: Colour is not the only cue: the 'Step X of Y' label / step labels carry progress (1.4.1).
+   Finding: B-D7 (2026-07-22): Back/Next press = the injected press-physics partial (was drifted translateY(1px)) — pixel-true scale travel, theme-dialable, movement zeroed in Legacy/Supercharge.
    Scope: .cn-progress-tracker   ============================================================ */
 .cn-progress-tracker{
   --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
   --ease: 300ms cubic-bezier(.4,0,.2,1);
+  --spring: 300ms cubic-bezier(.5,1.6,.4,1);
+  --press: 90ms cubic-bezier(0,0,.58,1);
+  --phys-size: 120;
   --complete: var(--progress-complete);
   --incomplete: var(--progress-incomplete);
   --text: var(--text-default);
   --muted: var(--text-secondary);
   --page: var(--background-default);
+  --on-complete: var(--text-on-inverse);
   --btn-border: var(--tertiary-border-default);
   --btn-hover: var(--tertiary-background-hover);
   --btn-dis-text: var(--text-disabled);
   --btn-dis-border: var(--tertiary-border-disabled);
   --focus: var(--focus-ring);
+  --press-travel: var(--component-type-button-family-press-travel);
+  --press-darken: var(--component-type-button-family-press-darken);
 }
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
    enhancement; headings/body excluded. Added 2026-06-29. */
 .cn-progress-tracker :is(button, .cn-progress-tracker a, .cn-progress-tracker label, .cn-progress-tracker span, .cn-progress-tracker small, .cn-progress-tracker strong, .cn-progress-tracker em, .cn-progress-tracker b, .cn-progress-tracker i, .cn-progress-tracker th, .cn-progress-tracker td, .cn-progress-tracker dt, .cn-progress-tracker dd, .cn-progress-tracker li, .cn-progress-tracker figcaption, .cn-progress-tracker legend, .cn-progress-tracker caption, .cn-progress-tracker summary, .cn-progress-tracker output, .cn-progress-tracker time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
 .cn-progress-tracker .pt{width:var(--demo-width, 520px); max-width:100%; container-type:inline-size;}
+/* persistent announcement — visually hidden, lives OUTSIDE both renderings so step
+     changes announce whichever form is showing */
+.cn-progress-tracker .sr-live{position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;}
+/* ── DOTS STEPPER — wide containers (resurrected from canon@273d18c~1; fold-in ADR-0013) ── */
+.cn-progress-tracker ol.steps{list-style:none; display:flex; margin:0 0 4px; padding:0;}
+.cn-progress-tracker ol.steps li{flex:1; display:flex; flex-direction:column; align-items:center; gap:8px; position:relative; font:400 13px/1.3 var(--font); text-align:center;}
+/* connector: 4px line (== track height), top 12 = dot-centred on the 4px grid (DEF-005;
+     the 273d18c~1 original's 3px/13px was pre-grid-gate — corrected on resurrection) */
+.cn-progress-tracker ol.steps li::before{content:""; position:absolute; top:12px; left:-50%; width:100%; height:4px; background:var(--incomplete);}
+.cn-progress-tracker ol.steps li:first-child::before{display:none;}
+.cn-progress-tracker ol.steps li.done::before, .cn-progress-tracker ol.steps li.current::before{background:var(--complete);}
+.cn-progress-tracker .dot{width:28px; height:28px; border-radius:50%; background:var(--incomplete); color:var(--text); display:inline-flex; align-items:center; justify-content:center; font-weight:500; z-index:1;}
+.cn-progress-tracker .dot svg{width:14px; height:14px; fill:currentColor;}
+.cn-progress-tracker li.done .dot{background:var(--complete); color:var(--on-complete);}
+.cn-progress-tracker li.current .dot{background:var(--page); color:var(--text); box-shadow:inset 0 0 0 3px var(--complete);}
+.cn-progress-tracker .step-label{opacity:.85;}
+.cn-progress-tracker li.current .step-label{font-weight:500; opacity:1;}
+/* ── COLLAPSED form — the 1784-86051 head + continuous track (narrow containers) ── */
+.cn-progress-tracker .collapse{display:none;}
 /* inline label: "Step N of M" (medium) + "Progress title" (regular, secondary) on one line */
 .cn-progress-tracker .pt .head{display:flex; align-items:baseline; gap:12px; margin:0 0 12px; flex-wrap:wrap;}
 .cn-progress-tracker .pt .count{font:500 16px/1.3 var(--font); color:var(--text); white-space:nowrap;}
 .cn-progress-tracker .pt .title{font:400 16px/1.3 var(--font); color:var(--muted);}
-/* continuous track — red fill grows to current/total (no segment gaps) */
+/* continuous track — fill grows to current/total (no segment gaps) */
 .cn-progress-tracker .track{position:relative; width:100%; height:4px; background:var(--incomplete); border-radius:var(--border-radius-indicator); overflow:hidden;}
 .cn-progress-tracker .track .fill{position:absolute; left:0; top:0; height:100%; width:0; background:var(--complete); transition:width var(--ease);}
+@container (max-width: 520px){
+.cn-progress-tracker ol.steps{display:none;}
+.cn-progress-tracker .collapse{display:block;}
+/* dots→line collapse (Tranche-1 pattern) */
+}
 .cn-progress-tracker .nav{display:flex; gap:12px; margin-top:20px;}
 .cn-progress-tracker .nav button{/* type: t-cm-button (bound in canon/type.css - T-D9/T-D12) */ padding:12px 16px; border-radius:var(--border-radius-control); cursor:pointer;
     border:1px solid var(--btn-border); background:transparent; color:var(--text);
-    transition:background var(--ease), border-color var(--ease);}
+    transition:background var(--ease), border-color var(--ease), transform var(--spring), filter var(--press);}
 .cn-progress-tracker .nav button:hover{background:var(--btn-hover);}
-.cn-progress-tracker .nav button:active{transform:translateY(1px);}
+/* ===== AUTO-PARTIAL press-physics START (button-family) ===== */
+/* INJECTED from Button.reference.html (partial "press-physics", group button-family —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+.cn-progress-tracker .nav button:hover{transform:scale(calc(1 + var(--press-travel)/var(--phys-size)));}
+.cn-progress-tracker .nav button.full:hover{transform:none;}
+/* full-width can't grow — would overflow */
+.cn-progress-tracker .nav button:active{transform:scale(calc(1 - var(--press-travel)/var(--phys-size))); filter:brightness(var(--press-darken)); transition:transform var(--press), filter var(--press);}
+.cn-progress-tracker .nav button:disabled:hover, .cn-progress-tracker .nav button.is-disabled:hover{transform:none; filter:none;}
+/* disabled stays put */
+/* WCAG 2.3.3 — the partial carries its OWN reduced-motion override (ADR-0013: rides inside, never per-file) */
+@media (prefers-reduced-motion: reduce){
+.cn-progress-tracker .nav button:hover, .cn-progress-tracker .nav button:active{transform:none !important; filter:none !important;}
+}
+/* ===== AUTO-PARTIAL press-physics END ===== */
 .cn-progress-tracker .nav button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
 .cn-progress-tracker .nav button:disabled{color:var(--btn-dis-text); border-color:var(--btn-dis-border); cursor:not-allowed; background:transparent;}
 @container (max-width: 380px){
@@ -3081,6 +3163,7 @@
   --press: 90ms cubic-bezier(0,0,.58,1);
   --target: 44px;
   --glyph: 20px;
+  --phys-size: 44;
   --pri-default: var(--button-primary-background-default);
   --pri-hover: var(--button-primary-background-hover);
   --pri-pressed: var(--button-primary-background-pressed);
@@ -3099,6 +3182,8 @@
   --quat-glyph: var(--button-quaternary-label-default);
   --glyph-disabled: var(--text-on-disabled);
   --page: var(--background-default);
+  --press-travel: var(--component-type-button-family-press-travel);
+  --press-darken: var(--component-type-button-family-press-darken);
 }
 .cn-icon-button h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
 .cn-icon-button .row{display:flex; gap:16px; flex-wrap:wrap; align-items:center;}
@@ -3109,11 +3194,25 @@
     transition:background var(--ease), border-color var(--ease), transform var(--spring), filter var(--press);}
 .cn-icon-button .iconbtn svg{width:var(--glyph); height:var(--glyph); display:block; fill:currentColor; pointer-events:none;}
 .cn-icon-button .iconbtn:focus-visible{outline:2px solid var(--text-default); outline-offset:2px;}
-/* Size-scoped scale-physics: hover = +2px, press = −2px on the 44px target (self-documenting calc; ~2px). */
-.cn-icon-button .iconbtn:hover{transform:scale(calc(1 + 2/44));}
-.cn-icon-button .iconbtn:active{transform:scale(calc(1 - 2/44)); filter:brightness(.94); transition:transform var(--press), filter var(--press);}
+/* Size-scoped scale-physics — now the INJECTED family partial (B-D7: this atom's model became
+     the canon; with --phys-size:44 the resolved values are byte-identical to the reviewed originals). */
+/* ===== AUTO-PARTIAL press-physics START (button-family) ===== */
+/* INJECTED from Button.reference.html (partial "press-physics", group button-family —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+.cn-icon-button .iconbtn:hover{transform:scale(calc(1 + var(--press-travel)/var(--phys-size)));}
+.cn-icon-button .iconbtn.full:hover{transform:none;}
+/* full-width can't grow — would overflow */
+.cn-icon-button .iconbtn:active{transform:scale(calc(1 - var(--press-travel)/var(--phys-size))); filter:brightness(var(--press-darken)); transition:transform var(--press), filter var(--press);}
+.cn-icon-button .iconbtn:disabled:hover, .cn-icon-button .iconbtn.is-disabled:hover{transform:none; filter:none;}
+/* disabled stays put */
+/* WCAG 2.3.3 — the partial carries its OWN reduced-motion override (ADR-0013: rides inside, never per-file) */
+@media (prefers-reduced-motion: reduce){
+.cn-icon-button .iconbtn:hover, .cn-icon-button .iconbtn:active{transform:none !important; filter:none !important;}
+}
+/* ===== AUTO-PARTIAL press-physics END ===== */
 .cn-icon-button .iconbtn:disabled{cursor:not-allowed; opacity:1;}
-.cn-icon-button .iconbtn:disabled:hover, .cn-icon-button .iconbtn:disabled:active{transform:none; filter:none;}
 /* PRIMARY — monochrome fill, inverse glyph; hover = operational 0.70 opacity over the page (ADR-0009/B-D3);
      --pri-hover holds the stored colour-equivalent (#626262/#B7B7B7) for colour-only consumers. */
 .cn-icon-button .iconbtn.primary{background:var(--pri-default); color:var(--pri-glyph);}
@@ -3136,7 +3235,7 @@
 .cn-icon-button .iconbtn.quaternary.is-pressed{background:var(--quat-hover);}
 .cn-icon-button .iconbtn.quaternary:disabled{background:transparent; color:var(--glyph-disabled);}
 @media (prefers-reduced-motion: reduce){
-.cn-icon-button .iconbtn:hover, .cn-icon-button .iconbtn:active{transform:none !important; filter:none !important;}
+/* .iconbtn override now arrives via the injected press-physics partial (ADR-0013) */
 }
 
 /* ============================================================
@@ -3236,7 +3335,7 @@
    edit the override sets and re-run. Theme attr goes on <html> or any
    ancestor of the [data-theme] element; Mono is the base (no block).
    Attrs: legacy=apollo-legacy, mono=apollo-mono, console=apollo-console, supercharge=apollo-supercharge */
-/* ---- Apollo Legacy  [data-apollo-theme="legacy"]  (30 override path(s), apollo-legacy.overrides) ---- */
+/* ---- Apollo Legacy  [data-apollo-theme="legacy"]  (34 override path(s), apollo-legacy.overrides) ---- */
 [data-apollo-theme="legacy"]{
   --badge-background: #DB0011;
   --border-radius-default: 0;
@@ -3249,6 +3348,10 @@
   --button-quaternary-label-default: #333333;
   --button-tertiary-border-disabled: #D7D8D6;
   --button-tertiary-label-default: #333333;
+  --component-type-button-family-press-darken: 1;
+  --component-type-button-family-press-travel: 0;
+  --motion-press-darken: 1;
+  --motion-press-travel: 0;
   --progress-complete: #DB0011;
   --rag-error: #A8000B;
   --rag-error-background: #A8000B;
@@ -3378,6 +3481,8 @@
   --text: #FFFFFF;
 }
 [data-apollo-theme="legacy"] .cn-button{
+  --press-darken: 1;
+  --press-travel: 0;
   --pri-default: #DB0011;
   --pri-disabled: #E1E1E1;
   --pri-hover: #BA1110;
@@ -3390,6 +3495,8 @@
 }
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-button,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-button{
+  --press-darken: 1;
+  --press-travel: 0;
   --pri-default: #DB0011;
   --pri-disabled: #484848;
   --pri-hover: #BA1110;
@@ -3475,6 +3582,8 @@
   --text: #FFFFFF;
 }
 [data-apollo-theme="legacy"] .cn-icon-button{
+  --press-darken: 1;
+  --press-travel: 0;
   --pri-default: #DB0011;
   --pri-disabled: #E1E1E1;
   --pri-hover: #BA1110;
@@ -3486,6 +3595,8 @@
 }
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-icon-button,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-icon-button{
+  --press-darken: 1;
+  --press-travel: 0;
   --pri-default: #DB0011;
   --pri-disabled: #484848;
   --pri-hover: #BA1110;
@@ -3547,6 +3658,8 @@
 }
 [data-apollo-theme="legacy"] .cn-modals{
   --on-pri: #FFFFFF;
+  --press-darken: 1;
+  --press-travel: 0;
   --pri: #DB0011;
   --pri-hover: #BA1110;
   --text: #333333;
@@ -3554,6 +3667,8 @@
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-modals,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-modals{
   --on-pri: #FFFFFF;
+  --press-darken: 1;
+  --press-travel: 0;
   --pri: #DB0011;
   --pri-hover: #BA1110;
   --text: #FFFFFF;
@@ -3596,12 +3711,16 @@
 [data-apollo-theme="legacy"] .cn-progress-tracker{
   --complete: #DB0011;
   --muted: #545454;
+  --press-darken: 1;
+  --press-travel: 0;
   --text: #333333;
 }
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-progress-tracker,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-progress-tracker{
   --complete: #DB0011;
   --muted: #9B9B9B;
+  --press-darken: 1;
+  --press-travel: 0;
   --text: #FFFFFF;
 }
 [data-apollo-theme="legacy"] .cn-quick-actions{
@@ -3905,7 +4024,7 @@
   --border-radius-control: 8px;
 }
 
-/* ---- Apollo Supercharge  [data-apollo-theme="supercharge"]  (113 override path(s), apollo-supercharge.overrides) ---- */
+/* ---- Apollo Supercharge  [data-apollo-theme="supercharge"]  (117 override path(s), apollo-supercharge.overrides) ---- */
 [data-apollo-theme="supercharge"]{
   --background-default: #F7F6F4;
   --border-action-strong: #13110E;
@@ -3947,6 +4066,8 @@
   --color-neutral-raise-1: #2A2621;
   --color-neutral-raise-2: #2E2A25;
   --color-neutral-raise-3: #322E29;
+  --component-type-button-family-press-darken: 1;
+  --component-type-button-family-press-travel: 0;
   --data-vis-border-on-dark-baseline-2: #333333;
   --data-vis-border-on-dark-gridline: #333333;
   --data-vis-border-on-light-baseline-2: #DFDEDC;
@@ -3965,6 +4086,8 @@
   --icon-default: #13110E;
   --icon-default-reverse: #F7F6F4;
   --icon-disabled: #CDC8C6;
+  --motion-press-darken: 1;
+  --motion-press-travel: 0;
   --primary-background-disabled: #CDC8C6;
   --primary-border-disabled: #CDC8C6;
   --primary-border-hover: #13110E;
@@ -4222,6 +4345,8 @@
 }
 [data-apollo-theme="supercharge"] .cn-button{
   --page: #F7F6F4;
+  --press-darken: 1;
+  --press-travel: 0;
   --pri-default: #13110E;
   --pri-disabled: #CDC8C6;
   --pri-hover: #493F39;
@@ -4245,6 +4370,8 @@
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-button,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-button{
   --page: #1A1A1A;
+  --press-darken: 1;
+  --press-travel: 0;
   --pri-default: #F0EFED;
   --pri-disabled: #413934;
   --pri-hover: #806E65;
@@ -4398,6 +4525,8 @@
 [data-apollo-theme="supercharge"] .cn-icon-button{
   --glyph-disabled: #635750;
   --page: #F7F6F4;
+  --press-darken: 1;
+  --press-travel: 0;
   --pri-default: #13110E;
   --pri-disabled: #CDC8C6;
   --pri-hover: #493F39;
@@ -4418,6 +4547,8 @@
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-icon-button{
   --glyph-disabled: #524842;
   --page: #1A1A1A;
+  --press-darken: 1;
+  --press-travel: 0;
   --pri-default: #F0EFED;
   --pri-disabled: #413934;
   --pri-hover: #806E65;
@@ -4518,6 +4649,8 @@
   --elev-bd: #FFFFFF00;
   --icon: #13110E;
   --page: #F7F6F4;
+  --press-darken: 1;
+  --press-travel: 0;
   --pri: #13110E;
   --pri-hover: #493F39;
   --sec-bd: #000000;
@@ -4530,6 +4663,8 @@
   --elev-bd: #524842;
   --icon: #F7F6F4;
   --page: #1A1A1A;
+  --press-darken: 1;
+  --press-travel: 0;
   --pri: #F0EFED;
   --pri-hover: #806E65;
   --sec-bd: #524842;
@@ -4593,6 +4728,8 @@
   --incomplete: #DFDEDC;
   --muted: #13110E;
   --page: #F7F6F4;
+  --press-darken: 1;
+  --press-travel: 0;
   --text: #13110E;
 }
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-progress-tracker,
@@ -4605,6 +4742,8 @@
   --incomplete: #413934;
   --muted: #F7F6F4;
   --page: #1A1A1A;
+  --press-darken: 1;
+  --press-travel: 0;
   --text: #F7F6F4;
 }
 [data-apollo-theme="supercharge"] .cn-quick-actions{

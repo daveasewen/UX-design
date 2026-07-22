@@ -60,7 +60,10 @@ def parse_rules():
 
 
 # ---------------------------------------------------------------- rulings
-RULING_ID_RE = re.compile(r"\b(T-D\d+|R-D\d+|DV-D\d+)\b")
+# ds-009 (2026-07-22): the ID pattern is GENERIC — any <prefix>-D<n> ledger ID — so a
+# new ledger's rulings index without a code change (B-D1…B-D7 were unfindable for two
+# days because this regex enumerated three prefixes and the corpus list was hardcoded).
+RULING_ID_RE = re.compile(r"\b([A-Z]{1,3}-D\d+)\b")
 
 
 def infer_ruling_status(heading_title):
@@ -152,16 +155,24 @@ def parse_dataviz_rulings(path, rel_file):
 
 
 def parse_rulings():
+    """ds-009 fix (2026-07-22): the corpus is DISCOVERED — every _proforma/_*-DECISIONS.md
+    on disk is parsed (heading-style by default; _DATAVIZ-DECISIONS.md rules by bullet).
+    A ledger that yields ZERO records fails the build loudly: an unindexed ledger is
+    exactly the silent hole B-D1…B-D5 fell into (unfindable by any consult query)."""
     out = []
-    out += parse_heading_rulings(
-        os.path.join(HERE, "_proforma", "_TYPE-DECISIONS.md"),
-        "knowledge/_proforma/_TYPE-DECISIONS.md")
-    out += parse_heading_rulings(
-        os.path.join(HERE, "_proforma", "_RAG-DECISIONS.md"),
-        "knowledge/_proforma/_RAG-DECISIONS.md")
-    out += parse_dataviz_rulings(
-        os.path.join(HERE, "_proforma", "_DATAVIZ-DECISIONS.md"),
-        "knowledge/_proforma/_DATAVIZ-DECISIONS.md")
+    ledgers = sorted(globlib.glob(os.path.join(HERE, "_proforma", "_*-DECISIONS.md")))
+    if not ledgers:
+        raise SystemExit("consult index: no _proforma/_*-DECISIONS.md ledgers found (corpus glob broken?)")
+    for path in ledgers:
+        rel = "knowledge/_proforma/" + os.path.basename(path)
+        if os.path.basename(path) == "_DATAVIZ-DECISIONS.md":
+            got = parse_dataviz_rulings(path, rel)
+        else:
+            got = parse_heading_rulings(path, rel)
+        if not got:
+            raise SystemExit(f"consult index: ledger {rel} yielded ZERO rulings — parser/ID mismatch "
+                             f"(ds-009 class). Fix the parser or the ledger; do not ship an unindexed ledger.")
+        out += got
     return out
 
 

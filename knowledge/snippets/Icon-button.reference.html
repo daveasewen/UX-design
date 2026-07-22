@@ -19,7 +19,11 @@
   ICONS: real HSBC library glyphs (assets/icons/global-controls/{add,download,edit,search,close}.svg) embedded
   as a <symbol> sprite (filled paths, fill:currentColor) — byte-matched by _validate_icons.py. Corners bind
   the CONTROL radius role (border-radius/control — Mono resolves 0/angular; themes flex it, ADR-0010).
-  Motion = the size-scoped scale-physics: hover +2px / press −2px on the 44px target (self-documenting calc).
+  Motion: THIS atom's size-scoped physics (hover +2px / press −2px on the 44px target, darken .94) was
+  PROMOTED to the button-family canon by B-D7 (Dave, 2026-07-22) — travel is pixel-true everywhere.
+  The rules now arrive via the injected AUTO-PARTIAL press-physics block (source: Button, which itself
+  re-ruled onto this model; ADR-0013). --phys-size:44 keeps the values byte-identical to the reviewed
+  originals: scale(calc(1 ± 2/44)). Theme dial: Legacy/Supercharge zero the movement.
 -->
 <style>
   :root{
@@ -28,6 +32,7 @@
     --spring:300ms cubic-bezier(.5,1.6,.4,1);
     --press:90ms cubic-bezier(0,0,.58,1);
     --target:44px; --glyph:20px;
+    --phys-size:44;   /* LOCAL geometry — unitless twin of --target; divides the B-D7 pixel-true travel (ADR-0013) */
   }
   [data-theme="light"]{
     /* PRIMARY — Mono monochrome (button/primary/*) */
@@ -44,6 +49,8 @@
     --glyph-disabled:#9D9D9D; --page:#FFFFFF; --text-default:#1A1A1A;
     /* shape — semantic radius tier (ADR-0010 flex slots). Icon button = CONTROL role, lock-step with Button. */
     --border-radius-control:0;
+    /* interaction motion — B-D7 via the component-type tier (ADR-0013): projector-maintained, theme-dialable */
+    --press-travel:2; --press-darken:0.94;
   }
   [data-theme="dark"]{
     --pri-default:#FAFAFA; --pri-hover:#B7B7B7; --pri-pressed:#FFFFFF; --pri-disabled:#484848;
@@ -54,6 +61,7 @@
     --quat-hover:#232323; --quat-glyph:#FFFFFF;
     --glyph-disabled:#808080; --page:#1A1A1A; --text-default:#FFFFFF;
     --border-radius-control:0;
+    --press-travel:2; --press-darken:0.94;
   }
 
   *{box-sizing:border-box;}
@@ -76,11 +84,23 @@
   }
   .iconbtn svg{width:var(--glyph); height:var(--glyph); display:block; fill:currentColor; pointer-events:none;}
   .iconbtn:focus-visible{outline:2px solid var(--text-default); outline-offset:2px;}
-  /* Size-scoped scale-physics: hover = +2px, press = −2px on the 44px target (self-documenting calc; ~2px). */
-  .iconbtn:hover{transform:scale(calc(1 + 2/44));}
-  .iconbtn:active{transform:scale(calc(1 - 2/44)); filter:brightness(.94); transition:transform var(--press), filter var(--press);}
+  /* Size-scoped scale-physics — now the INJECTED family partial (B-D7: this atom's model became
+     the canon; with --phys-size:44 the resolved values are byte-identical to the reviewed originals). */
+  /* ===== AUTO-PARTIAL press-physics START (button-family) ===== */
+/* INJECTED from Button.reference.html (partial "press-physics", group button-family —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+  .iconbtn:hover{transform:scale(calc(1 + var(--press-travel)/var(--phys-size)));}
+  .iconbtn.full:hover{transform:none;}                                           /* full-width can't grow — would overflow */
+  .iconbtn:active{transform:scale(calc(1 - var(--press-travel)/var(--phys-size))); filter:brightness(var(--press-darken)); transition:transform var(--press), filter var(--press);}
+  .iconbtn:disabled:hover,.iconbtn.is-disabled:hover{transform:none; filter:none;}   /* disabled stays put */
+  /* WCAG 2.3.3 — the partial carries its OWN reduced-motion override (ADR-0013: rides inside, never per-file) */
+  @media (prefers-reduced-motion: reduce){
+    .iconbtn:hover,.iconbtn:active{ transform:none !important; filter:none !important; }
+  }
+  /* ===== AUTO-PARTIAL press-physics END ===== */
   .iconbtn:disabled{cursor:not-allowed; opacity:1;}
-  .iconbtn:disabled:hover,.iconbtn:disabled:active{transform:none; filter:none;}
 
   /* PRIMARY — monochrome fill, inverse glyph; hover = operational 0.70 opacity over the page (ADR-0009/B-D3);
      --pri-hover holds the stored colour-equivalent (#626262/#B7B7B7) for colour-only consumers. */
@@ -109,7 +129,7 @@
 
   @media (prefers-reduced-motion: reduce){
     *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; }
-    .iconbtn:hover,.iconbtn:active{ transform:none !important; filter:none !important; }
+    /* .iconbtn override now arrives via the injected press-physics partial (ADR-0013) */
   }
 </style>
 </head>
@@ -183,7 +203,9 @@
       "--glyph-disabled": "text/on-disabled",
       "--page": "background/default",
       "--text-default": "text/default",
-      "--border-radius-control": "border-radius/control"
+      "--border-radius-control": "border-radius/control",
+      "--press-travel": "component-type/button-family/press-travel",
+      "--press-darken": "component-type/button-family/press-darken"
     },
     "contrastPairs": [
       { "fg": "button/primary/icon/default",    "bg": "button/primary/background/default",   "context": "icon" },
