@@ -244,9 +244,9 @@ the narrative, per-component judgment calls included).*
 (`2026-07-22-phase2-worker-A-brief.md` items 5–9: Date picker · Date-range · Time picker · File
 upload · Interactive stepper; survey debt named in A's receipt — stepper visuals from
 Progress-tracker, calendar button from Input-fields tail, glyphs verified library-matched) ·
-**Data-grid lane** (Fable, itinerary row 51) and **Charts-kit lane** (Fable, row 53) — both
-lane-sized, **briefs NOT yet cut** (conductor's first serial job next wave; pattern = the wave-1
-briefs). **Serial set unchanged:** `component-types.json` · `MIGRATED_SNIPPETS` · `CATEGORIES` ·
+**Data-grid lane** (Fable, itinerary row 51, ★ brief CUT → `2026-07-22-phase2-worker-C-brief.md`)
+and **Charts-kit lane** (Fable, row 53, ★ brief CUT → `2026-07-22-phase2-worker-D-brief.md` —
+promotes the PARKED dataviz kit as provisional-agent; Dave's sign-off still owed). **Serial set unchanged:** `component-types.json` · `MIGRATED_SNIPPETS` · `CATEGORIES` ·
 spine docs · git — conductor only, ONE commit. Workers = NEW files + receipts, no git. Role comes
 from Dave's opener line, never titles. After wave 2: P2 depth / **Layer-2 templates+shells (the
 load-bearing gap)**.
