@@ -1,35 +1,31 @@
 # Good morning, Dave ☕
 
-> ## ★ LATEST — 2026-07-22 (afternoon, FABLE solo): **THE COMPOSITION TIER IS LIVE — ADR-0013 BUILT, build 51/51.** Rules are now RETRIEVABLE like values: atoms declare **PARTIAL blocks**, consumers carry **AUTO-PARTIAL markers**, `gen_component_partials.py` injects (selector-mapped, provenance-commented, contract-checked), the **ratchet gate** makes local re-implementation a build failure (0 strict / 32-rule census = the accretion worklist). **★ B-D7 RULED mid-build (your reversal, recorded both beats):** press physics = the **Icon-button pixel-true model family-wide** (`motion/press/travel` 2px + `darken` 0.94, `scale(calc(1 ± travel/--phys-size))`) and **motion is a THEME DIAL — Legacy + Supercharge zero it (colour-only states)**; Console inherits Mono's. Zero JS — tuning = editing a token. The queued **responsive-stepper collapse folded into Progress-tracker** (dots resurrected from `273d18c~1`, grid-corrected). ds-008 + ds-009 CLOSED. **Exit gate passed both halves** (one dial → 4 consumers moved; one source edit → 3 copies moved; clean reverts). **⚠ AWAITING YOU: the eyeball set** (§C·1 — B-D7 deltas + the morning's SC dark sheet + 4 held whites). **Phase-2 fan-out is UNBLOCKED.**
-> **RENAME THIS CHAT →** `Apollo composition tier BUILT — ADR-0013: partials + ratchet + registry · B-D7 press physics pixel-true + theme-dialable · stepper folded · build 51/51 [FABLE solo]`
-> **TITLE THE NEXT (fresh) CHAT →** `Apollo review pass — Dave eyeballs B-D7 motion + SC dark sheet + held whites + Console radius · enact tweaks · then queue the Phase-2 fan-out`
+> ## ★ LATEST — 2026-07-22 (evening, FABLE CONDUCTOR + 2 parallel FABLE workers): **PHASE-2 WAVE 1 LANDED — 14 components, library 40→54, button-family 4→13 members, census 32→32 ZERO GROWTH, build 51/51.** Worker A (forms & entry) landed 4/9 — **Form-layout · Amount-input · Textarea · Secure-entry** — clean gauge cut, 5 remain on the same brief. Worker B (feedback & data) landed 10/11 — **Alert · Toast · Banner · Skeleton-loader · Drawer · Popover · Modal-lightbox · Empty-state · Stat-card · Account-selector** (row 89 already existed as Amount-display — correctly not duplicated). Every one: composites-only type · role-token radius STRICT FROM BIRTH · receipted retrievals (R-D20/R-D3/R-D5/B-D6). **The ADR-0013 protocol worked first time out:** empty markers + receipts in, conductor registered 9 `$members` + injected physics + completed contracts (they fire only on registration — caught all 7, fails-loud proven) · **new convention inscribed: multi-control members = `:is()` selector lists; mixed sizes = local `--phys-size`** (Drawer close 36 — file beat the receipt's 44; Toast/Banner × 24). Fences held; ONE wave commit **`60e4dc1`** (92 files) + the wrap commit. **★ ACCRETION WATCH: field-family is the standout candidate** (cross-lane observed duplication, ≥7 files share field chrome — propose-don't-promote, §C·2). **⚠ AWAITING YOU: 7 wave questions (§C·2) + the standing eyeball set (§C·3, non-blocking).**
+> **RENAME THIS CHAT →** `Apollo Phase-2 wave 1 CONDUCTED — 14 components landed (A: 4 forms · B: 10 feedback) · button-family 4→13 · census zero-growth · :is() convention · one commit 60e4dc1 [FABLE conductor]`
+> **TITLE THE NEXT (fresh) CHAT →** `Apollo Phase-2 wave 2 — cut Data-grid + Charts briefs · A-continuation (5 forms items) · absorb Dave's wave-1 rulings · conductor + workers per §C·1 divvy`
 > *(⚠ Titles are LABELS — the role word comes from your opener line, never from a title. Fresh session: read this file, then `_LIVE-STATE.md` top delta.)*
->
-> **POST-WRAP ADDENDA (same afternoon, Dave in-chat — all captured, none enacted):** Console motion flag CLOSED (*"share for now"* → inheritance, not fence) · theme posture: **Legacy FROZEN; Mono + SC + Console in design development** · **★ button-states finesse pass QUEUED** (§C·3b — Legacy mechanism fidelity + Mono/Console darker pressed + SC opacity option + **loader atom**) · **the Legacy reference is PINNED:** Figma Common Toolkit `mI8hvIkV98nquoqWzKh5Kn` node `65884-68326` (in the `_FUTURE-STATE.md` brief; fetch-at-finesse-time, OBSERVED provenance).
 >
 > ---
 >
-> ## PRIOR — 2026-07-22 (morning→midday, FABLE solo): **ADR-0014 RULED + BUILT** — neutral DNA tier live, warm ramp PULLED (OBSERVED), anchor remap, snap gate (7 checks incl. the Ally text-state floor), Console fenced, seed reconciled. **Still awaiting you from that session:** `reviews/SC-DARK-MODE-2026-07-22-v1.REVIEW.html` (all provisional-agent) + the **4 held whites**.
+> ## PRIOR — 2026-07-22 (afternoon, FABLE solo): **ADR-0013 BUILT** (partials + ratchet + registry; B-D7 press physics pixel-true + theme-dialable, both beats inscribed; stepper folded; ds-008/ds-009 closed) — then the review-pass window put the **review overlay in every showroom pane** and cut the wave-1 briefs. **Still awaiting you across sessions:** the eyeball set (§C·3) — B-D7 motion deltas + `reviews/SC-DARK-MODE-2026-07-22-v1.REVIEW.html` + 4 held whites + Console radius px — all NON-BLOCKING (your ruling: foundations first; everything retro-propagates as token edits).
 
 ---
 
-*Briefing — refreshed 2026-07-22 afternoon BST (date from `date`), session "Apollo ADR-0013 clean-room"
-(FABLE solo; B-D7 ruled by Dave in-chat mid-build — reversal recorded as the ruling).
+*Briefing — refreshed 2026-07-22 evening BST (date from `date`), session "Phase-2 wave 1 CONDUCTOR"
+(FABLE conductor + 2 parallel FABLE workers; receipts + reconcile receipt in `notes/_receipts/`).
 §A = standing orientation · §B = this session · §C = queue.*
 
 ## ⬛ DO THIS FIRST
 
-> **1. ★ DAVE'S EYEBALL PASS (cheap window, or rule live in any session):** open `showroom/index.html` —
-> **(a) B-D7 motion:** Button + Modals presses CALM DOWN (pixel-true 2px travel, softer darken) ·
-> Progress-tracker Back/Next = scale not translateY + the **dots↔line stepper collapse** (drag the
-> width slider through 520px) · Icon-button should feel IDENTICAL · under `#theme=legacy` and
-> `#theme=supercharge` presses are **colour-only, zero movement**. **(b) The morning's set:**
-> `reviews/SC-DARK-MODE-2026-07-22-v1.REVIEW.html` + the 4 held whites + Console radius px + bigplay.
-> **2. Then Phase-2 fan-out (fresh window)** — UNBLOCKED; DIVVY PLAN in §C·2.
+> **1. ★ DAVE: the 7 wave-1 questions (§C·2)** — label weight · input-error slot · Toast dark glyphs ·
+> modal fold · figure vouch · field-family accretion · Overlays split. Rule by number in any window;
+> everything retro-propagates (token edits / registry entries — nothing blocks wave 2).
+> **2. Then wave 2 (fresh windows)** — DIVVY PLAN in §C·1. The two new lanes need briefs CUT FIRST
+> (Data grid 51 · Charts kit 53); A-continuation rides its existing brief.
+> **3. The standing eyeball set (§C·3)** stays open + NON-BLOCKING (your "foundations first" ruling).
 
 *Standing practice: every handoff carries both names — retrospective + forward — and a **DIVVY PLAN**.
-This handoff's plan: Dave's eyeball pass (any model, cheap, serial) → **Phase-2 fan-out (conductor +
-2 Fable workers, parallel)** — lanes in §C·2. Steps 4b + 2 in `_RUNBOOK-capture-ritual.md`.*
+This handoff's plan: §C·1. Steps 4b + 2 in `_RUNBOOK-capture-ritual.md`.*
 
 *Read: **§A Orientation** (skip if you're in context) → **§B This session** → **§C Queue**.
 Then `_LIVE-STATE.md` → the decision files it points to.*
@@ -110,8 +106,10 @@ knowledge/            THE ENGINE
   ★ component-types.json  THE ADR-0013 REGISTRY — one file, both halves: component-type/<group>/<param>
                       tokens ($alias→semantic + cached $value) + $members (selector map) + $partials
                       (source atom · rootSelector · requires/matchValues/declarations · $manifestBinds)
-  snippets/           40 gated reference components = CANON. Atoms carry PARTIAL blocks; consumers
-                      carry generated AUTO-PARTIAL blocks (provenance-commented, sync-gated)
+  snippets/           54 gated reference components = CANON (40 + Phase-2 wave 1's 14). Atoms carry
+                      PARTIAL blocks; consumers carry generated AUTO-PARTIAL blocks (provenance-
+                      commented, sync-gated). Multi-control members = :is() selector lists (wave-1
+                      convention); mixed sizes = local --phys-size override
   ★ gen_component_partials.py  injects partials into consumers; --check = build gate; selftest 8 bites
   ★ _validate_partials.py      the re-implementation RATCHET (strict on members · census = accretion
                       worklist) → _PARTIALS-GATE.md
@@ -123,7 +121,7 @@ knowledge/            THE ENGINE
   _consult.py         "what governs X?" — RUN IT before designing (corpus now DISCOVERED, ds-009 closed)
   _validate_*.py      the gates — incl. _validate_state_snap.py (ADR-0014) + ★ _validate_partials.py
   gen_showroom.py     generates showroom/ — never hand-edit showroom
-showroom/             THE LIBRARY, browsable: 40 harness pages + index (#theme=… switches all four)
+showroom/             THE LIBRARY, browsable: 54 harness pages + index (#theme=… switches all four)
 reviews/              review sheets — ★ AWAITING DAVE: SC-DARK-MODE-2026-07-22-v1(.REVIEW).html
 notes/_receipts/      worker-receipt dir · notes/_briefs/ conductor briefs
 _LIVE-STATE.md        LIVE / DEAD / OPEN / TARGETS — read second, always
@@ -215,50 +213,82 @@ OWED; verification stood on mechanical proofs + selftests + gates. HTML is what 
 
 ---
 
-# §B · THIS SESSION (2026-07-22 afternoon — "the ADR-0013 clean-room: composition tier built + B-D7")
+# §B · THIS SESSION (2026-07-22 evening — "Phase-2 wave 1: conductor + 2 parallel Fable workers")
 
-*Arc with the why: `_DECISION-HISTORY/2026-07-22-composition-tier-adr-0013-build.md`. Dave ruled B-D7
-live mid-build (reversal recorded as the ruling); everything landed the same session.*
+*The mechanical record lives in the three receipts (`notes/_receipts/2026-07-22-phase2-{worker-A-forms,
+worker-B-feedback,conductor-reconcile}.md`) — no separate dossier (conducting session; the receipts ARE
+the narrative, per-component judgment calls included).*
 
-- **✅ ADR-0013 BUILT** — registry (one file, both halves; path-addressable params + $-structural keys) ·
-  partial generator (injection + 4 contract classes + --check + selftest) · ratchet gate (0 strict /
-  32 census) · gen_canon_components regenerate-always + determinism check · build 45→51 green ·
-  **exit gate passed BOTH halves** (value dial + rule-text probe, clean reverts).
-- **✅ B-D7** — pixel-true press physics family-wide (the Icon-button model won); motion = theme dial
-  (Legacy/SC zeroed); zero JS; Icon-button byte-identical; Button/Modals calm down; Progress-tracker
-  translateY evicted. **✅ Stepper collapse folded** (dots@273d18c~1 resurrected + grid-corrected;
-  ≤520px = the 1784-86051 form; persistent sr-live + aria-current). **✅ ds-008 + ds-009 closed.**
-- **🐛 Wrong/caught:** empty-marker regex bug (live run caught; selftest bite added) · resurrected
-  stepper off-grid (grid gate bit; 12px/4px) · first B-D7 answer reversed by Dave (both beats
-  inscribed). **Owed:** render-verify (headless-shell refusal persists).
+- **✅ 14 components landed** (A: 4 forms · B: 10 feedback/data), library 40→54, all strict-from-birth
+  (radius role tokens · composites-only type · receipted retrievals). A cut clean at the gauge with 5
+  remaining on the same brief; B finished the lane (row 89 already existed — correctly not rebuilt).
+- **✅ The ADR-0013 fan-out protocol proven live:** workers ship empty AUTO-PARTIAL markers + `$members`
+  proposals by receipt; conductor registers, injects, completes contracts. **Finding (by design, now
+  proven): contracts fire only on registration** — B's 7 pressables landed without `--spring`/`--press`;
+  the check caught every one, fails-loud. **Conventions minted at reconcile:** `:is()` selector lists
+  for multi-control members (bare comma lists mis-bind rewritten pseudo-classes) · local `--phys-size`
+  on the smaller control (Drawer close 36, Toast/Banner × 24 — pixel-true down to the 24px dismiss).
+- **✅ Quality bar held:** census 32→32 (ZERO press-shaped growth — the ratchet worked its first wave) ·
+  51/51 green serial · 92-file wave commit `60e4dc1` after a path-by-path reconcile (every dirty path
+  named against a receipt; the one build red was my own CATEGORIES edit landing stale — regen healed).
+- **🐛 Wrong/caught:** B's receipt said Drawer's close = 44px; the file measures 36 — file won
+  (attribute-the-diff). My first background-build attempt pkill'd itself (pattern matched my own
+  command line — sandbox lesson, receipted here). **Owed:** render-verify (headless-shell, unchanged).
 
 ---
 
 # §C · QUEUE
 
-## 1. ★ DAVE'S EYEBALL PASS (cheap; rule live or in any window)
-**(a) B-D7 motion** — showroom: Button/Modals presses (calmer) · Progress-tracker (scale press +
-dots↔line collapse through 520px) · Icon-button (identical) · `#theme=legacy` / `#theme=supercharge`
-(colour-only, zero movement). **(b) The morning's set:** SC dark sheet
-`reviews/SC-DARK-MODE-2026-07-22-v1.REVIEW.html` + 4 held whites (one line each) + Console radius px
-(8/12 provisional) + bigplay eyeball. **(c) ~~Motion-fence question~~ RULED same day (Dave: "Console
-and mono can share the motion tokens for now") — sharing stays INHERITANCE, not fence; recorded in
-B-D7's closing flag.**
+## 1. ★ PHASE-2 WAVE 2 (fresh windows, PARALLEL — the DIVVY PLAN)
+**Lanes:** **A-continuation** (Fable) = the 5 remaining forms items on the EXISTING brief
+(`2026-07-22-phase2-worker-A-brief.md` items 5–9: Date picker · Date-range · Time picker · File
+upload · Interactive stepper; survey debt named in A's receipt — stepper visuals from
+Progress-tracker, calendar button from Input-fields tail, glyphs verified library-matched) ·
+**Data-grid lane** (Fable, itinerary row 51) and **Charts-kit lane** (Fable, row 53) — both
+lane-sized, **briefs NOT yet cut** (conductor's first serial job next wave; pattern = the wave-1
+briefs). **Serial set unchanged:** `component-types.json` · `MIGRATED_SNIPPETS` · `CATEGORIES` ·
+spine docs · git — conductor only, ONE commit. Workers = NEW files + receipts, no git. Role comes
+from Dave's opener line, never titles. After wave 2: P2 depth / **Layer-2 templates+shells (the
+load-bearing gap)**.
 
-## 2. ★ PHASE-2 FAN-OUT (fresh window, PARALLEL — the mechanism it waited for is live)
-Conductor + 2 Fable workers per `_BUILDOUT-STRATEGY-2026-07-21.md`; ~50 itinerary gaps
-(`reviews/ITINERARY-2026-07-14…`). **DIVVY:** conductor = shared state (registry, canon, tokens,
-_LIVE-STATE) + reconcile + commit; workers = component files ONLY (snippets + receipts, no git).
-New organisms: declare membership + consume partials — the ratchet census (32 rules,
-`_PARTIALS-GATE.md`) is the accretion worklist; groups accrete from OBSERVED duplication (ruling 3).
-Serial set: registry edits (conductor only). Shared files named per lane in the conductor's brief.
+## 2. ★ DAVE: WAVE-1 RULINGS (rule by number; all retro-propagate, nothing blocks wave 2)
+1. **Form-label weight** — the `.t-cm-label` composite renders 400; gated Input-fields labels are
+   16/500. Rule 400 (Input-fields migrates later) or mint a 500 form-label composite (one type.css
+   line + binding).
+2. **`input-error` null slot** — the ADR-0010 slot you anticipated is NOT declared; all four form
+   components bind semantic `rag/error` directly. Declare the null slot?
+3. **Toast dark glyphs** — coloured shapes on the ELEVATED NEUTRAL ground (all ≥3.55); the
+   white-shape dark ruling was made on TINTED grounds. Confirm or extend.
+4. **Modal family fold** — Modal-lightbox extends Modals as a separate snippet; fold into one
+   modal-family snippet later, or keep split + a dialog-mechanics partial when a group accretes?
+5. **Figure vouch** — figure-4/5/6 composites still "PREPARED, awaiting vouch"; vouching flips
+   Amount-display candidate→canon + hardens Stat-card's value type.
+6. **★ Field-family accretion** (ADR-0013 ruling 3, cross-lane OBSERVED duplication — the
+   wave's standout): field chrome (hover fill · focus black border + 4px stroke · error stroke)
+   now consumed by copy across ≥7 files (Input-fields, Dropdown, Search-field + A's four +
+   Account-selector). Accrete `field-family` as registry group #2 next wave?
+7. **Showroom Overlays split** — B proposes Overlays (Drawer/Popover/Lightbox/Modals/Tooltip) +
+   Data-display buckets; wave 1 filed into existing buckets. Re-bucket?
+   *(Minor, flag-if-wrong: conductor decided the mixed-size idiom = local `--phys-size` override,
+   inscribed in the registry; Secure-entry holds figure-3/24 in its 40px narrow cells (A-Q3);
+   fl-summary ≈ Alert filed to the dedup pass (A-Q4); linked Stat-card variant awaits the
+   press/link posture question (B-Q6).)*
 
-## 3. Enact-queue (cheap, post-rulings)
+## 3. ★ THE STANDING EYEBALL SET (NON-BLOCKING — your "foundations first" ruling; pin-comments
+now live in every showroom pane, so it's async)
+**(a) B-D7 motion:** Button/Modals presses calm down · Progress-tracker scale press + dots↔line
+collapse through 520px · Icon-button identical · `#theme=legacy`/`#theme=supercharge` = colour-only.
+**(b)** SC dark sheet `reviews/SC-DARK-MODE-2026-07-22-v1.REVIEW.html` + 4 held whites + Console
+radius px + bigplay. **(c) NEW from wave 1:** the 14 new components across 4 themes × light/dark.
+
+## 4. Enact-queue (cheap, post-rulings)
 F1 Legacy icon/default white · F2 Legacy `rag/error-tint` · tag-atom radius reconcile · F5 Dropdown's
-6 locals · designer-pack v2.1 re-bake · pro-forma dedup pass (ruling 3) · composite motion tokens
-(would retire the matchValues pin) · enact whatever §C·1 changes · consider `--verify` blocking.
+6 locals · designer-pack v2.1 re-bake · **pro-forma dedup pass (ruling 3 — now also carries wave-1's
+fl-summary≈Alert + B's observation that Tranche-1/2 hold earlier empty-state/toast sketches)** ·
+composite motion tokens (would retire the matchValues pin) · enact whatever §C·2/§C·3 rulings change ·
+consider `--verify` blocking.
 
-## 3b. ★ QUEUED: button-states finesse pass (Dave 2026-07-22, "not now — follow up")
+## 4b. ★ QUEUED: button-states finesse pass (Dave 2026-07-22, "not now — follow up") *(was §C·3b — the wave-1 briefs/receipts + prior deltas point here under that number)*
 Full brief in `_FUTURE-STATE.md` §button-states-finesse. Headlines: **Legacy state-mechanism fidelity
 question** (as-built may be OPACITY, we render colours — VERIFY against source, don't flip on
 recollection; "Legacy shouldn't change" = the design is frozen, our reproduction of it can be
@@ -269,11 +299,12 @@ Button's `.spin` = first consumer). Theme posture, Dave: Legacy frozen; Mono/SC/
 design development. Natural shape: one session = fidelity check + pressed-tint tuner (review HTML,
 rule live) + loader accretion.
 
-## 4. Parked (unchanged)
+## 5. Parked (unchanged)
 Legacy hex seeding + provenance-gate flip · Console/Supercharge chromatic palettes · T9 review ·
-Sutherland field test · full-review backlog (`_REVIEW-SIGNOFF.md`) · `_FUTURE-STATE` items.
+Sutherland field test · full-review backlog (`_REVIEW-SIGNOFF.md`) · `_FUTURE-STATE` items ·
+spot-illustration/empty-state icon set (`_ICON-GAPS.md`, wave-1's only gap).
 
-> **COMMIT STATE.** The wrap's 5 are **PUSHED ✓** (Dave, same afternoon). Post-wrap = **4 small
-> commits pending push via GitHub Desktop**: `0eb0f9e` (Console motion = inheritance) · `0a83b4c`
-> (finesse pass queued + theme posture) · `c84035d` (Legacy Figma reference pinned) · + the
-> handoff-freshen commit carrying this line. Build green **51/51**; seed 124/124 zero mismatch.
+> **COMMIT STATE.** Everything pre-wave is **PUSHED ✓**. This wave = **2 commits pending push via
+> GitHub Desktop**: **`60e4dc1`** (Phase-2 wave 1 — 92 files, the 14 components + conductor serials)
+> + the wrap commit carrying this handoff. Build green **51/51** (54 snippets / 54 metas); census
+> 32→32; radius 35-strict clean.
