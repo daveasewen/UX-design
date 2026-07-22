@@ -22,6 +22,11 @@ the opacity-snaps-to-ramp state test) — this entry exists so colour-recall fin
    the blocking snap gate `_validate_state_snap.py` — item 3, "cool"; R-D23's tabs values are the
    calibration consumers.
 
+**Addendum (2026-07-22, post-push — Dave):** *"the inactive tabs still have to pass Ally, they're
+inactive not disabled remember."* → text-state AA floor wired into `_validate_state_snap.py` (interactive
+states carry NO contrast exemption, per theme, every non-exempt theme); first catch = SC dark inactive at
+the DNA index (3.89:1) → SC override dark `warm/11 #AA9B92` (7.01:1), provisional-agent on the sheet.
+
 Edges: refines(ADR-0011, scope=supercharge-neutrals) · refines(R-D19, scope=supercharge) · verified-by(theme-cascade-selftest) · verified-by(state-snap-gate)
 
 ---

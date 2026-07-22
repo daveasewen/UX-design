@@ -15,8 +15,15 @@ Dave's test, ruled 2026-07-22 (theming clean-room; refines ADR-0009 §2-3):
     a warm theme must snap to warm steps). Themes with default "colour"/"explicit"
     resolve the stored colour instead — no snap duty (Supercharge, Legacy/R-D24).
 
-AA remains the province of the contrast audits / state-contrast gate (ADR-0009 §4
-unchanged); this gate owns the snap mechanics. Fail = build failure (blocking).
+TEXT-STATE AA (added same day, Dave: "the inactive tabs still have to pass Ally,
+they're inactive not disabled remember"): when the fading token IS text (`fades`
+starts with text/), the STORED colour must also pass 4.5:1 against its `over`
+ground, resolved per theme under EVERY theme — inactive is an interactive state,
+not disabled; no contrast exemption. Themes exempt as-built (Legacy, R-D24) are
+skipped with an EXEMPTED note. First catch: SC dark tabs/inactive at warm/10 =
+3.89:1 (the DNA index landing on a darker warm page) → warm/11 = 7.01:1.
+Other snap AA remains with the contrast audits (ADR-0009 §4 unchanged); this
+gate owns snap mechanics + the text-state floor. Fail = build failure (blocking).
 
 Usage:
   python3 knowledge/_validate_state_snap.py             # gate
@@ -44,6 +51,31 @@ def _luma(rgb):
 
 def _flatten(alpha, fade_rgb, over_rgb):
     return tuple(alpha * f + (1 - alpha) * o for f, o in zip(fade_rgb, over_rgb))
+
+def _lin(c):
+    c = c / 255.0
+    return c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4
+
+def _rel_lum(rgb):
+    r, g, b = rgb
+    return 0.2126 * _lin(r) + 0.7152 * _lin(g) + 0.0722 * _lin(b)
+
+def contrast(hex_a, hex_b):
+    la, lb = _rel_lum(_rgb(hex_a)), _rel_lum(_rgb(hex_b))
+    hi, lo = max(la, lb), min(la, lb)
+    return (hi + 0.05) / (lo + 0.05)
+
+def check_text_state_aa(path, stored, over, theme_key):
+    """Interactive-not-disabled floor: a text-state's stored colour vs its ground
+    must pass WCAG AA 4.5:1 per mode. Returns failure strings."""
+    fails = []
+    for mode in ("light", "dark"):
+        c = contrast(stored[mode], over[mode])
+        if c < 4.5:
+            fails.append(f"[{theme_key}] {path} ({mode}): text-state {stored[mode]} on "
+                         f"{over[mode]} = {c:.2f}:1 < 4.5 — inactive is INTERACTIVE, not "
+                         f"disabled (no exemption); pick a passing ramp step")
+    return fails
 
 
 # ---------------------------------------------------------------- pure checker
@@ -104,6 +136,20 @@ def run_gate():
     sem = json.load(open(os.path.join(TOK, "semantic-colour.json")))
     themes = {t["key"]: t for t in load_themes()}
     fails, checked = [], 0
+    # --- text-state AA floor: EVERY theme (stored colour is what renders somewhere);
+    #     Legacy = as-built, R-D24 exempt (skipped, documented by the ruling).
+    for key, meta in reg["themes"].items():
+        if (meta.get("stateMechanism") or {}).get("default") == "explicit":
+            continue        # R-D24 as-built posture — exempt, never counted a pass
+        ov = themes[key]["overrides"] if key in themes else {}
+        for path, node, st in _opacity_tokens(sem):
+            fades_path = st.get("fades", "")
+            if not fades_path.startswith("text/"):
+                continue
+            stored = _mode_pair(path, ov)
+            over = _mode_pair(st.get("over", "background/default"), ov)
+            fails += check_text_state_aa(path, stored, over, key)
+            checked += 1
     for key, meta in reg["themes"].items():
         mech = (meta.get("stateMechanism") or {}).get("default")
         if mech not in OPACITY_DEFAULTS:
@@ -156,6 +202,11 @@ def selftest():
                     {"light": "#F7F6F4", "dark": "#13110E"}, warm, "warm/1-5", "sc-fix")
     if len([f for f in r if "NOT a step" in f]) != 2:
         fails.append("warm-ramp membership must bite on both modes")
+    # bite 4: text-state AA — the exact SC-dark catch (Dave 2026-07-22: inactive ≠ disabled).
+    r = check_text_state_aa("t/tabs-like", {"light": "#493F39", "dark": "#806E65"},
+                            {"light": "#F7F6F4", "dark": "#13110E"}, "sc-fix")
+    if not any("INTERACTIVE, not" in f and "(dark)" in f for f in r) or any("(light)" in f for f in r):
+        fails.append("text-state AA must bite on the 3.89:1 dark pair and pass the light pair")
     return fails
 
 def main():
