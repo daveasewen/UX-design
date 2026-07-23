@@ -257,3 +257,15 @@ results · judged deltas · open Qs · any Dave ruling absorbed mid-flight VERBA
 **Baseline:** conductor certified **51/51 green** pre-lane (commit noted in-receipt when you start —
 `git log --oneline -1`). Build serially as you land pieces; the authoritative final serial run +
 reconcile + commit are the conductor's.
+
+### ★ LIVE RULINGS ABSORBED — 2026-07-23 evening (conductor; ledger inscribed, seed fed)
+
+- **B2 / Q8 = RULED → DV-D08.** Chart text ladder: **12/500 floor** (labels · axis · legend text ·
+  values; values tabular) + **700 emphasis** (legend alphas, on-chart keys). 600 stays banned.
+  **The addendum's "no type mint" instruction is LIFTED** — mint the composite(s) per DV-D08
+  (T-D14 markup-class pattern, register in `_type-bindings.json`, blast-radius gate) and bind the
+  exemplar to them.
+- **B1 = RULED:** grouped + stacked PROMOTE in the WAVE (bar lane) — not your exemplar scope.
+- **B3 = RULED → DV-D09:** bar-family defaults orientation-distinct (column `series-1` · h-bar
+  `series-3`) — bar lane, noted for the wave briefs, not yours.
+- **Mini chart ramp (12–20) is PARKED** (`_FUTURE-STATE`) — do NOT build it.

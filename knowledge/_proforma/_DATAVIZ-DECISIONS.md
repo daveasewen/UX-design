@@ -63,6 +63,33 @@ Source of these rulings: the exported review comment-pins on the REVIEW copy (ba
   `reviews/DATA-AXIS-GRID-2026-07-23-v1.html` (+.REVIEW copy).
   Edges: refines(ADR-0010, scope=dataviz-chrome-roles) · refines(ADR-0009, scope=two-channel-beyond-states)
 
+- **DV-D08 · Chart text ladder: 12/500 floor + 700 emphasis; 600 stays off-brand (2026-07-23).**
+  Settles the Q8 label-weight seam via the bar audit (B2, `reviews/BAR-CHART-AUDIT-2026-07-23-v1`).
+  Dave: *"at 12 — medium is the floor."* At the 12px chart floor: labels · axis · legend text ·
+  values = **12/500** (values keep tabular numerals). Emphasis channel = **700**: legend alphas
+  (his donut reference image — the kit's 600 maps to 700; the weight set {100,300,400,500,700}
+  stands, 600 admitted nowhere) and on-chart keys (kit 700 restored). Supersedes BOTH the kit's
+  400-label/600-value pair AND the 07-22 uniform-500 snap (`99fcb6d`) — the flattening the audit
+  surfaced. Enactment = composite mints + rebind, rides the chart-revisit lane (worker); retro-
+  propagates as swaps. PARKED exploration (`_FUTURE-STATE`): a separate mini chart type ramp,
+  floor 12 / ceiling 20 — *"we can explore later."*
+  Edges: refines(DV-D05, scope=chart-floor-weight-ladder)
+
+- **DV-D09 · Bar-family canon defaults are ORIENTATION-DISTINCT; hue is a placeholder until edit
+  mode (2026-07-23).** Audit B3, Dave's reframe verbatim: *"I don't care what colour it is as long
+  as the default for horizontal in the canon is different from the vertical. We have an edit mode
+  planned[;] the designer can choose at [that] time, after the screen generation in Apollo."*
+  Enact: column default = `series-1`, horizontal default = `series-3` (#577C78 — the kit's
+  original, restored). Scope: dv-014 journey-consistency governs COMPOSED JOURNEYS (same data
+  twice in one journey = same series) — worker D's correction survives as a journey rule; the
+  canon pair showing distinct defaults is by design, not inconsistency. Product fact recorded:
+  the planned Apollo EDIT MODE (post-generation designer choice) is the surface this defers to
+  (`_FUTURE-STATE`).
+
+- **D-Q3 RULED (2026-07-23, audit B1):** grouped + stacked column **PROMOTE** into canon in the
+  chart-revisit wave (bar lane). The Batch-1 #3 grouped-layout-redesign open (reference images)
+  stays open — promotion ≠ redesign.
+
 ---
 
 ## Batch 1 — review 2026-07-16 (5 pins)

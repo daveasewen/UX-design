@@ -208,6 +208,15 @@ values per state within the AA guarantee); pairs with `$extensions.apollo.state`
 
 ## Spin-outs (public-facing, beyond the internal engine)
 
+- **★ SESSION-HARNESS TEMPLATE — the working method as a pro-forma for other teams** (Dave,
+  2026-07-23, routing-sidequest session; registered by the conductor per the receipt). Extract the
+  harness as a reusable kit: memento format (GOOD-MORNING/_LIVE-STATE spine) · capture ritual ·
+  conductor/worker model + receipts · context gauge · MODEL-ROUTING skeleton · review overlay ·
+  build-runner shape. Assessment (in the sidequest chat): the invariant + method layers are
+  domain-agnostic — Apollo is just the knowledge layer. Likely shape = a **Cowork plugin**. Needs an
+  environment appendix (sandbox git dance, window sizes are env-specific) + a Dave-specifics scrub.
+  Canonical note: `notes/2026-07-23-harness-framework-spinoff.md` · memory `harness-framework-spinoff`.
+
 - **★ APOLLO LABS — a public a11y / colour-science microtool ("Ally")** — Dave, 2026-07-19, riding off
   the isoluminant + halation work: *"we might just be on the edge of a really cool a11y tool here… spin
   out Apollo Labs as a side project for public consumption, good promotional material for HSBC."* The
@@ -461,6 +470,20 @@ values per state within the AA guarantee); pairs with `$extensions.apollo.state`
   cold-blooded pass could give every reference file a consistent canon link + local override
   discipline. *Feeds:* specimen-doc consistency. *Status:* idea — not urgent; the specimens render
   correctly as-is.
+
+## Mini chart type ramp — floor 12, ceiling 20 (Dave, 2026-07-23, parked at DV-D08)
+
+- Charts may want their OWN quantised type ramp instead of riding font-5/6/7 — Dave: *"I'm still not
+  sure about the scaling; we might have a separate mini font ramp for charts, say floor-12
+  ceiling-20, we can explore later."* T-D15-flavoured (curve-snapped quantised type is the sibling
+  entry); would supersede the DV-D05 chart bindings if built. Explore AFTER the chart-revisit wave.
+
+## Apollo edit mode — post-generation designer-choice surface (Dave, 2026-07-23, at DV-D09)
+
+- Ruled context for the bar-audit B3: canon defaults are placeholders; a planned EDIT MODE lets the
+  designer choose (e.g. series colours) AFTER screen generation in Apollo. Craft-phase surface;
+  siblings = the ★★ radius/corner tuner + theme-builder channel dials (the tuner-organ family).
+  No spec yet — log intentions here as they accrete.
 
 ## Standing register elsewhere (pointers, not copies)
 
