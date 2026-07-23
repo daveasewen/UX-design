@@ -2,8 +2,11 @@
 
 > Operating reference: name a session's work, get its model. Consulted at session start
 > (per the session-title ritual) and used as the **delegation rule** inside a session.
-> Supersedes the `model-selection-by-phase` memory (now points here). Unaudited — Dave's to tune.
-> *Last updated: 2026-07-19 (added the "scope once, run at scale" worked pattern).*
+> Supersedes the `model-selection-by-phase` memory (now points here). Audited 2026-07-23 against
+> the Fable-era routing research (sheet: `reviews/ROUTING-AUDIT-2026-07-23-v1.html`; all 13
+> proposals ratified by Dave same session) — still Dave's to tune.
+> *Last updated: 2026-07-23 (routing-audit enactments #6 + #12: Fable-era notes · Mode 2 demoted
+> to deliberate · mid-session-switch anti-pattern inscribed).*
 
 ## The tiers (Dave's real economy)
 
@@ -15,6 +18,23 @@
 | **Chore — mechanical** | **Haiku** | Doc-drift fixes, find/replace, formatting, renames, gate-count sweeps, index bumps. | No judgment involved — never pay more than you must. |
 
 *The Fable↔Opus and Sonnet↔Haiku boundaries are yours to calibrate from experience; the roles are the fixed part, not the exact model on each line.*
+
+## Fable-era notes (routing audit 2026-07-23, ratified #6)
+
+- **Route by difficulty × horizon, not category.** Fable's lead grows with task length and
+  complexity (VERIFIED, Fable prompting guide) — a long ambiguous multi-file job earns Fable; a
+  hard-but-short judgment call is still Opus territory.
+- **Effort is a real second axis at the API but NOT controllable in Cowork** (OBSERVED 2026-07-23):
+  no top-level effort knob; it exists only in agent-definition frontmatter. Record effort where
+  known (handoff/receipt header slot, #8); don't build routing logic on the missing knob. This
+  section pays off on a move to Code.
+- **Diagnose before attributing a failure to safety classifiers.** Our one logged "refusal"
+  (Playwright, 07-22) was a misdiagnosis of an installer's expected exit
+  (`_RUNBOOK-render-verify.md`). Fallback-aware routing (route classifier-prone task classes to
+  Opus) only ever acts on DIAGNOSED refusals, not pattern-matched ones.
+- **Fable is now a spawnable subagent target** in Cowork's Agent tool (OBSERVED 2026-07-23) —
+  rule 5's peer-or-stronger verification can be satisfied with a fresh-context Fable subagent
+  when the session itself runs on Fable.
 
 ## The rules (matter more than the table)
 
@@ -30,10 +50,17 @@
 A chat runs on **one model**; it changes only when you deliberately `/model`. Nothing silently reclassifies the task and switches you (which, for cost control, is a feature). So this file is a **lookup, not a router** — three ways to use it, in increasing automation:
 
 - **Mode 1 — session lookup (default, zero infra).** Name the work → this table → set the model. **Surface caveat (2026-07-13):** `/model` is a slash command in **Claude Code** only; in **Cowork** the `/` menu is a **file/skill picker**, so there's no `/model` — set the model via the app's model selector if surfaced, or lean on Modes 2 + 3. (Portable win: this file pays off more on a move to Code.)
-- **Mode 2 — in-session delegation (the cost lever). ✅ DEFAULT-ON, mention each time (ruled Dave 2026-07-13).** Keep the session on your judgment model (Opus) and **delegate the chore/throughput sub-tasks down** to Haiku/Sonnet *subagents* — they do the grunt work and return into the same chat, no fork, no lost context. This is what stops a default-Opus session from paying premium rates to do a find-and-replace, and it needs **no manual switch** — which matters because Mode 1 is awkward in Cowork. The orchestrating agent follows this file as the delegation rule and says when it delegates.
-- **Mode 3 — handoff pre-selects the next model.** `GOOD-MORNING.md` ends with "next session = <work> → <model>", so cold-start the choice is already made (you still action it via the selector).
+- **Mode 2 — in-session delegation: DELIBERATE, not default (re-ruled Dave 2026-07-23, routing
+  audit #12 — ⚠️ SUPERSEDES the 2026-07-13 "default-on" ruling).** The Cowork environment
+  now names agent spawning the *expensive* path (each spawn cold-starts and re-derives context) —
+  the 07-13 economics inverted. Delegate down to a subagent only when: the **divvy plan says so**,
+  **Dave asks**, or a subagent is the only way to keep the main window clean (e.g. the out-of-band
+  gauge read). Throughput's real carrier is the **parallel worker-chat model with divvy plans**
+  (`_RUNBOOK-parallel-conductor.md`) — proven at scale 07-19 → 07-22. Say so when you delegate,
+  as before.
+- **Mode 3 — handoff pre-selects the next model.** `GOOD-MORNING.md` ends with "next session = <work> → <model>", so cold-start the choice is already made (you still action it via the selector). **Anti-pattern (inscribed 2026-07-23, audit #6c): never switch model mid-session** — it invalidates the whole prompt cache (REPORTED, migration-guide era) and Cowork can't do it anyway; the handoff seam IS the routing point.
 
-**Biggest saving for Dave specifically:** you default to Opus for complex work, and manual switching is hard in Cowork — so **Modes 2 + 3 carry the weight**: Mode 2 (auto-delegate the donkey work off Opus) saves more than any clever switching, and reserving Fable for genuinely big high-trust jobs keeps the premium spent where it pays.
+**Biggest saving for Dave specifically (re-weighted 2026-07-23):** manual switching is hard in Cowork, so **Mode 3 + the parallel worker-chat model carry the weight** — route at the handoff seam, run throughput lanes on cheap models per the divvy plan, and reserve Fable for genuinely big high-trust jobs. Mode 2 subagents are the exception tool, not the standing lever (see the supersession note above).
 
 ## Worked pattern — scope once (expensive brain), run at scale (trusted hands)
 

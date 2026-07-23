@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apollo · Fable-era routing audit — three-layer mapping + numbered proposals (v1, 2026-07-23)</title>
+<style>
+  :root{
+    --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+    --page:#FFFFFF; --ink:#1A1A1A; --ink2:#545454; --line:#D7D8D6; --line2:#EDEDED; --raised:#F6F6F6;
+    --ok:#2B7E4F; --warn:#C58900; --bad:#B92F1E;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:var(--font); background:var(--page); color:var(--ink); line-height:1.5;
+    -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1080px; margin:0 auto; padding:24px 28px 80px;}
+  h1{font:500 22px/1.2 var(--font); margin:0 0 4px;}
+  .lede{color:var(--ink2); font:400 14px/1.5 var(--font); margin:0 0 8px; max-width:88ch;}
+  code{font-family:ui-monospace,Menlo,monospace; font-size:12px; background:var(--line2); padding:0 4px;}
+  h2{font:500 13px/1 var(--font); color:var(--ink2); margin:36px 0 10px; padding-bottom:6px;
+    border-bottom:1px solid var(--line2); letter-spacing:.02em;}
+  .rules{display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 0;}
+  .rules span{font:400 12px/1 var(--font); border:1px solid var(--line); padding:6px 8px; color:var(--ink2);}
+  .rules b{font-weight:500; color:var(--ink);}
+
+  table{width:100%; border-collapse:collapse; margin-top:10px; font:400 12.5px/1.5 var(--font);}
+  th{font:500 11px/1.3 var(--font); text-align:left; color:var(--ink2); padding:8px 10px 6px;
+    border-bottom:1px solid var(--line); vertical-align:bottom; letter-spacing:.03em;}
+  td{padding:9px 10px; border-bottom:1px solid var(--line2); vertical-align:top;}
+  td.num{font-weight:500; white-space:nowrap;}
+  .chip{display:inline-block; font:500 10px/1 var(--font); letter-spacing:.04em; padding:3px 6px;
+    border:1px solid var(--line); color:var(--ink2); white-space:nowrap;}
+  .chip.obs{border-color:var(--ok); color:var(--ok);}
+  .chip.rep{border-color:var(--warn); color:var(--warn);}
+  .chip.ver{border-color:var(--ink); color:var(--ink);}
+  .chip.nua{border-color:var(--bad); color:var(--bad);}
+  .chip.cost{border-style:dashed;}
+
+  .prop{border:1px solid var(--line); padding:14px 16px; margin-top:12px;}
+  .prop.rec{border-color:var(--ink);}
+  .prop h3{font:500 13px/1.4 var(--font); margin:0 0 6px;}
+  .prop h3 .n{display:inline-block; min-width:26px; font-weight:500;}
+  .prop p{font:400 12.5px/1.55 var(--font); color:var(--ink2); margin:0 0 6px; max-width:92ch;}
+  .prop p b{color:var(--ink); font-weight:500;}
+  .prop .meta{display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;}
+  .caveat{border:1px solid var(--warn); padding:12px 16px; margin-top:14px; font:400 12.5px/1.55 var(--font);
+    color:var(--ink2); max-width:100%;}
+  .caveat b{color:var(--ink); font-weight:500;}
+  .foot{margin-top:40px; padding-top:12px; border-top:1px solid var(--line2); font:400 11px/1.6 var(--font);
+    color:var(--ink2);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Fable-era routing audit — what changes, what stays, what needs your ruling</h1>
+<p class="lede">Audit of the Apollo scaffolding corpus against the three-layer model (invariant / knowledge /
+adapter) in your routing research (<code>notes/2026-07-23-fable-routing-research-dave.md</code>). Analysis and
+proposal only — nothing standing has been enacted. Rule by number, any window; enactment is a separate cheap
+window. Brief: <code>notes/_briefs/2026-07-23-routing-sidequest-brief.md</code>.</p>
+<div class="rules">
+  <span><b>Session</b> routing side-quest · worker · Fable (your opener)</span>
+  <span><b>Method</b> corpus read + greps + primary-source fetch, all claims tagged</span>
+  <span><b>Evidence classes</b> OBSERVED (our repo/env/logs) · VERIFIED (primary doc, fetched this session) · REPORTED (research doc / secondary)</span>
+  <span><b>Guardrail</b> gates untouchable — no proposal below weakens one</span>
+</div>
+
+<div class="caveat"><b>Self-audit caveat, named up front.</b> The brief recommended Opus for this session
+precisely so Fable would not grade its own scaffolding unchecked; you assigned Fable (with superior project
+context vs the mobile research run). Mitigation applied: every claim carries an evidence class, the primary
+source was re-fetched rather than trusted from the research doc, and the two places where my own interests
+could bias the reading (proposals 11 and 13 — the gauge and the emphasis style) are flagged inline. A cheap
+Opus counter-read of this one sheet is available any time and is the honest control.</div>
+
+<h2>1 · Fact-check — the research doc against primary sources and this repo</h2>
+<p class="lede">Your ask: the research run was on mobile with less context — check it against what the repo and
+this environment actually show. Four load-bearing claims re-verified; two materially corrected.</p>
+<table>
+  <tr><th style="width:34%">Claim (research doc)</th><th style="width:12%">Status</th><th>What the primary source / this environment actually shows</th></tr>
+  <tr>
+    <td>"Skills developed for prior models are often too prescriptive for Claude Fable 5 and can degrade output quality."</td>
+    <td><span class="chip ver">VERIFIED</span></td>
+    <td>Verbatim in the Fable prompting guide (fetched this session). But see proposal 2 — most of our runbook
+    prescription is environmental procedure, not model compensation, so the deletion-pass surface is small.</td>
+  </tr>
+  <tr>
+    <td>"Don't surface context-budget anxiety in handoff/resume prompts — documented to cause premature wrap-up."</td>
+    <td><span class="chip nua">NUANCED</span></td>
+    <td><b>The primary source is narrower.</b> Actual text: the concern is "most often triggered when the
+    <b>harness shows a remaining-token countdown</b> to the model", causing <b>unwanted</b> early wrap-up; the fix
+    offered is a reassurance line. Our fuel gauge is the inverse case: an agent-authored estimate whose designed
+    purpose is a <b>deliberate</b> wrap at threshold, protecting handoff quality. The doc's rendering
+    ("documented to cause premature wrap-up" in handoffs) over-generalises. Residual risk is real but small —
+    see proposal 11.</td>
+  </tr>
+  <tr>
+    <td>Effort recalibration: high as default; Fable at lower effort can exceed prior-model xhigh.</td>
+    <td><span class="chip ver">VERIFIED</span></td>
+    <td>Substance confirmed in the prompting guide ("Use high as the default… Lower effort settings on Claude
+    Fable 5 still perform well and often exceed xhigh performance on prior models"). Light paraphrase in the
+    research doc; no material drift.</td>
+  </tr>
+  <tr>
+    <td>Reasoning-extraction refusals: cull instructions that ask the model to echo internal reasoning.</td>
+    <td><span class="chip ver">VERIFIED</span></td>
+    <td>Confirmed (the <code>reasoning_extraction</code> refusal category). Corpus sweep ran this session:
+    <b>zero matches</b> outside the research doc and brief themselves. Dossiers are retrospective narratives of
+    the work, not thinking transcripts — outside the category. See proposal 3.</td>
+  </tr>
+  <tr>
+    <td>"Cowork may not expose effort — establish what's actually controllable." (brief, tension 4)</td>
+    <td><span class="chip obs">OBSERVED</span></td>
+    <td>Established from this environment: <b>no top-level effort control exists in Cowork</b>. Effort is
+    settable only in agent-definition frontmatter (<code>.claude/agents/*.md</code>); the Agent tool exposes
+    per-spawn <b>model</b> choice (sonnet / opus / haiku / <b>fable</b>) but not effort. So (model × effort)
+    routing is an API/Code-era surface; in Cowork the actionable unit stays the model. See proposals 6 and 8.</td>
+  </tr>
+  <tr>
+    <td>Delegation economics — "dispatches parallel subagents more readily… harnesses should go async." (implied: lean on subagents)</td>
+    <td><span class="chip obs">OBSERVED conflict</span></td>
+    <td><b>The research missed a live conflict.</b> The current Cowork harness explicitly discourages agent
+    spawning on this plan — each spawn cold-starts and re-derives context; it is named "the expensive path".
+    That contradicts <code>MODEL-ROUTING.md</code> Mode 2's "delegation DEFAULT-ON, ruled 2026-07-13". In
+    practice our throughput already runs through <b>parallel worker chats with divvy plans</b>, not subagents —
+    the practice outgrew the rule. See proposal 12.</td>
+  </tr>
+  <tr>
+    <td>Verdent material: ~30% tokenizer overhead, elevated security-refusal rates.</td>
+    <td><span class="chip rep">REPORTED</span></td>
+    <td>Not verified; the doc itself flags it as practitioner-grade. Treated as advisory only. Our one logged
+    "refusal" (Playwright, 07-22) was a <b>misdiagnosis</b> — already inscribed in the render runbook — which
+    is the useful local lesson: diagnose before attributing anything to classifiers. See proposal 6d.</td>
+  </tr>
+</table>
+
+<h2>2 · The three-layer mapping of our corpus</h2>
+<table>
+  <tr><th style="width:14%">Layer</th><th style="width:42%">What of ours lives there</th><th>Verdict</th></tr>
+  <tr>
+    <td><b>Invariant</b></td>
+    <td>All gates (<code>_validate_*.py</code>, build 51/51) · assertions register · derivation governance
+    (promotion = Dave only) · the memento <b>format</b>: capture-ritual step sequence, GOOD-MORNING §A/§B/§C
+    structure, receipts, divvy plans, supersession discipline.</td>
+    <td><span class="chip obs">OBSERVED</span> Fully conformant already. Doc and brief agree these never route
+    per model; no proposal below touches one.</td>
+  </tr>
+  <tr>
+    <td><b>Knowledge</b></td>
+    <td>Runbooks (14) · guidelines rules · ledgers + ADRs · GOOD-MORNING §A content · <code>MEMORY.md</code> ·
+    designer pack.</td>
+    <td><span class="chip obs">OBSERVED</span> Already one source of truth, model-blind. The doc's
+    "older-model appendix" pattern is <b>pre-invented here</b>: <code>_RUNBOOK-toolkit-tranche.md</code> is
+    explicitly "written by Fable so cheaper-model sessions can execute". Emphasis density is layered (see
+    proposal 13): runbooks + <code>AGENTS.md</code> are calm (zero IMPORTANT/CRITICAL matches); the vivid zone
+    is the Polaroid layer (GOOD-MORNING banner ≈47★ / ≈333 caps-words / 375 lines; MEMORY hooks).</td>
+  </tr>
+  <tr>
+    <td><b>Adapter</b></td>
+    <td><code>MODEL-ROUTING.md</code> + the divvy plans' model-per-lane + Mode 3 (handoff pre-selects next
+    model) + agent-definition frontmatter (the only effort surface).</td>
+    <td><span class="chip obs">OBSERVED</span> The right shape, three gaps: no effort axis (none is
+    controllable — record-only for now), Mode 2 out of date vs the environment, no fallback-diagnosis note.
+    Proposals 6, 8, 12.</td>
+  </tr>
+</table>
+
+<h2>3 · Proposals — KEEP (no action; recorded so the audit is complete)</h2>
+
+<div class="prop">
+  <h3><span class="n">1.</span> Gates and invariants: untouched, and already Fable-proof</h3>
+  <p>No gate depends on model goodwill; the build withholds "done" identically for every model. The doc's
+  strongest warning ("don't relax gates because the model checks its own work") describes a mistake we have
+  not made and the guardrail forbids.</p>
+  <div class="meta"><span class="chip obs">OBSERVED</span><span class="chip cost">cost: none</span></div>
+</div>
+
+<div class="prop">
+  <h3><span class="n">2.</span> Runbook prescriptiveness stays — tested per runbook, not ruled in bulk</h3>
+  <p>Applied the brief's test ("compensation vs hard-won procedure") to all 14: <b>environmental procedure</b>
+  (git lock dance — the sandbox delete-guard is real; render-verify pipeline; reconcile steps) is
+  model-independent, keep verbatim. <b>Process definitions</b> (capture ritual, parallel-conductor) are
+  memento <i>format</i> — invariant layer, keep. <b>Cheap-model runbooks</b> (toolkit-tranche) are already the
+  appendix pattern. Genuine "model compensation" steps: I found none worth deleting. The doc's verified
+  "too prescriptive" warning is about skills that legislate <i>behaviour</i>; ours legislate <i>environment</i>
+  and <i>record-keeping</i>.</p>
+  <div class="meta"><span class="chip obs">OBSERVED</span><span class="chip ver">warning VERIFIED but inapplicable</span><span class="chip cost">cost: none</span></div>
+</div>
+
+<div class="prop">
+  <h3><span class="n">3.</span> Reasoning-echo: sweep clean, dossiers exempt, nothing to cull</h3>
+  <p>Greps across the corpus for echo/transcribe/narrate-your-reasoning phrasings: zero hits outside the
+  research doc itself. The dossier practice (retrospective narrative of the <i>work</i> — why findings moved,
+  dead-ends, corrections) is exactly the distinction the brief drew and the primary source permits.</p>
+  <div class="meta"><span class="chip obs">OBSERVED</span><span class="chip ver">category VERIFIED</span><span class="chip cost">cost: none</span></div>
+</div>
+
+<div class="prop">
+  <h3><span class="n">4.</span> Route-at-the-handoff-seam: already exact practice (Mode 3)</h3>
+  <p>The doc's "decide the model when you open the next session, not mid-flight" is Mode 3 verbatim, plus
+  Cowork has no mid-session switch anyway. Already inscribed in <code>MODEL-ROUTING.md</code>; proposal 6
+  adds the anti-pattern line so the <i>why</i> (cache invalidation — REPORTED) survives a move to Code.</p>
+  <div class="meta"><span class="chip obs">OBSERVED</span><span class="chip cost">cost: none</span></div>
+</div>
+
+<div class="prop">
+  <h3><span class="n">5.</span> The memory/lessons system is already Fable-shaped</h3>
+  <p>The primary source's recommended memory pattern (one lesson per file, one-line summary, corrections and
+  confirmed approaches alike, with the why; update don't duplicate; delete wrong notes) matches our memory
+  discipline nearly clause-for-clause, and the dossier + "what I got wrong" §B practice covers
+  lessons-not-just-state. The research doc's "Fable benefits disproportionately from recorded lessons" is the
+  strongest argument that the existing investment was correct.</p>
+  <div class="meta"><span class="chip obs">OBSERVED</span><span class="chip ver">pattern VERIFIED</span><span class="chip cost">cost: none</span></div>
+</div>
+
+<h2>4 · Proposals — CHANGE (recommended; cheap doc edits, enact window after your ruling)</h2>
+
+<div class="prop rec">
+  <h3><span class="n">6.</span> <code>MODEL-ROUTING.md</code> gets a Fable-era refresh (~12 lines, one file)</h3>
+  <p><b>(a)</b> Sharpen the Fable row: route by <b>difficulty × horizon</b>, not category — the lead grows with
+  task length/complexity (VERIFIED). <b>(b)</b> Add the effort caveat: effort is a real second axis at the API
+  but <b>not controllable in Cowork</b> except via agent-definition frontmatter — record it where known, don't
+  build routing on the missing knob (OBSERVED). <b>(c)</b> Inscribe the mid-session-switch anti-pattern under
+  Mode 3 with its why (REPORTED: cache invalidation). <b>(d)</b> Add a fallback-diagnosis note: before
+  attributing any Fable failure to safety classifiers, diagnose — our one logged "refusal" was the 07-22
+  Playwright misdiagnosis (OBSERVED). <b>(e)</b> Note that the Agent tool now exposes Fable as a spawnable
+  subagent target (OBSERVED) — relevant to rule 5's peer-or-stronger verification.</p>
+  <div class="meta"><span class="chip obs">OBSERVED</span><span class="chip ver">VERIFIED</span><span class="chip rep">REPORTED (c only)</span><span class="chip cost">cost: one file, ~12 lines</span></div>
+</div>
+
+<div class="prop rec">
+  <h3><span class="n">7.</span> Evidence-pointered "done" claims become a stated requirement</h3>
+  <p>Receipts and verify-before-asking already carry most of this; formalise it as one line in the
+  capture-ritual (§B entries and receipts: every "landed/done" claim names its evidence — gate run, commit,
+  render, file path). The primary source verifies the discipline ("audit each claim against a tool result…
+  nearly eliminated fabricated status reports"). This also generalises an existing repo instinct: the
+  header-wins-over-audit and confident-false-inscription lessons.</p>
+  <div class="meta"><span class="chip ver">VERIFIED</span><span class="chip obs">near-practice OBSERVED</span><span class="chip cost">cost: ~3 lines across ritual + receipt template</span></div>
+</div>
+
+<div class="prop">
+  <h3><span class="n">8.</span> Handoff header records model (already) + effort-if-known slot</h3>
+  <p>Rule 3 already records model. Add an optional effort slot to the handoff/receipt header, filled only when
+  effort was actually set (today: only via agent definitions). Cheap future-proofing for a move to Code, where
+  the (model × effort) audit trail becomes real.</p>
+  <div class="meta"><span class="chip obs">OBSERVED</span><span class="chip cost">cost: ~2 lines</span></div>
+</div>
+
+<div class="prop">
+  <h3><span class="n">9.</span> Worker briefs gain an optional autonomy clause</h3>
+  <p>For semi-autonomous worker lanes, the primary source's autonomy framing ("the user is not watching;
+  proceed on reversible actions that follow from the brief; end-of-turn promises are not completions") is a
+  good fit and matches existing worker discipline. Add as an optional standing block in the divvy-plan
+  template, used when a lane runs unattended. Interactive solo sessions don't need it.</p>
+  <div class="meta"><span class="chip ver">VERIFIED</span><span class="chip cost">cost: ~4 lines in the conductor runbook</span></div>
+</div>
+
+<div class="prop">
+  <h3><span class="n">10.</span> The research doc stays verbatim; corrections live here and in the receipt</h3>
+  <p>Per its own filing note, <code>notes/2026-07-23-fable-routing-research-dave.md</code> is filed verbatim
+  and should never be silently edited. The two corrections (fact-check rows 2 and 6 above) are carried by this
+  sheet and the session receipt; if you want a pointer at the top of the research doc, that's a one-line
+  addendum you'd rule separately.</p>
+  <div class="meta"><span class="chip obs">OBSERVED</span><span class="chip cost">cost: none (or 1 line)</span></div>
+</div>
+
+<h2>5 · Proposals — RULE-NEEDED (genuinely yours; recommendation marked on each)</h2>
+
+<div class="prop rec">
+  <h3><span class="n">11.</span> The fuel gauge keeps its numbers — with the doc's own reassurance line added <span class="chip ver" style="vertical-align:2px">recommended</span></h3>
+  <p><b>The trade, named:</b> the primary source warns that a <i>harness-injected live countdown</i> triggers
+  unwanted early wrap-up; the mitigation it prescribes is a reassurance line, not silence. Our gauge is not
+  that case — it is a deliberate protocol whose entire purpose is to fire the ritual while the handoff can
+  still be authored well, and it exists because you asked for it. Removing the numbers would gut the
+  mechanism. <b>Recommendation:</b> keep bands + percentages as designed; add one line to
+  <code>_RUNBOOK-context-gauge.md</code>: <i>"the tally is a protocol, not a stop signal — below Amber, work
+  at full quality with no economising; the bands change behaviour only at their thresholds."</i> Residual
+  risk (an agent economising early because the tally exists) is real but bounded, and the added line is the
+  primary source's own remedy. <b>Bias flag:</b> I am the class of model the warning is about; discount my
+  comfort with the numbers accordingly — the OBSERVED fact cutting the other way is that this corpus's
+  gauge-driven sessions (07-21 →) wrapped at Red by design, not prematurely.</p>
+  <div class="meta"><span class="chip nua">doc claim NUANCED</span><span class="chip ver">remedy VERIFIED</span><span class="chip obs">gauge history OBSERVED</span><span class="chip cost">cost: 1 line</span></div>
+</div>
+
+<div class="prop rec">
+  <h3><span class="n">12.</span> Mode 2 demotes from "default-on" to "deliberate" <span class="chip ver" style="vertical-align:2px">recommended</span></h3>
+  <p><b>The conflict:</b> Mode 2 (in-session delegation to cheaper subagents, DEFAULT-ON, your ruling
+  2026-07-13) now contradicts the live Cowork environment, which names agent spawning "the expensive path on
+  this plan" — every spawn cold-starts and re-derives context. Meanwhile the practice that actually carries
+  our throughput is the <b>parallel worker-chat model with divvy plans</b> (proven 07-19 →, 24 components in
+  a day on 07-22), which Mode 2 predates. <b>Recommendation:</b> reword Mode 2 to "delegate when the divvy
+  plan says so, when you ask, or when a subagent is the only way to keep the main window clean (e.g. the
+  out-of-band gauge read)" — spawning stays available, stops being the standing default. This supersedes the
+  07-13 ruling, so it is yours to make, not mine to enact.</p>
+  <div class="meta"><span class="chip obs">OBSERVED</span><span class="chip cost">cost: ~4 lines in MODEL-ROUTING + memory hook update</span></div>
+</div>
+
+<div class="prop">
+  <h3><span class="n">13.</span> Polaroid-layer emphasis: keep the hooks, trial one calm banner <span class="chip ver" style="vertical-align:2px">recommended: trial, don't convert</span></h3>
+  <p><b>The layered answer the brief predicted holds, with sharper edges:</b> the corpus's vivid emphasis is
+  concentrated exactly where it is defensible — MEMORY hooks and the GOOD-MORNING banner are working state,
+  re-read cold by every model tier including the cheap ones the vividness was built for. Runbooks are already
+  calm. The counter-consideration is not model overshoot (REPORTED, unproven here) but <b>readability</b>: the
+  primary source's re-grounding guidance (outcome first, complete sentences, no arrow chains, no invented
+  labels) is VERIFIED, matches §A's "new-starter style" mandate — and matches your own standing comms
+  preference. The current LATEST banner is the corpus's densest arrow-chain artefact. <b>Recommendation:</b>
+  change nothing corpus-wide (the adversarial-densify rule already forbids blanket rewording); have the next
+  conductor write ONE banner in calm re-grounding prose alongside the usual style, and you judge which
+  re-grounds you faster. Evidence would then be OBSERVED, not argued. <b>Bias flag:</b> a Fable session
+  drafted most recent banners; my taste is in the sample.</p>
+  <div class="meta"><span class="chip obs">density OBSERVED</span><span class="chip ver">re-grounding guidance VERIFIED</span><span class="chip rep">overshoot REPORTED</span><span class="chip cost">cost: one trial banner, next handoff</span></div>
+</div>
+
+<div class="foot">
+  <b>Provenance.</b> Routing side-quest session, 2026-07-23 (worker, Fable — role from Dave's opener). Brief:
+  <code>notes/_briefs/2026-07-23-routing-sidequest-brief.md</code> · source:
+  <code>notes/2026-07-23-fable-routing-research-dave.md</code> (verbatim, unedited) · primary source fetched
+  this session: the Claude Fable 5 prompting guide (platform.claude.com). Corpus audited:
+  <code>MODEL-ROUTING.md</code> · <code>GOOD-MORNING.md</code> §A · <code>AGENTS.md</code> ·
+  <code>_RUNBOOK-context-gauge / capture-ritual / parallel-conductor / git-commit</code> ·
+  <code>_RUNBOOKS.md</code> index · <code>MEMORY.md</code> hook style. Nothing standing was edited; no git.
+  Receipt: <code>notes/_receipts/2026-07-23-routing-sidequest-audit.md</code>. Rule by number — enactment is a
+  separate cheap window (Sonnet/Haiku per <code>MODEL-ROUTING.md</code>, which is itself proposal 6's file:
+  enact 6 first or last, not mid-batch).
+</div>
+
+</div>
+</body>
+</html>

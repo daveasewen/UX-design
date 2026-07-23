@@ -43,6 +43,12 @@ Bands as fraction of the ~200k window:
 - 🟡 **AMBER  50–60%** (~100–120k) — get economical, pre-stage the handoff, confirm before the next big read. **PROACTIVELY surface the band to Dave here and offer to start wrapping / capture soon — do NOT wait to be asked** (Dave, 2026-07-20: *"I would set it at amber too"*; the agent suggesting session-end from the estimate, unprompted, is the whole point — silence while the tally climbs is the failure mode). **★ Also fire the light SPINE-FLUSH here (Amber tier, ruled 2026-07-21 — see trigger below): write current state to `_LIVE-STATE.md` now, WITHOUT ending the session.**
 - 🔴 **RED  >60%** (>~120k) — **fire the full trigger** (below): the complete capture ritual + fresh session.
 
+**The tally is a protocol, not a stop signal** (routing audit #11, ratified Dave 2026-07-23):
+below Amber, work at full quality with no economising — the bands change behaviour only at their
+thresholds. This line exists because a surfaced token count is a documented trigger for premature
+wrap-up in Fable-class models (the primary source's own remedy is exactly this reassurance); the
+gauge's numbers stay BY DESIGN — deliberate wrap at threshold is the mechanism, not the failure mode.
+
 ### Half 2 — accurate, out-of-band: confirm at Amber
 
 When the tally hits Amber, **confirm** with a real measurement before triggering — but measure

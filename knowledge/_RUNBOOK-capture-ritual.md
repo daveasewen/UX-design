@@ -57,7 +57,11 @@ wrong handoff we most want to avoid. Red cue line, ready to use:
      What Apollo is · the three-libraries-one-skeleton model · where things live · the one command ·
      the rules that actually bite · how we work. **Update it when the shape of the project changes, not
      every session — but NEVER drop it, and never shorten it to a label.**
-   - **§B this session** — what landed, what was found, what I got wrong.
+   - **§B this session** — what landed, what was found, what I got wrong. **Every "landed/done"
+     claim names its evidence** — gate run, commit hash, render, file path (routing audit #7,
+     ratified 2026-07-23; same discipline for worker receipts). The header records the session's
+     **model, and effort if it was actually set** (#8 — effort is only settable via agent
+     definitions today; record it when known, omit otherwise).
    - **§C queue** — numbered, actionable, plus commit/push state.
 
    ⚠️ **§A is the section most at risk, because it is the only one that doesn't change each session.**

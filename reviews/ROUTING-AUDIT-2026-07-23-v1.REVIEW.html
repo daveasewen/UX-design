@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apollo · Fable-era routing audit — three-layer mapping + numbered proposals (v1, 2026-07-23)</title>
+<style>
+  :root{
+    --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+    --page:#FFFFFF; --ink:#1A1A1A; --ink2:#545454; --line:#D7D8D6; --line2:#EDEDED; --raised:#F6F6F6;
+    --ok:#2B7E4F; --warn:#C58900; --bad:#B92F1E;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:var(--font); background:var(--page); color:var(--ink); line-height:1.5;
+    -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1080px; margin:0 auto; padding:24px 28px 80px;}
+  h1{font:500 22px/1.2 var(--font); margin:0 0 4px;}
+  .lede{color:var(--ink2); font:400 14px/1.5 var(--font); margin:0 0 8px; max-width:88ch;}
+  code{font-family:ui-monospace,Menlo,monospace; font-size:12px; background:var(--line2); padding:0 4px;}
+  h2{font:500 13px/1 var(--font); color:var(--ink2); margin:36px 0 10px; padding-bottom:6px;
+    border-bottom:1px solid var(--line2); letter-spacing:.02em;}
+  .rules{display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 0;}
+  .rules span{font:400 12px/1 var(--font); border:1px solid var(--line); padding:6px 8px; color:var(--ink2);}
+  .rules b{font-weight:500; color:var(--ink);}
+
+  table{width:100%; border-collapse:collapse; margin-top:10px; font:400 12.5px/1.5 var(--font);}
+  th{font:500 11px/1.3 var(--font); text-align:left; color:var(--ink2); padding:8px 10px 6px;
+    border-bottom:1px solid var(--line); vertical-align:bottom; letter-spacing:.03em;}
+  td{padding:9px 10px; border-bottom:1px solid var(--line2); vertical-align:top;}
+  td.num{font-weight:500; white-space:nowrap;}
+  .chip{display:inline-block; font:500 10px/1 var(--font); letter-spacing:.04em; padding:3px 6px;
+    border:1px solid var(--line); color:var(--ink2); white-space:nowrap;}
+  .chip.obs{border-color:var(--ok); color:var(--ok);}
+  .chip.rep{border-color:var(--warn); color:var(--warn);}
+  .chip.ver{border-color:var(--ink); color:var(--ink);}
+  .chip.nua{border-color:var(--bad); color:var(--bad);}
+  .chip.cost{border-style:dashed;}
+
+  .prop{border:1px solid var(--line); padding:14px 16px; margin-top:12px;}
+  .prop.rec{border-color:var(--ink);}
+  .prop h3{font:500 13px/1.4 var(--font); margin:0 0 6px;}
+  .prop h3 .n{display:inline-block; min-width:26px; font-weight:500;}
+  .prop p{font:400 12.5px/1.55 var(--font); color:var(--ink2); margin:0 0 6px; max-width:92ch;}
+  .prop p b{color:var(--ink); font-weight:500;}
+  .prop .meta{display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;}
+  .caveat{border:1px solid var(--warn); padding:12px 16px; margin-top:14px; font:400 12.5px/1.55 var(--font);
+    color:var(--ink2); max-width:100%;}
+  .caveat b{color:var(--ink); font-weight:500;}
+  .foot{margin-top:40px; padding-top:12px; border-top:1px solid var(--line2); font:400 11px/1.6 var(--font);
+    color:var(--ink2);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Fable-era routing audit — what changes, what stays, what needs your ruling</h1>
+<p class="lede">Audit of the Apollo scaffolding corpus against the three-layer model (invariant / knowledge /
+adapter) in your routing research (<code>notes/2026-07-23-fable-routing-research-dave.md</code>). Analysis and
+proposal only — nothing standing has been enacted. Rule by number, any window; enactment is a separate cheap
+window. Brief: <code>notes/_briefs/2026-07-23-routing-sidequest-brief.md</code>.</p>
+<div class="rules">
+  <span><b>Session</b> routing side-quest · worker · Fable (your opener)</span>
+  <span><b>Method</b> corpus read + greps + primary-source fetch, all claims tagged</span>
+  <span><b>Evidence classes</b> OBSERVED (our repo/env/logs) · VERIFIED (primary doc, fetched this session) · REPORTED (research doc / secondary)</span>
+  <span><b>Guardrail</b> gates untouchable — no proposal below weakens one</span>
+</div>
+
+<div class="caveat"><b>Self-audit caveat, named up front.</b> The brief recommended Opus for this session
+precisely so Fable would not grade its own scaffolding unchecked; you assigned Fable (with superior project
+context vs the mobile research run). Mitigation applied: every claim carries an evidence class, the primary
+source was re-fetched rather than trusted from the research doc, and the two places where my own interests
+could bias the reading (proposals 11 and 13 — the gauge and the emphasis style) are flagged inline. A cheap
+Opus counter-read of this one sheet is available any time and is the honest control.</div>
+
+<h2>1 · Fact-check — the research doc against primary sources and this repo</h2>
+<p class="lede">Your ask: the research run was on mobile with less context — check it against what the repo and
+this environment actually show. Four load-bearing claims re-verified; two materially corrected.</p>
+<table>
+  <tr><th style="width:34%">Claim (research doc)</th><th style="width:12%">Status</th><th>What the primary source / this environment actually shows</th></tr>
+  <tr>
+    <td>"Skills developed for prior models are often too prescriptive for Claude Fable 5 and can degrade output quality."</td>
+    <td><span class="chip ver">VERIFIED</span></td>
+    <td>Verbatim in the Fable prompting guide (fetched this session). But see proposal 2 — most of our runbook
+    prescription is environmental procedure, not model compensation, so the deletion-pass surface is small.</td>
+  </tr>
+  <tr>
+    <td>"Don't surface context-budget anxiety in handoff/resume prompts — documented to cause premature wrap-up."</td>
+    <td><span class="chip nua">NUANCED</span></td>
+    <td><b>The primary source is narrower.</b> Actual text: the concern is "most often triggered when the
+    <b>harness shows a remaining-token countdown</b> to the model", causing <b>unwanted</b> early wrap-up; the fix
+    offered is a reassurance line. Our fuel gauge is the inverse case: an agent-authored estimate whose designed
+    purpose is a <b>deliberate</b> wrap at threshold, protecting handoff quality. The doc's rendering
+    ("documented to cause premature wrap-up" in handoffs) over-generalises. Residual risk is real but small —
+    see proposal 11.</td>
+  </tr>
+  <tr>
+    <td>Effort recalibration: high as default; Fable at lower effort can exceed prior-model xhigh.</td>
+    <td><span class="chip ver">VERIFIED</span></td>
+    <td>Substance confirmed in the prompting guide ("Use high as the default… Lower effort settings on Claude
+    Fable 5 still perform well and often exceed xhigh performance on prior models"). Light paraphrase in the
+    research doc; no material drift.</td>
+  </tr>
+  <tr>
+    <td>Reasoning-extraction refusals: cull instructions that ask the model to echo internal reasoning.</td>
+    <td><span class="chip ver">VERIFIED</span></td>
+    <td>Confirmed (the <code>reasoning_extraction</code> refusal category). Corpus sweep ran this session:
+    <b>zero matches</b> outside the research doc and brief themselves. Dossiers are retrospective narratives of
+    the work, not thinking transcripts — outside the category. See proposal 3.</td>
+  </tr>
+  <tr>
+    <td>"Cowork may not expose effort — establish what's actually controllable." (brief, tension 4)</td>
+    <td><span class="chip obs">OBSERVED</span></td>
+    <td>Established from this environment: <b>no top-level effort control exists in Cowork</b>. Effort is
+    settable only in agent-definition frontmatter (<code>.claude/agents/*.md</code>); the Agent tool exposes
+    per-spawn <b>model</b> choice (sonnet / opus / haiku / <b>fable</b>) but not effort. So (model × effort)
+    routing is an API/Code-era surface; in Cowork the actionable unit stays the model. See proposals 6 and 8.</td>
+  </tr>
+  <tr>
+    <td>Delegation economics — "dispatches parallel subagents more readily… harnesses should go async." (implied: lean on subagents)</td>
+    <td><span class="chip obs">OBSERVED conflict</span></td>
+    <td><b>The research missed a live conflict.</b> The current Cowork harness explicitly discourages agent
+    spawning on this plan — each spawn cold-starts and re-derives context; it is named "the expensive path".
+    That contradicts <code>MODEL-ROUTING.md</code> Mode 2's "delegation DEFAULT-ON, ruled 2026-07-13". In
+    practice our throughput already runs through <b>parallel worker chats with divvy plans</b>, not subagents —
+    the practice outgrew the rule. See proposal 12.</td>
+  </tr>
+  <tr>
+    <td>Verdent material: ~30% tokenizer overhead, elevated security-refusal rates.</td>
+    <td><span class="chip rep">REPORTED</span></td>
+    <td>Not verified; the doc itself flags it as practitioner-grade. Treated as advisory only. Our one logged
+    "refusal" (Playwright, 07-22) was a <b>misdiagnosis</b> — already inscribed in the render runbook — which
+    is the useful local lesson: diagnose before attributing anything to classifiers. See proposal 6d.</td>
+  </tr>
+</table>
+
+<h2>2 · The three-layer mapping of our corpus</h2>
+<table>
+  <tr><th style="width:14%">Layer</th><th style="width:42%">What of ours lives there</th><th>Verdict</th></tr>
+  <tr>
+    <td><b>Invariant</b></td>
+    <td>All gates (<code>_validate_*.py</code>, build 51/51) · assertions register · derivation governance
+    (promotion = Dave only) · the memento <b>format</b>: capture-ritual step sequence, GOOD-MORNING §A/§B/§C
+    structure, receipts, divvy plans, supersession discipline.</td>
+    <td><span class="chip obs">OBSERVED</span> Fully conformant already. Doc and brief agree these never route
+    per model; no proposal below touches one.</td>
+  </tr>
+  <tr>
+    <td><b>Knowledge</b></td>
+    <td>Runbooks (14) · guidelines rules · ledgers + ADRs · GOOD-MORNING §A content · <code>MEMORY.md</code> ·
+    designer pack.</td>
+    <td><span class="chip obs">OBSERVED</span> Already one source of truth, model-blind. The doc's
+    "older-model appendix" pattern is <b>pre-invented here</b>: <code>_RUNBOOK-toolkit-tranche.md</code> is
+    explicitly "written by Fable so cheaper-model sessions can execute". Emphasis density is layered (see
+    proposal 13): runbooks + <code>AGENTS.md</code> are calm (zero IMPORTANT/CRITICAL matches); the vivid zone
+    is the Polaroid layer (GOOD-MORNING banner ≈47★ / ≈333 caps-words / 375 lines; MEMORY hooks).</td>
+  </tr>
+  <tr>
+    <td><b>Adapter</b></td>
+    <td><code>MODEL-ROUTING.md</code> + the divvy plans' model-per-lane + Mode 3 (handoff pre-selects next
+    model) + agent-definition frontmatter (the only effort surface).</td>
+    <td><span class="chip obs">OBSERVED</span> The right shape, three gaps: no effort axis (none is
+    controllable — record-only for now), Mode 2 out of date vs the environment, no fallback-diagnosis note.
+    Proposals 6, 8, 12.</td>
+  </tr>
+</table>
+
+<h2>3 · Proposals — KEEP (no action; recorded so the audit is complete)</h2>
+
+<div class="prop">
+  <h3><span class="n">1.</span> Gates and invariants: untouched, and already Fable-proof</h3>
+  <p>No gate depends on model goodwill; the build withholds "done" identically for every model. The doc's
+  strongest warning ("don't relax gates because the model checks its own work") describes a mistake we have
+  not made and the guardrail forbids.</p>
+  <div class="meta"><span class="chip obs">OBSERVED</span><span class="chip cost">cost: none</span></div>
+</div>
+
+<div class="prop">
+  <h3><span class="n">2.</span> Runbook prescriptiveness stays — tested per runbook, not ruled in bulk</h3>
+  <p>Applied the brief's test ("compensation vs hard-won procedure") to all 14: <b>environmental procedure</b>
+  (git lock dance — the sandbox delete-guard is real; render-verify pipeline; reconcile steps) is
+  model-independent, keep verbatim. <b>Process definitions</b> (capture ritual, parallel-conductor) are
+  memento <i>format</i> — invariant layer, keep. <b>Cheap-model runbooks</b> (toolkit-tranche) are already the
+  appendix pattern. Genuine "model compensation" steps: I found none worth deleting. The doc's verified
+  "too prescriptive" warning is about skills that legislate <i>behaviour</i>; ours legislate <i>environment</i>
+  and <i>record-keeping</i>.</p>
+  <div class="meta"><span class="chip obs">OBSERVED</span><span class="chip ver">warning VERIFIED but inapplicable</span><span class="chip cost">cost: none</span></div>
+</div>
+
+<div class="prop">
+  <h3><span class="n">3.</span> Reasoning-echo: sweep clean, dossiers exempt, nothing to cull</h3>
+  <p>Greps across the corpus for echo/transcribe/narrate-your-reasoning phrasings: zero hits outside the
+  research doc itself. The dossier practice (retrospective narrative of the <i>work</i> — why findings moved,
+  dead-ends, corrections) is exactly the distinction the brief drew and the primary source permits.</p>
+  <div class="meta"><span class="chip obs">OBSERVED</span><span class="chip ver">category VERIFIED</span><span class="chip cost">cost: none</span></div>
+</div>
+
+<div class="prop">
+  <h3><span class="n">4.</span> Route-at-the-handoff-seam: already exact practice (Mode 3)</h3>
+  <p>The doc's "decide the model when you open the next session, not mid-flight" is Mode 3 verbatim, plus
+  Cowork has no mid-session switch anyway. Already inscribed in <code>MODEL-ROUTING.md</code>; proposal 6
+  adds the anti-pattern line so the <i>why</i> (cache invalidation — REPORTED) survives a move to Code.</p>
+  <div class="meta"><span class="chip obs">OBSERVED</span><span class="chip cost">cost: none</span></div>
+</div>
+
+<div class="prop">
+  <h3><span class="n">5.</span> The memory/lessons system is already Fable-shaped</h3>
+  <p>The primary source's recommended memory pattern (one lesson per file, one-line summary, corrections and
+  confirmed approaches alike, with the why; update don't duplicate; delete wrong notes) matches our memory
+  discipline nearly clause-for-clause, and the dossier + "what I got wrong" §B practice covers
+  lessons-not-just-state. The research doc's "Fable benefits disproportionately from recorded lessons" is the
+  strongest argument that the existing investment was correct.</p>
+  <div class="meta"><span class="chip obs">OBSERVED</span><span class="chip ver">pattern VERIFIED</span><span class="chip cost">cost: none</span></div>
+</div>
+
+<h2>4 · Proposals — CHANGE (recommended; cheap doc edits, enact window after your ruling)</h2>
+
+<div class="prop rec">
+  <h3><span class="n">6.</span> <code>MODEL-ROUTING.md</code> gets a Fable-era refresh (~12 lines, one file)</h3>
+  <p><b>(a)</b> Sharpen the Fable row: route by <b>difficulty × horizon</b>, not category — the lead grows with
+  task length/complexity (VERIFIED). <b>(b)</b> Add the effort caveat: effort is a real second axis at the API
+  but <b>not controllable in Cowork</b> except via agent-definition frontmatter — record it where known, don't
+  build routing on the missing knob (OBSERVED). <b>(c)</b> Inscribe the mid-session-switch anti-pattern under
+  Mode 3 with its why (REPORTED: cache invalidation). <b>(d)</b> Add a fallback-diagnosis note: before
+  attributing any Fable failure to safety classifiers, diagnose — our one logged "refusal" was the 07-22
+  Playwright misdiagnosis (OBSERVED). <b>(e)</b> Note that the Agent tool now exposes Fable as a spawnable
+  subagent target (OBSERVED) — relevant to rule 5's peer-or-stronger verification.</p>
+  <div class="meta"><span class="chip obs">OBSERVED</span><span class="chip ver">VERIFIED</span><span class="chip rep">REPORTED (c only)</span><span class="chip cost">cost: one file, ~12 lines</span></div>
+</div>
+
+<div class="prop rec">
+  <h3><span class="n">7.</span> Evidence-pointered "done" claims become a stated requirement</h3>
+  <p>Receipts and verify-before-asking already carry most of this; formalise it as one line in the
+  capture-ritual (§B entries and receipts: every "landed/done" claim names its evidence — gate run, commit,
+  render, file path). The primary source verifies the discipline ("audit each claim against a tool result…
+  nearly eliminated fabricated status reports"). This also generalises an existing repo instinct: the
+  header-wins-over-audit and confident-false-inscription lessons.</p>
+  <div class="meta"><span class="chip ver">VERIFIED</span><span class="chip obs">near-practice OBSERVED</span><span class="chip cost">cost: ~3 lines across ritual + receipt template</span></div>
+</div>
+
+<div class="prop">
+  <h3><span class="n">8.</span> Handoff header records model (already) + effort-if-known slot</h3>
+  <p>Rule 3 already records model. Add an optional effort slot to the handoff/receipt header, filled only when
+  effort was actually set (today: only via agent definitions). Cheap future-proofing for a move to Code, where
+  the (model × effort) audit trail becomes real.</p>
+  <div class="meta"><span class="chip obs">OBSERVED</span><span class="chip cost">cost: ~2 lines</span></div>
+</div>
+
+<div class="prop">
+  <h3><span class="n">9.</span> Worker briefs gain an optional autonomy clause</h3>
+  <p>For semi-autonomous worker lanes, the primary source's autonomy framing ("the user is not watching;
+  proceed on reversible actions that follow from the brief; end-of-turn promises are not completions") is a
+  good fit and matches existing worker discipline. Add as an optional standing block in the divvy-plan
+  template, used when a lane runs unattended. Interactive solo sessions don't need it.</p>
+  <div class="meta"><span class="chip ver">VERIFIED</span><span class="chip cost">cost: ~4 lines in the conductor runbook</span></div>
+</div>
+
+<div class="prop">
+  <h3><span class="n">10.</span> The research doc stays verbatim; corrections live here and in the receipt</h3>
+  <p>Per its own filing note, <code>notes/2026-07-23-fable-routing-research-dave.md</code> is filed verbatim
+  and should never be silently edited. The two corrections (fact-check rows 2 and 6 above) are carried by this
+  sheet and the session receipt; if you want a pointer at the top of the research doc, that's a one-line
+  addendum you'd rule separately.</p>
+  <div class="meta"><span class="chip obs">OBSERVED</span><span class="chip cost">cost: none (or 1 line)</span></div>
+</div>
+
+<h2>5 · Proposals — RULE-NEEDED (genuinely yours; recommendation marked on each)</h2>
+
+<div class="prop rec">
+  <h3><span class="n">11.</span> The fuel gauge keeps its numbers — with the doc's own reassurance line added <span class="chip ver" style="vertical-align:2px">recommended</span></h3>
+  <p><b>The trade, named:</b> the primary source warns that a <i>harness-injected live countdown</i> triggers
+  unwanted early wrap-up; the mitigation it prescribes is a reassurance line, not silence. Our gauge is not
+  that case — it is a deliberate protocol whose entire purpose is to fire the ritual while the handoff can
+  still be authored well, and it exists because you asked for it. Removing the numbers would gut the
+  mechanism. <b>Recommendation:</b> keep bands + percentages as designed; add one line to
+  <code>_RUNBOOK-context-gauge.md</code>: <i>"the tally is a protocol, not a stop signal — below Amber, work
+  at full quality with no economising; the bands change behaviour only at their thresholds."</i> Residual
+  risk (an agent economising early because the tally exists) is real but bounded, and the added line is the
+  primary source's own remedy. <b>Bias flag:</b> I am the class of model the warning is about; discount my
+  comfort with the numbers accordingly — the OBSERVED fact cutting the other way is that this corpus's
+  gauge-driven sessions (07-21 →) wrapped at Red by design, not prematurely.</p>
+  <div class="meta"><span class="chip nua">doc claim NUANCED</span><span class="chip ver">remedy VERIFIED</span><span class="chip obs">gauge history OBSERVED</span><span class="chip cost">cost: 1 line</span></div>
+</div>
+
+<div class="prop rec">
+  <h3><span class="n">12.</span> Mode 2 demotes from "default-on" to "deliberate" <span class="chip ver" style="vertical-align:2px">recommended</span></h3>
+  <p><b>The conflict:</b> Mode 2 (in-session delegation to cheaper subagents, DEFAULT-ON, your ruling
+  2026-07-13) now contradicts the live Cowork environment, which names agent spawning "the expensive path on
+  this plan" — every spawn cold-starts and re-derives context. Meanwhile the practice that actually carries
+  our throughput is the <b>parallel worker-chat model with divvy plans</b> (proven 07-19 →, 24 components in
+  a day on 07-22), which Mode 2 predates. <b>Recommendation:</b> reword Mode 2 to "delegate when the divvy
+  plan says so, when you ask, or when a subagent is the only way to keep the main window clean (e.g. the
+  out-of-band gauge read)" — spawning stays available, stops being the standing default. This supersedes the
+  07-13 ruling, so it is yours to make, not mine to enact.</p>
+  <div class="meta"><span class="chip obs">OBSERVED</span><span class="chip cost">cost: ~4 lines in MODEL-ROUTING + memory hook update</span></div>
+</div>
+
+<div class="prop">
+  <h3><span class="n">13.</span> Polaroid-layer emphasis: keep the hooks, trial one calm banner <span class="chip ver" style="vertical-align:2px">recommended: trial, don't convert</span></h3>
+  <p><b>The layered answer the brief predicted holds, with sharper edges:</b> the corpus's vivid emphasis is
+  concentrated exactly where it is defensible — MEMORY hooks and the GOOD-MORNING banner are working state,
+  re-read cold by every model tier including the cheap ones the vividness was built for. Runbooks are already
+  calm. The counter-consideration is not model overshoot (REPORTED, unproven here) but <b>readability</b>: the
+  primary source's re-grounding guidance (outcome first, complete sentences, no arrow chains, no invented
+  labels) is VERIFIED, matches §A's "new-starter style" mandate — and matches your own standing comms
+  preference. The current LATEST banner is the corpus's densest arrow-chain artefact. <b>Recommendation:</b>
+  change nothing corpus-wide (the adversarial-densify rule already forbids blanket rewording); have the next
+  conductor write ONE banner in calm re-grounding prose alongside the usual style, and you judge which
+  re-grounds you faster. Evidence would then be OBSERVED, not argued. <b>Bias flag:</b> a Fable session
+  drafted most recent banners; my taste is in the sample.</p>
+  <div class="meta"><span class="chip obs">density OBSERVED</span><span class="chip ver">re-grounding guidance VERIFIED</span><span class="chip rep">overshoot REPORTED</span><span class="chip cost">cost: one trial banner, next handoff</span></div>
+</div>
+
+<div class="foot">
+  <b>Provenance.</b> Routing side-quest session, 2026-07-23 (worker, Fable — role from Dave's opener). Brief:
+  <code>notes/_briefs/2026-07-23-routing-sidequest-brief.md</code> · source:
+  <code>notes/2026-07-23-fable-routing-research-dave.md</code> (verbatim, unedited) · primary source fetched
+  this session: the Claude Fable 5 prompting guide (platform.claude.com). Corpus audited:
+  <code>MODEL-ROUTING.md</code> · <code>GOOD-MORNING.md</code> §A · <code>AGENTS.md</code> ·
+  <code>_RUNBOOK-context-gauge / capture-ritual / parallel-conductor / git-commit</code> ·
+  <code>_RUNBOOKS.md</code> index · <code>MEMORY.md</code> hook style. Nothing standing was edited; no git.
+  Receipt: <code>notes/_receipts/2026-07-23-routing-sidequest-audit.md</code>. Rule by number — enactment is a
+  separate cheap window (Sonnet/Haiku per <code>MODEL-ROUTING.md</code>, which is itself proposal 6's file:
+  enact 6 first or last, not mid-batch).
+</div>
+
+</div>
+<meta name="rv-doc" content="ROUTING AUDIT 2026 07 23 v1">
+<meta name="rv-file" content="reviews/ROUTING-AUDIT-2026-07-23-v1.html">
+<!-- APOLLO-REVIEW-OVERLAY -->
+<!-- ============================================================================
+     APOLLO REVIEW OVERLAY — reusable comment layer for pro-forma review files.
+     Self-contained (no external deps, no browser storage). Drop this whole block
+     in before </body> of ANY interactive HTML to add: a Review-mode toggle,
+     click-a-component-to-pin-a-comment, a DRAGGABLE comment box that opens beside
+     the target (not over it) with a NOODLE leader-line + dot back to the commented
+     element, a comments panel, and Export → a structured numbered prompt
+     (copy / download) to paste back for the edits.
+     Injected by _make_review.py. All ids/classes are `rv-` prefixed to avoid
+     clashing with the host page. Nothing here is scanned by the component gates.
+     ========================================================================= -->
+<style id="rv-style">
+  #rv-fab{position:fixed;right:16px;bottom:16px;z-index:2147483000;display:inline-flex;align-items:center;gap:8px;
+    height:40px;padding:0 16px;border:1.5px solid #1A1A1A;border-radius:999px;background:#fff;color:#1A1A1A;
+    font:600 13px/1 -apple-system,Segoe UI,Roboto,sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.14);}
+  #rv-fab .rv-dot{width:8px;height:8px;border-radius:50%;background:#B7B7B7;}
+  #rv-fab.rv-on{background:#1A1A1A;color:#fff;border-color:#1A1A1A;}
+  #rv-fab.rv-on .rv-dot{background:#37D67A;}
+  #rv-fab .rv-count{min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#DB0011;color:#fff;
+    font:700 11px/18px -apple-system,Segoe UI,Roboto,sans-serif;text-align:center;display:none;}
+  #rv-fab .rv-count.rv-has{display:inline-block;}
+  /* review mode: crosshair + hover outline on the host content */
+  body.rv-active [data-rv-hover]{outline:2px solid #DB0011 !important;outline-offset:1px;cursor:crosshair;}
+  body.rv-active{scroll-behavior:auto;}
+  /* pinned markers layer */
+  #rv-markers{position:fixed;inset:0;z-index:2147482000;pointer-events:none;}
+  .rv-pin{position:fixed;transform:translate(-50%,-50%);width:22px;height:22px;border-radius:50% 50% 50% 2px;
+    background:#DB0011;color:#fff;font:700 12px/22px -apple-system,Segoe UI,Roboto,sans-serif;text-align:center;
+    box-shadow:0 2px 6px rgba(0,0,0,.3);pointer-events:auto;cursor:pointer;border:2px solid #fff;}
+  /* composer popover */
+  #rv-composer{position:fixed;z-index:2147483600;width:300px;max-width:92vw;background:#fff;border:1px solid #D7D8D6;
+    border-radius:8px;box-shadow:0 12px 40px rgba(0,0,0,.22);padding:12px;display:none;
+    font:400 13px/1.45 -apple-system,Segoe UI,Roboto,sans-serif;color:#1A1A1A;}
+  #rv-composer.rv-show{display:block;}
+  #rv-composer .rv-target{font:600 12px/1.3 inherit;color:#333;margin:0 0 8px;padding-left:16px;word-break:break-word;
+    cursor:move;user-select:none;position:relative;}
+  #rv-composer .rv-target::before{content:'';position:absolute;left:2px;top:1px;width:7px;height:12px;opacity:.55;
+    background:radial-gradient(circle,#666 1px,transparent 1.4px);background-size:3px 4px;}
+  /* noodle: leader line from the commented element to the composer box */
+  #rv-noodle{position:fixed;inset:0;z-index:2147483500;pointer-events:none;overflow:visible;}
+  #rv-noodle path{fill:none;stroke:#DB0011;stroke-width:1.5;opacity:.9;}
+  #rv-noodle circle{fill:#DB0011;stroke:#fff;stroke-width:1.5;}
+  #rv-noodle rect{fill:rgba(219,0,17,.06);stroke:#DB0011;stroke-width:2;opacity:.95;}
+  #rv-composer textarea{width:100%;box-sizing:border-box;min-height:76px;resize:vertical;padding:8px;
+    border:1px solid #B7B7B7;border-radius:6px;font:inherit;color:#1A1A1A;outline:none;}
+  #rv-composer textarea:focus{border-color:#1A1A1A;}
+  #rv-composer .rv-row{display:flex;gap:8px;justify-content:flex-end;margin-top:8px;}
+  .rv-btn{height:32px;padding:0 14px;border-radius:6px;border:1px solid #1A1A1A;background:#fff;color:#1A1A1A;
+    font:600 12px/1 -apple-system,Segoe UI,Roboto,sans-serif;cursor:pointer;}
+  .rv-btn.rv-primary{background:#1A1A1A;color:#fff;}
+  .rv-btn.rv-danger{border-color:#DB0011;color:#DB0011;}
+  .rv-btn:disabled{opacity:.4;cursor:not-allowed;}
+  /* comments panel */
+  #rv-panel{position:fixed;top:0;right:0;bottom:0;width:340px;max-width:88vw;z-index:2147483200;background:#fff;
+    border-left:1px solid #D7D8D6;box-shadow:-8px 0 30px rgba(0,0,0,.16);transform:translateX(100%);
+    transition:transform .18s ease;display:flex;flex-direction:column;
+    font:400 13px/1.45 -apple-system,Segoe UI,Roboto,sans-serif;color:#1A1A1A;}
+  #rv-panel.rv-open{transform:translateX(0);}
+  #rv-panel .rv-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px 16px;border-bottom:1px solid #EEE;}
+  #rv-panel .rv-head strong{font:700 14px/1 inherit;}
+  #rv-panel .rv-list{flex:1;overflow:auto;padding:8px 12px;}
+  #rv-panel .rv-empty{color:#8A8A8A;padding:24px 8px;text-align:center;}
+  .rv-item{border:1px solid #EEE;border-radius:8px;padding:10px;margin:0 0 8px;}
+  .rv-item .rv-item-h{display:flex;align-items:center;gap:8px;margin:0 0 4px;}
+  .rv-item .rv-num{flex:none;width:20px;height:20px;border-radius:50%;background:#1A1A1A;color:#fff;font:700 11px/20px inherit;text-align:center;}
+  .rv-item .rv-loc{font:600 12px/1.3 inherit;color:#333;word-break:break-word;}
+  .rv-item .rv-txt{color:#1A1A1A;white-space:pre-wrap;word-break:break-word;margin:2px 0 8px;}
+  .rv-item .rv-acts{display:flex;gap:8px;}
+  .rv-item .rv-link{background:none;border:0;padding:0;color:#333;text-decoration:underline;cursor:pointer;font:600 12px/1 inherit;}
+  .rv-item .rv-link.rv-del{color:#DB0011;}
+  #rv-panel .rv-foot{border-top:1px solid #EEE;padding:12px 16px;display:flex;gap:8px;}
+  #rv-panel .rv-foot .rv-btn{flex:1;height:38px;}
+  /* export modal */
+  #rv-export{position:fixed;inset:0;z-index:2147483600;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;padding:24px;}
+  #rv-export.rv-show{display:flex;}
+  #rv-export .rv-card{width:720px;max-width:100%;max-height:86vh;background:#fff;border-radius:10px;display:flex;flex-direction:column;overflow:hidden;
+    font:400 13px/1.45 -apple-system,Segoe UI,Roboto,sans-serif;color:#1A1A1A;}
+  #rv-export .rv-card-h{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #EEE;}
+  #rv-export textarea{flex:1;margin:0;border:0;outline:none;resize:none;padding:16px;font:400 12.5px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;color:#1A1A1A;min-height:320px;}
+  #rv-export .rv-card-f{display:flex;gap:8px;justify-content:flex-end;padding:12px 16px;border-top:1px solid #EEE;}
+  .rv-x{background:none;border:0;font-size:20px;line-height:1;cursor:pointer;color:#666;padding:4px;}
+  @media print{#rv-fab,#rv-panel,#rv-composer,#rv-markers,#rv-export{display:none !important;}}
+</style>
+
+<button id="rv-fab" type="button" aria-pressed="false" title="Toggle review mode">
+  <span class="rv-dot" aria-hidden="true"></span><span class="rv-label">Review</span><span class="rv-count" id="rv-count">0</span>
+</button>
+<div id="rv-markers" aria-hidden="true"></div>
+<svg id="rv-noodle" aria-hidden="true"><rect id="rv-noodle-box" rx="3" style="display:none"/><path id="rv-noodle-path"/><circle id="rv-noodle-dot" r="3.5" style="display:none"/></svg>
+<div id="rv-composer" role="dialog" aria-label="Add comment">
+  <p class="rv-target" id="rv-composer-target" title="Drag to move"></p>
+  <textarea id="rv-composer-text" placeholder="Describe the change you want here…" aria-label="Comment"></textarea>
+  <div class="rv-row">
+    <button class="rv-btn rv-danger" id="rv-composer-del" type="button" style="margin-right:auto;display:none;">Delete</button>
+    <button class="rv-btn" id="rv-composer-cancel" type="button">Cancel</button>
+    <button class="rv-btn rv-primary" id="rv-composer-save" type="button">Save</button>
+  </div>
+</div>
+<aside id="rv-panel" aria-label="Review comments">
+  <div class="rv-head"><strong>Comments (<span id="rv-panel-count">0</span>)</strong>
+    <button class="rv-x" id="rv-panel-close" type="button" aria-label="Close panel">×</button></div>
+  <div class="rv-list" id="rv-list"><p class="rv-empty">Turn on <b>Review</b>, then click any component to pin a comment.</p></div>
+  <div class="rv-foot">
+    <button class="rv-btn" id="rv-clear" type="button">Clear all</button>
+    <button class="rv-btn rv-primary" id="rv-export-btn" type="button">Export prompt</button>
+  </div>
+</aside>
+<div id="rv-export" role="dialog" aria-label="Export prompt" aria-modal="true">
+  <div class="rv-card">
+    <div class="rv-card-h"><strong>Edit prompt — copy &amp; paste back</strong><button class="rv-x" id="rv-export-close" type="button" aria-label="Close">×</button></div>
+    <textarea id="rv-export-text" readonly spellcheck="false"></textarea>
+    <div class="rv-card-f">
+      <button class="rv-btn" id="rv-export-download" type="button">Download .md</button>
+      <button class="rv-btn rv-primary" id="rv-export-copy" type="button">Copy to clipboard</button>
+    </div>
+  </div>
+</div>
+
+<script id="rv-script">
+(function(){
+  "use strict";
+  function meta(n){ var m=document.querySelector('meta[name="'+n+'"]'); return m?m.getAttribute('content'):''; }
+  var DOC_TITLE = meta('rv-doc') || (document.title||"Review").replace(/\s+·.*$/,"").trim();
+  var DOC_FILE = meta('rv-file') || '';
+  // ctx = the viewing state a pin was made under (mode · theme), read from the host
+  // doc's live attributes at save time. Empty on docs that carry neither (harmless).
+  // In two-pane harnesses (showroom light/dark) this is what keeps exports unambiguous.
+  function ctxOf(){
+    var m=(document.body&&document.body.getAttribute('data-theme'))||'';
+    var t=document.documentElement.getAttribute('data-apollo-theme')||'';
+    return [m,t].filter(Boolean).join(' · ');
+  }
+  var comments = [];            // {id, ctx, section, desc, path, text, el}
+  var seq = 0;
+  var active = false, editingId = null, pendingEl = null, composerEl = null, dragging = false;
+
+  var fab=document.getElementById('rv-fab'),
+      countEl=document.getElementById('rv-count'),
+      markers=document.getElementById('rv-markers'),
+      composer=document.getElementById('rv-composer'),
+      cTarget=document.getElementById('rv-composer-target'),
+      cText=document.getElementById('rv-composer-text'),
+      cSave=document.getElementById('rv-composer-save'),
+      cCancel=document.getElementById('rv-composer-cancel'),
+      cDel=document.getElementById('rv-composer-del'),
+      panel=document.getElementById('rv-panel'),
+      list=document.getElementById('rv-list'),
+      panelCount=document.getElementById('rv-panel-count'),
+      exportModal=document.getElementById('rv-export'),
+      exportText=document.getElementById('rv-export-text');
+
+  function isRvNode(n){ return n && n.closest && n.closest('#rv-fab,#rv-panel,#rv-composer,#rv-markers,#rv-export'); }
+
+  // ---- element description -------------------------------------------------
+  function cleanHead(s){ return (s||'').replace(/\s+/g,' ').replace(/^(\d+)(?=\D)/,'$1 ').trim(); }
+  function sectionName(el){
+    var sec = el.closest && el.closest('section[aria-labelledby]');
+    if(sec){ var h=document.getElementById(sec.getAttribute('aria-labelledby')); if(h) return cleanHead(h.textContent); }
+    var anySec = el.closest && el.closest('section'); if(anySec){ var hh=anySec.querySelector('h1,h2,h3'); if(hh) return cleanHead(hh.textContent); }
+    // fallback for FLAT docs (dossiers with no <section> wrappers): nearest preceding heading in document order
+    var heads=[].slice.call(document.querySelectorAll('h1,h2,h3')), best='';
+    for(var i=0;i<heads.length;i++){
+      if(heads[i]===el || (el.compareDocumentPosition(heads[i]) & Node.DOCUMENT_POSITION_PRECEDING)){
+        best=cleanHead(heads[i].textContent);
+      }
+    }
+    return best;
+  }
+  function descOf(el){
+    var aria=(el.getAttribute&&el.getAttribute('aria-label'))||'';
+    var own=(aria||el.textContent||'').replace(/\s+/g,' ').trim();
+    if(own.length>48) own=own.slice(0,48)+'…';
+    var tag=el.tagName?el.tagName.toLowerCase():'el';
+    var cls=(typeof el.className==='string'&&el.className)?'.'+el.className.split(/\s+/)[0]:'';
+    return own ? own+' ('+tag+cls+')' : tag+cls;
+  }
+  function pathOf(el){
+    var parts=[], n=el, depth=0;
+    while(n && n.nodeType===1 && n!==document.body && depth<5){
+      var s=n.tagName.toLowerCase();
+      if(n.id){ s='#'+n.id; parts.unshift(s); break; }
+      if(typeof n.className==='string' && n.className.trim()) s+='.'+n.className.trim().split(/\s+/)[0];
+      parts.unshift(s); n=n.parentElement; depth++;
+    }
+    return parts.join(' > ');
+  }
+
+  // ---- markers -------------------------------------------------------------
+  function renderMarkers(){
+    markers.innerHTML='';
+    comments.forEach(function(c,i){
+      if(!c.el||!c.el.getBoundingClientRect) return;
+      var r=c.el.getBoundingClientRect();
+      if(r.width===0&&r.height===0) return;
+      var pin=document.createElement('button');
+      pin.className='rv-pin'; pin.type='button'; pin.textContent=(i+1);
+      pin.style.left=(r.right-6)+'px'; pin.style.top=(r.top+8)+'px';
+      pin.title=c.text||'(empty)';
+      pin.addEventListener('click',function(e){ e.stopPropagation(); openComposer(c.el,c.id); });
+      markers.appendChild(pin);
+    });
+  }
+
+  // ---- composer ------------------------------------------------------------
+  function openComposer(el, id){
+    editingId=(id!=null)?id:null; pendingEl=el;
+    var sec=sectionName(el), d=descOf(el);
+    cTarget.textContent=(sec?('['+sec+'] '):'')+d;
+    var existing=id!=null?comments.filter(function(c){return c.id===id;})[0]:null;
+    cText.value=existing?existing.text:'';
+    cDel.style.display=existing?'inline-flex':'none';
+    // default placement: beside the element (not over it); drag + noodle handle the rest
+    var r=el.getBoundingClientRect(), cw=312, ch=200, gap=14, left, top;
+    if(window.innerWidth-r.right > cw+gap) left=r.right+gap;                 // room on the right
+    else if(r.left > cw+gap) left=r.left-cw-gap;                            // else the left
+    else left=Math.min(window.innerWidth-cw-8, Math.max(8, r.left));        // else clamp
+    top=Math.min(window.innerHeight-ch, Math.max(8, r.top));
+    composer.style.top=top+'px'; composer.style.left=left+'px';
+    composer.classList.add('rv-show');
+    composerEl=el;
+    setTimeout(function(){ cText.focus(); drawNoodle(); },0);
+  }
+  function closeComposer(){ composer.classList.remove('rv-show'); pendingEl=null; editingId=null; composerEl=null; drawNoodle(); }
+
+  // ---- noodle (leader line) + drag ----------------------------------------
+  var noodlePath=document.getElementById('rv-noodle-path'), noodleDot=document.getElementById('rv-noodle-dot'),
+      noodleBox=document.getElementById('rv-noodle-box');
+  function drawNoodle(){
+    if(!composerEl || !composer.classList.contains('rv-show') || !noodlePath){
+      if(noodlePath) noodlePath.removeAttribute('d');
+      if(noodleDot) noodleDot.style.display='none';
+      if(noodleBox) noodleBox.style.display='none';
+      return;
+    }
+    var r=composerEl.getBoundingClientRect(), cr=composer.getBoundingClientRect();
+    // 1) highlight the EXACT element being commented on (its precise bounds)
+    noodleBox.setAttribute('x', r.left); noodleBox.setAttribute('y', r.top);
+    noodleBox.setAttribute('width', Math.max(0, r.width)); noodleBox.setAttribute('height', Math.max(0, r.height));
+    noodleBox.style.display='';
+    // 2) anchor the noodle to the element's BORDER edge facing the composer (never the centre)
+    var ecx=r.left+r.width/2, ecy=r.top+r.height/2, ccx=cr.left+cr.width/2, ccy=cr.top+cr.height/2;
+    var dx=ccx-ecx, dy=ccy-ecy, ex, ey;
+    if(Math.abs(dx) >= Math.abs(dy)){                           // composer is more to the side → left/right edge
+      ex = dx>=0 ? r.right : r.left;
+      ey = Math.min(Math.max(ccy, r.top+4), r.bottom-4);
+    } else {                                                    // composer is more above/below → top/bottom edge
+      ey = dy>=0 ? r.bottom : r.top;
+      ex = Math.min(Math.max(ccx, r.left+4), r.right-4);
+    }
+    // 3) composer-side anchor: nearest edge of the box to the element anchor
+    var cx = (ex<cr.left) ? cr.left : (ex>cr.right ? cr.right : Math.min(Math.max(ex,cr.left),cr.right));
+    var cy = Math.min(Math.max(ey, cr.top+8), cr.bottom-8);
+    var mx = ex+(cx-ex)*0.5;
+    noodlePath.setAttribute('d','M'+ex+','+ey+' C'+mx+','+ey+' '+mx+','+cy+' '+cx+','+cy);
+    noodleDot.setAttribute('cx',ex); noodleDot.setAttribute('cy',ey); noodleDot.style.display='';
+  }
+  cTarget.addEventListener('mousedown',function(e){
+    dragging=true; var cr=composer.getBoundingClientRect();
+    composer._dx=e.clientX-cr.left; composer._dy=e.clientY-cr.top;
+    e.preventDefault(); e.stopPropagation();
+  });
+  document.addEventListener('mousemove',function(e){
+    if(!dragging) return;
+    var left=Math.min(window.innerWidth-composer.offsetWidth-8, Math.max(8, e.clientX-composer._dx));
+    var top =Math.min(window.innerHeight-40, Math.max(8, e.clientY-composer._dy));
+    composer.style.left=left+'px'; composer.style.top=top+'px'; drawNoodle();
+  },true);
+  document.addEventListener('mouseup',function(){ dragging=false; },true);
+  cSave.addEventListener('click',function(){
+    var txt=cText.value.trim(); if(!txt){ closeComposer(); return; }
+    if(editingId!=null){
+      comments.forEach(function(c){ if(c.id===editingId) c.text=txt; });
+    } else if(pendingEl){
+      comments.push({id:++seq, ctx:ctxOf(), section:sectionName(pendingEl), desc:descOf(pendingEl), path:pathOf(pendingEl), text:txt, el:pendingEl});
+    }
+    closeComposer(); refresh();
+  });
+  cCancel.addEventListener('click',closeComposer);
+  cDel.addEventListener('click',function(){ if(editingId!=null){ comments=comments.filter(function(c){return c.id!==editingId;}); } closeComposer(); refresh(); });
+  cText.addEventListener('keydown',function(e){ if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)){ cSave.click(); } if(e.key==='Escape'){ closeComposer(); } });
+
+  // ---- panel list ----------------------------------------------------------
+  function refresh(){
+    countEl.textContent=comments.length; countEl.classList.toggle('rv-has',comments.length>0);
+    panelCount.textContent=comments.length;
+    if(!comments.length){ list.innerHTML='<p class="rv-empty">Turn on <b>Review</b>, then click any component to pin a comment.</p>'; }
+    else {
+      list.innerHTML='';
+      comments.forEach(function(c,i){
+        var it=document.createElement('div'); it.className='rv-item';
+        var loc=(c.ctx?('['+c.ctx+'] '):'')+(c.section?('['+c.section+'] '):'')+c.desc;
+        it.innerHTML='<div class="rv-item-h"><span class="rv-num">'+(i+1)+'</span><span class="rv-loc"></span></div>'+
+          '<div class="rv-txt"></div>'+
+          '<div class="rv-acts"><button class="rv-link rv-goto" type="button">Reveal</button>'+
+          '<button class="rv-link rv-edit" type="button">Edit</button>'+
+          '<button class="rv-link rv-del" type="button">Delete</button></div>';
+        it.querySelector('.rv-loc').textContent=loc;
+        it.querySelector('.rv-txt').textContent=c.text;
+        it.querySelector('.rv-goto').addEventListener('click',function(){ if(c.el&&c.el.scrollIntoView){ c.el.scrollIntoView({block:'center'}); flash(c.el);} });
+        it.querySelector('.rv-edit').addEventListener('click',function(){ if(c.el) openComposer(c.el,c.id); });
+        it.querySelector('.rv-del').addEventListener('click',function(){ comments=comments.filter(function(x){return x.id!==c.id;}); refresh(); });
+        list.appendChild(it);
+      });
+    }
+    renderMarkers();
+  }
+  function flash(el){ var o=el.style.outline; el.style.outline='3px solid #DB0011'; setTimeout(function(){ el.style.outline=o; },700); }
+
+  // ---- export --------------------------------------------------------------
+  function buildPrompt(){
+    var lines=[];
+    lines.push('# '+DOC_TITLE+' — review edits ('+comments.length+')');
+    lines.push('');
+    lines.push('Apply the following change requests'+(DOC_FILE?(' to `'+DOC_FILE+'`'):'')+'. Each item is pinned to a component; treat the bracketed location as the target and use the selector to disambiguate. A leading [mode · theme] bracket is the viewing state the comment was pinned under.');
+    lines.push('');
+    comments.forEach(function(c,i){
+      var loc=(c.ctx?('['+c.ctx+'] '):'')+(c.section?('['+c.section+'] '):'')+c.desc;
+      lines.push((i+1)+'. '+loc);
+      lines.push('   - '+c.text.replace(/\n/g,'\n     '));
+      lines.push('   - selector: `'+c.path+'`');
+      lines.push('');
+    });
+    return lines.join('\n');
+  }
+  function openExport(){ exportText.value=buildPrompt(); exportModal.classList.add('rv-show'); setTimeout(function(){ exportText.focus(); exportText.select(); },0); }
+  document.getElementById('rv-export-btn').addEventListener('click',openExport);
+  document.getElementById('rv-export-close').addEventListener('click',function(){ exportModal.classList.remove('rv-show'); });
+  exportModal.addEventListener('click',function(e){ if(e.target===exportModal) exportModal.classList.remove('rv-show'); });
+  document.getElementById('rv-export-copy').addEventListener('click',function(){
+    exportText.select();
+    var ok=false; try{ ok=document.execCommand('copy'); }catch(e){}
+    if(navigator.clipboard){ navigator.clipboard.writeText(exportText.value).catch(function(){}); ok=true; }
+    var b=document.getElementById('rv-export-copy'); var t=b.textContent; b.textContent=ok?'Copied ✓':'Select + ⌘C'; setTimeout(function(){ b.textContent=t; },1400);
+  });
+  document.getElementById('rv-export-download').addEventListener('click',function(){
+    var blob=new Blob([buildPrompt()],{type:'text/markdown'});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+    a.download=(DOC_TITLE.replace(/[^\w-]+/g,'-')||'review')+'-comments.md'; a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); },1000);
+  });
+
+  // ---- review-mode wiring --------------------------------------------------
+  var hoverEl=null;
+  function setActive(on){
+    active=on; document.body.classList.toggle('rv-active',on);
+    fab.classList.toggle('rv-on',on); fab.setAttribute('aria-pressed',on?'true':'false');
+    fab.querySelector('.rv-label').textContent=on?'Reviewing':'Review';
+    if(on){ panel.classList.add('rv-open'); } else { clearHover(); }
+  }
+  function clearHover(){ if(hoverEl){ hoverEl.removeAttribute('data-rv-hover'); hoverEl=null; } }
+  fab.addEventListener('click',function(){ setActive(!active); });
+  document.getElementById('rv-panel-close').addEventListener('click',function(){ panel.classList.remove('rv-open'); });
+  document.getElementById('rv-clear').addEventListener('click',function(){ if(comments.length&&confirm('Delete all '+comments.length+' comments?')){ comments=[]; refresh(); } });
+
+  document.addEventListener('mousemove',function(e){
+    if(!active || dragging) return;
+    var t=e.target;
+    if(isRvNode(t)){ clearHover(); return; }
+    if(t!==hoverEl){ clearHover(); hoverEl=t; if(hoverEl&&hoverEl.setAttribute) hoverEl.setAttribute('data-rv-hover',''); }
+  },true);
+
+  // capture clicks in review mode so the host page's own handlers/nav don't fire
+  document.addEventListener('click',function(e){
+    if(!active) return;
+    if(isRvNode(e.target)) return;           // let overlay UI work normally
+    e.preventDefault(); e.stopPropagation();
+    clearHover();
+    openComposer(e.target, null);
+  },true);
+
+  window.addEventListener('scroll',function(){ renderMarkers(); drawNoodle(); },true);
+  window.addEventListener('resize',function(){ renderMarkers(); drawNoodle(); },true);
+  setInterval(function(){ renderMarkers(); drawNoodle(); },600);   // keep pins + noodle glued as the page reflows
+
+  refresh();
+})();
+</script>
+<!-- ===================== END APOLLO REVIEW OVERLAY ===================== -->
+
+</body>
+</html>

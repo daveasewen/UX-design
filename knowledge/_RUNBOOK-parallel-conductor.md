@@ -48,6 +48,13 @@ clean on 2026-07-21 by good behaviour, not by construction — naming the file p
 construction. Workers may absorb LIVE Dave rulings mid-flight: receipt them with verbatim quotes so
 the conductor can inscribe from the receipt alone.
 
+**Optional autonomy clause for unattended lanes (routing audit #9, ratified 2026-07-23).** When a
+worker lane will run without Dave watching, its brief may include: *"the user is not watching;
+proceed on reversible actions that follow from the brief; an end-of-turn promise is not a
+completion — do the work or flag the blocker."* Interactive solo sessions don't need it. Worker
+receipts follow the evidence-pointer rule: every "landed" claim names its evidence (gate run,
+commit, render, file path — see `_RUNBOOK-capture-ritual.md` step 2).
+
 **N=1:** a lone session is Solo — its own conductor, writes its handoff as normal. The role machinery
 only engages at two or more.
 
