@@ -2,7 +2,7 @@
 
 > Generated derived view over `knowledge/` (Graphify-inspired; no external dependency). Regenerate after editing component metas or tokens: `python3 knowledge/tokens/_build_blast_radius.py`. Authored canon stays the source of truth; this is a generated dashboard.
 
-**Totals:** 64 components · 926 tokens defined · 104 tokens referenced by components · compliance: 31 rules x 64 components (31 SCs).
+**Totals:** 65 components · 926 tokens defined · 104 tokens referenced by components · compliance: 31 rules x 65 components (31 SCs).
 
 ## God-nodes — highest token blast radius
 
@@ -10,8 +10,8 @@ Change one of these and the listed number of components is affected. Use before 
 
 | Token | Blast | Example components |
 |---|---|---|
-| `text/default` | 54 | Accordion, Account card, Alert, Amount display, Amount input, Avatar… |
-| `background/default` | 25 | Accordion, Account selector, Amount display, Bar chart, Cards, Data grid… |
+| `text/default` | 55 | Accordion, Account card, Alert, Amount display, Amount input, Avatar… |
+| `background/default` | 26 | Accordion, Account selector, Amount display, Bar chart, Cards, Data grid… |
 | `icon/default` | 24 | Accordion, Avatar, Button, Cards, Dropdown, File upload… |
 | `text/reverse` | 18 | Action bar, Avatar, Badge, Button, Cards, Confirmation… |
 | `elevation/functional` | 16 | Account selector, Date picker, Date-range picker, Drawer, Dropdown, Input fields… |
@@ -30,13 +30,13 @@ Change one of these and the listed number of components is affected. Use before 
 
 | Group | Components |
 |---|---|
-| `text/` | 58 |
+| `text/` | 59 |
+| `background/` | 26 |
 | `tertiary/` | 26 |
 | `icon/` | 26 |
-| `background/` | 25 |
 | `rag/` | 22 |
+| `border/` | 18 |
 | `border-radius/` | 18 |
-| `border/` | 17 |
 | `form/` | 16 |
 | `elevation/` | 16 |
 | `typography/` | 13 |
@@ -45,7 +45,7 @@ Change one of these and the listed number of components is affected. Use before 
 | `secondary/` | 8 |
 | `padding/` | 7 |
 | `color/` | 7 |
-| `data/` | 5 |
+| `data/` | 6 |
 | `overlay/` | 5 |
 | `scale/` | 3 |
 | `scrollbar/` | 3 |

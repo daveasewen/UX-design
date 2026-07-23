@@ -4,12 +4,30 @@ Charts = semantic SVG + tokens + CSS motion + real-table spine. Blocking + advis
 Gridline contrast is advisory (decorative, WCAG 1.4.11-exempt); series-fill + axis/label contrast is blocking.
 
 ## ✓ _proforma/DataViz-interactive.html — PASS
+- ⚠ scatter — dv-016 [gridline]: var(--line2)=#EDEDED vs surface #FFFFFF = 1.17:1 (<3:1) in light mode.
+- ⚠ scatter — dv-016 [gridline]: var(--line2)=#EDEDED vs surface #FFFFFF = 1.17:1 (<3:1) in light mode.
+- ⚠ scatter — dv-016 [gridline]: var(--line2)=#EDEDED vs surface #FFFFFF = 1.17:1 (<3:1) in light mode.
+- ⚠ scatter — dv-016 [gridline]: var(--line2)=#EDEDED vs surface #FFFFFF = 1.17:1 (<3:1) in light mode.
+- ⚠ scatter — dv-016 [gridline]: var(--line2)=#EDEDED vs surface #FFFFFF = 1.17:1 (<3:1) in light mode.
+- ⚠ scatter — dv-016 [gridline]: var(--line2)=#EDEDED vs surface #FFFFFF = 1.17:1 (<3:1) in light mode.
+- ⚠ scatter — dv-016 [gridline]: var(--line2)=#EDEDED vs surface #FFFFFF = 1.17:1 (<3:1) in light mode.
+- ⚠ scatter — dv-016 [gridline]: var(--line2)=#EDEDED vs surface #FFFFFF = 1.17:1 (<3:1) in light mode.
+- ⚠ scatter — dv-016 [gridline]: var(--line2)=#3A3A3A vs surface #1A1A1A = 1.53:1 (<3:1) in dark mode.
+- ⚠ scatter — dv-016 [gridline]: var(--line2)=#3A3A3A vs surface #1A1A1A = 1.53:1 (<3:1) in dark mode.
+- ⚠ scatter — dv-016 [gridline]: var(--line2)=#3A3A3A vs surface #1A1A1A = 1.53:1 (<3:1) in dark mode.
+- ⚠ scatter — dv-016 [gridline]: var(--line2)=#3A3A3A vs surface #1A1A1A = 1.53:1 (<3:1) in dark mode.
+- ⚠ scatter — dv-016 [gridline]: var(--line2)=#3A3A3A vs surface #1A1A1A = 1.53:1 (<3:1) in dark mode.
+- ⚠ scatter — dv-016 [gridline]: var(--line2)=#3A3A3A vs surface #1A1A1A = 1.53:1 (<3:1) in dark mode.
+- ⚠ scatter — dv-016 [gridline]: var(--line2)=#3A3A3A vs surface #1A1A1A = 1.53:1 (<3:1) in dark mode.
+- ⚠ scatter — dv-016 [gridline]: var(--line2)=#3A3A3A vs surface #1A1A1A = 1.53:1 (<3:1) in dark mode.
 
 ## ✓ snippets/Chart-bar.reference.html — PASS
 
 ## ✓ snippets/Chart-donut.reference.html — PASS
 
 ## ✓ snippets/Chart-line.reference.html — PASS
+
+## ✓ snippets/Chart-scatter.reference.html — PASS
 
 ## ✓ snippets/Chart-sparkline.reference.html — PASS
 

@@ -3534,6 +3534,64 @@
 }
 
 /* ============================================================
+   Chart-scatter  (from snippets/Chart-scatter.reference.html)
+   Aria: role="group", aria-labelledby, role="img", aria-label
+   Scope: .cn-chart-scatter   ============================================================ */
+.cn-chart-scatter{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 160ms cubic-bezier(.4,0,.2,1);
+  --page: var(--background-default);
+  --ink: var(--text-default);
+  --baseline: var(--border-action-strong);
+  --line: var(--border-subtle);
+  --grid-alpha: .10;
+  --axis-alpha: .6;
+}
+[data-theme="dark"] .cn-chart-scatter{
+  --grid-alpha: .16;
+}
+.cn-chart-scatter h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-chart-scatter .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+.cn-chart-scatter figure.dv{margin:0;}
+.cn-chart-scatter .dv-stage{overflow-x:auto; padding-bottom:4px;}
+/* DV-D02 static: fixed geometry, scroll — text never scales */
+.cn-chart-scatter .dv-chart-area{width:580px;}
+.cn-chart-scatter .dv-svg{display:block; width:580px; height:260px; overflow:visible;}
+.cn-chart-scatter .dv-grid{stroke:var(--ink); stroke-opacity:var(--grid-alpha); stroke-width:1;}
+.cn-chart-scatter line.dv-axis{stroke:var(--baseline); stroke-width:1;}
+.cn-chart-scatter text.dv-axis, .cn-chart-scatter text.dv-label{opacity:var(--axis-alpha);}
+/* points ARE the series — series-colour fill + page-colour separating stroke (overlap legibility) */
+.cn-chart-scatter .dv-pt{stroke:var(--page); stroke-width:1.5; vector-effect:non-scaling-stroke;}
+/* entry motion — CSS only (DEF-003): points fade in on a gentle stagger (no line to draw against) */
+@media (prefers-reduced-motion:no-preference){
+.cn-chart-scatter .dv-animate g.dv-marker{opacity:0; animation:cn-chart-scatter-dvFade var(--ease) both;}
+}
+@keyframes cn-chart-scatter-dvFade{from{opacity:0;} to{opacity:1;}}
+.cn-chart-scatter .dv-legend{list-style:none; display:flex; flex-wrap:wrap; justify-content:center; gap:16px; margin:16px 0 0; padding:0;}
+.cn-chart-scatter .dv-legend li{display:flex; align-items:center; gap:8px; color:var(--ink);}
+.cn-chart-scatter .dv-legend .sw{width:12px; height:12px; flex:none;}
+.cn-chart-scatter .dv-legend .dv-key{font-weight:700; opacity:.6; min-width:12px; font-variant-numeric:tabular-nums;}
+.cn-chart-scatter details.dv-tabledetails{margin:8px 0 0;}
+.cn-chart-scatter details.dv-tabledetails summary{cursor:pointer; opacity:.6; width:max-content;}
+.cn-chart-scatter details.dv-tabledetails summary:hover{opacity:1; text-decoration:underline; text-underline-offset:3px;}
+.cn-chart-scatter details.dv-tabledetails summary:focus-visible{outline:2px solid var(--ink); outline-offset:2px; opacity:1;}
+.cn-chart-scatter table.dv-table{border-collapse:collapse; margin-top:8px; color:var(--ink);}
+.cn-chart-scatter table.dv-table caption{text-align:left; opacity:.6; margin-bottom:4px;}
+.cn-chart-scatter table.dv-table th, .cn-chart-scatter table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
+.cn-chart-scatter table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
+.cn-chart-scatter table.dv-table thead th{opacity:.6; font-weight:500;}
+.cn-chart-scatter .dv-empty-frame{width:580px; height:260px; display:flex; align-items:center; justify-content:center;
+    border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
+.cn-chart-scatter .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
+    padding:24px; max-width:480px;}
+.cn-chart-scatter .dv-empty-frame .empty h3{margin:0;}
+.cn-chart-scatter .dv-empty-frame .empty p{margin:0; opacity:.6; max-width:40ch;}
+@media (prefers-reduced-motion: reduce){
+
+}
+
+/* ============================================================
    Chart-sparkline  (from snippets/Chart-sparkline.reference.html)
    Aria: role="group", aria-labelledby, role="img", aria-label, aria-hidden="true"
    Scope: .cn-chart-sparkline   ============================================================ */
@@ -5707,6 +5765,15 @@
   --ink: #FFFFFF;
   --line: #404040;
 }
+[data-apollo-theme="legacy"] .cn-chart-scatter{
+  --ink: #333333;
+  --line: #D7D8D6;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-chart-scatter,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-chart-scatter{
+  --ink: #FFFFFF;
+  --line: #404040;
+}
 [data-apollo-theme="legacy"] .cn-chart-sparkline{
   --ink: #333333;
   --line: #D7D8D6;
@@ -6390,6 +6457,13 @@
 }
 [data-apollo-theme="console"][data-theme="dark"] .cn-chart-line,
 [data-apollo-theme="console"] [data-theme="dark"] .cn-chart-line{
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"] .cn-chart-scatter{
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-chart-scatter,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-chart-scatter{
   --border-radius-surface: 12px;
 }
 [data-apollo-theme="console"] .cn-chart-sparkline{
@@ -7155,6 +7229,19 @@
 }
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-line,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-line{
+  --baseline: #FFFFFF;
+  --ink: #F7F6F4;
+  --line: #524842;
+  --page: #1A1A1A;
+}
+[data-apollo-theme="supercharge"] .cn-chart-scatter{
+  --baseline: #13110E;
+  --ink: #13110E;
+  --line: #CDC8C6;
+  --page: #F7F6F4;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-scatter,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-scatter{
   --baseline: #FFFFFF;
   --ink: #F7F6F4;
   --line: #524842;

@@ -1,7 +1,7 @@
 {
   "$description": "Sutherland acceptance fixtures — per component, the contract a React implementation must satisfy to match the gated reference. Generated from snippet manifests + metas; regenerated each build.",
   "generated": "by _build_sutherland_fixtures.py",
-  "componentCount": 64,
+  "componentCount": 65,
   "fixtures": [
     {
       "component": "Accordion",
@@ -3707,6 +3707,76 @@
             ],
             "default": "default",
             "$note": "Drag handle; hover web only. Cursor shows grab → grabbed during drag."
+          }
+        ]
+      }
+    },
+    {
+      "component": "Scatter plot",
+      "category": "organism",
+      "referenceSnippet": "snippets/Chart-scatter.reference.html",
+      "meta": "components/Chart-scatter.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--page": "background/default",
+          "--ink": "text/default",
+          "--baseline": "border/action-strong",
+          "--line": "border/subtle",
+          "--data-series-1": "data/series/1",
+          "--data-series-2": "data/series/2",
+          "--data-series-3": "data/series/3",
+          "--border-radius-surface": "border-radius/surface"
+        },
+        "requiredAria": [
+          "role=\"group\"",
+          "aria-labelledby",
+          "role=\"img\"",
+          "aria-label"
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "data/series/1",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series/2",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series/3",
+            "bg": "background/default",
+            "context": "ui"
+          }
+        ],
+        "props": [
+          {
+            "name": "series",
+            "type": "number",
+            "$note": "1–3 segments; each carries colour (data/series/N) + MARKER SHAPE (circle · square · diamond) + letter key A/B/C repeated in the legend (§04.3) — colour is never the only channel (dv-011). Points carry class dv-series so the gate reads the fills directly (dv-016)."
+          },
+          {
+            "name": "data",
+            "type": "table",
+            "$note": "Real <table class=\"dv-table\"> in the figure (dv-005), surfaced by native <details>."
+          },
+          {
+            "name": "trendLine",
+            "type": "boolean",
+            "default": false,
+            "$note": "Not baked in the exemplar — a straight reference/regression line is a Layer-2 option raised for Dave (would be a dv-series <line>, dv-line-011-clean by construction)."
+          },
+          {
+            "name": "empty",
+            "type": "boolean",
+            "default": false,
+            "$note": "No-data state = the Empty-state pattern by reference."
           }
         ]
       }

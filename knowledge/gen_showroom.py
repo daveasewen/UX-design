@@ -78,7 +78,9 @@ CATEGORIES = [
                            "video-player"]),
     # Phase-2 wave 2 (worker D's lane; bucket cut by the conductor — provisional-agent
     # pending Dave's dataviz sign-off):
-    ("Charts",            ["chart-bar", "chart-line", "chart-donut", "chart-sparkline"]),
+    ("Charts",            ["chart-bar", "chart-line", "chart-donut", "chart-sparkline",
+                           # chart-expansion programme, prove-one-then-wave exemplar (2026-07-22):
+                           "chart-scatter"]),
 ]
 CAT_OF = {slug: cat for cat, slugs in CATEGORIES for slug in slugs}
 

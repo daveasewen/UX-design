@@ -48,6 +48,9 @@
 ## Chart-line.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 
+## Chart-scatter.reference.html — ✅ PASS
+- token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
+
 ## Chart-sparkline.reference.html — ✅ PASS
 - token fidelity (light+dark), ARIA, contrast pairs, all-caps, typography, copy-lint, focus — all clean.
 

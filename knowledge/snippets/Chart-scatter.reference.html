@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scatter plot — reference implementation (gated)</title>
+<!--
+  CANONICAL REFERENCE for Scatter plot (Apollo MONO) — single-series and multi-series.
+  ★ NET-NEW EXEMPLAR — chart-expansion programme, prove-one-then-wave (Dave 2026-07-22). This is the
+  FIRST of the 8 net-new chart types; built end-to-end for Dave to eyeball the LOCK-UP shape (chart +
+  controls toolbar + legend + <table> spine, projected across 4 themes × light/dark) BEFORE the wave.
+  PROVISIONAL-AGENT until Dave signs off the lock-up (open-014 class; the parked dataviz kit itself is
+  not signed off either).
+
+  WHAT'S REUSED, verbatim, from the promoted kit vocabulary (OBSERVED — Chart-line/bar are the source):
+  580×260 frame; plot 46→568 / 14→230; the data/series/* palette (#766682 / #A45C3A / #577C78,
+  dv-016 floor-clean both modes 3.31–5.26); per-series MARKER SHAPES + letters + names so colour is
+  never the only channel (dv-011 / §04.3: circle · square · diamond, keyed A/B/C); markers carry a
+  page-colour separating stroke (overlap legibility, halation-aware — R-D6 bloom, adds no absolute
+  white on dark); axis/label/grid inks = ink at alpha (as Chart-bar/line — the kit greys have no
+  post-R-D16 home; the quiet-ink token gap data/axis+data/grid stays receipted, D-side); legend is a
+  STATIC list (no pressables, no press physics); table = native <details> drawer; DV-D02 static answer
+  = fixed geometry + horizontal scroll, text never scales; CSS-only entry motion (DEF-003).
+
+  WHAT'S NEWLY JUDGED for scatter (receipted for Dave's eyeball):
+  · TWO quantitative axes (income × savings) — so BOTH horizontal AND vertical gridlines, plus numeric
+    tick labels on each axis and compact axis titles. Line/bar only needed one quantitative axis.
+  · Markers ARE the series (no connecting line) → they carry class="dv-series" so the gate sees the
+    fills directly (dv-016 checks each against the surface, both modes).
+  · Entry = a gentle staggered fade of the points (no line to draw against); reduced-motion safe.
+  · No trend/regression line in the exemplar — points only (keeps it pure; a straight reference line
+    is a Layer-2 option to raise with Dave, not baked here).
+
+  RULES honoured: dv-017 var() fills only · dv-016 ≥3:1 series + axis both modes · dv-011/§04.3 colour
+  never the only channel · dv-009 flat fills (no gradient/filter) · composites-only type (DV-D05 12px
+  step) · DEF-003 CSS-only motion · role-token radius only. Empty state consumes the Empty-state
+  pattern by reference. Metas are INLINE (#token-manifest) — the kit convention.
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:160ms cubic-bezier(.4,0,.2,1); }
+  [data-theme="light"]{
+    --page:#FFFFFF; --ink:#1A1A1A; --baseline:#1A1A1A; --line:#E1E1E1;
+    --data-series-1:#766682; --data-series-2:#A45C3A; --data-series-3:#577C78;
+    --grid-alpha:.10; --axis-alpha:.6;
+    --border-radius-surface:0;
+  }
+  [data-theme="dark"]{
+    --page:#1A1A1A; --ink:#FFFFFF; --baseline:#FFFFFF; --line:#808080;
+    --data-series-1:#766682; --data-series-2:#A45C3A; --data-series-3:#577C78;
+    --grid-alpha:.16; --axis-alpha:.6;
+    --border-radius-surface:0;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page); color:var(--ink);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--ink);
+    background:transparent; color:var(--ink); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+  h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+  .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+
+  figure.dv{margin:0;}
+  .dv-stage{overflow-x:auto; padding-bottom:4px;}   /* DV-D02 static: fixed geometry, scroll — text never scales */
+  .dv-chart-area{width:580px;}
+  .dv-svg{display:block; width:580px; height:260px; overflow:visible;}
+
+  .dv-grid{stroke:var(--ink); stroke-opacity:var(--grid-alpha); stroke-width:1;}
+  line.dv-axis{stroke:var(--baseline); stroke-width:1;}
+  text.dv-axis,text.dv-label{opacity:var(--axis-alpha);}
+
+  /* points ARE the series — series-colour fill + page-colour separating stroke (overlap legibility) */
+  .dv-pt{stroke:var(--page); stroke-width:1.5; vector-effect:non-scaling-stroke;}
+
+  /* entry motion — CSS only (DEF-003): points fade in on a gentle stagger (no line to draw against) */
+  @media (prefers-reduced-motion:no-preference){
+    .dv-animate g.dv-marker{opacity:0; animation:dvFade var(--ease) both;}
+  }
+  @keyframes dvFade{from{opacity:0;} to{opacity:1;}}
+
+  .dv-legend{list-style:none; display:flex; flex-wrap:wrap; justify-content:center; gap:16px; margin:16px 0 0; padding:0;}
+  .dv-legend li{display:flex; align-items:center; gap:8px; color:var(--ink);}
+  .dv-legend .sw{width:12px; height:12px; flex:none;}
+  .dv-legend .dv-key{font-weight:700; opacity:.6; min-width:12px; font-variant-numeric:tabular-nums;}
+
+  details.dv-tabledetails{margin:8px 0 0;}
+  details.dv-tabledetails summary{cursor:pointer; opacity:.6; width:max-content;}
+  details.dv-tabledetails summary:hover{opacity:1; text-decoration:underline; text-underline-offset:3px;}
+  details.dv-tabledetails summary:focus-visible{outline:2px solid var(--ink); outline-offset:2px; opacity:1;}
+  table.dv-table{border-collapse:collapse; margin-top:8px; color:var(--ink);}
+  table.dv-table caption{text-align:left; opacity:.6; margin-bottom:4px;}
+  table.dv-table th,table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
+  table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
+  table.dv-table thead th{opacity:.6; font-weight:500;}
+
+  .dv-empty-frame{width:580px; height:260px; display:flex; align-items:center; justify-content:center;
+    border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
+  .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
+    padding:24px; max-width:480px;}
+  .dv-empty-frame .empty h3{margin:0;}
+  .dv-empty-frame .empty p{margin:0; opacity:.6; max-width:40ch;}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
+      animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls">
+    <button id="themeToggle" type="button">◐ Toggle theme</button>
+    <button id="replay" type="button">↻ Replay motion</button>
+    <span>Scatter plot — canonical reference (Mono · single series · segments · no data)</span>
+  </div>
+
+  <h2>Scatter — single series</h2>
+  <figure class="dv dv-animate" data-dv-type="scatter" data-surface="page" role="group" aria-labelledby="cs1-h">
+    <figcaption id="cs1-h" class="sr-only">Monthly income against savings, per customer, pounds thousands</figcaption>
+    <div class="dv-stage"><div class="dv-chart-area">
+      <svg class="dv-svg" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 260" role="img" aria-label="Savings rise with monthly income across customers: a positive relationship from about 6 up to 47 thousand pounds saved as income runs from 28 to 140 thousand.">
+        <!-- horizontal gridlines + Y ticks (savings) -->
+        <line class="dv-grid" x1="46" y1="230" x2="568" y2="230" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="38" y="233" text-anchor="end">0</text>
+        <line class="dv-grid" x1="46" y1="158" x2="568" y2="158" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="38" y="161" text-anchor="end">25</text>
+        <line class="dv-grid" x1="46" y1="86" x2="568" y2="86" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="38" y="89" text-anchor="end">50</text>
+        <line class="dv-grid" x1="46" y1="14" x2="568" y2="14" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="38" y="17" text-anchor="end">75</text>
+        <!-- vertical gridlines + X ticks (income) -->
+        <line class="dv-grid" x1="46" y1="14" x2="46" y2="230" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="46" y="246" text-anchor="middle">0</text>
+        <line class="dv-grid" x1="220" y1="14" x2="220" y2="230" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="220" y="246" text-anchor="middle">50</text>
+        <line class="dv-grid" x1="394" y1="14" x2="394" y2="230" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="394" y="246" text-anchor="middle">100</text>
+        <line class="dv-grid" x1="568" y1="14" x2="568" y2="230" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="568" y="246" text-anchor="middle">150</text>
+        <!-- axes -->
+        <line class="dv-axis" x1="46" y1="14" x2="46" y2="230" stroke="var(--baseline)"/>
+        <line class="dv-axis" x1="46" y1="230" x2="568" y2="230" stroke="var(--baseline)"/>
+        <!-- axis titles -->
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="307" y="258" text-anchor="middle">Monthly income (£000)</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="2" y="9">Savings (£000)</text>
+        <!-- points -->
+        <g class="dv-marker" style="animation-delay:0ms"><circle class="dv-series dv-pt" fill="var(--data-series-1)" cx="143.4" cy="212.7" r="4.5"><title>£28k income · £6k saved</title></circle></g>
+        <g class="dv-marker" style="animation-delay:90ms"><circle class="dv-series dv-pt" fill="var(--data-series-1)" cx="167.8" cy="204.1" r="4.5"><title>£35k income · £9k saved</title></circle></g>
+        <g class="dv-marker" style="animation-delay:180ms"><circle class="dv-series dv-pt" fill="var(--data-series-1)" cx="192.2" cy="207.0" r="4.5"><title>£42k income · £8k saved</title></circle></g>
+        <g class="dv-marker" style="animation-delay:270ms"><circle class="dv-series dv-pt" fill="var(--data-series-1)" cx="237.4" cy="189.7" r="4.5"><title>£55k income · £14k saved</title></circle></g>
+        <g class="dv-marker" style="animation-delay:360ms"><circle class="dv-series dv-pt" fill="var(--data-series-1)" cx="258.3" cy="195.4" r="4.5"><title>£61k income · £12k saved</title></circle></g>
+        <g class="dv-marker" style="animation-delay:450ms"><circle class="dv-series dv-pt" fill="var(--data-series-1)" cx="282.6" cy="178.2" r="4.5"><title>£68k income · £18k saved</title></circle></g>
+        <g class="dv-marker" style="animation-delay:540ms"><circle class="dv-series dv-pt" fill="var(--data-series-1)" cx="314.0" cy="181.0" r="4.5"><title>£77k income · £17k saved</title></circle></g>
+        <g class="dv-marker" style="animation-delay:630ms"><circle class="dv-series dv-pt" fill="var(--data-series-1)" cx="341.8" cy="166.6" r="4.5"><title>£85k income · £22k saved</title></circle></g>
+        <g class="dv-marker" style="animation-delay:720ms"><circle class="dv-series dv-pt" fill="var(--data-series-1)" cx="380.1" cy="155.1" r="4.5"><title>£96k income · £26k saved</title></circle></g>
+        <g class="dv-marker" style="animation-delay:810ms"><circle class="dv-series dv-pt" fill="var(--data-series-1)" cx="421.8" cy="140.7" r="4.5"><title>£108k income · £31k saved</title></circle></g>
+        <g class="dv-marker" style="animation-delay:900ms"><circle class="dv-series dv-pt" fill="var(--data-series-1)" cx="470.6" cy="120.6" r="4.5"><title>£122k income · £38k saved</title></circle></g>
+        <g class="dv-marker" style="animation-delay:990ms"><circle class="dv-series dv-pt" fill="var(--data-series-1)" cx="533.2" cy="94.6" r="4.5"><title>£140k income · £47k saved</title></circle></g>
+      </svg>
+    </div></div>
+    <details class="dv-tabledetails">
+      <summary class="t-cm-legal">View as table</summary>
+      <table class="dv-table t-cm-legal">
+        <caption>Monthly income against savings, per customer, pounds thousands</caption>
+        <thead><tr><th scope="col">Income</th><th scope="col">Savings</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">28</th><td>6</td></tr><tr><th scope="row">35</th><td>9</td></tr>
+          <tr><th scope="row">42</th><td>8</td></tr><tr><th scope="row">55</th><td>14</td></tr>
+          <tr><th scope="row">61</th><td>12</td></tr><tr><th scope="row">68</th><td>18</td></tr>
+          <tr><th scope="row">77</th><td>17</td></tr><tr><th scope="row">85</th><td>22</td></tr>
+          <tr><th scope="row">96</th><td>26</td></tr><tr><th scope="row">108</th><td>31</td></tr>
+          <tr><th scope="row">122</th><td>38</td></tr><tr><th scope="row">140</th><td>47</td></tr>
+        </tbody>
+      </table>
+    </details>
+  </figure>
+
+  <h2>Scatter — segments (shape + letter + colour, colour never the only channel)</h2>
+  <figure class="dv dv-animate" data-dv-type="scatter" data-surface="page" role="group" aria-labelledby="cs2-h">
+    <figcaption id="cs2-h" class="sr-only">Monthly income against savings by customer segment, pounds thousands</figcaption>
+    <div class="dv-stage"><div class="dv-chart-area">
+      <svg class="dv-svg" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 260" role="img" aria-label="Three customer segments plotted by income and savings: Everyday (circles) save least at each income, Saver (squares) more, Investor (diamonds) most.">
+        <line class="dv-grid" x1="46" y1="230" x2="568" y2="230" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="38" y="233" text-anchor="end">0</text>
+        <line class="dv-grid" x1="46" y1="158" x2="568" y2="158" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="38" y="161" text-anchor="end">25</text>
+        <line class="dv-grid" x1="46" y1="86" x2="568" y2="86" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="38" y="89" text-anchor="end">50</text>
+        <line class="dv-grid" x1="46" y1="14" x2="568" y2="14" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="38" y="17" text-anchor="end">75</text>
+        <line class="dv-grid" x1="46" y1="14" x2="46" y2="230" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="46" y="246" text-anchor="middle">0</text>
+        <line class="dv-grid" x1="220" y1="14" x2="220" y2="230" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="220" y="246" text-anchor="middle">50</text>
+        <line class="dv-grid" x1="394" y1="14" x2="394" y2="230" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="394" y="246" text-anchor="middle">100</text>
+        <line class="dv-grid" x1="568" y1="14" x2="568" y2="230" stroke="var(--ink)"/>
+        <text class="dv-axis t-cm-legal" fill="var(--ink)" x="568" y="246" text-anchor="middle">150</text>
+        <line class="dv-axis" x1="46" y1="14" x2="46" y2="230" stroke="var(--baseline)"/>
+        <line class="dv-axis" x1="46" y1="230" x2="568" y2="230" stroke="var(--baseline)"/>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="307" y="258" text-anchor="middle">Monthly income (£000)</text>
+        <text class="dv-label t-cm-caption" fill="var(--ink)" x="2" y="9">Savings (£000)</text>
+        <!-- Segment A · Everyday · circles -->
+        <g class="dv-marker" data-series-group="1" style="animation-delay:0ms"><circle class="dv-series dv-pt" fill="var(--data-series-1)" cx="150.4" cy="218.5" r="4.5"><title>A · Everyday · £30k income · £4k saved</title></circle></g>
+        <g class="dv-marker" data-series-group="1" style="animation-delay:90ms"><circle class="dv-series dv-pt" fill="var(--data-series-1)" cx="227.0" cy="209.8" r="4.5"><title>A · Everyday · £52k income · £7k saved</title></circle></g>
+        <g class="dv-marker" data-series-group="1" style="animation-delay:180ms"><circle class="dv-series dv-pt" fill="var(--data-series-1)" cx="303.5" cy="204.1" r="4.5"><title>A · Everyday · £74k income · £9k saved</title></circle></g>
+        <g class="dv-marker" data-series-group="1" style="animation-delay:270ms"><circle class="dv-series dv-pt" fill="var(--data-series-1)" cx="387.0" cy="192.6" r="4.5"><title>A · Everyday · £98k income · £13k saved</title></circle></g>
+        <g class="dv-marker" data-series-group="1" style="animation-delay:360ms"><circle class="dv-series dv-pt" fill="var(--data-series-1)" cx="491.4" cy="181.0" r="4.5"><title>A · Everyday · £128k income · £17k saved</title></circle></g>
+        <!-- Segment B · Saver · squares -->
+        <g class="dv-marker" data-series-group="2" style="animation-delay:0ms"><rect class="dv-series dv-pt" fill="var(--data-series-2)" x="159.8" y="193.8" width="9" height="9"><title>B · Saver · £34k income · £11k saved</title></rect></g>
+        <g class="dv-marker" data-series-group="2" style="animation-delay:90ms"><rect class="dv-series dv-pt" fill="var(--data-series-2)" x="243.3" y="173.7" width="9" height="9"><title>B · Saver · £58k income · £18k saved</title></rect></g>
+        <g class="dv-marker" data-series-group="2" style="animation-delay:180ms"><rect class="dv-series dv-pt" fill="var(--data-series-2)" x="326.9" y="156.4" width="9" height="9"><title>B · Saver · £82k income · £24k saved</title></rect></g>
+        <g class="dv-marker" data-series-group="2" style="animation-delay:270ms"><rect class="dv-series dv-pt" fill="var(--data-series-2)" x="403.4" y="130.5" width="9" height="9"><title>B · Saver · £104k income · £33k saved</title></rect></g>
+        <g class="dv-marker" data-series-group="2" style="animation-delay:360ms"><rect class="dv-series dv-pt" fill="var(--data-series-2)" x="500.9" y="107.4" width="9" height="9"><title>B · Saver · £132k income · £41k saved</title></rect></g>
+        <!-- Segment C · Investor · diamonds -->
+        <g class="dv-marker" data-series-group="3" style="animation-delay:0ms"><polygon class="dv-series dv-pt" fill="var(--data-series-3)" points="185.2,167.4 190.2,172.4 185.2,177.4 180.2,172.4"><title>C · Investor · £40k income · £20k saved</title></polygon></g>
+        <g class="dv-marker" data-series-group="3" style="animation-delay:90ms"><polygon class="dv-series dv-pt" fill="var(--data-series-3)" points="275.7,135.7 280.7,140.7 275.7,145.7 270.7,140.7"><title>C · Investor · £66k income · £31k saved</title></polygon></g>
+        <g class="dv-marker" data-series-group="3" style="animation-delay:180ms"><polygon class="dv-series dv-pt" fill="var(--data-series-3)" points="359.2,104.0 364.2,109.0 359.2,114.0 354.2,109.0"><title>C · Investor · £90k income · £42k saved</title></polygon></g>
+        <g class="dv-marker" data-series-group="3" style="animation-delay:270ms"><polygon class="dv-series dv-pt" fill="var(--data-series-3)" points="449.7,69.5 454.7,74.5 449.7,79.5 444.7,74.5"><title>C · Investor · £116k income · £54k saved</title></polygon></g>
+        <g class="dv-marker" data-series-group="3" style="animation-delay:360ms"><polygon class="dv-series dv-pt" fill="var(--data-series-3)" points="547.1,34.9 552.1,39.9 547.1,44.9 542.1,39.9"><title>C · Investor · £144k income · £66k saved</title></polygon></g>
+      </svg>
+    </div></div>
+    <ul class="dv-legend center t-cm-legal">
+      <li><span class="sw" style="background:var(--data-series-1)"></span><span class="dv-key">A</span> Everyday</li>
+      <li><span class="sw" style="background:var(--data-series-2)"></span><span class="dv-key">B</span> Saver</li>
+      <li><span class="sw" style="background:var(--data-series-3)"></span><span class="dv-key">C</span> Investor</li>
+    </ul>
+    <details class="dv-tabledetails">
+      <summary class="t-cm-legal">View as table</summary>
+      <table class="dv-table t-cm-legal">
+        <caption>Monthly income against savings by customer segment, pounds thousands</caption>
+        <thead><tr><th scope="col">Income</th><th scope="col">Segment</th><th scope="col">Savings</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">30</th><td>Everyday</td><td>4</td></tr>
+          <tr><th scope="row">52</th><td>Everyday</td><td>7</td></tr>
+          <tr><th scope="row">74</th><td>Everyday</td><td>9</td></tr>
+          <tr><th scope="row">98</th><td>Everyday</td><td>13</td></tr>
+          <tr><th scope="row">128</th><td>Everyday</td><td>17</td></tr>
+          <tr><th scope="row">34</th><td>Saver</td><td>11</td></tr>
+          <tr><th scope="row">58</th><td>Saver</td><td>18</td></tr>
+          <tr><th scope="row">82</th><td>Saver</td><td>24</td></tr>
+          <tr><th scope="row">104</th><td>Saver</td><td>33</td></tr>
+          <tr><th scope="row">132</th><td>Saver</td><td>41</td></tr>
+          <tr><th scope="row">40</th><td>Investor</td><td>20</td></tr>
+          <tr><th scope="row">66</th><td>Investor</td><td>31</td></tr>
+          <tr><th scope="row">90</th><td>Investor</td><td>42</td></tr>
+          <tr><th scope="row">116</th><td>Investor</td><td>54</td></tr>
+          <tr><th scope="row">144</th><td>Investor</td><td>66</td></tr>
+        </tbody>
+      </table>
+    </details>
+  </figure>
+
+  <h2>No data — the Empty-state pattern, consumed by reference</h2>
+  <div class="dv-stage"><div class="dv-empty-frame" role="group" aria-label="Income against savings, no data">
+    <div class="empty">
+      <h3 class="t-cm-caption">No data to display</h3>
+      <p class="t-cm-legal">Points appear here once customers have activity for the selected period.</p>
+    </div>
+  </div></div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Scatter plot",
+    "vars": { "--page": "background/default", "--ink": "text/default", "--baseline": "border/action-strong",
+              "--line": "border/subtle",
+              "--data-series-1": "data/series/1", "--data-series-2": "data/series/2", "--data-series-3": "data/series/3",
+              "--border-radius-surface": "border-radius/surface" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "data/series/1", "bg": "background/default", "context": "ui" },
+      { "fg": "data/series/2", "bg": "background/default", "context": "ui" },
+      { "fg": "data/series/3", "bg": "background/default", "context": "ui" }
+    ],
+    "icons": {},
+    "requiredAria": ["role=\"group\"", "aria-labelledby", "role=\"img\"", "aria-label"],
+    "$note": "NET-NEW EXEMPLAR (chart-expansion programme, prove-one-then-wave, 2026-07-22) — PROVISIONAL-AGENT until Dave eyeballs the lock-up. Points ARE the series (class dv-series so the gate reads the fills; dv-016 ≥3:1 both modes). Two quantitative axes → both-axis gridlines + numeric ticks + compact axis titles (new-for-scatter vs line/bar's single quantitative axis). Per-series marker shapes (circle/square/diamond) + letters + names so colour is never the only channel (dv-011/§04.3). Page-colour separating stroke for overlap legibility. Axis/grid = ink at alpha (receipted judgment, as Chart-bar/line; the quiet-ink token gap data/axis+data/grid stays receipted). Legend STATIC; no trend line (Layer-2 option for Dave). Motion = CSS-only staggered fade (DEF-003)."
+  }
+  </script>
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    document.getElementById('replay').addEventListener('click', ()=>{ document.querySelectorAll('figure.dv').forEach(f=>{ f.classList.remove('dv-animate'); void f.offsetWidth; f.classList.add('dv-animate'); }); });
+  </script>
+</body>
+</html>
