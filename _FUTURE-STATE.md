@@ -250,6 +250,33 @@ values per state within the AA guarantee); pairs with `$extensions.apollo.state`
 
 ## Feature ideas (product, not yet specced)
 
+- **★ Responsive-type policy + TUNER — "curve-snapped" fluid type (Dave, 2026-07-23, chart-revisit
+  session 1)** — two riffs, logged not built. **(1) The observation:** responsive components should
+  have a per-family SCALING POLICY — *"some components might not be subject to it"* — and a tuner to
+  dial it (sibling of the ★★ radius tuner; another theme-builder proto-organ). **VERIFIED state at
+  logging (grep 2026-07-23): there is NO fluid font scaling anywhere** — zero `clamp()`/vw/cq-unit
+  font-sizes in type.css/canon.css/snippets; type = fixed scale steps; responsiveness = LAYOUT
+  collapses only, a mix of `@container` (component width — 8+ snippets, the direction) and `@media`
+  (page width — a few, incl. Chart-sparkline; reconcile candidate). Charts are ALREADY exempt by law
+  (DV-D02: text must not scale). Dave's floor instinct — **base = lowest step, 12px MEDIUM (500)** —
+  matches DV-D05 + the enacted dataviz label snap (12/500). **(2) The idea:** *"could the scaling be
+  less 'fixed' — based in the 'curve' of the scale but snap to 4px along the curve"* — i.e.
+  container-driven position along the modular curve, QUANTISED to grid steps (fluid-but-snapped, no
+  free interpolation). Architecture home if pursued: a **component-type-tier dial** (ADR-0013 — the
+  press-physics pattern: families opt in/out, themes can zero it), policy tokens not code. Open
+  design questions for a TYPE session (T-D15 candidate): the snap step (pure 4px regularises away
+  14px — font-6 breaks the quantum today); container vs page basis as the canonical rule; weight
+  behaviour along the curve (12px floor wants 500, larger sizes relax to 400 — the existing
+  body-weight rule bounds this). *Status:* logged; needs a dedicated type-tier session + tuner
+  sheet; do NOT enact piecemeal — T-D9/T-D12 binding architecture governs any change.
+  *Live demo, same hour:* the Q6 sheet itself shipped BOTH failures — a viewBox stretch (specimen
+  text + strokes scaling with pane width: accidental fluid type, the banned physics) and 11px
+  authored labels (sub-floor, off-scale; `reviews/` isn't gate-globbed so nothing fired) — **Dave
+  caught both by eye**; fixed to a 1:1 pin + t-cm-legal metrics (12/400). Also surfaced a live
+  **weight seam: proforma labels = 12/500 (the 07-22 snap) vs canon chart axis composite
+  `t-cm-legal` = 12/400** — flagged to Dave as chart-revisit Q8; the revisit pass must reconcile,
+  and Dave's floor instinct (small sizes want MEDIUM) is one of the two candidate answers.
+
 - **★ Narrative dossiers as a NODE-SET in the decision graph** — Dave, 2026-07-19, right after making the
   dossier a closing-ritual step (1b): *"it might have to be wired into the KB or the state manager or a
   separate graph or something, not sure but it's some kind of set of nodes for sure."* The dossiers
@@ -372,6 +399,27 @@ values per state within the AA guarantee); pairs with `$extensions.apollo.state`
   role-granular slots with a base fallback for the same reason. The alias-aware resolution in
   `gen_theme_cascade.py` (override the base → every role follows; dial a role → it wins) is the
   generator's core resolution semantic, already live.
+  **→ Channel dials (Dave, 2026-07-23, in the Q6 dataviz-chrome ruling):** every themable role should
+  expose ALL its render channels as generator levers — the Q6 shape (`data/axis`+`data/grid` = snapped
+  colour + a declared alpha slot, default 1.0) is the pattern instance: *"creating new themes has many
+  levels to pull on."* The Q6 sheet (`reviews/DATA-AXIS-GRID-2026-07-23-v1.html`), the ★★ radius tuner
+  (top of file) and the Mono primary editors are all **proto-organs of this builder** — every live
+  review controller we ship is a module of it, accreting toward the generator UI.
+
+- **★ Token COMPRESSOR — dispatch-time distiller (Dave, 2026-07-23: "strip out for production code,
+  so it's light … might not save much, let me know if this is pointless")** — assessed same day:
+  **not pointless, but bytes are the wrong scoreboard** — brotli/gzip already crush token CSS ~85%,
+  raw-size savings are marginal. The real jobs, in value order: **(1) SUBSETTING** — a product
+  shipping 30 components ships only their tokens + partials (tree-shaking at the adapter boundary);
+  **(2) GOVERNANCE** — production artefacts carry PROMOTED tokens only: default-value flex slots,
+  unconsumed roles and provisional-agent values stripped — the Dispatch-phase enforcement of
+  [[derivation-governance]]; **(3) CHAIN-FLATTENING where flex is dead** — alias hops (component →
+  type-group → semantic → default) bake to literals only where the shipped product never flips that
+  dial at runtime. The constraint that shapes the tool: **flattening kills runtime theming** —
+  `[data-apollo-theme]` switching needs live vars — so the compressor is a DIAL (how much runtime
+  flex survives to prod), not a flat pass. Architecturally this is the token-tier instance of
+  [[kb-distillation-at-deploy]] and most likely a **stage of the ADR-0008 automated adapters**, not
+  a standalone tool. *Status:* logged, unspecced; revisit when Dispatch is real.
 
 - ~~**★ Tiered flex at the COMPONENT-TYPE level — ARCHITECTURE SESSION QUEUED**~~ **GRADUATED
   2026-07-21 (same day, late night #3) → RULED as ADR-0013** — component-type tier carries shared

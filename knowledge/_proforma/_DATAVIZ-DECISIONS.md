@@ -46,6 +46,22 @@ Source of these rulings: the exported review comment-pins on the REVIEW copy (ba
 - **DV-D06 · Delta indicators** may use gain/loss colour with sign + arrow (dv-019 override), exempt
   from red-once-per-screen. *(From the ratified dossier; unchanged.)*
   Edges: bounds(dv-019)
+- **DV-D07 · Chart chrome = two-channel roles: snapped colour + declared alpha slot (2026-07-23).**
+  Mints `data/axis` + `data/grid` — closes worker-D's receipted quiet-ink gap (post-R-D16 homeless
+  greys). Each role = per-mode COLOUR snapped to the neutral ramp (`$alias → color/neutral/*`;
+  starting values axis 7 light / 9 dark · grid 12 light / 6 dark per the Q6 sheet — Dave may
+  re-dial on it) **+ a declared ALPHA slot, default 1.0** (ADR-0010 posture: a flex slot only a
+  theme pulling the alpha lever populates). Dave, verbatim: *"I still want to keep the flexibility
+  of having alpha as the method for styling … store a null or 100% value plus the colour[;] going
+  forward I need max flexibility so creating new themes has many levels to pull on."* Extends the
+  ADR-0009 two-channel physics (colour substrate + optional opacity layer) beyond states to
+  component chrome. Gate consequence at enactment: where a theme sets alpha < 1, dv-016 / DV-D03
+  contrast computes from the COMPOSITE (colour × alpha × ground), never the stored hex alone.
+  `data/target` deferred — mints only with the threshold feature (chart-revisit Q4). Enactment
+  rides the chart-revisit pass: rebind the five snippets' `--axis-alpha`/`--grid-alpha` idiom onto
+  the roles (the two-var CSS shape already matches). Decision sheet:
+  `reviews/DATA-AXIS-GRID-2026-07-23-v1.html` (+.REVIEW copy).
+  Edges: refines(ADR-0010, scope=dataviz-chrome-roles) · refines(ADR-0009, scope=two-channel-beyond-states)
 
 ---
 

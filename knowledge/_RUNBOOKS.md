@@ -9,7 +9,7 @@ only in the artefact it governs dies the first time that artefact is rewritten �
 **This index is generated from the filesystem**, because a hand-maintained list of runbooks is exactly
 the thing that rots when someone adds the tenth one and forgets the list.
 
-**13 runbooks**, last generated 2026-07-22.
+**14 runbooks**, last generated 2026-07-23.
 
 ### `_RUNBOOK-capture-ritual.md`
 **Runbook — end-of-session capture ritual**
@@ -70,6 +70,11 @@ Origin 2026-07-19: two Cowork sessions ran at once and BOTH tried to commit + re
 **Runbook — reconcile a dark token group**
 
 Procedure for fixing tokens that are flat, wrong, or invisible in dark mode. Companion to `_RUNBOOK-gated-component.md`. Trigger: the dark-surface gate fails, a snippet drifts, or an audit surfaces a dark defect.
+
+### `_RUNBOOK-render-verify.md`
+**Runbook — render-verify (Chromium + Playwright in the sandbox)**
+
+The repeatable procedure for rendering repo HTML to PNG **inside the Linux sandbox**, with the real HSBC face, so the agent can SEE its own work before handing it over. Stood up 2026-07-23 at Dave's ask ("there should be a runbook for…
 
 ### `_RUNBOOK-toolkit-tranche.md`
 **RUNBOOK — Common Toolkit tranche (cheap-model session)**

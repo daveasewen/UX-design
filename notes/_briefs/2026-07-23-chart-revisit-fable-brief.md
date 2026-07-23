@@ -205,6 +205,12 @@ Before handing anything back, per chart:
 5. Legend/toolbar pressables = quiet utility state, NO B-D7 press physics — confirm.
 6. Mint `data/axis` + `data/grid` (+ `data/target` if threshold built) now? (closes the receipted gap)
 7. Optional title: also a `dv-subtitle`/source-note slot, or title only?
+8. **Label weight seam (found 2026-07-23, Dave's eye):** the proforma's 07-22 snap made chart labels
+   12/**500**; canon chart snippets bind `t-cm-legal` = 12/**400**. Two live weights. Reconcile —
+   Dave's floor instinct ("smallest size wants MEDIUM") is one candidate; a 500 form-label composite
+   question (wave-1 Q1) is adjacent. Don't pick silently; T-D15-flavoured.
+   *(Post-cut addenda: Decision #1 = RESOLVED, ADR-0015 accepted 2026-07-23 — behaviour partial,
+   ≤16KB gated. Q6 = RULED, DV-D07 — two-channel mint, values on the Q6 sheet. Q1–5, 7, 8 open.)*
 
 *Provenance: this brief continues the chart-expansion programme (prove-one-then-wave). The scatter
 exemplar (`snippets/Chart-scatter.reference.html`, build green 51/51) is the layout/lock-up reference;
