@@ -216,3 +216,44 @@ Before handing anything back, per chart:
 exemplar (`snippets/Chart-scatter.reference.html`, build green 51/51) is the layout/lock-up reference;
 `_proforma/DataViz-interactive.html` is the INTERACTION reference. Both are the source of truth — do
 not re-invent, port + accrete.*
+
+---
+
+## ★ CONDUCTOR ADDENDUM — 2026-07-23 (Thu ~17:45 BST) · role split RULED by Dave
+
+**Dave ruled mid-afternoon: the bar-audit session becomes CONDUCTOR; a fresh Fable window runs
+Phase 1 of this brief as the WORKER lane.** Single worker, so fences are wide — but they are fences.
+
+### What changed since the brief was cut (read before building)
+
+1. **ADR-0015 + DV-D07 are RULED** (see the parenthetical addenda above — behaviour partial ≤16KB
+   gated; two-channel axis/grid mint, values on the Q6 sheet `reviews/DATA-AXIS-GRID-2026-07-23-v1.html`).
+2. **★ BAR AUDIT LANDED (this session):** `reviews/BAR-CHART-AUDIT-2026-07-23-v1(.REVIEW).html`.
+   Confirmed: responsive reflow absent from ALL FIVE canon charts (restore = confirmed req #2);
+   grouped/stacked unpromoted (B1, Dave's call, bar lane); h-bar recolour flag (B3, bar lane).
+3. **Q8 / B2 is formally OPEN — DO NOT resolve it in the exemplar.** The 07-22 snap FLATTENED the
+   kit's reviewed weight ladder (labels 400 · values 600 · keys 700 → uniform 500); one 12/500
+   composite would inscribe the flattening. **Exemplar binds the EXISTING canon composites
+   (`t-cm-legal` 12/400 etc.), zero type mints; Dave's B2 ruling retro-propagates as a composite
+   swap.** (Tokens for DV-D07 colour/alpha are NOT type — that mint rides your build as briefed.)
+4. **Proforma scatter section has no fit wiring** (audit B4). NOT your scope — it rides the
+   scatter lane in the wave. Do not edit `_proforma/DataViz-interactive.html` at all.
+
+### Lane fences (worker = the fresh window)
+
+**Worker OWNS (write freely):** `knowledge/canon/dv-behaviour.js` (new source) · the partials
+generator extension + its selftest · new/extended gate(s) + selftests · `knowledge/component-types.json`
+(dataviz group entry — single-worker wave, direct write is safe; contracts fire on registration) ·
+token stores for the DV-D07 mint + theme override sets · `snippets/Chart-line.reference.html` + its
+`components/*.meta.json` · regenerated artefacts (canon/cascade/showroom ride your builds).
+
+**Worker does NOT touch:** `GOOD-MORNING.md` · `_LIVE-STATE.md` · `_FUTURE-STATE.md` ·
+`notes/_briefs/*` · `reviews/BAR-CHART-AUDIT*` · ledger spines beyond your own inscription lines ·
+**git (NO commits — conductor commits ONE reconcile).**
+
+**Receipt:** `notes/_receipts/2026-07-23-chart-line-exemplar-worker.md` — landed files · gate/selftest
+results · judged deltas · open Qs · any Dave ruling absorbed mid-flight VERBATIM.
+
+**Baseline:** conductor certified **51/51 green** pre-lane (commit noted in-receipt when you start —
+`git log --oneline -1`). Build serially as you land pieces; the authoritative final serial run +
+reconcile + commit are the conductor's.

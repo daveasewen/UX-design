@@ -17,8 +17,8 @@
 - **caps-name** — ALL-CAPS word "YYYY" — names take Title Case, caps are for acronyms (nam-002)
 
 ## Form-layout.reference.html — 2 signal(s)
-- **unmasked-digits** — sort-code shape "40-12-26" — sort codes are fully masked
 - **unmasked-digits** — sort-code shape "00-00-00" — sort codes are fully masked
+- **unmasked-digits** — sort-code shape "40-12-26" — sort codes are fully masked
 
 ## Input-fields.reference.html — 4 signal(s)
 - **input-hints** — typed input with neither inputmode nor autocomplete: <input id="u1" type="email" placeholder="name@example.com" a… (acd-025, 1.3.5)
