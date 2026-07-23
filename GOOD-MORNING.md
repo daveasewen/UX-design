@@ -283,8 +283,13 @@ Serial set as always (registry · MIGRATED_SNIPPETS · CATEGORIES · spine · gi
 **(c) Templates+shells clean-room (Layer-2, the load-bearing gap)** — solo Fable ADR-style session.
 Best AFTER the ruling batch: field-family, stepper-fold and delta-seam answers shape it.
 **(d) Enact window (cheap)** — absorb §C·2 rulings as token/registry edits + §C·4; new candidates: mint
-`data/axis`+`data/grid` · R-D9 ramp promotion · field-family group build if ruled · Stat-card `spark` slot ·
-**★★ the live radius/corner tuner (Dave: return SOON).**
+`data/axis`+`data/grid` (per ★ DV-D07 two-channel) · R-D9 ramp promotion · field-family group build if ruled ·
+Stat-card `spark` slot · **★★ the live radius/corner tuner (Dave: return SOON).**
+**(e) ★ ROUTING SIDE-QUEST ("third chat", Dave 2026-07-23)** — audit our scaffolding against his
+Fable-routing research: brief `notes/_briefs/2026-07-23-routing-sidequest-brief.md` · source doc
+`notes/2026-07-23-fable-routing-research-dave.md`. Solo OPUS recommended; if parallel to the
+exemplar = WORKER (files+receipt, no git). Deliverable = numbered-proposals review sheet; known
+tensions pre-listed in the brief (gauge-numbers-in-handoffs is the sharp one). Enact nothing unruled.
 
 ## 2. ★ DAVE: THE RULING BATCH — 16 numbered + the ★ DATAVIZ SIGN-OFF (rule by number; all
 retro-propagate). **The sign-off first:** D promoted the PARKED kit verbatim into
