@@ -1,15 +1,26 @@
 # Good morning, Dave ☕
 
-> ## ★ LATEST — 2026-07-23 (Thu afternoon, FABLE solo — chart-revisit session 1: rulings + render runbook, wrapped Red ~16:00): **TWO RULINGS INSCRIBED SAME HOUR.** ★ **ADR-0015 ACCEPTED** (Decision #1: behaviour = ONE generated JS partial `dv-behaviour`, the ADR-0013 pattern; Dave's "light/fast/responsive" made GATEABLE — source ≤16KB raw vs observed proforma baseline 9.9KB/3.2gz · banned setInterval/network/external-src/polling · single rAF-debounced resize + delegated events · baked SVG survives JS-off). ★ **DV-D07 RULED** (Q6: `data/axis`+`data/grid` = **TWO-CHANNEL roles** — snapped colour, starting axis neutral/7L·9D grid 12L·6D re-diallable, **+ declared ALPHA slot default 1.0** — Dave: *"many levels to pull on"*; alpha<1 ⇒ composite contrast; **ID note: D06 was taken, the ruling is D07**). Seed fed both, **129/129/129 zero mismatch**. ★ **RENDER RUNBOOK STOOD UP** (`knowledge/_RUNBOOK-render-verify.md`, indexed 14) — **pipeline VERIFIED WORKING; the 07-22 "download refused" was a MISDIAGNOSIS** (the installer's EXPECTED host-validation exit fires AFTER a successful download — check `~/.cache/ms-playwright/` first) + fontconfig alias `"Univers Next for HSBC"`→`HSBC_MtUnivers_Latin` = real-font renders with zero CSS edits; ADR-0013/0014 render-verify UNBLOCKED (still owed). **Dave's eye beat render-verify ×3 on the Q6 sheet** (dark-on-dark dials · viewBox stretch = accidental fluid type, DV-D02's banned physics · 11px sub-floor authoring) → all fixed (1:1 pin, `t-cm-legal` 12/400, proof at TWO widths), runbook now requires **≥2 viewport widths**, and the chase surfaced ★ **Q8 NEW — the label-weight seam: proforma snap 12/500 vs canon `t-cm-legal` 12/400** (in the brief's Q-list; don't pick silently). `_FUTURE-STATE` +3 (theme-builder channel dials · token compressor — bytes wrong scoreboard, subsetting/governance real · curve-snapped responsive type — VERIFIED no fluid type exists anywhere today). Dossier: `_DECISION-HISTORY/2026-07-23-chart-revisit-rulings-and-render-runbook.md`. Build **51/51** · library 65 · ONE commit below. **⚠ AWAITING DAVE: revisit Q2–5, 7 + Q8 · the 16-Q batch + DATAVIZ SIGN-OFF · scatter eyeball.**
+> **RENAME THE WRAPPED CHAT →** `Apollo charts — bar audit + CONDUCTOR (Fable): Dave's hunches confirmed (fit absent all 5) · DV-D08 ladder (Q8 RESOLVED) + DV-D09 orientation defaults + D-Q3 promote · routing sidequest absorbed (Mode 2 deliberate) · 4 commits · wrapped Red`
+> **TITLE THE NEXT (Fable, WORKER) CHAT →** `Apollo charts — Chart-line exemplar (Fable WORKER, full budget): dv-behaviour + generator + gates (ADR-0015) → Layer-2 end-to-end · mint DV-D07 + DV-D08 composites · brief + addendum + LIVE RULINGS 2026-07-23`
+> *(Titles are LABELS — role comes from Dave's opener line. The worker opener is in §C·0.)*
+
+> *A calm word before the queue — the #13 trial banner (one handoff only; Dave judges by eye).*
+> *You are starting fresh, and that is fine — everything you need is written down. Read this file,
+> then the `_LIVE-STATE` top delta, and you will know what is true. Three rulings landed Thursday
+> evening and are inscribed with their evidence; the chart-line build is fully unblocked and its
+> brief is current. Nothing in the queue punishes reading slowly. The context gauge and its tally
+> are a protocol for writing things down while there is still room — not a stop signal.*
+
+> ## ★ LATEST — 2026-07-23 (Thu evening, FABLE — opened for the exemplar, became BAR AUDIT → CONDUCTOR; model: Fable, effort not set; wrapped Red ~20:00): **DAVE'S TWO HUNCHES CONFIRMED, THREE RULINGS INSCRIBED, FIRST TWO-LANE CONDUCT ABSORBED.** ★ **The bar audit** (`reviews/BAR-CHART-AUDIT-2026-07-23-v1.REVIEW.html`, render-verified 1400+840 real-font): responsive `fitCharts()` absent from **ALL FIVE** canon charts (proforma bar 24/23 fit points vs 0 — restore = brief req #2); grouped+stacked unpromoted; the 07-22 snap (`99fcb6d`) had FLATTENED the kit's 400/600/700 weight ladder to uniform 500 — my own Q8 framing nearly inscribed it (Dave caught it: "I didn't answer Q8 properly"). Sheet = live base64-payload iframes (file://→file:// subframes BLOCKED; showroom pattern) + width slider that DEMONSTRATES the loss. ★ **Rulings** (ledger + seed same hour, `f887efd`, graph 76/130): **DV-D08** text ladder 12/500 floor + 700 emphasis (600 stays off-brand — Dave chose 700 over amending the canon; **Q8 RESOLVED**, worker's type-mint unblocked) · **DV-D09** orientation-distinct bar defaults (column series-1 · h-bar series-3 restored; hue = placeholder until the planned **Apollo EDIT MODE**; dv-014 survives as a journey rule) · **D-Q3 RULED** (grouped+stacked promote, wave bar lane). ★ **Routing sidequest absorbed** (Dave's "other session"): 13/13 ratified+enacted, committed with its handed message (`db1ed1b`); **Mode-2 delegation → DELIBERATE** (supersedes 07-13; memory hooks updated); harness-template spin-out registered (`_FUTURE-STATE` §Spin-outs). Reconcile: every path named incl. one mid-conduct sibling commit (`a2acc9e` — flagged: single-writer includes idle-open windows). Build **51/51** · library 65 · dossier `_DECISION-HISTORY/2026-07-23-bar-audit-and-conductor-absorbs.md`. **⚠ THE CHART-LINE WORKER WINDOW WAS NEVER OPENED — §C·0 first.**
+>
+> ## PRIOR — 2026-07-23 (Thu afternoon, FABLE solo — chart-revisit session 1: rulings + render runbook, wrapped Red ~16:00): **TWO RULINGS INSCRIBED SAME HOUR.** ★ **ADR-0015 ACCEPTED** (Decision #1: behaviour = ONE generated JS partial `dv-behaviour`, the ADR-0013 pattern; Dave's "light/fast/responsive" made GATEABLE — source ≤16KB raw vs observed proforma baseline 9.9KB/3.2gz · banned setInterval/network/external-src/polling · single rAF-debounced resize + delegated events · baked SVG survives JS-off). ★ **DV-D07 RULED** (Q6: `data/axis`+`data/grid` = **TWO-CHANNEL roles** — snapped colour, starting axis neutral/7L·9D grid 12L·6D re-diallable, **+ declared ALPHA slot default 1.0** — Dave: *"many levels to pull on"*; alpha<1 ⇒ composite contrast; **ID note: D06 was taken, the ruling is D07**). Seed fed both, **129/129/129 zero mismatch**. ★ **RENDER RUNBOOK STOOD UP** (`knowledge/_RUNBOOK-render-verify.md`, indexed 14) — **pipeline VERIFIED WORKING; the 07-22 "download refused" was a MISDIAGNOSIS** (the installer's EXPECTED host-validation exit fires AFTER a successful download — check `~/.cache/ms-playwright/` first) + fontconfig alias `"Univers Next for HSBC"`→`HSBC_MtUnivers_Latin` = real-font renders with zero CSS edits; ADR-0013/0014 render-verify UNBLOCKED (still owed). **Dave's eye beat render-verify ×3 on the Q6 sheet** (dark-on-dark dials · viewBox stretch = accidental fluid type, DV-D02's banned physics · 11px sub-floor authoring) → all fixed (1:1 pin, `t-cm-legal` 12/400, proof at TWO widths), runbook now requires **≥2 viewport widths**, and the chase surfaced ★ **Q8 NEW — the label-weight seam: proforma snap 12/500 vs canon `t-cm-legal` 12/400** (in the brief's Q-list; don't pick silently). `_FUTURE-STATE` +3 (theme-builder channel dials · token compressor — bytes wrong scoreboard, subsetting/governance real · curve-snapped responsive type — VERIFIED no fluid type exists anywhere today). Dossier: `_DECISION-HISTORY/2026-07-23-chart-revisit-rulings-and-render-runbook.md`. Build **51/51** · library 65 · ONE commit below. **⚠ AWAITING DAVE: revisit Q2–5, 7 + Q8 · the 16-Q batch + DATAVIZ SIGN-OFF · scatter eyeball.**
 >
 > ## PRIOR — 2026-07-23 (Thu, OPUS solo — scatter exemplar BUILT + chart-revisit programme scoped, wrapped ~Amber): **THE SCATTER EXEMPLAR IS BUILT END-TO-END** — `snippets/Chart-scatter.reference.html` (single-series + 3-segment lock-up: controls toolbar + legend + `<table>` spine + CSS entry motion; both-axis gridlines + numeric ticks + optional axis titles; points carry `class="dv-series"` so the gate reads the fills; page-stroke markers). Proforma section seeded (`_proforma/DataViz-interactive.html`, DV-D01), meta + registration done. **Build green 51/51, library 64→65, census 32→32, DataViz gate 0 blocking/0 advisory both figures**; geometry-verified (27 pts in-bounds, chart↔table parity exact); render-verify OWED (Playwright refused, standing). Handed to Dave to eyeball the lock-up (async). **THEN DAVE RE-SET THE BAR:** the round-one **proforma `DataViz-interactive.html` is the INTERACTION gold-standard** — its Layer-2 (interactive value POPOVER `dvTip` · responsive `fitCharts()` reflow · **table-view POPOVER**, NOT a drawer — Dave corrected + mocked it · legend-as-FILTER · donut sweep · high-contrast) was **stripped** when the kit was promoted ("no pressables"). **NEW PROGRAMME (ruled): Fable revisits ALL 5 canon charts** (bar·line·donut·sparkline·scatter) to that bar + **optional visible title on every chart** + a **deeper-data-manipulation idea MENU** (Dave: "give me ideas") + ★ the **net-new BAR+LINE-OVERLAY combo** (Dave: "we've completely missed the bar with line overlay"). **Decision #1 for Fable:** behaviour home = a **generated JS partial** (ADR-0013 pattern, recommend — not 5× inline), reflect to Dave first. **Fable brief CUT →** `notes/_briefs/2026-07-23-chart-revisit-fable-brief.md`. **⚠ STILL AWAITING DAVE (unchanged): the 16-Q ruling batch + DATAVIZ SIGN-OFF, §C·2** — the scatter lock-up eyeball joins it (async).
 >
 > ## PRIOR — 2026-07-22 (evening, OPUS solo — scoping + quick wins, wrapped at Amber): **CHART-EXPANSION PROGRAMME SCOPED.** Mapped your wish-list vs the proforma kit: grouped/stacked bars already there → **promote** (= D-Q3); **8 net-new** — butterfly ×2 (h+v), scatter, histogram, box plot, pie, stacked area, bullet, candlestick. Each deliverable = a **lock-up** (chart + controls toolbar + legend + `<table>` spine) **projected across 4 themes × light/dark**. **Run mode YOU ruled: prove-one-then-wave — exemplar = SCATTER, built end-to-end next window for your eyeball, THEN I fan out the rest as worker lanes** (DV-D01: explore in `DataViz-interactive.html` → promote to `Chart-*.reference.html`). Also this session: **Console corner experiment** — you asked to try 4px; I wrongly flattened it *uniform*, you caught it ("corners tune per component type"); **RESTORED** buttons=4 / cards=12 / **bars square**; the "is this architectural?" answer = **no**, per-type tuning already lives in the role tier + the ADR-0013 component-type tier. **Heatmaps PARKED** — they need a live *interpolation tool*, not a snippet (intention logged `_FUTURE-STATE` ★; seed tuner `reviews/HEATMAP-RAMP-2026-07-22-v1.html`, OKLab). **DataViz labels snapped to the ramp** (11px → 12px/500). **★★ You told me not to let you forget the LIVE RADIUS/CORNER TUNER — logged, priority SOON.** Build green **51/51**. **⚠ STILL AWAITING YOU (unchanged): the 16-Q ruling batch + the DATAVIZ SIGN-OFF, §C·2.**
 >
 > ## PRIOR — 2026-07-22 (evening, ONE FABLE CONDUCTOR session ran BOTH waves + 5 worker windows): **PHASE-2 WAVES 1+2 LANDED — 24 components in one day, library 40→64, registry 4→18 members, census 32→32 across everything, build 51/51.** Wave 1: A forms 4/9 + B feedback 10/11 (14 landed). Wave 2: **A-continuation 5/5 — the forms brief is COMPLETE 9/9** (incl. the library's FIRST calendar panel + first determinate progress bar) · **C Data-grid 1/1** (APG semantics, 4-control `:is()` member) · **D Charts 4/4 — the parked dataviz kit PROMOTED to canon snippets, ALL PROVISIONAL-AGENT awaiting your sign-off.** The ADR-0013 protocol compounds: wave-2 workers PRE-LANDED the partials contracts → injections clean first try; dataviz gate now WIRED to chart snippets; census never moved. **Gates earned their keep:** token-sync caught 4 recall-written values (Stepper) · blast-radius caught a `.seg` reuse · type26-013 blocked a white-letter donut variant. **A's fence-breach flag RESOLVED as misread of MY mid-wave absorb — fences held all day** (reconcile receipt has the full account). **⚠ AWAITING YOU: 16 numbered questions + the DATAVIZ SIGN-OFF (§C·2) + the standing eyeball set now spanning 24 new components (§C·3).** Field-family accretion evidence: **≥10 files, overwhelming.**
-> **RENAME THIS CHAT →** `Apollo — chart-revisit 1 (Fable): ADR-0015 ruled (dv-behaviour partial, ≤16KB gated) + DV-D07 (axis/grid two-channel colour+alpha slot) + render runbook (07-22 refusal = misdiagnosis, pipeline VERIFIED, real-font alias) + Q8 label-weight seam · graph 129/129 · build 51/51 · wrapped Red`
-> **TITLE THE NEXT (Fable) CHAT →** `Apollo charts — Chart-line exemplar (Fable solo, full budget): dv-behaviour source + generator + gates (ADR-0015) → Layer-2 on Chart-line end-to-end · mint DV-D07 tokens + rebind · resolve Q8 label weight · then wave divvy · brief 2026-07-23 + §C`
-> *(⚠ Titles are LABELS — the role word comes from your opener line, never from a title. Fresh session: read this file, then `_LIVE-STATE.md` top delta.)*
+> *(Names for the wrapped + next chats live at the TOP of this file — this older pair was applied/superseded 2026-07-23 evening.)*
 >
 > ---
 >
@@ -17,26 +28,30 @@
 
 ---
 
-*Briefing — refreshed 2026-07-22 18:12 BST (date from `date`), session "Phase-2 CONDUCTOR, both
-waves" (one FABLE conductor + 5 FABLE worker windows across the day; all receipts + 2 reconcile
-receipts in `notes/_receipts/2026-07-22-phase2-*`). §A = orientation · §B = session · §C = queue.*
+*Briefing — refreshed 2026-07-23 ~20:00 BST (date from `date`), session "bar audit → CONDUCTOR"
+(Fable; sidequest receipt absorbed `notes/_receipts/2026-07-23-routing-sidequest-audit.md`; dossier
+`_DECISION-HISTORY/2026-07-23-bar-audit-and-conductor-absorbs.md`). §A = orientation · §B = session ·
+§C = queue.*
 
 ## ⬛ DO THIS FIRST
 
-> **1. ★ CHART-LINE EXEMPLAR — Decision #1 is RESOLVED (★ ADR-0015), so BUILD.** Read the brief
-> (`notes/_briefs/2026-07-23-chart-revisit-fable-brief.md`) + `docs/decisions/ADR-0015-behaviour-partials-dataviz.md`,
-> then: author `knowledge/canon/dv-behaviour.js` (popover · fit · table-popover · legend-filter, ≤16KB
-> gated) → extend the partials generator with the JS/AUTO-BEHAVIOUR block type + `--check` + selftest →
-> **mint DV-D07** (`data/axis`+`data/grid` two-channel per `_DATAVIZ-DECISIONS.md`; values on the Q6
-> sheet) → apply Layer-2 to **Chart-line** end-to-end + rebind its chrome → green build → render-verify
-> at ≥2 widths (`_RUNBOOK-render-verify.md` — pipeline WORKS now) → hand Dave the ONE chart. **Q8 (label
-> weight 500 vs 400) needs Dave or a loudly-flagged default.** Then the wave divvy (brief). The scatter
-> snippet = LAYOUT reference; the proforma = INTERACTION reference.
-> **2. ★ DAVE: the RULING BATCH (§C·2)** — 16 numbered + the **DATAVIZ SIGN-OFF**. Rule by number,
-> any window; all retro-propagate. **Field-family (Q6)** is the material one (≥10 files).
-> **3. The eyeball set (§C·3)** — 24 new components × 4 themes (non-blocking, async via pane pins).
-> **4. ★★ Radius/corner tuner (§C·1) — Dave: "return soon, don't let me forget."** Resurface it unprompted.
-> **5. Then wave 3 or the templates+shells clean-room** — after the chart programme / rulings.
+> **0. ★ OPEN THE CHART-LINE WORKER WINDOW — it was never started.** Dave pastes as the opener:
+> *"read good morning — you are the WORKER, chart-line exemplar lane, brief
+> `notes/_briefs/2026-07-23-chart-revisit-fable-brief.md` including the conductor addendum + LIVE
+> RULINGS at the end — build Phase 1 end-to-end, receipt only, no git."*
+> **1. ★ THE WORKER BUILDS (all rulings now in hand — nothing blocks):** `dv-behaviour.js` (popover ·
+> fit · table-popover · legend-filter, ≤16KB gated, ADR-0015) → generator JS-block extension +
+> `--check` + selftest → **mint DV-D07** (axis/grid two-channel, Q6-sheet values) **+ the DV-D08
+> composites** (12/500 floor · 700 emphasis — Q8 is RESOLVED, no seam left) → Layer-2 on
+> **Chart-line** end-to-end → green build → render-verify ≥2 widths → hand Dave the ONE chart.
+> Scatter snippet = LAYOUT reference; proforma = INTERACTION reference.
+> **2. ★ DAVE: the RULING BATCH (§C·2) — now 15 numbered** (D-Q3 RULED this session) + the
+> **DATAVIZ SIGN-OFF** + revisit **Q2–5, 7** (Q1/Q6/Q8 all resolved). Rule by number, any window.
+> **Field-family (batch Q6)** is the material one (≥10 files).
+> **3. The eyeball set (§C·3)** — 24 components × 4 themes + the scatter lock-up (async, pane pins).
+> **4. ★★ Radius/corner tuner (§C·1d) — Dave: "return soon, don't let me forget."** Resurface unprompted.
+> **5. Then the wave divvy** (bar lane now carries D-Q3 promotion + DV-D09 defaults + B4 scatter-fit)
+> **→ wave 3 or templates+shells** after.
 
 *Standing practice: every handoff carries both names — retrospective + forward — and a **DIVVY PLAN**.
 This handoff's plan: §C·1. Steps 4b + 2 in `_RUNBOOK-capture-ritual.md`.*
@@ -230,10 +245,14 @@ until actually run + seen. HTML is what Dave reviews; PNGs are agent self-verifi
 ---
 
 # §B · THIS SESSION
-> ⓘ Most recent = the **Opus solo scoping + quick-wins window** (see the LATEST banner + dossier
-> `_DECISION-HISTORY/2026-07-22-chart-scoping-console-corners-heatmap-park.md`): chart programme scoped,
-> Console corners fixed + architecture answered, heatmaps parked, labels snapped, tuner logged. The
-> detailed narrative below is the **PRIOR Phase-2 waves** session, retained for context.
+> ⓘ Most recent = the **bar-audit → CONDUCTOR window** (the ★ LATEST banner is its summary; the
+> narrative WHY lives in `_DECISION-HISTORY/2026-07-23-bar-audit-and-conductor-absorbs.md` — audit
+> method, the contaminated-Q8-framing lesson, the base64-payload iframe borrow, the rulings arc,
+> the two-lane reconcile incl. the `a2acc9e` mid-conduct note). Evidence per claim: audit sheet
+> `reviews/BAR-CHART-AUDIT-2026-07-23-v1.REVIEW.html` (rendered 1400+840) · ledger DV-D08/09 +
+> seed 76/130 (`f887efd`) · sidequest receipt + its commit (`db1ed1b`) · builds 51/51 at baseline
+> AND post-inscription. The detailed narrative below is the **PRIOR Phase-2 waves** session,
+> retained for context.
 
 ## (prior) 2026-07-22 evening — "Phase-2, BOTH waves: one conductor, five worker windows"
 
@@ -285,14 +304,16 @@ Best AFTER the ruling batch: field-family, stepper-fold and delta-seam answers s
 **(d) Enact window (cheap)** — absorb §C·2 rulings as token/registry edits + §C·4; new candidates: mint
 `data/axis`+`data/grid` (per ★ DV-D07 two-channel) · R-D9 ramp promotion · field-family group build if ruled ·
 Stat-card `spark` slot · **★★ the live radius/corner tuner (Dave: return SOON).**
-**(e) ★ ROUTING SIDE-QUEST ("third chat", Dave 2026-07-23)** — audit our scaffolding against his
-Fable-routing research: brief `notes/_briefs/2026-07-23-routing-sidequest-brief.md` · source doc
-`notes/2026-07-23-fable-routing-research-dave.md`. Solo OPUS recommended; if parallel to the
-exemplar = WORKER (files+receipt, no git). Deliverable = numbered-proposals review sheet; known
-tensions pre-listed in the brief (gauge-numbers-in-handoffs is the sharp one). Enact nothing unruled.
+**(e) ★ ROUTING SIDE-QUEST — ✅ DONE + RATIFIED SAME DAY (2026-07-23 evening).** All 13 proposals
+RATIFIED by Dave and #6–12 ENACTED in-session (his override): sheet
+`reviews/ROUTING-AUDIT-2026-07-23-v1.REVIEW.html` · receipt
+`notes/_receipts/2026-07-23-routing-sidequest-audit.md` (ruling verbatim). **#12 SUPERSEDES the
+07-13 Mode-2 default-on** (delegation now DELIBERATE; MODEL-ROUTING tombstoned, memory hooks
+updated). #13 = the calm-banner trial riding THIS handoff's top — Dave judges by eye. Residue in
+§C·4: none owed beyond the trial verdict.
 
-## 2. ★ DAVE: THE RULING BATCH — 16 numbered + the ★ DATAVIZ SIGN-OFF (rule by number; all
-retro-propagate). **The sign-off first:** D promoted the PARKED kit verbatim into
+## 2. ★ DAVE: THE RULING BATCH — 15 REMAIN of 16 (D-Q3 = #14 RULED 2026-07-23, promote in the
+wave; Q8/B2 also RESOLVED → DV-D08) + the ★ DATAVIZ SIGN-OFF (rule by number; all retro-propagate). **The sign-off first:** D promoted the PARKED kit verbatim into
 Chart-bar/line/donut/sparkline — your review flips them provisional-agent→canon (open-014).
 **New this wave, 8–16:**
 8. **(A-Q5)** Calendar day-cells + Stepper done-dots carry NO press physics (judged selection
@@ -307,7 +328,9 @@ Chart-bar/line/donut/sparkline — your review flips them provisional-agent→ca
     kit toggle never ruled.
 13. **(D-Q2)** Donut labelling default: spider vs direct; letters-on-segments HELD (white letters
     on series fills — type26-013).
-14. **(D-Q3)** Promote the kit's grouped/stacked bars next wave?
+14. ~~**(D-Q3)** Promote the kit's grouped/stacked bars next wave?~~ **✅ RULED 2026-07-23 (audit
+    B1): PROMOTE, wave bar lane** — ledger line under DV-D09's block; the Batch-1 #3
+    grouped-LAYOUT open (reference images) is separate and stays open.
 15. **(D-Q4)** Status-watch amber light-mode = 3.02:1 vs page — the R-D3 graphic floor with zero
     margin. Comfortable for charts, or lift?
 16. **(D-Q5)** TWO delta conventions now live (charts `data/delta/gain·loss` vs Stat-card's R-D5
@@ -346,7 +369,8 @@ as the dataviz sign-off (§C·2).
 
 ## 4. Enact-queue (cheap, post-rulings)
 F1 Legacy icon/default white · F2 Legacy `rag/error-tint` · tag-atom radius reconcile · F5 Dropdown's
-6 locals · designer-pack v2.1 re-bake · **pro-forma dedup pass (ruling 3 — now also carries wave-1's
+6 locals · designer-pack v2.1 re-bake · **advisory-signals emitter stable sort** (ordering wobble
+rode `db36e72`) · **DV-D09 enact** (h-bar → series-3; bar lane) · **pro-forma dedup pass (ruling 3 — now also carries wave-1's
 fl-summary≈Alert + B's observation that Tranche-1/2 hold earlier empty-state/toast sketches)** ·
 composite motion tokens (would retire the matchValues pin) · enact whatever §C·2/§C·3 rulings change ·
 consider `--verify` blocking.
@@ -367,9 +391,12 @@ Legacy hex seeding + provenance-gate flip · Console/Supercharge chromatic palet
 Sutherland field test · full-review backlog (`_REVIEW-SIGNOFF.md`) · `_FUTURE-STATE` items ·
 spot-illustration/empty-state icon set (`_ICON-GAPS.md`, wave-1's only gap).
 
-> **COMMIT STATE.** This Fable rulings session = **ONE wrap commit** (hash handed in-chat, paste-ready):
-> ADR-0015 (new) · DV-D07 in `_DATAVIZ-DECISIONS.md` · graph seed → 129 edges (verify zero-mismatch) ·
-> `knowledge/_RUNBOOK-render-verify.md` (new) + regenerated `_RUNBOOKS.md` (14) · the Q6 decision sheet
-> + REVIEW copy (new, `reviews/DATA-AXIS-GRID-2026-07-23-v1*`) · brief Q8 addendum · this handoff ·
-> `_LIVE-STATE` · `_FUTURE-STATE` (+3 entries) · the dossier. **No snippet/token changes** (rulings +
-> records only) — library stays **65**, build green **51/51**. **Dave pushes via GitHub Desktop.**
+> **COMMIT STATE (refreshed 2026-07-23 ~20:00).** The evening session's stack, oldest first:
+> `db36e72` (bar-audit sheet + divvy addendum) · `a2acc9e` (afternoon session's post-wrap sidequest
+> filing — landed mid-conduct, flagged) · `db1ed1b` (routing audit, the receipt's handed message) ·
+> `f887efd` (DV-D08/09 + D-Q3 inscriptions + seed) · **+ the wrap commit** (this handoff ·
+> `_LIVE-STATE` delta · dossier · queue re-narrow). These sit atop `ef86ab7` (afternoon wrap) and
+> `00abdf3`/`99fcb6d` (scatter + scoping) — **GitHub Desktop shows the true unpushed count; push the
+> WHOLE stack in one go.** No snippet/token changes this session (audit + rulings + records only) —
+> library stays **65**, build green **51/51**. **Dave pushes via GitHub Desktop; Desktop closed
+> while Claude commits.**
