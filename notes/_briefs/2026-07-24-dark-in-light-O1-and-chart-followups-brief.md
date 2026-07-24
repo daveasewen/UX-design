@@ -1,5 +1,15 @@
 # Brief — "dark-mode-in-light-mode" (O1 architecture) + chart follow-ups
 
+> **★ UPDATE 2026-07-24 PM (Opus solo) — DESIGN NOW RULED + INSCRIBED; only the MECHANISM BUILD remains.**
+> Dave confirmed the O1 sub-decisions by number and ruled **DV-D10** (combo/line labelling) by eye on
+> `reviews/COMBO-LABELLING-SOLUTIONS-2026-07-24-v1.html`. Records are on tattoos: **ADR-0014 addendum
+> (Decisions 7+8)**, **DV-D10** in `_DATAVIZ-DECISIONS.md`, decision-graph fed, build **53/53 green**.
+> ★ Correction verified: `type26-013` has **no running gate** (asserted-only) — the biting gate is
+> **`dv-016`**; O1's gate work = **extend `data-surface` with `inverse` + fix dv-016's contrast base**,
+> not "exempt white text". **The turnkey 5-step build spec is the `_LIVE-STATE` top delta** — open on
+> that. The sections below are the original design reasoning (still valid; superseded only where the
+> addendum/DV-D10 narrowed scope: combo end-key is DV-D10's lockups, NOT O1).
+
 *Cut 2026-07-24 ~19:23 BST (date from `date`) by the Opus chart-conductor window, at Dave's
 direction: "lets do it but it will probably needs its own sesh." Self-contained — a fresh window
 should be able to open cold on this. Read `_LIVE-STATE` top delta + this file.*

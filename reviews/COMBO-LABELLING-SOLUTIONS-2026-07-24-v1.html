@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Combo labelling — solutions side by side (2026-07-24 v1)</title>
+<!--
+  COMPARISON SHEET — how to identify/label the LINE series on a bar+line COMBO, given the line-end
+  key lands on/near the dark bar and collides on responsive reflow (Dave, 2026-07-24).
+  Four live panels, one shared WIDTH slider (drag to see the reflow collision), light+dark.
+  Geometry + tokens are the REAL Chart-combo (snippets/Chart-combo.reference.html): data-series
+  fills, dual axes, band-centre x, page-casing under the line. Only the LABELLING LAYER varies.
+  Colour tokens transcribed from the snippet's :root blocks (provenance in-file); this sheet
+  compares LAYOUT, not colour — the tokens are real so contrast reads true.
+  NOT canon. A review artefact for Dave to rule by eye. Versioned -v1 (never overwrite).
+-->
+<style>
+  :root{
+    --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+    --ease:160ms cubic-bezier(.4,0,.2,1);
+  }
+  /* real Chart-combo tokens (transcribed from the snippet, 2026-07-24) */
+  [data-theme="light"]{
+    --page:#FFFFFF; --ink:#1A1A1A; --baseline:#1A1A1A; --line:#E1E1E1;
+    --data-series-1:#766682; --data-series-2:#A45C3A;
+    --data-axis:#626262; --data-grid:#E1E1E1; --data-target:#313131;
+    --panel:#F5F4F2; --muted:#626262;
+  }
+  [data-theme="dark"]{
+    --page:#1A1A1A; --ink:#FFFFFF; --baseline:#FFFFFF; --line:#808080;
+    --data-series-1:#766682; --data-series-2:#A45C3A;
+    --data-axis:#9D9D9D; --data-grid:#484848; --data-target:#B7B7B7;
+    --panel:#242424; --muted:#9D9D9D;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:28px 32px 64px; font-family:var(--font); background:var(--page); color:var(--ink);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  h1{font-size:20px; font-weight:500; margin:0 0 4px;}
+  .sub{font-size:13px; color:var(--muted); margin:0 0 20px; max-width:70ch; line-height:1.5;}
+  .toolbar{position:sticky; top:0; z-index:10; background:var(--page); padding:12px 0 14px; margin-bottom:8px;
+    border-bottom:1px solid var(--line); display:flex; gap:20px; align-items:center; flex-wrap:wrap;}
+  .toolbar button{font:inherit; font-size:13px; padding:7px 12px; border:1px solid var(--ink);
+    background:transparent; color:var(--ink); cursor:pointer;}
+  .toolbar label{font-size:13px; display:flex; align-items:center; gap:8px; color:var(--muted);}
+  .toolbar input[type=range]{width:230px; accent-color:var(--data-series-2);}
+  .wval{font-variant-numeric:tabular-nums; color:var(--ink); min-width:52px;}
+  .grid{display:grid; grid-template-columns:repeat(2,minmax(340px,1fr)); gap:22px;}
+  @media(max-width:920px){ .grid{grid-template-columns:1fr;} }
+  .panel{border:1px solid var(--line); background:var(--page); padding:16px 16px 18px; min-width:0;}
+  .panel h2{font-size:14px; font-weight:500; margin:0 0 2px; display:flex; align-items:center; gap:8px;}
+  .tag{font-size:11px; font-weight:500; padding:2px 7px; border-radius:2px; letter-spacing:.02em;}
+  .tag.rec{background:#1f7a44; color:#fff;}
+  .tag.prob{background:#8a5a00; color:#fff;}
+  .tag.exc{background:#3a3a55; color:#fff;}
+  .panel .lede{font-size:12px; color:var(--muted); margin:0 0 12px; line-height:1.45; min-height:32px;}
+  .chartwrap{overflow:hidden;}
+  svg.combo{display:block; width:100%; height:auto; overflow:visible;}
+  .chan{display:flex; flex-wrap:wrap; gap:6px; margin:12px 0 8px;}
+  .chan span{font-size:11px; padding:2px 7px; border:1px solid var(--line); border-radius:2px; color:var(--muted);}
+  .chan span.on{border-color:var(--ink); color:var(--ink);}
+  .verdict{font-size:12px; line-height:1.5; margin:0;}
+  .verdict b{font-weight:500;}
+  .pro{color:#2f9e5f;} .con{color:#c9772b;}
+  [data-theme=dark] .pro{color:#5fca8a;} [data-theme=dark] .con{color:#e0a05e;}
+  footer{margin-top:26px; font-size:12px; color:var(--muted); line-height:1.55; max-width:80ch;}
+  code{font-family:ui-monospace,Menlo,monospace; font-size:11px; background:var(--panel); padding:1px 4px;}
+</style>
+</head>
+<body data-theme="light">
+  <div class="toolbar">
+    <button id="theme" type="button">◐ Toggle light / dark</button>
+    <label>Panel width
+      <input id="w" type="range" min="230" max="560" value="560">
+      <span class="wval" id="wv">560px</span>
+    </label>
+    <button id="narrow" type="button">↦ Jump to collision width (300px)</button>
+  </div>
+
+  <h1>Combo labelling — four solutions, side by side</h1>
+  <p class="sub">The line series' identity currently rides a <b>line-end key</b> that lands on/near the last dark bar and
+  collides with other elements as the chart reflows. Drag the width slider (or hit the collision button) to watch each
+  approach behave. Same real geometry + tokens everywhere; only the <b>labelling layer</b> changes.</p>
+
+  <div class="grid" id="grid"></div>
+
+  <footer>
+    <b>Channels legend:</b> the non-colour ways each series stays identifiable — <code>colour</code>, <code>shape</code>
+    (swatch mirrors the on-chart mark), <code>text</code> (the series name), <code>proximity</code> (lockup sits by its
+    axis), <code>table</code> (the full data spine, always present). WCAG 1.4.1 needs <b>at least one non-colour channel</b>;
+    "convey key info with <b>text</b>, don't rely solely on shape+colour." All four keep the table; the question is what
+    rides on the chart itself. — Not canon; rule by eye. <code>reviews/COMBO-LABELLING-SOLUTIONS-2026-07-24-v1.html</code>
+  </footer>
+
+<script>
+/* ---- real combo data (from the snippet's table) ---- */
+const MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const PAY=[620,585,705,660,748,802,760,815,878,842,910,965];      // £000, axis 0..1000
+const STP=[88.2,89.0,88.6,90.1,91.4,90.8,92.3,93.0,92.6,93.8,94.6,95.4]; // %, axis 85..100
+const H=240, PT=16, PB=42;             // plot top / bottom padding (x-labels live in PB)
+let PL=46, PR=46;                       // left / right axis gutters (overridden per variant)
+
+function y_bar(v){ const top=PT, bot=H-PB; return bot-(v/1000)*(bot-top); }
+function y_line(v){ const top=PT, bot=H-PB; return bot-((v-85)/15)*(bot-top); }
+
+/* build the combo SVG at width W for a given variant. Returns an <svg> string. */
+function combo(W, variant){
+  const plL = variant==='s1' ? 30 : PL;         // s1 drops numeric axes for lockups
+  const plR = variant==='s1' ? 30 : PR;
+  const plotW = W-plL-plR, bot=H-PB, top=PT;
+  const band=plotW/12;
+  const cx=i=> plL + band*i + band/2;
+  const bw=Math.min(28, band*0.52);
+
+  let bars="", line="", cas="", mk="", xlab="";
+  const pts=[];
+  for(let i=0;i<12;i++){
+    const x=cx(i), by=y_bar(PAY[i]);
+    bars+=`<rect class="bar" x="${(x-bw/2).toFixed(1)}" y="${by.toFixed(1)}" width="${bw.toFixed(1)}" height="${(bot-by).toFixed(1)}" fill="var(--data-series-1)"/>`;
+    const ly=y_line(STP[i]); pts.push(`${x.toFixed(1)},${ly.toFixed(1)}`);
+    mk+=`<circle cx="${x.toFixed(1)}" cy="${ly.toFixed(1)}" r="5" fill="var(--data-series-2)" stroke="var(--page)" stroke-width="2.5"/>`;
+    xlab+=`<text class="ax" x="${x.toFixed(1)}" y="${(bot+16).toFixed(1)}" text-anchor="middle">${MONTHS[i]}</text>`;
+  }
+  cas=`<polyline points="${pts.join(' ')}" fill="none" stroke="var(--page)" stroke-width="6.5" stroke-linejoin="round" stroke-linecap="round"/>`;
+  line=`<polyline points="${pts.join(' ')}" fill="none" stroke="var(--data-series-2)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
+
+  // grid + baseline
+  let grid="";
+  for(const g of [0,250,500,750,1000]){ const gy=y_bar(g); grid+=`<line class="grid" x1="${plL}" y1="${gy.toFixed(1)}" x2="${W-plR}" y2="${gy.toFixed(1)}"/>`; }
+  const base=`<line class="base" x1="${plL}" y1="${bot}" x2="${W-plR}" y2="${bot}"/>`;
+
+  // numeric axes (all variants except s1)
+  let axes="";
+  if(variant!=='s1'){
+    [[0,0],[250,250],[500,500],[750,750],[1000,1000]].forEach(([v])=>{ axes+=`<text class="ax" x="${plL-8}" y="${(y_bar(v)+4).toFixed(1)}" text-anchor="end">${v}</text>`; });
+    axes+=`<line class="ax2" x1="${W-plR}" y1="${top}" x2="${W-plR}" y2="${bot}"/>`;
+    [85,90,95,100].forEach(v=>{ axes+=`<text class="ax" x="${W-plR+8}" y="${(y_line(v)+4).toFixed(1)}" text-anchor="start">${v}%</text>`; });
+  }
+
+  // ---- labelling layer (the variable) ----
+  const lastX=cx(11), lastLy=y_line(STP[11]);
+  let lab="";
+  if(variant==='s0'){                    // status quo: ink end-key at the line end, near the dark bar
+    lab=`<text class="key ink" x="${(lastX+10).toFixed(1)}" y="${(lastLy+4).toFixed(1)}" text-anchor="start">B</text>`;
+  }
+  if(variant==='s3'){                    // O1: end-key kept on the bar but INVERSE ink (light) via data-surface="inverse"
+    lab=`<g><rect x="${(lastX-14).toFixed(1)}" y="${(lastLy-11).toFixed(1)}" width="26" height="22" fill="none"/>`
+       +`<text class="key inv" x="${(lastX+10).toFixed(1)}" y="${(lastLy+4).toFixed(1)}" text-anchor="start">B</text></g>`;
+  }
+  if(variant==='s2'){                    // direct label at the START of the line (left gutter, page air)
+    const x0=cx(0), y0=y_line(STP[0]);
+    lab=`<text class="dlab" x="${(x0-6).toFixed(1)}" y="${(y0-9).toFixed(1)}" text-anchor="start">STP rate ▸</text>`;
+  }
+
+  return `<svg class="combo" viewBox="0 0 ${W} ${H}" role="img" aria-label="Payments (bars, left axis) and straight-through rate (line, right axis) by month.">`
+    + `<style>
+        .grid{stroke:var(--data-grid); stroke-width:1;}
+        .base{stroke:var(--baseline); stroke-width:1;}
+        .ax2{stroke:var(--data-axis); stroke-width:1;}
+        .ax{fill:var(--data-axis); font-size:11px; font-family:var(--font);}
+        .bar{transition:none;}
+        .key{font-size:12px; font-weight:700; font-family:var(--font);}
+        .key.ink{fill:var(--ink);}
+        .key.inv{fill:#FFFFFF;}
+        .dlab{fill:var(--data-axis); font-size:11px; font-weight:500; font-family:var(--font);}
+       </style>`
+    + grid + base + bars + cas + line + mk + axes + xlab + lab + `</svg>`;
+}
+
+/* ---- the four panels ---- */
+const PANELS=[
+  { id:'s0', title:'0 · Today — line-end key', tag:['prob','THE PROBLEM'],
+    lede:'The “B” key rides the end of the line — which lands on the last dark bar, and drifts into other elements as the chart narrows.',
+    chan:{colour:1,shape:0,text:0,proximity:0,table:1},
+    verdict:'<b class="con">Fails on reflow.</b> Identity is pinned to a position the layout controls, and dark-ink “B” on the dark bar is marginal (3.3–3.8:1). The letter is only a proxy — it doesn’t even name the series.' },
+  { id:'s1', title:'1 · Axis-proximate lockups', tag:['rec','YOUR PROPOSAL · REC'],
+    lede:'Series identity moves OFF the plot into two lockups placed by their axes — swatch shape mirrors the mark, plus the real series name. No letters on the chart.',
+    chan:{colour:1,shape:1,text:1,proximity:1,table:1},
+    verdict:'<b class="pro">Robust + more accessible.</b> Nothing rides an unguaranteed position; shape + name + proximity carry identity (WCAG 1.4.1 met by shape AND text). Direct, low cognitive load. Condition: the swatch must mirror the on-chart mark (bar-chip / line-node).' },
+  { id:'s2', title:'2 · Direct-label the line start', tag:['exc','ALTERNATIVE'],
+    lede:'Label the line at its START — the left gutter is always page air, never a bar. Keeps W3C-preferred direct labelling but at a position we control.',
+    chan:{colour:1,shape:1,text:1,proximity:0,table:1},
+    verdict:'<b class="pro">Safe + direct.</b> Good if you want the name literally on the plot. <b class="con">Trade-off:</b> the left start can crowd the y-axis at very narrow widths; pairs well WITH the lockups rather than instead of them.' },
+  { id:'s3', title:'3 · O1 inverse-ink on the bar', tag:['exc','O1 — THE EXCEPTION'],
+    lede:'Keep the key on the bar, but let it re-resolve to LIGHT ink inside a data-surface="inverse" island — the O1 mechanism doing its job where text genuinely must sit on dark.',
+    chan:{colour:1,shape:0,text:0,proximity:0,table:1},
+    verdict:'<b class="pro">Legible on dark</b> (white “B” = 4.6–5.3:1). <b class="con">But</b> it still pins identity to a shifting position and still doesn’t name the series. Keep O1 for real dark panels/cards — not as the combo’s labelling fix.' },
+];
+
+const grid=document.getElementById('grid');
+PANELS.forEach(p=>{
+  const el=document.createElement('div'); el.className='panel'; el.dataset.id=p.id;
+  const chanHtml=Object.entries(p.chan).map(([k,v])=>`<span class="${v?'on':''}">${v?'✓':'✕'} ${k}</span>`).join('');
+  el.innerHTML=`<h2>${p.title} <span class="tag ${p.tag[0]}">${p.tag[1]}</span></h2>
+    <p class="lede">${p.lede}</p>
+    <div class="chartwrap" id="c-${p.id}"></div>
+    <div class="chan">${chanHtml}</div>
+    <p class="verdict">${p.verdict}</p>`;
+  grid.appendChild(el);
+});
+
+/* s1 lockups are HTML (real text lockups above the chart), positioned left/right */
+function renderLockups(w){
+  const wrap=document.getElementById('c-s1');
+  const lock=`<div style="display:flex; justify-content:space-between; gap:12px; margin-bottom:6px; font-size:12px;">
+      <span style="display:inline-flex; align-items:center; gap:7px;">
+        <span style="width:14px;height:12px;background:var(--data-series-1);display:inline-block;"></span>
+        <b style="font-weight:500;">Payments</b><span style="color:var(--muted);">left · £000</span>
+      </span>
+      <span style="display:inline-flex; align-items:center; gap:7px;">
+        <svg width="22" height="12" style="overflow:visible"><line x1="0" y1="6" x2="22" y2="6" stroke="var(--data-series-2)" stroke-width="2.5"/><circle cx="11" cy="6" r="4.5" fill="var(--data-series-2)" stroke="var(--page)" stroke-width="2"/></svg>
+        <b style="font-weight:500;">STP rate</b><span style="color:var(--muted);">right · %</span>
+      </span></div>`;
+  wrap.innerHTML=lock+combo(w,'s1');
+}
+
+let W=560;
+function renderAll(){
+  document.getElementById('c-s0').innerHTML=combo(W,'s0');
+  renderLockups(W);
+  document.getElementById('c-s2').innerHTML=combo(W,'s2');
+  document.getElementById('c-s3').innerHTML=combo(W,'s3');
+}
+renderAll();
+
+document.getElementById('w').addEventListener('input',e=>{ W=+e.target.value; document.getElementById('wv').textContent=W+'px'; renderAll(); });
+document.getElementById('narrow').addEventListener('click',()=>{ W=300; document.getElementById('w').value=300; document.getElementById('wv').textContent='300px'; renderAll(); });
+document.getElementById('theme').addEventListener('click',()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+</script>
+</body>
+</html>

@@ -105,3 +105,46 @@ as-built ink inactive, no fade) and R-D24 (`LEGACY_THEME_EXEMPTIONS` + `legacy_e
   each if ruled substrate). (c) Console's chromatic palette stays parked. (d) Legacy's dark-mode
   grey set (`color/grey/dark-mode/1–6`) remains available to its per-path overrides; no forced
   mapping. (e) The `input/error-condition` declared slots (ADR-0010) are untouched.
+
+## Addendum 2026-07-24 — the scoped inverse surface (O1): "a dark island in a light page re-resolves its own ink"
+
+**Status:** accepted (Dave, in-chat 2026-07-24: *"we need a dark-mode in Light-mode when the
+background is dark"* → ruled "do it"; sub-decisions 1–5 reflected back + confirmed; combo-labelling
+carve-out folded in, see DV-D10). **Populates an existing ADR-0014 slot — not new architecture:**
+surfaces are already classified, neutral indices are already SEMANTIC POSITIONS a subtree may remap
+(SC already remaps its anchor), and the theme cascade already re-resolves against *whichever element
+carries the scope lower in the tree* (`canon.css` cascade note). O1 is that remap, scoped to a
+subtree and narrowed to ink.
+
+**Decision 7 · A classified `data-surface="inverse"` island re-resolves ink (not the whole theme).**
+A subtree marked `data-surface="inverse"` re-points **ink + hairline borders** to their light/inverse
+values for its descendants, via the same cascade machinery as a theme — **not** a `data-theme` switch
+(too blunt: that would also swap surfaces, RAG, dataviz). Scope of the remap, RULED:
+- **Ink + hairlines only.** Series fills, RAG/status, and dataviz colour are UNTOUCHED — status is
+  semantic and already carries its own on-dark tokens (`rag/text/on-dark`); a chart's series fill is
+  set by its data token, not by the surface.
+- **Always inverse-resolved, never double-inverted.** The island declares itself `inverse`, not
+  "flip relative to parent" — so in light mode it is a dark island, and in dark mode it simply
+  matches the (already dark) page. No per-mode special-casing.
+- **Token shape = re-resolution (O1), not paired `on-*` tokens (O2).** Mints one two-channel surface
+  role the DV-D07 way: `surface/inverse/{color, on}` — `color` aliases `color/neutral/4`
+  (the dark ground = digital-black substrate, theme-following), `on` aliases `text/on-inverse`
+  (the light ink). O3 (CSS `contrast-color()`) tracked, not built (mid-tones muddy; not yet usable).
+
+**Decision 8 · The gate keeps its teeth — dv-016 gets the correct contrast BASE, not a blind exemption.**
+`type26-013` ("white type is red-only") is **doctrine with no running gate** (verified 2026-07-24 —
+asserted-only). The gate that actually bites chart text is **`dv-016`** (≥3:1 vs the declared
+`data-surface`, resolved per mode). O1's gate work is therefore **not** "exempt white text" — it is
+**extend `data-surface`'s value set with `inverse` and compute contrast against the inverse ground**,
+so white-on-dark scores 4.6–5.3:1 and passes *with the gate intact*. `type26-013` gains a recorded
+inverse-surface carve-out in doctrine (white legal where the enclosing surface is classified inverse;
+still red-only on page ground). Wire the condition, don't suppress — the `LEGACY_THEME_EXEMPTIONS` /
+`$darkNote` precedent.
+
+**First slice (the build):** apply to the **donut on-segment keys** (which ship `fill="var(--ink)"`
+today at marginal 3.3–3.8:1) and prove the mechanism on a dark section/card. The **combo end-key is
+NOT in scope** — DV-D10 solves it by repositioning to axis-proximate lockups. **Generalise (flagged):**
+roll `data-surface="inverse"` to dark section divs / cards system-wide. Render-verify (light + dark,
+2 widths) is OWED before this closes — it is a brand-gate change and deserves the look.
+Evidence: `reviews/COMBO-LINE-INVERT-2026-07-24-v1.REVIEW.html` (Dave-seen, O1/O2/O3 + measured
+contrasts) · `reviews/COMBO-LABELLING-SOLUTIONS-2026-07-24-v1.html` (the DV-D10 carve-out).

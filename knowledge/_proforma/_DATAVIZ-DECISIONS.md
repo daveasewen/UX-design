@@ -90,6 +90,34 @@ Source of these rulings: the exported review comment-pins on the REVIEW copy (ba
   chart-revisit wave (bar lane). The Batch-1 #3 grouped-layout-redesign open (reference images)
   stays open — promotion ≠ redesign.
 
+- **DV-D10 · Series identity comes OFF the plot where a mark can't guarantee its own page-air;
+  proximity + shape + name replace the on-chart letter (2026-07-24).** Dave, on the combo line-end
+  key colliding with the dark bars under responsive reflow (his three render frames: on-dark /
+  overlapping-the-axis / in-page-air): *"we can't guarantee that it will always sit on the bar."*
+  Ruled by eye on `reviews/COMBO-LABELLING-SOLUTIONS-2026-07-24-v1.html` (four live panels, shared
+  width slider). The split, by chart type:
+  - **COMBO (bar + line):** the line-end letter key is REMOVED from the plot. Series identity moves
+    to **axis-proximate legend lockups** — the bar set's lockup by the primary (left) axis, the line
+    set's by the secondary (right) axis — each carrying a **swatch that MIRRORS the on-chart mark**
+    (filled chip = the bar; short line + node = the line) + the **series name**. Proximity (which
+    axis) + shape (which mark) + name carry identity; nothing rides a position the layout controls.
+  - **LINE alone:** KEEP the direct end-label — **shape + letter** (belt-and-braces) — because a lone
+    line's end sits in guaranteed page air (no bars to collide with). The **letter is the droppable
+    channel** once shape + a named direct label are both present (WCAG 1.4.1 is already satisfied);
+    Dave is confirming with his accessibility team before dropping it. Until then it stays.
+  - **Standards basis (checked this session):** our dv-006 "values on both axes" is a **TOOLTIP**
+    requirement, not permanent both-axis labels; dv-011 / §04.3 "colour never the only channel" is
+    met by **shape AND text**; the `<table>` spine is the WCAG complex-image long description
+    (dv-005). W3C: direct labelling is *preferred* over legends (lower cognitive load), and 1.4.1
+    wants a non-colour channel — *"convey key info with text, don't rely solely on shape+colour."*
+    The lockup keeps the name as text, so it clears the nuance.
+  - **Relationship to O1:** this REMOVES the combo end-key from O1's scope. The scoped inverse-surface
+    (ADR-0014, 2026-07-24 addendum) is reserved for text that genuinely MUST sit on a dark ground —
+    dark page sections / cards, and the donut's on-segment keys — not the combo's labelling.
+  Enactment rides the O1 build: rebuild Chart-combo's legend as the two axis-proximate lockups +
+  strip the `.dv-endkey`; Chart-line keeps its end-key pending Dave's a11y check.
+  Edges: refines(dv-011, scope=combo-series-id-non-colour-channels) · relates(ADR-0014, scope=O1-inverse-surface-boundary) · bounds(dv-006, scope=both-axes-is-tooltip-not-permanent-label)
+
 ---
 
 ## Batch 1 — review 2026-07-16 (5 pins)
