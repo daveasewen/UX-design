@@ -1,6 +1,6 @@
 # A11y gate — _validate_a11y.py
 
-**65 snippet(s)** · **0 failure(s)** · **6 warning(s)**
+**66 snippet(s)** · **0 failure(s)** · **6 warning(s)**
 
 Gating: reduced-motion (2.3.3) · target size <24 floor (2.5.8, aid-009 ruling 2026-07-03). Reported: target size 24–43 vs the 44×44 HSBC default (aid-009).
 

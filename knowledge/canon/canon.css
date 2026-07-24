@@ -495,6 +495,7 @@
   --border-width-large: 4px;
   --focus-ring-width: 2px;
   --focus-ring-offset: 2px;
+  --target-min: 44px;
 
   /* ---- Elevation  (elevation.json) ---- */
   --elevation-decorative-x: 0;
@@ -5037,6 +5038,80 @@
 }
 
 /* ============================================================
+   Segmented-control  (from snippets/Segmented-control.reference.html)
+   Aria: aria-pressed
+   Scope: .cn-segmented-control   ============================================================ */
+.cn-segmented-control{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 200ms cubic-bezier(.4,0,.2,1);
+  --surface: var(--tertiary-background-default);
+  --hover: var(--tertiary-background-hover);
+  --sel: var(--secondary-background-default);
+  --on-sel: var(--text-on-inverse);
+  --text: var(--text-default);
+  --icon: var(--icon-default);
+  --border: var(--form-border-default);
+  --focus: var(--focus-ring);
+  --page: var(--background-default);
+  --hit: var(--target-min);
+}
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. */
+.cn-segmented-control :is(button, .cn-segmented-control a, .cn-segmented-control label, .cn-segmented-control span, .cn-segmented-control small, .cn-segmented-control strong, .cn-segmented-control em, .cn-segmented-control b, .cn-segmented-control i, .cn-segmented-control th, .cn-segmented-control td, .cn-segmented-control dt, .cn-segmented-control dd, .cn-segmented-control li, .cn-segmented-control figcaption, .cn-segmented-control legend, .cn-segmented-control caption, .cn-segmented-control summary, .cn-segmented-control output, .cn-segmented-control time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+.cn-segmented-control .demo-note{font-size:12px; color:#767676; max-width:60ch; margin:.6rem 0 0;}
+/* demo-chrome — advisory-exempt */
+/* ===== the segmented control =====
+     PILL PADDING FOR ALL (Dave 2026-07-24): the 4px inset track + floating indicator — once the pill's
+     alone — is now the BASE for every variant (square and pill). The active fill floats inside a 4px
+     gutter instead of touching the frame. */
+.cn-segmented-control .seg{position:relative; display:inline-flex; padding:4px; border:1px solid var(--border); background:var(--surface); vertical-align:top;}
+.cn-segmented-control .seg .ind{position:absolute; top:4px; bottom:4px; left:4px; width:0; background:var(--sel); z-index:0;
+    transition:left var(--ease), width var(--ease);}
+/* the active fill — floats in the 4px inset, slides */
+.cn-segmented-control .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    height:32px; padding:0 12px; border:0; background:transparent; color:var(--text);
+    /* type: bound in canon/type.css — per-size mini ramp (T-D15): .seg.sm=12/500 · .md=14/500 · .lg=16/400
+       (composites .t-cm-ctl-12/-14/-16; sized selectors registered in _type-bindings.json). */
+    cursor:pointer; transition:color var(--ease);}
+/* NO inter-button divider — one border frames the whole track; the fill floats + slides. */
+.cn-segmented-control .seg button:not([aria-pressed="true"]):hover{background:var(--hover);}
+/* hover only on inactive (active sits over the fill) */
+.cn-segmented-control .seg button[aria-pressed="true"]{color:var(--on-sel);}
+/* fill comes from the sliding .ind behind */
+.cn-segmented-control .seg button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px; z-index:2;}
+.cn-segmented-control .seg svg{width:16px; height:16px; fill:currentColor;}
+/* size — geometry + the mini ramp step (bound in type.css): sm 12 · md 14 · lg 16 */
+.cn-segmented-control .seg.sm button{height:28px; padding:0 8px;}
+.cn-segmented-control .seg.md button{height:32px; padding:0 12px;}
+.cn-segmented-control .seg.lg button{height:36px; padding:0 16px;}
+/* NOTE: the rounded PILL shape is NOT a seg variant (Dave 2026-07-24) — reserved for a MOBILE
+     tab-bar alternative (see Tab-bar + _FUTURE-STATE mobile-variants). The atom keeps the pill's
+     4px INSET PADDING (above) but stays square (Mono). */
+/* icon-only segments — square 44 cells (icon-005), accessible names on each button */
+.cn-segmented-control .seg.icons button{padding:0; width:44px;}
+.cn-segmented-control .seg.icons.sm button{width:36px;}
+/* ===== HIT AREA — invisible target >= var(--hit) so a SMALL visible segment still meets 44.
+     The ::before is the click/tap surface; it ANCHORS within the visible segment so the control
+     stays aligned to its neighbours while the padding grows into free space (Dave 2026-07-24).
+     9-point matrix (.hit-<v><h>): default centre. Never shrinks a target — additive only. ===== */
+.cn-segmented-control .seg button::before{content:""; position:absolute; z-index:0;
+    min-width:var(--hit); min-height:var(--hit); width:100%; height:100%;
+    top:50%; left:50%; transform:translate(-50%,-50%);}
+/* default: centre */
+/* vertical anchor */
+.cn-segmented-control .hit-t::before, .cn-segmented-control .hit-tl::before, .cn-segmented-control .hit-tr::before{top:0; bottom:auto; transform:translateX(-50%);}
+.cn-segmented-control .hit-b::before, .cn-segmented-control .hit-bl::before, .cn-segmented-control .hit-br::before{top:auto; bottom:0; transform:translateX(-50%);}
+/* horizontal anchor */
+.cn-segmented-control .hit-l::before, .cn-segmented-control .hit-tl::before, .cn-segmented-control .hit-bl::before{left:0; right:auto; transform:translateY(-50%);}
+.cn-segmented-control .hit-r::before, .cn-segmented-control .hit-tr::before, .cn-segmented-control .hit-br::before{left:auto; right:0; transform:translateY(-50%);}
+/* corners pin both axes (no centring transform) */
+.cn-segmented-control .hit-tl::before, .cn-segmented-control .hit-tr::before, .cn-segmented-control .hit-bl::before, .cn-segmented-control .hit-br::before{transform:none;}
+/* WCAG 2.3.3 / motion sensitivity — honour reduced-motion */
+@media (prefers-reduced-motion: reduce){
+.cn-segmented-control .seg .ind{transition:none !important;}
+}
+
+/* ============================================================
    Skeleton-loader  (from snippets/Skeleton-loader.reference.html)
    Aria: role="status", aria-busy, aria-hidden="true"
    Scope: .cn-skeleton-loader   ============================================================ */
@@ -6260,6 +6335,13 @@
   --press-travel: 0;
   --quat-label: #FFFFFF;
   --success: #00847F;
+  --text: #FFFFFF;
+}
+[data-apollo-theme="legacy"] .cn-segmented-control{
+  --text: #333333;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-segmented-control,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-segmented-control{
   --text: #FFFFFF;
 }
 [data-apollo-theme="legacy"] .cn-selection-controls{
@@ -8044,6 +8126,23 @@
   --quat-label-disabled: #524842;
   --text: #F7F6F4;
   --text-disabled: #524842;
+}
+[data-apollo-theme="supercharge"] .cn-segmented-control{
+  --border: #524842;
+  --hover: #DFDEDC;
+  --icon: #13110E;
+  --page: #F7F6F4;
+  --surface: #F7F6F4;
+  --text: #13110E;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-segmented-control,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-segmented-control{
+  --border: #524842;
+  --hover: #2E2A25;
+  --icon: #F7F6F4;
+  --page: #1A1A1A;
+  --surface: #2A2621;
+  --text: #F7F6F4;
 }
 [data-apollo-theme="supercharge"] .cn-selection-controls{
   --chip-hover: #DFDEDC;

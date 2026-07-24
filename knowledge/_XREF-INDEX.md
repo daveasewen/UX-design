@@ -2,7 +2,7 @@
 
 > One traversable record per component joining **tokens · god-nodes · WCAG SCs · guidelines · anti-patterns · deprecated bindings**. Generated derived view over the canon (Graphify-borrow #4); regenerate after editing metas/tokens/compliance KG/the guideline map: `python3 knowledge/_build_xref_index.py`. Machine-readable detail in `_XREF-INDEX.json`.
 
-**Totals:** 65 components · 19 with deprecated bindings · 27 god-nodes (blast≥7).
+**Totals:** 66 components · 19 with deprecated bindings · 27 god-nodes (blast≥7).
 
 **Global guidelines (apply to every component):** accessibility, digital-accessibility-standards, colour-usage, dark-mode, focus-indicators.
 
@@ -55,6 +55,7 @@
 | Scatter plot | org | 4 | background/default, text/default | 1.3.1, 1.4.1, 1.4.11, 1.4.13 | — |  |
 | Search field | mol | 13 | background/default, border/subsection, elevation/functional, background/hover… | 1.3.5, 1.4.10, 1.4.4, 2.4.11, 2.4.7, 3.3.2, 4.1.2 | forms, icons | 1 |
 | Secure entry | mol | 4 | border-radius/control, rag/error, rag/success, text/default | 1.3.1, 1.4.1, 1.4.3, 2.1.1, 2.4.7, 3.3.1, 3.3.2, 4.1.3 | — |  |
+| Segmented control | ato | 10 | border/default, icon/default, background/default, background/default… | 1.4.1, 2.1.1, 2.3.3, 2.5.8, 4.1.2 | — |  |
 | Selection controls | mol | 13 | background/default, border/default, icon/default, icon/default-reverse… | 1.3.1, 1.4.1, 2.4.7, 2.5.8, 3.3.1, 4.1.2 | forms | 13 |
 | Skeleton loader | mol | 5 | background/default, border-radius/surface, border/subtle, background/hover | 1.4.11, 2.3.3, 4.1.3 | — |  |
 | Slider | mol | 9 | background/default, border/subtle, border/default, background/default… | 1.4.1, 2.1.1, 2.5.7, 2.5.8, 4.1.2 | forms | 1 |

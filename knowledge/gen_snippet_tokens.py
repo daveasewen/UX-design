@@ -72,7 +72,7 @@ def resolve(path, mode):
     knowledge/component-types.json, everything else to semantic-colour.json."""
     if path.startswith("color/"):
         src = "colour.json"
-    elif path.startswith(("border-radius/", "border-width/", "focus-ring/", "layout/", "breakpoint/")):
+    elif path.startswith(("border-radius/", "border-width/", "focus-ring/", "layout/", "breakpoint/", "target/")):
         src = "layout.json"
     elif path.startswith("motion/"):
         src = "motion.json"

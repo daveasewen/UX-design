@@ -2,7 +2,7 @@
 
 > Generated derived view over `knowledge/` (Graphify-inspired; no external dependency). Regenerate after editing component metas or tokens: `python3 knowledge/tokens/_build_blast_radius.py`. Authored canon stays the source of truth; this is a generated dashboard.
 
-**Totals:** 65 components · 938 tokens defined · 104 tokens referenced by components · compliance: 31 rules x 65 components (31 SCs).
+**Totals:** 66 components · 939 tokens defined · 105 tokens referenced by components · compliance: 31 rules x 66 components (31 SCs).
 
 ## God-nodes — highest token blast radius
 
@@ -10,19 +10,19 @@ Change one of these and the listed number of components is affected. Use before 
 
 | Token | Blast | Example components |
 |---|---|---|
-| `text/default` | 54 | Accordion, Account card, Alert, Amount display, Amount input, Avatar… |
+| `text/default` | 55 | Accordion, Account card, Alert, Amount display, Amount input, Avatar… |
 | `background/default` | 26 | Accordion, Account selector, Amount display, Bar chart, Cards, Data grid… |
-| `icon/default` | 24 | Accordion, Avatar, Button, Cards, Dropdown, File upload… |
+| `icon/default` | 25 | Accordion, Avatar, Button, Cards, Dropdown, File upload… |
 | `text/reverse` | 18 | Action bar, Avatar, Badge, Button, Cards, Confirmation… |
 | `elevation/functional` | 17 | Account selector, Date picker, Date-range picker, Drawer, Dropdown, Input fields… |
+| `tertiary/background/default` | 17 | Account card, Action bar, Button, Cards, Drawer, Icon button… |
 | `rag/error` | 16 | Amount input, Bar chart, Date picker, Date-range picker, Dropdown, File upload… |
-| `tertiary/background/default` | 16 | Account card, Action bar, Button, Cards, Drawer, Icon button… |
 | `border/subtle` | 15 | Accordion, Account card, Action bar, Amount display, Avatar, Cards… |
 | `icon/default-reverse` | 15 | Avatar, Button, Cards, Dropdown, Hero, Icon button… |
-| `tertiary/background/hover` | 14 | Accordion, Avatar, Button, Cards, Confirmation, Data grid… |
+| `tertiary/background/hover` | 15 | Accordion, Avatar, Button, Cards, Confirmation, Data grid… |
 | `rag/success` | 13 | Account card, Amount input, Bar chart, Button, Confirmation, File upload… |
 | `typography/font-family/default` | 13 | Account card, Action bar, Amount display, Avatar, Badge, Breadcrumbs… |
-| `form/border/default` | 11 | Account card, Account selector, Data grid, Dropdown, File upload, Input fields… |
+| `form/border/default` | 12 | Account card, Account selector, Data grid, Dropdown, File upload, Input fields… |
 | `border-radius/control` | 10 | Amount input, Data grid, Date picker, Date-range picker, File upload, Form layout… |
 | `border-radius/surface` | 10 | Alert, Banner, Date picker, Date-range picker, Empty state, Popover… |
 
@@ -30,27 +30,27 @@ Change one of these and the listed number of components is affected. Use before 
 
 | Group | Components |
 |---|---|
-| `text/` | 58 |
+| `text/` | 59 |
+| `tertiary/` | 27 |
+| `icon/` | 27 |
 | `background/` | 26 |
-| `tertiary/` | 26 |
-| `icon/` | 26 |
 | `rag/` | 22 |
+| `border-radius/` | 19 |
 | `border/` | 18 |
-| `border-radius/` | 18 |
+| `form/` | 17 |
 | `elevation/` | 17 |
-| `form/` | 16 |
 | `typography/` | 13 |
 | `divider/` | 10 |
+| `secondary/` | 9 |
 | `primary/` | 9 |
-| `secondary/` | 8 |
 | `padding/` | 7 |
 | `color/` | 7 |
 | `data/` | 6 |
 | `overlay/` | 5 |
+| `focus/` | 4 |
 | `scale/` | 3 |
 | `scrollbar/` | 3 |
 | `blur/` | 3 |
-| `focus/` | 3 |
 | `image/` | 2 |
 | `border-width/` | 2 |
 | `table/` | 2 |
@@ -59,6 +59,7 @@ Change one of these and the listed number of components is affected. Use before 
 | `progress/` | 2 |
 | `timer/` | 1 |
 | `gap/` | 1 |
+| `target/` | 1 |
 | `tabs/` | 1 |
 
 ## Deprecated tokens still bound (migration worklist)
@@ -89,7 +90,7 @@ Components whose `tokens` block still references a `(depricate)` token (count = 
 
 ## Orphans — defined tokens not referenced by any component meta
 
-834 of 938 defined tokens are unreferenced at the component layer. **Expected** for primitives and scale steps (consumed via semantic aliases, not bound directly); worth scanning the *semantic* groups for genuinely-dead tokens. By group:
+834 of 939 defined tokens are unreferenced at the component layer. **Expected** for primitives and scale steps (consumed via semantic aliases, not bound directly); worth scanning the *semantic* groups for genuinely-dead tokens. By group:
 
 | Group | Unreferenced |
 |---|---|

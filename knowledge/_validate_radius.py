@@ -78,6 +78,8 @@ MIGRATED_SNIPPETS = {
     "Data-grid.reference.html",
     "Date-picker.reference.html",
     "Date-range-picker.reference.html",
+    # Segmented control (2026-07-24) — atom promoted from View options; square radius, pill = 999 literal:
+    "Segmented-control.reference.html",
     "Time-picker.reference.html",
     "File-upload.reference.html",
     "Stepper.reference.html",

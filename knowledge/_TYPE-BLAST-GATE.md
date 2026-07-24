@@ -1,14 +1,14 @@
 # Type-binding blast-radius gate — guards canon/type.css
 
-Every selector appended to a composite list is a GLOBAL rule. Registry: `canon/_type-bindings.json`. Corpus: snippets + _proforma (77 files).
+Every selector appended to a composite list is a GLOBAL rule. Registry: `canon/_type-bindings.json`. Corpus: snippets + _proforma (78 files).
 
 | radius | kind | selector | status |
 |---:|---|---|---|
 | 12 | class | `.btn` | PASS |
 | 7 | class | `.stateLabel` | PASS |
 | 5 | class | `.spec-h` | PASS |
+| 5 | scoped-element | `.seg button` | PASS |
 | 4 | class | `.chip` | PASS |
-| 4 | scoped-element | `.seg button` | PASS |
 | 3 | class | `.label` | PASS |
 | 3 | scoped-element | `.search input` | PASS |
 | 2 | class | `.avatar` | PASS |
@@ -27,6 +27,9 @@ Every selector appended to a composite list is a GLOBAL rule. Registry: `canon/_
 | 1 | scoped-element | `.nav button` | PASS |
 | 1 | scoped-element | `.note.global .actions button` | PASS |
 | 1 | scoped-element | `.pg a` | PASS |
+| 1 | scoped-element | `.seg.lg button` | PASS |
+| 1 | scoped-element | `.seg.md button` | PASS |
+| 1 | scoped-element | `.seg.sm button` | PASS |
 | 1 | scoped-element | `nav.main a` | PASS |
 
 ## Findings

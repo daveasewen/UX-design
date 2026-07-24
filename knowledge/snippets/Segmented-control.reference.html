@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Segmented control — reference implementation (gated)</title>
+<!-- CANONICAL REFERENCE for the Segmented control atom (gated). PROMOTED from View options
+     (Dave, 2026-07-24): the sliding-indicator segmented switcher is now a general ATOM, not a
+     view-format-only control. View options + Tab-bar's pill switcher + the chart's view switch
+     are all instances of THIS mechanism (observed duplication — ADR-0013 group-#3 candidate,
+     accretion proposed separately).
+
+     THE MECHANISM (single-select, exactly one active):
+       - one framing border wraps the whole track; NO inter-segment divider, so the active fill
+         slides edge-to-edge and aligns exactly to a segment box.
+       - the SELECTED fill is a SLIDING indicator (.ind) — animates left+width between segments
+         (set by JS from the pressed button's box), mirroring the Tabs indicator. Label colour
+         transitions on the SAME easing, so on-fill contrast stays correct mid-slide (no
+         white-on-white). Reduced-motion: slide + colour change become instant.
+       - selection exposed via aria-pressed, not colour alone (1.4.1); the selected fill inverts
+         (secondary/background/default + text/on-inverse), legible in both modes.
+
+     VARIANTS built here:
+       - shape:  square (default) · .pill (radius 999 + 4px track padding — the Tab-bar posture)
+       - content: label segments (text) · .icons (icon-only, accessible names required)
+       - size:   .md (40px, default) · .sm (32px, dense toolbars e.g. charts). The TEXT size is a
+         single composite today (.t-cm-chart-label 12/500); the 12/14/16 label RAMP that would let
+         each size carry its own text step rides the mini-ramp ruling (reviews/MINI-TEXT-RAMP-…) —
+         no type mint here.
+       - HIT AREA: every segment carries an invisible ::before target >= var(--hit,44px) so a small
+         VISIBLE segment still meets the 44 target (HSBC default; WCAG 2.5.5 AAA). The target ANCHORS
+         within the segment via .hit-* (9-point matrix) so the visible control stays aligned to its
+         neighbours while the padding grows into free space. Full standard: reviews/HIT-AREA-STANDARD-…. -->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
+   enhancement; headings/body excluded. */
+:is(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:200ms cubic-bezier(.4,0,.2,1); }
+  [data-theme="light"]{ --surface:#FFFFFF; --hover:#F0F0F0; --sel:#000000; --on-sel:#FFFFFF; --text:#1A1A1A; --icon:#1A1A1A; --border:#808080; --focus:#305A85; --page:#FFFFFF; --hit:44px; }
+  [data-theme="dark"]{ --surface:#1F1F1F; --hover:#232323; --sel:#FFFFFF; --on-sel:#333333; --text:#FFFFFF; --icon:#FFFFFF; --border:#808080; --focus:#4587A7; --page:#1A1A1A; --hit:44px; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.5rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:2rem; display:flex; gap:.75rem; align-items:center; font-size:13px;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--border); background:transparent; color:var(--text); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .demo-controls h2{font-size:12px; font-weight:500; letter-spacing:.04em; color:#767676; margin:2rem 0 .75rem;}
+  .demo-note{font-size:12px; color:#767676; max-width:60ch; margin:.6rem 0 0;}   /* demo-chrome — advisory-exempt */
+
+  /* ===== the segmented control =====
+     PILL PADDING FOR ALL (Dave 2026-07-24): the 4px inset track + floating indicator — once the pill's
+     alone — is now the BASE for every variant (square and pill). The active fill floats inside a 4px
+     gutter instead of touching the frame. */
+  .seg{position:relative; display:inline-flex; padding:4px; border:1px solid var(--border); background:var(--surface); vertical-align:top;}
+  .seg .ind{position:absolute; top:4px; bottom:4px; left:4px; width:0; background:var(--sel); z-index:0;
+    transition:left var(--ease), width var(--ease);}                          /* the active fill — floats in the 4px inset, slides */
+  .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    height:32px; padding:0 12px; border:0; background:transparent; color:var(--text);
+    /* type: bound in canon/type.css — per-size mini ramp (T-D15): .seg.sm=12/500 · .md=14/500 · .lg=16/400
+       (composites .t-cm-ctl-12/-14/-16; sized selectors registered in _type-bindings.json). */
+    cursor:pointer; transition:color var(--ease);}
+  /* NO inter-button divider — one border frames the whole track; the fill floats + slides. */
+  .seg button:not([aria-pressed="true"]):hover{background:var(--hover);}      /* hover only on inactive (active sits over the fill) */
+  .seg button[aria-pressed="true"]{color:var(--on-sel);}                      /* fill comes from the sliding .ind behind */
+  .seg button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px; z-index:2;}
+  .seg svg{width:16px; height:16px; fill:currentColor;}
+
+  /* size — geometry + the mini ramp step (bound in type.css): sm 12 · md 14 · lg 16 */
+  .seg.sm button{height:28px; padding:0 8px;}
+  .seg.md button{height:32px; padding:0 12px;}
+  .seg.lg button{height:36px; padding:0 16px;}
+
+  /* NOTE: the rounded PILL shape is NOT a seg variant (Dave 2026-07-24) — reserved for a MOBILE
+     tab-bar alternative (see Tab-bar + _FUTURE-STATE mobile-variants). The atom keeps the pill's
+     4px INSET PADDING (above) but stays square (Mono). */
+
+  /* icon-only segments — square 44 cells (icon-005), accessible names on each button */
+  .seg.icons button{padding:0; width:44px;}
+  .seg.icons.sm button{width:36px;}
+
+  /* ===== HIT AREA — invisible target >= var(--hit) so a SMALL visible segment still meets 44.
+     The ::before is the click/tap surface; it ANCHORS within the visible segment so the control
+     stays aligned to its neighbours while the padding grows into free space (Dave 2026-07-24).
+     9-point matrix (.hit-<v><h>): default centre. Never shrinks a target — additive only. ===== */
+  .seg button::before{content:""; position:absolute; z-index:0;
+    min-width:var(--hit); min-height:var(--hit); width:100%; height:100%;
+    top:50%; left:50%; transform:translate(-50%,-50%);}                        /* default: centre */
+  /* vertical anchor */
+  .hit-t::before,.hit-tl::before,.hit-tr::before{top:0; bottom:auto; transform:translateX(-50%);}
+  .hit-b::before,.hit-bl::before,.hit-br::before{top:auto; bottom:0; transform:translateX(-50%);}
+  /* horizontal anchor */
+  .hit-l::before,.hit-tl::before,.hit-bl::before{left:0; right:auto; transform:translateY(-50%);}
+  .hit-r::before,.hit-tr::before,.hit-br::before{left:auto; right:0; transform:translateY(-50%);}
+  /* corners pin both axes (no centring transform) */
+  .hit-tl::before,.hit-tr::before,.hit-bl::before,.hit-br::before{transform:none;}
+
+  /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+    .seg .ind{ transition:none !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls"><button id="themeToggle" type="button">◐ Toggle theme</button><span>Segmented control — canonical reference (promoted from View options, 2026-07-24)</span></div>
+
+  <div class="demo-controls" style="margin:0;"><h2>Label · square · md (default)</h2></div>
+  <div class="seg md" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">List</button>
+    <button type="button" aria-pressed="false">Grid</button>
+    <button type="button" aria-pressed="false">Table</button>
+  </div>
+
+  <div class="demo-controls" style="margin:0;"><h2>Label · square · lg (16 · prominent)</h2></div>
+  <div class="seg lg" role="group" aria-label="Range">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true">Day</button>
+    <button type="button" aria-pressed="false">Week</button>
+    <button type="button" aria-pressed="false">Month</button>
+  </div>
+
+  <div class="demo-controls" style="margin:0;"><h2>Label · square · sm (12 · dense — the chart's view switch consumes this)</h2></div>
+  <div class="seg sm" role="group" aria-label="Chart view">
+    <button type="button" aria-pressed="true">Monthly</button>
+    <button type="button" aria-pressed="false">Year to date</button>
+    <span class="ind" aria-hidden="true"></span>
+  </div>
+  <p class="demo-note">The sm segments are 28px visible, but each carries an
+    invisible <code>::before</code> target &ge; 44px — the whole control clears the HSBC 44 default without looking heavy.</p>
+
+  <div class="demo-controls" style="margin:0;"><h2>Icon-only · square · md (44px cells, accessible names)</h2></div>
+  <div class="seg md icons" role="group" aria-label="View as">
+    <span class="ind" aria-hidden="true"></span>
+    <button type="button" aria-pressed="true" aria-label="List view"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M0 15.6H18V14.4H0V15.6ZM0 2.40002V3.60002H18V2.40002H0ZM0 9.60002H18V8.40002H0V9.60002Z"/></svg></button>
+    <button type="button" aria-pressed="false" aria-label="Grid view"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M1 8H8V1H1V8ZM1 17H8V10H1V17ZM10 1V8H17V1H10ZM10 17H17V10H10V17Z"/></svg></button>
+  </div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Segmented control",
+    "vars": { "--surface": "tertiary/background/default", "--hover": "tertiary/background/hover", "--sel": "secondary/background/default", "--on-sel": "text/on-inverse", "--text": "text/default", "--icon": "icon/default", "--border": "form/border/default", "--focus": "focus/ring", "--page": "background/default", "--hit": "target/min" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/on-inverse", "bg": "secondary/background/default", "context": "text" },
+      { "fg": "form/border/default", "bg": "background/default", "context": "ui" }
+    ],
+    "requiredAria": ["aria-pressed"]
+  }
+  </script>
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); requestAnimationFrame(placeAll); });
+    /* SLIDING INDICATOR — one handler for every .seg on the page. Single-select: click sets
+       aria-pressed on the group, the indicator measures the pressed button's box and slides. */
+    function moveInd(seg){ const ind=seg.querySelector('.ind'); if(!ind) return;
+      const a=seg.querySelector('button[aria-pressed="true"]'); if(!a) return;
+      /* rect-based so the 4px inset padding + 1px border don't offset the measurement
+         (the .ind containing block is .seg's PADDING box — subtract seg.clientLeft). */
+      const sr=seg.getBoundingClientRect(), br=a.getBoundingClientRect();
+      ind.style.left=(br.left - sr.left - seg.clientLeft)+'px'; ind.style.width=br.width+'px'; }
+    function placeAll(){ document.querySelectorAll('.seg').forEach(moveInd); }
+    document.querySelectorAll('.seg').forEach(seg=>{
+      seg.querySelectorAll('button').forEach(b=> b.addEventListener('click', ()=>{
+        seg.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed', String(x===b))); moveInd(seg); }));
+    });
+    addEventListener('resize', placeAll);
+    placeAll();   /* initial position (widths depend on font/trim, so measure after layout) */
+  </script>
+</body>
+</html>

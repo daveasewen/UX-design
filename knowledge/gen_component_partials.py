@@ -139,7 +139,7 @@ def _resolve_semantic(path):
         store = json.load(open(os.path.join(TOK, "motion.json")))
     elif path.startswith("color/"):
         store = json.load(open(os.path.join(TOK, "colour.json")))
-    elif path.startswith(("border-radius/", "border-width/", "focus-ring/", "layout/", "breakpoint/")):
+    elif path.startswith(("border-radius/", "border-width/", "focus-ring/", "layout/", "breakpoint/", "target/")):
         store = json.load(open(os.path.join(TOK, "layout.json")))
     else:
         store = json.load(open(os.path.join(TOK, "semantic-colour.json")))

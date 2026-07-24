@@ -74,7 +74,7 @@ def _store(fname):
 def _store_for(path):
     if path.startswith("color/"):
         return _store("colour.json")
-    if path.startswith(("border-radius/", "border-width/", "breakpoint/", "layout/", "focus-ring/")):
+    if path.startswith(("border-radius/", "border-width/", "breakpoint/", "layout/", "focus-ring/", "target/")):
         return _store("layout.json")
     if path.startswith("motion/"):
         return _store("motion.json")

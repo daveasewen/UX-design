@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apollo hit-area standard — proposal (2026-07-24 v1)</title>
+<!-- REVIEW SHEET (reviews/ — not gate-globbed). PROPOSAL, nothing inscribed. Resolves Dave's ask
+     (2026-07-24): "comfortable with different visible sizes as long as there's an invisible hit area",
+     + his live refinement: the visible control must be able to ANCHOR within the hit area (top/bottom/
+     left/right/centre — all 9 combinations) so it stays aligned to its neighbours.
+     Sources: repo standards (icons.md icon-005, common-toolkit-tags-chips ctkt-029, accessibility-
+     interaction-design aid-*, WCAG 2.5.5/2.5.8) + industry cross-check (Apple HIG, Material 3, Carbon,
+     GOV.UK). Reference impl lives in snippets/Segmented-control.reference.html (.hit-* matrix). -->
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:180ms cubic-bezier(.4,0,.2,1); }
+  [data-theme="light"]{ --page:#FFFFFF; --ink:#1A1A1A; --line:#808080; --muted:#626262; --hair:#E1E1E1;
+    --card:#FFFFFF; --hover:#F0F0F0; --sel:#1A1A1A; --on-sel:#FFFFFF; --focus:#305A85; --hit:rgba(185,47,30,.14); --hit-b:#B92F1E; }
+  [data-theme="dark"]{ --page:#1A1A1A; --ink:#FAFAFA; --line:#808080; --muted:#9D9D9D; --hair:#484848;
+    --card:#1F1F1F; --hover:#232323; --sel:#FAFAFA; --on-sel:#1A1A1A; --focus:#4587A7; --hit:rgba(230,120,105,.22); --hit-b:#E67869; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:0 0 5rem; font-family:var(--font); background:var(--page); color:var(--ink);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease),color var(--ease);}
+  header{position:sticky; top:0; z-index:10; display:flex; align-items:center; justify-content:space-between;
+    gap:1rem; padding:1rem 2rem; background:var(--page); border-bottom:1px solid var(--hair);}
+  header h1{font-size:15px; font-weight:700; margin:0;}
+  header .sub{font-size:12px; color:var(--muted); font-weight:400;}
+  .tgl{font:500 13px/1 var(--font); padding:8px 12px; border:1px solid var(--line); background:transparent; color:var(--ink); cursor:pointer;}
+  .tgl:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  main{max-width:1000px; margin:0 auto; padding:2rem;}
+  .lede{font-size:13.5px; line-height:1.65; max-width:74ch; margin:0 0 .5rem;}
+  .lede b{font-weight:700;}
+  section{margin:2.5rem 0; padding-top:1.5rem; border-top:1px solid var(--hair);}
+  h2{font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; margin:0 0 .75rem;}
+  h2 .n{color:var(--muted); margin-right:.5rem;}
+  p.note{font-size:12.5px; line-height:1.6; color:var(--muted); max-width:76ch;}
+  table{border-collapse:collapse; width:100%; margin:.5rem 0 1rem; font-size:12.5px;}
+  th,td{text-align:left; padding:.55rem .7rem; border-bottom:1px solid var(--hair); vertical-align:top; line-height:1.5;}
+  th{font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); font-weight:700;}
+  td b{font-weight:700;} td.n{font-weight:700; white-space:nowrap;}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:11.5px; background:var(--hover); padding:1px 5px;}
+  .rec{color:#577C78; font-weight:700;}
+  /* interactive matrix demo */
+  .demo{display:flex; flex-wrap:wrap; gap:2.5rem; align-items:flex-start; margin:1.25rem 0;}
+  .stage{flex:1 1 340px; min-width:320px;}
+  .board{display:grid; grid-template-columns:repeat(3,1fr); gap:2px; background:var(--hair); border:1px solid var(--hair);
+    width:100%; max-width:360px;}
+  .matbtn{aspect-ratio:1/1; border:0; background:var(--card); color:var(--muted); cursor:pointer; font:700 11px/1 var(--font);
+    display:flex; align-items:center; justify-content:center; transition:background var(--ease),color var(--ease);}
+  .matbtn:hover{background:var(--hover);}
+  .matbtn[aria-pressed="true"]{background:var(--sel); color:var(--on-sel);}
+  .matbtn:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .panel{flex:1 1 340px; min-width:300px;}
+  /* the specimen: a 24px visible control inside a variable hit box */
+  .specwrap{display:flex; align-items:center; justify-content:center; height:200px; background:var(--card);
+    border:1px solid var(--hair); position:relative;}
+  .neigh{position:absolute; font:600 11px/1 var(--font); color:var(--muted);}
+  .neigh.l{left:16px;} .neigh.r{right:16px;} .neigh.t{top:12px;} .neigh.b{bottom:12px;}
+  .spec{position:relative; width:24px; height:24px; border-radius:50%; background:var(--sel); border:0; cursor:pointer;}
+  .spec::before{content:""; position:absolute; min-width:44px; min-height:44px; width:100%; height:100%;
+    background:var(--hit); border:1.5px dashed var(--hit-b);
+    top:50%; left:50%; transform:translate(-50%,-50%);}      /* default centre */
+  /* 9-anchor matrix — identical mechanism to the atom's .hit-* */
+  .a-t::before,.a-tl::before,.a-tr::before{top:0; bottom:auto; transform:translateX(-50%);}
+  .a-b::before,.a-bl::before,.a-br::before{top:auto; bottom:0; transform:translateX(-50%);}
+  .a-l::before,.a-tl::before,.a-bl::before{left:0; right:auto; transform:translateY(-50%);}
+  .a-r::before,.a-tr::before,.a-br::before{left:auto; right:0; transform:translateY(-50%);}
+  .a-tl::before,.a-tr::before,.a-bl::before,.a-br::before{transform:none;}
+  .reado{font-size:12.5px; color:var(--muted); margin-top:.6rem; line-height:1.6;}
+  .reado b{color:var(--ink);}
+  .opt{border:1px solid var(--hair); padding:1rem 1.2rem; margin:.75rem 0;}
+  .opt.pick{border-color:var(--ink);}
+  .opt h3{font-size:12.5px; margin:0 0 .35rem; font-weight:700;}
+  .opt p{font-size:12.5px; line-height:1.6; margin:.25rem 0;}
+  .ruling{background:var(--hover); border-left:3px solid var(--ink); padding:.85rem 1rem; font-size:12.5px; line-height:1.65; margin:1.25rem 0 0;}
+  .ruling b{font-weight:700;}
+  .kbd{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:11px; border:1px solid var(--line); padding:0 4px;}
+</style>
+</head>
+<body data-theme="light">
+<header>
+  <div><h1>Apollo hit-area standard <span class="sub">— ✓ RULED + enacted 2026-07-24 · target/min=44 minted · 9-anchor built · gate owed</span></h1></div>
+  <button class="tgl" id="themeToggle" type="button">◐ Light / dark</button>
+</header>
+<main>
+  <p class="lede">You're happy for a <b>visible control to be smaller than its touch target</b>, as long as an
+  <b>invisible hit area</b> makes up the difference — and you added the key constraint: that invisible area must be able to
+  <b>anchor</b> so the visible control still lines up with its neighbours (align top / bottom / left / right / centre — all
+  nine combinations). This sheet checks that against the standards, proposes one Apollo rule + a token, and gives you a live
+  matrix to feel the 9 anchors. The mechanism is already built into the segmented-control atom as the reference.</p>
+
+  <!-- 1. WHERE THE NUMBERS LAND -->
+  <section>
+    <h2><span class="n">01</span>What the standards actually require</h2>
+    <table>
+      <thead><tr><th>Source</th><th class="n">Target</th><th>The rule (and its escape hatch)</th></tr></thead>
+      <tbody>
+        <tr><td class="n">WCAG 2.5.8 (AA)</td><td class="n">24 × 24</td><td>Minimum. Has a <b>spacing exception</b>: an under-24 target passes if a 24px circle centred on it doesn't touch a neighbour's circle. This is the floor, not the goal.</td></tr>
+        <tr><td class="n">WCAG 2.5.5 (AAA)</td><td class="n">44 × 44</td><td>Enhanced. <b>No spacing escape</b> — 44 unless inline / user-agent / essential. This is the bar most banks aim at.</td></tr>
+        <tr><td class="n">Apple HIG</td><td class="n">44 × 44 pt</td><td>Firm recommendation for every control (~7 mm).</td></tr>
+        <tr><td class="n">Material 3</td><td class="n">48 × 48 dp</td><td>Baseline (~9 mm). Icon/small controls may be visually 24 but the <b>touch target extends to 48 via transparent padding</b> — exactly this mechanism.</td></tr>
+        <tr><td class="n">IBM Carbon</td><td class="n">44 × 44</td><td>All interactive icon targets ≥ 44; pad with CSS to reach it.</td></tr>
+        <tr><td class="n">HSBC (our repo)</td><td class="n">44 × 44</td><td><b>Default</b> (aid-009, ID-26). 24 is the <b>exception</b> (≥1px inactive gap). <code>icon-005</code> is BLOCKING 44×44. Shared bands already sanctioned: tags/chips 12+20+12 = 44; links 44 unless inline.</td></tr>
+      </tbody>
+    </table>
+    <p class="note">The read: <b>44 is the consensus target</b> (AAA, Apple, Carbon, HSBC) — Material's 48 is the only outlier and it
+    endorses the very technique we want (visible-small + invisible-padding-to-target). Nobody requires the <i>visible pixels</i> to
+    be 44 — only the <i>hit area</i>. That is precisely your position, and it's already how our tags, chips and links behave.</p>
+  </section>
+
+  <!-- 2. THE MECHANISM + THE 9-ANCHOR MATRIX -->
+  <section>
+    <h2><span class="n">02</span>The mechanism + your 9-anchor matrix <span class="rec">— click the grid</span></h2>
+    <p class="note">One transparent <code>::before</code> per control, sized <code>min-width/height: var(--hit, 44px)</code>, so a small
+    visible control still presents a 44 touch surface. Because a symmetric expansion would push the target past a container edge or a
+    neighbour, the <code>::before</code> <b>anchors</b> to any of 9 points — the visible control pins to that point and the padding grows
+    into the free space. Below: a <b>24px dot</b> (the visible control) with its hit area drawn dashed. Pick an anchor.</p>
+    <div class="demo">
+      <div class="stage">
+        <div class="board" role="group" aria-label="Hit-area anchor">
+          <button class="matbtn" data-a="tl" type="button" aria-pressed="false">TL</button>
+          <button class="matbtn" data-a="t"  type="button" aria-pressed="false">T</button>
+          <button class="matbtn" data-a="tr" type="button" aria-pressed="false">TR</button>
+          <button class="matbtn" data-a="l"  type="button" aria-pressed="false">L</button>
+          <button class="matbtn" data-a="c"  type="button" aria-pressed="true">C</button>
+          <button class="matbtn" data-a="r"  type="button" aria-pressed="false">R</button>
+          <button class="matbtn" data-a="bl" type="button" aria-pressed="false">BL</button>
+          <button class="matbtn" data-a="b"  type="button" aria-pressed="false">B</button>
+          <button class="matbtn" data-a="br" type="button" aria-pressed="false">BR</button>
+        </div>
+        <p class="reado" id="reado">Anchor <b>centre</b> — the 44 hit area is centred on the 24px dot; padding grows evenly all round.</p>
+      </div>
+      <div class="panel">
+        <div class="specwrap">
+          <span class="neigh t">▲ toolbar top edge</span>
+          <span class="neigh l">◀ edge</span><span class="neigh r">edge ▶</span>
+          <span class="neigh b">▼ baseline</span>
+          <button class="spec" id="spec" type="button" aria-label="Small control (24px visible, 44 hit area)"></button>
+        </div>
+        <p class="reado">Dashed red = the invisible touch target (44). The solid dot = what the user sees (24). The dot stays put;
+        the target shifts so it never overruns the edge it's anchored to.</p>
+      </div>
+    </div>
+    <p class="note">Reference implementation shipped in the atom: <code>.seg button::before</code> + the <code>.hit-&lt;v&gt;&lt;h&gt;</code>
+    utilities — identical CSS to the demo above. It never <i>shrinks</i> a target, so it's purely additive / accessibility-positive.</p>
+  </section>
+
+  <!-- 3. THE PROPOSAL -->
+  <section>
+    <h2><span class="n">03</span>The Apollo rule — one default, one token, one axis</h2>
+    <div class="opt pick">
+      <h3>Proposed standard (recommended)</h3>
+      <p><b>1 · Default target = 44×44.</b> Every interactive control presents a ≥44 hit area (matches HSBC default, WCAG 2.5.5 AAA,
+      Apple, Carbon). The <i>visible</i> control may be any size ≥ the minimum legible.</p>
+      <p><b>2 · Mint a <code>target/min</code> token = 44px</b> (a semantic geometry role, sibling to how <code>--phys-size</code> is local).
+      Controls bind <code>--hit: var(--target-min)</code>; a theme or dense context could dial it (never below 24, the AA floor).</p>
+      <p><b>3 · The hit area anchors (9-point matrix).</b> Default <b>centre</b>; <code>.hit-*</code> pins the visible control to any of
+      the 9 positions so it aligns to neighbours while padding grows outward. Gate: a control whose visible box &lt; 44 must declare an
+      anchor (fail-loud if it shrinks without one).</p>
+      <p class="note" style="margin-top:.5rem;">Cost: one token + one gate rule + the (built) <code>::before</code> mechanism. Upside:
+      small, tidy controls everywhere (charts, toolbars, dense tables) that still pass AAA — with alignment under your control.</p>
+    </div>
+    <div class="opt">
+      <h3>Alternative — AA floor (24) + spacing</h3>
+      <p>Adopt only 24×24 + the WCAG spacing exception. Cheaper conceptually but weaker (AA not AAA), off HSBC's own 44 default, and the
+      spacing maths is fiddly to gate. Not recommended for a bank aiming at "most accessible".</p>
+    </div>
+
+    <div class="ruling">
+      <b>Paste-ready ruling (edit before I inscribe):</b><br>
+      "Adopt the hit-area standard: <b>default target 44×44</b>, mint <code>target/min</code> = 44 (dial-down floor 24), invisible
+      <code>::before</code> mechanism, and the <b>9-anchor matrix</b> with default <b>centre</b>. A visible control &lt; 44 must declare
+      an anchor (gated). Apply to the segmented-control atom + the small chart controls first." <span style="color:var(--muted)">— or pick the AA-floor alternative, or change the default anchor.</span>
+    </div>
+  </section>
+</main>
+<script>
+  document.getElementById('themeToggle').addEventListener('click', function(){
+    var b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark');
+  });
+  var spec=document.getElementById('spec'), reado=document.getElementById('reado');
+  var CLASS={tl:'a-tl',t:'a-t',tr:'a-tr',l:'a-l',c:'',r:'a-r',bl:'a-bl',b:'a-b',br:'a-br'};
+  var WORD={tl:'top-left',t:'top',tr:'top-right',l:'left',c:'centre',r:'right',bl:'bottom-left',b:'bottom',br:'bottom-right'};
+  var GROW={tl:'grows down + right',t:'grows downward',tr:'grows down + left',l:'grows rightward',
+    c:'grows evenly all round',r:'grows leftward',bl:'grows up + right',b:'grows upward',br:'grows up + left'};
+  document.querySelectorAll('.matbtn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('.matbtn').forEach(function(x){ x.setAttribute('aria-pressed', String(x===btn)); });
+      var a=btn.getAttribute('data-a');
+      spec.className='spec'; if(CLASS[a]) spec.classList.add(CLASS[a]);
+      reado.innerHTML='Anchor <b>'+WORD[a]+'</b> — the 44 hit area pins to the '+WORD[a]+' of the 24px dot; padding '+GROW[a]+'.';
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+{
+  "name": "Segmented control",
+  "category": "atom",
+  "$family": "The single-select sliding-indicator switcher. Instances: View options (list/grid), Tab-bar's pill switcher, the chart view switch (Monthly / Year to date). Promoted from View options by Dave (2026-07-24) so the mechanism is one atom, not re-hand-rolled per consumer.",
+  "purpose": "A single-select control: exactly one segment active at a time. One framing border wraps the track; the selected fill is a sliding indicator that animates between segments. Use for switching a presentation, scale, or range in place (not for navigation between destinations — that is Tabs).",
+  "props": [
+    {
+      "name": "shape",
+      "type": "enum",
+      "values": [ "square" ],
+      "default": "square",
+      "$note": "Square (Mono). Every variant carries the 4px INSET track padding + a floating indicator (the pill's padding, applied to all — Dave 2026-07-24). The rounded PILL SHAPE is NOT a seg variant — reserved for a mobile Tab-bar alternative (deferred; see Tab-bar + _FUTURE-STATE mobile-variants)."
+    },
+    {
+      "name": "content",
+      "type": "enum",
+      "values": [ "label", "icons" ],
+      "default": "label",
+      "$note": "Label segments (text) or icon-only segments (.icons, 44px cells, accessible names required)."
+    },
+    {
+      "name": "size",
+      "type": "enum",
+      "values": [ "sm", "md", "lg" ],
+      "default": "md",
+      "$note": "Mini ramp (T-D15, RULED 2026-07-24): sm=12/500 · md=14/500 · lg=16/400 — bound in type.css (.t-cm-ctl-12/-14/-16 via .seg.sm/.md/.lg button). Visible heights 28/32/36; the invisible ::before target keeps every size at 44."
+    },
+    {
+      "name": "state",
+      "type": "enum",
+      "values": [ "default", "hover", "selected" ],
+      "default": "default",
+      "$note": "Per-segment; the chosen option is 'selected' (aria-pressed=true), shown by the sliding fill + inverted label."
+    }
+  ],
+  "variants": [
+    { "name": "label-square-md", "use": "Default. Text segments, e.g. List / Grid / Table (14/500)." },
+    { "name": "sm", "use": "Dense 12/500 control for chart / toolbar chrome; hit area still 44 via ::before." },
+    { "name": "lg", "use": "Prominent 16/400 control." },
+    { "name": "icons", "use": "Icon-only segments (44px cells) for the same options." }
+  ],
+  "tokens": {
+    "segment-surface": "tertiary/background/default (track) + tertiary/background/hover (inactive hover)",
+    "selected-fill": "secondary/background/default (the sliding .ind) — inverts, legible both modes",
+    "selected-label": "text/on-inverse",
+    "label-text": "text/default; type = mini ramp .t-cm-ctl-12/-14/-16 (T-D15) bound per size via .seg.sm/.md/.lg button",
+    "icon": "icon/default; currentColor",
+    "border": "form/border/default (one framing border, no inter-segment divider; 4px inset track)",
+    "focus": "focus/ring",
+    "hit-target": "target/min (RULED — the invisible ::before target, default 44px; 9-anchor .hit-* matrix)",
+    "radius": "border-radius/default (square, Mono). Rounded pill shape deferred to a mobile variant.",
+    "$finding": "(2026-07-24) Promoted from View options. Selected fill = the inverting secondary/background/default sliding indicator (same as Tabs), not a per-segment pressed tint. Selection via aria-pressed, not colour alone (1.4.1)."
+  },
+  "relationships": {
+    "livesInside": [ "List / grid header", "Toolbar", "Chart controls", "Search results", "Filter bar" ],
+    "mustNotNeighbour": [],
+    "commonPatterns": [ "list/grid view toggle", "range / scale switch", "segmented presentation switch" ]
+  },
+  "accessibility": {
+    "role": "Single-select group (toggle-button group with aria-pressed, or radiogroup); only one segment active",
+    "selected": "Selected segment must not be conveyed by the sliding fill alone — expose aria-pressed/aria-checked (1.4.1)",
+    "iconOnly": "Icon-only segments need accessible names (e.g. 'List view', 'Grid view')",
+    "targetArea": "Every segment carries an invisible ::before target >= 44px (HSBC default; WCAG 2.5.5 AAA). The target anchors within the segment (9-point matrix, .hit-*) so a small visible control still meets 44 while staying aligned to neighbours",
+    "motion": "The slide + label colour change honour prefers-reduced-motion (become instant)",
+    "relatedSC": [ "4.1.2 Name Role Value", "1.4.1 Use of Color", "2.5.8 Target Size (Minimum)", "2.3.3 Animation from Interactions", "2.1.1 Keyboard" ]
+  },
+  "tokenValidation": {
+    "date": "2026-07-24",
+    "against": "Promoted from View options (components/view-options.meta.json), which passed token validation 2026-06-18 against the Figma native variable export; the sliding-indicator + inverting-fill binding is unchanged, generalised to the atom.",
+    "result": "PASS (inherited) — surfaces use tertiary/background/*; selected fill = secondary/background/default; border = form/border/default. --hit binds target/min (44, layout.json) — RULED + minted 2026-07-24. Text = mini ramp .t-cm-ctl-12/-14/-16 (T-D15, minted same day)."
+  },
+  "antiPatterns": [
+    "Conveying the active segment by the sliding fill alone (add aria-pressed/checked)",
+    "Icon-only segments without accessible names",
+    "Allowing multiple segments selected (it is single-select — use checkboxes/chips for multi)",
+    "Using it for navigation between destinations (that is Tabs / Tab-bar link semantics)",
+    "Shrinking the visible segment below 44 without the ::before hit target"
+  ],
+  "provenance": {
+    "source": "figma",
+    "figma_node": "Cgbtrmfp15ruNFkIAClpkI:437:13740",
+    "code_path": "",
+    "$promotedFrom": "View options (components/view-options.meta.json) — Dave ruling 2026-07-24"
+  }
+}

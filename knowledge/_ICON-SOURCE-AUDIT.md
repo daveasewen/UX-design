@@ -2,7 +2,7 @@
 
 *GATE (build-failing as of 2026-06-24). Each inline `<svg>` path is matched to the library. **library** = byte-matches a real glyph · **bespoke** = inside `<svg data-bespoke="reason">`, a deliberately custom shape (control glyph / animated / focus mark), verified · **UNKNOWN** = neither (possibly invented → use the library SVG, or mark it `data-bespoke`). Shape-only icons (`<circle>`/`<rect>`/`<ellipse>`/`<polygon>` with no `<path>`, e.g. a 3-dot kebab) are now flagged too.*
 
-**0 UNKNOWN path(s)** across 65 snippet(s) (36 verified-bespoke). Library glyphs indexed: 746.
+**0 UNKNOWN path(s)** across 66 snippet(s) (36 verified-bespoke). Library glyphs indexed: 746.
 
 | # | Snippet | paths | library | bespoke | UNKNOWN | declares | status |
 |---|---------|------:|--------:|--------:|--------:|:--------:|--------|
@@ -54,23 +54,24 @@
 | 46 | Reorder | 18 | 18 | 0 | 0 | — | ✅ verified |
 | 47 | Search-field | 2 | 2 | 0 | 0 | — | ✅ verified |
 | 48 | Secure-entry | 5 | 5 | 0 | 0 | yes | ✅ verified |
-| 49 | Selection-controls | 7 | 0 | 7 | 0 | — | ✅ verified · 7 bespoke |
-| 50 | Skeleton-loader | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 51 | Slider | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 52 | Stat-card | 2 | 2 | 0 | 0 | yes | ✅ verified |
-| 53 | Status-indicator | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 54 | Stepper | 4 | 4 | 0 | 0 | yes | ✅ verified |
-| 55 | Summary | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 56 | Tab-bar | 11 | 11 | 0 | 0 | yes | ✅ verified |
-| 57 | Table | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 58 | Tabs | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 59 | Tags | 1 | 1 | 0 | 0 | yes | ✅ verified |
-| 60 | Textarea | 3 | 3 | 0 | 0 | yes | ✅ verified |
-| 61 | Time-picker | 9 | 4 | 5 | 0 | yes | ✅ verified · 5 bespoke |
-| 62 | Toast | 6 | 6 | 0 | 0 | yes | ✅ verified |
-| 63 | Tooltip | 3 | 3 | 0 | 0 | — | ✅ verified |
-| 64 | Video-player | 4 | 4 | 0 | 0 | — | ✅ verified |
-| 65 | View-options | 2 | 2 | 0 | 0 | — | ✅ verified |
+| 49 | Segmented-control | 2 | 2 | 0 | 0 | — | ✅ verified |
+| 50 | Selection-controls | 7 | 0 | 7 | 0 | — | ✅ verified · 7 bespoke |
+| 51 | Skeleton-loader | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 52 | Slider | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 53 | Stat-card | 2 | 2 | 0 | 0 | yes | ✅ verified |
+| 54 | Status-indicator | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 55 | Stepper | 4 | 4 | 0 | 0 | yes | ✅ verified |
+| 56 | Summary | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 57 | Tab-bar | 11 | 11 | 0 | 0 | yes | ✅ verified |
+| 58 | Table | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 59 | Tabs | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 60 | Tags | 1 | 1 | 0 | 0 | yes | ✅ verified |
+| 61 | Textarea | 3 | 3 | 0 | 0 | yes | ✅ verified |
+| 62 | Time-picker | 9 | 4 | 5 | 0 | yes | ✅ verified · 5 bespoke |
+| 63 | Toast | 6 | 6 | 0 | 0 | yes | ✅ verified |
+| 64 | Tooltip | 3 | 3 | 0 | 0 | — | ✅ verified |
+| 65 | Video-player | 4 | 4 | 0 | 0 | — | ✅ verified |
+| 66 | View-options | 2 | 2 | 0 | 0 | — | ✅ verified |
 
 ## UNKNOWN detail
 

@@ -12,6 +12,16 @@ graduates OUT of here into `_LIVE-STATE` OPEN/TARGET when work starts. Refresh w
 **Entry format:** what · why it's held · what it feeds (Apollo phase/mode) · source/provenance pointer ·
 status (`idea` / `parked` / `resurrection-candidate` / `graduated→LIVE`).
 
+## ★ Mobile variants — a component-wide dimension to build out (Dave, 2026-07-24)
+**What:** components will carry MOBILE variants, not just responsive reflow. Dave flagged this while ruling
+the segmented control: the rounded **PILL segmented control** is reserved as a **mobile Tab-bar alternative**
+(it already lives in `snippets/Tab-bar.reference.html` variant B — full-width, elevated, sliding pill), so the
+desktop segmented-control atom stays square and drops the pill shape. **Follow-up (Dave's words): raise this
+"when we've built out the library"** — i.e. after the base desktop set is fuller, do a mobile-variant pass as a
+first-class dimension (touch targets already covered by the hit-area standard / `target/min`; the pill is one
+instance). Candidates: bottom nav / tab-bar, mobile segmented (pill), sheets/drawers, mobile-first inputs.
+**Not now** — logged so it isn't lost.
+
 ## ★★ Live radius / corner tuner — Dave: "return to soon, we need it, don't let me forget" (2026-07-22)
 **What:** an in-browser tuner that dials `border-radius/{control · surface · indicator}` (and a future
 `data-mark` slot) **per theme**, live, with buttons/cards/chips/bars updating in place and the values

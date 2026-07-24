@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mini text ramp 12/14/16 — proposal (2026-07-24 v1)</title>
+<!-- REVIEW SHEET (reviews/ — not gate-globbed). PROPOSAL, NOTHING MINTED. Firms up the parked
+     _FUTURE-STATE mini-ramp (T-D15 candidate). Dave (2026-07-24): labels + controls get SIZE VARIANTS
+     across a mini ramp 12/14/16 (3 variants); ceiling 16 VERIFIED (18 absent from the scale, 20 dropped).
+     This sheet also demonstrates the segmented-control atom at all 3 steps + the chart's view switch
+     CONSUMING the atom at sm/12 — which the ramp is what unblocks (the 14/400-vs-12/500 seam).
+     Raw font sizes are used here to SHOW the proposed steps; no type.css is touched. -->
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:200ms cubic-bezier(.4,0,.2,1); }
+  [data-theme="light"]{ --page:#FFFFFF; --ink:#1A1A1A; --line:#808080; --muted:#626262; --hair:#E1E1E1;
+    --card:#FFFFFF; --hover:#F0F0F0; --surface:#FFFFFF; --sel:#000000; --on-sel:#FFFFFF; --focus:#305A85; }
+  [data-theme="dark"]{ --page:#1A1A1A; --ink:#FAFAFA; --line:#808080; --muted:#9D9D9D; --hair:#484848;
+    --card:#1F1F1F; --hover:#232323; --surface:#1F1F1F; --sel:#FFFFFF; --on-sel:#333333; --focus:#4587A7; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:0 0 5rem; font-family:var(--font); background:var(--page); color:var(--ink);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease),color var(--ease);}
+  header{position:sticky; top:0; z-index:10; display:flex; align-items:center; justify-content:space-between;
+    gap:1rem; padding:1rem 2rem; background:var(--page); border-bottom:1px solid var(--hair);}
+  header h1{font-size:15px; font-weight:700; margin:0;}
+  header .sub{font-size:12px; color:var(--muted); font-weight:400;}
+  .tgl{font:500 13px/1 var(--font); padding:8px 12px; border:1px solid var(--line); background:transparent; color:var(--ink); cursor:pointer;}
+  .tgl:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  main{max-width:1000px; margin:0 auto; padding:2rem;}
+  .lede{font-size:13.5px; line-height:1.65; max-width:74ch; margin:0 0 .5rem;}
+  .lede b{font-weight:700;}
+  section{margin:2.5rem 0; padding-top:1.5rem; border-top:1px solid var(--hair);}
+  h2{font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; margin:0 0 .75rem;}
+  h2 .n{color:var(--muted); margin-right:.5rem;}
+  p.note{font-size:12.5px; line-height:1.6; color:var(--muted); max-width:76ch;}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:11.5px; background:var(--hover); padding:1px 5px;}
+  table{border-collapse:collapse; width:100%; margin:.5rem 0 1rem; font-size:12.5px;}
+  th,td{text-align:left; padding:.55rem .7rem; border-bottom:1px solid var(--hair); vertical-align:middle; line-height:1.5;}
+  th{font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); font-weight:700;}
+  td.n{font-weight:700; white-space:nowrap;}
+  .rec{color:#577C78; font-weight:700;}
+  /* ramp specimens (raw sizes = the PROPOSED steps, shown live) */
+  .ramp{display:flex; flex-direction:column; gap:.4rem; margin:1rem 0;}
+  .r-row{display:flex; align-items:baseline; gap:1rem; padding:.5rem 0; border-bottom:1px solid var(--hair);}
+  .r-tag{flex:none; width:150px; font-size:11px; color:var(--muted); font-weight:700;}
+  .s12{font-size:12px; font-weight:500;} .s14{font-size:14px; font-weight:500;} .s16{font-size:16px; font-weight:500;}
+  /* live segmented control (faithful to the atom) */
+  .seg{position:relative; display:inline-flex; border:1px solid var(--line); background:var(--surface); vertical-align:top;}
+  .seg .ind{position:absolute; top:0; bottom:0; left:0; width:0; background:var(--sel); z-index:0; transition:left var(--ease),width var(--ease);}
+  .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    border:0; background:transparent; color:var(--ink); cursor:pointer; transition:color var(--ease); font-weight:500;}
+  .seg button[aria-pressed="true"]{color:var(--on-sel);}
+  .seg button:not([aria-pressed="true"]):hover{background:var(--hover);}
+  .seg button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px; z-index:2;}
+  .seg.sm button{height:32px; padding:0 12px; font-size:12px;}   /* ramp step 1 */
+  .seg.md button{height:40px; padding:0 16px; font-size:14px;}   /* ramp step 2 (today's .seg button) */
+  .seg.lg button{height:44px; padding:0 20px; font-size:16px;}   /* ramp step 3 */
+  .seg.pill{border-radius:999px; padding:4px;} .seg.pill .ind{top:4px; bottom:4px; left:4px; border-radius:999px;} .seg.pill button{border-radius:999px;}
+  .specrow{display:flex; flex-wrap:wrap; gap:2rem; align-items:flex-end; margin:1.25rem 0;}
+  .speccell{display:flex; flex-direction:column; gap:.5rem;}
+  .speccell .cap{font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.05em;}
+  .opt{border:1px solid var(--hair); padding:1rem 1.2rem; margin:.75rem 0;}
+  .opt.pick{border-color:var(--ink);}
+  .opt h3{font-size:12.5px; margin:0 0 .35rem; font-weight:700;} .opt p{font-size:12.5px; line-height:1.6; margin:.25rem 0;}
+  .ruling{background:var(--hover); border-left:3px solid var(--ink); padding:.85rem 1rem; font-size:12.5px; line-height:1.65; margin:1.25rem 0 0;}
+  .ruling b{font-weight:700;}
+  .flag{color:#C58900; font-weight:700;}
+</style>
+</head>
+<body data-theme="light">
+<header>
+  <div><h1>Mini text ramp — 12 / 14 / 16 <span class="sub">— ✓ RULED + minted 2026-07-24 (T-D15) · 16 at 400 · pill dropped (mobile only) · specimens below predate those two tweaks</span></h1></div>
+  <button class="tgl" id="themeToggle" type="button">◐ Light / dark</button>
+</header>
+<main>
+  <p class="lede">Labels and controls should carry a <b>small size ramp</b> so one label-/control-class item can step up or down without
+  a bespoke size each time. You set it at <b>three steps — 12 / 14 / 16 — ceiling 16</b> (18 isn't in our scale; 20 you dropped). This
+  sheet shows the ramp live, applies it to the segmented-control atom, and demonstrates the chart's view switch <b>consuming the atom</b>
+  at the 12 step — which is the thing the ramp unblocks. <b>Nothing is minted</b> until you rule.</p>
+
+  <!-- 1. THE RAMP -->
+  <section>
+    <h2><span class="n">01</span>The ramp — three steps, one weight</h2>
+    <div class="ramp">
+      <div class="r-row"><span class="r-tag">step 1 · 12px</span><span class="s12">Monthly · Year to date · Copy data</span></div>
+      <div class="r-row"><span class="r-tag">step 2 · 14px</span><span class="s14">List · Grid · Table</span></div>
+      <div class="r-row"><span class="r-tag">step 3 · 16px</span><span class="s16">Day · Week · Month</span></div>
+    </div>
+    <table>
+      <thead><tr><th>Step</th><th class="n">Size</th><th>Nearest existing composite</th><th>Proposed</th></tr></thead>
+      <tbody>
+        <tr><td class="n">1</td><td class="n">12 / 500</td><td><code>.t-cm-chart-label</code> (12/500) already exists ✓</td><td>reuse as the ramp's step 1</td></tr>
+        <tr><td class="n">2</td><td class="n">14 / 500</td><td><code>.t-cm-caption</code> is 14/<b>400</b> — weight differs</td><td>mint a 14/500 control step</td></tr>
+        <tr><td class="n">3</td><td class="n">16 / 500</td><td><code>nav.main a</code> is 16/500 ✓ (but nav-scoped)</td><td>mint a 16/500 control step</td></tr>
+      </tbody>
+    </table>
+    <p class="note"><b>Weight 500 recommended</b> — controls read as medium (matches <code>.t-cm-chart-label</code> 12/500 and the nav 16/500),
+    not the 400 of body captions. So the ramp = one weight (500) across three sizes. <span class="flag">Open Q for you:</span> weight
+    <b>500</b> (control) or <b>400</b> (to sit with captions)? Ceiling <b>16 confirmed</b> — the scale has no 18 (it appears only as a
+    line-height), so per your rule the ramp stops at 16.</p>
+    <p class="note">Proposed naming (T-D15): <code>.t-cm-ctl-12 / -14 / -16</code> (or <code>.t-cm-label-1/2/3</code>) — three type.css
+    composites + their <code>_type-bindings.json</code> registrations. That's the mint awaiting your word.</p>
+  </section>
+
+  <!-- 2. ATOM AT THREE SIZES -->
+  <section>
+    <h2><span class="n">02</span>The segmented-control atom, stepped <span class="rec">— click a segment</span></h2>
+    <p class="note">Same atom, three ramp steps. Today every <code>.seg button</code> is fixed at 14/400; the ramp lets the size variant
+    carry its own step, so a dense control reads 12 and a prominent one reads 16 — without a bespoke rule.</p>
+    <div class="specrow">
+      <div class="speccell"><span class="cap">sm · 12</span>
+        <div class="seg sm" role="group" aria-label="sm"><span class="ind"></span>
+          <button type="button" aria-pressed="true">Monthly</button><button type="button" aria-pressed="false">Year to date</button></div></div>
+      <div class="speccell"><span class="cap">md · 14 (today's default)</span>
+        <div class="seg md" role="group" aria-label="md"><span class="ind"></span>
+          <button type="button" aria-pressed="true">List</button><button type="button" aria-pressed="false">Grid</button><button type="button" aria-pressed="false">Table</button></div></div>
+      <div class="speccell"><span class="cap">lg · 16 · pill</span>
+        <div class="seg lg pill" role="group" aria-label="lg"><span class="ind"></span>
+          <button type="button" aria-pressed="true">Day</button><button type="button" aria-pressed="false">Week</button><button type="button" aria-pressed="false">Month</button></div></div>
+    </div>
+  </section>
+
+  <!-- 3. CHART CONSUMES THE ATOM -->
+  <section>
+    <h2><span class="n">03</span>"Chart consumes it" — the demonstration (and the coupling)</h2>
+    <p class="note">Your ruling: the chart's view switch should <b>consume the segmented-control atom</b> (sliding indicator + pill), not a
+    stripped variant. Below is the chart's Monthly / Year-to-date switch rebuilt as the atom at the <b>sm · 12</b> step — sliding indicator
+    and all. This is what lands in the exemplar <i>once the ramp is minted</i>.</p>
+    <div class="specrow">
+      <div class="speccell"><span class="cap">chart view switch → the atom (sm · 12, sliding)</span>
+        <div class="seg sm" role="group" aria-label="Chart view"><span class="ind"></span>
+          <button type="button" aria-pressed="true">Monthly</button><button type="button" aria-pressed="false">Year to date</button></div></div>
+    </div>
+    <p class="note"><span class="flag">Why it isn't landed yet:</span> today <code>.seg button</code> resolves to <b>14/400</b>, but the
+    chart's switch is tuned to <b>12/500</b> (DV-D08). Swapping the exemplar to <code>.seg</code> now would either bump its tuned text to
+    14/400 (an unapproved change to a control you haven't signed off) or need this ramp's <b>12/500 step</b>. So the chart-consume rides
+    this ruling. Rule the ramp → the enact window mints the steps, and the switch swaps to <code>.seg</code> at sm/12 with the coupling
+    cleared. (The additive toggles <code>Target line</code> / <code>Last year</code> + <code>Copy CSV</code> + the legend filter keep their
+    own open question — dataviz-scoped.)</p>
+  </section>
+
+  <!-- 4. RULING -->
+  <section>
+    <h2><span class="n">04</span>The choice</h2>
+    <div class="opt pick">
+      <h3>Recommended — mint the 3-step ramp at 500</h3>
+      <p><code>.t-cm-ctl-12 / -14 / -16</code> (12/500, 14/500, 16/500), registered in <code>_type-bindings.json</code>. Segmented-control
+      binds sm→12, md→14, lg→16; chart labels + quiet controls opt in. Each step pairs with its 44 hit target (hit-area proposal).</p>
+    </div>
+    <div class="opt">
+      <h3>Alternative — 2 steps (12 / 16) or weight 400</h3>
+      <p>Drop the middle 14 (fewer composites) or set the ramp at 400 to sit with captions. Both viable — 14 is the current segmented
+      default though, so dropping it orphans today's control; 400 makes controls read lighter than the chart labels.</p>
+    </div>
+    <div class="ruling">
+      <b>Paste-ready ruling (edit before I inscribe / mint):</b><br>
+      "Mint the mini ramp <b>12 / 14 / 16 at weight 500</b> as <code>.t-cm-ctl-12/-14/-16</code> (T-D15). Ceiling 16. Bind to the
+      segmented-control sizes (sm/md/lg) + chart labels + quiet controls. Then land the chart view switch on <code>.seg</code> at sm/12."
+      <span style="color:var(--muted)">— or 2-step, or weight 400, or a different name.</span>
+    </div>
+  </section>
+</main>
+<script>
+  document.getElementById('themeToggle').addEventListener('click', function(){
+    var b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark');
+    document.querySelectorAll('.seg').forEach(moveInd);
+  });
+  function moveInd(seg){ var ind=seg.querySelector('.ind'); if(!ind) return;
+    var a=seg.querySelector('button[aria-pressed="true"]'); if(!a) return;
+    ind.style.left=a.offsetLeft+'px'; ind.style.width=a.offsetWidth+'px'; }
+  document.querySelectorAll('.seg').forEach(function(seg){
+    seg.querySelectorAll('button').forEach(function(b){ b.addEventListener('click', function(){
+      seg.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', String(x===b)); }); moveInd(seg); }); });
+    moveInd(seg);
+  });
+  addEventListener('resize', function(){ document.querySelectorAll('.seg').forEach(moveInd); });
+  addEventListener('load', function(){ document.querySelectorAll('.seg').forEach(moveInd); });
+</script>
+</body>
+</html>

@@ -56,7 +56,7 @@ def overlay_block(label, rv_file):
 CATEGORIES = [
     ("Actions",           ["button", "icon-button", "action-bar", "quick-actions", "links"]),
     ("Forms and input",   ["input-fields", "search-field", "selection-controls", "slider",
-                           "dropdown", "reorder", "view-options",
+                           "dropdown", "reorder", "view-options", "segmented-control",
                            # Phase-2 wave 1 (worker A + Account-selector from B's lane)
                            # + wave 2 A-continuation (registered by the CONDUCTOR from receipts —
                            # workers never edit this file):

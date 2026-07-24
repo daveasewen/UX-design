@@ -1,7 +1,7 @@
 {
   "$description": "Sutherland acceptance fixtures — per component, the contract a React implementation must satisfy to match the gated reference. Generated from snippet manifests + metas; regenerated each build.",
   "generated": "by _build_sutherland_fixtures.py",
-  "componentCount": 65,
+  "componentCount": 66,
   "fixtures": [
     {
       "component": "Accordion",
@@ -4014,6 +4014,89 @@
             "type": "boolean",
             "default": true,
             "$note": "Ghost button unlocked by a countdown; button-family membership candidate (ADR-0013)."
+          }
+        ]
+      }
+    },
+    {
+      "component": "Segmented control",
+      "category": "atom",
+      "referenceSnippet": "snippets/Segmented-control.reference.html",
+      "meta": "components/segmented-control.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--surface": "tertiary/background/default",
+          "--hover": "tertiary/background/hover",
+          "--sel": "secondary/background/default",
+          "--on-sel": "text/on-inverse",
+          "--text": "text/default",
+          "--icon": "icon/default",
+          "--border": "form/border/default",
+          "--focus": "focus/ring",
+          "--page": "background/default",
+          "--hit": "target/min"
+        },
+        "requiredAria": [
+          "aria-pressed"
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "tertiary/background/default",
+            "context": "text"
+          },
+          {
+            "fg": "text/on-inverse",
+            "bg": "secondary/background/default",
+            "context": "text"
+          },
+          {
+            "fg": "form/border/default",
+            "bg": "background/default",
+            "context": "ui"
+          }
+        ],
+        "props": [
+          {
+            "name": "shape",
+            "type": "enum",
+            "values": [
+              "square"
+            ],
+            "default": "square",
+            "$note": "Square (Mono). Every variant carries the 4px INSET track padding + a floating indicator (the pill's padding, applied to all — Dave 2026-07-24). The rounded PILL SHAPE is NOT a seg variant — reserved for a mobile Tab-bar alternative (deferred; see Tab-bar + _FUTURE-STATE mobile-variants)."
+          },
+          {
+            "name": "content",
+            "type": "enum",
+            "values": [
+              "label",
+              "icons"
+            ],
+            "default": "label",
+            "$note": "Label segments (text) or icon-only segments (.icons, 44px cells, accessible names required)."
+          },
+          {
+            "name": "size",
+            "type": "enum",
+            "values": [
+              "sm",
+              "md",
+              "lg"
+            ],
+            "default": "md",
+            "$note": "Mini ramp (T-D15, RULED 2026-07-24): sm=12/500 · md=14/500 · lg=16/400 — bound in type.css (.t-cm-ctl-12/-14/-16 via .seg.sm/.md/.lg button). Visible heights 28/32/36; the invisible ::before target keeps every size at 44."
+          },
+          {
+            "name": "state",
+            "type": "enum",
+            "values": [
+              "default",
+              "hover",
+              "selected"
+            ],
+            "default": "default",
+            "$note": "Per-segment; the chosen option is 'selected' (aria-pressed=true), shown by the sliding fill + inverted label."
           }
         ]
       }

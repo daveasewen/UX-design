@@ -84,7 +84,7 @@ def resolve(token, mode):
     to a CSS-formatted string ('0' / '8px') so snippets can bind radius via manifest.
     motion/* + component-type/* (ADR-0013) resolve to UNITLESS number strings —
     the scale-factor namespace (matches gen_snippet_tokens._fmt)."""
-    if token.startswith(("border-radius/", "border-width/", "focus-ring/", "layout/", "breakpoint/")):
+    if token.startswith(("border-radius/", "border-width/", "focus-ring/", "layout/", "breakpoint/", "target/")):
         n = layout
         for k in token.split("/"):
             n = n.get(k) if isinstance(n, dict) else None
