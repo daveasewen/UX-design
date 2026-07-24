@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Radius / corner tuner — v1 (2026-07-24)</title>
+<!-- LIVE RADIUS / CORNER TUNER — prototype v1 (Dave's ask 2026-07-24, "quick prototype, 2px steps").
+     Dials border-radius/{control · surface · indicator} PER THEME, live, in 2px steps; the preview
+     components update in place; export emits the override-set JSON shape (apollo-<theme>.overrides).
+     READS CANON LIVE: links ../knowledge/canon/canon.css, so the slider start values + preview
+     colours are the real tokens (no retyped values). Switching theme re-seeds from the cascade
+     ([data-apollo-theme] + [data-theme]). Homes: _FUTURE-STATE ★★ · memory live-radius-corner-tuner.
+     NOT canon, NOT gated — a tuner surface for Dave to settle the provisional Console/Mono values. -->
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+<style>
+  /* tuner chrome — fixed neutral, independent of the previewed theme so the controls stay readable */
+  :root{ --uf:"Univers Next for HSBC","Helvetica Neue",Arial,sans-serif; }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:var(--uf); background:#F4F4F4; color:#1A1A1A; -webkit-font-smoothing:antialiased;}
+  header{padding:20px 28px; background:#111; color:#fff;}
+  header h1{margin:0; font-size:18px; font-weight:500;}
+  header p{margin:6px 0 0; font-size:13px; color:#B7B7B7; max-width:80ch;}
+  .wrap{display:grid; grid-template-columns:340px 1fr; gap:0; align-items:start;}
+  @media (max-width:880px){ .wrap{grid-template-columns:1fr;} }
+
+  /* ---- control rail ---- */
+  .rail{padding:20px 24px; border-right:1px solid #DADADA; position:sticky; top:0;}
+  .grp{margin:0 0 22px;}
+  .grp h2{font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:#767676; margin:0 0 10px;}
+  .themebtns,.modebtns{display:flex; flex-wrap:wrap; gap:6px;}
+  .themebtns button,.modebtns button{font:inherit; font-size:13px; padding:7px 12px; border:1px solid #C4C4C4;
+    background:#fff; color:#1A1A1A; cursor:pointer;}
+  .themebtns button[aria-pressed="true"],.modebtns button[aria-pressed="true"]{background:#111; color:#fff; border-color:#111;}
+  .themebtns button:focus-visible,.modebtns button:focus-visible{outline:2px solid #305A85; outline-offset:2px;}
+
+  .slider{margin:0 0 18px;}
+  .slider .row{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px;}
+  .slider label{font-size:14px; font-weight:500;}
+  .slider .role{font-size:11px; color:#767676; font-weight:400;}
+  .slider .val{font-size:14px; font-variant-numeric:tabular-nums; font-weight:500;}
+  .slider .canon{font-size:11px; color:#9A9A9A; font-variant-numeric:tabular-nums;}
+  .slider input[type=range]{width:100%; accent-color:#111; margin:2px 0 0;}
+  .rail .actions{display:flex; gap:8px; margin-top:8px;}
+  .rail .actions button{font:inherit; font-size:13px; padding:8px 14px; border:1px solid #111; background:#111; color:#fff; cursor:pointer;}
+  .rail .actions button.ghost{background:#fff; color:#111;}
+  .rail .actions button:focus-visible{outline:2px solid #305A85; outline-offset:2px;}
+
+  /* ---- preview canvas — adopts the theme via data-apollo-theme + data-theme on #preview ---- */
+  .stage{padding:24px 28px;}
+  #preview{background:var(--background-default); color:var(--text-default); border:1px solid #DADADA;
+    padding:28px; transition:background .2s, color .2s;}
+  .specgrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:22px;}
+  .spec{display:flex; flex-direction:column; gap:10px;}
+  .spec .cap{font-size:11px; letter-spacing:.04em; text-transform:uppercase; color:var(--text-secondary); opacity:.75;}
+  .spec .tag-role{font-size:10px; padding:1px 6px; border:1px solid currentColor; border-radius:2px; opacity:.55; align-self:flex-start;}
+
+  /* preview components — all consume canon radius roles so a slider updates them live */
+  .p-btn{display:inline-flex; align-items:center; justify-content:center; height:44px; padding:0 18px;
+    background:var(--primary-background-default); color:#fff; border:0; font:500 15px/1 var(--uf);
+    border-radius:var(--border-radius-control); cursor:default;}
+  .p-btn.sec{background:transparent; color:var(--text-default); border:1px solid var(--form-border-default);}
+  .p-input{height:44px; padding:0 14px; background:var(--background-default); color:var(--text-default);
+    border:1px solid var(--form-border-default); border-radius:var(--border-radius-control); font:15px/1 var(--uf);
+    display:flex; align-items:center;}
+  .p-chip{display:inline-flex; align-items:center; height:28px; padding:0 12px; font-size:13px;
+    background:var(--tertiary-background-default); color:var(--text-default); border:1px solid var(--border-subtle);
+    border-radius:var(--border-radius-control);}
+  .p-card{background:var(--surface-raised); color:var(--text-default); border:1px solid var(--border-subtle);
+    border-radius:var(--border-radius-surface); padding:16px; box-shadow:0 0 16px #00000014;}
+  .p-card h3{margin:0 0 6px; font-size:15px; font-weight:500;}
+  .p-card p{margin:0; font-size:13px; color:var(--text-secondary); opacity:.8;}
+  /* segmented control — track uses control radius, sliding indicator uses INDICATOR radius */
+  .p-seg{position:relative; display:inline-flex; padding:2px; border:1px solid var(--form-border-default);
+    background:transparent; border-radius:var(--border-radius-control);}
+  .p-seg .ind{position:absolute; top:2px; bottom:2px; left:2px; width:calc(50% - 2px);
+    background:var(--secondary-background-default); border-radius:var(--border-radius-indicator);}
+  .p-seg button{position:relative; z-index:1; flex:1 1 0; min-width:92px; height:28px; padding:0 14px; border:0;
+    background:transparent; font:500 12px/1 var(--uf); color:var(--text-default); white-space:nowrap; cursor:default;}
+  .p-seg button:first-of-type{color:var(--background-default);}   /* on-fill colour (indicator sits under button 1) */
+  .p-badge{display:inline-flex; align-items:center; justify-content:center; min-width:22px; height:22px; padding:0 7px;
+    background:var(--secondary-background-default); color:var(--background-default); font:700 12px/1 var(--uf);
+    border-radius:var(--border-radius-indicator);}
+  .p-progress{height:8px; width:160px; background:var(--tertiary-background-default); border-radius:var(--border-radius-indicator); overflow:hidden;}
+  .p-progress i{display:block; height:100%; width:62%; background:var(--secondary-background-default);}
+  /* bars — square by design; NO radius bind (dataviz). Shown for contrast + the data-mark note. */
+  .p-bars{display:flex; align-items:flex-end; gap:10px; height:90px;}
+  .p-bars span{width:26px; background:var(--secondary-background-default); border-radius:0;}
+  .note{margin:18px 0 0; font-size:12px; color:var(--text-secondary); opacity:.75; max-width:70ch;}
+
+  #export{margin:22px 28px; padding:16px; background:#0E0E0E; color:#E6E6E6; border-radius:6px;}
+  #export h2{margin:0 0 8px; font-size:12px; letter-spacing:.05em; text-transform:uppercase; color:#9A9A9A;}
+  #export textarea{width:100%; min-height:150px; background:#000; color:#7FE0A8; border:1px solid #2A2A2A;
+    font:12px/1.5 ui-monospace,Menlo,Consolas,monospace; padding:12px; resize:vertical;}
+  #export .exrow{display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:8px;}
+  #export button{font:inherit; font-size:13px; padding:7px 14px; border:1px solid #3A3A3A; background:#1C1C1C; color:#fff; cursor:pointer;}
+  #export small{color:#8A8A8A;}
+</style>
+</head>
+<body>
+  <header>
+    <h1>Radius / corner tuner — v1</h1>
+    <p>Dial the three radius roles per theme in 2px steps; the preview updates live. Start values and
+       preview colours are read from <code>canon.css</code> (the real cascade — nothing retyped).
+       Export gives the paste-ready override-set block. Mono base = square; bars bind no radius by design.</p>
+  </header>
+
+  <div class="wrap">
+    <div class="rail">
+      <div class="grp">
+        <h2>Theme</h2>
+        <div class="themebtns" id="themebtns">
+          <button type="button" data-theme-attr="" aria-pressed="true">Mono</button>
+          <button type="button" data-theme-attr="console" aria-pressed="false">Console</button>
+          <button type="button" data-theme-attr="legacy" aria-pressed="false">Legacy</button>
+          <button type="button" data-theme-attr="supercharge" aria-pressed="false">Supercharge</button>
+        </div>
+      </div>
+      <div class="grp">
+        <h2>Ground</h2>
+        <div class="modebtns" id="modebtns">
+          <button type="button" data-mode="light" aria-pressed="true">Light</button>
+          <button type="button" data-mode="dark" aria-pressed="false">Dark</button>
+        </div>
+      </div>
+      <div class="grp">
+        <h2>Radius roles — 2px steps</h2>
+        <div class="slider" data-role="control">
+          <div class="row"><label>Control <span class="role">buttons · inputs · chips · seg track</span></label><span class="val">0px</span></div>
+          <input type="range" min="0" max="24" step="2" value="0">
+          <div class="canon">canon: <span>0px</span></div>
+        </div>
+        <div class="slider" data-role="surface">
+          <div class="row"><label>Surface <span class="role">cards · dialogs · panels</span></label><span class="val">0px</span></div>
+          <input type="range" min="0" max="24" step="2" value="0">
+          <div class="canon">canon: <span>0px</span></div>
+        </div>
+        <div class="slider" data-role="indicator">
+          <div class="row"><label>Indicator <span class="role">seg fill · badges · progress</span></label><span class="val">0px</span></div>
+          <input type="range" min="0" max="24" step="2" value="0">
+          <div class="canon">canon: <span>0px</span></div>
+        </div>
+        <div class="actions">
+          <button type="button" class="ghost" id="reset">Reset to canon</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div id="preview">
+        <div class="specgrid">
+          <div class="spec"><span class="cap">Primary button</span><span class="tag-role">control</span><span class="p-btn">Continue</span></div>
+          <div class="spec"><span class="cap">Secondary button</span><span class="tag-role">control</span><span class="p-btn sec">Cancel</span></div>
+          <div class="spec"><span class="cap">Input field</span><span class="tag-role">control</span><span class="p-input">£1,240.00</span></div>
+          <div class="spec"><span class="cap">Chip / tag</span><span class="tag-role">control</span><span class="p-chip">Savings</span></div>
+          <div class="spec"><span class="cap">Card</span><span class="tag-role">surface</span><div class="p-card"><h3>Everyday account</h3><p>Balance climbed steadily through the year.</p></div></div>
+          <div class="spec"><span class="cap">Segmented control</span><span class="tag-role">control + indicator</span>
+            <div class="p-seg"><span class="ind"></span><button>Monthly</button><button>Year to date</button></div></div>
+          <div class="spec"><span class="cap">Badge</span><span class="tag-role">indicator</span><span class="p-badge">3</span></div>
+          <div class="spec"><span class="cap">Progress</span><span class="tag-role">indicator</span><span class="p-progress"><i></i></span></div>
+          <div class="spec"><span class="cap">Chart bars</span><span class="tag-role">square — no bind</span>
+            <div class="p-bars"><span style="height:60%"></span><span style="height:85%"></span><span style="height:45%"></span><span style="height:100%"></span></div></div>
+        </div>
+        <p class="note">Bars are square in every theme by design (dataviz reads shape as data, not chrome).
+           If charts ever need themeable corners, the clean move is an explicit <code>data-mark</code> radius
+           token — not folding them into <code>control</code>. Per-type tuning already lives in the role tier.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="export">
+    <h2>Override set — paste-ready</h2>
+    <textarea readonly></textarea>
+    <div class="exrow"><small>Shape mirrors <code>tokens/themes/apollo-&lt;theme&gt;.overrides.json</code> · values are px numbers. Mono is the base (dial it to seed a Mono override).</small>
+      <button type="button" id="copy">Copy</button></div>
+  </div>
+
+<script>
+  var ROLES = ['control','surface','indicator'];
+  var preview = document.getElementById('preview');
+  var sliders = {}, vals = {}, canonSpans = {}, canonVal = {}, curTheme = '', curMode = 'light';
+  document.querySelectorAll('.slider').forEach(function(s){
+    var r = s.getAttribute('data-role');
+    sliders[r] = s.querySelector('input');
+    vals[r]    = s.querySelector('.val');
+    canonSpans[r] = s.querySelector('.canon span');
+    sliders[r].addEventListener('input', function(){ setRole(r, parseInt(sliders[r].value,10), true); });
+  });
+
+  function setRole(r, px, dirty){
+    preview.style.setProperty('--border-radius-'+r, px+'px');
+    vals[r].textContent = px+'px';
+    if (dirty) renderExport();
+  }
+  // read the LIVE canon value for each role at the current theme (inline overrides cleared first)
+  function seedFromCanon(){
+    ROLES.forEach(function(r){ preview.style.removeProperty('--border-radius-'+r); });
+    ROLES.forEach(function(r){
+      var v = getComputedStyle(preview).getPropertyValue('--border-radius-'+r).trim();
+      var px = Math.round(parseFloat(v)) || 0;
+      canonVal[r] = px;
+      canonSpans[r].textContent = px+'px';
+      sliders[r].value = px;
+      setRole(r, px, false);
+    });
+    renderExport();
+  }
+  function applyTheme(){
+    if (curTheme) preview.setAttribute('data-apollo-theme', curTheme); else preview.removeAttribute('data-apollo-theme');
+    preview.setAttribute('data-theme', curMode);
+    requestAnimationFrame(seedFromCanon);   // let the cascade settle, then read
+  }
+  document.getElementById('themebtns').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    curTheme = b.getAttribute('data-theme-attr');
+    this.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', String(x===b)); });
+    applyTheme();
+  });
+  document.getElementById('modebtns').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    curMode = b.getAttribute('data-mode');
+    this.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', String(x===b)); });
+    applyTheme();
+  });
+  document.getElementById('reset').addEventListener('click', seedFromCanon);
+
+  function renderExport(){
+    var name = curTheme || 'mono';
+    var block = { '$attr': name, 'overrides': { 'border-radius': {} } };
+    ROLES.forEach(function(r){
+      block.overrides['border-radius'][r] = { '$value': parseInt(sliders[r].value,10), '$type': 'number' };
+    });
+    var changed = ROLES.filter(function(r){ return parseInt(sliders[r].value,10) !== canonVal[r]; });
+    var header = '// apollo-'+name+' — radius roles ('+(changed.length? 'changed: '+changed.join(', ') : 'all match canon')+')\n';
+    document.querySelector('#export textarea').value = header + JSON.stringify(block, null, 2);
+  }
+  document.getElementById('copy').addEventListener('click', function(){
+    var ta = document.querySelector('#export textarea'); ta.select();
+    try { document.execCommand('copy'); this.textContent='Copied'; var b=this; setTimeout(function(){b.textContent='Copy';},1400); } catch(e){}
+  });
+
+  applyTheme();   // seed on load from the Mono/light cascade
+</script>
+</body>
+</html>

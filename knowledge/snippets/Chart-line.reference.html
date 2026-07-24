@@ -162,11 +162,22 @@
   .dv-tbl-toggle:hover,.dv-vt:hover{border-color:var(--ink);}
   .dv-tbl-toggle:focus-visible,.dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
   .dv-tbl-toggle[aria-expanded="true"],.dv-vt[aria-pressed="true"]{border-color:var(--ink);}
-  /* the VIEW pair is a segmented switch — exclusive, one always filled (active view); reads as a
-     different control from the outline ADDITIVE toggles beside it (Dave's state-model ruling) */
-  .dv-seg{display:flex;}
-  .dv-seg .dv-vt + .dv-vt{border-left:0;}
-  .dv-seg .dv-vt[aria-pressed="true"]{background:var(--ink); color:var(--page); border-color:var(--ink);}
+  /* the VIEW pair now CONSUMES the Segmented-control atom (Dave, 2026-07-24): sliding indicator,
+     2px inset track, square (Mono). Reads as a different control from the outline ADDITIVE toggles
+     beside it (Dave's state-model ruling). Type = canon/type.css .seg.sm button (12/500, T-D15). */
+  .seg{position:relative; display:inline-flex; padding:2px; border:1px solid var(--line); background:transparent; vertical-align:top;}
+  .seg .ind{position:absolute; top:2px; bottom:2px; left:2px; width:0; background:var(--ink); z-index:0;
+    transition:left var(--ease), width var(--ease);}          /* active fill — floats in the 2px inset, slides (driven by dv-behaviour) */
+  .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    height:28px; padding:0 8px; border:0; background:transparent; color:var(--ink); cursor:pointer; transition:color var(--ease);}
+  .seg button:not([aria-pressed="true"]):hover{background:rgba(127,127,127,.14);}   /* hover only on the inactive segment */
+  .seg button[aria-pressed="true"]{color:var(--page);}         /* on-fill colour; the fill is the sliding .ind behind */
+  .seg button:focus-visible{outline:2px solid var(--ink); outline-offset:-2px; z-index:2;}
+  .seg.sm button{height:28px; padding:0 8px;}
+  /* HIT AREA — invisible ::before target ≥44 so the 28px segment still meets the HSBC 44 default
+     (Dave's hit-area standard, 2026-07-24). width:100% already ≥44, so expansion is vertical-only. */
+  .seg button::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
   .dv-off{display:none !important;}          /* baked-variant switching (menu 6/7/9) — geometry generated, never computed */
   .dv-quiet{opacity:.25 !important;}         /* highlight dims the DATA layer only (!important outranks the entry animation) */
   .dv-ghost{stroke:var(--data-series-1); fill:none; opacity:.45; stroke-width:2; stroke-dasharray:8 4;}
@@ -218,9 +229,10 @@
     <div class="dv-head">
       <h3 class="dv-title t-cm-section-label">Balance climbed steadily through the year</h3>
       <div class="dv-controls" role="group" aria-label="Chart tools">
-        <div class="dv-seg" role="group" aria-label="Chart view — one of two scales">
-          <button type="button" class="dv-vt t-cm-chart-label" data-dv-view-btn="discrete" aria-pressed="true">Monthly</button>
-          <button type="button" class="dv-vt t-cm-chart-label" data-dv-view-btn="cumulative" aria-pressed="false">Year to date</button>
+        <div class="seg sm" role="group" aria-label="Chart view — one of two scales">
+          <span class="ind" aria-hidden="true"></span>
+          <button type="button" data-dv-view-btn="discrete" aria-pressed="true">Monthly</button>
+          <button type="button" data-dv-view-btn="cumulative" aria-pressed="false">Year to date</button>
         </div>
         <button type="button" class="dv-vt t-cm-chart-label" data-dv-toggle="target" aria-pressed="false">Target line</button>
         <button type="button" class="dv-vt t-cm-chart-label" data-dv-toggle="ghost" aria-pressed="false">Last year</button>
@@ -534,7 +546,7 @@
   }
   var dvRAF;   /* the ONE resize listener, rAF-debounced (ADR-0015) */
   window.addEventListener('resize', function () {
-    cancelAnimationFrame(dvRAF); dvRAF = requestAnimationFrame(fitCharts);
+    cancelAnimationFrame(dvRAF); dvRAF = requestAnimationFrame(function () { fitCharts(); placeSegs(); });
   });
 
   /* ---------- POPOVER — real value tip on hover AND keyboard focus of any [data-tip].
@@ -672,6 +684,22 @@
     btn.setAttribute('aria-pressed', String(!on));
     setView(btn.closest('figure') || document, btn.getAttribute('data-dv-toggle'), !on);
   }
+  /* SEGMENTED INDICATOR (Dave, 2026-07-24): the view switch CONSUMES the Segmented-control atom —
+     behaviour drives the sliding fill (.ind) the atom's way: measure the pressed button's box and
+     slide. rect-based so the 2px inset + 1px border don't offset the measurement (the .ind
+     containing block is .seg's padding box — subtract seg.clientLeft). */
+  function moveSeg(seg) {
+    if (!seg) { return; }
+    var ind = seg.querySelector('.ind'); if (!ind) { return; }
+    var a = seg.querySelector('button[aria-pressed="true"]'); if (!a) { return; }
+    var sr = seg.getBoundingClientRect(), br = a.getBoundingClientRect();
+    ind.style.left = (br.left - sr.left - seg.clientLeft) + 'px';
+    ind.style.width = br.width + 'px';
+  }
+  function placeSegs() {
+    var segs = document.querySelectorAll('.seg');
+    for (var i = 0; i < segs.length; i++) { moveSeg(segs[i]); }
+  }
   /* VIEW SWITCH (Dave, 2026-07-23, both messages read together): the scale pair (monthly ⇄ year
      to date) is EXCLUSIVE — two scales can't share a canvas — but the overlays are fully ADDITIVE:
      each view carries its OWN baked variant of every overlay (nested [data-dv-view] groups), and
@@ -687,6 +715,7 @@
       segs[i].setAttribute('aria-pressed', String(v === active));
       setView(fig, v, v === active);
     }
+    moveSeg(btn.closest('.seg'));                 /* slide the indicator to the newly active view */
   }
   /* COPY CSV (menu pick 10): the figure's real table, serialised — no network, table = truth. */
   function copyCsv(btn) {
@@ -713,6 +742,8 @@
   var figs = document.querySelectorAll('figure.dv');
   for (var i = 0; i < figs.length; i++) { figs[i].classList.add('dv-fit-on'); }
   fitCharts();
+  placeSegs();                                    /* initial indicator position (widths depend on layout) */
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(placeSegs); }   /* re-place once the web font settles */
 }());
 </script>
   <!-- ===== AUTO-BEHAVIOUR dv-behaviour END ===== -->

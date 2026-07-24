@@ -65,7 +65,7 @@
   }
   var dvRAF;   /* the ONE resize listener, rAF-debounced (ADR-0015) */
   window.addEventListener('resize', function () {
-    cancelAnimationFrame(dvRAF); dvRAF = requestAnimationFrame(fitCharts);
+    cancelAnimationFrame(dvRAF); dvRAF = requestAnimationFrame(function () { fitCharts(); placeSegs(); });
   });
 
   /* ---------- POPOVER — real value tip on hover AND keyboard focus of any [data-tip].
@@ -203,6 +203,22 @@
     btn.setAttribute('aria-pressed', String(!on));
     setView(btn.closest('figure') || document, btn.getAttribute('data-dv-toggle'), !on);
   }
+  /* SEGMENTED INDICATOR (Dave, 2026-07-24): the view switch CONSUMES the Segmented-control atom —
+     behaviour drives the sliding fill (.ind) the atom's way: measure the pressed button's box and
+     slide. rect-based so the 2px inset + 1px border don't offset the measurement (the .ind
+     containing block is .seg's padding box — subtract seg.clientLeft). */
+  function moveSeg(seg) {
+    if (!seg) { return; }
+    var ind = seg.querySelector('.ind'); if (!ind) { return; }
+    var a = seg.querySelector('button[aria-pressed="true"]'); if (!a) { return; }
+    var sr = seg.getBoundingClientRect(), br = a.getBoundingClientRect();
+    ind.style.left = (br.left - sr.left - seg.clientLeft) + 'px';
+    ind.style.width = br.width + 'px';
+  }
+  function placeSegs() {
+    var segs = document.querySelectorAll('.seg');
+    for (var i = 0; i < segs.length; i++) { moveSeg(segs[i]); }
+  }
   /* VIEW SWITCH (Dave, 2026-07-23, both messages read together): the scale pair (monthly ⇄ year
      to date) is EXCLUSIVE — two scales can't share a canvas — but the overlays are fully ADDITIVE:
      each view carries its OWN baked variant of every overlay (nested [data-dv-view] groups), and
@@ -218,6 +234,7 @@
       segs[i].setAttribute('aria-pressed', String(v === active));
       setView(fig, v, v === active);
     }
+    moveSeg(btn.closest('.seg'));                 /* slide the indicator to the newly active view */
   }
   /* COPY CSV (menu pick 10): the figure's real table, serialised — no network, table = truth. */
   function copyCsv(btn) {
@@ -244,4 +261,6 @@
   var figs = document.querySelectorAll('figure.dv');
   for (var i = 0; i < figs.length; i++) { figs[i].classList.add('dv-fit-on'); }
   fitCharts();
+  placeSegs();                                    /* initial indicator position (widths depend on layout) */
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(placeSegs); }   /* re-place once the web font settles */
 }());

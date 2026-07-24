@@ -3585,11 +3585,25 @@
 .cn-chart-line .dv-tbl-toggle:hover, .cn-chart-line .dv-vt:hover{border-color:var(--ink);}
 .cn-chart-line .dv-tbl-toggle:focus-visible, .cn-chart-line .dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 .cn-chart-line .dv-tbl-toggle[aria-expanded="true"], .cn-chart-line .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
-/* the VIEW pair is a segmented switch — exclusive, one always filled (active view); reads as a
-     different control from the outline ADDITIVE toggles beside it (Dave's state-model ruling) */
-.cn-chart-line .dv-seg{display:flex;}
-.cn-chart-line .dv-seg .dv-vt + .dv-vt{border-left:0;}
-.cn-chart-line .dv-seg .dv-vt[aria-pressed="true"]{background:var(--ink); color:var(--page); border-color:var(--ink);}
+/* the VIEW pair now CONSUMES the Segmented-control atom (Dave, 2026-07-24): sliding indicator,
+     2px inset track, square (Mono). Reads as a different control from the outline ADDITIVE toggles
+     beside it (Dave's state-model ruling). Type = canon/type.css .seg.sm button (12/500, T-D15). */
+.cn-chart-line .seg{position:relative; display:inline-flex; padding:2px; border:1px solid var(--line); background:transparent; vertical-align:top;}
+.cn-chart-line .seg .ind{position:absolute; top:2px; bottom:2px; left:2px; width:0; background:var(--ink); z-index:0;
+    transition:left var(--ease), width var(--ease);}
+/* active fill — floats in the 2px inset, slides (driven by dv-behaviour) */
+.cn-chart-line .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    height:28px; padding:0 8px; border:0; background:transparent; color:var(--ink); cursor:pointer; transition:color var(--ease);}
+.cn-chart-line .seg button:not([aria-pressed="true"]):hover{background:rgba(127,127,127,.14);}
+/* hover only on the inactive segment */
+.cn-chart-line .seg button[aria-pressed="true"]{color:var(--page);}
+/* on-fill colour; the fill is the sliding .ind behind */
+.cn-chart-line .seg button:focus-visible{outline:2px solid var(--ink); outline-offset:-2px; z-index:2;}
+.cn-chart-line .seg.sm button{height:28px; padding:0 8px;}
+/* HIT AREA — invisible ::before target ≥44 so the 28px segment still meets the HSBC 44 default
+     (Dave's hit-area standard, 2026-07-24). width:100% already ≥44, so expansion is vertical-only. */
+.cn-chart-line .seg button::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
 .cn-chart-line .dv-off{display:none !important;}
 /* baked-variant switching (menu 6/7/9) — geometry generated, never computed */
 .cn-chart-line .dv-quiet{opacity:.25 !important;}
