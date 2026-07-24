@@ -103,6 +103,56 @@
       "$description": "ADR-0015 (accepted Dave 2026-07-23) — the behaviour-partial group: retrieval reaches JS. ONE hand-authored source (knowledge/canon/dv-behaviour.js: value popover dvTip · responsive fit reflow · table-view popover panel · legend-as-filter) injected into every member between AUTO-BEHAVIOUR markers by gen_component_partials.py, --check sync-gated, byte-exact; the performance contract on the source (≤16KB raw · no setInterval/network/polling · single rAF-debounced resize · delegated events) is gated by _validate_behaviour.py. Members accrete as the chart-revisit wave lands (exemplar first: Chart-line, 2026-07-23). DELIBERATE NON-MEMBERSHIP of button-family: legend/table-toggle controls are quiet utility pressables, NOT B-D7 press physics (chart-revisit Q5, flagged to Dave, standing). $manifestBinds carry the DV-D07 two-channel chrome roles (data/axis + data/grid, colour + alpha slot) — the mint rides the same lane. Contracts fire on registration (ADR-0013 posture).",
       "$members": {
         "Chart-line": {
+          "selector": "figure.dv",
+          "extraContract": {
+            "vars": ["--data-axis", "--axis-alpha", "--data-grid", "--grid-alpha"],
+            "declarations": ["data-fxs=\"", "class=\"dv-tbl-toggle", "data-series-toggle=\"", "class=\"dv-tablepanel"],
+            "manifestBinds": {
+              "--data-axis": "data/axis/color",
+              "--axis-alpha": "data/axis/alpha",
+              "--data-grid": "data/grid/color",
+              "--grid-alpha": "data/grid/alpha"
+            }
+          }
+        },
+        "Chart-bar": {
+          "selector": "figure.dv",
+          "extraContract": {
+            "vars": ["--data-axis", "--axis-alpha", "--data-grid", "--grid-alpha"],
+            "declarations": ["class=\"dv-tbl-toggle", "data-series-toggle=\"", "class=\"dv-tablepanel"],
+            "manifestBinds": {
+              "--data-axis": "data/axis/color",
+              "--axis-alpha": "data/axis/alpha",
+              "--data-grid": "data/grid/color",
+              "--grid-alpha": "data/grid/alpha"
+            }
+          }
+        },
+        "Chart-combo": {
+          "selector": "figure.dv",
+          "extraContract": {
+            "vars": ["--data-axis", "--axis-alpha", "--data-grid", "--grid-alpha"],
+            "declarations": ["data-fxs=\"", "class=\"dv-tbl-toggle", "data-series-toggle=\"", "class=\"dv-tablepanel"],
+            "manifestBinds": {
+              "--data-axis": "data/axis/color",
+              "--axis-alpha": "data/axis/alpha",
+              "--data-grid": "data/grid/color",
+              "--grid-alpha": "data/grid/alpha"
+            }
+          }
+        },
+        "Chart-donut": {
+          "selector": "figure.dv",
+          "extraContract": {
+            "vars": ["--data-axis", "--axis-alpha"],
+            "declarations": ["class=\"dv-tbl-toggle", "data-series-toggle=\"", "class=\"dv-tablepanel"],
+            "manifestBinds": {
+              "--data-axis": "data/axis/color",
+              "--axis-alpha": "data/axis/alpha"
+            }
+          }
+        },
+        "Chart-sparkline": {
           "selector": "figure.dv"
         }
       },
@@ -110,28 +160,14 @@
         "dv-behaviour": {
           "source": "canon/dv-behaviour.js",
           "requires": {
-            "vars": [
-              "--data-axis",
-              "--axis-alpha",
-              "--data-grid",
-              "--grid-alpha"
-            ],
+            "vars": [],
             "matchValues": [],
             "declarations": [
-              "data-tip=\"",
-              "data-fxs=\"",
-              "class=\"dv-tbl-toggle",
-              "data-series-toggle=\"",
-              "class=\"dv-tablepanel"
+              "data-tip=\""
             ]
           },
-          "$manifestBinds": {
-            "--data-axis": "data/axis/color",
-            "--axis-alpha": "data/axis/alpha",
-            "--data-grid": "data/grid/color",
-            "--grid-alpha": "data/grid/alpha"
-          },
-          "$description": "The Layer-2 interaction layer, single-sourced (ADR-0015). requires.vars = the DV-D07 rebind proof (every member declares the two-channel axis/grid idiom); requires.declarations = the behaviour hooks a member must carry (popover data-tip · fit fractions · table-popover toggle+panel · legend filter buttons); $manifestBinds pin the manifest paths so the projector + cascade reach the roles. Wave note: hook set is the LINE exemplar's — if a member legitimately lacks a hook (e.g. sparkline legend), split the behaviour contract per-capability THEN, from observed need, not now."
+          "$manifestBinds": {},
+          "$description": "The Layer-2 interaction layer, single-sourced (ADR-0015). PER-CAPABILITY SPLIT ENACTED 2026-07-24 (conductor absorb, chart-revisit wave — the exemplar's pre-authorised 'split from observed need' trigger; the wave landed 4 more members, whose real hook/chrome sets diverge from the line exemplar's). The UNIVERSAL contract now holds only the one hook every member carries (popover data-tip=); everything capability-specific lives in each member's $members[…].extraContract {vars · declarations · manifestBinds}, merged by check_contracts. Observed capability tiers: CARTESIAN CHROME (DV-D07 two-channel axis/grid — vars + manifestBinds) = line/bar/combo carry axis+grid, donut carries axis only (radial, no gridlines), sparkline carries neither (axis-free idiom). POLYLINE FIT (data-fxs=) = line+combo only (bar/donut/sparkline fit by rect/arc/CSS). TABLE+LEGEND (dv-tbl-toggle · data-series-toggle · dv-tablepanel) = all but sparkline (sparkline is compact: popover only). NOTE: the donut SWEEP animation hook is a SEPARATE future addition that would push dv-behaviour.js past the 16KB cap (measured 17,360B) — DEFERRED to Dave: amend the cap vs modularise per family. The existing under-cap module (14,620B) injects into all members as-is; sweep stays baked-static."
         }
       }
     }

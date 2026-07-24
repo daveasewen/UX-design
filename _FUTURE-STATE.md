@@ -26,6 +26,30 @@ spin-off · session-title convention · the gauge-stamp practice.
 **Bridge until built (in use now):** each thread = a labelled STRAND in the one GM's queue
 {next action · model · gauge · residues · brief file}. **Not now — Dave: "note this for exploration."**
 
+## ★ Parallel windows vs subagents — the execution-mechanism choice (Dave, 2026-07-24, reopened)
+**The question Dave reopened** (while launching the chart fan-out): should fan-out lanes run as parallel
+**Cowork windows** (the ratified parallel-session-conductor model, proven 2026-07-21) or as **subagents**
+spawned inside one session (Mode-2 delegation — DELIBERATE per the routing audit #12, not default)?
+**The frame — NOT rivals; pick by WORK SHAPE** (the converge/ship vs explore/noodle split we already have):
+- **Windows** — full session each: own context budget + model + **effort knob** (subagents can't express the
+  Fable·medium vs ·high distinction); your eye in the loop per lane → live rulings absorbed mid-flight (the
+  chart exemplar's SIX refinements came this way); fresh conductor window = context hygiene. *Cost:* you
+  shepherd + tend; parallel live threads drift/stale (the multi-thread problem above is the same tax).
+- **Subagents** — one session orchestrates, no window-juggling; I hold all returns + reconcile with the whole
+  picture. *Cost:* they start COLD (re-derive context every spawn — the expensive path on this plan); I get
+  only their final message, not the transcript (you lose watch-and-intervene); a subagent can't pause for a
+  live ruling; and the conductor BALLOONS (3 receipts absorbed into my own context vs a fresh window).
+**Side-quest handling (the sharp bit):** the anti-pattern is a tangent becoming a SECOND LIVE WINDOW that
+competes for attention + goes stale. Proposed rule → a tangent becomes a **window** only if it needs your eye
+AND you're ready to tend it; if bounded + eye-free ("audit X, report back"), a **subagent**; else a
+`_FUTURE-STATE` entry. Drains most of the staleness tax without babysitting threads.
+**Agent's steer (for the talk, NOT ruled):** keep windows for ruling-generative build work (the chart
+fan-out; also keeps the conductor fresh); adopt subagents as the home for bounded side-quests + repo-wide
+searches — a force-multiplier, not a replacement for the session model. **Feeds:** the harness ·
+harness-framework spin-off · the multi-thread GOOD-MORNING entry above. **Source:** in-chat 2026-07-24 (the
+tuner-v2 / fan-out-handoff session). **Status:** idea — reopened, NOT ruled; Dave is talking it through,
+decision + inscription to follow.
+
 ## ★ Mobile variants — a component-wide dimension to build out (Dave, 2026-07-24)
 **What:** components will carry MOBILE variants, not just responsive reflow. Dave flagged this while ruling
 the segmented control: the rounded **PILL segmented control** is reserved as a **mobile Tab-bar alternative**

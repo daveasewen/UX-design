@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Combo chart — reference implementation (gated)</title>
+<!--
+  CANONICAL REFERENCE for Combo chart (Apollo MONO) — bars on a PRIMARY axis + a line on a
+  SECONDARY axis. ★ NET-NEW TYPE (chart-revisit wave lane ③, 2026-07-24, brief
+  notes/_briefs/2026-07-24-chart-wave-lane3-combo.md): Dave, verbatim — "we've completely missed
+  the bar with line overlay." No proforma precedent — designed to the method (semantic SVG +
+  tokens + CSS/data-driven motion + real table + full Layer-2), composing the LANGUAGES of
+  Chart-bar (column geometry, grow motion) and Chart-line (exemplar Layer-2 canon: popover · fit ·
+  table popover · legend filter/isolate/highlight · CSV · optional title · H-stack head ·
+  enlarged markers · line-end letter key · 2026-07-24 control constructions).
+  ⚠ UNREGISTERED until conductor absorb (worker fence): component-types.json membership +
+  MIGRATED_SNIPPETS/CATEGORIES are conductor serials. AUTO-BEHAVIOUR markers below are an EMPTY
+  PAIR — dv-behaviour injects on registration (gen_component_partials). Verified this lane by
+  gate-import + a temp injected copy (receipt notes/_receipts/2026-07-24-wave-lane3-combo.md).
+
+  ★ COMBO GRAMMAR (lane-3 design decisions — rationale + alternatives in the receipt):
+  1. DUAL AXES per dv-line-006 (advisory, honoured): different measurement UNITS only, clearly
+     labelled, and the KEY states which axis each series reads against ("left axis" / "right axis"
+     in the legend text). Secondary-axis grammar: RIGHT-EDGE rule + tick labels in the data/axis
+     role (DV-D07), unit suffix IN the tick text ("85%" … "100%") — axis-title mint rejected (no
+     axis-title idiom exists in canon; a suffix is self-labelling and stays inside DV-D08 type).
+     Visual hierarchy: primary baseline = ink (bars own the plot floor); secondary rule = axis
+     grey (chrome of the overlaid scale, quieter than the baseline).
+  2. SERIES ASSIGNMENT: bars = data/series/1 (DV-D09 column default) · line = data/series/2.
+     Both ≥3:1 vs page BOTH modes (5.26/5.04 light · 3.31/3.46 dark). The categorical set is
+     ISOLUMINANT BY DESIGN, so line-vs-bar direct contrast is 1.04:1 — no series pair can ever
+     separate a crossing. INTERSECTION MECHANISM = a PAGE-COLOUR CASING under the line
+     (.dv-casing, 6.5px page stroke beneath the 2.5px series stroke) — the markers' own
+     series-fill + page-stroke halation idiom generalised to the line. Every crossing boundary
+     then reads at page-vs-bar-fill = the bar's own gate-checked ≥3:1, both modes, HC included.
+  3. ZERO-BASELINE POSTURE (the combo precedent): the BAR axis is zero-based ALWAYS
+     (dv-bar-009 blocking; data-domain-min="0" declared). The LINE's secondary axis MAY FLOAT
+     (dv-line-001 asymmetry: zero optional where it aids interpretation) — here 85–100% so the
+     rate's movement is legible; the full tick run with unit suffixes makes the floating floor
+     explicit, never silent.
+  4. X-GRAMMAR: BAND CENTRES (bar-chart convention wins the shared x-axis) — 12 bands across the
+     522px plot, bars centred in bands, the line's points ride the SAME centres so every point
+     sits over its bar. (Chart-line's endpoint-spread f=i/11 does not compose with bars.)
+  5. ONE TABLE SPINE (dv-005): a single <table> carries BOTH series with unit columns
+     (Payments £000 · STP rate %); popover tips read the same values, † flags at/above target.
+  dv-line-011 straight segments · enlarged marker family (r5.5, page-stroke 2.5 — supersedes kit
+  sizes, Dave 2026-07-23) · line-end letter key (B) in ink · legend swatches carry shapes
+  (square = the bar idiom, circle = the line's marker).
+  ⚠ GATE WIRING (conductor, at absorb): "combo" is not yet in _validate_dataviz's type contract —
+  add to BAR_FAMILY (zero-baseline teeth) + the dv-line-011 type list. This lane self-enforced
+  both (gate run by import with the proposed wiring — receipt).
+  RULINGS BOUND: DV-D07 (axis/grid/target two-channel roles) · DV-D08 (chart text ladder 12/500 +
+  700 keys) · DV-D09 (bars = series-1 column default) · DV-D02 (fit = width compression, text
+  never scales) · ADR-0015 (behaviour = the generated partial) · R-D6 (colour never the only
+  channel: shapes + letters + axis-named legend).
+  RULES: dv-017 var() fills/strokes only · dv-016 ≥3:1 rendered both modes · composites-only type ·
+  DEF-003 CSS-only decorative motion. Empty state = Empty-state pattern by reference.
+-->
+<link rel="stylesheet" href="../canon/type.css">
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:160ms cubic-bezier(.4,0,.2,1);
+    --draw-slow:2400ms cubic-bezier(.33,0,.3,1); --grow:760ms cubic-bezier(.22,.61,.36,1); }
+  [data-theme="light"]{
+    --page:#FFFFFF; --ink:#1A1A1A; --baseline:#1A1A1A; --line:#E1E1E1;
+    --data-series-1:#766682; --data-series-2:#A45C3A;
+    --data-series-1-hc:#484D6F; --data-series-2-hc:#97482C;
+    --data-axis:#626262; --axis-alpha:1;
+    --data-grid:#E1E1E1; --grid-alpha:1;
+    --data-target:#313131; --target-alpha:1;
+    --shadow:#00000033; --pop-border:#FFFFFF00;
+    --border-radius-surface:0;
+  }
+  [data-theme="dark"]{
+    --page:#1A1A1A; --ink:#FFFFFF; --baseline:#FFFFFF; --line:#808080;
+    --data-series-1:#766682; --data-series-2:#A45C3A;
+    --data-series-1-hc:#93B6CC; --data-series-2-hc:#E5A78F;
+    --data-axis:#9D9D9D; --axis-alpha:1;
+    --data-grid:#484848; --grid-alpha:1;
+    --data-target:#B7B7B7; --target-alpha:1;
+    --shadow:#000000D9; --pop-border:#808080;
+    --border-radius-surface:0;
+  }
+  [data-contrast="high"]{
+    --data-series-1:var(--data-series-1-hc);
+    --data-series-2:var(--data-series-2-hc);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page); color:var(--ink);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--ink);
+    background:transparent; color:var(--ink); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+  h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+  .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+
+  figure.dv{margin:0; position:relative;}   /* relative = the table-popover anchor */
+  /* HEAD = ONE H-stack (exemplar canon): title + all controls, flex-wrap V-fallback */
+  .dv-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; margin:0 0 12px;}
+  .dv-title{margin:0;}
+  .dv-controls{display:flex; flex-wrap:wrap; gap:8px; align-items:center;}
+  .dv-stage{overflow-x:auto; padding-bottom:4px; padding-right:32px;}   /* JS-off: DV-D02 static answer.
+     right padding = the letter-key + secondary-tick zone ("100%" paints past the svg edge;
+     the scroll container clips at its padding box — 32px vs the line exemplar's 24px). */
+  .dv-chart-area{width:580px;}
+  .dv-svg{display:block; width:580px; height:260px; overflow:visible;}
+  figure.dv-fit-on .dv-chart-area{width:100%;}
+  figure.dv-fit-on .dv-svg{width:100%;}
+
+  .dv-grid{stroke:var(--data-grid); stroke-opacity:var(--grid-alpha); stroke-width:1;}
+  line.dv-axis{stroke:var(--baseline); stroke-width:1;}
+  /* SECONDARY-AXIS rule — the data/axis role, not baseline ink: the overlaid scale's chrome is
+     quieter than the plot floor (grammar decision 1). */
+  line.dv-axis2{stroke:var(--data-axis); stroke-opacity:var(--axis-alpha); stroke-width:1;}
+  text.dv-axis,text.dv-label{opacity:var(--axis-alpha);}
+
+  /* bars — Chart-bar language: grow-from-baseline, hover brightness */
+  rect.dv-series{transition:filter var(--ease), opacity var(--ease), visibility var(--ease);}
+  rect.dv-series:hover{filter:brightness(1.12);}
+  [data-theme="dark"] rect.dv-series:hover{filter:brightness(1.22);}
+
+  /* line CASING — page-colour under-stroke (intersection mechanism, header decision 2).
+     NOT class dv-series: the gate must never contrast-check page-vs-page. */
+  polyline.dv-casing{stroke:var(--page); fill:none;}
+
+  /* markers — enlarged family (r5.5), series fill + page stroke 2.5 */
+  .dv-mk{fill:var(--sc); stroke:var(--page); stroke-width:2.5; vector-effect:non-scaling-stroke;}
+  .dv-marker{outline-offset:2px;}
+  .dv-marker:focus-visible{outline:2px solid var(--ink);}
+  .dv-bar{outline-offset:2px;}
+  .dv-bar:focus-visible{outline:2px solid var(--ink);}
+
+  /* entry motion — CSS only (DEF-003): bars grow (Chart-bar), line + casing draw IN SYNC
+     (same pathLength/duration — the casing must never lead its line), markers land on the
+     eased cadence, the letter key follows the draw. */
+  @media (prefers-reduced-motion:no-preference){
+    .dv-animate rect.dv-series[data-grow="up"]{transform-box:fill-box; transform-origin:bottom; animation:dvGrowY var(--grow) both;}
+    .dv-animate polyline.dv-series,.dv-animate polyline.dv-casing{stroke-dasharray:2400; stroke-dashoffset:2400; animation:dvDraw var(--draw-slow) forwards;}
+    .dv-animate g.dv-marker{opacity:0; animation:dvFade var(--ease) both;}
+    .dv-animate text.dv-endkey{opacity:0; animation:dvFade var(--ease) both; animation-delay:2400ms;}
+  }
+  @keyframes dvGrowY{from{transform:scaleY(0);}}
+  @keyframes dvDraw{to{stroke-dashoffset:0;}}
+  @keyframes dvFade{from{opacity:0;} to{opacity:1;}}
+  polyline.dv-series,polyline.dv-casing,g.dv-marker,text.dv-endkey{transition:opacity var(--ease), visibility var(--ease);}
+
+  .dv-legend{list-style:none; display:flex; flex-wrap:wrap; justify-content:center; gap:16px; margin:16px 0 0; padding:0;}
+  .dv-legend li{display:flex;}
+  .dv-legbtn{display:flex; align-items:center; gap:8px; min-height:24px; background:transparent;
+    border:0; padding:0; color:var(--ink); cursor:pointer; transition:opacity var(--ease);}
+  .dv-legbtn:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+  .dv-legbtn[aria-pressed="false"]{color:var(--data-axis);}
+  .dv-legbtn[aria-pressed="false"] .sw{background:transparent !important; border:2px solid var(--data-axis);}
+  .dv-legbtn[aria-pressed="false"] .dv-key{opacity:1;}
+  .dv-legend .sw{width:12px; height:12px; flex:none;}
+  .dv-legend .sw-circle{border-radius:50%;}
+  .dv-legend .dv-key{opacity:.6; min-width:12px;}
+
+  /* ── TOOLBAR CONTROLS — one shared literal height (Dave 2026-07-24) ── */
+  .dv-controls{--control-h:32px;}
+  .dv-tbl-toggle,.dv-vt{height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
+    background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
+    flex:none; transition:border-color var(--ease);}
+  .dv-tbl-toggle:hover,.dv-vt:hover{border-color:var(--ink);}
+  .dv-tbl-toggle:focus-visible,.dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+  .dv-tbl-toggle[aria-expanded="true"],.dv-vt[aria-pressed="true"]{border-color:var(--ink);}
+  .dv-act,.dv-dd{gap:8px;}
+  .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
+  .dv-csv .dv-ico-tick{display:none;}
+  .dv-csv.is-copied .dv-ico-copy{display:none;}
+  .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
+  .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
+  .dv-dd[aria-expanded="true"] .dv-ico-arrow{transform:rotate(180deg);}
+
+  /* single TOGGLE (Target rate) = single-cell segmented control (Dave 2026-07-24) */
+  .dv-toggle-seg{position:relative; display:inline-flex; height:var(--control-h); box-sizing:border-box;
+    padding:2px; border:1px solid var(--line); background:transparent; vertical-align:top;}
+  .dv-toggle-seg .ind{position:absolute; inset:2px; background:var(--ink); opacity:0; transition:opacity var(--ease);}
+  .dv-toggle-seg:has(button[aria-pressed="true"]) .ind{opacity:1;}
+  .dv-toggle-seg button{position:relative; z-index:1; display:inline-flex; align-items:center; padding:0 8px;
+    border:0; background:transparent; color:var(--ink); cursor:pointer; transition:color var(--ease);}
+  .dv-toggle-seg button[aria-pressed="true"]{color:var(--page);}
+  .dv-toggle-seg button:not([aria-pressed="true"]):hover{background:rgba(127,127,127,.14);}
+  .dv-toggle-seg button:focus-visible{outline:2px solid var(--ink); outline-offset:-2px; z-index:2;}
+
+  .dv-off{display:none !important;}          /* baked-variant switching — geometry generated, never computed */
+  .dv-quiet{opacity:.25 !important;}         /* highlight dims the DATA layer only */
+  .dv-target{stroke:var(--data-target); opacity:var(--target-alpha); stroke-width:1.5; stroke-dasharray:8 4;}
+  .dv-target-label{fill:var(--data-target);}
+  .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
+  .dv-tablepanel[hidden]{display:none;}
+  .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+
+  .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:8px 12px; pointer-events:none;
+    opacity:0; transition:opacity var(--ease);}
+  .dv-tip.on{opacity:1;}
+
+  table.dv-table{border-collapse:collapse; color:var(--ink);}
+  table.dv-table caption{text-align:left; opacity:.6; margin-bottom:8px;}
+  table.dv-table th,table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
+  table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
+  table.dv-table thead th{opacity:.6; font-weight:500;}
+
+  .dv-empty-frame{width:580px; height:260px; display:flex; align-items:center; justify-content:center;
+    border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
+  .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
+    padding:24px; max-width:480px;}
+  .dv-empty-frame .empty h3{margin:0;}
+  .dv-empty-frame .empty p{margin:0; opacity:.6; max-width:40ch;}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
+      animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls">
+    <button id="themeToggle" type="button">◐ Toggle theme</button>
+    <button id="contrastToggle" type="button" aria-pressed="false">◑ High contrast</button>
+    <button id="replay" type="button">↻ Replay motion</button>
+    <span>Combo chart — canonical reference (Mono · bars + line on a secondary axis · Layer-2 · no data)</span>
+  </div>
+
+  <h2>Combo — bars (primary axis) + line (secondary axis, different unit)</h2>
+  <figure class="dv dv-animate" data-dv-type="combo" data-domain-min="0" data-surface="page" role="group" aria-labelledby="cc1-h">
+    <figcaption id="cc1-h" class="sr-only">Payments processed and straight-through rate by month — pounds thousands (left axis) and per cent (right axis)</figcaption>
+    <div class="dv-head">
+      <h3 class="dv-title t-cm-section-label">Payments grew while straight-through rates climbed</h3>
+      <div class="dv-controls" role="group" aria-label="Chart tools">
+        <div class="dv-toggle-seg"><span class="ind" aria-hidden="true"></span><button type="button" class="t-cm-chart-label" data-dv-toggle="target" aria-pressed="false">Target rate</button></div>
+        <button type="button" class="dv-vt dv-act dv-csv t-cm-chart-label"><svg class="dv-ico dv-ico-copy" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M0 18H10.8V7.2H0V18ZM1.2 8.4H9.6V16.8H1.2V8.4ZM8.4 3.6H7.2V6H8.4V3.6ZM8.4 1.2H9.6V0H7.2V2.4H8.4V1.2ZM15.6 0V1.2H16.8V2.4H18V0H15.6ZM12 10.8H14.4V9.6H12V10.8ZM16.8 9.6H15.6V10.8H18V8.4H16.8V9.6ZM16.8 7.2H18V3.6H16.8V7.2ZM10.8 1.2H14.4V0H10.8V1.2Z" fill="currentColor"/></svg><svg class="dv-ico dv-ico-tick" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z" fill="currentColor"/></svg><span>Copy data (CSV)</span></button>
+        <button class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" type="button" aria-controls="cc1-tbl" aria-expanded="false"><span>View as table</span><svg class="dv-ico dv-ico-arrow" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M2 6H16L9 13L2 6Z" fill="currentColor"/></svg></button>
+      </div>
+    </div>
+    <div class="dv-stage"><div class="dv-chart-area">
+      <svg class="dv-svg dv-fit" data-pl="46" data-pr="12" data-h="260" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 260" role="group" aria-label="Payments processed and straight-through rate by month. Payments rose from 620 thousand pounds in January to 965 thousand in December; the straight-through rate climbed from 88.2 to 95.4 per cent.">
+        <line class="dv-grid" x1="46" y1="230" x2="568" y2="230" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <line class="dv-grid" x1="46" y1="176" x2="568" y2="176" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <line class="dv-grid" x1="46" y1="122" x2="568" y2="122" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <line class="dv-grid" x1="46" y1="68" x2="568" y2="68" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <line class="dv-grid" x1="46" y1="14" x2="568" y2="14" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+        <line class="dv-axis" x1="46" y1="230" x2="568" y2="230" stroke="var(--baseline)" data-fx="0" data-fx2="1"/>
+        <!-- PRIMARY ticks (bars, £000) — left edge, bare numbers; the unit lives in the
+             figcaption + legend + table header (grammar decision 1). Gridlines follow the
+             PRIMARY axis only — bars own the grid (dv-bar-003); the secondary scale gets its
+             right-edge rule + suffixed labels, no competing gridline set. -->
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="233" text-anchor="end" data-fx="0" data-dx="-8">0</text>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="179" text-anchor="end" data-fx="0" data-dx="-8">250</text>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="125" text-anchor="end" data-fx="0" data-dx="-8">500</text>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="71" text-anchor="end" data-fx="0" data-dx="-8">750</text>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="17" text-anchor="end" data-fx="0" data-dx="-8">1000</text>
+        <!-- SECONDARY axis (line, %) — right-edge rule in the data/axis role (quieter than the
+             ink baseline: the overlaid scale is chrome, not the plot floor) + tick labels with
+             the unit suffix baked in. The scale FLOATS (85–100) per dv-line-001 — the full tick
+             run keeps the floating floor explicit. -->
+        <line class="dv-axis2" x1="568" y1="14" x2="568" y2="230" stroke="var(--data-axis)" data-fx="1" data-fx2="1"/>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="576" y="233" text-anchor="start" data-fx="1" data-dx="8">85%</text>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="576" y="161" text-anchor="start" data-fx="1" data-dx="8">90%</text>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="576" y="89" text-anchor="start" data-fx="1" data-dx="8">95%</text>
+        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="576" y="17" text-anchor="start" data-fx="1" data-dx="8">100%</text>
+        <!-- BARS — series-1 (DV-D09 column default), band-centred, zero-based, grow motion;
+             every bar is a focus stop with a data-tip (exemplar popover parity). -->
+        <rect class="dv-series dv-bar" data-series-group="1" tabindex="0" role="img" aria-label="A, Payments, Jan: 620 thousand pounds" data-tip="A · Payments · Jan: 620" data-grow="up" style="animation-delay:0ms" fill="var(--data-series-1)" x="53.8" y="96.1" width="28" height="133.9" data-fx=".0148" data-fw=".0536"/>
+        <rect class="dv-series dv-bar" data-series-group="1" tabindex="0" role="img" aria-label="A, Payments, Feb: 585 thousand pounds" data-tip="A · Payments · Feb: 585" data-grow="up" style="animation-delay:45ms" fill="var(--data-series-1)" x="97.3" y="103.6" width="28" height="126.4" data-fx=".0982" data-fw=".0536"/>
+        <rect class="dv-series dv-bar" data-series-group="1" tabindex="0" role="img" aria-label="A, Payments, Mar: 705 thousand pounds" data-tip="A · Payments · Mar: 705" data-grow="up" style="animation-delay:90ms" fill="var(--data-series-1)" x="140.8" y="77.7" width="28" height="152.3" data-fx=".1815" data-fw=".0536"/>
+        <rect class="dv-series dv-bar" data-series-group="1" tabindex="0" role="img" aria-label="A, Payments, Apr: 660 thousand pounds" data-tip="A · Payments · Apr: 660" data-grow="up" style="animation-delay:135ms" fill="var(--data-series-1)" x="184.3" y="87.4" width="28" height="142.6" data-fx=".2649" data-fw=".0536"/>
+        <rect class="dv-series dv-bar" data-series-group="1" tabindex="0" role="img" aria-label="A, Payments, May: 748 thousand pounds" data-tip="A · Payments · May: 748" data-grow="up" style="animation-delay:180ms" fill="var(--data-series-1)" x="227.8" y="68.4" width="28" height="161.6" data-fx=".3482" data-fw=".0536"/>
+        <rect class="dv-series dv-bar" data-series-group="1" tabindex="0" role="img" aria-label="A, Payments, Jun: 802 thousand pounds" data-tip="A · Payments · Jun: 802" data-grow="up" style="animation-delay:225ms" fill="var(--data-series-1)" x="271.3" y="56.8" width="28" height="173.2" data-fx=".4315" data-fw=".0536"/>
+        <rect class="dv-series dv-bar" data-series-group="1" tabindex="0" role="img" aria-label="A, Payments, Jul: 760 thousand pounds" data-tip="A · Payments · Jul: 760" data-grow="up" style="animation-delay:270ms" fill="var(--data-series-1)" x="314.8" y="65.8" width="28" height="164.2" data-fx=".5148" data-fw=".0536"/>
+        <rect class="dv-series dv-bar" data-series-group="1" tabindex="0" role="img" aria-label="A, Payments, Aug: 815 thousand pounds" data-tip="A · Payments · Aug: 815" data-grow="up" style="animation-delay:315ms" fill="var(--data-series-1)" x="358.3" y="54.0" width="28" height="176.0" data-fx=".5982" data-fw=".0536"/>
+        <rect class="dv-series dv-bar" data-series-group="1" tabindex="0" role="img" aria-label="A, Payments, Sep: 878 thousand pounds" data-tip="A · Payments · Sep: 878" data-grow="up" style="animation-delay:360ms" fill="var(--data-series-1)" x="401.8" y="40.4" width="28" height="189.6" data-fx=".6815" data-fw=".0536"/>
+        <rect class="dv-series dv-bar" data-series-group="1" tabindex="0" role="img" aria-label="A, Payments, Oct: 842 thousand pounds" data-tip="A · Payments · Oct: 842" data-grow="up" style="animation-delay:405ms" fill="var(--data-series-1)" x="445.3" y="48.1" width="28" height="181.9" data-fx=".7648" data-fw=".0536"/>
+        <rect class="dv-series dv-bar" data-series-group="1" tabindex="0" role="img" aria-label="A, Payments, Nov: 910 thousand pounds" data-tip="A · Payments · Nov: 910" data-grow="up" style="animation-delay:450ms" fill="var(--data-series-1)" x="488.8" y="33.4" width="28" height="196.6" data-fx=".8482" data-fw=".0536"/>
+        <rect class="dv-series dv-bar" data-series-group="1" tabindex="0" role="img" aria-label="A, Payments, Dec: 965 thousand pounds" data-tip="A · Payments · Dec: 965" data-grow="up" style="animation-delay:495ms" fill="var(--data-series-1)" x="532.3" y="21.6" width="28" height="208.4" data-fx=".9315" data-fw=".0536"/>
+        <!-- TARGET overlay (secondary scale: 95%) — data/target role, dashed, toggle-governed -->
+        <!-- target label anchors LEFT (unlike Chart-line's right anchor): the right end is the endkey +
+             secondary-tick zone and Dec's 95.4 nearly coincides with the 95 target — render-verify
+             caught the collision; the short early bars leave the left air clear at every width. -->
+        <g data-dv-view="target" class="dv-off"><line class="dv-target" x1="46" y1="86" x2="568" y2="86" data-fx="0" data-fx2="1"/><text class="dv-target-label t-cm-chart-label" x="50" y="82" text-anchor="start" data-fx="0" data-dx="4">Target 95%</text></g>
+        <!-- LINE — series-2, SECONDARY axis, band-centre x parity with the bars. The CASING
+             (page stroke 6.5) rides UNDER the series stroke: at every bar crossing the visible
+             boundary is page-vs-bar-fill ≥3:1 (intersection mechanism, header decision 2).
+             Same pathLength + draw timing — casing and line draw as one. -->
+        <polyline class="dv-casing" data-series-group="2" pathLength="2400" stroke-width="6.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" points="67.8,183.9 111.3,172.4 154.8,178.2 198.3,156.6 241.8,137.8 285.3,146.5 328.8,124.9 372.3,114.8 415.8,120.6 459.3,103.3 502.8,91.8 546.3,80.2" data-fxs=".0417 .125 .2083 .2917 .375 .4583 .5417 .625 .7083 .7917 .875 .9583" data-ys="183.9 172.4 178.2 156.6 137.8 146.5 124.9 114.8 120.6 103.3 91.8 80.2"/>
+        <polyline class="dv-series" data-series-group="2" pathLength="2400" fill="none" stroke="var(--data-series-2)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" points="67.8,183.9 111.3,172.4 154.8,178.2 198.3,156.6 241.8,137.8 285.3,146.5 328.8,124.9 372.3,114.8 415.8,120.6 459.3,103.3 502.8,91.8 546.3,80.2" data-fxs=".0417 .125 .2083 .2917 .375 .4583 .5417 .625 .7083 .7917 .875 .9583" data-ys="183.9 172.4 178.2 156.6 137.8 146.5 124.9 114.8 120.6 103.3 91.8 80.2"/>
+        <g class="dv-marker" data-series-group="2" tabindex="0" role="img" aria-label="B, STP rate, Jan: 88.2 per cent" data-tip="B · STP rate · Jan: 88.2%" data-fx=".0417" data-x0="67.8" style="animation-delay:0ms"><circle class="dv-mk" style="--sc:var(--data-series-2)" cx="67.8" cy="183.9" r="5.5"/></g>
+        <g class="dv-marker" data-series-group="2" tabindex="0" role="img" aria-label="B, STP rate, Feb: 89.0 per cent" data-tip="B · STP rate · Feb: 89.0%" data-fx=".125" data-x0="111.3" style="animation-delay:369ms"><circle class="dv-mk" style="--sc:var(--data-series-2)" cx="111.3" cy="172.4" r="5.5"/></g>
+        <g class="dv-marker" data-series-group="2" tabindex="0" role="img" aria-label="B, STP rate, Mar: 88.6 per cent" data-tip="B · STP rate · Mar: 88.6%" data-fx=".2083" data-x0="154.8" style="animation-delay:507ms"><circle class="dv-mk" style="--sc:var(--data-series-2)" cx="154.8" cy="178.2" r="5.5"/></g>
+        <g class="dv-marker" data-series-group="2" tabindex="0" role="img" aria-label="B, STP rate, Apr: 90.1 per cent" data-tip="B · STP rate · Apr: 90.1%" data-fx=".2917" data-x0="198.3" style="animation-delay:616ms"><circle class="dv-mk" style="--sc:var(--data-series-2)" cx="198.3" cy="156.6" r="5.5"/></g>
+        <g class="dv-marker" data-series-group="2" tabindex="0" role="img" aria-label="B, STP rate, May: 91.4 per cent" data-tip="B · STP rate · May: 91.4%" data-fx=".375" data-x0="241.8" style="animation-delay:716ms"><circle class="dv-mk" style="--sc:var(--data-series-2)" cx="241.8" cy="137.8" r="5.5"/></g>
+        <g class="dv-marker" data-series-group="2" tabindex="0" role="img" aria-label="B, STP rate, Jun: 90.8 per cent" data-tip="B · STP rate · Jun: 90.8%" data-fx=".4583" data-x0="285.3" style="animation-delay:815ms"><circle class="dv-mk" style="--sc:var(--data-series-2)" cx="285.3" cy="146.5" r="5.5"/></g>
+        <g class="dv-marker" data-series-group="2" tabindex="0" role="img" aria-label="B, STP rate, Jul: 92.3 per cent" data-tip="B · STP rate · Jul: 92.3%" data-fx=".5417" data-x0="328.8" style="animation-delay:921ms"><circle class="dv-mk" style="--sc:var(--data-series-2)" cx="328.8" cy="124.9" r="5.5"/></g>
+        <g class="dv-marker" data-series-group="2" tabindex="0" role="img" aria-label="B, STP rate, Aug: 93.0 per cent" data-tip="B · STP rate · Aug: 93.0%" data-fx=".625" data-x0="372.3" style="animation-delay:1041ms"><circle class="dv-mk" style="--sc:var(--data-series-2)" cx="372.3" cy="114.8" r="5.5"/></g>
+        <g class="dv-marker" data-series-group="2" tabindex="0" role="img" aria-label="B, STP rate, Sep: 92.6 per cent" data-tip="B · STP rate · Sep: 92.6%" data-fx=".7083" data-x0="415.8" style="animation-delay:1183ms"><circle class="dv-mk" style="--sc:var(--data-series-2)" cx="415.8" cy="120.6" r="5.5"/></g>
+        <g class="dv-marker" data-series-group="2" tabindex="0" role="img" aria-label="B, STP rate, Oct: 93.8 per cent" data-tip="B · STP rate · Oct: 93.8%" data-fx=".7917" data-x0="459.3" style="animation-delay:1365ms"><circle class="dv-mk" style="--sc:var(--data-series-2)" cx="459.3" cy="103.3" r="5.5"/></g>
+        <g class="dv-marker" data-series-group="2" tabindex="0" role="img" aria-label="B, STP rate, Nov: 94.6 per cent" data-tip="B · STP rate · Nov: 94.6%" data-fx=".875" data-x0="502.8" style="animation-delay:1628ms"><circle class="dv-mk" style="--sc:var(--data-series-2)" cx="502.8" cy="91.8" r="5.5"/></g>
+        <g class="dv-marker" data-series-group="2" tabindex="0" role="img" aria-label="B, STP rate, Dec: 95.4 per cent" data-tip="B · STP rate · Dec: 95.4%" data-fx=".9583" data-x0="546.3" style="animation-delay:2400ms"><circle class="dv-mk" style="--sc:var(--data-series-2)" cx="546.3" cy="80.2" r="5.5"/></g>
+        <!-- line-end letter key — ink (DV-D08 emphasis); sits INSIDE the right-axis rule
+             (x 558.3 + glyph ≈ 565 < 568 — tight, render-verified; receipt notes the fit) -->
+        <text class="dv-endkey t-cm-chart-key" data-series-group="2" fill="var(--ink)" x="558.3" y="84.2" text-anchor="start" data-fx=".9583" data-dx="12">B</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="67.8" y="246" text-anchor="middle" data-fx=".0417">Jan</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="111.3" y="246" text-anchor="middle" data-fx=".125">Feb</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="154.8" y="246" text-anchor="middle" data-fx=".2083">Mar</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="198.3" y="246" text-anchor="middle" data-fx=".2917">Apr</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="241.8" y="246" text-anchor="middle" data-fx=".375">May</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="285.3" y="246" text-anchor="middle" data-fx=".4583">Jun</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="328.8" y="246" text-anchor="middle" data-fx=".5417">Jul</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="372.3" y="246" text-anchor="middle" data-fx=".625">Aug</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="415.8" y="246" text-anchor="middle" data-fx=".7083">Sep</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="459.3" y="246" text-anchor="middle" data-fx=".7917">Oct</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="502.8" y="246" text-anchor="middle" data-fx=".875">Nov</text>
+        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="546.3" y="246" text-anchor="middle" data-fx=".9583">Dec</text>
+      </svg>
+    </div></div>
+    <!-- LEGEND — filter buttons; the KEY names each series' AXIS + UNIT (dv-line-006: the key
+         states which axis each set refers to). Swatch shapes: square = the bar idiom itself,
+         circle = the line's marker shape. -->
+    <ul class="dv-legend center t-cm-chart-label" aria-label="Series — select to show or hide">
+      <li><button type="button" class="dv-legbtn t-cm-chart-label" data-series-toggle="1" aria-pressed="true"><span class="sw" style="background:var(--data-series-1)"></span><span class="dv-key t-cm-chart-key">A</span> Payments — left axis, £ thousands</button></li>
+      <li><button type="button" class="dv-legbtn t-cm-chart-label" data-series-toggle="2" aria-pressed="true"><span class="sw sw-circle" style="background:var(--data-series-2)"></span><span class="dv-key t-cm-chart-key">B</span> STP rate — right axis, %</button></li>
+    </ul>
+    <div class="dv-tablepanel" id="cc1-tbl" role="region" aria-label="Payments processed and straight-through rate by month, data table" tabindex="-1" hidden>
+      <table class="dv-table t-cm-legal">
+        <caption>Payments processed and straight-through rate by month († at or above the 95% target)</caption>
+        <thead><tr><th scope="col">Month</th><th scope="col">Payments (£000)</th><th scope="col">STP rate (%)</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Jan</th><td>620</td><td>88.2</td></tr>
+          <tr><th scope="row">Feb</th><td>585</td><td>89.0</td></tr>
+          <tr><th scope="row">Mar</th><td>705</td><td>88.6</td></tr>
+          <tr><th scope="row">Apr</th><td>660</td><td>90.1</td></tr>
+          <tr><th scope="row">May</th><td>748</td><td>91.4</td></tr>
+          <tr><th scope="row">Jun</th><td>802</td><td>90.8</td></tr>
+          <tr><th scope="row">Jul</th><td>760</td><td>92.3</td></tr>
+          <tr><th scope="row">Aug</th><td>815</td><td>93.0</td></tr>
+          <tr><th scope="row">Sep</th><td>878</td><td>92.6</td></tr>
+          <tr><th scope="row">Oct</th><td>842</td><td>93.8</td></tr>
+          <tr><th scope="row">Nov</th><td>910</td><td>94.6</td></tr>
+          <tr><th scope="row">Dec</th><td>965</td><td>95.4 †</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </figure>
+
+  <h2>No data — the Empty-state pattern, consumed by reference</h2>
+  <div class="dv-stage"><div class="dv-empty-frame" role="group" aria-label="Payments and straight-through rate, no data">
+    <div class="empty">
+      <h3 class="t-cm-caption">No data to display</h3>
+      <p class="t-cm-legal">Payments and rates appear here once activity arrives for the selected period.</p>
+    </div>
+  </div></div>
+
+  <script type="application/json" id="token-manifest">
+  {
+    "component": "Combo chart",
+    "vars": { "--page": "background/default", "--ink": "text/default", "--baseline": "border/action-strong",
+              "--line": "border/subtle",
+              "--data-series-1": "data/series/1", "--data-series-2": "data/series/2",
+              "--data-series-1-hc": "data/series-high-contrast/1", "--data-series-2-hc": "data/series-high-contrast/2",
+              "--data-axis": "data/axis/color", "--axis-alpha": "data/axis/alpha",
+              "--data-grid": "data/grid/color", "--grid-alpha": "data/grid/alpha",
+              "--data-target": "data/target/color", "--target-alpha": "data/target/alpha",
+              "--shadow": "elevation/functional", "--pop-border": "elevation/border",
+              "--border-radius-surface": "border-radius/surface" },
+    "contrastPairs": [
+      { "fg": "text/default", "bg": "background/default", "context": "text" },
+      { "fg": "data/series/1", "bg": "background/default", "context": "ui" },
+      { "fg": "data/series/2", "bg": "background/default", "context": "ui" },
+      { "fg": "data/series-high-contrast/1", "bg": "background/default", "context": "ui" },
+      { "fg": "data/series-high-contrast/2", "bg": "background/default", "context": "ui" },
+      { "fg": "data/axis/color", "bg": "background/default", "context": "text" },
+      { "fg": "data/target/color", "bg": "background/default", "context": "ui" }
+    ],
+    "icons": {},
+    "requiredAria": ["role=\"group\"", "aria-labelledby", "aria-label", "aria-pressed", "aria-controls", "aria-expanded", "role=\"region\""],
+    "$note": "NET-NEW combo type (wave lane 3, 2026-07-24) — bars primary axis + line SECONDARY axis. Dual axes per dv-line-006: different units only, clearly labelled, legend names the axis per series. Bar axis zero-based ALWAYS (dv-bar-009); line axis MAY float (dv-line-001) with its full suffixed tick run keeping the floor explicit — THE COMBO PRECEDENT. Intersection mechanism: line-vs-bar direct contrast is 1.04:1 (isoluminant categorical set, by design) so the line carries a PAGE-COLOUR CASING (6.5px under 2.5px series stroke — the marker halation idiom generalised); every crossing boundary = page-vs-bar-fill ≥3:1 both modes. X-grammar = BAND CENTRES (bar convention wins; line points sit over their bars). One table spine carries both series with unit columns. Layer-2 = exemplar canon (popover, fit, table popover, legend filter/isolate/highlight, CSV, target toggle on the SECONDARY scale, optional title, H-stack head, 2026-07-24 control constructions: single-cell seg toggle, copy-tick CSV, solid-arrow dropdown, one --control-h 32px). No seg-view: a cumulative % view = a weighted-average design question deferred (receipted). UNREGISTERED until conductor absorb — behaviour markers are an empty pair; gate run by import with proposed 'combo' wiring (add to BAR_FAMILY + dv-line-011 list)."
+  }
+  </script>
+  <!-- ===== AUTO-BEHAVIOUR dv-behaviour START (dataviz) ===== -->
+<script>
+/* INJECTED from knowledge/canon/dv-behaviour.js (behaviour "dv-behaviour", group dataviz —
+   registry knowledge/component-types.json, ADR-0015). DO NOT hand-edit between the
+   AUTO-BEHAVIOUR markers: edit the source and regenerate:
+   python3 knowledge/gen_component_partials.py */
+/* dv-behaviour — the dataviz interaction layer (ADR-0015, hand-authored SOURCE).
+   ONE file, injected into registered chart snippets between AUTO-BEHAVIOUR markers by
+   gen_component_partials.py (registry: knowledge/component-types.json, group "dataviz").
+   Edit HERE and regenerate — never between a consumer's markers.
+
+   Modules: value POPOVER (dvTip) · responsive FIT reflow (DV-D02: text never scales) ·
+   TABLE-VIEW POPOVER panel · LEGEND-AS-FILTER. Performance contract (GATED by
+   _validate_behaviour.py): source ≤16KB raw · no setInterval/network/polling · ONE
+   rAF-debounced resize listener · events DELEGATED (document-level, not per-element) ·
+   progressive enhancement — every entry wrapped; the baked SVG renders if this never runs.
+   DEF-003 boundary: behaviour + data-driven geometry ONLY — no JS scale-physics. */
+(function () {
+  'use strict';
+  if (window.__dvBehaviour) { return; } window.__dvBehaviour = true;
+
+  /* ---------- FIT — responsive width-compression (proforma fitCharts, ported).
+     Only HORIZONTAL positions relayout to the container width; height + text are fixed.
+     Geometry rides data-fx/data-fw/data-dx/data-x0/data-fx2 + polyline data-fxs/data-ys;
+     plot frame per-svg via data-pl/data-pr/data-h (defaults = the kit's 46/12/260).
+     JS-ON opt-in: .dv-fit-on lands on the figure, releasing the fixed-width CSS —
+     JS-off keeps the DV-D02 static answer (fixed geometry + horizontal scroll). */
+  function fitCharts() {
+    var svgs = document.querySelectorAll('svg.dv-fit');
+    for (var i = 0; i < svgs.length; i++) { fitOne(svgs[i]); }
+  }
+  function fitOne(svg) {
+    try {
+      var PL = parseFloat(svg.getAttribute('data-pl') || '46');
+      var PR = parseFloat(svg.getAttribute('data-pr') || '12');
+      var H  = parseFloat(svg.getAttribute('data-h')  || '260');
+      var W = Math.round(svg.getBoundingClientRect().width);
+      if (!W) { return; }
+      var plotW = W - PL - PR; if (plotW < 90) { plotW = 90; }
+      svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);   /* 1:1 pin — no proportional scaling */
+      var X = function (f) { return PL + parseFloat(f) * plotW; };
+      var els = svg.querySelectorAll('[data-fx]');
+      for (var i = 0; i < els.length; i++) {
+        var el = els[i], x = X(el.getAttribute('data-fx')), tag = el.tagName.toLowerCase();
+        if (tag === 'rect') {
+          el.setAttribute('x', x.toFixed(1));
+          var fw = el.getAttribute('data-fw');
+          if (fw !== null) { el.setAttribute('width', (parseFloat(fw) * plotW).toFixed(1)); }
+        } else if (tag === 'text') {
+          var dx = parseFloat(el.getAttribute('data-dx') || '0');
+          el.setAttribute('x', (x + dx).toFixed(1));
+        } else if (tag === 'line') {
+          el.setAttribute('x1', x.toFixed(1));
+          var fx2 = el.getAttribute('data-fx2');
+          if (fx2 !== null) { el.setAttribute('x2', X(fx2).toFixed(1)); }
+        } else if (tag === 'g') {
+          var x0 = parseFloat(el.getAttribute('data-x0') || '0');
+          el.setAttribute('transform', 'translate(' + (x - x0).toFixed(1) + ',0)');
+        }
+      }
+      var pls = svg.querySelectorAll('polyline[data-fxs]');
+      for (var j = 0; j < pls.length; j++) {
+        var pl = pls[j];
+        var fxs = pl.getAttribute('data-fxs').trim().split(/\s+/);
+        var ys  = pl.getAttribute('data-ys').trim().split(/\s+/);
+        var pts = [];
+        for (var k = 0; k < fxs.length; k++) { pts.push(X(fxs[k]).toFixed(1) + ',' + ys[k]); }
+        pl.setAttribute('points', pts.join(' '));
+      }
+    } catch (e) { /* leave the baked SVG intact */ }
+  }
+  var dvRAF;   /* the ONE resize listener, rAF-debounced (ADR-0015) */
+  window.addEventListener('resize', function () {
+    cancelAnimationFrame(dvRAF); dvRAF = requestAnimationFrame(function () { fitCharts(); placeSegs(); });
+  });
+
+  /* ---------- POPOVER — real value tip on hover AND keyboard focus of any [data-tip].
+     Replaces native <title> tooltips (values stay in sync with the table — one source).
+     Edge-flips at the viewport bounds. role=status/aria-live=polite (proforma posture). */
+  var dvTip = document.createElement('div');
+  dvTip.className = 'dv-tip t-cm-chart-value'; dvTip.id = 'dvTip';   /* type via composite (T-D14 markup class) */
+  dvTip.setAttribute('role', 'status'); dvTip.setAttribute('aria-live', 'polite');
+  document.body.appendChild(dvTip);
+  function tipAt(text, x, y) {
+    dvTip.textContent = text; dvTip.classList.add('on');
+    var r = dvTip.getBoundingClientRect();
+    if (x + r.width  > window.innerWidth  - 8) { x = x - r.width  - 28; }
+    if (y + r.height > window.innerHeight - 8) { y = y - r.height - 28; }
+    dvTip.style.left = x + 'px'; dvTip.style.top = y + 'px';
+  }
+  function tipHide() { dvTip.classList.remove('on'); }
+  document.addEventListener('pointermove', function (e) {
+    var el = e.target.closest && e.target.closest('[data-tip]');
+    if (el) { tipAt(el.getAttribute('data-tip'), e.clientX + 14, e.clientY + 14); }
+    else { tipHide(); }
+  });
+  document.addEventListener('focusin', function (e) {
+    var t = hlTarget(e); if (t) { setQuiet(t.fig, t.group); }   /* keyboard parity for highlight */
+    var el = e.target.closest && e.target.closest('[data-tip]');
+    if (!el) { return; }
+    var b = el.getBoundingClientRect();
+    tipAt(el.getAttribute('data-tip'), b.left + b.width / 2, b.top - 40);
+  });
+  document.addEventListener('focusout', function (e) {
+    var t = hlTarget(e); if (t) { setQuiet(t.fig, null); }
+    tipHide();
+  });
+
+  /* ---------- TABLE-VIEW POPOVER — floating card panel (Dave's mock, 2026-07-23:
+     surface ground + border + soft shadow, NOT a frosted drawer). Toggle carries
+     aria-controls + aria-expanded; panel is a labelled region, tabindex=-1 for the
+     focus hand-off; Esc dismisses and returns focus to its toggle. */
+  function tblToggle(btn) {
+    var panel = document.getElementById(btn.getAttribute('aria-controls'));
+    if (!panel) { return; }
+    var open = panel.hasAttribute('hidden');           /* opening if currently hidden */
+    if (open) { panel.removeAttribute('hidden'); } else { panel.setAttribute('hidden', ''); }
+    btn.setAttribute('aria-expanded', String(open));   /* label stays static; the solid arrow rotates via CSS (Dave 2026-07-24) */
+    if (open) { panel.focus(); }
+  }
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest && e.target.closest('.dv-tbl-toggle');
+    if (btn) { tblToggle(btn); return; }
+    var leg = e.target.closest && e.target.closest('button[data-series-toggle]');
+    if (leg) { if (e.shiftKey) { isolate(leg); } else { legendToggle(leg); } return; }
+    var vt = e.target.closest && e.target.closest('button[data-dv-toggle]');
+    if (vt) { viewToggle(vt); return; }
+    var sw = e.target.closest && e.target.closest('button[data-dv-view-btn]');
+    if (sw) { segView(sw); return; }
+    var cp = e.target.closest && e.target.closest('button.dv-csv');
+    if (cp) { copyCsv(cp); }
+  });
+  document.addEventListener('dblclick', function (e) {
+    var leg = e.target.closest && e.target.closest('button[data-series-toggle]');
+    if (leg) { isolate(leg); }
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') { return; }
+    var panel = e.target.closest && e.target.closest('.dv-tablepanel');
+    if (!panel || panel.hasAttribute('hidden')) { return; }
+    panel.setAttribute('hidden', '');
+    var btn = document.querySelector('.dv-tbl-toggle[aria-controls="' + panel.id + '"]');
+    if (btn) { btn.setAttribute('aria-expanded', 'false'); btn.focus(); }   /* label static (Dave 2026-07-24) */
+  });
+
+  /* ---------- LEGEND-AS-FILTER — show/hide a series from its legend button.
+     Scoped to the button's own figure (same group numbers may repeat across figures).
+     aria-pressed carries state; visuals = CSS on [aria-pressed] + the series' inline
+     opacity (transition lives in the snippet's CSS — decorative motion stays CSS). */
+  function setSeries(btn, show) {
+    btn.setAttribute('aria-pressed', String(show));
+    var fig = btn.closest('figure') || document;
+    var els = fig.querySelectorAll('[data-series-group="' + btn.getAttribute('data-series-toggle') + '"]');
+    for (var i = 0; i < els.length; i++) {
+      /* visibility as well as opacity: the entry animation (dvFade, fill both) outranks an
+         inline opacity, so opacity alone left markers painted (render-verify catch, 2026-07-23).
+         visibility is not animated by the fade — inline wins; transitioned, so the fade-out
+         still shows, then the element leaves. */
+      els[i].style.opacity = show ? '' : '0';
+      els[i].style.visibility = show ? '' : 'hidden';
+      els[i].style.pointerEvents = show ? '' : 'none';
+    }
+  }
+  function legendToggle(btn) {
+    setSeries(btn, btn.getAttribute('aria-pressed') !== 'true');
+  }
+  /* ISOLATE (menu pick 1 — Dave 2026-07-23): shift-click or double-click a legend row solos
+     that series; the same gesture on a solo restores all. Keyboard path: Shift+Enter fires a
+     shift-modified click on a focused button. */
+  function isolate(btn) {
+    var fig = btn.closest('figure') || document;
+    var all = fig.querySelectorAll('button[data-series-toggle]');
+    var solo = btn.getAttribute('aria-pressed') === 'true';
+    for (var i = 0; i < all.length; i++) {
+      if (all[i] !== btn && all[i].getAttribute('aria-pressed') === 'true') { solo = false; }
+    }
+    for (var j = 0; j < all.length; j++) { setSeries(all[j], solo ? true : all[j] === btn); }
+  }
+  /* HIGHLIGHT (menu pick 2): hovering/focusing a legend row or marker emphasises that series —
+     the OTHERS take .dv-quiet (opacity via !important, which outranks the entry animation).
+     Data-layer dimming only — control text never dims (Dave's a11y caution, 2026-07-23). */
+  function setQuiet(fig, group) {
+    var els = fig.querySelectorAll('[data-series-group]');
+    for (var i = 0; i < els.length; i++) {
+      els[i].classList.toggle('dv-quiet', group !== null && els[i].getAttribute('data-series-group') !== group);
+    }
+  }
+  function hlTarget(e) {
+    var el = e.target.closest && e.target.closest('.dv-legbtn[data-series-toggle], .dv-marker[data-series-group]');
+    if (!el) { return null; }
+    return { fig: el.closest('figure') || document,
+             group: el.getAttribute('data-series-toggle') || el.getAttribute('data-series-group') };
+  }
+  document.addEventListener('pointerover', function (e) {
+    var t = hlTarget(e); if (t) { setQuiet(t.fig, t.group); }
+  });
+  document.addEventListener('pointerout', function (e) {
+    var t = hlTarget(e); if (t) { setQuiet(t.fig, null); }
+  });
+  /* VIEW TOGGLES (menu picks 6/7/9): baked-variant switching — geometry is generated, never
+     computed here; behaviour only shows/hides [data-dv-view] groups (.dv-off = display:none). */
+  function setView(fig, name, show) {
+    var els = fig.querySelectorAll('[data-dv-view~="' + name + '"]');
+    for (var i = 0; i < els.length; i++) { els[i].classList.toggle('dv-off', !show); }
+  }
+  function viewToggle(btn) {
+    var on = btn.getAttribute('aria-pressed') === 'true';
+    btn.setAttribute('aria-pressed', String(!on));
+    setView(btn.closest('figure') || document, btn.getAttribute('data-dv-toggle'), !on);
+  }
+  /* SEGMENTED INDICATOR (Dave, 2026-07-24): the view switch CONSUMES the Segmented-control atom —
+     behaviour drives the sliding fill (.ind) the atom's way: measure the pressed button's box and
+     slide. rect-based so the 2px inset + 1px border don't offset the measurement (the .ind
+     containing block is .seg's padding box — subtract seg.clientLeft). */
+  function moveSeg(seg) {
+    if (!seg) { return; }
+    var ind = seg.querySelector('.ind'); if (!ind) { return; }
+    var a = seg.querySelector('button[aria-pressed="true"]'); if (!a) { return; }
+    var sr = seg.getBoundingClientRect(), br = a.getBoundingClientRect();
+    ind.style.left = (br.left - sr.left - seg.clientLeft) + 'px';
+    ind.style.width = br.width + 'px';
+  }
+  function placeSegs() {
+    var segs = document.querySelectorAll('.seg');
+    for (var i = 0; i < segs.length; i++) { moveSeg(segs[i]); }
+  }
+  /* VIEW SWITCH (Dave, 2026-07-23, both messages read together): the scale pair (monthly ⇄ year
+     to date) is EXCLUSIVE — two scales can't share a canvas — but the overlays are fully ADDITIVE:
+     each view carries its OWN baked variant of every overlay (nested [data-dv-view] groups), and
+     an overlay's toggle governs both copies, so it works in whichever view is up. Nothing ever
+     disables. */
+  function segView(btn) {
+    if (btn.getAttribute('aria-pressed') === 'true') { return; }
+    var fig = btn.closest('figure') || document;
+    var active = btn.getAttribute('data-dv-view-btn');
+    var segs = fig.querySelectorAll('button[data-dv-view-btn]');
+    for (var i = 0; i < segs.length; i++) {
+      var v = segs[i].getAttribute('data-dv-view-btn');
+      segs[i].setAttribute('aria-pressed', String(v === active));
+      setView(fig, v, v === active);
+    }
+    moveSeg(btn.closest('.seg'));                 /* slide the indicator to the newly active view */
+  }
+  /* COPY CSV (menu pick 10): the figure's real table, serialised — no network, table = truth. */
+  function copyCsv(btn) {
+    var fig = btn.closest('figure') || document;
+    var rows = fig.querySelectorAll('table tr');
+    var out = [];
+    for (var i = 0; i < rows.length; i++) {
+      var cells = rows[i].querySelectorAll('th,td'), line = [];
+      for (var j = 0; j < cells.length; j++) { line.push('"' + cells[j].textContent.trim().replace(/"/g, '""') + '"'); }
+      out.push(line.join(','));
+    }
+    var csv = out.join('\n');
+    function done() {
+      /* label stays put; the copy icon swaps to a tick briefly (Dave 2026-07-24) */
+      btn.classList.add('is-copied');
+      setTimeout(function () { btn.classList.remove('is-copied'); }, 1600);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(csv).then(done, done);
+    } else { done(); }
+  }
+
+  /* ---------- INIT — opt the page into fit (JS-on releases the fixed width), first pass. */
+  var figs = document.querySelectorAll('figure.dv');
+  for (var i = 0; i < figs.length; i++) { figs[i].classList.add('dv-fit-on'); }
+  fitCharts();
+  placeSegs();                                    /* initial indicator position (widths depend on layout) */
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(placeSegs); }   /* re-place once the web font settles */
+}());
+</script>
+  <!-- ===== AUTO-BEHAVIOUR dv-behaviour END ===== -->
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    document.getElementById('contrastToggle').addEventListener('click', function(){ const b=document.body; const hi=b.getAttribute('data-contrast')==='high'; if(hi){ b.removeAttribute('data-contrast'); } else { b.setAttribute('data-contrast','high'); } this.setAttribute('aria-pressed', String(!hi)); });
+    document.getElementById('replay').addEventListener('click', ()=>{ document.querySelectorAll('figure.dv').forEach(f=>{ f.classList.remove('dv-animate'); void f.offsetWidth; f.classList.add('dv-animate'); }); });
+  </script>
+</body>
+</html>

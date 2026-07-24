@@ -111,11 +111,18 @@ def manifest_vars(html):
     m = MANIFEST_RE.search(html)
     return (json.loads(m.group(1)).get("vars", {})) if m else {}
 
-def check_contracts(name, html, partial, src_html):
-    """requires.vars / matchValues / declarations / $manifestBinds -> list of failures."""
+def check_contracts(name, html, partial, src_html, extra=None):
+    """requires.vars / matchValues / declarations / $manifestBinds -> list of failures.
+    extra: per-member capability contract — the ADR-0013 per-capability split (a member's
+    $members[…].extraContract with keys vars / declarations / manifestBinds), MERGED with the
+    universal partial contract. So a behaviour contract holds only the truly-universal hook
+    (dataviz: popover data-tip=) while each member declares the capability chrome it actually
+    carries — cartesian axis/grid roles are line/bar/combo, axis-only is donut, sparkline is
+    axis-free (dataviz per-capability split, 2026-07-24)."""
     fails = []
+    extra = extra or {}
     req = partial.get("requires", {})
-    for var in req.get("vars", []):
+    for var in list(req.get("vars", [])) + list(extra.get("vars", [])):
         if declared_value(html, var) is None:
             fails.append(f"{name}: required var {var} not declared")
     for var in req.get("matchValues", []):
@@ -123,11 +130,12 @@ def check_contracts(name, html, partial, src_html):
         have = declared_value(html, var)
         if want is not None and have is not None and have != want:
             fails.append(f"{name}: {var} = '{have}' != source atom's '{want}' (matchValues)")
-    for needle in req.get("declarations", []):
+    for needle in list(req.get("declarations", [])) + list(extra.get("declarations", [])):
         if needle not in html:
             fails.append(f"{name}: required declaration '{needle}' missing")
     mv = manifest_vars(html)
-    for var, path in (partial.get("$manifestBinds") or {}).items():
+    binds = {**(partial.get("$manifestBinds") or {}), **(extra.get("manifestBinds") or {})}
+    for var, path in binds.items():
         if mv.get(var) != path:
             fails.append(f"{name}: #token-manifest must bind {var} -> {path} (has: {mv.get(var)})")
     return fails
@@ -197,7 +205,7 @@ def run(write):
                 if not os.path.exists(mp):
                     fails.append(f"{gname}/{pname}: member snippet {mname} missing"); continue
                 html = open(mp).read()
-                fails += check_contracts(mname, html, partial, src_html)
+                fails += check_contracts(mname, html, partial, src_html, mconf.get("extraContract"))
                 member_sel = mconf.get("selector", root_sel)
                 inner = generated_inner(src_css, pname, gname, source, root_sel, member_sel)
                 between = "\n" + inner + "\n  "     # canonical padding either side of the payload
@@ -224,7 +232,7 @@ def run(write):
                 if not os.path.exists(mp):
                     fails.append(f"{gname}/{bname}: member snippet {mname} missing"); continue
                 html = open(mp).read()
-                fails += check_contracts(mname, html, beh, js)
+                fails += check_contracts(mname, html, beh, js, mconf.get("extraContract"))
                 inner = behaviour_inner(js, bname, gname, beh["source"])
                 between = "\n" + inner + "\n  "     # same canonical padding as CSS partials
                 rx = BEHAVIOUR_RE(bname)
@@ -274,6 +282,17 @@ def selftest():
         fails.append("missing declaration not caught")
     if not any("#token-manifest must bind" in f for f in got):
         fails.append("missing manifest binding not caught")
+    # 4b. per-member extraContract (ADR-0013 per-capability split) — teeth + no false positive
+    uni = {"requires": {"vars": [], "matchValues": [], "declarations": ['data-tip="']}}
+    have_tip = '<i data-tip="x"></i>'
+    if check_contracts("T", have_tip, uni, have_tip):
+        fails.append("universal-only contract wrongly failing when the universal hook is present")
+    got = check_contracts("T", have_tip, uni, have_tip, {"declarations": ['class="dv-tablepanel']})
+    if not any("required declaration 'class=\"dv-tablepanel' missing" in f for f in got):
+        fails.append("per-member extraContract declaration not enforced (capability hook not caught)")
+    if not any("required var --data-grid" in f
+               for f in check_contracts("T", have_tip, uni, have_tip, {"vars": ["--data-grid"]})):
+        fails.append("per-member extraContract var not enforced (capability chrome not caught)")
     # 5. matchValues bites on drift
     src_html = ":root{--spring:300ms cubic-bezier(.5,1.6,.4,1);}"
     bad_html = ":root{--spring:200ms linear;}"

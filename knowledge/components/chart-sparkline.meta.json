@@ -1,7 +1,7 @@
 {
   "name": "Sparkline",
   "category": "molecule",
-  "purpose": "The axis-free inline trend line — a line chart reduced to pure shape, at two reviewed scales: standalone (with its data table) and inline (the KPI/Stat-card scale, decorative). Graduated from the round-one dataviz kit. PROVISIONAL-AGENT: promoted from the PARKED kit (9 review rounds, not signed off).",
+  "purpose": "The axis-free inline trend line — a line chart reduced to pure shape, at two reviewed scales: standalone (with its data table) and inline (the KPI/Stat-card scale, decorative). COMPACT Layer-2 (chart-revisit wave lane ②, 2026-07-24): popover (one focus stop on the trend line) + fit (CSS width release under .dv-fit-on) — deliberately below the exemplar's full set; the spark is ambient. Graduated from the round-one dataviz kit. PROVISIONAL-AGENT: promoted from the PARKED kit (9 review rounds, not signed off).",
   "props": [
     { "name": "scale", "type": "enum", "values": ["standalone", "inline"], "default": "standalone", "$note": "standalone = 340×64 render of the 580×90 frame, stroke 2.5, endpoint dot r3.5, role=img + table; inline = 200×48 at 44px, stroke 2, dot r3, aria-hidden (decorative — the composed value carries meaning)." },
     { "name": "data", "type": "table", "$note": "Standalone carries a real <table> (dv-005); inline defers to the composed tile's value + period." },
@@ -13,7 +13,7 @@
     { "name": "no data", "use": "Compact dashed frame, title carries meaning." }
   ],
   "tokens": {
-    "font-family": "type composites via markup class — caption + table .t-cm-legal",
+    "font-family": "type composites via markup class — DV-D08 rebind: summary + caption .t-cm-chart-label (12/500) · table .t-cm-legal (truth surface, exemplar precedent)",
     "series": "data/series/1 (mode-stable candidate C; 5.26:1 light / 3.31:1 dark vs the page — dv-016 clean)",
     "baseline": "text/default at grid alpha .10/.16 (hairline; kit greys have no post-R-D16 home — receipted)",
     "surface": "background/default",
@@ -25,7 +25,7 @@
     "tokens": []
   },
   "responsive": {
-    "rule": "preserveAspectRatio:none is SAFE here — a spark contains no text, so DV-D02's text-never-scales is vacuously held (the kit's own exception). Fixed render sizes; the stage scrolls if narrower.",
+    "rule": "preserveAspectRatio:none is SAFE here — a spark contains no text, so DV-D02's text-never-scales is vacuously held (the kit's own exception). FIT (Layer-2): JS-on, .dv-fit-on (dv-behaviour init) releases the standalone's fixed 340px to width:100% — pure CSS aspect stretch, no relayout maths; JS-off = fixed 340 baked (the DV-D02 static answer). Inline stays fixed 200×48.",
     "tokens": []
   },
   "relationships": {
@@ -35,9 +35,9 @@
     "triggeredBy": []
   },
   "accessibility": {
-    "role": "Standalone: figure role=\"group\" + sr-only figcaption, svg role=\"img\" with a trend-summary aria-label. Inline: aria-hidden — decorative; the composed value + period carry the meaning.",
-    "name": "Standalone aria-label summarises the trend ('rising from 82 to 104'); the table is the full data surface.",
-    "keyboard": "Only the <details> summary is focusable.",
+    "role": "Standalone: figure role=\"group\" + sr-only figcaption, svg role=\"group\" with a trend-summary aria-label; the trend polyline = role=\"img\" focus stop. Inline: aria-hidden — decorative; the composed value + period carry the meaning.",
+    "name": "Standalone aria-labels summarise the trend ('rising from 82 to 104'); polyline aria-label == data-tip; the table is the full data surface.",
+    "keyboard": "The trend line is ONE focus stop (tabindex 0 → dvTip popover on focus); the <details> summary is focusable. No per-point stops — receipted (axis-free idiom; the table carries per-month values).",
     "focus": "summary:focus-visible = 2px ink outline, offset 2.",
     "nonText": "Series stroke ≥3:1 vs the page both modes (dv-016).",
     "relatedSC": ["1.4.11 Non-text Contrast", "1.3.1 Info and Relationships", "1.1.1 Non-text Content"]
@@ -52,10 +52,10 @@
     "Raw hex strokes (dv-017)"
   ],
   "tokenValidation": {
-    "date": "2026-07-22",
+    "date": "2026-07-24",
     "against": "token store (semantic-colour.json) via #token-manifest",
-    "result": "PASS — data/series/1 5.26/3.31:1; ink 17.4:1 both modes.",
-    "$note": "Built Phase-2 wave 2 (worker D). PROVISIONAL-AGENT pending Dave's dataviz sign-off. The Stat-card composition seam is RECEIPTED, not built (Stat-card is a wave-1 passive atom with no spark slot — its variant decision belongs to Dave/conductor)."
+    "result": "PASS — data/series/1 5.26/3.31:1; ink 17.4:1 both modes; elevation vars added for the dvTip recipe.",
+    "$note": "Compact Layer-2 added chart-revisit wave lane ② (2026-07-24): popover + fit only (no legend/toolbar — flag if the wave wants toolbar parity). AUTO-BEHAVIOUR markers pre-landed empty; registration + injection = conductor's serial. PROVISIONAL-AGENT pending Dave's dataviz sign-off. The Stat-card composition seam is RECEIPTED, not built (Stat-card is a wave-1 passive atom with no spark slot — its variant decision belongs to Dave/conductor; B-Q6 open)."
   },
   "provenance": {
     "source": "proforma-promotion",

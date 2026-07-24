@@ -88,6 +88,7 @@ MIGRATED_SNIPPETS = {
     "Chart-donut.reference.html",
     "Chart-sparkline.reference.html",
     "Chart-scatter.reference.html",
+    "Chart-combo.reference.html",
 }
 
 ADVISORY_GLOBS = [

@@ -12,7 +12,7 @@ exits non-zero on any BLOCKING failure. Run `--selftest` to bite-test each check
 good/broken fixtures (a deliberately broken chart MUST fail) — no files touched.
 
 CHART DOM CONTRACT (what a compliant chart looks like — enforced below):
-  <figure class="dv" data-dv-type="kpi|column|bar|grouped|stacked|line|multiline|spark|donut"
+  <figure class="dv" data-dv-type="kpi|column|bar|grouped|stacked|line|multiline|spark|donut|combo"
           [data-domain-min="0"]      bar-family only — zero baseline (dv-bar-009)
           [data-total="…"]           donut/pie only — sum-to-total (dv-pie-010/011)
           [data-surface="page|raised"] which mode surface the chart sits on (contrast base)
@@ -56,7 +56,7 @@ import re, json, os, glob, sys, html as _html
 HERE = os.path.dirname(os.path.abspath(__file__))
 PROFORMA_DIR = os.path.join(HERE, "_proforma")
 SIGNATURE = "APOLLO-DATAVIZ"
-BAR_FAMILY = {"column", "bar", "grouped", "stacked"}
+BAR_FAMILY = {"column", "bar", "grouped", "stacked", "combo"}
 CURVE_CMDS = re.compile(r'[CSQTcsqt]')
 
 # ---------------- colour maths (lifted from _review/_gen_series_renders.py — one source) ----------------
@@ -271,7 +271,7 @@ def check_chart(attrs, inner, themes, ctx):
                 B.append("dv-pie-010: slice sum %.2f != displayed total %.2f." % (sum(vals), declared))
 
     # --- dv-line-011 straight lines (no curve commands) --------------------
-    if dtype in ("line", "multiline", "spark", "column", "bar", "grouped", "stacked", "kpi"):
+    if dtype in ("line", "multiline", "spark", "column", "bar", "grouped", "stacked", "kpi", "combo"):
         for path in re.findall(r'<path\b[^>]*class="[^"]*dv-series[^"]*"[^>]*\bd="([^"]+)"', inner):
             if CURVE_CMDS.search(path):
                 B.append("dv-line-011: series <path> has a curve command (C/S/Q/T) — series lines must be straight.")

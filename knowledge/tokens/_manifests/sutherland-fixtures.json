@@ -1,7 +1,7 @@
 {
   "$description": "Sutherland acceptance fixtures — per component, the contract a React implementation must satisfy to match the gated reference. Generated from snippet manifests + metas; regenerated each build.",
   "generated": "by _build_sutherland_fixtures.py",
-  "componentCount": 66,
+  "componentCount": 67,
   "fixtures": [
     {
       "component": "Accordion",
@@ -790,17 +790,29 @@
           "--data-series-3": "data/series/3",
           "--data-series-4": "data/series/4",
           "--data-series-5": "data/series/5",
+          "--data-series-1-hc": "data/series-high-contrast/1",
+          "--data-series-2-hc": "data/series-high-contrast/2",
+          "--data-series-3-hc": "data/series-high-contrast/3",
+          "--data-axis": "data/axis/color",
+          "--axis-alpha": "data/axis/alpha",
+          "--data-grid": "data/grid/color",
+          "--grid-alpha": "data/grid/alpha",
           "--status-breach": "rag/error",
           "--status-watch": "rag/warning",
           "--status-healthy": "rag/success",
           "--status-info": "rag/information",
+          "--shadow": "elevation/functional",
+          "--pop-border": "elevation/border",
           "--border-radius-surface": "border-radius/surface"
         },
         "requiredAria": [
           "role=\"group\"",
           "aria-labelledby",
-          "role=\"img\"",
-          "aria-label"
+          "aria-label",
+          "aria-pressed",
+          "aria-controls",
+          "aria-expanded",
+          "role=\"region\""
         ],
         "contrastPairs": [
           {
@@ -834,6 +846,26 @@
             "context": "ui"
           },
           {
+            "fg": "data/series-high-contrast/1",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series-high-contrast/2",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series-high-contrast/3",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/axis/color",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
             "fg": "rag/error",
             "bg": "background/default",
             "context": "ui"
@@ -860,31 +892,45 @@
             "type": "enum",
             "values": [
               "column",
-              "bar"
+              "bar",
+              "grouped-column",
+              "stacked-column"
             ],
             "default": "column",
-            "$note": "column = vertical (negatives permitted by dv-bar-007); bar = horizontal (positives only — dv-bar-007 blocks negative horizontals)."
+            "$note": "column = vertical single-series; bar = horizontal single-series (positives only, dv-bar-007); grouped-column + stacked-column = multi-series (D-Q3 promote)."
           },
           {
             "name": "series",
             "type": "enum",
             "values": [
               "categorical",
-              "status"
+              "status",
+              "multi"
             ],
             "default": "categorical",
-            "$note": "categorical = data/series/1–5 (mode-stable isoluminant set, R-D9); status = the salience RAMP red › amber › green › blue on rag/* (R-D9 — loudness tracks severity; NEVER the isoluminant set for status)."
+            "$note": "categorical = data/series/1–5 (mode-stable isoluminant, R-D9); status = the salience RAMP red › amber › green › blue on rag/* (R-D9); multi = grouped/stacked use series/1–3 with shaped+lettered legend keys and legend-as-filter."
+          },
+          {
+            "name": "sort",
+            "type": "enum",
+            "values": [
+              "orig",
+              "asc",
+              "desc"
+            ],
+            "default": "orig",
+            "$note": "Menu 3/4 sort: BAKED VARIANT GROUPS (data-dv-view — geometry is generation-time), switched by a seg control that CONSUMES the Segmented-control atom; the table mirrors the active order via baked <tbody data-dv-view> variants."
           },
           {
             "name": "data",
             "type": "table",
-            "$note": "A real <table class=\"dv-table\"> inside the figure — the a11y spine AND the tabular alternative (dv-005). Surfaced by a native <details> disclosure (zero JS)."
+            "$note": "A real <table class=\"dv-table\"> inside the figure — the a11y spine AND the tabular alternative (dv-005). Surfaced by the TABLE-VIEW POPOVER (dropdown w/ solid rotating arrow, static label; surface card, Esc-dismiss) — the exemplar's, not a native <details>."
           },
           {
             "name": "empty",
             "type": "boolean",
             "default": false,
-            "$note": "No-data state consumes the Empty-state pattern by reference: dashed frame, title carries the meaning, no glyph (spot-illustration set is a logged icon gap)."
+            "$note": "No-data state consumes the Empty-state pattern by reference."
           }
         ]
       }
@@ -1160,6 +1206,123 @@
             ],
             "default": "titleDescription",
             "$note": "Content combinations seen on actions/basic cards."
+          }
+        ]
+      }
+    },
+    {
+      "component": "Combo chart",
+      "category": "organism",
+      "referenceSnippet": "snippets/Chart-combo.reference.html",
+      "meta": "components/chart-combo.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--page": "background/default",
+          "--ink": "text/default",
+          "--baseline": "border/action-strong",
+          "--line": "border/subtle",
+          "--data-series-1": "data/series/1",
+          "--data-series-2": "data/series/2",
+          "--data-series-1-hc": "data/series-high-contrast/1",
+          "--data-series-2-hc": "data/series-high-contrast/2",
+          "--data-axis": "data/axis/color",
+          "--axis-alpha": "data/axis/alpha",
+          "--data-grid": "data/grid/color",
+          "--grid-alpha": "data/grid/alpha",
+          "--data-target": "data/target/color",
+          "--target-alpha": "data/target/alpha",
+          "--shadow": "elevation/functional",
+          "--pop-border": "elevation/border",
+          "--border-radius-surface": "border-radius/surface"
+        },
+        "requiredAria": [
+          "role=\"group\"",
+          "aria-labelledby",
+          "aria-label",
+          "aria-pressed",
+          "aria-controls",
+          "aria-expanded",
+          "role=\"region\""
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "data/series/1",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series/2",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series-high-contrast/1",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series-high-contrast/2",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/axis/color",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "data/target/color",
+            "bg": "background/default",
+            "context": "ui"
+          }
+        ],
+        "props": [
+          {
+            "name": "series",
+            "type": "fixed",
+            "$note": "Exactly TWO: bars = data/series/1 (DV-D09 column default) on the left/primary axis, line = data/series/2 on the right/secondary axis. More bar series (grouped combo) is a future variant — grouped promote rides the bar lane (D-Q3)."
+          },
+          {
+            "name": "secondaryAxis",
+            "type": "scale",
+            "$note": "THE COMBO PRECEDENT: bar axis zero-based ALWAYS (dv-bar-009, data-domain-min=\"0\"); the line's secondary axis MAY FLOAT (dv-line-001 — zero optional where it aids interpretation) and shows its FULL tick run with the unit suffix baked into the tick text ('85%' … '100%') so the floating floor is explicit, never silent. Right-edge rule renders in the data/axis role (quieter than the ink baseline — the overlaid scale is chrome, not the plot floor)."
+          },
+          {
+            "name": "intersection",
+            "type": "mechanism",
+            "$note": "Line-vs-bar direct contrast is 1.04:1 — the categorical set is isoluminant BY DESIGN, so no series pair separates a crossing. The line carries a PAGE-COLOUR CASING (.dv-casing, 6.5px page stroke under the 2.5px series stroke — the marker halation idiom generalised): every crossing boundary reads at page-vs-bar-fill = the bar's own gate-checked ≥3:1, both modes, high-contrast included. The casing is NOT class dv-series (the gate must never contrast-check page-vs-page) and carries data-series-group=\"2\" so filter/isolate/highlight take it with its line."
+          },
+          {
+            "name": "xGrammar",
+            "type": "layout",
+            "$note": "BAND CENTRES — bar convention wins the shared x-axis: 12 bands across the 522px plot, bars centred in bands (width 28), line points ride the SAME centres so every point sits over its bar. Chart-line's endpoint spread (f=i/11) does not compose with bars."
+          },
+          {
+            "name": "data",
+            "type": "table",
+            "$note": "ONE real <table class=\"dv-table\"> (dv-005) carries BOTH series with unit column headers (Payments £000 · STP rate %); popover tips read the same values; † flags at/above target."
+          },
+          {
+            "name": "target",
+            "type": "boolean",
+            "default": false,
+            "$note": "Target overlay on the SECONDARY scale (dashed data/target line + label), governed by a single-cell seg toggle (Dave 2026-07-24 construction). Demonstrates overlays against the floating axis."
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "$note": "Optional visible title slot (.dv-title, dv-006) — t-cm-section-label; sr-only figcaption always names the chart."
+          },
+          {
+            "name": "empty",
+            "type": "boolean",
+            "default": false,
+            "$note": "No-data state = the Empty-state pattern by reference."
           }
         ]
       }
@@ -1674,13 +1837,26 @@
           "--data-series-3": "data/series/3",
           "--data-series-4": "data/series/4",
           "--data-series-5": "data/series/5",
+          "--data-series-1-hc": "data/series-high-contrast/1",
+          "--data-series-2-hc": "data/series-high-contrast/2",
+          "--data-series-3-hc": "data/series-high-contrast/3",
+          "--data-series-4-hc": "data/series-high-contrast/4",
+          "--data-series-5-hc": "data/series-high-contrast/5",
+          "--data-axis": "data/axis/color",
+          "--axis-alpha": "data/axis/alpha",
+          "--shadow": "elevation/functional",
+          "--pop-border": "elevation/border",
           "--border-radius-surface": "border-radius/surface"
         },
         "requiredAria": [
           "role=\"group\"",
           "aria-labelledby",
           "role=\"img\"",
-          "aria-label"
+          "aria-label",
+          "aria-pressed",
+          "aria-controls",
+          "aria-expanded",
+          "role=\"region\""
         ],
         "contrastPairs": [
           {
@@ -1712,6 +1888,36 @@
             "fg": "data/series/5",
             "bg": "background/default",
             "context": "ui"
+          },
+          {
+            "fg": "data/series-high-contrast/1",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series-high-contrast/2",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series-high-contrast/3",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series-high-contrast/4",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series-high-contrast/5",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/axis/color",
+            "bg": "background/default",
+            "context": "text"
           }
         ],
         "props": [
@@ -1740,6 +1946,21 @@
             "type": "boolean",
             "default": false,
             "$note": "No-data state = the Empty-state pattern by reference."
+          },
+          {
+            "name": "valueMode",
+            "type": "enum",
+            "values": [
+              "value",
+              "percent"
+            ],
+            "default": "value",
+            "$note": "Menu item 5 (ruled in): the Segmented-control atom (.seg.sm) drives BAKED variant groups (data-dv-view) — centre total, direct labels AND the table column mirror the active mode. JS-off = value view. Tips/aria carry both readings always."
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "$note": "Optional visible title (.dv-title, t-cm-section-label) in the H-stack head; sr-only figcaption still names the chart when absent."
           }
         ]
       }
@@ -4333,6 +4554,8 @@
           "--ink": "text/default",
           "--line": "border/subtle",
           "--data-series-1": "data/series/1",
+          "--shadow": "elevation/functional",
+          "--pop-border": "elevation/border",
           "--border-radius-surface": "border-radius/surface"
         },
         "requiredAria": [

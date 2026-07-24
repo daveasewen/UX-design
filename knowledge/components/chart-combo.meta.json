@@ -1,0 +1,99 @@
+{
+  "name": "Combo chart",
+  "category": "organism",
+  "purpose": "Bars on a PRIMARY axis + a line on a SECONDARY axis — two related measures in DIFFERENT UNITS over one shared x (dv-line-006: dual axes only for different measurement units, clearly labelled, key states which axis each series reads against). NET-NEW type (chart-revisit wave lane 3, 2026-07-24 — Dave: 'we've completely missed the bar with line overlay'); no proforma precedent, designed to the method: semantic SVG styled by tokens, decorative motion by CSS, behaviour by the ADR-0015 generated JS partial (dv-behaviour — UNREGISTERED until conductor absorb; markers are an empty pair), described by ONE real table carrying both series with unit columns.",
+  "props": [
+    {
+      "name": "series",
+      "type": "fixed",
+      "$note": "Exactly TWO: bars = data/series/1 (DV-D09 column default) on the left/primary axis, line = data/series/2 on the right/secondary axis. More bar series (grouped combo) is a future variant — grouped promote rides the bar lane (D-Q3)."
+    },
+    {
+      "name": "secondaryAxis",
+      "type": "scale",
+      "$note": "THE COMBO PRECEDENT: bar axis zero-based ALWAYS (dv-bar-009, data-domain-min=\"0\"); the line's secondary axis MAY FLOAT (dv-line-001 — zero optional where it aids interpretation) and shows its FULL tick run with the unit suffix baked into the tick text ('85%' … '100%') so the floating floor is explicit, never silent. Right-edge rule renders in the data/axis role (quieter than the ink baseline — the overlaid scale is chrome, not the plot floor)."
+    },
+    {
+      "name": "intersection",
+      "type": "mechanism",
+      "$note": "Line-vs-bar direct contrast is 1.04:1 — the categorical set is isoluminant BY DESIGN, so no series pair separates a crossing. The line carries a PAGE-COLOUR CASING (.dv-casing, 6.5px page stroke under the 2.5px series stroke — the marker halation idiom generalised): every crossing boundary reads at page-vs-bar-fill = the bar's own gate-checked ≥3:1, both modes, high-contrast included. The casing is NOT class dv-series (the gate must never contrast-check page-vs-page) and carries data-series-group=\"2\" so filter/isolate/highlight take it with its line."
+    },
+    {
+      "name": "xGrammar",
+      "type": "layout",
+      "$note": "BAND CENTRES — bar convention wins the shared x-axis: 12 bands across the 522px plot, bars centred in bands (width 28), line points ride the SAME centres so every point sits over its bar. Chart-line's endpoint spread (f=i/11) does not compose with bars."
+    },
+    {
+      "name": "data",
+      "type": "table",
+      "$note": "ONE real <table class=\"dv-table\"> (dv-005) carries BOTH series with unit column headers (Payments £000 · STP rate %); popover tips read the same values; † flags at/above target."
+    },
+    {
+      "name": "target",
+      "type": "boolean",
+      "default": false,
+      "$note": "Target overlay on the SECONDARY scale (dashed data/target line + label), governed by a single-cell seg toggle (Dave 2026-07-24 construction). Demonstrates overlays against the floating axis."
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "$note": "Optional visible title slot (.dv-title, dv-006) — t-cm-section-label; sr-only figcaption always names the chart."
+    },
+    {
+      "name": "empty",
+      "type": "boolean",
+      "default": false,
+      "$note": "No-data state = the Empty-state pattern by reference."
+    }
+  ],
+  "variants": [
+    { "name": "combo", "use": "Volume-style bars + a rate/average line in a different unit (e.g. payments processed + straight-through rate). NOT for two same-unit series — that is a multi-series line or grouped bar." },
+    { "name": "no data", "use": "Empty-state pattern in the chart frame." }
+  ],
+  "tokens": {
+    "font-family": "type composites via markup class — DV-D08 ladder: axis ticks (both axes, suffixed) .t-cm-chart-value (12/500 tabular) · month labels + legend + controls .t-cm-chart-label (12/500) · letter keys .t-cm-chart-key (12/700); table .t-cm-legal; title .t-cm-section-label",
+    "series": "data/series/1 (bars) + data/series/2 (line) + high-contrast pair; axis/grid/target = the DV-D07 two-channel roles (colour + alpha slot); casing + marker strokes = background/default (page)",
+    "surfaces": "popovers/table panel = background/default + elevation/functional shadow + elevation/border (dark outline); radius = border-radius/surface role token"
+  },
+  "motion": {
+    "entry": "Bars grow from the baseline (760ms cubic-bezier(.22,.61,.36,1), 45ms stagger — Chart-bar language); line + casing draw AS ONE (same pathLength=2400 + 2400ms draw — the casing must never lead its line); markers land on the eased cadence (0·369·507·…·2400ms); the letter key fades in as the draw completes. All CSS (DEF-003).",
+    "hover": "Bar brightness emphasis (1.12 light / 1.22 dark); legend/marker hover-highlight dims the OTHER series' data layer to .25 (.dv-quiet)."
+  },
+  "responsive": {
+    "rule": "DV-D02 + fit via the behaviour partial: baked-fraction relayout (bars data-fx/data-fw, line data-fxs/data-ys, markers data-fx/data-x0, BOTH axes' ticks data-fx/data-dx) to the container width — fixed height, TEXT NEVER SCALES (viewBox pinned 1:1). Both scales recompute under fit because both are baked fractions of the same plot frame (46/12/260). JS-off = static 580×260 + horizontal scroll; stage padding-right 32px keeps the suffixed right ticks + letter key visible at the clip edge.",
+    "tokens": []
+  },
+  "relationships": {
+    "livesInside": ["Dashboards", "Operations and payments views", "Reports"],
+    "mustNotNeighbour": ["A second chart re-using these series colours for DIFFERENT data in the same journey (dv-014)", "A same-unit pair drawn as a combo (use multi-series line or grouped bar instead — dv-line-006)"],
+    "commonPatterns": ["volume + rate", "revenue + margin %", "payments + straight-through rate"],
+    "triggeredBy": []
+  },
+  "accessibility": {
+    "relatedSC": ["1.4.1 Use of Color", "1.4.11 Non-text Contrast", "1.3.1 Info and Relationships", "1.4.13 Content on Hover", "2.1.1 Keyboard", "4.1.2 Name, Role, Value"],
+    "role": "figure role=\"group\" + aria-labelledby → sr-only figcaption (names BOTH units and axes); svg role=\"group\" + full-sentence aria-label; table panel role=\"region\".",
+    "name": "Bars AND markers are focus stops (tabindex 0) with aria-label == data-tip == table values; the legend text names each series' axis and unit (dv-line-006 — never colour alone: shapes + letters + axis-named legend).",
+    "keyboard": "Bars + markers = focus stops (popover on focus); legend rows = filter buttons (aria-pressed; Shift+Enter isolates); table toggle aria-controls/expanded, Esc dismisses + refocuses; target toggle aria-pressed."
+  },
+  "antiPatterns": [
+    "Dual axes for the SAME unit (dv-line-006 — different measurement units only)",
+    "A floating bar axis (dv-bar-009 — bars are zero-based, only the line axis may float)",
+    "The line crossing bars without its page casing (isoluminant series ≈1:1 at the boundary)",
+    "A second gridline set for the secondary axis (grid follows the primary; the right rule + suffixed ticks carry the secondary scale)",
+    "Curved series paths (dv-line-011)",
+    "Colour as the only channel (shapes + letters + axis-named legend, always)",
+    "Raw hex fills/strokes (dv-017)",
+    "Scaling text with the viewBox (DV-D02)"
+  ],
+  "tokenValidation": {
+    "date": "2026-07-24",
+    "against": "token store (semantic-colour.json) via #token-manifest",
+    "result": "PASS — series 1/2 ≥3.31:1 both modes (5.26/5.04 L · 3.31/3.46 D); hc pair ≥6.40:1; axis roles 6.10:1 L / 6.42:1 D; target 13.01:1 L / 8.68:1 D; intersection boundary (page vs bar fill) 5.26:1 L / 3.31:1 D; grid decorative-exempt (advisory by design).",
+    "$note": "Wave lane 3 (2026-07-24): gate run BY IMPORT with the proposed 'combo' type wiring (add to BAR_FAMILY + the dv-line-011 list — conductor gate edit at absorb); snippet unregistered, behaviour markers empty until registration."
+  },
+  "provenance": {
+    "source": "gap-report",
+    "figma_node": "",
+    "code_path": "knowledge/snippets/Chart-combo.reference.html"
+  }
+}

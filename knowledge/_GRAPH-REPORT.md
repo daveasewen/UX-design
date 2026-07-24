@@ -2,7 +2,7 @@
 
 > Generated derived view over `knowledge/` (Graphify-inspired; no external dependency). Regenerate after editing component metas or tokens: `python3 knowledge/tokens/_build_blast_radius.py`. Authored canon stays the source of truth; this is a generated dashboard.
 
-**Totals:** 66 components · 939 tokens defined · 105 tokens referenced by components · compliance: 31 rules x 66 components (31 SCs).
+**Totals:** 67 components · 939 tokens defined · 108 tokens referenced by components · compliance: 31 rules x 67 components (31 SCs).
 
 ## God-nodes — highest token blast radius
 
@@ -11,10 +11,10 @@ Change one of these and the listed number of components is affected. Use before 
 | Token | Blast | Example components |
 |---|---|---|
 | `text/default` | 55 | Accordion, Account card, Alert, Amount display, Amount input, Avatar… |
-| `background/default` | 26 | Accordion, Account selector, Amount display, Bar chart, Cards, Data grid… |
+| `background/default` | 27 | Accordion, Account selector, Amount display, Bar chart, Cards, Combo chart… |
 | `icon/default` | 25 | Accordion, Avatar, Button, Cards, Dropdown, File upload… |
+| `elevation/functional` | 19 | Account selector, Bar chart, Combo chart, Date picker, Date-range picker, Drawer… |
 | `text/reverse` | 18 | Action bar, Avatar, Badge, Button, Cards, Confirmation… |
-| `elevation/functional` | 17 | Account selector, Date picker, Date-range picker, Drawer, Dropdown, Input fields… |
 | `tertiary/background/default` | 17 | Account card, Action bar, Button, Cards, Drawer, Icon button… |
 | `rag/error` | 16 | Amount input, Bar chart, Date picker, Date-range picker, Dropdown, File upload… |
 | `border/subtle` | 15 | Accordion, Account card, Action bar, Amount display, Avatar, Cards… |
@@ -22,30 +22,30 @@ Change one of these and the listed number of components is affected. Use before 
 | `tertiary/background/hover` | 15 | Accordion, Avatar, Button, Cards, Confirmation, Data grid… |
 | `rag/success` | 13 | Account card, Amount input, Bar chart, Button, Confirmation, File upload… |
 | `typography/font-family/default` | 13 | Account card, Action bar, Amount display, Avatar, Badge, Breadcrumbs… |
+| `elevation/border` | 12 | Account selector, Bar chart, Combo chart, Date picker, Date-range picker, Drawer… |
 | `form/border/default` | 12 | Account card, Account selector, Data grid, Dropdown, File upload, Input fields… |
-| `border-radius/control` | 10 | Amount input, Data grid, Date picker, Date-range picker, File upload, Form layout… |
-| `border-radius/surface` | 10 | Alert, Banner, Date picker, Date-range picker, Empty state, Popover… |
+| `border-radius/surface` | 11 | Alert, Banner, Combo chart, Date picker, Date-range picker, Empty state… |
 
 ## Token-group reach (components using each group)
 
 | Group | Components |
 |---|---|
 | `text/` | 59 |
+| `background/` | 27 |
 | `tertiary/` | 27 |
 | `icon/` | 27 |
-| `background/` | 26 |
 | `rag/` | 22 |
-| `border-radius/` | 19 |
+| `border-radius/` | 20 |
+| `elevation/` | 19 |
 | `border/` | 18 |
 | `form/` | 17 |
-| `elevation/` | 17 |
 | `typography/` | 13 |
 | `divider/` | 10 |
 | `secondary/` | 9 |
 | `primary/` | 9 |
+| `data/` | 7 |
 | `padding/` | 7 |
 | `color/` | 7 |
-| `data/` | 6 |
 | `overlay/` | 5 |
 | `focus/` | 4 |
 | `scale/` | 3 |
@@ -90,14 +90,14 @@ Components whose `tokens` block still references a `(depricate)` token (count = 
 
 ## Orphans — defined tokens not referenced by any component meta
 
-834 of 939 defined tokens are unreferenced at the component layer. **Expected** for primitives and scale steps (consumed via semantic aliases, not bound directly); worth scanning the *semantic* groups for genuinely-dead tokens. By group:
+831 of 939 defined tokens are unreferenced at the component layer. **Expected** for primitives and scale steps (consumed via semantic aliases, not bound directly); worth scanning the *semantic* groups for genuinely-dead tokens. By group:
 
 | Group | Unreferenced |
 |---|---|
 | `color/` | 241 |
 | `data-vis/` | 90 |
 | `button/` | 64 |
-| `data/` | 51 |
+| `data/` | 48 |
 | `rag/` | 46 |
 | `typography/` | 42 |
 | `surface/` | 36 |

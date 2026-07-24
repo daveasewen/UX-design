@@ -10,7 +10,7 @@
     "focus-indicators.md"
   ],
   "totals": {
-    "components": 66,
+    "components": 67,
     "with_deprecated_bindings": 19,
     "god_node_count": 27
   },
@@ -763,16 +763,22 @@
       "tokens": [
         "background/default",
         "border/action-strong",
+        "data/series-high-contrast/1",
         "data/series/1",
+        "data/series/3",
+        "elevation/border",
+        "elevation/functional",
         "rag/error",
         "rag/information",
         "rag/success",
         "rag/warning",
         "text/default"
       ],
-      "token_count": 8,
+      "token_count": 12,
       "god_nodes_touched": [
         "background/default",
+        "elevation/border",
+        "elevation/functional",
         "rag/error",
         "rag/success",
         "text/default"
@@ -781,7 +787,9 @@
         "1.3.1",
         "1.4.1",
         "1.4.11",
-        "1.4.13"
+        "1.4.13",
+        "2.1.1",
+        "4.1.2"
       ],
       "guidelines": [
         "accessibility.md",
@@ -797,10 +805,59 @@
           "A non-zero baseline (dv-bar-009: data-domain-min=\"0\" always)",
           "Gradient/3D/shadow fills (dv-009 flat fills only)",
           "Raw hex series fills (dv-017 — var() tokens only)",
-          "Curved series paths (dv-line-011)",
-          "More than one chevron pattern, or chevron outside gauges (DV-D04)",
+          "Signalling control state by dimming alone (Dave's a11y caution — controls keep the AA floor; dimming is data-layer only)",
           "A chart without its real data table (dv-005)",
           "Scaling the whole SVG down responsively (DV-D02 — text must never scale)"
+        ],
+        "inferred_review": []
+      },
+      "deprecated_bindings": [],
+      "deprecated_count": 0
+    },
+    "Combo chart": {
+      "name": "Combo chart",
+      "category": "organism",
+      "figma_node": "",
+      "tokens": [
+        "background/default",
+        "border-radius/surface",
+        "data/series/1",
+        "data/series/2",
+        "elevation/border",
+        "elevation/functional"
+      ],
+      "token_count": 6,
+      "god_nodes_touched": [
+        "background/default",
+        "border-radius/surface",
+        "elevation/border",
+        "elevation/functional"
+      ],
+      "wcag_sc": [
+        "1.3.1",
+        "1.4.1",
+        "1.4.11",
+        "1.4.13",
+        "2.1.1",
+        "4.1.2"
+      ],
+      "guidelines": [
+        "accessibility.md",
+        "digital-accessibility-standards.md",
+        "colour-usage.md",
+        "dark-mode.md",
+        "focus-indicators.md"
+      ],
+      "anti_patterns": {
+        "asserted": [
+          "Dual axes for the SAME unit (dv-line-006 — different measurement units only)",
+          "A floating bar axis (dv-bar-009 — bars are zero-based, only the line axis may float)",
+          "The line crossing bars without its page casing (isoluminant series ≈1:1 at the boundary)",
+          "A second gridline set for the secondary axis (grid follows the primary; the right rule + suffixed ticks carry the secondary scale)",
+          "Curved series paths (dv-line-011)",
+          "Colour as the only channel (shapes + letters + axis-named legend, always)",
+          "Raw hex fills/strokes (dv-017)",
+          "Scaling text with the viewBox (DV-D02)"
         ],
         "inferred_review": []
       },
@@ -844,7 +901,9 @@
           "600-weight emphasis (brand weights are 100/300/400/500/700)",
           "Gradient or 3D ring fills (dv-009)",
           "A donut without its real data table (dv-005)",
-          "Proportionally scaling the ring down (DV-D02 donut exclusion — it distorts)"
+          "Proportionally scaling the ring down (DV-D02 donut exclusion — it distorts)",
+          "Signalling a control's off state by dimming alone (ADR-0014 inactive ≠ disabled — the legend off-state is the hollow-swatch + data/axis grey recipe)",
+          "Recomputing arc geometry at runtime outside the sweep hook (geometry is generation-time; behaviour only toggles baked variants)"
         ],
         "inferred_review": []
       },

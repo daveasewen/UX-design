@@ -2,7 +2,7 @@
 
 > One traversable record per component joining **tokens · god-nodes · WCAG SCs · guidelines · anti-patterns · deprecated bindings**. Generated derived view over the canon (Graphify-borrow #4); regenerate after editing metas/tokens/compliance KG/the guideline map: `python3 knowledge/_build_xref_index.py`. Machine-readable detail in `_XREF-INDEX.json`.
 
-**Totals:** 66 components · 19 with deprecated bindings · 27 god-nodes (blast≥7).
+**Totals:** 67 components · 19 with deprecated bindings · 27 god-nodes (blast≥7).
 
 **Global guidelines (apply to every component):** accessibility, digital-accessibility-standards, colour-usage, dark-mode, focus-indicators.
 
@@ -18,10 +18,11 @@
 | Avatar | ato | 12 | border/subtle, icon/default, icon/default-reverse, icon/disabled… | 1.1.1, 1.4.10, 1.4.4, 2.4.7, 2.5.8 | imagery, hexagon-masks, typography-usage | 6 |
 | Badge | ato | 6 | color/primary, icon/disabled, background/default, text/reverse… | 1.4.1, 1.4.11, 4.1.2 | typography-usage |  |
 | Banner | mol | 4 | border-radius/surface | 1.4.1, 1.4.10, 1.4.3, 2.5.8, 4.1.3 | — |  |
-| Bar chart | org | 8 | background/default, rag/error, rag/success, text/default | 1.3.1, 1.4.1, 1.4.11, 1.4.13 | — |  |
+| Bar chart | org | 12 | background/default, elevation/border, elevation/functional, rag/error… | 1.3.1, 1.4.1, 1.4.11, 1.4.13, 2.1.1, 4.1.2 | — |  |
 | Breadcrumbs | mol | 2 | text/default, font-family/default | 1.4.1, 2.4.7, 2.4.8, 4.1.2 | platform-web, tone-of-voice |  |
 | Button | ato | 23 | icon/default, icon/default-reverse, icon/disabled, background/default… | 1.4.11, 1.4.3, 2.1.1, 2.4.7, 2.5.8, 4.1.2 | calls-to-action |  |
 | Cards | mol | 14 | background/default, border/subtle, color/primary, icon/default… | 1.4.11, 1.4.3, 2.1.1, 2.4.7 | elevation, imagery, hexagon-masks, icons | 1 |
+| Combo chart | org | 6 | background/default, border-radius/surface, elevation/border, elevation/functional | 1.3.1, 1.4.1, 1.4.11, 1.4.13, 2.1.1, 4.1.2 | — |  |
 | Confirmation | org | 8 | background/default, rag/success, background/hover, text/default… | 1.3.1, 1.4.1, 1.4.3 | — |  |
 | Countdown timer | mol | 4 | text/default, font-family/default | 1.4.1, 2.2.1, 2.3.3, 4.1.3 | time-based-indicators |  |
 | Data grid | org | 14 | background/default, border-radius/control, background/hover, border/active… | 1.3.1, 1.4.1, 1.4.11, 2.1.1, 4.1.2 | — |  |

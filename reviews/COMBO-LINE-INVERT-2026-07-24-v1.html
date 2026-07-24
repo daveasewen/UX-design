@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Combo crossing — casing vs CSS invert + text on dark surfaces (research) — 2026-07-24 v1</title>
+<!--
+  REVIEW SHEET (wave lane ③ side-quest, Dave's live ask 2026-07-24): TWO questions, RESEARCH not
+  ruling — nothing here is inscribed; paste-ready ruling lines at the foot.
+  Q-A · THE CROSSING: the combo line over bars — page-colour CASING (as built) vs CSS INVERT
+        (mix-blend-mode:difference) vs naked control. Live at 1:1 geometry, both modes.
+  Q-B · TEXT ON A LOCALLY-DARK SURFACE IN LIGHT MODE (Dave's crop: the B endkey by the Dec bar;
+        generalises to any dark section div): measured ink options + tokenisation directions.
+  Colour definitions follow the snippet convention ([data-theme] blocks = the sanctioned zone,
+  same var set as Chart-combo); type = canon composites via ../knowledge/canon/type.css.
+-->
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:160ms cubic-bezier(.4,0,.2,1); }
+  [data-theme="light"]{
+    --page:#FFFFFF; --ink:#1A1A1A; --line:#E1E1E1;
+    --data-series-1:#766682; --data-series-2:#A45C3A; --data-series-3:#577C78;
+    --data-axis:#626262; --data-grid:#E1E1E1;
+    --panel-dark:#1A1A1A; --panel-dark-ink:#FFFFFF;
+  }
+  [data-theme="dark"]{
+    --page:#1A1A1A; --ink:#FFFFFF; --line:#808080;
+    --data-series-1:#766682; --data-series-2:#A45C3A; --data-series-3:#577C78;
+    --data-axis:#9D9D9D; --data-grid:#484848;
+    --panel-dark:#1A1A1A; --panel-dark-ink:#FFFFFF;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page); color:var(--ink);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease); max-width:1180px;}
+  .demo-controls{margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; font-size:13px; flex-wrap:wrap;}
+  .demo-controls button{font:inherit; font-size:13px; padding:8px 12px; border:1px solid var(--ink);
+    background:transparent; color:var(--ink); cursor:pointer;}
+  .demo-controls button:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+  h1{font-size:20px; font-weight:500; margin:0 0 4px;}
+  .sub{opacity:.6; margin:0 0 24px; font-size:14px;}
+  h2{font-size:14px; opacity:.6; margin:2rem 0 .7rem; font-weight:500;}
+  .row{display:flex; gap:24px; flex-wrap:wrap; align-items:flex-start;}
+  .card{border:1px solid var(--line); padding:16px; flex:1 1 300px; max-width:380px;}
+  .card h3{margin:0 0 8px; font-size:13px; font-weight:500;}
+  .card p{margin:8px 0 0; font-size:12px; opacity:.75; line-height:1.5; max-width:44ch;}
+  .chip{display:inline-block; border:1px solid var(--line); padding:2px 8px; font-size:11px; margin:8px 6px 0 0;}
+  .chip.pass{border-color:var(--ink); font-weight:700;}
+  .chip.fail{opacity:.55; text-decoration:line-through;}
+  .rec{display:inline-block; background:var(--ink); color:var(--page); padding:2px 8px; font-size:11px; font-weight:700; margin-left:8px;}
+  svg.x{display:block; width:100%; height:auto; overflow:visible;}
+  .mk{fill:var(--data-series-2); stroke:var(--page); stroke-width:2.5;}
+  table.m{border-collapse:collapse; margin-top:12px; font-size:12px;}
+  table.m th,table.m td{border:1px solid var(--line); padding:4px 10px; text-align:right;}
+  table.m th[scope="row"]{text-align:left; font-weight:500;}
+  table.m thead th{opacity:.6; font-weight:500; text-align:right;}
+  .panelmock{background:var(--panel-dark); color:var(--panel-dark-ink); padding:20px; margin-top:8px;}
+  .panelmock .t-ink{color:#1A1A1A;}
+  .panelmock .t-blend{color:#FFFFFF; mix-blend-mode:difference;}
+  .rulings{border:1px solid var(--ink); padding:16px; margin-top:32px;}
+  .rulings code{font-family:inherit; background:transparent;}
+  .note{font-size:12px; opacity:.75; max-width:78ch; line-height:1.55;}
+</style>
+</head>
+<body data-theme="light">
+  <div class="demo-controls">
+    <button id="themeToggle" type="button">◐ Toggle theme</button>
+    <span>Combo crossing + dark-surface text — research sheet (v1, nothing inscribed)</span>
+  </div>
+  <h1>The crossing, and the B that started it</h1>
+  <p class="sub">Q-A: casing vs CSS invert on the combo line · Q-B: text on locally-dark surfaces in light mode — tokenisation directions. All specimens live at 1:1 chart geometry; toggle the theme on everything.</p>
+
+  <h2>Q-A · The crossing — three treatments, live (zoomed slice: Oct–Dec, line over bars)</h2>
+  <div class="row">
+    <div class="card">
+      <h3>A1 — control: naked line (no mechanism)</h3>
+      <svg class="x" viewBox="440 10 160 240">
+        <rect fill="var(--data-series-1)" x="445.3" y="48.1" width="28" height="181.9"/>
+        <rect fill="var(--data-series-1)" x="488.8" y="33.4" width="28" height="196.6"/>
+        <rect fill="var(--data-series-1)" x="532.3" y="21.6" width="28" height="208.4"/>
+        <polyline fill="none" stroke="var(--data-series-2)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" points="415.8,120.6 459.3,103.3 502.8,91.8 546.3,80.2"/>
+        <circle class="mk" cx="459.3" cy="103.3" r="5.5"/><circle class="mk" cx="502.8" cy="91.8" r="5.5"/><circle class="mk" cx="546.3" cy="80.2" r="5.5"/>
+        <text class="t-cm-chart-key" fill="var(--ink)" x="558.3" y="84.2">B</text>
+      </svg>
+      <span class="chip fail">line vs bar fill 1.04:1 — both modes</span>
+      <p>The categorical set is isoluminant by design: no series pair separates a crossing. Shown as the attribute-the-diff control.</p>
+    </div>
+    <div class="card">
+      <h3>A2 — page casing (as built) <span class="rec">REC</span></h3>
+      <svg class="x" viewBox="440 10 160 240">
+        <rect fill="var(--data-series-1)" x="445.3" y="48.1" width="28" height="181.9"/>
+        <rect fill="var(--data-series-1)" x="488.8" y="33.4" width="28" height="196.6"/>
+        <rect fill="var(--data-series-1)" x="532.3" y="21.6" width="28" height="208.4"/>
+        <polyline fill="none" stroke="var(--page)" stroke-width="6.5" stroke-linejoin="round" stroke-linecap="round" points="415.8,120.6 459.3,103.3 502.8,91.8 546.3,80.2"/>
+        <polyline fill="none" stroke="var(--data-series-2)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" points="415.8,120.6 459.3,103.3 502.8,91.8 546.3,80.2"/>
+        <circle class="mk" cx="459.3" cy="103.3" r="5.5"/><circle class="mk" cx="502.8" cy="91.8" r="5.5"/><circle class="mk" cx="546.3" cy="80.2" r="5.5"/>
+        <text class="t-cm-chart-key" fill="var(--ink)" x="558.3" y="84.2">B</text>
+      </svg>
+      <span class="chip pass">boundary = page vs bar: 5.26:1 L · 3.31:1 D</span>
+      <p>The markers' own series-fill + page-stroke halation idiom generalised to the line. The boundary contrast is exactly the bar's gate-checked figure, every theme, HC included. Line keeps its token identity (legend, filter, tips).</p>
+    </div>
+    <div class="card">
+      <h3>A3 — CSS invert (mix-blend-mode:difference, white stroke)</h3>
+      <!-- no isolation: the blend must reach the page beneath, as it would on the real chart -->
+      <svg class="x" viewBox="440 10 160 240">
+        <rect fill="var(--data-series-1)" x="445.3" y="48.1" width="28" height="181.9"/>
+        <rect fill="var(--data-series-1)" x="488.8" y="33.4" width="28" height="196.6"/>
+        <rect fill="var(--data-series-1)" x="532.3" y="21.6" width="28" height="208.4"/>
+        <polyline fill="none" stroke="#FFFFFF" style="mix-blend-mode:difference" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" points="415.8,120.6 459.3,103.3 502.8,91.8 546.3,80.2"/>
+        <circle class="mk" cx="459.3" cy="103.3" r="5.5"/><circle class="mk" cx="502.8" cy="91.8" r="5.5"/><circle class="mk" cx="546.3" cy="80.2" r="5.5"/>
+        <text class="t-cm-chart-key" fill="var(--ink)" x="558.3" y="84.2">B</text>
+      </svg>
+      <span class="chip pass">over page: 21.0:1 L</span>
+      <span class="chip fail">over the bar: #766682 → #89997D, 1.73:1</span>
+      <p>Per-pixel inversion. Against extremes it is maximal (black on white); against the BRAND MID-TONES it lands on another mid-tone — 1.37–1.80:1 across the series set — and the line stops being a token (its colour becomes a function of whatever sits beneath, so dv-017/dv-016 have nothing to resolve, and light mode's line is near-black page-side while dark mode's is near-white: the identity flips per ground and per mode).</p>
+    </div>
+  </div>
+  <p class="note">Measured difference-invert results over the set: series-1 #766682 → #89997D (1.73:1) · series-2 #A45C3A → #5BA3C5 (1.80:1) · series-3 #577C78 → #A88387 (1.37:1) · page white → #000000 (21.0:1). The invert is a contrast mechanism only against near-extremes; Apollo's categorical fills are deliberately mid-luminance, which is precisely where it fails. The casing also happens to be the only one of the three the existing gates can SEE (resolved tokens, not composited pixels).</p>
+
+  <h2>Q-B · Text on a locally-dark surface in light mode — the B, then the section div</h2>
+  <div class="row">
+    <div class="card">
+      <h3>B1 — the measured inks, per surface (light mode)</h3>
+      <table class="m t-cm-legal">
+        <thead><tr><th scope="col">Surface</th><th scope="col">Ink #1A1A1A</th><th scope="col">White</th><th scope="col">Best legal today</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">series-1 #766682</th><td>3.31</td><td><strong>5.26 ✓4.5</strong></td><td>none for body*</td></tr>
+          <tr><th scope="row">series-2 #A45C3A</th><td>3.46</td><td><strong>5.04 ✓4.5</strong></td><td>none for body*</td></tr>
+          <tr><th scope="row">series-3 #577C78</th><td>3.78</td><td><strong>4.61 ✓4.5</strong></td><td>none for body*</td></tr>
+          <tr><th scope="row">ink panel #1A1A1A</th><td>1.00</td><td><strong>17.40</strong></td><td>white*</td></tr>
+          <tr><th scope="row">amber #C58900</th><td><strong>5.76</strong></td><td>3.02</td><td>ink (R-D3 ✓)</td></tr>
+        </tbody>
+      </table>
+      <p>★ THE SEAM: white text mechanically PASSES AA on every dark-ish Apollo surface — but <strong>type26-013 (blocking) says white type is red-only.</strong> The maths and the brand gate point at different inks. That seam, not the B itself, is the tokenisation question. (Amber flips the other way and is already ruled — always black, R-D3.)</p>
+    </div>
+    <div class="card">
+      <h3>B2 — the section-div case, live</h3>
+      <div class="panelmock">
+        <div class="t-cm-chart-label" style="margin-bottom:8px">White ink on the dark panel — 17.4:1, blocked by type26-013 as written</div>
+        <div class="t-cm-chart-label t-ink" style="margin-bottom:8px">Theme ink #1A1A1A on the dark panel — 1.0:1, invisible (your crop's failure mode)</div>
+        <div class="t-cm-chart-label t-blend">mix-blend-mode:difference text — works HERE (extreme ground), muds on mid-tones</div>
+      </div>
+      <p>Toggle the theme: the panel is dark in BOTH modes — your standing rule holds (dark-in-light is not inverted in dark mode; the surface token simply carries per-mode values, and here they coincide). The failure only exists in light mode because the PAGE ink is dark there.</p>
+    </div>
+    <div class="card">
+      <h3>B3 — tokenisation directions (research, not ruled)</h3>
+      <p><strong>O1 · Surface-classified ink — scoped re-resolution</strong> <span class="rec">REC</span><br>
+      A dark-in-light panel is a CLASSIFIED SURFACE (the ADR-0014 move: whites are classified, indices are semantic). Mark it <code>data-surface="inverse"</code>; text roles re-resolve inside it (text/default → the inverse ink) via the same cascade machinery as themes — no per-element colour choices, gates resolve it statically. The surface role CARRIES its ink slot the DV-D07 two-channel way: <code>surface/x/{color, on}</code>.</p>
+      <p><strong>O2 · Paired on-* tokens</strong> — every surface token ships a sibling (<code>surface/x</code> + <code>on-surface/x</code>, the Material precedent). Same effect as O1 with a flatter shape; more token count, less cascade.</p>
+      <p><strong>O3 · CSS invert / <code>contrast-color()</code></strong> — rejected for text by the A3/B2 maths (mid-tones mud, 1.4–1.8:1); native <code>contrast-color()</code> is the future-CSS version of O1's intent, not yet usable. Track, don't build.</p>
+      <p><strong>Gate consequence either way:</strong> type26-013 needs an INVERSE-SURFACE CARVE-OUT (white type legal where the enclosing surface is classified inverse — still red-only on page ground), and text directly ON series fills stays prohibited for body sizes (3.31–3.78 vs ink) — large/graphic ≥3:1 only, which is why the endkey sits ADJACENT, in page air, never on the bar.</p>
+    </div>
+  </div>
+
+  <div class="rulings">
+    <h3 class="t-cm-chart-label" style="margin:0 0 8px">Paste-ready ruling lines (rule by number — all retro-propagate)</h3>
+    <p class="note" style="margin:0">
+    <code>R-A · crossing = [A2 casing (rec) | A3 invert | other]</code><br>
+    <code>R-B · dark-surface text = [O1 scoped inverse surface (rec) | O2 on-* pairs | O3 track-only | park for research]</code><br>
+    <code>R-C · type26-013 = [add inverse-surface carve-out | leave as-is (white stays red-only everywhere)]</code></p>
+  </div>
+
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+  </script>
+</body>
+</html>

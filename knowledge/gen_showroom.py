@@ -80,7 +80,9 @@ CATEGORIES = [
     # pending Dave's dataviz sign-off):
     ("Charts",            ["chart-bar", "chart-line", "chart-donut", "chart-sparkline",
                            # chart-expansion programme, prove-one-then-wave exemplar (2026-07-22):
-                           "chart-scatter"]),
+                           "chart-scatter",
+                           # chart-revisit wave, net-new bar+line-overlay combo (2026-07-24):
+                           "chart-combo"]),
 ]
 CAT_OF = {slug: cat for cat, slugs in CATEGORIES for slug in slugs}
 

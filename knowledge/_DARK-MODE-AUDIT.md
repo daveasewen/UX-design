@@ -2,7 +2,7 @@
 
 > Which components re-theme correctly in dark mode. **LEAK** = binds a raw colour *primitive* directly (single-valued, no dark variant — a real defect; the P3 family). *flat* = binds a semantic token whose dark value equals its light value (frequently intentional — reverse text, RAG, brand red — confirm per case). Derived view over the colour stores + blast-radius; regenerate: `python3 knowledge/_build_dark_mode_audit.py`. Detail in `_DARK-MODE-AUDIT.json`.
 
-**Coverage:** 59/66 components clean · 7 leak a primitive. Store: 187 semantic colour tokens (light+dark), 53 flat (dark==light), 225 primitives.
+**Coverage:** 60/67 components clean · 7 leak a primitive. Store: 187 semantic colour tokens (light+dark), 53 flat (dark==light), 225 primitives.
 
 ## Primitive leaks — fix before dark mode
 
@@ -29,10 +29,11 @@ Each raw primitive bound directly, and the components binding it. Rebind to a se
 | Avatar | ✅ clean | — | `icon/default-reverse`, `image/opacity/default`, `image/opacity/disabled`, `text/reverse` |
 | Badge | 🔴 LEAK | `color/primary` | `primary/background/default`, `text/reverse` |
 | Banner | ✅ clean | — | `rag/text/on-dark`, `rag/text/on-light`, `text/on-success` |
-| Bar chart | ✅ clean | — | `data/series/1`, `rag/warning` |
+| Bar chart | ✅ clean | — | `data/series/1`, `data/series/3`, `rag/warning` |
 | Breadcrumbs | ✅ clean | — | — |
 | Button | ✅ clean | — | `icon/default-reverse`, `primary/background/default`, `primary/background/hover`, `text/reverse` |
 | Cards | 🔴 LEAK | `color/primary` | `icon/default-reverse`, `text/reverse` |
+| Combo chart | ✅ clean | — | `data/series/1`, `data/series/2` |
 | Confirmation | ✅ clean | — | `primary/background/default`, `primary/background/hover`, `text/reverse` |
 | Countdown timer | ✅ clean | — | — |
 | Data grid | ✅ clean | — | `form/border/default`, `text/reverse` |

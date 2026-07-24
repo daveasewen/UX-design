@@ -1,12 +1,14 @@
 {
   "name": "Donut chart",
   "category": "organism",
-  "purpose": "Composition / proportion as a ring with a centre total — the round-one dataviz kit's donut graduated into canon. Semantic SVG arc paths styled by tokens, described by a real table. PROVISIONAL-AGENT: promoted from the PARKED kit (9 review rounds, not signed off); ring geometry and both labelling variants are OBSERVED kit values.",
+  "purpose": "Composition / proportion as a ring with a centre total — the round-one dataviz kit's donut graduated into canon, FULL LAYER-2 restored (chart-revisit wave lane ②, 2026-07-24, exemplar pattern): segment popover · table-view popover · legend-as-filter/isolate/highlight · value ⇄ % segmented toggle (baked variant groups) · optional title + H-stack head · high-contrast remap. PROVISIONAL-AGENT: promoted from the PARKED kit (9 review rounds, not signed off); ring geometry and both labelling variants are OBSERVED kit values.",
   "props": [
     { "name": "labelling", "type": "enum", "values": ["spider", "direct"], "default": "spider", "$note": "spider = letter on a short leader outside the ring + vertical legend [swatch][letter][name]; direct = name + value in place, no legend (its own colour-independent channel). The kit's third variant — letters ON segments — is NOT promoted: white letters on series fills collide with type26-013 white-type-red-only; Dave's Batch-2 #7 comparison stays open (receipted)." },
     { "name": "slices", "type": "number", "$note": "Maximum 6 (dv-pie-009); more → combine smallest into 'Other'. Values must sum to the displayed centre total (dv-pie-010, data-total attr)." },
     { "name": "total", "type": "string", "$note": "Centre total — .t-cm-figure-3 (24px/500; kit's 22px promoted to the ramp step, DV-D05)." },
-    { "name": "empty", "type": "boolean", "default": false, "$note": "No-data state = the Empty-state pattern by reference." }
+    { "name": "empty", "type": "boolean", "default": false, "$note": "No-data state = the Empty-state pattern by reference." },
+    { "name": "valueMode", "type": "enum", "values": ["value", "percent"], "default": "value", "$note": "Menu item 5 (ruled in): the Segmented-control atom (.seg.sm) drives BAKED variant groups (data-dv-view) — centre total, direct labels AND the table column mirror the active mode. JS-off = value view. Tips/aria carry both readings always." },
+    { "name": "title", "type": "string", "$note": "Optional visible title (.dv-title, t-cm-section-label) in the H-stack head; sr-only figcaption still names the chart when absent." }
   ],
   "variants": [
     { "name": "spider + legend", "use": "Default composition view; letters bridge chart ↔ legend (§04.3)." },
@@ -14,7 +16,7 @@
     { "name": "no data", "use": "Empty-state pattern in the chart frame." }
   ],
   "tokens": {
-    "font-family": "type composites via markup class — letters + labels + legend + table .t-cm-legal · centre total .t-cm-figure-3",
+    "font-family": "type composites via markup class — DV-D08 ladder: letters/keys .t-cm-chart-key (12/700) · labels + legend + controls .t-cm-chart-label (12/500) · direct values .t-cm-chart-value (12/500 tabular) · centre total .t-cm-figure-3 (24/500, above-ladder precedent) · table .t-cm-legal",
     "series": "data/series/1–5 (mode-stable candidate C); measured 3.52–5.26:1 light / 3.31–4.95:1 dark vs the page (dv-016 clean)",
     "separation": "stroke = background/default (page) at 2px on every segment (dv-004 — gapless surfaces need surface-coloured separation)",
     "leaders": "border/subtle hairlines (decorative)",
@@ -23,8 +25,8 @@
     "$survey": "Promoted from _proforma/DataViz-interactive.html (PARKED, fence intact). Direct value line weight: kit 600 → 500 (no 600 on brand — receipted correction)."
   },
   "motion": {
-    "entry": "NONE in the specimen — the kit's radial sequential sweep (Batch 3 #7, ease-in first / ease-out last Batch 7) and label sequencing are JS-driven (requestAnimationFrame); not promotable under the static contract (DEF-003-static). Specimens bake the full arcs visible — the kit's own no-JS/reduced-motion state. Receipted as Layer-2.",
-    "hover": "brightness(1.12/1.22) emphasis + <title> values.",
+    "entry": "RADIAL SWEEP RETURNS (ADR-0015: data-driven geometry is JS territory) — segments bake the sweep contract (data-cx/-cy/-ro/-ri/-a1/-a2) + data-seq on annotations; the rAF sweep hook itself is a dv-behaviour source edit = CONDUCTOR'S SERIAL (proposed code in the lane-② receipt; source is ~1.7KB from its 16KB cap — per-capability split observed). Baked state = full arcs + visible annotations, so JS-off / reduced-motion / pre-hook all render complete.",
+    "hover": "brightness(1.12/1.22) emphasis + dvTip popover (data-tip; replaces native <title>) + legend/segment highlight dims the OTHER groups (.dv-quiet, data layer only).",
     "reducedMotion": "Global collapse present (only hover transitions exist).",
     "tokens": []
   },
@@ -40,9 +42,9 @@
   },
   "accessibility": {
     "role": "figure role=\"group\" + aria-labelledby → sr-only figcaption; svg role=\"img\", aria-label carries subject + total.",
-    "name": "Figcaption names the chart; every segment carries a <title> with name, value and percentage; the real table is the full data surface.",
-    "keyboard": "Only the <details> summary is focusable; the figure is passive.",
-    "focus": "summary:focus-visible = 2px ink outline, offset 2.",
+    "name": "Figcaption names the chart; every segment carries aria-label == data-tip == table (name, value, percentage — one source); the real table is the full data surface.",
+    "keyboard": "Segments = focus stops (tabindex 0 → dvTip on focus); legend rows = buttons (Enter toggles, Shift+Enter isolates); seg view switch + CSV + table dropdown all native buttons; table panel takes focus on open, Esc returns it.",
+    "focus": "2px ink outline on segments/buttons/panel (focus-visible); seg buttons inset −2.",
     "nonText": "Segment fills ≥3:1 vs the page both modes; identity = letter/name + position + table, never colour alone (1.4.1); 2px page strokes keep adjacent segments separable.",
     "relatedSC": ["1.4.1 Use of Color", "1.4.11 Non-text Contrast", "1.3.1 Info and Relationships"]
   },
@@ -54,13 +56,15 @@
     "600-weight emphasis (brand weights are 100/300/400/500/700)",
     "Gradient or 3D ring fills (dv-009)",
     "A donut without its real data table (dv-005)",
-    "Proportionally scaling the ring down (DV-D02 donut exclusion — it distorts)"
+    "Proportionally scaling the ring down (DV-D02 donut exclusion — it distorts)",
+    "Signalling a control's off state by dimming alone (ADR-0014 inactive ≠ disabled — the legend off-state is the hollow-swatch + data/axis grey recipe)",
+    "Recomputing arc geometry at runtime outside the sweep hook (geometry is generation-time; behaviour only toggles baked variants)"
   ],
   "tokenValidation": {
-    "date": "2026-07-22",
+    "date": "2026-07-24",
     "against": "token store (semantic-colour.json) via #token-manifest",
-    "result": "PASS — series 1–5 ≥3.31:1 both modes; ink 17.4:1; sum 2320 = data-total; 5 slices.",
-    "$note": "Built Phase-2 wave 2 (worker D). PROVISIONAL-AGENT pending Dave's dataviz sign-off. No progress-ring variant — the kit has none (nothing invented); the loader atom stays queued (§C·4b)."
+    "result": "PASS — series 1–5 ≥3.31:1 both modes (+ HC 1–5 declared); ink 17.4:1; data/axis 6.10/6.42:1 (off-state text floor); sum 2320 = data-total; 5 slices; arc↔table parity scripted incl. the % column.",
+    "$note": "Layer-2 restored chart-revisit wave lane ② (2026-07-24) on the exemplar pattern. PROVISIONAL-AGENT pending Dave's dataviz sign-off. D-Q2 (spider vs direct default) OPEN — not picked; letters-on-segments HELD (type26-013). Filtering hides segments IN PLACE (honest gap); centre total stays the FULL total (receipted). Registration in component-types.json + dv-behaviour injection + sweep hook = conductor's serial. No progress-ring variant — the kit has none; the loader atom stays queued (§C·4b)."
   },
   "provenance": {
     "source": "proforma-promotion",

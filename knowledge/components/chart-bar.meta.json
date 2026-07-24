@@ -1,52 +1,56 @@
 {
   "name": "Bar chart",
   "category": "organism",
-  "purpose": "Categorical comparison as vertical columns or horizontal bars — the round-one dataviz kit's bar family graduated into canon. Semantic SVG in the DOM, styled by tokens, animated by CSS, described by a real table (the ratified dataviz method). PROVISIONAL-AGENT: promoted from the PARKED kit (9 review rounds, not signed off); every value is OBSERVED kit geometry unless receipted as newly judged.",
+  "purpose": "Categorical comparison as vertical columns or horizontal bars, single- or multi-series (grouped + stacked), with the full Layer-2 interaction layer restored to match the Chart-line exemplar (chart-revisit wave, 2026-07-24). Semantic SVG in the DOM, styled by tokens, animated by CSS, behaviour by the ONE generated dv-behaviour partial (ADR-0015), described by a real table. PROVISIONAL-AGENT: promoted from the PARKED kit (9 rounds, not signed off); kit geometry OBSERVED, Layer-2 + rulings receipted.",
   "props": [
-    { "name": "orientation", "type": "enum", "values": ["column", "bar"], "default": "column", "$note": "column = vertical (negatives permitted by dv-bar-007); bar = horizontal (positives only — dv-bar-007 blocks negative horizontals)." },
-    { "name": "series", "type": "enum", "values": ["categorical", "status"], "default": "categorical", "$note": "categorical = data/series/1–5 (mode-stable isoluminant set, R-D9); status = the salience RAMP red › amber › green › blue on rag/* (R-D9 — loudness tracks severity; NEVER the isoluminant set for status)." },
-    { "name": "data", "type": "table", "$note": "A real <table class=\"dv-table\"> inside the figure — the a11y spine AND the tabular alternative (dv-005). Surfaced by a native <details> disclosure (zero JS)." },
-    { "name": "empty", "type": "boolean", "default": false, "$note": "No-data state consumes the Empty-state pattern by reference: dashed frame, title carries the meaning, no glyph (spot-illustration set is a logged icon gap)." }
+    { "name": "orientation", "type": "enum", "values": ["column", "bar", "grouped-column", "stacked-column"], "default": "column", "$note": "column = vertical single-series; bar = horizontal single-series (positives only, dv-bar-007); grouped-column + stacked-column = multi-series (D-Q3 promote)." },
+    { "name": "series", "type": "enum", "values": ["categorical", "status", "multi"], "default": "categorical", "$note": "categorical = data/series/1–5 (mode-stable isoluminant, R-D9); status = the salience RAMP red › amber › green › blue on rag/* (R-D9); multi = grouped/stacked use series/1–3 with shaped+lettered legend keys and legend-as-filter." },
+    { "name": "sort", "type": "enum", "values": ["orig", "asc", "desc"], "default": "orig", "$note": "Menu 3/4 sort: BAKED VARIANT GROUPS (data-dv-view — geometry is generation-time), switched by a seg control that CONSUMES the Segmented-control atom; the table mirrors the active order via baked <tbody data-dv-view> variants." },
+    { "name": "data", "type": "table", "$note": "A real <table class=\"dv-table\"> inside the figure — the a11y spine AND the tabular alternative (dv-005). Surfaced by the TABLE-VIEW POPOVER (dropdown w/ solid rotating arrow, static label; surface card, Esc-dismiss) — the exemplar's, not a native <details>." },
+    { "name": "empty", "type": "boolean", "default": false, "$note": "No-data state consumes the Empty-state pattern by reference." }
   ],
   "variants": [
-    { "name": "column categorical", "use": "Compare categories; single series keeps ONE colour across every chart of the same data (dv-014)." },
-    { "name": "bar categorical", "use": "Long category names / many categories; same data = same series colour as the column (journey consistency)." },
-    { "name": "column status", "use": "Counts by state (R-D9 ramp order, direct-labelled — the status word sits under each bar, colour never alone R-D6 A′)." },
+    { "name": "column categorical (sortable)", "use": "Compare categories; single series, ONE colour (dv-014); original/ascending/descending sort views." },
+    { "name": "bar categorical", "use": "Long category names / many categories; DV-D09 default fill = data/series/3 (orientation-distinct from the column's series/1)." },
+    { "name": "column status", "use": "Counts by state (R-D9 ramp, direct-labelled — colour never alone, R-D6 A′)." },
+    { "name": "grouped column", "use": "Multi-series comparison side-by-side (D-Q3); legend-as-filter + isolate + highlight; shaped+lettered swatches mirror on-chart keys." },
+    { "name": "stacked column", "use": "Part-to-whole per category (D-Q3); in-segment letter keys; legend-as-filter." },
     { "name": "no data", "use": "Empty-state pattern in the chart frame." }
   ],
   "tokens": {
-    "font-family": "type composites via markup class — axis ticks + table .t-cm-legal (kit's 11px promoted to the 12px KB step, DV-D05) · category labels .t-cm-caption",
-    "series-categorical": "data/series/1–5 — mode-stable candidate C (V7 RULED); ≥3.17:1 vs both mode surfaces",
-    "series-status": "rag/error · rag/warning (graphic-grade #C58900, R-D3) · rag/success · rag/information — R-D9's resolved ramp greens/blues are NOT yet token-promoted (receipted gap)",
-    "axis": "text/default at 0.6 alpha (house treatment; effective ≈4.6:1 light / 5.5:1 dark) — kit's #545454/#9B9B9B have no post-R-D16 semantic home",
-    "gridlines": "text/default at per-mode alpha .10/.16 (reproduces the kit's reviewed quiet grid; data/grid role token = receipted gap; gridline contrast is ADVISORY by DV-D03)",
+    "font-family": "type composites via markup class (DV-D08): .t-cm-chart-label / .t-cm-chart-value = 12/500 (labels · axis · legend · values, tabular) · .t-cm-chart-key = 12/700 (on-chart + in-segment series letters, ink) · table .t-cm-legal 12/400 · title .t-cm-section-label",
+    "series-categorical": "data/series/1–5 (mode-stable isoluminant, ≥3:1 both modes); high-contrast remap data/series-high-contrast/1–3 (data-contrast=\"high\")",
+    "series-status": "rag/error · rag/warning (graphic-grade #C58900, R-D3) · rag/success · rag/information — R-D9 resolved ramp greens/blues NOT yet token-promoted (receipted gap)",
+    "axis": "data/axis (DV-D07 two-channel role: color snapped to the neutral ramp + declared alpha slot 1.0) — SUPERSEDES the promotion-time text/default@0.6 house treatment",
+    "gridlines": "data/grid (DV-D07 two-channel: color + alpha slot 1.0) — SUPERSEDES text/default@per-mode-alpha; gridline contrast is decorative-exempt (1.4.11), dv-016 advisory by design, no grid contrastPair declared",
     "baseline": "border/action-strong (ink-grade axis line, mode-inverting)",
-    "surface": "background/default (charts sit on the page, data-surface=\"page\")",
-    "$survey": "Promoted from _proforma/DataViz-interactive.html (PARKED, fence intact); Empty-state + Stat-card conventions consumed by reference."
+    "elevation": "table popover + value tip = surface ground + elevation/functional shadow + elevation/border (anchored-overlay recipe)",
+    "surface": "background/default (data-surface=\"page\")",
+    "$survey": "Promoted from _proforma/DataViz-interactive.html (PARKED, fence intact); Layer-2 machinery ported verbatim from the render-verified Chart-line exemplar."
   },
   "motion": {
-    "entry": "Bars grow from the baseline (scaleY/scaleX, transform-box:fill-box), 760ms cubic-bezier(.22,.61,.36,1), 45ms stagger — kit-reviewed values, CSS only (DEF-003).",
-    "hover": "brightness(1.12) light / (1.22) dark emphasis; <title> carries the value natively.",
-    "reducedMotion": "Entry animation is inside prefers-reduced-motion:no-preference; global collapse also present.",
+    "entry": "Bars grow from the baseline (scaleY/scaleX, transform-box:fill-box), 760ms cubic-bezier(.22,.61,.36,1), 45ms stagger — kit-reviewed, CSS only (DEF-003); on-chart letter keys fade in (.dv-barkey).",
+    "hover": "brightness(1.12) light / (1.22) dark emphasis; legend/marker hover-or-focus dims the OTHER series (.dv-quiet, data layer only — Dave's a11y caution).",
+    "reducedMotion": "Entry inside prefers-reduced-motion:no-preference; global collapse present.",
     "tokens": []
   },
   "responsive": {
-    "rule": "DV-D02: compress width, NEVER scale proportionally — text must not scale. Static answer: fixed 580×260 geometry + horizontal scroll in .dv-stage. The kit's runtime fit() relayout is JS Layer-2, not promoted.",
+    "rule": "DV-D02: compress width, NEVER scale — text must not scale. Layer-2 WIRED: dv-behaviour fitCharts relayouts HORIZONTAL positions only (data-fx/data-fw on rects, data-fx/data-fx2 on gridlines, data-fx/data-dx on labels), viewBox pinned 1:1; JS-off keeps the static answer (fixed geometry + scroll).",
     "tokens": []
   },
   "relationships": {
     "livesInside": ["Dashboards", "Insights and spending views", "Reports"],
     "mustNotNeighbour": ["A Stat-card making the identical claim in the same view", "A second chart re-using these series colours for DIFFERENT data (dv-014)"],
-    "commonPatterns": ["spend by category", "counts by status", "monthly comparison"],
+    "commonPatterns": ["spend by category", "counts by status", "monthly comparison", "product mix by quarter"],
     "triggeredBy": []
   },
   "accessibility": {
-    "role": "figure role=\"group\" + aria-labelledby → sr-only figcaption; svg role=\"img\" with a full-sentence data aria-label.",
-    "name": "The figcaption names the chart; the svg aria-label reads the data; each rect carries a <title>.",
-    "keyboard": "Only the <details> summary is focusable (native disclosure); the figure itself is passive.",
-    "focus": "summary:focus-visible = 2px ink outline, offset 2 (house pattern).",
-    "nonText": "Series fills ≥3:1 vs the page both modes (dv-016 BLOCKING, computed from resolved values); status meaning carried by the label under each bar, never colour alone (R-D6 A′, direct-labelled).",
-    "relatedSC": ["1.4.1 Use of Color", "1.4.11 Non-text Contrast", "1.3.1 Info and Relationships", "1.4.13 Content on Hover"]
+    "role": "figure role=\"group\" + aria-labelledby → sr-only figcaption; svg role=\"group\"/\"img\" with a full-sentence data aria-label.",
+    "name": "The figcaption names the chart; the svg aria-label reads the data; each bar carries aria-label + data-tip (popover value == table value, one source).",
+    "keyboard": "Bars are focus stops (tabindex 0 + aria-label → value popover on focus); legend rows are filter BUTTONS (aria-pressed; Shift+Enter isolates); table toggle = dropdown (aria-controls/expanded, Esc dismiss → refocus); sort seg buttons (aria-pressed). Quiet-utility controls, NOT B-D7 press physics (Q5).",
+    "focus": ":focus-visible = 2px ink outline (house pattern).",
+    "nonText": "Series fills ≥3:1 vs the page both modes (dv-016 BLOCKING); multi-series adds shape (circle/square/diamond) + letter + name (colour never the only channel); legend OFF = HOLLOW swatch + data/axis-grey text (AA-passing, no dim below floor); status meaning carried by the label under each bar (R-D6 A′).",
+    "relatedSC": ["1.4.1 Use of Color", "1.4.11 Non-text Contrast", "1.3.1 Info and Relationships", "1.4.13 Content on Hover", "2.1.1 Keyboard", "4.1.2 Name, Role, Value"]
   },
   "antiPatterns": [
     "Status data on the isoluminant categorical set (R-D9: status is a salience RAMP)",
@@ -54,16 +58,15 @@
     "A non-zero baseline (dv-bar-009: data-domain-min=\"0\" always)",
     "Gradient/3D/shadow fills (dv-009 flat fills only)",
     "Raw hex series fills (dv-017 — var() tokens only)",
-    "Curved series paths (dv-line-011)",
-    "More than one chevron pattern, or chevron outside gauges (DV-D04)",
+    "Signalling control state by dimming alone (Dave's a11y caution — controls keep the AA floor; dimming is data-layer only)",
     "A chart without its real data table (dv-005)",
     "Scaling the whole SVG down responsively (DV-D02 — text must never scale)"
   ],
   "tokenValidation": {
-    "date": "2026-07-22",
+    "date": "2026-07-24",
     "against": "token store (semantic-colour.json) via #token-manifest",
-    "result": "PASS — series 1–5 ≥3.17:1 both modes; status fills ≥3:1 both modes (amber = graphic-grade #C58900 by design, R-D3); axis effective ≈4.6/5.5:1; ink 17.4:1.",
-    "$note": "Built Phase-2 wave 2 (worker D). PROVISIONAL-AGENT pending Dave's dataviz sign-off — kit is PARKED, promotion is his. Grouped/stacked variants NOT promoted this pass (receipted follow-on)."
+    "result": "PASS — DataViz gate 0 blocking / 50 advisory (decorative gridline reads); series 1–5 + HC 1–3 ≥3:1 both modes; status fills ≥3:1 (amber graphic-grade #C58900, R-D3); DV-D07 axis/grid roles resolve; snippet/a11y/coverage/radius/census/type-blast all green.",
+    "$note": "CHART-REVISIT WAVE lane 1 (2026-07-24). DV-D07 + DV-D08 + DV-D09 + D-Q3 ENACTED; Layer-2 restored via dv-behaviour (AUTO-BEHAVIOUR markers EMPTY here — membership + a per-capability contract split are conductor serials, handed via receipt). Render-verify OWED (sandbox home rotates between calls → Playwright binary non-persistent; machinery is the render-verified exemplar's). PROVISIONAL-AGENT pending Dave's dataviz sign-off."
   },
   "provenance": {
     "source": "proforma-promotion",

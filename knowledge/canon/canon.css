@@ -3370,7 +3370,7 @@
 
 /* ============================================================
    Chart-bar  (from snippets/Chart-bar.reference.html)
-   Aria: role="group", aria-labelledby, role="img", aria-label
+   Aria: role="group", aria-labelledby, aria-label, aria-pressed, aria-controls, aria-expanded, role="region"
    Scope: .cn-chart-bar   ============================================================ */
 .cn-chart-bar{
   --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
@@ -3380,47 +3380,111 @@
   --ink: var(--text-default);
   --baseline: var(--border-action-strong);
   --line: var(--border-subtle);
+  --data-series-1-hc: var(--data-series-high-contrast-1);
+  --data-series-2-hc: var(--data-series-high-contrast-2);
+  --data-series-3-hc: var(--data-series-high-contrast-3);
+  --data-axis: var(--data-axis-color);
+  --axis-alpha: var(--data-axis-alpha);
+  --data-grid: var(--data-grid-color);
+  --grid-alpha: var(--data-grid-alpha);
   --status-breach: var(--rag-error);
   --status-watch: var(--rag-warning);
   --status-healthy: var(--rag-success);
   --status-info: var(--rag-information);
-  --grid-alpha: .10;
-  --axis-alpha: .6;
+  --shadow: var(--elevation-functional);
+  --pop-border: var(--elevation-border);
 }
-[data-theme="dark"] .cn-chart-bar{
-  --grid-alpha: .16;
-}
+.cn-chart-bar [data-contrast="high"]{--data-series-1:var(--data-series-1-hc);
+    --data-series-2:var(--data-series-2-hc);
+    --data-series-3:var(--data-series-3-hc);}
 .cn-chart-bar h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
 .cn-chart-bar .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
-.cn-chart-bar figure.dv{margin:0;}
+.cn-chart-bar figure.dv{margin:0; position:relative;}
+.cn-chart-bar .dv-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; margin:0 0 12px;}
+.cn-chart-bar .dv-title{margin:0;}
+.cn-chart-bar .dv-controls{display:flex; flex-wrap:wrap; gap:8px; align-items:center; --control-h:32px;}
 .cn-chart-bar .dv-stage{overflow-x:auto; padding-bottom:4px;}
-/* DV-D02 static: fixed geometry, scroll — text never scales */
 .cn-chart-bar .dv-chart-area{width:580px;}
 .cn-chart-bar .dv-svg{display:block; width:580px; height:260px; overflow:visible;}
-.cn-chart-bar .dv-grid{stroke:var(--ink); stroke-opacity:var(--grid-alpha); stroke-width:1;}
+.cn-chart-bar figure.dv-fit-on .dv-chart-area{width:100%;}
+.cn-chart-bar figure.dv-fit-on .dv-svg{width:100%;}
+.cn-chart-bar .dv-grid{stroke:var(--data-grid); stroke-opacity:var(--grid-alpha); stroke-width:1;}
 .cn-chart-bar line.dv-axis{stroke:var(--baseline); stroke-width:1;}
 .cn-chart-bar text.dv-axis, .cn-chart-bar text.dv-label{opacity:var(--axis-alpha);}
-.cn-chart-bar rect.dv-series{transition:filter var(--ease);}
+.cn-chart-bar rect.dv-series, .cn-chart-bar polygon.dv-series{transition:filter var(--ease), opacity var(--ease), visibility var(--ease);}
+.cn-chart-bar rect.dv-series{fill:var(--sc,var(--data-series-1));}
 .cn-chart-bar rect.dv-series:hover{filter:brightness(1.12);}
-/* entry motion — CSS only (DEF-003); kit-reviewed grow-from-baseline, staggered inline delays */
+.cn-chart-bar .dv-series[tabindex]:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+/* entry motion — CSS only (DEF-003): grow-from-baseline (columns) / from-left (h-bars) */
 @media (prefers-reduced-motion:no-preference){
 .cn-chart-bar .dv-animate rect.dv-series[data-grow="up"]{transform-box:fill-box; transform-origin:bottom; animation:cn-chart-bar-dvGrowY var(--grow) both;}
 .cn-chart-bar .dv-animate rect.dv-series[data-grow="right"]{transform-box:fill-box; transform-origin:left; animation:cn-chart-bar-dvGrowX var(--grow) both;}
+.cn-chart-bar .dv-animate text.dv-barkey{opacity:0; animation:cn-chart-bar-dvFade var(--ease) both;}
 }
 @keyframes cn-chart-bar-dvGrowY{from{transform:scaleY(0);}}
 @keyframes cn-chart-bar-dvGrowX{from{transform:scaleX(0);}}
-/* table affordance — native disclosure (zero JS); the kit's drawer overlay is Layer-2 */
-.cn-chart-bar details.dv-tabledetails{margin:8px 0 0;}
-.cn-chart-bar details.dv-tabledetails summary{cursor:pointer; opacity:.6; width:max-content;}
-.cn-chart-bar details.dv-tabledetails summary:hover{opacity:1; text-decoration:underline; text-underline-offset:3px;}
-.cn-chart-bar details.dv-tabledetails summary:focus-visible{outline:2px solid var(--ink); outline-offset:2px; opacity:1;}
-.cn-chart-bar table.dv-table{border-collapse:collapse; margin-top:8px; color:var(--ink);}
-.cn-chart-bar table.dv-table caption{text-align:left; opacity:.6; margin-bottom:4px;}
+@keyframes cn-chart-bar-dvFade{from{opacity:0;} to{opacity:1;}}
+.cn-chart-bar text.dv-barkey{transition:opacity var(--ease), visibility var(--ease);}
+/* on-chart series letter keys (DV-D08 700 emphasis) — ink, not series hue */
+.cn-chart-bar text.dv-barkey{fill:var(--ink);}
+/* ── TOOLBAR CONTROLS — ONE SHARED HEIGHT (Dave 2026-07-24), ported from Chart-line ── */
+.cn-chart-bar .dv-tbl-toggle, .cn-chart-bar .dv-vt{height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
+    background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
+    flex:none; transition:border-color var(--ease);}
+.cn-chart-bar .dv-tbl-toggle:hover, .cn-chart-bar .dv-vt:hover{border-color:var(--ink);}
+.cn-chart-bar .dv-tbl-toggle:focus-visible, .cn-chart-bar .dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-bar .dv-tbl-toggle[aria-expanded="true"], .cn-chart-bar .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
+.cn-chart-bar .dv-act, .cn-chart-bar .dv-dd{gap:8px;}
+.cn-chart-bar .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
+.cn-chart-bar .dv-csv .dv-ico-tick{display:none;}
+.cn-chart-bar .dv-csv.is-copied .dv-ico-copy{display:none;}
+.cn-chart-bar .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
+.cn-chart-bar .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
+.cn-chart-bar .dv-dd[aria-expanded="true"] .dv-ico-arrow{transform:rotate(180deg);}
+/* the SORT switch CONSUMES the Segmented-control atom (sliding indicator, 2px inset, square Mono) */
+.cn-chart-bar .seg{position:relative; display:inline-flex; height:var(--control-h); box-sizing:border-box; padding:2px;
+    border:1px solid var(--line); background:transparent; vertical-align:top;}
+.cn-chart-bar .seg .ind{position:absolute; top:2px; bottom:2px; left:2px; width:0; background:var(--ink); z-index:0;
+    transition:left var(--ease), width var(--ease);}
+.cn-chart-bar .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    height:auto; padding:0 8px; border:0; background:transparent; color:var(--ink); cursor:pointer; transition:color var(--ease);}
+.cn-chart-bar .seg button:not([aria-pressed="true"]):hover{background:rgba(127,127,127,.14);}
+.cn-chart-bar .seg button[aria-pressed="true"]{color:var(--page);}
+.cn-chart-bar .seg button:focus-visible{outline:2px solid var(--ink); outline-offset:-2px; z-index:2;}
+.cn-chart-bar .seg.sm button{padding:0 8px;}
+.cn-chart-bar .seg button::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+.cn-chart-bar .dv-off{display:none !important;}
+.cn-chart-bar .dv-quiet{opacity:.25 !important;}
+/* legend — multi-series filter buttons (grouped/stacked); shaped + lettered swatches, hollow off-state */
+.cn-chart-bar .dv-legend{list-style:none; display:flex; flex-wrap:wrap; justify-content:center; gap:16px; margin:16px 0 0; padding:0;}
+.cn-chart-bar .dv-legend li{display:flex;}
+.cn-chart-bar .dv-legbtn{display:flex; align-items:center; gap:8px; min-height:24px; background:transparent;
+    border:0; padding:0; color:var(--ink); cursor:pointer; transition:opacity var(--ease);}
+.cn-chart-bar .dv-legbtn:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-bar .dv-legbtn[aria-pressed="false"]{color:var(--data-axis);}
+.cn-chart-bar .dv-legbtn[aria-pressed="false"] .sw{background:transparent !important; border:2px solid var(--data-axis);}
+.cn-chart-bar .dv-legbtn[aria-pressed="false"] .dv-key{opacity:1;}
+.cn-chart-bar .dv-legend .sw-circle{border-radius:50%;}
+.cn-chart-bar .dv-legend .sw-diamond{width:8px; height:8px; transform:rotate(45deg); margin:2px;}
+.cn-chart-bar .dv-legend .sw{width:12px; height:12px; flex:none;}
+.cn-chart-bar .dv-legend .dv-key{opacity:.6; min-width:12px;}
+.cn-chart-bar .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
+.cn-chart-bar .dv-tablepanel[hidden]{display:none;}
+.cn-chart-bar .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-bar .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:8px 12px; pointer-events:none;
+    opacity:0; transition:opacity var(--ease);}
+.cn-chart-bar .dv-tip.on{opacity:1;}
+.cn-chart-bar table.dv-table{border-collapse:collapse; color:var(--ink);}
+.cn-chart-bar table.dv-table caption{text-align:left; opacity:.6; margin-bottom:8px;}
 .cn-chart-bar table.dv-table th, .cn-chart-bar table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
 .cn-chart-bar table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
 .cn-chart-bar table.dv-table thead th{opacity:.6; font-weight:500;}
-/* empty / no-data — the Empty-state pattern consumed by reference (dashed frame, title carries meaning) */
 .cn-chart-bar .dv-empty-frame{width:580px; height:260px; display:flex; align-items:center; justify-content:center;
     border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
 .cn-chart-bar .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
@@ -3432,8 +3496,149 @@
 }
 
 /* ============================================================
+   Chart-combo  (from snippets/Chart-combo.reference.html)
+   Aria: role="group", aria-labelledby, aria-label, aria-pressed, aria-controls, aria-expanded, role="region"
+   Scope: .cn-chart-combo   ============================================================ */
+.cn-chart-combo{
+  --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+  --ease: 160ms cubic-bezier(.4,0,.2,1);
+  --draw-slow: 2400ms cubic-bezier(.33,0,.3,1);
+  --grow: 760ms cubic-bezier(.22,.61,.36,1);
+  --page: var(--background-default);
+  --ink: var(--text-default);
+  --baseline: var(--border-action-strong);
+  --line: var(--border-subtle);
+  --data-series-1-hc: var(--data-series-high-contrast-1);
+  --data-series-2-hc: var(--data-series-high-contrast-2);
+  --data-axis: var(--data-axis-color);
+  --axis-alpha: var(--data-axis-alpha);
+  --data-grid: var(--data-grid-color);
+  --grid-alpha: var(--data-grid-alpha);
+  --data-target: var(--data-target-color);
+  --target-alpha: var(--data-target-alpha);
+  --shadow: var(--elevation-functional);
+  --pop-border: var(--elevation-border);
+}
+.cn-chart-combo [data-contrast="high"]{--data-series-1:var(--data-series-1-hc);
+    --data-series-2:var(--data-series-2-hc);}
+.cn-chart-combo h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
+.cn-chart-combo .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+.cn-chart-combo figure.dv{margin:0; position:relative;}
+/* relative = the table-popover anchor */
+/* HEAD = ONE H-stack (exemplar canon): title + all controls, flex-wrap V-fallback */
+.cn-chart-combo .dv-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; margin:0 0 12px;}
+.cn-chart-combo .dv-title{margin:0;}
+.cn-chart-combo .dv-controls{display:flex; flex-wrap:wrap; gap:8px; align-items:center;}
+.cn-chart-combo .dv-stage{overflow-x:auto; padding-bottom:4px; padding-right:32px;}
+/* JS-off: DV-D02 static answer.
+     right padding = the letter-key + secondary-tick zone ("100%" paints past the svg edge;
+     the scroll container clips at its padding box — 32px vs the line exemplar's 24px). */
+.cn-chart-combo .dv-chart-area{width:580px;}
+.cn-chart-combo .dv-svg{display:block; width:580px; height:260px; overflow:visible;}
+.cn-chart-combo figure.dv-fit-on .dv-chart-area{width:100%;}
+.cn-chart-combo figure.dv-fit-on .dv-svg{width:100%;}
+.cn-chart-combo .dv-grid{stroke:var(--data-grid); stroke-opacity:var(--grid-alpha); stroke-width:1;}
+.cn-chart-combo line.dv-axis{stroke:var(--baseline); stroke-width:1;}
+/* SECONDARY-AXIS rule — the data/axis role, not baseline ink: the overlaid scale's chrome is
+     quieter than the plot floor (grammar decision 1). */
+.cn-chart-combo line.dv-axis2{stroke:var(--data-axis); stroke-opacity:var(--axis-alpha); stroke-width:1;}
+.cn-chart-combo text.dv-axis, .cn-chart-combo text.dv-label{opacity:var(--axis-alpha);}
+/* bars — Chart-bar language: grow-from-baseline, hover brightness */
+.cn-chart-combo rect.dv-series{transition:filter var(--ease), opacity var(--ease), visibility var(--ease);}
+.cn-chart-combo rect.dv-series:hover{filter:brightness(1.12);}
+/* line CASING — page-colour under-stroke (intersection mechanism, header decision 2).
+     NOT class dv-series: the gate must never contrast-check page-vs-page. */
+.cn-chart-combo polyline.dv-casing{stroke:var(--page); fill:none;}
+/* markers — enlarged family (r5.5), series fill + page stroke 2.5 */
+.cn-chart-combo .dv-mk{fill:var(--sc); stroke:var(--page); stroke-width:2.5; vector-effect:non-scaling-stroke;}
+.cn-chart-combo .dv-marker{outline-offset:2px;}
+.cn-chart-combo .dv-marker:focus-visible{outline:2px solid var(--ink);}
+.cn-chart-combo .dv-bar{outline-offset:2px;}
+.cn-chart-combo .dv-bar:focus-visible{outline:2px solid var(--ink);}
+/* entry motion — CSS only (DEF-003): bars grow (Chart-bar), line + casing draw IN SYNC
+     (same pathLength/duration — the casing must never lead its line), markers land on the
+     eased cadence, the letter key follows the draw. */
+@media (prefers-reduced-motion:no-preference){
+.cn-chart-combo .dv-animate rect.dv-series[data-grow="up"]{transform-box:fill-box; transform-origin:bottom; animation:cn-chart-combo-dvGrowY var(--grow) both;}
+.cn-chart-combo .dv-animate polyline.dv-series, .cn-chart-combo .dv-animate polyline.dv-casing{stroke-dasharray:2400; stroke-dashoffset:2400; animation:cn-chart-combo-dvDraw var(--draw-slow) forwards;}
+.cn-chart-combo .dv-animate g.dv-marker{opacity:0; animation:cn-chart-combo-dvFade var(--ease) both;}
+.cn-chart-combo .dv-animate text.dv-endkey{opacity:0; animation:cn-chart-combo-dvFade var(--ease) both; animation-delay:2400ms;}
+}
+@keyframes cn-chart-combo-dvGrowY{from{transform:scaleY(0);}}
+@keyframes cn-chart-combo-dvDraw{to{stroke-dashoffset:0;}}
+@keyframes cn-chart-combo-dvFade{from{opacity:0;} to{opacity:1;}}
+.cn-chart-combo polyline.dv-series, .cn-chart-combo polyline.dv-casing, .cn-chart-combo g.dv-marker, .cn-chart-combo text.dv-endkey{transition:opacity var(--ease), visibility var(--ease);}
+.cn-chart-combo .dv-legend{list-style:none; display:flex; flex-wrap:wrap; justify-content:center; gap:16px; margin:16px 0 0; padding:0;}
+.cn-chart-combo .dv-legend li{display:flex;}
+.cn-chart-combo .dv-legbtn{display:flex; align-items:center; gap:8px; min-height:24px; background:transparent;
+    border:0; padding:0; color:var(--ink); cursor:pointer; transition:opacity var(--ease);}
+.cn-chart-combo .dv-legbtn:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-combo .dv-legbtn[aria-pressed="false"]{color:var(--data-axis);}
+.cn-chart-combo .dv-legbtn[aria-pressed="false"] .sw{background:transparent !important; border:2px solid var(--data-axis);}
+.cn-chart-combo .dv-legbtn[aria-pressed="false"] .dv-key{opacity:1;}
+.cn-chart-combo .dv-legend .sw{width:12px; height:12px; flex:none;}
+.cn-chart-combo .dv-legend .sw-circle{border-radius:50%;}
+.cn-chart-combo .dv-legend .dv-key{opacity:.6; min-width:12px;}
+/* ── TOOLBAR CONTROLS — one shared literal height (Dave 2026-07-24) ── */
+.cn-chart-combo .dv-controls{--control-h:32px;}
+.cn-chart-combo .dv-tbl-toggle, .cn-chart-combo .dv-vt{height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
+    background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
+    flex:none; transition:border-color var(--ease);}
+.cn-chart-combo .dv-tbl-toggle:hover, .cn-chart-combo .dv-vt:hover{border-color:var(--ink);}
+.cn-chart-combo .dv-tbl-toggle:focus-visible, .cn-chart-combo .dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-combo .dv-tbl-toggle[aria-expanded="true"], .cn-chart-combo .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
+.cn-chart-combo .dv-act, .cn-chart-combo .dv-dd{gap:8px;}
+.cn-chart-combo .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
+.cn-chart-combo .dv-csv .dv-ico-tick{display:none;}
+.cn-chart-combo .dv-csv.is-copied .dv-ico-copy{display:none;}
+.cn-chart-combo .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
+.cn-chart-combo .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
+.cn-chart-combo .dv-dd[aria-expanded="true"] .dv-ico-arrow{transform:rotate(180deg);}
+/* single TOGGLE (Target rate) = single-cell segmented control (Dave 2026-07-24) */
+.cn-chart-combo .dv-toggle-seg{position:relative; display:inline-flex; height:var(--control-h); box-sizing:border-box;
+    padding:2px; border:1px solid var(--line); background:transparent; vertical-align:top;}
+.cn-chart-combo .dv-toggle-seg .ind{position:absolute; inset:2px; background:var(--ink); opacity:0; transition:opacity var(--ease);}
+.cn-chart-combo .dv-toggle-seg:has(button[aria-pressed="true"]) .ind{opacity:1;}
+.cn-chart-combo .dv-toggle-seg button{position:relative; z-index:1; display:inline-flex; align-items:center; padding:0 8px;
+    border:0; background:transparent; color:var(--ink); cursor:pointer; transition:color var(--ease);}
+.cn-chart-combo .dv-toggle-seg button[aria-pressed="true"]{color:var(--page);}
+.cn-chart-combo .dv-toggle-seg button:not([aria-pressed="true"]):hover{background:rgba(127,127,127,.14);}
+.cn-chart-combo .dv-toggle-seg button:focus-visible{outline:2px solid var(--ink); outline-offset:-2px; z-index:2;}
+.cn-chart-combo .dv-off{display:none !important;}
+/* baked-variant switching — geometry generated, never computed */
+.cn-chart-combo .dv-quiet{opacity:.25 !important;}
+/* highlight dims the DATA layer only */
+.cn-chart-combo .dv-target{stroke:var(--data-target); opacity:var(--target-alpha); stroke-width:1.5; stroke-dasharray:8 4;}
+.cn-chart-combo .dv-target-label{fill:var(--data-target);}
+.cn-chart-combo .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
+.cn-chart-combo .dv-tablepanel[hidden]{display:none;}
+.cn-chart-combo .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-combo .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:8px 12px; pointer-events:none;
+    opacity:0; transition:opacity var(--ease);}
+.cn-chart-combo .dv-tip.on{opacity:1;}
+.cn-chart-combo table.dv-table{border-collapse:collapse; color:var(--ink);}
+.cn-chart-combo table.dv-table caption{text-align:left; opacity:.6; margin-bottom:8px;}
+.cn-chart-combo table.dv-table th, .cn-chart-combo table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
+.cn-chart-combo table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
+.cn-chart-combo table.dv-table thead th{opacity:.6; font-weight:500;}
+.cn-chart-combo .dv-empty-frame{width:580px; height:260px; display:flex; align-items:center; justify-content:center;
+    border:1px dashed var(--line); border-radius:var(--border-radius-surface);}
+.cn-chart-combo .dv-empty-frame .empty{display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px;
+    padding:24px; max-width:480px;}
+.cn-chart-combo .dv-empty-frame .empty h3{margin:0;}
+.cn-chart-combo .dv-empty-frame .empty p{margin:0; opacity:.6; max-width:40ch;}
+@media (prefers-reduced-motion: reduce){
+
+}
+
+/* ============================================================
    Chart-donut  (from snippets/Chart-donut.reference.html)
-   Aria: role="group", aria-labelledby, role="img", aria-label
+   Aria: role="group", aria-labelledby, role="img", aria-label, aria-pressed, aria-controls, aria-expanded, role="region"
    Scope: .cn-chart-donut   ============================================================ */
 .cn-chart-donut{
   --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
@@ -3441,33 +3646,107 @@
   --page: var(--background-default);
   --ink: var(--text-default);
   --line: var(--border-subtle);
+  --data-series-1-hc: var(--data-series-high-contrast-1);
+  --data-series-2-hc: var(--data-series-high-contrast-2);
+  --data-series-3-hc: var(--data-series-high-contrast-3);
+  --data-series-4-hc: var(--data-series-high-contrast-4);
+  --data-series-5-hc: var(--data-series-high-contrast-5);
+  --data-axis: var(--data-axis-color);
+  --axis-alpha: var(--data-axis-alpha);
+  --shadow: var(--elevation-functional);
+  --pop-border: var(--elevation-border);
 }
+.cn-chart-donut [data-contrast="high"]{--data-series-1:var(--data-series-1-hc);
+    --data-series-2:var(--data-series-2-hc);
+    --data-series-3:var(--data-series-3-hc);
+    --data-series-4:var(--data-series-4-hc);
+    --data-series-5:var(--data-series-5-hc);}
 .cn-chart-donut h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
 .cn-chart-donut .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
-.cn-chart-donut figure.dv{margin:0;}
+.cn-chart-donut figure.dv{margin:0; position:relative;}
+/* relative = the table-popover anchor */
+/* HEAD = ONE H-stack (exemplar canon): title + controls same line; flex-wrap = the V-fallback. */
+.cn-chart-donut .dv-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; margin:0 0 12px;}
+.cn-chart-donut .dv-title{margin:0;}
+.cn-chart-donut .dv-controls{display:flex; flex-wrap:wrap; gap:8px; align-items:center;}
 .cn-chart-donut .dv-stage{overflow-x:auto; padding-bottom:4px;}
 .cn-chart-donut .dv-donut-row{display:flex; gap:28px; align-items:center; flex-wrap:wrap;}
 .cn-chart-donut .dv-svg{display:block; overflow:visible;}
-.cn-chart-donut path.dv-series{transition:filter var(--ease);}
+/* segments are FOCUS STOPS (popover reads) — data-series-group ties them to legend filter/
+     isolate/highlight; hover keeps the kit's brightness lift as a second hover channel. */
+.cn-chart-donut path.dv-series{transition:filter var(--ease), opacity var(--ease), visibility var(--ease);}
 .cn-chart-donut path.dv-series:hover{filter:brightness(1.12);}
-.cn-chart-donut .dv-leader{stroke:var(--line); stroke-width:1; fill:none;}
-.cn-chart-donut text.dv-key-el{opacity:1;}
+.cn-chart-donut path.dv-series:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+/* sweep annotations — baked VISIBLE (.show in markup); the future dv-behaviour sweep hook
+     strips .show and re-adds per data-seq as each segment grows (proforma sequencing). */
+.cn-chart-donut .dv-anno{opacity:0; transition:opacity 300ms cubic-bezier(.4,0,.2,1);}
+.cn-chart-donut .dv-anno.show{opacity:1;}
+.cn-chart-donut .dv-leader{stroke:var(--line); stroke-width:1; fill:none; transition:opacity var(--ease), visibility var(--ease);}
+.cn-chart-donut text.dv-key-el{fill:var(--ink); transition:opacity var(--ease), visibility var(--ease);}
 .cn-chart-donut text.dv-val{fill:var(--ink);}
-.cn-chart-donut text.dv-direct{fill:var(--ink);}
-.cn-chart-donut text.dv-direct .amt{font-weight:500;}
-/* kit 600 → 500: no 600 weight on brand (receipted) */
+.cn-chart-donut text.dv-direct{fill:var(--ink); transition:opacity var(--ease), visibility var(--ease);}
+.cn-chart-donut .dv-quiet{opacity:.25 !important;}
+/* highlight dims the DATA layer only */
+.cn-chart-donut .dv-off{display:none !important;}
+/* baked-variant switching (value ⇄ percent) */
+/* ── TOOLBAR CONTROLS — ONE SHARED HEIGHT (Dave 2026-07-24, exemplar canon verbatim) ── */
+.cn-chart-donut .dv-controls{--control-h:32px;}
+.cn-chart-donut .dv-tbl-toggle, .cn-chart-donut .dv-vt{height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
+    background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
+    flex:none; transition:border-color var(--ease);}
+.cn-chart-donut .dv-tbl-toggle:hover, .cn-chart-donut .dv-vt:hover{border-color:var(--ink);}
+.cn-chart-donut .dv-tbl-toggle:focus-visible, .cn-chart-donut .dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-donut .dv-tbl-toggle[aria-expanded="true"], .cn-chart-donut .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
+.cn-chart-donut .dv-act, .cn-chart-donut .dv-dd{gap:8px;}
+.cn-chart-donut .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
+.cn-chart-donut .dv-csv .dv-ico-tick{display:none;}
+.cn-chart-donut .dv-csv.is-copied .dv-ico-copy{display:none;}
+.cn-chart-donut .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
+.cn-chart-donut .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
+.cn-chart-donut .dv-dd[aria-expanded="true"] .dv-ico-arrow{transform:rotate(180deg);}
+/* the value ⇄ % pair CONSUMES the Segmented-control atom (exemplar canon): sliding indicator,
+     2px inset track, square (Mono), --control-h matched; type = .seg.sm button (12/500, T-D15). */
+.cn-chart-donut .seg{position:relative; display:inline-flex; height:var(--control-h); box-sizing:border-box; padding:2px;
+    border:1px solid var(--line); background:transparent; vertical-align:top;}
+.cn-chart-donut .seg .ind{position:absolute; top:2px; bottom:2px; left:2px; width:0; background:var(--ink); z-index:0;
+    transition:left var(--ease), width var(--ease);}
+.cn-chart-donut .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    height:auto; padding:0 8px; border:0; background:transparent; color:var(--ink); cursor:pointer; transition:color var(--ease);}
+.cn-chart-donut .seg button:not([aria-pressed="true"]):hover{background:rgba(127,127,127,.14);}
+.cn-chart-donut .seg button[aria-pressed="true"]{color:var(--page);}
+.cn-chart-donut .seg button:focus-visible{outline:2px solid var(--ink); outline-offset:-2px; z-index:2;}
+.cn-chart-donut .seg.sm button{padding:0 8px;}
+.cn-chart-donut .seg button::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
 .cn-chart-donut .dv-legend{list-style:none; display:flex; margin:0; padding:0;}
 .cn-chart-donut .dv-legend.vert{flex-direction:column; gap:12px;}
-.cn-chart-donut .dv-legend li{display:flex; align-items:center; gap:8px; color:var(--ink);}
+.cn-chart-donut .dv-legend li{display:flex;}
+/* legend rows are FILTER BUTTONS — quiet utility state, NOT B-D7 press physics (Q5 posture) */
+.cn-chart-donut .dv-legbtn{display:flex; align-items:center; gap:8px; min-height:24px; background:transparent;
+    border:0; padding:0; color:var(--ink); cursor:pointer; transition:opacity var(--ease);}
+.cn-chart-donut .dv-legbtn:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+/* OFF state (Dave 2026-07-23, exemplar canon): HOLLOW swatch (2px border inside the 12px box) +
+     swatch/letter/text all in the data/axis AA grey; nothing dims below the floor. */
+.cn-chart-donut .dv-legbtn[aria-pressed="false"]{color:var(--data-axis);}
+.cn-chart-donut .dv-legbtn[aria-pressed="false"] .sw{background:transparent !important; border:2px solid var(--data-axis);}
+.cn-chart-donut .dv-legbtn[aria-pressed="false"] .dv-key{opacity:1;}
 .cn-chart-donut .dv-legend .sw{width:12px; height:12px; flex:none;}
-.cn-chart-donut .dv-legend .dv-key{font-weight:700; opacity:.6; min-width:12px; font-variant-numeric:tabular-nums;}
-.cn-chart-donut details.dv-tabledetails{margin:8px 0 0;}
-.cn-chart-donut details.dv-tabledetails summary{cursor:pointer; opacity:.6; width:max-content;}
-.cn-chart-donut details.dv-tabledetails summary:hover{opacity:1; text-decoration:underline; text-underline-offset:3px;}
-.cn-chart-donut details.dv-tabledetails summary:focus-visible{outline:2px solid var(--ink); outline-offset:2px; opacity:1;}
-.cn-chart-donut table.dv-table{border-collapse:collapse; margin-top:8px; color:var(--ink);}
-.cn-chart-donut table.dv-table caption{text-align:left; opacity:.6; margin-bottom:4px;}
+/* squares — the donut's non-colour channel is the LETTER, not marker shape */
+.cn-chart-donut .dv-legend .dv-key{opacity:.6; min-width:12px;}
+/* table-view POPOVER panel + value popover — the exemplar's anchored-overlay recipe verbatim */
+.cn-chart-donut .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
+.cn-chart-donut .dv-tablepanel[hidden]{display:none;}
+.cn-chart-donut .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-donut .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:8px 12px; pointer-events:none;
+    opacity:0; transition:opacity var(--ease);}
+.cn-chart-donut .dv-tip.on{opacity:1;}
+.cn-chart-donut table.dv-table{border-collapse:collapse; color:var(--ink);}
+.cn-chart-donut table.dv-table caption{text-align:left; opacity:.6; margin-bottom:8px;}
 .cn-chart-donut table.dv-table th, .cn-chart-donut table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
 .cn-chart-donut table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
 .cn-chart-donut table.dv-table thead th{opacity:.6; font-weight:500;}
@@ -3733,6 +4012,8 @@
   --page: var(--background-default);
   --ink: var(--text-default);
   --line: var(--border-subtle);
+  --shadow: var(--elevation-functional);
+  --pop-border: var(--elevation-border);
   --grid-alpha: .10;
 }
 [data-theme="dark"] .cn-chart-sparkline{
@@ -3743,12 +4024,17 @@
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 .cn-chart-sparkline figure.dv{margin:0;}
 .cn-chart-sparkline .dv-stage{overflow-x:auto; padding-bottom:4px;}
-/* standalone spark — 340×64 render of the 580×90 frame (kit); no text inside, so non-uniform scale is safe */
+/* standalone spark — 340×64 render of the 580×90 frame (kit); no text inside, so non-uniform
+     scale is safe. FIT (Layer-2, lane ②): JS-on (.dv-fit-on via dv-behaviour init) releases the
+     width to the container — pure CSS, no relayout maths; JS-off keeps the fixed 340. */
 .cn-chart-sparkline .spark-standalone{display:block; width:340px; height:64px; overflow:visible;}
+.cn-chart-sparkline figure.dv-fit-on .spark-standalone{width:100%;}
 .cn-chart-sparkline .dv-grid{stroke:var(--ink); stroke-opacity:var(--grid-alpha); stroke-width:1; vector-effect:non-scaling-stroke;}
 .cn-chart-sparkline .spark-standalone .dv-series{fill:none; stroke:var(--data-series-1); stroke-width:2.5;
     stroke-linejoin:round; stroke-linecap:round; vector-effect:non-scaling-stroke;}
 .cn-chart-sparkline .spark-standalone circle.dv-series{fill:var(--data-series-1); stroke:none;}
+.cn-chart-sparkline .spark-standalone polyline.dv-series{outline-offset:4px;}
+.cn-chart-sparkline .spark-standalone polyline.dv-series:focus-visible{outline:2px solid var(--ink);}
 /* inline spark — the KPI / Stat-card scale (200×48 @ 44px, stroke 2, dot r3) */
 .cn-chart-sparkline .spark-inline{display:block; width:200px; height:44px; overflow:visible;}
 .cn-chart-sparkline .spark-inline .dv-base{stroke:var(--ink); stroke-opacity:var(--grid-alpha); stroke-width:1; vector-effect:non-scaling-stroke;}
@@ -3766,6 +4052,12 @@
 @keyframes cn-chart-sparkline-dvDraw{to{stroke-dashoffset:0;}}
 @keyframes cn-chart-sparkline-dvDrawShort{to{stroke-dashoffset:0;}}
 @keyframes cn-chart-sparkline-dvFade{from{opacity:0;} to{opacity:1;}}
+/* the value popover (dvTip) — created by dv-behaviour, styled here (the anchored-overlay recipe) */
+.cn-chart-sparkline .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:8px 12px; pointer-events:none;
+    opacity:0; transition:opacity var(--ease);}
+.cn-chart-sparkline .dv-tip.on{opacity:1;}
 .cn-chart-sparkline details.dv-tabledetails{margin:8px 0 0;}
 .cn-chart-sparkline details.dv-tabledetails summary{cursor:pointer; opacity:.6; width:max-content;}
 .cn-chart-sparkline details.dv-tabledetails summary:hover{opacity:1; text-decoration:underline; text-underline-offset:3px;}
@@ -5951,6 +6243,15 @@
   --status-info: #4587A7;
   --status-watch: #FFBB33;
 }
+[data-apollo-theme="legacy"] .cn-chart-combo{
+  --ink: #333333;
+  --line: #D7D8D6;
+}
+[data-apollo-theme="legacy"][data-theme="dark"] .cn-chart-combo,
+[data-apollo-theme="legacy"] [data-theme="dark"] .cn-chart-combo{
+  --ink: #FFFFFF;
+  --line: #404040;
+}
 [data-apollo-theme="legacy"] .cn-chart-donut{
   --ink: #333333;
   --line: #D7D8D6;
@@ -6654,6 +6955,13 @@
 }
 [data-apollo-theme="console"][data-theme="dark"] .cn-chart-bar,
 [data-apollo-theme="console"] [data-theme="dark"] .cn-chart-bar{
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"] .cn-chart-combo{
+  --border-radius-surface: 12px;
+}
+[data-apollo-theme="console"][data-theme="dark"] .cn-chart-combo,
+[data-apollo-theme="console"] [data-theme="dark"] .cn-chart-combo{
   --border-radius-surface: 12px;
 }
 [data-apollo-theme="console"] .cn-chart-donut{
@@ -7416,27 +7724,58 @@
 }
 [data-apollo-theme="supercharge"] .cn-chart-bar{
   --baseline: #13110E;
+  --data-axis: #493F39;
+  --data-grid: #CDC8C6;
   --ink: #13110E;
   --line: #CDC8C6;
   --page: #F7F6F4;
+  --pop-border: #FFFFFF00;
 }
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-bar,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-bar{
   --baseline: #FFFFFF;
+  --data-axis: #635750;
+  --data-grid: #413934;
   --ink: #F7F6F4;
   --line: #524842;
   --page: #1A1A1A;
+  --pop-border: #524842;
 }
-[data-apollo-theme="supercharge"] .cn-chart-donut{
+[data-apollo-theme="supercharge"] .cn-chart-combo{
+  --baseline: #13110E;
+  --data-axis: #493F39;
+  --data-grid: #CDC8C6;
+  --data-target: #312C26;
   --ink: #13110E;
   --line: #CDC8C6;
   --page: #F7F6F4;
+  --pop-border: #FFFFFF00;
 }
-[data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-donut,
-[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-donut{
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-combo,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-combo{
+  --baseline: #FFFFFF;
+  --data-axis: #635750;
+  --data-grid: #413934;
+  --data-target: #806E65;
   --ink: #F7F6F4;
   --line: #524842;
   --page: #1A1A1A;
+  --pop-border: #524842;
+}
+[data-apollo-theme="supercharge"] .cn-chart-donut{
+  --data-axis: #493F39;
+  --ink: #13110E;
+  --line: #CDC8C6;
+  --page: #F7F6F4;
+  --pop-border: #FFFFFF00;
+}
+[data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-donut,
+[data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-donut{
+  --data-axis: #635750;
+  --ink: #F7F6F4;
+  --line: #524842;
+  --page: #1A1A1A;
+  --pop-border: #524842;
 }
 [data-apollo-theme="supercharge"] .cn-chart-line{
   --baseline: #13110E;
@@ -7476,12 +7815,14 @@
   --ink: #13110E;
   --line: #CDC8C6;
   --page: #F7F6F4;
+  --pop-border: #FFFFFF00;
 }
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-sparkline,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-sparkline{
   --ink: #F7F6F4;
   --line: #524842;
   --page: #1A1A1A;
+  --pop-border: #524842;
 }
 [data-apollo-theme="supercharge"] .cn-confirmation{
   --ghost-hover: #DFDEDC;
