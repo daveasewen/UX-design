@@ -21,6 +21,23 @@ narrative, relocated verbatim (how we got here; see its README for the rules + R
 - **Push stack (all unpushed, oldest first):** `07ad314 · dcad460 · eb9c9ec · 1c39e5f · cdd1c0f · f5e7bce · 76abe2f · 372fd4f · 05e1b97 · fa29858 · + THIS reconcile commit` — GitHub Desktop, whole stack. Build **53/53**, library **67**.
 - **🟢 Gauge at authoring: GREEN ~45% (ESTIMATE ±15%)** — fresh conductor window, ample headroom; the reconcile is high-confidence (build re-verified green + idempotent from a clean state, not trusting the Red-authored receipts' claims). The deliberate contrast: lane ①③ wrote at Red ~65–68%, which is why I re-ran every gate rather than believe the receipts.
 
+### ★ SAME-WINDOW FOLLOW-UP (2026-07-24 ~19:23 — Dave's chart edits, quick-wins pass)
+Dave gave 4 chart edits in a "quick wins, mint but flag later" pass. Outcomes:
+- **✅ Popover-over-trigger FIXED** (`dv-behaviour.js` `tblToggle`): the table panel now anchors just
+  BELOW its trigger (measured, not a fixed `top:44px` that a title pushed past). All 5 charts, build
+  53/53, module 14.7KB/16. **Render-verify OWED** (Dave's eyeball). Uncommitted → in the wrap commit.
+- **★★ Dark-surface text → RULED "dark-mode-in-light-mode" = O1, ITS OWN SESSION** (Dave: "lets do it
+  but it will probably needs its own sesh"). Dave independently named the general pattern: a **dark
+  island in a light page re-resolves its own ink** — NOT a per-spot carve-out. **Key: it POPULATES an
+  ADR-0014 slot** (classified surface remaps the neutral anchor locally), needs a scoped dark-surface
+  token + a `type26-013` gate scope. Brief cut: `notes/_briefs/2026-07-24-dark-in-light-O1-and-chart-followups-brief.md`.
+  This SUPERSEDES the old deferred-item-4 "R-B/R-C open" → now RULED do-it, own session. R-A casing unaffected.
+- **PROPOSED — legend isolate redesign** (reflected back, AWAITING Dave's confirm): label→isolate
+  (radio) · swatch→toggle (checkbox), additive interplay; retires the hidden shift/dblclick. a11y-real
+  (two roles/row) ⇒ flagged, not built. Spec in the brief.
+- **NOTE — mini ramp** (T-D15 med/12·med/14·reg/16) EXISTS + is applied (chart labels+buttons = 12/500
+  medium, correct). Wrinkle: charts use parallel composites vs `ctl-*`; agree at 12/500. Optional unify later.
+
 ## ⏱ PRIOR DELTA — 2026-07-24 (Fri PM, OPUS solo — chart controls landed + toggle tweaks + radius tuner v1) — "★ Chart-line view switch now CONSUMES the Segmented-control atom (sliding indicator, `372fd4f`) · toggle buttons differentiated BY JOB (`05e1b97`): Target line/Last year → single toggles (fill on) · View as table → dropdown w/ SOLID arrow (rotates, static label) · CSV → copy icon⇄tick (static label) · radius/corner tuner PROTOTYPE v1 (2px steps, live canon read) · build 53/53 · render-verified real font · ⚠ NEXT = the chart FAN-OUT (fresh window)"
 
 - **Seg landed in the chart (`372fd4f`):** `Chart-line` view switch (Monthly ⇄ Year to date) swapped `.dv-seg`/`.dv-vt` → the **`.seg.sm` atom** (sliding `.ind`, 2px inset, square, 12/500 via `.t-cm-ctl-12`). `dv-behaviour.js` drives the slide (`moveSeg`/`placeSegs`, rect-based, on `segView` + resize + `document.fonts.ready`; reduced-motion via CSS). Hit-area `::before` ≥44 rides in. Chart-line added to `.seg`/`.seg.sm` blast-radius set (`--update`, reviewed). Only Chart-line consumes dv-behaviour today (14.5KB < 16KB gate). **Render-verified** light+dark @1180+560: slide + geometry switch + dark inversion (white fill) + toolbar wrap all correct.

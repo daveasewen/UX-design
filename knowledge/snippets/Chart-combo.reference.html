@@ -497,7 +497,14 @@
     var panel = document.getElementById(btn.getAttribute('aria-controls'));
     if (!panel) { return; }
     var open = panel.hasAttribute('hidden');           /* opening if currently hidden */
-    if (open) { panel.removeAttribute('hidden'); } else { panel.setAttribute('hidden', ''); }
+    if (open) {
+      panel.removeAttribute('hidden');
+      /* anchor the panel just BELOW its trigger, never over it — the fixed top was brittle
+         once a title pushed the toolbar down (Dave 2026-07-24). Measure after un-hiding so
+         offsetParent resolves; fall back gracefully. */
+      var op = panel.offsetParent || btn.offsetParent || panel.parentNode;
+      if (op) { panel.style.top = (btn.getBoundingClientRect().bottom - op.getBoundingClientRect().top + 6) + 'px'; }
+    } else { panel.setAttribute('hidden', ''); }
     btn.setAttribute('aria-expanded', String(open));   /* label stays static; the solid arrow rotates via CSS (Dave 2026-07-24) */
     if (open) { panel.focus(); }
   }
