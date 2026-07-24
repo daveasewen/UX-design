@@ -59,25 +59,25 @@
 
 ## ⬛ DO THIS FIRST
 
-> **0. ★ DAVE: EYEBALL THE ONE CHART — `showroom/chart-line.html`** (all four themes × light/dark ×
-> the Layer-2: popover · fit · table popover · legend filter/isolate/highlight · seg view + overlays ·
-> CSV · JS-off). It gates the fan-out. The menu sheet
-> (`reviews/DATA-MANIPULATION-MENU-2026-07-23-v1.html`) is already ruled — nothing to re-rule there.
-> **1. ★ THE WAVE — open up to THREE worker windows + optional solo (divvy ratified; effort knob is
-> YOURS at window-open):** lane ① bar+scatter **Fable·medium** · lane ② donut+sparkline
-> **Fable·medium** · lane ③ combo **Fable·high** · conductor absorb (fresh window) **Opus·high** ·
-> optional parallel-safe solo (atoms compare sheet + mini-ramps proposal, reviews/+notes only)
-> **Opus·high**. Opener per lane: *"read good morning — you are the WORKER, wave lane N, brief
-> `notes/_briefs/2026-07-24-chart-wave-laneN-….md` — receipt only, no git."*
-> **2. ★ DAVE: the RULING BATCH (§C·2) — 15 remain** + the **DATAVIZ SIGN-OFF** + revisit **Q2–5, 7**
-> (Q2 combo-home rides lane ③'s receipt; a11y dim-caution OPEN, your adviser). **Field-family
-> (batch Q6)** is the material one (≥10 files).
+> **0. ✅ THE CHART FAN-OUT IS DONE + COMMITTED** (`ecf6e56` reconcile · `93c01c1` quick wins). All 5
+> charts (line·bar·donut·sparkline·combo) are WIRED to the dv-behaviour interaction registry via the
+> per-capability contract split. Build 53/53. Nothing to re-run here — the panes are live for review.
+> **1. ★★ NEXT BIG PIECE — "dark-mode-in-light-mode" (O1), ITS OWN FRESH WINDOW** (Dave ruled "do it,
+> own sesh"). A dark island in a light page re-resolves its own ink — an ADR-0014 slot + a `type26-013`
+> gate scope. **Open cold on** `notes/_briefs/2026-07-24-dark-in-light-O1-and-chart-followups-brief.md`.
+> Wants render-verify working (brand-gate change). Model: Opus / focused ADR window.
+> **2. ★ DAVE (async, non-blocking): the DATAVIZ SIGN-OFF** — eyeball the 5 live chart panes
+> (`showroom/chart-{line,bar,donut,sparkline,combo}.html`, 4 themes × light/dark) → flips them
+> provisional-agent→canon (open-014). **+ confirm the legend isolate-redesign** (label→radio-isolate,
+> swatch→checkbox; spec in the O1 brief) so it can be built. **+ the RULING BATCH (§C·2) — 15 remain**
+> (Q2 combo-home · sweep 16KB-cap fork · field-family batch-Q6 is the material one).
 > **3. The eyeball set (§C·3)** — 24 components × 4 themes + the scatter lock-up (async, pane pins).
 > **4. ★★ Radius/corner tuner (§C·1d) — "return soon, don't let me forget."** Resurface unprompted.
-> **5. After the wave:** wave 3 (component gaps) or templates+shells clean-room.
+> **5. After O1:** wave 3 (component gaps) or templates+shells clean-room · Chart-scatter Layer-2 · brush spec.
 
 *Standing practice: every handoff carries both names — retrospective + forward — and a **DIVVY PLAN**.
-This handoff's plan: §C·1. Steps 4b + 2 in `_RUNBOOK-capture-ritual.md`.*
+This handoff's plan: **SOLO** (the O1 session self-conducts — one window, no lanes; the fan-out that
+needed the parallel model is done). Steps 4b + 2 in `_RUNBOOK-capture-ritual.md`.*
 
 *Read: **§A Orientation** (skip if you're in context) → **§B This session** → **§C Queue**.
 Then `_LIVE-STATE.md` → the decision files it points to.*
