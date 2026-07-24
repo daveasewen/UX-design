@@ -112,7 +112,11 @@ def resolve(token, mode):
         if n is None:
             return None
     m = n.get(mode)
+    if m is None and "$value" in n:
+        m = n                       # modeless semantic leaf (e.g. DV-D07 data/*/alpha slots)
     v = m.get("$value") if isinstance(m, dict) else m
+    if isinstance(v, (int, float)):
+        return str(v)               # unitless factor (alpha) — matches gen_snippet_tokens._fmt
     return v.upper() if isinstance(v, str) and v.startswith("#") else None
 
 

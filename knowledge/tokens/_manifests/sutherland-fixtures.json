@@ -2680,13 +2680,27 @@
           "--data-series-1": "data/series/1",
           "--data-series-2": "data/series/2",
           "--data-series-3": "data/series/3",
+          "--data-series-1-hc": "data/series-high-contrast/1",
+          "--data-series-2-hc": "data/series-high-contrast/2",
+          "--data-series-3-hc": "data/series-high-contrast/3",
+          "--data-axis": "data/axis/color",
+          "--axis-alpha": "data/axis/alpha",
+          "--data-grid": "data/grid/color",
+          "--grid-alpha": "data/grid/alpha",
+          "--data-target": "data/target/color",
+          "--target-alpha": "data/target/alpha",
+          "--shadow": "elevation/functional",
+          "--pop-border": "elevation/border",
           "--border-radius-surface": "border-radius/surface"
         },
         "requiredAria": [
           "role=\"group\"",
           "aria-labelledby",
-          "role=\"img\"",
-          "aria-label"
+          "aria-label",
+          "aria-pressed",
+          "aria-controls",
+          "aria-expanded",
+          "role=\"region\""
         ],
         "contrastPairs": [
           {
@@ -2708,6 +2722,31 @@
             "fg": "data/series/3",
             "bg": "background/default",
             "context": "ui"
+          },
+          {
+            "fg": "data/series-high-contrast/1",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series-high-contrast/2",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series-high-contrast/3",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/axis/color",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "data/target/color",
+            "bg": "background/default",
+            "context": "ui"
           }
         ],
         "props": [
@@ -2719,7 +2758,7 @@
           {
             "name": "data",
             "type": "table",
-            "$note": "Real <table class=\"dv-table\"> in the figure (dv-005), surfaced by native <details>."
+            "$note": "Real <table class=\"dv-table\"> in the figure (dv-005), surfaced by the table-view popover panel; popover data-tips read the SAME values (one source)."
           },
           {
             "name": "markers",
@@ -2736,6 +2775,29 @@
             "type": "boolean",
             "default": false,
             "$note": "No-data state = the Empty-state pattern by reference."
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "$note": "OPTIONAL visible title slot (.dv-title, dv-006: reflects the main insight) — a type composite heading (t-cm-section-label); when absent the sr-only figcaption still names the chart."
+          },
+          {
+            "name": "tablePopover",
+            "type": "boolean",
+            "default": true,
+            "$note": "Table-view POPOVER panel (Dave's mock 2026-07-23): floating card on surface ground + elevation border/shadow recipe, 'View as table' ⇄ 'Hide table' toggle top-right; aria-controls/expanded, labelled region, Esc-dismiss, focus-managed. Supersedes the native <details>."
+          },
+          {
+            "name": "legendFilter",
+            "type": "boolean",
+            "default": true,
+            "$note": "Multi-series legend rows are FILTER buttons (data-series-toggle, aria-pressed; off = dim + line-through — never colour alone). QUIET utility state, deliberately NOT B-D7 press physics (chart-revisit Q5, standing)."
+          },
+          {
+            "name": "highContrast",
+            "type": "boolean",
+            "default": false,
+            "$note": "data-contrast=\"high\" remaps series onto data/series-high-contrast/* (token rebind only, kit pattern)."
           }
         ]
       }

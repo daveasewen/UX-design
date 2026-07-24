@@ -179,10 +179,11 @@ def var_name(path):
 
 def css_value(path, val):
     """Format an override $value for CSS. Numbers are px except 0 and the
-    unitless namespaces — motion scale factors + the component-type parameters
-    that cache them (matches gen_canon_tokens fmt_value / gen_snippet_tokens)."""
+    unitless namespaces — motion scale factors, the component-type parameters
+    that cache them, and the DV-D07 data/*/alpha slots (matches gen_canon_tokens
+    fmt_value / gen_snippet_tokens)."""
     if isinstance(val, (int, float)):
-        if path.startswith("motion/press/") or path.rsplit("/", 1)[-1] in ("press-travel", "press-darken"):
+        if path.startswith("motion/press/") or path.rsplit("/", 1)[-1] in ("press-travel", "press-darken", "alpha"):
             return str(val)
         return "0" if val == 0 else f"{val}px"
     return str(val)

@@ -34,7 +34,8 @@ FILES = [
 MODE_LEAVES = {"light", "dark"}
 FONT_STACK = '"Univers Next for HSBC", "Helvetica Neue", Arial, Helvetica, sans-serif'
 UNITLESS = ("weight", "opacity", "z-index", "line-height-ratio",
-            "press-travel", "press-darken", "motion-press")  # number tokens that take no px (incl. ADR-0013/B-D7 press physics)
+            "press-travel", "press-darken", "motion-press",
+            "alpha")  # number tokens that take no px (incl. ADR-0013/B-D7 press physics + DV-D07 data/*/alpha slots)
 
 def fmt_value(var, val, ttype):
     """Render a DTCG value as a CSS value string, by $type and path."""

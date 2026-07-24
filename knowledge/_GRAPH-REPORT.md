@@ -2,7 +2,7 @@
 
 > Generated derived view over `knowledge/` (Graphify-inspired; no external dependency). Regenerate after editing component metas or tokens: `python3 knowledge/tokens/_build_blast_radius.py`. Authored canon stays the source of truth; this is a generated dashboard.
 
-**Totals:** 65 components · 926 tokens defined · 104 tokens referenced by components · compliance: 31 rules x 65 components (31 SCs).
+**Totals:** 65 components · 938 tokens defined · 104 tokens referenced by components · compliance: 31 rules x 65 components (31 SCs).
 
 ## God-nodes — highest token blast radius
 
@@ -10,11 +10,11 @@ Change one of these and the listed number of components is affected. Use before 
 
 | Token | Blast | Example components |
 |---|---|---|
-| `text/default` | 55 | Accordion, Account card, Alert, Amount display, Amount input, Avatar… |
+| `text/default` | 54 | Accordion, Account card, Alert, Amount display, Amount input, Avatar… |
 | `background/default` | 26 | Accordion, Account selector, Amount display, Bar chart, Cards, Data grid… |
 | `icon/default` | 24 | Accordion, Avatar, Button, Cards, Dropdown, File upload… |
 | `text/reverse` | 18 | Action bar, Avatar, Badge, Button, Cards, Confirmation… |
-| `elevation/functional` | 16 | Account selector, Date picker, Date-range picker, Drawer, Dropdown, Input fields… |
+| `elevation/functional` | 17 | Account selector, Date picker, Date-range picker, Drawer, Dropdown, Input fields… |
 | `rag/error` | 16 | Amount input, Bar chart, Date picker, Date-range picker, Dropdown, File upload… |
 | `tertiary/background/default` | 16 | Account card, Action bar, Button, Cards, Drawer, Icon button… |
 | `border/subtle` | 15 | Accordion, Account card, Action bar, Amount display, Avatar, Cards… |
@@ -30,15 +30,15 @@ Change one of these and the listed number of components is affected. Use before 
 
 | Group | Components |
 |---|---|
-| `text/` | 59 |
+| `text/` | 58 |
 | `background/` | 26 |
 | `tertiary/` | 26 |
 | `icon/` | 26 |
 | `rag/` | 22 |
 | `border/` | 18 |
 | `border-radius/` | 18 |
+| `elevation/` | 17 |
 | `form/` | 16 |
-| `elevation/` | 16 |
 | `typography/` | 13 |
 | `divider/` | 10 |
 | `primary/` | 9 |
@@ -89,16 +89,16 @@ Components whose `tokens` block still references a `(depricate)` token (count = 
 
 ## Orphans — defined tokens not referenced by any component meta
 
-822 of 926 defined tokens are unreferenced at the component layer. **Expected** for primitives and scale steps (consumed via semantic aliases, not bound directly); worth scanning the *semantic* groups for genuinely-dead tokens. By group:
+834 of 938 defined tokens are unreferenced at the component layer. **Expected** for primitives and scale steps (consumed via semantic aliases, not bound directly); worth scanning the *semantic* groups for genuinely-dead tokens. By group:
 
 | Group | Unreferenced |
 |---|---|
 | `color/` | 241 |
 | `data-vis/` | 90 |
 | `button/` | 64 |
+| `data/` | 51 |
 | `rag/` | 46 |
 | `typography/` | 42 |
-| `data/` | 39 |
 | `surface/` | 36 |
 | `gap/` | 27 |
 | `tabs/` | 26 |

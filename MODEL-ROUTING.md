@@ -19,7 +19,12 @@
 
 *The Fable↔Opus and Sonnet↔Haiku boundaries are yours to calibrate from experience; the roles are the fixed part, not the exact model on each line.*
 
-## Fable-era notes (routing audit 2026-07-23, ratified #6)
+## Fable-era notes
+
+> **CORRECTION 2026-07-24 (Dave, OBSERVED in-session, via the chart-line worker receipt):** effort
+> **IS manually selectable per session in Cowork** — this supersedes the routing-audit #8 line
+> "no per-spawn effort control" for *sessions* (the Agent-tool spawn limitation stands). Divvy
+> plans may name model **and effort** per lane; the knob is Dave's, set at window-open. (routing audit 2026-07-23, ratified #6)
 
 - **Route by difficulty × horizon, not category.** Fable's lead grows with task length and
   complexity (VERIFIED, Fable prompting guide) — a long ambiguous multi-file job earns Fable; a

@@ -367,6 +367,12 @@
   --data-series-high-contrast-3: #385F4F;
   --data-series-high-contrast-4: #6E465D;
   --data-series-high-contrast-5: #7C6F34;
+  --data-axis-color: #626262;
+  --data-axis-alpha: 1;
+  --data-grid-color: #E1E1E1;
+  --data-grid-alpha: 1;
+  --data-target-color: #313131;
+  --data-target-alpha: 1;
   --data-delta-gain: #16864E;
   --data-delta-loss: #B92F1E;
   --data-delta-neutral: #2573DC;
@@ -656,6 +662,9 @@
   --data-series-high-contrast-3: #90BA9B;
   --data-series-high-contrast-4: #D197A6;
   --data-series-high-contrast-5: #E5C283;
+  --data-axis-color: #9D9D9D;
+  --data-grid-color: #484848;
+  --data-target-color: #B7B7B7;
   --data-delta-gain: #1AA05C;
   --data-delta-loss: #CC4333;
   --data-delta-neutral: #2674DC;
@@ -3473,7 +3482,7 @@
 
 /* ============================================================
    Chart-line  (from snippets/Chart-line.reference.html)
-   Aria: role="group", aria-labelledby, role="img", aria-label
+   Aria: role="group", aria-labelledby, aria-label, aria-pressed, aria-controls, aria-expanded, role="region"
    Scope: .cn-chart-line   ============================================================ */
 .cn-chart-line{
   --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
@@ -3483,25 +3492,52 @@
   --ink: var(--text-default);
   --baseline: var(--border-action-strong);
   --line: var(--border-subtle);
-  --grid-alpha: .10;
-  --axis-alpha: .6;
+  --data-series-1-hc: var(--data-series-high-contrast-1);
+  --data-series-2-hc: var(--data-series-high-contrast-2);
+  --data-series-3-hc: var(--data-series-high-contrast-3);
+  --data-axis: var(--data-axis-color);
+  --axis-alpha: var(--data-axis-alpha);
+  --data-grid: var(--data-grid-color);
+  --grid-alpha: var(--data-grid-alpha);
+  --data-target: var(--data-target-color);
+  --target-alpha: var(--data-target-alpha);
+  --shadow: var(--elevation-functional);
+  --pop-border: var(--elevation-border);
 }
-[data-theme="dark"] .cn-chart-line{
-  --grid-alpha: .16;
-}
+/* DV-D07 alpha slots ride the roles: axis/grid COLOUR is snapped to the neutral ramp; alpha
+     defaults 1.0 and only a theme pulling that lever populates <1 (composite contrast then applies). */
+.cn-chart-line [data-contrast="high"]{--data-series-1:var(--data-series-1-hc);
+    --data-series-2:var(--data-series-2-hc);
+    --data-series-3:var(--data-series-3-hc);}
 .cn-chart-line h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
 .cn-chart-line .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
-.cn-chart-line figure.dv{margin:0;}
-.cn-chart-line .dv-stage{overflow-x:auto; padding-bottom:4px;}
-/* DV-D02 static: fixed geometry, scroll — text never scales */
+.cn-chart-line figure.dv{margin:0; position:relative;}
+/* relative = the table-popover anchor */
+/* HEAD = ONE H-stack: title + ALL controls on the same line (Dave, 2026-07-23); when the
+     controls run out of room they WRAP to their own row under the title (H→V, plain flex-wrap —
+     no JS, no breakpoint). Within the controls row the buttons wrap again if they must. */
+.cn-chart-line .dv-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; margin:0 0 12px;}
+.cn-chart-line .dv-title{margin:0;}
+/* optional slot (dv-006) — renders only when supplied */
+.cn-chart-line .dv-controls{display:flex; flex-wrap:wrap; gap:8px; align-items:center;}
+.cn-chart-line .dv-stage{overflow-x:auto; padding-bottom:4px; padding-right:24px;}
+/* JS-off: DV-D02 static answer — fixed geometry, scroll.
+     right padding = the line-end letter zone: the scroll container clips at its padding box, so the
+     keys painting past the svg edge stay visible (fit recomputes to the narrower measured width). */
 .cn-chart-line .dv-chart-area{width:580px;}
 .cn-chart-line .dv-svg{display:block; width:580px; height:260px; overflow:visible;}
-.cn-chart-line .dv-grid{stroke:var(--ink); stroke-opacity:var(--grid-alpha); stroke-width:1;}
+/* JS-on (dv-behaviour adds .dv-fit-on): width releases to the container; fitCharts relayouts
+     HORIZONTAL positions only — height + text metrics fixed, viewBox pinned 1:1 (DV-D02). */
+.cn-chart-line figure.dv-fit-on .dv-chart-area{width:100%;}
+.cn-chart-line figure.dv-fit-on .dv-svg{width:100%;}
+.cn-chart-line .dv-grid{stroke:var(--data-grid); stroke-opacity:var(--grid-alpha); stroke-width:1;}
 .cn-chart-line line.dv-axis{stroke:var(--baseline); stroke-width:1;}
 .cn-chart-line text.dv-axis, .cn-chart-line text.dv-label{opacity:var(--axis-alpha);}
 /* markers — BACKGROUND mode promoted: series-colour fill + page stroke at line width (2.5) */
 .cn-chart-line .dv-mk{fill:var(--sc); stroke:var(--page); stroke-width:2.5; vector-effect:non-scaling-stroke;}
+.cn-chart-line .dv-marker{outline-offset:2px;}
+.cn-chart-line .dv-marker:focus-visible{outline:2px solid var(--ink);}
 /* entry motion — CSS only (DEF-003): lines draw (Batch 9 pathLength), markers land on the eased cadence (Batch 8) */
 @media (prefers-reduced-motion:no-preference){
 .cn-chart-line .dv-animate polyline.dv-series{stroke-dasharray:2400; stroke-dashoffset:2400; animation:cn-chart-line-dvDraw var(--draw-slow) forwards;}
@@ -3509,17 +3545,70 @@
 }
 @keyframes cn-chart-line-dvDraw{to{stroke-dashoffset:0;}}
 @keyframes cn-chart-line-dvFade{from{opacity:0;} to{opacity:1;}}
+/* legend-filter hide/show rides a CSS transition (decorative half stays CSS). visibility
+     transitions too: the fade-out plays, then the element leaves (markers can't rely on
+     opacity alone — dvFade's fill outranks inline styles; render-verify catch 2026-07-23). */
+.cn-chart-line polyline.dv-series, .cn-chart-line g.dv-marker, .cn-chart-line text.dv-endkey{transition:opacity var(--ease), visibility var(--ease);}
+@media (prefers-reduced-motion:no-preference){
+.cn-chart-line .dv-animate text.dv-endkey{opacity:0; animation:cn-chart-line-dvFade var(--ease) both; animation-delay:2400ms;}
+/* the letter lands as its line finishes drawing */
+}
 .cn-chart-line .dv-legend{list-style:none; display:flex; flex-wrap:wrap; justify-content:center; gap:16px; margin:16px 0 0; padding:0;}
-/* kit 14px → 16px: the 4px-grid gate bites resurrections too (stepper precedent) */
-.cn-chart-line .dv-legend li{display:flex; align-items:center; gap:8px; color:var(--ink);}
+.cn-chart-line .dv-legend li{display:flex;}
+/* legend rows are FILTER BUTTONS — quiet utility state, NOT B-D7 press physics (Q5 posture) */
+.cn-chart-line .dv-legbtn{display:flex; align-items:center; gap:8px; min-height:24px; background:transparent;
+    border:0; padding:0; color:var(--ink); cursor:pointer; transition:opacity var(--ease);}
+.cn-chart-line .dv-legbtn:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+/* OFF state (Dave, 2026-07-23 evening, refined same session — supersedes the strike-through
+     draft): HOLLOWED swatch + swatch outline AND text in an AA-passing grey = the data/axis role
+     (6.10:1 L · 6.42:1 D, mode-aware, already minted — no new token). The hollow is the
+     non-colour channel; text NEVER dims (inactive ≠ disabled, ADR-0014 floor). !important is
+     required only to beat the swatch's inline series background — scoped to this state. */
+.cn-chart-line .dv-legbtn[aria-pressed="false"]{color:var(--data-axis);}
+.cn-chart-line .dv-legbtn[aria-pressed="false"] .sw{background:transparent !important; border:2px solid var(--data-axis);}
+/* hollow = BORDER (Dave), inside the 12px box (border-box) */
+.cn-chart-line .dv-legbtn[aria-pressed="false"] .dv-key{opacity:1;}
+/* the letter keeps the SAME AA grey — its resting .6 dim would sink it below the floor */
+/* swatches carry the MARKER SHAPES too (Dave, same session) — circle A · square B · diamond C,
+     mirroring the chart's own non-colour channel; 50% = the circle idiom (radius-gate exempt);
+     diamond = 8px square rotated 45° (diagonal ≈ the 12px optical size, on the 4px grid). */
+.cn-chart-line .dv-legend .sw-circle{border-radius:50%;}
+.cn-chart-line .dv-legend .sw-diamond{width:8px; height:8px; transform:rotate(45deg); margin:2px;}
 .cn-chart-line .dv-legend .sw{width:12px; height:12px; flex:none;}
-.cn-chart-line .dv-legend .dv-key{font-weight:700; opacity:.6; min-width:12px; font-variant-numeric:tabular-nums;}
-.cn-chart-line details.dv-tabledetails{margin:8px 0 0;}
-.cn-chart-line details.dv-tabledetails summary{cursor:pointer; opacity:.6; width:max-content;}
-.cn-chart-line details.dv-tabledetails summary:hover{opacity:1; text-decoration:underline; text-underline-offset:3px;}
-.cn-chart-line details.dv-tabledetails summary:focus-visible{outline:2px solid var(--ink); outline-offset:2px; opacity:1;}
-.cn-chart-line table.dv-table{border-collapse:collapse; margin-top:8px; color:var(--ink);}
-.cn-chart-line table.dv-table caption{text-align:left; opacity:.6; margin-bottom:4px;}
+.cn-chart-line .dv-legend .dv-key{opacity:.6; min-width:12px;}
+/* table-view POPOVER panel — Dave's mock: floating card on the surface ground, thin border,
+     soft shadow (the Popover/Tooltip anchored-overlay elevation recipe: shadow in light, grey
+     outline in dark), NOT frosted. Radius = role token (theme-flexed). */
+.cn-chart-line .dv-tbl-toggle, .cn-chart-line .dv-vt{background:transparent; border:1px solid var(--line); color:var(--ink);
+    min-height:24px; padding:4px 8px; cursor:pointer; flex:none; transition:border-color var(--ease);}
+.cn-chart-line .dv-tbl-toggle:hover, .cn-chart-line .dv-vt:hover{border-color:var(--ink);}
+.cn-chart-line .dv-tbl-toggle:focus-visible, .cn-chart-line .dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-line .dv-tbl-toggle[aria-expanded="true"], .cn-chart-line .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
+/* the VIEW pair is a segmented switch — exclusive, one always filled (active view); reads as a
+     different control from the outline ADDITIVE toggles beside it (Dave's state-model ruling) */
+.cn-chart-line .dv-seg{display:flex;}
+.cn-chart-line .dv-seg .dv-vt + .dv-vt{border-left:0;}
+.cn-chart-line .dv-seg .dv-vt[aria-pressed="true"]{background:var(--ink); color:var(--page); border-color:var(--ink);}
+.cn-chart-line .dv-off{display:none !important;}
+/* baked-variant switching (menu 6/7/9) — geometry generated, never computed */
+.cn-chart-line .dv-quiet{opacity:.25 !important;}
+/* highlight dims the DATA layer only (!important outranks the entry animation) */
+.cn-chart-line .dv-ghost{stroke:var(--data-series-1); fill:none; opacity:.45; stroke-width:2; stroke-dasharray:8 4;}
+.cn-chart-line .dv-target{stroke:var(--data-target); opacity:var(--target-alpha); stroke-width:1.5; stroke-dasharray:8 4;}
+.cn-chart-line .dv-target-label{fill:var(--data-target);}
+.cn-chart-line .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
+.cn-chart-line .dv-tablepanel[hidden]{display:none;}
+.cn-chart-line .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+/* the value popover (dvTip) — created by dv-behaviour, styled here (token-bound) */
+.cn-chart-line .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:8px 12px; pointer-events:none;
+    opacity:0; transition:opacity var(--ease);}
+.cn-chart-line .dv-tip.on{opacity:1;}
+.cn-chart-line table.dv-table{border-collapse:collapse; color:var(--ink);}
+.cn-chart-line table.dv-table caption{text-align:left; opacity:.6; margin-bottom:8px;}
 .cn-chart-line table.dv-table th, .cn-chart-line table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
 .cn-chart-line table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
 .cn-chart-line table.dv-table thead th{opacity:.6; font-weight:500;}
@@ -6734,7 +6823,7 @@
   --border-radius-control: 4px;
 }
 
-/* ---- Apollo Supercharge  [data-apollo-theme="supercharge"]  (117 override path(s), apollo-supercharge.overrides) ---- */
+/* ---- Apollo Supercharge  [data-apollo-theme="supercharge"]  (120 override path(s), apollo-supercharge.overrides) ---- */
 [data-apollo-theme="supercharge"]{
   --background-default: #F7F6F4;
   --border-action-strong: #13110E;
@@ -6778,6 +6867,9 @@
   --color-neutral-raise-3: #322E29;
   --component-type-button-family-press-darken: 1;
   --component-type-button-family-press-travel: 0;
+  --data-axis-color: #493F39;
+  --data-grid-color: #CDC8C6;
+  --data-target-color: #312C26;
   --data-vis-border-on-dark-baseline-2: #333333;
   --data-vis-border-on-dark-gridline: #333333;
   --data-vis-border-on-light-baseline-2: #DFDEDC;
@@ -6878,6 +6970,9 @@
   --button-tertiary-border-disabled: #524842;
   --button-tertiary-label-default: #F7F6F4;
   --button-tertiary-label-disabled: #524842;
+  --data-axis-color: #635750;
+  --data-grid-color: #413934;
+  --data-target-color: #806E65;
   --data-vis-border-on-dark-baseline-2: #524842;
   --data-vis-border-on-dark-gridline: #524842;
   --data-vis-border-on-light-baseline-2: #333333;
@@ -7223,16 +7318,24 @@
 }
 [data-apollo-theme="supercharge"] .cn-chart-line{
   --baseline: #13110E;
+  --data-axis: #493F39;
+  --data-grid: #CDC8C6;
+  --data-target: #312C26;
   --ink: #13110E;
   --line: #CDC8C6;
   --page: #F7F6F4;
+  --pop-border: #FFFFFF00;
 }
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-line,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-line{
   --baseline: #FFFFFF;
+  --data-axis: #635750;
+  --data-grid: #413934;
+  --data-target: #806E65;
   --ink: #F7F6F4;
   --line: #524842;
   --page: #1A1A1A;
+  --pop-border: #524842;
 }
 [data-apollo-theme="supercharge"] .cn-chart-scatter{
   --baseline: #13110E;

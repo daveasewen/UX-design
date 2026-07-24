@@ -49,10 +49,11 @@ def store(fname):
     return _STORES[fname]
 
 def _unitless(path):
-    """Number tokens that take no px — the motion press-physics factors and the
-    component-type parameters that cache them (ADR-0013 / B-D7)."""
+    """Number tokens that take no px — the motion press-physics factors, the
+    component-type parameters that cache them (ADR-0013 / B-D7), and the DV-D07
+    two-channel alpha slots (data/*/alpha — an opacity factor, never a length)."""
     return (path.startswith("motion/press/")
-            or path.rsplit("/", 1)[-1] in ("press-travel", "press-darken"))
+            or path.rsplit("/", 1)[-1] in ("press-travel", "press-darken", "alpha"))
 
 def _fmt(val, path=""):
     """CSS-format a resolved token value: numbers are px except 0 and the unitless

@@ -98,6 +98,42 @@
         "$type": "number",
         "$description": "type-group parameter — :active brightness factor. Cache of motion/press/darken."
       }
+    },
+    "dataviz": {
+      "$description": "ADR-0015 (accepted Dave 2026-07-23) — the behaviour-partial group: retrieval reaches JS. ONE hand-authored source (knowledge/canon/dv-behaviour.js: value popover dvTip · responsive fit reflow · table-view popover panel · legend-as-filter) injected into every member between AUTO-BEHAVIOUR markers by gen_component_partials.py, --check sync-gated, byte-exact; the performance contract on the source (≤16KB raw · no setInterval/network/polling · single rAF-debounced resize · delegated events) is gated by _validate_behaviour.py. Members accrete as the chart-revisit wave lands (exemplar first: Chart-line, 2026-07-23). DELIBERATE NON-MEMBERSHIP of button-family: legend/table-toggle controls are quiet utility pressables, NOT B-D7 press physics (chart-revisit Q5, flagged to Dave, standing). $manifestBinds carry the DV-D07 two-channel chrome roles (data/axis + data/grid, colour + alpha slot) — the mint rides the same lane. Contracts fire on registration (ADR-0013 posture).",
+      "$members": {
+        "Chart-line": {
+          "selector": "figure.dv"
+        }
+      },
+      "$behaviour": {
+        "dv-behaviour": {
+          "source": "canon/dv-behaviour.js",
+          "requires": {
+            "vars": [
+              "--data-axis",
+              "--axis-alpha",
+              "--data-grid",
+              "--grid-alpha"
+            ],
+            "matchValues": [],
+            "declarations": [
+              "data-tip=\"",
+              "data-fxs=\"",
+              "class=\"dv-tbl-toggle",
+              "data-series-toggle=\"",
+              "class=\"dv-tablepanel"
+            ]
+          },
+          "$manifestBinds": {
+            "--data-axis": "data/axis/color",
+            "--axis-alpha": "data/axis/alpha",
+            "--data-grid": "data/grid/color",
+            "--grid-alpha": "data/grid/alpha"
+          },
+          "$description": "The Layer-2 interaction layer, single-sourced (ADR-0015). requires.vars = the DV-D07 rebind proof (every member declares the two-channel axis/grid idiom); requires.declarations = the behaviour hooks a member must carry (popover data-tip · fit fractions · table-popover toggle+panel · legend filter buttons); $manifestBinds pin the manifest paths so the projector + cascade reach the roles. Wave note: hook set is the LINE exemplar's — if a member legitimately lacks a hook (e.g. sparkline legend), split the behaviour contract per-capability THEN, from observed need, not now."
+        }
+      }
     }
   }
 }

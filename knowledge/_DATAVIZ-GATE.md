@@ -26,6 +26,22 @@ Gridline contrast is advisory (decorative, WCAG 1.4.11-exempt); series-fill + ax
 ## ✓ snippets/Chart-donut.reference.html — PASS
 
 ## ✓ snippets/Chart-line.reference.html — PASS
+- ⚠ line — dv-016 [gridline]: var(--data-grid)=#E1E1E1 vs surface #FFFFFF = 1.31:1 (<3:1) in light mode.
+- ⚠ line — dv-016 [gridline]: var(--data-grid)=#E1E1E1 vs surface #FFFFFF = 1.31:1 (<3:1) in light mode.
+- ⚠ line — dv-016 [gridline]: var(--data-grid)=#E1E1E1 vs surface #FFFFFF = 1.31:1 (<3:1) in light mode.
+- ⚠ line — dv-016 [gridline]: var(--data-grid)=#E1E1E1 vs surface #FFFFFF = 1.31:1 (<3:1) in light mode.
+- ⚠ line — dv-016 [gridline]: var(--data-grid)=#484848 vs surface #1A1A1A = 1.90:1 (<3:1) in dark mode.
+- ⚠ line — dv-016 [gridline]: var(--data-grid)=#484848 vs surface #1A1A1A = 1.90:1 (<3:1) in dark mode.
+- ⚠ line — dv-016 [gridline]: var(--data-grid)=#484848 vs surface #1A1A1A = 1.90:1 (<3:1) in dark mode.
+- ⚠ line — dv-016 [gridline]: var(--data-grid)=#484848 vs surface #1A1A1A = 1.90:1 (<3:1) in dark mode.
+- ⚠ multiline — dv-016 [gridline]: var(--data-grid)=#E1E1E1 vs surface #FFFFFF = 1.31:1 (<3:1) in light mode.
+- ⚠ multiline — dv-016 [gridline]: var(--data-grid)=#E1E1E1 vs surface #FFFFFF = 1.31:1 (<3:1) in light mode.
+- ⚠ multiline — dv-016 [gridline]: var(--data-grid)=#E1E1E1 vs surface #FFFFFF = 1.31:1 (<3:1) in light mode.
+- ⚠ multiline — dv-016 [gridline]: var(--data-grid)=#E1E1E1 vs surface #FFFFFF = 1.31:1 (<3:1) in light mode.
+- ⚠ multiline — dv-016 [gridline]: var(--data-grid)=#484848 vs surface #1A1A1A = 1.90:1 (<3:1) in dark mode.
+- ⚠ multiline — dv-016 [gridline]: var(--data-grid)=#484848 vs surface #1A1A1A = 1.90:1 (<3:1) in dark mode.
+- ⚠ multiline — dv-016 [gridline]: var(--data-grid)=#484848 vs surface #1A1A1A = 1.90:1 (<3:1) in dark mode.
+- ⚠ multiline — dv-016 [gridline]: var(--data-grid)=#484848 vs surface #1A1A1A = 1.90:1 (<3:1) in dark mode.
 
 ## ✓ snippets/Chart-scatter.reference.html — PASS
 

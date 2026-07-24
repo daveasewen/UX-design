@@ -39,7 +39,7 @@
 | Hero | org | 11 | border/subtle, color/primary, icon/default-reverse, background/default… | 1.3.1, 1.4.3, 2.2.2, 2.3.3, 2.4.6 | imagery, hexagon-masks, calls-to-action, typography-usage | 8 |
 | Icon button | ato | 24 | icon/default, icon/default-reverse, icon/disabled, background/default… | 1.4.11, 2.1.1, 2.4.4, 2.4.7, 2.5.8, 4.1.2 | — |  |
 | Input fields | mol | 17 | background/default, border/subsection, elevation/functional, background/hover… | 1.3.1, 1.3.5, 1.4.1, 2.1.1, 2.4.7, 3.3.1, 3.3.2, 4.1.2 | forms, tone-of-voice | 2 |
-| Line chart | org | 4 | background/default, text/default | 1.3.1, 1.4.1, 1.4.11, 1.4.13 | — |  |
+| Line chart | org | 5 | background/default, elevation/border, elevation/functional | 1.3.1, 1.4.1, 1.4.11, 1.4.13 | — |  |
 | Links | mol | 8 | color/primary, icon/default, icon/default-reverse, icon/disabled… | 1.4.1, 1.4.11, 1.4.3, 2.4.4, 2.4.7 | calls-to-action, tone-of-voice | 4 |
 | List items | mol | 16 | color/primary, icon/default, icon/default-reverse, icon/disabled… | 1.3.1, 1.4.3, 2.5.7, 2.5.8, 4.1.2, 4.1.3 | typography-usage, icons |  |
 | Loading indicator | ato | 4 | icon/default, icon/default-reverse, text/default, text/reverse | 1.1.1, 2.2.2, 2.3.3, 4.1.3 | time-based-indicators |  |

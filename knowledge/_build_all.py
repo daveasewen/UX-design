@@ -64,6 +64,12 @@ STEPS = [
     # the ratchet makes local re-implementation of a registered partial a build failure.
     ("component-partials sync — AUTO-PARTIAL injection + contracts (ADR-0013)", "gen_component_partials.py", ["--check"]),
     ("component-partials selftest (ADR-0013)", "gen_component_partials.py", ["--selftest"]),
+    # ADR-0015 (2026-07-23): behaviour partials — the dataviz interaction layer is ONE
+    # hand-authored JS source injected between AUTO-BEHAVIOUR markers (sync rides the
+    # partials --check above). This gate owns the PERFORMANCE CONTRACT on the source:
+    # ≤16KB raw · no polling/network · single rAF-debounced resize · DEF-003 boundary.
+    ("Behaviour contract gate — dv-behaviour size + banned patterns (ADR-0015)", "_validate_behaviour.py"),
+    ("Behaviour contract selftest (ADR-0015)", "_validate_behaviour.py", ["--selftest"]),
     ("canon components — regenerate from snippets (ADR-0013 ruling 4)", "canon/gen_canon_components.py"),
     ("canon components determinism check (ADR-0013 ruling 4)", "canon/gen_canon_components.py", ["--check"]),
     ("partial re-implementation ratchet (ADR-0013)", "_validate_partials.py"),
@@ -137,6 +143,9 @@ for i, step in enumerate(STEPS, 1):
             rc = rc or r.returncode
         elif "component-partials" in label:
             print(f"\n❌ component-partials gate failed (exit {r.returncode}) — an AUTO-PARTIAL block is out of sync with its source atom, or a member breaks the registry contract (vars / matchValues / manifest binds). Run: python3 knowledge/gen_component_partials.py — registry: knowledge/component-types.json (ADR-0013)")
+            rc = rc or r.returncode
+        elif "Behaviour contract" in label:
+            print(f"\n❌ behaviour-contract gate failed (exit {r.returncode}) — the dv-behaviour source breaks the ADR-0015 performance contract (size / banned pattern / resize discipline) or a member snippet carries an external script src. See knowledge/_BEHAVIOUR-GATE.md")
             rc = rc or r.returncode
         elif "canon components" in label:
             print(f"\n❌ canon components step failed (exit {r.returncode}) — .cn-* blocks diverged from the snippets or the generator is non-deterministic. Run: python3 knowledge/canon/gen_canon_components.py (ADR-0013 ruling 4)")

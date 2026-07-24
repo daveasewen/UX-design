@@ -96,7 +96,8 @@ def main():
         for var, token in manifest.get("vars", {}).items():
             for mode in ("light", "dark"):
                 hexv = resolve(token, mode)
-                if hexv and hexv.upper() in LEGACY_ONLY_HEXES:
+                # non-string leaves (DV-D07 data/*/alpha number slots) can never be a colour leak
+                if isinstance(hexv, str) and hexv.upper() in LEGACY_ONLY_HEXES:
                     reason = LEGACY_ONLY_HEXES[hexv.upper()]
                     if (name, var) in WAIVERS:
                         waived.append((name, var, token, mode, hexv, WAIVERS[(name, var)]))

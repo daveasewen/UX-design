@@ -26,6 +26,15 @@ Markers (single-line comments, inside <style>):
   source atom:  /* ===== PARTIAL <name> START ... ===== */   CSS   /* ===== PARTIAL <name> END ===== */
   consumers:    /* ===== AUTO-PARTIAL <name> START ... ===== */  (generated)  /* ===== AUTO-PARTIAL <name> END ===== */
 
+BEHAVIOUR partials (ADR-0015, 2026-07-23 — retrieval reaches JS): a group may carry
+$behaviour/<name> whose source is a hand-authored file under knowledge/ (e.g.
+canon/dv-behaviour.js — the type.css precedent). The generator injects it into every
+member snippet as a whole <script> element between HTML-comment markers:
+  <!-- ===== AUTO-BEHAVIOUR <name> START (group) ===== -->  (generated)  <!-- ===== AUTO-BEHAVIOUR <name> END ===== -->
+Same contract machinery (requires.vars / declarations / $manifestBinds), same --check
+sync gate, byte-exact. Snippets stay portable AFTER generation — the block travels.
+The performance contract on the SOURCE (≤16KB, banned patterns) is _validate_behaviour.py's.
+
 Usage:
   python3 knowledge/gen_component_partials.py             # inject/refresh all consumers
   python3 knowledge/gen_component_partials.py --check     # verify in sync + contracts (build gate)
@@ -60,6 +69,19 @@ def source_block(html, pname):
 AUTO_RE = lambda pname: re.compile(
     r'(/\* ===== AUTO-PARTIAL ' + re.escape(pname) + r' START[^\n]*===== \*/)(.*?)(/\* ===== AUTO-PARTIAL '
     + re.escape(pname) + r' END ===== \*/)', re.S)
+
+# Behaviour markers are HTML comments (the payload is a whole <script> element, not CSS).
+BEHAVIOUR_RE = lambda bname: re.compile(
+    r'(<!-- ===== AUTO-BEHAVIOUR ' + re.escape(bname) + r' START[^\n]*===== -->)(.*?)(<!-- ===== AUTO-BEHAVIOUR '
+    + re.escape(bname) + r' END ===== -->)', re.S)
+
+def behaviour_inner(js, bname, group, source):
+    """The generated payload between AUTO-BEHAVIOUR markers: provenance + the script."""
+    prov = (f"/* INJECTED from knowledge/{source} (behaviour \"{bname}\", group {group} —\n"
+            f"   registry knowledge/component-types.json, ADR-0015). DO NOT hand-edit between the\n"
+            f"   AUTO-BEHAVIOUR markers: edit the source and regenerate:\n"
+            f"   python3 knowledge/gen_component_partials.py */")
+    return "<script>\n" + prov + "\n" + js.rstrip("\n") + "\n</script>"
 
 def rewrite_selectors(css, root_sel, member_sel):
     """Map the atom's root selector onto the member's. Word-boundary safe:
@@ -191,6 +213,32 @@ def run(write):
                         html = rx.sub(lambda mm: mm.group(1) + between + mm.group(3), html, count=1)
                         open(mp, "w").write(html)
                         injected += 1
+        # ---- behaviour partials (ADR-0015): source = a hand-authored JS file under knowledge/
+        for bname, beh in (g.get("$behaviour") or {}).items():
+            src_path = os.path.join(HERE, beh["source"])
+            if not os.path.exists(src_path):
+                fails.append(f"{gname}/{bname}: behaviour source knowledge/{beh['source']} missing"); continue
+            js = open(src_path).read()
+            for mname, mconf in members.items():
+                mp = snippet_path(mname)
+                if not os.path.exists(mp):
+                    fails.append(f"{gname}/{bname}: member snippet {mname} missing"); continue
+                html = open(mp).read()
+                fails += check_contracts(mname, html, beh, js)
+                inner = behaviour_inner(js, bname, gname, beh["source"])
+                between = "\n" + inner + "\n  "     # same canonical padding as CSS partials
+                rx = BEHAVIOUR_RE(bname)
+                m = rx.search(html)
+                if not m:
+                    fails.append(f"{gname}/{bname}: {mname} is a member but carries no AUTO-BEHAVIOUR "
+                                 f"markers (membership is deliberate — add the marker pair to migrate)")
+                    continue
+                if m.group(2) != between:
+                    out_of_sync.append(f"{mname} ({bname})")
+                    if write:
+                        html = rx.sub(lambda mm: mm.group(1) + between + mm.group(3), html, count=1)
+                        open(mp, "w").write(html)
+                        injected += 1
     return fails, out_of_sync, injected
 
 # ------------------------------------------------------------------ selftest
@@ -239,6 +287,18 @@ def selftest():
     filled = AUTO_RE("p").sub(lambda m: m.group(1) + "\nX\n  " + m.group(3), empty, count=1)
     if AUTO_RE("p").search(filled).group(2) != "\nX\n  ":
         fails.append("AUTO-PARTIAL injection not idempotent on re-read")
+    # 5c. AUTO-BEHAVIOUR markers: empty pair matched, injection idempotent, tamper has teeth
+    bempty = '  <!-- ===== AUTO-BEHAVIOUR b START (g) ===== -->\n  <!-- ===== AUTO-BEHAVIOUR b END ===== -->'
+    if not BEHAVIOUR_RE("b").search(bempty):
+        fails.append("empty AUTO-BEHAVIOUR marker pair not matched (fresh migrations would fail)")
+    binner = behaviour_inner("var x=1;", "b", "g", "canon/x.js")
+    bfilled = BEHAVIOUR_RE("b").sub(lambda m: m.group(1) + "\n" + binner + "\n  " + m.group(3), bempty, count=1)
+    if BEHAVIOUR_RE("b").search(bfilled).group(2) != "\n" + binner + "\n  ":
+        fails.append("AUTO-BEHAVIOUR injection not idempotent on re-read")
+    if binner == behaviour_inner("var x=2;", "b", "g", "canon/x.js"):
+        fails.append("tampered behaviour source produced identical injection (no teeth)")
+    if "<script>" not in binner or "</script>" not in binner or "ADR-0015" not in binner:
+        fails.append("behaviour payload malformed (script element + provenance expected)")
     # 6. registry caches: live registry must pass; a poisoned cache must fail
     reg = load_registry()
     live = check_caches(reg)
