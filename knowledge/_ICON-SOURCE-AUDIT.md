@@ -21,7 +21,7 @@
 | 13 | Cards | 6 | 6 | 0 | 0 | — | ✅ verified |
 | 14 | Chart-bar | 0 | 0 | 0 | 0 | — | — no inline svg paths |
 | 15 | Chart-donut | 10 | 0 | 10 | 0 | — | ✅ verified · 10 bespoke |
-| 16 | Chart-line | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 16 | Chart-line | 6 | 6 | 0 | 0 | — | ✅ verified |
 | 17 | Chart-scatter | 0 | 0 | 0 | 0 | — | — no inline svg paths |
 | 18 | Chart-sparkline | 0 | 0 | 0 | 0 | — | — no inline svg paths |
 | 19 | Confirmation | 1 | 1 | 0 | 0 | — | ✅ verified |

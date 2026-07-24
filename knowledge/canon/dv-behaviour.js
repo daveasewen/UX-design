@@ -109,8 +109,7 @@
     if (!panel) { return; }
     var open = panel.hasAttribute('hidden');           /* opening if currently hidden */
     if (open) { panel.removeAttribute('hidden'); } else { panel.setAttribute('hidden', ''); }
-    btn.setAttribute('aria-expanded', String(open));
-    btn.textContent = open ? 'Hide table' : 'View as table';
+    btn.setAttribute('aria-expanded', String(open));   /* label stays static; the solid arrow rotates via CSS (Dave 2026-07-24) */
     if (open) { panel.focus(); }
   }
   document.addEventListener('click', function (e) {
@@ -135,7 +134,7 @@
     if (!panel || panel.hasAttribute('hidden')) { return; }
     panel.setAttribute('hidden', '');
     var btn = document.querySelector('.dv-tbl-toggle[aria-controls="' + panel.id + '"]');
-    if (btn) { btn.setAttribute('aria-expanded', 'false'); btn.textContent = 'View as table'; btn.focus(); }
+    if (btn) { btn.setAttribute('aria-expanded', 'false'); btn.focus(); }   /* label static (Dave 2026-07-24) */
   });
 
   /* ---------- LEGEND-AS-FILTER — show/hide a series from its legend button.
@@ -248,9 +247,9 @@
     }
     var csv = out.join('\n');
     function done() {
-      var old = btn.textContent;
-      btn.textContent = 'Copied';
-      setTimeout(function () { btn.textContent = old; }, 1600);
+      /* label stays put; the copy icon swaps to a tick briefly (Dave 2026-07-24) */
+      btn.classList.add('is-copied');
+      setTimeout(function () { btn.classList.remove('is-copied'); }, 1600);
     }
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(csv).then(done, done);

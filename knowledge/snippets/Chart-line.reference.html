@@ -23,8 +23,9 @@
        height, TEXT NEVER SCALES (viewBox pinned 1:1 to the measured width). JS-ON opts in via
        .dv-fit-on releasing the fixed width; JS-OFF keeps the static answer (fixed 580 + scroll).
     3. TABLE-VIEW POPOVER — Dave's mock (2026-07-23): floating card (surface ground + elevation
-       border/shadow recipe, NOT frosted), "View as table" ⇄ "Hide table" toggle top-right,
-       aria-controls/aria-expanded, panel = labelled region, tabindex=-1 focus hand-off, Esc
+       border/shadow recipe, NOT frosted), opened by a DROPDOWN button top-right (static "View as
+       table" label + a SOLID arrow that rotates on open — Dave 2026-07-24; the label no longer
+       swaps to "Hide table"), aria-controls/aria-expanded, panel = labelled region, tabindex=-1 focus hand-off, Esc
        dismisses back to the toggle. Replaces the native <details>. Real <table> stays (dv-005).
     4. LEGEND-AS-FILTER — multi-series legend rows are BUTTONS (data-series-toggle, aria-pressed,
        keyboard-operable); off = dimmed + line-through (never colour alone). QUIET UTILITY state,
@@ -162,6 +163,19 @@
   .dv-tbl-toggle:hover,.dv-vt:hover{border-color:var(--ink);}
   .dv-tbl-toggle:focus-visible,.dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
   .dv-tbl-toggle[aria-expanded="true"],.dv-vt[aria-pressed="true"]{border-color:var(--ink);}
+  /* single TOGGLES (Target line · Last year) — outline when off, solid FILL when on (Dave 2026-07-24:
+     "look like single toggles" — the seg's fill language, one cell). */
+  .dv-tgl[aria-pressed="true"]{background:var(--ink); color:var(--page); border-color:var(--ink);}
+  /* icon + label buttons (CSV action · table dropdown) */
+  .dv-act,.dv-dd{display:inline-flex; align-items:center; gap:8px;}
+  .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
+  /* CSV action — the copy icon swaps to a tick on success; the LABEL never changes (Dave 2026-07-24) */
+  .dv-csv .dv-ico-tick{display:none;}
+  .dv-csv.is-copied .dv-ico-copy{display:none;}
+  .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
+  /* table DROPDOWN — SOLID arrow (icon asset arrow-down, not a chevron); rotates on open, label static */
+  .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
+  .dv-dd[aria-expanded="true"] .dv-ico-arrow{transform:rotate(180deg);}
   /* the VIEW pair now CONSUMES the Segmented-control atom (Dave, 2026-07-24): sliding indicator,
      2px inset track, square (Mono). Reads as a different control from the outline ADDITIVE toggles
      beside it (Dave's state-model ruling). Type = canon/type.css .seg.sm button (12/500, T-D15). */
@@ -234,10 +248,10 @@
           <button type="button" data-dv-view-btn="discrete" aria-pressed="true">Monthly</button>
           <button type="button" data-dv-view-btn="cumulative" aria-pressed="false">Year to date</button>
         </div>
-        <button type="button" class="dv-vt t-cm-chart-label" data-dv-toggle="target" aria-pressed="false">Target line</button>
-        <button type="button" class="dv-vt t-cm-chart-label" data-dv-toggle="ghost" aria-pressed="false">Last year</button>
-        <button type="button" class="dv-vt dv-csv t-cm-chart-label">Copy data (CSV)</button>
-        <button class="dv-tbl-toggle t-cm-chart-label" type="button" aria-controls="cl1-tbl" aria-expanded="false">View as table</button>
+        <button type="button" class="dv-vt dv-tgl t-cm-chart-label" data-dv-toggle="target" aria-pressed="false">Target line</button>
+        <button type="button" class="dv-vt dv-tgl t-cm-chart-label" data-dv-toggle="ghost" aria-pressed="false">Last year</button>
+        <button type="button" class="dv-vt dv-act dv-csv t-cm-chart-label"><svg class="dv-ico dv-ico-copy" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M0 18H10.8V7.2H0V18ZM1.2 8.4H9.6V16.8H1.2V8.4ZM8.4 3.6H7.2V6H8.4V3.6ZM8.4 1.2H9.6V0H7.2V2.4H8.4V1.2ZM15.6 0V1.2H16.8V2.4H18V0H15.6ZM12 10.8H14.4V9.6H12V10.8ZM16.8 9.6H15.6V10.8H18V8.4H16.8V9.6ZM16.8 7.2H18V3.6H16.8V7.2ZM10.8 1.2H14.4V0H10.8V1.2Z" fill="currentColor"/></svg><svg class="dv-ico dv-ico-tick" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z" fill="currentColor"/></svg><span>Copy data (CSV)</span></button>
+        <button class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" type="button" aria-controls="cl1-tbl" aria-expanded="false"><span>View as table</span><svg class="dv-ico dv-ico-arrow" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M2 6H16L9 13L2 6Z" fill="currentColor"/></svg></button>
       </div>
     </div>
     <div class="dv-stage"><div class="dv-chart-area">
@@ -334,8 +348,8 @@
     <div class="dv-head">
       <h3 class="dv-title t-cm-section-label">Savings drove growth across every product</h3>
       <div class="dv-controls" role="group" aria-label="Chart tools">
-        <button type="button" class="dv-vt dv-csv t-cm-chart-label">Copy data (CSV)</button>
-        <button class="dv-tbl-toggle t-cm-chart-label" type="button" aria-controls="cl2-tbl" aria-expanded="false">View as table</button>
+        <button type="button" class="dv-vt dv-act dv-csv t-cm-chart-label"><svg class="dv-ico dv-ico-copy" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M0 18H10.8V7.2H0V18ZM1.2 8.4H9.6V16.8H1.2V8.4ZM8.4 3.6H7.2V6H8.4V3.6ZM8.4 1.2H9.6V0H7.2V2.4H8.4V1.2ZM15.6 0V1.2H16.8V2.4H18V0H15.6ZM12 10.8H14.4V9.6H12V10.8ZM16.8 9.6H15.6V10.8H18V8.4H16.8V9.6ZM16.8 7.2H18V3.6H16.8V7.2ZM10.8 1.2H14.4V0H10.8V1.2Z" fill="currentColor"/></svg><svg class="dv-ico dv-ico-tick" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z" fill="currentColor"/></svg><span>Copy data (CSV)</span></button>
+        <button class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" type="button" aria-controls="cl2-tbl" aria-expanded="false"><span>View as table</span><svg class="dv-ico dv-ico-arrow" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M2 6H16L9 13L2 6Z" fill="currentColor"/></svg></button>
       </div>
     </div>
     <div class="dv-stage"><div class="dv-chart-area">
@@ -590,8 +604,7 @@
     if (!panel) { return; }
     var open = panel.hasAttribute('hidden');           /* opening if currently hidden */
     if (open) { panel.removeAttribute('hidden'); } else { panel.setAttribute('hidden', ''); }
-    btn.setAttribute('aria-expanded', String(open));
-    btn.textContent = open ? 'Hide table' : 'View as table';
+    btn.setAttribute('aria-expanded', String(open));   /* label stays static; the solid arrow rotates via CSS (Dave 2026-07-24) */
     if (open) { panel.focus(); }
   }
   document.addEventListener('click', function (e) {
@@ -616,7 +629,7 @@
     if (!panel || panel.hasAttribute('hidden')) { return; }
     panel.setAttribute('hidden', '');
     var btn = document.querySelector('.dv-tbl-toggle[aria-controls="' + panel.id + '"]');
-    if (btn) { btn.setAttribute('aria-expanded', 'false'); btn.textContent = 'View as table'; btn.focus(); }
+    if (btn) { btn.setAttribute('aria-expanded', 'false'); btn.focus(); }   /* label static (Dave 2026-07-24) */
   });
 
   /* ---------- LEGEND-AS-FILTER — show/hide a series from its legend button.
@@ -729,9 +742,9 @@
     }
     var csv = out.join('\n');
     function done() {
-      var old = btn.textContent;
-      btn.textContent = 'Copied';
-      setTimeout(function () { btn.textContent = old; }, 1600);
+      /* label stays put; the copy icon swaps to a tick briefly (Dave 2026-07-24) */
+      btn.classList.add('is-copied');
+      setTimeout(function () { btn.classList.remove('is-copied'); }, 1600);
     }
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(csv).then(done, done);
