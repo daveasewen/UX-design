@@ -4,6 +4,10 @@
 commit, then cut the wave briefs per the receipt's divvy plan." · baseline HEAD at window-open:
 `dcad460`.*
 
+*Context gauge at authoring: 🟢 GREEN ~40% (in-head tally, ESTIMATE ±15% — Half-2 broken). Ample
+headroom → high confidence; this is the first artefact carrying the 2026-07-24 authoring-time-stamp
+practice (`_RUNBOOK-context-gauge.md`).*
+
 ## TL;DR
 
 The conductor work the opener describes was **already committed this morning** by the prior Fable

@@ -66,7 +66,9 @@ only engages at two or more.
 3. Commit only your OWN disjoint files if you must, serialized; when in doubt, don't commit — hand
    files up.
 4. Leave a short **RECEIPT** at the fixed path **`notes/_receipts/<date>-<session-slug>-<topic>.md`**
-   (what landed · open · files touched · proposed §C lines · commit state). The session-slug in the
+   (what landed · open · files touched · proposed §C lines · commit state · **author's context-gauge
+   reading** — `_RUNBOOK-context-gauge.md` § authoring-time stamp: a scrutiny indicator on the
+   receipt's reliability, e.g. `Context gauge at authoring: 🟡 AMBER ~55% (ESTIMATE)`). The session-slug in the
    filename means two workers physically cannot collide. The conductor can also read you directly via
    `session_info`; the receipt is the durable fallback and the anchor its reconcile step (2.5) looks for.
 

@@ -62,7 +62,10 @@ wrong handoff we most want to avoid. Red cue line, ready to use:
      ratified 2026-07-23; same discipline for worker receipts). The header records the session's
      **model, and effort if it was actually set** (#8 — effort is only settable via agent
      definitions today; record it when known, omit otherwise).
-   - **§C queue** — numbered, actionable, plus commit/push state.
+   - **§C queue** — numbered, actionable, plus commit/push state. **Stamp the author's context-gauge
+     reading in the commit-state block** (`_RUNBOOK-context-gauge.md` § authoring-time stamp) — a
+     scrutiny indicator on this handoff's reliability, not a quality score. Format:
+     `Context gauge at authoring: 🟢/🟡/🔴 BAND ~NN% (ESTIMATE)`.
 
    ⚠️ **§A is the section most at risk, because it is the only one that doesn't change each session.**
    On 2026-07-18 a from-scratch rewrite of `GOOD-MORNING.md` reduced §A's standing-instruction note to

@@ -111,6 +111,33 @@ The failure mode is a handoff written *after* quality has already degraded — a
 clean context to do the capture ritual properly. The gauge exists to protect the ritual, not to
 squeeze the last token out of a session.
 
+## The authoring-time STAMP — record the gauge ON the artefact (Dave, 2026-07-24)
+
+Every handoff artefact records the author's gauge reading **at the moment of authoring**, as a
+**scrutiny indicator on that artefact's reliability — NOT a quality verdict.** A record already carries
+provenance and confidence, not just content (`memento-framing`); the fill level it was written at is
+exactly such a confidence annotation. A Red-authored commit or handoff is where confident-false
+inscription is most likely — so the reader deserves to know. A Red artefact is not *necessarily*
+wrong, and a Green one is not *guaranteed* right; the stamp predicts **inscription-risk**, and the
+useful thing is the action it implies, not the number:
+
+- 🔴 **Red at authoring → the next reader RE-VERIFIES before trusting** (re-run `_build_all.py`,
+  spot-check the reconcile / every "landed" claim's evidence) — treat the artefact as suspect.
+- 🟡 **Amber → skim-check** the load-bearing claims. 🟢 **Green → normal trust.**
+
+**Where + format.**
+- The **creator** (conductor/solo) stamps it in `GOOD-MORNING.md`'s COMMIT STATE block.
+- Each **worker** stamps it in its receipt header (`_RUNBOOK-parallel-conductor.md` worker step 4).
+- One line: `Context gauge at authoring: 🟢/🟡/🔴 BAND ~NN% (in-head tally, ESTIMATE ±15% — Half-2
+  broken).` This already appears informally as "wrapped Red / ~Amber" in the ★ banner; the rule
+  formalises it as a REQUIRED field and extends it to receipts.
+
+**Live proof — the session that added this rule (2026-07-24):** the prior conductor wrapped *deep Red*
+and left a real showroom-sync gap — the committed tree failed `_build_all.py` while the spine claimed
+"53/53 green." The follow-up conductor, authoring in Green, re-ran the build, caught it, and fixed it
+(`eb9c9ec`). Had the Red wrap carried this stamp, it would have told that reader to scrutinise the
+commit *before* trusting the "green" claim — which is the whole point.
+
 ## Entry points
 
 `_RUNBOOK-capture-ritual.md` (where Red sends us) · `knowledge/_context_gauge.py` (the engine) ·

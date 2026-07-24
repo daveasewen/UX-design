@@ -205,6 +205,9 @@ python3 knowledge/_build_all.py     # ★ 51 steps (45→51: partials sync+selft
   recommendations in-chat, Dave rules by number, inscribe same hour, **feed the graph seed same hour**.
 - **Surface spin-off candidates**; register ideas in `_FUTURE-STATE.md`. **Run the capture ritual
   unasked**; **stamp dates from `date`**. **Memory accelerates; the repo is the record.**
+- **Stamp the context-gauge reading on every handoff artefact** — creator in `GOOD-MORNING` commit-state,
+  workers in their receipt header — as a SCRUTINY indicator on that artefact (Red-authored ⇒ next reader
+  re-verifies before trusting; not a quality score). Canon: `_RUNBOOK-context-gauge.md` § authoring-time stamp.
 
 ## The other standing documents (REACHABILITY-GATED by `_validate_standing_instructions.py` STAND-002 — keep every one referenced here)
 `_STANDARDS.md` (★ the standards hub) · `AGENTS.md` · `MODEL-ROUTING.md` · `_FUTURE-STATE.md` · `_DECISION-HISTORY/README.md` ·
@@ -410,4 +413,11 @@ spot-illustration/empty-state icon set (`_ICON-GAPS.md`, wave-1's only gap).
 > `_ADVISORY-SIGNALS.md` ordering wobble left uncommitted (known §C·4 stable-sort item, noise not
 > signal). **ONE reconcile commit** (`showroom/chart-line.html` + this note + `_LIVE-STATE` bullet +
 > receipt `notes/_receipts/2026-07-24-conductor-reconcile-showroom-syncgap.md`) — **add it to the
-> push stack: `07ad314` · `dcad460` · reconcile.** Library still **65**.
+> push stack: `07ad314` · `dcad460` · reconcile · + the gauge-stamp practice commit.** Library still **65**.
+>
+> **Context gauge at authoring: 🟢 GREEN ~40%** (in-head tally, ESTIMATE ±15% — Half-2 broken). Ample
+> headroom → high confidence in this reconcile; the deliberate contrast is the prior conductor's *deep
+> Red* wrap, which is where the showroom-sync gap crept in. **NEW STANDING PRACTICE (Dave, 2026-07-24):
+> every handoff artefact carries the author's gauge reading as a SCRUTINY INDICATOR — creator in this
+> block, workers in their receipt header; Red-authored ⇒ next reader re-verifies before trusting.
+> Canon: `_RUNBOOK-context-gauge.md` § authoring-time stamp.**
