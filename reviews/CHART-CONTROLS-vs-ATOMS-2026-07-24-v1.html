@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chart controls vs existing atoms — compare sheet (2026-07-24 v1)</title>
+<!-- REVIEW SHEET (reviews/ — not gate-globbed). Purpose: agree the ONE chart before the wave fans out.
+     Question (Dave, 2026-07-24): "can I see the controls using our existing atoms — I'm not sure if we
+     need to create new ones." Each chart-line control is shown BESIDE the nearest existing atom, drawn
+     from the ACTUAL snippet CSS (faithful reproduction, not re-invention). Mono token context; light+dark.
+     Sources: snippets/Chart-line.reference.html (dv-vt/dv-seg/dv-legbtn) · View-options.reference.html
+     (.seg + sliding .ind) · Tab-bar/Table (.seg pill) · Button.reference.html (.btn press family, B-D7). -->
+<style>
+  :root{
+    --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
+    --ease:200ms cubic-bezier(.4,0,.2,1);
+  }
+  /* Apollo Mono token context (values pulled from the snippets' own mono blocks) */
+  [data-theme="light"]{
+    --page:#FFFFFF; --ink:#1A1A1A; --line:#808080; --muted:#626262; --hair:#E1E1E1;
+    --surface:#FFFFFF; --hover:#F0F0F0; --sel:#000000; --on-sel:#FFFFFF; --focus:#305A85;
+    --data-axis:#626262; --series-1:#1A1A1A; --series-2:#577C78; --series-3:#94627B;
+    --card:#FFFFFF; --shadow:rgba(0,0,0,.14);
+    --pri:#1A1A1A; --sec:#626262; --ter-border:#808080;
+  }
+  [data-theme="dark"]{
+    --page:#1A1A1A; --ink:#FAFAFA; --line:#808080; --muted:#9D9D9D; --hair:#484848;
+    --surface:#1F1F1F; --hover:#232323; --sel:#FFFFFF; --on-sel:#333333; --focus:#4587A7;
+    --data-axis:#9D9D9D; --series-1:#FAFAFA; --series-2:#8FB0AC; --series-3:#C08FA8;
+    --card:#1F1F1F; --shadow:rgba(0,0,0,.5);
+    --pri:#FAFAFA; --sec:#808080; --ter-border:#808080;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:0 0 5rem; font-family:var(--font); background:var(--page); color:var(--ink);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+
+  header{position:sticky; top:0; z-index:10; display:flex; align-items:center; justify-content:space-between;
+    gap:1rem; padding:1rem 2rem; background:var(--page); border-bottom:1px solid var(--hair);}
+  header h1{font-size:15px; font-weight:700; margin:0; letter-spacing:.01em;}
+  header .sub{font-size:12px; color:var(--muted); font-weight:400;}
+  .tgl{font:500 13px/1 var(--font); padding:8px 12px; border:1px solid var(--line); background:transparent;
+    color:var(--ink); cursor:pointer;}
+  .tgl:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+
+  main{max-width:1080px; margin:0 auto; padding:2rem;}
+  .lede{font-size:13.5px; line-height:1.65; color:var(--ink); max-width:70ch; margin:0 0 .5rem;}
+  .lede b{font-weight:700;}
+  .muted{color:var(--muted);}
+
+  section{margin:2.5rem 0; padding-top:1.5rem; border-top:1px solid var(--hair);}
+  h2{font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; margin:0 0 .25rem;}
+  h2 .n{color:var(--muted); margin-right:.5rem;}
+  .note{font-size:12.5px; line-height:1.6; color:var(--muted); max-width:72ch; margin:.4rem 0 1.25rem;}
+
+  .row{display:flex; flex-wrap:wrap; gap:1.25rem;}
+  .cell{flex:1 1 300px; border:1px solid var(--hair); background:var(--card); padding:1.1rem 1.1rem 1.25rem;
+    display:flex; flex-direction:column; gap:.85rem; min-width:280px;}
+  .cell.here{border-color:var(--ink);}
+  .cell .cap{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em;}
+  .cell .cap.here{color:var(--ink);} .cell .cap.exist{color:var(--muted);}
+  .cell .demo{display:flex; flex-wrap:wrap; align-items:center; gap:.75rem; min-height:56px; padding:.4rem 0;}
+  .cell .desc{font-size:12px; line-height:1.55; color:var(--muted);}
+  .cell .desc code{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:11px; color:var(--ink);
+    background:var(--hover); padding:1px 4px;}
+  .tag{display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:.04em; padding:2px 7px;
+    border:1px solid currentColor; text-transform:uppercase;}
+  .tag.new{color:#B92F1E;} .tag.reuse{color:#577C78;} .tag.maybe{color:#C58900;}
+
+  /* ---- CHART controls (faithful from Chart-line.reference.html) ---- */
+  .dv-vt{background:transparent; border:1px solid var(--line); color:var(--ink); min-height:24px;
+    padding:4px 8px; cursor:pointer; transition:border-color var(--ease);
+    font:500 12px/1.2 var(--font);}                         /* .t-cm-chart-label 12/500 (DV-D08) */
+  .dv-vt:hover{border-color:var(--ink);}
+  .dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+  .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
+  .dv-seg{display:flex;}
+  .dv-seg .dv-vt + .dv-vt{border-left:0;}
+  .dv-seg .dv-vt[aria-pressed="true"]{background:var(--ink); color:var(--page); border-color:var(--ink);}
+
+  .dv-legend{list-style:none; display:flex; flex-wrap:wrap; gap:16px; margin:0; padding:0;}
+  .dv-legend li{display:flex;}
+  .dv-legbtn{display:flex; align-items:center; gap:8px; min-height:24px; background:transparent; border:0;
+    padding:0; color:var(--ink); cursor:pointer; transition:opacity var(--ease); font:500 12px/1.2 var(--font);}
+  .dv-legbtn:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+  .dv-legbtn[aria-pressed="false"]{color:var(--data-axis);}
+  .dv-legbtn[aria-pressed="false"] .sw{background:transparent !important; border:2px solid var(--data-axis);}
+  .dv-legbtn[aria-pressed="false"] .dv-key{opacity:1;}
+  .sw{width:12px; height:12px; flex:none;}
+  .sw-circle{border-radius:50%;} .sw-square{}
+  .sw-diamond{width:8px; height:8px; transform:rotate(45deg); margin:2px;}
+  .dv-key{opacity:.6; min-width:12px; font-weight:700;}     /* .t-cm-chart-key 12/700 */
+
+  /* ---- View-options / Tab / Table .seg (faithful — sliding indicator) ---- */
+  .seg{position:relative; display:inline-flex; border:1px solid var(--line); background:var(--surface);}
+  .seg .ind{position:absolute; top:0; bottom:0; left:0; width:0; background:var(--sel); z-index:0;
+    transition:left var(--ease), width var(--ease);}
+  .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; gap:8px; height:40px;
+    padding:0 16px; border:0; background:transparent; color:var(--ink); cursor:pointer;
+    transition:color var(--ease); font:500 14px/1 var(--font);}
+  .seg button:not([aria-pressed="true"]):hover{background:var(--hover);}
+  .seg button[aria-pressed="true"]{color:var(--on-sel);}
+  .seg button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px; z-index:2;}
+  .seg.pill{border-radius:999px; padding:4px;}
+  .seg.pill .ind{top:4px; bottom:4px; left:4px; border-radius:999px;}
+  .seg.pill button{height:32px;}
+
+  /* ---- Button press family (representative from Button.reference.html) ---- */
+  .btnrow{display:flex; gap:.6rem; flex-wrap:wrap;}
+  .btn{height:40px; min-width:96px; padding:0 20px; border:0; cursor:pointer; display:inline-flex;
+    align-items:center; justify-content:center; font:500 14px/1 var(--font);
+    transition:background var(--ease), transform 120ms cubic-bezier(.4,0,.2,1), filter 90ms;}
+  .btn:active{transform:scale(calc(1 - 2/120)); filter:brightness(.94);}   /* B-D7 press: scale + darken */
+  .btn-pri{background:var(--pri); color:var(--page);}
+  .btn-sec{background:var(--sec); color:var(--page);}
+  .btn-ter{background:transparent; color:var(--ink); border:1px solid var(--ter-border);}
+  .btn:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+
+  /* ---- verdict table ---- */
+  table{border-collapse:collapse; width:100%; margin:.5rem 0 1.25rem; font-size:12.5px;}
+  th,td{text-align:left; padding:.55rem .7rem; border-bottom:1px solid var(--hair); vertical-align:top; line-height:1.5;}
+  th{font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); font-weight:700;}
+  td code{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:11px; background:var(--hover); padding:1px 4px;}
+  .opt{border:1px solid var(--hair); padding:1rem 1.2rem; margin:.75rem 0;}
+  .opt.rec{border-color:var(--ink);}
+  .opt h3{font-size:12.5px; margin:0 0 .4rem; font-weight:700;}
+  .opt p{font-size:12.5px; line-height:1.6; margin:.3rem 0; color:var(--ink);}
+  .ruling{background:var(--hover); border-left:3px solid var(--ink); padding:.8rem 1rem; font-size:12.5px;
+    line-height:1.6; margin:1rem 0 0;}
+  .ruling b{font-weight:700;}
+</style>
+</head>
+<body data-theme="light">
+<header>
+  <div><h1>Chart controls vs existing atoms <span class="sub">— do we mint new? · 2026-07-24 v1</span></h1></div>
+  <button class="tgl" id="themeToggle" type="button">◐ Light / dark</button>
+</header>
+
+<main>
+  <p class="lede">The chart-line exemplar's controls are all hand-rolled <code>.dv-*</code> classes. Before the
+  wave fans out (three lanes port this pattern), the question is whether they should <b>consume an existing
+  atom</b> or justify a <b>new quiet-utility family</b>. Below, each chart control sits beside the nearest thing
+  we already have — drawn from the real snippet CSS, so what you see is what's in canon. <span class="muted">The
+  bordered cell is the chart's control; the muted cell is the existing atom.</span></p>
+
+  <!-- ===================== 1. SEGMENTED SWITCH ===================== -->
+  <section>
+    <h2><span class="n">01</span>Segmented switch — exclusive, one active <span class="tag maybe">reuse candidate</span></h2>
+    <p class="note">The chart's <b>view switch</b> (Monthly ⇄ Year to date) and our <b>View-options</b> atom are the
+    same <i>semantics</i> — pick exactly one. But they're different weight classes: the chart's is 24px, instant,
+    joined-border, filled-active; the atom is 40px with an <i>animated sliding indicator</i>. Click both.</p>
+    <div class="row">
+      <div class="cell here">
+        <span class="cap here">Chart · <code>.dv-seg</code></span>
+        <div class="demo">
+          <div class="dv-seg" role="group" aria-label="Chart view">
+            <button type="button" class="dv-vt" data-seg aria-pressed="true">Monthly</button>
+            <button type="button" class="dv-vt" data-seg aria-pressed="false">Year to date</button>
+          </div>
+        </div>
+        <p class="desc">Transparent, 1px <code>--line</code>, ink text, 24px. Active = instant ink fill. No motion,
+        no press physics (Q5 quiet-utility posture).</p>
+      </div>
+      <div class="cell">
+        <span class="cap exist">Exists · View-options <code>.seg</code></span>
+        <div class="demo">
+          <div class="seg" role="group" aria-label="View as" id="segVO">
+            <span class="ind" aria-hidden="true"></span>
+            <button type="button" aria-pressed="true">List</button>
+            <button type="button" aria-pressed="false">Grid</button>
+          </div>
+        </div>
+        <p class="desc">40px, one framing border, <b>sliding fill</b> that animates between segments (mirrors Tabs).
+        Inverting <code>secondary/background</code> fill. A more prominent control.</p>
+      </div>
+      <div class="cell">
+        <span class="cap exist">Exists · Tab / Table <code>.seg.pill</code></span>
+        <div class="demo">
+          <div class="seg pill" role="group" aria-label="Range" id="segPill">
+            <span class="ind" aria-hidden="true"></span>
+            <button type="button" aria-pressed="true">Day</button>
+            <button type="button" aria-pressed="false">Week</button>
+            <button type="button" aria-pressed="false">Month</button>
+          </div>
+        </div>
+        <p class="desc">Same sliding mechanism, rounded pill. Used in Tab-bar / Table view-switches. Also 32–40px,
+        animated.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 2. TOGGLE + ACTION BUTTONS ===================== -->
+  <section>
+    <h2><span class="n">02</span>Additive toggle + action buttons <span class="tag new">no existing home</span></h2>
+    <p class="note">The chart's <b>overlay toggles</b> (Target line, Last year) are outline <code>aria-pressed</code>
+    buttons; <b>Copy CSV</b> is the same shape as a momentary action. Nothing in the library is a <i>quiet outline
+    button</i> — the only button atom is the <b>Button press family</b>, which is loud (filled tiers, scale/darken
+    press physics) and was deliberately ruled out for charts (Q5). Compare the postures:</p>
+    <div class="row">
+      <div class="cell here">
+        <span class="cap here">Chart · <code>.dv-vt</code> toggle + <code>.dv-csv</code></span>
+        <div class="demo">
+          <button type="button" class="dv-vt" data-toggle aria-pressed="false">Target line</button>
+          <button type="button" class="dv-vt" data-toggle aria-pressed="false">Last year</button>
+          <button type="button" class="dv-vt">Copy data (CSV)</button>
+        </div>
+        <p class="desc">Outline, 24px, ink border darkens on hover / when pressed. Quiet — reads as chrome, not a
+        call-to-action. No scale, no fill motion.</p>
+      </div>
+      <div class="cell">
+        <span class="cap exist">Exists · Button <code>.btn</code> (B-D7 press family)</span>
+        <div class="demo">
+          <div class="btnrow">
+            <button type="button" class="btn btn-pri">Primary</button>
+            <button type="button" class="btn btn-sec">Secondary</button>
+            <button type="button" class="btn btn-ter">Tertiary</button>
+          </div>
+        </div>
+        <p class="desc">40px, min-width 96, filled tiers, <b>press physics</b> (scale + darken — press one). Built to
+        be the loud action on a screen. Wrong register for chart chrome.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 3. LEGEND-AS-FILTER ===================== -->
+  <section>
+    <h2><span class="n">03</span>Legend-as-filter <span class="tag new">chart-specific, new</span></h2>
+    <p class="note">Legend rows are filter buttons carrying the series' <b>swatch shape + letter key</b>, with the
+    AA hollow off-state (grey that passes contrast, never dim-only). This is data-bound to the chart's own non-colour
+    channels — there is no general atom for it, and arguably shouldn't be; it belongs to dataviz. Click a row to toggle.</p>
+    <div class="row">
+      <div class="cell here" style="flex-basis:100%;">
+        <span class="cap here">Chart · <code>.dv-legbtn</code> (swatch + key + hollow off-state)</span>
+        <div class="demo">
+          <ul class="dv-legend">
+            <li><button type="button" class="dv-legbtn" aria-pressed="true"><span class="sw sw-circle" style="background:var(--series-1)"></span><span class="dv-key">A</span> Revenue</button></li>
+            <li><button type="button" class="dv-legbtn" aria-pressed="true"><span class="sw sw-square" style="background:var(--series-2)"></span><span class="dv-key">B</span> Costs</button></li>
+            <li><button type="button" class="dv-legbtn" aria-pressed="false"><span class="sw sw-diamond" style="background:var(--series-3)"></span><span class="dv-key">C</span> Margin</button></li>
+          </ul>
+        </div>
+        <p class="desc">"Margin" is toggled OFF — note the hollow swatch + grey text/letter (the <code>data/axis</code>
+        role, AA-passing), so state never rides colour or dimming alone.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== VERDICT ===================== -->
+  <section>
+    <h2><span class="n">▶</span>The read + the choice</h2>
+    <table>
+      <thead><tr><th>Chart control</th><th>Nearest existing atom</th><th>Verdict</th></tr></thead>
+      <tbody>
+        <tr><td><code>.dv-seg</code> view switch</td><td>View-options <code>.seg</code> (sliding, 40px)</td>
+          <td><span class="tag maybe">reuse-with-variant</span> — same semantics; needs a compact/quiet variant (24px, no slide, ink-outline).</td></tr>
+        <tr><td><code>.dv-vt</code> toggle · <code>.dv-csv</code> action</td><td>Button <code>.btn</code> (loud, press physics)</td>
+          <td><span class="tag new">new</span> — no quiet outline button exists; Button is the wrong register (Q5).</td></tr>
+        <tr><td><code>.dv-legbtn</code> legend filter</td><td>— none —</td>
+          <td><span class="tag new">new</span> — data-bound (swatch/shape/key); chart-domain, keep in dataviz.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="opt rec">
+      <h3>Option A — mint a small "quiet-utility control" family (recommended)</h3>
+      <p>Register a second control family (ADR-0013 group #2): a base quiet button (<code>.dv-vt</code>: transparent,
+      1px line, ink, 24px, no press) + a compact segmented variant + the legend-filter variant. This formalises the
+      observed duplication into reusable atoms with a proper registry entry, contrast gate, and states — the same way
+      the button family was minted. Any future quiet toolbar (table controls, filters) reuses it.</p>
+      <p class="muted">Cost: one registry group + a gate. Upside: the wave lanes port <i>canon atoms</i>, not copies.</p>
+    </div>
+    <div class="opt">
+      <h3>Option B — extend the segmented atom + mint only the outliers</h3>
+      <p>Give View-options/<code>.seg</code> a compact/quiet <i>variant</i> (24px, no-slide, ink-outline) and have the
+      chart consume it for the view switch; mint the quiet button + legend-filter as chart-specific. Fewer new atoms,
+      but bends a prominent, animated atom toward a posture it wasn't designed for — the two may fight as either evolves.</p>
+    </div>
+
+    <div class="ruling">
+      <b>Paste-ready ruling (edit before I inscribe):</b><br>
+      "Chart controls = <b>Option A</b>: mint a quiet-utility control family (base <code>.dv-vt</code> + compact
+      segmented + legend-filter) as registry group #2. The view switch does NOT consume View-options as-is (weight
+      class differs). Legend-filter stays dataviz-scoped." <span class="muted">— or pick B, or split it differently.</span>
+    </div>
+    <p class="note" style="margin-top:1rem;">Nothing here is inscribed yet — this sheet is the evidence, you rule by
+    eye. Once you pick, the three wave briefs get a one-line amendment so the lanes build the controls from the agreed
+    atom(s) rather than re-hand-rolling them.</p>
+  </section>
+</main>
+
+<script>
+  // theme toggle
+  document.getElementById('themeToggle').addEventListener('click', function(){
+    var b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark');
+    document.querySelectorAll('.seg').forEach(moveInd);
+  });
+  // chart .dv-seg = exclusive switch (instant)
+  document.querySelectorAll('.dv-seg').forEach(function(seg){
+    seg.querySelectorAll('[data-seg]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        seg.querySelectorAll('[data-seg]').forEach(function(x){ x.setAttribute('aria-pressed', String(x===btn)); });
+      });
+    });
+  });
+  // chart .dv-vt additive toggles
+  document.querySelectorAll('[data-toggle]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      btn.setAttribute('aria-pressed', btn.getAttribute('aria-pressed')==='true'?'false':'true');
+    });
+  });
+  // legend filter toggles
+  document.querySelectorAll('.dv-legbtn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      btn.setAttribute('aria-pressed', btn.getAttribute('aria-pressed')==='true'?'false':'true');
+    });
+  });
+  // View-options / pill seg = sliding indicator
+  function moveInd(seg){
+    var ind=seg.querySelector('.ind'); if(!ind) return;
+    var a=seg.querySelector('button[aria-pressed="true"]'); if(!a) return;
+    ind.style.left=a.offsetLeft+'px'; ind.style.width=a.offsetWidth+'px';
+  }
+  document.querySelectorAll('.seg').forEach(function(seg){
+    seg.querySelectorAll('button').forEach(function(b){
+      b.addEventListener('click', function(){
+        seg.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', String(x===b)); });
+        moveInd(seg);
+      });
+    });
+    moveInd(seg);
+  });
+  addEventListener('resize', function(){ document.querySelectorAll('.seg').forEach(moveInd); });
+  addEventListener('load', function(){ document.querySelectorAll('.seg').forEach(moveInd); });
+</script>
+</body>
+</html>
