@@ -401,3 +401,13 @@ spot-illustration/empty-state icon set (`_ICON-GAPS.md`, wave-1's only gap).
 > WHOLE stack in one go.** No snippet/token changes this session (audit + rulings + records only) —
 > library stays **65**, build green **51/51**. **Dave pushes via GitHub Desktop; Desktop closed
 > while Claude commits.**
+>
+> **★ RECONCILE FOLLOW-UP — 2026-07-24 ~09:57 BST (Opus conductor).** Verified the committed tree
+> rather than redo the already-done reconcile (`07ad314`) + briefs (`dcad460`). Caught + closed a
+> real gap: `_build_all.py` **failed showroom-sync on `dcad460`** because `showroom/chart-line.html`
+> was stale against the `nam-002` "filter" snippet fix (source corrected, showroom regen never
+> committed). Regenerated the one page → build now **verifiably 53/53 GREEN on a clean checkout**.
+> `_ADVISORY-SIGNALS.md` ordering wobble left uncommitted (known §C·4 stable-sort item, noise not
+> signal). **ONE reconcile commit** (`showroom/chart-line.html` + this note + `_LIVE-STATE` bullet +
+> receipt `notes/_receipts/2026-07-24-conductor-reconcile-showroom-syncgap.md`) — **add it to the
+> push stack: `07ad314` · `dcad460` · reconcile.** Library still **65**.
