@@ -12,6 +12,20 @@ graduates OUT of here into `_LIVE-STATE` OPEN/TARGET when work starts. Refresh w
 **Entry format:** what · why it's held · what it feeds (Apollo phase/mode) · source/provenance pointer ·
 status (`idea` / `parked` / `resurrection-candidate` / `graduated→LIVE`).
 
+## ★ Multi-thread "GOOD-MORNING" — a handoff mechanism for parallel long-running threads (Dave, 2026-07-24)
+**The problem Dave named:** two async threads now run in parallel ACROSS sessions — the chart **FAN-OUT**
+(wave; GM §C·1a + `notes/_briefs/2026-07-24-chart-wave-lane{1,2,3}`) and the **CONTROLS SYSTEM** (seg atom +
+hit-area + mini ramp). The single linear GOOD-MORNING is **single-threaded**: when you bounce between threads
+across sessions, one thread's state goes stale in GM and **context slips** (observed 2026-07-24 — GM still said
+controls-system "scoped" after it was built + committed `f5e7bce`).
+**Explore:** GOOD-MORNING becomes a **dispatcher/index** across per-thread state docs (e.g. `GM-thread-<name>.md`),
+each thread carrying its own Memento — orientation · single next-action · gauge reading · residues · brief/receipt
+links. The master GM lists which threads are LIVE, their gauge, and the one next action per thread. Extends the
+**parallel-session conductor** model (same-day lanes → async cross-session threads). Ties to: harness-framework
+spin-off · session-title convention · the gauge-stamp practice.
+**Bridge until built (in use now):** each thread = a labelled STRAND in the one GM's queue
+{next action · model · gauge · residues · brief file}. **Not now — Dave: "note this for exploration."**
+
 ## ★ Mobile variants — a component-wide dimension to build out (Dave, 2026-07-24)
 **What:** components will carry MOBILE variants, not just responsive reflow. Dave flagged this while ruling
 the segmented control: the rounded **PILL segmented control** is reserved as a **mobile Tab-bar alternative**

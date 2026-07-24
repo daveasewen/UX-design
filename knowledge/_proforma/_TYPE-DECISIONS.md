@@ -1046,7 +1046,7 @@ Edges: refines(T-D12)
   → ctl-14, `.seg.lg button` → ctl-16, each registered in `_type-bindings.json` (scoped-element, waived). Higher
   specificity than the legacy `.seg button` 14/400, so each size wins; unsized `.seg` (View options) stays 14/400.
 - **Motivated by the segmented-control atom** (promoted from View options same session: sliding indicator + the
-  pill's 4px inset padding applied to ALL + the hit-area `::before`). The atom's sm/md/lg carry the ramp; it
+  pill's 2px inset padding applied to ALL + the hit-area `::before`). The atom's sm/md/lg carry the ramp; it
   resolved the 14/400-vs-12/500 seam that had blocked the chart view-switch consuming the atom.
 
 ### STILL OPEN
