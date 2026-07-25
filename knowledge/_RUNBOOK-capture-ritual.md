@@ -24,7 +24,7 @@ wrong handoff we most want to avoid. Red cue line, ready to use:
 > **Title this chat: `<retrospective title>` — context is Red (~NN%). Running the capture ritual, then
 > open fresh with: `<forward title>`.**
 
-## The steps, in order (1, 1b, 2, 3, 4, 4b, 5)
+## The steps, in order (1, 1b, 2, 2c, 3, 4, 4b, 5)
 
 1. **Refresh `_LIVE-STATE.md`** — and its siblings where touched: `_FUTURE-STATE.md` (ideas /
    side-quests / resurrection candidates) and `_DECISION-HISTORY/` (narrative >10 lines relocates
@@ -66,6 +66,19 @@ wrong handoff we most want to avoid. Red cue line, ready to use:
      reading in the commit-state block** (`_RUNBOOK-context-gauge.md` § authoring-time stamp) — a
      scrutiny indicator on this handoff's reliability, not a quality score. Format:
      `Context gauge at authoring: 🟢/🟡/🔴 BAND ~NN% (ESTIMATE)`.
+
+   **2c. Compact the banner stack — keep ★ LATEST + 1 PRIOR, roll the rest to `_GM-ARCHIVE.md`.**
+   *(Added 2026-07-25, Dave: "make good morning more efficient… keep improving Memento." First run the
+   same day cut `GOOD-MORNING.md` by 35%.)*
+   The stacked PRIOR banners are Polaroids: they accrete every session and, unpruned, become the single
+   biggest cold-start read cost (2026-07-25 measure: the old-banner pile was **35% of the file**, ~3.9k
+   tokens re-read every session for history already recorded elsewhere). At each wrap, **before** writing
+   the new ★ LATEST banner, move every banner older than **★ LATEST + 1 PRIOR** into `_GM-ARCHIVE.md` —
+   **verbatim, newest-first, a move never a rewrite** (mirrors `MEMORY.md` → `MEMORY-ARCHIVE.md`).
+   ⚠️ **Precondition, do not skip:** confirm each rolled banner's durable content already lives in its
+   proper home — `_DECISION-HISTORY/` (the WHY/HOW), `notes/_receipts|_briefs/`, the decision ledgers, or
+   git. The archive is a **convenience copy, never a tattoo**: it must hold no rule, threshold or rationale
+   that isn't already inscribed elsewhere. Only then is it safe to trim.
 
    ⚠️ **§A is the section most at risk, because it is the only one that doesn't change each session.**
    On 2026-07-18 a from-scratch rewrite of `GOOD-MORNING.md` reduced §A's standing-instruction note to
