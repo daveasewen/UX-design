@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Legend redesign on the REAL charts — dual swatch + isolate (prototype, 2026-07-25 v5)</title>
+<!--
+  v5 — Dave's 5 review edits on v4 (2026-07-25, brief notes/_briefs/2026-07-25-legend-v5-review-edits-brief.md).
+  The charts are the ACTUAL canon snippets, verbatim (Chart-bar grouped column cb4 + Chart-donut spider
+  cd1); real type.css + dv-behaviour.js LINKED. THE LEGEND is the thing under review.
+
+  RESTORED FROM v3 (v4's isolate-only was VETOED — "I can't check the swatches"): TWO gestures per row —
+    · SWATCH = checkbox  → additive show/hide of that one series (role=checkbox, aria-checked, Space/Enter)
+    · LABEL  = isolate   → show only that series; click the active one again, or Reset, to show all
+  Structure: <li class="legrow">[swatch checkbox][isolate label button]</li> — the swatch sits OUTSIDE the
+  isolate button so both are independently operable (a button can't nest an interactive checkbox).
+
+  The 5 edits applied:
+    1. BAR entry — each on-chart key (A/B/C) alpha animates IN SYNC with its bar's grow (per-key
+       animation-delay matches the bar; dvKeyIn is weighted to the end so the letter arrives as the bar settles).
+    2. RESET states = ref canon (B-D4). Default DISABLED: text #9D9D9D light / #808080 dark (text/on-disabled),
+       border --line (#E1E1E1 / #808080). Enabled = resting look (--line border + --ink text). Enables when
+       any series is hidden OR an isolate is active.
+    3. OFF/hidden rows = RESTING, not muted: row keeps --line border + --ink text; ONLY the swatch changes —
+       hollow (transparent) + grey-primitive border --muted (mono/7 #626262 light / mono/9 #9D9D9D dark).
+       Supersedes v4's mute-the-whole-item.
+    4. Dual radio+checkbox restored (see structure above) — the direct fix for "I can't check the swatches".
+    5. DONUT .seg hover — keep the per-button light-grey bg; ADD .seg:hover{border-color:var(--ink)} (+ focus-within)
+       so the container's outer border darkens to ink like the other controls.
+  KEPT from v4: square swatches (no shape-coding) · donut Reset under the last item + radial-sweep intro ·
+    bar keys ranged left / Reset right-inline · hover-fade the OTHERS · NO strike-through, NO "only" text · sr-only live region.
+  Interaction settled: resting state is "all shown", a click isolates ⇒ exclusive toggle-buttons (aria-pressed),
+  NOT a radiogroup. New legend hooks are IGNORED by dv-behaviour (no double-fire); a small controller drives the
+  same [data-series-group] hide dv-behaviour uses (opacity + visibility).
+-->
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:160ms cubic-bezier(.4,0,.2,1); --grow:760ms cubic-bezier(.22,.61,.36,1); }
+  /* ===== canon tokens (union of Chart-bar + Chart-donut light/dark blocks, verbatim values) ===== */
+  [data-theme="light"]{
+    --page:#FFFFFF; --ink:#1A1A1A; --baseline:#1A1A1A; --line:#E1E1E1;
+    --data-series-1:#766682; --data-series-2:#A45C3A; --data-series-3:#577C78; --data-series-4:#7F7B45; --data-series-5:#A37E94;
+    --data-series-1-hc:#484D6F; --data-series-2-hc:#97482C; --data-series-3-hc:#385F4F; --data-series-4-hc:#6E465D; --data-series-5-hc:#7C6F34;
+    --status-breach:#B92F1E; --status-watch:#C58900; --status-healthy:#2B7E4F; --status-info:#306EC6;
+    --data-axis:#626262; --axis-alpha:1; --data-grid:#E1E1E1; --grid-alpha:1;
+    --shadow:#00000033; --pop-border:#FFFFFF00; --border-radius-surface:0;
+    /* OFF-state grey = lowest mono primitive passing small-text AA on this page (mono/7, 6.10:1) */
+    --muted:var(--data-axis);
+    /* canon disabled (B-D4): contrast-exempt but visible — text/on-disabled + border/subtle(--line) */
+    --disabled-ink:#9D9D9D;
+  }
+  [data-theme="dark"]{
+    --page:#1A1A1A; --ink:#FFFFFF; --baseline:#FFFFFF; --line:#808080;
+    --data-series-1:#766682; --data-series-2:#A45C3A; --data-series-3:#577C78; --data-series-4:#7F7B45; --data-series-5:#A37E94;
+    --data-series-1-hc:#93B6CC; --data-series-2-hc:#E5A78F; --data-series-3-hc:#90BA9B; --data-series-4-hc:#D197A6; --data-series-5-hc:#E5C283;
+    --status-breach:#CC4333; --status-watch:#C58900; --status-healthy:#4A9568; --status-info:#2674DC;
+    --data-axis:#9D9D9D; --axis-alpha:1; --data-grid:#484848; --grid-alpha:1;
+    --shadow:#000000D9; --pop-border:#808080; --border-radius-surface:0;
+    /* OFF-state grey = lowest mono primitive passing small-text AA on this page (mono/9, 6.42:1) */
+    --muted:var(--data-axis);
+    /* canon disabled (B-D4): contrast-exempt but visible — text/on-disabled + border/subtle(--line) */
+    --disabled-ink:#808080;
+  }
+  [data-contrast="high"]{
+    --data-series-1:var(--data-series-1-hc); --data-series-2:var(--data-series-2-hc); --data-series-3:var(--data-series-3-hc);
+    --data-series-4:var(--data-series-4-hc); --data-series-5:var(--data-series-5-hc);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:26px 30px 64px; font-family:var(--font); background:var(--page); color:var(--ink);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  body[data-theme="light"]{background:#FFFFFF;} body[data-theme="dark"]{background:#1A1A1A;}
+
+  h1{font-size:20px; font-weight:500; margin:0 0 4px;}
+  .sub{font-size:13px; color:var(--data-axis); margin:0 0 18px; max-width:82ch; line-height:1.5;}
+  .sub b{color:var(--ink); font-weight:500;}
+  .bar-top{display:flex; gap:12px; align-items:center; margin-bottom:22px; flex-wrap:wrap;}
+  .bar-top button{font:inherit; font-size:13px; padding:7px 12px; border:1px solid var(--ink); background:transparent; color:var(--ink); cursor:pointer;}
+  .bar-top button:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+  .card{border:1px solid var(--line); padding:20px 22px 24px; margin:0 0 26px; max-width:760px;}
+  .card > h2.spec{font-size:12px; letter-spacing:.02em; text-transform:uppercase; color:var(--data-axis); margin:0 0 16px; font-weight:500;}
+  .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+
+  /* ===== chart shell (shared, from the snippets) ===== */
+  figure.dv{margin:0; position:relative;}
+  .dv-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; margin:0 0 12px;}
+  .dv-title{margin:0;}
+  .dv-controls{display:flex; flex-wrap:wrap; gap:8px; align-items:center; --control-h:32px;}
+  .dv-stage{overflow-x:auto; padding-bottom:4px;}
+  .dv-svg{display:block; overflow:visible;}
+  .dv-off{display:none !important;}
+  /* hover-fade: the OTHER series recede when one is rolled over (outranks entry animation via !important) */
+  .is-faded{opacity:.18 !important;}
+
+  /* bar geometry (scoped so the donut svg is never forced to 100%) */
+  .card-bar .dv-chart-area{width:580px;}
+  .card-bar .dv-svg{width:580px; height:260px;}
+  .card-bar figure.dv-fit-on .dv-chart-area{width:100%;}
+  .card-bar figure.dv-fit-on .dv-svg{width:100%;}
+  .dv-grid{stroke:var(--data-grid); stroke-opacity:var(--grid-alpha); stroke-width:1;}
+  line.dv-axis{stroke:var(--baseline); stroke-width:1;}
+  text.dv-axis,text.dv-label{opacity:var(--axis-alpha);}
+  rect.dv-series,polygon.dv-series{transition:filter var(--ease), opacity var(--ease), visibility var(--ease);}
+  /* CANON-BUG WORKAROUND (ds-010, _DS-IMPROVEMENTS.md): the real Chart-bar CSS carries
+     `rect.dv-series{fill:var(--sc,var(--data-series-1))}` which OVERRIDES every bar's fill attribute
+     (--sc never set) → grouped/stacked/horizontal/status bars all collapse to series-1 purple.
+     Dropping the rule here lets the fill attributes stand. The fix belongs in the snippet (Dave's call:
+     fold into the bar lane, or one-line fix + rebuild). */
+  rect.dv-series:hover{filter:brightness(1.12);}
+  [data-theme="dark"] rect.dv-series:hover{filter:brightness(1.22);}
+  .dv-series[tabindex]:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+  @media (prefers-reduced-motion:no-preference){
+    .dv-animate rect.dv-series[data-grow="up"]{transform-box:fill-box; transform-origin:bottom; animation:dvGrowY var(--grow) both;}
+    .dv-animate rect.dv-series[data-grow="right"]{transform-box:fill-box; transform-origin:left; animation:dvGrowX var(--grow) both;}
+    /* EDIT 1 — each key alpha-in tracks ITS bar's grow: same duration + per-key delay (inline, matches the bar),
+       weighted to the end so the letter ARRIVES as the bar settles.
+       ⚠ v5.1 TODO (Dave 2026-07-25): make the key RISE pinned to the bar top instead of fading — translateY
+       from --kh (bar height, per-key inline) → 0 on the SAME easing/delay as the bar. Reverted to this fade to
+       avoid a half-done state at the Red-tier wrap; full recipe + the 12 --kh values are in the v5.1 brief. */
+    .dv-animate text.dv-barkey{opacity:0; animation:dvKeyIn var(--grow) both;}
+  }
+  @keyframes dvGrowY{from{transform:scaleY(0);}}
+  @keyframes dvGrowX{from{transform:scaleX(0);}}
+  @keyframes dvKeyIn{0%{opacity:0;} 55%{opacity:0;} 100%{opacity:1;}}
+  text.dv-barkey{transition:opacity var(--ease), visibility var(--ease); fill:var(--ink);}
+
+  /* donut geometry (from Chart-donut) */
+  .dv-donut-row{display:flex; gap:28px; align-items:center; flex-wrap:wrap;}
+  path.dv-series{transition:filter var(--ease), opacity var(--ease), visibility var(--ease);}
+  path.dv-series:hover{filter:brightness(1.12);}
+  [data-theme="dark"] path.dv-series:hover{filter:brightness(1.22);}
+  path.dv-series:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+  .dv-anno{opacity:0; transition:opacity 300ms cubic-bezier(.4,0,.2,1);}
+  .dv-anno.show{opacity:1;}
+  .dv-leader{stroke:var(--line); stroke-width:1; fill:none; transition:opacity var(--ease), visibility var(--ease);}
+  text.dv-key-el{fill:var(--ink); transition:opacity var(--ease), visibility var(--ease);}
+  text.dv-val{fill:var(--ink);} text.dv-direct{fill:var(--ink);}
+
+  /* toolbar controls (shared, verbatim) */
+  .dv-tbl-toggle,.dv-vt{height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
+    background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer; flex:none; transition:border-color var(--ease);}
+  .dv-tbl-toggle:hover,.dv-vt:hover{border-color:var(--ink);}
+  .dv-tbl-toggle:focus-visible,.dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+  .dv-tbl-toggle[aria-expanded="true"],.dv-vt[aria-pressed="true"]{border-color:var(--ink);}
+  .dv-act,.dv-dd{gap:8px;}
+  .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
+  .dv-csv .dv-ico-tick{display:none;}
+  .dv-csv.is-copied .dv-ico-copy{display:none;}
+  .dv-csv.is-copied .dv-ico-tick{display:inline-block;}
+  .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
+  .dv-dd[aria-expanded="true"] .dv-ico-arrow{transform:rotate(180deg);}
+  .seg{position:relative; display:inline-flex; height:var(--control-h); box-sizing:border-box; padding:2px; border:1px solid var(--line); background:transparent; vertical-align:top; transition:border-color var(--ease);}
+  /* EDIT 5 — container border darkens to ink on hover/keyboard-focus, matching the other toolbar controls */
+  .seg:hover,.seg:focus-within{border-color:var(--ink);}
+  .seg .ind{position:absolute; top:2px; bottom:2px; left:2px; width:0; background:var(--ink); z-index:0; transition:left var(--ease), width var(--ease);}
+  .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; justify-content:center; gap:8px; height:auto; padding:0 8px; border:0; background:transparent; color:var(--ink); cursor:pointer; transition:color var(--ease);}
+  .seg button:not([aria-pressed="true"]):hover{background:rgba(127,127,127,.14);}
+  .seg button[aria-pressed="true"]{color:var(--page);}
+  .seg button:focus-visible{outline:2px solid var(--ink); outline-offset:-2px; z-index:2;}
+  .seg.sm button{padding:0 8px;}
+  .seg button::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+
+  .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page); border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow); border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
+  .dv-tablepanel[hidden]{display:none;}
+  .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+  .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink); border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow); border-radius:var(--border-radius-surface); padding:8px 12px; pointer-events:none; opacity:0; transition:opacity var(--ease);}
+  .dv-tip.on{opacity:1;}
+  table.dv-table{border-collapse:collapse; color:var(--ink);}
+  table.dv-table caption{text-align:left; opacity:.6; margin-bottom:8px;}
+  table.dv-table th,table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}
+  table.dv-table th[scope="row"]{text-align:left; font-weight:500;}
+  table.dv-table thead th{opacity:.6; font-weight:500;}
+
+  /* ============================ the LEGEND under test (v5) ============================
+     TWO gestures per row (RESTORED from v3): SWATCH = checkbox (additive show/hide) · LABEL = isolate
+     (show only this; click the active one again, or Reset, to show all). Hover/focus = fade the OTHERS.
+     OFF (hidden) row = RESTING — only the swatch goes hollow + grey-primitive border (--muted). */
+  .lg{list-style:none; margin:16px 0 0; padding:0; display:flex; gap:16px; --hit:44px;}
+  .lg.bar{flex-wrap:wrap; align-items:center;}
+  .lg.vert{flex-direction:column; align-items:stretch; gap:20px; margin:0; min-width:190px;}
+
+  /* the row = the bordered box carrying BOTH controls; the row itself is not interactive */
+  .legrow{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:2px;
+    padding:5px 9px; background:transparent; transition:border-color var(--ease), background var(--ease);}
+  .lg.vert .legrow{width:100%;}
+  .legrow:hover{border-color:var(--ink);}
+  .legrow.is-solo{border-color:var(--ink); background:color-mix(in srgb, var(--ink) 6%, transparent);}
+
+  /* SWATCH = checkbox — filled when shown; hollow + grey-primitive border when hidden (EDIT 3) */
+  .lg-sw{position:relative; width:12px; height:12px; flex:none; display:inline-block; cursor:pointer;
+    background:var(--sc); border:1px solid var(--sc); transition:background var(--ease), border-color var(--ease);}
+  /* HIT AREA — Apollo 44 standard (target/min) via invisible ::before + 9-point .hit-* pinning (canon
+     Segmented-control). Visible chrome stays compact; the click target is >= var(--hit)=44. The swatch
+     grows LEFT into the gutter (hit-r anchor) so its checkbox target never overlaps the isolate label. */
+  .lg-sw::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; right:0; left:auto; transform:translateY(-50%);}
+  .lg-sw[aria-checked="false"]{background:transparent; border-color:var(--muted);}
+  .lg-sw:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+
+  /* LABEL = isolate toggle-button — borderless (the row carries the box); pressed reads via .legrow.is-solo */
+  .lg-item{display:inline-flex; align-items:center; gap:8px; flex:1 1 auto;
+    margin:-5px -9px -5px 0; padding:5px 9px 5px 0;
+    background:transparent; border:0; color:var(--ink); cursor:pointer; text-align:left; font:inherit;}
+  .lg-item{position:relative;}
+  .lg-item::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}   /* centre — grows vertically into the row spacing */
+  .lg-item:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+  .lg-item > *{position:relative; z-index:1;}   /* keep the key + name above the invisible target */
+  .lg-item .dv-key{min-width:12px; text-align:center; opacity:.75;}
+  .lg-name{white-space:nowrap;}
+
+  /* Reset — ref canon B-D4 (EDIT 2): default DISABLED = text/on-disabled + --line border;
+     ENABLED = resting look (--line border + --ink text), hover → ink border. */
+  .lg-reset-wrap.bar{margin-left:auto;}     /* bar: push Reset to the right, inline with the keys */
+  .lg-reset{position:relative; font:inherit; font-size:12px; padding:5px 12px; border:1px solid var(--line); background:transparent;
+    color:var(--ink); cursor:pointer; transition:border-color var(--ease), color var(--ease); width:100%;}
+  .lg-reset::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}   /* centre — grows vertically */
+  .lg-reset:hover:not(:disabled){border-color:var(--ink);}
+  .lg-reset:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+  .lg-reset:disabled{border-color:var(--line); color:var(--disabled-ink); cursor:default;}
+  /* render-only: visualise the 44 targets (body.show-hits) — for review verification, never a shipped state */
+  body.show-hits .lg-sw::before,body.show-hits .lg-item::before,body.show-hits .lg-reset::before{
+    background:rgba(214,0,17,.16); outline:1px dashed rgba(214,0,17,.65); outline-offset:-1px;}
+
+  .how{margin:22px 0 0; font-size:12.5px; color:var(--data-axis); line-height:1.6; max-width:84ch;}
+  .how b{color:var(--ink); font-weight:500;}
+  code{font-family:ui-monospace,Menlo,monospace; font-size:11px; background:color-mix(in srgb, var(--ink) 7%, transparent); padding:1px 5px;}
+  .note{margin-top:16px; padding:12px 14px; border:1px solid var(--line); background:color-mix(in srgb, var(--ink) 4%, transparent); font-size:12.5px; line-height:1.55; max-width:84ch;}
+  .note .tag{display:inline-block; font-weight:500; color:var(--ink); border:1px solid var(--ink); border-radius:2px; padding:0 6px; margin-right:6px; font-size:11px;}
+  @media (prefers-reduced-motion: reduce){ *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; } }
+</style>
+</head>
+<body data-theme="light">
+  <div class="bar-top">
+    <button id="themeToggle" type="button">◐ Toggle light / dark</button>
+    <button id="contrastToggle" type="button" aria-pressed="false">◑ High contrast</button>
+    <button id="replayToggle" type="button">↻ Replay donut intro</button>
+    <button id="hitToggle" type="button" aria-pressed="false">▣ Show 44px hit areas</button>
+    <span class="sub" style="margin:0;">The charts are the <b>real canon components</b>. The only thing under review is the <b>legend</b>.</span>
+  </div>
+
+  <h1>Legend redesign — v5 (swatch checkbox + isolate label)</h1>
+  <p class="sub">Actual <b>Chart-bar</b> (grouped column) and <b>Chart-donut</b> (spider) snippets — real geometry, tokens,
+  letters, toolbars. Two gestures per row: <b>check a swatch</b> to show / hide that series, or <b>click a name</b> to
+  isolate it (<b>Reset</b> shows all). <b>Roll over</b> a series — the row or the bar/segment — and the others fade.
+  Hidden rows stay resting; only the <b>swatch</b> goes hollow with a grey-primitive border. No strike-through, no &ldquo;only&rdquo; labels.</p>
+
+  <!-- =================== CARD 1 — REAL grouped column (cb4), v4 legend =================== -->
+  <div class="card card-bar">
+    <h2 class="spec">Chart-bar · grouped column — real component, redesigned legend</h2>
+    <figure class="dv dv-animate" data-dv-type="grouped-column" data-domain-min="0" data-surface="page" role="group" aria-labelledby="cb4-h">
+      <figcaption id="cb4-h" class="sr-only">Balances by product by quarter, pounds thousands, grouped</figcaption>
+      <div class="dv-head">
+        <h3 class="dv-title t-cm-section-label">Savings led every quarter</h3>
+        <div class="dv-controls" role="group" aria-label="Chart tools">
+          <button type="button" class="dv-vt dv-act dv-csv t-cm-chart-label"><svg class="dv-ico dv-ico-copy" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M0 18H10.8V7.2H0V18ZM1.2 8.4H9.6V16.8H1.2V8.4ZM8.4 3.6H7.2V6H8.4V3.6ZM8.4 1.2H9.6V0H7.2V2.4H8.4V1.2ZM15.6 0V1.2H16.8V2.4H18V0H15.6ZM12 10.8H14.4V9.6H12V10.8ZM16.8 9.6H15.6V10.8H18V8.4H16.8V9.6ZM16.8 7.2H18V3.6H16.8V7.2ZM10.8 1.2H14.4V0H10.8V1.2Z" fill="currentColor"/></svg><svg class="dv-ico dv-ico-tick" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z" fill="currentColor"/></svg><span>Copy data (CSV)</span></button>
+          <button class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" type="button" aria-controls="cb4-tbl" aria-expanded="false"><span>View as table</span><svg class="dv-ico dv-ico-arrow" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M2 6H16L9 13L2 6Z" fill="currentColor"/></svg></button>
+        </div>
+      </div>
+      <div class="dv-stage"><div class="dv-chart-area">
+        <svg class="dv-svg dv-fit" data-pl="46" data-pr="12" data-h="260" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 260" role="group" aria-label="Balances by product by quarter: Current, Savings, Investments, pounds thousands.">
+          <line class="dv-grid" x1="46" y1="230" x2="568" y2="230" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+          <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="233" text-anchor="end" data-fx="0" data-dx="-8">0</text>
+          <line class="dv-grid" x1="46" y1="176" x2="568" y2="176" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+          <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="179" text-anchor="end" data-fx="0" data-dx="-8">25</text>
+          <line class="dv-grid" x1="46" y1="122" x2="568" y2="122" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+          <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="125" text-anchor="end" data-fx="0" data-dx="-8">50</text>
+          <line class="dv-grid" x1="46" y1="68" x2="568" y2="68" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+          <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="71" text-anchor="end" data-fx="0" data-dx="-8">75</text>
+          <line class="dv-grid" x1="46" y1="14" x2="568" y2="14" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
+          <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="17" text-anchor="end" data-fx="0" data-dx="-8">100</text>
+          <line class="dv-axis" x1="46" y1="230" x2="568" y2="230" stroke="var(--baseline)" data-fx="0" data-fx2="1"/>
+          <rect class="dv-series" data-series-group="1" data-grow="up" style="animation-delay:0ms" fill="var(--data-series-1)" x="68.2" y="143.6" width="26" height="86.4" data-fx="0.0426" data-fw="0.0498" tabindex="0" role="img" aria-label="A, Current, Q1: 40" data-tip="A · Current · Q1: 40"></rect>
+          <rect class="dv-series" data-series-group="2" data-grow="up" style="animation-delay:45ms" fill="var(--data-series-2)" x="98.2" y="78.8" width="26" height="151.2" data-fx="0.1001" data-fw="0.0498" tabindex="0" role="img" aria-label="B, Savings, Q1: 70" data-tip="B · Savings · Q1: 70"></rect>
+          <rect class="dv-series" data-series-group="3" data-grow="up" style="animation-delay:90ms" fill="var(--data-series-3)" x="128.2" y="165.2" width="26" height="64.8" data-fx="0.1576" data-fw="0.0498" tabindex="0" role="img" aria-label="C, Investments, Q1: 30" data-tip="C · Investments · Q1: 30"></rect>
+          <rect class="dv-series" data-series-group="1" data-grow="up" style="animation-delay:135ms" fill="var(--data-series-1)" x="198.8" y="132.8" width="26" height="97.2" data-fx="0.2926" data-fw="0.0498" tabindex="0" role="img" aria-label="A, Current, Q2: 45" data-tip="A · Current · Q2: 45"></rect>
+          <rect class="dv-series" data-series-group="2" data-grow="up" style="animation-delay:180ms" fill="var(--data-series-2)" x="228.8" y="70.2" width="26" height="159.8" data-fx="0.3501" data-fw="0.0498" tabindex="0" role="img" aria-label="B, Savings, Q2: 74" data-tip="B · Savings · Q2: 74"></rect>
+          <rect class="dv-series" data-series-group="3" data-grow="up" style="animation-delay:225ms" fill="var(--data-series-3)" x="258.8" y="156.6" width="26" height="73.4" data-fx="0.4076" data-fw="0.0498" tabindex="0" role="img" aria-label="C, Investments, Q2: 34" data-tip="C · Investments · Q2: 34"></rect>
+          <rect class="dv-series" data-series-group="1" data-grow="up" style="animation-delay:270ms" fill="var(--data-series-1)" x="329.2" y="122.0" width="26" height="108.0" data-fx="0.5426" data-fw="0.0498" tabindex="0" role="img" aria-label="A, Current, Q3: 50" data-tip="A · Current · Q3: 50"></rect>
+          <rect class="dv-series" data-series-group="2" data-grow="up" style="animation-delay:315ms" fill="var(--data-series-2)" x="359.2" y="57.2" width="26" height="172.8" data-fx="0.6001" data-fw="0.0498" tabindex="0" role="img" aria-label="B, Savings, Q3: 80" data-tip="B · Savings · Q3: 80"></rect>
+          <rect class="dv-series" data-series-group="3" data-grow="up" style="animation-delay:360ms" fill="var(--data-series-3)" x="389.2" y="147.9" width="26" height="82.1" data-fx="0.6576" data-fw="0.0498" tabindex="0" role="img" aria-label="C, Investments, Q3: 38" data-tip="C · Investments · Q3: 38"></rect>
+          <rect class="dv-series" data-series-group="1" data-grow="up" style="animation-delay:405ms" fill="var(--data-series-1)" x="459.8" y="104.7" width="26" height="125.3" data-fx="0.7926" data-fw="0.0498" tabindex="0" role="img" aria-label="A, Current, Q4: 58" data-tip="A · Current · Q4: 58"></rect>
+          <rect class="dv-series" data-series-group="2" data-grow="up" style="animation-delay:450ms" fill="var(--data-series-2)" x="489.8" y="39.9" width="26" height="190.1" data-fx="0.8501" data-fw="0.0498" tabindex="0" role="img" aria-label="B, Savings, Q4: 88" data-tip="B · Savings · Q4: 88"></rect>
+          <rect class="dv-series" data-series-group="3" data-grow="up" style="animation-delay:495ms" fill="var(--data-series-3)" x="519.8" y="135.0" width="26" height="95.0" data-fx="0.9076" data-fw="0.0498" tabindex="0" role="img" aria-label="C, Investments, Q4: 44" data-tip="C · Investments · Q4: 44"></rect>
+          <text class="dv-barkey t-cm-chart-key" style="animation-delay:0ms" data-series-group="1" fill="var(--ink)" x="81.2" y="139.6" text-anchor="middle" data-fx="0.0675">A</text>
+          <text class="dv-barkey t-cm-chart-key" style="animation-delay:45ms" data-series-group="2" fill="var(--ink)" x="111.2" y="74.8" text-anchor="middle" data-fx="0.1250">B</text>
+          <text class="dv-barkey t-cm-chart-key" style="animation-delay:90ms" data-series-group="3" fill="var(--ink)" x="141.2" y="161.2" text-anchor="middle" data-fx="0.1825">C</text>
+          <text class="dv-barkey t-cm-chart-key" style="animation-delay:135ms" data-series-group="1" fill="var(--ink)" x="211.8" y="128.8" text-anchor="middle" data-fx="0.3175">A</text>
+          <text class="dv-barkey t-cm-chart-key" style="animation-delay:180ms" data-series-group="2" fill="var(--ink)" x="241.8" y="66.2" text-anchor="middle" data-fx="0.3750">B</text>
+          <text class="dv-barkey t-cm-chart-key" style="animation-delay:225ms" data-series-group="3" fill="var(--ink)" x="271.8" y="152.6" text-anchor="middle" data-fx="0.4325">C</text>
+          <text class="dv-barkey t-cm-chart-key" style="animation-delay:270ms" data-series-group="1" fill="var(--ink)" x="342.2" y="118.0" text-anchor="middle" data-fx="0.5675">A</text>
+          <text class="dv-barkey t-cm-chart-key" style="animation-delay:315ms" data-series-group="2" fill="var(--ink)" x="372.2" y="53.2" text-anchor="middle" data-fx="0.6250">B</text>
+          <text class="dv-barkey t-cm-chart-key" style="animation-delay:360ms" data-series-group="3" fill="var(--ink)" x="402.2" y="143.9" text-anchor="middle" data-fx="0.6825">C</text>
+          <text class="dv-barkey t-cm-chart-key" style="animation-delay:405ms" data-series-group="1" fill="var(--ink)" x="472.8" y="100.7" text-anchor="middle" data-fx="0.8175">A</text>
+          <text class="dv-barkey t-cm-chart-key" style="animation-delay:450ms" data-series-group="2" fill="var(--ink)" x="502.8" y="35.9" text-anchor="middle" data-fx="0.8750">B</text>
+          <text class="dv-barkey t-cm-chart-key" style="animation-delay:495ms" data-series-group="3" fill="var(--ink)" x="532.8" y="131.0" text-anchor="middle" data-fx="0.9325">C</text>
+          <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="111.2" y="246" text-anchor="middle" data-fx="0.1250">Q1</text>
+          <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="241.8" y="246" text-anchor="middle" data-fx="0.3750">Q2</text>
+          <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="372.2" y="246" text-anchor="middle" data-fx="0.6250">Q3</text>
+          <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="502.8" y="246" text-anchor="middle" data-fx="0.8750">Q4</text>
+        </svg>
+      </div></div>
+
+      <!-- v5 LEGEND — dual control per row: swatch = checkbox (show/hide) + label = isolate; Reset right-inline, canon-disabled by default -->
+      <ul class="lg bar t-cm-chart-label" id="bar-legend" role="group" aria-label="Series — check a swatch to show or hide, click a name to isolate, Reset to show all">
+        <li class="legrow" data-series="1"><span class="lg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Current" style="--sc:var(--data-series-1)"></span><button type="button" class="lg-item" data-series="1" aria-pressed="false" aria-label="Isolate Current"><span class="dv-key t-cm-chart-key">A</span><span class="lg-name">Current</span></button></li>
+        <li class="legrow" data-series="2"><span class="lg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Savings" style="--sc:var(--data-series-2)"></span><button type="button" class="lg-item" data-series="2" aria-pressed="false" aria-label="Isolate Savings"><span class="dv-key t-cm-chart-key">B</span><span class="lg-name">Savings</span></button></li>
+        <li class="legrow" data-series="3"><span class="lg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Investments" style="--sc:var(--data-series-3)"></span><button type="button" class="lg-item" data-series="3" aria-pressed="false" aria-label="Isolate Investments"><span class="dv-key t-cm-chart-key">C</span><span class="lg-name">Investments</span></button></li>
+        <li class="lg-reset-wrap bar"><button type="button" class="lg-reset" data-for="bar-legend" disabled>Reset</button></li>
+      </ul>
+      <p class="sr-only" id="bar-live" role="status" aria-live="polite"></p>
+
+      <div class="dv-tablepanel" id="cb4-tbl" role="region" aria-label="Balances by product by quarter, data table" tabindex="-1" hidden>
+        <table class="dv-table t-cm-legal">
+          <caption>Balances by product by quarter, pounds thousands</caption>
+          <thead><tr><th scope="col">Quarter</th><th scope="col">Current</th><th scope="col">Savings</th><th scope="col">Investments</th></tr></thead>
+          <tbody><tr><th scope="row">Q1</th><td>40</td><td>70</td><td>30</td></tr><tr><th scope="row">Q2</th><td>45</td><td>74</td><td>34</td></tr><tr><th scope="row">Q3</th><td>50</td><td>80</td><td>38</td></tr><tr><th scope="row">Q4</th><td>58</td><td>88</td><td>44</td></tr></tbody>
+        </table>
+      </div>
+    </figure>
+  </div>
+
+  <!-- =================== CARD 2 — REAL spider donut (cd1), v4 legend =================== -->
+  <div class="card card-donut">
+    <h2 class="spec">Chart-donut · spider — real component, redesigned legend</h2>
+    <figure class="dv" data-dv-type="donut" data-total="2320" data-surface="page" data-labelling="spider" role="group" aria-labelledby="cd1-h">
+      <figcaption id="cd1-h" class="sr-only">Spend by category this month, pounds</figcaption>
+      <div class="dv-head">
+        <h3 class="dv-title t-cm-section-label">Housing takes two fifths of the month's spend</h3>
+        <div class="dv-controls" role="group" aria-label="Chart tools">
+          <div class="seg sm" role="group" aria-label="Segment values — pounds or share">
+            <span class="ind" aria-hidden="true"></span>
+            <button type="button" data-dv-view-btn="value" aria-pressed="true">Value</button>
+            <button type="button" data-dv-view-btn="percent" aria-pressed="false">Percent</button>
+          </div>
+          <button type="button" class="dv-vt dv-act dv-csv t-cm-chart-label"><svg class="dv-ico dv-ico-copy" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M0 18H10.8V7.2H0V18ZM1.2 8.4H9.6V16.8H1.2V8.4ZM8.4 3.6H7.2V6H8.4V3.6ZM8.4 1.2H9.6V0H7.2V2.4H8.4V1.2ZM15.6 0V1.2H16.8V2.4H18V0H15.6ZM12 10.8H14.4V9.6H12V10.8ZM16.8 9.6H15.6V10.8H18V8.4H16.8V9.6ZM16.8 7.2H18V3.6H16.8V7.2ZM10.8 1.2H14.4V0H10.8V1.2Z" fill="currentColor"/></svg><svg class="dv-ico dv-ico-tick" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z" fill="currentColor"/></svg><span>Copy data (CSV)</span></button>
+          <button class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" type="button" aria-controls="cd1-tbl" aria-expanded="false"><span>View as table</span><svg class="dv-ico dv-ico-arrow" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M2 6H16L9 13L2 6Z" fill="currentColor"/></svg></button>
+        </div>
+      </div>
+      <div class="dv-stage"><div class="dv-donut-row">
+        <svg class="dv-svg" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 300 260" width="300" height="260" role="group" aria-label="Spend by category. Total 2320 pounds.">
+          <path class="dv-series dv-donut-seg dv-marker" data-series-group="1" tabindex="0" role="img" aria-label="A, Housing: 950 pounds, 41 per cent" data-tip="A · Housing: £950 (41%)" data-cx="150" data-cy="130" data-ro="100" data-ri="60" data-a1="-90" data-a2="57.414" fill="var(--data-series-1)" stroke="var(--page)" stroke-width="2" d="M150.00 30.00 A100 100 0 0 1 203.86 214.26 L182.31 180.55 A60 60 0 0 0 150.00 70.00 Z"/>
+          <path class="dv-series dv-donut-seg dv-marker" data-series-group="2" tabindex="0" role="img" aria-label="B, Groceries: 420 pounds, 18 per cent" data-tip="B · Groceries: £420 (18%)" data-cx="150" data-cy="130" data-ro="100" data-ri="60" data-a1="57.414" data-a2="122.586" fill="var(--data-series-2)" stroke="var(--page)" stroke-width="2" d="M203.86 214.26 A100 100 0 0 1 96.14 214.26 L117.69 180.55 A60 60 0 0 0 182.31 180.55 Z"/>
+          <path class="dv-series dv-donut-seg dv-marker" data-series-group="3" tabindex="0" role="img" aria-label="C, Savings: 300 pounds, 13 per cent" data-tip="C · Savings: £300 (13%)" data-cx="150" data-cy="130" data-ro="100" data-ri="60" data-a1="122.586" data-a2="169.138" fill="var(--data-series-3)" stroke="var(--page)" stroke-width="2" d="M96.14 214.26 A100 100 0 0 1 51.79 148.84 L91.07 141.31 A60 60 0 0 0 117.69 180.55 Z"/>
+          <path class="dv-series dv-donut-seg dv-marker" data-series-group="4" tabindex="0" role="img" aria-label="D, Leisure: 260 pounds, 11 per cent" data-tip="D · Leisure: £260 (11%)" data-cx="150" data-cy="130" data-ro="100" data-ri="60" data-a1="169.138" data-a2="209.483" fill="var(--data-series-4)" stroke="var(--page)" stroke-width="2" d="M51.79 148.84 A100 100 0 0 1 62.95 80.78 L97.77 100.47 A60 60 0 0 0 91.07 141.31 Z"/>
+          <path class="dv-series dv-donut-seg dv-marker" data-series-group="5" tabindex="0" role="img" aria-label="E, Other: 390 pounds, 17 per cent" data-tip="E · Other: £390 (17%)" data-cx="150" data-cy="130" data-ro="100" data-ri="60" data-a1="209.483" data-a2="270" fill="var(--data-series-5)" stroke="var(--page)" stroke-width="2" d="M62.95 80.78 A100 100 0 0 1 150.00 30.00 L150.00 70.00 A60 60 0 0 0 97.77 100.47 Z"/>
+          <polyline class="dv-leader dv-anno show" data-seq="0" data-series-group="1" points="247.9,101.4 258.5,98.3"/>
+          <text class="dv-key-el dv-anno show t-cm-chart-key" data-seq="0" data-series-group="1" fill="var(--ink)" x="267.1" y="102.3" text-anchor="middle">A</text>
+          <polyline class="dv-leader dv-anno show" data-seq="1" data-series-group="2" points="150.0,232.0 150.0,243.0"/>
+          <text class="dv-key-el dv-anno show t-cm-chart-key" data-seq="1" data-series-group="2" fill="var(--ink)" x="150.0" y="247.0" text-anchor="middle">B</text>
+          <polyline class="dv-leader dv-anno show" data-seq="2" data-series-group="3" points="65.6,187.2 56.5,193.4"/>
+          <text class="dv-key-el dv-anno show t-cm-chart-key" data-seq="2" data-series-group="3" fill="var(--ink)" x="49.0" y="197.4" text-anchor="middle">C</text>
+          <polyline class="dv-leader dv-anno show" data-seq="3" data-series-group="4" points="49.3,113.5 38.5,111.7"/>
+          <text class="dv-key-el dv-anno show t-cm-chart-key" data-seq="3" data-series-group="4" fill="var(--ink)" x="29.6" y="115.7" text-anchor="middle">D</text>
+          <polyline class="dv-leader dv-anno show" data-seq="4" data-series-group="5" points="98.6,41.9 93.1,32.4"/>
+          <text class="dv-key-el dv-anno show t-cm-chart-key" data-seq="4" data-series-group="5" fill="var(--ink)" x="88.5" y="36.4" text-anchor="middle">E</text>
+          <g data-dv-view="value"><text class="dv-val t-cm-figure-3" fill="var(--ink)" x="150" y="138" text-anchor="middle">2320</text></g>
+          <g data-dv-view="percent" class="dv-off"><text class="dv-val t-cm-figure-3" fill="var(--ink)" x="150" y="138" text-anchor="middle">100%</text></g>
+        </svg>
+        <ul class="lg vert t-cm-chart-label" id="donut-legend" role="group" aria-label="Segments — check a swatch to show or hide, click a name to isolate, Reset to show all">
+          <li class="legrow" data-series="1"><span class="lg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Housing" style="--sc:var(--data-series-1)"></span><button type="button" class="lg-item" data-series="1" aria-pressed="false" aria-label="Isolate Housing"><span class="dv-key t-cm-chart-key">A</span><span class="lg-name">Housing</span></button></li>
+          <li class="legrow" data-series="2"><span class="lg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Groceries" style="--sc:var(--data-series-2)"></span><button type="button" class="lg-item" data-series="2" aria-pressed="false" aria-label="Isolate Groceries"><span class="dv-key t-cm-chart-key">B</span><span class="lg-name">Groceries</span></button></li>
+          <li class="legrow" data-series="3"><span class="lg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Savings" style="--sc:var(--data-series-3)"></span><button type="button" class="lg-item" data-series="3" aria-pressed="false" aria-label="Isolate Savings"><span class="dv-key t-cm-chart-key">C</span><span class="lg-name">Savings</span></button></li>
+          <li class="legrow" data-series="4"><span class="lg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Leisure" style="--sc:var(--data-series-4)"></span><button type="button" class="lg-item" data-series="4" aria-pressed="false" aria-label="Isolate Leisure"><span class="dv-key t-cm-chart-key">D</span><span class="lg-name">Leisure</span></button></li>
+          <li class="legrow" data-series="5"><span class="lg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide Other" style="--sc:var(--data-series-5)"></span><button type="button" class="lg-item" data-series="5" aria-pressed="false" aria-label="Isolate Other"><span class="dv-key t-cm-chart-key">E</span><span class="lg-name">Other</span></button></li>
+          <li class="lg-reset-wrap"><button type="button" class="lg-reset" data-for="donut-legend" disabled>Reset</button></li>
+        </ul>
+      </div></div>
+      <p class="sr-only" id="donut-live" role="status" aria-live="polite"></p>
+
+      <div class="dv-tablepanel" id="cd1-tbl" role="region" aria-label="Spend by category this month, data table" tabindex="-1" hidden>
+        <table class="dv-table t-cm-legal">
+          <caption>Spend by category this month, pounds</caption>
+          <thead><tr><th scope="col">Category</th><th scope="col" data-dv-view="value">Amount (£)</th><th scope="col" data-dv-view="percent" class="dv-off">Share (%)</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Housing</th><td data-dv-view="value">950</td><td data-dv-view="percent" class="dv-off">41</td></tr>
+            <tr><th scope="row">Groceries</th><td data-dv-view="value">420</td><td data-dv-view="percent" class="dv-off">18</td></tr>
+            <tr><th scope="row">Savings</th><td data-dv-view="value">300</td><td data-dv-view="percent" class="dv-off">13</td></tr>
+            <tr><th scope="row">Leisure</th><td data-dv-view="value">260</td><td data-dv-view="percent" class="dv-off">11</td></tr>
+            <tr><th scope="row">Other</th><td data-dv-view="value">390</td><td data-dv-view="percent" class="dv-off">17</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </figure>
+  </div>
+
+  <div class="how">
+    <b>What v5 does</b> — two gestures per row. <b>Check a swatch</b> to show or hide that series (additive; at least
+    one stays shown). <b>Click a name</b> to isolate it — only that series shows; click the active name again, or
+    <b>Reset</b>, to show all. <b>Reset</b> is canon-disabled (B-D4) until a series is hidden or isolated. <b>Rolling
+    over</b> a series — the row or the bar/segment — fades the others and their letter keys. Hidden rows stay
+    <b>resting</b>; only the <b>swatch</b> goes hollow with a grey-primitive border <code>--muted</code>
+    (mono/7 <code>#626262</code> light · mono/9 <code>#9D9D9D</code> dark). On the bar, each on-chart key&rsquo;s
+    alpha-in tracks its bar&rsquo;s grow. The donut plays its radial-sweep intro on load (Replay up top). Toolbar
+    (popover, table, value⇄%) is the real dv-behaviour, untouched.
+  </div>
+  <div class="note">
+    <span class="tag">SETTLED</span>The open a11y call is resolved by this model: because the resting state is
+    &ldquo;all shown&rdquo; and a click isolates, the isolate labels are <b>exclusive toggle-buttons</b>
+    (<code>aria-pressed</code>), not a <code>radiogroup</code>; the swatches are independent <b>checkboxes</b>
+    (<code>role=&ldquo;checkbox&rdquo;</code>). <code>reviews/LEGEND-ISOLATE-TOGGLE-PROTOTYPE-2026-07-24-v5.html</code>
+  </div>
+
+  <!-- real behaviour layer: popover · table-view · value⇄% · responsive fit · high-contrast -->
+  <script src="../knowledge/canon/dv-behaviour.js"></script>
+  <script>
+  /* ============= v5 legend controller: swatch=checkbox (show/hide) + label=isolate + hover-fade =============
+     STATE = which series are visible. Swatch toggles one (additive, can't hide the last). Isolate sets the
+     visible set to exactly {id}; clicking the active one again (or Reset) restores all. "Isolated" is DERIVED
+     (this series is the only visible one) so checking another swatch back on auto-clears the solo. */
+  function makeLegend(host){
+    var fig = host.closest('figure');
+    var live = document.getElementById(host.id.replace('-legend','-live'));
+    var rows = [].slice.call(host.querySelectorAll('.legrow'));
+    var ids = rows.map(function(r){ return r.getAttribute('data-series'); });
+    var resetBtn = host.querySelector('.lg-reset');
+    var visible = {}; ids.forEach(function(id){ visible[id] = true; });
+
+    function countVisible(){ return ids.filter(function(id){ return visible[id]; }).length; }
+    function isSolo(id){ return visible[id] && countVisible() === 1; }
+    function nm(id){ return host.querySelector('.legrow[data-series="'+id+'"] .lg-name').textContent; }
+    function groups(id){ return fig.querySelectorAll('[data-series-group="'+id+'"]'); }
+    function setShown(id, on){
+      var els = groups(id);
+      for (var i=0;i<els.length;i++){
+        els[i].style.opacity = on ? '' : '0';
+        els[i].style.visibility = on ? '' : 'hidden';   /* entry animation outranks inline opacity — hide via visibility too */
+        els[i].style.pointerEvents = on ? '' : 'none';
+      }
+    }
+    function clearFade(){ var f = fig.querySelectorAll('.is-faded'); for (var i=0;i<f.length;i++) f[i].classList.remove('is-faded'); }
+    function highlight(id){
+      if (!visible[id] || countVisible() <= 1) return;   /* nothing to preview if it's hidden or the only one shown */
+      ids.forEach(function(x){
+        if (!visible[x]) return;                          /* leave hidden series as they are */
+        var els = groups(x);
+        for (var i=0;i<els.length;i++){ els[i].classList.toggle('is-faded', x !== id); }
+      });
+    }
+    function render(){
+      rows.forEach(function(r){
+        var id = r.getAttribute('data-series');
+        r.querySelector('.lg-sw').setAttribute('aria-checked', String(!!visible[id]));
+        var solo = isSolo(id);
+        r.querySelector('.lg-item').setAttribute('aria-pressed', String(solo));
+        r.classList.toggle('is-solo', solo);
+      });
+      ids.forEach(function(id){ setShown(id, !!visible[id]); });
+      resetBtn.disabled = (countVisible() === ids.length);
+      clearFade();
+    }
+    function announce(msg){ if (live) live.textContent = msg; }
+    function toggleSwatch(id){
+      if (visible[id] && countVisible() === 1){ announce('At least one series must stay shown'); return; }  /* guard the last */
+      visible[id] = !visible[id];
+      announce(visible[id] ? (nm(id) + ' shown') : (nm(id) + ' hidden'));
+      render();
+    }
+    function isolate(id){
+      if (isSolo(id)){ ids.forEach(function(x){ visible[x] = true; }); announce('All series shown'); }
+      else { ids.forEach(function(x){ visible[x] = (x === id); }); announce('Showing only ' + nm(id)); }
+      render();
+    }
+    function resetAll(){ ids.forEach(function(x){ visible[x] = true; }); announce('All series shown'); render(); }
+
+    host.addEventListener('click', function(e){
+      var sw = e.target.closest('.lg-sw'); if (sw){ toggleSwatch(sw.closest('.legrow').getAttribute('data-series')); return; }
+      var it = e.target.closest('.lg-item'); if (it){ isolate(it.getAttribute('data-series')); return; }
+      var rs = e.target.closest('.lg-reset'); if (rs && !rs.disabled){ resetAll(); }
+    });
+    /* swatch keyboard: Space / Enter toggles the checkbox */
+    host.addEventListener('keydown', function(e){
+      var sw = e.target.closest('.lg-sw'); if (!sw) return;
+      if (e.key === ' ' || e.key === 'Spacebar' || e.key === 'Enter'){ e.preventDefault(); toggleSwatch(sw.closest('.legrow').getAttribute('data-series')); }
+    });
+    /* hover / focus preview keyed off the whole row (either control), plus the chart marks themselves */
+    rows.forEach(function(r){
+      var id = r.getAttribute('data-series');
+      r.addEventListener('mouseenter', function(){ highlight(id); });
+      r.addEventListener('mouseleave', clearFade);
+      r.addEventListener('focusin', function(){ highlight(id); });
+      r.addEventListener('focusout', clearFade);
+    });
+    [].forEach.call(fig.querySelectorAll('.dv-series'), function(s){
+      var id = s.getAttribute('data-series-group'); if (!id) return;
+      s.addEventListener('mouseenter', function(){ highlight(id); });
+      s.addEventListener('mouseleave', clearFade);
+      s.addEventListener('focus', function(){ highlight(id); });
+      s.addEventListener('blur', clearFade);
+    });
+    render();
+  }
+  ['bar-legend','donut-legend'].forEach(function(id){ makeLegend(document.getElementById(id)); });
+
+  /* ===================== donut radial-sweep intro (from the canon sweep contract) ===================== */
+  function pt(cx,cy,r,a){ var t=a*Math.PI/180; return [cx+r*Math.cos(t), cy+r*Math.sin(t)]; }
+  function arcPath(cx,cy,ro,ri,a1,a2){
+    var large = (a2-a1) > 180 ? 1 : 0;
+    var o1=pt(cx,cy,ro,a1), o2=pt(cx,cy,ro,a2), i2=pt(cx,cy,ri,a2), i1=pt(cx,cy,ri,a1);
+    return 'M'+o1[0].toFixed(2)+' '+o1[1].toFixed(2)+
+      ' A'+ro+' '+ro+' 0 '+large+' 1 '+o2[0].toFixed(2)+' '+o2[1].toFixed(2)+
+      ' L'+i2[0].toFixed(2)+' '+i2[1].toFixed(2)+
+      ' A'+ri+' '+ri+' 0 '+large+' 0 '+i1[0].toFixed(2)+' '+i1[1].toFixed(2)+' Z';
+  }
+  function sweepDonut(fig){
+    var segs = [].slice.call(fig.querySelectorAll('path.dv-series'));
+    if (!segs.length) return;
+    var annos = [].slice.call(fig.querySelectorAll('.dv-anno'));
+    var data = segs.map(function(el){
+      return { el:el, cx:+el.getAttribute('data-cx'), cy:+el.getAttribute('data-cy'),
+        ro:+el.getAttribute('data-ro'), ri:+el.getAttribute('data-ri'),
+        a1:+el.getAttribute('data-a1'), a2:+el.getAttribute('data-a2'),
+        grp:el.getAttribute('data-series-group'), full:el.getAttribute('d') };
+    });
+    var start = Math.min.apply(null, data.map(function(d){ return d.a1; }));
+    var end   = Math.max.apply(null, data.map(function(d){ return d.a2; }));
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce){ data.forEach(function(d){ d.el.setAttribute('d', d.full); d.el.style.opacity=''; }); annos.forEach(function(a){ a.classList.add('show'); a.style.opacity=''; }); return; }
+    annos.forEach(function(a){ a.classList.remove('show'); a.style.opacity='0'; });
+    data.forEach(function(d){ d.el.style.opacity='1'; d.el.setAttribute('d', arcPath(d.cx,d.cy,d.ro,d.ri,d.a1,d.a1)); });
+    var dur = 850, t0 = null;
+    function frame(ts){
+      if (t0===null) t0 = ts;
+      var p = Math.min((ts-t0)/dur, 1);
+      var ang = start + (end-start)*p;
+      data.forEach(function(d){
+        if (ang <= d.a1) d.el.setAttribute('d', arcPath(d.cx,d.cy,d.ro,d.ri,d.a1,d.a1));
+        else if (ang >= d.a2) d.el.setAttribute('d', d.full);
+        else d.el.setAttribute('d', arcPath(d.cx,d.cy,d.ro,d.ri,d.a1,ang));
+      });
+      annos.forEach(function(a){
+        var g = a.getAttribute('data-series-group');
+        var seg = data.filter(function(d){ return d.grp===g; })[0];
+        if (seg && ang >= seg.a2){ a.classList.add('show'); a.style.opacity=''; }
+      });
+      if (p < 1){ requestAnimationFrame(frame); }
+      else { data.forEach(function(d){ d.el.setAttribute('d', d.full); d.el.style.opacity=''; }); annos.forEach(function(a){ a.classList.add('show'); a.style.opacity=''; }); }
+    }
+    requestAnimationFrame(frame);
+  }
+  var donutFig = document.getElementById('donut-legend').closest('figure');
+  window.addEventListener('load', function(){ requestAnimationFrame(function(){ sweepDonut(donutFig); }); });
+
+  /* demo chrome */
+  document.getElementById('themeToggle').addEventListener('click', function(){ var b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+  document.getElementById('contrastToggle').addEventListener('click', function(){ var b=document.body; var hi=b.getAttribute('data-contrast')==='high'; if(hi){ b.removeAttribute('data-contrast'); } else { b.setAttribute('data-contrast','high'); } this.setAttribute('aria-pressed', String(!hi)); });
+  document.getElementById('replayToggle').addEventListener('click', function(){ sweepDonut(donutFig); });
+  document.getElementById('hitToggle').addEventListener('click', function(){ var on=document.body.classList.toggle('show-hits'); this.setAttribute('aria-pressed', String(on)); });
+  </script>
+</body>
+</html>

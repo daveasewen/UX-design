@@ -1,8 +1,8 @@
 # Good morning, Dave ☕
 
-> **RENAME THE WRAPPED CHAT →** `Apollo — legend FEEL RULED (isolate + reset = toggle-buttons, not radiogroup) → v4 built + render-verified light+dark @2 widths + isolate states (real HSBC font) → Dave's 5 review edits captured to the v5 brief · Amber wrap ~58% · build 53/53, no canon edits`
-> **TITLE THE NEXT CHAT →** `Apollo — build legend v5 from the 5-edit brief (RESTORE dual checkbox-swatch + isolate-label · Reset canon-disabled default · off-rows resting + hollow-grey swatch · bar key-alpha animation · seg hover border→ink) → render-verify → then DECIDE ds-010 + the donut/bar/combo wave`
-> *(Titles are LABELS — role comes from Dave's opener line. Legend FEEL is now RULED; v4 render-verified + trustworthy; the 5 edits live in `notes/_briefs/2026-07-25-legend-v5-review-edits-brief.md`. Deliberate wrap at AMBER — the v5 rebuild is an interactive build, handed to a fresh window per the gauge rule.)*
+> **RENAME THE WRAPPED CHAT →** `Apollo — legend v5 built + render-verified (5 edits) → CANON popover mispin FIXED in dv-behaviour.js (53/53, propagated to 5 charts + showroom) → 44 hit-area applied to legend controls · bar-key RISE + foundational hit-audit deferred to v5.1 · Red wrap ~66%`
+> **TITLE THE NEXT CHAT →** `Apollo — legend v5.1: bar-key RISE (pinned to bar top — translateY, not fade) + FOUNDATIONAL hit-area audit of EVERY control (toolbar Copy/View 32px = CANON gap · demo chrome · data-marks exempt? · bar-swatch 24 AA) → render-verify → then Dave sign-off + inscribe`
+> *(Titles are LABELS — role comes from Dave's opener line. v5 is render-verified + trustworthy but a REVIEW CANDIDATE (not canon). The self-contained next brief is `notes/_briefs/2026-07-25-legend-v5.1-barrise-and-hitarea-audit-brief.md` — read it first. Red wrap per the gauge, budgeting for the ritual itself (Dave's point).)*
 
 > *A calm word before the queue — the #13 trial banner (one handoff only; Dave judges by eye).*
 > *You are starting fresh, and that is fine — everything you need is written down. Read this file,
@@ -11,7 +11,14 @@
 > brief is current. Nothing in the queue punishes reading slowly. The context gauge and its tally
 > are a protocol for writing things down while there is still room — not a stop signal.*
 
-> ## ★ LATEST — 2026-07-25 (Sat morning, OPUS solo — legend FEEL RULED → v4 built + render-verified → Dave's 5 review edits captured to a v5 brief; 🟡 AMBER ~58%, deliberate wrap at Dave's call): **The legend feel is ruled and v4 is render-verified; Dave reviewed it via the overlay and pinned 5 change requests → building v5 is the next window's job (brief cut). The interactive rebuild was handed to a fresh window per the gauge rule (no new build artefact at Amber).**
+> ## ★ LATEST — 2026-07-25 (Sat midday→PM, OPUS solo — legend v5 built + render-verified → CANON popover fixed + 44 hit-area applied to the legend; 🔴 RED ~66% wrap at Dave's call): **v5 lands the 5 review edits and is render-verified (real font, light+dark @1180/560 + a checkbox-OFF and an isolate-ACTIVE state). Two follow-ups this window: a real CANON popover bug fixed in `dv-behaviour.js` (built 53/53, propagated), and the 44px hit-area standard applied to the legend controls. Two items carried to v5.1 (brief cut): the bar-key RISE and the FOUNDATIONAL hit-audit of every remaining control.**
+> - **★ v5 BUILT** — `reviews/LEGEND-ISOLATE-TOGGLE-PROTOTYPE-2026-07-24-v5.html` (+ `.REVIEW`): dual swatch-checkbox + isolate-label RESTORED (v4's isolate-only VETOED) · off-rows RESTING, only the swatch goes hollow + grey-primitive border · Reset canon-disabled (B-D4) · `.seg:hover`→ink. Render-verified. **NOT canon — review candidate.** Build 53/53, library 67.
+> - **★ CANON popover FIX** (`knowledge/canon/dv-behaviour.js` `tblToggle`): the table panel was pinned to the figure's right edge (`right:0`) → floated 125px off its trigger on the donut; now anchors under the trigger, clamped (bar/line stay right-clamped, no regression). Re-injected (5 consumers) + showroom regen (5) + `_build_all.py` **53/53 GREEN + idempotent**. Render-verified donut + bar.
+> - **★ HIT-AREA 44 on the LEGEND** (Dave: "everything interactable must have this — foundational"): invisible `::before` + 9-point `.hit-*` (canon `target/min`): swatch **44×44** (grows left into the gutter, never overlaps the label) · isolate labels + Reset **44 tall** · row gaps widened donut 8→20 / bar 10→16 so 44 targets tile · live **"Show 44px hit areas"** toggle added. Computed targets ≥44 verified; visible chrome unchanged.
+> - **⬛ CARRIED → v5.1** (`notes/_briefs/2026-07-25-legend-v5.1-barrise-and-hitarea-audit-brief.md`): (1) **bar-key RISE** — key rides its bar's top (translateY `--kh`→0, not a fade); built then REVERTED at the wrap to stay clean; recipe + 12 `--kh` values in the brief. (2) **FOUNDATIONAL hit-audit** — toolbar `.dv-vt`/`.dv-tbl-toggle` still 32px = **CANON gap** (all 5 snippets) · demo chrome · **data-marks EXEMPT?** (bars/slices can't be 44 without distorting — confirm + inscribe a rule + gate) · bar-swatch horizontal 44 overlap → 24px AA floor [rec].
+> - **Context gauge at authoring: 🔴 Red ~66% (in-head tally, ESTIMATE ±15% — Half-2 broken).** Wrap budgeted for the RITUAL's own cost (Dave's point — the gauge fires with headroom so the handoff is authored well, not at 95%). Red-authored ⇒ next reader re-verify render/gate claims. **Push stack (all unpushed): the prior stack + this session's ONE commit (canon popover fix + rebuild outputs + v5/v5.REVIEW) — GitHub Desktop, whole stack.**
+>
+> ## ★ PRIOR — 2026-07-25 (Sat morning, OPUS solo — legend FEEL RULED → v4 built + render-verified → Dave's 5 review edits captured to a v5 brief; 🟡 AMBER ~58%, deliberate wrap at Dave's call): **The legend feel is ruled and v4 is render-verified; Dave reviewed it via the overlay and pinned 5 change requests → building v5 is the next window's job (brief cut). The interactive rebuild was handed to a fresh window per the gauge rule (no new build artefact at Amber).**
 > - **★ LEGEND FEEL RULED:** click a legend item = ISOLATE · Reset = show all. Resting state is "all shown" ⇒ exclusive **toggle-buttons (`aria-pressed`), NOT a radiogroup** — the v1–v3 open a11y call is CLOSED.
 > - **★ v4 BUILT + RENDER-VERIFIED** (`reviews/LEGEND-ISOLATE-TOGGLE-PROTOTYPE-2026-07-24-v4.html`, real Chart-bar cb4 + Chart-donut cd1): light+dark @1180/560 + isolate states both themes, `document.fonts.check('16px HSBC_MtUnivers_Latin')` true. Evidence: 6 PNGs (agent self-verify) + `_LIVE-STATE` top delta. **Pipeline re-banked:** `$HOME` rotates between calls + bash cap is a hard **45s** ⇒ download+libs+fonts+render in ONE call; alias **BOTH** font strings; set `data-theme` via `add_init_script` (setting it after goto catches the 160ms cross-fade → greys the shot).
 > - **★ DAVE'S 5 REVIEW EDITS → `notes/_briefs/2026-07-25-legend-v5-review-edits-brief.md`** (self-contained). Headline = **RESTORE the dual checkbox-swatch + isolate-label** (v4's isolate-only was VETOED — "I can't check the swatches") · off-rows = **resting + hollow-grey swatch** (NOT muted item — supersedes first-pass point 5; grey primitive → swatch border only) · **Reset canon-disabled default** (B-D4: #9D9D9D/#808080 text, `--line` border) / enabled = light-border+dark-text · **bar key-alpha animates with the grow** · **`.seg:hover` border→ink**.
@@ -72,21 +79,20 @@
 
 ## ⬛ DO THIS FIRST
 
-> **✅ Legend FEEL RULED + v4 render-verified. NEXT = build v5 from the brief.** The legend model is
-> settled (click = isolate · Reset = show all · toggle-buttons); v4 is render-verified light+dark @2 widths
-> with the real font. Dave reviewed it via the overlay and pinned **5 change requests** — they are the job.
-> **0. ★★ BUILD LEGEND v5 from `notes/_briefs/2026-07-25-legend-v5-review-edits-brief.md`** (self-contained:
-> the 5 edits + canon values + the reconciled model). Headline: **RESTORE the dual checkbox-swatch +
-> isolate-label** (v4's isolate-only was Dave-vetoed) · off-rows resting + hollow-grey swatch · Reset
-> canon-disabled default / enabled light-border+dark-text · bar key-alpha animation · `.seg:hover` border→ink.
-> **VERSION (don't overwrite v4)**; regenerate `…v5.REVIEW.html`; **render-verify** light+dark @2 widths + states.
-> **1. ★ DECIDE ds-010 (Dave):** fold the one-line `Chart-bar` `fill:var(--sc,…)` drop into the bar lane,
-> or fix it now + re-run the build. Detail in `_DS-IMPROVEMENTS.md` + `_LIVE-STATE` top.
-> **2. ★★ THEN THE WAVE** — line + sparkline DONE; work = **donut + bar + combo**; the legend redesign is the
-> SHARED SERIAL (`dv-behaviour.js` legend logic). O1 (`data-surface="inverse"`) build spec = the `_LIVE-STATE`
-> PRIOR delta (donut on-segment keys). Render-verify each (brand-gate change).
-> **3. ★ DAVE async: DATAVIZ SIGN-OFF** — 5 panes → canon (open-014) · **+ ruling batch (§C·2), 15 remain** ·
-> line letter-drop pending his a11y team.
+> **✅ Legend v5 built + render-verified. NEXT = v5.1: the bar-key RISE + the FOUNDATIONAL hit-area audit.**
+> Read `notes/_briefs/2026-07-25-legend-v5.1-barrise-and-hitarea-audit-brief.md` FIRST (self-contained: the
+> rise recipe + 12 `--kh` values, and the full hit-audit scope). v5 is a REVIEW CANDIDATE, not canon.
+> **0. ★★ BAR-KEY RISE** — swap `dvKeyIn` (fade) → `dvKeyRise` (translateY `--kh`→0, pinned to the bar top on the
+> bar's easing + per-key delay); add the 12 `--kh` bar heights. **VERIFY BY RENDER AT MID-ANIMATION** (the letter
+> stays on the rising bar top; watch the SVG translateY units). Recipe + values in the brief.
+> **1. ★★ FOUNDATIONAL HIT-AREA AUDIT** (Dave: *"everything interactable must have this — we can make mistakes on
+> this"*). Audit EVERY control → ≥44 via invisible `::before` + 9-point `.hit-*`. Legend = done. Still open:
+> toolbar `.dv-vt`/`.dv-tbl-toggle` 32px = **CANON gap** (fix in all 5 `Chart-*.reference.html` + rebuild) · demo
+> chrome · **data-marks EXEMPT?** (confirm with Dave, then INSCRIBE the rule + wire a GATE — foundational ⇒ gate it)
+> · bar-swatch horizontal 44 overlap → 24px AA floor [rec].
+> **2. ★ THEN Dave sign-off → INSCRIBE the legend model** (`_DATAVIZ-DECISIONS`/ADR) → the donut+bar+combo WAVE
+> (legend logic = SHARED SERIAL). ds-010 (`Chart-bar` `fill:var(--sc,…)` one-liner) still Dave's call — fold into the bar lane.
+> **3. ★ DAVE async: DATAVIZ SIGN-OFF** — 5 panes → canon (open-014) · ruling batch (15 remain) · line letter-drop.
 > **4. ★★ Radius/corner tuner (§C·1d) — "return soon, don't let me forget."** Still owed; resurface unprompted.
 
 *Standing practice: every handoff carries both names — retrospective + forward — and a **DIVVY PLAN**.

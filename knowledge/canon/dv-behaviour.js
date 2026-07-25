@@ -114,7 +114,15 @@
          once a title pushed the toolbar down (Dave 2026-07-24). Measure after un-hiding so
          offsetParent resolves; fall back gracefully. */
       var op = panel.offsetParent || btn.offsetParent || panel.parentNode;
-      if (op) { panel.style.top = (btn.getBoundingClientRect().bottom - op.getBoundingClientRect().top + 6) + 'px'; }
+      if (op) {
+        var bt = btn.getBoundingClientRect(), ot = op.getBoundingClientRect();
+        panel.style.top = (bt.bottom - ot.top + 6) + 'px';
+        /* anchor horizontally UNDER the trigger too — right:0 pinned the panel to the figure's edge,
+           wrong when the trigger sits mid-figure (e.g. donut + side legend). Left-align to the
+           trigger, clamp so it never spills past the offsetParent's right edge (keeps bar/line right-anchored). */
+        var lx = Math.max(0, Math.min(bt.left - ot.left, op.clientWidth - panel.offsetWidth));
+        panel.style.left = lx + 'px'; panel.style.right = 'auto';
+      }
     } else { panel.setAttribute('hidden', ''); }
     btn.setAttribute('aria-expanded', String(open));   /* label stays static; the solid arrow rotates via CSS (Dave 2026-07-24) */
     if (open) { panel.focus(); }
