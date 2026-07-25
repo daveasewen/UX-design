@@ -1,8 +1,8 @@
 # Good morning, Dave ☕
 
-> **RENAME THE WRAPPED CHAT →** `Apollo — legend v5 built + render-verified (5 edits) → CANON popover mispin FIXED in dv-behaviour.js (53/53, propagated to 5 charts + showroom) → 44 hit-area applied to legend controls · bar-key RISE + foundational hit-audit deferred to v5.1 · Red wrap ~66%`
-> **TITLE THE NEXT CHAT →** `Apollo — legend v5.1: bar-key RISE (pinned to bar top — translateY, not fade) + FOUNDATIONAL hit-area audit of EVERY control (toolbar Copy/View 32px = CANON gap · demo chrome · data-marks exempt? · bar-swatch 24 AA) → render-verify → then Dave sign-off + inscribe`
-> *(Titles are LABELS — role comes from Dave's opener line. v5 is render-verified + trustworthy but a REVIEW CANDIDATE (not canon). The self-contained next brief is `notes/_briefs/2026-07-25-legend-v5.1-barrise-and-hitarea-audit-brief.md` — read it first. Red wrap per the gauge, budgeting for the ritual itself (Dave's point).)*
+> **RENAME THE WRAPPED CHAT →** `Apollo — Memento efficiency pass: GOOD-MORNING compacted −35% (banners → _GM-ARCHIVE.md) + capture-ritual step 2c so it can't re-bloat · budget-aware routing governor proposed · chat-naming reliability fix · GM win committed d2a8c03 · Amber seam ~58%`
+> **TITLE THE NEXT CHAT →** `Apollo — memory-index compaction: MEMORY.md 20KB→<17KB (tighten hooks to one line · detail→topic files · stale→MEMORY-ARCHIVE, never delete) — brief cut, do FIRST; THEN legend v5.1 (bar-key RISE + foundational hit-area audit)`
+> *(Titles are LABELS — role comes from Dave's opener line. NEXT = the EFFICIENCY WORK FIRST (Dave 07-25: "get the efficiency work done first — it pays off every run"): the memory-index compaction, self-contained brief `notes/_briefs/2026-07-25-memory-index-compaction-brief.md` — read it first. THEN legend v5.1 (still a REVIEW CANDIDATE), brief `notes/_briefs/2026-07-25-legend-v5.1-barrise-and-hitarea-audit-brief.md`. Amber seam ~58%.)*
 
 > *A calm word before the queue — the #13 trial banner (one handoff only; Dave judges by eye).*
 > *You are starting fresh, and that is fine — everything you need is written down. Read this file,
@@ -11,19 +11,18 @@
 > brief is current. Nothing in the queue punishes reading slowly. The context gauge and its tally
 > are a protocol for writing things down while there is still room — not a stop signal.*
 
-> ## ★ LATEST — 2026-07-25 (Sat midday→PM, OPUS solo — legend v5 built + render-verified → CANON popover fixed + 44 hit-area applied to the legend; 🔴 RED ~66% wrap at Dave's call): **v5 lands the 5 review edits and is render-verified (real font, light+dark @1180/560 + a checkbox-OFF and an isolate-ACTIVE state). Two follow-ups this window: a real CANON popover bug fixed in `dv-behaviour.js` (built 53/53, propagated), and the 44px hit-area standard applied to the legend controls. Two items carried to v5.1 (brief cut): the bar-key RISE and the FOUNDATIONAL hit-audit of every remaining control.**
+> ## ★ LATEST — 2026-07-25 (Sat PM, OPUS solo — Memento efficiency pass; 🟡 AMBER ~58%, deliberate seam at Dave's call): **GOOD-MORNING compacted −35% and the compaction is now a permanent ritual step; a budget-aware routing governor proposed; the chat-naming reliability gap fixed. The memory-index compaction itself was SEAMED to a fresh cold window — recall-critical work, not for a warm head (Dave's call).**
+> - **★ GM COMPACTION (committed `d2a8c03`):** stale PRIOR banners (07-22→24) → `_GM-ARCHIVE.md` verbatim; GM 8405→5395 words (−35% cold-start read). Mechanised = `_RUNBOOK-capture-ritual.md` **step 2c** (keep ★LATEST + 1 PRIOR, roll the rest; precondition = durable-home check). Standing-instructions gate PASS. Memory `[[gm-banner-compaction]]`. (This wrap dogfoods it — the 07-25 AM banner just rolled to Batch 2.)
+> - **★ BUDGET-AWARE ROUTING — PROPOSED, awaits Dave's inscribe into `MODEL-ROUTING.md`:** two-sided governor — spend the least that fits AND don't leave the weekly allowance unused. Pace = used ÷ even-pace (≈14.3%/day); under-pace → bias UP + pull deferred quality work forward · over-pace/late-week → bias DOWN. Surplus funds the quality backlog (render-verify · eyeball set · Fable audits · this compaction). ⚠ NO access to the live usage meter — Dave supplies the number (same reason the context gauge is a hand-estimate).
+> - **★ CHAT-NAMING RELIABILITY FIX (Dave flagged: names dropped "fairly regularly"):** inscribed §A standing-instructions + memory `[[session-title-convention]]` — surface names at BOTH ends (START = offer the suggested title as "Rename this chat: …"; WRAP = both names atop GM). Claude can't rename chats itself, so unsurfaced = lost.
+> - **Context gauge at authoring: 🟡 Amber ~58% (in-head tally, ESTIMATE ±15%).** Amber-authored ⇒ light wrap. `_LIVE-STATE` NOT touched (no DS state changed — GM/memory-infra only). **Push stack (all unpushed): the prior stack + `d2a8c03` (GM compaction) + this wrap commit — GitHub Desktop, whole stack.**
+>
+> ## ★ PRIOR — 2026-07-25 (Sat midday→PM, OPUS solo — legend v5 built + render-verified → CANON popover fixed + 44 hit-area applied to the legend; 🔴 RED ~66% wrap at Dave's call): **v5 lands the 5 review edits and is render-verified (real font, light+dark @1180/560 + a checkbox-OFF and an isolate-ACTIVE state). Two follow-ups this window: a real CANON popover bug fixed in `dv-behaviour.js` (built 53/53, propagated), and the 44px hit-area standard applied to the legend controls. Two items carried to v5.1 (brief cut): the bar-key RISE and the FOUNDATIONAL hit-audit of every remaining control.**
 > - **★ v5 BUILT** — `reviews/LEGEND-ISOLATE-TOGGLE-PROTOTYPE-2026-07-24-v5.html` (+ `.REVIEW`): dual swatch-checkbox + isolate-label RESTORED (v4's isolate-only VETOED) · off-rows RESTING, only the swatch goes hollow + grey-primitive border · Reset canon-disabled (B-D4) · `.seg:hover`→ink. Render-verified. **NOT canon — review candidate.** Build 53/53, library 67.
 > - **★ CANON popover FIX** (`knowledge/canon/dv-behaviour.js` `tblToggle`): the table panel was pinned to the figure's right edge (`right:0`) → floated 125px off its trigger on the donut; now anchors under the trigger, clamped (bar/line stay right-clamped, no regression). Re-injected (5 consumers) + showroom regen (5) + `_build_all.py` **53/53 GREEN + idempotent**. Render-verified donut + bar.
 > - **★ HIT-AREA 44 on the LEGEND** (Dave: "everything interactable must have this — foundational"): invisible `::before` + 9-point `.hit-*` (canon `target/min`): swatch **44×44** (grows left into the gutter, never overlaps the label) · isolate labels + Reset **44 tall** · row gaps widened donut 8→20 / bar 10→16 so 44 targets tile · live **"Show 44px hit areas"** toggle added. Computed targets ≥44 verified; visible chrome unchanged.
 > - **⬛ CARRIED → v5.1** (`notes/_briefs/2026-07-25-legend-v5.1-barrise-and-hitarea-audit-brief.md`): (1) **bar-key RISE** — key rides its bar's top (translateY `--kh`→0, not a fade); built then REVERTED at the wrap to stay clean; recipe + 12 `--kh` values in the brief. (2) **FOUNDATIONAL hit-audit** — toolbar `.dv-vt`/`.dv-tbl-toggle` still 32px = **CANON gap** (all 5 snippets) · demo chrome · **data-marks EXEMPT?** (bars/slices can't be 44 without distorting — confirm + inscribe a rule + gate) · bar-swatch horizontal 44 overlap → 24px AA floor [rec].
 > - **Context gauge at authoring: 🔴 Red ~66% (in-head tally, ESTIMATE ±15% — Half-2 broken).** Wrap budgeted for the RITUAL's own cost (Dave's point — the gauge fires with headroom so the handoff is authored well, not at 95%). Red-authored ⇒ next reader re-verify render/gate claims. **Push stack (all unpushed): the prior stack + this session's ONE commit (canon popover fix + rebuild outputs + v5/v5.REVIEW) — GitHub Desktop, whole stack.**
->
-> ## ★ PRIOR — 2026-07-25 (Sat morning, OPUS solo — legend FEEL RULED → v4 built + render-verified → Dave's 5 review edits captured to a v5 brief; 🟡 AMBER ~58%, deliberate wrap at Dave's call): **The legend feel is ruled and v4 is render-verified; Dave reviewed it via the overlay and pinned 5 change requests → building v5 is the next window's job (brief cut). The interactive rebuild was handed to a fresh window per the gauge rule (no new build artefact at Amber).**
-> - **★ LEGEND FEEL RULED:** click a legend item = ISOLATE · Reset = show all. Resting state is "all shown" ⇒ exclusive **toggle-buttons (`aria-pressed`), NOT a radiogroup** — the v1–v3 open a11y call is CLOSED.
-> - **★ v4 BUILT + RENDER-VERIFIED** (`reviews/LEGEND-ISOLATE-TOGGLE-PROTOTYPE-2026-07-24-v4.html`, real Chart-bar cb4 + Chart-donut cd1): light+dark @1180/560 + isolate states both themes, `document.fonts.check('16px HSBC_MtUnivers_Latin')` true. Evidence: 6 PNGs (agent self-verify) + `_LIVE-STATE` top delta. **Pipeline re-banked:** `$HOME` rotates between calls + bash cap is a hard **45s** ⇒ download+libs+fonts+render in ONE call; alias **BOTH** font strings; set `data-theme` via `add_init_script` (setting it after goto catches the 160ms cross-fade → greys the shot).
-> - **★ DAVE'S 5 REVIEW EDITS → `notes/_briefs/2026-07-25-legend-v5-review-edits-brief.md`** (self-contained). Headline = **RESTORE the dual checkbox-swatch + isolate-label** (v4's isolate-only was VETOED — "I can't check the swatches") · off-rows = **resting + hollow-grey swatch** (NOT muted item — supersedes first-pass point 5; grey primitive → swatch border only) · **Reset canon-disabled default** (B-D4: #9D9D9D/#808080 text, `--line` border) / enabled = light-border+dark-text · **bar key-alpha animates with the grow** · **`.seg:hover` border→ink**.
-> - **NOT inscribed to canon** — v5 stays a review candidate; the legend model goes to `_DATAVIZ-DECISIONS`/ADR only after Dave signs off the fixed version. **Build 53/53, library 67** (review artefacts only). **ds-010 + donut-sweep×16KB-cap still Dave's open calls.**
-> - **Context gauge at authoring: 🟡 Amber ~58% (in-head tally, ESTIMATE ±15% — Half-2 broken)** — deliberate wrap at Amber (Dave's call), not Red. **Push stack (all unpushed): prior stack + this wrap commit — GitHub Desktop, whole stack.**
 >
 > *(Earlier banners — the 2026-07-22 → 07-24 chart-wave + ADR-0013/0014 arc — rolled to `_GM-ARCHIVE.md` (verbatim; durable narrative in `_DECISION-HISTORY/` + `notes/_receipts/`). Compaction = step 2c of `_RUNBOOK-capture-ritual.md`: keep ★ LATEST + 1 PRIOR, roll the rest.)*
 
@@ -36,6 +35,14 @@
 
 ## ⬛ DO THIS FIRST
 
+> **★★ EFFICIENCY FIRST (Dave 07-25: "get the efficiency work done first — it pays off every run") — the MEMORY-INDEX COMPACTION, before legend v5.1.**
+> `MEMORY.md` tripped its size warning (20KB, nearing the 24.4KB read cap). Compact to <17KB: tighten each hook
+> to ONE line · push detail into its topic file · roll stale/retired entries to `MEMORY-ARCHIVE.md` (never delete).
+> Self-contained spec: `notes/_briefs/2026-07-25-memory-index-compaction-brief.md` — read it FIRST. GATE before
+> saving: no hook or `[[link]]` dropped · index re-reads clean · KB target hit. Do it COLD (recall-critical — the
+> reason it was seamed here, not done warm).
+>
+> **THEN — v5.1 (legend, unchanged below):**
 > **✅ Legend v5 built + render-verified. NEXT = v5.1: the bar-key RISE + the FOUNDATIONAL hit-area audit.**
 > Read `notes/_briefs/2026-07-25-legend-v5.1-barrise-and-hitarea-audit-brief.md` FIRST (self-contained: the
 > rise recipe + 12 `--kh` values, and the full hit-audit scope). v5 is a REVIEW CANDIDATE, not canon.
@@ -202,6 +209,10 @@ python3 knowledge/_build_all.py     # ★ 51 steps (45→51: partials sync+selft
 
 ## Standing instructions for the agent
 - **Announce the model/routing split at the START of every substantive task** (`MODEL-ROUTING.md`).
+- **Surface the chat names at BOTH ends — the small reliable thing Dave leans on, and it gets dropped
+  (Dave flagged 2026-07-25).** At session START, offer the last handoff's "TITLE THE NEXT CHAT" as a
+  ready-to-paste **"Rename this chat: …"**; at WRAP, put BOTH names at the top of `GOOD-MORNING.md`
+  (ritual step 4b). Claude cannot rename chats itself — a name left unsurfaced is a label lost.
 - **Verify before asking** (read repo / run gates) — including your own flags. **Reflect back before
   recording** a ruling — and when a ruling REVERSES, inscribe both beats (B-D7 is the model).
 - **Decision-heavy / material-referring choices ship as review HTML** (`knowledge/_review/_make_review.py`
