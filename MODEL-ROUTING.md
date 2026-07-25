@@ -5,8 +5,9 @@
 > Supersedes the `model-selection-by-phase` memory (now points here). Audited 2026-07-23 against
 > the Fable-era routing research (sheet: `reviews/ROUTING-AUDIT-2026-07-23-v1.html`; all 13
 > proposals ratified by Dave same session) — still Dave's to tune.
-> *Last updated: 2026-07-23 (routing-audit enactments #6 + #12: Fable-era notes · Mode 2 demoted
-> to deliberate · mid-session-switch anti-pattern inscribed).*
+> *Last updated: 2026-07-25 (budget-aware routing governor added — Dave's proposal, reflected back +
+> confirmed "good call"). Prior: 2026-07-23 (routing-audit #6 + #12: Fable-era notes · Mode 2 → deliberate
+> · mid-session-switch anti-pattern).*
 
 ## The tiers (Dave's real economy)
 
@@ -49,6 +50,27 @@
 4. **In experiments, model is a variable.** When testing the engine (e.g. the calibration run), pick the model on purpose and change **one thing at a time** (the 2026-07-05 confound was model + rule changed together).
 5. **Verify with a peer-or-stronger model.** Adversarial checks or critique of a strong model's output use equal-or-stronger — never audit Opus judgment with Haiku.
 6. **Fresh context pairs with the "decide" tier.** Judgment/audit sessions run cold *and* on Opus.
+
+## Budget-aware routing governor (added 2026-07-25, Dave's proposal)
+
+A **two-sided** control layered on top of rule 1 — spend the least tier that fits, **and** don't let the
+weekly allowance go unused. The lever is **pace**, not gut feel.
+
+- **Pace = spend-so-far ÷ even-pace**, where even-pace ≈ **14.3%/day** of the weekly allowance (100% ÷ 7).
+  A read >1.0 = ahead of budget for the day-of-week; <1.0 = behind.
+- **Under pace (surplus)** → bias **up** a tier where a call is genuinely close, and **pull deferred
+  quality work forward** — the backlog that always slips when budget is tight: render-verify, the standing
+  eyeball set, Fable adversarial audits, memory/GM compactions. Surplus is meant to be *spent on quality*,
+  not banked to expiry.
+- **Over pace / late in the week** → bias **down**; protect the reserve so the week finishes clean. Step
+  down at the **handoff seam**, never mid-session (that invalidates the cache — see Mode 3).
+- ⚠ **No live usage meter in this environment — Dave supplies the number** (same reason the context gauge
+  is a hand-estimate). The governor only runs when a real % is in hand; absent that, fall back to plain
+  rule 1 (default down, escalate up).
+
+*It nudges the boundary, it doesn't rewrite the roles:* a hard judgment call is still Opus even under
+pace; a mechanical chore is still Haiku even with surplus. The governor decides which way to lean when a
+call is close, and which deferred quality work to greenlight.
 
 ## How it runs in practice (there is no auto-fork)
 
