@@ -3429,9 +3429,12 @@
 /* on-chart series letter keys (DV-D08 700 emphasis) — ink, not series hue */
 .cn-chart-bar text.dv-barkey{fill:var(--ink);}
 /* ── TOOLBAR CONTROLS — ONE SHARED HEIGHT (Dave 2026-07-24), ported from Chart-line ── */
-.cn-chart-bar .dv-tbl-toggle, .cn-chart-bar .dv-vt{height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
+.cn-chart-bar .dv-tbl-toggle, .cn-chart-bar .dv-vt{position:relative; height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
     background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
     flex:none; transition:border-color var(--ease);}
+/* v5.1 — 44 hit target via the canon invisible ::before (foundational hit-area; canon gap, propagated from the legend v5.1 prototype). */
+.cn-chart-bar .dv-tbl-toggle::before, .cn-chart-bar .dv-vt::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+.cn-chart-bar .dv-tbl-toggle > *, .cn-chart-bar .dv-vt > *{position:relative; z-index:1;}
 .cn-chart-bar .dv-tbl-toggle:hover, .cn-chart-bar .dv-vt:hover{border-color:var(--ink);}
 .cn-chart-bar .dv-tbl-toggle:focus-visible, .cn-chart-bar .dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 .cn-chart-bar .dv-tbl-toggle[aria-expanded="true"], .cn-chart-bar .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
@@ -3582,9 +3585,12 @@
 .cn-chart-combo .dv-legend .dv-key{opacity:.6; min-width:12px;}
 /* ── TOOLBAR CONTROLS — one shared literal height (Dave 2026-07-24) ── */
 .cn-chart-combo .dv-controls{--control-h:32px;}
-.cn-chart-combo .dv-tbl-toggle, .cn-chart-combo .dv-vt{height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
+.cn-chart-combo .dv-tbl-toggle, .cn-chart-combo .dv-vt{position:relative; height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
     background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
     flex:none; transition:border-color var(--ease);}
+/* v5.1 — 44 hit target via the canon invisible ::before (foundational hit-area; canon gap, propagated from the legend v5.1 prototype). */
+.cn-chart-combo .dv-tbl-toggle::before, .cn-chart-combo .dv-vt::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+.cn-chart-combo .dv-tbl-toggle > *, .cn-chart-combo .dv-vt > *{position:relative; z-index:1;}
 .cn-chart-combo .dv-tbl-toggle:hover, .cn-chart-combo .dv-vt:hover{border-color:var(--ink);}
 .cn-chart-combo .dv-tbl-toggle:focus-visible, .cn-chart-combo .dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 .cn-chart-combo .dv-tbl-toggle[aria-expanded="true"], .cn-chart-combo .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
@@ -3692,9 +3698,12 @@
 /* baked-variant switching (value ⇄ percent) */
 /* ── TOOLBAR CONTROLS — ONE SHARED HEIGHT (Dave 2026-07-24, exemplar canon verbatim) ── */
 .cn-chart-donut .dv-controls{--control-h:32px;}
-.cn-chart-donut .dv-tbl-toggle, .cn-chart-donut .dv-vt{height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
+.cn-chart-donut .dv-tbl-toggle, .cn-chart-donut .dv-vt{position:relative; height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
     background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
     flex:none; transition:border-color var(--ease);}
+/* v5.1 — 44 hit target via the canon invisible ::before (foundational hit-area; canon gap, propagated from the legend v5.1 prototype). */
+.cn-chart-donut .dv-tbl-toggle::before, .cn-chart-donut .dv-vt::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+.cn-chart-donut .dv-tbl-toggle > *, .cn-chart-donut .dv-vt > *{position:relative; z-index:1;}
 .cn-chart-donut .dv-tbl-toggle:hover, .cn-chart-donut .dv-vt:hover{border-color:var(--ink);}
 .cn-chart-donut .dv-tbl-toggle:focus-visible, .cn-chart-donut .dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 .cn-chart-donut .dv-tbl-toggle[aria-expanded="true"], .cn-chart-donut .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
@@ -3865,9 +3874,12 @@
      (--control-h) → every control tracks (retrieval-not-recall; on the 4px grid). */
 .cn-chart-line .dv-controls{--control-h:32px;}
 /* action + dropdown buttons (Copy CSV · View as table) — 1px outline, height-matched */
-.cn-chart-line .dv-tbl-toggle, .cn-chart-line .dv-vt{height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
+.cn-chart-line .dv-tbl-toggle, .cn-chart-line .dv-vt{position:relative; height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
     background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
     flex:none; transition:border-color var(--ease);}
+/* v5.1 — 44 hit target via the canon invisible ::before (foundational hit-area; canon gap, propagated from the legend v5.1 prototype). */
+.cn-chart-line .dv-tbl-toggle::before, .cn-chart-line .dv-vt::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+.cn-chart-line .dv-tbl-toggle > *, .cn-chart-line .dv-vt > *{position:relative; z-index:1;}
 .cn-chart-line .dv-tbl-toggle:hover, .cn-chart-line .dv-vt:hover{border-color:var(--ink);}
 .cn-chart-line .dv-tbl-toggle:focus-visible, .cn-chart-line .dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 .cn-chart-line .dv-tbl-toggle[aria-expanded="true"], .cn-chart-line .dv-vt[aria-pressed="true"]{border-color:var(--ink);}

@@ -20,9 +20,9 @@
 - i DEAD `Legend prototype` → superseded-by "dv-behaviour" — target not resolvable to a known ADR/§/file.
 
 ## · Dead-artifact references (info)
-- i DEAD artifact `_RUNBOOK-render-verify.md` is mentioned (no nearby tombstone) in: `knowledge/_RUNBOOKS.md`
-- i DEAD artifact `_DS-IMPROVEMENTS.md` is mentioned (no nearby tombstone) in: `knowledge/_RUNBOOK-consult.md`, `knowledge/_COMMON-TOOLKIT-SURVEY.md`, `knowledge/_KNOWLEDGE-USAGE-TRACE.html`, `knowledge/_KNOWLEDGE-USAGE-TRACE-2026-07-19-v3.html`…
 - i DEAD artifact `Chart-bar.reference.html` is mentioned (no nearby tombstone) in: `knowledge/_DS-IMPROVEMENTS.md`, `knowledge/_DATAVIZ-GATE.md`, `knowledge/_ICON-CONTRAST-DELTA.md`, `knowledge/_SNIPPET-AUDIT.md`
+- i DEAD artifact `_DS-IMPROVEMENTS.md` is mentioned (no nearby tombstone) in: `knowledge/_RUNBOOK-consult.md`, `knowledge/_COMMON-TOOLKIT-SURVEY.md`, `knowledge/_KNOWLEDGE-USAGE-TRACE.html`, `knowledge/_KNOWLEDGE-USAGE-TRACE-2026-07-19-v3.html`…
+- i DEAD artifact `_RUNBOOK-render-verify.md` is mentioned (no nearby tombstone) in: `knowledge/_RUNBOOKS.md`
 
 ---
 *Checked: 6 DEAD entries · 15 ADRs · LIVE section 6 bullets.*

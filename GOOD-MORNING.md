@@ -1,11 +1,18 @@
 # Good morning, Dave ☕
 
-> **RENAME THE WRAPPED CHAT →** `Apollo — memory-index compaction (MEMORY.md 20KB→16.6 KiB, 123→108 entries, 15 archived) + budget-aware routing governor INSCRIBED in MODEL-ROUTING · governor's first live read: pace 0.64 (UNDER, surplus week) · Amber ~52% wrap`
-> **TITLE THE NEXT CHAT →** `Apollo — legend v5.1: bar-key RISE + FOUNDATIONAL 44px hit-area audit (v5 = review candidate, not canon; brief cut) — SURPLUS week (pace 0.64) ⇒ run render-verify, Fable free for templates+shells`
-> *(Titles are LABELS — role comes from Dave's opener line. NEXT = legend v5.1; read its brief `notes/_briefs/2026-07-25-legend-v5.1-barrise-and-hitarea-audit-brief.md` FIRST. v5 stays a REVIEW CANDIDATE (not canon). Efficiency work is DONE (memory-index compaction landed; routing governor now in `MODEL-ROUTING.md`). Budget read this week = UNDER pace ⇒ pull deferred quality forward: render-verify is OWED; Fable only 10% used if you'd rather spend it on the templates+shells clean-room.)*
+> **RENAME THE WRAPPED CHAT →** `Apollo — legend v5.1: bar-key RISE (render-verified, letters pinned to bar tops) + hit-area 44 canon patch (4 toolbar snippets, build green) + Dave rulings — swatch 44 everywhere + responsive centring; rule+gate proposal pending sign-off — 🔴 Red ~70% wrap`
+> **TITLE THE NEXT CHAT →** `Apollo — legend v5.1 SIGN-OFF → inscribe the legend model → donut+bar+combo wave; + the data-marks-exempt rule & gate rebuild (markup-driven, 44 blocking for controls). Read the hit-area proposal brief FIRST`
+> *(Titles are LABELS — role comes from Dave's opener line. NEXT = v5.1 SIGN-OFF + the hit-area rule/gate; open the v5.1 `.REVIEW` overlay + read `notes/_briefs/2026-07-25-hit-area-rule-and-gate-proposal.md` FIRST. v5.1 is a REVIEW CANDIDATE, not canon. Gauge bands recalibrated: Green<45 / Amber 45–60 / Red≥60.)*
 
 
-> ## ★ LATEST — 2026-07-25 (Sat PM #2, OPUS solo — memory-index compaction + routing governor inscribed; 🟡 AMBER ~52% wrap at Dave's call): **`MEMORY.md` compacted 20KB→16.6 KiB (123→108 index entries, 15 rolled to `MEMORY-ARCHIVE.md`, ~40 hooks tightened) — under the read cap, gate-clean. The budget-aware routing governor is now INSCRIBED in `MODEL-ROUTING.md` and had its first live read: pace 0.64 (UNDER) → surplus week.**
+> ## ★ LATEST — 2026-07-25 (Sat evening, OPUS solo — legend v5.1 built + render-verified + hit-area canon patch + Dave's swatch/centring rulings; 🔴 RED ~70% wrap on Dave's recalibrated bands): **v5.1 lands the bar-key RISE (letters ride pinned ~4px above the rising bar top — render-verified at real HSBC font + frozen mid-animation @400/700ms, and numerically exact) and the foundational hit-area audit. The toolbar 44 gap is fixed in CANON (4 snippets → canon.css + showroom, build 53/53 GREEN). Dave ruled the swatch is component-invariant (44 everywhere, reversing my 24 floor) + asked for centred bottom-controls + donut on the responsive stack. Legend stays a REVIEW CANDIDATE; a rule+gate PROPOSAL (data-marks exempt) awaits sign-off.**
+> - **★ v5.1** `reviews/…-v5.1.html` (+`.REVIEW`): `dvKeyRise` + 12 inline `--kh` · toolbar/demo-chrome/legend all ≥44 · swatch 44 (bar rows spaced `gap:28px`) · responsive centring `@≤640px`. v5 untouched (versioned).
+> - **★ CANON:** `.dv-vt`/`.dv-tbl-toggle` → 44 `::before`, propagated to `Chart-{bar,combo,donut,line}` — **4, not the brief's 5** (sparkline = native `<details>` summary, flagged; scatter none) → build GREEN.
+> - **⬛ PENDING SIGN-OFF:** data-marks exempt (rec) + the gate rebuild — `notes/_briefs/2026-07-25-hit-area-rule-and-gate-proposal.md`. `_validate_a11y.py` blind spots found (allowlist · literal-px · advisory-44). Legend model inscribes on sign-off.
+> - **★ Dave recalibrated the gauge bands: Green <45 · Amber 45–60 · Red ≥60** (runbooks + memory updated). **Render beat sandbox instance-flapping** by staging the browser on the shared mount (fold into `_RUNBOOK-render-verify.md`).
+> - **Context gauge at authoring: 🔴 RED ~70% (in-head tally, ESTIMATE ±15% — Half-2 broken). ⇒ NEXT READER RE-VERIFY** (re-run `_build_all.py`, check each "landed" claim). Full capture ritual run this turn. Push: this session's files + the prior unpushed stack — GitHub Desktop, whole stack.
+>
+> ## ★ PRIOR — 2026-07-25 (Sat PM #2, OPUS solo — memory-index compaction + routing governor inscribed; 🟡 AMBER ~52% wrap at Dave's call): **`MEMORY.md` compacted 20KB→16.6 KiB (123→108 index entries, 15 rolled to `MEMORY-ARCHIVE.md`, ~40 hooks tightened) — under the read cap, gate-clean. The budget-aware routing governor is now INSCRIBED in `MODEL-ROUTING.md` and had its first live read: pace 0.64 (UNDER) → surplus week.**
 > - **★ MEMORY-INDEX COMPACTION** (`MEMORY.md` — memory dir, NOT in git): 123→108 entries; **20KB→16.6 KiB (17,002 B)**, under the 17.1KB hook cap so it stops warning. 15 done/closed/historical/parked entries → `MEMORY-ARCHIVE.md` (verbatim; topic files untouched + recall-reachable); ~40 long hooks trimmed to one line (detail already in topic files). Gate: no file deleted · no slug renamed (no `[[link]]` orphaned) · every kept entry keeps its pointer · count reconciles 108+15=123 · no blanks/dup slugs. Brief `notes/_briefs/2026-07-25-memory-index-compaction-brief.md`; memory `[[memory-compaction-mechanics]]`.
 > - **★ BUDGET-AWARE ROUTING GOVERNOR — INSCRIBED** (`MODEL-ROUTING.md`, new section + header bump): two-sided — spend the least tier that fits AND don't leave the weekly allowance unused; **pace = spend ÷ even-pace (≈14.3%/day)**; under → bias UP + pull deferred quality forward · over/late-week → bias DOWN (step down at the handoff seam). ⚠ no live meter — Dave supplies the %. **First live read (17:03 Sat): 16% used at 25% through the week → pace 0.64 (UNDER)** ⇒ ~36% surplus heading for expiry; Fable only 10% used. Governor says: spend freely on the quality backlog (render-verify OWED · templates+shells Fable session · legend v5.1).
 > - **Removed the #13 calm-banner trial** — it was "one handoff only", its run is over (reinstate if you liked it).
@@ -17,7 +24,7 @@
 > - **★ CHAT-NAMING RELIABILITY FIX (Dave flagged: names dropped "fairly regularly"):** inscribed §A standing-instructions + memory `[[session-title-convention]]` — surface names at BOTH ends (START = offer the suggested title as "Rename this chat: …"; WRAP = both names atop GM). Claude can't rename chats itself, so unsurfaced = lost.
 > - **Context gauge at authoring: 🟡 Amber ~58% (in-head tally, ESTIMATE ±15%).** Amber-authored ⇒ light wrap. `_LIVE-STATE` NOT touched (no DS state changed — GM/memory-infra only). **Push stack (all unpushed): the prior stack + `d2a8c03` (GM compaction) + this wrap commit — GitHub Desktop, whole stack.**
 >
-> *(Earlier banners — the 07-22 → 07-24 chart-wave + ADR-0013/0014 arc (Batch 1), the 07-25 AM legend-feel/v4 banner (Batch 2), and this wrap's 07-25 midday→PM legend-v5 banner (Batch 3) — all rolled to `_GM-ARCHIVE.md`, verbatim; durable narrative in `_DECISION-HISTORY/` + `notes/_receipts|_briefs/`. Compaction = step 2c of `_RUNBOOK-capture-ritual.md`: keep ★ LATEST + 1 PRIOR, roll the rest.)*
+> *(Compaction 2c — keep ★ LATEST + 1 PRIOR, roll the rest. Older banners (the 07-22→24 chart-wave + ADR arc, the 07-25 AM v4 + midday→PM v5 + PM Memento-efficiency banners) are in `_GM-ARCHIVE.md`, verbatim, newest-first; durable narrative in `_DECISION-HISTORY/` + `notes/`.)*
 
 ---
 
@@ -28,34 +35,24 @@
 
 ## ⬛ DO THIS FIRST
 
-> **✅ EFFICIENCY WORK DONE (2026-07-25 PM #2): the memory-index compaction landed (`MEMORY.md` 20KB→16.6 KiB,
-> 123→108 entries, gate-clean) and the budget-aware routing governor is INSCRIBED in `MODEL-ROUTING.md`
-> (first live read this week: pace 0.64, UNDER — surplus, so render-verify + Fable jobs are greenlit).**
+> **✅ LEGEND v5.1 BUILT + RENDER-VERIFIED this session (2026-07-25 evening).** Bar-key RISE + the hit-area audit
+> are done; the toolbar 44 gap is fixed in canon (4 snippets, build 53/53 green). v5.1 is a **REVIEW CANDIDATE —
+> NOT canon.** ⚠ Authored in 🔴 RED (~70%) → re-run `python3 knowledge/_build_all.py` + spot-check before building on it.
 >
-> **★★ DO FIRST — legend v5.1** (Dave OK'd deferring the build to a fresh window — the Amber "no new build" rule):
-> **✅ Legend v5 built + render-verified. NEXT = v5.1: the bar-key RISE + the FOUNDATIONAL hit-area audit.**
-> Read `notes/_briefs/2026-07-25-legend-v5.1-barrise-and-hitarea-audit-brief.md` FIRST (self-contained: the
-> rise recipe + 12 `--kh` values, and the full hit-audit scope). v5 is a REVIEW CANDIDATE, not canon.
-> **0. ★★ BAR-KEY RISE** — swap `dvKeyIn` (fade) → `dvKeyRise` (translateY `--kh`→0, pinned to the bar top on the
-> bar's easing + per-key delay); add the 12 `--kh` bar heights. **VERIFY BY RENDER AT MID-ANIMATION** (the letter
-> stays on the rising bar top; watch the SVG translateY units). Recipe + values in the brief.
-> **1. ★★ FOUNDATIONAL HIT-AREA AUDIT** (Dave: *"everything interactable must have this — we can make mistakes on
-> this"*). Audit EVERY control → ≥44 via invisible `::before` + 9-point `.hit-*`. Legend = done. Still open:
-> toolbar `.dv-vt`/`.dv-tbl-toggle` 32px = **CANON gap** (fix in all 5 `Chart-*.reference.html` + rebuild) · demo
-> chrome · **data-marks EXEMPT?** (confirm with Dave, then INSCRIBE the rule + wire a GATE — foundational ⇒ gate it)
-> · bar-swatch horizontal 44 overlap → 24px AA floor [rec].
-> **2. ★ THEN Dave sign-off → INSCRIBE the legend model** (`_DATAVIZ-DECISIONS`/ADR) → the donut+bar+combo WAVE
-> (legend logic = SHARED SERIAL). ds-010 (`Chart-bar` `fill:var(--sc,…)` one-liner) still Dave's call — fold into the bar lane.
-> **3. ★ DAVE async: DATAVIZ SIGN-OFF** — 5 panes → canon (open-014) · ruling batch (15 remain) · line letter-drop.
-> **4. ★★ Radius/corner tuner (§C·1d) — "return soon, don't let me forget."** Still owed; resurface unprompted.
-
-*Standing practice: every handoff carries both names — retrospective + forward — and a **DIVVY PLAN**.
-This handoff: **the v5 legend build is SOLO** (one window — the 5 edits + render-verify), NOT the parallel
-wave yet. AFTER Dave signs off v5, the wave DIVVY holds: **lane① donut** (O1 `inverse` on segment keys +
-legend) · **lane② bar** (`dv-barkey` verify + legend) · **lane③ combo** (end-key→lockups + legend). **SHARED
-SERIAL = `dv-behaviour.js` legend logic + the `surface/inverse` token + dv-016 gate scope → CONDUCTOR ONLY**
-(workers do per-snippet markup + receipts, no git). Model: Opus conducts, Sonnet/Fable workers. Do NOT start
-the lanes until v5 is signed off. Steps 4b + 2 in `_RUNBOOK-capture-ritual.md`.*
+> **★★ DO FIRST — v5.1 SIGN-OFF.** Open `reviews/LEGEND-ISOLATE-TOGGLE-PROTOTYPE-2026-07-24-v5.1.REVIEW.html` — Dave
+> eyeballs the fixed v5.1 (rise · both swatches 44 · responsive centring). On his OK:
+> **1.** INSCRIBE the legend model → `_DATAVIZ-DECISIONS`/ADR (it becomes the SHARED SERIAL for the wave).
+> **2.** Then the **donut+bar+combo legend WAVE** — divvy: lane① donut · lane② bar · lane③ combo; shared serial =
+>    `dv-behaviour.js` legend logic + the `surface/inverse` token + dv-016 scope → CONDUCTOR ONLY (workers = per-snippet
+>    markup + receipts, no git). Do NOT start the lanes before sign-off.
+> **★★ ALSO PENDING DAVE — the hit-area rule + gate. Read `notes/_briefs/2026-07-25-hit-area-rule-and-gate-proposal.md` FIRST.**
+> Asks: (a) data-marks EXEMPT + a min floor for tiny marks? · (b) fold sparkline's `<summary>` into the rule? · (c)
+> green-light the gate rebuild (markup-driven, 44 BLOCKING for controls — today `_validate_a11y.py` misses `.dv-vt`
+> via its selector allowlist). On sign-off → inscribe the rule + rebuild the gate + selftest + wire + build green + seed the graph.
+> **★★ Radius/corner tuner (§C·1d) — still owed: "return soon, don't let me forget."**
+>
+> *Standing: every handoff carries both names (top) + a DIVVY PLAN. Model: Opus conducts, Sonnet/Fable workers.
+> Render-verify is UNBLOCKED (stage the browser on the shared mount — instance-flapping workaround, fold into the runbook).*
 
 *Read: **§A Orientation** (skip if you're in context) → **§B This session** → **§C Queue**.
 Then `_LIVE-STATE.md` → the decision files it points to.*

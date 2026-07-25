@@ -17,7 +17,7 @@ only for pure Q&A sessions that touched nothing. If in doubt, run it; it's cheap
 **step 1 only** — a light `_LIVE-STATE.md` spine-flush, session continues (no `GOOD-MORNING`, no
 rename, no fresh window); at **Red** run the whole thing 1→5 + open fresh.
 
-**Also run it mid-session when the context gauge reads Red (>70%)** — don't wait for a natural end.
+**Also run it mid-session when the context gauge reads Red (≥60%)** — don't wait for a natural end.
 The gauge (`_RUNBOOK-context-gauge.md`) exists precisely to fire this ritual *while there's still
 clean budget to author the handoff well*; a `GOOD-MORNING.md` written at 95% full is the confidently
 wrong handoff we most want to avoid. Red cue line, ready to use:
