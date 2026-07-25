@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Legend redesign — isolate + toggle (interactive prototype, 2026-07-24 v2)</title>
+<!--
+  v2 — careful redo (Dave 2026-07-24: "go back a step, do this again, be very careful"), render-verified
+  light+dark @2 widths with the real HSBC face before hand-off.
+  FIXES vs v1 (both were render-caught, not logic bugs):
+    · donut ballooned to fill its column (~2x the bar's scale) → capped + centred, both charts now read
+      at a comparable size.
+    · equal-height grid left a large dead gap under the bar card → align-items:start, cards size to content.
+  UNCHANGED — the RULED interaction (this is what Dave rules the FEEL of):
+    · SWATCH = checkbox  → additive show/hide (toggle one series on/off, independently)
+    · LABEL  = isolate   → solo that series (radio-FEEL: exclusive; click the active one again = show all)
+    · interplay: isolate A (just A) → tick B's swatch (A+B) → isolate C (just C)
+  Grouped BAR (axis family) + DONUT (the two that need work; line + sparkline are done). Real data-series
+  tokens (canon.css values). NOT canon — a feel prototype. The ONE open a11y call is annotated at the foot.
+-->
+<style>
+  :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:150ms cubic-bezier(.4,0,.2,1); }
+  [data-theme="light"]{ --page:#FFFFFF; --ink:#1A1A1A; --line:#E1E1E1; --axis:#626262; --muted:#626262; --panel:#F5F4F2;
+    --s1:#766682; --s2:#A45C3A; --s3:#577C78; --s4:#7F7B45; --s5:#A37E94; }
+  [data-theme="dark"]{ --page:#1A1A1A; --ink:#FFFFFF; --line:#484848; --axis:#9D9D9D; --muted:#9D9D9D; --panel:#242424;
+    --s1:#766682; --s2:#A45C3A; --s3:#577C78; --s4:#7F7B45; --s5:#A37E94; }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:26px 30px 60px; font-family:var(--font); background:var(--page); color:var(--ink);
+    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+  h1{font-size:20px; font-weight:500; margin:0 0 4px;}
+  .sub{font-size:13px; color:var(--muted); margin:0 0 18px; max-width:78ch; line-height:1.5;}
+  .sub b{color:var(--ink); font-weight:500;}
+  .bar-top{display:flex; gap:16px; align-items:center; margin-bottom:22px; flex-wrap:wrap;}
+  .bar-top button{font:inherit; font-size:13px; padding:7px 12px; border:1px solid var(--ink); background:transparent; color:var(--ink); cursor:pointer;}
+  .grid{display:grid; grid-template-columns:repeat(2,minmax(320px,1fr)); gap:26px; align-items:start;}
+  @media(max-width:860px){ .grid{grid-template-columns:1fr;} }
+  .card{border:1px solid var(--line); padding:18px 18px 20px;}
+  .card h2{font-size:14px; font-weight:500; margin:0 0 14px;}
+  /* chart wells — cap each so neither balloons; donut is centred */
+  .well{min-height:250px; display:flex; align-items:center;}
+  #bar-svg{max-width:560px;}
+  #donut-svg{max-width:280px; margin:0 auto;}
+  svg{display:block; width:100%; height:auto; overflow:visible;}
+  .ax{fill:var(--axis); font-size:11px; font-family:var(--font);}
+
+  /* ---- the legend under test ---- */
+  .legend{margin:16px 0 4px; display:flex; flex-direction:column; gap:2px;}
+  .legrow{display:flex; align-items:center; gap:10px; padding:3px 4px; border-radius:2px;}
+  .legrow.hidden .lab{color:var(--muted); text-decoration:line-through; text-decoration-thickness:1px;}
+  /* SWATCH = checkbox */
+  .sw{width:15px; height:15px; flex:none; border:2px solid var(--sc); background:var(--sc); cursor:pointer;
+      position:relative; transition:background var(--ease);}
+  .sw.circle{border-radius:50%;}
+  .sw[aria-checked="false"]{background:transparent;}
+  .sw:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+  .sw .tick{position:absolute; inset:0; display:grid; place-items:center; color:var(--page); font-size:10px; line-height:1;}
+  .sw[aria-checked="false"] .tick{opacity:0;}
+  /* LABEL = isolate (exclusive) */
+  .lab{font:inherit; font-size:12.5px; font-weight:500; color:var(--ink); background:transparent; border:0;
+       padding:2px 6px; cursor:pointer; border-radius:2px; text-align:left; flex:1; min-width:0;
+       display:inline-flex; align-items:center; gap:7px;}
+  .lab:hover{background:color-mix(in srgb, var(--ink) 8%, transparent);}
+  .lab:focus-visible{outline:2px solid var(--ink); outline-offset:1px;}
+  .lab[aria-pressed="true"]{background:color-mix(in srgb, var(--ink) 12%, transparent);}
+  .lab .soloflag{font-size:10px; color:var(--muted); font-weight:400; margin-left:auto; padding-left:8px;}
+  .lab[aria-pressed="true"] .soloflag{color:var(--ink);}
+  .showall{font:inherit; font-size:11.5px; margin-top:10px; padding:5px 10px; border:1px solid var(--line);
+    background:transparent; color:var(--muted); cursor:pointer;}
+  .showall:hover{border-color:var(--ink); color:var(--ink);}
+  .showall:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+  .announce{font-size:11.5px; color:var(--muted); margin:10px 0 0; min-height:16px; font-style:italic;}
+  .dv-series-el{transition:opacity var(--ease);}
+  .off{opacity:0 !important;}
+
+  .how{margin-top:26px; font-size:12.5px; color:var(--muted); line-height:1.6; max-width:82ch;}
+  .how b{color:var(--ink); font-weight:500;}
+  code{font-family:ui-monospace,Menlo,monospace; font-size:11px; background:var(--panel); padding:1px 5px;}
+  .open{margin-top:14px; padding:12px 14px; border:1px solid var(--line); background:var(--panel); font-size:12.5px; line-height:1.55; max-width:82ch;}
+  .open .q{display:inline-block; font-weight:500; color:var(--ink); border:1px solid var(--ink); border-radius:2px; padding:0 6px; margin-right:6px; font-size:11px;}
+</style>
+</head>
+<body data-theme="light">
+  <div class="bar-top">
+    <button id="theme" type="button">◐ Toggle light / dark</button>
+    <span class="sub" style="margin:0;">Click a <b>swatch</b> to toggle a series on/off · click a <b>label</b> to isolate it · keyboard: Tab to a control, Space/Enter to activate.</span>
+  </div>
+
+  <h1>Legend redesign — isolate + toggle</h1>
+  <p class="sub">Two affordances per row. The <b>swatch is a checkbox</b> (additive: turn any series on or off, independently).
+  The <b>label is an isolate</b> (exclusive, radio-feel: solos that one; click the active one again to show all).
+  Try the interplay: <b>isolate A → tick B&rsquo;s swatch → isolate C</b>. Same behaviour on the axis chart and the donut —
+  they&rsquo;re the two families that need it.</p>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Axis chart — grouped bars (3 series)</h2>
+      <div class="well"><div id="bar-svg"></div></div>
+      <div class="legend" id="bar-legend" role="group" aria-label="Series — isolate a series (label) or toggle it (swatch)"></div>
+      <button class="showall" data-for="bar" type="button">Show all series</button>
+      <p class="announce" id="bar-announce" role="status" aria-live="polite"></p>
+    </div>
+    <div class="card">
+      <h2>Donut — 5 segments</h2>
+      <div class="well"><div id="donut-svg"></div></div>
+      <div class="legend" id="donut-legend" role="group" aria-label="Segments — isolate a segment (label) or toggle it (swatch)"></div>
+      <button class="showall" data-for="donut" type="button">Show all segments</button>
+      <p class="announce" id="donut-announce" role="status" aria-live="polite"></p>
+    </div>
+  </div>
+
+  <div class="how">
+    <b>What each gesture does</b> — <b>Swatch (checkbox):</b> toggles just that series, additively; the others are
+    untouched. <b>Label (isolate):</b> shows only that series; clicking the currently-isolated label again restores
+    all. Doing a swatch toggle after an isolate clears the &ldquo;isolated&rdquo; flag (you&rsquo;re back in additive mode). <b>Keyboard:</b> Tab reaches
+    every swatch and label; Space/Enter activates; &uarr;/&darr; on a label moves between labels. Every series stays reachable —
+    nothing is ever colour-only (shape swatch + text name + the data table carry it).
+  </div>
+  <div class="open">
+    <span class="q">DECIDE</span><b>One open a11y call to make while you feel it:</b> the isolate is built here as <b>exclusive toggle-buttons</b>
+    (<code>aria-pressed</code>, &ldquo;Show only X&rdquo;) rather than a true <code>role="radiogroup"</code>. Reason: after
+    an additive swatch toggle you can be showing two series, where a radiogroup has no single &ldquo;checked&rdquo; member.
+    Toggle-buttons stay honest in that state. If the radio <i>feel</i> (arrow-to-scrub-solos) matters more than that
+    edge, we switch to a radiogroup and accept the multi-state quirk. <b>Rule by feel — this is the thing to decide.</b>
+    <code>reviews/LEGEND-ISOLATE-TOGGLE-PROTOTYPE-2026-07-24-v2.html</code>
+  </div>
+
+<script>
+/* ============ chart data ============ */
+const BAR={ groups:["Q1","Q2","Q3","Q4"], series:[
+  {id:"1",name:"Current",  v:[62,70,74,81]},
+  {id:"2",name:"Savings",  v:[48,52,58,61]},
+  {id:"3",name:"Investments",v:[30,41,46,55]} ]};
+const DONUT={ total:2320, seg:[
+  {id:"1",name:"Current",  v:820},
+  {id:"2",name:"Savings",  v:640},
+  {id:"3",name:"Investments",v:430},
+  {id:"4",name:"Pensions", v:260},
+  {id:"5",name:"Other",    v:170} ]};
+
+/* ============ grouped bar SVG ============ */
+function barSVG(){
+  const W=520,H=250,PL=34,PR=16,PT=16,PB=38,bot=H-PB, maxV=90;
+  const gb=(W-PL-PR)/BAR.groups.length, bw=Math.min(20,(gb-14)/3);
+  const y=v=>bot-(v/maxV)*(bot-PT);
+  let g="";
+  for(const gv of [0,30,60,90]) g+=`<line x1="${PL}" y1="${y(gv)}" x2="${W-PR}" y2="${y(gv)}" stroke="var(--line)"/><text class="ax" x="${PL-7}" y="${y(gv)+4}" text-anchor="end">${gv}</text>`;
+  let bars="",labs="";
+  BAR.groups.forEach((gname,gi)=>{
+    const gx=PL+gb*gi+7;
+    const groupW=bw*3+6;
+    BAR.series.forEach((s,si)=>{
+      const x=gx+si*(bw+3), by=y(s.v[gi]);
+      bars+=`<rect class="dv-series-el" data-series-group="${s.id}" x="${x.toFixed(1)}" y="${by.toFixed(1)}" width="${bw.toFixed(1)}" height="${(bot-by).toFixed(1)}" fill="var(--s${s.id})"/>`;
+    });
+    labs+=`<text class="ax" x="${(gx+groupW/2).toFixed(1)}" y="${bot+16}" text-anchor="middle">${gname}</text>`;
+  });
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Grouped bars, three series across four quarters.">`
+    +`<style>.dv-series-el{transition:opacity var(--ease);}</style>`
+    +g+`<line x1="${PL}" y1="${bot}" x2="${W-PR}" y2="${bot}" stroke="var(--ink)"/>`+bars+labs+`</svg>`;
+}
+/* ============ donut SVG ============ */
+function donutSVG(){
+  const W=260,H=250,cx=W/2,cy=H/2,r=88,circ=2*Math.PI*r;
+  let start=0,segs="";
+  DONUT.seg.forEach(s=>{
+    const frac=s.v/DONUT.total, len=frac*circ;
+    segs+=`<circle class="dv-series-el" data-series-group="${s.id}" cx="${cx}" cy="${cy}" r="${r}" fill="none"
+      stroke="var(--s${s.id})" stroke-width="40"
+      stroke-dasharray="${len.toFixed(2)} ${(circ-len).toFixed(2)}" stroke-dashoffset="${(-start).toFixed(2)}"
+      transform="rotate(-90 ${cx} ${cy})"/>`;
+    start+=len;
+  });
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Donut of balances by account type, five segments.">`
+    +`<style>.dv-series-el{transition:opacity var(--ease);}</style>`
+    +segs
+    +`<text x="${cx}" y="${cy-4}" text-anchor="middle" class="ax" style="font-size:13px; fill:var(--ink); font-weight:500;">£${(DONUT.total/1000).toFixed(2)}k</text>`
+    +`<text x="${cx}" y="${cy+14}" text-anchor="middle" class="ax">total</text></svg>`;
+}
+
+/* ============ legend controller (shared) ============ */
+function makeLegend(key, host, series, announceEl, circle){
+  const shown=new Set(series.map(s=>s.id));   // source of truth: which are visible
+  let solo=null;                               // id of the active isolate, or null
+  const svgHost=document.getElementById(key+"-svg");
+
+  host.innerHTML=series.map(s=>`
+    <div class="legrow" data-series="${s.id}">
+      <span class="sw ${circle?'circle':''}" role="checkbox" aria-checked="true" tabindex="0"
+            style="--sc:var(--s${s.id})" aria-label="Toggle ${s.name} on or off"><span class="tick" aria-hidden="true">✓</span></span>
+      <button class="lab" type="button" aria-pressed="false" data-series="${s.id}"
+              aria-label="Show only ${s.name}">${s.name}<span class="soloflag" aria-hidden="true"></span></button>
+    </div>`).join("");
+
+  function apply(){
+    series.forEach(s=>{
+      const on=shown.has(s.id);
+      svgHost.querySelectorAll('[data-series-group="'+s.id+'"]').forEach(el=>{
+        el.classList.toggle('off', !on);
+      });
+      const row=host.querySelector('.legrow[data-series="'+s.id+'"]');
+      const sw=row.querySelector('.sw'), lab=row.querySelector('.lab');
+      sw.setAttribute('aria-checked', String(on));
+      row.classList.toggle('hidden', !on);
+      lab.setAttribute('aria-pressed', String(solo===s.id));
+      lab.querySelector('.soloflag').textContent = solo===s.id ? 'only' : '';
+    });
+  }
+  function say(msg){ announceEl.textContent=msg; }
+
+  function toggle(id){                          // swatch = additive
+    if(shown.has(id)){ if(shown.size>1) shown.delete(id); else { say(series.find(x=>x.id===id).name+' is the last one shown — can’t hide it'); return; } }
+    else shown.add(id);
+    solo=null;                                  // additive action clears the isolate
+    const s=series.find(x=>x.id===id);
+    say(shown.has(id)? s.name+' shown ('+shown.size+' visible)' : s.name+' hidden ('+shown.size+' visible)');
+    apply();
+  }
+  function isolate(id){                          // label = exclusive
+    const s=series.find(x=>x.id===id);
+    if(solo===id){ shown.clear(); series.forEach(x=>shown.add(x.id)); solo=null; say('Showing all'); }
+    else { shown.clear(); shown.add(id); solo=id; say('Showing only '+s.name); }
+    apply();
+  }
+  function showAll(){ shown.clear(); series.forEach(x=>shown.add(x.id)); solo=null; say('Showing all'); apply(); }
+
+  host.addEventListener('click', e=>{
+    const sw=e.target.closest('.sw'); if(sw){ toggle(sw.closest('.legrow').dataset.series); return; }
+    const lab=e.target.closest('.lab'); if(lab){ isolate(lab.dataset.series); }
+  });
+  host.addEventListener('keydown', e=>{
+    const sw=e.target.closest('.sw');
+    if(sw && (e.key===' '||e.key==='Enter')){ e.preventDefault(); toggle(sw.closest('.legrow').dataset.series); return; }
+    const lab=e.target.closest('.lab');
+    if(lab && (e.key===' '||e.key==='Enter')){ e.preventDefault(); isolate(lab.dataset.series); return; }
+    if(lab && (e.key==='ArrowDown'||e.key==='ArrowUp')){
+      e.preventDefault();
+      const labs=[...host.querySelectorAll('.lab')]; const i=labs.indexOf(lab);
+      const n=e.key==='ArrowDown'? (i+1)%labs.length : (i-1+labs.length)%labs.length;
+      labs[n].focus();
+    }
+  });
+  return { showAll };
+}
+
+/* ============ boot ============ */
+function boot(){
+  document.getElementById('bar-svg').innerHTML=barSVG();
+  document.getElementById('donut-svg').innerHTML=donutSVG();
+  const bar=makeLegend('bar', document.getElementById('bar-legend'), BAR.series, document.getElementById('bar-announce'), false);
+  const donut=makeLegend('donut', document.getElementById('donut-legend'), DONUT.seg, document.getElementById('donut-announce'), true);
+  document.querySelectorAll('.showall').forEach(b=>b.addEventListener('click',()=>{ (b.dataset.for==='bar'?bar:donut).showAll(); }));
+}
+boot();
+document.getElementById('theme').addEventListener('click',()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
+</script>
+</body>
+</html>

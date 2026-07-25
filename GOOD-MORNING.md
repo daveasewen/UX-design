@@ -1,8 +1,8 @@
 # Good morning, Dave ☕
 
-> **RENAME THE WRAPPED CHAT →** `Apollo — O1 "dark-in-light" RULED + inscribed (ADR-0014 Decisions 7+8) + DV-D10 labelling (combo→lockups, line keeps its key) · ★ verified type26-013 has NO gate → dv-016 is the biting one → gate work = BASE-EXTENSION not exemption · legend isolate/toggle PROTOTYPE built for feel · went HOT, Dave called the handover · record-only, build 53/53 green`
-> **TITLE THE NEXT CHAT →** `Apollo — REDO CAREFULLY, render-verify RUNNING: (1) rule the legend FEEL on the prototype → (2) build the donut+bar+combo wave — O1 inverse on donut keys · combo end-key→lockups · bar dv-barkey verify · legend on dv-behaviour+markup. Design is RULED (ADR-0014 D7/8 + DV-D10); this is careful EXECUTION, not re-design`
-> *(Titles are LABELS — role comes from Dave's opener line. ⚠ THIS handoff was authored HOT/RED — re-verify the review sheets before trusting; the inscriptions are Dave-ruled + build-green. Open FRESH with render-verify working per the O1 brief.)*
+> **RENAME THE WRAPPED CHAT →** `Apollo — legend FEEL RULED (isolate + reset = toggle-buttons, not radiogroup) → v4 built + render-verified light+dark @2 widths + isolate states (real HSBC font) → Dave's 5 review edits captured to the v5 brief · Amber wrap ~58% · build 53/53, no canon edits`
+> **TITLE THE NEXT CHAT →** `Apollo — build legend v5 from the 5-edit brief (RESTORE dual checkbox-swatch + isolate-label · Reset canon-disabled default · off-rows resting + hollow-grey swatch · bar key-alpha animation · seg hover border→ink) → render-verify → then DECIDE ds-010 + the donut/bar/combo wave`
+> *(Titles are LABELS — role comes from Dave's opener line. Legend FEEL is now RULED; v4 render-verified + trustworthy; the 5 edits live in `notes/_briefs/2026-07-25-legend-v5-review-edits-brief.md`. Deliberate wrap at AMBER — the v5 rebuild is an interactive build, handed to a fresh window per the gauge rule.)*
 
 > *A calm word before the queue — the #13 trial banner (one handoff only; Dave judges by eye).*
 > *You are starting fresh, and that is fine — everything you need is written down. Read this file,
@@ -11,7 +11,14 @@
 > brief is current. Nothing in the queue punishes reading slowly. The context gauge and its tally
 > are a protocol for writing things down while there is still room — not a stop signal.*
 
-> ## ★ LATEST — 2026-07-24 (Fri eve, OPUS solo — O1 "dark-in-light" DESIGN RULED + INSCRIBED, then went HOT; 🔴 RED ~65% at wrap — RE-VERIFY the review sheets, TRUST the inscriptions): **O1 is ruled and on tattoos; the BUILD is what remains. Dave called the handover — "we're obviously hot, there are silly mistakes, go back a step and do this again, be very careful."**
+> ## ★ LATEST — 2026-07-25 (Sat morning, OPUS solo — legend FEEL RULED → v4 built + render-verified → Dave's 5 review edits captured to a v5 brief; 🟡 AMBER ~58%, deliberate wrap at Dave's call): **The legend feel is ruled and v4 is render-verified; Dave reviewed it via the overlay and pinned 5 change requests → building v5 is the next window's job (brief cut). The interactive rebuild was handed to a fresh window per the gauge rule (no new build artefact at Amber).**
+> - **★ LEGEND FEEL RULED:** click a legend item = ISOLATE · Reset = show all. Resting state is "all shown" ⇒ exclusive **toggle-buttons (`aria-pressed`), NOT a radiogroup** — the v1–v3 open a11y call is CLOSED.
+> - **★ v4 BUILT + RENDER-VERIFIED** (`reviews/LEGEND-ISOLATE-TOGGLE-PROTOTYPE-2026-07-24-v4.html`, real Chart-bar cb4 + Chart-donut cd1): light+dark @1180/560 + isolate states both themes, `document.fonts.check('16px HSBC_MtUnivers_Latin')` true. Evidence: 6 PNGs (agent self-verify) + `_LIVE-STATE` top delta. **Pipeline re-banked:** `$HOME` rotates between calls + bash cap is a hard **45s** ⇒ download+libs+fonts+render in ONE call; alias **BOTH** font strings; set `data-theme` via `add_init_script` (setting it after goto catches the 160ms cross-fade → greys the shot).
+> - **★ DAVE'S 5 REVIEW EDITS → `notes/_briefs/2026-07-25-legend-v5-review-edits-brief.md`** (self-contained). Headline = **RESTORE the dual checkbox-swatch + isolate-label** (v4's isolate-only was VETOED — "I can't check the swatches") · off-rows = **resting + hollow-grey swatch** (NOT muted item — supersedes first-pass point 5; grey primitive → swatch border only) · **Reset canon-disabled default** (B-D4: #9D9D9D/#808080 text, `--line` border) / enabled = light-border+dark-text · **bar key-alpha animates with the grow** · **`.seg:hover` border→ink**.
+> - **NOT inscribed to canon** — v5 stays a review candidate; the legend model goes to `_DATAVIZ-DECISIONS`/ADR only after Dave signs off the fixed version. **Build 53/53, library 67** (review artefacts only). **ds-010 + donut-sweep×16KB-cap still Dave's open calls.**
+> - **Context gauge at authoring: 🟡 Amber ~58% (in-head tally, ESTIMATE ±15% — Half-2 broken)** — deliberate wrap at Amber (Dave's call), not Red. **Push stack (all unpushed): prior stack + this wrap commit — GitHub Desktop, whole stack.**
+>
+> ## PRIOR — 2026-07-24 (Fri eve, OPUS solo — O1 "dark-in-light" DESIGN RULED + INSCRIBED, then went HOT; 🔴 RED ~65% at wrap — RE-VERIFY the review sheets, TRUST the inscriptions): **O1 is ruled and on tattoos; the BUILD is what remains. Dave called the handover — "we're obviously hot, there are silly mistakes, go back a step and do this again, be very careful."**
 > - **★ O1 (scoped inverse surface) RULED + inscribed** = ADR-0014 addendum (Decisions 7+8). Sub-decisions 1–5 confirmed: `data-surface="inverse"` (extends `page|raised`) · re-resolution (not paired tokens) · **ink+hairlines only** (RAG/fills untouched) · **always inverse-resolved, never double-inverted** · slice = donut keys + dark card, NOT combo. **★ VERIFIED CORRECTION to the brief:** `type26-013` has **NO running gate** (asserted-only) — the biting gate is **`dv-016`**; O1's gate work = **extend `data-surface` with `inverse` + fix dv-016's contrast base** (white scores 4.6–5.3:1, passes WITH teeth), NOT "exempt white text".
 > - **★ DV-D10 minted (combo/line labelling), RULED BY EYE** on `reviews/COMBO-LABELLING-SOLUTIONS-2026-07-24-v1.html`: **combo** drops the on-chart end-key → **axis-proximate lockups** (swatch mirrors the mark) · **line alone** keeps its direct end-key (shape+letter; letter droppable pending Dave's a11y team) · O1 reserved for real dark grounds. Standards checked: dv-006 "both axes"=TOOLTIP not permanent labels · dv-011/§04.3 met by shape+text · W3C direct-labelling-preferred + `<table>`=long-desc. **DV-D10 removes the combo end-key from O1's scope.**
 > - **Scope narrowed (Dave):** line + sparkline are **DONE**. Work = **DONUT + BAR** (+ combo's end-key→lockups). **Legend redesign = interactive prototype BUILT for Dave's FEEL** (`reviews/LEGEND-ISOLATE-TOGGLE-PROTOTYPE-2026-07-24-v1.html`): swatch = checkbox (additive) · label = isolate (exclusive, radio-feel). State logic node-tested clean. **ONE open a11y call** (exclusive toggle-buttons vs true radiogroup) for Dave to **rule by feel FIRST**, then the wave builds.
@@ -65,31 +72,30 @@
 
 ## ⬛ DO THIS FIRST
 
-> **⚠ THIS handoff was authored HOT (🔴 RED ~65%). Re-verify before trusting.** The INSCRIPTIONS
-> (ADR-0014 D7/8, DV-D10, graph) are Dave-ruled + build-53/53-green = solid. The **two review sheets
-> are ROUGH** (not render-verified; the compare sheet had a render bug). Dave: *"go back a step, do
-> this again, be very careful."* **First move: get render-verify RUNNING** (`knowledge/_RUNBOOK-render-verify.md`) — this session skipped it and that's where the silly mistakes came from.
-> **0. ✅ O1 DESIGN IS RULED + INSCRIBED — NOT re-design, EXECUTION.** Read `_LIVE-STATE` top delta
-> (turnkey 5-step build spec) + ADR-0014 addendum (Decisions 7+8) + DV-D10. The `type26-013`-has-no-gate
-> / `dv-016`-is-the-biting-gate correction is banked — build the gate as **base-extension, not exemption**.
-> **1. ★★ RULE THE LEGEND FEEL FIRST (Dave, blocks the wave).** He wants to interact:
-> `reviews/LEGEND-ISOLATE-TOGGLE-PROTOTYPE-2026-07-24-v1.html` — swatch=checkbox, label=isolate. **The
-> one open call: exclusive toggle-buttons vs true radiogroup** (annotated in-sheet). ⚠ REDO this prototype
-> carefully + render-verify it — Dave flagged silly mistakes in the current one. **Only after he rules the
-> feel does the legend build.**
-> **2. ★★ THEN BUILD THE WAVE (Dave okayed PARALLEL).** Scope: line + sparkline DONE; work = **donut + bar
-> + combo**. Turnkey per-chart worklist is in the `_LIVE-STATE` delta. Render-verify each (brand-gate change).
+> **✅ Legend FEEL RULED + v4 render-verified. NEXT = build v5 from the brief.** The legend model is
+> settled (click = isolate · Reset = show all · toggle-buttons); v4 is render-verified light+dark @2 widths
+> with the real font. Dave reviewed it via the overlay and pinned **5 change requests** — they are the job.
+> **0. ★★ BUILD LEGEND v5 from `notes/_briefs/2026-07-25-legend-v5-review-edits-brief.md`** (self-contained:
+> the 5 edits + canon values + the reconciled model). Headline: **RESTORE the dual checkbox-swatch +
+> isolate-label** (v4's isolate-only was Dave-vetoed) · off-rows resting + hollow-grey swatch · Reset
+> canon-disabled default / enabled light-border+dark-text · bar key-alpha animation · `.seg:hover` border→ink.
+> **VERSION (don't overwrite v4)**; regenerate `…v5.REVIEW.html`; **render-verify** light+dark @2 widths + states.
+> **1. ★ DECIDE ds-010 (Dave):** fold the one-line `Chart-bar` `fill:var(--sc,…)` drop into the bar lane,
+> or fix it now + re-run the build. Detail in `_DS-IMPROVEMENTS.md` + `_LIVE-STATE` top.
+> **2. ★★ THEN THE WAVE** — line + sparkline DONE; work = **donut + bar + combo**; the legend redesign is the
+> SHARED SERIAL (`dv-behaviour.js` legend logic). O1 (`data-surface="inverse"`) build spec = the `_LIVE-STATE`
+> PRIOR delta (donut on-segment keys). Render-verify each (brand-gate change).
 > **3. ★ DAVE async: DATAVIZ SIGN-OFF** — 5 panes → canon (open-014) · **+ ruling batch (§C·2), 15 remain** ·
 > line letter-drop pending his a11y team.
 > **4. ★★ Radius/corner tuner (§C·1d) — "return soon, don't let me forget."** Still owed; resurface unprompted.
 
 *Standing practice: every handoff carries both names — retrospective + forward — and a **DIVVY PLAN**.
-This handoff's plan: **serialise the FEEL ruling (Dave + one window), THEN 3 parallel lanes** —
-**lane① donut** (O1 `inverse` on segment keys + legend) · **lane② bar** (`dv-barkey` verify + legend) ·
-**lane③ combo** (end-key→lockups + legend). **SHARED SERIAL = `dv-behaviour.js` legend logic + the
-`surface/inverse` token + dv-016 gate scope → CONDUCTOR ONLY** (workers do per-snippet markup + receipts,
-no git). Model: Opus conducts, Sonnet/Fable workers. Do NOT start the lanes until the legend feel is ruled.
-Steps 4b + 2 in `_RUNBOOK-capture-ritual.md`.*
+This handoff: **the v5 legend build is SOLO** (one window — the 5 edits + render-verify), NOT the parallel
+wave yet. AFTER Dave signs off v5, the wave DIVVY holds: **lane① donut** (O1 `inverse` on segment keys +
+legend) · **lane② bar** (`dv-barkey` verify + legend) · **lane③ combo** (end-key→lockups + legend). **SHARED
+SERIAL = `dv-behaviour.js` legend logic + the `surface/inverse` token + dv-016 gate scope → CONDUCTOR ONLY**
+(workers do per-snippet markup + receipts, no git). Model: Opus conducts, Sonnet/Fable workers. Do NOT start
+the lanes until v5 is signed off. Steps 4b + 2 in `_RUNBOOK-capture-ritual.md`.*
 
 *Read: **§A Orientation** (skip if you're in context) → **§B This session** → **§C Queue**.
 Then `_LIVE-STATE.md` → the decision files it points to.*

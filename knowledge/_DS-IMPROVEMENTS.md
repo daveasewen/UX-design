@@ -227,3 +227,33 @@ addition repeats this silently. **Fix:** add the ledger to the corpus list + a s
 `_proforma/_*-DECISIONS.md` on disk is indexed (catches the NEXT new ledger, not just this one).
 Secondary (already a `_FUTURE-STATE` path): keyword retrieval misses cross-vocabulary queries —
 "composition/organisms" doesn't reach ADR-0010/0011's "override sets/nullable slots"; fuzzy→rigorous.
+
+## ds-010 — Chart-bar CSS `fill` override collapses ALL bars to series-1 (2026-07-24, legend-prototype render)
+**OPEN — surfaced to Dave 2026-07-24 (legend feel session); recommend folding the fix into the bar lane of
+the chart wave.** Render-verify of the REAL `knowledge/snippets/Chart-bar.reference.html` (the render that
+was standing-OWED and never actually run on these snippets) shows **every bar rendering `--data-series-1`
+purple** — grouped column, stacked column, horizontal bar, AND the status chart. Confirmed at 1180px, light,
+real HSBC font; screenshot in the session outputs (`REAL_bar.png`).
+
+**Root cause:** `knowledge/snippets/Chart-bar.reference.html` line 102 —
+`rect.dv-series{fill:var(--sc,var(--data-series-1));}`. A CSS `fill` property beats an element's
+`fill="…"` **presentation attribute** (presentation attributes sit below author CSS in the cascade). Every
+bar carries `fill="var(--data-series-N)"` (or `var(--status-breach)` etc.), but `--sc` is **never set on any
+rect** (grep `--sc:` → 0 hits), so the rule resolves to the `var(--data-series-1)` fallback for ALL of them.
+The `fill` attributes — and with them DV-D09 (horizontal default = series-3) and the R-D9 status salience
+ramp (breach/watch/healthy/info) — are dead in render. The donut is UNAFFECTED (`path.dv-series` carries no
+`fill` declaration, only `transition`/hover), which is why multi-series colour reads correctly there.
+
+**Why no gate caught it:** `dv-016`/DataViz gate checks the DECLARED tokens + `contrastPairs` manifest
+(data/series/1–5 vs background), not what the bars RESOLVE to after CSS overrides the attribute. Same shape
+as the declared-pairs contrast blind spot (ds earlier) and [[gate-blindspot-state-contrast]] — checks-passed
+≠ renders-right. Render-verify is the only thing that sees it; it had been OWED on every chart handoff.
+
+**Fix (one line):** drop the `fill` declaration from `rect.dv-series` (keep the `transition` on
+`rect.dv-series,polygon.dv-series` and the `:hover{filter}`), letting each bar's `fill=` attribute stand.
+Verified in `reviews/LEGEND-ISOLATE-TOGGLE-PROTOTYPE-2026-07-24-v3.html` (workaround applied there so the
+legend review renders the intended three-colour series). If a CSS-var fill channel is genuinely wanted for
+theming, set `--sc` per rect via `style` at generation time instead of a blanket fallback rule.
+**Gate follow-up:** the DataViz gate should resolve each `.dv-series` fill AFTER CSS (or forbid a blanket
+`fill` on `.dv-series` that shadows the per-element attribute) so the next colour-collapse can't ship green.
+Touches canon → Dave's call; the bar lane of the wave already opens this snippet.
