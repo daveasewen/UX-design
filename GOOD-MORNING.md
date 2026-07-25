@@ -1,25 +1,26 @@
 # Good morning, Dave ☕
 
-> **RENAME THE WRAPPED CHAT →** `Apollo — legend v5.1: bar-key RISE (render-verified, letters pinned to bar tops) + hit-area 44 canon patch (4 toolbar snippets, build green) + Dave rulings — swatch 44 everywhere + responsive centring; rule+gate proposal pending sign-off — 🔴 Red ~70% wrap`
-> **TITLE THE NEXT CHAT →** `Apollo — legend v5.1 SIGN-OFF → inscribe the legend model → donut+bar+combo wave; + the data-marks-exempt rule & gate rebuild (markup-driven, 44 blocking for controls). Read the hit-area proposal brief FIRST`
-> *(Titles are LABELS — role comes from Dave's opener line. NEXT = v5.1 SIGN-OFF + the hit-area rule/gate; open the v5.1 `.REVIEW` overlay + read `notes/_briefs/2026-07-25-hit-area-rule-and-gate-proposal.md` FIRST. v5.1 is a REVIEW CANDIDATE, not canon. Gauge bands recalibrated: Green<45 / Amber 45–60 / Red≥60.)*
+> **RENAME THE WRAPPED CHAT →** `Apollo — legend v5.2 donut sweep RE-EASED (trapezoidal: ease-in seg-1 · linear mid · ease-out last — restored from a linear regression) + v5.3 TWO-STEP FADE (hover 24% · isolate ghosts to 12%, isolate now its own state layer); both review candidates, build 53/53 green — 🟡 Amber ~55% wrap`
+> **TITLE THE NEXT CHAT →** `Apollo — legend v5.3: Dave's next changes → then v5.x SIGN-OFF → inscribe legend + sweep-easing + two-step-fade models → donut+bar+combo wave. Open the v5.3 prototype FIRST; confirm the 2 design defaults (checkbox fully-removes · isolate owns the dimming)`
+> *(Titles are LABELS — role comes from Dave's opener line. NEXT = continue v5.3 tuning WITH Dave, THEN sign-off + inscribe. Open `reviews/LEGEND-ISOLATE-TOGGLE-PROTOTYPE-2026-07-24-v5.3.html` FIRST. v5.1/v5.2/v5.3 are REVIEW CANDIDATES, not canon. Gauge bands: Green<45 / Amber 45–60 / Red≥60.)*
 
 
-> ## ★ LATEST — 2026-07-25 (Sat evening, OPUS solo — legend v5.1 built + render-verified + hit-area canon patch + Dave's swatch/centring rulings; 🔴 RED ~70% wrap on Dave's recalibrated bands): **v5.1 lands the bar-key RISE (letters ride pinned ~4px above the rising bar top — render-verified at real HSBC font + frozen mid-animation @400/700ms, and numerically exact) and the foundational hit-area audit. The toolbar 44 gap is fixed in CANON (4 snippets → canon.css + showroom, build 53/53 GREEN). Dave ruled the swatch is component-invariant (44 everywhere, reversing my 24 floor) + asked for centred bottom-controls + donut on the responsive stack. Legend stays a REVIEW CANDIDATE; a rule+gate PROPOSAL (data-marks exempt) awaits sign-off.**
+> ## ★ LATEST — 2026-07-25 (Sat night, OPUS solo — Red handoff RE-VERIFIED green → donut sweep RE-EASED (v5.2) + two-step fade (v5.3); both REVIEW CANDIDATES; 🟡 Amber ~55% wrap at Dave's call): **Opened as the v5.1 sign-off, became prototype tuning at Dave's direction. Re-verified the Red-authored handoff FIRST (`_build_all.py` 53/53 GREEN — claims held), then two Dave-driven interaction changes, each versioned no-overwrite. Nothing inscribed; Dave has more changes coming, so the next window continues on v5.3.**
+> - **★ v5.2 — DONUT SWEEP EASING RESTORED** (`reviews/…-v5.2.html`): the radial-sweep intro was silently flattened to LINEAR in the v3→v5.1 rebuild; restored to Dave's finesse — ease-in across segment 1, linear through the middle, ease-out across the last — as a **trapezoidal velocity profile keyed to segment spans** (`sweepDonut`). Verified numerically (rest→rest · monotonic · flat cruise). ⚠ segment A = 147° so the ease-in ramp is long (~441ms of 850); Dave judges if sluggish (one-line tune).
+> - **★ v5.3 — TWO-STEP FADE** (`reviews/…-v5.3.html`, Dave's ruling): hover **.18→.24**; ISOLATE now **ghosts the others to 12%** not 0%. Isolate refactored into its **own state layer** → three levels full / ghost(12%) / gone(0%, checkbox-removed) via `paint(id,level)`. Logic sim **12/12 PASS**, JS `--check` clean.
+> - **⬛ 2 DESIGN DEFAULTS PENDING DAVE:** (a) the swatch checkbox still FULLY removes (only isolate ghosts to 12%); (b) hover doesn't stack while isolated + any swatch toggle exits isolate. Confirm or retune next window.
+> - **Build:** NO canon/snippet edits → **53/53 GREEN**, library **67**. v5.1/v5.2/v5.3 all intact. The verify-build's stable-sort noise (`_ADVISORY-SIGNALS`, `_LIVE-STATE-CHECK`) restored in place (sandbox delete-guard blocks `git checkout` → used `git show HEAD:… >`).
+> - **🟡 Gauge ~55% Amber** (in-head, ESTIMATE ±15%) — heat front-loaded from orientation reads; the three iterations were light. Amber-authored ⇒ trustworthy; the 2 defaults await Dave.
+>
+> ## ★ PRIOR — 2026-07-25 (Sat evening, OPUS solo — legend v5.1 built + render-verified + hit-area canon patch + Dave's swatch/centring rulings; 🔴 RED ~70% wrap on Dave's recalibrated bands): **v5.1 lands the bar-key RISE (letters ride pinned ~4px above the rising bar top — render-verified at real HSBC font + frozen mid-animation @400/700ms, and numerically exact) and the foundational hit-area audit. The toolbar 44 gap is fixed in CANON (4 snippets → canon.css + showroom, build 53/53 GREEN). Dave ruled the swatch is component-invariant (44 everywhere, reversing my 24 floor) + asked for centred bottom-controls + donut on the responsive stack. Legend stays a REVIEW CANDIDATE; a rule+gate PROPOSAL (data-marks exempt) awaits sign-off.**
 > - **★ v5.1** `reviews/…-v5.1.html` (+`.REVIEW`): `dvKeyRise` + 12 inline `--kh` · toolbar/demo-chrome/legend all ≥44 · swatch 44 (bar rows spaced `gap:28px`) · responsive centring `@≤640px`. v5 untouched (versioned).
 > - **★ CANON:** `.dv-vt`/`.dv-tbl-toggle` → 44 `::before`, propagated to `Chart-{bar,combo,donut,line}` — **4, not the brief's 5** (sparkline = native `<details>` summary, flagged; scatter none) → build GREEN.
 > - **⬛ PENDING SIGN-OFF:** data-marks exempt (rec) + the gate rebuild — `notes/_briefs/2026-07-25-hit-area-rule-and-gate-proposal.md`. `_validate_a11y.py` blind spots found (allowlist · literal-px · advisory-44). Legend model inscribes on sign-off.
 > - **★ Dave recalibrated the gauge bands: Green <45 · Amber 45–60 · Red ≥60** (runbooks + memory updated). **Render beat sandbox instance-flapping** by staging the browser on the shared mount (fold into `_RUNBOOK-render-verify.md`).
 > - **Context gauge at authoring: 🔴 RED ~70% (in-head tally, ESTIMATE ±15% — Half-2 broken). ⇒ NEXT READER RE-VERIFY** (re-run `_build_all.py`, check each "landed" claim). Full capture ritual run this turn. Push: this session's files + the prior unpushed stack — GitHub Desktop, whole stack.
 >
-> ## ★ PRIOR — 2026-07-25 (Sat PM #2, OPUS solo — memory-index compaction + routing governor inscribed; 🟡 AMBER ~52% wrap at Dave's call): **`MEMORY.md` compacted 20KB→16.6 KiB (123→108 index entries, 15 rolled to `MEMORY-ARCHIVE.md`, ~40 hooks tightened) — under the read cap, gate-clean. The budget-aware routing governor is now INSCRIBED in `MODEL-ROUTING.md` and had its first live read: pace 0.64 (UNDER) → surplus week.**
-> - **★ MEMORY-INDEX COMPACTION** (`MEMORY.md` — memory dir, NOT in git): 123→108 entries; **20KB→16.6 KiB (17,002 B)**, under the 17.1KB hook cap so it stops warning. 15 done/closed/historical/parked entries → `MEMORY-ARCHIVE.md` (verbatim; topic files untouched + recall-reachable); ~40 long hooks trimmed to one line (detail already in topic files). Gate: no file deleted · no slug renamed (no `[[link]]` orphaned) · every kept entry keeps its pointer · count reconciles 108+15=123 · no blanks/dup slugs. Brief `notes/_briefs/2026-07-25-memory-index-compaction-brief.md`; memory `[[memory-compaction-mechanics]]`.
-> - **★ BUDGET-AWARE ROUTING GOVERNOR — INSCRIBED** (`MODEL-ROUTING.md`, new section + header bump): two-sided — spend the least tier that fits AND don't leave the weekly allowance unused; **pace = spend ÷ even-pace (≈14.3%/day)**; under → bias UP + pull deferred quality forward · over/late-week → bias DOWN (step down at the handoff seam). ⚠ no live meter — Dave supplies the %. **First live read (17:03 Sat): 16% used at 25% through the week → pace 0.64 (UNDER)** ⇒ ~36% surplus heading for expiry; Fable only 10% used. Governor says: spend freely on the quality backlog (render-verify OWED · templates+shells Fable session · legend v5.1).
-> - **Removed the #13 calm-banner trial** — it was "one handoff only", its run is over (reinstate if you liked it).
-> - **Context gauge at authoring: 🟡 Amber ~52% (in-head tally, ESTIMATE ±15%).** `_LIVE-STATE` NOT touched (no DS state changed — memory/routing infra only; build stays 53/53, library 67). **Push stack (all unpushed): the prior stack + `d2a8c03` + this session's ONE commit (`MODEL-ROUTING.md` governor + this GM wrap + `_GM-ARCHIVE` Batch-3 roll) — GitHub Desktop, whole stack.**
->
 
-> *(Compaction 2c — keep ★ LATEST + 1 PRIOR, roll the rest. Older banners (the 07-22→24 chart-wave + ADR arc, the 07-25 AM v4 + midday→PM v5 + PM Memento-efficiency banners) are in `_GM-ARCHIVE.md`, verbatim, newest-first; durable narrative in `_DECISION-HISTORY/` + `notes/`.)*
+> *(Compaction 2c — keep ★ LATEST + 1 PRIOR, roll the rest. Older banners (the 07-22→24 chart-wave + ADR arc, the 07-25 AM v4 + midday→PM v5 + PM Memento-efficiency + PM#2 memory/routing-governor banners) are in `_GM-ARCHIVE.md` (Batches 1–5), verbatim, newest-first; durable narrative in `_DECISION-HISTORY/` + `notes/`.)*
 
 ---
 
@@ -30,16 +31,22 @@
 
 ## ⬛ DO THIS FIRST
 
-> **✅ LEGEND v5.1 BUILT + RENDER-VERIFIED this session (2026-07-25 evening).** Bar-key RISE + the hit-area audit
-> are done; the toolbar 44 gap is fixed in canon (4 snippets, build 53/53 green). v5.1 is a **REVIEW CANDIDATE —
-> NOT canon.** ⚠ Authored in 🔴 RED (~70%) → re-run `python3 knowledge/_build_all.py` + spot-check before building on it.
+> **✅ v5.2 + v5.3 BUILT this session (2026-07-25 night) — REVIEW CANDIDATES, not canon.** The Red handoff was
+> re-verified GREEN first (`_build_all.py` 53/53). **v5.2** = donut sweep RE-EASED (trapezoidal: ease-in seg-1 · linear
+> mid · ease-out last — restored from a linear regression). **v5.3** = TWO-STEP FADE (hover 24% · isolate ghosts to 12%;
+> isolate is now its own state layer). Build stays 53/53, library 67. ⚠ Authored 🟡 Amber ~55% → light re-verify before trusting.
 >
-> **★★ DO FIRST — v5.1 SIGN-OFF.** Open `reviews/LEGEND-ISOLATE-TOGGLE-PROTOTYPE-2026-07-24-v5.1.REVIEW.html` — Dave
-> eyeballs the fixed v5.1 (rise · both swatches 44 · responsive centring). On his OK:
-> **1.** INSCRIBE the legend model → `_DATAVIZ-DECISIONS`/ADR (it becomes the SHARED SERIAL for the wave).
+> **★★ DO FIRST — CONTINUE v5.3 TUNING WITH DAVE.** He wrapped mid-tuning with "more changes" coming. Open
+> `reviews/LEGEND-ISOLATE-TOGGLE-PROTOTYPE-2026-07-24-v5.3.html`, take his next edits, and **confirm the 2 design
+> defaults I chose** (detailed in `_LIVE-STATE` LATEST): (a) the swatch checkbox FULLY removes — only isolate ghosts to
+> 12%; (b) hover doesn't stack while isolated + any swatch toggle exits isolate. Also for his eye: the v5.2 sweep ease-in
+> is long (segment A = 147° → ~441ms ramp) — Dave decides if it reads sluggish (one-line tune).
+> **THEN, on Dave's sign-off:**
+> **1.** INSCRIBE the models → `_DATAVIZ-DECISIONS`/ADR: the legend model + the **sweep-easing spec** + the
+>    **two-step-fade model** — all three become the SHARED SERIAL for the wave.
 > **2.** Then the **donut+bar+combo legend WAVE** — divvy: lane① donut · lane② bar · lane③ combo; shared serial =
->    `dv-behaviour.js` legend logic + the `surface/inverse` token + dv-016 scope → CONDUCTOR ONLY (workers = per-snippet
->    markup + receipts, no git). Do NOT start the lanes before sign-off.
+>    `dv-behaviour.js` legend logic (now incl. the 3-level fade + eased sweep) + the `surface/inverse` token + dv-016
+>    scope → CONDUCTOR ONLY (workers = per-snippet markup + receipts, no git). Do NOT start the lanes before sign-off.
 > **★★ ALSO PENDING DAVE — the hit-area rule + gate. Read `notes/_briefs/2026-07-25-hit-area-rule-and-gate-proposal.md` FIRST.**
 > Asks: (a) data-marks EXEMPT + a min floor for tiny marks? · (b) fold sparkline's `<summary>` into the rule? · (c)
 > green-light the gate rebuild (markup-driven, 44 BLOCKING for controls — today `_validate_a11y.py` misses `.dv-vt`
