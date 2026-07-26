@@ -39,6 +39,14 @@ that single pass.** Running list of what it must cover:
   aria-both-forms asymmetry (DV-D13 ⚠) + the seed-uncheck edge (DV-D11 open edge).
 - **Radius/corner tuner v1+v2 (added 2026-07-26, P4):** `reviews/RADIUS-CORNER-TUNER-2026-07-24-v1/-v2.html` — the ★★ "return SOON" item; owed = tweaks + numbers, then per-theme ruling.
 - **Data-marks-exempt hit-area rule + a11y gate rebuild (added 2026-07-26, P4):** `notes/_briefs/2026-07-25-hit-area-rule-and-gate-proposal.md` — sign-off inscribes the rule + green-lights the markup-driven gate rebuild (44 blocking for controls, marks exempt).
+- **⬛ Donut legend ENACTED — awaiting Dave's eye (added 2026-07-26, legend-wave session):**
+  `showroom/chart-donut.html` (and `knowledge/snippets/Chart-donut.reference.html`) — the first member
+  running the real DV-D11/12/13 model out of `canon/dv-legend.js`. Verified numerically **27/27**
+  (`knowledge/_verify_dv_legend.js`, real source against the real snippet, incl. 950/41% and 1250/54%);
+  NOT yet render-verified in a browser — the sandbox had no staged Playwright and one was not stood up.
+  ⚠ **Two deltas from the signed-off v5.5 need your eye, both forced by gates:** row padding 5px/9px →
+  **4px/8px** (DEF-005 4px grid) and `border-radius:2px` → `var(--border-radius-default)` (radius gate).
+  Resurrect-verbatim is not gate-exempt — same door the 273d18c~1 stepper came through.
 - **Five chart showroom panes (added 2026-07-26, P4):** `showroom/chart-{bar,line,donut,combo,sparkline}.html` — the DataViz sign-off = Dave eyeballs the 5 panes → canon flips provisional-agent→canon (open-014). Same object as the "DataViz sign-off" line above — pane paths pinned here so the eyeball has its list.
 
 Method + template controls (live variant/state spread from meta · light/dark toggle · responsive slider · comment

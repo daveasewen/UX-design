@@ -38,6 +38,65 @@ must stay **self-contained single-file artefacts**; option (c) (inline ×5) reje
 5. **Decorative motion stays CSS** (draws, fades, grows). JS touches geometry only where data
    demands it (fit reflow, arc growth, popover position).
 
+## Amendment — 2026-07-26: ONE source becomes MANY, and the size gate becomes a PAGE budget
+
+**Ruled by Dave, 2026-07-26** (option-select, legend-wave session). Amends §4's size clause and
+§3's "one source" posture. Both beats are recorded because the first is still the reason for the
+second.
+
+**BEAT 1 — the original rule (2026-07-23).** Size gate: source ≤ 16 KB raw, per registered
+behaviour source, against an observed 9.9 KB baseline. The ADR's own words: *"the cap is headroom,
+not a target."*
+
+**BEAT 2 — what happened.** The kit grew from the line exemplar to six charts, and DV-D11/12/13
+turned the legend from a 3 KB filter into a ~14 KB interaction model. `dv-behaviour.js` measured
+15,526 B — 858 B of headroom. Enacting the signed-off legend in one file would have landed at
+**26,615 B**; stripping every comment still left **22,364 B**; abandoning DV-D12's sweep as well
+still left **21,327 B**. No arrangement that kept one file passed. The question had already been
+logged as a deferral in the registry's own `$description` ("amend the cap vs modularise per
+family") and as §C·2 #18 in the queue.
+
+**THE RULING — split AND re-scope, not either/or.**
+
+1. **The group may carry MULTIPLE sources.** `canon/dv-legend.js` joins `canon/dv-behaviour.js`
+   under `component-type/dataviz/$behaviour`. The generator and gate already iterated `$behaviour`
+   entries, so this needed no tooling change — only a registry entry and a second
+   `AUTO-BEHAVIOUR` marker pair per member.
+2. **The 16 KB cap stays per-source, and its job is renamed: LEGIBILITY.** A behaviour source
+   must stay small enough for one person to hold in their head.
+3. **A per-group PAGE budget of 32 KB is added** (`PAGE_BYTES`, `check_group`). This is the clause
+   that matters. Splitting a source must not buy headroom — without it, the 16 KB constraint
+   silently degrades from a page budget to a file budget the moment anyone adds a second file, and
+   the gate would read green while the page doubled. That failure shape — *a gate measuring the
+   proxy instead of the thing* — is already in this project's record (the declared-pairs-only
+   contrast blind spot). It is closed here by construction, and bitten by a selftest that feeds
+   `check_group` two sources which each pass 16 KB and together fail 32 KB.
+4. **The single-rAF-debounced-resize check moves to GROUP level in the same beat**, for the same
+   reason: it was always a page invariant, and per-source it wrongly failed a second source for
+   carrying zero resize listeners — which is correct for a source with nothing to reflow.
+
+**Rejected, with reasons.** *Raise the cap to 32 KB and keep one file* — cheapest, but a 26 KB
+single file is not legible, and a cap that moves once moves again. *Minify the source* (Dave asked,
+2026-07-26) — declined: the cap is a complexity forcing function, and minifying shrinks the number
+without simplifying the thing, while letting the source sprawl unpoliced. The reference snippets
+carry the injected block inline and must stay readable; the comments are the provenance trail; and
+a minifier adds a version-drift surface to a byte-exact `--check`. Transport compression already
+takes the group from 28,332 B to 9,622 B gzipped, free. A true wire-weight answer belongs in the
+ADR-0008 adapter layer, where a build pipeline is expected — not in canon, where the source is the
+artefact.
+
+**Measured at amendment:** dv-behaviour 12,682 B + dv-legend 15,650 B = 28,332 B (86% of the page
+budget) once the transitional block is deleted; 31,268 B (95%) while it remains. ⚠ The next
+behaviour addition therefore faces this same conversation — that is the forcing function working,
+not a defect.
+
+**Open, flagged not ruled:** injection is group-wide, so `Chart-sparkline` — the deliberately
+compact, popover-only member — now carries an inert 15.6 KB payload. Per-member behaviour opt-in
+is not supported by the registry schema today. Raised for Dave; not decided here.
+
+Node: ADR-0015-A1
+Edges: amends(ADR-0015, scope=size-clause-and-one-source-posture) · enables(DV-D11, scope=legend-model-needs-its-own-source)
+
 ## Consequences
 
 - The gate work rides the Chart-line exemplar build: size + pattern checks + sync `--check` +

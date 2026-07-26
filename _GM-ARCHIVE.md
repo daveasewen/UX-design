@@ -13,6 +13,14 @@ only move.*
 
 ---
 
+> ## ★ PRIOR — 2026-07-25 (Sat night, OPUS solo — Red handoff RE-VERIFIED green → donut sweep RE-EASED (v5.2) + two-step fade (v5.3); both REVIEW CANDIDATES; 🟡 Amber ~55% wrap at Dave's call): **Opened as the v5.1 sign-off, became prototype tuning at Dave's direction. Re-verified the Red-authored handoff FIRST (`_build_all.py` 53/53 GREEN — claims held), then two Dave-driven interaction changes, each versioned no-overwrite. Nothing inscribed; Dave has more changes coming, so the next window continues on v5.3.**
+> - **★ v5.2 — DONUT SWEEP EASING RESTORED** (`reviews/…-v5.2.html`): the radial-sweep intro was silently flattened to LINEAR in the v3→v5.1 rebuild; restored to Dave's finesse — ease-in across segment 1, linear through the middle, ease-out across the last — as a **trapezoidal velocity profile keyed to segment spans** (`sweepDonut`). Verified numerically (rest→rest · monotonic · flat cruise). ⚠ segment A = 147° so the ease-in ramp is long (~441ms of 850); Dave judges if sluggish (one-line tune).
+> - **★ v5.3 — TWO-STEP FADE** (`reviews/…-v5.3.html`, Dave's ruling): hover **.18→.24**; ISOLATE now **ghosts the others to 12%** not 0%. Isolate refactored into its **own state layer** → three levels full / ghost(12%) / gone(0%, checkbox-removed) via `paint(id,level)`. Logic sim **12/12 PASS**, JS `--check` clean.
+> - **⬛ 2 DESIGN DEFAULTS PENDING DAVE:** (a) the swatch checkbox still FULLY removes (only isolate ghosts to 12%); (b) hover doesn't stack while isolated + any swatch toggle exits isolate. Confirm or retune next window.
+> - **Build:** NO canon/snippet edits → **53/53 GREEN**, library **67**. v5.1/v5.2/v5.3 all intact. The verify-build's stable-sort noise (`_ADVISORY-SIGNALS`, `_LIVE-STATE-CHECK`) restored in place (sandbox delete-guard blocks `git checkout` → used `git show HEAD:… >`).
+> - **🟡 Gauge ~55% Amber** (in-head, ESTIMATE ±15%) — heat front-loaded from orientation reads; the three iterations were light. Amber-authored ⇒ trustworthy; the 2 defaults await Dave.
+>
+
 ## Batch 6 — rolled 2026-07-26 evening (the 07-25 Sat-evening v5.1 banner)
 
 > ## ★ PRIOR — 2026-07-25 (Sat evening, OPUS solo — legend v5.1 built + render-verified + hit-area canon patch + Dave's swatch/centring rulings; 🔴 RED ~70% wrap on Dave's recalibrated bands): **v5.1 lands the bar-key RISE (letters ride pinned ~4px above the rising bar top — render-verified at real HSBC font + frozen mid-animation @400/700ms, and numerically exact) and the foundational hit-area audit. The toolbar 44 gap is fixed in CANON (4 snippets → canon.css + showroom, build 53/53 GREEN). Dave ruled the swatch is component-invariant (44 everywhere, reversing my 24 floor) + asked for centred bottom-controls + donut on the responsive stack. Legend stays a REVIEW CANDIDATE; a rule+gate PROPOSAL (data-marks exempt) awaits sign-off.**

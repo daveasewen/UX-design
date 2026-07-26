@@ -1,22 +1,23 @@
 # Good morning, Dave ☕
 
-> **RENAME THE WRAPPED CHAT →** `Apollo — legend v5.x SIGNED OFF ★ v5.4 additive isolate (Dave reversed both v5.3 defaults: checkbox ghosts 12%, isolate = blank-boxes-that-ADD) + v5.5 typed tooltip + centre-follows-selection → DV-D11/12/13 inscribed, seed fed, register LOCKED — 🟢 Green ~35% wrap`
-> **TITLE THE NEXT CHAT →** `Apollo — donut+bar+combo legend WAVE: bake DV-D11/12/13 into dv-behaviour.js + snippets (2-level paint · focus-set isolate · eased sweep · typed tips · live centre) + ds-010 in the bar lane. Read GOOD-MORNING §DO-FIRST for the divvy`
+> **RENAME THE WRAPPED CHAT →** `Apollo — behaviour CAP FORK ruled (ADR-0015 amendment: dv-legend.js split + 32KB per-group page budget) + Chart-donut migrated to DV-D11/12/13, verify 27/27, build 55/55 — 🔴 Red ~72% wrap`
+> **TITLE THE NEXT CHAT →** `Apollo — legend wave members 2-4: migrate Chart-bar (+ds-010) · Chart-combo (+DV-D10 lockups) · Chart-line, then DELETE the transitional block + promote the universal contract. Copy-source = Chart-donut. Read GOOD-MORNING §DO-FIRST`
 > *(Titles are LABELS — role comes from Dave's opener line. The wave = the parallel model: Opus conducts, workers per lane, DIVVY in §DO-FIRST. Gauge bands: Green<45 / Amber 45–60 / Red≥60.)*
 
 
-> ## ★ LATEST — 2026-07-26 (Sun evening, FABLE solo — ★ LEGEND v5.x SIGNED OFF + DV-D11/12/13 INSCRIBED same hour; build 55/55 GREEN; 🟢 Green ~35% wrap): **Dave reversed BOTH v5.3 defaults and re-specced isolate; two versioned builds later v5.5 is the signed-off legend model. Everything inscribed, seeded, registered — the wave is UNBLOCKED.**
+> ## ★ LATEST — 2026-07-26 (Sun evening, OPUS solo self-conducting — ★ THE CAP FORK RULED + legend model ENACTED on member #1; build 55/55 GREEN · verify 27/27; 🔴 RED ~72% wrap): **The "mechanical enactment" wasn't. `dv-behaviour.js` had 858 bytes of headroom against a model needing ~14,100, so §C·2 #18 came off the queue and onto the critical path. Dave ruled split AND re-scope; Chart-donut now runs the real DV-D11/12/13 model.**
+> - **★ ADR-0015 § AMENDMENT (2026-07-26) — RULED, §C·2 #18 CLOSED.** Measured three ways first (one file = 26,615 B as-written · 22,364 B comment-stripped · 21,327 B even dropping DV-D12 — none passed). Ruling: **`canon/dv-legend.js` splits out** as a second registered `$behaviour` source · the 16KB per-source cap is renamed a **LEGIBILITY** constraint · a **32KB per-GROUP PAGE budget** is added so splitting can never buy headroom. The resize check moved to group level in the same beat (same defect: page invariant enforced per file). Gate ships 5 new bites incl. the evasion case.
+> - **★ Chart-donut MIGRATED + VERIFIED 27/27** (`knowledge/_verify_dv_legend.js` — real source, real snippet, jsdom; incl. Dave's 950/41% and 1250/54%). Dual-gesture rows · typed tips · live region · Reset. **Bar, combo, LINE still to go — the wave is FOUR members, not three (line carries a legend; it was in no lane).**
+> - **★ Minification asked + declined** (28,332 B → 9,622 B gzipped is free; the cap is a *complexity* forcing function, and minifying shrinks the number without simplifying the thing). Reasoning in the ADR amendment.
+> - **⚠ TWO VISUAL DELTAS AWAIT DAVE'S EYE** — the signed-off v5.5 CSS failed the 4px grid + radius gates on re-entry; corrected `padding:5px 9px`→**4px/8px**, `border-radius:2px`→**var(--border-radius-default)**. Registered in `_REVIEW-SIGNOFF.md`. Also renamed `.lg`→**`.dv-leg*`** (collided with canon's `.seg.lg`; blast-radius gate caught it).
+> - **⬛ 4 OPEN, flagged not decided:** sparkline's inert 15.6KB payload (no per-member opt-in) · page budget already 86% · `_verify_dv_legend.js` unwired (needs jsdom) · graph `--verify` has no convention for an ADR-amendment node (5 seed edges unmatched).
+> - **🔴 RED ~72% (ESTIMATE ±15%)** ⇒ **next reader RE-VERIFIES before building:** `_build_all.py` + `node knowledge/_verify_dv_legend.js` + spot-check the byte figures.
+>
+> ## ★ PRIOR — 2026-07-26 (Sun evening, FABLE solo — ★ LEGEND v5.x SIGNED OFF + DV-D11/12/13 INSCRIBED same hour; build 55/55 GREEN; 🟢 Green ~35% wrap): **Dave reversed BOTH v5.3 defaults and re-specced isolate; two versioned builds later v5.5 is the signed-off legend model. Everything inscribed, seeded, registered — the wave is UNBLOCKED.**
 > - **★ v5.4 — ADDITIVE ISOLATE** (`reviews/…-v5.4.html`): checkbox ghosts to **12%, never 0%** (two levels only — the v5.3 three-level ladder is DEAD, reversal inscribed both-beats) · isolate = **additive focus set** (blank bordered boxes; checking ADDS; release restores the prior mix by construction) · hover live in BOTH modes + **24% peek** on ghosted rows. 14/14 numeric interaction checks in-render, real HSBC cut.
 > - **★ v5.5 — SEG COHERENCE** (`reviews/…-v5.5.html` = **the reference implementation**): tooltip carries ONLY the seg-selected number-type · **centre figure follows the LEGEND selection** (950/41% isolated · 1250/54% +Savings · share-of-grand-total percent). 14/14. ⚠ aria keeps BOTH forms (deliberate — wave a11y pass confirms).
 > - **★ INSCRIBED: DV-D11 · DV-D12 · DV-D13** (`_proforma/_DATAVIZ-DECISIONS.md`) + seed fed (81 nodes/138 edges) + `_REVIEW-SIGNOFF.md` legend strand **✅ LOCKED** + dossier `_DECISION-HISTORY/2026-07-26-legend-signoff-additive-isolate.md`. Build **55/55 GREEN** post-inscription (55 = 53 + the Memento-lane gate steps; the old 53 count is dead).
 > - **🟢 Gauge ~35% GREEN at wrap** (ESTIMATE ±15%) — clean-budget handoff; claims re-checkable via the build + the two 14/14 verify scripts (`outputs` mount, session-local).
->
-> ## ★ PRIOR — 2026-07-25 (Sat night, OPUS solo — Red handoff RE-VERIFIED green → donut sweep RE-EASED (v5.2) + two-step fade (v5.3); both REVIEW CANDIDATES; 🟡 Amber ~55% wrap at Dave's call): **Opened as the v5.1 sign-off, became prototype tuning at Dave's direction. Re-verified the Red-authored handoff FIRST (`_build_all.py` 53/53 GREEN — claims held), then two Dave-driven interaction changes, each versioned no-overwrite. Nothing inscribed; Dave has more changes coming, so the next window continues on v5.3.**
-> - **★ v5.2 — DONUT SWEEP EASING RESTORED** (`reviews/…-v5.2.html`): the radial-sweep intro was silently flattened to LINEAR in the v3→v5.1 rebuild; restored to Dave's finesse — ease-in across segment 1, linear through the middle, ease-out across the last — as a **trapezoidal velocity profile keyed to segment spans** (`sweepDonut`). Verified numerically (rest→rest · monotonic · flat cruise). ⚠ segment A = 147° so the ease-in ramp is long (~441ms of 850); Dave judges if sluggish (one-line tune).
-> - **★ v5.3 — TWO-STEP FADE** (`reviews/…-v5.3.html`, Dave's ruling): hover **.18→.24**; ISOLATE now **ghosts the others to 12%** not 0%. Isolate refactored into its **own state layer** → three levels full / ghost(12%) / gone(0%, checkbox-removed) via `paint(id,level)`. Logic sim **12/12 PASS**, JS `--check` clean.
-> - **⬛ 2 DESIGN DEFAULTS PENDING DAVE:** (a) the swatch checkbox still FULLY removes (only isolate ghosts to 12%); (b) hover doesn't stack while isolated + any swatch toggle exits isolate. Confirm or retune next window.
-> - **Build:** NO canon/snippet edits → **53/53 GREEN**, library **67**. v5.1/v5.2/v5.3 all intact. The verify-build's stable-sort noise (`_ADVISORY-SIGNALS`, `_LIVE-STATE-CHECK`) restored in place (sandbox delete-guard blocks `git checkout` → used `git show HEAD:… >`).
-> - **🟡 Gauge ~55% Amber** (in-head, ESTIMATE ±15%) — heat front-loaded from orientation reads; the three iterations were light. Amber-authored ⇒ trustworthy; the 2 defaults await Dave.
 >
 > *(Compaction 2c — keep ★ LATEST + 1 PRIOR, roll the rest. Older banners (the 07-22→24 chart-wave + ADR arc, the 07-25 AM v4 + midday→PM v5 + PM Memento-efficiency + PM#2 memory/routing-governor banners) are in `_GM-ARCHIVE.md` (Batches 1–5), verbatim, newest-first; durable narrative in `_DECISION-HISTORY/` + `notes/`.)*
 
@@ -31,16 +32,23 @@
 
 > **✅ LEGEND SIGNED OFF (2026-07-26). The models are CANON-INSCRIBED (DV-D11/12/13) — the work now is ENACTMENT.**
 >
-> **★★ DO FIRST — THE DONUT+BAR+COMBO LEGEND WAVE.** Bake DV-D11/12/13 into `dv-behaviour.js` + the chart
-> snippets. Reference implementation = `reviews/LEGEND-ISOLATE-TOGGLE-PROTOTYPE-2026-07-24-v5.5.html` (read its
-> controller + DV-D11/12/13 BEFORE building — retrieval not recall). **DIVVY PLAN** (role from Dave's opener line):
-> **lane① donut** (focus-set isolate + eased sweep DV-D12 + typed tips/centre DV-D13) · **lane② bar** (2-level
-> paint + **ds-010 one-liner**: kill `fill:var(--sc,…)` in `Chart-bar.reference.html:102` — Dave ruled it rides
-> this lane) · **lane③ combo** (2-level paint + the DV-D10 axis-proximate lockups). **Shared serial = CONDUCTOR
-> ONLY:** `dv-behaviour.js` legend logic (`paint(id,level)` 2-level + focus-set isolate + 24% hover/peek) +
-> `surface/inverse` token + dv-016 scope + registry/spine/git (ONE commit). Workers = per-snippet markup +
-> receipts, no git. **Riding the wave:** DV-D13's aria-both-forms ⚠ (a11y pass confirms) · DV-D11's seed-uncheck
-> edge (rule if it grates) · dv-016/DV-D03 contrast gates re-run per snippet.
+> **★★ DO FIRST — LEGEND WAVE, MEMBERS 2–4. The spine is BUILT and the exemplar is PROVEN — this is now
+> genuinely mechanical.** `canon/dv-legend.js` carries DV-D11/12/13; `Chart-donut.reference.html` is the
+> **copy-source** (read it, not the prototype). Per member: rebuild the legend rows to the dual-gesture
+> markup (`.dv-legrow` > `.dv-leg-sw[role=checkbox]` OUTSIDE `.dv-leg-item` button) · port the `.dv-leg*`
+> CSS block + the `.is-ghost/.is-faded/.is-peek` ladder · add the sr-only live region (`<fig>-live`) +
+> Reset · add `data-tip-value`/`data-tip-percent` where a value⇄percent seg exists · swap the member's
+> `extraContract` hook `data-series-toggle="` → `class="dv-legrow` + `class="dv-leg-sw`.
+> **DIVVY:** lane① **Chart-bar** (+ **ds-010**: kill `fill:var(--sc,…)` at `Chart-bar.reference.html:102`)
+> · lane② **Chart-combo** (+ the DV-D10 axis-proximate lockups) · lane③ **Chart-line** (⚠ NOT in the old
+> divvy — it carries a 3-row legend and was missed). **CONDUCTOR-SERIAL, do not let a worker touch:**
+> `canon/dv-legend.js` · `component-types.json` · canon/showroom regen · git (ONE commit).
+> **★★ ON THE LAST MEMBER — the transition closes in one beat:** delete the TRANSITIONAL block in
+> `canon/dv-behaviour.js` (its end condition is executable: `grep -l data-series-toggle
+> knowledge/snippets/Chart-*.reference.html` returns nothing) · promote `class="dv-legrow` to
+> `dv-legend`'s universal contract and drop it from the four `extraContract`s · re-run the behaviour
+> gate — **the page budget should fall 95% → 86%**. Verify with `node knowledge/_verify_dv_legend.js`
+> (27/27 on donut; extend it per member — it needs jsdom at `/tmp/node_modules`, see §C·4).
 > **★★ ALSO PENDING DAVE — the hit-area rule + gate rebuild. Read `notes/_briefs/2026-07-25-hit-area-rule-and-gate-proposal.md` FIRST.**
 > Asks: (a) data-marks EXEMPT + a min floor for tiny marks? · (b) fold sparkline's `<summary>` into the rule? · (c)
 > green-light the gate rebuild (markup-driven, 44 BLOCKING for controls — today `_validate_a11y.py` misses `.dv-vt`
@@ -351,7 +359,7 @@ Chart-bar/line/donut/sparkline — your review flips them provisional-agent→ca
 the banner's compaction to `_GM-ARCHIVE.md:32` carried these out of live state; copied back
 verbatim-in-substance. Same ruling mechanics as 8–16.**
 17. **Q2 combo home** — new snippet vs Chart-bar variant.
-18. **Sweep hook / 16KB cap fork** — amend cap vs modularise (sweep baked-static for now).
+18. ~~**Sweep hook / 16KB cap fork** — amend cap vs modularise.~~ **✅ RULED 2026-07-26: SPLIT *and* RE-SCOPE** — `dv-legend.js` is a second source; 16KB stays per-source (legibility) and a **32KB per-GROUP PAGE budget** was added so a split can't buy headroom. Inscribed **ADR-0015 § Amendment**; the sweep is no longer baked-static (DV-D12 runs).
 19. **COMBO-LINE-INVERT R-B/R-C** — R-A casing DAVE-SEEN-PROVISIONAL.
 20. **Chart-scatter Layer-2** — deferred, stays Layer-1 safe.
 21. **Brush/range-select spec** — menu 8, designed not built.
@@ -389,7 +397,7 @@ radius px + bigplay. **(c) NEW from Phase-2:** all 24 new components across 4 th
 as the dataviz sign-off (§C·2).
 
 ## 4. Enact-queue (cheap, post-rulings)
-F1 Legacy icon/default white · F2 Legacy `rag/error-tint` · tag-atom radius reconcile · F5 Dropdown's
+**★ NEW 2026-07-26 (from the cap-fork session):** wire `_verify_dv_legend.js` as an advisory build step or vendor its jsdom dependency (today: `npm i jsdom` into `/tmp`, unwired) · decide `Chart-sparkline`'s **inert 15.6KB payload** (needs per-member behaviour opt-in in the registry — schema change) · give the graph parser a convention for an **ADR-amendment node** (`--verify` shows 5 unmatched seed edges) · F1 Legacy icon/default white · F2 Legacy `rag/error-tint` · tag-atom radius reconcile · F5 Dropdown's
 6 locals · designer-pack v2.1 re-bake · **DV-D09 enact** (h-bar → series-3; bar lane) · **pro-forma dedup pass (ruling 3 — now also carries wave-1's
 fl-summary≈Alert + B's observation that Tranche-1/2 hold earlier empty-state/toast sketches)** ·
 composite motion tokens (would retire the matchValues pin) · enact whatever §C·2/§C·3 rulings change ·
@@ -411,14 +419,13 @@ Legacy hex seeding + provenance-gate flip · Console/Supercharge chromatic palet
 Sutherland field test · full-review backlog (`_REVIEW-SIGNOFF.md`) · `_FUTURE-STATE` items ·
 spot-illustration/empty-state icon set (`_ICON-GAPS.md`, wave-1's only gap).
 
-> **COMMIT STATE (refreshed 2026-07-26 ~19:2x BST, legend sign-off session).** This session lands **ONE
-> commit**: v5.4 + v5.5 review artefacts · DV-D11/12/13 in `_DATAVIZ-DECISIONS.md` · seed (81/138) + graph
-> regen outputs · `_REVIEW-SIGNOFF.md` (legend ✅ LOCKED) · `_LIVE-STATE` + archive roll · `GOOD-MORNING` +
-> `_GM-ARCHIVE` roll · the dossier. **NO canon/token/snippet edits** — build **55/55 GREEN**, library **67**.
-> **GitHub Desktop shows the true unpushed count — push the WHOLE stack in one go** (prior sessions flagged
-> unpushed commits; Desktop closed while Claude commits).
->
-> **Context gauge at authoring: 🟢 GREEN ~35% (in-head tally, ESTIMATE ±15%).** Clean-budget wrap — the
-> handoff was authored with headroom; claims re-checkable via `_build_all.py` + the ledger.
-> Standing practice: every handoff artefact carries the author's gauge reading as a SCRUTINY indicator
-> (Red-authored ⇒ next reader re-verifies). Canon: `_RUNBOOK-context-gauge.md` § authoring-time stamp.**
+> **COMMIT STATE (refreshed 2026-07-26 ~20:0x BST, cap-fork + donut-migration session).** ONE commit:
+> `canon/dv-legend.js` (new) · `canon/dv-behaviour.js` (legend isolated behind a TRANSITIONAL block) ·
+> `_validate_behaviour.py` (check_group + PAGE_BYTES + 5 bites) · `component-types.json` (dv-legend
+> registered, donut hooks migrated, the old deferral marked RULED) · `Chart-donut.reference.html`
+> (migrated) + 4 members' marker pairs · regenerated `canon.css`/showroom/`_BEHAVIOUR-GATE.md` ·
+> `_verify_dv_legend.js` (new, 27/27) · ADR-0015 § Amendment · seed + graph · `_REVIEW-SIGNOFF.md` ·
+> `_LIVE-STATE` + `_GM-ARCHIVE` + `_LIVE-STATE-ARCHIVE` rolls · this file · the dossier.
+> **Build 55/55 GREEN · behaviour gate green (page budget 31,268 B = 95% during transition) · library 67.**
+> **Context gauge at authoring: 🔴 RED ~72% (ESTIMATE)** — Red-authored ⇒ next reader re-verifies before
+> building on it. Dave pushes via GitHub Desktop (whole stack, Desktop closed while Claude commits).

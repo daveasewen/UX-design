@@ -89,16 +89,12 @@
     else { tipHide(); }
   });
   document.addEventListener('focusin', function (e) {
-    var t = hlTarget(e); if (t) { setQuiet(t.fig, t.group); }   /* keyboard parity for highlight */
     var el = e.target.closest && e.target.closest('[data-tip]');
     if (!el) { return; }
     var b = el.getBoundingClientRect();
     tipAt(el.getAttribute('data-tip'), b.left + b.width / 2, b.top - 40);
   });
-  document.addEventListener('focusout', function (e) {
-    var t = hlTarget(e); if (t) { setQuiet(t.fig, null); }
-    tipHide();
-  });
+  document.addEventListener('focusout', function () { tipHide(); });
 
   /* ---------- TABLE-VIEW POPOVER — floating card panel (Dave's mock, 2026-07-23:
      surface ground + border + soft shadow, NOT a frosted drawer). Toggle carries
@@ -130,18 +126,12 @@
   document.addEventListener('click', function (e) {
     var btn = e.target.closest && e.target.closest('.dv-tbl-toggle');
     if (btn) { tblToggle(btn); return; }
-    var leg = e.target.closest && e.target.closest('button[data-series-toggle]');
-    if (leg) { if (e.shiftKey) { isolate(leg); } else { legendToggle(leg); } return; }
     var vt = e.target.closest && e.target.closest('button[data-dv-toggle]');
     if (vt) { viewToggle(vt); return; }
     var sw = e.target.closest && e.target.closest('button[data-dv-view-btn]');
     if (sw) { segView(sw); return; }
     var cp = e.target.closest && e.target.closest('button.dv-csv');
     if (cp) { copyCsv(cp); }
-  });
-  document.addEventListener('dblclick', function (e) {
-    var leg = e.target.closest && e.target.closest('button[data-series-toggle]');
-    if (leg) { isolate(leg); }
   });
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') { return; }
@@ -152,30 +142,33 @@
     if (btn) { btn.setAttribute('aria-expanded', 'false'); btn.focus(); }   /* label static (Dave 2026-07-24) */
   });
 
-  /* ---------- LEGEND-AS-FILTER — show/hide a series from its legend button.
-     Scoped to the button's own figure (same group numbers may repeat across figures).
-     aria-pressed carries state; visuals = CSS on [aria-pressed] + the series' inline
-     opacity (transition lives in the snippet's CSS — decorative motion stays CSS). */
+  /* ---------- LEGEND — ⚠ TRANSITIONAL, SUPERSEDED BY DV-D11. DELETE WHEN THE LAST MEMBER MIGRATES.
+     The model below (hide-at-0%, shift-click isolate, .dv-quiet highlight) is DEAD as a design:
+     DV-D11 replaced it with two render levels (full / ghost-12%, nothing ever disappears), a
+     dual-gesture row (swatch=checkbox + label=isolate) and an ADDITIVE focus set. That model
+     lives in `canon/dv-legend.js`, the group's second registered behaviour source.
+
+     WHY THIS STILL EXISTS (Dave ruled incremental migration, 2026-07-26): the two models are
+     SELECTOR-DISJOINT — this one keys on `button[data-series-toggle]`, dv-legend keys on
+     `.legrow`. A migrated snippet is therefore served only by dv-legend and an unmigrated one
+     only by this block, with no overlap and no double-binding. That lets the four legend-bearing
+     members migrate one at a time with every commit in a working state.
+
+     END CONDITION — delete this whole block (and drop the group's page budget back to ~27.7KB)
+     when `grep -l data-series-toggle knowledge/snippets/Chart-*.reference.html` returns nothing.
+     MIGRATED so far: Chart-donut. REMAINING: Chart-bar · Chart-combo · Chart-line.
+     Do not extend or "improve" anything below — it is scheduled for deletion. */
   function setSeries(btn, show) {
     btn.setAttribute('aria-pressed', String(show));
     var fig = btn.closest('figure') || document;
     var els = fig.querySelectorAll('[data-series-group="' + btn.getAttribute('data-series-toggle') + '"]');
     for (var i = 0; i < els.length; i++) {
-      /* visibility as well as opacity: the entry animation (dvFade, fill both) outranks an
-         inline opacity, so opacity alone left markers painted (render-verify catch, 2026-07-23).
-         visibility is not animated by the fade — inline wins; transitioned, so the fade-out
-         still shows, then the element leaves. */
       els[i].style.opacity = show ? '' : '0';
       els[i].style.visibility = show ? '' : 'hidden';
       els[i].style.pointerEvents = show ? '' : 'none';
     }
   }
-  function legendToggle(btn) {
-    setSeries(btn, btn.getAttribute('aria-pressed') !== 'true');
-  }
-  /* ISOLATE (menu pick 1 — Dave 2026-07-23): shift-click or double-click a legend row solos
-     that series; the same gesture on a solo restores all. Keyboard path: Shift+Enter fires a
-     shift-modified click on a focused button. */
+  function legendToggle(btn) { setSeries(btn, btn.getAttribute('aria-pressed') !== 'true'); }
   function isolate(btn) {
     var fig = btn.closest('figure') || document;
     var all = fig.querySelectorAll('button[data-series-toggle]');
@@ -185,9 +178,6 @@
     }
     for (var j = 0; j < all.length; j++) { setSeries(all[j], solo ? true : all[j] === btn); }
   }
-  /* HIGHLIGHT (menu pick 2): hovering/focusing a legend row or marker emphasises that series —
-     the OTHERS take .dv-quiet (opacity via !important, which outranks the entry animation).
-     Data-layer dimming only — control text never dims (Dave's a11y caution, 2026-07-23). */
   function setQuiet(fig, group) {
     var els = fig.querySelectorAll('[data-series-group]');
     for (var i = 0; i < els.length; i++) {
@@ -206,6 +196,16 @@
   document.addEventListener('pointerout', function (e) {
     var t = hlTarget(e); if (t) { setQuiet(t.fig, null); }
   });
+  document.addEventListener('dblclick', function (e) {
+    var leg = e.target.closest && e.target.closest('button[data-series-toggle]');
+    if (leg) { isolate(leg); }
+  });
+  document.addEventListener('click', function (e) {
+    var leg = e.target.closest && e.target.closest('button[data-series-toggle]');
+    if (leg) { if (e.shiftKey) { isolate(leg); } else { legendToggle(leg); } }
+  });
+  /* ---------- end TRANSITIONAL legend block ---------- */
+
   /* VIEW TOGGLES (menu picks 6/7/9): baked-variant switching — geometry is generated, never
      computed here; behaviour only shows/hides [data-dv-view] groups (.dv-off = display:none). */
   function setView(fig, name, show) {

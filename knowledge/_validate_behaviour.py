@@ -30,6 +30,11 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REG = os.path.join(HERE, "component-types.json")
 REPORT = os.path.join(HERE, "_BEHAVIOUR-GATE.md")
 MAX_BYTES = 16 * 1024
+# PAGE budget across ALL of a group's sources — added 2026-07-26 when the legend model was split
+# into a second source (dv-legend.js). Dave's ruling on the cap fork was "split AND re-scope the
+# gate", precisely so the 16KB stayed a PAGE constraint instead of silently becoming a per-file
+# one that any future split could route around. Per-source cap = legibility; page sum = weight.
+PAGE_BYTES = 32 * 1024
 
 BANNED = [
     (re.compile(r'\bsetInterval\s*\('), "setInterval (polling)"),
@@ -47,6 +52,9 @@ EXT_SRC_RE = re.compile(r'<script\b[^>]*\bsrc\s*=', re.I)
 
 
 def check_source(js, label):
+    """PER-SOURCE checks: size + banned patterns. Anything that is a PAGE invariant (the byte
+    budget in aggregate, the single resize listener) belongs in check_group — a source is not
+    the unit a browser loads, a member page is."""
     fails = []
     n = len(js.encode("utf-8"))
     if n > MAX_BYTES:
@@ -54,12 +62,28 @@ def check_source(js, label):
     for rx, why in BANNED:
         if rx.search(js):
             fails.append(f"{label}: banned pattern — {why}")
+    return fails, n
+
+
+def check_group(sources, label):
+    """PAGE-LEVEL checks across every source a member page loads together.
+
+    Both of these were per-SOURCE until 2026-07-26 and were wrong the moment a group carried
+    two sources: the sum was unpoliced (two 16KB files pass a 16KB cap), and the "exactly one
+    resize listener" rule failed a second source for having zero — even though zero is correct
+    for a source with nothing to reflow. The invariant was always about the PAGE."""
+    fails = []
+    total = sum(len(js.encode("utf-8")) for js in sources)
+    if total > PAGE_BYTES:
+        fails.append(f"{label}: {total} bytes across {len(sources)} source(s) > {PAGE_BYTES} "
+                     f"(ADR-0015 page budget — splitting a source does not buy headroom)")
+    js = "\n".join(sources)
     r = len(RESIZE_RE.findall(js))
     if r != 1:
-        fails.append(f"{label}: {r} window resize listeners — exactly ONE, rAF-debounced (ADR-0015)")
+        fails.append(f"{label}: {r} window resize listeners across the group — exactly ONE, rAF-debounced (ADR-0015)")
     if r and ("requestAnimationFrame" not in js or "cancelAnimationFrame" not in js):
         fails.append(f"{label}: resize listener is not rAF-debounced (requestAnimationFrame + cancelAnimationFrame expected)")
-    return fails, n
+    return fails, total
 
 
 def check_member(html, label):
@@ -69,7 +93,7 @@ def check_member(html, label):
 
 def run():
     reg = json.load(open(REG))
-    fails, rows = [], []
+    fails, rows, totals = [], [], {}
     for gname, g in reg.get("component-type", {}).items():
         if gname.startswith("$") or not isinstance(g, dict):
             continue
@@ -77,26 +101,39 @@ def run():
         if not behs:
             continue
         members = [m for m in (g.get("$members") or {}) if not m.startswith("$")]
+        srcs = []
         for bname, beh in behs.items():
             sp = os.path.join(HERE, beh["source"])
             if not os.path.exists(sp):
                 fails.append(f"{gname}/{bname}: source knowledge/{beh['source']} missing")
                 continue
-            f, n = check_source(open(sp).read(), f"{gname}/{bname} ({beh['source']})")
+            js = open(sp).read()
+            srcs.append(js)
+            f, n = check_source(js, f"{gname}/{bname} ({beh['source']})")
             fails += f
             rows.append((f"{gname}/{bname}", beh["source"], n, len(members)))
+        if srcs:
+            f, total = check_group(srcs, f"{gname} (page budget)")
+            fails += f
+            totals[gname] = (total, len(srcs))
         for m in members:
             mp = os.path.join(HERE, "snippets", m + ".reference.html")
             if os.path.exists(mp):
                 fails += check_member(open(mp).read(), f"{gname}: {m}")
-    return fails, rows
+    return fails, rows, totals
 
 
-def write_report(fails, rows):
+def write_report(fails, rows, totals):
     L = ["# Behaviour-contract gate (ADR-0015)", "",
-         "Source ≤16KB · no polling/network · single rAF-debounced resize · DEF-003 boundary · members carry no external script src.", ""]
+         "Per source ≤16KB (legibility) · per group ≤32KB (page weight) · no polling/network · "
+         "ONE rAF-debounced resize per GROUP · DEF-003 boundary · members carry no external script src.", ""]
     for name, src, n, nm in rows:
         L.append(f"- **{name}** — `knowledge/{src}` · {n} bytes ({n / 1024:.1f} KB of 16 KB) · {nm} member(s)")
+    L.append("")
+    for gname, (total, k) in sorted(totals.items()):
+        pct = 100 * total / PAGE_BYTES
+        L.append(f"- **{gname} — page budget:** {total} bytes ({total / 1024:.1f} KB of 32 KB, "
+                 f"{pct:.0f}%) across {k} source(s)")
     L.append("")
     if fails:
         L.append("## ✗ FAILURES")
@@ -119,18 +156,31 @@ def selftest():
         fails.append("fetch not caught")
     if not check_source(ok_src + "el.style.transform='scale(2)';", "T")[0]:
         fails.append("style.transform not caught")
-    if not check_source(ok_src + "window.addEventListener('resize',f);", "T")[0]:
-        fails.append("second resize listener not caught")
-    if not check_source("var x=1;", "T")[0]:
-        fails.append("zero resize listeners not caught (fit must respond to resize)")
     big = ok_src + "/*" + "x" * MAX_BYTES + "*/"
     if not any("size gate" in x for x in check_source(big, "T")[0]):
         fails.append("oversize source not caught")
+    # --- group-level bites (added 2026-07-26 with the page-budget re-scope) ---
+    if check_group([ok_src], "T")[0]:
+        fails.append("clean single-source group failed")
+    if check_group([ok_src, "var x=1;"], "T")[0]:
+        fails.append("two-source group wrongly failed — a second source may legitimately carry "
+                     "zero resize listeners; the invariant is ONE per group")
+    if not any("resize" in x for x in check_group([ok_src, ok_src], "T")[0]):
+        fails.append("two resize listeners across a group not caught")
+    if not any("resize" in x for x in check_group(["var x=1;"], "T")[0]):
+        fails.append("zero resize listeners across a group not caught (fit must respond to resize)")
+    # two sources that EACH pass the 16KB per-source cap but together blow the 32KB page budget —
+    # the exact evasion the re-scope exists to close.
+    pad = "var x=1;/*" + "y" * (MAX_BYTES - 20) + "*/"
+    if check_source(pad, "T")[0]:
+        fails.append("page-budget bite is malformed — each pad must pass the per-source cap")
+    if not any("page budget" in x for x in check_group([ok_src, pad, pad], "T")[0]):
+        fails.append("page budget not caught — splitting a source must not buy headroom")
     if not check_member('<script src="https://cdn.example/x.js"></script>', "T"):
         fails.append("external script src not caught")
     if check_member('<script>var a=1;</script>', "T"):
         fails.append("inline script wrongly flagged")
-    live, _ = run()
+    live, _, _ = run()
     if live:
         fails.append("LIVE registry failing: %s" % "; ".join(live))
     return fails
@@ -144,13 +194,15 @@ def main():
             sys.exit(1)
         print("_validate_behaviour selftest OK")
         return
-    fails, rows = run()
-    write_report(fails, rows)
+    fails, rows, totals = run()
+    write_report(fails, rows, totals)
     if fails:
         print("Behaviour-contract gate FAILED:"); [print("  X " + f) for f in fails]
         sys.exit(1)
     for name, src, n, nm in rows:
         print(f"  [PASS] {name} — {n} bytes ({n / 1024:.1f} KB of 16), {nm} member(s)")
+    for gname, (total, k) in sorted(totals.items()):
+        print(f"  [PASS] {gname} page budget — {total} bytes ({total / 1024:.1f} KB of 32) across {k} source(s)")
     print("Behaviour-contract gate OK — see knowledge/_BEHAVIOUR-GATE.md")
 
 
