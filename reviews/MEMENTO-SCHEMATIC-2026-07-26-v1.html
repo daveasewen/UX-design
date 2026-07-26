@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Memento — the shape of it (2026-07-26 v1)</title>
+<style>
+  :root{
+    --ink:#1A1A1A; --paper:#FFFFFF; --line:#D7D7D7; --muted:#626262;
+    --blue:#305A85; --green:#2E6B4F; --amber:#F0B13A; --grey-bg:#F4F4F4;
+  }
+  *{box-sizing:border-box; margin:0}
+  body{font-family:-apple-system,"Helvetica Neue",Arial,sans-serif; color:var(--ink);
+       background:var(--paper); padding:48px 40px; max-width:1180px; margin:0 auto; line-height:1.45}
+  h1{font-size:28px; font-weight:700; letter-spacing:-.01em}
+  .sub{color:var(--muted); font-size:14px; margin:6px 0 40px}
+  h2{font-size:13px; font-weight:700; text-transform:none; letter-spacing:.06em;
+     color:var(--muted); margin:44px 0 14px; border-top:1px solid var(--line); padding-top:14px}
+  /* registers band */
+  .registers{display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px}
+  .reg{border:1px solid var(--line); padding:16px 18px; background:var(--grey-bg)}
+  .reg b{display:block; font-size:15px; margin-bottom:6px}
+  .reg p{font-size:13px; color:var(--muted)}
+  .tag{display:inline-block; font-size:11px; font-weight:700; padding:2px 8px; margin-top:10px;
+       border:1px solid var(--ink); background:var(--paper)}
+  .reg.canon{background:var(--ink); color:var(--paper); border-color:var(--ink)}
+  .reg.canon p{color:#BFBFBF}
+  .reg.canon .tag{background:var(--ink); color:var(--paper); border-color:var(--paper)}
+  .never{font-size:12px; color:var(--muted); margin-top:10px; font-style:italic}
+  /* the loop */
+  .loop{display:flex; align-items:stretch; gap:0; margin-top:8px; flex-wrap:wrap}
+  .stage{flex:1 1 150px; border:2px solid var(--ink); padding:14px; position:relative;
+         min-width:150px; background:var(--paper)}
+  .stage b{display:block; font-size:14px; margin-bottom:6px}
+  .stage p{font-size:12px; color:var(--muted)}
+  .stage .who{font-size:11px; font-weight:700; margin-top:10px; color:var(--blue)}
+  .stage.dave{border-color:var(--green); border-width:3px}
+  .stage.dave .who{color:var(--green)}
+  .arrow{flex:0 0 34px; display:flex; align-items:center; justify-content:center;
+         font-size:22px; color:var(--ink)}
+  .back{margin-top:10px; display:flex; align-items:center; gap:10px; font-size:12px; color:var(--muted)}
+  .back .bar{flex:1; border-bottom:2px dashed var(--muted); position:relative; height:1px}
+  /* machinery */
+  .mach{display:grid; grid-template-columns:repeat(4,1fr); gap:12px}
+  .m{border:1px solid var(--line); padding:12px 14px}
+  .m b{font-size:12.5px; display:block; font-family:ui-monospace,Menlo,monospace}
+  .m p{font-size:12px; color:var(--muted); margin-top:4px}
+  .m .role{font-size:10.5px; font-weight:700; color:var(--blue); letter-spacing:.05em}
+  /* shapes */
+  .shapes{display:flex; gap:0; align-items:stretch}
+  .sh{flex:1; border:1px solid var(--line); padding:14px 16px}
+  .sh b{font-size:14px}
+  .sh p{font-size:12px; color:var(--muted); margin-top:4px}
+  .sh.live{border:2px solid var(--green)}
+  .sh .st{display:inline-block; font-size:10.5px; font-weight:700; padding:1px 7px; margin-left:6px}
+  .st.on{background:var(--green); color:#fff}
+  .st.wait{background:var(--amber); color:var(--ink)}
+  .st.later{background:var(--grey-bg); color:var(--muted); border:1px solid var(--line)}
+  .principle{margin-top:44px; border:2px solid var(--ink); padding:18px 22px; background:var(--grey-bg)}
+  .principle b{font-size:15px}
+  .principle p{font-size:13px; color:var(--muted); margin-top:6px}
+  .foot{margin-top:36px; font-size:11.5px; color:var(--muted); border-top:1px solid var(--line); padding-top:12px}
+  @media (max-width:760px){ .registers,.mach{grid-template-columns:1fr} .shapes{flex-direction:column}
+    .loop{flex-direction:column} .arrow{transform:rotate(90deg); align-self:center} }
+</style>
+</head>
+<body>
+
+<h1>Memento — the shape of it</h1>
+<p class="sub">The project record dreams while Dave sleeps; Dave rules when he wakes; sessions enact what he ruled. 2026-07-26 · v1 ·
+<span style="font-family:ui-monospace,Menlo,monospace">provenance: local_bc312468 · status: inferred (nothing here is ruled by being drawn)</span></p>
+
+<h2>1 · THE THREE REGISTERS — never flatten these</h2>
+<div class="registers">
+  <div class="reg">
+    <b>The May chat</b>
+    <p>Exploratory, outside this project. Two distinct ideas: (a) overnight consolidation of memories · (b) post-training on memories. Idea (a) converged with Anthropic&rsquo;s &ldquo;dreaming&rdquo;; idea (b) stands alone, untouched.</p>
+    <span class="tag">floated</span>
+  </div>
+  <div class="reg">
+    <b>Two hemispheres</b>
+    <p>Dave&rsquo;s long-running hypothesis — diffusion + LLM in tandem, an orchestrator as corpus callosum, after McGilchrist. Intended as an essay, not an implementation.</p>
+    <span class="tag">standing</span>
+  </div>
+  <div class="reg canon">
+    <b>The Apollo harness</b>
+    <p>Built, gated, running. 27 blocking validators in a 55-step build. The substrate everything below runs on.</p>
+    <span class="tag">canon</span>
+  </div>
+</div>
+<p class="never">Flattening these three into one register was v1&rsquo;s core error — the corrected record is
+<span style="font-family:ui-monospace,Menlo,monospace">notes/2026-07-26-convergence-anthropic-dreaming-v2.md</span>.</p>
+
+<h2>2 · THE LOOP — the built thing (proven ×2, 13 proposals, 0 rejected)</h2>
+<div class="loop">
+  <div class="stage"><b>Sessions work</b><p>Normal Apollo sessions. Transcripts accumulate; the repo record (spine, ledgers, notes) carries receipts.</p><span class="who">ANY MODEL</span></div>
+  <div class="arrow">→</div>
+  <div class="stage"><b>Dream pass</b><p>Weekly (Sun 07:10) or &ldquo;run dream pass&rdquo;. Conductor follows the runbook; one cold Opus dreamer hunts drift, repeats, stale claims, dropped loops.</p><span class="who">FABLE conducts · OPUS dreams</span></div>
+  <div class="arrow">→</div>
+  <div class="stage"><b>Proposals float</b><p>One file in <span style="font-family:ui-monospace,Menlo,monospace">notes/_dream/</span>. Every claim carries receipts + prevalence; conductor independently re-checks ≥3 before accepting. Nothing self-promotes.</p><span class="who">status: floated</span></div>
+  <div class="arrow">→</div>
+  <div class="stage dave"><b>Dave rules</b><p>Plain-language read-back; explicit option-select. Accept / defer / reject / hold. Promotion is Dave&rsquo;s alone — the engine never derives-and-promotes.</p><span class="who">DAVE ONLY</span></div>
+  <div class="arrow">→</div>
+  <div class="stage"><b>Sessions enact</b><p>Each ruling lands with its own receipts, ledger row and commit; gates verify (build 55/55, wrap gate, STAND-002).</p><span class="who">CONDUCTOR + WORKERS</span></div>
+</div>
+<div class="back"><span>the record improves</span><div class="bar"></div><span>⟲ which is what the next sessions (and the next dream) read</span></div>
+
+<h2>3 · THE MACHINERY — where each piece lives</h2>
+<div class="mach">
+  <div class="m"><span class="role">LANE RECORD</span><b>_LIVE-STATE.md §🔀</b><p>The lane&rsquo;s cold-start entry point. Outside the GM queue by ruling — dogfoods its own cold-read thesis.</p></div>
+  <div class="m"><span class="role">LEDGER</span><b>notes/_MEMENTO-DECISIONS.md</b><p>Every ruling + WHY. D1–D6 · A-D1–4 · P1–P8 · S-D1–4 · V2-P1–P5. Rulings never re-float.</p></div>
+  <div class="m"><span class="role">DREAMER SPEC</span><b>.claude/agents/dreamer.md</b><p>Single source for the dreamer (all shapes). Governance · inputs · hunt list · output format.</p></div>
+  <div class="m"><span class="role">CONDUCTOR SPEC</span><b>knowledge/_RUNBOOK-dream-pass.md</b><p>Single source for the conductor. Skill + weekly task are thin pointers to it (S-D4).</p></div>
+  <div class="m"><span class="role">OUTPUT</span><b>notes/_dream/*-proposals.md</b><p>Floated proposals + checked-clear lists (settled ground the next pass must not re-open). Versioned -vN, never overwritten.</p></div>
+  <div class="m"><span class="role">GATE</span><b>knowledge/_capture_gate.py</b><p>Provenance fields (<span style="font-family:ui-monospace,Menlo,monospace">observed·inferred·ruled·floated·standing</span>) blocking in every build; <span style="font-family:ui-monospace,Menlo,monospace">--wrap --lane</span> at lane close.</p></div>
+  <div class="m"><span class="role">COMMIT</span><b>knowledge/_git_commit.sh</b><p>The commit dance mechanised (a dream-pass ruling itself — P2 of pass 1). Refuses locks + unreconciled trees.</p></div>
+  <div class="m"><span class="role">TRIGGER</span><b>&ldquo;run dream pass&rdquo;</b><p>Cowork skill <span style="font-family:ui-monospace,Menlo,monospace">dream-pass</span> + weekly task <span style="font-family:ui-monospace,Menlo,monospace">memento-dream-pass</span> (Sun 07:10). Both read-not-restate.</p></div>
+</div>
+
+<h2>4 · THE SHAPES — one spec, three runtimes (D4′ sequence)</h2>
+<div class="shapes">
+  <div class="sh live"><b>Shape A — Cowork</b><span class="st on">LIVE</span><p>Transcripts via session tools (turn-level ceiling — receipts verified in-repo instead). Proved the loop cheapest. Two passes run + ruled.</p></div>
+  <div class="sh"><b>Shape C — Copilot / VS Code</b><span class="st wait">AWAITS D6</span><p>Tests the harness-spinoff portability thesis. Blocked only on Dave&rsquo;s one-time access check (repo private · Copilot tier · cloud agents).</p></div>
+  <div class="sh"><b>Shape B — Claude Code</b><span class="st later">LATER</span><p>Full-fidelity JSONL transcripts. Waits on Dave&rsquo;s CC migration; flips forward freely if he moves sooner.</p></div>
+</div>
+
+<div class="principle">
+  <b>The one principle under all of it</b>
+  <p>The real risk was never forgetting — it&rsquo;s <b style="color:var(--ink)">confident false inscription</b> (the tattoo that&rsquo;s wrong).
+  So: every claim carries its register and its receipts · generated artifacts someone reads beat rules nobody re-reads ·
+  retrieval beats recall · and nothing — nothing — promotes itself. Two passes in, every finding has been a propagation
+  gap, not a knowledge gap: the record knew; it just didn&rsquo;t bite. The lane exists to make it bite.</p>
+</div>
+
+<p class="foot">Sources: _LIVE-STATE §🔀 · notes/_MEMENTO-DECISIONS.md · dreamer.md · _RUNBOOK-dream-pass.md · the two 2026-07-26 proposals files · convergence -v2. Schematic is a convenience view — the spine wins where they differ.</p>
+
+</body>
+</html>
