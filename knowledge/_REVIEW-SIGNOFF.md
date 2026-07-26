@@ -29,7 +29,14 @@ that single pass.** Running list of what it must cover:
   (14–19:1) + #333333 glyph (12.6:1, driftAllow'd), themed accent stays on the scrub. **Applies in ALL themes —
   Legacy's play button is white now too (its scrub stays red) — confirm at eyeball.** Also review the scrub
   played-bar contrast against its track (pre-existing, all themes). Worker-B receipt 2026-07-21 has probe values.
-- **Legend isolate/toggle v5.x (added 2026-07-26, dream-pass v2 P4):** `reviews/LEGEND-ISOLATE-TOGGLE-PROTOTYPE-2026-07-24-v5.1/.2/.3.html` — v5.1 bar-key rise + hit-areas · v5.2 sweep easing · v5.3 two-step fade; model inscribes to `_DATAVIZ-DECISIONS`/ADR on sign-off; Dave has more changes coming on v5.3 first.
+- **✅ Legend isolate/toggle v5.x — SIGNED OFF (Dave 2026-07-26, "good done, love this" on v5.5) — LOCKED.**
+  `reviews/LEGEND-ISOLATE-TOGGLE-PROTOTYPE-2026-07-24-v5.5.html` = the reference implementation; v5.1–v5.4
+  retained as the decision arc. **INSCRIBED same session: DV-D11** (legend model: dual gesture · two fade
+  levels full/ghost-12% · additive isolate · hover live in both modes + 24% peek) · **DV-D12** (trapezoidal
+  sweep easing keyed to segment spans) · **DV-D13** (typed tooltip + centre figure follows selection) in
+  `_DATAVIZ-DECISIONS.md`; seed fed (81 nodes / 138 edges); build 55/55 GREEN. Enactment = the
+  donut+bar+combo wave bakes DV-D11/12/13 into `dv-behaviour.js`. Residual asks riding the wave: the
+  aria-both-forms asymmetry (DV-D13 ⚠) + the seed-uncheck edge (DV-D11 open edge).
 - **Radius/corner tuner v1+v2 (added 2026-07-26, P4):** `reviews/RADIUS-CORNER-TUNER-2026-07-24-v1/-v2.html` — the ★★ "return SOON" item; owed = tweaks + numbers, then per-theme ruling.
 - **Data-marks-exempt hit-area rule + a11y gate rebuild (added 2026-07-26, P4):** `notes/_briefs/2026-07-25-hit-area-rule-and-gate-proposal.md` — sign-off inscribes the rule + green-lights the markup-driven gate rebuild (44 blocking for controls, marks exempt).
 - **Five chart showroom panes (added 2026-07-26, P4):** `showroom/chart-{bar,line,donut,combo,sparkline}.html` — the DataViz sign-off = Dave eyeballs the 5 panes → canon flips provisional-agent→canon (open-014). Same object as the "DataViz sign-off" line above — pane paths pinned here so the eyeball has its list.

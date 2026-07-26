@@ -13,6 +13,16 @@ only move.*
 
 ---
 
+## Batch 6 — rolled 2026-07-26 evening (the 07-25 Sat-evening v5.1 banner)
+
+> ## ★ PRIOR — 2026-07-25 (Sat evening, OPUS solo — legend v5.1 built + render-verified + hit-area canon patch + Dave's swatch/centring rulings; 🔴 RED ~70% wrap on Dave's recalibrated bands): **v5.1 lands the bar-key RISE (letters ride pinned ~4px above the rising bar top — render-verified at real HSBC font + frozen mid-animation @400/700ms, and numerically exact) and the foundational hit-area audit. The toolbar 44 gap is fixed in CANON (4 snippets → canon.css + showroom, build 53/53 GREEN). Dave ruled the swatch is component-invariant (44 everywhere, reversing my 24 floor) + asked for centred bottom-controls + donut on the responsive stack. Legend stays a REVIEW CANDIDATE; a rule+gate PROPOSAL (data-marks exempt) awaits sign-off.**
+> - **★ v5.1** `reviews/…-v5.1.html` (+`.REVIEW`): `dvKeyRise` + 12 inline `--kh` · toolbar/demo-chrome/legend all ≥44 · swatch 44 (bar rows spaced `gap:28px`) · responsive centring `@≤640px`. v5 untouched (versioned).
+> - **★ CANON:** `.dv-vt`/`.dv-tbl-toggle` → 44 `::before`, propagated to `Chart-{bar,combo,donut,line}` — **4, not the brief's 5** (sparkline = native `<details>` summary, flagged; scatter none) → build GREEN.
+> - **⬛ PENDING SIGN-OFF:** data-marks exempt (rec) + the gate rebuild — `notes/_briefs/2026-07-25-hit-area-rule-and-gate-proposal.md`. `_validate_a11y.py` blind spots found (allowlist · literal-px · advisory-44). Legend model inscribes on sign-off.
+> - **★ Dave recalibrated the gauge bands: Green <45 · Amber 45–60 · Red ≥60** (runbooks + memory updated). **Render beat sandbox instance-flapping** by staging the browser on the shared mount (recipe now IN `_RUNBOOK-render-verify.md` — folded 2026-07-26, dream-pass P3).
+> - **Context gauge at authoring: 🔴 RED ~70% (in-head tally, ESTIMATE ±15% — Half-2 broken). ⇒ NEXT READER RE-VERIFY** (re-run `_build_all.py`, check each "landed" claim). Full capture ritual run this turn. Push: this session's files + the prior unpushed stack — GitHub Desktop, whole stack.
+>
+
 ## Batch 1 — archived 2026-07-25 (banners 2026-07-22 → 07-24: the chart-wave + ADR-0013/0014 arc)
 
 *Covers: O1 dark-in-light · chart fan-out absorb · seg/controls system · chart-line exemplar ·

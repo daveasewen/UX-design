@@ -118,6 +118,71 @@ Source of these rulings: the exported review comment-pins on the REVIEW copy (ba
   strip the `.dv-endkey`; Chart-line keeps its end-key pending Dave's a11y check.
   Edges: refines(dv-011, scope=combo-series-id-non-colour-channels) · relates(ADR-0014, scope=O1-inverse-surface-boundary) · bounds(dv-006, scope=both-axes-is-tooltip-not-permanent-label)
 
+- **DV-D11 · The LEGEND MODEL — dual gesture, two fade levels, additive isolate (2026-07-26).**
+  Signed off by Dave on `reviews/LEGEND-ISOLATE-TOGGLE-PROTOTYPE-2026-07-24-v5.5.html` (*"good
+  done, love this"*; fading interaction ruled done same session on v5.4: *"we're done with these
+  as far as fading interaction goes"*). The model, in full:
+  - **Two gestures per row:** SWATCH = checkbox (`role="checkbox"`, Space/Enter) · LABEL = isolate
+    (exclusive toggle-button, `aria-pressed`, NOT a radiogroup — resting state is "all shown").
+    Structure: swatch sits OUTSIDE the isolate button (a button can't nest an interactive checkbox).
+  - **Two render levels — full / ghost(12%). Nothing ever fully disappears.** Unchecking a swatch
+    ghosts that series to 12% (opacity, `pointer-events:none`; layout preserved). ⚠ ARC, both
+    beats: v5.3 built a THREE-level ladder (full / ghost / gone-at-0%) with the checkbox fully
+    removing — Dave reversed to two levels the next session ("retune — checkbox also ghosts").
+    An unchecked series and an isolate-ghosted series are visually identical mid-chart; the
+    legend row state (hollow swatch vs blank-in-isolate) disambiguates. Ruled, not residue.
+  - **Isolate = ADDITIVE FOCUS MODE** (Dave's spec verbatim: *"On isolate mode the checkboxes
+    should be blank, with a border, and the check should add segments in this mode"*). Entering
+    isolate seeds a focus set {series}; the other checkboxes render BLANK (hollow + border);
+    checking one ADDS that series at full. The outside-isolate checkbox mix is untouched during
+    isolate, so release (click the active label again, or Reset) restores it exactly.
+  - **Hover fires in BOTH modes** ("let's try 1"): hovering an active row fades the other ACTIVE
+    series to 24% (ghosts stay 12%); hovering a GHOSTED row PEEKS it at 24% — an add-preview.
+    Fade ladder: full ▸ 24% hover/peek ▸ 12% ghost. Hover ladder values: hover/peek `.is-faded`/
+    `.is-peek` 24% (raised from 18%, Dave 2026-07-25) · ghost `.is-ghost` 12%.
+  - **Chrome:** off/hidden row = RESTING (row keeps line border + ink text; only the swatch goes
+    hollow + grey-primitive border) · Reset canon-disabled by default (the B-D4 pattern), enables
+    on any ghost or isolate · square swatches · no strike-through, no "only" text · sr-only
+    live region announces every state change · every control carries the 44 target via the
+    invisible `::before` (swatch grows LEFT into the gutter, component-invariant per Dave's
+    2026-07-25 swatch ruling).
+  - Open edge (flagged at build, unruled): unchecking the SEED series while others sit in the
+    focus set leaves the isolate ring on a blank row — kept simple; rule if it grates.
+  Enactment: the donut+bar+combo wave bakes this into `dv-behaviour.js` (three-state paint +
+  focus-set isolate), replacing the current hide-at-0% legend logic. Prototype = the reference
+  implementation (v5.5); v5/v5.1–v5.4 retained on disk as the decision arc.
+  Edges: refines(DV-D10, scope=legend-lockup-interaction-layer) · relates(B-D4, scope=reset-disabled-pattern)
+
+- **DV-D12 · Donut sweep easing = trapezoidal velocity keyed to SEGMENT SPANS (2026-07-26).**
+  Signed off within the same v5.x arc (built v5.2, 2026-07-25, restoring a finesse the v3→v5.1
+  rebuild silently flattened to linear). Spec: the radial-sweep intro eases IN across exactly the
+  FIRST segment's arc, runs LINEAR (constant angular speed) through the middle, eases OUT across
+  exactly the LAST segment's arc. Cruise speed `V=(S+w1+wN)/dur`; accel `ta=2·w1/V`, decel
+  `td=2·wN/V`; rest→rest, monotonic, flat cruise (verified numerically at build). Degenerate case
+  (no interior): single ease-in-out. NOT a global bezier — the profile is data-keyed, so a long
+  first segment gives a long ramp by design (segment A = 147° → ~441ms of 850ms; Dave saw it and
+  signed off without a tune). Enactment: the wave carries `sweepDonut`'s profile into
+  `dv-behaviour.js`, replacing the linear sweep.
+  Edges: refines(DV-D01, scope=donut-intro-motion-spec)
+
+- **DV-D13 · The Value⇄Percent seg drives EVERY numeric surface; the centre figure follows the
+  SELECTION (2026-07-26).** Dave: the seg changing only the centre figure read as confusing —
+  *"the tooltip should only have the number-type that you select"* + *"the figure in the middle
+  should change dependent on what's selected."* Ruled model:
+  - **Tooltip is TYPED:** it carries ONLY the seg-selected number-type — Value → `A · Housing:
+    £950` · Percent → `A · Housing: 41%` — never both. Mechanism: marks carry
+    `data-tip-value`/`data-tip-percent`; the seg rewrites `data-tip` (dv-behaviour reads it live
+    at hover-time, no re-wire).
+  - **Centre figure follows the LEGEND SELECTION:** value + percent recompute over the ACTIVE
+    series (the isolate focus set, or the checkbox mix) — isolate Housing → 950 / 41%; percent =
+    the active sum's share of the GRAND total.
+  - **⚠ Deliberate a11y asymmetry (agent call, Dave-visible, unreversed):** `aria-label`s keep
+    BOTH forms — a screen-reader user shouldn't lose data to a toggle they may not perceive.
+    Confirm or retune at the wave's a11y pass.
+  Enactment: wave bakes typed tips + selection-following centre into `dv-behaviour.js` +
+  `Chart-donut.reference.html` (and any chart carrying the value⇄percent seg).
+  Edges: refines(DV-D11, scope=seg-numeric-coherence) · bounds(dv-006, scope=tooltip-carries-selected-type-only)
+
 ---
 
 ## Batch 1 — review 2026-07-16 (5 pins)
