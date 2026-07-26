@@ -257,3 +257,25 @@ theming, set `--sc` per rect via `style` at generation time instead of a blanket
 **Gate follow-up:** the DataViz gate should resolve each `.dv-series` fill AFTER CSS (or forbid a blanket
 `fill` on `.dv-series` that shadows the per-element attribute) so the next colour-collapse can't ship green.
 Touches canon → Dave's call; the bar lane of the wave already opens this snippet.
+
+## ds-011 — Three advisory a11y promotions carry trigger conditions that have never fired; the debt was invisible outside the generated report (2026-07-26, dream-pass v2 P3)
+**OPEN — Dave ruled "log them" 2026-07-26 (dream-pass v2). Tracking entry only — the fixes are design
+work at the named trigger events, not this entry.** `_ADVISORY-SIGNALS.md` has held **20 signals across
+11 commits** (2026-07-22→25); three of them were wired 2026-07-03 with explicit written promotion
+conditions (`_validate_advisory.py`, advisory-first per ADR-0005 §5), all still unmet:
+
+- **G role-suffix (avd-006)** — condition: *"fix at the Cards revisit, then promote."* Still 2 signals
+  (Cards + canon-gallery). **Trigger: the Cards revisit.**
+- **H skip-link (acd-003, WCAG 2.4.1 — Level A)** — condition: *"all 5 composed screens signal at
+  wiring — real gap, fix at the composition touch."* Still **5 of 5** — `_fitness-test/` screens
+  untouched since the Apollo rename, so the trigger has never fired. Level A on every composed screen,
+  against the ADR-0004 floor. **Trigger: any composition touch.**
+- **N inputmode/autocomplete (acd-025, SC 1.3.5)** — condition: *"evidence banked for the Input-fields
+  supercharge."* Still 8 signals (4 Input-fields + 4 gallery mirrors). **Trigger: the Input-fields
+  supercharge.**
+
+**Why it went invisible:** a condition whose trigger never fires is indistinguishable from a closed item
+— the report is generated, green-adjacent, and nothing live pointed at it ([[assertion-propagation-gap]];
+same family as [[gate-blindspot-state-contrast]]). This entry is the pointer. **When a trigger event is
+scheduled (Cards revisit · composition touch · Input-fields supercharge), its brief carries the line
+"clears advisory G/H/N" and the promotion happens per the wired condition.**

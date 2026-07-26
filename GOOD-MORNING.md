@@ -348,6 +348,16 @@ Chart-bar/line/donut/sparkline — your review flips them provisional-agent→ca
 16. **(D-Q5)** TWO delta conventions now live (charts `data/delta/gain·loss` vs Stat-card's R-D5
     rag arrows) — one canon convention, or a deliberate chart/card split?
 
+**17–22 — RESTORED from the rolled 07-24 chart-wave banner (dream-pass v2 P1, ruled 2026-07-26):
+the banner's compaction to `_GM-ARCHIVE.md:32` carried these out of live state; copied back
+verbatim-in-substance. Same ruling mechanics as 8–16.**
+17. **Q2 combo home** — new snippet vs Chart-bar variant.
+18. **Sweep hook / 16KB cap fork** — amend cap vs modularise (sweep baked-static for now).
+19. **COMBO-LINE-INVERT R-B/R-C** — R-A casing DAVE-SEEN-PROVISIONAL.
+20. **Chart-scatter Layer-2** — deferred, stays Layer-1 safe.
+21. **Brush/range-select spec** — menu 8, designed not built.
+22. **JS-off seg wart** — shared w/ Chart-line, atom-level fix.
+
 ## 2b. WAVE-1 RULINGS 1–7 (unchanged, rule with the above)
 1. **Form-label weight** — the `.t-cm-label` composite renders 400; gated Input-fields labels are
    16/500. Rule 400 (Input-fields migrates later) or mint a 500 form-label composite (one type.css
@@ -381,8 +391,7 @@ as the dataviz sign-off (§C·2).
 
 ## 4. Enact-queue (cheap, post-rulings)
 F1 Legacy icon/default white · F2 Legacy `rag/error-tint` · tag-atom radius reconcile · F5 Dropdown's
-6 locals · designer-pack v2.1 re-bake · **advisory-signals emitter stable sort** (ordering wobble
-rode `db36e72`) · **DV-D09 enact** (h-bar → series-3; bar lane) · **pro-forma dedup pass (ruling 3 — now also carries wave-1's
+6 locals · designer-pack v2.1 re-bake · **DV-D09 enact** (h-bar → series-3; bar lane) · **pro-forma dedup pass (ruling 3 — now also carries wave-1's
 fl-summary≈Alert + B's observation that Tranche-1/2 hold earlier empty-state/toast sketches)** ·
 composite motion tokens (would retire the matchValues pin) · enact whatever §C·2/§C·3 rulings change ·
 consider `--verify` blocking.

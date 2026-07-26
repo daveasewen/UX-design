@@ -36,6 +36,10 @@ wrong handoff we most want to avoid. Red cue line, ready to use:
    Confident false inscription of something as small as a date still poisons the record.
    If a ruling killed something, tombstone the artifact **and** log the propagation gap in the
    same pass (supersession discipline, non-negotiable per `AGENTS.md`).
+   **Feed the sign-off register (dream-pass v2 P4, ruled 2026-07-26):** if the session leaves a
+   review artefact awaiting Dave (a `reviews/*.html`, a proposal brief, a showroom pane), its PATH
+   goes into `knowledge/_REVIEW-SIGNOFF.md`'s running list in the same pass — not only into the
+   banner. Banners compact (2c/2d); the register is the durable queue.
 1b. **Author the session NARRATIVE DOSSIER — the why and how, not just the what.** *(Added 2026-07-19,
    Dave: "a narrative dossier would be good for many chats, I like recording the why and how not just
    saving the what — maybe this should be part of the closing ritual." Model example:
@@ -95,6 +99,12 @@ wrong handoff we most want to avoid. Red cue line, ready to use:
    proper home — `_DECISION-HISTORY/` (the WHY/HOW), `notes/_receipts|_briefs/`, the decision ledgers, or
    git. The archive is a **convenience copy, never a tattoo**: it must hold no rule, threshold or rationale
    that isn't already inscribed elsewhere. Only then is it safe to trim.
+   ⚠️ **EXIT CHECK (dream-pass v2 P1, ruled 2026-07-26):** before a banner rolls, scan it for
+   **⚠ / ⬛ / "AWAITING" / "OPEN CALL" / "DEFERRED TO DAVE"** lines. Each such item must already
+   appear in a **standing** section (GM §C·2/§C·3/§C·4, a register, or `_FUTURE-STATE.md`) — if it
+   doesn't, copy it up FIRST, then roll. The 07-24 chart banner rolled 6 of 7 numbered deferrals out
+   of live state; only the one with a standing home survived. Dated homes (briefs, receipts,
+   `_DECISION-HISTORY/`) do NOT count — a cold session reads none of them.
 
    **2d. Compact the `_LIVE-STATE` delta stack — keep ⏱ LATEST + 2 PRIOR, roll the rest to
    `_LIVE-STATE-ARCHIVE.md`.** *(Added 2026-07-26 — dream-pass P1, Dave ruled accept-enact-now. First
@@ -104,6 +114,8 @@ wrong handoff we most want to avoid. Red cue line, ready to use:
    rewrite** — and trim the *Last refreshed* `Previous:` chain at the same boundary (tail appends to
    the archive's chain section). Same precondition as 2c: rolled deltas are convenience copies — the
    durable WHY/rules must already live in `_DECISION-HISTORY/`, ledgers, notes or git before rolling.
+   **Same EXIT CHECK as 2c** (dream-pass v2 P1): Dave-owed ⚠/⬛/AWAITING/OPEN-CALL items inside a
+   rolling delta must live in a standing section before the delta moves.
    After editing `_LIVE-STATE.md`, run `python3 knowledge/_validate_standing_instructions.py` (STAND-002).
 
    ⚠️ **§A is the section most at risk, because it is the only one that doesn't change each session.**

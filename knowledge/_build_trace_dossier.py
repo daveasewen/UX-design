@@ -375,7 +375,7 @@ def build_reading_layer():
             except Exception:
                 pass
     wcag = {sc: {"name": WCAG_NAMES.get(sc, sc), "desc": WCAG_DESC.get(sc, "")}
-            for sc in set(WCAG_NAMES) | set(WCAG_DESC)}
+            for sc in sorted(set(WCAG_NAMES) | set(WCAG_DESC))}  # sorted: deterministic (dream-pass v2 P2, 2026-07-26)
     comp_meta = {}
     for name, c in XREF_COMPS.items():
         slug = "cn-" + re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")

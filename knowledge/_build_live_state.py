@@ -295,7 +295,7 @@ def main():
     dead_files = [os.path.basename(f) for d in dead_entries for f in d["files"] if f.endswith((".html", ".md"))]
     if dead_files:
         scan_dirs = [HERE, os.path.join(HERE, "_fitness-test")]
-        for base in set(dead_files):
+        for base in sorted(set(dead_files)):  # sorted: deterministic report order (dream-pass v2 P2, 2026-07-26)
             hits = []
             for sd in scan_dirs:
                 if not os.path.isdir(sd):
@@ -350,7 +350,7 @@ def main():
             if re.search(aid + r"[^\n]{0,40}(superseded|retired)\b", head, re.I):
                 state = "superseded"
             adr_state[aid] = state
-    for adr in set(ADR_RE.findall(live_body)):
+    for adr in sorted(set(ADR_RE.findall(live_body))):  # sorted: deterministic (P2)
         aid = "ADR-" + adr
         st = adr_state.get(aid)
         if st in ("deferred", "superseded"):

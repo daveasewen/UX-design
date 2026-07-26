@@ -210,7 +210,7 @@ def validate(path):
     vis = re.sub(r'<style.*?</style>', ' ', vis, flags=re.S | re.I)
     vis = re.sub(r'<!--.*?-->', ' ', vis, flags=re.S)
     vis = re.sub(r'<[^>]+>', ' ', vis)
-    for run in set(re.findall(r'\b[A-Z]{2,}(?: [A-Z]{2,})+\b', vis)):
+    for run in sorted(set(re.findall(r'\b[A-Z]{2,}(?: [A-Z]{2,})+\b', vis))):  # sorted: deterministic (dream-pass v2 P2, 2026-07-26)
         if all(w in ACRONYMS for w in run.split()):
             continue  # acronym-only runs are the brand exemption (type26-019)
         errors.append(f"{name}: ALL-CAPS text run \"{run}\" — banned outside acronyms (type26-019, promoted 2026-07-02)")

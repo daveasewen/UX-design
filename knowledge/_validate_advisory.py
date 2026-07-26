@@ -138,7 +138,7 @@ def check(path):
     # A — all-caps labels (house rule)
     for m in CAPS_CSS.finditer(html):
         signals.append(("all-caps", "text-transform:uppercase in CSS — house rule: no all-caps labels"))
-    for m in set(CAPS_TEXT.findall(text)):
+    for m in sorted(set(CAPS_TEXT.findall(text))):  # sorted: deterministic report order (dream-pass v2 P2, 2026-07-26)
         signals.append(("all-caps", f'ALL-CAPS text run "{m}" — house rule: no all-caps labels'))
 
     # B — placeholder-as-label (recorded anti-pattern: placeholder as the ONLY accessible
@@ -154,9 +154,9 @@ def check(path):
                 signals.append(("placeholder-as-label", f"input with placeholder and no accessible name: {tag[:60]}…"))
 
     # C — unmasked number runs (safety pattern)
-    for m in set(DIGIT_RUN.findall(text)):
+    for m in sorted(set(DIGIT_RUN.findall(text))):  # sorted: deterministic (P2)
         signals.append(("unmasked-digits", f'digit run "{m}" — account refs last-4 only, sort codes fully masked'))
-    for m in set(SORT_CODE.findall(text)):
+    for m in sorted(set(SORT_CODE.findall(text))):  # sorted: deterministic (P2)
         signals.append(("unmasked-digits", f'sort-code shape "{m}" — sort codes are fully masked'))
 
     # D — all-caps names (nam-002, advisory 2026-07-03)

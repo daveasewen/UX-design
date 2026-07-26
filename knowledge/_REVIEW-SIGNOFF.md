@@ -29,6 +29,10 @@ that single pass.** Running list of what it must cover:
   (14–19:1) + #333333 glyph (12.6:1, driftAllow'd), themed accent stays on the scrub. **Applies in ALL themes —
   Legacy's play button is white now too (its scrub stays red) — confirm at eyeball.** Also review the scrub
   played-bar contrast against its track (pre-existing, all themes). Worker-B receipt 2026-07-21 has probe values.
+- **Legend isolate/toggle v5.x (added 2026-07-26, dream-pass v2 P4):** `reviews/LEGEND-ISOLATE-TOGGLE-PROTOTYPE-2026-07-24-v5.1/.2/.3.html` — v5.1 bar-key rise + hit-areas · v5.2 sweep easing · v5.3 two-step fade; model inscribes to `_DATAVIZ-DECISIONS`/ADR on sign-off; Dave has more changes coming on v5.3 first.
+- **Radius/corner tuner v1+v2 (added 2026-07-26, P4):** `reviews/RADIUS-CORNER-TUNER-2026-07-24-v1/-v2.html` — the ★★ "return SOON" item; owed = tweaks + numbers, then per-theme ruling.
+- **Data-marks-exempt hit-area rule + a11y gate rebuild (added 2026-07-26, P4):** `notes/_briefs/2026-07-25-hit-area-rule-and-gate-proposal.md` — sign-off inscribes the rule + green-lights the markup-driven gate rebuild (44 blocking for controls, marks exempt).
+- **Five chart showroom panes (added 2026-07-26, P4):** `showroom/chart-{bar,line,donut,combo,sparkline}.html` — the DataViz sign-off = Dave eyeballs the 5 panes → canon flips provisional-agent→canon (open-014). Same object as the "DataViz sign-off" line above — pane paths pinned here so the eyeball has its list.
 
 Method + template controls (live variant/state spread from meta · light/dark toggle · responsive slider · comment
 overlay) per the **Method** section. Pointer in `_LIVE-STATE.md` PLANNED/TARGET; memory `full-review-pending`.
