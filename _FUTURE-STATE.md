@@ -49,6 +49,16 @@ searches — a force-multiplier, not a replacement for the session model. **Feed
 harness-framework spin-off · the multi-thread GOOD-MORNING entry above. **Source:** in-chat 2026-07-24 (the
 tuner-v2 / fan-out-handoff session). **Status:** idea — reopened, NOT ruled; Dave is talking it through,
 decision + inscription to follow.
+**UPDATE 2026-07-25 — a THIRD mechanism surveyed (notes-only, NOT ruled):** Claude Code now ships **dynamic
+workflows** (Claude writes a JS orchestration script — `agent()`/`parallel()`/`pipeline()`, schema-validated
+node outputs, per-node model routing, saved to `.claude/workflows/` as re-runnable `/commands`) + **agent
+teams** (experimental: lead + teammates, shared task list, plan-approval + `TaskCompleted` exit-2 hooks) +
+**subagent persistent `memory:`** (per-agent MEMORY.md that survives compaction — a productised slice of
+Memento). Verified against the official docs; full mapping-to-our-practice table + the harness-spin-off
+reframe (layer ON TOP of upstream, not competitor) in
+`notes/2026-07-25-claude-code-orchestration-survey.md`. Sharp constraints: Claude Code/Desktop-side (Cowork
+parity gap stands) · workflows take NO mid-run rulings (Dave's eye is load-bearing) · teams don't worktree-
+isolate. Candidate trial: ONE bounded audit as a workflow vs the same job as a conductor divvy.
 
 ## ★ Mobile variants — a component-wide dimension to build out (Dave, 2026-07-24)
 **What:** components will carry MOBILE variants, not just responsive reflow. Dave flagged this while ruling
