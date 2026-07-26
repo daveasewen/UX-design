@@ -48,7 +48,14 @@
 > **★★ Radius/corner tuner (§C·1d) — v1+v2 BUILT + render-verified** (`reviews/RADIUS-CORNER-TUNER-2026-07-24-v*.html`);
 > **owed = the TWEAKS + ruling the numbers with Dave** ("return soon, don't let me forget"). Do NOT rebuild from scratch.
 >
-> *Standing: every handoff carries both names (top) + a DIVVY PLAN. Model: Opus conducts, Sonnet/Fable workers.
+> **MODEL + EFFORT per lane (Dave ruled 2026-07-26, budget-checked: Fable weekly 27%, all-models 28%):**
+> conductor = **Opus 5, effort MAX** (Dave's knob, set at window-open — the serial `dv-behaviour.js` merge is
+> where the risk concentrates) · lanes ①②③ = **Sonnet, default effort** (mechanical enactment of inscribed
+> specs) · **Fable held in reserve** for the open-judgment sessions (hit-area gate ruling · the §C·2 ruling
+> batch). Per `MODEL-ROUTING.md` Fable-era notes: effort IS per-session-selectable in Cowork (2026-07-24
+> correction); Agent-tool spawns still can't set it per-spawn.
+>
+> *Standing: every handoff carries both names (top) + a DIVVY PLAN — naming model AND effort per lane.
 > Render-verify UNBLOCKED (shared-mount recipe: `_RUNBOOK-render-verify.md`; 2 fresh potholes in the 2026-07-26
 > dossier §5 — FONTCONFIG_FILE replaces not merges · dv-tip rides pointermove/focusin).*
 
