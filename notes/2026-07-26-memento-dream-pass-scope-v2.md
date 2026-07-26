@@ -9,6 +9,13 @@ scope + D1–D3) stand unchanged — referenced, not duplicated.
 "one day I'll move to code probably"; **"I want a version for VS Studio with GitHub Copilot."**
 **Context gauge at authoring:** 🟡 Amber ~55% (in-head estimate, ±15%).
 
+provenance: local_57114829-1386-4f6a-ad3f-378af5bdfb9f · 2026-07-26
+status: floated
+
+*(Fields added 2026-07-26, later session — provenance cutover. D4′ RULED that session:
+§4.1 → A → C → B; D5/D6 pencilled per this note's recommendations → `notes/_MEMENTO-DECISIONS.md`.
+Body untouched.)*
+
 **Why Shape C matters beyond the dream pass:** it is the first concrete test of the
 harness-spinoff thesis (memory `harness-framework-spinoff`, Dave's 07-25 steer: runtime-agnostic
 core + adapters, **Copilot/VS Code likely first adapter**). The memory store is repo markdown +

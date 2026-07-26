@@ -1,8 +1,9 @@
 # Runbook — end-of-session capture ritual
 
 *The insurance policy decided in `notes/_SEAWORTHINESS-PLAN_2026-07-05.md` ("The capture ritual / gate").
-Stood up 2026-07-05 as a fixed, repeatable sequence — the enforcing script (`_capture_gate.py`) is
-deferred to the PM-KG MVP build, but the ritual itself is free and starts now. Anchor: ADR-0007
+Stood up 2026-07-05 as a fixed, repeatable sequence — the enforcing script (`_capture_gate.py`)
+was BUILT 2026-07-26 under the Memento dream-pass lane (§ "The gate" below; rulings
+`notes/_MEMENTO-DECISIONS.md`). Anchor: ADR-0007
 (temporal decision-graph); principle: don't archive every transcript (rebuilds the haystack) — invest
 in a *reliable* end-of-session distillation instead, because that's where the actual risk sits.*
 
@@ -49,6 +50,19 @@ wrong handoff we most want to avoid. Red cue line, ready to use:
    whole, dated from `date`, never silently edited after; both-way links** to its spine entry and ledger.
    **Trigger:** substantive/reasoning-heavy sessions. **Skip** for trivial or purely mechanical ones — the
    test is "would a cold reader need to know *why* we did this, not just *what* we landed on?" If yes, write it.
+   **Provenance fields (added 2026-07-26, Memento §4.1 — D1a/D2, `notes/_MEMENTO-DECISIONS.md`):** every
+   new dossier — and every new dated note in `notes/` — carries two plain lines in its header block at
+   write time, mechanical, never authored as prose:
+
+   ```
+   provenance: <session-id> · <YYYY-MM-DD>     # id from the session's own path; date from `date`, never belief
+   status: observed | inferred | ruled | floated | standing
+   ```
+
+   `ruled` is reserved — writable only with a pointer to its ledger/ADR entry after the value
+   (promotion is Dave's alone). `standing` = long-lived Dave-owned hypothesis, neither floated-and-
+   forgotten nor ruled. **Enforced by `_capture_gate.py` in every build** (blocking, files dated
+   ≥ 2026-07-26 — no corpus retrofit).
 2. **Write/refresh `GOOD-MORNING.md`.** The cold-start entry point for the *next* session — write it
    for a reader with zero memory of this one. **Required structure, in order:**
    - **The two names first** (see step 4b) — rename + next title, at the very top.
@@ -59,7 +73,9 @@ wrong handoff we most want to avoid. Red cue line, ready to use:
      every session — but NEVER drop it, and never shorten it to a label.**
    - **§B this session** — what landed, what was found, what I got wrong. **Every "landed/done"
      claim names its evidence** — gate run, commit hash, render, file path (routing audit #7,
-     ratified 2026-07-23; same discipline for worker receipts). The header records the session's
+     ratified 2026-07-23; same discipline for worker receipts). Write evidence lines
+     `provenance:`-shaped (`<source> · <date>`) so they can later be machine-read
+     (2026-07-26, Memento §4.1 — spirit unchanged, format converges). The header records the session's
      **model, and effort if it was actually set** (#8 — effort is only settable via agent
      definitions today; record it when known, omit otherwise).
    - **§C queue** — numbered, actionable, plus commit/push state. **Stamp the author's context-gauge
@@ -89,6 +105,15 @@ wrong handoff we most want to avoid. Red cue line, ready to use:
 3. **Update memory — AND mirror anything durable into the repo.** Any `feedback` / `project` / `user` /
    `reference` memory that's new or changed this session, plus the one-line pointer in `MEMORY.md`.
    Check for stale memories the session disproved and correct or remove them.
+   **Provenance fields on memory files (2026-07-26, Memento §4.1 — D1a):** every new/changed memory
+   file gets two keys under its existing frontmatter `metadata:` — `provenance: <session-id> · <date>`
+   and `status:` (same five-value vocab as step 1b). ⚠️ **Ritual discipline, NOT gate-enforced** — the
+   store is invisible to every gate (below), so the session checks these by hand here, at this step.
+   Per the gate-glob-scope rule the enforced rule is only as wide as `_capture_gate.py`'s repo-side
+   glob; claiming the memory side is "gated" would be a false inscription. With provenance pointing
+   back to the session/dossier, inline "Why:" justification prose can shrink to the fact + the
+   pointer — the reasoning is retrievable, not re-inscribed. Status words in `MEMORY.md` index hooks
+   are NOT deletable (the hook is what's loaded at recall — trust-the-spine).
 
    ⚠️ **Memory is NOT a backup and NOT the source of truth.** It lives outside the repo: not in git, not
    pushed by GitHub Desktop, invisible to the shell and to every gate, and lost if the Cowork space is
@@ -147,18 +172,25 @@ All steps complete = the session is safely captured. The transcript never has to
 of truth — a cold-start agent can reconstruct full context from `GOOD-MORNING` → `_LIVE-STATE` →
 `knowledge/README.md` → `MEMORY.md` alone.
 
-## The gate (spec only — not yet built)
+## The gate (`_capture_gate.py` — BUILT 2026-07-26, Memento §4.1; rulings D1a/D2/D3 `notes/_MEMENTO-DECISIONS.md`)
 
-A light, enforceable check, `_capture_gate.py`, to build **alongside the PM-KG MVP** (same
-front-matter/date-parsing machinery as `_build_live_state.py`):
+One script (D3), two modes:
 
-- **FAIL** if `_LIVE-STATE.md` "Last refreshed" ≠ today.
-- **FAIL** if `GOOD-MORNING.md` date ≠ today.
-- **WARN** on dangling `MEMORY.md` pointers (an index line or `[[link]]` with no matching file).
-- **WARN** if uncommitted changes remain (nudge to commit before close).
+- **Build mode** (default — wired into `_build_all.py` with its selftest, **blocking**):
+  provenance/status fields on new capture surfaces — `notes/YYYY-MM-DD-*.md` (non-underscore)
+  and `_DECISION-HISTORY/YYYY-MM-DD-*.md`, dated ≥ **2026-07-26** (cutover — gate the flip,
+  don't chase history). FAIL: missing `status:` · unknown value · `ruled` without a ledger
+  pointer · `provenance:` with no parseable date. WARN: missing `provenance:` (session-id is
+  soft) · ruled-pointer matching no file.
+- **Wrap mode** (`--wrap` — **the session runs it at this ritual's close**, not the build):
+  adds the original capture checks — FAIL if `_LIVE-STATE.md` "Last refreshed" ≠ today or
+  `GOOD-MORNING.md` header ≠ today; WARN on uncommitted changes.
+- **Honest scope (D1a):** the memory store is invisible to the shell and to every gate (step 3)
+  — dangling `MEMORY.md` pointers and memory-file fields are checked *by the session, by hand,
+  at step 3*. The script prints this as an explicit SKIP so the boundary can't silently blur.
 
-Green = safely captured. Until the script exists, this runbook **is** the gate — run it by hand,
-every session, no exceptions.
+Green = safely captured. The wrap-mode run replaces nothing in this runbook — the ritual is
+still the sequence; the gate is its receipt.
 
 ## Why this exists
 

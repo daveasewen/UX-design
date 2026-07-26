@@ -3,7 +3,14 @@
 **Date:** 2026-07-26 (from `date`, 15:52 BST)
 **Session:** Fable solo. Follow-on to `2026-07-26-memento-dreaming-convergence-and-buildable.md` (the record).
 **Status:** SCOPE for Dave to rule on. Nothing here is ruled. Decision points marked ⚖.
-**Context gauge at authoring:** 🟡 Amber ~40–45% (in-head estimate, ±15%).
+**Context gauge at authoring:** 🟡 Amber ~40–45% (in-head estimate, ±15%)
+
+provenance: local_57114829-1386-4f6a-ad3f-378af5bdfb9f · 2026-07-26
+status: floated
+
+*(Fields added 2026-07-26, later session — provenance cutover. D1–D3 RULED that session:
+D1(a) repo-side only · D2 five values · D3 one script; D4 superseded by v2's D4′, also ruled
+→ `notes/_MEMENTO-DECISIONS.md`. Body untouched.)*.
 
 **Verification performed first (the record was authored at Amber ~58%):**
 - The record's §3 paragraph citations were re-checked against `lamish-context-engineering-transcript.md`.

@@ -9,12 +9,12 @@ only in the artefact it governs dies the first time that artefact is rewritten �
 **This index is generated from the filesystem**, because a hand-maintained list of runbooks is exactly
 the thing that rots when someone adds the tenth one and forgets the list.
 
-**14 runbooks**, last generated 2026-07-25.
+**14 runbooks**, last generated 2026-07-26.
 
 ### `_RUNBOOK-capture-ritual.md`
 **Runbook — end-of-session capture ritual**
 
-The insurance policy decided in `notes/_SEAWORTHINESS-PLAN_2026-07-05.md` ("The capture ritual / gate"). Stood up 2026-07-05 as a fixed, repeatable sequence — the enforcing script (`_capture_gate.py`) is deferred to the PM-KG MVP build,…
+The insurance policy decided in `notes/_SEAWORTHINESS-PLAN_2026-07-05.md` ("The capture ritual / gate"). Stood up 2026-07-05 as a fixed, repeatable sequence — the enforcing script (`_capture_gate.py`) was BUILT 2026-07-26 under the…
 
 ### `_RUNBOOK-compose-from-canon.md`
 **Runbook — compose a screen from canon (the composition layer)**

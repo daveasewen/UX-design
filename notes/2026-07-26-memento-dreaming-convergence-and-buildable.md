@@ -5,6 +5,12 @@
 **Status:** RECORD of a development. The implementable programme in §4 is PROPOSED, not ruled.
 **Context gauge at authoring:** 🟡 Amber ~55% (in-head estimate, ±15%) ⇒ light re-verify before trusting.
 
+provenance: local_00712f30-b76a-4d77-8c93-c2f4979bd900 · 2026-07-26
+status: inferred
+
+*(Fields added 2026-07-26, later session — provenance cutover, `notes/2026-07-26-provenance-cutover.md`.
+§4.1's D-points were RULED that session → `notes/_MEMENTO-DECISIONS.md`. Body untouched.)*
+
 **Inputs:**
 - `lamish-context-engineering-transcript.md` (repo root) — the primary source, read in full this session.
 - `2026-07-26-convergence-anthropic-dreaming.md` (uploaded) — the prior convergence note, reviewed against the transcript.

@@ -42,6 +42,14 @@ STEPS = [
     # 16 months while the fonts sat in the repo (Dave, 2026-07-18: "how do we fix this
     # permanently?"). Registry: _assertions.json.
     ("assertion veracity gate — claims that can rot", "_validate_assertions.py"),
+    # Third sibling: reachable (above), true (above) — and now PROVENANCED. New notes/
+    # dossiers must say who observed what, when, and at what standing (observed/inferred/
+    # ruled/floated/standing) so a cold reader can weigh them without the authoring
+    # session's context. Memento §4.1; rulings D1a/D2/D3 2026-07-26
+    # (notes/_MEMENTO-DECISIONS.md). Repo-side only — the memory store is invisible to
+    # gates BY RULING; wrap-time checks are `--wrap`, session-run, not wired here.
+    ("capture/provenance gate — status+provenance on new notes+dossiers (Memento §4.1)", "_capture_gate.py"),
+    ("capture/provenance selftest (Memento §4.1)", "_capture_gate.py", ["--selftest"]),
     ("cross-reference index", "_build_xref_index.py"),
     ("sutherland acceptance fixtures", "_build_sutherland_fixtures.py"),
     ("states-completeness probe (advisory)", "_build_states_probe.py"),
