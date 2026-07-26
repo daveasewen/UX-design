@@ -26,6 +26,13 @@ TWO MODES, one script (D3):
     FAIL — `_LIVE-STATE.md` "Last refreshed" is not today · `GOOD-MORNING.md` header
            zone doesn't carry today's date.
     WARN — uncommitted changes (nudge to commit before close).
+    --lane (S-D2, ruled 2026-07-26): a SPIN-OFF-LANE session runs `--wrap --lane` —
+    skips ONLY the GOOD-MORNING header check (lanes are ruled OUTSIDE the GM queue,
+    _LIVE-STATE §🔀 is still their record so that check still bites). Noted in output
+    so the skip is visible, never silent.
+    S-D3 (ruled 2026-07-26): wrap mode reports to STDOUT ONLY — it no longer writes
+    `_CAPTURE-GATE.md`, which is build mode's committed report (wrap used to clobber
+    it with a transient session verdict).
     HONEST SKIP — MEMORY.md dangling-pointer check: the memory store lives outside the
     repo, invisible to the shell and to every gate (runbook step 3). Memory-side fields
     are ritual discipline, checked by the session with file tools at step 3 — UNENFORCED
@@ -34,8 +41,9 @@ TWO MODES, one script (D3):
 
 Usage:  python3 knowledge/_capture_gate.py             # build mode (blocking)
         python3 knowledge/_capture_gate.py --wrap      # wrap mode (session-run)
+        python3 knowledge/_capture_gate.py --wrap --lane  # lane session wrap (skips GM check)
         python3 knowledge/_capture_gate.py --selftest  # bite-test, one fixture per FAIL class
-Writes _CAPTURE-GATE.md; exits non-zero on any FAIL."""
+Build mode writes _CAPTURE-GATE.md; wrap mode is stdout-only (S-D3). Exits non-zero on any FAIL."""
 import datetime
 import glob
 import os
@@ -136,10 +144,16 @@ def check_file(path, repo):
     return fails, warns
 
 
-def wrap_checks(repo, today):
+def wrap_checks(repo, today, lane=False):
     fails, warns, notes = [], [], []
     iso = today.isoformat()
-    for fname, label in (("_LIVE-STATE.md", '"Last refreshed"'), ("GOOD-MORNING.md", "header date")):
+    targets = [("_LIVE-STATE.md", '"Last refreshed"'), ("GOOD-MORNING.md", "header date")]
+    if lane:
+        targets = targets[:1]
+        notes.append("LANE WRAP (--lane, S-D2): GOOD-MORNING header check SKIPPED — lane "
+                     "sessions are ruled outside the GM queue; _LIVE-STATE §🔀 is their "
+                     "record and its check still bites.")
+    for fname, label in targets:
         p = os.path.join(repo, fname)
         if not os.path.exists(p):
             fails.append(f"{fname}: missing")
@@ -163,7 +177,7 @@ def wrap_checks(repo, today):
     return fails, warns, notes
 
 
-def run(mode="build", repo=REPO, report=REPORT, today=None):
+def run(mode="build", repo=REPO, report=REPORT, today=None, lane=False):
     today = today or datetime.date.today()
     fails, warns, notes = [], [], []
     scoped = in_scope(repo)
@@ -172,7 +186,8 @@ def run(mode="build", repo=REPO, report=REPORT, today=None):
         fails += f
         warns += w
     if mode == "wrap":
-        f, w, n = wrap_checks(repo, today)
+        report = None  # S-D3: wrap is stdout-only — _CAPTURE-GATE.md belongs to build mode
+        f, w, n = wrap_checks(repo, today, lane=lane)
         fails += f
         warns += w
         notes += n
@@ -239,6 +254,25 @@ def selftest():
                  today=datetime.date(2026, 7, 26))
         if rc == 0:
             failures.append("run() returned 0 over a fixture set with known failures")
+        # S-D2 lane-flag bite-test: stale GM must FAIL a plain wrap and be SKIPPED with --lane
+        stale = datetime.date(2026, 7, 27)
+        with open(os.path.join(td, "_LIVE-STATE.md"), "w", encoding="utf-8") as f:
+            f.write(f"Last refreshed: {stale.isoformat()}\n")
+        with open(os.path.join(td, "GOOD-MORNING.md"), "w", encoding="utf-8") as f:
+            f.write("header dated 2026-07-25 (stale)\n")
+        f_plain, _, _ = wrap_checks(td, stale, lane=False)
+        f_lane, _, n_lane = wrap_checks(td, stale, lane=True)
+        if not any("GOOD-MORNING" in x for x in f_plain):
+            failures.append("wrap without --lane: stale GM header did not FAIL — check dead")
+        if any("GOOD-MORNING" in x for x in f_lane):
+            failures.append("--lane still FAILs on GM header — S-D2 flag does not bite")
+        if not any("SKIPPED" in x for x in n_lane):
+            failures.append("--lane skip is silent — must be noted in output")
+        # S-D3 bite-test: a wrap run must NOT write the report file
+        rpt = os.path.join(td, "_CG-TEST.md")
+        run(mode="wrap", repo=td, report=rpt, today=stale, lane=True)
+        if os.path.exists(rpt):
+            failures.append("wrap mode wrote a report file — S-D3 clobber fix regressed")
     if failures:
         for x in failures:
             print(f"  ❌ selftest: {x}")
@@ -250,4 +284,5 @@ def selftest():
 if __name__ == "__main__":
     if "--selftest" in sys.argv:
         sys.exit(selftest())
-    sys.exit(run(mode="wrap" if "--wrap" in sys.argv else "build"))
+    sys.exit(run(mode="wrap" if "--wrap" in sys.argv else "build",
+                 lane="--lane" in sys.argv))

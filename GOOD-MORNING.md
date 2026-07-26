@@ -16,7 +16,7 @@
 > - **★ v5.1** `reviews/…-v5.1.html` (+`.REVIEW`): `dvKeyRise` + 12 inline `--kh` · toolbar/demo-chrome/legend all ≥44 · swatch 44 (bar rows spaced `gap:28px`) · responsive centring `@≤640px`. v5 untouched (versioned).
 > - **★ CANON:** `.dv-vt`/`.dv-tbl-toggle` → 44 `::before`, propagated to `Chart-{bar,combo,donut,line}` — **4, not the brief's 5** (sparkline = native `<details>` summary, flagged; scatter none) → build GREEN.
 > - **⬛ PENDING SIGN-OFF:** data-marks exempt (rec) + the gate rebuild — `notes/_briefs/2026-07-25-hit-area-rule-and-gate-proposal.md`. `_validate_a11y.py` blind spots found (allowlist · literal-px · advisory-44). Legend model inscribes on sign-off.
-> - **★ Dave recalibrated the gauge bands: Green <45 · Amber 45–60 · Red ≥60** (runbooks + memory updated). **Render beat sandbox instance-flapping** by staging the browser on the shared mount (fold into `_RUNBOOK-render-verify.md`).
+> - **★ Dave recalibrated the gauge bands: Green <45 · Amber 45–60 · Red ≥60** (runbooks + memory updated). **Render beat sandbox instance-flapping** by staging the browser on the shared mount (recipe now IN `_RUNBOOK-render-verify.md` — folded 2026-07-26, dream-pass P3).
 > - **Context gauge at authoring: 🔴 RED ~70% (in-head tally, ESTIMATE ±15% — Half-2 broken). ⇒ NEXT READER RE-VERIFY** (re-run `_build_all.py`, check each "landed" claim). Full capture ritual run this turn. Push: this session's files + the prior unpushed stack — GitHub Desktop, whole stack.
 >
 
@@ -51,10 +51,14 @@
 > Asks: (a) data-marks EXEMPT + a min floor for tiny marks? · (b) fold sparkline's `<summary>` into the rule? · (c)
 > green-light the gate rebuild (markup-driven, 44 BLOCKING for controls — today `_validate_a11y.py` misses `.dv-vt`
 > via its selector allowlist). On sign-off → inscribe the rule + rebuild the gate + selftest + wire + build green + seed the graph.
-> **★★ Radius/corner tuner (§C·1d) — still owed: "return soon, don't let me forget."**
+> **★★ Radius/corner tuner (§C·1d) — v1+v2 BUILT + render-verified** (`reviews/RADIUS-CORNER-TUNER-2026-07-24-v*.html`);
+> **owed = the TWEAKS + ruling the numbers with Dave** ("return soon, don't let me forget"). Do NOT rebuild from scratch.
+> **⬛ ds-010 — STILL DAVE'S OPEN CALL** (live canon defect, `_DS-IMPROVEMENTS.md`): `Chart-bar` `fill:var(--sc,…)` renders
+> grouped/stacked/horizontal/status bars series-1 purple (DV-D09 + R-D9 ramp dead in render). Fold into the bar lane of the
+> wave, **or** fix now as a one-liner + rebuild. (Re-surfaced 2026-07-26, dream-pass P5 — it had dropped out of the handoff.)
 >
 > *Standing: every handoff carries both names (top) + a DIVVY PLAN. Model: Opus conducts, Sonnet/Fable workers.
-> Render-verify is UNBLOCKED (stage the browser on the shared mount — instance-flapping workaround, fold into the runbook).*
+> Render-verify is UNBLOCKED (shared-mount recipe: `_RUNBOOK-render-verify.md` § sandbox environment).*
 
 *Read: **§A Orientation** (skip if you're in context) → **§B This session** → **§C Queue**.
 Then `_LIVE-STATE.md` → the decision files it points to.*
@@ -161,8 +165,8 @@ _DECISION-HISTORY/    dated narrative — ★ 2026-07-22: the ADR-0014 arc AND t
 
 ## The one command that matters
 ```
-python3 knowledge/_build_all.py     # ★ 51 steps (45→51: partials sync+selftest · canon-components
-                                    #   regenerate+determinism · ratchet+selftest), exits non-zero on any failure
+python3 knowledge/_build_all.py     # ★ the blocking build — it prints its own [i/N] step count;
+                                    #   exits non-zero on any failure (count not hardcoded here: it rots — P4, 2026-07-26)
 ```
 
 ## Rules that actually bite (core + this session's)

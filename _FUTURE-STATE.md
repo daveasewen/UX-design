@@ -71,6 +71,10 @@ instance). Candidates: bottom nav / tab-bar, mobile segmented (pill), sheets/dra
 **Not now** — logged so it isn't lost.
 
 ## ★★ Live radius / corner tuner — Dave: "return to soon, we need it, don't let me forget" (2026-07-22)
+**STATE CORRECTION (2026-07-26, dream-pass P7): v1+v2 are BUILT + render-verified —
+`reviews/RADIUS-CORNER-TUNER-2026-07-24-v*.html`. What remains OWED = the tweaks + ruling the numbers
+with Dave ("we'll do the tuner after"). Do NOT rebuild from scratch; the ask below is the original
+framing, kept for the WHY.**
 **What:** an in-browser tuner that dials `border-radius/{control · surface · indicator}` (and a future
 `data-mark` slot) **per theme**, live, with buttons/cards/chips/bars updating in place and the values
 exportable straight to the theme override sets. **Why it's wanted:** settling corner numbers by argument
@@ -542,6 +546,15 @@ values per state within the AA guarantee); pairs with `$extensions.apollo.state`
   designer choose (e.g. series colours) AFTER screen generation in Apollo. Craft-phase surface;
   siblings = the ★★ radius/corner tuner + theme-builder channel dials (the tuner-organ family).
   No spec yet — log intentions here as they accrete.
+
+## Context gauge — Half-2 rebuild OR band re-shape (own session; parked 2026-07-26, dream-pass P6, Dave ruled defer-to-own-session)
+The gauge's measuring half (`knowledge/_context_gauge.py`, dated 07-21) has been broken since ~07-21;
+every wrap stamps "in-head tally, ESTIMATE ±15%". The sharp edge: the recalibrated Amber band is
+**15 points wide** while the instrument's error is **±15%** — "Amber ~55" is consistent with anything
+from Green to Red, yet the bands drive real behaviour (Amber blocks new build artefacts, fires the
+flush + wrap). The session decides ONE of: **(a)** rebuild Half-2 as a real token count against the
+transcript, or **(b)** re-shape the bands coarser than the error (e.g. keep-going / wrap-now).
+Evidence + full framing: `notes/_dream/2026-07-26-proposals.md` §P6. Runbook: `_RUNBOOK-context-gauge.md`.
 
 ## Standing register elsewhere (pointers, not copies)
 

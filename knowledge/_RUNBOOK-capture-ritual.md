@@ -25,7 +25,7 @@ wrong handoff we most want to avoid. Red cue line, ready to use:
 > **Title this chat: `<retrospective title>` — context is Red (~NN%). Running the capture ritual, then
 > open fresh with: `<forward title>`.**
 
-## The steps, in order (1, 1b, 2, 2c, 3, 4, 4b, 5)
+## The steps, in order (1, 1b, 2, 2c, 2d, 3, 4, 4b, 5)
 
 1. **Refresh `_LIVE-STATE.md`** — and its siblings where touched: `_FUTURE-STATE.md` (ideas /
    side-quests / resurrection candidates) and `_DECISION-HISTORY/` (narrative >10 lines relocates
@@ -95,6 +95,16 @@ wrong handoff we most want to avoid. Red cue line, ready to use:
    proper home — `_DECISION-HISTORY/` (the WHY/HOW), `notes/_receipts|_briefs/`, the decision ledgers, or
    git. The archive is a **convenience copy, never a tattoo**: it must hold no rule, threshold or rationale
    that isn't already inscribed elsewhere. Only then is it safe to trim.
+
+   **2d. Compact the `_LIVE-STATE` delta stack — keep ⏱ LATEST + 2 PRIOR, roll the rest to
+   `_LIVE-STATE-ARCHIVE.md`.** *(Added 2026-07-26 — dream-pass P1, Dave ruled accept-enact-now. First
+   roll same day cut `_LIVE-STATE.md` 205KB→62KB; it had exceeded a single Read call.)*
+   Exact sibling of 2c: at each wrap that adds a new ⏱ LATEST delta, move every delta older than
+   **LATEST + 2 PRIOR** into `_LIVE-STATE-ARCHIVE.md` — **verbatim, newest-first, a move never a
+   rewrite** — and trim the *Last refreshed* `Previous:` chain at the same boundary (tail appends to
+   the archive's chain section). Same precondition as 2c: rolled deltas are convenience copies — the
+   durable WHY/rules must already live in `_DECISION-HISTORY/`, ledgers, notes or git before rolling.
+   After editing `_LIVE-STATE.md`, run `python3 knowledge/_validate_standing_instructions.py` (STAND-002).
 
    ⚠️ **§A is the section most at risk, because it is the only one that doesn't change each session.**
    On 2026-07-18 a from-scratch rewrite of `GOOD-MORNING.md` reduced §A's standing-instruction note to

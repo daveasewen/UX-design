@@ -70,11 +70,19 @@ cat > ~/.config/fontconfig/fonts.conf << 'EOF'
     <test name="family"><string>Univers Next for HSBC</string></test>
     <edit name="family" mode="prepend" binding="strong"><string>HSBC_MtUnivers_Latin</string></edit>
   </match>
+  <match target="pattern">
+    <test name="family"><string>Univers Next HSBC</string></test>
+    <edit name="family" mode="prepend" binding="strong"><string>HSBC_MtUnivers_Latin</string></edit>
+  </match>
 </fontconfig>
 EOF
 fc-cache -f
 ```
-The alias means repo CSS declaring `"Univers Next for HSBC"` renders in the licensed cut with **no
+⚠ **The alias must cover BOTH font strings** (folded 2026-07-26, observed 2026-07-24): snippets
+declare `"Univers Next for HSBC"` (`--font`) but **type.css `--uf` declares `"Univers Next HSBC"`** —
+with only the first match, chart composite text silently falls back to a stock face while everything
+else renders correctly. Both `<match>` blocks above are required.
+The alias means repo CSS declaring either string renders in the licensed cut with **no
 file edits**. Assert in-page: `document.fonts.check('16px HSBC_MtUnivers_Latin')` must be `true`.
 **Licence: DESKTOP** — rendering for our own verification is fine; embedding/serving/committing the
 font into anything shared is NOT covered (the Latin *webfont* blocker `ASSERT-001` is untouched by
@@ -111,7 +119,29 @@ Screenshot to the **outputs mount** (`/sessions/<session>/mnt/outputs/`) — fil
 
 ---
 
-## Failure modes (dated, observed)
+## Sandbox environment — stage on the SHARED MOUNT, not `$HOME` (folded 2026-07-26; observed working 2026-07-25)
+
+Two sandbox facts break the naive recipe: **(a) `$HOME` rotates between bash calls** (cache + pip
+installs don't survive), and **(b) calls load-balance across sandbox *instances* with unshared
+`~/.cache`** — so even within one session, step 3's download can land on an instance a later call
+never sees ("instance-flapping": the browser is there, then it isn't).
+
+The fix that beat it (2026-07-25 session, render-verified output): **stage Playwright + the browser
++ chromelibs + fonts on the shared mount** (`/sessions/<session>/mnt/outputs/` or the repo mount —
+shared across instances and calls), and point every env var there in EVERY call:
+
+```bash
+M=/sessions/<session>/mnt/outputs/_render-env       # any shared-mount dir
+export PLAYWRIGHT_BROWSERS_PATH=$M/pw-browsers      # browser download target + lookup
+pip install playwright --break-system-packages --target=$M/pylibs   # if pip state also flaps
+export PYTHONPATH=$M/pylibs:$PYTHONPATH
+export LD_LIBRARY_PATH=$M/chromelibs/root/usr/lib/aarch64-linux-gnu:$LD_LIBRARY_PATH
+# fonts: keep ~/.fonts + fonts.conf per call (cheap to re-copy from the repo mount), or point
+# FONTCONFIG_FILE at a conf staged on the mount.
+```
+
+Alternative when the env fights back: **do everything in ONE bash call** (download+libs+fonts+render
+fit in ~40s warm, observed 2026-07-24) — one call = one instance, no flapping window.
 
 | Symptom | Reading | Move |
 |---|---|---|

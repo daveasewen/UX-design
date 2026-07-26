@@ -36,7 +36,7 @@ as a ratified programme with a roadmap. Dave's correction (this session, verbati
 |---|---|---|
 | **The May chat** | An exploratory chat, May 2026, **outside this project**. Two distinct ideas: (a) a local model doing overnight consolidation of memories; (b) a local model **post-training** on the memories. | `floated` |
 | **The two-hemispheres idea** | A **long-running** standing idea of Dave's — diffusion models + LLMs in tandem, an orchestrator as corpus callosum, grounded in Iain McGilchrist's work on the divided brain. **Intended as an essay, not an implementation.** | `standing hypothesis / essay` |
-| **The Apollo harness** | Built, gated, running. 53 blocking gates, `_build_all.py`. | `canon` |
+| **The Apollo harness** | Built, gated, running. 27 blocking validators inside a 55-step `_build_all.py` (counts as of 2026-07-26 — P4). | `canon` |
 
 **Consequences for the note (all OWED, not yet applied):**
 
@@ -153,7 +153,7 @@ Apply a proposed consolidation → run `_build_all.py` → count what breaks. An
 regresses means the dream damaged the record.
 
 The talk asserts consolidation improves accuracy and cost but gives **no way to tell a good dream
-from a confident bad one**. This project has 53 blocking gates and a build that exits non-zero —
+from a confident bad one**. This project has 27 blocking validators inside a 55-step build that exits non-zero (as of 2026-07-26 — P4) —
 **a fitness function nobody else in this picture has.** Honest limit: gates cover the gated corpus,
 not Dave's rulings or design judgement, so it answers the checkable half. That half is the cheap half.
 

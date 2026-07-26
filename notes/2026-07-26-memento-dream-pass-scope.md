@@ -199,7 +199,7 @@ Two viable shapes, not one:
   fidelity only (§2 ceiling). Cheap, on-cadence, zero new infrastructure.
 - **Shape B — Claude Code-native (fuller):** a `dreamer` agent definition (+ optionally a saved
   workflow) fanning readers over raw JSONLs, **worktree-isolated**, running `_build_all.py` in its
-  worktree so proposals arrive pre-scored by the 53 gates (§4.3 fused in), delivered as a branch.
+  worktree so proposals arrive pre-scored by the blocking build (27 validators / 55 steps as of 2026-07-26 — P4) (§4.3 fused in), delivered as a branch.
   Full ¶153 fidelity for CC-side sessions; needs Dave working CC-side for the transcripts to exist.
 
 ⚖ **D4 — sequence.** Recommended: §4.1 first (unchanged), then Shape A as the first dream pass

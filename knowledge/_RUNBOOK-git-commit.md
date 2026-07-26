@@ -6,7 +6,22 @@ file's owner). So git commits fail with `Unable to create '.git/index.lock': Fil
 command leaves a fresh lock behind. `mv` IS permitted where `rm` is not — that's the whole trick.
 Companion to memory `git-push-method`; git split = Claude commits, Dave pushes via GitHub Desktop.*
 
-## The procedure
+## The procedure — RUN THE SCRIPT (2026-07-26, dream-pass P2, Dave ruled)
+
+```
+git status --short                                   # step 0.5 — account for EVERY dirty path first
+bash knowledge/_git_commit.sh --reconciled <msgfile>  # clear · stage · clear · commit · clear
+```
+
+The script mechanises the whole sequence below, refuses to stage while any `.git/*.lock` exists,
+refuses an empty/stale msgfile, verifies HEAD advanced AND the message matches, and clears locks as
+its last action. It cannot do step 0.5's judgment — the `--reconciled` flag is your attestation that
+every dirty path is accounted for (worktree-reconcile rule). WHY a script: 3 of 5 commit sessions
+reconstructed this sequence from memory under wrap heat and hit the lock failure first; a hot agent
+can call one script (`feedback-gate-dont-patch`). Everything below is the reference the script
+implements — read it when the script surprises you, don't re-derive it.
+
+## The manual sequence (reference — the script implements this)
 
 **Clear locks BEFORE staging as well as after — the sequence is clear · stage · clear · commit · clear.**
 A lock left behind by the *previous* session blocks `git add` itself, so starting at "stage" only works
@@ -55,6 +70,8 @@ from an already-clean `.git`. (Corrected 2026-07-18 after step 1 failed on a 12-
    ```
    for L in $(find .git -name '*.lock'); do mv "$L" _to_delete/_stale_locks/; done
    ```
+4b. *(Optional sweep — dream-pass P8, 2026-07-26.)* If `_to_delete/` is bulging, remind Dave in the
+   handoff: host-side `rm -rf _to_delete/*` when next at the machine (gitignored; the sandbox cannot).
 5. **Hand off to Dave** — "committed at `<hash>`, locks clear, safe to push." Dave pushes via
    **GitHub Desktop only** (never terminal push — it hangs on credentials). If Desktop ever complains
    about a lock, Dave can delete `.git/index.lock` on his side (his machine has normal permissions).
