@@ -40,6 +40,11 @@ wrong handoff we most want to avoid. Red cue line, ready to use:
    review artefact awaiting Dave (a `reviews/*.html`, a proposal brief, a showroom pane), its PATH
    goes into `knowledge/_REVIEW-SIGNOFF.md`'s running list in the same pass — not only into the
    banner. Banners compact (2c/2d); the register is the durable queue.
+   **Save cited uploads (dream-pass v2 P5(b), ruled 2026-07-26):** any uploaded/attached document
+   the record will CITE gets written into the repo (`notes/`, verbatim + field lines) in the same
+   session — a chat-only attachment is an un-retrievable citation. Worked precedent both ways: the
+   `lamish-…` transcript was saved and nothing that cites it ever blocked; the convergence note was
+   not, and its `-v2` blocked three consecutive sessions on "re-attach".
 1b. **Author the session NARRATIVE DOSSIER — the why and how, not just the what.** *(Added 2026-07-19,
    Dave: "a narrative dossier would be good for many chats, I like recording the why and how not just
    saving the what — maybe this should be part of the closing ritual." Model example:
