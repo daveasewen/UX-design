@@ -9,7 +9,7 @@ only in the artefact it governs dies the first time that artefact is rewritten �
 **This index is generated from the filesystem**, because a hand-maintained list of runbooks is exactly
 the thing that rots when someone adds the tenth one and forgets the list.
 
-**14 runbooks**, last generated 2026-07-26.
+**15 runbooks**, last generated 2026-07-26.
 
 ### `_RUNBOOK-capture-ritual.md`
 **Runbook — end-of-session capture ritual**
@@ -45,6 +45,11 @@ The method for moving decision nodes from `unaudited` → `vouched` (or `amend` 
 **Runbook — adversarial densification (lossless context-file compression)**
 
 Stood up 2026-07-19 (Dave: "maybe an adversarial set of agents might sharpen things up" + "many a mickle macks a muckle" — 10–12%/file across the whole corpus adds up). Sibling to `_RUNBOOK-context-gauge.md`: the gauge lowers WHEN we…
+
+### `_RUNBOOK-dream-pass.md`
+**Runbook — dream-pass CONDUCTOR (the "run dream pass" sequence)**
+
+Single source for the conductor side of the Memento dream-pass lane, exactly as `dreamer.md` is single source for the dreamer side (A-D3 discipline: task prompts, skills and dispatches say "read + follow" — they never restate). Stood up…
 
 ### `_RUNBOOK-gated-component.md`
 **Runbook — build a gated component**
