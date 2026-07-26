@@ -229,7 +229,15 @@ Secondary (already a `_FUTURE-STATE` path): keyword retrieval misses cross-vocab
 "composition/organisms" doesn't reach ADR-0010/0011's "override sets/nullable slots"; fuzzy→rigorous.
 
 ## ds-010 — Chart-bar CSS `fill` override collapses ALL bars to series-1 (2026-07-24, legend-prototype render)
-**OPEN — surfaced to Dave 2026-07-24 (legend feel session); recommend folding the fix into the bar lane of
+**✅ CLOSED 2026-07-26, legend-wave lane ① — fixed AND render-proven.** The offending line was deleted from
+`Chart-bar.reference.html` (a comment now sits in its place explaining why a CSS `fill` must never return
+there). Proof, at 1180px AND 760px in the licensed HSBC cut, reading `getComputedStyle(rect).fill` per
+figure: cb1 single-series purple ✓ · **cb2 horizontal = `rgb(87,124,120)` series-3 teal — DV-D09 restored** ✓ ·
+**cb3 status = 4 distinct, `rgb(185,47,30)` #B92F1E red · `rgb(197,137,0)` #C58900 amber · green · blue — the
+R-D9 salience ramp restored** ✓ · cb4/cb5 three distinct series each ✓. Before the fix every one of these was
+a single purple. *(Same render surfaced the sibling defect [[ds-012]] — the h-bar labels are clipped.)*
+
+*Original entry follows.* **OPEN — surfaced to Dave 2026-07-24 (legend feel session); recommend folding the fix into the bar lane of
 the chart wave.** Render-verify of the REAL `knowledge/snippets/Chart-bar.reference.html` (the render that
 was standing-OWED and never actually run on these snippets) shows **every bar rendering `--data-series-1`
 purple** — grouped column, stacked column, horizontal bar, AND the status chart. Confirmed at 1180px, light,
@@ -279,3 +287,37 @@ conditions (`_validate_advisory.py`, advisory-first per ADR-0005 §5), all still
 same family as [[gate-blindspot-state-contrast]]). This entry is the pointer. **When a trigger event is
 scheduled (Cards revisit · composition touch · Input-fields supercharge), its brief carries the line
 "clears advisory G/H/N" and the promotion happens per the wired condition.**
+
+## ds-012 — Chart-bar's horizontal-bar category gutter is too narrow for the REAL HSBC cut; every label is clipped (2026-07-26, legend-wave lane ① render)
+**OPEN — found the same way ds-010 was, one render later.** Rendering the real
+`knowledge/snippets/Chart-bar.reference.html` at 1180px and 760px with the licensed HSBC face shows
+**all six category labels on the horizontal-bar figure (`cb2`) cut off at the left edge**: "Groceries"
+renders as "oceries", "Transport" as "nsport", "Housing" as "ousing", "Utilities" as "Jtilities".
+
+**Root cause — measured, not eyeballed.** The labels sit at `x="38"` with `text-anchor="end"`, so they
+grow LEFTWARD from a 38px gutter into a viewBox whose origin is 0. Measured `getBBox()` in-browser:
+
+| label | width @12px, real cut | left edge | overflow |
+|---|---|---|---|
+| Groceries | 54.8 | −16.8 | **16.8px** |
+| Transport | 55.0 | −16.4 | 16.4px |
+| Housing | 48.2 | −10.2 | 10.2px |
+| Savings | 45.3 | −7.3 | 7.3px |
+| Utilities | 44.0 | −6.0 | 6.0px |
+| Leisure | 42.0 | −3.8 | 3.8px |
+
+Six of six clipped — the gutter is short by at least 17px for this data.
+
+**Why it survived until now:** this is [[univers-measured-facts]] biting geometry. The HSBC cut is
+LOOSER than Helvetica, so a gutter sized against a fallback face fits and the same gutter against the
+licensed face does not. It is invisible in any render that falls back — which is precisely why the
+runbook asserts `document.fonts.check('16px HSBC_MtUnivers_Latin')` before shooting.
+
+**NOT fixed in lane ①, deliberately.** Widening the gutter re-bakes every `x`/`width` on the h-bar
+figure — a geometry change to a reviewed artefact, not a legend migration. Two candidate shapes, for
+Dave: (a) widen the gutter to a fixed value that fits the longest label at the real cut (~60px), or
+(b) make the plot area gutter-relative so long categories can't clip at any width. **Recommend folding
+into the same beat as ds-010's sibling checks, with a render as the acceptance test — and adding a
+"no `text.dv-label` has `getBBox().x < 0`" assertion to the dataviz gate so geometry clipping becomes
+gated rather than eyeballed.** *(The gate would have to run in a browser — today it cannot; log as the
+reason the assertion is a recommendation and not a patch.)*

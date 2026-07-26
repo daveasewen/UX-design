@@ -43,10 +43,27 @@ that single pass.** Running list of what it must cover:
   `showroom/chart-donut.html` (and `knowledge/snippets/Chart-donut.reference.html`) — the first member
   running the real DV-D11/12/13 model out of `canon/dv-legend.js`. Verified numerically **27/27**
   (`knowledge/_verify_dv_legend.js`, real source against the real snippet, incl. 950/41% and 1250/54%);
-  NOT yet render-verified in a browser — the sandbox had no staged Playwright and one was not stood up.
+  ✅ **Render-verify CLEARED 2026-07-26 (lane ①)** — the standing owed note is discharged: Playwright was
+  staged per `_RUNBOOK-render-verify.md` and the donut shot at 1180px + 760px in the licensed HSBC cut
+  (font assert passed). Both figures, the legend rows, the Reset and the centre figure all read correctly.
   ⚠ **Two deltas from the signed-off v5.5 need your eye, both forced by gates:** row padding 5px/9px →
   **4px/8px** (DEF-005 4px grid) and `border-radius:2px` → `var(--border-radius-default)` (radius gate).
   Resurrect-verbatim is not gate-exempt — same door the 273d18c~1 stepper came through.
+- **⬛ Chart-bar legend ENACTED + ds-010 CLOSED — awaiting Dave's eye (added 2026-07-26, legend-wave lane ①):**
+  `showroom/chart-bar.html` — wave member 2, and the first member carrying **TWO legends on one page**
+  (cb4 grouped · cb5 stacked). Verified **54/54** (`knowledge/_verify_dv_legend_members.js` — DV-D11
+  conformance per legend, plus 8 new cross-talk checks proving one legend cannot move the other's marks
+  or write to its live region) and **render-verified at 1180px + 760px in the licensed HSBC cut**.
+  ⚠ **ONE DELIBERATE VISUAL DELTA needs your eye:** the shaped swatches are gone — `.sw-circle` /
+  `.sw-square` / `.sw-diamond` are now plain 12px squares, as on the donut. Reasoning: bar's marks are
+  rects, so no marker shapes exist for the swatches to encode; bar's real non-colour channel is the
+  on-chart LETTER key (A/B/C). A diamond swatch promised a diamond mark that was never there.
+  **Chart-line's markers genuinely ARE circle/square/diamond** — it keeps shape modifiers in lane ③,
+  so the two members will differ on purpose. Say the word and I'll put bar's shapes back.
+  ✅ Also visible here: **ds-010 closed** — every figure now renders its true colours (h-bar teal per
+  DV-D09, the full R-D9 status ramp red/amber/green/blue), where before all four were series-1 purple.
+  ⬛ And the same render surfaced **ds-012**: all six h-bar category labels are clipped at the left
+  (worst 16.8px) — a 38px gutter sized against a fallback face, not the real cut. Logged, NOT fixed.
 - **Five chart showroom panes (added 2026-07-26, P4):** `showroom/chart-{bar,line,donut,combo,sparkline}.html` — the DataViz sign-off = Dave eyeballs the 5 panes → canon flips provisional-agent→canon (open-014). Same object as the "DataViz sign-off" line above — pane paths pinned here so the eyeball has its list.
 
 Method + template controls (live variant/state spread from meta · light/dark toggle · responsive slider · comment

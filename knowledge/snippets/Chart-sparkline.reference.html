@@ -349,14 +349,16 @@
      lives in `canon/dv-legend.js`, the group's second registered behaviour source.
 
      WHY THIS STILL EXISTS (Dave ruled incremental migration, 2026-07-26): the two models are
-     SELECTOR-DISJOINT — this one keys on `button[data-series-toggle]`, dv-legend keys on
-     `.legrow`. A migrated snippet is therefore served only by dv-legend and an unmigrated one
-     only by this block, with no overlap and no double-binding. That lets the four legend-bearing
-     members migrate one at a time with every commit in a working state.
+     SELECTOR-DISJOINT — this one keys on `button[data-series-toggle]`, dv-legend on
+     `.dv-legrow`. A migrated snippet is served only by dv-legend and an unmigrated one only by
+     this block: no overlap, no double-binding. The four legend-bearing members can migrate one
+     at a time with every commit in a working state.
 
-     END CONDITION — delete this whole block (and drop the group's page budget back to ~27.7KB)
-     when `grep -l data-series-toggle knowledge/snippets/Chart-*.reference.html` returns nothing.
-     MIGRATED so far: Chart-donut. REMAINING: Chart-bar · Chart-combo · Chart-line.
+     END CONDITION — run `knowledge/_check_legend_migration.py` (exit 0 = delete this block; the
+     page budget then falls to ~27.7KB). NOT the bare grep this comment used to name: that string
+     is in this block's own source, injected into every member, so it matched all five snippets
+     the day it was written — migrated donut included. Corrected lane ①, 2026-07-26.
+     MIGRATED: Chart-donut · Chart-bar. REMAINING: Chart-combo · Chart-line.
      Do not extend or "improve" anything below — it is scheduled for deletion. */
   function setSeries(btn, show) {
     btn.setAttribute('aria-pressed', String(show));
