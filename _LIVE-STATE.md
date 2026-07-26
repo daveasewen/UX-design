@@ -11,6 +11,9 @@ mis-dated itself a day forward; commit timestamps caught it).*
 half of the state machine, Dave's ask 2026-07-18) · **`_DECISION-HISTORY/`** — dated per-thread
 narrative, relocated verbatim (how we got here; see its README for the rules + RESURRECT tags).*
 
+## 🔀 SPIN-OFF LANE — Memento dream-pass (registered 2026-07-26, per the spin-off rule; runs COLD from its own record, deliberately OUTSIDE the GM queue — the lane itself dogfoods §4.2's cold-read thesis)
+Entry point: `notes/2026-07-26-memento-dream-pass-scope-v2.md` (three shapes: Cowork · Claude Code · VS Code+Copilot) → v1 same date (§4.1 fields+gate, tooling verification) → `notes/2026-07-26-memento-dreaming-convergence-and-buildable.md` (the record). **Status: scoped, D1–D6 AWAIT DAVE.** Commits `dfdc857` + `f140fee`. Owed: convergence-note `-v2` (blocked on re-attach).
+
 ## ⏱ LATEST DELTA — 2026-07-25 (Sat night, OPUS solo — Red-handoff re-verified GREEN → donut sweep easing restored (v5.2) + two-step fade redesign (v5.3); both REVIEW CANDIDATES; 🟡 AMBER ~55% wrap at Dave's call) — "Opened as the v5.1 sign-off; became prototype tuning at Dave's direction. Re-verified the Red-authored prior handoff first (`_build_all.py` 53/53 GREEN, claims held), then made two Dave-driven interaction changes, each versioned no-overwrite: v5.2 restored the donut sweep easing that the v3→v5.1 rebuild had silently flattened to linear; v5.3 reworked the fade into two steps. Nothing inscribed — Dave has more changes coming; next window continues on v5.3."
 
 - **★ RED HANDOFF RE-VERIFIED (first action, per the Red-scrutiny rule):** ran `python3 knowledge/_build_all.py` cold → **53/53 GREEN** (a11y · dataviz · integrity all pass). The prior session's "landed" claims (v5.1 bar-key rise, hit-area canon patch) hold. Library still **67**.
