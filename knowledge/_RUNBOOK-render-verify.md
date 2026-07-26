@@ -153,6 +153,31 @@ fit in ~40s warm, observed 2026-07-24) — one call = one instance, no flapping 
 | `nohup` job dead next call | `--die-with-parent` | Chunk ≤45 s; poll within the call |
 | Render fine but wrong font | Alias file missing / fc-cache stale | Step 5; assert `document.fonts.check` |
 
+## Two potholes banked 2026-07-26 (legend-wave lane ① — the recipe otherwise held first-try, from scratch)
+
+**The runbook worked verbatim in a fresh sandbox** (arm64, no root): pip → TLS env → download →
+expected host-validation failure with the shell present → 11 libs → fonts + the two-alias fontconfig →
+render. No new steps needed. Two things cost time anyway:
+
+**1 · `/tmp` was NOT writable.** `nohup … > /tmp/pwdl.log` failed with *Permission denied*, and the
+background job died silently with it. `~/.cache`, `~/.fonts`, `~/.local` were all fine — it is `/tmp`
+specifically. **Put logs and scratch on the outputs mount** (`/sessions/<s>/mnt/outputs/`), which is
+writable and readable by the file tools. ⚠ This also affects the verify scripts: they default to
+`JSDOM=/tmp/node_modules/jsdom`. That path happened to survive here, but do not assume it — the env
+var exists for exactly this.
+
+**2 · Render the SNIPPET, not the showroom page.** `showroom/<Component>.html` is a HARNESS: it loads
+the component in an **iframe**. A `page.evaluate` that queries `document.querySelectorAll` from the top
+frame therefore finds nothing and returns cleanly — no error, just empty results, which reads as
+"the selector is wrong" and sends you looking in the wrong place. Cost one wasted shot on Chart-bar.
+Point `goto` at `knowledge/snippets/<Component>.reference.html` — the canon artefact anyway — or drive
+`page.frames()` deliberately.
+
+**Assert numerically, not visually, wherever the finding allows it.** ds-010's closure is a table of
+`getComputedStyle(rect).fill` per figure, and ds-012 is a table of per-label `getBBox()` — both far
+more durable in the record than "I looked and it seemed right", and both re-runnable. Take the PNG too
+(a render still catches what you did not think to assert), but lead with the numbers.
+
 ## Fallback — real-browser loop (Claude-in-Chrome on Dave's Mac)
 
 If in-sandbox rendering is down, or a true-browser check is wanted: Dave starts a **THREADING**
