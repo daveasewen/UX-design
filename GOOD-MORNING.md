@@ -58,11 +58,34 @@ self-conducting, effort MAX; dossier
 > the pane = base-URL artefact.** One pass separates them; five separate investigations do not.
 > ⚠ `_render-env/stack.py`'s cb5 probe is BROKEN (returned zero segment rects — a wrong selector
 > assumption, NOT missing segments). Fix the probe before reading anything into it.
-> **THE STRUCTURAL ASK BEHIND THE LIST — this is the real work.** DV-D08 was ruled, inscribed,
-> gated-green and silently not in force for weeks. **Gates prove the corpus is SELF-CONSISTENT;
-> nothing proves a RULING IS LIVE in the artefact Dave looks at.** Proposal for him to rule on
-> (recommend, do not enact): every `DV-D*`/`R-D*`/`B-D*`/`T-D*` carries an executable enactment proof
-> or an explicit NOT-GATEABLE marker, and the build reports the unproven ones as a standing register.
+> **★★★ AND THE STRUCTURAL FIX — ✅ RULED BY DAVE 2026-07-27: BUILD IT, DON'T PROPOSE IT.** His
+> words: *"is this in the next session, we nee to fix it."* This is no longer a recommendation
+> awaiting a call — it is the deliverable, and the four-item list above is its first test case.
+> **The problem, stated once:** DV-D08 was ruled, inscribed, gated-green and **silently not in force
+> for weeks**. Rulings here are not reversed — they quietly stop applying. **Gates prove the corpus
+> is SELF-CONSISTENT. Nothing proves a RULING IS LIVE in the artefact Dave looks at.** Every item on
+> his list was found by his eye. That is the defect being fixed.
+> **BUILD SHAPE — phased, so session 1 ships visibility rather than a half-finished gate:**
+> **P1 · THE REGISTER (do this first, it is mechanical).** Parse every ledger (`_DATAVIZ-`, `_RAG-`,
+> `_BUTTON-`, `_TYPE-DECISIONS.md`, the ADRs) for ruling IDs, and emit
+> `knowledge/_ENACTMENT-REGISTER.md`: one row per ruling → **PROVEN** (names an executable check) ·
+> **UNPROVEN** (nothing asserts it) · **NOT-GATEABLE** (explicitly marked, with the reason). Expect
+> most rows UNPROVEN — that number IS the finding, and it is the first honest measure of this debt.
+> **P2 · PROOFS FOR THE FLAGGED ONES.** Write real enactment checks for Dave's four items first —
+> they are the ones we know are broken. `_sweep_type_enactment.py` is the pattern to copy: it reads
+> the RULED value out of the source of truth and asserts the RENDERED value. Ruled-vs-rendered, not
+> ruled-vs-ruled.
+> **P3 · WIRE IT.** Advisory build step first (a new blocking gate that fails 80 rows on day one gets
+> switched off, and a switched-off gate is how we got here). Blocking once the register is green or
+> deliberately waived, per the ratchet posture that worked for `_validate_partials.py`.
+> ⚠ **The trap to design against, learned twice today:** a check that cannot see its subject must
+> FAIL, never pass quietly. `_sweep_type_enactment.py` reported a cheerful "0 deviations" when it
+> could not read the stylesheet at all, and `_verify_dv_legend_members.js` would have passed any
+> member whose series happened to be named "Current". **A green light from a blind check is worse
+> than no check** — it is what let ds-013 live for weeks. Every P2 proof needs a bite that proves the
+> proof can fail.
+> **Wants an ADR (candidate ADR-0016) — write it in the same session as P1, per the same-hour
+> inscription rule, and feed the graph seed.**
 >
 > **★★ THEN — THE SHOWROOM TYPE SWEEP (ds-013 fallout), already started.**
 > `knowledge/_sweep_type_enactment.py` ran once: **800 composite-bound elements across 67 panes, 22

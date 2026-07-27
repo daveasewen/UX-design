@@ -473,3 +473,12 @@ loudly as it was raised, because a phantom item on a debt register is worse than
 sends the next session hunting, and an agent that hunts long enough will FIND something and inscribe
 it. (This is the [[memento-framing]] failure mode in miniature — the danger is not forgetting, it is
 confident false inscription.)**
+
+**★ ds-014 UPDATE 3 — the structural fix is RULED, not proposed (Dave, 2026-07-27):**
+
+> *"is this in the next session, we nee to fix it"*
+
+**⇒ The enactment-proof register is a BUILD, scheduled next session, phased P1 register → P2 proofs
+for the four flagged items → P3 wire advisory-then-blocking.** Full shape in `GOOD-MORNING` §DO-FIRST.
+Candidate **ADR-0016**, to be written in the same session as P1 (same-hour inscription rule) and fed
+to the graph seed. Reflected back to Dave in-session for correction before the next window opens.
