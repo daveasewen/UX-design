@@ -933,11 +933,84 @@ assert passed in all four · declaration census by `awk` over `canon/canon.css` 
 
 ---
 
-## ds-019 — `.dv-legrow.is-solo` MATCHES, its variables RESOLVE, and it still does not paint: the isolate treatment has never been visible, and DV-D17's render-proof is therefore VACUOUS (2026-07-27, found by a positive control that nearly passed)
+## ds-019 — ⛔ **WITHDRAWN WITH CAUSE 2026-07-27 (session #9): NOT A DEFECT. It was a MEASUREMENT ARTEFACT — the probe read a computed value in the same task as the class change, i.e. at t=0 of a 160ms transition.** The treatment paints correctly and always did.
 
-**Status: OBSERVED + MEASURED, cause NOT yet named. Nothing fixed.**
+> ## ⛔ WITHDRAWAL — read this before the original entry below
+>
+> **Status: WITHDRAWN. There is no overriding rule. `.dv-legrow.is-solo` paints exactly as authored.**
+> **Both beats are kept verbatim** (the original claim is below, unedited) so that a reversal can
+> never read as agent drift — per the Memento discipline in `GOOD-MORNING.md` §A.
+>
+> **What was actually wrong: the instrument, not the CSS.** `.dv-legrow` carries
+> `transition: border-color var(--ease), background var(--ease)` = **0.16s**. A computed value read in
+> the **same task** as `classList.add('is-solo')` is the **pre-transition** value. Measured time series,
+> canon snippet, `.is-solo` applied directly:
+>
+> | when | `border-top-color` | `background-color` |
+> |---|---|---|
+> | before add | `rgb(225,225,225)` (`--line`) | `rgba(0, 0, 0, 0)` |
+> | **t=0, same task** | **`rgb(225,225,225)`** | **`oklab(0 0 0 / 0)`** ← *the pair the original entry records as proof* |
+> | t≈50ms | `rgb(145,145,145)` | `oklab(0.217785 … / 0.0241082)` |
+> | **t≈150ms +** | **`rgb(26,26,26)` = `--ink`** ✓ | **`color(srgb 0.101961 … / 0.06)` = 6% ink** ✓ |
+>
+> **The cascade was never in question.** CDP `CSS.getMatchedStylesForNode` on the node:
+> `.dv-legrow.is-solo` **(0,2,0) at cascade index 4**, beating `.dv-legrow` **(0,1,0) at index 3**.
+> No `!important`, no inline style, no `attributesStyle`, no keyframes, no `:is()`/`:where()` rule, no
+> `#cb4-legend li` rule. **The winning rule that "does not contain the string `dv-legrow`" does not
+> exist** — the census that found only four such selectors was correct, and its conclusion was sound;
+> the premise it was answering was false.
+>
+> **Confirmed in six contexts**, all correct: snippet @1180 and @760 · showroom light pane @1180 and
+> @760 · showroom **dark** pane @1180 and @760 (theme-tracks properly — `--ink` `#FFFFFF`, 6% white).
+>
+> ⚠ **`oklab(0 0 0 / 0)` IS THE SIGNATURE OF AN IN-FLIGHT INTERPOLATION, not of a failed declaration.**
+> Chromium interpolates `background-color` toward a `color-mix()` result in oklab. Reading it as *"fully
+> transparent, therefore the declaration did not win"* is the whole of the error.
+>
+> **★ AND THE HARDEST PART TO SWALLOW: the predecessor probe's positive control WAS WORKING.** It
+> observed `oklab(0 0 0 / 0)` differing from `rgba(0, 0, 0, 0)` and passed — because those genuinely
+> are different states (**transitioning-transparent vs static-transparent**). Session #8 diagnosed its
+> own control as a string-comparison defect and dismissed the signal. **The string comparison was
+> indeed a bad method — and on that reading it was accidentally right.** ⇒ *When a control fires
+> unexpectedly, exhaust "it detected something real" before concluding it is broken.*
+>
+> **Consequences, all recorded 2026-07-27 #9:**
+> 1. **DV-D17's render-proof is UNBLOCKED.** It was blocked only by this entry's premise. It is
+>    dischargeable — the proof must settle the transition before reading (see 3).
+> 2. **Dave's logged question is ANSWERED:** *"if it never painted, what did the DV-D17 screenshot
+>    show?"* — it showed the treatment, because the treatment paints. **Screenshot right, probe wrong,
+>    for two sessions.** No silent regression, no unprobed context.
+> 3. **Structural remedy shipped, not just a note:** `knowledge/_render/cdp_matched_styles.py`
+>    (`--settle off` by default) injects `transition:none !important` *before* the class change, so a
+>    mid-transition read is impossible; `--settle none` exists solely to reproduce this artefact on
+>    demand. Pothole banked in `_RUNBOOK-render-verify.md`.
+> 4. **ds-018 is NOT withdrawn and NOT re-verified.** Same instrument, same session — but it measured a
+>    **resting** disabled control, not a post-class-change state, so this timing defect should not reach
+>    it, and its structural census (29 declarations, ten form scopes, **zero** chart scopes) is an
+>    independent line of evidence. ⚠ **"Should not" is not "does not" — a cheap re-check is OWED.**
+>
+> **The class it actually belongs to.** It is still a sibling of [[silent-lookup-failure-class]], but one
+> level further out: **the instrument was present, correct-looking, and not measuring what it claimed** —
+> the same shape as #7's stale conformance suite and [[gate-narrows-its-own-rule]]. The difference is
+> that this time the false reading was **inscribed as a defect in the corpus** and began directing work.
+> ⇒ **`GOOD-MORNING.md` §A is right: the real danger is confident false inscription, not forgetting.**
+> This entry is the worked example, and it survived one full session as canon.
+>
+> **Evidence** · `knowledge/_render/cdp_matched_styles.py` (CDP matched-styles enumeration, cascade
+> order, specificity, `!important`, inline + attributes + keyframes) · time series + six-context
+> confirmation, licensed cut not staged **deliberately** — cascade resolution is font-independent and
+> this measures neither geometry nor paint · bite: `.is-solo` deleted from a copy reproduces the
+> original numbers exactly, canon untouched · 2026-07-27.
+
+---
+
+### ⬇ ORIGINAL ENTRY, KEPT VERBATIM — the claim as written 2026-07-27 #8. **It is WRONG.** Retained because a withdrawn claim that vanishes is indistinguishable from drift.
+
+## ~~ds-019 — `.dv-legrow.is-solo` MATCHES, its variables RESOLVE, and it still does not paint: the isolate treatment has never been visible, and DV-D17's render-proof is therefore VACUOUS (2026-07-27, found by a positive control that nearly passed)~~
+
+**~~Status: OBSERVED + MEASURED, cause NOT yet named. Nothing fixed.~~** → **WITHDRAWN, see above.**
 **Found by:** the positive control inside DV-D17's own render-proof — the check written to stop that
-proof from passing vacuously. It nearly failed to.
+proof from passing vacuously. It nearly failed to. *(It did not fail. It worked, and was overruled.)*
 
 ### What was measured
 

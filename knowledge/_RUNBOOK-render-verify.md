@@ -173,6 +173,37 @@ frame therefore finds nothing and returns cleanly — no error, just empty resul
 Point `goto` at `knowledge/snippets/<Component>.reference.html` — the canon artefact anyway — or drive
 `page.frames()` deliberately.
 
+## ★★ Pothole banked 2026-07-27 — SETTLE THE TRANSITION BEFORE YOU READ (it cost a whole false defect)
+
+**A computed value read in the SAME TASK as a class change is the PRE-transition value.** This is not
+subtle and it is not rare — it produced **ds-019**, a defect entry asserting that `.dv-legrow.is-solo`
+"matches, its variables resolve, and it still does not paint", which was **wrong**, and which then
+blocked DV-D17's render-proof and set the next window hunting a CSS rule that does not exist.
+
+`.dv-legrow` carries `transition: border-color var(--ease), background var(--ease)` = **0.16s**.
+Measured time series on the canon snippet, `.is-solo` applied directly:
+
+| when | `border-top-color` | `background-color` |
+|---|---|---|
+| before add | `rgb(225,225,225)` (`--line`) | `rgba(0, 0, 0, 0)` |
+| **t=0, same task** | **`rgb(225,225,225)`** | **`oklab(0 0 0 / 0)`** ← *what ds-019 recorded as proof* |
+| t≈50ms | `rgb(145,145,145)` | `oklab(0.217785 … / 0.0241082)` |
+| **t≈150ms +** | **`rgb(26,26,26)` = `--ink`** ✓ | **6% ink** ✓ |
+
+⚠ **`oklab(…)` serialisation is the SIGNATURE OF AN IN-FLIGHT INTERPOLATION, not of a failed
+declaration.** Chromium interpolates toward a `color-mix()` result in oklab. Reading `oklab(0 0 0 / 0)`
+as *"fully transparent, so the declaration lost"* is exactly the misread. **The predecessor probe's
+positive control actually DID detect this** — it saw `oklab(0 0 0 / 0)` differ from `rgba(0, 0, 0, 0)`
+and passed — and the session dismissed its own control as a string-comparison artefact. **The control
+was right for a reason nobody looked for.**
+
+⇒ **RULE: any proof touching a transitioned property must settle first.** Either inject
+`*{transition:none !important;animation:none !important}` **before** the class change (deterministic —
+this is what `knowledge/_render/cdp_matched_styles.py --settle off` does by default), or wait past the
+longest declared duration. **Never read in the same task.** ⚠ And when a measurement contradicts a
+screenshot Dave has actually seen, **suspect the measurement first** — here the screenshot was right
+and the probe was wrong for two sessions.
+
 **Assert numerically, not visually, wherever the finding allows it.** ds-010's closure is a table of
 `getComputedStyle(rect).fill` per figure, and ds-012 is a table of per-label `getBBox()` — both far
 more durable in the record than "I looked and it seemed right", and both re-runnable. Take the PNG too
