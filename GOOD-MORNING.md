@@ -163,9 +163,16 @@ painted — ds-018 confirmed as instance five, and the proof that would have bee
 > could move the band. **Any unplanned finding ⇒ STOP, re-price, put the fork to Dave** — log-and-stop /
 > narrow / chase knowingly. **Never economise on READING the band table** (a wrong band twice, costs a `grep`).
 > **★ AND CHECK THE PACE, which sets the posture:** the weekly allowance is **PERISHABLE**
-> *(status: `inferred` ~75%, from the plan panel — see the runbook's provenance note)*. **At 2026-07-27 it
-> was 0.65× pro-rata, Fable 0.55×.** ⇒ **Behind pace = MORE WINDOWS, not longer ones**; hoarding wastes
-> allowance exactly as Red does. **Ask Dave for the current panel reading — no gate can see it.**
+> *(status: `inferred`, firmed 2026-07-27 — the panel labels each weekly bar **"Resets Thu 11:00 PM"**,
+> and a capped counter that resets cannot carry unspent capacity forward. Still not directly OBSERVED.)*
+> **★ READ 2026-07-27 ~15:50 BST, Max (20×): week ~53% elapsed · All models 34% used ⇒ 0.64× pro-rata ·
+> Fable 28% ⇒ 0.53×. Session bucket 6%, resets in 55 min ⇒ NO session-level constraint.**
+> ⚠ **THE DELTA IS THE FINDING, not the level:** at 12:07 the same day it read 51% / 33% / 28%. **Three
+> full windows (#6 #7 #8) moved the weekly bar ONE point, and Fable ZERO.** ⇒ To spend the allowance
+> before Thu 23:00 now needs **1.40× pro-rata (Fable 1.53×)** — **the gap WIDENED across a working
+> afternoon.** ⇒ **Behind pace = MORE WINDOWS, not longer ones**; hoarding wastes allowance exactly as
+> Red does, and **Fable at 0.53× with 72% unspent is the strongest case on the board for promoting the
+> §C·2 ruling batch.** **Ask Dave for a fresh panel reading each opener — no gate can see it.**
 >
 > **★★★ NEW AND UNRULED — `ds-017`.** A FLOATED item that **supersedes a standing instruction** has no
 > path into this file; the EXIT CHECK only carries §C·4 items *up*. It cost the start of session #5, and
