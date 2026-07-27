@@ -95,6 +95,8 @@ finding**: stop, re-price out loud, and put the fork to him — **(a)** log it a
 **(c)** chase it knowingly with a Red stamp. **Not a decision the agent makes silently from inside the
 sunk cost**, which is exactly how ds-016 got chased for +17.
 
+⚠ **Observed failure of (b) — 2026-07-27 #12, inscribed at the first 2f strata roll (#15):** mid-enactment, C2's first run surfaced three new instances of the silent-lookup class; one was fixed and two written up **without a re-price or a fork** — the rule failing precisely where it exists, on a finding arriving mid-enactment when stopping is most expensive and most necessary. Same window: Dave named the circling (*"im going round in circles"*, ~55%) before the agent did; the unlock was one sentence — *a token value is a one-line reversible edit, not architecture*. **Name the circling, and say the unlock, earlier.** Post-mortem data: `notes/_GAUGE-LOG.md` § 2026-07-27 #12.
+
 **★ THE MECHANISM ALREADY EXISTED; ITS TRIGGER WAS AT THE WRONG TIME.** The fork in Half 0 above was
 written before this ruling and is precisely the throttle Dave asked for — it just fired **only** before
 starting. Extended, one word: **before starting AND on any unplanned finding.** *(Same class as the

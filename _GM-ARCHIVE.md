@@ -2,6 +2,206 @@
 
 ---
 
+## Batch 2026-07-27 #15 — rolled by the phase-2 compaction pass, window 1 (Fable). Verbatim, newest-first.
+*EXIT CHECK receipts: §B roll — its STALE notice dies WITH §B (GM-D2 test 1, same batch); lane-① narrative → `_DECISION-HISTORY/2026-07-26-legend-wave-lane-1-and-three-record-corrections.md`; 07-22 wave record → `notes/_receipts/2026-07-22-phase2-*`; 'Owed: render-verify' → standing in §A; Charts sign-off → §C·2. Commit-state strata — #12's `--border-radius-control` agent-choice flag → `_DS-IMPROVEMENTS.md:879` + `_LIVE-STATE.md` LIVE; #12 fork-failure lesson → inscribed `_RUNBOOK-context-gauge.md` § ★ Half 0b THIS batch, before the roll; #8 probe flags → ds-019 withdrawal + `cdp_matched_styles.py`; #7 flags → DV-D17 closed arc + §C·4; #6 flags → ledgers + DO-FIRST 2/3; #5 flags → Half 0b. Pre-flight post-mortems → `notes/_GAUGE-LOG.md` (2f). §A hash-verified before and after. AT WRAP, same batch: the #13 banner (EXIT CHECK: GM-D1…D9 → ledger § GM growth-contracts; enactment-owed → the #15 banner + NEXT-CHAT title + DO-FIRST #13 notice, all live; dossier → `_DECISION-HISTORY/2026-07-27-supersession-by-addition.md`) + #13's strata pair (post-mortem → `notes/_GAUGE-LOG.md` § #13 · commit-state below).*
+
+> **COMMIT STATE (refreshed 2026-07-27 ~17:45 BST from `date`, the class was never rare).**
+> **Context gauge at authoring: 🔴 RED ~72% (ESTIMATE) — RED-AUTHORED, RE-VERIFY BEFORE TRUSTING.**
+> ONE commit `5cd91c6`, and unlike the last three it is **CODE, not just record**:
+> `knowledge/tokens/semantic-colour.json` (**`data/control/label-disabled` MINTED**) ·
+> `knowledge/snippets/Chart-{bar,combo,donut,line}.reference.html` (**A2 spine declarations ×2 themes,
+> B2 consumer rewrite, `--muted`→`--data-control-swatch-off`, `--border-radius-default`→the role token,
+> manifest entries**) · `knowledge/_validate_property_resolves.py` (**NEW — the C2 gate + selftest**) ·
+> `knowledge/_build_all.py` (**steps 52–53 wired**) · `knowledge/canon/canon.css` + `showroom/chart-*.html`
+> + `showroom/index.html` (**regenerated, never hand-edited**) · `knowledge/_DS-IMPROVEMENTS.md`
+> (**ds-018 § ✅✅ ENACTED block** — the three new instances, the advisory reasoning, the record correction) ·
+> `reviews/DS-018-VALUE-2026-07-27-v2.html` + `.REVIEW.html` (**NEW, self-measuring**) ·
+> `_GM-ARCHIVE.md` (2c, **Batch 11**) · `_LIVE-STATE-ARCHIVE.md` (2d) · `_LIVE-STATE.md` · this file.
+> **Build `62/62` GREEN exit 0** (58→62: C2 + selftest added two steps) · **C2 selftest: green control +
+> 4 bites + a bite-the-bite, all PASS** · **STAND-002 PASS, 26 standing docs reachable.**
+> **⚠ WHAT THE AUTHOR FLAGS AGAINST HIS OWN WORK:** **instances 7 and 8 are STATIC RESOLUTION REASONING,
+> NOT RENDERS** — and *"`--mark` falls back to black"* is exactly the shape of tidy explanation **ds-019**
+> punished; **render-confirm before acting, and do not let the vividness of "BLACK, in silence" substitute
+> for a measurement** · **ds-018 is ENACTED but NOT RENDER-PROVEN** — reading `62/62` as "ds-018 is done"
+> is the single most likely misreading of this handoff, and #10's banner warned about exactly this
+> confusion on exactly this component · **`#9D9D9D` is MY proposal on Dave's *"just do it"*** — assent to
+> a plan, not a dialled number, and the caveat that B-D4 dialled it against a *different backdrop* is
+> recorded at mint precisely so nobody later reads it as a considered chart-ground judgement ·
+> **the `--border-radius-control` tier choice was mine too** (the minimal fix was to declare the base) ·
+> **no `_DECISION-HISTORY` dossier** — deliberate at 🔴 72%; the ledger block is the tattoo.
+> Dave pushes via GitHub Desktop (whole stack, Desktop closed while Claude commits).
+
+> **COMMIT STATE (refreshed 2026-07-27 ~15:40 BST from `date`, the treatment that never painted).**
+> **Context gauge at authoring: 🟡 AMBER ~55% (ESTIMATE).**
+> ONE commit, **entirely record — NOTHING WAS BUILT**: `knowledge/_DS-IMPROVEMENTS.md`
+> (**ds-018 § ✅ CONFIRMED block** — measurement + the declaration census + the widened fix scope + the
+> second gate candidate · **ds-019 NEW** — the non-painting rule, the vacuous-proof consequence, 3
+> anti-false-fix clauses, and the probe's own near-miss) ·
+> `_DECISION-HISTORY/2026-07-27-the-treatment-that-never-painted.md` (**NEW dossier**) ·
+> `_GM-ARCHIVE.md` (2c roll, **Batch 10**) · `_LIVE-STATE-ARCHIVE.md` (2d roll, #5) ·
+> `_LIVE-STATE.md` · this file. **Probe sources are in the session outputs dir, not the repo** —
+> `probe.py`/`diag.py` are cited by the record; **fold them into `knowledge/` if the next window reuses
+> them, or the citation is un-retrievable** (the step-1 save-cited-uploads discipline, applied to my own
+> artefacts).
+> **Build 60/60 GREEN at session start and UNCHANGED — no code was touched, so no re-run is claimed.**
+> ⚠ **That is deliberate: this handoff makes no build claim it did not re-verify.**
+> **⚠ WHAT THE AUTHOR FLAGS AGAINST HIS OWN WORK:** **my probe printed `24 checks · 0 failures` and was
+> blind** — if you reuse it without fixing the string comparison you will get the same false green, and
+> this time nobody will be reading the JSON by eye · **ds-019's cause is UNNAMED**, so every sentence I
+> have written about *why* `.is-solo` loses is bounded by "not yet checked" — resist the tidy explanation ·
+> **ds-018's structural census is the strongest claim here and it rests on `awk`/`grep` over two files** —
+> cheap to re-run, so re-run it before ruling on the fix · **"instance five" is a framing I wanted to be
+> true** and it was flagged as such last session; it is now measured, but the wanting came first.
+> Dave pushes via GitHub Desktop (whole stack, Desktop closed while Claude commits).
+
+> **COMMIT STATE (refreshed 2026-07-27 ~14:20 BST from `date`, the suite was asserting the old ruling).**
+> ONE commit: `knowledge/canon/dv-legend.js` (**DV-D17 ENACTED** — release-on-add + the removed
+> superseded announce branch; trimmed to 16330/16384 after the ADR-0015 gate blocked the first pass) ·
+> `knowledge/_verify_dv_legend_members.js` + `knowledge/_verify_dv_legend.js` (**six checks rewritten,
+> old wording kept verbatim beside each; 4 new DV-D17 checks; `DVLEGEND` env override on both**) ·
+> the 5 injected chart snippets + `showroom/chart-*.html` (regenerated, never hand-edited) ·
+> `knowledge/_proforma/_DATAVIZ-DECISIONS.md` (**DV-D17 ENACTED block** + **DV-D16 (1) ANSWERED** with
+> the scope measure) · `_DECISION-HISTORY/2026-07-27-the-suite-that-asserted-the-old-ruling.md`
+> (**NEW dossier**) · `_GM-ARCHIVE.md` (2c roll, Batch 10) · `_LIVE-STATE-ARCHIVE.md` (2d roll) ·
+> `_LIVE-STATE.md` · `knowledge/_REVIEW-SIGNOFF.md` · this file.
+> **Build 60/60 GREEN (exit 0) · members 108/108 · donut 27/27 · 3 neutered controls all RED on the
+> right checks · STAND-002 PASS, 26 standing docs reachable.**
+> **⚠ WHAT THE AUTHOR FLAGS AGAINST HIS OWN WORK:** **108/108 and 27/27 are DOM assertions, NOT renders**
+> — reading them as "DV-D17 is done" is the single most likely misreading of this handoff, and ds-018 is
+> a live counter-example on the same component · **the DV-D16 downward re-price makes the next job look
+> cheap**, which is exactly when to re-derive rather than inherit · **the `st.visible[id] = true` line is
+> my call, not Dave's, and is unruled** — it is flagged in three places precisely because a quiet
+> enactment choice is indistinguishable from a ruling six sessions later · **the donut suite's inability
+> to catch an all-on regression is published, not patched** — do not treat the two suites as
+> interchangeable.
+> Dave pushes via GitHub Desktop (whole stack, Desktop closed while Claude commits).
+
+> **[SUPERSEDED — kept for the record] COMMIT STATE (refreshed 2026-07-27 ~13:15 BST from `date`, the read-back offered the wrong options).**
+> ONE commit: `knowledge/_proforma/_DATAVIZ-DECISIONS.md` (**§ Batch 10 NEW** — DV-D16 with **both**
+> wordings and the reversal record · DV-D17 + 3 enactment bites · DV-D18 + the justification-shift note ·
+> the read-back method finding) · `knowledge/_DS-IMPROVEMENTS.md` (**ds-018 NEW** with two competing
+> causes; **ds-012 RULED (b)** + 5 enactment conditions + **a wording correction Dave's pushback earned**) ·
+> `_FUTURE-STATE.md` (**★★ FLOATED: expandable "Other" buckets**) ·
+> `_DECISION-HISTORY/2026-07-27-the-read-back-offered-the-wrong-options.md` (**NEW dossier**) ·
+> `_GM-ARCHIVE.md` (2c roll, **Batch 9**) · `_LIVE-STATE-ARCHIVE.md` (2d roll) · `_LIVE-STATE.md` · this file.
+> **Build 60/60 GREEN (exit 0) · capture gate 14 in scope / 0 fail / 0 warn · STAND-002 PASS, 26 standing
+> docs reachable.** **NOTHING WAS BUILT — this commit is entirely record.**
+> **⚠ WHAT THE AUTHOR FLAGS AGAINST HIS OWN WORK:** the **DV-D16 reversal means my read-back options were
+> wrong once already today** — treat wording ② as Dave's words, not as my reading of them, and **re-read
+> the ledger quote rather than this banner** · **ds-018's "instance five" framing is a HYPOTHESIS I want to
+> be true**, which is exactly when to demand the measurement · **ds-012's ruling was taken at ~57%** —
+> the conditions attached to it were written hot and deserve a cold re-read before enactment.
+
+> **[SUPERSEDED — kept for the record] COMMIT STATE (2026-07-27 ~12:40 BST, the gauge becomes a throttle).**
+> ONE commit: `knowledge/_RUNBOOK-context-gauge.md` (**§ ★ Half 0b NEW** — the throttle, the third tier,
+> the bank/fee model, 4 anti-false-fix clauses incl. the PROVEN-form/UNPROVEN-rule gap; Half 0 rewritten,
+> the ~10% floor removed) · `knowledge/_capture_gate.py` (**pre-flight FORM check** + 7 bites + 2 green
+> controls + wrap wiring + `--lane` skip) · `knowledge/_DS-IMPROVEMENTS.md` (**ds-017 NEW**) ·
+> `_FUTURE-STATE.md` (floated → **RULED**, diagnosis kept verbatim) ·
+> `_DECISION-HISTORY/2026-07-27-the-gauge-becomes-a-throttle.md` (**NEW dossier**, incl. §5 the author's
+> concerns against his own work) · `_GM-ARCHIVE.md` (2c roll, Batch 8) · `_LIVE-STATE` (2d) · this file.
+> **Build 60/60 GREEN (exit 0) · capture-gate selftest GREEN, all classes bite · bite-the-bite PASSED
+> (neutered band check ⇒ selftest red) · pre-flight check verified end-to-end on this handoff.**
+> **⚠ THREE THINGS THE AUTHOR FLAGS AGAINST HIS OWN WORK** *(Dave: "you are super clever, but agreeable")*:
+> the **15% is provisional** (n=3, one unknown, keyed off one unusual event — re-derive after ~5 sessions,
+> and RECORD each session's overrun so there is something to re-derive from) · **"unspent allowance is
+> LOST" is `inferred` ~75%**, not observed (it sat in a canon table as fact for 20 minutes) · **"1.36×
+> pro-rata" is a number that looks like a target** — spending allowance on low-value work is not a win.
+> **Superseded (do not act on): `git rev-list` showed 2 unpushed commits at session start** — this makes 3.
+>
+
+### the #13 ★ PRIOR banner — rolled at the W1 wrap (2c)
+
+> ## ★ PRIOR — 2026-07-27 (Mon **evening #13**, FABLE solo — ★★★ **GM COMPACTION ARCHITECTURE RULED: GM-D1…D9, ALL NINE AS RECOMMENDED** (`notes/_MEMENTO-DECISIONS.md` § GM growth-contracts) · ★★ **the disease is named: SUPERSESSION BY ADDITION** — move-discipline with no WHEN rule means text is only ever killed by piling a notice on top; dead spec + its warning label both bill full price every cold read · ★ **§C·5 Parked is INNOCENT** — the growing organ is the unlabelled pre-flight/post-mortem/commit-state stack under its heading (4 sessions deep, 2 blocks hand-marked "[SUPERSEDED…]") · ★ **~97% of the week's +70 lines landed in the two roll-less regions** · 🟡 ~68% at wrap, priced upfront not overrun): **Every section gets a growth contract; §A alone stays standing and uncapped.**
+> - **★★ RULED, NOTHING ENACTED:** D1(a) DO-FIRST typed contract + LATEST+1 roll, cap 120/180 · D2 retirement tests ×4 (supersession notice dies WITH its target, same batch · tombstone term LATEST+2 then gate-or-ledger · correction dies when source struck · perishables replaced never stacked) · D3(a) `[born·guards·until]` tags on NEW entries only · D4(a) **§B deleted into the banner** (runbook step-2 amendment) · D5(a) stack keeps LATEST only, post-mortems → NEW `notes/_GAUGE-LOG.md`, commit-states → archive, batch key `<date> <session#>` · D6(a) §C = pointer+state+owner, cap 150 · D7(a) chain budget GM ≤8K + LS ≤16K ≈ 12%, beyond = RETRIEVAL · D8(a) budgets in `_capture_gate.py` warn/BLOCK + bites · D9 gauge floor MEASURED per session, bands on remaining budget (Dave's reframe — a snapshot constant would be falsified by its own enactment).
+> - **⬛ ENACTMENT OWED, its own window (~30–40%), Opus conducts:** read `notes/_briefs/2026-07-27-gm-compaction-enactment-brief.md` — runbook 2e/2f FIRST, then gate, then ONE supervised compaction pass (predicts GM ~910 → ~450–500 lines; publish actuals). **§A untouched (hash-verify) · EXIT CHECK per batch · verbatim moves · LS 2d-tightening OUT OF SCOPE (separate ruling).**
+> - **⚠ THIS session ran under CURRENT rules** — GM grew net +~40 lines today by design; the shrink is the enactment's job, under rules that exist first. Dossier: `_DECISION-HISTORY/2026-07-27-supersession-by-addition.md`. Evidence in the proposal §1 (all numbers measured in-window, brief's stale numbers corrected).
+
+### #13 commit-state — rolled at the W1 wrap (2f)
+
+> **COMMIT STATE (refreshed 2026-07-27 ~18:25 BST from `date`, supersession by addition).**
+> **Context gauge at authoring: 🟡 AMBER ~68% (ESTIMATE).**
+> ONE commit, RECORD not code: `notes/_MEMENTO-DECISIONS.md` (**GM-D1…D9 inscribed**) ·
+> `notes/_briefs/2026-07-27-gm-compaction-architecture-proposal-v1.md` (**NEW + RULED stamp**) ·
+> `notes/_briefs/2026-07-27-gm-compaction-enactment-brief.md` (**NEW**) ·
+> `_DECISION-HISTORY/2026-07-27-supersession-by-addition.md` (**NEW dossier**) ·
+> `_GM-ARCHIVE.md` (2c, batch 2026-07-27 #13) · `_LIVE-STATE-ARCHIVE.md` (2d, #10 delta) ·
+> `_LIVE-STATE.md` · this file. **No build run — zero source/knowledge-pipeline files touched;
+> last known 62/62 GREEN stands.** STAND-002 + `_capture_gate.py --wrap` run at close (results in
+> the wrap message). Dave pushes via GitHub Desktop (whole stack, Desktop closed while Claude commits).
+
+### §B · THIS SESSION — deleted into the banner by GM-D4(a), verbatim
+
+# §B · THIS SESSION
+
+> ⚠ **STALE BELOW — do not read it as current (2026-07-27, later morning #3).** The three most recent
+> sessions are summarised only in the ★ LATEST + ★ PRIOR banners at the top of this file, which are
+> authoritative. This section still narrates the 07-26 lane ① window. **The narratives you actually
+> want:** this session → `_DECISION-HISTORY/2026-07-27-the-instrument-cannot-see-the-property.md`
+> (the KG exploration arc: the consult's two defects, Dave's two reframes, why held angle (1) would have
+> missed `aid-009`, and the three-term pre-flight) · prior → `_DECISION-HISTORY/2026-07-27-the-gate-that-narrowed-its-own-rule.md`
+> (the full arc: why the recommendation was wrong, the gate-narrowed-its-own-rule finding, the forked
+> vocabulary, the third silent-fallback, and the probe repeating the wrong-document error) · rulings →
+> `knowledge/_proforma/_DATAVIZ-DECISIONS.md` **DV-D14 + DV-D15** · defect record →
+> `knowledge/_DS-IMPROVEMENTS.md` ds-014 (ENACTED block) · the register build →
+> `docs/decisions/ADR-0016-enactment-proof-register.md`. Rewriting §B was again deliberately not
+> attempted — the banner + DO-FIRST + the dossier carry the session, and a hot rewrite of a long
+> narrative section is exactly what produced 07-26's three corrections.
+
+> ⓘ Most recent = **legend wave lane ①** (2026-07-26 evening, Opus 5 solo self-conducting, effort MAX).
+> The ★ LATEST banner is its summary; the narrative WHY/HOW — why the re-verify mattered more than the
+> lane, the correction to my own correction on the grep, the two non-obvious calls the divvy didn't
+> name — is `_DECISION-HISTORY/2026-07-26-legend-wave-lane-1-and-three-record-corrections.md`.
+> **Evidence per claim** (`<source> · <date>`): build `_build_all.py` 55/55 GREEN · 2026-07-26 ·
+> members `node knowledge/_verify_dv_legend_members.js` 54/54 · 2026-07-26 · exemplar
+> `node knowledge/_verify_dv_legend.js` 27/27 · 2026-07-26 · migration state
+> `python3 knowledge/_check_legend_migration.py` → donut ✅ bar ✅, combo + line remain · 2026-07-26 ·
+> ds-010 closure = computed-fill read at 1180 + 760 in the licensed cut, font assert passed ·
+> 2026-07-26 · ds-012 = per-label `getBBox()`, 6 of 6 clipped, worst 16.8px · 2026-07-26 ·
+> byte figures = `knowledge/_BEHAVIOUR-GATE.md` + `wc -c` · 2026-07-26 · commit `aabe617`.
+> **What I got wrong:** my first framing said a grep "cannot" discriminate the migration state —
+> building the replacement disproved it (`data-series-toggle="` works today, on punctuation luck).
+> Corrected in the script's docstring, the dv-behaviour comment, the dossier and the banner.
+> The two older narratives below are retained for context.
+>
+> ⓘ (prior) the **bar-audit → CONDUCTOR window** (the
+> narrative WHY lives in `_DECISION-HISTORY/2026-07-23-bar-audit-and-conductor-absorbs.md` — audit
+> method, the contaminated-Q8-framing lesson, the base64-payload iframe borrow, the rulings arc,
+> the two-lane reconcile incl. the `a2acc9e` mid-conduct note). Evidence per claim: audit sheet
+> `reviews/BAR-CHART-AUDIT-2026-07-23-v1.REVIEW.html` (rendered 1400+840) · ledger DV-D08/09 +
+> seed 76/130 (`f887efd`) · sidequest receipt + its commit (`db1ed1b`) · builds 51/51 at baseline
+> AND post-inscription. The detailed narrative below is the **PRIOR Phase-2 waves** session,
+> retained for context.
+
+## (prior) 2026-07-22 evening — "Phase-2, BOTH waves: one conductor, five worker windows"
+
+*The record lives in the receipts (5 worker + 2 conductor-reconcile, `notes/_receipts/2026-07-22-
+phase2-*`) — no separate dossier; the receipts ARE the narrative, judgment calls included.*
+
+- **✅ 24 components in one day** (W1: A-forms 4 + B-feedback 10 · W2: A-continuation 5 — **forms
+  brief COMPLETE 9/9** — + C Data-grid + D Charts 4). Library 40→64, registry 4→18 members,
+  radius 45-strict, **census 32→32 across everything**, 51/51 green at every reconcile. Firsts:
+  calendar panel (Date-picker, composed from surveyed parts) · determinate progress bar
+  (File-upload, ink-on-neutral) · Charts = the parked kit PROMOTED (provisional-agent, sign-off
+  yours). Conventions minted: `:is()` multi-control members · local `--phys-size` on mixed sizes ·
+  `proforma-promotion` provenance class · dataviz gate wired to chart snippets (new-surface rule).
+- **✅ The protocol COMPOUNDS:** wave-1 absorb completed 7 lanes' contracts by hand (they fire only
+  on registration — fails-loud proven); wave-2 workers READ that lesson and pre-landed contracts →
+  both wave-2 absorbs injected clean first try. Fences held all day; A's wave-2 breach flag =
+  misread of MY mid-wave absorb of C (resolved + inscribed in the wave-2 reconcile receipt —
+  the name-every-path reflex worked, the inference didn't).
+- **✅ Dave's in-flight asks handled by the hot-clause:** showroom header count SHIPPED (live 64) ·
+  card thumbnails NOTED (`_FUTURE-STATE`, `#bare`-mode shape) · theme "outage" diagnosed as
+  wrong-file + payload-is-base64 (pages were correct; Legacy's small delta on data components =
+  architecture, not bug).
+- **🐛 Wrong/caught:** Drawer close 44→36 (file beat receipt) · my pkill self-match (twice-class,
+  receipted for the runbook) · one stale-cascade red per wave (my own serial edits, regen healed).
+  **Owed:** render-verify (headless-shell, standing).
+
+
+---
+
+
 *(rolled 2026-07-27 evening, capture-ritual step 2c — Batch 11)*
 
 > ## ★ PRIOR — 2026-07-27 (Mon **afternoon #9**, OPUS solo self-conducting, effort MAX — ★ **ds-019 WITHDRAWN WITH CAUSE: THERE IS NO OVERRIDING RULE, AND THERE NEVER WAS** · ★ **the defect was the INSTRUMENT — a computed value read in the SAME TASK as the class change is the PRE-transition value** · ★ **`oklab(0 0 0 / 0)` is an IN-FLIGHT INTERPOLATION, not a failed declaration** · ★ **the predecessor probe's control WAS WORKING and was overruled as a string artefact** · ★ **DV-D17's render-proof UNBLOCKED · Dave's screenshot question ANSWERED** · harness given a REPO HOME by Dave's ruling · build untouched **60/60 GREEN** · 🔴 ~63% by his "headline only" call): **A false defect spent one full session as canon, and the record was directing the next window to hunt a rule that does not exist.**

@@ -18,7 +18,8 @@ WHAT IT CHECKS (repo-side referential completeness)
              the self-declaration route, so a new kind of standing doc can opt in without
              this gate needing to know about it in advance
   STAND-004  GOOD-MORNING.md still carries its own structural spine: the two names,
-             §A/§B/§C, and §A's standing-instruction note. §A is the section most at risk
+             §A/★ LATEST banner/§C (GM-D4: §B deleted, the banner is the session record),
+             and §A's standing-instruction note. §A is the section most at risk
              because it is the only one that does not change each session; on 2026-07-18 a
              from-scratch rewrite silently reduced its instruction to two words.
 
@@ -57,7 +58,11 @@ REQUIRED_IN_GOOD_MORNING = [
     (r"TITLE .*CHAT", "the next-session title line (capture-ritual step 4b)"),
     (r"^#\s*§A", "§A Orientation heading"),
     (r"STANDING SECTION", "§A's standing-instruction note — the bit that erodes"),
-    (r"^#\s*§B", "§B This session heading"),
+    # GM-D4(a), 2026-07-27 (`notes/_MEMENTO-DECISIONS.md` § GM growth-contracts): §B is DELETED;
+    # the ★ LATEST banner formally absorbs its spec. The spine asserts the banner, not the dead heading.
+    # (Phase-1 gap closed at the phase-2 pass: this line still demanded §B while the capture gate
+    #  failed on §B's presence — two gates enforcing opposite structures.)
+    (r"^>\s*##\s*★ LATEST", "the ★ LATEST session banner (GM-D4: the banner IS the session record)"),
     (r"^#\s*§C", "§C Queue heading"),
 ]
 

@@ -133,3 +133,13 @@ cp /tmp/apply_type_bind.py.patched knowledge/apply_type_bind.py   # restore the 
 ```
 The general rule: **a revert is scoped to the EXPERIMENT, never to the instrument measuring it.**
 If the instrument is itself uncommitted, `git diff --name-only` cannot tell them apart — you must.
+
+## Sandbox wart — build kills at call boundaries (banked 2026-07-27 #15)
+
+**Nothing survives a tool-call boundary in this sandbox** — `nohup` and `setsid` both get reaped
+(tested #15). A `_build_all.py` killed mid-run freezes whatever step was writing: the signature is
+**~33 stripped compliance JSONs + `_CAPTURE-GATE.md`** (#14's "34 files / 1,335 deleted lines" and
+#15's 33/1,336 were the same event). **Run the build FOREGROUND, ONE call — it fits inside 45s.**
+Restore stripped files with `git show HEAD:<path> > <path>` — the delete-guard blocks `git checkout`'s
+unlink (`Operation not permitted`), and `git status` itself can strand `index.lock` if its call is
+reaped (clear per step 0 above).

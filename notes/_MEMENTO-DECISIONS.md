@@ -59,8 +59,11 @@ created (Sun 07:10) · S-D2/S-D3: `_capture_gate.py` lane flag + stdout-only wra
 ## GM growth-contracts ruling — 2026-07-27 (Fable solo, explicit option-select in-session)
 
 *Proposal: `notes/_briefs/2026-07-27-gm-compaction-architecture-proposal-v1.md` (all numbers measured in-window).
-Dossier: `_DECISION-HISTORY/2026-07-27-supersession-by-addition.md`. Enactment: OWED, its own window —
-brief at `notes/_briefs/2026-07-27-gm-compaction-enactment-brief.md`. Invariants: §A untouched · every
+Dossier: `_DECISION-HISTORY/2026-07-27-supersession-by-addition.md`. Enactment: phase 1 (rules 2e/2f ·
+gauge D9 · gate budgets) `113eefc` #14 · **phase 2 W1** (clean build · 2f strata → `notes/_GAUGE-LOG.md` ·
+D4 §B deleted · STAND-004 aligned to D4) 2026-07-27 #15 · **W2 OWED: 2e DO-FIRST audit · D6 §C prune ·
+D7 chain line · final stamp** — brief at `notes/_briefs/2026-07-27-gm-compaction-enactment-brief.md`
+*(status line superseded at source #15; original read "OWED, its own window")*. Invariants: §A untouched · every
 roll passes the 2c EXIT CHECK · rolls are verbatim MOVES.*
 
 | # | Ruling (Dave, 2026-07-27) | Why | Audit |
