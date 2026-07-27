@@ -33,6 +33,23 @@ const MEMBERS = [
       { id: 'cb4-legend', live: 'cb4-live', ids: ['1', '2', '3'], figure: 'grouped column' },
       { id: 'cb5-legend', live: 'cb5-live', ids: ['1', '2', '3'], figure: 'stacked column' }
     ]
+  },
+  {
+    file: 'knowledge/snippets/Chart-combo.reference.html',
+    name: 'Chart-combo',
+    legends: [
+      /* TWO series, TWO mark types (bar + line) on ONE plot — the first member where the swatch
+         SHAPE carries meaning, so the row set is small but the mark coupling is the risk. */
+      { id: 'cc1-legend', live: 'cc1-live', ids: ['1', '2'], figure: 'bar + line combo' }
+    ]
+  },
+  {
+    file: 'knowledge/snippets/Chart-line.reference.html',
+    name: 'Chart-line',
+    legends: [
+      /* The member that EARNS the swatch shape set — its markers are circle/square/diamond. */
+      { id: 'cl2-legend', live: 'cl2-live', ids: ['1', '2', '3'], figure: 'multi-line' }
+    ]
   }
 ];
 
@@ -71,7 +88,19 @@ MEMBERS.forEach((member) => {
     const peeked = (id) => [].some.call(marks(id), (e) => e.classList.contains('is-peek'));
     const reset = leg.querySelector('.dv-leg-reset');
     const live = doc.getElementById(L.live);
-    const [a, b, c] = L.ids;
+    /* ⚠ GENERALISED 2026-07-27 (lane ②). This suite was written against Chart-bar and baked TWO
+       of its facts in: exactly three series (`const [a,b,c] = L.ids`) and the literal series name
+       "Current" in check 13. Chart-combo has TWO series called something else, so both assumptions
+       crashed or lied. The invariants are per-N, not per-bar: `a` = the first row, `last` = the
+       floor, `others` = everyone else. Names come off the MARKUP, never from a literal — a suite
+       that hardcodes one member's data cannot verify the next one. Bar's 23 per-legend checks are
+       unchanged in number, wording and meaning. */
+    const a = L.ids[0];
+    const b = L.ids[1];
+    const last = L.ids[L.ids.length - 1];
+    const others = (x) => L.ids.filter((id) => id !== x);
+    const nameOf = (id) => item(id).querySelector('.dv-leg-name').textContent.trim();
+    const announces = (id) => live.textContent.indexOf(nameOf(id)) !== -1;
 
     /* STRUCTURE — the dual-gesture contract. The swatch must sit OUTSIDE the label button:
        nesting a checkbox inside a button is the bug the markup shape exists to prevent. */
@@ -102,12 +131,13 @@ MEMBERS.forEach((member) => {
     ok('11 the ghosted series stops taking pointer events',
       [].every.call(marks(a), (e) => e.style.pointerEvents === 'none'));
     ok('12 Reset enables once something is ghosted', reset.disabled === false);
-    ok('13 the change is announced by name', /Current/i.test(live.textContent));
+    ok('13 the change is announced by name', announces(a));
 
-    /* THE FLOOR — the last active series cannot be removed */
-    click(sw(b)); click(sw(c));
+    /* THE FLOOR — the last active series cannot be removed. `a` is already unchecked above, so
+       walking the rest in order makes the FINAL click the one the floor must refuse. */
+    L.ids.slice(1).forEach((id) => click(sw(id)));
     ok('14 the last active series cannot be unchecked',
-      sw(c).getAttribute('aria-checked') === 'true' && !anyGhost(c));
+      sw(last).getAttribute('aria-checked') === 'true' && !anyGhost(last));
     ok('15 the floor is announced, not silent', /at least one/i.test(live.textContent));
 
     /* RESET */
@@ -118,21 +148,23 @@ MEMBERS.forEach((member) => {
     /* ISOLATE = ADDITIVE FOCUS SET */
     click(item(a));
     ok('18 isolate ghosts the others and marks the row solo',
-      !anyGhost(a) && ghosted(b) && ghosted(c) && row(a).classList.contains('is-solo'));
+      !anyGhost(a) && others(a).every(ghosted) && row(a).classList.contains('is-solo'));
     ok('19 in isolate the other boxes render BLANK (focus-set membership)',
       sw(b).getAttribute('aria-checked') === 'false' && sw(a).getAttribute('aria-checked') === 'true');
     click(sw(b));
-    ok('20 checking a blank swatch ADDS it at full', !anyGhost(b) && ghosted(c));
+    ok('20 checking a blank swatch ADDS it at full',
+      !anyGhost(b) && L.ids.slice(2).every(ghosted));   /* slice(2) is empty on a 2-series member */
     click(item(a));
     ok('21 releasing isolate restores the PRIOR mix (all shown)',
       L.ids.every((id) => !anyGhost(id)) && !row(a).classList.contains('is-solo'));
 
     /* HOVER — fires in BOTH modes */
     over(row(a));
-    ok('22 hovering an active row fades the OTHER actives to 24%', faded(b) && faded(c) && !faded(a));
-    click(sw(c));
-    over(row(c));
-    ok('23 hovering a GHOSTED row peeks it as an add-preview', peeked(c));
+    ok('22 hovering an active row fades the OTHER actives to 24%',
+      others(a).every(faded) && !faded(a));
+    click(sw(last));
+    over(row(last));
+    ok('23 hovering a GHOSTED row peeks it as an add-preview', peeked(last));
     click(reset);
   });
 

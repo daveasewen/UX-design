@@ -142,71 +142,16 @@
     if (btn) { btn.setAttribute('aria-expanded', 'false'); btn.focus(); }   /* label static (Dave 2026-07-24) */
   });
 
-  /* ---------- LEGEND — ⚠ TRANSITIONAL, SUPERSEDED BY DV-D11. DELETE WHEN THE LAST MEMBER MIGRATES.
-     The model below (hide-at-0%, shift-click isolate, .dv-quiet highlight) is DEAD as a design:
-     DV-D11 replaced it with two render levels (full / ghost-12%, nothing ever disappears), a
-     dual-gesture row (swatch=checkbox + label=isolate) and an ADDITIVE focus set. That model
-     lives in `canon/dv-legend.js`, the group's second registered behaviour source.
-
-     WHY THIS STILL EXISTS (Dave ruled incremental migration, 2026-07-26): the two models are
-     SELECTOR-DISJOINT — this one keys on `button[data-series-toggle]`, dv-legend on
-     `.dv-legrow`. A migrated snippet is served only by dv-legend and an unmigrated one only by
-     this block: no overlap, no double-binding. The four legend-bearing members can migrate one
-     at a time with every commit in a working state.
-
-     END CONDITION — run `knowledge/_check_legend_migration.py` (exit 0 = delete this block; the
-     page budget then falls to ~27.7KB). NOT the bare grep this comment used to name: that string
-     is in this block's own source, injected into every member, so it matched all five snippets
-     the day it was written — migrated donut included. Corrected lane ①, 2026-07-26.
-     MIGRATED: Chart-donut · Chart-bar. REMAINING: Chart-combo · Chart-line.
-     Do not extend or "improve" anything below — it is scheduled for deletion. */
-  function setSeries(btn, show) {
-    btn.setAttribute('aria-pressed', String(show));
-    var fig = btn.closest('figure') || document;
-    var els = fig.querySelectorAll('[data-series-group="' + btn.getAttribute('data-series-toggle') + '"]');
-    for (var i = 0; i < els.length; i++) {
-      els[i].style.opacity = show ? '' : '0';
-      els[i].style.visibility = show ? '' : 'hidden';
-      els[i].style.pointerEvents = show ? '' : 'none';
-    }
-  }
-  function legendToggle(btn) { setSeries(btn, btn.getAttribute('aria-pressed') !== 'true'); }
-  function isolate(btn) {
-    var fig = btn.closest('figure') || document;
-    var all = fig.querySelectorAll('button[data-series-toggle]');
-    var solo = btn.getAttribute('aria-pressed') === 'true';
-    for (var i = 0; i < all.length; i++) {
-      if (all[i] !== btn && all[i].getAttribute('aria-pressed') === 'true') { solo = false; }
-    }
-    for (var j = 0; j < all.length; j++) { setSeries(all[j], solo ? true : all[j] === btn); }
-  }
-  function setQuiet(fig, group) {
-    var els = fig.querySelectorAll('[data-series-group]');
-    for (var i = 0; i < els.length; i++) {
-      els[i].classList.toggle('dv-quiet', group !== null && els[i].getAttribute('data-series-group') !== group);
-    }
-  }
-  function hlTarget(e) {
-    var el = e.target.closest && e.target.closest('.dv-legbtn[data-series-toggle], .dv-marker[data-series-group]');
-    if (!el) { return null; }
-    return { fig: el.closest('figure') || document,
-             group: el.getAttribute('data-series-toggle') || el.getAttribute('data-series-group') };
-  }
-  document.addEventListener('pointerover', function (e) {
-    var t = hlTarget(e); if (t) { setQuiet(t.fig, t.group); }
-  });
-  document.addEventListener('pointerout', function (e) {
-    var t = hlTarget(e); if (t) { setQuiet(t.fig, null); }
-  });
-  document.addEventListener('dblclick', function (e) {
-    var leg = e.target.closest && e.target.closest('button[data-series-toggle]');
-    if (leg) { isolate(leg); }
-  });
-  document.addEventListener('click', function (e) {
-    var leg = e.target.closest && e.target.closest('button[data-series-toggle]');
-    if (leg) { if (e.shiftKey) { isolate(leg); } else { legendToggle(leg); } }
-  });
-  /* ---------- end TRANSITIONAL legend block ---------- */
+  /* ---------- LEGEND — MOVED OUT, NOT LOST (2026-07-27, wave complete).
+     The transitional legend model that sat here (hide-at-0%, shift-click isolate, .dv-quiet
+     highlight) was SUPERSEDED by DV-D11 and is deleted now that all four legend-carrying members
+     run `canon/dv-legend.js`. Authorised by `python3 knowledge/_check_legend_migration.py` → exit 0
+     (donut · bar · combo · line all on `.dv-legrow`; scatter and sparkline carry no legend).
+     ⚠ ANTI-FALSE-FIX: if you are here because a legend stopped working, the answer is NOT to
+     restore this block — the two models are selector-disjoint, so a half-migrated member would
+     simply be served by neither. Check the member's markup carries `.dv-legrow` rows and that its
+     extraContract is not still naming the dead `data-series-toggle=" hook. The dead model's full
+     text is at git f6c7f99:knowledge/canon/dv-behaviour.js if it is ever needed as evidence. */
 
   /* VIEW TOGGLES (menu picks 6/7/9): baked-variant switching — geometry is generated, never
      computed here; behaviour only shows/hides [data-dv-view] groups (.dv-off = display:none). */

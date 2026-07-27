@@ -18,6 +18,14 @@ that single pass.** Running list of what it must cover:
   or adopt `text/on-inverse`); **success/verified kept MONO** (ink check) vs teal; **blue-vs-mono focus ring**.
 - **Also owed:** DataViz sign-off (parked "good enough"); **Tranche-9 first review**; Masthead/Hero/Headers revisits
   already flagged below.
+- **★ NEW 2026-07-27 — THE WHOLE SHOWROOM CHANGED TYPE, and nobody has looked at it yet (ds-013).** Dave
+  reported the chart legend labels rendering too big; the cause was `srcdoc` re-basing every payload's
+  relative URL, so **`canon/type.css` 404'd in all 49 panes that link it** and every `.t-cm-*` composite
+  and selector binding in it was inert. Fixed + gated in `gen_showroom.py` (build 56/56). ⚠ **Consequence
+  to eyeball: 49 showroom panes are now rendering CANON type for the first time.** Measured on the charts
+  (labels 16px/400 → 12px/500, keys → 12px/700); everywhere else the delta is unmeasured. Anything that
+  looked acceptable at browser defaults may have moved. **This wants a deliberate sweep — it is the
+  cheapest moment to catch type regressions across the library, and it is not a chart question.**
 - **Video-player re-themed — ★ FAST FOLLOWER, do NOT hold for the consolidated pass (Dave 2026-07-21
   end-of-session: "fine-ish for now, lets make it a fast follower"):** primary action
   now the B-D1 ladder ink (red = Legacy-only via override); `--muted` bound to `text/secondary` — a **deliberate

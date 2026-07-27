@@ -99,6 +99,7 @@ STEPS = [
     ("state-snap selftest (ADR-0014)", "_validate_state_snap.py", ["--selftest"]),
     ("radius gate — no hardcoded border-radius; shape is a theme flex slot (ADR-0010)", "_validate_radius.py"),
     ("showroom sync — generated component library (RULED 2026-07-21)", "gen_showroom.py", ["--check"]),
+    ("showroom URL-rebase selftest — the srcdoc base-URL trap (2026-07-27)", "gen_showroom.py", ["--selftest"]),
     ("Legacy-colour leakage gate (Mono) — no Legacy-only colour in a Mono surface", "_validate_legacy_leak.py"),
     ("theme-provenance gate (ADR-0011/R-D19) — no foreign-theme hex in a Mono surface (advisory)", "_validate_theme_provenance.py"),
     ("token-tier gate (_STANDARDS.md §1)", "_validate_token_tiers.py"),

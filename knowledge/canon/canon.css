@@ -3463,20 +3463,12 @@
 .cn-chart-bar .seg button::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
     width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
 .cn-chart-bar .dv-off{display:none !important;}
-.cn-chart-bar .dv-quiet{opacity:.25 !important;}
 /* legend — multi-series filter buttons (grouped/stacked); shaped + lettered swatches, hollow off-state */
-.cn-chart-bar .dv-legend{list-style:none; display:flex; flex-wrap:wrap; justify-content:center; gap:16px; margin:16px 0 0; padding:0;}
-.cn-chart-bar .dv-legend li{display:flex;}
-.cn-chart-bar .dv-legbtn{display:flex; align-items:center; gap:8px; min-height:24px; background:transparent;
-    border:0; padding:0; color:var(--ink); cursor:pointer; transition:opacity var(--ease);}
-.cn-chart-bar .dv-legbtn:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
-.cn-chart-bar .dv-legbtn[aria-pressed="false"]{color:var(--data-axis);}
-.cn-chart-bar .dv-legbtn[aria-pressed="false"] .sw{background:transparent !important; border:2px solid var(--data-axis);}
-.cn-chart-bar .dv-legbtn[aria-pressed="false"] .dv-key{opacity:1;}
-.cn-chart-bar .dv-legend .sw-circle{border-radius:50%;}
-.cn-chart-bar .dv-legend .sw-diamond{width:8px; height:8px; transform:rotate(45deg); margin:2px;}
-.cn-chart-bar .dv-legend .sw{width:12px; height:12px; flex:none;}
-.cn-chart-bar .dv-legend .dv-key{opacity:.6; min-width:12px;}
+/* The pre-DV-D11 legend chrome (.dv-legend / .dv-legbtn / .dv-quiet) was DELETED here on
+     2026-07-27 when the wave closed — authorised by `_check_legend_migration.py` exit 0.
+     Nothing else consumed it: snippet CSS is hoisted into canon.css NAMESPACED per component,
+     so each member only ever had its own copy. The live legend chrome is the .dv-leg* block
+     below, driven by canon/dv-legend.js. */
 /* ================= DV-D11 LEGEND MODEL — the migrated chrome (2026-07-26, wave member 2) ==========
      This snippet's two legends (cb4 grouped, cb5 stacked) now run on `canon/dv-legend.js`.
      The `.dv-legend*` rules ABOVE are DEAD HERE and serve nothing else — snippet CSS is hoisted into
@@ -3639,17 +3631,72 @@
 @keyframes cn-chart-combo-dvDraw{to{stroke-dashoffset:0;}}
 @keyframes cn-chart-combo-dvFade{from{opacity:0;} to{opacity:1;}}
 .cn-chart-combo polyline.dv-series, .cn-chart-combo polyline.dv-casing, .cn-chart-combo g.dv-marker, .cn-chart-combo text.dv-endkey{transition:opacity var(--ease), visibility var(--ease);}
-.cn-chart-combo .dv-legend{list-style:none; display:flex; flex-wrap:wrap; justify-content:center; gap:16px; margin:16px 0 0; padding:0;}
-.cn-chart-combo .dv-legend li{display:flex;}
-.cn-chart-combo .dv-legbtn{display:flex; align-items:center; gap:8px; min-height:24px; background:transparent;
-    border:0; padding:0; color:var(--ink); cursor:pointer; transition:opacity var(--ease);}
-.cn-chart-combo .dv-legbtn:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
-.cn-chart-combo .dv-legbtn[aria-pressed="false"]{color:var(--data-axis);}
-.cn-chart-combo .dv-legbtn[aria-pressed="false"] .sw{background:transparent !important; border:2px solid var(--data-axis);}
-.cn-chart-combo .dv-legbtn[aria-pressed="false"] .dv-key{opacity:1;}
-.cn-chart-combo .dv-legend .sw{width:12px; height:12px; flex:none;}
-.cn-chart-combo .dv-legend .sw-circle{border-radius:50%;}
-.cn-chart-combo .dv-legend .dv-key{opacity:.6; min-width:12px;}
+/* The pre-DV-D11 legend chrome (.dv-legend / .dv-legbtn / .dv-quiet) was DELETED here on
+     2026-07-27 when the wave closed — authorised by `_check_legend_migration.py` exit 0.
+     Nothing else consumed it: snippet CSS is hoisted into canon.css NAMESPACED per component,
+     so each member only ever had its own copy. The live legend chrome is the .dv-leg* block
+     below, driven by canon/dv-legend.js. */
+/* ================= DV-D11 LEGEND MODEL — the migrated chrome (2026-07-27, lane ②) =========
+     This snippet's legend now runs on `canon/dv-legend.js`. The `.dv-legend*` rules ABOVE are
+     DEAD HERE and serve nothing else (snippet CSS is hoisted into canon.css NAMESPACED per
+     component, `.cn-chart-combo .dv-legend{…}`, so it can never reach another member). `.dv-quiet`
+     stays until the TRANSITIONAL block in dv-behaviour.js goes. End condition for deleting all of
+     it: `python3 knowledge/_check_legend_migration.py` → exit 0.
+     Copy-source: Chart-bar.reference.html (HORIZONTAL legend — it carries `.dv-leg.center` and the
+     `:not(.vert)` Reset width rule that the horizontal case needs). */
+.cn-chart-combo .dv-leg{list-style:none; margin:0; padding:0; display:flex; gap:16px; --hit:44px;}
+.cn-chart-combo .dv-leg.center{flex-wrap:wrap; justify-content:center; align-items:center; margin:16px 0 0;}
+.cn-chart-combo .dv-leg.vert{flex-direction:column; align-items:stretch; gap:20px; min-width:190px;}
+/* the row = the bordered box carrying BOTH controls; the row itself is not interactive */
+.cn-chart-combo .dv-legrow{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:var(--border-radius-default);
+    padding:4px 8px; background:transparent; transition:border-color var(--ease), background var(--ease);}
+.cn-chart-combo .dv-leg.vert .dv-legrow{width:100%;}
+.cn-chart-combo .dv-legrow:hover{border-color:var(--ink);}
+.cn-chart-combo .dv-legrow.is-solo{border-color:var(--ink); background:color-mix(in srgb, var(--ink) 6%, transparent);}
+/* SWATCH = checkbox — filled when shown; hollow + grey-primitive border when hidden.
+     HIT AREA: Apollo 44 via an invisible ::before, growing LEFT into the gutter. */
+.cn-chart-combo .dv-leg-sw{position:relative; width:12px; height:12px; flex:none; display:inline-block; cursor:pointer;
+    background:var(--sc); border:1px solid var(--sc); transition:background var(--ease), border-color var(--ease);}
+.cn-chart-combo .dv-leg-sw::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; right:0; left:auto; transform:translateY(-50%);}
+.cn-chart-combo .dv-leg-sw[aria-checked="false"]{background:transparent; border-color:var(--muted);}
+.cn-chart-combo .dv-leg-sw:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+/* ★ SHAPE MODIFIER — EARNED HERE, unlike Chart-bar. Combo is the one member with TWO mark types
+     on one plot: series 1 is a rect (bar), series 2 is a line with circular nodes. So swatch shape
+     mirrors the on-chart mark and is a real non-colour channel (DV-D10's "swatch MIRRORS the mark"
+     clause). Bar's shape modifiers were dropped because ALL its marks are rects — same rule, other
+     answer. Chart-line earns its full circle/square/diamond set in lane ③. */
+.cn-chart-combo .dv-leg-sw.sw-circle{border-radius:50%;}
+/* LABEL = isolate toggle-button — borderless (the row carries the box); pressed reads via .is-solo */
+.cn-chart-combo .dv-leg-item{display:inline-flex; align-items:center; gap:8px; flex:1 1 auto; position:relative;
+    margin:-4px -8px -4px 0; padding:4px 8px 4px 0;
+    background:transparent; border:0; color:var(--ink); cursor:pointer; text-align:left; font:inherit;}
+.cn-chart-combo .dv-leg-item::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+.cn-chart-combo .dv-leg-item:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-combo .dv-leg-item > *{position:relative; z-index:1;}
+/* keep the key + name above the invisible target */
+.cn-chart-combo .dv-leg-item .dv-key{min-width:12px; text-align:center; opacity:.75;}
+.cn-chart-combo .dv-leg-name{white-space:nowrap;}
+/* Reset — the B-D4 pattern: default DISABLED (token colours, still VISIBLE), enables on any
+     ghost or isolate; hover lifts the border to ink. */
+.cn-chart-combo .dv-leg-reset{position:relative; font:inherit; font-size:12px; padding:4px 12px; width:100%;
+    border:1px solid var(--line); background:transparent; color:var(--ink); cursor:pointer;
+    transition:border-color var(--ease), color var(--ease);}
+.cn-chart-combo .dv-leg:not(.vert) .dv-leg-reset{width:auto;}
+.cn-chart-combo .dv-leg-reset::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+.cn-chart-combo .dv-leg-reset:hover:not(:disabled){border-color:var(--ink);}
+.cn-chart-combo .dv-leg-reset:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-combo .dv-leg-reset:disabled{border-color:var(--border-disabled); color:var(--text-disabled); cursor:default;}
+/* THE FADE LADDER — full ▸ 24% hover/peek ▸ 12% ghost. Two render levels, nothing ever hides.
+     .is-peek MUST sit after .is-ghost: a ghosted row lifts 12% → 24% as an add-preview. */
+.cn-chart-combo .is-faded{opacity:.24 !important;}
+.cn-chart-combo .is-ghost{opacity:.12 !important;}
+.cn-chart-combo .is-peek{opacity:.24 !important;}
+/* sr-only live region — every legend state change is announced (DV-D11 chrome clause) */
+.cn-chart-combo .dv-sr{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 /* ── TOOLBAR CONTROLS — one shared literal height (Dave 2026-07-24) ── */
 .cn-chart-combo .dv-controls{--control-h:32px;}
 .cn-chart-combo .dv-tbl-toggle, .cn-chart-combo .dv-vt{position:relative; height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
@@ -3680,8 +3727,6 @@
 .cn-chart-combo .dv-toggle-seg button:focus-visible{outline:2px solid var(--ink); outline-offset:-2px; z-index:2;}
 .cn-chart-combo .dv-off{display:none !important;}
 /* baked-variant switching — geometry generated, never computed */
-.cn-chart-combo .dv-quiet{opacity:.25 !important;}
-/* highlight dims the DATA layer only */
 .cn-chart-combo .dv-target{stroke:var(--data-target); opacity:var(--target-alpha); stroke-width:1.5; stroke-dasharray:8 4;}
 .cn-chart-combo .dv-target-label{fill:var(--data-target);}
 .cn-chart-combo .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
@@ -3759,8 +3804,6 @@
 .cn-chart-donut text.dv-key-el{fill:var(--ink); transition:opacity var(--ease), visibility var(--ease);}
 .cn-chart-donut text.dv-val{fill:var(--ink);}
 .cn-chart-donut text.dv-direct{fill:var(--ink); transition:opacity var(--ease), visibility var(--ease);}
-.cn-chart-donut .dv-quiet{opacity:.25 !important;}
-/* highlight dims the DATA layer only */
 .cn-chart-donut .dv-off{display:none !important;}
 /* baked-variant switching (value ⇄ percent) */
 /* ── TOOLBAR CONTROLS — ONE SHARED HEIGHT (Dave 2026-07-24, exemplar canon verbatim) ── */
@@ -3795,21 +3838,11 @@
 .cn-chart-donut .seg.sm button{padding:0 8px;}
 .cn-chart-donut .seg button::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
     width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
-.cn-chart-donut .dv-legend{list-style:none; display:flex; margin:0; padding:0;}
-.cn-chart-donut .dv-legend.vert{flex-direction:column; gap:12px;}
-.cn-chart-donut .dv-legend li{display:flex;}
-/* legend rows are FILTER BUTTONS — quiet utility state, NOT B-D7 press physics (Q5 posture) */
-.cn-chart-donut .dv-legbtn{display:flex; align-items:center; gap:8px; min-height:24px; background:transparent;
-    border:0; padding:0; color:var(--ink); cursor:pointer; transition:opacity var(--ease);}
-.cn-chart-donut .dv-legbtn:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
-/* OFF state (Dave 2026-07-23, exemplar canon): HOLLOW swatch (2px border inside the 12px box) +
-     swatch/letter/text all in the data/axis AA grey; nothing dims below the floor. */
-.cn-chart-donut .dv-legbtn[aria-pressed="false"]{color:var(--data-axis);}
-.cn-chart-donut .dv-legbtn[aria-pressed="false"] .sw{background:transparent !important; border:2px solid var(--data-axis);}
-.cn-chart-donut .dv-legbtn[aria-pressed="false"] .dv-key{opacity:1;}
-.cn-chart-donut .dv-legend .sw{width:12px; height:12px; flex:none;}
-/* squares — the donut's non-colour channel is the LETTER, not marker shape */
-.cn-chart-donut .dv-legend .dv-key{opacity:.6; min-width:12px;}
+/* The pre-DV-D11 legend chrome (.dv-legend / .dv-legbtn / .dv-quiet) was DELETED here on
+     2026-07-27 when the wave closed — authorised by `_check_legend_migration.py` exit 0.
+     Nothing else consumed it: snippet CSS is hoisted into canon.css NAMESPACED per component,
+     so each member only ever had its own copy. The live legend chrome is the .dv-leg* block
+     below, driven by canon/dv-legend.js. */
 /* ================= DV-D11 LEGEND MODEL — the migrated chrome (2026-07-26) =================
      This snippet's legend now runs on `canon/dv-legend.js`. The `.dv-legend*` rules ABOVE are
      dead HERE and serve NOTHING else — ⚠ corrected 2026-07-26 lane ①, this comment previously
@@ -3967,29 +4000,68 @@
 .cn-chart-line .dv-animate text.dv-endkey{opacity:0; animation:cn-chart-line-dvFade var(--ease) both; animation-delay:2400ms;}
 /* the letter lands as its line finishes drawing */
 }
-.cn-chart-line .dv-legend{list-style:none; display:flex; flex-wrap:wrap; justify-content:center; gap:16px; margin:16px 0 0; padding:0;}
-.cn-chart-line .dv-legend li{display:flex;}
-/* legend rows are FILTER BUTTONS — quiet utility state, NOT B-D7 press physics (Q5 posture) */
-.cn-chart-line .dv-legbtn{display:flex; align-items:center; gap:8px; min-height:24px; background:transparent;
-    border:0; padding:0; color:var(--ink); cursor:pointer; transition:opacity var(--ease);}
-.cn-chart-line .dv-legbtn:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
-/* OFF state (Dave, 2026-07-23 evening, refined same session — supersedes the strike-through
-     draft): HOLLOWED swatch + swatch outline AND text in an AA-passing grey = the data/axis role
-     (6.10:1 L · 6.42:1 D, mode-aware, already minted — no new token). The hollow is the
-     non-colour channel; text NEVER dims (inactive ≠ disabled, ADR-0014 floor). !important is
-     required only to beat the swatch's inline series background — scoped to this state. */
-.cn-chart-line .dv-legbtn[aria-pressed="false"]{color:var(--data-axis);}
-.cn-chart-line .dv-legbtn[aria-pressed="false"] .sw{background:transparent !important; border:2px solid var(--data-axis);}
-/* hollow = BORDER (Dave), inside the 12px box (border-box) */
-.cn-chart-line .dv-legbtn[aria-pressed="false"] .dv-key{opacity:1;}
-/* the letter keeps the SAME AA grey — its resting .6 dim would sink it below the floor */
-/* swatches carry the MARKER SHAPES too (Dave, same session) — circle A · square B · diamond C,
-     mirroring the chart's own non-colour channel; 50% = the circle idiom (radius-gate exempt);
-     diamond = 8px square rotated 45° (diagonal ≈ the 12px optical size, on the 4px grid). */
-.cn-chart-line .dv-legend .sw-circle{border-radius:50%;}
-.cn-chart-line .dv-legend .sw-diamond{width:8px; height:8px; transform:rotate(45deg); margin:2px;}
-.cn-chart-line .dv-legend .sw{width:12px; height:12px; flex:none;}
-.cn-chart-line .dv-legend .dv-key{opacity:.6; min-width:12px;}
+/* The pre-DV-D11 legend chrome (.dv-legend / .dv-legbtn / .dv-quiet) was DELETED here on
+     2026-07-27 when the wave closed — authorised by `_check_legend_migration.py` exit 0.
+     Nothing else consumed it: snippet CSS is hoisted into canon.css NAMESPACED per component,
+     so each member only ever had its own copy. The live legend chrome is the .dv-leg* block
+     below, driven by canon/dv-legend.js. */
+/* ================= DV-D11 LEGEND MODEL — the migrated chrome (2026-07-27, lane ③) =========
+     This snippet's legend now runs on `canon/dv-legend.js`. The `.dv-legend*` rules ABOVE are
+     DEAD HERE and serve nothing else (snippet CSS is hoisted into canon.css NAMESPACED per
+     component). All of it goes when `python3 knowledge/_check_legend_migration.py` exits 0.
+     Copy-source: Chart-bar.reference.html (HORIZONTAL legend). */
+.cn-chart-line .dv-leg{list-style:none; margin:0; padding:0; display:flex; gap:16px; --hit:44px;}
+.cn-chart-line .dv-leg.center{flex-wrap:wrap; justify-content:center; align-items:center; margin:16px 0 0;}
+.cn-chart-line .dv-leg.vert{flex-direction:column; align-items:stretch; gap:20px; min-width:190px;}
+.cn-chart-line .dv-legrow{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:var(--border-radius-default);
+    padding:4px 8px; background:transparent; transition:border-color var(--ease), background var(--ease);}
+.cn-chart-line .dv-leg.vert .dv-legrow{width:100%;}
+.cn-chart-line .dv-legrow:hover{border-color:var(--ink);}
+.cn-chart-line .dv-legrow.is-solo{border-color:var(--ink); background:color-mix(in srgb, var(--ink) 6%, transparent);}
+.cn-chart-line .dv-leg-sw{position:relative; width:12px; height:12px; flex:none; display:inline-block; cursor:pointer;
+    background:var(--sc); border:1px solid var(--sc); transition:background var(--ease), border-color var(--ease);}
+.cn-chart-line .dv-leg-sw::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; right:0; left:auto; transform:translateY(-50%);}
+.cn-chart-line .dv-leg-sw[aria-checked="false"]{background:transparent; border-color:var(--muted);}
+.cn-chart-line .dv-leg-sw:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+/* ★★ THE MARKER-SHAPE SET — Chart-line is the member that EARNS it (DV-D11 non-colour channel).
+     Its markers genuinely ARE circle · square · diamond, so the swatch mirrors the mark. Chart-bar
+     dropped these because all its marks are rects; Chart-combo carries only the circle, for its one
+     line series. Values are the reviewed ones from the dead block above — diamond = an 8px square
+     rotated 45° so its DIAGONAL reads at the 12px optical size, on the 4px grid.
+     ⚠ NON-OBVIOUS, and the divvy did not name it: the 44px hit target is an invisible ::before
+     CHILD of the swatch, so `transform:rotate(45deg)` on the diamond rotates the TARGET with it.
+     The counter-rotation below keeps the hit area axis-aligned — without it the diamond's target is
+     a 44px square standing on its corner, which is not the rectangle the hit-area rule means.
+     (Same reason the ::before keeps `translateY(-50%)`: the transform list REPLACES, never merges.) */
+.cn-chart-line .dv-leg-sw.sw-circle{border-radius:50%;}
+.cn-chart-line .dv-leg-sw.sw-diamond{width:8px; height:8px; margin:2px; transform:rotate(45deg);}
+.cn-chart-line .dv-leg-sw.sw-diamond::before{transform:translateY(-50%) rotate(-45deg);}
+.cn-chart-line .dv-leg-item{display:inline-flex; align-items:center; gap:8px; flex:1 1 auto; position:relative;
+    margin:-4px -8px -4px 0; padding:4px 8px 4px 0;
+    background:transparent; border:0; color:var(--ink); cursor:pointer; text-align:left; font:inherit;}
+.cn-chart-line .dv-leg-item::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+.cn-chart-line .dv-leg-item:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-line .dv-leg-item > *{position:relative; z-index:1;}
+.cn-chart-line .dv-leg-item .dv-key{min-width:12px; text-align:center; opacity:.75;}
+.cn-chart-line .dv-leg-name{white-space:nowrap;}
+.cn-chart-line .dv-leg-reset{position:relative; font:inherit; font-size:12px; padding:4px 12px; width:100%;
+    border:1px solid var(--line); background:transparent; color:var(--ink); cursor:pointer;
+    transition:border-color var(--ease), color var(--ease);}
+.cn-chart-line .dv-leg:not(.vert) .dv-leg-reset{width:auto;}
+.cn-chart-line .dv-leg-reset::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
+    width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+.cn-chart-line .dv-leg-reset:hover:not(:disabled){border-color:var(--ink);}
+.cn-chart-line .dv-leg-reset:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-line .dv-leg-reset:disabled{border-color:var(--border-disabled); color:var(--text-disabled); cursor:default;}
+/* THE FADE LADDER — full ▸ 24% hover/peek ▸ 12% ghost. .is-peek MUST sit after .is-ghost. */
+.cn-chart-line .is-faded{opacity:.24 !important;}
+.cn-chart-line .is-ghost{opacity:.12 !important;}
+.cn-chart-line .is-peek{opacity:.24 !important;}
+/* sr-only live region — every legend state change is announced (DV-D11 chrome clause) */
+.cn-chart-line .dv-sr{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 /* table-view POPOVER panel — Dave's mock: floating card on the surface ground, thin border,
      soft shadow (the Popover/Tooltip anchored-overlay elevation recipe: shadow in light, grey
      outline in dark), NOT frosted. Radius = role token (theme-flexed). */
@@ -4048,8 +4120,6 @@
     width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
 .cn-chart-line .dv-off{display:none !important;}
 /* baked-variant switching (menu 6/7/9) — geometry generated, never computed */
-.cn-chart-line .dv-quiet{opacity:.25 !important;}
-/* highlight dims the DATA layer only (!important outranks the entry animation) */
 .cn-chart-line .dv-ghost{stroke:var(--data-series-1); fill:none; opacity:.45; stroke-width:2; stroke-dasharray:8 4;}
 .cn-chart-line .dv-target{stroke:var(--data-target); opacity:var(--target-alpha); stroke-width:1.5; stroke-dasharray:8 4;}
 .cn-chart-line .dv-target-label{fill:var(--data-target);}

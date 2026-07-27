@@ -321,3 +321,59 @@ into the same beat as ds-010's sibling checks, with a render as the acceptance t
 "no `text.dv-label` has `getBBox().x < 0`" assertion to the dataviz gate so geometry clipping becomes
 gated rather than eyeballed.** *(The gate would have to run in a browser — today it cannot; log as the
 reason the assertion is a recommendation and not a patch.)*
+
+## ds-013 — `srcdoc` re-based every showroom payload's relative URL, so type.css 404'd in ALL 49 panes that link it (2026-07-27, Dave's report → render)
+**✅ FIXED + GATED SAME SESSION.** Dave, cold: *"the labeling on the donut and bars, they are all too
+big apart from the reset button, we had an independent scale for labels that seems to have been
+lost"* — an exact description of the DV-D08 chart text ladder (12/500) not applying.
+
+**Root cause — the srcdoc base-URL trap.** `gen_showroom.py` embeds the reference snippet VERBATIM and
+hands it to the pane iframe as `srcdoc`. A srcdoc document has no URL of its own; per spec it inherits
+the **parent's** base URL — `showroom/<Component>.html`. So the snippet's own
+`<link rel="stylesheet" href="../canon/type.css">`, correct from `knowledge/snippets/`, re-resolved to
+`<repo>/canon/type.css` — **a path that does not exist**. Every `.t-cm-*` composite AND every
+selector-list binding in type.css was inert in every showroom pane. A 404 stylesheet throws nothing:
+the failure presents as "the type looks a bit off".
+
+**Measured, not eyeballed** (computed styles, licensed HSBC cut, `showroom/Chart-donut.html` +
+`Chart-bar.html`, both panes):
+
+| element | before | after | canon |
+|---|---|---|---|
+| `.dv-leg-item` (label) | 16px / 400 | **12px / 500** | 12/500 |
+| `.dv-leg-name` | 16px / 400 | **12px / 500** | 12/500 |
+| `.dv-key` (letter key) | 16px / 400 | **12px / 700** | 12/700 |
+| `.dv-leg-reset` | 12px / 400 | **12px / 500** | 12/500 |
+| `.t-cm-chart-label` rule | NOT FOUND | **12px / 500** | — |
+| `type.css` cssRules | BLOCKED / absent | **57** | — |
+
+Reset was the only correct label in the pane **because its snippet CSS hard-codes `font-size:12px`** —
+the one member not depending on the composite. That is exactly the asymmetry Dave reported.
+
+**Longstanding, not a lane-① regression — OBSERVED.** Rendering the PRE-migration snippet
+(`git show 7401daf~1`) under the same unreachable-type.css condition gives `.dv-legbtn` = **13.333px /
+400** — the `<button>` UA default. The DV-D11 migration added `.dv-leg-item{font:inherit}`, which
+swapped that UA default for the inherited **16px** body size. So the outage predates the wave; the
+migration made it 2.7px worse and cost the key its 700 weight, which is what pushed it over Dave's
+threshold. **Blast radius: 49 of 67 snippets link type.css — every one of them has been rendering
+uncomposed type in the showroom.**
+
+**Fix + GATE (`knowledge/gen_showroom.py`).** `rebase_payload_urls()` re-points each payload's relative
+URLs so they resolve from `showroom/` (`../canon/type.css` → `../knowledge/canon/type.css`), and — the
+half that matters — **a rebased URL whose target does not exist FAILS THE BUILD.** The condition is
+gated, not the instance. Selftest `--selftest` (6 bites) wired as a build step; build **56/56 GREEN**.
+
+⚠ **ANTI-FALSE-FIX, recorded because it is the obvious "simplification":** do NOT replace this with an
+injected `<base href="…">`. A `<base>` also re-bases **fragment-only** URLs, which would break every
+inline icon-sprite reference (`<use href="#ic-*">`) in the library — trading a type outage for an icon
+outage. Bite 2 pins that.
+
+**Two residues, logged not fixed.** (a) `reviews/BINDING-MECHANISM-2026-07-18*.html` carries the same
+dead `../canon/type.css` — a historical review artefact, left as filed (do not rewrite ratified docs);
+(b) **49 showroom panes now render canon type for the first time** — a library-wide visual change that
+no one has eyeballed. Registered in `_REVIEW-SIGNOFF.md`.
+
+**The standing pattern, now THREE times:** ds-010, ds-012 and ds-013 were all found by rendering the
+real artefact in the real cut, and **none is reachable by any static gate we had.** ds-013 differs in
+one way that matters — it was found by *Dave's eye*, not ours. The gate it produced is the first of the
+three to make the class of failure build-blocking.
