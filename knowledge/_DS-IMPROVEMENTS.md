@@ -414,3 +414,30 @@ looks at.** That is a missing gate class, not a missing fix:
 - **candidate: every `DV-D*`/`R-D*`/`B-D*`/`T-D*` ruling carries either an executable enactment proof
   or an explicit NOT-GATEABLE marker, and the build reports the unproven ones as a standing debt
   register.** Recommend, do not enact — this is an architecture call and Dave's to make.
+
+**★ ds-014 UPDATE — Dave NAMED two of them (2026-07-27, same session, verbatim):**
+
+> *"spacing between segments and contrast on the alpha labels"*
+
+So the stacked figure (`cb5`, `Chart-bar.reference.html`) has lost, in his eye: **(1) the spacing
+between stacked segments** and **(2) the contrast treatment on the alpha labels** (the A/B/C letter
+keys — "legend alphas" in DV-D07's language, emphasis channel 700). A third a11y rule is named only
+as part of "3 cardinal" and is NOT yet identified — **ask, do not infer.**
+
+**Leads for the next session, marked as LEADS not findings:**
+- **DV-D07** already rules that where a theme sets alpha < 1, **dv-016 / DV-D03 contrast must compute
+  from the COMPOSITE (colour × alpha × ground), never the stored hex alone.** If the enactment
+  computes on the hex, letters can pass a gate and fail on screen — the same silent-wrongness shape
+  as ds-013.
+- Segment spacing: the ledger's stacked entries found so far are ANIMATION order (Batch 3 #2, Batch 4
+  #4, #3 easing), **not** a spacing/separation rule — so the spacing decision is likely inscribed in
+  the **bar audit** (`reviews/BAR-CHART-AUDIT-2026-07-23-v1.REVIEW.html`) or the DV-D08/09 block.
+  **Find where it was ruled before judging whether it was lost.**
+- ⚠ **A first probe of `cb5` returned ZERO segment rects** — the figure/selector assumption in
+  `_render-env/stack.py` is wrong (grouping by `x` attribute; the stack may use `<g transform>` or
+  non-`rect` marks). **That is a broken probe, NOT evidence that the segments are missing.** Fix the
+  probe before reading anything into it. Written down because a "0 rects" line in a log is exactly
+  the kind of thing that gets quoted later as a finding.
+
+**Authoring gauge: 🔴 RED ~90% — this entry is a CAPTURE, not a diagnosis. Everything above the
+"LEADS" line is Dave's words; everything below is unverified.**
