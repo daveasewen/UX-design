@@ -60,6 +60,29 @@ CUTOVER = datetime.date(2026, 7, 26)
 VOCAB = {"observed", "inferred", "ruled", "floated", "standing"}  # D2: five values
 HEADER_LINES = 40
 
+# ---------------------------------------------------------------- pre-flight stamp
+# RULED by Dave 2026-07-27 (_RUNBOOK-context-gauge.md § ★ Half 0b — "the gauge must be a
+# THROTTLE, not a thermometer"). The handoff must carry the pre-flight estimate it was priced
+# with, in the canonical form:
+#
+#   pre-flight: fill 40% + job 12% + wrap 5% = 57% AMBER · reserve 15% ring-fenced
+#
+# ⚠ WHAT THIS CHECKS AND WHAT IT CANNOT (anti-false-fix clause 3 of the runbook section):
+# it checks the FORM of the stamp — that three terms are present (the wrap is the one
+# historically omitted), that they sum to the stated total, and that the named band matches
+# the band table. It CANNOT check whether the fill figure is honest, and it CANNOT observe
+# whether a mid-job re-price happened. Those are discipline, not enforcement. Do NOT "fix"
+# this gate by having it invent its own fill estimate: it has no access to the token tally,
+# and a guessed number wearing a gate's authority is the failure this programme exists to stop.
+BANDS = ((45, "GREEN"), (60, "AMBER"), (10 ** 9, "RED"))  # Dave recalibrated 2026-07-25
+WRAP_FLOOR = 5      # runbook: "WRAP (~5%)" — soft, hence WARN not FAIL
+RESERVE_FENCE = 15  # runbook § Half 0b: ring-fenced, NOT an addend
+PREFLIGHT_RE = re.compile(r"^\s*>?\s*\**pre-?flight\**\s*[:—-]", re.I)
+TERM_RE = {k: re.compile(r"\b%s\b\D{0,4}(\d+)" % k, re.I) for k in ("fill", "job", "wrap")}
+TOTAL_RE = re.compile(r"=\s*[~≈]?\s*(\d+)")
+BAND_WORD_RE = re.compile(r"\b(GREEN|AMBER|RED)\b", re.I)
+RESERVE_RE = re.compile(r"\breserve\b\D{0,4}(\d+)", re.I)
+
 DATE_PREFIX_RE = re.compile(r"^(\d{4})-(\d{2})-(\d{2})-")
 STATUS_RE = re.compile(r"^status:\s*(\S+)\s*(.*)$")
 PROV_RE = re.compile(r"^provenance:\s*(.+)$")
@@ -144,6 +167,67 @@ def check_file(path, repo):
     return fails, warns
 
 
+def band_for(total):
+    """The band table, read not recalled (runbook § READ THE BAND TABLE)."""
+    for ceiling, name in BANDS:
+        if total < ceiling:
+            return name
+    return "RED"
+
+
+def check_preflight(text, label="GOOD-MORNING.md"):
+    """FORM check on the pre-flight stamp. Returns (fails, warns).
+
+    Bites on the three failures actually observed: the wrap term omitted (2026-07-27 #2),
+    a band asserted from memory instead of the table (twice), and arithmetic that doesn't
+    close. Everything it cannot see is named in the module header, not implied away."""
+    fails, warns = [], []
+    line = next((ln for ln in text.splitlines() if PREFLIGHT_RE.match(ln)), None)
+    if line is None:
+        return ([f"{label}: no `pre-flight:` stamp — the handoff must carry the estimate the "
+                 f"session was priced with (runbook § ★ Half 0b). Form: `pre-flight: fill N% + "
+                 f"job N% + wrap N% = N% BAND · reserve 15% ring-fenced`"], warns)
+
+    terms = {}
+    for key, rx in TERM_RE.items():
+        m = rx.search(line)
+        if m:
+            terms[key] = int(m.group(1))
+    missing = [k for k in ("fill", "job", "wrap") if k not in terms]
+    if missing:
+        fails.append(f"{label}: pre-flight stamp has {len(terms)} of 3 terms — missing "
+                     f"{', '.join(missing)}. \"A pre-flight estimate that does not include the "
+                     f"wrap is not a pre-flight estimate\"")
+
+    tm = TOTAL_RE.search(line)
+    bm = BAND_WORD_RE.search(line)
+    if not tm:
+        fails.append(f"{label}: pre-flight stamp states no projected total (`= N%`)")
+    if not bm:
+        fails.append(f"{label}: pre-flight stamp names no band — state the NUMBER and the BAND "
+                     f"together so a mismatch is visible in one glance")
+
+    if tm and not missing:
+        total, summed = int(tm.group(1)), sum(terms[k] for k in ("fill", "job", "wrap"))
+        if abs(total - summed) > 1:  # 1 point of rounding slack
+            fails.append(f"{label}: pre-flight arithmetic does not close — "
+                         f"{terms['fill']}+{terms['job']}+{terms['wrap']} = {summed}, "
+                         f"stamp says {total}")
+    if tm and bm:
+        total, named, truth = int(tm.group(1)), bm.group(1).upper(), band_for(int(tm.group(1)))
+        if named != truth:
+            fails.append(f"{label}: pre-flight band MIS-READ — {total}% is {truth} by the band "
+                         f"table, stamp says {named}. Quote the table, never recall it")
+
+    if terms.get("wrap", WRAP_FLOOR) < WRAP_FLOOR:
+        warns.append(f"{label}: wrap reserved at {terms['wrap']}% (runbook says ~{WRAP_FLOOR}%) "
+                     f"— the ritual is not free")
+    if not RESERVE_RE.search(line):
+        warns.append(f"{label}: pre-flight names no ring-fenced reserve (~{RESERVE_FENCE}%) — "
+                     f"the fence is what makes the gauge a throttle rather than a thermometer")
+    return fails, warns
+
+
 def wrap_checks(repo, today, lane=False):
     fails, warns, notes = [], [], []
     iso = today.isoformat()
@@ -153,6 +237,19 @@ def wrap_checks(repo, today, lane=False):
         notes.append("LANE WRAP (--lane, S-D2): GOOD-MORNING header check SKIPPED — lane "
                      "sessions are ruled outside the GM queue; _LIVE-STATE §🔀 is their "
                      "record and its check still bites.")
+        notes.append("LANE WRAP: pre-flight-stamp check SKIPPED too — the stamp lives in "
+                     "GOOD-MORNING.md, which lane sessions do not write.")
+    else:
+        gm = os.path.join(repo, "GOOD-MORNING.md")
+        if os.path.exists(gm):
+            with open(gm, encoding="utf-8") as f:
+                f_, w_ = check_preflight(f.read())
+            fails += f_
+            warns += w_
+        notes.append("PRE-FLIGHT stamp: FORM checked only (3 terms · arithmetic · band-vs-table). "
+                     "Whether the fill figure is honest, and whether a mid-job re-price actually "
+                     "happened, are NOT observable here — discipline, not enforcement "
+                     "(_RUNBOOK-context-gauge.md § ★ Half 0b).")
     for fname, label in targets:
         p = os.path.join(repo, fname)
         if not os.path.exists(p):
@@ -230,8 +327,52 @@ FIXTURES = {
 }
 
 
-def selftest():
+# One fixture per pre-flight FAIL class. The first two are the failures ACTUALLY OBSERVED:
+# the wrap term omitted (2026-07-27 #2, 58→63) and a band asserted from memory (twice).
+PREFLIGHT_FIXTURES = [
+    ("missing", "> **COMMIT STATE.** Context gauge at authoring: RED ~72%.\n", True),
+    ("two-term (wrap omitted)",
+     "pre-flight: fill 38% + job 15% = 53% AMBER · reserve 15% ring-fenced\n", True),
+    ("arithmetic does not close",
+     "pre-flight: fill 40% + job 12% + wrap 5% = 70% RED · reserve 15% ring-fenced\n", True),
+    ("band mis-read (70 called AMBER)",
+     "pre-flight: fill 50% + job 15% + wrap 5% = 70% AMBER · reserve 15% ring-fenced\n", True),
+    ("band mis-read at the boundary (60 is RED)",
+     "pre-flight: fill 40% + job 15% + wrap 5% = 60% AMBER · reserve 15% ring-fenced\n", True),
+    ("green control",
+     "pre-flight: fill 40% + job 12% + wrap 5% = 57% AMBER · reserve 15% ring-fenced\n", False),
+    ("green control, boundary GREEN (44)",
+     "pre-flight: fill 30% + job 9% + wrap 5% = 44% GREEN · reserve 15% ring-fenced\n", False),
+]
+
+
+def selftest_preflight():
+    """Bite-test the pre-flight FORM check — every class must FAIL, controls must pass."""
     failures = []
+    for name, text, should_fail in PREFLIGHT_FIXTURES:
+        f_, _ = check_preflight(text, label="fixture")
+        if should_fail and not f_:
+            failures.append(f"pre-flight [{name}]: expected FAIL, check stayed green — "
+                            f"the check does not bite")
+        if not should_fail and f_:
+            failures.append(f"pre-flight [{name}]: expected green, got {f_}")
+    # the band table itself, read not recalled: boundaries are the twice-observed failure
+    for total, want in ((44, "GREEN"), (45, "AMBER"), (59, "AMBER"), (60, "RED"), (72, "RED")):
+        got = band_for(total)
+        if got != want:
+            failures.append(f"band_for({total}) = {got}, table says {want}")
+    # the reserve must NOT be counted into the sum — if it ever is, the fence became padding
+    f_, _ = check_preflight("pre-flight: fill 40% + job 12% + wrap 5% = 72% RED · reserve 15%\n",
+                            label="fixture")
+    if not f_:
+        failures.append("pre-flight: a stamp that ADDED the ring-fenced reserve into its total "
+                        "passed — the fence has silently become a fourth addend (runbook § Half "
+                        "0b anti-false-fix 1)")
+    return failures
+
+
+def selftest():
+    failures = selftest_preflight()
     with tempfile.TemporaryDirectory() as td:
         os.makedirs(os.path.join(td, "notes"))
         os.makedirs(os.path.join(td, "_DECISION-HISTORY"))

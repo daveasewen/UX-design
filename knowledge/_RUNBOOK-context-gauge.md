@@ -34,16 +34,29 @@ are spent. That is why the gauge kept failing while being technically present: i
 wrap, when the only remaining option is to stop. **A gauge that only reports is not a gauge, it is a
 postmortem.**
 
-**The rule: before starting any job with a plausible cost above ~10% of the window, state TWO numbers
-to Dave, unprompted, in the same breath as the plan.**
+**The rule: EVERY job is priced and debited — and the estimate is stated to Dave, unprompted, in the
+same breath as the plan, whenever it could move the band or reach the reserve. THREE terms plus a fence.**
+
+*(RULED by Dave 2026-07-27: *"every job should be priced, so we have a budget for everything, like real
+life."* **Like real life** is the operative phrase and it sets the ceremony: every purchase debits the
+account, but you do not hold a board meeting over a coffee. **Debit always; state out loud when it
+matters.** The old rule had a ~10% floor — and every overrun on record arrived as a series of steps each
+individually under it, which is precisely how a floor fails.)*
 
 ```
-current fill  +  estimated cost of this job  =  projected band at completion
+fill  +  job  +  WRAP (~5%)          =  projected band at completion
+RESERVE (~15%, RING-FENCED)          =  the line you may not cross without asking
 ```
+
+*(The three-term rule is below under "the wrap is part of the job". The RESERVE is the fence ruled on
+2026-07-27 — see ★ Half 0b. It is **not** a fourth addend: adding it to the projection is exactly the
+mistake it exists to prevent.)*
 
 - **Projects into Red?** Say so **before** starting, and offer the fork: **(a)** narrow the job to
   fit, **(b)** flush + hand the build to a fresh window, **(c)** proceed knowingly with a Red stamp.
   **Dave chooses. Do not choose silently by starting.**
+  ⇒ **★ Since 2026-07-27 this fork has TWO triggers, not one — see ★ Half 0b.** It used to fire only
+  before starting, which is why a finding landing mid-job could never reach it.
 - **Jobs that need pricing** (all observed to blow past estimate): a render-verify harness built from
   scratch · a new gate + its selftest · a review sheet or interactive prototype · a corpus-wide sweep ·
   an ADR plus the build it describes. *Rough anchors, 2026-07-27: standing up render-verify cold ≈
@@ -51,6 +64,131 @@ current fill  +  estimated cost of this job  =  projected band at completion
 - **Re-price when the job changes shape.** The 2026-07-27 session priced nothing, then absorbed a
   discriminator, a render env rebuild, two probe rewrites, a generator, an ADR and the full ritual —
   each individually reasonable, cumulatively 85%.
+
+### ★ Half 0b — THE THROTTLE: the gauge must be able to CUT WORK (RULED by Dave, 2026-07-27)
+
+**Dave, at the wrap that forced this:** *"the pre-flighting needs work, we cant keep hitting red, its a
+waste of effort."* Ruled cold the following window, deliberately — the diagnosis was authored at ~97%
+fill, and a rule about not working past your budget must not itself be inscribed past budget.
+
+**The evidence: three Red sessions running — 🔴 ~92% · 🔴 ~63% · 🔴 ~72%**, overruns of **+?, +5, +17**.
+The three-term rule was inscribed *during* the last of those and **did not stop it.**
+
+**★ THE FINDING: hitting Red is a SCOPE failure, not a MEASUREMENT failure.** A better estimate would
+not have saved any of those three sessions; **only cutting would have.** The gauge was being used as a
+**thermometer** — it reported how hot the session was and never once told it to stop.
+
+**RULED (a) — the reserve is RING-FENCED, not additive. ~15%.** It is a budget you **may not spend
+without asking**, not a term you add to make the projection fit. Sized from the observed **worst**
+overrun (+17), not the mean: *n*=3 with one unknown, so a mean would be false precision, and the error
+is **asymmetric** — under-reserving costs a wasted session (*"a waste of effort"*), over-reserving costs
+a slightly early wrap.
+
+⚠ **THE NUMBER IS PROVISIONAL AND WEAKER THAN THE SHAPE.** The *shape* (ring-fenced, not additive) is
+firm. **15% is sized from n=3 with one value unknown, and the +17 it keys off was a single unusual event**
+(chasing ds-016) — that is a tail observation doing the work of a distribution. ⇒ **Re-derive after ~5
+more sessions of recorded overrun**, and record each session's actual overrun at wrap so there is
+something to re-derive *from*. Flagged at inscription by the author, not discovered later.
+
+**RULED (b) — spending the reserve is a TRIGGER, and the fork goes to Dave.** On **any unplanned
+finding**: stop, re-price out loud, and put the fork to him — **(a)** log it and stop · **(b)** narrow ·
+**(c)** chase it knowingly with a Red stamp. **Not a decision the agent makes silently from inside the
+sunk cost**, which is exactly how ds-016 got chased for +17.
+
+**★ THE MECHANISM ALREADY EXISTED; ITS TRIGGER WAS AT THE WRONG TIME.** The fork in Half 0 above was
+written before this ruling and is precisely the throttle Dave asked for — it just fired **only** before
+starting. Extended, one word: **before starting AND on any unplanned finding.** *(Same class as the
+morning's other findings — the right rule, unreachable at the moment it is needed.)*
+
+**RULED (c) — A NEW SESSION IS A REFILL, NOT A PENALTY** *(Dave, same window: "we can reset the budget
+at any time by starting a new session").* This is the clause that makes the throttle cheap to obey.
+The fork's option **(b)** — flush and hand to a fresh window — has been written as a last resort; it is
+in fact **the normal way more budget is obtained**, and under this ruling it is often the FIRST answer,
+not the reluctant one. **Cutting work no longer means losing it.**
+
+⚠ **But a refill is not free — it costs the cold read.** MEASURED 2026-07-27: a fresh session reached
+~**22%** fill on `GOOD-MORNING.md` + `_LIVE-STATE.md` + the memory index **before doing any work**
+(*n*=1 — treat as an anchor, not a constant, and re-measure when the handoff's size changes).
+⇒ **A fresh window buys ~78%, not 100%**, which gives the fork an arithmetic:
+
+> **Flush whenever the remaining budget is smaller than the job plus its wrap.** You are trading ~22%
+> of re-read for ~78% of clean room — a good trade well before Red, and a bad one for a job that would
+> have fitted.
+
+**★ THE MODEL, in Dave's words (2026-07-27):** *"the individual budgets stay the same but we can always
+pull from a larger 'bank' of tokens by moving to a new window."* ⇒ **The window is the BUDGET; the BANK
+is the constraint.** The budget per window is fixed and non-negotiable; the bank behind it is large but
+finite and it is what actually gets spent.
+
+⇒ **The re-read is a TRANSACTION FEE on every withdrawal** — ~22% of a window, pure overhead, buying no
+work. That single fact resolves the posture in both directions and neither extreme is right:
+- **Never flushing** spends the fee zero times but wastes whole sessions in Red — *"a waste of effort."*
+- **Flushing freely** never goes Red but pays ~22% every time, and the fee comes out of the bank.
+⇒ **So: SIZE JOBS TO FIT A WINDOW so the fee is paid rarely; and when a job genuinely will not fit, pay
+it rather than burn the session.**
+
+### ★★ THE THIRD TIER — the weekly allowance is PERISHABLE, and it inverts the objective
+
+**⚠ CORRECTION, inscribed as loudly as the claim it replaces (2026-07-27, same window).** This section
+first read: *"minimising Reds and minimising flushes are the same objective — fewer tokens spent against
+the bank for the same work."* **That is wrong, and Dave corrected it within minutes** by showing the
+plan-usage panel: *"the overall weekly budget, which we need to max-out or loose."*
+
+**There are THREE tiers, not two:**
+
+| tier | unit | behaviour | resets |
+|---|---|---|---|
+| **the job** | one task | priced + debited, always | — |
+| **the window** | ~200k context | fixed, non-negotiable, refillable by starting a new session | per session |
+| **★ the week** | plan allowance | **PERISHABLE — unspent allowance is LOST** *(INFERRED, see below)* | Thu 23:00 |
+
+⚠ **PROVENANCE OF THE PERISHABLE CLAIM — `status: inferred`, not observed.** It rests on the plan-usage
+panel (a percentage bar with a reset time) plus Dave's reading of it (*"which we need to max-out or
+loose"*). **Not verified:** whether the percentage meters tokens, messages or a composite; whether the
+Fable line draws from the same pool as "all models"; whether anything rolls over. Confidence ~75% —
+enough to act on, **not** enough to have gone into a canon table as a fact, which is what happened for
+twenty minutes on 2026-07-27 before this line was added. *(The failure this project exists to prevent is
+confident false inscription; the correction is the record working, not an embarrassment to hide.)*
+
+⇒ **The objective is NOT to minimise tokens. It is to MAXIMISE WORK DONE PER WEEK.** Under-spending the
+weekly allowance is a failure of exactly the same kind as burning a session in Red — both convert
+allowance into nothing. *(MEASURED 2026-07-27 12:07, Max 20×: week 51% elapsed, **33% consumed = 0.65×
+pro-rata**; Fable **28% = 0.55×**, the most under-used line of all. 83h and 67% of allowance left ⇒
+**1.36× pro-rata needed** for the rest of the week just to avoid losing it.)*
+
+**⇒ THE PACE CHECK sets the posture for tier 2.** Compare weekly-consumed % against week-elapsed %:
+
+- **BEHIND pace** (consumed < elapsed) — allowance is expiring. **Flush freely; run more windows; do not
+  economise.** The ~22% re-read fee is close to irrelevant, because the alternative is not saving the
+  tokens, it is **losing them at Thu 23:00.** Prefer the bigger model, the fuller proof, the extra bite.
+- **ON or AHEAD of pace** — the fee is real. Size jobs to fit, flush reluctantly, economise at Amber.
+
+⚠ **This does NOT license Red sessions.** A Red session wastes allowance *and* produces the silly
+mistakes Dave has called out; a flush converts allowance into work. **Behind pace, the correct move is
+MORE WINDOWS, not longer ones.** Red is still the failure; hoarding is now also a failure.
+
+⚠ **Rationing a model against its own line is a hoarding trap.** Fable is "reserved for open-judgment"
+by routing — but its allowance is separately metered and separately perishable, so **reserving it past
+the point where it can be spent is not discipline, it is waste.** If the Fable line is behind pace and
+Fable-shaped work is queued (the ruling batch), spend it.
+
+#### ⚠ ANTI-FALSE-FIX
+
+1. **Do not fold the reserve into the job estimate** so the projection fits the band you wanted. That
+   converts the throttle straight back into padding, and padding is a thermometer.
+2. **The reserve is a LINE, not an allowance.** `fill + job + wrap + 15%` is not a budget to run to;
+   crossing the line is a **question put to Dave.**
+0. **⚠ THE GATE PROVES THE STAMP, NOT THE RULE — and that gap is ADR-0016's "dangerous middle".**
+   `_capture_gate.py` has a selftest proving its FORM check can fail, so *the form check* is PROVEN.
+   **The RULE this section states — price every job, re-price on a finding, take the fork to Dave —
+   is UNPROVEN and unprovable by any gate in this repo.** A well-formed stamp carrying invented
+   numbers passes. ⇒ **Do not let the green tick be read as compliance.** Registering it otherwise
+   would make it a CLAIMED row, and *"a green light from a blind check is worse than no check."*
+   *(Flagged by the author at inscription, 2026-07-27, unprompted-by-a-gate.)*
+3. **What a gate can honestly check is the FORM of the stamp** — term count, arithmetic, and that the
+   named band matches the band table. **It cannot check whether the fill figure is honest, and it cannot
+   observe whether a mid-job re-price happened.** Those are discipline. Claiming otherwise would be the
+   false inscription this programme exists to stop. *(Enforced form: `_capture_gate.py --wrap`.)*
 
 ### ⚠ READ THE BAND TABLE. DO NOT RECALL IT.
 

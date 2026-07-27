@@ -701,7 +701,25 @@ Evidence + full framing: `notes/_dream/2026-07-26-proposals.md` §P6. Runbook: `
   as a chore. Related: `memory-compaction-mechanics` (same pattern, repo-side); MEMORY.md index
   (~6k auto-load) is due its own densify pass under the adversarial-densify gate.
 
-## ★★ FLOATED 2026-07-27 (#4 wrap, Dave) — the gauge must be a THROTTLE, not a thermometer
+## ~~★★ FLOATED~~ ✅ RULED + BUILT 2026-07-27 (#5, cold as instructed) — the gauge must be a THROTTLE, not a thermometer
+
+> **RULED COLD BY DAVE 2026-07-27 (later morning #5), exactly as this entry asked.** Canon now lives in
+> `knowledge/_RUNBOOK-context-gauge.md` **§ ★ Half 0b — THE THROTTLE**. Rulings: **(a)** reserve is
+> **RING-FENCED ~15%**, sized from the observed WORST overrun (+17), never additive · **(b)** any
+> unplanned finding **triggers a re-price + the fork put to Dave** (log-and-stop / narrow / chase
+> knowingly) · **(c)** **a new session is a REFILL, not a penalty** — *"we can reset the budget at any
+> time by starting a new session"* · **every job is priced and debited**, stated out loud when it could
+> move the band (*"like real life"* — the ~10% floor is gone; every overrun on record arrived as steps
+> each under it) · **the window is the BUDGET, the BANK is the constraint, and the re-read is a
+> ~22% TRANSACTION FEE** on every withdrawal (measured, *n*=1).
+> **Enforced (FORM only):** `_capture_gate.py --wrap` now fails a handoff whose `pre-flight:` stamp is
+> missing, short of three terms, arithmetically open, or mis-banded against the table — 7 bites + 2 green
+> controls, and the bite was proven able to fail. **Honesty of the fill figure and whether a mid-job
+> re-price happened are NOT observable and are declared unenforced.**
+> ⚠ **The diagnosis below is kept VERBATIM** — it is the evidence the ruling was made on, and the entry
+> that had to survive a compaction to be read at all *(see `ds-017`)*.
+
+### The original diagnosis, as floated (2026-07-27 #4 wrap, ~97% fill)
 
 **Dave, at wrap:** *"the pre-flighting needs work, we cant keep hitting red, its a waste of effort."*
 **Evidence he's right — three sessions running:** 🔴 ~92% · 🔴 ~63% · 🔴 ~72%. The three-term

@@ -713,3 +713,56 @@ DV-D15 local token mirror): **the markup is correct, the lookup fails, and nothi
 
 **Detected by:** `knowledge/_build_instrument_fit.py` § dangling citations (bites 1c + 1d).
 **Narrative:** `_DECISION-HISTORY/2026-07-27-the-index-cannot-see-the-rule.md`.
+
+## ds-017 — A FLOATED item that supersedes a standing instruction has no path into the handoff (2026-07-27)
+
+**Status: LOGGED at the moment it bit, then partially closed by the ruling it was blocking.**
+
+**What happened.** At the 2026-07-27 #4 wrap Dave said *"the pre-flighting needs work, we cant keep
+hitting red, its a waste of effort."* The diagnosis was filed correctly — `_FUTURE-STATE.md`
+★★ FLOATED, marked UNRULED, with its own sequencing note: *"~10 minutes at the FRONT of the next
+window; it does not displace ds-016 / the `CTRL` sweep, it precedes them."*
+
+**The next session did not find it.** `GOOD-MORNING.md` § DO THIS FIRST carried a pre-flight paragraph
+— restating the **three-term rule**, i.e. **the very rule the same session's wrap had concluded did not
+work**. The correction lived only in `_FUTURE-STATE.md`, which nothing in the read-order requires. The
+agent read the handoff, ranked ds-016 as the session's task, and was wrong; **Dave had to say
+"should be the pre-flight work" twice before the right file was opened.**
+
+⇒ **Same signature as the silent-lookup class** (ds-010 · ds-013 · ds-015 · ds-016): the record was
+correct and complete, the retrieval path did not reach it, and nothing reported the gap. Here the extra
+turn of the screw is that **the stale instruction was still being handed forward as live guidance** —
+a Polaroid carrying a superseded posture, which is the *confident false inscription* failure the whole
+GOOD-MORNING architecture exists to prevent (§A).
+
+### Why the existing mechanism missed it
+
+The ritual's **2c/2d EXIT CHECK** (ruled 2026-07-26, dream-pass V2-P1) carries §C·4 items up so banner
+compaction cannot lose them. It has **no clause for the inverse case**: an item filed in
+`_FUTURE-STATE.md` that **supersedes or contradicts a standing instruction already in the handoff**.
+Compaction was never the problem — **the item was never in the handoff to begin with.**
+
+### ⚠ ANTI-FALSE-FIX
+
+1. **Do not "fix" this by copying `_FUTURE-STATE` into the handoff.** It is 63KB of deliberately-parked
+   material; the handoff's value is that it is short. The defect is the missing *link*, not missing bulk.
+2. **Do not add "read `_FUTURE-STATE` too" to the read-order** and call it closed. That is a discipline
+   instruction, not a mechanism — the same category error as the pre-flight rule itself, which was
+   inscribed as prose and then failed to stop the thing it described.
+3. **A FLOATED item is not authority.** Anything that supersedes a standing instruction still needs
+   Dave's ruling before the handoff presents it as live. The fix is to make the *contradiction visible*,
+   not to auto-promote the newer text.
+
+### Candidate remedies (UNRULED — Dave's call)
+
+- **(a) Wrap-gate check:** a `_FUTURE-STATE.md` entry marked ★★ FLOATED whose body names a standing
+  document must be echoed as a one-line pointer in `GOOD-MORNING.md` § DO THIS FIRST, or the wrap fails.
+  Mechanical, mirrors the ratified *fail-loud-on-unknown* pattern.
+- **(b) Ritual clause:** extend the 2c/2d EXIT CHECK with the inverse direction — before writing the
+  handoff, list FLOATED items that touch a standing instruction and carry each up or explicitly decline.
+- **(c) Both** — (b) catches this week's, (a) stops the next one silently recurring. Same
+  adoption-plus-sweep pair Dave ruled complementary on 2026-07-27.
+
+**Found by:** Dave, twice, in the first ten minutes of session #5 (*"read the 'do first' … it should have
+a new task"* → *"should be teh pre-flight work, is that correct?"*). **No gate saw it.**
+**Canon it was hiding:** `_RUNBOOK-context-gauge.md` § ★ Half 0b · `_FUTURE-STATE.md` § the throttle.
