@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ds-018 — the recessive value, and the one standing next to it · decision review v2</title>
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<style>
+/* ─────────────────────────────────────────────────────────────────────────────
+   ds-018 VALUE REVIEW v2 · 2026-07-27 · Apollo Mono
+   Successor to DS-018-DISABLED-STATE-2026-07-27-v1.html (A2/B2/C2 ruled there).
+   v1 is NOT superseded and NOT overwritten — it holds the ruled calls.
+
+   Specimen CSS is COPIED VERBATIM from the truth-source for charts, which is the
+   snippet's own inline spine — NOT canon.css, which #11 proved is not in the
+   chart cascade at all. Provenance, file:line:
+     knowledge/snippets/Chart-bar.reference.html:55-57   (light spine)
+     knowledge/snippets/Chart-bar.reference.html:71-73   (dark spine)
+     knowledge/snippets/Chart-bar.reference.html:202-206 (.dv-legrow)
+     knowledge/snippets/Chart-bar.reference.html:212-216 (.dv-leg-sw + the --muted line)
+     knowledge/snippets/Chart-bar.reference.html:220-224 (.dv-leg-item)
+     knowledge/snippets/Chart-bar.reference.html:230-239 (.dv-leg-reset + :disabled)
+
+   ★ THIS PAGE MEASURES ITSELF. --border-disabled, --text-disabled and --muted are
+   left UNDECLARED in the specimen scope exactly as they ship, so the browser you
+   are reading this in resolves them for real. Every ratio below is computed from
+   getComputedStyle at render time. No ratio in this file is typed by hand.
+   ⚠ NOT render-proven in the licensed cut — deferred to the enactment window by
+   Dave's ruling. Figures are live but the typeface may be a fallback face.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+:root{
+  --page:#FFFFFF; --ink:#1A1A1A; --line:#E1E1E1; --ease:.16s cubic-bezier(.2,0,0,1);
+  --hairline:#E1E1E1; --muted-doc:#6B6B6B; --amber-bg:#F0B13A; --amber-gr:#C58900;
+  --red:#B92F1E; --green:#1E7A46; --gutter:24px;
+}
+*{box-sizing:border-box;}
+body{margin:0; background:var(--page); color:var(--ink);
+  font-family:"Univers Next W02",-apple-system,"Segoe UI",Arial,sans-serif;
+  font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased;}
+.wrap{max-width:1180px; margin:0 auto; padding:40px var(--gutter) 140px;}
+
+.mh{border-top:4px solid var(--ink); padding-top:16px; margin-bottom:40px;}
+.mh h1{font-size:32px; line-height:1.15; font-weight:500; margin:0 0 8px; letter-spacing:-.01em;}
+.mh .sub{font-size:16px; font-weight:400; color:var(--muted-doc); margin:0 0 16px; max-width:72ch;}
+.mh .meta{font-size:12px; font-weight:400; color:var(--muted-doc); display:flex; flex-wrap:wrap; gap:20px;
+  border-top:1px solid var(--hairline); padding-top:12px;}
+.mh .meta b{font-weight:500; color:var(--ink);}
+
+h2{font-size:22px; font-weight:500; margin:56px 0 4px; letter-spacing:-.005em;}
+h2 .num{color:var(--muted-doc); font-weight:400; margin-right:10px;}
+h2+.lede{font-size:16px; color:var(--muted-doc); margin:0 0 24px; max-width:74ch;}
+h3{font-size:16px; font-weight:500; margin:28px 0 8px;}
+p{margin:0 0 12px; max-width:74ch;}
+code{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:.88em;
+  background:#F4F4F4; padding:1px 5px; border:1px solid var(--hairline);}
+.small{font-size:12px; color:var(--muted-doc);}
+b.ink{color:var(--ink);}
+
+table{border-collapse:collapse; width:100%; font-size:13px; margin:16px 0 8px;}
+th,td{text-align:left; padding:9px 12px; border-bottom:1px solid var(--hairline); vertical-align:top;}
+th{font-weight:500; font-size:12px; border-bottom:1px solid var(--ink); white-space:nowrap;}
+td.mono,th.mono{font-family:ui-monospace,Menlo,monospace; font-size:12px;}
+.tag{display:inline-block; font-size:11px; font-weight:500; padding:1px 7px; border:1px solid currentColor;
+  white-space:nowrap;}
+.tag.ok{color:var(--green);} .tag.bad{color:var(--red);} .tag.warn{color:var(--amber-gr);}
+
+.callout{border-left:4px solid var(--ink); background:#FAFAFA; padding:16px 20px; margin:24px 0;}
+.callout.find{border-left-color:var(--amber-gr); background:#FEF9EF;}
+.callout.corr{border-left-color:var(--green); background:#F3FAF5;}
+.callout h3{margin-top:0;}
+.callout p:last-child{margin-bottom:0;}
+
+/* ── specimen stage ───────────────────────────────────────────────────────── */
+.stage{border:1px solid var(--hairline); margin:20px 0 8px;}
+.stage-bar{display:flex; flex-wrap:wrap; align-items:center; gap:16px; padding:10px 14px;
+  border-bottom:1px solid var(--hairline); background:#FAFAFA; font-size:12px;}
+.stage-bar label{display:flex; align-items:center; gap:7px; font-weight:500;}
+.stage-bar input[type=range]{width:190px;}
+.panes{display:grid; grid-template-columns:1fr 1fr; gap:0;}
+@media (max-width:820px){ .panes{grid-template-columns:1fr;} }
+.pane{padding:22px; overflow:hidden;}
+.pane+.pane{border-left:1px solid var(--hairline);}
+@media (max-width:820px){ .pane+.pane{border-left:0; border-top:1px solid var(--hairline);} }
+.pane-h{font-size:11px; font-weight:500; letter-spacing:.04em; text-transform:uppercase;
+  margin:0 0 16px; opacity:.55;}
+
+/* ── THE SPECIMEN — verbatim from Chart-bar.reference.html ────────────────── */
+.dv-demo{ --page:#FFFFFF; --ink:#1A1A1A; --line:#E1E1E1; --ease:.16s cubic-bezier(.2,0,0,1);
+  --data-series-1:#766682; --data-series-2:#A45C3A; --data-series-3:#577C78;
+  --border-radius-default:0;
+  background:var(--page); color:var(--ink); padding:18px;
+  border:1px solid rgba(128,128,128,.28);}
+.dv-demo[data-theme="dark"]{ --page:#1A1A1A; --ink:#FFFFFF; --line:#808080;
+  --data-series-1:#766682; --data-series-2:#A45C3A; --data-series-3:#577C78; }
+/* ⚠ DELIBERATELY ABSENT, exactly as they ship: --border-disabled, --text-disabled,
+   --muted. The browser resolves them; §2 and §5 read what it actually did. */
+
+.dv-leg{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:12px;
+  align-items:stretch; max-width:var(--legw,280px); --hit:44px;}
+.dv-legrow{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line);
+  border-radius:var(--border-radius-default); padding:4px 8px; background:transparent;
+  transition:border-color var(--ease), background var(--ease); width:100%;}
+.dv-leg-sw{position:relative; width:12px; height:12px; flex:none; display:inline-block;
+  background:var(--sc); border:1px solid var(--sc);
+  transition:background var(--ease), border-color var(--ease);}
+.dv-leg-sw[aria-checked="false"]{background:transparent; border-color:var(--muted);}
+.dv-leg-item{display:inline-flex; align-items:center; gap:8px; flex:1 1 auto; position:relative;
+  background:transparent; border:0; color:var(--ink); text-align:left; font:inherit; font-size:13px;
+  padding:0;}
+.dv-leg-item .dv-key{min-width:12px; text-align:center; opacity:.75;}
+.dv-leg-name{white-space:nowrap;}
+.dv-leg-reset{position:relative; font:inherit; font-size:12px; padding:4px 12px; width:100%;
+  border:1px solid var(--line); background:transparent; color:var(--ink); cursor:pointer;
+  transition:border-color var(--ease), color var(--ease);}
+.dv-leg-reset:hover:not(:disabled){border-color:var(--ink);}
+.dv-leg-reset:disabled{border-color:var(--border-disabled); color:var(--text-disabled); cursor:default;}
+.row-lab{font-size:11px; letter-spacing:.04em; text-transform:uppercase; opacity:.55; margin:0 0 7px;}
+.spec-block{margin-bottom:22px;}
+.readout{font-family:ui-monospace,Menlo,monospace; font-size:11px; opacity:.75; margin-top:7px;
+  line-height:1.7;}
+.readout b{font-weight:500; opacity:1;}
+
+/* ── backdrop comparison strip (§2) ───────────────────────────────────────── */
+.bdrow{display:flex; gap:0; margin:14px 0 6px; flex-wrap:wrap;}
+.bd{flex:1 1 200px; padding:18px; border:1px solid var(--hairline); text-align:center;}
+.bd .bl{font-size:13px; font-weight:500;}
+.bd .cap{font-size:11px; letter-spacing:.04em; text-transform:uppercase; opacity:.55; margin-bottom:12px;}
+.bd .ro{font-family:ui-monospace,Menlo,monospace; font-size:11px; margin-top:10px; opacity:.8;}
+
+/* ── decision controls ────────────────────────────────────────────────────── */
+.call{border:1px solid var(--ink); margin:28px 0;}
+.call-h{padding:14px 18px; border-bottom:1px solid var(--ink); display:flex; gap:12px;
+  align-items:baseline; flex-wrap:wrap;}
+.call-h .id{font-size:11px; font-weight:500; letter-spacing:.06em; border:1px solid var(--ink);
+  padding:2px 8px;}
+.call-h h3{margin:0; font-size:18px; font-weight:500;}
+.call-h .st{margin-left:auto; font-size:11px; font-weight:500; color:var(--red);
+  border:1px solid currentColor; padding:2px 8px;}
+.call-h .st.done{color:var(--green);}
+.call-body{padding:18px;}
+
+.rail{display:flex; gap:9px; flex-wrap:wrap; margin:10px 0 4px;}
+.sw{font-family:ui-monospace,Menlo,monospace; font-size:11px; border:1px solid var(--hairline);
+  padding:6px 9px; display:flex; align-items:center; gap:8px; background:#fff; cursor:pointer;
+  text-align:left; line-height:1.45;}
+.sw:hover{border-color:var(--ink);}
+.sw.on{border-color:var(--ink); border-width:2px; padding:5px 8px;}
+.sw i{width:15px; height:15px; display:block; border:1px solid rgba(0,0,0,.25); flex:none;}
+.sw .nt{opacity:.6;}
+.freerow{display:flex; align-items:center; gap:10px; margin-top:12px; flex-wrap:wrap; font-size:12px;}
+.freerow input[type=text]{font-family:ui-monospace,Menlo,monospace; font-size:12px; padding:6px 9px;
+  border:1px solid var(--hairline); width:110px; text-transform:uppercase;}
+.freerow input[type=color]{width:38px; height:32px; padding:0; border:1px solid var(--hairline);
+  background:#fff; cursor:pointer;}
+.pairhead{font-size:11px; font-weight:500; letter-spacing:.06em; text-transform:uppercase;
+  border-bottom:1px solid var(--ink); padding-bottom:5px; margin:22px 0 4px;}
+
+.exp{border:1px solid var(--ink); padding:18px; margin:36px 0 0; background:#FAFAFA;}
+button.act{font:inherit; font-size:13px; font-weight:500; padding:9px 18px; border:1px solid var(--ink);
+  background:var(--ink); color:#fff; cursor:pointer;}
+button.act.ghost{background:transparent; color:var(--ink);}
+button.act:hover{opacity:.86;}
+#expout{width:100%; min-height:230px; margin-top:14px; font-family:ui-monospace,Menlo,monospace;
+  font-size:12px; padding:12px; border:1px solid var(--hairline); display:none; line-height:1.6;}
+.fail{color:var(--red); font-weight:500;}
+.okk{color:var(--green); font-weight:500;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="mh">
+  <h1>ds-018 — the recessive value, and the one standing next to it</h1>
+  <p class="sub">A2, B2 and C2 are ruled. What is left is a <b>number</b>, and it turns out to be
+  two numbers on the same scope: the recessive label step, and <code>--muted</code>, which fails
+  in exactly the same way one control to the left and would be caught by the same gate on the day
+  it lands.</p>
+  <div class="meta">
+    <span><b>Date</b> 2026-07-27</span>
+    <span><b>Supersedes</b> nothing — v1 holds the ruled calls</span>
+    <span><b>Open</b> two values (light/dark pairs)</span>
+    <span><b>Ruled by</b> Dave — derivation governance</span>
+    <span><b>Authored at</b> gauge ~30% (Green)</span>
+    <span><b>Render-proof</b> <span class="tag warn">DEFERRED to the enactment window</span></span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<h2><span class="num">1</span>First, a correction — the collision in the record does not exist</h2>
+<p class="lede">The handoff carries, in three places, that <b>B-D4 ruled <code>#808080</code> while
+canon ships <code>#9D9D9D</code></b> — "two ledgered numbers that disagree". They do not disagree.
+It is one ruling read against half of itself.</p>
+
+<p>B-D4's <i>prose</i> says <code>text/on-disabled</code> = <code>#808080</code> "both modes". But the
+same ledger's <b>Values — SETTLED (Dave, 2026-07-20, dialled on the v7 live editor)</b> block gives the
+light/dark <b>pair</b>. Canon and the token store both implement that pair exactly:</p>
+
+<table>
+  <thead><tr><th>Source</th><th class="mono">Light</th><th class="mono">Dark</th><th>Reading</th></tr></thead>
+  <tbody>
+    <tr><td>B-D4 prose <span class="small">_BUTTON-DECISIONS.md:47</span></td>
+        <td class="mono">#808080</td><td class="mono">#808080</td>
+        <td>"both modes" — written before the editor session</td></tr>
+    <tr><td><b class="ink">B-D4 Values — SETTLED</b> <span class="small">dialled by Dave on v7</span></td>
+        <td class="mono"><b>#9D9D9D</b> m9</td><td class="mono"><b>#808080</b> m8</td>
+        <td><span class="tag ok">the ruling</span></td></tr>
+    <tr><td><code>canon.css</code> <span class="small">:351 / :648</span></td>
+        <td class="mono">#9D9D9D</td><td class="mono">#808080</td><td>matches</td></tr>
+    <tr><td><code>semantic-colour.json</code> <span class="small">:1636</span></td>
+        <td class="mono">#9D9D9D</td><td class="mono">#808080</td><td>matches</td></tr>
+  </tbody>
+</table>
+
+<div class="callout corr">
+  <h3>Three sources agree; the fourth is loose prose in the same document</h3>
+  <p>The record compared B-D4's prose against canon's <i>light</i> value only, and reported a
+  disagreement between what are actually the two halves of one light/dark ruling. <b>Nothing needs
+  reconciling.</b> This is the "trust the spine, don't mine the prose" shape — and it will be
+  inscribed as a correction in all three places at wrap, as loudly as the original claim.</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<h2><span class="num">2</span>The question that replaces it — the backdrop was never matched</h2>
+<p class="lede"><code>text/on-disabled</code> was dialled to sit <b>on the disabled fill</b>
+<code>#E1E1E1</code>. That is the backdrop its "faint but visible" was judged against. The legend
+label sits on <b>the chart ground</b> — the row has no background at all
+(<code>Chart-bar.reference.html:203</code>).</p>
+
+<p>So borrowing <code>#9D9D9D</code> for the chart legend does not borrow a ruling. It borrows a
+judgement made against a different backdrop, and lands somewhere else. Same swatch, two grounds:</p>
+
+<div class="bdrow" id="backdrop"></div>
+<p class="small">Both measured live from <code>getComputedStyle</code>. If those two numbers are far
+apart, the button value cannot simply be inherited — which is the whole reason this page exists.</p>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<h2><span class="num">3</span>What B2 actually asks you to judge</h2>
+<p class="lede">B2 is label-led: the disabled border returns to <code>--line</code>, matching
+enabled-resting. That cost is ruled, not a defect. But it means the borders become <b>identical</b>
+and <b>the label carries the entire distinction</b> — so the thing to judge is not a contrast figure,
+it is the <b>gap</b> between the live label and the dead one, seen together.</p>
+
+<div class="stage">
+  <div class="stage-bar">
+    <label>Legend width <input type="range" id="legw" min="180" max="380" value="280"></label>
+    <span class="small" id="legwv">280px</span>
+    <label style="margin-left:auto"><input type="checkbox" id="showhover"> show hover rung too</label>
+  </div>
+  <div class="panes">
+    <div class="pane">
+      <p class="pane-h">Light — as it ships today (the defect)</p>
+      <div class="dv-demo" id="todayL"></div>
+    </div>
+    <div class="pane">
+      <p class="pane-h">Dark — as it ships today (the defect)</p>
+      <div class="dv-demo" data-theme="dark" id="todayD"></div>
+    </div>
+  </div>
+</div>
+<p class="small">Nothing above is styled by this page. <code>--border-disabled</code> and
+<code>--text-disabled</code> are undeclared exactly as they ship; your browser resolved them.</p>
+
+<div id="squeeze"></div>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<h2><span class="num">4</span>Value 1 — the recessive label step</h2>
+
+<div class="call">
+  <div class="call-h"><span class="id">CALL A · B · C</span>
+    <h3>tier · channel · gate</h3><span class="st done">RULED — A2 · B2 · C2</span></div>
+  <div class="call-body">
+    <p style="margin:0" class="small">Ruled from v1: <b class="ink">A2</b> mint dataviz-tier
+    <code>--data-control-*</code> · <b class="ink">B2</b> label-led · <b class="ink">C2</b> the wide
+    fail-loud gate. C3 was not rejected, merely not selected. Nothing below reopens any of that.</p>
+  </div>
+</div>
+
+<div class="call">
+  <div class="call-h"><span class="id">VALUE 1</span>
+    <h3><code>--data-control-label-disabled</code> — the recessive step</h3>
+    <span class="st">UNRULED</span></div>
+  <div class="call-body">
+    <p class="small" style="margin-top:0">Candidates are <b>candidates, not a recommendation</b>.
+    Value promotion is yours (derivation governance). The free field is there so you are not confined
+    to four numbers I happened to think of.</p>
+
+    <div class="pairhead">Light — on <code class="mono">#FFFFFF</code></div>
+    <div class="rail" id="railL"></div>
+    <div class="freerow">
+      <label>or any value <input type="text" id="freeL" value="" placeholder="#RRGGBB" maxlength="7"></label>
+      <input type="color" id="pickL" value="#9D9D9D">
+    </div>
+
+    <div class="pairhead">Dark — on <code class="mono">#1A1A1A</code></div>
+    <div class="rail" id="railD"></div>
+    <div class="freerow">
+      <label>or any value <input type="text" id="freeD" value="" placeholder="#RRGGBB" maxlength="7"></label>
+      <input type="color" id="pickD" value="#808080">
+    </div>
+
+    <div class="callout" style="margin-bottom:0">
+      <h3 style="margin-top:0">On accessibility, so it is not left implicit</h3>
+      <p style="margin-bottom:0">A disabled control is <b>exempt from WCAG 1.4.3</b> (inactive
+      component), so <b>B-D5's "only offer selections that pass AA" does not clamp this one</b> — no
+      option is struck out. The binding constraint is <b>B-D4</b>: <i>"it doesn't have to be
+      accessible but invisible for normal sighted people isn't acceptable."</i> That is a judgement
+      by eye, which is why this is a picker and not a calculator.</p>
+    </div>
+  </div>
+</div>
+
+<div class="stage">
+  <div class="panes">
+    <div class="pane">
+      <p class="pane-h">Light — B2 applied, your value</p>
+      <div class="dv-demo" id="fixL"></div>
+    </div>
+    <div class="pane">
+      <p class="pane-h">Dark — B2 applied, your value</p>
+      <div class="dv-demo" data-theme="dark" id="fixD"></div>
+    </div>
+  </div>
+</div>
+<p class="small">Borders are identical between the enabled and disabled Reset here — that is B2
+working as ruled, not a rendering error.</p>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<h2><span class="num">5</span>Value 2 — <code>--muted</code>, the one standing next to it</h2>
+<p class="lede">OBSERVED: <code>.dv-leg-sw[aria-checked="false"]{border-color:var(--muted)}</code> —
+the <b>hidden-series</b> swatch. <code>--muted</code> is used in <b>4 of 6</b> chart snippets (bar,
+combo, donut, line) and <b>declared in none</b>. Not in <code>type.css</code> either. It is declared
+in <code>canon.css:748</code>, which is not in the chart cascade.</p>
+
+<div class="callout find">
+  <h3>Why it belongs in this decision and not a later one</h3>
+  <p><b>C2 is the wide gate</b>: <i>a declaration referencing a custom property that resolves nowhere
+  in its own scope is a build failure.</i> The day it lands it fails on <code>--muted</code> too. So
+  the enactment either answers this in the same pass, or ships a gate that immediately red-flags four
+  snippets. One decision, one scope.</p>
+  <p style="margin-bottom:0">The row below is <b>not an argument, it is a measurement</b> — the
+  specimen leaves <code>--muted</code> undeclared, so the figure is whatever your browser actually
+  resolved.</p>
+</div>
+
+<div class="stage">
+  <div class="panes">
+    <div class="pane">
+      <p class="pane-h">Light — hidden swatch today vs your value</p>
+      <div class="dv-demo" id="mutL"></div>
+    </div>
+    <div class="pane">
+      <p class="pane-h">Dark — hidden swatch today vs your value</p>
+      <div class="dv-demo" data-theme="dark" id="mutD"></div>
+    </div>
+  </div>
+</div>
+
+<div class="call">
+  <div class="call-h"><span class="id">VALUE 2</span>
+    <h3><code>--data-control-swatch-off</code> — the hidden-series border</h3>
+    <span class="st">UNRULED</span></div>
+  <div class="call-body">
+    <p class="small" style="margin-top:0">Note this one is a <b>graphic</b>, not text — R-D3's
+    graphic floor (3:1) is the relevant reference, and unlike the disabled label it is arguably
+    <b>not</b> exempt: a hidden series is a state you are meant to perceive and act on.
+    <b>That distinction is yours to make and it may split the two values apart.</b></p>
+
+    <div class="pairhead">Light</div>
+    <div class="rail" id="railML"></div>
+    <div class="freerow">
+      <label>or any value <input type="text" id="freeML" value="" placeholder="#RRGGBB" maxlength="7"></label>
+      <input type="color" id="pickML" value="#6B6B6B">
+    </div>
+
+    <div class="pairhead">Dark</div>
+    <div class="rail" id="railMD"></div>
+    <div class="freerow">
+      <label>or any value <input type="text" id="freeMD" value="" placeholder="#RRGGBB" maxlength="7"></label>
+      <input type="color" id="pickMD" value="#9D9D9D">
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<h2><span class="num">6</span>Export the ruling</h2>
+<div class="exp">
+  <p style="margin-top:0" class="small">Emits both pairs plus the live-measured ratios, ready to
+  paste into the ledger. Nothing is written to the repo until you hand it back.</p>
+  <button class="act" id="doexp">Export ruling</button>
+  <button class="act ghost" id="docopy">Copy</button>
+  <span class="small" id="expnote" style="margin-left:12px"></span>
+  <textarea id="expout" readonly></textarea>
+</div>
+
+<p class="small" style="margin-top:40px; border-top:1px solid var(--hairline); padding-top:14px">
+<b>Provenance:</b> specimen CSS verbatim from <code>knowledge/snippets/Chart-bar.reference.html</code>
+(lines cited in the stylesheet header); B-D4 from <code>knowledge/_proforma/_BUTTON-DECISIONS.md</code>;
+token values from <code>knowledge/canon/canon.css</code> + <code>knowledge/tokens/semantic-colour.json</code>;
+<code>--muted</code> census by <code>grep</code> over <code>knowledge/snippets/Chart-*.reference.html</code>.
+All ratios computed live. <b>Not render-proven in the licensed cut</b> — deferred by ruling to the
+enactment window.</p>
+
+</div>
+
+<script>
+/* ── WCAG relative luminance + contrast, from real rendered colours ────────── */
+function toRGB(s){
+  if(!s) return null;
+  var m = s.match(/rgba?\(([^)]+)\)/); if(!m) return null;
+  var p = m[1].split(/[,\s\/]+/).filter(Boolean).map(Number);
+  return {r:p[0], g:p[1], b:p[2], a:(p.length>3?p[3]:1)};
+}
+function hexRGB(h){
+  h=(h||'').replace('#','');
+  if(h.length!==6) return null;
+  var r=parseInt(h.slice(0,2),16), g=parseInt(h.slice(2,4),16), b=parseInt(h.slice(4,6),16);
+  if(isNaN(r)||isNaN(g)||isNaN(b)) return null;
+  return {r:r,g:g,b:b,a:1};
+}
+function lum(c){
+  var f=function(v){ v/=255; return v<=0.03928 ? v/12.92 : Math.pow((v+0.055)/1.055,2.4); };
+  return 0.2126*f(c.r)+0.7152*f(c.g)+0.0722*f(c.b);
+}
+function ratio(a,b){ var L1=lum(a),L2=lum(b); if(L1<L2){var t=L1;L1=L2;L2=t;} return (L1+0.05)/(L2+0.05); }
+function fmt(n){ return n.toFixed(2)+':1'; }
+function hex(c){ var h=function(v){return ('0'+Math.round(v).toString(16)).slice(-2).toUpperCase();};
+  return '#'+h(c.r)+h(c.g)+h(c.b); }
+function isHex(s){ return /^#?[0-9a-fA-F]{6}$/.test(s||''); }
+function norm(s){ s=(s||'').trim(); if(s && s[0]!=='#') s='#'+s; return s.toUpperCase(); }
+
+/* ── the legend specimen — the REAL row markup, not a button in isolation ─── */
+var SERIES = [
+  {id:1, key:'A', name:'Current',     on:true},
+  {id:2, key:'B', name:'Savings',     on:true},
+  {id:3, key:'C', name:'Investments', on:false}   /* the hidden one — the --muted case */
+];
+function legendHTML(opts){
+  opts = opts||{};
+  var rows = SERIES.map(function(s){
+    return '<li class="dv-legrow">'+
+      '<span class="dv-leg-sw" role="checkbox" aria-checked="'+(s.on?'true':'false')+'" '+
+        'data-sw="'+s.id+'" style="--sc:var(--data-series-'+s.id+')"></span>'+
+      '<span class="dv-leg-item"><span class="dv-key">'+s.key+'</span>'+
+      '<span class="dv-leg-name">'+s.name+'</span></span></li>';
+  }).join('');
+  var resets =
+    '<li><button type="button" class="dv-leg-reset" data-k="enabled">Reset</button></li>'+
+    (opts.hover ? '<li><button type="button" class="dv-leg-reset force-hover" data-k="hover">Reset</button></li>' : '')+
+    '<li><button type="button" class="dv-leg-reset" data-k="disabled" disabled>Reset</button></li>';
+  return '<ul class="dv-leg">'+rows+resets+'</ul>'+
+    '<div class="readout" data-ro></div>';
+}
+function buildAll(){
+  var hv = document.getElementById('showhover').checked;
+  ['todayL','todayD','fixL','fixD','mutL','mutD'].forEach(function(id){
+    document.getElementById(id).innerHTML = legendHTML({hover:hv});
+  });
+}
+
+/* ── candidate rails ──────────────────────────────────────────────────────── */
+var CANDS_LABEL_L = [
+  {hex:'#9D9D9D', note:'canon --text-on-disabled (light)'},
+  {hex:'#808080', note:'B-D4 prose value'},
+  {hex:'#B5B5B5', note:'ramp neighbour, lighter'},
+  {hex:'#6B6B6B', note:'ramp neighbour, darker'}
+];
+var CANDS_LABEL_D = [
+  {hex:'#808080', note:'canon --text-on-disabled (dark)'},
+  {hex:'#9D9D9D', note:'lighter step'},
+  {hex:'#6B6B6B', note:'darker step'},
+  {hex:'#B5B5B5', note:'lightest step'}
+];
+var CANDS_MUTED_L = [
+  {hex:'#6B6B6B', note:'the doc muted grey'},
+  {hex:'#626262', note:'= --data-axis (light)'},
+  {hex:'#808080', note:'mono/8'},
+  {hex:'#9D9D9D', note:'mono/9 — quietest'}
+];
+var CANDS_MUTED_D = [
+  {hex:'#9D9D9D', note:'mono/9'},
+  {hex:'#B5B5B5', note:'lighter'},
+  {hex:'#808080', note:'= --line (dark) — collides'},
+  {hex:'#CFCFCF', note:'lightest'}
+];
+
+var PICK = { labelL:'#9D9D9D', labelD:'#808080', mutedL:'#6B6B6B', mutedD:'#9D9D9D' };
+
+function paintRail(elId, cands, key, groundHex){
+  var ground = hexRGB(groundHex);
+  var el = document.getElementById(elId);
+  el.innerHTML = cands.map(function(c){
+    var r = ratio(hexRGB(c.hex), ground);
+    return '<button class="sw'+(norm(c.hex)===norm(PICK[key])?' on':'')+'" data-hex="'+c.hex+'">'+
+      '<i style="background:'+c.hex+'"></i>'+
+      '<span>'+c.hex+' &nbsp;'+fmt(r)+'<br><span class="nt">'+c.note+'</span></span></button>';
+  }).join('');
+  Array.prototype.forEach.call(el.querySelectorAll('.sw'), function(b){
+    b.onclick = function(){ PICK[key] = norm(b.dataset.hex); refresh(); };
+  });
+}
+
+/* ── apply picks to the specimens ─────────────────────────────────────────── */
+function applyTo(id, opts){
+  var el = document.getElementById(id);
+  if(!el) return;
+  var dis = el.querySelector('.dv-leg-reset[data-k=disabled]');
+  var offs = el.querySelectorAll('.dv-leg-sw[aria-checked="false"]');
+  if(opts.label && dis){
+    /* B2 as ruled: border returns to --line, label carries the distinction */
+    dis.style.borderColor = getComputedStyle(el).getPropertyValue('--line').trim();
+    dis.style.color = opts.label;
+  }
+  if(opts.muted){
+    Array.prototype.forEach.call(offs, function(s){ s.style.borderColor = opts.muted; });
+  }
+}
+
+/* ── readouts, measured not typed ─────────────────────────────────────────── */
+function readout(id){
+  var el = document.getElementById(id);
+  if(!el) return null;
+  var ground = toRGB(getComputedStyle(el).backgroundColor);
+  var g = function(k){
+    var b = el.querySelector('.dv-leg-reset[data-k='+k+']');
+    if(!b) return null;
+    var cs = getComputedStyle(b);
+    return {bd:toRGB(cs.borderTopColor), tx:toRGB(cs.color)};
+  };
+  var en = g('enabled'), di = g('disabled');
+  var offSw = el.querySelector('.dv-leg-sw[aria-checked="false"]');
+  var offC = offSw ? toRGB(getComputedStyle(offSw).borderTopColor) : null;
+  var onSw = el.querySelector('.dv-leg-sw[aria-checked="true"]');
+  var onC = onSw ? toRGB(getComputedStyle(onSw).borderTopColor) : null;
+  var lab = el.querySelector('.dv-leg-item');
+  var labC = lab ? toRGB(getComputedStyle(lab).color) : null;
+
+  var ro = el.querySelector('[data-ro]');
+  if(ro && ground && en && di){
+    var lines = [];
+    lines.push('ground <b>'+hex(ground)+'</b>');
+    lines.push('enabled&nbsp; border <b>'+hex(en.bd)+'</b> '+fmt(ratio(en.bd,ground))+
+               ' &nbsp;label <b>'+hex(en.tx)+'</b> '+fmt(ratio(en.tx,ground)));
+    lines.push('disabled border <b>'+hex(di.bd)+'</b> '+fmt(ratio(di.bd,ground))+
+               ' &nbsp;label <b>'+hex(di.tx)+'</b> '+fmt(ratio(di.tx,ground)));
+    if(labC) lines.push('series label <b>'+hex(labC)+'</b> '+fmt(ratio(labC,ground)));
+    if(offC && onC) lines.push('swatch: shown <b>'+hex(onC)+'</b> &nbsp;hidden <b>'+hex(offC)+'</b> '+
+               fmt(ratio(offC,ground)));
+    ro.innerHTML = lines.join('<br>');
+  }
+  return {ground:ground, en:en, di:di, offC:offC, labC:labC};
+}
+
+/* ── §2 backdrop strip — same hex, two grounds, both measured ─────────────── */
+function backdrop(){
+  var host = document.getElementById('backdrop');
+  var cfgs = [
+    {bg:'#E1E1E1', cap:'On the disabled FILL — where B-D4 judged it',
+     note:'the button case'},
+    {bg:'#FFFFFF', cap:'On the chart ground — where the legend label sits',
+     note:'the ds-018 case'}
+  ];
+  host.innerHTML = cfgs.map(function(c){
+    var r = ratio(hexRGB('#9D9D9D'), hexRGB(c.bg));
+    return '<div class="bd" style="background:'+c.bg+'">'+
+      '<p class="cap">'+c.cap+'</p>'+
+      '<div class="bl" style="color:#9D9D9D">Reset</div>'+
+      '<div class="ro">#9D9D9D on '+c.bg+'<br><b>'+fmt(r)+'</b> · '+c.note+'</div></div>';
+  }).join('');
+  var a = ratio(hexRGB('#9D9D9D'), hexRGB('#E1E1E1'));
+  var b = ratio(hexRGB('#9D9D9D'), hexRGB('#FFFFFF'));
+  host.insertAdjacentHTML('afterend',
+    '<p class="small" id="bdnote"><b>Measured delta:</b> the same value reads '+fmt(a)+
+    ' against the fill it was dialled on and '+fmt(b)+' against the chart ground — a factor of '+
+    (Math.max(a,b)/Math.min(a,b)).toFixed(2)+'×. '+
+    (Math.max(a,b)/Math.min(a,b) > 1.25
+      ? '<span class="fail">Far enough apart that inheriting the button value inherits the wrong judgement.</span>'
+      : '<span class="okk">Close enough that inheritance is defensible — worth saying out loud.</span>')+'</p>');
+}
+
+/* ── the squeeze table, measured from the shipping pane ───────────────────── */
+function squeeze(){
+  var el = document.getElementById('todayL');
+  var ground = toRGB(getComputedStyle(el).backgroundColor);
+  var g = function(k){ var b=el.querySelector('.dv-leg-reset[data-k='+k+']');
+    return b ? toRGB(getComputedStyle(b).borderTopColor) : null; };
+  var en=g('enabled'), di=g('disabled');
+  var offSw = el.querySelector('.dv-leg-sw[aria-checked="false"]');
+  var offC = offSw ? toRGB(getComputedStyle(offSw).borderTopColor) : null;
+  if(!en||!di||!ground) return;
+  var host = document.getElementById('squeeze');
+  var rEn = ratio(en,ground), rDi = ratio(di,ground);
+  var rows = [
+    ['Enabled resting border', en, fmt(rEn), 'the live control — the quietest thing here'],
+    ['DISABLED border, today', di, fmt(rDi), '<span class="fail">the dead control, '+
+      (rDi/rEn).toFixed(1)+'× louder than the live one</span>']
+  ];
+  if(offC) rows.push(['Hidden-series swatch, today', offC, fmt(ratio(offC,ground)),
+    '<span class="fail">--muted unresolved — the same failure, one control left</span>']);
+  host.innerHTML = '<table><thead><tr><th>Rung</th><th class="mono">Resolved</th>'+
+    '<th class="mono">vs ground</th><th>Reading</th></tr></thead><tbody>'+
+    rows.map(function(r){
+      return '<tr><td>'+r[0]+'</td><td class="mono">'+hex(r[1])+'</td><td class="mono">'+
+        r[2]+'</td><td>'+r[3]+'</td></tr>';
+    }).join('')+'</tbody></table>';
+}
+
+/* ── refresh everything ───────────────────────────────────────────────────── */
+function refresh(){
+  applyTo('fixL', {label:PICK.labelL});
+  applyTo('fixD', {label:PICK.labelD});
+  applyTo('mutL', {label:PICK.labelL, muted:PICK.mutedL});
+  applyTo('mutD', {label:PICK.labelD, muted:PICK.mutedD});
+  ['todayL','todayD','fixL','fixD','mutL','mutD'].forEach(readout);
+  paintRail('railL',  CANDS_LABEL_L, 'labelL', '#FFFFFF');
+  paintRail('railD',  CANDS_LABEL_D, 'labelD', '#1A1A1A');
+  paintRail('railML', CANDS_MUTED_L, 'mutedL', '#FFFFFF');
+  paintRail('railMD', CANDS_MUTED_D, 'mutedD', '#1A1A1A');
+  squeeze();
+}
+
+/* ── free-hex + colour inputs ─────────────────────────────────────────────── */
+function wireFree(txtId, colId, key){
+  var t = document.getElementById(txtId), c = document.getElementById(colId);
+  t.oninput = function(){ if(isHex(t.value)){ PICK[key]=norm(t.value); c.value=PICK[key]; refresh(); } };
+  c.oninput = function(){ PICK[key]=norm(c.value); t.value=PICK[key]; refresh(); };
+}
+
+/* ── width + hover toggles ────────────────────────────────────────────────── */
+document.getElementById('legw').oninput = function(){
+  var v = this.value;
+  document.getElementById('legwv').textContent = v+'px';
+  Array.prototype.forEach.call(document.querySelectorAll('.dv-leg'), function(l){
+    l.style.maxWidth = v+'px';
+  });
+};
+document.getElementById('showhover').onchange = function(){ buildAll(); refresh(); };
+
+/* ── export ───────────────────────────────────────────────────────────────── */
+function ratioFor(hexv, groundHex){ return fmt(ratio(hexRGB(hexv), hexRGB(groundHex))); }
+document.getElementById('doexp').onclick = function(){
+  var out = document.getElementById('expout');
+  var lines = [];
+  lines.push('ds-018 — VALUE RULING (v2 picker, '+new Date().toISOString().slice(0,10)+')');
+  lines.push('Ruled by: Dave. Calls A2 / B2 / C2 already ruled in v1 — unchanged.');
+  lines.push('');
+  lines.push('VALUE 1 — recessive label step (--data-control-label-disabled)');
+  lines.push('  light : '+PICK.labelL+'   on #FFFFFF = '+ratioFor(PICK.labelL,'#FFFFFF'));
+  lines.push('  dark  : '+PICK.labelD+'   on #1A1A1A = '+ratioFor(PICK.labelD,'#1A1A1A'));
+  lines.push('  basis : WCAG 1.4.3 EXEMPT (inactive component); B-D4 visible-but-recessive is the');
+  lines.push('          binding constraint, judged by eye on the chart ground.');
+  lines.push('');
+  lines.push('VALUE 2 — hidden-series swatch border (--data-control-swatch-off)');
+  lines.push('  light : '+PICK.mutedL+'   on #FFFFFF = '+ratioFor(PICK.mutedL,'#FFFFFF'));
+  lines.push('  dark  : '+PICK.mutedD+'   on #1A1A1A = '+ratioFor(PICK.mutedD,'#1A1A1A'));
+  lines.push('  basis : graphic, not text — R-D3 3:1 graphic floor is the reference. Whether a');
+  lines.push('          hidden series is an "inactive component" is Dave\'s call, recorded above.');
+  lines.push('');
+  lines.push('RECORD CORRECTION carried by this doc:');
+  lines.push('  B-D4 does NOT disagree with canon. Its SETTLED block gives the light/dark pair');
+  lines.push('  #9D9D9D / #808080, which canon.css:351/:648 and semantic-colour.json:1636 both');
+  lines.push('  implement. The "collision" in GOOD-MORNING / _LIVE-STATE / SS-C.4 is a misreading');
+  lines.push('  of B-D4 prose against half of B-D4\'s own ruling. To be inscribed as a correction.');
+  lines.push('');
+  lines.push('SCOPE NOTE: --muted is used in 4 of 6 chart snippets and declared in none.');
+  lines.push('  C2 (the wide gate) fails on it the day it lands, which is why it is ruled here.');
+  lines.push('');
+  lines.push('NOT render-proven in the licensed cut — deferred to the enactment window by ruling.');
+  out.value = lines.join('\n');
+  out.style.display='block';
+  document.getElementById('expnote').textContent = 'Ruling built from the live picks.';
+};
+document.getElementById('docopy').onclick = function(){
+  var out = document.getElementById('expout');
+  if(!out.value) document.getElementById('doexp').click();
+  out.select();
+  try{ document.execCommand('copy'); document.getElementById('expnote').textContent='Copied.'; }
+  catch(e){ document.getElementById('expnote').textContent='Select and copy manually.'; }
+};
+
+/* ── boot ─────────────────────────────────────────────────────────────────── */
+buildAll();
+backdrop();
+wireFree('freeL','pickL','labelL');
+wireFree('freeD','pickD','labelD');
+wireFree('freeML','pickML','mutedL');
+wireFree('freeMD','pickMD','mutedD');
+refresh();
+</script>
+<meta name="rv-doc" content="DS 018 VALUE 2026 07 27 v2">
+<meta name="rv-file" content="reviews/DS-018-VALUE-2026-07-27-v2.html">
+<!-- APOLLO-REVIEW-OVERLAY -->
+<!-- ============================================================================
+     APOLLO REVIEW OVERLAY — reusable comment layer for pro-forma review files.
+     Self-contained (no external deps, no browser storage). Drop this whole block
+     in before </body> of ANY interactive HTML to add: a Review-mode toggle,
+     click-a-component-to-pin-a-comment, a DRAGGABLE comment box that opens beside
+     the target (not over it) with a NOODLE leader-line + dot back to the commented
+     element, a comments panel, and Export → a structured numbered prompt
+     (copy / download) to paste back for the edits.
+     Injected by _make_review.py. All ids/classes are `rv-` prefixed to avoid
+     clashing with the host page. Nothing here is scanned by the component gates.
+     ========================================================================= -->
+<style id="rv-style">
+  #rv-fab{position:fixed;right:16px;bottom:16px;z-index:2147483000;display:inline-flex;align-items:center;gap:8px;
+    height:40px;padding:0 16px;border:1.5px solid #1A1A1A;border-radius:999px;background:#fff;color:#1A1A1A;
+    font:600 13px/1 -apple-system,Segoe UI,Roboto,sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.14);}
+  #rv-fab .rv-dot{width:8px;height:8px;border-radius:50%;background:#B7B7B7;}
+  #rv-fab.rv-on{background:#1A1A1A;color:#fff;border-color:#1A1A1A;}
+  #rv-fab.rv-on .rv-dot{background:#37D67A;}
+  #rv-fab .rv-count{min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#DB0011;color:#fff;
+    font:700 11px/18px -apple-system,Segoe UI,Roboto,sans-serif;text-align:center;display:none;}
+  #rv-fab .rv-count.rv-has{display:inline-block;}
+  /* review mode: crosshair + hover outline on the host content */
+  body.rv-active [data-rv-hover]{outline:2px solid #DB0011 !important;outline-offset:1px;cursor:crosshair;}
+  body.rv-active{scroll-behavior:auto;}
+  /* pinned markers layer */
+  #rv-markers{position:fixed;inset:0;z-index:2147482000;pointer-events:none;}
+  .rv-pin{position:fixed;transform:translate(-50%,-50%);width:22px;height:22px;border-radius:50% 50% 50% 2px;
+    background:#DB0011;color:#fff;font:700 12px/22px -apple-system,Segoe UI,Roboto,sans-serif;text-align:center;
+    box-shadow:0 2px 6px rgba(0,0,0,.3);pointer-events:auto;cursor:pointer;border:2px solid #fff;}
+  /* composer popover */
+  #rv-composer{position:fixed;z-index:2147483600;width:300px;max-width:92vw;background:#fff;border:1px solid #D7D8D6;
+    border-radius:8px;box-shadow:0 12px 40px rgba(0,0,0,.22);padding:12px;display:none;
+    font:400 13px/1.45 -apple-system,Segoe UI,Roboto,sans-serif;color:#1A1A1A;}
+  #rv-composer.rv-show{display:block;}
+  #rv-composer .rv-target{font:600 12px/1.3 inherit;color:#333;margin:0 0 8px;padding-left:16px;word-break:break-word;
+    cursor:move;user-select:none;position:relative;}
+  #rv-composer .rv-target::before{content:'';position:absolute;left:2px;top:1px;width:7px;height:12px;opacity:.55;
+    background:radial-gradient(circle,#666 1px,transparent 1.4px);background-size:3px 4px;}
+  /* noodle: leader line from the commented element to the composer box */
+  #rv-noodle{position:fixed;inset:0;z-index:2147483500;pointer-events:none;overflow:visible;}
+  #rv-noodle path{fill:none;stroke:#DB0011;stroke-width:1.5;opacity:.9;}
+  #rv-noodle circle{fill:#DB0011;stroke:#fff;stroke-width:1.5;}
+  #rv-noodle rect{fill:rgba(219,0,17,.06);stroke:#DB0011;stroke-width:2;opacity:.95;}
+  #rv-composer textarea{width:100%;box-sizing:border-box;min-height:76px;resize:vertical;padding:8px;
+    border:1px solid #B7B7B7;border-radius:6px;font:inherit;color:#1A1A1A;outline:none;}
+  #rv-composer textarea:focus{border-color:#1A1A1A;}
+  #rv-composer .rv-row{display:flex;gap:8px;justify-content:flex-end;margin-top:8px;}
+  .rv-btn{height:32px;padding:0 14px;border-radius:6px;border:1px solid #1A1A1A;background:#fff;color:#1A1A1A;
+    font:600 12px/1 -apple-system,Segoe UI,Roboto,sans-serif;cursor:pointer;}
+  .rv-btn.rv-primary{background:#1A1A1A;color:#fff;}
+  .rv-btn.rv-danger{border-color:#DB0011;color:#DB0011;}
+  .rv-btn:disabled{opacity:.4;cursor:not-allowed;}
+  /* comments panel */
+  #rv-panel{position:fixed;top:0;right:0;bottom:0;width:340px;max-width:88vw;z-index:2147483200;background:#fff;
+    border-left:1px solid #D7D8D6;box-shadow:-8px 0 30px rgba(0,0,0,.16);transform:translateX(100%);
+    transition:transform .18s ease;display:flex;flex-direction:column;
+    font:400 13px/1.45 -apple-system,Segoe UI,Roboto,sans-serif;color:#1A1A1A;}
+  #rv-panel.rv-open{transform:translateX(0);}
+  #rv-panel .rv-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px 16px;border-bottom:1px solid #EEE;}
+  #rv-panel .rv-head strong{font:700 14px/1 inherit;}
+  #rv-panel .rv-list{flex:1;overflow:auto;padding:8px 12px;}
+  #rv-panel .rv-empty{color:#8A8A8A;padding:24px 8px;text-align:center;}
+  .rv-item{border:1px solid #EEE;border-radius:8px;padding:10px;margin:0 0 8px;}
+  .rv-item .rv-item-h{display:flex;align-items:center;gap:8px;margin:0 0 4px;}
+  .rv-item .rv-num{flex:none;width:20px;height:20px;border-radius:50%;background:#1A1A1A;color:#fff;font:700 11px/20px inherit;text-align:center;}
+  .rv-item .rv-loc{font:600 12px/1.3 inherit;color:#333;word-break:break-word;}
+  .rv-item .rv-txt{color:#1A1A1A;white-space:pre-wrap;word-break:break-word;margin:2px 0 8px;}
+  .rv-item .rv-acts{display:flex;gap:8px;}
+  .rv-item .rv-link{background:none;border:0;padding:0;color:#333;text-decoration:underline;cursor:pointer;font:600 12px/1 inherit;}
+  .rv-item .rv-link.rv-del{color:#DB0011;}
+  #rv-panel .rv-foot{border-top:1px solid #EEE;padding:12px 16px;display:flex;gap:8px;}
+  #rv-panel .rv-foot .rv-btn{flex:1;height:38px;}
+  /* export modal */
+  #rv-export{position:fixed;inset:0;z-index:2147483600;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;padding:24px;}
+  #rv-export.rv-show{display:flex;}
+  #rv-export .rv-card{width:720px;max-width:100%;max-height:86vh;background:#fff;border-radius:10px;display:flex;flex-direction:column;overflow:hidden;
+    font:400 13px/1.45 -apple-system,Segoe UI,Roboto,sans-serif;color:#1A1A1A;}
+  #rv-export .rv-card-h{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #EEE;}
+  #rv-export textarea{flex:1;margin:0;border:0;outline:none;resize:none;padding:16px;font:400 12.5px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;color:#1A1A1A;min-height:320px;}
+  #rv-export .rv-card-f{display:flex;gap:8px;justify-content:flex-end;padding:12px 16px;border-top:1px solid #EEE;}
+  .rv-x{background:none;border:0;font-size:20px;line-height:1;cursor:pointer;color:#666;padding:4px;}
+  @media print{#rv-fab,#rv-panel,#rv-composer,#rv-markers,#rv-export{display:none !important;}}
+</style>
+
+<button id="rv-fab" type="button" aria-pressed="false" title="Toggle review mode">
+  <span class="rv-dot" aria-hidden="true"></span><span class="rv-label">Review</span><span class="rv-count" id="rv-count">0</span>
+</button>
+<div id="rv-markers" aria-hidden="true"></div>
+<svg id="rv-noodle" aria-hidden="true"><rect id="rv-noodle-box" rx="3" style="display:none"/><path id="rv-noodle-path"/><circle id="rv-noodle-dot" r="3.5" style="display:none"/></svg>
+<div id="rv-composer" role="dialog" aria-label="Add comment">
+  <p class="rv-target" id="rv-composer-target" title="Drag to move"></p>
+  <textarea id="rv-composer-text" placeholder="Describe the change you want here…" aria-label="Comment"></textarea>
+  <div class="rv-row">
+    <button class="rv-btn rv-danger" id="rv-composer-del" type="button" style="margin-right:auto;display:none;">Delete</button>
+    <button class="rv-btn" id="rv-composer-cancel" type="button">Cancel</button>
+    <button class="rv-btn rv-primary" id="rv-composer-save" type="button">Save</button>
+  </div>
+</div>
+<aside id="rv-panel" aria-label="Review comments">
+  <div class="rv-head"><strong>Comments (<span id="rv-panel-count">0</span>)</strong>
+    <button class="rv-x" id="rv-panel-close" type="button" aria-label="Close panel">×</button></div>
+  <div class="rv-list" id="rv-list"><p class="rv-empty">Turn on <b>Review</b>, then click any component to pin a comment.</p></div>
+  <div class="rv-foot">
+    <button class="rv-btn" id="rv-clear" type="button">Clear all</button>
+    <button class="rv-btn rv-primary" id="rv-export-btn" type="button">Export prompt</button>
+  </div>
+</aside>
+<div id="rv-export" role="dialog" aria-label="Export prompt" aria-modal="true">
+  <div class="rv-card">
+    <div class="rv-card-h"><strong>Edit prompt — copy &amp; paste back</strong><button class="rv-x" id="rv-export-close" type="button" aria-label="Close">×</button></div>
+    <textarea id="rv-export-text" readonly spellcheck="false"></textarea>
+    <div class="rv-card-f">
+      <button class="rv-btn" id="rv-export-download" type="button">Download .md</button>
+      <button class="rv-btn rv-primary" id="rv-export-copy" type="button">Copy to clipboard</button>
+    </div>
+  </div>
+</div>
+
+<script id="rv-script">
+(function(){
+  "use strict";
+  function meta(n){ var m=document.querySelector('meta[name="'+n+'"]'); return m?m.getAttribute('content'):''; }
+  var DOC_TITLE = meta('rv-doc') || (document.title||"Review").replace(/\s+·.*$/,"").trim();
+  var DOC_FILE = meta('rv-file') || '';
+  // ctx = the viewing state a pin was made under (mode · theme), read from the host
+  // doc's live attributes at save time. Empty on docs that carry neither (harmless).
+  // In two-pane harnesses (showroom light/dark) this is what keeps exports unambiguous.
+  function ctxOf(){
+    var m=(document.body&&document.body.getAttribute('data-theme'))||'';
+    var t=document.documentElement.getAttribute('data-apollo-theme')||'';
+    return [m,t].filter(Boolean).join(' · ');
+  }
+  var comments = [];            // {id, ctx, section, desc, path, text, el}
+  var seq = 0;
+  var active = false, editingId = null, pendingEl = null, composerEl = null, dragging = false;
+
+  var fab=document.getElementById('rv-fab'),
+      countEl=document.getElementById('rv-count'),
+      markers=document.getElementById('rv-markers'),
+      composer=document.getElementById('rv-composer'),
+      cTarget=document.getElementById('rv-composer-target'),
+      cText=document.getElementById('rv-composer-text'),
+      cSave=document.getElementById('rv-composer-save'),
+      cCancel=document.getElementById('rv-composer-cancel'),
+      cDel=document.getElementById('rv-composer-del'),
+      panel=document.getElementById('rv-panel'),
+      list=document.getElementById('rv-list'),
+      panelCount=document.getElementById('rv-panel-count'),
+      exportModal=document.getElementById('rv-export'),
+      exportText=document.getElementById('rv-export-text');
+
+  function isRvNode(n){ return n && n.closest && n.closest('#rv-fab,#rv-panel,#rv-composer,#rv-markers,#rv-export'); }
+
+  // ---- element description -------------------------------------------------
+  function cleanHead(s){ return (s||'').replace(/\s+/g,' ').replace(/^(\d+)(?=\D)/,'$1 ').trim(); }
+  function sectionName(el){
+    var sec = el.closest && el.closest('section[aria-labelledby]');
+    if(sec){ var h=document.getElementById(sec.getAttribute('aria-labelledby')); if(h) return cleanHead(h.textContent); }
+    var anySec = el.closest && el.closest('section'); if(anySec){ var hh=anySec.querySelector('h1,h2,h3'); if(hh) return cleanHead(hh.textContent); }
+    // fallback for FLAT docs (dossiers with no <section> wrappers): nearest preceding heading in document order
+    var heads=[].slice.call(document.querySelectorAll('h1,h2,h3')), best='';
+    for(var i=0;i<heads.length;i++){
+      if(heads[i]===el || (el.compareDocumentPosition(heads[i]) & Node.DOCUMENT_POSITION_PRECEDING)){
+        best=cleanHead(heads[i].textContent);
+      }
+    }
+    return best;
+  }
+  function descOf(el){
+    var aria=(el.getAttribute&&el.getAttribute('aria-label'))||'';
+    var own=(aria||el.textContent||'').replace(/\s+/g,' ').trim();
+    if(own.length>48) own=own.slice(0,48)+'…';
+    var tag=el.tagName?el.tagName.toLowerCase():'el';
+    var cls=(typeof el.className==='string'&&el.className)?'.'+el.className.split(/\s+/)[0]:'';
+    return own ? own+' ('+tag+cls+')' : tag+cls;
+  }
+  function pathOf(el){
+    var parts=[], n=el, depth=0;
+    while(n && n.nodeType===1 && n!==document.body && depth<5){
+      var s=n.tagName.toLowerCase();
+      if(n.id){ s='#'+n.id; parts.unshift(s); break; }
+      if(typeof n.className==='string' && n.className.trim()) s+='.'+n.className.trim().split(/\s+/)[0];
+      parts.unshift(s); n=n.parentElement; depth++;
+    }
+    return parts.join(' > ');
+  }
+
+  // ---- markers -------------------------------------------------------------
+  function renderMarkers(){
+    markers.innerHTML='';
+    comments.forEach(function(c,i){
+      if(!c.el||!c.el.getBoundingClientRect) return;
+      var r=c.el.getBoundingClientRect();
+      if(r.width===0&&r.height===0) return;
+      var pin=document.createElement('button');
+      pin.className='rv-pin'; pin.type='button'; pin.textContent=(i+1);
+      pin.style.left=(r.right-6)+'px'; pin.style.top=(r.top+8)+'px';
+      pin.title=c.text||'(empty)';
+      pin.addEventListener('click',function(e){ e.stopPropagation(); openComposer(c.el,c.id); });
+      markers.appendChild(pin);
+    });
+  }
+
+  // ---- composer ------------------------------------------------------------
+  function openComposer(el, id){
+    editingId=(id!=null)?id:null; pendingEl=el;
+    var sec=sectionName(el), d=descOf(el);
+    cTarget.textContent=(sec?('['+sec+'] '):'')+d;
+    var existing=id!=null?comments.filter(function(c){return c.id===id;})[0]:null;
+    cText.value=existing?existing.text:'';
+    cDel.style.display=existing?'inline-flex':'none';
+    // default placement: beside the element (not over it); drag + noodle handle the rest
+    var r=el.getBoundingClientRect(), cw=312, ch=200, gap=14, left, top;
+    if(window.innerWidth-r.right > cw+gap) left=r.right+gap;                 // room on the right
+    else if(r.left > cw+gap) left=r.left-cw-gap;                            // else the left
+    else left=Math.min(window.innerWidth-cw-8, Math.max(8, r.left));        // else clamp
+    top=Math.min(window.innerHeight-ch, Math.max(8, r.top));
+    composer.style.top=top+'px'; composer.style.left=left+'px';
+    composer.classList.add('rv-show');
+    composerEl=el;
+    setTimeout(function(){ cText.focus(); drawNoodle(); },0);
+  }
+  function closeComposer(){ composer.classList.remove('rv-show'); pendingEl=null; editingId=null; composerEl=null; drawNoodle(); }
+
+  // ---- noodle (leader line) + drag ----------------------------------------
+  var noodlePath=document.getElementById('rv-noodle-path'), noodleDot=document.getElementById('rv-noodle-dot'),
+      noodleBox=document.getElementById('rv-noodle-box');
+  function drawNoodle(){
+    if(!composerEl || !composer.classList.contains('rv-show') || !noodlePath){
+      if(noodlePath) noodlePath.removeAttribute('d');
+      if(noodleDot) noodleDot.style.display='none';
+      if(noodleBox) noodleBox.style.display='none';
+      return;
+    }
+    var r=composerEl.getBoundingClientRect(), cr=composer.getBoundingClientRect();
+    // 1) highlight the EXACT element being commented on (its precise bounds)
+    noodleBox.setAttribute('x', r.left); noodleBox.setAttribute('y', r.top);
+    noodleBox.setAttribute('width', Math.max(0, r.width)); noodleBox.setAttribute('height', Math.max(0, r.height));
+    noodleBox.style.display='';
+    // 2) anchor the noodle to the element's BORDER edge facing the composer (never the centre)
+    var ecx=r.left+r.width/2, ecy=r.top+r.height/2, ccx=cr.left+cr.width/2, ccy=cr.top+cr.height/2;
+    var dx=ccx-ecx, dy=ccy-ecy, ex, ey;
+    if(Math.abs(dx) >= Math.abs(dy)){                           // composer is more to the side → left/right edge
+      ex = dx>=0 ? r.right : r.left;
+      ey = Math.min(Math.max(ccy, r.top+4), r.bottom-4);
+    } else {                                                    // composer is more above/below → top/bottom edge
+      ey = dy>=0 ? r.bottom : r.top;
+      ex = Math.min(Math.max(ccx, r.left+4), r.right-4);
+    }
+    // 3) composer-side anchor: nearest edge of the box to the element anchor
+    var cx = (ex<cr.left) ? cr.left : (ex>cr.right ? cr.right : Math.min(Math.max(ex,cr.left),cr.right));
+    var cy = Math.min(Math.max(ey, cr.top+8), cr.bottom-8);
+    var mx = ex+(cx-ex)*0.5;
+    noodlePath.setAttribute('d','M'+ex+','+ey+' C'+mx+','+ey+' '+mx+','+cy+' '+cx+','+cy);
+    noodleDot.setAttribute('cx',ex); noodleDot.setAttribute('cy',ey); noodleDot.style.display='';
+  }
+  cTarget.addEventListener('mousedown',function(e){
+    dragging=true; var cr=composer.getBoundingClientRect();
+    composer._dx=e.clientX-cr.left; composer._dy=e.clientY-cr.top;
+    e.preventDefault(); e.stopPropagation();
+  });
+  document.addEventListener('mousemove',function(e){
+    if(!dragging) return;
+    var left=Math.min(window.innerWidth-composer.offsetWidth-8, Math.max(8, e.clientX-composer._dx));
+    var top =Math.min(window.innerHeight-40, Math.max(8, e.clientY-composer._dy));
+    composer.style.left=left+'px'; composer.style.top=top+'px'; drawNoodle();
+  },true);
+  document.addEventListener('mouseup',function(){ dragging=false; },true);
+  cSave.addEventListener('click',function(){
+    var txt=cText.value.trim(); if(!txt){ closeComposer(); return; }
+    if(editingId!=null){
+      comments.forEach(function(c){ if(c.id===editingId) c.text=txt; });
+    } else if(pendingEl){
+      comments.push({id:++seq, ctx:ctxOf(), section:sectionName(pendingEl), desc:descOf(pendingEl), path:pathOf(pendingEl), text:txt, el:pendingEl});
+    }
+    closeComposer(); refresh();
+  });
+  cCancel.addEventListener('click',closeComposer);
+  cDel.addEventListener('click',function(){ if(editingId!=null){ comments=comments.filter(function(c){return c.id!==editingId;}); } closeComposer(); refresh(); });
+  cText.addEventListener('keydown',function(e){ if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)){ cSave.click(); } if(e.key==='Escape'){ closeComposer(); } });
+
+  // ---- panel list ----------------------------------------------------------
+  function refresh(){
+    countEl.textContent=comments.length; countEl.classList.toggle('rv-has',comments.length>0);
+    panelCount.textContent=comments.length;
+    if(!comments.length){ list.innerHTML='<p class="rv-empty">Turn on <b>Review</b>, then click any component to pin a comment.</p>'; }
+    else {
+      list.innerHTML='';
+      comments.forEach(function(c,i){
+        var it=document.createElement('div'); it.className='rv-item';
+        var loc=(c.ctx?('['+c.ctx+'] '):'')+(c.section?('['+c.section+'] '):'')+c.desc;
+        it.innerHTML='<div class="rv-item-h"><span class="rv-num">'+(i+1)+'</span><span class="rv-loc"></span></div>'+
+          '<div class="rv-txt"></div>'+
+          '<div class="rv-acts"><button class="rv-link rv-goto" type="button">Reveal</button>'+
+          '<button class="rv-link rv-edit" type="button">Edit</button>'+
+          '<button class="rv-link rv-del" type="button">Delete</button></div>';
+        it.querySelector('.rv-loc').textContent=loc;
+        it.querySelector('.rv-txt').textContent=c.text;
+        it.querySelector('.rv-goto').addEventListener('click',function(){ if(c.el&&c.el.scrollIntoView){ c.el.scrollIntoView({block:'center'}); flash(c.el);} });
+        it.querySelector('.rv-edit').addEventListener('click',function(){ if(c.el) openComposer(c.el,c.id); });
+        it.querySelector('.rv-del').addEventListener('click',function(){ comments=comments.filter(function(x){return x.id!==c.id;}); refresh(); });
+        list.appendChild(it);
+      });
+    }
+    renderMarkers();
+  }
+  function flash(el){ var o=el.style.outline; el.style.outline='3px solid #DB0011'; setTimeout(function(){ el.style.outline=o; },700); }
+
+  // ---- export --------------------------------------------------------------
+  function buildPrompt(){
+    var lines=[];
+    lines.push('# '+DOC_TITLE+' — review edits ('+comments.length+')');
+    lines.push('');
+    lines.push('Apply the following change requests'+(DOC_FILE?(' to `'+DOC_FILE+'`'):'')+'. Each item is pinned to a component; treat the bracketed location as the target and use the selector to disambiguate. A leading [mode · theme] bracket is the viewing state the comment was pinned under.');
+    lines.push('');
+    comments.forEach(function(c,i){
+      var loc=(c.ctx?('['+c.ctx+'] '):'')+(c.section?('['+c.section+'] '):'')+c.desc;
+      lines.push((i+1)+'. '+loc);
+      lines.push('   - '+c.text.replace(/\n/g,'\n     '));
+      lines.push('   - selector: `'+c.path+'`');
+      lines.push('');
+    });
+    return lines.join('\n');
+  }
+  function openExport(){ exportText.value=buildPrompt(); exportModal.classList.add('rv-show'); setTimeout(function(){ exportText.focus(); exportText.select(); },0); }
+  document.getElementById('rv-export-btn').addEventListener('click',openExport);
+  document.getElementById('rv-export-close').addEventListener('click',function(){ exportModal.classList.remove('rv-show'); });
+  exportModal.addEventListener('click',function(e){ if(e.target===exportModal) exportModal.classList.remove('rv-show'); });
+  document.getElementById('rv-export-copy').addEventListener('click',function(){
+    exportText.select();
+    var ok=false; try{ ok=document.execCommand('copy'); }catch(e){}
+    if(navigator.clipboard){ navigator.clipboard.writeText(exportText.value).catch(function(){}); ok=true; }
+    var b=document.getElementById('rv-export-copy'); var t=b.textContent; b.textContent=ok?'Copied ✓':'Select + ⌘C'; setTimeout(function(){ b.textContent=t; },1400);
+  });
+  document.getElementById('rv-export-download').addEventListener('click',function(){
+    var blob=new Blob([buildPrompt()],{type:'text/markdown'});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+    a.download=(DOC_TITLE.replace(/[^\w-]+/g,'-')||'review')+'-comments.md'; a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); },1000);
+  });
+
+  // ---- review-mode wiring --------------------------------------------------
+  var hoverEl=null;
+  function setActive(on){
+    active=on; document.body.classList.toggle('rv-active',on);
+    fab.classList.toggle('rv-on',on); fab.setAttribute('aria-pressed',on?'true':'false');
+    fab.querySelector('.rv-label').textContent=on?'Reviewing':'Review';
+    if(on){ panel.classList.add('rv-open'); } else { clearHover(); }
+  }
+  function clearHover(){ if(hoverEl){ hoverEl.removeAttribute('data-rv-hover'); hoverEl=null; } }
+  fab.addEventListener('click',function(){ setActive(!active); });
+  document.getElementById('rv-panel-close').addEventListener('click',function(){ panel.classList.remove('rv-open'); });
+  document.getElementById('rv-clear').addEventListener('click',function(){ if(comments.length&&confirm('Delete all '+comments.length+' comments?')){ comments=[]; refresh(); } });
+
+  document.addEventListener('mousemove',function(e){
+    if(!active || dragging) return;
+    var t=e.target;
+    if(isRvNode(t)){ clearHover(); return; }
+    if(t!==hoverEl){ clearHover(); hoverEl=t; if(hoverEl&&hoverEl.setAttribute) hoverEl.setAttribute('data-rv-hover',''); }
+  },true);
+
+  // capture clicks in review mode so the host page's own handlers/nav don't fire
+  document.addEventListener('click',function(e){
+    if(!active) return;
+    if(isRvNode(e.target)) return;           // let overlay UI work normally
+    e.preventDefault(); e.stopPropagation();
+    clearHover();
+    openComposer(e.target, null);
+  },true);
+
+  window.addEventListener('scroll',function(){ renderMarkers(); drawNoodle(); },true);
+  window.addEventListener('resize',function(){ renderMarkers(); drawNoodle(); },true);
+  setInterval(function(){ renderMarkers(); drawNoodle(); },600);   // keep pins + noodle glued as the page reflows
+
+  refresh();
+})();
+</script>
+<!-- ===================== END APOLLO REVIEW OVERLAY ===================== -->
+
+</body>
+</html>

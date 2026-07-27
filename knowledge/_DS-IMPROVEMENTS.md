@@ -816,6 +816,102 @@ a new task"* → *"should be teh pre-flight work, is that correct?"*). **No gate
 
 ## ds-018 — Legend Reset renders its DISABLED state as the HOVER state (2026-07-27, Dave by eye)
 
+> ### ✅✅ ENACTED + BUILD-GREEN 2026-07-27 (session #12). **A2 · B2 · C2 are all in. Do not re-enact.**
+> **Build `62/62` GREEN, exit 0** (58→62: C2 + its selftest added two steps, and two generators re-ran).
+> **⚠ NOT RENDER-PROVEN.** Deferred by Dave's ruling this session — the env was cold and the proof was
+> priced against a window already at Amber. **The render-proof is the one thing still owed on ds-018**,
+> and it is owed against `_RUNBOOK-render-verify.md` (licensed cut asserted inside each measured frame,
+> transitions settled, colours compared as colours, **cells read not flattened text** — #11's probe wart).
+>
+> **WHAT LANDED, file by file:**
+> - **A2 · the tier.** Minted `data/control/label-disabled` in `tokens/semantic-colour.json` as a
+>   sibling of `data/axis` / `data/grid` — light `#9D9D9D` (`color/neutral/9`), dark `#808080`
+>   (`color/neutral/8`). Declared as `--data-control-label-disabled` on the light AND dark spine blocks
+>   of **Chart-bar · Chart-combo · Chart-donut · Chart-line** (the four with legends; scatter and
+>   sparkline have none), and mapped in each `#token-manifest`.
+>   ⚠ **In the SNIPPET SPINES, not `canon.css`** — chart snippets link `type.css` only and inline their
+>   own spine, so `canon.css` is not in this cascade (#11's finding, and it held).
+>   ⚠ **CORRECTION TO #11's INSTRUCTION:** the handoff said to land this "in the GENERATOR, never a
+>   canon.css hand-patch". **There is no generator for the CSS spine** — `gen_component_partials.py`
+>   injects only the JS behaviour blocks between `AUTO-BEHAVIOUR` markers. The spine is hand-authored
+>   per snippet, so this was four hand-edits, applied by one anchored script with per-file assertions.
+> - **B2 · the channel.** `.dv-leg-reset:disabled` now reads
+>   `border-color:var(--line); color:var(--data-control-label-disabled);`
+>   ⚠ The border is bound **directly to `--line`**, not to a new border token — that IS B2: the disabled
+>   border *is* the enabled-resting border. **The ruled+accepted cost stands: at rest the two are
+>   identical and the label carries the whole distinction. Do not "fix" this back into a border
+>   difference without asking.**
+> - **THE VALUE — reuse, not derivation.** `#9D9D9D`/`#808080` is B-D4's SETTLED pair adopted verbatim.
+>   Dave 2026-07-27, asked for the most efficient path: *"just do it"* — taken against an explicit
+>   statement that (a) the alternative was a fresh value judgement, (b) a token value is a **one-line
+>   reversible edit, not architecture**, and (c) proposing it was me proposing a value, vetoable in a word.
+>   ⚠ **CAVEAT RECORDED AT MINT, not discovered later:** B-D4 dialled that pair against the **disabled
+>   fill `#E1E1E1`**; here it sits on the **chart ground** (the legend row has no background,
+>   `Chart-bar.reference.html:203`), so the same hex reads at a different ratio than the one judged.
+>   **Re-dial on sight is expected and cheap.**
+> - **`--muted` (the sibling defect, found this session).** `.dv-leg-sw[aria-checked="false"]` referenced
+>   `--muted`, used in **4 of 6** chart snippets and declared in **none** (and not in `type.css`; it is in
+>   `canon.css:748`, which is not in this cascade). Dave, on the v2 doc: *"muted looks fine to me"* ⇒
+>   ruled as **no visual change**. Enacted as `--data-control-swatch-off:currentColor` — **a no-op BY
+>   CONSTRUCTION, not by measurement**: it resolves to precisely what the failed lookup was already
+>   falling back to, so it cannot shift a pixel, and it converts an accident into a named, tunable dial.
+> - **C2 · the gate.** `knowledge/_validate_property_resolves.py`, wired at build steps 52–53.
+>
+> ### ⚠ C2 SHIPS **ADVISORY**, DELIBERATELY, AND THE REASON MATTERS MORE THAN THE GATE
+> C2 is RULED BLOCKING. It runs advisory because **it found 10 pre-existing failures on its first run**,
+> and going blocking today would have required clearing them **now** — which means inventing values.
+> **Value promotion is Dave's alone.** The other exit, narrowing the glob to charts, is
+> `gate-narrows-its-own-rule` in its purest form: a gate whose glob is smaller than its rule silently
+> redefines the rule as whatever it happens to check. **So the rule stays wide, the findings are
+> published, and nothing is faked green. Promotion is a one-line edit** (`["--strict"]` on the build step)
+> **the moment the worklist is empty.** ⚠ An advisory gate that is never promoted has quietly become
+> documentation — this one has a named trigger, use it.
+>
+> ### ★★★ THE GATE FOUND THREE MORE INSTANCES ON ITS FIRST RUN — the worklist, all Dave's
+> **This is the finding of the session, and it is bigger than ds-018.** Five instances of the
+> silent-lookup class had been found across five sessions, every one **by eye or by accident**. The
+> first automated pass found three more in seconds. **⇒ The class was never rare; it was invisible.**
+> 1. **`--border-radius-default` — instance six. FIXED THIS SESSION.** Consumed by `.dv-legrow` in all
+>    four chart snippets, declared in **no snippet in the library**. Fell to initial = `0`, which is
+>    *correct in Mono by accident* (square corners) and would have gone **silently wrong in Console**,
+>    whose live divergence is rounded corners. ⇒ **A silent lookup can hide indefinitely behind a theme
+>    whose value happens to match the initial.** Fixed by consuming the **role** token
+>    `--border-radius-control` (a legend row is a control, not a surface — a tier correction, and my
+>    call: the minimal fix was to declare the base, which would have bypassed the role tier) and
+>    declaring it on both spine blocks + the manifest. **Value 0 in Mono ⇒ no visual change today.**
+> 2. **`--phys-size` — instance seven. NOT FIXED, needs values.** Referenced 2× each in **Alert ·
+>    Empty-state · Popover**, declared in none. This is **B-D7's press-physics local geometry** (buttons
+>    120, icon 44 — Dave's ruled numbers) ⇒ **the press physics may be silently dead in three
+>    components**, on a RULED behaviour. ⚠ **Unverified by render** — the inference is from resolution
+>    rules, not observation. **Measure before believing it, then Dave sets the three numbers.**
+> 3. **`--mark` — instance eight. NOT FIXED, needs a value.** Referenced across **7 pro-forma files**
+>    (Masthead-interactive 7×, Tranche-2/3/4/5 1× each, Tranche-7 7×, Tranche-8 7×), declared in none.
+>    It fills icon marks inside `<symbol>` ⇒ **falls to the SVG initial value, BLACK, in silence** —
+>    *the exact failure `Chart-bar`'s own spine comment documents for `--data-text-on-series`*, which
+>    was caught at 3.99:1 by a render probe. Same shape, same corpus, uncaught until now.
+>
+> ### ⛔ RECORD CORRECTION — the "B-D4 vs canon collision" DOES NOT EXIST
+> The handoff carried, in **three** places (GOOD-MORNING DO-FIRST, `_LIVE-STATE` LATEST DELTA, §C·4),
+> that *"B-D4 ruled `#808080` while canon ships `#9D9D9D` — two ledgered numbers that disagree"*.
+> **They do not disagree.** B-D4's *prose* says `#808080` "both modes"; **B-D4's own
+> `Values — SETTLED (Dave, 2026-07-20, dialled on the v7 live editor)` block gives the light/dark PAIR
+> `#9D9D9D` m9 / `#808080` m8**, which `canon.css:351`/`:648` and `semantic-colour.json:1636` both
+> implement. Three sources agree; the fourth is loose prose in the same document, read against half the
+> ruling. ⇒ **`trust-the-spine-not-the-prose`, and it cost part of a window.** Nothing to reconcile.
+>
+> **Evidence:** `python3 knowledge/_build_all.py` **62/62 GREEN exit 0** · 2026-07-27 ·
+> `_validate_property_resolves.py --selftest` **green control + 4 bites + a bite-the-bite, all PASS**
+> · 2026-07-27 · `--muted` / `--border-radius-default` / `--phys-size` / `--mark` censuses by `grep -c`
+> over `knowledge/snippets/*.reference.html` + `knowledge/_proforma/*.html` · 2026-07-27 ·
+> decision doc `reviews/DS-018-VALUE-2026-07-27-v2.html` (+ `.REVIEW.html` overlay), **self-measuring:
+> it leaves the three properties undeclared so the reader's browser resolves them.**
+> **⚠ WHAT THE AUTHOR FLAGS AGAINST HIS OWN WORK:** the three new instances are **static-resolution
+> reasoning, not renders** — instance six is safe to believe (initial `0` matches Mono), but
+> **`--phys-size` and `--mark` should be render-confirmed before anyone acts on them**; the `--mark`→black
+> claim in particular is the kind of tidy explanation this project has been burned by (ds-019). And the
+> value `#9D9D9D` is **mine to propose and Dave's to keep** — it entered on "just do it", which is
+> assent to a plan, not a dialled number.
+
 > ### ★★★ RULED BY DAVE 2026-07-27 (session #11) — the remedy is settled. **A2 · B2 · C2.**
 > **Ruled from** `reviews/DS-018-DISABLED-STATE-2026-07-27-v1.html` (live specimens, three decision
 > controls, contrast computed at render time). Dave, verbatim: *"I've gone with your recommendations

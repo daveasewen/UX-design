@@ -65,16 +65,25 @@
     --data-series-1:#766682; --data-series-2:#A45C3A; --data-series-3:#577C78; --data-series-4:#7F7B45; --data-series-5:#A37E94;
     --data-series-1-hc:#484D6F; --data-series-2-hc:#97482C; --data-series-3-hc:#385F4F; --data-series-4-hc:#6E465D; --data-series-5-hc:#7C6F34;
     --data-axis:#626262; --axis-alpha:1;
+    /* ds-018 A2 (RULED Dave 2026-07-27) — dataviz-tier control chrome, siblings of --data-axis/--data-grid.
+       WHY HERE AND NOT canon.css: chart snippets link type.css only and inline their own spine, so canon.css
+       is not in this cascade at all — a :root fix repairs a real app page and leaves THIS file broken.
+       B2 label-led: the disabled BORDER returns to --line (= enabled-resting, the ruled+accepted cost) and
+       the LABEL carries the whole distinction. Value = B-D4's settled pair, reused not re-derived.
+       --data-control-swatch-off records TODAY'S rendered value (currentColor) as an explicit tunable dial:
+       Dave ruled the hidden swatch "looks fine", so this is a NO-OP BY CONSTRUCTION, not a new colour. */
+    --data-control-label-disabled:#9D9D9D; --data-control-swatch-off:currentColor;
     --shadow:#00000033; --pop-border:#FFFFFF00;
-    --border-radius-surface:0;
+    --border-radius-control:0; --border-radius-surface:0;
   }
   [data-theme="dark"]{
     --page:#1A1A1A; --ink:#FFFFFF; --line:#808080;
     --data-series-1:#766682; --data-series-2:#A45C3A; --data-series-3:#577C78; --data-series-4:#7F7B45; --data-series-5:#A37E94;
     --data-series-1-hc:#93B6CC; --data-series-2-hc:#E5A78F; --data-series-3-hc:#90BA9B; --data-series-4-hc:#D197A6; --data-series-5-hc:#E5C283;
     --data-axis:#9D9D9D; --axis-alpha:1;
+    --data-control-label-disabled:#808080; --data-control-swatch-off:currentColor;
     --shadow:#000000D9; --pop-border:#808080;
-    --border-radius-surface:0;
+    --border-radius-control:0; --border-radius-surface:0;
   }
   [data-contrast="high"]{
     --data-series-1:var(--data-series-1-hc);
@@ -175,7 +184,7 @@
   .dv-leg{list-style:none; margin:0; padding:0; display:flex; gap:16px; --hit:44px;}
   .dv-leg.vert{flex-direction:column; align-items:stretch; gap:20px; min-width:190px;}
   /* the row = the bordered box carrying BOTH controls; the row itself is not interactive */
-  .dv-legrow{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:var(--border-radius-default);
+  .dv-legrow{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:var(--border-radius-control);
     padding:4px 8px; background:transparent; transition:border-color var(--ease), background var(--ease);}
   .dv-leg.vert .dv-legrow{width:100%;}
   .dv-legrow:hover{border-color:var(--ink);}
@@ -188,7 +197,7 @@
     background:var(--sc); border:1px solid var(--sc); transition:background var(--ease), border-color var(--ease);}
   .dv-leg-sw::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
     width:100%; height:100%; top:50%; right:0; left:auto; transform:translateY(-50%);}
-  .dv-leg-sw[aria-checked="false"]{background:transparent; border-color:var(--muted);}
+  .dv-leg-sw[aria-checked="false"]{background:transparent; border-color:var(--data-control-swatch-off);}
   .dv-leg-sw:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
   /* LABEL = isolate toggle-button — borderless (the row carries the box); pressed reads via .is-solo */
   .dv-leg-item{display:inline-flex; align-items:center; gap:8px; flex:1 1 auto; position:relative;
@@ -209,7 +218,7 @@
     width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
   .dv-leg-reset:hover:not(:disabled){border-color:var(--ink);}
   .dv-leg-reset:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
-  .dv-leg-reset:disabled{border-color:var(--border-disabled); color:var(--text-disabled); cursor:default;}
+  .dv-leg-reset:disabled{border-color:var(--line); color:var(--data-control-label-disabled); cursor:default;}
   /* THE FADE LADDER — full ▸ 24% hover/peek ▸ 12% ghost. Two render levels, nothing ever hides.
      .is-peek MUST sit after .is-ghost: a ghosted row lifts 12% → 24% as an add-preview. */
   .is-faded{opacity:.24 !important;}
@@ -392,7 +401,9 @@
               "--data-series-3-hc": "data/series-high-contrast/3", "--data-series-4-hc": "data/series-high-contrast/4",
               "--data-series-5-hc": "data/series-high-contrast/5",
               "--data-axis": "data/axis/color", "--axis-alpha": "data/axis/alpha",
+              "--data-control-label-disabled": "data/control/label-disabled/color",
               "--shadow": "elevation/functional", "--pop-border": "elevation/border",
+              "--border-radius-control": "border-radius/control",
               "--border-radius-surface": "border-radius/surface" },
     "contrastPairs": [
       { "fg": "text/default", "bg": "background/default", "context": "text" },

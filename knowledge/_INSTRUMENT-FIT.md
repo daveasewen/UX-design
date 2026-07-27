@@ -80,6 +80,7 @@
 | `knowledge/_validate_no_hardcode.py` | I0-STATIC |
 | `knowledge/_validate_partials.py` | I0-STATIC |
 | `knowledge/_validate_proforma.py` | I0-STATIC |
+| `knowledge/_validate_property_resolves.py` | I0-STATIC |
 | `knowledge/_validate_radius.py` | I0-STATIC |
 | `knowledge/_validate_screen.py` | I2-RENDER |
 | `knowledge/_validate_snippets.py` | I0-STATIC |

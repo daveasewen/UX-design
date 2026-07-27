@@ -2,7 +2,7 @@
 
 > Each text/icon token is tested against the **worst-case (lightest) dark surface it can sit on**, resolved from the store — page default `#1A1A1A` + raised island `#1D1D1D`, or the token's own group surfaces. `on-light` tokens are excluded (light-only). Disabled-state tokens are allowlisted (reported, not gated). Text needs 4.5:1, icons/UI need 3:1.
 
-**Result:** 17 pass · 4 allowed exception(s) · **0 gating failure(s)** · 5 skipped (light-only).
+**Result:** 18 pass · 4 allowed exception(s) · **0 gating failure(s)** · 5 skipped (light-only).
 
 ## Allowed exceptions (reported, not gated)
 
@@ -36,6 +36,7 @@
 | `button/secondary/label/disabled` | `#808080` | `#B7B7B7` | 1.97:1 | 🟡 ALLOWED |
 | `button/tertiary/label/default` | `#FFFFFF` | `#232323` | 15.72:1 | ✅ OK |
 | `button/tertiary/label/disabled` | `#808080` | `#232323` | 3.98:1 | ✅ OK |
+| `data/control/label-disabled/color` | `#808080` | `#1D1D1D` | 4.27:1 | ✅ OK |
 | `data/text/on-series` | `#FFFFFF` | `#1D1D1D` | 16.86:1 | ✅ OK |
 | `icon/default` | `#FFFFFF` | `#1D1D1D` | 16.86:1 | ✅ OK |
 | `icon/default-reverse` | `#FFFFFF` | `#1D1D1D` | 16.86:1 | ✅ OK |

@@ -3387,6 +3387,7 @@
   --data-series-3-hc: var(--data-series-high-contrast-3);
   --data-axis: var(--data-axis-color);
   --axis-alpha: var(--data-axis-alpha);
+  --data-control-label-disabled: var(--data-control-label-disabled-color);
   --data-grid: var(--data-grid-color);
   --grid-alpha: var(--data-grid-alpha);
   --status-breach: var(--rag-error);
@@ -3395,6 +3396,7 @@
   --status-info: var(--rag-information);
   --shadow: var(--elevation-functional);
   --pop-border: var(--elevation-border);
+  --data-control-swatch-off: currentColor;
   --data-text-on-series: #FFFFFF;
 }
 .cn-chart-bar [data-contrast="high"]{--data-series-1:var(--data-series-1-hc);
@@ -3499,7 +3501,7 @@
 .cn-chart-bar .dv-leg.center{flex-wrap:wrap; justify-content:center; align-items:center; margin:16px 0 0;}
 .cn-chart-bar .dv-leg.vert{flex-direction:column; align-items:stretch; gap:20px; min-width:190px;}
 /* the row = the bordered box carrying BOTH controls; the row itself is not interactive */
-.cn-chart-bar .dv-legrow{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:var(--border-radius-default);
+.cn-chart-bar .dv-legrow{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:var(--border-radius-control);
     padding:4px 8px; background:transparent; transition:border-color var(--ease), background var(--ease);}
 .cn-chart-bar .dv-leg.vert .dv-legrow{width:100%;}
 .cn-chart-bar .dv-legrow:hover{border-color:var(--ink);}
@@ -3512,7 +3514,7 @@
     background:var(--sc); border:1px solid var(--sc); transition:background var(--ease), border-color var(--ease);}
 .cn-chart-bar .dv-leg-sw::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
     width:100%; height:100%; top:50%; right:0; left:auto; transform:translateY(-50%);}
-.cn-chart-bar .dv-leg-sw[aria-checked="false"]{background:transparent; border-color:var(--muted);}
+.cn-chart-bar .dv-leg-sw[aria-checked="false"]{background:transparent; border-color:var(--data-control-swatch-off);}
 .cn-chart-bar .dv-leg-sw:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 /* LABEL = isolate toggle-button — borderless (the row carries the box); pressed reads via .is-solo */
 .cn-chart-bar .dv-leg-item{display:inline-flex; align-items:center; gap:8px; flex:1 1 auto; position:relative;
@@ -3536,7 +3538,7 @@
     width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
 .cn-chart-bar .dv-leg-reset:hover:not(:disabled){border-color:var(--ink);}
 .cn-chart-bar .dv-leg-reset:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
-.cn-chart-bar .dv-leg-reset:disabled{border-color:var(--border-disabled); color:var(--text-disabled); cursor:default;}
+.cn-chart-bar .dv-leg-reset:disabled{border-color:var(--line); color:var(--data-control-label-disabled); cursor:default;}
 /* THE FADE LADDER — full ▸ 24% hover/peek ▸ 12% ghost. Two render levels, nothing ever hides.
      .is-peek MUST sit after .is-ghost: a ghosted row lifts 12% → 24% as an add-preview. */
 .cn-chart-bar .is-faded{opacity:.24 !important;}
@@ -3587,12 +3589,14 @@
   --data-series-2-hc: var(--data-series-high-contrast-2);
   --data-axis: var(--data-axis-color);
   --axis-alpha: var(--data-axis-alpha);
+  --data-control-label-disabled: var(--data-control-label-disabled-color);
   --data-grid: var(--data-grid-color);
   --grid-alpha: var(--data-grid-alpha);
   --data-target: var(--data-target-color);
   --target-alpha: var(--data-target-alpha);
   --shadow: var(--elevation-functional);
   --pop-border: var(--elevation-border);
+  --data-control-swatch-off: currentColor;
 }
 .cn-chart-combo [data-contrast="high"]{--data-series-1:var(--data-series-1-hc);
     --data-series-2:var(--data-series-2-hc);}
@@ -3661,7 +3665,7 @@
 .cn-chart-combo .dv-leg.center{flex-wrap:wrap; justify-content:center; align-items:center; margin:16px 0 0;}
 .cn-chart-combo .dv-leg.vert{flex-direction:column; align-items:stretch; gap:20px; min-width:190px;}
 /* the row = the bordered box carrying BOTH controls; the row itself is not interactive */
-.cn-chart-combo .dv-legrow{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:var(--border-radius-default);
+.cn-chart-combo .dv-legrow{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:var(--border-radius-control);
     padding:4px 8px; background:transparent; transition:border-color var(--ease), background var(--ease);}
 .cn-chart-combo .dv-leg.vert .dv-legrow{width:100%;}
 .cn-chart-combo .dv-legrow:hover{border-color:var(--ink);}
@@ -3672,7 +3676,7 @@
     background:var(--sc); border:1px solid var(--sc); transition:background var(--ease), border-color var(--ease);}
 .cn-chart-combo .dv-leg-sw::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
     width:100%; height:100%; top:50%; right:0; left:auto; transform:translateY(-50%);}
-.cn-chart-combo .dv-leg-sw[aria-checked="false"]{background:transparent; border-color:var(--muted);}
+.cn-chart-combo .dv-leg-sw[aria-checked="false"]{background:transparent; border-color:var(--data-control-swatch-off);}
 .cn-chart-combo .dv-leg-sw:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 /* ★ SHAPE MODIFIER — EARNED HERE, unlike Chart-bar. Combo is the one member with TWO mark types
      on one plot: series 1 is a rect (bar), series 2 is a line with circular nodes. So swatch shape
@@ -3701,7 +3705,7 @@
     width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
 .cn-chart-combo .dv-leg-reset:hover:not(:disabled){border-color:var(--ink);}
 .cn-chart-combo .dv-leg-reset:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
-.cn-chart-combo .dv-leg-reset:disabled{border-color:var(--border-disabled); color:var(--text-disabled); cursor:default;}
+.cn-chart-combo .dv-leg-reset:disabled{border-color:var(--line); color:var(--data-control-label-disabled); cursor:default;}
 /* THE FADE LADDER — full ▸ 24% hover/peek ▸ 12% ghost. Two render levels, nothing ever hides.
      .is-peek MUST sit after .is-ghost: a ghosted row lifts 12% → 24% as an add-preview. */
 .cn-chart-combo .is-faded{opacity:.24 !important;}
@@ -3784,8 +3788,10 @@
   --data-series-5-hc: var(--data-series-high-contrast-5);
   --data-axis: var(--data-axis-color);
   --axis-alpha: var(--data-axis-alpha);
+  --data-control-label-disabled: var(--data-control-label-disabled-color);
   --shadow: var(--elevation-functional);
   --pop-border: var(--elevation-border);
+  --data-control-swatch-off: currentColor;
 }
 .cn-chart-donut [data-contrast="high"]{--data-series-1:var(--data-series-1-hc);
     --data-series-2:var(--data-series-2-hc);
@@ -3870,7 +3876,7 @@
 .cn-chart-donut .dv-leg{list-style:none; margin:0; padding:0; display:flex; gap:16px; --hit:44px;}
 .cn-chart-donut .dv-leg.vert{flex-direction:column; align-items:stretch; gap:20px; min-width:190px;}
 /* the row = the bordered box carrying BOTH controls; the row itself is not interactive */
-.cn-chart-donut .dv-legrow{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:var(--border-radius-default);
+.cn-chart-donut .dv-legrow{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:var(--border-radius-control);
     padding:4px 8px; background:transparent; transition:border-color var(--ease), background var(--ease);}
 .cn-chart-donut .dv-leg.vert .dv-legrow{width:100%;}
 .cn-chart-donut .dv-legrow:hover{border-color:var(--ink);}
@@ -3883,7 +3889,7 @@
     background:var(--sc); border:1px solid var(--sc); transition:background var(--ease), border-color var(--ease);}
 .cn-chart-donut .dv-leg-sw::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
     width:100%; height:100%; top:50%; right:0; left:auto; transform:translateY(-50%);}
-.cn-chart-donut .dv-leg-sw[aria-checked="false"]{background:transparent; border-color:var(--muted);}
+.cn-chart-donut .dv-leg-sw[aria-checked="false"]{background:transparent; border-color:var(--data-control-swatch-off);}
 .cn-chart-donut .dv-leg-sw:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 /* LABEL = isolate toggle-button — borderless (the row carries the box); pressed reads via .is-solo */
 .cn-chart-donut .dv-leg-item{display:inline-flex; align-items:center; gap:8px; flex:1 1 auto; position:relative;
@@ -3905,7 +3911,7 @@
     width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
 .cn-chart-donut .dv-leg-reset:hover:not(:disabled){border-color:var(--ink);}
 .cn-chart-donut .dv-leg-reset:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
-.cn-chart-donut .dv-leg-reset:disabled{border-color:var(--border-disabled); color:var(--text-disabled); cursor:default;}
+.cn-chart-donut .dv-leg-reset:disabled{border-color:var(--line); color:var(--data-control-label-disabled); cursor:default;}
 /* THE FADE LADDER — full ▸ 24% hover/peek ▸ 12% ghost. Two render levels, nothing ever hides.
      .is-peek MUST sit after .is-ghost: a ghosted row lifts 12% → 24% as an add-preview. */
 .cn-chart-donut .is-faded{opacity:.24 !important;}
@@ -3957,12 +3963,14 @@
   --data-series-3-hc: var(--data-series-high-contrast-3);
   --data-axis: var(--data-axis-color);
   --axis-alpha: var(--data-axis-alpha);
+  --data-control-label-disabled: var(--data-control-label-disabled-color);
   --data-grid: var(--data-grid-color);
   --grid-alpha: var(--data-grid-alpha);
   --data-target: var(--data-target-color);
   --target-alpha: var(--data-target-alpha);
   --shadow: var(--elevation-functional);
   --pop-border: var(--elevation-border);
+  --data-control-swatch-off: currentColor;
 }
 /* DV-D07 alpha slots ride the roles: axis/grid COLOUR is snapped to the neutral ramp; alpha
      defaults 1.0 and only a theme pulling that lever populates <1 (composite contrast then applies). */
@@ -4026,7 +4034,7 @@
 .cn-chart-line .dv-leg{list-style:none; margin:0; padding:0; display:flex; gap:16px; --hit:44px;}
 .cn-chart-line .dv-leg.center{flex-wrap:wrap; justify-content:center; align-items:center; margin:16px 0 0;}
 .cn-chart-line .dv-leg.vert{flex-direction:column; align-items:stretch; gap:20px; min-width:190px;}
-.cn-chart-line .dv-legrow{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:var(--border-radius-default);
+.cn-chart-line .dv-legrow{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:var(--border-radius-control);
     padding:4px 8px; background:transparent; transition:border-color var(--ease), background var(--ease);}
 .cn-chart-line .dv-leg.vert .dv-legrow{width:100%;}
 .cn-chart-line .dv-legrow:hover{border-color:var(--ink);}
@@ -4035,7 +4043,7 @@
     background:var(--sc); border:1px solid var(--sc); transition:background var(--ease), border-color var(--ease);}
 .cn-chart-line .dv-leg-sw::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px);
     width:100%; height:100%; top:50%; right:0; left:auto; transform:translateY(-50%);}
-.cn-chart-line .dv-leg-sw[aria-checked="false"]{background:transparent; border-color:var(--muted);}
+.cn-chart-line .dv-leg-sw[aria-checked="false"]{background:transparent; border-color:var(--data-control-swatch-off);}
 .cn-chart-line .dv-leg-sw:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
 /* ★★ THE MARKER-SHAPE SET — Chart-line is the member that EARNS it (DV-D11 non-colour channel).
      Its markers genuinely ARE circle · square · diamond, so the swatch mirrors the mark. Chart-bar
@@ -4067,7 +4075,7 @@
     width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
 .cn-chart-line .dv-leg-reset:hover:not(:disabled){border-color:var(--ink);}
 .cn-chart-line .dv-leg-reset:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
-.cn-chart-line .dv-leg-reset:disabled{border-color:var(--border-disabled); color:var(--text-disabled); cursor:default;}
+.cn-chart-line .dv-leg-reset:disabled{border-color:var(--line); color:var(--data-control-label-disabled); cursor:default;}
 /* THE FADE LADDER — full ▸ 24% hover/peek ▸ 12% ghost. .is-peek MUST sit after .is-ghost. */
 .cn-chart-line .is-faded{opacity:.24 !important;}
 .cn-chart-line .is-ghost{opacity:.12 !important;}
@@ -7171,31 +7179,39 @@
   --border-radius-surface: 12px;
 }
 [data-apollo-theme="console"] .cn-chart-bar{
+  --border-radius-control: 4px;
   --border-radius-surface: 12px;
 }
 [data-apollo-theme="console"][data-theme="dark"] .cn-chart-bar,
 [data-apollo-theme="console"] [data-theme="dark"] .cn-chart-bar{
+  --border-radius-control: 4px;
   --border-radius-surface: 12px;
 }
 [data-apollo-theme="console"] .cn-chart-combo{
+  --border-radius-control: 4px;
   --border-radius-surface: 12px;
 }
 [data-apollo-theme="console"][data-theme="dark"] .cn-chart-combo,
 [data-apollo-theme="console"] [data-theme="dark"] .cn-chart-combo{
+  --border-radius-control: 4px;
   --border-radius-surface: 12px;
 }
 [data-apollo-theme="console"] .cn-chart-donut{
+  --border-radius-control: 4px;
   --border-radius-surface: 12px;
 }
 [data-apollo-theme="console"][data-theme="dark"] .cn-chart-donut,
 [data-apollo-theme="console"] [data-theme="dark"] .cn-chart-donut{
+  --border-radius-control: 4px;
   --border-radius-surface: 12px;
 }
 [data-apollo-theme="console"] .cn-chart-line{
+  --border-radius-control: 4px;
   --border-radius-surface: 12px;
 }
 [data-apollo-theme="console"][data-theme="dark"] .cn-chart-line,
 [data-apollo-theme="console"] [data-theme="dark"] .cn-chart-line{
+  --border-radius-control: 4px;
   --border-radius-surface: 12px;
 }
 [data-apollo-theme="console"] .cn-chart-scatter{
@@ -7473,7 +7489,7 @@
   --border-radius-control: 4px;
 }
 
-/* ---- Apollo Supercharge  [data-apollo-theme="supercharge"]  (120 override path(s), apollo-supercharge.overrides) ---- */
+/* ---- Apollo Supercharge  [data-apollo-theme="supercharge"]  (121 override path(s), apollo-supercharge.overrides) ---- */
 [data-apollo-theme="supercharge"]{
   --background-default: #F7F6F4;
   --border-action-strong: #13110E;
@@ -7518,6 +7534,7 @@
   --component-type-button-family-press-darken: 1;
   --component-type-button-family-press-travel: 0;
   --data-axis-color: #493F39;
+  --data-control-label-disabled-color: #635750;
   --data-grid-color: #CDC8C6;
   --data-target-color: #312C26;
   --data-vis-border-on-dark-baseline-2: #333333;
@@ -7621,6 +7638,7 @@
   --button-tertiary-label-default: #F7F6F4;
   --button-tertiary-label-disabled: #524842;
   --data-axis-color: #635750;
+  --data-control-label-disabled-color: #524842;
   --data-grid-color: #413934;
   --data-target-color: #806E65;
   --data-vis-border-on-dark-baseline-2: #524842;
@@ -7945,6 +7963,7 @@
 [data-apollo-theme="supercharge"] .cn-chart-bar{
   --baseline: #13110E;
   --data-axis: #493F39;
+  --data-control-label-disabled: #635750;
   --data-grid: #CDC8C6;
   --ink: #13110E;
   --line: #CDC8C6;
@@ -7955,6 +7974,7 @@
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-bar{
   --baseline: #FFFFFF;
   --data-axis: #635750;
+  --data-control-label-disabled: #524842;
   --data-grid: #413934;
   --ink: #F7F6F4;
   --line: #524842;
@@ -7964,6 +7984,7 @@
 [data-apollo-theme="supercharge"] .cn-chart-combo{
   --baseline: #13110E;
   --data-axis: #493F39;
+  --data-control-label-disabled: #635750;
   --data-grid: #CDC8C6;
   --data-target: #312C26;
   --ink: #13110E;
@@ -7975,6 +7996,7 @@
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-combo{
   --baseline: #FFFFFF;
   --data-axis: #635750;
+  --data-control-label-disabled: #524842;
   --data-grid: #413934;
   --data-target: #806E65;
   --ink: #F7F6F4;
@@ -7984,6 +8006,7 @@
 }
 [data-apollo-theme="supercharge"] .cn-chart-donut{
   --data-axis: #493F39;
+  --data-control-label-disabled: #635750;
   --ink: #13110E;
   --line: #CDC8C6;
   --page: #F7F6F4;
@@ -7992,6 +8015,7 @@
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-donut,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-donut{
   --data-axis: #635750;
+  --data-control-label-disabled: #524842;
   --ink: #F7F6F4;
   --line: #524842;
   --page: #1A1A1A;
@@ -8000,6 +8024,7 @@
 [data-apollo-theme="supercharge"] .cn-chart-line{
   --baseline: #13110E;
   --data-axis: #493F39;
+  --data-control-label-disabled: #635750;
   --data-grid: #CDC8C6;
   --data-target: #312C26;
   --ink: #13110E;
@@ -8011,6 +8036,7 @@
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-line{
   --baseline: #FFFFFF;
   --data-axis: #635750;
+  --data-control-label-disabled: #524842;
   --data-grid: #413934;
   --data-target: #806E65;
   --ink: #F7F6F4;

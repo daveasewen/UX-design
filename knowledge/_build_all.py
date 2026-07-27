@@ -117,6 +117,12 @@ STEPS = [
     # proved dv-004 could fail — and it could not, on `stacked-column`. Exactly the rot the
     # ADR-0014 note below warns about. Unwired selftests are CLAIMED gates.
     ("DataViz gate selftest — bite-tests dv-004 + the dtype vocabulary (ds-014)", "_validate_dataviz.py", ["--selftest"]),
+    # C2 (ds-018, RULED Dave 2026-07-27): "a declaration referencing a custom property that
+    # resolves nowhere in its own scope is a build failure, not a silent fallback."
+    # Ships ADVISORY only until its first-run backlog is cleared — see the script's __main__
+    # for why, and promote with ["--strict"] the moment that list is empty.
+    ("property-resolves gate C2 — silent-lookup class (advisory, ds-018)", "_validate_property_resolves.py"),
+    ("property-resolves gate C2 selftest — 4 bites + a bite-the-bite", "_validate_property_resolves.py", ["--selftest"]),
     ("reverse-text edge-extremity check {#col26-020} (advisory)", "_validate_edge_extremity.py"),
     ("compliance verification edges — applies_to vs verified_by (advisory)", "compliance/_build_verification_edges.py"),
     ("external automatable-check refs — axe-core import (advisory)", "compliance/_import_axe_rules.py"),
