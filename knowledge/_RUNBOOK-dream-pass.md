@@ -44,6 +44,17 @@ dreamer spec: `.claude/agents/dreamer.md`.*
    gauge stamp. Plain-language read-back available on request — rulings are recorded only after
    reflect-back (V2 precedent: "do it" rows enact; an unsure row HOLDS).
 
+> **⚠ ABSENCE IS THE FAILURE SIGNAL (M11, 2026-07-27).** If a scheduled fire produces NO
+> proposals file, that absence IS how this lane reports failure — there is nothing else to
+> read. Go to the session transcript. **Nothing in the repo is at risk when a pass dies:**
+> the pass's only output is the proposals file, it never pushes, and promotion is Dave's
+> alone. A silent Sunday means the pass did not run or did not finish, never that it ran and
+> found nothing — a pass that finds nothing still writes the file and says so.
+>
+> The CONDUCTOR model is deliberately unpinned (whatever the scheduled session runs as); the
+> **dreamer subagent IS pinned to Opus** and that pin is load-bearing — it is the half that
+> reads cold and must think on its feet.
+
 ## Guardrails (unchanged, non-negotiable)
 
 Nothing self-promotes; promotion is Dave's alone, on reading the file. The proposals file is

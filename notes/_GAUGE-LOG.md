@@ -90,3 +90,15 @@ Blocks below moved VERBATIM from `GOOD-MORNING.md` §C strata at the first 2f ro
 > ~1–2 pts over projection, reserve untouched.
 > **PACE (perishable, replaces 19:35):** panel 20:16 BST — All 41% ⇒ 0.74× · Fable 37% ⇒ 0.67× ·
 > catch-up to Thu 23:00 All 1.33× / Fable 1.42× — behind, improving, gap NARROWING. MORE-WINDOWS holds.)*
+
+#### 2026-07-27 #17
+
+> **pre-flight:** fill 30% + job 22% + wrap 6% = 58% AMBER · reserve 15% ring-fenced
+> *(Session #17, 2026-07-27, Fable solo, Dave live. Opened for §C·2; Dave reframed to Memento hardening
+> at ~32%. AMBER crossing announced at ~44% (M1's first live use, mid-ruling); in-window enactment
+> trimmed at the crossing — M11/M12 file edits moved to the brief. One script abort (wrong-shape §A
+> hash probe) — nothing written, convention recovered, re-run green. Closed 🟡 ~60% ESTIMATE, boundary,
+> reserve untouched.
+> **PACE (perishable):** panel 21:21 BST — All 43% ⇒ 0.77× · Fable 41% ⇒ 0.73× · catch-up All 1.29× /
+> Fable 1.34× — behind, narrowing all day. MORE-WINDOWS holds; the M-set window is Opus (All bucket).)*
+>

@@ -3,6 +3,14 @@
 
 *(rolled from `_LIVE-STATE.md` 2026-07-27 by capture-ritual step 2d — LATEST + 2 PRIOR stay live)*
 
+## Rolled 2026-07-27 #18 (2d)
+
+*EXIT CHECK: #15's ⬛ WINDOW-2 spec LANDED at #16 (`72d442b`) and its two gate FAILs are long cleared; its ⚠ author-flags (the piped-`tail` exit-code trap · the all-or-nothing abort as the design working) are inscribed in `_RUNBOOK-git-commit.md` § sandbox warts and in the abort discipline M5 will build on — verified present before the move, no lesson left in a dated-only home.*
+
+## ⏱ PRIOR DELTA — 2026-07-27 (Mon **evening #15**, FABLE solo — ★★ **GM pass p2 W1 LANDED: clean build `[62/62]` exit 0 (foreground — a call-boundary kill STRIPS generated JSONs; `git show HEAD:` to restore) · 2f strata → NEW `notes/_GAUGE-LOG.md` · §B DELETED (D4) · STAND-004 aligned to D4 (it still demanded §B — two gates, opposite structures)** · ★ **compactable 21,410→16,712 tk (tiktoken)** · 🟡 ~55% at wrap, split ruled at the 66% Red projection) — "Half the pass is landed; the gate's two remaining fails are the map of the other half."
+- **LIVE:** wrap gate now fails ONLY on W2's worklist (DO-FIRST 266>180 · compactable 16,712>12,000) — CORRECT, do not loosen. §C at 213 = WARN (cap 150, W2). **W2 = 2e retirement audit + D6 §C prune + D7 chain line + D9 band-pointer + final stamp; predicts 8.1–9.5K WARN.** §A untouched, hash `999b1e3d…` re-verified at every write — **locate §A by hash-search, its recorded line range goes stale whenever a banner grows above it.**
+- **DEAD:** §B (heading + strata → `_GM-ARCHIVE.md` § Batch 2026-07-27 #15) · the §C stratum stack pre-#15 (post-mortems → `notes/_GAUGE-LOG.md`, commit-states → archive) · the header's stale 26.2K stamp.
+
 ## Rolled 2026-07-27 #17 (2d)
 
 *EXIT CHECK: #14's ⚠ NOT-DONE items both LANDED (compaction p2 = `2259e07` + `72d442b`; clean build re-proven #17 today, [62/62] exit 0 foreground) · its three OPEN holes now RULED as M7/M8/M9 (`notes/_MEMENTO-DECISIONS.md` § ★ M-SET + brief `notes/_briefs/2026-07-27-memento-hardening-brief.md`) · read-the-runbook lesson inscribed (memory + `_RUNBOOK-git-commit.md` § warts) — verified before the move.*

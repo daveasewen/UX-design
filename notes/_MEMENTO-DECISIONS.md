@@ -163,3 +163,52 @@ without a banner line naming the change; backstop warn 4,500 tk. The hard-cap ha
 M7 rec is WITHDRAWN by its author (it would have forced the trim the §A invariant forbids — the
 STAND-004 contradiction class). GM-D7-am's *"not even a guard banner"* is honoured: nothing can
 force §A to shrink. Brief item 5 updated to the final shape, same pass.
+
+### ★ M-SET ENACTED — the cheap-first cut (2026-07-27 evening #18, Opus solo effort MAX, Dave live)
+
+**LANDED: M3 · M6 · M7 · M8 · M9 · M10 · M11 · M12 — eight of ten, every new check with a bite.**
+Files: `knowledge/_build_instrument_fit.py` (M3) · `knowledge/_capture_gate.py` (M6·M7·M8·M9a·M10 +
+`section_a_digest()`) · `.claude/agents/dreamer.md` (M9b) · `knowledge/_RUNBOOK-dream-pass.md` (M11) ·
+`_FUTURE-STATE.md` (M12). Build `[62/62]` exit 0 twice, foreground; `--selftest` green.
+**REMAINING, deliberately together as a build window: M4a · M4b · M5** (brief §2/§3/§11).
+
+**THE CUT ITSELF WAS RULED FIRST.** The brief priced the set at 35–45%. The window MEASURED its floor
+per D9 — read chain 32,759 tk = 16.4%, harness unmeasured on top, ⇒ ~23–24% — which under M1
+(RED = wrap-only) leaves **~30 points of job**, not 35–45. Forked to Dave PRE-START with three cuts;
+he took the cheap-first re-cut (*"2. your recommendation"*). **The brief's price was not wrong so much
+as unmeasured against the window it would run in** — the same class the M-set exists to close.
+
+**★ M10 RE-TIERED: ADVISORY, ruled by Dave in-window (*"Ill go with your advice"*).**
+Read-back of what he accepted, so the ruling cannot later read as agent drift: *M10 keeps Dave's ruled
+numbers exactly — warn 24,000, and 28,000 becomes a **PROMOTION THRESHOLD** rather than a block; the
+tier moves to advisory on the M9(a) pattern the brief itself chose (advisory first, promote once seen
+working); trimming `_LIVE-STATE`'s standing body is queued as the work whose completion arms the block.*
+**WHY.** Enactment measured the chain at **28,843 tk — already past the block the M-set had written**,
+and the brief's own quoted figure (29,193) was past it too, so its stated expectation ("the warn will
+fire") could not have been true as written. Worse, the check's first draft printed *"roll `_LIVE-STATE`
+deltas (2d)"* as the remedy: measured, the three retained deltas total **1,422 tk** against a **12,694
+tk** standing body, and LS was **already at its ruled LATEST+2** — the prescribed fix was both
+unavailable and insufficient. Remedy text corrected in the same pass; the gate now reports its
+measurement and explicitly declines to name a region. This is [[gate-narrows-its-own-rule]] occurring
+inside the gate built to prevent it, and it is worth keeping visible for that reason.
+
+**★ TWO AUTHOR ERRORS CAUGHT BY THE NEW BITES, NOT BY THE AUTHOR — both recorded, per B-D7 precedent.**
+(i) **M7's suppressor would have silenced M7 permanently.** The growth trigger is suppressed when a
+banner line names a §A change; the first draft scanned the whole banner region — but once §A is stamped,
+the `size:` stamp line itself contains "§A", so the suppressor would have fired on every wrap, silently,
+forever. Fixed: the scan excludes the stamp line. (ii) **The M8 warn fixture was sized from a comment.**
+`FAT` was documented as "~200 tk of line"; measured, it is **240**, which put the intended warn fixture
+in the block band. A fixture written from a comment is a fixture written from recall.
+
+**★ THE §A HASH CONVENTION IS NOW CODE, NOT COMMENT** — `_capture_gate.py::section_a_digest()`, bitten
+both shapes (with and without the trailing newline, which must not collide), reproducing `999b1e3d…`
+on the live file. **M5's mover MUST CALL IT** rather than re-derive the slice; the #17 abort came from a
+wrong-shape probe, and a convention that lives only in prose is one rewrite from being lost.
+
+**Ruled values PINNED in the selftest** (`CHAIN_BUDGET_TK` · `BANNER_BUDGET_TK` · `SECTION_A_WARN_TK`),
+tier included — re-arming M10's block before a wrap has measured the chain under 28,000 would reverse a
+ruling by editing a tuple, so the pin fails the build if it happens. Bite-the-bite run and restored.
+
+**Measured at enactment, for the next window:** §A 4,208 tk · banner region 2,103 tk (warn 4,000) ·
+compactable 9,108 tk (warn 8,000) · chain 29,810 tk — the chain rose across this wrap, which is honest:
+#18's banner and delta are denser than what rolled out. The advisory warn fires, correctly.

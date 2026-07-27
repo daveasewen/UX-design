@@ -46,6 +46,9 @@ agent dispatches say "read + follow `.claude/agents/dreamer.md`" — they never 
 - **Near-duplicate or driftable memories** — two hooks covering one fact.
 - **Dropped loops** — owed items that stopped being mentioned without being closed.
 - **Consolidations** — N scattered inscriptions that should be one ruling/runbook line.
+- **Retirements without receipts** — DO-FIRST lines that vanished with no archive batch
+  naming them. (`_capture_gate.py` carries an ADVISORY proxy for this since M9; it can
+  only see literal text, not whether the retirement was DUE — that half is still yours.)
 
 ## Output format (per proposal, strict)
 

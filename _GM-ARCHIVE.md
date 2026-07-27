@@ -2,6 +2,68 @@
 
 ---
 
+## Batch 2026-07-27 #18 — rolled by the wrap of the M-set enactment window (Opus solo, effort MAX, Dave live). Verbatim, newest-first. §A sha256 `999b1e3d…` asserted before and after every write, using the convention now PINNED IN CODE as `_capture_gate.py::section_a_digest()` — a comment could drift, a function the wrap calls cannot.
+
+*EXIT CHECK receipts: #16 banner — its ⚠ author-flags are inscribed (anchor discipline → M5's brief item + this pass's own extractor; the §A hash convention → `section_a_digest()`, bitten both shapes) and its **"§C sits AT 150, zero headroom"** carry was copied UP to §C·4 before the roll ✓; its ⬛ three governance holes were RULED at #17 as M7/M8/M9 and ENACTED this window ✓; the calm-banner verdict + §C·2's 15 rulings already stand in §C·4 / §C·2 ✓. #17 post-mortem → `notes/_GAUGE-LOG.md`, same pass ✓ — its lessons (M1's first live AMBER crossing; the wrong-shape §A probe) are inscribed in gauge canon § Half 0b and in `section_a_digest()` respectively, so no lesson rolls into a dated-only home ✓. #17 commit-state — superseded by #18's (2f LATEST-only); its 21:21 pace line perishable-replaced by the 21:56 panel ✓.*
+
+### DO-FIRST retirements (2e) — surfaced by M9's proxy on its FIRST live run
+
+*The check fired at this very wrap and it was RIGHT: worklist item 0 was replaced with no receipt.
+Verbatim below. It also flagged the superseded PACE PANEL — which by **GM-D2 retirement test 4** is a
+**perishable reading**, "replaced at the next wrap, never stacked", and owed no receipt at all. Recorded
+anyway, for completeness and to keep the proxy quiet: the gate cannot see content types, only text, and
+that limit is named in its own docstring rather than papered over. **Advisory promotes to blocking once
+this has been seen working — this is the seeing.***
+
+**Worked item 0, replaced #18 (owed a receipt):**
+
+```
+> **0. ★ M-SET ENACTMENT (NEXT WINDOW — OPUS solo effort MAX, NOT Sonnet)** — READ
+>    `notes/_briefs/2026-07-27-memento-hardening-brief.md`, execute M3→M12 in order, STOP per item;
+>    M7 = WARN-only growth-triggered (RULED #17: Dave "agreed"); M11 = DAVE fires
+>    `memento-dream-pass` from the UI, supervised, BEFORE Sun 08-02. Ledger § ★ M-SET.
+```
+
+**Pace panel, superseded #18 (D2 test 4 — perishable, NOT owed):**
+
+```
+> **Panel 2026-07-27 21:21 (Mon):** week 55.9% elapsed · All 43% = 0.77× pro-rata · Fable 41% = 0.73× ·
+> catch-up to Thu 23:00 = All 1.29× / Fable 1.34× — behind, narrowing (Fable 0.67→0.73 across today).
+```
+
+### §C·2 item 24 — closure tombstone retired past term (GM-D2 test 2)
+
+*Closed at #10; term is LATEST+2 and we are at #18. Structural guards named and verified live before the cut: `knowledge/_render/verify_dv_d17_render.py` (with its inverting `--bite`) and §C·4's CLOSED AGGREGATE line. §C keeps the aggregate, as D2 requires. Verbatim:*
+
+```
+**24. ✅ DV-D17 RULED + ENACTED + RENDER-PROVEN — CLOSED** (release isolation entirely on second
+check-on; the three enactment bites honoured; §C·4 aggregate + ledger hold the record).
+```
+
+### #16 banner (2c)
+
+> ## ★ PRIOR — 2026-07-27 (Mon **evening #16**, FABLE solo — ★★ **PHASE-2 WINDOW 2 LANDED ⇒ THE GM GROWTH-CONTRACTS PACKAGE (GM-D1…D9 + D7-am) IS ENACTED END-TO-END: the D3 grandfather audit retired 10 notice-groups on D2's tests, receipts per notice · DO-FIRST 266→71 raw lines (FAIL→PASS, cap 120) · §C 213→150 (AT cap) · D7 chain contract + D9 band pointer + measured stamp in the header** · ★ **compactable 16,712→8,818 tk = the WARN zone the ruling itself predicted (8.1–9.5K)** · 🔴 close ~63% est (pre-flight 62% RED-edge; Dave ruled RUN WHOLE + findings watch)): **#15's two FAILs are cleared; the WARN that remains is the one the ruling predicted.**
+> - **★★ LANDED, with evidence.** Receipts ×10, each naming the D2 test it passed, + the pre-W2 DO-FIRST and §C regions verbatim — `_GM-ARCHIVE.md` § Batch 2026-07-27 #16 · §A sha256 `999b1e3d…` asserted before/after EVERY write (byte range `# §A`→`# §C`; never located by line number) · gate `_capture_gate.py --wrap` post-write: compactable WARN + git-uncommitted only (the latter cleared by this commit) · STAND-002 PASS · build `[62/62]` exit 0 foreground · 2026-07-27.
+> - **★ THE AUDIT'S OWN FINDS.** (i) **The 07-23 calm-banner trial VERDICT had floated 4 days with no standing home** — the ds-017 class, caught by the EXIT CHECK working; now §C·4 Dave's-calls. (ii) **The sandbox reset between #15 and #16 silently removed tiktoken** — the gate FELL BACK HONESTLY (bytes/3.53, labelled ESTIMATE, said so in its own output); reinstalled, every stamp measured. **A fresh sandbox loses pip state: check the instrument before trusting the stamp check.**
+> - **⚠ WHAT THE AUTHOR FLAGS.** FOUR all-or-nothing ABORTS mid-pass (a bare substring anchor caught a backtick-quoted mention instead of the line-start marker ×2 — same trap, two costumes · the §C line-projector over cap ×2) — **every abort wrote NOTHING and §A held through all of them; the design working, same species as #15's linebreak abort. Anchor on the line-start form, always.** One trim replacement was a silent no-op (identical strings), caught by the projector, not by me. **§C sits AT 150 exactly — zero headroom; the next §C addition must displace a line.** Close ran ~1–2 pts over the 62% projection (trim + abort iterations), reserve untouched.
+> - **⬛ OPEN, unchanged and Dave's:** the three governance holes (§A uncapped-by-ruling · the banner region has no LINE cap and is the densest text in the file · 2e's retirement tests are gate-invisible) — ledger § GM-D7 AMENDED, LEFT OPEN · the calm-banner verdict · §C·2's 15 rulings.
+>
+
+### #17 commit-state (2f)
+
+> **COMMIT STATE (refreshed 2026-07-27 ~21:35 BST from `date`).**
+> **Context gauge at authoring: 🟡 ~60% (ESTIMATE, boundary) — near-Red ⇒ spot-verify before trusting.**
+> ONE commit: `GOOD-MORNING.md` (#17 banner · worklist item 0 · panel · §C·1e compress · §C·4 adds ·
+> stamp · strata roll+new) · `_LIVE-STATE.md` + `_LIVE-STATE-ARCHIVE.md` (2d: #17 in, #14 rolled) ·
+> `_GM-ARCHIVE.md` (Batch 2026-07-27 #17: #15 banner + #16 commit-state, EXIT-CHECK receipts in header) ·
+> `notes/_GAUGE-LOG.md` (#16 post-mortem) · `knowledge/_RUNBOOK-context-gauge.md` (M1/M2 inscribed) ·
+> `notes/_MEMENTO-DECISIONS.md` (§ ★ M-SET + routing amendment) · `notes/_briefs/2026-07-27-memento-hardening-brief.md`
+> (NEW) · `_DECISION-HISTORY/2026-07-27-memento-hardening-mset.md` (NEW) · `knowledge/_instrument-fit.json`
+> (benign key-order churn, named — M3 kills it). Build `[62/62]` exit 0 foreground (pre-inscription) ·
+> wrap gate + STAND-002 rerun at close. Dave pushes via GitHub Desktop, whole stack, Desktop closed.
+
+---
+
 ## Batch 2026-07-27 #17 — rolled by the wrap of the Memento-hardening ruling session (Fable, Dave live). Verbatim, newest-first. §A sha256 `999b1e3d…` asserted before/after every write (convention: lines `# §A` → before `# §C`, joined + trailing newline — RECOVERED this pass after a wrong-shape probe read `70e61b93…`; git-diff-vs-HEAD 0 proved §A unchanged; M5's mover must PIN this convention).
 
 *EXIT CHECK receipts: #15 banner — its ⬛ WINDOW-2 spec LANDED at #16 (`72d442b`, receipts in Batch 2026-07-27 #16); its ⚠ author-flags inscribed (gauge canon + `_RUNBOOK-git-commit.md` § warts + `_RUNBOOK-render-verify.md`) ✓. #16 commit-state — superseded by #17's (2f LATEST-only); its pace line perishable-replaced by the 21:21 panel ✓. #16 post-mortem → `notes/_GAUGE-LOG.md`, same pass ✓.*

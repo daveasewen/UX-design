@@ -1,28 +1,32 @@
 # Good morning, Dave ☕
 
-> **size:** GM 12.8K tk · chain 28.9K tk · measured 2026-07-27 (tiktoken cl100k_base) · budget = the COMPACTABLE region (all but §A), 8K warn / 12K block —
-> `_RUNBOOK-capture-ritual.md` step 2. Compactable 8,601 tk = WARN, the ruled landing zone — do not chase below 8K.
-> **STATE: ★ M-SET (M1–M12) RULED 2026-07-27 #17 (ledger `notes/_MEMENTO-DECISIONS.md` § ★ M-SET) — M1/M2 LIVE in
-> gauge canon (RED=wrap-only · mid-ritual rulings=findings); M3–M12 await the OPUS enactment window (brief
-> `notes/_briefs/2026-07-27-memento-hardening-brief.md`, STOP conditions per item, NOT Sonnet). GM-D1…D9 + D7-am
-> remain ENACTED END-TO-END (#16 `72d442b`).**
-> **pre-flight #18 guide:** cold floor ~22% (n=1) + brief ~3%; the M-set window prices ~35–45% + wrap · M1: RED = wrap-only, announce every crossing · 15% reserve ring-fenced.
-> **RENAME THE WRAPPED CHAT →** `Apollo — Memento HARDENING (Dave live, Fable): the day's papercuts probed to classes and ruled M1–M12 in one batch — determinism churn, anchor aborts, tiktoken flap, the view-as-table fork Dave spotted live, three GM holes; RED=wrap-only inscribed and applied to its own birth window; Opus-not-Sonnet brief cut; the dream pass audited watertight before its first Sunday`
-> **TITLE THE NEXT CHAT →** `Apollo — M-SET ENACTMENT (OPUS solo effort MAX, NOT Sonnet — Dave's trust ruling): READ notes/_briefs/2026-07-27-memento-hardening-brief.md and execute M3→M12 in order, STOP conditions per item; M7 per Dave's word in §C·4 (default WARN-only, growth-triggered); acceptance = twice-clean build + the phantom git-WARN dead + a bite per new gate check. Rider if room: MEMORY.md trim (brief item 12)`
+> **size:** GM 13.2K tk · §A 4.21K tk · chain 29.7K tk · measured 2026-07-27 (tiktoken cl100k_base) · budget = the COMPACTABLE region (all but §A),
+> 8K warn / 12K block — `_RUNBOOK-capture-ritual.md` step 2. Compactable 8,982 tk = WARN, the ruled landing zone — do not chase below 8K. Chain cap 24K is ADVISORY (M10, #18).
+> **STATE: ★ M-SET CHEAP-FIRST CUT ENACTED 2026-07-27 #18 — M3 · M6 · M7 · M8 · M9 · M10 · M11 · M12
+> LIVE in `knowledge/_capture_gate.py` + the dreamer/dream-pass/FUTURE-STATE surfaces, every new check
+> bitten (ledger `notes/_MEMENTO-DECISIONS.md` § ★ M-SET ENACTED). **M10 stands ADVISORY by Dave's
+> ruling this window** — 28,000 is a PROMOTION THRESHOLD, not a stop. REMAINING: M4a · M4b · M5, left
+> together as the build window (brief §2/§3/§11). GM-D1…D9 + D7-am remain ENACTED END-TO-END (#16 `72d442b`).**
+> **pre-flight #19 guide:** cold floor **MEASURE IT** (#18 measured 16.4% for the read chain alone, harness
+> unmeasured on top ⇒ ~23–24%; the chain has since shrunk, so re-measure, don't inherit) + brief ~2%; the
+> build window prices ~30–40% + wrap · M1: RED = wrap-only, announce every crossing · 15% reserve ring-fenced.
+> **RENAME THE WRAPPED CHAT →** `Apollo — M-SET ENACTMENT, cheap-first cut (Opus solo effort MAX, Dave live): the brief re-cut against measured headroom because the full set could not fit under M1; eight of ten landed and bitten; M10 shipped ADVISORY after enactment found its block already crossed AND its remedy pointing at a region that cannot pay; M7's own bite caught the suppressor that would have silenced it forever; the §A hash convention pinned in code, not in a comment`
+> **TITLE THE NEXT CHAT →** `Apollo — M-SET BUILD WINDOW (OPUS solo effort MAX, NOT Sonnet — Dave's standing trust ruling): the two expensive items, deliberately left together. READ notes/_briefs/2026-07-27-memento-hardening-brief.md §2/§3/§11 and execute M4a (view-as-table port: sparkline + scatter) → M4b (chart-table-toggle as an ADR-0013 partial) → M5 (_gm_move.py — it MUST CALL _capture_gate.py::section_a_digest(), never re-derive the slice). STOP conditions per item. Rider if room: the _LIVE-STATE standing-body trim that arms M10's block`
 > *(Titles are LABELS — role comes from Dave's opener line. Bands: the ONLY copy is
 > `_RUNBOOK-context-gauge.md` § ★ THE FLOOR IS MEASURED — grep it, never recall it.)*
-
-> ## ★ LATEST — 2026-07-27 (Mon **evening #17**, FABLE solo, Dave live — ★★ **MEMENTO HARDENING: M1–M12 RULED AS A BATCH, all as recommended** (*"all of these seem good i trust your scheduling choice"*) · ★ **M1/M2 INSCRIBED LIVE in gauge canon** (RED=wrap-only · mid-ritual rulings=findings) · ★ **enactment brief cut for OPUS solo effort MAX — NOT SONNET** (Dave: *"it cant think on its feet"* — both beats in the ledger) · 🟡 ~60% at wrap, M1 applied to its own birth window): **"The gated regions were already fixed; the ungated ones are now ruled and brief'd."**
+> ## ★ LATEST — 2026-07-27 (Mon **evening #18**, OPUS solo effort MAX, Dave live — ★★ **M-SET CHEAP-FIRST CUT: M3 · M6 · M7 · M8 · M9 · M10 · M11 · M12 ENACTED, eight of ten, every new check bitten** · ★ **M10 RULED ADVISORY by Dave in-window** (*"Ill go with your advice"*) after enactment measured the chain already past its own block · ★ **the new bites caught two design bugs the author did not** · 🟡 ~52% at wrap): **"The brief priced 35–45% into 30 points of headroom — so the cut came first, and the room that existed took eight items."**
+> - **★★ ENACTED, with evidence.** All eight in `knowledge/_capture_gate.py` + `_build_instrument_fit.py` + `.claude/agents/dreamer.md` + `knowledge/_RUNBOOK-dream-pass.md` + `_FUTURE-STATE.md` · ledger § ★ M-SET ENACTED · dossier `_DECISION-HISTORY/2026-07-27-mset-enactment-cheap-first.md` · build `[62/62]` exit 0 **twice, foreground** · `--selftest` green · 2026-07-27.
+> - **★★ M3 PROVEN, not asserted.** The churn source was `dangling_citations` iterating a **SET** (the V2-P2 sweep's escape). Defect reproduced FIRST under two hash seeds, then fixed, then re-proven: **byte-identical under 3 seeds** and **two consecutive builds byte-identical across all 7 changed files**. The other emissions in that file were checked once, as briefed — all already sorted.
+> - **★ THE FINDING, and it is the M-set's own class.** M10's ruled block (28,000) was **already crossed at enactment** — chain 28,843 tk; the brief's own quoted 29,193 was over it too, so its "expect the warn to fire" could never have been true. **And the remedy text it printed pointed at a region that cannot pay:** measured, the three retained `_LIVE-STATE` deltas total **1,422 tk** against a **12,694 tk** standing body, with LS already at its ruled LATEST+2. A budget written without measuring the thing it budgets, inside the gate built to stop exactly that. Forked to Dave; he ruled ADVISORY.
+> - **⚠ WHAT THE AUTHOR FLAGS.** **Two of my own drafts were wrong and the bites, not I, caught them.** (i) M7's suppressor read the whole banner region for the string "§A" — but once §A is stamped, the stamp line contains it, so the growth trigger would have been suppressed on every wrap, permanently and silently. (ii) The M8 warn fixture was sized from a comment claiming `FAT` ≈ 200 tk/line; measured, it is **240**, so the "warn" fixture sat in the block band. **A fixture written from a comment is a fixture written from recall.** Also: the wrap ran WITHOUT M5's mover again (still unbuilt) — hand-rolled extractors with line-START anchors and §A asserted before every write; §A held, `999b1e3d…` at open and close.
+> - **⬛ OPEN, Dave's:** the build window (M4a · M4b · M5) · the LS standing-body trim that ARMS M10's block · M11 supervised fire before Sun 08-02 · §C·2's 15 rulings + dataviz sign-off (PARKED, unchanged) · calm-banner verdict.
+>
+> 
+> ## ★ PRIOR — 2026-07-27 (Mon **evening #17**, FABLE solo, Dave live — ★★ **MEMENTO HARDENING: M1–M12 RULED AS A BATCH, all as recommended** (*"all of these seem good i trust your scheduling choice"*) · ★ **M1/M2 INSCRIBED LIVE in gauge canon** (RED=wrap-only · mid-ritual rulings=findings) · ★ **enactment brief cut for OPUS solo effort MAX — NOT SONNET** (Dave: *"it cant think on its feet"* — both beats in the ledger) · 🟡 ~60% at wrap, M1 applied to its own birth window): **"The gated regions were already fixed; the ungated ones are now ruled and brief'd."**
 > - **★★ RULED, with evidence.** Ledger § ★ M-SET (batch row + M7 read-back + routing amendment, Dave verbatim ×3) · brief `notes/_briefs/2026-07-27-memento-hardening-brief.md` (M3–M12, a STOP condition per item) · gauge canon M1/M2 live in `_RUNBOOK-context-gauge.md` § Half 0b · dossier `_DECISION-HISTORY/2026-07-27-memento-hardening-mset.md` · 2026-07-27.
 > - **★ PROBE RECEIPTS, all repo-verified in-window:** `_instrument-fit.json` churn = PURE KEY-ORDER, build-caused (V2-P2 escape — M3) · tiktoken lost a SECOND time in 24h (M6) · **view-as-table: TWO idioms live in canon** — solved `dv-tbl-toggle` (bar×5 · line×2 · combo · donut×2) vs old `<details>` (sparkline:148 · scatter:163,230), Dave's own live sighting (M4) · LS 546 lines vs ~500 advisory (M10) · dream-pass governance WATERTIGHT (proposes-only · one file · never pushes · STOP conditions) but the SCHEDULED path has NEVER fired — first fire Sun 08-02 (M11: Dave fires it supervised this week).
 > - **⚠ WHAT THE AUTHOR FLAGS.** My original M7 rec (hard cap) crossed Dave's recorded *"not even a guard banner"* — caught at inscription, read back, revised to WARN-only growth-triggered — RULED in-window, Dave: "agreed". The §A hash convention had to be RECOVERED mid-wrap (a wrong-shape probe read `70e61b93…`; git-diff-vs-HEAD 0 proved §A unchanged; the recorded form = lines `# §A`→before-`# §C` + trailing newline — M5's mover must PIN it). Wrap ran WITHOUT the M5 mover (not built yet): hand-rolled all-or-nothing scripts, one abort (the design working), §A held through everything.
 > - **⬛ OPEN, Dave's:** M11 supervised fire before Sun 08-02 · §C·2's 15 rulings + dataviz sign-off (PARKED this window, unchanged, still owed) · calm-banner verdict · the M-set enactment window itself.
->
-> ## ★ PRIOR — 2026-07-27 (Mon **evening #16**, FABLE solo — ★★ **PHASE-2 WINDOW 2 LANDED ⇒ THE GM GROWTH-CONTRACTS PACKAGE (GM-D1…D9 + D7-am) IS ENACTED END-TO-END: the D3 grandfather audit retired 10 notice-groups on D2's tests, receipts per notice · DO-FIRST 266→71 raw lines (FAIL→PASS, cap 120) · §C 213→150 (AT cap) · D7 chain contract + D9 band pointer + measured stamp in the header** · ★ **compactable 16,712→8,818 tk = the WARN zone the ruling itself predicted (8.1–9.5K)** · 🔴 close ~63% est (pre-flight 62% RED-edge; Dave ruled RUN WHOLE + findings watch)): **#15's two FAILs are cleared; the WARN that remains is the one the ruling predicted.**
-> - **★★ LANDED, with evidence.** Receipts ×10, each naming the D2 test it passed, + the pre-W2 DO-FIRST and §C regions verbatim — `_GM-ARCHIVE.md` § Batch 2026-07-27 #16 · §A sha256 `999b1e3d…` asserted before/after EVERY write (byte range `# §A`→`# §C`; never located by line number) · gate `_capture_gate.py --wrap` post-write: compactable WARN + git-uncommitted only (the latter cleared by this commit) · STAND-002 PASS · build `[62/62]` exit 0 foreground · 2026-07-27.
-> - **★ THE AUDIT'S OWN FINDS.** (i) **The 07-23 calm-banner trial VERDICT had floated 4 days with no standing home** — the ds-017 class, caught by the EXIT CHECK working; now §C·4 Dave's-calls. (ii) **The sandbox reset between #15 and #16 silently removed tiktoken** — the gate FELL BACK HONESTLY (bytes/3.53, labelled ESTIMATE, said so in its own output); reinstalled, every stamp measured. **A fresh sandbox loses pip state: check the instrument before trusting the stamp check.**
-> - **⚠ WHAT THE AUTHOR FLAGS.** FOUR all-or-nothing ABORTS mid-pass (a bare substring anchor caught a backtick-quoted mention instead of the line-start marker ×2 — same trap, two costumes · the §C line-projector over cap ×2) — **every abort wrote NOTHING and §A held through all of them; the design working, same species as #15's linebreak abort. Anchor on the line-start form, always.** One trim replacement was a silent no-op (identical strings), caught by the projector, not by me. **§C sits AT 150 exactly — zero headroom; the next §C addition must displace a line.** Close ran ~1–2 pts over the 62% projection (trim + abort iterations), reserve untouched.
-> - **⬛ OPEN, unchanged and Dave's:** the three governance holes (§A uncapped-by-ruling · the banner region has no LINE cap and is the densest text in the file · 2e's retirement tests are gate-invisible) — ledger § GM-D7 AMENDED, LEFT OPEN · the calm-banner verdict · §C·2's 15 rulings.
 >
 *(Compaction 2c: ★ LATEST + 1 PRIOR stay; every older banner is in `_GM-ARCHIVE.md`, verbatim, newest-first, batch keys `<date> <session#>`; durable narrative in `_DECISION-HISTORY/` + `notes/`.)*
 
@@ -31,10 +35,11 @@
 ## ⬛ DO THIS FIRST
 
 > **★ WORKLIST — pointer · state · owner (method lives at the pointer, never here):**
-> **0. ★ M-SET ENACTMENT (NEXT WINDOW — OPUS solo effort MAX, NOT Sonnet)** — READ
->    `notes/_briefs/2026-07-27-memento-hardening-brief.md`, execute M3→M12 in order, STOP per item;
->    M7 = WARN-only growth-triggered (RULED #17: Dave "agreed"); M11 = DAVE fires
->    `memento-dream-pass` from the UI, supervised, BEFORE Sun 08-02. Ledger § ★ M-SET.
+> **0. ★ M-SET REMAINDER — the BUILD window (OPUS solo effort MAX, NOT Sonnet)** — M3 · M6–M12
+>    ENACTED #18 (receipts `_GM-ARCHIVE.md` § Batch 2026-07-27 #18 · ledger § ★ M-SET ENACTED).
+>    LEFT, deliberately together: **M4a** view-as-table port · **M4b** `chart-table-toggle` partial ·
+>    **M5** `_gm_move.py` — it MUST CALL `_capture_gate.py::section_a_digest()`, never re-derive the
+>    slice. Brief §2/§3/§11, STOP per item. M11's supervised fire stays DAVE's, before Sun 08-02.
 >    [born #17 · guards: the brief · until: enacted]
 > **1. ds-018 C2 follow-through** — order RULED: RENDER-CONFIRM `--phys-size` (B-D7 press physics —
 >    Alert/Empty-state/Popover, possibly dead) and `--mark` (→ SVG-initial BLACK across 7 pro-formas)
@@ -92,8 +97,8 @@
 > ring-fenced reserve · every job priced out loud · any unplanned finding ⇒ STOP, re-price, fork to
 > Dave · the weekly allowance is PERISHABLE ⇒ behind pace = MORE WINDOWS, and ask for a fresh panel
 > reading each opener — no gate can see it.
-> **Panel 2026-07-27 21:21 (Mon):** week 55.9% elapsed · All 43% = 0.77× pro-rata · Fable 41% = 0.73× ·
-> catch-up to Thu 23:00 = All 1.29× / Fable 1.34× — behind, narrowing (Fable 0.67→0.73 across today).
+> **Panel 2026-07-27 21:56 (Mon):** week 56.4% elapsed · All 45% = 0.80× pro-rata · Fable 44% = 0.78× ·
+> catch-up to Thu 23:00 = All 1.26× / Fable 1.28× — behind, still narrowing. Allowance is PERISHABLE.
 > **Model routing** → `MODEL-ROUTING.md` (07-23 audit ratified: delegation DELIBERATE — #12 supersedes
 > the Mode-2 default-on). Conductor = Opus effort MAX · mechanical lanes = Sonnet · Fable reserved for
 > open judgment · P2 = script-then-judge, every deviation is Dave's call.
@@ -325,8 +330,6 @@ Best AFTER the ruling batch: field-family, stepper-fold and delta-seam answers s
 **(d) Enact window (cheap)** — absorb §C·2 rulings as token/registry edits + §C·4; new candidates: mint
 `data/axis`+`data/grid` (per ★ DV-D07 two-channel) · R-D9 ramp promotion · field-family group build if ruled ·
 Stat-card `spark` slot · **★★ the live radius/corner tuner (Dave: return SOON).**
-**(e) ✅ routing side-quest CLOSED + ENACTED 07-23** — receipt `notes/_receipts/2026-07-23-routing-sidequest-audit.md`; #12 delegation-DELIBERATE in force; residue = the calm-banner verdict (§C·4). [rolled #17, tombstone past term, receipt = the guard]
-
 ## 2. ★ DAVE: THE RULING BATCH — 15 REMAIN of 16 (D-Q3 ✅ #14; Q8/B2 → DV-D08) + the ★ DATAVIZ
 SIGN-OFF (rule by number; all retro-propagate). **Sign-off first:** D promoted the PARKED kit verbatim
 into Chart-bar/line/donut/sparkline — your review flips them provisional-agent→canon (open-014).
@@ -336,8 +339,6 @@ into Chart-bar/line/donut/sparkline — your review flips them provisional-agent
 first · ease-out last · linear between; verbatim + open read-backs in the ledger § Batch 10).
 FORWARD-BINDING: today's stacked set = ONE surface — carry into the chart-expansion brief (§C·1a lane 3
 + D-Q3) or the next wave ships stacked that doesn't animate. Enactment = DO-FIRST 4, reduced-motion with it.
-**24. ✅ DV-D17 RULED + ENACTED + RENDER-PROVEN — CLOSED** (release isolation entirely on second
-check-on; the three enactment bites honoured; §C·4 aggregate + ledger hold the record).
 **25. ✅ ds-018 RULED + ENACTED + CLOSED** (`A2·B2·C2` + values `#9D9D9D`/`#808080`, commit `5cd91c6`;
 ledger `_DS-IMPROVEMENTS.md` ds-018 § ✅✅ ENACTED). Remaining thread = C2 follow-through, DO-FIRST 1.
 
@@ -422,6 +423,10 @@ the 07-23 calm-banner trial VERDICT — never recorded; judge by eye, close it.
 **⚠ RENDER-RUNBOOK DEBTS (fold at next touch of `_RUNBOOK-render-verify.md`):** `__dirlock` EPERM
 pothole · absence-proofs need paired DETECTABLE-WHEN-PRESENT bites (the DV-D17 lesson — a full revert
 passes an absence-only test) · the probe-wrong-toward-green standing assumption.
+**⚠ M10 PROMOTION TRIGGER (ADVISORY, Dave #18):** trimming `_LIVE-STATE`'s STANDING BODY (12,694 tk vs
+1,422 in all three deltas) is what arms M10's block — not the deltas, already at LATEST+2 and unable to
+pay. First wrap measuring chain < 28,000: re-arm `CHAIN_BUDGET_TK` + its selftest pin. **§C IS AT CAP —
+an addition must DISPLACE.** [born #18 · guards: CHAIN_BUDGET_TK advisory · until: chain < 28,000]
 **⚠ MEMORY-INDEX COMPACTION OWED** — 19.5KB vs 17.1KB target, loaded every cold start. Mechanics
 RULED: trim hooks + move to `MEMORY-ARCHIVE.md`, never delete; dir OUTSIDE all mounts — file tools
 only. Its own small window.
@@ -453,24 +458,27 @@ spot-illustration/empty-state icon set (`_ICON-GAPS.md`, wave-1's only gap).
 
 ### ⏱ SESSION STRATA
 
-#### 2026-07-27 #17
+#### 2026-07-27 #18
 
-> **pre-flight:** fill 30% + job 22% + wrap 6% = 58% AMBER · reserve 15% ring-fenced
-> *(Session #17, 2026-07-27, Fable solo, Dave live. Opened for §C·2; Dave reframed to Memento hardening
-> at ~32%. AMBER crossing announced at ~44% (M1's first live use, mid-ruling); in-window enactment
-> trimmed at the crossing — M11/M12 file edits moved to the brief. One script abort (wrong-shape §A
-> hash probe) — nothing written, convention recovered, re-run green. Closed 🟡 ~60% ESTIMATE, boundary,
-> reserve untouched.
-> **PACE (perishable):** panel 21:21 BST — All 43% ⇒ 0.77× · Fable 41% ⇒ 0.73× · catch-up All 1.29× /
-> Fable 1.34× — behind, narrowing all day. MORE-WINDOWS holds; the M-set window is Opus (All bucket).)*
+> **pre-flight:** fill 24% + job 20% + wrap 8% = 52% AMBER · reserve 15% ring-fenced
+> *(Session #18, 2026-07-27, Opus solo effort MAX, Dave live — the routing #17 ruled. Floor MEASURED
+> per D9 at the opener: read chain 32,759 tk = 16.4% (GM 12,780 + LS 16,063 + brief 2,389 + band-table
+> slice 1,527), harness UNMEASURED on top ⇒ ~23–24%. **The brief's own 35–45% price did not fit**:
+> 60% RED − 24% floor − 6% wrap = ~30 points of job. Forked PRE-START with three cuts; Dave took the
+> cheap-first re-cut. One further fork mid-window (M10's block already crossed) — re-priced, ruled
+> ADVISORY, no band change. Closed 🟡 ~52% ESTIMATE, reserve untouched.
+> **PACE (perishable, replaces 21:21):** panel 21:56 BST — All 45% ⇒ 0.80× · Fable 44% ⇒ 0.78× ·
+> catch-up to Thu 23:00 All 1.26× / Fable 1.28× — behind, narrowing. MORE-WINDOWS holds; this window
+> was Opus (All bucket) per the #17 trust ruling.)*
 >
-> **COMMIT STATE (refreshed 2026-07-27 ~21:35 BST from `date`).**
-> **Context gauge at authoring: 🟡 ~60% (ESTIMATE, boundary) — near-Red ⇒ spot-verify before trusting.**
-> ONE commit: `GOOD-MORNING.md` (#17 banner · worklist item 0 · panel · §C·1e compress · §C·4 adds ·
-> stamp · strata roll+new) · `_LIVE-STATE.md` + `_LIVE-STATE-ARCHIVE.md` (2d: #17 in, #14 rolled) ·
-> `_GM-ARCHIVE.md` (Batch 2026-07-27 #17: #15 banner + #16 commit-state, EXIT-CHECK receipts in header) ·
-> `notes/_GAUGE-LOG.md` (#16 post-mortem) · `knowledge/_RUNBOOK-context-gauge.md` (M1/M2 inscribed) ·
-> `notes/_MEMENTO-DECISIONS.md` (§ ★ M-SET + routing amendment) · `notes/_briefs/2026-07-27-memento-hardening-brief.md`
-> (NEW) · `_DECISION-HISTORY/2026-07-27-memento-hardening-mset.md` (NEW) · `knowledge/_instrument-fit.json`
-> (benign key-order churn, named — M3 kills it). Build `[62/62]` exit 0 foreground (pre-inscription) ·
+> **COMMIT STATE (refreshed 2026-07-27 ~22:10 BST from `date`).**
+> **Context gauge at authoring: 🟡 ~52% (ESTIMATE) — Amber, mid-band ⇒ ordinary scrutiny.**
+> ONE commit: `knowledge/_capture_gate.py` (M6·M7·M8·M9a·M10 + `section_a_digest()` + bites) ·
+> `knowledge/_build_instrument_fit.py` (M3) · `knowledge/_instrument-fit.json` + `_CAPTURE-GATE.md`
+> + `_LIVE-STATE-CHECK.md` (regenerated) · `.claude/agents/dreamer.md` (M9b) · `knowledge/_RUNBOOK-dream-pass.md` (M11) ·
+> `_FUTURE-STATE.md` (M12) · `GOOD-MORNING.md` (#18 banner · item 0 · panel · §C·1e retired · §C·4
+> adds · stamp · strata roll) · `_LIVE-STATE.md` + `_LIVE-STATE-ARCHIVE.md` (2d: #18 in, #15 rolled) ·
+> `_GM-ARCHIVE.md` (Batch 2026-07-27 #18) · `notes/_GAUGE-LOG.md` (#17 post-mortem) ·
+> `notes/_MEMENTO-DECISIONS.md` (§ ★ M-SET ENACTED + the M10 tier ruling) ·
+> `_DECISION-HISTORY/2026-07-27-mset-enactment-cheap-first.md` (NEW). Build `[62/62]` exit 0 ×2 ·
 > wrap gate + STAND-002 rerun at close. Dave pushes via GitHub Desktop, whole stack, Desktop closed.

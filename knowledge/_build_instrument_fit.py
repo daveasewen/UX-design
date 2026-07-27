@@ -192,12 +192,17 @@ def dangling_citations(rules):
                                    open(f, encoding="utf-8").read()))
     untagged = declared - idx
     out = {}
-    for path in check_files():
+    # DETERMINISM (M3, 2026-07-27): `untagged` is a SET — iterating it seeds `out`'s key
+    # order from hash randomisation, so a clean rebuild churned `_instrument-fit.json`
+    # (5 ins / 5 del, ZERO content: aid-009/aca-004/avd-006 swapping places). This is the
+    # V2-P2 class (7 `sorted()` sites fixed 2026-07-26); this dict escaped that sweep.
+    # Sort BOTH the iteration and the emitted keys — do not "simplify" either away.
+    for path in check_files():                       # already sorted (see check_files)
         src = open(path, encoding="utf-8", errors="replace").read()
-        for rid in untagged:
+        for rid in sorted(untagged):
             if re.search(r"(?<![\w-])" + re.escape(rid) + r"(?![\w-])", src):
                 out.setdefault(rid, []).append(os.path.relpath(path, REPO))
-    return out, len(declared), len(untagged)
+    return {k: out[k] for k in sorted(out)}, len(declared), len(untagged)
 
 
 def harvest_gates(rules):

@@ -46,6 +46,8 @@ Usage:  python3 knowledge/_capture_gate.py             # build mode (blocking)
 Build mode writes _CAPTURE-GATE.md; wrap mode is stdout-only (S-D3). Exits non-zero on any FAIL."""
 import datetime
 import glob
+import hashlib
+import importlib
 import os
 import re
 import subprocess
@@ -141,6 +143,46 @@ SIZE_STAMP_RE = re.compile(r"^\s*>?\s*\**size\**\s*[:—-]\s*(.+)$", re.I)
 SIZE_TK_RE = re.compile(r"\bGM\b\D{0,12}?([\d.]+)\s*K\s*tk", re.I)  # K is REQUIRED: without it
 #   "GM 25618 tk" would parse as 25.6M and pass a drift check by accident. One canonical form.
 SIZE_TOLERANCE = 0.10      # a stamp is a claim about a measurable thing; 10% drift = re-stamp
+
+# ---------------------------------------------------------------- M-set, ruled 2026-07-27 #17
+# `notes/_MEMENTO-DECISIONS.md` § ★ M-SET · brief `notes/_briefs/2026-07-27-memento-hardening-brief.md`.
+# Three regions that the D7 amendment measured and PUBLISHED but never budgeted. Publishing a
+# number nobody is accountable for is how the compactable region reached 21K before anyone looked.
+#
+# M7 — §A: **WARN ONLY, and it can never block.** GM-D7-am is explicit that §A is uncapped by
+#   ruling — Dave's words were "not even a guard banner" — so the FIRST draft of this item (a hard
+#   cap) was caught at inscription and revised. Two warn triggers, and the steady state is SILENT:
+#     (a) GROWTH — §A is bigger than the last wrap stamped AND no banner line names a §A change;
+#     (b) BACKSTOP — an absolute ceiling, so drift accumulated over many wraps still surfaces once.
+#   Nothing here may be read as an instruction to trim §A. It reports; Dave rules.
+SECTION_A_WARN_TK = 4500   # §A measured 4,208 tk at the ruling (2026-07-27) — headroom is deliberate
+STAMP_PRECISION_TK = 100   # the stamp writes §A as `N.NK tk`, so its granularity is 100 tk. Growth
+#   below the instrument's own precision is NOT an observation — compare with this slack or every
+#   wrap warns on its own rounding ([[measure-dont-convert-units]]: the unit you state in bounds
+#   the claim you may make).
+SIZE_A_RE = re.compile(r"§A\D{0,12}?([\d.]+)\s*K\s*tk", re.I)   # K REQUIRED, as for GM above
+#
+# M8 — the BANNER region (file top → the line before DO-FIRST: header + ★ LATEST + ★ PRIOR).
+#   It had no budget and is the densest prose in the file. Measured with the EXISTING region
+#   parser (`section_spans`) — a second parser is precisely the drift class this block exists to
+#   prevent, so if that parser ever cannot isolate the region, this check refuses to measure.
+BANNER_BUDGET_TK = (4000, 5000)    # (warn, BLOCK) — measured 2,103 tk at enactment
+#
+# M10 — the READ CHAIN (GM + _LIVE-STATE.md), the GM-D7-am contract, now actually measured.
+#   ⚠ **ADVISORY — it does not block.** RULED by Dave 2026-07-27 #18, after enactment measured the
+#   chain at 28,843 tk: already past the 28,000 the M-set had written as a BLOCK, and the brief's
+#   own quoted figure (29,193) was too. Both numbers stand exactly as ruled; only the TIER moved,
+#   on the M9(a) pattern the brief itself chose — advisory first, promote once seen working.
+#   **28,000 is therefore the PROMOTION THRESHOLD, not a stop:** when a wrap measures the chain
+#   under it, arm the block. This comment is the only record of that trigger — don't delete it.
+#   ⚠ AND the first draft of this check printed "roll _LIVE-STATE deltas (ritual step 2d)" as the
+#   remedy. That advice was WRONG and would have sent a reader at a region that cannot pay:
+#   measured at enactment, the three retained deltas total 1,422 tk against a 12,694 tk standing
+#   body, and LS was ALREADY at its ruled LATEST+2 retention — so the prescribed fix was both
+#   unavailable and insufficient. **A budget check reports its measurement; it does not prescribe
+#   the region.** (The "gate narrows its own rule" class: the exit code ages well, the advice text
+#   does not.)
+CHAIN_BUDGET_TK = (24000, 28000)   # (warn, PROMOTION THRESHOLD) — advisory, never blocks
 
 DATE_PREFIX_RE = re.compile(r"^(\d{4})-(\d{2})-(\d{2})-")
 STATUS_RE = re.compile(r"^status:\s*(\S+)\s*(.*)$")
@@ -305,16 +347,61 @@ def section_spans(lines):
             for n, (i, name) in enumerate(hits)}
 
 
+# M6 (2026-07-27): a fresh sandbox loses pip state, and tiktoken vanished TWICE inside 24 hours.
+# Each time the gate did the honest thing — fell back to bytes/3.53 and SAID so — but a stamp
+# measured by estimate is a weaker claim than one measured by the encoder, and nobody noticed
+# until the second time. ONE quiet install attempt, at most once per process.
+# ⚠ The fallback is NOT touched by this. Auto-heal must never make the estimate path quieter;
+# healing is a convenience, the self-description is the contract.
+_TIKTOKEN_HEAL_TRIED = False
+
+
+def _heal_tiktoken():
+    """One `pip install tiktoken` attempt per process. True iff the module imports afterwards.
+    Never raises and never prints — a failed heal is a non-event, the fallback covers it.
+    `CAPTURE_GATE_NO_HEAL=1` suppresses the attempt; that is how the selftest reaches the
+    fallback path on a machine where tiktoken IS installed."""
+    global _TIKTOKEN_HEAL_TRIED
+    if _TIKTOKEN_HEAL_TRIED or os.environ.get("CAPTURE_GATE_NO_HEAL"):
+        return False
+    _TIKTOKEN_HEAL_TRIED = True
+    try:
+        subprocess.run([sys.executable, "-m", "pip", "install", "tiktoken",
+                        "--break-system-packages", "-q"],
+                       capture_output=True, timeout=60)
+        importlib.invalidate_caches()
+        importlib.import_module("tiktoken")
+        return True
+    except Exception:
+        return False
+
+
 def measure_tokens(text):
     """Returns (tokens, method). tiktoken when present (OBSERVED); otherwise the MEASURED byte
     divisor, labelled ESTIMATE. Both are declared and they are never silently mixed — a number
     whose method is unstated is the thing this gate exists to prevent."""
     try:
-        import tiktoken
-        return len(tiktoken.get_encoding("cl100k_base").encode(text)), "tiktoken cl100k_base"
+        tiktoken = importlib.import_module("tiktoken")
     except Exception:
-        return (int(len(text.encode("utf-8")) / BYTES_PER_TOKEN),
-                f"bytes/{BYTES_PER_TOKEN} ESTIMATE (tiktoken absent)")
+        if _heal_tiktoken():
+            tiktoken = importlib.import_module("tiktoken")
+        else:
+            return (int(len(text.encode("utf-8")) / BYTES_PER_TOKEN),
+                    f"bytes/{BYTES_PER_TOKEN} ESTIMATE (tiktoken absent)")
+    return len(tiktoken.get_encoding("cl100k_base").encode(text)), "tiktoken cl100k_base"
+
+
+# ⚠ §A HASH CONVENTION — PINNED HERE, and this is the only implementation. Recovered the hard way
+# at #17, when a wrong-shape probe read `70e61b93…` and cost an abort mid-wrap; `git diff` against
+# HEAD is what proved §A had not in fact changed. The digest is taken over the lines from `# §A`
+# up to the line BEFORE `# §C`, joined with '\n', plus a TRAILING newline — `999b1e3d…` today.
+# M5's mover MUST call this function rather than re-derive the slice: any other shape produces a
+# different digest that looks just as authoritative and means nothing.
+def section_a_digest(lines, spans):
+    """sha256 of §A in the PINNED shape. Raises if the file lacks either marker — a digest over
+    a region you could not locate is worse than no digest (it reads as evidence)."""
+    return hashlib.sha256(
+        ("\n".join(lines[spans["§A"][0]:spans["§C"][0]]) + "\n").encode("utf-8")).hexdigest()
 
 
 def check_budgets(repo):
@@ -402,7 +489,124 @@ def check_budgets(repo):
                      f"{budget * 1.5:.0f} — ritual step 2")
     elif compactable > budget:
         warns.append(f"GOOD-MORNING.md compactable: {compactable} tk, cap {budget} — ritual step 2")
+
+    # ---- M8: the banner region gets a sub-budget of its own.
+    # ⚠ The exclusion of §A is only sound while §A sits BELOW DO-FIRST. If the file is ever
+    # reordered, this refuses to measure rather than quietly charge an exempt section to a
+    # budget — fail loud on the unknown, never guess (the dv-vocab lesson).
+    b_end = spans["DO-FIRST"][0]
+    if spans["§A"][0] < b_end:
+        fails.append("GOOD-MORNING.md: §A precedes DO-FIRST, so the banner region can no longer "
+                     "be isolated from the exempt section — the M8 budget REFUSES to measure "
+                     "rather than charge §A. Restore the order, or re-rule the region.")
+    else:
+        banner_tk = measure_tokens("\n".join(lines[:b_end]))[0]
+        b_warn, b_block = BANNER_BUDGET_TK
+        notes.append(f"BANNER region: {banner_tk} tk (file top → DO-FIRST: header + ★ LATEST + "
+                     f"★ PRIOR) · warn {b_warn} / block {b_block}")
+        if banner_tk >= b_block:
+            fails.append(f"GOOD-MORNING.md banner region: {banner_tk} tk, block {b_block} — "
+                         f"roll a banner to _GM-ARCHIVE.md (ritual step 2c)")
+        elif banner_tk > b_warn:
+            warns.append(f"GOOD-MORNING.md banner region: {banner_tk} tk, cap {b_warn} — "
+                         f"ritual step 2c")
+
+    # ---- M10: the read chain (GM + _LIVE-STATE), the D7 chain contract now measured. ADVISORY.
+    c_warn, c_promote = CHAIN_BUDGET_TK
+    if chain > c_warn:
+        warns.append(f"read chain (GM + _LIVE-STATE): {chain} tk, cap {c_warn} tk — ADVISORY "
+                     f"(blocking arms once a wrap measures it under {c_promote}). Measure both "
+                     f"files before picking a region to trim: this check knows the total, not "
+                     f"where the weight sits, and the deltas are rarely where it sits.")
+
+    # ---- M7: §A size line — WARN ONLY, growth-triggered. It can never block and never orders
+    # a trim; GM-D7-am ("not even a guard banner") is honoured by the SILENCE of the steady state.
+    a_claim = SIZE_A_RE.search(stamp.group(1)) if stamp else None
+    if a_claim is None:
+        notes.append(f"§A baseline UNSET: the `size:` stamp carries no §A figure, so growth "
+                     f"cannot be observed this wrap. Measured {exempt_tk} tk — stamp it "
+                     f"(`§A N.NK tk`) to arm the growth trigger. Unset, not assumed clean.")
+    else:
+        claimed_a = float(a_claim.group(1)) * 1000
+        # ⚠ The suppressor must read the banner PROSE, not the size stamp — once §A is stamped,
+        # the stamp itself contains the string "§A" on every single wrap, which would suppress
+        # the trigger permanently and silently. Caught by its own bite at enactment.
+        banner_names_a = any("§A" in ln and not SIZE_STAMP_RE.match(ln)
+                             for ln in lines[:spans["DO-FIRST"][0]])
+        if exempt_tk - claimed_a > STAMP_PRECISION_TK and not banner_names_a:
+            warns.append(f"§A grew {claimed_a:.0f} → {exempt_tk} tk and no banner line names a "
+                         f"§A change — say what changed in the ★ LATEST banner, or re-stamp. "
+                         f"WARN ONLY: §A is uncapped by ruling and this can never force a trim.")
+    if exempt_tk > SECTION_A_WARN_TK:
+        warns.append(f"§A {exempt_tk} tk, past the {SECTION_A_WARN_TK} tk backstop — ADVISORY. "
+                     f"§A is uncapped by ruling (GM-D7-am); this is a look-at-it, never a "
+                     f"trim order.")
     return fails, warns, notes
+
+
+def _norm(text):
+    """Strip blockquote/list chrome and collapse whitespace. Comparing NORMALISED regions rather
+    than lines is what makes the receipts proxy rewrap-immune: re-flowing a paragraph moves every
+    line boundary but preserves the character sequence, so a rewrap produces no removals and a
+    genuine deletion still does."""
+    text = re.sub(r"(?m)^[>\s]*(?:[-*·]\s+)?", " ", text)
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def retirement_receipts(repo):
+    """M9(a), ADVISORY — a PROXY for 2e's retirement tests, and naming that is the whole point.
+
+    2e says a retired DO-FIRST notice is archived verbatim. The gate cannot see 2e's actual
+    tests (they key on live targets, elapsed terms and struck sources, none of which are in
+    these files) and it cannot see whether a move was verbatim. It observes exactly one thing:
+    a line left DO-FIRST since HEAD and no text in `_GM-ARCHIVE.md` carries it.
+
+    Advisory first, per the brief — promote to blocking only once it has been seen working."""
+    warns, notes = [], []
+    gm = os.path.join(repo, "GOOD-MORNING.md")
+    arch = os.path.join(repo, "_GM-ARCHIVE.md")
+    if not (os.path.exists(gm) and os.path.exists(arch)):
+        return warns, notes
+    try:
+        r = subprocess.run(["git", "-C", repo, "show", "HEAD:GOOD-MORNING.md"],
+                           capture_output=True, text=True, timeout=30)
+        if r.returncode != 0:
+            notes.append("retirement receipts: no HEAD copy of GOOD-MORNING.md — check skipped "
+                         "(this is the honest skip, not a pass)")
+            return warns, notes
+        old_lines = r.stdout.splitlines()
+    except Exception as e:
+        notes.append(f"retirement receipts: skipped ({e}) — not a pass")
+        return warns, notes
+
+    with open(gm, encoding="utf-8") as f:
+        new_lines = f.read().splitlines()
+    old_spans, new_spans = section_spans(old_lines), section_spans(new_lines)
+    if "DO-FIRST" not in old_spans or "DO-FIRST" not in new_spans:
+        notes.append("retirement receipts: DO-FIRST marker absent one side — check skipped")
+        return warns, notes
+    region = lambda ls, sp: ls[sp["DO-FIRST"][0]:sp["DO-FIRST"][1]]
+    new_norm = _norm("\n".join(region(new_lines, new_spans)))
+    with open(arch, encoding="utf-8") as f:
+        arch_norm = _norm(f.read())
+
+    orphans = []
+    for ln in region(old_lines, old_spans):
+        n = _norm(ln)
+        if not re.search(r"[A-Za-z0-9]", n) or n in new_norm:
+            continue
+        if n not in arch_norm:
+            orphans.append(ln.strip()[:90])
+    if orphans:
+        warns.append(f"retirement receipts (ADVISORY): {len(orphans)} DO-FIRST line(s) left the "
+                     f"worklist since HEAD with no matching text in _GM-ARCHIVE.md — archive "
+                     f"them verbatim (ritual step 2c/2e) or say why they needed no receipt. "
+                     f"First: “{orphans[0]}”")
+    else:
+        notes.append("retirement receipts: every DO-FIRST line removed since HEAD is findable "
+                     "in _GM-ARCHIVE.md (proxy — verbatim-ness and retirement-DUE are not "
+                     "observable here).")
+    return warns, notes
 
 
 def wrap_checks(repo, today, lane=False):
@@ -416,7 +620,8 @@ def wrap_checks(repo, today, lane=False):
                      "record and its check still bites.")
         notes.append("LANE WRAP: pre-flight-stamp check SKIPPED too — the stamp lives in "
                      "GOOD-MORNING.md, which lane sessions do not write.")
-        notes.append("LANE WRAP: section growth contracts (2e/2f) SKIPPED — same reason. A lane "
+        notes.append("LANE WRAP: section growth contracts (2e/2f), the banner/§A/chain budgets "
+                     "and the retirement-receipts proxy are all SKIPPED — same reason. A lane "
                      "session cannot be charged for a file it is ruled out of writing.")
     else:
         gm = os.path.join(repo, "GOOD-MORNING.md")
@@ -427,6 +632,9 @@ def wrap_checks(repo, today, lane=False):
             warns += w_
         f_, w_, n_ = check_budgets(repo)
         fails += f_
+        warns += w_
+        notes += n_
+        w_, n_ = retirement_receipts(repo)      # M9(a) — advisory proxy for 2e
         warns += w_
         notes += n_
         notes.append("PRE-FLIGHT stamp: FORM checked only (3 terms · arithmetic · band-vs-table). "
@@ -559,13 +767,21 @@ FAT = " ".join(f"word{i}" for i in range(120))  # ~200 tk of line, for isolating
 
 
 def _gm_fixture(do_first=10, sec_a=10, sec_c=10, with_b=False, strata_blocks=0,
-                strata_pad=0, drop=(), stamp=None, fat_c=0, fat_a=0):
+                strata_pad=0, drop=(), stamp=None, fat_c=0, fat_a=0,
+                fat_banner=0, banner_extra=None, stamp_a=None, ls_text=None):
     """Synthetic GOOD-MORNING.md for the budget bites.
 
     `stamp=None` ⇒ a CORRECT stamp is computed for the finished text, so the green control is
     genuinely green rather than green by omission (attribute-the-diff: a control that passes for
-    the wrong reason cannot license the fixtures that fail)."""
+    the wrong reason cannot license the fixtures that fail).
+
+    M-set additions: `fat_banner` grows the banner region (M8) · `banner_extra` injects a banner
+    line, which is how the M7 growth trigger's "a banner names §A" suppressor is bitten ·
+    `stamp_a` overrides the stamped §A figure (a float to claim one, `False` to omit it)."""
     out = ["# Good morning", "SIZESTAMP", ""]
+    if banner_extra:
+        out.append(banner_extra)
+    out += [f"{FAT} banner {i}" for i in range(fat_banner)]
     if "DO-FIRST" not in drop:
         out += ["## ⬛ DO THIS FIRST", ""] + [f"do line {i}" for i in range(do_first)]
     if "§A" not in drop:
@@ -583,10 +799,18 @@ def _gm_fixture(do_first=10, sec_a=10, sec_c=10, with_b=False, strata_blocks=0,
     body = "\n".join(out) + "\n"
     if stamp is not None:
         return body.replace("SIZESTAMP", stamp)
+    # the §A figure the stamp will CLAIM: measured by default, so the control is silent under the
+    # M7 growth trigger for the right reason rather than because the trigger is unarmed.
+    b_lines = body.splitlines()
+    b_spans = section_spans(b_lines)
+    if stamp_a is None and {"§A", "§C"} <= set(b_spans):
+        a_s, a_e = b_spans["§A"]
+        stamp_a = measure_tokens("\n".join(b_lines[a_s:a_e]))[0] / 1000
+    a_part = "" if stamp_a in (None, False) else f"§A {stamp_a:.2f}K tk · "
     text = body.replace("SIZESTAMP", "> **size:** GM 0.00K tk · chain 0.00K tk · measured x")
     for _ in range(3):  # converges: the stamp's own length barely moves the count
         tk, _m = measure_tokens(text)
-        text = body.replace("SIZESTAMP", f"> **size:** GM {tk / 1000:.2f}K tk · "
+        text = body.replace("SIZESTAMP", f"> **size:** GM {tk / 1000:.2f}K tk · {a_part}"
                                          f"chain {tk / 1000:.2f}K tk · measured x")
     return text
 
@@ -644,8 +868,165 @@ def selftest_budgets():
     return failures
 
 
+# ---------------------------------------------------------------- M-set bites (2026-07-27 #18)
+# Every check added by the M-set ships a bite that PROVES IT FIRES, plus the control that proves
+# it stays quiet — one without the other licenses nothing. Two of these (M7 growth, M8 banner)
+# are WARN-level, so they cannot ride on `selftest_budgets`, which inspects fails only; adding a
+# fourth tuple element there would have churned a ruled fixture table for no gain.
+def _warns_for(td, **kw):
+    with open(os.path.join(td, "GOOD-MORNING.md"), "w", encoding="utf-8") as f:
+        f.write(_gm_fixture(**kw))
+    f_, w_, n_ = check_budgets(td)
+    return f_, w_, n_
+
+
+def selftest_growth():
+    """Bite-test M6 (tiktoken heal/fallback) · M7 (§A warn) · M8 (banner) · M10 (chain) ·
+    the pinned §A digest · M9 (retirement receipts)."""
+    failures = []
+
+    # ---- M6: the fallback must stay REACHABLE and must still describe itself as an ESTIMATE.
+    saved, os.environ["CAPTURE_GATE_NO_HEAL"] = os.environ.get("CAPTURE_GATE_NO_HEAL"), "1"
+    sys.modules["tiktoken"] = None          # makes `import tiktoken` raise, as a missing module does
+    try:
+        n, method = measure_tokens("hello world " * 50)
+        if "ESTIMATE" not in method or "tiktoken absent" not in method:
+            failures.append(f"M6: with tiktoken absent the method read {method!r} — the fallback "
+                            f"must keep saying it is an estimate")
+        if n <= 0:
+            failures.append("M6: fallback returned a non-positive count")
+    finally:
+        del sys.modules["tiktoken"]
+        if saved is None:
+            os.environ.pop("CAPTURE_GATE_NO_HEAL", None)
+        else:
+            os.environ["CAPTURE_GATE_NO_HEAL"] = saved
+    if measure_tokens("hello")[1] == "tiktoken cl100k_base":
+        pass                                 # healthy env: the OBSERVED path is the one in use
+    elif "ESTIMATE" not in measure_tokens("hello")[1]:
+        failures.append("M6: measure_tokens returned an undeclared method")
+
+    with tempfile.TemporaryDirectory() as td:
+        # ---- M8: banner budget — fires at warn, fires at block, silent for a normal banner.
+        # FAT measures 240 tk/line, so 17 lines ≈ 4.1K (warn band) and 30 ≈ 7.3K (block). The
+        # numbers are MEASURED, not assumed: the first draft guessed ~200 tk/line, put the warn
+        # fixture at 5.4K, and bit as a block instead.
+        _f, w, _n = _warns_for(td, fat_banner=17)
+        if not any("banner region" in x for x in w):
+            failures.append("M8: a 17-fat-line banner did not WARN — the sub-budget does not bite")
+        f, _w, _n = _warns_for(td, fat_banner=30)
+        if not any("banner region" in x for x in f):
+            failures.append("M8: a 30-fat-line banner did not BLOCK")
+        _f, w, _n = _warns_for(td)
+        if any("banner region" in x for x in w):
+            failures.append("M8: an ordinary banner warned — the budget fires on everything")
+
+        # ---- M10: chain budget, ADVISORY. The fixture repo has no _LIVE-STATE, so chain == GM.
+        f, w, _n = _warns_for(td, fat_c=5, fat_a=160)
+        if not any("read chain" in x for x in w):
+            failures.append("M10: an over-cap chain did not WARN — the budget does not bite")
+        if any("read chain" in x for x in f):
+            failures.append("M10: a chain finding reached FAILS — Dave ruled it ADVISORY "
+                            "(2026-07-27 #18); blocking arms only once a wrap measures the "
+                            "chain under the promotion threshold")
+        _f, w, _n = _warns_for(td)
+        if any("read chain" in x for x in w):
+            failures.append("M10: a small chain warned — the budget fires on everything")
+        # the remedy text must NOT prescribe a region: measured at enactment, the deltas the old
+        # text pointed at could not have paid the difference. Pin the correction.
+        _f, w, _n = _warns_for(td, fat_c=5, fat_a=160)
+        if any("step 2d" in x for x in w if "read chain" in x):
+            failures.append("M10: the chain warn prescribes rolling deltas again — it knows the "
+                            "total, not where the weight sits")
+
+        # ---- M7: §A. WARN-ONLY is the ruling, so a §A fixture must never appear in `fails`.
+        _f, w, _n = _warns_for(td, fat_a=30)          # ~6K tk of §A, past the 4,500 backstop
+        if not any("backstop" in x for x in w):
+            failures.append("M7: §A past the backstop did not warn")
+        f, _w, _n = _warns_for(td, fat_a=30)
+        if any("§A" in x for x in f):
+            failures.append("M7: a §A finding reached FAILS — the ruling is WARN-ONLY and "
+                            "'not even a guard banner' (GM-D7-am). It may never block.")
+        # growth: stamp claims less than §A measures, and no banner line mentions §A
+        _f, w, _n = _warns_for(td, sec_a=40, stamp_a=0.01)
+        if not any("grew" in x for x in w):
+            failures.append("M7: §A growth against a smaller stamped baseline did not warn")
+        # …and the suppressor: a banner line that NAMES §A must silence it (steady state = quiet)
+        _f, w, _n = _warns_for(td, sec_a=40, stamp_a=0.01,
+                               banner_extra="> ★ LATEST — §A rewritten this session")
+        if any("grew" in x for x in w):
+            failures.append("M7: a banner naming §A did not suppress the growth warn — the "
+                            "trigger will wallpaper the header")
+        # …and an ABSENT §A figure must be reported UNSET, never assumed clean
+        _f, _w, n = _warns_for(td, stamp_a=False)
+        if not any("baseline UNSET" in x for x in n):
+            failures.append("M7: a stamp with no §A figure passed silently — unknown must be "
+                            "declared, never defaulted")
+
+        # ---- the PINNED §A digest: right shape reproduces, wrong shape does not.
+        text = _gm_fixture()
+        lines = text.splitlines()
+        spans = section_spans(lines)
+        want = hashlib.sha256(
+            ("\n".join(lines[spans["§A"][0]:spans["§C"][0]]) + "\n").encode()).hexdigest()
+        if section_a_digest(lines, spans) != want:
+            failures.append("§A digest: does not match the PINNED shape (§A → line before §C, "
+                            "'\\n'.join, trailing newline)")
+        wrong = hashlib.sha256("\n".join(lines[spans["§A"][0]:spans["§C"][0]]).encode()).hexdigest()
+        if wrong == want:
+            failures.append("§A digest: the trailing-newline variant collides — the bite cannot "
+                            "tell the shapes apart, so it proves nothing")
+
+    # ---- M9: the receipts proxy needs a real git repo, so it gets its own fixture.
+    with tempfile.TemporaryDirectory() as td:
+        git = ["git", "-C", td, "-c", "user.email=t@t", "-c", "user.name=t"]
+        try:
+            if subprocess.run(git[:3] + ["init", "-q"], capture_output=True,
+                              timeout=30).returncode != 0:
+                raise RuntimeError("git init failed")
+            with open(os.path.join(td, "GOOD-MORNING.md"), "w", encoding="utf-8") as f:
+                f.write(_gm_fixture(do_first=6))
+            open(os.path.join(td, "_GM-ARCHIVE.md"), "w", encoding="utf-8").write("# archive\n")
+            subprocess.run(git + ["add", "-A"], capture_output=True, timeout=30)
+            subprocess.run(git + ["commit", "-qm", "fixture"], capture_output=True, timeout=30)
+            # remove a DO-FIRST line, archive NOTHING -> the proxy must warn
+            with open(os.path.join(td, "GOOD-MORNING.md"), "w", encoding="utf-8") as f:
+                f.write(_gm_fixture(do_first=6).replace("do line 3\n", ""))
+            w, _n = retirement_receipts(td)
+            if not any("retirement receipts" in x for x in w):
+                failures.append("M9: a DO-FIRST line vanished with no archive text and the proxy "
+                                "stayed quiet")
+            # now archive it -> the proxy must go quiet (else it fires on everything)
+            open(os.path.join(td, "_GM-ARCHIVE.md"), "a", encoding="utf-8").write("do line 3\n")
+            w, _n = retirement_receipts(td)
+            if any("retirement receipts" in x for x in w):
+                failures.append("M9: an archived line still warned — the receipt is not read")
+            # a pure REWRAP must produce no removals at all (the normalisation's whole job)
+            with open(os.path.join(td, "GOOD-MORNING.md"), "w", encoding="utf-8") as f:
+                f.write(_gm_fixture(do_first=6).replace("do line 4\ndo line 5",
+                                                        "do line 4 do\nline 5"))
+            w, _n = retirement_receipts(td)
+            if any("retirement receipts" in x for x in w):
+                failures.append("M9: a rewrap read as a retirement — the proxy is line-shaped, "
+                                "not content-shaped, and will cry wolf every compaction")
+        except Exception as e:
+            failures.append(f"M9: bite could not run ({e}) — an untested check must not ship")
+
+    # ---- RULED VALUES, pinned (same discipline as SIZE_BUDGET_TK). Promotion of values is
+    # Dave's alone, so a convenience re-dial has to be a deliberate act with a ledger line behind
+    # it. The chain pin covers the TIER as much as the numbers: re-arming M10's block before a
+    # wrap has measured the chain under 28,000 would reverse a ruling by editing a tuple.
+    for name, got, want in (("CHAIN_BUDGET_TK", CHAIN_BUDGET_TK, (24000, 28000)),
+                            ("BANNER_BUDGET_TK", BANNER_BUDGET_TK, (4000, 5000)),
+                            ("SECTION_A_WARN_TK", SECTION_A_WARN_TK, 4500)):
+        if got != want:
+            failures.append(f"{name} = {got}, ruled {want} (2026-07-27 M-set) — re-dialling is "
+                            f"Dave's, and updating this pin is part of doing it")
+    return failures
+
+
 def selftest():
-    failures = selftest_preflight() + selftest_budgets()
+    failures = selftest_preflight() + selftest_budgets() + selftest_growth()
     with tempfile.TemporaryDirectory() as td:
         os.makedirs(os.path.join(td, "notes"))
         os.makedirs(os.path.join(td, "_DECISION-HISTORY"))

@@ -162,6 +162,29 @@ New: **whether to invest in the pattern table** (279 of 465 rules UNTAGGED — t
 so the call is made on a number) and **ds-016's** three candidate remedies.
 Evidence: `ds-016` · `_DECISION-HISTORY/2026-07-27-the-index-cannot-see-the-rule.md`.
 
+## ★ Memento v1 — a shareable pack (registered M12, 2026-07-27 #18)
+**status: TARGET, not started.** Registered by ruling (M-set item 12, `notes/_MEMENTO-DECISIONS.md`
+§ ★ M-SET; brief `notes/_briefs/2026-07-27-memento-hardening-brief.md`).
+
+**What.** The portable kit, extracted project-agnostic: the **capture ritual** + **`_capture_gate.py`**
++ the **gauge canon** (`_RUNBOOK-context-gauge.md`, bands and throttle) + the **dream-pass runbook** +
+the **dreamer spec** (`.claude/agents/dreamer.md`) + **GM / `_LIVE-STATE` templates**.
+
+**Why it's held.** It is the answer to a question nobody else has written down — *how does a
+long-running agent project retain state, record supersession, and audit its own decisions when every
+session starts with no memory.* Sibling to `_LIVE-STATE`'s first named spin-off candidate (the state
+machine); Memento is that candidate grown teeth, because the gate half is what makes it more than a
+filing convention.
+
+**Blockers, all three:** (1) **M3–M10 landed** — the growth contracts must be enforced, not just
+described, or the pack ships prose; (2) **one clean UNATTENDED Sunday fire** of the dream pass — the
+scheduled path has never run end-to-end without a human in the window, so the lane is unproven exactly
+where a shared pack would be used; (3) **`MEMORY.md` trim** — the index loads on every cold start and
+is currently over target, which a recipient would inherit.
+
+**What it feeds:** the state machine as a product, not a practice. Spin-off register, `_LIVE-STATE`
+§ SPIN-OFF / GENERALISABLE CANDIDATES.
+
 ## ★ Multi-thread "GOOD-MORNING" — a handoff mechanism for parallel long-running threads (Dave, 2026-07-24)
 **The problem Dave named:** two async threads now run in parallel ACROSS sessions — the chart **FAN-OUT**
 (wave; GM §C·1a + `notes/_briefs/2026-07-24-chart-wave-lane{1,2,3}`) and the **CONTROLS SYSTEM** (seg atom +
