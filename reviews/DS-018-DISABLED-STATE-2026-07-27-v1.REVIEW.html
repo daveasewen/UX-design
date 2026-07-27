@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ds-018 — the disabled state that is declared but never delivered · decision review v1</title>
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<style>
+/* ─────────────────────────────────────────────────────────────────────────────
+   ds-018 DECISION REVIEW · 2026-07-27 · Apollo Mono
+   Specimen CSS is COPIED VERBATIM from the truth-source for charts, which is the
+   snippet's own inline spine — NOT canon.css. Provenance per rule, file:line:
+     knowledge/snippets/Chart-bar.reference.html:56   (light spine)
+     knowledge/snippets/Chart-bar.reference.html:71   (dark spine)
+     knowledge/snippets/Chart-bar.reference.html:231  (.dv-leg-reset resting)
+     knowledge/snippets/Chart-bar.reference.html:237  (:hover:not(:disabled))
+     knowledge/snippets/Chart-bar.reference.html:239  (:disabled)
+   Nothing here is retyped from memory. Contrast figures are computed LIVE from
+   getComputedStyle at render time — no hardcoded ratios anywhere in this file.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+:root{
+  --page:#FFFFFF; --ink:#1A1A1A; --line:#E1E1E1; --ease:.16s cubic-bezier(.2,0,0,1);
+  --hairline:#E1E1E1; --muted:#6B6B6B; --amber-bg:#F0B13A; --amber-gr:#C58900;
+  --red:#B92F1E; --gutter:24px;
+}
+*{box-sizing:border-box;}
+body{margin:0; background:var(--page); color:var(--ink);
+  font-family:"Univers Next W02",-apple-system,"Segoe UI",Arial,sans-serif;
+  font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased;}
+.wrap{max-width:1180px; margin:0 auto; padding:40px var(--gutter) 120px;}
+
+/* ── masthead ─────────────────────────────────────────────────────────────── */
+.mh{border-top:4px solid var(--ink); padding-top:16px; margin-bottom:40px;}
+.mh h1{font-size:32px; line-height:1.15; font-weight:500; margin:0 0 8px; letter-spacing:-.01em;}
+.mh .sub{font-size:16px; font-weight:400; color:var(--muted); margin:0 0 16px; max-width:72ch;}
+.mh .meta{font-size:12px; font-weight:400; color:var(--muted); display:flex; flex-wrap:wrap; gap:20px;
+  border-top:1px solid var(--hairline); padding-top:12px;}
+.mh .meta b{font-weight:500; color:var(--ink);}
+
+h2{font-size:22px; font-weight:500; margin:56px 0 4px; letter-spacing:-.005em;}
+h2 .num{color:var(--muted); font-weight:400; margin-right:10px;}
+h2+.lede{font-size:16px; color:var(--muted); margin:0 0 24px; max-width:74ch;}
+h3{font-size:16px; font-weight:500; margin:28px 0 8px;}
+p{margin:0 0 12px; max-width:74ch;}
+code{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:.88em;
+  background:#F4F4F4; padding:1px 5px; border:1px solid var(--hairline);}
+.small{font-size:12px; color:var(--muted);}
+
+/* ── evidence table ───────────────────────────────────────────────────────── */
+table{border-collapse:collapse; width:100%; font-size:13px; margin:16px 0 8px;}
+th,td{text-align:left; padding:9px 12px; border-bottom:1px solid var(--hairline); vertical-align:top;}
+th{font-weight:500; font-size:12px; border-bottom:1px solid var(--ink); white-space:nowrap;}
+td.mono,th.mono{font-family:ui-monospace,Menlo,monospace; font-size:12px;}
+.tag{display:inline-block; font-size:11px; font-weight:500; padding:1px 7px; border:1px solid currentColor;
+  white-space:nowrap;}
+.tag.ok{color:#1E7A46;} .tag.bad{color:var(--red);} .tag.warn{color:var(--amber-gr);}
+
+/* ── callout ──────────────────────────────────────────────────────────────── */
+.callout{border-left:4px solid var(--ink); background:#FAFAFA; padding:16px 20px; margin:24px 0;}
+.callout.find{border-left-color:var(--amber-gr); background:#FEF9EF;}
+.callout h3{margin-top:0;}
+.callout p:last-child{margin-bottom:0;}
+
+/* ── specimen stage ───────────────────────────────────────────────────────── */
+.stage{border:1px solid var(--hairline); margin:20px 0 8px;}
+.stage-bar{display:flex; flex-wrap:wrap; align-items:center; gap:16px; padding:10px 14px;
+  border-bottom:1px solid var(--hairline); background:#FAFAFA; font-size:12px;}
+.stage-bar label{display:flex; align-items:center; gap:7px; font-weight:500;}
+.stage-bar input[type=range]{width:190px;}
+.panes{display:grid; grid-template-columns:1fr 1fr; gap:0;}
+@media (max-width:720px){ .panes{grid-template-columns:1fr;} }
+.pane{padding:22px; overflow:hidden;}
+.pane+.pane{border-left:1px solid var(--hairline);}
+@media (max-width:720px){ .pane+.pane{border-left:0; border-top:1px solid var(--hairline);} }
+.pane-h{font-size:11px; font-weight:500; letter-spacing:.04em; text-transform:uppercase;
+  margin:0 0 16px; opacity:.55;}
+
+/* ── THE SPECIMEN — verbatim from Chart-bar.reference.html:231–239 ─────────── */
+.dv-demo{ --page:#FFFFFF; --ink:#1A1A1A; --line:#E1E1E1; --ease:.16s cubic-bezier(.2,0,0,1);
+  background:var(--page); color:var(--ink); padding:18px; border:1px solid rgba(128,128,128,.28);}
+.dv-demo[data-theme="dark"]{ --page:#1A1A1A; --ink:#FFFFFF; --line:#808080; }
+.dv-leg{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px;
+  max-width:var(--legw,260px);}
+.dv-leg-reset{position:relative; font:inherit; font-size:12px; padding:4px 12px; width:100%;
+  border:1px solid var(--line); background:transparent; color:var(--ink); cursor:pointer;
+  transition:border-color var(--ease), color var(--ease);}
+.dv-leg-reset:hover:not(:disabled){border-color:var(--ink);}
+.dv-leg-reset:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+/* ── the defect, as it ships today: neither custom property is declared on any
+      chart scope, so both declarations are invalid-at-computed-value-time.
+      border-color falls to currentColor (= --ink); color falls to inherit (= --ink). */
+.dv-leg-reset:disabled{border-color:var(--border-disabled); color:var(--text-disabled); cursor:default;}
+/* the forced-state twins, so a static page can show hover without a pointer */
+.dv-leg-reset.force-hover{border-color:var(--ink);}
+.row-lab{font-size:11px; letter-spacing:.04em; text-transform:uppercase; opacity:.55; margin:0 0 5px;}
+.spec-row{margin-bottom:18px;}
+.readout{font-family:ui-monospace,Menlo,monospace; font-size:11px; opacity:.75; margin-top:5px;}
+.readout b{font-weight:500; opacity:1;}
+
+/* ── decision controls ────────────────────────────────────────────────────── */
+.call{border:1px solid var(--ink); margin:28px 0;}
+.call-h{padding:14px 18px; border-bottom:1px solid var(--ink); display:flex; gap:12px;
+  align-items:baseline; flex-wrap:wrap;}
+.call-h .id{font-size:11px; font-weight:500; letter-spacing:.06em; border:1px solid var(--ink);
+  padding:2px 8px;}
+.call-h h3{margin:0; font-size:18px; font-weight:500;}
+.call-h .st{margin-left:auto; font-size:11px; font-weight:500; color:var(--red);
+  border:1px solid currentColor; padding:2px 8px;}
+.opts{padding:6px 18px 18px;}
+.opt{display:block; border-bottom:1px solid var(--hairline); padding:14px 0 14px 30px; position:relative;
+  cursor:pointer;}
+.opt:last-child{border-bottom:0;}
+.opt input{position:absolute; left:0; top:16px;}
+.opt .ot{font-weight:500; font-size:15px; display:block; margin-bottom:3px;}
+.opt .od{font-size:13px; color:var(--muted); max-width:70ch; display:block;}
+.opt .flagbad{color:var(--red); font-weight:500;}
+.opt .flagok{color:#1E7A46; font-weight:500;}
+.opt.rec .ot::after{content:"RECOMMENDED"; font-size:10px; letter-spacing:.06em; font-weight:500;
+  border:1px solid currentColor; padding:1px 6px; margin-left:9px; vertical-align:2px;}
+.swatchrow{display:flex; gap:10px; margin-top:9px; flex-wrap:wrap;}
+.sw{font-family:ui-monospace,Menlo,monospace; font-size:11px; border:1px solid var(--hairline);
+  padding:4px 8px; display:flex; align-items:center; gap:7px;}
+.sw i{width:13px; height:13px; display:block; border:1px solid rgba(0,0,0,.25);}
+
+/* ── export ───────────────────────────────────────────────────────────────── */
+.exp{border:1px solid var(--ink); padding:18px; margin:36px 0 0; background:#FAFAFA;}
+button.act{font:inherit; font-size:13px; font-weight:500; padding:9px 18px; border:1px solid var(--ink);
+  background:var(--ink); color:#fff; cursor:pointer;}
+button.act.ghost{background:transparent; color:var(--ink);}
+button.act:hover{opacity:.86;}
+#expout{width:100%; min-height:190px; margin-top:14px; font-family:ui-monospace,Menlo,monospace;
+  font-size:12px; padding:12px; border:1px solid var(--hairline); display:none; line-height:1.55;}
+.fail{color:var(--red); font-weight:500;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="mh">
+  <h1>ds-018 — the disabled state that is declared but never delivered</h1>
+  <p class="sub">The cause is settled and re-verified. What is open is the remedy, and the census turned
+  up a constraint that was not in the record: <b>the border channel has no room left below the enabled
+  state</b>, so this cannot be fixed by choosing a disabled value alone.</p>
+  <div class="meta">
+    <span><b>Date</b> 2026-07-27</span>
+    <span><b>Defect</b> ds-018 · silent-lookup class, instance five</span>
+    <span><b>Ruled by</b> Dave — three calls open</span>
+    <span><b>Status</b> cause CONFIRMED + RE-VERIFIED · remedy UNRULED</span>
+    <span><b>Authored at</b> gauge ~38% (Green)</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<h2><span class="num">1</span>What is actually true — verified this session, not inherited</h2>
+<p class="lede">Every row was re-measured from source today. The handoff carried one claim marked
+<i>unverified</i>; it is now verified, and it is more specific than the record said.</p>
+
+<table>
+<thead><tr><th>Claim</th><th>Verdict</th><th class="mono">Evidence</th></tr></thead>
+<tbody>
+<tr>
+  <td><code>--border-disabled</code> is declared on <b>zero</b> chart scopes and zero <code>:root</code></td>
+  <td><span class="tag ok">CONFIRMED</span></td>
+  <td class="mono">29 declarations, all on the ten <code>.cn-*</code> form scopes + their SC/dark twins.
+      <code>canon.css</code></td>
+</tr>
+<tr>
+  <td><code>--text-disabled</code> is declared on zero chart scopes</td>
+  <td><span class="tag ok">CONFIRMED</span></td>
+  <td class="mono">28 declarations — form scopes + SC/dark twins</td>
+</tr>
+<tr>
+  <td>…and on zero <code>:root</code></td>
+  <td><span class="tag bad">REFUTED</span></td>
+  <td class="mono"><b><code>:root{--text-disabled:#E1E1E1}</code></b> — <code>canon.css:350</code>.
+      Dark twin <code>#808080</code> at <code>:647</code>.</td>
+</tr>
+<tr>
+  <td>The trap value is <code>#E1E1E1</code></td>
+  <td><span class="tag ok">VERIFIED</span> <span class="small">— was flagged unverified</span></td>
+  <td class="mono">Exactly the value <b>B-D4</b> minted <code>text/on-disabled</code> to escape, because it
+      equalled the disabled ground at 1.0:1</td>
+</tr>
+<tr>
+  <td>The B-D4 replacement value is <code>#808080</code></td>
+  <td><span class="tag warn">DRIFTED</span></td>
+  <td class="mono">B-D4 ruled <code>#808080</code>; canon ships
+      <b><code>--text-on-disabled:#9D9D9D</code></b> at <code>canon.css:351</code>, per the later B-D6
+      four-tier fold. <b>Flagging, not correcting.</b></td>
+</tr>
+<tr>
+  <td>Chart snippets read from <code>canon.css</code></td>
+  <td><span class="tag bad">REFUTED</span></td>
+  <td class="mono"><code>Chart-bar.reference.html:51–52</code> links <b>only</b> <code>type.css</code>,
+      then inlines its own spine. <b>canon.css is not in the chart's cascade at all.</b></td>
+</tr>
+</tbody>
+</table>
+
+<div class="callout find">
+  <h3>The consequence nobody had joined up: the defect has two different faces</h3>
+  <p><b>In the snippet</b> (which is what the render-proof measures) neither property resolves, so both
+  declarations are invalid-at-computed-value-time: the border falls to <code>currentColor</code> and the
+  label to <code>inherit</code>. Both land on ink. <b>That is the inversion Dave saw.</b></p>
+  <p><b>In a real canon page</b> the border still falls to ink — but the label now <i>does</i> resolve, to
+  <code>:root</code>'s <code>#E1E1E1</code>: near-invisible on a white ground. <b>So "promote to
+  <code>:root</code>" is not an untried option — it is already the state of the label token, and it
+  produces the exact defect B-D4 was minted to fix.</b> That is call A's answer, mostly.</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<h2><span class="num">2</span>The finding that changes the shape of the call</h2>
+<p class="lede">The record says: make the disabled state recessive. Measure what "recessive" has to be
+quieter <i>than</i>, and the border channel turns out to be already spent.</p>
+
+<p>The Reset's resting <b>enabled</b> border is <code>var(--line)</code> — <code>#E1E1E1</code> on a white
+page. Numbers computed live below, from the specimens themselves:</p>
+
+<div class="stage">
+  <div class="stage-bar"><b>Live measurement — the squeeze</b>
+    <span class="small">read from <code>getComputedStyle</code> on the rendered specimens, not typed</span></div>
+  <div class="pane"><div id="squeeze"></div></div>
+</div>
+
+<div class="callout">
+  <h3>Read it as a ladder with no rung below the bottom one</h3>
+  <p>Hover sits at ink. Enabled-resting sits at <code>--line</code>, which is already at the floor of
+  perceptibility as a border. <b>Any disabled border quieter than enabled is below that floor — invisible —
+  and any disabled border equal to it erases the distinction entirely.</b> There is no third value.</p>
+  <p>The <b>label</b> channel is the opposite: enabled label is ink at maximum contrast, so there is a wide
+  band of genuinely recessive-but-visible values beneath it — which is precisely the band B-D4 already
+  ruled acceptable when it chose "faint but visible by choice". <b>The honest fix is label-led, and the
+  border question becomes secondary.</b></p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<h2><span class="num">3</span>Live specimens — the state spread, both themes</h2>
+<p class="lede">Left is what ships today. Right updates live as you pick options in §4. Drag the width
+slider to check the narrow legend; the Reset goes full-width in a vertical legend.</p>
+
+<div class="stage">
+  <div class="stage-bar">
+    <label>Legend width <input type="range" id="legw" min="150" max="360" value="260"></label>
+    <span class="small" id="legwv">260px</span>
+    <label style="margin-left:auto"><input type="checkbox" id="showdark" checked> show dark theme</label>
+  </div>
+  <div class="panes">
+    <div class="pane">
+      <p class="pane-h">Today — as it ships <span class="fail">(inverted)</span></p>
+      <div class="dv-demo" id="demoA"></div>
+      <div class="dv-demo" data-theme="dark" id="demoAd" style="margin-top:16px"></div>
+    </div>
+    <div class="pane">
+      <p class="pane-h">Your current selection</p>
+      <div class="dv-demo" id="demoB"></div>
+      <div class="dv-demo" data-theme="dark" id="demoBd" style="margin-top:16px"></div>
+    </div>
+  </div>
+</div>
+<p class="small">Dark twins for every candidate below are <b>UNRULED</b> — they are shown paired at the
+same lightness step so the ladder can be judged, but pairing them is part of the ruling, not a
+consequence of it.</p>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<h2><span class="num">4</span>The three calls</h2>
+<p class="lede">Pick one per call. Nothing is enacted from this page — Export at the bottom produces the
+ruling text, and enactment happens in the next window against your words.</p>
+
+<!-- CALL A ─────────────────────────────────────────────────────────────── -->
+<div class="call">
+  <div class="call-h"><span class="id">CALL A</span><h3>The tier fix — where should the token live?</h3>
+    <span class="st">UNRULED</span></div>
+  <div class="opts">
+    <label class="opt"><input type="radio" name="A" value="A1">
+      <span class="ot">Declare the form tokens on chart scopes</span>
+      <span class="od">Add <code>--border-disabled</code> / <code>--text-disabled</code> to the chart
+      scopes, carrying the form tier's values.
+      <span class="flagbad">Imports <code>#E1E1E1</code> as the label colour</span> — the B-D4 defect,
+      one tier over. Also cements a form-tier name as a dataviz concern.</span></label>
+
+    <label class="opt"><input type="radio" name="A" value="A2" checked>
+      <span class="ot">Mint dataviz-tier equivalents</span>
+      <span class="od">New <code>--data-control-border-disabled</code> /
+      <code>--data-control-text-disabled</code>, alongside the existing
+      <code>--data-axis</code> / <code>--data-grid</code> / <code>--data-series-*</code> family that already
+      lives on chart scopes. <span class="flagok">Fits the naming the tier already uses</span> and lets the
+      dataviz value diverge from the form value without a structural change — which the evidence says it
+      must, since the two tiers have different ladders.</span></label>
+
+    <label class="opt"><input type="radio" name="A" value="A3">
+      <span class="ot">Promote to <code>:root</code></span>
+      <span class="od"><span class="flagbad">Already true for <code>--text-disabled</code>, and it is the
+      source of the second defect.</span> Promoting <code>--border-disabled</code> to match would make the
+      chart inherit a form-tier ladder globally — the widest blast radius of the three, and canon.css is not
+      even in the chart snippet's cascade, so it would fix the app and leave the snippet broken.</span></label>
+  </div>
+</div>
+
+<!-- CALL B ─────────────────────────────────────────────────────────────── -->
+<div class="call">
+  <div class="call-h"><span class="id">CALL B</span><h3>The channel — what carries "disabled"?</h3>
+    <span class="st">UNRULED · NEW</span></div>
+  <div class="opts">
+    <label class="opt"><input type="radio" name="B" value="B1">
+      <span class="ot">Border-led — quieten the disabled border</span>
+      <span class="od"><span class="flagbad">Structurally unavailable.</span> Enabled resting is already
+      <code>--line</code>; there is nothing perceptible below it. Kept on the page because it is the option
+      the record implied, and it deserves to be visibly ruled out rather than quietly dropped.</span></label>
+
+    <label class="opt rec"><input type="radio" name="B" value="B2" checked>
+      <span class="ot">Label-led — the label goes recessive, the border matches enabled</span>
+      <span class="od">Disabled label drops to a recessive step; disabled border returns to
+      <code>--line</code>, i.e. the same as enabled resting. The control still reads as a control, and the
+      distinction lands in the channel that has room. <span class="flagok">Consistent with B-D4's
+      "faint but visible by choice"</span>, and it is the smallest change that removes the inversion.
+      <span class="small">Note the honest cost: at rest, enabled and disabled borders become identical —
+      the label is then doing all the work.</span></span></label>
+
+    <label class="opt"><input type="radio" name="B" value="B3">
+      <span class="ot">Both — lift enabled, drop disabled</span>
+      <span class="od">Lift the enabled resting border off <code>--line</code> so a recessive rung opens
+      beneath it, then place disabled there. Restores a real two-rung border ladder, and would make the
+      enabled Reset more findable — <span class="flagbad">but it changes a state Dave has already seen and
+      not complained about</span>, so it is a wider change than the defect strictly requires.</span></label>
+  </div>
+  <div class="opts" id="bvals" style="border-top:1px solid var(--hairline); padding-top:14px;">
+    <h3 style="margin-top:0">Candidate values for the recessive step <span class="small"
+      style="font-weight:400">— live contrast against each theme's page, computed on render</span></h3>
+    <div class="swatchrow" id="cands"></div>
+    <p class="small" style="margin-top:10px">Pick one to preview it in §3:
+      <span id="candpick"></span></p>
+    <p class="small"><b>Derivation note.</b> These are candidates, not a recommendation of a number.
+      <code>#9D9D9D</code> is what canon ships today for <code>--text-on-disabled</code>;
+      <code>#808080</code> is what B-D4 ruled. The rest are ramp neighbours offered so the ladder can be
+      judged by eye. <b>Promotion of any value is yours alone.</b></p>
+  </div>
+</div>
+
+<!-- CALL C ─────────────────────────────────────────────────────────────── -->
+<div class="call">
+  <div class="call-h"><span class="id">CALL C</span><h3>Which gate?</h3><span class="st">UNRULED</span></div>
+  <div class="opts">
+    <label class="opt"><input type="radio" name="C" value="C1">
+      <span class="ot">Narrow — no control's disabled treatment may resolve to its hover treatment</span>
+      <span class="od">Catches exactly ds-018 and nothing else. Cheap, and it encodes one mechanism as the
+      rule — <span class="flagbad">the failure shape already logged twice</span> (a gate that narrows its
+      own rule).</span></label>
+
+    <label class="opt rec"><input type="radio" name="C" value="C2" checked>
+      <span class="ot">Wide — fail loud when a declaration references a custom property that resolves
+      nowhere in its own scope</span>
+      <span class="od"><span class="flagok">Would have caught ds-018 on the day it landed</span>, catches
+      <code>--text-disabled</code> in the same pass, and is the <i>fail-loud-on-unknown</i> shape already
+      ratified for <code>dv-vocab</code>. Generalises to every future silent lookup — this class now has
+      five confirmed instances.</span></label>
+
+    <label class="opt"><input type="radio" name="C" value="C3">
+      <span class="ot">Affordance — a disabled control may not out-contrast its own enabled state</span>
+      <span class="od">Catches the inversion <i>as an inversion</i>, which is what Dave actually reported,
+      and would survive a fix that resolved the tokens to the wrong values. Narrower than C2 on cause,
+      wider on symptom — the two are complementary rather than exclusive.</span></label>
+
+    <label class="opt"><input type="radio" name="C" value="C23">
+      <span class="ot">C2 <i>and</i> C3 — cause and symptom</span>
+      <span class="od">The pattern ruled complementary for adoption-time-plus-sweep, applied here: C2 stops
+      the lookup failing silently, C3 stops a resolved-but-wrong ladder. <span class="small">Costs two gates
+      instead of one.</span></span></label>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<h2><span class="num">5</span>Export the ruling</h2>
+<p class="lede">Produces a paste-ready block for the next window. It records what you picked, what you
+did <i>not</i> pick, and the evidence each choice rests on — so the ruling can never read as agent drift.</p>
+<div class="exp">
+  <button class="act" id="doexp">Export ruling</button>
+  <button class="act ghost" id="docopy">Copy</button>
+  <span class="small" id="expnote" style="margin-left:12px"></span>
+  <textarea id="expout" readonly></textarea>
+</div>
+
+<p class="small" style="margin-top:40px; border-top:1px solid var(--hairline); padding-top:14px">
+<b>Not enacted.</b> This page changes nothing in the repo. Cause: ds-018, confirmed by measurement in four
+contexts and re-verified on a clean instrument. Remedy: three calls above, all Dave's.
+<b>Provenance:</b> specimen CSS copied verbatim from <code>knowledge/snippets/Chart-bar.reference.html</code>
+lines 56, 71, 231–239; token census from <code>knowledge/canon/canon.css</code>; ratios computed live.
+</p>
+
+</div>
+
+<script>
+/* ── WCAG relative luminance + contrast, computed from real rendered colours ── */
+function toRGB(s){
+  var m = s.match(/rgba?\(([^)]+)\)/); if(!m) return null;
+  var p = m[1].split(/[,\s\/]+/).filter(Boolean).map(Number);
+  return {r:p[0], g:p[1], b:p[2], a:(p.length>3?p[3]:1)};
+}
+function hexRGB(h){
+  h=h.replace('#',''); return {r:parseInt(h.slice(0,2),16), g:parseInt(h.slice(2,4),16), b:parseInt(h.slice(4,6),16), a:1};
+}
+function lum(c){
+  var f=function(v){ v/=255; return v<=0.03928 ? v/12.92 : Math.pow((v+0.055)/1.055,2.4); };
+  return 0.2126*f(c.r)+0.7152*f(c.g)+0.0722*f(c.b);
+}
+function ratio(a,b){ var L1=lum(a),L2=lum(b); if(L1<L2){var t=L1;L1=L2;L2=t;} return (L1+0.05)/(L2+0.05); }
+function fmt(n){ return n.toFixed(2)+':1'; }
+function hex(c){ var h=function(v){return ('0'+v.toString(16)).slice(-2).toUpperCase();}; return '#'+h(c.r)+h(c.g)+h(c.b); }
+
+/* ── the specimen markup, built once per demo ─────────────────────────────── */
+var STATES = [
+  {k:'enabled',  lab:'Enabled — resting',            cls:''},
+  {k:'hover',    lab:'Enabled — hover',              cls:'force-hover'},
+  {k:'disabled', lab:'Disabled',                     cls:'', dis:true}
+];
+function build(el){
+  el.innerHTML = STATES.map(function(s){
+    return '<div class="spec-row"><p class="row-lab">'+s.lab+'</p>'+
+      '<ul class="dv-leg"><li><button type="button" class="dv-leg-reset '+s.cls+'" data-k="'+s.k+'"'+
+      (s.dis?' disabled':'')+'>Reset</button></li></ul>'+
+      '<div class="readout" data-ro="'+s.k+'"></div></div>';
+  }).join('');
+}
+['demoA','demoAd','demoB','demoBd'].forEach(function(id){ build(document.getElementById(id)); });
+
+/* ── candidate recessive values ───────────────────────────────────────────── */
+var CANDS = [
+  {hex:'#9D9D9D', note:'canon --text-on-disabled today'},
+  {hex:'#808080', note:'B-D4 ruled value'},
+  {hex:'#B5B5B5', note:'ramp neighbour, lighter'},
+  {hex:'#6B6B6B', note:'ramp neighbour, darker'}
+];
+var pickedCand = '#9D9D9D';
+
+function paintCands(){
+  var page = hexRGB('#FFFFFF'), pageD = hexRGB('#1A1A1A');
+  document.getElementById('cands').innerHTML = CANDS.map(function(c){
+    return '<button class="sw" data-hex="'+c.hex+'"'+(c.hex===pickedCand?' style="border-color:#1A1A1A;border-width:2px"':'')+'>'+
+      '<i style="background:'+c.hex+'"></i>'+c.hex+
+      ' &nbsp;light '+fmt(ratio(hexRGB(c.hex),page))+
+      ' &nbsp;dark '+fmt(ratio(hexRGB(c.hex),pageD))+'</button>';
+  }).join('');
+  document.getElementById('candpick').textContent = pickedCand+' — '+
+    (CANDS.filter(function(c){return c.hex===pickedCand;})[0]||{}).note;
+  Array.prototype.forEach.call(document.querySelectorAll('.sw'), function(b){
+    b.onclick=function(){ pickedCand=b.dataset.hex; paintCands(); apply(); };
+  });
+}
+
+/* ── apply the current selection to the B panes ───────────────────────────── */
+function apply(){
+  var B = (document.querySelector('input[name=B]:checked')||{}).value;
+  [['demoB','#FFFFFF','#E1E1E1'],['demoBd','#1A1A1A','#808080']].forEach(function(cfg){
+    var el = document.getElementById(cfg[0]);
+    var line = cfg[2];
+    var btnDis = el.querySelector('.dv-leg-reset[disabled]');
+    var btnEn  = el.querySelector('.dv-leg-reset[data-k=enabled]');
+    if(!btnDis) return;
+    btnEn.style.borderColor = '';
+    if(B==='B1'){                                   // border-led (unavailable)
+      btnDis.style.borderColor = line; btnDis.style.color = '';
+    } else if(B==='B3'){                            // lift enabled, drop disabled
+      btnEn.style.borderColor = pickedCand;
+      btnDis.style.borderColor = line; btnDis.style.color = pickedCand;
+    } else {                                        // B2 label-led
+      btnDis.style.borderColor = line; btnDis.style.color = pickedCand;
+    }
+  });
+  readouts();
+}
+
+/* ── live readouts on every specimen ──────────────────────────────────────── */
+function readouts(){
+  ['demoA','demoAd','demoB','demoBd'].forEach(function(id){
+    var el = document.getElementById(id);
+    var page = toRGB(getComputedStyle(el).backgroundColor);
+    Array.prototype.forEach.call(el.querySelectorAll('.dv-leg-reset'), function(b){
+      var cs = getComputedStyle(b);
+      var bc = toRGB(cs.borderTopColor), tc = toRGB(cs.color);
+      var ro = el.querySelector('[data-ro="'+b.dataset.k+'"]');
+      if(ro && bc && tc && page){
+        ro.innerHTML = 'border <b>'+hex(bc)+'</b> '+fmt(ratio(bc,page))+
+                       ' &nbsp;·&nbsp; label <b>'+hex(tc)+'</b> '+fmt(ratio(tc,page));
+      }
+    });
+  });
+  squeeze();
+}
+
+/* ── §2, measured from the shipping pane, never typed ─────────────────────── */
+function squeeze(){
+  var el = document.getElementById('demoA');
+  var page = toRGB(getComputedStyle(el).backgroundColor);
+  var g = function(k){ var b=el.querySelector('.dv-leg-reset[data-k='+k+']'); return toRGB(getComputedStyle(b).borderTopColor); };
+  var en=g('enabled'), hv=g('hover'), di=g('disabled');
+  if(!en||!hv||!di||!page) return;
+  var rows = [
+    ['Hover border',            hv, 'the loudest rung'],
+    ['DISABLED border — today', di, '<span class="fail">identical to hover — the inversion</span>'],
+    ['Enabled resting border',  en, 'the quietest rung, and already at the floor']
+  ];
+  document.getElementById('squeeze').innerHTML =
+    '<table style="margin:0"><thead><tr><th>Rung</th><th class="mono">Resolved</th>'+
+    '<th class="mono">vs page</th><th>Reading</th></tr></thead><tbody>'+
+    rows.map(function(r){
+      return '<tr><td>'+r[0]+'</td><td class="mono">'+hex(r[1])+'</td><td class="mono">'+
+        fmt(ratio(r[1],page))+'</td><td>'+r[2]+'</td></tr>';
+    }).join('')+'</tbody></table>'+
+    '<p class="small" style="margin-top:10px"><b>The squeeze:</b> disabled currently sits at '+
+    fmt(ratio(di,page))+' while enabled sits at '+fmt(ratio(en,page))+
+    ' — the dead control is <b>'+(ratio(di,page)/ratio(en,page)).toFixed(1)+
+    '× the contrast</b> of the live one. Any border quieter than '+fmt(ratio(en,page))+
+    ' is below the perceptible floor, which is why the border channel cannot carry this distinction.</p>';
+}
+
+/* ── width + dark toggles ─────────────────────────────────────────────────── */
+document.getElementById('legw').oninput = function(){
+  document.documentElement.style.setProperty('--legw', this.value+'px');
+  document.getElementById('legwv').textContent = this.value+'px';
+  Array.prototype.forEach.call(document.querySelectorAll('.dv-leg'), function(l){ l.style.maxWidth=this.value+'px'; }, this);
+};
+document.getElementById('showdark').onchange = function(){
+  var v = this.checked ? '' : 'none';
+  document.getElementById('demoAd').style.display = v;
+  document.getElementById('demoBd').style.display = v;
+};
+Array.prototype.forEach.call(document.querySelectorAll('input[type=radio]'), function(r){ r.onchange = apply; });
+
+/* ── export ───────────────────────────────────────────────────────────────── */
+var LABELS = {
+  A1:'Declare the form tokens on chart scopes',
+  A2:'Mint dataviz-tier equivalents (--data-control-*)',
+  A3:'Promote to :root',
+  B1:'Border-led', B2:'Label-led', B3:'Both — lift enabled, drop disabled',
+  C1:'Narrow gate — disabled may not resolve to hover',
+  C2:'Wide gate — fail loud on a property that resolves nowhere in its own scope',
+  C3:'Affordance gate — disabled may not out-contrast enabled',
+  C23:'C2 + C3 — cause and symptom'
+};
+document.getElementById('doexp').onclick = function(){
+  var v = function(n){ var e=document.querySelector('input[name='+n+']:checked'); return e?e.value:null; };
+  var A=v('A'), B=v('B'), C=v('C');
+  var not = function(n, keep){
+    return Array.prototype.map.call(document.querySelectorAll('input[name='+n+']'), function(e){return e.value;})
+      .filter(function(x){return x!==keep;}).map(function(x){return LABELS[x];}).join(' · ');
+  };
+  var out =
+'ds-018 — RULED by Dave, 2026-07-27\n'+
+'Source: reviews/DS-018-DISABLED-STATE-2026-07-27-v1.html (decision review, live specimens)\n'+
+'\n'+
+'CALL A · tier fix   -> '+(A?LABELS[A]:'NOT PICKED')+'\n'+
+'   not chosen: '+not('A',A)+'\n'+
+'CALL B · channel    -> '+(B?LABELS[B]:'NOT PICKED')+'\n'+
+'   recessive value: '+pickedCand+'  (light + dark pairing UNRULED — pair explicitly on enactment)\n'+
+'   not chosen: '+not('B',B)+'\n'+
+'CALL C · gate       -> '+(C?LABELS[C]:'NOT PICKED')+'\n'+
+'   not chosen: '+not('C',C)+'\n'+
+'\n'+
+'EVIDENCE THIS RULING RESTS ON (verified 2026-07-27, not inherited):\n'+
+'  - --border-disabled: 29 declarations, ten form scopes + SC/dark twins, ZERO chart scopes, ZERO :root.\n'+
+'  - --text-disabled:   28 declarations, form scopes + twins, AND :root = #E1E1E1 (canon.css:350),\n'+
+'                       dark twin #808080 (:647). The record said zero :root — that was wrong.\n'+
+'  - Chart snippets link type.css ONLY and inline their own spine; canon.css is NOT in the chart cascade\n'+
+'    (Chart-bar.reference.html:51-52). So a :root fix reaches the app and NOT the snippet.\n'+
+'  - THE SQUEEZE: enabled resting border = --line #E1E1E1; there is no perceptible rung beneath it, so\n'+
+'    the border channel cannot carry a recessive disabled state. The label channel can.\n'+
+'  - B-D4 ruled #808080; canon ships --text-on-disabled #9D9D9D (canon.css:351) per the B-D6 fold.\n'+
+'    FLAGGED, not corrected — value drift is Dave\'s to reconcile.\n'+
+'\n'+
+'ENACTMENT NOTES (do not skip):\n'+
+'  - --text-disabled must be fixed in the SAME pass as --border-disabled.\n'+
+'  - The disabled block is replicated per chart family and REGENERATED -> fix in the generator, never as\n'+
+'    a canon.css hand-patch.\n'+
+'  - Every proof ships with a bite proving it can FAIL, and any assertion of the form "X is absent" needs\n'+
+'    a paired proof that X is DETECTABLE WHEN PRESENT.\n'+
+'  - Settle transitions before reading computed styles (.dv-leg-reset transitions border-color + color\n'+
+'    over 0.16s); compare colours AS COLOURS, never as strings.\n';
+  var t=document.getElementById('expout'); t.style.display='block'; t.value=out;
+  document.getElementById('expnote').textContent='Ready — paste into the next session.';
+};
+document.getElementById('docopy').onclick = function(){
+  var t=document.getElementById('expout');
+  if(!t.value){ document.getElementById('doexp').click(); }
+  t.select(); try{ document.execCommand('copy'); document.getElementById('expnote').textContent='Copied.'; }
+  catch(e){ document.getElementById('expnote').textContent='Select and copy manually.'; }
+};
+
+paintCands(); apply();
+</script>
+<meta name="rv-doc" content="DS 018 DISABLED STATE 2026 07 27 v1">
+<meta name="rv-file" content="reviews/DS-018-DISABLED-STATE-2026-07-27-v1.html">
+<!-- APOLLO-REVIEW-OVERLAY -->
+<!-- ============================================================================
+     APOLLO REVIEW OVERLAY — reusable comment layer for pro-forma review files.
+     Self-contained (no external deps, no browser storage). Drop this whole block
+     in before </body> of ANY interactive HTML to add: a Review-mode toggle,
+     click-a-component-to-pin-a-comment, a DRAGGABLE comment box that opens beside
+     the target (not over it) with a NOODLE leader-line + dot back to the commented
+     element, a comments panel, and Export → a structured numbered prompt
+     (copy / download) to paste back for the edits.
+     Injected by _make_review.py. All ids/classes are `rv-` prefixed to avoid
+     clashing with the host page. Nothing here is scanned by the component gates.
+     ========================================================================= -->
+<style id="rv-style">
+  #rv-fab{position:fixed;right:16px;bottom:16px;z-index:2147483000;display:inline-flex;align-items:center;gap:8px;
+    height:40px;padding:0 16px;border:1.5px solid #1A1A1A;border-radius:999px;background:#fff;color:#1A1A1A;
+    font:600 13px/1 -apple-system,Segoe UI,Roboto,sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.14);}
+  #rv-fab .rv-dot{width:8px;height:8px;border-radius:50%;background:#B7B7B7;}
+  #rv-fab.rv-on{background:#1A1A1A;color:#fff;border-color:#1A1A1A;}
+  #rv-fab.rv-on .rv-dot{background:#37D67A;}
+  #rv-fab .rv-count{min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#DB0011;color:#fff;
+    font:700 11px/18px -apple-system,Segoe UI,Roboto,sans-serif;text-align:center;display:none;}
+  #rv-fab .rv-count.rv-has{display:inline-block;}
+  /* review mode: crosshair + hover outline on the host content */
+  body.rv-active [data-rv-hover]{outline:2px solid #DB0011 !important;outline-offset:1px;cursor:crosshair;}
+  body.rv-active{scroll-behavior:auto;}
+  /* pinned markers layer */
+  #rv-markers{position:fixed;inset:0;z-index:2147482000;pointer-events:none;}
+  .rv-pin{position:fixed;transform:translate(-50%,-50%);width:22px;height:22px;border-radius:50% 50% 50% 2px;
+    background:#DB0011;color:#fff;font:700 12px/22px -apple-system,Segoe UI,Roboto,sans-serif;text-align:center;
+    box-shadow:0 2px 6px rgba(0,0,0,.3);pointer-events:auto;cursor:pointer;border:2px solid #fff;}
+  /* composer popover */
+  #rv-composer{position:fixed;z-index:2147483600;width:300px;max-width:92vw;background:#fff;border:1px solid #D7D8D6;
+    border-radius:8px;box-shadow:0 12px 40px rgba(0,0,0,.22);padding:12px;display:none;
+    font:400 13px/1.45 -apple-system,Segoe UI,Roboto,sans-serif;color:#1A1A1A;}
+  #rv-composer.rv-show{display:block;}
+  #rv-composer .rv-target{font:600 12px/1.3 inherit;color:#333;margin:0 0 8px;padding-left:16px;word-break:break-word;
+    cursor:move;user-select:none;position:relative;}
+  #rv-composer .rv-target::before{content:'';position:absolute;left:2px;top:1px;width:7px;height:12px;opacity:.55;
+    background:radial-gradient(circle,#666 1px,transparent 1.4px);background-size:3px 4px;}
+  /* noodle: leader line from the commented element to the composer box */
+  #rv-noodle{position:fixed;inset:0;z-index:2147483500;pointer-events:none;overflow:visible;}
+  #rv-noodle path{fill:none;stroke:#DB0011;stroke-width:1.5;opacity:.9;}
+  #rv-noodle circle{fill:#DB0011;stroke:#fff;stroke-width:1.5;}
+  #rv-noodle rect{fill:rgba(219,0,17,.06);stroke:#DB0011;stroke-width:2;opacity:.95;}
+  #rv-composer textarea{width:100%;box-sizing:border-box;min-height:76px;resize:vertical;padding:8px;
+    border:1px solid #B7B7B7;border-radius:6px;font:inherit;color:#1A1A1A;outline:none;}
+  #rv-composer textarea:focus{border-color:#1A1A1A;}
+  #rv-composer .rv-row{display:flex;gap:8px;justify-content:flex-end;margin-top:8px;}
+  .rv-btn{height:32px;padding:0 14px;border-radius:6px;border:1px solid #1A1A1A;background:#fff;color:#1A1A1A;
+    font:600 12px/1 -apple-system,Segoe UI,Roboto,sans-serif;cursor:pointer;}
+  .rv-btn.rv-primary{background:#1A1A1A;color:#fff;}
+  .rv-btn.rv-danger{border-color:#DB0011;color:#DB0011;}
+  .rv-btn:disabled{opacity:.4;cursor:not-allowed;}
+  /* comments panel */
+  #rv-panel{position:fixed;top:0;right:0;bottom:0;width:340px;max-width:88vw;z-index:2147483200;background:#fff;
+    border-left:1px solid #D7D8D6;box-shadow:-8px 0 30px rgba(0,0,0,.16);transform:translateX(100%);
+    transition:transform .18s ease;display:flex;flex-direction:column;
+    font:400 13px/1.45 -apple-system,Segoe UI,Roboto,sans-serif;color:#1A1A1A;}
+  #rv-panel.rv-open{transform:translateX(0);}
+  #rv-panel .rv-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px 16px;border-bottom:1px solid #EEE;}
+  #rv-panel .rv-head strong{font:700 14px/1 inherit;}
+  #rv-panel .rv-list{flex:1;overflow:auto;padding:8px 12px;}
+  #rv-panel .rv-empty{color:#8A8A8A;padding:24px 8px;text-align:center;}
+  .rv-item{border:1px solid #EEE;border-radius:8px;padding:10px;margin:0 0 8px;}
+  .rv-item .rv-item-h{display:flex;align-items:center;gap:8px;margin:0 0 4px;}
+  .rv-item .rv-num{flex:none;width:20px;height:20px;border-radius:50%;background:#1A1A1A;color:#fff;font:700 11px/20px inherit;text-align:center;}
+  .rv-item .rv-loc{font:600 12px/1.3 inherit;color:#333;word-break:break-word;}
+  .rv-item .rv-txt{color:#1A1A1A;white-space:pre-wrap;word-break:break-word;margin:2px 0 8px;}
+  .rv-item .rv-acts{display:flex;gap:8px;}
+  .rv-item .rv-link{background:none;border:0;padding:0;color:#333;text-decoration:underline;cursor:pointer;font:600 12px/1 inherit;}
+  .rv-item .rv-link.rv-del{color:#DB0011;}
+  #rv-panel .rv-foot{border-top:1px solid #EEE;padding:12px 16px;display:flex;gap:8px;}
+  #rv-panel .rv-foot .rv-btn{flex:1;height:38px;}
+  /* export modal */
+  #rv-export{position:fixed;inset:0;z-index:2147483600;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;padding:24px;}
+  #rv-export.rv-show{display:flex;}
+  #rv-export .rv-card{width:720px;max-width:100%;max-height:86vh;background:#fff;border-radius:10px;display:flex;flex-direction:column;overflow:hidden;
+    font:400 13px/1.45 -apple-system,Segoe UI,Roboto,sans-serif;color:#1A1A1A;}
+  #rv-export .rv-card-h{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #EEE;}
+  #rv-export textarea{flex:1;margin:0;border:0;outline:none;resize:none;padding:16px;font:400 12.5px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;color:#1A1A1A;min-height:320px;}
+  #rv-export .rv-card-f{display:flex;gap:8px;justify-content:flex-end;padding:12px 16px;border-top:1px solid #EEE;}
+  .rv-x{background:none;border:0;font-size:20px;line-height:1;cursor:pointer;color:#666;padding:4px;}
+  @media print{#rv-fab,#rv-panel,#rv-composer,#rv-markers,#rv-export{display:none !important;}}
+</style>
+
+<button id="rv-fab" type="button" aria-pressed="false" title="Toggle review mode">
+  <span class="rv-dot" aria-hidden="true"></span><span class="rv-label">Review</span><span class="rv-count" id="rv-count">0</span>
+</button>
+<div id="rv-markers" aria-hidden="true"></div>
+<svg id="rv-noodle" aria-hidden="true"><rect id="rv-noodle-box" rx="3" style="display:none"/><path id="rv-noodle-path"/><circle id="rv-noodle-dot" r="3.5" style="display:none"/></svg>
+<div id="rv-composer" role="dialog" aria-label="Add comment">
+  <p class="rv-target" id="rv-composer-target" title="Drag to move"></p>
+  <textarea id="rv-composer-text" placeholder="Describe the change you want here…" aria-label="Comment"></textarea>
+  <div class="rv-row">
+    <button class="rv-btn rv-danger" id="rv-composer-del" type="button" style="margin-right:auto;display:none;">Delete</button>
+    <button class="rv-btn" id="rv-composer-cancel" type="button">Cancel</button>
+    <button class="rv-btn rv-primary" id="rv-composer-save" type="button">Save</button>
+  </div>
+</div>
+<aside id="rv-panel" aria-label="Review comments">
+  <div class="rv-head"><strong>Comments (<span id="rv-panel-count">0</span>)</strong>
+    <button class="rv-x" id="rv-panel-close" type="button" aria-label="Close panel">×</button></div>
+  <div class="rv-list" id="rv-list"><p class="rv-empty">Turn on <b>Review</b>, then click any component to pin a comment.</p></div>
+  <div class="rv-foot">
+    <button class="rv-btn" id="rv-clear" type="button">Clear all</button>
+    <button class="rv-btn rv-primary" id="rv-export-btn" type="button">Export prompt</button>
+  </div>
+</aside>
+<div id="rv-export" role="dialog" aria-label="Export prompt" aria-modal="true">
+  <div class="rv-card">
+    <div class="rv-card-h"><strong>Edit prompt — copy &amp; paste back</strong><button class="rv-x" id="rv-export-close" type="button" aria-label="Close">×</button></div>
+    <textarea id="rv-export-text" readonly spellcheck="false"></textarea>
+    <div class="rv-card-f">
+      <button class="rv-btn" id="rv-export-download" type="button">Download .md</button>
+      <button class="rv-btn rv-primary" id="rv-export-copy" type="button">Copy to clipboard</button>
+    </div>
+  </div>
+</div>
+
+<script id="rv-script">
+(function(){
+  "use strict";
+  function meta(n){ var m=document.querySelector('meta[name="'+n+'"]'); return m?m.getAttribute('content'):''; }
+  var DOC_TITLE = meta('rv-doc') || (document.title||"Review").replace(/\s+·.*$/,"").trim();
+  var DOC_FILE = meta('rv-file') || '';
+  // ctx = the viewing state a pin was made under (mode · theme), read from the host
+  // doc's live attributes at save time. Empty on docs that carry neither (harmless).
+  // In two-pane harnesses (showroom light/dark) this is what keeps exports unambiguous.
+  function ctxOf(){
+    var m=(document.body&&document.body.getAttribute('data-theme'))||'';
+    var t=document.documentElement.getAttribute('data-apollo-theme')||'';
+    return [m,t].filter(Boolean).join(' · ');
+  }
+  var comments = [];            // {id, ctx, section, desc, path, text, el}
+  var seq = 0;
+  var active = false, editingId = null, pendingEl = null, composerEl = null, dragging = false;
+
+  var fab=document.getElementById('rv-fab'),
+      countEl=document.getElementById('rv-count'),
+      markers=document.getElementById('rv-markers'),
+      composer=document.getElementById('rv-composer'),
+      cTarget=document.getElementById('rv-composer-target'),
+      cText=document.getElementById('rv-composer-text'),
+      cSave=document.getElementById('rv-composer-save'),
+      cCancel=document.getElementById('rv-composer-cancel'),
+      cDel=document.getElementById('rv-composer-del'),
+      panel=document.getElementById('rv-panel'),
+      list=document.getElementById('rv-list'),
+      panelCount=document.getElementById('rv-panel-count'),
+      exportModal=document.getElementById('rv-export'),
+      exportText=document.getElementById('rv-export-text');
+
+  function isRvNode(n){ return n && n.closest && n.closest('#rv-fab,#rv-panel,#rv-composer,#rv-markers,#rv-export'); }
+
+  // ---- element description -------------------------------------------------
+  function cleanHead(s){ return (s||'').replace(/\s+/g,' ').replace(/^(\d+)(?=\D)/,'$1 ').trim(); }
+  function sectionName(el){
+    var sec = el.closest && el.closest('section[aria-labelledby]');
+    if(sec){ var h=document.getElementById(sec.getAttribute('aria-labelledby')); if(h) return cleanHead(h.textContent); }
+    var anySec = el.closest && el.closest('section'); if(anySec){ var hh=anySec.querySelector('h1,h2,h3'); if(hh) return cleanHead(hh.textContent); }
+    // fallback for FLAT docs (dossiers with no <section> wrappers): nearest preceding heading in document order
+    var heads=[].slice.call(document.querySelectorAll('h1,h2,h3')), best='';
+    for(var i=0;i<heads.length;i++){
+      if(heads[i]===el || (el.compareDocumentPosition(heads[i]) & Node.DOCUMENT_POSITION_PRECEDING)){
+        best=cleanHead(heads[i].textContent);
+      }
+    }
+    return best;
+  }
+  function descOf(el){
+    var aria=(el.getAttribute&&el.getAttribute('aria-label'))||'';
+    var own=(aria||el.textContent||'').replace(/\s+/g,' ').trim();
+    if(own.length>48) own=own.slice(0,48)+'…';
+    var tag=el.tagName?el.tagName.toLowerCase():'el';
+    var cls=(typeof el.className==='string'&&el.className)?'.'+el.className.split(/\s+/)[0]:'';
+    return own ? own+' ('+tag+cls+')' : tag+cls;
+  }
+  function pathOf(el){
+    var parts=[], n=el, depth=0;
+    while(n && n.nodeType===1 && n!==document.body && depth<5){
+      var s=n.tagName.toLowerCase();
+      if(n.id){ s='#'+n.id; parts.unshift(s); break; }
+      if(typeof n.className==='string' && n.className.trim()) s+='.'+n.className.trim().split(/\s+/)[0];
+      parts.unshift(s); n=n.parentElement; depth++;
+    }
+    return parts.join(' > ');
+  }
+
+  // ---- markers -------------------------------------------------------------
+  function renderMarkers(){
+    markers.innerHTML='';
+    comments.forEach(function(c,i){
+      if(!c.el||!c.el.getBoundingClientRect) return;
+      var r=c.el.getBoundingClientRect();
+      if(r.width===0&&r.height===0) return;
+      var pin=document.createElement('button');
+      pin.className='rv-pin'; pin.type='button'; pin.textContent=(i+1);
+      pin.style.left=(r.right-6)+'px'; pin.style.top=(r.top+8)+'px';
+      pin.title=c.text||'(empty)';
+      pin.addEventListener('click',function(e){ e.stopPropagation(); openComposer(c.el,c.id); });
+      markers.appendChild(pin);
+    });
+  }
+
+  // ---- composer ------------------------------------------------------------
+  function openComposer(el, id){
+    editingId=(id!=null)?id:null; pendingEl=el;
+    var sec=sectionName(el), d=descOf(el);
+    cTarget.textContent=(sec?('['+sec+'] '):'')+d;
+    var existing=id!=null?comments.filter(function(c){return c.id===id;})[0]:null;
+    cText.value=existing?existing.text:'';
+    cDel.style.display=existing?'inline-flex':'none';
+    // default placement: beside the element (not over it); drag + noodle handle the rest
+    var r=el.getBoundingClientRect(), cw=312, ch=200, gap=14, left, top;
+    if(window.innerWidth-r.right > cw+gap) left=r.right+gap;                 // room on the right
+    else if(r.left > cw+gap) left=r.left-cw-gap;                            // else the left
+    else left=Math.min(window.innerWidth-cw-8, Math.max(8, r.left));        // else clamp
+    top=Math.min(window.innerHeight-ch, Math.max(8, r.top));
+    composer.style.top=top+'px'; composer.style.left=left+'px';
+    composer.classList.add('rv-show');
+    composerEl=el;
+    setTimeout(function(){ cText.focus(); drawNoodle(); },0);
+  }
+  function closeComposer(){ composer.classList.remove('rv-show'); pendingEl=null; editingId=null; composerEl=null; drawNoodle(); }
+
+  // ---- noodle (leader line) + drag ----------------------------------------
+  var noodlePath=document.getElementById('rv-noodle-path'), noodleDot=document.getElementById('rv-noodle-dot'),
+      noodleBox=document.getElementById('rv-noodle-box');
+  function drawNoodle(){
+    if(!composerEl || !composer.classList.contains('rv-show') || !noodlePath){
+      if(noodlePath) noodlePath.removeAttribute('d');
+      if(noodleDot) noodleDot.style.display='none';
+      if(noodleBox) noodleBox.style.display='none';
+      return;
+    }
+    var r=composerEl.getBoundingClientRect(), cr=composer.getBoundingClientRect();
+    // 1) highlight the EXACT element being commented on (its precise bounds)
+    noodleBox.setAttribute('x', r.left); noodleBox.setAttribute('y', r.top);
+    noodleBox.setAttribute('width', Math.max(0, r.width)); noodleBox.setAttribute('height', Math.max(0, r.height));
+    noodleBox.style.display='';
+    // 2) anchor the noodle to the element's BORDER edge facing the composer (never the centre)
+    var ecx=r.left+r.width/2, ecy=r.top+r.height/2, ccx=cr.left+cr.width/2, ccy=cr.top+cr.height/2;
+    var dx=ccx-ecx, dy=ccy-ecy, ex, ey;
+    if(Math.abs(dx) >= Math.abs(dy)){                           // composer is more to the side → left/right edge
+      ex = dx>=0 ? r.right : r.left;
+      ey = Math.min(Math.max(ccy, r.top+4), r.bottom-4);
+    } else {                                                    // composer is more above/below → top/bottom edge
+      ey = dy>=0 ? r.bottom : r.top;
+      ex = Math.min(Math.max(ccx, r.left+4), r.right-4);
+    }
+    // 3) composer-side anchor: nearest edge of the box to the element anchor
+    var cx = (ex<cr.left) ? cr.left : (ex>cr.right ? cr.right : Math.min(Math.max(ex,cr.left),cr.right));
+    var cy = Math.min(Math.max(ey, cr.top+8), cr.bottom-8);
+    var mx = ex+(cx-ex)*0.5;
+    noodlePath.setAttribute('d','M'+ex+','+ey+' C'+mx+','+ey+' '+mx+','+cy+' '+cx+','+cy);
+    noodleDot.setAttribute('cx',ex); noodleDot.setAttribute('cy',ey); noodleDot.style.display='';
+  }
+  cTarget.addEventListener('mousedown',function(e){
+    dragging=true; var cr=composer.getBoundingClientRect();
+    composer._dx=e.clientX-cr.left; composer._dy=e.clientY-cr.top;
+    e.preventDefault(); e.stopPropagation();
+  });
+  document.addEventListener('mousemove',function(e){
+    if(!dragging) return;
+    var left=Math.min(window.innerWidth-composer.offsetWidth-8, Math.max(8, e.clientX-composer._dx));
+    var top =Math.min(window.innerHeight-40, Math.max(8, e.clientY-composer._dy));
+    composer.style.left=left+'px'; composer.style.top=top+'px'; drawNoodle();
+  },true);
+  document.addEventListener('mouseup',function(){ dragging=false; },true);
+  cSave.addEventListener('click',function(){
+    var txt=cText.value.trim(); if(!txt){ closeComposer(); return; }
+    if(editingId!=null){
+      comments.forEach(function(c){ if(c.id===editingId) c.text=txt; });
+    } else if(pendingEl){
+      comments.push({id:++seq, ctx:ctxOf(), section:sectionName(pendingEl), desc:descOf(pendingEl), path:pathOf(pendingEl), text:txt, el:pendingEl});
+    }
+    closeComposer(); refresh();
+  });
+  cCancel.addEventListener('click',closeComposer);
+  cDel.addEventListener('click',function(){ if(editingId!=null){ comments=comments.filter(function(c){return c.id!==editingId;}); } closeComposer(); refresh(); });
+  cText.addEventListener('keydown',function(e){ if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)){ cSave.click(); } if(e.key==='Escape'){ closeComposer(); } });
+
+  // ---- panel list ----------------------------------------------------------
+  function refresh(){
+    countEl.textContent=comments.length; countEl.classList.toggle('rv-has',comments.length>0);
+    panelCount.textContent=comments.length;
+    if(!comments.length){ list.innerHTML='<p class="rv-empty">Turn on <b>Review</b>, then click any component to pin a comment.</p>'; }
+    else {
+      list.innerHTML='';
+      comments.forEach(function(c,i){
+        var it=document.createElement('div'); it.className='rv-item';
+        var loc=(c.ctx?('['+c.ctx+'] '):'')+(c.section?('['+c.section+'] '):'')+c.desc;
+        it.innerHTML='<div class="rv-item-h"><span class="rv-num">'+(i+1)+'</span><span class="rv-loc"></span></div>'+
+          '<div class="rv-txt"></div>'+
+          '<div class="rv-acts"><button class="rv-link rv-goto" type="button">Reveal</button>'+
+          '<button class="rv-link rv-edit" type="button">Edit</button>'+
+          '<button class="rv-link rv-del" type="button">Delete</button></div>';
+        it.querySelector('.rv-loc').textContent=loc;
+        it.querySelector('.rv-txt').textContent=c.text;
+        it.querySelector('.rv-goto').addEventListener('click',function(){ if(c.el&&c.el.scrollIntoView){ c.el.scrollIntoView({block:'center'}); flash(c.el);} });
+        it.querySelector('.rv-edit').addEventListener('click',function(){ if(c.el) openComposer(c.el,c.id); });
+        it.querySelector('.rv-del').addEventListener('click',function(){ comments=comments.filter(function(x){return x.id!==c.id;}); refresh(); });
+        list.appendChild(it);
+      });
+    }
+    renderMarkers();
+  }
+  function flash(el){ var o=el.style.outline; el.style.outline='3px solid #DB0011'; setTimeout(function(){ el.style.outline=o; },700); }
+
+  // ---- export --------------------------------------------------------------
+  function buildPrompt(){
+    var lines=[];
+    lines.push('# '+DOC_TITLE+' — review edits ('+comments.length+')');
+    lines.push('');
+    lines.push('Apply the following change requests'+(DOC_FILE?(' to `'+DOC_FILE+'`'):'')+'. Each item is pinned to a component; treat the bracketed location as the target and use the selector to disambiguate. A leading [mode · theme] bracket is the viewing state the comment was pinned under.');
+    lines.push('');
+    comments.forEach(function(c,i){
+      var loc=(c.ctx?('['+c.ctx+'] '):'')+(c.section?('['+c.section+'] '):'')+c.desc;
+      lines.push((i+1)+'. '+loc);
+      lines.push('   - '+c.text.replace(/\n/g,'\n     '));
+      lines.push('   - selector: `'+c.path+'`');
+      lines.push('');
+    });
+    return lines.join('\n');
+  }
+  function openExport(){ exportText.value=buildPrompt(); exportModal.classList.add('rv-show'); setTimeout(function(){ exportText.focus(); exportText.select(); },0); }
+  document.getElementById('rv-export-btn').addEventListener('click',openExport);
+  document.getElementById('rv-export-close').addEventListener('click',function(){ exportModal.classList.remove('rv-show'); });
+  exportModal.addEventListener('click',function(e){ if(e.target===exportModal) exportModal.classList.remove('rv-show'); });
+  document.getElementById('rv-export-copy').addEventListener('click',function(){
+    exportText.select();
+    var ok=false; try{ ok=document.execCommand('copy'); }catch(e){}
+    if(navigator.clipboard){ navigator.clipboard.writeText(exportText.value).catch(function(){}); ok=true; }
+    var b=document.getElementById('rv-export-copy'); var t=b.textContent; b.textContent=ok?'Copied ✓':'Select + ⌘C'; setTimeout(function(){ b.textContent=t; },1400);
+  });
+  document.getElementById('rv-export-download').addEventListener('click',function(){
+    var blob=new Blob([buildPrompt()],{type:'text/markdown'});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+    a.download=(DOC_TITLE.replace(/[^\w-]+/g,'-')||'review')+'-comments.md'; a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); },1000);
+  });
+
+  // ---- review-mode wiring --------------------------------------------------
+  var hoverEl=null;
+  function setActive(on){
+    active=on; document.body.classList.toggle('rv-active',on);
+    fab.classList.toggle('rv-on',on); fab.setAttribute('aria-pressed',on?'true':'false');
+    fab.querySelector('.rv-label').textContent=on?'Reviewing':'Review';
+    if(on){ panel.classList.add('rv-open'); } else { clearHover(); }
+  }
+  function clearHover(){ if(hoverEl){ hoverEl.removeAttribute('data-rv-hover'); hoverEl=null; } }
+  fab.addEventListener('click',function(){ setActive(!active); });
+  document.getElementById('rv-panel-close').addEventListener('click',function(){ panel.classList.remove('rv-open'); });
+  document.getElementById('rv-clear').addEventListener('click',function(){ if(comments.length&&confirm('Delete all '+comments.length+' comments?')){ comments=[]; refresh(); } });
+
+  document.addEventListener('mousemove',function(e){
+    if(!active || dragging) return;
+    var t=e.target;
+    if(isRvNode(t)){ clearHover(); return; }
+    if(t!==hoverEl){ clearHover(); hoverEl=t; if(hoverEl&&hoverEl.setAttribute) hoverEl.setAttribute('data-rv-hover',''); }
+  },true);
+
+  // capture clicks in review mode so the host page's own handlers/nav don't fire
+  document.addEventListener('click',function(e){
+    if(!active) return;
+    if(isRvNode(e.target)) return;           // let overlay UI work normally
+    e.preventDefault(); e.stopPropagation();
+    clearHover();
+    openComposer(e.target, null);
+  },true);
+
+  window.addEventListener('scroll',function(){ renderMarkers(); drawNoodle(); },true);
+  window.addEventListener('resize',function(){ renderMarkers(); drawNoodle(); },true);
+  setInterval(function(){ renderMarkers(); drawNoodle(); },600);   // keep pins + noodle glued as the page reflows
+
+  refresh();
+})();
+</script>
+<!-- ===================== END APOLLO REVIEW OVERLAY ===================== -->
+
+</body>
+</html>

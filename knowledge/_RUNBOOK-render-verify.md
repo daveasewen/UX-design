@@ -209,6 +209,29 @@ and the probe was wrong for two sessions.
 more durable in the record than "I looked and it seemed right", and both re-runnable. Take the PNG too
 (a render still catches what you did not think to assert), but lead with the numbers.
 
+## ★ Three potholes banked 2026-07-27 — two carried debts and one new (sessions #8–#11)
+
+**1 · `__dirlock` EPERM is a failure message AFTER a success.** With `PLAYWRIGHT_BROWSERS_PATH` on the
+outputs mount, the install ends with `EPERM: operation not permitted, rmdir '__dirlock'`. **Same species
+as the host-requirements exit at step 3: the download landed.** `ls ~/.cache/ms-playwright/` — if
+`chromium_headless_shell-*` is there, **proceed.** *(Carried in `GOOD-MORNING` §C·4 for four sessions
+under "fold into the runbook next time that file is touched"; folded here 2026-07-27 #11.)*
+
+**2 · The sandbox cannot `os.remove` under the repo mount — and a cleanup error can EAT YOUR VERDICT.**
+`unlink` returns `EPERM` on the repo mount, so a probe's `--bite` teardown raises **after** the checks
+have run. First observation (#11): the bite had correctly gone red, and the traceback replaced the
+verdict line, so the run *looked* like a crash rather than a pass. **Two rules, both structural:**
+**print the verdict BEFORE cleanup**, and **`shutil.move` the artefact to `outputs/` (same mount,
+`.gitignore` line 45) — never `os.remove`, never a cross-mount move** (cross-mount degrades to
+copy+unlink and hits the same `EPERM`).
+
+**3 · Read CELLS, never flattened `textContent`.** A probe scraping ratios with `(\d+\.\d+):1` over a
+table's `textContent` reported `11.31:1` where the page displayed `1.31:1` — adjacent `<td>`s
+concatenate without a separator, so `#E1E1E1` + `1.31:1` becomes `…E1E1E11.31:1` and `\d+` greedily
+eats the hex digit. **The document was right; the instrument was wrong** — the week's signature failure,
+one more time. Query `r.cells[n].textContent`, and prefer `re.fullmatch` over `findall` so a malformed
+scrape fails loud instead of returning a plausible number.
+
 ## Fallback — real-browser loop (Claude-in-Chrome on Dave's Mac)
 
 If in-sandbox rendering is down, or a true-browser check is wanted: Dave starts a **THREADING**

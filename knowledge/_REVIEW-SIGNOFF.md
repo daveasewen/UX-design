@@ -184,3 +184,11 @@ Follow the **account-card** template. Components: **summary, tab-bar, action-bar
 | action-bar | ✅ | 2026-06-30 | Promoted — Back(tertiary,left)+Cancel+Confirm; reflow stacks primary-top/Back-bottom; reuses Button |
 | eyebrow | ✅ | 2026-06-30 | Promoted — sentence case (house type rule); leading-trim kicker |
 | confirmation/success | ✅ | 2026-06-30 | Promoted (finesse later) — success-solid pop + staggered rise; mobile vertical-centre; desktop variant logged in _COMPONENT-GAPS.md |
+
+---
+
+## Awaiting Dave — running list (dream-pass v2 P4, ruled 2026-07-26)
+
+| Artefact | Raised | State |
+|---|---|---|
+| `reviews/DS-018-DISABLED-STATE-2026-07-27-v1.REVIEW.html` | 2026-07-27 #11 | **A2·B2·C2 RULED same session.** ⛔ **The RECESSIVE VALUE remains UNRULED** — the doc's four candidates (`#9D9D9D` canon today · `#808080` B-D4 · `#B5B5B5` · `#6B6B6B`) were offered as candidates, **never as a recommendation**, per derivation governance. Light/dark pairing also unruled. **Enactment must put the value to him.** ⚠ Collides with the flagged drift: B-D4 ruled `#808080`, canon ships `#9D9D9D` (`canon.css:351`). |

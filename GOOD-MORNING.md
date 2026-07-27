@@ -1,11 +1,19 @@
 # Good morning, Dave ☕
 
-> **RENAME THE WRAPPED CHAT →** `Apollo — DV-D17 RENDER-PROVEN in six contexts: the old acceptance test was one-sided (an absence a full revert also satisfies), the missing half was proving the treatment paints at all; the bite reproduces Dave's screenshot exactly; ds-018 re-verified clean AND SHARPER — disabled and enabled are INVERTED, the disabled Reset out-shouts the enabled one`
-> **TITLE THE NEXT CHAT →** `Apollo — ENACT ds-018: Dave steered it (make the disabled state REAL and RECESSIVE — it is DECLARED but never DELIVERED), so what is left is the TIER fix (mint dataviz-tier equivalents? the form tier's #E1E1E1 would re-create the defect B-D4 minted #808080 to fix — VERIFY that scope first) + WHICH of three gates, and --text-disabled in the same pass`
+> **RENAME THE WRAPPED CHAT →** `Apollo — ds-018 RULED A2/B2/C2, and the finding that made the record's own remedy impossible: the enabled Reset border is already at 1.31:1, so the DEAD control carries 13.3x the contrast of the LIVE one and the border channel cannot carry "recessive" at all — channel is upstream of tier; also --text-disabled IS on :root at #E1E1E1, and chart snippets are not in canon.css's cascade`
+> **TITLE THE NEXT CHAT →** `Apollo — ENACT ds-018 (A2 mint dataviz-tier --data-control-*, B2 label-led, C2 the wide fail-loud gate): put the RECESSIVE VALUE to Dave FIRST (unruled by design, and B-D4's #808080 vs canon's #9D9D9D disagree), fix --text-disabled in the same pass, land it in the GENERATOR not canon.css, and ship the gate with a bite`
 > *(Titles are LABELS — role comes from Dave's opener line. The wave = the parallel model: Opus conducts, workers per lane, DIVVY in §DO-FIRST. Gauge bands: Green<45 / Amber 45–60 / Red≥60.)*
 
 
-> ## ★ LATEST — 2026-07-27 (Mon **evening #10**, OPUS solo self-conducting, effort MAX — ★ **DV-D17 IS RENDER-PROVEN — a debt carried across three sessions is DISCHARGED** · ★ **THE OLD ACCEPTANCE TEST WAS ONE-SIDED: it asserted an ABSENCE, and an absence is satisfied by a full revert** · ★ **the bite REPRODUCES DAVE'S SCREENSHOT exactly** · ★ **ds-018 RE-VERIFIED CLEAN — it STANDS, and the states are INVERTED, which is worse than reported** · build **60/60 GREEN** · 🔴 ~72% at wrap, stated): **The half that was missing was never "check harder" — it was proving the thing could be seen at all.**
+> ## ★ LATEST — 2026-07-27 (Mon **evening #11**, OPUS solo self-conducting, effort MAX — ★★ **ds-018's REMEDY IS RULED: A2 · B2 · C2** · ★★ **THE SQUEEZE — the border channel is STRUCTURALLY UNABLE to carry a recessive disabled state, and nobody had measured it** · ★ **the record was WRONG that `--text-disabled` has no `:root` — it does, at `#E1E1E1`** · ★ **chart snippets are NOT in canon.css's cascade at all** · review doc **30 checks · 0 failures ×2 widths, bite red** · **NOTHING ENACTED, by his instruction** · 🔴 ~66% at wrap, stated): **The remedy the record implied was impossible, and the reason was one measurement nobody had taken.**
+> - **★★ RULED BY DAVE — ds-018 = A2 · B2 · C2.** From `reviews/DS-018-DISABLED-STATE-2026-07-27-v1.html` (live specimens, three decision controls, contrast computed at render time). Verbatim: *"I've gone with your recommendations but we should probably wrap up and do it in the next window."* **A2** mint dataviz-tier `--data-control-*` (siblings of `--data-axis`/`--data-grid`/`--data-series-*`, already on chart scopes) · **B2** label-led (disabled label recessive; disabled border returns to `--line` = enabled-resting — **accepted cost ruled with it: the label carries the whole distinction**) · **C2** the wide gate (*a declaration referencing a custom property that resolves nowhere in its own scope is a build failure*) = the `fail-loud-on-unknown` shape already ratified for `dv-vocab`. ⚠ **C3 (affordance) was NOT rejected — merely not selected**; it still catches a resolved-but-wrong ladder C2 cannot see.
+> - **⛔ THE ONE THING YOU MUST NOT INFER — THE RECESSIVE VALUE IS UNRULED.** The doc offered `#9D9D9D`/`#808080`/`#B5B5B5`/`#6B6B6B` **as candidates and explicitly NOT as a recommendation** (derivation governance). `#9D9D9D` was only the page's pre-selected preview. **Light/dark pairing equally unruled.** ⇒ **Enactment PUTS THE VALUE TO HIM; it does not read it off the ledger.**
+> - **★★ THE SQUEEZE.** Enabled-resting border = `var(--line)` `#E1E1E1` at **1.31:1**; disabled resolves to ink at **17.40:1** ⇒ **the dead control carries 13.3× the contrast of the live one.** Anything quieter than enabled is below the perceptible floor; anything equal erases the distinction. **No third value ⇒ the border channel cannot carry this state.** The label channel can (enabled label is ink at max contrast), and that band is the one **B-D4** already ruled acceptable. ⇒ **CHANNEL IS UPSTREAM OF TIER**, which is the reverse of how the record framed it.
+> - **★ THREE CORRECTIONS TO THE RECORD, from source.** (1) **`--text-disabled` IS on `:root`** — `canon.css:350` `#E1E1E1`, dark twin `#808080` `:647`. The old *"zero `:root`"* was true of `--border-disabled` only and was over-generalised. (2) `--border-disabled` census unchanged — 29 declarations, ten form scopes + twins, zero chart, zero `:root`. (3) **`Chart-bar.reference.html:51–52` links `type.css` ONLY** and inlines its own spine ⇒ **canon.css is not in the chart cascade, so a `:root` fix repairs a real app page and leaves the SNIPPET broken** — and the snippet is what every render-proof measures. ⚠ (4) **Drift flagged not corrected:** B-D4 ruled `#808080`; canon ships `--text-on-disabled: #9D9D9D` (`canon.css:351`).
+> - **⚠ PROBE WART, and it is the week's signature failure once more.** First run reported the enabled ratio as `11.31:1`; **the doc was right at 1.31:1 and the probe was wrong** — a `\d+\.\d+` regex over the table's *flattened* textContent straddled the adjacent `#E1E1E1` cell. **Read cells, never flattened text.** Folded into `_RUNBOOK-render-verify.md` with two siblings (the `__dirlock` EPERM debt, finally banked; and *print the verdict BEFORE cleanup* — a teardown `EPERM` swallowed a correct bite verdict).
+> - **⬛ NOTHING ENACTED.** No token minted, no gate built, no generator touched — his instruction, at 🔴 ~66%. **The ruling IS the deliverable.** Build not re-run (no source touched): last known **60/60 GREEN**.
+>
+> ## ★ PRIOR — 2026-07-27 (Mon **evening #10**, OPUS solo self-conducting, effort MAX — ★ **DV-D17 IS RENDER-PROVEN — a debt carried across three sessions is DISCHARGED** · ★ **THE OLD ACCEPTANCE TEST WAS ONE-SIDED: it asserted an ABSENCE, and an absence is satisfied by a full revert** · ★ **the bite REPRODUCES DAVE'S SCREENSHOT exactly** · ★ **ds-018 RE-VERIFIED CLEAN — it STANDS, and the states are INVERTED, which is worse than reported** · build **60/60 GREEN** · 🔴 ~72% at wrap, stated): **The half that was missing was never "check harder" — it was proving the thing could be seen at all.**
 > - **★★ DV-D17 — ENACTED · DOM-PROVEN · ✅ RENDER-PROVEN.** `knowledge/_render/verify_dv_d17_render.py`: licensed cut asserted **inside the frame measured**, transitions killed **before the first gesture**, **real pointer clicks on the real gestures** (LABEL = isolate · SWATCH = check on) — never `classList.add`, which is not a user path. **Six contexts, identical:** snippet @1180/@760 · showroom **light** @1180/@760 · showroom **dark** @1180/@760 (confirmed genuinely dark, `--ink` `#FFFFFF` — coverage, not one pane twice). **baseline** `rgb(225,225,225)`/transparent → **isolated** `rgb(26,26,26)` = `--ink` + 6% ink → **released** back to `rgb(225,225,225)`/transparent.
 > - **★ THE TRANSFERABLE FINDING — A ONE-SIDED PROOF OF AN ABSENCE IS NOT A PROOF.** The specified test was *"no `.dv-legrow` resolves the `.is-solo` treatment after isolate-then-check-on"* — satisfied by a working fix, a blind probe, a mistyped selector **and a complete revert.** #8 ran it and printed `24 checks · 0 failures` measuring nothing. **The replacement is two-sided in ONE gesture sequence: step 1 proves the treatment CAN be seen (isolate → it paints), step 2 proves it stops.** ⇒ **Any proof asserting "X is absent" needs a paired proof that X is DETECTABLE WHEN PRESENT.** That is the half the original lacked, and it generalises well past this defect.
 > - **★ THE BITE IS DAVE'S SCREENSHOT.** `--bite` on a **neutered COPY** (216-byte release branch deleted; canon untouched, `git status` clean): step 2 fails at both widths — row 1 keeps `.is-solo`, ink border, 6% fill **while three series show**. **Step 1 still passes under the neuter**, which is the point: probe not blind, behaviour broken.
@@ -13,26 +21,18 @@
 > - **★★ ds-018 RE-VERIFIED — STANDS, and is SHARPER.** `recheck_ds018.py`, settled + pointer parked, 4 contexts: `--border-disabled` → `''` · `--text-disabled` → `''` · `border-color` → `rgb(26,26,26)`. **The timing defect did not reach it.** ⚠ **NEW: THE STATES ARE INVERTED** — disabled → **ink**, enabled (isolated) → `--line`. **The disabled Reset is the most prominent control in the legend; the enabled one the faintest.** Not a wrong colour — an **inversion of affordance**. Adds a third gate candidate: *a disabled control may not out-contrast its own enabled state.*
 > - **⬛ NOT DONE, deliberately, price stated:** no `_DECISION-HISTORY` dossier. The window ran to ~72% and the durable ledgers were the priority over narrative. **The overrun is recorded per the throttle: priced at ~45%, ran to ~72% — the excess is roughly half the render-env cold-stage and half the two self-caught instrument detours, both of which produced the findings above.**
 >
-> ## ★ PRIOR — 2026-07-27 (Mon **afternoon #9**, OPUS solo self-conducting, effort MAX — ★ **ds-019 WITHDRAWN WITH CAUSE: THERE IS NO OVERRIDING RULE, AND THERE NEVER WAS** · ★ **the defect was the INSTRUMENT — a computed value read in the SAME TASK as the class change is the PRE-transition value** · ★ **`oklab(0 0 0 / 0)` is an IN-FLIGHT INTERPOLATION, not a failed declaration** · ★ **the predecessor probe's control WAS WORKING and was overruled as a string artefact** · ★ **DV-D17's render-proof UNBLOCKED · Dave's screenshot question ANSWERED** · harness given a REPO HOME by Dave's ruling · build untouched **60/60 GREEN** · 🔴 ~63% by his "headline only" call): **A false defect spent one full session as canon, and the record was directing the next window to hunt a rule that does not exist.**
-> - **★ ds-019 IS NOT A DEFECT.** `.dv-legrow.is-solo` **(0,2,0) at cascade index 4** beats `.dv-legrow` **(0,1,0) at index 3** — CDP `getMatchedStylesForNode`, no `!important`, no inline, no `attributesStyle`, no keyframes, **no `:is()`/`:where()` or `#cb4-legend li` rule.** Confirmed in **six contexts**: snippet @1180/@760 · showroom light pane @1180/@760 · showroom **dark** pane @1180/@760 (theme-tracks correctly — `--ink` `#FFFFFF`, 6% white). **The census that found only four `dv-legrow` selectors was right; the premise it answered was false.**
-> - **★ THE MECHANISM, measured as a time series.** `.dv-legrow` carries `transition: border-color var(--ease), background var(--ease)` = **0.16s**. Before add: `rgb(225,225,225)` / `rgba(0,0,0,0)` · **t=0 same task: `rgb(225,225,225)` / `oklab(0 0 0 / 0)`** ← *exactly the pair ds-019 recorded as proof* · t≈50ms: `rgb(145,145,145)` / `oklab(0.217785 … / 0.0241082)` **(mid-interpolation)** · **t≈150ms+: `rgb(26,26,26)` = `--ink` ✓ / 6% ink ✓.** **It paints from ~160ms.**
-> - **★ THE HARDEST PART: THE PREDECESSOR'S POSITIVE CONTROL WAS WORKING.** It saw `oklab(0 0 0 / 0)` differ from `rgba(0, 0, 0, 0)` and passed — and those **genuinely are different states** (transitioning-transparent vs static-transparent). Session #8 diagnosed its own control as a string-comparison defect and **dismissed a true signal**. The string method was bad *and* its verdict was right. ⇒ **When a control fires unexpectedly, exhaust "it detected something real" BEFORE concluding it is broken.** Sibling of [[gate-narrows-its-own-rule]] and #7's stale suite — **the instrument present, correct-looking, and not measuring what it claimed** — except this one **got inscribed into the corpus as a defect and began directing work.**
-> - **✅ DV-D17 UNBLOCKED + DAVE'S QUESTION ANSWERED.** The render-proof was blocked only by ds-019's premise. **DV-D17 stays ENACTED · DOM-PROVEN · RENDER-OWED** — prove it, don't rebuild it, and **settle the transition or you reproduce ds-019 exactly.** His logged question — *"if it never painted, what did the screenshot show?"* — **it showed the treatment, because the treatment paints. Screenshot right, probe wrong, two sessions. No silent regression.**
-> - **★ RULED BY DAVE #9 — RENDER TOOLING GETS A REPO HOME.** The prior handoff said *"the harness is already written — reuse it, don't rebuild it"* pointing at `outputs/_render-env/probe.py`. **That was never followable: `outputs/` is `.gitignore` line 45.** Now `knowledge/_render/cdp_matched_styles.py` — CDP cascade enumeration, colours parsed **as colours**, **`--settle off` by default** (injects `transition:none !important` *before* the class change, making a mid-transition read structurally impossible); `--settle none` reproduces the artefact on demand. Pothole banked in `_RUNBOOK-render-verify.md`.
-> - **⚠ ds-018 IS NOT WITHDRAWN — and NOT re-verified.** Same probe, same session. It measured a **resting** disabled control (not a post-class-change state) and its census is independent (**29 declarations, ten form scopes, zero chart scopes**), so the timing defect should not reach it. **"Should not" is not "does not" — a cheap re-check is OWED** (§C·4). **I skipped it deliberately at ~55% rather than start a fresh measurement hot.**
-> - **⬛ SCOPED BY DAVE MID-WINDOW ("headline only, then commit" at a ~68% projection).** Full dossier, `_LIVE-STATE` narrative and the capture ritual **deliberately NOT run** — the priority was getting a false inscription out of the record before the next window read it. **Two unplanned findings, both forked to him as ruled; neither decided from inside the sunk cost.**
->
-> ⛔ **CORRECTION MARKER (added #9) — everything this banner says about `ds-019` IS WRONG and is
-> WITHDRAWN.** It is kept verbatim, unedited, because a claim that vanishes is indistinguishable from
-> drift. **`ds-018` in this banner still STANDS.** See ★ LATEST above and `_DS-IMPROVEMENTS.md` ds-019.
->
 > *(Compaction 2c — keep ★ LATEST + 1 PRIOR, roll the rest. Older banners (the 07-22→24 chart-wave + ADR arc, the 07-25 AM v4 + midday→PM v5 + PM Memento-efficiency + PM#2 memory/routing-governor banners, the 07-27 #5 throttle banner and the #6 chart-flags banner) are in `_GM-ARCHIVE.md` (Batches 1–10), verbatim, newest-first; durable narrative in `_DECISION-HISTORY/` + `notes/`.)*
 
 ---
 
-*Briefing — refreshed 2026-07-27 ~15:40 BST (date from `date`), session "the treatment that never
-painted — ds-018 confirmed as instance five, and the proof that would have been green forever"
+*Briefing — refreshed 2026-07-27 ~17:10 BST (date from `date`), session "the squeeze — ds-018 ruled
+A2/B2/C2, and the measurement that made the record's own remedy impossible"
 (Opus 5 solo self-conducting, effort MAX). §A = orientation · §B = session · §C = queue.*
+
+**Context gauge at authoring: 🔴 RED ~66% (ESTIMATE)** — scrutiny indicator on this handoff, not a
+quality score. Red-authored ⇒ re-verify before trusting. Nothing was enacted in this window; the
+durable content is the ds-018 ruling block and the three record corrections, both of which were
+written from measurements taken in-window, not from recall.
 
 ## ⬛ DO THIS FIRST
 
@@ -59,19 +59,47 @@ painted — ds-018 confirmed as instance five, and the proof that would have bee
 > ⚠ **But it is SHARPER than recorded: the states are INVERTED** — disabled → ink, enabled → `--line`.
 > **The disabled Reset out-shouts the enabled one.** That is an inversion of affordance, and it adds a
 > **third gate candidate**: *a disabled control may not out-contrast its own enabled state.*
-> ⇒ **THE NEXT JOB ON THIS THREAD IS DAVE'S RULING ON THE ds-018 FIX SHAPE, not more measurement.**
-> **★ AND HE HAS ALREADY STEERED IT (evening #10) — CAPTURED, NOT ENACTED.** Verbatim, two beats:
-> *"there should be a disabled state for reset"* → *"or, the reset disabled state should look like a
-> disabled state not the hover state."* ⇒ **The remedy is to make the disabled state REAL and
-> RECESSIVE.** NOT *"delete the disabled styling"*, NOT *"stop disabling the button"* — both were live
-> readings and both are now dead. **A disabled state is already DECLARED and has simply never been
-> DELIVERED** (neither token resolves on a chart scope), so the job is to make the existing declaration
-> resolve — **not to design a new state.** ⚠ **STILL UNRULED: the TIER fix and WHICH GATE** (three
-> candidates now). ⚠ **TRAP:** the naive tier answer — declare the form tokens on chart scopes — imports
-> a `--text-disabled` as faint as `#E1E1E1`, while **B-D4 ruled `#808080` "faint-but-visible by choice"**
-> for exactly that reason. **Argues for minting dataviz-tier equivalents; still his call.**
-> ⚠ **The `#E1E1E1` scope was NOT verified — confirm before quoting it.** Full note: `_DS-IMPROVEMENTS.md`
-> ds-018 § DAVE'S STEER.
+> **★★★ SUPERSEDED #11 — THE RULING HAS LANDED. ds-018 IS `A2 · B2 · C2`. STOP ASKING FOR IT.**
+> Dave ruled from `reviews/DS-018-DISABLED-STATE-2026-07-27-v1.html`, verbatim: *"I've gone with your
+> recommendations but we should probably wrap up and do it in the next window."*
+> **⇒ THE NEXT JOB ON THIS THREAD IS THE ENACTMENT, and it is fully specified below.**
+> **A2 · TIER** — mint **dataviz-tier** equivalents (`--data-control-*`), siblings of
+>    `--data-axis`/`--data-grid`/`--data-series-*` which already live on chart scopes. **NOT** the form
+>    tokens on chart scopes; **NOT** `:root`.
+> **B2 · CHANNEL** — **label-led.** Disabled label goes recessive; disabled border returns to `--line`,
+>    i.e. **matching enabled-resting.** ⚠ **The cost is RULED, not a defect to fix later:** at rest the
+>    enabled and disabled borders become identical and the label carries the whole distinction. Do not
+>    "improve" this back into a border difference without asking.
+> **C2 · GATE** — the WIDE one: *a declaration referencing a custom property that resolves nowhere in
+>    its own scope is a build failure, not a silent fallback.* ⚠ **C3 (a disabled control may not
+>    out-contrast its own enabled state) was NOT rejected — it was not selected**, and it catches a
+>    resolved-but-wrong ladder C2 is blind to. Keep it alive in §C·4.
+> **⛔ THE TRAP FOR THE ENACTING WINDOW — THE RECESSIVE VALUE IS *UNRULED*, DELIBERATELY.**
+>    The review offered `#9D9D9D` (canon's `--text-on-disabled` today) · `#808080` (B-D4's ruled value)
+>    · `#B5B5B5` · `#6B6B6B` **as candidates and explicitly NOT as a recommendation** — value promotion
+>    is Dave's alone (derivation governance). **`#9D9D9D` was only the page's pre-selected preview; it
+>    is NOT a ruling.** The **light/dark pairing is unruled too.** ⇒ **Put the value to him FIRST, before
+>    writing a token.** ⚠ And note the collision: **B-D4 ruled `#808080` while canon ships `#9D9D9D`
+>    (`canon.css:351`)** — flagged, not corrected; reconciling them is his.
+> **⚠ THREE FACTS THE OLD BLOCK GOT WRONG — verified from source #11, do not re-inherit them:**
+>    **(i) `--text-disabled` IS declared on `:root`** — `canon.css:350` = **`#E1E1E1`**, dark twin
+>    `#808080` at `:647`. The old *"zero `:root`"* was true of `--border-disabled` **only** and was
+>    over-generalised to both. *(The `#E1E1E1` scope this block flagged as unverified is now VERIFIED —
+>    it is `:root`, and it is the exact value B-D4 was minted to escape.)*
+>    **(ii) `canon.css` IS NOT IN THE CHART SNIPPET'S CASCADE.** `Chart-bar.reference.html:51–52` links
+>    **`type.css` only** and inlines its own spine ⇒ **a `:root` fix repairs a real app page and leaves
+>    the SNIPPET broken — and the snippet is what every render-proof measures.** This is why A2's
+>    declarations must land on the chart scope **in the generator**, never as a `canon.css` hand-patch
+>    (the block is replicated per chart family and regenerated).
+>    **(iii) ★★ THE SQUEEZE — why B is label-led, and it is the finding this thread turned on.**
+>    Enabled-resting border = `var(--line)` `#E1E1E1` at **1.31:1**; disabled currently resolves to ink
+>    at **17.40:1** ⇒ **the dead control carries 13.3× the contrast of the live one.** Anything quieter
+>    than enabled is below the perceptible floor; anything equal erases the distinction. **There is no
+>    third value — the border channel CANNOT carry a recessive disabled state.** ⇒ **Channel is upstream
+>    of tier**, which is the reverse of how this block used to frame it.
+> ⚠ **`--text-disabled` must be fixed in the SAME pass as `--border-disabled`** (unchanged, still true).
+> Full ruling + evidence: `_DS-IMPROVEMENTS.md` ds-018 § **RULED BY DAVE**. Review doc + its render-proof
+> (`knowledge/_render/verify_ds018_review.py`, 30 checks · 0 failures ×2 widths, `--bite` red) are reusable.
 >
 > **★★★ ds-019 IS WITHDRAWN — IT WAS NEVER A DEFECT. ds-018 STILL STANDS (and is re-verified, #10).**
 > **⛔ THREE THINGS THAT ARE NO LONGER JOBS — read before planning.**
@@ -625,6 +653,18 @@ radius px + bigplay. **(c) NEW from Phase-2:** all 24 new components across 4 th
 as the dataviz sign-off (§C·2).
 
 ## 4. Enact-queue (cheap, post-rulings)
+**★ NEW 2026-07-27 #11 — carried here by the 2c EXIT CHECK so compaction cannot lose them:**
+**⬛ DAVE'S CALL — the ds-018 RECESSIVE VALUE** (A2/B2/C2 are ruled; the *value* is not): candidates
+`#9D9D9D` (canon `--text-on-disabled` today) · `#808080` (B-D4's ruled value) · `#B5B5B5` · `#6B6B6B`,
+**offered as candidates and NOT as a recommendation** — value promotion is his alone. **Light/dark
+pairing unruled with it.** ⚠ **Collision to put to him in the same breath: B-D4 ruled `#808080`, canon
+ships `#9D9D9D` (`canon.css:351`) per the B-D6 fold — two ledgered numbers that disagree** ·
+**⬛ GATE C3 IS ALIVE, NOT REJECTED** — *a disabled control may not out-contrast its own enabled state*;
+C2 was selected, C3 was simply not, and C3 catches a resolved-but-wrong ladder C2 is blind to ·
+**⚠ B2's ACCEPTED COST is RULED, not a bug** — at rest, enabled and disabled borders become identical
+and the label carries the distinction; do not "fix" it back into a border difference unprompted ·
+**⬛ the enabled Reset's 1.31:1 resting border** is now a measured fact on the record — whether that is
+*right* for a live control was never asked and is worth his eye (it is the floor that made B2 necessary).
 **★ NEW 2026-07-27 #8 — carried here by the 2c EXIT CHECK so compaction cannot lose them:**
 **⬛ DAVE'S CALL — the ds-018 FIX SHAPE** (cause is settled, the remedy is not): it is a **form-tier
 token read from a dataviz scope**, so the choices are *declare the form tokens on chart scopes* vs

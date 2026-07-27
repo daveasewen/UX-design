@@ -816,6 +816,78 @@ a new task"* → *"should be teh pre-flight work, is that correct?"*). **No gate
 
 ## ds-018 — Legend Reset renders its DISABLED state as the HOVER state (2026-07-27, Dave by eye)
 
+> ### ★★★ RULED BY DAVE 2026-07-27 (session #11) — the remedy is settled. **A2 · B2 · C2.**
+> **Ruled from** `reviews/DS-018-DISABLED-STATE-2026-07-27-v1.html` (live specimens, three decision
+> controls, contrast computed at render time). Dave, verbatim: *"I've gone with your recommendations
+> but we should probably wrap up and do it in the next window."* The doc's marked recommendations were
+> A2 / B2 / C2, so that is what "my recommendations" resolves to. **Recorded as RULED; enactment is
+> deliberately NOT started — his instruction, and the gauge was Red.**
+>
+> - **CALL A — the tier fix ⇒ A2: MINT DATAVIZ-TIER EQUIVALENTS.** New `--data-control-*` properties
+>   declared on chart scopes, siblings of the `--data-axis` / `--data-grid` / `--data-series-*` family
+>   that already lives there. **Not chosen:** declaring the form tokens on chart scopes (imports the
+>   form ladder wholesale); promoting to `:root` (see the finding below — it is already the state of
+>   `--text-disabled`, and it is a source of defect, not a fix).
+> - **CALL B — the channel ⇒ B2: LABEL-LED.** The disabled label drops to a recessive step; the
+>   disabled border returns to `--line`, i.e. matching enabled-resting. **Accepted cost, stated in the
+>   doc and ruled with it: at rest, enabled and disabled borders become identical and the label carries
+>   the whole distinction.** **Not chosen:** border-led (structurally unavailable — see THE SQUEEZE);
+>   both (would change an enabled state Dave has not complained about).
+> - **CALL C — the gate ⇒ C2: THE WIDE ONE.** *A declaration referencing a custom property that
+>   resolves nowhere in its own scope is a build failure, not a silent fallback* — the
+>   `fail-loud-on-unknown` shape already ratified for `dv-vocab`. **Not chosen:** the narrow
+>   *disabled≠hover* gate (encodes one mechanism as the rule — the failure shape logged twice);
+>   the affordance gate C3; the C2+C3 pair. ⚠ **C3 was NOT rejected on merit — it was not selected.**
+>   It stays a live candidate in §C·4, because it catches a resolved-but-wrong ladder that C2 cannot see.
+>
+> ⛔ **STILL UNRULED, AND MUST NOT BE INFERRED FROM THE ABOVE — THE RECESSIVE VALUE ITSELF.**
+> The doc offered `#9D9D9D` (canon's `--text-on-disabled` today), `#808080` (B-D4's ruled value),
+> `#B5B5B5` and `#6B6B6B` **explicitly as candidates and explicitly NOT as a recommendation**, under
+> derivation governance: promotion of a value is Dave's alone. `#9D9D9D` was merely the page's
+> pre-selected preview. **Enactment must put the value to him, not read it off this entry.**
+> **The light/dark pairing is equally unruled** — candidates were shown paired at the same lightness
+> step so the ladder could be judged, which is not the same as a ruling that they pair.
+>
+> ### ★★ THE SQUEEZE — the finding that produced CALL B, and it was not in the record before #11.
+> The remedy the record implied was *"make the disabled border recessive"*. Measured, that is
+> **structurally impossible**: the Reset's **enabled resting** border is `var(--line)` `#E1E1E1` at
+> **1.31:1** against the page, while the disabled border currently resolves to ink at **17.40:1** —
+> **the dead control carries 13.3× the contrast of the live one.** Any disabled border quieter than
+> enabled is below the perceptible floor; any border equal to it erases the distinction. **There is no
+> third value, so the border channel cannot carry this state at all.** The label channel can: enabled
+> label is ink at maximum contrast, leaving a wide recessive-but-visible band — which is precisely the
+> band **B-D4** already ruled acceptable ("faint but visible by choice"). ⇒ **The remedy is label-led,
+> and the tier question is downstream of the channel question, not the other way round.**
+>
+> ### ★★ THREE CORRECTIONS TO THE RECORD, verified from source 2026-07-27 #11.
+> 1. **`--text-disabled` IS declared on `:root` — the record said it was not.** `canon.css:350` =
+>    **`#E1E1E1`**, dark twin `#808080` at `:647`. ⇒ **"Promote to `:root`" is not an untried option;
+>    it is already the label token's state, and `#E1E1E1` is exactly the value B-D4 minted
+>    `text/on-disabled` to escape.** The prior entry's *"zero `:root`"* was true of
+>    `--border-disabled` only and was over-generalised to both.
+> 2. **`--border-disabled` census CONFIRMED unchanged:** 29 declarations, ten `.cn-*` form scopes +
+>    their SC/dark twins, **zero chart scopes, zero `:root`**.
+> 3. **Chart snippets are not in `canon.css`'s cascade at all.** `Chart-bar.reference.html:51–52`
+>    links **only** `type.css`, then inlines its own spine. ⇒ **A `:root` fix would reach a real app
+>    page and leave the snippet — the thing every render-proof measures — still broken.** This is why
+>    A2's declarations must land on the chart scope in the generator, not in a `:root` block.
+> 4. ⚠ **VALUE DRIFT, FLAGGED NOT CORRECTED:** B-D4 ruled `text/on-disabled` = `#808080`; canon ships
+>    **`--text-on-disabled: #9D9D9D`** (`canon.css:351`) per the later B-D6 four-tier fold. Both are in
+>    the ledgers, so this is not drift-in-the-dark — but the two numbers disagree and **the
+>    reconciliation is Dave's**, and it collides directly with the unruled recessive value above.
+>
+> **Evidence:** review doc `reviews/DS-018-DISABLED-STATE-2026-07-27-v1.html` (+ `.REVIEW.html`
+> overlay copy) · 2026-07-27 · render-proof `knowledge/_render/verify_ds018_review.py` **30 checks ·
+> 0 failures at 1180 and 760**, licensed HSBC cut asserted inside each measured frame, transitions
+> killed before every computed read, colours parsed and compared **as colours** · 2026-07-27 ·
+> **`--bite` red** (declaring the two properties on a copy resolves the lookup and turns STEP 1 red —
+> the probe is not blind) · 2026-07-27 · token census by AST-ish scope walk over `canon/canon.css` ·
+> 2026-07-27.
+> ⚠ **PROBE WART, banked:** the first run reported the enabled ratio as `11.31:1`. **The doc was
+> right (1.31:1); the probe was wrong** — a `\d+\.\d+` regex over the table's *flattened* textContent
+> straddled the adjacent `#E1E1E1` cell. **Read cells, never flattened text.** Same family as every
+> other instrument defect this week: present, correct-looking, not measuring what it claimed.
+
 > ### ✅✅ RE-VERIFIED 2026-07-27 (session #10) — ds-018 **STANDS**, on a clean instrument.
 > **WHY A RE-CHECK WAS OWED:** ds-018 and the later-**withdrawn** ds-019 were measured in one session
 > by one probe. When that probe was discredited, ds-018 was left resting on its reputation. *"Should
