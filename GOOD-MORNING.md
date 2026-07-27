@@ -1,7 +1,7 @@
 # Good morning, Dave ☕
 
 > **RENAME THE WRAPPED CHAT →** `Apollo — LEGEND WAVE CLOSED (combo + line migrated, 100/100, transition deleted) + ds-013: srcdoc killed type.css in ALL 49 showroom panes — Dave's eye caught what no gate could — 🔴 Red ~80% wrap`
-> **TITLE THE NEXT CHAT →** `Apollo — the SHOWROOM TYPE SWEEP: 49 panes render canon type for the first time (ds-013 fallout), nobody has looked. Build the numeric sweep FIRST, eyeball second. Then §C·2's ruling batch. Read GOOD-MORNING §DO-FIRST`
+> **TITLE THE NEXT CHAT →** `Apollo — "we are losing decisions": BUILD the enactment register (Dave RULED it, P1→P2→P3) + diff his four flagged regressions (stacked spacing · alpha-label contrast · donut centring; label scale already fixed). Run the standalone-vs-showroom discriminator BEFORE chasing any of them. Read GOOD-MORNING §DO-FIRST`
 > *(Titles are LABELS — role comes from Dave's opener line. The wave = the parallel model: Opus conducts, workers per lane, DIVVY in §DO-FIRST. Gauge bands: Green<45 / Amber 45–60 / Red≥60.)*
 
 
