@@ -441,3 +441,29 @@ as part of "3 cardinal" and is NOT yet identified — **ask, do not infer.**
 
 **Authoring gauge: 🔴 RED ~90% — this entry is a CAPTURE, not a diagnosis. Everything above the
 "LEADS" line is Dave's words; everything below is unverified.**
+
+**★ ds-014 UPDATE 2 — a fourth flag (2026-07-27, verbatim):**
+
+> *"teh donuts have lost the centreing responsive behaviour"*
+
+**Dave's running list, as given, in his words:** label scale on donut + bars *(FIXED — ds-013)* ·
+stacked **segment spacing** · stacked **alpha-label contrast** · a third cardinal a11y rule *(not yet
+named)* · donut **centring responsive behaviour**.
+
+**★ THE HYPOTHESIS THAT SHOULD BE TESTED FIRST — and it is cheap.** Every one of these was seen in
+the SHOWROOM, and until this morning **the showroom could not load `type.css` at all** (ds-013).
+Layout that depends on text metrics measures differently when the type is 16px/400 instead of the
+ruled 12px/500 — **a donut whose centre figure is sized and centred against its own text is exactly
+that kind of layout**, and so is anything reflowing on a container/element width that text
+contributes to. ⇒ **Some of this list may be showroom artefact rather than lost canon; some may be
+real regression that the broken type was masking. Do not assume either.**
+
+**THE TEST, one pass, mechanical:** render each affected component **standalone**
+(`knowledge/snippets/<X>.reference.html`, where `../canon/type.css` has ALWAYS resolved) and
+**side-by-side with its showroom pane**, and diff the measured geometry. Anything that differs is a
+showroom/base-URL artefact; anything wrong in BOTH is a genuinely lost decision, and only those go to
+the ledger diff. **This separates the two causes in one run and stops us chasing five things that may
+share one cause.** ⚠ Note the showroom panes were only regenerated correctly at commit `ba336dc` —
+anything Dave looked at before that was, for type purposes, a different document.
+
+**Still owed and NOT inferable: the third cardinal a11y rule. ASK.**
