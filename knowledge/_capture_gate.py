@@ -83,6 +83,65 @@ TOTAL_RE = re.compile(r"=\s*[~≈]?\s*(\d+)")
 BAND_WORD_RE = re.compile(r"\b(GREEN|AMBER|RED)\b", re.I)
 RESERVE_RE = re.compile(r"\breserve\b\D{0,4}(\d+)", re.I)
 
+# ---------------------------------------------------------------- section growth contracts
+# GM-D1(a) / D5(a) / D6(a) / D7(a) / D8(a), ruled 2026-07-27 (`notes/_MEMENTO-DECISIONS.md`
+# § GM growth-contracts; enacted here + `_RUNBOOK-capture-ritual.md` steps 2e/2f).
+# The architecture: every GM section declares a growth contract — what it may contain · cap ·
+# roll target · retirement test — and §A alone is standing and uncapped.
+#
+# This block enforces the CAP half only. The typed-content and retirement halves are ritual
+# discipline, and saying so is the point: see the anti-false-fix note below.
+#
+# ⚠ WRAP MODE ONLY, and the reason is sequencing. These budgets describe the state a WRAP must
+# leave behind. In build mode they would fail every build from the moment they shipped until the
+# first compaction pass ran — a gate red for a reason no build can fix, which teaches the team to
+# ignore it. Wrap mode is still BLOCKING in its mode; none of this is advisory.
+#
+# ⚠ WHAT THIS CANNOT SEE — do not "fix" it by teaching it to guess (same discipline as the
+# pre-flight block above, and the reason that one has held):
+#   · whether DO-FIRST's content is of the four PERMITTED TYPES (2e) — a line count is blind to a
+#     restated body wearing a pointer's clothes;
+#   · whether a notice is retirement-DUE — 2e's four tests key on live targets, elapsed terms and
+#     struck sources, none of which are in this file;
+#   · whether a move was VERBATIM.
+# Its job is the one thing it can observe exactly: how big each region is.
+SECTION_RE = (
+    ("DO-FIRST", re.compile(r"^##\s*⬛\s*DO TH", re.I)),
+    ("§A",       re.compile(r"^#\s*§A\b")),
+    ("§B",       re.compile(r"^#\s*§B\b")),
+    ("§C",       re.compile(r"^#\s*§C\b")),
+)
+SECTION_CAPS = {"DO-FIRST": (120, 180), "§C": (150, 225)}  # (warn, BLOCK) — block = cap+50%, D8(a)
+SECTION_EXEMPT = {"§A"}    # standing + uncapped by ruling: measured and reported, NEVER charged
+SECTION_RETIRED = {"§B"}   # D4(a) deleted it into the banner — its reappearance IS the failure
+SECTION_REQUIRED = ("DO-FIRST", "§A", "§C")
+
+# 2f: the session-strata stack. It is excluded from §C's cap by D6(a) — which is only checkable if
+# it is DELIMITED, so 2f requires the marker below. ⚠ Excluding a region from a cap without giving
+# it a rule of its own is precisely how "splitting buys headroom"; the region's rule is D5(a) —
+# GM keeps LATEST ONLY — so the gate counts blocks, not lines. One block is the whole contract.
+STRATA_HEAD_RE = re.compile(r"^###\s*⏱\s*SESSION STRATA\b", re.I)
+STRATA_BLOCK_RE = re.compile(r"^####\s")
+STRATA_MAX_BLOCKS = 1
+
+# D7(a) size stamps, AS AMENDED 2026-07-27 (Dave, this window — see `notes/_MEMENTO-DECISIONS.md`
+# § GM-D7 amendment). The original D7 set GM ≤ 8K tk whole-file. Measured with tiktoken, that is
+# unreachable while §A is untouchable: GM = 25,618 tk of which **§A alone = 4,208 tk = 53% of the
+# whole 8K**, leaving ~3.8K for banners + DO-FIRST + §C, which today are 19,869. The proposal's own
+# predicted post-pass outcome (450–500 ln = 12.3–13.7K tk) would have BLOCKED at 8K+50%.
+# ⇒ RULED: **the budget applies to the COMPACTABLE REGION** (everything but §A), and the whole-file
+# figure is ALWAYS published beside it so true cold-start cost is never hidden by the exclusion.
+# §A is excluded from the budget exactly as it is already excluded from the line caps — charging a
+# section you may not touch is not a budget, it is a permanent debt.
+SIZE_BUDGET_TK = {"compactable": 8000}   # warn at cap · BLOCK at cap+50% (12,000), per D8(a)
+BYTES_PER_TOKEN = 3.53     # MEASURED on GM, tiktoken cl100k_base, 2026-07-27. NOT the chars/4 rule
+#                            of thumb: this corpus runs ~13% denser because of its ★ ⚠ ⛔ · — load,
+#                            so every earlier chars/4 token estimate of these files read LOW.
+SIZE_STAMP_RE = re.compile(r"^\s*>?\s*\**size\**\s*[:—-]\s*(.+)$", re.I)
+SIZE_TK_RE = re.compile(r"\bGM\b\D{0,12}?([\d.]+)\s*K\s*tk", re.I)  # K is REQUIRED: without it
+#   "GM 25618 tk" would parse as 25.6M and pass a drift check by accident. One canonical form.
+SIZE_TOLERANCE = 0.10      # a stamp is a claim about a measurable thing; 10% drift = re-stamp
+
 DATE_PREFIX_RE = re.compile(r"^(\d{4})-(\d{2})-(\d{2})-")
 STATUS_RE = re.compile(r"^status:\s*(\S+)\s*(.*)$")
 PROV_RE = re.compile(r"^provenance:\s*(.+)$")
@@ -228,6 +287,124 @@ def check_preflight(text, label="GOOD-MORNING.md"):
     return fails, warns
 
 
+def section_spans(lines):
+    """Split GOOD-MORNING.md into its contracted regions. Returns {name: (start, end)} in lines.
+
+    ⚠ The caller fails LOUD on a missing required marker rather than measuring nothing and
+    reporting green. A structural check that silently measures zero is the "cheerful 0 deviations"
+    failure this corpus has already been bitten by (the type sweep reading ZERO without
+    --allow-file-access-from-files, and reporting success)."""
+    hits = []
+    for name, rx in SECTION_RE:
+        for i, ln in enumerate(lines):
+            if rx.match(ln):
+                hits.append((i, name))
+                break
+    hits.sort()
+    return {name: (i, hits[n + 1][0] if n + 1 < len(hits) else len(lines))
+            for n, (i, name) in enumerate(hits)}
+
+
+def measure_tokens(text):
+    """Returns (tokens, method). tiktoken when present (OBSERVED); otherwise the MEASURED byte
+    divisor, labelled ESTIMATE. Both are declared and they are never silently mixed — a number
+    whose method is unstated is the thing this gate exists to prevent."""
+    try:
+        import tiktoken
+        return len(tiktoken.get_encoding("cl100k_base").encode(text)), "tiktoken cl100k_base"
+    except Exception:
+        return (int(len(text.encode("utf-8")) / BYTES_PER_TOKEN),
+                f"bytes/{BYTES_PER_TOKEN} ESTIMATE (tiktoken absent)")
+
+
+def check_budgets(repo):
+    """GM section line caps (D1a/D6a) + the D7 size stamp. Returns (fails, warns, notes)."""
+    fails, warns, notes = [], [], []
+    gm_path = os.path.join(repo, "GOOD-MORNING.md")
+    if not os.path.exists(gm_path):
+        return ["GOOD-MORNING.md: missing — ritual step 2"], warns, notes
+    with open(gm_path, encoding="utf-8") as f:
+        text = f.read()
+    lines = text.splitlines()
+    spans = section_spans(lines)
+
+    missing = [n for n in SECTION_REQUIRED if n not in spans]
+    if missing:
+        return ([f"GOOD-MORNING.md: section marker(s) not found ({', '.join(missing)}) — "
+                 f"ritual step 2"], warns, notes)
+    for name in SECTION_RETIRED:
+        if name in spans:
+            fails.append(f"GOOD-MORNING.md: {name} present — ritual step 2")
+
+    # 2f strata stack: excluded from §C's cap (D6a), governed by block COUNT instead (D5a).
+    strata_lines, c_start, c_end = 0, *spans["§C"]
+    for i in range(c_start, c_end):
+        if STRATA_HEAD_RE.match(lines[i]):
+            j, blocks = i + 1, 0
+            while j < c_end and not re.match(r"^#{1,3}\s", lines[j]):
+                blocks += bool(STRATA_BLOCK_RE.match(lines[j]))
+                j += 1
+            strata_lines = j - i
+            if blocks > STRATA_MAX_BLOCKS:
+                fails.append(f"GOOD-MORNING.md: strata stack holds {blocks} blocks "
+                             f"(max {STRATA_MAX_BLOCKS}) — ritual step 2f")
+            break
+
+    for name, (s, e) in sorted(spans.items(), key=lambda kv: kv[1][0]):
+        n = e - s
+        if name in SECTION_EXEMPT:
+            notes.append(f"{name}: {n} lines — EXEMPT by ruling (standing, uncapped): measured "
+                         f"and reported, never charged.")
+            continue
+        if name not in SECTION_CAPS:
+            continue
+        if name == "§C":
+            n -= strata_lines
+        warn_at, block_at = SECTION_CAPS[name]
+        step = "2e" if name == "DO-FIRST" else "2"
+        if n >= block_at:
+            fails.append(f"GOOD-MORNING.md {name}: {n} lines, block {block_at} — ritual step {step}")
+        elif n > warn_at:
+            warns.append(f"GOOD-MORNING.md {name}: {n} lines, cap {warn_at} — ritual step {step}")
+
+    # ---- D7 size stamp: measure first, then check what the file CLAIMS against the measurement
+    tk, method = measure_tokens(text)
+    a_s, a_e = spans["§A"]
+    exempt_tk = measure_tokens("\n".join(lines[a_s:a_e]))[0]
+    compactable = tk - exempt_tk
+    chain = tk
+    ls_path = os.path.join(repo, "_LIVE-STATE.md")
+    if os.path.exists(ls_path):
+        with open(ls_path, encoding="utf-8") as f:
+            chain += measure_tokens(f.read())[0]
+    # ⚠ The whole-file figure leads, ALWAYS. The budget excludes §A; the published cost does not.
+    # An exclusion that also hides the total would understate exactly the cold-start cost that the
+    # D9 measured floor exists to make honest.
+    notes.append(f"SIZE measured ({method}): GM {tk} tk WHOLE FILE · of which §A {exempt_tk} tk "
+                 f"exempt · compactable {compactable} tk (the budgeted figure) · chain {chain} tk")
+
+    stamp = next((m for m in (SIZE_STAMP_RE.match(ln) for ln in lines[:HEADER_LINES]) if m), None)
+    if stamp is None:
+        fails.append("GOOD-MORNING.md: no `size:` stamp — ritual step 2")
+    else:
+        cm = SIZE_TK_RE.search(stamp.group(1))
+        if not cm:
+            fails.append("GOOD-MORNING.md: `size:` stamp carries no GM figure — ritual step 2")
+        else:
+            claimed = float(cm.group(1)) * 1000
+            if abs(claimed - tk) / max(tk, 1) > SIZE_TOLERANCE:
+                fails.append(f"GOOD-MORNING.md: `size:` stamp claims {claimed:.0f} tk, measured "
+                             f"{tk} tk — ritual step 2")
+
+    budget = SIZE_BUDGET_TK["compactable"]
+    if compactable >= budget * 1.5:
+        fails.append(f"GOOD-MORNING.md compactable: {compactable} tk, block "
+                     f"{budget * 1.5:.0f} — ritual step 2")
+    elif compactable > budget:
+        warns.append(f"GOOD-MORNING.md compactable: {compactable} tk, cap {budget} — ritual step 2")
+    return fails, warns, notes
+
+
 def wrap_checks(repo, today, lane=False):
     fails, warns, notes = [], [], []
     iso = today.isoformat()
@@ -239,6 +416,8 @@ def wrap_checks(repo, today, lane=False):
                      "record and its check still bites.")
         notes.append("LANE WRAP: pre-flight-stamp check SKIPPED too — the stamp lives in "
                      "GOOD-MORNING.md, which lane sessions do not write.")
+        notes.append("LANE WRAP: section growth contracts (2e/2f) SKIPPED — same reason. A lane "
+                     "session cannot be charged for a file it is ruled out of writing.")
     else:
         gm = os.path.join(repo, "GOOD-MORNING.md")
         if os.path.exists(gm):
@@ -246,6 +425,10 @@ def wrap_checks(repo, today, lane=False):
                 f_, w_ = check_preflight(f.read())
             fails += f_
             warns += w_
+        f_, w_, n_ = check_budgets(repo)
+        fails += f_
+        warns += w_
+        notes += n_
         notes.append("PRE-FLIGHT stamp: FORM checked only (3 terms · arithmetic · band-vs-table). "
                      "Whether the fill figure is honest, and whether a mid-job re-price actually "
                      "happened, are NOT observable here — discipline, not enforcement "
@@ -371,8 +554,98 @@ def selftest_preflight():
     return failures
 
 
+FAT = " ".join(f"word{i}" for i in range(120))  # ~200 tk of line, for isolating the SIZE check
+#   from the LINE check: a fixture that trips both proves neither (attribute-the-diff).
+
+
+def _gm_fixture(do_first=10, sec_a=10, sec_c=10, with_b=False, strata_blocks=0,
+                strata_pad=0, drop=(), stamp=None, fat_c=0, fat_a=0):
+    """Synthetic GOOD-MORNING.md for the budget bites.
+
+    `stamp=None` ⇒ a CORRECT stamp is computed for the finished text, so the green control is
+    genuinely green rather than green by omission (attribute-the-diff: a control that passes for
+    the wrong reason cannot license the fixtures that fail)."""
+    out = ["# Good morning", "SIZESTAMP", ""]
+    if "DO-FIRST" not in drop:
+        out += ["## ⬛ DO THIS FIRST", ""] + [f"do line {i}" for i in range(do_first)]
+    if "§A" not in drop:
+        out += ["# §A · ORIENTATION", ""] + [f"a line {i}" for i in range(sec_a)]
+        out += [f"{FAT} {i}" for i in range(fat_a)]
+    if with_b:
+        out += ["# §B · THIS SESSION", "", "b line"]
+    if "§C" not in drop:
+        out += ["# §C · QUEUE", ""] + [f"c line {i}" for i in range(sec_c)]
+        out += [f"{FAT} {i}" for i in range(fat_c)]
+        if strata_blocks:
+            out.append("### ⏱ SESSION STRATA")
+            for b in range(strata_blocks):
+                out += [f"#### 2026-07-2{b} #{b}"] + [f"s line {i}" for i in range(strata_pad)]
+    body = "\n".join(out) + "\n"
+    if stamp is not None:
+        return body.replace("SIZESTAMP", stamp)
+    text = body.replace("SIZESTAMP", "> **size:** GM 0.00K tk · chain 0.00K tk · measured x")
+    for _ in range(3):  # converges: the stamp's own length barely moves the count
+        tk, _m = measure_tokens(text)
+        text = body.replace("SIZESTAMP", f"> **size:** GM {tk / 1000:.2f}K tk · "
+                                         f"chain {tk / 1000:.2f}K tk · measured x")
+    return text
+
+
+# GM-D8(a): "ships with bites — an over-budget fixture must go RED, plus a bite-the-bite."
+# The last three entries ARE the bite-the-bite: they prove the gate's *exemptions and exclusions*
+# work. A cap that fires on everything is as broken as one that fires on nothing, and only a
+# passing control makes a failing fixture mean anything.
+BUDGET_FIXTURES = [
+    ("DO-FIRST over block (266 ln, real value at ruling)", dict(do_first=266), True),
+    ("§C over block",                                      dict(sec_c=260), True),
+    ("§B present (D4 deleted it)",                         dict(with_b=True), True),
+    ("required marker missing",                            dict(drop=("§C",)), True),
+    ("strata stack 2 blocks deep (D5: LATEST only)",       dict(strata_blocks=2, strata_pad=3), True),
+    ("no size stamp",                                      dict(stamp="(no stamp here)"), True),
+    ("size stamp STALE (claims 0.10K)",
+     dict(stamp="> **size:** GM 0.10K tk · chain 0.10K tk · measured x"), True),
+    ("size stamp with no K (25618 must not read as 25.6M)",
+     dict(stamp="> **size:** GM 25618 tk · chain 1 tk"), True),
+    # D7-as-amended: the SIZE budget, isolated from the LINE caps by fat lines rather than many
+    # lines — a fixture that trips both checks at once proves neither of them.
+    ("compactable over size block (80 fat §C lines, under the LINE cap)",
+     dict(sec_c=5, fat_c=80), True),
+    ("green control — every region inside contract",       dict(), False),
+    ("§A 400 lines — EXEMPT must actually exempt",         dict(sec_a=400), False),
+    ("§C over block ONLY via strata — exclusion must hold",
+     dict(sec_c=100, strata_blocks=1, strata_pad=200), False),
+    # ★ THE BITE FOR DAVE'S 2026-07-27 AMENDMENT. A §A fat enough to blow a whole-file budget on
+    # its own must NOT fail, or the exclusion he ruled is decorative. This is the fixture that
+    # would have caught the original D7 before it shipped.
+    ("§A alone > the whole budget — exclusion must protect it",
+     dict(fat_a=90), False),
+]
+
+
+def selftest_budgets():
+    """Bite-test the section growth contracts (2e/2f)."""
+    failures = []
+    with tempfile.TemporaryDirectory() as td:
+        for name, kw, should_fail in BUDGET_FIXTURES:
+            with open(os.path.join(td, "GOOD-MORNING.md"), "w", encoding="utf-8") as f:
+                f.write(_gm_fixture(**kw))
+            f_, _w, _n = check_budgets(td)
+            if should_fail and not f_:
+                failures.append(f"budget [{name}]: expected FAIL, gate stayed green — "
+                                f"the cap does not bite")
+            if not should_fail and f_:
+                failures.append(f"budget [{name}]: expected green, got {f_}")
+    # The budget number is a RULED value (Dave, 2026-07-27 — D7 amendment). Pin it, so a later
+    # convenience edit has to be a deliberate act with a ledger entry behind it rather than a
+    # quiet re-dial: promotion of values is Dave's alone (derivation governance).
+    if SIZE_BUDGET_TK != {"compactable": 8000}:
+        failures.append(f"SIZE_BUDGET_TK = {SIZE_BUDGET_TK}, ruled {{'compactable': 8000}} — "
+                        f"re-dialling is Dave's, and updating this pin is part of doing it")
+    return failures
+
+
 def selftest():
-    failures = selftest_preflight()
+    failures = selftest_preflight() + selftest_budgets()
     with tempfile.TemporaryDirectory() as td:
         os.makedirs(os.path.join(td, "notes"))
         os.makedirs(os.path.join(td, "_DECISION-HISTORY"))

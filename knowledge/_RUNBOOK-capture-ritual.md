@@ -25,7 +25,13 @@ wrong handoff we most want to avoid. Red cue line, ready to use:
 > **Title this chat: `<retrospective title>` — context is Red (~NN%). Running the capture ritual, then
 > open fresh with: `<forward title>`.**
 
-## The steps, in order (1, 1b, 2, 2c, 2d, 3, 4, 4b, 5)
+## The steps, in order (1, 1b, 2, 2c, 2d, 2e, 2f, 3, 4, 4b, 5)
+
+*Steps **2e** and **2f** were added 2026-07-27 (GM-D1…D9, `notes/_MEMENTO-DECISIONS.md` § GM
+growth-contracts ruling). They extend the 2c/2d pattern — cap + archive sibling + verbatim move +
+EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and were therefore absorbing
+~97% of the file's growth. **The architecture in one line: every GM section declares a growth contract
+(what it may contain · cap · roll target · retirement test); §A alone is standing and uncapped.***
 
 1. **Refresh `_LIVE-STATE.md`** — and its siblings where touched: `_FUTURE-STATE.md` (ideas /
    side-quests / resurrection candidates) and `_DECISION-HISTORY/` (narrative >10 lines relocates
@@ -80,17 +86,45 @@ wrong handoff we most want to avoid. Red cue line, ready to use:
      What Apollo is · the three-libraries-one-skeleton model · where things live · the one command ·
      the rules that actually bite · how we work. **Update it when the shape of the project changes, not
      every session — but NEVER drop it, and never shorten it to a label.**
-   - **§B this session** — what landed, what was found, what I got wrong. **Every "landed/done"
-     claim names its evidence** — gate run, commit hash, render, file path (routing audit #7,
-     ratified 2026-07-23; same discipline for worker receipts). Write evidence lines
-     `provenance:`-shaped (`<source> · <date>`) so they can later be machine-read
-     (2026-07-26, Memento §4.1 — spirit unchanged, format converges). The header records the session's
-     **model, and effort if it was actually set** (#8 — effort is only settable via agent
-     definitions today; record it when known, omit otherwise).
-   - **§C queue** — numbered, actionable, plus commit/push state. **Stamp the author's context-gauge
-     reading in the commit-state block** (`_RUNBOOK-context-gauge.md` § authoring-time stamp) — a
-     scrutiny indicator on this handoff's reliability, not a quality score. Format:
-     `Context gauge at authoring: 🟢/🟡/🔴 BAND ~NN% (ESTIMATE)`.
+     ⚠️ **§A is EXEMPT from every cap and every roll rule in 2c–2f** — standing and uncapped, by ruling
+     (GM-D1…D9 invariant, 2026-07-27). No cap, no roll, no rewrite, not even a guard banner. The reason
+     is at the foot of this family (the 07-18 incident); it is the one section a growth contract must
+     never touch, because its cost is the point.
+   - **The ★ LATEST banner IS the session record — there is no §B.** *(GM-D4(a), ruled 2026-07-27:
+     §B deleted, its spec formally absorbed here. This amends a previously ratified required-structure
+     and changed only on Dave's ruling. Practice had already voted — §B's own STALE notice declared the
+     banners authoritative while §B accreted "retained for context" strata; it was a duplicate register.)*
+     The banner carries, and must carry, everything §B was required to: what landed, what was found,
+     **what I got wrong**; **every "landed/done" claim names its evidence** — gate run, commit hash,
+     render, file path (routing audit #7, ratified 2026-07-23; same discipline for worker receipts);
+     evidence lines written `provenance:`-shaped (`<source> · <date>`) so they can later be machine-read
+     (2026-07-26, Memento §4.1 — spirit unchanged, format converges); the session's **model, and effort
+     if it was actually set** (#8 — effort is only settable via agent definitions today; record it when
+     known, omit otherwise); and the **context-gauge stamp** (below). Banner stack rolls per **2c**.
+   - **§C queue** — numbered, actionable, plus commit/push state. **Contract (GM-D6(a)):** §C·1–4
+     entries are **pointer + state + owner** — no method bodies. Method lives in the brief or ledger the
+     pointer names; an entry that restates it is duplicating a document that will drift out from under
+     it. Parked list stays as-is. **Cap 150 lines**, excluding the 2f stratum stack.
+     **Stamp the author's context-gauge reading in the commit-state block**
+     (`_RUNBOOK-context-gauge.md` § authoring-time stamp) — a scrutiny indicator on this handoff's
+     reliability, not a quality score. Format: `Context gauge at authoring: 🟢/🟡/🔴 BAND ~NN% (ESTIMATE)`.
+   - **The read-chain contract, stamped in the file (GM-D7(a)).** GM states its own budget and the
+     chain's: **GM ≤ ~8K tk · chain (GM + `_LIVE-STATE.md`) ≤ ~24K tk (~12% of a window)**, both files
+     carrying a gate-checked size stamp so drift is visible rather than discovered. **Everything cited
+     beyond the chain is RETRIEVAL** — `_consult.py`, a grep, a targeted read — **never a reading list.**
+     ⚠️ The old open-ended *"then the decision files it points to"* was a selective instruction pretending
+     to be complete: the chain cites 112 asset paths, ~312K tk resolvable, 1.5× a window. Say the
+     selectivity out loud or the next cold reader will try to obey it.
+     **The stamp, in the file's header block, one canonical form** (the `K` is required — without it
+     `GM 25618 tk` parses as 25.6M and passes a drift check by accident):
+     ```
+     > **size:** GM 25.6K tk · chain 43.5K tk · measured <date> (tiktoken cl100k_base)
+     ```
+     The gate **measures the file and checks the stamp against its own measurement** (>10% drift = FAIL),
+     so a stale stamp is caught rather than believed. ⚠️ **Measure, never convert by rule of thumb:** this
+     corpus runs at **3.53 bytes/token**, not the customary 4 — its ★ ⚠ ⛔ · — load makes it ~13% denser,
+     so every chars/4 estimate of these files has read LOW, including the ones in the proposal that set
+     the budget.
 
    **2c. Compact the banner stack — keep ★ LATEST + 1 PRIOR, roll the rest to `_GM-ARCHIVE.md`.**
    *(Added 2026-07-25, Dave: "make good morning more efficient… keep improving Memento." First run the
@@ -100,6 +134,10 @@ wrong handoff we most want to avoid. Red cue line, ready to use:
    tokens re-read every session for history already recorded elsewhere). At each wrap, **before** writing
    the new ★ LATEST banner, move every banner older than **★ LATEST + 1 PRIOR** into `_GM-ARCHIVE.md` —
    **verbatim, newest-first, a move never a rewrite** (mirrors `MEMORY.md` → `MEMORY-ARCHIVE.md`).
+   **Batch key = `<date> <session#>`, never a serial** (GM-D5(a), 2026-07-27). Serials collided twice —
+   two "Batch 11", two "Batch 6" — because parallel sessions mint them independently and none can see
+   the others' numbering. A date plus the session number is derivable from inside a single session,
+   which is the only vantage point a session actually has.
    ⚠️ **Precondition, do not skip:** confirm each rolled banner's durable content already lives in its
    proper home — `_DECISION-HISTORY/` (the WHY/HOW), `notes/_receipts|_briefs/`, the decision ledgers, or
    git. The archive is a **convenience copy, never a tattoo**: it must hold no rule, threshold or rationale
@@ -122,6 +160,83 @@ wrong handoff we most want to avoid. Red cue line, ready to use:
    **Same EXIT CHECK as 2c** (dream-pass v2 P1): Dave-owed ⚠/⬛/AWAITING/OPEN-CALL items inside a
    rolling delta must live in a standing section before the delta moves.
    After editing `_LIVE-STATE.md`, run `python3 knowledge/_validate_standing_instructions.py` (STAND-002).
+
+   **2e. Enforce the DO-FIRST contract — typed content · LATEST+1 roll · retirement tests.**
+   *(Added 2026-07-27 — GM-D1(a) / GM-D2 / GM-D3(a). DO-FIRST had no roll rule and was, with the §C
+   tail, absorbing ~97% of the file's growth.)*
+
+   **What DO-FIRST may contain — four types, nothing else:**
+   **(i)** the current worklist · **(ii)** live supersession notices whose target text is still visible
+   on a live surface · **(iii)** closure tombstones inside their term (table below) · **(iv)** one-line
+   POINTERS to standing canon — **never restated bodies.**
+   ⚠️ **(iv) is the one that bleeds.** Throttle canon, model routing, known potholes, read-order — all
+   inscribed in their own homes, all found restated here at length. That is recall creeping back into the
+   file whose entire design is retrieval. A pointer is one line; if you are writing the third line, you
+   are restating.
+
+   **Roll:** at each wrap, strata older than **LATEST + 1 session** move verbatim to `_GM-ARCHIVE.md`,
+   **EXIT CHECK first** — the same check as 2c, not a second one; do not re-derive it.
+   **Cap: 120 lines (warn) · 180 (block).** A contract-compliant DO-FIRST runs ≈ 60–80.
+
+   **The retirement tests — the answer to "when does this stop earning its place?" (GM-D2, all four):**
+
+   | Notice type | Dies when |
+   |---|---|
+   | **Supersession** (*"X is DONE, stop planning it"*) | It lives **exactly as long as the text it negates remains on a live surface** (GM or `_LIVE-STATE.md`; archives excluded). When the dead stratum rolls, **the notice rolls with it, in the same batch — they are one move.** A warning label may not outlive the thing it warns about, and must not die before it. |
+   | **Closure tombstone** (*"✅ CLOSED, do not re-open"*) | Term = **LATEST + 2 sessions** (mirrors 2d). To persist beyond term it must name a **structural guard** — a gate that enforces the closure, or a ledger closed-register line. After term it rolls and §C keeps one aggregate line. ⚠️ **A tombstone that must live forever is evidence a gate is missing** — gate-don't-patch, applied to the record itself. |
+   | **Record correction** (*"the collision DOES NOT EXIST"*) | Same test as a supersession notice, **plus** the correction must be struck through **at the source of the wrong claim** before the notice may roll. Otherwise the wrong claim outlives its own correction. |
+   | **Perishable reading** (pace/panel, quota, counts) | **Replaced at the next wrap, never stacked.** Already dated. A second reading beside the first is two readings, not a history — if the delta matters, the delta is the finding and gets written as one. |
+
+   **Why tests and not judgment:** notices had no lifecycle, so nothing could ever retire, so the only
+   legal way to kill text was to pile a notice on top of it — **supersession by addition**, under which
+   dead spec *and* its warning label both bill full price on every cold read. Each test above keys on
+   something **checkable** — is the target still visible? has the term elapsed? is the source struck?
+   is it dated? — which is what makes this a checklist instead of a memory feat.
+
+   **Lifecycle tags (GM-D3(a)) — on NEW entries only.** Every new notice or tombstone carries one
+   machine-readable suffix so the gate can list what is retirement-due:
+   ```
+   [born #12 · guards: <target> · until: <condition|session>]
+   ```
+   ⚠️ **Existing entries are NEVER retro-tagged.** That would be a rewrite of ratified text, and verbatim
+   discipline outranks tidiness. They retire instead via **one supervised audit pass at first enactment**,
+   checked one by one against the table above, with receipts in the batch header.
+
+   **2f. Roll the stratum stack — GM keeps LATEST only.**
+   *(Added 2026-07-27 — GM-D5(a).)*
+   The pre-flight / post-mortem / commit-state blocks that accumulate under §C are a stratum generator
+   with no roll rule: four sessions deep at ruling time, two of them hand-marked *"[SUPERSEDED — kept for
+   the record]"*. **The author felt the pressure to roll and no rule licensed the move** — that phrase is
+   the diagnostic signature. If you catch yourself writing "kept for the record", this is the rule you want.
+
+   **The stack lives under an explicit marker, and one date-keyed block per session:**
+   ```
+   ### ⏱ SESSION STRATA
+   #### <date> #<session#>
+   ```
+   *(Enactment detail, 2026-07-27 — flagged as such. D6(a) caps §C **"excluding the D5 stack"**, which is
+   only checkable if the stack is delimited; **the stack being UNLABELLED is what let it grow in the first
+   place**. This is the minimum mechanism that makes an already-ruled cap enforceable, not a new rule.)*
+   ⚠️ **The exclusion does not make it un-governed** — that would be splitting buying headroom. §C's cap
+   skips these lines; **D5's own rule governs them, and the gate counts BLOCKS, not lines: more than one
+   is a FAIL.** "LATEST only" is the entire contract, and one block is what it looks like.
+
+   **GM keeps the LATEST pre-flight/post-mortem and the LATEST commit-state** (the handoff's freshness and
+   trust stamp). Everything older moves at wrap:
+   - **post-mortems → `notes/_GAUGE-LOG.md`** — append-only, one block per session. These are
+     **measurements, not narrative**: pre-flight estimate vs closed band, overrun and its cause. The
+     throttle programme keeps reasoning from n=1; the log is what makes it a countable dataset.
+   - **commit-states → `_GM-ARCHIVE.md`**, under the same `<date> <session#>` batch key as 2c.
+
+   **EXIT CHECK applies and it bites here:** a stratum carrying a lesson — e.g. *"the fork rule failed
+   mid-enactment"* — must have that lesson inscribed in `_RUNBOOK-context-gauge.md` **before** the stratum
+   may roll. A lesson living only in a post-mortem block is a lesson in a dated home, and dated homes do
+   not count.
+
+   ⚠️ **Splitting never buys headroom** (ADR-0015's phrase, ruled into GM-D8). Content may not escape a cap
+   by moving to a new un-governed file: a new file must declare its own contract, or the gate fails.
+   `notes/_GAUGE-LOG.md` is licensed here because this step declares its contract — append-only,
+   measurements only, not in the read chain.
 
    ⚠️ **§A is the section most at risk, because it is the only one that doesn't change each session.**
    On 2026-07-18 a from-scratch rewrite of `GOOD-MORNING.md` reduced §A's standing-instruction note to
@@ -212,6 +327,16 @@ One script (D3), two modes:
 - **Wrap mode** (`--wrap` — **the session runs it at this ritual's close**, not the build):
   adds the original capture checks — FAIL if `_LIVE-STATE.md` "Last refreshed" ≠ today or
   `GOOD-MORNING.md` header ≠ today; WARN on uncommitted changes.
+  **Plus, since 2026-07-27 (GM-D8(a)/D7(a)), the section growth contracts:** per-section line counts
+  for `GOOD-MORNING.md` (DO-FIRST 120/180 · §C 150/225, §A exempt and unmeasured) and the chain size
+  stamps (GM ≤ ~8K tk · GM + `_LIVE-STATE.md` ≤ ~24K tk). **WARN at cap · FAIL at cap + 50%.**
+  ⚠️ **Wrap mode, not build mode, and the reason is sequencing:** these budgets describe the state the
+  *wrap* must leave behind. In build mode they would fail every build from the moment they shipped until
+  the first compaction pass ran — a gate red for a reason no build can fix. Wrap mode is still blocking
+  in its mode (the "Last refreshed" check FAILs; none of this is advisory).
+  ⚠️ **Failure text names the runbook step and nothing else.** No advice list, no "now do X" — that prose
+  ages while the exit code doesn't, and a stale `print()` inside a gate has already sent one session to
+  redo finished work (2026-07-27 #7). **The exit code is the evidence; this file is the advice.**
 - **Honest scope (D1a):** the memory store is invisible to the shell and to every gate (step 3)
   — dangling `MEMORY.md` pointers and memory-file fields are checked *by the session, by hand,
   at step 3*. The script prints this as an explicit SKIP so the boundary can't silently blur.

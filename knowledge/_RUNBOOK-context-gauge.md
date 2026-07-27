@@ -209,7 +209,7 @@ of substantive turns. No tooling, roughly ±15%. Reckoning (round to nearest 5k)
 
 | Event | Rough cost |
 |---|---|
-| **Session baseline** (system prompt + tool defs + `MEMORY.md`) at start, THIS env | ~35k |
+| **Session baseline** (system prompt + tool defs + `MEMORY.md`) at start, THIS env | ~35k — ⚠️ **SUSPECT, see note** |
 | Heavy file read (canon CSS/HTML, long runbook) | +2–8k (use the real line/char count) |
 | Big tool dump / review render / subagent return | +1–5k |
 | Normal exchange turn | +0.5–1.5k |
@@ -219,6 +219,17 @@ of substantive turns. No tooling, roughly ±15%. Reckoning (round to nearest 5k)
 | — the task list (create + each update; it re-renders) | +0.5–1k per burst |
 | — a Half-2 gauge confirmation (subagent + transcript) | +1–3k |
 | — a consult, a build run, a gate report read | +1–4k each |
+
+⚠️ **NOTE ON THE ~35k BASELINE — it is a snapshot constant and the harness has moved under it
+(flagged 2026-07-27 #14, the GM-D9 enactment window).** The row was written when every tool schema
+loaded up front. This env now **defers most tool schemas** — they arrive as bare names and are fetched
+on demand — which removes a large, previously unavoidable block from the opening fill. The enacting
+session's own estimate put its baseline nearer **~12–15k**.
+**That figure is NOT inscribed, deliberately: it is an estimate, not an observation** — there is no token
+meter, and replacing one unmeasured constant with another is the defect, not the fix
+(`measuring-tool-must-not-guess`: observe, don't infer; UNKNOWN is never defaulted).
+⇒ **Treat the row as an upper bound of unknown tightness, and MEASURE the floor per session (GM-D9 below).**
+The whole point of the D9 mechanism is that this row should not need to be right.
 
 ### ★★ PRICE THE INSTRUMENT, NOT JUST THE WORK (Dave, 2026-07-27: *"remember that it self consumes tokens too"*)
 
@@ -245,6 +256,38 @@ that handoff had to be corrected at close.
   re-read a gate report you have already read. *(Dave, same day: "be careful with the tasks.")*
   ⚠ **But never economise by skipping the READING of the band table** — that is the one instrument whose
   omission caused a wrong band twice, and it costs a `grep`.
+
+### ★ THE FLOOR IS MEASURED, NEVER ASSUMED — and this is the only copy of the band table (GM-D9)
+
+*(Ruled 2026-07-27, `notes/_MEMENTO-DECISIONS.md` § GM growth-contracts. **Dave's reframe, and it is the
+whole decision:** the cold-start floor is **a variable this programme shrinks**, so a snapshot constant
+written into canon would be **falsified by its own enactment** — the prose-drift class, self-inflicted.)*
+
+**Two rules, and they replace every earlier treatment of the floor:**
+
+1. **MEASURE the floor at session start — announce the fill after the mandated reads, before pricing
+   anything.** Not "the floor is about 22–24%": *this* session's floor, this window, stated as a number.
+   The floor moves with what you actually read — a session that reads `GOOD-MORNING.md` alone does not
+   have the floor of one that reads the whole chain, and the two must not be priced the same.
+   ⚠️ **The old band table priced the floor at ZERO** (SD-7) — it described fill as though every window
+   started empty. It never did.
+2. **Bands are read against REMAINING BUDGET.** What decides a fork is never how full you are, it is
+   whether what is left can hold the job *and* its wrap. This is already the arithmetic of the flush rule
+   above (*"flush whenever the remaining budget is smaller than the job plus its wrap"*); the table below
+   is now stated the same way so the two cannot drift apart.
+
+| Band | Remaining budget | ≡ fill (unchanged) |
+|---|---|---|
+| 🟢 GREEN | **> 55%** left | <45% used |
+| 🟡 AMBER | **40–55%** left | 45–60% used |
+| 🔴 RED | **< 40%** left | ≥60% used |
+
+**The numbers are Dave's and are re-dialled only by him, here.** The table above is a restatement, not a
+recalibration — the thresholds are byte-identical to the ratified bullets below, which stay as he wrote them.
+
+★ **THIS FILE IS THE ONLY COPY.** `GOOD-MORNING.md` used to carry an inline band table; per GM-D9 it now
+carries a **pointer to this section**. ⚠️ **Two copies of a band table WILL drift** — and this one has
+already been misquoted from memory twice in one day (below). Quote it from here or `grep` it; never recall it.
 
 Bands as fraction of the ~200k window:
 

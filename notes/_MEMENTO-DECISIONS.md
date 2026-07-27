@@ -77,3 +77,53 @@ roll passes the 2c EXIT CHECK · rolls are verbatim MOVES.*
 
 **Ruled 2026-07-27, NOTHING ENACTED** — enactment window reads this section + the proposal §3, amends
 the runbook FIRST (2e/2f, §B spec, batch key), then the gate, then one supervised compaction pass.
+
+### ⛔ GM-D7 AMENDED — 2026-07-27 evening #14 (Opus, the enacting window). The original number was unreachable.
+
+**What was found, before anything was built on it.** D7(a) set **GM ≤ 8K tk** whole-file. That number
+was never checked against a tokenizer: proposal §1 measured GM in **bytes and lines**, §3 stated the
+budget in **tokens**, and §4 converted between them at an unstated rate. Measured here with
+**tiktoken cl100k_base** — an observation, not an estimate:
+
+| | measured |
+|---|---|
+| GM whole file | **25,618 tk** |
+| §A alone — exempt and untouchable by the package's own first invariant | **4,208 tk = 53% of the whole 8K** |
+| banners + DO-FIRST + §C (the compactable region) | **21,410 tk** |
+| proposal §4's own predicted post-pass *success* state (450–500 ln) | **12.3–13.7K tk** |
+| D8(a) block threshold at 8K + 50% | **12,000 tk** |
+
+⇒ **The ruling package's predicted good outcome fails its own gate**, and no pass could have rescued it:
+8K leaves ~3,800 tk for banners + DO-FIRST + §C, a 5.2× squeeze on a proposal scoped for ~2×.
+**D7's 8K and the §A invariant cannot both hold.**
+⚠ **Root cause worth keeping:** this corpus runs at **3.53 bytes/token**, not the customary 4 — its
+★ ⚠ ⛔ · — load makes it ~13% denser — so **every chars/4 estimate of these files has read LOW**,
+including the one behind the 8K. *(Now inscribed in the ritual runbook step 2: measure, never convert.)*
+
+| # | Ruling (Dave, 2026-07-27 #14) | Why | Audit |
+|---|---|---|---|
+| **GM-D7-am(a)** | **The size budget applies to the COMPACTABLE REGION** (banners + DO-FIRST + §C), **not the whole file**; §A is excluded from the budget exactly as it is already excluded from the line caps. **8,000 tk warn · 12,000 BLOCK.** The **whole-file figure is ALWAYS published beside it** (gate output + the `size:` stamp), so the exclusion can never hide true cold-start cost. | Charging a section you may not touch is not a budget, it is a permanent debt — and it made 53% of the allowance unspendable. Keeps all nine original rulings intact and makes the number name something a pass can act on: post-pass projects to **8.1–9.5K compactable ⇒ WARN, not block**, which reads as "keep going" rather than "you failed". | unaudited |
+
+*Dave's words, verbatim, including the latitude: **"looks like 1 to me, but just do what you need to to
+get teh task done."** Recorded as given — the ruling is the pick; the second clause is licence for the
+enactment shape, not for re-dialling the number.*
+
+**Enacted same window:** `_capture_gate.py` `SIZE_BUDGET_TK = {"compactable": 8000}`, pinned by a
+selftest bite so a later convenience edit must be a deliberate act with a ledger entry behind it.
+Bites include **§A fat enough to blow a whole-file budget must NOT fail** — the fixture that would
+have caught the original D7 before it shipped.
+
+⬛ **LEFT OPEN, not ruled — Dave's question at wrap: *"will the rule we just ruled on allow the file to
+grow to be unmanageable again?"*** Answered on measurement, and the answer is **mostly no, with three
+named holes**. Ceiling is now `12,000 tk + §A` (≈16.2K worst case vs 25.6K today). But:
+**(1) §A is uncapped by ruling and is now the ONLY region with no roll rule** — the original diagnosis
+("growth lands where there is no roll rule") now points at what we just built. **(2) The banner region
+has no LINE cap** — only 2c's count rule and the shared token budget — and it is the densest text in
+the file at **302 B/line, 3.6× §A's**, so one fat banner silently eats DO-FIRST's and §C's headroom.
+**(3) The disease itself is unenforced:** the gate cannot check 2e's retirement tests, so a small file
+full of dead notices passes. **Size was the symptom; supersession-by-addition was the disease — we have
+gated the symptom and are relying on the cap to force pruning as a side effect.**
+**Candidate for (1), NOT enacted because it brushes the §A invariant:** a **WARN-only** line/token count
+on §A that never blocks — not a cap and not a roll, so §A can never be forced to shrink; it only makes
+§A growth a number at wrap instead of a surprise in three months. Dave's ruling said *"not even a guard
+banner"*, which may or may not extend to a line in gate output. **His line to draw.**
