@@ -1,5 +1,17 @@
 # GOOD-MORNING — banner archive
 
+## Batch 6 — rolled 2026-07-27 (legend-wave close session)
+
+> ## ROLLED — PRIOR — 2026-07-26 (Sun evening, OPUS solo self-conducting — ★ THE CAP FORK RULED + legend model ENACTED on member #1; build 55/55 GREEN · verify 27/27; 🔴 RED ~72% wrap): **The "mechanical enactment" wasn't. `dv-behaviour.js` had 858 bytes of headroom against a model needing ~14,100, so §C·2 #18 came off the queue and onto the critical path. Dave ruled split AND re-scope; Chart-donut now runs the real DV-D11/12/13 model.**
+> - **★ ADR-0015 § AMENDMENT (2026-07-26) — RULED, §C·2 #18 CLOSED.** Measured three ways first (one file = 26,615 B as-written · 22,364 B comment-stripped · 21,327 B even dropping DV-D12 — none passed). Ruling: **`canon/dv-legend.js` splits out** as a second registered `$behaviour` source · the 16KB per-source cap is renamed a **LEGIBILITY** constraint · a **32KB per-GROUP PAGE budget** is added so splitting can never buy headroom. The resize check moved to group level in the same beat (same defect: page invariant enforced per file). Gate ships 5 new bites incl. the evasion case.
+> - **★ Chart-donut MIGRATED + VERIFIED 27/27** (`knowledge/_verify_dv_legend.js` — real source, real snippet, jsdom; incl. Dave's 950/41% and 1250/54%). Dual-gesture rows · typed tips · live region · Reset. **Bar, combo, LINE still to go — the wave is FOUR members, not three (line carries a legend; it was in no lane).**
+> - **★ Minification asked + declined** (28,332 B → 9,622 B gzipped is free; the cap is a *complexity* forcing function, and minifying shrinks the number without simplifying the thing). Reasoning in the ADR amendment.
+> - **⚠ TWO VISUAL DELTAS AWAIT DAVE'S EYE** — the signed-off v5.5 CSS failed the 4px grid + radius gates on re-entry; corrected `padding:5px 9px`→**4px/8px**, `border-radius:2px`→**var(--border-radius-default)**. Registered in `_REVIEW-SIGNOFF.md`. Also renamed `.lg`→**`.dv-leg*`** (collided with canon's `.seg.lg`; blast-radius gate caught it).
+> - **⬛ 4 OPEN, flagged not decided:** sparkline's inert 15.6KB payload (no per-member opt-in) · page budget already 86% · `_verify_dv_legend.js` unwired (needs jsdom) · graph `--verify` has no convention for an ADR-amendment node (5 seed edges unmatched).
+> - **🔴 RED ~72% (ESTIMATE ±15%)** ⇒ **next reader RE-VERIFIES before building:** `_build_all.py` + `node knowledge/_verify_dv_legend.js` + spot-check the byte figures.
+>
+
+
 *Rolled-off session banners from `GOOD-MORNING.md`, newest-first within each batch. A **Polaroid
 archive**, not a tattoo: the durable record for each entry lives in `_DECISION-HISTORY/` (the WHY/HOW
 narrative), `notes/_receipts/` + `notes/_briefs/` (worker/conductor detail), the decision ledgers
