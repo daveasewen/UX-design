@@ -12,6 +12,33 @@ graduates OUT of here into `_LIVE-STATE` OPEN/TARGET when work starts. Refresh w
 **Entry format:** what · why it's held · what it feeds (Apollo phase/mode) · source/provenance pointer ·
 status (`idea` / `parked` / `resurrection-candidate` / `graduated→LIVE`).
 
+## ★★ EXPANDABLE "OTHER" BUCKETS — the cap must not become data loss (Dave, 2026-07-27 session #6)
+**status: FLOATED — explicitly NOT ruled, not designed, not scoped.** Dave, verbatim, in the same
+breath as ruling the segment cap:
+> *"Lets cap at 6 for now, but note for later, all bucketed 'other' segments should be expandable,
+> through some mechanism we'll explore later."*
+
+**What it holds.** Segment caps bucket the remainder into an **"Other"** slice. Today that remainder is
+**terminal** — the donut's `dv-pie-009` (≤6, live) buckets with **no route to the detail**, and
+**DV-D18** (2026-07-27) has just extended the same cap to stacked columns. Dave's note says the bucket
+must be **expandable**: the reader gets legibility by default and the detail on demand.
+
+**Why it's held rather than built.** The mechanism is genuinely open — drill-in (Other replaces the
+series set), expand-in-place (Other splits into its constituents), a companion detail view, or a
+disclosure in the legend. **These are different products with different a11y, different keyboard
+models, and different `dv-legend.js` state shapes**, and one of them (expand-in-place) collides with
+the ≤6 cap it exists to relieve. Dave said *"we'll explore later"* — this is the note that makes later
+possible, not a head start on it.
+
+**⚠ WHY THIS IS LOAD-BEARING, not a nice-to-have.** **DV-D18 is only defensible because of this.** A
+cap with no expansion route is **data loss presented as legibility** — the chart silently stops being
+able to say what it was given. ⇒ **Flag it if a cap ships and this is still floated**; the pairing was
+Dave's, in one sentence, and separating them would keep the constraint and drop the remedy.
+Applies **retroactively to the donut**, which already caps and already has no route out.
+
+**Feeds:** Craft (the chart programme) · **Source:** Dave, 2026-07-27 session #6 ·
+**Ledger:** `knowledge/_proforma/_DATAVIZ-DECISIONS.md` § Batch 10, DV-D18 · **status:** `floated`
+
 ## ★★ FORCING THE KG INTO THE DECISION LOOP — "the KG shouldn't be ignored, that's what it's there for" (Dave, 2026-07-27)
 **status: FLOATED — explicitly NOT ruled.** Dave, verbatim, mid-session:
 > *"I want you to note that we may create something that will force decisions to check that KG in such

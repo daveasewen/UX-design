@@ -309,9 +309,21 @@ grow LEFTWARD from a 38px gutter into a viewBox whose origin is 0. Measured `get
 Six of six clipped — the gutter is short by at least 17px for this data.
 
 **Why it survived until now:** this is [[univers-measured-facts]] biting geometry. The HSBC cut is
-LOOSER than Helvetica, so a gutter sized against a fallback face fits and the same gutter against the
-licensed face does not. It is invisible in any render that falls back — which is precisely why the
-runbook asserts `document.fonts.check('16px HSBC_MtUnivers_Latin')` before shooting.
+LOOSER than Helvetica, so **a gutter baked against a narrower face fits, and the same gutter under the
+licensed face does not.** The 38px was sized against something narrower than the real cut; the defect
+was born there.
+
+⚠ **WORDING CORRECTED 2026-07-27 (session #6), because the original misled Dave — and would have
+misled the next reader the same way.** The entry read *"invisible in any render that falls back"*,
+which he reasonably took as a claim about **his** environment: *"I have Universe installed so it
+shouldn't use helvetica surely."* **He is right, and the clipping is the proof.** Univers is the
+*looser* face — a Helvetica fallback would render these labels NARROWER and most of them would fit.
+**Seeing the clipping is positive evidence the licensed cut is loading correctly**, on his machine and
+in the measurement above. ⇒ **The fallback caution is about (i) how the 38px came to be baked and
+(ii) MY verification renders**, where the sandbox can silently substitute — which is why the runbook
+asserts `document.fonts.check('16px HSBC_MtUnivers_Latin')` before shooting. **It was never a claim
+about Dave's browser.** *(Filed as a wording defect in its own right: a caution aimed at the render
+harness, written where it reads as a diagnosis of the user's setup.)*
 
 **NOT fixed in lane ①, deliberately.** Widening the gutter re-bakes every `x`/`width` on the h-bar
 figure — a geometry change to a reviewed artefact, not a legend migration. Two candidate shapes, for
@@ -321,6 +333,39 @@ into the same beat as ds-010's sibling checks, with a render as the acceptance t
 "no `text.dv-label` has `getBBox().x < 0`" assertion to the dataviz gate so geometry clipping becomes
 gated rather than eyeballed.** *(The gate would have to run in a browser — today it cannot; log as the
 reason the assertion is a recommendation and not a patch.)*
+
+### ★ RULED 2026-07-27 (session #6) — **(b) GUTTER-RELATIVE PLOT AREA**
+
+**Dave re-reported the defect cold**, from a screenshot of the same figure, without reference to this
+entry — *"we have cropping of the labels on the horiz-bars"* — and then ruled the fix shape:
+**(b), the plot area is computed from the widest label, not a fixed number.**
+
+**Why (b) and not the cheaper (a), in his own terms and worth keeping:** a fixed ~60px gutter fixes
+*this data in this face*. **The clipping is driven by two things neither of which is a design
+property** — how long the category names happen to be, and how loose the rendered face happens to be
+([[univers-measured-facts]]: the HSBC cut is looser than Helvetica, which is the whole reason this
+survived review). ⇒ **(a) fixes an instance; (b) fixes the class.**
+
+**⚠ RULED ≠ ENACTED. Not built — the window was flushed before any build.** What the enactment owes:
+
+1. **Compute, don't guess.** The widest label's width is only knowable *after* layout in the real
+   face. A build-time constant re-introduces (a) wearing (b)'s clothes.
+2. **⚠ RE-BAKING RISK — this touches a REVIEWED artefact.** Every `x`/`width` on `cb2` moves.
+   **Attribute the diff** ([[attribute-the-diff]]): render a control before and after, or a correct
+   change will be indistinguishable from a regression, which has nearly reverted good work twice.
+3. **⚠ DO NOT let the plot area collapse.** Making the gutter grow with the label means the bars
+   shrink; at narrow widths a long category can eat the plot. Needs a floor, and the floor needs
+   Dave's eye — it is a legibility trade, not a formula.
+4. **The acceptance test is a RENDER in the licensed cut**, both widths, snippet AND showroom pane,
+   with `document.fonts.check(...)` asserted first. A fallback-face render will pass while broken.
+5. **Ship the gate with it:** *no `text.dv-label` has `getBBox().x < 0`*. ⚠ It needs a browser, so it
+   belongs with the render-proof family (`_verify_dv_*`), **not** in the static dataviz gate — putting
+   it in a static gate is exactly the instrument-fit error the 07-27 pass measured (a STATIC check for
+   a RENDERED property), and it would report a cheerful pass.
+
+**Found by:** Dave, by eye, twice — 2026-07-26 render and again 2026-07-27 cold. ⚠ **The second report
+is itself the signal: a logged, measured, correctly-parked defect was hit again by the user before the
+queue reached it.** Parking is not free; it spends Dave's attention on something we already knew.
 
 ## ds-013 — `srcdoc` re-based every showroom payload's relative URL, so type.css 404'd in ALL 49 panes that link it (2026-07-27, Dave's report → render)
 **✅ FIXED + GATED SAME SESSION.** Dave, cold: *"the labeling on the donut and bars, they are all too
@@ -766,3 +811,67 @@ Compaction was never the problem — **the item was never in the handoff to begi
 **Found by:** Dave, twice, in the first ten minutes of session #5 (*"read the 'do first' … it should have
 a new task"* → *"should be teh pre-flight work, is that correct?"*). **No gate saw it.**
 **Canon it was hiding:** `_RUNBOOK-context-gauge.md` § ★ Half 0b · `_FUTURE-STATE.md` § the throttle.
+
+---
+
+## ds-018 — Legend Reset renders its DISABLED state as the HOVER state (2026-07-27, Dave by eye)
+
+**Status: LOGGED, NOT FIXED. Mechanism is a HYPOTHESIS and is explicitly NOT render-verified.**
+
+**What Dave saw**, verbatim: *"reset disabled style is set at the hover style."* Screenshot: a legend
+row with all three series showing — `A Current`, `B Savings`, `C Investments` all in the plain resting
+treatment — and **`Reset` carrying a heavy ink border**. With every series visible and nothing
+isolated, Reset is `disabled` by construction (`canon/dv-legend.js:122` —
+`st.reset.disabled = (count(st, st.visible) === st.ids.length && !st.isolated)`), so the ink border is
+being painted **on the disabled control**.
+
+**Why that is wrong, by rule not by taste.** The declared cascade (`canon.css`, replicated per chart
+family at `:3531–3539` bar, `:3696–3704` combo, `:3901–3908` donut) is:
+
+```
+.dv-leg-reset            border:1px solid var(--line)              /* resting  */
+.dv-leg-reset:hover:not(:disabled)  border-color:var(--ink)        /* hover    */
+.dv-leg-reset:disabled   border-color:var(--border-disabled)       /* disabled */
+                         color:var(--text-disabled)
+```
+
+The rules are **correct as authored** — `:hover` is even properly fenced with `:not(:disabled)`, so
+this is not a specificity fight. Yet disabled renders at ink, which is the hover value. And **B-D4
+requires disabled to be VISIBLE but recessive** (`_proforma/_BUTTON-DECISIONS.md`; the neighbouring
+comment says so in words — *"default DISABLED (token colours, still VISIBLE)"*). Ink is neither.
+
+### ⚠ HYPOTHESIS — stated as a hypothesis, to be PROVEN or KILLED by render, never assumed
+
+If **`--border-disabled` does not resolve in the context being viewed**, `border-color:var(--border-disabled)`
+becomes **invalid at computed-value time**, and `border-color` falls back to its inherited/initial
+value — `currentColor` — which on this surface is **ink**. **A failed token lookup would therefore
+produce exactly the hover appearance, in silence.**
+
+That is the repo's signature defect class, and this would be **instance five**: ds-010 (author CSS beat
+`fill=`) · ds-013 (404 stylesheet re-based by `srcdoc`) · the 07-27 black chart keys (local mirror
+missing the new var) · ds-016 (index cannot see the rule) · **this**. In every one the markup is
+CORRECT, the lookup misses, and **nothing reports it** — see [[silent-lookup-failure-class]].
+
+⚠ **Competing explanation that must be eliminated first:** `--border-disabled` may resolve perfectly
+well and simply be *set to an ink-ish value* in the theme in view. That is a token-value bug, not a
+lookup bug, and it has a completely different fix. **Do not choose between them by reading CSS** —
+`getComputedStyle` on the disabled Reset, in the snippet AND the showroom pane, at two widths, per
+`_RUNBOOK-render-verify.md`. Read the *resolved* value of both `--border-disabled` and `border-color`.
+
+### ⚠ ANTI-FALSE-FIX
+
+1. **Do not hard-code a grey on `:disabled`.** That silences the symptom and, if the cause is a failed
+   lookup, leaves every other consumer of `--border-disabled` broken and invisible.
+2. **Do not "fix" it by tightening the `:hover` selector.** `:not(:disabled)` is already there; a
+   change that makes the symptom go away without explaining the ink value has not found the defect.
+3. **Fix it in `canon.css`'s generator, not in `canon.css`** — the block is replicated per chart family
+   (bar · combo · donut, and line/scatter/sparkline should be checked), so a hand-patch fixes one of N.
+   ⇒ If the cause is real, this is a **GATE candidate**, not a patch: *no interactive control may resolve
+   its disabled treatment to the same computed value as its hover treatment* — cheap, mechanical, and it
+   would have caught this the day it landed. See [[feedback-gate-dont-patch]].
+
+**Found by:** Dave, by eye, from a screenshot — **no gate saw it**, and the declared-pairs contrast
+check cannot: both values are legal colours, the defect is that they are the SAME one.
+**Related:** DV-D17 (same legend, same session) · B-D4 disabled-but-visible · `dv-016`/`icon-011`,
+the two BLOCKING contrast rules the 07-27 instrument-fit pass flagged as having STATIC gates for a
+COMPOSITED property — this is that gap, arriving as a real defect.

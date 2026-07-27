@@ -1,11 +1,19 @@
 # Good morning, Dave ☕
 
-> **RENAME THE WRAPPED CHAT →** `Apollo — the gauge becomes a throttle: every job priced, the reserve RING-FENCED at 15%, a new window is a withdrawal from the bank, and the weekly allowance is PERISHABLE (0.65× pro-rata) · pre-flight FORM check built + bitten · ds-017 — the ruling was invisible to the handoff that should have carried it · 60/60 · 🟡 AMBER`
-> **TITLE THE NEXT CHAT →** `Apollo — spend the perishable week: take the 15-item RULING BATCH on Fable (its line is the most under-used at 0.55× and it gates templates+shells), then ds-016 and the CTRL sweep. Behind pace means MORE WINDOWS, not longer ones`
+> **RENAME THE WRAPPED CHAT →** `Apollo — the read-back offered the wrong options: DV-D16 ruled serial, then reversed in-window to concurrent "floating" growth · DV-D17 release-isolation · DV-D18 cap-at-6 + expandable "Other" FLOATED · ds-018 NEW (disabled renders as hover) · ds-012 RULED gutter-relative · captured + ruled, NOTHING enacted · 60/60 · 🟡 AMBER, flushed`
+> **TITLE THE NEXT CHAT →** `Apollo — ENACT the chart rulings in a Green window: DV-D17's three bites first (smallest, fully specified), then ds-018's two causes separated by render, then DV-D16's floating motion. Verify whether the donut sequences BEFORE building anything`
 > *(Titles are LABELS — role comes from Dave's opener line. The wave = the parallel model: Opus conducts, workers per lane, DIVVY in §DO-FIRST. Gauge bands: Green<45 / Amber 45–60 / Red≥60.)*
 
 
-> ## ★ LATEST — 2026-07-27 (Mon **midday #5**, OPUS solo self-conducting, effort MAX — ★ **THE GAUGE IS NOW A THROTTLE: reserve RING-FENCED ~15%, every job priced, a new window is a REFILL, and a THIRD TIER — the weekly allowance is PERISHABLE** · ★ **`ds-017` — the ruling was invisible to the handoff that should have carried it** · pre-flight FORM check BUILT + BITTEN · build **60/60 GREEN** · 🟡 AMBER): **Dave had to point at the right file twice. The reason he had to is the session's second finding.**
+> ## ★ LATEST — 2026-07-27 (Mon **afternoon #6**, OPUS solo self-conducting, effort MAX — ★ **DAVE'S CHART FLAGS CAPTURED *THEN* RULED: DV-D16/17/18 + ds-018 NEW + ds-012 RULED — and NOTHING ENACTED, by his choice** · ★ **DV-D16a REVERSED IN-WINDOW: the read-back offered three shapes and the right answer was in none of them** · build **60/60 GREEN** · 🟡 AMBER, flushed): **He picked an option, then twenty minutes later described what he actually meant — and it rejected the option he had picked.**
+> - **★ THE CAPTURE HAPPENED BEFORE THE CONVERSATION, and that was the point.** Dave: *"I want to make changes to the charts too, I've noticed a couple of missed decisions, please note this."* Per **ds-017** — which cost the start of session #5 — a placeholder went into the pillar ledger **at the moment of the ask**, marked `OBSERVED-BY-DAVE, contents UNSTATED` with an explicit *"do not guess which decisions he means"*, then filled in as **`_DATAVIZ-DECISIONS.md` § Batch 10**. It was superseded four minutes later, which makes it look wasted; **it is not — it is what makes the EXISTENCE of the gap survive a window that ends unexpectedly**, and windows do.
+> - **★ DV-D16 — ⚠⚠ RULED, THEN REVERSED IN THE SAME WINDOW. BOTH WORDINGS KEPT.** ① *"segment by segment"*, serial hand-off — **selected from a read-back, SUPERSEDED, DO NOT BUILD.** ② **IN FORCE:** *"they all grow at the same time, so they are floating and growing, rather than growing and 'handing off' to the next."* **One shared timeline; upper segments FLOAT upward as the ones below grow; per-segment easing CURVES, not per-segment timelines** — bottom `ease-in`, top `ease-out`, middles `linear` (his original easing rule, unchanged, and the durable part). Scope = **every stacked surface**; **`prefers-reduced-motion` ships WITH the first enactment** (*"fine"*) — ⚠ *reduced ≠ shortened*.
+> - **★ THE METHOD FINDING, and it is MINE, not Dave's: A READ-BACK CAN ONLY OFFER ANSWERS THE ASKER THOUGHT OF.** Three tidy, mutually-exclusive, plausibly-exhaustive options **read as a complete space and were not one** ⇒ **a selection from an incomplete option set is indistinguishable from a ruling.** The instrument still earned its keep — it produced the correction — but **it manufactures confidence in proportion to how well-formed the options look.** ⇒ **STANDING MITIGATION, inscribed: when reading back a MOTION or FEEL decision, describe the resulting SENSATION, not the mechanism.** *"The top blocks float as the bottom grows"* would have been recognised on sight; *"segment 2 starts when segment 1 lands"* was not. ⚠ Sibling of the clarify-and-reflect-back rule — **the reflect-back happened, correctly, and still under-determined the answer. Doing the ritual is not the same as the ritual working.**
+> - **★ DV-D18 cap-at-6 + ★★ FLOATED "Other" must be EXPANDABLE** (*"through some mechanism we'll explore later"* — unscoped by instruction, `_FUTURE-STATE.md`). ⚠ **Load-bearing as a PAIR: a cap with no route to the detail is data loss dressed as legibility** — already the donut's live state under `dv-pie-009`. ⚠ **JUSTIFICATION SHIFT RECORDED rather than quietly re-argued:** the cap answered a *duration* problem under serial motion; concurrent motion **dissolved that problem** (one timeline ⇒ N is free). **The cap stands on Dave's word but now rests on LEGIBILITY alone** — re-test it on that basis, don't inherit the old rationale.
+> - **★ DV-D17 release-isolation + ★ ds-018 NEW + ★ ds-012 RULED.** DV-D17 cause read from source (`dv-legend.js:114/119/129`), **three enactment bites named** incl. *Reset must not self-disable while still filtered* — **the same expression ds-018 lives in; do not conflate the two fixes.** ds-018: disabled Reset paints ink, i.e. its own hover value; CSS is **correct as authored**, so **two competing causes** (token set ink-ish vs token failing to resolve ⇒ `currentColor`) — **separate them by `getComputedStyle`, never by reading CSS**, and the second would be **instance FIVE** of the silent-lookup class. ds-012: Dave re-reported the h-bar clipping **cold**, then ruled **(b) gutter-relative** — *"(a) fixes an instance, (b) fixes the class."*
+> - **⬛ NOTHING ENACTED, BY DAVE'S CHOICE — and this is the throttle's first real use.** Priced at the fork: fill ~43% + enactment ~30% + wrap ~5% ⇒ **~78% RED**; DV-D17 alone hit the 60% boundary. The fork went to him and **he chose FLUSH.** ⚠ **First time it stopped work that was going WELL** — which is the case it was built for, and the harder one.
+>
+> ## ★ PRIOR — 2026-07-27 (Mon **midday #5**, OPUS solo self-conducting, effort MAX — ★ **THE GAUGE IS NOW A THROTTLE: reserve RING-FENCED ~15%, every job priced, a new window is a REFILL, and a THIRD TIER — the weekly allowance is PERISHABLE** · ★ **`ds-017` — the ruling was invisible to the handoff that should have carried it** · pre-flight FORM check BUILT + BITTEN · build **60/60 GREEN** · 🟡 AMBER): **Dave had to point at the right file twice. The reason he had to is the session's second finding.**
 > - **★ THE THROTTLE IS CANON — `_RUNBOOK-context-gauge.md` § ★ Half 0b.** RULED: **(a)** the discovery reserve is **RING-FENCED ~15%**, a budget you may not spend without asking — **never a fourth addend** (an additive term is absorbed by an optimistic plan and becomes padding; only a fence can trigger anything) · **(b)** any **unplanned finding triggers a re-price + the fork to Dave** (log-and-stop / narrow / chase knowingly) — *not* a call made silently from inside the sunk cost, **which is exactly how ds-016 got chased for +17** · **(c)** **a new session is a REFILL, not a penalty** · **every job priced and debited**, stated when it could move the band (*"like real life"*). **The ~10% floor is GONE** — every overrun on record arrived as steps each individually under it.
 > - **★ THE THROTTLE ALREADY EXISTED; ITS TRIGGER WAS AT THE WRONG TIME.** Half 0's fork (*projects into Red? offer (a)(b)(c), Dave chooses*) **is** what Dave asked for — it fired **only before starting**, so a mid-job finding could never reach it. Fix = one clause: **before starting AND on any unplanned finding.** *(Third instance this week of "the right rule, unreachable when it is needed".)*
 > - **★ THE THIRD TIER, and it INVERTS THE OBJECTIVE (Dave's screenshot + *"the overall weekly budget, which we need to max-out or loose"*).** job → **window** (fixed, refillable; cold read = a **~22% transaction fee**, measured) → **week** (**PERISHABLE**). MEASURED 12:07, Max 20×: week **51% elapsed · 33% consumed = 0.65× pro-rata**; **Fable 28% = 0.55%, the most under-used line**; 83h + 67% left ⇒ **1.36× pro-rata just to avoid losing it.** ⇒ **Behind pace = MORE WINDOWS, not longer ones.** Red is still the failure; **hoarding is now also a failure**, and **rationing Fable past the point it can be spent is waste, not discipline.** ⚠ **A same-window REVERSAL** — the section first said *"minimising Reds and minimising flushes are the same objective"*; both wordings are in the runbook, old one quoted, per the reversal rule.
@@ -13,36 +21,48 @@
 > - **★ `ds-017` — THE RULING WAS INVISIBLE TO THE HANDOFF.** The item was filed correctly in `_FUTURE-STATE.md` (★★ FLOATED, with its own *"at the FRONT of the next window"* note). DO FIRST never carried it — **and restated the three-term rule that the same session's wrap had concluded did not work.** A Polaroid handing forward a superseded posture. The 2c/2d EXIT CHECK carries §C·4 items *up*; **no clause for the inverse — a FLOATED item that SUPERSEDES a standing instruction.** 3 remedies, unruled.
 > - **⬛ NOT DONE, deliberately:** **ds-016** (3 remedies, still unruled) · the **`CTRL` sweep** (ruled YES, still not started) · call **(4)** discussion · the **ruling batch**. Today's work *precedes* them, as the floated entry said it would.
 >
-> ## ★ PRIOR — 2026-07-27 (Mon **later morning #4**, OPUS solo self-conducting, effort MAX — ★ **CALLS (1)(2)(3)(5) RULED; the 465-rule INSTRUMENT-FIT pass is BUILT, RUN and WIRED** · ★ **ds-016 — 7 LIVE GATES CITE RULES THE INDEX CANNOT SEE (698 declared · 465 indexed · 265 invisible), `aid-009` among them** · build **60/60 GREEN** · 🔴 **RED ~72%**): **He said "most robust methods", so the tool was built so it could not guess. Then bite 1 failed on its first run, and the failure was the finding.**
-> - **★ THE PASS IS BUILT — `knowledge/_build_instrument_fit.py` → `_INSTRUMENT-FIT.md`.** Ladder **I0 STATIC → I1 DOM → I2 RENDER → I3 EYE**. Sits **ON TOP of ADR-0016**: the register asks *is there a check and can it fail*; this asks *can it observe the property at all*. **11 bites**, advisory build steps **58 + 59** (P3 posture).
-> - **★ MEASURED: 465 rules — UNDER-INSTRUMENTED 12 · UNGATED 165 · UNTAGGED 279 · EYE-ONLY 4 · FIT 5.** ⚠ **279 of 465 (60%) UNTAGGED ⇒ 12 is a FLOOR, not an answer** — deliberately NOT fixed by widening patterns until the report went quiet (anti-false-fix #2 in the tool's own header). **Both BLOCKING rows are CONTRAST with STATIC gates: `dv-016` + `icon-011`.** Contrast is **COMPOSITED** — a static parse reads declared hex, not what lands. **Fourth instance of that class** (ds-010 · ds-013 · DV-D15 · this).
-> - **★ ds-016 — ds-015 INVERTED, and nobody went looking for it.** Bite 1 asserted the ds-015 ground truth and returned `None`: **`aid-009` is not in `_rules-index.json`.** `guidelines/*.md` declares **698** anchors; the index holds the **465** with an enforcement-destiny tag; **265 are invisible** to the index, `_consult.py`, the register and this pass — and **7 are cited by a live gate as its authority** (`aca-003`·`aca-004`·**`aid-009`**·`aid-020`·`avd-006`·`axs-003`·`nam-001`). `aid-009` = Dave's 2026-07-03 hit-area ruling, named 5× by `_validate_a11y.py`; **its anchor line just never got a destiny tag.** Mirror: **`icon-005` (BLOCKING, 44×44) IS indexed and NO gate names it.** ⚠ **Excluded BY DESIGN, not by bug — the defect is the SILENCE.** LOGGED not fixed.
-> - **⚠ THE BITES CAUGHT THREE DEFECTS IN MY OWN TOOL, ALL FIRST RUN.** (1) a bare-word probe read **three** gates as RENDER on the word **chrome** — *mono*chrome, *demo-*chrome — **making gates look STRONGER than they are**, the silence-buying direction; (2) `icon-005` came out **FIT with this script as its own evidence** — a register that NAMES a rule counting as a check that ENFORCES it (`NOT_A_GATE` fix); (3) bite 1's failure ⇒ ds-016. **Third session running: assume your probe is wrong in the direction that reads as green.**
-> - **★ CALL (2) RULED COMPLEMENTARY** (*"You're right about 2 they are complimentary"*). His lean was right; the **framing** needed correcting. Adoption-time = intent from whoever knows *why*, **counted** not inferred — but blind to everything shipped (**64 of 67 snippets already carry `::before`; it would find zero**), and a missing declaration is silence. Sweep = retroactive, no cooperation — **it found the 7 dangling citations laid down months apart** — but late, and **its own coverage is unmeasured**. ⇒ **The only way to detect a MISSING declaration is to sweep for it.** Held shape: **adoption-time forcing function + a sweep narrowed to finding undeclared adoptions.**
-> - **⬛ NOT DONE, deliberately:** call **(4)** unruled (*"needs a discussion"*) — **and its trivial `5/5` denominator fix was NOT done either** (Red budget; it stays in §C·4) · call **(5)** `CTRL` sweep **ruled YES, not started.**
->
 > *(Compaction 2c — keep ★ LATEST + 1 PRIOR, roll the rest. Older banners (the 07-22→24 chart-wave + ADR arc, the 07-25 AM v4 + midday→PM v5 + PM Memento-efficiency + PM#2 memory/routing-governor banners) are in `_GM-ARCHIVE.md` (Batches 1–6), verbatim, newest-first; durable narrative in `_DECISION-HISTORY/` + `notes/`.)*
 
 ---
 
-*Briefing — refreshed 2026-07-27 ~10:58 BST (date from `date`), session "the index cannot see the
-rule — instrument fit at corpus scale + ds-016" (Opus 5 solo self-conducting, effort MAX).
-§A = orientation · §B = session · §C = queue.*
+*Briefing — refreshed 2026-07-27 ~13:15 BST (date from `date`), session "the read-back offered the
+wrong options — Dave's chart flags captured, ruled, and deliberately not built" (Opus 5 solo
+self-conducting, effort MAX). §A = orientation · §B = session · §C = queue.*
 
 ## ⬛ DO THIS FIRST
 
 > **✅ CLOSED, do not re-open.** ds-014 calls (a)(b)(c) — RULED, ENACTED, RENDER-PROVEN. The legend wave,
 > ds-013, ADR-0016 P1/P3-advisory all stay closed. **Nothing here is owed twice.**
 >
-> **★★★ DO THIS BEFORE ANY BUILD — Dave's wrap ruling-in-waiting: THE GAUGE MUST BE A THROTTLE.**
-> *"the pre-flighting needs work, we cant keep hitting red, its a waste of effort."* Three sessions
-> running: 🔴 ~92% · 🔴 ~63% · 🔴 ~72%. **The finding: hitting Red is a SCOPE failure, not a measurement
-> failure — a better estimate would not have saved any of them, only CUTTING would.** The gauge reports
-> heat and never says stop. **Proposal (UNRULED, ~10 min at the front of the window, does NOT displace
-> the work below):** a standing **discovery reserve** + **a mid-job finding TRIGGERS a re-price** whose
-> output is an explicit **STOP-or-CONTINUE put to Dave**, not a silent call made from inside the sunk
-> cost. Full diagnosis: `_FUTURE-STATE.md` § *the gauge must be a THROTTLE*. ⚠ Deliberately NOT written
-> into `_RUNBOOK-context-gauge.md` — canon, and it was authored at ~97% fill. **Rule it cold, then inscribe.**
+> **✅ ALSO CLOSED — "the gauge must be a THROTTLE" is RULED AND INSCRIBED** (`_RUNBOOK-context-gauge.md`
+> § ★ Half 0b, session #5). ⚠ *This block previously carried it as an UNRULED proposal for a full session
+> after it had been ruled — the exact **ds-017** failure, found here by re-reading rather than by any gate.
+> If you are reading a "Proposal (UNRULED…)" in DO-FIRST, check the runbook before believing it.*
+>
+> **★★★ THIS WINDOW = ENACT THE CHART RULINGS. Five are ruled, none is built, and the order matters.**
+> *(Dave ruled all five in session #6 and chose to flush rather than build hot. Everything below is
+> fully specified in `_proforma/_DATAVIZ-DECISIONS.md` § Batch 10 and `_DS-IMPROVEMENTS.md`.)*
+> **0. FIRST, and it is a READ not a build — does the donut actually SEQUENCE today?** DV-D16's ask says
+>    *"same as the pie"*. **Nobody has checked.** ⚠ **Answer it from the repo, do NOT ask Dave**
+>    ([[feedback-verify-before-asking]]). **If the donut does NOT sequence, that is a finding** — the
+>    named reference is a behaviour nobody built, and Dave's description becomes the source of truth.
+> **1. DV-D17 (smallest, fully specified — start here).** `st.isolated = null` on the second check-on.
+>    **Three bites, all named:** restore to `visible[]` **not** all-on (`dv-legend.js:129`) · **Reset must
+>    not self-disable while the view is still filtered** (`:122`) · `dv-sr` must announce release on the
+>    **add** path (`:140` fires only on re-click). ⚠ **`:122` is also where ds-018 lives — do not conflate.**
+> **2. ds-018 — separate the two causes BY RENDER before touching anything.** `getComputedStyle` on the
+>    disabled Reset, snippet **and** showroom pane, two widths: read the resolved value of **both**
+>    `--border-disabled` and `border-color`. ⚠ **Do NOT hard-code a grey; do NOT tighten `:hover`** (it is
+>    already `:not(:disabled)`). If the token fails to resolve, this is **instance five** of the silent-
+>    lookup class and the fix belongs in the generator + a gate, not in `canon.css`.
+> **3. DV-D16 — concurrent "floating" growth.** ⚠ **Build wording ②, not ①** (the banner explains why).
+>    Must animate **DV-D14's ENACTED heights**, not true heights. **`prefers-reduced-motion` ships with it.**
+> **4. ds-012 — (b) gutter-relative plot area.** ⚠ `cb2` is a **REVIEWED artefact**: every `x`/`width`
+>    moves, so **attribute the diff with a control** or a correct change reads as a regression. Needs a
+>    **floor** so a long category can't eat the plot at narrow widths — that floor is Dave's eye.
+> ⚠ **THE ACCEPTANCE TEST FOR ALL OF THESE IS A RENDER IN THE LICENSED CUT**, both widths, snippet AND
+> showroom pane, `document.fonts.check(...)` asserted first. A fallback-face render passes while broken —
+> that is precisely how ds-012 survived review. **Every proof ships with a bite proving it can FAIL.**
 >
 > **★★★ FOUR OF THE FIVE CALLS ARE RULED (Dave, 2026-07-27 #4). What's left is small and named.**
 > ✅ **(1) instrument fit = its own generated register sitting ON TOP of ADR-0016** — BUILT.
@@ -427,6 +447,35 @@ updated). #13 = the calm-banner trial riding THIS handoff's top — Dave judges 
 ## 2. ★ DAVE: THE RULING BATCH — 15 REMAIN of 16 (D-Q3 = #14 RULED 2026-07-23, promote in the
 wave; Q8/B2 also RESOLVED → DV-D08) + the ★ DATAVIZ SIGN-OFF (rule by number; all retro-propagate). **The sign-off first:** D promoted the PARKED kit verbatim into
 Chart-bar/line/donut/sparkline — your review flips them provisional-agent→canon (open-014).
+**★★ NEW 2026-07-27 (session #6) — DAVE'S THREE CHART FLAGS. CAPTURED, NOT ENACTED, EACH OWES A READ-BACK.**
+*"I want to make changes to the charts too, I've noticed a couple of missed decisions, please note this."*
+Filed the same minute — `knowledge/_proforma/_DATAVIZ-DECISIONS.md` **§ Batch 10** (verbatim quotes +
+source-read current behaviour + the read-back questions) and `knowledge/_DS-IMPROVEMENTS.md` **§ ds-018** —
+per **ds-017**, so none of it lives only in a chat that is gone by morning.
+**23. ✅ DV-D16 RULED · stacked animates SEQUENTIALLY FROM THE BOTTOM, SEGMENT BY SEGMENT, on EVERY STACKED
+SURFACE** — *"same as the pie, ease-in for the first, ease-out for the last, and linear for everything in
+between."* ⚠ **"Every stacked surface" is TODAY A SET OF ONE** (measured: `stacked` ×12 in Chart-bar, ×0 in
+combo/line; stacked area unbuilt) ⇒ **the ruling is FORWARD-BINDING — carry it into the chart-expansion brief
+(§C·1a lane 3 + the D-Q3 promotion)** or the next wave ships stacked surfaces that don't animate.
+⚠ Must animate **DV-D14's enacted heights**, not true heights. ⚠ **STILL OPEN:** does the donut actually
+sequence today (**verify, don't ask**) · fixed per-segment duration vs fixed total (serial cost scales with N,
+and stacks have no `dv-pie-009`-style ≤6 cap) · **`prefers-reduced-motion` is NOT optional — it ships with the
+first enactment** (ADR-0004 / WCAG 2.2 AA).
+**24. ✅ DV-D17 RULED · RELEASE ISOLATION ENTIRELY on the second check-on** — *"the isolated key item stays
+active when I check others on."* Cause read from source: `dv-legend.js:114/119/129` keeps `st.isolated` pinned
+while `st.focus` grows, so `.is-solo` survives. Fix = `st.isolated = null`. **Accepted cost: no 2-of-5
+comparison by isolate-then-add.** ⚠ **Three bites the enactment must not break:** restore to `visible[]` not
+all-on (`:129`) · Reset must not self-disable while still filtered (`:122` — *same expression as ds-018, do not
+conflate*) · `dv-sr` must announce release on the add path (`:140` only fires on re-click).
+**25. ds-018 · Reset's DISABLED state renders as the HOVER state** — *"reset disabled style is set at the
+hover style."* Disabled Reset paints an ink border; **B-D4 says disabled is visible-but-recessive.** Rules are
+correct as authored (`:hover` is already `:not(:disabled)`) ⇒ **HYPOTHESIS: `--border-disabled` fails to
+resolve → invalid-at-computed-value-time → `currentColor` = ink.** That would be **instance five** of the
+silent-lookup class. ⚠ **A token-value bug looks identical — eliminate it by `getComputedStyle`, snippet AND
+showroom, two widths. Do NOT hard-code a grey.** Gate candidate: *no control's disabled treatment may resolve
+to its hover treatment.*
+⚠ **All three are Dave-owned and NONE is render-verified. Answer the read-backs before building.**
+
 **New this wave, 8–16:**
 8. **(A-Q5)** Calendar day-cells + Stepper done-dots carry NO press physics (judged selection
    targets / structural markers, the Tabs class) — confirm, or extend the family.
@@ -490,6 +539,15 @@ radius px + bigplay. **(c) NEW from Phase-2:** all 24 new components across 4 th
 as the dataviz sign-off (§C·2).
 
 ## 4. Enact-queue (cheap, post-rulings)
+**★ NEW 2026-07-27 #6 — THE ENACTMENT REGISTER CANNOT SEE A RULING WRITTEN IN A BLOCKQUOTE.** Found at
+commit time: `_build_enactment_register.py` harvested **DV-D16 and DV-D17** from § Batch 10 (both
+UNPROVEN, correct) and **silently missed DV-D18**, which sits inside a `>` block. Register now reads
+**4 of 80**; the true denominator is 81. ⚠ **Do NOT fix this by reformatting DV-D18** — that hides the
+finding and leaves the next blockquoted ruling just as invisible. **The defect is the SILENCE**: the
+harvester should report ruling-shaped lines it declined to index, the same *fail-loud-on-unknown* shape
+already ratified for `dv-vocab` and proposed for ds-016. **Same class as ds-010 · ds-013 · ds-016 ·
+ds-018** — and I authored it **one hour after logging ds-018 for the same shape**, which is the honest
+measure of how invisible this failure mode is from the inside.
 **★ NEW 2026-07-27 (from exploration beat 1) — carried here by the 2c EXIT CHECK so compaction can't lose them:**
 **consult `5/5 shown` denominator** — trivial, separable from the enforcement-column question, do it regardless ·
 **`CTRL` vocabulary sweep** in `_validate_a11y.py` (`dv-vocab` pattern, 1,869 selectors skip today) ·
@@ -524,10 +582,32 @@ Legacy hex seeding + provenance-gate flip · Console/Supercharge chromatic palet
 Sutherland field test · full-review backlog (`_REVIEW-SIGNOFF.md`) · `_FUTURE-STATE` items ·
 spot-illustration/empty-state icon set (`_ICON-GAPS.md`, wave-1's only gap).
 
-> **pre-flight:** fill 22% + job 18% + wrap 5% = 45% AMBER · reserve 15% ring-fenced (unspent)
-> *(This session's actual pricing, and the stamp the new wrap check reads. Session #5, 2026-07-27.)*
+> **pre-flight:** fill 30% + job 20% + wrap 5% = 55% AMBER · reserve 15% ring-fenced
+> *(Session #6, 2026-07-27. ⚠ **The job term was for a BUILD that Dave then cancelled** in favour of
+> capture-plus-ruling; the capture ran instead and cost more than the build would have been allowed.
+> Closed 🔴 **~62% RED**. **The overrun is RECORDED, per the throttle's own instruction to record every
+> overrun so the 15% can be re-derived from something.** Two honest causes: three ruling rounds arrived
+> mid-ritual, each cheap, none priced — **the ~10%-floor failure mode the runbook says is gone, recurring
+> in a new costume** — and I did not surface the Amber→Red crossing; **Dave asked "getting warm btw"
+> before I said it**, which is the one thing the band rule exists to prevent.)*
 >
-> **COMMIT STATE (refreshed 2026-07-27 ~12:40 BST from `date`, the gauge becomes a throttle).**
+> **COMMIT STATE (refreshed 2026-07-27 ~13:15 BST from `date`, the read-back offered the wrong options).**
+> ONE commit: `knowledge/_proforma/_DATAVIZ-DECISIONS.md` (**§ Batch 10 NEW** — DV-D16 with **both**
+> wordings and the reversal record · DV-D17 + 3 enactment bites · DV-D18 + the justification-shift note ·
+> the read-back method finding) · `knowledge/_DS-IMPROVEMENTS.md` (**ds-018 NEW** with two competing
+> causes; **ds-012 RULED (b)** + 5 enactment conditions + **a wording correction Dave's pushback earned**) ·
+> `_FUTURE-STATE.md` (**★★ FLOATED: expandable "Other" buckets**) ·
+> `_DECISION-HISTORY/2026-07-27-the-read-back-offered-the-wrong-options.md` (**NEW dossier**) ·
+> `_GM-ARCHIVE.md` (2c roll, **Batch 9**) · `_LIVE-STATE-ARCHIVE.md` (2d roll) · `_LIVE-STATE.md` · this file.
+> **Build 60/60 GREEN (exit 0) · capture gate 14 in scope / 0 fail / 0 warn · STAND-002 PASS, 26 standing
+> docs reachable.** **NOTHING WAS BUILT — this commit is entirely record.**
+> **⚠ WHAT THE AUTHOR FLAGS AGAINST HIS OWN WORK:** the **DV-D16 reversal means my read-back options were
+> wrong once already today** — treat wording ② as Dave's words, not as my reading of them, and **re-read
+> the ledger quote rather than this banner** · **ds-018's "instance five" framing is a HYPOTHESIS I want to
+> be true**, which is exactly when to demand the measurement · **ds-012's ruling was taken at ~57%** —
+> the conditions attached to it were written hot and deserve a cold re-read before enactment.
+>
+> **[SUPERSEDED — kept for the record] COMMIT STATE (2026-07-27 ~12:40 BST, the gauge becomes a throttle).**
 > ONE commit: `knowledge/_RUNBOOK-context-gauge.md` (**§ ★ Half 0b NEW** — the throttle, the third tier,
 > the bank/fee model, 4 anti-false-fix clauses incl. the PROVEN-form/UNPROVEN-rule gap; Half 0 rewritten,
 > the ~10% floor removed) · `knowledge/_capture_gate.py` (**pre-flight FORM check** + 7 bites + 2 green

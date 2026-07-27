@@ -344,6 +344,122 @@ Source of these rulings: the exported review comment-pins on the REVIEW copy (ba
   all. Added `pathLength="2400"` to normalise the path so the dash-draw spans the whole animation (and
   it's immune to the responsive rescaling). Now the line and the eased node cadence share one timeline.
 
+## Batch 10 — Dave's flags, 2026-07-27 (session #6) — RULED SAME SESSION, NOT YET ENACTED
+
+*Captured at the moment of the ask, before any build, per **ds-017**; read back as explicit options and
+**ruled by Dave in the same window**. Dave's words are quoted verbatim. ⚠ **RULED ≠ ENACTED — nothing
+below has been built, and nothing below has been render-verified.***
+
+> **★ THE RULINGS (Dave, 2026-07-27 session #6, option-select read-back then a same-session reversal):**
+>
+> **⚠⚠ DV-D16a — REVERSED WITHIN THE SAME WINDOW. BOTH WORDINGS KEPT, per the reversal rule
+> ([[memento-framing]] — a reversal in the ledger can never read as agent drift).**
+> **① FIRST WORDING, ruled then superseded ~20 minutes later — DO NOT BUILD THIS:** *"segment by
+> segment — segment 2 starts when segment 1 lands. Serial, not staggered, not a single shared rise."*
+> Selected by Dave from a three-option read-back.
+> **② SECOND WORDING, IN FORCE — CONCURRENT GROWTH ON ONE SHARED TIMELINE.** Dave, verbatim:
+> *"they all grow at the same time, so they are floating and growing, rather than growing and
+> 'handing off' to the next."* **Every segment animates simultaneously.** Because a stack's upper
+> segments are anchored to the top of the segment below, growing them all at once makes the upper
+> ones **FLOAT upward while growing** — that float is the effect, and it is what *"sequentially from
+> the bottom"* meant. The **easing shape from the original ask is unchanged and is the durable part**:
+> first (bottom) `ease-in` · last (top) `ease-out` · all intermediates `linear` — **per-segment curves
+> on ONE timeline**, not per-segment timelines.
+>
+> **⚠ WHY THE FIRST WORDING WAS WRONG, and it is a METHOD finding, not a Dave finding.** The
+> read-back offered three shapes — serial · one-rise-revealing-in-order · fixed stagger — and
+> **the correct answer was in none of them.** Dave picked the closest available option; twenty minutes
+> later he described what he actually meant, and it rejected the option he had picked, in its own
+> words (*"rather than growing and 'handing off' to the next"* is a direct rejection of the serial
+> wording). ⇒ **An option-select read-back can only surface answers the asker thought of, and a
+> selection from a wrong option set reads exactly like a ruling.** It is a *better* instrument than an
+> open question — it produced the correction — but **it manufactures false confidence when the option
+> set is incomplete.** ⇒ **Standing mitigation: when reading back a MOTION or FEEL decision, describe
+> the resulting sensation, not just the mechanism** — *"the top blocks float as the bottom grows"*
+> would have been recognised or rejected instantly; *"segment 2 starts when segment 1 lands"* was not.
+> *(Sibling of [[feedback-clarify-reflect-back]]; the reflect-back happened and still under-determined
+> the answer.)*
+>
+> **DV-D16b · scope = EVERY STACKED SURFACE**, not Chart-bar alone.
+> **★ DV-D18 · CAP STACKED SEGMENTS AT 6 for now** — Dave: *"Lets cap at 6 for now."* Aligns stacks
+> with `dv-pie-009`'s existing donut cap; remainder buckets to **"Other"**.
+> **★★ FLOATED, Dave's, for a later window — THE "OTHER" BUCKET MUST BE EXPANDABLE.** Verbatim:
+> *"all bucketed 'other' segments should be expandable, through some mechanism we'll explore later."*
+> **Not designed, not scoped, deliberately.** ⚠ **This binds the cap:** DV-D18 is only acceptable
+> *because* the bucketed data stays reachable — **shipping the cap without a route to the detail
+> would be data loss dressed as legibility.** Applies to the donut's existing `dv-pie-009` cap too,
+> which today buckets with no expansion route. Filed to `_FUTURE-STATE.md`.
+> ⚠ **NOTE THE JUSTIFICATION SHIFT, recorded rather than quietly re-argued:** the ≤6 cap was offered
+> as an answer to *duration scaling under serial motion*. **The reversal to concurrent motion dissolves
+> that problem entirely** — a 9-segment stack on one shared timeline takes exactly as long as a
+> 3-segment one. **The cap still stands on Dave's word, but it now rests on LEGIBILITY alone, not
+> duration.** Re-test it on that basis rather than inheriting the original rationale.
+> **DV-D17 · RELEASE ISOLATION ENTIRELY** on the second check-on (`st.isolated = null`).
+>
+> **⚠ FINDING AT RULING TIME — "every stacked surface" is TODAY A SET OF ONE.** Measured, not assumed:
+> `stacked` appears **12×** in `snippets/Chart-bar.reference.html` and **0×** in `Chart-combo` and
+> `Chart-line`; **stacked area does not exist yet** (chart-expansion lane 3, unbuilt) and the
+> grouped/stacked promotion (D-Q3 / ruling-batch #14) is **ruled but not enacted**. ⇒ **The scope choice
+> does not enlarge this window's build; it makes DV-D16 FORWARD-BINDING.** Every stacked surface that
+> lands from here inherits it. **Carry it into the chart-expansion brief** (`GOOD-MORNING` §C·1a lane 3
+> stacked area + the D-Q3 promotion) or the next wave will build stacked surfaces that don't animate.
+>
+> **✅ `prefers-reduced-motion` — CONFIRMED BY DAVE ("fine"): it ships WITH the first enactment**, not
+> after. Accessibility floor, ADR-0004 / WCAG 2.2 AA. ⚠ **"Reduced" is not "none"** — the honest
+> reduced-motion form of this is the final state rendered immediately, or a single opacity fade; do
+> **not** ship a version that merely shortens the duration and call it satisfied.
+> **⚠ THE DURATION QUESTION IS NOW MOOT — recorded because its disappearance is itself the evidence
+> the reversal was real.** Under the superseded serial wording, total duration scaled with segment
+> count and needed a ruling (fixed per-segment vs fixed total). **Under concurrent motion there is one
+> timeline, so N does not affect duration at all.** No ruling needed; the question is closed by the
+> reversal, not by an answer.
+
+- **DV-D16 · Stacked chart animates SEQUENTIALLY FROM THE BOTTOM, with a shaped easing cadence.**
+  Dave, verbatim: *"the stacked chart should animate sequentially from the bottom, same as the pie,
+  ease-in for the first, ease-out for the last, and linear for everything in between."*
+  **The easing rule is unambiguous and is the durable part:** first segment `ease-in` · last segment
+  `ease-out` · all intermediate segments `linear`. Reads as one continuous gesture — the stack starts
+  gently, runs at constant speed, settles gently — rather than N independently-eased segments, which is
+  why the middle is linear. Sibling of the existing line/node shared-timeline ruling (Batch 9 tail).
+  **RULED (2)** → **⚠ first "segment by segment", then REVERSED same session to CONCURRENT growth on
+  one shared timeline — see the ⚠⚠ block above; wording ② is in force.** **RULED (3)** → **every
+  stacked surface** (see the forward-binding note above).
+  **STILL OPEN (1)** — *"same as the pie"* names the donut as the
+  reference, but **whether the donut sequences today has NOT been checked.** Deliberately not asked of
+  Dave: it is answerable by reading the repo ([[feedback-verify-before-asking]]). **Check it first, and
+  if the donut does NOT sequence, that is itself a finding** — it would mean the reference for this
+  ruling is a behaviour nobody has built, and Dave's description becomes the source of truth.
+  Edges: relates(DV-D14) — DV-D14 already moves segment geometry, so the animation must animate the
+  ENACTED heights, not the true ones, or the two rulings will fight.
+
+- **DV-D17 · The isolated key must NOT stay active once other series are checked back on.**
+  Dave, verbatim: *"the legend behaviour, the isolated key item stays active when I check others on."*
+  **Current behaviour, read from source (not inferred):** `canon/dv-legend.js:114` sets
+  `solo = st.isolated === id` and `:119` toggles `.is-solo` from it; isolate mode keeps `st.isolated`
+  pinned to the originally-isolated id while `st.focus` grows (`:129` — *"checking one ADDS it at
+  full"*). So the first-isolated row keeps `.is-solo` — `border-color:var(--ink)` + a 6% ink fill
+  (`canon.css:3506`) — even after the focus set is no longer a set of one. **That is the black-bordered
+  "B Savings" in Dave's screenshot.** The marker claims *isolated* while three series are showing.
+  **★ RULED — (a) RELEASE ISOLATION ENTIRELY.** The moment a second series is checked on,
+  `st.isolated = null` and `st.focus = null`; the row returns to its resting treatment and the legend
+  leaves isolate mode. **Accepted cost, stated at ruling time:** you cannot build a 2-of-5 comparison
+  by isolating then adding — the second click ends isolation rather than growing a focus set. **The
+  simplicity is the point**; a mode that persists invisibly is what produced the defect.
+  **⚠ THREE THINGS THE ENACTMENT MUST NOT BREAK, and each is a bite:**
+  **(i)** `dv-legend.js:129` currently leaves `visible[]` untouched during isolate specifically so
+  release can restore it — **releasing on add must restore to `visible[]`, not to all-on**, or the
+  ruling silently becomes a Reset. **(ii)** `:122` computes Reset's disabled state from
+  `count(visible) === ids.length && !isolated` — with `isolated` now null, **Reset must not disable
+  itself while the view is still filtered.** ⚠ This is the same expression ds-018 lives in; do not
+  conflate the two fixes. **(iii)** the `dv-sr` live region (DV-D11 chrome clause) announces every state
+  change — **"Isolation released" must fire on the add path too**, not only on the label re-click at
+  `:140`, or screen-reader users get a silent mode change.
+
+- **ds-018 · Reset's DISABLED state renders as the hover/active style.** Dave, verbatim: *"reset
+  disabled style is set at the hover style."* Full record + the mechanism hypothesis in
+  `knowledge/_DS-IMPROVEMENTS.md` § ds-018. Headline: disabled Reset shows an **ink border**, which is
+  the hover treatment, where **B-D4 requires disabled to be visible-but-recessive** (#808080 class).
+
 ## STATUS — round-one kit PARKED, "good enough", NOT signed off (Dave 2026-07-16)
 
 Dave's call: **move on now, but this is a REVISIT target — not DONE.** The round-one kit + its
@@ -358,6 +474,10 @@ in `_LIVE-STATE.md` (🟡 PARKED entry) so the state machine doesn't read this a
 
 ## Open / pending
 
+- **★ NEW 2026-07-27 (Dave, session #6) — THREE FLAGS, CONTENTS NOW NAMED → see Batch 10 above.**
+  **DV-D16** (stacked sequential animation) · **DV-D17** (isolate marker persistence) ·
+  **ds-018** (Reset disabled renders as hover). All three are CAPTURED, **none enacted** — each carries
+  a READ-BACK question that must be answered before any build. Nothing here has been render-verified.
 - **Grouped column layout redesign** — awaiting Dave's reference images (Batch 1 #3).
 - **DV-D02 responsive** — needs an in-browser resize check by Dave (built blind; safe fallback).
 - **Two new Figma display types + 4px-grid type tokens** — land the real display scale, replace
