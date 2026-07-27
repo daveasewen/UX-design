@@ -134,6 +134,14 @@ STEPS = [
     # (the _validate_partials.py ratchet posture).
     ("enactment register — is each ruling IN FORCE? (advisory, ADR-0016)",
      "_build_enactment_register.py"),
+    # ds-015 (2026-07-27): the register above asks "is there a check and can it fail?".
+    # This asks the question ON TOP of it — "can that check OBSERVE the property its rule
+    # names?" A check can be PROVEN and still measure a proxy. Selftest first, per the
+    # standing rule that every new gate ships a bite AND wires it; the tool is ADVISORY
+    # for the same reason the register is.
+    ("instrument-fit selftest (advisory, ds-015)", "_build_instrument_fit.py", ["--selftest"]),
+    ("instrument fit — can the gate SEE the property? (advisory, ds-015)",
+     "_build_instrument_fit.py"),
     ("integrity lint (gate)", "_build_integrity.py"),
 ]
 

@@ -1,11 +1,19 @@
 # Good morning, Dave ☕
 
-> **RENAME THE WRAPPED CHAT →** `Apollo — "maybe we are checking the wrong thing": Dave found that the hit-area MECHANISM switches off the hit-area RULE — 7 of 67 snippets measured, gate green · INSTRUMENT FIT is a third axis above ADR-0016 · the trigger should be ADOPTION-TIME · pre-flight now has three terms · 58/58 · 🟡 Amber ~58%`
-> **TITLE THE NEXT CHAT →** `Apollo — instrument fit at corpus scale: tag all 465 rules with the instrument their property needs, then rank every gate that is weaker than its rule. Dave has FIVE open calls waiting in §DO-FIRST — read them before building`
+> **RENAME THE WRAPPED CHAT →** `Apollo — "the index cannot see the rule": the 465-rule instrument-fit pass is BUILT, RUN and WIRED (12 under-instrumented, 2 BLOCKING contrast rules, 279 UNTAGGED = a floor) · ds-016 — 7 live gates cite rules absent from the index, aid-009 among them, found by a bite failing · adoption+sweep RULED complementary · 60/60 · 🔴 RED ~72%`
+> **TITLE THE NEXT CHAT →** `Apollo — close the lookup hole: rule on ds-016 (fail-loud / tag the 7 / both), run the CTRL vocabulary sweep Dave already ruled YES, and have the call-(4) discussion on the consult's enforcement column. 279 UNTAGGED rules is the other open number`
 > *(Titles are LABELS — role comes from Dave's opener line. The wave = the parallel model: Opus conducts, workers per lane, DIVVY in §DO-FIRST. Gauge bands: Green<45 / Amber 45–60 / Red≥60.)*
 
 
-> ## ★ LATEST — 2026-07-27 (Mon **later morning #3**, OPUS solo self-conducting, effort MAX — ★ **KG FORCING-FUNCTION, EXPLORATION BEAT 1: Dave reframed it TWICE and both reframes beat all four held angles** · ★ **ds-015 — `aid-009` EXEMPTS every component that adopts the hit-area mechanism: 7 of 67 snippets are actually measured and the gate reports "0 failures"** · **PRE-FLIGHT now has THREE terms** · build **58/58 GREEN** · 🟡 AMBER ~58%, **nothing built by design**): **He asked me to explore, not build. So the session's output is two findings and one sentence of his that outranks both.**
+> ## ★ LATEST — 2026-07-27 (Mon **later morning #4**, OPUS solo self-conducting, effort MAX — ★ **CALLS (1)(2)(3)(5) RULED; the 465-rule INSTRUMENT-FIT pass is BUILT, RUN and WIRED** · ★ **ds-016 — 7 LIVE GATES CITE RULES THE INDEX CANNOT SEE (698 declared · 465 indexed · 265 invisible), `aid-009` among them** · build **60/60 GREEN** · 🔴 **RED ~72%**): **He said "most robust methods", so the tool was built so it could not guess. Then bite 1 failed on its first run, and the failure was the finding.**
+> - **★ THE PASS IS BUILT — `knowledge/_build_instrument_fit.py` → `_INSTRUMENT-FIT.md`.** Ladder **I0 STATIC → I1 DOM → I2 RENDER → I3 EYE**. Sits **ON TOP of ADR-0016**: the register asks *is there a check and can it fail*; this asks *can it observe the property at all*. **11 bites**, advisory build steps **58 + 59** (P3 posture).
+> - **★ MEASURED: 465 rules — UNDER-INSTRUMENTED 12 · UNGATED 165 · UNTAGGED 279 · EYE-ONLY 4 · FIT 5.** ⚠ **279 of 465 (60%) UNTAGGED ⇒ 12 is a FLOOR, not an answer** — deliberately NOT fixed by widening patterns until the report went quiet (anti-false-fix #2 in the tool's own header). **Both BLOCKING rows are CONTRAST with STATIC gates: `dv-016` + `icon-011`.** Contrast is **COMPOSITED** — a static parse reads declared hex, not what lands. **Fourth instance of that class** (ds-010 · ds-013 · DV-D15 · this).
+> - **★ ds-016 — ds-015 INVERTED, and nobody went looking for it.** Bite 1 asserted the ds-015 ground truth and returned `None`: **`aid-009` is not in `_rules-index.json`.** `guidelines/*.md` declares **698** anchors; the index holds the **465** with an enforcement-destiny tag; **265 are invisible** to the index, `_consult.py`, the register and this pass — and **7 are cited by a live gate as its authority** (`aca-003`·`aca-004`·**`aid-009`**·`aid-020`·`avd-006`·`axs-003`·`nam-001`). `aid-009` = Dave's 2026-07-03 hit-area ruling, named 5× by `_validate_a11y.py`; **its anchor line just never got a destiny tag.** Mirror: **`icon-005` (BLOCKING, 44×44) IS indexed and NO gate names it.** ⚠ **Excluded BY DESIGN, not by bug — the defect is the SILENCE.** LOGGED not fixed.
+> - **⚠ THE BITES CAUGHT THREE DEFECTS IN MY OWN TOOL, ALL FIRST RUN.** (1) a bare-word probe read **three** gates as RENDER on the word **chrome** — *mono*chrome, *demo-*chrome — **making gates look STRONGER than they are**, the silence-buying direction; (2) `icon-005` came out **FIT with this script as its own evidence** — a register that NAMES a rule counting as a check that ENFORCES it (`NOT_A_GATE` fix); (3) bite 1's failure ⇒ ds-016. **Third session running: assume your probe is wrong in the direction that reads as green.**
+> - **★ CALL (2) RULED COMPLEMENTARY** (*"You're right about 2 they are complimentary"*). His lean was right; the **framing** needed correcting. Adoption-time = intent from whoever knows *why*, **counted** not inferred — but blind to everything shipped (**64 of 67 snippets already carry `::before`; it would find zero**), and a missing declaration is silence. Sweep = retroactive, no cooperation — **it found the 7 dangling citations laid down months apart** — but late, and **its own coverage is unmeasured**. ⇒ **The only way to detect a MISSING declaration is to sweep for it.** Held shape: **adoption-time forcing function + a sweep narrowed to finding undeclared adoptions.**
+> - **⬛ NOT DONE, deliberately:** call **(4)** unruled (*"needs a discussion"*) — **and its trivial `5/5` denominator fix was NOT done either** (Red budget; it stays in §C·4) · call **(5)** `CTRL` sweep **ruled YES, not started.**
+>
+> ## ★ PRIOR — 2026-07-27 (Mon **later morning #3**, OPUS solo self-conducting, effort MAX — ★ **KG FORCING-FUNCTION, EXPLORATION BEAT 1: Dave reframed it TWICE and both reframes beat all four held angles** · ★ **ds-015 — `aid-009` EXEMPTS every component that adopts the hit-area mechanism: 7 of 67 snippets are actually measured and the gate reports "0 failures"** · **PRE-FLIGHT now has THREE terms** · build **58/58 GREEN** · 🟡 AMBER ~58%, **nothing built by design**): **He asked me to explore, not build. So the session's output is two findings and one sentence of his that outranks both.**
 > - **★ INSTRUMENT FIT IS A THIRD AXIS — and the held angle (1) would have MISSED it.** Angle (1) is *compare what a rule SAYS against what its gate DEMANDS*. `aid-009` says *"a minimum 44×44px target area"*; the gate calls its check *"target size"* — **the vocabulary MATCHES. The narrowing is in the INSTRUMENT, not the words.** A static regex sees a *declared box*; the rule is about a *target*, and the two decouple the moment the property is carried by a mechanism (expander · token · transform) — at which point **the gate goes QUIET, not RED.** ⇒ Ask of every rule: **"what property does this name, and can this gate's instrument observe it at all?"** (static parse → DOM → render+hit-test → eye). ⇒ **This sits ON TOP of ADR-0016:** PROVEN/CLAIMED/UNPROVEN ask *is there a check and can it fail*; this asks *is it looking at the right thing* — **a check can be PROVEN and still measure a proxy that doesn't track its rule.**
 > - **★ ds-015 — DOING THE RIGHT THING IS WHAT MAKES YOU INVISIBLE.** `_validate_a11y.py` doesn't mis-measure the `::before` expander, it **`continue`s** — deferring to a "render axis" that **does not exist**. **MEASURED: 67 snippets · 1,869 selectors skipped by the `CTRL` vocabulary · 14 eligible · 7 exempted · 7 measured.** 64 of 67 snippets use `::before`. **The diamond fails three ways at once** (out of `CTRL` scope · expander is `min-width:var(--hit,44px)` vs a literal-`px` regex · `::before`→exempt) — and its real defect is a **transform**, which **no static box measurement can see in principle.** ⚠ **This proves the CHECK is blind, NOT that the components fail.**
 > - **★ DAVE'S SECOND REFRAME, and it is the best angle on the whole idea.** *"we are relying too much on my memory here, the hit mechanism should have triggered something that cascaded this elsewhere."* Adoption = a LOCAL CSS decision with a GLOBAL governance consequence, and **nothing carried it.** ⇒ **The trigger should be ADOPTION-TIME, not sweep-time.** Cheapest cut: make claiming the exemption **name the rule it exempts from**, and let the register harvest it — **an exemption that must declare itself is one you can count.**
@@ -13,23 +21,12 @@
 > - **★ PRE-FLIGHT NOW HAS THREE TERMS** (Dave: *"it self consumes tockens too"* + *"encode a pre-flight mechanism rather than loosing it in this chat"*). Already-inscribed rule NOT re-litigated; what was missing is the **meta-cost** ⇒ **"A pre-flight estimate that does not include the wrap is not a pre-flight estimate" — `fill + job + WRAP (~5%)`, always three terms.** Reserve the wrap BEFORE the job. Evidence: last session priced its render job right (53%, held), ran **the ritual unpriced**, 58→63. **Applied to itself: the instrument-tagging build was CUT, not started.**
 > - **⚠ THE HANDOFF'S OWN PROSE WAS STALE, caught in two minutes.** Banner said register **4/52 of 76**; generated file reads **4/54 of 78** (DV-D14+D15 harvested). **The RED ~63% stamp told the next reader to re-verify the prose. It worked — keep stamping.** Also re-verified, not inherited: **no chat-rename tool exists.**
 >
-> ## ★ PRIOR — 2026-07-27 (Mon **later morning #2**, OPUS solo self-conducting, effort MAX — ★ **ds-014 calls (a)+(b) RULED BY DAVE, ENACTED, PROVEN BY RENDER** · ★ **dv-004's GATE HAD NARROWED ITS OWN RULE** · **`dv-vocab` NEW BLOCKING — unknown chart types can no longer skip in silence** · build **58/58 GREEN** · register **PROVEN 3→4** · 🟡 AMBER ~58% wrap): **Dave declined my recommendation and asked why I had made it. Answering that took one grep and cost me the argument — then found a defect bigger than the chart.**
-> - **★ DV-D14 — GEOMETRY, not a stroke, and Dave was right on the evidence.** I recommended the donut's 2px `stroke="var(--page)"`. He said: *"I prefer the geometry the border will obscure gridlines, may I know why you recommend borders?"* **`cb5` carries 5 full-width `.dv-grid` lines behind the columns; the donut carries NONE.** An SVG stroke straddles its path — 2px puts 1px OUTSIDE each rect, painting over every gridline down both sides of all 4 columns. ⇒ **A surface-coloured stroke only simulates separation when the thing behind it IS the surface.** Enacted **variant A, both ends pinned**; accepted cost, stated before it landed: **segments understate 2.0–2.6%**, worst on the shortest column.
-> - **★ THE FINDING THAT OUTRANKS THE CHART.** dv-004's text is **mechanism-NEUTRAL** — *"minimum 2px separation between colour blocks"*. Its gate demanded *"a surface-coloured stroke >=2px"*. **So a chart satisfying dv-004 by real geometry would have FAILED — and an agent reading the gate to learn what compliance looks like gets the WRONG ANSWER.** The gate was not merely failing to catch my error; **it was the source of it.** Now accepts either mechanism; unmeasurable geometry still demands the stroke (fails safe).
-> - **★ DAVE NAMED THE CLASS HIMSELF — and it is FLOATED, not ruled.** *"we may create something that will force decisions to check that KG… the KG is a valuable resource and shouldn't be ignored, thats what it is there for."* Held in `_FUTURE-STATE.md` with four angles; sharpest is **a check comparing what a rule SAYS against what its gate DEMANDS** — the exact mirror of ADR-0016. ⚠ **Do NOT build ahead of the exploration session he asked for.** Caution recorded: the consult prints `rulings (5/5 shown, --all for more)` — **it TRUNCATES**, so a forcing function built on it is a CLAIMED gate with extra steps.
-> - **★ DV-D15 — `data/text/on-series` MINTED (his promotion).** Keys had declared `var(--page)`: white today **only because of where the neutral ramp sits — a coincidence, not an intent**. New role → `color/grey/white`, pinned BOTH modes, modelled on `rag/text/on-dark`; **deliberately NO alpha channel** (DV-D07 computes contrast from the composite). **type26-013 does NOT collide** — checked, not assumed: its white-only clause is specific to RED grounds.
-> - **★ THE VOCABULARY HAD FORKED — fixed structurally.** Corpus carries **both `stacked` and `stacked-column`, both `grouped` and `grouped-column`**, plus `scatter`. Enumerating three strings would have guaranteed a repeat ⇒ **`DTYPE_CANON` normalises once at read time** + **`dv-vocab` FAILS THE BUILD on any unknown dtype**. Scope-blindness audit: **3 blind values → "none detected"**. **Selftest WIRED into the build** — it existed and ran only by hand, which is exactly why nothing ever proved dv-004 could fail. **9 new bites**, one reproducing the ds-014 figure verbatim.
-> - **⚠ A THIRD SILENT-FALLBACK — and it landed AFTER the build went green.** Token minted, generated into `canon.css`, **58/58 — and the keys still rendered BLACK at 3.99:1.** The snippet carries a LOCAL MIRROR of the token list for standalone preview and never declared the new var; **`fill:var(--undefined)` falls back to the SVG initial value, black, silently.** Three instances, three mechanisms: **ds-010** (author CSS beat `fill=`) · **ds-013** (404 stylesheet) · **this**. **Through-line: a lookup that misses and reports nothing — and in all three the MARKUP IS CORRECT, so no static gate reaches it.**
-> - **★ PROVEN BY RENDER — `_verify_dv_stacked_enactment.py` (NEW, the P2 proof).** Licensed cut, **snippet AND showroom pane, 1180 AND 760, all four agreeing**: separation **2.00px** on all 8 boundaries · keys white **5.26 / 5.04 / 4.61:1** vs AA 4.5. ⚠ **The prior handoff predicted "≈5:1". MEASURED worst is 4.61:1** (series-3, margin **0.11**) ⇒ **series-3 cannot be lightened without breaking AA.**
-> - **⚠ THE PROBE MADE THE ERROR IT WAS WRITTEN TO DETECT — third session running.** It reported *"no stacked-column figure"* for the showroom; the honest reading was **"I queried the top document and the panes are `srcdoc` iframes"**, not "the showroom is broken". Last session: `querySelector('svg')` → the toolbar copy icon. **Assume your probe is wrong in the direction that reads as green.**
-> - **🟡 AMBER ~58% — and the PRE-FLIGHT rule worked.** Priced the render job before starting it (*"fill ~38% + ~15% = ~53% Amber"*) and it held. Wrapped on Dave's word rather than starting the remaining 52 proofs hot.
->
 > *(Compaction 2c — keep ★ LATEST + 1 PRIOR, roll the rest. Older banners (the 07-22→24 chart-wave + ADR arc, the 07-25 AM v4 + midday→PM v5 + PM Memento-efficiency + PM#2 memory/routing-governor banners) are in `_GM-ARCHIVE.md` (Batches 1–6), verbatim, newest-first; durable narrative in `_DECISION-HISTORY/` + `notes/`.)*
 
 ---
 
-*Briefing — refreshed 2026-07-27 ~10:30 BST (date from `date`), session "the instrument cannot see
-the property — KG exploration beat 1 + ds-015" (Opus 5 solo self-conducting, effort MAX).
+*Briefing — refreshed 2026-07-27 ~10:58 BST (date from `date`), session "the index cannot see the
+rule — instrument fit at corpus scale + ds-016" (Opus 5 solo self-conducting, effort MAX).
 §A = orientation · §B = session · §C = queue.*
 
 ## ⬛ DO THIS FIRST
@@ -37,19 +34,30 @@ the property — KG exploration beat 1 + ds-015" (Opus 5 solo self-conducting, e
 > **✅ CLOSED, do not re-open.** ds-014 calls (a)(b)(c) — RULED, ENACTED, RENDER-PROVEN. The legend wave,
 > ds-013, ADR-0016 P1/P3-advisory all stay closed. **Nothing here is owed twice.**
 >
-> **★★★ FIVE CALLS ARE DAVE'S, and they gate the next build. Put them to him BEFORE starting.**
-> All five came out of exploration beat 1 (`_FUTURE-STATE.md` § *forcing the KG into the decision loop*
-> → **Exploration beat 1**; evidence in `knowledge/_DS-IMPROVEMENTS.md` **ds-015**):
-> 1. Does **INSTRUMENT FIT** join the enactment register as a **third axis**, or stand as its own check?
-> 2. Is the trigger **ADOPTION-TIME** or sweep-time? *(His idea; the adoption-time shape is the strongest
->    thing anyone has proposed for the forcing function — an exemption that must name the rule it exempts
->    from is an exemption you can count.)*
-> 3. Run the **465-rule instrument-tagging pass**? Mechanical, ranks the whole corpus. **NOT started —
->    deliberately, it is a build and the window was capped.** This is the natural DO-FIRST once he rules.
-> 4. **Fix or REMOVE the consult's enforcement column.** A wrong `gated by` is worse than no column. The
->    `5/5 shown` denominator is a separate, trivial fix — **do that one regardless.**
-> 5. **`CTRL` in `_validate_a11y.py` is an UNSWEPT VOCABULARY.** `dv-vocab` closed this class for dataviz
->    only. 1,869 selectors currently skip. **Same pattern, already proven, applies directly.**
+> **★★★ FOUR OF THE FIVE CALLS ARE RULED (Dave, 2026-07-27 #4). What's left is small and named.**
+> ✅ **(1) instrument fit = its own generated register sitting ON TOP of ADR-0016** — BUILT.
+> ✅ **(2) adoption-time vs sweep = COMPLEMENTARY** — *"You're right about 2 they are complimentary"*.
+>    Held shape, **not yet built**: adoption-time forcing function + a sweep **narrowed to one job,
+>    finding undeclared adoptions** (`_FUTURE-STATE.md` § **Exploration beat 2**).
+> ✅ **(3) the 465-rule pass** — BUILT, RUN, WIRED advisory (steps 58+59). See ★ LATEST.
+> ⬛ **(4) the consult's enforcement column — NOT RULED.** Dave: *"I lean fix, but this probably needs
+>    a discussion."* **Have the discussion before touching it.** ⚠ Its `5/5 shown` denominator fix is
+>    separable and trivial and was **NOT** done — it is in §C·4, do it regardless.
+> ⬛ **(5) `CTRL` vocabulary sweep in `_validate_a11y.py` — RULED YES, NOT STARTED.** 1,869 selectors
+>    skip today. The `dv-vocab` pattern (normalise once + **fail loud on unknown**, never enumerate)
+>    applies directly and is already ratified. **This is the cheapest ruled work on the board.**
+>
+> **★★★ NEW AND UNRULED — `ds-016`, and it is the same class one level up.** 7 live gates cite rules
+> the index cannot see (698 anchors declared · 465 indexed · **265 invisible**), including **`aid-009`**,
+> the ruling `_validate_a11y.py` names 5×. Three candidate remedies in `_DS-IMPROVEMENTS.md`:
+> **(a)** fail loud when a gate cites an unindexed rule · **(b)** tag the 7 · **(c)** both — which is
+> exactly the adoption+sweep pair he just ruled complementary, applied to itself.
+> ⚠ **Do NOT bulk-add destiny tags to clear the list** — a destiny tag is an enforcement decision and
+> belongs to Dave (derivation governance). ⚠ **`aid-009` is RULED AND IN FORCE** — its absence from the
+> index is a retrieval failure, not a lapsed ruling.
+> **Also open:** **279 of 465 rules are UNTAGGED** by the new pass ⇒ **12 under-instrumented is a FLOOR,
+> not an answer.** Whether to invest in the pattern table is Dave's call; the number is published so it
+> is made on evidence.
 >
 > **★★★ IF HE RULES "GO" ON #3 — the method is now demonstrated THREE times.** ADR-0016 P2 exemplars:
 > `knowledge/_sweep_type_enactment.py` (corpus sweep) · `knowledge/_verify_dv_stacked_enactment.py`
@@ -495,24 +503,22 @@ Legacy hex seeding + provenance-gate flip · Console/Supercharge chromatic palet
 Sutherland field test · full-review backlog (`_REVIEW-SIGNOFF.md`) · `_FUTURE-STATE` items ·
 spot-illustration/empty-state icon set (`_ICON-GAPS.md`, wave-1's only gap).
 
-> **COMMIT STATE (refreshed 2026-07-27 ~10:35 BST from `date`, KG exploration beat 1 + ds-015).**
-> ONE commit: `_FUTURE-STATE.md` (**Exploration beat 1** — Dave's two reframes verbatim, instrument-fit as
-> a third axis, adoption-time trigger, 3 open questions) · `knowledge/_DS-IMPROVEMENTS.md` (**ds-015 NEW**
-> — the exemption, the measurements, the diamond's three blindnesses, severity caveat + anti-false-fix) ·
-> `knowledge/_validate_a11y.py` (**the silent `continue` now WARNS** + a 17-line anti-false-fix provenance
-> block) · `knowledge/_RUNBOOK-context-gauge.md` (**PRE-FLIGHT is THREE terms** + instrument cost rows) ·
-> `_DECISION-HISTORY/2026-07-27-the-instrument-cannot-see-the-property.md` (**NEW dossier**) ·
-> regenerated `knowledge/_A11Y-GATE.md` + `_consult-index.json` · `_LIVE-STATE` + `_GM-ARCHIVE` (Batch 7)
-> + `_LIVE-STATE-ARCHIVE` rolls · this file.
-> **Build 58/58 GREEN (exit 0) · a11y gate 67 snippets / 0 fail / 13 warn (was 6 — the 7 new are the
-> exemptions declaring themselves) · STAND-002 PASS, 26 standing docs reachable.**
-> **NOTHING WAS BUILT — his instruction was explore, not build.** Both enactments are reversible and
-> neither pre-empts a ruling.
-> **Context gauge at authoring: 🟡 AMBER ~58% + ~5% wrap ⇒ 🔴 RED ~63% at close (ESTIMATE ±15%).** Read off
-> the band table, and **priced in advance this time** — the three-term rule was written mid-session and
-> immediately applied to itself: the instrument-tagging build was CUT rather than started, and the ritual
-> was reserved before the last job began. ⇒ **Next reader: the ★ LATEST banner and §DO-FIRST were authored
-> in Amber and are the trustworthy part; this block was written at the Red boundary — re-verify the PROSE,
-> which is what no gate sees.** *(That instruction earned its keep today: it is how this session caught the
-> previous handoff quoting a register figure that had already moved.)*
+> **COMMIT STATE (refreshed 2026-07-27 ~11:00 BST from `date`, instrument fit at corpus scale + ds-016).**
+> ONE commit: `knowledge/_build_instrument_fit.py` (**NEW** — the ladder, the pass, 11 bites, the
+> dangling-citation detector, a 5-point anti-false-fix header) · `knowledge/_build_all.py` (**steps 58+59
+> wired advisory**) · generated `knowledge/_INSTRUMENT-FIT.md` + `_instrument-fit.json` (**NEW**) ·
+> `knowledge/_DS-IMPROVEMENTS.md` (**ds-016 NEW** — the 7 dangling citations, the 698/465/265 measure,
+> 4 anti-false-fix clauses, 3 unruled remedies) · `_FUTURE-STATE.md` (**Exploration beat 2** — call (2)
+> ruled complementary, with the evidence both ways) ·
+> `_DECISION-HISTORY/2026-07-27-the-index-cannot-see-the-rule.md` (**NEW dossier**) ·
+> `_LIVE-STATE` + `_LIVE-STATE-ARCHIVE` (2d roll) + `_GM-ARCHIVE` (2c roll) · this file.
+> **Build 60/60 GREEN (exit 0) · instrument-fit selftest 11/11 · capture gate 13 in scope / 0 fail /
+> 0 warn · STAND-002 PASS, 26 standing docs reachable.**
+> **Everything built is ADVISORY and reversible; nothing pre-empts calls (4) or ds-016.**
+> **Context gauge at authoring: 🔴 RED ~72% (ESTIMATE ±15%).** Read off the band table. Pre-flight said
+> ~55% Amber and ran ~17 points over — **the miss was ds-016, an unplanned finding chased mid-job**;
+> the wrap itself was reserved in advance per the three-term rule and held. ⇒ **Next reader: the ★ LATEST
+> banner and the ruled calls above are measured and re-runnable; THIS PROSE was authored deep in Red —
+> re-verify it, which is what no gate sees.** *(Every number here is reproducible: `python3
+> knowledge/_build_instrument_fit.py` and `--selftest`.)*
 > Dave pushes via GitHub Desktop (whole stack, Desktop closed while Claude commits).

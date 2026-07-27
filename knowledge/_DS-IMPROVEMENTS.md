@@ -651,3 +651,65 @@ rulings.
 trigger-shape questions are held in `_FUTURE-STATE.md` § *forcing the KG into the decision loop*,
 Exploration beat 1 — including **Dave's cascade point**: *"the hit mechanism should have triggered
 something that cascaded this elsewhere."*
+
+---
+
+## ds-016 — Seven live gates cite rules the index cannot see: 698 anchors declared, 465 indexed, 265 invisible (2026-07-27, found by a bite failing on its first run)
+
+**Status: LOGGED, not fixed.** Deliberately — the remedy is call (4)'s discussion, which Dave has
+NOT ruled (*"I lean fix, but this probably needs a discussion"*).
+
+**MEASURED** (`knowledge/_build_instrument_fit.py`, regenerates every build):
+
+| | count |
+|---|---:|
+| rule anchors `{#id}` declared in `guidelines/*.md` | **698** |
+| held in `guidelines/_rules-index.json` (destiny-tagged) | **465** |
+| declared but NOT indexed (no enforcement-destiny tag) | **265** |
+| of those, **cited by a live gate as its authority** | **7** |
+
+The seven: `aca-003` (`_validate_compose.py`) · `aca-004` (`_validate_advisory.py`,
+`_validate_snippets.py`) · **`aid-009`** (`_validate_a11y.py`) · `aid-020` (`_validate_advisory.py`) ·
+`avd-006` (`_validate_advisory.py`, `_validate_snippets.py`) · `axs-003` (`_validate_a11y.py`) ·
+`nam-001` (`_validate_advisory.py`, `_validate_snippets.py`).
+
+**Why it matters, and why it was found by accident.** `aid-009` is Dave's hit-area ruling of
+2026-07-03 and the founding case of **ds-015**. `_validate_a11y.py` names it five times as the rule
+it enforces. Its anchor line ends `Bite-tested (test_gates target24)] {#aid-009}` — **the destiny
+tag was never written**, so the rule a BLOCKING gate enforces cannot be retrieved by `_consult.py`,
+the enactment register, or anything else that reads the index. It surfaced only because a bite
+asserting the ds-015 ground truth returned `None`.
+
+**The mirror image sits in the same family:** `icon-005` — **BLOCKING**, *"Functional icons need a
+minimum 44×44px target area"* — IS indexed and **no gate names it at all**. So the 44×44 rule that
+exists has no check, and the check that exists cites a rule nothing can look up.
+
+⇒ **ds-015 INVERTED.** There the gate could not see the component; here the index cannot see the
+rule. Same signature as the silent-lookup class already proven three times (ds-010 · ds-013 · the
+DV-D15 local token mirror): **the markup is correct, the lookup fails, and nothing reports it.**
+
+### ⚠ ANTI-FALSE-FIX
+
+1. **The 265 are excluded BY DESIGN, not by bug** — `gen_rules_index.py` says so in its docstring:
+   the index holds enforcement-destiny-tagged rules. **Do not "fix" the generator to swallow all
+   698.** That would flood the index with prose anchors and break every count that depends on it.
+2. **The defect is the SILENCE, not the exclusion** — nothing reported that seven live gates depend
+   on rules inside the excluded set. Any fix must make that condition *loud*, not make it disappear.
+3. **Do not bulk-add destiny tags to clear the list.** A destiny tag is an enforcement decision
+   (BLOCKING / ADVISORY / REVIEW) and belongs to Dave — derivation governance. Tagging 265 anchors
+   to quieten a report would be the largest unpromoted derivation in the project's history.
+4. **`aid-009` in particular is RULED and IN FORCE** — its absence from the index is a retrieval
+   failure, NOT evidence the ruling lapsed. Do not treat the gate as unauthorised.
+
+### Candidate remedies (none ruled — for the call-(4) discussion)
+
+- **(a) Fail loud, adoption-time.** A gate citing a rule ID absent from the index errors at build.
+  Cheap, structural, mirrors the ratified `dv-vocab` fix (*normalise once, fail loud on unknown,
+  never enumerate*). Catches the next one for free; says nothing about the existing 7.
+- **(b) Tag the 7.** Smallest possible change, restores retrievability for exactly the rules a gate
+  already enforces. Each tag is a Dave decision.
+- **(c) Both** — (b) clears today's debt, (a) stops tomorrow's. This is the adoption-time/sweep pair
+  Dave ruled complementary the same session, applied to itself.
+
+**Detected by:** `knowledge/_build_instrument_fit.py` § dangling citations (bites 1c + 1d).
+**Narrative:** `_DECISION-HISTORY/2026-07-27-the-index-cannot-see-the-rule.md`.

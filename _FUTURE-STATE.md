@@ -101,6 +101,40 @@ check? (ii) is the trigger adoption-time or sweep-time? (iii) the instrument tag
 rules is mechanical and would rank the whole corpus — **NOT started, deliberately** (scoped as a build,
 and he capped the window). **Evidence backing all of the above: `ds-015`.**
 
+### ★ Exploration beat 2 — 2026-07-27, later morning #4: (i)(iii) DELIVERED, (ii) RULED COMPLEMENTARY
+
+**Dave ruled four of the five calls** (*"I'll go with your recommendation, I just want the most robust
+methods"*). (i) third axis — built as its own generated register that sits ON TOP of ADR-0016.
+(iii) **the 465-rule pass is BUILT and RUN**: `knowledge/_build_instrument_fit.py` →
+`_INSTRUMENT-FIT.md`, 11 bites, advisory build steps 58+59, build 60/60 green.
+
+**⇒ (ii) IS RULED, and the framing was the thing that needed correcting, not his lean.** He said
+*"I lean adoption, seams less likely to carry mistakes… maybe sweep if more efficient, I need to
+understand the implications of both"*, then on the analysis: ***"You're right about 2 they are
+complimentary."***
+
+- **Adoption-time** captures intent at the moment it exists, from whoever knows *why* — **counted**
+  data, not inferred data. Blind to everything already shipped: **64 of 67 snippets already carry the
+  `::before` expander and it would find zero of them.** And a *missing* declaration is silence — the
+  very failure mode being hunted.
+- **Sweep-time** is retroactive and needs no cooperation. **Proven the same day:** the pass surfaced
+  **7 dangling citations** laid down months apart, which no adoption-time trigger could reach. But it
+  reports late and **its own coverage is unmeasured** — this sweep is blind to 265 rules and cannot
+  classify 279 more, and *nothing revealed that until a second check was built*.
+
+⇒ **Each one's blind spot is the other's coverage, and the only way to detect a MISSING declaration
+is to sweep for it** — so the sweep is not optional, it is what makes the adoption-time rule
+enforceable. **Held shape for design (not yet built):** adoption-time as the forcing function +
+a sweep **narrowed to one job — find undeclared adoptions**. Narrower than a general sweep, so
+cheaper and less blind. Same pair now applies to itself in **`ds-016`** remedy (c).
+
+**⬛ STILL OPEN, Dave's:** call **(4)** the consult's enforcement column — *"I lean fix, but this
+probably needs a discussion"*, **NOT ruled**; the `5/5 shown` denominator is separable and trivial and
+was **not** done (Red budget). Call **(5)** the `CTRL` vocabulary sweep — **ruled YES, not started.**
+New: **whether to invest in the pattern table** (279 of 465 rules UNTAGGED — the figure is published
+so the call is made on a number) and **ds-016's** three candidate remedies.
+Evidence: `ds-016` · `_DECISION-HISTORY/2026-07-27-the-index-cannot-see-the-rule.md`.
+
 ## ★ Multi-thread "GOOD-MORNING" — a handoff mechanism for parallel long-running threads (Dave, 2026-07-24)
 **The problem Dave named:** two async threads now run in parallel ACROSS sessions — the chart **FAN-OUT**
 (wave; GM §C·1a + `notes/_briefs/2026-07-24-chart-wave-lane{1,2,3}`) and the **CONTROLS SYSTEM** (seg atom +
