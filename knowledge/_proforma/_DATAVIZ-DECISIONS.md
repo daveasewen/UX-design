@@ -424,11 +424,26 @@ below has been built, and nothing below has been render-verified.***
   **RULED (2)** → **⚠ first "segment by segment", then REVERSED same session to CONCURRENT growth on
   one shared timeline — see the ⚠⚠ block above; wording ② is in force.** **RULED (3)** → **every
   stacked surface** (see the forward-binding note above).
-  **STILL OPEN (1)** — *"same as the pie"* names the donut as the
-  reference, but **whether the donut sequences today has NOT been checked.** Deliberately not asked of
-  Dave: it is answerable by reading the repo ([[feedback-verify-before-asking]]). **Check it first, and
-  if the donut does NOT sequence, that is itself a finding** — it would mean the reference for this
-  ruling is a behaviour nobody has built, and Dave's description becomes the source of truth.
+  **✅ (1) ANSWERED 2026-07-27 (session #7), by reading the repo, not by asking Dave — AND IT IS A
+  FINDING.** `sweepDonut()` (`snippets/Chart-donut.reference.html:889–945`) runs **ONE timeline**:
+  a single `dur = 850`, one `t0`, one rAF loop, and **one sweeping angle** `angAt(t)` crossing the
+  whole ring. Segments only *appear* to hand off because one angle crosses them in order. Its
+  velocity envelope is explicit — accelerate through the first segment's arc (`ta`), cruise (`tc`),
+  decelerate through the last (`td`) — i.e. **Dave's easing rule is ALREADY implemented there, as one
+  continuous curve rather than N per-segment timelines.** `prefers-reduced-motion` is baked at
+  `:901–906` (land on the final frame, never animate).
+  ⇒ **"same as the pie" is TRUE OF THE EASING AND FALSE OF THE APPEARANCE under wording ②.** The
+  donut is serial-*looking*; ② explicitly rejects that look for stacks. **What carries over is the
+  architecture (one shared timeline), the easing envelope, and the reduced-motion answer** — reuse
+  those, do **not** reuse the appearance, and do not cite the donut as a visual precedent for ②.
+  **⚠ SCOPE MEASURED, and it re-prices DV-D16 DOWNWARD — re-derive before building, do not inherit
+  this line.** `Chart-bar.reference.html:121–128`: stacked segments already run `scaleY(0)→1` from
+  `transform-origin:bottom`, **all at once**, one `--grow:760ms`, CSS-only per DEF-003. **Concurrency
+  already exists.** Exactly two deltas remain: **(a)** upper segments do not FLOAT — each grows from
+  its own fixed anchor, so the stack gaps mid-animation instead of staying contiguous · **(b)** all
+  share one `cubic-bezier(.22,.61,.36,1)`; there are no per-segment curves. Both are reachable in
+  pure CSS (the cumulative height below each segment is static per chart ⇒ a per-rect custom property
+  emitted at generation time), so **no JS enters physics** and B-D7 / DEF-003 hold.
   Edges: relates(DV-D14) — DV-D14 already moves segment geometry, so the animation must animate the
   ENACTED heights, not the true ones, or the two rulings will fight.
 
@@ -454,6 +469,36 @@ below has been built, and nothing below has been render-verified.***
   conflate the two fixes. **(iii)** the `dv-sr` live region (DV-D11 chrome clause) announces every state
   change — **"Isolation released" must fire on the add path too**, not only on the label re-click at
   `:140`, or screen-reader users get a silent mode change.
+
+  **✅ ENACTED 2026-07-27 (session #7) — DOM-PROVEN, RENDER OWED.** `canon/dv-legend.js`
+  `toggleSwatch()`: a blank swatch checked while isolated sets `st.isolated = null; st.focus = null`
+  and leaves isolate mode; injected into all 5 registered consumers by `gen_component_partials.py`;
+  build **60/60 GREEN exit 0**. **All three bites covered and each has its own failing control** —
+  `_verify_dv_legend_members.js` **108/108** (checks 20–23) and `_verify_dv_legend.js` **27/27**
+  (checks 12/13/20), with a `DVLEGEND` env override added to both so a neutered copy can be pointed
+  at without ever mutating canon: full revert → 99/108 + 23/27 · release-to-all-on → 105/108 ·
+  release-silently → 104/108 + 26/27. ⚠ **The donut suite CANNOT catch the all-on regression**
+  (27/27 under that neutering) — its scenario starts all-visible, where `visible[]` and all-on are
+  indistinguishable; only the members suite dims a spare **before** isolating. Do not treat the two
+  suites as interchangeable proofs of bite (i).
+  ⚠ **RENDER-VERIFY IN THE LICENSED CUT IS OWED, NOT DONE** (Dave's ruling: wrap and flush at ~55%).
+  jsdom proves the state machine, not that `.is-solo` stops painting — and **ds-018 is a live
+  counter-example on this same component.** Pair the two in one Green window: same page, same
+  harness, same two widths, one spin-up. Tracked in `GOOD-MORNING` §C·4 + `_REVIEW-SIGNOFF.md`.
+  ⚠ **ONE ENACTMENT CALL IS THE AGENT'S, NOT DAVE'S, AND IS UNRULED.** Release also sets
+  `st.visible[id] = true`, so the clicked series is showing afterwards. The literal reading restores
+  `visible[]` **alone** — both satisfy bite (i) (neither releases to all-on), and they differ only
+  when a series dimmed *before* isolating is then the one clicked: the literal reading leaves it
+  dimmed, so the click that ended the mode does nothing visible to what was clicked. **One line
+  either way — Dave's to reverse.**
+  ⚠ **CONSEQUENCE FOR DV-D13 THAT THE RULING DID NOT NAME — needs Dave's eye.** Under additive
+  focus, isolating Housing (`950 / 41%`) then checking a second series **grew** the donut's centre
+  readout to `1250 / 54%`. Under DV-D17 that click releases, so the selection becomes the whole
+  visible set and the centre returns to `2320 / 100%`. **DV-D13 is intact — the centre still follows
+  the SELECTION**; the selection is simply everything again. Recorded rather than absorbed, because
+  the accepted-cost line named the lost 2-of-5 comparison and not this.
+  **Arc + what the author flags against his own work:**
+  `_DECISION-HISTORY/2026-07-27-the-suite-that-asserted-the-old-ruling.md`.
 
 - **ds-018 · Reset's DISABLED state renders as the hover/active style.** Dave, verbatim: *"reset
   disabled style is set at the hover style."* Full record + the mechanism hypothesis in

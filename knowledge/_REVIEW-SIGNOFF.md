@@ -18,6 +18,19 @@ that single pass.** Running list of what it must cover:
   or adopt `text/on-inverse`); **success/verified kept MONO** (ink check) vs teal; **blue-vs-mono focus ring**.
 - **Also owed:** DataViz sign-off (parked "good enough"); **Tranche-9 first review**; Masthead/Hero/Headers revisits
   already flagged below.
+- **★ NEW 2026-07-27 (#7) — TWO FELT CONSEQUENCES OF DV-D17, NEITHER RULED, BOTH NEED DAVE'S EYE LIVE.**
+  Surfaces: `showroom/chart-donut.html`, `chart-bar.html`, `chart-combo.html`, `chart-line.html`.
+  **(a) An enactment call that is the agent's, not Dave's.** Release-on-add also sets `st.visible[id] = true`,
+  so the series you clicked is showing afterwards. The strictly literal reading of DV-D17 bite (i) restores
+  `visible[]` **alone** — both avoid the all-on failure, and they diverge only when a series dimmed *before*
+  isolating is then the one clicked: literal leaves it dimmed, so the click that ended the mode does nothing
+  visible to the thing clicked. **One line either way.**
+  **(b) A DV-D13 consequence the ruling never named.** Isolate Housing (`950 / 41%`), then check a second
+  series: that click now **releases**, so the donut's centre returns to `2320 / 100%` instead of growing to
+  `1250 / 54%`. DV-D13 is intact — the centre still follows the SELECTION; the selection is simply everything
+  again. **Judge it live, not from this description.**
+  ⚠ **Both are DOM-proven only** (`_verify_dv_legend*.js`, 108/108 + 27/27) — **the render in the licensed cut
+  is OWED** and is `GOOD-MORNING` §DO-FIRST item 0(a) for the next window.
 - **★ NEW 2026-07-27 — THE WHOLE SHOWROOM CHANGED TYPE, and nobody has looked at it yet (ds-013).** Dave
   reported the chart legend labels rendering too big; the cause was `srcdoc` re-basing every payload's
   relative URL, so **`canon/type.css` 404'd in all 49 panes that link it** and every `.t-cm-*` composite

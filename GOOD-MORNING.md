@@ -1,11 +1,22 @@
 # Good morning, Dave ☕
 
-> **RENAME THE WRAPPED CHAT →** `Apollo — the read-back offered the wrong options: DV-D16 ruled serial, then reversed in-window to concurrent "floating" growth · DV-D17 release-isolation · DV-D18 cap-at-6 + expandable "Other" FLOATED · ds-018 NEW (disabled renders as hover) · ds-012 RULED gutter-relative · captured + ruled, NOTHING enacted · 60/60 · 🟡 AMBER, flushed`
-> **TITLE THE NEXT CHAT →** `Apollo — ENACT the chart rulings in a Green window: DV-D17's three bites first (smallest, fully specified), then ds-018's two causes separated by render, then DV-D16's floating motion. Verify whether the donut sequences BEFORE building anything`
+> **RENAME THE WRAPPED CHAT →** `Apollo — the suite was asserting the OLD ruling: DV-D17 ENACTED and DOM-proven (108/108 + 27/27, three neutered controls), six green checks rewritten not deleted, the donut's "sequence" is ONE timeline so DV-D16 re-prices down, legend migration COMPLETE and nobody knew · 60/60 · render OWED · flushed at ~60%`
+> **TITLE THE NEXT CHAT →** `Apollo — RENDER-PROVE DV-D17 and DIAGNOSE ds-018 in the SAME licensed-cut harness run (one spin-up, two widths, snippet + showroom pane), then decide the per-member behaviour opt-in — dv-legend.js has 54 bytes of headroom, the group is at 90%, and there is NO cleanup left to buy space back`
 > *(Titles are LABELS — role comes from Dave's opener line. The wave = the parallel model: Opus conducts, workers per lane, DIVVY in §DO-FIRST. Gauge bands: Green<45 / Amber 45–60 / Red≥60.)*
 
 
-> ## ★ LATEST — 2026-07-27 (Mon **afternoon #6**, OPUS solo self-conducting, effort MAX — ★ **DAVE'S CHART FLAGS CAPTURED *THEN* RULED: DV-D16/17/18 + ds-018 NEW + ds-012 RULED — and NOTHING ENACTED, by his choice** · ★ **DV-D16a REVERSED IN-WINDOW: the read-back offered three shapes and the right answer was in none of them** · build **60/60 GREEN** · 🟡 AMBER, flushed): **He picked an option, then twenty minutes later described what he actually meant — and it rejected the option he had picked.**
+> ## ★ LATEST — 2026-07-27 (Mon **afternoon #7**, OPUS solo self-conducting, effort MAX — ★ **DV-D17 ENACTED: the first BUILD window after three record-only ones** · ★ **SIX GREEN CHECKS WERE ASSERTING THE SUPERSEDED RULING — a conformance suite goes stale exactly like prose** · ★ **the donut's "sequence" is ONE TIMELINE ⇒ DV-D16 re-prices ~30%→~19%** · ★ **legend migration COMPLETE (exit 0) and the record didn't know** · build **60/60 GREEN** · render OWED · flushed at ~60%): **The suite was an inscription of the old ruling, and only running it said so.**
+> - **★ DV-D17 ENACTED — four lines in `canon/dv-legend.js`, injected into all 5 registered consumers.** A blank swatch checked while isolated sets `st.isolated = null; st.focus = null` and leaves isolate mode, so no row keeps `.is-solo` while several series show. **All three named bites covered, each with its own failing control.** ⚠ **RENDER-VERIFY IN THE LICENSED CUT IS OWED, NOT DONE** — jsdom proves the state machine, **not** that `.is-solo` stops painting, and **ds-018 is a live counter-example on this same component.** Anyone reading "108/108" as *done* is reading it wrong: **enacted · DOM-proven · render-OWED.**
+> - **★ THE FINDING: SIX GREEN CHECKS ENCODED THE RULING DV-D17 SUPERSEDES.** Baseline **100/100 + 27/27**; after the fix **85/100 + 23/27**. That red was not a regression — members 20/21 and donut 12/13/14/20 asserted the **additive focus set**, the half of DV-D11 that DV-D17 kills. **Nothing in the repo connected "DV-D17 is ruled" to "six assertions now say the opposite"; only RUNNING the suite surfaced it.** Sibling of [[assertion-propagation-gap]], in a surface nobody had counted — **the verification tooling itself.** All six **REWRITTEN, NOT DELETED**, old wording verbatim beside each, so a reversal can never read as agent drift.
+> - **★ BITE-THE-BITE ×3, WITHOUT MUTATING CANON.** Both suites gained a **`DVLEGEND` env override** (their own `JSDOM` idiom), so neutered copies are pointed at from outside: full revert **99/108 + 23/27** · release-to-**all-on** **105/108** · release-**silently** **104/108 + 26/27** · control **108/108 + 27/27**. ⚠ **PUBLISHED LIMIT — the donut suite CANNOT catch the all-on regression** (27/27 under it): its scenario starts all-visible, where `visible[]` and all-on are indistinguishable. **Only the members suite dims a spare BEFORE isolating.** Not interchangeable proofs of bite (i).
+> - **★ STEP 0 ANSWERED FROM THE REPO — and "same as the pie" is TRUE OF THE EASING, FALSE OF THE APPEARANCE.** `sweepDonut()` (`Chart-donut.reference.html:889–945`) = **ONE timeline**, one `t0`, one rAF loop, **one sweeping angle**; segments only *appear* to hand off because one angle crosses them in order. Its envelope (accelerate through seg 1's arc → cruise → decelerate through seg N's) **is already Dave's easing rule as one continuous curve**; `prefers-reduced-motion` baked at `:901–906`. ⇒ **Reuse the architecture, envelope and reduced-motion answer; do NOT cite the donut as a visual precedent for wording ②.**
+> - **★ DV-D16 RE-PRICED DOWN, the direction nobody double-checks.** `Chart-bar.reference.html:121–128`: stacked segments **already** run `scaleY(0)→1` from `transform-origin:bottom`, **all at once**, one `--grow:760ms`, CSS-only. **Concurrency exists.** Two deltas left: **(a)** upper segments don't FLOAT (fixed anchors ⇒ the stack gaps mid-animation) · **(b)** one shared easing curve, no per-segment curves. Both pure-CSS (below-height is static per chart ⇒ a per-rect custom property) ⇒ **no JS in physics**, B-D7 / DEF-003 hold. ⚠ **RE-DERIVE BEFORE BUILDING — a cheap-looking job is exactly what the throttle exists to doubt.**
+> - **★ CORRECTED IN-WINDOW — I READ A GATE'S ADVICE TEXT AS LIVE STATE, and caught it at ritual step 3.** `_check_legend_migration.py` **does** exit 0 (WAVE COMPLETE), and GM/`_LIVE-STATE` **were** stale — they said *"combo + line remain"* after commit **`ba336dc`** had already migrated them. **That much stands.** But the gate prints its *"Now: delete the TRANSITIONAL block…"* list **UNCONDITIONALLY** (`_check_legend_migration.py:87–89`), and **`ba336dc` had already done it**: `dv-behaviour.js:146` is a **tombstone comment** where the block used to be (15,771 → **13,004 B**), and `class="dv-legrow` stays in the members' `extraContracts` **deliberately** — promoting it to the universal contract **fails the build**, because sparkline and scatter are in the dataviz GROUP but carry no legend. ⇒ **THERE IS NO CLEANUP LEFT AND NO RELIEF VALVE.** A memory file held the correct state the whole time and I hadn't read it yet. **Sibling of [[gate-narrows-its-own-rule]]: a gate said one true thing (exit 0) beside one stale thing (its todo list), and I took both as current.**
+> - **⚠ SO THE CEILING IS WORSE THAN THE FIRST WRITE-UP SAID, and that is the real finding.** `dv-legend.js` = **16330 / 16384 bytes, 54 to spare**; dataviz page budget **29334 / 32768 = 90%** (was 88% before this session's comments). **Nothing cheap buys space back.** The known real fix is already on the board and is **Dave's call, not an enactment**: **per-member behaviour opt-in in the registry** (a schema change — the same item `Chart-sparkline`'s inert 15.6KB payload has been waiting on since 07-26, §C·4). **The next behaviour change to this group does not fit until that lands.**
+> - **⚠ TWO THINGS FOR DAVE'S EYE, NEITHER RULED.** **(1) An enactment call that is MINE:** release also sets `st.visible[id] = true` so the clicked series shows; the literal reading restores `visible[]` **alone**, and they differ only when a series dimmed *before* isolating is then the one clicked — literal leaves it dimmed, so the click that ended the mode does nothing to what was clicked. **One line either way.** **(2) A DV-D13 consequence the ruling never named:** isolate Housing (`950/41%`) then check a second series — that click now **releases**, so the centre returns to `2320/100%` instead of growing to `1250/54%`. **DV-D13 is intact**; the selection is simply everything again.
+> - **⬛ FLUSHED BY DAVE at the fork — the throttle's FIRST use on a job MID-FLIGHT.** Priced: fill ~55% + render ~10% + wrap ~5% ⇒ **~70% RED**; flushing lands ~60%. ⚠ **Overrun recorded per the throttle's own instruction:** DV-D17 was priced at 15% and ran nearer 20, **entirely on the byte-cap detour — self-inflicted, not a discovery.**
+>
+> ## ★ PRIOR — 2026-07-27 (Mon **afternoon #6**, OPUS solo self-conducting, effort MAX — ★ **DAVE'S CHART FLAGS CAPTURED *THEN* RULED: DV-D16/17/18 + ds-018 NEW + ds-012 RULED — and NOTHING ENACTED, by his choice** · ★ **DV-D16a REVERSED IN-WINDOW: the read-back offered three shapes and the right answer was in none of them** · build **60/60 GREEN** · 🟡 AMBER, flushed): **He picked an option, then twenty minutes later described what he actually meant — and it rejected the option he had picked.**
 > - **★ THE CAPTURE HAPPENED BEFORE THE CONVERSATION, and that was the point.** Dave: *"I want to make changes to the charts too, I've noticed a couple of missed decisions, please note this."* Per **ds-017** — which cost the start of session #5 — a placeholder went into the pillar ledger **at the moment of the ask**, marked `OBSERVED-BY-DAVE, contents UNSTATED` with an explicit *"do not guess which decisions he means"*, then filled in as **`_DATAVIZ-DECISIONS.md` § Batch 10**. It was superseded four minutes later, which makes it look wasted; **it is not — it is what makes the EXISTENCE of the gap survive a window that ends unexpectedly**, and windows do.
 > - **★ DV-D16 — ⚠⚠ RULED, THEN REVERSED IN THE SAME WINDOW. BOTH WORDINGS KEPT.** ① *"segment by segment"*, serial hand-off — **selected from a read-back, SUPERSEDED, DO NOT BUILD.** ② **IN FORCE:** *"they all grow at the same time, so they are floating and growing, rather than growing and 'handing off' to the next."* **One shared timeline; upper segments FLOAT upward as the ones below grow; per-segment easing CURVES, not per-segment timelines** — bottom `ease-in`, top `ease-out`, middles `linear` (his original easing rule, unchanged, and the durable part). Scope = **every stacked surface**; **`prefers-reduced-motion` ships WITH the first enactment** (*"fine"*) — ⚠ *reduced ≠ shortened*.
 > - **★ THE METHOD FINDING, and it is MINE, not Dave's: A READ-BACK CAN ONLY OFFER ANSWERS THE ASKER THOUGHT OF.** Three tidy, mutually-exclusive, plausibly-exhaustive options **read as a complete space and were not one** ⇒ **a selection from an incomplete option set is indistinguishable from a ruling.** The instrument still earned its keep — it produced the correction — but **it manufactures confidence in proportion to how well-formed the options look.** ⇒ **STANDING MITIGATION, inscribed: when reading back a MOTION or FEEL decision, describe the resulting SENSATION, not the mechanism.** *"The top blocks float as the bottom grows"* would have been recognised on sight; *"segment 2 starts when segment 1 lands"* was not. ⚠ Sibling of the clarify-and-reflect-back rule — **the reflect-back happened, correctly, and still under-determined the answer. Doing the ritual is not the same as the ritual working.**
@@ -13,15 +24,7 @@
 > - **★ DV-D17 release-isolation + ★ ds-018 NEW + ★ ds-012 RULED.** DV-D17 cause read from source (`dv-legend.js:114/119/129`), **three enactment bites named** incl. *Reset must not self-disable while still filtered* — **the same expression ds-018 lives in; do not conflate the two fixes.** ds-018: disabled Reset paints ink, i.e. its own hover value; CSS is **correct as authored**, so **two competing causes** (token set ink-ish vs token failing to resolve ⇒ `currentColor`) — **separate them by `getComputedStyle`, never by reading CSS**, and the second would be **instance FIVE** of the silent-lookup class. ds-012: Dave re-reported the h-bar clipping **cold**, then ruled **(b) gutter-relative** — *"(a) fixes an instance, (b) fixes the class."*
 > - **⬛ NOTHING ENACTED, BY DAVE'S CHOICE — and this is the throttle's first real use.** Priced at the fork: fill ~43% + enactment ~30% + wrap ~5% ⇒ **~78% RED**; DV-D17 alone hit the 60% boundary. The fork went to him and **he chose FLUSH.** ⚠ **First time it stopped work that was going WELL** — which is the case it was built for, and the harder one.
 >
-> ## ★ PRIOR — 2026-07-27 (Mon **midday #5**, OPUS solo self-conducting, effort MAX — ★ **THE GAUGE IS NOW A THROTTLE: reserve RING-FENCED ~15%, every job priced, a new window is a REFILL, and a THIRD TIER — the weekly allowance is PERISHABLE** · ★ **`ds-017` — the ruling was invisible to the handoff that should have carried it** · pre-flight FORM check BUILT + BITTEN · build **60/60 GREEN** · 🟡 AMBER): **Dave had to point at the right file twice. The reason he had to is the session's second finding.**
-> - **★ THE THROTTLE IS CANON — `_RUNBOOK-context-gauge.md` § ★ Half 0b.** RULED: **(a)** the discovery reserve is **RING-FENCED ~15%**, a budget you may not spend without asking — **never a fourth addend** (an additive term is absorbed by an optimistic plan and becomes padding; only a fence can trigger anything) · **(b)** any **unplanned finding triggers a re-price + the fork to Dave** (log-and-stop / narrow / chase knowingly) — *not* a call made silently from inside the sunk cost, **which is exactly how ds-016 got chased for +17** · **(c)** **a new session is a REFILL, not a penalty** · **every job priced and debited**, stated when it could move the band (*"like real life"*). **The ~10% floor is GONE** — every overrun on record arrived as steps each individually under it.
-> - **★ THE THROTTLE ALREADY EXISTED; ITS TRIGGER WAS AT THE WRONG TIME.** Half 0's fork (*projects into Red? offer (a)(b)(c), Dave chooses*) **is** what Dave asked for — it fired **only before starting**, so a mid-job finding could never reach it. Fix = one clause: **before starting AND on any unplanned finding.** *(Third instance this week of "the right rule, unreachable when it is needed".)*
-> - **★ THE THIRD TIER, and it INVERTS THE OBJECTIVE (Dave's screenshot + *"the overall weekly budget, which we need to max-out or loose"*).** job → **window** (fixed, refillable; cold read = a **~22% transaction fee**, measured) → **week** (**PERISHABLE**). MEASURED 12:07, Max 20×: week **51% elapsed · 33% consumed = 0.65× pro-rata**; **Fable 28% = 0.55%, the most under-used line**; 83h + 67% left ⇒ **1.36× pro-rata just to avoid losing it.** ⇒ **Behind pace = MORE WINDOWS, not longer ones.** Red is still the failure; **hoarding is now also a failure**, and **rationing Fable past the point it can be spent is waste, not discipline.** ⚠ **A same-window REVERSAL** — the section first said *"minimising Reds and minimising flushes are the same objective"*; both wordings are in the runbook, old one quoted, per the reversal rule.
-> - **★ BUILT: `_capture_gate.py --wrap` checks the pre-flight stamp's FORM** — 3 terms (the wrap is the historically omitted one) · arithmetic closes · band matched **against the table**. **7 bites + 2 green controls** incl. both band boundaries; **the bite was proven able to fail** (band check neutered in a copy ⇒ selftest goes red); verified **end-to-end on the real handoff**, not just fixtures. ⚠ **It proves the STAMP, not the RULE** — a well-formed stamp with invented numbers passes. Form check PROVEN, rule UNPROVEN, and **that gap is ADR-0016's "dangerous middle"** — flagged at inscription, not found later.
-> - **★ `ds-017` — THE RULING WAS INVISIBLE TO THE HANDOFF.** The item was filed correctly in `_FUTURE-STATE.md` (★★ FLOATED, with its own *"at the FRONT of the next window"* note). DO FIRST never carried it — **and restated the three-term rule that the same session's wrap had concluded did not work.** A Polaroid handing forward a superseded posture. The 2c/2d EXIT CHECK carries §C·4 items *up*; **no clause for the inverse — a FLOATED item that SUPERSEDES a standing instruction.** 3 remedies, unruled.
-> - **⬛ NOT DONE, deliberately:** **ds-016** (3 remedies, still unruled) · the **`CTRL` sweep** (ruled YES, still not started) · call **(4)** discussion · the **ruling batch**. Today's work *precedes* them, as the floated entry said it would.
->
-> *(Compaction 2c — keep ★ LATEST + 1 PRIOR, roll the rest. Older banners (the 07-22→24 chart-wave + ADR arc, the 07-25 AM v4 + midday→PM v5 + PM Memento-efficiency + PM#2 memory/routing-governor banners) are in `_GM-ARCHIVE.md` (Batches 1–6), verbatim, newest-first; durable narrative in `_DECISION-HISTORY/` + `notes/`.)*
+> *(Compaction 2c — keep ★ LATEST + 1 PRIOR, roll the rest. Older banners (the 07-22→24 chart-wave + ADR arc, the 07-25 AM v4 + midday→PM v5 + PM Memento-efficiency + PM#2 memory/routing-governor banners, and the 07-27 #5 throttle banner) are in `_GM-ARCHIVE.md` (Batches 1–10), verbatim, newest-first; durable narrative in `_DECISION-HISTORY/` + `notes/`.)*
 
 ---
 
@@ -31,7 +34,8 @@ self-conducting, effort MAX). §A = orientation · §B = session · §C = queue.
 
 ## ⬛ DO THIS FIRST
 
-> **✅ CLOSED, do not re-open.** ds-014 calls (a)(b)(c) — RULED, ENACTED, RENDER-PROVEN. The legend wave,
+> **✅ CLOSED, do not re-open.** ds-014 calls (a)(b)(c) — RULED, ENACTED, RENDER-PROVEN. **★ DV-D17 is
+> ENACTED + DOM-PROVEN (session #7) — its CODE is done; only its RENDER is owed. Do not re-implement it.** The legend wave,
 > ds-013, ADR-0016 P1/P3-advisory all stay closed. **Nothing here is owed twice.**
 >
 > **✅ ALSO CLOSED — "the gauge must be a THROTTLE" is RULED AND INSCRIBED** (`_RUNBOOK-context-gauge.md`
@@ -39,30 +43,47 @@ self-conducting, effort MAX). §A = orientation · §B = session · §C = queue.
 > after it had been ruled — the exact **ds-017** failure, found here by re-reading rather than by any gate.
 > If you are reading a "Proposal (UNRULED…)" in DO-FIRST, check the runbook before believing it.*
 >
-> **★★★ THIS WINDOW = ENACT THE CHART RULINGS. Five are ruled, none is built, and the order matters.**
-> *(Dave ruled all five in session #6 and chose to flush rather than build hot. Everything below is
-> fully specified in `_proforma/_DATAVIZ-DECISIONS.md` § Batch 10 and `_DS-IMPROVEMENTS.md`.)*
-> **0. FIRST, and it is a READ not a build — does the donut actually SEQUENCE today?** DV-D16's ask says
->    *"same as the pie"*. **Nobody has checked.** ⚠ **Answer it from the repo, do NOT ask Dave**
->    ([[feedback-verify-before-asking]]). **If the donut does NOT sequence, that is a finding** — the
->    named reference is a behaviour nobody built, and Dave's description becomes the source of truth.
-> **1. DV-D17 (smallest, fully specified — start here).** `st.isolated = null` on the second check-on.
->    **Three bites, all named:** restore to `visible[]` **not** all-on (`dv-legend.js:129`) · **Reset must
->    not self-disable while the view is still filtered** (`:122`) · `dv-sr` must announce release on the
->    **add** path (`:140` fires only on re-click). ⚠ **`:122` is also where ds-018 lives — do not conflate.**
-> **2. ds-018 — separate the two causes BY RENDER before touching anything.** `getComputedStyle` on the
->    disabled Reset, snippet **and** showroom pane, two widths: read the resolved value of **both**
->    `--border-disabled` and `border-color`. ⚠ **Do NOT hard-code a grey; do NOT tighten `:hover`** (it is
->    already `:not(:disabled)`). If the token fails to resolve, this is **instance five** of the silent-
->    lookup class and the fix belongs in the generator + a gate, not in `canon.css`.
-> **3. DV-D16 — concurrent "floating" growth.** ⚠ **Build wording ②, not ①** (the banner explains why).
->    Must animate **DV-D14's ENACTED heights**, not true heights. **`prefers-reduced-motion` ships with it.**
-> **4. ds-012 — (b) gutter-relative plot area.** ⚠ `cb2` is a **REVIEWED artefact**: every `x`/`width`
+> **★★★ THIS WINDOW = ONE HARNESS RUN THAT PAYS FOR TWO JOBS, THEN A CLEANUP THAT IS ALREADY AUTHORISED.**
+> **0. RENDER-PROVE DV-D17 *and* DIAGNOSE ds-018 IN THE SAME SPIN-UP.** Same component, same page, same
+>    two widths, same licensed cut — doing them separately pays the harness cost twice for nothing.
+>    Read `knowledge/_RUNBOOK-render-verify.md` first; do **not** reconstruct the pipeline.
+>    **(a) DV-D17's owed proof:** assert `document.fonts.check(...)` FIRST, then confirm **no `.dv-legrow`
+>    resolves the `.is-solo` treatment** (ink border + 6% ink fill) after isolate-then-check-on — in the
+>    **snippet AND the showroom pane**, at both widths. ⚠ Showroom panes are `srcdoc` IFRAMES: query
+>    `page.frames`, not the top document. ⚠ **jsdom already says 108/108 — that is the state machine, not
+>    the paint.** The whole reason this is owed is that ds-018 is a live case of *DOM correct, screen wrong*
+>    on this very component.
+>    **(b) ds-018, unchanged from its own entry:** `getComputedStyle` on the **disabled** Reset, snippet and
+>    showroom, two widths; read the resolved value of **both** `--border-disabled` and `border-color`.
+>    ⚠ **Do NOT hard-code a grey; do NOT tighten `:hover`** (already `:not(:disabled)`). If the token fails
+>    to resolve, this is **instance five** of the silent-lookup class and the fix belongs in the generator
+>    + a gate, not in `canon.css`.
+> **1. ⛔ NOT A JOB — READ THIS BEFORE YOU PLAN ANYTHING ELSE ON THE DATAVIZ GROUP.** An earlier draft of
+>    this handoff told you to "take the authorised transitional-block deletion". **It is already done**
+>    (`ba336dc`); `_check_legend_migration.py` prints that todo list unconditionally at `:87–89` and
+>    `dv-behaviour.js:146` is the tombstone. **Do not go looking for it.**
+>    What is REAL: **`dv-legend.js` = 16330 / 16384 bytes (54 to spare); dataviz page budget 90%.**
+>    **There is no cleanup left to buy headroom**, so **the next behaviour change to this group does not
+>    fit.** The known fix is **Dave's call, not an enactment**: **per-member behaviour opt-in in the
+>    registry** (schema change — same item `Chart-sparkline`'s inert 15.6KB payload waits on, §C·4).
+>    ⇒ **If your plan touches dv-legend.js or dv-behaviour.js, price the schema question FIRST or you
+>    will hit the ADR-0015 gate mid-job, exactly as session #7 did.**
+> **2. ds-012 — (b) gutter-relative plot area.** ⚠ `cb2` is a **REVIEWED artefact**: every `x`/`width`
 >    moves, so **attribute the diff with a control** or a correct change reads as a regression. Needs a
 >    **floor** so a long category can't eat the plot at narrow widths — that floor is Dave's eye.
-> ⚠ **THE ACCEPTANCE TEST FOR ALL OF THESE IS A RENDER IN THE LICENSED CUT**, both widths, snippet AND
-> showroom pane, `document.fonts.check(...)` asserted first. A fallback-face render passes while broken —
-> that is precisely how ds-012 survived review. **Every proof ships with a bite proving it can FAIL.**
+> **3. DV-D16 — concurrent "floating" growth. ⚠ RE-PRICE IT YOURSELF FIRST.** Session #7 measured it down
+>    from ~30% to ~19% (concurrency already exists; only *floating* + *per-segment curves* are missing —
+>    `Chart-bar.reference.html:121–128`, full detail in the ledger). **That is a downward re-price, which is
+>    the direction nobody double-checks — re-derive it, do not inherit it.** Build wording ②, not ①. Must
+>    animate **DV-D14's ENACTED heights**. **`prefers-reduced-motion` ships with it** — and the donut's
+>    baked answer at `Chart-donut.reference.html:901–906` is the model (land on the final frame; **reduced
+>    ≠ shortened**).
+> ⚠ **THE ACCEPTANCE TEST IS A RENDER IN THE LICENSED CUT**, both widths, snippet AND showroom pane,
+> `document.fonts.check(...)` asserted first. A fallback-face render passes while broken — that is precisely
+> how ds-012 survived review. **Every proof ships with a bite proving it can FAIL.**
+> ★ **The `DVLEGEND` env override added in #7 is the cheap way to do that for anything touching the legend:**
+> point either suite at a neutered copy instead of mutating canon. Worked example + the published limit
+> (the donut suite cannot see an all-on regression) in the ledger's DV-D17 ENACTED block.
 >
 > **★★★ FOUR OF THE FIVE CALLS ARE RULED (Dave, 2026-07-27 #4). What's left is small and named.**
 > ✅ **(1) instrument fit = its own generated register sitting ON TOP of ADR-0016** — BUILT.
@@ -539,6 +560,13 @@ radius px + bigplay. **(c) NEW from Phase-2:** all 24 new components across 4 th
 as the dataviz sign-off (§C·2).
 
 ## 4. Enact-queue (cheap, post-rulings)
+**★ NEW 2026-07-27 #7 — carried here by the 2c EXIT CHECK so compaction cannot lose them:**
+**DV-D17's render-verify in the licensed cut** (OWED — pair with ds-018, §DO-FIRST 0) · **the
+`st.visible[id] = true` enactment call** (the agent's, UNRULED — one line to reverse; `_REVIEW-SIGNOFF.md`) ·
+**the DV-D13 centre-figure consequence** (Dave's eye, live; `_REVIEW-SIGNOFF.md`) · **the dataviz behaviour CEILING** — 54 bytes free in `dv-legend.js`, group at 90%, **no cleanup left**;
+the fix is the per-member opt-in SCHEMA question, Dave's (§DO-FIRST 1) · **`_verify_dv_legend*.js` both take a `DVLEGEND` override now** — use it to bite anything
+touching the legend instead of mutating canon · ⚠ **the members suite is 108 checks, not the "54/54" the
+record carried for two sessions** — a stale count in three places, same class as the migration miss.
 **★ NEW 2026-07-27 #6 — THE ENACTMENT REGISTER CANNOT SEE A RULING WRITTEN IN A BLOCKQUOTE.** Found at
 commit time: `_build_enactment_register.py` harvested **DV-D16 and DV-D17** from § Batch 10 (both
 UNPROVEN, correct) and **silently missed DV-D18**, which sits inside a `>` block. Register now reads
@@ -582,6 +610,37 @@ Legacy hex seeding + provenance-gate flip · Console/Supercharge chromatic palet
 Sutherland field test · full-review backlog (`_REVIEW-SIGNOFF.md`) · `_FUTURE-STATE` items ·
 spot-illustration/empty-state icon set (`_ICON-GAPS.md`, wave-1's only gap).
 
+> **pre-flight:** fill 30% + job 15% + wrap 5% = 50% AMBER · reserve 15% ring-fenced
+> *(Session #7, 2026-07-27. Closed 🟡 **~60% AMBER, at the boundary**. **Overrun +5, and it was
+> SELF-INFLICTED, not a discovery:** the byte-cap detour (a comment block that restated the ruling's arc
+> inside a file whose header forbids exactly that) cost the difference. **Recorded per the throttle's own
+> instruction to log every overrun so the 15% can eventually be re-derived from something.** The fork
+> fired correctly and mid-flight this time — priced at ~55% fill, the render would have landed ~70% RED,
+> and Dave chose flush. ⚠ The three-term projection was accurate to within 5 points here; **that is n=1
+> and does not vindicate it.**)*
+>
+> **COMMIT STATE (refreshed 2026-07-27 ~14:20 BST from `date`, the suite was asserting the old ruling).**
+> ONE commit: `knowledge/canon/dv-legend.js` (**DV-D17 ENACTED** — release-on-add + the removed
+> superseded announce branch; trimmed to 16330/16384 after the ADR-0015 gate blocked the first pass) ·
+> `knowledge/_verify_dv_legend_members.js` + `knowledge/_verify_dv_legend.js` (**six checks rewritten,
+> old wording kept verbatim beside each; 4 new DV-D17 checks; `DVLEGEND` env override on both**) ·
+> the 5 injected chart snippets + `showroom/chart-*.html` (regenerated, never hand-edited) ·
+> `knowledge/_proforma/_DATAVIZ-DECISIONS.md` (**DV-D17 ENACTED block** + **DV-D16 (1) ANSWERED** with
+> the scope measure) · `_DECISION-HISTORY/2026-07-27-the-suite-that-asserted-the-old-ruling.md`
+> (**NEW dossier**) · `_GM-ARCHIVE.md` (2c roll, Batch 10) · `_LIVE-STATE-ARCHIVE.md` (2d roll) ·
+> `_LIVE-STATE.md` · `knowledge/_REVIEW-SIGNOFF.md` · this file.
+> **Build 60/60 GREEN (exit 0) · members 108/108 · donut 27/27 · 3 neutered controls all RED on the
+> right checks · STAND-002 PASS, 26 standing docs reachable.**
+> **⚠ WHAT THE AUTHOR FLAGS AGAINST HIS OWN WORK:** **108/108 and 27/27 are DOM assertions, NOT renders**
+> — reading them as "DV-D17 is done" is the single most likely misreading of this handoff, and ds-018 is
+> a live counter-example on the same component · **the DV-D16 downward re-price makes the next job look
+> cheap**, which is exactly when to re-derive rather than inherit · **the `st.visible[id] = true` line is
+> my call, not Dave's, and is unruled** — it is flagged in three places precisely because a quiet
+> enactment choice is indistinguishable from a ruling six sessions later · **the donut suite's inability
+> to catch an all-on regression is published, not patched** — do not treat the two suites as
+> interchangeable.
+> Dave pushes via GitHub Desktop (whole stack, Desktop closed while Claude commits).
+>
 > **pre-flight:** fill 30% + job 20% + wrap 5% = 55% AMBER · reserve 15% ring-fenced
 > *(Session #6, 2026-07-27. ⚠ **The job term was for a BUILD that Dave then cancelled** in favour of
 > capture-plus-ruling; the capture ran instead and cost more than the build would have been allowed.
@@ -591,7 +650,7 @@ spot-illustration/empty-state icon set (`_ICON-GAPS.md`, wave-1's only gap).
 > in a new costume** — and I did not surface the Amber→Red crossing; **Dave asked "getting warm btw"
 > before I said it**, which is the one thing the band rule exists to prevent.)*
 >
-> **COMMIT STATE (refreshed 2026-07-27 ~13:15 BST from `date`, the read-back offered the wrong options).**
+> **[SUPERSEDED — kept for the record] COMMIT STATE (refreshed 2026-07-27 ~13:15 BST from `date`, the read-back offered the wrong options).**
 > ONE commit: `knowledge/_proforma/_DATAVIZ-DECISIONS.md` (**§ Batch 10 NEW** — DV-D16 with **both**
 > wordings and the reversal record · DV-D17 + 3 enactment bites · DV-D18 + the justification-shift note ·
 > the read-back method finding) · `knowledge/_DS-IMPROVEMENTS.md` (**ds-018 NEW** with two competing
@@ -624,22 +683,3 @@ spot-illustration/empty-state icon set (`_ICON-GAPS.md`, wave-1's only gap).
 > pro-rata" is a number that looks like a target** — spending allowance on low-value work is not a win.
 > **Superseded (do not act on): `git rev-list` showed 2 unpushed commits at session start** — this makes 3.
 >
-> **[SUPERSEDED — kept for the reversal record] COMMIT STATE (2026-07-27 ~11:00 BST, instrument fit + ds-016).**
-> ONE commit: `knowledge/_build_instrument_fit.py` (**NEW** — the ladder, the pass, 11 bites, the
-> dangling-citation detector, a 5-point anti-false-fix header) · `knowledge/_build_all.py` (**steps 58+59
-> wired advisory**) · generated `knowledge/_INSTRUMENT-FIT.md` + `_instrument-fit.json` (**NEW**) ·
-> `knowledge/_DS-IMPROVEMENTS.md` (**ds-016 NEW** — the 7 dangling citations, the 698/465/265 measure,
-> 4 anti-false-fix clauses, 3 unruled remedies) · `_FUTURE-STATE.md` (**Exploration beat 2** — call (2)
-> ruled complementary, with the evidence both ways) ·
-> `_DECISION-HISTORY/2026-07-27-the-index-cannot-see-the-rule.md` (**NEW dossier**) ·
-> `_LIVE-STATE` + `_LIVE-STATE-ARCHIVE` (2d roll) + `_GM-ARCHIVE` (2c roll) · this file.
-> **Build 60/60 GREEN (exit 0) · instrument-fit selftest 11/11 · capture gate 13 in scope / 0 fail /
-> 0 warn · STAND-002 PASS, 26 standing docs reachable.**
-> **Everything built is ADVISORY and reversible; nothing pre-empts calls (4) or ds-016.**
-> **Context gauge at authoring: 🔴 RED ~72% (ESTIMATE ±15%).** Read off the band table. Pre-flight said
-> ~55% Amber and ran ~17 points over — **the miss was ds-016, an unplanned finding chased mid-job**;
-> the wrap itself was reserved in advance per the three-term rule and held. ⇒ **Next reader: the ★ LATEST
-> banner and the ruled calls above are measured and re-runnable; THIS PROSE was authored deep in Red —
-> re-verify it, which is what no gate sees.** *(Every number here is reproducible: `python3
-> knowledge/_build_instrument_fit.py` and `--selftest`.)*
-> Dave pushes via GitHub Desktop (whole stack, Desktop closed while Claude commits).

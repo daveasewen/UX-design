@@ -124,16 +124,27 @@
     clearFade(st);
   }
 
-  /* ---------- GESTURES. SWATCH = checkbox (show/hide) · LABEL = isolate. Isolate is an
-     ADDITIVE FOCUS MODE: entering seeds a focus SET {id}, the other boxes render BLANK, and
-     checking one ADDS it at full. visible[] is untouched while isolated, so release restores
-     the prior mix by construction rather than by bookkeeping. */
+  /* ---------- GESTURES. SWATCH = checkbox (show/hide) · LABEL = isolate. Isolate is a
+     ONE-SERIES MODE the next swatch click ENDS (★ DV-D17; additive until 2026-07-27).
+     visible[] is untouched while isolated, so release restores the prior mix by construction. */
   function toggleSwatch(st, id) {
     var m = active(st);
+    /* ★ DV-D17 — a blank swatch checked while isolated ENDS isolation, so no row keeps .is-solo
+       while several series show. ⚠ Release restores visible[], NEVER all-on (that would make this
+       a second Reset); the clicked series is set visible so the click still does what it says.
+       Arc + accepted cost + the 3 bites: _DATAVIZ-DECISIONS.md § Batch 10. */
+    if (st.isolated && !m[id]) {
+      st.isolated = null; st.focus = null;
+      st.visible[id] = true;
+      announce(st, 'Isolation released — ' + nameOf(st, id) + ' shown');
+      render(st);
+      return;
+    }
     if (m[id] && count(st, m) === 1) { announce(st, 'At least one series must stay shown'); return; }
     m[id] = !m[id];
-    if (st.isolated) { announce(st, nameOf(st, id) + (m[id] ? ' added' : ' removed')); }
-    else { announce(st, nameOf(st, id) + (m[id] ? ' shown' : ' dimmed')); }
+    /* the isolated-mode ' added'/' removed' branch is GONE, not merely unreachable: focus is now
+       always a singleton — add releases above, remove hits the floor guard. */
+    announce(st, nameOf(st, id) + (m[id] ? ' shown' : ' dimmed'));
     render(st);
   }
   function isolate(st, id) {

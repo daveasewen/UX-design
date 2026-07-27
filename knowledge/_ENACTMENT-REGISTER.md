@@ -9,12 +9,12 @@
 | verdict | count | meaning |
 |---|---:|---|
 | **PROVEN** | 4 | a check names it AND a selftest proves that check can FAIL on it |
-| **CLAIMED** | 20 | a check names it, nothing proves it can fail — the dangerous middle |
+| **CLAIMED** | 21 | a check names it, nothing proves it can fail — the dangerous middle |
 | **UNPROVEN** | 56 | no executable check names it at all |
 | **NOT-GATEABLE** | 0 | the ledger says so explicitly, with a reason |
-| **TOTAL** | 80 | |
+| **TOTAL** | 81 | |
 
-**4 of 80 rulings (5%) are PROVEN.** That number is the finding, not a failure of this script.
+**4 of 81 rulings (5%) are PROVEN.** That number is the finding, not a failure of this script.
 
 ⚠ **CLAIMED is not a soft PROVEN.** ds-013 lived in CLAIMED for weeks: `_sweep_type_enactment.py` named its subject and reported *0 deviations* while it could not read the stylesheet at all. A green light from a blind check is worse than no check.
 
@@ -65,7 +65,8 @@
 | `DV-D14` | **UNPROVEN** | DV-D14 · dv-004 separation is satisfied by GEOMETRY on gridded plots, not by a surface-coloured | — | `_proforma/_DATAVIZ-DECISIONS.md` |
 | `DV-D15` | **UNPROVEN** | DV-D15 · Type drawn ON a series fill gets its own semantic role — `data/text/on-series` MINTED | — | `_proforma/_DATAVIZ-DECISIONS.md` |
 | `DV-D16` | **UNPROVEN** | DV-D16 · Stacked chart animates SEQUENTIALLY FROM THE BOTTOM, with a shaped easing cadence. | — | `_proforma/_DATAVIZ-DECISIONS.md` |
-| `DV-D17` | **UNPROVEN** | DV-D17 · The isolated key must NOT stay active once other series are checked back on. | — | `_proforma/_DATAVIZ-DECISIONS.md` |
+| `DV-D17` | **CLAIMED** | DV-D17 · The isolated key must NOT stay active once other series are checked back on. | knowledge/_verify_dv_legend.js, knowledge/_verify_dv_legend_members.js | `_proforma/_DATAVIZ-DECISIONS.md` |
+| `DV-D18` | **UNPROVEN** | ★ DV-D18 · CAP STACKED SEGMENTS AT 6 for now — Dave: *"Lets cap at 6 for now."* Aligns stacks | — | `_proforma/_DATAVIZ-DECISIONS.md` |
 | `R-D1` | **UNPROVEN** | R-D1 — RAG promotion, round one (2026-07-18) | — | `_proforma/_RAG-DECISIONS.md` |
 | `R-D2` | **UNPROVEN** | R-D2 — Background/glyph split + matting (2026-07-18) | — | `_proforma/_RAG-DECISIONS.md` |
 | `R-D3` | **UNPROVEN** | amber (deepening only reaches 2.52 at L0.72 before it goes ochre/brown, R-D3-barred). So on white the watch fill | — | `_proforma/_RAG-DECISIONS.md` |

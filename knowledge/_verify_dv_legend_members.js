@@ -15,7 +15,10 @@ const path = require('path');
 const { JSDOM } = require(process.env.JSDOM || '/tmp/node_modules/jsdom');
 
 const ROOT = path.resolve(__dirname, '..');
-const SRC = path.join(ROOT, 'knowledge/canon/dv-legend.js');
+/* SRC is overridable so the BITE-THE-BITE run can point the suite at a deliberately neutered
+   copy and prove these checks are capable of going red — WITHOUT ever mutating canon to do it.
+   Same idiom as the JSDOM override above. Default is always the real canon source. */
+const SRC = process.env.DVLEGEND || path.join(ROOT, 'knowledge/canon/dv-legend.js');
 
 let pass = 0, fail = 0;
 const ok = (name, cond, detail) => {
@@ -145,26 +148,53 @@ MEMBERS.forEach((member) => {
     ok('16 Reset restores every series', L.ids.every((id) => !anyGhost(id)));
     ok('17 Reset re-disables itself once everything is shown', reset.disabled === true);
 
-    /* ISOLATE = ADDITIVE FOCUS SET */
+    /* ISOLATE = A ONE-SERIES MODE THE NEXT SWATCH CLICK ENDS (★ DV-D17, Dave 2026-07-27) */
     click(item(a));
     ok('18 isolate ghosts the others and marks the row solo',
       !anyGhost(a) && others(a).every(ghosted) && row(a).classList.contains('is-solo'));
     ok('19 in isolate the other boxes render BLANK (focus-set membership)',
       sw(b).getAttribute('aria-checked') === 'false' && sw(a).getAttribute('aria-checked') === 'true');
+
+    /* ⚠ 20 AND 21 ASSERTED THE SUPERSEDED MODEL AND ARE REWRITTEN, NOT DELETED.
+       They read: "20 checking a blank swatch ADDS it at full" and "21 releasing isolate restores
+       the PRIOR mix (all shown)" — the additive-focus half of DV-D11. **DV-D17 supersedes it**:
+       the second check-on ends the mode outright. Both wordings live in _DATAVIZ-DECISIONS.md
+       § Batch 10. Keeping the old text here as a comment is deliberate — a suite that quietly
+       changes what a numbered check means is how a reversal reads as agent drift. */
+    const soloRow = () => leg.querySelector('.dv-legrow.is-solo');
     click(sw(b));
-    ok('20 checking a blank swatch ADDS it at full',
-      !anyGhost(b) && L.ids.slice(2).every(ghosted));   /* slice(2) is empty on a 2-series member */
+    ok('20 DV-D17 — checking a blank swatch RELEASES isolation entirely (no row stays solo)',
+      !soloRow() && !anyGhost(a) && !anyGhost(b)
+        && sw(b).getAttribute('aria-checked') === 'true');
+    ok('21 DV-D17 — the release is ANNOUNCED on the add path, not a silent mode change',
+      /isolation released/i.test(live.textContent) && announces(b));
+
+    /* THE RULING'S SHARPEST EDGE — release must restore visible[], NOT all-on, or DV-D17
+       silently becomes Reset. Needs a series dimmed BEFORE isolating, so it has its own setup.
+       ⚠ Per-N, not per-bar: a 2-series member has no spare to leave dimmed, so it asserts the
+       reachable form of the same invariant. */
+    click(reset);
+    const spare = L.ids.length >= 3 ? L.ids[2] : null;
+    if (spare) { click(sw(spare)); }
     click(item(a));
-    ok('21 releasing isolate restores the PRIOR mix (all shown)',
-      L.ids.every((id) => !anyGhost(id)) && !row(a).classList.contains('is-solo'));
+    click(sw(b));
+    ok(`22 DV-D17 — release restores visible[], NOT all-on${spare ? ' (the dimmed series stays dimmed)' : ' (2-series: nothing to leave dimmed)'}`,
+      spare ? (ghosted(spare) && !anyGhost(a) && !anyGhost(b))
+            : (!anyGhost(a) && !anyGhost(b)),
+      spare ? `spare=${spare} ghosted=${ghosted(spare)}` : '');
+    /* bite (ii) of the ruling. Stated as the real invariant rather than a literal expected value:
+       Reset is disabled exactly when the view is NOT filtered — which holds for any N. */
+    ok('23 DV-D17 — Reset does not self-disable while the view is still filtered',
+      reset.disabled === L.ids.every((id) => !anyGhost(id)));
+    click(reset);
 
     /* HOVER — fires in BOTH modes */
     over(row(a));
-    ok('22 hovering an active row fades the OTHER actives to 24%',
+    ok('24 hovering an active row fades the OTHER actives to 24%',
       others(a).every(faded) && !faded(a));
     click(sw(last));
     over(row(last));
-    ok('23 hovering a GHOSTED row peeks it as an add-preview', peeked(last));
+    ok('25 hovering a GHOSTED row peeks it as an add-preview', peeked(last));
     click(reset);
   });
 
@@ -185,19 +215,19 @@ MEMBERS.forEach((member) => {
     const live2Before = doc.getElementById(L2.live).textContent;
     const live1Before = doc.getElementById(L1.live).textContent;
 
-    ok('24 the two legends resolve to DIFFERENT figures', fig1 !== fig2);
-    ok('25 both figures start clean', ghostCount(fig1) === 0 && ghostCount(fig2) === 0);
+    ok('26 the two legends resolve to DIFFERENT figures', fig1 !== fig2);
+    ok('27 both figures start clean', ghostCount(fig1) === 0 && ghostCount(fig2) === 0);
     click(sw1);
-    ok('26 toggling legend 1 ghosts marks in ITS figure only', ghostCount(fig1) > 0);
-    ok('27 the OTHER figure is untouched — no cross-talk', ghostCount(fig2) === 0);
-    ok('28 the other legend\'s Reset stays disabled',
+    ok('28 toggling legend 1 ghosts marks in ITS figure only', ghostCount(fig1) > 0);
+    ok('29 the OTHER figure is untouched — no cross-talk', ghostCount(fig2) === 0);
+    ok('30 the other legend\'s Reset stays disabled',
       leg2.querySelector('.dv-leg-reset').disabled === true);
-    ok('29 legend 1 announces to its own live region',
+    ok('31 legend 1 announces to its own live region',
       doc.getElementById(L1.live).textContent !== live1Before);
-    ok('30 legend 2\'s live region is NOT written to — announcements don\'t bleed',
+    ok('32 legend 2\'s live region is NOT written to — announcements don\'t bleed',
       doc.getElementById(L2.live).textContent === live2Before);
     click(leg1.querySelector('.dv-leg-reset'));
-    ok('31 resetting legend 1 leaves legend 2 exactly as it was',
+    ok('33 resetting legend 1 leaves legend 2 exactly as it was',
       ghostCount(fig2) === 0 && doc.getElementById(L2.live).textContent === live2Before);
   }
 });

@@ -11,7 +11,9 @@ const { JSDOM } = require(process.env.JSDOM || '/tmp/node_modules/jsdom');
 
 const ROOT = path.resolve(__dirname, '..');
 const SNIP = path.join(ROOT, 'knowledge/snippets/Chart-donut.reference.html');
-const SRC = path.join(ROOT, 'knowledge/canon/dv-legend.js');
+/* overridable so the BITE-THE-BITE run can point at a neutered copy and prove these checks can
+   go red, without ever mutating canon to do it. Default is always the real canon source. */
+const SRC = process.env.DVLEGEND || path.join(ROOT, 'knowledge/canon/dv-legend.js');
 
 let pass = 0, fail = 0;
 const ok = (name, cond, detail) => {
@@ -64,17 +66,24 @@ ok('7  Reset enables on any ghost', reset.disabled === false);
 click(sw(1));
 ok('8  re-checking restores full', !ghosted(1) && reset.disabled === true);
 
-console.log('\nDV-D11 — isolate is an ADDITIVE focus mode');
+console.log('\nDV-D11 + ★ DV-D17 — isolate is a ONE-SERIES mode the next check-on ENDS');
 click(item(2));
 ok('9  isolate marks its row solo', item(2).getAttribute('aria-pressed') === 'true' && row(2).classList.contains('is-solo'));
 ok('10 other boxes render BLANK in isolate', [1, 3, 4, 5].every((i) => sw(i).getAttribute('aria-checked') === 'false'));
 ok('11 non-focused series ghost, focus stays full', !ghosted(2) && [1, 3, 4, 5].every((i) => ghosted(i)));
+/* ⚠ 12 and 13 ASSERTED THE SUPERSEDED MODEL — rewritten, not deleted. They read
+   "12 checking ADDS to the focus set" (!ghosted(4) && !ghosted(2) && ghosted(1) && ghosted(3))
+   and "13 release restores the prior mix exactly". DV-D17 (Dave, 2026-07-27) ends the mode on
+   that click instead. Both wordings: _DATAVIZ-DECISIONS.md § Batch 10. */
 click(sw(4));
-ok('12 checking ADDS to the focus set', !ghosted(4) && !ghosted(2) && ghosted(1) && ghosted(3));
-click(item(2));
-ok('13 release restores the prior mix exactly', [1, 2, 3, 4, 5].every((i) => !ghosted(i)));
+ok('12 DV-D17 — checking a blank swatch RELEASES isolation entirely',
+  !row(2).classList.contains('is-solo') && item(2).getAttribute('aria-pressed') === 'false'
+    && [1, 2, 3, 4, 5].every((i) => !ghosted(i)));
+ok('13 DV-D17 — the release is ANNOUNCED on the add path', /isolation released/i.test(live.textContent));
 
 console.log('\nDV-D11 — guards, hover ladder, live region');
+/* isolation is already released above (it used to need the click that stood here), so the walk
+   below starts from the all-shown state exactly as it did before DV-D17. */
 [2, 3, 4, 5].forEach((i) => click(sw(i)));
 click(sw(1));
 ok('14 the last active series cannot be unchecked', !ghosted(1) && /must stay shown/i.test(live.textContent));
@@ -92,9 +101,14 @@ console.log('\nDV-D13 — typed tooltip + selection-following centre');
 ok('18 centre starts at the grand total', centre('value') === '2320' && centre('percent') === '100%');
 click(item(1));
 ok('19 isolate Housing → 950 / 41%', centre('value') === '950' && centre('percent') === '41%', `got ${centre('value')} / ${centre('percent')}`);
+/* ⚠ DV-D17 CHANGES WHAT THIS CHECK MEASURES, and the change is worth naming. It read
+   "20 +Savings → 1250 / 54%": under additive focus, checking a second series GREW the centre
+   readout. Under DV-D17 that same click ends isolation, so the selection becomes the whole
+   visible set and the centre returns to the grand total. DV-D13 is intact — the centre still
+   follows the SELECTION; the selection is simply everything again. */
 click(sw(3));
-ok('20 +Savings → 1250 / 54%', centre('value') === '1250' && centre('percent') === '54%', `got ${centre('value')} / ${centre('percent')}`);
-click(item(1));
+ok('20 DV-D17 — the add-click releases, so the centre returns to the grand total',
+  centre('value') === '2320' && centre('percent') === '100%', `got ${centre('value')} / ${centre('percent')}`);
 click(reset);
 const segBtn = (v) => fig.querySelector(`button[data-dv-view-btn="${v}"]`);
 ok('21 marks carry BOTH typed tips', !!seg(1).getAttribute('data-tip-value') && !!seg(1).getAttribute('data-tip-percent'));
