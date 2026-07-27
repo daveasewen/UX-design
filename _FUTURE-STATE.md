@@ -700,3 +700,39 @@ Evidence + full framing: `notes/_dream/2026-07-26-proposals.md` §P6. Runbook: `
   ~15-20k/session. Mechanical, Sonnet-able — fold into the ruling-batch window's enact-queue or run
   as a chore. Related: `memory-compaction-mechanics` (same pattern, repo-side); MEMORY.md index
   (~6k auto-load) is due its own densify pass under the adversarial-densify gate.
+
+## ★★ FLOATED 2026-07-27 (#4 wrap, Dave) — the gauge must be a THROTTLE, not a thermometer
+
+**Dave, at wrap:** *"the pre-flighting needs work, we cant keep hitting red, its a waste of effort."*
+**Evidence he's right — three sessions running:** 🔴 ~92% · 🔴 ~63% · 🔴 ~72%. The three-term
+pre-flight rule (`fill + job + WRAP`) was inscribed *during* that run and did not stop it.
+
+**⚠ UNRULED — this is a diagnosis and a proposal, not a decision.** Deliberately NOT written into
+`_RUNBOOK-context-gauge.md`: that file is canon, this was authored at ~97% fill, and a rule about
+not working past your budget should not itself be inscribed past budget. Rule it cold.
+
+**Diagnosis — four points, the last one is the actual finding:**
+
+1. **The estimate prices the job PLANNED, not the job RUN.** Every overrun was an *unplanned finding
+   chased mid-job* (ds-016 today; the gauge-failure arc before it). In this project discovery is not
+   noise — **it is the most common event**. A pre-flight with no discovery reserve is *systematically*
+   optimistic, not occasionally wrong.
+2. **It is ONE-SHOT.** Priced at the start, not re-read until wrap ⇒ a 17-point overrun is invisible
+   until it is already spent.
+3. **There is no ABORT rule.** On finding ds-016 there was a real choice — log it and stop, or chase
+   it. Nothing forced a re-price, so it was chased from inside the sunk cost.
+4. **★ Hitting Red is a SCOPE failure, not a MEASUREMENT failure.** A better estimate would not have
+   saved this session; **only cutting would have.** ⇒ *The gauge has been used as a thermometer — it
+   reports how hot you are and never tells you to stop.* **Dave wants a throttle.**
+
+**Proposed shape (his framing, reflected back and confirmed at wrap):**
+- a **DISCOVERY RESERVE** as a standing term in the pre-flight, sized from the observed overrun history
+  (three data points exist: +?, +5, +17);
+- **a finding mid-job TRIGGERS a re-price**, and the re-price produces an explicit **STOP-or-CONTINUE
+  decision put to Dave** — not one the agent makes silently at the point where it is already invested;
+- ⇒ the gauge gains the power to **CUT WORK**, which is the whole point.
+
+**Sequencing (Dave asked whether to abort the next task — answer: no).** This is a runbook edit + a
+ruling, ~10 minutes at the FRONT of the next window; it does not displace ds-016 / the `CTRL` sweep,
+it precedes them. Related: [[feedback-context-gauge]] · `_RUNBOOK-context-gauge.md` ·
+`_DECISION-HISTORY/2026-07-27-the-index-cannot-see-the-rule.md` (the session that produced the +17).

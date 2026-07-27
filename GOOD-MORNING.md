@@ -34,6 +34,16 @@ rule — instrument fit at corpus scale + ds-016" (Opus 5 solo self-conducting, 
 > **✅ CLOSED, do not re-open.** ds-014 calls (a)(b)(c) — RULED, ENACTED, RENDER-PROVEN. The legend wave,
 > ds-013, ADR-0016 P1/P3-advisory all stay closed. **Nothing here is owed twice.**
 >
+> **★★★ DO THIS BEFORE ANY BUILD — Dave's wrap ruling-in-waiting: THE GAUGE MUST BE A THROTTLE.**
+> *"the pre-flighting needs work, we cant keep hitting red, its a waste of effort."* Three sessions
+> running: 🔴 ~92% · 🔴 ~63% · 🔴 ~72%. **The finding: hitting Red is a SCOPE failure, not a measurement
+> failure — a better estimate would not have saved any of them, only CUTTING would.** The gauge reports
+> heat and never says stop. **Proposal (UNRULED, ~10 min at the front of the window, does NOT displace
+> the work below):** a standing **discovery reserve** + **a mid-job finding TRIGGERS a re-price** whose
+> output is an explicit **STOP-or-CONTINUE put to Dave**, not a silent call made from inside the sunk
+> cost. Full diagnosis: `_FUTURE-STATE.md` § *the gauge must be a THROTTLE*. ⚠ Deliberately NOT written
+> into `_RUNBOOK-context-gauge.md` — canon, and it was authored at ~97% fill. **Rule it cold, then inscribe.**
+>
 > **★★★ FOUR OF THE FIVE CALLS ARE RULED (Dave, 2026-07-27 #4). What's left is small and named.**
 > ✅ **(1) instrument fit = its own generated register sitting ON TOP of ADR-0016** — BUILT.
 > ✅ **(2) adoption-time vs sweep = COMPLEMENTARY** — *"You're right about 2 they are complimentary"*.
