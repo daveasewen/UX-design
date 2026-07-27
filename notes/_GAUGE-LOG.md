@@ -79,3 +79,14 @@ Blocks below moved VERBATIM from `GOOD-MORNING.md` §C strata at the first 2f ro
 > 39% ⇒ 0.71× pro-rata · Fable 33% ⇒ 0.60× · catch-up to Thu 23:00: All 1.36× · Fable 1.50×. Behind,
 > improving. Posture: MORE WINDOWS — W2 on Fable is on-posture, and Dave pre-licensed it in-window.)*
 >
+
+#### 2026-07-27 #16
+
+> **pre-flight:** fill 45% + job ~12% + wrap 5% = ~62% RED-edge · reserve 15% ring-fenced
+> *(Session #16, 2026-07-27, phase-2 W2, Fable solo. Fill MEASURED per D9 after the mandated reads
+> (brief · ledger · runbook 2/2c/2e/2f · band table · full GM + LS at open). Projection straddled the
+> Red line ⇒ fork put to Dave PRE-START; he ruled RUN WHOLE with a findings watch. No unplanned finding
+> moved the band — four script aborts cost ~4 calls, absorbed in price. Closed 🔴 ~63% ESTIMATE,
+> ~1–2 pts over projection, reserve untouched.
+> **PACE (perishable, replaces 19:35):** panel 20:16 BST — All 41% ⇒ 0.74× · Fable 37% ⇒ 0.67× ·
+> catch-up to Thu 23:00 All 1.33× / Fable 1.42× — behind, improving, gap NARROWING. MORE-WINDOWS holds.)*

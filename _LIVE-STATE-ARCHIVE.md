@@ -3,6 +3,17 @@
 
 *(rolled from `_LIVE-STATE.md` 2026-07-27 by capture-ritual step 2d — LATEST + 2 PRIOR stay live)*
 
+## Rolled 2026-07-27 #17 (2d)
+
+*EXIT CHECK: #14's ⚠ NOT-DONE items both LANDED (compaction p2 = `2259e07` + `72d442b`; clean build re-proven #17 today, [62/62] exit 0 foreground) · its three OPEN holes now RULED as M7/M8/M9 (`notes/_MEMENTO-DECISIONS.md` § ★ M-SET + brief `notes/_briefs/2026-07-27-memento-hardening-brief.md`) · read-the-runbook lesson inscribed (memory + `_RUNBOOK-git-commit.md` § warts) — verified before the move.*
+
+## ⏱ PRIOR DELTA — 2026-07-27 (Mon **evening #14**, OPUS solo self-conducting, effort MAX — ★★★ **GM-D1…D9 PHASE 1 ENACTED: runbook 2e/2f + gauge D9 + `_capture_gate.py` budgets, selftest exit 0, bite-tested 5 ways** · ★★★ **D7's 8K tk budget MEASURED UNREACHABLE and AMENDED by Dave — §A alone was 53% of the whole allowance** · ★ **compaction PASS deliberately split to phase 2 (Fable)** · 🟡 ~58% at wrap) — "A budget that charges a section you may not touch is not a budget, it is a permanent debt."
+- **LIVE:** ritual steps **2e** (DO-FIRST contract · caps 120/180 · D2's four retirement tests · D3 tags) and **2f** (strata stack LATEST-only · `### ⏱ SESSION STRATA` marker · `notes/_GAUGE-LOG.md`) · step 2 amended (§B deleted into the banner, read-chain contract, `size:` stamp form) · gauge **D9** (floor MEASURED per session; bands restated on remaining budget; GM's band table → pointer) · gate section budgets in **WRAP mode**.
+- **RULED:** **GM-D7-am(a)** — size budget applies to the **compactable region** (all but §A), 8K warn / 12K block, whole-file figure always published. `notes/_MEMENTO-DECISIONS.md` § GM-D7 AMENDED.
+- **OPEN (Dave's, unruled):** §A uncapped is now the only roll-less region · the banner region has no line cap and is the densest text in the file (302 B/line) · 2e's retirement tests are unenforceable by any gate.
+- **⚠ NOT DONE:** the compaction pass (phase 2, Fable) · **one clean `_build_all.py`** — concurrent builds were killed mid-run and stripped 34 generated files, restored from HEAD, but never re-verified green after the final edits · **COMMITTED `113eefc`** (8 files, locks clear, safe to push). ⚠ I first declared the commit impossible — `rm` and `mv` both gave `Operation not permitted` — because I had **not read `_RUNBOOK-git-commit.md`**, which answers it: `mv` works but only **WITHIN the repo mount** (`_to_delete/_stale_locks/`), and `knowledge/_git_commit.sh --reconciled <msgfile>` mechanises the sequence. Read-the-runbook, caught by Dave.
+
+
 ## Rolled 2026-07-27 #16 (2d)
 
 *EXIT CHECK: the #13 delta's RULED-list is ENACTED end-to-end (#14 `113eefc` · #15 `2259e07` · #16 this commit; ledger § GM growth-contracts status line updated at source, #15) · its three OPEN holes live in the ledger's LEFT-OPEN block (standing) ✓ · dossier + brief pointers retained verbatim below — verified before the move.*

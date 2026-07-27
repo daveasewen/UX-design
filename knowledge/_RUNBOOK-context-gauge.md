@@ -102,6 +102,17 @@ written before this ruling and is precisely the throttle Dave asked for — it j
 starting. Extended, one word: **before starting AND on any unplanned finding.** *(Same class as the
 morning's other findings — the right rule, unreachable at the moment it is needed.)*
 
+**★ M1 — RED IS A WRAP-ONLY BAND (RULED Dave, 2026-07-27 evening #17: *"running in red just makes a
+godawful mess"*).** Crossing **60% fill** = announce it the moment it happens and **start no new
+jobs**: remaining work moves to the handoff/brief and the session wraps. The only judgment left in
+Red is how to close cleanly. *(Still self-report — no gate can see fill; what this line changes is
+that running-on in Red is now a RULE violation, not a defensible choice. Red-authored artefacts
+already carry the re-verify stamp; this rule exists so there are fewer of them.)*
+
+**★ M2 — A RULING ARRIVING MID-RITUAL IS A FINDING (RULED Dave, same window).** Price it or park it
+to the queue before absorbing it. The #6/#12 leak was rulings treated as free because each was cheap
+singly — cheap × unpriced × several = the overrun. The fork above applies to them unchanged.
+
 **RULED (c) — A NEW SESSION IS A REFILL, NOT A PENALTY** *(Dave, same window: "we can reset the budget
 at any time by starting a new session").* This is the clause that makes the throttle cheap to obey.
 The fork's option **(b)** — flush and hand to a fresh window — has been written as a last resort; it is

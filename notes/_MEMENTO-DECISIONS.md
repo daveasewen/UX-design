@@ -130,3 +130,36 @@ gated the symptom and are relying on the cap to force pruning as a side effect.*
 on §A that never blocks — not a cap and not a roll, so §A can never be forced to shrink; it only makes
 §A growth a number at wrap instead of a surprise in three months. Dave's ruling said *"not even a guard
 banner"*, which may or may not extend to a line in gate output. **His line to draw.**
+
+---
+
+### ★ M-SET — Memento hardening, ruled as a batch (Dave, 2026-07-27 evening #17, Fable solo)
+
+*Context: Dave reframed the window off the §C·2 batch — "we must get this memento system running as
+efficiently as possible … it has to be robust … I need to rest assured that I have a reliable system I
+can share with others" · "very tight context windows, tasks overrunning and not being caught, and lots
+of going round in circles correcting work repeatedly … running in red just makes a godawful mess."
+Probe receipts + per-item options/spec: `notes/_briefs/2026-07-27-memento-hardening-brief.md` (the
+enactment brief IS the detail; this row records the ruling).*
+
+| # | Ruling (Dave, 2026-07-27 #17) | Why | Audit |
+|---|---|---|---|
+| **M1–M12** | **All twelve accepted AS RECOMMENDED**, routing split included (in-window: M1/M2 inscription + this row + the brief; all else → Sonnet window off the brief). Verbatim: *"all of these seem good I trust your scheduling choice, we must be getting warm in this session."* | One batch row by spine discipline; the brief carries per-item detail. The set: M1 RED=wrap-only · M2 mid-ritual rulings=findings · M3 `_instrument-fit.json` determinism · M4 view-as-table port + `chart-table-toggle` partial · M5 `_gm_move.py` hardened mover · M6 tiktoken auto-heal · M7 §A cap (⚠ read-back below) · M8 banner sub-budget · M9 retirement receipts proxy + dreamer hunt line · M10 chain budget · M11 dream-pass residuals (Dave fires the scheduled task supervised pre-Sunday) · M12 Memento v1 target registered. Probe receipts in-window: instrument-fit diff = pure key-order churn (build-caused) · tiktoken lost twice in 24h · two table-toggle idioms live (bar×5/line×2/combo/donut×2 solved vs sparkline+scatter old) · LS 546 lines vs ~500 advisory · dream-pass governance verified watertight (proposes-only · one file · never pushes · STOP conditions). | unaudited |
+
+⚠ **M7 READ-BACK, open at inscription:** GM-D7-am's left-open note records Dave's verbatim *"not even
+a guard banner"* around §A, and the WARN-only candidate was left "his line to draw." M7-as-recommended
+(warn 4.5K / block 5.5K) draws that line at a HARD CAP — a reversal of the earlier lean, inscribed as
+both beats per discipline. **Brief instructs: enact WARN-only first (never blocks); upgrade to the
+block only on Dave's explicit confirm.** His answer lands in the brief's checklist.
+
+**ROUTING AMENDED, same window, minutes later (Dave verbatim: *"be careful and precise I don't trust
+sonnet, it cant think on its feet"*):** the enactment window is **OPUS solo, effort MAX — NOT Sonnet**;
+no Sonnet subagents on this set. Supersedes the "Sonnet window" phrasing in the row above (both beats
+kept per discipline). The brief carries per-item STOP conditions so nothing is improvised on canon.
+
+**M7 CLOSED, same window, minutes later (Dave: *"agreed"* to the read-back's revised shape):** §A line
+= **WARN-only, GROWTH-TRIGGERED, never blocks** — silent while §A stands still; fires when §A grows
+without a banner line naming the change; backstop warn 4,500 tk. The hard-cap half of the original
+M7 rec is WITHDRAWN by its author (it would have forced the trim the §A invariant forbids — the
+STAND-004 contradiction class). GM-D7-am's *"not even a guard banner"* is honoured: nothing can
+force §A to shrink. Brief item 5 updated to the final shape, same pass.

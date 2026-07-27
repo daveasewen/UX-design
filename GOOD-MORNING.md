@@ -1,31 +1,28 @@
 # Good morning, Dave ☕
 
-> **size:** GM 13.0K tk · chain 29.2K tk · measured 2026-07-27 (tiktoken cl100k_base) · budget = the
-> COMPACTABLE region (all but §A), 8K warn / 12K block — `_RUNBOOK-capture-ritual.md` step 2.
-> **STATE: GM-D1…D9 + D7-am ENACTED END-TO-END (p1 `113eefc` · W1 `2259e07` · W2 = this commit).**
-> Wrap gate: DO-FIRST 71/120 · §C 150/150 (AT cap, zero headroom) · **compactable 8,818 tk = WARN,
-> the ruled landing zone** (GM-D7-am predicted 8.1–9.5K ⇒ WARN not block). Do not chase below 8K by
-> deleting live state — WARN reads as "keep going", not "you failed".
-> **pre-flight:** fill 45% + job ~12% + wrap 5% = ~62% RED · reserve 15% ring-fenced, unspent
-> *(projection straddled the Red line ⇒ fork put to Dave PRE-START; ruled RUN WHOLE, findings watch)*
-
-> **RENAME THE WRAPPED CHAT →** `Apollo — GM pass p2 W2 (Fable): the grandfather audit — 10 retirement receipts on D2's tests, DO-FIRST 266→71 raw lines PASS, §C 213→150 at-cap, D7 chain contract + honest stamp in the header; compactable 16.7K→8.8K = the WARN the ruling predicted. Three all-or-nothing aborts, §A hash held; the 07-23 calm-banner verdict surfaced after 4 days floating. GM-D1…D9 + D7-am ENACTED END-TO-END`
-> **TITLE THE NEXT CHAT →** `Apollo — §C·2 RULING BATCH + dataviz sign-off (Dave live, FABLE): 15 rulings by number off the review docs + the 4-chart provisional→canon flip (open-014). Fable 0.67× with 63% unspent = the case for spending it here. Alt small window: MEMORY.md compaction (mechanics ruled, file tools only). Read: #16 banner → §C·2; §A by hash-search; the chain is the WHOLE read (≤24K)`
+> **size:** GM 12.8K tk · chain 28.9K tk · measured 2026-07-27 (tiktoken cl100k_base) · budget = the COMPACTABLE region (all but §A), 8K warn / 12K block —
+> `_RUNBOOK-capture-ritual.md` step 2. Compactable 8,601 tk = WARN, the ruled landing zone — do not chase below 8K.
+> **STATE: ★ M-SET (M1–M12) RULED 2026-07-27 #17 (ledger `notes/_MEMENTO-DECISIONS.md` § ★ M-SET) — M1/M2 LIVE in
+> gauge canon (RED=wrap-only · mid-ritual rulings=findings); M3–M12 await the OPUS enactment window (brief
+> `notes/_briefs/2026-07-27-memento-hardening-brief.md`, STOP conditions per item, NOT Sonnet). GM-D1…D9 + D7-am
+> remain ENACTED END-TO-END (#16 `72d442b`).**
+> **pre-flight #18 guide:** cold floor ~22% (n=1) + brief ~3%; the M-set window prices ~35–45% + wrap · M1: RED = wrap-only, announce every crossing · 15% reserve ring-fenced.
+> **RENAME THE WRAPPED CHAT →** `Apollo — Memento HARDENING (Dave live, Fable): the day's papercuts probed to classes and ruled M1–M12 in one batch — determinism churn, anchor aborts, tiktoken flap, the view-as-table fork Dave spotted live, three GM holes; RED=wrap-only inscribed and applied to its own birth window; Opus-not-Sonnet brief cut; the dream pass audited watertight before its first Sunday`
+> **TITLE THE NEXT CHAT →** `Apollo — M-SET ENACTMENT (OPUS solo effort MAX, NOT Sonnet — Dave's trust ruling): READ notes/_briefs/2026-07-27-memento-hardening-brief.md and execute M3→M12 in order, STOP conditions per item; M7 per Dave's word in §C·4 (default WARN-only, growth-triggered); acceptance = twice-clean build + the phantom git-WARN dead + a bite per new gate check. Rider if room: MEMORY.md trim (brief item 12)`
 > *(Titles are LABELS — role comes from Dave's opener line. Bands: the ONLY copy is
 > `_RUNBOOK-context-gauge.md` § ★ THE FLOOR IS MEASURED — grep it, never recall it.)*
 
-> ## ★ LATEST — 2026-07-27 (Mon **evening #16**, FABLE solo — ★★ **PHASE-2 WINDOW 2 LANDED ⇒ THE GM GROWTH-CONTRACTS PACKAGE (GM-D1…D9 + D7-am) IS ENACTED END-TO-END: the D3 grandfather audit retired 10 notice-groups on D2's tests, receipts per notice · DO-FIRST 266→71 raw lines (FAIL→PASS, cap 120) · §C 213→150 (AT cap) · D7 chain contract + D9 band pointer + measured stamp in the header** · ★ **compactable 16,712→8,818 tk = the WARN zone the ruling itself predicted (8.1–9.5K)** · 🔴 close ~63% est (pre-flight 62% RED-edge; Dave ruled RUN WHOLE + findings watch)): **#15's two FAILs are cleared; the WARN that remains is the one the ruling predicted.**
+> ## ★ LATEST — 2026-07-27 (Mon **evening #17**, FABLE solo, Dave live — ★★ **MEMENTO HARDENING: M1–M12 RULED AS A BATCH, all as recommended** (*"all of these seem good i trust your scheduling choice"*) · ★ **M1/M2 INSCRIBED LIVE in gauge canon** (RED=wrap-only · mid-ritual rulings=findings) · ★ **enactment brief cut for OPUS solo effort MAX — NOT SONNET** (Dave: *"it cant think on its feet"* — both beats in the ledger) · 🟡 ~60% at wrap, M1 applied to its own birth window): **"The gated regions were already fixed; the ungated ones are now ruled and brief'd."**
+> - **★★ RULED, with evidence.** Ledger § ★ M-SET (batch row + M7 read-back + routing amendment, Dave verbatim ×3) · brief `notes/_briefs/2026-07-27-memento-hardening-brief.md` (M3–M12, a STOP condition per item) · gauge canon M1/M2 live in `_RUNBOOK-context-gauge.md` § Half 0b · dossier `_DECISION-HISTORY/2026-07-27-memento-hardening-mset.md` · 2026-07-27.
+> - **★ PROBE RECEIPTS, all repo-verified in-window:** `_instrument-fit.json` churn = PURE KEY-ORDER, build-caused (V2-P2 escape — M3) · tiktoken lost a SECOND time in 24h (M6) · **view-as-table: TWO idioms live in canon** — solved `dv-tbl-toggle` (bar×5 · line×2 · combo · donut×2) vs old `<details>` (sparkline:148 · scatter:163,230), Dave's own live sighting (M4) · LS 546 lines vs ~500 advisory (M10) · dream-pass governance WATERTIGHT (proposes-only · one file · never pushes · STOP conditions) but the SCHEDULED path has NEVER fired — first fire Sun 08-02 (M11: Dave fires it supervised this week).
+> - **⚠ WHAT THE AUTHOR FLAGS.** My original M7 rec (hard cap) crossed Dave's recorded *"not even a guard banner"* — caught at inscription, read back, revised to WARN-only growth-triggered — RULED in-window, Dave: "agreed". The §A hash convention had to be RECOVERED mid-wrap (a wrong-shape probe read `70e61b93…`; git-diff-vs-HEAD 0 proved §A unchanged; the recorded form = lines `# §A`→before-`# §C` + trailing newline — M5's mover must PIN it). Wrap ran WITHOUT the M5 mover (not built yet): hand-rolled all-or-nothing scripts, one abort (the design working), §A held through everything.
+> - **⬛ OPEN, Dave's:** M11 supervised fire before Sun 08-02 · §C·2's 15 rulings + dataviz sign-off (PARKED this window, unchanged, still owed) · calm-banner verdict · the M-set enactment window itself.
+>
+> ## ★ PRIOR — 2026-07-27 (Mon **evening #16**, FABLE solo — ★★ **PHASE-2 WINDOW 2 LANDED ⇒ THE GM GROWTH-CONTRACTS PACKAGE (GM-D1…D9 + D7-am) IS ENACTED END-TO-END: the D3 grandfather audit retired 10 notice-groups on D2's tests, receipts per notice · DO-FIRST 266→71 raw lines (FAIL→PASS, cap 120) · §C 213→150 (AT cap) · D7 chain contract + D9 band pointer + measured stamp in the header** · ★ **compactable 16,712→8,818 tk = the WARN zone the ruling itself predicted (8.1–9.5K)** · 🔴 close ~63% est (pre-flight 62% RED-edge; Dave ruled RUN WHOLE + findings watch)): **#15's two FAILs are cleared; the WARN that remains is the one the ruling predicted.**
 > - **★★ LANDED, with evidence.** Receipts ×10, each naming the D2 test it passed, + the pre-W2 DO-FIRST and §C regions verbatim — `_GM-ARCHIVE.md` § Batch 2026-07-27 #16 · §A sha256 `999b1e3d…` asserted before/after EVERY write (byte range `# §A`→`# §C`; never located by line number) · gate `_capture_gate.py --wrap` post-write: compactable WARN + git-uncommitted only (the latter cleared by this commit) · STAND-002 PASS · build `[62/62]` exit 0 foreground · 2026-07-27.
 > - **★ THE AUDIT'S OWN FINDS.** (i) **The 07-23 calm-banner trial VERDICT had floated 4 days with no standing home** — the ds-017 class, caught by the EXIT CHECK working; now §C·4 Dave's-calls. (ii) **The sandbox reset between #15 and #16 silently removed tiktoken** — the gate FELL BACK HONESTLY (bytes/3.53, labelled ESTIMATE, said so in its own output); reinstalled, every stamp measured. **A fresh sandbox loses pip state: check the instrument before trusting the stamp check.**
 > - **⚠ WHAT THE AUTHOR FLAGS.** FOUR all-or-nothing ABORTS mid-pass (a bare substring anchor caught a backtick-quoted mention instead of the line-start marker ×2 — same trap, two costumes · the §C line-projector over cap ×2) — **every abort wrote NOTHING and §A held through all of them; the design working, same species as #15's linebreak abort. Anchor on the line-start form, always.** One trim replacement was a silent no-op (identical strings), caught by the projector, not by me. **§C sits AT 150 exactly — zero headroom; the next §C addition must displace a line.** Close ran ~1–2 pts over the 62% projection (trim + abort iterations), reserve untouched.
 > - **⬛ OPEN, unchanged and Dave's:** the three governance holes (§A uncapped-by-ruling · the banner region has no LINE cap and is the densest text in the file · 2e's retirement tests are gate-invisible) — ledger § GM-D7 AMENDED, LEFT OPEN · the calm-banner verdict · §C·2's 15 rulings.
->
-## ★ PRIOR — 2026-07-27 (Mon **evening #15**, FABLE solo — ★★ **PHASE-2 WINDOW 1 LANDED: the clean-build debt PAID (`[62/62]` exit 0, foreground), the strata have a HOME (`notes/_GAUGE-LOG.md` born, 2f live), §B IS DELETED into the archive (D4)** · ★★ **the #14 build-strip incident REPRODUCED AND NAMED: a sandbox call-boundary kill freezes the compliance JSONs mid-rewrite — 33 files/1,336 deletions, same event as #14's 34/1,335** · ★ **STAND-004 still demanded §B while the capture gate failed on §B's presence — two live gates enforcing OPPOSITE structures; aligned to D4** · 🟡 ~55% at wrap, split ruled by Dave at the 66% Red projection): **Half the pass is landed, and the gate's two remaining fails are the map of the other half.**
-> - **★★ LANDED, with evidence.** Clean uninterrupted `_build_all.py` — `[62/62] · exit 0`, foreground · 2026-07-27 (#14's ruled first act; `knowledge/_CAPTURE-GATE.md` + `_instrument-fit.json` regenerated by it, in this commit). **2f:** `### ⏱ SESSION STRATA` marker live, GM keeps #15 only; post-mortems #6/#7/#8/#12/#13 → `notes/_GAUGE-LOG.md` (contract declared in-file: append-only · measurements only · not in the read chain) · commit-states #5/#6/#7/#8/#12/#13 → `_GM-ARCHIVE.md` § Batch 2026-07-27 #15. **D4:** §B (66 lines) → same batch, verbatim; its STALE notice died WITH it — **GM-D2 test 1's first live use.** **2c:** the #13 banner → same batch. **Every move script-executed, byte-identical, §A re-found by hash after every write** (`outputs` scripts; asserts quoted in the batch header). Stamp: GM 26.2K→**20.9K tk** · compactable 21,410→**16,712** · tiktoken cl100k_base installed in-window, and the gate now measures with it · gate wrap 4 FAIL→**2 FAIL 2 WARN** · **STAND-002 PASS 26 docs** — `_capture_gate.py --wrap` + `_validate_standing_instructions.py` · 2026-07-27.
-> - **★★ THE BUILD-KILL MECHANISM, named and fenced.** A backgrounded `_build_all.py` (`nohup`, then `setsid` — both tested) is REAPED at the sandbox call boundary; a mid-step kill froze 33 compliance JSONs + `_CAPTURE-GATE.md` stripped. **#14's "I nearly committed 1,335 deleted lines" was this exact event; the cause is now measured, not mysterious.** Recovery under the delete-guard: `git show HEAD:<path> > <path>` (checkout's unlink = `Operation not permitted`). **The build fits ONE foreground ≤45s call — run it that way or not at all.** Banked: `_RUNBOOK-git-commit.md` § sandbox warts.
-> - **★ TWO RECORD CORRECTIONS, both the drift class, both benign.** (i) §A's hash `999b1e3d…` was ALWAYS right — but its recorded range "lines 299–489" was stale at birth: #14's own banner added 8 lines above §A (true range 307–497 at `b9581ea`). **Find §A by hash-search, never by line number.** (ii) STAND-004 (above) — phase-1 gap closed with a dated comment naming the ledger; the selftest-visible contradiction (capture gate fails if §B present, STAND-004 failed if absent) existed for exactly one commit.
-> - **⚠ WHAT THE AUTHOR FLAGS AGAINST HIS OWN WORK.** An early gate reading piped through `tail` nearly recorded the PIPE's exit 0 as the gate's — re-captured unpiped (`GATE EXIT=1`, failing correctly). The first pass-script run ABORTED whole on a linebreak-spanning anchor — nothing written, fixed, re-run green: **the all-or-nothing abort is the design working, not a recovery.** The ~55% close is an ESTIMATE; the fill/job actuals are in the #15 stratum below.
-> - **⬛ WINDOW 2, fully specified, NOT started:** 2e DO-FIRST retirement audit (D2's four tests, one untagged notice at a time, receipts in the batch header — the D3 grandfather pass) · D6 §C prune to ≤150 · D7 read-chain contract line replaces the old open chain · GM:12's inline band note → pointer (D9) · final stamp. **Predicts compactable ~8.1–9.5K ⇒ WARN, not block** (GM-D7-am). Brief: `notes/_briefs/2026-07-27-gm-compaction-enactment-brief.md`.
 >
 *(Compaction 2c: ★ LATEST + 1 PRIOR stay; every older banner is in `_GM-ARCHIVE.md`, verbatim, newest-first, batch keys `<date> <session#>`; durable narrative in `_DECISION-HISTORY/` + `notes/`.)*
 
@@ -34,6 +31,11 @@
 ## ⬛ DO THIS FIRST
 
 > **★ WORKLIST — pointer · state · owner (method lives at the pointer, never here):**
+> **0. ★ M-SET ENACTMENT (NEXT WINDOW — OPUS solo effort MAX, NOT Sonnet)** — READ
+>    `notes/_briefs/2026-07-27-memento-hardening-brief.md`, execute M3→M12 in order, STOP per item;
+>    M7 = WARN-only growth-triggered (RULED #17: Dave "agreed"); M11 = DAVE fires
+>    `memento-dream-pass` from the UI, supervised, BEFORE Sun 08-02. Ledger § ★ M-SET.
+>    [born #17 · guards: the brief · until: enacted]
 > **1. ds-018 C2 follow-through** — order RULED: RENDER-CONFIRM `--phys-size` (B-D7 press physics —
 >    Alert/Empty-state/Popover, possibly dead) and `--mark` (→ SVG-initial BLACK across 7 pro-formas)
 >    BEFORE acting → THEN Dave's four values (three `--phys-size` + one `--mark` — his alone, do not
@@ -90,9 +92,8 @@
 > ring-fenced reserve · every job priced out loud · any unplanned finding ⇒ STOP, re-price, fork to
 > Dave · the weekly allowance is PERISHABLE ⇒ behind pace = MORE WINDOWS, and ask for a fresh panel
 > reading each opener — no gate can see it.
-> **Panel 2026-07-27 20:16 (Mon):** week 55.5% elapsed · All 41% = 0.74× pro-rata · Fable 37% = 0.67× ·
-> catch-up to Thu 23:00 = All 1.33× / Fable 1.42× — behind, improving, gap NARROWING for the first
-> time today.
+> **Panel 2026-07-27 21:21 (Mon):** week 55.9% elapsed · All 43% = 0.77× pro-rata · Fable 41% = 0.73× ·
+> catch-up to Thu 23:00 = All 1.29× / Fable 1.34× — behind, narrowing (Fable 0.67→0.73 across today).
 > **Model routing** → `MODEL-ROUTING.md` (07-23 audit ratified: delegation DELIBERATE — #12 supersedes
 > the Mode-2 default-on). Conductor = Opus effort MAX · mechanical lanes = Sonnet · Fable reserved for
 > open judgment · P2 = script-then-judge, every deviation is Dave's call.
@@ -324,9 +325,7 @@ Best AFTER the ruling batch: field-family, stepper-fold and delta-seam answers s
 **(d) Enact window (cheap)** — absorb §C·2 rulings as token/registry edits + §C·4; new candidates: mint
 `data/axis`+`data/grid` (per ★ DV-D07 two-channel) · R-D9 ramp promotion · field-family group build if ruled ·
 Stat-card `spark` slot · **★★ the live radius/corner tuner (Dave: return SOON).**
-**(e) ✅ ROUTING SIDE-QUEST — DONE + RATIFIED + #6–12 ENACTED same day (07-23).** Receipt verbatim
-`notes/_receipts/2026-07-23-routing-sidequest-audit.md` (names the sheet) · #12 supersedes the Mode-2
-default-on (delegation DELIBERATE). Residue: the calm-banner trial VERDICT only (§C·4 Dave's-calls).
+**(e) ✅ routing side-quest CLOSED + ENACTED 07-23** — receipt `notes/_receipts/2026-07-23-routing-sidequest-audit.md`; #12 delegation-DELIBERATE in force; residue = the calm-banner verdict (§C·4). [rolled #17, tombstone past term, receipt = the guard]
 
 ## 2. ★ DAVE: THE RULING BATCH — 15 REMAIN of 16 (D-Q3 ✅ #14; Q8/B2 → DV-D08) + the ★ DATAVIZ
 SIGN-OFF (rule by number; all retro-propagate). **Sign-off first:** D promoted the PARKED kit verbatim
@@ -410,7 +409,8 @@ ds-014(a)(b)(c) · DV-D17 enacted·DOM·render-proven (`knowledge/_render/verify
 CAUSE (instrument, not treatment; both beats in `_DS-IMPROVEMENTS.md`) · legend wave + transitional
 block (`ba336dc`) · ds-013 · ADR-0016 P1 + P3-advisory · routing audit 07-23 (receipt) · throttle
 ruling (gauge canon § ★ Half 0b). **Nothing here is owed twice — do not re-open or re-prove.**
-**⬛ DAVE'S CALLS, parked live:** C3 gate candidate — *disabled may not out-contrast its own enabled
+**⬛ DAVE'S CALLS, parked live:** M11 supervised
+`memento-dream-pass` fire from the UI before Sun 08-02 · C3 gate candidate — *disabled may not out-contrast its own enabled
 state* — ALIVE, not selected (catches the resolved-but-wrong ladder C2 is blind to) · the enabled
 Reset's **1.31:1 resting border**, measured, never judged — the floor that made B2 necessary · B2's
 accepted cost is RULED (rest borders identical, label carries it — do not "fix" unprompted) · **B-D4
@@ -453,23 +453,24 @@ spot-illustration/empty-state icon set (`_ICON-GAPS.md`, wave-1's only gap).
 
 ### ⏱ SESSION STRATA
 
-#### 2026-07-27 #16
+#### 2026-07-27 #17
 
-> **pre-flight:** fill 45% + job ~12% + wrap 5% = ~62% RED-edge · reserve 15% ring-fenced
-> *(Session #16, 2026-07-27, phase-2 W2, Fable solo. Fill MEASURED per D9 after the mandated reads
-> (brief · ledger · runbook 2/2c/2e/2f · band table · full GM + LS at open). Projection straddled the
-> Red line ⇒ fork put to Dave PRE-START; he ruled RUN WHOLE with a findings watch. No unplanned finding
-> moved the band — four script aborts cost ~4 calls, absorbed in price. Closed 🔴 ~63% ESTIMATE,
-> ~1–2 pts over projection, reserve untouched.
-> **PACE (perishable, replaces 19:35):** panel 20:16 BST — All 41% ⇒ 0.74× · Fable 37% ⇒ 0.67× ·
-> catch-up to Thu 23:00 All 1.33× / Fable 1.42× — behind, improving, gap NARROWING. MORE-WINDOWS holds.)*
+> **pre-flight:** fill 30% + job 22% + wrap 6% = 58% AMBER · reserve 15% ring-fenced
+> *(Session #17, 2026-07-27, Fable solo, Dave live. Opened for §C·2; Dave reframed to Memento hardening
+> at ~32%. AMBER crossing announced at ~44% (M1's first live use, mid-ruling); in-window enactment
+> trimmed at the crossing — M11/M12 file edits moved to the brief. One script abort (wrong-shape §A
+> hash probe) — nothing written, convention recovered, re-run green. Closed 🟡 ~60% ESTIMATE, boundary,
+> reserve untouched.
+> **PACE (perishable):** panel 21:21 BST — All 43% ⇒ 0.77× · Fable 41% ⇒ 0.73× · catch-up All 1.29× /
+> Fable 1.34× — behind, narrowing all day. MORE-WINDOWS holds; the M-set window is Opus (All bucket).)*
 >
-> **COMMIT STATE (refreshed 2026-07-27 ~20:45 BST from `date`, phase-2 window 2).**
-> **Context gauge at authoring: 🔴 ~63% (ESTIMATE, boundary) — Red-authored ⇒ re-verify before trusting.**
-> ONE commit: `GOOD-MORNING.md` (W2: audit · §C prune · chain contract · header+stamp · #16 banner ·
-> strata) · `_GM-ARCHIVE.md` (§ Batch 2026-07-27 #16 — receipts ×10 + pre-W2 DO-FIRST + §C + old chain
-> line + #14 banner + #15 commit-state + old 2c-note, all verbatim, EXIT-CHECK receipts in headers) ·
-> `notes/_GAUGE-LOG.md` (#15 post-mortem appended verbatim) · `_LIVE-STATE.md` + `_LIVE-STATE-ARCHIVE.md`
-> (2d: #16 delta in, #13 delta rolled with EXIT-CHECK note). Build `[62/62]` exit 0 FOREGROUND · gate
-> wrap: compactable WARN only once this commit clears the git-WARN · STAND-002 PASS.
-> Dave pushes via GitHub Desktop (whole stack, Desktop closed while Claude commits).
+> **COMMIT STATE (refreshed 2026-07-27 ~21:35 BST from `date`).**
+> **Context gauge at authoring: 🟡 ~60% (ESTIMATE, boundary) — near-Red ⇒ spot-verify before trusting.**
+> ONE commit: `GOOD-MORNING.md` (#17 banner · worklist item 0 · panel · §C·1e compress · §C·4 adds ·
+> stamp · strata roll+new) · `_LIVE-STATE.md` + `_LIVE-STATE-ARCHIVE.md` (2d: #17 in, #14 rolled) ·
+> `_GM-ARCHIVE.md` (Batch 2026-07-27 #17: #15 banner + #16 commit-state, EXIT-CHECK receipts in header) ·
+> `notes/_GAUGE-LOG.md` (#16 post-mortem) · `knowledge/_RUNBOOK-context-gauge.md` (M1/M2 inscribed) ·
+> `notes/_MEMENTO-DECISIONS.md` (§ ★ M-SET + routing amendment) · `notes/_briefs/2026-07-27-memento-hardening-brief.md`
+> (NEW) · `_DECISION-HISTORY/2026-07-27-memento-hardening-mset.md` (NEW) · `knowledge/_instrument-fit.json`
+> (benign key-order churn, named — M3 kills it). Build `[62/62]` exit 0 foreground (pre-inscription) ·
+> wrap gate + STAND-002 rerun at close. Dave pushes via GitHub Desktop, whole stack, Desktop closed.
