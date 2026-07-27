@@ -589,3 +589,65 @@ mode of this file's whole history is a lookup that misses and reports nothing.*
 
 **(c) DISCHARGED** — the vocabulary widening landed *with* (a), as required. **(d) PARKED on Dave's
 ruling** (2026-07-27): log only, rule it in a session where he can see it live. Not fixed, deliberately.
+
+---
+
+## ds-015 — `aid-009`'s hit-area check EXEMPTS every component that adopts the hit-area mechanism; 7 of 67 snippets are actually measured (2026-07-27, Dave: "maybe we are checking the wrong thing")
+
+**Found by Dave, from the KG-forcing-function exploration** — he read the `icon-005`/`aid-009` exhibit and
+said: *"so the 44px rule is negated by the hit area mechanism, maybe we are checking the wrong thing."*
+He was right, and the mechanism is worse than mis-measurement: **adopting the correct mechanism is what
+removes a component from the check.**
+
+**The line (`knowledge/_validate_a11y.py`), quoted verbatim — its own comment is candid:**
+```python
+# an explicit hit-area expander for THIS selector exempts both tiers
+# (static CSS can't size the expander; the render axis owns that check)
+if re.search(re.escape(sel) + r'\s*::(before|after)', s):
+    continue
+```
+It does not measure the expander. It **skips**, and defers to "the render axis" — which is the hit-area
+gate still marked *PENDING DAVE SIGN-OFF* in `notes/_briefs/2026-07-25-hit-area-rule-and-gate-proposal.md`.
+**The handoff has no receiver.**
+
+**MEASURED (2026-07-27, corpus scan reproducing the gate's own `CTRL`/`DECOR` regexes):**
+
+| | count |
+|---|---|
+| snippets | 67 |
+| selectors SKIPPED — not matched by the `CTRL` regex | **1,869** |
+| control selectors eligible (explicit px `width`+`height`) | 14 |
+| — EXEMPTED by a `::before` expander (check skipped) | **7** |
+| — **actually measured** | **7** |
+
+**Gate verdict today: 67 snippets · 0 failures · 6 warnings · exit 0.** 64 of 67 snippets use `::before`.
+**The library's hit-area compliance rests on 7 measured selectors.**
+
+**THE DIAMOND — three independent blindnesses on one element, and the defect it hides is already PROVEN.**
+`Chart-line.reference.html`: `.dv-leg-sw.sw-diamond` is `width:8px;height:8px;transform:rotate(45deg)`,
+its target on `.dv-leg-sw::before{min-width:var(--hit,44px)}`.
+1. **Scope** — `.dv-leg-sw` does not match `CTRL` (`button|a\.|\.x|\.close|\.clear|\.trigger|\.handle|\.page|\.step`).
+   Never in scope. **Same hand-maintained-vocabulary class as the `dtype in ("donut","pie","stacked")` fork
+   that produced ds-014** — and `dv-vocab` closed that one for dataviz only. **`CTRL` is UNSWEPT.**
+2. **Parse** — the expander is `min-width:var(--hit,44px)`; the gate's regex reads literal `(\d+)px`.
+   **It cannot parse a token.**
+3. **Exemption** — `::before` present → `continue`.
+⚠ **And the actual defect is a TRANSFORM consequence** (the `rotate(45deg)` rotated the 44px target onto
+its corner). **No static box measurement can see that in principle**, not merely in this implementation.
+It was caught by `elementFromPoint` probes at render, by hand, during the legend wave — and that snippet's
+own comment records that *"the divvy did not name it."*
+
+**⚠ SEVERITY IS UNKNOWN AND THAT IS THE POINT.** This record proves the check is blind, **NOT** that the
+components are non-compliant. Most probably pass. **Nothing has measured them**, and per
+[[gate-blindspot-state-contrast]] "0 failures" from a blind check is worse than no check.
+
+**INTERIM FIX APPLIED (2026-07-27, Dave assented — reversible, one line, NO rule change):** the silent
+`continue` now emits a **warning** naming the exemption, so exemptions are visible and countable instead
+of invisible. **The exemption still stands** — this does not fail any build and does not pre-empt his
+rulings.
+
+**OWED — Dave's, all open:** the real fix is the render-axis hit-area gate (DO-FIRST item iii), which
+**stops being a backlog item: it is the named receiver for an exemption already shipping.** Framing +
+trigger-shape questions are held in `_FUTURE-STATE.md` § *forcing the KG into the decision loop*,
+Exploration beat 1 — including **Dave's cascade point**: *"the hit mechanism should have triggered
+something that cascaded this elsewhere."*

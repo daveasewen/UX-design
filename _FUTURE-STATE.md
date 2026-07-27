@@ -63,6 +63,44 @@ spin-off (this is a governance primitive other teams would want, not an Apollo l
 **Source:** this session, alongside ds-014 calls (a)+(b). **Owed: a session with Dave to explore it —
 benefits, method, implications. Do NOT build ahead of that conversation.**
 
+### ★★ EXPLORATION BEAT 1 — 2026-07-27 (later morning #3). Dave reframed it TWICE and both are his.
+
+**Reframe A — "maybe we are checking the wrong thing." ⇒ INSTRUMENT FIT is a THIRD AXIS.**
+Angle (1) as written (*compare what a rule SAYS against what its gate DEMANDS*) **would not have caught
+`aid-009`.** The rule names *"a minimum 44×44px target area"*; `_validate_a11y.py` calls its check
+*"target size"*. **The vocabulary matches — the narrowing is not in the words, it is in the INSTRUMENT.**
+A static regex can observe a *declared box*. The rule is about a *target*. Those two stop tracking each
+other the moment the corpus expresses the property through a mechanism — an expander, a token, or a
+transform — and **the gate goes QUIET rather than RED.**
+⇒ The question to ask of every rule: **"what property does this rule name, and can this gate's instrument
+observe that property at all?"** Instruments, weakest→strongest: static parse → DOM read → render +
+hit-test → human eye. **A gate whose instrument is weaker than its rule's property is inert BY
+CONSTRUCTION, however well written.**
+⇒ **This is a THIRD axis on top of ADR-0016, not a sub-case of it.** PROVEN/CLAIMED/UNPROVEN ask *"is
+there a check, and can it fail?"* Instrument-fit asks *"is it looking at the right thing?"* — **a check
+can be PROVEN (bite-tested, fails correctly) and still be measuring a proxy that does not track the rule.**
+dv-004 was the *narrowing* case; `aid-009` is the *instrument* case, and it is the larger one.
+
+**Reframe B — Dave's, and it names the propagation defect: *"the hit mechanism should have triggered
+something that cascaded this elsewhere."*** Adopting the `::before` hit-area expander is a LOCAL CSS
+decision with a GLOBAL governance consequence — it silently removes the component from `aid-009`'s
+sample. **Nothing carried that fact anywhere.** No registry entry, no re-check, no flag on the rule. The
+only thing that connected the adoption to the exemption was **Dave remembering the mechanism existed**,
+which is [[stale-reading-failure-mode]] pointed at the enforcement layer instead of the design layer.
+⇒ Sibling of [[assertion-propagation-gap]] (*a gate fires on FLIP, so a doc known-wrong-now is never
+chased*): **here the gate never fires at all, because the adoption IS the exemption.**
+⇒ **Design implication for the forcing function, and it may be the strongest angle yet:** the trigger
+should not be a periodic sweep — it should be **adoption-time**. When a component takes up a mechanism
+that changes which gate can see it, THAT is the event that must cascade. *(Cheapest first cut: the
+mechanism is already a marker in the CSS. Make claiming the exemption require naming the rule it exempts
+from, and let the register harvest the claim — an exemption that must declare itself is an exemption you
+can count.)*
+
+**⬛ OPEN, all Dave's:** (i) does instrument-fit join the register as a third axis, or stand as its own
+check? (ii) is the trigger adoption-time or sweep-time? (iii) the instrument tagging pass across 465
+rules is mechanical and would rank the whole corpus — **NOT started, deliberately** (scoped as a build,
+and he capped the window). **Evidence backing all of the above: `ds-015`.**
+
 ## ★ Multi-thread "GOOD-MORNING" — a handoff mechanism for parallel long-running threads (Dave, 2026-07-24)
 **The problem Dave named:** two async threads now run in parallel ACROSS sessions — the chart **FAN-OUT**
 (wave; GM §C·1a + `notes/_briefs/2026-07-24-chart-wave-lane{1,2,3}`) and the **CONTROLS SYSTEM** (seg atom +

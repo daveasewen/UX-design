@@ -76,6 +76,37 @@ of substantive turns. No tooling, roughly ±15%. Reckoning (round to nearest 5k)
 | Big tool dump / review render / subagent return | +1–5k |
 | Normal exchange turn | +0.5–1.5k |
 | A long agent output (like this build) | count it too |
+| **★ THE INSTRUMENTS THEMSELVES — see below. They are NOT free.** | |
+| — the capture ritual | **+~5% (MEASURED 2026-07-27)** |
+| — the task list (create + each update; it re-renders) | +0.5–1k per burst |
+| — a Half-2 gauge confirmation (subagent + transcript) | +1–3k |
+| — a consult, a build run, a gate report read | +1–4k each |
+
+### ★★ PRICE THE INSTRUMENT, NOT JUST THE WORK (Dave, 2026-07-27: *"remember that it self consumes tokens too"*)
+
+**The measuring costs what it measures out of.** Every row in the block above is overhead the agent spends
+*observing and reporting* rather than doing the job — and it is the row most often left out of a pre-flight,
+because it does not feel like work.
+
+**This is not hypothetical; it is the exact failure of 2026-07-27 (later morning #2).** The render job was
+priced in advance (*"38% + 15% = 53%"*) and the estimate **held**. Then the **capture ritual ran unpriced**
+and cost ~5%, taking a true 🟡 Amber ~58% to 🔴 Red ~63%. **The pre-flight rule was obeyed for the work and
+skipped for the instrument** — which is the same omission one step later, and it is why the band stamped on
+that handoff had to be corrected at close.
+
+**⇒ THE MECHANISM, and it is one line:**
+> **A pre-flight estimate that does not include the wrap is not a pre-flight estimate.**
+> `fill + job + WRAP (~5%) = projected band` — always three terms, never two.
+
+**Two consequences that bite:**
+- **Reserve the wrap before starting the job, not after.** At 🟡 Amber, an unreserved ritual is what pushes
+  the session Red — so the honest question at Amber is never *"can I fit this job?"* but **"can I fit this
+  job AND the ritual?"** If not, the job does not start; the flush does.
+- **Instrumentation is subject to its own bands.** At Amber, get economical with the instruments too —
+  fewer, tighter task entries; skip the Half-2 confirmation unless the band is genuinely in doubt; do not
+  re-read a gate report you have already read. *(Dave, same day: "be careful with the tasks.")*
+  ⚠ **But never economise by skipping the READING of the band table** — that is the one instrument whose
+  omission caused a wrong band twice, and it costs a `grep`.
 
 Bands as fraction of the ~200k window:
 

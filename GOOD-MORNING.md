@@ -1,11 +1,19 @@
 # Good morning, Dave ☕
 
-> **RENAME THE WRAPPED CHAT →** `Apollo — the gate had narrowed its own rule: Dave declined my fix, asked why, and dv-004 turned out to demand a mechanism its own text never named · DV-D14+D15 ruled, enacted, RENDER-PROVEN · dv-vocab closes the scope-blindness class · 58/58 · 🟡 Amber ~58%`
-> **TITLE THE NEXT CHAT →** `Apollo — ADR-0016 P2 at scale: 52 rulings still UNPROVEN. The method is demonstrated twice now, so this window is about VOLUME + the rule-text-vs-gate-text check Dave's KG idea points at. Read §DO-FIRST first`
+> **RENAME THE WRAPPED CHAT →** `Apollo — "maybe we are checking the wrong thing": Dave found that the hit-area MECHANISM switches off the hit-area RULE — 7 of 67 snippets measured, gate green · INSTRUMENT FIT is a third axis above ADR-0016 · the trigger should be ADOPTION-TIME · pre-flight now has three terms · 58/58 · 🟡 Amber ~58%`
+> **TITLE THE NEXT CHAT →** `Apollo — instrument fit at corpus scale: tag all 465 rules with the instrument their property needs, then rank every gate that is weaker than its rule. Dave has FIVE open calls waiting in §DO-FIRST — read them before building`
 > *(Titles are LABELS — role comes from Dave's opener line. The wave = the parallel model: Opus conducts, workers per lane, DIVVY in §DO-FIRST. Gauge bands: Green<45 / Amber 45–60 / Red≥60.)*
 
 
-> ## ★ LATEST — 2026-07-27 (Mon **later morning #2**, OPUS solo self-conducting, effort MAX — ★ **ds-014 calls (a)+(b) RULED BY DAVE, ENACTED, PROVEN BY RENDER** · ★ **dv-004's GATE HAD NARROWED ITS OWN RULE** · **`dv-vocab` NEW BLOCKING — unknown chart types can no longer skip in silence** · build **58/58 GREEN** · register **PROVEN 3→4** · 🟡 AMBER ~58% wrap): **Dave declined my recommendation and asked why I had made it. Answering that took one grep and cost me the argument — then found a defect bigger than the chart.**
+> ## ★ LATEST — 2026-07-27 (Mon **later morning #3**, OPUS solo self-conducting, effort MAX — ★ **KG FORCING-FUNCTION, EXPLORATION BEAT 1: Dave reframed it TWICE and both reframes beat all four held angles** · ★ **ds-015 — `aid-009` EXEMPTS every component that adopts the hit-area mechanism: 7 of 67 snippets are actually measured and the gate reports "0 failures"** · **PRE-FLIGHT now has THREE terms** · build **58/58 GREEN** · 🟡 AMBER ~58%, **nothing built by design**): **He asked me to explore, not build. So the session's output is two findings and one sentence of his that outranks both.**
+> - **★ INSTRUMENT FIT IS A THIRD AXIS — and the held angle (1) would have MISSED it.** Angle (1) is *compare what a rule SAYS against what its gate DEMANDS*. `aid-009` says *"a minimum 44×44px target area"*; the gate calls its check *"target size"* — **the vocabulary MATCHES. The narrowing is in the INSTRUMENT, not the words.** A static regex sees a *declared box*; the rule is about a *target*, and the two decouple the moment the property is carried by a mechanism (expander · token · transform) — at which point **the gate goes QUIET, not RED.** ⇒ Ask of every rule: **"what property does this name, and can this gate's instrument observe it at all?"** (static parse → DOM → render+hit-test → eye). ⇒ **This sits ON TOP of ADR-0016:** PROVEN/CLAIMED/UNPROVEN ask *is there a check and can it fail*; this asks *is it looking at the right thing* — **a check can be PROVEN and still measure a proxy that doesn't track its rule.**
+> - **★ ds-015 — DOING THE RIGHT THING IS WHAT MAKES YOU INVISIBLE.** `_validate_a11y.py` doesn't mis-measure the `::before` expander, it **`continue`s** — deferring to a "render axis" that **does not exist**. **MEASURED: 67 snippets · 1,869 selectors skipped by the `CTRL` vocabulary · 14 eligible · 7 exempted · 7 measured.** 64 of 67 snippets use `::before`. **The diamond fails three ways at once** (out of `CTRL` scope · expander is `min-width:var(--hit,44px)` vs a literal-`px` regex · `::before`→exempt) — and its real defect is a **transform**, which **no static box measurement can see in principle.** ⚠ **This proves the CHECK is blind, NOT that the components fail.**
+> - **★ DAVE'S SECOND REFRAME, and it is the best angle on the whole idea.** *"we are relying too much on my memory here, the hit mechanism should have triggered something that cascaded this elsewhere."* Adoption = a LOCAL CSS decision with a GLOBAL governance consequence, and **nothing carried it.** ⇒ **The trigger should be ADOPTION-TIME, not sweep-time.** Cheapest cut: make claiming the exemption **name the rule it exempts from**, and let the register harvest it — **an exemption that must declare itself is one you can count.**
+> - **⚠ THE CONSULT'S OWN INSTRUMENT IS GUESSING (bite-tested, two defects).** `rulings (5/5 shown)` is **shown/CAP not shown/total** (`:200` truncates, `:217` counts the truncated list) — true totals **28 · 38 · 54**, agent sees **17–22%**, and **BLOCKING truncates too (5 of 16)**. And `enforcement_for_rule()` decides gated-ness by **keyword overlap**, never opening the gate: **54 BLOCKING rules · 25 claimed gated · 10 named in no `.py` at all.** ⚠ That proves **unverified**, not unenforced. Its docstring is candid — **it's a good hint; the defect only bites when Dave's proposal promotes the hint to an authority.**
+> - **★ PRE-FLIGHT NOW HAS THREE TERMS** (Dave: *"it self consumes tockens too"* + *"encode a pre-flight mechanism rather than loosing it in this chat"*). Already-inscribed rule NOT re-litigated; what was missing is the **meta-cost** ⇒ **"A pre-flight estimate that does not include the wrap is not a pre-flight estimate" — `fill + job + WRAP (~5%)`, always three terms.** Reserve the wrap BEFORE the job. Evidence: last session priced its render job right (53%, held), ran **the ritual unpriced**, 58→63. **Applied to itself: the instrument-tagging build was CUT, not started.**
+> - **⚠ THE HANDOFF'S OWN PROSE WAS STALE, caught in two minutes.** Banner said register **4/52 of 76**; generated file reads **4/54 of 78** (DV-D14+D15 harvested). **The RED ~63% stamp told the next reader to re-verify the prose. It worked — keep stamping.** Also re-verified, not inherited: **no chat-rename tool exists.**
+>
+> ## ★ PRIOR — 2026-07-27 (Mon **later morning #2**, OPUS solo self-conducting, effort MAX — ★ **ds-014 calls (a)+(b) RULED BY DAVE, ENACTED, PROVEN BY RENDER** · ★ **dv-004's GATE HAD NARROWED ITS OWN RULE** · **`dv-vocab` NEW BLOCKING — unknown chart types can no longer skip in silence** · build **58/58 GREEN** · register **PROVEN 3→4** · 🟡 AMBER ~58% wrap): **Dave declined my recommendation and asked why I had made it. Answering that took one grep and cost me the argument — then found a defect bigger than the chart.**
 > - **★ DV-D14 — GEOMETRY, not a stroke, and Dave was right on the evidence.** I recommended the donut's 2px `stroke="var(--page)"`. He said: *"I prefer the geometry the border will obscure gridlines, may I know why you recommend borders?"* **`cb5` carries 5 full-width `.dv-grid` lines behind the columns; the donut carries NONE.** An SVG stroke straddles its path — 2px puts 1px OUTSIDE each rect, painting over every gridline down both sides of all 4 columns. ⇒ **A surface-coloured stroke only simulates separation when the thing behind it IS the surface.** Enacted **variant A, both ends pinned**; accepted cost, stated before it landed: **segments understate 2.0–2.6%**, worst on the shortest column.
 > - **★ THE FINDING THAT OUTRANKS THE CHART.** dv-004's text is **mechanism-NEUTRAL** — *"minimum 2px separation between colour blocks"*. Its gate demanded *"a surface-coloured stroke >=2px"*. **So a chart satisfying dv-004 by real geometry would have FAILED — and an agent reading the gate to learn what compliance looks like gets the WRONG ANSWER.** The gate was not merely failing to catch my error; **it was the source of it.** Now accepts either mechanism; unmeasurable geometry still demands the stroke (fails safe).
 > - **★ DAVE NAMED THE CLASS HIMSELF — and it is FLOATED, not ruled.** *"we may create something that will force decisions to check that KG… the KG is a valuable resource and shouldn't be ignored, thats what it is there for."* Held in `_FUTURE-STATE.md` with four angles; sharpest is **a check comparing what a rule SAYS against what its gate DEMANDS** — the exact mirror of ADR-0016. ⚠ **Do NOT build ahead of the exploration session he asked for.** Caution recorded: the consult prints `rulings (5/5 shown, --all for more)` — **it TRUNCATES**, so a forcing function built on it is a CLAIMED gate with extra steps.
@@ -16,95 +24,81 @@
 > - **⚠ THE PROBE MADE THE ERROR IT WAS WRITTEN TO DETECT — third session running.** It reported *"no stacked-column figure"* for the showroom; the honest reading was **"I queried the top document and the panes are `srcdoc` iframes"**, not "the showroom is broken". Last session: `querySelector('svg')` → the toolbar copy icon. **Assume your probe is wrong in the direction that reads as green.**
 > - **🟡 AMBER ~58% — and the PRE-FLIGHT rule worked.** Priced the render job before starting it (*"fill ~38% + ~15% = ~53% Amber"*) and it held. Wrapped on Dave's word rather than starting the remaining 52 proofs hot.
 >
-> ## ★ PRIOR — 2026-07-27 (Mon **later** morning, OPUS solo self-conducting, effort MAX — ★ **ADR-0016 BUILT: `_ENACTMENT-REGISTER.md` — 3 of 76 rulings (4%) are PROVEN** · **ds-014 DISCHARGED by render: 2 lost decisions, 2 artefacts** · **dv-004 proven blind on 3 chart types**; build **57/57 GREEN**; 🔴 RED ~92% wrap): **Dave read the brief and said "as you advise". So: the discriminator first, then the build he ruled. The discriminator settled all four flags in one pass — and the root cause of one of them generalised into the number the register now reports.**
-> - **★ ds-014 SETTLED — MEASURED, at 1180 and 760, licensed cut, snippet BESIDE showroom pane.** **#2 stacked segment spacing — LOST:** gap **0.0–0.1px** on all 4 columns × 3 boundaries, `stroke:none`, against a **BLOCKING dv-004 that requires ≥2px**. **#3 stacked alpha-key contrast — LOST:** keys render **`#1A1A1A` (`--ink`)**, not the `var(--page)` their markup declares — `text.dv-barkey{fill:var(--ink)}` beats the SVG presentation attribute — giving **3.31 / 3.46 / 3.78:1** at 12px/700 against AA's 4.5:1; white measures ≈5:1 and passes. **#1 + #4 — ARTEFACTS:** donut centre value **dx +0.00 / dy −2.00**, ring offset **0.00**, identical in both artefacts at both widths. ds-013 was the whole story.
-> - **★ WHY #2 SHIPPED GREEN — and it is bigger than one chart.** `_validate_dataviz.py` guards dv-004 with `if dtype in ("donut","pie","stacked")`; the figure declares **`stacked-column`**. **The gate never looked.** ⚠ **PROVEN BY BITE in a scratch copy** — adding that one string makes it fail: `✗ dv-004: stacked-column segment lacks a >=2px surface-coloured separating stroke.` **Three blind values in the corpus** (`stacked-column`, `grouped-column`, `scatter`, all zero mentions in the gate) ⇒ **dv-004, dv-bar-009 and dv-line-011 are inert on those types.**
-> - **★ THE REGISTER — P1 SHIPPED, P3 WIRED ADVISORY (step 56/57).** `_build_enactment_register.py` harvests every ruling from the four ledgers + all ADRs: **PROVEN 3 · CLAIMED 20 · UNPROVEN 53 · NOT-GATEABLE 0**. **The four-verdict scheme is the contribution, and CLAIMED is the point** — a check names the ruling but nothing proves the check can FAIL. **ds-013 lived in CLAIMED for weeks.** Advisory deliberately: *a gate that fails 53 rows on day one gets switched off, and a switched-off gate is how we got here.*
-> - **★ THE REFRAME, and it is the thing to carry.** Dave is not noticing four regressions. **He is noticing the visible edge of 73 rulings that nothing checks** — with his eyes, because that is currently the only instrument we have.
-> - **⚠ TWO SELF-INFLICTED ERRORS, both caught, both inscribed.** ADR-0016's draft said *75/52* — written before the generator ran; **the register harvests ADRs, so it counts itself**: measured **76/53**. Same class as Correction 2 of 07-26. And the probe's first donut pass used `querySelector('svg')`, which returns the **toolbar copy icon** — it reported a 16px-wide "chart canvas". **The probe committed the exact error it was written to detect.**
-> - **🔴 RED ~92% (Dave's calibration; I had said 85%, and called that Amber) — AND THE GAUGE ITSELF FAILED TWICE, which is the finding.** ⚠ **I labelled it "Amber" at an already-understated 85%. Our own bands are Green<45 / Amber 45–60 / Red≥60 — 85 is deep RED**, and the mislabel went into this banner, `_LIVE-STATE` and the summary Dave read. **A false reading of the instrument built to catch false readings.** Second failure, Dave's: **the gauge was only consulted at WRAP.** It has to be estimated **BEFORE committing to a big job**, so the cost is priced when it can still change the plan. ⇒ **Both now ruled into `_RUNBOOK-context-gauge.md` as the PRE-FLIGHT step + a band table you read, never recall.** ⇒ **Next reader RE-VERIFIES this banner's prose before building on it** — it was written at ~92%.
->
 > *(Compaction 2c — keep ★ LATEST + 1 PRIOR, roll the rest. Older banners (the 07-22→24 chart-wave + ADR arc, the 07-25 AM v4 + midday→PM v5 + PM Memento-efficiency + PM#2 memory/routing-governor banners) are in `_GM-ARCHIVE.md` (Batches 1–6), verbatim, newest-first; durable narrative in `_DECISION-HISTORY/` + `notes/`.)*
 
 ---
 
-*Briefing — refreshed 2026-07-27 ~08:30 BST (date from `date`), session "ADR-0016 built — the
-enactment register (4% PROVEN) + ds-014 settled by render" (Opus 5 solo self-conducting, effort
-MAX). §A = orientation · §B = session · §C = queue.*
+*Briefing — refreshed 2026-07-27 ~10:30 BST (date from `date`), session "the instrument cannot see
+the property — KG exploration beat 1 + ds-015" (Opus 5 solo self-conducting, effort MAX).
+§A = orientation · §B = session · §C = queue.*
 
 ## ⬛ DO THIS FIRST
 
-> **✅ CLOSED, do not re-open.** ds-014's four calls are ALL settled: **(a)+(b) RULED by Dave, ENACTED
-> and RENDER-PROVEN** (DV-D14 + DV-D15) · **(c)** the vocabulary widening landed *with* (a) as required ·
-> **(d)** PARKED on his ruling, logged not fixed. The legend wave, ds-013 and ADR-0016 P1/P3-advisory
-> stay closed. **Nothing here is owed twice.**
+> **✅ CLOSED, do not re-open.** ds-014 calls (a)(b)(c) — RULED, ENACTED, RENDER-PROVEN. The legend wave,
+> ds-013, ADR-0016 P1/P3-advisory all stay closed. **Nothing here is owed twice.**
 >
-> **★★★ DO FIRST — ADR-0016 P2 AT SCALE. 52 rulings are UNPROVEN and the method is now demonstrated TWICE.**
-> `knowledge/_ENACTMENT-REGISTER.md` reads **PROVEN 4 · CLAIMED 20 · UNPROVEN 52 · NOT-GATEABLE 0, of 76.**
-> Two worked exemplars to copy, deliberately different in shape:
-> - `knowledge/_sweep_type_enactment.py` — corpus-wide sweep (many elements, one property).
-> - `knowledge/_verify_dv_stacked_enactment.py` — **NEW, and the better model**: reads the ruled value,
->   asserts the RENDERED value in the licensed cut, **across snippet × showroom × two widths**. The
->   cross-context spread is what makes it a discriminator rather than a measurement.
-> ⚠ **Every P2 proof ships with a bite proving the proof can FAIL.** Non-negotiable, and it has now caught
-> a real defect **four sessions running** — this session it caught keys rendering BLACK at 3.99:1 while
-> the entire build was green.
-> **Target the CLAIMED 20 first, not the UNPROVEN 52.** CLAIMED is the dangerous middle — a check names
-> the ruling and nothing proves it can fail. ds-013 lived there for weeks reporting "0 deviations" while
-> blind. An UNPROVEN row is honest about being unchecked; a CLAIMED row lies.
+> **★★★ FIVE CALLS ARE DAVE'S, and they gate the next build. Put them to him BEFORE starting.**
+> All five came out of exploration beat 1 (`_FUTURE-STATE.md` § *forcing the KG into the decision loop*
+> → **Exploration beat 1**; evidence in `knowledge/_DS-IMPROVEMENTS.md` **ds-015**):
+> 1. Does **INSTRUMENT FIT** join the enactment register as a **third axis**, or stand as its own check?
+> 2. Is the trigger **ADOPTION-TIME** or sweep-time? *(His idea; the adoption-time shape is the strongest
+>    thing anyone has proposed for the forcing function — an exemption that must name the rule it exempts
+>    from is an exemption you can count.)*
+> 3. Run the **465-rule instrument-tagging pass**? Mechanical, ranks the whole corpus. **NOT started —
+>    deliberately, it is a build and the window was capped.** This is the natural DO-FIRST once he rules.
+> 4. **Fix or REMOVE the consult's enforcement column.** A wrong `gated by` is worse than no column. The
+>    `5/5 shown` denominator is a separate, trivial fix — **do that one regardless.**
+> 5. **`CTRL` in `_validate_a11y.py` is an UNSWEPT VOCABULARY.** `dv-vocab` closed this class for dataviz
+>    only. 1,869 selectors currently skip. **Same pattern, already proven, applies directly.**
 >
-> **★★★ THE HIGHEST-VALUE NEW LANE — and it is DAVE'S IDEA, so put it to him before building.**
-> `_FUTURE-STATE.md` § *"forcing the KG into the decision loop"* (FLOATED 2026-07-27, his words verbatim).
-> **He asked to explore benefits, method and implications WITH him. Do not build ahead of that conversation.**
-> The angle this session's evidence most supports: **compare what a rule SAYS against what its gate
-> DEMANDS.** dv-004 said *"minimum 2px separation"*; its gate said *"must carry a surface-coloured stroke"*
-> — a narrowing nothing compared, which made the gate the SOURCE of a wrong recommendation rather than a
-> check on it. ⚠ **Before anything leans on the consult, bite-test the consult itself:** it prints
-> `rulings (5/5 shown, --all for more)` and **truncates by default**. A forcing function built on a
-> truncating query is a CLAIMED gate with extra steps.
->
-> **★★ GENERALISE THE SCOPE-BLINDNESS FIX — the pattern is proven, the corpus is not swept.**
-> `dv-vocab` now fails the build on any `data-dv-type` the dataviz gate has never heard of, and the
-> corpus had genuinely forked (**both** `stacked` and `stacked-column`, **both** `grouped` and
-> `grouped-column`). **Every other gate that branches on a corpus vocabulary has the same exposure and
-> nobody has looked.** This is the cheapest known way to find the next ds-013. The register already
-> audits `data-dv-type` automatically — widen that audit to other vocabularies.
+> **★★★ IF HE RULES "GO" ON #3 — the method is now demonstrated THREE times.** ADR-0016 P2 exemplars:
+> `knowledge/_sweep_type_enactment.py` (corpus sweep) · `knowledge/_verify_dv_stacked_enactment.py`
+> (**the better model** — ruled value vs RENDERED value across snippet × showroom × two widths).
+> ⚠ **Every proof ships with a bite proving the proof can FAIL.** Non-negotiable; it has caught a real
+> defect **five sessions running.**
+> **Register reads PROVEN 4 · CLAIMED 20 · UNPROVEN 54 of 78** *(re-read the generated file, do not trust
+> this line — it moved twice today as rulings were harvested).* **Target CLAIMED first** — an UNPROVEN row
+> is honest about being unchecked; a CLAIMED row lies.
 >
 > **★★ STILL OWED, unchanged and NOT superseded:**
-> **(i) The showroom type sweep + the 49-pane eyeball.** `_sweep_type_enactment.py` ran once: **800
-> composite-bound elements across 67 panes, 22 deviations in 27 panes** — the pattern is **WEIGHT, not
-> size**. Worst pane stepper (3); also amount-input · date-picker · date-range-picker · drawer ·
-> empty-state. Results in `knowledge/_type-sweep-2026-07-27.json`. ⚠ Needs
-> `--allow-file-access-from-files` or it reads ZERO composites and reports a cheerful "0 deviations".
-> **Fold it into the register as a P2 proof rather than re-running it as a one-off.**
-> **(ii) §C·2's RULING BATCH (15 + 17–22)** — has not moved in days, gates §C·1(c). **Fable is the model
-> for that session** (open judgment).
-> **(iii) The hit-area rule + gate rebuild** — read `notes/_briefs/2026-07-25-hit-area-rule-and-gate-proposal.md`
-> FIRST. Chart-line's 45°-rotated diamond swatch is a live case: a markup-driven hit-area gate must
-> understand transforms.
-> **(iv) Radius/corner tuner (§C·1d)** — v1+v2 BUILT + render-verified
-> (`reviews/RADIUS-CORNER-TUNER-2026-07-24-v*.html`); owed = the TWEAKS + ruling the numbers with Dave
-> ("return soon, don't let me forget"). **Do NOT rebuild from scratch.**
-> **(v) NEW — `showroom/chart-bar.html` cb5 is changed and Dave has not seen it rendered.** Registered in
-> `_REVIEW-SIGNOFF.md`: the 2.0–2.6% segment understatement and the ink→white key flip are both his
-> LOOK call, and **series-3 sits at 4.61:1 — 0.11 over AA**, which constrains any future re-tune of that hue.
+> **(i) The showroom type sweep + the 49-pane eyeball** — `_sweep_type_enactment.py` ran once: **800
+> composite-bound elements, 22 deviations in 27 panes**, pattern is **WEIGHT not size**
+> (`knowledge/_type-sweep-2026-07-27.json`). ⚠ Needs `--allow-file-access-from-files` or it reads ZERO and
+> reports a cheerful "0 deviations". **Fold into the register as a P2 proof, don't re-run as a one-off.**
+> **(ii) §C·2's RULING BATCH (15 + 17–22)** — unmoved for days, gates §C·1(c). **Fable is the model.**
+> **(iii) The hit-area rule + gate** — read `notes/_briefs/2026-07-25-hit-area-rule-and-gate-proposal.md`
+> FIRST. ⚠ **This is no longer a backlog item: ds-015 proves it is the NAMED RECEIVER for an exemption
+> that is already shipping in 7 components.** The diamond's counter-rotation is the live case — a
+> markup-driven gate must understand transforms, and a static one cannot.
+> **(iv) Radius/corner tuner (§C·1d)** — v1+v2 BUILT + render-verified; owed = TWEAKS + ruling the numbers
+> with Dave ("return soon, don't let me forget"). **Do NOT rebuild from scratch.**
+> **(v) `showroom/chart-bar.html` cb5 rendered but UNSEEN by Dave** — 2.0–2.6% segment understatement,
+> ink→white key flip, and **series-3 sits at 4.61:1, 0.11 over AA** (constrains any re-tune of that hue).
+> **(vi) ds-014 (d) — donut cluster alignment, PARKED on his ruling** (`.dv-donut-row` is `flex-start`;
+> −114px at 600 → −534px at 1440). Logged not fixed, deliberately — rule it where he can see it live.
+> *(Carried up by the 2c EXIT CHECK so banner compaction can't lose it.)*
 >
 > **MODEL + EFFORT (Dave ruled 2026-07-26, still current):** conductor = **Opus 5, effort MAX** ·
-> mechanical lanes = **Sonnet, default** · **Fable reserved** for open-judgment sessions (the ruling
-> batch · the hit-area gate). P2 is **script-then-judge**: any model can write a proof; **every deviation
-> it finds is Dave's call, not the agent's.**
+> mechanical lanes = **Sonnet** · **Fable reserved** for open-judgment (the ruling batch · the hit-area
+> gate). P2 is **script-then-judge**: any model writes a proof; **every deviation it finds is Dave's call.**
 >
-> **⚠ THE LESSON THIS SESSION EARNED, and it is procedural not technical: CONSULT BEFORE RECOMMENDING,
-> not just before designing.** The whole arc started because I recommended a mechanism without running
-> `python3 knowledge/_consult.py`. Dave caught it, and the KG had the answer the entire time. *(See
-> `_DECISION-HISTORY/2026-07-27-the-gate-that-narrowed-its-own-rule.md` for the full arc.)*
+> **⚠ THE PRE-FLIGHT RULE CHANGED TODAY — read it before pricing anything.** `_RUNBOOK-context-gauge.md`:
+> **"A pre-flight estimate that does not include the wrap is not a pre-flight estimate."**
+> `fill + job + WRAP (~5%) = projected band` — **always three terms.** At Amber the honest question is never
+> *"can I fit this job?"* but ***"can I fit this job AND the ritual?"*** Instruments (task list, consult,
+> gauge check, ritual) are **not free** — but **never economise on READING the band table**; that omission
+> has produced a wrong band twice and costs a `grep`.
 >
-> *Standing: every handoff carries both names (top) + a DIVVY PLAN. **Render-verify re-proven from scratch
-> AGAIN 2026-07-27 (later#2)** — runbook held end-to-end, no new potholes, ~6 min cold. Known potholes all
-> still true: the installer's non-zero exit is HOST-VALIDATION not download refusal (**check the cache,
-> proceed**) · `/tmp` NOT writable (use the outputs mount — this bit twice today) · FONTCONFIG two-alias
-> block is required · **render the SNIPPET for canon truth and the SHOWROOM PAGE for what Dave looks at**,
-> and remember the showroom's panes are `srcdoc` IFRAMES — query `page.frames`, not the top document.*
+> **⚠ THE LESSON THIS SESSION EARNED: the recommendation went through the CONSULT first, unprompted, and
+> that is the whole remedy from this morning's arc working.** Cheap, and it is what stopped a second wrong
+> recommendation. *(Full arc: `_DECISION-HISTORY/2026-07-27-the-instrument-cannot-see-the-property.md`.)*
+>
+> *Standing: every handoff carries both names (top) + a DIVVY PLAN. Known potholes all still true: the
+> installer's non-zero exit is HOST-VALIDATION not download refusal (**check the cache, proceed**) ·
+> `/tmp` NOT writable (use the outputs mount) · FONTCONFIG two-alias block required · **render the SNIPPET
+> for canon truth and the SHOWROOM PAGE for what Dave looks at**, and the showroom's panes are `srcdoc`
+> IFRAMES — query `page.frames`, not the top document. **Assume your probe is wrong in the direction that
+> reads as green** (four sessions running).*
 
 *Read: **§A Orientation** (skip if you're in context) → **§B This session** → **§C Queue**.
 Then `_LIVE-STATE.md` → the decision files it points to.*
@@ -304,10 +298,12 @@ until actually run + seen. HTML is what Dave reviews; PNGs are agent self-verifi
 
 # §B · THIS SESSION
 
-> ⚠ **STALE BELOW — do not read it as current (2026-07-27, later morning #2).** The three most recent
+> ⚠ **STALE BELOW — do not read it as current (2026-07-27, later morning #3).** The three most recent
 > sessions are summarised only in the ★ LATEST + ★ PRIOR banners at the top of this file, which are
 > authoritative. This section still narrates the 07-26 lane ① window. **The narratives you actually
-> want:** this session → `_DECISION-HISTORY/2026-07-27-the-gate-that-narrowed-its-own-rule.md`
+> want:** this session → `_DECISION-HISTORY/2026-07-27-the-instrument-cannot-see-the-property.md`
+> (the KG exploration arc: the consult's two defects, Dave's two reframes, why held angle (1) would have
+> missed `aid-009`, and the three-term pre-flight) · prior → `_DECISION-HISTORY/2026-07-27-the-gate-that-narrowed-its-own-rule.md`
 > (the full arc: why the recommendation was wrong, the gate-narrowed-its-own-rule finding, the forked
 > vocabulary, the third silent-fallback, and the probe repeating the wrong-document error) · rulings →
 > `knowledge/_proforma/_DATAVIZ-DECISIONS.md` **DV-D14 + DV-D15** · defect record →
@@ -465,6 +461,11 @@ radius px + bigplay. **(c) NEW from Phase-2:** all 24 new components across 4 th
 as the dataviz sign-off (§C·2).
 
 ## 4. Enact-queue (cheap, post-rulings)
+**★ NEW 2026-07-27 (from exploration beat 1) — carried here by the 2c EXIT CHECK so compaction can't lose them:**
+**consult `5/5 shown` denominator** — trivial, separable from the enforcement-column question, do it regardless ·
+**`CTRL` vocabulary sweep** in `_validate_a11y.py` (`dv-vocab` pattern, 1,869 selectors skip today) ·
+**ds-014 (d) donut cluster alignment** — PARKED on Dave, logged not fixed (`.dv-donut-row` `flex-start`) ·
+**ds-015's exemption warnings** are advisory by design — they become the hit-area gate's worklist when it lands.
 **★ NEW 2026-07-26 (from lane ①) — carried up here by the 2c EXIT CHECK, so they survive banner compaction:**
 **DV-D13 aria asymmetry** — the legend's `aria-label`s deliberately keep BOTH the value and percent forms
 (a screen-reader user shouldn't lose data to a toggle they may never perceive). Flagged at inscription,
@@ -494,28 +495,24 @@ Legacy hex seeding + provenance-gate flip · Console/Supercharge chromatic palet
 Sutherland field test · full-review backlog (`_REVIEW-SIGNOFF.md`) · `_FUTURE-STATE` items ·
 spot-illustration/empty-state icon set (`_ICON-GAPS.md`, wave-1's only gap).
 
-> **COMMIT STATE (refreshed 2026-07-27 ~09:35 BST from `date`, ds-014 calls (a)+(b) enact + prove session).**
-> ONE commit: `knowledge/tokens/semantic-colour.json` (**`data/text/on-series` MINTED** — DV-D15) ·
-> `knowledge/snippets/Chart-bar.reference.html` (cb5 re-geometried variant A · 12 keys rebound · the
-> blanket `dv-barkey` rule split by ground with anti-false-fix provenance · **local token mirror fixed** —
-> the silent-black defect) · `knowledge/_validate_dataviz.py` (**`DTYPE_CANON` + `KNOWN_DTYPES` +
-> `dv-vocab` BLOCKING + `_rect_stack_gap` + `_seg_has_surface_stroke`**, and **9 new bites**) ·
-> `knowledge/_build_all.py` (**dataviz selftest WIRED**, 57→58 steps) ·
-> `knowledge/_verify_dv_stacked_enactment.py` (**NEW** — the ADR-0016 P2 proof) ·
-> `knowledge/_proforma/_DATAVIZ-DECISIONS.md` (**DV-D14 + DV-D15**) · `knowledge/_DS-IMPROVEMENTS.md`
-> (ds-014 ENACTED block) · `knowledge/_REVIEW-SIGNOFF.md` (cb5 pane awaits Dave's eye) ·
-> `_FUTURE-STATE.md` (**Dave's KG forcing-function idea, FLOATED**) · regenerated `canon.css` +
-> `showroom/` + the audit/register reports · `_LIVE-STATE` + `_GM-ARCHIVE` + `_LIVE-STATE-ARCHIVE` rolls ·
-> this file · the dossier.
-> **Build 58/58 GREEN (exit 0) · gate selftest 22/22 · render proof ALL ASSERTIONS PASS across 4 contexts ·
-> register PROVEN 3→4, UNPROVEN 53→52 · scope-blindness "none detected" (was 3).**
-> **Context gauge at authoring: 🔴 RED ~63% (ESTIMATE ±15%) — CORRECTED AT RITUAL CLOSE.** The banner above
-> was written at a true 🟡 AMBER ~58%; **the capture ritual itself then cost ~5% more**, which crosses the
-> Green<45 / Amber 45–60 / **Red≥60** boundary. Stamped from the band table, not from the reading I had
-> already announced — this morning's finding was an agent leaving an optimistic band in place after the
-> number moved, and re-reading the table is the whole remedy. ⇒ **Next reader: the DO-FIRST and the ★ LATEST
-> banner were authored in Amber and are the trustworthy part; this commit-state block and the ritual edits
-> were not — re-verify the PROSE, which is what no gate sees.** The PRE-FLIGHT estimate before the render
-> job was stated in advance and held (38% + 15% → 53%); it was the RITUAL that went unpriced, which is the
-> same omission one step later.
+> **COMMIT STATE (refreshed 2026-07-27 ~10:35 BST from `date`, KG exploration beat 1 + ds-015).**
+> ONE commit: `_FUTURE-STATE.md` (**Exploration beat 1** — Dave's two reframes verbatim, instrument-fit as
+> a third axis, adoption-time trigger, 3 open questions) · `knowledge/_DS-IMPROVEMENTS.md` (**ds-015 NEW**
+> — the exemption, the measurements, the diamond's three blindnesses, severity caveat + anti-false-fix) ·
+> `knowledge/_validate_a11y.py` (**the silent `continue` now WARNS** + a 17-line anti-false-fix provenance
+> block) · `knowledge/_RUNBOOK-context-gauge.md` (**PRE-FLIGHT is THREE terms** + instrument cost rows) ·
+> `_DECISION-HISTORY/2026-07-27-the-instrument-cannot-see-the-property.md` (**NEW dossier**) ·
+> regenerated `knowledge/_A11Y-GATE.md` + `_consult-index.json` · `_LIVE-STATE` + `_GM-ARCHIVE` (Batch 7)
+> + `_LIVE-STATE-ARCHIVE` rolls · this file.
+> **Build 58/58 GREEN (exit 0) · a11y gate 67 snippets / 0 fail / 13 warn (was 6 — the 7 new are the
+> exemptions declaring themselves) · STAND-002 PASS, 26 standing docs reachable.**
+> **NOTHING WAS BUILT — his instruction was explore, not build.** Both enactments are reversible and
+> neither pre-empts a ruling.
+> **Context gauge at authoring: 🟡 AMBER ~58% + ~5% wrap ⇒ 🔴 RED ~63% at close (ESTIMATE ±15%).** Read off
+> the band table, and **priced in advance this time** — the three-term rule was written mid-session and
+> immediately applied to itself: the instrument-tagging build was CUT rather than started, and the ritual
+> was reserved before the last job began. ⇒ **Next reader: the ★ LATEST banner and §DO-FIRST were authored
+> in Amber and are the trustworthy part; this block was written at the Red boundary — re-verify the PROSE,
+> which is what no gate sees.** *(That instruction earned its keep today: it is how this session caught the
+> previous handoff quoting a register figure that had already moved.)*
 > Dave pushes via GitHub Desktop (whole stack, Desktop closed while Claude commits).

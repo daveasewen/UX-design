@@ -55,9 +55,28 @@ def check(fp):
         if not (w and h):
             continue
         wv, hv = int(w.group(1)), int(h.group(1))
-        # an explicit hit-area expander for THIS selector exempts both tiers
-        # (static CSS can't size the expander; the render axis owns that check)
+        # An explicit hit-area expander for THIS selector exempts both tiers, because static CSS
+        # cannot size the expander — the render axis owns that check.
+        #
+        # ds-015 (2026-07-27, Dave: "maybe we are checking the wrong thing"): the exemption is
+        # CORRECT but it was SILENT, and silence is what made it dangerous. Adopting the expander —
+        # i.e. doing the right thing — removed a component from aid-009's sample, and the render
+        # axis it defers to DOES NOT EXIST YET (the hit-area gate is still PENDING DAVE SIGN-OFF,
+        # notes/_briefs/2026-07-25-hit-area-rule-and-gate-proposal.md). Measured at the time:
+        # 7 of 14 eligible control selectors exempted, 7 actually measured, across 67 snippets —
+        # and the gate reported "0 failures".
+        #
+        # ⚠ ANTI-FALSE-FIX: do NOT "fix" this by deleting the exemption and failing these
+        # selectors. They are not known to be non-compliant; they are known to be UNMEASURED, and
+        # a static parse cannot tell the difference (it cannot read `min-width:var(--hit,44px)`,
+        # and it cannot see a `transform` standing the target on its corner — the Chart-line
+        # diamond, caught by elementFromPoint at render, never by this gate). Failing them would
+        # trade a blind pass for a blind fail. The exemption stands until the render axis lands;
+        # what changed here is only that it now DECLARES ITSELF and can be counted.
         if re.search(re.escape(sel) + r'\s*::(before|after)', s):
+            warns.append(f"`{sel}` is {wv}×{hv}px — EXEMPT via a ::before hit-area expander, "
+                         f"NOT MEASURED (aid-009, ds-015). Static CSS cannot size the expander; "
+                         f"the render-axis hit-area gate owes this one.")
             continue
         if min(wv, hv) < 24:
             fails.append(f"`{sel}` is {wv}×{hv}px (<24 floor, 2.5.8) — add a ::before hit-area expander or enlarge (aid-009)")
