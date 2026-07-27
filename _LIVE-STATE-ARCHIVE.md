@@ -3,6 +3,15 @@
 
 *(rolled from `_LIVE-STATE.md` 2026-07-27 by capture-ritual step 2d — LATEST + 2 PRIOR stay live)*
 
+## Rolled 2026-07-27 #16 (2d)
+
+*EXIT CHECK: the #13 delta's RULED-list is ENACTED end-to-end (#14 `113eefc` · #15 `2259e07` · #16 this commit; ledger § GM growth-contracts status line updated at source, #15) · its three OPEN holes live in the ledger's LEFT-OPEN block (standing) ✓ · dossier + brief pointers retained verbatim below — verified before the move.*
+
+## ⏱ PRIOR DELTA — 2026-07-27 (Mon **evening #13**, FABLE solo — ★★★ **GM growth-contracts RULED: GM-D1…D9 all-as-recommended**, `notes/_MEMENTO-DECISIONS.md` § GM growth-contracts · ★★ **supersession-by-addition named** · ★ **§C·5 Parked innocent; the stratum stack is the growing organ** · 🟡 ~68% at wrap, priced upfront) — "Every section gets a growth contract; §A alone stays standing and uncapped."
+- **RULED, NOT ENACTED:** DO-FIRST contract+roll (D1a) · retirement tests ×4 (D2) · lifecycle tags on new entries (D3a) · **§B deleted into banner** (D4a, runbook amendment) · stack → `_GAUGE-LOG.md`/archive, LATEST kept (D5a) · §C pointer+state+owner cap 150 (D6a) · chain budget ≈12% (D7a; **LS 2d-tightening = separate future ruling**) · gate budgets warn/BLOCK + bites (D8a) · gauge floor MEASURED, bands on remaining (D9).
+- **Enactment owed, own window:** `notes/_briefs/2026-07-27-gm-compaction-enactment-brief.md` — runbook 2e/2f first · §A untouched · EXIT CHECK per batch · verbatim moves · predicts GM ~910→~450–500, publish actuals.
+- **This session:** diagnosis only + this capture; no build (zero pipeline files touched, 62/62 stands). Dossier: `_DECISION-HISTORY/2026-07-27-supersession-by-addition.md`.
+
 ## Rolled 2026-07-27 #14 (2d)
 
 *EXIT CHECK: every ★/⚠ below already lives in GOOD-MORNING §DO-FIRST's

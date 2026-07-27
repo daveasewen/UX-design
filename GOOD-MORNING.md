@@ -1,308 +1,112 @@
 # Good morning, Dave ☕
 
-> **size:** GM 21.8K tk · chain 37.8K tk · measured 2026-07-27 (tiktoken cl100k_base) · budget = the
+> **size:** GM 13.0K tk · chain 29.2K tk · measured 2026-07-27 (tiktoken cl100k_base) · budget = the
 > COMPACTABLE region (all but §A), 8K warn / 12K block — `_RUNBOOK-capture-ritual.md` step 2.
-> **⚠ KNOWINGLY OVER, BY HALF NOW: W1 (build · strata · §B) is LANDED; the two remaining wrap-gate FAILs (DO-FIRST 266>180 · compactable 16,712>12,000) are W2's worklist, and the gate failing on them is CORRECT — do not loosen it.**
-> **pre-flight:** fill 41% + job 13% + wrap 5% = 59% AMBER (the SPLIT — Dave's fork call at the 66% Red projection) · reserve 15% ring-fenced
-> *(fill MEASURED per D9 after the mandated reads; the full pass priced ~20%, re-priced ~13% at the split.
-> Pace 19:35: All 39% = 0.71× · Fable 33% = 0.60× — behind, improving ⇒ MORE WINDOWS; W2 stays on Fable.)*
+> **STATE: GM-D1…D9 + D7-am ENACTED END-TO-END (p1 `113eefc` · W1 `2259e07` · W2 = this commit).**
+> Wrap gate: DO-FIRST 71/120 · §C 150/150 (AT cap, zero headroom) · **compactable 8,818 tk = WARN,
+> the ruled landing zone** (GM-D7-am predicted 8.1–9.5K ⇒ WARN not block). Do not chase below 8K by
+> deleting live state — WARN reads as "keep going", not "you failed".
+> **pre-flight:** fill 45% + job ~12% + wrap 5% = ~62% RED · reserve 15% ring-fenced, unspent
+> *(projection straddled the Red line ⇒ fork put to Dave PRE-START; ruled RUN WHOLE, findings watch)*
 
-> **RENAME THE WRAPPED CHAT →** `Apollo — GM pass p2 W1 (Fable): strata→_GAUGE-LOG + §B deleted (D4) + the clean 62/62 build paid — and the #14 build-strip incident REPRODUCED, mechanism named: a sandbox call-boundary kill freezes the compliance JSONs mid-rewrite; foreground-one-call is now the only way. STAND-004 was still demanding §B (two gates, opposite structures) — aligned to D4. Compactable 21.4K→16.7K tk, §A hash-held`
-> **TITLE THE NEXT CHAT →** `Apollo — GM compaction pass p2 W2 (FABLE): the DO-FIRST retirement audit (2e — D2's four tests, one notice at a time, receipts) + §C prune ≤150 (D6) + D7 read-chain line + final stamp. Predicts compactable 8.1–9.5K ⇒ WARN not block. Read the #15 banner + the brief FIRST; §A untouched (hash 999b1e3d…, find it by SEARCH, never by line number); build = FOREGROUND ONE CALL only. W1 committed`
-> *(Titles are LABELS — role comes from Dave's opener line. The wave = the parallel model: Opus conducts, workers per lane, DIVVY in §DO-FIRST. Gauge bands: Green<45 / Amber 45–60 / Red≥60.)*
+> **RENAME THE WRAPPED CHAT →** `Apollo — GM pass p2 W2 (Fable): the grandfather audit — 10 retirement receipts on D2's tests, DO-FIRST 266→71 raw lines PASS, §C 213→150 at-cap, D7 chain contract + honest stamp in the header; compactable 16.7K→8.8K = the WARN the ruling predicted. Three all-or-nothing aborts, §A hash held; the 07-23 calm-banner verdict surfaced after 4 days floating. GM-D1…D9 + D7-am ENACTED END-TO-END`
+> **TITLE THE NEXT CHAT →** `Apollo — §C·2 RULING BATCH + dataviz sign-off (Dave live, FABLE): 15 rulings by number off the review docs + the 4-chart provisional→canon flip (open-014). Fable 0.67× with 63% unspent = the case for spending it here. Alt small window: MEMORY.md compaction (mechanics ruled, file tools only). Read: #16 banner → §C·2; §A by hash-search; the chain is the WHOLE read (≤24K)`
+> *(Titles are LABELS — role comes from Dave's opener line. Bands: the ONLY copy is
+> `_RUNBOOK-context-gauge.md` § ★ THE FLOOR IS MEASURED — grep it, never recall it.)*
 
-
-> ## ★ LATEST — 2026-07-27 (Mon **evening #15**, FABLE solo — ★★ **PHASE-2 WINDOW 1 LANDED: the clean-build debt PAID (`[62/62]` exit 0, foreground), the strata have a HOME (`notes/_GAUGE-LOG.md` born, 2f live), §B IS DELETED into the archive (D4)** · ★★ **the #14 build-strip incident REPRODUCED AND NAMED: a sandbox call-boundary kill freezes the compliance JSONs mid-rewrite — 33 files/1,336 deletions, same event as #14's 34/1,335** · ★ **STAND-004 still demanded §B while the capture gate failed on §B's presence — two live gates enforcing OPPOSITE structures; aligned to D4** · 🟡 ~55% at wrap, split ruled by Dave at the 66% Red projection): **Half the pass is landed, and the gate's two remaining fails are the map of the other half.**
+> ## ★ LATEST — 2026-07-27 (Mon **evening #16**, FABLE solo — ★★ **PHASE-2 WINDOW 2 LANDED ⇒ THE GM GROWTH-CONTRACTS PACKAGE (GM-D1…D9 + D7-am) IS ENACTED END-TO-END: the D3 grandfather audit retired 10 notice-groups on D2's tests, receipts per notice · DO-FIRST 266→71 raw lines (FAIL→PASS, cap 120) · §C 213→150 (AT cap) · D7 chain contract + D9 band pointer + measured stamp in the header** · ★ **compactable 16,712→8,818 tk = the WARN zone the ruling itself predicted (8.1–9.5K)** · 🔴 close ~63% est (pre-flight 62% RED-edge; Dave ruled RUN WHOLE + findings watch)): **#15's two FAILs are cleared; the WARN that remains is the one the ruling predicted.**
+> - **★★ LANDED, with evidence.** Receipts ×10, each naming the D2 test it passed, + the pre-W2 DO-FIRST and §C regions verbatim — `_GM-ARCHIVE.md` § Batch 2026-07-27 #16 · §A sha256 `999b1e3d…` asserted before/after EVERY write (byte range `# §A`→`# §C`; never located by line number) · gate `_capture_gate.py --wrap` post-write: compactable WARN + git-uncommitted only (the latter cleared by this commit) · STAND-002 PASS · build `[62/62]` exit 0 foreground · 2026-07-27.
+> - **★ THE AUDIT'S OWN FINDS.** (i) **The 07-23 calm-banner trial VERDICT had floated 4 days with no standing home** — the ds-017 class, caught by the EXIT CHECK working; now §C·4 Dave's-calls. (ii) **The sandbox reset between #15 and #16 silently removed tiktoken** — the gate FELL BACK HONESTLY (bytes/3.53, labelled ESTIMATE, said so in its own output); reinstalled, every stamp measured. **A fresh sandbox loses pip state: check the instrument before trusting the stamp check.**
+> - **⚠ WHAT THE AUTHOR FLAGS.** FOUR all-or-nothing ABORTS mid-pass (a bare substring anchor caught a backtick-quoted mention instead of the line-start marker ×2 — same trap, two costumes · the §C line-projector over cap ×2) — **every abort wrote NOTHING and §A held through all of them; the design working, same species as #15's linebreak abort. Anchor on the line-start form, always.** One trim replacement was a silent no-op (identical strings), caught by the projector, not by me. **§C sits AT 150 exactly — zero headroom; the next §C addition must displace a line.** Close ran ~1–2 pts over the 62% projection (trim + abort iterations), reserve untouched.
+> - **⬛ OPEN, unchanged and Dave's:** the three governance holes (§A uncapped-by-ruling · the banner region has no LINE cap and is the densest text in the file · 2e's retirement tests are gate-invisible) — ledger § GM-D7 AMENDED, LEFT OPEN · the calm-banner verdict · §C·2's 15 rulings.
+>
+## ★ PRIOR — 2026-07-27 (Mon **evening #15**, FABLE solo — ★★ **PHASE-2 WINDOW 1 LANDED: the clean-build debt PAID (`[62/62]` exit 0, foreground), the strata have a HOME (`notes/_GAUGE-LOG.md` born, 2f live), §B IS DELETED into the archive (D4)** · ★★ **the #14 build-strip incident REPRODUCED AND NAMED: a sandbox call-boundary kill freezes the compliance JSONs mid-rewrite — 33 files/1,336 deletions, same event as #14's 34/1,335** · ★ **STAND-004 still demanded §B while the capture gate failed on §B's presence — two live gates enforcing OPPOSITE structures; aligned to D4** · 🟡 ~55% at wrap, split ruled by Dave at the 66% Red projection): **Half the pass is landed, and the gate's two remaining fails are the map of the other half.**
 > - **★★ LANDED, with evidence.** Clean uninterrupted `_build_all.py` — `[62/62] · exit 0`, foreground · 2026-07-27 (#14's ruled first act; `knowledge/_CAPTURE-GATE.md` + `_instrument-fit.json` regenerated by it, in this commit). **2f:** `### ⏱ SESSION STRATA` marker live, GM keeps #15 only; post-mortems #6/#7/#8/#12/#13 → `notes/_GAUGE-LOG.md` (contract declared in-file: append-only · measurements only · not in the read chain) · commit-states #5/#6/#7/#8/#12/#13 → `_GM-ARCHIVE.md` § Batch 2026-07-27 #15. **D4:** §B (66 lines) → same batch, verbatim; its STALE notice died WITH it — **GM-D2 test 1's first live use.** **2c:** the #13 banner → same batch. **Every move script-executed, byte-identical, §A re-found by hash after every write** (`outputs` scripts; asserts quoted in the batch header). Stamp: GM 26.2K→**20.9K tk** · compactable 21,410→**16,712** · tiktoken cl100k_base installed in-window, and the gate now measures with it · gate wrap 4 FAIL→**2 FAIL 2 WARN** · **STAND-002 PASS 26 docs** — `_capture_gate.py --wrap` + `_validate_standing_instructions.py` · 2026-07-27.
 > - **★★ THE BUILD-KILL MECHANISM, named and fenced.** A backgrounded `_build_all.py` (`nohup`, then `setsid` — both tested) is REAPED at the sandbox call boundary; a mid-step kill froze 33 compliance JSONs + `_CAPTURE-GATE.md` stripped. **#14's "I nearly committed 1,335 deleted lines" was this exact event; the cause is now measured, not mysterious.** Recovery under the delete-guard: `git show HEAD:<path> > <path>` (checkout's unlink = `Operation not permitted`). **The build fits ONE foreground ≤45s call — run it that way or not at all.** Banked: `_RUNBOOK-git-commit.md` § sandbox warts.
 > - **★ TWO RECORD CORRECTIONS, both the drift class, both benign.** (i) §A's hash `999b1e3d…` was ALWAYS right — but its recorded range "lines 299–489" was stale at birth: #14's own banner added 8 lines above §A (true range 307–497 at `b9581ea`). **Find §A by hash-search, never by line number.** (ii) STAND-004 (above) — phase-1 gap closed with a dated comment naming the ledger; the selftest-visible contradiction (capture gate fails if §B present, STAND-004 failed if absent) existed for exactly one commit.
 > - **⚠ WHAT THE AUTHOR FLAGS AGAINST HIS OWN WORK.** An early gate reading piped through `tail` nearly recorded the PIPE's exit 0 as the gate's — re-captured unpiped (`GATE EXIT=1`, failing correctly). The first pass-script run ABORTED whole on a linebreak-spanning anchor — nothing written, fixed, re-run green: **the all-or-nothing abort is the design working, not a recovery.** The ~55% close is an ESTIMATE; the fill/job actuals are in the #15 stratum below.
 > - **⬛ WINDOW 2, fully specified, NOT started:** 2e DO-FIRST retirement audit (D2's four tests, one untagged notice at a time, receipts in the batch header — the D3 grandfather pass) · D6 §C prune to ≤150 · D7 read-chain contract line replaces the old open chain · GM:12's inline band note → pointer (D9) · final stamp. **Predicts compactable ~8.1–9.5K ⇒ WARN, not block** (GM-D7-am). Brief: `notes/_briefs/2026-07-27-gm-compaction-enactment-brief.md`.
 >
-> ## ★ PRIOR — 2026-07-27 (Mon **evening #14**, OPUS solo self-conducting, effort MAX — ★★★ **GM-D1…D9 PHASE 1 IS ENACTED: runbook 2e/2f + gauge D9 + gate budgets, all landed, selftest green exit 0** · ★★★ **D7's 8K WAS UNREACHABLE AND IS NOW AMENDED — the first honest tokenizer measurement falsified a ruled number before anything was built on it** · ★ **the compaction PASS is deliberately NOT done — split to its own window on Dave's pace reading** · 🟡 ~58% at wrap, priced): **A budget that charges a section you may not touch is not a budget, it is a permanent debt.**
-> - **★★ LANDED, with evidence.** `_RUNBOOK-capture-ritual.md` — new **step 2e** (DO-FIRST typed-content contract · LATEST+1 roll · caps 120/180 · **D2's four retirement tests as a table** · D3 lifecycle tags, new entries only) and **step 2f** (strata stack, LATEST only, post-mortems → `notes/_GAUGE-LOG.md`, commit-states → archive, **explicit `### ⏱ SESSION STRATA` marker** so D6's "excluding the stack" is checkable at all) · **step 2 amended per D4** (§B deleted, banner absorbs its spec) + the D7 read-chain contract + the `size:` stamp form · batch key → `<date> <session#>`. `_RUNBOOK-context-gauge.md` — **D9 enacted**: floor MEASURED per session, bands restated on **remaining budget**, GM's inline band table demoted to a pointer. *(evidence: `git diff`, 3 files; selftest exit 0; STAND-002 exit 0)*
-> - **★★★ THE FINDING — D7's 8K TOKEN BUDGET WAS ARITHMETICALLY IMPOSSIBLE, AND NOBODY HAD MEASURED IT.** Proposal §1 measured GM in **bytes and lines**; §3 stated the budget in **tokens**; §4 converted at an unstated rate. Measured with **tiktoken cl100k_base**: GM **25,618 tk**, of which **§A alone is 4,208 tk = 53% of the entire 8K** — and §A is untouchable by the package's own first invariant. That leaves ~3,800 tk for banners + DO-FIRST + §C, which today are **21,410**. ⇒ **The proposal's own predicted SUCCESS state (450–500 ln = 12.3–13.7K tk) would have BLOCKED at 8K+50%.** **Dave ruled the amendment: budget the COMPACTABLE REGION, publish the whole file always.** 8,000 warn / 12,000 block; post-pass projects to **8.1–9.5K ⇒ WARN, not block**. Ledger: `notes/_MEMENTO-DECISIONS.md` § **GM-D7 AMENDED**.
-> - **⚠ THE UNITS LESSON, and it will bite again: this corpus runs at 3.53 BYTES/TOKEN, not the customary 4** — the ★ ⚠ ⛔ · — load makes it ~13% denser. **Every chars/4 estimate of these files has read LOW**, including the one that set the budget. Inscribed in ritual step 2: **measure, never convert by rule of thumb.** *(Same class: the gauge runbook's `~35k` session-baseline row is now flagged SUSPECT — this env defers tool schemas, so the real floor is far lower. **Deliberately NOT replaced with my estimate** — swapping one unmeasured constant for another is the defect, not the fix.)*
-> - **★ THE GATE BITES, AND THE BITES WERE BITE-TESTED.** `_capture_gate.py` gains section line caps + the D7 size stamp in **WRAP mode** (build mode untouched — in build mode these would fail every build until the first pass ran, a red no build can fix). 11 budget fixtures; then the gate was **deliberately broken 5 ways** (caps removed · §A un-exempted · strata max raised · tolerance opened · §B un-retired) and **every mutation turned the selftest RED**. Live wrap correctly reports today's non-compliance: DO-FIRST 266>180, §C 377>225, §B present, no `size:` stamp, compactable 21,410>12,000. **Nothing faked green.**
-> - **⬛ THE PASS IS NOT DONE — and that is the ruling, not a shortfall.** Priced at open as one Red window (~64%); Dave's 18:45 panel showed **0.70× pro-rata (Fable 0.59×), both improving, catch-up 1.37×** ⇒ *behind pace = MORE windows, not longer ones* ⇒ split into two Amber windows at the brief's own rules-then-pass seam. **Phase 2 = the supervised compaction pass, and Dave has assigned it to FABLE.** §A hash to preserve: **`999b1e3d29662fefeac573b9cfcbde77b53482182f1fe971b8b7d816260a6d2b`** (lines 299–489 at this commit).
-> - **⚠⚠ TWO THINGS THE AUTHOR FLAGS AGAINST HIS OWN WORK.** **(i) I nearly committed 1,335 deleted lines.** I launched concurrent builds; killing them left 34 generated files stripped of their `verified_by` blocks. Caught **only** by reconciling every path instead of `git add -A`. **Restored from HEAD via `git show` — but the full build was never re-run clean after the final D7 edits.** ⇒ **PHASE 2's FIRST ACT: one clean uninterrupted `_build_all.py`.** **(ii) I declared the commit impossible, and it was not — I had not read `_RUNBOOK-git-commit.md`.** I reported `.git/index.lock` as unclearable because `rm` AND `mv` both returned `Operation not permitted`. **The runbook answers both:** the delete-guard permits `mv` but only **WITHIN the repo mount** (`_to_delete/_stale_locks/`) — my `mv` went to the outputs mount, which is copy-then-unlink, i.e. a delete in disguise — **and there is a script, `knowledge/_git_commit.sh --reconciled <msgfile>`, that mechanises the whole clear·stage·clear·commit·clear sequence.** Committed on the first try once read: **`113eefc`, 8 files, locks clear, safe to push.** ⚠ **The runbook's own note says 3 of 5 commit sessions reconstructed this from memory under wrap heat and hit the lock first. This was the fourth.** *(`feedback-read-the-runbook`, caught by Dave, not by me: "theres. a commit runbook".)*
-> - **⬛ CARRIED UP BY THE 2c EXIT CHECK (it had no standing home):** **the B-D4 re-dial caveat.** `#9D9D9D`/`#808080` was dialled by Dave against the **disabled fill `#E1E1E1`**; on the **chart ground** the same hex reads at a different ratio than the one he judged. **Re-dial on sight is expected and cheap** — this is not a defect report.
-> - **⬛ DAVE'S QUESTION AT WRAP, ANSWERED ON MEASUREMENT AND LEFT OPEN:** *"will the rule we just ruled on allow the file to grow to be unmanageable again?"* **Ceiling is now `12,000 tk + §A` ≈ 16.2K worst case vs 25.6K today — bounded.** But **three holes, all unruled**: **(1) §A is uncapped and is now the ONLY region with no roll rule** — the original diagnosis pointing at what we just built · **(2) the banner region has NO line cap**, only 2c's count rule, and it is the densest text in the file at **302 B/line, 3.6× §A's** ⇒ one fat banner silently eats DO-FIRST's and §C's shared headroom · **(3) the disease is unenforced** — the gate cannot see 2e's retirement tests, so a small file full of dead notices passes. **Size was the symptom; supersession-by-addition was the disease.** Candidate for (1), **not enacted because it brushes the §A invariant**: a **WARN-only** §A count that never blocks. **Dave's line to draw.**
->
-> *(Compaction 2c — keep ★ LATEST + 1 PRIOR, roll the rest. Older banners (the #13 growth-contracts-RULED banner → Batch 2026-07-27 #15; the #11 ds-018-ruling banner → Batch 2026-07-27 #13; the #10 DV-D17-render banner rolled to Batch 11; the 07-22→24 chart-wave + ADR arc, the 07-25 AM v4 + midday→PM v5 + PM Memento-efficiency + PM#2 memory/routing-governor banners, the 07-27 #5 throttle banner and the #6 chart-flags banner) are in `_GM-ARCHIVE.md` (Batches 1–10), verbatim, newest-first; durable narrative in `_DECISION-HISTORY/` + `notes/`.)*
+*(Compaction 2c: ★ LATEST + 1 PRIOR stay; every older banner is in `_GM-ARCHIVE.md`, verbatim, newest-first, batch keys `<date> <session#>`; durable narrative in `_DECISION-HISTORY/` + `notes/`.)*
 
 ---
 
-*Briefing — refreshed 2026-07-27 ~18:25 BST (date from `date`), session "GM compaction
-architecture — supersession by addition" (Fable 5 solo). §A = orientation · ★ LATEST banner = session record (GM-D4) · §C = queue.*
-
-**Context gauge at authoring: 🟡 AMBER ~68% (ESTIMATE)** — scrutiny indicator on this handoff, not a
-quality score. Priced upfront (Dave chose full ritual at ~50%), not an overrun. Durable content =
-the nine GM-D rulings (ledger), written from in-window measurements, not recall.
-
 ## ⬛ DO THIS FIRST
 
-> **★★★ NEW #13 — THE GM GROWTH-CONTRACTS RULING IS IN. GM-D1…D9, ruled, NOT enacted.**
-> `[born #13 · guards: notes/_briefs/2026-07-27-gm-compaction-enactment-brief.md · until: enactment lands]`
-> **If this window is the enactment: READ THE BRIEF + LEDGER FIRST** (`notes/_MEMENTO-DECISIONS.md`
-> § GM growth-contracts) — runbook 2e/2f before any move · §A UNTOUCHED, hash-verified · EXIT CHECK
-> per batch · verbatim moves · `_LIVE-STATE` 2d-tightening OUT OF SCOPE. Price ~30–40%.
-> **Until enacted, THIS FILE STILL RUNS ON THE OLD RULES** — keep stacking under §C·5, keep 2c/2d
-> as written. Do not half-adopt the new rules ad hoc; the runbook must change first.
-> ⚠ Carried by EXIT CHECK from the #10 delta roll: **MEMORY.md compaction is still owed, its own
-> small window** (pre-existing, unrelated to this ruling).
+> **★ WORKLIST — pointer · state · owner (method lives at the pointer, never here):**
+> **1. ds-018 C2 follow-through** — order RULED: RENDER-CONFIRM `--phys-size` (B-D7 press physics —
+>    Alert/Empty-state/Popover, possibly dead) and `--mark` (→ SVG-initial BLACK across 7 pro-formas)
+>    BEFORE acting → THEN Dave's four values (three `--phys-size` + one `--mark` — his alone, do not
+>    invent) → THEN promote C2 to blocking (`--strict` on the `_build_all.py` step; an advisory gate
+>    never promoted is documentation — this one has its trigger, use it) → ds-018's OWN render-proof
+>    still OWED (deferred by ruling, env was cold). Owner: agent proofs, Dave values. Ledger:
+>    `_DS-IMPROVEMENTS.md` ds-018. ⚠ C3 stays ALIVE in §C·4 — never rejected, only not selected.
+> **2. dv-legend/dv-behaviour CEILING** — `dv-legend.js` 54 B free · group page 90% · NO cleanup left:
+>    any behaviour change to this group prices the per-member opt-in SCHEMA question (Dave's, with
+>    `Chart-sparkline`'s inert 15.6KB payload) FIRST, or it hits the ADR-0015 gate mid-job as #7 did.
+> **3. ds-012(b) gutter-relative plot area** — cb2 is a REVIEWED artefact: every x/width moves, so
+>    attribute the diff with a control or a correct change reads as a regression; the narrow-width
+>    floor is Dave's eye. Ledger: `_DS-IMPROVEMENTS.md`.
+> **4. DV-D16 floating growth** — RE-PRICE YOURSELF (a DOWNWARD re-price, #7: ~19% — re-derive it,
+>    don't inherit it); build wording ②, not ①; animate DV-D14's ENACTED heights, not true heights;
+>    `prefers-reduced-motion` ships with it (donut `:901–906` = the model; reduced ≠ shortened).
+>    Ledger: `knowledge/_proforma/_DATAVIZ-DECISIONS.md`.
+> **5. Instrument-fit remainder** — (2) adoption-time + sweep COMPLEMENTARY: ruled, held shape, NOT
+>    built (`_FUTURE-STATE.md` § Exploration beat 2) · (4) consult enforcement column: Dave leans fix
+>    but wants the DISCUSSION — have it before touching · (5) `CTRL` vocabulary sweep in
+>    `_validate_a11y.py`: RULED GO, not started (1,869 selectors skip; `dv-vocab` shape — normalise
+>    once + fail loud, never enumerate) — the cheapest ruled work on the board.
+> **6. ds-016, UNRULED** — 7 live gates cite rules the index cannot see (698 declared · 465 indexed ·
+>    265 invisible, incl. `aid-009` — RULED AND IN FORCE, its absence is a retrieval failure, not a
+>    lapsed ruling). Remedies (a)/(b)/(c) in `_DS-IMPROVEMENTS.md`; destiny tags are enforcement
+>    decisions = Dave alone. 279/465 rules untagged ⇒ "12 under-instrumented" is a FLOOR; the
+>    pattern-table investment is his call, made on the published number.
+> **7. ds-017, UNRULED** — a FLOATED item that supersedes a standing instruction has no path into this
+>    file; it cost the start of #5 and the mechanism is still live. Remedies (a)/(b)/(c) in
+>    `_DS-IMPROVEMENTS.md`. A FLOATED item is not authority — surface the contradiction, never
+>    auto-promote the newer text.
+> **8. STILL OWED, unchanged, none superseded:** (i) showroom type sweep → fold into the register as a
+>    P2 proof, don't re-run one-off (800 elements, 22 deviations, pattern = WEIGHT;
+>    `knowledge/_type-sweep-2026-07-27.json`; needs `--allow-file-access-from-files` or it reads a
+>    cheerful zero) · (ii) §C·2 RULING BATCH 15 + 17–22 — unmoved for days, gates §C·1(c); Fable is
+>    the model · (iii) hit-area rule + gate — read
+>    `notes/_briefs/2026-07-25-hit-area-rule-and-gate-proposal.md` FIRST; ds-015 proves it is the
+>    NAMED RECEIVER for an exemption already shipping in 7 components (the diamond's counter-rotation
+>    is the live case — a markup-driven gate must understand transforms) · (iv) radius/corner tuner —
+>    v1+v2 BUILT + render-verified; owed = tweaks + ruling the numbers with Dave ("return SOON, don't
+>    let me forget"); do NOT rebuild · (v) `showroom/chart-bar.html` cb5 rendered, UNSEEN by Dave —
+>    2.0–2.6% segment understatement, ink→white key flip, series-3 at 4.61:1 (0.11 over AA) constrains
+>    any re-tune of that hue · (vi) ds-014(d) donut cluster alignment — PARKED on Dave's ruling, rule
+>    it where he can see it live.
 >
+> **★ POINTERS — canon lives at the target, one line each (a third line here is the 2e bleed):**
+> **Render/proof canon** → `knowledge/_RUNBOOK-render-verify.md` + `knowledge/_render/cdp_matched_styles.py`
+> (CDP matched-rules in cascade order, colours parsed AS colours, `--settle off` default). Licensed cut
+> asserted in-frame · snippet = canon truth, showroom panes are `srcdoc` iframes (query `page.frames`) ·
+> every proof ships a bite proving it can FAIL · assume a probe is wrong in the direction that reads
+> GREEN (five sessions running).
+> **Throttle + pace canon** → `_RUNBOOK-context-gauge.md` § ★ Half 0b + § THE FLOOR IS MEASURED (the
+> band table's ONLY copy — quote it or grep it, never recall it). fill + job + WRAP = band · 15%
+> ring-fenced reserve · every job priced out loud · any unplanned finding ⇒ STOP, re-price, fork to
+> Dave · the weekly allowance is PERISHABLE ⇒ behind pace = MORE WINDOWS, and ask for a fresh panel
+> reading each opener — no gate can see it.
+> **Panel 2026-07-27 20:16 (Mon):** week 55.5% elapsed · All 41% = 0.74× pro-rata · Fable 37% = 0.67× ·
+> catch-up to Thu 23:00 = All 1.33× / Fable 1.42× — behind, improving, gap NARROWING for the first
+> time today.
+> **Model routing** → `MODEL-ROUTING.md` (07-23 audit ratified: delegation DELIBERATE — #12 supersedes
+> the Mode-2 default-on). Conductor = Opus effort MAX · mechanical lanes = Sonnet · Fable reserved for
+> open judgment · P2 = script-then-judge, every deviation is Dave's call.
+> **Sandbox warts** → `_RUNBOOK-git-commit.md` § sandbox warts (call-boundary kill strips generated
+> JSONs · `git show HEAD:<p> > <p>` restore · `knowledge/_git_commit.sh --reconciled <msgfile>`) +
+> `_RUNBOOK-render-verify.md` potholes (installer host-validation exit — check the cache, proceed ·
+> `/tmp` unwritable · FONTCONFIG two-alias · `__dirlock` EPERM = failure-message-after-success).
+> **The build fits ONE foreground ≤45s call — run it that way or not at all.**
 
-> **★★★ SUPERSEDED #12 — ds-018 IS ENACTED AND CLOSED. STOP PLANNING IT.** A2 · B2 · C2 all landed,
-> build **62/62 GREEN exit 0**, commit `5cd91c6`. **Do not re-enact, do not re-rule, do not re-measure it.**
-> Everything below about "the enacting window", the recessive value, the fix shape and which gate is
-> **HISTORY** — kept for the arc, not as instructions. Ledger: `_DS-IMPROVEMENTS.md` ds-018 § ✅✅ ENACTED.
-> **⛔ THE "B-D4 vs CANON COLLISION" DOES NOT EXIST — do not re-inherit it.** It appears below (and in
-> `_LIVE-STATE` §C·4) as *"two ledgered numbers that disagree"*. **They agree.** B-D4's prose says
-> `#808080` "both modes"; **its own `Values — SETTLED` block gives the PAIR `#9D9D9D`/`#808080`**, which
-> `canon.css:351`/`:648` and `semantic-colour.json:1636` both implement. **Struck through in place below.**
-> **⛔ "LAND IT IN THE GENERATOR" WAS NOT FOLLOWABLE — there is no generator for the chart CSS spine.**
-> Only the JS behaviour blocks are injected (`AUTO-BEHAVIOUR` markers). The spine is hand-authored per
-> snippet. The *point* held (canon.css is not in the chart cascade); the *mechanism* named did not exist.
->
-> **★★★ WHAT IS ACTUALLY NEXT — C2's WORKLIST, and it is the biggest thing on this board.**
-> C2's first run found **three more instances** of the silent-lookup class (see ★ LATEST). **Order:**
-> **(1) RENDER-CONFIRM instances 7 + 8 BEFORE ACTING.** `--phys-size` (B-D7 press physics, possibly dead
->    in Alert/Empty-state/Popover) and `--mark` (→ SVG-initial BLACK across 7 pro-formas) are **static
->    reasoning, not observation.** ⚠ **ds-019 is the standing warning against exactly this confidence.**
-> **(2) THEN Dave's values** — three `--phys-size` numbers + one `--mark`. **Do not invent them.**
-> **(3) THEN promote C2 to blocking** — one line, `["--strict"]` on the `_build_all.py` step. ⚠ An
->    advisory gate that is never promoted has quietly become documentation. **This one has a trigger: use it.**
-> **(4) ds-018's OWN RENDER-PROOF is still owed** (deferred by ruling, env was cold) — licensed cut asserted
->    inside each measured frame, transitions settled, colours compared as colours, **cells read not flattened
->    text** (#11's probe wart), plus a bite.
-> ⚠ **C3 was never rejected, only not selected** — *a disabled control may not out-contrast its own enabled
-> state.* It catches a resolved-but-wrong ladder **C2 is blind to by construction.** Still live.
->
-
-> **✅ CLOSED, do not re-open.** ds-014 calls (a)(b)(c) — RULED, ENACTED, RENDER-PROVEN. **★ DV-D17 is
-> ENACTED + DOM-PROVEN (session #7) — its CODE is done; only its RENDER is owed. Do not re-implement it.** The legend wave,
-> ds-013, ADR-0016 P1/P3-advisory all stay closed. **Nothing here is owed twice.**
->
-> **✅ ALSO CLOSED — "the gauge must be a THROTTLE" is RULED AND INSCRIBED** (`_RUNBOOK-context-gauge.md`
-> § ★ Half 0b, session #5). ⚠ *This block previously carried it as an UNRULED proposal for a full session
-> after it had been ruled — the exact **ds-017** failure, found here by re-reading rather than by any gate.
-> If you are reading a "Proposal (UNRULED…)" in DO-FIRST, check the runbook before believing it.*
->
-> **★★★ UPDATED #10 — TWO OF THE THINGS THIS BLOCK ASKED FOR ARE NOW DONE. READ THIS FIRST.**
-> **✅ DV-D17 IS RENDER-PROVEN.** Six contexts (snippet · showroom light · showroom dark, ×1180/760),
-> real gestures, licensed cut, transitions settled, **and a bite that reproduces Dave's screenshot**.
-> **DV-D17 is ENACTED · DOM-PROVEN · RENDER-PROVEN. It is finished. Do not re-open it, do not
-> re-prove it.** Tools: `knowledge/_render/verify_dv_d17_render.py` (reusable; `--bite` inverts it).
-> ⚠ **The lesson, because it will apply again:** the OLD acceptance test asserted only an **ABSENCE**,
-> which a **full revert also satisfies** — that is why #8's run printed `24 checks · 0 failures` while
-> measuring nothing. **Any proof of the form "X is absent" needs a paired proof that X is DETECTABLE
-> WHEN PRESENT.** Step 1 (isolate → the treatment paints) is what makes step 2 mean anything.
-> **✅ ds-018's RE-CHECK IS DONE AND IT STANDS** — clean instrument, settled, pointer parked, 4
-> contexts, numbers unchanged. **The timing defect did not reach it. Do not re-measure it again.**
-> ⚠ **But it is SHARPER than recorded: the states are INVERTED** — disabled → ink, enabled → `--line`.
-> **The disabled Reset out-shouts the enabled one.** That is an inversion of affordance, and it adds a
-> **third gate candidate**: *a disabled control may not out-contrast its own enabled state.*
-> **★★★ SUPERSEDED #11 — THE RULING HAS LANDED. ds-018 IS `A2 · B2 · C2`. STOP ASKING FOR IT.**
-> Dave ruled from `reviews/DS-018-DISABLED-STATE-2026-07-27-v1.html`, verbatim: *"I've gone with your
-> recommendations but we should probably wrap up and do it in the next window."*
-> **⇒ THE NEXT JOB ON THIS THREAD IS THE ENACTMENT, and it is fully specified below.**
-> **A2 · TIER** — mint **dataviz-tier** equivalents (`--data-control-*`), siblings of
->    `--data-axis`/`--data-grid`/`--data-series-*` which already live on chart scopes. **NOT** the form
->    tokens on chart scopes; **NOT** `:root`.
-> **B2 · CHANNEL** — **label-led.** Disabled label goes recessive; disabled border returns to `--line`,
->    i.e. **matching enabled-resting.** ⚠ **The cost is RULED, not a defect to fix later:** at rest the
->    enabled and disabled borders become identical and the label carries the whole distinction. Do not
->    "improve" this back into a border difference without asking.
-> **C2 · GATE** — the WIDE one: *a declaration referencing a custom property that resolves nowhere in
->    its own scope is a build failure, not a silent fallback.* ⚠ **C3 (a disabled control may not
->    out-contrast its own enabled state) was NOT rejected — it was not selected**, and it catches a
->    resolved-but-wrong ladder C2 is blind to. Keep it alive in §C·4.
-> **⛔ THE TRAP FOR THE ENACTING WINDOW — THE RECESSIVE VALUE IS *UNRULED*, DELIBERATELY.**
->    The review offered `#9D9D9D` (canon's `--text-on-disabled` today) · `#808080` (B-D4's ruled value)
->    · `#B5B5B5` · `#6B6B6B` **as candidates and explicitly NOT as a recommendation** — value promotion
->    is Dave's alone (derivation governance). **`#9D9D9D` was only the page's pre-selected preview; it
->    is NOT a ruling.** The **light/dark pairing is unruled too.** ⇒ **Put the value to him FIRST, before
->    writing a token.** ⚠ ~~And note the collision: B-D4 ruled `#808080` while canon ships `#9D9D9D`.~~
->    **⛔ WITHDRAWN #12 — no collision; B-D4's SETTLED block IS the pair. Nothing to reconcile.**
-> **⚠ THREE FACTS THE OLD BLOCK GOT WRONG — verified from source #11, do not re-inherit them:**
->    **(i) `--text-disabled` IS declared on `:root`** — `canon.css:350` = **`#E1E1E1`**, dark twin
->    `#808080` at `:647`. The old *"zero `:root`"* was true of `--border-disabled` **only** and was
->    over-generalised to both. *(The `#E1E1E1` scope this block flagged as unverified is now VERIFIED —
->    it is `:root`, and it is the exact value B-D4 was minted to escape.)*
->    **(ii) `canon.css` IS NOT IN THE CHART SNIPPET'S CASCADE.** `Chart-bar.reference.html:51–52` links
->    **`type.css` only** and inlines its own spine ⇒ **a `:root` fix repairs a real app page and leaves
->    the SNIPPET broken — and the snippet is what every render-proof measures.** This is why A2's
->    declarations must land on the chart scope **in the generator**, never as a `canon.css` hand-patch
->    (the block is replicated per chart family and regenerated).
->    **(iii) ★★ THE SQUEEZE — why B is label-led, and it is the finding this thread turned on.**
->    Enabled-resting border = `var(--line)` `#E1E1E1` at **1.31:1**; disabled currently resolves to ink
->    at **17.40:1** ⇒ **the dead control carries 13.3× the contrast of the live one.** Anything quieter
->    than enabled is below the perceptible floor; anything equal erases the distinction. **There is no
->    third value — the border channel CANNOT carry a recessive disabled state.** ⇒ **Channel is upstream
->    of tier**, which is the reverse of how this block used to frame it.
-> ⚠ **`--text-disabled` must be fixed in the SAME pass as `--border-disabled`** (unchanged, still true).
-> Full ruling + evidence: `_DS-IMPROVEMENTS.md` ds-018 § **RULED BY DAVE**. Review doc + its render-proof
-> (`knowledge/_render/verify_ds018_review.py`, 30 checks · 0 failures ×2 widths, `--bite` red) are reusable.
->
-> **★★★ ds-019 IS WITHDRAWN — IT WAS NEVER A DEFECT. ds-018 STILL STANDS (and is re-verified, #10).**
-> **⛔ THREE THINGS THAT ARE NO LONGER JOBS — read before planning.**
-> **(i) ds-018 is CONFIRMED, not open.** Measured in 4 contexts: `--border-disabled` and `--text-disabled`
->    resolve to **`""`**, `border-color` → `rgb(26,26,26)` = ink = the hover value. It is the **LOOKUP**,
->    **instance five**, and the census proves it structurally: **29 declarations, ten FORM scopes, ZERO
->    chart scopes** — a form-tier token read from a dataviz scope. **Do not re-measure it.** What is OWED
->    is Dave's ruling on the FIX SHAPE (see below). ⚠ **One caveat added #9:** it came from the same probe
->    as the withdrawn ds-019. Its census evidence is independent and it measured a **resting** control, so
->    the timing defect should not reach it — **but a cheap re-check is OWED** (§C·4).
-> **(ii) ⛔ DO NOT GO LOOKING FOR THE RULE THAT BEATS `.dv-legrow.is-solo`. IT DOES NOT EXIST.**
->    **ds-019 is WITHDRAWN WITH CAUSE (#9).** The treatment paints correctly and always did:
->    `.dv-legrow.is-solo` **(0,2,0) at cascade index 4** beats `.dv-legrow` **(0,1,0) at index 3** — no
->    `!important`, no inline, no `:is()`/`:where()`, no keyframes, confirmed by CDP in **six contexts**
->    incl. the dark pane. **The previous handoff sent a window hunting a ghost; that instruction is dead.**
->    **What was actually wrong was the INSTRUMENT:** `.dv-legrow` transitions `border-color` + `background`
->    over **0.16s**, and the probe read computed style **in the same task as the class change** — i.e. the
->    pre-transition value. ⚠ **`oklab(0 0 0 / 0)` is the signature of an IN-FLIGHT INTERPOLATION, not of a
->    failed declaration.** Full withdrawal + time series: `_DS-IMPROVEMENTS.md` ds-019 (both beats kept).
-> **(iii) ~~★ DV-D17's RENDER-PROOF IS UNBLOCKED AND IS THE OBVIOUS NEXT JOB.~~ ✅ DONE #10 — RENDER-PROVEN, six contexts, bite green. Skip to the ds-018 ruling.** *(original kept below for the arc)*
-> **(iii-old)** It was blocked only by
->    ds-019's false premise. **DV-D17 remains ENACTED · DOM-PROVEN (108/108 + 27/27) · RENDER-OWED** —
->    do not re-implement it, just prove it. ⚠ **The proof MUST settle the transition before reading**
->    (`--settle off`, below) or it will reproduce ds-019 exactly. ✅ **DAVE'S QUESTION IS ANSWERED:** the
->    DV-D17 screenshot showed the treatment **because the treatment paints**. Screenshot right, probe
->    wrong, for two sessions. **No silent regression. Close that thread.**
-> **0b. ★ THE HARNESS NOW HAS A REPO HOME — `knowledge/_render/cdp_matched_styles.py`.** ⚠ **The previous
->    handoff pointed at `outputs/_render-env/probe.py` and said "reuse it, don't rebuild it" — that was
->    NEVER FOLLOWABLE:** `outputs/` is `.gitignore` line 45, so the file could not survive the session that
->    wrote it. **Ruled by Dave #9: render tooling lives in the repo.** The new script enumerates matched
->    rules via CDP in cascade order (specificity, `!important`, inline, attributes, keyframes), parses
->    colours **as colours** (never as strings), and **defaults to `--settle off`** — injecting
->    `transition:none !important` *before* any class change, so a mid-transition read is structurally
->    impossible. `--settle none` exists **only** to reproduce the ds-019 artefact on demand.
->    ⚠ **Staging potholes, both still live:** `PLAYWRIGHT_BROWSERS_PATH` on the outputs mount ends the
->    install with `EPERM … rmdir '__dirlock'` — **a failure message after a success**, same species as the
->    host-validation exit; **check the cache, proceed.** `/tmp` is not writable. Recipe worked verbatim
->    from cold again (#9), fonts skipped **deliberately** — cascade resolution is font-independent.
-> **1. ⛔ NOT A JOB — READ THIS BEFORE YOU PLAN ANYTHING ELSE ON THE DATAVIZ GROUP.** An earlier draft of
->    this handoff told you to "take the authorised transitional-block deletion". **It is already done**
->    (`ba336dc`); `_check_legend_migration.py` prints that todo list unconditionally at `:87–89` and
->    `dv-behaviour.js:146` is the tombstone. **Do not go looking for it.**
->    What is REAL: **`dv-legend.js` = 16330 / 16384 bytes (54 to spare); dataviz page budget 90%.**
->    **There is no cleanup left to buy headroom**, so **the next behaviour change to this group does not
->    fit.** The known fix is **Dave's call, not an enactment**: **per-member behaviour opt-in in the
->    registry** (schema change — same item `Chart-sparkline`'s inert 15.6KB payload waits on, §C·4).
->    ⇒ **If your plan touches dv-legend.js or dv-behaviour.js, price the schema question FIRST or you
->    will hit the ADR-0015 gate mid-job, exactly as session #7 did.**
-> **2. ds-012 — (b) gutter-relative plot area.** ⚠ `cb2` is a **REVIEWED artefact**: every `x`/`width`
->    moves, so **attribute the diff with a control** or a correct change reads as a regression. Needs a
->    **floor** so a long category can't eat the plot at narrow widths — that floor is Dave's eye.
-> **3. DV-D16 — concurrent "floating" growth. ⚠ RE-PRICE IT YOURSELF FIRST.** Session #7 measured it down
->    from ~30% to ~19% (concurrency already exists; only *floating* + *per-segment curves* are missing —
->    `Chart-bar.reference.html:121–128`, full detail in the ledger). **That is a downward re-price, which is
->    the direction nobody double-checks — re-derive it, do not inherit it.** Build wording ②, not ①. Must
->    animate **DV-D14's ENACTED heights**. **`prefers-reduced-motion` ships with it** — and the donut's
->    baked answer at `Chart-donut.reference.html:901–906` is the model (land on the final frame; **reduced
->    ≠ shortened**).
-> ⚠ **THE ACCEPTANCE TEST IS A RENDER IN THE LICENSED CUT**, both widths, snippet AND showroom pane,
-> `document.fonts.check(...)` asserted first. A fallback-face render passes while broken — that is precisely
-> how ds-012 survived review. **Every proof ships with a bite proving it can FAIL.**
-> ★ **The `DVLEGEND` env override added in #7 is the cheap way to do that for anything touching the legend:**
-> point either suite at a neutered copy instead of mutating canon. Worked example + the published limit
-> (the donut suite cannot see an all-on regression) in the ledger's DV-D17 ENACTED block.
->
-> **★★★ FOUR OF THE FIVE CALLS ARE RULED (Dave, 2026-07-27 #4). What's left is small and named.**
-> ✅ **(1) instrument fit = its own generated register sitting ON TOP of ADR-0016** — BUILT.
-> ✅ **(2) adoption-time vs sweep = COMPLEMENTARY** — *"You're right about 2 they are complimentary"*.
->    Held shape, **not yet built**: adoption-time forcing function + a sweep **narrowed to one job,
->    finding undeclared adoptions** (`_FUTURE-STATE.md` § **Exploration beat 2**).
-> ✅ **(3) the 465-rule pass** — BUILT, RUN, WIRED advisory (steps 58+59). See ★ LATEST.
-> ⬛ **(4) the consult's enforcement column — NOT RULED.** Dave: *"I lean fix, but this probably needs
->    a discussion."* **Have the discussion before touching it.** ⚠ Its `5/5 shown` denominator fix is
->    separable and trivial and was **NOT** done — it is in §C·4, do it regardless.
-> ⬛ **(5) `CTRL` vocabulary sweep in `_validate_a11y.py` — RULED YES, NOT STARTED.** 1,869 selectors
->    skip today. The `dv-vocab` pattern (normalise once + **fail loud on unknown**, never enumerate)
->    applies directly and is already ratified. **This is the cheapest ruled work on the board.**
->
-> **★★★ NEW AND UNRULED — `ds-016`, and it is the same class one level up.** 7 live gates cite rules
-> the index cannot see (698 anchors declared · 465 indexed · **265 invisible**), including **`aid-009`**,
-> the ruling `_validate_a11y.py` names 5×. Three candidate remedies in `_DS-IMPROVEMENTS.md`:
-> **(a)** fail loud when a gate cites an unindexed rule · **(b)** tag the 7 · **(c)** both — which is
-> exactly the adoption+sweep pair he just ruled complementary, applied to itself.
-> ⚠ **Do NOT bulk-add destiny tags to clear the list** — a destiny tag is an enforcement decision and
-> belongs to Dave (derivation governance). ⚠ **`aid-009` is RULED AND IN FORCE** — its absence from the
-> index is a retrieval failure, not a lapsed ruling.
-> **Also open:** **279 of 465 rules are UNTAGGED** by the new pass ⇒ **12 under-instrumented is a FLOOR,
-> not an answer.** Whether to invest in the pattern table is Dave's call; the number is published so it
-> is made on evidence.
->
-> **★★★ IF HE RULES "GO" ON #3 — the method is now demonstrated THREE times.** ADR-0016 P2 exemplars:
-> `knowledge/_sweep_type_enactment.py` (corpus sweep) · `knowledge/_verify_dv_stacked_enactment.py`
-> (**the better model** — ruled value vs RENDERED value across snippet × showroom × two widths).
-> ⚠ **Every proof ships with a bite proving the proof can FAIL.** Non-negotiable; it has caught a real
-> defect **five sessions running.**
-> **Register reads PROVEN 4 · CLAIMED 20 · UNPROVEN 54 of 78** *(re-read the generated file, do not trust
-> this line — it moved twice today as rulings were harvested).* **Target CLAIMED first** — an UNPROVEN row
-> is honest about being unchecked; a CLAIMED row lies.
->
-> **★★ STILL OWED, unchanged and NOT superseded:**
-> **(i) The showroom type sweep + the 49-pane eyeball** — `_sweep_type_enactment.py` ran once: **800
-> composite-bound elements, 22 deviations in 27 panes**, pattern is **WEIGHT not size**
-> (`knowledge/_type-sweep-2026-07-27.json`). ⚠ Needs `--allow-file-access-from-files` or it reads ZERO and
-> reports a cheerful "0 deviations". **Fold into the register as a P2 proof, don't re-run as a one-off.**
-> **(ii) §C·2's RULING BATCH (15 + 17–22)** — unmoved for days, gates §C·1(c). **Fable is the model.**
-> **(iii) The hit-area rule + gate** — read `notes/_briefs/2026-07-25-hit-area-rule-and-gate-proposal.md`
-> FIRST. ⚠ **This is no longer a backlog item: ds-015 proves it is the NAMED RECEIVER for an exemption
-> that is already shipping in 7 components.** The diamond's counter-rotation is the live case — a
-> markup-driven gate must understand transforms, and a static one cannot.
-> **(iv) Radius/corner tuner (§C·1d)** — v1+v2 BUILT + render-verified; owed = TWEAKS + ruling the numbers
-> with Dave ("return soon, don't let me forget"). **Do NOT rebuild from scratch.**
-> **(v) `showroom/chart-bar.html` cb5 rendered but UNSEEN by Dave** — 2.0–2.6% segment understatement,
-> ink→white key flip, and **series-3 sits at 4.61:1, 0.11 over AA** (constrains any re-tune of that hue).
-> **(vi) ds-014 (d) — donut cluster alignment, PARKED on his ruling** (`.dv-donut-row` is `flex-start`;
-> −114px at 600 → −534px at 1440). Logged not fixed, deliberately — rule it where he can see it live.
-> *(Carried up by the 2c EXIT CHECK so banner compaction can't lose it.)*
->
-> **MODEL + EFFORT (Dave ruled 2026-07-26, still current):** conductor = **Opus 5, effort MAX** ·
-> mechanical lanes = **Sonnet** · **Fable reserved** for open-judgment (the ruling batch · the hit-area
-> gate). P2 is **script-then-judge**: any model writes a proof; **every deviation it finds is Dave's call.**
->
-> **★★★ THE GAUGE IS A THROTTLE NOW — this supersedes every earlier pre-flight paragraph. READ
-> `_RUNBOOK-context-gauge.md` § ★ Half 0b BEFORE PRICING ANYTHING.** *(The three-term rule alone is
-> NOT current guidance — it was inscribed and then failed to stop a +17 overrun the same day.)*
-> **`fill + job + WRAP (~5%) = projected band`** *plus* **a RING-FENCED ~15% reserve you may not spend
-> without asking.** **Every job is priced and debited** (the ~10% floor is gone), stated out loud when it
-> could move the band. **Any unplanned finding ⇒ STOP, re-price, put the fork to Dave** — log-and-stop /
-> narrow / chase knowingly. **Never economise on READING the band table** (a wrong band twice, costs a `grep`).
-> **★ AND CHECK THE PACE, which sets the posture:** the weekly allowance is **PERISHABLE**
-> *(status: `inferred`, firmed 2026-07-27 — the panel labels each weekly bar **"Resets Thu 11:00 PM"**,
-> and a capped counter that resets cannot carry unspent capacity forward. Still not directly OBSERVED.)*
-> **★ READ 2026-07-27 ~15:50 BST, Max (20×): week ~53% elapsed · All models 34% used ⇒ 0.64× pro-rata ·
-> Fable 28% ⇒ 0.53×. Session bucket 6%, resets in 55 min ⇒ NO session-level constraint.**
-> ⚠ **THE DELTA IS THE FINDING, not the level:** at 12:07 the same day it read 51% / 33% / 28%. **Three
-> full windows (#6 #7 #8) moved the weekly bar ONE point, and Fable ZERO.** ⇒ To spend the allowance
-> before Thu 23:00 now needs **1.40× pro-rata (Fable 1.53×)** — **the gap WIDENED across a working
-> afternoon.** ⇒ **Behind pace = MORE WINDOWS, not longer ones**; hoarding wastes allowance exactly as
-> Red does, and **Fable at 0.53× with 72% unspent is the strongest case on the board for promoting the
-> §C·2 ruling batch.** **Ask Dave for a fresh panel reading each opener — no gate can see it.**
->
-> **★★★ NEW AND UNRULED — `ds-017`.** A FLOATED item that **supersedes a standing instruction** has no
-> path into this file; the EXIT CHECK only carries §C·4 items *up*. It cost the start of session #5, and
-> the mechanism that hid it is still live. 3 remedies in `_DS-IMPROVEMENTS.md`: **(a)** wrap-gate check
-> **(b)** ritual clause **(c)** both. ⚠ **A FLOATED item is not authority** — make the contradiction
-> visible, never auto-promote the newer text.
->
-> **⚠ THE LESSON THIS SESSION EARNED: the recommendation went through the CONSULT first, unprompted, and
-> that is the whole remedy from this morning's arc working.** Cheap, and it is what stopped a second wrong
-> recommendation. *(Full arc: `_DECISION-HISTORY/2026-07-27-the-instrument-cannot-see-the-property.md`.)*
->
-> *Standing: every handoff carries both names (top) + a DIVVY PLAN. Known potholes all still true: the
-> installer's non-zero exit is HOST-VALIDATION not download refusal (**check the cache, proceed**) ·
-> `/tmp` NOT writable (use the outputs mount) · FONTCONFIG two-alias block required · **render the SNIPPET
-> for canon truth and the SHOWROOM PAGE for what Dave looks at**, and the showroom's panes are `srcdoc`
-> IFRAMES — query `page.frames`, not the top document. **Assume your probe is wrong in the direction that
-> reads as green** (four sessions running).*
-
-*Read: **§A Orientation** (skip if you're in context) → **the ★ LATEST banner** (the session record — GM-D4) → **§C Queue**.
-Then `_LIVE-STATE.md` → the decision files it points to.*
+*Read chain — the CONTRACT (GM-D7-am): **§A Orientation** (skip if in context) → **the ★ LATEST
+banner** (the session record — GM-D4) → **§C Queue** → `_LIVE-STATE.md`. That is the WHOLE chain:
+≤ ~24K tk ≈ 12% of a window (GM compactable 8K warn / 12K block, gate-checked against the header
+stamp). **Everything cited beyond the chain is RETRIEVAL** — `_consult.py`, a grep, a targeted read —
+never a reading list.*
 
 ---
 
@@ -520,51 +324,23 @@ Best AFTER the ruling batch: field-family, stepper-fold and delta-seam answers s
 **(d) Enact window (cheap)** — absorb §C·2 rulings as token/registry edits + §C·4; new candidates: mint
 `data/axis`+`data/grid` (per ★ DV-D07 two-channel) · R-D9 ramp promotion · field-family group build if ruled ·
 Stat-card `spark` slot · **★★ the live radius/corner tuner (Dave: return SOON).**
-**(e) ★ ROUTING SIDE-QUEST — ✅ DONE + RATIFIED SAME DAY (2026-07-23 evening).** All 13 proposals
-RATIFIED by Dave and #6–12 ENACTED in-session (his override): sheet
-`reviews/ROUTING-AUDIT-2026-07-23-v1.REVIEW.html` · receipt
-`notes/_receipts/2026-07-23-routing-sidequest-audit.md` (ruling verbatim). **#12 SUPERSEDES the
-07-13 Mode-2 default-on** (delegation now DELIBERATE; MODEL-ROUTING tombstoned, memory hooks
-updated). #13 = the calm-banner trial riding THIS handoff's top — Dave judges by eye. Residue in
-§C·4: none owed beyond the trial verdict.
+**(e) ✅ ROUTING SIDE-QUEST — DONE + RATIFIED + #6–12 ENACTED same day (07-23).** Receipt verbatim
+`notes/_receipts/2026-07-23-routing-sidequest-audit.md` (names the sheet) · #12 supersedes the Mode-2
+default-on (delegation DELIBERATE). Residue: the calm-banner trial VERDICT only (§C·4 Dave's-calls).
 
-## 2. ★ DAVE: THE RULING BATCH — 15 REMAIN of 16 (D-Q3 = #14 RULED 2026-07-23, promote in the
-wave; Q8/B2 also RESOLVED → DV-D08) + the ★ DATAVIZ SIGN-OFF (rule by number; all retro-propagate). **The sign-off first:** D promoted the PARKED kit verbatim into
-Chart-bar/line/donut/sparkline — your review flips them provisional-agent→canon (open-014).
-**★★ NEW 2026-07-27 (session #6) — DAVE'S THREE CHART FLAGS. CAPTURED, NOT ENACTED, EACH OWES A READ-BACK.**
-*"I want to make changes to the charts too, I've noticed a couple of missed decisions, please note this."*
-Filed the same minute — `knowledge/_proforma/_DATAVIZ-DECISIONS.md` **§ Batch 10** (verbatim quotes +
-source-read current behaviour + the read-back questions) and `knowledge/_DS-IMPROVEMENTS.md` **§ ds-018** —
-per **ds-017**, so none of it lives only in a chat that is gone by morning.
-**23. ✅ DV-D16 RULED · stacked animates SEQUENTIALLY FROM THE BOTTOM, SEGMENT BY SEGMENT, on EVERY STACKED
-SURFACE** — *"same as the pie, ease-in for the first, ease-out for the last, and linear for everything in
-between."* ⚠ **"Every stacked surface" is TODAY A SET OF ONE** (measured: `stacked` ×12 in Chart-bar, ×0 in
-combo/line; stacked area unbuilt) ⇒ **the ruling is FORWARD-BINDING — carry it into the chart-expansion brief
-(§C·1a lane 3 + the D-Q3 promotion)** or the next wave ships stacked surfaces that don't animate.
-⚠ Must animate **DV-D14's enacted heights**, not true heights. ⚠ **STILL OPEN:** does the donut actually
-sequence today (**verify, don't ask**) · fixed per-segment duration vs fixed total (serial cost scales with N,
-and stacks have no `dv-pie-009`-style ≤6 cap) · **`prefers-reduced-motion` is NOT optional — it ships with the
-first enactment** (ADR-0004 / WCAG 2.2 AA).
-**24. ✅ DV-D17 RULED · RELEASE ISOLATION ENTIRELY on the second check-on** — *"the isolated key item stays
-active when I check others on."* Cause read from source: `dv-legend.js:114/119/129` keeps `st.isolated` pinned
-while `st.focus` grows, so `.is-solo` survives. Fix = `st.isolated = null`. **Accepted cost: no 2-of-5
-comparison by isolate-then-add.** ⚠ **Three bites the enactment must not break:** restore to `visible[]` not
-all-on (`:129`) · Reset must not self-disable while still filtered (`:122` — *same expression as ds-018, do not
-conflate*) · `dv-sr` must announce release on the add path (`:140` only fires on re-click).
-**25. ✅ ds-018 — CAUSE CONFIRMED 2026-07-27 #8 (measured, 4 contexts). WHAT REMAINS IS THE FIX SHAPE, AND IT IS YOURS.**
-It is the **LOOKUP**, **instance five**: `--border-disabled` and `--text-disabled` resolve to `""` on every
-chart, `border-color` falls to `currentColor` = ink = the hover value. **Structural cause: a FORM-tier token
-read from a DATAVIZ-tier scope** — 29 declarations across ten form scopes, **zero chart scopes, zero `:root`**.
-⇒ **Ruling needed on (a) the tier fix** — declare on chart scopes vs mint dataviz equivalents vs promote to
-`:root` — **and (b) which gate** (narrow *disabled≠hover*, or the wider *fail-loud on a property that resolves
-nowhere in its own scope*). ⚠ **`--text-disabled` must be fixed in the same pass.** Original entry below, kept
-for the arc: *"reset disabled style is set at the hover style."* Disabled Reset paints an ink border; **B-D4 says disabled is visible-but-recessive.** Rules are
-correct as authored (`:hover` is already `:not(:disabled)`) ⇒ **HYPOTHESIS: `--border-disabled` fails to
-resolve → invalid-at-computed-value-time → `currentColor` = ink.** That would be **instance five** of the
-silent-lookup class. ⚠ **A token-value bug looks identical — eliminate it by `getComputedStyle`, snippet AND
-showroom, two widths. Do NOT hard-code a grey.** Gate candidate: *no control's disabled treatment may resolve
-to its hover treatment.*
-⚠ **All three are Dave-owned and NONE is render-verified. Answer the read-backs before building.**
+## 2. ★ DAVE: THE RULING BATCH — 15 REMAIN of 16 (D-Q3 ✅ #14; Q8/B2 → DV-D08) + the ★ DATAVIZ
+SIGN-OFF (rule by number; all retro-propagate). **Sign-off first:** D promoted the PARKED kit verbatim
+into Chart-bar/line/donut/sparkline — your review flips them provisional-agent→canon (open-014).
+*(Your three chart flags, #6 — filed same minute per ds-017: verbatim + read-backs in
+`_DATAVIZ-DECISIONS.md` § Batch 10 + `_DS-IMPROVEMENTS.md` § ds-018. 23–25 below = state lines only.)*
+**23. ✅ DV-D16 RULED — stacked animates SEQUENTIALLY FROM THE BOTTOM, every stacked surface** (ease-in
+first · ease-out last · linear between; verbatim + open read-backs in the ledger § Batch 10).
+FORWARD-BINDING: today's stacked set = ONE surface — carry into the chart-expansion brief (§C·1a lane 3
++ D-Q3) or the next wave ships stacked that doesn't animate. Enactment = DO-FIRST 4, reduced-motion with it.
+**24. ✅ DV-D17 RULED + ENACTED + RENDER-PROVEN — CLOSED** (release isolation entirely on second
+check-on; the three enactment bites honoured; §C·4 aggregate + ledger hold the record).
+**25. ✅ ds-018 RULED + ENACTED + CLOSED** (`A2·B2·C2` + values `#9D9D9D`/`#808080`, commit `5cd91c6`;
+ledger `_DS-IMPROVEMENTS.md` ds-018 § ✅✅ ENACTED). Remaining thread = C2 follow-through, DO-FIRST 1.
 
 **New this wave, 8–16:**
 8. **(A-Q5)** Calendar day-cells + Stepper done-dots carry NO press physics (judged selection
@@ -615,10 +391,9 @@ verbatim-in-substance. Same ruling mechanics as 8–16.**
    Account-selector). Accrete `field-family` as registry group #2 next wave?
 7. **Showroom Overlays split** — B proposes Overlays (Drawer/Popover/Lightbox/Modals/Tooltip) +
    Data-display buckets; wave 1 filed into existing buckets. Re-bucket?
-   *(Minor, flag-if-wrong: conductor decided the mixed-size idiom = local `--phys-size` override,
-   inscribed in the registry; Secure-entry holds figure-3/24 in its 40px narrow cells (A-Q3);
-   fl-summary ≈ Alert filed to the dedup pass (A-Q4); linked Stat-card variant awaits the
-   press/link posture question (B-Q6).)*
+   *(Minor, flag-if-wrong: mixed-size idiom = local `--phys-size` override, registry-inscribed;
+   Secure-entry holds figure-3/24 in its 40px cells (A-Q3); fl-summary ≈ Alert → the dedup pass (A-Q4);
+   linked Stat-card variant awaits the press/link posture question (B-Q6).)*
 
 ## 3. ★ THE STANDING EYEBALL SET (NON-BLOCKING — your "foundations first" ruling; pin-comments
 now live in every showroom pane, so it's async)
@@ -628,71 +403,37 @@ collapse through 520px · Icon-button identical · `#theme=legacy`/`#theme=super
 radius px + bigplay. **(c) NEW from Phase-2:** all 24 new components across 4 themes × light/dark — the Charts 4 double
 as the dataviz sign-off (§C·2).
 
-## 4. Enact-queue (cheap, post-rulings)
-**★ NEW 2026-07-27 #11 — carried here by the 2c EXIT CHECK so compaction cannot lose them:**
-**⬛ DAVE'S CALL — the ds-018 RECESSIVE VALUE** (A2/B2/C2 are ruled; the *value* is not): candidates
-`#9D9D9D` (canon `--text-on-disabled` today) · `#808080` (B-D4's ruled value) · `#B5B5B5` · `#6B6B6B`,
-**offered as candidates and NOT as a recommendation** — value promotion is his alone. **Light/dark
-pairing unruled with it.** ~~⚠ Collision to put to him: B-D4 `#808080` vs canon `#9D9D9D`.~~ **⛔ WITHDRAWN #12 —
-they AGREE; B-D4's SETTLED block is the light/dark pair. ✅ VALUE NOW RULED + ENACTED:
-`#9D9D9D` light / `#808080` dark, reuse not derivation (Dave: "just do it").** ·
-**⬛ GATE C3 IS ALIVE, NOT REJECTED** — *a disabled control may not out-contrast its own enabled state*;
-C2 was selected, C3 was simply not, and C3 catches a resolved-but-wrong ladder C2 is blind to ·
-**⚠ B2's ACCEPTED COST is RULED, not a bug** — at rest, enabled and disabled borders become identical
-and the label carries the distinction; do not "fix" it back into a border difference unprompted ·
-**⬛ the enabled Reset's 1.31:1 resting border** is now a measured fact on the record — whether that is
-*right* for a live control was never asked and is worth his eye (it is the floor that made B2 necessary).
-**★ NEW 2026-07-27 #8 — carried here by the 2c EXIT CHECK so compaction cannot lose them:**
-**⬛ DAVE'S CALL — the ds-018 FIX SHAPE** (cause is settled, the remedy is not): it is a **form-tier
-token read from a dataviz scope**, so the choices are *declare the form tokens on chart scopes* vs
-*mint dataviz-tier equivalents* vs *promote to `:root`* — an ADR-0010/0014 tier question, not a patch.
-⚠ **`--text-disabled` fails in the same breath** and must be fixed with it. ⚠ **WHICH GATE** is also his:
-the narrow one (*no control's disabled treatment may resolve to its hover treatment*) or the wider,
-cheaper one (*fail loud when a declaration references a custom property that resolves nowhere in its own
-scope*) — **the wider one would have caught ds-018 AND is the `dv-vocab` fail-loud shape already ratified.** ·
-**ds-019's overriding rule** (§DO-FIRST 0, unnamed — the single next step) · **DV-D17's render-proof is
-OWED and BLOCKED behind ds-019** — do not tick it · **the probe's string-comparison defect** (fix before
-reuse; it is what produced `24 checks · 0 failures` on a blind probe) · **⬛ Dave's question: what did the
-DV-D17 screenshot show, if the treatment has never painted?** — unprobed context, or a silent regression ·
-**the `__dirlock` EPERM pothole** now in the ★ LATEST banner, fold into `_RUNBOOK-render-verify.md` next
-time that file is touched · **⚠ MEMORY-INDEX COMPACTION IS OWED** — `MEMORY.md` is **19.5KB against a
-17.1KB target and a 24.4KB read limit**; it is loaded every cold start, so an over-limit index is a
-cold-start failure, not a tidiness issue. **Mechanics are ruled** (trim hooks + move entries to
-`MEMORY-ARCHIVE.md`, **never delete the files**). ⚠ **The memory dir is OUTSIDE every sandbox mount** —
-file tools only, no scripting, which is why it wasn't absorbed into this wrap. **Its own small window.**
-**★ NEW 2026-07-27 #7 — carried here by the 2c EXIT CHECK so compaction cannot lose them:**
-**DV-D17's render-verify in the licensed cut** (OWED — pair with ds-018, §DO-FIRST 0) · **the
-`st.visible[id] = true` enactment call** (the agent's, UNRULED — one line to reverse; `_REVIEW-SIGNOFF.md`) ·
-**the DV-D13 centre-figure consequence** (Dave's eye, live; `_REVIEW-SIGNOFF.md`) · **the dataviz behaviour CEILING** — 54 bytes free in `dv-legend.js`, group at 90%, **no cleanup left**;
-the fix is the per-member opt-in SCHEMA question, Dave's (§DO-FIRST 1) · **`_verify_dv_legend*.js` both take a `DVLEGEND` override now** — use it to bite anything
-touching the legend instead of mutating canon · ⚠ **the members suite is 108 checks, not the "54/54" the
-record carried for two sessions** — a stale count in three places, same class as the migration miss.
-**★ NEW 2026-07-27 #6 — THE ENACTMENT REGISTER CANNOT SEE A RULING WRITTEN IN A BLOCKQUOTE.** Found at
-commit time: `_build_enactment_register.py` harvested **DV-D16 and DV-D17** from § Batch 10 (both
-UNPROVEN, correct) and **silently missed DV-D18**, which sits inside a `>` block. Register now reads
-**4 of 80**; the true denominator is 81. ⚠ **Do NOT fix this by reformatting DV-D18** — that hides the
-finding and leaves the next blockquoted ruling just as invisible. **The defect is the SILENCE**: the
-harvester should report ruling-shaped lines it declined to index, the same *fail-loud-on-unknown* shape
-already ratified for `dv-vocab` and proposed for ds-016. **Same class as ds-010 · ds-013 · ds-016 ·
-ds-018** — and I authored it **one hour after logging ds-018 for the same shape**, which is the honest
-measure of how invisible this failure mode is from the inside.
-**★ NEW 2026-07-27 (from exploration beat 1) — carried here by the 2c EXIT CHECK so compaction can't lose them:**
-**consult `5/5 shown` denominator** — trivial, separable from the enforcement-column question, do it regardless ·
-**`CTRL` vocabulary sweep** in `_validate_a11y.py` (`dv-vocab` pattern, 1,869 selectors skip today) ·
-**ds-014 (d) donut cluster alignment** — PARKED on Dave, logged not fixed (`.dv-donut-row` `flex-start`) ·
-**ds-015's exemption warnings** are advisory by design — they become the hit-area gate's worklist when it lands.
-**★ NEW 2026-07-26 (from lane ①) — carried up here by the 2c EXIT CHECK, so they survive banner compaction:**
-**DV-D13 aria asymmetry** — the legend's `aria-label`s deliberately keep BOTH the value and percent forms
-(a screen-reader user shouldn't lose data to a toggle they may never perceive). Flagged at inscription,
-**confirm at the wave's a11y pass** · **`_check_legend_migration.py`** is the authorisation to delete the
-transitional block (exit 0) — the old grep in the handoff could never fire · **ds-012** h-bar labels clipped
-16.8px, Dave's call on fix shape (`_DS-IMPROVEMENTS.md`) · **the swatch-shape delta** on Chart-bar, reversible
-on request (`_REVIEW-SIGNOFF.md`).
-**★ NEW 2026-07-26 (from the cap-fork session):** wire **BOTH** verify suites — `_verify_dv_legend.js` (donut exemplar, 27/27) and `_verify_dv_legend_members.js` (members, 54/54) — as advisory build steps, or vendor their jsdom dependency (today: `npm i jsdom` into `/tmp`, unwired; two suites now, so the prize is bigger) · decide `Chart-sparkline`'s **inert 15.6KB payload** (needs per-member behaviour opt-in in the registry — schema change) · give the graph parser a convention for an **ADR-amendment node** (`--verify` shows 5 unmatched seed edges) · F1 Legacy icon/default white · F2 Legacy `rag/error-tint` · tag-atom radius reconcile · F5 Dropdown's
-6 locals · designer-pack v2.1 re-bake · **DV-D09 enact** (h-bar → series-3; bar lane) · **pro-forma dedup pass (ruling 3 — now also carries wave-1's
-fl-summary≈Alert + B's observation that Tranche-1/2 hold earlier empty-state/toast sketches)** ·
-composite motion tokens (would retire the matchValues pin) · enact whatever §C·2/§C·3 rulings change ·
-consider `--verify` blocking.
+## 4. Enact-queue (cheap, post-rulings) + standing carries
+**✅ CLOSED AGGREGATE (tombstones past LATEST+2; guards = ledger closed-lines / gates / commits):**
+ds-014(a)(b)(c) · DV-D17 enacted·DOM·render-proven (`knowledge/_render/verify_dv_d17_render.py`,
+`--bite` inverts) · ds-018 A2·B2·C2 + values `#9D9D9D`/`#808080` (`5cd91c6`) · ds-019 WITHDRAWN WITH
+CAUSE (instrument, not treatment; both beats in `_DS-IMPROVEMENTS.md`) · legend wave + transitional
+block (`ba336dc`) · ds-013 · ADR-0016 P1 + P3-advisory · routing audit 07-23 (receipt) · throttle
+ruling (gauge canon § ★ Half 0b). **Nothing here is owed twice — do not re-open or re-prove.**
+**⬛ DAVE'S CALLS, parked live:** C3 gate candidate — *disabled may not out-contrast its own enabled
+state* — ALIVE, not selected (catches the resolved-but-wrong ladder C2 is blind to) · the enabled
+Reset's **1.31:1 resting border**, measured, never judged — the floor that made B2 necessary · B2's
+accepted cost is RULED (rest borders identical, label carries it — do not "fix" unprompted) · **B-D4
+re-dial caveat:** pair dialled vs disabled fill `#E1E1E1`; chart ground reads differently — re-dial on
+sight, expected, cheap · ds-014(d) donut cluster (`flex-start`, −114px @600 → −534px @1440) — rule it
+live · DV-D13 centre-figure + `st.visible[id]=true` call, agent's, UNRULED (both `_REVIEW-SIGNOFF.md`)
+· stacked pair: per-segment vs total duration + donut-sequencing verify-don't-ask (ledger DV-D16) ·
+the 07-23 calm-banner trial VERDICT — never recorded; judge by eye, close it.
+**⚠ RENDER-RUNBOOK DEBTS (fold at next touch of `_RUNBOOK-render-verify.md`):** `__dirlock` EPERM
+pothole · absence-proofs need paired DETECTABLE-WHEN-PRESENT bites (the DV-D17 lesson — a full revert
+passes an absence-only test) · the probe-wrong-toward-green standing assumption.
+**⚠ MEMORY-INDEX COMPACTION OWED** — 19.5KB vs 17.1KB target, loaded every cold start. Mechanics
+RULED: trim hooks + move to `MEMORY-ARCHIVE.md`, never delete; dir OUTSIDE all mounts — file tools
+only. Its own small window.
+**Enact-queue:** consult `5/5 shown` denominator (separable, do regardless) · wire both
+`_verify_dv_legend*.js` advisory or vendor jsdom (⚠ members = 108 checks, not "54/54"; `DVLEGEND`
+override bites on a neutered copy) · graph ADR-amendment node convention (5 unmatched seed edges) ·
+F1 Legacy icon white + F2 `rag/error-tint` · tag-atom radius reconcile · F5 Dropdown's 6 locals ·
+designer-pack v2.1 re-bake · DV-D09 enact (h-bar → series-3, bar lane) · pro-forma dedup pass (rule 3;
++ fl-summary≈Alert + T1/T2 sketches) · composite motion tokens (retires the matchValues pin) · enact
+§C·2/§C·3 rulings as they land · consider `--verify` blocking · DV-D13 aria asymmetry — confirm at the
+wave a11y pass · ds-012 h-bar 16.8px clip fix shape (Dave) · swatch-shape delta reversible
+(`_REVIEW-SIGNOFF.md`) · ds-015 warnings = the hit-area gate's worklist when it lands.
 
 ## 4b. ★ QUEUED: button-states finesse pass (Dave 2026-07-22, "not now — follow up") *(was §C·3b — the wave-1 briefs/receipts + prior deltas point here under that number)*
 Full brief in `_FUTURE-STATE.md` §button-states-finesse. Headlines: **Legacy state-mechanism fidelity
@@ -712,29 +453,23 @@ spot-illustration/empty-state icon set (`_ICON-GAPS.md`, wave-1's only gap).
 
 ### ⏱ SESSION STRATA
 
-#### 2026-07-27 #15
+#### 2026-07-27 #16
 
-> **pre-flight:** fill 41% + job 13% + wrap 5% = 59% AMBER · reserve 15% ring-fenced
-> *(Session #15, 2026-07-27, phase-2 W1, Fable solo. Fill MEASURED per D9 by summing served reads of the
-> mandated set (brief · ledger · runbook 2e/2f · full GM · gauge canon). The full pass priced ~20% under the
-> script-move method; Dave took the SPLIT at the ~66% Red projection — the fork fired BEFORE start, as ruled
-> — job re-priced ~13%. Closed 🟡 ~55% ESTIMATE, on plan, no overrun: both unplanned findings (build-kill
-> mechanism · STAND-004 contradiction) were absorbed inside the price as inscriptions, not chases.
-> **PACE (perishable, replaces 18:45):** panel 19:35 BST — session bucket 15% (resets +2h07) · All models
-> 39% ⇒ 0.71× pro-rata · Fable 33% ⇒ 0.60× · catch-up to Thu 23:00: All 1.36× · Fable 1.50×. Behind,
-> improving. Posture: MORE WINDOWS — W2 on Fable is on-posture, and Dave pre-licensed it in-window.)*
+> **pre-flight:** fill 45% + job ~12% + wrap 5% = ~62% RED-edge · reserve 15% ring-fenced
+> *(Session #16, 2026-07-27, phase-2 W2, Fable solo. Fill MEASURED per D9 after the mandated reads
+> (brief · ledger · runbook 2/2c/2e/2f · band table · full GM + LS at open). Projection straddled the
+> Red line ⇒ fork put to Dave PRE-START; he ruled RUN WHOLE with a findings watch. No unplanned finding
+> moved the band — four script aborts cost ~4 calls, absorbed in price. Closed 🔴 ~63% ESTIMATE,
+> ~1–2 pts over projection, reserve untouched.
+> **PACE (perishable, replaces 19:35):** panel 20:16 BST — All 41% ⇒ 0.74× · Fable 37% ⇒ 0.67× ·
+> catch-up to Thu 23:00 All 1.33× / Fable 1.42× — behind, improving, gap NARROWING. MORE-WINDOWS holds.)*
 >
-> **COMMIT STATE (refreshed 2026-07-27 ~20:05 BST from `date`, phase-2 window 1).**
-> **Context gauge at authoring: 🟡 AMBER ~55% (ESTIMATE).**
-> ONE commit: `GOOD-MORNING.md` (W1: strata→2f homes · §B deleted · #15 banner · header + stamp) ·
-> `_GM-ARCHIVE.md` (§ Batch 2026-07-27 #15 — 6 commit-states + §B + the #13 banner, verbatim, EXIT-CHECK
-> receipts in the header) · `notes/_GAUGE-LOG.md` (**NEW** — 2f home, 5 post-mortems, contract in-file) ·
-> `knowledge/_RUNBOOK-context-gauge.md` (the #12 fork-failure instance inscribed BEFORE its stratum rolled
-> — the 2f EXIT CHECK's own worked example, honoured on its first live run) ·
-> `knowledge/_validate_standing_instructions.py` (STAND-004 → the D4 structure, dated comment) ·
-> `knowledge/_RUNBOOK-git-commit.md` (build-kill wart + `git show` restore) · `_LIVE-STATE.md` +
-> `_LIVE-STATE-ARCHIVE.md` (2d roll: the #12 delta) · `notes/_MEMENTO-DECISIONS.md` (enactment status
-> line updated AT SOURCE, not by addition) · `knowledge/_CAPTURE-GATE.md` + `knowledge/_instrument-fit.json`
-> (regenerated by the clean build). **Build `[62/62]` exit 0 FOREGROUND · gate wrap 2 FAIL (W2's map,
-> failing CORRECTLY) · 2 WARN (§C 213 · uncommitted, cleared by this commit) · STAND-002 PASS 26 docs.**
+> **COMMIT STATE (refreshed 2026-07-27 ~20:45 BST from `date`, phase-2 window 2).**
+> **Context gauge at authoring: 🔴 ~63% (ESTIMATE, boundary) — Red-authored ⇒ re-verify before trusting.**
+> ONE commit: `GOOD-MORNING.md` (W2: audit · §C prune · chain contract · header+stamp · #16 banner ·
+> strata) · `_GM-ARCHIVE.md` (§ Batch 2026-07-27 #16 — receipts ×10 + pre-W2 DO-FIRST + §C + old chain
+> line + #14 banner + #15 commit-state + old 2c-note, all verbatim, EXIT-CHECK receipts in headers) ·
+> `notes/_GAUGE-LOG.md` (#15 post-mortem appended verbatim) · `_LIVE-STATE.md` + `_LIVE-STATE-ARCHIVE.md`
+> (2d: #16 delta in, #13 delta rolled with EXIT-CHECK note). Build `[62/62]` exit 0 FOREGROUND · gate
+> wrap: compactable WARN only once this commit clears the git-WARN · STAND-002 PASS.
 > Dave pushes via GitHub Desktop (whole stack, Desktop closed while Claude commits).

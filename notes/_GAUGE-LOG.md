@@ -66,3 +66,16 @@ Blocks below moved VERBATIM from `GOOD-MORNING.md` §C strata at the first 2f ro
 > → ~60). The fork rule working as ruled. Findings en route: brief's numbers stale (GM 840→910 in a
 > day — which IS the diagnosis) · Parked innocent, stratum stack guilty · both folded into the
 > proposal before ruling, no re-price needed as the job was diagnosis.)*
+
+#### 2026-07-27 #15
+
+> **pre-flight:** fill 41% + job 13% + wrap 5% = 59% AMBER · reserve 15% ring-fenced
+> *(Session #15, 2026-07-27, phase-2 W1, Fable solo. Fill MEASURED per D9 by summing served reads of the
+> mandated set (brief · ledger · runbook 2e/2f · full GM · gauge canon). The full pass priced ~20% under the
+> script-move method; Dave took the SPLIT at the ~66% Red projection — the fork fired BEFORE start, as ruled
+> — job re-priced ~13%. Closed 🟡 ~55% ESTIMATE, on plan, no overrun: both unplanned findings (build-kill
+> mechanism · STAND-004 contradiction) were absorbed inside the price as inscriptions, not chases.
+> **PACE (perishable, replaces 18:45):** panel 19:35 BST — session bucket 15% (resets +2h07) · All models
+> 39% ⇒ 0.71× pro-rata · Fable 33% ⇒ 0.60× · catch-up to Thu 23:00: All 1.36× · Fable 1.50×. Behind,
+> improving. Posture: MORE WINDOWS — W2 on Fable is on-posture, and Dave pre-licensed it in-window.)*
+>
