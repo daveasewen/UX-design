@@ -847,6 +847,27 @@ a new task"* → *"should be teh pre-flight work, is that correct?"*). **No gate
 > **Evidence:** `knowledge/_render/recheck_ds018.py` + the three-state read · 2026-07-27 session #10.
 > **STILL OWED, UNCHANGED — Dave's ruling on the FIX SHAPE** (tier fix + which gate); `--text-disabled`
 > fails in the same breath and must be fixed with it. **RE-VERIFIED ≠ FIXED.**
+>
+> ### ⬛ DAVE'S STEER, 2026-07-27 evening #10 — CAPTURED, NOT ENACTED. Direction only; the tier fix and the gate are still unruled.
+> Verbatim, two beats: *"there should be a disabled state for reset"* → then, sharpening it himself:
+> *"or, the reset disabled state should look like a disabled state not the hover state."*
+> **What this settles:** the remedy is to **make the disabled state real and recessive**. It is NOT
+> *"delete the disabled styling"*, and it is NOT *"stop disabling the button"* — both were live readings
+> before he sharpened it, and both are now dead. A disabled state for Reset is **already declared**
+> (`.dv-leg-reset:disabled{border-color:var(--border-disabled); color:var(--text-disabled)}`) — it has
+> simply never been **delivered**, because neither token resolves on a chart scope. ⇒ **The job is to
+> make the existing declaration resolve to a recessive value, not to design a new state.**
+> **What this does NOT settle, and must not be read as settling:** (a) the **tier** fix — declare the
+> form tokens on chart scopes vs mint dataviz-tier equivalents vs promote to `:root`; (b) **which gate**
+> — now three candidates (*disabled ≠ hover* · *fail loud on a property that resolves nowhere in its own
+> scope* · **new #10:** *a disabled control may not out-contrast its own enabled state*).
+> ⚠ **AND A TRAP FOR WHOEVER TAKES THIS — the naive tier answer imports a value B-D4 already rejected.**
+> The form tier's `--text-disabled` runs as faint as `#E1E1E1`, while **B-D4 ruled disabled labels to
+> `#808080`** — *"faint-but-visible by choice"* — minted precisely because a fainter value was invisible
+> to sighted users. **Declaring the form tokens on chart scopes would therefore risk re-creating B-D4's
+> original defect on charts.** That pushes toward minting dataviz-tier equivalents, **but it is Dave's
+> call and this is an argument, not a ruling.** ⚠ **UNVERIFIED:** which theme/scope the `#E1E1E1` row
+> belongs to was NOT checked (window ran out at ~79%) — **confirm it before quoting it as evidence.**
 
 **Status: CONFIRMED (2026-07-27 #8) · RE-VERIFIED on a clean instrument (2026-07-27 #10) · NOT FIXED.
 The fix shape is Dave's. Original hypothesis wording kept below, verbatim, for the arc.**

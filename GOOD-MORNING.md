@@ -1,7 +1,7 @@
 # Good morning, Dave ☕
 
 > **RENAME THE WRAPPED CHAT →** `Apollo — DV-D17 RENDER-PROVEN in six contexts: the old acceptance test was one-sided (an absence a full revert also satisfies), the missing half was proving the treatment paints at all; the bite reproduces Dave's screenshot exactly; ds-018 re-verified clean AND SHARPER — disabled and enabled are INVERTED, the disabled Reset out-shouts the enabled one`
-> **TITLE THE NEXT CHAT →** `Apollo — RULE THE ds-018 FIX SHAPE (tier fix: chart scopes vs mint dataviz equivalents vs :root — AND which gate: narrow disabled≠hover, wider fail-loud-on-unresolved, or the NEW third candidate a disabled control may not out-contrast its enabled state), --text-disabled fixed in the same pass; then the CTRL sweep — cheapest ruled work on the board`
+> **TITLE THE NEXT CHAT →** `Apollo — ENACT ds-018: Dave steered it (make the disabled state REAL and RECESSIVE — it is DECLARED but never DELIVERED), so what is left is the TIER fix (mint dataviz-tier equivalents? the form tier's #E1E1E1 would re-create the defect B-D4 minted #808080 to fix — VERIFY that scope first) + WHICH of three gates, and --text-disabled in the same pass`
 > *(Titles are LABELS — role comes from Dave's opener line. The wave = the parallel model: Opus conducts, workers per lane, DIVVY in §DO-FIRST. Gauge bands: Green<45 / Amber 45–60 / Red≥60.)*
 
 
@@ -60,6 +60,18 @@ painted — ds-018 confirmed as instance five, and the proof that would have bee
 > **The disabled Reset out-shouts the enabled one.** That is an inversion of affordance, and it adds a
 > **third gate candidate**: *a disabled control may not out-contrast its own enabled state.*
 > ⇒ **THE NEXT JOB ON THIS THREAD IS DAVE'S RULING ON THE ds-018 FIX SHAPE, not more measurement.**
+> **★ AND HE HAS ALREADY STEERED IT (evening #10) — CAPTURED, NOT ENACTED.** Verbatim, two beats:
+> *"there should be a disabled state for reset"* → *"or, the reset disabled state should look like a
+> disabled state not the hover state."* ⇒ **The remedy is to make the disabled state REAL and
+> RECESSIVE.** NOT *"delete the disabled styling"*, NOT *"stop disabling the button"* — both were live
+> readings and both are now dead. **A disabled state is already DECLARED and has simply never been
+> DELIVERED** (neither token resolves on a chart scope), so the job is to make the existing declaration
+> resolve — **not to design a new state.** ⚠ **STILL UNRULED: the TIER fix and WHICH GATE** (three
+> candidates now). ⚠ **TRAP:** the naive tier answer — declare the form tokens on chart scopes — imports
+> a `--text-disabled` as faint as `#E1E1E1`, while **B-D4 ruled `#808080` "faint-but-visible by choice"**
+> for exactly that reason. **Argues for minting dataviz-tier equivalents; still his call.**
+> ⚠ **The `#E1E1E1` scope was NOT verified — confirm before quoting it.** Full note: `_DS-IMPROVEMENTS.md`
+> ds-018 § DAVE'S STEER.
 >
 > **★★★ ds-019 IS WITHDRAWN — IT WAS NEVER A DEFECT. ds-018 STILL STANDS (and is re-verified, #10).**
 > **⛔ THREE THINGS THAT ARE NO LONGER JOBS — read before planning.**
