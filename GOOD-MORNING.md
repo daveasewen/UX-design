@@ -509,6 +509,13 @@ spot-illustration/empty-state icon set (`_ICON-GAPS.md`, wave-1's only gap).
 > this file · the dossier.
 > **Build 58/58 GREEN (exit 0) · gate selftest 22/22 · render proof ALL ASSERTIONS PASS across 4 contexts ·
 > register PROVEN 3→4, UNPROVEN 53→52 · scope-blindness "none detected" (was 3).**
-> **Context gauge at authoring: 🟡 AMBER ~58% (ESTIMATE)** — handoff authored with clean budget, and the
-> PRE-FLIGHT estimate was stated before the render job rather than after it, per the rule ruled this morning.
+> **Context gauge at authoring: 🔴 RED ~63% (ESTIMATE ±15%) — CORRECTED AT RITUAL CLOSE.** The banner above
+> was written at a true 🟡 AMBER ~58%; **the capture ritual itself then cost ~5% more**, which crosses the
+> Green<45 / Amber 45–60 / **Red≥60** boundary. Stamped from the band table, not from the reading I had
+> already announced — this morning's finding was an agent leaving an optimistic band in place after the
+> number moved, and re-reading the table is the whole remedy. ⇒ **Next reader: the DO-FIRST and the ★ LATEST
+> banner were authored in Amber and are the trustworthy part; this commit-state block and the ritual edits
+> were not — re-verify the PROSE, which is what no gate sees.** The PRE-FLIGHT estimate before the render
+> job was stated in advance and held (38% + 15% → 53%); it was the RITUAL that went unpriced, which is the
+> same omission one step later.
 > Dave pushes via GitHub Desktop (whole stack, Desktop closed while Claude commits).
