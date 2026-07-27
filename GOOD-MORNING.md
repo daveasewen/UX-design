@@ -1,11 +1,20 @@
 # Good morning, Dave ☕
 
-> **RENAME THE WRAPPED CHAT →** `Apollo — the suite was asserting the OLD ruling: DV-D17 ENACTED and DOM-proven (108/108 + 27/27, three neutered controls), six green checks rewritten not deleted, the donut's "sequence" is ONE timeline so DV-D16 re-prices down, legend migration COMPLETE and nobody knew · 60/60 · render OWED · flushed at ~60%`
-> **TITLE THE NEXT CHAT →** `Apollo — RENDER-PROVE DV-D17 and DIAGNOSE ds-018 in the SAME licensed-cut harness run (one spin-up, two widths, snippet + showroom pane), then decide the per-member behaviour opt-in — dv-legend.js has 54 bytes of headroom, the group is at 90%, and there is NO cleanup left to buy space back`
+> **RENAME THE WRAPPED CHAT →** `Apollo — the treatment that never painted: ds-018 CONFIRMED as instance FIVE (a FORM-tier token read from a DATAVIZ scope, empty in all 4 contexts), ds-019 NEW (.is-solo matches, vars resolve, still doesn't paint) so DV-D17's render-proof was VACUOUS and would have read green through a full revert — and my own probe printed 24/0 and was WRONG`
+> **TITLE THE NEXT CHAT →** `Apollo — NAME THE RULE THAT BEATS .dv-legrow.is-solo (it does not contain the string "dv-legrow" — use CDP getMatchedStylesForNode, do NOT guess), because DV-D17's render-proof cannot be discharged until the treatment paints; then rule the ds-018 fix shape — generator + WHICH gate, and note --text-disabled fails in the same breath`
 > *(Titles are LABELS — role comes from Dave's opener line. The wave = the parallel model: Opus conducts, workers per lane, DIVVY in §DO-FIRST. Gauge bands: Green<45 / Amber 45–60 / Red≥60.)*
 
 
-> ## ★ LATEST — 2026-07-27 (Mon **afternoon #7**, OPUS solo self-conducting, effort MAX — ★ **DV-D17 ENACTED: the first BUILD window after three record-only ones** · ★ **SIX GREEN CHECKS WERE ASSERTING THE SUPERSEDED RULING — a conformance suite goes stale exactly like prose** · ★ **the donut's "sequence" is ONE TIMELINE ⇒ DV-D16 re-prices ~30%→~19%** · ★ **legend migration COMPLETE (exit 0) and the record didn't know** · build **60/60 GREEN** · render OWED · flushed at ~60%): **The suite was an inscription of the old ruling, and only running it said so.**
+> ## ★ LATEST — 2026-07-27 (Mon **afternoon #8**, OPUS solo self-conducting, effort MAX — ★ **ds-018 CONFIRMED BY MEASUREMENT: it is the LOOKUP, and it is INSTANCE FIVE** · ★ **ds-019 NEW — a rule that MATCHES, whose vars RESOLVE, and which STILL does not paint ⇒ DV-D17's owed render-proof was VACUOUS and would have read GREEN through a full revert** · ★ **MY OWN PROBE PRINTED `24 checks · 0 failures` AND WAS WRONG** · **NOTHING BUILT — Dave chose log-and-stop at the fork** · build unchanged **60/60 GREEN** · 🟡 ~55%): **The proof was green because the thing it was watching for has never happened, and could never happen.**
+> - **★ ds-018 ANSWERED — the hypothesis is PROVEN and the competing explanation ELIMINATED, by measurement, exactly as the entry demanded.** `getComputedStyle` on the **disabled** Reset, licensed cut, `document.fonts.check` asserted FIRST, **4 contexts (snippet + showroom pane via `page.frames`, 1180 + 760)**, all identical: **`--border-disabled` → `""`** · **`--text-disabled` → `""`** · `--ink` → `#1A1A1A` (resolves — the context is fine) · **`border-color` → `rgb(26,26,26)` = ink = the `:hover` value.** IACVT ⇒ border falls to `currentColor`, colour falls to `inherit`; **both roads end at ink.**
+> - **★ THE CENSUS BEATS THE MEASUREMENT: the token isn't set to an ink-ish value, it is NOT SET AT ALL where a chart can see it.** `canon.css` declares `--border-disabled` **29×** — ten **FORM** scopes + SC/dark twins, **ZERO chart scopes, ZERO `:root`**; the 4 consuming chart snippets declare it **0×**. ⇒ **A FORM-TIER TOKEN READ FROM A DATAVIZ-TIER SCOPE — never resolved since the day it landed, every gate green throughout.** ⚠ **The fix is WIDER than Dave's symptom:** `--text-disabled` fails in the same breath and is **masked** (colour inherits ⇒ lands on ink ⇒ *reads* plausible). **Generator + gate, never a `canon.css` patch. CONFIRMED ≠ FIXED.**
+> - **★ ds-019 — THE FINDING THAT STOPPED THE WINDOW.** `.is-solo` applied **directly** (no gestures, no behaviour code): element **matches** ✓ · `--ink` `#1A1A1A` ✓ · `--line` `#E1E1E1` ✓ · yet **`border-color` → `rgb(225,225,225)`** (`--line`; the declaration did not win) and **`background` → `oklab(0 0 0 / 0)` = FULLY TRANSPARENT**, not 6% ink. **Control: the same `color-mix` literal on a sibling `<div>` in the SAME subtree → `color(srgb 0.101961 0.101961 0.101961 / 0.06)`** — the mix is fine. The census enumerated only selectors containing `dv-legrow` (4, none beats `(0,2,0)`) ⇒ **the winning rule does NOT contain that string.** `:is()`/`:where()` · `.dv-leg > li` · `#cb4-legend li` · `!important` · inline/animated — **none checked. DO NOT GUESS IT; use CDP `getMatchedStylesForNode`.**
+> - **⚠⚠ SO DV-D17's RENDER-PROOF WAS UNATTAINABLE AS SPECIFIED.** *"No `.dv-legrow` resolves the `.is-solo` treatment after isolate-then-check-on"* is **permanently true** — no row resolves it before, during or after isolation — **and would have survived a complete revert of the fix.** ⇒ **DV-D17 stays ENACTED · DOM-PROVEN (108/108 + 27/27) · RENDER-OWED.** ⚠ **Do NOT mark it render-verified on a green run of the probe as written.** ⚠ **DAVE'S QUESTION, logged not chased:** if it never painted, **the DV-D17 screenshot showed something** — unprobed context, or a silent regression?
+> - **★ WHAT I GOT WRONG, and it is the transferable part: the first run printed `24 checks · 0 failures` and was a FALSE GREEN.** The probe carried a positive control *precisely* to stop a vacuous pass. **It compared computed strings** — solo bg serialises `oklab(0 0 0 / 0)`, baseline `rgba(0, 0, 0, 0)`: **textually different, visually identical (both transparent)** — so the control "saw a difference" and passed. **Caught BY EYE reading the JSON, not by the check.** ⇒ **Compare computed colours AS COLOURS (parse r/g/b/a), never as strings; a control that can pass on a serialisation difference is not a control.** ⚠ **This happened inside the probe written to honour "assume your probe is wrong in the direction that reads as green" — the rule was quoted in its own docstring.** The control was checked for existence, not for **sensitivity**. Same shape as #7's stale suite, and as ds-018/ds-019 themselves: **the instrument was present, correct-looking, and not measuring what it claimed.**
+> - **✅ HARNESS RE-PROVEN FROM COLD, runbook verbatim, no new steps.** **NEW POTHOLE BANKED:** `PLAYWRIGHT_BROWSERS_PATH` on the outputs mount ends the install with **`EPERM … rmdir '__dirlock'`** — **same species as the host-validation exit: a failure message following a success. Check the cache, proceed.**
+> - **⬛ THE FORK WENT TO DAVE AND HE CHOSE LOG-AND-STOP.** Priced at the finding: fill ~48% + naming the rule ~8% ⇒ **~61% RED**, over the band and into the reserve; the fix unbounded from there, **and `dv-legend.js` has 54 bytes free with the group at 90%** ⇒ anything touching behaviour hits the ADR-0015 gate. **The throttle fired on an unplanned finding exactly as ruled.** Per the perishable allowance: **behind pace, more windows beat longer ones.**
+>
+> ## ★ PRIOR — 2026-07-27 (Mon **afternoon #7**, OPUS solo self-conducting, effort MAX — ★ **DV-D17 ENACTED: the first BUILD window after three record-only ones** · ★ **SIX GREEN CHECKS WERE ASSERTING THE SUPERSEDED RULING — a conformance suite goes stale exactly like prose** · ★ **the donut's "sequence" is ONE TIMELINE ⇒ DV-D16 re-prices ~30%→~19%** · ★ **legend migration COMPLETE (exit 0) and the record didn't know** · build **60/60 GREEN** · render OWED · flushed at ~60%): **The suite was an inscription of the old ruling, and only running it said so.**
 > - **★ DV-D17 ENACTED — four lines in `canon/dv-legend.js`, injected into all 5 registered consumers.** A blank swatch checked while isolated sets `st.isolated = null; st.focus = null` and leaves isolate mode, so no row keeps `.is-solo` while several series show. **All three named bites covered, each with its own failing control.** ⚠ **RENDER-VERIFY IN THE LICENSED CUT IS OWED, NOT DONE** — jsdom proves the state machine, **not** that `.is-solo` stops painting, and **ds-018 is a live counter-example on this same component.** Anyone reading "108/108" as *done* is reading it wrong: **enacted · DOM-proven · render-OWED.**
 > - **★ THE FINDING: SIX GREEN CHECKS ENCODED THE RULING DV-D17 SUPERSEDES.** Baseline **100/100 + 27/27**; after the fix **85/100 + 23/27**. That red was not a regression — members 20/21 and donut 12/13/14/20 asserted the **additive focus set**, the half of DV-D11 that DV-D17 kills. **Nothing in the repo connected "DV-D17 is ruled" to "six assertions now say the opposite"; only RUNNING the suite surfaced it.** Sibling of [[assertion-propagation-gap]], in a surface nobody had counted — **the verification tooling itself.** All six **REWRITTEN, NOT DELETED**, old wording verbatim beside each, so a reversal can never read as agent drift.
 > - **★ BITE-THE-BITE ×3, WITHOUT MUTATING CANON.** Both suites gained a **`DVLEGEND` env override** (their own `JSDOM` idiom), so neutered copies are pointed at from outside: full revert **99/108 + 23/27** · release-to-**all-on** **105/108** · release-**silently** **104/108 + 26/27** · control **108/108 + 27/27**. ⚠ **PUBLISHED LIMIT — the donut suite CANNOT catch the all-on regression** (27/27 under it): its scenario starts all-visible, where `visible[]` and all-on are indistinguishable. **Only the members suite dims a spare BEFORE isolating.** Not interchangeable proofs of bite (i).
@@ -16,21 +25,13 @@
 > - **⚠ TWO THINGS FOR DAVE'S EYE, NEITHER RULED.** **(1) An enactment call that is MINE:** release also sets `st.visible[id] = true` so the clicked series shows; the literal reading restores `visible[]` **alone**, and they differ only when a series dimmed *before* isolating is then the one clicked — literal leaves it dimmed, so the click that ended the mode does nothing to what was clicked. **One line either way.** **(2) A DV-D13 consequence the ruling never named:** isolate Housing (`950/41%`) then check a second series — that click now **releases**, so the centre returns to `2320/100%` instead of growing to `1250/54%`. **DV-D13 is intact**; the selection is simply everything again.
 > - **⬛ FLUSHED BY DAVE at the fork — the throttle's FIRST use on a job MID-FLIGHT.** Priced: fill ~55% + render ~10% + wrap ~5% ⇒ **~70% RED**; flushing lands ~60%. ⚠ **Overrun recorded per the throttle's own instruction:** DV-D17 was priced at 15% and ran nearer 20, **entirely on the byte-cap detour — self-inflicted, not a discovery.**
 >
-> ## ★ PRIOR — 2026-07-27 (Mon **afternoon #6**, OPUS solo self-conducting, effort MAX — ★ **DAVE'S CHART FLAGS CAPTURED *THEN* RULED: DV-D16/17/18 + ds-018 NEW + ds-012 RULED — and NOTHING ENACTED, by his choice** · ★ **DV-D16a REVERSED IN-WINDOW: the read-back offered three shapes and the right answer was in none of them** · build **60/60 GREEN** · 🟡 AMBER, flushed): **He picked an option, then twenty minutes later described what he actually meant — and it rejected the option he had picked.**
-> - **★ THE CAPTURE HAPPENED BEFORE THE CONVERSATION, and that was the point.** Dave: *"I want to make changes to the charts too, I've noticed a couple of missed decisions, please note this."* Per **ds-017** — which cost the start of session #5 — a placeholder went into the pillar ledger **at the moment of the ask**, marked `OBSERVED-BY-DAVE, contents UNSTATED` with an explicit *"do not guess which decisions he means"*, then filled in as **`_DATAVIZ-DECISIONS.md` § Batch 10**. It was superseded four minutes later, which makes it look wasted; **it is not — it is what makes the EXISTENCE of the gap survive a window that ends unexpectedly**, and windows do.
-> - **★ DV-D16 — ⚠⚠ RULED, THEN REVERSED IN THE SAME WINDOW. BOTH WORDINGS KEPT.** ① *"segment by segment"*, serial hand-off — **selected from a read-back, SUPERSEDED, DO NOT BUILD.** ② **IN FORCE:** *"they all grow at the same time, so they are floating and growing, rather than growing and 'handing off' to the next."* **One shared timeline; upper segments FLOAT upward as the ones below grow; per-segment easing CURVES, not per-segment timelines** — bottom `ease-in`, top `ease-out`, middles `linear` (his original easing rule, unchanged, and the durable part). Scope = **every stacked surface**; **`prefers-reduced-motion` ships WITH the first enactment** (*"fine"*) — ⚠ *reduced ≠ shortened*.
-> - **★ THE METHOD FINDING, and it is MINE, not Dave's: A READ-BACK CAN ONLY OFFER ANSWERS THE ASKER THOUGHT OF.** Three tidy, mutually-exclusive, plausibly-exhaustive options **read as a complete space and were not one** ⇒ **a selection from an incomplete option set is indistinguishable from a ruling.** The instrument still earned its keep — it produced the correction — but **it manufactures confidence in proportion to how well-formed the options look.** ⇒ **STANDING MITIGATION, inscribed: when reading back a MOTION or FEEL decision, describe the resulting SENSATION, not the mechanism.** *"The top blocks float as the bottom grows"* would have been recognised on sight; *"segment 2 starts when segment 1 lands"* was not. ⚠ Sibling of the clarify-and-reflect-back rule — **the reflect-back happened, correctly, and still under-determined the answer. Doing the ritual is not the same as the ritual working.**
-> - **★ DV-D18 cap-at-6 + ★★ FLOATED "Other" must be EXPANDABLE** (*"through some mechanism we'll explore later"* — unscoped by instruction, `_FUTURE-STATE.md`). ⚠ **Load-bearing as a PAIR: a cap with no route to the detail is data loss dressed as legibility** — already the donut's live state under `dv-pie-009`. ⚠ **JUSTIFICATION SHIFT RECORDED rather than quietly re-argued:** the cap answered a *duration* problem under serial motion; concurrent motion **dissolved that problem** (one timeline ⇒ N is free). **The cap stands on Dave's word but now rests on LEGIBILITY alone** — re-test it on that basis, don't inherit the old rationale.
-> - **★ DV-D17 release-isolation + ★ ds-018 NEW + ★ ds-012 RULED.** DV-D17 cause read from source (`dv-legend.js:114/119/129`), **three enactment bites named** incl. *Reset must not self-disable while still filtered* — **the same expression ds-018 lives in; do not conflate the two fixes.** ds-018: disabled Reset paints ink, i.e. its own hover value; CSS is **correct as authored**, so **two competing causes** (token set ink-ish vs token failing to resolve ⇒ `currentColor`) — **separate them by `getComputedStyle`, never by reading CSS**, and the second would be **instance FIVE** of the silent-lookup class. ds-012: Dave re-reported the h-bar clipping **cold**, then ruled **(b) gutter-relative** — *"(a) fixes an instance, (b) fixes the class."*
-> - **⬛ NOTHING ENACTED, BY DAVE'S CHOICE — and this is the throttle's first real use.** Priced at the fork: fill ~43% + enactment ~30% + wrap ~5% ⇒ **~78% RED**; DV-D17 alone hit the 60% boundary. The fork went to him and **he chose FLUSH.** ⚠ **First time it stopped work that was going WELL** — which is the case it was built for, and the harder one.
->
-> *(Compaction 2c — keep ★ LATEST + 1 PRIOR, roll the rest. Older banners (the 07-22→24 chart-wave + ADR arc, the 07-25 AM v4 + midday→PM v5 + PM Memento-efficiency + PM#2 memory/routing-governor banners, and the 07-27 #5 throttle banner) are in `_GM-ARCHIVE.md` (Batches 1–10), verbatim, newest-first; durable narrative in `_DECISION-HISTORY/` + `notes/`.)*
+> *(Compaction 2c — keep ★ LATEST + 1 PRIOR, roll the rest. Older banners (the 07-22→24 chart-wave + ADR arc, the 07-25 AM v4 + midday→PM v5 + PM Memento-efficiency + PM#2 memory/routing-governor banners, the 07-27 #5 throttle banner and the #6 chart-flags banner) are in `_GM-ARCHIVE.md` (Batches 1–10), verbatim, newest-first; durable narrative in `_DECISION-HISTORY/` + `notes/`.)*
 
 ---
 
-*Briefing — refreshed 2026-07-27 ~13:15 BST (date from `date`), session "the read-back offered the
-wrong options — Dave's chart flags captured, ruled, and deliberately not built" (Opus 5 solo
-self-conducting, effort MAX). §A = orientation · §B = session · §C = queue.*
+*Briefing — refreshed 2026-07-27 ~15:40 BST (date from `date`), session "the treatment that never
+painted — ds-018 confirmed as instance five, and the proof that would have been green forever"
+(Opus 5 solo self-conducting, effort MAX). §A = orientation · §B = session · §C = queue.*
 
 ## ⬛ DO THIS FIRST
 
@@ -43,21 +44,34 @@ self-conducting, effort MAX). §A = orientation · §B = session · §C = queue.
 > after it had been ruled — the exact **ds-017** failure, found here by re-reading rather than by any gate.
 > If you are reading a "Proposal (UNRULED…)" in DO-FIRST, check the runbook before believing it.*
 >
-> **★★★ THIS WINDOW = ONE HARNESS RUN THAT PAYS FOR TWO JOBS, THEN A CLEANUP THAT IS ALREADY AUTHORISED.**
-> **0. RENDER-PROVE DV-D17 *and* DIAGNOSE ds-018 IN THE SAME SPIN-UP.** Same component, same page, same
->    two widths, same licensed cut — doing them separately pays the harness cost twice for nothing.
->    Read `knowledge/_RUNBOOK-render-verify.md` first; do **not** reconstruct the pipeline.
->    **(a) DV-D17's owed proof:** assert `document.fonts.check(...)` FIRST, then confirm **no `.dv-legrow`
->    resolves the `.is-solo` treatment** (ink border + 6% ink fill) after isolate-then-check-on — in the
->    **snippet AND the showroom pane**, at both widths. ⚠ Showroom panes are `srcdoc` IFRAMES: query
->    `page.frames`, not the top document. ⚠ **jsdom already says 108/108 — that is the state machine, not
->    the paint.** The whole reason this is owed is that ds-018 is a live case of *DOM correct, screen wrong*
->    on this very component.
->    **(b) ds-018, unchanged from its own entry:** `getComputedStyle` on the **disabled** Reset, snippet and
->    showroom, two widths; read the resolved value of **both** `--border-disabled` and `border-color`.
->    ⚠ **Do NOT hard-code a grey; do NOT tighten `:hover`** (already `:not(:disabled)`). If the token fails
->    to resolve, this is **instance five** of the silent-lookup class and the fix belongs in the generator
->    + a gate, not in `canon.css`.
+> **★★★ THIS WINDOW = NAME ONE RULE. ds-018 IS ANSWERED; DV-D17's PROOF IS BLOCKED BEHIND ds-019.**
+> **⛔ FIRST, TWO THINGS THAT ARE NO LONGER JOBS — read before planning.**
+> **(i) ds-018 is CONFIRMED, not open.** Measured in 4 contexts: `--border-disabled` and `--text-disabled`
+>    resolve to **`""`**, `border-color` → `rgb(26,26,26)` = ink = the hover value. It is the **LOOKUP**,
+>    **instance five**, and the census proves it structurally: **29 declarations, ten FORM scopes, ZERO
+>    chart scopes** — a form-tier token read from a dataviz scope. **Do not re-measure it.** What is OWED
+>    is Dave's ruling on the FIX SHAPE (see below).
+> **(ii) DV-D17's render-proof CANNOT BE WRITTEN YET, and the old wording of it was a trap.** The
+>    acceptance test in the last two handoffs — *"no `.dv-legrow` resolves the `.is-solo` treatment"* — is
+>    **permanently, vacuously true**: the treatment never paints at all (**ds-019**). A green run proves
+>    nothing and would have survived a full revert. ⚠ **DV-D17 stays ENACTED · DOM-PROVEN · RENDER-OWED.
+>    Do not re-implement it and do not tick it off.**
+> **0. ★ NAME THE RULE THAT BEATS `.dv-legrow.is-solo` — the single next step, cheap and bounded.**
+>    Measured: the element **matches**, `--ink` and `--line` **both resolve**, and **both** declarations are
+>    overridden (`border-color` → `--line`; `background` → fully transparent). A census of selectors
+>    *containing* `dv-legrow` found 4, **none of which can beat `(0,2,0)`** ⇒ **the winning rule does not
+>    contain that string.** ⚠ **DO NOT GUESS IT** — use CDP `getMatchedStylesForNode` (or
+>    `page.context().new_cdp_session`) to enumerate **every** matched rule in cascade order, `!important`
+>    and inline included. Candidates only: `:is()`/`:where()` lists · `.dv-leg > li` · `#cb4-legend li`.
+>    ⚠ **ANTI-FALSE-FIX: do NOT raise `.is-solo`'s specificity or add `!important`** — that hides what is
+>    winning, and whatever it is presumably beats other rules too. Full entry: `_DS-IMPROVEMENTS.md` ds-019.
+> **0b. ★ THE HARNESS IS ALREADY WRITTEN — reuse it, don't rebuild it.** `outputs/_render-env/probe.py`
+>    + `diag.py` (staging recipe worked verbatim from cold). ⚠ **BUT FIX ITS CONTROL FIRST:** it compares
+>    computed colours **as strings**, and `oklab(0 0 0 / 0)` vs `rgba(0, 0, 0, 0)` are textually different
+>    and visually identical — that is how it printed **`24 checks · 0 failures`** on a blind probe.
+>    **Parse to r/g/b/a and compare numerically.** ⚠ **New pothole:** `PLAYWRIGHT_BROWSERS_PATH` on the
+>    outputs mount ends the install with `EPERM … rmdir '__dirlock'` — **a failure message after a
+>    success, same species as the host-validation exit. Check the cache, proceed.**
 > **1. ⛔ NOT A JOB — READ THIS BEFORE YOU PLAN ANYTHING ELSE ON THE DATAVIZ GROUP.** An earlier draft of
 >    this handoff told you to "take the authorised transitional-block deletion". **It is already done**
 >    (`ba336dc`); `_check_legend_migration.py` prints that todo list unconditionally at `:87–89` and
@@ -488,8 +502,14 @@ while `st.focus` grows, so `.is-solo` survives. Fix = `st.isolated = null`. **Ac
 comparison by isolate-then-add.** ⚠ **Three bites the enactment must not break:** restore to `visible[]` not
 all-on (`:129`) · Reset must not self-disable while still filtered (`:122` — *same expression as ds-018, do not
 conflate*) · `dv-sr` must announce release on the add path (`:140` only fires on re-click).
-**25. ds-018 · Reset's DISABLED state renders as the HOVER state** — *"reset disabled style is set at the
-hover style."* Disabled Reset paints an ink border; **B-D4 says disabled is visible-but-recessive.** Rules are
+**25. ✅ ds-018 — CAUSE CONFIRMED 2026-07-27 #8 (measured, 4 contexts). WHAT REMAINS IS THE FIX SHAPE, AND IT IS YOURS.**
+It is the **LOOKUP**, **instance five**: `--border-disabled` and `--text-disabled` resolve to `""` on every
+chart, `border-color` falls to `currentColor` = ink = the hover value. **Structural cause: a FORM-tier token
+read from a DATAVIZ-tier scope** — 29 declarations across ten form scopes, **zero chart scopes, zero `:root`**.
+⇒ **Ruling needed on (a) the tier fix** — declare on chart scopes vs mint dataviz equivalents vs promote to
+`:root` — **and (b) which gate** (narrow *disabled≠hover*, or the wider *fail-loud on a property that resolves
+nowhere in its own scope*). ⚠ **`--text-disabled` must be fixed in the same pass.** Original entry below, kept
+for the arc: *"reset disabled style is set at the hover style."* Disabled Reset paints an ink border; **B-D4 says disabled is visible-but-recessive.** Rules are
 correct as authored (`:hover` is already `:not(:disabled)`) ⇒ **HYPOTHESIS: `--border-disabled` fails to
 resolve → invalid-at-computed-value-time → `currentColor` = ink.** That would be **instance five** of the
 silent-lookup class. ⚠ **A token-value bug looks identical — eliminate it by `getComputedStyle`, snippet AND
@@ -560,6 +580,24 @@ radius px + bigplay. **(c) NEW from Phase-2:** all 24 new components across 4 th
 as the dataviz sign-off (§C·2).
 
 ## 4. Enact-queue (cheap, post-rulings)
+**★ NEW 2026-07-27 #8 — carried here by the 2c EXIT CHECK so compaction cannot lose them:**
+**⬛ DAVE'S CALL — the ds-018 FIX SHAPE** (cause is settled, the remedy is not): it is a **form-tier
+token read from a dataviz scope**, so the choices are *declare the form tokens on chart scopes* vs
+*mint dataviz-tier equivalents* vs *promote to `:root`* — an ADR-0010/0014 tier question, not a patch.
+⚠ **`--text-disabled` fails in the same breath** and must be fixed with it. ⚠ **WHICH GATE** is also his:
+the narrow one (*no control's disabled treatment may resolve to its hover treatment*) or the wider,
+cheaper one (*fail loud when a declaration references a custom property that resolves nowhere in its own
+scope*) — **the wider one would have caught ds-018 AND is the `dv-vocab` fail-loud shape already ratified.** ·
+**ds-019's overriding rule** (§DO-FIRST 0, unnamed — the single next step) · **DV-D17's render-proof is
+OWED and BLOCKED behind ds-019** — do not tick it · **the probe's string-comparison defect** (fix before
+reuse; it is what produced `24 checks · 0 failures` on a blind probe) · **⬛ Dave's question: what did the
+DV-D17 screenshot show, if the treatment has never painted?** — unprobed context, or a silent regression ·
+**the `__dirlock` EPERM pothole** now in the ★ LATEST banner, fold into `_RUNBOOK-render-verify.md` next
+time that file is touched · **⚠ MEMORY-INDEX COMPACTION IS OWED** — `MEMORY.md` is **19.5KB against a
+17.1KB target and a 24.4KB read limit**; it is loaded every cold start, so an over-limit index is a
+cold-start failure, not a tidiness issue. **Mechanics are ruled** (trim hooks + move entries to
+`MEMORY-ARCHIVE.md`, **never delete the files**). ⚠ **The memory dir is OUTSIDE every sandbox mount** —
+file tools only, no scripting, which is why it wasn't absorbed into this wrap. **Its own small window.**
 **★ NEW 2026-07-27 #7 — carried here by the 2c EXIT CHECK so compaction cannot lose them:**
 **DV-D17's render-verify in the licensed cut** (OWED — pair with ds-018, §DO-FIRST 0) · **the
 `st.visible[id] = true` enactment call** (the agent's, UNRULED — one line to reverse; `_REVIEW-SIGNOFF.md`) ·
@@ -610,7 +648,39 @@ Legacy hex seeding + provenance-gate flip · Console/Supercharge chromatic palet
 Sutherland field test · full-review backlog (`_REVIEW-SIGNOFF.md`) · `_FUTURE-STATE` items ·
 spot-illustration/empty-state icon set (`_ICON-GAPS.md`, wave-1's only gap).
 
-> **pre-flight:** fill 30% + job 15% + wrap 5% = 50% AMBER · reserve 15% ring-fenced
+> **pre-flight:** fill 30% + job 20% + wrap 5% = 55% AMBER · reserve 15% ring-fenced
+> *(Session #8, 2026-07-27. Closed 🟡 **~55% AMBER**, **on plan** — the first window in four to close
+> inside its projected band. **No overrun to record.** The mid-flight fork fired on an unplanned finding
+> at ~48%: naming ds-019's overriding rule was priced at ~8% ⇒ **~61% RED**, and Dave chose **log-and-stop**
+> rather than spend the reserve. ⚠ **n=1 again, and the band held for an unheroic reason** — the job was
+> stopped early, not estimated well. Do not read this as the three-term rule vindicated.
+> ⚠ **PACE UNREAD:** Dave was asked for the plan-panel figures and the window closed before they arrived,
+> so posture ran on Friday's `inferred` 0.65× pro-rata / Fable 0.55×. **Ask again at the next opener.**)*
+>
+> **COMMIT STATE (refreshed 2026-07-27 ~15:40 BST from `date`, the treatment that never painted).**
+> **Context gauge at authoring: 🟡 AMBER ~55% (ESTIMATE).**
+> ONE commit, **entirely record — NOTHING WAS BUILT**: `knowledge/_DS-IMPROVEMENTS.md`
+> (**ds-018 § ✅ CONFIRMED block** — measurement + the declaration census + the widened fix scope + the
+> second gate candidate · **ds-019 NEW** — the non-painting rule, the vacuous-proof consequence, 3
+> anti-false-fix clauses, and the probe's own near-miss) ·
+> `_DECISION-HISTORY/2026-07-27-the-treatment-that-never-painted.md` (**NEW dossier**) ·
+> `_GM-ARCHIVE.md` (2c roll, **Batch 10**) · `_LIVE-STATE-ARCHIVE.md` (2d roll, #5) ·
+> `_LIVE-STATE.md` · this file. **Probe sources are in the session outputs dir, not the repo** —
+> `probe.py`/`diag.py` are cited by the record; **fold them into `knowledge/` if the next window reuses
+> them, or the citation is un-retrievable** (the step-1 save-cited-uploads discipline, applied to my own
+> artefacts).
+> **Build 60/60 GREEN at session start and UNCHANGED — no code was touched, so no re-run is claimed.**
+> ⚠ **That is deliberate: this handoff makes no build claim it did not re-verify.**
+> **⚠ WHAT THE AUTHOR FLAGS AGAINST HIS OWN WORK:** **my probe printed `24 checks · 0 failures` and was
+> blind** — if you reuse it without fixing the string comparison you will get the same false green, and
+> this time nobody will be reading the JSON by eye · **ds-019's cause is UNNAMED**, so every sentence I
+> have written about *why* `.is-solo` loses is bounded by "not yet checked" — resist the tidy explanation ·
+> **ds-018's structural census is the strongest claim here and it rests on `awk`/`grep` over two files** —
+> cheap to re-run, so re-run it before ruling on the fix · **"instance five" is a framing I wanted to be
+> true** and it was flagged as such last session; it is now measured, but the wanting came first.
+> Dave pushes via GitHub Desktop (whole stack, Desktop closed while Claude commits).
+>
+> **[SUPERSEDED — kept for the record] pre-flight:** fill 30% + job 15% + wrap 5% = 50% AMBER · reserve 15% ring-fenced
 > *(Session #7, 2026-07-27. Closed 🟡 **~60% AMBER, at the boundary**. **Overrun +5, and it was
 > SELF-INFLICTED, not a discovery:** the byte-cap detour (a comment block that restated the ruling's arc
 > inside a file whose header forbids exactly that) cost the difference. **Recorded per the throttle's own

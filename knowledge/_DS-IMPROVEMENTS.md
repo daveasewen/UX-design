@@ -875,3 +875,135 @@ check cannot: both values are legal colours, the defect is that they are the SAM
 **Related:** DV-D17 (same legend, same session) · B-D4 disabled-but-visible · `dv-016`/`icon-011`,
 the two BLOCKING contrast rules the 07-27 instrument-fit pass flagged as having STATIC gates for a
 COMPOSITED property — this is that gap, arriving as a real defect.
+
+### ✅ CONFIRMED 2026-07-27 (session #8) — RENDER-MEASURED. It is the LOOKUP. Instance FIVE.
+
+**The hypothesis is PROVEN and the competing explanation is ELIMINATED — by measurement, not by
+reading CSS**, exactly as this entry demanded. `getComputedStyle` on the **disabled** Reset, licensed
+HSBC cut, `document.fonts.check('16px HSBC_MtUnivers_Latin')` asserted true first, **four contexts:
+snippet AND showroom pane (the pane read through `page.frames`, not the top document), at 1180 and
+760**. All four returned identical values:
+
+```
+--border-disabled   →  ""              ← DOES NOT RESOLVE (empty string)
+--text-disabled     →  ""              ← DOES NOT RESOLVE
+--ink               →  #1A1A1A         ← resolves fine, so this is not a broken context
+border-color        →  rgb(26, 26, 26) ← = #1A1A1A = ink   ⇒ IDENTICAL to :hover
+color               →  rgb(26, 26, 26)
+```
+
+⇒ `border-color:var(--border-disabled)` is **invalid at computed-value time** → `border-color` takes
+its initial value `currentColor`; `color:var(--text-disabled)` is likewise IACVT → `color` is an
+inherited property so it becomes `inherit` → ink. **Both roads end at ink, which is the hover value.**
+
+**The competing token-value explanation is dead, and the reason is stronger than the measurement.**
+`--border-disabled` is not *set to an ink-ish value* — it is **not set at all, anywhere a chart can
+see it**. Source census (`canon/canon.css`, every declaration, by enclosing selector):
+
+- **29 declarations**, on `.cn-input-fields` · `.cn-dropdown` · `.cn-amount-input` · `.cn-date-picker` ·
+  `.cn-date-range-picker` · `.cn-file-upload` · `.cn-form-layout` · `.cn-secure-entry` · `.cn-textarea` ·
+  `.cn-time-picker` (+ their `[data-apollo-theme="supercharge"]` / dark twins).
+- **ZERO on any chart scope. ZERO on `:root`.** `awk` over the file for a declaring selector matching
+  `chart|:root|html|body|*` returns nothing.
+- The four chart snippets that *use* it declare it **0 times**: `Chart-bar` · `Chart-combo` ·
+  `Chart-donut` · `Chart-line` each show `decl=0 use=1` for **both** `--border-disabled` and
+  `--text-disabled`. (`Chart-scatter` and `Chart-sparkline` neither use nor declare — they carry no legend.)
+
+**So the defect is a FORM-TIER token consumed from a DATAVIZ-TIER scope.** The `.dv-leg-reset` rule
+block was written against a variable that only exists inside form components. It has never resolved on
+a chart, in any theme, at any width, since the day it landed — and every gate stayed green throughout.
+
+**Scope of the fix — wider than the symptom Dave reported.** `--text-disabled` fails in the same
+breath and is currently masked (inherit happens to land on ink, which *reads* plausible), so a fix
+that only addresses `border-color` leaves a second silent lookup in place. Both belong to the
+generator, per ANTI-FALSE-FIX 3 — the block is replicated per chart family, so a hand-patch to
+`canon.css` fixes one of four and is overwritten on the next regen.
+
+⚠ **GATE, not patch** — the candidate this entry already names is now evidenced twice over:
+*no interactive control may resolve its disabled treatment to the same computed value as its hover
+treatment.* Add the sibling that would have caught it a layer earlier and cheaper: **a declaration
+referencing a custom property that resolves nowhere in its own scope is a build failure, not a
+silent fallback** — the *fail-loud-on-unknown* shape already ratified for `dv-vocab` and proposed
+for ds-016. ⚠ Neither gate is built; **this is CONFIRMED, not FIXED.**
+
+**Evidence:** `outputs/_render-env/probe.py` + `probe-result.json` · 2026-07-27 · four contexts, font
+assert passed in all four · declaration census by `awk` over `canon/canon.css` and `grep -c` over
+`snippets/Chart-*.reference.html` · 2026-07-27. Narrative + the false-green it produced:
+`_DECISION-HISTORY/2026-07-27-the-treatment-that-never-painted.md`.
+
+---
+
+## ds-019 — `.dv-legrow.is-solo` MATCHES, its variables RESOLVE, and it still does not paint: the isolate treatment has never been visible, and DV-D17's render-proof is therefore VACUOUS (2026-07-27, found by a positive control that nearly passed)
+
+**Status: OBSERVED + MEASURED, cause NOT yet named. Nothing fixed.**
+**Found by:** the positive control inside DV-D17's own render-proof — the check written to stop that
+proof from passing vacuously. It nearly failed to.
+
+### What was measured
+
+Licensed HSBC cut, `document.fonts.check` asserted first, snippet `Chart-bar.reference.html`,
+legend `#cb4-legend`, `.is-solo` applied **directly** (no gestures, so no behaviour code is involved):
+
+```
+element matches '.dv-legrow.is-solo'  →  TRUE
+  rule declares: border-color: var(--ink); background: color-mix(in srgb, var(--ink) 6%, transparent)
+--ink   on the row  →  #1A1A1A     ← resolves
+--line  on the row  →  #E1E1E1     ← resolves
+computed border-color →  rgb(225, 225, 225)   ← --line. The .is-solo declaration DID NOT WIN.
+computed background   →  oklab(0 0 0 / 0)     ← FULLY TRANSPARENT, not 6% ink
+CONTROL: the identical mix written literally on a sibling <div> in the SAME subtree
+         →  color(srgb 0.101961 0.101961 0.101961 / 0.06)   ← the mix itself is fine
+```
+
+Reproduced at 1180 and 760, snippet and showroom pane (pane read via `page.frames`).
+
+**So: a rule that matches, whose custom properties resolve, whose colour function is valid in the same
+subtree, is nonetheless overridden on BOTH its declarations.** The rule census run against the element
+enumerated only selectors whose text contains `dv-legrow` — four of them, none of which can beat
+`.dv-legrow.is-solo` (0,2,0). ⇒ **The winning rule does not contain the string `dv-legrow`** — candidates
+not yet checked: a `:is()`/`:where()` list, a descendant selector via `.dv-leg > li` or `#cb4-legend li`,
+an `!important`, or an inline/animated value. **Naming it is the whole of the next step; do not guess it.**
+
+### Why this outranks its own symptom
+
+**DV-D17's owed render-proof is unattainable as specified, and would have read GREEN forever.** The
+acceptance test in the handoff is *"confirm no `.dv-legrow` resolves the `.is-solo` treatment (ink
+border + 6% ink fill) after isolate-then-check-on"*. **No row resolves that treatment at any time** —
+before isolating, during isolation, or after release. The assertion is true, permanently, for a reason
+that has nothing to do with DV-D17, and it would have stayed true through a complete revert of the fix.
+
+⇒ **DV-D17 remains ENACTED and DOM-PROVEN (108/108 + 27/27, three neutered controls) and its RENDER
+PROOF IS STILL OWED** — it cannot be discharged until the treatment paints. ⚠ **Do not mark it
+render-verified on the strength of a green run of the probe as currently written.**
+
+### The class
+
+Sibling of [[silent-lookup-failure-class]] one level up. There the *lookup* misses while the markup is
+correct; here the **lookup succeeds, the selector matches, and the paint is still absent** — and again
+**nothing reports it**. It also joins ds-018 as the second case today of a dataviz rule that has never
+had visible effect, both green in every gate since the day they landed. Related: [[gate-blindspot-state-contrast]]
+(declared-pairs checking cannot see a computed-value outcome) · [[feedback-measuring-tool-must-not-guess]].
+
+### ⚠ ANTI-FALSE-FIX
+
+1. **Do not raise specificity or add `!important` to `.is-solo`.** That would make the symptom go away
+   without naming what is beating it — and whatever that is presumably beats other rules too.
+2. **Do not "fix" it in `canon.css`.** Same reasoning as ds-018 ANTI-FALSE-FIX 3: the block is
+   replicated per chart family and regenerated.
+3. **Do not treat "DV-D17's probe went green" as evidence of anything** until the positive control
+   demonstrably fails on a reverted `dv-legend.js`. It currently cannot.
+
+### ⚠ The probe's own near-miss, recorded because it is the transferable lesson
+
+The first run printed **24 checks · 0 failures**. It was a **false green**. The positive control
+compared computed strings, and the solo background serialises as `oklab(0 0 0 / 0)` where the baseline
+serialises as `rgba(0, 0, 0, 0)` — **textually different, visually identical (both fully transparent)**
+— so the control "saw a difference" and passed. It was caught **by eye, reading the JSON, not by the
+check.** ⇒ **Comparing computed colour values requires comparing them as COLOURS (parse to
+r/g/b/a), never as strings**, and a control that can pass on a serialisation difference is not a
+control. This happened inside the probe written specifically to honour *"assume your probe is wrong in
+the direction that reads as green"* — which is the honest measure of how hard that rule is to obey.
+
+**Evidence:** `outputs/_render-env/probe.py` · `outputs/_render-env/diag.py` · `probe-result.json` ·
+2026-07-27 · four contexts, font assert passed in all four.
+Narrative: `_DECISION-HISTORY/2026-07-27-the-treatment-that-never-painted.md`.
