@@ -421,8 +421,9 @@ looks at.** That is a missing gate class, not a missing fix:
 
 So the stacked figure (`cb5`, `Chart-bar.reference.html`) has lost, in his eye: **(1) the spacing
 between stacked segments** and **(2) the contrast treatment on the alpha labels** (the A/B/C letter
-keys — "legend alphas" in DV-D07's language, emphasis channel 700). A third a11y rule is named only
-as part of "3 cardinal" and is NOT yet identified — **ask, do not infer.**
+keys — "legend alphas" in DV-D07's language, emphasis channel 700). ⚠ **CORRECTED same session — Dave: *"the 3 was a misstype"*. There is NO third unnamed rule.**
+The earlier line here asked the next session to chase one; it would have gone looking for something
+that does not exist. The accessibility complaint IS the alpha-label contrast, named above.
 
 **Leads for the next session, marked as LEADS not findings:**
 - **DV-D07** already rules that where a theme sets alpha < 1, **dv-016 / DV-D03 contrast must compute
@@ -447,8 +448,8 @@ as part of "3 cardinal" and is NOT yet identified — **ask, do not infer.**
 > *"teh donuts have lost the centreing responsive behaviour"*
 
 **Dave's running list, as given, in his words:** label scale on donut + bars *(FIXED — ds-013)* ·
-stacked **segment spacing** · stacked **alpha-label contrast** · a third cardinal a11y rule *(not yet
-named)* · donut **centring responsive behaviour**.
+stacked **segment spacing** · stacked **alpha-label contrast** · donut **centring responsive behaviour**. *(A "3 cardinal a11y rules" phrasing in the original
+messages was a typo, corrected by Dave same session — there is no third item.)*
 
 **★ THE HYPOTHESIS THAT SHOULD BE TESTED FIRST — and it is cheap.** Every one of these was seen in
 the SHOWROOM, and until this morning **the showroom could not load `type.css` at all** (ds-013).
@@ -466,4 +467,9 @@ the ledger diff. **This separates the two causes in one run and stops us chasing
 share one cause.** ⚠ Note the showroom panes were only regenerated correctly at commit `ba336dc` —
 anything Dave looked at before that was, for type purposes, a different document.
 
-**Still owed and NOT inferable: the third cardinal a11y rule. ASK.**
+**★ CORRECTION (Dave, same session): *"the 3 was a misstype"* — there is no third cardinal a11y
+rule and nothing is owed on it. The list is FOUR items, one of them already fixed. Struck here as
+loudly as it was raised, because a phantom item on a debt register is worse than no register: it
+sends the next session hunting, and an agent that hunts long enough will FIND something and inscribe
+it. (This is the [[memento-framing]] failure mode in miniature — the danger is not forgetting, it is
+confident false inscription.)**
