@@ -1,27 +1,28 @@
 # Good morning, Dave ☕
 
-> **RENAME THE WRAPPED CHAT →** `Apollo — ds-018 RULED A2/B2/C2, and the finding that made the record's own remedy impossible: the enabled Reset border is already at 1.31:1, so the DEAD control carries 13.3x the contrast of the LIVE one and the border channel cannot carry "recessive" at all — channel is upstream of tier; also --text-disabled IS on :root at #E1E1E1, and chart snippets are not in canon.css's cascade`
-> **TITLE THE NEXT CHAT →** `Apollo — ENACT ds-018 (A2 mint dataviz-tier --data-control-*, B2 label-led, C2 the wide fail-loud gate): put the RECESSIVE VALUE to Dave FIRST (unruled by design, and B-D4's #808080 vs canon's #9D9D9D disagree), fix --text-disabled in the same pass, land it in the GENERATOR not canon.css, and ship the gate with a bite`
+> **RENAME THE WRAPPED CHAT →** `Apollo — the class was never rare, it was INVISIBLE: ds-018 ENACTED A2/B2/C2 build 62/62 green, and C2's FIRST RUN found three more silent-lookup instances in seconds (--border-radius-default correct in Mono BY ACCIDENT and silently wrong in Console; --phys-size = B-D7 press physics possibly DEAD in 3 components; --mark falling to SVG-initial BLACK in 7 pro-formas) — five instances took five sessions by eye, the first automated pass took three`
+> **TITLE THE NEXT CHAT →** `Apollo — RENDER-CONFIRM the three new instances BEFORE acting (--phys-size + --mark are static reasoning, not renders — the ds-019 trap), then take Dave's values and CLEAR C2's worklist so the gate can be promoted to --strict; ds-018's own render-proof is the other owed half`
 > *(Titles are LABELS — role comes from Dave's opener line. The wave = the parallel model: Opus conducts, workers per lane, DIVVY in §DO-FIRST. Gauge bands: Green<45 / Amber 45–60 / Red≥60.)*
 
 
-> ## ★ LATEST — 2026-07-27 (Mon **evening #11**, OPUS solo self-conducting, effort MAX — ★★ **ds-018's REMEDY IS RULED: A2 · B2 · C2** · ★★ **THE SQUEEZE — the border channel is STRUCTURALLY UNABLE to carry a recessive disabled state, and nobody had measured it** · ★ **the record was WRONG that `--text-disabled` has no `:root` — it does, at `#E1E1E1`** · ★ **chart snippets are NOT in canon.css's cascade at all** · review doc **30 checks · 0 failures ×2 widths, bite red** · **NOTHING ENACTED, by his instruction** · 🔴 ~66% at wrap, stated): **The remedy the record implied was impossible, and the reason was one measurement nobody had taken.**
+> ## ★ LATEST — 2026-07-27 (Mon **evening #12**, OPUS solo self-conducting, effort MAX — ★★ **ds-018 IS ENACTED AND CLOSED: A2 · B2 · C2, build 62/62 GREEN exit 0** · ★★★ **THE FINDING IS BIGGER THAN ds-018 — C2's FIRST RUN FOUND THREE MORE INSTANCES OF THE SILENT-LOOKUP CLASS IN SECONDS, where five instances had taken five sessions by eye** · ★ **the "B-D4 vs canon collision" DOES NOT EXIST and never did** · ★ **there is NO GENERATOR for the chart CSS spine — #11's central instruction was not followable** · 🔴 ~72% at wrap, stated): **The class was never rare. It was invisible.**
+> - **★★ ds-018 ENACTED — A2 · B2 · C2, all in, build `62/62` GREEN.** **A2** minted `data/control/label-disabled` (light `#9D9D9D` = `color/neutral/9`, dark `#808080` = `color/neutral/8`) as a sibling of `data/axis`/`data/grid`, declared on the **light AND dark spine blocks** of Chart-bar/-combo/-donut/-line + mapped in each `#token-manifest`. **B2** `.dv-leg-reset:disabled` → `border-color:var(--line); color:var(--data-control-label-disabled)` — the border binds **directly to `--line`**, which IS B2. **C2** = `knowledge/_validate_property_resolves.py`, wired at steps 52–53, selftest green (control + 4 bites + a bite-the-bite). Commit `5cd91c6`.
+> - **★★★ THE FINDING — C2 FOUND THREE MORE INSTANCES ON ITS FIRST RUN.** Five instances of this class were found across five sessions, **every one by eye or by accident**. The first automated pass found three in seconds. ⇒ **The class was never rare; it was invisible, and every previous "instance N" count was a floor.** **(6) `--border-radius-default`** — consumed by `.dv-legrow` in all four chart snippets, declared in **no snippet in the library**; fell to initial `0`, **correct in Mono BY ACCIDENT** and silently wrong in Console (whose divergence is rounded corners). **FIXED** via the role token `--border-radius-control`; no visual change today. ⚠ **A silent lookup can hide indefinitely behind a theme whose value happens to match the initial.** **(7) `--phys-size`** — Alert · Empty-state · Popover, 2× each, declared in none. **That is B-D7 press physics ⇒ possibly DEAD in three components, on a RULED behaviour.** **NOT FIXED — needs Dave's numbers.** **(8) `--mark`** — 7 pro-forma files; fills icon marks inside `<symbol>` ⇒ **falls to the SVG initial, BLACK, in silence** — *the exact failure `Chart-bar`'s own spine comment documents for `--data-text-on-series`*. **NOT FIXED — needs Dave's value.**
+> - **⚠ C2 SHIPS ADVISORY THOUGH IT IS RULED BLOCKING — and the reasoning is the point.** Going blocking today meant clearing 10 pre-existing failures **now**, and three need **values** (Dave's alone). The other exit — narrowing the glob to charts — is **`gate-narrows-its-own-rule` in its purest form**. ⇒ **rule stays WIDE, findings PUBLISHED, nothing faked green. Promotion = adding `["--strict"]` to the build step** the moment the worklist empties. ⚠ **An advisory gate never promoted has quietly become documentation.**
+> - **⛔ RECORD CORRECTION — THE "B-D4 vs CANON COLLISION" DOES NOT EXIST.** Carried in three places as *"two ledgered numbers that disagree"*. **They don't.** B-D4's **prose** says `#808080` "both modes"; **B-D4's own `Values — SETTLED (Dave, 2026-07-20, dialled on the v7 live editor)` block gives the light/dark PAIR `#9D9D9D` / `#808080`**, which `canon.css:351`/`:648` **and** `semantic-colour.json:1636` both implement. Three sources agree; the fourth is loose prose in the same document read against half the ruling. ⇒ **`trust-the-spine-not-the-prose`, and it cost part of a window.**
+> - **★ #11's CENTRAL INSTRUCTION WAS NOT FOLLOWABLE — there is NO GENERATOR for the chart CSS spine.** The handoff said *"land it in the GENERATOR, never as a canon.css hand-patch"*. `gen_component_partials.py` injects **only the JS behaviour blocks** between `AUTO-BEHAVIOUR` markers; **the spine is hand-authored per snippet.** The *point* (don't patch canon.css — it isn't in the chart cascade) held; the *mechanism* named didn't exist. Enacted as four hand-edits via one anchored script with per-file assertions. ⚠ **Second time in four sessions a handoff pointed at a tool that could not do the job** (cf. `outputs/_render-env/probe.py` behind `.gitignore`).
+> - **⬛ THE VALUE IS REUSE, NOT DERIVATION — and it entered on assent to a plan, not a dialled number.** `#9D9D9D`/`#808080` is B-D4's settled pair adopted verbatim. Dave, asked for the most efficient path: *"just do it"* — taken against an explicit statement that it was me proposing a value, vetoable in a word. ⚠ **CAVEAT RECORDED AT MINT:** B-D4 dialled that pair against the **disabled fill `#E1E1E1`**; here it sits on the **chart ground** ⇒ the same hex reads at a different ratio than the one judged. **Re-dial on sight is expected and cheap.**
+> - **⚠ WHAT THE AUTHOR FLAGS AGAINST HIS OWN WORK:** **instances 7 and 8 are STATIC RESOLUTION REASONING, NOT RENDERS** — instance 6 is safe (initial `0` matches Mono), but *"`--mark` falls back to black"* is exactly the tidy explanation **ds-019** punished. **Render-confirm before anyone acts on them.** · **ds-018 itself is NOT render-proven** — deferred by ruling, env cold; that is the other owed half · this banner was written at **🔴 ~72%**.
+>
+> ## ★ PRIOR — 2026-07-27 (Mon **evening #11**, OPUS solo self-conducting, effort MAX — ★★ **ds-018's REMEDY IS RULED: A2 · B2 · C2** · ★★ **THE SQUEEZE — the border channel is STRUCTURALLY UNABLE to carry a recessive disabled state, and nobody had measured it** · ★ **the record was WRONG that `--text-disabled` has no `:root` — it does, at `#E1E1E1`** · ★ **chart snippets are NOT in canon.css's cascade at all** · review doc **30 checks · 0 failures ×2 widths, bite red** · **NOTHING ENACTED, by his instruction** · 🔴 ~66% at wrap, stated): **The remedy the record implied was impossible, and the reason was one measurement nobody had taken.**
 > - **★★ RULED BY DAVE — ds-018 = A2 · B2 · C2.** From `reviews/DS-018-DISABLED-STATE-2026-07-27-v1.html` (live specimens, three decision controls, contrast computed at render time). Verbatim: *"I've gone with your recommendations but we should probably wrap up and do it in the next window."* **A2** mint dataviz-tier `--data-control-*` (siblings of `--data-axis`/`--data-grid`/`--data-series-*`, already on chart scopes) · **B2** label-led (disabled label recessive; disabled border returns to `--line` = enabled-resting — **accepted cost ruled with it: the label carries the whole distinction**) · **C2** the wide gate (*a declaration referencing a custom property that resolves nowhere in its own scope is a build failure*) = the `fail-loud-on-unknown` shape already ratified for `dv-vocab`. ⚠ **C3 (affordance) was NOT rejected — merely not selected**; it still catches a resolved-but-wrong ladder C2 cannot see.
 > - **⛔ THE ONE THING YOU MUST NOT INFER — THE RECESSIVE VALUE IS UNRULED.** The doc offered `#9D9D9D`/`#808080`/`#B5B5B5`/`#6B6B6B` **as candidates and explicitly NOT as a recommendation** (derivation governance). `#9D9D9D` was only the page's pre-selected preview. **Light/dark pairing equally unruled.** ⇒ **Enactment PUTS THE VALUE TO HIM; it does not read it off the ledger.**
 > - **★★ THE SQUEEZE.** Enabled-resting border = `var(--line)` `#E1E1E1` at **1.31:1**; disabled resolves to ink at **17.40:1** ⇒ **the dead control carries 13.3× the contrast of the live one.** Anything quieter than enabled is below the perceptible floor; anything equal erases the distinction. **No third value ⇒ the border channel cannot carry this state.** The label channel can (enabled label is ink at max contrast), and that band is the one **B-D4** already ruled acceptable. ⇒ **CHANNEL IS UPSTREAM OF TIER**, which is the reverse of how the record framed it.
-> - **★ THREE CORRECTIONS TO THE RECORD, from source.** (1) **`--text-disabled` IS on `:root`** — `canon.css:350` `#E1E1E1`, dark twin `#808080` `:647`. The old *"zero `:root`"* was true of `--border-disabled` only and was over-generalised. (2) `--border-disabled` census unchanged — 29 declarations, ten form scopes + twins, zero chart, zero `:root`. (3) **`Chart-bar.reference.html:51–52` links `type.css` ONLY** and inlines its own spine ⇒ **canon.css is not in the chart cascade, so a `:root` fix repairs a real app page and leaves the SNIPPET broken** — and the snippet is what every render-proof measures. ⚠ (4) **Drift flagged not corrected:** B-D4 ruled `#808080`; canon ships `--text-on-disabled: #9D9D9D` (`canon.css:351`).
+> - **★ THREE CORRECTIONS TO THE RECORD, from source.** (1) **`--text-disabled` IS on `:root`** — `canon.css:350` `#E1E1E1`, dark twin `#808080` `:647`. The old *"zero `:root`"* was true of `--border-disabled` only and was over-generalised. (2) `--border-disabled` census unchanged — 29 declarations, ten form scopes + twins, zero chart, zero `:root`. (3) **`Chart-bar.reference.html:51–52` links `type.css` ONLY** and inlines its own spine ⇒ **canon.css is not in the chart cascade, so a `:root` fix repairs a real app page and leaves the SNIPPET broken** — and the snippet is what every render-proof measures. ⚠ (4) ~~**Drift flagged not corrected:** B-D4 ruled `#808080`; canon ships `--text-on-disabled: #9D9D9D` (`canon.css:351`).~~ **⛔ WITHDRAWN #12 — THERE IS NO DRIFT.** B-D4's own `Values — SETTLED` block gives the PAIR `#9D9D9D`/`#808080`; canon and the token store both implement it. The claim compared prose against half the ruling.
 > - **⚠ PROBE WART, and it is the week's signature failure once more.** First run reported the enabled ratio as `11.31:1`; **the doc was right at 1.31:1 and the probe was wrong** — a `\d+\.\d+` regex over the table's *flattened* textContent straddled the adjacent `#E1E1E1` cell. **Read cells, never flattened text.** Folded into `_RUNBOOK-render-verify.md` with two siblings (the `__dirlock` EPERM debt, finally banked; and *print the verdict BEFORE cleanup* — a teardown `EPERM` swallowed a correct bite verdict).
 > - **⬛ NOTHING ENACTED.** No token minted, no gate built, no generator touched — his instruction, at 🔴 ~66%. **The ruling IS the deliverable.** Build not re-run (no source touched): last known **60/60 GREEN**.
 >
-> ## ★ PRIOR — 2026-07-27 (Mon **evening #10**, OPUS solo self-conducting, effort MAX — ★ **DV-D17 IS RENDER-PROVEN — a debt carried across three sessions is DISCHARGED** · ★ **THE OLD ACCEPTANCE TEST WAS ONE-SIDED: it asserted an ABSENCE, and an absence is satisfied by a full revert** · ★ **the bite REPRODUCES DAVE'S SCREENSHOT exactly** · ★ **ds-018 RE-VERIFIED CLEAN — it STANDS, and the states are INVERTED, which is worse than reported** · build **60/60 GREEN** · 🔴 ~72% at wrap, stated): **The half that was missing was never "check harder" — it was proving the thing could be seen at all.**
-> - **★★ DV-D17 — ENACTED · DOM-PROVEN · ✅ RENDER-PROVEN.** `knowledge/_render/verify_dv_d17_render.py`: licensed cut asserted **inside the frame measured**, transitions killed **before the first gesture**, **real pointer clicks on the real gestures** (LABEL = isolate · SWATCH = check on) — never `classList.add`, which is not a user path. **Six contexts, identical:** snippet @1180/@760 · showroom **light** @1180/@760 · showroom **dark** @1180/@760 (confirmed genuinely dark, `--ink` `#FFFFFF` — coverage, not one pane twice). **baseline** `rgb(225,225,225)`/transparent → **isolated** `rgb(26,26,26)` = `--ink` + 6% ink → **released** back to `rgb(225,225,225)`/transparent.
-> - **★ THE TRANSFERABLE FINDING — A ONE-SIDED PROOF OF AN ABSENCE IS NOT A PROOF.** The specified test was *"no `.dv-legrow` resolves the `.is-solo` treatment after isolate-then-check-on"* — satisfied by a working fix, a blind probe, a mistyped selector **and a complete revert.** #8 ran it and printed `24 checks · 0 failures` measuring nothing. **The replacement is two-sided in ONE gesture sequence: step 1 proves the treatment CAN be seen (isolate → it paints), step 2 proves it stops.** ⇒ **Any proof asserting "X is absent" needs a paired proof that X is DETECTABLE WHEN PRESENT.** That is the half the original lacked, and it generalises well past this defect.
-> - **★ THE BITE IS DAVE'S SCREENSHOT.** `--bite` on a **neutered COPY** (216-byte release branch deleted; canon untouched, `git status` clean): step 2 fails at both widths — row 1 keeps `.is-solo`, ink border, 6% fill **while three series show**. **Step 1 still passes under the neuter**, which is the point: probe not blind, behaviour broken.
-> - **★ THE PROBE CAUGHT ITSELF, exercising the rule inscribed this morning.** First run red: *"row 2 paints an ink border with no `.is-solo`"*. **The check was working; the cause was the instrument** — `.dv-legrow:hover` also paints ink, and a real click leaves the cursor on the row it clicked. Fixed by parking the pointer **and** carrying an OBSERVED `hovered` field, so a hovered row is **named and skipped, never silently filtered.**
-> - **★★ ds-018 RE-VERIFIED — STANDS, and is SHARPER.** `recheck_ds018.py`, settled + pointer parked, 4 contexts: `--border-disabled` → `''` · `--text-disabled` → `''` · `border-color` → `rgb(26,26,26)`. **The timing defect did not reach it.** ⚠ **NEW: THE STATES ARE INVERTED** — disabled → **ink**, enabled (isolated) → `--line`. **The disabled Reset is the most prominent control in the legend; the enabled one the faintest.** Not a wrong colour — an **inversion of affordance**. Adds a third gate candidate: *a disabled control may not out-contrast its own enabled state.*
-> - **⬛ NOT DONE, deliberately, price stated:** no `_DECISION-HISTORY` dossier. The window ran to ~72% and the durable ledgers were the priority over narrative. **The overrun is recorded per the throttle: priced at ~45%, ran to ~72% — the excess is roughly half the render-env cold-stage and half the two self-caught instrument detours, both of which produced the findings above.**
->
-> *(Compaction 2c — keep ★ LATEST + 1 PRIOR, roll the rest. Older banners (the 07-22→24 chart-wave + ADR arc, the 07-25 AM v4 + midday→PM v5 + PM Memento-efficiency + PM#2 memory/routing-governor banners, the 07-27 #5 throttle banner and the #6 chart-flags banner) are in `_GM-ARCHIVE.md` (Batches 1–10), verbatim, newest-first; durable narrative in `_DECISION-HISTORY/` + `notes/`.)*
+> *(Compaction 2c — keep ★ LATEST + 1 PRIOR, roll the rest. Older banners (the #10 DV-D17-render banner rolled to Batch 11; the 07-22→24 chart-wave + ADR arc, the 07-25 AM v4 + midday→PM v5 + PM Memento-efficiency + PM#2 memory/routing-governor banners, the 07-27 #5 throttle banner and the #6 chart-flags banner) are in `_GM-ARCHIVE.md` (Batches 1–10), verbatim, newest-first; durable narrative in `_DECISION-HISTORY/` + `notes/`.)*
 
 ---
 
@@ -35,6 +36,33 @@ durable content is the ds-018 ruling block and the three record corrections, bot
 written from measurements taken in-window, not from recall.
 
 ## ⬛ DO THIS FIRST
+
+> **★★★ SUPERSEDED #12 — ds-018 IS ENACTED AND CLOSED. STOP PLANNING IT.** A2 · B2 · C2 all landed,
+> build **62/62 GREEN exit 0**, commit `5cd91c6`. **Do not re-enact, do not re-rule, do not re-measure it.**
+> Everything below about "the enacting window", the recessive value, the fix shape and which gate is
+> **HISTORY** — kept for the arc, not as instructions. Ledger: `_DS-IMPROVEMENTS.md` ds-018 § ✅✅ ENACTED.
+> **⛔ THE "B-D4 vs CANON COLLISION" DOES NOT EXIST — do not re-inherit it.** It appears below (and in
+> `_LIVE-STATE` §C·4) as *"two ledgered numbers that disagree"*. **They agree.** B-D4's prose says
+> `#808080` "both modes"; **its own `Values — SETTLED` block gives the PAIR `#9D9D9D`/`#808080`**, which
+> `canon.css:351`/`:648` and `semantic-colour.json:1636` both implement. **Struck through in place below.**
+> **⛔ "LAND IT IN THE GENERATOR" WAS NOT FOLLOWABLE — there is no generator for the chart CSS spine.**
+> Only the JS behaviour blocks are injected (`AUTO-BEHAVIOUR` markers). The spine is hand-authored per
+> snippet. The *point* held (canon.css is not in the chart cascade); the *mechanism* named did not exist.
+>
+> **★★★ WHAT IS ACTUALLY NEXT — C2's WORKLIST, and it is the biggest thing on this board.**
+> C2's first run found **three more instances** of the silent-lookup class (see ★ LATEST). **Order:**
+> **(1) RENDER-CONFIRM instances 7 + 8 BEFORE ACTING.** `--phys-size` (B-D7 press physics, possibly dead
+>    in Alert/Empty-state/Popover) and `--mark` (→ SVG-initial BLACK across 7 pro-formas) are **static
+>    reasoning, not observation.** ⚠ **ds-019 is the standing warning against exactly this confidence.**
+> **(2) THEN Dave's values** — three `--phys-size` numbers + one `--mark`. **Do not invent them.**
+> **(3) THEN promote C2 to blocking** — one line, `["--strict"]` on the `_build_all.py` step. ⚠ An
+>    advisory gate that is never promoted has quietly become documentation. **This one has a trigger: use it.**
+> **(4) ds-018's OWN RENDER-PROOF is still owed** (deferred by ruling, env was cold) — licensed cut asserted
+>    inside each measured frame, transitions settled, colours compared as colours, **cells read not flattened
+>    text** (#11's probe wart), plus a bite.
+> ⚠ **C3 was never rejected, only not selected** — *a disabled control may not out-contrast its own enabled
+> state.* It catches a resolved-but-wrong ladder **C2 is blind to by construction.** Still live.
+>
 
 > **✅ CLOSED, do not re-open.** ds-014 calls (a)(b)(c) — RULED, ENACTED, RENDER-PROVEN. **★ DV-D17 is
 > ENACTED + DOM-PROVEN (session #7) — its CODE is done; only its RENDER is owed. Do not re-implement it.** The legend wave,
@@ -79,8 +107,8 @@ written from measurements taken in-window, not from recall.
 >    · `#B5B5B5` · `#6B6B6B` **as candidates and explicitly NOT as a recommendation** — value promotion
 >    is Dave's alone (derivation governance). **`#9D9D9D` was only the page's pre-selected preview; it
 >    is NOT a ruling.** The **light/dark pairing is unruled too.** ⇒ **Put the value to him FIRST, before
->    writing a token.** ⚠ And note the collision: **B-D4 ruled `#808080` while canon ships `#9D9D9D`
->    (`canon.css:351`)** — flagged, not corrected; reconciling them is his.
+>    writing a token.** ⚠ ~~And note the collision: B-D4 ruled `#808080` while canon ships `#9D9D9D`.~~
+>    **⛔ WITHDRAWN #12 — no collision; B-D4's SETTLED block IS the pair. Nothing to reconcile.**
 > **⚠ THREE FACTS THE OLD BLOCK GOT WRONG — verified from source #11, do not re-inherit them:**
 >    **(i) `--text-disabled` IS declared on `:root`** — `canon.css:350` = **`#E1E1E1`**, dark twin
 >    `#808080` at `:647`. The old *"zero `:root`"* was true of `--border-disabled` **only** and was
@@ -657,8 +685,9 @@ as the dataviz sign-off (§C·2).
 **⬛ DAVE'S CALL — the ds-018 RECESSIVE VALUE** (A2/B2/C2 are ruled; the *value* is not): candidates
 `#9D9D9D` (canon `--text-on-disabled` today) · `#808080` (B-D4's ruled value) · `#B5B5B5` · `#6B6B6B`,
 **offered as candidates and NOT as a recommendation** — value promotion is his alone. **Light/dark
-pairing unruled with it.** ⚠ **Collision to put to him in the same breath: B-D4 ruled `#808080`, canon
-ships `#9D9D9D` (`canon.css:351`) per the B-D6 fold — two ledgered numbers that disagree** ·
+pairing unruled with it.** ~~⚠ Collision to put to him: B-D4 `#808080` vs canon `#9D9D9D`.~~ **⛔ WITHDRAWN #12 —
+they AGREE; B-D4's SETTLED block is the light/dark pair. ✅ VALUE NOW RULED + ENACTED:
+`#9D9D9D` light / `#808080` dark, reuse not derivation (Dave: "just do it").** ·
 **⬛ GATE C3 IS ALIVE, NOT REJECTED** — *a disabled control may not out-contrast its own enabled state*;
 C2 was selected, C3 was simply not, and C3 catches a resolved-but-wrong ladder C2 is blind to ·
 **⚠ B2's ACCEPTED COST is RULED, not a bug** — at rest, enabled and disabled borders become identical
@@ -733,6 +762,47 @@ Legacy hex seeding + provenance-gate flip · Console/Supercharge chromatic palet
 Sutherland field test · full-review backlog (`_REVIEW-SIGNOFF.md`) · `_FUTURE-STATE` items ·
 spot-illustration/empty-state icon set (`_ICON-GAPS.md`, wave-1's only gap).
 
+> **pre-flight:** fill 12% + job 30% + wrap 5% = 47% AMBER · reserve 15% ring-fenced
+> *(Session #12, 2026-07-27. Closed 🔴 **~72% RED. Overrun +25, and it is the largest recorded** —
+> **but the whole excess is TWO UNPLANNED FINDINGS, both forked to Dave at the moment they appeared,
+> and both of which he chose to absorb.** Finding 1 (the B-D4 non-collision) *reduced* scope and was
+> reported without a stop. Finding 2 (`--muted` in C2's blast radius) was priced and forked — Dave took
+> option (a), narrow. **The third overrun source was NOT forked and should have been:** C2's first run
+> found three more instances, and I fixed one and wrote up two without re-pricing. ⚠ **That is the fork
+> rule failing in the one case it exists for — a finding arriving mid-enactment, when stopping is most
+> expensive and most necessary.** Also: Dave said *"im going round in circles"* at ~55% — **the circling
+> was real and I had not named it.** The unlock, when it came, was one sentence: *a token value is a
+> one-line reversible edit, not architecture.* **Say that earlier next time.**
+> ⚠ **PACE:** Dave reported the plan panel *"has barely changed since the last reading"* (Friday-inferred
+> 0.64× pro-rata, Fable 0.53×) ⇒ **still behind pace; posture stays MORE WINDOWS, not longer ones** —
+> which this session did the opposite of.)*
+>
+> **COMMIT STATE (refreshed 2026-07-27 ~17:45 BST from `date`, the class was never rare).**
+> **Context gauge at authoring: 🔴 RED ~72% (ESTIMATE) — RED-AUTHORED, RE-VERIFY BEFORE TRUSTING.**
+> ONE commit `5cd91c6`, and unlike the last three it is **CODE, not just record**:
+> `knowledge/tokens/semantic-colour.json` (**`data/control/label-disabled` MINTED**) ·
+> `knowledge/snippets/Chart-{bar,combo,donut,line}.reference.html` (**A2 spine declarations ×2 themes,
+> B2 consumer rewrite, `--muted`→`--data-control-swatch-off`, `--border-radius-default`→the role token,
+> manifest entries**) · `knowledge/_validate_property_resolves.py` (**NEW — the C2 gate + selftest**) ·
+> `knowledge/_build_all.py` (**steps 52–53 wired**) · `knowledge/canon/canon.css` + `showroom/chart-*.html`
+> + `showroom/index.html` (**regenerated, never hand-edited**) · `knowledge/_DS-IMPROVEMENTS.md`
+> (**ds-018 § ✅✅ ENACTED block** — the three new instances, the advisory reasoning, the record correction) ·
+> `reviews/DS-018-VALUE-2026-07-27-v2.html` + `.REVIEW.html` (**NEW, self-measuring**) ·
+> `_GM-ARCHIVE.md` (2c, **Batch 11**) · `_LIVE-STATE-ARCHIVE.md` (2d) · `_LIVE-STATE.md` · this file.
+> **Build `62/62` GREEN exit 0** (58→62: C2 + selftest added two steps) · **C2 selftest: green control +
+> 4 bites + a bite-the-bite, all PASS** · **STAND-002 PASS, 26 standing docs reachable.**
+> **⚠ WHAT THE AUTHOR FLAGS AGAINST HIS OWN WORK:** **instances 7 and 8 are STATIC RESOLUTION REASONING,
+> NOT RENDERS** — and *"`--mark` falls back to black"* is exactly the shape of tidy explanation **ds-019**
+> punished; **render-confirm before acting, and do not let the vividness of "BLACK, in silence" substitute
+> for a measurement** · **ds-018 is ENACTED but NOT RENDER-PROVEN** — reading `62/62` as "ds-018 is done"
+> is the single most likely misreading of this handoff, and #10's banner warned about exactly this
+> confusion on exactly this component · **`#9D9D9D` is MY proposal on Dave's *"just do it"*** — assent to
+> a plan, not a dialled number, and the caveat that B-D4 dialled it against a *different backdrop* is
+> recorded at mint precisely so nobody later reads it as a considered chart-ground judgement ·
+> **the `--border-radius-control` tier choice was mine too** (the minimal fix was to declare the base) ·
+> **no `_DECISION-HISTORY` dossier** — deliberate at 🔴 72%; the ledger block is the tattoo.
+> Dave pushes via GitHub Desktop (whole stack, Desktop closed while Claude commits).
+>
 > **pre-flight:** fill 30% + job 20% + wrap 5% = 55% AMBER · reserve 15% ring-fenced
 > *(Session #8, 2026-07-27. Closed 🟡 **~55% AMBER**, **on plan** — the first window in four to close
 > inside its projected band. **No overrun to record.** The mid-flight fork fired on an unplanned finding
