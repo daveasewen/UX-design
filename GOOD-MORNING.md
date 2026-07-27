@@ -43,8 +43,34 @@ self-conducting, effort MAX; dossier
 > deleted, `_check_legend_migration.py` exit 0, page budget 88%. **Nothing legend-shaped is owed
 > except the a11y confirmations already in §C·4.** Do not go looking for lane work here.
 >
-> **★★ DO FIRST — THE SHOWROOM TYPE SWEEP (ds-013 fallout). This is the whole reason the next
-> session exists.** The srcdoc fix means **49 showroom panes now render CANON type for the first
+> **★★★ DO FIRST — ds-014: DAVE'S REGRESSION LIST. He said, verbatim, *"okay we are loosing
+> decisions, this is getting frustrating."* Treat that as the session's brief, not as feedback.**
+> His four items (his words, in `knowledge/_DS-IMPROVEMENTS.md` ds-014): label scale on donut + bars
+> **✅ FIXED (ds-013)** · stacked **segment spacing** · stacked **alpha-label contrast** · donut
+> **centring responsive behaviour**. *(A "3 cardinal a11y rules" phrasing was a typo — he corrected
+> it; there is no third item, do not go looking for one.)*
+> **RUN THE DISCRIMINATOR BEFORE CHASING ANY OF THEM.** All four were seen in the SHOWROOM, and until
+> 2026-07-27 the showroom could not load `type.css` at all — text rendered 16px/400 where the ruling
+> says 12px/500, and **layout that measures its own text measures differently under that** (a donut
+> centre sized against its own figure is exactly that). ⇒ **Render each component standalone
+> (`knowledge/snippets/<X>.reference.html`, where the link has always resolved) beside its showroom
+> pane and diff the geometry. Wrong in BOTH = a genuinely lost decision → ledger diff. Wrong only in
+> the pane = base-URL artefact.** One pass separates them; five separate investigations do not.
+> ⚠ `_render-env/stack.py`'s cb5 probe is BROKEN (returned zero segment rects — a wrong selector
+> assumption, NOT missing segments). Fix the probe before reading anything into it.
+> **THE STRUCTURAL ASK BEHIND THE LIST — this is the real work.** DV-D08 was ruled, inscribed,
+> gated-green and silently not in force for weeks. **Gates prove the corpus is SELF-CONSISTENT;
+> nothing proves a RULING IS LIVE in the artefact Dave looks at.** Proposal for him to rule on
+> (recommend, do not enact): every `DV-D*`/`R-D*`/`B-D*`/`T-D*` carries an executable enactment proof
+> or an explicit NOT-GATEABLE marker, and the build reports the unproven ones as a standing register.
+>
+> **★★ THEN — THE SHOWROOM TYPE SWEEP (ds-013 fallout), already started.**
+> `knowledge/_sweep_type_enactment.py` ran once: **800 composite-bound elements across 67 panes, 22
+> deviations in 27 panes** — the pattern is **WEIGHT, not size** (500 where the composite declares
+> 400; `t-ed-heading-4` 400 where it declares 300). Worst pane **stepper (3)**; also amount-input ·
+> date-picker · date-range-picker · drawer · empty-state. Results: `knowledge/_type-sweep-2026-07-27.json`.
+> ⚠ The sweep needs `--allow-file-access-from-files` or it reads ZERO composites and reports a
+> cheerful "0 deviations" — it did exactly that on its first run. Wire it as an advisory build step. The srcdoc fix means **49 showroom panes now render CANON type for the first
 > time** — every `.t-cm-*` composite and every selector binding in `type.css` was inert in the
 > showroom until yesterday. Measured only on the charts. **Everywhere else the delta is unknown.**
 > **BUILD IT AS A NUMBER, NOT AN EYEBALL** (Dave's window ran out before this, and an eyeball pass
