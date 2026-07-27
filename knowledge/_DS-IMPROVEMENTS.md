@@ -377,3 +377,40 @@ no one has eyeballed. Registered in `_REVIEW-SIGNOFF.md`.
 real artefact in the real cut, and **none is reachable by any static gate we had.** ds-013 differs in
 one way that matters — it was found by *Dave's eye*, not ours. The gate it produced is the first of the
 three to make the class of failure build-blocking.
+
+## ds-014 — DAVE'S FLAGS, 2026-07-27: "we are losing decisions" — the stacked graph + 3 cardinal a11y rules
+**OPEN. RECORDED VERBATIM AND IMMEDIATELY, because the complaint is precisely that things like this
+evaporate.** Dave, mid-session, three messages:
+
+> *"okay we are loosing decisions, this is getting frustrating"*
+> *"theres more the stacked graph, has lost decisions made days ago"*
+> *"its even lost 3 cardinal Ally rules"*
+
+**NOT YET DIAGNOSED — and deliberately not guessed at.** The specific stacked-bar decisions and the
+three accessibility rules he means are HIS observations; writing my guess here would be exactly the
+confident-false-inscription failure the project is built to avoid. **Next session's FIRST job: get
+the three named, then diff the stacked figure (`cb5`, `Chart-bar.reference.html`) against
+`_DATAVIZ-DECISIONS.md` + the a11y rule set, decision by decision, and report what is actually
+missing rather than what is plausibly missing.**
+
+**What IS measured already (2026-07-27, post-ds-013 sweep — the first systematic pass):**
+`_render-env/sweep.py` walks every showroom pane, reads each `.t-cm-*`/`.t-ed-*` composite's DECLARED
+size+weight out of `type.css`, and asserts the computed value on every element carrying that class.
+**800 composite-bound elements checked · 22 deviations across 27 panes.** The pattern is **WEIGHT, not
+size** — `t-cm-caption`/`t-cm-label`/`t-cm-figure-5/6` computing **500 where the composite declares
+400**, and `t-ed-heading-4` computing **400 where it declares 300**. Worst pane: **stepper (3)**. Also
+touched: amount-input · date-picker · date-range-picker · drawer · empty-state. (The panes reporting
+"type.css did not load" are the snippets that never linked it — count consistent with 67−49=18, but
+CONFIRM rather than assume.)
+
+**THE STRUCTURAL POINT, which is Dave's actual complaint.** ds-013 was the same shape: **DV-D08's
+12/500 chart ladder was ruled, inscribed, gated-green, and silently not in force for weeks.** Rulings
+in this project do not get reversed — they quietly stop applying, and the only detector is Dave's eye.
+Gates prove the corpus is SELF-CONSISTENT. **Nothing proves a RULING IS LIVE in the artefact Dave
+looks at.** That is a missing gate class, not a missing fix:
+- the sweep above is the first instance of one — it compares a **ruled value** to a **rendered value**;
+- `_ASSERTIONS.md` already holds the machinery for "this claim, this evidence" but is not wired to
+  ledger rulings, and per [[assertion-propagation-gap]] it only fires on FLIP;
+- **candidate: every `DV-D*`/`R-D*`/`B-D*`/`T-D*` ruling carries either an executable enactment proof
+  or an explicit NOT-GATEABLE marker, and the build reports the unproven ones as a standing debt
+  register.** Recommend, do not enact — this is an architecture call and Dave's to make.
