@@ -1,11 +1,19 @@
 # Good morning, Dave ☕
 
-> **RENAME THE WRAPPED CHAT →** `Apollo — LEGEND WAVE CLOSED (combo + line migrated, 100/100, transition deleted) + ds-013: srcdoc killed type.css in ALL 49 showroom panes — Dave's eye caught what no gate could — 🔴 Red ~80% wrap`
-> **TITLE THE NEXT CHAT →** `Apollo — "we are losing decisions": BUILD the enactment register (Dave RULED it, P1→P2→P3) + diff his four flagged regressions (stacked spacing · alpha-label contrast · donut centring; label scale already fixed). Run the standalone-vs-showroom discriminator BEFORE chasing any of them. Read GOOD-MORNING §DO-FIRST`
+> **RENAME THE WRAPPED CHAT →** `Apollo — "we are losing decisions": ds-013 caught by Dave's eye (srcdoc killed type.css in ALL 49 showroom panes, every gate green throughout) · legend wave CLOSED (combo + line, 100/100) · the enactment register RULED — 🔴 Red ~92% wrap`
+> **TITLE THE NEXT CHAT →** `Apollo — ADR-0016 P2: write the ruled-vs-RENDERED proofs, starting with the two Dave found (dv-004 separation · alpha-key contrast). FOUR CALLS ARE HIS AND GATE THE WORK — read §DO-FIRST before writing any code`
 > *(Titles are LABELS — role comes from Dave's opener line. The wave = the parallel model: Opus conducts, workers per lane, DIVVY in §DO-FIRST. Gauge bands: Green<45 / Amber 45–60 / Red≥60.)*
 
 
-> ## ★ LATEST — 2026-07-27 (Mon morning, OPUS solo self-conducting, effort MAX — ★ **THE LEGEND WAVE IS CLOSED** (combo + line migrated, 100/100, transitional block deleted) **+ ds-013: `srcdoc` had killed `type.css` in ALL 49 showroom panes**; build 56/56 GREEN; commit `ba336dc`; 🔴 RED ~80% wrap): **Dave opened with a bug report, not a lane: *"the labeling on the donut and bars, they are all too big apart from the reset button, we had an independent scale for labels that seems to have been lost."* He was exactly right, and the cause was three tiers below the charts.**
+> ## ★ LATEST — 2026-07-27 (Mon **later** morning, OPUS solo self-conducting, effort MAX — ★ **ADR-0016 BUILT: `_ENACTMENT-REGISTER.md` — 3 of 76 rulings (4%) are PROVEN** · **ds-014 DISCHARGED by render: 2 lost decisions, 2 artefacts** · **dv-004 proven blind on 3 chart types**; build **57/57 GREEN**; 🟡 AMBER ~70% wrap): **Dave read the brief and said "as you advise". So: the discriminator first, then the build he ruled. The discriminator settled all four flags in one pass — and the root cause of one of them generalised into the number the register now reports.**
+> - **★ ds-014 SETTLED — MEASURED, at 1180 and 760, licensed cut, snippet BESIDE showroom pane.** **#2 stacked segment spacing — LOST:** gap **0.0–0.1px** on all 4 columns × 3 boundaries, `stroke:none`, against a **BLOCKING dv-004 that requires ≥2px**. **#3 stacked alpha-key contrast — LOST:** keys render **`#1A1A1A` (`--ink`)**, not the `var(--page)` their markup declares — `text.dv-barkey{fill:var(--ink)}` beats the SVG presentation attribute — giving **3.31 / 3.46 / 3.78:1** at 12px/700 against AA's 4.5:1; white measures ≈5:1 and passes. **#1 + #4 — ARTEFACTS:** donut centre value **dx +0.00 / dy −2.00**, ring offset **0.00**, identical in both artefacts at both widths. ds-013 was the whole story.
+> - **★ WHY #2 SHIPPED GREEN — and it is bigger than one chart.** `_validate_dataviz.py` guards dv-004 with `if dtype in ("donut","pie","stacked")`; the figure declares **`stacked-column`**. **The gate never looked.** ⚠ **PROVEN BY BITE in a scratch copy** — adding that one string makes it fail: `✗ dv-004: stacked-column segment lacks a >=2px surface-coloured separating stroke.` **Three blind values in the corpus** (`stacked-column`, `grouped-column`, `scatter`, all zero mentions in the gate) ⇒ **dv-004, dv-bar-009 and dv-line-011 are inert on those types.**
+> - **★ THE REGISTER — P1 SHIPPED, P3 WIRED ADVISORY (step 56/57).** `_build_enactment_register.py` harvests every ruling from the four ledgers + all ADRs: **PROVEN 3 · CLAIMED 20 · UNPROVEN 53 · NOT-GATEABLE 0**. **The four-verdict scheme is the contribution, and CLAIMED is the point** — a check names the ruling but nothing proves the check can FAIL. **ds-013 lived in CLAIMED for weeks.** Advisory deliberately: *a gate that fails 53 rows on day one gets switched off, and a switched-off gate is how we got here.*
+> - **★ THE REFRAME, and it is the thing to carry.** Dave is not noticing four regressions. **He is noticing the visible edge of 73 rulings that nothing checks** — with his eyes, because that is currently the only instrument we have.
+> - **⚠ TWO SELF-INFLICTED ERRORS, both caught, both inscribed.** ADR-0016's draft said *75/52* — written before the generator ran; **the register harvests ADRs, so it counts itself**: measured **76/53**. Same class as Correction 2 of 07-26. And the probe's first donut pass used `querySelector('svg')`, which returns the **toolbar copy icon** — it reported a 16px-wide "chart canvas". **The probe committed the exact error it was written to detect.**
+> - **🔴 RED ~85% — AND THE GAUGE ITSELF FAILED TWICE, which is the finding.** ⚠ **I labelled 85% "Amber". Our own bands are Green<45 / Amber 45–60 / Red≥60 — 85 is deep RED**, and the mislabel went into this banner, `_LIVE-STATE` and the summary Dave read. **A false reading of the instrument built to catch false readings.** Second failure, Dave's: **the gauge was only consulted at WRAP.** It has to be estimated **BEFORE committing to a big job**, so the cost is priced when it can still change the plan. ⇒ **Both now ruled into `_RUNBOOK-context-gauge.md` as the PRE-FLIGHT step + a band table you read, never recall.** ⇒ **Next reader RE-VERIFIES this banner's prose before building on it** — it was written at 85%.
+>
+> ## ★ PRIOR — 2026-07-27 (Mon morning, OPUS solo self-conducting, effort MAX — ★ **THE LEGEND WAVE IS CLOSED** (combo + line migrated, 100/100, transitional block deleted) **+ ds-013: `srcdoc` had killed `type.css` in ALL 49 showroom panes**; build 56/56 GREEN; commit `ba336dc`; 🔴 RED ~80% wrap): **Dave opened with a bug report, not a lane: *"the labeling on the donut and bars, they are all too big apart from the reset button, we had an independent scale for labels that seems to have been lost."* He was exactly right, and the cause was three tiers below the charts.**
 > - **★ ds-013 — THE SHOWROOM HAS BEEN RENDERING UNCOMPOSED TYPE, LIBRARY-WIDE.** `gen_showroom.py` hands each snippet to its pane iframe as **`srcdoc`**, and a srcdoc document inherits the **parent's** base URL. So every snippet's own `<link href="../canon/type.css">` — correct from `knowledge/snippets/` — re-resolved against `showroom/` to a path that does not exist. **type.css 404'd in all 49 panes that link it**; every `.t-cm-*` composite AND selector binding in it was inert. Measured, licensed cut: legend label **16px/400 → 12px/500**, letter key **→ 12px/700**. **Reset was the only correct label in the pane because its CSS hard-codes `font-size:12px`** — precisely the asymmetry Dave described.
 > - **★ NOT a lane-① regression — OBSERVED, not assumed.** The PRE-migration snippet (`git show 7401daf~1`) renders **13.333px** under the same unreachable-type.css condition (the `<button>` UA default). The outage predates the wave; DV-D11's `.dv-leg-item{font:inherit}` swapped that default for the inherited **16px** and cost the key its 700 weight, which is what pushed it past Dave's threshold.
 > - **★ FIXED + GATED, not patched.** `rebase_payload_urls()` re-points payload URLs; **a rebased URL whose target is missing FAILS THE BUILD**. Selftest (6 bites) wired as build step 56. ⚠ One bite pins the anti-fix: an injected `<base href>` would also re-base fragment URLs and break **every icon sprite** in the library. **My own selftest caught a real defect in my own fix** (query/fragment suffixes were being dropped) before it shipped.
@@ -16,118 +24,96 @@
 > - **⬛ OWED, and it is the next session: 49 showroom panes now render CANON type for the first time and NOBODY HAS LOOKED.** Registered in `_REVIEW-SIGNOFF.md`. Dave chose "lanes now, sweep after"; the window went to the lanes. **Build the sweep as a NUMERIC assertion, not an eyeball pass** (§DO-FIRST).
 > - **🔴 RED ~80% (ESTIMATE ±15%)** ⇒ **next reader RE-VERIFIES before building** — and re-verify the PROSE, not just the gates: that is where all three of Saturday's errors lived, and this banner was written hotter than that one.
 >
-> ## ★ PRIOR — 2026-07-26 (Sun evening, OPUS solo self-conducting, effort MAX — ★ LANE ① COMPLETE: Chart-bar migrated **54/54** · **ds-010 CLOSED and RENDER-PROVEN** · **THREE corrections to the prior handoff's record** · ds-012 logged; build 55/55 GREEN; 🟡 AMBER ~65% wrap at Dave's call): **Opened to run all three lanes. The Red-scrutiny re-verify paid for the window on its own: the GATES held exactly as claimed — 55/55 and 27/27 — but three of the handoff's PROSE claims did not. Chart-bar landed complete; combo and line deliberately not started.**
-> - **★ THE RE-VERIFY LESSON, worth more than the lane:** every failure was on the surface **no gate covers**. ⇒ **A Red re-verify must include the assertions a gate cannot see** — prose instructions and quoted numbers are where late-session error concentrates, because that is what gets written last and hottest. Re-running the build is necessary and nowhere near sufficient.
-> - **★ CORRECTION 1 — the end condition could never fire.** The handoff's `grep -l data-series-toggle …Chart-*.reference.html` matched **all five** snippets incl. the already-migrated donut: the transitional block's own source carries the string and is injected into every member. ⇒ **`knowledge/_check_legend_migration.py`** (strips the injected regions; **exit 0 = authorised to delete**). ⚠ My own first framing was too strong and is corrected in the record: grepping `data-series-toggle="` *does* work today — the objection is that it works on **punctuation luck** and fails in the direction that authorises a premature deletion.
-> - **★ CORRECTION 2 — the byte figures were PREDICTIONS labelled as CURRENT.** True at session start: **15,618 + 15,719**, page **31,337 B (96%)** — not 12,682 / 15,650 / 95%. The 12,682 is the *post-deletion* size (15,618 − 3,569 transitional block). **Post-deletion really lands ~27,768 B (85%), not 28,332 / 86%.**
-> - **★ CORRECTION 3 — the COPY-SOURCE documented a model it no longer ran.** `Chart-donut.reference.html` header §3 still described the DEAD legend as live, and claimed its dead `.dv-legend*` rules "still serve Chart-bar/combo/line" — they cannot (snippet CSS is hoisted into canon.css **namespaced per component**). Both fixed **before** the remaining lanes copy from it.
-> - **★ CHART-BAR MIGRATED — 54/54** (`knowledge/_verify_dv_legend_members.js`, NEW). Both legends (cb4 grouped · cb5 stacked) — **the first member with TWO legends on one page**, so the suite adds **8 cross-talk checks**: driving one legend cannot move the other figure's marks, enable its Reset, or write to its live region. Held. No typed tips — bar's only seg is SORT (DV-D13 handler no-ops on it).
-> - **★ ds-010 CLOSED, proven by RENDER at 1180 **and** 760 in the licensed cut** (computed fills, not eyeballs): h-bar back to series-3 teal (**DV-D09 restored**) · status back to 4 distinct — #B92F1E · #C58900 · green · blue (**R-D9 ramp restored**) · cb4/cb5 3 each. All were a single purple before. Donut render-verify **owed → discharged** in the same staging.
-> - **⬛ ds-012 NEW, logged not fixed — h-bar labels CLIPPED.** All six cut at the left edge, worst **16.8px** (54.8px of text into a 38px gutter), measured per label via `getBBox()`. A gutter sized against a fallback face, not the looser licensed cut. **Standing pattern, twice: ds-010 and ds-012 were BOTH found by rendering the real snippet in the real cut, and neither is reachable by any static gate we have.**
-> - **⬛ AWAITING DAVE (in `_REVIEW-SIGNOFF.md`):** the **swatch-shape delta** — bar's circle/square/diamond swatches are now plain squares (its marks are rects; the real non-colour channel is the LETTER key). **Chart-line's markers genuinely ARE those shapes and keep modifiers in lane ③** — the two members will differ on purpose. Reversible on request · ds-012's fix shape · the two v5.5 gate-forced deltas.
-> - **🟡 AMBER ~65% (ESTIMATE ±15%)** — deliberate wrap at Dave's call rather than author two more members at the heat that produced the three corrections. Commit **`aabe617`**, UNPUSHED. ⚠ **`dv-legend.js` has ~665 bytes of headroom** — remaining lanes must stay snippet-side or the cap fork reopens mid-wave.
->
 > *(Compaction 2c — keep ★ LATEST + 1 PRIOR, roll the rest. Older banners (the 07-22→24 chart-wave + ADR arc, the 07-25 AM v4 + midday→PM v5 + PM Memento-efficiency + PM#2 memory/routing-governor banners) are in `_GM-ARCHIVE.md` (Batches 1–6), verbatim, newest-first; durable narrative in `_DECISION-HISTORY/` + `notes/`.)*
 
 ---
 
-*Briefing — refreshed 2026-07-27 ~07:45 BST (date from `date`), session "legend wave CLOSED
-(combo + line) + ds-013 — srcdoc killed type.css in all 49 showroom panes" (Opus 5 solo
-self-conducting, effort MAX; dossier
-`_DECISION-HISTORY/2026-07-27-ds013-srcdoc-type-outage-and-wave-close.md`).
-§A = orientation · §B = session · §C = queue.*
+*Briefing — refreshed 2026-07-27 ~08:30 BST (date from `date`), session "ADR-0016 built — the
+enactment register (4% PROVEN) + ds-014 settled by render" (Opus 5 solo self-conducting, effort
+MAX). §A = orientation · §B = session · §C = queue.*
 
 ## ⬛ DO THIS FIRST
 
-> **✅ THE LEGEND WAVE IS CLOSED (2026-07-27).** All four members on DV-D11, transitional block
-> deleted, `_check_legend_migration.py` exit 0, page budget 88%. **Nothing legend-shaped is owed
-> except the a11y confirmations already in §C·4.** Do not go looking for lane work here.
+> **✅ CLOSED, do not re-open.** The legend wave (all four members on DV-D11, `_check_legend_migration.py`
+> exit 0, page budget 88%). **ds-014's discriminator — it RAN**, and all four of Dave's flags are
+> settled with measurements in `knowledge/_DS-IMPROVEMENTS.md`. **ADR-0016 P1 + P3-advisory.**
+> Nothing here is owed twice.
 >
-> **★★★ DO FIRST — ds-014: DAVE'S REGRESSION LIST. He said, verbatim, *"okay we are loosing
-> decisions, this is getting frustrating."* Treat that as the session's brief, not as feedback.**
-> His four items (his words, in `knowledge/_DS-IMPROVEMENTS.md` ds-014): label scale on donut + bars
-> **✅ FIXED (ds-013)** · stacked **segment spacing** · stacked **alpha-label contrast** · donut
-> **centring responsive behaviour**. *(A "3 cardinal a11y rules" phrasing was a typo — he corrected
-> it; there is no third item, do not go looking for one.)*
-> **RUN THE DISCRIMINATOR BEFORE CHASING ANY OF THEM.** All four were seen in the SHOWROOM, and until
-> 2026-07-27 the showroom could not load `type.css` at all — text rendered 16px/400 where the ruling
-> says 12px/500, and **layout that measures its own text measures differently under that** (a donut
-> centre sized against its own figure is exactly that). ⇒ **Render each component standalone
-> (`knowledge/snippets/<X>.reference.html`, where the link has always resolved) beside its showroom
-> pane and diff the geometry. Wrong in BOTH = a genuinely lost decision → ledger diff. Wrong only in
-> the pane = base-URL artefact.** One pass separates them; five separate investigations do not.
-> ⚠ `_render-env/stack.py`'s cb5 probe is BROKEN (returned zero segment rects — a wrong selector
-> assumption, NOT missing segments). Fix the probe before reading anything into it.
-> **★★★ AND THE STRUCTURAL FIX — ✅ RULED BY DAVE 2026-07-27: BUILD IT, DON'T PROPOSE IT.** His
-> words: *"is this in the next session, we nee to fix it."* This is no longer a recommendation
-> awaiting a call — it is the deliverable, and the four-item list above is its first test case.
-> **The problem, stated once:** DV-D08 was ruled, inscribed, gated-green and **silently not in force
-> for weeks**. Rulings here are not reversed — they quietly stop applying. **Gates prove the corpus
-> is SELF-CONSISTENT. Nothing proves a RULING IS LIVE in the artefact Dave looks at.** Every item on
-> his list was found by his eye. That is the defect being fixed.
-> **BUILD SHAPE — phased, so session 1 ships visibility rather than a half-finished gate:**
-> **P1 · THE REGISTER (do this first, it is mechanical).** Parse every ledger (`_DATAVIZ-`, `_RAG-`,
-> `_BUTTON-`, `_TYPE-DECISIONS.md`, the ADRs) for ruling IDs, and emit
-> `knowledge/_ENACTMENT-REGISTER.md`: one row per ruling → **PROVEN** (names an executable check) ·
-> **UNPROVEN** (nothing asserts it) · **NOT-GATEABLE** (explicitly marked, with the reason). Expect
-> most rows UNPROVEN — that number IS the finding, and it is the first honest measure of this debt.
-> **P2 · PROOFS FOR THE FLAGGED ONES.** Write real enactment checks for Dave's four items first —
-> they are the ones we know are broken. `_sweep_type_enactment.py` is the pattern to copy: it reads
-> the RULED value out of the source of truth and asserts the RENDERED value. Ruled-vs-rendered, not
-> ruled-vs-ruled.
-> **P3 · WIRE IT.** Advisory build step first (a new blocking gate that fails 80 rows on day one gets
-> switched off, and a switched-off gate is how we got here). Blocking once the register is green or
-> deliberately waived, per the ratchet posture that worked for `_validate_partials.py`.
-> ⚠ **The trap to design against, learned twice today:** a check that cannot see its subject must
-> FAIL, never pass quietly. `_sweep_type_enactment.py` reported a cheerful "0 deviations" when it
-> could not read the stylesheet at all, and `_verify_dv_legend_members.js` would have passed any
-> member whose series happened to be named "Current". **A green light from a blind check is worse
-> than no check** — it is what let ds-013 live for weeks. Every P2 proof needs a bite that proves the
-> proof can fail.
-> **Wants an ADR (candidate ADR-0016) — write it in the same session as P1, per the same-hour
-> inscription rule, and feed the graph seed.**
+> **★★★ DO FIRST — PUT THE FOUR CALLS TO DAVE. They gate everything else in this section, and
+> three of them cannot be answered by an agent (derivation governance).**
+> The discriminator turned Dave's four flags into **two lost decisions and two artefacts**, and
+> then the register turned the root cause of one into a corpus-wide number. What is owed now is
+> not investigation — it is **his ruling**:
+> - **(a) dv-004 on stacked columns.** Measured separation **0.0–0.1px**, `stroke:none`; the rule
+>   is BLOCKING and requires **≥2px**. Fix by a 2px surface-coloured stroke (the donut's existing
+>   mechanism) or by a geometry gap? **Both change the chart's look.**
+> - **(b) The alpha keys (A/B/C on the segments).** They render **`#1A1A1A`** because
+>   `text.dv-barkey{fill:var(--ink)}` (snippet L127 · canon.css L3434) overrides the `var(--page)`
+>   in their own markup. **3.31 / 3.46 / 3.78:1** at 12px/700 vs AA's 4.5:1. White measures ≈5:1
+>   and passes, and the D-Q2 ledger line already says white — so this may be pure restoration.
+>   ⚠ It collides with **type26-013 (white type is red-only)**, which the ledger flagged and never
+>   resolved. **That collision is the actual decision.**
+> - **(c) Widening the gate's dtype vocabulary is mechanical — but it turns (a) into a RED BUILD.**
+>   So it lands *with* (a)'s answer, never before it. Do not "tidy" it early.
+> - **(d) NEW, un-ruled, not on his list:** `.dv-donut-row` is `flex-start`, so the ring+legend
+>   cluster pins left and whitespace grows with viewport (**−114px at 600 → −534px at 1440** from
+>   figure centre). No ruling covers donut cluster alignment. Flagged only — do not fix it.
 >
-> **★★ THEN — THE SHOWROOM TYPE SWEEP (ds-013 fallout), already started.**
-> `knowledge/_sweep_type_enactment.py` ran once: **800 composite-bound elements across 67 panes, 22
-> deviations in 27 panes** — the pattern is **WEIGHT, not size** (500 where the composite declares
-> 400; `t-ed-heading-4` 400 where it declares 300). Worst pane **stepper (3)**; also amount-input ·
-> date-picker · date-range-picker · drawer · empty-state. Results: `knowledge/_type-sweep-2026-07-27.json`.
-> ⚠ The sweep needs `--allow-file-access-from-files` or it reads ZERO composites and reports a
-> cheerful "0 deviations" — it did exactly that on its first run. Wire it as an advisory build step. The srcdoc fix means **49 showroom panes now render CANON type for the first
-> time** — every `.t-cm-*` composite and every selector binding in `type.css` was inert in the
-> showroom until yesterday. Measured only on the charts. **Everywhere else the delta is unknown.**
-> **BUILD IT AS A NUMBER, NOT AN EYEBALL** (Dave's window ran out before this, and an eyeball pass
-> at the end of a hot session is exactly the condition that produced Saturday's three corrections):
-> for every pane, for every element carrying a `t-cm-*` class, assert the computed
-> `font-size`/`font-weight` **equals the composite's declared values**, and print a table of
-> deviations. The render harness is proven and the recipe is `_RUNBOOK-render-verify.md`; jsdom
-> cannot do this (it needs real cascade + the licensed face). ⚠ **Render the SNIPPET for canon
-> truth, and the SHOWROOM PAGE for what Dave actually looks at — they now agree, and the sweep's
-> job is to prove that claim rather than assume it.** Expect real finds: anything that read
-> acceptably at browser defaults may have moved. Then, and only then, an eyeball pass on the worst.
+> **★★★ THEN — ADR-0016 P2: THE PROOFS. This is the build, and (a)+(b) are its first two.**
+> `docs/decisions/ADR-0016-enactment-proof-register.md` is accepted; `knowledge/_ENACTMENT-REGISTER.md`
+> is generated every build (step 56/57, **advisory**). Today's reading: **PROVEN 3 · CLAIMED 20 ·
+> UNPROVEN 53 · NOT-GATEABLE 0, of 76.**
+> **The non-obvious part of P2, and the reason CLAIMED exists:** a proof that reads the ledger and
+> compares it to another document proves nothing — that is what we already had. **Read the RULED
+> value out of the source of truth and assert the RENDERED value** in a real browser with the
+> licensed face. `_sweep_type_enactment.py` is the pattern; `_RUNBOOK-render-verify.md` is the recipe.
+> ⚠ **Every P2 proof ships with a bite that proves the proof can FAIL.** Non-negotiable, and it has
+> now caught a real defect three sessions running:
+> - `_sweep_type_enactment.py` reported a cheerful "0 deviations" while it could not read the
+>   stylesheet at all (**that is how ds-013 survived weeks**).
+> - `_verify_dv_legend_members.js` would have passed any member whose series was named "Current".
+> - **This session, twice.** dv-004 passed a chart with 0.0px separation because its branch tests
+>   `"stacked"` and the figure says `"stacked-column"` — **proven by bite in a scratch copy: adding
+>   that one string makes the gate fail correctly.** And *my own probe* first measured the donut with
+>   `querySelector('svg')`, which returns the **toolbar copy icon** — it reported a 16px-wide "chart".
+>   **The probe committed the exact error it was written to detect. Assume yours will too.**
 >
-> **★★ THEN — §C·2's RULING BATCH (15 + 17–22).** It has not moved in days and it gates §C·1(c).
-> **Fable is the model for that session** (open judgment), per the routing note below.
+> **★★ THE SCOPE-BLINDNESS LANE — three chart types are ungoverned right now.**
+> `stacked-column`, `grouped-column` and `scatter` appear **zero** times in `_validate_dataviz.py`
+> ⇒ **dv-004, dv-bar-009 and dv-line-011 are all inert on them.** The register audits this
+> automatically for `data-dv-type`. **Generalising that audit to other gate vocabularies is high-value
+> and nobody has looked** — it is the cheapest way to find the next ds-013.
 >
-> **★★ ALSO PENDING DAVE, unchanged: the hit-area rule + gate rebuild.** Read
-> `notes/_briefs/2026-07-25-hit-area-rule-and-gate-proposal.md` FIRST. ⚠ **Lane ③ just produced a
-> live case for it:** Chart-line's diamond swatch rotates 45°, which rotated its 44px hit target
-> with it (counter-rotated in the snippet). A markup-driven hit-area gate would have to understand
-> transforms — worth naming in the proposal before Dave rules on it.
-> **★★ Radius/corner tuner (§C·1d) — v1+v2 BUILT + render-verified**
-> (`reviews/RADIUS-CORNER-TUNER-2026-07-24-v*.html`); **owed = the TWEAKS + ruling the numbers with
-> Dave** ("return soon, don't let me forget"). Do NOT rebuild from scratch.
+> **★★ STILL OWED, unchanged and NOT superseded by any of the above:**
+> **(i) The showroom type sweep.** `knowledge/_sweep_type_enactment.py` ran once: **800
+> composite-bound elements across 67 panes, 22 deviations in 27 panes** — the pattern is **WEIGHT,
+> not size**. Worst pane stepper (3); also amount-input · date-picker · date-range-picker · drawer ·
+> empty-state. Results in `knowledge/_type-sweep-2026-07-27.json`. ⚠ It needs
+> `--allow-file-access-from-files` or it reads ZERO composites and reports a cheerful "0 deviations".
+> **This is a P2 proof in all but name — fold it into the register rather than running it as a
+> one-off.**
+> **(ii) §C·2's RULING BATCH (15 + 17–22)** — has not moved in days, gates §C·1(c). **Fable is the
+> model for that session** (open judgment).
+> **(iii) The hit-area rule + gate rebuild** — read `notes/_briefs/2026-07-25-hit-area-rule-and-gate-proposal.md`
+> FIRST. Chart-line's 45°-rotated diamond swatch (whose hit target rotated with it) is a live case:
+> a markup-driven hit-area gate must understand transforms.
+> **(iv) Radius/corner tuner (§C·1d)** — v1+v2 BUILT + render-verified
+> (`reviews/RADIUS-CORNER-TUNER-2026-07-24-v*.html`); owed = the TWEAKS + ruling the numbers with
+> Dave ("return soon, don't let me forget"). **Do NOT rebuild from scratch.**
 >
 > **MODEL + EFFORT (Dave ruled 2026-07-26, still current):** conductor = **Opus 5, effort MAX** ·
 > mechanical lanes = **Sonnet, default** · **Fable reserved** for open-judgment sessions (the ruling
-> batch · the hit-area gate). The type sweep is **script-then-judge**: Sonnet or Opus can build the
-> sweep; the deviations it finds are Dave's call, not the agent's (derivation governance).
+> batch · the hit-area gate). P2 is **script-then-judge**: any model can write a proof; **every
+> deviation it finds is Dave's call, not the agent's.**
 >
-> *Standing: every handoff carries both names (top) + a DIVVY PLAN. Render-verify re-proven again
-> 2026-07-27 from scratch — the runbook held, no new potholes. ⚠ `/tmp` was NOT writable again this
-> session (use the outputs mount; `JSDOM=` env var for the verify suites). Prior potholes still
-> true: FONTCONFIG_FILE replaces not merges · dv-tip rides pointermove/focusin · render the SNIPPET,
-> not the showroom, when you want canon truth.*
+> *Standing: every handoff carries both names (top) + a DIVVY PLAN. **Render-verify re-proven from
+> scratch AGAIN 2026-07-27** — runbook held, but bank one NEW pothole: staged on the shared mount,
+> `playwright install` fails at **`EPERM rmdir '__dirlock'`**, not at host-validation. Same reading —
+> **check the cache, proceed** (`chromium_headless_shell-*` was present and worked). Prior potholes
+> still true: `/tmp` NOT writable (use the outputs mount) · FONTCONFIG_FILE replaces not merges ·
+> the two-alias fontconfig is required · **render the SNIPPET for canon truth and the SHOWROOM PAGE
+> for what Dave looks at** — since ds-013 they finally agree, and a probe's job is to prove that,
+> not assume it.*
 
 *Read: **§A Orientation** (skip if you're in context) → **§B This session** → **§C Queue**.
 Then `_LIVE-STATE.md` → the decision files it points to.*
@@ -326,6 +312,15 @@ until actually run + seen. HTML is what Dave reviews; PNGs are agent self-verifi
 ---
 
 # §B · THIS SESSION
+
+> ⚠ **STALE BELOW — do not read it as current (2026-07-27, later morning).** The two most recent
+> sessions are summarised only in the ★ LATEST + ★ PRIOR banners at the top of this file, which are
+> authoritative. This section still narrates the 07-26 lane ① window. **The narrative for
+> ADR-0016 / ds-014 lives in `docs/decisions/ADR-0016-enactment-proof-register.md` (§ Provenance
+> carries every measurement) and `knowledge/_DS-IMPROVEMENTS.md` ds-014.** Rewriting §B was
+> deliberately not attempted at Amber — the banner + DO-FIRST carry the session, and a hot rewrite
+> of a long narrative section is exactly what produced 07-26's three corrections.
+
 > ⓘ Most recent = **legend wave lane ①** (2026-07-26 evening, Opus 5 solo self-conducting, effort MAX).
 > The ★ LATEST banner is its summary; the narrative WHY/HOW — why the re-verify mattered more than the
 > lane, the correction to my own correction on the grep, the two non-obvious calls the divvy didn't

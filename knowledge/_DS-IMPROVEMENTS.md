@@ -482,3 +482,34 @@ confident false inscription.)**
 for the four flagged items → P3 wire advisory-then-blocking.** Full shape in `GOOD-MORNING` §DO-FIRST.
 Candidate **ADR-0016**, to be written in the same session as P1 (same-hour inscription rule) and fed
 to the graph seed. Reflected back to Dave in-session for correction before the next window opens.
+
+---
+
+**★ ds-014 DISCHARGED — the discriminator RAN, 2026-07-27 (Mon morning session).** Every item below
+is MEASURED by render, licensed cut, at 1180 **and** 760, **snippet beside showroom pane** — the one
+pass that separates a lost decision from a ds-013 base-URL artefact. Probe + raw JSON:
+`_render-env` recipe in `_RUNBOOK-render-verify.md`; results quoted here are OBSERVED, not inferred.
+
+| # | Dave's flag | verdict | measured |
+|---|---|---|---|
+| 1 | label scale, donut + bars | **ARTEFACT — already fixed** | ds-013 (`srcdoc` killed `type.css`); keys now 12px/700, `.t-cm-figure-3` 24px/500 in the licensed face |
+| 2 | stacked **segment spacing** | **★ LOST DECISION** | gap **0.0–0.1px** on all 4 columns × 3 boundaries, `stroke:none`. **dv-004 is BLOCKING and requires ≥2px.** Identical snippet vs showroom |
+| 3 | stacked **alpha-label contrast** | **★ LOST DECISION** | keys render **`#1A1A1A` (`--ink`)**, not the `var(--page)` their markup declares — `text.dv-barkey{fill:var(--ink)}` (snippet L127 / canon.css L3434) overrides the SVG presentation attribute. Contrast **3.31 / 3.46 / 3.78:1** at 12px/700; AA floor 4.5:1. White measures ≈5:1 and passes. Identical snippet vs showroom |
+| 4 | donut **centring**, responsive | **ARTEFACT — does not reproduce** | centre value **dx +0.00 / dy −2.00** (optical), ring offset **0.00** in canvas — identical snippet vs showroom at both widths |
+
+**★ WHY #2 SHIPPED GREEN — the root cause, and it is bigger than one chart.** `_validate_dataviz.py`
+guards dv-004 with `if dtype in ("donut","pie","stacked")`. The figure declares
+`data-dv-type="stacked-column"`. **The gate never looked.** The register's scope-blindness audit
+generalised it the same hour: `stacked-column`, `grouped-column` and `scatter` appear **zero** times
+in the gate ⇒ **dv-004, dv-bar-009 and dv-line-011 are all inert on those three chart types.**
+
+**⬛ OPEN, and they are DAVE'S CALLS (derivation governance — measured, not fixed):**
+- **(a)** dv-004 on stacked columns: 2px surface-coloured stroke (the donut's mechanism) or a
+  geometry gap? Either changes the chart's look; both make the currently-green build FAIL until done.
+- **(b)** alpha keys back to `var(--page)` white per the D-Q2 ledger line, or re-rule the ledger to
+  ink and accept 3.3:1? (type26-013 "white type is red-only" is the tension the ledger already noted.)
+- **(c)** widening the gate's dtype vocabulary is mechanical, but it turns (a) into a build failure —
+  so it lands *with* (a)'s answer, not before it.
+- **(d)** NEW, un-ruled, not on Dave's list: `.dv-donut-row` is `flex-start`, so the ring+legend
+  cluster pins left and whitespace grows with viewport (**−114px at 600 → −534px at 1440** from
+  figure centre). No ruling covers donut cluster alignment. Flagged only.

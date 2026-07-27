@@ -24,6 +24,46 @@ Two facts that shape the method:
 
 ## The gauge is two halves
 
+### ★ Half 0 — PRE-FLIGHT: price the job BEFORE committing to it (RULED by Dave, 2026-07-27)
+
+**Dave, at the wrap that forced this:** *"this needs to be flagged before embarking on big jobs, you
+have to estimate before committing to a big task."*
+
+Halves 1 and 2 both answer *"where am I now?"* — a question whose answer arrives **after** the tokens
+are spent. That is why the gauge kept failing while being technically present: it was consulted at
+wrap, when the only remaining option is to stop. **A gauge that only reports is not a gauge, it is a
+postmortem.**
+
+**The rule: before starting any job with a plausible cost above ~10% of the window, state TWO numbers
+to Dave, unprompted, in the same breath as the plan.**
+
+```
+current fill  +  estimated cost of this job  =  projected band at completion
+```
+
+- **Projects into Red?** Say so **before** starting, and offer the fork: **(a)** narrow the job to
+  fit, **(b)** flush + hand the build to a fresh window, **(c)** proceed knowingly with a Red stamp.
+  **Dave chooses. Do not choose silently by starting.**
+- **Jobs that need pricing** (all observed to blow past estimate): a render-verify harness built from
+  scratch · a new gate + its selftest · a review sheet or interactive prototype · a corpus-wide sweep ·
+  an ADR plus the build it describes. *Rough anchors, 2026-07-27: standing up render-verify cold ≈
+  15–20% · a generator + wiring + its ADR ≈ 25–30%.*
+- **Re-price when the job changes shape.** The 2026-07-27 session priced nothing, then absorbed a
+  discriminator, a render env rebuild, two probe rewrites, a generator, an ADR and the full ritual —
+  each individually reasonable, cumulatively 85%.
+
+### ⚠ READ THE BAND TABLE. DO NOT RECALL IT.
+
+**Recalled bands were WRONG on 2026-07-27:** the agent reported **"🟡 Amber ~70%"** and then
+**"Amber ~85%"** — both Red by the table twelve lines below, which had been correct all along. The
+mislabel propagated into the `GOOD-MORNING` banner, `_LIVE-STATE` and Dave's summary before he caught
+it. **A false reading of the very instrument built to catch false inscription**, and it is the same
+failure class as [[stale-reading-failure-mode]]: the corpus was right, the recall was not.
+
+⇒ **Quote the band from this file, or `grep` it. A band asserted from memory is not a reading.**
+⇒ **State the NUMBER and the BAND together** (`~85% → RED`) so a mismatch is visible to Dave in one
+glance — he caught this one exactly that way.
+
 ### Half 1 — cheap, always-on: the running tally (near-free)
 
 The agent keeps a rough cumulative token estimate **in-head** and reports a one-word band at the end

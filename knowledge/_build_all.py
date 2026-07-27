@@ -122,6 +122,14 @@ STEPS = [
     # build so it cannot rot; the selftest is advisory until the tool has earned trust.
     ("consult index — problem-domain query surface", "_build_consult_index.py"),
     ("consult tool selftest (advisory)", "_consult.py", ["--selftest"]),
+    # ADR-0016 P1/P3 (2026-07-27, Dave ruled it a BUILD): the register asks the question no
+    # other step asks — not "is the corpus self-consistent?" but "is this RULING LIVE in the
+    # artefact Dave looks at?" Regenerates every build so it cannot rot. ADVISORY on purpose:
+    # it reports 52 UNPROVEN on day one, and a gate that fails 52 rows gets switched off —
+    # which is how we got here. Blocking once the register is green or deliberately waived
+    # (the _validate_partials.py ratchet posture).
+    ("enactment register — is each ruling IN FORCE? (advisory, ADR-0016)",
+     "_build_enactment_register.py"),
     ("integrity lint (gate)", "_build_integrity.py"),
 ]
 
