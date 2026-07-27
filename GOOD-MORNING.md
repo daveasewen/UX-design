@@ -1,11 +1,16 @@
 # Good morning, Dave ☕
 
-> **RENAME THE WRAPPED CHAT →** `Apollo — the class was never rare, it was INVISIBLE: ds-018 ENACTED A2/B2/C2 build 62/62 green, and C2's FIRST RUN found three more silent-lookup instances in seconds (--border-radius-default correct in Mono BY ACCIDENT and silently wrong in Console; --phys-size = B-D7 press physics possibly DEAD in 3 components; --mark falling to SVG-initial BLACK in 7 pro-formas) — five instances took five sessions by eye, the first automated pass took three`
-> **TITLE THE NEXT CHAT →** `Apollo — RENDER-CONFIRM the three new instances BEFORE acting (--phys-size + --mark are static reasoning, not renders — the ds-019 trap), then take Dave's values and CLEAR C2's worklist so the gate can be promoted to --strict; ds-018's own render-proof is the other owed half`
+> **RENAME THE WRAPPED CHAT →** `Apollo — GM compaction architecture: supersession-by-addition named, GM-D1…D9 RULED all-as-recommended (growth contracts per section, §B deleted into banner, retirement tests for ⛔ notices, gauge floor becomes MEASURED), enactment briefed for its own window`
+> **TITLE THE NEXT CHAT →** `Apollo — ENACT GM-D1…D9 (read notes/_briefs/2026-07-27-gm-compaction-enactment-brief.md + the ledger FIRST): runbook 2e/2f → gate budgets+bites → one supervised compaction pass, §A untouched, EXIT CHECK per batch — OR resume C2's worklist (render-confirm 7+8, Dave's values, promote --strict)`
 > *(Titles are LABELS — role comes from Dave's opener line. The wave = the parallel model: Opus conducts, workers per lane, DIVVY in §DO-FIRST. Gauge bands: Green<45 / Amber 45–60 / Red≥60.)*
 
 
-> ## ★ LATEST — 2026-07-27 (Mon **evening #12**, OPUS solo self-conducting, effort MAX — ★★ **ds-018 IS ENACTED AND CLOSED: A2 · B2 · C2, build 62/62 GREEN exit 0** · ★★★ **THE FINDING IS BIGGER THAN ds-018 — C2's FIRST RUN FOUND THREE MORE INSTANCES OF THE SILENT-LOOKUP CLASS IN SECONDS, where five instances had taken five sessions by eye** · ★ **the "B-D4 vs canon collision" DOES NOT EXIST and never did** · ★ **there is NO GENERATOR for the chart CSS spine — #11's central instruction was not followable** · 🔴 ~72% at wrap, stated): **The class was never rare. It was invisible.**
+> ## ★ LATEST — 2026-07-27 (Mon **evening #13**, FABLE solo — ★★★ **GM COMPACTION ARCHITECTURE RULED: GM-D1…D9, ALL NINE AS RECOMMENDED** (`notes/_MEMENTO-DECISIONS.md` § GM growth-contracts) · ★★ **the disease is named: SUPERSESSION BY ADDITION** — move-discipline with no WHEN rule means text is only ever killed by piling a notice on top; dead spec + its warning label both bill full price every cold read · ★ **§C·5 Parked is INNOCENT** — the growing organ is the unlabelled pre-flight/post-mortem/commit-state stack under its heading (4 sessions deep, 2 blocks hand-marked "[SUPERSEDED…]") · ★ **~97% of the week's +70 lines landed in the two roll-less regions** · 🟡 ~68% at wrap, priced upfront not overrun): **Every section gets a growth contract; §A alone stays standing and uncapped.**
+> - **★★ RULED, NOTHING ENACTED:** D1(a) DO-FIRST typed contract + LATEST+1 roll, cap 120/180 · D2 retirement tests ×4 (supersession notice dies WITH its target, same batch · tombstone term LATEST+2 then gate-or-ledger · correction dies when source struck · perishables replaced never stacked) · D3(a) `[born·guards·until]` tags on NEW entries only · D4(a) **§B deleted into the banner** (runbook step-2 amendment) · D5(a) stack keeps LATEST only, post-mortems → NEW `notes/_GAUGE-LOG.md`, commit-states → archive, batch key `<date> <session#>` · D6(a) §C = pointer+state+owner, cap 150 · D7(a) chain budget GM ≤8K + LS ≤16K ≈ 12%, beyond = RETRIEVAL · D8(a) budgets in `_capture_gate.py` warn/BLOCK + bites · D9 gauge floor MEASURED per session, bands on remaining budget (Dave's reframe — a snapshot constant would be falsified by its own enactment).
+> - **⬛ ENACTMENT OWED, its own window (~30–40%), Opus conducts:** read `notes/_briefs/2026-07-27-gm-compaction-enactment-brief.md` — runbook 2e/2f FIRST, then gate, then ONE supervised compaction pass (predicts GM ~910 → ~450–500 lines; publish actuals). **§A untouched (hash-verify) · EXIT CHECK per batch · verbatim moves · LS 2d-tightening OUT OF SCOPE (separate ruling).**
+> - **⚠ THIS session ran under CURRENT rules** — GM grew net +~40 lines today by design; the shrink is the enactment's job, under rules that exist first. Dossier: `_DECISION-HISTORY/2026-07-27-supersession-by-addition.md`. Evidence in the proposal §1 (all numbers measured in-window, brief's stale numbers corrected).
+>
+> ## ★ PRIOR — 2026-07-27 (Mon **evening #12**, OPUS solo self-conducting, effort MAX — ★★ **ds-018 IS ENACTED AND CLOSED: A2 · B2 · C2, build 62/62 GREEN exit 0** · ★★★ **THE FINDING IS BIGGER THAN ds-018 — C2's FIRST RUN FOUND THREE MORE INSTANCES OF THE SILENT-LOOKUP CLASS IN SECONDS, where five instances had taken five sessions by eye** · ★ **the "B-D4 vs canon collision" DOES NOT EXIST and never did** · ★ **there is NO GENERATOR for the chart CSS spine — #11's central instruction was not followable** · 🔴 ~72% at wrap, stated): **The class was never rare. It was invisible.**
 > - **★★ ds-018 ENACTED — A2 · B2 · C2, all in, build `62/62` GREEN.** **A2** minted `data/control/label-disabled` (light `#9D9D9D` = `color/neutral/9`, dark `#808080` = `color/neutral/8`) as a sibling of `data/axis`/`data/grid`, declared on the **light AND dark spine blocks** of Chart-bar/-combo/-donut/-line + mapped in each `#token-manifest`. **B2** `.dv-leg-reset:disabled` → `border-color:var(--line); color:var(--data-control-label-disabled)` — the border binds **directly to `--line`**, which IS B2. **C2** = `knowledge/_validate_property_resolves.py`, wired at steps 52–53, selftest green (control + 4 bites + a bite-the-bite). Commit `5cd91c6`.
 > - **★★★ THE FINDING — C2 FOUND THREE MORE INSTANCES ON ITS FIRST RUN.** Five instances of this class were found across five sessions, **every one by eye or by accident**. The first automated pass found three in seconds. ⇒ **The class was never rare; it was invisible, and every previous "instance N" count was a floor.** **(6) `--border-radius-default`** — consumed by `.dv-legrow` in all four chart snippets, declared in **no snippet in the library**; fell to initial `0`, **correct in Mono BY ACCIDENT** and silently wrong in Console (whose divergence is rounded corners). **FIXED** via the role token `--border-radius-control`; no visual change today. ⚠ **A silent lookup can hide indefinitely behind a theme whose value happens to match the initial.** **(7) `--phys-size`** — Alert · Empty-state · Popover, 2× each, declared in none. **That is B-D7 press physics ⇒ possibly DEAD in three components, on a RULED behaviour.** **NOT FIXED — needs Dave's numbers.** **(8) `--mark`** — 7 pro-forma files; fills icon marks inside `<symbol>` ⇒ **falls to the SVG initial, BLACK, in silence** — *the exact failure `Chart-bar`'s own spine comment documents for `--data-text-on-series`*. **NOT FIXED — needs Dave's value.**
 > - **⚠ C2 SHIPS ADVISORY THOUGH IT IS RULED BLOCKING — and the reasoning is the point.** Going blocking today meant clearing 10 pre-existing failures **now**, and three need **values** (Dave's alone). The other exit — narrowing the glob to charts — is **`gate-narrows-its-own-rule` in its purest form**. ⇒ **rule stays WIDE, findings PUBLISHED, nothing faked green. Promotion = adding `["--strict"]` to the build step** the moment the worklist empties. ⚠ **An advisory gate never promoted has quietly become documentation.**
@@ -14,28 +19,29 @@
 > - **⬛ THE VALUE IS REUSE, NOT DERIVATION — and it entered on assent to a plan, not a dialled number.** `#9D9D9D`/`#808080` is B-D4's settled pair adopted verbatim. Dave, asked for the most efficient path: *"just do it"* — taken against an explicit statement that it was me proposing a value, vetoable in a word. ⚠ **CAVEAT RECORDED AT MINT:** B-D4 dialled that pair against the **disabled fill `#E1E1E1`**; here it sits on the **chart ground** ⇒ the same hex reads at a different ratio than the one judged. **Re-dial on sight is expected and cheap.**
 > - **⚠ WHAT THE AUTHOR FLAGS AGAINST HIS OWN WORK:** **instances 7 and 8 are STATIC RESOLUTION REASONING, NOT RENDERS** — instance 6 is safe (initial `0` matches Mono), but *"`--mark` falls back to black"* is exactly the tidy explanation **ds-019** punished. **Render-confirm before anyone acts on them.** · **ds-018 itself is NOT render-proven** — deferred by ruling, env cold; that is the other owed half · this banner was written at **🔴 ~72%**.
 >
-> ## ★ PRIOR — 2026-07-27 (Mon **evening #11**, OPUS solo self-conducting, effort MAX — ★★ **ds-018's REMEDY IS RULED: A2 · B2 · C2** · ★★ **THE SQUEEZE — the border channel is STRUCTURALLY UNABLE to carry a recessive disabled state, and nobody had measured it** · ★ **the record was WRONG that `--text-disabled` has no `:root` — it does, at `#E1E1E1`** · ★ **chart snippets are NOT in canon.css's cascade at all** · review doc **30 checks · 0 failures ×2 widths, bite red** · **NOTHING ENACTED, by his instruction** · 🔴 ~66% at wrap, stated): **The remedy the record implied was impossible, and the reason was one measurement nobody had taken.**
-> - **★★ RULED BY DAVE — ds-018 = A2 · B2 · C2.** From `reviews/DS-018-DISABLED-STATE-2026-07-27-v1.html` (live specimens, three decision controls, contrast computed at render time). Verbatim: *"I've gone with your recommendations but we should probably wrap up and do it in the next window."* **A2** mint dataviz-tier `--data-control-*` (siblings of `--data-axis`/`--data-grid`/`--data-series-*`, already on chart scopes) · **B2** label-led (disabled label recessive; disabled border returns to `--line` = enabled-resting — **accepted cost ruled with it: the label carries the whole distinction**) · **C2** the wide gate (*a declaration referencing a custom property that resolves nowhere in its own scope is a build failure*) = the `fail-loud-on-unknown` shape already ratified for `dv-vocab`. ⚠ **C3 (affordance) was NOT rejected — merely not selected**; it still catches a resolved-but-wrong ladder C2 cannot see.
-> - **⛔ THE ONE THING YOU MUST NOT INFER — THE RECESSIVE VALUE IS UNRULED.** The doc offered `#9D9D9D`/`#808080`/`#B5B5B5`/`#6B6B6B` **as candidates and explicitly NOT as a recommendation** (derivation governance). `#9D9D9D` was only the page's pre-selected preview. **Light/dark pairing equally unruled.** ⇒ **Enactment PUTS THE VALUE TO HIM; it does not read it off the ledger.**
-> - **★★ THE SQUEEZE.** Enabled-resting border = `var(--line)` `#E1E1E1` at **1.31:1**; disabled resolves to ink at **17.40:1** ⇒ **the dead control carries 13.3× the contrast of the live one.** Anything quieter than enabled is below the perceptible floor; anything equal erases the distinction. **No third value ⇒ the border channel cannot carry this state.** The label channel can (enabled label is ink at max contrast), and that band is the one **B-D4** already ruled acceptable. ⇒ **CHANNEL IS UPSTREAM OF TIER**, which is the reverse of how the record framed it.
-> - **★ THREE CORRECTIONS TO THE RECORD, from source.** (1) **`--text-disabled` IS on `:root`** — `canon.css:350` `#E1E1E1`, dark twin `#808080` `:647`. The old *"zero `:root`"* was true of `--border-disabled` only and was over-generalised. (2) `--border-disabled` census unchanged — 29 declarations, ten form scopes + twins, zero chart, zero `:root`. (3) **`Chart-bar.reference.html:51–52` links `type.css` ONLY** and inlines its own spine ⇒ **canon.css is not in the chart cascade, so a `:root` fix repairs a real app page and leaves the SNIPPET broken** — and the snippet is what every render-proof measures. ⚠ (4) ~~**Drift flagged not corrected:** B-D4 ruled `#808080`; canon ships `--text-on-disabled: #9D9D9D` (`canon.css:351`).~~ **⛔ WITHDRAWN #12 — THERE IS NO DRIFT.** B-D4's own `Values — SETTLED` block gives the PAIR `#9D9D9D`/`#808080`; canon and the token store both implement it. The claim compared prose against half the ruling.
-> - **⚠ PROBE WART, and it is the week's signature failure once more.** First run reported the enabled ratio as `11.31:1`; **the doc was right at 1.31:1 and the probe was wrong** — a `\d+\.\d+` regex over the table's *flattened* textContent straddled the adjacent `#E1E1E1` cell. **Read cells, never flattened text.** Folded into `_RUNBOOK-render-verify.md` with two siblings (the `__dirlock` EPERM debt, finally banked; and *print the verdict BEFORE cleanup* — a teardown `EPERM` swallowed a correct bite verdict).
-> - **⬛ NOTHING ENACTED.** No token minted, no gate built, no generator touched — his instruction, at 🔴 ~66%. **The ruling IS the deliverable.** Build not re-run (no source touched): last known **60/60 GREEN**.
->
-> *(Compaction 2c — keep ★ LATEST + 1 PRIOR, roll the rest. Older banners (the #10 DV-D17-render banner rolled to Batch 11; the 07-22→24 chart-wave + ADR arc, the 07-25 AM v4 + midday→PM v5 + PM Memento-efficiency + PM#2 memory/routing-governor banners, the 07-27 #5 throttle banner and the #6 chart-flags banner) are in `_GM-ARCHIVE.md` (Batches 1–10), verbatim, newest-first; durable narrative in `_DECISION-HISTORY/` + `notes/`.)*
+> *(Compaction 2c — keep ★ LATEST + 1 PRIOR, roll the rest. Older banners (the #11 ds-018-ruling banner → Batch 2026-07-27 #13; the #10 DV-D17-render banner rolled to Batch 11; the 07-22→24 chart-wave + ADR arc, the 07-25 AM v4 + midday→PM v5 + PM Memento-efficiency + PM#2 memory/routing-governor banners, the 07-27 #5 throttle banner and the #6 chart-flags banner) are in `_GM-ARCHIVE.md` (Batches 1–10), verbatim, newest-first; durable narrative in `_DECISION-HISTORY/` + `notes/`.)*
 
 ---
 
-*Briefing — refreshed 2026-07-27 ~17:10 BST (date from `date`), session "the squeeze — ds-018 ruled
-A2/B2/C2, and the measurement that made the record's own remedy impossible"
-(Opus 5 solo self-conducting, effort MAX). §A = orientation · §B = session · §C = queue.*
+*Briefing — refreshed 2026-07-27 ~18:25 BST (date from `date`), session "GM compaction
+architecture — supersession by addition" (Fable 5 solo). §A = orientation · §B = session · §C = queue.*
 
-**Context gauge at authoring: 🔴 RED ~66% (ESTIMATE)** — scrutiny indicator on this handoff, not a
-quality score. Red-authored ⇒ re-verify before trusting. Nothing was enacted in this window; the
-durable content is the ds-018 ruling block and the three record corrections, both of which were
-written from measurements taken in-window, not from recall.
+**Context gauge at authoring: 🟡 AMBER ~68% (ESTIMATE)** — scrutiny indicator on this handoff, not a
+quality score. Priced upfront (Dave chose full ritual at ~50%), not an overrun. Durable content =
+the nine GM-D rulings (ledger), written from in-window measurements, not recall.
 
 ## ⬛ DO THIS FIRST
+
+> **★★★ NEW #13 — THE GM GROWTH-CONTRACTS RULING IS IN. GM-D1…D9, ruled, NOT enacted.**
+> `[born #13 · guards: notes/_briefs/2026-07-27-gm-compaction-enactment-brief.md · until: enactment lands]`
+> **If this window is the enactment: READ THE BRIEF + LEDGER FIRST** (`notes/_MEMENTO-DECISIONS.md`
+> § GM growth-contracts) — runbook 2e/2f before any move · §A UNTOUCHED, hash-verified · EXIT CHECK
+> per batch · verbatim moves · `_LIVE-STATE` 2d-tightening OUT OF SCOPE. Price ~30–40%.
+> **Until enacted, THIS FILE STILL RUNS ON THE OLD RULES** — keep stacking under §C·5, keep 2c/2d
+> as written. Do not half-adopt the new rules ad hoc; the runbook must change first.
+> ⚠ Carried by EXIT CHECK from the #10 delta roll: **MEMORY.md compaction is still owed, its own
+> small window** (pre-existing, unrelated to this ruling).
+>
 
 > **★★★ SUPERSEDED #12 — ds-018 IS ENACTED AND CLOSED. STOP PLANNING IT.** A2 · B2 · C2 all landed,
 > build **62/62 GREEN exit 0**, commit `5cd91c6`. **Do not re-enact, do not re-rule, do not re-measure it.**
@@ -762,6 +768,24 @@ Legacy hex seeding + provenance-gate flip · Console/Supercharge chromatic palet
 Sutherland field test · full-review backlog (`_REVIEW-SIGNOFF.md`) · `_FUTURE-STATE` items ·
 spot-illustration/empty-state icon set (`_ICON-GAPS.md`, wave-1's only gap).
 
+> **pre-flight:** fill 20% + job 25% + wrap 5% = 50% AMBER · reserve 15% ring-fenced
+> *(Session #13, 2026-07-27. Closed 🟡 **~68% AMBER-high — but the +18 was PRICED MID-SESSION, not
+> overrun**: at ~50% Dave chose "full ritual" from a stated fork (full = +15–18 → ~68 vs light = +10
+> → ~60). The fork rule working as ruled. Findings en route: brief's numbers stale (GM 840→910 in a
+> day — which IS the diagnosis) · Parked innocent, stratum stack guilty · both folded into the
+> proposal before ruling, no re-price needed as the job was diagnosis.)*
+>
+> **COMMIT STATE (refreshed 2026-07-27 ~18:25 BST from `date`, supersession by addition).**
+> **Context gauge at authoring: 🟡 AMBER ~68% (ESTIMATE).**
+> ONE commit, RECORD not code: `notes/_MEMENTO-DECISIONS.md` (**GM-D1…D9 inscribed**) ·
+> `notes/_briefs/2026-07-27-gm-compaction-architecture-proposal-v1.md` (**NEW + RULED stamp**) ·
+> `notes/_briefs/2026-07-27-gm-compaction-enactment-brief.md` (**NEW**) ·
+> `_DECISION-HISTORY/2026-07-27-supersession-by-addition.md` (**NEW dossier**) ·
+> `_GM-ARCHIVE.md` (2c, batch 2026-07-27 #13) · `_LIVE-STATE-ARCHIVE.md` (2d, #10 delta) ·
+> `_LIVE-STATE.md` · this file. **No build run — zero source/knowledge-pipeline files touched;
+> last known 62/62 GREEN stands.** STAND-002 + `_capture_gate.py --wrap` run at close (results in
+> the wrap message). Dave pushes via GitHub Desktop (whole stack, Desktop closed while Claude commits).
+>
 > **pre-flight:** fill 12% + job 30% + wrap 5% = 47% AMBER · reserve 15% ring-fenced
 > *(Session #12, 2026-07-27. Closed 🔴 **~72% RED. Overrun +25, and it is the largest recorded** —
 > **but the whole excess is TWO UNPLANNED FINDINGS, both forked to Dave at the moment they appeared,
