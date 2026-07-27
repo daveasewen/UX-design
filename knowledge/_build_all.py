@@ -113,6 +113,10 @@ STEPS = [
     ("type-binding blast-radius gate (canon/type.css)", "_validate_type_blast_radius.py"),
     ("descender-clip gate (ds-005) — truncating labels stay descender-safe", "_validate_descender_clip.py"),
     ("DataViz chart gate (semantic SVG + tokens + table spine)", "_validate_dataviz.py"),
+    # WIRED 2026-07-27 (ds-014): this selftest already existed and ran only by hand, so nothing
+    # proved dv-004 could fail — and it could not, on `stacked-column`. Exactly the rot the
+    # ADR-0014 note below warns about. Unwired selftests are CLAIMED gates.
+    ("DataViz gate selftest — bite-tests dv-004 + the dtype vocabulary (ds-014)", "_validate_dataviz.py", ["--selftest"]),
     ("reverse-text edge-extremity check {#col26-020} (advisory)", "_validate_edge_extremity.py"),
     ("compliance verification edges — applies_to vs verified_by (advisory)", "compliance/_build_verification_edges.py"),
     ("external automatable-check refs — axe-core import (advisory)", "compliance/_import_axe_rules.py"),

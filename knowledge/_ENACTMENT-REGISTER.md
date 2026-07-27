@@ -8,25 +8,19 @@
 
 | verdict | count | meaning |
 |---|---:|---|
-| **PROVEN** | 3 | a check names it AND a selftest proves that check can FAIL on it |
+| **PROVEN** | 4 | a check names it AND a selftest proves that check can FAIL on it |
 | **CLAIMED** | 20 | a check names it, nothing proves it can fail — the dangerous middle |
-| **UNPROVEN** | 53 | no executable check names it at all |
+| **UNPROVEN** | 54 | no executable check names it at all |
 | **NOT-GATEABLE** | 0 | the ledger says so explicitly, with a reason |
-| **TOTAL** | 76 | |
+| **TOTAL** | 78 | |
 
-**3 of 76 rulings (4%) are PROVEN.** That number is the finding, not a failure of this script.
+**4 of 78 rulings (5%) are PROVEN.** That number is the finding, not a failure of this script.
 
 ⚠ **CLAIMED is not a soft PROVEN.** ds-013 lived in CLAIMED for weeks: `_sweep_type_enactment.py` named its subject and reported *0 deviations* while it could not read the stylesheet at all. A green light from a blind check is worse than no check.
 
 ## Scope blindness — gates that cannot see part of their own corpus
 
-| vocabulary | value | uses | gate | consequence |
-|---|---|---:|---|---|
-| `data-dv-type` | `grouped-column` | 1 | `knowledge/_validate_dataviz.py` | declared in the corpus, matched by no branch — every dtype-keyed rule silently skips it |
-| `data-dv-type` | `scatter` | 3 | `knowledge/_validate_dataviz.py` | declared in the corpus, matched by no branch — every dtype-keyed rule silently skips it |
-| `data-dv-type` | `stacked-column` | 1 | `knowledge/_validate_dataviz.py` | declared in the corpus, matched by no branch — every dtype-keyed rule silently skips it |
-
-*OBSERVED 2026-07-27: this is exactly how **dv-004** (BLOCKING, ≥2px separation between colour blocks) passed on a chart with **0.0px** separation. Dave saw it; the build did not.*
+*No scope-blind vocabulary values detected.*
 
 ## The register
 
@@ -47,7 +41,7 @@
 | `ADR-0013` | **PROVEN** | ADR-0013 — Component-type tier: shared VALUES and shared RULES (composition by retrieval) | knowledge/_validate_partials.py, knowledge/gen_component_partials.py | `docs/decisions/ADR-0013-component-type-tier-composition.md` |
 | `ADR-0014` | **CLAIMED** | ADR-0014 — Per-theme neutral primitives: the neutral DNA tier + the opacity-snaps-to-ramp state test | knowledge/_validate_state_snap.py | `docs/decisions/ADR-0014-per-theme-neutral-primitives-state-snap.md` |
 | `ADR-0015` | **PROVEN** | ADR-0015 — Behaviour partials: the dataviz interaction layer as generated JS | knowledge/gen_component_partials.py | `docs/decisions/ADR-0015-behaviour-partials-dataviz.md` |
-| `ADR-0016` | **UNPROVEN** | ADR-0016 — Enactment proof: rulings must be provably LIVE, not merely inscribed | — | `docs/decisions/ADR-0016-enactment-proof-register.md` |
+| `ADR-0016` | **PROVEN** | ADR-0016 — Enactment proof: rulings must be provably LIVE, not merely inscribed | knowledge/_validate_dataviz.py | `docs/decisions/ADR-0016-enactment-proof-register.md` |
 | `B-D1` | **UNPROVEN** | B-D1 — Apollo Mono primary carries NO red (2026-07-20). Source: Dave. FIRM. | — | `_proforma/_BUTTON-DECISIONS.md` |
 | `B-D2` | **UNPROVEN** | B-D2 — Mono primary token ladder minted; completes `button/*` (2026-07-20). | — | `_proforma/_BUTTON-DECISIONS.md` |
 | `B-D3` | **UNPROVEN** | B-D3 — Hover = dual token; mechanism is selectable (2026-07-20). → ADR-0009. | — | `_proforma/_BUTTON-DECISIONS.md` |
@@ -68,6 +62,8 @@
 | `DV-D11` | **CLAIMED** | DV-D11 · The LEGEND MODEL — dual gesture, two fade levels, additive isolate (2026-07-26). | knowledge/_check_legend_migration.py, knowledge/_verify_dv_legend.js, knowledge/_verify_dv_legend_members.js | `_proforma/_DATAVIZ-DECISIONS.md` |
 | `DV-D12` | **CLAIMED** | DV-D12 · Donut sweep easing = trapezoidal velocity keyed to SEGMENT SPANS (2026-07-26). | knowledge/_verify_dv_legend_members.js | `_proforma/_DATAVIZ-DECISIONS.md` |
 | `DV-D13` | **CLAIMED** | DV-D13 · The Value⇄Percent seg drives EVERY numeric surface; the centre figure follows the | knowledge/_verify_dv_legend.js, knowledge/_verify_dv_legend_members.js | `_proforma/_DATAVIZ-DECISIONS.md` |
+| `DV-D14` | **UNPROVEN** | DV-D14 · dv-004 separation is satisfied by GEOMETRY on gridded plots, not by a surface-coloured | — | `_proforma/_DATAVIZ-DECISIONS.md` |
+| `DV-D15` | **UNPROVEN** | DV-D15 · Type drawn ON a series fill gets its own semantic role — `data/text/on-series` MINTED | — | `_proforma/_DATAVIZ-DECISIONS.md` |
 | `R-D1` | **UNPROVEN** | R-D1 — RAG promotion, round one (2026-07-18) | — | `_proforma/_RAG-DECISIONS.md` |
 | `R-D2` | **UNPROVEN** | R-D2 — Background/glyph split + matting (2026-07-18) | — | `_proforma/_RAG-DECISIONS.md` |
 | `R-D3` | **UNPROVEN** | amber (deepening only reaches 2.52 at L0.72 before it goes ochre/brown, R-D3-barred). So on white the watch fill | — | `_proforma/_RAG-DECISIONS.md` |

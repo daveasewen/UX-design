@@ -26,6 +26,15 @@ that single pass.** Running list of what it must cover:
   (labels 16px/400 → 12px/500, keys → 12px/700); everywhere else the delta is unmeasured. Anything that
   looked acceptable at browser defaults may have moved. **This wants a deliberate sweep — it is the
   cheapest moment to catch type regressions across the library, and it is not a chart question.**
+- **★ NEW 2026-07-27 (later morning #2) — Chart-bar `cb5` STACKED COLUMN re-geometried + alpha keys
+  re-coloured; Dave has not seen it rendered.** Pane: `showroom/chart-bar.html` (also
+  `knowledge/snippets/Chart-bar.reference.html` standalone). Both changes are DV-D14/DV-D15 enactments
+  and both are **measured green** (`knowledge/_verify_dv_stacked_enactment.py`: 2.00px separation on all
+  8 boundaries; keys white at 5.26 / 5.04 / **4.61:1**), but the *look* is his call:
+  **(i)** segments now understate by **2.0–2.6%** to buy the gap — accepted at ruling time, never seen;
+  **(ii)** the keys flipped ink → white, which changes the chart's whole texture at a glance;
+  **(iii)** ⚠ **series-3's 4.61:1 leaves 0.11 of margin over AA** — flagged because it constrains any
+  future re-tune of that hue, and he should know the ceiling is that close before he approves the look.
 - **Video-player re-themed — ★ FAST FOLLOWER, do NOT hold for the consolidated pass (Dave 2026-07-21
   end-of-session: "fine-ish for now, lets make it a fast follower"):** primary action
   now the B-D1 ladder ink (red = Legacy-only via override); `--muted` bound to `text/secondary` — a **deliberate

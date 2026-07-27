@@ -12,6 +12,57 @@ graduates OUT of here into `_LIVE-STATE` OPEN/TARGET when work starts. Refresh w
 **Entry format:** what · why it's held · what it feeds (Apollo phase/mode) · source/provenance pointer ·
 status (`idea` / `parked` / `resurrection-candidate` / `graduated→LIVE`).
 
+## ★★ FORCING THE KG INTO THE DECISION LOOP — "the KG shouldn't be ignored, that's what it's there for" (Dave, 2026-07-27)
+**status: FLOATED — explicitly NOT ruled.** Dave, verbatim, mid-session:
+> *"I want you to note that we may create something that will force decisions to check that KG in such
+> situations, I don't know what that is, you will have to explore the benefits, method and implications
+> with me, the KG is a valuable resource and shouldn't be ignored, thats what it is there for... along
+> with many other things"*
+
+**He named it while holding the evidence.** Same session, ds-014 call (a): I recommended a 2px
+surface-coloured stroke for the stacked column's separation. Dave pushed back — *"I prefer the geometry
+the border will obscure gridlines, may I know why you recommend borders?"* — and then supplied the fact
+that settled it: *"btw the gap is only 2px minimum, this is in the dataviz specifications in the KG."*
+**He was reading the KG. I was not.** CONSULT-before-designing is a STANDING rule and I skipped it; the
+recommendation came from transferring the donut's mechanism without checking the ground under it.
+
+**The finding that came out of finally running the consult, and it is the generalisable one:**
+dv-004's rule text is **mechanism-NEUTRAL** — *"minimum 2px separation between colour blocks"*. But
+`_validate_dataviz.py` had implemented it as *"must carry a surface-coloured stroke >=2px"*. **The gate
+had silently narrowed a rule into one mechanism** — so the only "compliant" answer available to an agent
+reading the gate was the wrong one for a chart that sits on gridlines. ⇒ **The KG was right and reachable
+the whole time; the enforcement layer had drifted off it, and nothing compared the two.**
+*(Fixed this session for dv-004 specifically — both mechanisms now pass, 9 new bites. The CLASS is what
+this entry holds open.)*
+
+**Why this is not just "remember to consult."** A rule that depends on the agent remembering is exactly
+as reliable as a gate nobody proved can fail — which is the ds-013/CLAIMED lesson (ADR-0016). Dave's
+instinct is to make it **structural**. Angles to explore WITH him, none picked:
+- **(1) Rule-text vs gate-implementation drift check.** Compare what a rule SAYS against what its gate
+  DEMANDS; flag narrowings. This is the one that would have caught dv-004 directly, and it is the exact
+  mirror of ADR-0016: the register asks *"is this ruling live?"*, this asks *"is the gate still enforcing
+  the rule, or its own paraphrase of it?"*
+- **(2) Consult-on-write, not consult-by-discipline.** The build already touches every changed file — it
+  could run the consult for the rule-IDs the diff touches and surface what governs them, advisory then
+  blocking. Removes the remembering from the loop entirely.
+- **(3) Consult receipt as a precondition on rulings.** A decision record must cite the consult it rests
+  on. Cheap; games easily (a citation is not a reading) — probably weakest alone, useful combined.
+- **(4) Reframe: the KG as the thing an agent must ASK, not the thing it may recall.** Ties to
+  [[stale-reading-failure-mode]] and the retrieval-not-recall principle in the charter — this may be a
+  charter-level statement rather than a tool.
+
+**⚠ Implication to price honestly before building any of it — the instrument can be blind too.** Today's
+consult printed **`rulings (5/5 shown, --all for more)`**: it TRUNCATES by default. A forcing function
+built on a truncating query is a CLAIMED gate with extra steps — the ds-013 shape exactly. **Any build
+here needs the consult's own recall bite-tested first** (does it return the governing rule for a known
+case, and does it fail loudly when it cannot?). Second cost: every decision gains a friction step, and
+the context gauge already binds.
+
+**Feeds:** Discover/Create · the enactment-proof programme (ADR-0016 P2/P3) · the harness-framework
+spin-off (this is a governance primitive other teams would want, not an Apollo local fix).
+**Source:** this session, alongside ds-014 calls (a)+(b). **Owed: a session with Dave to explore it —
+benefits, method, implications. Do NOT build ahead of that conversation.**
+
 ## ★ Multi-thread "GOOD-MORNING" — a handoff mechanism for parallel long-running threads (Dave, 2026-07-24)
 **The problem Dave named:** two async threads now run in parallel ACROSS sessions — the chart **FAN-OUT**
 (wave; GM §C·1a + `notes/_briefs/2026-07-24-chart-wave-lane{1,2,3}`) and the **CONTROLS SYSTEM** (seg atom +

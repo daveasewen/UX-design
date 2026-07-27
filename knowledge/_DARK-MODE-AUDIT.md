@@ -2,7 +2,7 @@
 
 > Which components re-theme correctly in dark mode. **LEAK** = binds a raw colour *primitive* directly (single-valued, no dark variant — a real defect; the P3 family). *flat* = binds a semantic token whose dark value equals its light value (frequently intentional — reverse text, RAG, brand red — confirm per case). Derived view over the colour stores + blast-radius; regenerate: `python3 knowledge/_build_dark_mode_audit.py`. Detail in `_DARK-MODE-AUDIT.json`.
 
-**Coverage:** 60/67 components clean · 7 leak a primitive. Store: 187 semantic colour tokens (light+dark), 53 flat (dark==light), 225 primitives.
+**Coverage:** 60/67 components clean · 7 leak a primitive. Store: 188 semantic colour tokens (light+dark), 54 flat (dark==light), 225 primitives.
 
 ## Primitive leaks — fix before dark mode
 

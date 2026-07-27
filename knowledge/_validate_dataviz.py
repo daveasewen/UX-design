@@ -57,6 +57,70 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 PROFORMA_DIR = os.path.join(HERE, "_proforma")
 SIGNATURE = "APOLLO-DATAVIZ"
 BAR_FAMILY = {"column", "bar", "grouped", "stacked", "combo"}
+
+# ---- dtype vocabulary (ds-014 → ADR-0016, 2026-07-27) --------------------------------------
+# The corpus FORKED without anyone noticing: `stacked` AND `stacked-column`, `grouped` AND
+# `grouped-column` both ship, and `scatter` was never taught to this gate at all. Every
+# dtype-keyed branch below tested only the short forms, so dv-004, dv-bar-009 and dv-line-011
+# were INERT on the long ones — which is how a stacked column with 0.0px separation passed a
+# BLOCKING ">=2px" rule for weeks and had to be caught by Dave's eye.
+# Fixed STRUCTURALLY, not by enumeration: normalise once, here, and FAIL LOUD on any dtype this
+# gate has never heard of. Enumerating the three known synonyms would only postpone the next
+# miss — an unknown dtype must not be able to slip past five branches in silence again.
+DTYPE_CANON = {
+    "stacked-column": "stacked",
+    "stacked-bar":    "stacked",
+    "grouped-column": "grouped",
+    "grouped-bar":    "grouped",
+}
+KNOWN_DTYPES = {
+    "column", "bar", "grouped", "stacked", "combo",
+    "line", "multiline", "spark", "kpi", "donut", "pie", "scatter",
+}
+
+
+def _seg_has_surface_stroke(seg):
+    """dv-004, mechanism 1: a >=2px stroke painted in the surface colour."""
+    sw = re.search(r'stroke-width="?\s*([\d.]+)', seg) or re.search(r'stroke-width:\s*([\d.]+)', seg)
+    stroke = re.search(r'stroke="([^"]+)"', seg)
+    return bool(sw and float(sw.group(1)) >= 2 and stroke
+                and ("page" in stroke.group(1) or "raised" in stroke.group(1) or "surf" in stroke.group(1)))
+
+
+def _rect_stack_gap(segs, minimum=2.0):
+    """dv-004, mechanism 2: REAL geometric separation in a rect stack.
+
+    Returns (True | False | None, detail). None = not statically measurable (arcs/paths, or a
+    horizontal stack whose columns don't group by x) — in which case the caller falls back to
+    demanding the stroke, so an unmeasurable chart fails SAFE rather than passing silently.
+
+    Vertical stacks group by x; within a column, segments sorted by y ascending run top-to-bottom,
+    so the gap below segment i is y[i+1] - (y[i] + h[i]). dv-004 says MINIMUM 2px — a larger gap
+    passes, which is the point Dave made when he ruled the geometry route on 2026-07-27.
+    """
+    cols = {}
+    for seg in segs:
+        x = re.search(r'\bx="([\d.]+)"', seg)
+        y = re.search(r'\by="([\d.]+)"', seg)
+        h = re.search(r'\bheight="([\d.]+)"', seg)
+        if not (x and y and h):
+            return (None, "segments are not measurable rects")
+        cols.setdefault(x.group(1), []).append((float(y.group(1)), float(h.group(1))))
+    worst = None
+    for x, rows in cols.items():
+        if len(rows) < 2:
+            continue
+        rows.sort()
+        for (y1, h1), (y2, _h2) in zip(rows, rows[1:]):
+            gap = y2 - (y1 + h1)
+            if worst is None or gap < worst[0]:
+                worst = (gap, x)
+    if worst is None:
+        return (None, "no column carries 2+ segments")
+    gap, x = worst
+    if gap + 1e-6 >= minimum:
+        return (True, "smallest measured gap %.2fpx at x=%s" % (gap, x))
+    return (False, "smallest measured gap is %.2fpx at x=%s (needs >=%.0fpx)" % (gap, x, minimum))
 CURVE_CMDS = re.compile(r'[CSQTcsqt]')
 
 # ---------------- colour maths (lifted from _review/_gen_series_renders.py — one source) ----------------
@@ -188,7 +252,13 @@ def series_fill_vars(inner):
 def check_chart(attrs, inner, themes, ctx):
     """Return (blocking[list], advisory[list]). ctx = per-file journey map (mutated)."""
     B, A = [], []
-    dtype = attrs["data-dv-type"]
+    raw_dtype = attrs["data-dv-type"]
+    dtype = DTYPE_CANON.get(raw_dtype, raw_dtype)
+    if dtype not in KNOWN_DTYPES:
+        B.append("dv-vocab: data-dv-type=\"%s\" is unknown to this gate — EVERY dtype-keyed rule "
+                 "(dv-004, dv-bar-009, dv-bar-007, dv-pie-009/010, dv-line-011) would skip this "
+                 "figure in silence. Add it to KNOWN_DTYPES, or to DTYPE_CANON if it is a synonym, "
+                 "before shipping the figure." % raw_dtype)
     surface_key = "--raised" if attrs.get("data-surface") == "raised" else "--page"
     svg = "\n".join(re.findall(r'<svg\b.*?</svg>', inner, re.S))
 
@@ -238,16 +308,24 @@ def check_chart(attrs, inner, themes, ctx):
                     msg = "dv-016 [%s]: %s=%s vs surface %s = %.2f:1 (<3:1) in %s mode." % (label, expr, hexv, surf, r, theme)
                     (B if block else A).append(msg)
 
-    # --- dv-004 >=2px separation on gapless surfaces (donut/stacked) --------
+    # --- dv-004 >=2px separation on gapless surfaces (donut/pie/stacked) ----
+    #     The RULE is mechanism-NEUTRAL: "minimum 2px separation between colour blocks".
+    #     This gate used to demand a surface-coloured stroke and nothing else — so a chart that
+    #     satisfied dv-004 with real geometry would have FAILED it, and the one available
+    #     mechanism is the one that reads as correct on plain page and lies over gridlines.
+    #     Dave ruled the geometry route for stacked columns on 2026-07-27; both mechanisms now
+    #     pass, and an unmeasurable chart still has to carry the stroke.
     if dtype in ("donut", "pie", "stacked"):
         segs = re.findall(r'<(?:path|rect|circle)\b[^>]*class="[^"]*dv-series[^"]*"[^>]*>', inner)
-        for seg in segs:
-            sw = re.search(r'stroke-width="?\s*([\d.]+)', seg) or re.search(r'stroke-width:\s*([\d.]+)', seg)
-            stroke = re.search(r'stroke="([^"]+)"', seg)
-            ok = sw and float(sw.group(1)) >= 2 and stroke and ("page" in (stroke.group(1)) or "raised" in stroke.group(1) or "surf" in stroke.group(1))
-            if not ok:
-                B.append("dv-004: %s segment lacks a >=2px surface-coloured separating stroke." % dtype)
-                break
+        stroke_ok = bool(segs) and all(_seg_has_surface_stroke(s) for s in segs)
+        gap_ok, gap_note = _rect_stack_gap(segs) if dtype == "stacked" else (None, "not a rect stack")
+        if not stroke_ok and gap_ok is not True:
+            if gap_ok is False:
+                B.append("dv-004: %s — %s, and no >=2px surface-coloured separating stroke."
+                         % (raw_dtype, gap_note))
+            else:
+                B.append("dv-004: %s segment lacks a >=2px surface-coloured separating stroke "
+                         "(geometry not statically measurable here: %s)." % (raw_dtype, gap_note))
 
     # --- dv-bar-009 zero baseline (bar-family ONLY; never fires on lines) ---
     if dtype in BAR_FAMILY:
@@ -440,6 +518,51 @@ def selftest():
                   '<path class="dv-series" fill="var(--data-series-1)" d="M0 0"/></svg>'
                   '<table><tr><th>A</th><td>30</td></tr></table></figure>',
                   lambda B, A: has(B, "dv-004")))
+
+    # ---- ds-014 / ADR-0016 bites (2026-07-27) ------------------------------------------
+    # These exist because dv-004 shipped GREEN on a stacked column with 0.0px separation for
+    # weeks. The branch tested `stacked`; the figure said `stacked-column`; the gate never
+    # looked. Bite 1 IS that exact figure — it must fail. A gate you cannot prove will fail is
+    # a CLAIMED gate, and CLAIMED is where ds-013 lived.
+    def _stack(gap_px, dtype="stacked-column", stroke=""):
+        """Two-segment stacked column, baseline y=60. Upper segment's bottom is `gap_px` above
+        the lower segment's top, so the gap is exact and declared by the caller."""
+        return ('<figure class="dv" data-dv-type="%s" data-domain-min="0">'
+                '<svg class="dv-svg" viewBox="0 0 100 60">'
+                '<rect class="dv-series" fill="var(--data-series-1)"%s x="10" y="30" width="20" height="30"/>'
+                '<rect class="dv-series" fill="var(--data-series-2)"%s x="10" y="%s" width="20" height="20"/>'
+                '</svg><table><tr><th>A</th><td>30</td></tr><tr><th>B</th><td>20</td></tr></table></figure>'
+                % (dtype, stroke, stroke, 10 - gap_px))
+
+    cases.append(("★ dv-004 FIRES on the ds-014 figure — stacked-column, 0.0px gap, no stroke",
+                  _stack(0.0), lambda B, A: has(B, "dv-004")))
+    cases.append(("★ dv-004 PASSES on 2px of REAL GEOMETRY (Dave's ruling, no stroke needed)",
+                  _stack(2.0), lambda B, A: not has(B, "dv-004")))
+    cases.append(("dv-004 boundary — 1.9px gap is still a failure",
+                  _stack(1.9), lambda B, A: has(B, "dv-004")))
+    cases.append(("dv-004 accepts MORE than the minimum (6px gap)",
+                  _stack(6.0), lambda B, A: not has(B, "dv-004")))
+    cases.append(("dv-004 stroke mechanism still passes with a 0px gap",
+                  _stack(0.0, stroke=' stroke="var(--page)" stroke-width="2"'),
+                  lambda B, A: not has(B, "dv-004")))
+    cases.append(("dv-004 unmeasurable geometry fails SAFE (no x/y/height, no stroke)",
+                  '<figure class="dv" data-dv-type="stacked-column" data-domain-min="0">'
+                  '<svg class="dv-svg"><path class="dv-series" fill="var(--data-series-1)" d="M0 0"/>'
+                  '<path class="dv-series" fill="var(--data-series-2)" d="M0 0"/></svg>'
+                  '<table><tr><th>A</th><td>30</td></tr></table></figure>',
+                  lambda B, A: has(B, "dv-004")))
+    cases.append(("★ dv-vocab FIRES on a dtype the gate has never heard of",
+                  _stack(2.0, dtype="sunburst"), lambda B, A: has(B, "dv-vocab")))
+    cases.append(("dv-vocab silent on the three values that were blind (scatter)",
+                  '<figure class="dv" data-dv-type="scatter"><svg class="dv-svg">'
+                  '<circle class="dv-series" fill="var(--data-series-1)" cx="5" cy="5" r="3"/></svg>'
+                  '<table><tr><th>A</th><td>5</td></tr></table></figure>',
+                  lambda B, A: not has(B, "dv-vocab")))
+    cases.append(("dtype synonym normalises — grouped-column reaches dv-bar-009",
+                  '<figure class="dv" data-dv-type="grouped-column"><svg class="dv-svg">'
+                  '<rect class="dv-series" fill="var(--data-series-1)" x="0" y="10" width="20" height="50"/>'
+                  '</svg><table><tr><th>A</th><td>50</td></tr></table></figure>',
+                  lambda B, A: has(B, "dv-bar-009") and not has(B, "dv-vocab")))
     cases.append(("dv-line-011 curved series path",
                   '<figure class="dv" data-dv-type="line"><svg class="dv-svg">'
                   '<path class="dv-series" stroke="var(--data-series-1)" d="M0 0 C10 10 20 0 30 0"/></svg>'

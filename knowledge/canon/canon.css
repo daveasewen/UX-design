@@ -373,6 +373,7 @@
   --data-grid-alpha: 1;
   --data-target-color: #313131;
   --data-target-alpha: 1;
+  --data-text-on-series: #FFFFFF;
   --data-delta-gain: #16864E;
   --data-delta-loss: #B92F1E;
   --data-delta-neutral: #2573DC;
@@ -666,6 +667,7 @@
   --data-axis-color: #9D9D9D;
   --data-grid-color: #484848;
   --data-target-color: #B7B7B7;
+  --data-text-on-series: #FFFFFF;
   --data-delta-gain: #1AA05C;
   --data-delta-loss: #CC4333;
   --data-delta-neutral: #2674DC;
@@ -3393,6 +3395,7 @@
   --status-info: var(--rag-information);
   --shadow: var(--elevation-functional);
   --pop-border: var(--elevation-border);
+  --data-text-on-series: #FFFFFF;
 }
 .cn-chart-bar [data-contrast="high"]{--data-series-1:var(--data-series-1-hc);
     --data-series-2:var(--data-series-2-hc);
@@ -3430,8 +3433,18 @@
 @keyframes cn-chart-bar-dvGrowX{from{transform:scaleX(0);}}
 @keyframes cn-chart-bar-dvFade{from{opacity:0;} to{opacity:1;}}
 .cn-chart-bar text.dv-barkey{transition:opacity var(--ease), visibility var(--ease);}
-/* on-chart series letter keys (DV-D08 700 emphasis) — ink, not series hue */
+/* on-chart series letter keys (DV-D08 700 emphasis) — ink, not series hue.
+     TWO grounds, two roles: cb4's grouped keys sit on PAGE AIR beside the bars and take ink;
+     cb5's stacked keys are drawn ON a series fill and take data/text/on-series (minted
+     2026-07-27, Dave's ruling on ds-014 call (b)).
+     ⚠ ANTI-FALSE-FIX — do NOT re-collapse these into one blanket rule. Until 2026-07-27 this
+     was a single `text.dv-barkey{fill:var(--ink)}`. A CSS rule beats an SVG presentation
+     attribute, so it silently overrode the `fill=` every key declared and rendered all 24 ink
+     — including the 12 stacked keys, which measured 3.31 / 3.46 / 3.78:1 on their fills against
+     AA's 4.5:1 floor. Green in every gate for weeks; found by Dave's eye. The markup and these
+     rules now agree, deliberately: either alone would be enough, and that redundancy is the point. */
 .cn-chart-bar text.dv-barkey{fill:var(--ink);}
+[data-dv-type="stacked-column"] .cn-chart-bar text.dv-barkey{fill:var(--data-text-on-series);}
 /* ── TOOLBAR CONTROLS — ONE SHARED HEIGHT (Dave 2026-07-24), ported from Chart-line ── */
 .cn-chart-bar .dv-tbl-toggle, .cn-chart-bar .dv-vt{position:relative; height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
     background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;

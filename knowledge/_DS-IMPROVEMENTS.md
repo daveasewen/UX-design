@@ -513,3 +513,79 @@ in the gate ⇒ **dv-004, dv-bar-009 and dv-line-011 are all inert on those thre
 - **(d)** NEW, un-ruled, not on Dave's list: `.dv-donut-row` is `flex-start`, so the ring+legend
   cluster pins left and whitespace grows with viewport (**−114px at 600 → −534px at 1440** from
   figure centre). No ruling covers donut cluster alignment. Flagged only.
+
+---
+
+**★★ ds-014 CALLS (a)+(b) RULED AND ENACTED — 2026-07-27, later morning. Proven by RENDER, not by gate.**
+
+**Dave ruled (a) = GEOMETRY, against my recommendation, and he was right on the evidence.** I had
+recommended the donut's 2px surface-coloured stroke. He pushed back — *"I prefer the geometry the
+border will obscure gridlines, may I know why you recommend borders?"* — and he was correct:
+**`cb5` carries 5 full-width `.dv-grid` lines behind the columns; the donut carries none.** An SVG
+stroke straddles its path, so a 2px page-coloured stroke puts 1px OUTSIDE each rect and would paint
+over every gridline down both sides of all 4 columns. ⇒ **A surface-coloured stroke only simulates
+separation when the thing behind it IS the surface.** The donut precedent does not transfer to a
+gridded plot. *(My recommendation was precedent-transfer without checking the ground — recorded as
+the error it was.)*
+
+**★ THE RULE HAD BEEN NARROWED BY ITS OWN GATE — the generalisable finding.** dv-004's text is
+mechanism-NEUTRAL: *"minimum 2px separation between colour blocks."* `_validate_dataviz.py`
+implemented it as *"must carry a surface-coloured stroke >=2px"*. **So a chart satisfying dv-004
+with real geometry would have FAILED the gate**, and the only "compliant" answer available to an
+agent reading the gate was the wrong one for this chart. Dave caught it from the KG —
+*"the gap is only 2px minimum, this is in the dataviz specifications in the KG"* — which is the
+seed of the forcing-function idea now held in `_FUTURE-STATE.md`.
+
+**ENACTED, geometry variant A (both ends pinned):** baseline stays `y=230` and each stack top stays
+at its true total, so every column still reads correctly against the gridlines; the 4px (2 boundaries
+× 2px) comes out of segment heights, proportionally. Cost, stated at ruling time and accepted:
+segments understate by **2.0–2.6%**, worst on the shortest column.
+
+**ENACTED (b): `data/text/on-series` MINTED** (Dave's promotion) → `color/grey/white`, pinned in BOTH
+modes, modelled on `rag/text/on-dark`. **Deliberately no alpha channel** — DV-D07 requires contrast to
+compute from the composite, so an alpha slot here would be a route to a key that passes on the hex and
+fails on screen. The blanket `text.dv-barkey{fill:var(--ink)}` is now split by ground: ink for cb4's
+keys on page air, `--data-text-on-series` for cb5's keys on fills, with an anti-false-fix comment.
+
+**★ MEASURED, licensed cut, snippet AND showroom pane, 1180 AND 760 — all four agree:**
+
+| assertion | ruled | rendered | verdict |
+|---|---|---|---|
+| dv-004 separation | ≥2px | **2.00px** across all 8 boundaries, every context | ✅ |
+| alpha key A on `rgb(118,102,130)` | ≥4.5:1 | **5.26:1** | ✅ |
+| alpha key B on `rgb(164,92,58)` | ≥4.5:1 | **5.04:1** | ✅ |
+| alpha key C on `rgb(87,124,120)` | ≥4.5:1 | **4.61:1** | ✅ ⚠ |
+
+⚠ **The handoff predicted "white measures ≈5:1". MEASURED worst case is 4.61:1** — series-3, margin
+**0.11 over AA**. Recorded as measured, per the 07-26 Correction-2 rule. **Series-3 cannot be lightened
+without breaking this**, and nothing but the new proof would catch it.
+
+**★ A THIRD INSTANCE OF THE SILENT-FALLBACK CLASS, caught by the probe and not by any gate.** With the
+token minted, generated into `canon.css`, and the whole build green, **the keys still rendered BLACK
+(3.99:1)**. Cause: the snippet is standalone-previewable and carries a LOCAL MIRROR of the token list
+in its own `[data-theme]` blocks — and it did not declare `--data-text-on-series`. **`fill:var(--undefined)`
+does not fall back to the previous value; it falls back to the SVG initial value, black, in silence.**
+Same shape as ds-010 (author CSS beat the `fill=` attribute) and ds-013 (404 stylesheet): *the failure
+mode of this file's whole history is a lookup that misses and reports nothing.*
+
+**★ GATE WORK — condition gated, not instance patched:**
+1. **`dv-vocab` (NEW, BLOCKING)** — any `data-dv-type` the gate has never heard of now FAILS the build,
+   naming the rules that would have skipped it. The corpus had forked unnoticed: **both `stacked` and
+   `stacked-column`, both `grouped` and `grouped-column`**, plus `scatter`. Enumerating the three known
+   synonyms would only have postponed the next miss.
+2. **`DTYPE_CANON`** normalises synonyms once, at read time, instead of at five separate branches.
+3. **dv-004 now accepts EITHER** a ≥2px surface stroke **or** ≥2px of measured geometry
+   (`_rect_stack_gap`), matching the rule's own wording. Unmeasurable geometry still demands the
+   stroke — it fails SAFE.
+4. **9 new bites**, including one that reproduces the exact ds-014 figure and one proving `dv-vocab`
+   fires. **Selftest WIRED into the build** (step added): it existed and ran only by hand, which is
+   precisely why nothing ever proved dv-004 could fail.
+5. **`knowledge/_verify_dv_stacked_enactment.py` (NEW)** — the ADR-0016 **P2 proof** for both rulings:
+   reads the ruled value, asserts the RENDERED value in the licensed cut across snippet × showroom ×
+   two widths. It caught the black-keys defect above, which every gate had passed.
+   ⚠ **It also committed the wrong-document error itself** — first pass queried only the top document
+   and reported "no stacked-column figure" for the showroom, whose panes are `srcdoc` iframes. Third
+   session running that a probe made the class of error it was written to detect. **Assume yours will.**
+
+**(c) DISCHARGED** — the vocabulary widening landed *with* (a), as required. **(d) PARKED on Dave's
+ruling** (2026-07-27): log only, rule it in a session where he can see it live. Not fixed, deliberately.

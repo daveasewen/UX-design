@@ -183,6 +183,53 @@ Source of these rulings: the exported review comment-pins on the REVIEW copy (ba
   `Chart-donut.reference.html` (and any chart carrying the value⇄percent seg).
   Edges: refines(DV-D11, scope=seg-numeric-coherence) · bounds(dv-006, scope=tooltip-carries-selected-type-only)
 
+- **DV-D14 · dv-004 separation is satisfied by GEOMETRY on gridded plots, not by a surface-coloured
+  stroke (2026-07-27).** Dave ruled against the agent's recommendation, on the evidence. The agent
+  had proposed reusing the donut's 2px `stroke="var(--page)"` mechanism; Dave: *"I prefer the geometry
+  the border will obscure gridlines, may I know why you recommend borders?"* — and then supplied the
+  governing fact: *"btw the gap is only 2px minimum, this is in the dataviz specifications in the KG."*
+  - **Why the donut precedent does not transfer:** `cb5` carries **5 full-width `.dv-grid` lines behind
+    the columns; the donut carries none.** An SVG stroke straddles its path, so a 2px page-coloured
+    stroke puts 1px OUTSIDE each rect and paints over every gridline down both sides of all 4 columns.
+    ⇒ **A surface-coloured stroke only simulates separation when the thing behind it IS the surface.**
+  - **Ruled shape — variant A, both ends pinned:** baseline stays at `y=230` and each stack top stays at
+    its TRUE total, so every column still reads correctly against the gridlines and the y-axis. The
+    4px (2 boundaries × 2px) comes out of segment heights, proportionally. **Accepted cost, stated at
+    ruling time: segments understate by 2.0–2.6%, worst on the shortest column.**
+  - **2px is a FLOOR, not a target** (Dave, verbatim above) — a larger gap passes.
+  - ⚠ **The finding this exposed, and it outranks the chart:** dv-004's rule text is mechanism-NEUTRAL
+    (*"minimum 2px separation between colour blocks"*) but `_validate_dataviz.py` had implemented it as
+    *"must carry a surface-coloured stroke >=2px"*. **The gate had silently narrowed the rule into one
+    mechanism**, so the only "compliant" answer available to an agent reading the gate was the wrong one
+    for this chart. The gate now accepts EITHER mechanism; unmeasurable geometry still demands the stroke
+    (fails safe). Held open as a CLASS in `_FUTURE-STATE.md` (Dave's forcing-function idea).
+  Enactment: `Chart-bar.reference.html` cb5 re-geometried; `_validate_dataviz.py` `_rect_stack_gap()`.
+  Proof: `knowledge/_verify_dv_stacked_enactment.py` — **2.00px on all 8 boundaries**, licensed cut,
+  snippet AND showroom pane, 1180 AND 760.
+  Edges: refines(dv-004, scope=mechanism-neutral-separation) · supersedes-mechanism(dv-004-stroke-only)
+
+- **DV-D15 · Type drawn ON a series fill gets its own semantic role — `data/text/on-series` MINTED
+  (2026-07-27).** Dave's promotion (derivation governance). The stacked alpha keys had been declaring
+  `var(--page)`, which renders white today only because of where the neutral ramp sits — **a coincidence,
+  not an intent**; on a dark-page theme they would resolve dark and vanish into the fill. Dave:
+  *"we have a declared token schema for light-mode with dark surface, can we use this… will it be hard
+  coded"* — the `data/*` namespace held **no** text-on-fill role at all, so this is a mint, not a lookup.
+  - **Shape:** `data/text/on-series` → `color/grey/white`, **pinned in BOTH modes**, modelled on the
+    proven `rag/text/on-dark`. **Deliberately carries NO alpha channel**, unlike its `data/axis`,
+    `data/grid` and `data/target` siblings: **DV-D07** requires contrast to compute from the composite
+    (colour × alpha × ground), so an alpha slot here would be a route to a key that passes on the stored
+    hex and fails on screen — the ds-013 shape. Full opacity is the contract.
+  - **type26-013 does NOT collide,** contrary to the prior handoff's fear: the rule reads *"Black/dark-grey
+    on light · white/light-grey on dark"* — white on a dark series fill sits inside the first clause; the
+    "white-only" restriction is specific to RED grounds. Checked, not assumed.
+  - **The blanket `text.dv-barkey{fill:var(--ink)}` is split by GROUND:** ink for cb4's keys on page air,
+    `--data-text-on-series` for cb5's keys on fills, with an anti-false-fix comment. A CSS rule beats an
+    SVG presentation attribute, which is how one blanket rule silently overrode all 24 keys' declared fills.
+  Proof: `_verify_dv_stacked_enactment.py` — **5.26 / 5.04 / 4.61:1** vs AA's 4.5, all four render contexts.
+  ⚠ **MEASURED worst case is 4.61:1 on series-3, margin 0.11** — the prior handoff predicted "≈5:1".
+  Recorded as measured. **Series-3 cannot be lightened without breaking AA here.**
+  Edges: refines(DV-D07, scope=composite-contrast-no-alpha-slot) · bounds(type26-013, scope=white-on-series-fill-permitted)
+
 ---
 
 ## Batch 1 — review 2026-07-16 (5 pins)
