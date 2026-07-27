@@ -816,7 +816,40 @@ a new task"* → *"should be teh pre-flight work, is that correct?"*). **No gate
 
 ## ds-018 — Legend Reset renders its DISABLED state as the HOVER state (2026-07-27, Dave by eye)
 
-**Status: LOGGED, NOT FIXED. Mechanism is a HYPOTHESIS and is explicitly NOT render-verified.**
+> ### ✅✅ RE-VERIFIED 2026-07-27 (session #10) — ds-018 **STANDS**, on a clean instrument.
+> **WHY A RE-CHECK WAS OWED:** ds-018 and the later-**withdrawn** ds-019 were measured in one session
+> by one probe. When that probe was discredited, ds-018 was left resting on its reputation. *"Should
+> not be affected" is not "is not affected"* — and a defect entry surviving on a discredited
+> instrument is the confident-false-inscription this project treats as the primary risk.
+> **RE-MEASURED** with `knowledge/_render/recheck_ds018.py` — licensed cut asserted, transitions
+> settled, **pointer parked** (`hovered` OBSERVED as a field, so the hover rule cannot be mistaken for
+> the finding), **4 contexts** (2 Reset instances × 1180/760). **All four identical, and unchanged:**
+> **`--border-disabled` → `''`** · **`--text-disabled` → `''`** · **`border-color` → `rgb(26,26,26)`
+> = `--ink`** · `color` → `rgb(26,26,26)`. **The timing defect did not reach it.** The census evidence
+> (29 declarations, ten FORM scopes, **zero** chart scopes) was always independent of any render and
+> is untouched.
+>
+> **★ AND THE SYMPTOM IS SHARPER THAN "DISABLED LOOKS LIKE HOVER" — THE TWO STATES ARE INVERTED.**
+> Measured across the real gesture sequence on one Reset (settled, unhovered, session #10):
+>
+> | legend state | Reset `:disabled` | `border-top-color` |
+> |---|---|---|
+> | baseline (all series shown) | **true** | **`rgb(26,26,26)` = `--ink`** |
+> | isolated (Reset is live and useful) | false | `rgb(225,225,225)` = `--line` |
+> | released (all shown again) | **true** | **`rgb(26,26,26)`** |
+>
+> ⇒ **The DISABLED Reset is the most prominent control in the legend, and the ENABLED one is the
+> faintest.** B-D4 requires disabled to be *visible-but-recessive*; this is not merely a wrong colour,
+> it is **an inversion of affordance** — the control shouts loudest exactly when it cannot be used.
+> ⚠ **This does not change the CAUSE** (still the lookup, still instance five) **and it does not
+> change who rules the fix** — but it raises the stakes on the fix shape, and it is a second, cheaper
+> gate candidate in its own right: *a disabled control may not out-contrast its own enabled state.*
+> **Evidence:** `knowledge/_render/recheck_ds018.py` + the three-state read · 2026-07-27 session #10.
+> **STILL OWED, UNCHANGED — Dave's ruling on the FIX SHAPE** (tier fix + which gate); `--text-disabled`
+> fails in the same breath and must be fixed with it. **RE-VERIFIED ≠ FIXED.**
+
+**Status: CONFIRMED (2026-07-27 #8) · RE-VERIFIED on a clean instrument (2026-07-27 #10) · NOT FIXED.
+The fix shape is Dave's. Original hypothesis wording kept below, verbatim, for the arc.**
 
 **What Dave saw**, verbatim: *"reset disabled style is set at the hover style."* Screenshot: a legend
 row with all three series showing — `A Current`, `B Savings`, `C Investments` all in the plain resting

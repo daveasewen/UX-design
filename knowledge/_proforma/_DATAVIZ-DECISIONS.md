@@ -481,10 +481,46 @@ below has been built, and nothing below has been render-verified.***
   (27/27 under that neutering) — its scenario starts all-visible, where `visible[]` and all-on are
   indistinguishable; only the members suite dims a spare **before** isolating. Do not treat the two
   suites as interchangeable proofs of bite (i).
-  ⚠ **RENDER-VERIFY IN THE LICENSED CUT IS OWED, NOT DONE** (Dave's ruling: wrap and flush at ~55%).
+  ~~⚠ **RENDER-VERIFY IN THE LICENSED CUT IS OWED, NOT DONE** (Dave's ruling: wrap and flush at ~55%).
   jsdom proves the state machine, not that `.is-solo` stops painting — and **ds-018 is a live
   counter-example on this same component.** Pair the two in one Green window: same page, same
-  harness, same two widths, one spin-up. Tracked in `GOOD-MORNING` §C·4 + `_REVIEW-SIGNOFF.md`.
+  harness, same two widths, one spin-up.~~ **✅ DISCHARGED 2026-07-27 (session #10) — see below.**
+
+  **✅✅ RENDER-PROVEN 2026-07-27 (session #10). DV-D17 IS NOW ENACTED · DOM-PROVEN · RENDER-PROVEN.**
+  `knowledge/_render/verify_dv_d17_render.py`, licensed HSBC cut asserted in every frame before
+  measuring, transitions killed **before the first gesture** (ds-019's lesson), **real pointer
+  clicks** on the real gestures (LABEL = isolate · SWATCH = check on) — never `classList.add`.
+  **Measured, identically, in six contexts** — snippet @1180/@760 · showroom **light** pane
+  @1180/@760 · showroom **dark** pane @1180/@760 (genuinely dark: `--ink` `#FFFFFF`, `--line`
+  `#808080`, so this is coverage, not the same pane counted twice):
+
+  | state | `.is-solo` | `border-top-color` | `background-color` |
+  |---|---|---|---|
+  | baseline | false | `rgb(225,225,225)` = `--line` | `rgba(0, 0, 0, 0)` |
+  | **isolated (POSITIVE CONTROL)** | **true** | **`rgb(26,26,26)` = `--ink`** ✓ | **`color(srgb 0.101961 0.101961 0.101961 / 0.06)` = 6% ink** ✓ |
+  | **released (THE RULING)** | **false** | **`rgb(225,225,225)`** ✓ | **`rgba(0, 0, 0, 0)`** ✓ |
+
+  **★ WHY THE OLD ACCEPTANCE TEST HAD TO BE REPLACED, AND THIS IS THE TRANSFERABLE PART.**
+  As specified it was *"no `.dv-legrow` resolves the `.is-solo` treatment after isolate-then-check-on"* —
+  **an assertion of an ABSENCE, and nothing else.** An absence is satisfied by a working fix, by a
+  blind probe, by a mistyped selector, **and by a complete revert of the fix.** Session #8 ran it,
+  printed `24 checks · 0 failures`, and was measuring nothing. **⇒ A one-sided proof of an absence is
+  not a proof.** The replacement is two-sided in one gesture sequence: **step 1 proves the treatment
+  CAN be seen** (isolate → it paints), **step 2 proves it stops** (check a second on → it does not).
+  Step 1 is what makes step 2 mean anything.
+  **BITE (`--bite`, on a NEUTERED COPY — canon never mutated, `git status` clean):** the 216-byte
+  DV-D17 release branch deleted from a copy of the snippet ⇒ step 2 fails at **both** widths and
+  **reproduces Dave's original screenshot exactly** — row 1 keeps `.is-solo`, `rgb(26,26,26)` border,
+  6% ink fill, while three series show. Step 1 still passes under the neuter, which is the point:
+  the probe is not blind, the behaviour is broken.
+  **★ ONE CATCH THE PROBE MADE AGAINST ITSELF, banked because it is the live shape of a standing
+  rule.** The first run went red: *"row 2 paints an ink border with no `.is-solo` class."* **The check
+  was working. The cause was the instrument** — `canon.css` also carries `.dv-legrow:hover{border-color:
+  var(--ink)}`, and a **real** pointer click leaves the cursor resting on the row it just clicked.
+  Fix: park the pointer before reading, and carry an OBSERVED `hovered` field so a hovered row is
+  **named and skipped**, never silently filtered. *(Exactly [[silent-lookup-failure-class]]'s ruling:
+  a control that fires may be RIGHT — exhaust that before calling it broken. Here it was right about
+  the pixels and wrong about the cause, and only an observed field could tell the two apart.)*
   ⚠ **ONE ENACTMENT CALL IS THE AGENT'S, NOT DAVE'S, AND IS UNRULED.** Release also sets
   `st.visible[id] = true`, so the clicked series is showing afterwards. The literal reading restores
   `visible[]` **alone** — both satisfy bite (i) (neither releases to all-on), and they differ only
