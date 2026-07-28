@@ -381,3 +381,17 @@ status: ruled — this entry · provenance: session #21 post-wrap · 2026-07-28.
 Receipts: mover stdout dry + live (3 ops, all-or-nothing) · `_build_enactment_register.py --check`
 green · build + STAND-002 green in the enactment commit (hash in GM commit-state at wrap).
 status: enacted — this entry · provenance: session #22 · 2026-07-28.
+
+### ★ M9 PROMOTED TO BLOCKING (2026-07-28 #22, Dave live, same window as the P1–P6 enactment)
+
+Dave verbatim: *"I think your advising the promote (strict, occasional false alarm), seems
+sensible."* **Read-back correction, surfaced in-chat before inscribing:** the agent had presented
+both options neutrally (P3's HOLD was the dreamer's recommendation, honouring the false-positive
+limit); Dave's pick stood after the correction. **WHY promote:** the receipts discipline M9 enforces
+is already mandatory (2c/2e EXIT CHECKS); #18 proved the proxy catches real misses; a false fire
+costs one visible re-wrap, not lost work. **Enacted same hour:** `_capture_gate.py` —
+`retirement_receipts` docstring + finding text BLOCKING, `wrap_checks` routes it to FAILS; the M9
+selftest fixture is tier-agnostic and unchanged (still proves fire · quiet-on-receipt ·
+rewrap-immune); GM §C·4 tracking line flipped HELD→PROMOTED, line-count neutral. The limit is
+inscribed in the docstring where the next reader of a fire will meet it.
+status: ruled — Dave, this entry · provenance: session #22 · 2026-07-28.

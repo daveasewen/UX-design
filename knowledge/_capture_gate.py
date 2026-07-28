@@ -577,14 +577,18 @@ def _norm(text):
 
 
 def retirement_receipts(repo):
-    """M9(a), ADVISORY — a PROXY for 2e's retirement tests, and naming that is the whole point.
+    """M9 — BLOCKING in wrap mode (ruled Dave 2026-07-28 #22) — a PROXY for 2e's retirement
+    tests, and naming that is the whole point.
 
     2e says a retired DO-FIRST notice is archived verbatim. The gate cannot see 2e's actual
     tests (they key on live targets, elapsed terms and struck sources, none of which are in
     these files) and it cannot see whether a move was verbatim. It observes exactly one thing:
     a line left DO-FIRST since HEAD and no text in `_GM-ARCHIVE.md` carries it.
 
-    Advisory first, per the brief — promote to blocking only once it has been seen working."""
+    Advisory first per the brief; SEEN WORKING at #18 (fired and was right — "this is the
+    seeing"); PROMOTED by Dave at #22. The known limit STANDS: it sees text vanish, not
+    retirement-DUE, so a false fire is possible on a correct wrap — the answer is archive the
+    line (or say why no receipt is owed) and re-run the wrap, one visible beat, no lost work."""
     warns, notes = [], []
     gm = os.path.join(repo, "GOOD-MORNING.md")
     arch = os.path.join(repo, "_GM-ARCHIVE.md")
@@ -621,7 +625,7 @@ def retirement_receipts(repo):
         if n not in arch_norm:
             orphans.append(ln.strip()[:90])
     if orphans:
-        warns.append(f"retirement receipts (ADVISORY): {len(orphans)} DO-FIRST line(s) left the "
+        warns.append(f"retirement receipts (BLOCKING, Dave #22): {len(orphans)} DO-FIRST line(s) left the "
                      f"worklist since HEAD with no matching text in _GM-ARCHIVE.md — archive "
                      f"them verbatim (ritual step 2c/2e) or say why they needed no receipt. "
                      f"First: “{orphans[0]}”")
@@ -657,8 +661,8 @@ def wrap_checks(repo, today, lane=False):
         fails += f_
         warns += w_
         notes += n_
-        w_, n_ = retirement_receipts(repo)      # M9(a) — advisory proxy for 2e
-        warns += w_
+        f_, n_ = retirement_receipts(repo)      # M9 — receipts proxy, BLOCKING (Dave #22)
+        fails += f_
         notes += n_
         notes.append("PRE-FLIGHT stamp: FORM checked only (3 terms · arithmetic · band-vs-table). "
                      "Whether the fill figure is honest, and whether a mid-job re-price actually "

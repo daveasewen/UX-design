@@ -135,3 +135,9 @@ step 2f (`113eefc`) yet wrote no stratum of its own; its gauge story lives only 
 > *(Session #20, 2026-07-28, Fable solo, Dave live. Opened titled for the ex-M4a/M4b/M5 build; the survey found the injected-behaviour architecture (~45%), Dave re-cut the frame — TWO LANES, M-codes retired off chart jobs — and the fork + inscriptions took the window to Amber before M5's first line. Deferral = HIS pick per his own no-new-builds-at-Amber rule; no build artefact started past Amber. Closed 🟡 ~55–58% ESTIMATE, reserve untouched.
 > **PACE (perishable):** NO fresh panel this window — Mon 21:56 stands (All 0.80× · Fable 0.78×, behind-narrowing); ask at #21's opener.)*
 >
+
+#### 2026-07-28 #21
+> **pre-flight:** fill 22% + job 14% + wrap 8% = 44% GREEN · reserve 15% ring-fenced *(fill = 15.3% chain MEASURED 30,624 tk + ~7 harness inferred; job = M5 solo per brief §11, priced at the opener)*
+> *(Session #21, 2026-07-28, Fable solo, Dave live. Opened on the #20 title and ran to spec: mover built + bitten + wired, runbook pointed, this wrap = the mover's first live fire. No unplanned findings; no fork needed. Closed 🟢 ~44% ESTIMATE, reserve untouched.
+> **PACE (perishable, replaces Mon 21:56):** panel Tue 09:09 BST — week 63.2% elapsed · All 50% ⇒ 0.79× · Fable 52% ⇒ 0.82× · catch-up to Thu 23:00 = All 1.36× / Fable 1.30× — behind, narrowing. MORE-WINDOWS holds.)*
+>
