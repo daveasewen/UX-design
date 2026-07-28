@@ -23,7 +23,7 @@
 | 15 | Chart-combo | 3 | 3 | 0 | 0 | — | ✅ verified |
 | 16 | Chart-donut | 16 | 6 | 10 | 0 | — | ✅ verified · 10 bespoke |
 | 17 | Chart-line | 6 | 6 | 0 | 0 | — | ✅ verified |
-| 18 | Chart-scatter | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 18 | Chart-scatter | 2 | 2 | 0 | 0 | — | ✅ verified |
 | 19 | Chart-sparkline | 0 | 0 | 0 | 0 | — | — no inline svg paths |
 | 20 | Confirmation | 1 | 1 | 0 | 0 | — | ✅ verified |
 | 21 | Countdown-timer | 0 | 0 | 0 | 0 | — | — no inline svg paths |

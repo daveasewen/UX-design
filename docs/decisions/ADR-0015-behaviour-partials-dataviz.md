@@ -139,6 +139,17 @@ budget). First narrow declaration = DV-J2's enactment (Chart-scatter, `consumes:
 member; `$members` never listed it (and it carries 0 AUTO-BEHAVIOUR markers, measured). The #20
 survey receipt was right; the prose is corrected where it lives.
 
+**★ FIRST NARROW DECLARATION LANDED — 2026-07-28, session #27** (the amendment's own predicted
+first case, enacted one window after it was ruled). Chart-scatter joined the group declaring
+`"consumes": ["dv-behaviour"]`: **13,251 B injected, dv-legend's 16,271 B refused entry**, build
+72/72 exit 0. The narrow path was exercised only by unit bites until this instance; a mutation
+control on the live member now shows it refusing in **four** directions — unknown name, empty list,
+declared-away markers present, and **the declaration removed**. That last one was not predicted:
+dropping the key makes the member universal, which immediately demands the dv-legend markers it
+deliberately does not carry, so the file goes non-conforming. **The declaration cannot be silently
+deleted**, which is a stronger safety property than the mechanism was designed for — recorded as
+observed, not inferred. Detail and measurements: the DataViz ledger, Open/pending, session #27.
+
 Node: ADR-0015-A2
 Edges: amends(ADR-0015, scope=group-wide-injection-becomes-manifest-gated)
 

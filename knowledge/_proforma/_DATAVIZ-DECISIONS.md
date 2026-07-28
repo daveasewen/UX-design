@@ -573,6 +573,39 @@ in `_LIVE-STATE.md` (🟡 PARKED entry) so the state machine doesn't read this a
   `data-tip`; sparkline may shed its inert 16,330 B when ruled). **Drift corrected, measured:**
   scatter was NEVER a group member (`$members` + 0 markers) — the dv-legend `$description` aside
   claiming so was prose drift; the #20 receipt was right.
+  **★★ 2026-07-28 #27 — DV-J2 SCATTER HALF ENACTED + RENDER-PROVEN. The manifest's first NARROW
+  declaration is live.** `component-types.json` → `Chart-scatter` joins `$members` with
+  `"consumes": ["dv-behaviour"]` + an extraContract naming only the table hooks it carries
+  (`dv-tbl-toggle` · `dv-tablepanel`) — no legend hooks, because it does not consume dv-legend.
+  **MEASURED RESULT: 13,251 B injected, dv-legend's 16,271 B refused entry** (no legend marker pair
+  in the file) — the saving ADR-0015-A2 was built for, on its first live instance. Build `[72/72]`
+  exit 0; `--check` clean.
+  **The narrow path bites FOUR ways on a live instance** (mutation control, green at both ends —
+  the ADR's seven bites were unit-only until now): (1) unknown name REFUSES · (2) empty list
+  REFUSES · (3) **the declaration REMOVED refuses** — universal membership then demands the
+  dv-legend markers scatter deliberately does not carry, so the declaration cannot be silently
+  dropped; the file itself goes non-conforming *(this one refused where the author predicted it
+  would pass — the reason is better than the prediction and is recorded as observed, not inferred)*
+  · (4) declared-away markers present REFUSES.
+  **⚠ THE QUEUE'S "28 `<title>`→`data-tip`" WAS TWO THINGS WRONG, both measured:** (a) 27 marks,
+  not 28 — the 28th `<title>` is the document title in `<head>`; (b) it is **not a rename**. Canon
+  (Chart-bar 52 tips, Chart-line 62) is a four-part contract — `tabindex="0" role="img"
+  aria-label="…" data-tip="…"` on the element, **no `<title>` child** — and the svg is
+  `role="group"`, not `role="img"`. Scatter shipped `role="img"` with `<title>` children: marks
+  were **not in the a11y tree as separate nodes at all** and the tip was mouse-only, because
+  `dv-behaviour.js:71` raises the popover on hover **AND keyboard focus** of `[data-tip]`. A literal
+  rename would have dropped the accessible name and shipped a half-dead tooltip, and **nothing
+  gates it** — `_validate_dataviz.py` has no aria-label/role check on marks. Enacted as the full
+  contract: 27 marks now keyboard-reachable and individually announced.
+  **Scope, Dave's word (session #27, plain-language option-select):** *interaction only* — tooltips
+  + the show-the-table button. **DV-D07 axis/grid catch-up was FENCED and is logged as ds-020**;
+  the CSV button (`button.dv-csv`, available in the consumed behaviour) was NOT adopted — out of
+  the ruled scope, flagged not taken. FIT (`svg.dv-fit`) not adopted either: scatter is deliberately
+  fixed-geometry per DV-D02 static.
+  Render-proof: `knowledge/_render/verify_dv_j2_render.py` (2 widths · licensed cut asserted ·
+  toolbar 32px + 44px hit · toggle drives the panel · **keyboard focus raises the tip** · shadow
+  compared AS A COLOUR → `rgba(0,0,0,0.2)`); `--bite` strips one `data-tip` and the proof FAILS as
+  it must. Ledger row + enactment: 2026-07-28 #27.
 - **★ NEW 2026-07-27 (Dave, session #6) — THREE FLAGS, CONTENTS NOW NAMED → see Batch 10 above.**
   **DV-D16** (stacked sequential animation) · **DV-D17** (isolate marker persistence) ·
   **ds-018** (Reset disabled renders as hover). All three are CAPTURED, **none enacted** — each carries

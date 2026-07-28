@@ -1302,3 +1302,57 @@ the direction that reads as green"* — which is the honest measure of how hard 
 **Evidence:** `outputs/_render-env/probe.py` · `outputs/_render-env/diag.py` · `probe-result.json` ·
 2026-07-27 · four contexts, font assert passed in all four.
 Narrative: `_DECISION-HISTORY/2026-07-27-the-treatment-that-never-painted.md`.
+
+---
+
+## ds-020 — Chart-scatter is the only cartesian chart still drawing axis + grid the pre-DV-D07 way (2026-07-28, session #27, measured)
+
+**Status: OPEN. FENCED BY RULING, not by oversight** — Dave ruled it out of DV-J2's scatter half in
+plain language ("just the interaction"), *on the attribution argument*, so this entry exists to stop
+a deliberate deferral decaying into a forgotten one. It is a **numbered item, not a queue line**
+(the assertion-propagation class: §C·1(a)'s STEP-1 sat stale six days and cost the start of #26).
+
+**What was measured** (`Chart-scatter.reference.html` vs `Chart-bar` / `Chart-line`, 2026-07-28):
+
+| | scatter (today) | canon since DV-D07 |
+|---|---|---|
+| grid stroke | `stroke="var(--ink)"` | `stroke="var(--data-grid)"` |
+| grid alpha | `--grid-alpha:.10` light / `.16` dark | `--grid-alpha:1` (colour carries it) |
+| axis colour | `var(--baseline)` + `--axis-alpha:.6` | `--data-axis:#626262` light / `#9D9D9D` dark, alpha 1 |
+| registry contract | no axis/grid vars | `vars` + `manifestBinds` → `data/axis/*`, `data/grid/*` |
+
+DV-D07 is the **two-channel** ruling (colour and alpha are separate channels; it supersedes the
+promotion-time "ink at alpha" idiom). Line, bar and combo carry axis+grid; donut carries axis only
+(radial, no gridlines); sparkline is axis-free. **Scatter is the one cartesian member left on the
+old idiom** — and since it now sits in the dataviz `$members` map (DV-J2), it is visibly the odd
+one out in a group whose other cartesian members all bind the roles.
+
+**Why it was fenced, in Dave's terms:** enacting it moves *every gridline and axis pixel in the
+file*, in both modes, in the same commit as the interaction work. A correct change would then be
+indistinguishable from a regression by eye — the standing "attribute the diff" rule (a diff you
+cannot attribute is not evidence; the `NO_SNAP=1` control in the T-D12 arc is the method).
+
+**What enacting it looks like** (do NOT start it without the control):
+1. declare `--data-axis` / `--data-grid` in both theme blocks, alphas → 1;
+2. rebind `.dv-grid` and `line.dv-axis` strokes to the role vars;
+3. add `vars` + `manifestBinds` to scatter's `extraContract` in `component-types.json`
+   (`data/axis/color`, `data/axis/alpha`, `data/grid/color`, `data/grid/alpha`) — the contract gate
+   then enforces it;
+4. **render the control FIRST**: same widths, pre- and post-, both modes, diffed as colours not
+   strings — `knowledge/_render/verify_dv_j2_render.py` is the nearest harness to extend;
+5. the narrow-width floor is Dave's eye (the ds-012(b) precedent).
+
+**Sibling, same shape:** ds-012(b) gutter-relative plot area, fenced for the same attribution
+reason. If both are ever enacted, they must not share a commit.
+
+**★ A SECOND FINDING, recorded because it is evidence for a promotion already on the board.** While
+porting the canon toolbar CSS into scatter I referenced `var(--shadow)` in `.dv-tablepanel` and
+`.dv-tip` without declaring it — scatter had never needed it. **The ds-018 C2 gate
+(`_validate_property_resolves.py`) caught it in the same build**, correctly, with the right message:
+the declaration is invalid at computed-value time and `box-shadow` silently takes its initial value.
+Fixed by declaring `--shadow` / `--pop-border` in both theme blocks (matching Chart-bar) and binding
+`--shadow → elevation/functional` in the token manifest. **C2 is still ADVISORY** — the promotion to
+blocking is DO-FIRST item 1 and is gated on Dave's four values. Had it been blocking, this would have
+been a red build instead of a line in an advisory census I had to go looking for; had I not gone
+looking, scatter would have shipped a shadowless popover that renders *almost* right. That is the
+argument for promotion, and it now has a live instance behind it rather than only a rationale.

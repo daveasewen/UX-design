@@ -4172,7 +4172,7 @@
 
 /* ============================================================
    Chart-scatter  (from snippets/Chart-scatter.reference.html)
-   Aria: role="group", aria-labelledby, role="img", aria-label
+   Aria: role="group", aria-labelledby, role="img", aria-label, aria-controls, aria-expanded, role="region"
    Scope: .cn-chart-scatter   ============================================================ */
 .cn-chart-scatter{
   --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
@@ -4181,16 +4181,21 @@
   --ink: var(--text-default);
   --baseline: var(--border-action-strong);
   --line: var(--border-subtle);
+  --shadow: var(--elevation-functional);
   --grid-alpha: .10;
   --axis-alpha: .6;
+  --pop-border: #FFFFFF00;
 }
 [data-theme="dark"] .cn-chart-scatter{
   --grid-alpha: .16;
+  --pop-border: #808080;
 }
 .cn-chart-scatter h2{font-size:14px; opacity:.6; margin:1.75rem 0 .7rem; font-weight:500;}
 .cn-chart-scatter .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
-.cn-chart-scatter figure.dv{margin:0;}
+.cn-chart-scatter figure.dv{margin:0; position:relative;}
+.cn-chart-scatter .dv-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-end; gap:8px 16px; margin:0 0 12px;}
+.cn-chart-scatter .dv-controls{display:flex; flex-wrap:wrap; gap:8px; align-items:center; --control-h:32px;}
 .cn-chart-scatter .dv-stage{overflow-x:auto; padding-bottom:4px;}
 /* DV-D02 static: fixed geometry, scroll — text never scales */
 .cn-chart-scatter .dv-chart-area{width:580px;}
@@ -4209,10 +4214,32 @@
 .cn-chart-scatter .dv-legend li{display:flex; align-items:center; gap:8px; color:var(--ink);}
 .cn-chart-scatter .dv-legend .sw{width:12px; height:12px; flex:none;}
 .cn-chart-scatter .dv-legend .dv-key{font-weight:700; opacity:.6; min-width:12px; font-variant-numeric:tabular-nums;}
-.cn-chart-scatter details.dv-tabledetails{margin:8px 0 0;}
-.cn-chart-scatter details.dv-tabledetails summary{cursor:pointer; opacity:.6; width:max-content;}
-.cn-chart-scatter details.dv-tabledetails summary:hover{opacity:1; text-decoration:underline; text-underline-offset:3px;}
-.cn-chart-scatter details.dv-tabledetails summary:focus-visible{outline:2px solid var(--ink); outline-offset:2px; opacity:1;}
+/* -- TOOLBAR CONTROLS -- ONE SHARED HEIGHT (Dave 2026-07-24), ported verbatim from Chart-bar/line.
+     DV-J2 (2026-07-28): scatter joins the dv-behaviour group with consumes:["dv-behaviour"] -- the
+     <details> disclosure it shipped with is replaced by the canon toggle + panel the injected JS drives. */
+.cn-chart-scatter .dv-tbl-toggle, .cn-chart-scatter .dv-vt{position:relative; height:var(--control-h); box-sizing:border-box; display:inline-flex; align-items:center;
+    background:transparent; border:1px solid var(--line); color:var(--ink); padding:0 8px; cursor:pointer;
+    flex:none; transition:border-color var(--ease);}
+/* v5.1 -- 44 hit target via the canon invisible ::before (foundational hit-area; canon gap). */
+.cn-chart-scatter .dv-tbl-toggle::before, .cn-chart-scatter .dv-vt::before{content:""; position:absolute; z-index:0; min-width:var(--hit,44px); min-height:var(--hit,44px); width:100%; height:100%; top:50%; left:50%; transform:translate(-50%,-50%);}
+.cn-chart-scatter .dv-tbl-toggle > *, .cn-chart-scatter .dv-vt > *{position:relative; z-index:1;}
+.cn-chart-scatter .dv-tbl-toggle:hover, .cn-chart-scatter .dv-vt:hover{border-color:var(--ink);}
+.cn-chart-scatter .dv-tbl-toggle:focus-visible, .cn-chart-scatter .dv-vt:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-scatter .dv-tbl-toggle[aria-expanded="true"], .cn-chart-scatter .dv-vt[aria-pressed="true"]{border-color:var(--ink);}
+.cn-chart-scatter .dv-act, .cn-chart-scatter .dv-dd{gap:8px;}
+.cn-chart-scatter .dv-ico{width:16px; height:16px; fill:currentColor; flex:none; display:inline-block;}
+.cn-chart-scatter .dv-dd .dv-ico-arrow{transition:transform var(--ease);}
+.cn-chart-scatter .dv-dd[aria-expanded="true"] .dv-ico-arrow{transform:rotate(180deg);}
+.cn-chart-scatter .dv-tablepanel{position:absolute; top:44px; right:0; z-index:5; background:var(--page);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:16px; max-width:100%; overflow:auto;}
+.cn-chart-scatter .dv-tablepanel[hidden]{display:none;}
+.cn-chart-scatter .dv-tablepanel:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+.cn-chart-scatter .dv-tip{position:fixed; z-index:9; background:var(--page); color:var(--ink);
+    border:1px solid var(--pop-border,var(--line)); box-shadow:0 0 16px var(--shadow);
+    border-radius:var(--border-radius-surface); padding:8px 12px; pointer-events:none;
+    opacity:0; transition:opacity var(--ease);}
+.cn-chart-scatter .dv-tip.on{opacity:1;}
 .cn-chart-scatter table.dv-table{border-collapse:collapse; margin-top:8px; color:var(--ink);}
 .cn-chart-scatter table.dv-table caption{text-align:left; opacity:.6; margin-bottom:4px;}
 .cn-chart-scatter table.dv-table th, .cn-chart-scatter table.dv-table td{border:1px solid var(--line); padding:4px 12px; text-align:right;}

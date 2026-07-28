@@ -1,5 +1,42 @@
 # GOOD-MORNING — banner archive
 
+## Batch 2026-07-28 #27 — rolled by the DV-J2 scatter-half wrap (Opus solo, Dave live) — moves via `knowledge/_gm_move.py`, receipts in that session's stdout
+
+#### 2026-07-28 #26
+
+> **pre-flight:** fill ~30% + job 17% + wrap 8% = ~55% AMBER-projected · reserve 15% ring-fenced *(fill = 16.0% chain MEASURED 32,043 tk + ~7 harness inferred + read-render overhead; job re-priced twice — 20–25% at the pick → cut at the seam to machinery + inscriptions + renames ~17%, both announced in-chat)*
+> *(Session #26, 2026-07-28, Fable solo, Dave live. Arc: floor measured → lane-2 first pick → **the offered scatter job was STALE — caught by survey (`00abdf3`, 07-22), stopped, re-priced, forked, re-picked** (DV-J2) → schema priced on live numbers → Dave ruled TENTATIVE universal-default manifest + DV-J keys (mid-flight: "M stood for Memento") → machinery + inscriptions + renames → build `[72/72]` → wrap-now (Dave's pick, option-select). Closed 🟡 **~57% ESTIMATE** (band from the remaining-budget table), reserve untouched; the one unplanned finding (the stale queue line) was absorbed as the re-pick fork, announced in-chat.
+> **PACE (perishable, replaces Tue ~12:55):** panel Tue ~13:35 BST — week 65.8% elapsed · All 61% ⇒ 0.93× (behind, narrowing; MORE-WINDOWS holds for All only) · **Fable 75% ⇒ 1.14× — AHEAD of pace; 0.73× rationed from here lands the reset — Fable spends deliberately, wrap-now was that**.)*
+> **section-usage #26 (observed, self-report):** GM HDR:C LATEST:C PRIOR:R DOFIRST:C A:C C1:C C2:C C2b:R C3:R C4:R C4b:R C5:R STRATA:C · LS HDR:R LANES:C SPIN:R DELTAS:C WEBFONT:R LIVE:R LIFECYCLE:R DEAD:R OPEN:R TARGETS:R SPINOFFS:R
+> **section-sizes #26 (tiktoken cl100k_base):** GM HDR:1003 LATEST:991 PRIOR:1015 DOFIRST:2137 A:4208 C1:776 C2:1076 C2b:484 C3:181 C4:1204 C4b:256 C5:84 STRATA:8 · LS HDR:255 LANES:784 SPIN:1794 DELTAS:2441 WEBFONT:604 LIVE:4928 LIFECYCLE:973 DEAD:432 OPEN:4361 TARGETS:577 SPINOFFS:444 · totals GM:13423 LS:17593
+> **consult-receipts #26:** "scatter exemplar chart expansion step 1" → lane:lane-2-apollo-charts · gm:C1 · ledger:two-lanes-the-m-set-splits-chart-jobs-lose-their-m-codes-202 (fetched verbatim) ; "scatter chart dataviz series tokens legend controls table spine" → DV-D10 · DV-D11 · dv-017
+>
+> **COMMIT STATE (refreshed 2026-07-28 ~14:10 BST from `date`).**
+> **Context gauge at authoring: 🟡 ~57% (ESTIMATE) — Amber ⇒ re-verify claims against receipts before trusting.**
+> ONE commit this window: `knowledge/gen_component_partials.py` (consumes-manifest: `consumes_behaviour` + `non_consumer_marker_fails` + run() gating + 7 §5d bites + docstring contract; mutation control run + restored) · `docs/decisions/ADR-0015-behaviour-partials-dataviz.md` (§ Amendment 2) · `notes/_decision-graph-seed-2026-07-21.json` (node + edge `ADR-0015-A2`) · `knowledge/_proforma/_DATAVIZ-DECISIONS.md` (§ Open/pending: DV-J1/DV-J2 minted + schema ruling + drift correction) · `knowledge/component-types.json` (dv-legend `$description` resolution line) · `knowledge/_lanes.json` (DV-J names · DV-J2 ACTIVE) + regenerated LS §🛤 view · `GOOD-MORNING.md` (#26 banner · STATE · guide · names · item 0 · ⛔ line renamed · §C·1(a) STEP-1 corrected · stratum) + `_GM-ARCHIVE.md` (Batch 2026-07-28 #26: #24 banner + #25 commit-state) · `_LIVE-STATE.md` (#26 delta · #23 rolled) + `_LIVE-STATE-ARCHIVE.md` · `notes/_GAUGE-LOG.md` (#25 block in) + memory — rolls VIA THE MOVER (receipts this window's stdout, extents verified at DRY). Build `[72/72]` exit 0 · wrap gate at close (usage + M9 + lane-routing BLOCKING · consult-receipts ADVISORY) · STAND-002 green. Dave pushes via GitHub Desktop, whole stack, Desktop closed.
+
+
+
+
+### Rolled item 0 — #26's worklist head, DISCHARGED by #27 (2e receipt, M9): DV-J2's scatter half shipped, so the instruction it carried is spent. Kept verbatim.
+
+> **0. ★ NEXT WINDOW: DV-J2 ENACTMENT — the first job, already ACTIVE by records.** Machinery
+>    proven #26 (ADR-0015-A2 + `[72/72]` — do NOT re-prove). The job: scatter joins `$members` with
+>    `consumes:["dv-behaviour"]` + a fresh AUTO-BEHAVIOUR marker pair + 28 `<title>`→`data-tip` +
+>    toolbar/table spine per the universal contract; sparkline toggle = markup + CSS (JS injected,
+>    dormant); render-verify per runbook. **The first NARROW declaration = the manifest's first live
+>    fire — watch it bite BOTH ways.** [born #26 · guards: ⛔ ROUTING + `_lanes.json` DV-J2 ACTIVE · until: DV-J2 ships]
+
+> ## ★ PRIOR — 2026-07-28 (Tue **afternoon #25**, FABLE solo, Dave live — ★★ **O2′ ENACTED: MODULAR MEMENTO-SEARCH — `_search_core.py` spine + TWO doors + consult-receipt probe, build `[72/72]` exit 0** · ★★ **LANE 1 LANDS — lane 2 (components/charts) ACTIVE by records** · 🟡 ~57% est at wrap): **"The record can now answer questions; lane 2 gets to make components again."**
+> - **★★ LANDED, with evidence.** `knowledge/_search_core.py` (ONE engine: matching · ranking · honest denominators · two-stage fetch REFUSING unknown ids with near-misses · consult-receipt format; 14 bites) · `_consult.py` → thin DS door (interface unchanged + `--fetch <id>` verbatim — retires the 140-char truncation — + honest "5 of 41 shown", the §C·4 wart CLOSED) · `_memento_search.py` + `_build_memento_index.py` (225 records, 10 source classes; closed contracts REFUSE — GM/LS vocab IMPORTED from `_gm_usage.py`, gauge `#### date #N`, lanes via `_gen_lanes`; determinism `--check`; 4 known-answer pins incl. the band-table section) · `_capture_gate.py::consult_receipt_probe` ADVISORY (`CONSULT_RECEIPT_BLOCKING=False` + pin; format IMPORTED from the core) · five build steps → `[72/72]` exit 0 · records flipped FIRST, view regenerated, ⛔ ROUTING line rewritten, routing check GREEN pre-wrap. Ledger § ★ #25 · 2026-07-28.
+> - **★ RULED (Dave, option-select ×3 — all recommended; design read-back in-chat first, the ruled direction re-quoted so only UNRULED shape was asked):** core + two thin doors · corpus = the ruled five + memento runbooks (the band table's only copy lives in one) · DS gains stage 2 now. **Mid-flight scope-in, verbatim "and this":** the KG forcing function — receipts probe ADVISORY at birth, promotion his word; re-price announced 17–22%.
+> - **★ FOUND (measured).** Chain **31,504 tk** at the opener (vs 31,279 stamped at #24 — the delta is GM authored after its own stamp; the guide now says so) · dogfood at survey: the pre-O2′ consult on THIS design returned RAG/type rulings — **the memento tier was invisible to retrieval**, which is the gap O2′ closes · the archives FALSIFIED the draft's closed batch contract (moved banners carry their own `## ` headings) — the fail-loud refusal caught the author, the #24 class again; archives ruled OPEN-form, and each rolled delta becomes its own fetchable record (the better unit anyway).
+> - **⚠ WHAT THE AUTHOR FLAGS.** Single weak-token queries still rank (inherited DS matching, deliberately unchanged in the refactor — the lexicon is the tuning lever, both doors share it) · the memento index embeds GM/LS/archive text ON DISK (regenerated every build; it is not read-chain weight) · the receipts probe is FORM-only testimony (the #23 precedent, stated) · no 1b dossier — option-select-shaped arc, WHY in ledger § ★ #25 + module docstrings (the 1b test applied, stated) · §C stands at 151/150 WARN, unchanged, announced by the mover. Panel Tue ~12:55: All 0.90× · **Fable 1.07× — AHEAD of pace, first time this week**; MORE-WINDOWS holds for All only.
+> - **⬛ OPEN, Dave's:** **LANE 2 FIRST PICK — ex-M4a table-idiom · ex-M4b toggle accretion · §C·1 strands (a)–(d), his at the opener** · consult-receipts probe promotion (his word, on its record) · M12's UNATTENDED fire Sun 08-02 07:10 · §C·2's 15 rulings + dataviz sign-off (PARKED, unchanged) · calm-banner verdict · LS-trim-vs-defer (P4b — sizes line accumulating).
+>
+>
+
+
 ---
 
 ## Batch 2026-07-28 #26 — rolled by the DV-J-keys/ADR-0015-A2 wrap (Fable solo, Dave live) — moves via `knowledge/_gm_move.py`, receipts on the wrap's stdout. Verbatim, newest-first.
