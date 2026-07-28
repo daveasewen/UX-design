@@ -4,10 +4,6 @@ provenance: local_e79e89ee-51cb-4a74-bf95-b7cf3e303af9 · 2026-07-27
 status: observed
 
 *Contract (runbook step 2f, GM-D5(a)): APPEND-ONLY · one block per session, chronological ·
-**exactly TWO `#### ` forms are legal and `_build_memento_index.py` REFUSES any other:**
-`#### YYYY-MM-DD #N` = a session · `#### META — <title>` = a finding about this file.
-(#30 wrote an audit block in neither form; the index builder refused, and because the wrap
-gate does not run the build, `_build_all.py` stayed RED across two wraps — repaired #32.) ·
 #### 2026-07-28 #27
 
 > **pre-flight:** fill ~30% + job 15–17% + wrap 8% = ~53% AMBER-projected · reserve 15% ring-fenced *(fill = 16.1% chain MEASURED 32,179 tk + ~7 harness inferred + read-render overhead; job priced 14–17% at the fenced scope after a mid-survey re-price from 20–25%, forked to Dave and re-ruled — both announced in-chat)*
@@ -22,6 +18,12 @@ gate does not run the build, `_build_all.py` stayed RED across two wraps — rep
 measurements only (pre-flight estimate vs closed band, overrun + cause) · NOT in the cold-start
 read chain. This file exists so the throttle's 15% reserve can be re-derived from data (Half 0b).
 Blocks below moved VERBATIM from `GOOD-MORNING.md` §C strata at the first 2f roll (session #15).*
+
+> **⚠ BLOCK FORMS — exactly TWO are legal, and `_build_memento_index.py` REFUSES any other:**
+> `#### YYYY-MM-DD #N` = a session · `#### META — <title>` = a finding about this file.
+> *(#30 wrote an audit block in neither form. The index builder refused — correctly — and because
+> the wrap gate does not run the build, `_build_all.py` stayed RED across two wraps and both of them
+> committed over it. ds-024, repaired #32.)*
 
 #### 2026-07-27 #6
 
@@ -239,3 +241,12 @@ step 2f (`113eefc`) yet wrote no stratum of its own; its gauge story lives only 
 > **section-usage #30 (observed, self-report):** GM HDR:C LATEST:C PRIOR:R DOFIRST:R A:C C1:R C2:U C2b:U C3:U C4:R C4b:U C5:U STRATA:C · LS HDR:R LANES:R SPIN:U DELTAS:C WEBFONT:U LIVE:R LIFECYCLE:U DEAD:U OPEN:U TARGETS:U SPINOFFS:U
 > **> **section-sizes #30 (tiktoken cl100k_base):** GM HDR:1363 LATEST:1050 PRIOR:1111 DOFIRST:2474 A:4208 C1:842 C2:1157 C2b:484 C3:181 C4:1435 C4b:256 C5:84 STRATA:8 · LS HDR:255 LANES:872 SPIN:1794 DELTAS:3646 WEBFONT:604 LIVE:4928 LIFECYCLE:973 DEAD:432 OPEN:4361 TARGETS:577 SPINOFFS:444 · totals GM:14653 LS:18886**
 > **consult-receipts #30:** none — the window audited the ritual against its own runbook and gates, so retrieval was `_RUNBOOK-capture-ritual.md` + `_capture_gate.py` + `_RUNBOOK-context-gauge.md` read direct, plus greps of `_GAUGE-LOG.md`/`_GM-ARCHIVE.md`. **Honest negative:** the doors index records, not procedure — "was step 2f run?" is not a question `_memento_search.py` can answer, and that is the same shape as #28's and #29's misses.
+#### 2026-07-28 #31
+
+> **pre-flight:** fill 27.5% + job ~10% + wrap 10% = ~47% AMBER-projected · reserve 15% ring-fenced *(fill = floor MEASURED at the opener in BOTH units: 35,079 tk cl100k = 17.5% by the gate's unit, ~55.1K charged = 27.5% actual, harness on top; job = the throttle rulings, chat-shaped, no build. ⚠ The projection already exceeded the 45 ceiling this session went on to rule — recorded, not excused. The ENACT build was then priced ~15–20 and REFUSED at ~50% fill by the fresh stop line: forked to #32. That refusal is the ceiling's first enforcement, applied to its own author.)*
+> **CLOSED: 🔴 RED-edge ~62% (ESTIMATE, unconfirmed out-of-band) — reserve intact.** Overrun cause: the wrap began AT the stop line (60 − wrap) and cost more than its 10-pt price — rulings inscription + first dual-unit bookkeeping. This block is itself the next point in ds-023 (c)'s overrun dataset.
+> **PACE (perishable, replaces Tue 17:40): Tue ~19:15 — All 66% vs ~69.2% elapsed = 0.95× (behind; catch-up 1.10× to Thu 23:00) · Fable 80% = 1.16× (RATION; 0.65× from here).** This window was Fable (rulings = open judgment); #32's enact is Opus-shaped.
+> **★ THE LESSON:** a ceiling ruled mid-session governs that same session — and the second banner-vs-git falsification in two sessions (`__tmp_moved.html` "untracked" → tracked again one commit later) says the check is `git ls-files`, never prose. Unit pairs this window: GM ×1.563 · LS ×1.540 (Read-tool vs tiktoken; file-diversity still n=2).
+> **section-usage #31 (observed, self-report):** GM HDR:C LATEST:C PRIOR:R DOFIRST:R A:C C1:U C2:U C2b:U C3:U C4:R C4b:U C5:U STRATA:C · LS HDR:R LANES:U SPIN:U DELTAS:C WEBFONT:U LIVE:U LIFECYCLE:U DEAD:U OPEN:R TARGETS:U SPINOFFS:U
+> **section-sizes #31 (tiktoken cl100k_base):** GM HDR:1170 LATEST:792 PRIOR:1113 DOFIRST:2474 A:4208 C1:842 C2:1157 C2b:484 C3:181 C4:1435 C4b:256 C5:84 STRATA:8 · LS HDR:255 LANES:872 SPIN:1794 DELTAS:3339 WEBFONT:604 LIVE:4928 LIFECYCLE:973 DEAD:432 OPEN:4361 TARGETS:577 SPINOFFS:444 · totals GM:14204 LS:18579 *(measured pre-stratum)*
+> **consult-receipts #31:** none — the window's questions were procedural + state-shaped: direct reads of `_RUNBOOK-capture-ritual.md` · `_gm_move.py` docstring · ds-021/022/023 ledger blocks, plus `git log`/`git ls-files` receipts. Honest negative: no design question was open that the doors index.

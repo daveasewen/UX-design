@@ -1546,3 +1546,84 @@ is CONFIRMED by the same delegation** — flagged as adopted-on-recommendation, 
 re-dial remains his at any time. **(c) stays blocked by ds-022** until the log holds ~5 recorded
 overruns, then the 15% reserve is re-derived and put to him.
 [born #30 · ruled-in-part #31 · enforcement picked #31 (delegated) · guards: this entry + the GM header · until: the checks land in `_capture_gate.py`]
+
+## ds-024 — The wrap gate does not run the build, so a RED build survives any number of wraps (2026-07-28, session #32, measured)
+
+**Status: ENACTED IN PART — the specific hole is closed and gated. The GENERAL question is
+OPEN and Dave's.**
+
+**Measured at #32's opener.** `_memento_search.py --fetch gm:LATEST` returned **#29's banner**
+while `GOOD-MORNING.md` carried **#31's**. Three links, each verified against the repo (`git log`,
+a real run of the builder, a real run of `_build_all.py`) rather than reasoned about:
+
+1. The index regenerates inside `_build_all.py`; the **wrap** rewrites GM/LS *afterwards*. Retrieval
+   is one session behind **by construction**.
+2. It could not regenerate at all: #30's ds-022 repair wrote `#### GAPS FOUND AT #30's AUDIT`, and
+   `_build_memento_index.py` refuses any `#### ` that is not `#### YYYY-MM-DD #N` (the ds-016
+   fail-loud contract, working exactly as designed). The step exited 1.
+3. ⇒ **`_build_all.py` was RED at step 65/72 from `f2c083a` onward, and #30 and #31 BOTH wrapped and
+   committed over it** — because the wrap gate does not run the build.
+
+⚠️ **The session that fixed one silent-record failure opened another one layer down.** ds-022 was
+"nothing reads `_GAUGE-LOG.md`"; its repair broke the index; nothing was watching *that*. Three
+sessions of work — including the ds-021/022/023 throttle rulings — were committed on a red build by
+agents who each believed they had verified their state. **And RETRIEVAL-FIRST is standing canon**, so
+the door was pointing every session at a superseded record with full confidence: the
+confident-false-inscription class, inside the mechanism built to prevent it.
+
+**✅ ENACTED #32 (commit `b62d4c6`), and deliberately narrow:**
+- `_build_memento_index.py` — a SECOND declared gauge-log form, `#### META — <title>`; every other
+  `#### ` still refuses. Declared, not enumerated (dv-004 shape). 5 bites.
+- `_capture_gate.py::index_freshness_check` — **BLOCKING at birth.** Rebuilds in-process, byte-compares
+  against disk. **Content, never mtime** — an mtime check reads green on a reverted file (DV-D17
+  shape). 4 bites, the FIRST of which is the positive one (fresh passes AND says FRESH), because a
+  failure-only suite survives a revert that deletes the comparison.
+- `_RUNBOOK-capture-ritual.md` **step 2g** — rebuild the index LAST, after every GM/LS edit is final.
+  The ordering is the fix; the gate is what stops it rotting.
+- Proven end-to-end on the live repo, not fixtures: runbook edit → gate RED → 2g → gate GREEN.
+
+**⬛ OPEN — Dave's, and the general form is the point:**
+**(a)** Should the wrap gate **run `_build_all.py`** (or a fast subset) rather than trusting that some
+earlier call in the session did? ⚠️ Price it honestly: the build takes most of a 45s call, and a wrap
+gate that costs a call every time will get worked around — which is how we got here. A `--since-HEAD`
+subset may be the real answer.
+**(b)** Or: a cheap **build-freshness stamp** — `_build_all.py` records its exit + HEAD, the wrap gate
+refuses to close if the last recorded green build predates the session's first commit. Cheaper than (a),
+catches the same class, does not catch a build that was never run at all.
+**(c)** Neither — declare that a red build is the session's own discipline. ⚠️ That is the status quo,
+and the status quo produced two sessions of commits over a red build.
+
+**★ THE CLASS, and it is bigger than this entry.** #32 found three instruments this session whose
+output **nothing consumes**, and they are the same defect wearing different clothes:
+- **ds-022** — `_GAUGE-LOG.md` measurements, no gate reads them.
+- **the section-usage lines** — `PRIOR` referenced-never-consumed **8 of 8** sessions; `C2b`/`C3`/`C4b`/`C5`
+  unused **five sessions running**; ~3,275 tk cl100k carried dead every window. The #23 emitter and the
+  #24 FORM check both exist; neither asks what the accumulated data *says*. **UNBUILT — #33's.**
+- **this entry** — the build runs, and the wrap never asks whether it passed.
+
+⇒ **Building the instrument feels like closing the gap, and it is only ever half.** Proposed standing
+rule, Dave's to accept: **an instrument ships with its consumer, or it ships as ADVISORY with a named
+trigger and a dated review** — never as a measurement with no reader. *(Sibling of gate-don't-patch,
+and of the ADR-0016 CLAIMED-vs-UNPROVEN distinction: an unread instrument is UNPROVEN wearing green.)*
+
+**⬛ ALSO OPEN, same session, NOT started (both refused at Amber as new build artefacts):**
+- **The eager read chain (GM-D7-am) is why JIT cannot work.** The contract mandates §A + LATEST + §C +
+  whole `_LIVE-STATE.md` — **~33K tk before any question is asked.** `_memento_search.py` is a working
+  two-stage door over 255 records and **cannot save a token the contract has already spent.** §A alone
+  is 4,208 tk, static, loaded every window. ⚠️ The standing instruction says **never drop §A** — read for
+  eleven sessions as *always read it*. **Those are separable decisions and nobody had separated them.**
+  Dave ruled the cut GO at #32 ("lets do it your way"); it is UNBUILT. **#33's first job.**
+- **Growth: the contract caps what ROLLS, not what ACCRETES.** Measured over 30 commits: GM 26,323 →
+  **12,780** at the #16 enactment → **15,347** twenty-four hours later (**+20%, ~+150 tk/wrap**); LS
+  16,037 → 18,579 (**+16%**). DO-FIRST (2,474) and §C·4 (1,435) carry it. A cap on the rolling sections
+  **reads like** a cap on the file and is not one.
+
+**⚠ WART FOUND WHILE WRAPPING #32 (small, real, unfixed).** `_gm_usage.validate_stratum()` selects the
+line to validate with `if "section-usage" in ln and ln.lstrip().startswith(">")` and validates
+**`usage[0]`** — a **substring match**, the ds-018 silent-lookup class. #32's own stratum LESSON line
+mentioned *"the section-usage lines"* in prose and was therefore picked up and reported MALFORMED,
+while the real, well-formed usage line two lines below was never examined. **The failure reads exactly
+like a genuine false inscription**, which is the worst possible disguise for a lookup bug. Worked
+around by rewording the prose; the selector should anchor on the line-START form (`^>\s*\*\*section-usage`)
+like every other anchor in this programme. One line, plus a bite that puts the phrase in neighbouring
+prose and proves the real line is still the one validated. **#33, cheap.**

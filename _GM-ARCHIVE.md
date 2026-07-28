@@ -1,5 +1,27 @@
 # GOOD-MORNING — banner archive
 
+## Batch 2026-07-28 #32 — rolled by the retrieval-index wrap (Opus solo, Dave live) — moves via `knowledge/_gm_move.py`. This session found `_build_all.py` RED since `f2c083a` and closed it: ds-024 — gauge-log META form, `index_freshness_check` (BLOCKING), ritual step 2g. #31's post-mortem → `notes/_GAUGE-LOG.md` (2f).
+
+### Banner rolled (2c) — #30
+> ## ★ PRIOR — 2026-07-28 (Tue **evening #30**, OPUS solo, Dave live — ★★ **THE GROWTH CONTRACTS ARE DENOMINATED IN A UNIT THE WINDOW DOES NOT CHARGE IN: cl100k says GM 16,107 tk; the read charges 25,355. ×1.57. Every cap and every floor figure in the programme is stated in the wrong unit — ds-021, UNRULED** · ★★ **STEP 2f WAS NOT BEING RUN: `notes/_GAUGE-LOG.md` never received #26/#28/#29 — the strata rolled WHOLE into `_GM-ARCHIVE.md`, and NO GATE READS THE LOG — ds-022, repaired + UNRULED** · ★ **#29's commit had never run — 11 paths orphaned, incl. two untracked files its own handoff claims are committed** · 🟡 Amber at wrap): **"The gauge was handed off. It was never recorded — and the one RED session is the one that went missing."**
+> - **★★ ds-021 — MEASURED, NOT FIXED.** GM 16,107 cl100k → **25,355 charged** (×1.57) · LS 18,818 → **29,103** (×1.55) · floor **34,925 = 17.5%** by the gate, **54,458 = 27.2%** actually. ⇒ compactable **warn 8K / block 12K are really ~12.6K / ~18.8K**, and #27/#28/#29's reported floors understate true fill by **~10 points**. ~2,100 tk is Read's line-number prefixes (a real, repeating charge); the rest is tokenizer. ⚠ **NOT re-dialled — a falsified constant is UNSET and forked, never replaced by the finder's number.** Three remedies + the three homes any fix must reach together: `_DS-IMPROVEMENTS.md` **ds-021**.
+> - **★★ ds-022 — REPAIRED, MECHANISM UNTOUCHED.** Log held #6–#8 · #12–#18 · #20–#25 · #27 only. **#29 is the expensive loss: the only 🔴 RED session, its closed band on a Polaroid and never on the tattoo** — the exact #18 failure P1(a)'s record-FIRST-then-quote was written to prevent, one ruling later. `grep GAUGE-LOG knowledge/*.py` = **4 hits, all comments, ZERO checks.** #30 appended #28 (verbatim from the archive) + #29 + a GAPS block naming #9/#10/#11/#19 as uncountable. Three remedies in **ds-022**; (a) needs a HOLE escape hatch or it teaches sessions to fake blocks.
+> - **★ ENACTED (the 2c EXIT CHECK earning its place).** #28's chat-titles ruling was about to roll out of live state **un-enacted** — its `guards: step 4b` pointed at a runbook step that still said the opposite. **Step 4b now carries the amendment** (rename → CHAT ONLY, forward title stays in GM) **+ the size-is-a-discipline ruling.** Still owed, HIS call: the advisory title-size report · the `session-title-convention` memory.
+> - **⚠ WHAT #30 GOT WRONG.** First probe said #28's post-mortem was **destroyed** — it was in `_GM-ARCHIVE.md` all along; I grepped a `_GAUGE-LOG` phrasing convention against a GM stratum. Caught by a second measurement, not by reasoning — **#29's lesson, reproduced in the session auditing #29.** Said in chat before it could be inscribed. ⚠ The ×1.57 ratio is **two files, one session** — not established as a corpus constant.
+> - **⬛ OPEN, Dave's:** **ds-021 unit ruling (a/b/c)** · **ds-022 gate ruling (a/b/c)** · the advisory title-size report · **§C still 158 vs warn 150** — and per ds-021 the real cost is ~1.57× whatever §C measures · everything on #29's list below, untouched: scatter geometry (`x=2→46`/`y=9→11`, the numbers are HIS) · the two instrument fixes before ANY corpus figure · DV-J2b · ds-020 · T-D15 for charts · composition tier · donut hedge · consumes-manifest → firm · consult-receipts promotion · M12 Sun 08-02 07:10 · §C·2's 15 rulings + dataviz sign-off · calm-banner verdict · LS-trim (P4b).
+>
+>
+
+### Strata rolled (2f) — #31 commit-state (its post-mortem went to `notes/_GAUGE-LOG.md`)
+
+#### 2026-07-28 #31 — commit-state
+> **COMMIT STATE (stamped 2026-07-28 ~19:45 BST from `date`).**
+> **Context gauge at authoring: 🔴 RED-edge ~62% (ESTIMATE) — dual-unit per ds-021 (b); the gate still measures cl100k until #32 enacts.**
+> ONE commit this window: `knowledge/_DS-IMPROVEMENTS.md` (ds-021 (b) · ds-022 (c)+(a) · ds-023 ruled-in-part + enforcement picked — all delegated, vetoable) · `GOOD-MORNING.md` (#31 banner · header rewritten on the rulings · #29 banner + #30 stratum rolled via the mover) · `_GM-ARCHIVE.md` (Batch 2026-07-28 #31) · `_LIVE-STATE.md` (#31 delta · #28 delta rolled) · `_LIVE-STATE-ARCHIVE.md` · `notes/_GAUGE-LOG.md` (#30 post-mortem landed per 2f) · **the staged `D __tmp_moved.html`** (untracked again; `.gitignore` covers it — Dave's manual disk delete now cosmetic). Dave pushes via GitHub Desktop, whole stack, Desktop closed during the commit. ⚠ **Ritual step 3 (memory) DEFERRED at RED-edge** — the `measure-dont-convert-units` memory hook is now STALE (says "UNSET + forked"; ds-021 is RULED (b) #31). This header carries the truth; #32's wrap fixes the hook + the owed `session-title-convention` memory.
+
+
+
+
 ## Batch 2026-07-28 #31 — rolled by the throttle-rulings wrap (Fable solo, Dave live) — moves via `knowledge/_gm_move.py`. This session RULED ds-021 (b) · ds-022 (c)+(a) · ds-023 (stop = 60 − priced wrap; ceiling 45) — delegated picks, vetoable, ledger `knowledge/_DS-IMPROVEMENTS.md`. #30's post-mortem → `notes/_GAUGE-LOG.md` (2f).
 
 ### Strata rolled (2f) — #30 commit-state (its post-mortem went to `notes/_GAUGE-LOG.md`)
