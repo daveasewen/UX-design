@@ -49,6 +49,15 @@ agent dispatches say "read + follow `.claude/agents/dreamer.md`" — they never 
 - **Retirements without receipts** — DO-FIRST lines that vanished with no archive batch
   naming them. (`_capture_gate.py` carries an ADVISORY proxy for this since M9; it can
   only see literal text, not whether the retirement was DUE — that half is still yours.)
+- **Price-vs-actual drift** *(added 2026-07-28 #21, Dave's pick)* — `notes/_GAUGE-LOG.md` is a
+  dataset now: hunt sessions whose pre-flight price and closed band diverge REPEATEDLY, and
+  whether the cause repeats or is one-off noise.
+- **Claimed-ENACTED vs RUN** *(same batch)* — "landed" claims whose only evidence is a banner or
+  prose, with no gate run, receipt, render or commit behind them (the ADR-0016 CLAIMED class;
+  target CLAIMED first, UNPROVEN is honest).
+- **Lane-order violations** *(same batch)* — work touching a BLOCKED lane's surfaces while an
+  open lane gates it (GM §C·1 TWO LANES). Nothing mechanical enforces the block until O1′ —
+  this hunt IS the interim guard.
 
 ## Output format (per proposal, strict)
 

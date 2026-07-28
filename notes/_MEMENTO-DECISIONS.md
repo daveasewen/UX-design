@@ -318,3 +318,10 @@ ruling supersedes the brief's option (header-wins); the trim stays owed to its o
 **Lane 1 remainder: wrap-ritual section-usage instrumentation → O1′ → O2′.** M11's supervised
 fire stays DAVE's, before Sun 08-02. status: observed (enactment receipt; the ruling is the brief's,
 #17) · provenance: session #21 · 2026-07-28.
+
+**DREAMER HUNT LIST +3 (same session, pre-M11-fire — Dave: *"all three are probaly good. No?"*,
+option-set offered in-chat, all accepted):** `.claude/agents/dreamer.md` § What to hunt gains
+(1) price-vs-actual drift (`notes/_GAUGE-LOG.md` as dataset) · (2) claimed-ENACTED vs RUN (the
+ADR-0016 CLAIMED class) · (3) lane-order violations (the interim guard until O1′ makes lanes
+mechanical). Inscribed in the SPEC, not a chat prompt, per A-D3 (dispatches never restate) —
+every future fire inherits them. status: ruled — this entry · 2026-07-28.
