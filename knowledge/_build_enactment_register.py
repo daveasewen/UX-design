@@ -185,6 +185,14 @@ def render(rulings, idx, blind):
     pct = (100.0 * tally["PROVEN"] / total) if total else 0
     A("**%d of %d rulings (%.0f%%) are PROVEN.** That number is the finding, not a failure "
       "of this script.\n" % (tally["PROVEN"], total, pct))
+    # Denominator line — dream-pass-3 P2 (ruled 2026-07-28): the register must name its own
+    # corpus. Derived from LEDGERS so it cannot drift from what is actually harvested.
+    # Widening LEDGERS/RULING_RE is a separate, ruled decision (Dave's, unscheduled).
+    A("**Denominator (P2, 2026-07-28): %d ledgers harvested — %s — plus `docs/decisions/ADR-*.md`. "
+      "Deliberately OUTSIDE it: the Memento governance set (`notes/_MEMENTO-DECISIONS.md`, ~50 keyed "
+      "rulings) and the ds-* body (`knowledge/_DS-IMPROVEMENTS.md`). Read the %.0f%% as *of the "
+      "pillar ledgers*, not *of the project*.**\n"
+      % (len(LEDGERS), " · ".join("`%s`" % rel for rel, _ in LEDGERS), pct))
     A("⚠ **CLAIMED is not a soft PROVEN.** ds-013 lived in CLAIMED for weeks: "
       "`_sweep_type_enactment.py` named its subject and reported *0 deviations* while it "
       "could not read the stylesheet at all. A green light from a blind check is worse than "

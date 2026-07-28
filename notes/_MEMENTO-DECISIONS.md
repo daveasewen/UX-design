@@ -356,3 +356,28 @@ recommendation per row. What that binds, row by row:**
 **ENACTMENT = the next window's FIRST beat, before lane-1 step 2** — each item with its own
 receipt; nothing above is enacted in this window except P6's beat itself (Amber discipline, M1).
 status: ruled — this entry · provenance: session #21 post-wrap · 2026-07-28.
+
+**✅ ENACTED — 2026-07-28 #22, the next window's first beat as ruled. Per-item receipts:**
+- **P1(a)(b)** `knowledge/_RUNBOOK-capture-ritual.md` step 2f, post-mortem bullet — record-FIRST-
+  then-quote + missing-stratum-logged-as-HOLE inscribed. **(c)** `notes/_GAUGE-LOG.md` #18 block —
+  APPEND-ONLY correction carrying 52%-record vs ~62%-chat as unadjudicable. **First application of
+  (b):** #14's hole line added between #13 and #15 (gap recorded, not reconstructed).
+- **P2** `knowledge/_build_enactment_register.py` — denominator line GENERATED (derived from
+  `LEDGERS`, cannot drift): 4 ledgers named, Memento + ds-* exclusions stated, "of the pillar
+  ledgers, not of the project". Register regenerated, `--check` green. Widening stays PARKED (Dave's).
+- **P3** GM §C·4 — M9 tracking line beside M10's trigger, `[born #22 · guards · until]` tagged,
+  condition MET, promotion HELD as Dave's one-word call. Inserted VIA THE MOVER; §C charged
+  **151/150 WARN** (block 225) — announced on stdout, warn ≠ block, nothing displaced unprompted.
+- **P4a** `_LIVE-STATE.md` §🔀 — the false *"owed list now … only"* line CORRECTED in place: this
+  ledger named as the owed list's home; M11 closure (`0ee1634`), M12's Sun 08-02 fire, D6, `-v2` §7,
+  hunt-list follow-ons all named. **P4b untouched** — waits on LS-trim-vs-defer, as ruled.
+- **P5** `_LIVE-STATE.md:46–49` → `_LIVE-STATE-ARCHIVE.md` VIA THE MOVER (receipt `MOVE 4 ln`),
+  landing directly after its own 2026-07-18 head — the residue was the CONTINUATION of the archive's
+  refresh-chain tail ending *"— consolidated"*; the sentence is re-united, line 45 stays, provenance
+  note beside it. FOUND in passing: the split was cleaner than the proposal knew — the archive tail
+  ends mid-sentence, so the move restores grammar as well as provenance.
+- **P6** runbook step **5b** inscribed (post-wrap-addendum beat: banner addendum + re-gate + commit);
+  steps-order line updated (…5, 5b).
+Receipts: mover stdout dry + live (3 ops, all-or-nothing) · `_build_enactment_register.py --check`
+green · build + STAND-002 green in the enactment commit (hash in GM commit-state at wrap).
+status: enacted — this entry · provenance: session #22 · 2026-07-28.

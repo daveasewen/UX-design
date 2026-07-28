@@ -437,6 +437,7 @@ passes an absence-only test) · the probe-wrong-toward-green standing assumption
 1,422 in all three deltas) is what arms M10's block — not the deltas, already at LATEST+2 and unable to
 pay. First wrap measuring chain < 28,000: re-arm `CHAIN_BUDGET_TK` + its selftest pin. **§C IS AT CAP —
 an addition must DISPLACE.** [born #18 · guards: CHAIN_BUDGET_TK advisory · until: chain < 28,000]
+**⚠ M9 PROMOTION — CONDITION MET, HELD FOR DAVE (dream-pass-3 P3, 2026-07-28):** the retirement-receipts proxy's advisory-until-seen-working trigger FIRED AND WAS RIGHT at #18 ("this is the seeing" — `_GM-ARCHIVE.md` § Batch 2026-07-27 #18) then sat untracked for 3 wraps; promotion to blocking = **Dave's one-word call**, HELD on the proxy's own stated limit (it sees text vanish, not retirement-DUE — blocking could fire on a correct wrap). [born #22 · guards: `_capture_gate.py` retirement_receipts advisory tier · until: Dave rules promote/stay]
 **⚠ MEMORY-INDEX COMPACTION OWED** — 19.5KB vs 17.1KB target, loaded every cold start. Mechanics
 RULED: trim hooks + move to `MEMORY-ARCHIVE.md`, never delete; dir OUTSIDE all mounts — file tools
 only. Its own small window.

@@ -67,6 +67,12 @@ Blocks below moved VERBATIM from `GOOD-MORNING.md` §C strata at the first 2f ro
 > day — which IS the diagnosis) · Parked innocent, stratum stack guilty · both folded into the
 > proposal before ruling, no re-price needed as the job was diagnosis.)*
 
+#### 2026-07-27 #14 — HOLE, no stratum written
+
+*(gap line added 2026-07-28 #22 per P1(b) — recorded, not reconstructed. #14 enacted GM-D5(a)'s own
+step 2f (`113eefc`) yet wrote no stratum of its own; its gauge story lives only in its banner
+(`_GM-ARCHIVE.md` § Batch 2026-07-27) + git. The absence was unflagged until dream-pass 3 found it.)*
+
 #### 2026-07-27 #15
 
 > **pre-flight:** fill 41% + job 13% + wrap 5% = 59% AMBER · reserve 15% ring-fenced
@@ -115,6 +121,12 @@ Blocks below moved VERBATIM from `GOOD-MORNING.md` §C strata at the first 2f ro
 > **PACE (perishable, replaces 21:21):** panel 21:56 BST — All 45% ⇒ 0.80× · Fable 44% ⇒ 0.78× ·
 > catch-up to Thu 23:00 All 1.26× / Fable 1.28× — behind, narrowing. MORE-WINDOWS holds; this window
 > was Opus (All bucket) per the #17 trust ruling.)*
+>
+> **CORRECTION (append-only, dream-pass-3 P1(c), ruled 2026-07-28, enacted #22):** this block's closed
+> band (🟡 ~52%) equals its own pre-flight arithmetic; the session's final chat message to Dave said
+> **🟡 ~62%, RED edge (estimate)** — after the commit it reports. Both figures were ESTIMATES and
+> nothing measured the window, so they **cannot be adjudicated**; the record now carries both rather
+> than silently disagreeing with the chat. (Transcript `local_9ecbcf40`, final wrap message.)
 
 *(rolled 2026-07-28 #20 per 2f. ⚠ #19 wrote no stratum — its gauge story lives in its banner; recorded as a gap, not reconstructed.)*
 #### 2026-07-28 #20

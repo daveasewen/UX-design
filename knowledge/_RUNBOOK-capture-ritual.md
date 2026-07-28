@@ -25,7 +25,7 @@ wrong handoff we most want to avoid. Red cue line, ready to use:
 > **Title this chat: `<retrospective title>` — context is Red (~NN%). Running the capture ritual, then
 > open fresh with: `<forward title>`.**
 
-## The steps, in order (1, 1b, 2, 2c, 2d, 2e, 2f, 3, 4, 4b, 5)
+## The steps, in order (1, 1b, 2, 2c, 2d, 2e, 2f, 3, 4, 4b, 5, 5b)
 
 *Steps **2e** and **2f** were added 2026-07-27 (GM-D1…D9, `notes/_MEMENTO-DECISIONS.md` § GM
 growth-contracts ruling). They extend the 2c/2d pattern — cap + archive sibling + verbatim move +
@@ -230,6 +230,13 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
    - **post-mortems → `notes/_GAUGE-LOG.md`** — append-only, one block per session. These are
      **measurements, not narrative**: pre-flight estimate vs closed band, overrun and its cause. The
      throttle programme keeps reasoning from n=1; the log is what makes it a countable dataset.
+     **Record-FIRST-then-quote (dream-pass-3 P1(a), ruled 2026-07-28):** the closed band is written to
+     this record FIRST and the chat wrap message QUOTES it — one number, one source. The #18 block is
+     the counter-example: record 52%, chat ~62%, nothing reconciled the two, and neither can be
+     adjudicated after the fact.
+     **A missing stratum is logged as a HOLE (P1(b), same ruling):** a session that writes no stratum
+     gets a dated gap line in `_GAUGE-LOG.md`, the way #19's absence was flagged — the dataset's gaps
+     stay visible to the next reader; #14's unflagged absence is what made them silent.
    - **commit-states → `_GM-ARCHIVE.md`**, under the same `<date> <session#>` batch key as 2c.
 
    **EXIT CHECK applies and it bites here:** a stratum carrying a lesson — e.g. *"the fork rule failed
@@ -311,6 +318,14 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
 5. **Commit + push.** Claude commits in terminal with a paste-ready summary + description, clears any
    stale `.git/*.lock` files. **Dave pushes via GitHub Desktop only** — never terminal push, never a
    Desktop commit, Desktop closed while Claude commits (memory `git-push-method`).
+5b. **Post-wrap addendum (dream-pass-3 P6, ruled 2026-07-28; applied to its own ruling the hour it
+   was made, #21).** A ruling that lands AFTER the wrap gate has run gets an explicit addendum beat:
+   append it to the ★ LATEST banner (a one-line "post-wrap addendum" under the banner is enough),
+   re-run the wrap gate, then commit. The banner is the session record (GM-D4) — inscribing the
+   tattoos while the record stays silent is how #21's hunt-list ruling went missing from its own
+   session while #20's identical shape propagated; discipline, not design, is what made it a class.
+   ⚠ Do NOT promote a spec/ledger to Polaroid duty in compensation (A-D3: the spec stays the single
+   source); the beat only makes the record SAY the source changed.
 
 ## What "done" looks like
 

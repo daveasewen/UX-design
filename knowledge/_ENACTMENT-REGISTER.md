@@ -16,6 +16,8 @@
 
 **4 of 81 rulings (5%) are PROVEN.** That number is the finding, not a failure of this script.
 
+**Denominator (P2, 2026-07-28): 4 ledgers harvested — `_proforma/_DATAVIZ-DECISIONS.md` · `_proforma/_RAG-DECISIONS.md` · `_proforma/_TYPE-DECISIONS.md` · `_proforma/_BUTTON-DECISIONS.md` — plus `docs/decisions/ADR-*.md`. Deliberately OUTSIDE it: the Memento governance set (`notes/_MEMENTO-DECISIONS.md`, ~50 keyed rulings) and the ds-* body (`knowledge/_DS-IMPROVEMENTS.md`). Read the 5% as *of the pillar ledgers*, not *of the project*.**
+
 ⚠ **CLAIMED is not a soft PROVEN.** ds-013 lived in CLAIMED for weeks: `_sweep_type_enactment.py` named its subject and reported *0 deviations* while it could not read the stylesheet at all. A green light from a blind check is worse than no check.
 
 ## Scope blindness — gates that cannot see part of their own corpus
