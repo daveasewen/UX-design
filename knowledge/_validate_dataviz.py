@@ -78,6 +78,59 @@ KNOWN_DTYPES = {
     "line", "multiline", "spark", "kpi", "donut", "pie", "scatter",
 }
 
+# ---------------------------------------------------------------------------
+# DV-D02-A · dv-fit scope (ruled Dave 2026-07-28, session #28)
+# ---------------------------------------------------------------------------
+# DV-D02 says responsive = compress width, never scale proportionally, text must not scale —
+# enacted as `class="dv-svg dv-fit"` on the plot svg, which the injected fit() picks up.
+#
+# The ledger USED to read "Cartesian charts only; horizontal bar + donut excluded". The h-bar half
+# was ROT: Chart-bar.reference.html's horizontal bar has carried `dv-fit` since it was built, so the
+# implementation never agreed with the text. Dave, asked directly: "horizontal bars is fine, this
+# must have been a rot problem or miscommunication." Amended as DV-D02-A.
+#
+# The partition below is TOTAL over KNOWN_DTYPES and asserted at import. That is deliberate and it
+# is the dv-vocab lesson (see the comment above DTYPE_CANON): a new dtype must not be able to land
+# in neither bucket and skip this rule in silence. Adding a dtype to KNOWN_DTYPES without placing it
+# here is an ImportError, not a silent pass.
+CARTESIAN_DTYPES = {
+    "column", "bar", "grouped", "stacked", "combo", "line", "multiline", "scatter",
+}
+# Out of scope — and the REASON travels with the exclusion, per Dave's standing terms
+# ("correctness, standardisation with flexibility rather than expediency"). A gate that encodes a
+# rule without its principled exceptions is not standardisation, it is a future false positive.
+NON_CARTESIAN_DTYPES = {
+    "donut": "compressing a circle distorts it (DV-D02). ⚠ Dave-HEDGED, not firm: 'probably never "
+             "have to scale, but I'm not 100% sure' — deferred to the 12-column-grid + breakpoints "
+             "task by his instruction. Do not harden 'never' into a rule.",
+    "pie":   "same circle argument as donut (DV-D02).",
+    "spark": "VACUOUSLY out of scope, not excluded: a sparkline carries no text, so the "
+             "non-scaling-text constraint has nothing to bind. Its fit rides a separate CSS release "
+             "(figure.dv-fit-on .spark-standalone), receipted in the registry $note. Do not 'fix' "
+             "it by adding dv-fit.",
+    "kpi":   "a KPI figure is a number, not a plot — it has no value axis to relayout.",
+}
+# Waivers: cartesian, genuinely non-compliant, but non-compliant BY RULING rather than by accident.
+# A waiver demotes blocking -> advisory and must carry both a reason and the condition that clears it.
+DV_FIT_WAIVED = {
+    "scatter": ("ds-020 — scatter is the only cartesian member still on the pre-DV-D07 axis/grid "
+                "idiom, FENCED by Dave's ruling (#27): adopting fit moves every gridline, so it "
+                "ships with a paired before/after control or not at all. Scatter also lacks the "
+                "data-pl/data-fx geometry hooks fit() reads (measured #28: bar 167 data-fx, "
+                "scatter 0), so this is not a one-class fix. CLEARS WHEN: ds-020 is enacted with "
+                "its control — then delete this waiver and the check goes blocking on scatter."),
+}
+_unplaced = KNOWN_DTYPES - CARTESIAN_DTYPES - set(NON_CARTESIAN_DTYPES)
+if _unplaced:
+    raise ImportError(
+        "DV-D02-A partition is not total: %s in KNOWN_DTYPES but in neither CARTESIAN_DTYPES nor "
+        "NON_CARTESIAN_DTYPES. Place it (with a reason, if excluded) — an unplaced dtype would skip "
+        "the dv-fit rule in silence, which is the dv-vocab defect this gate already learned once."
+        % sorted(_unplaced))
+if set(DV_FIT_WAIVED) - CARTESIAN_DTYPES:
+    raise ImportError("DV_FIT_WAIVED may only waive cartesian dtypes; got %s"
+                      % sorted(set(DV_FIT_WAIVED) - CARTESIAN_DTYPES))
+
 
 def _seg_has_surface_stroke(seg):
     """dv-004, mechanism 1: a >=2px stroke painted in the surface colour."""
@@ -261,6 +314,29 @@ def check_chart(attrs, inner, themes, ctx):
                  "before shipping the figure." % raw_dtype)
     surface_key = "--raised" if attrs.get("data-surface") == "raised" else "--page"
     svg = "\n".join(re.findall(r'<svg\b.*?</svg>', inner, re.S))
+
+    # --- DV-D02-A dv-fit scope ---------------------------------------------
+    # Bites BOTH ways: a cartesian plot MISSING dv-fit, and an excluded plot CARRYING it.
+    # The second direction matters — #27 proved a manifest bites hardest where the author
+    # predicted it would pass, and "someone added fit to the donut" is exactly that shape.
+    plot_tags = [t for t in re.findall(r'<svg\b[^>]*>', inner)
+                 if re.search(r'\bclass="[^"]*\bdv-svg\b', t)]
+    if plot_tags:
+        with_fit = [t for t in plot_tags if re.search(r'\bclass="[^"]*\bdv-fit\b', t)]
+        if dtype in CARTESIAN_DTYPES:
+            if len(with_fit) < len(plot_tags):
+                msg = ('DV-D02-A: data-dv-type="%s" is a cartesian plot, so DV-D02 covers it — its '
+                       'plot <svg class="dv-svg"> must also carry dv-fit (%d of %d do). Responsive '
+                       '= compress width, never scale proportionally.'
+                       % (raw_dtype, len(with_fit), len(plot_tags)))
+                if dtype in DV_FIT_WAIVED:
+                    A.append(msg + " WAIVED: " + DV_FIT_WAIVED[dtype])
+                else:
+                    B.append(msg)
+        else:
+            if with_fit:
+                B.append('DV-D02-A: data-dv-type="%s" carries dv-fit but is OUT of DV-D02 scope — %s'
+                         % (raw_dtype, NON_CARTESIAN_DTYPES[dtype]))
 
     # --- dv-009 flat fills -------------------------------------------------
     for grad in ("linearGradient", "radialGradient", "filter"):
@@ -474,16 +550,47 @@ def selftest():
         return any(tok in m for m in msgs)
 
     GOOD_BAR = ('<figure class="dv" data-dv-type="column" data-domain-min="0">'
-                '<svg class="dv-svg" viewBox="0 0 100 60"><line class="dv-axis" stroke="var(--dv-axis)" x1="0" y1="60" x2="100" y2="60"/>'
+                '<svg class="dv-svg dv-fit" viewBox="0 0 100 60"><line class="dv-axis" stroke="var(--dv-axis)" x1="0" y1="60" x2="100" y2="60"/>'
                 '<rect class="dv-series" data-series-i="1" fill="var(--data-series-1)" x="0" y="10" width="20" height="50"/></svg>'
                 '<table><tr><th>A</th><td>50</td></tr></table>'
                 '<ul class="dv-legend"><li><span class="dv-key">A</span> Savings</li></ul></figure>')
     cases = []
     # each: (name, fixture, checker predicate on (B,A))
     cases.append(("GOOD column passes blocking", GOOD_BAR, lambda B, A: len(B) == 0))
-    cases.append(("dv-009 gradient", GOOD_BAR.replace("<svg class=\"dv-svg\" viewBox=\"0 0 100 60\">",
-                  "<svg class=\"dv-svg\" viewBox=\"0 0 100 60\"><linearGradient id=\"g\"/>"),
+    cases.append(("dv-009 gradient", GOOD_BAR.replace("<svg class=\"dv-svg dv-fit\" viewBox=\"0 0 100 60\">",
+                  "<svg class=\"dv-svg dv-fit\" viewBox=\"0 0 100 60\"><linearGradient id=\"g\"/>"),
                   lambda B, A: has(B, "dv-009")))
+
+    # --- DV-D02-A dv-fit scope (ruled 2026-07-28 #28) -----------------------
+    # Five bites: the two directions, the waiver, the control that must NOT fire, and the
+    # partition-totality guard. GOOD_BAR now carries dv-fit — that IS the green control, and it is
+    # why "GOOD column passes blocking" above proves the check can stay silent on a compliant chart.
+    cases.append(("★ DV-D02-A fires when a cartesian plot LOSES dv-fit",
+                  GOOD_BAR.replace('class="dv-svg dv-fit"', 'class="dv-svg"'),
+                  lambda B, A: has(B, "DV-D02-A")))
+    cases.append(("★ DV-D02-A fires the OTHER way — an excluded donut that CARRIES dv-fit",
+                  '<figure class="dv" data-dv-type="donut" data-total="30">'
+                  '<svg class="dv-svg dv-fit"><path class="dv-series" fill="var(--data-series-1)" '
+                  'stroke="var(--page)" stroke-width="2" d="M0 0"/></svg>'
+                  '<table><tr><th>A</th><td>30</td></tr></table></figure>',
+                  lambda B, A: has(B, "DV-D02-A")))
+    cases.append(("DV-D02-A silent on an excluded chart with no dv-fit (donut, the normal case)",
+                  '<figure class="dv" data-dv-type="donut" data-total="30">'
+                  '<svg class="dv-svg"><path class="dv-series" fill="var(--data-series-1)" '
+                  'stroke="var(--page)" stroke-width="2" d="M0 0"/></svg>'
+                  '<table><tr><th>A</th><td>30</td></tr></table></figure>',
+                  lambda B, A: not has(B, "DV-D02-A")))
+    cases.append(("★ DV-D02-A WAIVER demotes scatter to advisory, and names ds-020",
+                  '<figure class="dv" data-dv-type="scatter"><svg class="dv-svg">'
+                  '<circle class="dv-series" fill="var(--data-series-1)" cx="5" cy="5" r="3"/></svg>'
+                  '<table><tr><th>A</th><td>5</td></tr></table></figure>',
+                  lambda B, A: not has(B, "DV-D02-A") and has(A, "DV-D02-A") and has(A, "ds-020")))
+    cases.append(("★ h-bar is IN scope after DV-D02-A — the rot the amendment corrected",
+                  '<figure class="dv" data-dv-type="bar" data-domain-min="0">'
+                  '<svg class="dv-svg"><rect class="dv-series" fill="var(--data-series-1)" '
+                  'x="0" y="10" width="20" height="50"/></svg>'
+                  '<table><tr><th>A</th><td>50</td></tr></table></figure>',
+                  lambda B, A: has(B, "DV-D02-A")))
     cases.append(("dv-009 two patterns", GOOD_BAR.replace("<rect class=\"dv-series\"",
                   "<pattern id=\"chevron\"/><pattern id=\"chevron2\"/><rect class=\"dv-series\""),
                   lambda B, A: has(B, "dv-009")))

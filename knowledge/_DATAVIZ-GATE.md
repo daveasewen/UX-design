@@ -4,6 +4,7 @@ Charts = semantic SVG + tokens + CSS motion + real-table spine. Blocking + advis
 Gridline contrast is advisory (decorative, WCAG 1.4.11-exempt); series-fill + axis/label contrast is blocking.
 
 ## ✓ _proforma/DataViz-interactive.html — PASS
+- ⚠ scatter — DV-D02-A: data-dv-type="scatter" is a cartesian plot, so DV-D02 covers it — its plot <svg class="dv-svg"> must also carry dv-fit (0 of 1 do). Responsive = compress width, never scale proportionally. WAIVED: ds-020 — scatter is the only cartesian member still on the pre-DV-D07 axis/grid idiom, FENCED by Dave's ruling (#27): adopting fit moves every gridline, so it ships with a paired before/after control or not at all. Scatter also lacks the data-pl/data-fx geometry hooks fit() reads (measured #28: bar 167 data-fx, scatter 0), so this is not a one-class fix. CLEARS WHEN: ds-020 is enacted with its control — then delete this waiver and the check goes blocking on scatter.
 - ⚠ scatter — dv-016 [gridline]: var(--line2)=#EDEDED vs surface #FFFFFF = 1.17:1 (<3:1) in light mode.
 - ⚠ scatter — dv-016 [gridline]: var(--line2)=#EDEDED vs surface #FFFFFF = 1.17:1 (<3:1) in light mode.
 - ⚠ scatter — dv-016 [gridline]: var(--line2)=#EDEDED vs surface #FFFFFF = 1.17:1 (<3:1) in light mode.
@@ -106,6 +107,8 @@ Gridline contrast is advisory (decorative, WCAG 1.4.11-exempt); series-fill + ax
 - ⚠ multiline — dv-016 [gridline]: var(--data-grid)=#484848 vs surface #1A1A1A = 1.90:1 (<3:1) in dark mode.
 
 ## ✓ snippets/Chart-scatter.reference.html — PASS
+- ⚠ scatter — DV-D02-A: data-dv-type="scatter" is a cartesian plot, so DV-D02 covers it — its plot <svg class="dv-svg"> must also carry dv-fit (0 of 1 do). Responsive = compress width, never scale proportionally. WAIVED: ds-020 — scatter is the only cartesian member still on the pre-DV-D07 axis/grid idiom, FENCED by Dave's ruling (#27): adopting fit moves every gridline, so it ships with a paired before/after control or not at all. Scatter also lacks the data-pl/data-fx geometry hooks fit() reads (measured #28: bar 167 data-fx, scatter 0), so this is not a one-class fix. CLEARS WHEN: ds-020 is enacted with its control — then delete this waiver and the check goes blocking on scatter.
+- ⚠ scatter — DV-D02-A: data-dv-type="scatter" is a cartesian plot, so DV-D02 covers it — its plot <svg class="dv-svg"> must also carry dv-fit (0 of 1 do). Responsive = compress width, never scale proportionally. WAIVED: ds-020 — scatter is the only cartesian member still on the pre-DV-D07 axis/grid idiom, FENCED by Dave's ruling (#27): adopting fit moves every gridline, so it ships with a paired before/after control or not at all. Scatter also lacks the data-pl/data-fx geometry hooks fit() reads (measured #28: bar 167 data-fx, scatter 0), so this is not a one-class fix. CLEARS WHEN: ds-020 is enacted with its control — then delete this waiver and the check goes blocking on scatter.
 
 ## ✓ snippets/Chart-sparkline.reference.html — PASS
 

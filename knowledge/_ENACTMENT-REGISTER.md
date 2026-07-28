@@ -8,15 +8,15 @@
 
 | verdict | count | meaning |
 |---|---:|---|
-| **PROVEN** | 4 | a check names it AND a selftest proves that check can FAIL on it |
+| **PROVEN** | 5 | a check names it AND a selftest proves that check can FAIL on it |
 | **CLAIMED** | 21 | a check names it, nothing proves it can fail — the dangerous middle |
-| **UNPROVEN** | 56 | no executable check names it at all |
+| **UNPROVEN** | 55 | no executable check names it at all |
 | **NOT-GATEABLE** | 0 | the ledger says so explicitly, with a reason |
 | **TOTAL** | 81 | |
 
-**4 of 81 rulings (5%) are PROVEN.** That number is the finding, not a failure of this script.
+**5 of 81 rulings (6%) are PROVEN.** That number is the finding, not a failure of this script.
 
-**Denominator (P2, 2026-07-28): 4 ledgers harvested — `_proforma/_DATAVIZ-DECISIONS.md` · `_proforma/_RAG-DECISIONS.md` · `_proforma/_TYPE-DECISIONS.md` · `_proforma/_BUTTON-DECISIONS.md` — plus `docs/decisions/ADR-*.md`. Deliberately OUTSIDE it: the Memento governance set (`notes/_MEMENTO-DECISIONS.md`, ~50 keyed rulings) and the ds-* body (`knowledge/_DS-IMPROVEMENTS.md`). Read the 5% as *of the pillar ledgers*, not *of the project*.**
+**Denominator (P2, 2026-07-28): 4 ledgers harvested — `_proforma/_DATAVIZ-DECISIONS.md` · `_proforma/_RAG-DECISIONS.md` · `_proforma/_TYPE-DECISIONS.md` · `_proforma/_BUTTON-DECISIONS.md` — plus `docs/decisions/ADR-*.md`. Deliberately OUTSIDE it: the Memento governance set (`notes/_MEMENTO-DECISIONS.md`, ~50 keyed rulings) and the ds-* body (`knowledge/_DS-IMPROVEMENTS.md`). Read the 6% as *of the pillar ledgers*, not *of the project*.**
 
 ⚠ **CLAIMED is not a soft PROVEN.** ds-013 lived in CLAIMED for weeks: `_sweep_type_enactment.py` named its subject and reported *0 deviations* while it could not read the stylesheet at all. A green light from a blind check is worse than no check.
 
@@ -52,12 +52,12 @@
 | `B-D6` | **UNPROVEN** | B-D6 — Mono success button = R-D14 GREEN fill, black label (2026-07-20). Source: Dave. FIRM. | — | `_proforma/_BUTTON-DECISIONS.md` |
 | `B-D7` | **CLAIMED** | B-D7 — Press physics: the Icon-button size-scoped model IS the family canon; motion is a THEME DIAL (2026-07-22). Source: Dave. FIRM. | knowledge/gen_snippet_tokens.py | `_proforma/_BUTTON-DECISIONS.md` |
 | `DV-D01` | **UNPROVEN** | DV-D01 · Consolidate to ONE file. All chart types live on one interactive file | — | `_proforma/_DATAVIZ-DECISIONS.md` |
-| `DV-D02` | **UNPROVEN** | DV-D02 · Responsive = compress width, never scale proportionally, and TEXT MUST NOT SCALE. | — | `_proforma/_DATAVIZ-DECISIONS.md` |
+| `DV-D02` | **PROVEN** | ✅ RESOLVED 2026-07-28 #28 — DV-D02 AMENDED (DV-D02-A, see § Standing decisions). Dave firmed the | knowledge/_validate_dataviz.py | `_proforma/_DATAVIZ-DECISIONS.md` |
 | `DV-D03` | **UNPROVEN** | DV-D03 · Gridline contrast = advisory; series-fill + axis/label = blocking ≥3:1, computed from | — | `_proforma/_DATAVIZ-DECISIONS.md` |
 | `DV-D04` | **UNPROVEN** | DV-D04 · Chevron/hash texture is reserved for GAUGE-type charts only — NOT stacked series. | — | `_proforma/_DATAVIZ-DECISIONS.md` |
 | `DV-D05` | **UNPROVEN** | DV-D05 · Type = the KB scale (`typography.json`: font-5/6/7 = 16/14/12 + weights | — | `_proforma/_DATAVIZ-DECISIONS.md` |
 | `DV-D06` | **UNPROVEN** | DV-D06 · Delta indicators may use gain/loss colour with sign + arrow (dv-019 override), exempt | — | `_proforma/_DATAVIZ-DECISIONS.md` |
-| `DV-D07` | **CLAIMED** | DV-D07 · Chart chrome = two-channel roles: snapped colour + declared alpha slot (2026-07-23). | knowledge/_validate_legacy_leak.py, knowledge/_validate_snippets.py, knowledge/gen_snippet_tokens.py | `_proforma/_DATAVIZ-DECISIONS.md` |
+| `DV-D07` | **CLAIMED** | DV-D07 · Chart chrome = two-channel roles: snapped colour + declared alpha slot (2026-07-23). | knowledge/_validate_dataviz.py, knowledge/_validate_legacy_leak.py, knowledge/_validate_snippets.py, knowledge/gen_snippet_tokens.py | `_proforma/_DATAVIZ-DECISIONS.md` |
 | `DV-D08` | **UNPROVEN** | DV-D08 · Chart text ladder: 12/500 floor + 700 emphasis; 600 stays off-brand (2026-07-23). | — | `_proforma/_DATAVIZ-DECISIONS.md` |
 | `DV-D09` | **UNPROVEN** | DV-D09 · Bar-family canon defaults are ORIENTATION-DISTINCT; hue is a placeholder until edit | — | `_proforma/_DATAVIZ-DECISIONS.md` |
 | `DV-D10` | **UNPROVEN** | DV-D10 · Series identity comes OFF the plot where a mark can't guarantee its own page-air; | — | `_proforma/_DATAVIZ-DECISIONS.md` |

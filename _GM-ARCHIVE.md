@@ -1,5 +1,58 @@
 # GOOD-MORNING — banner archive
 
+## Batch 2026-07-28 #28 — rolled by the DV-D02-A wrap (Opus solo, Dave live) — moves via `knowledge/_gm_move.py`, receipts in that session's stdout
+
+### RETIREMENT RECEIPT — DO-FIRST item 0, RETIRED (2026-07-28 #28)
+
+**A true retirement, and its guard is structural.** Item 0 asked Dave for one word on §C·2 item 20.
+He gave it — *"narrowly discharged"* — at 15:25 on 2026-07-28, commit `2369cb6`, one minute before
+#28 opened. The notice's own `until: Dave rules` was therefore already met, and the supersession
+test in the ritual (step 2e) retires a notice **when the text it negates is gone**: §C·2 item 20 now
+reads `✅ RULED #27`. The ✅ line and the DataViz ledger row are the structural guard. Verbatim:
+
+> **0. ★ DAVE'S WORD OWED — §C·2 item 20 still reads "Chart-scatter Layer-2 — deferred, stays
+>    Layer-1 safe". It isn't, as of #27.** He was asked at enactment time and answered the
+>    explanation question instead, so the line was deliberately LEFT ALONE — a ratified batch line
+>    is not auto-promoted by an agent, even when the agent's own work superseded it. One word closes
+>    it: **discharged** (DV-J2 is the Layer-2 catch-up, ledger says so) or **narrowly discharged**
+>    (tips + table spine only; legend interaction, brush/range still deferred). Until he rules, the
+>    file contradicts itself on purpose and this line is the flag.
+>    [born #27 · guards: this line + the ledger row · until: Dave rules]
+
+### ⚠ NOT A TOMBSTONE — DO-FIRST 0b/0c were COMPACTED, not retired (2026-07-28 #28)
+
+**M9 false fire #3.** Both items are LIVE and their instructions are unchanged; 0b was updated to
+record that the brief is now PART-CONSUMED (finding 2 ruled + gated, 3 ruled-but-unbuildable, 1 and
+4 unstarted) and 0c gained the measured warning that ds-020 is bigger than it reads. The proxy sees
+text vanish, not retirement — its known limit, ruled acceptable at promotion (#22). Verbatim prior
+text below **only** to satisfy the text-match — ⚠ **NOT A TOMBSTONE, do not read these as closed:**
+
+> **0b. ★★ ENCODE BEFORE THE WAVE — Dave found FOUR defects by eye on the DV-J2 scatter half, every
+>    one a rule Apollo HOLDS but does not ENFORCE.** → **`notes/_briefs/2026-07-28-chart-encoding-gaps-carry-forward.md`**
+>    — READ IT, do not reconstruct from this line. Three things it must not lose: **⚠ DV-D02 CANNOT
+>    BE GATED AS WRITTEN** (Dave's h-bar + graphic-vs-lockup correction is LEANING — firm it and
+>    amend the rule FIRST, or the gate enforces a defect) · **⚠ THE LIST IS OPEN** ("There maybe more
+>    than I've stated too") · sequencing — the wave is 8 more charts, so encode first or fix it nine
+>    times. [born #27 · guards: this line + the brief · until: the gates ship]
+> **0c. NEXT BUILD CANDIDATES (his pick, not the queue's):** **DV-J2b** — sparkline toggle markup +
+>    CSS, the JS is already injected and dormant (cheap, self-contained) · **ds-020** — scatter's
+>    DV-D07 axis/grid catch-up, FENCED by his #27 ruling; it moves every gridline, so it ships with a
+>    paired before/after control or not at all. ⚠ Price the render sandbox IN: it is fresh every
+>    session (~4 calls to stand up). [born #27 · guards: `_lanes.json` DV-J2b queued · until: shipped]
+
+> **COMMIT STATE (stamped 2026-07-28 ~14:45 BST from `date`).**
+> **Context gauge at authoring: 🟡 AMBER ~Amber (ESTIMATE, unconfirmed by out-of-band measure) — re-verify claims against the receipts before trusting.**
+> ONE commit this window: `knowledge/component-types.json` (Chart-scatter → `$members` + `consumes:["dv-behaviour"]` + extraContract) · `knowledge/snippets/Chart-scatter.reference.html` (27 marks → canon contract · svg `role="group"` · toolbar + `dv-tablepanel` replace `<details>` · `--shadow`/`--pop-border` + manifest bind · AUTO-BEHAVIOUR pair, 13,251 B injected) · `knowledge/_render/verify_dv_j2_render.py` (NEW — render-proof + `--bite`) · `knowledge/_proforma/_DATAVIZ-DECISIONS.md` (§ Open/pending — DV-J2 enactment row) · `knowledge/_DS-IMPROVEMENTS.md` (NEW ds-020 + the C2-promotion evidence) · `docs/decisions/ADR-0015-behaviour-partials-dataviz.md` (§ Amendment 2 — first-narrow-declaration landed note) · `knowledge/_lanes.json` (DV-J2 landed · DV-J2b queued · sequence reordered) + regenerated LS §🛤 view · `showroom/` (2 pages regenerated) · `GOOD-MORNING.md` (#27 banner · STATE · guide · names · item 0/0b · ⛔ ROUTING · §C·1(a) · size stamp · stratum) + `_GM-ARCHIVE.md` (Batch #27: #25 banner) · `_LIVE-STATE.md` (#27 delta · #24 rolled) + `_LIVE-STATE-ARCHIVE.md` — rolls VIA THE MOVER (receipts in this window's stdout, extents verified at DRY). Build `[72/72]` exit 0 · render-proof GREEN + bite FAILS-as-designed · wrap gate at close. Dave pushes via GitHub Desktop, whole stack, Desktop closed.
+> ## ★ PRIOR — 2026-07-28 (Tue **mid-afternoon #26**, FABLE solo, Dave live — ★★ **ADR-0015-A2 ENACTED: consumes-manifest — universal default · individual opt-out · TENTATIVE — machinery mutation-proven, build `[72/72]` exit 0** · ★ **DV-J KEYS MINTED (J = Job; "M stood for Memento")** · ★ **§C·1(a) STEP-1 was SIX DAYS STALE — measured, corrected** · 🟡 ~57% est at wrap): **"The pick was made on a stale queue line; the measurement un-made it."**
+> - **★★ LANDED, with evidence.** `gen_component_partials.py` gains `consumes_behaviour` + `non_consumer_marker_fails` (docstring contract + 7 §5d bites incl. a green control; the universal-default bite proven able to FAIL by mutation control — default flipped → selftest exit 1 on the right message → restored green) · zero declarations yet ⇒ `--check` clean = the no-behaviour-change control · build `[72/72]` exit 0 · inscriptions same hour: **ADR-0015 § Amendment 2** + seed node/edge `ADR-0015-A2` + DataViz ledger § Open/pending (**DV-J1/DV-J2 minted**, the #20 "picker-upper keys them" clause satisfied) + dv-legend `$description` resolution line · renames records-FIRST (`_lanes.json` → regen view green → GM ⛔ line; DV-J2 step ACTIVE). Ledger: `knowledge/_proforma/_DATAVIZ-DECISIONS.md` § Open/pending · 2026-07-28.
+> - **★ RULED (Dave, three beats, each read back before recording):** (1) **schema TENTATIVE** — his own play-back taken as the ruling's words: *"universal automatic opt-in with the option to opt-out individually"*; posture verbatim: *"working on instinct… flexible at the moment… might be neater in the end for them to be global"* — the shape was chosen so a later firm ruling EITHER way is a data edit, not a rebuild → ADR-0015-A2. (2) **DV-J keys** — *"M stood for Memento… this is Apollo dataviz work, we need to fix this coding"*; forward surfaces renamed, historical rows verbatim. (3) **Wrap-now over enact-first** (option-select, recommended pick — Fable pace).
+> - **★ FOUND (measured).** Floor **32,043 tk = 16.0%** at the opener (measured, not inherited) · **the scatter exemplar was already DONE 07-22** (`00abdf3`, build 51/51, library 65) — §C·1(a)'s "STEP 1: DO THIS FIRST" sat stale SIX DAYS (assertion-propagation class); my first option-select offered it and Dave picked it — **a pick from a stale set is not a ruling**; stopped, measured, corrected, re-picked · scatter was NEVER a behaviour-group member (`$members` + 0 markers) — the dv-legend `$description` aside was prose drift, the #20 receipt was right · budgets clear regardless: dv-behaviour 13,004 + dv-legend 16,330 = **29,334/32,768 B**, membership doesn't change source bytes.
+> - **⚠ WHAT THE AUTHOR FLAGS.** The manifest's NARROW path has no live instance yet — unit bites only until scatter declares (#27); run()-integration is exercised solely on the universal path · no 1b dossier — option-select-shaped arc, WHY in ADR-0015-A2 + the ledger row (the 1b test applied, stated) · panel Tue ~13:35: All 0.93× (behind, narrowing — MORE-WINDOWS holds for All) · **Fable 1.14× AHEAD ⇒ 0.73× rationed lands the reset — wrap-now was the pace-correct pick**.
+> - **⬛ OPEN, Dave's:** consumes-manifest revisit (TENTATIVE → firm, either way a data edit) · consult-receipts probe promotion (his word) · M12's UNATTENDED fire Sun 08-02 07:10 · §C·2's 15 rulings + dataviz sign-off (PARKED, unchanged) · calm-banner verdict · LS-trim-vs-defer (P4b).
+>
+>
+
+
 ## Batch 2026-07-28 #27 — rolled by the DV-J2 scatter-half wrap (Opus solo, Dave live) — moves via `knowledge/_gm_move.py`, receipts in that session's stdout
 
 ### M9 FALSE FIRE #2, answered not archived — item 0b COMPACTED, not retired (2026-07-28, post-wrap)

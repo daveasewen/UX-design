@@ -29,9 +29,47 @@ Source of these rulings: the exported review comment-pins on the REVIEW copy (ba
   Edges: supersedes(DV:DOSSIER.s07)
 - **DV-D02 · Responsive = compress width, never scale proportionally, and TEXT MUST NOT SCALE.**
   Enacted as a runtime `fit()` (the method's geometry node at runtime): fixed height + non-scaling
-  text, only horizontal positions relayout to container width. Cartesian charts only; horizontal bar
-  + donut excluded (compressing a value-axis / circle distorts). Pure enhancement, safe fallback to the
-  baked SVG. ⚠️ built without an in-browser test (sandbox has no browser) — needs Dave's resize check.
+  text, only horizontal positions relayout to container width. Pure enhancement, safe fallback to the
+  baked SVG.
+  **IN SCOPE — cartesian plots, HORIZONTAL BAR INCLUDED:** vertical bar · **horizontal bar** · line ·
+  combo · scatter. Marked by `class="dv-svg dv-fit"` on the plot `<svg>`; gated by
+  `_validate_dataviz.py::dv_fit_scope` (DV-D02-A, 2026-07-28).
+  **OUT OF SCOPE — and the reason travels with the exclusion.** Dave's standing terms: *"I lean to
+  correctness, standardisation with flexibility rather than expediency"* — a gate that encodes a rule
+  without its principled exceptions is not standardisation, it is a future false positive.
+  - **Donut / pie graphic — EXCLUDED: compressing a circle distorts it.** ⚠️ Status is
+    **DAVE-HEDGED, not firm** (2026-07-28), and must not be hardened by a later reader: *"the chart
+    graphic will probably never have to scale, but I'm not 100% sure. there may be a case to start and
+    stop scaling between break points. this also need to tested, this is finessing though, and should
+    probably happen while or after we work on the 12 column grid and breakpoints."* **Deferred to the
+    12-column-grid + breakpoints task by his instruction — do not fold it into gate work.**
+  - **The donut's LOCKUP with its legend is a separate question, and is NOT excluded.** Dave, #27:
+    *"donut (graphics) probably not but their lockup with the legend will."* Responsiveness applies at
+    **different levels of a composition**; DV-D02 today speaks only about plots. The composition level
+    needs a slot/props model the registry has no concept of — same seam as the legend-as-molecule
+    proposal and the templates/shells zero tier. **ADR-shaped, deliberately not gated here.**
+  - **Sparkline — VACUOUSLY out of scope, not excluded.** It carries no text, so the
+    non-scaling-text constraint has nothing to bind; its fit rides a separate CSS release
+    (`figure.dv-fit-on .spark-standalone`), receipted in its registry `$note`. Recorded so a later
+    reader does not "fix" it by adding `dv-fit`.
+  **⚠️ AMENDED 2026-07-28 (#28) — DV-D02-A: the horizontal-bar exclusion was ROT, and the code never
+  agreed with it.** Original text kept verbatim per the Memento discipline, so the correction can never
+  read as drift: *"Cartesian charts only; horizontal bar + donut excluded (compressing a value-axis /
+  circle distorts)."* Dave, asked directly and answering firmly: *"horizontal bars is fine, this must
+  have been a rot problem or miscommunication. This earlier example was responsive and I was happy with
+  it apart from the text cropping."* **MEASURED — and this is why it is a correction, not a reversal:**
+  `Chart-bar.reference.html:387`, the very h-bar he was looking at, has carried `class="dv-svg dv-fit"`
+  all along. The implementation has always treated horizontal bar as responsive; only this ledger line
+  said otherwise. The exclusion was never enacted and was never his.
+  ⚠️ **The owed in-browser resize check is now PART-MET:** Dave has seen horizontal bar responsive and
+  approved it, with text cropping noted as a separate defect (brief finding 1,
+  `notes/_briefs/2026-07-28-chart-encoding-gaps-carry-forward.md`). Donut and scatter remain unchecked.
+  ⚠️ **Open tail, do not assume it settled — chart text and the T-D15 mini ramp.** Dave: *"we had a
+  mini text scale for charts, 12-14-16: however we never tested it."* T-D15 IS minted and live
+  (`.t-cm-ctl-12/14/16`, chart labels already at 12/500 = step 1 de-facto) — **but it was minted for
+  the segmented control and is a FIXED ramp a class picks one rung from, not a responsive step-down.**
+  Chart text dropping 14→12 at narrow widths would be a NEW application of T-D15, not the untested
+  half of an existing one. Needs its own test before anyone gates or builds it.
 - **DV-D03 · Gridline contrast = advisory; series-fill + axis/label = blocking ≥3:1**, computed from
   resolved hex in BOTH modes (the 9/9 declared-pairs blind-spot fix).
 - **DV-D04 · Chevron/hash texture is reserved for GAUGE-type charts only** — NOT stacked series.
@@ -610,9 +648,14 @@ in `_LIVE-STATE.md` (🟡 PARKED entry) so the state machine doesn't read this a
   instead of retrieving it — the [[trust-the-spine-not-the-prose]] violation, committed in the same
   session that correctly caught the queue doing the equivalent. **Scatter is MISSING `dv-fit` and
   that is a defect, not a decision** (measured: bar 5 · combo 1 · line 2 · donut 0 correctly ·
-  scatter 0 wrongly). ⚠ And DV-D02's exclusion list is itself now in question — Dave, hedged and
+  scatter 0 wrongly). ~~⚠ And DV-D02's exclusion list is itself now in question — Dave, hedged and
   **not yet firm**: *"I think horizontal bars are fine to be fully responsive, donut (graphics)
-  probably not but their lockup with the legend will."* Do not gate DV-D02 as written; amend first.
+  probably not but their lockup with the legend will."* Do not gate DV-D02 as written; amend first.~~
+  **✅ RESOLVED 2026-07-28 #28 — DV-D02 AMENDED (DV-D02-A, see § Standing decisions).** Dave firmed the
+  h-bar half — *"horizontal bars is fine, this must have been a rot problem or miscommunication"* — and
+  the amendment is evidence-backed: `Chart-bar.reference.html:387` already carried `dv-fit`, so the
+  implementation never agreed with the exclusion. The donut half stays **hedged and DEFERRED** to the
+  12-column-grid + breakpoints task by his instruction, and the lockup half is ADR-shaped, not gate-shaped.
   Carry-forward brief: `notes/_briefs/2026-07-28-chart-encoding-gaps-carry-forward.md`.
   **✅ §C·2 ITEM 20 RULED 2026-07-28 #27 — "NARROWLY DISCHARGED" (Dave, his phrase, one word after a
   three-option read-back).** The 07-24 deferral *"Chart-scatter Layer-2 — deferred, stays Layer-1

@@ -4,6 +4,17 @@ provenance: local_e79e89ee-51cb-4a74-bf95-b7cf3e303af9 · 2026-07-27
 status: observed
 
 *Contract (runbook step 2f, GM-D5(a)): APPEND-ONLY · one block per session, chronological ·
+#### 2026-07-28 #27
+
+> **pre-flight:** fill ~30% + job 15–17% + wrap 8% = ~53% AMBER-projected · reserve 15% ring-fenced *(fill = 16.1% chain MEASURED 32,179 tk + ~7 harness inferred + read-render overhead; job priced 14–17% at the fenced scope after a mid-survey re-price from 20–25%, forked to Dave and re-ruled — both announced in-chat)*
+> *(Session #27, 2026-07-28, **Opus solo** (conductor, effort max; delegation deliberately NOT taken — one snippet + one registry edit), Dave live. Arc: floor measured → retrieval-first on the ADR-0015-A2 contract → survey found the queue's job description wrong twice → **STOP, re-price, fork** → Dave ruled interaction-only with DV-D07 fenced, after refusing the first option-select as mechanism-shaped and asking for it in plain words → enact → build red on TWO counts (my own `--shadow`, caught by ds-018's advisory C2; plus stale showroom) → both fixed → `[72/72]` → 4-way mutation control → render-proof + bite → inscriptions → wrap. Closed 🟡 **Amber ESTIMATE**, reserve untouched.
+> **PACE (perishable, replaces Tue ~13:35):** panel Tue 14:25 BST — week 66.3% elapsed · All 63% ⇒ **0.95×** (behind, narrowing three panels running) · **Fable 79% ⇒ 1.19× — further AHEAD; 0.62× rationed to the Thu 23:00 reset**. Opus counts to All ⇒ this window was the pace-correct spend; MORE-WINDOWS still holds for All.)*
+> **★ THE LESSON, for the next reader:** the queue said *"28 `<title>`→`data-tip`"*. Both halves were wrong — 27 marks, and it was never a rename but a four-part contract whose missing `tabindex` would have left the popover mouse-only while the dropped `<title>` took the accessible name with it. **A queue line describes a job; only the canon describes the contract.** Survey the canon consumer before believing the queue's verb.
+> **section-usage #27 (observed, self-report):** GM HDR:C LATEST:C PRIOR:R DOFIRST:C A:C C1:C C2:C C2b:R C3:U C4:R C4b:U C5:U STRATA:C · LS HDR:R LANES:C SPIN:U DELTAS:C WEBFONT:U LIVE:R LIFECYCLE:U DEAD:U OPEN:R TARGETS:U SPINOFFS:U
+> **section-sizes #27 (tiktoken cl100k_base):** GM HDR:1178 LATEST:1239 PRIOR:1054 DOFIRST:2297 A:4208 C1:842 C2:1076 C2b:484 C3:181 C4:1204 C4b:256 C5:84 STRATA:1167 · LS HDR:255 LANES:872 SPIN:1794 DELTAS:2651 WEBFONT:604 LIVE:4928 LIFECYCLE:973 DEAD:432 OPEN:4361 TARGETS:577 SPINOFFS:444 · totals GM:15271 LS:17891
+> **consult-receipts #27:** "consumes manifest universal default opt-out ADR-0015-A2" → lane:lane-2-apollo-charts · gm:DOFIRST · ledger:two-lanes-the-m-set-splits-chart-jobs-lose-their-m-codes-202 ; "chart scatter behaviour partial consumes data-tip toolbar table spine" → DV-D10 · DV-D13 · dv-017 · dv-line-004
+> *(⚠ **neither door indexes `docs/decisions/`** — ADR-0015 § Amendment 2, the contract this session enacted, had to be read direct. The ds-016 shape: a live, in-force document retrieval cannot see. Price it.)*
+>
 measurements only (pre-flight estimate vs closed band, overrun + cause) · NOT in the cold-start
 read chain. This file exists so the throttle's 15% reserve can be re-derived from data (Half 0b).
 Blocks below moved VERBATIM from `GOOD-MORNING.md` §C strata at the first 2f roll (session #15).*
