@@ -140,4 +140,10 @@ step 2f (`113eefc`) yet wrote no stratum of its own; its gauge story lives only 
 > **pre-flight:** fill 22% + job 14% + wrap 8% = 44% GREEN · reserve 15% ring-fenced *(fill = 15.3% chain MEASURED 30,624 tk + ~7 harness inferred; job = M5 solo per brief §11, priced at the opener)*
 > *(Session #21, 2026-07-28, Fable solo, Dave live. Opened on the #20 title and ran to spec: mover built + bitten + wired, runbook pointed, this wrap = the mover's first live fire. No unplanned findings; no fork needed. Closed 🟢 ~44% ESTIMATE, reserve untouched.
 > **PACE (perishable, replaces Mon 21:56):** panel Tue 09:09 BST — week 63.2% elapsed · All 50% ⇒ 0.79× · Fable 52% ⇒ 0.82× · catch-up to Thu 23:00 = All 1.36× / Fable 1.30× — behind, narrowing. MORE-WINDOWS holds.)*
+#### 2026-07-28 #22
+
+> **pre-flight:** fill ~22% + job 10% + wrap 8% = 40% GREEN-projected · reserve 15% ring-fenced *(fill = 15.4% chain MEASURED 30,710 tk + ~7 harness inferred; job = dream-pass-3 enactment, priced at the opener)*
+> *(Session #22, 2026-07-28, Fable solo, Dave live. The beat ran to spec — P1–P6, per-item receipts, ONE commit `681cfac` — then Dave ruled M9 PROMOTE in-window (enacted same hour) and chose wrap over starting lane-1 step 2 at Amber. The projection under-read the fill: the mandated spine reads (LS ~17K tk + runbook + proposals + ledger) cost more than the inferred floor suggests — recorded as a cause, not excused. **Closed 🟡 ~55–58% ESTIMATE** (band from the remaining-budget table), reserve untouched; one fork (proceed-vs-wrap), put to Dave, he took wrap per his own no-new-builds-at-Amber rule.
+> **PACE (perishable, replaces Tue 09:09):** panel Tue 10:25 BST — week 63.9% elapsed · All 53% ⇒ 0.83× · Fable 58% ⇒ 0.91× · catch-up to Thu 23:00 = All 1.30× / Fable 1.16× — behind, narrowing fast. MORE-WINDOWS holds.)*
+>
 >

@@ -395,3 +395,17 @@ selftest fixture is tier-agnostic and unchanged (still proves fire · quiet-on-r
 rewrap-immune); GM §C·4 tracking line flipped HELD→PROMOTED, line-count neutral. The limit is
 inscribed in the docstring where the next reader of a fire will meet it.
 status: ruled — Dave, this entry · provenance: session #22 · 2026-07-28.
+
+## ★ #23 — SECTION-USAGE INSTRUMENTATION ENACTED (lane 1 step 2) — 2026-07-28 (Fable solo, Dave live)
+
+**RULED (Dave, option-select ×3 — all recommended picks taken; read-back given in-chat before build; the set carried an open "Other" door):** (1) wrap-gate probe **ADVISORY with a NAMED PROMOTION TRIGGER = O1′ start** (the data's consumer arriving) — M10's pattern; promotion = flip `SECTION_USAGE_BLOCKING` + its selftest pin, one deliberate pair. (2) **U/R/C 3-state** — Unread / Read / Cited-in-a-decision; the JIT premise (note §7.3) is about CITED, not read. (3) **code-measured per-section sizes ride along** — usage × size = the payoff map.
+
+**ENACTED same hour:** `knowledge/_gm_usage.py` — vocabulary = the ONLY copy (GM 13 · LS 10 sections; unregistered `## ` headings REFUSE, never enumerate-and-skip; `measure_tokens` IMPORTED from `_capture_gate.py`, the heal/fallback contract never re-implemented; 17 selftest bites, every check proves it can FAIL) · `_capture_gate.py::section_usage_probe` (tier routed at ONE call-site line; lane wraps skip it, said in the lane note) · build step (`[64/64]` exit 0) · runbook 2f one-line pointer. **Placement (agent's call, flagged in-window, unobjected):** the two lines live in the session's GM stratum beside the pre-flight stamp and roll to `notes/_GAUGE-LOG.md` via the existing 2f mechanism — zero new plumbing, transient chain cost self-cleans at the next roll.
+
+**HONESTY CONTRACT:** the usage line is the session's own testimony — FORM-checked only (complete vocabulary, legal codes, every section testified exactly once; U is a statement too). Whether a C is honest is discipline, not enforcement — the pre-flight-stamp precedent, inscribed in the probe note and the script docstring.
+
+**FIRST FIRE + FIRST DATAPOINT (this wrap):** the probe fired WARN on #22's pre-enactment stratum — correct tier, correct target. First sizes line: **LS LIVE 4,928 + OPEN 4,361 tk — 9.3K of LS's 16.8K is standing reference** · GM DOFIRST 2,120 · §A 4,208 (exempt by ruling). LS-trim-vs-defer (P4b) now has an instrument; per the JIT note's own instruction, let data accumulate before surgery.
+
+**Limit, stated:** sizes measure FILE cost, not READ cost — the Read-tool render overhead (#23: LS ~28K tk rendered vs 16.8K file) stays outside the instrument, INFERRED and said so.
+
+status: observed (enactment receipt; rulings Dave's, this section) · provenance: session #23 · 2026-07-28
