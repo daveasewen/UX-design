@@ -555,6 +555,12 @@ in `_LIVE-STATE.md` (🟡 PARKED entry) so the state machine doesn't read this a
 
 ## Open / pending
 
+- **★ NEW 2026-07-28 (two-lane ruling, memento ledger § TWO LANES) — TABLE-IDIOM UNIFICATION
+  (ex-M4a) + CHART-TABLE-TOGGLE ACCRETION (ex-M4b) queue HERE**, blocked until the memento lane
+  lands. Survey receipt in that ledger row: scatter = behaviour-group registration + `data-tip`
+  contract adoption + dv-legend's inert payload rides along (the per-member opt-in schema question,
+  Dave's); sparkline = markup + CSS only (toggle JS already injected, dormant). Batch-2 #2 already
+  rules the toolbar for every chart with a data table; DV-D02 checked — it protects no `<details>`.
 - **★ NEW 2026-07-27 (Dave, session #6) — THREE FLAGS, CONTENTS NOW NAMED → see Batch 10 above.**
   **DV-D16** (stacked sequential animation) · **DV-D17** (isolate marker persistence) ·
   **ds-018** (Reset disabled renders as hover). All three are CAPTURED, **none enacted** — each carries

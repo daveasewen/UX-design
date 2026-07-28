@@ -1,6 +1,19 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
 
 
+## Rolled 2026-07-28 #20 (2d)
+
+*EXIT CHECK: #17's ⬛ OPEN items all hold standing homes — M11 fire → GM §C·4 ⬛ DAVE'S CALLS ✓ · §C·2's 15 rulings + dataviz sign-off → GM §C·2 ✓ · calm-banner verdict → GM §C·4 ✓. Its durable content is inscribed: M1/M2 → gauge canon § Half 0b ✓ · the M-set brief = enactment authority, still pointed at by GM §C·1 lane 1 + DO-FIRST 0 ✓ · the two-idiom table finding → carried forward and superseded-in-part by the TWO-LANES ruling (`notes/_MEMENTO-DECISIONS.md` § TWO LANES, survey receipt filed there) ✓ · the §A hash convention → `section_a_digest()` in code, bitten ✓. §A sha256 asserted before/after via the CALLED function — the M5 mover is STILL unbuilt (fifth hand-rolled pass).*
+
+## ⏱ PRIOR DELTA — 2026-07-27 (Mon **evening #17**, FABLE solo, Dave live — ★★ **MEMENTO HARDENING RULED: M1–M12 accepted as a batch, as recommended** (ledger `notes/_MEMENTO-DECISIONS.md` § ★ M-SET) · ★ **M1/M2 LIVE in gauge canon** · ★ **enactment = OPUS solo effort MAX, NOT Sonnet** (Dave's trust ruling, both beats) · 🟡 ~60% at wrap, M1 applied to its own birth window) — "The gated regions were already fixed; the ungated ones are now ruled and brief'd."
+- **LIVE:** M1 RED=wrap-only + M2 rulings-are-findings (`_RUNBOOK-context-gauge.md` § Half 0b) · the M-set brief `notes/_briefs/2026-07-27-memento-hardening-brief.md` = enactment authority (M3 determinism · M4 view-as-table port + `chart-table-toggle` partial · M5 `_gm_move.py` mover, MUST pin the §A hash convention · M6 tiktoken auto-heal · M7 §A WARN-only growth-triggered (RULED #17) · M8 banner sub-budget · M9 retirement proxy + dreamer hunt line · M10 chain budget 24K/28K · M11 absence-signal line + DAVE's supervised fire before Sun 08-02 · M12 Memento-v1 target) · probe receipts in the ledger row + #17 banner.
+- **FOUND:** `_instrument-fit.json` churn = pure key-order, build-caused (V2-P2 escape) · tiktoken lost twice in 24h · view-as-table TWO idioms live (solved `dv-tbl-toggle` bar/line/combo/donut vs old `<details>` sparkline:148 scatter:163,230 — Dave's sighting) · dream-pass scheduled path NEVER fired (first: Sun 08-02) · §A hash convention = lines `# §A`→before-`# §C` + trailing newline (recovered after a wrong-shape probe; git-diff proved §A unchanged).
+- **OPEN (Dave's):** M11 fire · §C·2's 15 rulings + dataviz sign-off (parked, unchanged) · calm-banner verdict.
+
+---
+
+*(rolled from `_LIVE-STATE.md` 2026-07-28 by capture-ritual step 2d — LATEST + 2 PRIOR stay live)*
+
 ## Rolled 2026-07-28 #19 (2d)
 
 *EXIT CHECK: #16's ⬛ OPEN items all hold standing homes before the move — its "three governance holes" were RULED at #17 as M7/M8/M9 and ENACTED at #18 (`e53afc4`, ledger § ★ M-SET ENACTED) ✓ · calm-banner verdict → GM §C·4 ⬛ DAVE'S CALLS ✓ · §C·2's 15 rulings + dataviz sign-off → GM §C·2 ✓. Its LIVE lines (wrap-gate numbers, stamp-vs-measure check, the read-chain contract) are inscribed in `_capture_gate.py` and the GM header stamp, not left in this delta ✓. Its NEW CARRY — the 07-23 calm-banner verdict — was copied up to §C·4 at #16 and is still there ✓.*

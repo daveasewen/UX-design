@@ -241,3 +241,39 @@ and the miss-side gates (reachability + fail-loud, ds-016 class) land BEFORE the
 
 **NOT ruled here:** O1′/O2′ designs, schema shape, any §C displacement, any GM/LS edit — all owed to
 their own windows. Registered: `_FUTURE-STATE.md` (entry + same-day update) · note §1/§9.
+
+## TWO LANES — the M-set splits; chart jobs lose their M-codes — 2026-07-28 #20 (Fable solo, Dave live)
+
+**RULED (Dave, mid-window, verbatim beats in order):** *"these. are Apollo jobs, I thought M stood
+for Memento? I want to settle all memento work before moving to the Apollo charts"* · *"teh coding
+needs fixing too"* · *"i.e. the M suffix"* · *"there are two lanes now"*. Read-back reflected;
+firmness confirmed by option-select — he took **"Confirm — charts out, M5 now"** over "Keep the
+ruled scope".
+
+**What changed.** M4a (view-as-table port) + M4b (chart-table-toggle partial) were CHART-SURFACE
+jobs that rode the memento brief because the two-idiom split was SPOTTED during #17's memento
+window — the label followed the finder, not the surface. They leave the lane AND lose their M-codes
+on every forward-looking surface (historical brief/ledger rows stay verbatim): now **"table-idiom
+unification (ex-M4a)"** + **"chart-table-toggle accretion (ex-M4b)"**, queued in the CHART lane —
+breadcrumb in `_DATAVIZ-DECISIONS.md` § Open/pending. Codes deliberately NOT re-minted here: the
+wave brief that picks them up keys them.
+
+**The lanes as now ruled:** **LANE 1 — MEMENTO, runs first:** M5 `_gm_move.py` → wrap-ritual
+section-usage instrumentation → O1′ LS schema + generated index/view → O2′ modular memento-search +
+gates · M11 supervised fire = Dave's, before Sun 08-02. **LANE 2 — APOLLO CHARTS, blocked until
+lane 1 lands:** ex-M4a + ex-M4b + the §C·1(a)–(d) strands.
+
+**Survey receipt (this window's ex-M4a survey, filed so lane 2 inherits it free):** scatter is NOT
+a dataviz behaviour-group member — joining requires the universal contract's `data-tip` popover
+adoption (it carries native `<title>` today) and lands dv-legend's inert 16,330 B too (the
+per-member opt-in schema question's SECOND live case, Dave's); budgets clear regardless (group page
+29,334 / 32,768 B — membership doesn't change source bytes). Sparkline IS a member: the toggle JS
+sits injected + dormant, so its port = markup + CSS only. Batch-2 #2 (2026-07-16) already rules the
+toolbar for every chart with a data table; DV-D02 checked — responsive-only, protects no `<details>`.
+
+**Lane REPRESENTATION (answering Dave's "is there logic in memento for lanes?"):** today = ONE
+built mechanism (`_capture_gate.py --wrap --lane`, S-D2 — a binary "outside the GM queue" wrap
+scope for spin-off sessions) + prose in §C·1 + the latent `[born · guards · until]` tags. Nothing
+mechanical enforces "lane 2 blocked until lane 1 lands" — read discipline does. **First-class lanes
+are registered as a REQUIREMENT on O1′** (lane-as-record, `guards:` machine-checkable), whose
+design stays owed to its own window — schema NOT invented here.

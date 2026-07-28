@@ -2,6 +2,42 @@
 
 ---
 
+## Batch 2026-07-28 #20 — rolled by the TWO-LANES wrap (Fable solo, Dave live). Verbatim, newest-first. §A sha256 `999b1e3d…` asserted before and after every write via `_capture_gate.py::section_a_digest()` — called, never re-derived (M5's mover STILL unbuilt; fifth hand-rolled pass).
+
+*EXIT CHECK receipts (2c): #18 banner — its ⬛ OPEN items all hold standing homes: the build window → §C·1 lane 1 (amended #20) ✓ · LS standing-body trim → §C·4 M10 promotion trigger ✓ · M11 fire → §C·4 ⬛ DAVE'S CALLS ✓ · §C·2 rulings + sign-off → §C·2 ✓ · calm-banner verdict → §C·4 ✓. Its ⚠ flags are inscribed, not dated-only: the M7-suppressor + M8-fixture stories → ledger § ★ M-SET ENACTED + dossier `_DECISION-HISTORY/2026-07-27-mset-enactment-cheap-first.md` ✓ · hand-rolled-wrap discipline → `section_a_digest()` in code ✓. (2e) worklist item 0 replaced by the #20 lane-1 form — old text verbatim below. (2f) #18 commit-state below; #18 pre-flight → `notes/_GAUGE-LOG.md`, same pass. ⚠ #19 wrote NO stratum of its own (flagged in the #20 banner — nothing existed to roll).*
+
+### DO-FIRST retirement (2e) — item 0 pre-#20, verbatim
+
+> **0. ★ M-SET REMAINDER — the BUILD window (OPUS solo effort MAX, NOT Sonnet)** — M3 · M6–M12
+>    ENACTED #18 (receipts `_GM-ARCHIVE.md` § Batch 2026-07-27 #18 · ledger § ★ M-SET ENACTED).
+>    LEFT, deliberately together: **M4a** view-as-table port · **M4b** `chart-table-toggle` partial ·
+>    **M5** `_gm_move.py` — it MUST CALL `_capture_gate.py::section_a_digest()`, never re-derive the
+>    slice. Brief §2/§3/§11, STOP per item. M11's supervised fire stays DAVE's, before Sun 08-02.
+>    [born #17 · guards: the brief · until: enacted]
+
+### #18 commit-state stratum (2f), verbatim
+
+> **COMMIT STATE (refreshed 2026-07-27 ~22:10 BST from `date`).**
+> **Context gauge at authoring: 🟡 ~52% (ESTIMATE) — Amber, mid-band ⇒ ordinary scrutiny.**
+> ONE commit: `knowledge/_capture_gate.py` (M6·M7·M8·M9a·M10 + `section_a_digest()` + bites) ·
+> `knowledge/_build_instrument_fit.py` (M3) · `knowledge/_instrument-fit.json` + `_CAPTURE-GATE.md`
+> + `_LIVE-STATE-CHECK.md` (regenerated) · `.claude/agents/dreamer.md` (M9b) · `knowledge/_RUNBOOK-dream-pass.md` (M11) ·
+> `_FUTURE-STATE.md` (M12) · `GOOD-MORNING.md` (#18 banner · item 0 · panel · §C·1e retired · §C·4
+> adds · stamp · strata roll) · `_LIVE-STATE.md` + `_LIVE-STATE-ARCHIVE.md` (2d: #18 in, #15 rolled) ·
+> `_GM-ARCHIVE.md` (Batch 2026-07-27 #18) · `notes/_GAUGE-LOG.md` (#17 post-mortem) ·
+> `notes/_MEMENTO-DECISIONS.md` (§ ★ M-SET ENACTED + the M10 tier ruling) ·
+> `_DECISION-HISTORY/2026-07-27-mset-enactment-cheap-first.md` (NEW). Build `[62/62]` exit 0 ×2 ·
+> wrap gate + STAND-002 rerun at close. Dave pushes via GitHub Desktop, whole stack, Desktop closed.
+
+> ## ★ PRIOR — 2026-07-27 (Mon **evening #18**, OPUS solo effort MAX, Dave live — ★★ **M-SET CHEAP-FIRST CUT: M3 · M6 · M7 · M8 · M9 · M10 · M11 · M12 ENACTED, eight of ten, every new check bitten** · ★ **M10 RULED ADVISORY by Dave in-window** (*"Ill go with your advice"*) after enactment measured the chain already past its own block · ★ **the new bites caught two design bugs the author did not** · 🟡 ~52% at wrap): **"The brief priced 35–45% into 30 points of headroom — so the cut came first, and the room that existed took eight items."**
+> - **★★ ENACTED, with evidence.** All eight in `knowledge/_capture_gate.py` + `_build_instrument_fit.py` + `.claude/agents/dreamer.md` + `knowledge/_RUNBOOK-dream-pass.md` + `_FUTURE-STATE.md` · ledger § ★ M-SET ENACTED · dossier `_DECISION-HISTORY/2026-07-27-mset-enactment-cheap-first.md` · build `[62/62]` exit 0 **twice, foreground** · `--selftest` green · 2026-07-27.
+> - **★★ M3 PROVEN, not asserted.** The churn source was `dangling_citations` iterating a **SET** (the V2-P2 sweep's escape). Defect reproduced FIRST under two hash seeds, then fixed, then re-proven: **byte-identical under 3 seeds** and **two consecutive builds byte-identical across all 7 changed files**. The other emissions in that file were checked once, as briefed — all already sorted.
+> - **★ THE FINDING, and it is the M-set's own class.** M10's ruled block (28,000) was **already crossed at enactment** — chain 28,843 tk; the brief's own quoted 29,193 was over it too, so its "expect the warn to fire" could never have been true. **And the remedy text it printed pointed at a region that cannot pay:** measured, the three retained `_LIVE-STATE` deltas total **1,422 tk** against a **12,694 tk** standing body, with LS already at its ruled LATEST+2. A budget written without measuring the thing it budgets, inside the gate built to stop exactly that. Forked to Dave; he ruled ADVISORY.
+> - **⚠ WHAT THE AUTHOR FLAGS.** **Two of my own drafts were wrong and the bites, not I, caught them.** (i) M7's suppressor read the whole banner region for the string "§A" — but once §A is stamped, the stamp line contains it, so the growth trigger would have been suppressed on every wrap, permanently and silently. (ii) The M8 warn fixture was sized from a comment claiming `FAT` ≈ 200 tk/line; measured, it is **240**, so the "warn" fixture sat in the block band. **A fixture written from a comment is a fixture written from recall.** Also: the wrap ran WITHOUT M5's mover again (still unbuilt) — hand-rolled extractors with line-START anchors and §A asserted before every write; §A held, `999b1e3d…` at open and close.
+> - **⬛ OPEN, Dave's:** the build window (M4a · M4b · M5) · the LS standing-body trim that ARMS M10's block · M11 supervised fire before Sun 08-02 · §C·2's 15 rulings + dataviz sign-off (PARKED, unchanged) · calm-banner verdict.
+
+---
+
 ## Batch 2026-07-28 #19 — rolled by the conductor pass that reconciled the Fable JIT-research worker window (Opus conductor, Dave live). Verbatim, newest-first. §A sha256 `999b1e3d…` asserted before and after every write via `_capture_gate.py::section_a_digest()` — called, never re-derived (the M5 mover is still unbuilt; this pass hand-rolls but PINS the convention by calling it).
 
 *EXIT CHECK receipts (2c): #17 banner — its ⬛ OPEN items all hold standing homes before the move: M11 supervised fire → §C·4 ⬛ DAVE'S CALLS ✓ · §C·2's 15 rulings + dataviz sign-off → §C·2 ✓ · calm-banner verdict → §C·4 ✓ · "the M-set enactment window itself" → discharged at #18 (`e53afc4`) ✓. Its ⚠ author-flags are inscribed, not dated-only: the §A hash convention → `section_a_digest()` in code, bitten both shapes ✓ · the M7 hard-cap/WARN reversal → ledger § ★ M-SET, both beats ✓. No lesson rolls into a dated-only home.*

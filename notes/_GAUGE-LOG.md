@@ -102,3 +102,18 @@ Blocks below moved VERBATIM from `GOOD-MORNING.md` §C strata at the first 2f ro
 > **PACE (perishable):** panel 21:21 BST — All 43% ⇒ 0.77× · Fable 41% ⇒ 0.73× · catch-up All 1.29× /
 > Fable 1.34× — behind, narrowing all day. MORE-WINDOWS holds; the M-set window is Opus (All bucket).)*
 >
+
+#### 2026-07-27 #18
+
+> **pre-flight:** fill 24% + job 20% + wrap 8% = 52% AMBER · reserve 15% ring-fenced
+> *(Session #18, 2026-07-27, Opus solo effort MAX, Dave live — the routing #17 ruled. Floor MEASURED
+> per D9 at the opener: read chain 32,759 tk = 16.4% (GM 12,780 + LS 16,063 + brief 2,389 + band-table
+> slice 1,527), harness UNMEASURED on top ⇒ ~23–24%. **The brief's own 35–45% price did not fit**:
+> 60% RED − 24% floor − 6% wrap = ~30 points of job. Forked PRE-START with three cuts; Dave took the
+> cheap-first re-cut. One further fork mid-window (M10's block already crossed) — re-priced, ruled
+> ADVISORY, no band change. Closed 🟡 ~52% ESTIMATE, reserve untouched.
+> **PACE (perishable, replaces 21:21):** panel 21:56 BST — All 45% ⇒ 0.80× · Fable 44% ⇒ 0.78× ·
+> catch-up to Thu 23:00 All 1.26× / Fable 1.28× — behind, narrowing. MORE-WINDOWS holds; this window
+> was Opus (All bucket) per the #17 trust ruling.)*
+
+*(rolled 2026-07-28 #20 per 2f. ⚠ #19 wrote no stratum — its gauge story lives in its banner; recorded as a gap, not reconstructed.)*

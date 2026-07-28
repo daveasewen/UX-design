@@ -1,37 +1,39 @@
 # Good morning, Dave ☕
 
-> **size:** GM 13.7K tk · §A 4.21K tk · chain 30.4K tk · measured 2026-07-28 (tiktoken cl100k_base) · budget = the COMPACTABLE region (all but §A),
-> 8K warn / 12K block — `_RUNBOOK-capture-ritual.md` step 2. Compactable 9,496 tk = WARN, the ruled landing zone — do not chase below 8K. Chain cap 24K is ADVISORY (M10, #18); ⚠ the 28,000 promotion threshold is still CROSSED.
-> **STATE: ★ M-SET CHEAP-FIRST CUT ENACTED 2026-07-27 #18 — M3 · M6 · M7 · M8 · M9 · M10 · M11 · M12
-> LIVE in `knowledge/_capture_gate.py` + the dreamer/dream-pass/FUTURE-STATE surfaces, every new check
-> bitten (ledger `notes/_MEMENTO-DECISIONS.md` § ★ M-SET ENACTED). **M10 stands ADVISORY by Dave's
-> ruling this window** — 28,000 is a PROMOTION THRESHOLD, not a stop. REMAINING: M4a · M4b · M5, left
-> together as the build window (brief §2/§3/§11). GM-D1…D9 + D7-am remain ENACTED END-TO-END (#16 `72d442b`).**
-> **pre-flight #20 guide:** cold floor **MEASURE IT — never inherit this number.** #19 measured the read
-> chain at **29,694 tk = 14.8%** (GM 13,200 + LS 16,494) on the files as committed; harness is UNMEASURED on top
-> (#18 inferred ~7 points ⇒ floor ≈ 23%, still inferred, still owed a real measurement). ⚠ **#19's guide claimed the
-> chain had SHRUNK; it had RISEN (28,843 → 29,694) and the ledger said so all along** — measure, don't inherit, and
-> when a banner and a ledger disagree the ledger wins. Build window prices ~30–40% + wrap · M1: RED = wrap-only,
-> announce every crossing · 15% reserve ring-fenced.
-> **RENAME THE WRAPPED CHAT →** `Apollo — CONDUCTOR RECONCILE + THE STANDING PRIORITY (Opus conductor, one Fable worker re-seated mid-flight): the parallel windows reconciled clean, and Memento-before-Apollo landed in §C·1 where a cold session cannot miss it; three findings, all from measuring instead of inheriting — the pre-flight told the next window the chain had shrunk when the ledger said it rose, three chain numbers disagree by 116 tk, and §C's "must displace" turned out stricter than its own gate, so nothing live was displaced`
-> **TITLE THE NEXT CHAT →** `Apollo — M-SET BUILD WINDOW (OPUS solo effort MAX, NOT Sonnet — Dave's standing trust ruling). READ notes/_briefs/2026-07-27-memento-hardening-brief.md §2/§3/§11 and execute M4a (view-as-table port: sparkline + scatter) → M4b (chart-table-toggle as an ADR-0013 partial) → M5 (_gm_move.py — it MUST CALL _capture_gate.py::section_a_digest(), never re-derive the slice). STOP conditions per item. ⚠ This is now STEP 1 OF A RULED LANE, not a standalone: the Memento lane runs before any §C·1 Apollo strand (§C·1 head line). MEASURE the floor at the opener — do not inherit 14.8%`
+> **size:** GM 13.6K tk · §A 4.21K tk · chain 30.5K tk · measured 2026-07-28 (tiktoken cl100k_base) · budget = the COMPACTABLE region (all but §A),
+> 8K warn / 12K block — `_RUNBOOK-capture-ritual.md` step 2. Compactable 9,420 tk = WARN, the ruled landing zone — do not chase below 8K. Chain cap 24K is ADVISORY (M10, #18); ⚠ the 28,000 promotion threshold is still CROSSED.
+> **STATE: ★ TWO LANES since #20 (Dave live, ledger `notes/_MEMENTO-DECISIONS.md` § TWO LANES) —
+> LANE 1 Memento FIRST: M5 `_gm_move.py` → wrap-ritual instrumentation → O1′ (carries LANES-as-records)
+> → O2′; LANE 2 Apollo charts (table-idiom unification ex-M4a · chart-table-toggle accretion ex-M4b ·
+> strands) BLOCKED until lane 1 lands. M-SET: M3·M6–M12 ENACTED #18, every new check bitten; **M10
+> ADVISORY** (28,000 = promotion threshold); M4a/M4b RECLASSIFIED OUT #20, their M-codes retired;
+> M5 = the one remainder. GM-D1…D9 + D7-am remain ENACTED END-TO-END (#16 `72d442b`).**
+> **pre-flight #21 guide:** cold floor **MEASURE IT — never inherit this number.** #20 measured the read
+> chain at **30,411 tk = 15.2%** (GM 13,721 + LS 16,690) at its opener — the chain ROSE again (29,694 →
+> 30,411) and for once stamp, ledger and gate all agreed; harness still UNMEASURED on top (~7 pts
+> inferred ⇒ floor ≈ 22%, still inferred, still owed). **#21 = M5 SOLO** (brief §11, ~12–15% + wrap):
+> the mover MUST CALL `_capture_gate.py::section_a_digest()` + import `SECTION_CAPS` (never
+> re-derive/hardcode — warn ≠ block, #19) · bites that PROVE each behaviour FIRES (reuse `_gm_fixture`) ·
+> then runbook 2c/2d/2e become one-line pointers · M1: RED = wrap-only, announce every crossing · 15%
+> reserve ring-fenced · ⚠ panel STALE (Mon 21:56) — ask Dave for a fresh reading at the opener.
+> **RENAME THE WRAPPED CHAT →** `Apollo — TWO LANES: the M-set sheds its chart jobs (Fable solo, Dave live): "I thought M stood for Memento" — ex-M4a/M4b re-keyed to the chart queue with their survey paid forward (scatter needs behaviour-group registration + the data-tip contract, with dv-legend's inert payload riding along; sparkline's toggle JS turns out already injected, dormant — markup+CSS only); lanes today = prose + tags + one wrap flag, so first-class lanes became an O1′ requirement; M5 deferred at Amber by Dave's own no-new-builds rule`
+> **TITLE THE NEXT CHAT →** `Apollo — M5 BUILD WINDOW (lane 1 · Memento): build knowledge/_gm_move.py per notes/_briefs/2026-07-27-memento-hardening-brief.md §11 — CALL _capture_gate.py::section_a_digest(), import SECTION_CAPS, line-START anchors only, all-or-nothing, no-op = loud FAIL, stdout receipts; a selftest bite per behaviour that PROVES IT FIRES (reuse _gm_fixture); then runbook 2c/2d/2e reference it as one-line pointers. STOP conditions per brief §11. MEASURE the floor at the opener — do not inherit 15.2% — and ask Dave for a fresh panel reading (last Mon 21:56)`
 > *(Titles are LABELS — role comes from Dave's opener line. Bands: the ONLY copy is
 > `_RUNBOOK-context-gauge.md` § ★ THE FLOOR IS MEASURED — grep it, never recall it.)*
-> ## ★ LATEST — 2026-07-28 (Tue **morning #19**, OPUS conductor + one FABLE worker (re-seated by Dave mid-flight), Dave live — ★★ **MEMENTO-BEFORE-APOLLO RULED A STANDING PRIORITY and landed in §C·1, so a cold session can no longer default onto an Apollo strand** · ★ **GM's own pre-flight was telling the next window the OPPOSITE of what the ledger recorded** · 🟡 mid-band at authoring): **"The Polaroid said the chain shrank, the tattoo said it rose, and the tattoo was right."**
+> ## ★ LATEST — 2026-07-28 (Tue **mid-morning #20**, FABLE solo, Dave live — ★★ **TWO LANES: chart jobs OUT of the M-set, their M-codes RETIRED; lane 2 blocked until lane 1 lands** · ★ **the ex-M4a survey INVERTED the brief's risk map, and lane 2 inherits it receipted** · ★ **M5 deferred at Amber by Dave's own build rule** · 🟡 ~55–58% est at wrap): **"M stands for Memento, so the chart jobs stopped wearing it."**
+> - **★★ RULED, with evidence.** Dave mid-window, verbatim ×4 (*"these. are Apollo jobs, I thought M stood for Memento? I want to settle all memento work before moving to the Apollo charts"* → *"teh coding needs fixing too"* → *"i.e. the M suffix"* → *"there are two lanes now"*), read-back reflected, firmness by option-select (*"Confirm — charts out, M5 now"*). Inscribed same hour: ledger § TWO LANES (verbatim + WHY + survey receipt + lane representation) · GM §C·1 head line amended IN PLACE (line-count neutral) · `_DATAVIZ-DECISIONS.md` § Open/pending breadcrumb · dossier `_DECISION-HISTORY/2026-07-28-two-lanes-and-the-mislabelled-m.md` · 2026-07-28.
+> - **★ FOUND (measured, all repo-verified).** The toggle JS is an ADR-0015 INJECTED BEHAVIOUR, not per-file copy — sparkline (a member) already carries it DORMANT, so its port = markup+CSS only; scatter is NOT a member, and joining costs the universal `data-tip` contract (native `<title>` today) + dv-legend's inert 16,330 B (the per-member opt-in schema question's SECOND live case, Dave's); budgets clear regardless (group page 29,334/32,768 B — membership doesn't change source bytes). Batch-2 #2 (2026-07-16) already ruled the toolbar for every chart with a data table; DV-D02 checked — responsive-only, protects no `<details>`. **The brief priced sparkline risky and scatter trivial; measurement says the reverse.**
+> - **⚠ WHAT THE AUTHOR FLAGS.** The survey + two-lane fork ate the build budget — Amber (~55% est) before M5's first line; deferral was Dave's pick on my recommendation, per his own no-new-builds-at-Amber rule (07-24 precedent). FIFTH consecutive hand-rolled wrap without M5's mover (`section_a_digest()` CALLED, §A asserted before/after every write). #19 wrote no stratum of its own and left #18's as GM's only block — #18's rolled properly this pass; #19's commit state lives only in its banner + git (flagged, not reconstructed). Panel never refreshed this window.
+> - **⬛ OPEN, Dave's:** M5 next window (lane 1 step 1; brief §11 unchanged) · M11 supervised fire before Sun 08-02 · §C·2's 15 rulings + dataviz sign-off (PARKED, unchanged) · calm-banner verdict · LS-trim-vs-defer (unchanged).
+>
+>
+> ## ★ PRIOR — 2026-07-28 (Tue **morning #19**, OPUS conductor + one FABLE worker (re-seated by Dave mid-flight), Dave live — ★★ **MEMENTO-BEFORE-APOLLO RULED A STANDING PRIORITY and landed in §C·1, so a cold session can no longer default onto an Apollo strand** · ★ **GM's own pre-flight was telling the next window the OPPOSITE of what the ledger recorded** · 🟡 mid-band at authoring): **"The Polaroid said the chain shrank, the tattoo said it rose, and the tattoo was right."**
 > - **★★ LANDED, with evidence.** Dave's ruling (Fable window, option-select: *"Standing priority"* over "soft posture" and "only until M-set lands") inscribed at `notes/_MEMENTO-DECISIONS.md` § Memento-before-Apollo · surfaced as ONE line at the head of §C·1 · worker receipt `notes/_receipts/2026-07-28-memento-jit-research-worker.md` · research note `notes/2026-07-28-memento-jit-context-research.md` · 2026-07-28. The receipt asked for exactly this and named the failure it prevents: without it "the next session will pick an Apollo strand off §C·1 by default".
 > - **★ FOUND — the handoff contradicted the ledger, and the handoff lost.** The #19 pre-flight guide read *"the chain has since shrunk, so re-measure, don't inherit"*; the ledger, inscribed at the same wrap, read *"the chain rose across this wrap, which is honest"*. A cold re-measure agreed with the ledger: **28,843 → 29,694 tk**. Corrected in place. This is the tattoo/Polaroid rule paying for itself — and the pre-flight line had been written to be OBEYED by the very next reader.
 > - **★ FOUND — three chain numbers, and 116 tk that will not reproduce.** Ledger says **29,810**, header said **29.7K**, `_capture_gate.py` on unchanged bytes measures **29,694**. Observed: the current files compute 29,694, which is what any gate will get. Inferred, NOT observed: the ledger measured before GM's final 22:14 write. The ledger line stays (verbatim discipline); the non-reproducing number is flagged here instead.
 > - **★ FOUND — "§C IS AT CAP, an addition must DISPLACE" is prose, and the gate disagrees.** Measured via `section_spans` + `SECTION_CAPS`: §C charged **149** (warn 150 / block 225), DO-FIRST **84** (warn 120 / block 180). One free line existed, and a warn was never a block. **The standing priority fit in the free line and nothing live was displaced** — the gate-narrows-its-own-rule class, running in the other direction for once: the prose was STRICTER than the gate, and obeying it would have cost a live line for nothing.
 > - **⚠ WHAT THE AUTHOR FLAGS.** I priced this pass at ~5% to Dave and the gate immediately made it a full capture ritual — two date FAILs plus the worker's note missing its machine-readable `status:` field (its prose declared FLOATED; the field the gate reads was absent). Surfaced, not swallowed, but the price Dave agreed to was not the price of the job. Also: this wrap again ran **without M5's mover** — hand-rolled, line-START anchors, `section_a_digest()` CALLED rather than re-derived, §A asserted before and after every write.
 > - **⬛ OPEN, Dave's:** the M-set build window (M4a·M4b·M5) — now step 1 of the ruled lane, not a standalone · M11 supervised fire before Sun 08-02 · §C·2's 15 rulings + dataviz sign-off (PARKED, unchanged) · calm-banner verdict · whether §C·4's "trim the LS standing body" is SUPERSEDED by the JIT lane's "defer it" (same 12,694 tk, opposite treatment).
->
-> 
-> ## ★ PRIOR — 2026-07-27 (Mon **evening #18**, OPUS solo effort MAX, Dave live — ★★ **M-SET CHEAP-FIRST CUT: M3 · M6 · M7 · M8 · M9 · M10 · M11 · M12 ENACTED, eight of ten, every new check bitten** · ★ **M10 RULED ADVISORY by Dave in-window** (*"Ill go with your advice"*) after enactment measured the chain already past its own block · ★ **the new bites caught two design bugs the author did not** · 🟡 ~52% at wrap): **"The brief priced 35–45% into 30 points of headroom — so the cut came first, and the room that existed took eight items."**
-> - **★★ ENACTED, with evidence.** All eight in `knowledge/_capture_gate.py` + `_build_instrument_fit.py` + `.claude/agents/dreamer.md` + `knowledge/_RUNBOOK-dream-pass.md` + `_FUTURE-STATE.md` · ledger § ★ M-SET ENACTED · dossier `_DECISION-HISTORY/2026-07-27-mset-enactment-cheap-first.md` · build `[62/62]` exit 0 **twice, foreground** · `--selftest` green · 2026-07-27.
-> - **★★ M3 PROVEN, not asserted.** The churn source was `dangling_citations` iterating a **SET** (the V2-P2 sweep's escape). Defect reproduced FIRST under two hash seeds, then fixed, then re-proven: **byte-identical under 3 seeds** and **two consecutive builds byte-identical across all 7 changed files**. The other emissions in that file were checked once, as briefed — all already sorted.
-> - **★ THE FINDING, and it is the M-set's own class.** M10's ruled block (28,000) was **already crossed at enactment** — chain 28,843 tk; the brief's own quoted 29,193 was over it too, so its "expect the warn to fire" could never have been true. **And the remedy text it printed pointed at a region that cannot pay:** measured, the three retained `_LIVE-STATE` deltas total **1,422 tk** against a **12,694 tk** standing body, with LS already at its ruled LATEST+2. A budget written without measuring the thing it budgets, inside the gate built to stop exactly that. Forked to Dave; he ruled ADVISORY.
-> - **⚠ WHAT THE AUTHOR FLAGS.** **Two of my own drafts were wrong and the bites, not I, caught them.** (i) M7's suppressor read the whole banner region for the string "§A" — but once §A is stamped, the stamp line contains it, so the growth trigger would have been suppressed on every wrap, permanently and silently. (ii) The M8 warn fixture was sized from a comment claiming `FAT` ≈ 200 tk/line; measured, it is **240**, so the "warn" fixture sat in the block band. **A fixture written from a comment is a fixture written from recall.** Also: the wrap ran WITHOUT M5's mover again (still unbuilt) — hand-rolled extractors with line-START anchors and §A asserted before every write; §A held, `999b1e3d…` at open and close.
-> - **⬛ OPEN, Dave's:** the build window (M4a · M4b · M5) · the LS standing-body trim that ARMS M10's block · M11 supervised fire before Sun 08-02 · §C·2's 15 rulings + dataviz sign-off (PARKED, unchanged) · calm-banner verdict.
 >
 > 
 *(Compaction 2c: ★ LATEST + 1 PRIOR stay; every older banner is in `_GM-ARCHIVE.md`, verbatim, newest-first, batch keys `<date> <session#>`; durable narrative in `_DECISION-HISTORY/` + `notes/`.)*
@@ -41,12 +43,13 @@
 ## ⬛ DO THIS FIRST
 
 > **★ WORKLIST — pointer · state · owner (method lives at the pointer, never here):**
-> **0. ★ M-SET REMAINDER — the BUILD window (OPUS solo effort MAX, NOT Sonnet)** — M3 · M6–M12
->    ENACTED #18 (receipts `_GM-ARCHIVE.md` § Batch 2026-07-27 #18 · ledger § ★ M-SET ENACTED).
->    LEFT, deliberately together: **M4a** view-as-table port · **M4b** `chart-table-toggle` partial ·
->    **M5** `_gm_move.py` — it MUST CALL `_capture_gate.py::section_a_digest()`, never re-derive the
->    slice. Brief §2/§3/§11, STOP per item. M11's supervised fire stays DAVE's, before Sun 08-02.
->    [born #17 · guards: the brief · until: enacted]
+> **0. ★ LANE 1 REMAINDER — M5 `_gm_move.py`, the next window's ONE job** — M3 · M6–M12 ENACTED #18
+>    (receipts `_GM-ARCHIVE.md` § Batch 2026-07-27 #18 · ledger § ★ M-SET ENACTED); **ex-M4a/ex-M4b
+>    RECLASSIFIED to lane 2 at #20** (ledger § TWO LANES — survey receipted there, do NOT re-survey).
+>    M5 spec = brief §11: CALL `section_a_digest()` · import `SECTION_CAPS` · line-START anchors ·
+>    all-or-nothing · bites that FIRE · then runbook 2c/2d/2e become one-line pointers. Model: Dave
+>    seats it (Opus ruled #17; Fable cleared #20). M11's fire stays DAVE's, before Sun 08-02.
+>    [born #17 · amended #20 · guards: the brief · until: enacted]
 > **1. ds-018 C2 follow-through** — order RULED: RENDER-CONFIRM `--phys-size` (B-D7 press physics —
 >    Alert/Empty-state/Popover, possibly dead) and `--mark` (→ SVG-initial BLACK across 7 pro-formas)
 >    BEFORE acting → THEN Dave's four values (three `--phys-size` + one `--mark` — his alone, do not
@@ -316,7 +319,7 @@ until actually run + seen. HTML is what Dave reviews; PNGs are agent self-verifi
 # §C · QUEUE
 
 ## 1. ★ NEXT STRANDS (pick one per window; role from the opener line)
-**⛔ STANDING PRIORITY — Memento before Apollo (Dave, 2026-07-28, option-select "Standing priority"): the MEMENTO LANE runs BEFORE every strand below — M4a·M4b·M5 (brief scope UNTOUCHED) → wrap-ritual section-usage instrumentation → O1′ LS schema + generated index/view → O2′ modular memento-search + gates. **Do not pick (a)–(d) until the lane lands.** Ledger `notes/_MEMENTO-DECISIONS.md` § Memento-before-Apollo. [born #19 · guards: §C·1(a)–(d) · until: the lane lands]
+**⛔ STANDING PRIORITY — Memento before Apollo (Dave 2026-07-28 #19 "Standing priority"; ★ TWO LANES since #20, Dave live: chart jobs OUT of the M-set + their M-codes RETIRED): LANE 1 — MEMENTO, first: M5 `_gm_move.py` → wrap-ritual section-usage instrumentation → O1′ LS schema + generated index/view (now carries the LANES-as-records requirement) → O2′ modular memento-search + gates · M11 supervised fire = Dave's, before Sun 08-02. LANE 2 — APOLLO CHARTS, blocked until lane 1 lands: table-idiom unification (ex-M4a) + chart-table-toggle accretion (ex-M4b; survey receipted) + strands (a)–(d) below. **Do not pick lane 2 until lane 1 lands.** Ledger `notes/_MEMENTO-DECISIONS.md` § TWO LANES + § Memento-before-Apollo. [born #19 · two-lanes #20 · guards: §C·1(a)–(d) · until: lane 1 lands]
 **(a) ★ CHART-EXPANSION PROGRAMME — prove-one-then-wave (Dave ruled 2026-07-22, this session).**
 **STEP 1 (next window, solo — DO THIS FIRST):** build the **scatter** exemplar END-TO-END — proforma
 section in `_proforma/DataViz-interactive.html` (DV-D01) + promoted `snippets/Chart-scatter.reference.html`
@@ -465,27 +468,12 @@ spot-illustration/empty-state icon set (`_ICON-GAPS.md`, wave-1's only gap).
 
 ### ⏱ SESSION STRATA
 
-#### 2026-07-27 #18
+#### 2026-07-28 #20
 
-> **pre-flight:** fill 24% + job 20% + wrap 8% = 52% AMBER · reserve 15% ring-fenced
-> *(Session #18, 2026-07-27, Opus solo effort MAX, Dave live — the routing #17 ruled. Floor MEASURED
-> per D9 at the opener: read chain 32,759 tk = 16.4% (GM 12,780 + LS 16,063 + brief 2,389 + band-table
-> slice 1,527), harness UNMEASURED on top ⇒ ~23–24%. **The brief's own 35–45% price did not fit**:
-> 60% RED − 24% floor − 6% wrap = ~30 points of job. Forked PRE-START with three cuts; Dave took the
-> cheap-first re-cut. One further fork mid-window (M10's block already crossed) — re-priced, ruled
-> ADVISORY, no band change. Closed 🟡 ~52% ESTIMATE, reserve untouched.
-> **PACE (perishable, replaces 21:21):** panel 21:56 BST — All 45% ⇒ 0.80× · Fable 44% ⇒ 0.78× ·
-> catch-up to Thu 23:00 All 1.26× / Fable 1.28× — behind, narrowing. MORE-WINDOWS holds; this window
-> was Opus (All bucket) per the #17 trust ruling.)*
+> **pre-flight:** fill 22% + job 28% + wrap 8% = 58% AMBER · reserve 15% ring-fenced *(fill = 15.2% chain measured + ~7 harness inferred; job priced LIVE mid-window, not at opener — the honest account is the paragraph below)*
+> *(Session #20, 2026-07-28, Fable solo, Dave live. Opened titled for the ex-M4a/M4b/M5 build; the survey found the injected-behaviour architecture (~45%), Dave re-cut the frame — TWO LANES, M-codes retired off chart jobs — and the fork + inscriptions took the window to Amber before M5's first line. Deferral = HIS pick per his own no-new-builds-at-Amber rule; no build artefact started past Amber. Closed 🟡 ~55–58% ESTIMATE, reserve untouched.
+> **PACE (perishable):** NO fresh panel this window — Mon 21:56 stands (All 0.80× · Fable 0.78×, behind-narrowing); ask at #21's opener.)*
 >
-> **COMMIT STATE (refreshed 2026-07-27 ~22:10 BST from `date`).**
-> **Context gauge at authoring: 🟡 ~52% (ESTIMATE) — Amber, mid-band ⇒ ordinary scrutiny.**
-> ONE commit: `knowledge/_capture_gate.py` (M6·M7·M8·M9a·M10 + `section_a_digest()` + bites) ·
-> `knowledge/_build_instrument_fit.py` (M3) · `knowledge/_instrument-fit.json` + `_CAPTURE-GATE.md`
-> + `_LIVE-STATE-CHECK.md` (regenerated) · `.claude/agents/dreamer.md` (M9b) · `knowledge/_RUNBOOK-dream-pass.md` (M11) ·
-> `_FUTURE-STATE.md` (M12) · `GOOD-MORNING.md` (#18 banner · item 0 · panel · §C·1e retired · §C·4
-> adds · stamp · strata roll) · `_LIVE-STATE.md` + `_LIVE-STATE-ARCHIVE.md` (2d: #18 in, #15 rolled) ·
-> `_GM-ARCHIVE.md` (Batch 2026-07-27 #18) · `notes/_GAUGE-LOG.md` (#17 post-mortem) ·
-> `notes/_MEMENTO-DECISIONS.md` (§ ★ M-SET ENACTED + the M10 tier ruling) ·
-> `_DECISION-HISTORY/2026-07-27-mset-enactment-cheap-first.md` (NEW). Build `[62/62]` exit 0 ×2 ·
-> wrap gate + STAND-002 rerun at close. Dave pushes via GitHub Desktop, whole stack, Desktop closed.
+> **COMMIT STATE (refreshed 2026-07-28 ~08:55 BST from `date`).**
+> **Context gauge at authoring: 🟡 ~55–58% (ESTIMATE) — Amber ⇒ ordinary scrutiny; wrap-only past the call.**
+> ONE commit: `notes/_MEMENTO-DECISIONS.md` (§ TWO LANES) · `GOOD-MORNING.md` (#20 banner · STATE · pre-flight #21 · names · §C·1 two-lane line · item 0 · strata roll) · `_LIVE-STATE.md` + `_LIVE-STATE-ARCHIVE.md` (2d: #20 in, #17 rolled) · `_GM-ARCHIVE.md` (Batch 2026-07-28 #20) · `notes/_GAUGE-LOG.md` (#18 pre-flight rolled) · `knowledge/_proforma/_DATAVIZ-DECISIONS.md` (lane-2 breadcrumb) · `_DECISION-HISTORY/2026-07-28-two-lanes-and-the-mislabelled-m.md` (NEW). Build exit 0 · wrap gate stdout (M10 chain warn expected, honest) · STAND-002 PASS. Dave pushes via GitHub Desktop, whole stack, Desktop closed.
