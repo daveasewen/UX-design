@@ -12,14 +12,14 @@
 > **pre-flight #22 guide:** cold floor **MEASURE IT — never inherit this number.** #21 measured the read
 > chain at **30,624 tk = 15.3%** (GM 13,672 + LS 16,952) at its opener — ROSE again (30,411 → 30,624)
 > and stamp, gate and session agreed to the token; harness still UNMEASURED on top (~7 pts inferred ⇒
-> floor ≈ 22%, still inferred, still owed). **#22 = LANE 1 STEP 2** (wrap-ritual section-usage
-> instrumentation — design first, then build; price against the floor MEASURED at the opener) ·
+> floor ≈ 22%, still inferred, still owed). **#22 = DREAM-PASS-3 ENACTMENT first (P1–P6 as ruled,
+> ledger § ★ M11 CLOSED + DREAM PASS 3 RULED), THEN LANE 1 STEP 2** (price against the MEASURED floor) ·
 > **wrap moves now RUN THROUGH `knowledge/_gm_move.py`** (runbook 2c/2d/2e pointers; ops JSON +
 > `--dry-run` to probe; hand-rolled moves are RETIRED — #21 was the first live fire, receipts
 > `_GM-ARCHIVE.md` § Batch 2026-07-28 #21) · M1: RED = wrap-only, announce every crossing · 15%
 > reserve ring-fenced · panel Tue 09:09 — ask for a fresh reading at the opener.
 > **RENAME THE WRAPPED CHAT →** `Apollo — M5 LANDS (lane 1 · Memento, Fable solo): the hardened mover _gm_move.py — line-START anchors, §A digest via the gate's own function, caps imported not re-derived (the gate's charging walk EXTRACTED so mover and gate cannot drift), no-op = loud FAIL, all-or-nothing, stdout receipts; 24 bites all firing, wired into the build; runbook 2c/2d/2e = one-line pointers; the #21 wrap = the mover's first live fire — "five wraps hand-rolled the discipline; the sixth runs it as code"`
-> **TITLE THE NEXT CHAT →** `Apollo — LANE 1 STEP 2 (Memento): wrap-ritual section-usage instrumentation — design + build the measurement of which GM/LS sections each wrap READS and WRITES (receipts, not recall), per §C·1 lane 1; then O1′ LS schema + generated index/view (carries LANES-as-records, ledger § TWO LANES addendum). MEASURE the floor at the opener — do not inherit 30,624 tk — and ask Dave for a fresh panel reading (last Tue 09:09)`
+> **TITLE THE NEXT CHAT →** `Apollo — DREAM-PASS-3 ENACTMENT then LANE 1 STEP 2: first enact P1–P6 as ruled (ledger § ★ M11 CLOSED + DREAM PASS 3 RULED — P1 runbook-2f record-first + log-holes + #18 correction append · P2 register denominator line · P3 M9 tracking line beside M10's · P4a §🔀 stale-"only" correction · P5 orphan-lines move VIA THE MOVER · P6 post-wrap-addendum beat into the runbook), each with receipts, ONE commit; THEN wrap-ritual section-usage instrumentation (§C·1 lane 1). MEASURE the floor at the opener — do not inherit 30,624 tk — panel last Tue 09:09`
 > *(Titles are LABELS — role comes from Dave's opener line. Bands: the ONLY copy is
 > `_RUNBOOK-context-gauge.md` § ★ THE FLOOR IS MEASURED — grep it, never recall it.)*
 > ## ★ LATEST — 2026-07-28 (Tue **mid-morning #21**, FABLE solo, Dave live — ★★ **M5 ENACTED: the hardened mover `knowledge/_gm_move.py` — 24 selftest bites all FIRING, wired into the build; THIS WRAP IS ITS FIRST LIVE FIRE** · ★ **the gate's §C charging walk EXTRACTED so mover and gate cannot drift** · 🟢 ~44% est at wrap): **"Five wraps hand-rolled the discipline; the sixth runs it as code."**
@@ -27,6 +27,7 @@
 > - **★ FOUND (measured, repo-verified).** The gate's strata-exclusion walk was INLINE in `check_budgets` — a mover re-deriving it would drift exactly as #19's prose drifted from its gate; extracted to `strata_extent()`/`charged_line_counts()` in `_capture_gate.py`, behaviour identical, the existing BUDGET_FIXTURES (strata FAIL + exclusion control) prove it. Chain at opener 30,624 tk — rose again (30,411 → 30,624); stamp, gate and session agreed to the token. Build #2 died at the 45s call boundary — the #14 kill signature CHECKED FOR and absent (no stripped JSONs, tree clean); build #1's `[63/63]` exit 0 + zero generated drift already carried the proof.
 > - **⚠ WHAT THE AUTHOR FLAGS.** This wrap ran through the mover (receipts `_GM-ARCHIVE.md` § Batch 2026-07-28 #21) — but the mover cannot verify EXIT CHECKS or verbatim-ness; those stay ritual discipline, said in its own docstring. Brief §12's MEMORY.md ride-along trim NOT taken: GM §C·4's later "its own small window" ruling supersedes the option (header-wins); still owed. Panel FRESH this window (Tue 09:09: All 0.79× · Fable 0.82× pro-rata, behind-narrowing).
 > - **⬛ OPEN, Dave's:** lane 1 step 2 = wrap-ritual section-usage instrumentation (next window) · M11 supervised fire before Sun 08-02 · §C·2's 15 rulings + dataviz sign-off (PARKED, unchanged) · calm-banner verdict · LS-trim-vs-defer (unchanged).
+> - **★ POST-WRAP ADDENDUM (same day, ~10:15 — P6's beat, applied the hour it was ruled):** **M11 CLOSED** — supervised fire ran clean (pass 3 = `0ee1634`, 6 proposals, 3 on the hunt lines added that morning `a5ca45d`; absence signal unneeded; M12's remaining proof = the unattended Sun 08-02 fire) · **DREAM PASS 3 RULED, Dave verbatim "accept all six as recommended": P1–P6 accepted** (P2 widening PARKED · P3 promotion HELD · P4b waits on LS-trim-vs-defer) — full row-by-row binding in ledger § ★ M11 CLOSED + DREAM PASS 3 RULED · **enactment = the next window's FIRST beat, before lane-1 step 2** (Amber discipline: nothing enacted this window except this beat itself). Wrap gate re-run after this line; commit follows.
 >
 >
 > ## ★ PRIOR — 2026-07-28 (Tue **mid-morning #20**, FABLE solo, Dave live — ★★ **TWO LANES: chart jobs OUT of the M-set, their M-codes RETIRED; lane 2 blocked until lane 1 lands** · ★ **the ex-M4a survey INVERTED the brief's risk map, and lane 2 inherits it receipted** · ★ **M5 deferred at Amber by Dave's own build rule** · 🟡 ~55–58% est at wrap): **"M stands for Memento, so the chart jobs stopped wearing it."**
@@ -43,7 +44,7 @@
 ## ⬛ DO THIS FIRST
 
 > **★ WORKLIST — pointer · state · owner (method lives at the pointer, never here):**
-> **0. ★ LANE 1 STEP 2 — wrap-ritual section-usage instrumentation, the next window's ONE job** —
+> **0. ★ NEXT WINDOW: dream-pass-3 enactment (P1–P6, ledger-ruled) THEN lane 1 step 2 (wrap-ritual section-usage instrumentation)** —
 >    M5 ENACTED #21 (`knowledge/_gm_move.py` + its build-step selftest; receipts `_GM-ARCHIVE.md`
 >    § Batch 2026-07-28 #21 · ledger § ★ M5 ENACTED — do NOT re-prove). Wraps EXECUTE moves via the
 >    mover (runbook 2c/2d/2e pointers; ops JSON + `--dry-run` to probe) — hand-rolled moves RETIRED.

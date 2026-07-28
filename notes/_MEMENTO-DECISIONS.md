@@ -325,3 +325,34 @@ option-set offered in-chat, all accepted):** `.claude/agents/dreamer.md` § What
 ADR-0016 CLAIMED class) · (3) lane-order violations (the interim guard until O1′ makes lanes
 mechanical). Inscribed in the SPEC, not a chat prompt, per A-D3 (dispatches never restate) —
 every future fire inherits them. status: ruled — this entry · 2026-07-28.
+
+### ★ M11 CLOSED + DREAM PASS 3 RULED — P1–P6 all accepted as recommended (2026-07-28 #21 post-wrap, Dave live)
+
+**M11 CLOSED.** The supervised fire ran clean the same morning it was asked for: pass 3 committed
+`0ee1634` (`notes/_dream/2026-07-28-proposals.md`, 6 proposals, 3 on the fresh hunt lines), tree
+clean, `--wrap --lane` green, absence signal never needed. **M12's remaining fire-proof = the first
+UNATTENDED Sunday fire, 08-02 07:10.**
+
+**PASS 3 RULED — Dave verbatim: *"accept all six as recommended"*, on the read-back table with a
+recommendation per row. What that binds, row by row:**
+- **P1 accepted (a)(b)(c)** — runbook 2f gains record-FIRST-then-quote + missing-stratum-logged-as-
+  hole; `_GAUGE-LOG.md` #18 block gains an APPEND-ONLY correction line carrying both figures
+  (52% record / ~62% chat) as unadjudicable. NOT a re-float of parked pass-1 P6 (gauge rebuild).
+- **P2 accepted, WIDENING PARKED** — `_ENACTMENT-REGISTER.md` gains a generated denominator line
+  (4 ledgers harvested, Memento + ds-* bodies deliberately excluded). Widening `LEDGERS`/`RULING_RE`
+  = a separate, measured, ruled decision — Dave's, unscheduled.
+- **P3 accepted, PROMOTION HELD** — M9's fired-and-expired trigger gets a `[born · guards · until]`
+  line beside GM §C·4's M10 trigger, stating the condition is MET and promotion is Dave's one-word
+  call; the HOLD honours the proxy's own stated false-positive limit (cannot see retirement-DUE).
+- **P4 (a) accepted / (b) WAITS** — §🔀's false *"owed list now … only"* corrected (M11 + hunt-list
+  named or pointed); rolling the three stale Status paragraphs waits on the OPEN LS-trim-vs-defer
+  question — same question, same fate, not pre-judged here.
+- **P5 accepted** — the four orphaned 2026-07-18 residue lines (`_LIVE-STATE.md:46–49`) move
+  verbatim to `_LIVE-STATE-ARCHIVE.md` VIA THE MOVER; line 45 stays.
+- **P6 accepted** — runbook gains the post-wrap-addendum beat (ruling after the wrap ⇒ banner
+  addendum + re-gate + commit). **Applied to this very ruling the hour it was made** — the #21
+  banner carries the addendum, the gate re-ran, this entry is in that commit.
+
+**ENACTMENT = the next window's FIRST beat, before lane-1 step 2** — each item with its own
+receipt; nothing above is enacted in this window except P6's beat itself (Amber discipline, M1).
+status: ruled — this entry · provenance: session #21 post-wrap · 2026-07-28.
