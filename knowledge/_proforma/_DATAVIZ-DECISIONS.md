@@ -600,8 +600,20 @@ in `_LIVE-STATE.md` (🟡 PARKED entry) so the state machine doesn't read this a
   **Scope, Dave's word (session #27, plain-language option-select):** *interaction only* — tooltips
   + the show-the-table button. **DV-D07 axis/grid catch-up was FENCED and is logged as ds-020**;
   the CSV button (`button.dv-csv`, available in the consumed behaviour) was NOT adopted — out of
-  the ruled scope, flagged not taken. FIT (`svg.dv-fit`) not adopted either: scatter is deliberately
-  fixed-geometry per DV-D02 static.
+  the ruled scope, flagged not taken. ~~FIT (`svg.dv-fit`) not adopted either: scatter is deliberately
+  fixed-geometry per DV-D02 static.~~
+  **✗ THAT CLAIM WAS FALSE — CORRECTED SAME DAY (2026-07-28, Dave caught it by eye). Both beats kept
+  per the Memento discipline.** DV-D02 reads *"Cartesian charts only; horizontal bar + donut
+  excluded"* — **scatter is cartesian, so DV-D02 covers it and scatter does not comply.** The
+  "deliberate" came from a CSS comment in the snippet (`/* DV-D02 static: fixed geometry, scroll */`)
+  which describes the **safe fallback**, not an exemption: the agent inferred a ruling from prose
+  instead of retrieving it — the [[trust-the-spine-not-the-prose]] violation, committed in the same
+  session that correctly caught the queue doing the equivalent. **Scatter is MISSING `dv-fit` and
+  that is a defect, not a decision** (measured: bar 5 · combo 1 · line 2 · donut 0 correctly ·
+  scatter 0 wrongly). ⚠ And DV-D02's exclusion list is itself now in question — Dave, hedged and
+  **not yet firm**: *"I think horizontal bars are fine to be fully responsive, donut (graphics)
+  probably not but their lockup with the legend will."* Do not gate DV-D02 as written; amend first.
+  Carry-forward brief: `notes/_briefs/2026-07-28-chart-encoding-gaps-carry-forward.md`.
   Render-proof: `knowledge/_render/verify_dv_j2_render.py` (2 widths · licensed cut asserted ·
   toolbar 32px + 44px hit · toggle drives the panel · **keyboard focus raises the tip** · shadow
   compared AS A COLOUR → `rgba(0,0,0,0.2)`); `--bite` strips one `data-tip` and the proof FAILS as

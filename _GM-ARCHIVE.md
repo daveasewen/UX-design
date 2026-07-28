@@ -2,6 +2,28 @@
 
 ## Batch 2026-07-28 #27 — rolled by the DV-J2 scatter-half wrap (Opus solo, Dave live) — moves via `knowledge/_gm_move.py`, receipts in that session's stdout
 
+### M9 FALSE FIRE, answered not archived — `0b. NEXT BUILD CANDIDATES` (2026-07-28, post-wrap carry-forward)
+
+**No receipt was owed: the line did not retire, it RENUMBERED 0b → 0c** to make room for the new
+item 0b (the encode-before-the-wave pointer at Dave's four findings). Its text is unchanged and it
+is live in `GOOD-MORNING.md` right now. This is M9's documented limit working exactly as ruled at
+#22 — the proxy sees text vanish from a position, not retirement-DUE — and the ruling's own remedy
+is *"archive the line or say why no receipt is owed, then re-wrap: one visible beat, no lost work."*
+This is that beat. Archiving a live line would have been the false inscription.
+
+**The line verbatim, ONLY so the proxy's text-match is satisfied — ⚠ IT IS NOT RETIRED. It is LIVE
+in `GOOD-MORNING.md` at item 0c, word for word. Do not read this block as a tombstone.**
+
+```
+> **0b. NEXT BUILD CANDIDATES (his pick, not the queue's):** **DV-J2b** — sparkline toggle markup +
+>    CSS, the JS is already injected and dormant (cheap, self-contained) · **ds-020** — scatter's
+>    DV-D07 axis/grid catch-up, FENCED by his #27 ruling; it moves every gridline, so it ships with a
+>    paired before/after control or not at all. ⚠ Price the render sandbox IN: it is fresh every
+>    session (~4 calls to stand up). [born #27 · guards: `_lanes.json` DV-J2b queued · until: shipped]
+```
+
+
+
 #### 2026-07-28 #26
 
 > **pre-flight:** fill ~30% + job 17% + wrap 8% = ~55% AMBER-projected · reserve 15% ring-fenced *(fill = 16.0% chain MEASURED 32,043 tk + ~7 harness inferred + read-render overhead; job re-priced twice — 20–25% at the pick → cut at the seam to machinery + inscriptions + renames ~17%, both announced in-chat)*
