@@ -90,6 +90,49 @@ firm. **15% is sized from n=3 with one value unknown, and the +17 it keys off wa
 more sessions of recorded overrun**, and record each session's actual overrun at wrap so there is
 something to re-derive *from*. Flagged at inscription by the author, not discovered later.
 
+### ★★ ds-023 — THE CEILING AND THE STOP LINE (ruled-in-part #31 in Dave's own words, enforcement picked #31 delegated, ENACTED + CONFIRMED #34)
+
+**Dave, #30:** *"it's calculating 60+15 headroom is okay and it definitely isn't, 60 should be a hard
+stop."* **#31:** *"the wrap should be done before we hit that mark thats when things go wrong… we should
+never run hot."* **#34, confirming:** *"this is making me suffer unduly."*
+
+⚠️ **THIS WAS NEVER A CALIBRATION GAP — it was an ENFORCEMENT gap.** Everything above already said so,
+three times, verbatim. The rule existed, was correct, was ratified, and **nothing checked it**. Same
+shape as ds-021 and ds-022; all three were raised in one session and enacted in one.
+
+**Two numbers, and both are Dave's:**
+
+| | value | what it means |
+|---|---|---|
+| **pre-flight ceiling** | **fill + job + wrap ≤ 45** | a job must be projected to finish GREEN. **Checked, and it FAILS a wrap.** |
+| **in-flight stop line** | **60 − the priced wrap** | ~50–52 at today's 8–10 point wraps. **It MOVES with the wrap price and is not its own constant** — an expensive wrap must stop the session earlier. |
+
+**60 is where the wrap has FINISHED, not where it starts.** Starting the ritual at 60 is exactly what
+spends the reserve; that is #28's and #29's recorded cause.
+
+**★ THE ESCAPE HATCH, and why it exists.** A ceiling with no declared way past it gets worked around by
+quietly under-pricing the job — which would corrupt the only honest number in the stamp. So an overrun
+IS allowed, as an explicit, marked, forked act. **The canonical marker, which the gate matches literally:**
+
+```
+RESERVE SPEND — forked to Dave
+```
+
+Put it in the `pre-flight:` stamp. **Unmarked over-ceiling FAILS the wrap; marked over-ceiling WARNS and
+leaves a receipt.** ⚠️ The marker is a receipt, **not an absolution** — a session that marks every wrap
+this way has re-dialled the ceiling by habit rather than by ruling.
+
+⚠️ **KNOWN, FLAGGED, UNRESOLVED — one point of slack.** The ruling says `≤ 45`, but 45 reads **AMBER** on
+the band table (GREEN is `< 45`), so *"must project to finish GREEN"* and *"≤ 45"* disagree by exactly one
+point. **The literal ruling is what is implemented** (45 passes). Dave's to close.
+
+⚠️ **AND A FINDING FROM ENACTMENT (#34):** #33's stamp already recorded the right behaviour in the wrong
+words — *"was REFUSED against the 45 ceiling and forked to Dave"* — and does **not** match the canonical
+marker. The strict form was kept deliberately (a gate that accepts free prose cannot tell a declared
+spend from a passing mention), but this is the *gate-narrows-its-own-rule* class showing up at birth:
+**a disciplined session wrote the correct thing and would still have failed.** Hence this box — the
+magic string is documented where the rule is, not only in the regex.
+
 **RULED (b) — spending the reserve is a TRIGGER, and the fork goes to Dave.** On **any unplanned
 finding**: stop, re-price out loud, and put the fork to him — **(a)** log it and stop · **(b)** narrow ·
 **(c)** chase it knowingly with a Red stamp. **Not a decision the agent makes silently from inside the
@@ -297,6 +340,46 @@ written into canon would be **falsified by its own enactment** — the prose-dri
 
 **The numbers are Dave's and are re-dialled only by him, here.** The table above is a restatement, not a
 recalibration — the thresholds are byte-identical to the ratified bullets below, which stay as he wrote them.
+
+### ★ THE UNITS — `tape` and `bill` (ds-021, ruled #31 delegated, CONFIRMED + named by Dave #34)
+
+**Every number on this page, in every stamp, and in every banner NAMES ITS UNIT. A bare token count
+is a defect.** There are two units and they differ by about half as much again:
+
+| unit | what it is | who reads it |
+|---|---|---|
+| **`tape`** | what `tiktoken cl100k_base` counts | the gate, when it measures a file |
+| **`bill`** | what the window actually **charges** | you, when you run out of room |
+
+★ **THE MNEMONIC IS THE RULE: the tape is not the bill.** A tape measure tells you the size; the bill
+tells you the cost. Written out: *"the chain is 3,487 tape / ~5,405 bill."*
+
+**Why this was worth a ruling.** Every cap in `_capture_gate.py` was denominated in `tape` while the
+window charges in `bill`. Measured #30, two files, one session — `GOOD-MORNING.md` 16,107 tape →
+25,355 bill (1.57×) and `_LIVE-STATE.md` 18,818 tape → 29,103 bill (1.55×). So a gate reporting
+*"99.2% of block"* was describing a file that actually cost half as much again, and the reported
+floors for #27/#28/#29 understated true fill by **~10 points**. ⚠️ **The gate was never wrong — it was
+precise in the wrong unit**, which is exactly why five sessions of careful measurement never caught it.
+Same class as *a count is not a measurement*: a proxy measured well, then reported as the quantity.
+
+**What binds.** Caps bind on **`bill`**. They were **RESTATED at their current real value, not
+silently tightened** — `_capture_gate.py` converts the ruled `tape` caps through the ratio, so today
+the comparison is arithmetically identical to the old one *by design*. What the change buys is that
+(i) nobody can read a `tape` figure as a cost again, and (ii) the moment a **real** `bill` measurement
+is available the cap binds on the measured thing and the ratio stops mattering.
+
+⚠️ **THE RATIO IS PROVISIONAL AND IS NOT A CORPUS CONSTANT.** n=2, one session, two files; a third
+measurement could move it. `TAPE_TO_BILL = 1.57` is **GM's own pair**, deliberately not the 1.55
+average — every cap it converts is GM-derived, and the average would quietly loosen a GM cap.
+**Standing practice (ds-021 (c), folded in rather than skipped): every wrap logs ONE `tape`/`bill`
+pair into `notes/_GAUGE-LOG.md`** — free, since the chain is read anyway — **and at n≥4 the constant
+goes to Dave to rule.** The gate says so itself on every wrap (`ratio_status()`), and forks to him
+when the threshold arrives. Firming it is a **ruling**, not a re-dial.
+
+**Transitional:** the legacy spelling `tk` still parses in a `size:` stamp but **WARNS**. It is
+accepted on purpose — a regex that hard-failed on the old form would block the very wrap that
+rewrites the stamp. **Promotion trigger: once a wrap passes with no legacy-unit warning, make `tape`
+mandatory in `SIZE_TK_RE` and delete the `|tk` branch.**
 
 ★ **THIS FILE IS THE ONLY COPY.** `GOOD-MORNING.md` used to carry an inline band table; per GM-D9 it now
 carries a **pointer to this section**. ⚠️ **Two copies of a band table WILL drift** — and this one has

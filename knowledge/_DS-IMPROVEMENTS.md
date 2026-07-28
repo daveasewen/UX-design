@@ -1361,7 +1361,15 @@ argument for promotion, and it now has a live instance behind it rather than onl
 
 ## ds-021 — The GM growth contracts are denominated in a unit the window does not charge in (2026-07-28, session #30, measured)
 
-**Status: OPEN, UNRULED. This is Dave's call — the thresholds are his** (`_RUNBOOK-context-gauge.md`
+**★ Status: ENACTED #34 (2026-07-28). Units NAMED by Dave: `tape` (what tiktoken cl100k counts) /
+`bill` (what the window charges) — "the tape is not the bill". Caps bind on `bill`, restated at their
+current real value and NOT tightened. Three homes edited together: `_RUNBOOK-context-gauge.md`
+§ ★ THE UNITS · `_capture_gate.py` (TAPE_TO_BILL + bill_of + fmt_units + ratio_status, pinned) · the
+`size:` stamp format (legacy `tk` still parses but WARNS; promotion trigger recorded in-code).
+Bites: `selftest_units` — 4 classes, bite-the-bite verified. ⚠ RATIO STILL PROVISIONAL at n=2; the
+gate forks to Dave at n≥4.**
+
+*(Original status, kept: OPEN, UNRULED. This is Dave's call — the thresholds are his)* (`_RUNBOOK-context-gauge.md`
 § ★ THE FLOOR IS MEASURED: *"the numbers are Dave's and are re-dialled only by him, here"*).
 
 **What was measured.** Both chain files, two ways, same session:
@@ -1416,7 +1424,16 @@ caps · the stamp format.
 
 ## ds-022 — Step 2f's stratum split is discipline with no receipt: nothing reads `_GAUGE-LOG.md` (2026-07-28, session #30, measured)
 
-**Status: OPEN, UNRULED. Repair done at #30's wrap; the mechanism is untouched.**
+**★ Status: ENACTED #34 (2026-07-28) as ruled — (c) guarded by (a).** `_gm_move.py` gains the
+`roll_2f` op: both halves or neither, both destinations APPENDED at true EOF (no anchor argument
+exists, because the anchor is what produced #27's prepend), duplicate + out-of-order + unkeyed
+blocks all refused. `_capture_gate.py::gauge_log_continuity` is BLOCKING at birth: a wrap fails
+unless N−1 has a block or an explicit `HOLE #<N> — <why>`. Runbook step 2f rewritten to run the op.
+Bites: 6 in the mover (incl. the append-order bite that would have caught #27), 4 in the gate.
+⚠ **STILL OPEN AND DAVE'S:** #9/#10/#11/#19 remain absent with no HOLE line. Declaring them
+retroactively would assert something no evidence supports — flagged, not done.
+
+*(Original status, kept: OPEN, UNRULED. Repair done at #30's wrap; the mechanism is untouched.)*
 
 **The rule** (capture ritual step 2f): at each wrap the older stratum splits — **post-mortems →
 `notes/_GAUGE-LOG.md`** (append-only, chronological, one block per session) · **commit-states →
@@ -1463,8 +1480,20 @@ keys) ride along only if cheap at build time — not required for the ruling to 
 
 ## ds-023 — The reserve is being read as additive headroom, which the canon forbids by name (2026-07-28, session #30, Dave by eye)
 
-**Status: OPEN. The SHAPE is already ruled — what is missing is a CEILING and a check.
-The ceiling number is Dave's.**
+**★ Status: ENACTED #34 (2026-07-28), Dave confirming — "this is making me suffer unduly".**
+`_capture_gate.py::check_preflight` now enforces the CEILING (`fill + job + wrap ≤ 45`, FAIL) with the
+canonical escape `RESERVE SPEND — forked to Dave` (WARN + receipt), and publishes the in-flight stop
+line `60 − the priced wrap` on BOTH the passing and the over-ceiling path — it moves with the wrap
+price and is bitten for it. Runbook § ds-023 documents the marker where the rule is, not only in the
+regex. Bites: 3 fixtures + 5 assertions; ceiling/stop pinned at (45, 60).
+⚠ **TWO THINGS LEFT FOR DAVE.** (1) One point of slack: the ruling says `≤ 45` but 45 reads AMBER
+(GREEN is `< 45`); the LITERAL ruling is implemented. (2) At enactment the check FAILED the real repo
+on #33's own stamp — which had done the right thing in the wrong words (*"was REFUSED against the 45
+ceiling and forked to Dave"*). Strict marker kept deliberately, but that is *gate-narrows-its-own-rule*
+appearing at birth: **a disciplined session wrote the correct thing and would still have failed.**
+
+*(Original status, kept: OPEN. The SHAPE is already ruled — what is missing is a CEILING and a check.
+The ceiling number is Dave's.)*
 
 **Dave's words, #30:** *"I think that calibration of the headroom is wrong… I think it's calculating
 60+15 headroom is okay and it definitely isn't, 60 should be a hard stop."*

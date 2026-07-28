@@ -271,6 +271,38 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
      stay visible to the next reader; #14's unflagged absence is what made them silent.
    - **commit-states → `_GM-ARCHIVE.md`**, under the same `<date> <session#>` batch key as 2c.
 
+   ### ★★ ds-022 (ENACTED #34) — THIS ROLL IS NO LONGER DONE BY HAND
+
+   **Run it through the mover.** One op, and it is the only supported way:
+
+   ```bash
+   python3 knowledge/_gm_move.py --ops - <<'JSON'
+   [{"op": "roll_2f", "session": 33,
+     "pm_start": "#### 2026-07-28 #33", "pm_end": "> **COMMIT STATE",
+     "cs_start": "> **COMMIT STATE",    "cs_end": "## <the next heading>"}]
+   JSON
+   ```
+
+   **Why it stopped being a hand-roll.** Measured #30: **#26, #28 and #29 rolled WHOLE into
+   `_GM-ARCHIVE.md` and never reached the log** · **#9/#10/#11/#19 are absent with no HOLE line**, so the
+   file cannot say whether a stratum ever existed · **#27's block was PREPENDED**, against this file's own
+   append-only contract. Three wraps in a row got the same step wrong — the gate-don't-patch trigger.
+   **#29 is the expensive loss:** the only 🔴 RED session on the board, the only one with a measured
+   overrun cause, and its band lived on a Polaroid and never reached the tattoo.
+
+   **What `roll_2f` makes impossible, rather than merely discouraged:** a half-done split (an empty half
+   is refused, and nothing is written) · a prepend (**both destinations append at true EOF; there is no
+   anchor argument, because that argument is what produced #27**) · a duplicate session key · a block
+   appended behind a later one · a post-mortem with no `#### <date> #<N>` key, which would be invisible
+   to the check below.
+
+   **And the guard on it (ds-022 (a), BLOCKING at birth):** `_capture_gate.py::gauge_log_continuity` —
+   **a wrap FAILS unless session N−1 has a block, or an explicit `HOLE #<N> — <why>` line**, in
+   `notes/_GAUGE-LOG.md`. ⚠️ **The HOLE hatch is load-bearing, not politeness:** without it the check
+   would block a wrap whose predecessor legitimately wrote no stratum, and a gate that fails on correct
+   behaviour teaches sessions to **fake blocks** — which would poison the very dataset the 15% reserve is
+   waiting to be re-derived from.
+
    **EXIT CHECK applies and it bites here:** a stratum carrying a lesson — e.g. *"the fork rule failed
    mid-enactment"* — must have that lesson inscribed in `_RUNBOOK-context-gauge.md` **before** the stratum
    may roll. A lesson living only in a post-mortem block is a lesson in a dated home, and dated homes do

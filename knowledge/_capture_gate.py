@@ -85,6 +85,40 @@ TOTAL_RE = re.compile(r"=\s*[~≈]?\s*(\d+)")
 BAND_WORD_RE = re.compile(r"\b(GREEN|AMBER|RED)\b", re.I)
 RESERVE_RE = re.compile(r"\breserve\b\D{0,4}(\d+)", re.I)
 
+# ---------------------------------------------------------------- ds-023 — THE CEILING
+# RULED IN PART by Dave #31 in plain language, ENFORCEMENT picked #31 (delegated), CONFIRMED
+# by Dave #34 ("this is making me suffer unduly").
+#
+# HIS WORDS, #30: "I think that calculation of the headroom is wrong… it's calculating 60+15
+# headroom is okay and it definitely isn't, 60 should be a hard stop." And #31: "the wrap
+# should be done before we hit that mark thats when things go wrong… we should never run hot."
+#
+# ⚠ THIS WAS NEVER A CALIBRATION GAP. The runbook already agreed with him, three times,
+# verbatim — "the RESERVE is not a fourth addend" · "RULED (a) — the reserve is RING-FENCED,
+# not additive" · "the reserve is a LINE, not an allowance". **It was an ENFORCEMENT gap: the
+# rule existed, was correct, was ratified, and nothing checked it.** Identical shape to ds-021
+# and ds-022 — which is why all three were raised in one session and are enacted in one.
+#
+# THE ARITHMETIC, which falls out of Dave's OWN ratified numbers and is not a new threshold:
+# if RED (>=60) is a hard stop and the ~15% reserve is ring-fenced INSIDE it, then any
+# pre-flight must project to finish GREEN —
+#
+#     fill + job + wrap  <=  45        (the GREEN ceiling, unchanged)
+#
+# and in flight the stop-and-wrap trigger is 60 MINUS THE PRICED WRAP (~50-52 at today's 8-10
+# point wraps) — because 60 is where the wrap must have FINISHED, not where it starts. Starting
+# the ritual at 60 is precisely what spends the reserve; that is #28's and #29's recorded cause.
+# ⚠ The stop line MOVES WITH THE WRAP PRICE and is not its own constant. A session with an
+# expensive wrap must stop earlier, which is the whole point.
+PREFLIGHT_CEILING = 45   # confirmed by Dave on delegation #31, re-confirmed #34. Not derived here.
+HARD_STOP = 60           # Dave's, ratified #30 — "60 should be a hard stop"
+# ⚠ THE ESCAPE HATCH IS DELIBERATE AND IS NOT A LOOPHOLE. A ceiling with no way past it gets
+# worked around by quietly under-pricing the job, which would destroy the only honest number in
+# the stamp. So over-ceiling is permitted — but ONLY as an explicit, marked, forked act:
+# crossing the line is a QUESTION PUT TO DAVE (runbook, anti-false-fix 2), so the marker names
+# him. Unmarked over-ceiling FAILS; marked over-ceiling WARNS and leaves a receipt in the file.
+RESERVE_SPEND_RE = re.compile(r"RESERVE SPEND\b[^.]{0,40}?\bforked to Dave\b", re.I)
+
 # ---------------------------------------------------------------- section growth contracts
 # GM-D1(a) / D5(a) / D6(a) / D7(a) / D8(a), ruled 2026-07-27 (`notes/_MEMENTO-DECISIONS.md`
 # § GM growth-contracts; enacted here + `_RUNBOOK-capture-ritual.md` steps 2e/2f).
@@ -139,6 +173,34 @@ CONSULT_RECEIPT_BLOCKING = False
 STRATA_HEAD_RE = re.compile(r"^###\s*⏱\s*SESSION STRATA\b", re.I)
 STRATA_BLOCK_RE = re.compile(r"^####\s")
 STRATA_MAX_BLOCKS = 1
+# ds-022 (#34). ⚠ ONE SHAPE, DECLARED ONCE — `_gm_move.py` imports these rather than writing its
+# own copy. Two parsers for one line format is the drift class, and #32 was caused by exactly
+# that: a `#### ` heading one reader accepted and another refused.
+STRATA_KEY_RE = re.compile(r"^####\s+\d{4}-\d{2}-\d{2}\s+#\d+\b")
+HOLE_RE = re.compile(r"^\s*>?\s*\**HOLE\**\s+#\d+\b", re.I)
+SESSION_NO_RE = re.compile(r"#(\d+)\b")
+BANNER_SESSION_RE = re.compile(r"★\s*LATEST.*?#(\d+)\b")
+
+
+def _key_session(line):
+    """The session number out of a `#### <date> #<N>` key or a `HOLE #<N>` line, or None.
+    ⚠ None rather than a guess: an unparseable key is UNKNOWN, and defaulting it to a number
+    would let a malformed block satisfy a continuity check it should have failed."""
+    m = SESSION_NO_RE.search(line.split("#### ", 1)[-1] if line.startswith("#### ") else line)
+    return int(m.group(1)) if m else None
+
+
+def _current_session_no(gm_text):
+    """This session's number, read from GM. Tries the §C stratum key first (the authoritative
+    form) and falls back to the ★ LATEST banner. Returns None if neither is legible — the
+    caller then WARNS that the check is unarmed rather than passing quietly."""
+    for ln in gm_text.splitlines():
+        if STRATA_KEY_RE.match(ln):
+            n = _key_session(ln)
+            if n is not None:
+                return n
+    m = BANNER_SESSION_RE.search(gm_text)
+    return int(m.group(1)) if m else None
 
 # D7(a) size stamps, AS AMENDED 2026-07-27 (Dave, this window — see `notes/_MEMENTO-DECISIONS.md`
 # § GM-D7 amendment). The original D7 set GM ≤ 8K tk whole-file. Measured with tiktoken, that is
@@ -153,9 +215,79 @@ SIZE_BUDGET_TK = {"compactable": 8000}   # warn at cap · BLOCK at cap+50% (12,0
 BYTES_PER_TOKEN = 3.53     # MEASURED on GM, tiktoken cl100k_base, 2026-07-27. NOT the chars/4 rule
 #                            of thumb: this corpus runs ~13% denser because of its ★ ⚠ ⛔ · — load,
 #                            so every earlier chars/4 token estimate of these files read LOW.
+# ================================================================ ds-021 — THE TWO UNITS
+# RULED 2026-07-28 #31 as (b) with (c) folded in as standing practice — a DELEGATED pick
+# ("whatever you recommend"). CONFIRMED by Dave #34, who also named the units.
+#
+# THE FINDING (#30, measured, not inferred). Every cap in this file was denominated in
+# tiktoken cl100k tokens. The window is not charged in cl100k tokens. Two files, one session:
+#     GOOD-MORNING.md   16,107 tape → 25,355 bill   (1.57×)
+#     _LIVE-STATE.md    18,818 tape → 29,103 bill   (1.55×)
+# So a gate reporting "99.2% of block" described a file that actually cost half as much again,
+# and five sessions of careful measurement never caught it — because the gate was never WRONG,
+# it was PRECISE IN THE WRONG UNIT. That is the whole class ([[measure-dont-convert-units]]:
+# a proxy measured carefully, then reported as the quantity itself).
+#
+# THE UNITS, named by Dave #34 ("you choose"), collision-checked across the corpus first —
+# `tick` collides 118×, `ruler` reads as `RULED`, which this repo is full of:
+#     tape — what tiktoken cl100k_base counts.  A tape measure tells you the SIZE.
+#     bill — what the window actually charges.  The bill tells you the COST.
+# ★ THE MNEMONIC IS THE RULE: **the tape is not the bill.** Every token number this gate emits,
+#   every size stamp, and every banner figure NAMES ITS UNIT. A bare token count is a defect.
+#
+# ⚠ THE RATIO IS PROVISIONAL. n=2, one session, two files — it is NOT a corpus constant, and a
+# third measurement could move it. (c) is folded in as standing PRACTICE rather than skipped:
+# every wrap logs one tape/bill pair into `notes/_GAUGE-LOG.md` (free — the chain is read
+# anyway), and at n>=4 the constant goes to Dave to rule. Until then conversion is a LAST
+# RESORT: where a real bill measurement exists, USE IT and do not convert.
+MEASURED_PAIRS = [                 # (label, tape, bill, date, session) — APPEND, never edit.
+    ("GOOD-MORNING.md", 16107, 25355, "2026-07-28", 30),
+    ("_LIVE-STATE.md",  18818, 29103, "2026-07-28", 30),
+]
+RATIO_FIRM_N = 4                   # below this the ratio is provisional and may not be ruled
+TAPE_TO_BILL = 1.57                # GM's measured pair, NOT the 1.55 corpus average. Every cap
+#                                    below is GM-derived, so restating them with GM's own ratio
+#                                    is the honest conversion; the average would silently loosen
+#                                    a GM cap by ~1%. Re-dialling this is Dave's.
+
+
+def bill_of(tape):
+    """Derive a bill figure from a tape figure. LAST RESORT — prefer a measured bill."""
+    return int(round(tape * TAPE_TO_BILL))
+
+
+def fmt_units(tape, bill=None):
+    """The canonical dual-unit rendering, and the only one. A derived bill is MARKED derived,
+    because an unmarked derived number is precisely the ds-021 defect: it reads as a
+    measurement and it is not one. Cf. `_MEASURING-TOOL-MUST-NOT-GUESS`: observe, don't infer;
+    publish the evidence; never default the unknown."""
+    if bill is None:
+        return f"{tape:,} tape / ~{bill_of(tape):,} bill (derived ×{TAPE_TO_BILL}, PROVISIONAL)"
+    return f"{tape:,} tape / {bill:,} bill (both measured)"
+
+
+def ratio_status():
+    """One line on how firm the ratio is. Reported every wrap so the provisional never quietly
+    hardens into canon by being carried long enough."""
+    n = len(MEASURED_PAIRS)
+    if n < RATIO_FIRM_N:
+        return (f"tape→bill ratio PROVISIONAL: n={n} of {RATIO_FIRM_N} measured pairs, using "
+                f"×{TAPE_TO_BILL} (GM's own). Not a corpus constant; log this wrap's pair.")
+    obs = [b / t for _l, t, b, _d, _s in MEASURED_PAIRS]
+    return (f"tape→bill ratio: n={n} pairs, observed {min(obs):.3f}–{max(obs):.3f}, using "
+            f"×{TAPE_TO_BILL} — n>={RATIO_FIRM_N} reached, PUT THE CONSTANT TO DAVE to rule.")
+
+
 SIZE_STAMP_RE = re.compile(r"^\s*>?\s*\**size\**\s*[:—-]\s*(.+)$", re.I)
-SIZE_TK_RE = re.compile(r"\bGM\b\D{0,12}?([\d.]+)\s*K\s*tk", re.I)  # K is REQUIRED: without it
-#   "GM 25618 tk" would parse as 25.6M and pass a drift check by accident. One canonical form.
+SIZE_TK_RE = re.compile(r"\bGM\b\D{0,12}?([\d.]+)\s*K\s*(tape|tk)\b", re.I)  # K is REQUIRED:
+#   without it "GM 25618 tk" would parse as 25.6M and pass a drift check by accident.
+#   ds-021 (#34): `tape` is the canonical unit; bare `tk` is the LEGACY spelling and is still
+#   accepted, but it WARNS. ⚠ It is accepted deliberately — a regex that hard-failed on the old
+#   form would have blocked the very wrap that rewrites the stamp, i.e. a gate that cannot be
+#   satisfied from the state it is introduced in. PROMOTION TRIGGER: once a wrap passes with no
+#   legacy-unit warning, make `tape` mandatory here and delete the `|tk` branch. This comment is
+#   the only record of that trigger — it ships WITH its consumer (the warn below), per ds-024.
+LEGACY_UNIT_RE = re.compile(r"\b\d[\d.]*\s*K\s*tk\b", re.I)
 SIZE_TOLERANCE = 0.10      # a stamp is a claim about a measurable thing; 10% drift = re-stamp
 
 # ---------------------------------------------------------------- M-set, ruled 2026-07-27 #17
@@ -174,7 +306,7 @@ STAMP_PRECISION_TK = 100   # the stamp writes §A as `N.NK tk`, so its granulari
 #   below the instrument's own precision is NOT an observation — compare with this slack or every
 #   wrap warns on its own rounding ([[measure-dont-convert-units]]: the unit you state in bounds
 #   the claim you may make).
-SIZE_A_RE = re.compile(r"§A\D{0,12}?([\d.]+)\s*K\s*tk", re.I)   # K REQUIRED, as for GM above
+SIZE_A_RE = re.compile(r"§A\D{0,12}?([\d.]+)\s*K\s*(tape|tk)\b", re.I)  # K REQUIRED, as for GM
 #
 # M8 — the BANNER region (file top → the line before DO-FIRST: header + ★ LATEST + ★ PRIOR).
 #   It had no budget and is the densest prose in the file. Measured with the EXISTING region
@@ -314,17 +446,23 @@ def band_for(total):
 
 
 def check_preflight(text, label="GOOD-MORNING.md"):
-    """FORM check on the pre-flight stamp. Returns (fails, warns).
+    """FORM check on the pre-flight stamp, plus the ds-023 CEILING. Returns (fails, warns, notes).
 
     Bites on the three failures actually observed: the wrap term omitted (2026-07-27 #2),
     a band asserted from memory instead of the table (twice), and arithmetic that doesn't
-    close. Everything it cannot see is named in the module header, not implied away."""
-    fails, warns = [], []
+    close. Everything it cannot see is named in the module header, not implied away.
+
+    ⚠ The third return value is new at #34 and is not decoration. ds-023's stop line
+    (`HARD_STOP − the priced wrap`) is only useful on the PASSING path — a session that is
+    within its ceiling is exactly the one that still needs telling where to stop. Folding it
+    into `warns` would have made the good path noisy and taught sessions to skim the warnings;
+    dropping it would have shipped a computed number with no reader, which is ds-024's class."""
+    fails, warns, notes = [], [], []
     line = next((ln for ln in text.splitlines() if PREFLIGHT_RE.match(ln)), None)
     if line is None:
         return ([f"{label}: no `pre-flight:` stamp — the handoff must carry the estimate the "
                  f"session was priced with (runbook § ★ Half 0b). Form: `pre-flight: fill N% + "
-                 f"job N% + wrap N% = N% BAND · reserve 15% ring-fenced`"], warns)
+                 f"job N% + wrap N% = N% BAND · reserve 15% ring-fenced`"], warns, notes)
 
     terms = {}
     for key, rx in TERM_RE.items():
@@ -357,13 +495,42 @@ def check_preflight(text, label="GOOD-MORNING.md"):
             fails.append(f"{label}: pre-flight band MIS-READ — {total}% is {truth} by the band "
                          f"table, stamp says {named}. Quote the table, never recall it")
 
+    # ---- ds-023: THE CEILING. Everything above this point is a FORM check — it asks whether the
+    # stamp is well-formed. This is the first thing here that asks whether the PLAN IS ALLOWED.
+    if tm and not missing:
+        total = int(tm.group(1))
+        stop_at = HARD_STOP - terms["wrap"]
+        if total > PREFLIGHT_CEILING:
+            if RESERVE_SPEND_RE.search(line):
+                warns.append(
+                    f"{label}: pre-flight projects {total}% against the {PREFLIGHT_CEILING}% "
+                    f"ceiling — ALLOWED, marked RESERVE SPEND and forked to Dave. This is a "
+                    f"receipt, not an absolution: the reserve is a line, not an allowance, and "
+                    f"a session that marks every wrap this way has re-dialled the ceiling by "
+                    f"habit rather than by ruling. In flight, STOP AT {stop_at}% "
+                    f"({HARD_STOP} − the {terms['wrap']}%-priced wrap).")
+            else:
+                fails.append(
+                    f"{label}: pre-flight projects {total}%, over the {PREFLIGHT_CEILING}% "
+                    f"ceiling — a job must be projected to finish GREEN (ds-023: RED at "
+                    f"{HARD_STOP} is a hard stop and the ~{RESERVE_FENCE}% reserve is "
+                    f"ring-fenced INSIDE it, so {HARD_STOP} − {RESERVE_FENCE} = "
+                    f"{PREFLIGHT_CEILING}). Either CUT THE JOB, or declare the overrun in "
+                    f"advance and mark it `RESERVE SPEND — forked to Dave`. What is not "
+                    f"allowed is discovering it afterwards: #30, #31, #32 and #33 all exceeded "
+                    f"their own projections, and the ceiling has never once held.")
+        else:
+            notes.append(f"{label}: pre-flight {total}% within the {PREFLIGHT_CEILING}% ceiling · "
+                         f"in flight, STOP AT {stop_at}% ({HARD_STOP} − the {terms['wrap']}%-priced "
+                         f"wrap). 60 is where the wrap has FINISHED, not where it starts.")
+
     if terms.get("wrap", WRAP_FLOOR) < WRAP_FLOOR:
         warns.append(f"{label}: wrap reserved at {terms['wrap']}% (runbook says ~{WRAP_FLOOR}%) "
                      f"— the ritual is not free")
     if not RESERVE_RE.search(line):
         warns.append(f"{label}: pre-flight names no ring-fenced reserve (~{RESERVE_FENCE}%) — "
                      f"the fence is what makes the gauge a throttle rather than a thermometer")
-    return fails, warns
+    return fails, warns, notes
 
 
 def section_spans(lines):
@@ -611,6 +778,14 @@ def check_budgets(repo):
     if stamp is None:
         fails.append("GOOD-MORNING.md: no `size:` stamp — ritual step 2")
     else:
+        # ---- ds-021: the stamp is the THIRD home. It is the number a reader quotes without
+        # re-measuring, so it is the one place an unnamed unit does the most damage.
+        if LEGACY_UNIT_RE.search(stamp.group(1)):
+            warns.append("GOOD-MORNING.md `size:` stamp still spells the measured unit `tk` — "
+                         "ds-021 canon is `tape` (what tiktoken counts) beside `bill` (what the "
+                         "window charges). Re-stamp in both units, naming each. WARN this wrap "
+                         "only: when a wrap passes clean here, `tape` becomes mandatory in "
+                         "SIZE_TK_RE and the legacy branch is deleted.")
         cm = SIZE_TK_RE.search(stamp.group(1))
         if not cm:
             fails.append("GOOD-MORNING.md: `size:` stamp carries no GM figure — ritual step 2")
@@ -620,12 +795,24 @@ def check_budgets(repo):
                 fails.append(f"GOOD-MORNING.md: `size:` stamp claims {claimed:.0f} tk, measured "
                              f"{tk} tk — ritual step 2")
 
+    # ---- ds-021: the cap BINDS ON BILL. Both numbers are reported, the unit is named on each.
+    # ⚠ Today this is arithmetically identical to binding on tape, BY DESIGN — the ruling says
+    # RESTATED at current real value, not silently tightened, and both sides of the comparison
+    # are currently derived through the same ratio. What it buys is (i) nobody can read a tape
+    # figure as a cost again, and (ii) the moment a REAL bill measurement arrives the cap binds
+    # on the measured thing and the ratio stops mattering. A conversion applied to both sides
+    # cancels; the naming does not.
     budget = SIZE_BUDGET_TK["compactable"]
-    if compactable >= budget * 1.5:
-        fails.append(f"GOOD-MORNING.md compactable: {compactable} tk, block "
-                     f"{budget * 1.5:.0f} — ritual step 2")
-    elif compactable > budget:
-        warns.append(f"GOOD-MORNING.md compactable: {compactable} tk, cap {budget} — ritual step 2")
+    budget_bill, block_bill = bill_of(budget), bill_of(int(budget * 1.5))
+    compact_bill = bill_of(compactable)
+    notes.append(f"COMPACTABLE region: {fmt_units(compactable)} · warn {budget:,} tape / "
+                 f"~{budget_bill:,} bill · block {int(budget * 1.5):,} tape / ~{block_bill:,} bill")
+    if compact_bill >= block_bill:
+        fails.append(f"GOOD-MORNING.md compactable: {fmt_units(compactable)}, block "
+                     f"~{block_bill:,} bill — ritual step 2")
+    elif compact_bill > budget_bill:
+        warns.append(f"GOOD-MORNING.md compactable: {fmt_units(compactable)}, cap "
+                     f"~{budget_bill:,} bill — ritual step 2")
 
     # ---- M8: the banner region gets a sub-budget of its own.
     # ⚠ The exclusion of §A is only sound while §A sits BELOW DO-FIRST. If the file is ever
@@ -639,14 +826,16 @@ def check_budgets(repo):
     else:
         banner_tk = measure_tokens("\n".join(lines[:b_end]))[0]
         b_warn, b_block = BANNER_BUDGET_TK
-        notes.append(f"BANNER region: {banner_tk} tk (file top → DO-FIRST: header + ★ LATEST + "
-                     f"★ PRIOR) · warn {b_warn} / block {b_block}")
-        if banner_tk >= b_block:
-            fails.append(f"GOOD-MORNING.md banner region: {banner_tk} tk, block {b_block} — "
-                         f"roll a banner to _GM-ARCHIVE.md (ritual step 2c)")
-        elif banner_tk > b_warn:
-            warns.append(f"GOOD-MORNING.md banner region: {banner_tk} tk, cap {b_warn} — "
-                         f"ritual step 2c")
+        bw_bill, bb_bill = bill_of(b_warn), bill_of(b_block)
+        notes.append(f"BANNER region: {fmt_units(banner_tk)} (file top → DO-FIRST: header + "
+                     f"★ LATEST + ★ PRIOR) · warn {b_warn:,} tape / ~{bw_bill:,} bill · block "
+                     f"{b_block:,} tape / ~{bb_bill:,} bill")
+        if bill_of(banner_tk) >= bb_bill:
+            fails.append(f"GOOD-MORNING.md banner region: {fmt_units(banner_tk)}, block "
+                         f"~{bb_bill:,} bill — roll a banner to _GM-ARCHIVE.md (ritual step 2c)")
+        elif bill_of(banner_tk) > bw_bill:
+            warns.append(f"GOOD-MORNING.md banner region: {fmt_units(banner_tk)}, cap "
+                         f"~{bw_bill:,} bill — ritual step 2c")
 
     # ---- M10, RE-POINTED #33: the READ CHAIN is header + ★ LATEST + the LS LATEST delta.
     # ADVISORY, and the budget numbers are agent-derived pending Dave (see the constant block).
@@ -659,18 +848,26 @@ def check_budgets(repo):
         warns.append(f"M10 read chain UNMEASURED — {chain_detail}. Not defaulted, not assumed "
                      f"clean: a chain budget that reports 0 on a parse failure reads GREEN on a "
                      f"broken file. Fix the structure, then re-run.")
-    elif chain > c_warn:
-        warns.append(f"M10 read chain (header + ★ LATEST + LS latest delta): {chain} tk cl100k, "
-                     f"warn {c_warn} / block-candidate {c_block} — ADVISORY, numbers agent-derived "
-                     f"and awaiting Dave. {chain_detail}. This check knows the total, not where the "
-                     f"weight sits — measure the three terms before picking one to trim.")
+    elif bill_of(chain) > bill_of(c_warn):
+        warns.append(f"M10 read chain (header + ★ LATEST + LS latest delta): {fmt_units(chain)}, "
+                     f"warn {c_warn:,} tape / ~{bill_of(c_warn):,} bill · block-candidate "
+                     f"{c_block:,} tape / ~{bill_of(c_block):,} bill — ADVISORY, numbers "
+                     f"agent-derived and awaiting Dave. {chain_detail}. This check knows the "
+                     f"total, not where the weight sits — measure the three terms before picking "
+                     f"one to trim.")
+    else:
+        notes.append(f"M10 read chain: {fmt_units(chain)} · warn {c_warn:,} tape / "
+                     f"~{bill_of(c_warn):,} bill (ADVISORY). {ratio_status()}")
     # ---- The corpus rides alongside, always, warn-only. Post-cut it is what retrieval must
     # serve, not what a session reads; it is reported so the deferral can never read as a deletion.
-    if corpus > CORPUS_BUDGET_TK:
-        warns.append(f"M10 corpus (GM + _LIVE-STATE whole): {corpus} tk cl100k, warn "
-                     f"{CORPUS_BUDGET_TK} — the RETRIEVAL SURFACE, not the chain a session reads. "
-                     f"WARN ONLY: growth here costs a retrieval, not a cold start. Never a trim "
-                     f"order.")
+    if bill_of(corpus) > bill_of(CORPUS_BUDGET_TK):
+        warns.append(f"M10 corpus (GM + _LIVE-STATE whole): {fmt_units(corpus)}, warn "
+                     f"{CORPUS_BUDGET_TK:,} tape / ~{bill_of(CORPUS_BUDGET_TK):,} bill — the "
+                     f"RETRIEVAL SURFACE, not the chain a session reads. WARN ONLY: growth here "
+                     f"costs a retrieval, not a cold start. Never a trim order.")
+    else:
+        notes.append(f"M10 corpus (retrieval surface): {fmt_units(corpus)} · warn "
+                     f"{CORPUS_BUDGET_TK:,} tape / ~{bill_of(CORPUS_BUDGET_TK):,} bill")
 
     # ---- M7: §A size line — WARN ONLY, growth-triggered. It can never block and never orders
     # a trim; GM-D7-am ("not even a guard banner") is honoured by the SILENCE of the steady state.
@@ -690,10 +887,68 @@ def check_budgets(repo):
             warns.append(f"§A grew {claimed_a:.0f} → {exempt_tk} tk and no banner line names a "
                          f"§A change — say what changed in the ★ LATEST banner, or re-stamp. "
                          f"WARN ONLY: §A is uncapped by ruling and this can never force a trim.")
-    if exempt_tk > SECTION_A_WARN_TK:
-        warns.append(f"§A {exempt_tk} tk, past the {SECTION_A_WARN_TK} tk backstop — ADVISORY. "
-                     f"§A is uncapped by ruling (GM-D7-am); this is a look-at-it, never a "
-                     f"trim order.")
+    if bill_of(exempt_tk) > bill_of(SECTION_A_WARN_TK):
+        warns.append(f"§A {fmt_units(exempt_tk)}, past the {SECTION_A_WARN_TK:,} tape / "
+                     f"~{bill_of(SECTION_A_WARN_TK):,} bill backstop — ADVISORY. §A is uncapped "
+                     f"by ruling (GM-D7-am); this is a look-at-it, never a trim order.")
+    return fails, warns, notes
+
+
+def gauge_log_continuity(repo):
+    """ds-022 (a), the guard on (c): session N's wrap FAILS unless session N−1 left a block —
+    or an explicit HOLE line — in `notes/_GAUGE-LOG.md`. Returns (fails, warns, notes).
+
+    ⚠ THE HOLE ESCAPE HATCH IS LOAD-BEARING, not politeness. Some sessions legitimately write
+    no stratum (a lane wrap, an aborted window). Without a way to say so, this check would block
+    a wrap whose predecessor was correct — and a gate that fails on correct behaviour teaches
+    sessions to FAKE blocks, which would poison the exact dataset the throttle is re-derived
+    from. #14 is the proof it works: its absence was flagged, so #14 is countable. #9, #10, #11
+    and #19 are absent with nothing said, so the file cannot state whether they ever existed.
+
+    ⚠ WHAT IT CANNOT SEE: whether the block's CONTENT is a real post-mortem. It checks presence
+    and continuity — the two things a grep can settle. Do not teach it to grade prose."""
+    fails, warns, notes = [], [], []
+    log = os.path.join(repo, "notes", "_GAUGE-LOG.md")
+    gm = os.path.join(repo, "GOOD-MORNING.md")
+    if not os.path.exists(log) or not os.path.exists(gm):
+        notes.append("ds-022 continuity: no _GAUGE-LOG.md or no GOOD-MORNING.md — UNMEASURED, "
+                     "not assumed clean.")
+        return fails, warns, notes
+
+    with open(gm, encoding="utf-8") as f:
+        gm_text = f.read()
+    with open(log, encoding="utf-8") as f:
+        log_lines = f.read().splitlines()
+
+    cur = _current_session_no(gm_text)
+    if cur is None:
+        warns.append("ds-022 continuity: could not read this session's number from "
+                     "GOOD-MORNING.md — the check is UNARMED this wrap and says so rather than "
+                     "passing quietly. (It reads `#### <date> #<N>` in §C strata, then the "
+                     "`★ LATEST` banner's `#<N>`.)")
+        return fails, warns, notes
+
+    have = {n for n in (_key_session(ln) for ln in log_lines
+                        if STRATA_KEY_RE.match(ln)) if n is not None}
+    holes = {n for n in (_key_session(ln) for ln in log_lines
+                         if HOLE_RE.match(ln)) if n is not None}
+    prev = cur - 1
+    if prev in have:
+        notes.append(f"ds-022 continuity: #{prev} has a block in notes/_GAUGE-LOG.md — the 2f "
+                     f"split landed. (n={len(have)} recorded, {len(holes)} declared holes.)")
+    elif prev in holes:
+        notes.append(f"ds-022 continuity: #{prev} is a DECLARED HOLE — countable, which is the "
+                     f"whole difference between #14 and #9/#10/#11/#19.")
+    else:
+        fails.append(
+            f"ds-022: session #{prev} left NO block and NO hole line in notes/_GAUGE-LOG.md, "
+            f"so this wrap (#{cur}) cannot proceed. Ritual step 2f splits the older stratum — "
+            f"post-mortem to the log, commit-state to _GM-ARCHIVE.md — and #26/#28/#29 all "
+            f"rolled WHOLE into the archive instead. #29 is why this check exists: the only RED "
+            f"session on the board, the only measured overrun cause, and its band is gone. "
+            f"FIX: roll it with `_gm_move.py --ops` op `roll_2f` (which cannot half-do it), or "
+            f"— if #{prev} genuinely wrote no stratum — declare it: "
+            f"`HOLE #{prev} — <why>` in notes/_GAUGE-LOG.md.")
     return fails, warns, notes
 
 
@@ -957,7 +1212,8 @@ def wrap_checks(repo, today, lane=False):
         gm = os.path.join(repo, "GOOD-MORNING.md")
         if os.path.exists(gm):
             with open(gm, encoding="utf-8") as f:
-                f_, w_ = check_preflight(f.read())
+                f_, w_, n_ = check_preflight(f.read())
+            notes += n_
             fails += f_
             warns += w_
         f_, w_, n_ = check_budgets(repo)
@@ -979,6 +1235,13 @@ def wrap_checks(repo, today, lane=False):
         f_, n_ = lane_routing_check(repo)       # O1′ #24 — eager line ↔ records, BLOCKING
         fails += f_
         notes += n_
+        f_, w_, n_ = gauge_log_continuity(repo)  # ds-022 (a) #34 — the 2f split must LAND.
+        fails += f_                              # BLOCKING: three wraps in a row skipped the
+        warns += w_                              # step, and #29's overrun cause is gone for good.
+        notes += n_
+        notes.append("PRE-FLIGHT stamp: ds-023 CEILING now enforced (fill+job+wrap ≤ 45, "
+                     "escape = `RESERVE SPEND — forked to Dave`), plus the FORM check below. "
+                     "Whether the fill figure is HONEST is still not observable here.")
         notes.append("PRE-FLIGHT stamp: FORM checked only (3 terms · arithmetic · band-vs-table). "
                      "Whether the fill figure is honest, and whether a mid-job re-price actually "
                      "happened, are NOT observable here — discipline, not enforcement "
@@ -1072,10 +1335,24 @@ PREFLIGHT_FIXTURES = [
      "pre-flight: fill 50% + job 15% + wrap 5% = 70% AMBER · reserve 15% ring-fenced\n", True),
     ("band mis-read at the boundary (60 is RED)",
      "pre-flight: fill 40% + job 15% + wrap 5% = 60% AMBER · reserve 15% ring-fenced\n", True),
-    ("green control",
-     "pre-flight: fill 40% + job 12% + wrap 5% = 57% AMBER · reserve 15% ring-fenced\n", False),
+    # ⚠ ds-023 (#34) RETIRED THE OLD GREEN CONTROL. It read
+    #     "fill 40% + job 12% + wrap 5% = 57% AMBER"
+    # — well-formed, and now NOT ALLOWED: 57 is over the 45 ceiling. It was a valid control for a
+    # FORM check and is an invalid one for a check that also asks whether the plan is permitted.
+    # Kept here in the comment rather than deleted, because "the control used to pass" is the
+    # evidence that the ceiling actually changed something.
+    ("green control (within ceiling)",
+     "pre-flight: fill 25% + job 12% + wrap 8% = 45% AMBER · reserve 15% ring-fenced\n", False),
     ("green control, boundary GREEN (44)",
      "pre-flight: fill 30% + job 9% + wrap 5% = 44% GREEN · reserve 15% ring-fenced\n", False),
+    # ---- ds-023 ceiling fixtures
+    ("ds-023: over ceiling, UNMARKED — must FAIL",
+     "pre-flight: fill 40% + job 12% + wrap 5% = 57% AMBER · reserve 15% ring-fenced\n", True),
+    ("ds-023: over ceiling but MARKED — allowed, warns not fails",
+     "pre-flight: fill 30% + job 10% + wrap 8% = 48% AMBER · reserve 15% ring-fenced · "
+     "RESERVE SPEND — forked to Dave\n", False),
+    ("ds-023: at the ceiling exactly (45) — allowed",
+     "pre-flight: fill 32% + job 5% + wrap 8% = 45% AMBER · reserve 15% ring-fenced\n", False),
 ]
 
 
@@ -1083,7 +1360,7 @@ def selftest_preflight():
     """Bite-test the pre-flight FORM check — every class must FAIL, controls must pass."""
     failures = []
     for name, text, should_fail in PREFLIGHT_FIXTURES:
-        f_, _ = check_preflight(text, label="fixture")
+        f_, _w, _n = check_preflight(text, label="fixture")
         if should_fail and not f_:
             failures.append(f"pre-flight [{name}]: expected FAIL, check stayed green — "
                             f"the check does not bite")
@@ -1095,12 +1372,59 @@ def selftest_preflight():
         if got != want:
             failures.append(f"band_for({total}) = {got}, table says {want}")
     # the reserve must NOT be counted into the sum — if it ever is, the fence became padding
-    f_, _ = check_preflight("pre-flight: fill 40% + job 12% + wrap 5% = 72% RED · reserve 15%\n",
-                            label="fixture")
+    f_, _w, _n = check_preflight("pre-flight: fill 40% + job 12% + wrap 5% = 72% RED · reserve 15%\n",
+                                 label="fixture")
     if not f_:
         failures.append("pre-flight: a stamp that ADDED the ring-fenced reserve into its total "
                         "passed — the fence has silently become a fourth addend (runbook § Half "
                         "0b anti-false-fix 1)")
+
+    # ---- ds-023 (#34). The FIXTURES above prove the ceiling FAILS and PASSES in the right
+    # places. These prove the two things a pass/fail table cannot see: that the escape hatch
+    # leaves a RECEIPT rather than silence, and that the stop line is actually PUBLISHED.
+    marked = ("pre-flight: fill 30% + job 10% + wrap 8% = 48% AMBER · reserve 15% ring-fenced · "
+              "RESERVE SPEND — forked to Dave\n")
+    f_, w_, n_ = check_preflight(marked, label="fixture")
+    if f_:
+        failures.append(f"ds-023: a MARKED reserve spend failed ({f_}) — a ceiling with no "
+                        f"declared way past it gets worked around by under-pricing the job, "
+                        f"which corrupts the only honest number in the stamp")
+    if not any("RESERVE SPEND" in x for x in w_):
+        failures.append("ds-023: a marked reserve spend passed SILENTLY — the marker is a "
+                        "receipt, and a receipt nobody emits is not a receipt. Dave must be "
+                        "able to see, later, that the ceiling was crossed deliberately")
+    if not any("STOP AT 52%" in x for x in w_):
+        failures.append(f"ds-023: the over-ceiling path did not publish the stop line "
+                        f"(expected 'STOP AT 52%' = {HARD_STOP} − an 8%% wrap), got {w_}")
+
+    # the stop line must appear on the PASSING path too — that is the session that still has
+    # room to overrun, and the one every previous overrun happened in.
+    ok = "pre-flight: fill 25% + job 12% + wrap 8% = 45% AMBER · reserve 15% ring-fenced\n"
+    f_, _w, n_ = check_preflight(ok, label="fixture")
+    if f_:
+        failures.append(f"ds-023: a within-ceiling stamp failed ({f_})")
+    if not any("STOP AT 52%" in x for x in n_):
+        failures.append(f"ds-023: the within-ceiling path published no stop line — a computed "
+                        f"number with no reader is ds-024's class, and this is the path where "
+                        f"the number still matters. Got {n_}")
+    # and it must MOVE with the wrap price — a stop line that is really a constant is a lie
+    pricier = "pre-flight: fill 20% + job 10% + wrap 15% = 45% AMBER · reserve 15% ring-fenced\n"
+    _f, _w, n2 = check_preflight(pricier, label="fixture")
+    if not any("STOP AT 45%" in x for x in n2):
+        failures.append(f"ds-023: the stop line did not move with the wrap price (15%% wrap ⇒ "
+                        f"stop at {HARD_STOP} − 15 = 45), got {n2}. An expensive wrap MUST stop "
+                        f"the session earlier; that is the entire mechanism")
+
+    # ---- the ruled numbers, pinned. Both are Dave's: 60 ratified outright, 45 confirmed on
+    # delegation. ⚠ ONE POINT OF SLACK IS KNOWN AND UNRESOLVED, and is flagged rather than
+    # quietly settled: the ruling says `fill + job + wrap <= 45`, but 45 reads AMBER on the band
+    # table (GREEN is < 45), so "must project to finish GREEN" and "<= 45" disagree by exactly
+    # one point. The LITERAL ruling is implemented (<= 45 passes). Dave's to close.
+    if (PREFLIGHT_CEILING, HARD_STOP) != (45, 60):
+        failures.append(f"ds-023: ceiling/stop = {(PREFLIGHT_CEILING, HARD_STOP)}, ruled (45, 60) "
+                        f"— 60 is Dave's ratified hard stop and 45 was confirmed on his "
+                        f"delegation; re-dialling either is his, and updating this pin is part "
+                        f"of doing it")
     return failures
 
 
@@ -1154,12 +1478,16 @@ def _gm_fixture(do_first=10, sec_a=10, sec_c=10, with_b=False, strata_blocks=0,
     if stamp_a is None and {"§A", "§C"} <= set(b_spans):
         a_s, a_e = b_spans["§A"]
         stamp_a = measure_tokens("\n".join(b_lines[a_s:a_e]))[0] / 1000
-    a_part = "" if stamp_a in (None, False) else f"§A {stamp_a:.2f}K tk · "
-    text = body.replace("SIZESTAMP", "> **size:** GM 0.00K tk · chain 0.00K tk · measured x")
+    # ds-021 (#34): the fixture stamps in `tape`, the canonical unit. It MUST model the canon and
+    # not the legacy spelling — a fixture stamped `tk` would trip the new legacy-unit warn on every
+    # bite, and the usual fix (widen the assertions to tolerate it) is how a gate gets taught to
+    # accept the thing it was built to retire. The legacy path keeps its own dedicated bite below.
+    a_part = "" if stamp_a in (None, False) else f"§A {stamp_a:.2f}K tape · "
+    text = body.replace("SIZESTAMP", "> **size:** GM 0.00K tape · chain 0.00K tape · measured x")
     for _ in range(3):  # converges: the stamp's own length barely moves the count
         tk, _m = measure_tokens(text)
-        text = body.replace("SIZESTAMP", f"> **size:** GM {tk / 1000:.2f}K tk · {a_part}"
-                                         f"chain {tk / 1000:.2f}K tk · measured x")
+        text = body.replace("SIZESTAMP", f"> **size:** GM {tk / 1000:.2f}K tape · {a_part}"
+                                         f"chain {tk / 1000:.2f}K tape · measured x")
     return text
 
 
@@ -1226,6 +1554,125 @@ def _warns_for(td, **kw):
         f.write(_gm_fixture(**kw))
     f_, w_, n_ = check_budgets(td)
     return f_, w_, n_
+
+
+def selftest_gauge_continuity():
+    """ds-022 (a) bites (#34). The POSITIVE case leads, deliberately: a suite that only proves
+    failures reads green after a revert that deletes the comparison entirely (#32's lesson)."""
+    failures = []
+
+    def _repo(td, gm_session, log_body):
+        os.makedirs(os.path.join(td, "notes"), exist_ok=True)
+        with open(os.path.join(td, "GOOD-MORNING.md"), "w", encoding="utf-8") as f:
+            f.write(f"# Good morning\n\n#### 2026-07-28 #{gm_session}\nstratum body\n")
+        with open(os.path.join(td, "notes", "_GAUGE-LOG.md"), "w", encoding="utf-8") as f:
+            f.write(log_body)
+        return td
+
+    with tempfile.TemporaryDirectory() as td:
+        _repo(td, 34, "# log\n\n#### 2026-07-28 #33\npost-mortem\n")
+        f_, _w, n_ = gauge_log_continuity(td)
+        if f_:
+            failures.append(f"ds-022: a COMPLETE record failed ({f_}) — the check fires on the "
+                            f"good case and would be routed around within one wrap")
+        if not any("the 2f split landed" in x for x in n_):
+            failures.append("ds-022: the passing case said nothing — a check that is silent "
+                            "when it succeeds cannot be distinguished from one that is dead")
+
+    with tempfile.TemporaryDirectory() as td:
+        _repo(td, 34, "# log\n\n#### 2026-07-28 #31\npost-mortem\n")
+        f_, _w, _n = gauge_log_continuity(td)
+        if not any("left NO block" in x for x in f_):
+            failures.append("ds-022: a MISSING N−1 block did not fail — this is the #26/#28/#29 "
+                            "defect itself, and the reason #29's overrun cause is unrecoverable")
+
+    with tempfile.TemporaryDirectory() as td:
+        _repo(td, 34, "# log\n\n#### 2026-07-28 #31\nx\n\nHOLE #33 — lane wrap, no stratum\n")
+        f_, _w, n_ = gauge_log_continuity(td)
+        if f_:
+            failures.append(f"ds-022: a DECLARED HOLE still failed ({f_}) — without the escape "
+                            f"hatch this gate blocks correct behaviour, and a gate that fails "
+                            f"on correct behaviour teaches sessions to fake blocks, which "
+                            f"poisons the dataset the reserve is re-derived from")
+        if not any("DECLARED HOLE" in x for x in n_):
+            failures.append("ds-022: the hole was accepted SILENTLY — #14 is countable precisely "
+                            "because its absence was said out loud")
+
+    with tempfile.TemporaryDirectory() as td:
+        os.makedirs(os.path.join(td, "notes"), exist_ok=True)
+        with open(os.path.join(td, "GOOD-MORNING.md"), "w", encoding="utf-8") as f:
+            f.write("# Good morning\n\nno session number anywhere\n")
+        with open(os.path.join(td, "notes", "_GAUGE-LOG.md"), "w", encoding="utf-8") as f:
+            f.write("# log\n")
+        f_, w_, _n = gauge_log_continuity(td)
+        if f_ or not any("UNARMED" in x for x in w_):
+            failures.append("ds-022: an unreadable session number did not announce itself as "
+                            "UNARMED — an unmeasurable check must say so, never pass quietly "
+                            "(the M10 refusal pattern)")
+    return failures
+
+
+def selftest_units():
+    """ds-021 bites (#34). The unit machinery is now load-bearing for EVERY cap in this file, so
+    it gets the full treatment: the legacy-unit warn must FIRE, the canonical form must be
+    SILENT, and the derived/measured distinction must survive rendering — an unmarked derived
+    number is the exact defect ds-021 was raised about, so a formatter that loses the marking
+    reintroduces the bug in the tool built to fix it."""
+    failures = []
+
+    # ---- 1. THE POSITIVE CONTROL FIRST. A failure-only suite reads green after a revert that
+    # deletes the whole comparison (the #32 lesson, and the reason index-freshness leads with its
+    # fresh-passes bite). Prove the canonical stamp is accepted AND quiet.
+    with tempfile.TemporaryDirectory() as td:
+        _f, w_, _n = _warns_for(td)
+        if any("spells the measured unit" in x for x in w_):
+            failures.append("ds-021: the canonical `tape` stamp tripped the LEGACY warn — the "
+                            "gate is now warning about its own canon, which will train sessions "
+                            "to ignore the message")
+
+    # ---- 2. THE LEGACY FORM MUST BITE. Accepted, but never silently.
+    with tempfile.TemporaryDirectory() as td:
+        _f, w_, _n = _warns_for(td, stamp="> **size:** GM 1.00K tk · chain 1.00K tk · measured x")
+        if not any("spells the measured unit" in x for x in w_):
+            failures.append("ds-021: a `tk`-spelled stamp did NOT warn — the legacy unit would "
+                            "then survive forever behind a regex that quietly accepts it, which "
+                            "is the ds-024 class (a tolerance nobody is accountable for)")
+        # and it must still PARSE, or the transition blocks the wrap that performs it
+        if any("carries no GM figure" in x for x in _f):
+            failures.append("ds-021: the legacy stamp stopped parsing — the migration would "
+                            "block the very wrap that rewrites the stamp")
+
+    # ---- 3. DERIVED vs MEASURED must be visible in the rendering, not just in the caller's head.
+    derived, measured = fmt_units(1000), fmt_units(1000, 1570)
+    if "derived" not in derived or "PROVISIONAL" not in derived:
+        failures.append(f"ds-021: fmt_units() rendered a DERIVED bill without marking it "
+                        f"({derived!r}) — an unmarked derived number reads as a measurement, "
+                        f"which is ds-021 itself")
+    if "measured" not in measured or "derived" in measured:
+        failures.append(f"ds-021: fmt_units() mislabelled a MEASURED pair ({measured!r})")
+    if "tape" not in derived or "bill" not in derived:
+        failures.append(f"ds-021: fmt_units() emitted a number without naming its unit "
+                        f"({derived!r}) — the one thing this ruling exists to prevent")
+
+    # ---- 4. The ratio must announce its own provisionality, and must FLIP to a fork when the
+    # evidence firms. A constant that hardens by being carried long enough is the prose-drift
+    # class; this is the check that makes n=4 arrive as a question to Dave rather than as silence.
+    if "PROVISIONAL" not in ratio_status():
+        failures.append(f"ds-021: ratio_status() does not declare itself provisional at "
+                        f"n={len(MEASURED_PAIRS)} — below RATIO_FIRM_N it always must")
+    saved = MEASURED_PAIRS[:]
+    try:
+        MEASURED_PAIRS.extend([("fixture-a", 1000, 1550, "2026-07-28", 34),
+                               ("fixture-b", 1000, 1560, "2026-07-28", 34)])
+        firm = ratio_status()
+        if "PUT THE CONSTANT TO DAVE" not in firm:
+            failures.append(f"ds-021: at n={len(MEASURED_PAIRS)} the ratio did not fork to Dave "
+                            f"({firm!r}) — the engine never derives-and-promotes, so reaching "
+                            f"the evidence threshold has to SAY something or nothing happens")
+    finally:
+        MEASURED_PAIRS[:] = saved
+
+    return failures
 
 
 def selftest_growth():
@@ -1423,7 +1870,25 @@ def selftest_growth():
             ("BANNER_BUDGET_TK", BANNER_BUDGET_TK, (4000, 5000), "ruled 2026-07-27 M-set"),
             ("SECTION_A_WARN_TK", SECTION_A_WARN_TK, 4500, "ruled 2026-07-27 M-set"),
             ("CORPUS_BUDGET_TK", CORPUS_BUDGET_TK, 36000,
-             "born #33 2026-07-28, AGENT-DERIVED from 34,094 tk measured, warn-only, awaiting Dave")):
+             "born #33 2026-07-28, AGENT-DERIVED from 34,094 tk measured, warn-only, awaiting Dave"),
+            # ds-021, enacted #34. The ratio is the load-bearing number now — every cap in this
+            # file binds through it — so it gets the same pin as the caps it converts. ⚠ It is
+            # PROVISIONAL at n=2 and firming it is a RULING, not a re-dial: when n>=4, the
+            # constant goes to Dave and this pin moves with his word, not with the arithmetic.
+            ("TAPE_TO_BILL", TAPE_TO_BILL, 1.57,
+             "ds-021 enacted #34 2026-07-28 — GM's OWN measured pair (16,107 tape → 25,355 "
+             "bill), deliberately NOT the 1.55 corpus average. PROVISIONAL at n=2"),
+            ("RATIO_FIRM_N", RATIO_FIRM_N, 4,
+             "ds-021 (c) folded in as standing practice — the ratio may not be ruled a corpus "
+             "constant below n=4 measured pairs"),
+            # The two seed pairs are the EVIDENCE the ratio rests on. MEASURED_PAIRS is
+            # append-only, so the pin covers the seeds by value and never the list length —
+            # pinning the length would fire on every legitimate wrap that logs a pair, which is
+            # how a gate teaches sessions to stop logging.
+            ("MEASURED_PAIRS[:2]", MEASURED_PAIRS[:2],
+             [("GOOD-MORNING.md", 16107, 25355, "2026-07-28", 30),
+              ("_LIVE-STATE.md", 18818, 29103, "2026-07-28", 30)],
+             "ds-021's founding measurement, #30 — append below it, never edit it")):
         if got != want:
             failures.append(f"{name} = {got}, pinned {want} ({note}) — re-dialling is Dave's, "
                             f"and updating this pin is part of doing it")
@@ -1565,9 +2030,9 @@ def selftest_index_freshness():
 
 
 def selftest():
-    failures = (selftest_preflight() + selftest_budgets() + selftest_growth()
-                + selftest_usage() + selftest_lanes() + selftest_receipts()
-                + selftest_index_freshness())
+    failures = (selftest_preflight() + selftest_budgets() + selftest_units()
+                + selftest_gauge_continuity() + selftest_growth() + selftest_usage()
+                + selftest_lanes() + selftest_receipts() + selftest_index_freshness())
     with tempfile.TemporaryDirectory() as td:
         os.makedirs(os.path.join(td, "notes"))
         os.makedirs(os.path.join(td, "_DECISION-HISTORY"))

@@ -48,6 +48,15 @@ OPS — a JSON list (via `--ops <file|->`), or the `Transaction` API:
       `find` matches FULL LINES (list equality — inherently line-start), exactly once.
       `replace` may be shorter, longer, or empty (a ritual-licensed trim).
   {"op": "insert", "file": F, "at": A, "where": "after" | "before", "lines": [lines]}
+  {"op": "roll_2f", "session": N, "pm_start": A, "pm_end": A | "EOF",
+   "cs_start": A, "cs_end": A | "EOF"}
+      ds-022, ruled #31 / confirmed #34. The ritual step-2f stratum SPLIT, made mechanical:
+      the post-mortem half goes to `notes/_GAUGE-LOG.md`, the commit-state half to
+      `_GM-ARCHIVE.md`, and NEITHER can happen without the other. Both destinations are
+      APPENDED at true EOF — there is deliberately no anchor argument, because #27's block
+      was prepended by a hand-written insert and the append-only contract is easier to keep
+      than to remember. Refuses: an empty half · a duplicate session key · a key later than
+      the one being rolled (chronological) · a post-mortem with no `#### <date> #<N>` key.
 
   Anchors: a string = literal line prefix · {"regex": "^..."} = regex, MUST begin with '^'.
   Files are repo-relative. The mover NEVER creates a file — a new file must declare its own
@@ -68,6 +77,17 @@ import tempfile
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import _capture_gate as cg  # section_spans · section_a_digest · SECTION_CAPS ·
 #                             charged_line_counts · SECTION_REQUIRED · _gm_fixture (selftest)
+
+
+# ds-022 (#34): the gauge-log block key. ⚠ IMPORTED, never re-declared — the mover writes the
+# blocks and the gate reads them, so a second copy of this regex here would be two parsers for
+# one line format. That is the #32 defect exactly: a `#### ` heading one reader accepted and
+# another refused, and the index froze while every banner still read green.
+STRATA_KEY_RE = cg.STRATA_KEY_RE
+_key_session = cg._key_session
+# The archive's own key form — newest-first batches. Separate from the log's key on purpose:
+# two files, two contracts, and conflating them is the defect this regex exists to prevent.
+ARCHIVE_BATCH_RE = re.compile(r"^##\s+Batch\b")
 
 
 class MoveError(Exception):
@@ -206,6 +226,125 @@ class Transaction:
         fl.lines[i:i] = lines
         self.receipts.append(f"INSERT {len(lines)} ln into {file} {where} {_show(at)}")
 
+    # ---------------------------------------------------------------- ds-022: the 2f roll
+    # RULED #31 as (c) guarded by (a) — a DELEGATED pick, CONFIRMED by Dave #34.
+    #
+    # THE OBSERVED FAILURE (#30, measured by `grep '^#### ' notes/_GAUGE-LOG.md`): step 2f says
+    # the older stratum SPLITS — post-mortems to `notes/_GAUGE-LOG.md`, commit-states to
+    # `_GM-ARCHIVE.md`. In practice #26, #28 and #29 rolled WHOLE into the archive and never
+    # reached the log; #9/#10/#11/#19 are absent with no marker, so the file cannot even say
+    # whether a stratum existed; and #27's block was PREPENDED, against this file's own declared
+    # append-only contract. **#29 is the expensive loss** — the only 🔴 RED session on the board
+    # and the only one with a measured overrun cause, and its band lived on a Polaroid.
+    #
+    # ⚠ THE POINT OF THIS OP IS THAT THE SPLIT CANNOT BE HALF-DONE. Two `move` ops could always
+    # have expressed the roll; what they could not express is that the SECOND one is mandatory.
+    # Three wraps in a row got the same step wrong, which is the gate-don't-patch trigger: a
+    # condition that recurs is gated, not remembered.
+    #
+    # WHAT IT CANNOT SEE, stated rather than implied: whether the lines you called a post-mortem
+    # actually are one. It checks that both halves are non-empty, that the log's block key lands,
+    # and that it lands in CHRONOLOGICAL position — the three things that are observable.
+    # ⚠ CAUGHT AT FIRST LIVE USE, #34, BEFORE IT RAN — the first draft of this op appended to BOTH
+    # destinations, because "append-only" was carried over from the log to the archive as though
+    # the two files shared a contract. THEY DO NOT. `notes/_GAUGE-LOG.md` is append-only and
+    # chronological; `_GM-ARCHIVE.md` is NEWEST-FIRST under `## Batch <date> #<N>` keys. An
+    # EOF append there would have buried this session's commit-state under every older batch —
+    # a correct-looking write in the wrong place, which is the silent-lookup class landing in the
+    # very op built to stop a mis-placed write. The asymmetry is now explicit: the log gets NO
+    # anchor (that is the #27 fix), the archive REQUIRES one and REFUSES to guess.
+    def roll_2f(self, session, pm_start, pm_end, cs_start, cs_end, archive_at=None,
+                src="GOOD-MORNING.md", log="notes/_GAUGE-LOG.md", archive="_GM-ARCHIVE.md"):
+        try:
+            n = int(str(session).lstrip("#"))
+        except ValueError:
+            raise MoveError(f"roll_2f: session {session!r} is not a number — the block key is "
+                            f"`#### <date> #<N>` and N is what the continuity check reads")
+        flog = self._file(log)
+
+        # ---- ORDER MATTERS, and it was got wrong first time. Validate WHAT is being rolled
+        # before WHERE it goes: with the position checks first, a mis-typed `session` argument
+        # was refused by the chronological check and reported as an ordering problem, so the
+        # message named the wrong defect. Safe to extract early — a MoveError anywhere means
+        # nothing is written, so in-memory mutation costs nothing.
+        pm = self._extract(src, pm_start, pm_end, what=f"roll_2f post-mortem (#{n})")
+        cs = self._extract(src, cs_start, cs_end, what=f"roll_2f commit-state (#{n})")
+
+        # ---- the block key must be IN the post-mortem half. Unkeyed text is invisible to the
+        # N−1 continuity check, which is how a gate gets built on a record it cannot read.
+        if not any(STRATA_KEY_RE.match(ln) for ln in pm):
+            raise MoveError(f"roll_2f: the post-mortem block carries no `#### <date> #<N>` key "
+                            f"line — unkeyed, it is invisible to the N−1 continuity check and "
+                            f"the session becomes uncountable (the #9/#10/#11/#19 case)")
+        got = [_key_session(ln) for ln in pm if STRATA_KEY_RE.match(ln)]
+        if n not in got:
+            raise MoveError(f"roll_2f: rolling session #{n} but the post-mortem block is keyed "
+                            f"{got} — the key and the argument disagree, so one of them is "
+                            f"describing a session that is not being rolled")
+
+        # ---- APPEND-ONLY is enforced by CONSTRUCTION, not by asking the caller to be careful.
+        # #27's block was prepended by a hand-written insert with a top-of-file anchor; there is
+        # deliberately no anchor argument here, so that mistake is not expressible.
+        seen = [s for s in (_key_session(ln) for ln in flog.lines
+                            if STRATA_KEY_RE.match(ln)) if s is not None]
+        if n in seen:
+            raise MoveError(f"roll_2f: {log} already carries a block for #{n} — the contract is "
+                            f"one block per session, and a duplicate key silently splits the "
+                            f"record of one session across two places")
+        later = [s for s in seen if s > n]
+        if later:
+            raise MoveError(f"roll_2f: {log} already carries blocks for {sorted(later)}, all "
+                            f"later than #{n} — appending would break the chronological "
+                            f"contract this file declares in its own header (#27's defect)")
+        self._append(log, pm)
+        where = self._archive_insert(archive, cs, archive_at)
+        self.receipts.append(f"ROLL-2f #{n}: {len(pm)} ln → {log} (appended, EOF) · "
+                             f"{len(cs)} ln → {archive} ({where})")
+
+    def _extract(self, src, start, end, what):
+        fs = self._file(src)
+        s = _find_anchor(fs.lines, start, what=f"{what} start")
+        e = len(fs.lines) if end == "EOF" else _find_anchor(
+            fs.lines, end, lo=s + 1, what=f"{what} end", first=True)
+        block = fs.lines[s:e]
+        if not block:
+            raise MoveError(f"{what}: block is empty — a 2f roll with an empty half IS the "
+                            f"defect (the stratum went somewhere, or nowhere, but not to both)")
+        del fs.lines[s:e]
+        return block
+
+    def _append(self, rel, block):
+        """Append at true EOF. Anchors cannot express 'end of file', and giving the caller an
+        anchor for the append point is exactly how #27 ended up at line 7."""
+        fl = self._file(rel)
+        while fl.lines and not fl.lines[-1].strip():
+            fl.lines.pop()
+        fl.lines += [""] + block
+
+    def _archive_insert(self, rel, block, at):
+        """`_GM-ARCHIVE.md` is NEWEST-FIRST under `## Batch <date> #<N>` keys, so the commit-state
+        goes UNDER the newest batch heading — not at EOF, which would bury it beneath every older
+        batch. Default target is the first `## Batch ` line; `archive_at` overrides it.
+
+        ⚠ REFUSES rather than falling back to EOF when neither is available. A default of "append
+        somewhere reasonable" is how a write lands in the wrong place while every receipt reads
+        green — and the whole point of this op is that the misplacement is not expressible."""
+        fl = self._file(rel)
+        if at is not None:
+            pos = _find_anchor(fl.lines, at, what=f"roll_2f archive anchor ({rel})")
+            fl.lines[pos + 1:pos + 1] = [""] + block
+            return f"after {_show(at)}"
+        hits = [i for i, ln in enumerate(fl.lines) if ARCHIVE_BATCH_RE.match(ln)]
+        if not hits:
+            raise MoveError(
+                f"roll_2f: {rel} carries no `## Batch ` heading and no `archive_at` was given — "
+                f"REFUSING to guess a position. This file is newest-first, not append-only; an "
+                f"EOF append would bury the block under every older batch while the receipt read "
+                f"green. Roll the banner batch first (ritual step 2c), or pass `archive_at`.")
+        pos = hits[0]
+        fl.lines[pos + 1:pos + 1] = [""] + block
+        return f"under the newest batch, {fl.lines[pos][:48]!r}"
+
     # ---------------------------------------------------------------- guards + write
     def _guard(self, rel, fl):
         after_text = fl.text()
@@ -282,8 +421,11 @@ def run_ops(repo, ops, dry_run=False):
                     tx.replace(**o)
                 elif kind == "insert":
                     tx.insert(**o)
+                elif kind == "roll_2f":
+                    tx.roll_2f(**o)
                 else:
-                    raise MoveError(f"op {k}: unknown op {kind!r} (move|replace|insert)")
+                    raise MoveError(f"op {k}: unknown op {kind!r} "
+                                    f"(move|replace|insert|roll_2f)")
             except TypeError as e:
                 raise MoveError(f"op {k} ({kind}): bad/missing argument — {e}")
         tx.commit(dry_run=dry_run)
@@ -315,6 +457,25 @@ def _fixture_repo(td, **gm_kw):
     _write(td, "GOOD-MORNING.md", cg._gm_fixture(**gm_kw))
     _write(td, "_GM-ARCHIVE.md", "# _GM-ARCHIVE\n\n## Batch 2026-07-28 #21\n\nold entry\n")
     _write(td, "_LIVE-STATE.md", "# _LIVE-STATE\n\nls line 1\nls line 2\nls line 3\n")
+    os.makedirs(os.path.join(td, "notes"), exist_ok=True)
+    _write(td, "notes/_GAUGE-LOG.md", "# _GAUGE-LOG\n\n#### 2026-07-28 #32\nolder block\n")
+
+
+def _roll_repo(td, log_body=None):
+    """A GM carrying a step-2f-shaped stratum: a post-mortem half and a commit-state half."""
+    _fixture_repo(td)
+    _write(td, "GOOD-MORNING.md",
+           "# Good morning\n\n## strata\n"
+           "#### 2026-07-28 #33\n> pre-flight: fill 20%\n> post-mortem body\n"
+           "> **COMMIT STATE (stamped)**\n> two commits this window\n"
+           "## after\ntail\n")
+    if log_body is not None:
+        _write(td, "notes/_GAUGE-LOG.md", log_body)
+
+
+ROLL_OK = {"op": "roll_2f", "session": 33,
+           "pm_start": "#### 2026-07-28 #33", "pm_end": "> **COMMIT STATE",
+           "cs_start": "> **COMMIT STATE", "cs_end": "## after"}
 
 
 def _run(td, ops, dry_run=False):
@@ -335,6 +496,86 @@ def selftest():
     def bite(name, cond):
         if not cond:
             failures.append(name)
+
+    # ================================================================ ds-022: the 2f roll (#34)
+    # The green control leads. Everything below it is a refusal, and a suite of refusals with no
+    # passing case cannot tell "correctly strict" from "broken and strict about it".
+    with tempfile.TemporaryDirectory() as td:
+        _roll_repo(td)
+        rc, out, err = _run(td, [dict(ROLL_OK)])
+        gm, log, ar = (_read(td, "GOOD-MORNING.md"), _read(td, "notes/_GAUGE-LOG.md"),
+                       _read(td, "_GM-ARCHIVE.md"))
+        bite("roll_2f green: exit 0", rc == 0)
+        bite("roll_2f green: post-mortem left GM", "post-mortem body" not in gm)
+        bite("roll_2f green: post-mortem landed in the LOG", "post-mortem body" in log)
+        bite("roll_2f green: commit-state landed in the ARCHIVE",
+             "two commits this window" in ar and "two commits this window" not in log)
+        # ★ THE TWO FILES HAVE DIFFERENT CONTRACTS. The log is append-only/chronological; the
+        # archive is NEWEST-FIRST. This bite is the one that caught the first draft appending to
+        # both — it would have buried the block under every older batch, receipt still green.
+        bite("roll_2f: archive insert lands UNDER the newest batch, not at EOF",
+             ar.index("two commits this window") < ar.index("old entry"))
+        bite("roll_2f green: receipt names both halves",
+             "ROLL-2f #33" in out and "_GAUGE-LOG" in out and "_GM-ARCHIVE" in out)
+        # ★ APPEND-ONLY, the #27 defect. The new block must sit AFTER the existing one — this is
+        # the bite that would have caught a block prepended at line 7.
+        bite("roll_2f: appended AFTER the existing block, never prepended (#27)",
+             log.index("older block") < log.index("post-mortem body"))
+
+    # ---- a duplicate key silently splits one session's record across two places
+    with tempfile.TemporaryDirectory() as td:
+        _roll_repo(td, log_body="# log\n\n#### 2026-07-28 #33\nalready here\n")
+        rc, _o, err = _run(td, [dict(ROLL_OK)])
+        bite("roll_2f: duplicate session key refused", rc == 2 and "already carries a block" in err)
+
+    # ---- chronological: appending behind a later block breaks the file's own contract
+    with tempfile.TemporaryDirectory() as td:
+        _roll_repo(td, log_body="# log\n\n#### 2026-07-28 #40\nlater block\n")
+        rc, _o, err = _run(td, [dict(ROLL_OK)])
+        bite("roll_2f: out-of-order append refused", rc == 2 and "chronological" in err)
+
+    # ---- ★ THE RULING ITSELF: the split cannot be half-done. An empty half is the #26/#28/#29
+    # failure — the stratum went to the archive whole and the log got nothing.
+    with tempfile.TemporaryDirectory() as td:
+        _roll_repo(td)
+        bad = dict(ROLL_OK, cs_start="> **COMMIT STATE", cs_end="> **COMMIT STATE")
+        rc, _o, err = _run(td, [bad])
+        bite("roll_2f: an empty half is refused", rc == 2)
+        bite("roll_2f: nothing written when a half is empty — all-or-nothing holds",
+             "post-mortem body" in _read(td, "GOOD-MORNING.md"))
+
+    # ---- an unkeyed post-mortem is invisible to the continuity check that guards this op
+    with tempfile.TemporaryDirectory() as td:
+        _roll_repo(td)
+        bad = dict(ROLL_OK, pm_start="> pre-flight: fill 20%")
+        rc, _o, err = _run(td, [bad])
+        bite("roll_2f: unkeyed post-mortem refused", rc == 2 and "no `#### " in err)
+
+    # ---- the key and the argument must agree, or one of them describes another session
+    with tempfile.TemporaryDirectory() as td:
+        _roll_repo(td)
+        rc, _o, err = _run(td, [dict(ROLL_OK, session=31)])
+        bite("roll_2f: session argument disagreeing with the block key is refused",
+             rc == 2 and "disagree" in err)
+
+    # ---- an archive with no batch key: REFUSE, never fall back to EOF
+    with tempfile.TemporaryDirectory() as td:
+        _roll_repo(td)
+        _write(td, "_GM-ARCHIVE.md", "# _GM-ARCHIVE\n\nno batch headings here\n")
+        rc, _o, err = _run(td, [dict(ROLL_OK)])
+        bite("roll_2f: unanchored archive refused rather than EOF-appended",
+             rc == 2 and "REFUSING to guess" in err)
+        bite("roll_2f: nothing written when the archive position is unknown",
+             "post-mortem body" in _read(td, "GOOD-MORNING.md"))
+
+    # ---- and an explicit override is honoured
+    with tempfile.TemporaryDirectory() as td:
+        _roll_repo(td)
+        _write(td, "_GM-ARCHIVE.md", "# _GM-ARCHIVE\n\nMARKER\n\ntail\n")
+        rc, out, _e = _run(td, [dict(ROLL_OK, archive_at="MARKER")])
+        ar = _read(td, "_GM-ARCHIVE.md")
+        bite("roll_2f: archive_at override lands the block at the named anchor",
+             rc == 0 and ar.index("two commits this window") < ar.index("tail"))
 
     with tempfile.TemporaryDirectory() as td:
         # ---- green control: a real move (LS → archive) + an in-cap GM replace ----------
