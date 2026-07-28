@@ -842,3 +842,29 @@ retained for the orientation tier — data carries STATE, prose carries WHY). Se
 ("I'll go with your instinct") with the constraint **"memento working better before working on apollo
 again"** — firmness pending read-back. Lane: M-set window (unchanged, M5 mover load-bearing) → wrap
 instrumentation → O1′ schema+index → O2′ modular search → Apollo resumes. Detail: note §9.
+
+## 🌱 `_memento-index.json` — 1.1 MB generated artefact vs. reviewable diffs (raised Dave 2026-07-28 #28)
+
+provenance: local_7a4f5e6f-dea7-478b-8b7a-9e1b05d42f7f · 2026-07-28
+status: floated
+
+**Observed, not inferred:** GitHub Desktop refused to render the #28 diff ("too large to be
+displayed by default"). Measured cause: `knowledge/_memento-index.json` is **1,115,565 B / 1,941
+lines**, and **340 lines changed** across the two #28 commits. It embeds GM/LS/archive TEXT so the
+Memento door can search it (O2′ #25), so any wrap that edits `GOOD-MORNING.md` or `_LIVE-STATE.md`
+rewrites large parts of it.
+
+**Cost is ergonomic, not correctness.** The index is regenerated every build and determinism-checked
+(`_build_memento_index.py --check`), and it is NOT in the cold-start read chain. But it makes Desktop
+useless for eyeballing precisely the commits most worth eyeballing — the wraps.
+
+**⚠ The obvious fix breaks a standing convention.** Generated artefacts in this repo ARE committed —
+`canon/canon.css`, `showroom/`, `guidelines/_rules-index.json`. Gitignoring the index would trade a
+convention for diff readability, and would leave a fresh clone with no retrieval index until someone
+runs a build. **Options, none ruled:** (a) leave it, accept the diff cost · (b) gitignore + regenerate
+on build, and state the fresh-clone consequence · (c) split the embedded TEXT from the index STRUCTURE
+so only the small half is tracked · (d) `.gitattributes` `-diff` on the path, so git marks it binary
+and Desktop stops trying — the smallest change, keeps it tracked, loses nothing but the diff view.
+
+Author's lean: **(d)** — it is one line, changes no convention, and the diff it suppresses was never
+readable anyway. But this is a repo-convention call, so it is Dave's.
