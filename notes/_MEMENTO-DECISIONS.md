@@ -277,3 +277,14 @@ scope for spin-off sessions) + prose in §C·1 + the latent `[born · guards · 
 mechanical enforces "lane 2 blocked until lane 1 lands" — read discipline does. **First-class lanes
 are registered as a REQUIREMENT on O1′** (lane-as-record, `guards:` machine-checkable), whose
 design stays owed to its own window — schema NOT invented here.
+
+**FLOATED addendum (post-wrap, same window — Dave: *"less lets not forget this, thats the whole
+point"*, confirming the externalisation question he raised): lanes = the O1′ PILOT SCHEMA CASE.**
+Shape floated: lane-as-record (name · sequence · `guards:` · `until:` · receipts pointer), index +
+readable view GENERATED, the lane-blocking machine-checkable. **The ROUTING LINE stays EAGER** —
+one §C·1 line saying which lane is active, what's blocked, where the records live; externalising
+*that* would rebuild the cold-session-defaults-onto-Apollo failure the standing priority exists to
+prevent. Miss-side gates (reachability + fail-loud, ds-016 class) land WITH the externalisation,
+per the #19 guard — bodies thin only after the fetch path is gated. Three live instances to design
+against, not guess: lane 1 (Memento) · lane 2 (Apollo charts) · the dream-pass spin-off (LS §🔀,
+`--wrap --lane`). status: floated — promotion at the O1′ design window, Dave's alone.
