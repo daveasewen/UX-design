@@ -30,7 +30,10 @@ enumerate-and-skip); open forms split but never refuse on heading content:
     memento runbooks            — `## `/`### ` sections, slug ids (list in RUNBOOKS below;
                                   extending the set is an edit here, deliberate)
 
-Missing declared files REFUSE. A source class contributing ZERO records REFUSES.
+`notes/_GAUGE-LOG.md` has exactly TWO legitimate `#### ` forms — `#### YYYY-MM-DD #N`
+(a session) and `#### META — <title>` (a finding about the file itself). Any other
+`#### ` REFUSES. Missing declared files REFUSE. A source class contributing ZERO
+records REFUSES.
 Determinism: records sorted by (file, line); id collisions suffixed `-2`, `-3` in
 document order; `--check` regenerates and byte-compares (the ADR-0013 ruling-4 shape).
 
@@ -47,6 +50,16 @@ OUT_PATH = os.path.join(HERE, "_memento-index.json")
 sys.path.insert(0, HERE)
 
 GAUGE_BLOCK_RE = re.compile(r"^####\s+(\d{4}-\d{2}-\d{2})\s+#(\w+)\b")
+# `#### META — <title>`: the gauge log's SECOND legitimate block form — a finding ABOUT the
+# file rather than a session in it (#30's ds-022 audit wrote the first one, and the
+# session-only contract above refused it, taking `_build_all.py` red for two sessions
+# without either wrap noticing). Declared, not enumerated: exactly two forms are known
+# here and every other `#### ` still REFUSES (the dv-004 scope-blindness shape —
+# normalise once, fail loud on unknown, never grow a list of special cases).
+# ⚠ the separator REQUIRES surrounding whitespace: without it `#### META-ish heading`
+# matched and was silently accepted as a meta block (caught by the near-miss bite below,
+# not by reading the pattern — the standing "assume the probe is wrong toward green").
+GAUGE_META_RE = re.compile(r"^####\s+META\s+[—–-]\s+(.+?)\s*$")
 H2_RE = re.compile(r"^##\s")
 H4_RE = re.compile(r"^####\s")
 
@@ -123,23 +136,32 @@ def parse_gauge(records, errors):
     lines = read_lines(relpath, errors)
     if lines is None:
         return
-    marks = []
-    for i, ln in enumerate(lines):
-        m = GAUGE_BLOCK_RE.match(ln)
+    marks, sessions = [], 0        # marks = EVERY recognised `#### `, so a META block
+    for i, ln in enumerate(lines):  # terminates the session body above it instead of
+        m = GAUGE_BLOCK_RE.match(ln)  # being swallowed into it
         if m:
-            marks.append((i, m))
-        elif H4_RE.match(ln):
-            errors.append(f"{relpath}:{i + 1}: `#### ` block outside `#### YYYY-MM-DD #N` — "
-                          f"refuse: {ln.strip()[:70]}")
-    if not marks:
+            marks.append((i, "session", f"{m.group(1)}-{m.group(2)}"))
+            sessions += 1
+            continue
+        mm = GAUGE_META_RE.match(ln)
+        if mm:
+            marks.append((i, "meta", slug(mm.group(1))))
+            continue
+        if H4_RE.match(ln):
+            errors.append(f"{relpath}:{i + 1}: `#### ` block outside `#### YYYY-MM-DD #N` "
+                          f"or `#### META — <title>` — refuse: {ln.strip()[:70]}")
+    if not sessions:
+        # META blocks alone do not satisfy the contract: a gauge log with findings and no
+        # sessions is a broken corpus, not a quiet one.
         errors.append(f"{relpath}: zero gauge blocks — contract broken, refuse")
         return
     if marks[0][0] > 0:
         body = "\n".join(lines[: marks[0][0]])
         records.append(rec("gauge:HDR", "gauge-block", relpath, 1, head_of(body), body))
-    for n, (i, m) in enumerate(marks):
+    for n, (i, kind, key) in enumerate(marks):
         end = marks[n + 1][0] if n + 1 < len(marks) else len(lines)
-        records.append(rec(f"gauge:{m.group(1)}-{m.group(2)}", "gauge-block", relpath, i + 1,
+        rid = f"gauge:{key}" if kind == "session" else f"gauge:meta:{key}"
+        records.append(rec(rid, "gauge-block", relpath, i + 1,
                            lines[i].lstrip("# ").strip()[:140], "\n".join(lines[i:end])))
 
 
@@ -251,6 +273,35 @@ def selftest():
         read_lines = lambda rp, e: ["preamble only, no blocks"]  # noqa: E731
         parse_gauge(recs, errs)
         bite("gauge: zero blocks REFUSES", any("zero gauge blocks" in e for e in errs))
+        # ── the META form (the f2c083a regression: #30's ds-022 audit block took the
+        # build red for two sessions). THREE bites, deliberately paired — the refusal
+        # bite above survives a revert that deletes META support, so it cannot be the
+        # only evidence (the DV-D17 lesson: an absence-only test passes a full revert).
+        recs, errs = [], []
+        read_lines = lambda rp, e: ["#### 2026-07-27 #6", "body6",  # noqa: E731
+                                    "#### META — GAPS FOUND AT #30's AUDIT", "finding",
+                                    "#### 2026-07-27 #7", "body7"]
+        parse_gauge(recs, errs)
+        ids = [r["id"] for r in recs]
+        bite("gauge: META block ACCEPTED — no refusal", not errs)
+        bite("gauge: META block INDEXED under gauge:meta:*",
+             "gauge:meta:gaps-found-at-30-s-audit" in ids)
+        # structural: the META block must END the session body above it, not be swallowed
+        body6 = next((r["text"] for r in recs if r["id"] == "gauge:2026-07-27-6"), "")
+        bite("gauge: META terminates the session body above it",
+             "body6" in body6 and "GAPS FOUND" not in body6)
+        # and the closed contract still bites on a form that is NEITHER
+        recs, errs = [], []
+        read_lines = lambda rp, e: ["#### 2026-07-27 #6", "b", "#### META-ish heading"]  # noqa: E731
+        parse_gauge(recs, errs)
+        bite("gauge: near-miss META spelling STILL REFUSES",
+             any("outside" in e for e in errs))
+        # META alone is not a corpus — findings without sessions is broken, not quiet
+        recs, errs = [], []
+        read_lines = lambda rp, e: ["#### META — only a finding", "x"]  # noqa: E731
+        parse_gauge(recs, errs)
+        bite("gauge: META-only file REFUSES (no sessions)",
+             any("zero gauge blocks" in e for e in errs))
         # archives are OPEN by measured necessity (#25): a stray `## ` heading must NOT
         # refuse — it becomes its own record (moved content is arbitrary by nature)
         recs, errs = [], []

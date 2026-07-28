@@ -686,6 +686,64 @@ def section_usage_probe(repo):
     return issues, notes
 
 
+def index_freshness_check(repo):
+    """#32 — RETRIEVAL MUST NOT SERVE A PREVIOUS SESSION'S RECORD.
+
+    Measured at #32's opener: `_memento_search.py --fetch gm:LATEST` returned **#29's
+    banner** while the file carried #31's. Cause chain, all three links verified against
+    the repo rather than reasoned about:
+      1. the index regenerates in `_build_all.py` — but the WRAP rewrites GM/LS *after*
+         the session's last build, so retrieval is structurally one session behind;
+      2. the index could not regenerate at all: #30's ds-022 repair wrote a `#### ` block
+         in a form `_build_memento_index.py` refuses, so the step exited 1;
+      3. `_build_all.py` was therefore RED for two sessions and BOTH wraps committed over
+         it, because **the wrap gate does not run the build**.
+
+    So this check is not "is the index tidy" — it is the gate that closes link 3. It
+    rebuilds the records IN-PROCESS (no subprocess: the sandbox call-boundary lesson) and
+    byte-compares against what is on disk. Stale ⇒ FAIL with the one command that fixes it.
+
+    ⚠ Deliberately NOT an mtime comparison. mtimes are reset by any checkout and would
+    read GREEN on a file that had been reverted — the DV-D17 shape, where a test that can
+    only see absence passes a full revert. Content is the only honest witness."""
+    fails, notes = [], []
+    try:
+        sys.path.insert(0, HERE)
+        import _build_memento_index as bmi
+    except Exception as e:
+        fails.append(f"retrieval index: _build_memento_index.py unimportable ({e}) — the "
+                     f"freshness check cannot run; fix it, never close blind")
+        return fails, notes
+    try:
+        records, errors = bmi.build_records()
+    except Exception as e:
+        fails.append(f"retrieval index: rebuild raised ({e}) — retrieval is unverifiable "
+                     f"this wrap")
+        return fails, notes
+    if errors:
+        fails.append("retrieval index: the corpus REFUSES to index — %s%s · run "
+                     "`python3 knowledge/_build_memento_index.py` and fix the source. "
+                     "(This is exactly how the build went red at #30 and stayed red.)"
+                     % (errors[0], "" if len(errors) == 1 else f" (+{len(errors) - 1} more)"))
+        return fails, notes
+    if not os.path.exists(bmi.OUT_PATH):
+        fails.append("retrieval index: ABSENT — every `_memento_search.py` call this "
+                     "session was unbacked; run `python3 knowledge/_build_memento_index.py`")
+        return fails, notes
+    with open(bmi.OUT_PATH, encoding="utf-8") as f:
+        on_disk = f.read()
+    if bmi.render(records) != on_disk:
+        fails.append("retrieval index is STALE — it does not match GOOD-MORNING.md / "
+                     "_LIVE-STATE.md as they now stand, so `_memento_search.py` is serving "
+                     "a PREVIOUS session's record. Run "
+                     "`python3 knowledge/_build_memento_index.py` and stage the result "
+                     "(ritual step 2g). This is the #32 defect — do not close over it.")
+    else:
+        notes.append("retrieval index: FRESH — %d records byte-match the live corpus, so "
+                     "retrieval-first quotes this session's truth." % len(records))
+    return fails, notes
+
+
 def consult_receipt_probe(repo):
     """#25 (Dave, mid-flight — the KG forcing function, floated 2026-07-27, scoped into
     O2′ by him): the session stratum carries a `consult-receipts` line — the queries run
@@ -776,6 +834,9 @@ def wrap_checks(repo, today, lane=False):
                      "consult-receipt probe and the lane-routing check are all SKIPPED — same "
                      "reason. A lane session cannot be charged for a file it is ruled out of "
                      "writing.")
+        notes.append("LANE WRAP: the #32 retrieval-index freshness check is SKIPPED — a lane "
+                     "session does not write GM/LS, so it cannot stale the index. ⚠ If lanes "
+                     "ever gain a write path into either file, this exemption must go with it.")
     else:
         gm = os.path.join(repo, "GOOD-MORNING.md")
         if os.path.exists(gm):
@@ -796,6 +857,9 @@ def wrap_checks(repo, today, lane=False):
         i_, n_ = consult_receipt_probe(repo)    # #25 — KG forcing function, ADVISORY at birth
         (fails if CONSULT_RECEIPT_BLOCKING else warns).extend(i_)
         notes += n_
+        f_, n_ = index_freshness_check(repo)     # #32 — retrieval must not serve a stale record
+        fails += f_                              # BLOCKING at birth: the failure it catches
+        notes += n_                              # (build red, unnoticed) already cost 2 sessions
         f_, n_ = lane_routing_check(repo)       # O1′ #24 — eager line ↔ records, BLOCKING
         fails += f_
         notes += n_
@@ -1273,9 +1337,58 @@ def selftest_receipts():
     return failures
 
 
+def selftest_index_freshness():
+    """#32 — four bites, and the FIRST one is the load-bearing pair.
+
+    A check that only ever reports failure passes a revert that deletes it (the DV-D17
+    lesson, and the reason ds-019 was withdrawn). So bite 1 asserts the check goes GREEN
+    on a fresh index AND says so in its notes: delete the comparison and bite 1 dies with
+    it, not just bites 2-4."""
+    print("\n-- index freshness (#32) --")
+    failures = []
+
+    def bite(name, cond):
+        print(f"[{'OK' if cond else 'FAIL'}] index-freshness: {name}")
+        if not cond:
+            failures.append(f"index-freshness: {name}")
+
+    sys.path.insert(0, HERE)
+    import _build_memento_index as bmi
+    real_build, real_out = bmi.build_records, bmi.OUT_PATH
+    recs = [{"id": "x", "kind": "k", "file": "f", "line": 1, "head": "h", "text": "t"}]
+    try:
+        with tempfile.TemporaryDirectory() as td:
+            p = os.path.join(td, "idx.json")
+            bmi.OUT_PATH = p
+            bmi.build_records = lambda: (list(recs), [])
+            with open(p, "w", encoding="utf-8") as f:
+                f.write(bmi.render(recs))
+            f_, n_ = index_freshness_check(td)
+            bite("FRESH index passes and reports it (the detectable-when-present half)",
+                 not f_ and any("FRESH" in x for x in n_))
+            with open(p, "w", encoding="utf-8") as f:
+                f.write(bmi.render([dict(recs[0], head="a PREVIOUS session's head")]))
+            f_, _ = index_freshness_check(td)
+            bite("STALE index fails — the #32 defect itself",
+                 any("STALE" in x for x in f_))
+            os.remove(p)
+            f_, _ = index_freshness_check(td)
+            bite("ABSENT index fails", any("ABSENT" in x for x in f_))
+            with open(p, "w", encoding="utf-8") as f:
+                f.write(bmi.render(recs))
+            bmi.build_records = lambda: ([], ["notes/_GAUGE-LOG.md:219: `#### ` block outside"])
+            f_, _ = index_freshness_check(td)
+            bite("corpus REFUSAL fails and names the offending source (the #30 case)",
+                 any("REFUSES to index" in x and "_GAUGE-LOG" in x for x in f_))
+    finally:
+        bmi.build_records, bmi.OUT_PATH = real_build, real_out
+    return failures
+
+
 def selftest():
     failures = (selftest_preflight() + selftest_budgets() + selftest_growth()
-                + selftest_usage() + selftest_lanes() + selftest_receipts())
+                + selftest_usage() + selftest_lanes() + selftest_receipts()
+                + selftest_index_freshness())
     with tempfile.TemporaryDirectory() as td:
         os.makedirs(os.path.join(td, "notes"))
         os.makedirs(os.path.join(td, "_DECISION-HISTORY"))

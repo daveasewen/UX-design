@@ -4,6 +4,10 @@ provenance: local_e79e89ee-51cb-4a74-bf95-b7cf3e303af9 · 2026-07-27
 status: observed
 
 *Contract (runbook step 2f, GM-D5(a)): APPEND-ONLY · one block per session, chronological ·
+**exactly TWO `#### ` forms are legal and `_build_memento_index.py` REFUSES any other:**
+`#### YYYY-MM-DD #N` = a session · `#### META — <title>` = a finding about this file.
+(#30 wrote an audit block in neither form; the index builder refused, and because the wrap
+gate does not run the build, `_build_all.py` stayed RED across two wraps — repaired #32.) ·
 #### 2026-07-28 #27
 
 > **pre-flight:** fill ~30% + job 15–17% + wrap 8% = ~53% AMBER-projected · reserve 15% ring-fenced *(fill = 16.1% chain MEASURED 32,179 tk + ~7 harness inferred + read-render overhead; job priced 14–17% at the fenced scope after a mid-survey re-price from 20–25%, forked to Dave and re-ruled — both announced in-chat)*
@@ -216,7 +220,7 @@ step 2f (`113eefc`) yet wrote no stratum of its own; its gauge story lives only 
 > **consult-receipts #29:** "axis text collision cropping clipped descender SVG text render proof" → DV-D15 · DV-D14 · T-D12 · DV-D10 · T-D9 ; "text cropping collision render proof getBBox axis label" → lane:lane-2-apollo-charts · gm:DOFIRST · ls:LIVE
 > *(⚠ **the governing facts were NOT in either returned set** — ds-005 and `_validate_descender_clip.py`'s `text-box-edge` scope came from GREP. **Second instance of #28's gap**: the doors do not index rule TEXT by phrase, nor `docs/decisions/` — §C·4.)*
 
-#### GAPS FOUND AT #30's AUDIT — sessions with no block in this file (P1(b))
+#### META — GAPS FOUND AT #30's AUDIT — sessions with no block in this file (P1(b))
 
 > **#9 · #10 · #11 · #19** — absent, and absent WITHOUT a HOLE line, so nothing here records whether a
 > stratum was ever written. **Not inferred either way** — the dataset simply cannot say. #14 is the

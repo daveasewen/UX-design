@@ -25,7 +25,7 @@ wrong handoff we most want to avoid. Red cue line, ready to use:
 > **Title this chat: `<retrospective title>` — context is Red (~NN%). Running the capture ritual, then
 > open fresh with: `<forward title>`.**
 
-## The steps, in order (1, 1b, 2, 2c, 2d, 2e, 2f, 3, 4, 4b, 5, 5b)
+## The steps, in order (1, 1b, 2, 2c, 2d, 2e, 2f, 2g, 3, 4, 4b, 5, 5b)
 
 *Steps **2e** and **2f** were added 2026-07-27 (GM-D1…D9, `notes/_MEMENTO-DECISIONS.md` § GM
 growth-contracts ruling). They extend the 2c/2d pattern — cap + archive sibling + verbatim move +
@@ -205,6 +205,23 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
    ⚠️ **Existing entries are NEVER retro-tagged.** That would be a rewrite of ratified text, and verbatim
    discipline outranks tidiness. They retire instead via **one supervised audit pass at first enactment**,
    checked one by one against the table above, with receipts in the batch header.
+
+   **2g. Rebuild the retrieval index — LAST, after every GM/LS edit is final.**
+   *(Added 2026-07-28 #32. Order is the whole point: the index must be built from the files as they
+   will be COMMITTED, not as they were when the session's last `_build_all.py` ran.)*
+   ```
+   python3 knowledge/_build_memento_index.py     # then stage knowledge/_memento-index.json
+   ```
+   **Why this step exists, measured at #32's opener:** `_memento_search.py --fetch gm:LATEST` returned
+   **#29's banner** while the file carried #31's — because the index regenerates inside `_build_all.py`
+   and the wrap rewrites GM/LS *afterwards*. Retrieval was structurally one session behind, and
+   RETRIEVAL-FIRST is standing: the door was confidently quoting a superseded record.
+   ⚠️ **Deeper cause, and the reason this is a gated step and not advice:** the index could not rebuild at
+   all — #30's ds-022 repair wrote a `#### ` block in a form the builder refuses, so `_build_all.py` was
+   **RED for two sessions and both wraps committed over it, because the wrap gate does not run the build.**
+   `_capture_gate.py::index_freshness_check` now closes that: it rebuilds in-process and byte-compares,
+   **BLOCKING**. If it fires, run the command above — do not close over it.
+   *(It compares CONTENT, never mtimes: an mtime check reads green on a reverted file.)*
 
    **2f. Roll the stratum stack — GM keeps LATEST only.**
    *(Added 2026-07-27 — GM-D5(a).)*
