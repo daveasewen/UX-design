@@ -185,6 +185,24 @@ is currently over target, which a recipient would inherit.
 **What it feeds:** the state machine as a product, not a practice. Spin-off register, `_LIVE-STATE`
 § SPIN-OFF / GENERALISABLE CANDIDATES.
 
+## ★ Dream-pass cadence — "a sleep once a week with occasional naps" (Dave, 2026-07-28 #22 post-wrap)
+**status: FLOATED — posture confirmed, schedule deliberately UNCHANGED.** Dave, verbatim, closing #22:
+*"so a sleep once a week with occasional naps, sound good for now"* — confirming the agent's read that
+the bottleneck is his ruling time + enactment beats (dream work jumped the lane queue twice while
+lane-1 step 2 waited), not dream supply (yield holds: 8 → 5 → 6 proposals across three passes in
+three days — the corpus is not over-dreamed).
+**What.** Weekly Sun 07:10 stays the FLOOR (A-D2 unchanged — M12's unattended proof depends on the
+schedule firing untouched). **Manual "naps" licensed:** fire `run dream pass` (S-D4, one line) when
+the unread transcript pile approaches ~15 — the lane's own lookback unit — or ahead of a targeted
+hunt (pass 3 evidence: half its proposals came off hunt lines Dave added that same morning; the
+steering works, which argues targeted manual fires over a shorter fixed interval).
+**Re-price trigger:** AFTER M12's Sun 08-02 proof AND lane-1 landing — lane 1 should cut drift
+generation, so a cadence priced today prices a corpus about to change. Judge on yield-per-pass data,
+not feel. A floated item is not authority (ds-017): any actual schedule change re-rules A-D2.
+**Feeds:** the Memento lane, steady-state · **Ledger context:** `notes/_MEMENTO-DECISIONS.md` A-D2
+(weekly) + S-D4 (invocation) · **Source:** #22 post-wrap chat, Dave verbatim ·
+provenance: session #22 · 2026-07-28 · status: floated
+
 ## ★ Multi-thread "GOOD-MORNING" — a handoff mechanism for parallel long-running threads (Dave, 2026-07-24)
 **The problem Dave named:** two async threads now run in parallel ACROSS sessions — the chart **FAN-OUT**
 (wave; GM §C·1a + `notes/_briefs/2026-07-24-chart-wave-lane{1,2,3}`) and the **CONTROLS SYSTEM** (seg atom +
