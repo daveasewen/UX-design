@@ -150,6 +150,19 @@ STEPS = [
     # build so it cannot rot; the selftest is advisory until the tool has earned trust.
     ("consult index — problem-domain query surface", "_build_consult_index.py"),
     ("consult tool selftest (advisory)", "_consult.py", ["--selftest"]),
+    # O2′ #25 (ruled Dave 2026-07-28, option-select ×3 all recommended): ONE retrieval
+    # spine (_search_core.py), N doors — _consult.py (DS) + _memento_search.py (Memento).
+    # Two-stage refs→fetch; the memento index regenerates every build so it cannot rot;
+    # closed contracts REFUSE unknown structure (ds-016 class). The consult-receipt probe
+    # (KG forcing function, ADVISORY) lives in _capture_gate.py and imports the core.
+    ("search core selftest — two-stage engine + receipt format (O2′ #25)",
+     "_search_core.py", ["--selftest"]),
+    ("memento index — the Memento door's corpus (O2′ #25)", "_build_memento_index.py"),
+    ("memento index determinism check (O2′ #25)", "_build_memento_index.py", ["--check"]),
+    ("memento index selftest — contract refusals + determinism (O2′ #25)",
+     "_build_memento_index.py", ["--selftest"]),
+    ("memento search selftest — known-answer retrieval + fetch refusal (O2′ #25)",
+     "_memento_search.py", ["--selftest"]),
     # ADR-0016 P1/P3 (2026-07-27, Dave ruled it a BUILD): the register asks the question no
     # other step asks — not "is the corpus self-consistent?" but "is this RULING LIVE in the
     # artefact Dave looks at?" Regenerates every build so it cannot rot. ADVISORY on purpose:

@@ -1,16 +1,25 @@
 #!/usr/bin/env python3
-"""_consult.py — "what governs X?", answered in one step.
+"""_consult.py — "what governs X?", answered in one step. THE DS-DECISIONS DOOR.
 
 Part 2 of the consult read-side tool (reviews/CONSOLIDATION-AUDIT-2026-07-18.html §3).
-Reads the generated knowledge/_consult-index.json (built by _build_consult_index.py) plus
-the hand-authored knowledge/_consult-lexicon.json, and returns the ranked records that
-govern a plain-English query.
+Since O2′ (#25, ruled Dave 2026-07-28) this file is a THIN DOOR over the shared engine
+`knowledge/_search_core.py` — matching, ranking, honest denominators and the two-stage
+fetch contract live THERE (one copy; the Memento door `_memento_search.py` imports the
+same spine). This door owns: the DS corpus (knowledge/_consult-index.json, built by
+_build_consult_index.py), the six output groups, and the enforcement column.
 
 Usage:
-  python3 knowledge/_consult.py "amber indicator on white"     # ranked answer, one screen
-  python3 knowledge/_consult.py "amber indicator on white" --all    # everything that matched
-  python3 knowledge/_consult.py "amber indicator on white" --json  # machine-readable
+  python3 knowledge/_consult.py "amber indicator on white"          # stage 1: ranked refs
+  python3 knowledge/_consult.py "amber indicator on white" --all    # no per-group cap
+  python3 knowledge/_consult.py "amber indicator on white" --json   # machine-readable
+  python3 knowledge/_consult.py --fetch R-D3                        # stage 2: full record verbatim
   python3 knowledge/_consult.py --selftest                          # regression check
+
+Two-stage (O2′): stage 1 shows each record's head (first 140 chars) as a REF — that is a
+pointer, not the record; stage 2 `--fetch <id>` prints the indexed text IN FULL. The old
+single-stage output truncated at 140 chars with no way back — the KG-float complaint;
+fetch retires it. Group headers now quote the true matched TOTAL, never the cap
+(the §C·4 "5/5 shown" wart, closed here).
 
 Matching = keyword over text + a small hand-authored synonym lexicon
 (knowledge/_consult-lexicon.json) that grows one line each time a real query misses —
@@ -24,18 +33,17 @@ text/glob plausibly covers the rule's source file, else "asserted only — no ga
 
 Advisory tier (AGENTS principle 5): this tool does not gate anything today. The pre-flight
 protocol (run a consult before designing; paste the receipt into the review sheet/meta) is
-documented in knowledge/_RUNBOOK-consult.md.
+documented in knowledge/_RUNBOOK-consult.md — and since #25 the wrap stratum carries a
+`consult-receipts` line (ADVISORY probe, format in _search_core.py).
 """
 import json, os, re, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import _search_core as core
+
 INDEX_PATH = os.path.join(HERE, "_consult-index.json")
 LEXICON_PATH = os.path.join(HERE, "_consult-lexicon.json")
-
-STOPWORDS = {
-    "the", "and", "for", "with", "on", "of", "a", "an", "in", "to", "is", "are",
-    "it", "its", "be", "as", "at", "by", "or", "this", "that", "we", "our",
-}
 
 KIND_ORDER = ["ruling", "rule-blocking", "rule-advisory", "assertion", "open-item", "gate"]
 KIND_LABEL = {
@@ -68,56 +76,14 @@ def load_json(path):
         return json.load(f)
 
 
-def tokenize(s):
-    return [t for t in re.split(r"[^a-z0-9]+", s.lower()) if len(t) >= 3 and t not in STOPWORDS]
-
-
-def expand_query(raw_query, lexicon):
-    """Original query tokens, plus lexicon-expanded tokens. Returns (original_set, expanded_only_set)."""
-    original = set(tokenize(raw_query))
-    expanded = set()
-    lc = raw_query.lower()
-    for key, val in lexicon.get("synonyms", {}).items():
-        if key in lc:
-            expanded |= set(tokenize(val))
-    expanded -= original
-    return original, expanded
-
-
-def stem_candidates(token):
-    """A few cheap candidate substrings for a query token, so 'fonts' still finds 'font-size'
-    and 'portability' still finds 'portable'. Not real stemming — substring search is."""
-    cands = {token}
-    if token.endswith("ing") and len(token) > 5:
-        cands.add(token[:-3])
-    if token.endswith("es") and len(token) > 4:
-        cands.add(token[:-2])
-    if token.endswith("s") and len(token) > 3:
-        cands.add(token[:-1])
-    if len(token) > 6:
-        cands.add(token[:6])
-    return {c for c in cands if len(c) >= 3}
-
-
-def record_blob(r):
-    return " ".join(str(r.get(k, "")) for k in ("id", "kind", "file", "text", "status")).lower()
-
-
-def score_record(record, original_tokens, expanded_tokens):
-    blob = record_blob(record)
-    matched_original = 0
-    for t in original_tokens:
-        if any(c in blob for c in stem_candidates(t)):
-            matched_original += 1
-    matched_expanded = 0
-    for t in expanded_tokens:
-        if any(c in blob for c in stem_candidates(t)):
-            matched_expanded += 1
-    return matched_original * 2 + matched_expanded
-
-
-def rule_bucket(rule):
-    return "rule-blocking" if rule.get("status") == "BLOCKING" else "rule-advisory"
+def bucket_for(record):
+    if record["kind"] == "rule":
+        return "rule-blocking" if record.get("status") == "BLOCKING" else "rule-advisory"
+    if record["kind"] in KIND_ORDER:
+        return record["kind"]
+    # adr / defect records are indexed (future consumers, e.g. a chat surface) but
+    # are not one of the six groups this CLI's output is specified to show.
+    return None
 
 
 # Generic enough that a shared occurrence says nothing about topical overlap (every gate's
@@ -174,34 +140,19 @@ def enforcement_for_rule(rule, gates):
 
 
 def search(query, index, lexicon, all_results=False):
-    original, expanded = expand_query(query, lexicon)
     gates = [r for r in index["records"] if r["kind"] == "gate"]
-    buckets = {k: [] for k in KIND_ORDER}
-    for r in index["records"]:
-        if r["kind"] == "rule":
-            bucket = rule_bucket(r)
-        elif r["kind"] in buckets:
-            bucket = r["kind"]
-        else:
-            # adr / defect records are indexed (future consumers, e.g. a chat surface) but
-            # are not one of the six groups this CLI's output is specified to show.
-            continue
-        s = score_record(r, original, expanded)
-        if s <= 0:
-            continue
-        entry = dict(r)
-        entry["_score"] = s
-        if r["kind"] == "rule":
-            entry["_enforcement"] = enforcement_for_rule(r, gates)
-        buckets[bucket].append(entry)
-    for k in buckets:
-        buckets[k].sort(key=lambda e: (-e["_score"], len(e.get("text", "")), e["id"]))
-        if not all_results:
-            buckets[k] = buckets[k][: DEFAULT_CAP[k]]
-    return buckets, original, expanded
+
+    def decorate(entry):
+        if entry["kind"] == "rule":
+            entry["_enforcement"] = enforcement_for_rule(entry, gates)
+
+    buckets, totals, original, expanded = core.search(
+        index["records"], query, lexicon, bucket_for, DEFAULT_CAP,
+        all_results=all_results, decorate=decorate)
+    return buckets, totals, original, expanded
 
 
-def print_human(buckets, query, original, expanded, all_results):
+def print_human(buckets, totals, query, expanded, all_results):
     print(f'consult: "{query}"')
     if expanded:
         print(f"  lexicon expanded to: {', '.join(sorted(expanded))}")
@@ -211,22 +162,35 @@ def print_human(buckets, query, original, expanded, all_results):
               " if this is a real miss.")
         return
     for kind in KIND_ORDER:
-        rows = buckets[kind]
+        rows = buckets.get(kind, [])
         if not rows:
             continue
-        print(f"\n{KIND_LABEL[kind]} ({len(rows)}{'' if all_results else f'/{DEFAULT_CAP[kind]} shown, --all for more'}):")
+        print("\n" + core.group_header(KIND_LABEL[kind], len(rows), totals.get(kind, len(rows)),
+                                       all_results))
         for r in rows:
             head = f"  [{r['id']}] ({r.get('status', 'unknown')}) {r['text'][:140]}"
             print(head)
             if kind in ("rule-blocking", "rule-advisory"):
                 print(f"      -> {r['_enforcement']}")
-            print(f"      source: {r['file']}")
+            print(f"      source: {r['file']}  (stage 2: --fetch {r['id']})")
+
+
+def print_fetch(index, record_id):
+    record, err = core.fetch(index["records"], record_id)
+    if err:
+        print(err)
+        return 1
+    print(f"[{record['id']}] kind={record['kind']} status={record.get('status', 'unknown')}")
+    print(f"source: {record['file']}")
+    print()
+    print(record.get("text", "").rstrip())
+    return 0
 
 
 def build_json(buckets):
     out = {}
     for kind in KIND_ORDER:
-        out[KIND_LABEL[kind]] = buckets[kind]
+        out[KIND_LABEL[kind]] = buckets.get(kind, [])
     return out
 
 
@@ -241,7 +205,7 @@ SELFTEST_CASES = [
 def run_selftest(index, lexicon):
     ok = True
     for query, expect_ids in SELFTEST_CASES:
-        buckets, _, _ = search(query, index, lexicon, all_results=True)
+        buckets, _, _, _ = search(query, index, lexicon, all_results=True)
         found = set()
         for rows in buckets.values():
             found |= {r["id"] for r in rows}
@@ -251,6 +215,15 @@ def run_selftest(index, lexicon):
               f"missing {sorted(missing) if missing else 'none'}")
         if missing:
             ok = False
+    # O2′ bites: the two-stage fetch, both directions
+    record, err = core.fetch(index["records"], "R-D3")
+    hit = record is not None and err is None and record.get("text")
+    print(f"[{'OK' if hit else 'FAIL'}] --fetch R-D3 returns the full record (stage 2 hit)")
+    ok = ok and bool(hit)
+    record, err = core.fetch(index["records"], "NO-SUCH-ID-XYZ")
+    refused = record is None and err and "REFUSING" in err
+    print(f"[{'OK' if refused else 'FAIL'}] --fetch unknown id REFUSES (fail-loud)")
+    ok = ok and bool(refused)
     if ok:
         print("selftest OK — all regression queries surfaced their known-answer record(s).")
     else:
@@ -261,11 +234,18 @@ def run_selftest(index, lexicon):
 
 def main():
     args = sys.argv[1:]
-    index = load_json(INDEX_PATH)
+    index = core.load_records_or_refuse(INDEX_PATH, "consult (DS door)")
     lexicon = load_json(LEXICON_PATH)
 
     if args and args[0] == "--selftest":
         return run_selftest(index, lexicon)
+
+    if "--fetch" in args:
+        i = args.index("--fetch")
+        if i + 1 >= len(args):
+            print("--fetch needs a record id. Usage: python3 knowledge/_consult.py --fetch <id>")
+            return 1
+        return print_fetch(index, args[i + 1])
 
     if not args:
         print(__doc__)
@@ -275,22 +255,24 @@ def main():
     all_results = "--all" in args
     query_parts = [a for a in args if not a.startswith("--")]
     if not query_parts:
-        print("no query given. Usage: python3 knowledge/_consult.py \"<query>\" [--all] [--json]")
+        print("no query given. Usage: python3 knowledge/_consult.py \"<query>\" "
+              "[--all] [--json] | --fetch <id>")
         return 1
     query = " ".join(query_parts)
 
-    buckets, original, expanded = search(query, index, lexicon, all_results=all_results)
+    buckets, totals, original, expanded = search(query, index, lexicon, all_results=all_results)
 
     if as_json:
         payload = {
             "query": query,
             "lexicon_expansion": sorted(expanded),
+            "totals": {KIND_LABEL[k]: v for k, v in totals.items()},
             "results": build_json(buckets),
         }
         print(json.dumps(payload, indent=2, ensure_ascii=False))
         return 0
 
-    print_human(buckets, query, original, expanded, all_results)
+    print_human(buckets, totals, query, expanded, all_results)
     return 0
 
 

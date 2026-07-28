@@ -125,6 +125,13 @@ SECTION_REQUIRED = ("DO-FIRST", "§A", "§C")
 # validation live in _gm_usage.py — the ONLY copy.
 SECTION_USAGE_BLOCKING = True
 
+# #25 (Dave, mid-flight 2026-07-28): the KG forcing function — the wrap wants consult
+# TESTIMONY (retrieval receipts, or the honest negative). ADVISORY at birth (the M10/#23
+# pattern); promotion to BLOCKING is Dave's word, on the probe's record. Flag + its
+# selftest pin move only as a pair. Line format + validation live in _search_core.py —
+# the ONLY copy (the mover≠gate lesson: imported, never re-implemented).
+CONSULT_RECEIPT_BLOCKING = False
+
 # 2f: the session-strata stack. It is excluded from §C's cap by D6(a) — which is only checkable if
 # it is DELIMITED, so 2f requires the marker below. ⚠ Excluding a region from a cap without giving
 # it a rule of its own is precisely how "splitting buys headroom"; the region's rule is D5(a) —
@@ -679,6 +686,52 @@ def section_usage_probe(repo):
     return issues, notes
 
 
+def consult_receipt_probe(repo):
+    """#25 (Dave, mid-flight — the KG forcing function, floated 2026-07-27, scoped into
+    O2′ by him): the session stratum carries a `consult-receipts` line — the queries run
+    this window with their retrieved ids (`"query" → id · id ; …`), or the honest
+    negative (`none — <why>`). FORM-checked only (the section-usage / pre-flight-stamp
+    precedent — whether the queries were actually run stays the session's honesty).
+    Format + validation IMPORTED from _search_core.py — the only copy."""
+    issues, notes = [], []
+    gm = os.path.join(repo, "GOOD-MORNING.md")
+    if not os.path.exists(gm):
+        return issues, notes
+    with open(gm, encoding="utf-8") as f:
+        lines = f.read().splitlines()
+    idx = next((i for i, ln in enumerate(lines) if STRATA_HEAD_RE.match(ln)), None)
+    if idx is None:
+        notes.append("consult-receipts: strata marker absent — probe skipped (honest skip, "
+                     "not a pass)")
+        return issues, notes
+    try:
+        sys.path.insert(0, HERE)
+        import _search_core
+    except Exception as e:
+        issues.append(f"consult-receipts: _search_core.py unimportable ({e}) — probe cannot "
+                      f"run; fix it, never close blind")
+        return issues, notes
+    hits = []
+    for i, ln in enumerate(lines[idx:], start=idx):
+        m = _search_core.RECEIPT_LINE_RE.match(ln)
+        if m:
+            hits.append((i, m))
+    if not hits:
+        issues.append("consult-receipts: stratum carries NO consult-receipts line — the KG "
+                      "forcing function (#25) wants testimony: `> **consult-receipts #N:** "
+                      "\"query\" → id · id` or `none — <why>`")
+    for i, m in hits:
+        for e in _search_core.validate_receipt_payload(m.group(2)):
+            issues.append(f"consult-receipts (line {i + 1}): {e}")
+    if hits and not issues:
+        notes.append("consult-receipts: stratum carries well-formed testimony (FORM only — "
+                     "whether the queries were run is not observable here).")
+    notes.append("consult-receipts tier: %s (read from CONSULT_RECEIPT_BLOCKING — #25 born "
+                 "ADVISORY; promotion is Dave's word, flag + pin move as a pair)."
+                 % ("BLOCKING" if CONSULT_RECEIPT_BLOCKING else "ADVISORY"))
+    return issues, notes
+
+
 def lane_routing_check(repo):
     """O1′ #24 (ruled Dave, option-select ×4 all recommended): the eager GM §C·1 ROUTING
     line must AGREE with knowledge/_lanes.json — drift between the eager line and the
@@ -719,9 +772,10 @@ def wrap_checks(repo, today, lane=False):
         notes.append("LANE WRAP: pre-flight-stamp check SKIPPED too — the stamp lives in "
                      "GOOD-MORNING.md, which lane sessions do not write.")
         notes.append("LANE WRAP: section growth contracts (2e/2f), the banner/§A/chain budgets, "
-                     "the retirement-receipts proxy, the section-usage probe and the "
-                     "lane-routing check are all SKIPPED — same reason. A lane session cannot "
-                     "be charged for a file it is ruled out of writing.")
+                     "the retirement-receipts proxy, the section-usage probe, the "
+                     "consult-receipt probe and the lane-routing check are all SKIPPED — same "
+                     "reason. A lane session cannot be charged for a file it is ruled out of "
+                     "writing.")
     else:
         gm = os.path.join(repo, "GOOD-MORNING.md")
         if os.path.exists(gm):
@@ -738,6 +792,9 @@ def wrap_checks(repo, today, lane=False):
         notes += n_
         i_, n_ = section_usage_probe(repo)      # #23 built · #24 BLOCKING (tier = this line)
         (fails if SECTION_USAGE_BLOCKING else warns).extend(i_)
+        notes += n_
+        i_, n_ = consult_receipt_probe(repo)    # #25 — KG forcing function, ADVISORY at birth
+        (fails if CONSULT_RECEIPT_BLOCKING else warns).extend(i_)
         notes += n_
         f_, n_ = lane_routing_check(repo)       # O1′ #24 — eager line ↔ records, BLOCKING
         fails += f_
@@ -1178,9 +1235,47 @@ def selftest_lanes():
     return failures
 
 
+def selftest_receipts():
+    """#25: the consult-receipt probe's failure classes bite, and the tier pin holds."""
+    failures = []
+    if CONSULT_RECEIPT_BLOCKING is not False:
+        failures.append("receipts: CONSULT_RECEIPT_BLOCKING pin — expected False (ADVISORY "
+                        "at birth, #25); a flip must land WITH its ruled promotion and "
+                        "update this pin in the same edit (the M10 pattern)")
+    try:
+        sys.path.insert(0, HERE)
+        import _search_core
+    except Exception as e:
+        return failures + [f"receipts: _search_core unimportable in selftest ({e})"]
+    if _search_core.validate_receipt_payload(
+            '"two lanes" → ledger:two-lanes · lane:lane-1-memento'):
+        failures.append("receipts: known-good payload refused — validator broken")
+    if not _search_core.validate_receipt_payload("none"):
+        failures.append("receipts: bare `none` passed — the honest-negative bite is dead")
+    with tempfile.TemporaryDirectory() as td:
+        gm = os.path.join(td, "GOOD-MORNING.md")
+        base = "# GM\n### ⏱ SESSION STRATA\n\n#### 2026-07-28 #25\n"
+        with open(gm, "w", encoding="utf-8") as f:
+            f.write(base)
+        i_, _ = consult_receipt_probe(td)
+        if not any("NO consult-receipts" in x for x in i_):
+            failures.append("receipts: missing stratum line did not raise — probe dead")
+        with open(gm, "w", encoding="utf-8") as f:
+            f.write(base + "> **consult-receipts #25:** none — selftest fixture window\n")
+        i_, _ = consult_receipt_probe(td)
+        if i_:
+            failures.append(f"receipts: well-formed honest negative raised: {i_}")
+        with open(gm, "w", encoding="utf-8") as f:
+            f.write(base + "> **consult-receipts #25:** \"query with no ids\" → \n")
+        i_, _ = consult_receipt_probe(td)
+        if not i_:
+            failures.append("receipts: malformed payload (empty ids) passed — bite dead")
+    return failures
+
+
 def selftest():
     failures = (selftest_preflight() + selftest_budgets() + selftest_growth()
-                + selftest_usage() + selftest_lanes())
+                + selftest_usage() + selftest_lanes() + selftest_receipts())
     with tempfile.TemporaryDirectory() as td:
         os.makedirs(os.path.join(td, "notes"))
         os.makedirs(os.path.join(td, "_DECISION-HISTORY"))

@@ -87,3 +87,33 @@ not fail the full build (promotion to blocking follows the same path as the tool
 `_build_consult_index.py` runs as a generator step in `_build_all.py` (rebuilds the index
 every time). `_consult.py --selftest` runs immediately after as an advisory step (reports,
 does not abort the build). See `_build_all.py`'s `STEPS` list for the exact position.
+
+## O2′ (#25, ruled 2026-07-28) — the spine split: ONE engine, TWO doors
+
+Dave's direction (ledger `notes/_MEMENTO-DECISIONS.md` § Memento-before-Apollo, enacted #25,
+option-select ×3 all recommended): the search functionality is MODULAR — a core engine plus
+corpus doors, two-stage retrieval throughout.
+
+- `knowledge/_search_core.py` — the engine: matching, ranking, honest denominators, the
+  two-stage fetch contract, and the `consult-receipts` line format (one copy; the wrap
+  probe imports it). `--selftest` bites.
+- `knowledge/_consult.py` — the DS door (this runbook's original subject). Interface
+  unchanged, plus **`--fetch <id>`** (stage 2: the full record verbatim — retires the
+  140-char truncation) and honest group headers (`5 of 41 shown`, never the cap as the
+  denominator).
+- `knowledge/_memento_search.py` — the Memento door: GM/LS sections · both archives ·
+  the Memento ledger · gauge blocks · briefs · dream proposals · the memento runbooks ·
+  lane records. Index `_memento-index.json` via `_build_memento_index.py` (regenerates
+  every build; closed contracts REFUSE unknown structure, ds-016 class; archives are
+  deliberately OPEN-form — moved content carries arbitrary headings, measured #25).
+  Same lexicon file as the DS door — one curation point.
+
+**Two-stage protocol (the ruled shape):** stage 1 returns REFS (ids + one-line heads +
+file:line) — cheap to read; stage 2 `--fetch <id>` prints the record VERBATIM. Spend
+tokens on the records you need, not on the corpus.
+
+**Consult receipts (the KG forcing function, #25):** the wrap stratum carries a
+`consult-receipts` line — the window's queries with their retrieved ids, or the honest
+negative `none — <why>`. FORM-checked by `_capture_gate.py::consult_receipt_probe`,
+ADVISORY at birth; promotion to BLOCKING is Dave's word. Ritual runbook step 2f has the
+one-line contract.

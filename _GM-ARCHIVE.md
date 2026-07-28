@@ -2,6 +2,31 @@
 
 ---
 
+## Batch 2026-07-28 #25 — rolled by the O2′-lands wrap (Fable solo, Dave live) — moves via `knowledge/_gm_move.py`, receipts on the wrap's stdout. Verbatim, newest-first.
+
+### Rolled banner — #23, verbatim (2c)
+> ## ★ PRIOR — 2026-07-28 (Tue **midday #23**, FABLE solo, Dave live — ★★ **LANE 1 STEP 2 ENACTED: section-usage instrumentation — `_gm_usage.py` + ADVISORY wrap probe, build `[64/64]` exit 0** · ★ **first fire behaved as ruled; first payoff-map datapoint in hand** · 🟡 ~58% est at wrap): **"The wrap now testifies to what it read, and prices what the testimony covers."**
+> - **★★ LANDED, with evidence.** `knowledge/_gm_usage.py` — vocabulary = the ONLY copy (GM 13 · LS 10 sections; unregistered headings REFUSE, never enumerate-and-skip; `measure_tokens` IMPORTED from the gate, heal/fallback never re-implemented; 17 selftest bites, every check proves it can FAIL) · `_capture_gate.py::section_usage_probe` in wrap mode — tier routed at ONE call-site line by `SECTION_USAGE_BLOCKING=False`, lane wraps skip it, said in the lane note · build step `[64/64]` exit 0 · runbook 2f one-line pointer. The lines live in the session stratum and roll to `_GAUGE-LOG.md` via the existing 2f — zero new plumbing. Receipts: ledger § ★ #23 · the commit below · 2026-07-28.
+> - **★ RULED (Dave, option-select ×3 — all recommended picks; read-back given in-chat before build):** probe ADVISORY with a NAMED trigger (promotion = O1′ start; flip `SECTION_USAGE_BLOCKING` + its selftest pin, one pair — M10's pattern) · U/R/C 3-state (the JIT premise is about CITED, not read) · code-measured sizes ride along. Testimony is FORM-checked only — whether a C is honest is discipline, not enforcement (the pre-flight-stamp precedent). Ledger § ★ #23 · 2026-07-28.
+> - **★ FOUND (measured).** Chain 31,094 tk at the opener — rose again (30,710 → 31,094). First sizes line: **LS LIVE 4,928 + OPEN 4,361 tk = 9.3K of LS's 16.8K is standing reference** · GM DOFIRST 2,120 · §A 4,208 (exempt by ruling) — LS-trim-vs-defer (P4b) now has its instrument and its first datapoint. The probe's first live fire (on #22's pre-enactment stratum) = WARN, exactly as ruled.
+> - **⚠ WHAT THE AUTHOR FLAGS.** The sizes line measures FILE cost, not READ cost — this session's LS Read rendered ~28K tk against the 16.8K file (pagination + line-number overhead); the read-side overhead stays INFERRED and is said so. The mover charged §C at 151/150 WARN on every projected GM write — announced, nothing displaced unprompted. Panel FRESH (Tue 11:18: All 0.85× · Fable 0.96× pro-rata — Fable nearly on pace, MORE-WINDOWS holds for All).
+> - **⬛ OPEN, Dave's:** O1′ LS schema next (lane 1 step 3 — its start ARMS the probe's promotion) · M12's UNATTENDED fire Sun 08-02 07:10 · §C·2's 15 rulings + dataviz sign-off (PARKED, unchanged) · calm-banner verdict · LS-trim-vs-defer (P4b — let the instrument accumulate data first).
+>
+>
+
+### DO-FIRST retirement (2e) — item 0 pre-#25, verbatim
+> **0. ★ NEXT WINDOW: LANE 1 FINAL STEP — O2′ modular memento-search + gates** — O1′ ✅ ENACTED #24
+>    (lanes-as-records pilot RULED ×4 + BUILT + routing check BLOCKING; ledger § ★ #24 — do NOT
+>    re-prove, 19+3 bites stand). Landing O2′ = lane 1 LANDS ⇒ update `_lanes.json` states, regen the
+>    view, update the ⛔ ROUTING line — the wrap gate refuses a mismatch. M12: Sun 08-02 07:10,
+>    nobody watches it; that is the point. [born #17 · amended #24 · guards: ⛔ ROUTING + records · until: lane 1 lands]
+
+### Commit-state — #24 (2f), verbatim
+> **COMMIT STATE (refreshed 2026-07-28 ~12:25 BST from `date`).**
+> **Context gauge at authoring: 🟡 ~57% (ESTIMATE) — Amber ⇒ re-verify claims against receipts before trusting.**
+> ONE commit this window: `knowledge/_lanes.json` (NEW — 3 lane records, schema in-file) · `knowledge/_gen_lanes.py` (NEW — validate/generate/--check, 18 bites) · `knowledge/_capture_gate.py` (promotion pair FLIPPED + `lane_routing_check` BLOCKING + `selftest_lanes`) · `knowledge/_gm_usage.py` (LS vocab + `LANES`; fixtures; docstring) · `knowledge/_build_all.py` (`[67/67]` — three lane steps) · `_LIVE-STATE.md` (§🛤 LANES generated section · #24 delta · #21 rolled) + `_LIVE-STATE-ARCHIVE.md` · `GOOD-MORNING.md` (#24 banner · STATE · guide · names · item 0 · ⛔ ROUTING line · strata) + `_GM-ARCHIVE.md` (Batch 2026-07-28 #24: ⛔ paragraph + #22 banner + old item 0 + #23 commit-state, all verbatim) · `notes/_MEMENTO-DECISIONS.md` (§ ★ #24) · `notes/_GAUGE-LOG.md` (#23 block in) + memory — all moves VIA THE MOVER (receipts on this window's stdout). Build `[67/67]` exit 0 · wrap gate at close (probe + M9 + lane-routing all BLOCKING) · STAND-002 green. Dave pushes via GitHub Desktop, whole stack, Desktop closed.
+
+
 ## Batch 2026-07-28 #24 — mid-session move by the O1′ window (Fable solo, Dave live): §C·1's ⛔ STANDING PRIORITY paragraph externalised to lane records (pick 4 of the option-select ×4) — the eager ROUTING line replaces it; records `knowledge/_lanes.json` · view `_LIVE-STATE.md` §🛤 · why `notes/_MEMENTO-DECISIONS.md` § TWO LANES. Moved verbatim below.
 
 *EXIT CHECK receipts (2c): #22 banner — its ⬛ OPEN items all hold standing homes: lane 1 step 2 → ENACTED #23 (ledger § ★ #23) ✓ · M12 → §C·4 + `_lanes.json` lane-dream-pass record ✓ · §C·2's 15 rulings + dataviz sign-off → §C·2 ✓ · calm-banner verdict → §C·4 ✓ · LS-trim-vs-defer (P4b) → §C·4 M10 line ✓; its ★ POST-WRAP ADDENDUM (dream-pass cadence float) → `_FUTURE-STATE.md` § Dream-pass cadence ✓. Durable content: dream-pass-3 enactments → ledger § ✅ ENACTED + commit `681cfac` ✓ · M9 promotion → ledger § ★ M9 PROMOTED + gate code ✓. (2e/M9) worklist item 0 amended to the O2′ form — old text moved verbatim below. (2f) #23 commit-state below; #23 pre-flight+post-mortem+usage/sizes lines → `notes/_GAUGE-LOG.md`, same pass.*

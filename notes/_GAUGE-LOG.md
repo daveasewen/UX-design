@@ -152,6 +152,14 @@ step 2f (`113eefc`) yet wrote no stratum of its own; its gauge story lives only 
 > **PACE (perishable, replaces Tue 10:25):** panel Tue 11:18 BST — week 64.5% elapsed · All 55% ⇒ 0.85× · Fable 62% ⇒ 0.96× · catch-up to Thu 23:00 = All 1.27× / Fable 1.07× — Fable nearly on pace, All still behind; MORE-WINDOWS holds.)*
 > **section-usage #23 (observed, self-report):** GM HDR:C LATEST:C PRIOR:R DOFIRST:C A:C C1:C C2:R C2b:R C3:R C4:C C4b:R C5:R STRATA:C · LS HDR:R SPIN:R DELTAS:C WEBFONT:R LIVE:R LIFECYCLE:R DEAD:R OPEN:R TARGETS:R SPINOFFS:R
 > **section-sizes #23 (tiktoken cl100k_base):** GM HDR:1074 LATEST:799 PRIOR:1117 DOFIRST:2125 A:4208 C1:929 C2:1076 C2b:484 C3:181 C4:1204 C4b:256 C5:84 STRATA:632 · LS HDR:255 SPIN:1794 DELTAS:2242 WEBFONT:604 LIVE:4928 LIFECYCLE:965 DEAD:432 OPEN:4361 TARGETS:577 SPINOFFS:444 · totals GM:14169 LS:16602
+#### 2026-07-28 #24
+
+> **pre-flight:** fill ~28% + job 15–20% + wrap 8% = ~51–56% AMBER-projected · reserve 15% ring-fenced *(fill = 15.5% chain MEASURED 30,998 tk — the run's first fall — + ~7 harness inferred + read-render overhead; job = lane 1 step 3 O1′, priced at the opener)*
+> *(Session #24, 2026-07-28, Fable solo, Dave live. Ran to spec: retrieval → design read-back + option-select ×4 (all recommended picks — the lanes-pilot promotion) → promotion pair → build `[67/67]` → wrap. The Amber crossing announced at build-close per M1, wrap chosen. Closed 🟡 **~57% ESTIMATE** (band from the remaining-budget table), reserve untouched, no unplanned forks. One mover refusal (blockquote-prefix anchor) caught by all-or-nothing, nothing written, corrected run clean — the #22 lesson holding as designed.
+> **PACE (perishable, replaces Tue 11:18):** panel Tue 11:50 BST — week 64.8% elapsed · All 57% ⇒ 0.88× · **Fable 66% ⇒ 1.02× — ON PACE, first time this week** (0.78→0.91→0.96→1.02) · catch-up to Thu 23:00 = All 1.22× / Fable 0.97× — MORE-WINDOWS holds for All only; Fable spends at pace, no catch-up posture.)*
+> **section-usage #24 (observed, self-report):** GM HDR:C LATEST:C PRIOR:R DOFIRST:C A:C C1:C C2:R C2b:R C3:R C4:C C4b:R C5:R STRATA:C · LS HDR:R LANES:C SPIN:R DELTAS:C WEBFONT:R LIVE:R LIFECYCLE:R DEAD:R OPEN:R TARGETS:R SPINOFFS:R
+> **section-sizes #24 (tiktoken cl100k_base):** GM HDR:1032 LATEST:847 PRIOR:862 DOFIRST:2126 A:4208 C1:782 C2:1076 C2b:484 C3:181 C4:1204 C4b:256 C5:84 STRATA:882 · LS HDR:255 LANES:674 SPIN:1794 DELTAS:2221 WEBFONT:604 LIVE:4928 LIFECYCLE:965 DEAD:432 OPEN:4361 TARGETS:577 SPINOFFS:444 · totals GM:14024 LS:17255
+>
 >
 >
 >
