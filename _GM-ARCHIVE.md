@@ -1,5 +1,50 @@
 # GOOD-MORNING — banner archive
 
+## Batch 2026-07-28 #33 — rolled by the GM-D7-am wrap (Opus conducting + one worker lane, Dave live) — moves via `knowledge/_gm_move.py`. This session CUT the eager read chain: chain 34,094 → 3,410 tk cl100k (90%), §A/§C become retrieval-on-demand, `gm:A` subdivided into 11 records + a router. Dossier: `_DECISION-HISTORY/2026-07-28-cutting-the-eager-read-chain.md`. EXIT CHECK copied ds-021/022/023 + the veto window up to §C·4 first — they had no standing home.
+
+### The RETIRED read-chain contract (GM-D7-am), replaced by the #33 cut — verbatim
+*M9 retirement receipt. This is the contract that made every session spend ~34K tk before asking a question; #33 replaced it on Dave's ruling. Kept verbatim so the reversal can never read as agent drift — the successor contract is in `GOOD-MORNING.md`, and the WHY is in `_DECISION-HISTORY/2026-07-28-cutting-the-eager-read-chain.md`.*
+
+> *Read chain — the CONTRACT (GM-D7-am): **§A Orientation** (skip if in context) → **the ★ LATEST
+> banner** (the session record — GM-D4) → **§C Queue** → `_LIVE-STATE.md`. That is the WHOLE chain:
+> ≤ ~24K tk ≈ 12% of a window (GM compactable 8K warn / 12K block, gate-checked against the header
+> stamp). **Everything cited beyond the chain is RETRIEVAL** — `_consult.py`, a grep, a targeted read —
+> never a reading list.*
+
+### DO-FIRST pointer block, trimmed under step 2e (2e-iv "the one that bleeds") — #33
+*Retained VERBATIM as the M9 retirement receipt. Nothing here was a rule: every line restated canon that lives at its own pointer, which is exactly what 2e(iv) forbids ("throttle canon, model routing, known potholes, read-order — all inscribed in their own homes, all found restated here at length"). 21 lines → 7. The `Panel 2026-07-27` reading below is STALE and is the only content not reachable at a pointer; Dave has since declined a fresh panel twice.*
+
+> **★ POINTERS — canon lives at the target, one line each (a third line here is the 2e bleed):**
+> **Render/proof canon** → `knowledge/_RUNBOOK-render-verify.md` + `knowledge/_render/cdp_matched_styles.py`
+> (CDP matched-rules in cascade order, colours parsed AS colours, `--settle off` default). Licensed cut
+> asserted in-frame · snippet = canon truth, showroom panes are `srcdoc` iframes (query `page.frames`) ·
+> every proof ships a bite proving it can FAIL · assume a probe is wrong in the direction that reads
+> GREEN (five sessions running).
+> **Throttle + pace canon** → `_RUNBOOK-context-gauge.md` § ★ Half 0b + § THE FLOOR IS MEASURED (the
+> band table's ONLY copy — quote it or grep it, never recall it). fill + job + WRAP = band · 15%
+> ring-fenced reserve · every job priced out loud · any unplanned finding ⇒ STOP, re-price, fork to
+> Dave · the weekly allowance is PERISHABLE ⇒ behind pace = MORE WINDOWS, and ask for a fresh panel
+> reading each opener — no gate can see it.
+> **Panel 2026-07-27 21:56 (Mon):** week 56.4% elapsed · All 45% = 0.80× pro-rata · Fable 44% = 0.78× ·
+> catch-up to Thu 23:00 = All 1.26× / Fable 1.28× — behind, still narrowing. Allowance is PERISHABLE.
+> **Model routing** → `MODEL-ROUTING.md` (07-23 audit ratified: delegation DELIBERATE — #12 supersedes
+> the Mode-2 default-on). Conductor = Opus effort MAX · mechanical lanes = Sonnet · Fable reserved for
+> open judgment · P2 = script-then-judge, every deviation is Dave's call.
+> **Sandbox warts** → `_RUNBOOK-git-commit.md` § sandbox warts (call-boundary kill strips generated
+> JSONs · `git show HEAD:<p> > <p>` restore · `knowledge/_git_commit.sh --reconciled <msgfile>`) +
+> `_RUNBOOK-render-verify.md` potholes (installer host-validation exit — check the cache, proceed ·
+> `/tmp` unwritable · FONTCONFIG two-alias · `__dirlock` EPERM = failure-message-after-success).
+> **The build fits ONE foreground ≤45s call — run it that way or not at all.**
+
+### Banner rolled (2c) — #31
+> ## ★ PRIOR — 2026-07-28 (Tue **evening #31**, FABLE solo, Dave live — ★★ **THE THROTTLE IS RULED: ds-023 stop = 60 − priced wrap ("never run hot — the wrap should try and stay below 60", his words) + ceiling fill+job+wrap ≤ 45 · ds-021 (b) dual-unit, caps bind on CHARGED · ds-022 (c)+(a) mover fold + N−1-or-HOLE check — all three DELEGATED PICKS ("whatever you recommend"), vetoable, NONE ENACTED** · 🟡 est at wrap): **"The rule bit its author the hour it was made: the enact build was refused this window by the ceiling it had just ruled."**
+> - **★★ RULED — ledger `knowledge/_DS-IMPROVEMENTS.md` (verbatim + read-backs + delegated-pick provenance all there; quote it, don't reconstruct).** ds-023: 60 is where the wrap must have **FINISHED**, not started; in-flight stop = **60 − priced wrap** (~50–52 at today's 8–10-pt wraps); pre-flight ceiling **45** adopted-on-recommendation. ds-021: stamps/gates report BOTH units, caps bind on charged, RESTATED not tightened (warn ~12.6K / block ~18.8K charged ≡ 8K/12K cl100k @ provisional ×1.57); each wrap logs one cl100k↔charged pair. ds-022: the 2f roll folds into `_gm_move.py`; wrap gate gains the N−1-or-HOLE check.
+> - **★ ENACTMENT = #32's JOB, refused THIS window by the fresh ceiling itself** (fill ~50% at pick time — the ruling's first enforcement was on its own author). Until it lands the gate still measures cl100k — bands are directional.
+> - **★ FOUND (measured):** two fresh unit pairs, same two files, second session: GM 16,193 cl100k → 25,315 charged (**×1.563**) · LS 18,886 → 29,081 (**×1.540**) — stable, but file-diversity still n=2 · **`__tmp_moved.html` was TRACKED AGAIN** — `0b3561e` re-committed it after the amend that untracked it; caught by `git ls-files`, not the banner; `git rm --cached` re-run #31, deletion rides this commit, `.gitignore` covers it (manual disk delete now cosmetic) · stack fully PUSHED at the opener (banner claimed 8 unpushed) · stranded `index.lock` moved aside (`.git/index.lock.stale` — the git-status wart).
+> - **⬛ OPEN, Dave's:** veto window on the three delegated picks · 45/60/15% re-dials, any time · advisory title-size report · §C 158 vs warn 150 · #29's chart list, untouched a second session: scatter geometry (`x=2→46`/`y=9→11`, HIS) · two instrument fixes before ANY corpus figure (the 78 UNTRUSTED) · DV-J2b · ds-020 · T-D15-for-charts · composition tier · donut hedge · consumes-manifest → firm · consult-receipts promotion · M12 Sun 08-02 07:10 · §C·2's 15 rulings + dataviz sign-off · calm-banner verdict · LS-trim (P4b) · memory-index compaction (~20.4KB vs 17.1KB target).
+>
+>
+
 ## Batch 2026-07-28 #32 — rolled by the retrieval-index wrap (Opus solo, Dave live) — moves via `knowledge/_gm_move.py`. This session found `_build_all.py` RED since `f2c083a` and closed it: ds-024 — gauge-log META form, `index_freshness_check` (BLOCKING), ritual step 2g. #31's post-mortem → `notes/_GAUGE-LOG.md` (2f).
 
 ### Banner rolled (2c) — #30

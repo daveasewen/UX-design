@@ -108,9 +108,17 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
      **Stamp the author's context-gauge reading in the commit-state block**
      (`_RUNBOOK-context-gauge.md` § authoring-time stamp) — a scrutiny indicator on this handoff's
      reliability, not a quality score. Format: `Context gauge at authoring: 🟢/🟡/🔴 BAND ~NN% (ESTIMATE)`.
-   - **The read-chain contract, stamped in the file (GM-D7(a)).** GM states its own budget and the
-     chain's: **GM ≤ ~8K tk · chain (GM + `_LIVE-STATE.md`) ≤ ~24K tk (~12% of a window)**, both files
-     carrying a gate-checked size stamp so drift is visible rather than discovered. **Everything cited
+   - **The read-chain contract, stamped in the file (GM-D7(a) — ★★ AMENDED 2026-07-28 #33: GM-D7-am
+     CUT on Dave's ruling).** ⚠ **This step said, until #33: "chain (GM + `_LIVE-STATE.md`) ≤ ~24K tk".
+     That referent is retired.** The chain is now **header → ★ LATEST banner → the ⏱ LATEST delta of
+     `_LIVE-STATE.md`** — measured **3,487 tk cl100k / ~5,405 charged / 2.6 pts** at the cut, down from
+     **34,094 / 52,846 / 26.4 pts**. **§A and §C STAY IN THE FILE**; they left the CHAIN, not the record,
+     and are reached by `_memento_search.py "<q>"` → `--fetch <id>`. *(The old wording was found by #33
+     while following this very step — the assertion-propagation class: a doc known-wrong-now that
+     nothing chases. Amended in the same pass that made it wrong.)*
+     GM still states its own budget and the chain's, both files carrying a gate-checked size stamp so
+     drift is visible rather than discovered; the wrap publishes **the CORPUS beside the chain, always**,
+     because the cut DEFERRED 34K tokens rather than deleting them. **Everything cited
      beyond the chain is RETRIEVAL** — `_consult.py`, a grep, a targeted read — **never a reading list.**
      ⚠️ The old open-ended *"then the decision files it points to"* was a selective instruction pretending
      to be complete: the chain cites 112 asset paths, ~312K tk resolvable, 1.5× a window. Say the

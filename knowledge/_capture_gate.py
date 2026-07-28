@@ -196,7 +196,30 @@ BANNER_BUDGET_TK = (4000, 5000)    # (warn, BLOCK) — measured 2,103 tk at enac
 #   unavailable and insufficient. **A budget check reports its measurement; it does not prescribe
 #   the region.** (The "gate narrows its own rule" class: the exit code ages well, the advice text
 #   does not.)
-CHAIN_BUDGET_TK = (24000, 28000)   # (warn, PROMOTION THRESHOLD) — advisory, never blocks
+#
+# ★★ RE-POINTED 2026-07-28 #33, when Dave ruled the EAGER READ CHAIN (GM-D7-am) CUT.
+#   Everything above stands as ruled and is not trimmed — it is the record of what M10 was. What
+#   changed is the REFERENT, not the ruling: until #33 the "chain" was GM + _LIVE-STATE in full,
+#   because the contract told every session to read both files end to end. The new contract is
+#   **header + ★ LATEST banner + the _LIVE-STATE LATEST delta**; §A and §C stay in the file and
+#   are reached by retrieval (`_memento_search.py`). Measured at the cut:
+#       old referent (GM + LS whole)   34,094 tk cl100k  ≈ 52,846 charged  ≈ 26.4 pts
+#       new referent (HDR+LATEST+delta) 3,410 tk cl100k  ≈  5,286 charged  ≈  2.6 pts
+#   ⚠ **THE PROMOTION TRIGGER IS DISARMED, DELIBERATELY, AND THIS IS DAVE'S CALL TO RE-MAKE.**
+#   The old comment said: arm the block once a wrap measures the chain under 28,000. Re-pointing
+#   satisfies that instantly — 3,410 < 28,000 — but it is satisfied **by redefinition, not by
+#   achievement**, and arming a 28,000 block against a 3,410 tk chain would create precisely the
+#   thing ds-024 named: an instrument nobody reads, that can never fire. So the threshold does NOT
+#   auto-arm. The numbers below are AGENT-DERIVED from one measurement and are ADVISORY until Dave
+#   rules them (derivation governance: the engine never derives-and-promotes).
+#   ⚠ AND the corpus figure is published on every wrap regardless. The chain got 90% cheaper; the
+#   corpus did not get smaller, it got *deferred*. A budget that reported only the chain would hide
+#   the retrieval surface exactly the way the D7 amendment warned an §A exclusion would hide GM.
+CHAIN_BUDGET_TK = (4500, 6000)     # (warn, BLOCK-CANDIDATE) — ADVISORY, agent-derived, awaiting
+#                                    Dave. Measured 3,410 tk at the cut; warn leaves ~32% headroom.
+CORPUS_BUDGET_TK = 36000           # (warn only) — GM + LS whole, the RETRIEVAL SURFACE. Never
+#                                    blocks: it is the thing the cut made cheap to carry, not the
+#                                    thing the cut made small. 34,094 tk at the cut.
 
 DATE_PREFIX_RE = re.compile(r"^(\d{4})-(\d{2})-(\d{2})-")
 STATUS_RE = re.compile(r"^status:\s*(\S+)\s*(.*)$")
@@ -361,6 +384,76 @@ def section_spans(lines):
             for n, (i, name) in enumerate(hits)}
 
 
+LS_DELTA_RE = re.compile(r"^##\s*⏱")
+
+
+def read_chain_tk(repo, gm_lines):
+    """Measure the GM-D7-am READ CHAIN **as re-pointed #33**: GM header + ★ LATEST banner +
+    the `_LIVE-STATE.md` LATEST delta. Returns `(chain_tk, detail)`; `(None, reason)` if a
+    region cannot be isolated.
+
+    ⚠ It REUSES `_gm_usage.split_sections` — the same parser the memento index is built from —
+    instead of growing a second one here. A second parser is exactly the drift class the M8
+    block exists to prevent, and a chain measured by a different splitter than the one the
+    retrieval door uses would drift silently against the thing it claims to describe.
+
+    ⚠ It REFUSES rather than guesses. Every failure path returns a REASON, never a number and
+    never a zero: a budget check that defaults to 0 on a parse failure reports GREEN on a
+    broken file, which is the "cheerful zero" this corpus has already been bitten by.
+    """
+    try:
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import _gm_usage
+    except Exception as e:                                    # pragma: no cover - import guard
+        return None, f"_gm_usage unavailable ({e}) — chain UNMEASURED, not assumed clean"
+
+    def _region_end(lines, vocab, start_id):
+        """First line index of `start_id`'s marker, and where its region ends — using the SAME
+        regexes `_gm_usage` splits on, but WITHOUT demanding the whole vocabulary validate.
+
+        ⚠ The first draft of this called `split_sections(..., unknown_check=...)` and refused the
+        whole measurement when any unrelated marker was missing — a chain that cannot be measured
+        because `C4b` moved is over-coupled, and it silently routed every fixture down the
+        UNMEASURED path. The chain depends on ★ LATEST and ⏱ DELTAS; nothing else may break it.
+        Caught by a bite, not by re-reading the code."""
+        rx = dict(vocab).get(start_id)
+        if rx is None:
+            return None, None
+        start = next((i for i, ln in enumerate(lines) if rx.match(ln)), None)
+        if start is None:
+            return None, None
+        others = [r for k, r in vocab if k != start_id and r is not None]
+        end = next((i for i in range(start + 1, len(lines))
+                    if any(r.match(lines[i]) for r in others)), len(lines))
+        return start, end
+
+    # HDR runs file-top → LATEST, and LATEST → the next marker. Contiguous, so one slice carries
+    # both: the chain's GM term is "everything above the end of the ★ LATEST banner".
+    _s, l_end = _region_end(gm_lines, _gm_usage.GM_VOCAB, "LATEST")
+    if l_end is None:
+        return None, ("GOOD-MORNING.md has no ★ LATEST banner — the chain's whole session record "
+                      "is that banner, so this is a refusal to measure, not a small chain")
+    gm_part = "\n".join(gm_lines[:l_end])
+    gm_tk = measure_tokens(gm_part)[0]
+
+    ls_path = os.path.join(repo, "_LIVE-STATE.md")
+    if not os.path.exists(ls_path):
+        return gm_tk, f"GM header+LATEST {gm_tk} tk · _LIVE-STATE absent (no delta term)"
+    with open(ls_path, encoding="utf-8") as f:
+        ls_lines = f.read().splitlines()
+    d_s, d_e = _region_end(ls_lines, _gm_usage.LS_VOCAB, "DELTAS")
+    if d_s is None:
+        return None, "_LIVE-STATE.md has no ⏱ delta section — chain UNMEASURED, not assumed zero"
+    body = ls_lines[d_s:d_e]
+    # The LATEST delta ends where the next ⏱ heading begins. If there is no second one, the
+    # whole section IS the latest delta — say which case was taken, never silently assume.
+    nxt = next((i for i, ln in enumerate(body) if i > 0 and LS_DELTA_RE.match(ln)), None)
+    delta = "\n".join(body[:nxt] if nxt else body)
+    d_tk = measure_tokens(delta)[0]
+    how = f"LATEST delta only (of {len(body)} delta lines)" if nxt else "whole ⏱ section (single delta)"
+    return gm_tk + d_tk, f"GM header+LATEST {gm_tk} tk · LS {how} {d_tk} tk"
+
+
 # M6 (2026-07-27): a fresh sandbox loses pip state, and tiktoken vanished TWICE inside 24 hours.
 # Each time the gate did the honest thing — fell back to bytes/3.53 and SAID so — but a stamp
 # measured by estimate is a weaker claim than one measured by the encoder, and nobody noticed
@@ -496,16 +589,23 @@ def check_budgets(repo):
     a_s, a_e = spans["§A"]
     exempt_tk = measure_tokens("\n".join(lines[a_s:a_e]))[0]
     compactable = tk - exempt_tk
-    chain = tk
+    # CORPUS = GM + _LIVE-STATE whole. Until #33 this variable was called `chain`, because the
+    # contract made a session read all of it. After the cut it is the RETRIEVAL SURFACE: still
+    # carried, no longer read on arrival. Renamed so the two can never again be confused.
+    corpus = tk
     ls_path = os.path.join(repo, "_LIVE-STATE.md")
     if os.path.exists(ls_path):
         with open(ls_path, encoding="utf-8") as f:
-            chain += measure_tokens(f.read())[0]
+            corpus += measure_tokens(f.read())[0]
+    chain, chain_detail = read_chain_tk(repo, lines)
     # ⚠ The whole-file figure leads, ALWAYS. The budget excludes §A; the published cost does not.
     # An exclusion that also hides the total would understate exactly the cold-start cost that the
-    # D9 measured floor exists to make honest.
+    # D9 measured floor exists to make honest. Post-#33 the same principle covers the corpus: the
+    # chain got 90% cheaper, the corpus did not get smaller — it got DEFERRED. Publish both.
+    chain_txt = f"{chain} tk ({chain_detail})" if chain is not None else f"UNMEASURED — {chain_detail}"
     notes.append(f"SIZE measured ({method}): GM {tk} tk WHOLE FILE · of which §A {exempt_tk} tk "
-                 f"exempt · compactable {compactable} tk (the budgeted figure) · chain {chain} tk")
+                 f"exempt · compactable {compactable} tk (the budgeted figure) · "
+                 f"READ CHAIN {chain_txt} · corpus (GM+LS, the retrieval surface) {corpus} tk")
 
     stamp = next((m for m in (SIZE_STAMP_RE.match(ln) for ln in lines[:HEADER_LINES]) if m), None)
     if stamp is None:
@@ -548,13 +648,29 @@ def check_budgets(repo):
             warns.append(f"GOOD-MORNING.md banner region: {banner_tk} tk, cap {b_warn} — "
                          f"ritual step 2c")
 
-    # ---- M10: the read chain (GM + _LIVE-STATE), the D7 chain contract now measured. ADVISORY.
-    c_warn, c_promote = CHAIN_BUDGET_TK
-    if chain > c_warn:
-        warns.append(f"read chain (GM + _LIVE-STATE): {chain} tk, cap {c_warn} tk — ADVISORY "
-                     f"(blocking arms once a wrap measures it under {c_promote}). Measure both "
-                     f"files before picking a region to trim: this check knows the total, not "
-                     f"where the weight sits, and the deltas are rarely where it sits.")
+    # ---- M10, RE-POINTED #33: the READ CHAIN is header + ★ LATEST + the LS LATEST delta.
+    # ADVISORY, and the budget numbers are agent-derived pending Dave (see the constant block).
+    c_warn, c_block = CHAIN_BUDGET_TK
+    # ⚠ Both messages lead with a UNIQUE tag. The first draft had the bites match on the substring
+    # "read chain" — which also appears inside the corpus warn's own explanatory prose, so a fat-§A
+    # fixture "warned the chain" when the chain had in fact measured 60 tk. A bite that matches on
+    # a phrase two different messages share is not a bite. Tag, then match the tag.
+    if chain is None:
+        warns.append(f"M10 read chain UNMEASURED — {chain_detail}. Not defaulted, not assumed "
+                     f"clean: a chain budget that reports 0 on a parse failure reads GREEN on a "
+                     f"broken file. Fix the structure, then re-run.")
+    elif chain > c_warn:
+        warns.append(f"M10 read chain (header + ★ LATEST + LS latest delta): {chain} tk cl100k, "
+                     f"warn {c_warn} / block-candidate {c_block} — ADVISORY, numbers agent-derived "
+                     f"and awaiting Dave. {chain_detail}. This check knows the total, not where the "
+                     f"weight sits — measure the three terms before picking one to trim.")
+    # ---- The corpus rides alongside, always, warn-only. Post-cut it is what retrieval must
+    # serve, not what a session reads; it is reported so the deferral can never read as a deletion.
+    if corpus > CORPUS_BUDGET_TK:
+        warns.append(f"M10 corpus (GM + _LIVE-STATE whole): {corpus} tk cl100k, warn "
+                     f"{CORPUS_BUDGET_TK} — the RETRIEVAL SURFACE, not the chain a session reads. "
+                     f"WARN ONLY: growth here costs a retrieval, not a cold start. Never a trim "
+                     f"order.")
 
     # ---- M7: §A size line — WARN ONLY, growth-triggered. It can never block and never orders
     # a trim; GM-D7-am ("not even a guard banner") is honoured by the SILENCE of the steady state.
@@ -994,7 +1110,7 @@ FAT = " ".join(f"word{i}" for i in range(120))  # ~200 tk of line, for isolating
 
 def _gm_fixture(do_first=10, sec_a=10, sec_c=10, with_b=False, strata_blocks=0,
                 strata_pad=0, drop=(), stamp=None, fat_c=0, fat_a=0,
-                fat_banner=0, banner_extra=None, stamp_a=None, ls_text=None):
+                fat_banner=0, banner_extra=None, stamp_a=None, ls_text=None, latest=True):
     """Synthetic GOOD-MORNING.md for the budget bites.
 
     `stamp=None` ⇒ a CORRECT stamp is computed for the finished text, so the green control is
@@ -1005,6 +1121,12 @@ def _gm_fixture(do_first=10, sec_a=10, sec_c=10, with_b=False, strata_blocks=0,
     line, which is how the M7 growth trigger's "a banner names §A" suppressor is bitten ·
     `stamp_a` overrides the stamped §A figure (a float to claim one, `False` to omit it)."""
     out = ["# Good morning", "SIZESTAMP", ""]
+    # ★ LATEST is in the fixture by DEFAULT from #33 on: after the GM-D7-am cut the banner is the
+    # chain's whole GM term, so a fixture without one cannot exercise M10 at all — every bite would
+    # take the UNMEASURED path and a failure-only suite would still read green. `latest=False` is
+    # how the refusal path is bitten on purpose.
+    if latest:
+        out += ["> ## ★ LATEST — 2026-07-28 (fixture session)", "> - one session-record line", ""]
     if banner_extra:
         out.append(banner_extra)
     out += [f"{FAT} banner {i}" for i in range(fat_banner)]
@@ -1147,23 +1269,67 @@ def selftest_growth():
         if any("banner region" in x for x in w):
             failures.append("M8: an ordinary banner warned — the budget fires on everything")
 
-        # ---- M10: chain budget, ADVISORY. The fixture repo has no _LIVE-STATE, so chain == GM.
-        f, w, _n = _warns_for(td, fat_c=5, fat_a=160)
-        if not any("read chain" in x for x in w):
-            failures.append("M10: an over-cap chain did not WARN — the budget does not bite")
-        if any("read chain" in x for x in f):
-            failures.append("M10: a chain finding reached FAILS — Dave ruled it ADVISORY "
-                            "(2026-07-27 #18); blocking arms only once a wrap measures the "
-                            "chain under the promotion threshold")
+        # ---- M10, RE-POINTED #33: the chain is header + ★ LATEST + the LS latest delta.
+        # The fixture repo has no _LIVE-STATE, so chain == the GM banner term alone.
+        #
+        # ★ THE POSITIVE BITE COMES FIRST, AND IT IS THE LOAD-BEARING ONE. A failure-only suite
+        # survives a revert that deletes the whole comparison: if `read_chain_tk` were reverted to
+        # returning None, every "did it warn?" bite below would still pass, because an UNMEASURED
+        # chain never warns. This bite proves the measurement HAPPENS and reports a number.
+        _f, _w, n = _warns_for(td)
+        chain_note = next((x for x in n if "READ CHAIN" in x), None)
+        if chain_note is None:
+            failures.append("M10: no READ CHAIN note published at all — the measurement is gone")
+        elif "UNMEASURED" in chain_note:
+            failures.append(f"M10 POSITIVE BITE: an ordinary fixture reported the chain as "
+                            f"UNMEASURED — the measurement is broken and every warn-bite below "
+                            f"would pass anyway. Note was: {chain_note}")
+        elif not re.search(r"READ CHAIN \d+ tk", chain_note):
+            failures.append(f"M10 POSITIVE BITE: the chain note carries no number — {chain_note}")
+
+        # ★ THE RE-POINT CONTROL. Under the OLD definition (GM + LS whole) a fat §A/§C blew the
+        # chain budget. Under the new one they are not in the chain at all. This bite is what
+        # proves the re-point actually took, rather than the constant merely having been edited.
+        _f, w, _n = _warns_for(td, fat_c=5, fat_a=160)
+        if any("M10 read chain" in x for x in w):
+            failures.append("M10: a fat §A/§C warned the CHAIN — the re-point did not take. "
+                            "After the GM-D7-am cut (#33) §A and §C are retrieval, not chain; "
+                            "if they still charge the chain the budget measures the old contract.")
+
+        # …and the chain DOES bite on the region that is actually in it: the banner.
+        _f, w, _n = _warns_for(td, fat_banner=24)
+        if not any("M10 read chain" in x for x in w):
+            failures.append("M10: a 24-fat-line banner did not warn the chain — the budget does "
+                            "not bite on the one region the chain is made of")
+        f, _w, _n = _warns_for(td, fat_banner=24)
+        if any("M10 read chain" in x for x in f):
+            failures.append("M10: a chain finding reached FAILS — ADVISORY by ruling (Dave "
+                            "2026-07-27 #18), and #33's re-pointed numbers are agent-derived and "
+                            "still awaiting him. It may not block.")
         _f, w, _n = _warns_for(td)
-        if any("read chain" in x for x in w):
-            failures.append("M10: a small chain warned — the budget fires on everything")
+        if any("M10 read chain" in x for x in w):
+            failures.append("M10: an ordinary chain warned — the budget fires on everything")
         # the remedy text must NOT prescribe a region: measured at enactment, the deltas the old
         # text pointed at could not have paid the difference. Pin the correction.
-        _f, w, _n = _warns_for(td, fat_c=5, fat_a=160)
-        if any("step 2d" in x for x in w if "read chain" in x):
+        _f, w, _n = _warns_for(td, fat_banner=24)
+        if any("step 2d" in x for x in w if "M10 read chain" in x):
             failures.append("M10: the chain warn prescribes rolling deltas again — it knows the "
                             "total, not where the weight sits")
+
+        # ★ THE REFUSAL PATH. No ★ LATEST banner ⇒ UNMEASURED and SAID SO — never 0, never green.
+        _f, w, n = _warns_for(td, latest=False)
+        if not any("UNMEASURED" in x for x in list(w) + list(n)):
+            failures.append("M10: a GOOD-MORNING with no ★ LATEST banner did not report the chain "
+                            "UNMEASURED — a budget that defaults to zero on a parse failure reads "
+                            "GREEN on a broken file")
+
+        # ---- The CORPUS rides alongside and must be published on every wrap, warned or not:
+        # the cut deferred the corpus, it did not shrink it, and a report that dropped it would
+        # let a 90% cheaper chain read as a 90% smaller record.
+        _f, _w, n = _warns_for(td)
+        if not any("corpus" in x for x in n):
+            failures.append("M10: the corpus figure is not published — the chain got cheap, the "
+                            "corpus got DEFERRED; hiding it repeats the exclusion D7 warned about")
 
         # ---- M7: §A. WARN-ONLY is the ruling, so a §A fixture must never appear in `fails`.
         _f, w, _n = _warns_for(td, fat_a=30)          # ~6K tk of §A, past the 4,500 backstop
@@ -1242,12 +1408,25 @@ def selftest_growth():
     # Dave's alone, so a convenience re-dial has to be a deliberate act with a ledger line behind
     # it. The chain pin covers the TIER as much as the numbers: re-arming M10's block before a
     # wrap has measured the chain under 28,000 would reverse a ruling by editing a tuple.
-    for name, got, want in (("CHAIN_BUDGET_TK", CHAIN_BUDGET_TK, (24000, 28000)),
-                            ("BANNER_BUDGET_TK", BANNER_BUDGET_TK, (4000, 5000)),
-                            ("SECTION_A_WARN_TK", SECTION_A_WARN_TK, 4500)):
+    # ⚠ #33: CHAIN_BUDGET_TK was RE-POINTED, not re-dialled. The pin fired when the numbers moved
+    # and it was RIGHT to — that is the whole point of it. What changed is the REFERENT: Dave ruled
+    # the eager read chain cut, so "the chain" stopped meaning GM + _LIVE-STATE whole (34,094 tk)
+    # and started meaning header + ★ LATEST + the LS latest delta (3,410 tk, measured at the cut).
+    # The 2026-07-27 numbers described a measurement the repo has retired; keeping them would pin
+    # the gate to a contract that no longer exists. The new numbers are AGENT-DERIVED from a single
+    # measurement and are ADVISORY UNTIL DAVE RULES THEM. Both are kept here so the re-point can
+    # never be read as a quiet re-dial, and so the old ruling stays legible after the change.
+    for name, got, want, note in (
+            ("CHAIN_BUDGET_TK", CHAIN_BUDGET_TK, (4500, 6000),
+             "RE-POINTED #33 2026-07-28 — was (24000, 28000) against the GM+LS-whole referent, "
+             "ruled 2026-07-27 M-set. New values AGENT-DERIVED, ADVISORY, awaiting Dave"),
+            ("BANNER_BUDGET_TK", BANNER_BUDGET_TK, (4000, 5000), "ruled 2026-07-27 M-set"),
+            ("SECTION_A_WARN_TK", SECTION_A_WARN_TK, 4500, "ruled 2026-07-27 M-set"),
+            ("CORPUS_BUDGET_TK", CORPUS_BUDGET_TK, 36000,
+             "born #33 2026-07-28, AGENT-DERIVED from 34,094 tk measured, warn-only, awaiting Dave")):
         if got != want:
-            failures.append(f"{name} = {got}, ruled {want} (2026-07-27 M-set) — re-dialling is "
-                            f"Dave's, and updating this pin is part of doing it")
+            failures.append(f"{name} = {got}, pinned {want} ({note}) — re-dialling is Dave's, "
+                            f"and updating this pin is part of doing it")
     return failures
 
 

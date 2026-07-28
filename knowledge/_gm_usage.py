@@ -78,6 +78,67 @@ LS_VOCAB = (
 )
 LS_HEADING_RE = re.compile(r"^##\s")
 
+# --- §A SUBSECTION VOCABULARY (worker lane `worker-a-subdivision`, cut at #33) ----------
+# WHY THIS EXISTS: #32 cut the eager read chain, so §A became retrieval-on-demand via the
+# Memento door. #33 then MEASURED the door and found `--fetch gm:A` returned the ENTIRE
+# §A — 4,208 tk cl100k, all or nothing. A coarse door is not retrieval: it moves §A from
+# *paid every window* to *paid in full on the first §A-shaped question* ("where does X
+# live", "what are the four themes", "what's the build command" — the commonest questions
+# there are). This vocabulary lets the door serve ONE subsection.
+#
+# ★ WHY IT IS SEPARATE FROM GM_VOCAB, AND MUST STAY SEPARATE:
+#   GM_VOCAB is the SECTION-USAGE vocabulary. `validate_usage_line` demands testimony for
+#   every id in it, and SECTION_USAGE_BLOCKING is True — so adding 11 ids to GM_VOCAB would
+#   require editing the `> **section-usage #N:**` line INSIDE GOOD-MORNING.md, and would
+#   fail every wrap until that happened. Retrieval granularity and testimony granularity
+#   are DIFFERENT QUESTIONS at DIFFERENT COSTS; conflating them makes the cheap change
+#   (a finer door) pay the expensive change's price (a wider testimony contract). Whether
+#   usage testimony should also go per-subsection is #34's call, not this lane's.
+#   ⇒ §A's usage testimony is still a single `A:<code>`. Unchanged by design, not by omission.
+#
+# Same dv-004 shape as its siblings: the vocabulary is the ONLY copy, order = document
+# order, and an unregistered `## ` heading inside the §A span REFUSES (never
+# enumerate-and-skip). Note this check is deliberately fence-UNAWARE, exactly like
+# `_ls_unknown`: a `## ` at line start inside a code fence would refuse loudly rather than
+# be silently normalised away. That refusal is correct — register it or reformat it.
+GM_A_SUBVOCAB = (
+    ("PRE",      None),  # implicit: the `# §A` heading + Memento framing + STANDING note
+    ("WHAT",     re.compile(r"^##\s+What Apollo is\b")),
+    ("THEMES",   re.compile(r"^##\s+★\s*ONE token store\b")),
+    ("WHERE",    re.compile(r"^##\s+Where things live\b")),
+    ("CMD",      re.compile(r"^##\s+The one command that matters\b")),
+    ("RULES",    re.compile(r"^##\s+Rules that actually bite\b")),
+    ("AGENT",    re.compile(r"^##\s+Standing instructions for the agent\b")),
+    ("DOCS",     re.compile(r"^##\s+The other standing documents\b")),
+    ("PARALLEL", re.compile(r"^##\s+Parallel-session model\b")),
+    ("RENDERS",  re.compile(r"^##\s+Renders\b")),
+    ("HOW",      re.compile(r"^##\s+How we work\b")),
+)
+GM_A_HEADING_RE = re.compile(r"^##\s")
+
+
+def _gm_a_unknown(ln):
+    if GM_A_HEADING_RE.match(ln) and not any(
+            rx.match(ln) for _, rx in GM_A_SUBVOCAB if rx is not None):
+        return ("unregistered `## ` subsection heading inside §A of GOOD-MORNING.md — "
+                "register it in GM_A_SUBVOCAB (the only copy) so the Memento door can "
+                "serve it; never index around a hole")
+    return None
+
+
+def split_gm_a(lines, span):
+    """Subdivide the §A span into its subsections. `span` is the (start, end) the GM_VOCAB
+    walk gave for id `A`. Returns (ordered [(subid, (abs_start, abs_end))], errors) with
+    line numbers RE-BASED onto the whole file so records keep honest file:line provenance.
+    Fails loud through `split_sections` — a missing/reordered/unregistered heading refuses."""
+    start, end = span
+    sub, errs = split_sections(lines[start:end], GM_A_SUBVOCAB, _gm_a_unknown)
+    if errs:
+        return None, [f"§A: {e}" for e in errs]
+    ordered = sorted(sub.items(), key=lambda kv: kv[1][0])
+    return [(sid, (start + a, start + b)) for sid, (a, b) in ordered], []
+
+
 USAGE_RE = re.compile(
     r"^>\s*\*\*section-usage\s+#(\d+)\s*\(([^)]*)\):\*\*\s*GM\s+(.*?)\s*·\s*LS\s+(.*?)\s*$")
 SIZES_RE = re.compile(
@@ -119,7 +180,11 @@ def split_sections(lines, vocab, unknown_check=None):
     if [v for _, v in hits] != [v for v, rx in vocab if rx is not None]:
         return None, ["vocabulary markers out of document order — the registered order is "
                       "the contract; a reorder is a structure change, refuse and re-register"]
-    spans = {"HDR": (0, hits[0][0])}
+    # the implicit leading span is the vocabulary's FIRST entry when it declares no
+    # pattern — named by the vocabulary, not hardcoded ("HDR" for GM/LS, "PRE" for §A).
+    spans = {}
+    if vocab and vocab[0][1] is None:
+        spans[vocab[0][0]] = (0, hits[0][0])
     for n, (i, vid) in enumerate(hits):
         spans[vid] = (i, hits[n + 1][0] if n + 1 < len(hits) else len(lines))
     return spans, []
@@ -239,9 +304,10 @@ GOOD_USAGE = ("> **section-usage #23 (observed, self-report):** "
 
 
 def selftest():
-    fails = []
+    fails, run = [], []
 
     def bite(name, cond):
+        run.append(name)
         if not cond:
             fails.append(name)
 
@@ -287,6 +353,73 @@ def selftest():
     _, errs = split_sections(ls_fx + ["## BRAND NEW SECTION"], LS_VOCAB, _ls_unknown)
     bite("unregistered LS heading must refuse", any("unregistered `## `" in e for e in errs))
 
+    # --- §A subdivision (worker lane `worker-a-subdivision`) --------------------------
+    # ★ PAIRED, and the POSITIVE ONE IS LOAD-BEARING (#32's lesson, learned expensively):
+    # a failure-only suite survives a revert that deletes the whole subdivision — the
+    # refusals would still fire on a vocabulary that split nothing. So the first bites
+    # assert the RIGHT subsections on a GOOD file, and that they TILE the §A span with no
+    # gap and no overlap. Delete the feature and these go red.
+    a_fx = ["# §A · ORIENTATION", "> framing", "",
+            "## What Apollo is", "w",
+            "## ★ ONE token store · ONE baseline library · FOUR themes (R-D15)", "t",
+            "## Where things live", "l",
+            "## The one command that matters", "c",
+            "## Rules that actually bite (core + this session's)", "r",
+            "## Standing instructions for the agent", "a",
+            "## The other standing documents (REACHABILITY-GATED)", "d",
+            "## Parallel-session model (PROVEN 2026-07-21)", "p",
+            "## Renders — REAL FONT, in-sandbox", "n",
+            "## How we work", "h"]
+    got, errs = split_gm_a(a_fx, (0, len(a_fx)))
+    bite("§A fixture splits clean", errs == [] and got is not None)
+    bite("§A fixture yields EVERY registered subsection, in document order",
+         got is not None and [s for s, _ in got] == [i for i, _ in GM_A_SUBVOCAB])
+    bite("§A fixture: PRE owns the heading+framing, WHAT starts at its own heading",
+         got is not None and dict(got)["PRE"] == (0, 3) and dict(got)["WHAT"] == (3, 5))
+    bite("§A fixture: spans TILE the section — no gap, no overlap, no lost line",
+         got is not None
+         and [sp for _, sp in got][0][0] == 0
+         and [sp for _, sp in got][-1][1] == len(a_fx)
+         and all(got[n][1][1] == got[n + 1][1][0] for n in range(len(got) - 1)))
+    # offset re-basing: the door's file:line provenance must survive the slice
+    got_off, errs_off = split_gm_a(["pad"] * 7 + a_fx, (7, 7 + len(a_fx)))
+    bite("§A spans re-base onto the whole file (honest file:line)",
+         errs_off == [] and got_off is not None and dict(got_off)["WHAT"] == (10, 12))
+    # ...and the refusals, which must fire for the RIGHT reason
+    _, errs = split_gm_a(a_fx + ["## Something brand new"], (0, len(a_fx) + 1))
+    bite("§A: unregistered `## ` subsection REFUSES",
+         any("unregistered `## ` subsection" in e for e in errs))
+    trimmed = [ln for ln in a_fx if not ln.startswith("## Where things live")]
+    _, errs = split_gm_a(trimmed, (0, len(trimmed)))
+    bite("§A: a REMOVED registered heading REFUSES (structure change, never a quiet skip)",
+         any("not found: WHERE" in e for e in errs))
+    swapped = list(a_fx)
+    i, j = swapped.index("## How we work"), swapped.index("## What Apollo is")
+    swapped[i], swapped[j] = swapped[j], swapped[i]
+    _, errs = split_gm_a(swapped, (0, len(swapped)))
+    bite("§A: REORDERED headings REFUSE (registered order is the contract)",
+         any("out of document order" in e for e in errs))
+    # green control on the REAL file — this is the bite that proves the door actually
+    # subdivides the shipping §A, not just a fixture that flatters the vocabulary.
+    _gm_path = os.path.join(REPO, "GOOD-MORNING.md")
+    if os.path.exists(_gm_path):
+        with open(_gm_path, encoding="utf-8") as f:
+            _gm_lines = f.read().splitlines()
+        _spans, _errs = split_sections(_gm_lines, GM_VOCAB, _gm_unknown)
+        bite("real GOOD-MORNING.md still splits at GM_VOCAB level", _errs == [])
+        if not _errs:
+            real, rerrs = split_gm_a(_gm_lines, _spans["A"])
+            bite(f"real §A subdivides clean (got: {rerrs[:1]})", rerrs == [])
+            bite("real §A yields every registered subsection",
+                 real is not None and [s for s, _ in real] == [i for i, _ in GM_A_SUBVOCAB])
+            bite("real §A: every subsection is NON-EMPTY (a zero-line record is a hole)",
+                 real is not None and all(b > a for _, (a, b) in real))
+            bite("real §A: no subsection is the WHOLE of §A (the hole this lane closed)",
+                 real is not None and all(
+                     (b - a) < (_spans["A"][1] - _spans["A"][0]) for _, (a, b) in real))
+    else:
+        bite("real GOOD-MORNING.md present", False)
+
     # green control on the REAL repo — the walk must complete and cover the whole vocabulary
     rows, method, errors = measure_sizes(REPO)
     bite(f"real-repo sizes walk clean (got: {errors[:2]})", errors == [])
@@ -299,7 +432,7 @@ def selftest():
         for f in fails:
             print(f"  ✗ {f}")
         return 1
-    print(f"[_gm_usage selftest] OK — {17} bites, all fired or held as contracted "
+    print(f"[_gm_usage selftest] OK — {len(run)} bites, all fired or held as contracted "
           f"(sizes method: {method})")
     return 0
 
