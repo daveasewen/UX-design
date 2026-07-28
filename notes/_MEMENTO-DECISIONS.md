@@ -288,3 +288,33 @@ prevent. Miss-side gates (reachability + fail-loud, ds-016 class) land WITH the 
 per the #19 guard — bodies thin only after the fetch path is gated. Three live instances to design
 against, not guess: lane 1 (Memento) · lane 2 (Apollo charts) · the dream-pass spin-off (LS §🔀,
 `--wrap --lane`). status: floated — promotion at the O1′ design window, Dave's alone.
+
+### ★ M5 ENACTED — the hardened mover lands; hand-rolled wraps retire (2026-07-28 mid-morning #21, Fable solo, Dave live)
+
+**LANDED: `knowledge/_gm_move.py`** — move/replace/insert over GM/LS/archives with the brief §11
+contract, every behaviour carrying a selftest bite that proves it FIRES: line-START anchors only
+(bare substring and un-anchored regex REFUSED; every locating anchor must match exactly one line) ·
+§A sha256 asserted before AND after every projected write via `_capture_gate.py::section_a_digest()`
+CALLED, region located by marker search never line numbers, **no relaxing flag exists** · projected
+line counts charged by the gate's own `charged_line_counts()` with `SECTION_CAPS` IMPORTED — the
+block band refuses, the warn band proceeds and says so (**warn ≠ block**, the #19
+prose-stricter-than-its-gate class closed in code) · identical-string and compound no-ops = loud
+FAIL · all-or-nothing across ALL files (guards precede any write) · one-line stdout receipt per op,
+printed only after writes land · `--dry-run`. **Selftest = 24 bites + green controls
+(attribute-the-diff), wired into `_build_all.py` as its own step — build `[63/63]` exit 0,
+foreground.**
+
+**EXTRACTION, not duplication.** The gate's §C charging walk (D6a strata exclusion) was inline in
+`check_budgets`; a mover re-deriving it would drift exactly as #19's prose drifted from its gate.
+Extracted to `strata_extent()`/`charged_line_counts()` in `_capture_gate.py` — behaviour identical,
+proven by the existing BUDGET_FIXTURES (strata-blocks FAIL + exclusion-must-hold control).
+
+**Runbook 2c/2d/2e now carry one-line pointers to the mover; the §11 STOP condition (re-describing
+the ritual) never triggered.** The #21 wrap is the mover's FIRST LIVE FIRE — the sixth wrap since
+M5 was ruled, and the first not hand-rolled.
+
+**NOT taken:** brief §12's MEMORY.md ride-along trim — GM §C·4's later "its own small window"
+ruling supersedes the brief's option (header-wins); the trim stays owed to its own window.
+**Lane 1 remainder: wrap-ritual section-usage instrumentation → O1′ → O2′.** M11's supervised
+fire stays DAVE's, before Sun 08-02. status: observed (enactment receipt; the ruling is the brief's,
+#17) · provenance: session #21 · 2026-07-28.

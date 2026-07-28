@@ -404,6 +404,36 @@ def section_a_digest(lines, spans):
         ("\n".join(lines[spans["§A"][0]:spans["§C"][0]]) + "\n").encode("utf-8")).hexdigest()
 
 
+def strata_extent(lines, spans):
+    """(#lines, #blocks) of the 2f stratum stack inside §C — the D6(a) exclusion region.
+    Extracted from check_budgets at M5 (2026-07-28) so the mover's projected-count guard
+    and this gate walk the SAME implementation: two copies of an exclusion is how one of
+    them drifts. Behaviour identical to the inline original — the BUDGET_FIXTURES strata
+    bites (2-blocks FAIL · exclusion-must-hold control) prove it."""
+    if "§C" not in spans:
+        return 0, 0
+    c_start, c_end = spans["§C"]
+    for i in range(c_start, c_end):
+        if STRATA_HEAD_RE.match(lines[i]):
+            j, blocks = i + 1, 0
+            while j < c_end and not re.match(r"^#{1,3}\s", lines[j]):
+                blocks += bool(STRATA_BLOCK_RE.match(lines[j]))
+                j += 1
+            return j - i, blocks
+    return 0, 0
+
+
+def charged_line_counts(lines, spans):
+    """{section: line count as the caps CHARGE it} — §C net of the strata exclusion, every
+    other section gross. The ONLY implementation of the charging rule: check_budgets reports
+    against it and `_gm_move.py` imports it (M5 — the mover must never re-derive what the
+    gate charges; a mover charging §C gross would refuse moves the gate permits, which is
+    the #19 prose-stricter-than-its-gate failure rebuilt in code)."""
+    strata_lines, _blocks = strata_extent(lines, spans)
+    return {name: (e - s - strata_lines if name == "§C" else e - s)
+            for name, (s, e) in spans.items()}
+
+
 def check_budgets(repo):
     """GM section line caps (D1a/D6a) + the D7 size stamp. Returns (fails, warns, notes)."""
     fails, warns, notes = [], [], []
@@ -424,29 +454,22 @@ def check_budgets(repo):
             fails.append(f"GOOD-MORNING.md: {name} present — ritual step 2")
 
     # 2f strata stack: excluded from §C's cap (D6a), governed by block COUNT instead (D5a).
-    strata_lines, c_start, c_end = 0, *spans["§C"]
-    for i in range(c_start, c_end):
-        if STRATA_HEAD_RE.match(lines[i]):
-            j, blocks = i + 1, 0
-            while j < c_end and not re.match(r"^#{1,3}\s", lines[j]):
-                blocks += bool(STRATA_BLOCK_RE.match(lines[j]))
-                j += 1
-            strata_lines = j - i
-            if blocks > STRATA_MAX_BLOCKS:
-                fails.append(f"GOOD-MORNING.md: strata stack holds {blocks} blocks "
-                             f"(max {STRATA_MAX_BLOCKS}) — ritual step 2f")
-            break
+    # Walk lives in strata_extent()/charged_line_counts() since M5 (2026-07-28) — shared
+    # with the mover's projected-count guard, behaviour identical (see those docstrings).
+    _strata_lines, strata_blocks = strata_extent(lines, spans)
+    if strata_blocks > STRATA_MAX_BLOCKS:
+        fails.append(f"GOOD-MORNING.md: strata stack holds {strata_blocks} blocks "
+                     f"(max {STRATA_MAX_BLOCKS}) — ritual step 2f")
 
+    counts = charged_line_counts(lines, spans)
     for name, (s, e) in sorted(spans.items(), key=lambda kv: kv[1][0]):
-        n = e - s
+        n = counts[name]
         if name in SECTION_EXEMPT:
             notes.append(f"{name}: {n} lines — EXEMPT by ruling (standing, uncapped): measured "
                          f"and reported, never charged.")
             continue
         if name not in SECTION_CAPS:
             continue
-        if name == "§C":
-            n -= strata_lines
         warn_at, block_at = SECTION_CAPS[name]
         step = "2e" if name == "DO-FIRST" else "2"
         if n >= block_at:

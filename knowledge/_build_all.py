@@ -50,6 +50,11 @@ STEPS = [
     # gates BY RULING; wrap-time checks are `--wrap`, session-run, not wired here.
     ("capture/provenance gate — status+provenance on new notes+dossiers (Memento §4.1)", "_capture_gate.py"),
     ("capture/provenance selftest (Memento §4.1)", "_capture_gate.py", ["--selftest"]),
+    # M5 (brief §11, built 2026-07-28 #21): the hardened GM/LS mover the wrap ritual's
+    # 2c/2d/2e moves route through. Its selftest is the proof its refusals FIRE — line-start
+    # anchors · §A digest assert · imported caps (warn ≠ block) · no-op loud FAIL ·
+    # all-or-nothing. The mover itself runs at ritual time, not in the build.
+    ("GM/LS mover selftest — hardened move mechanics (M5)", "_gm_move.py", ["--selftest"]),
     ("cross-reference index", "_build_xref_index.py"),
     ("sutherland acceptance fixtures", "_build_sutherland_fixtures.py"),
     ("states-completeness probe (advisory)", "_build_states_probe.py"),

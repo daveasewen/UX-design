@@ -127,6 +127,7 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
      the budget.
 
    **2c. Compact the banner stack — keep ★ LATEST + 1 PRIOR, roll the rest to `_GM-ARCHIVE.md`.**
+   → **Execute every move via `python3 knowledge/_gm_move.py --ops <ops.json>` — never hand-edit a roll** (M5, 2026-07-28: line-START anchors · §A digest asserted · caps imported, warn ≠ block · all-or-nothing · stdout receipts).
    *(Added 2026-07-25, Dave: "make good morning more efficient… keep improving Memento." First run the
    same day cut `GOOD-MORNING.md` by 35%.)*
    The stacked PRIOR banners are Polaroids: they accrete every session and, unpruned, become the single
@@ -150,7 +151,9 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
    `_DECISION-HISTORY/`) do NOT count — a cold session reads none of them.
 
    **2d. Compact the `_LIVE-STATE` delta stack — keep ⏱ LATEST + 2 PRIOR, roll the rest to
-   `_LIVE-STATE-ARCHIVE.md`.** *(Added 2026-07-26 — dream-pass P1, Dave ruled accept-enact-now. First
+   `_LIVE-STATE-ARCHIVE.md`.**
+   → **Execute every move via `_gm_move.py` — the 2c pointer's contract, same mover, same ops file.**
+   *(Added 2026-07-26 — dream-pass P1, Dave ruled accept-enact-now. First
    roll same day cut `_LIVE-STATE.md` 205KB→62KB; it had exceeded a single Read call.)*
    Exact sibling of 2c: at each wrap that adds a new ⏱ LATEST delta, move every delta older than
    **LATEST + 2 PRIOR** into `_LIVE-STATE-ARCHIVE.md` — **verbatim, newest-first, a move never a
@@ -176,6 +179,7 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
 
    **Roll:** at each wrap, strata older than **LATEST + 1 session** move verbatim to `_GM-ARCHIVE.md`,
    **EXIT CHECK first** — the same check as 2c, not a second one; do not re-derive it.
+   → **Execute every move via `_gm_move.py` — the 2c pointer's contract, same mover, same ops file.**
    **Cap: 120 lines (warn) · 180 (block).** A contract-compliant DO-FIRST runs ≈ 60–80.
 
    **The retirement tests — the answer to "when does this stop earning its place?" (GM-D2, all four):**

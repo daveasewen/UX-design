@@ -2,6 +2,35 @@
 
 ---
 
+## Batch 2026-07-28 #21 — rolled by the M5-lands wrap (Fable solo, Dave live) — ★ THE MOVER'S FIRST LIVE FIRE: every move in this batch executed by `knowledge/_gm_move.py` (§A sha256 asserted mechanically before/after, caps charged by the gate's own function, all-or-nothing; receipts on the wrap's stdout). Verbatim, newest-first.
+
+*EXIT CHECK receipts (2c): #19 banner — its ⬛ OPEN items all hold standing homes: the M-set build window → landed (M5 ✅ #21, ledger § ★ M5 ENACTED; ex-M4a/M4b → §C·1 lane 2) ✓ · M11 fire → §C·4 ⬛ DAVE'S CALLS + item 0 ✓ · §C·2 rulings + dataviz sign-off → §C·2 ✓ · calm-banner verdict → §C·4 ✓ · LS-trim-vs-defer → §C·4 M10 line ✓. Its ★ FOUND stories are inscribed: the tattoo-vs-Polaroid chain correction → #19's ledger/receipt homes (unchanged) ✓ · §C-prose-stricter-than-its-gate → closed IN CODE by M5's imported-caps guard (this batch) ✓. (2e) worklist item 0 replaced by the #21 lane-1-step-2 form — old text verbatim below. (2f) #20 commit-state below; #20 pre-flight+post-mortem → `notes/_GAUGE-LOG.md`, same pass.*
+
+### DO-FIRST retirement (2e) — item 0 pre-#21, verbatim
+> **0. ★ LANE 1 REMAINDER — M5 `_gm_move.py`, the next window's ONE job** — M3 · M6–M12 ENACTED #18
+>    (receipts `_GM-ARCHIVE.md` § Batch 2026-07-27 #18 · ledger § ★ M-SET ENACTED); **ex-M4a/ex-M4b
+>    RECLASSIFIED to lane 2 at #20** (ledger § TWO LANES — survey receipted there, do NOT re-survey).
+>    M5 spec = brief §11: CALL `section_a_digest()` · import `SECTION_CAPS` · line-START anchors ·
+>    all-or-nothing · bites that FIRE · then runbook 2c/2d/2e become one-line pointers. Model: Dave
+>    seats it (Opus ruled #17; Fable cleared #20). M11's fire stays DAVE's, before Sun 08-02.
+>    [born #17 · amended #20 · guards: the brief · until: enacted]
+
+### Rolled banner — #19, verbatim (2c)
+> ## ★ PRIOR — 2026-07-28 (Tue **morning #19**, OPUS conductor + one FABLE worker (re-seated by Dave mid-flight), Dave live — ★★ **MEMENTO-BEFORE-APOLLO RULED A STANDING PRIORITY and landed in §C·1, so a cold session can no longer default onto an Apollo strand** · ★ **GM's own pre-flight was telling the next window the OPPOSITE of what the ledger recorded** · 🟡 mid-band at authoring): **"The Polaroid said the chain shrank, the tattoo said it rose, and the tattoo was right."**
+> - **★★ LANDED, with evidence.** Dave's ruling (Fable window, option-select: *"Standing priority"* over "soft posture" and "only until M-set lands") inscribed at `notes/_MEMENTO-DECISIONS.md` § Memento-before-Apollo · surfaced as ONE line at the head of §C·1 · worker receipt `notes/_receipts/2026-07-28-memento-jit-research-worker.md` · research note `notes/2026-07-28-memento-jit-context-research.md` · 2026-07-28. The receipt asked for exactly this and named the failure it prevents: without it "the next session will pick an Apollo strand off §C·1 by default".
+> - **★ FOUND — the handoff contradicted the ledger, and the handoff lost.** The #19 pre-flight guide read *"the chain has since shrunk, so re-measure, don't inherit"*; the ledger, inscribed at the same wrap, read *"the chain rose across this wrap, which is honest"*. A cold re-measure agreed with the ledger: **28,843 → 29,694 tk**. Corrected in place. This is the tattoo/Polaroid rule paying for itself — and the pre-flight line had been written to be OBEYED by the very next reader.
+> - **★ FOUND — three chain numbers, and 116 tk that will not reproduce.** Ledger says **29,810**, header said **29.7K**, `_capture_gate.py` on unchanged bytes measures **29,694**. Observed: the current files compute 29,694, which is what any gate will get. Inferred, NOT observed: the ledger measured before GM's final 22:14 write. The ledger line stays (verbatim discipline); the non-reproducing number is flagged here instead.
+> - **★ FOUND — "§C IS AT CAP, an addition must DISPLACE" is prose, and the gate disagrees.** Measured via `section_spans` + `SECTION_CAPS`: §C charged **149** (warn 150 / block 225), DO-FIRST **84** (warn 120 / block 180). One free line existed, and a warn was never a block. **The standing priority fit in the free line and nothing live was displaced** — the gate-narrows-its-own-rule class, running in the other direction for once: the prose was STRICTER than the gate, and obeying it would have cost a live line for nothing.
+> - **⚠ WHAT THE AUTHOR FLAGS.** I priced this pass at ~5% to Dave and the gate immediately made it a full capture ritual — two date FAILs plus the worker's note missing its machine-readable `status:` field (its prose declared FLOATED; the field the gate reads was absent). Surfaced, not swallowed, but the price Dave agreed to was not the price of the job. Also: this wrap again ran **without M5's mover** — hand-rolled, line-START anchors, `section_a_digest()` CALLED rather than re-derived, §A asserted before and after every write.
+> - **⬛ OPEN, Dave's:** the M-set build window (M4a·M4b·M5) — now step 1 of the ruled lane, not a standalone · M11 supervised fire before Sun 08-02 · §C·2's 15 rulings + dataviz sign-off (PARKED, unchanged) · calm-banner verdict · whether §C·4's "trim the LS standing body" is SUPERSEDED by the JIT lane's "defer it" (same 12,694 tk, opposite treatment).
+>
+> 
+
+### Commit-state — #20 (2f), verbatim
+> **COMMIT STATE (refreshed 2026-07-28 ~08:55 BST from `date`).**
+> **Context gauge at authoring: 🟡 ~55–58% (ESTIMATE) — Amber ⇒ ordinary scrutiny; wrap-only past the call.**
+> ONE commit: `notes/_MEMENTO-DECISIONS.md` (§ TWO LANES) · `GOOD-MORNING.md` (#20 banner · STATE · pre-flight #21 · names · §C·1 two-lane line · item 0 · strata roll) · `_LIVE-STATE.md` + `_LIVE-STATE-ARCHIVE.md` (2d: #20 in, #17 rolled) · `_GM-ARCHIVE.md` (Batch 2026-07-28 #20) · `notes/_GAUGE-LOG.md` (#18 pre-flight rolled) · `knowledge/_proforma/_DATAVIZ-DECISIONS.md` (lane-2 breadcrumb) · `_DECISION-HISTORY/2026-07-28-two-lanes-and-the-mislabelled-m.md` (NEW). Build exit 0 · wrap gate stdout (M10 chain warn expected, honest) · STAND-002 PASS. Dave pushes via GitHub Desktop, whole stack, Desktop closed.
+
 ## Batch 2026-07-28 #20 — rolled by the TWO-LANES wrap (Fable solo, Dave live). Verbatim, newest-first. §A sha256 `999b1e3d…` asserted before and after every write via `_capture_gate.py::section_a_digest()` — called, never re-derived (M5's mover STILL unbuilt; fifth hand-rolled pass).
 
 *EXIT CHECK receipts (2c): #18 banner — its ⬛ OPEN items all hold standing homes: the build window → §C·1 lane 1 (amended #20) ✓ · LS standing-body trim → §C·4 M10 promotion trigger ✓ · M11 fire → §C·4 ⬛ DAVE'S CALLS ✓ · §C·2 rulings + sign-off → §C·2 ✓ · calm-banner verdict → §C·4 ✓. Its ⚠ flags are inscribed, not dated-only: the M7-suppressor + M8-fixture stories → ledger § ★ M-SET ENACTED + dossier `_DECISION-HISTORY/2026-07-27-mset-enactment-cheap-first.md` ✓ · hand-rolled-wrap discipline → `section_a_digest()` in code ✓. (2e) worklist item 0 replaced by the #20 lane-1 form — old text verbatim below. (2f) #18 commit-state below; #18 pre-flight → `notes/_GAUGE-LOG.md`, same pass. ⚠ #19 wrote NO stratum of its own (flagged in the #20 banner — nothing existed to roll).*
