@@ -1356,3 +1356,88 @@ blocking is DO-FIRST item 1 and is gated on Dave's four values. Had it been bloc
 been a red build instead of a line in an advisory census I had to go looking for; had I not gone
 looking, scatter would have shipped a shadowless popover that renders *almost* right. That is the
 argument for promotion, and it now has a live instance behind it rather than only a rationale.
+
+---
+
+## ds-021 — The GM growth contracts are denominated in a unit the window does not charge in (2026-07-28, session #30, measured)
+
+**Status: OPEN, UNRULED. This is Dave's call — the thresholds are his** (`_RUNBOOK-context-gauge.md`
+§ ★ THE FLOOR IS MEASURED: *"the numbers are Dave's and are re-dialled only by him, here"*).
+
+**What was measured.** Both chain files, two ways, same session:
+
+| | `tiktoken cl100k_base` (what the gate measures) | actually charged on read | ratio |
+|---|---|---|---|
+| `GOOD-MORNING.md` | 16,107 tk | **25,355 tk** | 1.57× |
+| `_LIVE-STATE.md` | 18,818 tk | **29,103 tk** | 1.55× |
+| chain floor | 34,925 = 17.5% | **54,458 = 27.2%** | — |
+
+**Why it matters.** Every cap in the 2c–2f growth contracts, and every floor figure in every stratum,
+is stated in cl100k tokens. The window is not charged in cl100k tokens. So:
+
+- **GM compactable warn 8,000 / block 12,000 are really ~12,600 / ~18,800 charged.**
+- At audit time GM measured **11,899 — 99.2% of block** — while the file actually costs ~18,700.
+- The reported floors (#27 16.1% · #28 17.0% · #29 17.2%) understate true fill by **~10 points**.
+
+~2,100 tk of the gap is line-number prefixes, which are a *real* cost — the chain is read through the
+Read tool, so the prefix is charged every time. The remaining ~17,400 is tokenizer difference: this
+corpus's ★ ⚠ ⛔ · — load prices differently under the two encoders.
+
+**The class.** Same as `measure-dont-convert-units` and #28's *a count is not a measurement*: a proxy
+was measured carefully and then reported as the quantity itself. The runbook already warns
+*"Measure, never convert by rule of thumb"* about **bytes→tokens** — and then converts
+**cl100k-tokens→charged-tokens** at 1.0 without saying so. ⚠️ **The gate is not wrong; it is precise in
+the wrong unit**, which is why five sessions of careful measurement never caught it.
+
+**What #30 did NOT do.** Re-dial anything. A falsified constant is UNSET and forked, not replaced by
+the finder's own number (derivation governance). The 1.55–1.57× ratio is **observed on two files in one
+session** — it is not established as a corpus constant, and a third measurement could move it.
+
+**Remedies, Dave's pick — none started:**
+**(a)** Keep cl100k as the measured unit, re-dial the caps to their charged equivalents (one edit,
+thresholds stay his). **(b)** Measure and report BOTH numbers in the stamp and the gate output, and
+let the caps bind on the charged one. **(c)** Rule the ratio a corpus constant only after it is
+measured on a third and fourth file — the honest option, and the slowest.
+⚠️ Whichever wins, the fix must reach `_RUNBOOK-context-gauge.md` § THE FLOOR IS MEASURED, the
+`_capture_gate.py` cap constants, and the stamp format together — three homes, one unit.
+[born #30 · guards: this entry · until: Dave rules a unit]
+
+---
+
+## ds-022 — Step 2f's stratum split is discipline with no receipt: nothing reads `_GAUGE-LOG.md` (2026-07-28, session #30, measured)
+
+**Status: OPEN, UNRULED. Repair done at #30's wrap; the mechanism is untouched.**
+
+**The rule** (capture ritual step 2f): at each wrap the older stratum splits — **post-mortems →
+`notes/_GAUGE-LOG.md`** (append-only, chronological, one block per session) · **commit-states →
+`_GM-ARCHIVE.md`**. The log exists so the throttle programme is not reasoning from n=1.
+
+**What was observed** (`grep '^#### ' notes/_GAUGE-LOG.md`, 2026-07-28):
+
+- blocks present: **#6 #7 #8 · #12–#18 · #20–#25 · #27**
+- **#26, #28, #29 never arrived** — their strata rolled WHOLE into `_GM-ARCHIVE.md` instead of splitting
+- **#9 #10 #11 #19 absent with no HOLE line**, so the file cannot say whether a stratum ever existed
+  (#14 is the counter-example: its absence was flagged, so #14 is countable)
+- **#27's block sits at line 7, above the #6→#25 run** — prepended by #28's wrap, against this file's
+  own declared APPEND-ONLY · chronological contract
+
+**#29 is the expensive loss.** It is the only 🔴 RED session on the board and the only one with a
+measured overrun cause. Its closed band lived on a Polaroid (`GOOD-MORNING.md`) and never reached the
+tattoo. Dream-pass-3 **P1(a)** rules *record-FIRST-then-quote — one number, one source*; #29 quoted a
+number it had not recorded, which is the #18 failure the rule was written to prevent, one ruling later.
+
+**Why it kept happening: no gate can see it.** `grep -n 'GAUGE-LOG' knowledge/*.py` returns four hits,
+**all comments or docstrings — zero checks.** The wrap gate verifies §C lines, compactable size, chain
+size, banner region, retirement receipts, section-usage FORM, consult-receipts FORM, lane-routing and
+pre-flight FORM. It does not verify that the post-mortem it just displaced landed anywhere.
+**This is the gate-don't-patch trigger:** three wraps in a row got the same step wrong, which is the
+definition of a condition that should be gated rather than remembered.
+
+**Remedies, Dave's pick — none started:**
+**(a)** A wrap check: the session number in GM's stratum must be N, and N−1 must have a block in
+`_GAUGE-LOG.md` — FAIL otherwise. Cheap, catches exactly this. **(b)** Same check, plus assert the
+file's own contract (chronological, one block per session, no duplicate keys). **(c)** Fold the roll
+into `_gm_move.py` so it cannot be done by hand at all — the M5 argument, applied one step further.
+⚠️ **(a) needs a HOLE escape hatch** or it will block a wrap whose predecessor legitimately wrote no
+stratum — the P1(b) line must satisfy the check, or the gate will teach sessions to fake blocks.
+[born #30 · guards: this entry + the GAPS block in `notes/_GAUGE-LOG.md` · until: Dave rules a remedy]

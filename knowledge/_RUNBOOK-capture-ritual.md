@@ -308,14 +308,24 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
    good morning going forward, it's more efficient than copy and pasting your suggestion.")*
    Sessions drift — they routinely end up being about something other than what they were opened for
    (2026-07-18 opened as the type retrofit and became the halation/edge-extremity discovery; the retrofit
-   was ~15% of it). So the handoff carries **two** names, and both go at the TOP of `GOOD-MORNING.md`
-   where Dave acts on them first, not buried at the bottom:
+   was ~15% of it). So the wrap delivers **two** names — but they go to **two different places**:
    - **RENAME THIS SESSION → `<retrospective title>`** — what it turned out to be, written with hindsight.
-     Dave applies it to the finished conversation.
-   - **NEXT SESSION TITLE → `<forward title>`** — the opener for tomorrow.
-   Write them as ready-to-use lines, not as a suggestion needing reformatting. Claude cannot rename a
+     **DELIVERED IN CHAT AT WRAP, never written into `GOOD-MORNING.md`.** ⚠️ **AMENDED — ruled Dave #28,
+     2026-07-28 (post-wrap addendum, step 5b), superseding the both-names-at-the-top instruction above.**
+     The reason: the rename applies to the conversation that is ENDING, so a cold reader of the next
+     handoff can do nothing with it — it was billing cold-start tokens to every future session to carry
+     an instruction only the outgoing one could act on. **ENACTED here #30** (owed since #28; the ruling
+     had been living only on a rolling banner, which the 2c EXIT CHECK caught one wrap before it rolled).
+   - **NEXT SESSION TITLE → `<forward title>`** — the opener for tomorrow. **This one stays at the TOP of
+     `GOOD-MORNING.md`**, where Dave acts on it first, not buried at the bottom.
+   Write both as ready-to-use lines, not as suggestions needing reformatting. Claude cannot rename a
    conversation itself — no tool for it — so the line exists to make Dave's action one copy, not a
    re-read of the whole handoff to work out what the session became.
+   ⚠️ **Title SIZE is a DISCIPLINE, NOT A GATE — ruled Dave #28** (*"not a hard cap if it impacts
+   context… not necessarily a strict cap"*), knowingly exceedable when a longer title aids HIS recall.
+   He flagged unease at an ungated rule and was right: #28 broke it by 19% (295→352 tk) in the session
+   that made it, and MEASUREMENT caught it, not a gate. **An ADVISORY report that names the size and
+   never fails is offered and remains HIS call** — un-blocked, not ungated. Still owed as of #30.
    ⚠ **Titles are LABELS, never role assignments** (2026-07-21: a forward title's `[conductor + 2
    workers]` seated a second conductor). If the coming session runs the parallel model, say so in the
    §C brief and let the ROLE come from Dave's opener line — and include the **DIVVY PLAN** (lanes ·

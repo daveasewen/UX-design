@@ -183,3 +183,45 @@ step 2f (`113eefc`) yet wrote no stratum of its own; its gauge story lives only 
 >
 >
 >
+
+#### 2026-07-28 #26 — GAP, stratum written but never reached this file
+
+> Audited #30 (2026-07-28). The stratum exists in `_GM-ARCHIVE.md` (rolled WHOLE by #27's wrap).
+> Not recovered here: recovering it is a judgement about which half is the post-mortem, and #30 ran
+> out of budget to do it verbatim. **Recorded as a gap so it stays visible** (2f/P1(b)).
+
+#### 2026-07-28 #28 — RECOVERED at #30's audit
+
+> **Provenance:** copied verbatim from `_GM-ARCHIVE.md` (Batch 2026-07-28 #29), where #29's wrap rolled
+> the WHOLE stratum instead of splitting it per step 2f. The archive copy is left untouched — verbatim
+> discipline outranks tidiness; this file is the authoritative dataset, the archive is a convenience copy.
+
+> **pre-flight:** fill 17% + job 25% + wrap 8% = 50% AMBER-projected · reserve 15% ring-fenced *(floor MEASURED at the opener: GM 15,985 + LS 17,977 = 33,962 tk = 17.0%; harness ~7 pts inferred on top. Job priced 20–25% for "amend + three cheap gates", then **RE-PRICED DOWN mid-flight** when Dave's answers removed two of the three — forked to him with the numbers, he re-picked. Both announced in-chat.)*
+> **CLOSED: 🟡 AMBER ~58–62% (ESTIMATE, unconfirmed out-of-band) — at the RED boundary; reserve untouched.** Overrun cause: not the job. The WRAP ran long — the 2c EXIT CHECK found three Dave-owed items with no standing home, the mover refused two anchors, and the compactable budget took four passes to clear 12K.
+> **PACE (perishable, replaces Tue 14:25): NOT RE-READ THIS WINDOW** — the 14:25 panel was already ~1h stale at the opener; a fresh reading was asked for and not supplied, so this window spent against an unknown. ⚠ #29 must ask again — no gate can see it.
+> **★ THE LESSON, for the next reader:** DV-D02 said horizontal bar was excluded; `Chart-bar:387` had carried `dv-fit` since the day it was built. **When a rule and its implementation disagree, do not assume the implementation is the defect** — check which one Dave actually ruled. The mirror-image failure landed in the same window: I read a grep COUNT and inferred a mechanism's state from it. **A count is not a measurement of the thing you care about.** Full arc: the 1b dossier.
+> **section-usage #28 (observed, self-report):** GM HDR:C LATEST:C PRIOR:R DOFIRST:C A:C C1:R C2:C C2b:U C3:U C4:C C4b:U C5:U STRATA:C · LS HDR:R LANES:C SPIN:R DELTAS:C WEBFONT:R LIVE:R LIFECYCLE:R DEAD:R OPEN:R TARGETS:R SPINOFFS:R
+> **section-sizes #28 (tiktoken cl100k_base):** GM HDR:1378 LATEST:1627 PRIOR:1412 DOFIRST:2310 A:4208 C1:842 C2:1157 C2b:484 C3:181 C4:1435 C4b:256 C5:84 STRATA:1276 · LS HDR:255 LANES:872 SPIN:1794 DELTAS:3045 WEBFONT:604 LIVE:4928 LIFECYCLE:973 DEAD:432 OPEN:4361 TARGETS:577 SPINOFFS:444 · totals GM:16650 LS:18285
+> **consult-receipts #28:** "DV-D02 fit-to-width control cartesian charts exclusion lockup horizontal bar" → DV-D02 · DV-D10 · DV-D14 · R-D6 · T-D15 ; "fetch DV-D02 verbatim" → DV-D02 ; "fetch T-D15 verbatim" → T-D15 ; "chart title rule presence vs content" → none — the doors do not index `knowledge/guidelines/` rule TEXT by phrase, found by grep: dv-006 · dv-007 · dv-bar-001
+> *(★ retrieval earned its keep: T-D15 came back UNBIDDEN and was what Dave raised two messages later. ⚠ The title rule needed a GREP — neither door indexes `docs/decisions/` (§C·4).)*
+
+#### 2026-07-28 #29 — ROLLED at #30's wrap (late; #29's own wrap did not roll it)
+
+> **pre-flight:** fill 17% + job 25% + wrap 8% = 50% AMBER-projected · reserve 15% ring-fenced *(floor MEASURED at the opener: GM 16,200 + LS 18,285 = 34,485 tk = 17.2%; harness ~7 pts inferred on top. Job re-priced TWICE mid-flight — the `set_content` finding, then the sweep turning a one-chart proof into a corpus question — both announced in-chat and both forked to Dave, who re-scoped on the second.)*
+> **CLOSED: 🔴 RED ~68–72% (ESTIMATE, unconfirmed out-of-band) — reserve INTACT.** Overrun cause: the job was priced for one chart and one instrument; it cost four instrument corrections and a sweep. Dave was offered the reduced wrap at the Red boundary and **ruled full ritual**.
+> **PACE (perishable, replaces Tue 14:25 — Dave supplied it at the opener, as #28 asked): Tue 17:40 — All 65% used vs 68.3% week elapsed = 0.95× (behind, 1.10× catch-up to Thu 23:00) · Fable 79% = 1.16× (ahead, 0.66× — ration).** Opus counts to All, which is why this window was Opus.
+> **★ THE LESSON:** every correction came from **one measurement disagreeing with another**, never from reasoning about the code. **A single instrument agreeing with itself is not evidence — build the second one.** Arc: the 1b dossier.
+> **section-usage #29 (observed, self-report):** GM HDR:C LATEST:C PRIOR:R DOFIRST:C A:R C1:R C2:U C2b:U C3:U C4:R C4b:U C5:U STRATA:C · LS HDR:R LANES:R SPIN:U DELTAS:C WEBFONT:R LIVE:R LIFECYCLE:U DEAD:U OPEN:U TARGETS:U SPINOFFS:U
+> **section-sizes #29 (tiktoken cl100k_base):** GM HDR:1116 LATEST:1048 PRIOR:1664 DOFIRST:2474 A:4208 C1:842 C2:1157 C2b:484 C3:181 C4:1435 C4b:256 C5:84 STRATA:994 · LS HDR:255 LANES:872 SPIN:1794 DELTAS:3578 WEBFONT:604 LIVE:4928 LIFECYCLE:973 DEAD:432 OPEN:4361 TARGETS:577 SPINOFFS:444 · totals GM:15943 LS:18818
+> **consult-receipts #29:** "axis text collision cropping clipped descender SVG text render proof" → DV-D15 · DV-D14 · T-D12 · DV-D10 · T-D9 ; "text cropping collision render proof getBBox axis label" → lane:lane-2-apollo-charts · gm:DOFIRST · ls:LIVE
+> *(⚠ **the governing facts were NOT in either returned set** — ds-005 and `_validate_descender_clip.py`'s `text-box-edge` scope came from GREP. **Second instance of #28's gap**: the doors do not index rule TEXT by phrase, nor `docs/decisions/` — §C·4.)*
+
+#### GAPS FOUND AT #30's AUDIT — sessions with no block in this file (P1(b))
+
+> **#9 · #10 · #11 · #19** — absent, and absent WITHOUT a HOLE line, so nothing here records whether a
+> stratum was ever written. **Not inferred either way** — the dataset simply cannot say. #14 is the
+> counter-example: its absence WAS flagged, which is why #14 is countable and these four are not.
+> ⚠️ **This file declares itself APPEND-ONLY and chronological (header, above). #27's block sits at
+> line 7, above the #6→#25 run — prepended by #28's wrap.** Left in place, not re-sorted.
+> Registered as **ds-022** in `knowledge/_DS-IMPROVEMENTS.md`: no gate reads this file, so step 2f's
+> split is discipline with no receipt. [born #30 · guards: this line · until: ds-022 is ruled]

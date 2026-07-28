@@ -29,6 +29,19 @@ encoding."* — correct: ds-005 fixed descender clip and `_validate_descender_cl
 that gate operates on CSS `text-box-edge`, which SVG `<text>` does not use** — it structurally cannot
 see an axis label. The collision half has no gate anywhere.
 
+> **✅ INSTRUMENTED 2026-07-28 #29 — `knowledge/_render/verify_chart_text_render.py`.** MEASURED, both
+> widths, licensed cut: `'Savings (£000)'` ink **1.38 units** above the viewBox ceiling ·
+> `'75'` × `'Savings (£000)'` ink overlap **13.96 × 3.50**. Bite (sentinel) detects; `--control`
+> (the geometric remedy, applied live) goes GREEN — so the proof is not merely stuck red.
+> ⚠ **The note above is right about the ink but wrong about the mechanism, and the distinction
+> decides the remedy:** the `g` is the ink involved in the *collision*, but it is **not clipped** —
+> the clipping happens to the **caps at the opposite edge**. Two defects, one sensation. A fix aimed
+> at descenders would have addressed neither. Both beats kept per the Memento discipline.
+> ⚠ **Still OPEN:** the defect is measured, not fixed. `--control` SPECIFIES the geometry
+> (`x=2→46`, `y=9→11`) — the numbers are Dave's to rule. Corpus-wide debt **UNMEASURED**
+> (see the dossier's "what is NOT proven"). Arc + the four instrument corrections:
+> `_DECISION-HISTORY/2026-07-28-chart-text-clip-collision-render-proof.md`.
+
 **2 · Charts must be responsive — and the existing rule's exclusion list is itself wrong.**
 See § DV-D02 below; this is the biggest item here, because the rule I was about to encode has a
 defect in it.

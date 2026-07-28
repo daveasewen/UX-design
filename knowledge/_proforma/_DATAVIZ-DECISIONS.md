@@ -675,6 +675,23 @@ in `_LIVE-STATE.md` (🟡 PARKED entry) so the state machine doesn't read this a
   **DV-D16** (stacked sequential animation) · **DV-D17** (isolate marker persistence) ·
   **ds-018** (Reset disabled renders as hover). All three are CAPTURED, **none enacted** — each carries
   a READ-BACK question that must be answered before any build. Nothing here has been render-verified.
+- **★ CHART TEXT — CLIP + COLLISION · INSTRUMENTED 2026-07-28 (#29), REMEDY UNRULED.** Brief finding 1
+  (`notes/_briefs/2026-07-28-chart-encoding-gaps-carry-forward.md`) is now measured by a render-proof,
+  `knowledge/_render/verify_chart_text_render.py` — the ds-005 gate matches on CSS `text-box-edge` and
+  structurally cannot see SVG `<text>`, so this belongs to the render-proof family, not a `_validate_*.py`.
+  **Asserts, on ink not em box:** (A) every `<text>`'s ink sits inside the viewBox · (B) no two ink boxes
+  intersect. **MEASURED on Chart-scatter, both widths, licensed cut:** `'Savings (£000)'` **1.38 units**
+  above the ceiling · `'75'` × `'Savings (£000)'` overlap **13.96 × 3.50**.
+  **⛔ RULED (Dave, #29): ink tolerance = 0.5 user units**, shown before it stood — the ceiling line cuts
+  the caps of "Savings", the floor line only kisses "Monthly income"'s descenders (~0.5), so the latter
+  PASSES and must not be "fixed".
+  ⚠ **`getBBox()` IS THE EM BOX, NOT THE INK** — it over-reports this label by **4.62 units** (6.00 vs
+  1.38). A containment check written on it fires 4.6 units early and fails compliant charts on run 1.
+  Do not "simplify" this proof back onto `getBBox()` vertically.
+  **OPEN:** the geometry itself. `--control` specifies `x=2→46` + `y=9→11` and goes GREEN, but the
+  numbers are **Dave's to rule** (derivation governance). **Corpus-wide debt UNMEASURED** — the `--all`
+  sweep's 78 findings are UNTRUSTED pending two named instrument fixes (ancestor transforms · ancestor
+  visibility). Arc: `_DECISION-HISTORY/2026-07-28-chart-text-clip-collision-render-proof.md`.
 - **Grouped column layout redesign** — awaiting Dave's reference images (Batch 1 #3).
 - **DV-D02 responsive** — needs an in-browser resize check by Dave (built blind; safe fallback).
 - **Two new Figma display types + 4px-grid type tokens** — land the real display scale, replace
