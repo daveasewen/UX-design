@@ -159,6 +159,15 @@ step 2f (`113eefc`) yet wrote no stratum of its own; its gauge story lives only 
 > **PACE (perishable, replaces Tue 11:18):** panel Tue 11:50 BST — week 64.8% elapsed · All 57% ⇒ 0.88× · **Fable 66% ⇒ 1.02× — ON PACE, first time this week** (0.78→0.91→0.96→1.02) · catch-up to Thu 23:00 = All 1.22× / Fable 0.97× — MORE-WINDOWS holds for All only; Fable spends at pace, no catch-up posture.)*
 > **section-usage #24 (observed, self-report):** GM HDR:C LATEST:C PRIOR:R DOFIRST:C A:C C1:C C2:R C2b:R C3:R C4:C C4b:R C5:R STRATA:C · LS HDR:R LANES:C SPIN:R DELTAS:C WEBFONT:R LIVE:R LIFECYCLE:R DEAD:R OPEN:R TARGETS:R SPINOFFS:R
 > **section-sizes #24 (tiktoken cl100k_base):** GM HDR:1032 LATEST:847 PRIOR:862 DOFIRST:2126 A:4208 C1:782 C2:1076 C2b:484 C3:181 C4:1204 C4b:256 C5:84 STRATA:882 · LS HDR:255 LANES:674 SPIN:1794 DELTAS:2221 WEBFONT:604 LIVE:4928 LIFECYCLE:965 DEAD:432 OPEN:4361 TARGETS:577 SPINOFFS:444 · totals GM:14024 LS:17255
+#### 2026-07-28 #25
+
+> **pre-flight:** fill ~30% + job 17–22% + wrap 8% = ~55–60% AMBER-projected · reserve 15% ring-fenced *(fill = 15.8% chain MEASURED 31,504 tk + ~7 harness inferred + read-render overhead; job re-priced 15–20%→17–22% at the "and this" scope-in, announced in-chat)*
+> *(Session #25, 2026-07-28, Fable solo, Dave live. Ran to spec: survey → design read-back + option-select ×3 (all recommended) + mid-flight scope-in → build `[72/72]` → records flip (records FIRST, view, ⛔ line — routing check green pre-wrap) → wrap. Amber announced at build-close per M1. Closed 🟡 **~57% ESTIMATE** (band from the remaining-budget table), reserve untouched; the one unplanned finding (archive contract falsified by the corpus) was absorbed at minutes-cost, said in the banner, no fork needed.
+> **PACE (perishable, replaces Tue 11:50):** panel Tue ~12:55 BST — week 65.4% elapsed · All 59% ⇒ 0.90× · **Fable 70% ⇒ 1.07× — AHEAD of pace, first time this week** (0.91→0.96→1.02→1.07) · to Thu 23:00: All 1.19× · Fable 0.87× — MORE-WINDOWS holds for All only; Fable now spends DELIBERATELY, not in catch-up.)*
+> **section-usage #25 (observed, self-report):** GM HDR:C LATEST:C PRIOR:R DOFIRST:C A:C C1:C C2:R C2b:R C3:R C4:C C4b:R C5:R STRATA:C · LS HDR:R LANES:C SPIN:R DELTAS:C WEBFONT:R LIVE:R LIFECYCLE:R DEAD:R OPEN:R TARGETS:R SPINOFFS:R
+> **section-sizes #25 (tiktoken cl100k_base):** GM HDR:999 LATEST:952 PRIOR:1001 DOFIRST:2132 A:4208 C1:820 C2:1076 C2b:484 C3:181 C4:1204 C4b:256 C5:84 STRATA:8 · LS HDR:255 LANES:727 SPIN:1794 DELTAS:2336 WEBFONT:604 LIVE:4928 LIFECYCLE:965 DEAD:432 OPEN:4361 TARGETS:577 SPINOFFS:444 · totals GM:13405 LS:17423
+> **consult-receipts #25:** "modular search index adapters memento consult" → R-D5 · T-D1 · open-001 ; "band table amber threshold remaining budget" → runbook:context-gauge:the-floor-is-measured-never-assumed-and-this-is-the-only-cop ; "lane routing check blocking records" → lane:lane-1-memento
+>
 >
 >
 >

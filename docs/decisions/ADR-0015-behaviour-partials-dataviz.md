@@ -97,6 +97,51 @@ is not supported by the registry schema today. Raised for Dave; not decided here
 Node: ADR-0015-A1
 Edges: amends(ADR-0015, scope=size-clause-and-one-source-posture) · enables(DV-D11, scope=legend-model-needs-its-own-source)
 
+## Amendment 2 — 2026-07-28: the consumes-manifest — universal by default, opt-out by declaration
+
+**Ruled by Dave, 2026-07-28 (session #26; read-back confirmed in his own words: "universal
+automatic opt-in with the option to opt-out individually"). Posture: TENTATIVE, revisit open** —
+his framing kept: leaning per-member, *"working on instinct… flexible at the moment… might be
+neater in the end for them to be global."* The shape was chosen for exactly that flexibility: a
+later firm ruling in EITHER direction is a data edit, not a rebuild.
+
+**What it resolves.** Amendment 1's closing flag (above) and the registry dv-legend
+`$description`'s open item ("a per-member behaviour OPT-IN in the registry schema… Dave's call,
+not a lane's"). The second live case forced the question: Chart-scatter joining the group for
+**DV-J2** (chart-table-toggle accretion) would have carried dv-legend's 16,330 B inert, after
+Chart-sparkline's first case — and the chart-expansion wave could add up to 8 more members,
+multiplying the debt exactly as membership grows. Priced before the wave, not after.
+
+**THE MECHANISM** (`gen_component_partials.py`: `consumes_behaviour` + `non_consumer_marker_fails`):
+
+1. A member object may declare `"consumes": [<behaviour name>, …]`. **ABSENT = every group
+   behaviour** — the universal default, today's behaviour; all five members unchanged at
+   enactment. **PRESENT = only the listed behaviours'** AUTO-BEHAVIOUR blocks, and only their
+   contracts.
+2. **Fail-loud both ways:** unknown names REFUSE · an empty list REFUSES (omit the key for
+   universal) · a non-consuming member carrying the markers REFUSES — declared-away payload
+   present is a defect, not a warning.
+3. The declaration is **positive** ("what I consume"), not a refusal list — the checkable form:
+   a member using a behaviour without carrying it fails the build in both directions.
+4. **Budgets untouched.** Membership never changed source bytes; 16 KB per source · 32 KB per
+   page stand; `_validate_behaviour.py` unmodified.
+
+**Proof at enactment.** Seven selftest bites (§5d) including a green control; the
+universal-default bite proven able to FAIL by mutation control (default flipped → selftest exit 1
+on the right message → restored green). `--check` clean with zero declarations = the
+no-behaviour-change control.
+
+**Measured at amendment:** dv-behaviour 13,004 B + dv-legend 16,330 B = 29,334 B (90% of the page
+budget). First narrow declaration = DV-J2's enactment (Chart-scatter, `consumes:
+["dv-behaviour"]`); Chart-sparkline may shed its inert payload by the same declaration when ruled.
+
+**Drift corrected in the same beat:** the dv-legend `$description` called Chart-scatter a group
+member; `$members` never listed it (and it carries 0 AUTO-BEHAVIOUR markers, measured). The #20
+survey receipt was right; the prose is corrected where it lives.
+
+Node: ADR-0015-A2
+Edges: amends(ADR-0015, scope=group-wide-injection-becomes-manifest-gated)
+
 ## Consequences
 
 - The gate work rides the Chart-line exemplar build: size + pattern checks + sync `--check` +

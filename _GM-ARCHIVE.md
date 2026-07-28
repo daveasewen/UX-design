@@ -2,6 +2,31 @@
 
 ---
 
+## Batch 2026-07-28 #26 — rolled by the DV-J-keys/ADR-0015-A2 wrap (Fable solo, Dave live) — moves via `knowledge/_gm_move.py`, receipts on the wrap's stdout. Verbatim, newest-first.
+
+### Rolled item 0 — #25's worklist head, superseded by the #26 re-pick (2e receipt, M9)
+
+> **0. ★ NEXT WINDOW: LANE 2 FIRST PICK — Dave's, at the opener.** Lane 1 LANDED #25 (O2′ ✅ —
+>    do NOT re-prove; ledger § ★ #25, build `[72/72]`). Options per the records: ex-M4a table-idiom ·
+>    ex-M4b toggle accretion (survey receipted) · §C·1(a) scatter exemplar STEP 1. Retrieval NOW
+>    LIVE: `_memento_search.py "<q>"` → `--fetch <id>` (+ `_consult.py --fetch`); the stratum adds a
+>    consult-receipts line (ADVISORY #25). [born #25 · guards: ⛔ ROUTING + records · until: lane 2's first strand ships]
+
+### Rolled commit-state — #25 (2f)
+> **COMMIT STATE (refreshed 2026-07-28 ~13:20 BST from `date`).**
+> **Context gauge at authoring: 🟡 ~57% (ESTIMATE) — Amber ⇒ re-verify claims against receipts before trusting.**
+> ONE commit this window: `knowledge/_search_core.py` (NEW — engine + receipt format, 14 bites) · `knowledge/_consult.py` (thin DS door: core imported, `--fetch`, honest denominators, +2 bites) · `knowledge/_build_memento_index.py` (NEW — 225 records, 10 classes, closed-contract refusals, `--check`, 9 bites) · `knowledge/_memento_search.py` (NEW — Memento door, 4 known-answer pins + fetch bites) · `knowledge/_memento-index.json` (NEW, generated) · `knowledge/_capture_gate.py` (`consult_receipt_probe` ADVISORY + `selftest_receipts` + lane-note) · `knowledge/_build_all.py` (`[72/72]` — five steps) · `knowledge/_lanes.json` (lane 1 LANDED · lane 2 ACTIVE) + regenerated LS §🛤 view · `GOOD-MORNING.md` (#25 banner · STATE · guide · names · item 0 · ⛔ line · strata) + `_GM-ARCHIVE.md` (Batch 2026-07-28 #25: #23 banner + old item 0 + #24 commit-state) · `_LIVE-STATE.md` (#25 delta · #22 rolled) + `_LIVE-STATE-ARCHIVE.md` · `knowledge/_RUNBOOK-consult.md` (§ O2′) + `knowledge/_RUNBOOK-capture-ritual.md` (2f receipts line; aged probe text fixed) · `notes/_MEMENTO-DECISIONS.md` (§ ★ #25) · `notes/_GAUGE-LOG.md` (#24 block in) + memory — all rolls VIA THE MOVER (receipts this window's stdout; one wrong-extent op caught at DRY, corrected before write). Build `[72/72]` exit 0 · wrap gate at close (usage + M9 + lane-routing BLOCKING · consult-receipts ADVISORY) · STAND-002 green. Dave pushes via GitHub Desktop, whole stack, Desktop closed.
+
+### Rolled banner — #24, verbatim (2c)
+> ## ★ PRIOR — 2026-07-28 (Tue **early afternoon #24**, FABLE solo, Dave live — ★★ **O1′ ENACTED: LANES-AS-RECORDS — `_lanes.json` + generated LS §🛤 view + BLOCKING routing check, build `[67/67]` exit 0** · ★ **section-usage probe PROMOTED (the #23 trigger fired)** · 🟡 ~57% est at wrap): **"The lane order stopped being read discipline and became a gate."**
+> - **★★ LANDED, with evidence.** `knowledge/_lanes.json` (3 lane records, schema in-file) · `knowledge/_gen_lanes.py` (fail-loud validate + generate + `--check` determinism; 19 selftest bites — unknown state/field, dangling guard, stale block, lane-order violation, markers-missing all REFUSE) · LS §🛤 LANES view generated between AUTO-LANES markers · `_capture_gate.py::lane_routing_check` BLOCKING at wrap (logic IMPORTED from the generator, +3 gate-side bites) · `_gm_usage.py` LS vocab gains `LANES` (priced + testified from day one) · three new build steps → `[67/67]` exit 0 · §C·1's ⛔ STANDING-PRIORITY paragraph → ONE eager ⛔ ROUTING line (old text archived VERBATIM, mover receipts § Batch 2026-07-28 #24). Ledger § ★ #24 · 2026-07-28.
+> - **★ RULED (Dave, option-select ×4 — all recommended; design read-back in-chat first):** records = JSON sibling of `_decision-graph.json` · view = own LS section + vocab id · drift check = BLOCKING · §C·1 relief taken. **The picks ARE the lanes-pilot promotion** (the #20 float: "promotion at the O1′ design window, Dave's alone"). Probe promotion pair fired at O1′ start exactly as #23 ruled (flag + pin, one edit pair; pin now fires on DEMOTION).
+> - **★ FOUND (measured).** Chain 30,998 tk at the opener — **the FIRST FALL in the recorded run** (31,094 → 30,998). The swap's honest arithmetic: §C·1 −147 tk (929→782) vs generated view +674 tk ⇒ chain 31,524 pre-compaction, **31,279 at wrap** (opener 30,998) — **externalisation RE-HOMES weight from the capped eager file to the priced reference file; it does not shrink the chain.** M10's 28K threshold stays crossed, payer unchanged (LS standing body — P4b now has datapoint #2). Panel Tue 11:50: **Fable 1.02× — ON PACE for the first time this week**; All 0.88×, MORE-WINDOWS holds for All only.
+> - **⚠ WHAT THE AUTHOR FLAGS.** The routing check's FIRST FIRE (this wrap) caught the author, correctly twice: GM cites "the ⛔ ROUTING line" in five places and the bare-substring contract elected a MENTION over the line — fixed to a line-START anchor (the mover's lesson, re-learned in a regex; bite 19 pins it). No 1b dossier — the arc was option-select-shaped; the WHY lives in ledger § ★ #24 + the two docstrings (the 1b test applied, stated). The routing check is FORM+agreement only — it cannot see a session PICK a lane in defiance of a green line; read discipline still owns that, and the dreamer's hunt item stays for prose violations. A stranded selftest temp file sits in `_to_delete/` (delete-guard; host-side sweep when convenient).
+> - **⬛ OPEN, Dave's:** **O2′ modular memento-search + gates = lane 1's LAST step — land it and lane 2 (components/charts) UNBLOCKS, which is the point** · M12's UNATTENDED fire Sun 08-02 07:10 · §C·2's 15 rulings + dataviz sign-off (PARKED, unchanged) · calm-banner verdict · LS-trim-vs-defer (P4b — accumulating).
+>
+>
+
 ## Batch 2026-07-28 #25 — rolled by the O2′-lands wrap (Fable solo, Dave live) — moves via `knowledge/_gm_move.py`, receipts on the wrap's stdout. Verbatim, newest-first.
 
 ### Rolled banner — #23, verbatim (2c)

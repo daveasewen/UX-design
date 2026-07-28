@@ -555,12 +555,24 @@ in `_LIVE-STATE.md` (🟡 PARKED entry) so the state machine doesn't read this a
 
 ## Open / pending
 
-- **★ NEW 2026-07-28 (two-lane ruling, memento ledger § TWO LANES) — TABLE-IDIOM UNIFICATION
-  (ex-M4a) + CHART-TABLE-TOGGLE ACCRETION (ex-M4b) queue HERE**, blocked until the memento lane
-  lands. Survey receipt in that ledger row: scatter = behaviour-group registration + `data-tip`
-  contract adoption + dv-legend's inert payload rides along (the per-member opt-in schema question,
-  Dave's); sparkline = markup + CSS only (toggle JS already injected, dormant). Batch-2 #2 already
-  rules the toolbar for every chart with a data table; DV-D02 checked — it protects no `<details>`.
+- **★ DV-J1 — TABLE-IDIOM UNIFICATION · ★ DV-J2 — CHART-TABLE-TOGGLE ACCRETION** *(J = Job,
+  sitting beside the DV-D decision series; keys minted 2026-07-28 #26 on Dave's word — "M stood
+  for Memento… this is Apollo dataviz work, we need to fix this coding". The #20 two-lane ruling
+  deliberately left re-keying to the job that picked them up; #26 is that job. Forward-looking
+  surfaces carry DV-J1/DV-J2; historical rows keep ex-M4a/ex-M4b verbatim.)* Queue HERE; unblocked
+  #25 (memento lane landed). Survey receipt (#20 ledger row): scatter = behaviour-group
+  registration + `data-tip` contract adoption; sparkline = markup + CSS only (toggle JS already
+  injected, dormant). Batch-2 #2 already rules the toolbar for every chart with a data table;
+  DV-D02 checked — it protects no `<details>`.
+  **★ 2026-07-28 #26 — the inert-payload half is RULED + MACHINERY LANDED:** the per-member
+  opt-in schema question → **ADR-0015 § Amendment 2** (Dave, TENTATIVE: universal-default
+  consumes-manifest, individual opt-out, fail-loud both ways; his read-back "universal automatic
+  opt-in with the option to opt-out individually"). Machinery in `gen_component_partials.py`
+  (7 bites + mutation-proven), zero declarations yet ⇒ zero behaviour change. **DV-J2's enactment
+  = the first narrow declaration** (scatter joins `consumes:["dv-behaviour"]` + 28 `<title>`→
+  `data-tip`; sparkline may shed its inert 16,330 B when ruled). **Drift corrected, measured:**
+  scatter was NEVER a group member (`$members` + 0 markers) — the dv-legend `$description` aside
+  claiming so was prose drift; the #20 receipt was right.
 - **★ NEW 2026-07-27 (Dave, session #6) — THREE FLAGS, CONTENTS NOW NAMED → see Batch 10 above.**
   **DV-D16** (stacked sequential animation) · **DV-D17** (isolate marker persistence) ·
   **ds-018** (Reset disabled renders as hover). All three are CAPTURED, **none enacted** — each carries

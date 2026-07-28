@@ -35,6 +35,14 @@ Same contract machinery (requires.vars / declarations / $manifestBinds), same --
 sync gate, byte-exact. Snippets stay portable AFTER generation — the block travels.
 The performance contract on the SOURCE (≤16KB, banned patterns) is _validate_behaviour.py's.
 
+Consumes-manifest (ADR-0015 Amendment 2, ruled Dave 2026-07-28 — TENTATIVE, revisit open):
+a member OBJECT may declare "consumes": [<behaviour name>, ...]. ABSENT = the member consumes
+EVERY group behaviour (the universal default — today's behaviour, unchanged). PRESENT = the
+member carries ONLY the listed behaviours' AUTO-BEHAVIOUR blocks and is held only to their
+contracts. Fail-loud both ways: unknown names REFUSE · an empty list REFUSES (omit the key
+for universal) · a non-consuming member carrying the behaviour's markers REFUSES (declared-away
+payload present = a defect, not a warning).
+
 Usage:
   python3 knowledge/gen_component_partials.py             # inject/refresh all consumers
   python3 knowledge/gen_component_partials.py --check     # verify in sync + contracts (build gate)
@@ -82,6 +90,30 @@ def behaviour_inner(js, bname, group, source):
             f"   AUTO-BEHAVIOUR markers: edit the source and regenerate:\n"
             f"   python3 knowledge/gen_component_partials.py */")
     return "<script>\n" + prov + "\n" + js.rstrip("\n") + "\n</script>"
+
+def consumes_behaviour(mconf, bname, bnames, gname, mname):
+    """ADR-0015 Amendment 2 (Dave 2026-07-28, TENTATIVE): universal-default consumes-manifest.
+    Returns (consuming, fails). Absent key = consumes everything; a declared list narrows;
+    unknown names and empty lists REFUSE (fail loud on unknown — never enumerate-and-skip)."""
+    cons = mconf.get("consumes")
+    if cons is None:
+        return True, []
+    if not isinstance(cons, list) or not cons:
+        return False, [f'{gname}/{mname}: "consumes" must be a non-empty list of behaviour '
+                       f'names (omit the key entirely for the universal default)']
+    unknown = sorted(set(cons) - set(bnames))
+    if unknown:
+        return False, [f'{gname}/{mname}: consumes unknown behaviour(s) {unknown} — '
+                       f'group has {sorted(bnames)}']
+    return bname in cons, []
+
+def non_consumer_marker_fails(html, bname, gname, mname):
+    """A member that declared this behaviour away must NOT carry its markers (inert payload
+    is exactly what the manifest exists to retire)."""
+    if BEHAVIOUR_RE(bname).search(html):
+        return [f'{gname}/{bname}: {mname} does not consume this behaviour but carries its '
+                f'AUTO-BEHAVIOUR markers — remove the pair, or add "{bname}" to its consumes list']
+    return []
 
 def rewrite_selectors(css, root_sel, member_sel):
     """Map the atom's root selector onto the member's. Word-boundary safe:
@@ -222,6 +254,7 @@ def run(write):
                         open(mp, "w").write(html)
                         injected += 1
         # ---- behaviour partials (ADR-0015): source = a hand-authored JS file under knowledge/
+        bnames = list((g.get("$behaviour") or {}).keys())
         for bname, beh in (g.get("$behaviour") or {}).items():
             src_path = os.path.join(HERE, beh["source"])
             if not os.path.exists(src_path):
@@ -232,6 +265,12 @@ def run(write):
                 if not os.path.exists(mp):
                     fails.append(f"{gname}/{bname}: member snippet {mname} missing"); continue
                 html = open(mp).read()
+                # ADR-0015 Amendment 2: the consumes-manifest gates BOTH injection and contract
+                consuming, cfails = consumes_behaviour(mconf, bname, bnames, gname, mname)
+                if cfails:
+                    fails += [f for f in cfails if f not in fails]; continue
+                if not consuming:
+                    fails += non_consumer_marker_fails(html, bname, gname, mname); continue
                 fails += check_contracts(mname, html, beh, js, mconf.get("extraContract"))
                 inner = behaviour_inner(js, bname, gname, beh["source"])
                 between = "\n" + inner + "\n  "     # same canonical padding as CSS partials
@@ -318,6 +357,24 @@ def selftest():
         fails.append("tampered behaviour source produced identical injection (no teeth)")
     if "<script>" not in binner or "</script>" not in binner or "ADR-0015" not in binner:
         fails.append("behaviour payload malformed (script element + provenance expected)")
+    # 5d. ADR-0015 Amendment 2 — consumes-manifest (universal default + individual opt-out) has teeth
+    ok, f = consumes_behaviour({}, "b", ["b", "c"], "g", "M")
+    if not ok or f:
+        fails.append("absent consumes key must read universal (member consumes everything)")
+    ok, f = consumes_behaviour({"consumes": ["b"]}, "b", ["b", "c"], "g", "M")
+    if not ok or f:
+        fails.append("declared consumer not recognised as consuming")
+    ok, f = consumes_behaviour({"consumes": ["c"]}, "b", ["b", "c"], "g", "M")
+    if ok or f:
+        fails.append("narrow manifest failed to opt the member out")
+    if not consumes_behaviour({"consumes": []}, "b", ["b", "c"], "g", "M")[1]:
+        fails.append("empty consumes list not refused (omit-the-key is the universal spelling)")
+    if not consumes_behaviour({"consumes": ["zz"]}, "b", ["b", "c"], "g", "M")[1]:
+        fails.append("unknown behaviour name in consumes not refused (fail loud on unknown)")
+    if not non_consumer_marker_fails(bfilled, "b", "g", "M"):
+        fails.append("non-consumer carrying AUTO-BEHAVIOUR markers not refused (inert payload undetected)")
+    if non_consumer_marker_fails("<style>clean</style>", "b", "g", "M"):
+        fails.append("clean non-consumer wrongly refused (green control)")
     # 6. registry caches: live registry must pass; a poisoned cache must fail
     reg = load_registry()
     live = check_caches(reg)
