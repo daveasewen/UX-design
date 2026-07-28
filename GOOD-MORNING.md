@@ -10,7 +10,7 @@
 > **pre-flight #20 guide:** cold floor **MEASURE IT — never inherit this number.** #19 measured the read
 > chain at **29,694 tk = 14.8%** (GM 13,200 + LS 16,494) on the files as committed; harness is UNMEASURED on top
 > (#18 inferred ~7 points ⇒ floor ≈ 23%, still inferred, still owed a real measurement). ⚠ **#19's guide claimed the
-> chain had SHRUNK; it had ROSEN (28,843 → 29,694) and the ledger said so all along** — measure, don't inherit, and
+> chain had SHRUNK; it had RISEN (28,843 → 29,694) and the ledger said so all along** — measure, don't inherit, and
 > when a banner and a ledger disagree the ledger wins. Build window prices ~30–40% + wrap · M1: RED = wrap-only,
 > announce every crossing · 15% reserve ring-fenced.
 > **RENAME THE WRAPPED CHAT →** `Apollo — CONDUCTOR RECONCILE + THE STANDING PRIORITY (Opus conductor, one Fable worker re-seated mid-flight): the parallel windows reconciled clean, and Memento-before-Apollo landed in §C·1 where a cold session cannot miss it; three findings, all from measuring instead of inheriting — the pre-flight told the next window the chain had shrunk when the ledger said it rose, three chain numbers disagree by 116 tk, and §C's "must displace" turned out stricter than its own gate, so nothing live was displaced`
