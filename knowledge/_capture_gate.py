@@ -118,11 +118,12 @@ SECTION_EXEMPT = {"§A"}    # standing + uncapped by ruling: measured and report
 SECTION_RETIRED = {"§B"}   # D4(a) deleted it into the banner — its reappearance IS the failure
 SECTION_REQUIRED = ("DO-FIRST", "§A", "§C")
 
-# #23 (ruled Dave 2026-07-28): the section-usage probe's tier. ADVISORY now — the wrap WARNS
-# on a missing/malformed stratum usage line. PROMOTION TRIGGER = O1′ start (the data's
-# consumer arrives): flip this flag AND its selftest pin together, one deliberate edit pair
-# (M10's pattern). Vocabulary + validation live in _gm_usage.py — the ONLY copy.
-SECTION_USAGE_BLOCKING = False
+# #23 (ruled Dave 2026-07-28): the section-usage probe's tier, routed at ONE call-site line.
+# PROMOTED #24 (2026-07-28): O1′ started — the data's consumer arrived — so the ruled trigger
+# fired and the flag + its selftest pin flipped together, one deliberate edit pair (M10's
+# pattern). A missing/malformed stratum usage line now FAILS the wrap. Vocabulary +
+# validation live in _gm_usage.py — the ONLY copy.
+SECTION_USAGE_BLOCKING = True
 
 # 2f: the session-strata stack. It is excluded from §C's cap by D6(a) — which is only checkable if
 # it is DELIMITED, so 2f requires the marker below. ⚠ Excluding a region from a cap without giving
@@ -647,8 +648,9 @@ def section_usage_probe(repo):
     `section-usage` line (U/R/C testimony, FORM-checked only — honesty stays the
     session's, the pre-flight-stamp precedent) and a `section-sizes` line
     (code-measured). Accumulated in _GAUGE-LOG.md as strata roll, usage × size is the
-    dataset LS-trim-vs-defer (P4b) and the JIT premise wait on. ADVISORY — tier routed
-    at the call site by SECTION_USAGE_BLOCKING; promotion trigger = O1′ start."""
+    dataset LS-trim-vs-defer (P4b) and the JIT premise wait on. Tier routed at the call
+    site by SECTION_USAGE_BLOCKING (promoted to BLOCKING at O1′ start, #24 — the #23
+    trigger); the note below reads the flag so this text cannot age."""
     issues, notes = [], []
     gm = os.path.join(repo, "GOOD-MORNING.md")
     if not os.path.exists(gm):
@@ -671,9 +673,38 @@ def section_usage_probe(repo):
     if not issues:
         notes.append("section-usage: stratum carries well-formed usage + sizes lines "
                      "(FORM only — whether a C is honest is not observable here).")
-    notes.append("section-usage tier: ADVISORY — promotion trigger = O1′ start "
-                 "(#23 ruling; flip SECTION_USAGE_BLOCKING + its selftest pin together).")
+    notes.append("section-usage tier: %s (read from SECTION_USAGE_BLOCKING — #23 ruled the "
+                 "trigger, #24 fired it; flag + selftest pin move only as a pair)."
+                 % ("BLOCKING" if SECTION_USAGE_BLOCKING else "ADVISORY"))
     return issues, notes
+
+
+def lane_routing_check(repo):
+    """O1′ #24 (ruled Dave, option-select ×4 all recommended): the eager GM §C·1 ROUTING
+    line must AGREE with knowledge/_lanes.json — drift between the eager line and the
+    records is the confident-false-inscription class, so it FAILS the wrap (BLOCKING by
+    ruling, pick 3). All logic lives in _gen_lanes.py and is IMPORTED — one implementation,
+    never a second copy (the mover≠gate lesson)."""
+    fails, notes = [], []
+    gm = os.path.join(repo, "GOOD-MORNING.md")
+    if not os.path.exists(gm):
+        return fails, notes
+    sys.path.insert(0, HERE)
+    try:
+        import _gen_lanes
+    except Exception as e:
+        return [f"lane-routing: _gen_lanes.py unimportable ({e}) — check cannot run; "
+                f"fix it, never close blind"], notes
+    lanes, errs = _gen_lanes.load_lanes()
+    if errs:
+        return [f"lane-routing: records invalid — {e}" for e in errs], notes
+    with open(gm, encoding="utf-8") as f:
+        issues = _gen_lanes.check_routing_line(f.read(), lanes)
+    fails += [f"lane-routing: {i}" for i in issues]
+    if not fails:
+        notes.append(f"lane-routing: GM eager ROUTING line agrees with {len(lanes)} lane "
+                     f"records (BLOCKING — O1′ #24; records are the truth).")
+    return fails, notes
 
 
 def wrap_checks(repo, today, lane=False):
@@ -688,9 +719,9 @@ def wrap_checks(repo, today, lane=False):
         notes.append("LANE WRAP: pre-flight-stamp check SKIPPED too — the stamp lives in "
                      "GOOD-MORNING.md, which lane sessions do not write.")
         notes.append("LANE WRAP: section growth contracts (2e/2f), the banner/§A/chain budgets, "
-                     "the retirement-receipts proxy and the section-usage probe are all SKIPPED "
-                     "— same reason. A lane session cannot be charged for a file it is ruled "
-                     "out of writing.")
+                     "the retirement-receipts proxy, the section-usage probe and the "
+                     "lane-routing check are all SKIPPED — same reason. A lane session cannot "
+                     "be charged for a file it is ruled out of writing.")
     else:
         gm = os.path.join(repo, "GOOD-MORNING.md")
         if os.path.exists(gm):
@@ -705,8 +736,11 @@ def wrap_checks(repo, today, lane=False):
         f_, n_ = retirement_receipts(repo)      # M9 — receipts proxy, BLOCKING (Dave #22)
         fails += f_
         notes += n_
-        i_, n_ = section_usage_probe(repo)      # #23 — ADVISORY until O1′ (tier = this line)
+        i_, n_ = section_usage_probe(repo)      # #23 built · #24 BLOCKING (tier = this line)
         (fails if SECTION_USAGE_BLOCKING else warns).extend(i_)
+        notes += n_
+        f_, n_ = lane_routing_check(repo)       # O1′ #24 — eager line ↔ records, BLOCKING
+        fails += f_
         notes += n_
         notes.append("PRE-FLIGHT stamp: FORM checked only (3 terms · arithmetic · band-vs-table). "
                      "Whether the fill figure is honest, and whether a mid-job re-price actually "
@@ -1114,16 +1148,39 @@ def selftest_usage():
     if not any("MALFORMED" in i for i in _gm_usage.validate_stratum(
             good.replace("SPIN:R", "SPIN:X"))):
         failures.append("usage: malformed line must fire, and say MALFORMED")
-    if SECTION_USAGE_BLOCKING:
-        failures.append("usage tier pin: SECTION_USAGE_BLOCKING is True but the ruled tier "
-                        "is ADVISORY until O1′ starts — promotion is Dave's trigger; flip "
-                        "flag AND this pin together (one deliberate pair)")
+    if not SECTION_USAGE_BLOCKING:
+        failures.append("usage tier pin: SECTION_USAGE_BLOCKING is False but the ruled tier "
+                        "is BLOCKING since O1′ started (#24, the #23 trigger fired) — a "
+                        "demotion is a ruling; flip flag AND this pin together (one "
+                        "deliberate pair)")
+    return failures
+
+
+def selftest_lanes():
+    """O1′ #24 — the lane-routing check's dependency FIRES from this harness (drift and
+    missing-line must fail; good fixture stays quiet). The deep refusal bites live in
+    `_gen_lanes.py --selftest` (its own build step) — this proves the gate's import path."""
+    failures = []
+    sys.path.insert(0, HERE)
+    try:
+        import _gen_lanes
+    except Exception as e:
+        return [f"lanes: _gen_lanes unimportable in selftest ({e})"]
+    fx = [{"id": "lane-x", "name": "X", "state": "active", "born": "#1", "until": "u",
+           "blocked_by": [], "receipts": "r", "sequence": []}]
+    good_gm = "**⛔ ROUTING (records: knowledge/_lanes.json): ACTIVE lane-x.**"
+    if _gen_lanes.check_routing_line(good_gm, fx):
+        failures.append("lanes: good routing fixture must stay quiet")
+    if not _gen_lanes.check_routing_line("no routing here", fx):
+        failures.append("lanes: missing routing line must fire")
+    if not _gen_lanes.check_routing_line(good_gm.replace("ACTIVE", "BLOCKED"), fx):
+        failures.append("lanes: state drift must fire")
     return failures
 
 
 def selftest():
     failures = (selftest_preflight() + selftest_budgets() + selftest_growth()
-                + selftest_usage())
+                + selftest_usage() + selftest_lanes())
     with tempfile.TemporaryDirectory() as td:
         os.makedirs(os.path.join(td, "notes"))
         os.makedirs(os.path.join(td, "_DECISION-HISTORY"))

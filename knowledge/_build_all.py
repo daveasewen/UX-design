@@ -59,6 +59,15 @@ STEPS = [
     # proves the vocabulary refuses unregistered headings and the stratum probe FIRES;
     # the wrap-time probe itself lives in _capture_gate.py (--wrap), ADVISORY until O1′.
     ("section-usage instrumentation selftest (#23)", "_gm_usage.py", ["--selftest"]),
+    # O1′ (ruled Dave 2026-07-28 #24, option-select ×4): lane records are DATA
+    # (knowledge/_lanes.json); the LS §🛤 view is GENERATED between AUTO-LANES markers
+    # (regenerate-always + determinism, the ADR-0013 ruling-4 shape); the selftest proves
+    # every schema refusal FIRES (unknown state/field, dangling guard, stale block,
+    # lane-order violation) + the routing-line contract. The wrap-time eager-line check
+    # lives in _capture_gate.py::lane_routing_check (BLOCKING) and IMPORTS _gen_lanes.
+    ("lane records — regenerate LS §🛤 view (O1′ #24)", "_gen_lanes.py"),
+    ("lane records determinism check (O1′ #24)", "_gen_lanes.py", ["--check"]),
+    ("lane records selftest — schema refusals + routing contract (O1′ #24)", "_gen_lanes.py", ["--selftest"]),
     ("cross-reference index", "_build_xref_index.py"),
     ("sutherland acceptance fixtures", "_build_sutherland_fixtures.py"),
     ("states-completeness probe (advisory)", "_build_states_probe.py"),

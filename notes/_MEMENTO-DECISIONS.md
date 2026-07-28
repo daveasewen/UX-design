@@ -409,3 +409,23 @@ status: ruled — Dave, this entry · provenance: session #22 · 2026-07-28.
 **Limit, stated:** sizes measure FILE cost, not READ cost — the Read-tool render overhead (#23: LS ~28K tk rendered vs 16.8K file) stays outside the instrument, INFERRED and said so.
 
 status: observed (enactment receipt; rulings Dave's, this section) · provenance: session #23 · 2026-07-28
+
+## ★ #24 — O1′ ENACTED: lanes-as-records, the LS schema's pilot case — 2026-07-28 (Fable solo, Dave live)
+
+**RULED (Dave, option-select ×4 — all recommended picks; design read-back given in-chat before the questions, "just go for it pal, lets get the memento stuff nailed so we can make more components" = the go):**
+1. **Records home = `knowledge/_lanes.json`** — one JSON file, exact sibling of `_decision-graph.json`; LS text becomes a generated VIEW of it.
+2. **View home = new LS section `## 🛤 LANES`**, own vocab id `LANES` in `_gm_usage.py` (AUTO-LANES markers) — priced by the sizes line and testified by the usage line from day one.
+3. **Lane-drift check = BLOCKING at wrap** — routing-line↔records drift is the confident-false-inscription class; `_capture_gate.py::lane_routing_check`, logic IMPORTED from `_gen_lanes.py` (mover≠gate lesson).
+4. **§C·1 relief taken** — the ⛔ STANDING PRIORITY paragraph externalised: state → records, WHY → this ledger, ONE eager ⛔ ROUTING line remains in §C·1 (records · view · why pointers + ACTIVE/BLOCKED/STEADY per lane). Old paragraph archived VERBATIM (`_GM-ARCHIVE.md` § Batch 2026-07-28 #24, mover receipts).
+
+**These four picks ARE the lanes-pilot promotion** (the #20 float said "promotion at the O1′ design window, Dave's alone") — the § TWO LANES addendum's `status: floated` is superseded by this entry: **ruled + enacted**.
+
+**SCHEMA (the pilot, exactly the floated shape):** lane = `id · name · state (active|blocked|steady-state|landed) · born · until · blocked_by · sequence (step · state landed|active|queued · receipt) · receipts · wrap_scope?`. Miss-side gates landed WITH the externalisation (the #19 guard): unknown state/field REFUSES · dangling `blocked_by` REFUSES · a lane with a live blocker MUST be blocked · a blocked lane whose blockers all landed REFUSES as rotted · `landed` after a live step REFUSES (the lane-order-violation class) · AUTO-LANES markers missing = generator fails loud (reachability) · every refusal bitten (`_gen_lanes.py --selftest`, 19 bites) + gate-side import-path bites (`selftest_lanes`, 3). Build steps: regenerate-always + `--check` determinism + selftest — `[67/67]` exit 0. **The check's FIRST FIRE (at this window's own wrap) caught the author's contract: GM cites "the ⛔ ROUTING line" five times and the bare-substring match elected a MENTION over the line — fix = line-START anchor (`^\\*\\*⛔ ROUTING`), the mover's anchor lesson re-learned in a regex; bite 19 pins mention≠line.**
+
+**PROMOTION PAIR FIRED (the #23 trigger):** O1′ start = the section-usage probe's consumer arriving — `SECTION_USAGE_BLOCKING=True` + selftest pin inverted (now fires on demotion), advice text made flag-read so it cannot age. One deliberate edit pair, M10's pattern.
+
+**FIRST PILOT DATAPOINT, honest:** the §C·1 swap bought **−147 tk in GM** (C1 929→782); the generated LS view costs **+674 tk** (LANES section) ⇒ chain net +526 to 31,524 tk — the externalisation moves weight from the capped eager file to the priced reference file, it does not shrink the chain. M10's 28K threshold remains crossed; the payer remains LS's standing body (P4b, Dave's, instrument accumulating).
+
+**Interim guard superseded:** the dreamer hunt-list item (3) "lane-order violations (the interim guard until O1′ makes lanes mechanical)" — lanes are now mechanical (`lane_routing_check` BLOCKING + schema consistency refusals); the hunt item stays useful for PROSE violations but the mechanical layer now exists. Spec untouched (A-D3); noted here so the next dreamer pass prices it.
+
+status: ruled (picks 1–4 Dave's, this entry) + observed (enactment receipts: build `[67/67]` exit 0 · mover stdout · commit this window) · provenance: session #24 · 2026-07-28

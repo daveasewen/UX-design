@@ -25,9 +25,9 @@ queue heading in GOOD-MORNING.md, makes the sizes walk REFUSE — never enumerat
 never a cheerful partial answer. Adding a section to either file means registering it here
 (the accretion bite is deliberate).
 
-TIER (ruled): the wrap-gate probe is ADVISORY now. PROMOTION TRIGGER = O1′ start (the
-data's consumer arrives) — flip SECTION_USAGE_BLOCKING in `_capture_gate.py` + its
-selftest pin, one deliberate edit pair (M10's pattern).
+TIER (ruled #23, trigger fired #24): O1′ started, so the promotion pair flipped —
+SECTION_USAGE_BLOCKING=True in `_capture_gate.py` + its selftest pin, one deliberate
+edit pair (M10's pattern). A missing/malformed stratum line now FAILS the wrap.
 
 Usage:  python3 knowledge/_gm_usage.py --sizes --session 23   # print the code-measured sizes line
         python3 knowledge/_gm_usage.py --check-line "<line>"  # validate a usage line (exit 1 on malformed)
@@ -65,6 +65,7 @@ GM_NUMBERED_RE = re.compile(r"^##\s*\d+[a-z]?\.\s")
 # LS: every `## ` heading must match a pattern here or the ⏱ continuation — else refuse.
 LS_VOCAB = (
     ("HDR",       None),
+    ("LANES",     re.compile(r"^##\s*🛤")),   # O1′ #24 — generated lane index (AUTO-LANES)
     ("SPIN",      re.compile(r"^##\s*🔀")),
     ("DELTAS",    re.compile(r"^##\s*⏱")),   # LATEST/PRIOR/OLDER all merge — one region
     ("WEBFONT",   re.compile(r"^##\s*🕓")),
@@ -233,7 +234,7 @@ def validate_stratum(text):
 # --- selftest — every bite proves the check can FAIL (green control included) ------------
 GOOD_USAGE = ("> **section-usage #23 (observed, self-report):** "
               "GM HDR:C LATEST:C PRIOR:R DOFIRST:C A:C C1:C C2:R C2b:R C3:R C4:C C4b:R "
-              "C5:R STRATA:R · LS HDR:R SPIN:R DELTAS:C WEBFONT:R LIVE:R LIFECYCLE:R "
+              "C5:R STRATA:R · LS HDR:R LANES:C SPIN:R DELTAS:C WEBFONT:R LIVE:R LIFECYCLE:R "
               "DEAD:R OPEN:R TARGETS:R SPINOFFS:R")
 
 
@@ -276,12 +277,13 @@ def selftest():
     _, errs = split_sections([ln for ln in gm_fx if "## 3." not in ln], GM_VOCAB, _gm_unknown)
     bite("missing GM marker must refuse", any("not found: C3" in e for e in errs))
 
-    ls_fx = ["head", "## 🔀 SPIN-OFF LANE", "## ⏱ LATEST DELTA", "## ⏱ PRIOR DELTA",
+    ls_fx = ["head", "## 🛤 LANES — generated index", "## 🔀 SPIN-OFF LANE",
+             "## ⏱ LATEST DELTA", "## ⏱ PRIOR DELTA",
              "## 🕓 OPEN — webfont", "## LIVE — current truth", "## DECISION-NODE LIFECYCLE",
              "## SUPERSEDED / DEAD", "## OPEN — propagation", "## PLANNED / TARGET STATES",
              "## SPIN-OFF / GENERALISABLE"]
     spans, errs = split_sections(ls_fx, LS_VOCAB, _ls_unknown)
-    bite("ls fixture splits clean (⏱ merges)", errs == [] and spans["DELTAS"] == (2, 4))
+    bite("ls fixture splits clean (⏱ merges)", errs == [] and spans["DELTAS"] == (3, 5))
     _, errs = split_sections(ls_fx + ["## BRAND NEW SECTION"], LS_VOCAB, _ls_unknown)
     bite("unregistered LS heading must refuse", any("unregistered `## `" in e for e in errs))
 

@@ -145,5 +145,13 @@ step 2f (`113eefc`) yet wrote no stratum of its own; its gauge story lives only 
 > **pre-flight:** fill ~22% + job 10% + wrap 8% = 40% GREEN-projected · reserve 15% ring-fenced *(fill = 15.4% chain MEASURED 30,710 tk + ~7 harness inferred; job = dream-pass-3 enactment, priced at the opener)*
 > *(Session #22, 2026-07-28, Fable solo, Dave live. The beat ran to spec — P1–P6, per-item receipts, ONE commit `681cfac` — then Dave ruled M9 PROMOTE in-window (enacted same hour) and chose wrap over starting lane-1 step 2 at Amber. The projection under-read the fill: the mandated spine reads (LS ~17K tk + runbook + proposals + ledger) cost more than the inferred floor suggests — recorded as a cause, not excused. **Closed 🟡 ~55–58% ESTIMATE** (band from the remaining-budget table), reserve untouched; one fork (proceed-vs-wrap), put to Dave, he took wrap per his own no-new-builds-at-Amber rule.
 > **PACE (perishable, replaces Tue 09:09):** panel Tue 10:25 BST — week 63.9% elapsed · All 53% ⇒ 0.83× · Fable 58% ⇒ 0.91× · catch-up to Thu 23:00 = All 1.30× / Fable 1.16× — behind, narrowing fast. MORE-WINDOWS holds.)*
+#### 2026-07-28 #23
+
+> **pre-flight:** fill ~28% + job 12–15% + wrap 8% = ~48–51% AMBER-projected · reserve 15% ring-fenced *(fill = 15.5% chain MEASURED 31,094 tk + ~7 harness inferred + read-render overhead; job = lane 1 step 2, priced at the opener)*
+> *(Session #23, 2026-07-28, Fable solo, Dave live. Ran to spec: retrieval → option-select (3 picks, all recommended, read-back before build) → build `[64/64]` → wrap. One mid-flight re-price at the design beat (~38–40%, announced); the Amber crossing announced at build-close per M1, wrap chosen. Closed 🟡 **~58% ESTIMATE** (band from the remaining-budget table), reserve untouched, no unplanned forks.
+> **PACE (perishable, replaces Tue 10:25):** panel Tue 11:18 BST — week 64.5% elapsed · All 55% ⇒ 0.85× · Fable 62% ⇒ 0.96× · catch-up to Thu 23:00 = All 1.27× / Fable 1.07× — Fable nearly on pace, All still behind; MORE-WINDOWS holds.)*
+> **section-usage #23 (observed, self-report):** GM HDR:C LATEST:C PRIOR:R DOFIRST:C A:C C1:C C2:R C2b:R C3:R C4:C C4b:R C5:R STRATA:C · LS HDR:R SPIN:R DELTAS:C WEBFONT:R LIVE:R LIFECYCLE:R DEAD:R OPEN:R TARGETS:R SPINOFFS:R
+> **section-sizes #23 (tiktoken cl100k_base):** GM HDR:1074 LATEST:799 PRIOR:1117 DOFIRST:2125 A:4208 C1:929 C2:1076 C2b:484 C3:181 C4:1204 C4b:256 C5:84 STRATA:632 · LS HDR:255 SPIN:1794 DELTAS:2242 WEBFONT:604 LIVE:4928 LIFECYCLE:965 DEAD:432 OPEN:4361 TARGETS:577 SPINOFFS:444 · totals GM:14169 LS:16602
+>
 >
 >
