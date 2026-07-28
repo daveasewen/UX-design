@@ -296,6 +296,22 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
    appended behind a later one · a post-mortem with no `#### <date> #<N>` key, which would be invisible
    to the check below.
 
+      ### ★ THREE STATES, NOT TWO (ruled by Dave, #34)
+
+   | marker | what it CLAIMS | gate |
+   |---|---|---|
+   | a `#### <date> #<N>` block | the 2f split landed | passes |
+   | **`HOLE #<N> — <why>`** | **that session wrote no stratum, and we know it** — a positive claim | passes |
+   | **`ABSENT #<N> — …`** | **no block was found; whether one was ever written is UNKNOWN** — a claim about the RECORD, not the session | **WARNS** |
+
+   ⚠️ **`ABSENT` IS NOT A POLITE `HOLE`.** #9/#10/#11/#19 had no block and no note; writing `HOLE` for them
+   would have made this log read complete **at the price of four invented facts** — confident false
+   inscription, committed in order to tidy a file. `ABSENT` makes them **countable as unknowns** with no
+   fabricated cause, which is why the dataset now accounts for every session 6→33 with zero gaps.
+   ⚠️ **It WARNS rather than passing silently, on purpose:** a silent `ABSENT` would become a free skip for
+   step 2f — `HOLE` with the honesty removed. **If YOU wrote no stratum, the honest marker is `HOLE`.**
+   After #34 there should never be a new `ABSENT`.
+
    **And the guard on it (ds-022 (a), BLOCKING at birth):** `_capture_gate.py::gauge_log_continuity` —
    **a wrap FAILS unless session N−1 has a block, or an explicit `HOLE #<N> — <why>` line**, in
    `notes/_GAUGE-LOG.md`. ⚠️ **The HOLE hatch is load-bearing, not politeness:** without it the check

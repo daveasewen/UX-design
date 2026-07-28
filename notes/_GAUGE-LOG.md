@@ -273,3 +273,22 @@ step 2f (`113eefc`) yet wrote no stratum of its own; its gauge story lives only 
 > *(⚠⚠ **THE SESSION'S OWN STRONGEST EVIDENCE: `_LIVE-STATE.md` WAS NEVER READ.** Not the head, not one section — the only touch was WRITING the #33 delta and rolling #30's. **17,190 tk cl100k (~26,644 charged, ~13 points) that the old contract mandated, that this session never once wanted, on a job that rewrote the contract itself.** §A reads `C` only because the opener's full-file read swept it in; nothing in the job consulted it.)*
 > **section-sizes #33 (tiktoken cl100k_base):** GM HDR:1461 LATEST:845 PRIOR:1388 DOFIRST:2554 A:4208 C1:842 C2:1157 C2b:484 C3:181 C4:1868 C4b:256 C5:84 STRATA:8 · LS HDR:255 LANES:872 SPIN:1794 DELTAS:2950 WEBFONT:604 LIVE:4928 LIFECYCLE:973 DEAD:432 OPEN:4361 TARGETS:577 SPINOFFS:444
 > **consult-receipts #33:** none — ⚠ **HONEST NEGATIVE, a real zero not an omission.** The window's questions were structural (what the door returns · where the chain is computed · does the pin fire) and were answered by runs against the code being changed. `_consult.py` governs DESIGN questions; none arose.
+
+#### META — ABSENT markers for #9/#10/#11/#19, ruled by Dave at #34
+
+> **ABSENT #9 — no block found in this log; whether a stratum was ever written is UNKNOWN.**
+> **ABSENT #10 — no block found in this log; whether a stratum was ever written is UNKNOWN.**
+> **ABSENT #11 — no block found in this log; whether a stratum was ever written is UNKNOWN.**
+> **ABSENT #19 — no block found in this log; whether a stratum was ever written is UNKNOWN.**
+>
+> *(Declared retroactively at #34, from the ABSENCE ITSELF and from no other evidence. ★ **`ABSENT`
+> is deliberately NOT `HOLE`.** A `HOLE` line is a positive claim — *"that session wrote no
+> stratum"* — and writing four of those would have made this log read complete at the price of
+> four invented facts, which is the confident-false-inscription failure the whole programme exists
+> to prevent, committed in order to tidy a file. `ABSENT` is a claim about the RECORD, not about
+> the session: no block was found, and the cause is unknown. The gaps become **countable as
+> unknowns** without a single fabricated cause. Ruled by Dave, #34, on the recommendation.
+> ⚠ **Do not let `ABSENT` decay into `HOLE`'s meaning:** the gate WARNS on it rather than passing
+> it silently, precisely so it never becomes a free skip for ritual step 2f. If YOU write no
+> stratum, the honest marker is `HOLE #N — <why>`. `ABSENT` is only for gaps nobody can account
+> for, and after #34 there should never be a new one.)*

@@ -178,6 +178,16 @@ STRATA_MAX_BLOCKS = 1
 # that: a `#### ` heading one reader accepted and another refused.
 STRATA_KEY_RE = re.compile(r"^####\s+\d{4}-\d{2}-\d{2}\s+#\d+\b")
 HOLE_RE = re.compile(r"^\s*>?\s*\**HOLE\**\s+#\d+\b", re.I)
+# ★ ABSENT — the THIRD state, ruled by Dave #34. HOLE and ABSENT are not synonyms and the
+# difference is the whole point:
+#   HOLE   #N — a POSITIVE claim: that session wrote no stratum, and we know it.
+#   ABSENT #N — a claim about the RECORD, not the session: no block was found, and whether one
+#               was ever written is UNKNOWN. Countable as an unknown; asserts nothing about #N.
+# #9/#10/#11/#19 have no block and no note. Writing HOLE for them would have made the log read
+# complete at the price of four invented facts — the confident-false-inscription failure this
+# programme exists to prevent, committed to tidy a file. ABSENT gets the countable dataset with
+# no fabricated cause. ⚠ A remedy is measured too: do not let ABSENT decay into HOLE's meaning.
+ABSENT_RE = re.compile(r"^\s*>?\s*\**ABSENT\**\s+#\d+\b", re.I)
 SESSION_NO_RE = re.compile(r"#(\d+)\b")
 BANNER_SESSION_RE = re.compile(r"★\s*LATEST.*?#(\d+)\b")
 
@@ -500,10 +510,17 @@ def check_preflight(text, label="GOOD-MORNING.md"):
     if tm and not missing:
         total = int(tm.group(1))
         stop_at = HARD_STOP - terms["wrap"]
-        if total > PREFLIGHT_CEILING:
+        # ⚠ STRICT `<`, RULED BY DAVE #34, closing the one-point slack this check shipped with.
+        # ds-023 was written `fill + job + wrap <= 45`, but 45 reads AMBER on the band table
+        # (GREEN is `< 45`) — so "must project to finish GREEN" and "<= 45" disagreed by exactly
+        # one point, and BOTH were in the canon. #34 implemented the literal `<=` and forked the
+        # contradiction to Dave rather than silently picking the stricter reading (tightening a
+        # ratified threshold is not the agent's to do). He ruled `< 45`: **45 now FAILS**, and
+        # "project to finish GREEN" is literally true rather than nearly true.
+        if total >= PREFLIGHT_CEILING:
             if RESERVE_SPEND_RE.search(line):
                 warns.append(
-                    f"{label}: pre-flight projects {total}% against the {PREFLIGHT_CEILING}% "
+                    f"{label}: pre-flight projects {total}%, at/over the {PREFLIGHT_CEILING}% "
                     f"ceiling — ALLOWED, marked RESERVE SPEND and forked to Dave. This is a "
                     f"receipt, not an absolution: the reserve is a line, not an allowance, and "
                     f"a session that marks every wrap this way has re-dialled the ceiling by "
@@ -511,8 +528,9 @@ def check_preflight(text, label="GOOD-MORNING.md"):
                     f"({HARD_STOP} − the {terms['wrap']}%-priced wrap).")
             else:
                 fails.append(
-                    f"{label}: pre-flight projects {total}%, over the {PREFLIGHT_CEILING}% "
-                    f"ceiling — a job must be projected to finish GREEN (ds-023: RED at "
+                    f"{label}: pre-flight projects {total}%, at/over the {PREFLIGHT_CEILING}% "
+                    f"ceiling — a job must be projected to finish GREEN, and {PREFLIGHT_CEILING} "
+                    f"itself is AMBER (ds-023 + Dave #34: strictly BELOW. RED at "
                     f"{HARD_STOP} is a hard stop and the ~{RESERVE_FENCE}% reserve is "
                     f"ring-fenced INSIDE it, so {HARD_STOP} − {RESERVE_FENCE} = "
                     f"{PREFLIGHT_CEILING}). Either CUT THE JOB, or declare the overrun in "
@@ -520,7 +538,7 @@ def check_preflight(text, label="GOOD-MORNING.md"):
                     f"allowed is discovering it afterwards: #30, #31, #32 and #33 all exceeded "
                     f"their own projections, and the ceiling has never once held.")
         else:
-            notes.append(f"{label}: pre-flight {total}% within the {PREFLIGHT_CEILING}% ceiling · "
+            notes.append(f"{label}: pre-flight {total}% is below the {PREFLIGHT_CEILING}% ceiling · "
                          f"in flight, STOP AT {stop_at}% ({HARD_STOP} − the {terms['wrap']}%-priced "
                          f"wrap). 60 is where the wrap has FINISHED, not where it starts.")
 
@@ -932,13 +950,21 @@ def gauge_log_continuity(repo):
                         if STRATA_KEY_RE.match(ln)) if n is not None}
     holes = {n for n in (_key_session(ln) for ln in log_lines
                          if HOLE_RE.match(ln)) if n is not None}
+    absent = {n for n in (_key_session(ln) for ln in log_lines
+                          if ABSENT_RE.match(ln)) if n is not None}
     prev = cur - 1
     if prev in have:
         notes.append(f"ds-022 continuity: #{prev} has a block in notes/_GAUGE-LOG.md — the 2f "
-                     f"split landed. (n={len(have)} recorded, {len(holes)} declared holes.)")
+                     f"split landed. (n={len(have)} recorded · {len(holes)} declared holes · "
+                     f"{len(absent)} ABSENT-unknown. {ratio_status()})")
     elif prev in holes:
         notes.append(f"ds-022 continuity: #{prev} is a DECLARED HOLE — countable, which is the "
                      f"whole difference between #14 and #9/#10/#11/#19.")
+    elif prev in absent:
+        warns.append(f"ds-022 continuity: #{prev} is marked ABSENT — no block found, and whether "
+                     f"one was ever written is UNKNOWN. ⚠ WARN, not pass: ABSENT is a statement "
+                     f"about the RECORD, not a licence to skip 2f. If YOU wrote no stratum, say "
+                     f"so with `HOLE #{prev} — <why>`; ABSENT is for gaps nobody can account for.")
     else:
         fails.append(
             f"ds-022: session #{prev} left NO block and NO hole line in notes/_GAUGE-LOG.md, "
@@ -1341,8 +1367,8 @@ PREFLIGHT_FIXTURES = [
     # FORM check and is an invalid one for a check that also asks whether the plan is permitted.
     # Kept here in the comment rather than deleted, because "the control used to pass" is the
     # evidence that the ceiling actually changed something.
-    ("green control (within ceiling)",
-     "pre-flight: fill 25% + job 12% + wrap 8% = 45% AMBER · reserve 15% ring-fenced\n", False),
+    ("green control (below ceiling)",
+     "pre-flight: fill 24% + job 12% + wrap 8% = 44% GREEN · reserve 15% ring-fenced\n", False),
     ("green control, boundary GREEN (44)",
      "pre-flight: fill 30% + job 9% + wrap 5% = 44% GREEN · reserve 15% ring-fenced\n", False),
     # ---- ds-023 ceiling fixtures
@@ -1351,8 +1377,10 @@ PREFLIGHT_FIXTURES = [
     ("ds-023: over ceiling but MARKED — allowed, warns not fails",
      "pre-flight: fill 30% + job 10% + wrap 8% = 48% AMBER · reserve 15% ring-fenced · "
      "RESERVE SPEND — forked to Dave\n", False),
-    ("ds-023: at the ceiling exactly (45) — allowed",
-     "pre-flight: fill 32% + job 5% + wrap 8% = 45% AMBER · reserve 15% ring-fenced\n", False),
+    # ★ RULED BY DAVE #34: 45 is AMBER, so 45 itself FAILS. This fixture FLIPPED — it was
+    # written as "allowed" at enactment and is the evidence that the one-point slack closed.
+    ("ds-023: at the ceiling exactly (45) — Dave #34 ruled this FAILS",
+     "pre-flight: fill 32% + job 5% + wrap 8% = 45% AMBER · reserve 15% ring-fenced\n", True),
 ]
 
 
@@ -1399,7 +1427,7 @@ def selftest_preflight():
 
     # the stop line must appear on the PASSING path too — that is the session that still has
     # room to overrun, and the one every previous overrun happened in.
-    ok = "pre-flight: fill 25% + job 12% + wrap 8% = 45% AMBER · reserve 15% ring-fenced\n"
+    ok = "pre-flight: fill 24% + job 12% + wrap 8% = 44% GREEN · reserve 15% ring-fenced\n"
     f_, _w, n_ = check_preflight(ok, label="fixture")
     if f_:
         failures.append(f"ds-023: a within-ceiling stamp failed ({f_})")
@@ -1408,7 +1436,7 @@ def selftest_preflight():
                         f"number with no reader is ds-024's class, and this is the path where "
                         f"the number still matters. Got {n_}")
     # and it must MOVE with the wrap price — a stop line that is really a constant is a lie
-    pricier = "pre-flight: fill 20% + job 10% + wrap 15% = 45% AMBER · reserve 15% ring-fenced\n"
+    pricier = "pre-flight: fill 19% + job 10% + wrap 15% = 44% GREEN · reserve 15% ring-fenced\n"
     _f, _w, n2 = check_preflight(pricier, label="fixture")
     if not any("STOP AT 45%" in x for x in n2):
         failures.append(f"ds-023: the stop line did not move with the wrap price (15%% wrap ⇒ "
@@ -1422,9 +1450,19 @@ def selftest_preflight():
     # one point. The LITERAL ruling is implemented (<= 45 passes). Dave's to close.
     if (PREFLIGHT_CEILING, HARD_STOP) != (45, 60):
         failures.append(f"ds-023: ceiling/stop = {(PREFLIGHT_CEILING, HARD_STOP)}, ruled (45, 60) "
-                        f"— 60 is Dave's ratified hard stop and 45 was confirmed on his "
-                        f"delegation; re-dialling either is his, and updating this pin is part "
+                        f"— 60 is Dave's ratified hard stop; 45 was confirmed on his delegation "
+                        f"#31 and made STRICTLY EXCLUSIVE by his own word #34 (45 is AMBER, so "
+                        f"45 fails). Re-dialling either is his, and updating this pin is part "
                         f"of doing it")
+    # the boundary itself, bitten — this is the one-point slack, and it is the whole ruling
+    for total, want_fail in ((44, False), (45, True), (46, True)):
+        stamp = (f"pre-flight: fill {total - 20}% + job 12% + wrap 8% = {total}% "
+                 f"{band_for(total)} · reserve 15% ring-fenced\n")
+        f_, _w, _n = check_preflight(stamp, label="fixture")
+        got_fail = any("ceiling" in x for x in f_)
+        if got_fail != want_fail:
+            failures.append(f"ds-023 boundary: {total}% ceiling-fail={got_fail}, ruled "
+                            f"{want_fail} (Dave #34: strictly BELOW 45 — 45 is AMBER)")
     return failures
 
 
@@ -1597,6 +1635,19 @@ def selftest_gauge_continuity():
         if not any("DECLARED HOLE" in x for x in n_):
             failures.append("ds-022: the hole was accepted SILENTLY — #14 is countable precisely "
                             "because its absence was said out loud")
+
+    # ★ ABSENT is the THIRD state (Dave #34) and must behave as NEITHER of the other two: it
+    # cannot FAIL (the gap is historical and unfixable) and it cannot pass SILENTLY (that would
+    # make it a free skip for 2f, i.e. HOLE without the honesty).
+    with tempfile.TemporaryDirectory() as td:
+        _repo(td, 34, "# log\n\n#### 2026-07-28 #31\nx\n\nABSENT #33 — no block found; cause unknown\n")
+        f_, w_, _n = gauge_log_continuity(td)
+        if f_:
+            failures.append(f"ds-022: ABSENT still FAILED ({f_}) — the four historical gaps can "
+                            f"never be filled, so a failing ABSENT blocks every future wrap")
+        if not any("ABSENT" in x for x in w_):
+            failures.append("ds-022: ABSENT passed SILENTLY — it would become a free skip for "
+                            "step 2f, which is HOLE with the honesty removed")
 
     with tempfile.TemporaryDirectory() as td:
         os.makedirs(os.path.join(td, "notes"), exist_ok=True)

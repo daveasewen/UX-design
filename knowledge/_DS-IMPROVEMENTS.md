@@ -1430,8 +1430,13 @@ exists, because the anchor is what produced #27's prepend), duplicate + out-of-o
 blocks all refused. `_capture_gate.py::gauge_log_continuity` is BLOCKING at birth: a wrap fails
 unless N−1 has a block or an explicit `HOLE #<N> — <why>`. Runbook step 2f rewritten to run the op.
 Bites: 6 in the mover (incl. the append-order bite that would have caught #27), 4 in the gate.
-⚠ **STILL OPEN AND DAVE'S:** #9/#10/#11/#19 remain absent with no HOLE line. Declaring them
-retroactively would assert something no evidence supports — flagged, not done.
+★ **CLOSED BY DAVE, #34 — a THIRD state, `ABSENT`.** #9/#10/#11/#19 had no block and no note.
+`HOLE #<N>` is a POSITIVE claim (*"that session wrote no stratum"*) and writing four would have made the log
+read complete **at the price of four invented facts** — confident false inscription, committed to tidy a
+file. **`ABSENT #<N>` is a claim about the RECORD, not the session:** no block found, cause UNKNOWN. The
+four are now countable as unknowns and **the dataset accounts for every session 6→33 with zero gaps**.
+⚠ The gate **WARNS** on `ABSENT` rather than passing it — a silent one would become a free skip for step 2f,
+i.e. `HOLE` with the honesty removed. After #34 there should never be a new `ABSENT`.
 
 *(Original status, kept: OPEN, UNRULED. Repair done at #30's wrap; the mechanism is untouched.)*
 
@@ -1486,11 +1491,15 @@ canonical escape `RESERVE SPEND — forked to Dave` (WARN + receipt), and publis
 line `60 − the priced wrap` on BOTH the passing and the over-ceiling path — it moves with the wrap
 price and is bitten for it. Runbook § ds-023 documents the marker where the rule is, not only in the
 regex. Bites: 3 fixtures + 5 assertions; ceiling/stop pinned at (45, 60).
-⚠ **TWO THINGS LEFT FOR DAVE.** (1) One point of slack: the ruling says `≤ 45` but 45 reads AMBER
-(GREEN is `< 45`); the LITERAL ruling is implemented. (2) At enactment the check FAILED the real repo
-on #33's own stamp — which had done the right thing in the wrong words (*"was REFUSED against the 45
-ceiling and forked to Dave"*). Strict marker kept deliberately, but that is *gate-narrows-its-own-rule*
-appearing at birth: **a disciplined session wrote the correct thing and would still have failed.**
+★ **BOTH RESIDUALS CLOSED BY DAVE, #34, same window.** (1) **The one-point slack is gone: `< 45`, not
+`≤ 45` — 45 itself now FAILS**, because 45 is AMBER and the rule is "project to finish GREEN". #34 shipped
+the literal `≤` and forked the contradiction rather than picking the stricter reading unasked; Dave ruled
+it. Boundary bitten (44 pass · 45 fail · 46 fail), and the fixture that read *"at the ceiling exactly —
+allowed"* was **FLIPPED to FAIL rather than deleted**, so the change stays legible. (2) **The marker stays
+STRICT**, cost accepted and named: #33's stamp was correct behaviour in different words and this gate fails
+it, but loosening to any prose containing "forked to Dave" would let the receipt be produced by accident —
+**and a receipt that can be produced by accident is not a receipt.** Mitigation: the literal is documented
+in the RULE (`_RUNBOOK-context-gauge.md`), not only in the regex.
 
 *(Original status, kept: OPEN. The SHAPE is already ruled — what is missing is a CEILING and a check.
 The ceiling number is Dave's.)*

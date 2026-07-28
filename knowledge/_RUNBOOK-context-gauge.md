@@ -104,7 +104,7 @@ shape as ds-021 and ds-022; all three were raised in one session and enacted in 
 
 | | value | what it means |
 |---|---|---|
-| **pre-flight ceiling** | **fill + job + wrap ≤ 45** | a job must be projected to finish GREEN. **Checked, and it FAILS a wrap.** |
+| **pre-flight ceiling** | **fill + job + wrap < 45** | a job must be projected to finish GREEN. **Checked, and it FAILS a wrap. 45 ITSELF FAILS** — it is AMBER. |
 | **in-flight stop line** | **60 − the priced wrap** | ~50–52 at today's 8–10 point wraps. **It MOVES with the wrap price and is not its own constant** — an expensive wrap must stop the session earlier. |
 
 **60 is where the wrap has FINISHED, not where it starts.** Starting the ritual at 60 is exactly what
@@ -122,9 +122,20 @@ Put it in the `pre-flight:` stamp. **Unmarked over-ceiling FAILS the wrap; marke
 leaves a receipt.** ⚠️ The marker is a receipt, **not an absolution** — a session that marks every wrap
 this way has re-dialled the ceiling by habit rather than by ruling.
 
-⚠️ **KNOWN, FLAGGED, UNRESOLVED — one point of slack.** The ruling says `≤ 45`, but 45 reads **AMBER** on
-the band table (GREEN is `< 45`), so *"must project to finish GREEN"* and *"≤ 45"* disagree by exactly one
-point. **The literal ruling is what is implemented** (45 passes). Dave's to close.
+★ **CLOSED BY DAVE, #34 — the one-point slack is gone.** ds-023 was written `≤ 45`, but 45 reads **AMBER**
+(GREEN is `< 45`), so *"must project to finish GREEN"* and *"≤ 45"* disagreed by exactly one point and **both
+were in the canon**. #34 shipped the literal `≤` and forked the contradiction rather than silently picking
+the stricter reading — *tightening a ratified threshold is not the agent's to do*. **Dave ruled `< 45`: 45
+now FAILS**, and "project to finish GREEN" is literally true instead of nearly true. The boundary (44 pass ·
+45 fail · 46 fail) is bitten, and the fixture that read *"at the ceiling exactly — allowed"* was **flipped to
+FAIL** rather than deleted, so the change stays legible.
+
+★ **RULED BY DAVE, #34 — THE MARKER STAYS STRICT**, knowing the cost. The gate matches
+`RESERVE SPEND — forked to Dave` literally, and #33's stamp — *"was REFUSED against the 45 ceiling and forked
+to Dave"* — is **correct behaviour that this gate fails**. Loosening it to any prose containing "forked to
+Dave" would let the receipt be produced by accident, and **a receipt that can be produced by accident is not
+a receipt**. The cost is real and is accepted: a session phrasing it naturally gets failed once and learns
+the literal. That is why the string is documented HERE, in the rule, and not only in the regex.
 
 ⚠️ **AND A FINDING FROM ENACTMENT (#34):** #33's stamp already recorded the right behaviour in the wrong
 words — *"was REFUSED against the 45 ceiling and forked to Dave"* — and does **not** match the canonical
