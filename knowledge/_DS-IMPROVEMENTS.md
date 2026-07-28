@@ -1441,3 +1441,74 @@ into `_gm_move.py` so it cannot be done by hand at all — the M5 argument, appl
 ⚠️ **(a) needs a HOLE escape hatch** or it will block a wrap whose predecessor legitimately wrote no
 stratum — the P1(b) line must satisfy the check, or the gate will teach sessions to fake blocks.
 [born #30 · guards: this entry + the GAPS block in `notes/_GAUGE-LOG.md` · until: Dave rules a remedy]
+
+---
+
+## ds-023 — The reserve is being read as additive headroom, which the canon forbids by name (2026-07-28, session #30, Dave by eye)
+
+**Status: OPEN. The SHAPE is already ruled — what is missing is a CEILING and a check.
+The ceiling number is Dave's.**
+
+**Dave's words, #30:** *"I think that calibration of the headroom is wrong… I think it's calculating
+60+15 headroom is okay and it definitely isn't, 60 should be a hard stop."*
+
+**He is right, and `_RUNBOOK-context-gauge.md` already agrees with him — three times, verbatim:**
+
+> The RESERVE … is **not** a fourth addend: adding it to the projection is exactly the **thermometer**
+> — it reported how hot the session was and never once told it to stop.
+
+> **RULED (a) — the reserve is RING-FENCED, not additive. ~15%.**
+
+> ANTI-FALSE-FIX 2. **The reserve is a LINE, not an allowance.** `fill + job + wrap + 15%` is not a
+> budget to run to; crossing the line is a **question put to Dave.**
+
+⇒ **This is not a calibration gap. It is an enforcement gap** — the third of this session's three, and
+the same shape as ds-021 and ds-022: the rule exists, is correct, is ratified, and nothing checks it.
+
+**The arithmetic the rule implies, and the reason nobody was doing it.** If RED (≥60%) is a hard stop
+and the ~15% reserve is ring-fenced *inside* it, the ceiling on any pre-flight is:
+
+```
+fill + job + wrap  ≤  45%          (= the GREEN ceiling, unchanged)
+```
+
+**i.e. a job must be projected to finish GREEN.** The reserve is what makes AMBER a *fork* zone rather
+than a working zone. ⚠️ **This falls out of Dave's own ratified numbers — it is NOT a new threshold and
+was NOT self-promoted.** The 45% is written here as the derivation, not as the rule; **the ceiling is
+his to confirm or re-dial** (derivation governance, and the band numbers are explicitly his alone).
+
+**The evidence — two consecutive sessions, both passing every gate:**
+
+| | stamped pre-flight | vs 45% ceiling | closed |
+|---|---|---|---|
+| **#29** | `fill 17 + job 25 + wrap 8 = 50% AMBER-projected` | **over at the opener** | 🔴 68–72% |
+| **#30** | `fill 27 + job 15 + wrap 10 = 52% AMBER-projected` | **over at the opener** | 🟡 est. |
+
+- **#29 then built a new instrument from an AMBER projection**, which the Amber rule forbids in terms
+  (*"DO NOT START A NEW BUILD ARTEFACT AT AMBER"*). It closed 68–72%: it did not merely spend the
+  reserve, **it exceeded it**.
+- ⚠️ **Compose ds-021 with this and #29 gets worse.** Its fill was not 17% — measured in the unit the
+  window actually charges, it was **~27%**. The true pre-flight was **27 + 25 + 8 = 60% before a single
+  tool call**, plus 15% ring-fenced. **There was no session there**, and no instrument in the programme
+  could see it: the floor was measured in the wrong unit (ds-021) and the projection was never compared
+  to a ceiling (this entry).
+- **#30 committed the identical error in the session that found it** — stamped 52%, proceeded, and the
+  wrap gate passed it. Recorded here rather than regretted, per the ds-018/#28 discipline.
+
+**Why every existing mechanism missed it.** The band table describes *fill*. The reserve rule describes
+*a line*. `_capture_gate.py` checks the stamp's **three terms, its arithmetic, and that the stated band
+matches the table** — and it does bite: it caught #30's own first stamp for calling 27% AMBER when the
+table says GREEN. **But no check compares the projection to a permissible maximum.** So a stamp can be
+arithmetically perfect, correctly banded, gate-green, and describe a session the canon forbids.
+
+**Remedies — Dave's pick, none started:**
+**(a)** One wrap/pre-flight check: `fill + job + wrap` ≤ ceiling, else FAIL unless the stamp carries an
+explicit `RESERVE SPEND — forked to Dave` marker. Cheap; reuses the existing stamp parser.
+**(b)** (a) plus a **stop rule at 60%**: no new build artefact, no new file, wrap only — making RED
+mechanical rather than advisory (M1 already says this for wraps; it is not enforced).
+**(c)** Re-dial the reserve instead of the ceiling — the runbook itself flags 15% as **provisional,
+"sized from n=3 with one value unknown"**, and asks to re-derive after ~5 more recorded overruns.
+⚠️ **ds-022 blocks (c):** re-deriving needs the overrun dataset, and `notes/_GAUGE-LOG.md` is missing
+#26/#28/#29 — including #29, the **only RED session and the largest overrun on the board**. **Fix
+ds-022 first or (c) is being computed on a corpus with its most informative point deleted.**
+[born #30 · guards: this entry + the GM header · until: Dave rules a ceiling]
