@@ -15,6 +15,10 @@
 >    seats it (Opus ruled #17; Fable cleared #20). M11's fire stays DAVE's, before Sun 08-02.
 >    [born #17 · amended #20 · guards: the brief · until: enacted]
 
+*(2e addendum, same session ~10:20 — the #21-born intermediate item-0 HEAD LINE, replaced in the post-wrap repoint the same day; receipt demanded by the M9 proxy at the addendum's own gate run — it fired, and it was right:)*
+
+> **0. ★ LANE 1 STEP 2 — wrap-ritual section-usage instrumentation, the next window's ONE job** —
+
 ### Rolled banner — #19, verbatim (2c)
 > ## ★ PRIOR — 2026-07-28 (Tue **morning #19**, OPUS conductor + one FABLE worker (re-seated by Dave mid-flight), Dave live — ★★ **MEMENTO-BEFORE-APOLLO RULED A STANDING PRIORITY and landed in §C·1, so a cold session can no longer default onto an Apollo strand** · ★ **GM's own pre-flight was telling the next window the OPPOSITE of what the ledger recorded** · 🟡 mid-band at authoring): **"The Polaroid said the chain shrank, the tattoo said it rose, and the tattoo was right."**
 > - **★★ LANDED, with evidence.** Dave's ruling (Fable window, option-select: *"Standing priority"* over "soft posture" and "only until M-set lands") inscribed at `notes/_MEMENTO-DECISIONS.md` § Memento-before-Apollo · surfaced as ONE line at the head of §C·1 · worker receipt `notes/_receipts/2026-07-28-memento-jit-research-worker.md` · research note `notes/2026-07-28-memento-jit-context-research.md` · 2026-07-28. The receipt asked for exactly this and named the failure it prevents: without it "the next session will pick an Apollo strand off §C·1 by default".
