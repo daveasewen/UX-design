@@ -1400,7 +1400,17 @@ let the caps bind on the charged one. **(c)** Rule the ratio a corpus constant o
 measured on a third and fourth file — the honest option, and the slowest.
 ⚠️ Whichever wins, the fix must reach `_RUNBOOK-context-gauge.md` § THE FLOOR IS MEASURED, the
 `_capture_gate.py` cap constants, and the stamp format together — three homes, one unit.
-[born #30 · guards: this entry · until: Dave rules a unit]
+
+**★ RULED (2026-07-28 19:13 BST, #31 — Dave: "whatever you recommend"; recommendation adopted on his
+word, VETOABLE, provenance = delegated pick, not his own derivation):** **(b), with (c) folded in as
+standing practice.** Every stamp and gate output reports BOTH numbers with the unit NAMED; **caps bind
+on the charged figure**. The caps are RESTATED at their current real value, not silently tightened:
+warn ≈ **12.6K charged** / block ≈ **18.8K charged** (≡ today's 8K/12K cl100k at the provisional
+×1.57). The ratio stays PROVISIONAL — each wrap logs one cl100k↔charged pair (the Read-tool count vs
+tiktoken, free at every chain read) into `notes/_GAUGE-LOG.md` until n≥4 files, then the constant is
+put to Dave. Three homes still owed together: runbook § THE FLOOR IS MEASURED · `_capture_gate.py`
+caps · the stamp format.
+[born #30 · ruled #31 (delegated) · guards: this entry · until: the three homes are edited + ratio firmed at n≥4]
 
 ---
 
@@ -1440,7 +1450,14 @@ file's own contract (chronological, one block per session, no duplicate keys). *
 into `_gm_move.py` so it cannot be done by hand at all — the M5 argument, applied one step further.
 ⚠️ **(a) needs a HOLE escape hatch** or it will block a wrap whose predecessor legitimately wrote no
 stratum — the P1(b) line must satisfy the check, or the gate will teach sessions to fake blocks.
-[born #30 · guards: this entry + the GAPS block in `notes/_GAUGE-LOG.md` · until: Dave rules a remedy]
+
+**★ RULED (2026-07-28 19:13 BST, #31 — Dave: "whatever you recommend"; recommendation adopted on his
+word, VETOABLE, provenance = delegated pick):** **(c) guarded by (a).** The 2f roll folds into
+`_gm_move.py` so the split cannot be done by hand (the M5 argument); the wrap gate gains the N−1
+check — a wrap FAILS unless session N−1 has a block **or an explicit HOLE line** in
+`notes/_GAUGE-LOG.md`. (b)'s contract asserts (chronological · one block per session · no duplicate
+keys) ride along only if cheap at build time — not required for the ruling to be enacted.
+[born #30 · ruled #31 (delegated) · guards: this entry + the GAPS block in `notes/_GAUGE-LOG.md` · until: mover fold + N−1 check land]
 
 ---
 
@@ -1511,4 +1528,21 @@ mechanical rather than advisory (M1 already says this for wraps; it is not enfor
 ⚠️ **ds-022 blocks (c):** re-deriving needs the overrun dataset, and `notes/_GAUGE-LOG.md` is missing
 #26/#28/#29 — including #29, the **only RED session and the largest overrun on the board**. **Fix
 ds-022 first or (c) is being computed on a corpus with its most informative point deleted.**
-[born #30 · guards: this entry + the GM header · until: Dave rules a ceiling]
+
+**★ RULED IN PART (2026-07-28 19:13 BST, #31, Dave, plain language — verbatim):** *"the wrap should be
+done before we hit that mark thats when thing go wrong"* → *"so we should never run hot, the wrap
+should try and stay below 60, does that answer the question, we need to a handle on this."*
+**Read-back (reflected in-chat, confirmed by the second beat):** 60 is where the wrap must have
+**FINISHED**, not where it starts — starting the ritual at 60 is what spends the reserve (#28/#29's
+recorded failure). ⇒ the in-flight **stop-and-wrap trigger = 60 − the priced wrap** (~50–52 at the
+current 8–10-point wraps; moves with the wrap price, is not its own constant). "Never run hot" is the
+standing posture. The pre-flight ceiling stays the derivation above (fill + job + wrap ≤ 45,
+projected-GREEN) — **still his to confirm or re-dial, not yet confirmed in terms.**
+**★ ENFORCEMENT PICKED (2026-07-28 19:13 BST, #31 — Dave: "whatever you recommend"; adopted on his
+word, VETOABLE, provenance = delegated pick): (b) + (a)'s pre-flight check.** Mechanical stop at
+**60 − the priced wrap** (wrap-only beyond it; RED stays wrap-only per M1) · pre-flight check
+`fill + job + wrap ≤ 45` with the explicit `RESERVE SPEND — forked to Dave` escape marker. **The 45
+is CONFIRMED by the same delegation** — flagged as adopted-on-recommendation, not his own derivation;
+re-dial remains his at any time. **(c) stays blocked by ds-022** until the log holds ~5 recorded
+overruns, then the 15% reserve is re-derived and put to him.
+[born #30 · ruled-in-part #31 · enforcement picked #31 (delegated) · guards: this entry + the GM header · until: the checks land in `_capture_gate.py`]
