@@ -2,6 +2,31 @@
 
 ## Batch 2026-07-28 #27 — rolled by the DV-J2 scatter-half wrap (Opus solo, Dave live) — moves via `knowledge/_gm_move.py`, receipts in that session's stdout
 
+### M9 FALSE FIRE #2, answered not archived — item 0b COMPACTED, not retired (2026-07-28, post-wrap)
+
+**No receipt owed: item 0b is LIVE and its instruction is unchanged.** It was TRIMMED to obey §C's
+own pointer+state contract (GM-D6(a): no method bodies in the queue) after the compactable budget
+hit 14 tk of headroom. The enumerated findings it used to restate now live where they belong — the
+brief `notes/_briefs/2026-07-28-chart-encoding-gaps-carry-forward.md`. Nothing was dropped: the
+trim moved duplication out, and the three decision-changing warnings (DV-D02 not gateable as
+written · the list is open · encode before the 8-chart wave) are all still on the live line.
+Verbatim prior text below **only** to satisfy the proxy's text-match — ⚠ NOT A TOMBSTONE:
+
+```
+> **0b. ★★ ENCODE BEFORE THE WAVE — Dave reviewed the DV-J2 scatter half and found FOUR defects by
+>    eye, every one a rule Apollo HOLDS but does not ENFORCE.** Brief:
+>    **`notes/_briefs/2026-07-28-chart-encoding-gaps-carry-forward.md`** — read it, do not
+>    reconstruct this from the banner. Headlines: SVG axis text cropping + collision (the descender
+>    gate works on CSS `text-box-edge`, so it structurally cannot see SVG `<text>`) · scatter is
+>    MISSING `dv-fit` — a DEFECT, see the corrected flag in the LATEST banner · every chart needs a
+>    title (KB rule NOT yet located — find and quote it before gating) · legend/controls should be
+>    shared composition, not copies. **⚠ DV-D02 CANNOT BE GATED AS WRITTEN** — Dave's h-bar
+>    correction and his graphic-vs-lockup split must be confirmed and the rule amended FIRST, or the
+>    gate enforces a defect. **⚠ THE LIST IS OPEN — Dave: "There maybe more than I've stated too."**
+>    Sequencing: the expansion wave is 8 more charts; encode first or fix it nine times.
+>    [born #27 · guards: this line + the brief · until: the gates ship]
+```
+
 ### M9 FALSE FIRE, answered not archived — `0b. NEXT BUILD CANDIDATES` (2026-07-28, post-wrap carry-forward)
 
 **No receipt was owed: the line did not retire, it RENUMBERED 0b → 0c** to make room for the new

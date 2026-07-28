@@ -34,7 +34,7 @@
 > - **★ RULED (Dave, plain-language option-select — the first attempt was refused for being mechanism-shaped):** **interaction only** — tooltips + the show-the-table button; **DV-D07 axis/grid catch-up FENCED**, on the attribution argument (every gridline moves; a correct change would read as a regression), and logged as **ds-020** at his instruction that it be written up rather than left as a queue line. His question mid-flight — *"so I read that the scatter is misaligned with the other charts, is that right"* — was the whole of it, and the answer was yes.
 > - **★ FOUND (measured).** Floor **32,179 tk = 16.1%** at the opener (measured, not inherited) · **the queue's "28 `<title>`→`data-tip`" was wrong twice**: 27 marks (the 28th is the document `<title>`), and it is **not a rename** — canon is a four-part contract and `dv-behaviour.js:71` raises the popover on hover **AND keyboard focus**, so the literal swap would have dropped the accessible name AND shipped a mouse-only tip, with **nothing gating either** (`_validate_dataviz.py` has no aria-label/role check on marks) · **bite 3 refused where the author predicted it would PASS** — dropping the declaration makes the member universal, which then demands the legend markers scatter deliberately lacks, so **the declaration cannot be silently deleted**; a stronger safety property than the mechanism was designed for, recorded as observed not inferred · the ds-018 C2 gate caught the author's own omitted `--shadow` in the ported CSS — DO-FIRST 1's promotion now has a live instance behind it, not just a rationale.
 > - **⚠ WHAT THE AUTHOR FLAGS.** Scatter is now the ONLY cartesian member on the pre-DV-D07 idiom (fenced by ruling → **ds-020**; do not enact without the paired control) · CSV (`button.dv-csv`) **NOT adopted** — out of ruled scope · ~~FIT (`svg.dv-fit`) not adopted — DV-D02 static~~ **✗ FALSE, corrected same day (Dave, by eye): DV-D02 covers cartesian charts and scatter IS one — the missing `dv-fit` is a DEFECT, not a decision. The "deliberate" was inferred from a CSS comment instead of retrieved from the ledger (the trust-the-spine violation, in the session that caught the queue doing the same). Both beats kept.** · **§C·2 item 20 still says "scatter stays Layer-1 safe" — HIS WORD IS OWED**: he was asked and answered the explanation question instead, so the enactment stands on his scope ruling while the batch line is deliberately untouched (never auto-promote over a ratified line) · no 1b dossier — WHY lives in the ledger row + ds-020 (the 1b test applied, stated) · **panel Tue 14:25: All 63% ⇒ 0.95× (behind, narrowing) · Fable 79% ⇒ 1.19×, 0.62× to the Thu reset** — Opus counts to All, which is why this window was Opus.
-> - **⬛ OPEN, Dave's:** **§C·2 item 20 — close as discharged, or narrowly?** · DV-J2b sparkline half (queued by his split) · ds-020 · consumes-manifest TENTATIVE→firm · consult-receipts probe promotion · M12's UNATTENDED fire Sun 08-02 07:10 · §C·2's 15 rulings + dataviz sign-off (PARKED) · calm-banner verdict · LS-trim-vs-defer (P4b).
+> - **⬛ OPEN, Dave's:** ~~§C·2 item 20~~ **✅ RULED post-wrap: "narrowly discharged"** · **DV-D02's exclusion list — his h-bar/lockup correction is LEANING, needs firming before anything gates it** · DV-J2b sparkline half · ds-020 · consumes-manifest TENTATIVE→firm · consult-receipts probe promotion · M12's UNATTENDED fire Sun 08-02 07:10 · §C·2's 15 rulings + dataviz sign-off (PARKED) · calm-banner verdict · LS-trim-vs-defer (P4b).
 >
 >
 > ## ★ PRIOR — 2026-07-28 (Tue **mid-afternoon #26**, FABLE solo, Dave live — ★★ **ADR-0015-A2 ENACTED: consumes-manifest — universal default · individual opt-out · TENTATIVE — machinery mutation-proven, build `[72/72]` exit 0** · ★ **DV-J KEYS MINTED (J = Job; "M stood for Memento")** · ★ **§C·1(a) STEP-1 was SIX DAYS STALE — measured, corrected** · 🟡 ~57% est at wrap): **"The pick was made on a stale queue line; the measurement un-made it."**
@@ -60,18 +60,13 @@
 >    (tips + table spine only; legend interaction, brush/range still deferred). Until he rules, the
 >    file contradicts itself on purpose and this line is the flag.
 >    [born #27 · guards: this line + the ledger row · until: Dave rules]
-> **0b. ★★ ENCODE BEFORE THE WAVE — Dave reviewed the DV-J2 scatter half and found FOUR defects by
->    eye, every one a rule Apollo HOLDS but does not ENFORCE.** Brief:
->    **`notes/_briefs/2026-07-28-chart-encoding-gaps-carry-forward.md`** — read it, do not
->    reconstruct this from the banner. Headlines: SVG axis text cropping + collision (the descender
->    gate works on CSS `text-box-edge`, so it structurally cannot see SVG `<text>`) · scatter is
->    MISSING `dv-fit` — a DEFECT, see the corrected flag in the LATEST banner · every chart needs a
->    title (KB rule NOT yet located — find and quote it before gating) · legend/controls should be
->    shared composition, not copies. **⚠ DV-D02 CANNOT BE GATED AS WRITTEN** — Dave's h-bar
->    correction and his graphic-vs-lockup split must be confirmed and the rule amended FIRST, or the
->    gate enforces a defect. **⚠ THE LIST IS OPEN — Dave: "There maybe more than I've stated too."**
->    Sequencing: the expansion wave is 8 more charts; encode first or fix it nine times.
->    [born #27 · guards: this line + the brief · until: the gates ship]
+> **0b. ★★ ENCODE BEFORE THE WAVE — Dave found FOUR defects by eye on the DV-J2 scatter half, every
+>    one a rule Apollo HOLDS but does not ENFORCE.** → **`notes/_briefs/2026-07-28-chart-encoding-gaps-carry-forward.md`**
+>    — READ IT, do not reconstruct from this line. Three things it must not lose: **⚠ DV-D02 CANNOT
+>    BE GATED AS WRITTEN** (Dave's h-bar + graphic-vs-lockup correction is LEANING — firm it and
+>    amend the rule FIRST, or the gate enforces a defect) · **⚠ THE LIST IS OPEN** ("There maybe more
+>    than I've stated too") · sequencing — the wave is 8 more charts, so encode first or fix it nine
+>    times. [born #27 · guards: this line + the brief · until: the gates ship]
 > **0c. NEXT BUILD CANDIDATES (his pick, not the queue's):** **DV-J2b** — sparkline toggle markup +
 >    CSS, the JS is already injected and dormant (cheap, self-contained) · **ds-020** — scatter's
 >    DV-D07 axis/grid catch-up, FENCED by his #27 ruling; it moves every gridline, so it ships with a
@@ -406,7 +401,9 @@ verbatim-in-substance. Same ruling mechanics as 8–16.**
 17. **Q2 combo home** — new snippet vs Chart-bar variant.
 18. ~~**Sweep hook / 16KB cap fork** — amend cap vs modularise.~~ **✅ RULED 2026-07-26: SPLIT *and* RE-SCOPE** — `dv-legend.js` is a second source; 16KB stays per-source (legibility) and a **32KB per-GROUP PAGE budget** was added so a split can't buy headroom. Inscribed **ADR-0015 § Amendment**; the sweep is no longer baked-static (DV-D12 runs).
 19. **COMBO-LINE-INVERT R-B/R-C** — R-A casing DAVE-SEEN-PROVISIONAL.
-20. **Chart-scatter Layer-2** — deferred, stays Layer-1 safe.
+20. ~~**Chart-scatter Layer-2** — deferred, stays Layer-1 safe.~~ **✅ RULED #27 (Dave: "narrowly
+    discharged") — tips + table spine ONLY; DV-D11 legend + brush/range (21) STAY DEFERRED.** WHY +
+    the count arithmetic: ledger § Open/pending. *(17–22 → 4 open of 6; header "15 of 16" unaffected.)*
 21. **Brush/range-select spec** — menu 8, designed not built.
 22. **JS-off seg wart** — shared w/ Chart-line, atom-level fix.
 

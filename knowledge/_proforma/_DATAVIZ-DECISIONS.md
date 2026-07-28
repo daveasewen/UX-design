@@ -614,6 +614,16 @@ in `_LIVE-STATE.md` (🟡 PARKED entry) so the state machine doesn't read this a
   **not yet firm**: *"I think horizontal bars are fine to be fully responsive, donut (graphics)
   probably not but their lockup with the legend will."* Do not gate DV-D02 as written; amend first.
   Carry-forward brief: `notes/_briefs/2026-07-28-chart-encoding-gaps-carry-forward.md`.
+  **✅ §C·2 ITEM 20 RULED 2026-07-28 #27 — "NARROWLY DISCHARGED" (Dave, his phrase, one word after a
+  three-option read-back).** The 07-24 deferral *"Chart-scatter Layer-2 — deferred, stays Layer-1
+  safe"* is discharged **for the tips + table spine only**; **DV-D11 legend interaction and
+  brush/range-select (item 21) stay DEFERRED.** WHY the narrow form, and it is the point: scatter
+  still ships a static `<ul class="dv-legend">` — finding 4 of Dave's same-day review — so it is
+  *partly* Layer-2, not Layer-2. A flat "discharged" would have put an overstatement in the record as
+  the next reader's starting fact. The agent did NOT edit this line when the work landed: it is
+  Dave's batch item, and closing one's own open question by having done adjacent work is the
+  derivation-governance failure this project gates against — the enactment stood on his SCOPE ruling
+  while the batch line waited for his word on the line itself. Restored set 17–22 → 4 open of 6.
   Render-proof: `knowledge/_render/verify_dv_j2_render.py` (2 widths · licensed cut asserted ·
   toolbar 32px + 44px hit · toggle drives the panel · **keyboard focus raises the tip** · shadow
   compared AS A COLOUR → `rgba(0,0,0,0.2)`); `--bite` strips one `data-tip` and the proof FAILS as
