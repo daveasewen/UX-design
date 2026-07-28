@@ -1,6 +1,18 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
 
 
+## Rolled 2026-07-28 #19 (2d)
+
+*EXIT CHECK: #16's ⬛ OPEN items all hold standing homes before the move — its "three governance holes" were RULED at #17 as M7/M8/M9 and ENACTED at #18 (`e53afc4`, ledger § ★ M-SET ENACTED) ✓ · calm-banner verdict → GM §C·4 ⬛ DAVE'S CALLS ✓ · §C·2's 15 rulings + dataviz sign-off → GM §C·2 ✓. Its LIVE lines (wrap-gate numbers, stamp-vs-measure check, the read-chain contract) are inscribed in `_capture_gate.py` and the GM header stamp, not left in this delta ✓. Its NEW CARRY — the 07-23 calm-banner verdict — was copied up to §C·4 at #16 and is still there ✓.*
+
+## ⏱ PRIOR DELTA — 2026-07-27 (Mon **evening #16**, FABLE solo — ★★ **GM pass p2 W2 LANDED ⇒ GM-D1…D9 + D7-am ENACTED END-TO-END: D3 grandfather audit, 10 receipts on D2's tests · DO-FIRST 266→71 PASS · §C 213→150 at-cap · D7 chain contract + measured stamp live in the header** · ★ **compactable 16,712→8,818 tk = the predicted WARN zone** · 🔴 ~63% at wrap, run-whole ruled at the 62% projection) — "The two FAILs are cleared; the WARN that remains is the one the ruling predicted."
+- **LIVE:** wrap gate: DO-FIRST 71/120 · §C 150/150 (⚠ AT cap — zero headroom by design; an addition must displace a line) · compactable 8,818 tk WARN (8K warn / 12K block — do not chase below 8K by deleting live state) · stamp-vs-measure check active (>10% drift = FAIL; ⚠ a fresh sandbox loses tiktoken — the gate falls back to bytes/3.53 and SAYS so; reinstall before trusting a stamp check) · read chain = `GOOD-MORNING.md` → this file, ≤ ~24K tk, everything beyond = RETRIEVAL. **NEW CARRY surfaced by the audit: the 07-23 calm-banner trial VERDICT** (GM §C·4 Dave's-calls) — floated 4 days homeless, the ds-017 class.
+- **DEAD:** the 10 pre-W2 DO-FIRST notice-groups (retired on D2's tests — receipts + verbatim text `_GM-ARCHIVE.md` § Batch 2026-07-27 #16) · the old open read-chain line ("the decision files it points to") · §C·4's #7/#8-era carry-blobs (compressed to standing one-liners, originals in the batch) · the #14 banner (→ same batch, EXIT-CHECK receipts in its header).
+- **OPEN (Dave's, unchanged):** the three governance holes (ledger § GM-D7 AMENDED, LEFT OPEN) · the calm-banner verdict · §C·2's 15 rulings + dataviz sign-off.
+
+---
+
+
 *(rolled from `_LIVE-STATE.md` 2026-07-27 by capture-ritual step 2d — LATEST + 2 PRIOR stay live)*
 
 ## Rolled 2026-07-27 #18 (2d)

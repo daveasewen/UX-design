@@ -804,3 +804,23 @@ not working past your budget should not itself be inscribed past budget. Rule it
 ruling, ~10 minutes at the FRONT of the next window; it does not displace ds-016 / the `CTRL` sweep,
 it precedes them. Related: [[feedback-context-gauge]] · `_RUNBOOK-context-gauge.md` ·
 `_DECISION-HISTORY/2026-07-27-the-index-cannot-see-the-rule.md` (the session that produced the +17).
+
+## ★ FLOATED 2026-07-28 — Memento × JIT context (Dave's idea: "a separate search tool working with good morning")
+
+**UNRULED.** Apply the Tool-Search/progressive-disclosure pattern to the Memento chain itself: **duties
+eager, reference deferred** — thin the eager chain to §A + LATEST banner + §C headlines + an LS INDEX,
+and retrieve section bodies on demand (extend `_consult.py`, grep is the regex variant). Measured target:
+`_LIVE-STATE` standing body **12,694 tk** (reference, not duty) ⇒ chain ~29.7K → ~18–19K, cold fee
+~23–24% → ~18–19% (ESTIMATE). Prerequisite before any deferral: strengthen the miss-side gates
+(reachability + fail-loud — ds-016 is our signature defect) + instrument section-usage at wrap.
+Free symmetry: M10's 28K advisory becomes the demotion trigger (the `auto:N` analogue).
+**Full survey + options O1/O2/O3 + risks: `notes/2026-07-28-memento-jit-context-research.md`.**
+§C is at cap — entering the board displaces a line; Dave's call.
+
+**UPDATE 2026-07-28 (same day):** Dave confirms the §1 reading and sharpens it twice — modularise the
+search (consult CORE + corpus adapters, two-stage refs→fetch) and shift the STATE tier to
+more-code-than-prose (LS entries as structured records; index + readable view both GENERATED; prose
+retained for the orientation tier — data carries STATE, prose carries WHY). Sequencing delegated
+("I'll go with your instinct") with the constraint **"memento working better before working on apollo
+again"** — firmness pending read-back. Lane: M-set window (unchanged, M5 mover load-bearing) → wrap
+instrumentation → O1′ schema+index → O2′ modular search → Apollo resumes. Detail: note §9.

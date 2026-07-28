@@ -9,7 +9,7 @@ only in the artefact it governs dies the first time that artefact is rewritten â
 **This index is generated from the filesystem**, because a hand-maintained list of runbooks is exactly
 the thing that rots when someone adds the tenth one and forgets the list.
 
-**15 runbooks**, last generated 2026-07-27.
+**15 runbooks**, last generated 2026-07-28.
 
 ### `_RUNBOOK-capture-ritual.md`
 **Runbook â€” end-of-session capture ritual**

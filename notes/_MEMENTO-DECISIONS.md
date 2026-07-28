@@ -212,3 +212,32 @@ ruling by editing a tuple, so the pin fails the build if it happens. Bite-the-bi
 **Measured at enactment, for the next window:** §A 4,208 tk · banner region 2,103 tk (warn 4,000) ·
 compactable 9,108 tk (warn 8,000) · chain 29,810 tk — the chain rose across this wrap, which is honest:
 #18's banner and delta are denser than what rolled out. The advisory warn fires, correctly.
+
+## Memento-before-Apollo priority + JIT lane direction — 2026-07-28 (Fable solo, explicit option-select in-session)
+
+**RULED: "Memento working better before working on Apollo" is a STANDING PRIORITY.** Dave's verbatim
+(opener response): *"I'll go with your instinct but I just want memento working better before working
+on apollo again."* Firmness confirmed by option-select same window — he took **"Standing priority"**
+over "soft posture" and "only until M-set lands".
+
+**Read-back of what he accepted, so it cannot later read as agent drift:** *the Memento lane — M-set
+remainder (M4a·M4b·M5, brief scope UNTOUCHED) → wrap-ritual section-usage instrumentation → O1′ LS
+schema + generated index/view → O2′ modular memento-search + gates — runs BEFORE any §C·1 Apollo
+strand; next sessions open accordingly until the lane lands.* M11's supervised fire stays Dave's,
+before Sun 08-02, unchanged.
+
+**DIRECTION (his, same message), confirmed not yet enacted:** (i) modularise the search — `_consult.py`
+CORE (index + query + fail-loud, two-stage refs→fetch) + corpus adapters (DS · Memento; also serves
+the KG forcing function floated 07-27); (ii) more-code-than-prose for the STATE tier only — LS entries
+as structured records, index AND readable view GENERATED; prose retained for the orientation tier
+(**data carries STATE, prose carries WHY** — three registers never flattened).
+
+**WHY.** The JIT survey (note `2026-07-28-memento-jit-context-research.md` + §9) measured the eager
+chain at 29.7K tk with `_LIVE-STATE`'s 12,694 tk standing body as reference-not-duty; the industry
+pattern (tool search · Skills 3-level · MemGPT · Manus) and the repo's own trajectory (§A digest in
+code · M8's fixture-from-a-comment · born/guards/until latent schema) both point the same way. Dave's
+constraint orders the work; it does not price it — **each window prices at its own opener (M1/D9),
+and the miss-side gates (reachability + fail-loud, ds-016 class) land BEFORE the eager set thins.**
+
+**NOT ruled here:** O1′/O2′ designs, schema shape, any §C displacement, any GM/LS edit — all owed to
+their own windows. Registered: `_FUTURE-STATE.md` (entry + same-day update) · note §1/§9.
