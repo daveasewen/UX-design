@@ -218,6 +218,9 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
    ### ⏱ SESSION STRATA
    #### <date> #<session#>
    ```
+   **The stratum also carries `section-usage` + `section-sizes` lines** (#23, ruled 2026-07-28):
+   emit sizes via `python3 knowledge/_gm_usage.py --sizes --session <N>`, self-report usage U/R/C —
+   contract + vocabulary in that script's docstring, probe ADVISORY until O1′. One line each, no more here.
    *(Enactment detail, 2026-07-27 — flagged as such. D6(a) caps §C **"excluding the D5 stack"**, which is
    only checkable if the stack is delimited; **the stack being UNLABELLED is what let it grow in the first
    place**. This is the minimum mechanism that makes an already-ruled cap enforceable, not a new rule.)*

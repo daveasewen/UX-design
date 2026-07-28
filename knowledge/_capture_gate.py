@@ -118,6 +118,12 @@ SECTION_EXEMPT = {"§A"}    # standing + uncapped by ruling: measured and report
 SECTION_RETIRED = {"§B"}   # D4(a) deleted it into the banner — its reappearance IS the failure
 SECTION_REQUIRED = ("DO-FIRST", "§A", "§C")
 
+# #23 (ruled Dave 2026-07-28): the section-usage probe's tier. ADVISORY now — the wrap WARNS
+# on a missing/malformed stratum usage line. PROMOTION TRIGGER = O1′ start (the data's
+# consumer arrives): flip this flag AND its selftest pin together, one deliberate edit pair
+# (M10's pattern). Vocabulary + validation live in _gm_usage.py — the ONLY copy.
+SECTION_USAGE_BLOCKING = False
+
 # 2f: the session-strata stack. It is excluded from §C's cap by D6(a) — which is only checkable if
 # it is DELIMITED, so 2f requires the marker below. ⚠ Excluding a region from a cap without giving
 # it a rule of its own is precisely how "splitting buys headroom"; the region's rule is D5(a) —
@@ -636,6 +642,40 @@ def retirement_receipts(repo):
     return warns, notes
 
 
+def section_usage_probe(repo):
+    """#23 (ruled Dave 2026-07-28, lane 1 step 2): the session stratum carries a
+    `section-usage` line (U/R/C testimony, FORM-checked only — honesty stays the
+    session's, the pre-flight-stamp precedent) and a `section-sizes` line
+    (code-measured). Accumulated in _GAUGE-LOG.md as strata roll, usage × size is the
+    dataset LS-trim-vs-defer (P4b) and the JIT premise wait on. ADVISORY — tier routed
+    at the call site by SECTION_USAGE_BLOCKING; promotion trigger = O1′ start."""
+    issues, notes = [], []
+    gm = os.path.join(repo, "GOOD-MORNING.md")
+    if not os.path.exists(gm):
+        return issues, notes
+    with open(gm, encoding="utf-8") as f:
+        lines = f.read().splitlines()
+    idx = next((i for i, ln in enumerate(lines) if STRATA_HEAD_RE.match(ln)), None)
+    if idx is None:
+        notes.append("section-usage: strata marker absent — probe skipped (honest skip, "
+                     "not a pass)")
+        return issues, notes
+    try:
+        sys.path.insert(0, HERE)
+        import _gm_usage
+    except Exception as e:
+        issues.append(f"section-usage: _gm_usage.py unimportable ({e}) — probe cannot run; "
+                      f"fix it, never close blind")
+        return issues, notes
+    issues += _gm_usage.validate_stratum("\n".join(lines[idx:]))
+    if not issues:
+        notes.append("section-usage: stratum carries well-formed usage + sizes lines "
+                     "(FORM only — whether a C is honest is not observable here).")
+    notes.append("section-usage tier: ADVISORY — promotion trigger = O1′ start "
+                 "(#23 ruling; flip SECTION_USAGE_BLOCKING + its selftest pin together).")
+    return issues, notes
+
+
 def wrap_checks(repo, today, lane=False):
     fails, warns, notes = [], [], []
     iso = today.isoformat()
@@ -647,9 +687,10 @@ def wrap_checks(repo, today, lane=False):
                      "record and its check still bites.")
         notes.append("LANE WRAP: pre-flight-stamp check SKIPPED too — the stamp lives in "
                      "GOOD-MORNING.md, which lane sessions do not write.")
-        notes.append("LANE WRAP: section growth contracts (2e/2f), the banner/§A/chain budgets "
-                     "and the retirement-receipts proxy are all SKIPPED — same reason. A lane "
-                     "session cannot be charged for a file it is ruled out of writing.")
+        notes.append("LANE WRAP: section growth contracts (2e/2f), the banner/§A/chain budgets, "
+                     "the retirement-receipts proxy and the section-usage probe are all SKIPPED "
+                     "— same reason. A lane session cannot be charged for a file it is ruled "
+                     "out of writing.")
     else:
         gm = os.path.join(repo, "GOOD-MORNING.md")
         if os.path.exists(gm):
@@ -663,6 +704,9 @@ def wrap_checks(repo, today, lane=False):
         notes += n_
         f_, n_ = retirement_receipts(repo)      # M9 — receipts proxy, BLOCKING (Dave #22)
         fails += f_
+        notes += n_
+        i_, n_ = section_usage_probe(repo)      # #23 — ADVISORY until O1′ (tier = this line)
+        (fails if SECTION_USAGE_BLOCKING else warns).extend(i_)
         notes += n_
         notes.append("PRE-FLIGHT stamp: FORM checked only (3 terms · arithmetic · band-vs-table). "
                      "Whether the fill figure is honest, and whether a mid-job re-price actually "
@@ -1052,8 +1096,34 @@ def selftest_growth():
     return failures
 
 
+def selftest_usage():
+    """#23 — the section-usage probe fires on missing/malformed and stays quiet on good
+    (tier-agnostic, the M9 selftest's shape), plus the tier pin (M10's pattern)."""
+    failures = []
+    sys.path.insert(0, HERE)
+    try:
+        import _gm_usage
+    except Exception as e:
+        return [f"usage: _gm_usage unimportable in selftest ({e})"]
+    good = (_gm_usage.GOOD_USAGE +
+            "\n> **section-sizes #23 (t):** GM HDR:1 · LS HDR:1")
+    if _gm_usage.validate_stratum(good):
+        failures.append("usage: good stratum must stay quiet")
+    if not any("MISSING" in i for i in _gm_usage.validate_stratum("> nothing here")):
+        failures.append("usage: missing line must fire")
+    if not any("MALFORMED" in i for i in _gm_usage.validate_stratum(
+            good.replace("SPIN:R", "SPIN:X"))):
+        failures.append("usage: malformed line must fire, and say MALFORMED")
+    if SECTION_USAGE_BLOCKING:
+        failures.append("usage tier pin: SECTION_USAGE_BLOCKING is True but the ruled tier "
+                        "is ADVISORY until O1′ starts — promotion is Dave's trigger; flip "
+                        "flag AND this pin together (one deliberate pair)")
+    return failures
+
+
 def selftest():
-    failures = selftest_preflight() + selftest_budgets() + selftest_growth()
+    failures = (selftest_preflight() + selftest_budgets() + selftest_growth()
+                + selftest_usage())
     with tempfile.TemporaryDirectory() as td:
         os.makedirs(os.path.join(td, "notes"))
         os.makedirs(os.path.join(td, "_DECISION-HISTORY"))

@@ -55,6 +55,10 @@ STEPS = [
     # anchors · §A digest assert · imported caps (warn ≠ block) · no-op loud FAIL ·
     # all-or-nothing. The mover itself runs at ritual time, not in the build.
     ("GM/LS mover selftest — hardened move mechanics (M5)", "_gm_move.py", ["--selftest"]),
+    # #23 (lane 1 step 2, ruled 2026-07-28): section-usage instrumentation. The selftest
+    # proves the vocabulary refuses unregistered headings and the stratum probe FIRES;
+    # the wrap-time probe itself lives in _capture_gate.py (--wrap), ADVISORY until O1′.
+    ("section-usage instrumentation selftest (#23)", "_gm_usage.py", ["--selftest"]),
     ("cross-reference index", "_build_xref_index.py"),
     ("sutherland acceptance fixtures", "_build_sutherland_fixtures.py"),
     ("states-completeness probe (advisory)", "_build_states_probe.py"),
