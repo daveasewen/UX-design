@@ -2,6 +2,26 @@
 
 ## Batch 2026-07-29 #38 — rolled by the FINISH-#37'S-WRAP wrap (Opus solo, Dave live) — moves via `knowledge/_gm_move.py`
 
+### ⬛ RETIRED #38 — `M11 supervised dream-pass fire`, VERBATIM, with cause
+
+> **The line, as it stood in GM §C·4 § ⬛ DAVE'S CALLS, parked live:**
+> `M11 supervised \`memento-dream-pass\` fire from the UI before Sun 08-02`
+>
+> **VERIFIED CLOSED AT #21, seventeen sessions before it was retired.** Evidence, two independent:
+> commit **`0ee1634`** (2026-07-28) — *"Third dream pass — 6 floated proposals (Tue fire, **M11
+> supervised-fire week**)"* · and `_LIVE-STATE.md` § 🔀 SPIN-OFF LANE states it outright: **"M11 CLOSED
+> #21 `0ee1634`"**. ⚠ **It was still filed as an OPEN CALL AWAITING DAVE** — it would have had him redo
+> landed work, which is the [[assertion-propagation-gap]] class: a doc known-wrong-now that nothing
+> chases, because the gate fires on a FLIP and this never flipped. **M12's unattended Sunday fire
+> (2026-08-02 07:10) is the LIVE one** and lives in §C·4 *Also homeless*.
+>
+> ⚠⚠ **AND THE RETIREMENT ITSELF DEMONSTRATED THE PATHOLOGY.** #38's first attempt explained the
+> retirement IN PLACE — and GM got **BIGGER** (12,398 → 12,492 tape) while removing a dead line.
+> **Supersession by addition**, which is precisely what GM-D2's retirement tests were written to stop,
+> committed while performing a retirement. ⇒ **The cause goes in the archive; the live surface keeps a
+> clause. A retirement that grows the file has not retired anything.**
+
+
 ### ⬛ COMPRESSED #38 — the header's potholes line, VERBATIM (M9 receipt)
 
 > ⚠ **2e's PERISHABLE-READING test: *replaced at the next wrap, never stacked.*** The pace-panel clause carried #33's verbatim decline and a #34 aside, three sessions on, inside a line that exists to list potholes. Substance kept (ask at the opener · no gate sees pace · Fable is on the table); the dated quotes are here.
