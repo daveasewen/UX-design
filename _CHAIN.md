@@ -7,7 +7,7 @@
 > and ★ LATEST banner, plus `_LIVE-STATE.md`'s ⏱ LATEST delta — the three things GM-D7-am names
 > (CUT #33 on Dave's ruling). **If you have read this file, you have read the chain.**
 >
-> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 20,186 tape and 84% of it is
+> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 20,456 tape and 83% of it is
 > retrieval surface you are not meant to pay for at boot. That reflex is the thing this file
 > exists to stop — five sessions called the chain CUT and every one of them paid full price.
 >
@@ -46,6 +46,7 @@
 > - **★ EXIT CHECK BIT — FOURTH CONSECUTIVE WRAP.** Dave's *"a sub-agent may do the working, never the judging"* is in **NO standing doc** (four greps, zero hits); it lived in `6f92f08` and two rolling deltas. **Copied to §C·4 before the roll.**
 > - **⛔ THE BRIEF'S ITEM 1 IS BLOCKED, surveyed not attempted:** moving §A/§C trips **`STAND-004`**, which exists *because* §A was eroded 2026-07-18 — plus an index selftest pin and **six modules referencing GM by path.** Coordinated surgery, not a small win.
 > - **⚠ WHAT I GOT WRONG (two — FIFTEENTH consecutive).** My opener read GM whole (the exact overspend I then fixed — it made the defect visible, but I did not choose that) · I relayed an unchecked **presence** claim, the mirror of [[unmatched-grep-is-not-an-absence]]. ⚠ **And the STOP line cost +137 tape in the region it shrinks** — #38's shape, kept because it buys ~15,000, declared not hidden.
+> - **⊕ TAIL, added #42 BY ADDITION — #41 ran on for THREE COMMITS after this banner and the chain never carried them** (`e92ea0e` · `0ab9331` · `aa2f425`; the evidence was always in `notes/_GAUGE-LOG.md § META #41 (third)` and `_RUNBOOK-git-commit.md` — **only the chain half was missing**, [[gap-in-record-vs-gap-in-evidence]]). ★★ **ONE THROUGH-LINE, THREE TIMES IN ONE WINDOW: a correct mechanism sitting where the hot agent never has to pass through it** — `_git_commit.sh` (ruled 07-26, unused ×3; count corrected **3 of 5 → 5 of 7**, #36's instance never inscribed) · the read chain · **`_to_delete/` clearing routed to Dave, who said *"i dont know how to do this"*, while `mcp__cowork__allow_cowork_file_delete` existed all along.** ⇒ **a step that routes agent-solvable work to the human is a defect in the step** (runbook 4b, corrected). ⬛ **UNRULED, DAVE'S: nothing makes calling the script mandatory.**
 
 
 ---
@@ -62,11 +63,12 @@
 - **⛔ THE BRIEF'S ITEM 1 IS BLOCKED, surveyed not attempted** — `STAND-004` + an index selftest pin + six modules referencing GM by path.
 - **★ EXIT CHECK BIT — FOURTH CONSECUTIVE WRAP.** Dave's *"a sub-agent may do the working, never the judging"* was in no standing doc; homed in §C·4 before the roll. FLOATED — promotion is his.
 - **⚠ ERRORS: 2, FIFTEENTH consecutive** — opener read GM whole · relayed #39's unchecked presence claim as fact. Both read-the-record.
+- **⊕ TAIL (added #42) — #41's three post-wrap commits reached the record but never the chain:** `e92ea0e` · `0ab9331` · `aa2f425`. Through-line: **three correct mechanisms hand-rolled around in one window.** Runbook 4b corrected — **the agent clears `_to_delete/`, never Dave** (`mcp__cowork__allow_cowork_file_delete`); commit-session count **3 of 5 → 5 of 7**. ⬛ Script-mandatory UNRULED. ⚠ **TREE STATE below understates by three — six commits now local, unpushed.**
 - **TREE STATE.** Local, unpushed — Dave pushes via GitHub Desktop. Three commits: `7a16a20` · `bb47693` · this wrap's. ⚠ Explicit paths only. ⚠ `mv` stray `.git/*.lock` BEFORE git.
 
 
 ---
 
-*(Chain ends. **4,065 tape** — the contract price, measured by the same function that
-generated this file. `GOOD-MORNING.md` is 20,186 tape and stays whole for retrieval; you have
-paid for 20% of it and that is the intended figure, not a shortfall.)*
+*(Chain ends. **4,482 tape** — the contract price, measured by the same function that
+generated this file. `GOOD-MORNING.md` is 20,456 tape and stays whole for retrieval; you have
+paid for 22% of it and that is the intended figure, not a shortfall.)*
