@@ -2,7 +2,7 @@
 # _git_commit.sh — the sandbox commit dance, mechanised.
 # provenance: lane session 2026-07-26 (dream-pass P2, Dave ruled accept-enact-now) · status: ruled
 #
-# WHY: 3 of 5 commit-running sessions reconstructed the clear·stage·clear·commit·clear sequence
+# WHY: 5 of 7 commit-running sessions (3 of 5 at ruling; #36 + #41 since) reconstructed the clear·stage·clear·commit·clear sequence
 # from memory under wrap-time heat and hit the lock failure first (dream-pass P2 evidence).
 # Per feedback-gate-dont-patch: make the condition mechanical, not another prose reminder.
 # The sandbox delete-guard means locks can only be MOVED (mv), never rm'd — see the runbook.
