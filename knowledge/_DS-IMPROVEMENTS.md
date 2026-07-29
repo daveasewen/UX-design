@@ -1485,6 +1485,25 @@ keys) ride along only if cheap at build time — not required for the ruling to 
 
 ## ds-023 — The reserve is being read as additive headroom, which the canon forbids by name (2026-07-28, session #30, Dave by eye)
 
+**★★ SUPERSEDED IN SHAPE #37 (2026-07-29) — THIS IS A BAND, NOT A CEILING. Dave re-stated it at
+#36 and #37 enacted it.** `45–60` is the PREFERRED BAND for the FULL price (front-load + context GM
++ job + wrap); `60` is the line and is LIVABLE; `61–63` is tolerable when RARE and MARKED. **45 was
+never a ceiling** — the `>= 45 -> FAIL` below was picked by a *delegated agent* at #31, never ruled
+by Dave, and it was failing the very zone it existed to steer sessions into. `PREFLIGHT_CEILING` is
+gone; `BAND_FLOOR` / `HARD_STOP` / `MARKED_MAX` are pinned to `(45, 60, 63)`. Whole arc:
+`GOOD-MORNING.md` § ★ LATEST #36 · `_LIVE-STATE.md` § ⏱ LATEST DELTA #37 ·
+`_DECISION-HISTORY/2026-07-29-the-ceiling-was-never-a-ceiling.md`.
+
+⬛ **OPEN AND DAVE'S — the ONLY part of ds-023 still unruled: what happens ABOVE 63.** He ruled the
+band and the marked tolerance and nothing beyond. #37 deliberately **kept the pre-#36 escape-hatch
+shape** there (marked → WARN, unmarked → FAIL) rather than inventing a harder stop, and the gate
+*says* `UNRULED` in the message. A pinned assertion in `selftest_preflight` fails if a later session
+quietly fills that silence — **because filling exactly this kind of silence is how `>= 45 -> FAIL`
+got in.** ⚠ Do not resolve this by reasoning; it needs his words.
+
+*(Everything below is the #30→#34 record, kept verbatim. It is the evidence that only the
+ENFORCEMENT ever moved — the underlying reserve arithmetic was never in dispute.)*
+
 **★ Status: ENACTED #34 (2026-07-28), Dave confirming — "this is making me suffer unduly".**
 `_capture_gate.py::check_preflight` now enforces the CEILING (`fill + job + wrap ≤ 45`, FAIL) with the
 canonical escape `RESERVE SPEND — forked to Dave` (WARN + receipt), and publishes the in-flight stop
@@ -1665,3 +1684,51 @@ like a genuine false inscription**, which is the worst possible disguise for a l
 around by rewording the prose; the selector should anchor on the line-START form (`^>\s*\*\*section-usage`)
 like every other anchor in this programme. One line, plus a bite that puts the phrase in neighbouring
 prose and proves the real line is still the one validated. **#33, cheap.**
+
+## ds-025 — Every load-bearing number in the throttle is one no session can observe from inside itself (2026-07-29, session #37, measured)
+
+**Status: OPEN. The measurement is done and is not in dispute; the REMEDY is a ruling and is Dave's
+alone, because it changes what the agent is allowed to assert.**
+
+**Three numbers hold up the whole gauge, and not one of them is observable from inside the window
+that depends on it:**
+
+1. **THE BOOT (front-load).** Never measured by any session in 36. Carried as *"~17 of a ~20-pt
+   floor"*. Measured at #37, the DISK-RESIDENT half alone: **17,810 tape / ~27,961 bill / ~14.0 pts**
+   — `MEMORY.md` 4,517 · reconstructed `available_skills` (37 SKILL.md) 5,684 · GM lines 1–120 6,253 ·
+   LS delta 1,356. The harness half (system prompt, tool schemas, MCP instruction blocks) is **not on
+   disk and not reachable from the sandbox** — the session transcript is outside every mount. ⇒ the
+   real boot is almost certainly well above the inherited ~17, and **every pre-flight in this repo
+   has been priced on the low figure.**
+2. **`bill`.** ds-021(c) requires one `tape`/`bill` pair per wrap and sends the constant to Dave at
+   **n≥4**. Measured at #37: `notes/_GAUGE-LOG.md` has **never contained a single pair** (`grep -i
+   bill` → 0 hits, all sessions). `TAPE_TO_BILL = 1.57` is still the original **n=2** from #30. The
+   reason is not laziness — **`bill` is what the WINDOW CHARGES, and a session cannot read its own
+   meter.** The instrument was asked for a number it structurally cannot produce.
+3. **`fill`.** `_capture_gate.py` says so itself, in its own header: *"It CANNOT check whether the
+   fill figure is honest… it has no access to the token tally, and a guessed number wearing a gate's
+   authority is the failure this programme exists to stop."* Correct — and it means the first term of
+   every pre-flight stamp is an agent's estimate.
+
+★ **THE SHAPE.** This is [[measuring-tool-must-not-guess]] at programme scale: **a number the
+instrument cannot observe will be supplied by estimate forever, and estimates do not announce
+themselves as estimates once they are written into a stamp.** Dave's #36 band makes it sharper, not
+softer — the band is denominated in the FULL price, so the unmeasured boot sits *inside* the ruled
+quantity. The band is only as honest as its floor.
+
+**PROPOSED, HIS TO RULE (three options, deliberately not chosen here):**
+- **(a) Dave-supplied inputs.** `fill` and `bill` become pasted observations like the **pace panel**
+  already is — he can read the meter, the agent cannot. Worked precedent: he pasted the panel at #37
+  and it priced the session honestly in one line.
+- **(b) REFUSE rather than estimate.** #36 raised this for the size checks (the gate silently
+  degrades to `bytes/3.53` without `tiktoken` and **under-reports by 414 tape**, i.e. fails UNSAFE).
+  Generalised: an unobservable term is `UNKNOWN`, and `UNKNOWN` blocks rather than defaults.
+- **(c) Publish the split.** Keep estimating, but every stamp states which terms are MEASURED and
+  which are ESTIMATED, so the boot's status can never again be invisible for 36 sessions.
+
+⚠ **Do NOT let an agent pick between these.** ds-023 is the cautionary case in this very file: a
+delegated agent chose an enforcement Dave never ruled and it stood for six sessions.
+
+**Cheap first step regardless of the ruling:** the boot's disk-resident half is now measurable in one
+script (~15 lines, `tiktoken` + the mounted paths) and should be re-measured per session rather than
+inherited — it is *"a variable this programme shrinks"* (GM-D9), and nobody has ever watched it move.
