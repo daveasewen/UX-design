@@ -70,8 +70,17 @@ from an already-clean `.git`. (Corrected 2026-07-18 after step 1 failed on a 12-
    ```
    for L in $(find .git -name '*.lock'); do mv "$L" _to_delete/_stale_locks/; done
    ```
-4b. *(Optional sweep — dream-pass P8, 2026-07-26.)* If `_to_delete/` is bulging, remind Dave in the
-   handoff: host-side `rm -rf _to_delete/*` when next at the machine (gitignored; the sandbox cannot).
+4b. *(Optional sweep — dream-pass P8, 2026-07-26. ⛔ **CORRECTED #41 — this step used to route the job
+   to Dave and that was wrong.**)* If `_to_delete/` is bulging, **the agent clears it — do NOT put it in
+   the handoff.** `rm` fails `Operation not permitted` **until permission is granted**, and there is a
+   tool for exactly that: **`mcp__cowork__allow_cowork_file_delete`**, whose own description says to call
+   it *"whenever a delete operation (such as rm) fails with 'Operation not permitted', rather than
+   telling the user it is impossible."* Then `rm -rf _to_delete/*` works. ⚠ **Keep the directory and
+   re-`mkdir -p _to_delete/_stale_locks`** — the lock workaround writes there every commit.
+   ★ **Why this correction exists:** #41 handed Dave a terminal command; he replied *"i dont know how to
+   do this."* He pushes via GitHub Desktop by design and should never need a shell. **A step that routes
+   agent-solvable work to the human is a defect in the step** — and this is the THIRD mechanism #41
+   hand-rolled around in one window (`_git_commit.sh`, the chain file, this).
 5. **Hand off to Dave** — "committed at `<hash>`, locks clear, safe to push." Dave pushes via
    **GitHub Desktop only** (never terminal push — it hangs on credentials). If Desktop ever complains
    about a lock, Dave can delete `.git/index.lock` on his side (his machine has normal permissions).
@@ -88,8 +97,12 @@ from an already-clean `.git`. (Corrected 2026-07-18 after step 1 failed on a 12-
 - **The warnings lie about failure, and `git status` lies about success.** Even a read-only
   `git status` respawns `index.lock`, so a clean-looking status run leaves the next `git add` blocked.
   That is why step 4 says the lock-clear must be the *last* git-touching action.
-- **`_to_delete/` is gitignored** and the bridge can't empty it from the sandbox — Dave deletes it on
-  his machine when convenient. Never commit `_to_delete/`.
+- **`_to_delete/` is gitignored.** ⛔ **CORRECTED #41 — the old text here read *"the bridge can't empty
+  it from the sandbox — Dave deletes it on his machine"*, and that is FALSE:** the agent clears it after
+  `mcp__cowork__allow_cowork_file_delete` grants the folder (see step 4b). **Never commit `_to_delete/`,
+  and never hand the cleanup to Dave.** ⚠ The false claim survived because *"the sandbox cannot"* is TRUE
+  of the default state and nobody re-tested it once a permission tool existed — [[assertion-propagation-gap]]:
+  the gate fires on a FLIP, so a line that was true when written and quietly went stale is never chased.
 - **Big/licensed binaries** (fonts, raw exports) must be gitignored before `git add -A` — check
   `git status --short` for anything under `knowledge/assets/fonts/` or `knowledge/tokens/_raw/`.
 - **The stale-msgfile trap (bitten 2026-07-22).** `/tmp` persists across sessions and a file there can
