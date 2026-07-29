@@ -319,6 +319,15 @@ step 2f (`113eefc`) yet wrote no stratum of its own; its gauge story lives only 
 > than merely discouraged: a half-done split"* — and it occurred in the very next session.
 > Narrative: `_LIVE-STATE.md` § ⏱ PRIOR DELTA #35 · `_DECISION-HISTORY/2026-07-29-reading-the-usage-series.md`.
 >
+> ✅ **HOLE #35 IS DISCHARGED — #38 ROLLED THE MISSING HALF.** The text above stays verbatim: it was
+> TRUE when written, and a ratified record is corrected by addition, never by tidying. What changed is
+> that #35's post-mortem **existed all along, in `GOOD-MORNING.md` §C** — only the 2f split's log half
+> had failed — so #38's roll RECOVERED it rather than reconstructing it (the `#28 — RECOVERED at #30's
+> audit` precedent). ⚠ **This is the opposite of the forgery the box above refuses:** the block below is
+> in-the-moment testimony written by the session that paid the cost. #35 now has a real block; **#36
+> still does not and never will** — it wrote neither half. [born #38 · guards: the `#### 2026-07-29 #35`
+> block at EOF · until: n/a, this is a closure]
+>
 > **HOLE #36 — no post-mortem block AND no §C stratum.** Neither half of the 2f split ran.
 > Narrative: `GOOD-MORNING.md` § ★ LATEST #36 · `_LIVE-STATE.md` § ⏱ LATEST DELTA #36 ·
 > `_DECISION-HISTORY/2026-07-29-the-ceiling-was-never-a-ceiling.md`.
@@ -343,4 +352,36 @@ step 2f (`113eefc`) yet wrote no stratum of its own; its gauge story lives only 
 > the boot unmeasured for 36 sessions. **A number the instrument cannot produce will be supplied
 > by estimate forever.** Proposal, HIS to rule: `bill` and session fill become **Dave-supplied
 > inputs like the pace panel**, not agent-derived — see `_DS-IMPROVEMENTS.md` ds-023/ds-025.
+
+#### 2026-07-29 #35
+
+> **pre-flight:** fill 20% + job 12% + wrap 10% = 42% — 🟢 GREEN projected · reserve 15% ring-fenced. *(fill = the cut chain, 3.0 pts, + ~4 pts opener reads. ⚠ **the BOOT term is an ESTIMATE and always has been — no session here has measured it.** Priced 38, **re-priced to 42 at the finding**, announced before continuing.)*
+> **CLOSED: 🟡 AMBER, at the stop line.** Declared 42, closed ~50 = **`60 − the 10-pt wrap`**, and stopped there rather than after. **Dave's own ruling was DROPPED AT THE DOOR to #36** — the ceiling working, twice running. ⚠ The close is an ESTIMATE (boot); the tape figures beside it are measured.
+> **★ THE LESSON — full text in the banner + dossier:** *a job can outlive the cost that justified it.* **An instrument's READING ages faster than its RULE; measure the premise, not only the work.**
+> **section-sizes #35 (tiktoken cl100k_base):** GM HDR:1473 LATEST:1346 PRIOR:1209 DOFIRST:2554 A:4208 C1:842 C2:1157 C2b:484 C3:181 C4:1955 C4b:256 C5:84 STRATA:8 · LS HDR:255 LANES:872 SPIN:1794 DELTAS:3520 WEBFONT:604 LIVE:4928 LIFECYCLE:973 DEAD:432 OPEN:4361 TARGETS:577 SPINOFFS:444 · totals GM:15757 LS:18760
+> **section-usage #35 (observed, self-report):** GM HDR:C LATEST:C PRIOR:C DOFIRST:R A:U C1:U C2:U C4:C STRATA:C · LS HDR:U LANES:U SPIN:U DELTAS:C WEBFONT:U LIVE:U LIFECYCLE:C DEAD:U OPEN:U TARGETS:U SPINOFFS:U
+> *(⚠ **`A:U` twice running** — the cut chain held. ★ `PRIOR:C` = the EXIT CHECK: the `{17}` class lived ONLY in the #33 banner that rolled this wrap.)*
+> **consult-receipts #35:** "pace panel" → gm:HDR · gm:DOFIRST · ls:DELTAS ; "batch #30" → gm-archive:batch-2026-07-27-17-rolled-by-the-wrap-of-the-memento-harden *(the second was not a question but the PROOF that archive content is retrievable — a search used as EVIDENCE, and the fact Dave's offload ruling rests on.)*
+
+#### META — HOLE DECLARED AT #38 for #37, and the STATE THE VOCABULARY DOES NOT HAVE
+
+> **HOLE #37 — no post-mortem block and no §C stratum.** #37 ran an **AMBER SPINE-FLUSH**
+> (capture-ritual STEP 1 ONLY, `_RUNBOOK-context-gauge.md` § The trigger) and deliberately did not
+> wrap: it priced the full wrap at **~73%** against Dave's 45–60 band and chose the cheaper tier
+> rather than under-price the job to fit. It then handed to #38 mid-flight. **It therefore never
+> closed, and has no closed band to record.**
+>
+> ⚠ **THE FOURTH STATE — RAISED AT #38, DAVE'S TO RULE, NOT FILLED.** This log's vocabulary is
+> `block` / `HOLE` / `ABSENT`, and **a session that hands over mid-flight fits none of them.** #37 is
+> not a `HOLE` in the #36 sense (it left real MEASURED numbers — the flush decision at ~55%, the
+> ~73% full-wrap price, and tape figures throughout its commits); it is not a `block` (no closed
+> band exists to write); and `ABSENT` is plainly wrong (we know exactly what happened). **Dave ruled
+> at #38: take `HOLE` now, because it invents nothing, and leave the fourth state to him.** ⚠ The
+> tempting move — write a block with the measured fields and `UNKNOWN` for the close — is a NEW
+> STATE minted by an agent, and ds-023 is the standing cautionary case for exactly that.
+>
+> **Where #37's real numbers live, unlost:** commits `3488332` · `e89c06c` · `9cd2ae7` · `aa8f66b`,
+> and `_LIVE-STATE.md` § ⏱ PRIOR DELTA #37. ⚠ **No dossier was written** — deferred by Dave at #38
+> on price; the four commit messages ARE the arc and are the thing to read, not reconstruct.
+> [born #38 · guards: this block · until: Dave rules the fourth state]
 

@@ -1,5 +1,125 @@
 # GOOD-MORNING — banner archive
 
+## Batch 2026-07-29 #38 — rolled by the FINISH-#37'S-WRAP wrap (Opus solo, Dave live) — moves via `knowledge/_gm_move.py`
+
+### ⬛ COMPRESSED #38 — the header's potholes line, VERBATIM (M9 receipt)
+
+> ⚠ **2e's PERISHABLE-READING test: *replaced at the next wrap, never stacked.*** The pace-panel clause carried #33's verbatim decline and a #34 aside, three sessions on, inside a line that exists to list potholes. Substance kept (ask at the opener · no gate sees pace · Fable is on the table); the dated quotes are here.
+
+> > ⚠ **Render sandbox is FRESH every session** (~4 calls — price it) · **retrieval FIRST:** `_memento_search.py "<q>"` → `--fetch <id>` (⚠ **and it was serving a two-session-old record until #32 — if an answer looks stale, check the index before believing it**) · **wrap moves RUN THROUGH `_gm_move.py`** (⚠ **banner headings are BLOCKQUOTED — anchor `> ## ★ PRIOR …`**) · **NO PACE PANEL for a SECOND window — Dave declined again #33 ("dont worry about the panel I just want this all fixed, we can use fable if we need to"); ask fresh at the opener anyway, no gate can see it.** ⚠ **He also put Fable on the table for #34 if judgment work needs it.**
+
+
+### ⬛ COMPRESSED #38 — the DO-FIRST POINTERS preamble, VERBATIM (M9 receipt)
+
+> ⚠ **It was the bleed it warns about.** Three lines explaining why entries must be one line, quoting #33's own cut of the same block. The RULE survives in one line above the pointers; the history is here.
+
+> > **★ POINTERS — ONE LINE EACH. A second line is the 2e bleed; #33 cut this block from 21 lines to 7
+> > under step 2e's own naming of it ("throttle canon, model routing, known potholes… all found restated
+> > here at length"). If you need the body, RETRIEVE it — that is now the whole point of this file.**
+
+
+### ⬛ ROLLED #38 — §C·2 closure tombstones past term, VERBATIM
+
+> 2e's closure-tombstone test: **term = LATEST + 2 sessions**, then it rolls and §C keeps ONE aggregate line. These were ruled at **#14 / #26 / #27** and were still billing full price on every cold read at #38. ⚠ **The forward-binding clause in 23 was LIFTED INTO the aggregate**, not archived with the rest — a ruling that constrains future work is not a tombstone. Originals:
+
+> **23. ✅ DV-D16 RULED — stacked animates SEQUENTIALLY FROM THE BOTTOM, every stacked surface** (ease-in
+> first · ease-out last · linear between; verbatim + open read-backs in the ledger § Batch 10).
+> FORWARD-BINDING: today's stacked set = ONE surface — carry into the chart-expansion brief (§C·1a lane 3
+> + D-Q3) or the next wave ships stacked that doesn't animate. Enactment = DO-FIRST 4, reduced-motion with it.
+>
+> 14. ~~**(D-Q3)** Promote the kit's grouped/stacked bars next wave?~~ **✅ RULED 2026-07-23 (audit
+>     B1): PROMOTE, wave bar lane** — ledger line under DV-D09's block; the Batch-1 #3
+>     grouped-LAYOUT open (reference images) is separate and stays open.
+>
+> 18. ~~**Sweep hook / 16KB cap fork** — amend cap vs modularise.~~ **✅ RULED 2026-07-26: SPLIT *and* RE-SCOPE** — `dv-legend.js` is a second source; 16KB stays per-source (legibility) and a **32KB per-GROUP PAGE budget** was added so a split can't buy headroom. Inscribed **ADR-0015 § Amendment**; the sweep is no longer baked-static (DV-D12 runs).
+>
+> 20. ~~**Chart-scatter Layer-2** — deferred, stays Layer-1 safe.~~ **✅ RULED #27 (Dave: "narrowly
+>     discharged") — tips + table spine ONLY; DV-D11 legend + brush/range (21) STAY DEFERRED.** WHY +
+>     the count arithmetic: ledger § Open/pending. *(17–22 → 4 open of 6; header "15 of 16" unaffected.)*
+>
+> **25. ✅ ds-018 RULED + ENACTED + CLOSED** (`A2·B2·C2` + values `#9D9D9D`/`#808080`, commit `5cd91c6`;
+> ledger `_DS-IMPROVEMENTS.md` ds-018 § ✅✅ ENACTED). Remaining thread = C2 follow-through, DO-FIRST 1.
+>
+
+
+### ⬛ COMPRESSED #38 — DO-FIRST item 8, ORIGINAL VERBATIM (M9 receipt)
+
+> ⚠ **Compressed, not retired — all six are LIVE.** Same 2e(iv) treatment as 0b/0c: thirteen lines carrying restated method bodies, cut to pointer · state. Every constraint that BITES was kept inline (the `--allow-file-access-from-files` wart · the 4.61:1 hue floor · *do NOT rebuild the tuner*); the rest is at the pointers. Original:
+
+> > **8. STILL OWED, unchanged, none superseded:** (i) showroom type sweep → fold into the register as a
+> >    P2 proof, don't re-run one-off (800 elements, 22 deviations, pattern = WEIGHT;
+> >    `knowledge/_type-sweep-2026-07-27.json`; needs `--allow-file-access-from-files` or it reads a
+> >    cheerful zero) · (ii) §C·2 RULING BATCH 15 + 17–22 — unmoved for days, gates §C·1(c); Fable is
+> >    the model · (iii) hit-area rule + gate — read
+> >    `notes/_briefs/2026-07-25-hit-area-rule-and-gate-proposal.md` FIRST; ds-015 proves it is the
+> >    NAMED RECEIVER for an exemption already shipping in 7 components (the diamond's counter-rotation
+> >    is the live case — a markup-driven gate must understand transforms) · (iv) radius/corner tuner —
+> >    v1+v2 BUILT + render-verified; owed = tweaks + ruling the numbers with Dave ("return SOON, don't
+> >    let me forget"); do NOT rebuild · (v) `showroom/chart-bar.html` cb5 rendered, UNSEEN by Dave —
+> >    2.0–2.6% segment understatement, ink→white key flip, series-3 at 4.61:1 (0.11 over AA) constrains
+> >    any re-tune of that hue · (vi) ds-014(d) donut cluster alignment — PARKED on Dave's ruling, rule
+> >    it where he can see it live.
+> >
+
+
+### ⬛ COMPRESSED #38 — DO-FIRST 0b + 0c, ORIGINALS VERBATIM (M9 receipt)
+
+> ⚠ **Compressed, not retired — both items are LIVE work.** Step 2e(iv) is explicit: DO-FIRST may carry *"one-line POINTERS to standing canon — never restated bodies… if you are writing the third line, you are restating."* These ran to **nine lines each**, restating a brief that is itself the pointer. Compressed to pointer · state · owner; every ruled fact kept, every method body dropped to the brief it came from. Originals:
+
+> > **0b. ★★ ENCODE BEFORE THE WAVE — PART-CONSUMED #28.** → **`notes/_briefs/2026-07-28-chart-encoding-gaps-carry-forward.md`**
+> >    — READ IT, do not reconstruct. State: **finding 2 (responsive) RULED + GATED (DV-D02-A)** ·
+> >    **finding 3 (titles) RULED "make parameterised" but NOT BUILDABLE** — it needs a slot/props model
+> >    the registry lacks, so it merges with **finding 4** (legend molecule) and the templates/shells
+> >    zero tier: **one missing capability, three symptoms — ADR-shaped** · **finding 1 (text cropping)
+> >    ✅ INSTRUMENTED #29 — MEASURED, NOT FIXED; its remedy is UNRULED.** ⚠ **THE LIST IS STILL OPEN** —
+> >    a fifth surfaced in #28, and #29 added a sixth in substance (the render-proof family's
+> >    `set_content` exposure). Sequencing unchanged: the wave is 8 more charts.
+> >    [born #27 · guards: this line + the brief · until: the gates ship]
+> > **0c. NEXT BUILD CANDIDATES (his pick, not the queue's):** **the scatter GEOMETRY — `--control` in
+> >    `verify_chart_text_render.py` already specifies `x=2→46` + `y=9→11` and clears the proof; the
+> >    numbers are DAVE'S** (derivation governance), so this is one ruling then a small enact ·
+> >    **the two instrument fixes** — ancestor transforms (`getCTM()` before comparing) + ancestor
+> >    visibility — ⚠ **no corpus clip/collision figure may be quoted until they land; the `--all`
+> >    sweep's 78 is UNTRUSTED** · **DV-J2b** sparkline markup+CSS, JS dormant · **ds-020** — FENCED by
+> >    his #27 ruling, ⚠ **scatter has 0 `data-fx` hooks vs bar's 167**. Price the render sandbox IN
+> >    (~4 calls, fresh every session — #29 paid exactly that).
+> >    [born #27 · finding-1 half discharged #29 · guards: `_lanes.json` DV-J2b queued · until: shipped]
+
+
+### ⬛ RETIRED #38 — the read-chain contract block, VERBATIM (M9 receipt)
+
+> ⚠ **Replaced, not deleted.** #38 found THREE stale numbers in it — the chain quoted `3,410 tk` (measured 4,585), the corpus `34,094` (measured 37,590), and it claimed **`gm:A` is "still one 4,208-tk atom"** when the subdivision LANDED at #33 and the index carries 11 children. Five sessions stale, in the block that teaches retrieval. Original text below so the correction is legible:
+
+> *Read chain — the CONTRACT. **★★ GM-D7-am CUT #33 on Dave's ruling. Three things:*** **this header** →
+> **the ★ LATEST banner** (GM-D4) → **the ⏱ LATEST DELTA in `_LIVE-STATE.md`**. That is the WHOLE chain:
+> **3,410 tk cl100k ≈ 5,286 charged ≈ 2.6 pts**, from **34,094 / 52,846 / 26.4 pts** — a **90% cut**.
+> (Gate: M10 in `_capture_gate.py`, ADVISORY — its numbers are agent-derived, awaiting Dave.)*
+>
+> *⚠ **§A AND §C STAY IN THE FILE — they left the CHAIN, not the record.** For eleven sessions *"never
+> drop §A"* was read as *"always read §A"*: **two separable decisions nobody had separated.** §A is still
+> here, still uncapped, still never trimmed or shortened to a label. **Reach it when you need it.***
+>
+> *★ **RETRIEVAL, two stages:** `python3 knowledge/_memento_search.py "<q>"` → `--fetch <id>`. §C is
+> granular (`gm:C1`…`gm:C5`, 84–1,435 tk). ⚠ **`gm:A` IS STILL ONE 4,208-tk ATOM** until the subdivision
+> lands (`notes/_briefs/2026-07-28-a-subdivision-worker-brief.md`) — **say so if you pay it; a coarse door
+> is not retrieval.** ★ **The corpus DEFERRED, it did not shrink** (34,094 tk cl100k, still the retrieval
+> surface) — the wrap publishes both, so a cheap chain never reads as a small record. **Everything beyond
+> the chain is RETRIEVAL** — never a reading list.*
+
+**✅ M9 PROMOTED TO BLOCKING (ruled Dave #22 2026-07-28, enacted same hour):** the receipts proxy fired-and-was-right at #18, tracked at #22, promoted on Dave's word; its known limit STANDS (sees text vanish, not retirement-DUE) — a false fire = archive the line or say why no receipt is owed, then re-wrap: one visible beat, no lost work. [born #22 · guards: `_capture_gate.py::retirement_receipts` BLOCKING in wrap mode · until: #24 roll — closure tombstone, 2e term]
+> ## ★ PRIOR — 2026-07-29 (Wed **morning #35**, OPUS solo, Dave live — ★★ **the `section-usage` testimony was read as a SERIES for the first time in eleven sessions** · ★★ **the brief's own premise was a PRE-CUT number** · ★ **twelve sections never cited, not four** · 🟡 declared 42, closed at the stop line): **"The job was aimed at a cost the previous session had already eliminated."**
+> **★ THE ARC IS IN THE DOSSIER — `_DECISION-HISTORY/2026-07-29-reading-the-usage-series.md`. Read it, do not reconstruct.** State lines only below.
+> - **★★ ENACTED — the READER the instrument never had.** `_gm_usage.py`: `usage_history` · `usage_streaks` · `deferral_candidates` · `--history`. Gate: **`usage_history_probe` ADVISORY at birth**, flag + pin, **promotion trigger written INTO THE CODE** (the ds-021/022/023 lesson — three ruled picks sat unenacted three sessions because nothing held them). Build **72/72 exit 0**, 48 bites, two mutation-tested and both go red.
+> - **★★ THE PREMISE DID NOT SURVIVE THE MEASUREMENT — the finding.** The job was *"~3,275 tape dead every window"*. **Measured: the chain is 3,760 tape and NOT ONE named section is in it** — #33 banked that a session earlier, and #34 watched it happen. What remains is **RECORD cost** (3,431 tape carried/rolled/gated), a different currency; never quote the two as each other. ★ **Nothing was false — the number had stopped being about anything. An instrument's READING ages faster than its RULE.** Also: **twelve** never-cited, not four, and **`PRIOR` was cited at #33** — *"8/8"* does not survive a count.
+> - **★ RULED BY DAVE #35 — whole ruling in §C·4, enactment owed:** offload seven · **de-materialise `LS:LIFECYCLE`** (already generated from `_decision-graph.json`) · **the DEFERRED REGISTER is the CONDITION, not a nicety** — for a QUEUE, *never cited* is ambiguous between *not needed* and *invisible* · per-subsection testimony **DECLINED**. Archives are **IN the retrieval corpus, verified by a real search** — that is what makes offload lossless.
+> - **⚠ WHAT I GOT WRONG (five; NINTH consecutive session with none found by re-reading code).** Mine: asserted `LIFECYCLE` was generated **before** verifying, then a heading grep came back empty and I nearly reported the opposite — **right claim, wrong evidence** · reached for `mv` to `/tmp` when the repo's own `_to_delete/` already existed · ★★ **my own new probe REFUSED this banner** — it detected testimony by SUBSTRING, so prose *mentioning* `section-usage` read as a malformed record; **shipped and caught inside one window, by the thing it was pointed at.** Inherited, both prose-vs-code: `_gm_move.py`'s docstring claims `roll_2f` takes **no anchor for either destination** (the code has had `archive_at` since #34) · ★★ **the wrap's `"Last refreshed" is not today` check reads only the first 40 lines, where that line did not live — it was passing on DATES IN THE LANES SECTION**, so on #34 it could not have failed even with a stale stamp. All fixed this wrap.
+> - **⬛ STILL OPEN, Dave's:** **the offloads are RULED, NOT MOVED — #36's first job** · **★ THE BOOT HAS NEVER BEEN MEASURED BY ANY SESSION HERE** — ~17 of a ~20-pt floor, and **every pre-flight number in this repo rests on that estimate** · the **M10 numbers**, third session untouched · the **`{17}`-literal siblings, UNSWEPT** (now §C·4). ⚠ **The compactable block fired FOUR TIMES this wrap and every trim came out of #35's own record — the offload is the first real relief.**
+
+
+> **COMMIT STATE (stamped 2026-07-29 from `date`).**
+> **Context gauge at authoring: 🟡 AMBER ~50% (ESTIMATE — the boot term is unmeasurable from inside the window; see the pre-flight note).**
+> **ONE commit.** `knowledge/_gm_usage.py` (the reader + 17 new bites) · `knowledge/_capture_gate.py` (`usage_history_probe` ADVISORY + flag + 2 pins + wiring) · `knowledge/_gm_move.py` (docstring correction) · `_DECISION-HISTORY/2026-07-29-reading-the-usage-series.md` (NEW) · `notes/_MEMENTO-DECISIONS.md` (#35) · `GOOD-MORNING.md` (#35 banner · header · #33 banner + #34 stratum rolled via the mover) · `_GM-ARCHIVE.md` (Batch #35) · `_LIVE-STATE.md` (#35 delta · #32 rolled · Last-refreshed moved into the gate's zone) · `_LIVE-STATE-ARCHIVE.md` · `notes/_GAUGE-LOG.md` (#34 post-mortem, second live `roll_2f`) · `knowledge/_memento-index.json` (2g, LAST). Dave pushes via GitHub Desktop, Desktop closed during the commit.
+
 ## Batch 2026-07-29 #36 — rolled by the CEILING-IS-A-BAND wrap (Opus solo, Dave live) — moves via `knowledge/_gm_move.py`
 > ## ★ PRIOR — 2026-07-28 (Tue **evening #34**, OPUS solo, Dave live — ★★ **THE THROTTLE IS ENACTED: ds-021 · ds-022 · ds-023, ALL THREE, in one window, after three sessions unbuilt** · ★★ **`roll_2f` — the 2f split can no longer be half-done, and the prepend is no longer EXPRESSIBLE** · ★ **the ceiling FAILED the real repo on first run, on #33's own correct-but-differently-worded stamp** · 🟡 48 declared over a 45 ceiling and ruled a spend by Dave IN ADVANCE): **"The rule existed, was correct, was ratified — and nothing checked it."**
 > **★ THE ARC IS IN THE DOSSIER — `_DECISION-HISTORY/2026-07-28-enacting-the-throttle-three-rules-nothing-checked.md`. Read it, do not reconstruct.** State lines only below.
