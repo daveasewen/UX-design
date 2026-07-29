@@ -687,6 +687,79 @@ re-grepped and quoted, the tree re-read from `git log`, `origin/master` re-check
 stack, still Dave's) · **UNRULED and named here: the newest-end convention for `roll_2f` and the
 archives.**
 
+## ★ #46 — THE UNIT WAS NEVER NAMED: #44's NUMBER WAS RIGHT, AND #45 RETIRED IT FOR THE WRONG REASON — 2026-07-29 (Opus solo, Dave live, SHORT window by instruction)
+
+**The job.** #44's forward title named a chain retirement sweep. **#45 had already run it** (`d3d9a16`,
+commit-only) — Dave stopped this session mid-flight and redirected it at the one thing #45 left
+declared-but-unproven. ⚠ **I had already read `git log` and seen #45's commit, and carried on toward
+the sweep anyway.** See ERRORS below; it is the session's real finding about itself.
+
+**★★ THE FINDING — #45's UNPROVEN HYPOTHESIS IS NOW PROVEN, by reconstructing #44's actual tree.**
+#45 wrote: *"The old figure may not have been drift at all but a unit mismatch… Suggestive, not
+established — I did not reconstruct #44's tree. Do not quote this as diagnosed."* It is now
+reconstructable in one read-only command — `git show f811069:<file>` — which #45 could have run.
+
+| at `f811069` (#44's commit) | tape | vs 4,500 warn |
+|---|---|---|
+| what #44 STAMPED | `~4,690` | claimed **"~190 OVER"** |
+| contract **slice** (`read_chain_tk`) | **4,319** | −181 under |
+| whole **`_CHAIN.md` file** | **4,719** | **+219 over** |
+
+`|4,690 − slice| = 371` · **`|4,690 − file| = 29`.**
+
+⇒ **#44's number was not stale. It was the FILE, and it was very nearly exact — including
+"~190 OVER", which is TRUE in that unit (+219).** [[measure-dont-convert-units]] — *name the unit*.
+★ **So #45's retirement was the right ACT for the wrong REASON.** Retiring the hand copy in favour
+of the generated one stands — the stamp should carry the unit the cap binds. But the ledger records
+the claim as *"false, and the wrong side of the threshold"*, and it was neither: it was **correct in
+an unnamed unit.** ⚠ **Recorded here by ADDITION. #45's entry is ratified and is NOT trimmed**
+([[feedback-header-wins-over-audit]]); this section is the audit.
+
+**★★ THE LIVE CONSEQUENCE, measured at HEAD today — and it is worse than a retrospective footnote.**
+The overhead is not merely observed, it is **attributed**: `_gen_chain.py`'s `BANNER` = **328 tape**
+and `FOOTER` = **70 tape**; 328 + 70 + 4,282 = 4,680 against a measured file of **4,682** (residual 2,
+a join). So:
+
+- gate-measured **slice 4,282** → **−218 UNDER** the 4,500 warn
+- **file a cold session actually opens: 4,682** → **+182 OVER the same warn**
+
+**Probe named:** `_CHAIN|CHAIN.md|OUT_NAME` across `_capture_gate.py` + `_build_all.py` → the only
+hits are `_build_all.py:174/:175`, which **generate and determinism-check the file and never measure
+it.** ⇒ ★★ **The door the whole #33 cut exists to produce has been over its own warn at #44 AND at
+#45, and no mechanism can see it, because the cap binds the slice while the reader pays the file.**
+This is #45's own finding one level out: [[instrument-without-a-consumer]] — **the generated fix
+inherited the unmeasured unit.** ⚠ And it means #44's last ~370 of shaving pressure was real
+pressure against a figure the cap never charged it for.
+
+**⬛ REMEDY NOT PRESCRIBED — PARKED TO DAVE (open 16).** Measure the file · exempt the wrapper
+explicitly · or keep the slice and *name the unit* in footer + stamp. Dave parked it to tomorrow's
+Fable window as judgment work. [[feedback-measuring-tool-must-not-guess]] extends to remedies.
+
+**What this wrap also discharged.** #45 ran commit-only and DECLARED (not forged) four owed items:
+★ LATEST banner · LS ⏱ delta · forward title · 2c/2d rolls. **Dave ruled the discharge: #46 banner
+only, with a pointer to § ★ #45** — a full #45 banner would have spent ~1,500 chain tape restating
+retrievable canon and forced both #43 and #44 to roll to pay for it. ★ **The ledger is the record;
+the banner is the rolling surface. #45's record was never missing — only its presence on the surface.**
+
+**⚠ ERRORS: 1 — NINETEENTH consecutive session with at least one.** ★ **I ran `git log` as my FIRST
+probe, saw `d3d9a16 #45 retire the chain size-stamp`, wrote "is there a session 45?" as the probe's
+own label — and then kept building the retirement-sweep candidate list anyway.** I noted the banner
+said #44 while the stamp said #45 and filed it as *an inconsistency to mention*, not as
+*the job is already done*. **Dave stopped me; my own disconfirming evidence did not.**
+★ This is not [[premise-ages-faster-than-rule]] (I did check the premise) — it is one step worse and
+needs its own name: **the check RAN, RETURNED the disconfirming answer, and did not reach the plan.**
+Nearest sibling is [[ritual-output-is-not-evidence]] inverted — evidence gathered and not consumed.
+
+**Entry points:** `knowledge/_gen_chain.py` (`BANNER`, `FOOTER`, the footer figure) ·
+`knowledge/_capture_gate.py:454` `CHAIN_BUDGET_TK` · `:386` `SIZE_TK_RE` (#45's open, now open 15) ·
+`_build_all.py:174-175` · reconstruction command: `git show f811069:_CHAIN.md`.
+
+**Method note.** `GOOD-MORNING.md` was **never opened** this session — every edit surgical with a
+`count == 1` assertion. `tiktoken` installed and verified before the first measurement. The
+reconstruction touched **no working-tree file**: `git show` into `/tmp`, read-only.
+
+---
+
 ## ★ #45 — THE FIGURE THE WHOLE CUT EXISTS TO GOVERN WAS THE ONE FIGURE WITH NO CHECKER — 2026-07-29 (Opus solo, Dave live, SHORT window by instruction)
 
 **The job.** #44's forward title named a supervised retirement sweep of the CHAIN REGION ONLY, every

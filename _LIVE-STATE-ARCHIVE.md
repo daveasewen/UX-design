@@ -1,5 +1,19 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
 
+<!-- batch 2026-07-29 #46 -->
+## ⏱ PRIOR DELTA — 2026-07-29 (Wed **evening #42**, OPUS solo, Dave live — ★★ **the 2c/2d EXIT CHECK bit for the FIFTH consecutive wrap and caught the 2f fork itself** · ★★ **the read chain has EIGHTEEN TAPE and `roll_2f` is its only relief valve** · ★ **#41 ran on past its own wrap for three commits**) — "Small bites, fresh window often — small big wins first." *(Dave, #42.)*
+
+> ⚠ **STATE LINES ONLY — the narrative is in `GOOD-MORNING.md`'s ★ LATEST banner, verbatim, same commit.**
+
+- **✅ #41's TAIL INSCRIBED BY ADDITION — `99cce9e`.** `e92ea0e` `0ab9331` `aa2f425`; evidence half was already in `notes/_GAUGE-LOG.md` + `_RUNBOOK-git-commit.md`, **only the chain half was missing.**
+- **★★ MEASURED — READ CHAIN 4,065 → 4,482 tape against a 4,500 warn. EIGHTEEN TAPE.** ⇒ **the 2f fork is the chain's sole source of headroom**, not bookkeeping. → §C·4 open **7**.
+- **★★ EXIT CHECK, FIFTH CONSECUTIVE — three #41 items had NO standing home:** the 2f fork · "PRESENT BUT UNKEYED" · `ds-025` at 2.11×. **Copied to §C·4 before the roll — SIX OPENS is now NINE.** Probe named (nine strings, zero hits).
+- **ROLLED:** 2c #40 banner → `_GM-ARCHIVE.md` · 2d #38 delta → `_LIVE-STATE-ARCHIVE.md`. Banner region **4,690 → 3,412 tape**. ⚠ **2e/2f NOT run — blocked and declared; `ds-022` RED, strata stack FOUR.**
+- **⚠ `_gen_chain.py --check` gave ONE UNREPRODUCED `STALE`** at cold sandbox start; byte-identical regen, green 3/3 since, `tiktoken` present. Reported, not diagnosed.
+- **⚠ ERRORS: 3, SIXTEENTH consecutive** — stranded `index.lock` by running `git status` after the final clear (`e92ea0e` defect 3, read one commit earlier) · mis-priced the tail as a record gap · ran a broken §C probe whose zeros were not absences.
+- **TREE STATE.** Local, unpushed — Dave pushes via GitHub Desktop. **Seven commits** local: `7a16a20` `bb47693` `7866904` `e92ea0e` `0ab9331` `aa2f425` `99cce9e` + this wrap's. ⚠ Explicit paths only. ⚠ `mv` stray `.git/*.lock` BEFORE git; the clear is the LAST git-touching action.
+
+
 <!-- batch 2026-07-29 #44 -->
 ## ⏱ PRIOR DELTA — 2026-07-29 (Wed **evening #41**, OPUS solo, Dave live — ★★ **THE CHAIN WAS CUT ON PAPER AND NEVER IN THE TOOL: `Read` cannot read less than a file, so five sessions called it CUT while every one paid full price** · ★★ **#40's ENTIRE WRAP WAS UNCOMMITTED — HEAD was #39's** · ★★ **the 2f roll has TWO purposes and they have OPPOSITE answers** · ★ **a true `bill` reading IS observable — `ds-025`'s premise is part-falsified at 2.11×**) — "Why should the stratum retire?" *(Dave, #41 — one question, and it dissolved half a mechanism.)*
 
