@@ -272,7 +272,40 @@ def _current_session_no(gm_text):
 # figure is ALWAYS published beside it so true cold-start cost is never hidden by the exclusion.
 # §A is excluded from the budget exactly as it is already excluded from the line caps — charging a
 # section you may not touch is not a budget, it is a permanent debt.
-SIZE_BUDGET_TK = {"compactable": 8000}   # warn at cap · BLOCK at cap+50% (12,000), per D8(a)
+# ⛔ AMENDED 2026-07-29 #39, RULED BY DAVE — THE BLOCK IS WITHDRAWN, THE WARN STANDS.
+# The comment above states this cap's purpose in its own words: *"true cold-start cost."* That was
+# correct when written on 2026-07-27. **#33 then CUT the read chain** (2026-07-28), and a cold session
+# now reads three things — GM header → ★ LATEST → the ⏱ LATEST delta of `_LIVE-STATE.md`.
+# MEASURED #39 (Lane A, tiktoken cl100k): chain 4,801 tape · compactable 12,734 tape.
+# ⇒ **~8,000 of the tape this cap governs is NEVER PAID AT BOOT.** It is retrieval surface: growth
+# here costs a retrieval, not a cold start. The cap has been charging boot prices for a queue.
+#
+# ★ WHY A BLOCK HERE WAS ACTIVELY HARMFUL, not merely inert. The block fires at WRAP — after the
+# session's record is written — so the only response available is to cut something already written.
+# #35 did six trimming rounds, #38 did three, and the region grew through both. #38 measured the
+# reason: retiring a VERIFIED-DEAD item netted **+16 tape**, because a retirement must leave a
+# legible clause and the clause costs what the line cost. ⇒ the region has a FLOOR that retirement
+# cannot lower, the block cannot be satisfied by removing dead weight, and the only thing left to
+# cut is live record. **The gate was inside the growth loop, not braking it.**
+#
+# ⚠ WHAT IS *NOT* CLAIMED, and the ds-023 precedent is why this is spelled out. NOT that GM should
+# grow unbounded. NOT that 8,000/12,000 were wrong numbers — they may be exactly right for the CHAIN,
+# which is untested. The shape (`budget applies to the compactable region`) remains Dave's D8(a).
+# What is withdrawn is one thing only: **a BLOCK on a region whose growth is free at boot.**
+# ds-023 is the standing cautionary case — there, an enforcement Dave never ruled hardened into a
+# gate. Here the enforcement is being removed by Dave's word, #39, and recorded as his.
+#
+# ⬛ THE REPLACEMENT IS OWED, NOT DONE — Thursday's brief, and this comment is the receipt for that.
+# The expensive region (M10 `read_chain_tk`, 4,801 tape) is still ADVISORY. Un-blocking the free
+# region without blocking the costly one leaves NOTHING binding on cold-start cost. That swap is the
+# job: block what costs, warn on what does not. Until it lands, a session can grow the chain unchecked
+# — **this is a KNOWN, DECLARED gap for ~one day, not an oversight.**
+# ⚠ AND THE STANDING WARNING, Dave #39, in his words: *"we've done this before, assumed everything is
+# okay just for everything to grunge up again."* The WARN below is deliberately kept for that reason —
+# an un-instrumented region is how the compactable region reached 21K before anyone looked (line 357).
+SIZE_BUDGET_TK = {"compactable": 8000, "compactable_block": None}
+#   "compactable"       — WARN threshold, tape. Dave's D7 amendment 2026-07-27, UNCHANGED.
+#   "compactable_block" — BLOCK threshold, tape. `None` = ADVISORY, no block. Withdrawn #39.
 BYTES_PER_TOKEN = 3.53     # MEASURED on GM, tiktoken cl100k_base, 2026-07-27. NOT the chars/4 rule
 #                            of thumb: this corpus runs ~13% denser because of its ★ ⚠ ⛔ · — load,
 #                            so every earlier chars/4 token estimate of these files read LOW.
@@ -896,16 +929,33 @@ def check_budgets(repo):
     # on the measured thing and the ratio stops mattering. A conversion applied to both sides
     # cancels; the naming does not.
     budget = SIZE_BUDGET_TK["compactable"]
-    budget_bill, block_bill = bill_of(budget), bill_of(int(budget * 1.5))
+    block_tk = SIZE_BUDGET_TK["compactable_block"]        # None = ADVISORY, withdrawn #39
+    budget_bill = bill_of(budget)
     compact_bill = bill_of(compactable)
-    notes.append(f"COMPACTABLE region: {fmt_units(compactable)} · warn {budget:,} tape / "
-                 f"~{budget_bill:,} bill · block {int(budget * 1.5):,} tape / ~{block_bill:,} bill")
-    if compact_bill >= block_bill:
-        fails.append(f"GOOD-MORNING.md compactable: {fmt_units(compactable)}, block "
-                     f"~{block_bill:,} bill — ritual step 2")
-    elif compact_bill > budget_bill:
-        warns.append(f"GOOD-MORNING.md compactable: {fmt_units(compactable)}, cap "
-                     f"~{budget_bill:,} bill — ritual step 2")
+    if block_tk is None:
+        # ⛔ BLOCK WITHDRAWN #39 (Dave). This region is RETRIEVAL SURFACE — since #33 cut the read
+        # chain, its growth is not paid at cold start. Reported, never enforced. The message says so
+        # out loud, because a number with no stated referent is what let this cap outlive its purpose.
+        notes.append(f"COMPACTABLE region: {fmt_units(compactable)} · warn {budget:,} tape / "
+                     f"~{budget_bill:,} bill · BLOCK WITHDRAWN #39 — ADVISORY. This region is "
+                     f"RETRIEVAL surface, not the cold-start chain (#33): growth here costs a "
+                     f"retrieval, never a boot. ⬛ The binding cold-start cap is OWED — see M10 "
+                     f"read_chain_tk, still advisory.")
+        if compact_bill > budget_bill:
+            warns.append(f"GOOD-MORNING.md compactable: {fmt_units(compactable)}, warn "
+                         f"~{budget_bill:,} bill — ADVISORY, never a trim order. ⚠ If this number "
+                         f"is climbing session on session, that is the grunge signal: say so in the "
+                         f"banner and re-open the contract. Do NOT shave live record to quiet it.")
+    else:
+        block_bill = bill_of(block_tk)
+        notes.append(f"COMPACTABLE region: {fmt_units(compactable)} · warn {budget:,} tape / "
+                     f"~{budget_bill:,} bill · block {block_tk:,} tape / ~{block_bill:,} bill")
+        if compact_bill >= block_bill:
+            fails.append(f"GOOD-MORNING.md compactable: {fmt_units(compactable)}, block "
+                         f"~{block_bill:,} bill — ritual step 2")
+        elif compact_bill > budget_bill:
+            warns.append(f"GOOD-MORNING.md compactable: {fmt_units(compactable)}, cap "
+                         f"~{budget_bill:,} bill — ritual step 2")
 
     # ---- M8: the banner region gets a sub-budget of its own.
     # ⚠ The exclusion of §A is only sound while §A sits BELOW DO-FIRST. If the file is ever
@@ -1769,8 +1819,13 @@ BUDGET_FIXTURES = [
      dict(stamp="> **size:** GM 25618 tk · chain 1 tk"), True),
     # D7-as-amended: the SIZE budget, isolated from the LINE caps by fat lines rather than many
     # lines — a fixture that trips both checks at once proves neither of them.
-    ("compactable over size block (80 fat §C lines, under the LINE cap)",
-     dict(sec_c=5, fat_c=80), True),
+    # ⛔ FLIPPED True→False 2026-07-29 #39 WITH the block's withdrawal — flag and fixture move as a
+    # pair, the standing discipline in this file. This fixture is NOT deleted: it still proves the
+    # region is MEASURED, and it is the bite that turns red the moment a block is restored, which is
+    # exactly what Thursday's chain-cap swap will do. Keeping it is how the swap gets caught by a test
+    # rather than by a session noticing.
+    ("compactable over size WARN, block withdrawn #39 — advisory, must NOT fail",
+     dict(sec_c=5, fat_c=80), False),
     ("green control — every region inside contract",       dict(), False),
     ("§A 400 lines — EXEMPT must actually exempt",         dict(sec_a=400), False),
     ("§C over block ONLY via strata — exclusion must hold",
@@ -1799,9 +1854,16 @@ def selftest_budgets():
     # The budget number is a RULED value (Dave, 2026-07-27 — D7 amendment). Pin it, so a later
     # convenience edit has to be a deliberate act with a ledger entry behind it rather than a
     # quiet re-dial: promotion of values is Dave's alone (derivation governance).
-    if SIZE_BUDGET_TK != {"compactable": 8000}:
-        failures.append(f"SIZE_BUDGET_TK = {SIZE_BUDGET_TK}, ruled {{'compactable': 8000}} — "
-                        f"re-dialling is Dave's, and updating this pin is part of doing it")
+    # ⛔ PIN MOVED 2026-07-29 #39, WITH the ruling, as a pair. The WARN value 8000 is UNCHANGED and
+    # still Dave's D7 amendment; what moved is `compactable_block`: 12,000 (derived cap×1.5) → None.
+    # ⚠ `None` is a DECLARED ADVISORY STATE, not an absent value — the distinction matters, because
+    # a missing key would read as an oversight and this is a ruling. Restoring a block is Dave's, and
+    # moving this pin is part of doing it.
+    if SIZE_BUDGET_TK != {"compactable": 8000, "compactable_block": None}:
+        failures.append(f"SIZE_BUDGET_TK = {SIZE_BUDGET_TK}, ruled "
+                        f"{{'compactable': 8000, 'compactable_block': None}} (#39, block WITHDRAWN "
+                        f"— the region is retrieval surface, not cold-start cost) — re-dialling is "
+                        f"Dave's, and updating this pin is part of doing it")
     return failures
 
 
