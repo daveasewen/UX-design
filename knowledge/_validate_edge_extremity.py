@@ -238,8 +238,14 @@ def selftest():
     darktext = ".b{color:#333333;background:#FFBB33;font-size:14px;font-weight:500;}"
     assert check(darktext, "t") == [], "dark text on light ground is not reverse text"
 
+    # ★ DERIVED from min_weight_for(), never restated — the {17} class, swept #39.
+    # The literal this replaced read "500@12-16"; the function has always covered 12-19,
+    # so the summary under-stated the band by three sizes. Probing keeps them in step.
+    _lo = next(s for s in range(1, 400) if min_weight_for(s) is not None)
+    _step = next(s for s in range(_lo, 400) if min_weight_for(s) != min_weight_for(_lo))
     print(f"selftest OK — sat ceiling {SAT_CEILING} · pure-black substitution · "
-          "weight floor 500@12-16 / 300@20+ / none <12 · dark-on-light ignored.")
+          f"weight floor {min_weight_for(_lo)}@{_lo}-{_step - 1} / "
+          f"{min_weight_for(_step)}@{_step}+ / none <{_lo} · dark-on-light ignored.")
     return 0
 
 

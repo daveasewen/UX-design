@@ -181,8 +181,12 @@ def check_routing_line(gm_text, lanes):
 
 def selftest():
     fails = []
+    ran = []          # ★ the count is COMPUTED, never a literal — the {17} class, swept #39.
+                      # The last bite is inside `if lanes:`, so a literal would over-report
+                      # by one on the records-fail path: latent, but the same defect shape.
 
     def bite(name, cond):
+        ran.append(name)
         if not cond:
             fails.append(name)
 
@@ -247,7 +251,7 @@ def selftest():
         for f in fails:
             print(f"  ✗ {f}")
         return 1
-    print(f"[_gen_lanes selftest] OK — 19 bites, every refusal fired, green controls held")
+    print(f"[_gen_lanes selftest] OK — {len(ran)} bites, every refusal fired, green controls held")
     return 0
 
 

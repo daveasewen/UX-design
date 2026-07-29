@@ -425,7 +425,11 @@ def selftest():
     """Bites for the URL rebase + gate (2026-07-27). Every gate ships one."""
     import tempfile
     fails = []
+    ran = []          # ★ the count is COMPUTED, never a literal — the {17} class, swept #39.
+                      # ⚠ Two of this selftest's checks are try/except gates, NOT bite() calls,
+                      # so counting bite() alone would UNDER-report 6 as 4. They register here.
     def bite(name, got, want):
+        ran.append(name)
         if got != want:
             fails.append("%s\n     got:  %r\n     want: %r" % (name, got, want))
 
@@ -447,6 +451,7 @@ def selftest():
     # 4 · NOT idempotent, and that is the safe direction: the input is always a raw
     # snippet (URLs relative to knowledge/snippets/). Feeding it an already-rebased
     # payload must FAIL LOUD rather than quietly walk the path up another level.
+    ran.append("4 · double-rebase fails loud")
     try:
         rebase_payload_urls('<link href="../knowledge/canon/type.css">', fake)
         fails.append("4 · a double-rebase must exit non-zero — it did not")
@@ -454,6 +459,7 @@ def selftest():
         if e.code != 1:
             fails.append("4 · double-rebase exited %r, expected 1" % e.code)
 
+    ran.append("5 · missing-target gate fires")
     with tempfile.TemporaryDirectory():                      # bite 5 — the GATE fires
         try:
             rebase_payload_urls('<link href="../canon/does-not-exist.css">', fake)
@@ -471,8 +477,8 @@ def selftest():
         for f in fails:
             print("  ❌ " + f)
         sys.exit(1)
-    print("gen_showroom --selftest OK — 6 bites (rebase · fragments · absolutes · "
-          "double-rebase fails loud · missing-target gate · query suffix).")
+    print("gen_showroom --selftest OK — %d bites (rebase · fragments · absolutes · "
+          "double-rebase fails loud · missing-target gate · query suffix)." % len(ran))
 
 def main():
     if "--selftest" in sys.argv:
