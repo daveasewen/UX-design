@@ -686,3 +686,79 @@ re-grepped and quoted, the tree re-read from `git log`, `origin/master` re-check
 (ds-022 continuity, the consumer that was misled) · `:190` `STRATA_KEY_RE` · GM §C·4 open 7 (the
 stack, still Dave's) · **UNRULED and named here: the newest-end convention for `roll_2f` and the
 archives.**
+
+## ★ #45 — THE FIGURE THE WHOLE CUT EXISTS TO GOVERN WAS THE ONE FIGURE WITH NO CHECKER — 2026-07-29 (Opus solo, Dave live, SHORT window by instruction)
+
+**The job.** #44's forward title named a supervised retirement sweep of the CHAIN REGION ONLY, every
+candidate tested against the 2e table, receipts each, tape measured before and after. Dave: *"keep the
+wins small."* Seven candidates tested, **two retired, two re-stamped, three KEPT with a receipt for
+keeping them.** Net **−37 tape** on the chain (4,319 → 4,282).
+
+**★★ THE FINDING — a claim that stopped being true, and the reason nothing could notice.**
+The header stamped `chain **~4,690 tape, ⚠ ~190 OVER the 4,500 warn — DECLARED, not quiet.**`
+Measured with `read_chain_tk` (tiktoken verified present first): **4,319 — 181 UNDER the warn.**
+Not merely stale: **the wrong side of the threshold**, i.e. a wrap spent a session's discipline
+answering an over-run that its own final state had already fixed.
+
+**Why a whole session could quote it unchallenged** — `_capture_gate.py:386`:
+
+```python
+SIZE_TK_RE = re.compile(r"\bGM\b\D{0,12}?([\d.]+)\s*K\s*(tape|tk)\b", re.I)
+```
+
+The stamp checker fails a **missing** stamp, fails a **missing GM figure**, warns on a **legacy unit**
+— and never looks at the chain figure. Every `chain`-near-`stamp` occurrence in the gate is a test
+fixture (`:1844`, `:1846`, `:2050`), never a live assertion. ★ **So the number the entire #33 cut
+exists to govern is the one figure in the stamp with nothing behind it** —
+[[gate-narrows-its-own-rule]] and [[instrument-without-a-consumer]] meeting on one line.
+⚠ And the GM figure's own drift (25.7K claimed vs 26,951 measured = **4.64%**) passed legally:
+`SIZE_TOLERANCE = 0.10`. A checker that exists is not a checker that binds.
+
+**★ #44 HAD ALREADY WRITTEN THE FIX AND DID NOT SEE IT WAS ONE.** Its stamp argued *"the stamp
+CANNOT be made exact by hand… the argument for GENERATING the stamp the way `_CHAIN.md` already
+is."* The generator **already publishes the chain figure** — `_gen_chain.py` footer, measured by the
+same `read_chain_tk`, `--check`-blocked in `_build_all.py` at steps 69–71. The hand copy was not
+merely unchecked; it was **a duplicate of an already-checked number, and it was the wrong copy.**
+⇒ Retired the hand copy, pointed at the generated one. Enacting the argument retires the argument.
+
+**⚠ UNPROVEN HYPOTHESIS — named as unproven, not filed as a finding.** The old figure may not have
+been *drift* at all but a **unit mismatch**: whole-`_CHAIN.md`-file measures **4,682** against a
+contract slice of **4,282** (overhead ≈ 400), so `~4,690` sits ~371 above the contract-at-the-time
+and ~29 below the file-at-the-time. Suggestive, **not established** — I did not reconstruct #44's
+tree. If true, the mechanism is [[measure-dont-convert-units]] (*name the unit*), not staleness, and
+#44's last ~370 of shaving pressure was against a number 400 too high. **Do not quote this as
+diagnosed.**
+
+### The seven candidates, tested against the 2e table (runbook step 2e)
+
+| Claim, quoted | 2e type | Named probe | Verdict |
+|---|---|---|---|
+| `chain **~4,690 tape, ⚠ ~190 OVER the 4,500 warn**` | Perishable reading | `read_chain_tk` → **4,319**; `CHAIN_BUDGET_TK = (4500, 6000)` binds on the contract slice | **RETIRED** — false, and the wrong side |
+| `it costs 18.4K tape` (GM line 1, ⛔ STOP comment) | Perishable reading | `measure_tokens(GM)` → **26,951**; the generated preamble nine lines below already published 26,951 | **RETIRED** — 32% understated; replaced with *"you pay for ALL of it"*, which carries no number to go stale |
+| `GM **25.7K tape**` | Perishable reading | 26,951 → 4.64% vs `SIZE_TOLERANCE = 0.10` | **RE-STAMPED** 26.9K — legal but wrong; 2e replaces, never stacks |
+| `corpus **43.7K**` | Perishable reading | GM 26,951 + LS 17,994 = **44,945** | **RE-STAMPED** 44.9K |
+| `Build **72/72 exit 0**` | Perishable reading | ran `_build_all.py` → **75/75, all passed** | **RE-STAMPED** 75/75 — found by RUNNING it, not by quoting the banner [[ritual-output-is-not-evidence]] |
+| `#39's JOB LINE — SPENT, RETIRED #44` | Closure tombstone | born #44; term = LATEST + 2 ⇒ live through #46 | **KEPT — within term.** The table said so; judgment would have cut it |
+| THE FLOOR narrative (`one title costs ~190…`) | Finding | 4-string probe vs `_RUNBOOK-context-gauge.md` + `notes/_GAUGE-LOG.md` → **home NOT established** | **KEPT.** An unmatched grep is not an absence [[unmatched-grep-is-not-an-absence]]; shaving it could destroy the only copy |
+| (also inspected) tiktoken warning stated twice — stamp `⛔ PROVEN #44` + line 13 `−414` | — | both true, different strengths | **KEPT** — consolidation, not retirement. Not a dead claim |
+
+**★ The tape lesson, confirming #44 rather than extending it.** The stamp line was **509 tape — the
+single most expensive line in the 4,319-tape contract, 11.8% of the whole**. Retiring the two dead
+claims and re-stamping three perishables bought **37 tape**. #44 said the last cuts bought ~5 tape
+each; this is the same floor seen from the other side. ⇒ **The win here was never tape. It was that
+the header stopped lying about which side of the warn it was on** — and #44's own title said exactly
+that: *the cheapest tape is a claim that stopped being true*. It is cheap in **trust**, not in tokens.
+
+**⬛ NEW OPEN — Dave's.** The chain figure now has no hand copy, but the gate still cannot catch one
+if a future wrap re-adds it. Extending `SIZE_TK_RE`'s neighbourhood to assert the chain figure
+against `read_chain_tk` is [[feedback-gate-dont-patch]] applied properly — a recurring condition
+gated, not patched. **Not done: it touches a blocking gate and Dave asked for a small win.**
+
+**Entry points:** `knowledge/_capture_gate.py:386` `SIZE_TK_RE` · `:395` `SIZE_TOLERANCE` · `:454`
+`CHAIN_BUDGET_TK` · `:930` the stamp check · `knowledge/_gen_chain.py` (footer, the generated figure)
+· `knowledge/_RUNBOOK-capture-ritual.md:193` the 2e retirement table · GM lines 1 and 9.
+
+**Method note.** `GOOD-MORNING.md` was **never opened** during this session. Every edit was a
+surgical replacement with a `count == 1` assertion, every figure measured by the gate's own
+tokenizer, `tiktoken` installed and verified before the first measurement. Reading the 26,914-tape
+file to change two lines of it would have been the exact overspend the chain file exists to stop.
