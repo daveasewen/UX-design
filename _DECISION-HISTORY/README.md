@@ -21,6 +21,19 @@ rulings and corrections survive exactly as inscribed.*
 
 ## Index
 
+> ⛔ **THIS INDEX IS DEAD, AND THE NUMBER IS MEASURED, NOT ESTIMATED — #44, 2026-07-29.**
+> **7 of 54 files are listed. 47 are not.** The last indexed file is `2026-07-17`; every file
+> written in the twelve days since landed without a row, including this repo's own `RESURRECT`
+> tags — which means **rule 4's register has been silently incomplete for 47 files** and
+> `_FUTURE-STATE.md` cannot have been catalogued from here.
+>
+> ★ **Nothing failed, because nothing checks.** [[instrument-without-a-consumer]] — the README
+> declares the index, no gate enforces it, so it stopped being true without ever going red.
+> ⚠ **Do NOT read the rows below as current.** They are a 2026-07-17 snapshot.
+> ⇒ **The repair is almost certainly GENERATION, not 47 hand-written rows** — this repo already
+> generates `_CHAIN.md` and `_memento-index.json` from their sources. **Not done here: unruled,
+> and a 47-row backfill is not a small win.** → GM §C·4, raised for Dave.
+
 | file | thread | resurrect? |
 |---|---|---|
 | `2026-07-05-register-spread-and-restyle.md` | worked spread · restyle saga + its lessons · divergence probe · seaworthiness/Phase 0 | **YES → Create modes (Creative/Explore)** |

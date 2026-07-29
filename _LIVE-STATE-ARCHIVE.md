@@ -1,5 +1,21 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
 
+<!-- batch 2026-07-29 #44 -->
+## ⏱ PRIOR DELTA — 2026-07-29 (Wed **evening #41**, OPUS solo, Dave live — ★★ **THE CHAIN WAS CUT ON PAPER AND NEVER IN THE TOOL: `Read` cannot read less than a file, so five sessions called it CUT while every one paid full price** · ★★ **#40's ENTIRE WRAP WAS UNCOMMITTED — HEAD was #39's** · ★★ **the 2f roll has TWO purposes and they have OPPOSITE answers** · ★ **a true `bill` reading IS observable — `ds-025`'s premise is part-falsified at 2.11×**) — "Why should the stratum retire?" *(Dave, #41 — one question, and it dissolved half a mechanism.)*
+
+> ⚠ **STATE LINES ONLY — the narrative is in `GOOD-MORNING.md`'s ★ LATEST banner, verbatim, same commit.** ★ **Written long first, then cut to the contract, and the reason is the session's own finding turned on itself:** the draft ran **1,771 tape** against #40's 834 and **pushed the M10 chain to 4,913 over its 4,500 warn** — *the session that built the chain brake doubled the chain in the same window.* **This is DE-DUPLICATION to the D6(a) contract, NOT shaving the record**: nothing is deleted, the banner carries every word. **That distinction is the whole difference between honouring #39's *"do NOT shave live record"* and obeying it into paralysis.**
+
+- **✅ `_CHAIN.md` BUILT — cold start 19,405 → 4,374 tape (77%).** `knowledge/_gen_chain.py`, slicing via `_capture_gate.chain_parts` (the gate's own measuring function, extracted this window). `--check` BLOCKING in the build. Evidence: `bb47693` · 12 bites.
+- **✅ #40's ORPHANED WRAP LANDED — `7a16a20`.** Eight paths, zero commits, HEAD was `2b7bb72`. Verified whole before staging.
+- **⬛ 2f REFRAMED, FORKED TO DAVE — three questions, unruled.** Compaction half DEAD (#33 killed it a day after GM-D5a); dataset half LIVE and unserved. → `GOOD-MORNING.md` ★ LATEST · `notes/_GAUGE-LOG.md` § META #41 · `notes/_MEMENTO-DECISIONS.md` § ★ #41.
+- **⬛ `ds-025` PART-FALSIFIED — 2.11× not 1.57×.** A ROW, not a re-dial. Re-dialling `TAPE_TO_BILL` is Dave's. → `_GAUGE-LOG.md` § tape/bill PAIR #41.
+- **⬛ FIFTH VOCABULARY STATE RAISED, NOT MINTED — "PRESENT BUT UNKEYED".** #40's testimony exists in both halves and carries no `#### <date> #40` key, so `ds-022` demands a `HOLE #40` that would be **false**. Declined in writing. Minting the term is Dave's. → `_GAUGE-LOG.md` § META #41 (second).
+- **⛔ THE BRIEF'S ITEM 1 IS BLOCKED, surveyed not attempted** — `STAND-004` + an index selftest pin + six modules referencing GM by path.
+- **★ EXIT CHECK BIT — FOURTH CONSECUTIVE WRAP.** Dave's *"a sub-agent may do the working, never the judging"* was in no standing doc; homed in §C·4 before the roll. FLOATED — promotion is his.
+- **⚠ ERRORS: 2, FIFTEENTH consecutive** — opener read GM whole · relayed #39's unchecked presence claim as fact. Both read-the-record.
+- **⊕ TAIL (added #42) — #41's three post-wrap commits reached the record but never the chain:** `e92ea0e` · `0ab9331` · `aa2f425`. Through-line: **three correct mechanisms hand-rolled around in one window.** Runbook 4b corrected — **the agent clears `_to_delete/`, never Dave** (`mcp__cowork__allow_cowork_file_delete`); commit-session count **3 of 5 → 5 of 7**. ⬛ Script-mandatory UNRULED. ⚠ **TREE STATE below understates by three — six commits now local, unpushed.**
+- **TREE STATE.** Local, unpushed — Dave pushes via GitHub Desktop. Three commits: `7a16a20` · `bb47693` · this wrap's. ⚠ Explicit paths only. ⚠ `mv` stray `.git/*.lock` BEFORE git.
+
 <!-- batch 2026-07-29 #43 -->
 ## ⏱ PRIOR DELTA — 2026-07-29 (Wed **late afternoon #40**, OPUS solo, Dave live — ★★ **the 2f roll for #38 is MECHANICALLY IMPOSSIBLE and #39's handoff instructs it anyway** · ★★ **displacement has a FLOOR: the banner region was over its warn at a fully compliant `N`** · ★ **#39 reported its own completed 2c roll as debt**) — "This mechanism relies on itself, which is why things spin out of control."
 

@@ -223,13 +223,23 @@ def _key_session(line):
 
 
 def _stratum_session_no(gm_text):
-    """The newest §C stratum key's session number, or None. This is written by ritual step 2f."""
-    for ln in gm_text.splitlines():
-        if STRATA_KEY_RE.match(ln):
-            n = _key_session(ln)
-            if n is not None:
-                return n
-    return None
+    """The HIGHEST §C stratum key's session number, or None. This is written by ritual step 2f.
+
+    ★★ #44 — RULED BY DAVE: HIGHEST NUMBER WINS, FILE ORDER IS NOT CONSULTED.
+    This used to return the FIRST `STRATA_KEY_RE` match and call it "the newest". That is only
+    true in a file stacked newest-first, and GM's §C strata are stacked OLDEST-first — so at the
+    five blocks live when this was found (#38 #40 #41 #42 #43) it returned **38** and told
+    ds-022 that step 2f had not run when it had. ⚠ The remedy line ds-022 prints in that state
+    invites a `HOLE #<N>` row for a session that is not missing — i.e. the false read was one
+    step from FORGING a row, which the #43 ruling on present-but-unkeyed forbids.
+
+    ⚠ Do NOT "fix" this class by reordering a file to suit its reader. Dave's ruling dissolves
+    the ordering question here rather than settling it: max() is correct in a file stacked
+    either way, and cannot silently break when an order changes. The naming ("which end is
+    newest") remains UNRULED for `roll_2f` and the archives, which stack the other way."""
+    nos = [n for n in (_key_session(ln) for ln in gm_text.splitlines()
+                       if STRATA_KEY_RE.match(ln)) if n is not None]
+    return max(nos) if nos else None
 
 
 def _current_session_no(gm_text):

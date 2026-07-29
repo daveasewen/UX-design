@@ -625,3 +625,64 @@ until: measured or ruled]
 
 **Entry points:** `notes/_GAUGE-LOG.md` § `#### 2026-07-29 #40` (the enactment) ·
 `_capture_gate.py:190` `:200` `:837` `:1068` `:1109` (the mechanism) · `_DECISION-HISTORY/2026-07-29-present-but-unkeyed-ruling.md` (the arc) · GM §C·4 open 8 (closed by this entry).
+
+---
+
+## ★ #44 — THE READER SAYS NEWEST AND RETURNS OLDEST: HIGHEST NUMBER WINS, ORDER IS NOT CONSULTED — 2026-07-29 (Opus solo, Dave live)
+
+**RULED BY DAVE — `_stratum_session_no` takes the HIGHEST session number. File order is not
+consulted, in either direction.** Put to him as an option-select with three answers; he took the
+one I recommended, and the recommendation is on the record as mine, not his.
+
+**THE DEFECT.** `_capture_gate.py:225` documented itself as *"the newest §C stratum key's session
+number"* and returned the **first** `STRATA_KEY_RE` match in file order. GM's §C strata are stacked
+**oldest-first**. Quoted, not counted — the five keys live at the time, in file order:
+
+```
+#### 2026-07-29 #38   (l.425)      #### 2026-07-29 #42   (l.473)
+#### 2026-07-29 #40   (l.441)      #### 2026-07-29 #43   (l.487)
+#### 2026-07-29 #41   (l.457)
+```
+
+⇒ it returned **38** while the banner said **43**, so the ds-022 continuity check at `:1097` read a
+disagreement that did not exist and reported *"ritual step 2f did not run"* **when 2f had run**.
+★ **The check that exists to catch a self-hiding failure was itself reporting a false one.**
+
+**WHY IT MATTERED MORE THAN A WRONG NUMBER.** ds-022's own remedy line offers *"run 2f, or declare
+the gap with `HOLE #<N> — <why>`."* Taken at face value in the false state, the honest-looking move
+is to write a `HOLE #43` row **for a session that is not missing** — a forged row, which #43's
+ruling on present-but-unkeyed forbids. ⇒ **a false reading plus a helpful remedy is a forgery
+pathway**; the remedy line was never wrong, the clock under it was.
+
+**WHY MAX AND NOT AN ORDERING RULE — AND WHAT THIS DOES *NOT* SETTLE.** The obvious repair is to
+rule which end of a file is newest and read that end. Rejected, and Dave's reason is the load-bearing
+one: **`max()` is correct in a file stacked either way and cannot silently break when an order
+changes**, whereas an ordering rule is a promise every future file has to keep. ⚠ **But this
+DISSOLVES the naming question rather than answering it, and that was said before he ruled.** GM
+strata run oldest-first, the archives run newest-first, and *"which end is newest"* stays **UNRULED**
+for `roll_2f` and for the archives. **Do not read this entry as having settled it there.**
+⛔ And the standing prohibition holds: **do not reorder a file to suit its reader.**
+
+**ENACTED SAME WINDOW.** `_capture_gate.py:225` — loop-and-return-first replaced by a max over all
+parsed keys; docstring rewritten to state the contract instead of asserting an order.
+**VERIFIED NUMERICALLY, against the live file, not by eye:** reader → **43** (was 38) · stratum ==
+banner, so **ds-022 continuity is GREEN** · a line-reversed copy of GM → **43** as well, which is the
+assertion that actually proves order is not consulted · empty → `None` · single key → that key ·
+unparseable → `None`, never a guess ([[measuring-tool-must-not-guess]] holds through the change).
+Capture-gate selftest **exit 0, all failure classes bite**; live build run **32 in scope · 0 fail ·
+0 warn**.
+
+**⚠ WHAT IS STILL RED, AND IS NOT THIS.** `--wrap` still fails **`strata stack holds 5 blocks
+(max 1) — ritual step 2f`**. That is **open 7**, untouched and correctly red. ★ **Two different
+checks were failing for two different reasons and only one of them was a lie** — fixing the reader
+must not be read as having relieved the stack.
+
+**⚠ THE PREMISE HELD THIS TIME, AND IT WAS CHECKED.** [[premise-ages-faster-than-rule]]: #43's
+handoff was three minutes old at this opener, and its claims were still re-verified — the five keys
+re-grepped and quoted, the tree re-read from `git log`, `origin/master` re-checked as in sync.
+`tiktoken` installed **before** any measurement, per the header's own −414 warning.
+
+**Entry points:** `_capture_gate.py:225` (the fix) · `:264` (degraded-fallback caller) · `:1097`
+(ds-022 continuity, the consumer that was misled) · `:190` `STRATA_KEY_RE` · GM §C·4 open 7 (the
+stack, still Dave's) · **UNRULED and named here: the newest-end convention for `roll_2f` and the
+archives.**
