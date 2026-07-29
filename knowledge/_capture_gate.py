@@ -680,25 +680,20 @@ def section_spans(lines):
 LS_DELTA_RE = re.compile(r"^##\s*⏱")
 
 
-def read_chain_tk(repo, gm_lines):
-    """Measure the GM-D7-am READ CHAIN **as re-pointed #33**: GM header + ★ LATEST banner +
-    the `_LIVE-STATE.md` LATEST delta. Returns `(chain_tk, detail)`; `(None, reason)` if a
-    region cannot be isolated.
+def chain_parts(repo, gm_lines):
+    """The READ CHAIN as **TEXT**: `(gm_part, delta, how)`, or `(None, None, reason)` on refusal.
 
-    ⚠ It REUSES `_gm_usage.split_sections` — the same parser the memento index is built from —
-    instead of growing a second one here. A second parser is exactly the drift class the M8
-    block exists to prevent, and a chain measured by a different splitter than the one the
-    retrieval door uses would drift silently against the thing it claims to describe.
-
-    ⚠ It REFUSES rather than guesses. Every failure path returns a REASON, never a number and
-    never a zero: a budget check that defaults to 0 on a parse failure reports GREEN on a
-    broken file, which is the "cheerful zero" this corpus has already been bitten by.
+    ⚠ THIS IS THE ONE SLICER. `read_chain_tk` measures exactly what this returns and
+    `_gen_chain.py` writes exactly what this returns, so **the chain we measure and the chain
+    we hand a cold session cannot describe different text.** Extracted #41 for that reason: the
+    generator was a second consumer, and a second consumer with its own slicer is the same
+    drift class the docstring below already refuses.
     """
     try:
         sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
         import _gm_usage
     except Exception as e:                                    # pragma: no cover - import guard
-        return None, f"_gm_usage unavailable ({e}) — chain UNMEASURED, not assumed clean"
+        return None, None, f"_gm_usage unavailable ({e}) — chain UNMEASURED, not assumed clean"
 
     def _region_end(lines, vocab, start_id):
         """First line index of `start_id`'s marker, and where its region ends — using the SAME
@@ -724,26 +719,48 @@ def read_chain_tk(repo, gm_lines):
     # both: the chain's GM term is "everything above the end of the ★ LATEST banner".
     _s, l_end = _region_end(gm_lines, _gm_usage.GM_VOCAB, "LATEST")
     if l_end is None:
-        return None, ("GOOD-MORNING.md has no ★ LATEST banner — the chain's whole session record "
-                      "is that banner, so this is a refusal to measure, not a small chain")
+        return None, None, ("GOOD-MORNING.md has no ★ LATEST banner — the chain's whole session "
+                            "record is that banner, so this is a refusal to measure, not a small chain")
     gm_part = "\n".join(gm_lines[:l_end])
-    gm_tk = measure_tokens(gm_part)[0]
 
     ls_path = os.path.join(repo, "_LIVE-STATE.md")
     if not os.path.exists(ls_path):
-        return gm_tk, f"GM header+LATEST {gm_tk} tk · _LIVE-STATE absent (no delta term)"
+        return gm_part, None, "_LIVE-STATE absent (no delta term)"
     with open(ls_path, encoding="utf-8") as f:
         ls_lines = f.read().splitlines()
     d_s, d_e = _region_end(ls_lines, _gm_usage.LS_VOCAB, "DELTAS")
     if d_s is None:
-        return None, "_LIVE-STATE.md has no ⏱ delta section — chain UNMEASURED, not assumed zero"
+        return None, None, "_LIVE-STATE.md has no ⏱ delta section — chain UNMEASURED, not assumed zero"
     body = ls_lines[d_s:d_e]
     # The LATEST delta ends where the next ⏱ heading begins. If there is no second one, the
     # whole section IS the latest delta — say which case was taken, never silently assume.
     nxt = next((i for i, ln in enumerate(body) if i > 0 and LS_DELTA_RE.match(ln)), None)
     delta = "\n".join(body[:nxt] if nxt else body)
-    d_tk = measure_tokens(delta)[0]
     how = f"LATEST delta only (of {len(body)} delta lines)" if nxt else "whole ⏱ section (single delta)"
+    return gm_part, delta, how
+
+
+def read_chain_tk(repo, gm_lines):
+    """Measure the GM-D7-am READ CHAIN **as re-pointed #33**: GM header + ★ LATEST banner +
+    the `_LIVE-STATE.md` LATEST delta. Returns `(chain_tk, detail)`; `(None, reason)` if a
+    region cannot be isolated.
+
+    ⚠ It REUSES `_gm_usage.split_sections` — the same parser the memento index is built from —
+    instead of growing a second one here. A second parser is exactly the drift class the M8
+    block exists to prevent, and a chain measured by a different splitter than the one the
+    retrieval door uses would drift silently against the thing it claims to describe.
+
+    ⚠ It REFUSES rather than guesses. Every failure path returns a REASON, never a number and
+    never a zero: a budget check that defaults to 0 on a parse failure reports GREEN on a
+    broken file, which is the "cheerful zero" this corpus has already been bitten by.
+    """
+    gm_part, delta, how = chain_parts(repo, gm_lines)
+    if gm_part is None:
+        return None, how
+    gm_tk = measure_tokens(gm_part)[0]
+    if delta is None:
+        return gm_tk, f"GM header+LATEST {gm_tk} tk · {how}"
+    d_tk = measure_tokens(delta)[0]
     return gm_tk + d_tk, f"GM header+LATEST {gm_tk} tk · LS {how} {d_tk} tk"
 
 

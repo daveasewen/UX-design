@@ -1,3 +1,9 @@
+<!-- ⛔ STOP. If you are a cold session, you are in the wrong file and it costs 18.4K tape.
+     Read `_CHAIN.md` instead — it is GENERATED from this file's header + ★ LATEST banner and
+     `_LIVE-STATE.md`'s ⏱ LATEST delta, which is the ENTIRE contract (GM-D7-am, CUT #33).
+     This file stays whole for RETRIEVAL: `_memento_search.py "<q>"` → `--fetch <id>`.
+     ⚠ Reading on from here is not thoroughness — it is the exact overspend #41 measured. -->
+
 # Good morning, Dave ☕
 
 > **size:** GM **18.5K tape / ~29.0K bill** · §A **4.21K tape (EXEMPT)** · compactable **14.3K tape (ADVISORY — block WITHDRAWN #39)** · chain **3.9K tape**, ★ **UNDER M10's 4,500 warn for the first time in three sessions — the 2c/2d rolls did that** · corpus 38.6K tape · **measured #40** (cl100k; `bill` ×1.57, PROVISIONAL n=2). ★ **`tape` = tiktoken · `bill` = what the window charges — THE TAPE IS NOT THE BILL.** ⚠ **The gate SILENTLY ESTIMATES without `tiktoken` (−414 tape): `pip install tiktoken --break-system-packages` FIRST.** ⚠ **THE FLOOR LESSONS, both measured, both still binding:** retiring a VERIFIED-DEAD item netted **+16 tape** (#38 — a retirement must leave a legible clause, and the clause costs what the line cost) · **and displacement has a floor too (#40): the banner region sat OVER its 4,000 warn at a fully compliant `N`=2.** ⇒ **neither retirement nor rolling can shrink a region below `N` × one unit — do not plan relief that arithmetic forbids.**

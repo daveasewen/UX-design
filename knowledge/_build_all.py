@@ -163,6 +163,19 @@ STEPS = [
      "_build_memento_index.py", ["--selftest"]),
     ("memento search selftest — known-answer retrieval + fetch refusal (O2′ #25)",
      "_memento_search.py", ["--selftest"]),
+    # ★ #41: the read chain as a FILE. Measured that morning: the contract prices the chain at
+    # 3,838 tape and the opener paid 28,653 — because `Read` cannot read less than a file, so a
+    # cold session buys all 18,434 tape of GOOD-MORNING.md to learn it should have stopped at
+    # line 21. Five sessions called the chain CUT and every one paid full price for it.
+    # Generated (never hand-authored) from `_capture_gate.chain_parts` — the SAME slicer the gate
+    # measures with, so "the chain is N tape" and "here is the chain" cannot diverge.
+    # ⚠ --check is BLOCKING here on purpose: this is the FIRST file a cold session reads and it
+    # has no reason to doubt it, so a stale copy is the #32 defect with the blast radius maximised.
+    ("read chain file — _CHAIN.md, the cold-start door (#41)", "_gen_chain.py"),
+    ("read chain determinism check — stale _CHAIN.md serves a PREVIOUS session's record (#41)",
+     "_gen_chain.py", ["--check"]),
+    ("read chain selftest — verbatim terms + the CUT + refusal on a blank GM (#41)",
+     "_gen_chain.py", ["--selftest"]),
     # ADR-0016 P1/P3 (2026-07-27, Dave ruled it a BUILD): the register asks the question no
     # other step asks — not "is the corpus self-consistent?" but "is this RULING LIVE in the
     # artefact Dave looks at?" Regenerates every build so it cannot rot. ADVISORY on purpose:
