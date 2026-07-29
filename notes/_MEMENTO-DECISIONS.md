@@ -560,3 +560,68 @@ analytical requirement**, and if it relaxes #38's block simply appends at EOF.
 publishes what it charged. **28,653 for 13,548 tape = 2.11×** against `TAPE_TO_BILL = 1.57`
 ⇒ every `bill` figure in the corpus is understated ~1.35×. ⚠ **n=1 — a dataset ROW, not a re-dial.
 Re-dialling is Dave's** (`ds-023` is the standing case).
+
+## ★ #43 — PRESENT-BUT-UNKEYED IS A FILING ERROR, NOT A VOCABULARY GAP — RULED, AND SCOPED — 2026-07-29 (Opus solo, Dave live)
+
+**⬛ RULED BY DAVE, #43. Closes §C·4 open 8** (*"a fifth vocabulary state, raised not minted"*, born #41).
+
+**THE RULING, in his scoping:**
+> **Same file → key it.** A record whose content already sits in `notes/_GAUGE-LOG.md` but carries no
+> `#### <date> #<N>` line is a **filing error**, and a filing error is repaired by adding the key —
+> **not by minting a vocabulary term.** ⚠ **Mark the row PARTIAL where it is partial.**
+> **Another file → that is `roll_2f`'s job, a separate problem.** The rule does **not** cover a record
+> whose content lives outside the log; keying an empty heading there would forge the dataset.
+
+**WHY.** Dave's own question opened it — *"surely a key is fundamental to this working?"* It is, and
+the mechanism says so: `_capture_gate.py:1109` builds ds-022's `have` by **set membership on parsed
+`#### <date> #N` keys**, so unkeyed prose is invisible to the reader however true it is. ★ **That is
+the argument AGAINST minting the fifth term, not for it.** The existing vocabulary — `block` ·
+`HOLE` · `ABSENT` — is for records that **cannot be produced**. #40's could: its `tape/bill PAIR #40`
+and both `META #40` blocks were written by #40, in this file, at its own wrap. ⇒ **a term meaning
+*"we did not file it"* is precisely the one that decays into `HOLE`'s meaning**, which
+`_capture_gate.py:200` already warns against for `ABSENT`. **#41's REFUSAL to write `HOLE #40` was
+right; its diagnosis was not.**
+
+**WHY THE SCOPE IS LOAD-BEARING, and Dave named it.** Unscoped, the rule reads as covering **#38**,
+whose row is **not** in this file — and would then quietly authorise a forged row later. It is not
+the same case and must never be treated as one. ⚠ **The PARTIAL clause exists because the unscoped
+rule had a second hole, surfaced in-session:** *"same file → key it"* silently assumes the content
+there is adequate as a row, and #40's is not — **no band, no fill, no self-reported error count.**
+The adequacy test **cannot** be handed to the gate: `gauge_log_continuity`'s own docstring says
+*"it checks presence and continuity — the two things a grep can settle. Do not teach it to grade
+prose."* ⇒ **the marking is the session's job, done at the key, in writing.**
+
+**ENACTED SAME WINDOW — `cd75caf`, +4/−0.** One `#### 2026-07-29 #40` key plus its provenance block.
+Verified with the gate's own parser rather than by eye: **keyed rows 29 → 30**, `#40` in `have`,
+slotted between #39 (l.389) and #41 (l.409). ⛔ **#38 NOT keyed, by the scope.**
+
+**⚠ A THIRD PROPAGATION, CAUGHT IN-SESSION AND LOGGED AS THE ENTRY.** #39's *"what is actually
+missing is only its gauge-log block, now supplied by this line"* is a claim about the **HOLE's
+status**, not about #38's measurement. #40 read it as discharge · #41 repeated it to Dave · **#43
+repeated it a third time** before the probe caught it. [[assertion-propagation-gap]], fourth surface.
+★ **A correction inscribed at the source did not stop the claim — three sessions re-derived it from
+the same sentence.** The remedy that would have worked is the one #41 already wrote into its own
+error line, and no mechanism carries it.
+
+**⚠ WITHDRAWN IN-SESSION, BEFORE IT REACHED THE RECORD.** A suspicion that `STRATA_BLOCK_RE`'s loose
+`^####\s` let `#### META —` headings consume cap budget while feeding no dataset. **Probed:**
+`BLOCK_RE` is used **once**, `_capture_gate.py:837`, and **only against `GOOD-MORNING.md`**; the
+gauge log is never counted by it. **No defect.** [[unmatched-grep-is-not-an-absence]], inverted — a
+suspicion is not a finding either.
+
+**⚠ AND THE PREMISE AGED AGAIN, THREE TIMES IN ONE WINDOW.** [[premise-ages-faster-than-rule]],
+third · fourth · fifth surfaces: **(a)** the chain measures **4,119 tape / 381 headroom**, not the
+**18** the banner carries — #42's own 2c/2d rolls relieved it, so *"`roll_2f` is the chain's sole
+relief valve"* was true for exactly one wrap · **(b)** `_to_delete/` measured **0**, not #41's
+**840K** · **(c)** the tree was **pushed**, not *"seven commits local, unpushed"*.
+⇒ **every figure a banner carries about a MOVING quantity is a reading, not a fact.**
+
+**⚠ REPORTED, NOT DIAGNOSED — `_CHAIN.md` STATES THREE DIFFERENT SIZES FOR ITSELF:** `3,721`
+(footer) · `4,482` (banner) · `3.7K / 783-under` (header). **Measured: 4,119.** The ~398 gap is
+close to the known **414** tiktoken under-report; the likely mechanism is that the footer prices the
+file **before** writing the footer — a self-referential measurement, which is the same shape as a
+gate inside the growth loop, one layer down. **Not fixed here.** [born #43 · guards: this line ·
+until: measured or ruled]
+
+**Entry points:** `notes/_GAUGE-LOG.md` § `#### 2026-07-29 #40` (the enactment) ·
+`_capture_gate.py:190` `:200` `:837` `:1068` `:1109` (the mechanism) · `_DECISION-HISTORY/2026-07-29-present-but-unkeyed-ruling.md` (the arc) · GM §C·4 open 8 (closed by this entry).

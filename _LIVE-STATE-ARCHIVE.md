@@ -1,5 +1,18 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
 
+<!-- batch 2026-07-29 #43 -->
+## ⏱ PRIOR DELTA — 2026-07-29 (Wed **late afternoon #40**, OPUS solo, Dave live — ★★ **the 2f roll for #38 is MECHANICALLY IMPOSSIBLE and #39's handoff instructs it anyway** · ★★ **displacement has a FLOOR: the banner region was over its warn at a fully compliant `N`** · ★ **#39 reported its own completed 2c roll as debt**) — "This mechanism relies on itself, which is why things spin out of control."
+
+> ⚠ **NOTHING WAS BUILT, BY DAVE'S CHOICE.** No new mechanism, no new gate. He asked to *"nibble away at this until we get enough breathing space"* — the wrap IS the deliverable, and it is the first clean one in four sessions.
+
+- **⛔ BLOCKED — `roll_2f` for #38 REFUSES and the guard is correct.** `notes/_GAUGE-LOG.md` already carries a `#### 2026-07-29 #39` block, later than #38, so appending #38's post-mortem would break the file's own chronological contract (#27's prepend defect — the reason the mover exists). **#39 wrote that block while #38's stratum was still un-rolled in GM §C.** ⬛ **FORKED TO DAVE: how #38's stratum retires** — the log half is arguably discharged by addition already (#39's `HOLE #38` line says so), the mover will not do a half, and hand-prepending is exactly what the guard forbids. ⚠ **`ds-022` stays RED: declared and understood, not debt.**
+- **★★ DISPLACEMENT HAS A FLOOR — measured, and it bears on the Friday mast's item 2.** Banner region **4,715 tape** vs warn 4,000 / block 5,000, at `N`=2 **compliant**: nothing to displace and over anyway, because the two banners were 1,278 and 1,758 tape. ⇒ **floor = `N` × one unit.** Item 2 cannot relieve this region, so its "do it first, it shrinks the file" rationale does not hold here.
+- **⛔ HELD, DAVE #40 — ROLL AT OPEN.** Brief written: `notes/_briefs/2026-07-29-roll-at-open-plan.md`. His posture verbatim in `GOOD-MORNING.md` §C·4. ⚠ **HELD is neither parked nor rejected.** ★ Its premise was weakened in the writing: #39 failed from **no window**, not from missing detection (`ds-022` fired instantly) or an unscripted step (`roll_2f` since #34) ⇒ **the resource is the failure, not the mechanism.**
+- **ROLLED (mover receipts):** 2c #38 banner → `_GM-ARCHIVE.md` · 2d #36 delta → `_LIVE-STATE-ARCHIVE.md`. **EXIT CHECK first:** the four #37-dossier commits `3488332` `e89c06c` `9cd2ae7` `aa8f66b` lived only in rolling regions — copied to §C·4 before the roll.
+- **CORRECTED AT SOURCE, two:** #39's *"2c ROLL IS OWED"* (false when written — the archive disproves it) and its owed-list opener *"resolve `HOLE #38`"* (withdrawn an hour earlier in the same log block).
+- **TREE STATE.** Local, unpushed — Dave pushes via GitHub Desktop. ⚠ **Stage explicit paths; never `git add -A`.** ⚠ Sandbox cannot unlink in `.git` — `mv` any stray `*.lock` BEFORE running git.
+
+
 <!-- batch 2026-07-29 #42 -->
 ## ⏱ PRIOR DELTA — 2026-07-29 (Wed **morning #38**, OPUS solo, Dave live — ★★ **`HOLE #35` was FALSE by the time #38 read it: #35's post-mortem existed all along in GM §C, only the split's log half had failed** · ★★ **the 2d EXIT CHECK caught a Dave-owed item with NO standing home, one op before it rolled out of live state** · ★ **a THIRD GM budget was 37 tape from its warn and on nobody's list** · 🟡 mechanical wrap, dossier DEFERRED by Dave) — "A gap in the record is not the same as a gap in the evidence."
 
