@@ -85,33 +85,44 @@ TOTAL_RE = re.compile(r"=\s*[~≈]?\s*(\d+)")
 BAND_WORD_RE = re.compile(r"\b(GREEN|AMBER|RED)\b", re.I)
 RESERVE_RE = re.compile(r"\breserve\b\D{0,4}(\d+)", re.I)
 
-# ---------------------------------------------------------------- ds-023 — THE CEILING
-# RULED IN PART by Dave #31 in plain language, ENFORCEMENT picked #31 (delegated), CONFIRMED
-# by Dave #34 ("this is making me suffer unduly").
+# ------------------------------------------------------------------- ds-023 — THE BAND
+# ★★ RE-STATED BY DAVE #36: THIS IS A BAND, NOT A CEILING — and 45 was NEVER a ceiling. The
+# `FAIL at >= 45` this file shipped from #31 to #36 was the OPPOSITE of what he wanted: the
+# gate was refusing the very zone it existed to steer sessions into.
 #
-# HIS WORDS, #30: "I think that calculation of the headroom is wrong… it's calculating 60+15
-# headroom is okay and it definitely isn't, 60 should be a hard stop." And #31: "the wrap
-# should be done before we hit that mark thats when things go wrong… we should never run hot."
+# HIS WORDS, #36: "the whole 45% was a misunderstanding, it just creates the band, between 45
+# and 60, that I'd prefer the full price with wrap to sit in" · "hitting around 60% every time
+# for the full price I can live with, it's safe-ish" · 63 tolerable, RARE, and MARKED.
 #
-# ⚠ THIS WAS NEVER A CALIBRATION GAP. The runbook already agreed with him, three times,
-# verbatim — "the RESERVE is not a fourth addend" · "RULED (a) — the reserve is RING-FENCED,
-# not additive" · "the reserve is a LINE, not an allowance". **It was an ENFORCEMENT gap: the
-# rule existed, was correct, was ratified, and nothing checked it.** Identical shape to ds-021
-# and ds-022 — which is why all three were raised in one session and are enacted in one.
+# ⚠ THE UNIT IS THE FULL PRICE — "front-load + context GM + job + wrap", his enumeration. The
+# wrap is INSIDE the number, which is why landing at ~60 is safe rather than reckless: at 60
+# the wrap has already been PAID, not merely scheduled. That is the property the old `< 45`
+# derivation was reaching for — and it bought it twice, once in the arithmetic and once again
+# in the threshold, which is exactly how 15 points of margin went missing.
 #
-# THE ARITHMETIC, which falls out of Dave's OWN ratified numbers and is not a new threshold:
-# if RED (>=60) is a hard stop and the ~15% reserve is ring-fenced INSIDE it, then any
-# pre-flight must project to finish GREEN —
+# ⚠ WHERE THE OLD RULE CAME FROM, because the provenance IS the lesson. Dave ruled the NUMBER
+# at #31; a DELEGATED AGENT picked FAIL as its enforcement. #34's `<= 45` -> `< 45` sharpening
+# settled which SIDE of 45 counts, never whether 45 BLOCKS. So nobody ever ruled the block.
+# Its cost: an honestly-priced job landing in the low 50s — THE INTENDED ZONE — had either to
+# mark a `RESERVE SPEND` receipt for a spend that was never over budget, or be quietly
+# under-priced to fit. ds-023's own escape-hatch note (below) names under-pricing as the thing
+# it exists to prevent; the enforcement was manufacturing it. **warn != block.**
 #
-#     fill + job + wrap  <=  45        (the GREEN ceiling, unchanged)
+# THE SHAPE NOW:
+#     <  45        below the band — allowed, and NOTED. Chronic under-pricing is the documented
+#                  failure this band replaced, not a virtue.
+#     45 .. 60     ★ THE PREFERRED BAND. Passes clean. This is the TARGET, not the tolerance.
+#     61 .. 63     tolerable, but RARE and MARKED — needs `RESERVE SPEND — forked to Dave`.
+#     >  63        ⚠ UNRULED BY DAVE. The pre-#36 escape-hatch SHAPE is preserved rather than
+#                  replaced (marked -> WARN, unmarked -> FAIL), precisely because inventing a
+#                  fresh enforcement here would repeat #31's mistake in the same file.
+#                  FORKED TO DAVE at #37 — see `_DS-IMPROVEMENTS.md` ds-023.
 #
-# and in flight the stop-and-wrap trigger is 60 MINUS THE PRICED WRAP (~50-52 at today's 8-10
-# point wraps) — because 60 is where the wrap must have FINISHED, not where it starts. Starting
-# the ritual at 60 is precisely what spends the reserve; that is #28's and #29's recorded cause.
-# ⚠ The stop line MOVES WITH THE WRAP PRICE and is not its own constant. A session with an
-# expensive wrap must stop earlier, which is the whole point.
-PREFLIGHT_CEILING = 45   # confirmed by Dave on delegation #31, re-confirmed #34. Not derived here.
-HARD_STOP = 60           # Dave's, ratified #30 — "60 should be a hard stop"
+# In flight the stop-and-wrap trigger is still 60 MINUS THE PRICED WRAP, and it MOVES WITH THE
+# WRAP PRICE. A session with an expensive wrap must stop earlier; that is the whole mechanism.
+BAND_FLOOR = 45          # Dave #36 — the PREFERRED BAND's floor. NOT a ceiling. Never was one.
+HARD_STOP = 60           # Dave's, ratified #30, re-affirmed #36 as "the line" — and LIVABLE
+MARKED_MAX = 63          # Dave #36 — "tolerable, rare, marked". Above this is UNRULED.
 # ⚠ THE ESCAPE HATCH IS DELIBERATE AND IS NOT A LOOPHOLE. A ceiling with no way past it gets
 # worked around by quietly under-pricing the job, which would destroy the only honest number in
 # the stamp. So over-ceiling is permitted — but ONLY as an explicit, marked, forked act:
@@ -189,7 +200,18 @@ HOLE_RE = re.compile(r"^\s*>?\s*\**HOLE\**\s+#\d+\b", re.I)
 # no fabricated cause. ⚠ A remedy is measured too: do not let ABSENT decay into HOLE's meaning.
 ABSENT_RE = re.compile(r"^\s*>?\s*\**ABSENT\**\s+#\d+\b", re.I)
 SESSION_NO_RE = re.compile(r"#(\d+)\b")
-BANNER_SESSION_RE = re.compile(r"★\s*LATEST.*?#(\d+)\b")
+# ★★ #37 — THIS REGEX HAD NEVER WORKED, and only a fallback hid it. It read
+#     r"★\s*LATEST.*?#(\d+)\b"
+# unanchored, so `.search()` found the FIRST text anywhere in GM mentioning "★ LATEST" — which
+# is PROSE in the header (`… header + ★ LATEST + the LS LATEST delta … (#29→#36 …)`) — and
+# returned **#29**. It was never reached while `_current_session_no` preferred the §C stratum,
+# so a broken reader sat behind a working one for as long as the working one kept winning.
+# ⇒ **A fallback path is UNTESTED CODE until something forces it.** Promoting the banner to
+# authoritative at #37 is what exposed this, inside the same window.
+# Third appearance of substring-vs-structure here (#35's usage probe read prose MENTIONING
+# `section-usage` as a record; ds-016's index reads rules by text): **match the STRUCTURE — a
+# blockquoted heading — not the words.** ⚠ Banner headings are BLOCKQUOTED: `> ## ★ LATEST …`.
+BANNER_SESSION_RE = re.compile(r"^\s*>?\s*#{1,6}\s*★\s*LATEST\b.*?#(\d+)\b", re.M)
 
 
 def _key_session(line):
@@ -200,17 +222,46 @@ def _key_session(line):
     return int(m.group(1)) if m else None
 
 
-def _current_session_no(gm_text):
-    """This session's number, read from GM. Tries the §C stratum key first (the authoritative
-    form) and falls back to the ★ LATEST banner. Returns None if neither is legible — the
-    caller then WARNS that the check is unarmed rather than passing quietly."""
+def _stratum_session_no(gm_text):
+    """The newest §C stratum key's session number, or None. This is written by ritual step 2f."""
     for ln in gm_text.splitlines():
         if STRATA_KEY_RE.match(ln):
             n = _key_session(ln)
             if n is not None:
                 return n
+    return None
+
+
+def _current_session_no(gm_text):
+    """This session's number, read from GM's ★ LATEST banner, with the §C stratum as a
+    CROSS-CHECK rather than the source.
+
+    ★★ #37 — THE ORDER WAS INVERTED, AND THE INVERSION BLINDED ds-022's CONTINUITY CHECK.
+    This used to read the §C stratum key FIRST and fall back to the banner. But the stratum is
+    written by ritual step 2f — **the very step whose omission `gauge_log_continuity` exists to
+    catch.** So a session that skipped 2f left the clock un-advanced; the check then validated
+    a stale-but-compliant predecessor and passed. It is not an off-by-one that self-corrects:
+    the clock stops at the last compliant session and stays there, so the check reports GREEN
+    for as long as the lapse continues, and reports it *more* confidently the longer it runs.
+
+    MEASURED AT #37, on the live repo: GM's newest stratum was `#### 2026-07-29 #35` while the
+    banner read `#36`. The check therefore asked "does #34 have a block?", found one, and
+    announced "the 2f split landed" — with **#35 AND #36 both absent from the log.**
+
+    ⇒ **An auditor may not take its clock from the artefact it audits.** The banner (written at
+    steps 2c/2d, a different step, by a different edit) is now the source. Disagreement between
+    banner and stratum is not noise to be reconciled — it is the POSITIVE SIGNAL that 2f was
+    skipped, and `gauge_log_continuity` raises it rather than quietly preferring one.
+
+    Returns None if the banner is illegible; the caller then WARNS that the check is unarmed
+    rather than passing quietly."""
     m = BANNER_SESSION_RE.search(gm_text)
-    return int(m.group(1)) if m else None
+    if m:
+        return int(m.group(1))
+    # ⚠ Fallback ONLY when the banner is unreadable. It is deliberately the weaker source now:
+    # if we are here, the file is already malformed, and a stale number is better than none —
+    # but the caller is told the check is degraded.
+    return _stratum_session_no(gm_text)
 
 # D7(a) size stamps, AS AMENDED 2026-07-27 (Dave, this window — see `notes/_MEMENTO-DECISIONS.md`
 # § GM-D7 amendment). The original D7 set GM ≤ 8K tk whole-file. Measured with tiktoken, that is
@@ -505,42 +556,66 @@ def check_preflight(text, label="GOOD-MORNING.md"):
             fails.append(f"{label}: pre-flight band MIS-READ — {total}% is {truth} by the band "
                          f"table, stamp says {named}. Quote the table, never recall it")
 
-    # ---- ds-023: THE CEILING. Everything above this point is a FORM check — it asks whether the
+    # ---- ds-023: THE BAND. Everything above this point is a FORM check — it asks whether the
     # stamp is well-formed. This is the first thing here that asks whether the PLAN IS ALLOWED.
+    # ★★ RE-STATED BY DAVE #36 — see the ds-023 header block. 45 is the FLOOR of the preferred
+    # band, not a ceiling; the `>= 45 -> FAIL` this replaced was a delegated agent's pick and
+    # was refusing the zone Dave wants sessions to land in. Do not re-tighten it without a
+    # ruling from him, in his words, quoted at the site.
     if tm and not missing:
         total = int(tm.group(1))
         stop_at = HARD_STOP - terms["wrap"]
-        # ⚠ STRICT `<`, RULED BY DAVE #34, closing the one-point slack this check shipped with.
-        # ds-023 was written `fill + job + wrap <= 45`, but 45 reads AMBER on the band table
-        # (GREEN is `< 45`) — so "must project to finish GREEN" and "<= 45" disagreed by exactly
-        # one point, and BOTH were in the canon. #34 implemented the literal `<=` and forked the
-        # contradiction to Dave rather than silently picking the stricter reading (tightening a
-        # ratified threshold is not the agent's to do). He ruled `< 45`: **45 now FAILS**, and
-        # "project to finish GREEN" is literally true rather than nearly true.
-        if total >= PREFLIGHT_CEILING:
+        if total < BAND_FLOOR:
+            notes.append(
+                f"{label}: pre-flight {total}% is BELOW the {BAND_FLOOR}–{HARD_STOP}% preferred "
+                f"band (Dave #36). Allowed — but a price that keeps landing under the band is "
+                f"the UNDER-PRICING this band replaced, not thrift. Check the full price really "
+                f"includes front-load + context GM + job + wrap. In flight, STOP AT {stop_at}% "
+                f"({HARD_STOP} − the {terms['wrap']}%-priced wrap).")
+        elif total <= HARD_STOP:
+            notes.append(
+                f"{label}: pre-flight {total}% is IN the {BAND_FLOOR}–{HARD_STOP}% preferred "
+                f"band (Dave #36: \"where I'd prefer the full price with wrap to sit\"). This is "
+                f"the target, not a tolerance — no receipt required. In flight, STOP AT "
+                f"{stop_at}% ({HARD_STOP} − the {terms['wrap']}%-priced wrap): {HARD_STOP} is "
+                f"where the wrap has FINISHED, not where it starts.")
+        elif total <= MARKED_MAX:
             if RESERVE_SPEND_RE.search(line):
                 warns.append(
-                    f"{label}: pre-flight projects {total}%, at/over the {PREFLIGHT_CEILING}% "
-                    f"ceiling — ALLOWED, marked RESERVE SPEND and forked to Dave. This is a "
-                    f"receipt, not an absolution: the reserve is a line, not an allowance, and "
-                    f"a session that marks every wrap this way has re-dialled the ceiling by "
-                    f"habit rather than by ruling. In flight, STOP AT {stop_at}% "
-                    f"({HARD_STOP} − the {terms['wrap']}%-priced wrap).")
+                    f"{label}: pre-flight {total}% is over the {HARD_STOP}% line but within the "
+                    f"{MARKED_MAX}% tolerance — ALLOWED, marked and forked to Dave. His word "
+                    f"(#36) is that this is TOLERABLE **and RARE**: a session that marks this "
+                    f"every wrap has re-dialled the line by habit rather than by ruling. In "
+                    f"flight, STOP AT {stop_at}% ({HARD_STOP} − the {terms['wrap']}%-priced "
+                    f"wrap).")
             else:
                 fails.append(
-                    f"{label}: pre-flight projects {total}%, at/over the {PREFLIGHT_CEILING}% "
-                    f"ceiling — a job must be projected to finish GREEN, and {PREFLIGHT_CEILING} "
-                    f"itself is AMBER (ds-023 + Dave #34: strictly BELOW. RED at "
-                    f"{HARD_STOP} is a hard stop and the ~{RESERVE_FENCE}% reserve is "
-                    f"ring-fenced INSIDE it, so {HARD_STOP} − {RESERVE_FENCE} = "
-                    f"{PREFLIGHT_CEILING}). Either CUT THE JOB, or declare the overrun in "
-                    f"advance and mark it `RESERVE SPEND — forked to Dave`. What is not "
+                    f"{label}: pre-flight {total}% is over the {HARD_STOP}% line (ds-023). Dave #36 "
+                    f"allows up to {MARKED_MAX}% but only RARE and MARKED — so either CUT THE "
+                    f"JOB back into the {BAND_FLOOR}–{HARD_STOP}% band, or declare the overrun "
+                    f"IN ADVANCE and mark it `RESERVE SPEND — forked to Dave`. What is not "
                     f"allowed is discovering it afterwards: #30, #31, #32 and #33 all exceeded "
-                    f"their own projections, and the ceiling has never once held.")
+                    f"their own projections. ⚠ Do NOT under-price the job to fit — that is the "
+                    f"failure this band exists to prevent.")
         else:
-            notes.append(f"{label}: pre-flight {total}% is below the {PREFLIGHT_CEILING}% ceiling · "
-                         f"in flight, STOP AT {stop_at}% ({HARD_STOP} − the {terms['wrap']}%-priced "
-                         f"wrap). 60 is where the wrap has FINISHED, not where it starts.")
+            # ⚠ > MARKED_MAX is UNRULED BY DAVE. The pre-#36 escape-hatch SHAPE is preserved
+            # deliberately (marked -> WARN, unmarked -> FAIL) rather than replaced with an
+            # invented harder stop: picking an enforcement Dave never ruled is the exact defect
+            # #36 found in this file. The message says so, so the gap cannot go quiet.
+            hatch = (f"⚠ above {MARKED_MAX}% is UNRULED — Dave has ruled the band "
+                     f"({BAND_FLOOR}–{HARD_STOP}) and the marked tolerance ({MARKED_MAX}), and "
+                     f"nothing beyond. This gate keeps the pre-#36 shape here rather than "
+                     f"inventing a stop he did not pick; FORKED TO DAVE, ds-023.")
+            if RESERVE_SPEND_RE.search(line):
+                warns.append(
+                    f"{label}: pre-flight {total}% is beyond the {MARKED_MAX}% tolerance, marked "
+                    f"and forked to Dave — allowed on the receipt. {hatch} In flight, STOP AT "
+                    f"{stop_at}% ({HARD_STOP} − the {terms['wrap']}%-priced wrap).")
+            else:
+                fails.append(
+                    f"{label}: pre-flight {total}% is beyond the {MARKED_MAX}% tolerance and "
+                    f"UNMARKED (ds-023) — CUT THE JOB, or declare it in advance and mark it "
+                    f"`RESERVE SPEND — forked to Dave`. {hatch}")
 
     if terms.get("wrap", WRAP_FLOOR) < WRAP_FLOOR:
         warns.append(f"{label}: wrap reserved at {terms['wrap']}% (runbook says ~{WRAP_FLOOR}%) "
@@ -942,9 +1017,27 @@ def gauge_log_continuity(repo):
     if cur is None:
         warns.append("ds-022 continuity: could not read this session's number from "
                      "GOOD-MORNING.md — the check is UNARMED this wrap and says so rather than "
-                     "passing quietly. (It reads `#### <date> #<N>` in §C strata, then the "
-                     "`★ LATEST` banner's `#<N>`.)")
+                     "passing quietly. (It reads the `★ LATEST` banner's `#<N>` first, then "
+                     "falls back to the `#### <date> #<N>` §C stratum key.)")
         return fails, warns, notes
+
+    # ★★ THE CLOCK CROSS-CHECK, #37. The banner and the §C stratum are written by DIFFERENT
+    # ritual steps (2c/2d vs 2f). When they disagree, the later step did not run — and that is
+    # precisely the condition under which this whole check used to go blind, because it took
+    # its own clock from 2f's output. Reported as a FAIL, not reconciled: the disagreement is
+    # the finding. ⚠ Do not "fix" a red here by editing the banner to match the stratum; the
+    # remedy is to run 2f, or to declare the gap with a HOLE line.
+    strat = _stratum_session_no(gm_text)
+    if strat is not None and strat != cur:
+        fails.append(
+            f"ds-022 continuity: GM's ★ LATEST banner says #{cur} but the newest §C stratum "
+            f"key says #{strat} — ritual step 2f did not run for "
+            f"{'this session' if strat < cur else 'the banner’s session'}. This is the "
+            f"self-hiding failure found at #37: the continuity check used to read its own "
+            f"clock from the stratum, so a skipped 2f froze the clock at the last compliant "
+            f"session and the check reported GREEN indefinitely (measured: banner #36 vs "
+            f"stratum #35, while #35 AND #36 were both missing from _GAUGE-LOG.md). Run 2f, "
+            f"or declare the gap with `HOLE #<N> — <why>`.")
 
     have = {n for n in (_key_session(ln) for ln in log_lines
                         if STRATA_KEY_RE.match(ln)) if n is not None}
@@ -1329,9 +1422,13 @@ def wrap_checks(repo, today, lane=False):
         fails += f_                              # BLOCKING: three wraps in a row skipped the
         warns += w_                              # step, and #29's overrun cause is gone for good.
         notes += n_
-        notes.append("PRE-FLIGHT stamp: ds-023 CEILING now enforced (fill+job+wrap ≤ 45, "
-                     "escape = `RESERVE SPEND — forked to Dave`), plus the FORM check below. "
-                     "Whether the fill figure is HONEST is still not observable here.")
+        notes.append(f"PRE-FLIGHT stamp: ds-023 is a BAND (Dave #36) — the FULL price "
+                     f"(front-load + context GM + job + wrap) is preferred in "
+                     f"{BAND_FLOOR}–{HARD_STOP}%; {HARD_STOP} is the line and is livable; up to "
+                     f"{MARKED_MAX}% is tolerable when RARE and MARKED "
+                     f"(`RESERVE SPEND — forked to Dave`); above {MARKED_MAX} is UNRULED. Plus "
+                     f"the FORM check below. Whether the fill figure is HONEST is still not "
+                     f"observable here — and the BOOT it rests on was first measured at #37.")
         notes.append("PRE-FLIGHT stamp: FORM checked only (3 terms · arithmetic · band-vs-table). "
                      "Whether the fill figure is honest, and whether a mid-job re-price actually "
                      "happened, are NOT observable here — discipline, not enforcement "
@@ -1425,26 +1522,32 @@ PREFLIGHT_FIXTURES = [
      "pre-flight: fill 50% + job 15% + wrap 5% = 70% AMBER · reserve 15% ring-fenced\n", True),
     ("band mis-read at the boundary (60 is RED)",
      "pre-flight: fill 40% + job 15% + wrap 5% = 60% AMBER · reserve 15% ring-fenced\n", True),
-    # ⚠ ds-023 (#34) RETIRED THE OLD GREEN CONTROL. It read
+    # ⚠ THE HISTORY OF THIS CONTROL IS THE EVIDENCE — do not delete it, it has flipped TWICE.
     #     "fill 40% + job 12% + wrap 5% = 57% AMBER"
-    # — well-formed, and now NOT ALLOWED: 57 is over the 45 ceiling. It was a valid control for a
-    # FORM check and is an invalid one for a check that also asks whether the plan is permitted.
-    # Kept here in the comment rather than deleted, because "the control used to pass" is the
-    # evidence that the ceiling actually changed something.
-    ("green control (below ceiling)",
+    # passed at birth (FORM check only) · FAILED from #34 (over the 45 "ceiling") · and PASSES
+    # again from #37, because Dave #36 re-stated 45 as the FLOOR of the preferred band. A fixture
+    # that flips back to its original value is the strongest single proof that the #31 delegated
+    # enforcement was never his — the control was right, then wrong, then right again, and only
+    # the enforcement moved. It is a live fixture below, not a comment.
+    ("below the band (44)",
      "pre-flight: fill 24% + job 12% + wrap 8% = 44% GREEN · reserve 15% ring-fenced\n", False),
-    ("green control, boundary GREEN (44)",
+    ("below the band, boundary (44)",
      "pre-flight: fill 30% + job 9% + wrap 5% = 44% GREEN · reserve 15% ring-fenced\n", False),
-    # ---- ds-023 ceiling fixtures
-    ("ds-023: over ceiling, UNMARKED — must FAIL",
-     "pre-flight: fill 40% + job 12% + wrap 5% = 57% AMBER · reserve 15% ring-fenced\n", True),
-    ("ds-023: over ceiling but MARKED — allowed, warns not fails",
-     "pre-flight: fill 30% + job 10% + wrap 8% = 48% AMBER · reserve 15% ring-fenced · "
+    # ---- ds-023 BAND fixtures (Dave #36). ⚠ Band WORDS must match the table or the mis-read
+    # check fires and the fixture proves the wrong thing: 45–59 AMBER, 60+ RED.
+    ("ds-023: 45 is the BAND FLOOR — passes (FLIPPED from #34's FAIL, Dave #36)",
+     "pre-flight: fill 32% + job 5% + wrap 8% = 45% AMBER · reserve 15% ring-fenced\n", False),
+    ("ds-023: 57 IN the band, UNMARKED — passes (the twice-flipped control)",
+     "pre-flight: fill 40% + job 12% + wrap 5% = 57% AMBER · reserve 15% ring-fenced\n", False),
+    ("ds-023: 60 is the line and is LIVABLE — passes",
+     "pre-flight: fill 40% + job 12% + wrap 8% = 60% RED · reserve 15% ring-fenced\n", False),
+    ("ds-023: 62 over the line, UNMARKED — must FAIL",
+     "pre-flight: fill 42% + job 12% + wrap 8% = 62% RED · reserve 15% ring-fenced\n", True),
+    ("ds-023: 62 over the line but MARKED — allowed, warns not fails",
+     "pre-flight: fill 42% + job 12% + wrap 8% = 62% RED · reserve 15% ring-fenced · "
      "RESERVE SPEND — forked to Dave\n", False),
-    # ★ RULED BY DAVE #34: 45 is AMBER, so 45 itself FAILS. This fixture FLIPPED — it was
-    # written as "allowed" at enactment and is the evidence that the one-point slack closed.
-    ("ds-023: at the ceiling exactly (45) — Dave #34 ruled this FAILS",
-     "pre-flight: fill 32% + job 5% + wrap 8% = 45% AMBER · reserve 15% ring-fenced\n", True),
+    ("ds-023: 70 beyond the marked tolerance, UNMARKED — must FAIL (>63 UNRULED)",
+     "pre-flight: fill 50% + job 12% + wrap 8% = 70% RED · reserve 15% ring-fenced\n", True),
 ]
 
 
@@ -1471,23 +1574,64 @@ def selftest_preflight():
                         "passed — the fence has silently become a fourth addend (runbook § Half "
                         "0b anti-false-fix 1)")
 
-    # ---- ds-023 (#34). The FIXTURES above prove the ceiling FAILS and PASSES in the right
-    # places. These prove the two things a pass/fail table cannot see: that the escape hatch
-    # leaves a RECEIPT rather than silence, and that the stop line is actually PUBLISHED.
-    marked = ("pre-flight: fill 30% + job 10% + wrap 8% = 48% AMBER · reserve 15% ring-fenced · "
+    # ---- ds-023, AS RE-STATED BY DAVE #36. The FIXTURES above prove the band passes and fails
+    # in the right places. These prove the three things a pass/fail table cannot see: that the
+    # escape hatch leaves a RECEIPT rather than silence, that the stop line is PUBLISHED, and
+    # ★ that marking a stamp which never needed marking produces NO receipt.
+    #
+    # ⚠ THIS BLOCK MOVED FROM 48% TO 62% AT #37, AND THE MOVE IS THE POINT. Under the #31
+    # enforcement, 48% was "over the ceiling" and had to carry a receipt — for a spend that was
+    # never over budget. That is the manufactured under-pricing #36 found. 48% is now simply IN
+    # the band, and the receipt machinery starts where Dave actually put the line: past 60.
+    marked = ("pre-flight: fill 42% + job 12% + wrap 8% = 62% RED · reserve 15% ring-fenced · "
               "RESERVE SPEND — forked to Dave\n")
     f_, w_, n_ = check_preflight(marked, label="fixture")
     if f_:
-        failures.append(f"ds-023: a MARKED reserve spend failed ({f_}) — a ceiling with no "
+        failures.append(f"ds-023: a MARKED over-line spend failed ({f_}) — a line with no "
                         f"declared way past it gets worked around by under-pricing the job, "
                         f"which corrupts the only honest number in the stamp")
-    if not any("RESERVE SPEND" in x for x in w_):
-        failures.append("ds-023: a marked reserve spend passed SILENTLY — the marker is a "
+    if not any("RESERVE SPEND" in x or "forked to Dave" in x for x in w_):
+        failures.append("ds-023: a marked over-line spend passed SILENTLY — the marker is a "
                         "receipt, and a receipt nobody emits is not a receipt. Dave must be "
-                        "able to see, later, that the ceiling was crossed deliberately")
+                        "able to see, later, that the line was crossed deliberately")
     if not any("STOP AT 52%" in x for x in w_):
-        failures.append(f"ds-023: the over-ceiling path did not publish the stop line "
+        failures.append(f"ds-023: the over-line path did not publish the stop line "
                         f"(expected 'STOP AT 52%' = {HARD_STOP} − an 8%% wrap), got {w_}")
+
+    # ★ THE ANTI-HABIT BITE, NEW AT #37 — the direct test of the defect #36 found. A stamp that
+    # is comfortably INSIDE the band must produce NO receipt even if it carries the marker,
+    # because a gate that accepts receipts for non-events teaches sessions to mark everything,
+    # and a marker that appears on every wrap has re-dialled the line by habit rather than by
+    # ruling. Under the #31 enforcement this exact stamp emitted a warning; that was the bug.
+    in_band_marked = ("pre-flight: fill 30% + job 10% + wrap 8% = 48% AMBER · reserve 15% "
+                      "ring-fenced · RESERVE SPEND — forked to Dave\n")
+    f_, w_, _n = check_preflight(in_band_marked, label="fixture")
+    if f_:
+        failures.append(f"ds-023: an IN-BAND stamp (48%) failed ({f_}) — 45–60 is Dave's "
+                        f"preferred band and must pass clean")
+    if any("RESERVE SPEND" in x or "forked to Dave" in x for x in w_):
+        failures.append(f"ds-023: an IN-BAND stamp (48%) emitted an over-line receipt ({w_}). "
+                        f"THIS IS THE #36 DEFECT ITSELF — the gate charging a receipt for a "
+                        f"spend that was never over budget. 48 is inside 45–60; nothing to "
+                        f"declare")
+
+    # ★ THE UNDER-PRICING BITE, added #37 AFTER A MUTATION SURVIVED. Deleting the below-band
+    # branch entirely (`if total < BAND_FLOOR` -> `if total < 0`) left every other ds-023
+    # assertion green — so the one branch that guards against CHRONIC UNDER-PRICING, which is
+    # the failure Dave's band exists to replace, was completely untested. An unread note is
+    # ds-024's class (an instrument shipped without its consumer); an unasserted one is worse,
+    # because it can be deleted without a single test going red.
+    f_, _w, n_ = check_preflight(
+        "pre-flight: fill 20% + job 8% + wrap 8% = 36% GREEN · reserve 15% ring-fenced\n",
+        label="fixture")
+    if f_:
+        failures.append(f"ds-023: a below-band stamp (36%) FAILED ({f_}) — under the band is "
+                        f"allowed, it is only noted")
+    if not any("BELOW" in x and "under-pricing" in x.lower() for x in n_):
+        failures.append(f"ds-023: a below-band stamp (36%) published no under-pricing note. "
+                        f"Dave's band replaced a regime that manufactured under-pricing; a "
+                        f"price that keeps landing under 45 is the symptom, and this note is "
+                        f"the only place the gate can say so. Got {n_}")
 
     # the stop line must appear on the PASSING path too — that is the session that still has
     # room to overrun, and the one every previous overrun happened in.
@@ -1507,26 +1651,41 @@ def selftest_preflight():
                         f"stop at {HARD_STOP} − 15 = 45), got {n2}. An expensive wrap MUST stop "
                         f"the session earlier; that is the entire mechanism")
 
-    # ---- the ruled numbers, pinned. Both are Dave's: 60 ratified outright, 45 confirmed on
-    # delegation. ⚠ ONE POINT OF SLACK IS KNOWN AND UNRESOLVED, and is flagged rather than
-    # quietly settled: the ruling says `fill + job + wrap <= 45`, but 45 reads AMBER on the band
-    # table (GREEN is < 45), so "must project to finish GREEN" and "<= 45" disagree by exactly
-    # one point. The LITERAL ruling is implemented (<= 45 passes). Dave's to close.
-    if (PREFLIGHT_CEILING, HARD_STOP) != (45, 60):
-        failures.append(f"ds-023: ceiling/stop = {(PREFLIGHT_CEILING, HARD_STOP)}, ruled (45, 60) "
-                        f"— 60 is Dave's ratified hard stop; 45 was confirmed on his delegation "
-                        f"#31 and made STRICTLY EXCLUSIVE by his own word #34 (45 is AMBER, so "
-                        f"45 fails). Re-dialling either is his, and updating this pin is part "
-                        f"of doing it")
-    # the boundary itself, bitten — this is the one-point slack, and it is the whole ruling
-    for total, want_fail in ((44, False), (45, True), (46, True)):
+    # ---- the ruled numbers, pinned. ALL THREE ARE DAVE'S, all from #36 except 60, which he
+    # ratified at #30 and re-affirmed at #36 as "the line" and livable. ⚠ THE ONE-POINT SLACK
+    # THAT SAT HERE FROM #34 IS GONE, and not because it was resolved — the question ("does 45
+    # pass or fail?") stopped existing when he re-stated 45 as the band's FLOOR. A contradiction
+    # can be dissolved by a better framing instead of settled by a threshold; that is the #36
+    # lesson and it is why this pin now carries three numbers rather than two.
+    if (BAND_FLOOR, HARD_STOP, MARKED_MAX) != (45, 60, 63):
+        failures.append(f"ds-023: band = {(BAND_FLOOR, HARD_STOP, MARKED_MAX)}, ruled "
+                        f"(45, 60, 63) by Dave #36 — 45–60 is the PREFERRED BAND for the FULL "
+                        f"price (front-load + context GM + job + wrap), 60 is the line and is "
+                        f"livable, 63 is tolerable when RARE and MARKED. Re-dialling any of "
+                        f"them is his, and updating this pin is part of doing it")
+    # ⚠ ABOVE 63 IS UNRULED — pinned as a KNOWN GAP so it cannot be quietly filled in later by
+    # an agent the way `>= 45 -> FAIL` was at #31. If Dave rules it, this assertion is what he
+    # is changing; until then the gate keeps the old escape-hatch shape and says so out loud.
+    if not any("UNRULED" in x for x in check_preflight(
+            "pre-flight: fill 50% + job 12% + wrap 8% = 70% RED · reserve 15% ring-fenced\n",
+            label="fixture")[0]):
+        failures.append("ds-023: a >63% pre-flight no longer names the UNRULED gap. That gap is "
+                        "load-bearing — #31 proved an agent will fill a silence with an "
+                        "enforcement Dave never picked. Say UNRULED, or get his ruling")
+    # the boundaries, bitten. 45 and 60 are INCLUSIVE passes; 61+ needs a mark; >63 is unruled.
+    for total, marked, want_fail in ((44, False, False), (45, False, False), (59, False, False),
+                                     (60, False, False), (61, False, True), (61, True, False),
+                                     (63, False, True), (63, True, False), (64, False, True)):
         stamp = (f"pre-flight: fill {total - 20}% + job 12% + wrap 8% = {total}% "
-                 f"{band_for(total)} · reserve 15% ring-fenced\n")
+                 f"{band_for(total)} · reserve 15% ring-fenced"
+                 + (" · RESERVE SPEND — forked to Dave\n" if marked else "\n"))
         f_, _w, _n = check_preflight(stamp, label="fixture")
-        got_fail = any("ceiling" in x for x in f_)
+        got_fail = any("ds-023" in x for x in f_)
         if got_fail != want_fail:
-            failures.append(f"ds-023 boundary: {total}% ceiling-fail={got_fail}, ruled "
-                            f"{want_fail} (Dave #34: strictly BELOW 45 — 45 is AMBER)")
+            failures.append(f"ds-023 boundary: {total}% (marked={marked}) band-fail={got_fail}, "
+                            f"ruled {want_fail} (Dave #36: {BAND_FLOOR}–{HARD_STOP} is the "
+                            f"PREFERRED band and passes clean; {MARKED_MAX} tolerable when "
+                            f"marked; 45 is a FLOOR, never a ceiling)")
     return failures
 
 
@@ -1680,6 +1839,58 @@ def selftest_gauge_continuity():
         if not any("the 2f split landed" in x for x in n_):
             failures.append("ds-022: the passing case said nothing — a check that is silent "
                             "when it succeeds cannot be distinguished from one that is dead")
+
+    # ★★ THE CLOCK BITES, #37. Everything above builds GM with a stratum and NO banner, so it
+    # exercises only the fallback. That is exactly how the real defect survived: the primary
+    # reader was never forced, so nobody found out it was broken. These three force it.
+    def _repo_bannered(td, banner_n, stratum_n, log_body):
+        os.makedirs(os.path.join(td, "notes"), exist_ok=True)
+        with open(os.path.join(td, "GOOD-MORNING.md"), "w", encoding="utf-8") as f:
+            # ⚠ The decoy is DELIBERATELY first in the file, mimicking GM's real header, where
+            # prose naming "★ LATEST" precedes the actual banner. The old unanchored regex
+            # returned #29 from a line of this exact shape on the live repo.
+            f.write("# Good morning\n\n> **read the chain — header + ★ LATEST + the LS "
+                    "delta** (#29→#36: eight consecutive).\n\n"
+                    f"> ## ★ LATEST — 2026-07-29 (Wed **morning #{banner_n}**, OPUS solo)\n\n"
+                    f"#### 2026-07-28 #{stratum_n}\nstratum body\n")
+        with open(os.path.join(td, "notes", "_GAUGE-LOG.md"), "w", encoding="utf-8") as f:
+            f.write(log_body)
+        return td
+
+    with tempfile.TemporaryDirectory() as td:
+        # (i) the banner is the SOURCE and the decoy prose must not win.
+        _repo_bannered(td, 34, 34, "# log\n\n#### 2026-07-28 #33\npost-mortem\n")
+        got = _current_session_no(open(os.path.join(td, "GOOD-MORNING.md"),
+                                       encoding="utf-8").read())
+        if got != 34:
+            failures.append(f"ds-022 clock: banner reader returned {got}, expected 34. If it "
+                            f"returned 29 it matched the DECOY PROSE — the #37 defect exactly: "
+                            f"match the blockquoted heading STRUCTURE, never the words")
+        f_, _w, _n = gauge_log_continuity(td)
+        if f_:
+            failures.append(f"ds-022 clock: banner and stratum AGREE at 34 and the record is "
+                            f"complete, but the check failed ({f_})")
+
+    with tempfile.TemporaryDirectory() as td:
+        # (ii) ★ THE SELF-HIDING CASE. Banner #36, stratum #35 — 2f was skipped, and #35's block
+        # is missing. Pre-#37 this reported GREEN because the clock came from the stratum and
+        # so validated #34. It must now fail on the DISAGREEMENT, independently of the block.
+        _repo_bannered(td, 36, 35, "# log\n\n#### 2026-07-28 #34\npost-mortem\n")
+        f_, _w, _n = gauge_log_continuity(td)
+        if not any("did not run" in x for x in f_):
+            failures.append("ds-022 clock: banner #36 vs stratum #35 did not fail. This is the "
+                            "#37 finding itself — an auditor taking its clock from the artefact "
+                            "it audits freezes at the last compliant session and reports GREEN "
+                            "forever. The disagreement IS the signal that step 2f was skipped")
+
+    with tempfile.TemporaryDirectory() as td:
+        # (iii) and the fallback must still work when there is genuinely no banner, or every
+        # pre-#37 fixture above silently stops testing anything.
+        _repo(td, 34, "# log\n\n#### 2026-07-28 #33\npost-mortem\n")
+        if _current_session_no(open(os.path.join(td, "GOOD-MORNING.md"),
+                                    encoding="utf-8").read()) != 34:
+            failures.append("ds-022 clock: with no banner present the stratum fallback did not "
+                            "fire — a degraded path that stops working is worse than none")
 
     with tempfile.TemporaryDirectory() as td:
         _repo(td, 34, "# log\n\n#### 2026-07-28 #31\npost-mortem\n")

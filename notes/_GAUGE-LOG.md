@@ -303,3 +303,44 @@ step 2f (`113eefc`) yet wrote no stratum of its own; its gauge story lives only 
 > **consult-receipts #34:** "ds-021 ds-022 ds-023 throttle dual unit mover fold stop line" → gm:C4 · gm:HDR · gm:LATEST · ls:DELTAS · lane:lane-1-memento *(⚠ **the ledger itself is NOT indexed** — the three ds- entries needed direct `awk`; the ds-016 shape, #35's to fix.)*
 > **★ THE USAGE DATA PRODUCED ITS OWN EVIDENCE (#35's job):** **`A:U` — §A never opened, a first**; C1–C5 all U. **~9,600 tape of GM untouched that the pre-#33 contract charged in full.**
 
+#### META — HOLES DECLARED AT #37 for #35 and #36, and WHY NOTHING CAUGHT THEM
+
+> ⚠ **These are HOLE markers, not reconstructed post-mortems, and the distinction is the whole
+> point.** #37 could have written plausible blocks for both sessions from their dossiers and LS
+> deltas. That would have been a forgery: a post-mortem written by a later session from the
+> record is not the same evidence as one written in the moment by the session that paid the
+> cost, and this file is the dataset the throttle is re-derived from. **A HOLE is a positive
+> claim that we know the gap is there** — it keeps `n` honest. The substantive narrative for
+> both sessions is NOT lost; it is pointed at below.
+>
+> **HOLE #35 — no post-mortem block was written here. A HALF-DONE 2f SPLIT: the GM §C stratum
+> WAS written (`#### 2026-07-29 #35`), the `_GAUGE-LOG.md` half was not.** ⚠ This is exactly the
+> state `roll_2f` was built at #34 to make impossible — *"what `roll_2f` makes impossible rather
+> than merely discouraged: a half-done split"* — and it occurred in the very next session.
+> Narrative: `_LIVE-STATE.md` § ⏱ PRIOR DELTA #35 · `_DECISION-HISTORY/2026-07-29-reading-the-usage-series.md`.
+>
+> **HOLE #36 — no post-mortem block AND no §C stratum.** Neither half of the 2f split ran.
+> Narrative: `GOOD-MORNING.md` § ★ LATEST #36 · `_LIVE-STATE.md` § ⏱ LATEST DELTA #36 ·
+> `_DECISION-HISTORY/2026-07-29-the-ceiling-was-never-a-ceiling.md`.
+>
+> **★★ WHY THE BLOCKING GATE DID NOT FIRE — the finding, measured at #37.**
+> `gauge_log_continuity` is BLOCKING and has been since #34. It read this session's number from
+> the **§C stratum key** — which is written by **ritual step 2f, the very step whose omission it
+> exists to catch.** #36 skipped 2f, so the clock never advanced past #35; the check therefore
+> asked *"does #34 have a block?"*, found one, and announced **"the 2f split landed"** while #35
+> and #36 were both missing from this file. **It is not an off-by-one that corrects itself — the
+> clock freezes at the last compliant session and the check reports GREEN for as long as the
+> lapse continues.** ⇒ **An auditor may not take its clock from the artefact it audits.**
+> FIXED at #37: `_current_session_no` now reads the ★ LATEST banner (step 2c/2d) and treats the
+> stratum as a CROSS-CHECK, with banner-vs-stratum disagreement raised as a FAIL in its own
+> right, because that disagreement *is* the signal that 2f was skipped.
+>
+> ⚠ **STILL OPEN, and Dave's:** ds-021(c) requires one **`tape`/`bill` pair per wrap**, with the
+> constant going to him to rule at **n≥4**. Measured at #37: **this file has never contained a
+> single pair** (`grep -i bill` → 0 hits, all sessions). `TAPE_TO_BILL = 1.57` is still the
+> original **n=2** from #30. ★ **The reason is structural, not laziness:** `bill` is what the
+> window CHARGES, and no session can observe that from inside itself — the same wall that left
+> the boot unmeasured for 36 sessions. **A number the instrument cannot produce will be supplied
+> by estimate forever.** Proposal, HIS to rule: `bill` and session fill become **Dave-supplied
+> inputs like the pace panel**, not agent-derived — see `_DS-IMPROVEMENTS.md` ds-023/ds-025.
+
