@@ -868,3 +868,15 @@ and Desktop stops trying — the smallest change, keeps it tracked, loses nothin
 
 Author's lean: **(d)** — it is one line, changes no convention, and the diff it suppresses was never
 readable anyway. But this is a repo-convention call, so it is Dave's.
+
+## ★ FLOATED 2026-07-29 — sub-agents vs worker lanes (Dave, after #35's wrap: "we never had the chat about sub-agents")
+
+**Note:** `notes/2026-07-29-subagents-vs-worker-lanes.md` (FLOATED; ds-017 path — note + this entry, no GM/§C edit).
+
+**The distinction nobody here has drawn:** a **worker lane** (own window, briefed slice, returns FILES + a commit + a receipt) is modelled, gated and proven — `_lanes.json`, `lane_routing_check` BLOCKING, conductor-commits, DIVVY PLAN. An **in-session sub-agent** (own context, discarded, returns **a message**) has **no model here at all**. ★ **The constraint that matters: a lane hands back artefacts you can verify; a sub-agent hands back prose you cannot — structurally a banner**, against a seven-session streak of *verify against `git log`, never a banner*. Candidate rule if it is ever adopted: **a sub-agent may do the WORKING, never the JUDGING.**
+
+**Why it is live:** #35 spent six trim rounds inside the window whose quality they protected — textbook *context receives conclusions, not working* (the JIT note's doctrine, applied to sessions instead of tools). A sub-agent is **a way to buy a context window without buying a session.**
+
+**Measured floor, n=1, NOT a constant:** a lane costs ~4–6 pts of the conductor's window before it saves anything; #35's whole build was ~12 ⇒ below ~15 pts of mechanical work, delegation loses.
+
+⚠ **PREREQUISITE, and the recommendation: do not rule sub-agents until the BOOT is measured.** If ~17 pts of every window is fixed overhead, that number alone decides whether a fresh context is cheap or ruinous — and no session here has ever measured it. Also unapplied: the pace check (§ ★★ THE THIRD TIER) already decides delegation posture and has never been used for one.
