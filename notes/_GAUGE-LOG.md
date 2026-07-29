@@ -292,3 +292,14 @@ step 2f (`113eefc`) yet wrote no stratum of its own; its gauge story lives only 
 > it silently, precisely so it never becomes a free skip for ritual step 2f. If YOU write no
 > stratum, the honest marker is `HOLE #N — <why>`. `ABSENT` is only for gaps nobody can account
 > for, and after #34 there should never be a new one.)*
+
+#### 2026-07-28 #34
+
+> **pre-flight:** fill 20% + job 18% + wrap 10% = 48% — AMBER · reserve 15% ring-fenced · **RESERVE SPEND — forked to Dave** *(declared IN ADVANCE — "that is over the 45 ceiling I'm enacting for you in this very window"; Dave: "I can live with 48 if it only crawls over 60." **Job 1 was DROPPED at the door, not squeezed in** — the ceiling working on the window that built it. ⚠ **boot UNMEASURED, marked an estimate, never dressed as a measurement.**)*
+> **CLOSED: 🟡 AMBER ~60%.** The 48 held through the wrap; a SECOND spend (the 5b addendum, priced out loud at ~6 pts **before** starting) took it to ~60. ★ **Two true things at once:** the job as priced did NOT overrun — first in five — **and** the session still closed at ~60, because a second job was added after the first shut. **Both belong in the dataset;** recording only the flattering half is how #29's cause was lost.
+> **★ THE LESSON: three defects, one shape.** A unit error, a missing log entry, a mis-read reserve — **every one a rule that existed, was correct, was ratified, and that nothing checked.** Enacted together because doing one and leaving two would have been the fourth demonstration of the same thing. ⚠ **The enforcement bit its author twice on the way in**, neither found by re-reading code.
+> **section-usage #34 (observed, self-report):** GM HDR:C LATEST:C PRIOR:R DOFIRST:R A:U C1:U C2:U C2b:U C3:U C4:U C4b:U C5:U STRATA:C · LS HDR:U LANES:U SPIN:U DELTAS:C WEBFONT:U LIVE:U LIFECYCLE:U DEAD:U OPEN:U TARGETS:U SPINOFFS:U
+> **section-sizes #34 (tiktoken cl100k_base — `tape`):** GM HDR:1417 LATEST:1025 PRIOR:858 DOFIRST:2554 A:4208 C1:842 C2:1157 C2b:484 C3:181 C4:1788 C4b:256 C5:84 STRATA:8 · LS HDR:255 LANES:872 SPIN:1794 DELTAS:3321 WEBFONT:604 LIVE:4928 LIFECYCLE:973 DEAD:432 OPEN:4361 TARGETS:577 SPINOFFS:444 · totals GM:14862 LS:18561
+> **consult-receipts #34:** "ds-021 ds-022 ds-023 throttle dual unit mover fold stop line" → gm:C4 · gm:HDR · gm:LATEST · ls:DELTAS · lane:lane-1-memento *(⚠ **the ledger itself is NOT indexed** — the three ds- entries needed direct `awk`; the ds-016 shape, #35's to fix.)*
+> **★ THE USAGE DATA PRODUCED ITS OWN EVIDENCE (#35's job):** **`A:U` — §A never opened, a first**; C1–C5 all U. **~9,600 tape of GM untouched that the pre-#33 contract charged in full.**
+

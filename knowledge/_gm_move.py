@@ -53,9 +53,14 @@ OPS — a JSON list (via `--ops <file|->`), or the `Transaction` API:
       ds-022, ruled #31 / confirmed #34. The ritual step-2f stratum SPLIT, made mechanical:
       the post-mortem half goes to `notes/_GAUGE-LOG.md`, the commit-state half to
       `_GM-ARCHIVE.md`, and NEITHER can happen without the other. Both destinations are
-      APPENDED at true EOF — there is deliberately no anchor argument, because #27's block
-      was prepended by a hand-written insert and the append-only contract is easier to keep
-      than to remember. Refuses: an empty half · a duplicate session key · a key later than
+      NOT symmetrical, and the asymmetry is the contract (#34): the LOG is APPENDED at true
+      EOF and takes NO anchor argument, because #27's block was prepended by a hand-written
+      insert and the mistake must not be expressible. `_GM-ARCHIVE.md` is NEWEST-FIRST, so it
+      REQUIRES `archive_at` and refuses to guess — an EOF append there would bury the newest
+      commit-state under every older batch with the receipt still reading green.
+      ⚠ CORRECTED #35: this paragraph said BOTH destinations were appended at EOF while the
+      code has carried `archive_at` + `_archive_insert` since #34 — prose staler than its own
+      code, found by reading the implementation rather than the docstring. Refuses: an empty half · a duplicate session key · a key later than
       the one being rolled (chronological) · a post-mortem with no `#### <date> #<N>` key.
 
   Anchors: a string = literal line prefix · {"regex": "^..."} = regex, MUST begin with '^'.

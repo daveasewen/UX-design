@@ -1,5 +1,71 @@
 # GOOD-MORNING — banner archive
 
+## Batch 2026-07-29 #35 — rolled by the USAGE-SERIES-READER wrap (Opus solo, Dave live) — moves via `knowledge/_gm_move.py`
+
+### ⬛ OFFLOADED #35 — §C·2b · §C·3 · §C·4b · §C·5, VERBATIM, on Dave's ruling
+## 4b. ★ QUEUED: button-states finesse pass (Dave 2026-07-22, "not now — follow up") *(was §C·3b — the wave-1 briefs/receipts + prior deltas point here under that number)*
+Full brief in `_FUTURE-STATE.md` §button-states-finesse. Headlines: **Legacy state-mechanism fidelity
+question** (as-built may be OPACITY, we render colours — VERIFY against source, don't flip on
+recollection; "Legacy shouldn't change" = the design is frozen, our reproduction of it can be
+corrected) · **Mono+Console pressed = darker pressed fill** (ties to the open tertiary/quaternary
+pressed-token gap; B-D7's softer darken makes this more visible) · **SC keeps the opacity option
+open, probably won't change** · **loader ATOM for all loading states** (registry group candidate #2;
+Button's `.spin` = first consumer). Theme posture, Dave: Legacy frozen; Mono/SC/Console all in
+design development. Natural shape: one session = fidelity check + pressed-tint tuner (review HTML,
+rule live) + loader accretion.
+
+## 5. Parked (unchanged)
+Legacy hex seeding + provenance-gate flip · Console/Supercharge chromatic palettes · T9 review ·
+Sutherland field test · full-review backlog (`_REVIEW-SIGNOFF.md`) · `_FUTURE-STATE` items ·
+spot-illustration/empty-state icon set (`_ICON-GAPS.md`, wave-1's only gap).
+
+## 2b. WAVE-1 RULINGS 1–7 (unchanged, rule with the above)
+1. **Form-label weight** — the `.t-cm-label` composite renders 400; gated Input-fields labels are
+   16/500. Rule 400 (Input-fields migrates later) or mint a 500 form-label composite (one type.css
+   line + binding).
+2. **`input-error` null slot** — the ADR-0010 slot you anticipated is NOT declared; all four form
+   components bind semantic `rag/error` directly. Declare the null slot?
+3. **Toast dark glyphs** — coloured shapes on the ELEVATED NEUTRAL ground (all ≥3.55); the
+   white-shape dark ruling was made on TINTED grounds. Confirm or extend.
+4. **Modal family fold** — Modal-lightbox extends Modals as a separate snippet; fold into one
+   modal-family snippet later, or keep split + a dialog-mechanics partial when a group accretes?
+5. **Figure vouch** — figure-4/5/6 composites still "PREPARED, awaiting vouch"; vouching flips
+   Amount-display candidate→canon + hardens Stat-card's value type.
+6. **★ Field-family accretion** (ADR-0013 ruling 3, cross-lane OBSERVED duplication — the
+   wave's standout): field chrome (hover fill · focus black border + 4px stroke · error stroke)
+   now consumed by copy across ≥7 files (Input-fields, Dropdown, Search-field + A's four +
+   Account-selector). Accrete `field-family` as registry group #2 next wave?
+7. **Showroom Overlays split** — B proposes Overlays (Drawer/Popover/Lightbox/Modals/Tooltip) +
+   Data-display buckets; wave 1 filed into existing buckets. Re-bucket?
+   *(Minor, flag-if-wrong: mixed-size idiom = local `--phys-size` override, registry-inscribed;
+   Secure-entry holds figure-3/24 in its 40px cells (A-Q3); fl-summary ≈ Alert → the dedup pass (A-Q4);
+   linked Stat-card variant awaits the press/link posture question (B-Q6).)*
+
+## 3. ★ THE STANDING EYEBALL SET (NON-BLOCKING — your "foundations first" ruling; pin-comments
+now live in every showroom pane, so it's async)
+**(a) B-D7 motion:** Button/Modals presses calm down · Progress-tracker scale press + dots↔line
+collapse through 520px · Icon-button identical · `#theme=legacy`/`#theme=supercharge` = colour-only.
+**(b)** SC dark sheet `reviews/SC-DARK-MODE-2026-07-22-v1.REVIEW.html` + 4 held whites + Console
+radius px + bigplay. **(c) NEW from Phase-2:** all 24 new components across 4 themes × light/dark — the Charts 4 double
+as the dataviz sign-off (§C·2).
+
+*(NOT superseded and NOT trimmed — **offloaded**. Never cited in eleven sessions of `section-usage` testimony (`_gm_usage.py --history`); the archive is IN the memento retrieval corpus, so these remain reachable by `_memento_search.py` and are simply no longer CARRIED. Register + reason: `GOOD-MORNING.md` §C·4 ⬛ DEFERRED REGISTER. Enacted at #35's wrap because the compactable block could not be met by trimming #35's own prose — six rounds, diminishing each time.)*
+
+
+> **COMMIT STATE (stamped 2026-07-28 21:5x BST from `date`).**
+> **Context gauge at authoring: 🟡 AMBER ~60% (ESTIMATE — the boot term is unmeasurable from inside the window and is NOT defaulted). Figures in `tape`; `bill` derived ×1.57 PROVISIONAL, per the ds-021 this session built.**
+> **ONE commit.** `knowledge/_capture_gate.py` (ds-021 units + ds-023 ceiling + ds-022 continuity check + 3 new selftests) · `knowledge/_gm_move.py` (`roll_2f` + archive-contract split + 9 bites) · `knowledge/_RUNBOOK-context-gauge.md` (§ ★ THE UNITS · § ds-023 THE CEILING) · `knowledge/_RUNBOOK-capture-ritual.md` (step 2f rewritten to run the op) · `knowledge/_DS-IMPROVEMENTS.md` (ds-021/022/023 → ENACTED) · `_DECISION-HISTORY/2026-07-28-enacting-the-throttle-three-rules-nothing-checked.md` (NEW) · `GOOD-MORNING.md` (#34 banner · header re-stamped in tape/bill · #32 banner + #33 stratum rolled via the mover) · `_GM-ARCHIVE.md` (Batch #34) · `_LIVE-STATE.md` (#34 delta · #31 rolled) · `_LIVE-STATE-ARCHIVE.md` · `notes/_GAUGE-LOG.md` (#33 post-mortem, first live `roll_2f`) · `knowledge/_memento-index.json` (step 2g, LAST). Dave pushes via GitHub Desktop, Desktop closed during the commit.
+
+> ## ★ PRIOR — 2026-07-28 (Tue **evening #33**, OPUS conducting + ONE SONNET WORKER LANE, Dave live — ★★ **THE EAGER READ CHAIN IS CUT: 34,094 → 3,344 tk cl100k, 90%** · ★★ **`gm:A` SUBDIVIDED: 11 records + a ROUTER** · ★ **M10 RE-POINTED** · 🔴 declared overrun, on Dave's word): **"The contract could not save a token it had already spent."**
+> **★ THE ARC IS IN THE DOSSIER — `_DECISION-HISTORY/2026-07-28-cutting-the-eager-read-chain.md`. Read it, do not reconstruct.** State lines only below.
+> - **★★ ENACTED — chain + door (build 72/72 exit 0).** Contract: **header → ★ LATEST → the ⏱ LATEST delta**; §A/§C stay in the file, reached by `_memento_search.py`. **3,487 tk cl100k / 2.6 pts**, from **34,094 / 26.4** — verified by two independent code paths. `gm:A` was ONE 4,208-tk atom (**a coarse door is not retrieval**) → now 11 children 66–754 tk + a 382-tk **ROUTER**, summing exactly to the old whole. Receipt: `notes/_receipts/2026-07-28-a-subdivision-worker.md`.
+> - **★ M10 RE-POINTED; the 28,000 trigger DISARMED.** It measured GM+LS whole — a chain nobody will read. Now measures the real chain **and publishes the CORPUS beside it always** (the cut **deferred** 34K, did not delete it). The trigger would have been satisfied **by redefinition, not achievement**, and a 28,000 block on a 3,487 chain is ds-024's exact class. Numbers AGENT-DERIVED + ADVISORY → §C·4.
+> - **★ THREE CORRECTIONS, none from re-reading code** (seventh consecutive session): over-coupled the measurement · **wrote a bite matching a phrase two messages shared**, so a fat-§A fixture "warned" a 60-tk chain · **my own brief quoted a `--fetch` WRAPPER byte count** (52 B), which the worker flagged rather than chased. The ruled-value pin fired on my constant change and **was right to** — recorded, not flipped.
+> - **★ THE EXIT CHECK EARNED ITS PLACE.** #31's rolling banner carried **ds-021/022/023 + the veto window with NO standing home** (grep = 0 for all four, measured not assumed). Copied to §C·4 **before** the roll. ⚠ Also: mover says §C 161 vs **warn 150 / block 225** — *"warn ≠ block"* — while GM prose says "AT CAP, must DISPLACE". **Prose stricter than its own gate**, the documented class.
+> - **⬛ OPEN, Dave's:** the **M10 numbers** + whether 28,000 stays disarmed · **#31's three picks, THIRD session unenacted, veto open** · **should usage testimony follow the door to per-subsection?** (#34 — door now finer than the instrument; ids minted in `GM_A_SUBVOCAB`) · **the `{17}`-literal class** — a selftest reporting a number it does not compute; instance fixed, **siblings UNSWEPT** · everything on #32's list below, untouched.
+>
+>
+
 ## Batch 2026-07-28 #34 — rolled by the THROTTLE-ENACTMENT wrap (Opus solo, Dave live) — moves via `knowledge/_gm_move.py`, and the 2f split via its new `roll_2f` op. This session ENACTED all three of #31's delegated picks: ds-021 (units named `tape`/`bill`, caps bind on bill, three homes) · ds-022 (`roll_2f` + BLOCKING N−1-or-HOLE continuity check) · ds-023 (pre-flight ceiling 45 + stop line 60 − priced wrap). Dossier: `_DECISION-HISTORY/2026-07-28-enacting-the-throttle-three-rules-nothing-checked.md`. EXIT CHECK: #32's lessons live in ds-024 + its own dossier before this roll.
 
 > **COMMIT STATE (stamped 2026-07-28 from `date`).**

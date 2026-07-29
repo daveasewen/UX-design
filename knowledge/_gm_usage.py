@@ -31,6 +31,7 @@ edit pair (M10's pattern). A missing/malformed stratum line now FAILS the wrap.
 
 Usage:  python3 knowledge/_gm_usage.py --sizes --session 23   # print the code-measured sizes line
         python3 knowledge/_gm_usage.py --check-line "<line>"  # validate a usage line (exit 1 on malformed)
+        python3 knowledge/_gm_usage.py --history              # #35: read the ACCUMULATED testimony as a series
         python3 knowledge/_gm_usage.py --selftest             # bites — every check proves it can FAIL
 """
 import os
@@ -44,6 +45,12 @@ CODES = ("U", "R", "C")
 
 # --- THE VOCABULARY — only copy. (id, line-START pattern). Order = document order.
 # GM: C1 deliberately starts at the `# §C` heading itself so the queue preamble has an owner.
+# ⬛ RETIRED #35 (2026-07-29) on Dave's ruling: C2b · C3 · C4b · C5 were OFFLOADED VERBATIM to
+# `_GM-ARCHIVE.md` — never cited in eleven sessions of testimony, and the archive IS in the
+# retrieval corpus, so they stay reachable and are simply no longer carried. Their ids survive in
+# the historical `section-usage` lines, where `usage_streaks` reports them as `retired` — which is
+# why the #35 reader was built to tolerate ids the vocabulary no longer knows. Register (what was
+# offloaded, where, and that `C4b` is still LIVE WORK): `GOOD-MORNING.md` §C·4 ⬛ DEFERRED REGISTER.
 GM_VOCAB = (
     ("HDR",     None),  # implicit: file start → first explicit marker
     ("LATEST",  re.compile(r"^>\s*##\s*★\s*LATEST\b")),
@@ -52,11 +59,7 @@ GM_VOCAB = (
     ("A",       re.compile(r"^#\s*§A\b")),
     ("C1",      re.compile(r"^#\s*§C\b|^##\s*1\.\s")),
     ("C2",      re.compile(r"^##\s*2\.\s")),
-    ("C2b",     re.compile(r"^##\s*2b\.\s")),
-    ("C3",      re.compile(r"^##\s*3\.\s")),
     ("C4",      re.compile(r"^##\s*4\.\s")),
-    ("C4b",     re.compile(r"^##\s*4b\.\s")),
-    ("C5",      re.compile(r"^##\s*5\.\s")),
     ("STRATA",  re.compile(r"^###\s*⏱\s*SESSION STRATA\b", re.I)),
 )
 # Any numbered queue heading must be registered above — `## 6.` is a structure change, refuse.
@@ -296,10 +299,192 @@ def validate_stratum(text):
     return issues
 
 
+# --- THE READER (#35) — the dataset accumulates; until now NOTHING read it ---------------
+# ds-024's exact class, and the instrument's own author wrote the consumer's absence into
+# the docstring above ("the dataset that answers LS-trim-vs-defer") without ever building
+# the thing that answers it. Eleven sessions of testimony (#23–#34) sat in `_GAUGE-LOG.md`
+# being FORM-checked one line at a time and never once read as a series.
+#
+# ★ WHAT CHANGED THE JOB, MEASURED #35: the brief said these sections were "~3,275 tape
+#   carried dead every window". They are NOT — #33 cut the read chain to
+#   header → ★ LATEST → the LS LATEST delta, and every id named below sits OUTSIDE it.
+#   The window cost was already banked. What the series actually shows is a RECORD
+#   question, not a window question: twelve sections nobody has cited in eleven sessions,
+#   still carried in `GOOD-MORNING.md` / `_LIVE-STATE.md`, still rolled, still gated.
+#
+# ★ THIS READER PROPOSES NOTHING. It publishes a measurement and names candidates.
+#   Whether a candidate is OFFLOADED (moved to the retrieval index, reachable, not carried),
+#   TRIMMED (it is duplicated somewhere durable, so the copy here is the redundant one) or
+#   KEPT is Dave's ruling — derivation governance, the engine never derives-and-promotes.
+# ⚠ FOUND AT #35's OWN WRAP, by the probe firing on the banner that describes it: detecting
+# testimony by the SUBSTRING `section-usage` refuses every blockquoted line that merely MENTIONS
+# it — and a banner announcing "eleven sessions of `section-usage` testimony" is prose, not
+# testimony. Same class as #33's bite matching a phrase two messages happened to share. The
+# marker is the `**section-usage #<N>` OPENING, which prose does not imitate; a line that opens
+# this way and then fails to parse is still a REFUSAL, so nothing is loosened, only aimed.
+USAGE_MARKER_RE = re.compile(r"^>\s*\*\*section-usage\b")
+HISTORY_SOURCES = (os.path.join("notes", "_GAUGE-LOG.md"), "GOOD-MORNING.md")
+
+# AGENT-PROPOSED, ADVISORY, AWAITING DAVE. Chosen to sit one below the smallest
+# never-consumed streak measured at #35 (6), so the headline names the settled cases and
+# not the marginal ones. ⚠ A threshold nobody ruled must never read as a ruling: the probe
+# publishes the FULL table whatever this is set to, so the number moves the headline only.
+DEFER_STREAK = 6
+DEFER_STREAK_STATUS = "AGENT-PROPOSED, ADVISORY — awaiting Dave (#35)"
+
+
+def usage_history(repo=REPO):
+    """Read EVERY `section-usage` line in the corpus as a SERIES.
+
+    Returns `(rows, refusals, notes)` — `rows` is `[(session_n, {id: code}), ...]` oldest
+    first, `refusals` is fatal (a line that looks like testimony and is not well-formed),
+    `notes` is everything observed that is not an error.
+
+    ⚠ IT REFUSES RATHER THAN SKIPS. A line containing `section-usage` that does not parse
+    is a REFUSAL, never a quiet omission: a reader that silently drops the lines it cannot
+    understand reports a cleaner history than the record contains, which is the
+    confident-false-inscription failure with extra steps.
+
+    ⚠ THE SAME SESSION APPEARS TWICE BY DESIGN — its stratum lives in `GOOD-MORNING.md`
+    until the next wrap's `roll_2f` moves it to the log. Identical duplicates are collapsed
+    silently; DISAGREEING duplicates are a REFUSAL, because one of the two is false and this
+    reader cannot know which.
+    """
+    rows, refusals, notes = {}, [], []
+    seen_src = {}
+    for rel in HISTORY_SOURCES:
+        path = os.path.join(repo, rel)
+        if not os.path.exists(path):
+            notes.append(f"history source missing: {rel} — UNREAD, not assumed empty")
+            continue
+        with open(path, encoding="utf-8") as f:
+            text = f.read()
+        for ln in text.splitlines():
+            if not USAGE_MARKER_RE.match(ln.strip()):
+                continue
+            m = USAGE_RE.match(ln.strip())
+            if not m:
+                refusals.append(f"{rel}: a `section-usage` line does not parse — "
+                                f"REFUSED, not skipped: {ln.strip()[:90]}")
+                continue
+            n = int(m.group(1))
+            testimony = {}
+            for group, blob in (("GM", m.group(3)), ("LS", m.group(4))):
+                for tok in blob.split():
+                    tm = TOKEN_RE.match(tok)
+                    if tm:
+                        testimony[f"{group}:{tm.group(1)}"] = tm.group(2)
+            if n in rows and rows[n] != testimony:
+                refusals.append(
+                    f"session #{n} testifies DIFFERENTLY in {seen_src[n]} and {rel} — "
+                    f"one of them is false and this reader cannot tell which. REFUSED.")
+                continue
+            rows[n] = testimony
+            seen_src[n] = rel
+    ordered = sorted(rows.items())
+    if ordered:
+        span = [n for n, _ in ordered]
+        gaps = [n for n in range(span[0], span[-1] + 1) if n not in rows]
+        if gaps:
+            notes.append(f"sessions inside the range with NO testimony at all: "
+                         f"{', '.join('#%d' % g for g in gaps)} — absent from the dataset, "
+                         f"which is a claim about the RECORD, not about those sessions")
+    return ordered, refusals, notes
+
+
+def usage_streaks(rows):
+    """Per section id: the sequence, the trailing unread-streak, and whether it was EVER cited.
+
+    Returns `{id: {"seq", "u_streak", "unknown", "ever_consumed", "sessions"}}`, ids in
+    vocabulary order with any retired id appended after them.
+
+    ⚠ UNKNOWN IS NEVER COUNTED AS UNREAD. An id absent from a session's line (a section
+    registered after that session testified) is `?`, and a `?` STOPS the streak instead of
+    extending it. The opposite convention — treating silence as an unread — would let a
+    reader manufacture the very evidence it is looking for. A count is not a measurement.
+    """
+    live = [f"GM:{i}" for i, _ in GM_VOCAB] + [f"LS:{i}" for i, _ in LS_VOCAB]
+    retired = []
+    for _, d in rows:
+        for k in d:
+            if k not in live and k not in retired:
+                retired.append(k)
+    out = {}
+    for key in live + retired:
+        seq = "".join(d.get(key, "?") for _, d in rows)
+        streak = 0
+        for ch in reversed(seq):
+            if ch == "U":
+                streak += 1
+            else:
+                break
+        out[key] = {
+            "seq": seq,
+            "u_streak": streak,
+            "unknown": seq.count("?"),
+            "ever_consumed": "C" in seq,
+            "sessions": len(seq),
+            "retired": key in retired,
+        }
+    return out
+
+
+def deferral_candidates(streaks, min_streak=DEFER_STREAK):
+    """ADVISORY. Sections never once CITED and unread for `min_streak` consecutive testified
+    sessions. Sorted longest-streak first. It names them; it does not say what to do."""
+    return sorted(
+        [(k, v) for k, v in streaks.items()
+         if not v["ever_consumed"] and v["u_streak"] >= min_streak and not v["retired"]],
+        key=lambda kv: (-kv[1]["u_streak"], kv[0]))
+
+
+def history_report(repo=REPO, min_streak=DEFER_STREAK):
+    """The published measurement — one text block, used by the CLI and by the gate probe."""
+    rows, refusals, notes = usage_history(repo)
+    if refusals:
+        return ("USAGE HISTORY — REFUSED, no table published:\n  "
+                + "\n  ".join(refusals)), rows, refusals
+    if not rows:
+        return ("USAGE HISTORY — no `section-usage` testimony found anywhere. UNMEASURED, "
+                "not assumed clean."), rows, refusals
+    st = usage_streaks(rows)
+    sessions = ", ".join("#%d" % n for n, _ in rows)
+    lines = [f"USAGE HISTORY — {len(rows)} sessions of testimony ({sessions})",
+             "  (U unread · R read · C cited · ? not yet registered — UNKNOWN, never an unread)",
+             f"  {'id':<14} {'oldest → newest':<{max(14, len(rows))}} {'U-streak':>8}  note"]
+    for k, v in st.items():
+        note = []
+        if v["retired"]:
+            note.append("RETIRED id — testified but no longer in the vocabulary")
+        if not v["ever_consumed"]:
+            note.append("NEVER CITED")
+        if v["unknown"]:
+            note.append(f"{v['unknown']} unknown")
+        lines.append(f"  {k:<14} {v['seq']:<{max(14, len(rows))}} {v['u_streak']:>8}  "
+                     + " · ".join(note))
+    cands = deferral_candidates(st, min_streak)
+    lines.append("")
+    if cands:
+        lines.append(f"  ⬛ CANDIDATES FOR DAVE — never cited in {len(rows)} sessions AND "
+                     f"unread {min_streak}+ running ({DEFER_STREAK_STATUS}):")
+        for k, v in cands:
+            lines.append(f"     {k:<14} unread {v['u_streak']} running, cited 0 times")
+        lines.append("  ⚠ The remedy is UNRULED. Three are open and they are not the same: "
+                     "OFFLOAD (move to the retrieval index — reachable, not carried) · "
+                     "TRIM (it is durably recorded elsewhere, so this copy is the redundant "
+                     "one) · KEEP (rarely consulted is not the same as not needed). "
+                     "This reader must never pick one.")
+    else:
+        lines.append(f"  ✓ no section is both never-cited and unread {min_streak}+ running.")
+    return "\n".join(lines), rows, refusals
+
+
 # --- selftest — every bite proves the check can FAIL (green control included) ------------
+# ⚠ re-pointed #35 with the vocabulary: C2b/C3/C4b/C5 were offloaded and retired, so a fixture
+# still naming them would test a vocabulary that no longer exists — the stale-fixture class.
 GOOD_USAGE = ("> **section-usage #23 (observed, self-report):** "
-              "GM HDR:C LATEST:C PRIOR:R DOFIRST:C A:C C1:C C2:R C2b:R C3:R C4:C C4b:R "
-              "C5:R STRATA:R · LS HDR:R LANES:C SPIN:R DELTAS:C WEBFONT:R LIVE:R LIFECYCLE:R "
+              "GM HDR:C LATEST:C PRIOR:R DOFIRST:C A:C C1:C C2:R C4:C "
+              "STRATA:R · LS HDR:R LANES:C SPIN:R DELTAS:C WEBFONT:R LIVE:R LIFECYCLE:R "
               "DEAD:R OPEN:R TARGETS:R SPINOFFS:R")
 
 
@@ -313,9 +498,9 @@ def selftest():
 
     bite("good line must validate", validate_usage_line(GOOD_USAGE) == [])
     bite("missing id must fire", any("no testimony" in i for i in
-         validate_usage_line(GOOD_USAGE.replace("C4b:R ", ""))))
+         validate_usage_line(GOOD_USAGE.replace("C4:C ", ""))))
     bite("unknown id must fire", any("unknown section id" in i for i in
-         validate_usage_line(GOOD_USAGE.replace("C4b:R", "C4b:R C9:R"))))
+         validate_usage_line(GOOD_USAGE.replace("C4:C", "C4:C C9:R"))))
     bite("illegal code must fire", any("illegal code" in i for i in
          validate_usage_line(GOOD_USAGE.replace("SPIN:R", "SPIN:X"))))
     bite("duplicate must fire", any("testified twice" in i for i in
@@ -331,17 +516,17 @@ def selftest():
         "MALFORMED" in i for i in validate_stratum(
             GOOD_USAGE.replace("SPIN:R", "SPIN:X") + "\n> **section-sizes #23 (t):** x")))
 
+    # ⚠ fixture re-pointed #35 — C2b/C3/C4b/C5 were offloaded and retired from the vocabulary.
     gm_fx = ["head", "> ## ★ LATEST — x", "> ## ★ PRIOR — x", "## ⬛ DO THIS FIRST",
              "# §A · ORIENTATION", "# §C · QUEUE", "## 1. strands", "## 2. batch",
-             "## 2b. wave", "## 3. eyeball", "## 4. enact", "## 4b. queued",
-             "## 5. parked", "### ⏱ SESSION STRATA"]
+             "## 4. enact", "### ⏱ SESSION STRATA"]
     spans, errs = split_sections(gm_fx, GM_VOCAB, _gm_unknown)
     bite("gm fixture splits clean", errs == [] and spans is not None
-         and spans["C5"] == (12, 13))
+         and spans["C4"] == (8, 9))
     _, errs = split_sections(gm_fx + ["## 6. surprise"], GM_VOCAB, _gm_unknown)
     bite("unregistered `## 6.` must refuse", any("unregistered numbered" in e for e in errs))
-    _, errs = split_sections([ln for ln in gm_fx if "## 3." not in ln], GM_VOCAB, _gm_unknown)
-    bite("missing GM marker must refuse", any("not found: C3" in e for e in errs))
+    _, errs = split_sections([ln for ln in gm_fx if "## 4." not in ln], GM_VOCAB, _gm_unknown)
+    bite("missing GM marker must refuse", any("not found: C4" in e for e in errs))
 
     ls_fx = ["head", "## 🛤 LANES — generated index", "## 🔀 SPIN-OFF LANE",
              "## ⏱ LATEST DELTA", "## ⏱ PRIOR DELTA",
@@ -427,6 +612,102 @@ def selftest():
          len(rows) == len(GM_VOCAB) + len(LS_VOCAB))
     bite("real-repo announces its method", bool(method))
 
+    # --- THE READER (#35) — bites -----------------------------------------------------
+    # ★ The positive ones are load-bearing (#32's lesson): a refusal-only suite survives a
+    # revert that deletes the reader entirely, because refusals still fire on a series that
+    # was never built. So the first bites assert a REAL candidate list off a real series.
+    _mk = lambda seqs: [(23 + n, {k: v[n] for k, v in seqs.items() if v[n] != "?"})
+                        for n in range(len(next(iter(seqs.values()))))]
+
+    st = usage_streaks(_mk({"GM:C3": "RRRUUUUU", "GM:HDR": "CCCCCCCC"}))
+    bite("reader: a never-cited run is counted", st["GM:C3"]["u_streak"] == 5
+         and st["GM:C3"]["ever_consumed"] is False)
+    bite("reader: GREEN CONTROL — a cited section is never a candidate",
+         st["GM:HDR"]["ever_consumed"] is True
+         and "GM:HDR" not in dict(deferral_candidates(st, 1)))
+    bite("reader: a long unread run that was EVER cited is not a candidate",
+         "GM:C4" not in dict(deferral_candidates(
+             usage_streaks(_mk({"GM:C4": "CUUUUUUU"})), 6)))
+    # ⚠ ids here must be LIVE vocabulary — `deferral_candidates` excludes retired ids by
+    # design, so a fixture naming an offloaded section tests the retirement path, not the
+    # boundary. C3 was offloaded at #35's wrap and this bite went red the moment it was.
+    bite("reader: BOUNDARY — streak one short of the threshold is NOT named",
+         dict(deferral_candidates(usage_streaks(_mk({"GM:C2": "RRUUUUU"})), 6)) == {}
+         and "GM:C2" in dict(deferral_candidates(
+             usage_streaks(_mk({"GM:C2": "RUUUUUU"})), 6)))
+    # ★ THE ONE THAT MATTERS MOST: silence must not manufacture the evidence being sought.
+    st_q = usage_streaks(_mk({"GM:C3": "UUU?UU"}))
+    bite("reader: UNKNOWN STOPS the streak, never extends it (a count is not a measurement)",
+         st_q["GM:C3"]["u_streak"] == 2 and st_q["GM:C3"]["unknown"] == 1)
+    bite("reader: an id in testimony but not in the vocabulary is RETIRED, not a candidate",
+         usage_streaks(_mk({"GM:GONE": "UUUUUUUU"}))["GM:GONE"]["retired"] is True
+         and dict(deferral_candidates(
+             usage_streaks(_mk({"GM:GONE": "UUUUUUUU"})), 1)) == {})
+
+    # file-level refusals — these need a repo shape, so build a throwaway one
+    import tempfile
+    _good = GOOD_USAGE.replace("#23", "#40")
+    with tempfile.TemporaryDirectory() as td:
+        os.makedirs(os.path.join(td, "notes"))
+        _log = os.path.join(td, "notes", "_GAUGE-LOG.md")
+        _gm = os.path.join(td, "GOOD-MORNING.md")
+        open(_log, "w", encoding="utf-8").write(_good + "\n")
+        open(_gm, "w", encoding="utf-8").write(_good + "\n")
+        r, ref, _n = usage_history(td)
+        bite("reader: the SAME session in both sources collapses silently",
+             ref == [] and len(r) == 1)
+        open(_gm, "w", encoding="utf-8").write(_good.replace("SPIN:R", "SPIN:U") + "\n")
+        _r, ref, _n = usage_history(td)
+        bite("reader: DISAGREEING duplicates REFUSE (one is false, and it cannot tell which)",
+             any("testifies DIFFERENTLY" in e for e in ref))
+        open(_gm, "w", encoding="utf-8").write("> **section-usage #41 (observed):** garbled\n")
+        _r, ref, _n = usage_history(td)
+        bite("reader: an unparseable testimony line REFUSES, never skips",
+             any("does not parse" in e for e in ref))
+        open(_gm, "w", encoding="utf-8").write(_good.replace("#40", "#43") + "\n")
+        _r, _ref, nts = usage_history(td)
+        bite("reader: a session with NO testimony inside the range is NAMED as a record gap",
+             any("#41, #42" in n for n in nts))
+        r0, ref0, n0 = usage_history(os.path.join(td, "nope"))
+        bite("reader: a missing source is UNREAD, never assumed empty",
+             r0 == [] and any("UNREAD, not assumed empty" in n for n in n0))
+
+    _prose = ("> **★ the usage data:** eleven sessions of `section-usage` testimony were read "
+              "as a SERIES — this line is PROSE and must not be mistaken for testimony")
+    with tempfile.TemporaryDirectory() as td2:
+        os.makedirs(os.path.join(td2, "notes"))
+        open(os.path.join(td2, "notes", "_GAUGE-LOG.md"), "w", encoding="utf-8").write(
+            GOOD_USAGE.replace("#23", "#50") + "\n")
+        open(os.path.join(td2, "GOOD-MORNING.md"), "w", encoding="utf-8").write(_prose + "\n")
+        r2, ref2, _n2 = usage_history(td2)
+        bite("reader: a BANNER MENTIONING `section-usage` is prose, not testimony (found #35)",
+             ref2 == [] and len(r2) == 1)
+        open(os.path.join(td2, "GOOD-MORNING.md"), "w", encoding="utf-8").write(
+            "> **section-usage #51 (observed):** garbled\n")
+        _r2, ref3, _n3 = usage_history(td2)
+        bite("reader: ...but a line that OPENS as testimony and fails to parse still REFUSES",
+             any("does not parse" in e for e in ref3))
+
+    # green control on the REAL repo — the series must read, and must still find the
+    # candidates #35 measured by hand before this code existed.
+    _rep, _rows, _refs = history_report(REPO)
+    bite(f"real-repo usage history reads clean (got: {_refs[:1]})", _refs == [])
+    bite("real-repo history covers every session that testified", len(_rows) >= 11)
+    _real = deferral_candidates(usage_streaks(_rows))
+    # ★ UPDATED #35, and the update is the evidence the reader worked: GM:C2b/C3/C4b/C5 were
+    # this list's first four names, Dave ruled them offloaded, and they now fall out of the
+    # candidate set because they are RETIRED rather than because anything cited them. The LS
+    # four are what remains owed.
+    # ⚠ LS:LIFECYCLE is deliberately NOT in this set: #35 CITED it (it is what the
+    # de-materialise ruling rests on), so the reader correctly drops it. A candidate list that
+    # kept it after a real citation would be measuring nothing.
+    bite("real-repo names the never-cited set that is still CARRIED",
+         {k for k, _ in _real} >= {"LS:DEAD", "LS:SPINOFFS", "LS:TARGETS"})
+    bite("real-repo: the #35 offloads have LEFT the candidate set (retired, not cited)",
+         not ({k for k, _ in _real} & {"GM:C2b", "GM:C3", "GM:C4b", "GM:C5"}))
+    bite("real-repo report publishes the remedy as UNRULED (it must never pick one)",
+         "The remedy is UNRULED" in _rep)
+
     if fails:
         print("[_gm_usage selftest] FAIL:")
         for f in fails:
@@ -448,6 +729,10 @@ def main(argv):
         if not issues:
             print("✓ well-formed (FORM only — honesty stays yours)")
         return 1 if issues else 0
+    if "--history" in argv:
+        report, _rows, refusals = history_report()
+        print(report)
+        return 1 if refusals else 0
     if "--sizes" in argv:
         session = argv[argv.index("--session") + 1] if "--session" in argv else "?"
         line, errors = sizes_line(session)

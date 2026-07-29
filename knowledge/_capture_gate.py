@@ -1141,6 +1141,67 @@ def index_freshness_check(repo):
     return fails, notes
 
 
+# #35: the usage HISTORY probe's tier. ADVISORY AT BIRTH, deliberately — the dataset it
+# reads is eleven sessions old and has never been read, so its first act must be to PUBLISH,
+# not to block a wrap on a threshold nobody has ruled. ★ PROMOTION TRIGGER, recorded here so
+# it cannot be lost the way ds-021/022/023 were for three sessions: promote to BLOCKING when
+# Dave rules the remedy for the standing candidate list (OFFLOAD / TRIM / KEEP, per id) — at
+# that point the check becomes "no section sits never-cited and long-unread without a
+# recorded ruling", which is enforceable. Flag + its selftest pin move only as a pair.
+USAGE_HISTORY_BLOCKING = False
+
+
+def usage_history_probe(repo):
+    """#35: READ the accumulated `section-usage` testimony as a SERIES, and say what it shows.
+
+    ★ WHY THIS EXISTS. `section_usage_probe` above FORM-checks one line per wrap and the
+    lines then accumulate in `_GAUGE-LOG.md` — where, for eleven sessions, NOTHING read them.
+    Its own docstring names the dataset as what LS-trim-vs-defer waits on; the waiting had no
+    end because no code ever looked. ds-024's class exactly: an instrument shipped without its
+    reader. This is the reader.
+
+    ⚠ IT PUBLISHES; IT DOES NOT PRESCRIBE. The remedies (OFFLOAD to the retrieval index /
+    TRIM as durably recorded elsewhere / KEEP) are Dave's, per derivation governance, and the
+    published text says so on every run.
+
+    ⚠ AND IT IS NOT A WINDOW-COST CLAIM. #33 cut the read chain to header → ★ LATEST → the LS
+    LATEST delta; every id this names sits OUTSIDE that chain and is no longer paid eagerly.
+    What it measures is RECORD cost — carried, rolled and gated prose nobody consults — which
+    is a real cost and a different one. Do not let the two be quoted as each other."""
+    issues, notes = [], []
+    try:
+        sys.path.insert(0, HERE)
+        import _gm_usage
+    except Exception as e:
+        issues.append(f"usage-history: _gm_usage.py unimportable ({e}) — the series is "
+                      f"UNREAD, never assumed clean")
+        return issues, notes
+    report, rows, refusals = _gm_usage.history_report(repo)
+    if refusals:
+        issues += [f"usage-history: {r}" for r in refusals]
+        return issues, notes
+    if not rows:
+        notes.append("usage-history: no testimony found — UNMEASURED, not assumed clean.")
+        return issues, notes
+    cands = _gm_usage.deferral_candidates(_gm_usage.usage_streaks(rows))
+    notes.append("usage-history: %d sessions of testimony read as a series "
+                 "(`python3 knowledge/_gm_usage.py --history` prints the full table)."
+                 % len(rows))
+    if cands:
+        notes.append("usage-history ⬛ %d sections NEVER CITED in %d sessions and unread %d+ "
+                     "running: %s. Remedy UNRULED (OFFLOAD / TRIM / KEEP — Dave's, not this "
+                     "gate's). Threshold %d is %s."
+                     % (len(cands), len(rows), _gm_usage.DEFER_STREAK,
+                        ", ".join(k for k, _ in cands), _gm_usage.DEFER_STREAK,
+                        _gm_usage.DEFER_STREAK_STATUS))
+    else:
+        notes.append("usage-history: no section is both never-cited and long-unread.")
+    notes.append("usage-history tier: %s (read from USAGE_HISTORY_BLOCKING — promotion "
+                 "trigger is Dave ruling the candidate list; flag + selftest pin move as a "
+                 "pair)." % ("BLOCKING" if USAGE_HISTORY_BLOCKING else "ADVISORY"))
+    return issues, notes
+
+
 def consult_receipt_probe(repo):
     """#25 (Dave, mid-flight — the KG forcing function, floated 2026-07-27, scoped into
     O2′ by him): the session stratum carries a `consult-receipts` line — the queries run
@@ -1251,6 +1312,9 @@ def wrap_checks(repo, today, lane=False):
         notes += n_
         i_, n_ = section_usage_probe(repo)      # #23 built · #24 BLOCKING (tier = this line)
         (fails if SECTION_USAGE_BLOCKING else warns).extend(i_)
+        notes += n_
+        i_, n_ = usage_history_probe(repo)      # #35 — the series READER, ADVISORY at birth
+        (fails if USAGE_HISTORY_BLOCKING else warns).extend(i_)
         notes += n_
         i_, n_ = consult_receipt_probe(repo)    # #25 — KG forcing function, ADVISORY at birth
         (fails if CONSULT_RECEIPT_BLOCKING else warns).extend(i_)
@@ -1926,6 +1990,14 @@ def selftest_growth():
             # file binds through it — so it gets the same pin as the caps it converts. ⚠ It is
             # PROVISIONAL at n=2 and firming it is a RULING, not a re-dial: when n>=4, the
             # constant goes to Dave and this pin moves with his word, not with the arithmetic.
+            # #35, the series reader. ADVISORY at birth BY DESIGN — a threshold nobody ruled
+            # must not block a wrap. Pinned so the flag and this line move as a PAIR: the
+            # promotion is Dave ruling the candidate list, never a quiet flip.
+            ("USAGE_HISTORY_BLOCKING", USAGE_HISTORY_BLOCKING, False,
+             "born #35 2026-07-29 — ADVISORY until Dave rules OFFLOAD/TRIM/KEEP per candidate"),
+            ("_gm_usage.DEFER_STREAK", __import__("_gm_usage").DEFER_STREAK, 6,
+             "born #35 2026-07-29 — AGENT-PROPOSED, one below the smallest measured "
+             "never-cited streak; moving it is Dave's, and the full table publishes regardless"),
             ("TAPE_TO_BILL", TAPE_TO_BILL, 1.57,
              "ds-021 enacted #34 2026-07-28 — GM's OWN measured pair (16,107 tape → 25,355 "
              "bill), deliberately NOT the 1.55 corpus average. PROVISIONAL at n=2"),
