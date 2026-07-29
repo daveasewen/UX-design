@@ -527,3 +527,36 @@ status: observed (all measurements from `_capture_gate.py --wrap`, `_gm_usage.py
 **⬛ ALSO RULED / OBSERVED:** three worker lanes reconciled and committed by the conductor (`58556af` {17}-literal sweep — one literal **LIVE-WRONG since written**, `500@12-16` vs the function's true `12-19` · `e1649fb` Lane B six opens · `5e783bc` Lane A region measurement) · **Lane B found OPEN 4 IS NOT AN OPEN** — ruled at #35, it is four-session-old enactment debt that has been asking for a decision it already has · **the FLOATED degradation note was READ for the first time**, three sessions after it was written, and it is **upstream of opens 1/2/3, not a peer of them** · ★ **every size figure #38 published is understated on a file byte-identical to the one it committed** (compactable 12,734 vs 11,955 · chain 4,801 vs ~4,400 · banner 4,521 vs 3,963) — it **declared RED honestly and got the honest number wrong**, reaching its final figure by ARITHMETIC instead of re-measuring the finished file. ⚠ **`_build_all.py` NO LONGER FITS ONE FOREGROUND CALL** — 72 steps, no `--only`/`--from`, ~3–4 min against a hard 45s sandbox cap, measured twice; GM's standing line saying it fits is FALSIFIED, and #39's commits rest on targeted per-step verification, declared.
 
 status: ruled (Dave's withdrawal of the block, the Friday mast, and his refusal of the feel-based derivation — this entry) + observed (all measurements from `_capture_gate.py --wrap/--selftest`, Lane A's receipt, and `tiktoken` this window; window spec from platform docs) · provenance: session #39 · 2026-07-29
+
+## ★ #41 — the chain file, and the 2f reframe (2026-07-29, Opus solo, Dave live)
+
+**RULED BY DAVE #41 — generate `_CHAIN.md`; do NOT move §A/§C.** Options put to him with the survey
+attached: the Friday brief's item 1 (move the sections out) versus a generated chain file. He chose
+the generator, plus *"MEMORY.md pointer + a STOP line at GM's top"* for the redirect.
+**WHY (his framing):** *"as soon as the context is loaded we have no working space, it's fundamental
+that we do this… our space is limited so lets do the small high impact things first to gain more
+space to tackle other bigger problems."*
+**WHY (the measurement):** the contract prices the chain at **3,838 tape**; #41's opener paid
+**28,653**. **`Read` cannot read less than a file**, and the instruction saying *"stop at line 21"*
+lives inside the 433-line file it makes cheap. ⇒ **not a rule — a smaller file.** Cold start
+**19,405 → 4,374 tape (77%)**. ENACTED: `knowledge/_gen_chain.py`, three build steps, `bb47693`.
+⚠ **Item 1 was surveyed and is BLOCKED, not deferred on taste:** `STAND-004` *requires* GM to keep
+`^# §A` + `STANDING SECTION` (added after §A was eroded 2026-07-18), the index selftest pins §A's
+children to `file == "GOOD-MORNING.md"`, and six modules reference GM sections by path.
+
+**⬛ FORKED TO DAVE, RESHAPED BY HIS OWN QUESTION — *"why should the stratum retire?"*** Two sessions
+treated the 2f roll as a given. It has **two purposes with opposite answers**: **compaction**
+(GM-D5a, **2026-07-27**) is **dead** — #33 cut the chain **2026-07-28** and §C is never paid at boot,
+which is #38's cap finding applied to the roll rule — while **the dataset** half is the only live
+reason and is **unserved** (three named probes: #38's row is absent from `notes/_GAUGE-LOG.md`).
+⇒ **the mover does both jobs or neither, so an obsolete half is blocking a necessary one.**
+**Three questions, UNRULED and deliberately not offered as a menu** (an option-select only offers
+answers the agent thought of): does the roll still move anything out of §C · should `_gm_move.py` do
+the dataset half alone · **is the chronological contract over-strict for a date-keyed dataset a
+parser sorts anyway?** It exists because #27 hand-prepended — **order is file hygiene, not an
+analytical requirement**, and if it relaxes #38's block simply appends at EOF.
+
+**RAISED, NOT RULED — `ds-025` is part-falsified.** A true `bill` reading **is** observable: `Read`
+publishes what it charged. **28,653 for 13,548 tape = 2.11×** against `TAPE_TO_BILL = 1.57`
+⇒ every `bill` figure in the corpus is understated ~1.35×. ⚠ **n=1 — a dataset ROW, not a re-dial.
+Re-dialling is Dave's** (`ds-023` is the standing case).
