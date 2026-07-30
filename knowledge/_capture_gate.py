@@ -1335,6 +1335,61 @@ def check_budgets(repo):
     return fails, warns, notes
 
 
+# ---------------------------------------------------------------------------- #54: the stop line
+# ★★ WHY THIS IS A POSITIVE ASSERTION AND NOT A BAN, WHICH IS THE WHOLE DESIGN.
+# The defect: `_RUNBOOK-context-gauge.md` stated ds-023's stop line correctly in one section
+# (`60 − the priced wrap`; "60 is where the wrap has FINISHED, not where it starts") and
+# CONTRADICTED it in two others ("RED ≥60% — fire the full trigger"), and
+# `_RUNBOOK-capture-ritual.md` propagated the wrong half. Which rule a session got depended on
+# which line it happened to land on. Dave, #54: *"the 60% is the total with the wrap included,
+# it was never supposed to be 60 plus wrap."*
+#
+# ⚠ A BAN ON THE WRONG PHRASING IS UNREACHABLE HERE. The corrected prose QUOTES the old wrong
+# form in order to mark it as wrong ("THIS LINE USED TO SAY …"), and so does this comment. A
+# regex cannot separate USE from MENTION — [[gate-must-quote-what-it-forbids]], already paid for
+# at open 24. ⇒ **Assert the RULING'S PRESENCE instead.** A positive assertion cannot be tripped
+# by a quotation of what it forbids, and it fails on the thing that actually matters: someone
+# editing the stop line back out, or a new home stating the trigger without it.
+STOP_LINE_HOMES = {
+    "knowledge/_RUNBOOK-context-gauge.md": (
+        "60 − the priced wrap",
+        "60 is where the wrap has FINISHED",
+    ),
+    "knowledge/_RUNBOOK-capture-ritual.md": (
+        "60 − the priced wrap",
+    ),
+}
+
+
+def stop_line_consistency(repo):
+    """ds-023's stop line must be STATED in every home that triggers the ritual. Returns
+    (fails, notes). BLOCKING at birth — unlike the usual advisory-first convention, because this
+    is not a new rule being trialled: it is a ruling from #31, enacted #34, that was silently
+    contradicted for eleven sessions and cost the same conversation repeatedly."""
+    fails, notes = [], []
+    missing_any = False
+    for rel, required in STOP_LINE_HOMES.items():
+        path = os.path.join(repo, *rel.split("/"))
+        if not os.path.exists(path):
+            notes.append(f"stop-line: {rel} absent — UNMEASURED, not passed.")
+            continue
+        with open(path, encoding="utf-8") as fh:
+            text = fh.read()
+        gone = [s for s in required if s not in text]
+        if gone:
+            missing_any = True
+            fails.append(
+                f"ds-023 stop line: {rel} no longer states {gone!r}. The in-flight trigger is "
+                f"`60 − the priced wrap`, NOT a gauge reading of 60 — 60 is where the wrap has "
+                f"FINISHED. If this was edited out, the file is back to the #54 state where the "
+                f"corpus contradicted itself and sessions got whichever rule they landed on. "
+                f"Re-state it, or re-rule it with Dave (the numbers are his).")
+    if not missing_any:
+        notes.append(f"ds-023 stop line: STATED in all {len(STOP_LINE_HOMES)} trigger homes "
+                     f"(reconciled #54 — the runbook used to contradict itself).")
+    return fails, notes
+
+
 def gauge_log_continuity(repo):
     """ds-022 (a), the guard on (c): session N's wrap FAILS unless session N−1 left a block —
     or an explicit HOLE line — in `notes/_GAUGE-LOG.md`. Returns (fails, warns, notes).
@@ -1769,6 +1824,9 @@ def wrap_checks(repo, today, lane=False):
         f_, w_, n_ = gauge_log_continuity(repo)  # ds-022 (a) #34 — the 2f split must LAND.
         fails += f_                              # BLOCKING: three wraps in a row skipped the
         warns += w_                              # step, and #29's overrun cause is gone for good.
+        notes += n_
+        f_, n_ = stop_line_consistency(repo)     # ds-023 #54 — the stop line is `60 − wrap`, and
+        fails += f_                              # the runbook contradicted itself for 11 sessions.
         notes += n_
         notes.append(f"PRE-FLIGHT stamp: ds-023 is a BAND (Dave #36) — the FULL price "
                      f"(front-load + context GM + job + wrap) is preferred in "
@@ -2346,6 +2404,40 @@ def selftest_gauge_continuity():
         with open(os.path.join(td, "notes", "_GAUGE-LOG.md"), "w", encoding="utf-8") as f:
             f.write(log_body)
         return td
+
+    # ---- ds-023 stop line (#54). ★ MUTATION-TESTED BOTH WAYS, because a presence check that has
+    # never been seen to go red is an assertion about the corpus, not a test of the gate.
+    with tempfile.TemporaryDirectory() as td:
+        os.makedirs(os.path.join(td, "knowledge"), exist_ok=True)
+        _rb = os.path.join(td, "knowledge", "_RUNBOOK-context-gauge.md")
+        _cr = os.path.join(td, "knowledge", "_RUNBOOK-capture-ritual.md")
+        with open(_rb, "w", encoding="utf-8") as f:
+            f.write("stop line is 60 − the priced wrap\n60 is where the wrap has FINISHED\n")
+        with open(_cr, "w", encoding="utf-8") as f:
+            f.write("run it at 60 − the priced wrap\n")
+        f_, n_ = stop_line_consistency(td)
+        if f_:
+            failures.append(f"ds-023 stop line: both homes state the ruling and the check still "
+                            f"failed ({f_})")
+        if not any("all 2 trigger homes" in x for x in n_):
+            failures.append("ds-023 stop line: green path did not publish the homes count")
+        # MUTATION: edit the ruling back out of ONE home — the exact #54 regression.
+        with open(_cr, "w", encoding="utf-8") as f:
+            f.write("Also run it mid-session when the context gauge reads Red (>=60%).\n")
+        f_, _n = stop_line_consistency(td)
+        if not f_ or "capture-ritual" not in f_[0]:
+            failures.append("ds-023 stop line: the ruling was edited out of the capture ritual "
+                            "and the check stayed GREEN — this is the #54 defect returning, and "
+                            "a presence gate that cannot go red is not a gate")
+        # ⚠ AND THE USE/MENTION CONTROL: prose that QUOTES the wrong form in order to correct it
+        # must still pass. A ban-shaped gate fails this; that is why this one is presence-shaped.
+        with open(_cr, "w", encoding="utf-8") as f:
+            f.write("THIS LINE USED TO SAY 'run it when the gauge reads Red (>=60%)' and that "
+                    "was WRONG. The trigger is 60 − the priced wrap.\n")
+        f_, _n = stop_line_consistency(td)
+        if f_:
+            failures.append(f"ds-023 stop line: correcting prose that QUOTES the wrong form was "
+                            f"refused ({f_}) — use/mention, open 24's trap, in a new place")
 
     with tempfile.TemporaryDirectory() as td:
         # (i) the banner is the SOURCE and the decoy prose must not win.

@@ -1837,3 +1837,40 @@ provenance: session #53 · 2026-07-30
 
 **status:** rolls verified on output · rulings Dave's, this window · three items DECLARED OWED and
 none of them silently deferred · provenance: session #54 · 2026-07-30
+
+
+### ★★ #54 ADDENDUM — THE RUNBOOK CONTRADICTED ITSELF ON THE STOP LINE, AND THAT IS WHY IT KEPT RECURRING
+
+**DAVE, ON READING #54's OWN WRAP NOTE:** *"the runbook fires the ritual at Red ≥60% — this is wrong
+though, the 60% is the total with the wrap included, it was never supposed to be 60 plus wrap"*, then
+*"we're going round in circles with this again."*
+
+★★ **HE WAS RIGHT, AND THE CIRCLE WAS NOT A MEMORY FAILURE — IT WAS A CANON DEFECT.** Measured:
+`knowledge/_RUNBOOK-context-gauge.md` stated ds-023's rule CORRECTLY at line 110 — *"60 is where the
+wrap has FINISHED, not where it starts. Starting the ritual at 60 is exactly what spends the reserve;
+that is #28's and #29's recorded cause"* — and **CONTRADICTED it in two other sections of the same
+file** (the band table and § The trigger, both *"RED ≥60% → fire the full trigger"*), with
+`_RUNBOOK-capture-ritual.md` line 21 propagating the wrong half.
+
+⇒ **WHICH RULE A SESSION GOT DEPENDED ON WHICH LINE IT LANDED ON.** #54 landed on the trigger section —
+the one the capture ritual points at — and stated the wrong rule back to Dave in its own wrap note.
+★ **This reframes the recurrence: sessions were not forgetting his rule, they were being TOLD the wrong
+one by canon and believing it.** [[assertion-propagation-gap]] — ds-023 was ruled #31 and enacted #34;
+the band table was recalibrated #25 and never reconciled to it, so nothing ever flipped and nothing was
+ever chased. ⚠ **Eleven sessions.**
+
+✅ **RECONCILED #54 — three sites corrected, none of them a re-dial.** The numbers are unchanged and
+stay Dave's: **in-flight stop line = `60 − the priced wrap`** (~50–52 at today's 8–10 point wraps), and
+**it MOVES with the wrap price** — an expensive wrap must stop the session earlier.
+
+✅ **GATED — `_capture_gate.py::stop_line_consistency`, BLOCKING at birth.** ★★ **DELIBERATELY A
+PRESENCE ASSERTION, NOT A BAN**, and the reason is open 24's trap: the corrected prose QUOTES the old
+wrong form in order to mark it wrong, so no regex can separate USE from MENTION
+[[gate-must-quote-what-it-forbids]]. A presence check cannot be tripped by a quotation of what it
+forbids. ⚠ **Blocking at birth breaks this file's advisory-first convention, on purpose:** this is not a
+new rule on trial, it is an enacted ruling that was silently contradicted for eleven sessions.
+**Mutation-tested three ways** — ruling edited out of one home ⇒ RED · both homes stating it ⇒ green ·
+**correcting prose that quotes the wrong form ⇒ green** (the use/mention control).
+
+**status:** measured, corrected at all three sites, gated + mutation-tested · Dave's correction, his
+numbers untouched · provenance: session #54 · 2026-07-30

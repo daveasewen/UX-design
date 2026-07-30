@@ -423,7 +423,7 @@ Bands as fraction of the ~200k window:
 
 - 🟢 **GREEN  <45%** (<~90k) — work freely.
 - 🟡 **AMBER  45–60%** (~90–120k) — get economical, pre-stage the handoff, confirm before the next big read. **PROACTIVELY surface the band to Dave here and offer to start wrapping / capture soon — do NOT wait to be asked** (Dave, 2026-07-20: *"I would set it at amber too"*; the agent suggesting session-end from the estimate, unprompted, is the whole point — silence while the tally climbs is the failure mode). **★ Also fire the light SPINE-FLUSH here (Amber tier, ruled 2026-07-21 — see trigger below): write current state to `_LIVE-STATE.md` now, WITHOUT ending the session.** **★ AND DO NOT START A NEW BUILD ARTEFACT AT AMBER** — a review sheet, an interactive prototype, a new component. They are deceptively token-heavy and are exactly where hot-session "silly mistakes" land (2026-07-24: two review sheets/prototypes built *past* Amber → a render bug + Dave calling the handover, *"we're obviously hot, there are silly mistakes"*). Design/decision **writing + inscription** is fine hot; a new **interactive build** is not — flush and hand the BUILD to a fresh window.
-- 🔴 **RED  ≥60%** (≥~120k) — **fire the full trigger** (below): the complete capture ritual + fresh session.
+- 🔴 **RED  ≥60%** (≥~120k) — ⛔ **REACHING RED IS ALREADY THE OVERRUN, NOT THE CUE.** The ritual should have STARTED at the **in-flight stop line = `60 − the priced wrap`** (~50–52 at today's 8–10 point wraps, § ds-023 above). **60 is where the wrap has FINISHED, not where it starts.** If you are reading 60 and have not begun, you are spending the reserve — wrap immediately and mark it `RESERVE SPEND — forked to Dave`.
 
 *(Bands recalibrated by Dave 2026-07-25: **Green <45 · Amber 45–60 · Red ≥60**. Amber floor moved 50→45; earlier the runbook read Amber 50–60. The move-by point is unchanged at 60.)*
 
@@ -473,12 +473,23 @@ trigger is **tiered** — a cheap save at Amber, the full handoff at Red:
   equivalent of platform context-compaction — keep the invariants in high-signal text, cheaply, before
   the window is under pressure. Native equivalents now exist — memory tool GA · context-editing ·
   compaction beta — but aren't exposed as Cowork knobs, so the ritual stays the mechanism.)*
-- 🔴 **RED → the FULL trigger + fresh session** (below). Everything the Amber flush already saved makes
-  this handoff faster and safer to author.
+- 🔴 **THE STOP LINE (`60 − priced wrap`, NOT 60) → the FULL trigger + fresh session** (below).
+  Everything the Amber flush already saved makes this handoff faster and safer to author.
+  ⛔ **THE TIER IS NAMED FOR WHERE THE WRAP ENDS, NOT WHERE IT BEGINS.** Firing at a reading of 60
+  puts the whole wrap price ON TOP of 60 — which is #28's and #29's recorded cause, and it is the
+  single most-repeated misreading of this runbook. **Compute the stop line from your priced wrap and
+  fire THERE.** An expensive wrap must stop the session earlier; the line moves, it is not a constant.
 
 ## The Red trigger — wired to the existing ritual
 
-At **Red** (confirmed, or high-confidence tally), the agent says, as a ready-to-use line:
+⚠ **"At Red" BELOW MEANS AT THE STOP LINE — `60 − the priced wrap` — NOT at a gauge reading of 60.**
+Stated here because this section was, for eleven sessions, the half of the runbook agents actually
+landed on: it said *"at Red, fire the ritual"* while § ds-023 three hundred lines up said *"60 is where
+the wrap has FINISHED"*. **The file contradicted itself, and which rule a session got depended on which
+line it hit.** Reconciled #54 on Dave's correction — *"the 60% is the total with the wrap included, it
+was never supposed to be 60 plus wrap."* ★ Not a re-dial: ds-023's numbers are unchanged and stay his.
+
+At the **stop line** (confirmed, or high-confidence tally), the agent says, as a ready-to-use line:
 
 > **Title this chat: `<retrospective title>` — context is Red (~NN%). Running the capture ritual, then
 > open a fresh session with: `<forward title>`.**

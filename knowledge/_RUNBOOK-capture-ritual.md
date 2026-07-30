@@ -18,7 +18,13 @@ only for pure Q&A sessions that touched nothing. If in doubt, run it; it's cheap
 **step 1 only** — a light `_LIVE-STATE.md` spine-flush, session continues (no `GOOD-MORNING`, no
 rename, no fresh window); at **Red** run the whole thing 1→5 + open fresh.
 
-**Also run it mid-session when the context gauge reads Red (≥60%)** — don't wait for a natural end.
+**Also run it mid-session at the IN-FLIGHT STOP LINE — `60 − the priced wrap`, NOT at a reading of 60**
+(~50–52 at today's 8–10 point wraps; `_RUNBOOK-context-gauge.md` § ds-023). ⛔ **60 IS WHERE THE WRAP
+HAS FINISHED, NOT WHERE IT STARTS.** ⚠ **THIS LINE USED TO SAY "when the gauge reads Red (≥60%)" and
+that was WRONG** — it put the entire wrap price on top of 60, which is #28's and #29's recorded cause.
+Corrected #54 on Dave's own words: *"the 60% is the total with the wrap included, it was never supposed
+to be 60 plus wrap."* ★ The stop line MOVES with the wrap price and is not its own constant — an
+expensive wrap must stop the session earlier. Don't wait for a natural end.
 The gauge (`_RUNBOOK-context-gauge.md`) exists precisely to fire this ritual *while there's still
 clean budget to author the handoff well*; a `GOOD-MORNING.md` written at 95% full is the confidently
 wrong handoff we most want to avoid. Red cue line, ready to use:
