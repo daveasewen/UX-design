@@ -1516,6 +1516,21 @@ occurred**, so cumulative ≈ resident. **A cumulative log is not a fill reading
 1. ⛔ **`DEFAULT_WINDOW = 200_000` IS FALSIFIED BY EXISTENCE PROOF** — 613,386 tape is **307%** of
    it and the session is manifestly still working. **No feel, no literature, no priming**: the
    constant cannot be right. ⇒ **D2's premise is now demonstrated rather than argued.**
+   ⛔⛔ **OVERSTATED — CORRECTED POST-WRAP (5b), THE HOUR IT WAS WRITTEN.** Dave supplied the
+   provenance: *"the 200,000 figure came from desk research that calculated the safe range
+   including the boot and the rot starting."* ⇒ **`200_000` was a DEGRADATION BUDGET, never a
+   capacity claim.** The existence proof therefore falsifies **`DEFAULT_WINDOW`'s NAME**, which
+   asserts capacity — **not the number**, which as a quality budget is untouched, and which we have
+   been running at **3×** without noticing because the gauge reported the disk half.
+   ★ **This is #39's own declared fork — *"whether `200_000` was a guess about the model or a
+   deliberate degradation throttle is unresolved and is the question that settles it"* — ANSWERED,
+   and it SUPPORTS Dave's D2 (c) split rather than cutting against it.**
+   ⚠⚠ **AND THE SHARPEST CORRECTION IS AGAINST THIS ENTRY'S AUTHOR: it cited the window's coherence
+   as evidence against rot while THE SAME WINDOW CONTAINS ITS AUTHOR'S DESTRUCTIVE 524-LINE MOVE.**
+   n=1 and unattributable — but it is the most relevant data point available and it was in hand
+   while the opposite was being argued [[feedback-check-ran-never-reached-plan]].
+   ⇒ **NO NUMBER SHOULD BE PICKED TODAY. Build the reader, log real readings, recalibrate on the
+   dataset** — the first time this project has been able to.
 2. ⛔ **`ds-025` IS PART-FALSIFIED, AND THE SCOPE MATTERS:** the **conversation** half is observable
    and free. The **boot / system-prompt / tool-schema** half is **NOT in this file** — no `system`
    record type exists in it — so **`ds-025` item 1 (boot never measured in 36 sessions) STANDS.**

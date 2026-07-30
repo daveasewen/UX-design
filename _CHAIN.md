@@ -7,7 +7,7 @@
 > and ★ LATEST banner, plus `_LIVE-STATE.md`'s ⏱ LATEST delta — the three things GM-D7-am names
 > (CUT #33 on Dave's ruling). **If you have read this file, you have read the chain.**
 >
-> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 42,841 tape and 92% of it is
+> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 43,036 tape and 92% of it is
 > retrieval surface you are not meant to pay for at boot. That reflex is the thing this file
 > exists to stop — five sessions called the chain CUT and every one of them paid full price.
 >
@@ -47,7 +47,7 @@
 > - **⛔ ERRORS: 3 — 1 SELF-CAUGHT AND EXPENSIVE, 2 CAUGHT BY DAVE.** (1) **A `roll_2d` move with `"end":"EOF"` took 524 lines — #49's delta AND THE ENTIRE LIVE-STATE BODY.** Caught by the mover's own receipt (*"a wrong extent is visible, not silent"* — the property earned its keep), reverted **SCOPED** via `git show HEAD:<path> > <path>` per the runbook's revert section, **never the bulk form**, which would have taken this session's ledger with it. ★ **The runbook was READ, not reconstructed — the whole lesson of #51.** (2)+(3) below.
 > - **⛔ CAUGHT BY DAVE ×2:** the subagent-vs-parallel answer **was in `MODEL-ROUTING.md` all along** and three sessions gave contradictory advice instead of quoting it · and **my own inconsistency was filed as Dave's ambivalence** until he said *"this isn't me."* ★ **Both are RETRIEVAL-FIRST failures, not knowledge gaps.**
 > - **⬛ D4's LICENCE, SCOPED BY DAVE — PRESSURE, NOT PROMOTION.** *"When I keep adding deferments, or don't make decisions that bloat anything, be firmer with me."* Promotion to canon stays his; a deferment with a measurable cost now gets the cost NAMED. ⇒ [[feedback-press-on-deferments]].
-> - **⚠ CONTEXT: 613,386 tape conversation half MEASURED · boot half UNMEASURED · disk half 42,342 (= 6.9% of the real figure — TEN sessions reported the disk half as if it WERE the reading).** ⬛ **Dave, unresolved: *"70 is where things get proper spazzy"* — WHICH GAUGE was that read off? Against 200,000 it means ~140,000 tape; against 1M it means ~700,000. THE ANSWER CHANGES EVERY BAND.**
+> - **⚠ CONTEXT: 613,386 tape conversation half MEASURED · boot half UNMEASURED · disk half 42,342 (= 6.9% of the real figure — TEN sessions reported the disk half as if it WERE the reading).** ⛔⛔ **CORRECTED POST-WRAP (5b), DAVE ANSWERED AND MY CLAIM WAS TOO STRONG: `200_000` WAS NEVER A CAPACITY FIGURE.** He recalls it as **desk research on the safe range INCLUDING boot and rot** — i.e. a **DEGRADATION BUDGET**, a policy choice, which is exactly the fork #39 declared unresolved and the `ds-023` shape it warned of. ⇒ **What the existence proof falsifies is the NAME, not the NUMBER:** `DEFAULT_WINDOW` claims capacity and is wrong; `200_000` as a quality budget is UNTOUCHED, and we were **3× past it** without noticing because the gauge read the disk half. ★ **His recollection SUPPORTS his own D2 (c) split** — capacity and throttle are two numbers. ⚠ **AND THE MOST RELEVANT EVIDENCE CUTS AGAINST ME: I cited this window's coherence as against-rot while THIS SAME WINDOW contains my destructive 524-line move.** n=1, unattributable, and I had it in my hand while arguing the other way [[feedback-check-ran-never-reached-plan]].
 
 ---
 
@@ -69,7 +69,7 @@
 
 ---
 
-*(Chain ends. **4,481 tape — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **4,676 tape — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
-`GOOD-MORNING.md` is 42,841 tape and stays whole for retrieval; you have paid for
-10% of it, and that is the intended figure, not a shortfall.)*
+`GOOD-MORNING.md` is 43,036 tape and stays whole for retrieval; you have paid for
+11% of it, and that is the intended figure, not a shortfall.)*
