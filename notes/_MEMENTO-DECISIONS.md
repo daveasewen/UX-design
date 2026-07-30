@@ -2069,3 +2069,36 @@ the machine that makes a cold start cheap. [[premise-ages-faster-than-rule]].
 - **`_context_gauge.py`'s `DEFAULT_WINDOW` / `DEFAULT_BASELINE` are UNTOUCHED** — they feed the old
   path and cutting them belongs to the same later pass.
 - **No Apollo work.** Ledger, runbook, gate, new module.
+
+---
+
+## ★ #57 — 2026-07-30 — THE CHAIN WAS COMMITTED STALE, AND THE CHECK THAT WOULD HAVE CAUGHT IT RAN AFTER ITS OWN REMEDY
+
+*provenance: 2026-07-30 · status: ruled (Dave, in-session; delegation criteria delegated to me)*
+*Discharges the pointer `GOOD-MORNING.md` § ★ LATEST #57 makes to "§ ★ #57" — the probe found it DANGLING (the section did not exist while the banner promised it). Written by ADDITION, [[home-by-addition-then-cut]].*
+
+### The figures, homed here so they survive the 2c/2d rolls
+
+| quantity | value | standard |
+|---|---|---|
+| pre-flight #57 boot | **35,911** | disk 9,014 real + 6,897 real DUPLICATE (the stale chain, read twice) + harness 20,000 est ±8,000 |
+| pre-flight #57 total | **116,000 of 200,000 — GREEN** | job 55,000 est + wrap 25,000 est |
+| subagent 1 (Sonnet, build+mutation-test) | **121,464 tk its window** / **~5.5K conductor's** | ~22:1 |
+| subagent 2 (Opus, read-only 2f probe) | **174,479 tk its window** / **~9K conductor's** | ~19:1 |
+| wrap gate at close | **4 fail · 6 warn** (39 in scope) | ⚠ the banner first said 6 fail · 9 warn — **wrong, corrected by addition** |
+| chain after regen | 4,384 → **5,806 tape** | the stale copy was 4,384 |
+
+### The rulings
+
+| # | Ruling (Dave, 2026-07-30, in-session) | Why | Audit |
+|---|---|---|---|
+| **57-D1** | **Delegation inverts: subagents BY DEFAULT.** Safeguards named by Dave (*"is my judgment needed, will the work be evaluated"*), **criteria explicitly delegated to me**: DELEGATE when no ruling is produced AND a gate or mutation-test can check it; KEEP IN-WINDOW when it produces a ruling, touches ratified record, or has no mechanical check. | Supersedes the 2026-07-23 Mode-2 ruling, whose premise expired: subagents were the exception *because briefing a cold agent was expensive*, and `_CHAIN.md` + the retrieval index + the gates made a cold start cheap. | unaudited |
+| **57-D2** | **Assess before fixing.** Dave: *"This needs fixed I guess but not before a probe or something to assess the implications, fixing things ad-hoc often causes more problems, so assess first."* | **Vindicated inside one window:** the probe found the handoff instruction I had just ratified (*"#58 runs 2f FIRST"*) would file #56's commit-state under a three-session-stale `## Batch #54`, silently, with no gate able to see it. | unaudited |
+| **57-D3** | **Two different levers, not one — Dave's own correction.** *"subagents might be efficient and mean you can have long running jobs. but if you really want to put the throttle on the tokens you need multiple windows… one is a way of possibly extending the token window but the other allows denser usage."* | ★ **Sharpened by measurement, and it moves the boundary in his favour:** the two subagents burned **295,943 tokens** — ~5× the conductor's own window — at **zero decision cost to Dave**. So subagents are ALSO dense, not merely deep. ⇒ **extra windows are needed only when the work needs DAVE in two places, or when a conductor's window is spent** — not to raise burn rate. | unaudited |
+
+### The findings
+
+- **★★ A CHECK PLACED AFTER ITS OWN REMEDY CANNOT FAIL.** `_gen_chain.py --check` works and always did; its only caller was `_build_all.py:176`, and `:174` regenerates the file immediately before it. Green for 25 sessions while stale chains shipped. ⇒ reader moved to the **commit seam** (`_git_commit.sh`, blocking before `git add -A`, refuses loudly, never auto-regenerates). Both arms mutation-tested; ran GREEN in production on `0ab37aa`.
+- **★★ FAIL #1 IS UNREACHABLE BY CONSTRUCTION — Dave's fork, not a task.** Strata floor = 3 permanent (#40/#41/#42) + 1 current = **4** vs `STRATA_MAX_BLOCKS = 1`. [[m8-cap-at-its-own-floor]]. Options: exempt the three by name · raise the constant to 4 naming them · license a non-`roll_2f` route.
+- **⚠ THREE ERRORS, TWO CAUGHT BY THE PROBE AND NONE BY ME.** (i) ratified *"6 fail · 9 warn"* when the close measured 4 · 6 — a figure true mid-window, false by the end, never re-read, which is [[assertion-propagation-gap]] exactly · (ii) ratified a handoff order (*2f first*) that would have caused a silent mis-file · (iii) **#57 wrote NO stratum at all** and its ledger pointer dangled until this section. ★ All three are the same shape as #56's: **the measurement existed and the summary never consulted it.**
+- **⚠ TWO STALE PROSE SITES FOUND, NOT YET FIXED (queued, not ad-hoc'd):** `_gm_move.py:63–64` and `_RUNBOOK-capture-ritual.md:300–303` both still say `roll_2f` refuses a chronologically-later key — **relaxed at #54; the code appends a receipt instead.** The runbook also still says both destinations append at EOF, corrected in the code at #35 and never propagated. [[feedback-read-the-runbook]] cuts both ways: the runbook must itself be true.
