@@ -1956,6 +1956,26 @@ measuring.** Same shape as this window's other three misses: the measurement exi
 never consulted it. ⛔ **Nothing here is trimmed to fix it** — the +210 #55 added is live record and
 the remedy is Dave's call on the tier, not a shave.
 
+### ★ THE CHAIN FLOOR IS OSCILLATING, NOT RISING — measured #55 on Dave's challenge
+
+He asked, mid-wrap, whether the 2,633 floor (header + wrapper) was measured at HEAD or inherited, and
+whether it has MOVED — because *"a rising floor can't be fixed by discipline"*, and if it were rising
+the 4,917 warn would need re-deriving, **which is his call and not something an agent fixes by being
+leaner.** ✅ **Measured at HEAD** (`a012e01`, including #55's own +52 title clause), and then measured
+across the **last 25 commits** to `GOOD-MORNING.md`:
+
+**range 1,783 … 2,458 tape (spread 675) · net +167 over 25 commits (~+7/commit) · single-commit swings
+up to ±380.** #55's working header is **2,093 — BELOW `a012e01`'s 2,216**, because the #56 title is
+tighter than the #55 one was.
+
+⇒ **NOT STRUCTURAL. The warn does not need re-deriving on floor grounds.** The variance is dominated by
+**one discretionary line — the next-chat title** — not by accreting structure. ★ **So the
+floor-is-not-willpower rule points the other way here:** it says discipline cannot shrink a region below
+`N` × one unit, and this floor is not at its floor — it is swinging around one line whose length someone
+chooses every wrap. **The title is the single largest discretionary term in the chain.**
+⚠ **CAVEAT, and it is not decoration: 25 commits is ~8 sessions.** This is a trend claim from a short
+baseline and says nothing about slower accretion in the header's standing prose. **Not a constant.**
+
 ### ⬛ QUEUED, NOT BUILT — Dave, #55: *"an ungated recurrence is how we got here"*
 
 The 2d cap has no measurer, which is why LATEST+3 could only ever be hand-caught. **Priced as a #56

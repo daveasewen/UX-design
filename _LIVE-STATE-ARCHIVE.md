@@ -1,4 +1,41 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
+## ⏱ PRIOR DELTA — 2026-07-30 (Thu **#52**, OPUS solo, Dave live, decision-pack by instruction — ★★ **22 RULINGS IN ONE PASS** · ★★ **THE TRANSCRIPT IS SANDBOX-READABLE: `ds-025` PART-FALSIFIED** · ⛔ **`DEFAULT_WINDOW = 200_000` FALSIFIED BY EXISTENCE PROOF**)
+
+> ⚠ **STATE LINES ONLY — narrative is in `GOOD-MORNING.md`'s ★ LATEST banner, verbatim, same commit.**
+
+- **✅ 22 of 24 live opens RULED** via `reviews/MEMENTO-DECISION-PACK-2026-07-30-v1.html`. Rulings + WHY → `notes/_MEMENTO-DECISIONS.md` § ★★ #52. **§C·4 NOT yet cut — deliberate: the home is written, the cut is the second motion.**
+- **★★ `ds-025` PART-FALSIFIED.** Live transcript readable at `.claude/projects/<project>/<sessionId>.jsonl`; measurable in-sandbox, never loaded ⇒ free. **Conversation half 613,386 tape (`cl100k`).** ⚠ THROUGHPUT not fill; no-compaction DECLARED not verified. ⚠ **Boot half has no record type there ⇒ `ds-025` item 1 STANDS.** Corrected at source.
+- **⛔ `DEFAULT_WINDOW = 200_000` falsified by existence proof — 613,386 tape = 307% of it, session still working.** ⇒ D2's premise demonstrated. ⚠ Neither percentage is actionable until D1 + the boot land.
+- **★★ D3's amber is `60 − wrap_reserve` — DERIVED, not a constant — and is the SAME mechanism as D9.** One build item.
+- **⬛ WRAP RESERVE, first measurement, n=2: 8,938 / 9,011 tape (mean 8,974).** ⚠ tape WRITTEN, not window CONSUMED; full cost ≥8,974, unmeasured.
+- **⬛ NEW, Dave's: the CHECK-IN mechanism** — on-demand "how hot are we". ~30 lines. Not built.
+- **⬛ D4's licence SCOPED: pressure, not promotion.** Canon stays Dave's.
+- **⛔ ERRORS: 3 — 1 self-caught (a `move` with `"end":"EOF"` took 524 lines incl. the whole LS body; caught by the mover receipt, reverted SCOPED per the runbook, never the bulk form), 2 caught by Dave (both RETRIEVAL-FIRST failures).**
+- **⛔ 2f NOT RUN — open 7; `ds-022` FAILS, DECLARED.** ⚠ **D5 (a) now rules the chronological contract RELAXED — that is the unblock, and it is UNENACTED.**
+- **TREE STATE.** `_git_commit.sh --reconciled`, paths named. Dave pushes via **GitHub Desktop only**.
+
+## ⏱ PRIOR DELTA — 2026-07-30 (Thu **#51**, OPUS solo, Dave live, "reduced #51 — gate only" by instruction — ★★ **OPEN 25 CLOSED: `BARE_TOKEN_RE` BUILT, PROVED SEVEN WAYS AND MUTATION-TESTED** · ★★ **A GATE MUST QUOTE WHAT IT FORBIDS — USE vs MENTION IS UNREACHABLE BY SYNTAX** · ⛔ **ONE MISSING WORD HAD LEFT `SIZE_A_RE` DARK**)
+
+> ⚠ **STATE LINES ONLY — narrative is in `GOOD-MORNING.md`'s ★ LATEST banner, verbatim, same commit.**
+
+- **✅ OPEN 25 CLOSED. `BARE_TOKEN_RE` + `selftest_bare_token` (7 controls) built, wired into the runner, green.** All ten suites 0 fail. **MUTATION-TESTED — 3 mutants each caught** (dead check · lookahead deleted · `K` dropped), so the green is not vacuous.
+- **★★ THE SELF-BITE CONTROL FIRED AND WAS RIGHT.** The warn must QUOTE the offending figure (bite 2 requires it), so the message is a member of the class it polices. **A syntactic ban cannot tell USE from MENTION and cannot be made safe by cleverness — only by SCOPE** (`stamp.group(1)` and nothing else). Laundering the message for green would have broken bite 2: a false fix that reads as a pass. ⇒ Replaced by an INVERTED bite (the quote must SURVIVE) + the real property (its own words, pasted into a stamp, SHOULD flag).
+- **⬛ OPEN 24 UNTOUCHED, and now argued: it is HARDER than open 23, not easier.** Scope saves open 25; it cannot save open 24, because the self-measuring sentence IS in scope.
+- **⛔ `SIZE_A_RE` WAS DARK.** It requires `§A …K (tape|tk)`; the stamp carried `§A **4.2K (EXEMPT)**` with no unit ⇒ **matched nothing, and the silence read as "nothing to check"** [[unmatched-grep-is-not-an-absence]]. A bare figure had unarmed a neighbouring gate.
+- **✅ DISCHARGED BY ADDITION, both units MEASURED first** (§A 4,208 tape · corpus 58,658 tape ⇒ `tape` PROVEN, not copied). **+2 tape**, nothing cut. `SIZE_A_RE` now matches; open-25 warn SILENT.
+- **★ RULED — never invent a surface to satisfy a spec.** Spec said "GM/LS"; measured, **LS carries no `size:` stamp**. GM-scoped because that is where the stamp is; re-point trigger in the comment.
+- **⚠ NAMED, NOT CHASED — `_CHAIN.md` measured 5,043 tape at open, +126 OVER its 4,917 warn, while #50's banner leads "4,401 = 516 UNDER".** True when written, so nothing flipped to chase it [[assertion-propagation-gap]]. Remedy is a cut ⇒ Dave's.
+- **⚠ EXIT CHECK — THIRTEENTH CONSECUTIVE, AND IT BIT.** #49's rolling banner carried `⬛ M8 BLOCK ... DECLARED not cleared` with **no standing home** (5 probes; the one `banner region` hit quoted and rejected). **Copied up as §C·4 open 27 BEFORE the roll.** Rolls cleared: 2c #49 banner 9 ln · 2d #48 delta 17 ln.
+- **⚠ ERRORS: 2 — TWENTY-FOURTH consecutive, both self-caught.** (1) a control pasted `msg[:80]`, slicing BEFORE the quoted figure — **a control that tests the wrong string is not a control**. (2) an f-string with a conditional in its replacement field.
+- **⬛ POST-WRAP ADDENDUM (5b) — `_RUNBOOK-git-commit.md` EXISTS AND WENT UNREAD; DAVE CAUGHT IT.** Cost: I routed a shell command to him (**the defect its step 4b was amended to prevent**, `mcp__cowork__allow_cowork_file_delete` is the tool) · had the `mv` trick backwards (WITHIN the mount is a rename; CROSS-mount is copy+unlink) · used the fixed-`/tmp` msgfile trap, held only by the script. ⇒ **ERRORS RESTATED 3 → 5 (2 caught by Dave). A self-audited error count measures what I NOTICE** [[ritual-output-is-not-evidence]]. ⬛ **NEW OPEN 28.**
+- **⛔ 2f NOT RUN — open 7; `ds-022` FAILS, DECLARED, no forged `HOLE`. Stack TWELVE.**
+- **TREE STATE.** `_git_commit.sh --reconciled`, paths named. Dave pushes via **GitHub Desktop only**. ⚠ `mv` stray `.git/*.lock` BEFORE git; the clear is the LAST git action.
+
+
+---
+
+---
+
 
 ## ⏱ PRIOR DELTA — 2026-07-30 (Thu **#50**, OPUS solo, Dave live, "I lean to safety" by instruction — ★★ **THE `size:` LINE IS CUT 808→399, EVERY CUT PROVED FIRST** · ★★ **THE LINE'S SELF-MEASUREMENT HAD DRIFTED 18% AND THE BAN CANNOT SEE A SELF-REFERENCE** · ⛔ **THE GAUGE'S ANSWER WAS REFUSED, NOT REPORTED**)
 
