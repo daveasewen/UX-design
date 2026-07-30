@@ -1531,6 +1531,32 @@ occurred**, so cumulative ≈ resident. **A cumulative log is not a fill reading
    while the opposite was being argued [[feedback-check-ran-never-reached-plan]].
    ⇒ **NO NUMBER SHOULD BE PICKED TODAY. Build the reader, log real readings, recalibrate on the
    dataset** — the first time this project has been able to.
+
+   ⛔⛔⛔ **THIRD CORRECTION IN ONE HOUR, AND THIS ONE IS VERIFIED — BOTH OF US WERE WRONG, AND THE
+   ANSWER WAS IN A FILE THE RECORD ALREADY POINTS AT.** Dave flagged his own provenance as uncertain
+   (*"I might be wrong tho we need to verify"*) and was right to. **PROBE, named:** `git log -S
+   '200_000' -- knowledge/_context_gauge.py` → **ONE commit, `e7f8b87`, 2026-07-19, "Add
+   context-fuel gauge + adversarial densification method"**; and the FLOATED note
+   `notes/2026-07-29-context-degradation-research.md:75` records a harness system warning verbatim:
+   **`<system_warning>Token usage: 35000/200000; 165000 remaining</system_warning>`.**
+   ★★ **BOTH CONSTANTS MATCH THAT WARNING EXACTLY — `DEFAULT_WINDOW = 200_000` and
+   `DEFAULT_BASELINE = 35_000`.** ⇒ **STRONGLY SUPPORTED, not proven** (the commit message does not
+   say so): the pair was **lifted from an OBSERVED HARNESS DECLARATION**, not desk-researched and
+   not guessed. The code comment agrees — *"Window = model context budget."*
+   ⇒ **THE ORIGINAL FINDING IS RESTORED WITH A CORRECTED CAUSE: `200_000` was a TRUE OBSERVED
+   FIGURE THAT HAS GONE STALE**, which is a third thing from both "a guess about the model" (#39's
+   framing) and "a degradation budget" (the correction above). [[instruction-right-cause-wrong]] —
+   right instruction, wrong cause, twice.
+   ⚠ **AND THE HAZARD THAT PROBABLY MADE DAVE MISREMEMBER IS REAL AND SHOULD BE NAMED: THERE ARE
+   TWO 200Ks IN THAT NOTE.** `:75` is the harness budget; `:146` is a 172-billion-token study where
+   fabrication exceeds **10% for all models at 200K** (⚠ 35 open-weight models, no Claude). **Two
+   unrelated quantities, same digits, one document** — his recollection cannot be dismissed, only
+   out-weighed. ⇒ **`DEFAULT_WINDOW`'s remedy stays D2 (c): SPLIT, and NAME each.**
+   ⛔ **THE METHOD FAILURE, AND IT IS THE THIRD OF THIS SESSION: I flagged open 5's note as STALE
+   ("UNREAD BY ANY SESSION" when #39 had read it) AND THEN ARGUED FOR AN HOUR ABOUT ITS CONTENTS
+   WITHOUT OPENING IT.** Retrieval was available and reasoning was reached for — the same shape as
+   `MODEL-ROUTING.md` earlier in this window. ★ **Three retrieval-first failures in one session is
+   not three mistakes; it is one habit, and the check-in reader will not fix it.**
 2. ⛔ **`ds-025` IS PART-FALSIFIED, AND THE SCOPE MATTERS:** the **conversation** half is observable
    and free. The **boot / system-prompt / tool-schema** half is **NOT in this file** — no `system`
    record type exists in it — so **`ds-025` item 1 (boot never measured in 36 sessions) STANDS.**
