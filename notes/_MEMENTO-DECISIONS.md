@@ -1981,3 +1981,91 @@ baseline and says nothing about slower accretion in the header's standing prose.
 The 2d cap has no measurer, which is why LATEST+3 could only ever be hand-caught. **Priced as a #56
 item in GM §C·4.** ⚠ **Not built this window, deliberately** — #55 was scoped to one gate and a
 second one slipped in unasked is the drift this ledger exists to stop.
+
+---
+
+## ★★ #56 — 2026-07-30 (Thu, OPUS solo, Dave live) — THE GAUGE IS RE-DENOMINATED IN REAL TOKENS
+
+**Dave opened by proposing it and by naming the cause correctly:** *"the stamp's all-or-nothing
+format, not the measurement — one unobservable term (boot half) suppresses three measurable ones,
+which contradicts D10."* Verified in code, ruled, and built the same window.
+
+### ⬛ WHAT WAS RULED
+
+- **D23 · The gauge's unit is REAL CLAUDE TOKENS.** `client.messages.count_tokens()`, reachable
+  from the sandbox (verified this window). `cl100k` survives as a LABELLED offline fallback only.
+  ⚠ **Never convert cl100k with a fixed ratio and call the result real** — the per-register spread
+  at #53 was 1.486–1.664, so one ratio cannot re-denominate a mixed corpus. Reference measurement,
+  not a converter: `_CHAIN.md` = **4,384 tape / 6,897 real**.
+- **D24 · The budget is ABSOLUTE: working 200,000 (DAVE'S), hard 256,000 (SOURCED), amber 160,000
+  (derived).** ⛔ **The band was REPLACED, not converted** — `45/60/63` were percentages *of the
+  window*, and converting them requires multiplying by the unobservable. 256,000 is the largest
+  context at which Claude's recall is publicly measured and holding (93% MRCR v2, 76% at 1M).
+- **D25 · A DECLARED gap passes; a SILENT one fails.** D10 (c)'s form, finally mechanised: a term
+  is an estimate with an error bar, or `unobservable (<reason>)`. Only silence fails. ★ **That
+  asymmetry is the whole fix — it makes publishing cheaper than refusing.**
+- **D26 · The `RESERVE SPEND` marker buys the WORKING overrun and NOT the HARD one.** Past 256,000
+  there is no measurement of this model to reason from, and **a receipt cannot manufacture
+  evidence**. The gate says SPLIT THE JOB or DELEGATE IT.
+
+### ★★ THE FINDING, AND IT REFRAMES THIRTEEN SESSIONS
+
+**`PREFLIGHT_RE` never matched the live banner.** Banners write `pre-flight #55:`; the regex
+accepted only a bare `pre-flight:`. So `next(...)` skipped the ★ LATEST stamp at the top of the
+file and matched **the first ARCHIVED STRATUM** — blocks from #49–#51 saying *"FIFTH
+consecutive"*, *"SIXTH consecutive"*, which are ratified history and **can never go green**.
+⇒ **For those sessions the pre-flight FAIL was UNFIXABLE BY CONSTRUCTION.** Writing a perfect
+stamp could not clear a failure being read off a block written weeks earlier.
+★ **[[unmatched-grep-is-not-an-absence]], inverted: the pattern MATCHED, so nothing looked broken
+— but a matched pattern is not the RIGHT pattern.** Widened, and pinned by a fixture.
+
+### ⬛ THE ARGUMENT THAT UNSTUCK IT — recorded so it is not relitigated
+
+**±8,000 tokens on a 200,000 budget is ±4%, and no job's go/no-go flips on 4%.** The harness half
+of the boot was treated as a blocker for nineteen sessions because we held a **planning estimate**
+to a standard built for a **published measurement**. *"A measuring tool must not guess"*
+[[feedback-measuring-tool-must-not-guess]] governs what is asserted as FACT; it was never a ban on
+estimating, and reading it as one is what produced thirteen blank stamps.
+
+### ★★ POSITION, NOT JUST VOLUME — verified this window, and it is the cheaper lever
+
+Recall is **U-shaped**: strongest at the START and END of context, ~30% weaker in the MIDDLE;
+Anthropic's own framing is *"a performance gradient rather than a hard cliff"*. **The chain is read
+first and the wrap written last, so canon already sits at the two strong ends** — the Memento
+architecture has been exploiting this without anyone naming it. ⇒ **A finding made mid-window sits
+in the weakest region: write it to its home when found, never carry it to the wrap.**
+
+### ⬛ DAVE'S FRAMING CORRECTION, and it replaces the stop line I proposed
+
+I offered *"Memento takes no new work, then back to Apollo."* **He corrected the shape:** *"memento
+is my project and context manager and I use it to build Apollo… I rely on Memento working to get
+Apollo done."* ⇒ **The rule is not a freeze, it is a TEST: does this Memento item unblock Apollo
+work, or is it Memento improving Memento?** The first is built; the second is logged and deferred.
+Today's pre-flight passes it (you cannot delegate work you cannot price); the 2d delta gate does not.
+
+### ⬛ FLOATED, NOT RULED — the delegation inversion
+
+Dave: *"use subagents more often, and parallels when I'm needed — it's basically the other way
+round."* **The old ruling (`MODEL-ROUTING.md` Mode 2, 2026-07-23) is stale for a nameable reason:**
+it was ruled before `_CHAIN.md`, before the retrieval index, before the gates — subagents were the
+exception *because briefing a cold agent was expensive*, and we then spent twenty sessions building
+the machine that makes a cold start cheap. [[premise-ages-faster-than-rule]].
+**Three things put to him, UNRULED, his:**
+1. **Fan-out has a ceiling and it is the ORCHESTRATOR's window** — it pays for every brief written
+   and every result read. At ~3,000 a brief and ~8,000 a return against 200,000, that is **~15
+   subagents per orchestrator window**, not unlimited.
+2. **★ The constraint is VERIFIABILITY, not budget.** A subagent cannot ask Dave, and its errors
+   return as confident prose (#55: five errors, zero self-caught — Opus, with Dave live).
+   ⇒ **Delegate what a GATE can check; keep what only Dave can judge.** That names *which jobs*,
+   which "is Dave needed?" does not.
+3. **He is currently doing the routing job himself**, which is the real content of *"hard for me to
+   manage"*. Inverting to subagent-first takes him off it.
+
+### ⚠ WHAT THIS SESSION DID NOT DO
+
+- **The percentage path is STILL LIVE and still green — deliberately.** Additive per Dave's #55
+  ruling (correct by ADDITION, never by trimming ratified record); the new path proves itself over
+  a few sessions, THEN the old one is cut in one deliberate pass [[home-by-addition-then-cut]].
+- **`_context_gauge.py`'s `DEFAULT_WINDOW` / `DEFAULT_BASELINE` are UNTOUCHED** — they feed the old
+  path and cutting them belongs to the same later pass.
+- **No Apollo work.** Ledger, runbook, gate, new module.

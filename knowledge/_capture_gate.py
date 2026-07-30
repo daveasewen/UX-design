@@ -54,6 +54,9 @@ import subprocess
 import sys
 import tempfile
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import _gauge_tokens as gauge     # noqa: E402 — the UNIT and the BUDGET (Dave #56)
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
 REPORT = os.path.join(HERE, "_CAPTURE-GATE.md")
@@ -79,7 +82,16 @@ HEADER_LINES = 40
 BANDS = ((45, "GREEN"), (60, "AMBER"), (10 ** 9, "RED"))  # Dave recalibrated 2026-07-25
 WRAP_FLOOR = 5      # runbook: "WRAP (~5%)" — soft, hence WARN not FAIL
 RESERVE_FENCE = 15  # runbook § Half 0b: ring-fenced, NOT an addend
-PREFLIGHT_RE = re.compile(r"^\s*>?\s*\**pre-?flight\**\s*[:—-]", re.I)
+# ⚠ THE `#NN` IS NOT COSMETIC — IT WAS A SILENT MIS-TARGET, FOUND #56 WHILE MUTATION-TESTING.
+# Banners have written `pre-flight #55:` for many sessions; this regex only accepted a bare
+# `pre-flight:`, so `next(...)` skipped the LIVE ★ LATEST stamp at the top of the file and
+# matched the first ARCHIVED STRATUM instead — blocks from sessions #49–#51 that say "FIFTH
+# consecutive", "SIXTH consecutive" and can never go green because they are ratified history.
+# ⇒ For those sessions the pre-flight FAIL was UNFIXABLE BY CONSTRUCTION: writing a perfect
+# stamp today could not clear a failure being read off a stratum written weeks earlier.
+# ★ [[unmatched-grep-is-not-an-absence]]'s THIRD FACE, live: the check MATCHED, so nothing
+# looked broken — but it matched the wrong line, and a matched pattern is not the right pattern.
+PREFLIGHT_RE = re.compile(r"^\s*>?\s*\**pre-?flight\**(\s*#\d+)?\**(\s*\([^)]*\))?\**\s*[:—-]", re.I)
 TERM_RE = {k: re.compile(r"\b%s\b\D{0,4}(\d+)" % k, re.I) for k in ("fill", "job", "wrap")}
 TOTAL_RE = re.compile(r"=\s*[~≈]?\s*(\d+)")
 BAND_WORD_RE = re.compile(r"\b(GREEN|AMBER|RED)\b", re.I)
@@ -701,6 +713,143 @@ def band_for(total):
     return "RED"
 
 
+# ---------------------------------------------------------------- #56 — THE ABSOLUTE STAMP
+# ★★ RULED BY DAVE #56. The percentage stamp deadlocked for THIRTEEN CONSECUTIVE SESSIONS
+# because every one of its terms divided by the window, and the window's harness half is
+# unreachable (`ds-025` item 1). One unobservable denominator voided four observable terms —
+# the exact failure D10 (c) forbids, committed inside the instrument that rules it.
+#
+# ⚠ ADDITIVE ON PURPOSE, AND THIS IS NOT INDECISION. The percentage path below stays LIVE and
+# green; this one runs when the stamp is written in the new form. Dave's #55 ruling was to
+# correct by ADDITION rather than by trimming ratified record, and the same logic applies to
+# machinery: the new path proves itself over a few sessions, THEN the old one is cut in a
+# deliberate pass. [[home-by-addition-then-cut]] — never both motions at once.
+ABS_TERM_RE = {k: re.compile(r"\b%s\b[^0-9]{0,3}([\d,]+)" % k, re.I)
+               for k in ("boot", "job", "wrap")}
+ABS_TOTAL_RE = re.compile(r"=\s*([\d,]+)\s+of\s+([\d,]+)", re.I)
+# A term may be DECLARED unobservable and still pass. A term that is silently absent may not.
+# ★ That asymmetry IS the fix: it is what makes "publish the split" cheaper than staying blank.
+UNOBSERVABLE_RE = re.compile(r"\bunobservable\b\s*\(([^)]{3,})\)", re.I)
+
+
+def _n(s):
+    return int(s.replace(",", ""))
+
+
+def check_preflight_tokens(line, label="GOOD-MORNING.md"):
+    """The pre-flight stamp in REAL CLAUDE TOKENS against an ABSOLUTE budget (Dave #56).
+
+    Form: `pre-flight: boot N (disk N measured · harness ~N est ±N) + job N est + wrap N est
+           = N of 200,000 — BAND`
+
+    ⚠ Nothing here divides by anything. That is the whole design: the check needs no window
+    size, so no unobservable quantity can suppress it. A term whose value cannot be measured is
+    written as an estimate and LABELLED; a term that cannot be estimated at all is declared
+    `unobservable (<reason>)` and the stamp still publishes everything else.
+    """
+    fails, warns, notes = [], [], []
+    terms, declared = {}, set()
+    for key, rx in ABS_TERM_RE.items():
+        m = rx.search(line)
+        if m:
+            terms[key] = _n(m.group(1))
+    for m in UNOBSERVABLE_RE.finditer(line):
+        for key in ABS_TERM_RE:
+            if re.search(r"\b%s\b[^.·]{0,60}unobservable" % key, line, re.I):
+                declared.add(key)
+
+    missing = [k for k in ("boot", "job", "wrap") if k not in terms and k not in declared]
+    if missing:
+        fails.append(
+            f"{label}: pre-flight stamp is SILENT on {', '.join(missing)}. D10 (c): publish the "
+            f"measured/estimated split — a term you cannot measure is written as an ESTIMATE "
+            f"with its error bar, or declared `unobservable (<reason>)`. What is not allowed is "
+            f"leaving it out, because that is how one unknown suppressed the whole stamp for "
+            f"thirteen sessions.")
+
+    tm = ABS_TOTAL_RE.search(line)
+    if not tm:
+        fails.append(f"{label}: pre-flight stamp states no total against a budget "
+                     f"(`= N of {gauge.BUDGET_WORKING:,}`)")
+        return fails, warns, notes
+
+    total, budget = _n(tm.group(1)), _n(tm.group(2))
+    if budget != gauge.BUDGET_WORKING:
+        fails.append(f"{label}: pre-flight prices against {budget:,}, but the ruled working "
+                     f"budget is {gauge.BUDGET_WORKING:,} (Dave #56). Re-dialling it is his "
+                     f"word — and changing `_gauge_tokens.BUDGET_WORKING` is part of doing it.")
+
+    if not missing:
+        summed = sum(terms.get(k, 0) for k in ("boot", "job", "wrap"))
+        if summed and abs(total - summed) > max(1000, summed // 100):
+            fails.append(f"{label}: pre-flight arithmetic does not close — "
+                         f"{'+'.join(f'{terms.get(k, 0):,}' for k in ('boot', 'job', 'wrap'))} "
+                         f"= {summed:,}, stamp says {total:,}")
+
+    bm = BAND_WORD_RE.search(line)
+    if not bm:
+        fails.append(f"{label}: pre-flight names no band — state the NUMBER and the BAND "
+                     f"together so a mismatch is visible in one glance")
+    else:
+        truth = gauge.band_for(total)
+        if bm.group(1).upper() != truth:
+            fails.append(f"{label}: pre-flight band MIS-READ — {total:,} is {truth} against the "
+                         f"ruled budget, stamp says {bm.group(1).upper()}. Quote the thresholds "
+                         f"in `_gauge_tokens.py`, never recall them")
+
+    stop_at = gauge.BUDGET_WORKING - terms.get("wrap", 0)
+    if total > gauge.BUDGET_HARD:
+        # ⛔ ALWAYS a fail, marked or not — and the reason is EVIDENTIAL, not a preference.
+        # 256,000 is the largest context at which Claude's recall has been publicly MEASURED
+        # (93% MRCR v2). Past it we are not spending a reserve, we are extrapolating off the end
+        # of the data. A marker cannot buy evidence that does not exist.
+        fails.append(
+            f"{label}: pre-flight {total:,} is past the HARD line ({gauge.BUDGET_HARD:,}). "
+            f"That line is SOURCED, not picked: it is the last context length at which Claude's "
+            f"recall has been publicly measured (93% on MRCR v2, falling to 76% at 1M). Beyond "
+            f"it there is no measurement to reason from, so `RESERVE SPEND` does NOT buy the "
+            f"overrun — SPLIT THE JOB across windows, or delegate part of it to a subagent with "
+            f"its own budget.")
+    elif total > gauge.BUDGET_WORKING:
+        if RESERVE_SPEND_RE.search(line):
+            warns.append(
+                f"{label}: pre-flight {total:,} is over the working budget "
+                f"({gauge.BUDGET_WORKING:,}) but inside the hard line — ALLOWED, marked and "
+                f"forked to Dave. ⚠ RARE: a session marking this every wrap has re-dialled the "
+                f"budget by habit rather than by ruling.")
+        else:
+            fails.append(
+                f"{label}: pre-flight {total:,} is over the working budget "
+                f"({gauge.BUDGET_WORKING:,}, Dave #56) and UNMARKED. Either CUT THE JOB back "
+                f"inside the budget, DELEGATE part of it to a subagent with its own window, or "
+                f"declare the overrun IN ADVANCE and mark it `RESERVE SPEND — forked to Dave`. "
+                f"⚠ Do NOT under-price the job to fit — that is the failure this budget exists "
+                f"to prevent.")
+    elif total < gauge.BUDGET_AMBER:
+        notes.append(
+            f"{label}: pre-flight {total:,} is below {gauge.BUDGET_AMBER:,} — comfortable. "
+            f"Check the price really includes boot + job + wrap: a price that keeps landing far "
+            f"under budget is under-pricing, not thrift. In flight, STOP AT {stop_at:,} "
+            f"({gauge.BUDGET_WORKING:,} − the {terms.get('wrap', 0):,}-priced wrap).")
+    else:
+        notes.append(
+            f"{label}: pre-flight {total:,} is inside the working budget "
+            f"({gauge.BUDGET_WORKING:,}). In flight, STOP AT {stop_at:,} "
+            f"({gauge.BUDGET_WORKING:,} − the {terms.get('wrap', 0):,}-priced wrap): the budget "
+            f"is where the wrap has FINISHED, not where it starts.")
+
+    # ★ POSITION, NOT JUST VOLUME — published on every path, because it is the cheaper lever and
+    # no session will look it up. Recall is U-shaped: strongest at the START and END of context,
+    # ~30% weaker in the MIDDLE (Anthropic: "a performance gradient rather than a hard cliff").
+    # ⇒ a finding made mid-window is sitting in the weakest region and must be WRITTEN DOWN.
+    notes.append(
+        f"{label}: ⚠ position matters as much as volume — recall is U-shaped, ~30% weaker in "
+        f"the MIDDLE of a window than at either end. The chain is read first and the wrap "
+        f"written last, so canon already sits at the strong ends. A finding made MID-window "
+        f"does not: write it to its home when you find it, do not carry it to the wrap.")
+    return fails, warns, notes
+
+
 def check_preflight(text, label="GOOD-MORNING.md"):
     """FORM check on the pre-flight stamp, plus the ds-023 CEILING. Returns (fails, warns, notes).
 
@@ -717,8 +866,15 @@ def check_preflight(text, label="GOOD-MORNING.md"):
     line = next((ln for ln in text.splitlines() if PREFLIGHT_RE.match(ln)), None)
     if line is None:
         return ([f"{label}: no `pre-flight:` stamp — the handoff must carry the estimate the "
-                 f"session was priced with (runbook § ★ Half 0b). Form: `pre-flight: fill N% + "
-                 f"job N% + wrap N% = N% BAND · reserve 15% ring-fenced`"], warns, notes)
+                 f"session was priced with (runbook § ★ Half 0b). Form (Dave #56, REAL TOKENS): "
+                 f"`pre-flight: boot N (disk N measured · harness ~N est ±N) + job N est + "
+                 f"wrap N est = N of {gauge.BUDGET_WORKING:,} — BAND`"], warns, notes)
+
+    # ---- #56 DISPATCH. `= N of N` is the absolute form's signature and no percentage stamp can
+    # produce it, so the two paths cannot be confused. ⚠ The percentage path below is DEPRECATED
+    # but still live and still green — see the ADDITIVE note at ABS_TERM_RE.
+    if ABS_TOTAL_RE.search(line):
+        return check_preflight_tokens(line, label=label)
 
     terms = {}
     for key, rx in TERM_RE.items():
@@ -2097,6 +2253,78 @@ PREFLIGHT_FIXTURES = [
 ]
 
 
+# ---- #56 — THE ABSOLUTE-STAMP FIXTURES. ⚠ Every one of these was run as a MUTATION before it
+# was written down: the check was confirmed to go RED on the failing form and GREEN on the
+# control. A fixture list assembled without that step asserts that the code does what its author
+# intended, which is not the same as testing it [[gate-must-quote-what-it-forbids]].
+_ABS_OK = ("pre-flight #56: boot 26,897 (disk 6,897 measured · harness ~20,000 est ±8,000) + "
+           "job 45,000 est + wrap 20,000 est = 91,897 of 200,000 — GREEN\n")
+PREFLIGHT_TOKEN_FIXTURES = [
+    ("control — priced, in budget, all three terms labelled", _ABS_OK, False),
+    # ★ THE D10 (c) PAIR, and it is the whole point of the rewrite. A term that is DECLARED
+    # unobservable passes; the identical stamp with that term merely ABSENT fails. Silence is
+    # the only thing being punished — which is what makes publishing cheaper than refusing.
+    ("D10 (c): a DECLARED-unobservable term passes",
+     "pre-flight #56: boot 26,897 measured + job unobservable (scope unruled) + wrap 20,000 est "
+     "= 46,897 of 200,000 — GREEN\n", False),
+    ("D10 (c): the SAME term silently absent FAILS",
+     "pre-flight #56: boot 26,897 measured + wrap 20,000 est = 46,897 of 200,000 — GREEN\n", True),
+    ("arithmetic that does not close FAILS",
+     "pre-flight #56: boot 26,897 measured + job 45,000 est + wrap 20,000 est "
+     "= 150,000 of 200,000 — GREEN\n", True),
+    ("band mis-read against the ruled thresholds FAILS", _ABS_OK.replace("GREEN", "AMBER"), True),
+    ("AMBER stated correctly passes",
+     "pre-flight #56: boot 26,897 measured + job 120,000 est + wrap 30,000 est "
+     "= 176,897 of 200,000 — AMBER\n", False),
+    ("over the working budget, UNMARKED — FAILS",
+     "pre-flight #56: boot 26,897 measured + job 150,000 est + wrap 30,000 est "
+     "= 206,897 of 200,000 — RED\n", True),
+    ("over the working budget, MARKED — allowed, warns",
+     "pre-flight #56: boot 26,897 measured + job 150,000 est + wrap 30,000 est "
+     "= 206,897 of 200,000 — RED · RESERVE SPEND — forked to Dave\n", False),
+    # ⛔ THE ASYMMETRY THAT MATTERS: the marker buys the WORKING overrun and does NOT buy the
+    # HARD one. Past 256,000 there is no published measurement of Dave's model to reason from,
+    # and a receipt cannot manufacture evidence. Split the job or delegate it.
+    ("past the HARD line — FAILS EVEN WHEN MARKED",
+     "pre-flight #56: boot 26,897 measured + job 200,000 est + wrap 40,000 est "
+     "= 266,897 of 200,000 — RED · RESERVE SPEND — forked to Dave\n", True),
+    ("a stamp priced against a budget nobody ruled FAILS",
+     _ABS_OK.replace("of 200,000", "of 500,000"), True),
+    # ⚠ THE MIS-TARGET BITE, #56. Before the `#NN` widening, PREFLIGHT_RE skipped the live
+    # banner and matched an ARCHIVED stratum instead. This fixture pins the live form.
+    ("the LIVE banner form `pre-flight #NN:` is the line that gets checked", _ABS_OK, False),
+]
+
+
+def selftest_preflight_tokens():
+    """Bite-test the ABSOLUTE stamp (Dave #56). Controls green, every failing class red."""
+    failures = []
+    for name, text, should_fail in PREFLIGHT_TOKEN_FIXTURES:
+        f_, _w, _n = check_preflight(text, label="fixture")
+        if should_fail and not f_:
+            failures.append(f"pre-flight/tokens [{name}]: expected FAIL, stayed green — "
+                            f"the check does not bite")
+        if not should_fail and f_:
+            failures.append(f"pre-flight/tokens [{name}]: expected green, got {f_}")
+    # the budget thresholds, pinned. Two DIFFERENT authorities and the pin records which is which.
+    if (gauge.BUDGET_AMBER, gauge.BUDGET_WORKING, gauge.BUDGET_HARD) != (160_000, 200_000, 256_000):
+        failures.append(
+            f"budget = {(gauge.BUDGET_AMBER, gauge.BUDGET_WORKING, gauge.BUDGET_HARD)}, ruled "
+            f"(160,000 / 200,000 / 256,000) at #56. WORKING is DAVE'S; HARD is SOURCED (93% "
+            f"MRCR v2 at 256K); AMBER is derived at 80% of working. Re-dialling WORKING is his "
+            f"word — updating this pin is part of doing it.")
+    # ⛔ THE #53 GUARD, asserted rather than trusted: a budget under its own floor is unobeyable.
+    failures += [f"budget floor: {x}" for x in gauge.assert_budget_clears_floor()]
+    # the U-shape note must reach every path — an instrument with no reader is ds-024's class.
+    _f, _w, n_ = check_preflight(_ABS_OK, label="fixture")
+    if not any("U-shaped" in x for x in n_):
+        failures.append("pre-flight/tokens: the position note did not publish. Recall is weakest "
+                        "in the MIDDLE of a window, which is where mid-session findings sit — "
+                        "that is the cheaper lever than shrinking anything, and no session will "
+                        "look it up unless the gate says it.")
+    return failures
+
+
 def selftest_preflight():
     """Bite-test the pre-flight FORM check — every class must FAIL, controls must pass."""
     failures = []
@@ -3302,7 +3530,8 @@ def selftest_index_freshness():
 
 
 def selftest():
-    failures = (selftest_preflight() + selftest_budgets() + selftest_units()
+    failures = (selftest_preflight() + selftest_preflight_tokens()
+                + selftest_budgets() + selftest_units()
                 + selftest_bare_token()
                 + selftest_gauge_continuity() + selftest_unkeyed()
                 + selftest_growth() + selftest_usage()

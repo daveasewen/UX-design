@@ -24,6 +24,72 @@ Two facts that shape the method:
 
 ## The gauge is two halves
 
+### ★★ THE UNIT AND THE BUDGET — RULED BY DAVE #56, and it retires the percentage stamp
+
+**Read this before Half 0: the terms below are what Half 0 is denominated in.**
+
+**The stamp is now ABSOLUTE, in REAL Claude tokens.** Form:
+
+```
+pre-flight #NN: boot N (disk N measured · harness ~N est ±N, ds-025)
+              + job N est + wrap N est  =  N of 200,000  —  BAND
+```
+
+⚠ **Nothing in it divides by anything.** That is the entire design. The old stamp priced every
+term as a *percentage of the window*; the window's harness half is unreachable from inside any
+mount (`ds-025` item 1); so the denominator had no value and `check_preflight` — which failed on
+any missing term — voided the whole stamp. **One unobservable quantity suppressed every
+observable one, for thirteen consecutive sessions**, which is exactly the failure **D10 (c)**
+exists to forbid, committed inside the instrument that rules it.
+
+**⛔ THE BAND WAS NOT CONVERTED. IT WAS REPLACED.** `45 / 60 / 63` were percentages *of the
+window*; turning them into tokens means multiplying by the exact quantity nobody can observe.
+These are NEW thresholds with their own provenance [[measure-dont-convert-units]]:
+
+| number | value | authority |
+|---|---|---|
+| **HARD** | 256,000 | **SOURCED** — the largest context at which Claude's recall has been publicly measured and still holds (93% MRCR v2; 76% at 1M). Past it there is no measurement to reason from. |
+| **WORKING** | 200,000 | **DAVE'S**, ruled #56. The line jobs are priced against. |
+| **AMBER** | 160,000 | **DERIVED** — 80% of working. |
+
+★ **The marker buys the WORKING overrun and does NOT buy the HARD one.** `RESERVE SPEND — forked
+to Dave` lets a session cross 200,000 deliberately. Nothing lets it cross 256,000, because a
+receipt cannot manufacture evidence that was never collected. **Split the job, or delegate part
+of it to a subagent with its own window.**
+
+**⛔ A DECLARED GAP PASSES; A SILENT ONE FAILS.** A term you cannot measure is written as an
+estimate with its error bar, or declared `unobservable (<reason>)`. Leaving it out is the only
+thing punished. That asymmetry is the fix — it makes publishing cheaper than refusing.
+
+**★★ THE BOOT'S HARNESS HALF IS AN ESTIMATE AND THAT IS FINE — the argument, so it is not
+relitigated.** ±8,000 tokens on a 200,000 budget is ±4%, and no job's go/no-go flips on 4%. We
+were holding a **planning estimate** to a standard built for a **published measurement**.
+*"A measuring tool must not guess"* governs what we assert as fact; it was never a ban on
+estimating, and reading it as one produced thirteen blank stamps. **Estimate it, LABEL it, carry
+the error bar, move on.** ⚠ Re-measure when the session shape changes — a new MCP server moves it.
+
+**★★ POSITION MATTERS AS MUCH AS VOLUME, and it is the cheaper lever.** Recall is **U-shaped**:
+strongest at the START and END of a window, ~30% weaker in the MIDDLE (Anthropic's own framing is
+*"a performance gradient rather than a hard cliff"*). The chain is read first and the wrap is
+written last, so **canon already sits at the two strong ends — that is the architecture doing
+work, not luck.** ⇒ **A finding made mid-window is sitting in the weakest region: write it to its
+home when you find it, never carry it to the wrap.**
+
+**⚠ ONE MORE THING #56 FOUND, AND IT CHANGES HOW THE PAST THIRTEEN SESSIONS READ.** `PREFLIGHT_RE`
+did not match the live banner form `pre-flight #55:` — only a bare `pre-flight:`. So the gate was
+reading the **first ARCHIVED STRATUM** in the file, not the current session's stamp. Those strata
+say *"FIFTH consecutive"*, *"SIXTH consecutive"* and are ratified history: they can never go
+green. **For those sessions the pre-flight FAIL was unfixable by construction** — a perfect stamp
+written today could not clear a failure being read off a block written weeks earlier. ★ This is
+[[unmatched-grep-is-not-an-absence]]'s third face inverted: the pattern **matched**, so nothing
+looked broken — but *a matched pattern is not the right pattern.* Widened + pinned by a fixture.
+
+**Entry points:** `python3 knowledge/_gauge_tokens.py` prints the budget, the boot split and the
+room left. The `#53` guard (`assert_budget_clears_floor`) refuses a budget at or under its own
+floor, so the *"cap set below its own floor"* defect cannot ship again.
+
+---
+
 ### ★ Half 0 — PRE-FLIGHT: price the job BEFORE committing to it (RULED by Dave, 2026-07-27)
 
 **Dave, at the wrap that forced this:** *"this needs to be flagged before embarking on big jobs, you
