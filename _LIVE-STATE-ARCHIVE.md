@@ -1,5 +1,21 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
 
+<!-- batch 2026-07-30 #49 -->
+## ⏱ PRIOR DELTA — 2026-07-29 (Wed **evening #46**, OPUS solo, Dave live — ★★ **#45's declared-UNPROVEN hypothesis PROVEN by reconstructing #44's tree** · ★★ **the cap binds the SLICE, the reader pays the FILE — `_CHAIN.md` +182 over its own warn, unseeable** · ⚠ **my disconfirming probe ran, returned, and never reached my plan**) — "Keep the wins small." *(Dave, #43, carried.)*
+
+> ⚠ **STATE LINES ONLY — narrative is in `GOOD-MORNING.md`'s ★ LATEST banner, verbatim, same commit.**
+
+- **⚠ #45 RAN COMMIT-ONLY (`d3d9a16`)** — record in `notes/_MEMENTO-DECISIONS.md` § ★ #45, never in a banner. Four items DECLARED owed, **all discharged here**. ★ **Dave ruled: #46 banner + POINTER, not a reconstructed #45 banner** (~1,500 chain tape saved; would have forced #43 *and* #44 to roll).
+- **✅ PROVEN — #45's unit-mismatch hypothesis.** `git show f811069:` → slice **4,319** (−181) · file **4,719** (+219) · #44 stamped **~4,690**. **29 off the FILE, 371 off the slice.** ⇒ #44's number was right in an unnamed unit. #45's retirement stands; **its stated reason does not.** Recorded by ADDITION → ledger § ★ #46.
+- **⬛ NEW open 16 — the cap binds the slice, the reader pays the file.** `BANNER` 328 + `FOOTER` 70 + slice 4,282 = 4,680 vs file **4,682**. Warn 4,500: slice **−218**, file **+182**. Probe: `_CHAIN|CHAIN.md|OUT_NAME` → only `_build_all.py:174/:175`, generate + determinism-check, **never measure** [[instrument-without-a-consumer]]. **Remedy PARKED to Dave's Fable window** — (a) cap the file · (b) exempt + assert wrapper · (c) name the unit.
+- **★ EXIT CHECK — EIGHTH CONSECUTIVE.** Copied up **open 17** (#43's *"a claim that was never true is never chased"*, banner-only, rolling this wrap) and **open 15** (#45's `SIZE_TK_RE` open, never reached §C). Probe named, 4 strings; the one §C hit **cites the class without homing the item** [[unmatched-grep-is-not-an-absence]]. **ROLLED:** 2c #43 banner → `_GM-ARCHIVE.md` (11 ln) · 2d #42 delta → `_LIVE-STATE-ARCHIVE.md` (12 ln), mover receipts.
+- **⛔ 2f NOT RUN — blocked (open 7); `ds-022` FAILS, DECLARED, no forged `HOLE`.** Strata stack **SEVEN** (#45 added none). Dave's #43 scope still governs.
+- **⚠ ERRORS: 1 — NINETEENTH consecutive.** `git log` returned `d3d9a16` as my FIRST probe; I read it, noted the #44/#45 banner-vs-stamp mismatch, and **kept building the already-done sweep.** Dave stopped me, not my own evidence. **The check ran and never reached the plan.**
+- **TREE STATE.** Dave pushes via **GitHub Desktop only**. ⚠ `mv` stray `.git/*.lock` BEFORE git; the clear is the LAST git action. ⚠ Explicit paths — never `git add -A`.
+
+
+---
+
 <!-- batch 2026-07-30 #48 -->
 ## ⏱ PRIOR DELTA — 2026-07-29 (Wed **evening #44**, OPUS solo, Dave live — ★★ **#43's ruling told this wrap NOT to forge `HOLE #43`** · ★★ **#42's "unexplained" reading REPRODUCED under a control — `tiktoken` absence makes a BLOCKING step report a false STALE** · ★ **an index died twelve days ago and nothing could notice**) — "Keep the wins small." *(Dave, #43, carried.)*
 

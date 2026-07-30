@@ -394,6 +394,37 @@ SIZE_TK_RE = re.compile(r"\bGM\b\D{0,12}?([\d.]+)\s*K\s*(tape|tk)\b", re.I)  # K
 LEGACY_UNIT_RE = re.compile(r"\b\d[\d.]*\s*K\s*tk\b", re.I)
 SIZE_TOLERANCE = 0.10      # a stamp is a claim about a measurable thing; 10% drift = re-stamp
 
+# ================================================== open 15 — THE CHAIN FIGURE HAS A LIVE ASSERTION
+# ENACTED #49. Born #45, homeless until #46 copied it up, BLOCKED on open 16 until #48 closed it.
+#
+# THE DEFECT. `SIZE_TK_RE` above validates the **GM** figure and nothing else. Every other
+# `chain`-near-`stamp` occurrence in this file was a TEST FIXTURE (#45's probe), never a live
+# check — so the one number the whole #33 read-chain cut exists to govern was the one figure in
+# the stamp with nothing behind it. #45 retired the hand copy and pointed at the generated one in
+# `_CHAIN.md`'s footer, which made the corpus correct *that day* and left the door open. #46 then
+# hand-added a chain figure twice and caught itself; #48 did it a third time and caught itself.
+# ★ Three sessions self-caught the same act. That is a behaviour holding a line a mechanism should
+# ([[gate-inside-the-growth-loop]]), and it is what `guards: SIZE_TK_RE` was waiting for.
+#
+# ⚠ WHY THIS BANS PRESENCE RATHER THAN CHECKING DRIFT — the tier is mine and is DECLARED, not
+# smuggled. A drift check on a hand figure PASSES at the moment of writing (the wrap copies a
+# number that is true when it copies it) and only bites a session later. That check would license
+# the re-add and then punish whoever inherits it — a cap that fires after the writing can only be
+# paid in live record. Banning presence fails the wrap that performs the act, while it can still
+# undo it for free. ⬛ FAIL-vs-WARN is Dave's to re-dial; the message says so.
+#
+# ⚠ SCOPED TO THE `size:` STAMP, DELIBERATELY. `GOOD-MORNING.md:488` carries
+# `the CHAIN only (**~4.1K tape**` inside a dated stratum — a historical record of what one
+# session's boot cost, which is TRUE and must stay. A repo-wide ban would forge a defect out of
+# correct history: report the measurement, never prescribe the region [[gate-narrows-its-own-rule]].
+#
+# The alternation covers every form the hand copy has actually taken, taken from `git log`, not
+# imagined: `chain **4.4K tape` (#44) · `chain 3.56K tape` (#39) · `chain 34.7K tk` (legacy unit,
+# #30) · `_CHAIN.md **4.6K tape`. `\D{0,12}?` spans the markdown (`**`, `~`, `(`) without ever
+# crossing a digit, so `chain 4,065 → 4,400` and the `417-tape` wrapper prose do not match.
+CHAIN_STAMP_RE = re.compile(r"(?<![A-Za-z])_?CHAIN(?:\.md)?\b\D{0,12}?([\d.]+)\s*K\s*(tape|tk)\b",
+                            re.I)
+
 # ---------------------------------------------------------------- M-set, ruled 2026-07-27 #17
 # `notes/_MEMENTO-DECISIONS.md` § ★ M-SET · brief `notes/_briefs/2026-07-27-memento-hardening-brief.md`.
 # Three regions that the D7 amendment measured and PUBLISHED but never budgeted. Publishing a
@@ -1028,6 +1059,35 @@ def check_budgets(repo):
             if abs(claimed - tk) / max(tk, 1) > SIZE_TOLERANCE:
                 fails.append(f"GOOD-MORNING.md: `size:` stamp claims {claimed:.0f} tk, measured "
                              f"{tk} tk — ritual step 2")
+
+        # ---- open 15 (#49): the chain figure is now ASSERTED, and asserted against the FILE.
+        # ⚠ It reports the live measurement in the same breath as the refusal, because a gate that
+        # only forbids teaches nothing about where the truth lives. UNKNOWN is never defaulted: if
+        # `chain_file_tk` refused, the ban still stands and the message says the figure is
+        # UNMEASURED and why, rather than substituting the slice (~400 tape low, open 16's defect).
+        chain_hand = CHAIN_STAMP_RE.search(stamp.group(1))
+        if chain_hand:
+            if chain_file is None:
+                truth = f"UNMEASURED — {chain_file_detail}"
+            else:
+                hand = float(chain_hand.group(1)) * 1000
+                drift = abs(hand - chain_file) / max(chain_file, 1)
+                truth = (f"the FILE measures {chain_file:,} tape right now, so this copy is already "
+                         f"{drift * 100:.1f}% out" if drift > SIZE_TOLERANCE else
+                         f"the FILE measures {chain_file:,} tape, so this copy happens to be "
+                         f"accurate TODAY — which is not a defence, it is the failure mode: a hand "
+                         f"copy of a generated number is only ever accurate on the day it is written")
+            fails.append(
+                f"GOOD-MORNING.md: `size:` stamp carries a HAND-WRITTEN chain figure "
+                f"({chain_hand.group(0).strip()!r}) — RETIRED #45 and it must not come back. "
+                f"{truth}. Its ONE home is `_CHAIN.md`'s footer, where `_gen_chain` generates it "
+                f"as a fixed point (exact by construction) and `--check` blocks a stale one. "
+                f"REMEDY: delete the figure from the stamp; quote the footer if a reader needs it. "
+                f"⬛ This fails on PRESENCE, not on drift, because a drift check would pass the "
+                f"wrap that re-adds the figure and bite the one that inherits it — #46 and #48 "
+                f"each caught this by hand, which is a behaviour doing a mechanism's job. "
+                f"The FAIL tier is agent-picked and awaiting Dave; the retirement is not. "
+                f"— ritual step 2, open 15")
 
     # ---- ds-021: the cap BINDS ON BILL. Both numbers are reported, the unit is named on each.
     # ⚠ Today this is arithmetically identical to binding on tape, BY DESIGN — the ruling says
@@ -1909,11 +1969,19 @@ def _gm_fixture(do_first=10, sec_a=10, sec_c=10, with_b=False, strata_blocks=0,
     # bite, and the usual fix (widen the assertions to tolerate it) is how a gate gets taught to
     # accept the thing it was built to retire. The legacy path keeps its own dedicated bite below.
     a_part = "" if stamp_a in (None, False) else f"§A {stamp_a:.2f}K tape · "
-    text = body.replace("SIZESTAMP", "> **size:** GM 0.00K tape · chain 0.00K tape · measured x")
+    # ★★ #49, FOUND BY open 15's OWN POSITIVE CONTROL, and it is the better half of that bite.
+    # This second term read `chain {tk}K tape` from #34 until now — so the GREEN CONTROL that
+    # licenses every fixture in `BUDGET_FIXTURES` was modelling the exact hand copy #45 retired,
+    # and modelling it WRONG (it stamped the GM figure under a `chain` label). Fifteen sessions of
+    # green controls asserted that a stamp carrying a hand chain figure is correct. #45's probe
+    # named three fixture sites (`:1844`, `:1846`, `:2050`); the GENERATOR that mints them on every
+    # default fixture was not among them — a survey of occurrences missed the thing producing them.
+    # Now `corpus`, which is a real stamp field and is nobody's generated number.
+    text = body.replace("SIZESTAMP", "> **size:** GM 0.00K tape · corpus 0.00K tape · measured x")
     for _ in range(3):  # converges: the stamp's own length barely moves the count
         tk, _m = measure_tokens(text)
         text = body.replace("SIZESTAMP", f"> **size:** GM {tk / 1000:.2f}K tape · {a_part}"
-                                         f"chain {tk / 1000:.2f}K tape · measured x")
+                                         f"corpus {tk / 1000:.2f}K tape · measured x")
     return text
 
 
@@ -1928,10 +1996,14 @@ BUDGET_FIXTURES = [
     ("required marker missing",                            dict(drop=("§C",)), True),
     ("strata stack 2 blocks deep (D5: LATEST only)",       dict(strata_blocks=2, strata_pad=3), True),
     ("no size stamp",                                      dict(stamp="(no stamp here)"), True),
+    # ⚠ #49: both of these said `chain` until open 15 was enacted. They are EXPECTED-fail fixtures,
+    # so the new ban would not have turned them red — it would have made them fail for a reason
+    # their own names do not state, which is how a suite stops meaning what it says. Re-labelled
+    # `corpus` so each still fails for exactly the defect it is named after.
     ("size stamp STALE (claims 0.10K)",
-     dict(stamp="> **size:** GM 0.10K tk · chain 0.10K tk · measured x"), True),
+     dict(stamp="> **size:** GM 0.10K tk · corpus 0.10K tk · measured x"), True),
     ("size stamp with no K (25618 must not read as 25.6M)",
-     dict(stamp="> **size:** GM 25618 tk · chain 1 tk"), True),
+     dict(stamp="> **size:** GM 25618 tk · corpus 1 tk"), True),
     # D7-as-amended: the SIZE budget, isolated from the LINE caps by fat lines rather than many
     # lines — a fixture that trips both checks at once proves neither of them.
     # ⛔ FLIPPED True→False 2026-07-29 #39 WITH the block's withdrawal — flag and fixture move as a
@@ -2135,7 +2207,12 @@ def selftest_units():
 
     # ---- 2. THE LEGACY FORM MUST BITE. Accepted, but never silently.
     with tempfile.TemporaryDirectory() as td:
-        _f, w_, _n = _warns_for(td, stamp="> **size:** GM 1.00K tk · chain 1.00K tk · measured x")
+        # ⚠ #49: this fixture read `· chain 1.00K tk ·` until open 15 was enacted, and it was one of
+        # the three fixture-only `chain`-near-`stamp` strings #45's probe found. It now says
+        # `corpus`, because the legacy UNIT is what this bite is about and `GM 1.00K tk` exercises
+        # it alone. Changed rather than left: a fixture that trips a fail no bite asserts is a
+        # silent tolerance, and the chain string now belongs to the M10 STAMP BITE, which owns it.
+        _f, w_, _n = _warns_for(td, stamp="> **size:** GM 1.00K tk · corpus 1.00K tk · measured x")
         if not any("spells the measured unit" in x for x in w_):
             failures.append("ds-021: a `tk`-spelled stamp did NOT warn — the legacy unit would "
                             "then survive forever behind a regex that quietly accepts it, which "
@@ -2263,6 +2340,46 @@ def selftest_growth():
         if m10_note is not None and "_CHAIN.md" not in m10_note:
             failures.append(f"M10 UNIT BITE: the chain budget line does not name `_CHAIN.md` as its "
                             f"unit — ds-021, a bare token count is a defect. Note was: {m10_note}")
+
+        # ★ #49 — THE M10 STAMP BITE (open 15, born #45). For four sessions the chain figure had
+        # NO live assertion: `SIZE_TK_RE` validates the GM figure and every other chain-near-stamp
+        # string in this file was a fixture. These bites are what makes `guards: SIZE_TK_RE` true.
+        #
+        # ★ THE POSITIVE CONTROL LEADS, and here it is doing double duty — it proves the check is
+        # not firing on everything (a fail that always fires is deleted within one wrap) AND it is
+        # the SCOPE control's first half.
+        _f, _w, _n2 = _warns_for(td)
+        if any("HAND-WRITTEN chain figure" in x for x in _f):
+            failures.append("open 15: an ORDINARY stamp tripped the chain-figure ban. The check "
+                            "fires on everything, which makes it noise and gets it routed around")
+        # The forms are REAL — every one taken from `git log` on GOOD-MORNING.md, not invented:
+        # `chain **4.4K tape` (#44) · `chain 3.56K tape` (#39) · `chain 34.7K tk` (#30, legacy unit).
+        for hand in ("chain **4.4K tape**", "chain 3.56K tape", "chain 34.7K tk"):
+            f_, _w, _n3 = _warns_for(td, stamp=f"> **size:** GM 1.00K tape · {hand} · measured x")
+            hit = next((x for x in f_ if "HAND-WRITTEN chain figure" in x), None)
+            if hit is None:
+                failures.append(f"open 15: the stamp form {hand!r} did NOT fail. This is one of "
+                                f"the shapes the hand copy has actually taken in this repo's "
+                                f"history, so a regex that misses it leaves the door #45 retired "
+                                f"the figure to close standing open")
+            elif "_CHAIN.md" not in hit or "RETIRED #45" not in hit:
+                failures.append(f"open 15: the refusal for {hand!r} does not name the retirement "
+                                f"or the figure's real home. A gate that only forbids teaches the "
+                                f"next session nothing — report the measurement. Was: {hit}")
+        # ★★ THE SCOPE CONTROL, and it is the load-bearing bite. `GOOD-MORNING.md:488` really does
+        # carry `the CHAIN only (**~4.1K tape**` inside a dated stratum — a TRUE record of one
+        # session's boot cost. A repo-wide ban would forge a defect out of correct history. This
+        # asserts the ban stops at the stamp: same string, outside it, must pass clean.
+        f_, _w, _n4 = _warns_for(td, fat_c=1)
+        stratum_form = "Boot read the CHAIN only (**~4.1K tape**, not GM's 19.4K)"
+        if CHAIN_STAMP_RE.search(stratum_form) is None:
+            failures.append("open 15 SCOPE: the regex no longer matches the live GM:488 stratum "
+                            "form, so this control has stopped controlling anything — re-derive "
+                            "it from the file before trusting the bite above")
+        if any("HAND-WRITTEN chain figure" in x for x in f_):
+            failures.append("open 15 SCOPE: a fixture with NO chain figure in its stamp still "
+                            "failed — the ban has escaped the stamp and is now judging body prose, "
+                            "which would fail GM's own true history (line 488)")
 
         # ★ THE RE-POINT CONTROL. Under the OLD definition (GM + LS whole) a fat §A/§C blew the
         # chain budget. Under the new one they are not in the chain at all. This bite is what
