@@ -835,3 +835,84 @@ gated, not patched. **Not done: it touches a blocking gate and Dave asked for a 
 surgical replacement with a `count == 1` assertion, every figure measured by the gate's own
 tokenizer, `tiktoken` installed and verified before the first measurement. Reading the 26,914-tape
 file to change two lines of it would have been the exact overspend the chain file exists to stop.
+
+## ★ #47 — OPEN 16 WAS NOT IMPLEMENTABLE AS RULED, AND #46 HAD WRITTEN THE PROOF WITHOUT READING IT — 2026-07-30 (Opus solo, Dave live, small-bites by instruction)
+
+**The ruling (Dave, at the opener, from his own #46 shapes marked "not exhaustive"): open 16 = (a)+(c)
+— cap the file AND name the unit.** He also ruled the pace: small bites, banked and tested one at a
+time, and — mid-flight, approving machinery I had flagged as more code than he was promised —
+**"more machinery is what we are after tbh, we should be translating as much prose as we can."**
+That last line is a standing direction, recorded as memory `translate-prose-into-machinery`.
+
+**⛔ THE BLOCKER, and it is the finding.** `_gen_chain.py::build()` calls `read_chain_tk()` to produce
+the FOOTER, and the footer CONTAINS the figure. "Measure the file" needs the file, which needs the
+footer, which needs the number. **Circular.** ★ **#46 wrote the diagnosis and did not recognise it as
+one:** *"a self-referential delta cannot be written before the edit that changes it"* sits in the GM
+header as a lament about hand-editing a stamp; it is in fact a proof that the ruled shape could not
+be built. ⇒ **The wrapper went unmeasured for three sessions because measuring it was structurally
+impossible, not because nobody looked.**
+
+**THE RESOLUTION — a fixed point, and it is strictly better than what was ruled.** Render with a
+provisional figure → measure the whole rendered text → re-render → assert convergence. Seeded from
+the slice (a strict LOWER bound: the wrapper only adds). Converges in **2 passes**. **REFUSES a
+2-cycle** rather than picking an end — both ends are false, and a stamp chosen from one is the
+cheerful-zero class wearing a plausible number. ⇒ **the stamp is now exact BY CONSTRUCTION**, which
+is the property #46 broke twice by hand in a single session.
+
+**ENACTED (`62b6e1e`), MEASURED (cl100k, tiktoken verified before the first measurement):**
+`file 4,878 tape = slice 4,460 + wrapper 418 · fixed point in 2 passes`.
+⛔ **(a) IS NOT ENACTED.** `CHAIN_BUDGET_TK` + the M10 consumer still measure the SLICE; the cap does
+not yet bind the file. **Open 15 stays blocked behind open 16.** Bite 2 is specified in §C.
+
+**★ THE OLD BITE PASSED GREEN THROUGHOUT THE ENTIRE DEFECT.** It asserted only that *a* measurement
+appeared in the generated text — which the slice figure satisfied happily while the wrapper went
+unmeasured for three sessions. Re-pointed to the **fixed-point invariant**: the stamped figure IS the
+size of the file it is stamped in. **A bite that a defect can satisfy is not a bite.**
+
+**⚠ THE FIX GREW THE REGION IT GOVERNS, AND THE NEW INSTRUMENT CAUGHT IT.** The first footer draft
+explained the ruling, the unit change and the history *in the file*: **+107 tape on every future cold
+read**. Trimmed to **+18**. Visible only because the fixed point reports slice and wrapper
+separately — [[gate-inside-the-growth-loop]], caught inside ten minutes by the thing being built.
+★ **The rule extracted and inscribed in the source: the `.py` is read by maintainers by choice; the
+`.md` is charged to every cold session forever — be generous there, miserly here.**
+
+**⬛ FORKED TO DAVE, RAISED NOT RULED (five, all new this session):**
+1. **The build no longer fits in one sandbox call.** 75 steps, 1–73 ≈ 40s, 45s cap, `EXIT=124`
+   reproduced at 40s and 43s; `_build_all.py` has no subset flag. ⇒ **no session can obtain the
+   build's composite exit code.** Verified in SEGMENTS here and labelled as my composition:
+   reaching step 73 proves none of 1–73 gate-failed (`:290` `sys.exit`s on gating failure); 74 and
+   75 are exit 0 standalone. **The honest claim is "all 75 accounted for, none gate-failing" — the
+   banner has been saying "75/75 exit 0", which is stronger.**
+2. **Generated artefacts stamp the BUILD DATE** — seven files churned `07-29`→`07-30` with zero
+   content change. **This morning's bug with a longer period:** a per-RUN variable in generated
+   output where the footer had a per-PASS one.
+3. **`MODEL-ROUTING.md` is stale in its default tier** (*"Opus 4.8 · high"*); this session is
+   `claude-opus-5`, and I announced my routing off that table at the opener.
+4. **Two instruments, two amber edges** — `_context_gauge.py` `AMBER_AT = 0.50` vs the ruled
+   `((45,"GREEN"),(60,"AMBER"),…)` at `_capture_gate.py:79`. #37 enacted the recalibration in the
+   gate and left the gauge behind.
+5. **`"Measured, adjustable."`** annotates both `DEFAULT_WINDOW` and `DEFAULT_BASELINE`; `ds-025`
+   item 1 records the boot was never measured in 36 sessions. **Open 17's class, second specimen.**
+
+**✅ SETTLED — open 2 does NOT home the gauge denominator, but three receipts do.** `ds-025`'s three
+numbers are boot·bill·fill, all numerators. The denominator is homed at `_FUTURE-STATE.md:742` and in
+two lane receipts, **none of them §C**. ★ **And "hardcodes" was the wrong word for ten sessions** —
+`_context_gauge.py:63` is `ap.add_argument("--window", …, default=DEFAULT_WINDOW)`, an overridable
+default. **The remedy has existed since 07-29** in open 5's floated note (P4, `--model`), the note
+under Dave's firm #38 condition and **unread by any session, four now.**
+⇒ **A finding filed only in a receipt is filed in a dated home, and dated homes do not count.** 2c's
+EXIT CHECK applies that rule to banners and has never applied it to what banners point at.
+
+**⚠ ERRORS: 3 — TWENTIETH consecutive session to record them, all self-caught, one by the new
+instrument.** (i) the +107 footer; (ii) stamping the PASS COUNT into the footer, which would have
+moved the measured text on every pass and made convergence unguaranteed — caught before running;
+(iii) **I called the build "HANGING"** off two runs stopping at an identical 364 log lines. An
+inference from a coincidence. Step 74 alone is exit 0 in 10s. **Withdrawn** —
+[[measuring-tool-must-not-guess]] turned on my own diagnosis.
+
+**⛔ 2f NOT RUN — still blocked (open 7). `ds-022` continuity FAILS at this wrap, DECLARED, not
+discharged by a forged `HOLE`.** Strata stack **EIGHT** (#38 · #40 · #41 · #42 · #43 · #44 · #46 ·
+#47). Dave's #43 scope still governs; a `HOLE #47` would be the forgery open 8 forbids. **Fourth
+consecutive wrap this ruling has stopped a false inscription.**
+
+**Dossier:** `_DECISION-HISTORY/2026-07-30-the-fixed-point-and-the-unnamed-unit.md`.

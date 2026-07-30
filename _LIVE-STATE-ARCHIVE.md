@@ -1,6 +1,21 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
 
 <!-- batch 2026-07-29 #46 -->
+## ⏱ PRIOR DELTA — 2026-07-29 (Wed **evening #43**, OPUS solo, Dave live — ★★ **three inherited premises FALSE on arrival; the job shrank to one key** · ★★ **Dave RULED the fifth state out of existence, and scoped it himself** · ★ **a MATCHED grep is not a PRESENCE**) — "Keep the wins small." *(Dave, #43.)*
+
+> ⚠ **STATE LINES ONLY — narrative is in `GOOD-MORNING.md`'s ★ LATEST banner, verbatim, same commit.**
+
+- **✅ RULED (Dave) — present-but-unkeyed is a FILING ERROR, not a vocabulary gap. NO FIFTH TERM.** Scoped: *same file → key it + mark PARTIAL · another file → `roll_2f`'s job.* **§C·4 open 8 CLOSED.** → ledger § ★ #43 · `_DECISION-HISTORY/2026-07-29-present-but-unkeyed-ruling.md`. **ENACTED `cd75caf`** (+4/−0): keyed rows **29 → 30**, verified with `STRATA_KEY_RE`. ⛔ **#38 NOT keyed, by the scope.**
+- **★★ MEASURED — chain 4,119 / 381 headroom, NOT 18** ⇒ **open 7 is no longer urgent.** Two more aged premises: `_to_delete/` **0** not 840K · tree **fully pushed** (`6edf337`). [[premise-ages-faster-than-rule]] ×3.
+- **⚠ THIRD PROPAGATION of #39's *"now supplied by this line"*** (#40 · #41 · **#43**) — a claim about the HOLE's status read as the measurement. [[assertion-propagation-gap]] fires on a FLIP; this never flipped. **Named, unsolved.**
+- **★ EXIT CHECK, SIXTH CONSECUTIVE — three homeless items → §C·4 opens 10 · 11 · 12.** Probe named: seven strings, zero §C hits. ★★ **Three `_FUTURE-STATE.md` hits were FALSE POSITIVES** ⇒ **a matched grep is not a presence.** · **⚠ WITHDRAWN:** the `STRATA_BLOCK_RE` cost suspicion — `_capture_gate.py:837`, GM only, **no defect.** · **★ DIAGNOSED:** `_CHAIN.md`'s three sizes were the **−414 tiktoken-absent gap**, not a generator defect.
+- **⚠ THIS WRAP PUT THE CHAIN OVER ITS OWN WARN and had to shave its own banner to get back under** — [[gate-inside-the-growth-loop]], live. **ROLLED (mover receipts, EXIT CHECK first):** 2c #41 banner → `_GM-ARCHIVE.md` · 2d #40 delta → `_LIVE-STATE-ARCHIVE.md`, 11 ln each. ⚠ **2f NOT run — blocked, declared** (`ds-022` RED, stack FOUR).
+- **⚠ ERRORS: 3, SEVENTEENTH consecutive** — propagated an unchecked presence claim · pitched "two keys" on it, withdrew one at enactment · let Dave ratify my own wording before I found the hole in it.
+- **TREE STATE.** `cd75caf` via `_git_commit.sh --reconciled` (runbook READ, not recalled). Wrap commit follows. Dave pushes via **GitHub Desktop only**. ⚠ `mv` stray `.git/*.lock` BEFORE git; the clear is the LAST git action.
+
+
+---
+
 ## ⏱ PRIOR DELTA — 2026-07-29 (Wed **evening #42**, OPUS solo, Dave live — ★★ **the 2c/2d EXIT CHECK bit for the FIFTH consecutive wrap and caught the 2f fork itself** · ★★ **the read chain has EIGHTEEN TAPE and `roll_2f` is its only relief valve** · ★ **#41 ran on past its own wrap for three commits**) — "Small bites, fresh window often — small big wins first." *(Dave, #42.)*
 
 > ⚠ **STATE LINES ONLY — the narrative is in `GOOD-MORNING.md`'s ★ LATEST banner, verbatim, same commit.**
