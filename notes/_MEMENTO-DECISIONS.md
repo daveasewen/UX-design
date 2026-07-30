@@ -2102,3 +2102,61 @@ the machine that makes a cold start cheap. [[premise-ages-faster-than-rule]].
 - **★★ FAIL #1 IS UNREACHABLE BY CONSTRUCTION — Dave's fork, not a task.** Strata floor = 3 permanent (#40/#41/#42) + 1 current = **4** vs `STRATA_MAX_BLOCKS = 1`. [[m8-cap-at-its-own-floor]]. Options: exempt the three by name · raise the constant to 4 naming them · license a non-`roll_2f` route.
 - **⚠ THREE ERRORS, TWO CAUGHT BY THE PROBE AND NONE BY ME.** (i) ratified *"6 fail · 9 warn"* when the close measured 4 · 6 — a figure true mid-window, false by the end, never re-read, which is [[assertion-propagation-gap]] exactly · (ii) ratified a handoff order (*2f first*) that would have caused a silent mis-file · (iii) **#57 wrote NO stratum at all** and its ledger pointer dangled until this section. ★ All three are the same shape as #56's: **the measurement existed and the summary never consulted it.**
 - **⚠ TWO STALE PROSE SITES FOUND, NOT YET FIXED (queued, not ad-hoc'd):** `_gm_move.py:63–64` and `_RUNBOOK-capture-ritual.md:300–303` both still say `roll_2f` refuses a chronologically-later key — **relaxed at #54; the code appends a receipt instead.** The runbook also still says both destinations append at EOF, corrected in the code at #35 and never propagated. [[feedback-read-the-runbook]] cuts both ways: the runbook must itself be true.
+
+## ★ #58 — 2026-07-30 — THE RITUAL RAN CLEAN, AND A CAP AT ITS OWN FLOOR GOT ITS SECOND REMEDY
+
+*provenance: 2026-07-30 · status: ruled (Dave, in-session, at the opener)*
+*Discharges the pointer `GOOD-MORNING.md` § ★ LATEST #58 makes to "§ ★ #58". Narrative: `_DECISION-HISTORY/2026-07-30-the-ritual-and-the-two-stale-clauses.md`. Commit `ef265cb`.*
+
+### ⬛ D1 (RULED, Dave) — THE STRATA FORK: EXEMPT BY NAME, DO NOT RAISE THE CAP
+
+**The state put to him:** `STRATA_MAX_BLOCKS = 1` against a floor of **4** — three permanently
+unrollable blocks (`#40`/`#41`/`#42`, keys added retroactively to `notes/_GAUGE-LOG.md:399`, so
+`roll_2f`'s duplicate-key guard refuses them and is right to) plus the current one. Green was
+unreachable, forever. Three options offered; **the agent did not pick.**
+
+**His words:** *"Exempt #40/#41/#42 by name and keep the cap at 1 for live strata. They're unrollable
+for a recorded reason (_GAUGE-LOG.md:399 — keys added retroactively), so that's a known permanent
+condition. **Name it, don't bury it in a threshold.** There's already precedent in the same function:
+SECTION_EXEMPT at _capture_gate.py:1261, where §A is exempt by ruling and 'measured and reported,
+never charged.' Use that shape. **Not raising the cap to 4** — that's a cap at its own floor with no
+headroom, and #57 skipped 2f the night before, which would have taken it straight to 5. And the
+exemption is **a named list of three, not a licence to accumulate**: if a fourth unrollable block ever
+turns up, **fail loud and come back to me**."*
+
+**WHY it matters beyond this gate — the general form.** #53 answered a cap-at-its-own-floor by
+**deriving** the cap from the population it governs (D4a). #58 answers a different shape: when the
+floor is a **closed list of known permanent conditions**, the remedy is to **name the exceptions**.
+★ **Raising the number to meet the floor is neither remedy — it launders a known defect into a
+threshold, where the next reader cannot see it.** The test for choosing: is the floor a measurable
+*population* (derive) or a closed *list* (name)? See [[m8-cap-at-its-own-floor]].
+
+**BUILT:** `_capture_gate.py::STRATA_EXEMPT = {40, 41, 42}` + a reporting `note` naming them, live
+count = blocks − exempt, plus a distinct fail-loud arm cross-checking `_GAUGE-LOG.md` for an
+unrollable block that is NOT on the list. Sonnet subagent; **conductor replayed** gate (4 fail → 3),
+selftest (exit 0) and both mutation arms.
+
+### ⬛ D2 (STILL DAVE'S, STILL UNCONFIRMED) — THE BEHIND-PACE CLAUSE
+
+Asked as the **first question** of the #58 opener, per #57's instruction. He answered the *pace*
+question with *"no constraint, lets just fix the problems"* — which **does not settle it**. The
+clause (*behind pace ⇒ ONE window with more delegation, not more windows*) is now marked **CONTESTED**
+in the GM header and carried in §C·4. ⚠ **Two sessions have now recorded it as his stated preference
+and neither has confirmed it as a ruling.** Ask again, plainly, at #59.
+
+### ⬛ D3 (FORKED TO DAVE, NOT DECIDED) — RETIRE THE PERCENTAGE BAND IN CODE?
+
+#56 replaced `(45, 60, 63)` with real tokens. **Measured #58:** `BAND_FLOOR/HARD_STOP/MARKED_MAX`
+(`:135–137`), `check_preflight`'s % path (`:899–994`) and the selftest pin (`:2543`) all still exist,
+but the live wrap emits **no band line** — dispatch keys on the stamp form and current stamps are in
+tokens. ⇒ **DORMANT, not wrong.** The GM header's *prose* was the defect and is corrected at source.
+**Deleting a pinned ruling of Dave's is not an agent's move** — his word, either way.
+
+### ⚠ D4 (UNPROVEN, PRICED TODO) — THE CHAIN CHECK FLICKERED
+
+`_gen_chain.py --check` exited **1** at #58's boot on a **clean tree**; regeneration produced a
+**byte-identical** file (`diff` 0, `git status` clean) and the check then exited **0** three times
+running. **Nondeterminism or cold-mount artefact — UNDETERMINED, and not diagnosed.** It matters
+because the check is **BLOCKING** inside `_git_commit.sh` (#57's fix): a flaky RED blocks every
+commit, a flaky GREEN defeats the fix. **Reproduce it cold — first call of a session, before anything
+else — or close it out loud.** ★ An honest UNPROVEN is a priced TODO, not a finding.
