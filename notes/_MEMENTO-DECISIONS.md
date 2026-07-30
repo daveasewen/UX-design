@@ -1926,6 +1926,36 @@ times and the summary never consulted it.** [[feedback-check-ran-never-reached-p
 #54's version of it: *after any probe, say what it INVALIDATES.* No output-shaped check catches this
 — the data was right and the sentence was wrong.
 
+### ⛔ DECLARED #55 — THE READ CHAIN IS OVER ITS ADVISORY WARN, AND #55 GREW IT WITHOUT SAYING SO
+
+**Dave, #55: *"state the number and the band together, and declare it rather than leaving #56 to notice."***
+
+| point in the window | `chain_file_tk` | vs warn 4,917 |
+|---|---|---|
+| #55 open — **inherited already over** | 5,412 | **+495** |
+| #55's first correction draft | 5,909 | **+992** |
+| after #55 shaved its own additions | 5,561 | +644 |
+| HEAD `e0fbcd5` | **5,622** | **+705** |
+| after writing THIS declaration | **5,674** | **+757** |
+
+★★ **AND THE DECLARATION IS NOT FREE — it cost +52 tape of the thing it measures.** The first draft of the
+§C·4 entry carried the figure `5,622`, which **was false the moment it was written**, because writing it grew
+the file it describes. ⇒ **the entry now carries the BAND and a live probe, never the number**
+([[ban-scoped-to-a-name]]: home the measurement in a standing section; a line narrating its own size
+falsifies itself — this is the fifth time that has bitten).
+
+`CHAIN_BUDGET_TK = (4917, 6417)`; **−795 under the block candidate.** ⚠ **TIER MATTERS AND IS NOT
+OVERSTATED: both numbers are ADVISORY and AGENT-DERIVED, awaiting Dave** — this is over a threshold
+nobody has ratified, **not a breach of canon**. Arming, re-dialling or retiring it is his.
+
+⚠ **THE AGENT FAILURE, which is the reportable part:** #55 published the chain figure as a **bare
+number four times** and never once beside its band — inside a window whose own commit message quoted
+the pre-flight gate's rule, *"state the NUMBER and the BAND together so a mismatch is visible in one
+glance."* ★ **The rule was in my hands and applied to the thing I was writing, not to the thing I was
+measuring.** Same shape as this window's other three misses: the measurement existed and the summary
+never consulted it. ⛔ **Nothing here is trimmed to fix it** — the +210 #55 added is live record and
+the remedy is Dave's call on the tier, not a shave.
+
 ### ⬛ QUEUED, NOT BUILT — Dave, #55: *"an ungated recurrence is how we got here"*
 
 The 2d cap has no measurer, which is why LATEST+3 could only ever be hand-caught. **Priced as a #56
