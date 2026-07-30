@@ -171,6 +171,16 @@ STEPS = [
     # measures with, so "the chain is N tape" and "here is the chain" cannot diverge.
     # ⚠ --check is BLOCKING here on purpose: this is the FIRST file a cold session reads and it
     # has no reason to doubt it, so a stale copy is the #32 defect with the blast radius maximised.
+    # ⚠ BUT this position cannot actually catch that defect. The step directly above regenerates
+    # _CHAIN.md from whatever GOOD-MORNING.md / _LIVE-STATE.md say RIGHT NOW, so by the time
+    # --check runs here the file is fresh by construction — this can only ever catch
+    # NONDETERMINISM in build() (two renders of the same input disagreeing), never a _CHAIN.md
+    # left stale on disk by an edit to GM/LS that was never regenerated. That is precisely what
+    # landed at the #56 wrap: a stale chain committed with a clean tree, because nothing between
+    # "edit GM" and "commit" read this file. The disk-staleness reader now lives at the commit
+    # seam instead — `knowledge/_git_commit.sh` runs `_gen_chain.py --check` itself, after the
+    # --reconciled guard and before `git add -A`, where nothing regenerates the file in between
+    # and a stale chain is still stale when it is read.
     ("read chain file — _CHAIN.md, the cold-start door (#41)", "_gen_chain.py"),
     ("read chain determinism check — stale _CHAIN.md serves a PREVIOUS session's record (#41)",
      "_gen_chain.py", ["--check"]),

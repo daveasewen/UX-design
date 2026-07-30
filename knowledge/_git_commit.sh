@@ -45,6 +45,16 @@ if [ "$RECONCILED" -ne 1 ]; then
   exit 1
 fi
 
+# chain-staleness gate — this is the seam that actually reads disk state. _gen_chain.py --check's
+# OTHER caller (_build_all.py) runs it immediately AFTER regenerating the file, so it can only ever
+# catch nondeterminism in build(), never a chain left stale by a hand-edit to GOOD-MORNING.md /
+# _LIVE-STATE.md that was never regenerated — the #32 defect, which is what actually landed at the
+# #56 wrap (stale chain, clean tree, committed). Refuse loudly; do NOT auto-regenerate here — that
+# would stage a file this session never showed you.
+python3 knowledge/_gen_chain.py --check ||
+  fail "_CHAIN.md is STALE — a cold session would read a PREVIOUS session's record, not this one. Remedy: python3 knowledge/_gen_chain.py — then re-run this script. Nothing has been staged."
+echo "— chain fresh (_gen_chain.py --check passed)"
+
 # clear · stage · clear · commit · clear
 clear_locks
 find .git -name '*.lock' | grep -q . && fail "lock survived the mv-aside — do NOT stage; investigate"
