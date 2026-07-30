@@ -325,6 +325,33 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
    behaviour teaches sessions to **fake blocks** — which would poison the very dataset the 15% reserve is
    waiting to be re-derived from.
 
+   ### ⛔ AND THE FOURTH STATE IS PREVENTED, NOT NAMED (ds-022 (d), ruled by Dave #54, built #55)
+
+   ★★ **WHY THIS ONE IS ENFORCED AND NOT MERELY DOCUMENTED — Dave, #55, and it is the general form:**
+   *"An unenforced key turned into a false claim in the record, and the false claim turned into a wasted
+   session. Close the first and the chain doesn't start."* ⇒ **the cost of an unenforced convention is
+   not the convention being broken — it is the repair someone improvises, which becomes a fact.**
+
+   **There is no fourth row above, and its absence is the ruling.** A session whose *testimony* reached
+   `notes/_GAUGE-LOG.md` — a `META #<N>`, an `ERRORS #<N>`, a `tape/bill PAIR #<N>` — **without a
+   `#### <date> #<N>` key above it** was invisible to every parser here, so ds-022 (a) reported that the
+   session *"left NO block"* and invited a `HOLE` line that would have been **false**. #41 raised the
+   state, declined to write that line, and forked it; it stayed open thirteen sessions.
+   ⬛ **Dave's ruling (#54): gate it shut, and mark the three.** *"A vocabulary term for a state that
+   should not be possible is a permanent tax; prevention is not."* ⇒ `_capture_gate.py::unkeyed_testimony`,
+   **BLOCKING at birth** — testimony in this file with no key and no `HOLE`/`ABSENT` line **fails the
+   wrap**. ★ **Testimony and key are ONE act; write the key above the entry as you write the entry.**
+   ⚠️ **Do NOT reach for `HOLE` when it fires** — the evidence disproving it is the line the gate quoted
+   back at you. ⚠️ **Do NOT reach for `roll_2f` either:** the mover cannot produce this state (it refuses a
+   post-mortem with no key), so it is never the repair — and once a key exists here the duplicate-key
+   guard refuses, correctly. **The repair is the missing key, nothing else.**
+   ⚠️ **SCOPED TO THIS FILE, per the #43 ruling.** A stratum still sitting in `GOOD-MORNING.md` §C is a
+   different state — an unrolled block, i.e. 2f's job and ds-022 (a)'s alarm — and this check must not
+   annex it. ★ **The three that already reached the state (#40 #41 #42) are named once**, in this log's
+   `#### META — UNKEYED #40 #41 #42` block, and **must not be rolled**: their keys were added
+   retroactively, so the duplicate-key guard refuses them and is right to. That retroactive patch is why
+   #53's handoff said *"roll all 12"* when the record said **9**.
+
    **EXIT CHECK applies and it bites here:** a stratum carrying a lesson — e.g. *"the fork rule failed
    mid-enactment"* — must have that lesson inscribed in `_RUNBOOK-context-gauge.md` **before** the stratum
    may roll. A lesson living only in a post-mortem block is a lesson in a dated home, and dated homes do

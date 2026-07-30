@@ -1474,6 +1474,141 @@ def gauge_log_continuity(repo):
     return fails, warns, notes
 
 
+# ─────────────────────────────────────────────────────────────────────────────────────────────
+# ds-022 (d) — PRESENT BUT UNKEYED, the FOURTH STATE. Gated shut by Dave's ruling at #54.
+#
+# THE STATE, in the words of the record that raised it (`notes/_GAUGE-LOG.md` § META #41
+# (second)): a session whose *testimony* EXISTS in `_GAUGE-LOG.md` but which never wrote a
+# `#### <date> #<N>` key — so `STRATA_KEY_RE` is blind to it and `gauge_log_continuity` reports
+# "left NO block" about a session that had in fact testified. #41 declined to write `HOLE #40`
+# and was right to: `HOLE` is a POSITIVE claim of absence, the evidence was two screens up, and
+# the marker would have forged the dataset the throttle is re-derived from.
+#
+# ⬛ DAVE'S RULING (#54, `notes/_GAUGE-LOG.md` § META — UNKEYED #40 #41 #42): **gate it shut,
+# and mark the three.** ★ NOT a standing fourth vocabulary term. His reasoning, kept in his
+# shape: the state is an artefact of *testimony* and *key* being two separate acts, so the wrap
+# is gated to make it UNREACHABLE going forward and only the sessions that already reached it
+# get a name. **A vocabulary term for a state that should not be possible is a permanent tax;
+# prevention is not.**
+#
+# ★ WHY THE SCOPE IS ONE FILE — the #43 ruling's scope, not a convenience. `roll_2f` CANNOT
+# produce this state: `_RUNBOOK-capture-ritual.md` § ds-022 lists "a post-mortem with no
+# `#### <date> #<N>` key, which would be invisible to the check below" among the things the
+# mover makes impossible. The only way in is the HAND-WRITTEN append the same step licenses
+# ("append-only, one block per session"), and hand-writing produced all three cases.
+# ⇒ **testimony in `_GAUGE-LOG.md` with no key in `_GAUGE-LOG.md` is a FILING ERROR, repaired
+# by keying.** Testimony still sitting in `GOOD-MORNING.md` §C is a DIFFERENT state — an
+# unrolled stratum, which is `roll_2f`'s job and ds-022 (a)'s alarm. This check must not annex
+# it, and a wider glob here would make it fire on every session between wrap and roll.
+#
+# ⚠ WHY THIS IS NOT A DUPLICATE OF ds-022 (a). That check asks "did session N−1 leave a block?"
+# — it looks for the PRESENCE of a key. This one asks the mirror question: "is there testimony
+# that no key accounts for?" A file can fail (a) and fail (d) about the SAME session for
+# opposite reasons, and at #41 it did — (a) was red while naming an absence that was not there.
+# [[unmatched-grep-is-not-an-absence]], from the other side: a failed lookup is not an absence.
+UNKEYED_BLOCKING = True
+
+# The closed vocabulary of TESTIMONY labels, read OFF THE LIVE RECORD rather than imagined —
+# `grep -nE '^\*\*[^*]*#[0-9]+' notes/_GAUGE-LOG.md` returned 18 lines at #55 and all 18 were
+# classified by hand. `HOLE` and `ABSENT` are deliberately absent from this tuple: they are the
+# DECLARATIONS that discharge the check, not testimony that needs discharging.
+# ⚠ THE LIST IS NOT THE GUARD, and this is the whole safety argument. An unrecognised label is
+# NOT silently ignored — `_UNKEYED_ANY_RE` and the second arm below catch it. Enumerating a
+# vocabulary is exactly what [[scope-blindness-gate-vocabulary]] warns produces a blind gate;
+# the rule it gives is "normalise once and FAIL LOUD on unknown". This tuple is the normalise
+# half. The second arm is the fail-loud half, and without it this constant would be a liability.
+TESTIMONY_LABELS = ("META", "ERRORS", "PRE-FLIGHT", "PAIR", "CLOSED", "BAND", "FILL", "OUTCOME")
+# `[^#]*?` cannot cross a `#`, so the label must be the token immediately before the number —
+# match the STRUCTURE, not the words. This is the fourth appearance of substring-vs-structure in
+# this file (#35's usage probe, ds-016's index, #37's banner regex) and the first to be written
+# knowing it: `**RAISED AT #41, OPEN THIRTEEN SESSIONS…` is PROSE about #41, not #41 testifying,
+# and an unanchored search for "#41 near a bold line" cannot tell the two apart.
+_TESTIMONY_RE = re.compile(r"^\*\*[^#]*?\b(%s)\s+#(\d+)\b" % "|".join(TESTIMONY_LABELS))
+_UNKEYED_ANY_RE = re.compile(r"^\*\*[^#]*?#(\d+)\b")
+
+
+def unkeyed_testimony(repo):
+    """ds-022 (d) — BLOCKING AT BIRTH (Dave #54). Returns (fails, notes).
+
+    ⚠ Blocking at birth breaks this file's advisory-first convention, and the reason is on the
+    record rather than in a preference. The state was raised at #41 and stayed OPEN for thirteen
+    sessions; the remedy actually applied in the meantime was a RETROACTIVE key, added to quiet
+    the parser while the ruling was outstanding. That patch made three unrolled sessions look
+    rolled, which is why #53's handoff — *"2f IS 12 BLOCKS DEEP … roll all 12"* — was never a
+    runnable instruction. It was 9. **An advisory tier here licenses precisely the patch that
+    caused the damage**, so the tier is the finding, not a default.
+
+    ⚠ WHAT IT CANNOT SEE, said plainly so nobody reads more into a green: whether the testimony
+    under a key is ABOUT that session, and whether its content is honest. It settles one thing —
+    that every session the file testifies about is accounted for by a key or a declaration. Do
+    not teach it to grade prose; ds-022 (a)'s docstring makes the same refusal for the same
+    reason."""
+    fails, notes = [], []
+    log = os.path.join(repo, "notes", "_GAUGE-LOG.md")
+    if not os.path.exists(log):
+        notes.append("ds-022 (d) unkeyed: no notes/_GAUGE-LOG.md — UNMEASURED, not assumed "
+                     "clean. (An absent file is not a clean file; the M10 refusal pattern.)")
+        return fails, notes
+
+    with open(log, encoding="utf-8") as f:
+        lines = f.read().splitlines()
+
+    keyed = {n for n in (_key_session(ln) for ln in lines
+                         if STRATA_KEY_RE.match(ln)) if n is not None}
+    declared = {n for n in (_key_session(ln) for ln in lines
+                            if HOLE_RE.match(ln) or ABSENT_RE.match(ln)) if n is not None}
+    accounted = keyed | declared
+
+    testimony, unclassified = {}, {}
+    for ln in lines:
+        m = _TESTIMONY_RE.match(ln)
+        if m:
+            testimony.setdefault(int(m.group(2)), ln)
+            continue
+        m = _UNKEYED_ANY_RE.match(ln)
+        if m:
+            unclassified.setdefault(int(m.group(1)), ln)
+
+    def _quote(ln):
+        ln = ln.strip()
+        return ln if len(ln) <= 110 else ln[:107] + "…"
+
+    for n in sorted(set(testimony) - accounted):
+        fails.append(
+            f"ds-022 (d) PRESENT BUT UNKEYED: notes/_GAUGE-LOG.md carries testimony for "
+            f"session #{n} with no `#### <date> #{n}` key and no `HOLE #{n}`/`ABSENT #{n}` "
+            f"line, so every parser in this file is blind to it — including ds-022 (a), which "
+            f"will report that #{n} \"left NO block\" and invite a HOLE line that would be "
+            f"FALSE. The line: {_quote(testimony[n])} "
+            f"FIX — write the key above the testimony you just wrote: "
+            f"`#### <date> #{n} — <descriptor>`. ⛔ Do NOT declare `HOLE #{n}`: HOLE is a "
+            f"positive claim that the session wrote nothing, and the evidence above disproves "
+            f"it. ⛔ Do NOT roll it with `roll_2f` either — the duplicate-key guard will refuse "
+            f"once a key exists here, and it is right to. This is the fourth state Dave ruled "
+            f"UNREACHABLE at #54: testimony and key are ONE act.")
+
+    for n in sorted(set(unclassified) - accounted - set(testimony)):
+        fails.append(
+            f"ds-022 (d) UNCLASSIFIED MARKER: notes/_GAUGE-LOG.md has a bold-lead line naming "
+            f"session #{n}, which has no key and no HOLE/ABSENT line — and the label is not one "
+            f"this check recognises ({', '.join(TESTIMONY_LABELS)}). It is REFUSING TO GUESS "
+            f"rather than passing, because a vocabulary gate that ignores what it does not "
+            f"recognise is how this repo has gone blind before. The line: {_quote(unclassified[n])} "
+            f"FIX — if it IS testimony, key #{n} and add its label to `TESTIMONY_LABELS`; if it "
+            f"is prose that merely mentions #{n}, either key/declare #{n} or reword so the "
+            f"number is not in a structural position. ★ Note this arm stays SILENT whenever "
+            f"#{n} is accounted for, so it costs nothing on a clean file.")
+
+    if not fails:
+        notes.append(
+            f"ds-022 (d) unkeyed: {len(testimony)} session(s) testify in notes/_GAUGE-LOG.md "
+            f"and every one is accounted for — {len(keyed)} keyed · {len(declared)} declared "
+            f"HOLE/ABSENT · {len(unclassified)} unclassified bold-lead mention(s), all of them "
+            f"about accounted sessions. (Said out loud on the passing path: a check that is "
+            f"silent when it succeeds cannot be told apart from one that is dead.)")
+    return fails, notes
+
+
 def _norm(text):
     """Strip blockquote/list chrome and collapse whitespace. Comparing NORMALISED regions rather
     than lines is what makes the receipts proxy rewrap-immune: re-flowing a paragraph moves every
@@ -1828,6 +1963,11 @@ def wrap_checks(repo, today, lane=False):
         f_, n_ = stop_line_consistency(repo)     # ds-023 #54 — the stop line is `60 − wrap`, and
         fails += f_                              # the runbook contradicted itself for 11 sessions.
         notes += n_
+        f_, n_ = unkeyed_testimony(repo)         # ds-022 (d) #55 — the FOURTH STATE, gated shut
+        (fails if UNKEYED_BLOCKING else warns).extend(f_)   # by Dave #54. BLOCKING at birth: the
+        notes += n_                              # advisory years are what let the retroactive
+                                                 # key patch stand, and that patch is why the
+                                                 # #53 handoff said 12 when the record said 9.
         notes.append(f"PRE-FLIGHT stamp: ds-023 is a BAND (Dave #36) — the FULL price "
                      f"(front-load + context GM + job + wrap) is preferred in "
                      f"{BAND_FLOOR}–{HARD_STOP}%; {HARD_STOP} is the line and is livable; up to "
@@ -2520,6 +2660,113 @@ def selftest_gauge_continuity():
     return failures
 
 
+def selftest_unkeyed():
+    """ds-022 (d) bites (#55). The POSITIVE case leads, on the same reasoning as the suite
+    above: a suite that only proves failures reads GREEN after a revert that deletes the
+    comparison entirely, which is #32's lesson and the reason ds-019 was withdrawn.
+
+    ★ THE FIXTURE IS THE HISTORICAL CASE, not an invented one. Bites 1 and 2 are #40 with and
+    without its key — the same two lines, one edit apart — so the suite tests the defect that
+    actually happened rather than a tidier cousin of it. #54's `roll_2f` fixture had to be
+    rebuilt as a sandwich for the same reason: a fixture that cannot distinguish a half-fix
+    from a fix reads green on the half-fix."""
+    failures = []
+
+    def _log(td, body):
+        os.makedirs(os.path.join(td, "notes"), exist_ok=True)
+        with open(os.path.join(td, "notes", "_GAUGE-LOG.md"), "w", encoding="utf-8") as f:
+            f.write(body)
+        return td
+
+    # #40's testimony, verbatim in shape from notes/_GAUGE-LOG.md lines 403–407.
+    T40 = ("**tape/bill PAIR #40 (ds-021 (c) — the standing per-wrap log entry).** Measured…\n"
+           "\n**⛔ META #40 — `roll_2f` FOR #38 IS REFUSED.** The chronological guard…\n")
+
+    with tempfile.TemporaryDirectory() as td:
+        _log(td, "# log\n\n#### 2026-07-29 #40 — Opus solo\n\n" + T40)
+        f_, n_ = unkeyed_testimony(td)
+        if f_:
+            failures.append(f"ds-022 (d): KEYED testimony failed ({f_}) — the check fires on the "
+                            f"good case, which is the state every compliant wrap is in, and it "
+                            f"would be routed around within one session")
+        if not any("every one is accounted for" in x for x in n_):
+            failures.append("ds-022 (d): the passing case said NOTHING. A check that is silent "
+                            "when it succeeds cannot be told apart from a dead one — and this "
+                            "one is new, so nobody has a prior for what its green looks like")
+
+    with tempfile.TemporaryDirectory() as td:
+        # ★★ THE DEFECT ITSELF: the identical testimony with the key removed. This is the state
+        # the live file was in from #40 until the retroactive patch — thirteen sessions.
+        _log(td, "# log\n\n#### 2026-07-29 #39 — Opus\npost-mortem\n\n" + T40)
+        f_, _n = unkeyed_testimony(td)
+        if not any("PRESENT BUT UNKEYED" in x for x in f_):
+            failures.append("ds-022 (d): testimony with NO key did not fail — this is the fourth "
+                            "state itself, the one Dave ruled UNREACHABLE at #54, and the whole "
+                            "reason this function exists")
+        if any("HOLE #40" in x and "Do NOT declare" not in x for x in f_):
+            failures.append("ds-022 (d): the remedy invited a `HOLE #40` line. HOLE is a POSITIVE "
+                            "claim that the session wrote nothing, the testimony above disproves "
+                            "it, and ds-022 (a)'s remedy line inviting exactly this is what #41 "
+                            "refused to obey. A gate must not talk a session into a forgery")
+
+    with tempfile.TemporaryDirectory() as td:
+        # The escape hatch has to work HERE too, or a session that legitimately wrote no stratum
+        # but did leave a META note can never close.
+        _log(td, "# log\n\n#### 2026-07-29 #39 — Opus\nx\n\n**HOLE #40 — no stratum.**\n\n" + T40)
+        f_, _n = unkeyed_testimony(td)
+        if f_:
+            failures.append(f"ds-022 (d): a DECLARED HOLE still failed ({f_}) — without the hatch "
+                            f"this blocks correct behaviour, and a gate that fails on correct "
+                            f"behaviour teaches sessions to fake blocks")
+
+    with tempfile.TemporaryDirectory() as td:
+        # ★ THE DISCRIMINATION BITE. Prose ABOUT a session is not that session TESTIFYING, and
+        # telling them apart is the only thing the regex anchoring buys. Verbatim from line 560.
+        _log(td, "# log\n\n#### 2026-07-29 #39 — Opus\nx\n\n"
+                 "**RAISED AT #41, OPEN THIRTEEN SESSIONS, SETTLED THIS WINDOW.** The state…\n")
+        f_, _n = unkeyed_testimony(td)
+        if any("PRESENT BUT UNKEYED" in x for x in f_):
+            failures.append("ds-022 (d): PROSE about #41 was classified as #41 TESTIFYING. This "
+                            "is substring-vs-structure for the fourth time in this file (#35's "
+                            "usage probe, ds-016's index, #37's banner regex) — the label must "
+                            "be the token immediately before the number, not merely nearby")
+        if not any("UNCLASSIFIED MARKER" in x for x in f_):
+            failures.append("ds-022 (d): an unrecognised bold-lead line naming an UNACCOUNTED "
+                            "session passed silently. Refusing to guess must mean refusing, not "
+                            "ignoring")
+
+    with tempfile.TemporaryDirectory() as td:
+        # ★★ THE ANTI-BLINDNESS BITE, and the one that makes TESTIMONY_LABELS safe to be a list.
+        # A marker type nobody has invented yet must not be a free pass.
+        _log(td, "# log\n\n#### 2026-07-29 #39 — Opus\nx\n\n**FROBNICATE #99 — a new marker.**\n")
+        f_, _n = unkeyed_testimony(td)
+        if not any("UNCLASSIFIED MARKER" in x for x in f_):
+            failures.append("ds-022 (d): a NEW marker label for an unkeyed session passed — the "
+                            "enumerated vocabulary has become a blind spot, which is the exact "
+                            "failure [[scope-blindness-gate-vocabulary]] names. Enumerate and "
+                            "fail loud, never enumerate and hope")
+
+    with tempfile.TemporaryDirectory() as td:
+        # ⚠ AND THE COST BITE. The unclassified arm must stay SILENT about accounted sessions,
+        # or it emits two fails against today's committed, correct record every wrap — and a
+        # gate that cries on correct state is one nobody reads. [[instrument-without-a-consumer]]
+        _log(td, "# log\n\n#### 2026-07-29 #41 — Opus\nx\n\n"
+                 "**RAISED AT #41, OPEN THIRTEEN SESSIONS.** The state…\n")
+        f_, _n = unkeyed_testimony(td)
+        if f_:
+            failures.append(f"ds-022 (d): prose about an ACCOUNTED session raised {len(f_)} "
+                            f"fail(s) ({f_}) — the check must be free on a clean file or it is "
+                            f"noise, and noise is how a blocking gate gets disarmed")
+
+    with tempfile.TemporaryDirectory() as td:
+        f_, n_ = unkeyed_testimony(td)
+        if f_ or not any("UNMEASURED" in x for x in n_):
+            failures.append("ds-022 (d): a MISSING _GAUGE-LOG.md did not announce itself as "
+                            "UNMEASURED — an absent file is not a clean file")
+
+    return failures
+
+
 def selftest_units():
     """ds-021 bites (#34). The unit machinery is now load-bearing for EVERY cap in this file, so
     it gets the full treatment: the legacy-unit warn must FIRE, the canonical form must be
@@ -3057,7 +3304,8 @@ def selftest_index_freshness():
 def selftest():
     failures = (selftest_preflight() + selftest_budgets() + selftest_units()
                 + selftest_bare_token()
-                + selftest_gauge_continuity() + selftest_growth() + selftest_usage()
+                + selftest_gauge_continuity() + selftest_unkeyed()
+                + selftest_growth() + selftest_usage()
                 + selftest_lanes() + selftest_receipts() + selftest_index_freshness())
     with tempfile.TemporaryDirectory() as td:
         os.makedirs(os.path.join(td, "notes"))
