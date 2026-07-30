@@ -1,4 +1,17 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
+## ⏱ PRIOR DELTA — 2026-07-30 (Thu **#53**, OPUS solo, Dave live, spend #52's rulings by instruction — ★★★ **D1 MEASURED: `bill` IS THE TOKENIZER** · ★★ **THE M8 CAP SAT AT THE FLOOR + 2 TAPE** · ✅ **§C·4 CUT −10,313**)
+
+> ⚠ **STATE LINES ONLY — narrative is in `GOOD-MORNING.md`'s ★ LATEST banner, verbatim, same commit.**
+
+- **★★★ D1 LANDED. `tape`(`cl100k`) × **1.559** = REAL tokens** (`count_tokens`, `claude-opus-5`, 5 registers, `knowledge/_measure_tokenizer.py`). **`TAPE_TO_BILL` = ×1.57 agrees to 0.7%** ⇒ **`bill` was ALWAYS the tokenizer mismatch, never a billing overhead.** ⚠ **Spread 1.486–1.664 (12%) ⇒ ONE ratio cannot re-denominate the corpus.** ⬛ **Re-ruling `ds-021`'s `tape`/`bill` vocabulary is DAVE'S.**
+- **★★ M8 RE-EXPRESSED AS A DERIVED CAP (D4 (a) ENACTED).** Floor MEASURED = header 1,968 + 2×median 1,515 (n=57) = **4,998 vs a BLOCK of 5,000**. Now `warn = header+2×median` (5,000) · `block = header+2×p75` (6,200). **Region FAIL → WARN at 5,058.** Old pair kept verbatim as `BANNER_BUDGET_FALLBACK_TK`, declared never silent; selftest mutation-tests both arms; pin moved as a pair.
+- **✅ §C·4: 57 ln / 11,096 tape → 7 ln / 783. GM 43,016 → 32,703.** Extent asserted 4 ways before the write; receipt printed.
+- **✅ `knowledge/_checkin.py` BUILT** — on-demand "how hot are we", free (measured in-sandbox, never loaded). **This window 70,190 → 194,812 tape ≈ 304,000 real.** Refuses a percentage without a named denominator; exits loudly without tiktoken.
+- **⚠ EXIT CHECK 14th consecutive, BIT:** #50's delta orphan (chain 5,159 vs 4,810, unexplained) → §C·4 **open 29** before the roll.
+- **⛔ 2f NOT RUN — 13th session; DECLARED as `HOLE #52` + `HOLE #53` in `notes/_GAUGE-LOG.md`, and #51's stratum is UNROLLED-not-absent (stated, not fabricated).** ⚠ **D5 (a) ruled the unblock and is STILL UNENACTED — 12 blocks stacked.**
+- **⚠ ERRORS: 1, self-caught** — an under-deep `find` (`-maxdepth 6` vs a depth-7 path) nearly filed a false absence.
+- **TREE STATE.** `_git_commit.sh --reconciled`, paths named. Dave pushes via **GitHub Desktop only**.
+
 ## ⏱ PRIOR DELTA — 2026-07-30 (Thu **#52**, OPUS solo, Dave live, decision-pack by instruction — ★★ **22 RULINGS IN ONE PASS** · ★★ **THE TRANSCRIPT IS SANDBOX-READABLE: `ds-025` PART-FALSIFIED** · ⛔ **`DEFAULT_WINDOW = 200_000` FALSIFIED BY EXISTENCE PROOF**)
 
 > ⚠ **STATE LINES ONLY — narrative is in `GOOD-MORNING.md`'s ★ LATEST banner, verbatim, same commit.**

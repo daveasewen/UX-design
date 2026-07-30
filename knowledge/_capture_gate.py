@@ -724,9 +724,17 @@ def band_for(total):
 # correct by ADDITION rather than by trimming ratified record, and the same logic applies to
 # machinery: the new path proves itself over a few sessions, THEN the old one is cut in a
 # deliberate pass. [[home-by-addition-then-cut]] — never both motions at once.
-ABS_TERM_RE = {k: re.compile(r"\b%s\b[^0-9]{0,3}([\d,]+)" % k, re.I)
+# ⚠ MARKDOWN-TOLERANT BY NECESSITY, NOT BY TASTE — bitten #56, in the same wrap that built this.
+# The first real stamp read `= **96,897 of 200,000**` and the dispatch did not fire, because the
+# fixtures were written in plain text while every banner in this corpus is bold-laden. The check
+# then fell through to the DEPRECATED percentage path and reported a nonsense failure.
+# ★ EXACTLY THE `PREFLIGHT_RE` DEFECT THIS SESSION FOUND, REPEATED ONE FUNCTION LATER: a pattern
+# that matches the form the AUTHOR OF THE TEST writes, not the form the RECORD is written in.
+# ⇒ the bold-laden form is now a FIXTURE, so this cannot regress quietly.
+_A = r"[\s*_]*"          # markdown emphasis + whitespace, any amount
+ABS_TERM_RE = {k: re.compile(r"\b%s\b%s([\d,]+)" % (k, _A), re.I)
                for k in ("boot", "job", "wrap")}
-ABS_TOTAL_RE = re.compile(r"=\s*([\d,]+)\s+of\s+([\d,]+)", re.I)
+ABS_TOTAL_RE = re.compile(r"=%s([\d,]+)%sof%s([\d,]+)" % (_A, _A, _A), re.I)
 # A term may be DECLARED unobservable and still pass. A term that is silently absent may not.
 # ★ That asymmetry IS the fix: it is what makes "publish the split" cheaper than staying blank.
 UNOBSERVABLE_RE = re.compile(r"\bunobservable\b\s*\(([^)]{3,})\)", re.I)
@@ -2293,6 +2301,13 @@ PREFLIGHT_TOKEN_FIXTURES = [
     # ⚠ THE MIS-TARGET BITE, #56. Before the `#NN` widening, PREFLIGHT_RE skipped the live
     # banner and matched an ARCHIVED stratum instead. This fixture pins the live form.
     ("the LIVE banner form `pre-flight #NN:` is the line that gets checked", _ABS_OK, False),
+    # ★★ THE HOUSE-STYLE FIXTURE — this is the ACTUAL first stamp, bold and all, and it FAILED
+    # on its first run because the fixtures above are plain text. A gate tested only against the
+    # form its author types is tested against the wrong corpus.
+    ("the REAL bold-laden banner form parses (the #56 bite)",
+     "> **pre-flight #56:** boot 26,897 (disk 6,897 **measured**, real · harness ~20,000 "
+     "**est ±8,000**, `ds-025` item 1) + job 45,000 **est** + wrap 25,000 **est** "
+     "= **96,897 of 200,000 — GREEN**.\n", False),
 ]
 
 
