@@ -196,6 +196,36 @@ CONSULT_RECEIPT_BLOCKING = False
 STRATA_HEAD_RE = re.compile(r"^###\s*⏱\s*SESSION STRATA\b", re.I)
 STRATA_BLOCK_RE = re.compile(r"^####\s")
 STRATA_MAX_BLOCKS = 1
+# #58 (Dave, verbatim, this ruling): "Exempt #40/#41/#42 by name and keep the cap at 1 for live
+# strata. They're unrollable for a recorded reason (_GAUGE-LOG.md:399 — keys added
+# retroactively), so that's a known permanent condition. Name it, don't bury it in a
+# threshold." STRATA_MAX_BLOCKS above binds LIVE blocks only, from this ruling on — the three
+# below are the PERMANENT FLOOR these three sessions sit at, not headroom to spend.
+#
+# WHY THEY ARE PERMANENT, not drift: #40/#41/#42 each wrote real testimony into
+# notes/_GAUGE-LOG.md at their own wrap, but never wrote the `#### <date> #<N>` key that marks
+# it filed — see notes/_GAUGE-LOG.md:399 ("key added retroactively") and the standing record at
+# notes/_GAUGE-LOG.md § "META — UNKEYED #40 #41 #42" (Dave's ruling #54: gate the state shut,
+# name the three, never mint a standing fourth vocabulary term for it). The missing keys were
+# patched in retroactively to quiet a DIFFERENT check (ds-022 continuity) — so
+# notes/_GAUGE-LOG.md now already carries `#40`/`#41`/`#42` as keys, and `_gm_move.py`'s
+# `roll_2f` duplicate-key guard (knowledge/_gm_move.py ~line 320, "already carries a block for
+# #N") correctly REFUSES to roll them: doing so would split one session's record across two
+# places. The guard is right; the blocks are stuck; waiting does not change that.
+#
+# ⚠ NOT RAISED TO 4 (Dave, same ruling, verbatim): "Not raising the cap to 4 — that's a cap at
+# its own floor with no headroom, and #57 skipped 2f the night before, which would have taken
+# it straight to 5." A cap sized to exactly today's permanent floor leaves no room for a genuine
+# SECOND live block ever to coexist with the three ([[m8-cap-at-its-own-floor]] is the standing
+# name for that mistake). The fix is naming the floor and excluding it — the same shape as
+# SECTION_EXEMPT below (~line 1261: "measured and reported, never charged").
+#
+# ⛔ A CLOSED LIST OF THREE, NOT A LICENCE TO ACCUMULATE (Dave, verbatim): "the exemption is a
+# named list of three, not a licence to accumulate: if a fourth unrollable block ever turns up,
+# fail loud and come back to me." Do NOT add a fourth key here to silence a future FAIL —
+# check_budgets() below carries a dedicated fail-loud check that cross-references
+# notes/_GAUGE-LOG.md for exactly this condition rather than absorbing it quietly.
+STRATA_EXEMPT = {40, 41, 42}   # int form — matches _key_session()'s return type, read below
 # ds-022 (#34). ⚠ ONE SHAPE, DECLARED ONCE — `_gm_move.py` imports these rather than writing its
 # own copy. Two parsers for one line format is the drift class, and #32 was caused by exactly
 # that: a `#### ` heading one reader accepted and another refused.
@@ -732,16 +762,34 @@ def band_for(total):
 # that matches the form the AUTHOR OF THE TEST writes, not the form the RECORD is written in.
 # ⇒ the bold-laden form is now a FIXTURE, so this cannot regress quietly.
 _A = r"[\s*_]*"          # markdown emphasis + whitespace, any amount
-ABS_TERM_RE = {k: re.compile(r"\b%s\b%s([\d,]+)" % (k, _A), re.I)
+# ⛔ #58: the number group MUST BEGIN WITH A DIGIT. It was `([\d,]+)`, which matches a BARE COMMA —
+# so the prose mention "…before the job, and that is a LAPSE…" matched `job` + `,`, and `_n(",")`
+# raised ValueError and took the WHOLE GATE DOWN with a traceback. ★★ A CRASH IS NOT A FAIL: a
+# failing check reports and the wrap continues to the next check; a crashing one reports NOTHING,
+# about ANY check, and the session cannot tell a broken gate from a clean one. Measured, not
+# reasoned: `ABS_TERM_RE['job'].search(banner).group(1)` returned `','` on the live #58 banner.
+# ★ Requiring the leading digit also fixes the USE-vs-MENTION half for free — `search` walks past
+# a mention that has no number after it and finds the real term. ⚠ RESIDUAL, DECLARED, NOT FIXED:
+# a prose mention followed by a number (e.g. "the job, 3 of them, ran") would still win, because
+# scope is what saves USE-vs-MENTION and syntax cannot ([[gate-must-quote-what-it-forbids]]).
+ABS_TERM_RE = {k: re.compile(r"\b%s\b%s(\d[\d,]*)" % (k, _A), re.I)
                for k in ("boot", "job", "wrap")}
-ABS_TOTAL_RE = re.compile(r"=%s([\d,]+)%sof%s([\d,]+)" % (_A, _A, _A), re.I)
+ABS_TOTAL_RE = re.compile(r"=%s(\d[\d,]*)%sof%s(\d[\d,]*)" % (_A, _A, _A), re.I)
 # A term may be DECLARED unobservable and still pass. A term that is silently absent may not.
 # ★ That asymmetry IS the fix: it is what makes "publish the split" cheaper than staying blank.
 UNOBSERVABLE_RE = re.compile(r"\bunobservable\b\s*\(([^)]{3,})\)", re.I)
 
 
 def _n(s):
-    return int(s.replace(",", ""))
+    # ⛔ #58: FAIL LOUD AND NAMED, never a bare ValueError from inside a check. Defence in depth —
+    # the regex above should now make this unreachable, and a guard whose trigger is unreachable is
+    # exactly the one that fires the day someone widens the pattern again.
+    t = s.replace(",", "")
+    if not t.isdigit():
+        raise ValueError(f"_n(): {s!r} carries no digits — a pre-flight term matched punctuation, "
+                         f"not a number. This is the #58 crash class: widen ABS_TERM_RE and the "
+                         f"gate stops reporting on EVERY check, not just this one.")
+    return int(t)
 
 
 def check_preflight_tokens(line, label="GOOD-MORNING.md"):
@@ -1199,22 +1247,31 @@ def section_a_digest(lines, spans):
 
 
 def strata_extent(lines, spans):
-    """(#lines, #blocks) of the 2f stratum stack inside §C — the D6(a) exclusion region.
-    Extracted from check_budgets at M5 (2026-07-28) so the mover's projected-count guard
+    """(#lines, #blocks, block_keys) of the 2f stratum stack inside §C — the D6(a) exclusion
+    region. Extracted from check_budgets at M5 (2026-07-28) so the mover's projected-count guard
     and this gate walk the SAME implementation: two copies of an exclusion is how one of
     them drifts. Behaviour identical to the inline original — the BUDGET_FIXTURES strata
-    bites (2-blocks FAIL · exclusion-must-hold control) prove it."""
+    bites (2-blocks FAIL · exclusion-must-hold control) prove it.
+
+    block_keys ADDED #58 (for STRATA_EXEMPT — see its ruling comment above): the session number
+    off each block's own `#### <date> #<N>` heading, via `_key_session`, in file order — or
+    `None` for a block whose heading carries no parseable key. #lines and #blocks are UNCHANGED
+    in shape and meaning; both existing call sites were updated to unpack three values instead
+    of two. A `None` entry must be treated as LIVE by any caller matching against STRATA_EXEMPT
+    — an unparseable key must never silently match an exemption it cannot actually claim."""
     if "§C" not in spans:
-        return 0, 0
+        return 0, 0, []
     c_start, c_end = spans["§C"]
     for i in range(c_start, c_end):
         if STRATA_HEAD_RE.match(lines[i]):
-            j, blocks = i + 1, 0
+            j, blocks, keys = i + 1, 0, []
             while j < c_end and not re.match(r"^#{1,3}\s", lines[j]):
-                blocks += bool(STRATA_BLOCK_RE.match(lines[j]))
+                if STRATA_BLOCK_RE.match(lines[j]):
+                    blocks += 1
+                    keys.append(_key_session(lines[j]))
                 j += 1
-            return j - i, blocks
-    return 0, 0
+            return j - i, blocks, keys
+    return 0, 0, []
 
 
 def charged_line_counts(lines, spans):
@@ -1223,9 +1280,29 @@ def charged_line_counts(lines, spans):
     against it and `_gm_move.py` imports it (M5 — the mover must never re-derive what the
     gate charges; a mover charging §C gross would refuse moves the gate permits, which is
     the #19 prose-stricter-than-its-gate failure rebuilt in code)."""
-    strata_lines, _blocks = strata_extent(lines, spans)
+    strata_lines, _blocks, _keys = strata_extent(lines, spans)
     return {name: (e - s - strata_lines if name == "§C" else e - s)
             for name, (s, e) in spans.items()}
+
+
+def _gauge_log_session_keys(repo):
+    """Session numbers already keyed (`#### <date> #<N>`) in notes/_GAUGE-LOG.md, or `None` if
+    the file does not exist (e.g. a fixture repo in the self-test harness — the caller MUST
+    treat that as SKIPPED, never as an empty set: a missing file is not proof that no block is
+    unrollable). ADDED #58, for the fail-loud-on-a-fourth check in check_budgets().
+
+    Reads the SAME condition `_gm_move.py`'s roll_2f duplicate-key guard tests
+    (knowledge/_gm_move.py ~line 320-325: `seen = [s for s in (_key_session(ln) for ln in
+    flog.lines if STRATA_KEY_RE.match(ln)) if s is not None]`) — same regex, same key parser,
+    on purpose: a second hand-rolled copy of that condition is exactly the drift class
+    strata_extent()'s own docstring warns about."""
+    log_path = os.path.join(repo, "notes", "_GAUGE-LOG.md")
+    if not os.path.exists(log_path):
+        return None
+    with open(log_path, encoding="utf-8") as f:
+        log_lines = f.read().splitlines()
+    return {n for n in (_key_session(ln) for ln in log_lines if STRATA_KEY_RE.match(ln))
+            if n is not None}
 
 
 def check_budgets(repo):
@@ -1250,10 +1327,45 @@ def check_budgets(repo):
     # 2f strata stack: excluded from §C's cap (D6a), governed by block COUNT instead (D5a).
     # Walk lives in strata_extent()/charged_line_counts() since M5 (2026-07-28) — shared
     # with the mover's projected-count guard, behaviour identical (see those docstrings).
-    _strata_lines, strata_blocks = strata_extent(lines, spans)
-    if strata_blocks > STRATA_MAX_BLOCKS:
-        fails.append(f"GOOD-MORNING.md: strata stack holds {strata_blocks} blocks "
-                     f"(max {STRATA_MAX_BLOCKS}) — ritual step 2f")
+    _strata_lines, strata_blocks, strata_keys = strata_extent(lines, spans)
+    # #58: STRATA_MAX_BLOCKS binds LIVE blocks only — the closed exempt list (ruling + reason at
+    # STRATA_EXEMPT's definition above) is measured and reported, never charged, the same shape
+    # as SECTION_EXEMPT just below. A key of `None` (unparseable heading) can never match the
+    # exempt set, so it counts as live — behaviour for an ordinary over-cap block is UNCHANGED.
+    exempt_present = [k for k in strata_keys if k in STRATA_EXEMPT]
+    live_blocks = strata_blocks - len(exempt_present)
+    if exempt_present:
+        notes.append(
+            "GOOD-MORNING.md strata " + ", ".join(f"#{k}" for k in exempt_present) +
+            ": EXEMPT by ruling (Dave #58 — permanently unrollable, notes/_GAUGE-LOG.md:399 "
+            "key added retroactively; § META — UNKEYED #40 #41 #42): measured and reported, "
+            "never charged.")
+    if live_blocks > STRATA_MAX_BLOCKS:
+        fails.append(f"GOOD-MORNING.md: strata stack holds {live_blocks} live block(s) "
+                     f"(max {STRATA_MAX_BLOCKS}; {len(exempt_present)} exempt by ruling #58, "
+                     f"not counted) — ritual step 2f")
+    # ⚠ FAIL LOUD ON A FOURTH (Dave #58, verbatim): "the exemption is a named list of three, not
+    # a licence to accumulate: if a fourth unrollable block ever turns up, fail loud and come
+    # back to me." A block is unrollable in the SAME way #40/#41/#42 are exactly when its key is
+    # already present in notes/_GAUGE-LOG.md — that is the literal condition `_gm_move.py`'s
+    # roll_2f duplicate-key guard tests (~line 320: "already carries a block for #N"). Checked
+    # here cheaply (one extra file read, the same STRATA_KEY_RE/_key_session pair roll_2f itself
+    # uses — read, not re-derived) so a newly-stuck block gets a message naming the actual
+    # condition instead of reading as an ordinary overflow. If notes/_GAUGE-LOG.md is absent
+    # (e.g. a fixture repo) this specific check is silently SKIPPED, not passed — see
+    # _gauge_log_session_keys's docstring.
+    gauge_log_keys = _gauge_log_session_keys(repo)
+    if gauge_log_keys is not None:
+        newly_unrollable = [k for k in strata_keys
+                            if k is not None and k in gauge_log_keys and k not in STRATA_EXEMPT]
+        if newly_unrollable:
+            fails.append(
+                "GOOD-MORNING.md: strata block(s) " +
+                ", ".join(f"#{k}" for k in newly_unrollable) +
+                " already keyed in notes/_GAUGE-LOG.md — roll_2f's duplicate-key guard will "
+                "refuse them, the same permanent condition #40/#41/#42 are stuck in. "
+                "STRATA_EXEMPT is a CLOSED list of three (Dave #58): this is a NEW unrollable "
+                "block and needs Dave's ruling, not an addition to the list.")
 
     counts = charged_line_counts(lines, spans)
     for name, (s, e) in sorted(spans.items(), key=lambda kv: kv[1][0]):
@@ -2269,6 +2381,15 @@ _ABS_OK = ("pre-flight #56: boot 26,897 (disk 6,897 measured · harness ~20,000 
            "job 45,000 est + wrap 20,000 est = 91,897 of 200,000 — GREEN\n")
 PREFLIGHT_TOKEN_FIXTURES = [
     ("control — priced, in budget, all three terms labelled", _ABS_OK, False),
+    # ⛔ #58, AND IT TOOK THE WHOLE GATE DOWN, NOT JUST THIS CHECK. The live #58 banner mentioned
+    # a term in PROSE before stating it — "…before the job, and that is a LAPSE…" — and the old
+    # `([\d,]+)` group matched the BARE COMMA, so `_n(',')` raised a bare ValueError and the wrap
+    # printed a traceback instead of a verdict on any of its 39 checks. ★★ A CRASH IS NOT A FAIL.
+    # This fixture is the mention-then-state shape, and it must stay GREEN with the real numbers
+    # parsed: mutation-tested #58, both arms — restore `([\d,]+)` and it raises again.
+    ("#58: a PROSE MENTION before the real term must not crash, and must not win",
+     "pre-flight #58 (no band was written before the job, and that is a LAPSE): boot 30,633 "
+     "measured + job 70,000 est + wrap 25,000 est = 125,633 of 200,000 — GREEN\n", False),
     # ★ THE D10 (c) PAIR, and it is the whole point of the rewrite. A term that is DECLARED
     # unobservable passes; the identical stamp with that term merely ABSENT fails. Silence is
     # the only thing being punished — which is what makes publishing cheaper than refusing.
@@ -2484,7 +2605,8 @@ FAT = " ".join(f"word{i}" for i in range(120))  # ~200 tk of line, for isolating
 
 def _gm_fixture(do_first=10, sec_a=10, sec_c=10, with_b=False, strata_blocks=0,
                 strata_pad=0, drop=(), stamp=None, fat_c=0, fat_a=0,
-                fat_banner=0, banner_extra=None, stamp_a=None, ls_text=None, latest=True):
+                fat_banner=0, banner_extra=None, stamp_a=None, ls_text=None, latest=True,
+                strata_keys=None):
     """Synthetic GOOD-MORNING.md for the budget bites.
 
     `stamp=None` ⇒ a CORRECT stamp is computed for the finished text, so the green control is
@@ -2493,7 +2615,14 @@ def _gm_fixture(do_first=10, sec_a=10, sec_c=10, with_b=False, strata_blocks=0,
 
     M-set additions: `fat_banner` grows the banner region (M8) · `banner_extra` injects a banner
     line, which is how the M7 growth trigger's "a banner names §A" suppressor is bitten ·
-    `stamp_a` overrides the stamped §A figure (a float to claim one, `False` to omit it)."""
+    `stamp_a` overrides the stamped §A figure (a float to claim one, `False` to omit it).
+
+    `strata_keys` ADDED #58 (STRATA_EXEMPT bites): an explicit list of session numbers, e.g.
+    `[40, 41, 42]`, used for the `#### <date> #<N>` headings INSTEAD of the auto-generated
+    `#0 #1 #2 …` sequence. Purely ADDITIVE — every existing caller leaves it `None` and gets
+    byte-identical output to before this parameter existed; passing it is what lets a fixture
+    name specific (e.g. exempt) session numbers rather than only sequential ones. When given,
+    its length is what emits (so `strata_blocks` alone is no longer required alongside it)."""
     out = ["# Good morning", "SIZESTAMP", ""]
     # ★ LATEST is in the fixture by DEFAULT from #33 on: after the GM-D7-am cut the banner is the
     # chain's whole GM term, so a fixture without one cannot exercise M10 at all — every bite would
@@ -2514,10 +2643,14 @@ def _gm_fixture(do_first=10, sec_a=10, sec_c=10, with_b=False, strata_blocks=0,
     if "§C" not in drop:
         out += ["# §C · QUEUE", ""] + [f"c line {i}" for i in range(sec_c)]
         out += [f"{FAT} {i}" for i in range(fat_c)]
-        if strata_blocks:
+        if strata_blocks or strata_keys:
             out.append("### ⏱ SESSION STRATA")
-            for b in range(strata_blocks):
-                out += [f"#### 2026-07-2{b} #{b}"] + [f"s line {i}" for i in range(strata_pad)]
+            # strata_keys=None reproduces the ORIGINAL sequence (`key = b`) exactly — existing
+            # callers that only ever pass strata_blocks/strata_pad see byte-identical output.
+            n_blocks = len(strata_keys) if strata_keys is not None else strata_blocks
+            for b in range(n_blocks):
+                key = strata_keys[b] if strata_keys is not None else b
+                out += [f"#### 2026-07-2{b} #{key}"] + [f"s line {i}" for i in range(strata_pad)]
     body = "\n".join(out) + "\n"
     if stamp is not None:
         return body.replace("SIZESTAMP", stamp)
@@ -2559,6 +2692,17 @@ BUDGET_FIXTURES = [
     ("§B present (D4 deleted it)",                         dict(with_b=True), True),
     ("required marker missing",                            dict(drop=("§C",)), True),
     ("strata stack 2 blocks deep (D5: LATEST only)",       dict(strata_blocks=2, strata_pad=3), True),
+    # #58: STRATA_EXEMPT bites. #40/#41/#42 are the CLOSED exempt list (ruling + reason at
+    # STRATA_EXEMPT's own definition, ~line 198) — these three prove the exemption actually
+    # exempts, that it does not become a blanket licence once a live block joins the stack, and
+    # that the cap still bites past it. `strata stack 2 blocks deep` just above is fixture (d)
+    # from the verification plan: two NON-exempt blocks (#0 #1) still FAIL, unchanged.
+    ("strata: 3 exempt blocks only (#40/#41/#42, Dave #58) — must PASS",
+     dict(strata_keys=[40, 41, 42], strata_pad=3), False),
+    ("strata: 3 exempt + 1 live block — must PASS (cap 1 on the LIVE count)",
+     dict(strata_keys=[40, 41, 42, 99], strata_pad=3), False),
+    ("strata: 3 exempt + 2 live blocks — must FAIL (cap 1 still bites past the exemption)",
+     dict(strata_keys=[40, 41, 42, 99, 100], strata_pad=3), True),
     ("no size stamp",                                      dict(stamp="(no stamp here)"), True),
     # ⚠ #49: both of these said `chain` until open 15 was enacted. They are EXPECTED-fail fixtures,
     # so the new ban would not have turned them red — it would have made them fail for a reason
@@ -2615,6 +2759,63 @@ def selftest_budgets():
                         f"{{'compactable': 8000, 'compactable_block': None}} (#39, block WITHDRAWN "
                         f"— the region is retrieval surface, not cold-start cost) — re-dialling is "
                         f"Dave's, and updating this pin is part of doing it")
+    return failures
+
+
+def selftest_strata_exempt():
+    """MUTATION-TEST for STRATA_EXEMPT (Dave #58). A green here must be an assertion that CAN
+    go red, not one that cannot — that is the only way it proves the exemption is load-bearing
+    rather than the cap having silently stopped biting for some unrelated reason. Mutates the
+    module-level set, asserts RED, restores it inside `finally` (a failed assertion must never
+    leave every test that runs after this one in the same process mutated), then asserts GREEN
+    again on the restored set.
+
+    ⚠ THE BASE FIXTURE IS 3 EXEMPT + 1 LIVE, NOT 3 EXEMPT ALONE, AND THE ARITHMETIC IS WHY.
+    With only #40/#41/#42 present, live_blocks = 3 − 3 = 0 under the true set; dropping one key
+    from STRATA_EXEMPT moves it to 3 − 2 = 1, which is STILL <= STRATA_MAX_BLOCKS(1) — a green
+    that a single-key mutation cannot disturb, which would prove nothing (caught by this test
+    itself on its first run: the naive 3-block fixture stayed green after the mutation). Adding
+    one live block first (#99) means the SAME one-key mutation moves live_blocks from 4−3=1
+    (in cap) to 4−2=2 (over cap) — the mutation a reviewer would actually write, made to bite."""
+    failures = []
+    fixture = _gm_fixture(strata_keys=[40, 41, 42, 99], strata_pad=3)
+    with tempfile.TemporaryDirectory() as td:
+        with open(os.path.join(td, "GOOD-MORNING.md"), "w", encoding="utf-8") as f:
+            f.write(fixture)
+
+        # ---- baseline: 3 exempt + 1 live, unmutated STRATA_EXEMPT, must be GREEN (cap 1, live
+        # count 1), and the note must actually NAME all three exempt blocks — an exemption that
+        # is not reported is silent, which is exactly what #58 ruled against ("measured and
+        # reported, never charged", mirroring SECTION_EXEMPT).
+        f_, _w, n_ = check_budgets(td)
+        if f_:
+            failures.append(f"strata-exempt: baseline (unmutated, 3 exempt + 1 live) was not "
+                            f"green — {f_}")
+        if not any("#40" in x and "#41" in x and "#42" in x and "EXEMPT" in x for x in n_):
+            failures.append(f"strata-exempt: baseline published no note naming all three exempt "
+                            f"blocks. Got notes={n_}")
+
+        # ---- MUTATION: drop #42 from the closed list. The fixture is unchanged (still exactly
+        # #40/#41/#42/#99) — if the exemption is load-bearing, one fewer exempt key must turn a
+        # block that used to be exempt into a live one and trip the cap (2 live vs cap 1).
+        global STRATA_EXEMPT
+        original = STRATA_EXEMPT
+        try:
+            STRATA_EXEMPT = original - {42}
+            f_, _w, _n = check_budgets(td)
+            if not any("strata" in x.lower() for x in f_):
+                failures.append(f"strata-exempt MUTATION: removing #42 from the exempt set did "
+                                f"NOT turn the 4-block fixture red — got fails={f_}. A green "
+                                f"that cannot be made red is an assertion, not evidence")
+        finally:
+            STRATA_EXEMPT = original
+
+        # ---- RESTORE: same fixture, original set — must be green again, proving the red above
+        # was caused by the mutation and not by some other side effect of the test itself.
+        f_, _w, _n = check_budgets(td)
+        if f_:
+            failures.append(f"strata-exempt: restoring the original STRATA_EXEMPT did not "
+                            f"return the fixture to green — {f_}")
     return failures
 
 
@@ -3546,7 +3747,7 @@ def selftest_index_freshness():
 
 def selftest():
     failures = (selftest_preflight() + selftest_preflight_tokens()
-                + selftest_budgets() + selftest_units()
+                + selftest_budgets() + selftest_strata_exempt() + selftest_units()
                 + selftest_bare_token()
                 + selftest_gauge_continuity() + selftest_unkeyed()
                 + selftest_growth() + selftest_usage()
