@@ -273,7 +273,34 @@ class Transaction:
         # message named the wrong defect. Safe to extract early — a MoveError anywhere means
         # nothing is written, so in-memory mutation costs nothing.
         pm = self._extract(src, pm_start, pm_end, what=f"roll_2f post-mortem (#{n})")
-        cs = self._extract(src, cs_start, cs_end, what=f"roll_2f commit-state (#{n})")
+        # ★ SCOPED #54: after the pm delete, THIS stratum's commit-state sits exactly at the index
+        # the pm started at. Searching from 0 instead would find an EARLIER stratum's identical
+        # `> **COMMIT STATE` anchor whenever an un-rollable block sits above this one. See
+        # `_extract`'s docstring — measured live against a twelve-deep stack.
+        # ⚠ `first=True` IS LOAD-BEARING AND IS NOT A LOOSENING. `lo` alone is insufficient: the
+        # exactly-one rule then applies from `lo` to EOF, and EVERY stratum below this one carries
+        # the same `> **COMMIT STATE` anchor — so a twelve-deep stack is ambiguous downward even
+        # when it is unambiguous upward. Together the two arguments say the only precise thing
+        # available: "the first commit-state AT OR AFTER the hole the post-mortem just left",
+        # which is this stratum's by construction, since the pm was deleted up to but not
+        # including it. Either argument without the other is wrong.
+        cs = self._extract(src, cs_start, cs_end, what=f"roll_2f commit-state (#{n})",
+                           lo=self._last_extract_pos, first=True)
+
+        # ---- ★ OVER-REACH REFUSAL (#54). A commit-state half can never legitimately contain
+        # another stratum's `#### <date> #<N>` key. If it does, `cs_end` was aimed past the next
+        # stratum — typically at a section boundary like `## after` — and this roll is quietly
+        # carrying one or more WHOLE neighbouring strata into the archive under THIS session's
+        # batch. Caller error, invisible in every receipt, and it does not raise on its own.
+        # ⚠ FOUND BY THE SANDWICH FIXTURE, NOT BY REVIEW: the single-stratum fixture cannot
+        # express it, so this went unguarded from #34 until a twelve-deep stack needed it.
+        swallowed = [_key_session(ln) for ln in cs if STRATA_KEY_RE.match(ln)]
+        if swallowed:
+            raise MoveError(
+                f"roll_2f: the commit-state half for #{n} contains stratum key(s) "
+                f"{[s for s in swallowed if s is not None]} — `cs_end` reached PAST the next "
+                f"stratum and this roll would file whole neighbouring blocks under #{n}'s batch. "
+                f"Aim `cs_end` at the NEXT `#### <date> #<N>` line, not at a section boundary.")
 
         # ---- the block key must be IN the post-mortem half. Unkeyed text is invisible to the
         # N−1 continuity check, which is how a gate gets built on a record it cannot read.
@@ -296,19 +323,64 @@ class Transaction:
             raise MoveError(f"roll_2f: {log} already carries a block for #{n} — the contract is "
                             f"one block per session, and a duplicate key silently splits the "
                             f"record of one session across two places")
+        # ---- CHRONOLOGICAL ORDER: RELAXED #54, under Dave's D5 (a) (#52), and the relaxation
+        # is SAFE ONLY BECAUSE D21 (c) IS ENACTED — every reader of this file order-agnostic.
+        # ⚠ DO NOT "restore" this raise without re-running the check below. It is not a style
+        # preference; it is the thing that made twelve strata unrollable for thirteen sessions.
+        #
+        # WHY IT WAS THERE: #27 hand-prepended a block, so #31 gated the ordering. ★ D5 (a):
+        # "order was file hygiene, never an analytical requirement" — nothing computes on file
+        # position, and a parser sorts the dataset anyway.
+        #
+        # THE PRECONDITION, VERIFIED IN THE CALL GRAPH #54 rather than assumed (all four readers
+        # of notes/_GAUGE-LOG.md, quoted not counted):
+        #   _capture_gate._stratum_session_no  → max(nos)            — order-agnostic (#44's ruling)
+        #   _capture_gate.gauge_log_continuity → set comprehensions  — order-agnostic
+        #   _gm_usage.history_report           → sorted(rows.items())— order-agnostic
+        #   _build_memento_index.parse_gauge   → positional segmentation ONLY; it delimits block
+        #                                        BODIES by line index and never requires session
+        #                                        numbers to ascend.
+        # ⚠ THE DUPLICATE-KEY REFUSAL ABOVE IS UNTOUCHED AND MUST STAY. D5 (a) relaxes ORDER, not
+        # UNIQUENESS — they are different guards, and #54 measured the difference: of twelve
+        # stacked strata, three (#40 #41 #42) are blocked by uniqueness, not by order, and rolling
+        # them would do the harm the duplicate message names.
         later = [s for s in seen if s > n]
         if later:
-            raise MoveError(f"roll_2f: {log} already carries blocks for {sorted(later)}, all "
-                            f"later than #{n} — appending would break the chronological "
-                            f"contract this file declares in its own header (#27's defect)")
+            self.receipts.append(
+                f"ROLL-2f #{n}: appended BEHIND later blocks {sorted(later)} — permitted under "
+                f"D5 (a), safe under D21 (c). Order is not consulted by any reader; this note "
+                f"exists so the out-of-order append is DECLARED rather than silent.")
         self._append(log, pm)
         where = self._archive_insert(archive, cs, archive_at)
         self.receipts.append(f"ROLL-2f #{n}: {len(pm)} ln → {log} (appended, EOF) · "
                              f"{len(cs)} ln → {archive} ({where})")
 
-    def _extract(self, src, start, end, what):
+    def _extract(self, src, start, end, what, lo=0, first=False):
+        """★ `lo` ADDED #54, AND IT IS A REAL DEFECT FIX, NOT A CONVENIENCE.
+
+        `roll_2f` extracts two halves with the SAME anchor text (`> **COMMIT STATE`) appearing
+        once per stratum. The end anchor was already scoped (`lo=s + 1`); the START anchor was
+        not, so it resolved from line 0 every time. That is correct if and only if the stratum
+        being rolled is the TOPMOST one in the file — which is the only case the fixture builds.
+
+        ⚠ MEASURED LIVE #54: GM carried twelve stacked strata and three of them (#40 #41 #42)
+        are NOT rollable, so they stay. Every roll below the topmost was therefore IMPOSSIBLE.
+
+        ★★ AND THE FIRST DIAGNOSIS OF THIS WAS WRONG — RECORDED BECAUSE THE CORRECTION IS THE
+        POINT. #54 predicted a SILENT mis-file: that rolling #43 would quietly take #40's
+        commit-state and archive it under #43's key. **It would not.** `_find_anchor` demands
+        EXACTLY ONE match unless `first=True`, so the pre-fix code REFUSES, loudly and with
+        nothing written:
+            `✖ FAIL: roll_2f commit-state (#33) start: '> **COMMIT STATE' matched 2 lines
+             (need exactly 1) — an ambiguous anchor targets nothing — NOTHING written`
+        ⇒ this was a BLOCKER, never a corruption, and the ambiguity guard is what made it one.
+        The fix does not close a silent-write hole; it removes a refusal that was correct given
+        an unscoped anchor. ⚠ **Do not re-tell this as a near-miss** — [[unmatched-grep-is-not-an-absence]]
+        applies to one's own predictions too: the failure mode was ASSERTED, then measured, and
+        the measurement disagreed.
+        """
         fs = self._file(src)
-        s = _find_anchor(fs.lines, start, what=f"{what} start")
+        s = _find_anchor(fs.lines, start, lo=lo, what=f"{what} start", first=first)
         e = len(fs.lines) if end == "EOF" else _find_anchor(
             fs.lines, end, lo=s + 1, what=f"{what} end", first=True)
         block = fs.lines[s:e]
@@ -316,6 +388,7 @@ class Transaction:
             raise MoveError(f"{what}: block is empty — a 2f roll with an empty half IS the "
                             f"defect (the stratum went somewhere, or nowhere, but not to both)")
         del fs.lines[s:e]
+        self._last_extract_pos = s
         return block
 
     def _append(self, rel, block):
@@ -533,11 +606,77 @@ def selftest():
         rc, _o, err = _run(td, [dict(ROLL_OK)])
         bite("roll_2f: duplicate session key refused", rc == 2 and "already carries a block" in err)
 
-    # ---- chronological: appending behind a later block breaks the file's own contract
+    # ---- chronological: RELAXED #54 under D5 (a). ★ THIS BITE WAS INVERTED, DELIBERATELY —
+    # it used to assert `rc == 2 and "chronological" in err`. Kept in place rather than deleted
+    # so the flip is visible in the diff: what was refused is now PERMITTED AND DECLARED.
     with tempfile.TemporaryDirectory() as td:
         _roll_repo(td, log_body="# log\n\n#### 2026-07-28 #40\nlater block\n")
+        rc, out, err = _run(td, [dict(ROLL_OK)])
+        bite("roll_2f: out-of-order append PERMITTED (D5 (a))", rc == 0)
+        bite("roll_2f: out-of-order append is DECLARED, not silent",
+             "appended BEHIND later blocks [40]" in out)
+        # ★ MUTATION TEST THE OTHER ARM: relaxing ORDER must not have relaxed UNIQUENESS. These
+        # are different guards and #54 measured three live strata blocked by the second one.
+        _log = _read(td, "notes/_GAUGE-LOG.md")
+        bite("roll_2f: the later block SURVIVES the behind-append (nothing overwritten)",
+             "later block" in _log and "post-mortem body" in _log)
+
+    # ---- ★ MUTATION TEST THE OTHER ARM. Relaxing ORDER must not have relaxed UNIQUENESS: they
+    # are different guards, and #54 measured three live strata (#40 #41 #42) blocked by the second
+    # one alone. Both conditions are present here AT ONCE — a later block AND a duplicate key —
+    # which the two tests above cannot show separately.
+    # ⚠ NOT a re-run of the block above: a second `_run` on the same repo fails at _extract (the
+    # first run removed the anchor from GM), so it would go red for the wrong reason and read green
+    # only by accident of the exit code.
+    with tempfile.TemporaryDirectory() as td:
+        _roll_repo(td, log_body="# log\n\n#### 2026-07-28 #33\nalready here\n"
+                                "\n#### 2026-07-28 #40\nlater block\n")
         rc, _o, err = _run(td, [dict(ROLL_OK)])
-        bite("roll_2f: out-of-order append refused", rc == 2 and "chronological" in err)
+        bite("roll_2f: uniqueness STILL refuses when order no longer does",
+             rc == 2 and "already carries a block" in err)
+
+    # ---- ★★ THE ANCHOR-SCOPE DEFECT (#54). The fixture above has ONE stratum, so `cs_start`
+    # resolving from line 0 was indistinguishable from resolving from the pm's position. It is
+    # NOT the same the moment an un-rollable stratum sits ABOVE the one being rolled — which is
+    # the live state that found it: twelve stacked, three of them un-rollable.
+    # ⚠ This bite goes RED against the pre-#54 code, which is the only reason to trust the green.
+    with tempfile.TemporaryDirectory() as td:
+        _fixture_repo(td)
+        # ⚠ THE FIXTURE IS SANDWICHED ON PURPOSE — a stratum ABOVE and a stratum BELOW. Each side
+        # falsifies a different half of the fix, and a one-sided fixture reads green on a broken
+        # one: `lo` alone survives an above-only stack, `first=True` alone survives a below-only
+        # stack. Only the sandwich needs both. This is the shape the LIVE file had.
+        _write(td, "GOOD-MORNING.md",
+               "# Good morning\n\n## strata\n"
+               "#### 2026-07-28 #31\n> older post-mortem\n"
+               "> **COMMIT STATE (stamped)**\n> OLDER-STAYS-PUT\n"
+               "#### 2026-07-28 #33\n> pre-flight: fill 20%\n> post-mortem body\n"
+               "> **COMMIT STATE (stamped)**\n> two commits this window\n"
+               "#### 2026-07-28 #35\n> newer post-mortem\n"
+               "> **COMMIT STATE (stamped)**\n> NEWER-STAYS-PUT\n"
+               "## after\ntail\n")
+        # (i) `cs_end` aimed at the SECTION boundary over-reaches past the next stratum. Before
+        # #54 this wrote silently; it must now REFUSE. ★ This is the bite that found the guard.
+        rc, _o, err = _run(td, [dict(ROLL_OK)])   # ROLL_OK's cs_end is "## after"
+        bite("roll_2f: cs_end past the next stratum is REFUSED, not swallowed",
+             rc == 2 and "reached PAST the next stratum" in err)
+        bite("roll_2f: nothing written when cs_end over-reaches",
+             "NEWER-STAYS-PUT" in _read(td, "GOOD-MORNING.md")
+             and "NEWER-STAYS-PUT" not in _read(td, "_GM-ARCHIVE.md"))
+
+        # (ii) the SAME sandwich, with `cs_end` aimed correctly at the next stratum key.
+        ok = dict(ROLL_OK, cs_end="#### 2026-07-28 #35")
+        rc, _o, err = _run(td, [ok])
+        _arc, _gm = _read(td, "_GM-ARCHIVE.md"), _read(td, "GOOD-MORNING.md")
+        bite("roll_2f: rolls a stratum SANDWICHED between two others", rc == 0)
+        bite("roll_2f: archives THIS stratum's commit-state, neither neighbour's",
+             "two commits this window" in _arc
+             and "OLDER-STAYS-PUT" not in _arc and "NEWER-STAYS-PUT" not in _arc)
+        bite("roll_2f: both neighbours left wholly untouched in GM",
+             "OLDER-STAYS-PUT" in _gm and "#### 2026-07-28 #31" in _gm
+             and "NEWER-STAYS-PUT" in _gm and "#### 2026-07-28 #35" in _gm)
+        bite("roll_2f: the rolled stratum is GONE from GM, both halves",
+             "post-mortem body" not in _gm and "two commits this window" not in _gm)
 
     # ---- ★ THE RULING ITSELF: the split cannot be half-done. An empty half is the #26/#28/#29
     # failure — the stratum went to the archive whole and the log got nothing.

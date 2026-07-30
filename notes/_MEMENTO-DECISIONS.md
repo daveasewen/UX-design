@@ -1763,3 +1763,77 @@ and measure in real tokens directly.**
 **status:** observed (5 registers, `count_tokens`, `claude-opus-5`, 2026-07-30; instrument
 `knowledge/_measure_tokenizer.py`, re-runnable) · the re-denomination itself is **UNRULED — Dave's** ·
 provenance: session #53 · 2026-07-30
+
+
+---
+
+## ★★ #54 — 2026-07-30 — THE 2f BLOCKAGE CLEARED AFTER THIRTEEN SESSIONS, AND THE INSTRUCTION THAT WAS MEANT TO CLEAR IT WAS WRONG
+
+**⚠ APPENDED AT EOF under D21 (c), as #52 and #53 were.** Order is ruled irrelevant; readers are order-agnostic.
+
+### ⬛ DAVE'S RULINGS THIS WINDOW
+
+- **`ds-021` RE-RULED — COLLAPSE TO REAL TOKENS, KEEP THE PRICE/BUDGET ANALOGY.** D1 (#53) measured
+  `tape`×1.559 = real, against an agent-derived `TAPE_TO_BILL` of ×1.57 — agreement to 0.7%, so
+  `bill` was never a billing overhead, only the `cl100k`→Claude mismatch seen through a proxy.
+  ⬛ **His ruling: ONE unit — real Claude tokens. `cl100k` demoted to a LABELLED free estimator,
+  never a unit a cap is stated in. The PRICE/BUDGET language STAYS** — pricing a job, paying for a
+  read, the bill — because the metaphor was doing useful work; what dies is the claim that it names
+  a second *measurement*. ⚠ **NOT ENACTED THIS WINDOW.** The three homes (`_RUNBOOK-context-gauge.md`
+  § ★ THE UNITS · `_capture_gate.py` · the `size:` stamp) are untouched. ⚠ **AND THE RE-STATEMENT
+  MUST BE MEASURED, NOT CONVERTED:** the spread is 1.486–1.664 (12%), so multiplying the corpus by
+  ×1.559 would be converting a proxy by rule of thumb — the exact sin `ds-021` was raised to name.
+- **PRESENT-BUT-UNKEYED (raised #41, open 13 sessions) — GATE IT SHUT, AND MARK THE THREE.** Full
+  text and the three markers: `notes/_GAUGE-LOG.md` § `META — UNKEYED #40 #41 #42`. ★ No standing
+  fourth term: the state exists only because testimony and key are two separate acts, so the fix is
+  to make it unreachable, not nameable. ⚠ **THE GATE ITSELF IS NOT YET BUILT — declared, owed.**
+- **THE ARCHIVE BATCH KEY — PROBE IT, DO NOT RE-KEY IT.** `## Batch <date> #<N>` names the session
+  that DID the rolling, not the session rolled; the convention is unwritten and it already misled a
+  probe this window. Dave initially said fix the convention "if we have budget"; **#54 pushed back
+  and he took the push** — re-keying 2,000+ lines is a rewrite of live record, and it is the same
+  objection that stopped the log being re-keyed, so accepting one and refusing the other would have
+  been incoherent. ⇒ **add a probe that answers "is #N's commit-state archived?" by CONTENT.**
+  ⚠ **NOT YET BUILT — declared, owed.** Re-ruling the convention stays his.
+
+### ✅ WHAT LANDED
+
+- **NINE STRATA ROLLED — #38 #43 #44 #46 #47 #48 #49 #50 #51.** `ds-022` had failed for thirteen
+  consecutive sessions. Verified on OUTPUT, never on the receipts: GM left with exactly `[40,41,42]`,
+  log gained exactly the nine, **zero duplicate keys, and ZERO removed GM lines landing nowhere**
+  (set-difference assertion, not a line count). GM −110 ln · log +90 · archive +31.
+- **`_gm_move.py` — CHRONOLOGICAL GUARD RELAXED under D5 (a),** and the precondition VERIFIED rather
+  than assumed: D21 (c) requires every reader order-agnostic, and all four were read in the call
+  graph and quoted — `_stratum_session_no` `max()` · `gauge_log_continuity` sets ·
+  `_gm_usage.history_report` `sorted()` · `_build_memento_index.parse_gauge` positional-only.
+  Out-of-order appends are now PERMITTED **and DECLARED in the receipt**, never silent.
+
+### ★★ THE FINDINGS, IN THE ORDER THEY BIT
+
+1. **THE HANDOFF SAID 12. THE RECORD SAID 9.** #40/#41/#42 already carry keys in the log, so the
+   *duplicate-key* guard refuses them — **a different guard from the one D5 (a) relaxed**, and one
+   that must not be touched. ★ [[feedback-survey-before-build]]: the queue was the defect.
+2. **`roll_2f`'s `cs_start` ANCHOR WAS UNSCOPED — every roll below the topmost was IMPOSSIBLE.**
+   Latent since #34; unreachable until a stack grew deep enough with an un-rollable block on top.
+   The fix needs BOTH `lo=` (floor at the hole the post-mortem left) and `first=True` (because
+   every stratum BELOW carries the same anchor). **Either without the other is wrong**, and the
+   fixture was rebuilt as a SANDWICH — one stratum above, one below — because a one-sided fixture
+   reads green on a half-fix. Both mutations verified RED.
+3. **★★ AND THE FIRST DIAGNOSIS OF (2) WAS WRONG — RECORDED BECAUSE THE CORRECTION IS THE POINT.**
+   #54 told Dave the defect would cause a SILENT mis-file: #43's roll quietly archiving #40's
+   commit-state. **It would not.** `_find_anchor` demands exactly one match, so the pre-fix code
+   REFUSES with `'> **COMMIT STATE' matched 2 lines (need exactly 1) … NOTHING written`. It was a
+   BLOCKER, never a corruption. ⚠ **The near-miss story was ASSERTED, then measured, and the
+   measurement disagreed** — [[unmatched-grep-is-not-an-absence]] applies to one's own predictions.
+   Corrected at source in the docstring, not just here.
+4. **`cs_end` OVER-REACH WAS UNGATED — now refused.** A `cs_end` aimed at a section boundary rather
+   than the next stratum key silently carries WHOLE neighbouring strata into the archive under this
+   session's batch. Found by the sandwich fixture, not by review. Gated per [[feedback-gate-dont-patch]].
+5. **⚠ `ds-022` STILL FAILS, FOR A NEW CAUSE — NOT CLOSED, AND NOT MINE TO QUIET.** The nine rolls
+   discharged the backlog, but the check now reports *"GM's ★ LATEST banner says #53 but the newest
+   §C stratum key says #42"*. **#53 declared `HOLE #53` and wrote no stratum**, and the banner-vs-
+   stratum comparison does not consult HOLE lines for the CURRENT session the way the N−1 continuity
+   check does for the previous one. ⇒ **an inconsistency between two halves of the same gate**, and
+   it is adjacent to the ruling Dave just made. **DECLARED, unfixed, priced as owed.**
+
+**status:** rolls verified on output · rulings Dave's, this window · three items DECLARED OWED and
+none of them silently deferred · provenance: session #54 · 2026-07-30
