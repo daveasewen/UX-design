@@ -1594,3 +1594,172 @@ tape requires reading the regions edited, running the gate and committing. **The
 (all tape figures `tiktoken cl100k` this window; render assertions from Playwright at three widths)
 · **proxy warning: every `tape` figure here is `cl100k`, which D1 now rules unverified** ·
 provenance: session #52 · 2026-07-30
+
+## ★★ #53 — THE CAP WAS SET AT THE FLOOR PLUS TWO TAPE, AND THREE SESSIONS SHAVED LIVE RECORD TRYING TO OBEY IT — 2026-07-30 (Opus solo, Dave live)
+
+**⚠ APPENDED AT EOF under D21 (c), as #52 was.** Order is ruled irrelevant; readers are order-agnostic.
+
+**The window's brief was #52's own forward title: SPEND #52's RULINGS.** Three jobs, all three landed,
+none re-derived. ★ **The rulings were READ from this ledger, not reconstructed** — which is the whole
+point of writing them here and the habit three consecutive sessions failed at.
+
+### ✅ 1 — GM §C·4 CUT TO ONE AGGREGATE LINE
+
+**MEASURED: 57 lines / 11,096 tape → 7 lines / 783 tape. Net −10,313 tape**, 7% of the original.
+`GOOD-MORNING.md` fell from 43,016 to 32,703 tape in one motion.
+
+★ **The shape was READ, not chosen** (`_RUNBOOK-capture-ritual.md:198`): a closure tombstone's term is
+LATEST + 2, so 19 tombstones would have been 19 things the runbook rolls away inside two windows, written
+into the most pressured region in the file. **One aggregate line pointing at § ★★ #52 is what the runbook
+already ruled.** [[home-by-addition-then-cut]] was satisfied by construction — #52 wrote the home; this
+window did the second motion and nothing else.
+
+⚠ **THE EXTENT WAS ASSERTED ON FOUR BOUNDARY CONDITIONS BEFORE THE WRITE** — first line, last line, the
+blank after, and the successor heading — after #52's `"end":"EOF"` move took 524 lines. **A receipt printed
+the cut extent, the tape delta and the ratio.** Cheap insurance against the one error class this project
+has already paid for.
+
+⛔ **A DISCREPANCY FOUND WHILE CUTTING, CORRECTED NOT PROPAGATED.** #52's roll-up counted opens **15 and
+16** among "4 fully closed"; the roster still marked both **⬛ NEW**. Their bodies recorded the closures
+(15 → `CHAIN_STAMP_RE`, RETIRED #45 · 16 → `chain_file_tk`, #48). **The labels were stale and the count
+was right for the wrong reason** — [[assertion-propagation-gap]] again: the flip happened, nothing chased
+the label, and a later audit inherited the error silently.
+
+### ✅ 2 — THE CHECK-IN READER EXISTS, AND ITS FIRST READING RE-PRICED THE WINDOW
+
+`knowledge/_checkin.py`. Dave's requirement from #52, verbatim: *"I do need a check-in so I can say how
+hot are we."* **Run at any moment; the transcript is measured in the sandbox and never loaded, so the
+reading does not cost what it measures.**
+
+**MEASURED THIS WINDOW, `cl100k`, three readings: 70,190 → 122,491 → 150,583 tape** (conversation half).
+⚠ **THROUGHPUT, not fill.** ⚠ **The boot half is printed as UNMEASURED and is NEVER defaulted** —
+`ds-025` item 1 stands.
+
+★ **What it REFUSES is the design:** it prints **no percentage** unless handed a denominator, and captions
+any it is given as *yours, not observed* — D2 (c) enforced in code rather than remembered. It **exits
+loudly without `tiktoken`** rather than estimating, which is the defect `_context_gauge.py` still carries
+(it under-reports by 414 tape in silence). D10 (c)'s measured/estimated split is printed on every run.
+
+⚠ **AND THE SESSION'S OWN DISK-HALF FIGURE IS THE COUNTER-EXAMPLE #52 PREDICTED:** files read this window
+totalled ~11,600 tape against a 150,583 conversation half — **7.7%**. Eleven consecutive sessions have now
+published the disk half as though it were the reading.
+
+### ✅ 3 — D4 (a) ENACTED, AND THE MEASUREMENT INVERTED THE PROBLEM
+
+**THE FINDING, and it is the session's real one.** The M8 banner region holds a standing header plus TWO
+banners (2c keeps ★ LATEST + one ★ PRIOR). **MEASURED: header 1,968 tape · median archived banner 1,515
+tape across n=57 in `_GM-ARCHIVE.md` ⇒ floor = 1,968 + 2×1,515 = 4,998 tape. The BLOCK was 5,000.**
+
+⇒ **The cap was set at the floor plus two tape. It was never breached for fatness — compliance was
+arithmetically impossible from the day it was written.** ★ **#49 declared the breach, #51 cut 624 tape
+from its own regions and the region was STILL at BLOCK, and a further pass went UP.** Three sessions read
+a red gate as evidence of their own prolixity and shaved live record in response. **The gate was wrong and
+the record paid.**
+
+**⬛ DAVE RULED THE MECHANISM: A DERIVED FUNCTION, NOT NEW CONSTANTS.** Offered three shapes (derive ·
+re-pick constants · log and defer); he took the derivation.
+
+```
+warn  = header + 2 × MEDIAN archived banner     → 5,000 tape today
+block = header + 2 × p75 archived banner        → 6,200 tape today
+```
+
+★ **This is the same shape he gave D3's amber, ruled the day before: a threshold that is COMPUTED cannot
+be re-picked by fiat, and FALLS on its own if banners get leaner.** ⇒ **his D4 leanness condition
+(*"we need some way to keep this lean, even if it's you putting your foot down"*) is discharged
+MECHANICALLY rather than by discipline** — and it answers his standing instruction *"offload any
+prose-logic to code as much as possible."*
+
+⚠ **THE OLD PAIR SURVIVES VERBATIM AS `BANNER_BUDGET_FALLBACK_TK`**, used only when the archive yields
+fewer than 10 banners, and **never silently — the provenance string says `FALLBACK` and the gate prints it
+every run.** ds-021: restate openly, never silently re-dial.
+
+★★ **THE SELFTEST IS A MUTATION TEST, NOT AN ASSERTION** [[gate-must-quote-what-it-forbids]]: one arm
+proves that with no archive the cap DECLARES its fallback; the other writes an archive into the fixture and
+proves the same call switches to `DERIVED`. **A silently-fallen-back cap now fails the selftest** — which
+is the only property that makes the green mean anything. Pin moved as a pair with the flag, per the
+standing rule.
+
+**RESULT: the banner region moved from FAIL to WARN at 5,058 tape** — 58 over the floor is a nudge, not a
+stop, and that is the honest verdict the old cap could not express.
+
+### ⚠ ERRORS — ONE, SELF-CAUGHT, AND IT IS THE SAME CLASS AS #52's
+
+⛔ **A PROBE FOR THE SESSION TRANSCRIPT RETURNED EMPTY AND I ALMOST FILED IT AS A FINDING.** `find /`
+with `-maxdepth 6` against a path that sits at depth 7. **The premise was sound and the probe was
+under-deep**; one more search found the file immediately. ★ **[[unmatched-grep-is-not-an-absence]] — NAME
+THE PROBE — caught it, and the near-miss is recorded because the cost of the alternative was declaring
+#52's central finding dead.**
+
+### ⚠ THE PRICE — PUBLISHED PER D10 (c), AND FOR THE FIRST TIME BOTH HALVES OF THE CONVERSATION ARE REAL
+
+**MEASURED, `cl100k`:** disk half ~11,600 tape read (`_CHAIN.md` 4,656 · ledger § #52 6,947) · conversation
+half **150,583 tape at the wrap's start** (assistant 97,710 · user/tool-result 35,318 · attachment 17,555).
+⚠ **Boot half UNMEASURED** — `ds-025` item 1 stands. ⚠ Every figure `cl100k`, which **D1 rules an
+unverified proxy for Claude's own tokenizer**.
+
+⬛ **D1 IS NOW UNBLOCKED ON DAVE'S SIDE: `api.anthropic.com` ANSWERS FROM THE SANDBOX** (HTTP 405 to a bare
+GET — reachable, method-refused). He has a Console account and will supply a key via a gitignored
+`.env.local`. **The measurement is one script away and nothing else blocks it.**
+
+⚠ **PACE, HIS FIGURES:** 79% of the all-model quota used, **82% of Fable**, ~7h to reset. ★ **Fable was
+offered as headroom and is the MORE depleted pool** — an offer of relief that measurement showed was not
+one. ⇒ one window, wrapped, rather than a second opened.
+
+**status:** ruled (D4 (a)'s mechanism, Dave live, this window) · observed (all tape figures `tiktoken
+cl100k`; gate verdicts from `_capture_gate.py --wrap` and `--selftest` runs quoted above) ·
+**proxy warning: every `tape` figure here is `cl100k`, which D1 rules unverified** ·
+provenance: session #53 · 2026-07-30
+
+### ★★★ D1 LANDED THE SAME WINDOW — AND IT COLLAPSES `bill` INTO THE TOKENIZER
+
+**Dave supplied the key mid-wrap. `knowledge/_measure_tokenizer.py` built and run against
+`count_tokens()`, `claude-opus-5`, five registers of this corpus:**
+
+| register | tape (`cl100k`) | REAL | ratio |
+|---|---|---|---|
+| banner prose (★⚠⛔ dense) | 3,417 | 5,460 | **1.598** |
+| runbook prose | 2,191 | 3,255 | **1.486** |
+| ledger prose | 2,322 | 3,545 | **1.527** |
+| python source | 1,108 | 1,844 | **1.664** |
+| §A orientation | 2,500 | 3,887 | **1.555** |
+| **AGGREGATE** | **11,538** | **17,991** | **1.559** |
+
+★★★ **THE FINDING: `TAPE_TO_BILL` IS ×1.57, AGENT-DERIVED FROM n=2 OBSERVED PAIRS AND HELD
+PROVISIONAL FOR NINE SESSIONS. THE MEASURED TOKENIZER RATIO IS ×1.559. THEY AGREE TO 0.7%.**
+
+⇒ **THERE IS NO SEPARATE `bill` PHENOMENON.** What this project has been calling a billing
+overhead — a mysterious multiplier between what it measured and what the window charged — **is the
+`cl100k`→Claude tokenizer mismatch and nothing else.** The two constants were never independent;
+one was measuring the other through a proxy.
+
+★ **This is why `TAPE_TO_BILL` could never be firmed:** n=2 pairs looked like a starved dataset
+about billing, and every session dutifully logged another pair. **The dataset was never the
+problem — the referent was.** [[instruction-right-cause-wrong]]: nine sessions collected the right
+data for the wrong question. ⇒ **D11's "hold and collect until D1 settles" was exactly right, and
+D1 has now settled it in one window.**
+
+⚠ **BUT IT IS NOT ONE CONSTANT, AND THE SPREAD IS THE SECOND FINDING: 1.486 → 1.664, a 12% range
+across registers.** Python source is the worst (1.664), plain runbook prose the best (1.486).
+**A single ratio cannot re-denominate the corpus** [[measure-dont-convert-units]] — a cap on a code
+region and a cap on a prose region need different conversions, or better, **should stop converting
+and measure in real tokens directly.**
+
+⚠ **WHAT THIS INVALIDATES, said plainly** [[feedback-check-ran-never-reached-plan]]:
+1. **Every `tape` figure in this project reads ~36% LOW against the model.** This window's own
+   conversation half — **194,812 tape at the wrap — is ~304,000 REAL tokens.**
+2. **The M8 cap derived earlier THIS SESSION is in `tape`**, and so are the bands. They are
+   internally consistent (measurement and cap share the unit), so **nothing derived today is
+   wrong — but none of it is comparable to a real window figure** until re-denominated.
+3. ⛔ **`DEFAULT_WINDOW = 200_000`: #52 proved it stale by existence at 613,386 tape. In REAL
+   tokens that session was ~956,000** — which strengthens the finding rather than softening it,
+   and lands suspiciously close to a 1M window.
+4. **`ds-021`'s three-homes `tape`/`bill` vocabulary needs re-ruling, not re-dialling** — the
+   distinction it encodes appears to be an artefact. ⬛ **DAVE'S, not this session's.**
+
+⇒ **PROPOSED, NOT RULED: stop converting. Measure in real tokens, cache the count, and keep
+`cl100k` only as the free offline estimator it actually is — labelled, with its measured ×1.559.**
+
+**status:** observed (5 registers, `count_tokens`, `claude-opus-5`, 2026-07-30; instrument
+`knowledge/_measure_tokenizer.py`, re-runnable) · the re-denomination itself is **UNRULED — Dave's** ·
+provenance: session #53 · 2026-07-30

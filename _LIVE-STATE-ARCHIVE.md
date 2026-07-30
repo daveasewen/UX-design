@@ -1,5 +1,21 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
 
+## ⏱ PRIOR DELTA — 2026-07-30 (Thu **#50**, OPUS solo, Dave live, "I lean to safety" by instruction — ★★ **THE `size:` LINE IS CUT 808→399, EVERY CUT PROVED FIRST** · ★★ **THE LINE'S SELF-MEASUREMENT HAD DRIFTED 18% AND THE BAN CANNOT SEE A SELF-REFERENCE** · ⛔ **THE GAUGE'S ANSWER WAS REFUSED, NOT REPORTED**)
+
+> ⚠ **STATE LINES ONLY — narrative is in `GOOD-MORNING.md`'s ★ LATEST banner, verbatim, same commit.**
+
+- **✅ `size:` 808 → 399 tape (−409) · `_CHAIN.md` 4,810 → 4,401 = 516 UNDER the 4,917 warn · GM 37,977 → 37,568.** `--check` FRESH (fixed point, 2 passes) · gate **36 in scope, 0 fail, 0 warn** · `CHAIN_STAMP_RE` no match on the new stamp · generated file READ BACK.
+- **★★ THE LINE CLAIMED 685 TAPE AND MEASURED 808 (18% drift).** `CHAIN_STAMP_RE` is keyed to the token `CHAIN`; this figure was keyed to "this very line". **A ban scoped to a name cannot catch a self-reference** ⇒ **NEW OPEN 24.**
+- **★ PROBE (named): 13 claims × 6 corpora incl. GM-minus-the-line. 7 HOMED ⇒ cut · 2 HOMED NOWHERE.** The chain was the SOLE home of two uncapped facts ⇒ **RULING: HOME BY ADDITION, THEN CUT.** Orphans → #48's dossier · `_RUNBOOK-context-gauge.md` § ★★ THE FLOOR IS NOT WILLPOWER.
+- **⚠ TOKENIZER — still `cl100k` (OpenAI's), and Dave raised this before at P3 (`_MEMENTO-DECISIONS.md:523`), undischarged 7 sessions.** MEASURED not swapped: **`p50k` +8.6–11.1%** over `cl100k`. `BYTES_PER_TOKEN` · `CHAIN_BUDGET_TK` · `TAPE_TO_BILL` **UNTOUCHED** ⇒ **NEW OPEN 26.**
+- **⬛ `BARE_TOKEN_RE` SPECIFIED, NOT BUILT ⇒ NEW OPEN 25.** The mnemonic stays in the chain until its checker exists; `ds-024`'s class — a rule with no enforcer.
+- **⛔ GAUGE REFUSED, NINTH consecutive, NEW cause — 849 tape / 3,465 bytes for this transcript is impossible; the input never arrived.** Prior eight were the denominator; this is upstream of it. Measured instead: **disk 6,724 tape**, harness half unobservable (`ds-025`).
+- **⚠ ERRORS: 2 — TWENTY-THIRD consecutive, both self-caught.** (1) gauge figure briefly accepted as a measurement. (2) `Edit` at a MISSPELLED path with placeholder content — failed closed. **A tool erroring is not a control.**
+- **⚠ EXIT CHECK TWELFTH consecutive, cleared both rolls** (2c #48 banner 11 ln · 2d #47 delta 14 ln). **⛔ 2f NOT RUN — open 7; `ds-022` FAILS, DECLARED. Stack ELEVEN.**
+- **⚠ #49's delta says the chain measured 5,159 tape; it measured 4,810 at this session's open.** 349 apart, unexplained, not chased.
+- **TREE STATE.** `_git_commit.sh --reconciled`, paths named. Dave pushes via **GitHub Desktop only**. ⚠ `mv` stray `.git/*.lock` BEFORE git; the clear is the LAST git action.
+
+
 <!-- batch 2026-07-30 #51 -->
 ## ⏱ PRIOR DELTA — 2026-07-30 (Thu **#49**, OPUS solo, Dave live, "bite 3 only, then stop" by instruction — ★★ **OPEN 15 CLOSED: THE CHAIN FIGURE IS ASSERTED, AGAINST THE FILE** · ★★ **THE POSITIVE CONTROL FOUND THE FIXTURE GENERATOR MINTING THE RETIRED FORM SINCE #34** · ⛔ **#48's BUILD-TIMING CLAIM IS FALSIFIED — VERIFIED BY CALL GRAPH, AND SAID SO**)
 

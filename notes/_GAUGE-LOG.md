@@ -437,3 +437,29 @@ step 2f (`113eefc`) yet wrote no stratum of its own; its gauge story lives only 
 **META #42 (second) — `_gen_chain.py --check` RETURNED ONE UNREPRODUCED `STALE`.** At cold sandbox start, on a clean tree at HEAD, `--check` reported the chain did not match GM/LS. Regeneration produced a **byte-identical** file (`diff` empty, `git status` clean), and `--check` has been green on every subsequent run with `tiktoken` present. ⚠ **A BLOCKING build step reported a stale record and cannot be made to do it again.** Recorded because an unreproduced misfire in a gate is still a fact about the gate — not diagnosed, and no cause is proposed.
 
 **ERRORS #42 — three, sixteenth consecutive session.** ★ **Stranded `.git/index.lock` by running `git status` AFTER `_git_commit.sh`'s final clear** — defect (3) of `e92ea0e`, a commit I had read in full one step earlier; it would have blocked Dave's GitHub Desktop push. Cleared as the last git-touching action. **Reading a procedure is not passing through it — the session's inherited lesson, re-learned at cost.** · Priced the opening job as *"the record is three commits behind HEAD"* when the evidence half was present all along; checking the other half shrank it. · Ran a §C probe whose `sed` range matched nothing and nearly read its zeros as absences ([[unmatched-grep-is-not-an-absence]]); caught by checking the heading format before asserting.
+
+**HOLE #52 — the session wrote no stratum.** #52 spent its window on the 22-ruling decision pack and
+closed without a `#### <date> #52` block. **A positive claim, not an absence:** the block was never
+written, and this line says so rather than leaving the dataset to guess.
+
+**HOLE #53 — the session wrote no stratum, deliberately, and the reason is the stack itself.** 2f has
+not run for thirteen sessions and `GOOD-MORNING.md` carries **twelve** stratum blocks against a
+contract of one. Adding a thirteenth to satisfy the form would have made the breach worse in order to
+look compliant. ⚠ **#51 is NOT a hole and is not marked as one: its stratum EXISTS, in GM, unrolled.**
+Writing `HOLE #51` would have made this log read complete at the price of an invented fact — the exact
+move the ds-022 three-states ruling exists to forbid.
+
+**META #53 — THE BLOCKER IS RULED AND UNENACTED, WHICH IS WHY THIS IS A DECLARATION AND NOT A FAILURE.**
+`_gm_move.py::roll_2f` refuses a key later than the one being rolled (the chronological contract).
+**Dave ruled that contract RELAXED at #52 (D5 (a)) — order was file hygiene, never an analytical
+requirement, and a parser sorts the dataset anyway.** The enactment is one guard removed. ⇒ **Next
+session: relax it, then roll all twelve in one pass.** ★ The cost of not doing it is now visible and
+countable rather than felt: twelve blocks, thirteen sessions, one gate red throughout.
+
+**★★★ META #53 (second) — D1 SETTLES WHAT THIS LOG HAS BEEN MEASURING.** Every band, cap and price in
+this dataset is denominated in `tape` (`cl100k`, OpenAI's). **MEASURED this session against
+`count_tokens()`: ×1.559 aggregate over five registers.** `TAPE_TO_BILL`, the ×1.57 this project
+derived from n=2 observed pairs and held PROVISIONAL for nine sessions, **agrees to 0.7%.** ⇒ **the
+`bill` half of the vocabulary was never a second quantity — it was the tokenizer, measured through a
+proxy.** ⚠ **Spread 1.486–1.664 across registers: a single conversion cannot re-denominate this log.**
+⬛ Re-ruling the vocabulary is Dave's.

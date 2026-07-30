@@ -486,7 +486,66 @@ SIZE_A_RE = re.compile(r"§A\D{0,12}?([\d.]+)\s*K\s*(tape|tk)\b", re.I)  # K REQ
 #   It had no budget and is the densest prose in the file. Measured with the EXISTING region
 #   parser (`section_spans`) — a second parser is precisely the drift class this block exists to
 #   prevent, so if that parser ever cannot isolate the region, this check refuses to measure.
-BANNER_BUDGET_TK = (4000, 5000)    # (warn, BLOCK) — measured 2,103 tk at enactment
+#   ⛔ THE CAP IS NO LONGER A CONSTANT — RULED BY DAVE #53 ON D4 (a), AND THE REASON IS THE
+#   MEASUREMENT THAT LICENSED IT. The region structurally holds a standing HEADER plus TWO
+#   banners (2c keeps ★ LATEST + one ★ PRIOR). Measured #53: header 1,968 tape; median archived
+#   banner 1,515 tape across n=58 in `_GM-ARCHIVE.md` ⇒ **floor = 1,968 + 2×1,515 = 4,998 tape,
+#   against a block of 5,000.** The cap was set at the floor plus TWO TAPE, so it was never
+#   breached for fatness — compliance was arithmetically impossible from the day it was written,
+#   and #49/#51 both shaved live record trying to satisfy it (#51 cut 624 tape and the region was
+#   STILL at BLOCK). ★ A constant could only be re-picked; a DERIVED cap cannot be raised by fiat
+#   and FALLS on its own if banners get leaner — which is Dave's leanness condition discharged
+#   MECHANICALLY rather than by discipline, and the same shape he gave D3's amber.
+BANNER_BUDGET_FALLBACK_TK = (4000, 5000)   # used ONLY when the archive cannot be measured, and
+                                           # NEVER silently — the provenance string says so.
+BANNER_ARCHIVE_MIN_N = 10                  # below this the median is not a measurement
+BANNER_HEADROOM_PCTL = 75                  # block admits two 75th-percentile banners
+
+
+def _banner_unit_samples(repo):
+    """Tape size of every archived banner. The dataset the cap is derived FROM.
+
+    ⚠ Returns [] rather than guessing when the archive is absent or unparseable — a cap that
+    invents its own dataset is the exact defect this whole block exists to record.
+    """
+    path = os.path.join(repo, "_GM-ARCHIVE.md")
+    if not os.path.exists(path):
+        return []
+    with open(path, encoding="utf-8") as f:
+        arc = f.read()
+    parts = re.split(r"^>?\s*#{1,6}\s*★\s*(?:LATEST|PRIOR)\b", arc, flags=re.M)[1:]
+    if not parts:
+        return []
+    sizes = sorted(measure_tokens(p)[0] for p in parts)
+    # The final split swallows whatever trails the last banner, so it is not a banner sample.
+    return sizes[:-1] if len(sizes) > 1 else sizes
+
+
+def banner_budget_tk(repo, gm_lines, latest_idx):
+    """(warn, block, provenance) — DERIVED from the live floor, not picked. Dave #53, D4 (a).
+
+    warn  = header + 2 × MEDIAN archived banner   (the floor: what the region cannot go below)
+    block = header + 2 × p75 archived banner      (the floor plus measured headroom)
+
+    Both round UP to the nearest 100 so the published number is readable, never down — rounding
+    a cap down would silently tighten it, which is the ds-021 move this file bans.
+    """
+    samples = _banner_unit_samples(repo)
+    if len(samples) < BANNER_ARCHIVE_MIN_N or latest_idx is None:
+        w, b = BANNER_BUDGET_FALLBACK_TK
+        return w, b, (f"FALLBACK ({w:,}/{b:,}) — the archive yielded {len(samples)} banner "
+                      f"sample(s), under the {BANNER_ARCHIVE_MIN_N} a median needs. "
+                      f"DECLARED, never silent.")
+    header = measure_tokens("\n".join(gm_lines[:latest_idx]))[0]
+    med = samples[len(samples) // 2]
+    p75 = samples[min(len(samples) - 1, (len(samples) * BANNER_HEADROOM_PCTL) // 100)]
+    up = lambda n: -(-int(n) // 100) * 100
+    return up(header + 2 * med), up(header + 2 * p75), (
+        f"DERIVED — header {header:,} + 2 × banner (median {med:,} / p{BANNER_HEADROOM_PCTL} "
+        f"{p75:,}), n={len(samples)} archived banners")
+
+
+BANNER_LATEST_RE = re.compile(r"^>?\s*#{1,6}\s*★\s*LATEST\b", re.M)
 #
 # M10 — the READ CHAIN (GM + _LIVE-STATE.md), the GM-D7-am contract, now actually measured.
 #   ⚠ **ADVISORY — it does not block.** RULED by Dave 2026-07-27 #18, after enactment measured the
@@ -1199,11 +1258,13 @@ def check_budgets(repo):
                      "rather than charge §A. Restore the order, or re-rule the region.")
     else:
         banner_tk = measure_tokens("\n".join(lines[:b_end]))[0]
-        b_warn, b_block = BANNER_BUDGET_TK
+        _m = BANNER_LATEST_RE.search("\n".join(lines[:b_end]))
+        _lat = len("\n".join(lines[:b_end])[:_m.start()].splitlines()) if _m else None
+        b_warn, b_block, b_prov = banner_budget_tk(repo, lines, _lat)
         bw_bill, bb_bill = bill_of(b_warn), bill_of(b_block)
         notes.append(f"BANNER region: {fmt_units(banner_tk)} (file top → DO-FIRST: header + "
                      f"★ LATEST + ★ PRIOR) · warn {b_warn:,} tape / ~{bw_bill:,} bill · block "
-                     f"{b_block:,} tape / ~{bb_bill:,} bill")
+                     f"{b_block:,} tape / ~{bb_bill:,} bill · cap {b_prov}")
         if bill_of(banner_tk) >= bb_bill:
             fails.append(f"GOOD-MORNING.md banner region: {fmt_units(banner_tk)}, block "
                          f"~{bb_bill:,} bill — roll a banner to _GM-ARCHIVE.md (ritual step 2c)")
@@ -2472,9 +2533,29 @@ def selftest_growth():
         f, _w, _n = _warns_for(td, fat_banner=30)
         if not any("banner region" in x for x in f):
             failures.append("M8: a 30-fat-line banner did not BLOCK")
-        _f, w, _n = _warns_for(td)
+        _f, w, n = _warns_for(td)
         if any("banner region" in x for x in w):
             failures.append("M8: an ordinary banner warned — the budget fires on everything")
+
+        # ---- M8 cap PROVENANCE (Dave #53, D4 (a)): the cap is DERIVED, and when it cannot be
+        # derived it must SAY SO. A silent fallback is the defect the whole re-expression
+        # exists to remove, so both arms are asserted — the green is a mutation test, not a
+        # claim. The fixture repo carries no archive, so this arm must read FALLBACK.
+        if not any("cap FALLBACK" in x for x in n):
+            failures.append("M8: no archive present and the cap did not DECLARE a fallback — "
+                            "a silently-fallen-back cap is indistinguishable from a measured one")
+        # The mutation: give it an archive and the same call must switch to DERIVED.
+        _n_min = BANNER_ARCHIVE_MIN_N
+        with open(os.path.join(td, "_GM-ARCHIVE.md"), "w", encoding="utf-8") as f:
+            f.write("\n".join(f"## ★ PRIOR — {i}\nbody line for banner {i}\n"
+                              for i in range(_n_min + 2)))
+        _w2, _b2, prov2 = banner_budget_tk(td, ["# h", "> ## ★ LATEST x", "b"], 1)
+        if not prov2.startswith("DERIVED"):
+            failures.append(f"M8: an archive of {_n_min + 2} banners did not produce a DERIVED "
+                            f"cap — the function is pinned to its fallback ({prov2})")
+        if _b2 < _w2:
+            failures.append("M8: derived block is below derived warn — the cap is inverted")
+        os.remove(os.path.join(td, "_GM-ARCHIVE.md"))
 
         # ---- M10, RE-POINTED #33: the chain is header + ★ LATEST + the LS latest delta.
         # The fixture repo has no _LIVE-STATE, so chain == the GM banner term alone.
@@ -2704,7 +2785,14 @@ def selftest_growth():
              "against the whole _CHAIN.md FILE = the same (4500, 6000) plus the MEASURED 417-tape "
              "wrapper, so the verdict is arithmetically unchanged (ds-021: restate, never silently "
              "tighten). Values still AGENT-DERIVED, still ADVISORY, still awaiting Dave"),
-            ("BANNER_BUDGET_TK", BANNER_BUDGET_TK, (4000, 5000), "ruled 2026-07-27 M-set"),
+            ("BANNER_BUDGET_FALLBACK_TK", BANNER_BUDGET_FALLBACK_TK, (4000, 5000),
+             "⛔ NO LONGER THE CAP — it is the DECLARED FALLBACK only. Born as the cap, ruled "
+             "2026-07-27 M-set; RE-EXPRESSED AS A FUNCTION 2026-07-30 #53 on Dave's D4 (a), "
+             "because the measurement showed (4000, 5000) sat at the floor plus TWO TAPE "
+             "(header 1,968 + 2 × median 1,515 = 4,998) and could not be complied with. The "
+             "old pair is retained VERBATIM as the fallback so a repo with no archive behaves "
+             "exactly as it always did — ds-021: restate openly, never silently re-dial. The "
+             "live cap is `banner_budget_tk()` and publishes its own provenance every run"),
             ("SECTION_A_WARN_TK", SECTION_A_WARN_TK, 4500, "ruled 2026-07-27 M-set"),
             ("CORPUS_BUDGET_TK", CORPUS_BUDGET_TK, 36000,
              "born #33 2026-07-28, AGENT-DERIVED from 34,094 tk measured, warn-only, awaiting Dave"),

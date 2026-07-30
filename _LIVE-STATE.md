@@ -11,7 +11,7 @@ mis-dated itself a day forward; commit timestamps caught it).*
 half of the state machine, Dave's ask 2026-07-18) · **`_DECISION-HISTORY/`** — dated per-thread
 narrative, relocated verbatim (how we got here; see its README for the rules + RESURRECT tags).*
 
-*Last refreshed: 2026-07-30 (Thu #52 — 22 of 24 live opens RULED via the decision pack; ★★ `ds-025` PART-falsified, the live transcript IS sandbox-readable and the conversation half measures 613,386 tape, boot half still unmeasured; ⛔ `DEFAULT_WINDOW = 200_000` falsified by existence proof at 307%; ★★ D3's amber is `60 − wrap_reserve`, derived not constant, and collapses into D9) · Previous: #51 (open 25 CLOSED, `BARE_TOKEN_RE`; a gate must QUOTE what it forbids, so USE vs MENTION is unreachable by syntax)*
+*Last refreshed: 2026-07-30 (Thu #53 — ★★★ D1 MEASURED: tape ×1.559 = real tokens, and TAPE_TO_BILL ×1.57 agrees to 0.7%, so `bill` was always the tokenizer and never a billing overhead; ★★ the M8 cap sat at the floor + 2 tape and is now a DERIVED function, D4 (a) enacted; ✅ §C·4 cut −10,313 tape; ✅ the check-in reader exists) · Previous: #52 (22 of 24 live opens RULED via the decision pack; `ds-025` part-falsified, the live transcript IS sandbox-readable)*
 *(Previous: 2026-07-29 #43 — present-but-unkeyed ruled a FILING ERROR, scoped; one key enacted `cd75caf`.)*
 *(⚠ **MOVED INTO THE HEADER ZONE, #35.** The wrap gate's `"Last refreshed" is not today` check reads only the first 40 lines — where this line did not live. It had been passing on dates inside the LANES section, so on #34 it could not have failed even with a stale stamp. Moved so the check tests what it is named after.)*
 
@@ -46,7 +46,20 @@ Entry point: `notes/2026-07-26-memento-dream-pass-scope-v2.md` (three shapes: Co
 **Status (2026-07-26 evening, ruling session): DAVE RULED THE DREAM — P1–P5+P7+P8 accept-enact-now (ENACTED), P6 deferred to its own session (parked `_FUTURE-STATE.md`), rejections: none; S-D1 schedule EARNED (`memento-dream-pass` weekly, Sun 07:10, per A-D2) · S-D2 lane flag (`--wrap --lane`) + S-D3 stdout-only wrap BUILT + bite-tested — both wrap-gate warts CLOSED.** Full rulings + WHY + enactment receipt: `notes/_MEMENTO-DECISIONS.md`. Headline enactments on main-queue surfaces (by ruling, per proposal): `_LIVE-STATE-ARCHIVE.md` (this file 205KB→62KB, ritual step 2d) · `knowledge/_git_commit.sh` + runbook · render-verify runbook fold · GM count/tuner/ds-010 lines · `_FUTURE-STATE` corrections. **Lane is now STEADY-STATE: the weekly task dreams; Dave rules; sessions enact.** Owed unchanged: convergence `-v2` (blocked on re-attach) · D6 before any Shape C. ⚠ `ec4c2f3` was UNPUSHED at this session's start — push the whole stack via Desktop.
 **Status (2026-07-26 evening, weekly-run session): SECOND DREAM PASS RUN + RULED SAME SESSION — V2-P1–P4 ENACTED, V2-P5 HELD.** Pass ran cold per the lane checklist (Fable conductor + 1 Opus dreamer, repo-first forensics); 5 proposals → `notes/_dream/2026-07-26-proposals-v2.md` (commit `d777aaa`, 4/4 conductor spot-checks held). Dave ruled in plain language same session: V2-P1 six 07-24 chart deferrals RESTORED to GM §C·2 as **17–22** + compaction EXIT CHECK in ritual 2c/2d · V2-P2 emitter determinism FIXED (7 `sorted()` sites, 4 scripts; advisory 6/6 identical under random hash, §C·4 line closed; dated-banner mentions left historical) · V2-P3 ds-011 logged (G/H/N advisory promotions + triggers, incl. WCAG 2.4.1 Level A ×5 screens) · V2-P4 `_REVIEW-SIGNOFF.md` fed 4 strands (legend v5.x · tuner v1+v2 · hit-area rule brief · 5 chart panes) + ritual step-1 feed-the-register clause. **V2-P5(a) ENACTED same session — Dave re-attached the note; saved verbatim to `notes/2026-07-26-convergence-anthropic-dreaming.md` (+fields, gate 0 fail); the three-session blocker is DEAD.** V2-P5(b) (runbook save-uploads clause) pencilled, awaits his word. Ledger rows V2-P1–P5 in `notes/_MEMENTO-DECISIONS.md`. Build 55/55 GREEN post-enactment. **Continuation same session (Dave: "love your work continue"): V2-P5(b) ENACTED (save-cited-uploads clause, ritual step 1; read as the yes, vetoable) + convergence `-v2` WRITTEN** — `notes/2026-07-26-convergence-anthropic-dreaming-v2.md` (Opus worker + Fable 4/4 spot-check incl. independent transcript grep; supersedes v1 in-part, v1 stays as filed; §3-verification fixes + databases-Q&A recorded OWED in its §7). **Lane's owed list — CORRECTED 2026-07-28 #22 (dream-pass-3 P4a; the 07-26 'only' was false within a day): the ledger `notes/_MEMENTO-DECISIONS.md` is the owed list's home, never this line — at correction time it held: M12's first unattended Sunday fire (08-02 07:10; M11 CLOSED #21 `0ee1634`) · D6 (Dave, before Shape C) · `-v2`'s §7 leftovers · the #21 dreamer hunt-list follow-ons.** **S-D4 (same evening): conductor sequence inscribed → `knowledge/_RUNBOOK-dream-pass.md`; Cowork skill `dream-pass` + the weekly task prompt are thin pointers to it — "run dream pass" is now the whole invocation.**
 
-## ⏱ LATEST DELTA — 2026-07-30 (Thu **#52**, OPUS solo, Dave live, decision-pack by instruction — ★★ **22 RULINGS IN ONE PASS** · ★★ **THE TRANSCRIPT IS SANDBOX-READABLE: `ds-025` PART-FALSIFIED** · ⛔ **`DEFAULT_WINDOW = 200_000` FALSIFIED BY EXISTENCE PROOF**)
+## ⏱ LATEST DELTA — 2026-07-30 (Thu **#53**, OPUS solo, Dave live, spend #52's rulings by instruction — ★★★ **D1 MEASURED: `bill` IS THE TOKENIZER** · ★★ **THE M8 CAP SAT AT THE FLOOR + 2 TAPE** · ✅ **§C·4 CUT −10,313**)
+
+> ⚠ **STATE LINES ONLY — narrative is in `GOOD-MORNING.md`'s ★ LATEST banner, verbatim, same commit.**
+
+- **★★★ D1 LANDED. `tape`(`cl100k`) × **1.559** = REAL tokens** (`count_tokens`, `claude-opus-5`, 5 registers, `knowledge/_measure_tokenizer.py`). **`TAPE_TO_BILL` = ×1.57 agrees to 0.7%** ⇒ **`bill` was ALWAYS the tokenizer mismatch, never a billing overhead.** ⚠ **Spread 1.486–1.664 (12%) ⇒ ONE ratio cannot re-denominate the corpus.** ⬛ **Re-ruling `ds-021`'s `tape`/`bill` vocabulary is DAVE'S.**
+- **★★ M8 RE-EXPRESSED AS A DERIVED CAP (D4 (a) ENACTED).** Floor MEASURED = header 1,968 + 2×median 1,515 (n=57) = **4,998 vs a BLOCK of 5,000**. Now `warn = header+2×median` (5,000) · `block = header+2×p75` (6,200). **Region FAIL → WARN at 5,058.** Old pair kept verbatim as `BANNER_BUDGET_FALLBACK_TK`, declared never silent; selftest mutation-tests both arms; pin moved as a pair.
+- **✅ §C·4: 57 ln / 11,096 tape → 7 ln / 783. GM 43,016 → 32,703.** Extent asserted 4 ways before the write; receipt printed.
+- **✅ `knowledge/_checkin.py` BUILT** — on-demand "how hot are we", free (measured in-sandbox, never loaded). **This window 70,190 → 194,812 tape ≈ 304,000 real.** Refuses a percentage without a named denominator; exits loudly without tiktoken.
+- **⚠ EXIT CHECK 14th consecutive, BIT:** #50's delta orphan (chain 5,159 vs 4,810, unexplained) → §C·4 **open 29** before the roll.
+- **⛔ 2f NOT RUN — 13th session; DECLARED as `HOLE #52` + `HOLE #53` in `notes/_GAUGE-LOG.md`, and #51's stratum is UNROLLED-not-absent (stated, not fabricated).** ⚠ **D5 (a) ruled the unblock and is STILL UNENACTED — 12 blocks stacked.**
+- **⚠ ERRORS: 1, self-caught** — an under-deep `find` (`-maxdepth 6` vs a depth-7 path) nearly filed a false absence.
+- **TREE STATE.** `_git_commit.sh --reconciled`, paths named. Dave pushes via **GitHub Desktop only**.
+
+## ⏱ PRIOR DELTA — 2026-07-30 (Thu **#52**, OPUS solo, Dave live, decision-pack by instruction — ★★ **22 RULINGS IN ONE PASS** · ★★ **THE TRANSCRIPT IS SANDBOX-READABLE: `ds-025` PART-FALSIFIED** · ⛔ **`DEFAULT_WINDOW = 200_000` FALSIFIED BY EXISTENCE PROOF**)
 
 > ⚠ **STATE LINES ONLY — narrative is in `GOOD-MORNING.md`'s ★ LATEST banner, verbatim, same commit.**
 
@@ -80,22 +93,6 @@ Entry point: `notes/2026-07-26-memento-dream-pass-scope-v2.md` (three shapes: Co
 
 
 ---
-
-## ⏱ PRIOR DELTA — 2026-07-30 (Thu **#50**, OPUS solo, Dave live, "I lean to safety" by instruction — ★★ **THE `size:` LINE IS CUT 808→399, EVERY CUT PROVED FIRST** · ★★ **THE LINE'S SELF-MEASUREMENT HAD DRIFTED 18% AND THE BAN CANNOT SEE A SELF-REFERENCE** · ⛔ **THE GAUGE'S ANSWER WAS REFUSED, NOT REPORTED**)
-
-> ⚠ **STATE LINES ONLY — narrative is in `GOOD-MORNING.md`'s ★ LATEST banner, verbatim, same commit.**
-
-- **✅ `size:` 808 → 399 tape (−409) · `_CHAIN.md` 4,810 → 4,401 = 516 UNDER the 4,917 warn · GM 37,977 → 37,568.** `--check` FRESH (fixed point, 2 passes) · gate **36 in scope, 0 fail, 0 warn** · `CHAIN_STAMP_RE` no match on the new stamp · generated file READ BACK.
-- **★★ THE LINE CLAIMED 685 TAPE AND MEASURED 808 (18% drift).** `CHAIN_STAMP_RE` is keyed to the token `CHAIN`; this figure was keyed to "this very line". **A ban scoped to a name cannot catch a self-reference** ⇒ **NEW OPEN 24.**
-- **★ PROBE (named): 13 claims × 6 corpora incl. GM-minus-the-line. 7 HOMED ⇒ cut · 2 HOMED NOWHERE.** The chain was the SOLE home of two uncapped facts ⇒ **RULING: HOME BY ADDITION, THEN CUT.** Orphans → #48's dossier · `_RUNBOOK-context-gauge.md` § ★★ THE FLOOR IS NOT WILLPOWER.
-- **⚠ TOKENIZER — still `cl100k` (OpenAI's), and Dave raised this before at P3 (`_MEMENTO-DECISIONS.md:523`), undischarged 7 sessions.** MEASURED not swapped: **`p50k` +8.6–11.1%** over `cl100k`. `BYTES_PER_TOKEN` · `CHAIN_BUDGET_TK` · `TAPE_TO_BILL` **UNTOUCHED** ⇒ **NEW OPEN 26.**
-- **⬛ `BARE_TOKEN_RE` SPECIFIED, NOT BUILT ⇒ NEW OPEN 25.** The mnemonic stays in the chain until its checker exists; `ds-024`'s class — a rule with no enforcer.
-- **⛔ GAUGE REFUSED, NINTH consecutive, NEW cause — 849 tape / 3,465 bytes for this transcript is impossible; the input never arrived.** Prior eight were the denominator; this is upstream of it. Measured instead: **disk 6,724 tape**, harness half unobservable (`ds-025`).
-- **⚠ ERRORS: 2 — TWENTY-THIRD consecutive, both self-caught.** (1) gauge figure briefly accepted as a measurement. (2) `Edit` at a MISSPELLED path with placeholder content — failed closed. **A tool erroring is not a control.**
-- **⚠ EXIT CHECK TWELFTH consecutive, cleared both rolls** (2c #48 banner 11 ln · 2d #47 delta 14 ln). **⛔ 2f NOT RUN — open 7; `ds-022` FAILS, DECLARED. Stack ELEVEN.**
-- **⚠ #49's delta says the chain measured 5,159 tape; it measured 4,810 at this session's open.** 349 apart, unexplained, not chased.
-- **TREE STATE.** `_git_commit.sh --reconciled`, paths named. Dave pushes via **GitHub Desktop only**. ⚠ `mv` stray `.git/*.lock` BEFORE git; the clear is the LAST git action.
-
 
 ---
 
