@@ -1897,12 +1897,25 @@ the forward-facing INSTRUCTION (the next-chat title) is fixed, because an instru
 
 ### ★★ THE CAUSE — the handoff describes a state its own commit ended
 
-#54's declared failure was *banner #53 vs newest stratum #42*. Commit `c97708a` ("#54 handoff:
-banner, title, #54 stratum, chain regenerated") wrote the banner **and** #54's own stratum in one
-motion, and #53 already carried its `HOLE`. Both halves of the disagreement were resolved by the act
-of writing the handoff — so the claim was **false at the instant of ratification**, not merely stale.
-★ [[assertion-propagation-gap]] in its sharper form: the gate fires on a FLIP, so a claim that was
-**never true** is never chased. #43 named this class; it has now bitten a third time.
+⛔ **#55's FIRST ACCOUNT OF THIS WAS WRONG AND IS CORRECTED HERE.** It claimed the claim was *"false at
+the instant of ratification"* — reasoned from reading one commit, never replayed. Dave's reading was the
+right one. **The replay, `gauge_log_continuity` run against each tree in turn:**
+
+| tree | banner / stratum | ds-022 |
+|---|---|---|
+| `f787bd2` — step-1 spine-flush for #54 | 53 / 42 | **1 fail — RED** |
+| `db2d71e` — reconcile the ds-023 stop line | 53 / 42 | **1 fail — RED** |
+| `c97708a` — #54 handoff (banner, title, **#54 stratum**) | **54 / 54** | **0 fails — GREEN** |
+
+⇒ **TRUE WHEN WRITTEN, FALSE BY THE END OF THE SAME WINDOW.** #54's own stratum is what discharged it:
+writing `#### 2026-07-30 #54` made banner and newest stratum agree, and that agreement *is* the arm that
+was failing. **The finding and its fix landed inside one window**, so no flip ever fired and nothing chased
+the claim. ★ [[assertion-propagation-gap]] — but note the mechanism precisely: not a claim that was never
+true, and not one that merely aged. One **discharged by the very act of writing it down.**
+
+⚠ **THREE SITES CARRIED IT — banner, stratum COMMIT STATE, next-session title — and #55 corrected two,
+missing the stratum until Dave named it.** Recorded because the miss is the same shape as the defect: a
+correction applied to the surfaces you happen to be looking at is not a correction of the record.
 
 ### ⚠ AND THE AGENT FAILURE, RECORDED BECAUSE DAVE CAUGHT IT
 
