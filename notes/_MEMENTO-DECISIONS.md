@@ -836,6 +836,93 @@ surgical replacement with a `count == 1` assertion, every figure measured by the
 tokenizer, `tiktoken` installed and verified before the first measurement. Reading the 26,914-tape
 file to change two lines of it would have been the exact overspend the chain file exists to stop.
 
+## ★ #48 — THE CAP BINDS THE FILE, AND THE SPEC THAT GOT THERE WAS RIGHT FOR THE WRONG REASON — 2026-07-30 (Opus solo, Dave live, "bite 2 then stop" by instruction)
+
+**Narrative + full arc: `_DECISION-HISTORY/2026-07-30-the-cap-binds-the-file.md`.** This section holds
+the rulings and the WHY behind each; the dossier holds how the thinking moved.
+
+**Dave's instructions this window, verbatim in substance:** *"bite 2 then stop"* (pace — one bite,
+banked and tested, then wrap), plus one folded item off his own open 20: **fix the stale Default tier
+in `MODEL-ROUTING.md`.** He declined nothing else; (b) and (c) of open 20 stay his.
+
+**#48-1 — open 16 (a) ENACTED as a SEPARATE FUNCTION, not a fix inside the slicer. WHY:** the spec
+said *"import `_gen_chain` LAZILY — circular import"*, and that instruction is correct, but its stated
+cause is not the blocker. `_gen_chain.build()` **calls** `read_chain_tk()` for its fixed-point seed, so
+teaching `read_chain_tk` to measure the file is **unbounded recursion**, which no lazy import
+addresses. Lazy import solves the *other*, real hazard — the two modules reference each other, so a
+module-level import would close the cycle for every consumer of the gate. Both hazards real, only one
+named. ⇒ `chain_file_tk(repo)` sits beside `read_chain_tk`; the slice keeps its honest meaning and the
+FILE gets its own measurement, published side by side so the wrapper is **attributable, not inferred.**
+★ **The standing lesson: a correct instruction can carry an incorrect cause, and the cause is the part
+a later session reuses.** Nobody re-derives the instruction; they re-derive the reasoning, on the next
+problem that looks similar.
+
+**#48-2 — `chain_file_tk` measures the RENDER, not the bytes on disk. WHY:** every other figure the
+gate publishes is derived live from GM + LS. A cap read off a stale `_CHAIN.md` would bless a previous
+session's chain, and staleness already has a blocking detector (`_gen_chain --check`). One source of
+truth, no gap. **And it REFUSES rather than falling back to the slice** — a slice returned under a
+label saying FILE is ~400 tape low and is *the exact defect open 16 records, reintroduced as an error
+path.* UNKNOWN is never defaulted.
+
+**#48-3 — `CHAIN_BUDGET_TK` (4500, 6000) → (4917, 6417). WHY those numbers and not tighter ones:**
+`ds-021` precedent — **restate openly, never silently tighten.** Both ends moved by the MEASURED
+wrapper so the verdict is arithmetically identical (313 tape of headroom either side), and because
+`bill_of()` is monotone linear the *comparison the consumer makes* is preserved, not just the tape
+figures. ★ **The test of a restatement is that it is boring today**; had it moved a pass to a warn it
+would have been a re-dial wearing a unit change. ⚠ **417 measured, not the brief's 418** — one token in
+twelve hours. **Pinned as a SNAPSHOT deliberately:** a budget that recomputed the wrapper each wrap
+would silently absorb *wrapper growth*, the one region this check exists to expose. ⛔ **Tier
+UNTOUCHED** — ADVISORY, agent-derived, awaiting Dave; re-pointing a unit is not promotion.
+
+**#48-4 — the new `M10 UNIT BITE`, and WHY the old suite could not have caught this.** Four sessions of
+green while the wrapper went unmeasured, and reading the bites back the reason is uniform: **they all
+ask "did it warn?" and none asks "warned about WHAT SIZE?"** A failure-only suite is blind to a unit
+error, because a unit error does not change whether a check fires — it changes what the check is about.
+The new bite asserts the published FILE figure **exceeds** the slice (the wrapper only ever adds text).
+**Proved by CONTROL, not asserted:** monkeypatching `chain_file_tk` back to the slice yields
+`❌ M10 UNIT BITE: the FILE figure (60) does not exceed the SLICE (60)`, rc=1.
+
+**#48-5 — open 20 (a) done, with its mechanism inscribed beside it. WHY the mechanism matters more
+than the edit:** the Default tier read *"Opus 4.8"* for an unknown number of sessions and #47
+**announced its routing to Dave at the opener off that cell.** The reason nothing chased it is one line
+under the table — *"the roles are the fixed part, not the exact model on each line"* — which reads as
+licence for the cell to be approximate. ⇒ recorded in the file: **the roles are canon, the model
+strings are a snapshot, and a version number here is a measurable claim.**
+
+**#48-6 — NEW open 21, and WHY it is not folded into open 19.** Two generated reports were committed
+**stale** at `b8b388e` with **real content drift** (`_CAPTURE-GATE.md` "33 file(s)" vs 34 ·
+`_LIVE-STATE-CHECK.md` "7 bullets" vs 6); the 34th in-scope file is the dossier *that same commit
+added*. Open 19's framing is *"seven files dirty with ZERO content change"* — true of dates, and it
+**trains the next session to read all post-build dirt as harmless.** These were not. ★ Four instances
+of one shape in two sessions: **per-edit** (#46's stamp) · **per-pass** (#47's footer) · **per-run**
+(#47's dates) · **per-wrap** (these reports) — a variable inside generated output that moves after the
+output is written. ⬛ Remedy Dave's; the shape `_gen_chain.py` already proves is a `--check` per report.
+
+**#48-7 — the cut DECLINED, and why declining was the ruling-consistent act.** The chain came in 737
+tape over warn on first draft. The fattest line in it is the `size:` stamp at **685 tape**, four
+sessions of stacked narration on a perishable measurement — legitimately trimmable under GM-D2. **Not
+trimmed: honest trimming needs each claim's live home located first, and that probe was not run.**
+Named, priced, undone — an honest UNPROVEN is a priced TODO, never a `HOLE`. ✅ **The retirement that
+WAS provable:** #39's job-line notice, 126 tape, target proved absent from every live surface (probe:
+`JOB LINE` → one hit, itself) ⇒ it should have rolled with its target at #44; one standing clause
+carried out first, then retired.
+
+**#48-8 — both EXIT CHECKS bit, tenth consecutive wrap.** **2c:** #46's *"the check ran and never
+reached the plan"* had no standing home (probe empty across GM, `_FUTURE-STATE.md`, the gauge runbook,
+`AGENTS.md`) ⇒ **open 22**, recorded as **named, unsolved, UNMECHANISED** — a name is not a gate, and
+[[instrument-without-a-consumer]] warns that an advisory with no reader is worse than none, so whether
+it earns a mechanism is Dave's. Same banner's **BAND-REFUSED cause struck at source**: ten consecutive
+banners blamed a hardcoded `DEFAULT_WINDOW` that `:63` shows is an overridable default — **a claim that
+was never true, each banner citing the last** (open 17's unsolved half of
+[[assertion-propagation-gap]]). **2d:** #44's *"naming still UNRULED"* residue was homed **inside a ✅
+DISCHARGED entry**, invisible to a reader scanning live opens ⇒ **open 13 re-keyed PARTIAL** under
+#43's same-file scope.
+
+**#48-9 — verification composed in SEGMENTS, and said to be a composition.** No subset flag, 75 steps,
+one sandbox call insufficient ⇒ imported `_build_all.py`'s **STEPS table only** (lines 1–196, loop
+excluded) and ran 1–25 · 26–50 · 51–75 in order. **All 75 ran, 0 non-zero** — stronger than #47 could
+say, and still **not the build's own verdict**, since the composite exit code remains unobtainable.
+
 ## ★ #47 — OPEN 16 WAS NOT IMPLEMENTABLE AS RULED, AND #46 HAD WRITTEN THE PROOF WITHOUT READING IT — 2026-07-30 (Opus solo, Dave live, small-bites by instruction)
 
 **The ruling (Dave, at the opener, from his own #46 shapes marked "not exhaustive"): open 16 = (a)+(c)

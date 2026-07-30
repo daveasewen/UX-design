@@ -5,20 +5,34 @@
 > Supersedes the `model-selection-by-phase` memory (now points here). Audited 2026-07-23 against
 > the Fable-era routing research (sheet: `reviews/ROUTING-AUDIT-2026-07-23-v1.html`; all 13
 > proposals ratified by Dave same session) — still Dave's to tune.
-> *Last updated: 2026-07-25 (budget-aware routing governor added — Dave's proposal, reflected back +
-> confirmed "good call"). Prior: 2026-07-23 (routing-audit #6 + #12: Fable-era notes · Mode 2 → deliberate
-> · mid-session-switch anti-pattern).*
+> *Last updated: 2026-07-30 #48 (Default tier corrected `Opus 4.8` → `Opus 5` — open 20 (a),
+> Dave's ruling; see the staleness note under the table). Prior: 2026-07-25 (budget-aware routing
+> governor added — Dave's proposal, reflected back + confirmed "good call") · 2026-07-23
+> (routing-audit #6 + #12: Fable-era notes · Mode 2 → deliberate · mid-session-switch anti-pattern).*
 
 ## The tiers (Dave's real economy)
 
 | Tier | Model | When | Notes |
 |---|---|---|---|
 | **Premium — rationed** | **Fable** | Big, high-stakes, hands-off jobs where a mistake across the whole scope is costly and you can't babysit it — "I need to trust this." | Most-trusted, but dear. Spend it where high-trust-*at-scale* actually pays; not the daily driver. |
-| **Default — complex** | **Opus 4.8 · high** | Judgment, architecture, sequencing, audits, critique, governance, ambiguous or irreversible calls, reviews. | The workhorse. Your default for anything that needs thinking. |
+| **Default — complex** | **Opus 5 · high** | Judgment, architecture, sequencing, audits, critique, governance, ambiguous or irreversible calls, reviews. | The workhorse. Your default for anything that needs thinking. |
 | **Throughput — to a plan** | **Sonnet** | Execute a known runbook/spec: gates, metas, snippets, token rebinds, ingestion tranches, refactors to spec. | The judgment is already made; you need reliable execution. Saves Opus budget. |
 | **Chore — mechanical** | **Haiku** | Doc-drift fixes, find/replace, formatting, renames, gate-count sweeps, index bumps. | No judgment involved — never pay more than you must. |
 
 *The Fable↔Opus and Sonnet↔Haiku boundaries are yours to calibrate from experience; the roles are the fixed part, not the exact model on each line.*
+
+> ⚠ **STALENESS CORRECTED 2026-07-30 #48, on Dave's ruling — open 20 (a).** The Default tier read
+> **"Opus 4.8 · high"** for an unknown number of sessions while sessions were in fact running
+> `claude-opus-5`; **#47 announced its routing at the opener off that table**, which is the whole
+> cost of the defect — a routing announcement is one of the first things Dave reads, and it was
+> sourced from a stale cell. ★ **The mechanism, and it is the reusable part: a VERSION NUMBER in
+> this table is a claim with an expiry date, and the sentence directly above is what let it sit** —
+> "not the exact model on each line" reads as licence for the cell to be approximate, so nothing
+> ever chased it. **The ROLES are canon here; the model strings are a snapshot.** ⇒ Treat a version
+> number in this file the way the gate treats a size stamp: it is a measurable claim, and if you
+> notice it is wrong, correct it at source rather than routing around it
+> [[assertion-propagation-gap]]. **Unfixed in the same class: the two amber edges and the
+> "Measured, adjustable." annotation — open 20 (b) and (c), both still Dave's.**
 
 ## Fable-era notes
 

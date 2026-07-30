@@ -451,8 +451,31 @@ BANNER_BUDGET_TK = (4000, 5000)    # (warn, BLOCK) — measured 2,103 tk at enac
 #   ⚠ AND the corpus figure is published on every wrap regardless. The chain got 90% cheaper; the
 #   corpus did not get smaller, it got *deferred*. A budget that reported only the chain would hide
 #   the retrieval surface exactly the way the D7 amendment warned an §A exclusion would hide GM.
-CHAIN_BUDGET_TK = (4500, 6000)     # (warn, BLOCK-CANDIDATE) — ADVISORY, agent-derived, awaiting
-#                                    Dave. Measured 3,410 tk at the cut; warn leaves ~32% headroom.
+# ★★ RESTATED 2026-07-30 #48 — THE UNIT CHANGED, THE VERDICT DID NOT. open 16 (a), Dave #47.
+#   Until now these numbers were denominated in the SLICE (`read_chain_tk`). They are now
+#   denominated in the whole `_CHAIN.md` FILE (`chain_file_tk`) — the thing a cold session opens,
+#   which is the slice plus `_gen_chain`'s `BANNER` + `FOOTER`. Nothing was tightened: both ends
+#   moved by the MEASURED wrapper so that today's pass/fail is arithmetically unchanged.
+#       MEASURED at `b8b388e`, tiktoken cl100k:  file 4,604 = slice 4,187 + wrapper 417
+#       old:  slice 4,187 vs warn 4,500  →  PASS, 313 tape of headroom
+#       new:  file  4,604 vs warn 4,917  →  PASS, 313 tape of headroom   (identical)
+#   ⚠ `bill_of()` is a monotone linear map, so restating both sides preserves the comparison the
+#   consumer actually makes, not merely the tape figures. This is the `ds-021` precedent enacted
+#   (`_capture_gate.py` § ds-021, and the same move that file made at :344): **RESTATE OPENLY,
+#   NEVER SILENTLY TIGHTEN.** A re-point that also moved the verdict would be a re-dial wearing a
+#   unit change, and the drift pin below would have been the only thing left telling the truth.
+#   ⚠ **417 IS A SNAPSHOT, NOT A CONSTANT.** The wrapper renders `gm_tk` and two percentages, so
+#   it moves by a token or two every wrap — Dave's #47 brief said 418 and it was 417 by the time
+#   this was built, twelve hours later. It is pinned here on purpose: a budget that tracked the
+#   wrapper automatically would silently absorb wrapper GROWTH, which is exactly the region this
+#   check exists to expose ([[gate-inside-the-growth-loop]]). Moving it is a deliberate act with a
+#   ledger line, like every other value in the pin below.
+#   ⛔ THE TIER IS UNTOUCHED: still ADVISORY, still AGENT-DERIVED, still AWAITING DAVE. Re-pointing
+#   the unit is not promotion, and the engine never derives-and-promotes.
+CHAIN_BUDGET_TK = (4917, 6417)     # (warn, BLOCK-CANDIDATE) — ADVISORY, agent-derived, awaiting
+#                                    Dave. = the ruled (4500, 6000) on the SLICE + the measured
+#                                    417-tape wrapper, restated #48 onto the FILE. 3,410 tk was
+#                                    the slice at the #33 cut; warn still leaves ~32% headroom.
 CORPUS_BUDGET_TK = 36000           # (warn only) — GM + LS whole, the RETRIEVAL SURFACE. Never
 #                                    blocks: it is the thing the cut made cheap to carry, not the
 #                                    thing the cut made small. 34,094 tk at the cut.
@@ -774,6 +797,57 @@ def read_chain_tk(repo, gm_lines):
     return gm_tk + d_tk, f"GM header+LATEST {gm_tk} tk · LS {how} {d_tk} tk"
 
 
+# ================================================== open 16 (a) — THE CAP MUST BIND THE FILE
+# ENACTED #48 on Dave's #47 ruling ((a)+(c); (c) landed at `62b6e1e`, this is (a)).
+#
+# THE DEFECT, measured #46 and true at #44 and #45 as well. `read_chain_tk` above measures the
+# SLICE — the bytes `chain_parts` cuts out of GM and LS. What a cold session actually opens is
+# `_CHAIN.md`, which is that slice PLUS `_gen_chain.py`'s `BANNER` and `FOOTER`. The wrapper is
+# charged to every cold reader and, until this function existed, **to no cap at all**: the gate
+# could report the chain comfortably UNDER its warn while the file a session opens sat OVER it,
+# and did, at #44, #45, #46 and #47. ★ A third unit nobody had named — the slice is not the file,
+# the same shape as `the tape is not the bill` one level down ([[measure-dont-convert-units]]).
+#
+# ⚠ WHY THIS IS A SEPARATE FUNCTION AND NOT A FIX INSIDE `read_chain_tk`. `_gen_chain.build()`
+# CALLS `read_chain_tk` — it needs the slice as the seed for its fixed point. Measuring the file
+# from inside the slicer would be unbounded recursion, not a circular import. So the slice keeps
+# its own honest meaning and the FILE gets its own measurement, and the two are published side by
+# side so the wrapper's size is always attributable rather than inferred.
+#
+# ⚠ THE IMPORT IS LAZY, DELIBERATELY (Dave's spec, #47). `_gen_chain` imports `_capture_gate`;
+# a module-level import here would close the cycle at import time and break both modules for
+# every other consumer. Lazy also keeps the cost where it belongs: nothing that does not ask for
+# the file figure pays for a chain render.
+def chain_file_tk(repo):
+    """Measure what a cold session ACTUALLY OPENS: the whole `_CHAIN.md` file, wrapper included.
+
+    Returns `(file_tk, detail)`, or `(None, reason)` on refusal.
+
+    ⚠ It measures `_gen_chain.build()`'s OUTPUT, not the bytes currently on disk, and that is
+    deliberate. Every other figure this gate publishes is derived live from `GOOD-MORNING.md` and
+    `_LIVE-STATE.md`; a cap read off a stale `_CHAIN.md` would bless the size of a PREVIOUS
+    session's chain. Staleness is a different failure with its own detector — `_gen_chain --check`,
+    a blocking build step — so nothing here is left uncovered by measuring the live render.
+
+    ⚠ It REFUSES rather than falling back to the slice. Returning the slice when the file cannot
+    be measured would report a number ~400 tape LOW under a label that says FILE, which is the
+    exact defect open 16 records, reintroduced as an error path. UNKNOWN is never defaulted.
+    """
+    try:
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import _gen_chain                                     # LAZY — see the block comment above
+    except Exception as e:                                    # pragma: no cover - import guard
+        return None, (f"_gen_chain unavailable ({e}) — chain FILE UNMEASURED. NOT substituted with "
+                      f"the slice: that is ~400 tape low and would read as the file.")
+    try:
+        text, detail = _gen_chain.build(repo)
+    except Exception as e:                                    # pragma: no cover - defensive
+        return None, f"_gen_chain.build() raised ({e}) — chain FILE UNMEASURED, not assumed equal"
+    if text is None:
+        return None, f"_CHAIN.md is not generatable — {detail}"
+    return measure_tokens(text)[0], detail
+
+
 # M6 (2026-07-27): a fresh sandbox loses pip state, and tiktoken vanished TWICE inside 24 hours.
 # Each time the gate did the honest thing — fell back to bytes/3.53 and SAID so — but a stamp
 # measured by estimate is a weaker claim than one measured by the encoder, and nobody noticed
@@ -918,14 +992,21 @@ def check_budgets(repo):
         with open(ls_path, encoding="utf-8") as f:
             corpus += measure_tokens(f.read())[0]
     chain, chain_detail = read_chain_tk(repo, lines)
+    # open 16 (a), #48: the SLICE above is kept and still published — it is what `chain_parts` cuts
+    # and what the generator seeds from — but the CAP now binds the FILE, because the file is what a
+    # cold session opens. Both figures ride together so the wrapper is always ATTRIBUTABLE.
+    chain_file, chain_file_detail = chain_file_tk(repo)
     # ⚠ The whole-file figure leads, ALWAYS. The budget excludes §A; the published cost does not.
     # An exclusion that also hides the total would understate exactly the cold-start cost that the
     # D9 measured floor exists to make honest. Post-#33 the same principle covers the corpus: the
     # chain got 90% cheaper, the corpus did not get smaller — it got DEFERRED. Publish both.
     chain_txt = f"{chain} tk ({chain_detail})" if chain is not None else f"UNMEASURED — {chain_detail}"
+    file_txt = (f"{chain_file:,} tape (the CAPPED unit)" if chain_file is not None
+                else f"UNMEASURED — {chain_file_detail}")
     notes.append(f"SIZE measured ({method}): GM {tk} tk WHOLE FILE · of which §A {exempt_tk} tk "
                  f"exempt · compactable {compactable} tk (the budgeted figure) · "
-                 f"READ CHAIN {chain_txt} · corpus (GM+LS, the retrieval surface) {corpus} tk")
+                 f"READ CHAIN {chain_txt} · CHAIN FILE {file_txt} · "
+                 f"corpus (GM+LS, the retrieval surface) {corpus} tk")
 
     stamp = next((m for m in (SIZE_STAMP_RE.match(ln) for ln in lines[:HEADER_LINES]) if m), None)
     if stamp is None:
@@ -966,8 +1047,9 @@ def check_budgets(repo):
         notes.append(f"COMPACTABLE region: {fmt_units(compactable)} · warn {budget:,} tape / "
                      f"~{budget_bill:,} bill · BLOCK WITHDRAWN #39 — ADVISORY. This region is "
                      f"RETRIEVAL surface, not the cold-start chain (#33): growth here costs a "
-                     f"retrieval, never a boot. ⬛ The binding cold-start cap is OWED — see M10 "
-                     f"read_chain_tk, still advisory.")
+                     f"retrieval, never a boot. ⬛ The cold-start cap now MEASURES THE RIGHT THING "
+                     f"(the whole `_CHAIN.md` file, #48) but is still ADVISORY — arming it is "
+                     f"Dave's, see M10 chain_file_tk / CHAIN_BUDGET_TK.")
         if compact_bill > budget_bill:
             warns.append(f"GOOD-MORNING.md compactable: {fmt_units(compactable)}, warn "
                          f"~{budget_bill:,} bill — ADVISORY, never a trim order. ⚠ If this number "
@@ -1007,27 +1089,33 @@ def check_budgets(repo):
             warns.append(f"GOOD-MORNING.md banner region: {fmt_units(banner_tk)}, cap "
                          f"~{bw_bill:,} bill — ritual step 2c")
 
-    # ---- M10, RE-POINTED #33: the READ CHAIN is header + ★ LATEST + the LS LATEST delta.
-    # ADVISORY, and the budget numbers are agent-derived pending Dave (see the constant block).
+    # ---- M10, RE-POINTED #33 (referent) and again #48 (UNIT): the READ CHAIN is header +
+    # ★ LATEST + the LS LATEST delta, and the thing MEASURED against the cap is the whole
+    # `_CHAIN.md` FILE that carries them — slice + `_gen_chain`'s wrapper. open 16 (a), Dave #47.
+    # ⚠ The cap moved with the unit, by the SAME measured wrapper, so today's verdict is
+    # arithmetically identical (ds-021 precedent: RESTATE openly, never silently tighten).
+    # ADVISORY still, and the numbers are still agent-derived pending Dave (see the constant block).
     c_warn, c_block = CHAIN_BUDGET_TK
     # ⚠ Both messages lead with a UNIQUE tag. The first draft had the bites match on the substring
     # "read chain" — which also appears inside the corpus warn's own explanatory prose, so a fat-§A
     # fixture "warned the chain" when the chain had in fact measured 60 tk. A bite that matches on
     # a phrase two different messages share is not a bite. Tag, then match the tag.
-    if chain is None:
-        warns.append(f"M10 read chain UNMEASURED — {chain_detail}. Not defaulted, not assumed "
-                     f"clean: a chain budget that reports 0 on a parse failure reads GREEN on a "
-                     f"broken file. Fix the structure, then re-run.")
-    elif bill_of(chain) > bill_of(c_warn):
-        warns.append(f"M10 read chain (header + ★ LATEST + LS latest delta): {fmt_units(chain)}, "
-                     f"warn {c_warn:,} tape / ~{bill_of(c_warn):,} bill · block-candidate "
-                     f"{c_block:,} tape / ~{bill_of(c_block):,} bill — ADVISORY, numbers "
-                     f"agent-derived and awaiting Dave. {chain_detail}. This check knows the "
-                     f"total, not where the weight sits — measure the three terms before picking "
-                     f"one to trim.")
+    if chain_file is None:
+        warns.append(f"M10 read chain UNMEASURED — {chain_file_detail} (slice: {chain_detail}). "
+                     f"Not defaulted, not assumed clean: a chain budget that reports 0 on a parse "
+                     f"failure reads GREEN on a broken file. Fix the structure, then re-run.")
+    elif bill_of(chain_file) > bill_of(c_warn):
+        warns.append(f"M10 read chain — THE WHOLE `_CHAIN.md` FILE, which is what a cold session "
+                     f"opens: {fmt_units(chain_file)}, warn {c_warn:,} tape / "
+                     f"~{bill_of(c_warn):,} bill · block-candidate {c_block:,} tape / "
+                     f"~{bill_of(c_block):,} bill — ADVISORY, numbers agent-derived and awaiting "
+                     f"Dave. {chain_file_detail}. This check knows the total, not where the weight "
+                     f"sits — measure the terms before picking one to trim, and note that the "
+                     f"wrapper is the ONE term no editing of GM or _LIVE-STATE can move.")
     else:
-        notes.append(f"M10 read chain: {fmt_units(chain)} · warn {c_warn:,} tape / "
-                     f"~{bill_of(c_warn):,} bill (ADVISORY). {ratio_status()}")
+        notes.append(f"M10 read chain (whole `_CHAIN.md` file, the unit a cold session pays): "
+                     f"{fmt_units(chain_file)} · warn {c_warn:,} tape / ~{bill_of(c_warn):,} bill "
+                     f"(ADVISORY) · {chain_file_detail}. {ratio_status()}")
     # ---- The corpus rides alongside, always, warn-only. Post-cut it is what retrieval must
     # serve, not what a session reads; it is reported so the deferral can never read as a deletion.
     if bill_of(corpus) > bill_of(CORPUS_BUDGET_TK):
@@ -2149,6 +2237,33 @@ def selftest_growth():
         elif not re.search(r"READ CHAIN \d+ tk", chain_note):
             failures.append(f"M10 POSITIVE BITE: the chain note carries no number — {chain_note}")
 
+        # ★ #48 — THE UNIT BITE (open 16 (a), Dave #47). The cap must bind the FILE, not the slice.
+        # ⚠ This is the bite the old suite COULD NOT HAVE HAD, and its absence is the whole of
+        # open 16: for four sessions every M10 bite here passed while the wrapper went unmeasured,
+        # because they all asked "did it warn?" and none asked "warned about WHAT SIZE?". A revert
+        # of `chain_file_tk` would put the slice figure back and leave every other bite in this
+        # block green. So assert the NUMBER, and assert the FILE exceeds the SLICE — if the two are
+        # ever equal, the wrapper has stopped being counted and the defect is back.
+        if chain_note is not None:
+            m_slice = re.search(r"READ CHAIN (\d+) tk", chain_note)
+            m_file = re.search(r"CHAIN FILE ([\d,]+) tape", chain_note)
+            if m_file is None:
+                failures.append(f"M10 UNIT BITE: no CHAIN FILE figure is published, so the cap is "
+                                f"measuring the slice again and the wrapper every cold session pays "
+                                f"for is uncapped (open 16). Note was: {chain_note}")
+            elif m_slice is not None:
+                fl, sl = int(m_file.group(1).replace(",", "")), int(m_slice.group(1))
+                if fl <= sl:
+                    failures.append(f"M10 UNIT BITE: the FILE figure ({fl:,}) does not exceed the "
+                                    f"SLICE ({sl:,}) — the wrapper adds text unconditionally, so "
+                                    f"equality means one of the two is not measuring what it says")
+        # …and the budget line must NAME its unit. A bare number under a moved unit is the ds-021
+        # defect exactly: precise, and in the wrong unit, with nothing on the surface to say so.
+        m10_note = next((x for x in n if x.startswith("M10 read chain")), None)
+        if m10_note is not None and "_CHAIN.md" not in m10_note:
+            failures.append(f"M10 UNIT BITE: the chain budget line does not name `_CHAIN.md` as its "
+                            f"unit — ds-021, a bare token count is a defect. Note was: {m10_note}")
+
         # ★ THE RE-POINT CONTROL. Under the OLD definition (GM + LS whole) a fat §A/§C blew the
         # chain budget. Under the new one they are not in the chain at all. This bite is what
         # proves the re-point actually took, rather than the constant merely having been edited.
@@ -2278,10 +2393,20 @@ def selftest_growth():
     # the gate to a contract that no longer exists. The new numbers are AGENT-DERIVED from a single
     # measurement and are ADVISORY UNTIL DAVE RULES THEM. Both are kept here so the re-point can
     # never be read as a quiet re-dial, and so the old ruling stays legible after the change.
+    # ⚠ #48: RE-POINTED A SECOND TIME, and again the REFERENT moved rather than the ruling — from
+    # the SLICE to the whole `_CHAIN.md` FILE (open 16 (a), Dave #47). Both ends moved by the
+    # measured 417-tape wrapper, so the verdict is arithmetically identical; the pin fires on the
+    # numbers, which is right, and the note below is where the reason has to live. ★ The test of a
+    # restatement is that it is BORING TODAY: if this change had also moved a pass to a warn, it
+    # would be a re-dial wearing a unit change, and this pin would be the only honest record left.
     for name, got, want, note in (
-            ("CHAIN_BUDGET_TK", CHAIN_BUDGET_TK, (4500, 6000),
-             "RE-POINTED #33 2026-07-28 — was (24000, 28000) against the GM+LS-whole referent, "
-             "ruled 2026-07-27 M-set. New values AGENT-DERIVED, ADVISORY, awaiting Dave"),
+            ("CHAIN_BUDGET_TK", CHAIN_BUDGET_TK, (4917, 6417),
+             "RE-POINTED TWICE, both times the REFERENT and never the ruling. #33 2026-07-28: was "
+             "(24000, 28000) against the GM+LS-whole referent, ruled 2026-07-27 M-set → (4500, "
+             "6000) against the SLICE. #48 2026-07-30 (open 16 (a), Dave #47): → (4917, 6417) "
+             "against the whole _CHAIN.md FILE = the same (4500, 6000) plus the MEASURED 417-tape "
+             "wrapper, so the verdict is arithmetically unchanged (ds-021: restate, never silently "
+             "tighten). Values still AGENT-DERIVED, still ADVISORY, still awaiting Dave"),
             ("BANNER_BUDGET_TK", BANNER_BUDGET_TK, (4000, 5000), "ruled 2026-07-27 M-set"),
             ("SECTION_A_WARN_TK", SECTION_A_WARN_TK, 4500, "ruled 2026-07-27 M-set"),
             ("CORPUS_BUDGET_TK", CORPUS_BUDGET_TK, 36000,

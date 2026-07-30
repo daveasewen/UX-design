@@ -1,5 +1,21 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
 
+<!-- batch 2026-07-30 #48 -->
+## ⏱ PRIOR DELTA — 2026-07-29 (Wed **evening #44**, OPUS solo, Dave live — ★★ **#43's ruling told this wrap NOT to forge `HOLE #43`** · ★★ **#42's "unexplained" reading REPRODUCED under a control — `tiktoken` absence makes a BLOCKING step report a false STALE** · ★ **an index died twelve days ago and nothing could notice**) — "Keep the wins small." *(Dave, #43, carried.)*
+
+> ⚠ **STATE LINES ONLY — narrative is in `GOOD-MORNING.md`'s ★ LATEST banner, verbatim, same commit.**
+
+- **✅ RULED (Dave) — `_stratum_session_no` takes the HIGHEST session number; file order not consulted.** ⚠ **Not the handoff's proposed fix** (*"last match"* = a second order-dependence). **VERIFIED:** reader **43** (was 38) · line-**REVERSED** GM → **43** · ds-022 **GREEN** · empty/unparseable → `None`. Open **13 CLOSED** → ledger § ★ #44. ⛔ **Naming stays UNRULED for `roll_2f` + archives.**
+- **✅ #37 DOSSIER WRITTEN**, from the four named commits only → `_DECISION-HISTORY/2026-07-29-the-37-dossier.md`. Guard DISCHARGED, six sessions owed. ★ Owed because #37 took the Amber flush at ~73% — **a flush writes state lines and no narrative.**
+- **★★ DIAGNOSED *AND REPRODUCED* — #42's "unexplained STALE" is `tiktoken` ABSENCE.** One unchanged file, one variable: present → **FRESH exit 0** · `PYTHONPATH` shim → **STALE exit 1**. ⇒ **a fresh sandbox makes a BLOCKING build step report a false stale record.** [[attribute-the-diff]].
+- **⚠ NEW open 14 — `_DECISION-HISTORY/README.md`'s index is DEAD: 7 of 54 rows, last 2026-07-17.** Rule 4 makes it the `RESURRECT` register ⇒ 47 files uncatalogued. **Nothing failed because nothing checks** [[instrument-without-a-consumer]]. ⚠ One-row fix DECLINED. Repair is Dave's.
+- **★ EXIT CHECK — SEVENTH CONSECUTIVE.** 5 strings, zero hits, **closed by DIAGNOSIS not homing**. **ROLLED:** 2c #42 banner → `_GM-ARCHIVE.md` · 2d #41 delta → `_LIVE-STATE-ARCHIVE.md` (10 + 15 ln).
+- **⛔ 2f NOT RUN — blocked (open 7); ds-022 FAILS, declared, NOT discharged by a `HOLE #43`.** #43's stratum exists in GM; only the roll is blocked. **Dave's #43 scope decides it — *another file → `roll_2f`'s problem*** ⇒ a HOLE would be a forgery. ★★ **Last session's ruling stopped this session's false inscription.**
+- **⚠ CORRECTED AT SOURCE — open 7 still claimed EIGHTEEN tape and "now urgent".** #43 measured 381 headroom but struck it only in its banner. Struck in place here, not deleted.
+- **⚠ ERRORS: 1 — EIGHTEENTH consecutive.** Told Dave both ds-022 callers want "the most recent session"; `:264` wants *"a stale number… better than none"*. Same value, different contract.
+- **TREE STATE.** Dave pushes via **GitHub Desktop only**. ⚠ `mv` stray `.git/*.lock` BEFORE git; the clear is the LAST git action. ⚠ Explicit paths — never `git add -A`.
+
+
 <!-- batch 2026-07-29 #46 -->
 ## ⏱ PRIOR DELTA — 2026-07-29 (Wed **evening #43**, OPUS solo, Dave live — ★★ **three inherited premises FALSE on arrival; the job shrank to one key** · ★★ **Dave RULED the fifth state out of existence, and scoped it himself** · ★ **a MATCHED grep is not a PRESENCE**) — "Keep the wins small." *(Dave, #43.)*
 
