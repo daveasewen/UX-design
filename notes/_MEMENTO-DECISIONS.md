@@ -836,6 +836,133 @@ surgical replacement with a `count == 1` assertion, every figure measured by the
 tokenizer, `tiktoken` installed and verified before the first measurement. Reading the 26,914-tape
 file to change two lines of it would have been the exact overspend the chain file exists to stop.
 
+## ★ #50 — THE FATTEST LINE IN THE CHAIN CLAIMED ITS OWN SIZE, AND THE CLAIM HAD DRIFTED 18% — 2026-07-30 (Opus solo, Dave live, "I lean to safety" by instruction)
+
+**Narrative + full arc: `_DECISION-HISTORY/2026-07-30-the-line-that-measured-itself-wrong.md`.**
+This section holds the rulings and the WHY; the dossier holds how the thinking moved.
+
+**Dave's instruction this window.** Quota given unprompted at the opener (**78% shared, 82% Fable**).
+Offered three lanes; he said *"I lean to safety, but it depends how warm we are."* The gauge was run
+and **REFUSED** (below), so the honest answer was *warm enough for the scoped cut, not warm enough to
+also chase the tokenizer.* **Job 1 only.** Everything else is a specified open with its measurement
+attached, so #51 inherits numbers rather than a hunch.
+
+### ★★ THE FINDING — the line that announces the ban on hand-written figures carried one, about itself
+
+The `size:` line said **"this very line is 685 tape"**. Measured at the top of this window:
+**808 tape**. An **18% drift** on a hand-written measurement of the thing it is written in — the exact
+class `CHAIN_STAMP_RE` was built by #49 to refuse, one level up, sitting inside the sentence that
+announces the refusal. ⚠ **`CHAIN_STAMP_RE` cannot see it**: the regex guards figures keyed to
+`CHAIN`, and this one is keyed to *"this very line"*. **A ban scoped to a name cannot catch a
+self-reference.** Related to open 23 (the ban catches only the `K` form) but distinct — this is a
+second face of the same gap, and it is NOT closed. → **new open 24.**
+
+### ★ THE PROBE — named, and it is the reason this trim was refusable twice before
+
+**Method.** Decompose the `size:` line into its 13 constituent claims. Regex each against
+`_capture_gate.py`, `_RUNBOOK-context-gauge.md`, `notes/_MEMENTO-DECISIONS.md`, `_LIVE-STATE.md`,
+`_DECISION-HISTORY/2026-07-*`, and **`GOOD-MORNING.md` minus the `size:` line itself** (same-file
+duplication is still duplication). **QUOTE every hit** — a matched grep is not a presence
+[[unmatched-grep-is-not-an-absence]].
+
+**HOMED ⇒ CUT (7 of 13), homes quoted not counted:**
+
+| claim | quoted home |
+|---|---|
+| chain figure retired / never re-add | `_capture_gate.py:425` `CHAIN_STAMP_RE = re.compile(…)` · `:1068` `chain_hand = CHAIN_STAMP_RE.search(stamp.group(1))` — the refusal already reports the live figure **and** the footer's address |
+| `warn ≠ block` | `_capture_gate.py:109` `# … **warn != block.**` · `2026-07-29-the-ceiling-was-never-a-ceiling.md:39` |
+| #49's hand-stamped gauge figure | `notes/_MEMENTO-DECISIONS.md:902–903` (verbatim and fuller) · `_LIVE-STATE.md:59` |
+| open 23 body | `notes/_MEMENTO-DECISIONS.md:912` |
+| open 16 / `CHAIN_BUDGET_TK` (4500,6000)→(4917,6417) | `notes/_MEMENTO-DECISIONS.md:970` — the ruling **and** the WHY |
+| `pip install tiktoken` | **duplicated twice inside the chain itself** — GM:12 band line, GM:15 forward title — plus `2026-07-29-the-ceiling-was-never-a-ceiling.md:74` |
+| floor deltas +16 / ~5 / 37 | `_capture_gate.py:296` `# reason: retiring a VERIFIED-DEAD item netted **+16 tape**` · `notes/_MEMENTO-DECISIONS.md:820` · GM:519 |
+
+**UNHOMED ⇒ HOMED BY ADDITION FIRST, THEN CUT (2 of 13).** Both returned **NO MATCH** anywhere in the
+probed corpus. The `size:` line was their only copy.
+
+- #48's wrap arithmetic (LS delta −336 · banner cut ×3 · forward title −81 · opens 21/22 rewritten ·
+  #39's spent notice, 126 tape) → **moved to `_DECISION-HISTORY/2026-07-30-the-cap-binds-the-file.md`
+  § ★ HOMED HERE #50.**
+- *"nothing shrinks a region below `N` × one unit; the only lever is WRITING LESS"* → **moved to
+  `_RUNBOOK-context-gauge.md` § ★★ THE FLOOR IS NOT WILLPOWER**, beside the floor it is the
+  consequence of.
+
+**KEPT, deliberately (4 of 13):** the gate-parsed stamp itself · the chain-figure pointer, reduced to
+one clause · the `tape`/`bill` mnemonic (see the ruling below) · the floor rule in short form.
+
+### ⇒ THE RULING THIS INVALIDATES — *"just trim it"* was never available, and #48/#49 were RIGHT to refuse
+
+Two of the thirteen claims existed **only** in the line. Cutting the line down without the probe
+would have destroyed record, not tape — and both prior sessions declined it as *"NAMED, PRICED, NOT
+DONE"* without being able to say why. **The why is now measured: a capped region can be the sole home
+of an uncapped fact, and a trim is a deletion until a probe proves otherwise.** ★ Standing form:
+**home by ADDITION, then cut. Never the reverse, and never in one motion.**
+
+### ⬛ RULED-IN-PART, DAVE'S: the `tape`/`bill` mnemonic stays, and gets a checker instead of a new address
+
+Dave asked whether the mnemonic should be **moved** out of `_RUNBOOK-context-gauge.md:365`.
+**Advice given, and he took the safe half of it:** its location was never the defect. The runbook
+already states the rule — *"Every number … NAMES ITS UNIT. A bare token count is a defect"* — **with
+no enforcer**, which is `ds-024`'s class exactly: an instrument without its reader; a gate that does
+not run cannot fail. Moving prose between two files that both fail to enforce it is a **rewrite, not
+a cut** [[gate-inside-the-growth-loop]].
+
+⇒ **Specified, NOT built this window:** `BARE_TOKEN_RE` in `_capture_gate.py` — fail on a
+number-shaped token count in GM/LS with no unit word adjacent, same shape as `CHAIN_STAMP_RE`, whose
+#49 proof is that a live refusal teaches at the moment of violation where prose does not. **When it
+exists, the gate becomes the mnemonic's home and the chain copy goes entirely.** Until then the
+six-word mnemonic stays in the chain and the definition is dropped: **do not cut a live rule and
+leave a hole.** → **open 25.**
+
+### ⚠ THE TOKENIZER — Dave asked, and the record shows he asked BEFORE (P3, `:523`)
+
+*"Are we still using the OpenAI tool for the token count or Claude's?"* **Still OpenAI's.**
+`_capture_gate.py:923` returns `tiktoken.get_encoding("cl100k_base")`; the runbook's units table
+defines `tape` as exactly that, honestly. ★ **This was already raised by Dave unprompted at P3** and
+is recorded at `:523`: *"EVERY TOKEN FIGURE IN THIS ENTRY IS `cl100k` — OpenAI's tokenizer, not
+Claude's."* Ruled then: discrepancies stand (same proxy both sides, byte-identical file); absolute
+values are proxy until Anthropic's counting API replaces it. **That ruling has not been discharged in
+seven sessions, and nothing chases it** [[assertion-propagation-gap]].
+
+**MEASURED THIS WINDOW — the exposure, not the answer.** Current public guidance is that `p50k_base`
+approximates Claude better than `cl100k_base`. No ground truth was available, so **nothing was
+swapped**; the exposure was priced instead:
+
+| file | `cl100k` (= `tape` today) | `p50k` | `o200k` |
+|---|---|---|---|
+| `_CHAIN.md` | 4,810 | **5,226** (+8.6%) | 4,763 |
+| `GOOD-MORNING.md` | 37,977 | **41,474** (+9.2%) | 37,676 |
+| `_LIVE-STATE.md` | 18,105 | **20,123** (+11.1%) | 17,993 |
+
+⇒ If `p50k` is the better proxy, **every cap referent is understated by ~9–11%** and the chain is well
+past its warn rather than marginally over. ⚠ **The 1.57× `TAPE_TO_BILL` ratio may be partly tokenizer
+mismatch dressed as message overhead** — it was derived n=2 against `cl100k`. **`BYTES_PER_TOKEN`,
+`CHAIN_BUDGET_TK` and the ratio were NOT touched.** Anthropic ships no local tokenizer post-Claude-3;
+the only accurate route is `client.messages.count_tokens()` — free, rate-limited, needs a key that
+reaches the sandbox. → **open 26, and it has a larger blast radius than anything in the chain.**
+
+### ⛔ THE GAUGE REFUSED — NINTH CONSECUTIVE, AND A NEW CAUSE
+
+The out-of-band half was run as designed (throwaway Haiku subagent, `read_transcript` → file →
+`_context_gauge.py`). It returned **849 tape / 3,465 bytes** for this session's transcript.
+**Impossible — `_CHAIN.md` alone is ~19KB.** A plausible-looking number from the wrong source: the
+silent-lookup class [[silent-lookup-failure-class]]. ★ **The number was REFUSED, not reported.**
+⚠ Prior eight refusals were all the denominator (`_context_gauge.py:27` hardcodes
+`DEFAULT_WINDOW = 200_000` against Opus 5's 1M, `ds-025`); **this one is upstream of the denominator
+— the input never arrived.** Both stand. **`:523` already says it: no gate can detect a wrong
+denominator** — and none can detect an empty input either.
+
+**What IS measured:** disk reads **6,724 tape** at the floor (`_CHAIN.md` 4,951 with the `Read`
+wrapper + two slices). Harness half unobservable. **Say which half.**
+
+### ⚠ ERRORS
+
+1. ⛔ **The gauge subagent's figure was accepted as a measurement for as long as it took to read it** —
+   caught on the byte size, not on the token count. **The tell was the smaller number.**
+2. ⛔ **An `Edit` fired at a MISSPELLED path with placeholder content** (`_RUNBOOK-context-gaute.md`).
+   It failed closed — the file does not exist — and nothing was written. **A tool erroring is not a
+   control; the same slip against a path that DID exist would have written a placeholder into canon.**
+
 ## ★ #49 — THE FIGURE WITH NO CHECKER GETS ONE, AND ITS OWN CONTROL FOUND THE MACHINE MINTING THE DEFECT — 2026-07-30 (Opus solo, Dave live, "bite 3 only, then stop" by instruction)
 
 **Narrative + full arc: `_DECISION-HISTORY/2026-07-30-the-figure-with-no-checker-gets-one.md`.**

@@ -207,3 +207,25 @@ corrected by addition, not rewritten. **Done on Dave's word:** open 20 (a).
 earn a mechanism?) · open 20 (b) the two amber edges, (c) the unsupported *"Measured, adjustable."* ·
 open 19 · open 13's naming convention · open 7, whose only relief is 2f, which is why `ds-022` failed
 again this wrap and was **declared, not forged** — the strata stack is now **nine**.
+
+---
+
+## ★ HOMED HERE #50 — the wrap arithmetic, moved out of the `size:` line
+
+*(#50 ran a homing probe over the `size:` line's 13 claims before cutting any of them. Seven were
+found live elsewhere and quoted. **This one was found live NOWHERE** — the `size:` line was its only
+copy, which is why #48 and #49 each declined to trim it and were right to. Moved here FIRST, then
+cut: discharge by ADDITION, never by deletion.)*
+
+**How #48's 737 tape of relief was actually found — every tape of it from the author's OWN regions:**
+
+- `_LIVE-STATE.md` ⏱ delta **−336** — it carried narrative the contract assigns to the ★ LATEST banner.
+- the ★ LATEST banner itself, **cut three times**.
+- the forward title, **−81**.
+- opens **21 and 22**, rewritten to *pointer + state + owner*, with their bodies moved to the ledger.
+- **one provable retirement:** #39's spent job-line notice, **126 tape** — a claim that had stopped
+  being true, which remains the cheapest tape in the chain.
+
+⇒ **It landed ~1% over warn and #48 stopped cutting, declared rather than hidden** — `warn ≠ block`
+(`_capture_gate.py:109`). The last three cuts bought ~30 tape each while each edit cost more window
+than it saved. **That is the measured floor, not a lapse of will.**

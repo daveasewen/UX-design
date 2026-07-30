@@ -1,5 +1,21 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
 
+<!-- batch 2026-07-30 #50 -->
+## ⏱ PRIOR DELTA — 2026-07-30 (Thu **morning #47**, OPUS solo, Dave live, small bites by instruction — ★★ **open 16 was NOT implementable as ruled, and #46 wrote the proof without reading it** · ★★ **the stamp is exact BY CONSTRUCTION — a fixed point that caught its own author** · ⚠ **the build no longer fits in one sandbox call**) — "More machinery is what we are after — we should be translating as much prose as we can." *(Dave, #47.)*
+
+> ⚠ **STATE LINES ONLY — narrative is in `GOOD-MORNING.md`'s ★ LATEST banner, verbatim, same commit.**
+
+- **✅ Dave RULED open 16 = (a)+(c). (c) ENACTED `62b6e1e` · ⛔ (a) NOT — cap still measures the SLICE, open 15 still blocked.** (a) unbuildable as written (the footer publishes the size of the file containing it); ★ **#46 wrote the proof and read it as a lament.** Resolution = **FIXED POINT**, 2 passes, refuses a 2-cycle. **MEASURED at `62b6e1e`: file 4,878 = slice 4,460 + wrapper 418** — ⚠ moved again this wrap, MEASURE.
+- **⛔ NEW OPEN 18 — both findings I "discovered" were already on disk.** #46's build failure sat in its COMMIT-STATE block; the gauge denominator in two lane receipts + `_FUTURE-STATE.md:742`, **remedy already written** (open 5's floated note). **§C indexes neither strata nor receipts nor floated notes.** ★ A finding the roster cannot see is one the next session buys again.
+- **⚠ "75/75 exit 0" UNSAYABLE — corrected at source in GM's STATE line, on #46's finding.** 75 steps, 1–73 ≈ 40s, `EXIT=124` at 40s AND 43s, no subset flag. #47 added only the cause: **cumulative time, not a step reap** (74 alone exit 0 in 10s).
+- **⚠ ERRORS: 3 — TWENTIETH consecutive**, all self-caught, one by the new instrument: +107-tape footer draft · pass-count-in-footer (would have broken convergence) · **"HANGING" called off a coincidence, WITHDRAWN.**
+- **⛔ 2f NOT RUN — blocked (open 7); `ds-022` FAILS, DECLARED, no forged `HOLE`. Stack EIGHT.** ✅ EXIT CHECK ninth consecutive; 2c #44 banner (11 ln) · 2d #43 delta (15 ln), mover receipts. ⛔ Band refused, tenth — cause SETTLED: `--window` is an overridable default, not a hardcode. Quota 76%/82% UNCHANGED overnight.
+- **TREE STATE.** `62b6e1e` via `_git_commit.sh --reconciled` (runbook READ, not recalled). Dave pushes via **GitHub Desktop only**. ⚠ `mv` stray `.git/*.lock` BEFORE git; the clear is the LAST git action.
+
+
+---
+
+
 <!-- batch 2026-07-30 #49 -->
 ## ⏱ PRIOR DELTA — 2026-07-29 (Wed **evening #46**, OPUS solo, Dave live — ★★ **#45's declared-UNPROVEN hypothesis PROVEN by reconstructing #44's tree** · ★★ **the cap binds the SLICE, the reader pays the FILE — `_CHAIN.md` +182 over its own warn, unseeable** · ⚠ **my disconfirming probe ran, returned, and never reached my plan**) — "Keep the wins small." *(Dave, #43, carried.)*
 

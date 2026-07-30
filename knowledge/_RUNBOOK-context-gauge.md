@@ -352,6 +352,29 @@ written into canon would be **falsified by its own enactment** — the prose-dri
 **The numbers are Dave's and are re-dialled only by him, here.** The table above is a restatement, not a
 recalibration — the thresholds are byte-identical to the ratified bullets below, which stay as he wrote them.
 
+### ★★ THE FLOOR IS NOT WILLPOWER — `N` × one unit, and the only lever (HOMED HERE #50)
+
+*(#50 ran a homing probe over `GOOD-MORNING.md`'s `size:` line before cutting it. This conclusion was
+found live **NOWHERE** in the repo — the `size:` line was its only copy. Moved here FIRST, then cut:
+discharge by ADDITION. It belongs beside the floor because it is the floor's operational consequence.)*
+
+**Measured, four sessions, same direction:**
+
+| session | what was tried | what it bought |
+|---|---|---|
+| #38 | retired one VERIFIED-DEAD item | **+16 tape** (a retirement must leave a stub) |
+| #44 | last compression cuts | **~5 tape each** |
+| #45 | a whole supervised sweep | **net 37 tape** |
+| #48 | needed 737 tape | got there **only by refusing to write some of it** |
+
+⇒ **Nothing shrinks a region below `N` × one unit.** A region with `N` items has a floor set by the
+cost of one item; compression cannot go under it, and past a point each edit costs more window than
+the tape it recovers. **The only lever is WRITING LESS, priced BEFORE the writing** — which is why
+pre-flight pricing (Half 0) is the load-bearing half of this gauge and shaving at wrap is not.
+
+★ **Corollary, and it is where the tape actually comes from: the cheapest tape in any capped region
+is a claim that has stopped being true.** Retirement is a BUDGET instrument, not hygiene.
+
 ### ★ THE UNITS — `tape` and `bill` (ds-021, ruled #31 delegated, CONFIRMED + named by Dave #34)
 
 **Every number on this page, in every stamp, and in every banner NAMES ITS UNIT. A bare token count
