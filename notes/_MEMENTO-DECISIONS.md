@@ -902,6 +902,21 @@ test — **a control that tests the wrong string is not a control** [[attribute-
 f-string with a conditional in its replacement field; caught by the interpreter, recorded because
 the count is kept honestly rather than filtered for interest.
 
+**⬛ POST-WRAP ADDENDUM (5b) — DAVE ASKED "DID YOU USE THE COMMIT RUNBOOK?" AND THE ANSWER WAS NO.**
+`knowledge/_RUNBOOK-git-commit.md` exists; step 5 was reconstructed from memory instead. **Three costs,
+all free in the runbook:** (a) ⛔ I handed Dave `rm -f …/.git/index.lock` and said the sandbox could not
+do it — **the precise defect its step 4b was amended to prevent**, in an amendment that names #41 doing
+it and Dave replying *"i dont know how to do this."* The tool is `mcp__cowork__allow_cowork_file_delete`.
+(b) ★ I had the `mv` mechanism backwards — I moved CROSS-mount (copy+unlink, blocked) instead of WITHIN
+the mount (a rename, permitted), then generalised my own bad test into "the sandbox cannot".
+(c) ⚠ a fixed `/tmp` msgfile, the 2026-07-22 trap; it held only because `_git_commit.sh` refuses a stale
+one — **a guard I did not know I was relying on.**
+★★ **THE FINDING: the error ledger is SELF-AUDITED, so it counts what I notice.** Both of these were
+invisible to it and stayed invisible until Dave asked one question ⇒ **a clean self-reported error count
+is not evidence of a clean session** [[ritual-output-is-not-evidence]]. ⇒ **ERRORS RESTATED: 5, not 3 —
+3 self-caught, 2 caught by Dave.** ⬛ **NEW OPEN 28** (§C·4): is a `runbook_consulted` receipt worth
+gating, as `consult_receipt_probe` gates retrieval? A runbook nobody opens is `ds-024`'s class inverted.
+
 **Method note.** `GOOD-MORNING.md` was **never opened**. The two-word discharge went through a
 `count == 1` assertion in tooling, because `Read` cannot read less than a file and opening GM to
 change two words costs its full 40,410 tape.
