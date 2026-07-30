@@ -1874,3 +1874,47 @@ new rule on trial, it is an enacted ruling that was silently contradicted for el
 
 **status:** measured, corrected at all three sites, gated + mutation-tested · Dave's correction, his
 numbers untouched · provenance: session #54 · 2026-07-30
+
+---
+
+## ★ #55 — 2026-07-30 — ds-022 WAS DISCHARGED BY THE VERY COMMIT THAT DECLARED IT FAILING
+
+⬛ **RULED BY DAVE, #55: correct it by ADDITION.** #54's ★ LATEST banner and ⏱ delta are RATIFIED
+record and are **not trimmed** — [[header-wins-over-audit]]. The correction is added beside them and
+the forward-facing INSTRUCTION (the next-chat title) is fixed, because an instruction is not history.
+
+### ★ THE MEASUREMENT, AND WHAT IT RETURNED — Dave's condition, and it precedes the fix
+
+| probe, run on the live repo this window | what it RETURNED |
+|---|---|
+| `gauge_log_continuity('.')` called directly | **fails `0` · warns `0` · notes `1`** — *"#53 is a DECLARED HOLE — countable, which is the whole difference between #14 and #9/#10/#11/#19."* |
+| `_current_session_no(gm)` / `_stratum_session_no(gm)` | **`54` / `54`** — they AGREE, so the banner-vs-stratum arm is structurally unable to fire |
+| `grep -nE "^#{1,3}\s*⏱" _LIVE-STATE.md` (quoted, not counted) | **4 delta headings** — LATEST **#54** · PRIOR **#53** · **#52** · **#51** |
+| `grep` `_capture_gate.py` for any LS-delta/2d measurer | **nothing** — the 2d cap has **no gate at all** |
+
+⇒ **ds-022 (a): FALSIFIED. It does not fail, and had already stopped failing before #55 opened.**
+⇒ **`_LIVE-STATE.md` LATEST+3 vs a LATEST+2 contract: CONFIRMED, still true.** #51 is the one over.
+
+### ★★ THE CAUSE — the handoff describes a state its own commit ended
+
+#54's declared failure was *banner #53 vs newest stratum #42*. Commit `c97708a` ("#54 handoff:
+banner, title, #54 stratum, chain regenerated") wrote the banner **and** #54's own stratum in one
+motion, and #53 already carried its `HOLE`. Both halves of the disagreement were resolved by the act
+of writing the handoff — so the claim was **false at the instant of ratification**, not merely stale.
+★ [[assertion-propagation-gap]] in its sharper form: the gate fires on a FLIP, so a claim that was
+**never true** is never chased. #43 named this class; it has now bitten a third time.
+
+### ⚠ AND THE AGENT FAILURE, RECORDED BECAUSE DAVE CAUGHT IT
+
+#55 ran `_capture_gate.py --wrap` **three times** and each run's fail list omitted ds-022. #55 quoted
+that list correctly — *"3 fails, all pre-existing GOOD-MORNING pre-flight/strata"* — and then wrote a
+summary repeating the banner's claim anyway. **The probe returned the disconfirming answer three
+times and the summary never consulted it.** [[feedback-check-ran-never-reached-plan]], unchanged from
+#54's version of it: *after any probe, say what it INVALIDATES.* No output-shaped check catches this
+— the data was right and the sentence was wrong.
+
+### ⬛ QUEUED, NOT BUILT — Dave, #55: *"an ungated recurrence is how we got here"*
+
+The 2d cap has no measurer, which is why LATEST+3 could only ever be hand-caught. **Priced as a #56
+item in GM §C·4.** ⚠ **Not built this window, deliberately** — #55 was scoped to one gate and a
+second one slipped in unasked is the drift this ledger exists to stop.
