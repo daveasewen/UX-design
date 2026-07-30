@@ -1,6 +1,24 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
 
 <!-- batch 2026-07-30 #51 -->
+## ⏱ PRIOR DELTA — 2026-07-30 (Thu **#49**, OPUS solo, Dave live, "bite 3 only, then stop" by instruction — ★★ **OPEN 15 CLOSED: THE CHAIN FIGURE IS ASSERTED, AGAINST THE FILE** · ★★ **THE POSITIVE CONTROL FOUND THE FIXTURE GENERATOR MINTING THE RETIRED FORM SINCE #34** · ⛔ **#48's BUILD-TIMING CLAIM IS FALSIFIED — VERIFIED BY CALL GRAPH, AND SAID SO**)
+
+> ⚠ **STATE LINES ONLY — narrative is in `GOOD-MORNING.md`'s ★ LATEST banner, verbatim, same commit.**
+
+- **✅ open 15 CLOSED.** `CHAIN_STAMP_RE` in `_capture_gate.py`, checked in `check_budgets`' `size:` stamp block against `chain_file_tk` (the FILE). Refusal REPORTS the live measurement; UNKNOWN never defaulted to the slice.
+- **★ BANS PRESENCE, NOT DRIFT** — a drift check passes at the moment of writing. ⛔ FAIL-vs-WARN tier agent-picked, stated in the message, **awaiting Dave**.
+- **★★ FINDING: `_gm_fixture` stamped `chain {tk}K tape` by default since #34**, with the GM figure under a `chain` label ⇒ fifteen sessions of green controls blessed the retired form. #45's probe saw occurrences, not the generator.
+- **★ SCOPE control + revert control both PROVED.** Neuter the regex ⇒ 4 open-15 fails; restore ⇒ 0. GM:488's true stratum string passes clean.
+- **⛔ BUILD NOT RUN — 1–25 alone blew the 44s cap.** Call-graph verification instead: one consumer outside the file (`_gm_move.py:462`, selftest green); steps 51/52/174/176/178 rc=0. **MY COMPOSITION, not the build's verdict.**
+- **⚠ EXIT CHECK ELEVENTH consecutive, cleared both rolls** (2c #47 banner 8 ln · 2d #46 delta 15 ln). **⛔ 2f NOT RUN — open 7; `ds-022` FAILS, DECLARED. Stack TEN.**
+- **⚠ ERRORS: 2 — TWENTY-SECOND consecutive, both self-caught.** (1) `git stash push` reached for to measure what the record already stated; did not take, tree untouched. (2) ⛔ **hand-stamped an UNMEASURED gauge figure into the banner** (`~38% · 21,480`) before measuring it (`48.6% · 26,971`) — **the exact class `CHAIN_STAMP_RE` was built this window to refuse.** Caught by the measure step.
+- **⚠ GAUGE 🟡 AMBER ~48.6% (×1.57) · ~65% 🔴 at #41's 2.11×.** Disk reads **MEASURED 26,971 tape**; baseline 35,000 is the gauge DEFAULT, **UNPROVEN** (`ds-025`). Quota, not window, was the binding throttle: 77% shared / 82% Fable at the opener.
+- **⚠ CHAIN MEASURED 5,159 tape vs 4,917 warn = +242 (+4.9%)** — #48's stamp says "~1% over". ADVISORY. Perishable: measure, never quote.
+- **TREE STATE.** `_git_commit.sh --reconciled`, paths named. Dave pushes via **GitHub Desktop only**. ⚠ `mv` stray `.git/*.lock` BEFORE git; the clear is the LAST git action.
+
+
+---
+
 ## ⏱ PRIOR DELTA — 2026-07-30 (Thu **#48**, OPUS solo, Dave live, "bite 2 then stop" by instruction — ★★ **THE CAP NOW BINDS THE FILE: open 16 (a) ENACTED, open 15 UNBLOCKED after four sessions** · ★★ **A CONTROL PROVED THE NEW BITE BITES — reverting to the slice FAILS it** · ⛔ **TWO GENERATED ARTEFACTS WERE COMMITTED STALE AT HEAD, AND "DATE CHURN" IS THE FRAMING THAT WOULD HAVE HIDDEN IT**)
 
 > ⚠ **STATE LINES ONLY — narrative is in `GOOD-MORNING.md`'s ★ LATEST banner, verbatim, same commit.**

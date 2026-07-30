@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Memento decision pack — 2026-07-30 v1</title>
+<style>
+  :root{
+    --ink:#1A1A1A; --ink-2:#4A4A4A; --ink-3:#767676;
+    --rule:#E2E2E2; --rule-2:#EFEFEF; --paper:#FFFFFF; --tint:#F6F7F8;
+    --blue:#1B5AA8; --blue-tint:#EDF3FA;
+    --green:#1F7A46; --green-tint:#ECF6F0;
+    --red:#B92F1E; --red-tint:#FBEFED;
+    --amber-ink:#6A4B00; --amber-tint:#FAF3E0;
+    --maxw:920px;
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0; background:var(--tint); color:var(--ink);
+    font:400 17px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    letter-spacing:.005em;
+  }
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 24px 140px;}
+  code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.88em;}
+  code{background:#EDEEF0; padding:.1em .32em; border-radius:3px; word-break:break-word;}
+
+  /* ── masthead ─────────────────────────────────────────────── */
+  header.mast{background:var(--ink); color:#fff; padding:44px 0 38px; margin-bottom:0;}
+  header.mast .wrap{padding-bottom:0;}
+  .kicker{font:600 12px/1 -apple-system,"Segoe UI",Roboto,sans-serif; letter-spacing:.14em;
+    text-transform:uppercase; color:#9BB6D6; margin:0 0 14px;}
+  h1{font:700 40px/1.15 -apple-system,"Segoe UI",Roboto,sans-serif; letter-spacing:-.02em; margin:0 0 16px;}
+  .mast p{margin:0 0 10px; color:#D6D6D6; font-size:17px; max-width:66ch;}
+  .mast strong{color:#fff;}
+  .mast .meta{margin-top:22px; font:400 13.5px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace; color:#8E8E8E;}
+
+  /* ── how to use ───────────────────────────────────────────── */
+  .howto{background:var(--paper); border-bottom:1px solid var(--rule); padding:28px 0;}
+  .howto .wrap{padding-bottom:0;}
+  .howto h2{font:700 19px/1.3 -apple-system,"Segoe UI",Roboto,sans-serif; margin:0 0 10px;}
+  .howto ol{margin:0; padding-left:22px; max-width:70ch;}
+  .howto li{margin:0 0 7px; color:var(--ink-2);}
+
+  /* ── progress rail ────────────────────────────────────────── */
+  #rail{position:sticky; top:0; z-index:60; background:rgba(255,255,255,.96);
+    backdrop-filter:saturate(150%) blur(8px); border-bottom:1px solid var(--rule);}
+  #rail .inner{max-width:var(--maxw); margin:0 auto; padding:11px 24px;
+    display:flex; align-items:center; gap:16px; flex-wrap:wrap;}
+  #rail .bar{flex:1 1 220px; height:8px; background:#E6E7E9; border-radius:99px; overflow:hidden; min-width:160px;}
+  #rail .bar i{display:block; height:100%; width:0%; background:var(--green); transition:width .25s ease;}
+  #rail .count{font:600 14px/1 -apple-system,"Segoe UI",Roboto,sans-serif; white-space:nowrap;}
+  .btn{appearance:none; border:1.5px solid var(--ink); background:#fff; color:var(--ink);
+    font:600 13.5px/1 -apple-system,"Segoe UI",Roboto,sans-serif; padding:9px 15px;
+    border-radius:7px; cursor:pointer;}
+  .btn:hover{background:#F2F2F2;}
+  .btn.primary{background:var(--ink); color:#fff;}
+  .btn.primary:hover{background:#000;}
+
+  /* ── tiers ────────────────────────────────────────────────── */
+  section.tier{margin:42px 0 0;}
+  .tier-h{border-top:3px solid var(--ink); padding-top:14px; margin-bottom:6px;}
+  .tier-h .t-no{font:700 12px/1 ui-monospace,Menlo,monospace; letter-spacing:.12em;
+    color:var(--ink-3); text-transform:uppercase;}
+  .tier-h h2{font:700 27px/1.2 -apple-system,"Segoe UI",Roboto,sans-serif;
+    letter-spacing:-.015em; margin:9px 0 8px;}
+  .tier-h p{margin:0 0 4px; color:var(--ink-2); max-width:68ch; font-size:16px;}
+
+  /* ── decision card ────────────────────────────────────────── */
+  article.d{background:var(--paper); border:1px solid var(--rule); border-radius:10px;
+    margin:20px 0; overflow:hidden; scroll-margin-top:76px;}
+  section.tier{scroll-margin-top:76px;}
+  article.d.done{border-color:var(--green); box-shadow:0 0 0 1px var(--green) inset;}
+  .d-h{padding:20px 24px 0; display:flex; gap:14px; align-items:flex-start;}
+  .d-id{flex:0 0 auto; font:700 12.5px/1.7 ui-monospace,Menlo,monospace; letter-spacing:.06em;
+    background:var(--ink); color:#fff; padding:2px 9px; border-radius:5px; margin-top:3px;}
+  .d-h h3{font:700 22px/1.3 -apple-system,"Segoe UI",Roboto,sans-serif;
+    letter-spacing:-.012em; margin:0; flex:1 1 auto;}
+  .d-src{padding:4px 24px 0 24px; font:400 12.5px/1.6 ui-monospace,Menlo,monospace; color:var(--ink-3);}
+
+  .plain{margin:14px 24px 0; padding:15px 18px; background:var(--blue-tint);
+    border-left:4px solid var(--blue); border-radius:0 7px 7px 0;}
+  .plain .lbl{font:700 11.5px/1 -apple-system,"Segoe UI",Roboto,sans-serif; letter-spacing:.11em;
+    text-transform:uppercase; color:var(--blue); display:block; margin-bottom:8px;}
+  .plain p{margin:0 0 9px; font-size:17px; line-height:1.6;}
+  .plain p:last-child{margin-bottom:0;}
+
+  details.tech{margin:14px 24px 0; border:1px solid var(--rule-2); border-radius:8px; background:#FCFCFD;}
+  details.tech summary{cursor:pointer; padding:11px 16px; font:600 14px/1.3 -apple-system,"Segoe UI",Roboto,sans-serif;
+    color:var(--ink-2); list-style:none; display:flex; align-items:center; gap:8px;}
+  details.tech summary::-webkit-details-marker{display:none;}
+  details.tech summary::before{content:"▸"; color:var(--ink-3); font-size:13px; transition:transform .15s;}
+  details.tech[open] summary::before{transform:rotate(90deg);}
+  details.tech .body{padding:2px 16px 15px; font-size:15.5px; line-height:1.62; color:var(--ink-2);}
+  details.tech .body p{margin:0 0 10px;} details.tech .body p:last-child{margin-bottom:0;}
+  details.tech .body ul{margin:0 0 10px; padding-left:20px;}
+  details.tech .body li{margin:0 0 5px;}
+
+  .opts{margin:16px 24px 0;}
+  .opts .lbl{font:700 11.5px/1 -apple-system,"Segoe UI",Roboto,sans-serif; letter-spacing:.11em;
+    text-transform:uppercase; color:var(--ink-3); display:block; margin-bottom:10px;}
+  label.opt{display:block; border:1.5px solid var(--rule); border-radius:8px; padding:13px 15px;
+    margin:0 0 9px; cursor:pointer; transition:border-color .12s, background .12s;}
+  label.opt:hover{border-color:#BFC3C7; background:#FAFAFB;}
+  label.opt.sel{border-color:var(--green); background:var(--green-tint);}
+  label.opt .row{display:flex; gap:11px; align-items:flex-start;}
+  label.opt input{margin:5px 0 0; flex:0 0 auto; width:17px; height:17px; accent-color:#1F7A46;}
+  label.opt .txt{flex:1 1 auto;}
+  label.opt .ttl{font:600 16px/1.45 -apple-system,"Segoe UI",Roboto,sans-serif; display:block;}
+  label.opt .rec{display:inline-block; margin-left:8px; font:700 10.5px/1 -apple-system,sans-serif;
+    letter-spacing:.08em; text-transform:uppercase; color:var(--green);
+    border:1px solid var(--green); padding:3px 6px; border-radius:4px; vertical-align:2px;}
+  .pc{display:grid; grid-template-columns:1fr 1fr; gap:0 18px; margin-top:9px;}
+  .pc div{font-size:14.5px; line-height:1.55; color:var(--ink-2);}
+  .pc .h{font:700 10.5px/1 -apple-system,sans-serif; letter-spacing:.1em; text-transform:uppercase;
+    display:block; margin-bottom:4px;}
+  .pc .p .h{color:var(--green);} .pc .c .h{color:var(--red);}
+
+  .note{margin:12px 24px 22px;}
+  .note label{font:700 11.5px/1 -apple-system,"Segoe UI",Roboto,sans-serif; letter-spacing:.11em;
+    text-transform:uppercase; color:var(--ink-3); display:block; margin-bottom:7px;}
+  .note textarea{width:100%; min-height:62px; border:1.5px solid var(--rule); border-radius:8px;
+    padding:11px 13px; font:400 15.5px/1.55 inherit; color:var(--ink); resize:vertical; background:#fff;}
+  .note textarea:focus{outline:none; border-color:var(--blue);}
+
+  .flag{margin:14px 24px 0; padding:13px 16px; border-radius:7px; font-size:15.5px; line-height:1.58;}
+  .flag.warn{background:var(--amber-tint); color:var(--amber-ink); border-left:4px solid #C9A227;}
+  .flag.block{background:var(--red-tint); color:var(--red); border-left:4px solid var(--red);}
+  .flag .h{font-weight:700; display:block; margin-bottom:4px;}
+
+  /* ── contents ─────────────────────────────────────────────── */
+  .toc{background:var(--paper); border:1px solid var(--rule); border-radius:10px;
+    padding:22px 24px 20px; margin:26px 0 0;}
+  .toc h2{font:700 19px/1.3 -apple-system,"Segoe UI",Roboto,sans-serif; margin:0 0 4px;}
+  .toc > p{margin:0 0 16px; color:var(--ink-2); font-size:15.5px;}
+  .toc .grp{margin-bottom:15px;}
+  .toc .grp:last-child{margin-bottom:0;}
+  .toc .gh{font:700 11px/1 -apple-system,sans-serif; letter-spacing:.11em; text-transform:uppercase;
+    color:var(--ink-3); display:block; margin:0 0 8px;}
+  .toc ol{list-style:none; margin:0; padding:0; display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:2px 18px;}
+  .toc li a{display:flex; gap:9px; align-items:baseline; text-decoration:none; color:var(--ink);
+    padding:5px 7px; border-radius:5px; font-size:15.5px; line-height:1.4;}
+  .toc li a:hover{background:var(--tint);}
+  .toc li a .k{font:700 11.5px/1.5 ui-monospace,Menlo,monospace; color:var(--ink-3);
+    flex:0 0 30px; letter-spacing:.03em;}
+  .toc li a.ruled .k{color:var(--green);}
+  .toc li a.ruled::after{content:"✓"; color:var(--green); font-weight:700; margin-left:auto;}
+
+  /* ── agent lane ───────────────────────────────────────────── */
+  .lane{background:var(--paper); border:1px solid var(--rule); border-radius:10px; padding:22px 24px; margin:20px 0;}
+  .lane h3{font:700 19px/1.3 -apple-system,"Segoe UI",Roboto,sans-serif; margin:0 0 6px;}
+  .lane ul{margin:12px 0 0; padding-left:20px;}
+  .lane li{margin:0 0 11px; color:var(--ink-2);}
+  .lane li b{color:var(--ink);}
+
+  /* ── export ───────────────────────────────────────────────── */
+  #ex{position:fixed; inset:0; z-index:200; background:rgba(0,0,0,.45); display:none;
+    align-items:center; justify-content:center; padding:24px;}
+  #ex.on{display:flex;}
+  #ex .card{width:760px; max-width:100%; max-height:86vh; background:#fff; border-radius:11px;
+    display:flex; flex-direction:column; overflow:hidden;}
+  #ex .card-h{display:flex; align-items:center; justify-content:space-between;
+    padding:15px 18px; border-bottom:1px solid var(--rule); font-weight:700;}
+  #ex textarea{flex:1; border:0; outline:none; resize:none; padding:16px;
+    font:400 12.5px/1.55 ui-monospace,Menlo,monospace; color:var(--ink); min-height:340px;}
+  #ex .card-f{display:flex; gap:9px; justify-content:flex-end; padding:13px 18px; border-top:1px solid var(--rule);}
+  #ex .x{border:0; background:none; font-size:24px; line-height:1; cursor:pointer; color:var(--ink-3);}
+
+  footer.end{margin-top:52px; padding-top:22px; border-top:1px solid var(--rule);
+    font-size:14.5px; line-height:1.6; color:var(--ink-3);}
+
+  @media (max-width:640px){
+    h1{font-size:31px;} .pc{grid-template-columns:1fr; gap:10px 0;}
+    .wrap{padding-left:16px; padding-right:16px;}
+    .plain,.opts,.note,details.tech,.flag{margin-left:16px; margin-right:16px;}
+    .d-h,.d-src{padding-left:16px; padding-right:16px;}
+    #rail .inner{padding-left:16px; padding-right:16px;}
+    /* the rail wraps to two rows at this width — measured 87px, so the anchor offset grows */
+    article.d, section.tier{scroll-margin-top:104px;}
+  }
+  @media print{ #rail,#ex,.btn{display:none !important;} body{background:#fff;} }
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <p class="kicker">Apollo · Memento · decision pack</p>
+    <h1>Twenty-two rulings, sequenced</h1>
+    <p>Every one of these is waiting on <strong>you</strong>. None of them can be settled by a session,
+       because each is a choice between defensible shapes rather than a defect with a right answer.</p>
+    <p>They are ordered so that the ones everything else is <strong>measured in</strong> come first.
+       If you rule nothing else, rule Tier&nbsp;0 — four items below it are denominated in its answers.</p>
+    <p class="meta">Source: <span class="mono">GOOD-MORNING.md</span> §C·4, read 2026-07-30 · 28 numbered opens,
+       4 fully closed (8, 15, 16, 25) · assembled session #52 · v1</p>
+  </div>
+</header>
+
+<div class="howto">
+  <div class="wrap">
+    <h2>How to use this</h2>
+    <ol>
+      <li>Each card opens with a <b>plain-English summary</b>. That is the whole decision. The technical detail is folded underneath — open it only if the summary does not settle it for you.</li>
+      <li>Pick an option. A <span style="color:#1F7A46;font-weight:700">RECOMMENDED</span> tag means the record argues for it; it is a reading, not a nudge, and the reasoning is in the pros and cons.</li>
+      <li>Add a note wherever your reasoning matters more than your pick — the <em>why</em> is what gets inscribed in the ledger.</li>
+      <li>You do not have to finish. Ruling Tier&nbsp;0 alone unblocks real work.</li>
+      <li><b>Export</b> at the end produces a paste-back block. Nothing is stored in the browser — the export <em>is</em> the save.</li>
+    </ol>
+  </div>
+</div>
+
+<div id="rail">
+  <div class="inner">
+    <span class="count"><b id="n">0</b> of <b id="tot">22</b> ruled</span>
+    <span class="bar"><i id="fill"></i></span>
+    <button class="btn" id="openAll" type="button">Expand detail</button>
+    <button class="btn primary" id="exBtn" type="button">Export rulings</button>
+  </div>
+</div>
+
+<div class="wrap" id="deck"></div>
+
+<div id="ex">
+  <div class="card">
+    <div class="card-h"><span>Rulings — copy and paste back into the session</span>
+      <button class="x" id="exClose" type="button" aria-label="Close">&times;</button></div>
+    <textarea id="exText" readonly spellcheck="false"></textarea>
+    <div class="card-f">
+      <button class="btn" id="exDl" type="button">Download .md</button>
+      <button class="btn primary" id="exCopy" type="button">Copy to clipboard</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══ THE DECISIONS ══════════════════════════════════════════════════════════
+   plain  = the summary Dave reads first
+   tech   = the evidence, folded
+   opts   = {k, t, p (pro), c (con)}   rec = recommended key or null
+   ════════════════════════════════════════════════════════════════════════ */
+var TIERS = [
+{
+  no:"Tier 0", name:"The yardstick",
+  blurb:"Rule these first. They define the units every cap, band and warning in the system is expressed in. Anything ruled below them may need re-deriving if they move.",
+  items:[
+  {
+    id:"D1", src:"open 26 · you raised it first at P3, seven sessions ago",
+    title:"Which tokenizer is <code>tape</code>?",
+    plain:"<p>We measure the size of everything with a ruler borrowed from OpenAI. It may be around 9% off in the dangerous direction — <em>understating</em>.</p><p>Every budget, cap and warning in the system is expressed in that unit. If the ruler is wrong, they are all wrong together, which is why this goes first.</p>",
+    tech:"<p><code>_capture_gate.py:923</code> returns <code>tiktoken cl100k_base</code>. Anthropic ships no local tokenizer post-Claude-3; the only accurate route is <code>client.messages.count_tokens()</code> — free, rate-limited, and it needs an API key that reaches the sandbox.</p><ul><li>#50 measured <code>p50k</code> at <b>+8.6% to +11.1%</b> over <code>cl100k</code> on this corpus: chain 5,226 · GM 41,474 · LS 20,123.</li><li><code>TAPE_TO_BILL</code> 1.57&times; (n=2) was derived <em>against</em> <code>cl100k</code>, so part of that ratio may be tokenizer mismatch rather than message overhead. See D11.</li><li><code>BYTES_PER_TOKEN</code>, <code>CHAIN_BUDGET_TK</code> and the ratio are all UNTOUCHED pending this.</li></ul><p>It sat seven sessions undischarged because the claim was never <em>wrong</em>, and the propagation gate fires only on a flip.</p>",
+    opts:[
+      {k:"a", t:"Spend a window measuring against real <code>count_tokens</code>, then re-denominate everything",
+       p:"Ends the guessing permanently. Every downstream cap becomes checkable rather than plausible.", c:"Costs a window, needs an API key reaching the sandbox, and forces a re-statement pass across ~30 figures."},
+      {k:"b", t:"Rule <code>cl100k</code> stands as a declared proxy — every figure carries the label",
+       p:"Costs nothing today. Discrepancies between two measurements stay valid, since both sides use the same proxy.", c:"Absolute values stay unverifiable, and the understating direction is the unsafe one. The question returns."},
+      {k:"c", t:"Switch to <code>p50k</code> as the conservative proxy",
+       p:"Errs toward over-counting, which is the safe direction for a cap. Cheap — one constant.", c:"Still a proxy, and now a proxy chosen by argument rather than measurement. Re-scales every referent for a number we have not confirmed."},
+      {k:"d", t:"Defer again, deliberately, with a named trigger",
+       p:"Honest about priority; nothing is spent.", c:"Eighth session. Four items below stay denominated in an unverified unit."}
+    ], rec:"a",
+    flag:{cls:"warn", h:"Biggest blast radius on the board.", t:"D9, D10, D11 and D4 are all arguments about numbers expressed in this unit."}
+  },
+  {
+    id:"D2", src:"open 20 (c) · #39's three-lane finding",
+    title:"What is the context-window denominator?",
+    plain:"<p>The gauge assumes a 200,000-token window. Opus 5's window is 1,000,000. So every percentage the gauge has ever printed may be off by a factor of five.</p><p>The question is not arithmetic. It is whether 200,000 was a <em>guess about the model</em> — in which case fix it — or a <em>deliberate throttle</em> because quality degrades long before the window fills. Nobody recorded which.</p>",
+    tech:"<p><code>_context_gauge.py:27</code> <code>DEFAULT_WINDOW = 200_000</code>, <code>:28</code> <code>DEFAULT_BASELINE = 35_000</code>, both annotated <em>&ldquo;Measured, adjustable.&rdquo;</em> — while <code>ds-025</code> records the boot was <b>never measured in 36 sessions</b>. The annotation is unsupported by the record.</p><p>#39's blast-radius measurement: one definition, one code read, zero automated callers, but <b>27 pre-flight stamps, 4 runbook restatements, at least 4 retrieval chunks, 5 notes and 2 gate figures that do not re-scale</b>. And <code>_capture_gate.py:79,123,124</code> validates a band <em>word</em> against a %-of-window table it never computes &rArr; <b>no gate can detect a wrong denominator</b>.</p><p>★ Independent of the number: the evidence says degradation tracks <b>absolute tokens</b>, not fraction-of-window (Chroma <em>Context Rot</em>, 18 frontier models; arXiv 2509.21361 MECW). That makes the <em>unit</em> wrong regardless of where the lines sit — and it is the argument for option (c).</p><p>★★ Your own correction at #39 stands over all of this: <em>&ldquo;I wouldn't trust my feels, that might be the problem.&rdquo;</em> A percentage band can never be checked against anything; an absolute-token band can.</p>",
+    opts:[
+      {k:"a", t:"200,000 was a deliberate degradation throttle — keep the number, rename it to say so",
+       p:"Preserves operating experience. Cheapest change: a rename plus a comment.", c:"Ratifies a number nobody measured, and keeps the unit that cannot be checked."},
+      {k:"b", t:"It was a guess — re-point to the real window and re-scale everything",
+       p:"Makes the gauge mean what it says. Removes a five-fold error from every stamp.", c:"Every band you have operated by shifts at once, and the degradation risk it accidentally protected against becomes unguarded."},
+      {k:"c", t:"Split it: real window for capacity, a separate ruled throttle in <b>absolute tokens</b> for degradation",
+       p:"Each number then means one thing and can be checked. Matches the literature's unit and survives without relying on your feel.", c:"Two constants to maintain, and the throttle value still has to be picked from thin evidence."},
+      {k:"d", t:"Re-measure the real boot cost first, decide after",
+       p:"Refuses to build on an unmeasured constant — the standing rule.", c:"Defers; the harness half of the fill is unobservable from inside a window (<code>ds-025</code>), so it may not fully resolve."}
+    ], rec:"c"
+  },
+  {
+    id:"D3", src:"open 20 (b) · a two-line edit whose numbers are yours",
+    title:"Two files hold different amber thresholds",
+    plain:"<p>The gauge goes amber at 50%. The gate goes amber at 60, per your ruling. #37 recalibrated the gate and left the gauge behind.</p><p>Small, but it means the two instruments disagree about when to worry.</p>",
+    tech:"<p><code>_context_gauge.py:32</code> <code>AMBER_AT = 0.50</code> against <code>_capture_gate.py:79</code>'s ruled <code>((45,\"GREEN\"),(60,\"AMBER\"),…)</code>. Measured at #48 and left untouched because the numbers are yours to say. The edit itself is trivial; option (c) is the only one that stops it recurring.</p>",
+    opts:[
+      {k:"a", t:"Gauge adopts the gate's ruled edges", p:"One ruling governs both. Two-line change.", c:"Leaves two copies of the same number, free to drift apart again."},
+      {k:"b", t:"Gauge keeps 0.50 for a stated reason", p:"Honest if the gauge is deliberately more cautious.", c:"Requires a reason, and none is on record."},
+      {k:"c", t:"One constant, imported by both", p:"Structurally cannot drift. Your prose-to-code instinct applied to the smallest possible case.", c:"A little more work than a two-line edit; couples the two modules."}
+    ], rec:"c"
+  }]
+},
+{
+  no:"Tier 1", name:"Structural",
+  blurb:"These block other work, or they are the shape of the system rather than a value inside it. Two of them are the reason sessions keep finding new problems.",
+  items:[
+  {
+    id:"D4", src:"open 27 · copied up by #51's exit check",
+    title:"The banner cap and the 2c contract disagree",
+    plain:"<p>The banner region sits over its size cap while every rule governing it is being obeyed. That is not a size complaint — it means the cap and the contract are asking for incompatible things, and only you can say which yields.</p><p>#51 tried to shave its way out and proved it cannot be done.</p>",
+    tech:"<p>Measured #51: banner region <b>4,874 tape / ~7,649 bill</b> against a <b>~6,280 bill</b> cap. Still breached.</p><p>★★ #51 cut <b>624 tape from its own regions</b> (banner &minus;514, its next-session title &minus;110) and the region was <b>still at BLOCK</b>. A further pass went <em>up</em>, because the line announcing the cut cost more than the cut saved. &rArr; The remaining tape exists only in inherited record, or below the 2c contract's retained-count — neither of which is a session's to spend.</p><p>This independently reproduces #49's declaration from the opposite direction, and is the strongest evidence on the board that the cap and the contract genuinely disagree.</p>",
+    opts:[
+      {k:"a", t:"Raise the cap to the measured floor plus headroom", p:"Honest — the floor is structural, not laziness. Ends thirteen sessions of a gate that cannot be satisfied.", c:"A cap that moves when breached teaches nothing. Needs a stated rule for what would make you raise it again."},
+      {k:"b", t:"Reduce the retained-count in the 2c contract — keep fewer banners", p:"Actually reduces the file, and a roll is not a retirement so it genuinely shrinks.", c:"Costs recall. The retained banners are the read chain's only session-to-session memory."},
+      {k:"c", t:"Cap becomes advisory, as the compactable block did at #39", p:"Precedent exists and was yours. Stops a gate firing inside its own growth loop.", c:"#39's block was withdrawn because its region was free at boot. This one is not — the banner is in the chain and is paid every cold start."},
+      {k:"d", t:"Split the banner region by cost, the way <code>_CHAIN.md</code> split GM", p:"The one move that has already worked here. Fixes the cause rather than the number.", c:"More machinery, and D6 shows this class of surgery is bigger than it looks."}
+    ], rec:"a",
+    flag:{cls:"block", h:"Note the asymmetry.", t:"(c) has your precedent but not its premise — #39's region was free at boot; this one is paid at every cold start."}
+  },
+  {
+    id:"D5", src:"open 7 · raised by you in four words: “why should the stratum retire?”",
+    title:"The 2f roll — three questions, none ruled",
+    plain:"<p>A wrap step that files old session records into the dataset will not run. Twelve sessions of evidence have therefore never reached the dataset the whole throttle is derived from.</p><p>The blockage is a rule saying records must stay in date order — a rule that exists for tidiness, in a file a parser sorts anyway. Relaxing it makes the problem evaporate.</p>",
+    tech:"<p>Your four-word question split the mechanism in two, and the halves have opposite answers:</p><ul><li><b>Compaction is dead</b> — GM-D5a ruled 07-27, #33 cut the chain 07-28, so §C is retrieval surface and is never paid at cold start.</li><li><b>The dataset is the whole reason, and it is unserved</b> — three probes confirm #38's row is not in <code>notes/_GAUGE-LOG.md</code>.</li></ul><p>&rArr; Not rolling costs a <em>starved dataset</em>, not a bigger file. The three unruled questions: does the roll still need to move anything out of §C · should <code>_gm_move.py</code> be able to do the dataset half alone · <b>is the chronological contract over-strict for a date-keyed dataset a parser sorts anyway?</b></p><p>That contract exists only because #27 hand-prepended once — <b>order is file hygiene, not an analytical requirement</b>. If it relaxes, #38's block simply appends at the end and the blockage disappears.</p><p>⚠ #42's <em>&ldquo;sole relief valve&rdquo;</em> urgency is <b>dead and was corrected at source</b>. Nothing here should be read as pressure.</p>",
+    opts:[
+      {k:"a", t:"Relax the chronological contract — the blockage evaporates", p:"Cheapest by a wide margin. Removes a constraint that was never analytical, and the parser is order-agnostic already.", c:"Files become less pleasant to read by hand. Interacts with D21 — which end is “newest” is still unruled."},
+      {k:"b", t:"Give <code>_gm_move.py</code> a dataset-only mode", p:"Serves the half that matters and leaves §C alone.", c:"New code path to maintain, for a problem (a) removes for free."},
+      {k:"c", t:"Drop the §C half entirely, keep only the dataset half", p:"Follows the finding — compaction is dead, so the §C half has no purpose left.", c:"Retires a mechanism you may want back if D6 goes the other way."},
+      {k:"d", t:"Leave it blocked and accept the starved dataset", p:"No work. The dataset's consumer is not urgent.", c:"<code>ds-022</code> stays red indefinitely, and the degradation question stays unanswerable."}
+    ], rec:"a",
+    flag:{cls:"warn", h:"This one has downstream reach.", t:"D15 option (c) is “unblock 2f”, so ruling this may settle that card too. The strata stack is at twelve and grew 1,855 tape in one session."}
+  },
+  {
+    id:"D6", src:"open 10 · the Friday mast's item 1, surveyed not attempted",
+    title:"Split <code>GOOD-MORNING.md</code> by cost?",
+    plain:"<p>The idea: move the expensive-to-read parts of GM into their own small file with a hard cap, so the cheap parts cannot bloat the expensive thing.</p><p>The survey found it trips a guard that exists <em>because</em> that section was accidentally eroded once before. It is coordinated surgery, not a small win — and <code>_CHAIN.md</code> may already have bought most of the benefit.</p>",
+    tech:"<p>Moving §A/§C trips <b><code>STAND-004</code></b> — the reachability guard added after §A was eroded on 2026-07-18 — plus <b>an index selftest pin</b> and <b>six modules referencing GM by path</b>.</p><p>Context: at #41 you were offered exactly this versus a generated chain file, and <b>you chose the generator</b>. <code>_CHAIN.md</code> now delivers 12% of GM at cold start, which was the split's main prize. This is a survey finding, not a refusal — nobody has ruled whether the surgery is still worth it.</p>",
+    opts:[
+      {k:"a", t:"Do the surgery", p:"Makes the cost split structural rather than generated, so it cannot regress.", c:"Coordinated change across a guard, a selftest pin and six modules — the mast's sequencing assumed it was small."},
+      {k:"b", t:"Retire the item — <code>_CHAIN.md</code> already bought the benefit", p:"Honest about what #41 achieved. Removes a standing item that is quietly recruiting effort.", c:"GM keeps growing; the generator is a mitigation rather than a bound."},
+      {k:"c", t:"Partial — move §C only, leave §A where the guard protects it", p:"Avoids the guard entirely; §C is the largest and fastest-growing region.", c:"Half a mechanism, and §C is the part already free at boot — so it buys the least."}
+    ], rec:"b"
+  },
+  {
+    id:"D7", src:"open 12 · #40 weakened its own premise while writing the brief",
+    title:"Roll-at-open — adopt, or drop it?",
+    plain:"<p>A plan to move the wrap's housekeeping to the <em>start</em> of a session instead of the end.</p><p>While writing the brief for it, the author found the evidence it rests on does not hold: the session it was meant to prevent failed from <b>running out of window</b>, not from missing machinery.</p>",
+    tech:"<p>#39 failed from having <b>no window</b> — not from missing detection (<code>ds-022</code> fired instantly) and not from an unscripted step (<code>roll_2f</code> has existed since #34). <b>Moving the rolls earlier cannot fix a shortage of window</b>, which is the rationale the plan rests on.</p><p>★ It points the same way as your #42 ruling (<em>&ldquo;small bites, fresh window often&rdquo;</em>): more windows is more often the right answer than more machinery — which is precisely the clause D8 asks you to scope.</p>",
+    opts:[
+      {k:"a", t:"Adopt anyway as cheap insurance", p:"Housekeeping at open is paid from a fresh window rather than a spent one.", c:"Builds machinery on a premise its own author falsified. That is the shape that has failed here before."},
+      {k:"b", t:"Drop it — the premise is gone", p:"Honest. Removes an item that keeps recruiting attention.", c:"Loses a real ergonomic gain, and wraps do reliably grind."},
+      {k:"c", t:"Adopt only the dataset half (pairs with D5)", p:"Serves the starved dataset without resting on the falsified rationale.", c:"Only coherent if D5 goes (b) or (c)."}
+    ], rec:"b"
+  },
+  {
+    id:"D8", src:"raised this session · the contradictory advice you have had three times",
+    title:"Which binds — window, or quota?",
+    plain:"<p>You have been told three different things about subagents versus parallel sessions. The answer was already in your own canon, and I should have quoted it rather than re-derived it.</p><p><b>Parallel worker-chats are the throughput lever; subagents are the exception tool.</b> Ruled by you on 2026-07-23.</p><p>What is genuinely unruled is smaller: both are throughput levers, and neither creates capacity out of nothing. So which resource actually runs out for you first — hours in the day, or weekly allowance?</p>",
+    tech:"<p><code>MODEL-ROUTING.md</code> Mode 2, ruled by you 2026-07-23 (routing audit #12, explicitly superseding the 2026-07-13 &ldquo;default-on&rdquo; ruling):</p><p><em>&ldquo;Delegate down to a subagent only when: the divvy plan says so, Dave asks, or a subagent is the only way to keep the main window clean. Throughput's real carrier is the parallel worker-chat model with divvy plans — proven at scale 07-19 → 07-22.&rdquo;</em></p><p>The reason is economic: each spawn cold-starts and re-derives context, which made it the expensive path once Cowork's economics inverted.</p><p><b>The live question:</b> the standing clause <em>&ldquo;behind pace ⇒ more windows&rdquo;</em> is a <b>window</b> remedy. #51 noted that when <b>quota</b> binds, more windows cost <em>more</em>. The governor needs a real percentage and you supply it by hand, so nothing can detect which case you are in.</p>",
+    opts:[
+      {k:"a", t:"Window binds — parallel lanes are the lever, keep the clause as written", p:"Matches the ruled routing and the 07-19→07-22 proof.", c:"If quota is what actually runs out, the clause actively misadvises every session that reads it."},
+      {k:"b", t:"Quota binds — rewrite the clause, prefer fewer larger windows", p:"Removes a standing instruction that may be steering sessions the wrong way.", c:"Larger windows run into the degradation question D2 is about. Trades one risk for another."},
+      {k:"c", t:"It alternates — make the clause conditional on the pace read", p:"Both cases handled, and the pace read already exists as an input.", c:"Only works if you supply the percentage reliably, which is the same weakness <code>ds-025</code> records."}
+    ], rec:"c"
+  }]
+},
+{
+  no:"Tier 2", name:"Policy and numbers",
+  blurb:"Values and thresholds. Cheap to rule once Tier 0 has settled what the numbers mean.",
+  items:[
+  {
+    id:"D9", src:"open 1 · <code>ds-023</code>",
+    title:"What happens above 63?",
+    plain:"<p>You ruled the spend band (45–60) and the marked tolerance (63), and deliberately ruled nothing beyond. The gate says UNRULED there on purpose.</p><p>That silence is honest, but it is also how an earlier defect got in — an agent filled a gap you had left open.</p>",
+    tech:"<p>Pinned in <code>knowledge/_DS-IMPROVEMENTS.md</code> as <code>ds-023</code>, which is the project's standing cautionary case for an agent minting a rule because it noticed a gap. ⚠ The same silence is how <code>&gt;=45 → FAIL</code> got in.</p>",
+    opts:[
+      {k:"a", t:"Rule a hard stop above 63 — wrap immediately", p:"Removes the gap. Protects the wrap, which is where quality actually fails.", c:"A hard stop mid-job strands work, and the number is not evidence-backed."},
+      {k:"b", t:"Above 63 is a fork to you, every time", p:"Keeps judgment human at the point it matters. Consistent with 61–63's existing rule.", c:"Needs you live; sessions that run unattended have no answer."},
+      {k:"c", t:"Rule it stays UNRULED, and say why in the gate message", p:"Makes the silence deliberate and legible rather than a hole.", c:"The gap remains genuinely fillable by a future agent."}
+    ], rec:"b"
+  },
+  {
+    id:"D10", src:"open 2 · <code>ds-025</code>",
+    title:"What should the gauge do when it cannot measure?",
+    plain:"<p>Part of what the gauge reports is genuinely unobservable from inside a session. Three shapes were named and none picked, so today it quietly estimates.</p>",
+    tech:"<p>Boot, <code>bill</code> and fill are all unobservable from inside a window. The three named shapes: <b>(a)</b> you supply the inputs, like the pace panel · <b>(b)</b> <b>REFUSE rather than estimate</b> · <b>(c)</b> publish the measured/estimated split.</p><p>⚠ Related and already biting: <code>pip install tiktoken --break-system-packages</code> is required or <b>the gate silently estimates, under-reporting by 414 tape</b>. That is this decision in miniature — a tool guessing where it should refuse.</p>",
+    opts:[
+      {k:"a", t:"You supply the unobservable inputs at the opener", p:"Already works — the pace panel is this shape and it scoped the last three sessions.", c:"Depends on you being present, and you have declined a fresh panel twice."},
+      {k:"b", t:"REFUSE rather than estimate", p:"Matches the standing rule that a measuring tool must not guess. A silent estimate is the worst outcome.", c:"A refusing gauge gives no signal at all, which is how sessions end up flying blind."},
+      {k:"c", t:"Publish the measured / estimated split on every reading", p:"Keeps the signal and makes its quality visible. Half a measurement, labelled, beats a whole guess.", c:"More output to read each time, and it does not make the unknown half knowable."}
+    ], rec:"c"
+  },
+  {
+    id:"D11", src:"open 9 · depends on D1",
+    title:"Re-dial <code>TAPE_TO_BILL</code>?",
+    plain:"<p>The conversion between what we measure and what the window actually charges was set at 1.57&times;. One real reading came back at 2.11&times;.</p><p>One reading is a data point, not a calibration — and if D1 goes against the current tokenizer, part of that gap is the ruler, not the overhead.</p>",
+    tech:"<p><code>Read</code> published a true observation: <b>28,653 charged for 13,548 tape</b> &rArr; every <code>bill</code> figure the gate prints is understated by roughly 1.35&times;. <b>n=1</b> — this is a row for the starved dataset (D5), not a re-dial.</p><p>&rArr; If D1 finds <code>cl100k</code> is understating by ~9%, some of the 1.57 → 2.11 gap is tokenizer mismatch rather than message overhead, and re-dialling now would bake the error in.</p>",
+    opts:[
+      {k:"a", t:"Hold until D1 settles, and collect readings meanwhile", p:"Refuses to build on a converted number — the standing rule. Costs nothing.", c:"Every bill figure stays knowingly understated in the meantime."},
+      {k:"b", t:"Re-dial to 2.11&times; now", p:"Closer to the one real measurement we have; errs toward over-counting, the safe direction.", c:"n=1, and it may be re-dialling for the wrong cause. Would need re-doing after D1."},
+      {k:"c", t:"Publish both figures side by side until n is respectable", p:"Makes the uncertainty visible instead of picking a side.", c:"Two numbers to interpret at every reading."}
+    ], rec:"a"
+  },
+  {
+    id:"D12", src:"open 3",
+    title:"Does <code>DO THIS FIRST</code> join the priced read chain?",
+    plain:"<p>A question of accounting: is a particular header section part of what every cold session must pay for, or does it sit outside the chain?</p><p>It is worth <b>3,415 tape</b> either way — the number does not change, only whether the cap has to cover it.</p>",
+    tech:"<p><code>_capture_gate.py::read_chain_tk</code> plus the M10 consumer, which is <b>ADVISORY and agent-derived</b>. Partly overtaken by open 16's close at #48: the cap now binds <code>chain_file_tk</code>, the whole file, rather than the slice. Worth confirming the question still reads the same way before ruling it.</p>",
+    opts:[
+      {k:"a", t:"It joins the chain — the cap covers it", p:"Honest about what a cold session pays. The cap then means what it says.", c:"Adds 3,415 tape inside a budget already breached (D4)."},
+      {k:"b", t:"It stays in the header region, separately asserted", p:"Keeps the chain figure comparable to its history.", c:"A second region with its own rules; the split is the thing that made open 16 possible."},
+      {k:"c", t:"Re-derive the question first — open 16's close may have dissolved it", p:"Avoids ruling on a premise that has moved. The premise ages faster than the rule.", c:"Defers a small item."}
+    ], rec:"c"
+  }]
+},
+{
+  no:"Tier 3", name:"Mechanism, or discipline?",
+  blurb:"Every card here is the same question in a different costume: does this rule earn code, or does it stay prose and we accept the failure rate? Your instinct — offload prose-logic to code — answers most of them, but the cost is real and named on each.",
+  items:[
+  {
+    id:"D13", src:"opens 11 + 28 · you found the second one by asking one question",
+    title:"Runbooks that exist, and go unread",
+    plain:"<p><code>_git_commit.sh</code> was ruled in July. <b>Five of seven sessions</b> reconstructed the sequence from memory instead.</p><p>Yesterday you asked &ldquo;did you use the Commit Runbook?&rdquo; and the answer was no — the runbook existed, went unread, and the session re-committed two errors the runbook hands you for free.</p><p>This is the clearest case for your prose-to-code instinct on the board.</p>",
+    tech:"<p>The recurring shape, named at #43: <em>a correct mechanism stored where the hot agent does not have to pass through it is documentation, not a procedure.</em> Same class as the read chain and <code>_to_delete/</code>.</p><p>Options named, none picked: <b>(a)</b> a capture-gate check that the wrap's commits carry the script's signature · <b>(b)</b> a <code>--reconciled</code> receipt line in the stratum · <b>(c)</b> leave it prose and accept the rate.</p><p>⚠ n is small and the direction is not clean: #43 <em>did</em> call the script. One clean data point, not a trend.</p>",
+    opts:[
+      {k:"a", t:"Capture-gate check — the wrap must carry the script's signature", p:"Puts the check on the hot path, which is the whole diagnosis. Cannot be skipped by forgetting.", c:"A gate that blocks a wrap is a gate firing at the worst moment; needs a bypass, and bypasses get used."},
+      {k:"b", t:"A <code>--reconciled</code> receipt line in the stratum", p:"Cheap, visible, and produces a dataset rather than a verdict.", c:"Advisory with no reader is worse than none — and this project has that failure four times over."},
+      {k:"c", t:"Leave it prose, accept the rate", p:"No machinery to maintain or subvert.", c:"Five of seven is not a rate you would accept anywhere else."},
+      {k:"d", t:"(a) plus (b) — gate the presence, receipt the detail", p:"The gate stops the miss; the receipt makes it measurable. Matches the standing lesson to gate presence, not drift.", c:"Two mechanisms for one rule."}
+    ], rec:"a"
+  },
+  {
+    id:"D14", src:"open 14 · measured, not estimated",
+    title:"The decision-history index is dead",
+    plain:"<p>An index that is supposed to catalogue every decision document carries <b>7 rows for 54 files</b>. It has been stale for twelve days and nothing noticed, because nothing checks it.</p><p>It matters more than tidiness: that table is where “resurrect this later” tags are declared, so 47 files' worth have never been catalogued.</p>",
+    tech:"<p>Last indexed file is 2026-07-17. Everything since — the whole throttle series, the M-set, the legend wave — landed without a row. The README's rule 4 makes this table the place <code>RESURRECT</code> tags are declared, and <code>_FUTURE-STATE.md</code> is described as the catalogue to this shelf.</p><p>★ Nothing failed because nothing checks — the README declares the index and no gate enforces it, so it stopped being true without ever going red.</p><p>⚠ A one-row fix was <b>declined</b>: adding only the current session's row would make a 47-stale table look current.</p>",
+    opts:[
+      {k:"a", t:"Generate the table from the directory", p:"This repo already generates <code>_CHAIN.md</code> and the search index from their sources — the pattern is proven here.", c:"Generated rows carry no human summary, which may be the column that mattered."},
+      {k:"b", t:"Hand-backfill 47 rows", p:"Preserves the human summaries the index was for.", c:"A large chore that fixes today and not tomorrow. ⚠ This is the obvious-looking option, and picking obvious is the <code>ds-023</code> shape."},
+      {k:"c", t:"Rule the index retired — retrieval is the only door", p:"Honest. The search index already reaches every one of those files.", c:"Loses the <code>RESURRECT</code> declaration surface with nothing replacing it."}
+    ], rec:"a"
+  },
+  {
+    id:"D15", src:"open 18 · two measured instances in one window",
+    title:"Findings filed where the roster cannot see them",
+    plain:"<p>A finding written in the wrong place gets bought twice. One session recorded a real discovery with full evidence; the next re-derived the whole thing from scratch and announced it as new.</p><p>The register of open items indexes neither receipts nor notes nor session records — so a solved problem and an unsolved one look identical from the list.</p>",
+    tech:"<p><em>(i)</em> #46 recorded a build finding in its commit-state block; #47 re-derived it from zero. That block never rolls to the gauge log while 2f is blocked (D5), so it is the one surface a cold session never reads.</p><p><em>(ii)</em> A remedy for the gauge denominator has been written since 07-29 in a floated note — and <b>ten consecutive banners re-declared it an unfixable structural refusal</b>.</p><p>★ Not simple forgetting: the exit check already applies <em>&ldquo;dated homes do not count&rdquo;</em> to banners, and has never applied it to the things banners point at.</p><p>⚠ n=2. Do not over-build.</p>",
+    opts:[
+      {k:"a", t:"Extend the exit check to receipts and notes a rolling record cites", p:"Reuses a mechanism that already works and already bites thirteen sessions running.", c:"Widens a check that already costs real time at every wrap."},
+      {k:"b", t:"Index session records and receipts in search, plus a “not yet homed” pointer", p:"Attacks the cause — the roster's blindness — rather than the symptom.", c:"Larger build, and the pointer is another advisory needing a reader."},
+      {k:"c", t:"Unblock 2f so commit-states reach the log (= D5)", p:"Free if you rule D5 (a). Makes instance (i) moot.", c:"Does nothing for instance (ii), which is the more expensive of the two."}
+    ], rec:"c"
+  },
+  {
+    id:"D16", src:"open 17 · three sessions, correction at the source the whole time",
+    title:"A claim that was never true is never chased",
+    plain:"<p>There is a mechanism that catches a document going out of date. It works by noticing a change — so it can only catch something that <em>was</em> right and became wrong.</p><p>A statement that was wrong the day it was written never changes, so nothing ever chases it. Three sessions repeated one of those before anyone probed.</p>",
+    tech:"<p>The gap class fires on a <b>flip</b>. #39's <em>&ldquo;now supplied by this line&rdquo;</em> was wrong when written, so no mechanism was ever going to chase it: #40 misread it, #41 repeated it to you, #43 repeated it before probing. Correction was inscribed at the source throughout.</p><p>Named and unsolved: the class has no detector for never-true claims. ⚠ It is not obvious one is buildable — you cannot diff a claim against a past version of itself when it was always wrong.</p>",
+    opts:[
+      {k:"a", t:"Build a detector — assert claims against source at write time, not on change", p:"Catches the never-true class, which nothing currently can.", c:"Expensive and possibly not well-defined; “assert prose against source” is the hard open problem here."},
+      {k:"b", t:"Rule it stays a discipline — probe before repeating an inherited claim", p:"Honest about buildability. The habit already caught this one.", c:"A discipline that failed three sessions running is not obviously a discipline."},
+      {k:"c", t:"Narrow it: require a source citation on any figure entering a standing section", p:"Buildable and checkable — a citation's presence is a syntactic property.", c:"Catches figures, not prose claims, so it covers part of the class only."}
+    ], rec:"c"
+  },
+  {
+    id:"D17", src:"open 22 · the sharpest finding about the agent rather than a mechanism",
+    title:"“The check ran, returned the disconfirming answer, and never reached the plan”",
+    plain:"<p>A session ran a check, got an answer that invalidated its own plan, and carried on anyway.</p><p>It has a name and no home. Whether a name is enough, or it needs a mechanism, is the question — and the record warns that an advisory nobody reads is worse than nothing.</p>",
+    tech:"<p>#46's finding. A probe came back empty across GM, <code>_FUTURE-STATE.md</code>, the gauge runbook and <code>AGENTS.md</code> — it lived only on the banner that has since rolled.</p><p>Named, unsolved, unmechanised, and that is the honest state: <b>a name is not a gate</b>, and the standing lesson warns an advisory with no reader is worse than none. Not the ageing-premise class (the premise was never checked) but the inverse of the ritual-output class — output produced, not consumed.</p>",
+    opts:[
+      {k:"a", t:"Mechanise it — after any probe, the session must state what it invalidates", p:"Turns a habit into a step. The failure is a skipped step, not a missing insight.", c:"Unenforceable by a gate — no check can tell whether the statement was thought about."},
+      {k:"b", t:"Rule it stays a discipline, and give it a standing home so it is inherited", p:"Cheap, and homing it is the actual gap — it only ever lived on a rolling banner.", c:"Still relies on a session reading and applying it."},
+      {k:"c", t:"Leave it named and unhomed", p:"No cost.", c:"It has already rolled out of the record once. It will be re-found and re-paid."}
+    ], rec:"b"
+  },
+  {
+    id:"D18", src:"open 19 · found by a reconcile step",
+    title:"May a generated file carry a date at all?",
+    plain:"<p>Seven files show as changed every single day with <b>zero actual content change</b> — they stamp the build date, so the repository disagrees with itself daily.</p><p>It makes real changes harder to see, which is how genuine drift slips through unread.</p>",
+    tech:"<p>Seven files dirty with only <code>-2026-07-29</code> / <code>+2026-07-30</code>: <code>knowledge/_CAPTURE-GATE.md</code>, <code>knowledge/_RUNBOOKS.md</code>, <code>knowledge/compliance/graph-index.json</code> and four <code>compliance/rules/wcag-*.json</code>.</p><p>★ Same shape as a bug found the same session, with a longer period: a per-run variable inside generated output, where the other had a per-pass one. Both make a generated file disagree with itself for reasons that are not about what it describes.</p>",
+    opts:[
+      {k:"a", t:"No dates in generated output", p:"Removes the churn entirely. A clean diff is a real safety property here.", c:"Loses at-a-glance freshness, which is how one stale artefact was noticed."},
+      {k:"b", t:"Date only where the date is content, not metadata", p:"Keeps freshness where it is meaningful.", c:"Requires a judgement per file, and judgements drift."},
+      {k:"c", t:"Keep dates, exclude these paths from the reconcile step", p:"Smallest change.", c:"Hides the churn rather than removing it — and unread sweeping is how the stale reports in D19 got committed."}
+    ], rec:"a"
+  },
+  {
+    id:"D19", src:"open 21 · deliberately kept separate from D18",
+    title:"Should every generated report self-check?",
+    plain:"<p>Two generated reports were committed carrying <b>real wrong content</b> — one claimed 33 files when there were 34, another 7 bullets when there were 6.</p><p>Kept separate from D18 on purpose: that one is harmless churn, this one is genuine drift, and treating them alike teaches the next session to sweep post-build changes unread.</p>",
+    tech:"<p>Proved not to be the committing session's doing — the live-state builder never imports the gate, and that file was untouched. The 34th file was the document that same commit added.</p><p>Shape: a <code>--check</code> mode per generated report, which <code>_gen_chain.py</code> already proves works.</p>",
+    opts:[
+      {k:"a", t:"<code>--check</code> for every generated report, wired into the build", p:"Proven pattern already in the repo. Turns a class of silent drift into a build failure.", c:"Adds steps to a build that already does not fit one sandbox call."},
+      {k:"b", t:"<code>--check</code> only for reports carrying counts or figures", p:"Targets where drift is detectable and consequential.", c:"Needs a rule for which reports qualify, and that rule will itself drift."},
+      {k:"c", t:"Rely on the reconcile step", p:"No new machinery.", c:"The reconcile step is exactly what let these through — it saw the diff and read it as churn."}
+    ], rec:"a"
+  },
+  {
+    id:"D20", src:"open 6 · minting a term is yours",
+    title:"Mint a state for a mid-flight handover?",
+    plain:"<p>The gauge log has words for “ran fine”, “gap in the record” and “nothing here”. It has no word for a session that stopped mid-flight leaving real measurements behind.</p><p>One session fits none of them. A near-fit was used rather than inventing a word, because inventing one is yours.</p>",
+    tech:"<p>Vocabulary is <code>block</code> / <code>HOLE</code> / <code>ABSENT</code>. #37 flushed at Amber, left real measured numbers, never closed. <code>HOLE #37</code> was taken <b>because it invents nothing</b>, and declared as an approximation.</p><p>Related but scoped away by your #43 ruling: <em>present-but-unkeyed</em> is a filing error, not a vocabulary gap, and does not cover this.</p>",
+    opts:[
+      {k:"a", t:"Mint a fourth state (e.g. <code>PARTIAL</code>) for measured-but-unclosed", p:"The dataset stops carrying a known-approximate label on a real reading.", c:"A fourth term is a fourth thing every reader and parser must know."},
+      {k:"b", t:"Rule <code>HOLE</code> covers it, with a required qualifier", p:"No new term; keeps the vocabulary at three.", c:"<code>HOLE</code> is a positive claim that the gap is real, and this is not that."},
+      {k:"c", t:"Rule the case out of scope — mid-flight sessions do not get a row", p:"Simplest. The dataset only records completed observations.", c:"Discards real measurements, and the starved dataset (D5) cannot afford it."}
+    ], rec:"a"
+  },
+  {
+    id:"D21", src:"open 13 residue · re-keyed PARTIAL at #48",
+    title:"Which end is “newest”?",
+    plain:"<p>Session records in GM run oldest-first; both archives run newest-first. Nothing has ever ruled which is correct.</p><p>A reader function once said “newest” and returned the oldest because of it. That instance was dissolved at #44 by making the reader ignore order entirely — but the convention itself is still unnamed, and D5 touches it.</p>",
+    tech:"<p>#44 ruled <b>highest number wins; file order is not consulted, in either direction</b>. Verified both ways, including against a line-reversed copy.</p><p>⚠ That ruling dissolved the question <em>at that reader</em>; it did not answer it for <code>roll_2f</code> or the archives, which is where D5 lands. ⚠ Do not resolve it by reordering existing records — that would rewrite ratified blocks to suit a reader.</p>",
+    opts:[
+      {k:"a", t:"Newest-first everywhere — archives win, GM converts", p:"Most recent is what a human wants first. Two of three surfaces already do it.", c:"Converting GM means rewriting ratified regions, which is explicitly warned against."},
+      {k:"b", t:"Oldest-first everywhere — GM wins, archives convert", p:"Append-only, which is the cheapest and safest write.", c:"Every human read starts at the least relevant end."},
+      {k:"c", t:"Rule order irrelevant — every reader must be order-agnostic, as #44's is", p:"Removes the class of bug rather than picking a side, and #44 proved the pattern.", c:"Each reader must be written correctly, and one that is not will look fine until the file re-stacks."}
+    ], rec:"c"
+  },
+  {
+    id:"D22", src:"open 24 · #51 argued it is harder than it looks",
+    title:"License a fix for self-referential figures?",
+    plain:"<p>A gate bans hand-written size figures. It works by spotting the word they are keyed to — so a sentence that measures <em>itself</em> is invisible to it. One such sentence claimed 685 and measured 808: an 18% error, inside the sentence announcing the ban.</p><p>#51 built the neighbouring fix and came back arguing this one is genuinely harder, not merely undone.</p>",
+    tech:"<p>The gate matches figures keyed to the token <code>CHAIN</code>; a self-keyed figure is out of its reach. <b>Proximity to a gate is not coverage by it.</b></p><p>★★ #51's finding, and it is why this stayed untouched: <b>syntax cannot tell use from mention — only scope can.</b> Scope saves the sibling case because the check can be pinned to one capture group. It cannot save this one, <b>because the self-measuring sentence is itself in scope</b>. Any pattern matching self-measurement will bite the line it guards.</p><p>Agent-solvable <em>with</em> a scope control, not without one.</p>",
+    opts:[
+      {k:"a", t:"License an agent to attempt it, with a mandatory scope control and mutation tests", p:"The sibling case was built exactly this way and its mutation tests caught three faults.", c:"#51 argues the scope trick that saved the sibling provably does not transfer. Real chance of a window spent for nothing."},
+      {k:"b", t:"Rule self-referential figures out of scope — ban the construction instead", p:"Sidesteps the unsolvable check: if no line may measure itself, nothing needs to detect one that does.", c:"A ban with no enforcer is the exact class this whole pack keeps re-finding."},
+      {k:"c", t:"Leave it open and documented", p:"Honest. Documented, argued, and cheap.", c:"Documenting a defect is not immunity to it — the same session that documented one then committed it."}
+    ], rec:"b"
+  }]
+}];
+
+/* ═══ AGENT LANE — no ruling needed ═════════════════════════════════════════ */
+var LANE = [
+  {t:"open 4 — the LS offloads", d:"Already ruled at #35. Four sessions of pure enactment debt: three sections to archives, one to de-materialise, plus register rows. A survey lane found it <b>is not an open</b> — it has been asking for a decision it already has. Sonnet tier, to spec."},
+  {t:"open 23 — the un-K'd chain figure", d:"The size-stamp ban catches <code>4.4K tape</code> but misses <code>5,368 tape</code>. Agent-solvable, but the fix is to normalise the number form once and <b>fail loud on an unknown one</b> — never to enumerate spellings. Must be tested against the live stamp and the historical copy before wiring, and must keep the scope control."},
+  {t:"open 5 — a status correction", d:"It reads <em>“UNREAD BY ANY SESSION”</em>. The #39 ledger records the note <b>was</b> read. The open is stale — same propagation class as D16. Correct at source; no ruling needed."}
+];
+</script>
+
+<script>
+(function(){
+  var deck=document.getElementById('deck'), picks={}, notes={}, total=0;
+
+  /* contents — built first, filled as tiers render */
+  var toc=document.createElement('nav'); toc.className='toc';
+  toc.innerHTML='<h2>What you are being asked to rule</h2>'+
+    '<p>Twenty-two decisions in four tiers. Jump to any of them; a tick means you have ruled it.</p>';
+  deck.appendChild(toc);
+
+  function esc(s){return String(s).replace(/&(?![a-z#]+;)/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function strip(h){var d=document.createElement('div'); d.innerHTML=h; return (d.textContent||'').replace(/\s+/g,' ').trim();}
+
+  TIERS.forEach(function(tier){
+    var sec=document.createElement('section'); sec.className='tier';
+    sec.innerHTML='<div class="tier-h"><span class="t-no">'+tier.no+'</span>'+
+      '<h2>'+tier.name+'</h2><p>'+tier.blurb+'</p></div>';
+
+    var grp=document.createElement('div'); grp.className='grp';
+    var gl='<span class="gh">'+tier.no+' — '+tier.name+'</span><ol>';
+    tier.items.forEach(function(d){
+      gl+='<li><a href="#'+d.id+'" id="toc-'+d.id+'"><span class="k">'+d.id+'</span>'+
+          '<span>'+strip(d.title)+'</span></a></li>';
+    });
+    grp.innerHTML=gl+'</ol>'; toc.appendChild(grp);
+
+    tier.items.forEach(function(d){
+      total++;
+      var a=document.createElement('article'); a.className='d'; a.id=d.id;
+      var h='<div class="d-h"><span class="d-id">'+d.id+'</span><h3>'+d.title+'</h3></div>'+
+            '<div class="d-src">'+d.src+'</div>'+
+            '<div class="plain"><span class="lbl">In short</span>'+d.plain+'</div>';
+      if(d.flag) h+='<div class="flag '+d.flag.cls+'"><span class="h">'+d.flag.h+'</span>'+d.flag.t+'</div>';
+      h+='<details class="tech"><summary>Technical detail and evidence</summary><div class="body">'+d.tech+'</div></details>'+
+         '<div class="opts"><span class="lbl">Your ruling</span>';
+      d.opts.forEach(function(o){
+        h+='<label class="opt" data-d="'+d.id+'" data-k="'+o.k+'"><span class="row">'+
+           '<input type="radio" name="r-'+d.id+'" value="'+o.k+'">'+
+           '<span class="txt"><span class="ttl">('+o.k+') '+o.t+
+           (d.rec===o.k?'<span class="rec">Recommended</span>':'')+'</span>'+
+           '<span class="pc"><span class="p"><span class="h">For</span>'+o.p+'</span>'+
+           '<span class="c"><span class="h">Against</span>'+o.c+'</span></span>'+
+           '</span></span></label>';
+      });
+      h+='</div><div class="note"><label for="n-'+d.id+'">Your reasoning — the why is what gets inscribed</label>'+
+         '<textarea id="n-'+d.id+'" data-d="'+d.id+'" placeholder="Optional. Anything the option list did not offer, write here."></textarea></div>';
+      a.innerHTML=h; sec.appendChild(a);
+    });
+    deck.appendChild(sec);
+  });
+
+  /* agent lane */
+  var lane=document.createElement('section'); lane.className='tier';
+  var lh='<div class="tier-h"><span class="t-no">Agent lane</span><h2>Needs nothing from you</h2>'+
+    '<p>These can run in parallel worker windows today, on Sonnet, to spec. They are the whole of what is left that does not wait on a ruling — which is the evidence that nibbling has run out of road.</p></div>'+
+    '<div class="lane"><ul>';
+  LANE.forEach(function(l){ lh+='<li><b>'+l.t+'</b> — '+l.d+'</li>'; });
+  lh+='</ul></div>';
+  lane.innerHTML=lh; deck.appendChild(lane);
+
+  var foot=document.createElement('footer'); foot.className='end';
+  foot.innerHTML='Assembled from <span class="mono">GOOD-MORNING.md</span> §C·4 and '+
+    '<span class="mono">notes/_MEMENTO-DECISIONS.md</span>, read 2026-07-30. '+
+    'Every figure quoted here is transcribed from the record, not recomputed — '+
+    're-measure before building on any of them. '+
+    'Nothing is stored in your browser: <b>Export is the save</b>.';
+  deck.appendChild(foot);
+
+  document.getElementById('tot').textContent=total;
+
+  /* ── interaction ── */
+  deck.addEventListener('change', function(e){
+    var t=e.target;
+    if(t.type==='radio'){
+      var lab=t.closest('label.opt'), id=lab.getAttribute('data-d');
+      picks[id]=lab.getAttribute('data-k');
+      var card=document.getElementById(id);
+      card.querySelectorAll('label.opt').forEach(function(l){l.classList.remove('sel');});
+      lab.classList.add('sel'); card.classList.add('done');
+      var tl=document.getElementById('toc-'+id); if(tl) tl.classList.add('ruled');
+      tally();
+    }
+  });
+  deck.addEventListener('input', function(e){
+    if(e.target.tagName==='TEXTAREA') notes[e.target.getAttribute('data-d')]=e.target.value;
+  });
+
+  function tally(){
+    var n=Object.keys(picks).length;
+    document.getElementById('n').textContent=n;
+    document.getElementById('fill').style.width=(total?Math.round(n/total*100):0)+'%';
+  }
+
+  var openAll=document.getElementById('openAll'), isOpen=false;
+  openAll.addEventListener('click', function(){
+    isOpen=!isOpen;
+    deck.querySelectorAll('details.tech').forEach(function(x){ x.open=isOpen; });
+    openAll.textContent=isOpen?'Collapse detail':'Expand detail';
+  });
+
+  /* ── export ── */
+  function build(){
+    var out=['# Memento decision pack — rulings','','Source: reviews/MEMENTO-DECISION-PACK-2026-07-30-v1.html',
+             'Ruled: '+Object.keys(picks).length+' of '+total,''];
+    TIERS.forEach(function(tier){
+      var any=tier.items.some(function(d){return picks[d.id]||notes[d.id];});
+      if(!any) return;
+      out.push('## '+tier.no+' — '+tier.name,'');
+      tier.items.forEach(function(d){
+        var k=picks[d.id], nt=(notes[d.id]||'').trim();
+        if(!k && !nt) return;
+        out.push('### '+d.id+' — '+strip(d.title));
+        out.push('- source: '+strip(d.src));
+        if(k){
+          var o=d.opts.filter(function(x){return x.k===k;})[0];
+          out.push('- **RULED: ('+k+') '+strip(o.t)+'**');
+          if(d.rec && d.rec!==k) out.push('- note: this differs from the recommendation ('+d.rec+') — take the ruling, and record why the recommendation was not followed');
+        } else { out.push('- **NOT RULED** — note only'); }
+        if(nt) out.push('- why: '+nt);
+        out.push('');
+      });
+    });
+    var un=[];
+    TIERS.forEach(function(t){t.items.forEach(function(d){ if(!picks[d.id]&&!(notes[d.id]||'').trim()) un.push(d.id); });});
+    if(un.length){ out.push('## Not ruled this pass','', un.join(', '), ''); }
+    out.push('---','','Next: inscribe each ruling plus its why in `notes/_MEMENTO-DECISIONS.md`,',
+             'then close the corresponding §C·4 open with a `[closed #NN]` tag.','',
+             'Re-measure every figure before building on it.');
+    return out.join('\n');
+  }
+  var ex=document.getElementById('ex'), exText=document.getElementById('exText');
+  document.getElementById('exBtn').addEventListener('click', function(){
+    exText.value=build(); ex.classList.add('on'); exText.focus(); exText.select();
+  });
+  document.getElementById('exClose').addEventListener('click', function(){ ex.classList.remove('on'); });
+  ex.addEventListener('click', function(e){ if(e.target===ex) ex.classList.remove('on'); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') ex.classList.remove('on'); });
+  document.getElementById('exCopy').addEventListener('click', function(){
+    exText.select();
+    try{ document.execCommand('copy'); this.textContent='Copied'; var b=this;
+      setTimeout(function(){b.textContent='Copy to clipboard';},1400); }catch(err){}
+  });
+  document.getElementById('exDl').addEventListener('click', function(){
+    var blob=new Blob([exText.value],{type:'text/markdown'}), u=URL.createObjectURL(blob),
+        a=document.createElement('a');
+    a.href=u; a.download='memento-rulings-2026-07-30.md'; a.click(); URL.revokeObjectURL(u);
+  });
+
+  tally();
+})();
+</script>
+</body>
+</html>

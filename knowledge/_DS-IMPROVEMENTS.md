@@ -1700,6 +1700,21 @@ that depends on it:**
    disk and not reachable from the sandbox** — the session transcript is outside every mount. ⇒ the
    real boot is almost certainly well above the inherited ~17, and **every pre-flight in this repo
    has been priced on the low figure.**
+
+   ⛔⛔ **PART-FALSIFIED #52 (2026-07-30) — THE SENTENCE ABOVE IS WRONG AND THIS IS THE CORRECTION AT
+   SOURCE.** *"The session transcript is outside every mount"* is FALSE: the live transcript sits at
+   `.claude/projects/<project>/<sessionId>.jsonl` and **IS readable from the sandbox**. It can be
+   measured with `tiktoken` there and never loaded into the window, so **the reading is free.**
+   Confirmed as the live session by matching `sessionId`, timestamps and content probes.
+   **MEASURED #52, `cl100k`: conversation half 613,386 tape** (`user`/tool-results 426,344 ·
+   `assistant` 168,587 · `attachment` 18,455; meta records excluded). ⚠ **A cumulative log is not a
+   fill reading** — that figure is THROUGHPUT, and it assumes no compaction/eviction, which is
+   DECLARED not verified. ⚠ **SCOPE, and it matters: only the CONVERSATION half is now observable.
+   The boot half — system prompt, tool schemas, MCP instruction blocks — has NO record type in that
+   file, so THIS ITEM'S HEADLINE CLAIM STANDS: the boot is still unmeasured after 36 sessions.**
+   ⇒ **`ds-025` is NOT closed; item 1 is narrowed.** ★ Found because Dave used the check-in
+   mechanism he ruled the same hour (*"how hot are we now?"*) — **an instrument's first run
+   disconfirmed the premise it was built on.** → `notes/_MEMENTO-DECISIONS.md` § ★★ #52.
 2. **`bill`.** ds-021(c) requires one `tape`/`bill` pair per wrap and sends the constant to Dave at
    **n≥4**. Measured at #37: `notes/_GAUGE-LOG.md` has **never contained a single pair** (`grep -i
    bill` → 0 hits, all sessions). `TAPE_TO_BILL = 1.57` is still the original **n=2** from #30. The

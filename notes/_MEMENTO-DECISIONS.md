@@ -1318,3 +1318,238 @@ discharged by a forged `HOLE`.** Strata stack **EIGHT** (#38 · #40 · #41 · #4
 consecutive wrap this ruling has stopped a false inscription.**
 
 **Dossier:** `_DECISION-HISTORY/2026-07-30-the-fixed-point-and-the-unnamed-unit.md`.
+
+---
+
+## ★★ #52 — TWENTY-TWO RULINGS IN ONE PASS, AND TWO OF THEM REDESIGNED THE GAUGE — 2026-07-30 (Opus solo, Dave live, decision-pack by instruction)
+
+**⚠ APPENDED AT EOF, DELIBERATELY, UNDER THIS SESSION'S OWN D21 (c).** This file is already
+inconsistent — entries #23→#45 run oldest-first, the 07-30 block (#51 · #50 · #49 · #48 · #47) runs
+newest-first. **D21 (c) rules order irrelevant and readers order-agnostic**, so append-only is the
+cheapest safe write and this line is the receipt that the choice was made, not drifted into.
+★ **The ruling was applied to the file recording it, within the hour.**
+
+**Instrument:** `reviews/MEMENTO-DECISION-PACK-2026-07-30-v1.html` (+ `.REVIEW.html` pair). 22
+decisions, 4 tiers, 71 options, plain-English summary above folded technical evidence, one control
+per decision, export-to-markdown. Verified at 1280 / 768 / 430 px: 22 cards, 71 options, anchors
+clear the sticky rail at every width, 22 rulings export, 0 page errors. **Dave ruled all 22 and
+returned the export.** ★ **He asked for the template to be reused** — *"this template is great BTW,
+we should use it again."*
+
+### ★ THE SHAPE OF THE FINDING — the backlog was never an error backlog
+
+Counted from GM §C·4 this morning: **28 numbered opens, 4 fully closed** (8 · 15 · 16 · 25),
+**24 carrying live residue**, of which **~19 were marked ⬛ DAVE'S**. Only three were genuinely
+agent-solvable (open 4 · open 23 · open 5's stale status). ⇒ **Sessions are structurally good at
+finding, homing and evidencing problems and structurally unable to rule them; each window added
+1–3 opens and closed about one.** The queue was Dave-bound, not Claude-bound, and no amount of
+nibbling, parallelism or delegation clears a queue bottlenecked on one human's judgment.
+
+### ⬛ TIER 0 — THE YARDSTICK
+
+- **D1 · RULED (a) — spend a window measuring `tape` against real `client.messages.count_tokens()`, then re-denominate.** Open 26. ★ Dave raised the tokenizer at **P3, seven sessions ago**; it went undischarged because the claim was never *wrong* and [[assertion-propagation-gap]] fires only on a FLIP.
+- **D2 · RULED (c) — SPLIT THE DENOMINATOR: real window for capacity, a separate ruled throttle in ABSOLUTE TOKENS for degradation.** Open 20 (c). **His why, verbatim:** *"I think we need to investigate or research this, I notice that reasoning and memory go down after about 60% of the measurement that we use currently, and we have to think about all the front loading of context, memory files etc."*
+- **D3 · RULED (c) — ONE CONSTANT, IMPORTED BY BOTH.** Open 20 (b). Mechanism only; the values are below and they are **not constants**.
+
+**⇒ THE SEQUENCING CONSEQUENCE, DECLARED: D2's throttle, D3's edges and D9's warn threshold are all
+expressed in the unit D1 says is unmeasured.** The mechanisms are buildable now; **the numbers are
+not settable until D1 lands.** Dave: *"okay the ordering is sensible."*
+
+### ★★ THE SHARPEST THING IN THIS SESSION — D3's AMBER IS NOT A CONSTANT, IT IS A FUNCTION
+
+Dave's design, read back and confirmed:
+
+- **RED = 60.** *"60 is red, it's a warning and maybe it needs tuning."* **Budget is always around 60 and the price needs to sit under it or very close.**
+- **AMBER = the point at which front-load + chats + deviations + notes + jobs — WITHOUT a wrap — sit.** ⇒ **amber fires when adding a wrap would bust the budget.**
+
+★★ **So amber is `60 − wrap_reserve`, a DERIVED and MOVING threshold, not a percentage.** Every
+amber this project has ever had was a constant (`AMBER_AT = 0.50`, the gate's ruled `60`). This is a
+different instrument.
+
+★★ **AND IT COLLAPSES INTO D9.** D9's ruling — *"there should be a warning when it becomes apparent
+that any job/s plus a wrap (plus any sidetracks) will push the price above the 60%"* — **is the same
+mechanism**, and Dave said so himself when asked (*"this is what I talked about in 2"*). ⇒ **D3's
+amber and D9's forward-warn are ONE build item, not two.**
+
+★★ **WHY THIS MATTERS BEYOND THE NUMBER: every gate this project has measures spend that has ALREADY
+HAPPENED.** That is the defect [[gate-inside-the-growth-loop]] names — a cap firing after the writing
+is paid. **Dave's amber fires BEFORE the spend is committed.** It is the first forward-looking
+instrument on the board, and it is the mechanical answer to D17 as well.
+
+### ⚠ THE PRIMING FLAG — RAISED, NOT RESOLVED, AND HE ANSWERED IT BETTER THAN THE OBJECTION
+
+Dave's *"reasoning and memory go down after about 60%"* is **the same observation he refused at #39**
+(*"past 50% mostly okay, in the 60s things go wrong"*), where he said **"I wouldn't trust my 'feels',
+that might be the problem"** and was right: if the gauge already showed amber/red at 60 and he then
+noticed problems, that is **priming, not observation**. ⚠ **Repeating an observation does not
+strengthen it while the priming source is still on screen** — n=2 from one possibly-contaminated
+source is not n=2.
+
+★★ **BUT HIS ANSWER DISSOLVES THE OBJECTION RATHER THAN REPEATING IT:** *"I can spot when things are
+slipping but I don't have a gauge to refer to, so I can correlate a pattern."* ⇒ **He is not asking
+to be trusted; he is asking for the instrument that would let his feel be CHECKED.** That is the
+experiment, not the fallacy. ⬛ **NEW REQUIREMENT, HIS: a CHECK-IN mechanism** — he must be able to
+ask *"how hot are we?"* / *"what's the gauge like?"* **at any point**, not only at wrap. ★ Today's
+gauge has no on-demand reader, which is [[instrument-without-a-consumer]] in its mildest form: the
+instrument exists and speaks only once, at the moment it is least useful.
+
+### ⬛ THE FIRST JOB IS A MEASUREMENT WINDOW — THREE NUMBERS, NONE OF THEM CURRENTLY MEASURED
+
+1. **The tokenizer** (D1) — `cl100k` is OpenAI's; `p50k` reads **+8.6–11.1%** on this corpus.
+2. **The boot / front-load** — Dave's *"front loading of context, memory files etc."* `DEFAULT_BASELINE = 35_000` is annotated *"Measured, adjustable."* while `ds-025` item 1 records it was **NEVER MEASURED IN 36 SESSIONS**. ★ **If front-load is a large fraction, "60% of window" and "absolute tokens since boot" are not the same line at all** — which is D2 (c)'s whole point.
+3. **The wrap reserve** — **newly required by D3's amber**, which cannot be computed without it. ⚠ **Not currently measured anywhere.**
+
+⇒ **Those three make D2's throttle, D3's edges and D9's warn ALL computable. None is settable
+without them.** ★ **This is a MEASUREMENT window, and it must not guess** — `ds-025`'s standing rule,
+and D10 (c) below is its published form.
+
+### ⬛ TIER 1 — STRUCTURAL
+
+- **D4 · RULED (a) — raise the M8 banner cap to the measured floor plus headroom.** Open 27. ⚠ **His why carries a condition:** *"again we need some way to keep this lean, even if it's you putting your foot down for some decisions."* ⇒ **the raise is NOT unconditional** — it is owed a leanness mechanism. See the licence below. ★ Evidence that licensed it: #51 cut **624 tape** from its own regions (banner −514, title −110) and the region was **still at BLOCK**; a further pass went UP.
+- **D5 · RULED (a) — relax the chronological contract; the 2f blockage evaporates.** Open 7. ★ **Order was file hygiene, never an analytical requirement** (it exists only because #27 hand-prepended once), and a parser sorts the dataset anyway. ⇒ #38's block simply appends at EOF. **`ds-022` gets a route to green after twelve blocked sessions.**
+- **D6 · RULED (b) — retire the GM-split item; `_CHAIN.md` already bought the benefit.** Open 10. Consistent with his own #41 choice of the generator over the surgery.
+- **D7 · RULED (b) — drop roll-at-open; the premise is gone.** Open 12. #39 failed from having **no window**, not from missing machinery, so moving rolls earlier cannot fix it.
+- **D8 · RULED (c) — window-vs-quota ALTERNATES; make the standing clause conditional on the pace read.** ★ **The subagent question was never open:** `MODEL-ROUTING.md` Mode 2, **ruled by Dave 2026-07-23** (routing audit #12), already says parallel worker-chats carry throughput and subagents are the exception tool. ⛔ **THE SESSION'S OWN FAILURE, DECLARED: Dave reported receiving contradictory advice on this across THREE sessions, and the ruling was in canon the whole time.** [[feedback-read-the-runbook]] and [[trust-the-spine-not-the-prose]] both cover it; neither was applied until he pushed back. **What was genuinely unruled was only the smaller question — which resource binds — and that is what (c) settles.**
+
+★ **D5 (a) AND D21 (c) ARE MUTUALLY REINFORCING and were ruled independently:** D21 (c) — every
+reader order-agnostic — **is what makes D5 (a) safe.** Relaxing a chronological contract is only
+sound if nothing depends on the order, which is exactly what D21 (c) requires.
+
+### ⬛ TIER 2 — POLICY AND NUMBERS
+
+- **D9 · RULED (b) — above 63 is a fork to Dave, every time.** Open 1 / `ds-023`. ⇒ **plus his new forward-warn**, folded into D3's amber above — **one build item.**
+- **D10 · RULED (c) — publish the measured / estimated split on every reading.** Open 2 / `ds-025`. ★ **This is the standing answer to "a measuring tool must not guess"** [[feedback-measuring-tool-must-not-guess]]: half a measurement, LABELLED, beats a whole guess — and beats a silent estimate absolutely.
+- **D11 · RULED (a) — hold `TAPE_TO_BILL`; collect readings until D1 settles.** Open 9. n=1 (28,653 bill for 13,548 tape) is a ROW for the starved dataset, **not a re-dial** — and part of the 1.57× → 2.11× gap may be tokenizer mismatch, which D1 decides.
+- **D12 · RULED (c) — re-derive the question before ruling it; open 16's close may have dissolved it.** Open 3. [[premise-ages-faster-than-rule]] applied prospectively for once, rather than discovered afterwards.
+
+### ⬛ TIER 3 — MECHANISM, OR DISCIPLINE
+
+**Dave's standing instruction shaped this whole tier:** *"I want to offload any prose-logic to code
+as much as possible."* ⇒ **eight of ten went to a mechanism.**
+
+- **D13 · RULED (a) — capture-gate check that the wrap's commits carry `_git_commit.sh`'s signature.** Opens 11 + 28. ★ **5 of 7 sessions reconstructed the sequence from memory**, and #51 did it again with `_RUNBOOK-git-commit.md` — **caught by Dave asking one question, not by any mechanism.** *A correct procedure the hot path can skip is documentation, not a procedure.*
+- **D14 · RULED (a) — GENERATE the `_DECISION-HISTORY` index from the directory.** Open 14. 7 rows for 54 files, dead 12 days. ⚠ He did **not** take the obvious backfill — which is the `ds-023` shape and was flagged as such in the pack.
+- **D15 · RULED (c) — unblock 2f so commit-states reach the log (= D5).** Open 18. ⬛ **His note: *"but lets explore B later"* — option (b), indexing strata + receipts in `_memento_search`, is QUEUED, NOT DROPPED**, and it is the half that covers instance (ii).
+- **D16 · RULED (c) — require a source citation on any figure entering a standing section.** Open 17. ★ The narrow, buildable slice of the never-true class: **a citation's PRESENCE is a syntactic property**, where "assert prose against source" is not. ⚠ **Covers figures, not prose claims** — the rest of the class stays open by design.
+- **D17 · RULED (b) — stays a DISCIPLINE, but gets a STANDING HOME so it is inherited.** Open 22. ★ **The homing was the actual gap** — it only ever lived on a rolling banner and rolled out of the record once already.
+- **D18 · RULED (a) — NO DATES IN GENERATED OUTPUT.** Open 19. Seven files false-diffed daily with zero content change. ⇒ **a clean diff is a safety property here, not tidiness** — unread sweeping is precisely how D19's stale reports got committed.
+- **D19 · RULED (a) — `--check` for EVERY generated report, wired into the build.** Open 21. ⚠ **Kept separate from D18 on purpose:** 18 is harmless churn, 19 is real content drift, and treating them alike teaches the next session to sweep post-build changes unread.
+- **D20 · RULED (a) — MINT THE FOURTH STATE (`PARTIAL`) for measured-but-unclosed.** Open 6. **Minting was always Dave's**; `ds-023` is the standing cautionary case for an agent minting because it noticed. ⇒ #37's real measurements stop being filed under a known-approximate `HOLE`.
+- **D21 · RULED (c) — ORDER IS IRRELEVANT; every reader must be order-agnostic, as #44's is.** Open 13 residue. ★ Removes the class rather than picking an end — and #44's `max()` already proved the pattern against a line-reversed file. **Applied to this entry, above.**
+- **D22 · RULED (b), WITH THE JEOPARDY INSCRIBED — ban the construction; self-referential figures are out of scope.** Open 24. See below.
+
+### ⬛ D22 — RULED WITH ITS OWN OBJECTION ON THE RECORD, AT DAVE'S INSTRUCTION
+
+**His note, verbatim:** *"we need to think about this: Against — A ban with no enforcer is the exact
+class this whole pack keeps re-finding."* **His instruction:** *"Inscribe for now but note the
+jeopardy so we can think about solving it later (I know it's another deferment)."*
+
+⇒ **RULED (b) AND NOT SETTLED. The jeopardy is the ruling's own most likely failure mode**, and it is
+inscribed here rather than discovered later. ★ **A ruling recorded WITH its live objection is not a
+weaker ruling — it is the only kind that can be chased**, because [[assertion-propagation-gap]]
+cannot chase a claim that was never marked as doubtful.
+
+⬛ **THE CANDIDATE RESOLUTION, RAISED THIS SESSION AND ACCEPTED FOR EXPLORATION (Dave: *"yes lets
+explore this"*): SCOPE THE BAN TO A REGION, NOT TO A REFERENT.** #51 proved a self-measuring
+sentence is unreachable by syntax **because the sentence is itself in scope**. But a ban on *any*
+hand-written figure in the `size:` stamp — generated figures only — is a **PRESENCE check on a
+REGION**, which needs no semantics at all, and **self-reference is caught as a side effect.**
+★ **This is #49's own lesson applied one level up: gate the PRESENCE, not the drift** — and
+`BARE_TOKEN_RE` (#51) already proves the shape works on that exact region. **Not built; not ruled.**
+
+### ⬛ D4's LICENCE, SCOPED — PRESSURE, NOT PROMOTION
+
+Asked whether *"you putting your foot down"* widened the derivation rule, Dave scoped it himself:
+*"I mean when I keep adding deferments, or don't make decisions that bloat anything, I think you
+should be firmer with me, you can make suggestions and the decision template was very useful."*
+
+⇒ **RULED, and it does NOT touch [[derivation-governance]]: promotion to canon remains Dave's alone.
+What changes is PRESSURE — when a deferment carries a measurable cost, name the cost and press,
+rather than recording the deferral neutrally.** ★ **Proposed shape, not yet ruled: every deferment
+gets a PRICE recorded at the moment of deferral**, so "firmer" is an accumulating bill rather than
+nagging — which is this project's own idiom (*price every job*) turned on its own backlog.
+⚠ **D22 is the first entry on that list, and Dave flagged it himself** — *"I know it's another
+deferment."*
+
+### ⬛ WHAT WAS DELIBERATELY **NOT** DONE, AND WHY — THE §C CUT IS A SEPARATE MOTION
+
+**19 of 24 live opens are now ruled.** Closing them in GM §C·4 was NOT done in this window, and the
+refusal is procedural, not a shortage:
+
+**[[home-by-addition-then-cut]], RULED #50, prescribes the sequence exactly: a capped region can be
+the SOLE home of an uncapped fact ⇒ probe and QUOTE the homes BEFORE any trim; orphans are written
+FIRST and cut SECOND, never in one motion.** ⇒ **This entry IS the new home.** The probe, the quoted
+homes and the cut are the second motion and belong to a window that can do them deliberately.
+
+★ **AND THE RUNBOOK ALREADY SETTLES THE SHAPE — READ, NOT RECONSTRUCTED**
+(`_RUNBOOK-capture-ritual.md:198`): a closure tombstone's term is **LATEST + 2 sessions**, after
+which *"it rolls and §C keeps one aggregate line"*, and **"a tombstone that must live forever is
+evidence a gate is missing."** ⇒ **Writing 19 individual tombstones would be writing 19 things the
+runbook rolls away within two sessions**, into the largest and most pressured region in the file
+(STRATA, up 1,855 tape in one session, stack twelve). **One aggregate line pointing here is the
+ruled shape.**
+
+### ⚠ THE PRICE OF THIS SESSION — DISK HALF MEASURED, HARNESS HALF UNOBSERVABLE (`ds-025`), PUBLISHED PER D10 (c)
+
+**MEASURED, `cl100k`:** read **24,293 tape** (`_CHAIN.md` 5,072 · GM §C·4 roster slice 12,398 ·
+`MODEL-ROUTING.md` 2,926 · two ledger slices 2,885 · render runbook 1,012) · **written 18,049 tape**
+(the decision pack) ⇒ **disk half 42,342 tape.** ⚠ **The last six ledger entries measure
+1,461–2,568 tape for 1–3 rulings each; this one carries 22**, which is why it was priced before it
+was written.
+
+⛔⛔ **CORRECTED AT SOURCE, SAME SESSION — THE SENTENCE HERE ORIGINALLY READ *"Harness half:
+UNOBSERVABLE from inside the window — stated, not estimated."* IT WAS FALSE WHEN WRITTEN, and it
+was written on `ds-025`'s authority without probing.** Dave then used the check-in mechanism he had
+just ruled (*"how hot are we now?"*) and the probe found **the live session transcript is READABLE
+FROM THE SANDBOX** — `.claude/projects/<project>/<sessionId>.jsonl`, confirmed as this session by
+matching `sessionId`, timestamps `12:12:39Z → 14:10:14Z`, and content probes. It can be **measured
+with `tiktoken` in the sandbox and never loaded into the window**, so the reading is free.
+
+**MEASURED, `cl100k`, conversation half: 613,386 tape** — `user`/tool-result records **426,344** ·
+`assistant` **168,587** · `attachment` **18,455** (meta records excluded: `queue-operation`,
+`last-prompt`, `mode`). ⚠ **ASSUMPTION DECLARED, not verified: no compaction or eviction has
+occurred**, so cumulative ≈ resident. **A cumulative log is not a fill reading**
+[[measure-dont-convert-units]] — this is a THROUGHPUT figure and is named as one.
+
+★★ **WHAT THIS INVALIDATES, stated because a probe that does not reach the plan is the failure
+[[feedback-check-ran-never-reached-plan]]:**
+1. ⛔ **`DEFAULT_WINDOW = 200_000` IS FALSIFIED BY EXISTENCE PROOF** — 613,386 tape is **307%** of
+   it and the session is manifestly still working. **No feel, no literature, no priming**: the
+   constant cannot be right. ⇒ **D2's premise is now demonstrated rather than argued.**
+2. ⛔ **`ds-025` IS PART-FALSIFIED, AND THE SCOPE MATTERS:** the **conversation** half is observable
+   and free. The **boot / system-prompt / tool-schema** half is **NOT in this file** — no `system`
+   record type exists in it — so **`ds-025` item 1 (boot never measured in 36 sessions) STANDS.**
+   ⚠ Do not read this as "ds-025 is dead."
+3. ⛔ **EVERY "disk half" READING THIS PROJECT HAS PUBLISHED MASSIVELY UNDERSTATES.** This session's
+   own disk half was **42,342 tape = 6.9%** of the measured conversation figure. **Ten consecutive
+   sessions reported the disk half as though it were the reading.**
+4. ⛔ **THE BANDS ARE UNTRUSTWORTHY IN BOTH DENOMINATORS AND NEITHER READING SHOULD BE ACTED ON:**
+   307% against the legacy 200,000, **61% against a 1M window** — and Dave's ruled RED of 60 was
+   calibrated against the legacy figure, where it meant ~120,000 tape absolute, not ~600,000.
+   ⇒ **The percentage is meaningless until D1 and the boot measurement land. The ABSOLUTE figure is
+   the only honest one, which is exactly what D2 (c) ruled.**
+
+★ **THE INSTRUMENT'S FIRST RUN DISCONFIRMED THE PREMISE IT WAS BUILT TO TEST**, which is the whole
+argument for building it rather than reasoning about it — and it is the answer to the priming
+objection above: Dave asked for a gauge so he could *correlate*, and the first reading says the
+thing he was correlating against was never a real number.
+
+### ⬛ WRAP RESERVE — FIRST MEASUREMENT, n=2, AND IT IS A FLOOR NOT A COST
+
+D3's amber needs it and nothing had measured it. From `git log`, tape ADDED to
+`GOOD-MORNING.md` + `_LIVE-STATE.md` + this ledger by a wrap commit:
+**#50 `905f1a36` +8,938 tape · #38 `f72a9102` +9,011 tape** ⇒ **mean 8,974 tape, the two agreeing
+within 0.8%.** ⚠ **n=2, and it is the tape WRITTEN, not the window a wrap CONSUMES** — writing 9,000
+tape requires reading the regions edited, running the gate and committing. **The full wrap cost is
+≥ 8,974 tape and is NOT yet measured.** Naming the unit rather than converting it
+[[measure-dont-convert-units]].
+
+### ⚠ ERRORS
+
+1. ⛔ **CAUGHT BY DAVE — the subagent-vs-parallel answer was in `MODEL-ROUTING.md` all along, and three sessions gave contradictory advice instead of quoting it.** *"I've been advised differently in 3 different sessions and the advice has been contradictory."* ★ **The failure was not ignorance of the file; it was reaching for reasoning where retrieval was available** — the standing RETRIEVAL-FIRST rule, missed.
+2. ⛔ **CAUGHT BY DAVE — a tension was attributed to him that was never his.** The pack's predecessor framed *"more machinery"* vs *"more windows"* as Dave-vs-Dave; he corrected it: *"This isn't me, I've been advised differently in 3 different sessions."* ★ **An agent's own inconsistency, mis-filed as the user's ambivalence** — and it would have been inscribed as a standing tension had he not said so.
+
+**status:** ruled (all 22, Dave live, via the decision pack's own export — this entry) · observed
+(all tape figures `tiktoken cl100k` this window; render assertions from Playwright at three widths)
+· **proxy warning: every `tape` figure here is `cl100k`, which D1 now rules unverified** ·
+provenance: session #52 · 2026-07-30

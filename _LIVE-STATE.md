@@ -11,7 +11,7 @@ mis-dated itself a day forward; commit timestamps caught it).*
 half of the state machine, Dave's ask 2026-07-18) · **`_DECISION-HISTORY/`** — dated per-thread
 narrative, relocated verbatim (how we got here; see its README for the rules + RESURRECT tags).*
 
-*Last refreshed: 2026-07-30 (Thu #51 — open 25 CLOSED: `BARE_TOKEN_RE` enforces ds-021's unit rule on GM's `size:` stamp, 7 controls + 3 mutants; ★★ the self-bite control fired and was RIGHT — a gate must QUOTE what it forbids, so USE vs MENTION is unreachable by syntax and only SCOPE makes such a check safe; ⛔ the missing unit word had left `SIZE_A_RE` DARK, matching nothing while its silence read as nothing-to-check; discharged by ADDITION, +2 tape, both units measured first) · Previous: #50 (the `size:` line cut 808→399 tape, every cut proved by a homing probe first; the line's self-measurement had drifted 18% and `CHAIN_STAMP_RE` cannot see a self-reference ⇒ open 24)*
+*Last refreshed: 2026-07-30 (Thu #52 — 22 of 24 live opens RULED via the decision pack; ★★ `ds-025` PART-falsified, the live transcript IS sandbox-readable and the conversation half measures 613,386 tape, boot half still unmeasured; ⛔ `DEFAULT_WINDOW = 200_000` falsified by existence proof at 307%; ★★ D3's amber is `60 − wrap_reserve`, derived not constant, and collapses into D9) · Previous: #51 (open 25 CLOSED, `BARE_TOKEN_RE`; a gate must QUOTE what it forbids, so USE vs MENTION is unreachable by syntax)*
 *(Previous: 2026-07-29 #43 — present-but-unkeyed ruled a FILING ERROR, scoped; one key enacted `cd75caf`.)*
 *(⚠ **MOVED INTO THE HEADER ZONE, #35.** The wrap gate's `"Last refreshed" is not today` check reads only the first 40 lines — where this line did not live. It had been passing on dates inside the LANES section, so on #34 it could not have failed even with a stale stamp. Moved so the check tests what it is named after.)*
 
@@ -46,7 +46,22 @@ Entry point: `notes/2026-07-26-memento-dream-pass-scope-v2.md` (three shapes: Co
 **Status (2026-07-26 evening, ruling session): DAVE RULED THE DREAM — P1–P5+P7+P8 accept-enact-now (ENACTED), P6 deferred to its own session (parked `_FUTURE-STATE.md`), rejections: none; S-D1 schedule EARNED (`memento-dream-pass` weekly, Sun 07:10, per A-D2) · S-D2 lane flag (`--wrap --lane`) + S-D3 stdout-only wrap BUILT + bite-tested — both wrap-gate warts CLOSED.** Full rulings + WHY + enactment receipt: `notes/_MEMENTO-DECISIONS.md`. Headline enactments on main-queue surfaces (by ruling, per proposal): `_LIVE-STATE-ARCHIVE.md` (this file 205KB→62KB, ritual step 2d) · `knowledge/_git_commit.sh` + runbook · render-verify runbook fold · GM count/tuner/ds-010 lines · `_FUTURE-STATE` corrections. **Lane is now STEADY-STATE: the weekly task dreams; Dave rules; sessions enact.** Owed unchanged: convergence `-v2` (blocked on re-attach) · D6 before any Shape C. ⚠ `ec4c2f3` was UNPUSHED at this session's start — push the whole stack via Desktop.
 **Status (2026-07-26 evening, weekly-run session): SECOND DREAM PASS RUN + RULED SAME SESSION — V2-P1–P4 ENACTED, V2-P5 HELD.** Pass ran cold per the lane checklist (Fable conductor + 1 Opus dreamer, repo-first forensics); 5 proposals → `notes/_dream/2026-07-26-proposals-v2.md` (commit `d777aaa`, 4/4 conductor spot-checks held). Dave ruled in plain language same session: V2-P1 six 07-24 chart deferrals RESTORED to GM §C·2 as **17–22** + compaction EXIT CHECK in ritual 2c/2d · V2-P2 emitter determinism FIXED (7 `sorted()` sites, 4 scripts; advisory 6/6 identical under random hash, §C·4 line closed; dated-banner mentions left historical) · V2-P3 ds-011 logged (G/H/N advisory promotions + triggers, incl. WCAG 2.4.1 Level A ×5 screens) · V2-P4 `_REVIEW-SIGNOFF.md` fed 4 strands (legend v5.x · tuner v1+v2 · hit-area rule brief · 5 chart panes) + ritual step-1 feed-the-register clause. **V2-P5(a) ENACTED same session — Dave re-attached the note; saved verbatim to `notes/2026-07-26-convergence-anthropic-dreaming.md` (+fields, gate 0 fail); the three-session blocker is DEAD.** V2-P5(b) (runbook save-uploads clause) pencilled, awaits his word. Ledger rows V2-P1–P5 in `notes/_MEMENTO-DECISIONS.md`. Build 55/55 GREEN post-enactment. **Continuation same session (Dave: "love your work continue"): V2-P5(b) ENACTED (save-cited-uploads clause, ritual step 1; read as the yes, vetoable) + convergence `-v2` WRITTEN** — `notes/2026-07-26-convergence-anthropic-dreaming-v2.md` (Opus worker + Fable 4/4 spot-check incl. independent transcript grep; supersedes v1 in-part, v1 stays as filed; §3-verification fixes + databases-Q&A recorded OWED in its §7). **Lane's owed list — CORRECTED 2026-07-28 #22 (dream-pass-3 P4a; the 07-26 'only' was false within a day): the ledger `notes/_MEMENTO-DECISIONS.md` is the owed list's home, never this line — at correction time it held: M12's first unattended Sunday fire (08-02 07:10; M11 CLOSED #21 `0ee1634`) · D6 (Dave, before Shape C) · `-v2`'s §7 leftovers · the #21 dreamer hunt-list follow-ons.** **S-D4 (same evening): conductor sequence inscribed → `knowledge/_RUNBOOK-dream-pass.md`; Cowork skill `dream-pass` + the weekly task prompt are thin pointers to it — "run dream pass" is now the whole invocation.**
 
-## ⏱ LATEST DELTA — 2026-07-30 (Thu **#51**, OPUS solo, Dave live, "reduced #51 — gate only" by instruction — ★★ **OPEN 25 CLOSED: `BARE_TOKEN_RE` BUILT, PROVED SEVEN WAYS AND MUTATION-TESTED** · ★★ **A GATE MUST QUOTE WHAT IT FORBIDS — USE vs MENTION IS UNREACHABLE BY SYNTAX** · ⛔ **ONE MISSING WORD HAD LEFT `SIZE_A_RE` DARK**)
+## ⏱ LATEST DELTA — 2026-07-30 (Thu **#52**, OPUS solo, Dave live, decision-pack by instruction — ★★ **22 RULINGS IN ONE PASS** · ★★ **THE TRANSCRIPT IS SANDBOX-READABLE: `ds-025` PART-FALSIFIED** · ⛔ **`DEFAULT_WINDOW = 200_000` FALSIFIED BY EXISTENCE PROOF**)
+
+> ⚠ **STATE LINES ONLY — narrative is in `GOOD-MORNING.md`'s ★ LATEST banner, verbatim, same commit.**
+
+- **✅ 22 of 24 live opens RULED** via `reviews/MEMENTO-DECISION-PACK-2026-07-30-v1.html`. Rulings + WHY → `notes/_MEMENTO-DECISIONS.md` § ★★ #52. **§C·4 NOT yet cut — deliberate: the home is written, the cut is the second motion.**
+- **★★ `ds-025` PART-FALSIFIED.** Live transcript readable at `.claude/projects/<project>/<sessionId>.jsonl`; measurable in-sandbox, never loaded ⇒ free. **Conversation half 613,386 tape (`cl100k`).** ⚠ THROUGHPUT not fill; no-compaction DECLARED not verified. ⚠ **Boot half has no record type there ⇒ `ds-025` item 1 STANDS.** Corrected at source.
+- **⛔ `DEFAULT_WINDOW = 200_000` falsified by existence proof — 613,386 tape = 307% of it, session still working.** ⇒ D2's premise demonstrated. ⚠ Neither percentage is actionable until D1 + the boot land.
+- **★★ D3's amber is `60 − wrap_reserve` — DERIVED, not a constant — and is the SAME mechanism as D9.** One build item.
+- **⬛ WRAP RESERVE, first measurement, n=2: 8,938 / 9,011 tape (mean 8,974).** ⚠ tape WRITTEN, not window CONSUMED; full cost ≥8,974, unmeasured.
+- **⬛ NEW, Dave's: the CHECK-IN mechanism** — on-demand "how hot are we". ~30 lines. Not built.
+- **⬛ D4's licence SCOPED: pressure, not promotion.** Canon stays Dave's.
+- **⛔ ERRORS: 3 — 1 self-caught (a `move` with `"end":"EOF"` took 524 lines incl. the whole LS body; caught by the mover receipt, reverted SCOPED per the runbook, never the bulk form), 2 caught by Dave (both RETRIEVAL-FIRST failures).**
+- **⛔ 2f NOT RUN — open 7; `ds-022` FAILS, DECLARED.** ⚠ **D5 (a) now rules the chronological contract RELAXED — that is the unblock, and it is UNENACTED.**
+- **TREE STATE.** `_git_commit.sh --reconciled`, paths named. Dave pushes via **GitHub Desktop only**.
+
+## ⏱ PRIOR DELTA — 2026-07-30 (Thu **#51**, OPUS solo, Dave live, "reduced #51 — gate only" by instruction — ★★ **OPEN 25 CLOSED: `BARE_TOKEN_RE` BUILT, PROVED SEVEN WAYS AND MUTATION-TESTED** · ★★ **A GATE MUST QUOTE WHAT IT FORBIDS — USE vs MENTION IS UNREACHABLE BY SYNTAX** · ⛔ **ONE MISSING WORD HAD LEFT `SIZE_A_RE` DARK**)
 
 > ⚠ **STATE LINES ONLY — narrative is in `GOOD-MORNING.md`'s ★ LATEST banner, verbatim, same commit.**
 
@@ -79,24 +94,6 @@ Entry point: `notes/2026-07-26-memento-dream-pass-scope-v2.md` (three shapes: Co
 - **⚠ ERRORS: 2 — TWENTY-THIRD consecutive, both self-caught.** (1) gauge figure briefly accepted as a measurement. (2) `Edit` at a MISSPELLED path with placeholder content — failed closed. **A tool erroring is not a control.**
 - **⚠ EXIT CHECK TWELFTH consecutive, cleared both rolls** (2c #48 banner 11 ln · 2d #47 delta 14 ln). **⛔ 2f NOT RUN — open 7; `ds-022` FAILS, DECLARED. Stack ELEVEN.**
 - **⚠ #49's delta says the chain measured 5,159 tape; it measured 4,810 at this session's open.** 349 apart, unexplained, not chased.
-- **TREE STATE.** `_git_commit.sh --reconciled`, paths named. Dave pushes via **GitHub Desktop only**. ⚠ `mv` stray `.git/*.lock` BEFORE git; the clear is the LAST git action.
-
-
----
-
-## ⏱ PRIOR DELTA — 2026-07-30 (Thu **#49**, OPUS solo, Dave live, "bite 3 only, then stop" by instruction — ★★ **OPEN 15 CLOSED: THE CHAIN FIGURE IS ASSERTED, AGAINST THE FILE** · ★★ **THE POSITIVE CONTROL FOUND THE FIXTURE GENERATOR MINTING THE RETIRED FORM SINCE #34** · ⛔ **#48's BUILD-TIMING CLAIM IS FALSIFIED — VERIFIED BY CALL GRAPH, AND SAID SO**)
-
-> ⚠ **STATE LINES ONLY — narrative is in `GOOD-MORNING.md`'s ★ LATEST banner, verbatim, same commit.**
-
-- **✅ open 15 CLOSED.** `CHAIN_STAMP_RE` in `_capture_gate.py`, checked in `check_budgets`' `size:` stamp block against `chain_file_tk` (the FILE). Refusal REPORTS the live measurement; UNKNOWN never defaulted to the slice.
-- **★ BANS PRESENCE, NOT DRIFT** — a drift check passes at the moment of writing. ⛔ FAIL-vs-WARN tier agent-picked, stated in the message, **awaiting Dave**.
-- **★★ FINDING: `_gm_fixture` stamped `chain {tk}K tape` by default since #34**, with the GM figure under a `chain` label ⇒ fifteen sessions of green controls blessed the retired form. #45's probe saw occurrences, not the generator.
-- **★ SCOPE control + revert control both PROVED.** Neuter the regex ⇒ 4 open-15 fails; restore ⇒ 0. GM:488's true stratum string passes clean.
-- **⛔ BUILD NOT RUN — 1–25 alone blew the 44s cap.** Call-graph verification instead: one consumer outside the file (`_gm_move.py:462`, selftest green); steps 51/52/174/176/178 rc=0. **MY COMPOSITION, not the build's verdict.**
-- **⚠ EXIT CHECK ELEVENTH consecutive, cleared both rolls** (2c #47 banner 8 ln · 2d #46 delta 15 ln). **⛔ 2f NOT RUN — open 7; `ds-022` FAILS, DECLARED. Stack TEN.**
-- **⚠ ERRORS: 2 — TWENTY-SECOND consecutive, both self-caught.** (1) `git stash push` reached for to measure what the record already stated; did not take, tree untouched. (2) ⛔ **hand-stamped an UNMEASURED gauge figure into the banner** (`~38% · 21,480`) before measuring it (`48.6% · 26,971`) — **the exact class `CHAIN_STAMP_RE` was built this window to refuse.** Caught by the measure step.
-- **⚠ GAUGE 🟡 AMBER ~48.6% (×1.57) · ~65% 🔴 at #41's 2.11×.** Disk reads **MEASURED 26,971 tape**; baseline 35,000 is the gauge DEFAULT, **UNPROVEN** (`ds-025`). Quota, not window, was the binding throttle: 77% shared / 82% Fable at the opener.
-- **⚠ CHAIN MEASURED 5,159 tape vs 4,917 warn = +242 (+4.9%)** — #48's stamp says "~1% over". ADVISORY. Perishable: measure, never quote.
 - **TREE STATE.** `_git_commit.sh --reconciled`, paths named. Dave pushes via **GitHub Desktop only**. ⚠ `mv` stray `.git/*.lock` BEFORE git; the clear is the LAST git action.
 
 
