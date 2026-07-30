@@ -81,10 +81,44 @@ FOOTER = """
 
 ---
 
-*(Chain ends. **{chain_tk:,} tape** — the contract price, measured by the same function that
-generated this file. `GOOD-MORNING.md` is {gm_tk:,} tape and stays whole for retrieval; you have
-paid for {chain_pct:.0f}% of it and that is the intended figure, not a shortfall.)*
+*(Chain ends. **{file_tk:,} tape — the unit is THE WHOLE FILE**, this generated wrapper included:
+the number in this sentence is the size of the file containing it, held exact by a fixed point.
+`GOOD-MORNING.md` is {gm_tk:,} tape and stays whole for retrieval; you have paid for
+{chain_pct:.0f}% of it, and that is the intended figure, not a shortfall.)*
 """
+
+# ⚠ #47 — THE COST ASYMMETRY, AND IT DECIDES WHERE PROSE GOES IN THIS MODULE.
+# Comments in this `.py` are read by whoever maintains the generator: a handful of times, by
+# choice. Text inside `BANNER` / `FOOTER` is read by EVERY cold session, forever, and is charged
+# against the cap those sessions are trying to stay under. ⇒ **be generous here, miserly there.**
+# ★ Measured, this session: the first draft of the re-pointed footer explained the ruling, the
+# unit change and the history in the FILE. It cost **+107 tape on every future cold read** — the
+# fix growing the region it exists to govern ([[gate-inside-the-growth-loop]]), caught only
+# because the fixed point now reports slice-vs-wrapper separately. The narration moved to the
+# banner and the ledger, where it is retrieval and nobody pays for it at boot. What stayed in the
+# footer is the one thing a cold reader cannot get elsewhere: WHICH UNIT THE NUMBER IS IN.
+# ⚠ A transitional note ("the old figure was the slice") was drafted here and REMOVED for the
+# same reason — it is a claim with an expiry date, sited in the most expensive text in the repo.
+
+# ★ #47 — HOW MANY TIMES `build()` MAY RE-RENDER BEFORE IT REFUSES.
+# The footer publishes the size of the file the footer is inside, so the figure is SELF-
+# REFERENTIAL and cannot be written in one pass. #46 named the problem without seeing it was a
+# blocker: *"a self-referential delta cannot be written before the edit that changes it."*
+# The resolution is a fixed point — render, measure the WHOLE text, re-render with that number,
+# repeat until the stamped figure equals the measured one. It converges on pass 2 or 3 whenever
+# the digit count is stable, which it is either side of a comma boundary.
+# ⚠ NOTHING THAT VARIES PER PASS MAY APPEAR IN `FOOTER`. The first draft of this stamped the pass
+# COUNT into the file — which changes the text on every pass, so the thing being measured moved
+# with the measurement and convergence was never guaranteed. The pass count is reported in the
+# `detail` string instead, where it is observable without being self-referential. ★ The general
+# rule, and it is the whole reason a fixed point works here: the ONLY per-pass variable in the
+# rendered text is the figure itself.
+# ⚠ IT CAN OSCILLATE. Crossing a width boundary (999→1,000) changes the rendered length, which
+# can change the measurement back. That is a 2-cycle, and this module REFUSES a 2-cycle rather
+# than picking the prettier half — same posture as every other failure path here. A stamp that
+# silently picked one end of an oscillation would be exactly the "confident blank" the module
+# docstring refuses, wearing a number instead of a blank.
+MAX_FIXED_POINT_PASSES = 8
 
 
 def build(repo=ROOT):
@@ -111,8 +145,8 @@ def build(repo=ROOT):
         return None, how
 
     gm_tk = cg.measure_tokens(gm_text)[0]
-    chain_tk, chain_detail = cg.read_chain_tk(repo, gm_lines)
-    if chain_tk is None:
+    slice_tk, chain_detail = cg.read_chain_tk(repo, gm_lines)
+    if slice_tk is None:
         return None, chain_detail
 
     body = gm_part if delta is None else gm_part + "\n\n---\n\n" + delta
@@ -120,9 +154,37 @@ def build(repo=ROOT):
     # line counts or character lengths. A COUNT IS NOT A MEASUREMENT — the standing lesson.
     gm_part_tk = cg.measure_tokens(gm_part)[0]
     head = BANNER.format(gm_tk=gm_tk, gm_pct=100.0 * (gm_tk - gm_part_tk) / gm_tk if gm_tk else 0.0)
-    foot = FOOTER.format(chain_tk=chain_tk, gm_tk=gm_tk,
-                         chain_pct=100.0 * chain_tk / gm_tk if gm_tk else 0.0)
-    return head + "\n" + body + foot, chain_detail
+
+    def render(file_tk):
+        foot = FOOTER.format(file_tk=file_tk, gm_tk=gm_tk,
+                             chain_pct=100.0 * file_tk / gm_tk if gm_tk else 0.0)
+        return head + "\n" + body + foot
+
+    # ---- THE FIXED POINT (#47, Dave's ruling on open 16 (a)+(c)).
+    # Seeded from the SLICE, which is a strict LOWER BOUND: the wrapper only ever adds text, so
+    # the first render can never overshoot. Each pass stamps the previous measurement and
+    # re-measures the whole rendered file; convergence is the stamped figure EQUALLING the
+    # measured one, which is the only state in which the sentence in the footer is true.
+    guess, seen = slice_tk, {}
+    for n in range(1, MAX_FIXED_POINT_PASSES + 1):
+        text = render(guess)
+        measured = cg.measure_tokens(text)[0]
+        if measured == guess:
+            return text, (f"{chain_detail} · FILE {measured:,} tape = slice {slice_tk:,} + "
+                          f"wrapper {measured - slice_tk:,} · fixed point in {n} pass(es)")
+        if measured in seen:
+            # ⚠ A 2-cycle. REFUSE — do not pick the prettier end. Both ends are false: whichever
+            # is stamped, the file's real size is the other one. This is the "cheerful zero"
+            # class wearing a plausible number, and it is worse than a blank because it looks
+            # measured. The remedy is a width-stable footer, and it is a code fix, not a retry.
+            return None, (f"_CHAIN.md figure does NOT converge — it oscillates between "
+                          f"{measured:,} and {guess:,} tape (pass {seen[measured]} vs {n}). The "
+                          f"footer's rendered width changes with the figure it publishes. Chain "
+                          f"NOT generated: a stamp picked from one end of an oscillation is a "
+                          f"confident wrong number, which is worse than no file.")
+        seen[measured], guess = n, measured
+    return None, (f"_CHAIN.md figure did not settle in {MAX_FIXED_POINT_PASSES} passes "
+                  f"(last {guess:,} tape). Chain NOT generated, not stamped with a guess.")
 
 
 def write(repo=ROOT):
@@ -199,8 +261,18 @@ def selftest():
         out_tk = cg.measure_tokens(text)[0]
         bite(f"is materially smaller than GOOD-MORNING.md ({out_tk:,} vs {gm_tk:,} tape, <40%)",
              out_tk < 0.40 * gm_tk)
-        bite("published chain figure is the gate's own measurement, not a re-derivation",
-             f"{chain_tk:,} tape" in text)
+        # ★ #47 — RE-POINTED from the SLICE to the FILE, and STRENGTHENED while it was open.
+        # The old bite asserted only that *a* measurement appeared in the text, which the slice
+        # figure satisfied for three sessions while the file went unmeasured — the bite passed
+        # throughout the defect open 16 records. This asserts the FIXED-POINT INVARIANT instead:
+        # the stamped figure IS the size of the file it is stamped in. That is a property no
+        # hand-maintained stamp can hold, and it is the whole point of the re-point.
+        bite("STAMP IS EXACT — the published figure equals this file's own measured size",
+             f"**{cg.measure_tokens(text)[0]:,} tape" in text)
+        bite("published figure is the FILE, not the slice — the two differ and the file is bigger",
+             cg.measure_tokens(text)[0] > chain_tk and f"**{chain_tk:,} tape" not in text)
+        bite("footer NAMES THE UNIT — a bare token count is a defect (ds-021)",
+             "the unit is THE WHOLE FILE" in text and "wrapper included" in text)
         bite("says GENERATED / DO-NOT-HAND-EDIT at the very top (line 1)",
              text.splitlines()[0].lstrip().startswith("<!-- GENERATED"))
         bite("tells the reader NOT to open GOOD-MORNING.md to check",

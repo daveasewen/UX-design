@@ -66,6 +66,7 @@
 
 ---
 
-*(Chain ends. **4,460 tape** — the contract price, measured by the same function that
-generated this file. `GOOD-MORNING.md` is 29,758 tape and stays whole for retrieval; you have
-paid for 15% of it and that is the intended figure, not a shortfall.)*
+*(Chain ends. **4,878 tape — the unit is THE WHOLE FILE**, this generated wrapper included:
+the number in this sentence is the size of the file containing it, held exact by a fixed point.
+`GOOD-MORNING.md` is 29,758 tape and stays whole for retrieval; you have paid for
+16% of it, and that is the intended figure, not a shortfall.)*
