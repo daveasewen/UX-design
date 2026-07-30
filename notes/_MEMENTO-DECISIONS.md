@@ -836,6 +836,76 @@ surgical replacement with a `count == 1` assertion, every figure measured by the
 tokenizer, `tiktoken` installed and verified before the first measurement. Reading the 26,914-tape
 file to change two lines of it would have been the exact overspend the chain file exists to stop.
 
+## ★ #51 — THE GATE MUST QUOTE WHAT IT FORBIDS, AND ONE MISSING WORD HAD LEFT A NEIGHBOURING CHECK DARK — 2026-07-30 (Opus solo, Dave live, "reduced #51 — gate only" by instruction)
+
+**Narrative + full arc: `_DECISION-HISTORY/2026-07-30-the-gate-that-must-quote-what-it-forbids.md`.**
+This section holds the rulings and the WHY; the dossier holds how the thinking moved.
+
+**Dave's instruction this window.** Quota given at the opener (**78% shared, 82% Fable**, 10h39 to
+reset) — the same reading #50 recorded, 3½ hours and six commits earlier, **unreconciled and named
+as such** rather than rounded away. Offered four lanes; he picked **reduced #51 — the gate only**,
+skipping both the mnemonic cut and open 24. The reduction was made to protect the wrap, on the
+measured precedent that the wrap is what runs dry.
+
+**★ RULED — a syntactic ban cannot distinguish USE from MENTION, and cleverness cannot fix it.**
+The self-bite control fired on its first run and was CORRECT: the warn quotes the offending figure
+because bite 2 requires it to, so the message is necessarily a member of the class it polices. The
+available green was to launder the message — which would have satisfied the control by breaking the
+bite above it, a false fix that reads as a pass. **What makes such a check safe is SCOPE, never
+syntax:** it reads `stamp.group(1)` and nothing else, so its own output is unreachable by
+construction. ⇒ The control was replaced by (a) an INVERTED bite — the message must STILL contain a
+matchable figure, so a future "fix" deleting the quotation fails instead of reading green — and
+(b) the real property: the gate's own words, pasted into a stamp, SHOULD flag, because an exemption
+for the gate's own prose is how a rule stops applying to the thing that wrote it.
+⬛ **This is why open 24 stayed untouched.** The same argument says a self-measurement ban bites the
+sentence carrying it, and scope cannot save that one — the sentence IS in scope. Open 24 is HARDER
+than open 23, not easier, and #50's warning was right.
+
+**★★ FOUND — the missing unit word had DISARMED an existing check.** `SIZE_A_RE` requires a unit
+after the §A figure (`§A …K (tape|tk)`); GM's stamp carried `§A **4.2K (EXEMPT)**` with none, so
+**the §A stamp validation has been dark**, matching nothing, its silence reading as "nothing to
+check" rather than "cannot fire" [[unmatched-grep-is-not-an-absence]] [[silent-lookup-failure-class]].
+⇒ A bare figure is not only a readability defect; it can silently unarm a neighbour. This is the
+argument for the tier being WARN-and-discharged rather than left to accumulate.
+
+**RULED — the tier is WARN, declared and Dave's to re-dial.** It fired on INHERITED record the day
+it was built (2 figures). A FAIL would have blocked the wrap and forced live edits to inherited
+record under wrap pressure — the motion [[gate-inside-the-growth-loop]] warns about.
+
+**RULED — discharge was BY ADDITION, both units MEASURED first.** §A 4,208 tape · corpus 58,658
+tape, so `tape` was PROVEN, not copied from the neighbouring field [[measuring-tool-must-not-guess]].
+Two words, **+2 tape**, nothing cut, no figure changed. `SIZE_A_RE` now matches.
+
+**★ RULED — never invent a surface to satisfy a spec.** The spec said "GM/LS"; measured,
+`_LIVE-STATE.md` carries NO `size:` stamp. The check is GM-scoped **because that is where the stamp
+is**, not because LS was judged exempt, and the comment carries the re-point trigger. Widening into
+LS body prose to match a sentence would have forged defects out of true dated records — the
+`GOOD-MORNING.md:488` lesson [[gate-narrows-its-own-rule]].
+
+**RULED — the `K` narrowing is INHERITED KNOWINGLY and PINNED IN THE SUITE.** A bare `4,917` still
+passes; that is open 23, declared, not a new hole. Bite 6 asserts it, so **widening the regex trips
+a bite instead of silently changing the check's scope** [[gate-glob-scope-rule]].
+
+**PROOF — the green is not vacuous.** Seven controls, then THREE MUTANTS, each caught: a dead check
+· the lookahead deleted · the `K` requirement dropped. A suite that has never been made to fail is
+an assertion, not a proof.
+
+**⚠ NAMED, NOT CHASED — `_CHAIN.md` measured 5,043 tape at this session's open, +126 OVER its 4,917
+warn, while #50's banner leads with "4,401 tape = 516 UNDER".** #50's own text says the relief was
+spent, so the claim was true when written and nothing ever flipped to chase it
+[[assertion-propagation-gap]]. Left for Dave: the remedy is a cut, and a cut is not made in the same
+motion as the finding [[home-by-addition-then-cut]].
+
+**⚠ ERRORS: 2 — TWENTY-FOURTH consecutive, both self-caught.** (1) control 4(b) pasted `msg[:80]`,
+a slice stopping BEFORE the quoted figure, so it failed for a reason unrelated to the property under
+test — **a control that tests the wrong string is not a control** [[attribute-the-diff]]. (2) an
+f-string with a conditional in its replacement field; caught by the interpreter, recorded because
+the count is kept honestly rather than filtered for interest.
+
+**Method note.** `GOOD-MORNING.md` was **never opened**. The two-word discharge went through a
+`count == 1` assertion in tooling, because `Read` cannot read less than a file and opening GM to
+change two words costs its full 40,410 tape.
+
 ## ★ #50 — THE FATTEST LINE IN THE CHAIN CLAIMED ITS OWN SIZE, AND THE CLAIM HAD DRIFTED 18% — 2026-07-30 (Opus solo, Dave live, "I lean to safety" by instruction)
 
 **Narrative + full arc: `_DECISION-HISTORY/2026-07-30-the-line-that-measured-itself-wrong.md`.**

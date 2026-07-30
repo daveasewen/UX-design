@@ -425,6 +425,45 @@ SIZE_TOLERANCE = 0.10      # a stamp is a claim about a measurable thing; 10% dr
 CHAIN_STAMP_RE = re.compile(r"(?<![A-Za-z])_?CHAIN(?:\.md)?\b\D{0,12}?([\d.]+)\s*K\s*(tape|tk)\b",
                             re.I)
 
+# ---------------------------------------------------------------- open 25, built 2026-07-30 #51
+# `BARE_TOKEN_RE` — ds-021's rule finally gets an enforcer instead of a sentence.
+#
+# THE RULE IT ENFORCES is already canon and already stated in two places that cannot check it:
+# `tape` is what tiktoken counts, `bill` is what the window charges, and **a figure with no unit
+# word beside it is a defect** because a reader quotes it without re-measuring. `:2342` already
+# bites exactly this for the M10 note (`"a bare token count is a defect"`) — one hand-placed
+# check on one line. This generalises it to the `size:` stamp, which ds-021 calls the THIRD home
+# and the worst place for an unnamed unit (`:1046`). It is `ds-024`'s class discharged: a rule
+# that lived only as prose in `_RUNBOOK-context-gauge.md` now ships with a reader.
+#
+# ⚠ WARN, NOT FAIL, AND THE TIER IS DECLARED. On the day it was built it fired TWICE on the
+# INHERITED stamp (`§A **4.2K (EXEMPT)**`, `corpus **58.7K**`). A FAIL would have blocked the
+# wrap and forced same-session edits to inherited record under time pressure — the exact motion
+# [[gate-inside-the-growth-loop]] warns about, where a cap firing after the writing is paid in
+# live record. WARN reports; Dave rules the tier. ⬛ HIS to re-dial, like every tier here.
+#
+# ⚠ `K` IS REQUIRED, AND THAT NARROWING IS OPEN 23's, INHERITED KNOWINGLY. `SIZE_TK_RE` and
+# `SIZE_A_RE` both require it and open 23 already records that `CHAIN_STAMP_RE` "catches only the
+# `K` form". Requiring it here is what keeps the check off `#50`, `2026-07-30`, `18%` and `11 ln`
+# without an exclusion list nobody can maintain — a scope control that is structural rather than
+# enumerated ([[scope-blindness-gate-vocabulary]]: normalise once, don't enumerate). The cost is
+# stated plainly: a bare `4,917` in the stamp would pass. That is open 23, not a new hole.
+#
+# ⚠ SCOPED TO GM's `size:` STAMP — and the spec said "GM/LS". MEASURED at build: `_LIVE-STATE.md`
+# carries NO `size:` stamp, so the LS half of the spec has no surface to bind to. The check is
+# GM-scoped because that is where the stamp is, not because LS was judged exempt. If LS ever
+# grows a stamp this must be re-pointed. **Report the measurement, never prescribe the region**
+# [[gate-narrows-its-own-rule]] — and never invent a surface to satisfy a spec.
+#
+# ⚠ IT IS NOT OPEN 24 AND MUST NOT BE READ AS IT. Open 24 is a ban on a line MEASURING ITSELF;
+# that ban bites the sentence that carries it, which is why #51 left it alone on Dave's warning.
+# This one never judges its own output: the scope is the stamp, and the warning text lives in the
+# gate. The self-bite control in `selftest_bare_token` asserts that, rather than assuming it.
+BARE_TOKEN_RE = re.compile(
+    r"(?<![#\w.])(\d[\d,]*(?:\.\d+)?\s*K)\b"
+    r"(?!\s*\**\s*(?:tape|bill|tk|tokens?|bytes?|ln|lines?)\b)", re.I)
+BARE_TOKEN_UNITS = ("tape", "bill", "tk", "tokens", "bytes", "ln", "lines")
+
 # ---------------------------------------------------------------- M-set, ruled 2026-07-27 #17
 # `notes/_MEMENTO-DECISIONS.md` § ★ M-SET · brief `notes/_briefs/2026-07-27-memento-hardening-brief.md`.
 # Three regions that the D7 amendment measured and PUBLISHED but never budgeted. Publishing a
@@ -1088,6 +1127,29 @@ def check_budgets(repo):
                 f"each caught this by hand, which is a behaviour doing a mechanism's job. "
                 f"The FAIL tier is agent-picked and awaiting Dave; the retirement is not. "
                 f"— ritual step 2, open 15")
+
+        # ---- open 25 (#51): ds-021's unit rule, enforced. A figure in the stamp with no unit
+        # word beside it cannot be quoted safely, because `tape` and `bill` are different
+        # quantities and the stamp is the surface readers quote WITHOUT re-measuring (ds-021's
+        # "third home", `:1046` above). The remedy is ADDITION — name the unit — never a cut,
+        # so this warn can be discharged without touching a single figure [[home-by-addition]].
+        bare = [m.group(1).strip() for m in BARE_TOKEN_RE.finditer(stamp.group(1))]
+        if bare:
+            warns.append(
+                f"GOOD-MORNING.md `size:` stamp carries {len(bare)} figure(s) with NO unit word "
+                f"beside them: {', '.join(repr(b) for b in bare)}. ds-021 canon is `tape` (what "
+                f"tiktoken counts) beside `bill` (what the window charges) — a bare count leaves "
+                f"the reader to guess which, and the stamp is the one surface quoted without "
+                f"re-measuring. REMEDY IS ADDITION: write the unit after the figure "
+                f"(`{bare[0]} tape`); nothing needs cutting and no figure needs changing. "
+                f"⚠ MEASURE before you name the unit — do not copy the neighbouring figure's "
+                f"word on the assumption it is the same quantity. Accepted unit words: "
+                f"{', '.join('`%s`' % u for u in BARE_TOKEN_UNITS)}. "
+                f"⬛ WARN not FAIL, and the tier is agent-picked and awaiting Dave: this fired on "
+                f"INHERITED record the day it was built, and a block would have forced live edits "
+                f"to that record under wrap pressure. ⚠ `K` is REQUIRED to match, so a bare "
+                f"`4,917` still passes — that is open 23's limitation, declared, not a new hole. "
+                f"— ritual step 2, open 25")
 
     # ---- ds-021: the cap BINDS ON BILL. Both numbers are reported, the unit is named on each.
     # ⚠ Today this is arithmetically identical to binding on tape, BY DESIGN — the ruling says
@@ -2066,6 +2128,124 @@ def _warns_for(td, **kw):
     return f_, w_, n_
 
 
+def selftest_bare_token():
+    """open 25 (#51) — `BARE_TOKEN_RE` proved BOTH ways: it bites, and it stops where it should.
+
+    ★ THE POSITIVE CONTROL LEADS, on the house rule: a check that fires on everything is noise
+    and gets routed around within one wrap, and a failure-only suite reads green after a revert
+    that deletes the comparison entirely (#32's lesson, restated at `:2070`)."""
+    failures = []
+
+    def _open25(warns):
+        return [x for x in warns if "open 25" in x]
+
+    with tempfile.TemporaryDirectory() as td:
+        # ---- 1. POSITIVE CONTROL. The default fixture stamps every field in `tape` (`:2043`).
+        _f, w, _n = _warns_for(td)
+        if _open25(w):
+            failures.append(f"open 25: an ORDINARY, fully unit-named stamp warned — the check "
+                            f"fires on everything, which makes it noise. Was: {_open25(w)}")
+
+        # ---- 2. THE BITE, on the forms that were REALLY THERE. Both taken from `GOOD-MORNING.md`'s
+        # live `size:` stamp as it stood at build time (#51), not invented — the same discipline
+        # `CHAIN_STAMP_RE` uses when it takes its forms from `git log` rather than imagination.
+        for bare_form, figure in (("§A **4.2K (EXEMPT)**", "4.2K"),
+                                  ("corpus **58.7K**", "58.7K")):
+            _f, w, _n = _warns_for(
+                td, stamp=f"> **size:** GM 1.00K tape · {bare_form} · measured x")
+            hit = next(iter(_open25(w)), None)
+            if hit is None:
+                failures.append(f"open 25: the stamp form {bare_form!r} did NOT warn. This is one "
+                                f"of the two forms live in GM's stamp the day the check was built, "
+                                f"so a regex that misses it enforces nothing that was actually "
+                                f"wrong")
+            elif figure not in hit:
+                failures.append(f"open 25: the warn for {bare_form!r} does not QUOTE the offending "
+                                f"figure {figure!r}. A count is not a measurement and a gate that "
+                                f"only forbids teaches nothing — name the thing. Was: {hit}")
+            elif "ADDITION" not in hit:
+                failures.append(f"open 25: the warn for {bare_form!r} does not say the remedy is "
+                                f"ADDITION. Discharge here NEVER requires a cut, and a warn that "
+                                f"reads as 'remove something' invites the one motion "
+                                f"[[home-by-addition-then-cut]] forbids. Was: {hit}")
+
+        # ---- 3. ★★ THE SCOPE CONTROL, and it is the load-bearing bite — the GM:488 lesson
+        # generalised. GM's BODY is full of true, dated records of what things measured; a stamp
+        # ban that escaped into body prose would forge defects out of correct history. Same
+        # string, outside the stamp: must pass clean.
+        _f, w, _n = _warns_for(td, banner_extra="> - boot read the chain only (**~4.1K**, not GM's)")
+        if _open25(w):
+            failures.append(f"open 25 SCOPE: a bare figure in BANNER PROSE warned — the check has "
+                            f"escaped the `size:` stamp and is now judging body prose, which would "
+                            f"forge a defect out of GM's own true history. Was: {_open25(w)}")
+
+        # ---- 4. ★★ THE USE/MENTION CONTROL — and it is the one that taught #51 something.
+        #
+        # It was WRITTEN as a self-bite control: feed the gate's own warn text back through its own
+        # regex and assert it comes back clean, on the theory that a ban tripping on the sentence
+        # explaining it is open 23's false-positive risk in sharper form. ⛔ IT FIRED ON THE FIRST
+        # RUN, AND IT WAS RIGHT TO. The warn QUOTES the offending figure (`'58.7K'`) because bite 2
+        # above REQUIRES it to — a gate that will not name the thing it found teaches nothing. So
+        # the message necessarily contains a bare figure, and the regex cannot tell that it is
+        # MENTIONING one rather than USING one.
+        #
+        # ★ THE FINDING, and it is open 24's shape one level down: a syntactic ban cannot
+        # distinguish use from mention, so it can never be made safe by making it cleverer. What
+        # makes it safe is SCOPE — the check reads `stamp.group(1)` and nothing else, so the warn
+        # text is unreachable by construction (bite 3 proves the stopping point). ⇒ The honest test
+        # is not "is the message clean" but the two below. Laundering the message to get green here
+        # would have removed the quote and broken bite 2 — a false fix that reads as a pass.
+        _f, w, _n = _warns_for(td, stamp="> **size:** GM 1.00K tape · corpus **58.7K** · measured x")
+        msg = next(iter(_open25(w)), "")
+        # (a) INVERTED BITE. The message MUST still contain a matchable figure, because it must
+        # quote the defect. If this ever goes clean, someone has "fixed" the self-bite by deleting
+        # the quotation — which silently guts the gate's usefulness while looking like tidying.
+        if msg and not BARE_TOKEN_RE.search(msg):
+            failures.append("open 25 USE/MENTION: the warn text no longer contains the bare figure "
+                            "it is reporting. That is not the check getting safer — it means the "
+                            "quotation was removed, and a gate that will not name what it found is "
+                            "the thing bite 2 exists to prevent. Restore the quote; the safety here "
+                            "comes from SCOPE, never from laundering the message.")
+        # (b) THE REAL SAFETY PROPERTY, asserted rather than assumed: the check judges the stamp
+        # ONLY. Pasted into a stamp — the one way this text could ever reach the scope — the warn
+        # SHOULD flag, and that is correct behaviour, not a self-bite.
+        # ⚠ the window is taken AROUND the regex's own match, not off the front of the string: the
+        # first draft sliced `msg[:80]`, which stops before the quoted figure, so the paste carried
+        # no bare figure and the bite failed for a reason that had nothing to do with the property
+        # under test. A control that tests the wrong string is not a control [[attribute-the-diff]].
+        _m = BARE_TOKEN_RE.search(msg) if msg else None
+        _window = msg[max(0, _m.start() - 30):_m.end() + 2] if _m else ""
+        _f, w2, _n = _warns_for(td, stamp=f"> **size:** GM 1.00K tape · {_window} · measured x")
+        if msg and not _open25(w2):
+            failures.append("open 25 USE/MENTION: the gate's own warn text, pasted INTO a stamp, "
+                            "did not flag. The check must judge its own words by the same rule as "
+                            "anyone else's once they enter its scope — an exemption for the gate's "
+                            "own prose is how a rule stops applying to the thing that wrote it.")
+
+        # ---- 5. UNIT COVERAGE. Every accepted word must actually suppress, or the remedy the warn
+        # prescribes fails for whoever follows it — a gate that names a fix it does not honour.
+        for unit in BARE_TOKEN_UNITS:
+            _f, w, _n = _warns_for(
+                td, stamp=f"> **size:** GM 1.00K tape · corpus **58.7K {unit}** · measured x")
+            if _open25(w):
+                failures.append(f"open 25: the unit word {unit!r} did NOT suppress the warn, but "
+                                f"the warn text OFFERS it as the remedy. Following this gate's own "
+                                f"advice would leave it still firing")
+
+        # ---- 6. THE NARROWING IS PINNED, NOT JUST COMMENTED. `K` is required, so a bare `4,917`
+        # passes. That is open 23's limitation inherited knowingly, and it is asserted HERE so that
+        # widening the regex trips a bite instead of silently changing the check's scope
+        # [[gate-glob-scope-rule]]: a rule is only as wide as the thing that enforces it.
+        _f, w, _n = _warns_for(td, stamp="> **size:** GM 1.00K tape · corpus 4,917 · measured x")
+        if _open25(w):
+            failures.append("open 25 SCOPE: a bare `4,917` (no `K`) warned. That may well be an "
+                            "IMPROVEMENT — but it is a WIDENING of open 23's declared scope, and "
+                            "the comment above still tells the next reader it passes. Re-read that "
+                            "comment and open 23 before deleting this bite.")
+
+    return failures
+
+
 def selftest_gauge_continuity():
     """ds-022 (a) bites (#34). The POSITIVE case leads, deliberately: a suite that only proves
     failures reads green after a revert that deletes the comparison entirely (#32's lesson)."""
@@ -2696,6 +2876,7 @@ def selftest_index_freshness():
 
 def selftest():
     failures = (selftest_preflight() + selftest_budgets() + selftest_units()
+                + selftest_bare_token()
                 + selftest_gauge_continuity() + selftest_growth() + selftest_usage()
                 + selftest_lanes() + selftest_receipts() + selftest_index_freshness())
     with tempfile.TemporaryDirectory() as td:

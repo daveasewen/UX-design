@@ -1,5 +1,23 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
 
+<!-- batch 2026-07-30 #51 -->
+## ⏱ PRIOR DELTA — 2026-07-30 (Thu **#48**, OPUS solo, Dave live, "bite 2 then stop" by instruction — ★★ **THE CAP NOW BINDS THE FILE: open 16 (a) ENACTED, open 15 UNBLOCKED after four sessions** · ★★ **A CONTROL PROVED THE NEW BITE BITES — reverting to the slice FAILS it** · ⛔ **TWO GENERATED ARTEFACTS WERE COMMITTED STALE AT HEAD, AND "DATE CHURN" IS THE FRAMING THAT WOULD HAVE HIDDEN IT**)
+
+> ⚠ **STATE LINES ONLY — narrative is in `GOOD-MORNING.md`'s ★ LATEST banner, verbatim, same commit.**
+
+- **✅ open 16 CLOSED · open 15 UNBLOCKED.** `chain_file_tk()` in `_capture_gate.py`, `_gen_chain` LAZY, a SEPARATE function (in-place = recursion). Cap binds the FILE; slice + file publish together.
+- **✅ `CHAIN_BUDGET_TK` (4500,6000)→(4917,6417)** on the measured **417** wrapper (brief said 418). MEASURED `b8b388e`: file 4,604 = slice 4,187 + 417. Both old and new PASS at **313 headroom — identical**. Pin `:2282` + `:309` pointer moved same edit. ⛔ Tier untouched: ADVISORY, awaiting Dave.
+- **★★ NEW `M10 UNIT BITE`, proved by CONTROL** — revert to the slice ⇒ FAIL, rc=1.
+- **⛔ NEW open 21** — `_CAPTURE-GATE.md` "33 file(s)" vs 34 · `_LIVE-STATE-CHECK.md` "7 bullets" vs 6, both stale at `b8b388e`. Not mine (proved). ⬛ Dave's.
+- **✅ open 20 (a) DONE** — `MODEL-ROUTING.md` Default → `Opus 5`. (b)/(c) his.
+- **✅ BUILD 75 steps, 0 non-zero — MY COMPOSITION** (STEPS table imported, run 1–25 · 26–50 · 51–75). Gate selftest 0 · `--check` FRESH.
+- **⚠ EXIT CHECK bit twice, tenth consecutive** → **open 22** (2c) · **open 13 re-keyed PARTIAL** (2d) · #46's BAND-REFUSED cause struck at source. **⛔ 2f NOT RUN — open 7; `ds-022` FAILS, DECLARED. Stack NINE.** ROLLED: #46 banner · #44 delta. ✅ Retired #39's spent job-line notice (126 tape) under GM-D2, target proved absent.
+- **⚠ GAUGE 🟡 AMBER ~51% (×1.57) · ~63% 🔴 at #41's 2.11×.** Disk **MEASURED 30,616 tape**; baseline 35,000 is the gauge DEFAULT, **UNPROVEN** (`ds-025`).
+- **TREE STATE.** `_git_commit.sh --reconciled`, paths named. Dave pushes via **GitHub Desktop only**. ⚠ `mv` stray `.git/*.lock` BEFORE git; the clear is the LAST git action.
+
+
+---
+
 <!-- batch 2026-07-30 #50 -->
 ## ⏱ PRIOR DELTA — 2026-07-30 (Thu **morning #47**, OPUS solo, Dave live, small bites by instruction — ★★ **open 16 was NOT implementable as ruled, and #46 wrote the proof without reading it** · ★★ **the stamp is exact BY CONSTRUCTION — a fixed point that caught its own author** · ⚠ **the build no longer fits in one sandbox call**) — "More machinery is what we are after — we should be translating as much prose as we can." *(Dave, #47.)*
 
