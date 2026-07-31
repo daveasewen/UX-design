@@ -7,7 +7,7 @@
 > and ★ LATEST banner, plus `_LIVE-STATE.md`'s ⏱ LATEST delta — the three things GM-D7-am names
 > (CUT #33 on Dave's ruling). **If you have read this file, you have read the chain.**
 >
-> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 24,273 tape and 84% of it is
+> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 24,273 tape and 83% of it is
 > retrieval surface you are not meant to pay for at boot. That reflex is the thing this file
 > exists to stop — five sessions called the chain CUT and every one of them paid full price.
 >
@@ -50,6 +50,9 @@
 > - **⬛ DAVE RULED — MULTI-WINDOW IS SETTLED, AND IT HAS TWO USE CASES, NOT ONE.** Available for **(i) catching up the weekly quota** AND **(ii) cranking production when we need it**. **Claude OFFERS; Dave chooses or vetoes.** **Cap 3** — *"I find them difficult to manage beyond 3"* — **revisable upward as his confidence grows.** ⇒ **this RETIRES the CONTESTED clause standing since #48 and disputed at #57.** ★ **The clause was never about tokens: Dave's decision load is what binds, and a measured stop line is what made the cap manageable.**
 > - **⚠ `$?` AFTER `| tail` REPORTED `EXIT=0` FOR A CHECK THAT HAD REFUSED — caught in-window, before it entered the record.** `_gen_chain.py --check` **REFUSES rather than estimating** when tiktoken is absent from a fresh sandbox — *"a MEASUREMENT REFUSAL, not a content verdict in either direction."* ★ **The measuring tool behaved correctly and my reading of it did not.** Installed tiktoken; the refusal path is sound and should be left alone.
 >
+> **⬛ OPEN WORKLIST — PRESENCE INDEX (14 items, GENERATED). Every open item is named; NO bodies are here — `--fetch gm:DOFIRST`.**
+> `0b` ★★ ENCODE BEFORE THE WAVE · `0c` NEXT BUILD CANDIDATES (his pick, not the… · `1` ds-018 C2 follow-through · `2` dv-legend/dv-behaviour CEILING · `3` ds-012(b) gutter-relative plot area · `4` DV-D16 floating growth · `5` Instrument-fit remainder · `6` ds-016, UNRULED · `7` ds-017, UNRULED · `8` STILL OWED, unchanged, none superseded · `9` DELEGATION TOPOLOGY, UNSCOPED · `10` PER-GATE TEST PLAN, STILL OWED · `11` THE 2c-ROLL / INDEX-VOCABULARY DEADLOCK · `12` THE #57 1b DOSSIER
+> **QUEUE — `gm:C1` strands · `gm:C2` ruling batch (Dave's) · `gm:C4` enact-queue.**
 
 ---
 
@@ -67,7 +70,7 @@
 
 ---
 
-*(Chain ends. **4,924 tape — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **5,177 tape — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
 `GOOD-MORNING.md` is 24,273 tape and stays whole for retrieval; you have paid for
-20% of it, and that is the intended figure, not a shortfall.)*
+21% of it, and that is the intended figure, not a shortfall.)*

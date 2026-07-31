@@ -1071,6 +1071,95 @@ def section_spans(lines):
 
 LS_DELTA_RE = re.compile(r"^##\s*⏱")
 
+# ★ #61 — THE PRESENCE INDEX. Born from a defect Dave found: #60 added DO-FIRST items 9–12 and
+# NOTHING in the read chain revealed they existed, so a cold session could not even know to
+# retrieve them. That is a PRESENCE defect, not a drift one — [[gate-inside-the-growth-loop]] —
+# and the remedy is not to paste the bodies in.
+#
+# ★★ MEASURED BEFORE DESIGNED, and the measurement inverted the task:
+#     items 9–12 VERBATIM ... 331 tape, and leaves 0b–8 still invisible
+#     ALL 13 items as an index ... 181 tape, and nothing is invisible
+# ⇒ the compact index of EVERY open item is CHEAPER than the full text of the four missing ones.
+# Full DO-FIRST is 2,583 tape and would breach CHAIN_BUDGET_TK's block candidate by 1,090.
+#
+# ⚠ GENERATED, NEVER HAND-MAINTAINED. A hand-kept index reproduces the exact defect it exists to
+# fix — the next session adds item 13 and forgets the index. Deriving it from the item headings
+# makes the authoring gap structurally impossible rather than merely detectable.
+# ⛔ WHAT THIS DOES NOT CLOSE, stated because a silent gap is the failing kind: a STALE committed
+# `_CHAIN.md` still slips, because `_build_all.py:184-186` writes then checks (#60's ⛔ finding,
+# check-after-its-own-remedy). This closes AUTHORING, not STALENESS. Do not read it as both.
+OUT_CHAIN = "_CHAIN.md"          # must match `_gen_chain.OUT_NAME` — asserted in selftest
+DOFIRST_ITEM_RE = re.compile(r"^>\s*\*\*(\d+[a-z]?)\.\s*(.+)$")
+DOFIRST_HOOK_MAX = 46            # chars per hook — a BYTE bound, deliberately
+DOFIRST_INDEX_TK_MAX = 420       # ⚠ the whole index, MEASURED — see below
+
+
+def dofirst_index(gm_lines):
+    """Compact presence index of every open DO-FIRST item: `(text, how)` or `(None, reason)`.
+
+    ⚠ BOUNDS MAGNITUDE, NOT JUST COUNT. #60 found the strata gate bounding live-block COUNT while
+    `charged_line_counts` exempted the region's BYTES — *"a gap each gate believes the other
+    closes"*. An index whose hooks may grow freely is that same shape with a new name, so the hook
+    is truncated per item AND the assembled index is measured against a ceiling. A count of 13 is
+    not a measurement of 13 items — [[measure-dont-convert-units]].
+
+    ⚠ REFUSES rather than emitting an empty-but-plausible index, inheriting this module's posture:
+    a chain that silently reports NO open work is worse than one that reports none at all.
+    """
+    try:
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import _gm_usage
+    except Exception as e:                                    # pragma: no cover - import guard
+        return None, f"_gm_usage unavailable ({e}) — presence index NOT built, not assumed empty"
+    rx = dict(_gm_usage.GM_VOCAB).get("DOFIRST")
+    others = [r for k, r in _gm_usage.GM_VOCAB if k != "DOFIRST" and r is not None]
+    start = next((i for i, ln in enumerate(gm_lines) if rx.match(ln)), None)
+    if start is None:
+        return None, ("GOOD-MORNING.md has no ⬛ DO THIS FIRST section — presence index NOT built. "
+                      "The chain would otherwise tell a cold session there is no open work, which "
+                      "is a confident false negative, not a small index.")
+    end = next((i for i in range(start + 1, len(gm_lines))
+                if any(r.match(gm_lines[i]) for r in others)), len(gm_lines))
+
+    items = []
+    for ln in gm_lines[start:end]:
+        m = DOFIRST_ITEM_RE.match(ln)
+        if not m:
+            continue
+        num, rest = m.group(1), m.group(2)
+        # Hook = the item's own opening clause, to the first em-dash or bold-close, truncated.
+        hook = re.split(r"—|\*\*", rest, maxsplit=1)[0]
+        hook = re.sub(r"[`*_]", "", hook).strip(" .,:;")
+        hook = re.sub(r"\s+", " ", hook)
+        if len(hook) > DOFIRST_HOOK_MAX:
+            hook = hook[:DOFIRST_HOOK_MAX].rsplit(" ", 1)[0] + "…"
+        items.append((num, hook or "(unhooked — see body)"))
+
+    if not items:
+        # ⚠ RAW pattern, never `!r`. `repr()` doubles every backslash, so the "quoted" pattern is
+        # not the one a reader can grep for — a gate that quotes what it forbids in a mangled form
+        # is a weaker version of not quoting it at all ([[gate-must-quote-what-it-forbids]]).
+        # Caught by a mutation-test arm, not by re-reading this line.
+        return None, (f"⬛ DO THIS FIRST found at line {start + 1} but ZERO items matched "
+                      f"`{DOFIRST_ITEM_RE.pattern}` — presence index NOT built. Either the section "
+                      f"is genuinely empty (say so deliberately) or the item form changed and this "
+                      f"parser went blind; both are refusals, and a blind parser must never be "
+                      f"mistaken for an empty queue.")
+
+    body = " · ".join(f"`{n}` {h}" for n, h in items)
+    text = (f"> **⬛ OPEN WORKLIST — PRESENCE INDEX ({len(items)} items, GENERATED). "
+            f"Every open item is named; NO bodies are here — `--fetch gm:DOFIRST`.**\n"
+            f"> {body}\n"
+            f"> **QUEUE — `gm:C1` strands · `gm:C2` ruling batch (Dave's) · `gm:C4` enact-queue.**")
+    tk = measure_tokens(text)[0]
+    if tk > DOFIRST_INDEX_TK_MAX:
+        return None, (f"presence index is {tk:,} tape, over its {DOFIRST_INDEX_TK_MAX:,} ceiling — "
+                      f"NOT emitted. This is the bound doing its job: the index sits in the most "
+                      f"expensive text in the repo, so it is capped by BYTES and not merely by item "
+                      f"count. Shorten the item headings in GOOD-MORNING.md, or raise this ceiling "
+                      f"deliberately with a reason — do not let it drift upward silently.")
+    return text, f"{len(items)} items, {tk:,} tape (ceiling {DOFIRST_INDEX_TK_MAX:,})"
+
 
 def chain_parts(repo, gm_lines):
     """The READ CHAIN as **TEXT**: `(gm_part, delta, how)`, or `(None, None, reason)` on refusal.
@@ -1114,6 +1203,28 @@ def chain_parts(repo, gm_lines):
         return None, None, ("GOOD-MORNING.md has no ★ LATEST banner — the chain's whole session "
                             "record is that banner, so this is a refusal to measure, not a small chain")
     gm_part = "\n".join(gm_lines[:l_end])
+
+    # ★ #61 — the presence index rides INSIDE the one slicer, deliberately. `_gen_chain.py` writes
+    # what this returns and `read_chain_tk` measures what this returns; appending the index in the
+    # generator instead would give the generator its own slice, which is the exact second-consumer
+    # drift this function was extracted (#41) to make impossible.
+    # ⛔ A FAILED INDEX DECLARES ITSELF; IT DOES NOT REFUSE THE CHAIN. The first cut of this DID
+    # refuse — and it broke four M10 bites at once, routing every minimal fixture down the
+    # UNMEASURED path. `_region_end`'s docstring, eight lines up, had already named the trap:
+    # *"a chain that cannot be measured because `C4` moved is over-coupled … The chain depends on
+    # ★ LATEST and ⏱ DELTAS; nothing else may break it."* ★ I applied this module's refusal
+    # posture to a term that is not allowed to have it, and — exactly as that docstring predicts —
+    # it was **caught by a bite, not by re-reading the code**.
+    # ★ THE GOVERNING RULE IS THE OTHER ONE: **a DECLARED gap passes, a SILENT one fails.** So an
+    # unbuildable index emits a LOUD line saying the worklist is unrepresented, which is what
+    # #60 actually lacked — the items were absent with nothing saying so. Measurement survives;
+    # invisibility does not. Asserting the index EXISTS on the live tree is a gate's job
+    # (`dofirst_index_present_check`), not the slicer's.
+    idx, idx_how = dofirst_index(gm_lines)
+    gm_part = gm_part + "\n" + (idx if idx is not None else (
+        "> ⚠ **PRESENCE INDEX UNAVAILABLE — the open worklist is NOT represented in this chain.** "
+        f"{idx_how} ⇒ retrieve `gm:DOFIRST` by hand; do NOT read this chain as evidence that "
+        "there is no open work."))
 
     ls_path = os.path.join(repo, "_LIVE-STATE.md")
     if not os.path.exists(ls_path):
@@ -2255,6 +2366,54 @@ def lane_routing_check(repo):
     return fails, notes
 
 
+def dofirst_index_present_check(repo):
+    """★ #61 — every open DO-FIRST item must be NAMED in the generated `_CHAIN.md`.
+
+    The defect this exists for, in Dave's words at the #61 opener: *#60 left DO-FIRST items 9–12
+    outside the read chain.* They were real, open, and a cold session had no way to learn they
+    existed. **That is a PRESENCE defect** — [[gate-inside-the-growth-loop]]: gate the PRESENCE,
+    not the drift.
+
+    ⚠ THIS IS THE CONSUMER FOR THE DECLARED GAP. `chain_parts` deliberately does NOT refuse when
+    the index cannot be built — refusing over-couples the chain and broke four M10 bites when it
+    was tried. It emits a loud UNAVAILABLE line instead. **A declared gap that nothing ever reads
+    is just a quieter silence** ([[instrument-without-a-consumer]]), so the assertion lives here,
+    on the live tree, where a fixture cannot be hurt by it.
+
+    ⚠ SCOPE, STATED SO IT IS NOT OVERSOLD. This asserts every item is NAMED in the chain file on
+    disk. It does NOT close chain STALENESS — `_build_all.py:184-186` still writes then checks
+    (#60's ⛔ finding), so a chain regenerated and then verified in the same breath proves only
+    that the generator is deterministic. What this catches is an item that reaches GOOD-MORNING.md
+    and never reaches the chain at all, which is precisely the #60 shape.
+    """
+    fails, notes = [], []
+    gm_path, chain_path = os.path.join(repo, "GOOD-MORNING.md"), os.path.join(repo, OUT_CHAIN)
+    if not os.path.exists(gm_path) or not os.path.exists(chain_path):
+        return fails, notes
+    with open(gm_path, encoding="utf-8") as f:
+        gm_lines = f.read().splitlines()
+    idx, how = dofirst_index(gm_lines)
+    if idx is None:
+        return [f"dofirst-index: the presence index could not be built, so the read chain does "
+                f"NOT represent the open worklist — {how}"], notes
+    with open(chain_path, encoding="utf-8") as f:
+        chain = f.read()
+    # ⚠ Assert each item INDIVIDUALLY and QUOTE the missing ones. A bare count would be the very
+    # error this corpus keeps re-learning: a count is not a measurement, and "14 items" tells you
+    # nothing about WHICH one fell out ([[measure-dont-convert-units]]).
+    nums = [m.group(1) for m in (DOFIRST_ITEM_RE.match(l) for l in gm_lines) if m]
+    missing = [n for n in nums if f"`{n}` " not in chain]
+    if missing:
+        fails.append(f"dofirst-index: {len(missing)} open DO-FIRST item(s) are in GOOD-MORNING.md "
+                     f"but NOT named in {OUT_CHAIN} — {', '.join(missing)}. A cold session reading "
+                     f"the chain cannot learn they exist. Run `python3 knowledge/_gen_chain.py` "
+                     f"and stage the result. (This is the #60 defect: items 9-12, silently absent.)")
+    else:
+        notes.append(f"dofirst-index: all {len(nums)} open DO-FIRST items are named in {OUT_CHAIN} "
+                     f"({how}) — presence gated, staleness NOT (see docstring).")
+    return fails, notes
+
+
 def wrap_checks(repo, today, lane=False):
     fails, warns, notes = [], [], []
     iso = today.isoformat()
@@ -2304,6 +2463,10 @@ def wrap_checks(repo, today, lane=False):
         f_, n_ = lane_routing_check(repo)       # O1′ #24 — eager line ↔ records, BLOCKING
         fails += f_
         notes += n_
+        f_, n_ = dofirst_index_present_check(repo)  # ★ #61 — every open item NAMED in the chain.
+        fails += f_                              # BLOCKING at birth, and deliberately so: the
+        notes += n_                              # failure it catches (items 9-12 invisible to a
+                                                 # cold session) already happened once, unnoticed.
         f_, w_, n_ = gauge_log_continuity(repo)  # ds-022 (a) #34 — the 2f split must LAND.
         fails += f_                              # BLOCKING: three wraps in a row skipped the
         warns += w_                              # step, and #29's overrun cause is gone for good.
