@@ -58,7 +58,14 @@ CACHE = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".token-cache.j
 # sessions shaved ratified record trying to obey it. A cap must be DERIVED, and a derivation
 # that lands under its own floor is not a strict cap, it is a broken one. [[translate-prose-into-machinery]]
 BUDGET_HARD = 256_000        # SOURCED — last publicly measured-good recall point (93% MRCR v2)
-BUDGET_WORKING = 200_000     # DAVE'S, ruled #56 — the line jobs are priced against
+BUDGET_WORKING = 200_000     # SOURCED — the line jobs are priced against
+# ⛔ PROVENANCE CORRECTED #58b, BY DAVE, AND THE CORRECTION IS THE POINT. This line read "DAVE'S,
+# ruled #56" for three sessions. He: *"BTW the 200K and 256K come from established research, its
+# been worked out already."* ⇒ BOTH are SOURCED; neither is a preference he can be talked out of,
+# and 200,000 was never his to re-dial by fiat. ★ A number attributed to the wrong authority is
+# argued with differently — a preference invites negotiation, a measurement does not. His shape
+# for the two, same message: **do not reach 200,000 · 200,000–256,000 is DANGEROUS · past 256,000
+# everything goes badly.** ⚠ AMBER stays DERIVED (80% of working) and is ours, not research.
 BUDGET_AMBER = 160_000       # DERIVED — 80% of WORKING: where a job should stop taking on more
 
 # --------------------------------------------------------------------------- THE BOOT
