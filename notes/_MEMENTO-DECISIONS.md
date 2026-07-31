@@ -2275,3 +2275,21 @@ The boot decomposition derived total tape by dividing 61,775 real by 1.559. Tape
 Measured at 1,073 tape / 3,950 chars — 18% of the 5,969-tape read chain — with zero consumers anywhere in the toolchain. Replaced with a ≤120-tape label; its live directives were homed in DO-FIRST first, by addition, and only then cut. Now gate-enforced.
 **WHY:** canon already said "Titles are LABELS" three lines below a 3,950-character title. The rule was correct and ungated, so it grew for sixty sessions. **A rule with no gate is a preference.**
 **SAVING:** ~1,040 tape (~1,700 real) off every cold boot, permanently.
+
+## ★ #63 — 2026-07-31 — THE SIX-BEAT PRINCIPLE RULED, AND CI LEARNED TO ASK BEFORE IT BUILDS
+
+*provenance: 2026-07-31 · status: #63-D1 ruled (Dave, live, wording his); further entries land at the #63 wrap.*
+
+**#63-D1 — RULED (Dave): the working method is a six-beat ladder — RETRIEVE · RESEARCH · ANALYSE · PLAN · PROBE · TEST.**
+His wording, verbatim save dated deixis:
+
+- **Retrieve** — the record first: quote it, never reconstruct. (consult-receipts, `_memento_search`)
+- **Research** — the world, when the record can't answer: desk research, dated, because external facts age. (the Copilot survey is the model — and the #62 caveat on it, 2026-07-31, is the proof they age)
+- **Analyse** — name the mechanism, not the symptom; verify the premise before building on it.
+- **Plan** — price it, sequence it, declare the stamp, decide delegation; every term tagged measured or estimated. (the pre-flight formula — planning is already half-machinery)
+- **Probe** — run the real system; measure, never recall. (the survey)
+- **Test** — try to make your own conclusion fail; a green that can't fail is an assertion. (the bite matrix, #63)
+
+**WHY:** confirms and words the #62 5b-4 re-cut (+PLAN, +DESK RESEARCH extended the four-beat form). Dave invoked the ladder twice at the #63 opener before wording it — the ruling records practice already in force, which is the strongest kind.
+**EXAMPLES KEPT — conductor's call, explicitly offered by Dave ("not sure we need the examples but you decide"):** each beat names its machinery, and per translate-prose-into-machinery a beat with NO example is a beat with no machinery yet — the gap itself is information.
+**FILING:** DO-FIRST 14 ("founding principle, HELD not filed") discharges at the #63 wrap; the GM edit rides the mover with the wrap batch, not before.
