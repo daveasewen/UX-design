@@ -2265,3 +2265,8 @@ Three independent readings: 61,582 (#58b), 61,812 (#59), 61,775 (#60). Spread 24
 **#60-D6 — CAUGHT IN REPLAY: a worker converted units to build its denominator.**
 The boot decomposition derived total tape by dividing 61,775 real by 1.559. Tape cells are DIRECT measurements; the percentage column is SOFT.
 **WHY RECORDED:** this is the standing "measure, don't convert units" rule violated inside an otherwise sound measurement. A table can be honest in its cells and wrong in its column. Replay caught it; the gate would not have.
+
+**#60-D7 — PROVEN BY ACCIDENT: the pre-flight FORM gate bites.**
+`_capture_gate.py --wrap` returned exit 1 (2 fail / 8 warn) against the conductor's own #60 banner, rejecting a pre-flight stamp that lacked a `wrap` term and a band word. The text was corrected; the gate was not.
+**WHY IT MATTERS:** #59 probed the gates, got green, and recorded that green proves nothing about bite. #60 obtained the missing evidence the only way probing cannot — by emitting a genuine defect and being caught. This is a real mutation test, unplanned.
+**SCOPE — do not overclaim:** it proves the FORM check bites. It does NOT show pre-flight can detect a false or fabricated figure; per #60-D-open that gate checks only internal arithmetic and remains blind to fiction.

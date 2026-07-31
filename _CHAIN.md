@@ -7,7 +7,7 @@
 > and ★ LATEST banner, plus `_LIVE-STATE.md`'s ⏱ LATEST delta — the three things GM-D7-am names
 > (CUT #33 on Dave's ruling). **If you have read this file, you have read the chain.**
 >
-> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 24,757 tape and 81% of it is
+> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 24,987 tape and 80% of it is
 > retrieval surface you are not meant to pay for at boot. That reflex is the thing this file
 > exists to stop — five sessions called the chain CUT and every one of them paid full price.
 >
@@ -36,8 +36,9 @@
 > *(Titles are LABELS — role comes from Dave's opener line. Bands: the ONLY copy is
 > `_RUNBOOK-context-gauge.md` § ★ THE FLOOR IS MEASURED — grep it, never recall it.)*
 > ## ★ LATEST — 2026-07-31 (Fri **#60**, OPUS conductor + 2× SONNET workers, Dave live throughout — ★★ **DELEGATION IS MEASURED AT 46:1 AND DAVE'S THIRD TERM HAS A NUMBER** · ⛔ **TWO GATES CANNOT FAIL WHERE IT COUNTS** · ⬛ **MULTI-WINDOW SETTLED — TWO USE CASES, CAP 3**)
-> **pre-flight #60 (DECLARED AT THE OPENER, before any job — the first non-retrospective stamp in the record):** boot **61,775 MEASURED** + job **41,779 MEASURED** = **103,554 of 200,000** at the stamp; stop line **132,955** = `200,000 − 42,434 wrap (MEASURED #59, floor — it was still climbing) − 24,611 step (MEASURED, high end, this window)`. ★ **Dave's formula from #59 applied as ruled — reserve the HIGH end of both terms — and it bound the window to ~29,000 of usable job, which is what actually shaped the session.**
+> **pre-flight #60 (DECLARED AT THE OPENER, before any job — the first genuinely prospective stamp in the record):** boot **61,775 MEASURED** + job **41,779 MEASURED** + wrap **42,434 ESTIMATED** (#59's measurement, carried as a FLOOR — it was still climbing when stamped) = **145,988 of 200,000 — 🟢 GREEN** against the 160,000 amber threshold. Stop line **132,955** = `200,000 − 42,434 wrap − 24,611 step (MEASURED, high end, this window)`. ★ **Dave's #59 formula applied as ruled — reserve the HIGH end of both terms — and it bound the window to ~29,000 of usable job, which is what actually shaped the session.** ⚠ **The band word is QUOTED from `_gauge_tokens.py`, never recalled** — #59 stamped RED from memory and its own gate caught it; the same trap, declined this time.
 > **⚠ SHORT BY DESIGN — rulings and every figure → `notes/_MEMENTO-DECISIONS.md` § ★ #60 and the #60 stratum below.**
+> - **★★ THE GATE BIT — ON THE CONDUCTOR'S OWN RATIFIED TEXT, AT THE CLOSE OF A SESSION SPENT ASKING WHETHER GATES BITE.** `_capture_gate.py --wrap` returned **exit 1, 2 fail / 8 warn**, rejecting this very pre-flight stamp: no `wrap` term, no band word. ★★ **We spent the window unable to prove bite by probing green — and proved it by writing something wrong.** ⇒ **the mutation test the tranche owes was run by accident, and the pre-flight FORM gate PASSES it.** ⚠ **Scope, stated honestly: this proves the FORM check bites. It says nothing about whether pre-flight can detect a FALSE number — it cannot, and that remains #60-D-open.**
 > - **★★ BOOT IS CLOSED BY REPRODUCTION, NOT BY A READING.** #58b **61,582** · #59 **61,812** · #60 **61,775** — three independent measurements, spread **240**. ⇒ **`ds-025` item 1's ±8,000 harness hole is CLOSED.** ★ **One reading falsified the claim that fill was unobservable; it took THREE to make boot a constant you can budget against.** Boot is **31% of the working budget spent before a single decision** — Dave named this the recurring cost, and it is now a number rather than a feeling.
 > - **★★ DELEGATION MEASURED AT ~46:1 — DAVE'S THIRD TERM, WHICH HAD NEVER BEEN MEASURED, NOW HAS A NUMBER.** brief-out **~4,259 real** (MEASURED as the `cache_creation` of the launching turn; **an UPPER bound — it carries the conductor's own prose too**) · report-in **~2,000 real** (MEASURED-PARTIAL, lands one record beyond the last read) · **conductor cost ~6,300** against **293,169 subagent tokens** (156,158 + 137,011, from the workers' own usage). ⇒ **~46 tokens of work per token of conductor budget.** ★ **This is the term Dave named as cheapest to fix because both directions are text you can count exactly — and that turned out to be true.**
 > - **★★ A CARELESS `Glob` COST 24,611 REAL — 59% OF THIS WINDOW'S JOB SPEND, AND 4× THE ENTIRE DELEGATION ROUND-TRIP.** One unanchored wildcard returned 100 session paths when exactly one was needed. **Declared, not hidden.** ★ **The lesson is not "be careful" — it is that ONE sloppy retrieval outweighs the entire cost of conducting two workers, so retrieval discipline dominates delegation overhead by a wide margin.**
@@ -66,7 +67,7 @@
 
 ---
 
-*(Chain ends. **5,739 tape — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **5,969 tape — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
-`GOOD-MORNING.md` is 24,757 tape and stays whole for retrieval; you have paid for
-23% of it, and that is the intended figure, not a shortfall.)*
+`GOOD-MORNING.md` is 24,987 tape and stays whole for retrieval; you have paid for
+24% of it, and that is the intended figure, not a shortfall.)*
