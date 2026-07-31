@@ -2235,3 +2235,33 @@ subagent transcripts are separate files outside its glob, and only a ~2–3K `to
 ★ **THE RETURN COST IS CONTROLLABLE, AND THIS DELEGATION PROVED IT.** A capped, write-to-disk worker
 returned ~350 tokens for a finding that overturns a standing ruling. Earlier returns this session ran
 thousands. ⇒ **cap the return and demand a file** — that is the fan-out economics lever, not the brief.
+
+## ★ #60 — 2026-07-31 — DELEGATION MEASURED AT 46:1, TWO GATES CANNOT FAIL IN CI, AND MULTI-WINDOW IS SETTLED
+
+*provenance: 2026-07-31 · status: ruled (Dave, D1) — D2–D6 are measured findings, not rulings; titles reuse the conductor's own ★ LATEST banner headline verbatim. See `GOOD-MORNING.md` § ★ LATEST for full context.*
+
+**#60-D1 — RULED (Dave): multi-window has TWO use cases, cap 3.**
+Multi-window runs are available both to catch up the weekly quota and to increase production when needed. Claude offers; Dave chooses or vetoes. Cap of 3 concurrent windows, revisable upward as confidence grows.
+**WHY:** the clause standing from #48 ("behind pace ⇒ more windows") optimised tokens, but Dave's decision load is the binding constraint. A measured stop line makes concurrency manageable, which is what changed his answer between #57 and #60.
+**SUPERSEDES:** the CONTESTED flag on the pace clause. That flag is now retired.
+
+**#60-D2 — MEASURED: delegation costs the conductor ~46× less than it buys.**
+brief-out ~4,259 real (upper bound, carries conductor prose), report-in ~2,000, conductor total ~6,300, against 293,169 subagent tokens across two workers.
+**WHY IT MATTERS:** Dave's budget model needs conductor-budget = 200K − boot − (brief-out + report-in + decide). The third term was never measured. It now is, n=1, two workers, one window.
+**CAVEAT:** brief-out is an upper bound and report-in is partial (lands one record beyond the last read). Both are FLOORS for accuracy, not exact splits. n=1.
+
+**#60-D3 — MEASURED: boot = 61,775, closed by reproduction.**
+Three independent readings: 61,582 (#58b), 61,812 (#59), 61,775 (#60). Spread 240.
+**WHY:** `ds-025` item 1 claimed a ±8,000 harness hole. One reading falsified "unobservable"; three readings closed the band. Boot may now be stated as a constant, not a range.
+
+**#60-D4 — FINDING: two gates are tautologically green in CI.**
+`_build_all.py:184-186` writes the chain then checks it; `:160-161` does the same for the memento index. CI runs only `_build_all.py`. Chain staleness has one genuine seam (`_git_commit.sh:60`, no hook enforces it); index freshness has none — `index_freshness_check` runs only under `--wrap`, invoked by nothing automated.
+**STATUS: UNFIXED.** This is the `check-after-its-own-remedy` class, previously inscribed and now located to the line.
+
+**#60-D5 — FINDING: the strata and section-cap gates each assume the other covers magnitude.**
+`charged_line_counts` (`_capture_gate.py:1310-1318`) subtracts the entire stratum region from §C's charge; the strata gate bounds live-block count only. A block can therefore grow without bound, unseen by both.
+**STATUS: UNFIXED.** New failure shape — not a gap between gates but a gap each gate believes the other closes.
+
+**#60-D6 — CAUGHT IN REPLAY: a worker converted units to build its denominator.**
+The boot decomposition derived total tape by dividing 61,775 real by 1.559. Tape cells are DIRECT measurements; the percentage column is SOFT.
+**WHY RECORDED:** this is the standing "measure, don't convert units" rule violated inside an otherwise sound measurement. A table can be honest in its cells and wrong in its column. Replay caught it; the gate would not have.
