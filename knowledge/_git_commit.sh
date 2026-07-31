@@ -51,8 +51,14 @@ fi
 # _LIVE-STATE.md that was never regenerated — the #32 defect, which is what actually landed at the
 # #56 wrap (stale chain, clean tree, committed). Refuse loudly; do NOT auto-regenerate here — that
 # would stage a file this session never showed you.
+# ⛔ CORRECTED #58b, found by the probe worker: this line used to re-assert "_CHAIN.md is STALE" and
+# name "regenerate it" as the remedy, on ANY non-zero exit — so when --check refused because its
+# TOKEN MEASURER was degraded (tiktoken absent / encoding file unreachable), the honest message it
+# had just printed was immediately overridden here by a WRONG CAUSE and a WRONG REMEDY, at the one
+# seam that blocks. ★ A WRAPPER MUST NOT RESTATE A CAUSE IT DID NOT DETERMINE. The check owns the
+# diagnosis and has already printed it; this layer owns only the consequence — nothing was staged.
 python3 knowledge/_gen_chain.py --check ||
-  fail "_CHAIN.md is STALE — a cold session would read a PREVIOUS session's record, not this one. Remedy: python3 knowledge/_gen_chain.py — then re-run this script. Nothing has been staged."
+  fail "_gen_chain.py --check REFUSED (exit non-zero) — its message is printed directly above and it is the authority on the cause; this script does not second-guess it. Nothing has been staged. If it named STALENESS, run: python3 knowledge/_gen_chain.py — then re-run this script. If it named a DEGRADED MEASUREMENT, regenerating will NOT help: fix tiktoken first (pip install tiktoken --break-system-packages) and re-run."
 echo "— chain fresh (_gen_chain.py --check passed)"
 
 # clear · stage · clear · commit · clear

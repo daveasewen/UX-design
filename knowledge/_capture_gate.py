@@ -1221,16 +1221,49 @@ def _heal_tiktoken():
 def measure_tokens(text):
     """Returns (tokens, method). tiktoken when present (OBSERVED); otherwise the MEASURED byte
     divisor, labelled ESTIMATE. Both are declared and they are never silently mixed — a number
-    whose method is unstated is the thing this gate exists to prevent."""
+    whose method is unstated is the thing this gate exists to prevent.
+
+    ⚠ #59 — THE ENCODE CALL IS BEHIND A GUARD NOW TOO, NOT JUST THE IMPORT. `get_encoding()`
+    fetches cl100k_base's BPE ranks file over the network on a cold cache (tiktoken's own
+    `read_file_cached`, keyed off `tempfile.gettempdir()`), and this line used to sit UNGUARDED
+    below the try/except: a healthy `import tiktoken` followed by a failed fetch (cold cache +
+    a network hiccup) raised straight out of this function — a crash, with no ESTIMATE fallback
+    and no label, which is a worse failure than the one this function's docstring already
+    refuses to allow. Same failure class as the import guard just above; there is no reason the
+    second half of one operation should be held to a lower standard than the first."""
     try:
         tiktoken = importlib.import_module("tiktoken")
     except Exception:
-        if _heal_tiktoken():
-            tiktoken = importlib.import_module("tiktoken")
-        else:
+        if not _heal_tiktoken():
             return (int(len(text.encode("utf-8")) / BYTES_PER_TOKEN),
                     f"bytes/{BYTES_PER_TOKEN} ESTIMATE (tiktoken absent)")
-    return len(tiktoken.get_encoding("cl100k_base").encode(text)), "tiktoken cl100k_base"
+        tiktoken = importlib.import_module("tiktoken")
+    try:
+        return len(tiktoken.get_encoding("cl100k_base").encode(text)), "tiktoken cl100k_base"
+    except Exception:
+        return (int(len(text.encode("utf-8")) / BYTES_PER_TOKEN),
+                f"bytes/{BYTES_PER_TOKEN} ESTIMATE (tiktoken installed, encoder unloadable)")
+
+
+def measurement_degraded():
+    """True iff `measure_tokens()` is running on the ESTIMATE fallback right now, rather than
+    the real tiktoken encoder. Probes a 1-character string — cheap, and it is the SAME call a
+    real measurement makes, so this cannot drift from what a real measurement would report (a
+    second, hand-rolled health check would be exactly the drift class every "ONE SLICER"
+    comment in this file already refuses to repeat).
+
+    ⚠ #59 — BORN because `_gen_chain.py`'s `build()` calls `measure_tokens(...)[0]` at every
+    site and never once looks at `[1]`: the method was always DECLARED, just never READ by its
+    main consumer. A generator whose fixed point bakes size figures straight into a file cannot
+    tell a genuine content change from an instrument that quietly started guessing — that is the
+    one fact it needs in order to tell the two apart, offered as its own function so `build()`
+    can ask the question BEFORE it measures anything, rather than infer it after the fact from a
+    mismatch that looks identical either way.
+
+    Call this to gate a VERDICT (stale vs. cannot-measure-reliably), never to gate a MEASUREMENT
+    itself — a caller that skips measuring because this returned True would just be adding a
+    second, undeclared fallback next to the one this file already owns."""
+    return "ESTIMATE" in measure_tokens("x")[1]
 
 
 # ⚠ §A HASH CONVENTION — PINNED HERE, and this is the only implementation. Recovered the hard way
@@ -3280,8 +3313,9 @@ def selftest_units():
 
 
 def selftest_growth():
-    """Bite-test M6 (tiktoken heal/fallback) · M7 (§A warn) · M8 (banner) · M10 (chain) ·
-    the pinned §A digest · M9 (retirement receipts)."""
+    """Bite-test M6 (tiktoken heal/fallback) · #59 (measurement_degraded() + the guarded
+    get_encoding() path) · M7 (§A warn) · M8 (banner) · M10 (chain) · the pinned §A digest ·
+    M9 (retirement receipts)."""
     failures = []
 
     # ---- M6: the fallback must stay REACHABLE and must still describe itself as an ESTIMATE.
@@ -3304,6 +3338,49 @@ def selftest_growth():
         pass                                 # healthy env: the OBSERVED path is the one in use
     elif "ESTIMATE" not in measure_tokens("hello")[1]:
         failures.append("M6: measure_tokens returned an undeclared method")
+
+    # ---- #59: measurement_degraded() must track measure_tokens()'s OWN fallback exactly. It is
+    # a second reader of the same fact (`_gen_chain.build()` trusts it ALONE to decide whether to
+    # refuse), so if it could disagree with measure_tokens() the refusal could fire on a healthy
+    # instrument or — worse — stay silent on a degraded one. Same forcing technique as M6, above.
+    saved, os.environ["CAPTURE_GATE_NO_HEAL"] = os.environ.get("CAPTURE_GATE_NO_HEAL"), "1"
+    sys.modules["tiktoken"] = None
+    try:
+        if not measurement_degraded():
+            failures.append("#59: measurement_degraded() read False with tiktoken absent — it "
+                            "has drifted from measure_tokens()'s own fallback decision")
+    finally:
+        del sys.modules["tiktoken"]
+        if saved is None:
+            os.environ.pop("CAPTURE_GATE_NO_HEAL", None)
+        else:
+            os.environ["CAPTURE_GATE_NO_HEAL"] = saved
+    if measurement_degraded():
+        failures.append("#59: measurement_degraded() read True with a healthy tiktoken restored "
+                        "— it would refuse every build() forever, not just a genuinely degraded one")
+
+    # ---- #59: the get_encoding()/encode() half of measure_tokens must ALSO degrade to a
+    # labelled ESTIMATE rather than crash uncaught — before this fix only the `import tiktoken`
+    # line was guarded. Monkeypatch get_encoding to fail the way a cold-cache network fetch fails
+    # (tiktoken.load.read_file_cached -> requests.get -> raise_for_status), WITHOUT touching the
+    # import path, so this bite is isolated to the second guard and cannot be satisfied by M6's.
+    real_tiktoken = importlib.import_module("tiktoken")
+    real_get_encoding = real_tiktoken.get_encoding
+
+    def _boom(*_a, **_k):
+        raise RuntimeError("simulated: cl100k_base.tiktoken fetch failed (no network / cold cache)")
+    real_tiktoken.get_encoding = _boom
+    try:
+        n, method = measure_tokens("hello world")
+        if "ESTIMATE" not in method:
+            failures.append(f"#59: a failing get_encoding() was not caught — method read "
+                            f"{method!r} instead of falling back to the ESTIMATE")
+        if n <= 0:
+            failures.append("#59: fallback from a failed get_encoding() returned a non-positive count")
+    finally:
+        real_tiktoken.get_encoding = real_get_encoding
+    if measure_tokens("hello")[1] != "tiktoken cl100k_base":
+        failures.append("#59: get_encoding restored but measure_tokens did not return to OBSERVED")
 
     with tempfile.TemporaryDirectory() as td:
         # ---- M8: banner budget — fires at warn, fires at block, silent for a normal banner.

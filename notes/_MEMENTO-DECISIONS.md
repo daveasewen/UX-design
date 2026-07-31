@@ -2160,3 +2160,47 @@ running. **Nondeterminism or cold-mount artefact — UNDETERMINED, and not diagn
 because the check is **BLOCKING** inside `_git_commit.sh` (#57's fix): a flaky RED blocks every
 commit, a flaky GREEN defeats the fix. **Reproduce it cold — first call of a session, before anything
 else — or close it out loud.** ★ An honest UNPROVEN is a priced TODO, not a finding.
+
+### ✅ D5 (#58b, past midnight 2026-07-31) — THE CHAIN-CHECK FLICKER: DIAGNOSED, FIXED, REGRESSION-TESTED
+
+Dave: *"lets probe and test this, its untidy not to fix this."* Delegated to a Sonnet **worker** under
+the conductor-worker construction; **load-bearing claims replayed in-window** before any were written here.
+
+**ROOT CAUSE, reproduced on demand — a check gave a CONTENT verdict while its own INSTRUMENT was degraded.**
+`_capture_gate.measure_tokens()` returns `(tokens, method)` and labels its ESTIMATE fallback honestly;
+**every call site inside `_gen_chain.py::build()` takes `[0]` and discards the label.** ⇒ when tiktoken is
+absent or its `cl100k_base` encoding file is unreachable (a **cold sandbox fetches it over the network**,
+and this repo's own M6 note records tiktoken vanishing twice in 24 hours), `build()` bakes ESTIMATED size
+figures into the in-memory chain, the byte-comparison against a **genuinely fresh, byte-identical** file
+fails, and `check()` reports **`STALE`** — the wrong cause, with a remedy (`regenerate`) that cannot work.
+★★ [[instrument-without-a-consumer]] at its purest: **the truth was declared at every call and read at none.**
+
+**Conductor replay, verbatim:** `degraded? -> True | method: bytes/3.53 ESTIMATE (tiktoken absent)` ⇒
+`check() -> 1` with the new refusal text; `_gen_chain.py --selftest` exit **0**.
+
+**FIX (by addition):** `_capture_gate.measurement_degraded()` + `build()` **refuses before measuring**, so
+`check()` and `write()` inherit it through their existing `(None, reason)` path. The message states it is a
+**MEASUREMENT REFUSAL, not a content verdict in either direction** — [[feedback-measuring-tool-must-not-guess]]
+applied to the *reporting* end, not just the measuring end. A second, adjacent bug was guarded on the way:
+an unguarded `get_encoding().encode()` that **crashed uncaught** rather than falling back — [[a-crash-is-not-a-fail]]
+again, one session after it was named. ⚠ **That guard is PROPHYLACTIC: it is not shown to be what bit at #58.**
+
+**⛔ AND THE WRAPPER WAS RESTATING A CAUSE IT DID NOT DETERMINE.** `_git_commit.sh` re-asserted *"_CHAIN.md is
+STALE … Remedy: regenerate"* on **any** non-zero exit — so at the one **blocking** seam, the honest diagnosis
+was overridden by a wrong cause and a useless remedy. ★ **A WRAPPER MUST NOT RESTATE A CAUSE IT DID NOT
+DETERMINE:** the check owns the diagnosis and has already printed it; the wrapper owns only the consequence.
+Corrected, and the new text routes both cases (staleness → regenerate · degraded → fix tiktoken first).
+
+**REGRESSION TEST:** 5 bites in `_gen_chain.py::selftest`, including *"--check's message does NOT call it
+STALE"* and *"names the DEGRADED INSTRUMENT"*. **Mutation-tested:** fix removed → 2 bites RED; restored → GREEN.
+
+⚠ **UNPROVEN, DECLARED:** which sub-mechanism fired at #58's own boot is **not re-derivable**. The class is
+proven and reproducible; that instance is not. The tidy `STALE` line #58 saw is more consistent with the
+fallback path than the crash path, which is an inference, not a measurement.
+
+⚠ **FOUND WHILE FIXING, NOT RESOLVED — A THIRD CAP WHOSE REMEDY IS UNREACHABLE.** The banner-region **block**
+demanded *"roll a banner (2c)"*, but GM then held only ★ LATEST + one ★ PRIOR — and rolling that PRIOR made
+`_build_memento_index.py` **refuse the whole corpus**: *"vocabulary marker not found: PRIOR"*. **Measured by
+doing it and reversing it in one transaction.** ⇒ **the block cap can demand a move the index vocabulary
+forbids.** Same family as [[m8-cap-at-its-own-floor]]; **the region was brought under block by shaving the
+session's OWN addition instead**, which is the correct order and not a fix for the tension. **Dave's.**

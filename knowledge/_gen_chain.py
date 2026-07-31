@@ -127,11 +127,43 @@ def build(repo=ROOT):
     ⚠ REFUSES rather than guesses, inheriting `chain_parts`' posture: a generator that emits an
     empty-but-plausible chain on a parse failure hands a cold session a confident blank, which is
     strictly worse than no file at all. Every failure path returns a REASON.
+
+    ★ #59 — REFUSES BEFORE MEASURING ANYTHING IF THE INSTRUMENT ITSELF IS DEGRADED, and this is
+    a DISTINCT refusal from every other one below it. Every size figure this function's fixed
+    point produces — `gm_tk`, `slice_tk`, the footer's own `file_tk` — comes from
+    `cg.measure_tokens(...)[0]`; every call site here and in `chain_parts`/`read_chain_tk`
+    discards `[1]`, the method, even though `measure_tokens` DECLARES it. So when tiktoken is
+    unavailable (a fresh sandbox with no pip state — `_capture_gate.py`'s own M6 note: "vanished
+    TWICE inside 24 hours") and the byte-divisor ESTIMATE stands in for it, this function
+    produces numbers that disagree with a tiktoken-measured `_CHAIN.md` for a reason that has
+    nothing to do with GOOD-MORNING.md or _LIVE-STATE.md changing — and the old code handed that
+    straight to `check()`'s byte comparison, which could only ever call it "_CHAIN.md is STALE".
+    MEASURED, this session (#59): forcing the ESTIMATE fallback against a `_CHAIN.md` that
+    `--check` had JUST called fresh, with git status clean and not one byte of GM/LS touched in
+    between, flips the verdict to STALE — see this file's `selftest`, the #59 bites, for the
+    reproduction and `_capture_gate.measurement_degraded` for the instrument-health probe.
+    ⇒ A degraded instrument is refused HERE, before any measuring happens, so neither `check()`
+    nor `write()` downstream ever gets to hand out a content verdict — PASS or FAIL — that was
+    actually built on a guess. Both callers already print whatever reason `build()` returns on a
+    `None`, so this refusal reaches them for free, worded distinctly from "STALE" and from
+    "MISSING", with no new branch needed in either.
     """
     try:
         import _capture_gate as cg
     except Exception as e:                                    # pragma: no cover - import guard
         return None, f"_capture_gate unavailable ({e}) — chain NOT generated, not assumed empty"
+
+    if cg.measurement_degraded():
+        return None, (
+            "the token measurer is running on the ESTIMATE fallback, not the real tiktoken "
+            "encoder (tiktoken unavailable, or its encoding file could not be loaded, in this "
+            "process) — chain NOT generated/verified. This is a MEASUREMENT REFUSAL, not a "
+            "content verdict in either direction: every size figure build() would bake into "
+            "the file is measured on the wrong instrument, so a byte comparison right now would "
+            "be noise wearing a verdict, whichever way it fell. Re-run once tiktoken is "
+            "installed and can reach openaipublic.blob.core.windows.net (the cl100k_base "
+            "encoding file) — see _capture_gate.measure_tokens / measurement_degraded."
+        )
 
     gm_path = os.path.join(repo, "GOOD-MORNING.md")
     if not os.path.exists(gm_path):
@@ -292,6 +324,44 @@ def selftest():
                 shutil.copy(src, os.path.join(tmp, n))
         write(tmp)
         bite("--check PASSES on a freshly generated file", check(tmp) == 0)
+
+        # ---- #59: a DEGRADED instrument must REFUSE, and must NEVER be reported as staleness.
+        # This is the reproduction of the #58 flicker: same bytes on disk, same GM/LS content,
+        # zero real drift — the check flipped from FRESH to STALE anyway because the MEASURER
+        # changed underneath it. Forces the ESTIMATE fallback with the same technique
+        # `_capture_gate.py`'s own M6 bite uses (`sys.modules["tiktoken"] = None` +
+        # `CAPTURE_GATE_NO_HEAL=1`), against THIS SAME tmp tree one line after `check(tmp)` just
+        # called it fresh with a healthy tiktoken — so any refusal below can only be attributed
+        # to the instrument, never to content.
+        import io
+        import contextlib
+        import _capture_gate as cg
+        saved_heal = os.environ.get("CAPTURE_GATE_NO_HEAL")
+        os.environ["CAPTURE_GATE_NO_HEAL"] = "1"
+        sys.modules["tiktoken"] = None
+        try:
+            buf = io.StringIO()
+            with contextlib.redirect_stdout(buf):
+                degraded_rc = check(tmp)
+            degraded_out = buf.getvalue()
+            bite("--check on a degraded instrument still exits non-zero (refuses, not a silent "
+                 "pass)", degraded_rc == 1)
+            bite("--check's message does NOT call it STALE — that misnames a measurement "
+                 "problem as a content problem (the #58 defect, reproduced here)",
+                 "STALE" not in degraded_out.upper())
+            bite("--check's message names the DEGRADED INSTRUMENT so the cause is legible",
+                 "ESTIMATE" in degraded_out)
+        finally:
+            del sys.modules["tiktoken"]
+            if saved_heal is None:
+                os.environ.pop("CAPTURE_GATE_NO_HEAL", None)
+            else:
+                os.environ["CAPTURE_GATE_NO_HEAL"] = saved_heal
+        # instrument restored — the SAME tree (untouched by any of the above) must report FRESH
+        # again, proving the refusal above was the instrument and not a side effect on the tree.
+        bite("instrument restored — the SAME fresh tree reports FRESH again, unharmed",
+             check(tmp) == 0)
+
         with open(os.path.join(tmp, OUT_NAME), "a", encoding="utf-8") as f:
             f.write("\ndrift\n")
         bite("--check FAILS on a hand-edited file (the stale-record class)", check(tmp) == 1)
