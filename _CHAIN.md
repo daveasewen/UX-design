@@ -7,7 +7,7 @@
 > and ★ LATEST banner, plus `_LIVE-STATE.md`'s ⏱ LATEST delta — the three things GM-D7-am names
 > (CUT #33 on Dave's ruling). **If you have read this file, you have read the chain.**
 >
-> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 24,656 tape and 84% of it is
+> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 24,800 tape and 84% of it is
 > retrieval surface you are not meant to pay for at boot. That reflex is the thing this file
 > exists to stop — five sessions called the chain CUT and every one of them paid full price.
 >
@@ -42,6 +42,7 @@
 > - **★ A DEFECT CLASS NAMED, CAUGHT TWICE IN ONE SESSION: a recalled count wearing a measurement's clothes.** Mover's 35 and 39 both measured the table's own corrupted markdown (row 42's unescaped pipes = 9 cells · row 18's nested backtick — repaired, marked); the usage draft's "PROVEN — implied" cells and 26+14 subtotals matched nothing ⇒ downgraded at ratification: **implication is not a bite.** Genuine defect RECORDED for a ruling: `_gm_usage.py:313` validates only `usage[0]` — a malformed second usage line is invisible to the wrap gate.
 > - **⬛ THE PACKAGE (Dave live ×3: separate · own folder · "be careful"):** `memento-package/_PACKAGE-SPEC.md` — no Apollo coupling in either direction, copies only, lift-out his call. **Boot rule is DAVE'S SHAPE: chain → pick it up and continue; no chain → orientation prose + ONE two-option question** ("existing project?" / "what shall we start?") — the agent detects what it can (the chain) and asks what it can't (intent). **Ratification owed at the #65 opener.** ⬛ **D6 — Dave's own Copilot access pre-check — STILL OWED, gates any Copilot build.**
 > - **⚠ Housekeeping, attributed:** a pre-existing stale 0-byte `.git/index.lock` (surfaced by Worker A's confessed read-only `git status` — confession honest, act benign, rule kept sharp) cleared by `mv` per ruling before any commit.
+> *(post-wrap addendum, 5b — ✅ **Dave pushed; CI run #210 REACHED [75/75] FOR THE FIRST TIME**: the font fix held (all 5 assertions true in CI) and the build died only on the integrity lint's `import jsonschema` — the tiktoken class again, one environment gap from green. Fixed at the seam `d0012fd`: `gates.yml` installs tiktoken + jsonschema, the "One pip install" comment corrected at source. **Full verdict = the NEXT push; UNPROVEN here, declared.** Also settled in-chat: CI ≠ CLI — Continuous Integration, the robot checker on every push.)*
 >
 > **⬛ OPEN WORKLIST — PRESENCE INDEX (17 items, GENERATED). Every open item is named; NO bodies are here — `--fetch gm:DOFIRST`.**
 > `0b` ★★ ENCODE BEFORE THE WAVE · `0c` NEXT BUILD CANDIDATES (his pick, not the… · `1` ds-018 C2 follow-through · `2` dv-legend/dv-behaviour CEILING · `3` ds-012(b) gutter-relative plot area · `4` DV-D16 floating growth · `5` Instrument-fit remainder · `6` ds-016, UNRULED · `7` ds-017, UNRULED · `8` STILL OWED, unchanged, none superseded · `9` DELEGATION TOPOLOGY, UNSCOPED · `10` ✅ PER-GATE TEST PLAN · `11` THE 2c-ROLL / INDEX-VOCABULARY DEADLOCK · `12` THE #57 1b DOSSIER · `13` /tmp RUNBOOK EXPOSURE, UNFIXED · `14` ⬛ DAVE'S FOUNDING PRINCIPLE · `15` LEDGER § ★ #59
@@ -59,7 +60,7 @@
 
 ---
 
-*(Chain ends. **4,884 tape — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **5,028 tape — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
-`GOOD-MORNING.md` is 24,656 tape and stays whole for retrieval; you have paid for
+`GOOD-MORNING.md` is 24,800 tape and stays whole for retrieval; you have paid for
 20% of it, and that is the intended figure, not a shortfall.)*
