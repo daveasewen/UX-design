@@ -60,7 +60,7 @@ PROVEN figure matched measurement — see § Replay #63 at the foot for the meas
 |---|---|---|---|---|
 | 16 | `session` must parse as an int (l.264-267) | none in shipped selftest | PROVEN — `session="abc"` → rc=2, err=`✖ FAIL: roll_2f: session 'abc' is not a number — the block key is \`#### <date> #<N>\` and N is what the continuity check reads — NOTHING written` | — |
 | 17 | Over-reach refusal: commit-state half may not swallow another stratum's `#### <date> #<N>` key (l.290-303) | PROVEN — selftest `"roll_2f: cs_end past the next stratum is REFUSED, not swallowed"` (l.660-662): `rc == 2 and "reached PAST the next stratum" in err`, plus `"nothing written when cs_end over-reaches"` (l.663-665) | — | Detection is via `STRATA_KEY_RE` matching `^####\s+\d{4}-\d{2}-\d{2}\s+#\d+\b` on swallowed lines. A neighbouring stratum whose key line is malformed, missing, or doesn't match that exact shape would be swallowed silently — the guard can only see keys it recognises. |
-| 18 | Post-mortem half must contain a `#### <date> #<N>` key line (l.305-310) | PROVEN — selftest `"roll_2f: unkeyed post-mortem refused"` (l.694-696): `rc == 2 and "no \`#### " in err` | — | — |
+| 18 | Post-mortem half must contain a `#### <date> #<N>` key line (l.305-310) | PROVEN — selftest `"roll_2f: unkeyed post-mortem refused"` (l.694-696): `rc == 2` and err names the missing `#### <date> #<N>` key *(cell rephrased #64 — the original nested an escaped backtick that left parsers in the wrong quoting state)* | — | — |
 | 19 | The key's session number must equal the `session` argument (l.311-315) | PROVEN — selftest `"roll_2f: session argument disagreeing with the block key is refused"` (l.701-703): `rc == 2 and "disagree" in err` | — | — |
 | 20 | Duplicate session key in the log refused (l.317-325) | PROVEN — selftest `"roll_2f: duplicate session key refused"` (l.607): `rc == 2 and "already carries a block" in err`; and combined with the order relaxation at l.631-636 (`"roll_2f: uniqueness STILL refuses when order no longer does"`) | — | Detection is via `STRATA_KEY_RE` matching lines already in the log. A duplicate recorded in a non-matching format (extra whitespace variant, different date punctuation) is invisible to this check. |
 | 21 | Chronological order RELAXED (#54/D5(a)) — later blocks permitted, and the append is DECLARED not silent (l.326-352) | PROVEN — selftest `"roll_2f: out-of-order append PERMITTED (D5 (a))"` (l.615, `rc==0`) and `"...is DECLARED, not silent"` (l.616-617, `"appended BEHIND later blocks [40]" in out`) | — | This is a relaxation, not a check — nothing here can "miss" a defect since the behaviour it used to refuse is now intentionally allowed. The residual risk (named in-file, l.343-346) is that a future edit could accidentally relax UNIQUENESS along with ORDER; claim 20's mutation above confirms uniqueness currently still holds even when order doesn't. |
@@ -94,7 +94,7 @@ PROVEN figure matched measurement — see § Replay #63 at the foot for the meas
 | 39 | Atomic per-file write: same-dir temp file + `os.replace` (l.469-478) | none (not a refusal — an implementation-robustness property) | **CANNOT-TEST-SAFELY** — proving this requires injecting an OS-level fault (disk full, permission revoked, process killed) mid-write against a live file, which risks leaving a real repo file in a half-written or lock-contended state. Not attempted. | This is the file's OWN named residual risk (docstring l.27-30): the "all-or-nothing" guarantee is a guard-level property, not a filesystem-transaction one. Multiple files being written in one commit are each individually atomic but not atomic AS A SET. |
 | 40 | `run_ops`: `ops` must be a JSON list (l.488-489) | none in shipped selftest | PROVEN — passed a dict instead of a list → rc=2, err=`✖ FAIL: --ops must be a JSON LIST of op objects — NOTHING written` | — |
 | 41 | `run_ops`: each op must be an object carrying an `'op'` key (l.491-492) | none in shipped selftest | PROVEN — `[{"file": "...", ...}]` (no `op` key) → rc=2, err=`✖ FAIL: op 0: not an object with an 'op' key — NOTHING written` | — |
-| 42 | `run_ops`: unknown op kind refused (l.504-506) | none in shipped selftest | PROVEN — `{"op":"delete",...}` → rc=2, err=`✖ FAIL: op 0: unknown op 'delete' (move|replace|insert|roll_2f) — NOTHING written` | — |
+| 42 | `run_ops`: unknown op kind refused (l.504-506) | none in shipped selftest | PROVEN — `{"op":"delete",...}` → rc=2, err=`✖ FAIL: op 0: unknown op 'delete' (move\|replace\|insert\|roll_2f) — NOTHING written` *(pipes escaped #64 — the raw `\|`s made this row 9 cells to any table parser)* | — |
 | 43 | `run_ops`: a `TypeError` from a bad/missing op argument is caught and re-raised as `MoveError` (l.507-508) | none in shipped selftest | PROVEN — `{"op":"insert","file":"GOOD-MORNING.md"}` (missing `at`, `lines`) → rc=2, err=`✖ FAIL: op 0 (insert): bad/missing argument — Transaction.insert() missing 2 required positional arguments: 'at' and 'lines' — NOTHING written` | Catches `TypeError` specifically — any OTHER exception type raised from inside an op (e.g. an unexpected `KeyError`/`AttributeError` from a malformed-but-type-correct argument) would propagate unguarded past `run_ops`'s `try/except MoveError`, as an unhandled Python traceback rather than a clean `✖ FAIL` receipt. Not exercised — no such input was found that reaches that branch through the currently-typed op signatures. |
 
 ## 9. CLI entry point (lines 843–865)
@@ -121,9 +121,14 @@ PROVEN figure matched measurement — see § Replay #63 at the foot for the meas
 - No claim was scored "UNPROVEN — ran out of budget"; every claim in the enumeration got either a
   selftest citation or a run mutation, except the one dead-code case above.
 
-Counts: **35 PROVEN · 1 UNPROVEN (dead code) · 1 CANNOT-TEST-SAFELY** across 45 numbered claims
-(two claims — 10 and 11 — share one row-pair under "move op"; count is of distinct verdict cells,
-not table rows).
+Counts: ~~35 PROVEN~~ → **43 PROVEN · 1 UNPROVEN (claim 10, dead code) · 1 CANNOT-TEST-SAFELY
+(claim 39) across 45 numbered claims — RECONCILED #64.** Method: a verdict lives in EITHER the
+BITES cell (selftest-proven) OR the MUTATION-RED cell (mutation-proven), so any single-column
+scorer undercounts; measured by `(?<!UN)PROVEN` per claim row (regex on this file, #64). The
+"35" here and #63's "39" were both parser artifacts — two rows were structurally malformed
+(row 42's unescaped pipes, row 18's nested backtick; both repaired above, marked) and five rows
+use non-canonical PROVEN phrasing ("PROVEN both arms", "PROVEN (as a positive control)", etc.),
+which a strict `PROVEN —` scorer also missed.
 
 ## git status after all work (verbatim)
 
@@ -151,3 +156,20 @@ under outputs/matrix-work/ which live outside this repo)
 - Status remains **DRAFT — not ratified**. The findings worth carrying regardless: the dead-code
   guard (claim 10) · the archive "newest batch" first-heading assumption · `STRATA_KEY_RE`
   blindness to malformed key lines · files without a §A marker get zero `_guard` protection.
+
+---
+
+## § Ratification #64 (Fable conductor, 2026-07-31 — count reconciliation DISCHARGED, by addition)
+
+**RATIFIED.** The #63 replay's owed reconciliation is settled: **43 PROVEN · 1 UNPROVEN (claim
+10) · 1 CANNOT-TEST-SAFELY (claim 39) · 45 total.** Three counts existed (35 / 39 / 43); the
+first two were measurements of the TABLE'S MARKDOWN, not of the claims — Worker A (#64, Sonnet)
+located the mechanism (row 42's unescaped pipes made it 9 cells; row 18's nested escaped backtick
+flipped quoting state; 5 rows use non-canonical PROVEN phrasing) and the conductor re-measured
+independently with a verdict-in-either-cell scorer before repairing the two malformed rows
+(marked in place). ★ The lesson is [[measure-dont-convert-units]]'s: all three counters were
+honest; two were pointed at a corrupted instrument. Claim 10 stays UNPROVEN (dead code — a
+finding, not a gap) and claim 39 stays CANNOT-TEST-SAFELY (OS-fault injection against live
+files; the module's own docstring names the residual). Row 30's "PROVEN by inference" is noted
+as the weakest cell in the table — a dedicated §A-less-bypass bite is a worthy follow-up, not a
+blocker. The #63 replay section above is left untouched as record, per header-wins-over-audit.

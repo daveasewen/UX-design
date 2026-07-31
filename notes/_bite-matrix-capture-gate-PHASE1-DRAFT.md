@@ -1060,3 +1060,14 @@ table — this table is a navigation aid only.)
   fail-loud-on-4th-unrollable cross-check — a #58 ruling untested), #42 (no-TITLE FAIL,
   the falsely-claimed bite), #84/#85 (dofirst-index checks never called by any selftest),
   #89 (git-uncommitted WARN). Status remains **DRAFT — not ratified**.
+
+---
+
+## § Ratification #64 (Fable conductor, 2026-07-31)
+
+**RATIFIED.** Phase 1's enumeration (96 claims · 66 selftest-proven · 30 UNCOVERED) is
+discharged as a map: phase 2 (`_bite-matrix-capture-gate-PHASE2-DRAFT.md`, ratified #64)
+mutation-tested all 30 UNCOVERED rows against the enumeration as numbered here, and none of
+its runs contradicted a phase-1 claim. The two flag-notes (UNKEYED_BLOCKING pin, the
+`_gm_fixture` title=False call-site gap) remain open items, phase-2-verified as documentation
+defects not mechanism defects.

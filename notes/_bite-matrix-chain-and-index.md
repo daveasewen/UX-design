@@ -43,3 +43,11 @@ today while wiring CI (`816f726`) — a sub would have re-proven the proven.
   sources, never source truth. A false banner or mangled archive heading propagates
   with full gate blessing. The gates upstream of the record (capture gate, gate 4) are
   where truth-shaped checks live — which is why its matrix is next.
+
+---
+
+## § Ratification #64 (Fable conductor, 2026-07-31)
+
+**RATIFIED.** Written and mutation-run in-window at #63 (conductor's own hands, mutations
+quoted in place; CI wiring `816f726` re-ran both directions RED→green at the push seam).
+The standing finding is carried, not softened: **these gates prove FRESH, never TRUE.**
