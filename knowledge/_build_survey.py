@@ -136,11 +136,27 @@ def main():
     if include_mut:
         dirty = subprocess.run(["git", "status", "--porcelain"], cwd=ROOT,
                                capture_output=True, text=True).stdout.strip()
-        if dirty:
+        if dirty and "--resume" in sys.argv:
+            # ★ #62: a chunked mutating pass is MID-BUILD dirty BY DESIGN — the build is
+            # non-atomic (step 1 rewrites compliance wholesale; verification{} and
+            # external_automatable_refs{} are rebuilt by LATER steps — _build_all.py's own
+            # docstring, lines 5-21). --resume continues over exactly that state. It PRINTS
+            # the dirt it resumes over, so damage attribution keeps its baseline: the last
+            # commit, never this intermediate state.
+            print("⚠ --resume: proceeding over a dirty tree. The dirt below must be the PRIOR\n"
+                  "  chunk's regeneration — if you cannot name why every path is dirty, STOP.\n"
+                  "  (#61's 'gutted' state IS this state: stripped-not-yet-re-enriched, healed\n"
+                  "  only by a COMPLETE pass over the remaining steps.)")
+            for p in dirty.splitlines():
+                print(f"    {p}")
+        elif dirty:
             print("✗ REFUSING --include-mutating on a dirty tree. Mutating steps rewrite derived\n"
                   "  files; if they abort you cannot tell your own edits from the damage. Commit\n"
                   "  or stash first. (#61: an aborted build gutted 33 compliance files and the\n"
-                  "  reconcile waved them through as 'just derived output'.)")
+                  "  reconcile waved them through as 'just derived output'.)\n"
+                  "  Continuing a CHUNKED --range pass whose dirt is the prior chunk's own\n"
+                  "  regeneration? That is what --resume is for — it declares the dirt it\n"
+                  "  resumes over instead of blessing it.")
             return 2
 
     failed, passed, skipped, errored = [], [], [], []
