@@ -7,7 +7,7 @@
 > and ★ LATEST banner, plus `_LIVE-STATE.md`'s ⏱ LATEST delta — the three things GM-D7-am names
 > (CUT #33 on Dave's ruling). **If you have read this file, you have read the chain.**
 >
-> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 25,051 tape and 84% of it is
+> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 25,192 tape and 83% of it is
 > retrieval surface you are not meant to pay for at boot. That reflex is the thing this file
 > exists to stop — five sessions called the chain CUT and every one of them paid full price.
 >
@@ -45,6 +45,7 @@
 > - **One-pager `notes/2026-07-31-what-memento-is-onepager-v1.md` v1 approved in draft** (public register, his three-function correction) — voice pass owed, sign-off register fed.
 > - **⚠ Parallel-window lesson, attributed:** #62 closed while #63 worked; its stand-down receipt landed between this session's reconcile and stage, so `e920080` carries a fifth file the reconcile never named (benign — the receipt was FOR #63). **A reconcile is stale the moment another writer exists; `git add -A` cannot scope.**
 > *(post-wrap addendum, 5b — ⬛ **DAVE REDIRECTED AT THE CLOSE: #64 = RELEASE, NOT APOLLO — "I have a deliverable": package Memento for GitHub Copilot AND a Claude plugin, stability confirmed first.** STABILITY = the #63 programme closing, each item evidence not vibes: ① CI's first verdict on his push (the wired survey step) · ② gate 5 (`_gm_usage.py`) matrix · ③ capture phase 2 (30 UNCOVERED — headline: ds-022's #58 cross-check) · ④ the three DRAFT ratifications + mover count fix. PACKAGING: start from `notes/2026-07-25-claude-code-orchestration-survey.md` as **DELTA-AUDIT BASE, never current truth** (his #62 caveat: re-verify every claim; the boot artefact to port is now `_CHAIN.md` + retrieval, not §A) + ledger D4′ sequence; **Claude plugin is now IN scope alongside Copilot, per this redirect — "later" is retired.** ⬛ **D6 — DAVE'S OWN ACCESS PRE-CHECK — IS OWED BEFORE ANY COPILOT BUILD; surface it at the #64 opener.** Apollo: seven sessions, his call, priced out loud.)*
+> *(post-wrap addendum 2, 5b — ⬛ **DAVE ACCEPTED THE MULTI-WINDOW OFFER (#60-D1, production-crank case): #64 RUNS CONDUCTOR + 2 SONNET WORKERS.** The DIVVY PLAN — lanes · model per lane · serial set · files per lane · the stability-before-packaging gate — is `notes/_briefs/2026-07-31-64-release-divvy-brief.md`; roles still come from Dave's opener lines, and he vetoes or re-lanes there. Workers own only their two named new draft files; everything else is the conductor's serial set.)*
 >
 > **⬛ OPEN WORKLIST — PRESENCE INDEX (17 items, GENERATED). Every open item is named; NO bodies are here — `--fetch gm:DOFIRST`.**
 > `0b` ★★ ENCODE BEFORE THE WAVE · `0c` NEXT BUILD CANDIDATES (his pick, not the… · `1` ds-018 C2 follow-through · `2` dv-legend/dv-behaviour CEILING · `3` ds-012(b) gutter-relative plot area · `4` DV-D16 floating growth · `5` Instrument-fit remainder · `6` ds-016, UNRULED · `7` ds-017, UNRULED · `8` STILL OWED, unchanged, none superseded · `9` DELEGATION TOPOLOGY, UNSCOPED · `10` PER-GATE TEST PLAN · `11` THE 2c-ROLL / INDEX-VOCABULARY DEADLOCK · `12` THE #57 1b DOSSIER · `13` /tmp RUNBOOK EXPOSURE, UNFIXED · `14` ⬛ DAVE'S FOUNDING PRINCIPLE · `15` LEDGER § ★ #59
@@ -64,7 +65,7 @@
 
 ---
 
-*(Chain ends. **5,285 tape — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **5,426 tape — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
-`GOOD-MORNING.md` is 25,051 tape and stays whole for retrieval; you have paid for
-21% of it, and that is the intended figure, not a shortfall.)*
+`GOOD-MORNING.md` is 25,192 tape and stays whole for retrieval; you have paid for
+22% of it, and that is the intended figure, not a shortfall.)*
