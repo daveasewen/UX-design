@@ -22,10 +22,15 @@ build step, not a copy step; a half-renamed copy would be neither auditable nor 
   The package ships the generator; each adopting project grows its own chain.
 - **`knowledge/_memento-index.json`** — generated, Apollo content; adopters regenerate.
 - **`knowledge/_capture_gate.py`** — Apollo-laced (~2.5K lines of project-specific rules).
-  NOT needed whole: `_gen_chain.py` imports exactly four functions —
+  NOT needed whole: `_gen_chain.py` imports four functions —
   `chain_parts` · `measure_tokens` · `measurement_degraded` · `read_chain_tk`
-  (probe: `grep -oE 'cg\.[a-z_]+' | sort -u`, 2026-07-31). **Owed: a four-function shim**
-  (`_gauge_shim.py` or similar) so the copied generator runs without Apollo's gate.
+  (probe: `grep -oE 'cg\.[a-z_]+' | sort -u`, 2026-07-31).
+  ★ **CORRECTED at the v0.1 build: "exactly four" was a grep of DIRECT calls and missed a
+  transitive dependency** — `chain_parts` also needs the `GM_VOCAB`/`LS_VOCAB` tuples from
+  `knowledge/_gm_usage.py` (833 lines, otherwise untouched). The build sub caught it and
+  ported the two tuples as data into the shim. A dependency list from one grep is a list of
+  MATCHES, not of SOURCES. ✅ **Shim SHIPPED as `machinery/_capture_gate.py`** (same module
+  name, so the verbatim import resolves unchanged) — debt item 1 CLOSED #65.
 - **Capture ritual + record-guarding gates** — the de-coupling job is real and unscoped;
   named as the next machinery wave, not smuggled in tonight.
 
