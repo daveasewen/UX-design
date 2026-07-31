@@ -1,11 +1,20 @@
 name: gates
 
 # Verification = enforcement, applied to the repo itself (review 2026-07-02,
-# decision 5). Two jobs' worth of checks in one:
+# decision 5). Three jobs' worth of checks in one:
+#   0. the survey — every check/selftest step asked against the COMMITTED tree,
+#      BEFORE any regeneration. This kills the write-then-check seam #60-D4
+#      located (`_build_all.py:184-186` chain, `:160-161` index): a build that
+#      regenerates and then checks its own output can never see a stale push.
+#      Mutation-tested #63: a stale _CHAIN.md and a stale _memento-index.json
+#      each turn this step red (steps [70] and [66]).
 #   1. the knowledge build — every derived view + every blocking gate
 #   2. the gate self-tests — every gate must BITE a deliberately-broken input
 #
-# Zero pip installs: the validators and tests are stdlib-only by design.
+# One pip install: tiktoken. The "zero pip installs, stdlib-only" premise
+# (07-02) pre-dates the real-token ruling (#56); `_gen_chain.py --check` now
+# REFUSES on the estimate fallback rather than silently under-reporting, so
+# without tiktoken step [70] is honestly red, not quietly green.
 # The render-dependent checks (_validate_state_contrast.py, _validate_screen.py
 # --render) are NOT run here — they need a browser engine; run them locally via
 # the render path. Known gap, documented in knowledge/_tests/test_gates.py.
@@ -24,6 +33,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
+      - name: Install tiktoken — the chain check refuses the estimate fallback
+        run: pip install tiktoken
+
+      - name: Survey the COMMITTED tree — every check/selftest before any regeneration
+        run: python3 knowledge/_build_survey.py --timeout 60
 
       - name: Knowledge build — all derived views + blocking gates
         run: python3 knowledge/_build_all.py
