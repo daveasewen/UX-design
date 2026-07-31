@@ -65,8 +65,19 @@ BUDGET_WORKING = 200_000     # SOURCED — the line jobs are priced against
 # and 200,000 was never his to re-dial by fiat. ★ A number attributed to the wrong authority is
 # argued with differently — a preference invites negotiation, a measurement does not. His shape
 # for the two, same message: **do not reach 200,000 · 200,000–256,000 is DANGEROUS · past 256,000
-# everything goes badly.** ⚠ AMBER stays DERIVED (80% of working) and is ours, not research.
-BUDGET_AMBER = 160_000       # DERIVED — 80% of WORKING: where a job should stop taking on more
+# everything goes badly.**
+# ⛔ AMBER IS **PICKED**, NOT DERIVED — RULED BY DAVE, #59. 80% of working is a round fraction, not a
+# derivation; labelling it DERIVED made it immune to the very rule that should have caught it
+# ("derive a cap, never pick it" — RULED #53 · gate-asserted #56 · second remedy #58; three dates
+# that had collapsed into one citation). ★ THE FORMULA IS THE RULING, THE NUMBER IS NOT:
+#     stop = wall − wrap − step        # each term tagged MEASURED or ESTIMATED
+# and the HIGH end of BOTH terms is reserved, or neither (a stop line reserved at the MEDIAN step is
+# under water half the time by construction). ⚠ DO NOT stack a step reserve on top of an amber that
+# already contains one — that is a RESERVE ON A RESERVE, ~10K/window, invisible because each layer is
+# individually defensible. ★★ `wrap` IS NOW MEASURABLE AND WAS FIRST MEASURED AT #59: 42,434+ real
+# tokens against the inherited ~25,000 folklore ⇒ low by ≥1.7×. n=1; needs 2–3 more before the line
+# moves. NO BEHAVIOUR CHANGE HERE — the value is untouched by ruling; only the label was a lie.
+BUDGET_AMBER = 160_000       # PICKED (see above) — where a job should stop taking on more
 
 # --------------------------------------------------------------------------- THE BOOT
 # The floor every session pays before it does anything. TWO HALVES, and they are known to
