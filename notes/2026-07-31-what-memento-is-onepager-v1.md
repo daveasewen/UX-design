@@ -1,4 +1,7 @@
-provenance: #63 conductor draft, per Dave's #62 redirect · status: DRAFT v1 — Dave's voice to apply, register PUBLIC (abstract, no internal mechanics)
+provenance: local_aa3d71d3-9961-4f44-9fc7-1d56283a5f90 · 2026-07-31
+status: floated
+
+*(#63 conductor draft per Dave's #62 redirect — DRAFT v1, approved in draft same session ("really encapsulates the idea"); his VOICE pass owed. Register PUBLIC: abstract, no internal mechanics.)*
 
 # What Memento is
 

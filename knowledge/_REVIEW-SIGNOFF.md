@@ -192,3 +192,7 @@ Follow the **account-card** template. Components: **summary, tab-bar, action-bar
 | Artefact | Raised | State |
 |---|---|---|
 | `reviews/DS-018-DISABLED-STATE-2026-07-27-v1.REVIEW.html` | 2026-07-27 #11 | **A2·B2·C2 RULED same session.** ⛔ **The RECESSIVE VALUE remains UNRULED** — the doc's four candidates (`#9D9D9D` canon today · `#808080` B-D4 · `#B5B5B5` · `#6B6B6B`) were offered as candidates, **never as a recommendation**, per derivation governance. Light/dark pairing also unruled. **Enactment must put the value to him.** ⚠ Collides with the flagged drift: B-D4 ruled `#808080`, canon ships `#9D9D9D` (`canon.css:351`). |
+| `notes/2026-07-31-what-memento-is-onepager-v1.md` | 2026-07-31 #63 | **Approved in draft same session** (Dave: "really encapsulates the idea"). Awaiting his VOICE pass + a release-home decision (where it publishes). |
+| `notes/_bite-matrix-gm-move-DRAFT.md` | 2026-07-31 #63 | DRAFT, replay done — **count reconciliation owed** (4 unverdicted rows) before ratification. |
+| `notes/_bite-matrix-chain-and-index.md` | 2026-07-31 #63 | DRAFT, conductor-built, mutations quoted — awaiting ratification. |
+| `notes/_bite-matrix-capture-gate-PHASE1-DRAFT.md` | 2026-07-31 #63 | DRAFT phase 1 (no mutations by design) — phase 2 = the 30 UNCOVERED rows, queued #64. |
