@@ -30,8 +30,12 @@ _to_delete/
 # Distributable build artifacts
 *.zip
 
-# Licensed font binaries (desktop + webfont packs) — internal use, not for distribution/repo
-knowledge/assets/fonts/
+# Licensed fonts — SPLIT #64 per the distribution ruling (_LIVE-STATE § WEBFONT, CLOSED):
+# repo is private and shared only in-licence, so the DESKTOP set (TTF+OTF) is TRACKED —
+# it is what ASSERT-002/006 verify and CI's checkout must contain it to answer honestly.
+# The script webfont packs stay ignored until the WEBFONT item clears (files land + ramp ruling).
+knowledge/assets/fonts/*
+!knowledge/assets/fonts/_desktop/
 
 # Font-embedded review sheets (added 2026-07-18) — these inline the licensed Latin face as
 # base64 woff2 so specimens render in real Univers. That is the whole point of them, but it
