@@ -2841,7 +2841,7 @@ FAT = " ".join(f"word{i}" for i in range(120))  # ~200 tk of line, for isolating
 def _gm_fixture(do_first=10, sec_a=10, sec_c=10, with_b=False, strata_blocks=0,
                 strata_pad=0, drop=(), stamp=None, fat_c=0, fat_a=0,
                 fat_banner=0, banner_extra=None, stamp_a=None, ls_text=None, latest=True,
-                strata_keys=None):
+                strata_keys=None, title=True):
     """Synthetic GOOD-MORNING.md for the budget bites.
 
     `stamp=None` ⇒ a CORRECT stamp is computed for the finished text, so the green control is
@@ -2858,7 +2858,19 @@ def _gm_fixture(do_first=10, sec_a=10, sec_c=10, with_b=False, strata_blocks=0,
     byte-identical output to before this parameter existed; passing it is what lets a fixture
     name specific (e.g. exempt) session numbers rather than only sequential ones. When given,
     its length is what emits (so `strata_blocks` alone is no longer required alongside it)."""
+    # ⛔ #61 — THE TITLE LINE IS NOT DECORATION IN THIS FIXTURE, IT IS LOAD-BEARING.
+    # `affe15d` (#60) added `check_budgets`'s TITLE_LINE_RE assertion and did NOT teach this
+    # fixture to satisfy it. Every green-expected budget bite then failed for a reason unrelated
+    # to what it tests — 9 failures, ONE cause — and because `_build_all.py:52` runs
+    # `--selftest` through the catch-all abort branch, the whole build DIED AT STEP 8 OF 75.
+    # MEASURED, not traced: exit 1 in 6s; steps 9–75 never ran; CI runs `_build_all.py`.
+    # ★ The gate that was added to make a rule bite bit the build instead, and nothing noticed
+    # because #60 ran `--wrap` (which passes) and never ran `--selftest` or the build.
+    # ⚠ `title=False` is how the ABSENT-title path is bitten deliberately — an absent title must
+    # still fail loudly, per #60-D8. Do not remove that arm to make this fixture simpler.
     out = ["# Good morning", "SIZESTAMP", ""]
+    if title:
+        out.append("> **TITLE THE NEXT CHAT →** `Apollo - #N fixture (read _CHAIN.md ONLY)`")
     # ★ LATEST is in the fixture by DEFAULT from #33 on: after the GM-D7-am cut the banner is the
     # chain's whole GM term, so a fixture without one cannot exercise M10 at all — every bite would
     # take the UNMEASURED path and a failure-only suite would still read green. `latest=False` is
