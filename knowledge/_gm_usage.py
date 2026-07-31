@@ -8,6 +8,18 @@ GM stratum block carries two lines beside the pre-flight stamp:
   > **section-usage #<N> (observed, self-report):** GM HDR:C LATEST:C ... · LS HDR:R SPIN:U ...
   > **section-sizes #<N> (<method>):** GM HDR:2410 LATEST:1187 ... · LS ... · totals GM:14332 LS:16762
 
+★ UNMEASURED IS A LEGAL VALUE (#62 — the #61 finding "two correct behaviours colliding").
+#55's wrap wrote an HONEST refusal for #54 (`9ca96e1`) and the vocabulary refused it, because
+nobody had taught the format that not-measuring is something a session may truthfully say.
+The legal form is EXACTLY:
+
+  > **section-usage #<N>:** ⛔ **NOT CAPTURED — UNMEASURED.**
+
+Scope is the quoted form and nothing wider (a gate must quote what it permits): a near-miss
+still REFUSES, a session may not testify BOTH codes and UNMEASURED, and an UNMEASURED session
+contributes NO column to the series — same convention as a session absent from the record,
+but named separately in notes, never flattened into a gap.
+
 Codes (ruled U/R/C, 3-state): U = unread this session · R = read (loaded into context) ·
 C = cited (actually shaped a decision or an edit). Usage × size, accumulated in
 `notes/_GAUGE-LOG.md` as strata roll (existing 2f mechanism, zero new plumbing), is the
@@ -144,6 +156,10 @@ def split_gm_a(lines, span):
 
 USAGE_RE = re.compile(
     r"^>\s*\*\*section-usage\s+#(\d+)\s*\(([^)]*)\):\*\*\s*GM\s+(.*?)\s*·\s*LS\s+(.*?)\s*$")
+# ★ The honest-refusal form, first-class since #62. EXACT — anchored both ends, no free text:
+# legality is scoped to the quoted form, and a near-miss is still a REFUSAL, never a skip.
+UNMEASURED_RE = re.compile(
+    r"^>\s*\*\*section-usage\s+#(\d+):\*\*\s*⛔\s*\*\*NOT CAPTURED — UNMEASURED\.\*\*\s*$")
 SIZES_RE = re.compile(
     r"^>\s*\*\*section-sizes\s+#(\d+)\s*\(([^)]*)\):\*\*\s*GM\s+(.*?)\s*·\s*LS\s+(.*?)(\s*·\s*totals.*)?$")
 TOKEN_RE = re.compile(r"^([A-Za-z0-9]+):([A-Za-z0-9]+)$")
@@ -248,7 +264,11 @@ def sizes_line(session, repo=REPO):
 
 
 def validate_usage_line(line):
-    """FORM check only (testimony stays the session's). Returns list of issues, [] = well-formed."""
+    """FORM check only (testimony stays the session's). Returns list of issues, [] = well-formed.
+    ★ #62: the exact UNMEASURED form is well-formed too — an honest refusal is legal testimony,
+    and a wrap that cannot capture must be able to say so without being called MALFORMED."""
+    if UNMEASURED_RE.match(line.strip()):
+        return []
     m = USAGE_RE.match(line.strip())
     if not m:
         return ["section-usage line does not match the contract "
@@ -351,7 +371,7 @@ def usage_history(repo=REPO):
     reader cannot know which.
     """
     rows, refusals, notes = {}, [], []
-    seen_src = {}
+    seen_src, unmeasured = {}, {}
     for rel in HISTORY_SOURCES:
         path = os.path.join(repo, rel)
         if not os.path.exists(path):
@@ -362,12 +382,31 @@ def usage_history(repo=REPO):
         for ln in text.splitlines():
             if not USAGE_MARKER_RE.match(ln.strip()):
                 continue
+            um = UNMEASURED_RE.match(ln.strip())
+            if um:
+                # ★ FIRST-CLASS (#62): present testimony that no measurement exists. No table
+                # column — the same convention as a session absent from the record (a column of
+                # invented `?`s would flatten "refused to measure" into "not yet registered").
+                un = int(um.group(1))
+                if un in rows:
+                    refusals.append(
+                        f"session #{un} testifies with codes in {seen_src[un]} and UNMEASURED "
+                        f"in {rel} — one of them is false and this reader cannot tell which. "
+                        f"REFUSED.")
+                    continue
+                unmeasured.setdefault(un, rel)   # identical duplicates collapse silently
+                continue
             m = USAGE_RE.match(ln.strip())
             if not m:
                 refusals.append(f"{rel}: a `section-usage` line does not parse — "
                                 f"REFUSED, not skipped: {ln.strip()[:90]}")
                 continue
             n = int(m.group(1))
+            if n in unmeasured:
+                refusals.append(
+                    f"session #{n} testifies UNMEASURED in {unmeasured[n]} and with codes in "
+                    f"{rel} — one of them is false and this reader cannot tell which. REFUSED.")
+                continue
             testimony = {}
             for group, blob in (("GM", m.group(3)), ("LS", m.group(4))):
                 for tok in blob.split():
@@ -384,11 +423,17 @@ def usage_history(repo=REPO):
     ordered = sorted(rows.items())
     if ordered:
         span = [n for n, _ in ordered]
-        gaps = [n for n in range(span[0], span[-1] + 1) if n not in rows]
+        gaps = [n for n in range(span[0], span[-1] + 1)
+                if n not in rows and n not in unmeasured]
         if gaps:
             notes.append(f"sessions inside the range with NO testimony at all: "
                          f"{', '.join('#%d' % g for g in gaps)} — absent from the dataset, "
                          f"which is a claim about the RECORD, not about those sessions")
+    if unmeasured:
+        # ★ Named separately, never flattened into the gap note: these sessions DID testify.
+        notes.append(f"sessions testifying UNMEASURED (an honest refusal, first-class #62): "
+                     f"{', '.join('#%d' % u for u in sorted(unmeasured))} — present in the "
+                     f"record, absent from the table by their own declaration")
     return ordered, refusals, notes
 
 
@@ -671,6 +716,44 @@ def selftest():
         r0, ref0, n0 = usage_history(os.path.join(td, "nope"))
         bite("reader: a missing source is UNREAD, never assumed empty",
              r0 == [] and any("UNREAD, not assumed empty" in n for n in n0))
+
+    # --- UNMEASURED is first-class (#62) — and its legality is SCOPED to the exact form ---
+    _unm = "> **section-usage #41:** ⛔ **NOT CAPTURED — UNMEASURED.**"
+    bite("UNMEASURED form is well-formed at the wrap gate (an honest refusal is legal testimony)",
+         validate_usage_line(_unm) == [])
+    bite("a NEAR-UNMEASURED form still fires at the wrap gate — legality is the quoted form only",
+         validate_usage_line(_unm.replace("UNMEASURED.", "UNMEASURED")) != [])
+    with tempfile.TemporaryDirectory() as td3:
+        os.makedirs(os.path.join(td3, "notes"))
+        _log3 = os.path.join(td3, "notes", "_GAUGE-LOG.md")
+        _gm3 = os.path.join(td3, "GOOD-MORNING.md")
+        open(_gm3, "w", encoding="utf-8").write(GOOD_USAGE.replace("#23", "#40") + "\n")
+        open(_log3, "w", encoding="utf-8").write(
+            _unm + "\n" + GOOD_USAGE.replace("#23", "#43") + "\n")
+        r3, ref3u, n3 = usage_history(td3)
+        bite("reader: an UNMEASURED line is FIRST-CLASS — read, never a refusal",
+             ref3u == [] and len(r3) == 2)
+        bite("reader: an UNMEASURED session is NOT a record gap — the gap note names #42 only",
+             any("NO testimony" in n and "#42" in n and "#41" not in n for n in n3))
+        bite("reader: UNMEASURED sessions are NAMED in notes, never flattened",
+             any("UNMEASURED" in n and "#41" in n for n in n3))
+        # disagreement, both orders — a session may not testify codes AND UNMEASURED
+        open(_log3, "w", encoding="utf-8").write(
+            GOOD_USAGE.replace("#23", "#41") + "\n" + _unm + "\n")
+        _r3, ref3d, _n3d = usage_history(td3)
+        bite("reader: codes-then-UNMEASURED for the SAME session REFUSES",
+             any("cannot tell which" in e for e in ref3d))
+        open(_log3, "w", encoding="utf-8").write(
+            _unm + "\n" + GOOD_USAGE.replace("#23", "#41") + "\n")
+        _r3, ref3e, _n3e = usage_history(td3)
+        bite("reader: UNMEASURED-then-codes for the SAME session REFUSES too",
+             any("cannot tell which" in e for e in ref3e))
+        # scope mutation: a near-miss in the CORPUS still refuses, never quietly skips
+        open(_log3, "w", encoding="utf-8").write(
+            _unm.replace(" — ", " - ") + "\n")
+        _r3, ref3f, _n3f = usage_history(td3)
+        bite("reader: a NEAR-UNMEASURED corpus line still REFUSES (nothing was loosened, only taught)",
+             any("does not parse" in e for e in ref3f))
 
     _prose = ("> **★ the usage data:** eleven sessions of `section-usage` testimony were read "
               "as a SERIES — this line is PROSE and must not be mistaken for testimony")
