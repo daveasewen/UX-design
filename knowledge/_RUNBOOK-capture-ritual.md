@@ -432,6 +432,12 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
    He flagged unease at an ungated rule and was right: #28 broke it by 19% (295→352 tk) in the session
    that made it, and MEASUREMENT caught it, not a gate. **An ADVISORY report that names the size and
    never fails is offered and remains HIS call** — un-blocked, not ungated. Still owed as of #30.
+   ⛔ **SUPERSEDED #60/#61 — RULED (Dave): the title is now a capped LABEL, ≤120 tape,
+   GATE-ENFORCED (BLOCKING).** The advisory-only posture above is the exact mechanism that let the
+   title grow to 1,073 tape / 3,950 chars — 18% of the read chain, ZERO consumers — over the
+   thirty-two sessions since #28: *"a rule with no gate is a preference."* Written by ADDITION,
+   the #28 text above stays verbatim. Ledger: `notes/_MEMENTO-DECISIONS.md` § ★ #60-D8. Gate:
+   `knowledge/_capture_gate.py`'s `TITLE_CAP_TAPE`/`TITLE_LINE_RE` check in `check_budgets()`.
    ⚠ **Titles are LABELS, never role assignments** (2026-07-21: a forward title's `[conductor + 2
    workers]` seated a second conductor). If the coming session runs the parallel model, say so in the
    §C brief and let the ROLE come from Dave's opener line — and include the **DIVVY PLAN** (lanes ·

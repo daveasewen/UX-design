@@ -506,6 +506,24 @@ BARE_TOKEN_RE = re.compile(
     r"(?!\s*\**\s*(?:tape|bill|tk|tokens?|bytes?|ln|lines?)\b)", re.I)
 BARE_TOKEN_UNITS = ("tape", "bill", "tk", "tokens", "bytes", "ln", "lines")
 
+# ---------------------------------------------------------------- #60-D8, built 2026-07-31 #61
+# `notes/_MEMENTO-DECISIONS.md` § ★ #60 · #60-D8 — RULED (Dave): the next-chat title is a LABEL,
+# capped and gated. MEASURED #60: the `TITLE THE NEXT CHAT` line had grown to 1,073 tape / 3,950
+# chars — 18% of the ENTIRE 5,969-tape cold-boot read chain (it is copied verbatim into
+# `_CHAIN.md`) — with ZERO consumers anywhere in the toolchain: a repo-wide grep for
+# `TITLE THE NEXT CHAT`, `TITLE_RE`, `next_chat`, `chat_title` finds nothing that parses it. Canon
+# already said "Titles are LABELS — role comes from Dave's opener line" three lines below it in
+# GOOD-MORNING.md. The rule was correct and ungated, so it grew for sixty sessions.
+# ⛔ A RULE WITH NO GATE IS A PREFERENCE — that is the finding this check exists to close, and it
+# SUPERSEDES `_RUNBOOK-capture-ritual.md` step 4b's #28 ruling ("Title SIZE is a DISCIPLINE, NOT A
+# GATE… un-blocked, not ungated"): the advisory-only posture #28 chose is the exact mechanism that
+# let this grow unchecked for thirty-two sessions. The runbook carries a correction note pointing
+# here, by ADDITION, not a silent rewrite of #28's own text.
+# ⚠ FAILS LOUD ON ABSENCE, not just on overflow — an absent title must not read as a pass; #60-D8
+# caps the line, it does not licence deleting it.
+TITLE_CAP_TAPE = 120
+TITLE_LINE_RE = re.compile(r"^\s*>?\s*\*\*TITLE THE NEXT CHAT\b.*$", re.I)
+
 # ---------------------------------------------------------------- M-set, ruled 2026-07-27 #17
 # `notes/_MEMENTO-DECISIONS.md` § ★ M-SET · brief `notes/_briefs/2026-07-27-memento-hardening-brief.md`.
 # Three regions that the D7 amendment measured and PUBLISHED but never budgeted. Publishing a
@@ -1415,6 +1433,27 @@ def check_budgets(repo):
             fails.append(f"GOOD-MORNING.md {name}: {n} lines, block {block_at} — ritual step {step}")
         elif n > warn_at:
             warns.append(f"GOOD-MORNING.md {name}: {n} lines, cap {warn_at} — ritual step {step}")
+
+    # ---- #60-D8: TITLE THE NEXT CHAT is a LABEL, capped and BLOCKING (Dave's ruling — see the
+    # TITLE_CAP_TAPE/TITLE_LINE_RE comment above for the full measurement and the #28 supersession).
+    title_line = next((ln for ln in lines[:HEADER_LINES] if TITLE_LINE_RE.match(ln)), None)
+    if title_line is None:
+        fails.append(
+            "GOOD-MORNING.md: no `TITLE THE NEXT CHAT` line found in the header — ritual step "
+            "2/4b. An ABSENT title must not read as a pass: #60-D8 caps the line, it does not "
+            "licence deleting it.")
+    else:
+        title_tape, title_method = measure_tokens(title_line)
+        if title_tape > TITLE_CAP_TAPE:
+            fails.append(
+                f"GOOD-MORNING.md: `TITLE THE NEXT CHAT` line measures {title_tape} tape "
+                f"({title_method}), cap {TITLE_CAP_TAPE} tape (RULED #60-D8) — ritual step 2/4b. "
+                f"The title is a LABEL: at 1,073 tape it was 18% of the 5,969-tape read chain "
+                f"with ZERO consumers anywhere in the toolchain. REMEDY: shorten it back to a "
+                f"label — role comes from Dave's opener line, never the title.")
+        else:
+            notes.append(f"TITLE THE NEXT CHAT: {title_tape} tape ({title_method}) — cap "
+                         f"{TITLE_CAP_TAPE} tape, RULED #60-D8.")
 
     # ---- D7 size stamp: measure first, then check what the file CLAIMS against the measurement
     tk, method = measure_tokens(text)

@@ -2238,7 +2238,7 @@ thousands. ⇒ **cap the return and demand a file** — that is the fan-out econ
 
 ## ★ #60 — 2026-07-31 — DELEGATION MEASURED AT 46:1, TWO GATES CANNOT FAIL IN CI, AND MULTI-WINDOW IS SETTLED
 
-*provenance: 2026-07-31 · status: ruled (Dave, D1) — D2–D6 are measured findings, not rulings; titles reuse the conductor's own ★ LATEST banner headline verbatim. See `GOOD-MORNING.md` § ★ LATEST for full context.*
+*provenance: 2026-07-31 · status: ruled (Dave, D1, D8) — D2–D7 are measured findings, not rulings; titles reuse the conductor's own ★ LATEST banner headline verbatim. See `GOOD-MORNING.md` § ★ LATEST for full context.*
 
 **#60-D1 — RULED (Dave): multi-window has TWO use cases, cap 3.**
 Multi-window runs are available both to catch up the weekly quota and to increase production when needed. Claude offers; Dave chooses or vetoes. Cap of 3 concurrent windows, revisable upward as confidence grows.
@@ -2270,3 +2270,8 @@ The boot decomposition derived total tape by dividing 61,775 real by 1.559. Tape
 `_capture_gate.py --wrap` returned exit 1 (2 fail / 8 warn) against the conductor's own #60 banner, rejecting a pre-flight stamp that lacked a `wrap` term and a band word. The text was corrected; the gate was not.
 **WHY IT MATTERS:** #59 probed the gates, got green, and recorded that green proves nothing about bite. #60 obtained the missing evidence the only way probing cannot — by emitting a genuine defect and being caught. This is a real mutation test, unplanned.
 **SCOPE — do not overclaim:** it proves the FORM check bites. It does NOT show pre-flight can detect a false or fabricated figure; per #60-D-open that gate checks only internal arithmetic and remains blind to fiction.
+
+**#60-D8 — RULED (Dave): the next-chat title is a LABEL, capped and gated.**
+Measured at 1,073 tape / 3,950 chars — 18% of the 5,969-tape read chain — with zero consumers anywhere in the toolchain. Replaced with a ≤120-tape label; its live directives were homed in DO-FIRST first, by addition, and only then cut. Now gate-enforced.
+**WHY:** canon already said "Titles are LABELS" three lines below a 3,950-character title. The rule was correct and ungated, so it grew for sixty sessions. **A rule with no gate is a preference.**
+**SAVING:** ~1,040 tape (~1,700 real) off every cold boot, permanently.
