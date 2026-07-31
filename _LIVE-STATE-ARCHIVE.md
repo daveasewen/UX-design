@@ -1,4 +1,27 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
+## ⏱ PRIOR DELTA — 2026-07-31 (Fri **#60**, OPUS conductor + 2× SONNET workers — ★★ **DELEGATION MEASURED AT 46:1** · ⛔ **TWO GATES CANNOT FAIL IN CI** · ⬛ **MULTI-WINDOW SETTLED, CAP 3**)
+
+- **★★ DELEGATION 46:1 — Dave's third term measured.** brief-out ~4,259 real (upper bound) · report-in ~2,000 · conductor ~6,300 against **293,169** subagent tokens.
+- **★★ BOOT CLOSED BY REPRODUCTION:** 61,582 · 61,812 · 61,775, spread **240** ⇒ `ds-025` item 1's ±8,000 hole is CLOSED. Boot = **31% of working budget before any decision**.
+- **★★ One careless `Glob` cost 24,611 real** — 59% of job spend, **4× the whole delegation round-trip**. Retrieval discipline dominates delegation overhead.
+- **⛔ Chain-staleness + index-freshness are check-after-remedy at every automated seam.** `_build_all.py:184-186` and `:160-161` write-then-check; CI runs only `_build_all.py` ⇒ tautologically green. Chain has ONE genuine seam (`_git_commit.sh:60`, unenforced); **index freshness has ZERO**. **UNFIXED.**
+- **⚠ Strata gate bounds COUNT not BYTES**; `charged_line_counts` exempts the whole region ⇒ unbounded growth invisible to both gates, **each assuming the other covers magnitude**.
+- **★ Pre-flight can be made true, not just self-consistent** — check the stamp against `message.usage`. NOT BUILT; cheapest real bite in the suite.
+- **⚠ Boot 65.6% unaccounted** (system prompt + eager schemas never logged). **Percentages SOFT — denominator was CONVERTED, not measured.** Config lever (7,975 tape) **beats** repo lever (MEMORY.md 5,141). `AGENTS.md` measured-ABSENT from boot.
+- **⬛ RULED (Dave): multi-window = quota catch-up AND production crank; Claude offers, Dave vetoes; cap 3, revisable.** Retires the CONTESTED clause from #48/#57.
+
+## ⏱ PRIOR DELTA — 2026-07-31 (Fri **#59**, OPUS conductor + SONNET worker, Dave live throughout — ★★ **THE WRAP COST IS MEASURED FOR THE FIRST TIME** · ⬛ **RECORD THE FORMULA, NOT THE NUMBER** · ✅ **THE FILL READ IS CLOSED**)
+
+- **★★ WRAP COST MEASURED: 118,155 → 160,589 = 42,434 real tokens and still climbing at the stamp.** Inherited estimate ~25,000, low by ≥1.7×. **Zero prior wrap measurements exist in the live unit** — `notes/_GAUGE-LOG.md` carries only retired-band percentages, unconvertible by Dave's own rule.
+- **⬛ RULED (Dave):** `stop = wall − wrap − step`, every term tagged MEASURED/ESTIMATED; **160,000 is PICKED, not DERIVED**; **reserve the HIGH end of both terms or neither**. Citation split corrected: **#53 ruling · #56 enactment · #58 second remedy**.
+- **★★ NEW CLASS — reserve stacked on a reserve** (~10K/window), invisible because each layer is individually defensible. Surfaced only by writing the formula out.
+- **✅ FILL READ CLOSED:** `usage` byte-identical within every `message.id`; records ≠ turns (~1.75×); a `<synthetic>` zero-usage record can land last and read as 0 ⇒ **max-per-id + synthetic skip**.
+- **★★ `/tmp` STALE-ARTEFACT TRAP, HIT LIVE:** unwritable + world-readable ⇒ a failed redirect serves a prior session's file. Nearly recorded a stale `STALE` chain verdict as this window's. Toolchain clean; **three RUNBOOKS still instruct `/tmp` — UNFIXED**.
+- **⚠ Three pricing errors, all caught by Dave:** wall-distance quoted as "room" · the gauge priced the last turn not the next (late by one step; steps measured 181–17,681) · a compaction probe that could not have failed.
+- **⛔ No gate-suite build, no Apollo — declared.** Gates probed green (`--check` exit 0 · capture gate 0 fail/0 warn); **green is not bite.**
+
+---
+
 ## ⏱ PRIOR DELTA — 2026-07-30 (Thu **#58**, OPUS conductor + SONNET subagent, Dave live at the opener then away — ✅ **THE RITUAL RAN IN THE CORRECTED ORDER AND THE THREE INHERITED FAILS ARE CLEARED** · ⬛ **DAVE RULED THE STRATA EXEMPTION AND IT IS BUILT + REPLAYED** · ★★ **TWO STALE CLAUSES FOUND IN THE HEADER — INSIDE THE READ CHAIN**)
 
 - **✅ RITUAL COMPLETE, 2c → 2f → HOLE → 2g, in #57's corrected order.** 2c minted `## Batch 2026-07-30 #58` (date from `date`; #57's handoff guessed `2026-07-31`) and rolled banners #56 + #55 · 2f rolled #56's stratum (10 ln → `notes/_GAUGE-LOG.md`, 1 ln → `_GM-ARCHIVE.md`) · `HOLE #57` declared after probing BOTH halves of the split · 2g index rebuilt LAST. **Gate: 4 fail → 0.**
