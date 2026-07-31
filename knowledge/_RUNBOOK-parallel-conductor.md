@@ -83,7 +83,8 @@ only engages at two or more.
    or a known worker's — cross-check against `ls notes/_receipts/`. **Never blind-`git add -A` with
    workers live**; account for each path first. (Same check as `_RUNBOOK-git-commit.md` step 0.5,
    restated here because the conductor is the one holding the commit.)
-3. Make ONE commit (follow `_RUNBOOK-git-commit.md` lock dance); hand Dave a paste-ready summary.
+3. Make ONE commit (follow `_RUNBOOK-git-commit.md` — run `_git_commit.sh`, never hand-roll).
+   *(Paste-ready summary RETIRED — Dave, #63: Claude commits, Dave pushes; he reads it in Desktop.)*
 4. Dave pushes via GitHub Desktop only.
 
 ## Structuring the merged handoff — N strands, never a mega list

@@ -444,9 +444,12 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
    model per lane · serial set · shared files assigned per lane) in the forward brief, per
    `_RUNBOOK-parallel-conductor.md`.
 
-5. **Commit + push.** Claude commits in terminal with a paste-ready summary + description, clears any
-   stale `.git/*.lock` files. **Dave pushes via GitHub Desktop only** — never terminal push, never a
+5. **Commit + push.** Claude commits via `_git_commit.sh` (see `_RUNBOOK-git-commit.md`), which
+   handles the lock dance. **Dave pushes via GitHub Desktop only** — never terminal push, never a
    Desktop commit, Desktop closed while Claude commits (memory `git-push-method`).
+   *(The old "hand Dave a paste-ready summary + description" beat is RETIRED — Dave, #63: it dated
+   from the era when the sandbox could not commit at all; `_git_commit.sh` ended that. He reads the
+   commit in Desktop when pushing. Claude commits, Dave pushes — nothing to paste.)*
 5b. **Post-wrap addendum (dream-pass-3 P6, ruled 2026-07-28; applied to its own ruling the hour it
    was made, #21).** A ruling that lands AFTER the wrap gate has run gets an explicit addendum beat:
    append it to the ★ LATEST banner (a one-line "post-wrap addendum" under the banner is enough),

@@ -41,8 +41,8 @@ FLAG, don't decide.*
 - **Platform policy**: canon is web-first (Q2 ruling). App/iOS/Android clauses
   are RECORDED context, not binding criteria.
 - **Commits**: one per family. Message: `ingest: Common Toolkit <family>
-  (ctkX-001…NNN) — <headline>, register NNN`. Provide Dave a paste-ready
-  summary + description at session end.
+  (ctkX-001…NNN) — <headline>, register NNN`. Commit via `_git_commit.sh`.
+  *(Paste-ready summary RETIRED — Dave, #63: Claude commits, Dave pushes.)*
 
 ## Figma access recipe (hard-won — do not rediscover)
 
