@@ -2310,3 +2310,30 @@ His wording, verbatim save dated deixis:
 - **★ A RECALLED COUNT WEARING A MEASUREMENT'S CLOTHES — twice in one session, now a NAMED defect class.** Mover: 35 and 39 were both artifacts of the table's own corrupted markdown (row 42's unescaped pipes = 9 cells; row 18's nested backtick flipped quoting state) — all three counters honest, two pointed at a broken instrument. Usage draft: cells said "PROVEN — implied" while its own summary said UNPROVEN, and the 26+14 subtotals matched neither the rows nor each other. Both reconciled at ratification with the instrument named (`(?<!UN)PROVEN` per row). **An implied proof was downgraded on principle: implication is not a bite.**
 - **Genuine defect RECORDED, not repaired (ruling owed):** `_gm_usage.py:313` — `validate_stratum` validates only `usage[0]`; a malformed SECOND section-usage line in a stratum is invisible to the wrap gate.
 - **Stability gate: all four items quoted at close** — ① survey step green in CI (#209) · ② gate-5 ratified · ③ phase 2 ratified · ④ ratifications + mover fix applied. Packaging began only after: `memento-package/_PACKAGE-SPEC.md` scaffolded; **delta audit → #65** (Dave's pick at the declared re-price fork); **D6 (Dave's Copilot access pre-check) still OWED and gating any Copilot build.**
+
+## ★ #65 — 2026-07-31 — THE BOOT RULE RATIFIED IN DAVE'S BRACKETS, AND v0.1 SHIPPED WITH ITS DEBT NAMED
+
+*(FABLE Cowork conductor + 2 SONNET subs · evening session, Dave live to mid-evening · dossier
+`_DECISION-HISTORY/2026-07-31-the-65-package-v01.md` · commits `13433cc` `3bde658` + wrap)*
+
+- **#65-D1 (Dave, RATIFIED with amendment):** the package boot rule stands as written at #64,
+  **plus bracket clarifiers on both questions, his wording:** *"(one of your existing projects)"*
+  and *"(a brand new project, not started yet)"*. Applied verbatim to `_PACKAGE-SPEC.md` and
+  `.github/copilot-instructions.md`. His spirit clause, recorded: *"we'll see if it works"* —
+  the first no-chain boot is the test and may fail honestly.
+- **#65-D2 (Dave):** the 07-23 harness-spinoff note's never-landed reframe is NOT repaired —
+  the note stays IGNORED as thinking-out-loud; **the package spec is the record.** (Audit claim
+  #25 closed by ruling, not by edit.)
+- **#65-D3 (Dave, declared assertion):** **D6 is DISCHARGED** — distribution = zip from his
+  repo shared directly; colleague's VS Code + Copilot known running; installs assumed
+  unproblematic — *"I'll let you know if we do."* Declared, not measured; reopens only if
+  reality disagrees.
+- **#65-D4 (priced fork, Dave chose tonight):** v0.1 scope cut — `GOOD-MORNING.md` /
+  `_LIVE-STATE.md` stay the PACKAGE'S OWN convention; configurable filenames remain debt item 2.
+  The cut is what made a same-evening v0.1 honest.
+- **Defect class continuation (#64's "recalled count in measurement's clothes"), caught twice
+  at replay:** the audit sub's by-eye 14/9/2/5 (irreproducible under any single counting rule;
+  compound-verdict cells; corrected at source with the rule declared) · the conductor's own
+  "exactly four functions" (a grep of DIRECT calls; transitive `GM_VOCAB`/`LS_VOCAB` found by
+  the build sub). **Corollary inscribed: a dependency list from one grep is a list of MATCHES,
+  not SOURCES.**

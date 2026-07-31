@@ -83,6 +83,10 @@ only engages at two or more.
    or a known worker's — cross-check against `ls notes/_receipts/`. **Never blind-`git add -A` with
    workers live**; account for each path first. (Same check as `_RUNBOOK-git-commit.md` step 0.5,
    restated here because the conductor is the one holding the commit.)
+   ⚠ **A reconcile is STALE the moment another writer exists (#63, measured):** #62's stand-down
+   receipt landed BETWEEN #63's reconcile and its stage, so the commit carried a fifth file the
+   reconcile never named. Re-run the reconcile immediately before staging when any other session
+   was live this window — the gap between "checked" and "staged" is a write window.
 3. Make ONE commit (follow `_RUNBOOK-git-commit.md` — run `_git_commit.sh`, never hand-roll).
    *(Paste-ready summary RETIRED — Dave, #63: Claude commits, Dave pushes; he reads it in Desktop.)*
 4. Dave pushes via GitHub Desktop only.
