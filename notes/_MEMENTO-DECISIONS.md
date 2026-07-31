@@ -2204,3 +2204,34 @@ demanded *"roll a banner (2c)"*, but GM then held only ★ LATEST + one ★ PRIO
 doing it and reversing it in one transaction.** ⇒ **the block cap can demand a move the index vocabulary
 forbids.** Same family as [[m8-cap-at-its-own-floor]]; **the region was brought under block by shaving the
 session's OWN addition instead**, which is the correct order and not a fix for the tension. **Dave's.**
+
+### ★★★ D6 (#58b) — FILL WAS NEVER UNOBSERVABLE. `ds-025` ITEM 1 IS FALSIFIED.
+
+Dave asked to *"understand the compaction process… just research or some testing."* Delegated to a
+worker with a **15-line return cap and instructions to write findings to disk** — the return cost
+being the unmeasured term. Brief: `notes/_briefs/2026-07-31-compaction-and-fill-research.md`.
+
+**THE FINDING.** Every assistant record in the live transcript carries `message.usage`, and
+`input_tokens + cache_creation_input_tokens + cache_read_input_tokens` is **Anthropic's own count of
+that exact call's prompt, on the real tokenizer, with the harness included.** ⇒ **window fill has
+been directly readable for twenty-odd sessions while the record declared it unobservable.**
+★★ [[instrument-without-a-consumer]] for the third time in two days, and the largest instance:
+**the number was in the log, and nothing ever read it.**
+
+**CONDUCTOR REPLAY, independent of the worker, verbatim:** `input_tokens 2 · cache_creation 1,490 ·
+cache_read 290,908` ⇒ **REAL PROMPT TOTAL 292,400**, with **0 records mentioning `compaction`** across
+**213** assistant turns. ⇒ **past WORKING 200,000 and past HARD 256,000, and nothing had been dropped
+— that is genuine resident fill.** The session stopped on the measurement.
+
+**⛔ AND THE BOOT ESTIMATE WAS ~3× LOW.** Turn one measured **61,582** against the inherited
+*"~20,000 est ±8,000"*. **Every pre-flight stamp in this record understated its own floor**, so every
+"GREEN" it published was computed from a wrong opening balance. ⚠ Re-price from the measurement.
+
+**Two collapses, both worth keeping:** (a) `_checkin.py`'s 338,887 tape was never a fill reading and
+never claimed to be — it sums an append-only log including thinking blocks and envelopes; **the
+object was wrong, not the arithmetic.** (b) The subagent-contamination hypothesis is **REFUTED**:
+subagent transcripts are separate files outside its glob, and only a ~2–3K `tool_result` crosses back.
+
+★ **THE RETURN COST IS CONTROLLABLE, AND THIS DELEGATION PROVED IT.** A capped, write-to-disk worker
+returned ~350 tokens for a finding that overturns a standing ruling. Earlier returns this session ran
+thousands. ⇒ **cap the return and demand a file** — that is the fan-out economics lever, not the brief.
