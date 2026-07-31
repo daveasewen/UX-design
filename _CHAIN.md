@@ -7,7 +7,7 @@
 > and ★ LATEST banner, plus `_LIVE-STATE.md`'s ⏱ LATEST delta — the three things GM-D7-am names
 > (CUT #33 on Dave's ruling). **If you have read this file, you have read the chain.**
 >
-> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 25,151 tape and 83% of it is
+> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 25,295 tape and 83% of it is
 > retrieval surface you are not meant to pay for at boot. That reflex is the thing this file
 > exists to stop — five sessions called the chain CUT and every one of them paid full price.
 >
@@ -48,7 +48,7 @@
 > *(post-wrap addendum 2, 5b — ⬛ DAVE REDIRECTED AT THE CLOSE: **#63 = STABILITY WIRING** — CI asks the survey (kills the tautological seam #60 located) · bite matrix on the five record-guarding gates (DO-FIRST 10, scoped) · the "What Memento is" one-pager. Apollo waits one more window — his call, priced out loud (queue → five sessions unmoved). ★ HIS CORRECTION TO THE PICTURE, floated pending his wording: Memento = record-integrity **+ the PRICING mechanism** (host agent prices jobs against the budget, decides subagent extension) **+ the PM/orientation half** — *"features to help Leonard work out what he has to do that day."* ⬛ RELEASE: Copilot-in-VS-Code FIRST — **re-FOUND, not re-derived**: `notes/2026-07-25-claude-code-orchestration-survey.md` (differentiated half · adapter mapping · org-push delivery, no marketplace) + ledger D4′ sequence + D6 (Dave's own pre-check, owed before any Copilot build). Claude plugins later. ⚠ **DAVE'S CAVEAT, same beat: that scoping PRE-DATES the last week — no dream-pass existed, no real-token gauge/pre-flight, no survey, no measured delegation, and the boot artefact to port is now `_CHAIN.md` + retrieval, not §A alone; its Copilot-side facts were verified 07-25 in a moving ecosystem. ⇒ the doc is the BASE for a DELTA AUDIT at release-scoping time — reuse it, re-verify every claim against the current shape, never treat it as current truth.**)*
 >
 > **⬛ OPEN WORKLIST — PRESENCE INDEX (17 items, GENERATED). Every open item is named; NO bodies are here — `--fetch gm:DOFIRST`.**
-> `0b` ★★ ENCODE BEFORE THE WAVE · `0c` NEXT BUILD CANDIDATES (his pick, not the… · `1` ds-018 C2 follow-through · `2` dv-legend/dv-behaviour CEILING · `3` ds-012(b) gutter-relative plot area · `4` DV-D16 floating growth · `5` Instrument-fit remainder · `6` ds-016, UNRULED · `7` ds-017, UNRULED · `8` STILL OWED, unchanged, none superseded · `9` DELEGATION TOPOLOGY, UNSCOPED · `10` PER-GATE TEST PLAN, STILL OWED · `11` THE 2c-ROLL / INDEX-VOCABULARY DEADLOCK · `12` THE #57 1b DOSSIER · `13` /tmp RUNBOOK EXPOSURE, UNFIXED · `14` ⬛ DAVE'S FOUNDING PRINCIPLE, HELD NOT FILED… · `15` LEDGER § ★ #59
+> `0b` ★★ ENCODE BEFORE THE WAVE · `0c` NEXT BUILD CANDIDATES (his pick, not the… · `1` ds-018 C2 follow-through · `2` dv-legend/dv-behaviour CEILING · `3` ds-012(b) gutter-relative plot area · `4` DV-D16 floating growth · `5` Instrument-fit remainder · `6` ds-016, UNRULED · `7` ds-017, UNRULED · `8` STILL OWED, unchanged, none superseded · `9` DELEGATION TOPOLOGY, UNSCOPED · `10` PER-GATE TEST PLAN, STILL OWED · `11` THE 2c-ROLL / INDEX-VOCABULARY DEADLOCK · `12` THE #57 1b DOSSIER · `13` /tmp RUNBOOK EXPOSURE, UNFIXED · `14` ⬛ DAVE'S FOUNDING PRINCIPLE · `15` LEDGER § ★ #59
 > **QUEUE — `gm:C1` strands · `gm:C2` ruling batch (Dave's) · `gm:C4` enact-queue.**
 
 ---
@@ -65,7 +65,7 @@
 
 ---
 
-*(Chain ends. **5,337 tape — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **5,330 tape — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
-`GOOD-MORNING.md` is 25,151 tape and stays whole for retrieval; you have paid for
+`GOOD-MORNING.md` is 25,295 tape and stays whole for retrieval; you have paid for
 21% of it, and that is the intended figure, not a shortfall.)*
