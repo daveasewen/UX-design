@@ -67,6 +67,10 @@
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 
   figure.dv{margin:0;}
+  /* dv-head/.dv-title added #68 (dv-lockup): title-only header — sparkline carries no toggle/legend
+     chrome, so this is the minimal literal copy (same rule text as the other five charts). */
+  .dv-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; margin:0 0 12px;}
+  .dv-title{margin:0;}
   .dv-stage{overflow-x:auto; padding-bottom:4px;}
 
   /* standalone spark — 340×64 render of the 580×90 frame (kit); no text inside, so non-uniform
@@ -135,8 +139,15 @@
   </div>
 
   <h2>Standalone — axis-free trend with its data table (popover + fit)</h2>
-  <figure class="dv dv-animate" data-dv-type="spark" data-surface="page" role="group" aria-labelledby="cs1-h">
+  <figure class="dv dv-animate" data-dv-type="spark" data-surface="page" role="group" aria-labelledby="cs1-h" data-lockup-title="Twelve-month trend, rising">
     <figcaption id="cs1-h" class="sr-only">Twelve-month trend, indexed</figcaption>
+    <div class="dv-head"><!-- ===== AUTO-MARKUP dv-lockup-title START (dataviz) ===== -->
+      <!-- INJECTED from Chart-combo.reference.html (markup "dv-lockup-title", group dataviz —
+     registry knowledge/component-types.json, dv-lockup extension #68). DO NOT hand-edit
+     between the AUTO-MARKUP markers: edit the source MARKUP block in the atom and
+     regenerate: python3 knowledge/gen_component_partials.py -->
+      <h3 class="dv-title t-cm-section-label">Twelve-month trend, rising</h3>
+      <!-- ===== AUTO-MARKUP dv-lockup-title END ===== --></div>
     <div class="dv-stage">
       <svg class="dv-svg spark-standalone" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 90" preserveAspectRatio="none" role="group" aria-label="Twelve-month trend, rising from 82 to 104.">
         <line class="dv-grid" x1="4" y1="86" x2="576" y2="86" stroke="var(--ink)"/>
