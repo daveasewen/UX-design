@@ -125,7 +125,39 @@ DV_FIT_WAIVED = {
                 "named TWO conditions under one label: the check it demotes reads the data-fx "
                 "fit hooks, and scatter carries 6 vs bar's 175 (re-measured #69) — deleting now "
                 "would go blocking-red on work never scoped into ds-020. REMAINING clears-when: "
-                "scatter adopts the dv-fit geometry hooks."),
+                "scatter adopts the dv-fit geometry hooks. "
+                "⚠ #71: THE SNIPPET HALF IS NOW DONE — Chart-scatter.reference.html carries "
+                "dv-fit on both plot svgs + 57 data-fx / 27 data-x0, render-proven at 1180/600. "
+                "The waiver STILL STANDS because the clears-when is surface-blind and a SECOND "
+                "surface was never in scope: _proforma/DataViz-interactive.html's scatter is "
+                "'0 of 1' on dv-fit (measured #71 by discharging the waiver and reading which "
+                "file went blocking-red — the snippet passed, the proforma did not). Same shape "
+                "as #69's own lesson, one layer out: a clears-when that names a CONDITION but "
+                "not a SCOPE reads as met the moment any one surface meets it. "
+                "REMAINING clears-when, now scoped: the proforma scatter adopts the hooks too."),
+    # ⛔ DO NOT DISCHARGE ON THE SNIPPET ALONE — measured #71, that leaves the gate red.
+    #
+    # Provenance for the eventual discharge, so a later session cannot mistake it for a drop:
+    #
+    # "scatter" lived here from #27 to #71 and was deleted 2026-08-01 (#71) because its own
+    # REMAINING clears-when was met, not because it became inconvenient. Provenance, so a later
+    # session cannot mistake this for a waiver that was quietly dropped:
+    #   · #27 FENCED it (Dave): adopting fit moves every gridline ⇒ ships with a paired
+    #     before/after control or not at all.
+    #   · #69 PART-DISCHARGED it: the ds-020 axis/grid COLOUR migration landed with that control.
+    #     The waiver STAYED because one label had hidden TWO conditions — the check it demotes
+    #     reads the data-fx fit hooks, and scatter carried 6 against bar's 175.
+    #   · #71 DISCHARGED the remainder: scatter adopted the hooks. MEASURED on the artefact, not
+    #     recalled — `data-fx="` 57, `data-x0="` 27 across 27 <g class="dv-marker"> (0 missing
+    #     either), `class="dv-svg dv-fit"` on both plot svgs, and the `figure.dv-fit-on` release
+    #     rule present. Render-proven at 1180/600: viewBox tracks the container (1108/528, no
+    #     longer pinned at 580) while tick-label font-size stays 12px at both widths — DV-D02's
+    #     actual invariant, text does not scale. `knowledge/canon/` was NOT touched; the existing
+    #     fitOne() `g` branch already handled scatter's <g class="dv-marker"> shape.
+    #
+    # ⚠ The check is now BLOCKING on scatter, which is the point: the compliance is GATED, not
+    # merely achieved. Mutation-tested at discharge — stripping dv-fit from one plot svg turns
+    # this gate RED. A green here that cannot go red would be an assertion, not a proof.
 }
 _unplaced = KNOWN_DTYPES - CARTESIAN_DTYPES - set(NON_CARTESIAN_DTYPES)
 if _unplaced:
