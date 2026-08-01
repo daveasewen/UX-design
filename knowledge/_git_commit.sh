@@ -45,6 +45,23 @@ if [ "$RECONCILED" -ne 1 ]; then
   exit 1
 fi
 
+# tiktoken self-heal — enacted #73 (Dave: "lets get the memento stuff fixed"; proposed #72).
+# The sandbox is fresh every session, pip state does not survive, and the measurement seam (#59)
+# rightly REFUSES when degraded — so every session's first commit was blocking on the same known
+# cause with the fix arriving too late. Heal that ONE cause BEFORE the check runs. If healing
+# fails, the check below still owns the diagnosis and refuses honestly — this layer removes only
+# the cause it can prove and fix, and never masks the check (★ a wrapper must not restate a cause
+# it did not determine; it may remove one it verified).
+if ! python3 -c "import tiktoken; tiktoken.get_encoding('cl100k_base')" >/dev/null 2>&1; then
+  echo "— tiktoken degraded (fresh sandbox) — self-healing: pip install tiktoken --break-system-packages"
+  pip install tiktoken --break-system-packages -q >/dev/null 2>&1 || true
+  if python3 -c "import tiktoken; tiktoken.get_encoding('cl100k_base')" >/dev/null 2>&1; then
+    echo "— tiktoken restored: the measurement below is real, not estimated"
+  else
+    echo "⚠ self-heal FAILED — proceeding; the chain check below will refuse with the honest cause"
+  fi
+fi
+
 # chain-staleness gate — this is the seam that actually reads disk state. _gen_chain.py --check's
 # OTHER caller (_build_all.py) runs it immediately AFTER regenerating the file, so it can only ever
 # catch nondeterminism in build(), never a chain left stale by a hand-edit to GOOD-MORNING.md /
