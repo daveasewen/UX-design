@@ -92,6 +92,11 @@ RESERVE_FENCE = 15  # runbook § Half 0b: ring-fenced, NOT an addend
 # ★ [[unmatched-grep-is-not-an-absence]]'s THIRD FACE, live: the check MATCHED, so nothing
 # looked broken — but it matched the wrong line, and a matched pattern is not the right pattern.
 PREFLIGHT_RE = re.compile(r"^\s*>?\s*\**pre-?flight\**(\s*#\d+)?\**(\s*\([^)]*\))?\**\s*[:—-]", re.I)
+# ★ #74 — FIRST-MATCH ATTRIBUTION (the (h) residual, DECLARED at #73). Keyed on the LIVE banner's
+# `**#N**` form deliberately: `_gm_fixture`'s banner (`★ LATEST — … (fixture session)`) carries no
+# session number, so every existing bare-stamp fixture is graded exactly as before (the #60/affe15d
+# lesson — a new check must not orphan the fixture corpus it will be tested against).
+LATEST_SESSION_RE = re.compile(r"^\s*>\s*##\s*★\s*LATEST\b[^\n]*?\*\*#(\d+)\*\*", re.M)
 # ★ #73 — THE LEGAL REFUSAL FORM for this check (#62's remedy applied to the check that lacked
 # it; proposed #72 item (h), enacted on Dave's word #73). A session that declared no pre-flight
 # at its opener CANNOT reconstruct one honestly — every number would be invented after the fact,
@@ -953,6 +958,33 @@ def check_preflight(text, label="GOOD-MORNING.md"):
                  f"session was priced with (runbook § ★ Half 0b). Form (Dave #56, REAL TOKENS): "
                  f"`pre-flight: boot N (disk N measured · harness ~N est ±N) + job N est + "
                  f"wrap N est = N of {gauge.BUDGET_WORKING:,} — BAND`"], warns, notes)
+
+    # ---- #74: FIRST-MATCH ATTRIBUTION (the (h) residual, declared at #73, its own motion here).
+    # `next()` above takes the FIRST stamp in file order, so when the LATEST banner carried no
+    # stamp of its own, an OLDER session's line was graded in its place — #72 was graded on #71's
+    # wording, and a verdict about the WRONG session is worse than no verdict (the
+    # [[wrap-skipped-chain-certifies-wrong-session]] class: never pair a message from one run
+    # with a status from another). Attribute BEFORE grading. Scoped to text whose ★ LATEST banner
+    # names `**#N**` — see LATEST_SESSION_RE's header for why fixtures are untouched.
+    ml = LATEST_SESSION_RE.search(text)
+    if ml:
+        want = ml.group(1)
+        mtag = PREFLIGHT_RE.match(line)
+        tag = (mtag.group(1) or "").replace("#", "").strip() if mtag else ""
+        if not tag:
+            fails.append(
+                f"{label}: the first pre-flight stamp carries NO session tag while the ★ LATEST "
+                f"banner names #{want} — an untagged stamp cannot be PROVEN to grade the latest "
+                f"wrap, which is the #72-graded-on-#71 defect wearing a passing face. Tag this "
+                f"session's stamp `pre-flight #{want}:`.")
+            return fails, warns, notes
+        if tag != want:
+            fails.append(
+                f"{label}: the first pre-flight stamp is #{tag} but the ★ LATEST banner names "
+                f"#{want} — the LATEST wrap carries no stamp of its own, so an OLDER session's "
+                f"line was about to be graded in its place (the exact (h) residual, observed "
+                f"live at #72). Stamp THIS session's pre-flight; a wrap never inherits one.")
+            return fails, warns, notes
 
     # ---- #73: the legal refusal (PREFLIGHT_UNMEASURED_RE, see its header). Checked BEFORE the
     # #56 dispatch so a refusing line is never asked for arithmetic it honestly does not have.
@@ -2753,6 +2785,28 @@ def selftest_preflight():
                             f"the check does not bite")
         if not should_fail and f_:
             failures.append(f"pre-flight [{name}]: expected green, got {f_}")
+    # ---- #74: FIRST-MATCH ATTRIBUTION arms. All four run as MUTATIONS before being written
+    # down. The banner line is the LIVE `**#N**` form; the bare-stamp fixtures above never carry
+    # it, which is itself the fifth arm (fixture text must be graded exactly as before).
+    _B74 = "> ## ★ LATEST — 2026-08-01 (Sat **#74**, fixture)\n"
+    _S = "> **pre-flight #{}:** ⛔ NOT CAPTURED — UNMEASURED. Fixture reason stated.\n"
+    for name, text, should_fail in [
+        ("#74 attribution: stamp tagged with the LATEST session — passes (control)",
+         _B74 + _S.format(74), False),
+        ("#74 attribution: OLDER session's stamp under a stampless LATEST — FAILS "
+         "(the #72-graded-on-#71 defect)", _B74 + _S.format(73), True),
+        ("#74 attribution: untagged stamp under a numbered LATEST — FAILS (unattributable)",
+         _B74 + "> **pre-flight:** ⛔ NOT CAPTURED — UNMEASURED. Fixture reason stated.\n", True),
+        ("#74 attribution: no numbered LATEST banner — bare stamp graded as before (fixture "
+         "corpus unharmed)", _S.format(73), False),
+    ]:
+        f_, _w, _n = check_preflight(text, label="fixture")
+        if should_fail and not f_:
+            failures.append(f"pre-flight [{name}]: expected FAIL, check stayed green — "
+                            f"the attribution check does not bite")
+        if not should_fail and f_:
+            failures.append(f"pre-flight [{name}]: expected green, got {f_}")
+
     # the band table itself, read not recalled: boundaries are the twice-observed failure
     for total, want in ((44, "GREEN"), (45, "AMBER"), (59, "AMBER"), (60, "RED"), (72, "RED")):
         got = band_for(total)

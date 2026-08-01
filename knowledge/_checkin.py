@@ -31,8 +31,9 @@ was a TRUE OBSERVED FIGURE GONE STALE (`e7f8b87`, matching a harness warning),
 and 613,386 tape ran through a session against it. A ratio is printed only if
 you pass `--window` and it is captioned with the number you passed.
 
-FAILS LOUD without tiktoken. `_context_gauge.py` silently estimates and
-under-reports by 414 tape; that defect is not reproduced here.
+FAILS LOUD without tiktoken. `_context_gauge.py` used to silently estimate and
+under-report by 414 tape; FIXED #74 — it now refuses by default too, with the
+chars/4 path behind an explicit `--estimate` flag that labels its output.
 """
 from __future__ import annotations
 

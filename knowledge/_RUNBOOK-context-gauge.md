@@ -501,29 +501,27 @@ gauge's numbers stay BY DESIGN — deliberate wrap at threshold is the mechanism
 
 ### Half 2 — accurate, out-of-band: confirm at Amber
 
-When the tally hits Amber, **confirm** with a real measurement before triggering — but measure
-*without* polluting the main window. A throwaway Haiku subagent does the reading; the main agent gets
-back only three numbers.
+**The instrument is `knowledge/_checkin.py` (RULED #52, built #52/#53) — run it in one bash call:**
 
-Subagent prompt (copy-ready):
+    python3 knowledge/_checkin.py
 
-> Call `list_sessions`. Find the parent session — the most recent one that is **not** yourself and not
-> your own child. Call `read_transcript` on it with `format:"full"` and a high `limit`. Write the full
-> transcript text to `/tmp/transcript.txt`. Then run:
-> `python3 knowledge/_context_gauge.py /tmp/transcript.txt`
-> Report back **only** the script's output (band, %, token estimate). Do not summarise the transcript.
+It reads the live session `.jsonl` from the mount directly — never loading the transcript into the
+window — and reports the conversation-half in `tape` with the boot half printed as UNMEASURED
+(`ds-025` item 1), never defaulted. Its number is **THROUGHPUT, not resident fill** — say so when
+quoting it. No subagent, no `read_transcript`, no copy-ready prompt.
 
-The engine is `knowledge/_context_gauge.py` — tiktoken if available, else chars/4; flags
-`--window` and `--baseline` are adjustable if the model/env changes.
-
-> ⚠ **HALF 2 IS CURRENTLY BROKEN in the Cowork env (observed 2026-07-21 late night #3) — do not
-> trust its number.** Two failure modes, both observed: (1) `read_transcript` renders tool calls as
-> one-line stubs with RESULTS STRIPPED — the real fuel-burners (file reads, tool dumps) are absent,
-> so it under-reads catastrophically (13KB rendered for a session whose receipts alone are bigger);
-> (2) the LIVE session is hard to identify in `list_sessions` (untitled mid-flight), so the subagent
-> measured the *previous night's* session — then rationalised the bad number ("the reading is
-> valid"). **Until rebuilt, Half 1 (the in-head tally) governs**; a Half-2 reading that disagrees
-> with the tally by >2× is presumed wrong, not reassuring.
+> ⚠ **HISTORY — the ORIGINAL Half-2 design (subagent + `read_transcript` + `_context_gauge.py`) is
+> RETIRED, not "currently broken" (corrected #74; the stale warning sat here from #3 while the
+> replacement landed at #52).** Its two observed failure modes, kept for provenance: (1)
+> `read_transcript` renders tool calls as one-line stubs with RESULTS STRIPPED — **re-probed #74,
+> still true**, quoted receipt: `[assistant] (called mcp__workspace__bash)`, no result payload — so
+> it under-reads catastrophically and CANNOT be fixed from our side; (2) the live session was hard
+> to identify untitled — **materially reduced since the title ritual** (#71–#73 all carry titles in
+> `list_sessions`), but moot: `_checkin.py` needs no session picking. `_context_gauge.py` itself
+> remains for measuring an arbitrary text file (since #74 it REFUSES without tiktoken unless
+> `--estimate` labels the output). **Half 1 (the in-head tally) still governs between check-ins;
+> a reading that disagrees with the tally by >2× is a prompt to check units (throughput vs fill),
+> not reassurance.**
 
 ## The trigger — TWO TIERS (ruled by Dave, 2026-07-21)
 
