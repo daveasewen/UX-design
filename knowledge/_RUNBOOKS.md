@@ -9,7 +9,7 @@ only in the artefact it governs dies the first time that artefact is rewritten �
 **This index is generated from the filesystem**, because a hand-maintained list of runbooks is exactly
 the thing that rots when someone adds the tenth one and forgets the list.
 
-**15 runbooks**, last generated 2026-07-31.
+**16 runbooks**, last generated 2026-08-01.
 
 ### `_RUNBOOK-capture-ritual.md`
 **Runbook — end-of-session capture ritual**
@@ -80,6 +80,11 @@ Procedure for fixing tokens that are flat, wrong, or invisible in dark mode. Com
 **Runbook — render-verify (Chromium + Playwright in the sandbox)**
 
 The repeatable procedure for rendering repo HTML to PNG **inside the Linux sandbox**, with the real HSBC face, so the agent can SEE its own work before handing it over. Stood up 2026-07-23 at Dave's ask ("there should be a runbook for…
+
+### `_RUNBOOK-review-doc.md`
+**Runbook — decision review docs (the two-register rule)**
+
+Ruled by Dave, live, 2026-08-01 #66 (ledger § ★ #66, D5): every decision review doc leads each decision with PLAIN PROSE and folds the machinery beneath it. Exemplar: `reviews/MOLECULES-KEYFILTER-LOCKUP-2026-08-01-v2.html`.
 
 ### `_RUNBOOK-toolkit-tranche.md`
 **RUNBOOK — Common Toolkit tranche (cheap-model session)**

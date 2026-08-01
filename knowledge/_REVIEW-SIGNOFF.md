@@ -67,7 +67,8 @@ that single pass.** Running list of what it must cover:
   `_DATAVIZ-DECISIONS.md`; seed fed (81 nodes / 138 edges); build 55/55 GREEN. Enactment = the
   donut+bar+combo wave bakes DV-D11/12/13 into `dv-behaviour.js`. Residual asks riding the wave: the
   aria-both-forms asymmetry (DV-D13 ⚠) + the seed-uncheck edge (DV-D11 open edge).
-- **Radius/corner tuner v1+v2 (added 2026-07-26, P4):** `reviews/RADIUS-CORNER-TUNER-2026-07-24-v1/-v2.html` — the ★★ "return SOON" item; owed = tweaks + numbers, then per-theme ruling.
+- **Radius/corner tuner v1+v2 (added 2026-07-26, P4):** `reviews/RADIUS-CORNER-TUNER-2026-07-24-v1/-v2.html` — the ★★ "return SOON" item; owed = tweaks + numbers, then per-theme ruling. *(Served to Dave again #66 — no verdict yet.)*
+- **Molecules pack — RULED #66, ENACTS PENDING (added 2026-08-01 #66):** `reviews/MOLECULES-KEYFILTER-LOCKUP-2026-08-01-v2.html` — D1 A2 permanent-strict · D2 sparkline sheds · D3 scatter connects · D4 dv-lockup shape approved (ledger § ★ #66-D6). Not awaiting signoff — awaiting the #67 enact wave; stays here until the four enacts land so the ruled-but-unenacted state has a durable home. ⚠ Doc predates the two-register + export-pair runbook laws it triggered; regenerate per `_RUNBOOK-review-doc.md` only if re-presented.
 - **Data-marks-exempt hit-area rule + a11y gate rebuild (added 2026-07-26, P4):** `notes/_briefs/2026-07-25-hit-area-rule-and-gate-proposal.md` — sign-off inscribes the rule + green-lights the markup-driven gate rebuild (44 blocking for controls, marks exempt).
 - **⬛ Donut legend ENACTED — awaiting Dave's eye (added 2026-07-26, legend-wave session):**
   `showroom/chart-donut.html` (and `knowledge/snippets/Chart-donut.reference.html`) — the first member
