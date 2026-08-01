@@ -57,4 +57,6 @@ matrices ratified + mover count reconciled (43/1/1 of 45).
    at `dist/memento-package-v0.1.zip` under a scoped `.gitignore` exception; download that
    ONE file from GitHub — never the repo zip, which ships Apollo.**
 4. Claude plugin.
-5. The one-pager (voice pass owed) fronts the package docs.
+5. The one-pager — ✅ **DONE #66: voice pass DISCHARGED as-is (Dave: "its good as is, i like it")**;
+   promoted to `WHAT-MEMENTO-IS.md`, fronting the package docs. Zip re-cut as **v0.1.1**
+   (version-don't-overwrite; v0.1 kept alongside in `dist/`).

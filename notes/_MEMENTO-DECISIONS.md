@@ -2337,3 +2337,16 @@ His wording, verbatim save dated deixis:
   "exactly four functions" (a grep of DIRECT calls; transitive `GM_VOCAB`/`LS_VOCAB` found by
   the build sub). **Corollary inscribed: a dependency list from one grep is a list of MATCHES,
   not SOURCES.**
+
+## ★ #66 — 2026-08-01 — THE VOICE PASS DISCHARGED AS-IS
+
+- **#66-D1 (Dave, live): the one-pager voice pass is DONE — v1 stands verbatim, no edits**
+  (*"its good as is, i like it"*). All six blocks read to him in chat; approval is the pass —
+  it was HIS pass to give, and he gave it by ruling the draft already in his register.
+  Promoted to `memento-package/WHAT-MEMENTO-IS.md` (spec step 5 CLOSED); drafting record
+  stays at `notes/2026-07-31-what-memento-is-onepager-v1.md`, status updated at source.
+- **#66-D2 (Dave: "yea just version"): the dist zip is re-cut as v0.1.1** including the
+  one-pager — version-don't-overwrite, v0.1 kept alongside in `dist/`. Read back as
+  agreement-plus-version; cut from the committed tree per the #65 rule, never the repo zip.
+- Session context: CI post-push verdict parked on Dave (Chrome extension unreachable from
+  this window) — DECLARED, not dropped.

@@ -1,7 +1,5 @@
-provenance: local_aa3d71d3-9961-4f44-9fc7-1d56283a5f90 · 2026-07-31
-status: PASSED #66 — Dave's voice pass discharged as-is; promoted to `memento-package/WHAT-MEMENTO-IS.md` (this file stays as the drafting record)
-
-*(#63 conductor draft per Dave's #62 redirect — DRAFT v1, approved in draft same session ("really encapsulates the idea"); his VOICE pass owed. Register PUBLIC: abstract, no internal mechanics.)*
+provenance: promoted #66 from `notes/2026-07-31-what-memento-is-onepager-v1.md` · 2026-08-01
+status: PASSED — Dave's voice pass #66, as-is, no edits ("its good as is, i like it")
 
 # What Memento is
 

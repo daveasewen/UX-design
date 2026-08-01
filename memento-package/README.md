@@ -11,6 +11,8 @@ writing that outcome down at the end of a session, so the next one has something
 Together, each session ends by leaving a record the next one boots from.
 
 This package is the standalone version of that harness, built for GitHub Copilot in VS Code.
+For the fuller story — the film, the three jobs, and why the enemy is the confident false
+inscription rather than forgetting — read **`WHAT-MEMENTO-IS.md`**.
 
 ## What's in the folder
 
