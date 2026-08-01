@@ -2494,3 +2494,51 @@ seams + a third banner-before-seam instance inside #72's own residual) is in
   (#72's residual + size line, struck at source `f70f602`) ⇒ declare LAST, re-read the
   declaration against the artefact (memory + this ledger). The "solid period" was part
   invisibility: silent estimates pre-#59, FRESH chains over skipped wraps #70/#71.
+
+## ★ #74 — 2026-08-01 (Sat; Fable solo Cowork conductor, Dave live)
+
+**Context:** Dave picked item 3 off the #73 fork list ("help me understand the implications"),
+then widened it: *"if your confident it'll work and is a solid solution, then lets fix the
+others on this list before returning to Apollo work."* Machinery session by his direction;
+Apollo work deferred by him, not by drift.
+
+- **#74-D1 — the wrap gate gets its consumer: the WARN/`--wrap` split (Dave: "the split is
+  the best of both worlds").** Default `_git_commit.sh` runs `_capture_gate.py --wrap` and
+  reports red as a VISIBLE WARN with the commit declared not-a-wrap; `--wrap` makes red BLOCK
+  before staging. WHY: the gate was honest with no consumer (#71/#72 committed through red),
+  but an unconditional block would refuse legitimate mid-session commits (three of #73's
+  four) — a new gate must not make a correct state unreachable (ds-022's lesson). Enacted
+  `c27d7b1`. Proven: green-default live on its own enactment commit · both red arms by
+  exit-code shim on the real seam · red-default live at `f8ff234` (stale index → visible
+  WARN, declared) · green-`--wrap` at this session's wrap. DECLARED residual: the #70 class
+  (a session that never wraps) is invisible at this seam by construction; the chain title
+  check owns it next session. Correction to the #73 framing, found by running the gate
+  mid-session: the gate grades the PREVIOUS wrap mid-session, so the default path is usually
+  GREEN — red mid-session means inherited debris, visible and declared, not noise.
+- **#74-D2 — the wrap term is RING-FENCED at any mid-session re-price (Dave, explicit
+  option-select; floated #73 unpriced, priced ~150 tape this session).** At a re-price the
+  wrap keeps its opener value and the JOB shrinks. WHY: #72's wrap was the thing the budget
+  squeeze cut, and a starved wrap costs more than any job it saves (the chain then certifies
+  the wrong session). Discipline not machinery — no gate can see the window. Enacted as
+  runbook § Half 0b RULED (a′).
+- **#74-D3 — the dormant % path RETIRED IN CODE (Dave, explicit option-select, closing the
+  #58 standing fork).** Deleted: the % grading branch in `check_preflight`, pins
+  (45/60/63), local `band_for`/`BANDS`/`WRAP_FLOOR`/`RESERVE_FENCE`/`RESERVE_RE`, the ds-023
+  % fixtures (including the twice-flipped 57% control) and their selftest block (~9.3K chars
+  net cut). A %-form stamp now FAILS naming the retirement and the legal forms (pinned by a
+  live fixture). WHY: dormant since #57, and its one live surface taught the RETIRED unit in
+  every wrap's notes. ⚠ SCOPE, declared: the ruling HISTORY is untouched (this ledger § #36,
+  runbook ds-023 sections, stop-line doc-check) — Dave retired the code, not the record. The
+  band's purposes (wrap paid inside the number, moving stop line, marked escape hatch) carry
+  forward in the #56 token path, which already owns them.
+- **Also enacted, same directive (no new rulings):** first-match ATTRIBUTION in
+  `check_preflight` (the (h) residual — a stamp is graded only if it belongs to the ★ LATEST
+  banner's session; keyed on `**#N**` so the fixture corpus is untouched, the #60 lesson;
+  four arms + mutation by re-enacting the old behaviour) · `_context_gauge.py` refuses
+  without tiktoken (`--estimate` opts into a LABELLED estimate; three arms run with tiktoken
+  hidden) · runbook § Half 2 corrected at source: the subagent+`read_transcript` design is
+  RETIRED not "currently broken" — `_checkin.py` (RULED #52) replaced it while the #3 warning
+  sat stale; re-probed #74, `read_transcript` still strips results (receipt quoted in the
+  section). All at `f8ff234` + this commit.
+- **Premise-corrected, no edit:** the ~35k baseline row was already reconciled honestly at
+  #14 — the planned "fix" would have been growth, not repair.

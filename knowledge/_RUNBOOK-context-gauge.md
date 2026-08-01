@@ -156,6 +156,15 @@ firm. **15% is sized from n=3 with one value unknown, and the +17 it keys off wa
 more sessions of recorded overrun**, and record each session's actual overrun at wrap so there is
 something to re-derive *from*. Flagged at inscription by the author, not discovered later.
 
+**RULED (a′) #74 — THE WRAP TERM IS RING-FENCED TOO (Dave, explicit option-select; floated #73,
+priced and adopted #74).** The pre-flight form already *requires* a wrap term, but nothing said it
+was untouchable — and #72 proved the gap: the wrap is last in the window, so a budget squeeze cuts
+it first, and a skipped or starved wrap costs more than any job it saved (the chain then certifies
+the wrong session). ⇒ **At any mid-session re-price, the wrap term keeps its opener value and the
+JOB is what shrinks.** Discipline, not machinery — no gate can see the window, so this paragraph is
+the enforcement, same status as the reserve above. A session that must eat its wrap reserve says so
+out loud at the moment of eating it, not at the wrap.
+
 ### ★★ ds-023 — THE CEILING AND THE STOP LINE (ruled-in-part #31 in Dave's own words, enforcement picked #31 delegated, ENACTED + CONFIRMED #34)
 
 **Dave, #30:** *"it's calculating 60+15 headroom is okay and it definitely isn't, 60 should be a hard
