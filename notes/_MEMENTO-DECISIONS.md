@@ -2470,3 +2470,27 @@ His wording, verbatim save dated deixis:
   scatter) — `_REVIEW-SIGNOFF.md` row, Dave rules at review. The type-composite gate remains
   globally red (1,011 pre-existing violations, 82/82 files) — scoped delta on #68's touched
   files was 0; the global red predates this session and is NOT #68's to chase.
+
+## ★ #73 — 2026-08-01 (Sat; Fable solo Cowork conductor, Dave live)
+
+**Context:** Dave opened on the degradation of wrap/pricing/GM; the diagnosis (four unruled
+seams + a third banner-before-seam instance inside #72's own residual) is in
+`_DECISION-HISTORY/2026-08-01-degradation-diagnosis-and-three-seam-fixes.md`.
+
+- **#73-D1 — Dave's directive, his words: "lets get the memento stuff fixed if we have space
+  otherwise wrap up."** Read as an enact licence for the mechanical remainder of the owed
+  queue, reflected back in-chat before work began (scope: (g)/(h-legal-form)/(f); NOT the
+  Memento package/plugin, which stays DISABLED per #69). Enacted: **(g)** tiktoken self-heal
+  at the commit seam `8d176a1` · **(h)** the legal pre-flight refusal `⛔ NOT CAPTURED —
+  UNMEASURED.` + reason in `check_preflight`, four mutation-run arms, `514f4bd` · **(f)**
+  title first in `_CHAIN.md` + stale-title refusal in `_gen_chain.build()`, both arms
+  mutation-run, `514f4bd`.
+- **Explicitly NOT enacted, forked to Dave:** wrap-gate wiring into `_git_commit.sh` (blocks
+  mid-session commits — his tradeoff) · (e) trigger index (content needs his eyes) · the
+  dormant %-path retire-or-keep (standing since #58) · NEW: the pre-flight FIRST-MATCH
+  grading residual (an older line is graded when the LATEST banner carries no stamp —
+  surfaced by (h)'s live run, declared in the #73 banner).
+- **Findings inscribed:** banner-before-seam reached the DECLARED-GAP mechanism itself
+  (#72's residual + size line, struck at source `f70f602`) ⇒ declare LAST, re-read the
+  declaration against the artefact (memory + this ledger). The "solid period" was part
+  invisibility: silent estimates pre-#59, FRESH chains over skipped wraps #70/#71.
