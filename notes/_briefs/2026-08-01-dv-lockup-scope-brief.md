@@ -1,6 +1,6 @@
 # dv-lockup scope brief — the reusable chart header partial (#67, D4 of #66-D6)
 
-**Status:** SCOPED, not built — shape approved #66-D6 D4; build is its own wave, priced below.
+**Status:** ✅ BUILT #68 (`2a3f6ee`, 2026-08-01) — but read the correction: line 53's claim *"rides `gen_component_partials.py` unchanged"* was FALSE ON THE TREE (no HTML-injection mechanism existed; a matched grep for AUTO-MARKUP found nothing). Dave ruled #68-D1: EXTEND — AUTO-MARKUP became the generator's third injection type, mutation-tested at birth. Re-priced 50–70K at the fork; held. Three placeholder titles await Dave (`_REVIEW-SIGNOFF.md`).
 **Owner:** agent builds, Dave rules the parameter set + any visual change.
 
 ## ⬛ RESHAPED IN CHAT #67 (Dave live, "well aligned" — reflect-back done, ledger line owed at wrap)

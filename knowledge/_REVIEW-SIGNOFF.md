@@ -197,4 +197,5 @@ Follow the **account-card** template. Components: **summary, tab-bar, action-bar
 | `notes/_bite-matrix-gm-move-DRAFT.md` | 2026-07-31 #63 | DRAFT, replay done — **count reconciliation owed** (4 unverdicted rows) before ratification. |
 | `notes/_bite-matrix-chain-and-index.md` | 2026-07-31 #63 | DRAFT, conductor-built, mutations quoted — awaiting ratification. |
 | `notes/_bite-matrix-capture-gate-PHASE1-DRAFT.md` | 2026-07-31 #63 | DRAFT phase 1 (no mutations by design) — phase 2 = the 30 UNCOVERED rows, queued #64. |
-| `notes/_briefs/2026-08-01-dv-lockup-scope-brief.md` | 2026-08-01 #67 | dv-lockup scope, reshaped #67-D1/D2/D3 (two product molecules · title = mandatory slot · rules+clerk). **Awaiting Dave: build go + PLAN-stamp questions** (multi-chart lockup-per-block confirm · name at ADR inscription). |
+| `notes/_briefs/2026-08-01-dv-lockup-scope-brief.md` | 2026-08-01 #67 | dv-lockup scope. ✅ BUILT #68 (`2a3f6ee`) — per-chart-block + name confirmed at the #68 opener; premise correction inscribed in the brief. |
+| `knowledge/snippets/Chart-donut.reference.html` (cd2 title) + `Chart-scatter.reference.html` (both titles) | 2026-08-01 #68 | **Awaiting Dave: three dv-lockup titles are BUILDER PLACEHOLDERS**, written to satisfy the mandatory title slot mechanically — rule the copy when reviewing the pages live. |

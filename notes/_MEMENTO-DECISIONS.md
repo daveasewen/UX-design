@@ -2437,3 +2437,36 @@ His wording, verbatim save dated deixis:
   wave (delete dv-behaviour.js TRANSITIONAL block · promote `dv-legrow` to dv-legend's
   universal contract · strip dead per-member CSS · page budget → ~85%). Beyond #66-D6's
   rulings — queued for Dave, deliberately unenacted.
+
+## ★ #68 — 2026-08-01 — THE PREMISE DIED, THE GENERATOR GREW A THIRD ARM, AND THE CRACK CLOSED
+
+- **⬛ #68-D1 (Dave, at the fork the sub surfaced): EXTEND THE GENERATOR.** The lockup brief's
+  central claim — *"rides `gen_component_partials.py` unchanged"* — was false on the tree: the
+  generator carried CSS (AUTO-PARTIAL) and JS (AUTO-BEHAVIOUR) injection only, no markup
+  mechanism at all. The build sub STOPPED before any edit and forked it (the correct move — a
+  build-sub inventing generator machinery is Dave's call, not a lane's). Dave: option 1 "on
+  instinct", ruled firm after the plain-prose comparison. **AUTO-MARKUP built symmetric with the
+  two existing mechanisms, A2 permanent-strict, mutation-tested at birth both ways** (desync →
+  exit 1 naming the member; undeclared member → exit 1 quoting the A2 requirement). Re-priced
+  50–70K at the fork, declared, held. Enacted `2a3f6ee`. Per-chart-block + `dv-lockup` name
+  confirmed at the opener (the brief's two surviving PLAN-stamp questions; donut-Replay was
+  already moot under #67-D1).
+- **⬛ #68-D2 (Dave): THE CLEANUP WAVE ENACTS NOW.** All three items gate-checkable, gates green
+  same-day. Enacted `5f09f2a`: TRANSITIONAL block deleted (grep-verified dead) · dv-legrow
+  PROMOTED to dv-legend's universal contract — ★ the registry `$description`'s own "permanent
+  stays-empty" ruling had AGED OUT (Amendment 2's consumes-manifest shields sparkline); the
+  supersession is recorded BY ADDITION in the `$description`, dated, the reversal evidence kept
+  verbatim — premise-ages-faster-than-rule, applied to a ratified record · item 3 found ALREADY
+  DONE in the 07-27 wave (the sub declared the absence rather than inventing work). Budget
+  28,378/32,768 (86.6%).
+- **⛔ #68-F1: THE GAUGE CRACK'S RUNNING-PARENT HALF IS DISPROVEN, NOT UNPROVEN.** Mutation-test
+  with a falsifiable pass criterion (the probe had to quote `5f09f2a`, a hash minted minutes
+  earlier in the parent): the running parent is ABSENT from `list_sessions`' complete
+  205-session inventory, nothing marked running, `is_child` never true ⇒ **a sub has no
+  addressable handle to its live parent.** The surviving half stands: completed sessions are
+  readable (205), so post-hoc tiktoken calibration is available now. `_FUTURE-STATE.md`
+  downgraded in place, status `post-hoc-only`.
+- **⚠ Carried, not decided:** three lockup titles are builder placeholders (donut cd2 + both
+  scatter) — `_REVIEW-SIGNOFF.md` row, Dave rules at review. The type-composite gate remains
+  globally red (1,011 pre-existing violations, 82/82 files) — scoped delta on #68's touched
+  files was 0; the global red predates this session and is NOT #68's to chase.

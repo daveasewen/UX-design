@@ -29,7 +29,8 @@ mutation-test it — feed it a session of known size first).
 **What it feeds:** the throttle (`_RUNBOOK-context-gauge.md`); pre-flight stamps stop being
 retrospective estimates.
 **Source:** #67 chat, probe run live at Dave's question. **Status:** `idea` — probe first,
-~one Haiku sub, next session candidate. — three data-entry paths for bounded values (Dave, 2026-08-01 #67)
+~one Haiku sub, next session candidate.
+**⛔ DOWNGRADED #68 (2026-08-01, mutation-test run live):** claim (c) is **DISPROVEN AS SCOPED** — a Sonnet probe with a falsifiable pass criterion (quote commit `5f09f2a`) found the RUNNING parent ABSENT from `list_sessions`' full 205-session inventory, nothing marked running, `is_child` never true ⇒ a sub has NO ADDRESSABLE HANDLE to its live parent. Claims (a) and (b) stand: post-hoc calibration on completed sessions remains available NOW and is the surviving half. Status: `idea` → **post-hoc-only**. — three data-entry paths for bounded values (Dave, 2026-08-01 #67)
 
 **What:** when Apollo's edit mode surfaces the bounded parameters a user may edit, the *values*
 (the data a chart/component displays) get three entry paths: **(1) edit values** directly (inline,
