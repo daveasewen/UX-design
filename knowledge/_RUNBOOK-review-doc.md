@@ -24,3 +24,15 @@ decision with PLAIN PROSE and folds the machinery beneath it. Exemplar:
 - Measured figures carry their measurement date and are re-measured on the artefact, never
   recalled from the record.
 - Selections aren't persisted — the doc says so, and rulings land in chat + the ledger.
+
+## Hard lessons inscribed #66 (both bit Dave the same evening)
+
+- **The review pair is MANDATORY, not optional:** run
+  `python3 knowledge/_review/_make_review.py <path>` so picks + comment pins are capturable.
+  A review doc with radio buttons and no export made Dave screenshot his own rulings.
+- **Live specimens must be tested IN THE REVIEW DOC'S OWN CONTEXT, not just standalone.**
+  `file://` iframes that traverse UP (`src="../…"`) are treated as cross-origin by Chrome:
+  scripts silently fall back to JS-off and interactive behaviour reads as broken. Specimens
+  are copied INTO the review's directory (or the doc lives beside them), and one interaction
+  is proven via the render sandbox ON THE REVIEW PAGE ITSELF before presenting. A "working"
+  label on an untested-in-context specimen is a CLAIMED, and it lied within the hour.

@@ -2378,3 +2378,17 @@ His wording, verbatim save dated deixis:
   `knowledge/_RUNBOOK-review-doc.md`; exemplar `reviews/MOLECULES-KEYFILTER-LOCKUP-2026-08-01-v2.html`
   (supersedes v1 for reading; v1 kept, version-don't-overwrite). Extends the ruled decision-pack
   template (#59's "use it again"), replaces nothing.
+- **#66-D6 (Dave, by screenshot — the review doc had no export, defect owned + runbook'd):**
+  **D1 = A2 PERMANENT, STRICT FORM — every member declares `consumes`, absent key = FAIL LOUD**
+  (supersedes A2's universal default; TENTATIVE closes) · **D2 = sparkline declares and sheds**
+  (the 16,661 B inert block) · **D3 = scatter's key CONNECTS** (migrate to `.dv-legrow` +
+  subscribe dv-legend) · **D4 = dv-lockup partial SHAPE APPROVED**, scope+build next session.
+  ⚠ ALL FOUR UNENACTED — queued #67 as one wave (D1 changes gen_component_partials semantics,
+  so D1→D2→D3 sequence, D4 scoped after).
+- **#66-D7 (finding, mine): Dave's "key behaviour isn't correct" was the REVIEW DOC's defect,
+  not the charts'.** DV-D11 dual-gesture PROVEN live in the snippet (isolate announce + 0.12
+  fade + checkbox toggle + 44px ::before). The review's `../` file:// iframes get Chrome's
+  cross-directory block ⇒ JS-off fallback ⇒ dead key presented as "working". Two runbook laws
+  added: review pair mandatory · specimens tested in the review's OWN context, copied
+  same-directory. The correct interaction reference stands: DV-D11 +
+  `reviews/LEGEND-ISOLATE-TOGGLE-PROTOTYPE-2026-07-24-v5.5.html` (Dave's signoff).
