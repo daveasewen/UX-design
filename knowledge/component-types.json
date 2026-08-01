@@ -114,7 +114,6 @@
             "declarations": [
               "data-fxs=\"",
               "class=\"dv-tbl-toggle",
-              "class=\"dv-legrow",
               "class=\"dv-leg-sw",
               "class=\"dv-tablepanel"
             ],
@@ -145,7 +144,6 @@
             ],
             "declarations": [
               "class=\"dv-tbl-toggle",
-              "class=\"dv-legrow",
               "class=\"dv-leg-sw",
               "class=\"dv-tablepanel"
             ],
@@ -177,7 +175,6 @@
             "declarations": [
               "data-fxs=\"",
               "class=\"dv-tbl-toggle",
-              "class=\"dv-legrow",
               "class=\"dv-leg-sw",
               "class=\"dv-tablepanel"
             ],
@@ -204,7 +201,6 @@
             "declarations": [
               "class=\"dv-tbl-toggle",
               "class=\"dv-tablepanel",
-              "class=\"dv-legrow",
               "class=\"dv-leg-sw",
               "data-tip-percent=\""
             ],
@@ -245,7 +241,6 @@
             "declarations": [
               "class=\"dv-tbl-toggle",
               "class=\"dv-tablepanel",
-              "class=\"dv-legrow",
               "class=\"dv-leg-sw"
             ]
           }
@@ -269,10 +264,12 @@
           "requires": {
             "vars": [],
             "matchValues": [],
-            "declarations": []
+            "declarations": [
+              "class=\"dv-legrow"
+            ]
           },
           "$manifestBinds": {},
-          "$description": "The LEGEND INTERACTION MODEL \u2014 DV-D11 (dual gesture, two render levels, additive isolate) + DV-D12 (trapezoidal donut sweep keyed to segment spans) + DV-D13 (typed tooltip + selection-following centre). SECOND behaviour source for the group, added 2026-07-26. WHY A SECOND SOURCE, both beats: the sweep hook was DEFERRED on 2026-07-24 because it pushed dv-behaviour.js past the 16KB cap; the full v5.5 legend model made the overshoot decisive (one file would have landed at 26.0KB raw, 21.8KB even with every comment stripped). Dave ruled 2026-07-26: SPLIT the source AND re-scope the gate \u2014 _validate_behaviour.py now checks per-source 16KB (legibility) AND a per-group 32KB PAGE budget, so a future split cannot buy headroom. The single-rAF-debounced-resize check moved to group level in the same beat, for the same reason: it is a page invariant, and a second source legitimately carries zero resize listeners. UNIVERSAL contract hook = class=\"dv-legrow (the dual-gesture row); the swatch/label/reset chrome and the value-percent seg are member-specific and ride each member's extraContract. NOT a member of this contract: Chart-scatter and Chart-sparkline carry no legend. \u2605 MIGRATION CLOSED 2026-07-27 \u2014 and the promotion the older note instructed was TRIED, MEASURED and REVERSED the same hour; both beats are recorded here because the reversal is the more useful fact. DURING the wave it was deliberately EMPTY: no hook was carried by every member, so the legend hooks rode each MIGRATED member's extraContract and the contract tightened per member rather than failing four members for not having arrived yet. All four legend-carrying members (donut \u00b7 bar \u00b7 combo \u00b7 line) have now moved and `_check_legend_migration.py` exits 0. Promoting class=\"dv-legrow to this universal contract FAILED THE BUILD, correctly: Chart-sparkline (and Chart-scatter) are members of the dataviz behaviour GROUP but carry no legend at all, so a hook required of every member is one two members can never satisfy. \u21d2 THE UNIVERSAL CONTRACT STAYS EMPTY, for a different and permanent reason than during the wave: the GROUP IS BROADER THAN THE CAPABILITY. The older instruction ('when the last member migrates, promote it here') assumed group == legend-carrying members; it does not. The hook therefore stays on each of the four members' extraContracts, which is where a per-capability hook belongs. The real fix is the already-logged open item \u2014 a per-member behaviour OPT-IN in the registry schema (which would also stop Chart-sparkline carrying an inert legend payload); that is a schema change and Dave's call, not a lane's. What stays member-specific: class=\"dv-leg-sw and the value/percent tip hooks (chrome and seg vocabulary differ per member \u2014 bar and combo and line carry no value\u21c4percent seg, so they carry no typed tips). NAMING: the family is .dv-leg* (list .dv-leg, row .dv-legrow, controls .dv-leg-sw / .dv-leg-item / .dv-leg-reset). The v5.5 prototype called the list .lg, which COLLIDES with canon's .seg.lg size variant \u2014 the blast-radius gate caught it on first build. State classes .is-ghost/.is-faded/.is-peek keep their names because DV-D11 inscribes them verbatim. \u2605 RESOLVED 2026-07-28 (ADR-0015 Amendment 2, Dave, TENTATIVE): the per-member OPT-IN this note asked for now exists \u2014 a universal-default consumes-manifest on the member object (absent = everything, unchanged; declared = only what is listed; fail-loud both ways, gen_component_partials.py). And a correction, kept as loud as the claim: this note\u2019s aside that Chart-scatter is a group member was DRIFT \u2014 $members never listed it and it carries 0 AUTO-BEHAVIOUR markers (measured #26); the promotion trial\u2019s member-side failure was Chart-sparkline alone. First narrow declaration lands with DV-J2 (scatter joins consuming dv-behaviour only)."
+          "$description": "The LEGEND INTERACTION MODEL \u2014 DV-D11 (dual gesture, two render levels, additive isolate) + DV-D12 (trapezoidal donut sweep keyed to segment spans) + DV-D13 (typed tooltip + selection-following centre). SECOND behaviour source for the group, added 2026-07-26. WHY A SECOND SOURCE, both beats: the sweep hook was DEFERRED on 2026-07-24 because it pushed dv-behaviour.js past the 16KB cap; the full v5.5 legend model made the overshoot decisive (one file would have landed at 26.0KB raw, 21.8KB even with every comment stripped). Dave ruled 2026-07-26: SPLIT the source AND re-scope the gate \u2014 _validate_behaviour.py now checks per-source 16KB (legibility) AND a per-group 32KB PAGE budget, so a future split cannot buy headroom. The single-rAF-debounced-resize check moved to group level in the same beat, for the same reason: it is a page invariant, and a second source legitimately carries zero resize listeners. UNIVERSAL contract hook = class=\"dv-legrow (the dual-gesture row); the swatch/label/reset chrome and the value-percent seg are member-specific and ride each member's extraContract. NOT a member of this contract: Chart-scatter and Chart-sparkline carry no legend. \u2605 MIGRATION CLOSED 2026-07-27 \u2014 and the promotion the older note instructed was TRIED, MEASURED and REVERSED the same hour; both beats are recorded here because the reversal is the more useful fact. DURING the wave it was deliberately EMPTY: no hook was carried by every member, so the legend hooks rode each MIGRATED member's extraContract and the contract tightened per member rather than failing four members for not having arrived yet. All four legend-carrying members (donut \u00b7 bar \u00b7 combo \u00b7 line) have now moved and `_check_legend_migration.py` exits 0. Promoting class=\"dv-legrow to this universal contract FAILED THE BUILD, correctly: Chart-sparkline (and Chart-scatter) are members of the dataviz behaviour GROUP but carry no legend at all, so a hook required of every member is one two members can never satisfy. \u21d2 THE UNIVERSAL CONTRACT STAYS EMPTY, for a different and permanent reason than during the wave: the GROUP IS BROADER THAN THE CAPABILITY. The older instruction ('when the last member migrates, promote it here') assumed group == legend-carrying members; it does not. The hook therefore stays on each of the four members' extraContracts, which is where a per-capability hook belongs. The real fix is the already-logged open item \u2014 a per-member behaviour OPT-IN in the registry schema (which would also stop Chart-sparkline carrying an inert legend payload); that is a schema change and Dave's call, not a lane's. What stays member-specific: class=\"dv-leg-sw and the value/percent tip hooks (chrome and seg vocabulary differ per member \u2014 bar and combo and line carry no value\u21c4percent seg, so they carry no typed tips). NAMING: the family is .dv-leg* (list .dv-leg, row .dv-legrow, controls .dv-leg-sw / .dv-leg-item / .dv-leg-reset). The v5.5 prototype called the list .lg, which COLLIDES with canon's .seg.lg size variant \u2014 the blast-radius gate caught it on first build. State classes .is-ghost/.is-faded/.is-peek keep their names because DV-D11 inscribes them verbatim. \u2605 RESOLVED 2026-07-28 (ADR-0015 Amendment 2, Dave, TENTATIVE): the per-member OPT-IN this note asked for now exists \u2014 a universal-default consumes-manifest on the member object (absent = everything, unchanged; declared = only what is listed; fail-loud both ways, gen_component_partials.py). And a correction, kept as loud as the claim: this note\u2019s aside that Chart-scatter is a group member was DRIFT \u2014 $members never listed it and it carries 0 AUTO-BEHAVIOUR markers (measured #26); the promotion trial\u2019s member-side failure was Chart-sparkline alone. First narrow declaration lands with DV-J2 (scatter joins consuming dv-behaviour only). \u2605 PROMOTED 2026-08-01 (#68-D2, Dave ruled the cleanup wave): class=\"dv-legrow now IS the universal contract \u2014 the \u2018permanent\u2019 stays-empty reasoning above aged out when Amendment 2\u2019s consumes-manifest landed: contract checks are gated by each member\u2019s declared consumes (gen_component_partials.py), so Chart-sparkline (consumes dv-behaviour only) is untouchable by dv-legend\u2019s contract. The reversal record above is kept verbatim; this line supersedes its conclusion, not its evidence."
         }
       },
       "$markup": {
