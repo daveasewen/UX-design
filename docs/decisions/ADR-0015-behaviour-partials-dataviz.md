@@ -95,7 +95,7 @@ compact, popover-only member — now carries an inert 15.6 KB payload. Per-membe
 is not supported by the registry schema today. Raised for Dave; not decided here.
 
 Node: ADR-0015-A1
-Edges: amends(ADR-0015, scope=size-clause-and-one-source-posture) · enables(DV-D11, scope=legend-model-needs-its-own-source)
+Edges: supersedes(ADR-0015, claim=size-clause-and-one-source-posture) · relates(DV-D11, scope=legend-model-needs-its-own-source)
 
 ## Amendment 2 — 2026-07-28: the consumes-manifest — universal by default, opt-out by declaration
 
@@ -151,7 +151,7 @@ deleted**, which is a stronger safety property than the mechanism was designed f
 observed, not inferred. Detail and measurements: the DataViz ledger, Open/pending, session #27.
 
 Node: ADR-0015-A2
-Edges: amends(ADR-0015, scope=group-wide-injection-becomes-manifest-gated)
+Edges: supersedes(ADR-0015, claim=group-wide-injection-becomes-manifest-gated)
 
 ## Consequences
 

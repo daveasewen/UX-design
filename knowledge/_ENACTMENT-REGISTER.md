@@ -57,7 +57,7 @@
 | `DV-D04` | **UNPROVEN** | DV-D04 · Chevron/hash texture is reserved for GAUGE-type charts only — NOT stacked series. | — | `_proforma/_DATAVIZ-DECISIONS.md` |
 | `DV-D05` | **UNPROVEN** | DV-D05 · Type = the KB scale (`typography.json`: font-5/6/7 = 16/14/12 + weights | — | `_proforma/_DATAVIZ-DECISIONS.md` |
 | `DV-D06` | **UNPROVEN** | DV-D06 · Delta indicators may use gain/loss colour with sign + arrow (dv-019 override), exempt | — | `_proforma/_DATAVIZ-DECISIONS.md` |
-| `DV-D07` | **CLAIMED** | DV-D07 · Chart chrome = two-channel roles: snapped colour + declared alpha slot (2026-07-23). | knowledge/_validate_dataviz.py, knowledge/_validate_legacy_leak.py, knowledge/_validate_snippets.py, knowledge/gen_snippet_tokens.py | `_proforma/_DATAVIZ-DECISIONS.md` |
+| `DV-D07` | **CLAIMED** | DV-D07 · Chart chrome = two-channel roles: snapped colour + declared alpha slot (2026-07-23). | knowledge/_validate_legacy_leak.py, knowledge/_validate_snippets.py, knowledge/gen_snippet_tokens.py | `_proforma/_DATAVIZ-DECISIONS.md` |
 | `DV-D08` | **UNPROVEN** | DV-D08 · Chart text ladder: 12/500 floor + 700 emphasis; 600 stays off-brand (2026-07-23). | — | `_proforma/_DATAVIZ-DECISIONS.md` |
 | `DV-D09` | **UNPROVEN** | DV-D09 · Bar-family canon defaults are ORIENTATION-DISTINCT; hue is a placeholder until edit | — | `_proforma/_DATAVIZ-DECISIONS.md` |
 | `DV-D10` | **UNPROVEN** | DV-D10 · Series identity comes OFF the plot where a mark can't guarantee its own page-air; | — | `_proforma/_DATAVIZ-DECISIONS.md` |

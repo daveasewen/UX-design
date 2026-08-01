@@ -126,3 +126,68 @@ gains a step). Conflicts remain **queued for Dave, never auto-resolved**.
   generator is deletable with no loss (the same low-regret shape as ADR-0007's slice 1).
 - `_RECONCILIATION.md` and `_LIVE-STATE-CHECK.md` are unchanged today; the graph view complements them and
   may later generate the `_LIVE-STATE` LIVE/DEAD blocks (part 2).
+
+## Amendment — 2026-08-01 (#75, Dave): `enacted-by` promoted, five types rewritten, and the vocabulary closed
+
+**Ruled by Dave at #75** after six unruled edge types (10 edges) were found live and UNRULED since #71.
+He asked for best practice rather than a menu; the recommendation below was put to him with its reasoning
+and taken. The six entered by ordinary good-faith authoring — **§2 ruled "small core, nuance in qualifiers"
+and then nothing gated it**, so when the seven didn't fit, a new type was the path of least resistance.
+
+### (a) The promotion test — why one of six was promoted and five were not
+
+A new edge type earns a place **only** when an existing type cannot say it without losing a distinction
+something else depends on. Five failed that test and were rewritten in their own homes:
+
+| was | now | why |
+|---|---|---|
+| `amends(X, scope=…)` | `supersedes(X, claim=…)` | §5 already produces AMENDED from claim-scoped supersession — `amends` was a second spelling of a ruled mechanism |
+| `supersedes-mechanism(X-clause)` | `supersedes(X, claim=…)` | the target was a coined pseudo-node; the claim qualifier is the ruled way to kill part of a live node |
+| `carve-out(X, scope=…)` | `bounds(X, scope=…)` | §2's `bounds` is *"limits X's scope without killing it"* — that is what a carve-out is |
+| `sibling(X)` | `relates(X)` | a weak link, and §2 keeps `relates` for exactly that |
+| `enables(X, scope=…)` | `relates(X, scope=…)` | causal note, no gate semantics; inventing dependency semantics was not warranted by one use |
+
+**`enacted-by(A)` is PROMOTED into the EVIDENCE class** beside `verified-by` — **not** structural: it backs
+a node, it never kills one. It is deliberately **not** folded into `verified-by`, because ADR-0016's
+enactment register exists precisely so that *"this was implemented"* and *"this was proven"* cannot be
+conflated (a CLAIMED enactment lies; an UNPROVEN one is honest). Collapsing them makes that distinction
+unsayable in the graph.
+
+### (b) The vocabulary is now CLOSED and the gate says so out loud
+
+`RULED_TYPES = STRUCTURAL | EVIDENCE | WEAK`. An edge type outside it is a **loud named finding**
+(`unknown-edge-type`), advisory per ADR-0005 §5. ⚠ **Adding the six offenders to `STRUCTURAL` was the
+rejected fix** — it clears these six and lets the seventh walk in tomorrow, exactly as these did. Two
+further silent paths were closed in the same motion: `malformed-target` (a `,` or `)` surviving in a
+target — a multi-target edge the grammar cannot express, or a `, `-separated run collapsed into one
+target, silently **dropping every edge after the first**) and `self-loop`.
+
+### (c) The node registry is no longer frozen — and its scope is stated
+
+Until #75, `nodes` loaded **only** from the 2026-07-21 seed while `edges` were parsed live. The seed's edge
+list was maintained; its node list was not. **14 edge sources resolved to no node, 9 of them real rulings.**
+They could never enter the LIVE/AMENDED/DEAD/OPEN rollup, nor be marked dead or amended — ADR-0007's
+founding failure, restored. Nodes are now registered from the same walk that parses edges, from
+unambiguous **own-id** shapes only (a `Node:` line, a `- **DV-D01 …**` bullet, an end-of-line `{#id}`
+anchor, a `(R-D6.A)` paren tag, an `# ADR-NNNN` title). Seed metadata wins on collision.
+
+⚠ **Registration is bound to the decision-ID vocabulary, and that boundary is a ruling of §3's, not an
+oversight.** §1 calls guideline rules `{#id}` nodes; §3 rules they are *not* re-authored into the decision
+corpus, and `RULE_ID` exists to make them legitimate endpoints **without** being nodes. Registering them
+would have taken the rollup 83 → **196** (100 of 113 new nodes were guideline rules) and quietly redefined
+what LIVE/DEAD/AMENDED count — a scope change dressed as a bug fix. Scoped out; rollup went 83 → **96**.
+
+⬛ **DECLARED RESIDUAL, Dave's if he wants it:** because guideline rules are not nodes,
+`DV-D14 —supersedes→ dv-004 (claim=stroke-only)` is **recorded but produces no state** — `dv-004` shows no
+AMENDED marker anywhere. That is §3 working as ruled, not a defect, but it means a guideline rule's dead
+claim lives only in the edge. Whether guideline rules should carry lifecycle state is **unruled**.
+
+### (d) `Node:` lines are load-bearing, retroactively
+
+The `Node: ADR-0015-A1` convention was already live in ADR-0015 (authored #27) and the parser never learned
+it, so every inline `Edges:` line in an ADR bound to the **last `# ADR-NNNN` title in the file** — which is
+how both sub-rulings came to amend their own parent (two self-loops). Honoured now for attribution *and*
+registration. Mutation-proven: strip the `Node:` lines and the two self-loops return.
+
+Node: ADR-0012-A1
+Edges: refines(ADR-0012, scope=taxonomy-closed-plus-enacted-by) · relates(ADR-0016, scope=enactment-vs-verification-must-stay-distinct) · verified-by(knowledge/_build_decision_graph.py)

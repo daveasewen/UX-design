@@ -50,7 +50,7 @@ Three parts, ruled together on the harness:
 
 Not yet enacted in tokens — lands with the theming clean-room (per-theme mechanism, brief
 `notes/_briefs/2026-07-22-theme-primitives-architecture-brief.md`).
-Edges: refines(R-D22) · sibling(button-sheet-v7, ADR-0009) · verified-by(contrast-gate)
+Edges: refines(R-D22) · relates(button-sheet-v7) · relates(ADR-0009) · verified-by(contrast-gate)
 
 ---
 
@@ -67,7 +67,7 @@ bank" aspiration (ADR-0004) is untouched; Legacy is the single named exception, 
 perfected. **Enactment (theming clean-room):** Legacy pairs are recorded in the audit as **EXEMPTED
 (documented), not as passes** — a theme-level carve-out via the `RULED_PAIR_EXCLUSIONS` mechanism
 (tag `theme=legacy`, reason = this ruling).
-Edges: carve-out(ADR-0004, `_STANDARDS.md` §3, scope=theme=legacy) · enacted-by(ADR-0014)
+Edges: bounds(ADR-0004, scope=theme=legacy) · bounds(_STANDARDS.md §3, scope=theme=legacy) · enacted-by(ADR-0014)
 
 ---
 

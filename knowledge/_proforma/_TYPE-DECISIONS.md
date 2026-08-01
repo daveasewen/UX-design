@@ -1056,4 +1056,4 @@ Edges: refines(T-D12)
 - **The ramp is CONTROL-scoped.** It's not the general editorial ramp (that's `.t-ed-*`). Naming `.t-cm-ctl-*`
   keeps the control family distinct.
 
-Edges: refines(T-D9), relates(T-D14), relates(T-D1)
+Edges: refines(T-D9) · relates(T-D14) · relates(T-D1)

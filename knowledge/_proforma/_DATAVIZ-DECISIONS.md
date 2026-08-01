@@ -244,7 +244,7 @@ Source of these rulings: the exported review comment-pins on the REVIEW copy (ba
   Enactment: `Chart-bar.reference.html` cb5 re-geometried; `_validate_dataviz.py` `_rect_stack_gap()`.
   Proof: `knowledge/_verify_dv_stacked_enactment.py` — **2.00px on all 8 boundaries**, licensed cut,
   snippet AND showroom pane, 1180 AND 760.
-  Edges: refines(dv-004, scope=mechanism-neutral-separation) · supersedes-mechanism(dv-004-stroke-only)
+  Edges: refines(dv-004, scope=mechanism-neutral-separation) · supersedes(dv-004, claim=stroke-only)
 
 - **DV-D15 · Type drawn ON a series fill gets its own semantic role — `data/text/on-series` MINTED
   (2026-07-27).** Dave's promotion (derivation governance). The stacked alpha keys had been declaring

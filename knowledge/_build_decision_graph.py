@@ -36,8 +36,21 @@ OUT_MD = os.path.join(HERE, "_DECISION-GRAPH.md")
 OUT_JSON = os.path.join(HERE, "_decision-graph.json")
 
 STRUCTURAL = {"supersedes", "refines", "subsumes", "bounds", "conflicts-with", "diverges-from"}
-EVIDENCE = {"verified-by"}
+# `enacted-by` PROMOTED #75 (Dave, 2026-08-01) into the EVIDENCE class — NOT structural.
+# It backs a node; it never kills one. It is deliberately NOT folded into `verified-by`:
+# ADR-0016's enactment register exists because "this was implemented" and "this was proven"
+# must not be conflated (a CLAIMED enactment lies; an UNPROVEN one is honest). Collapsing
+# the two would make that distinction unsayable in the graph. The other five unruled types
+# found live at #75 (`amends`/`enables`/`sibling`/`carve-out`/`supersedes-mechanism`) were
+# REWRITTEN into the ruled set with qualifiers, not promoted — ADR-0012 §2's own posture.
+EVIDENCE = {"verified-by", "enacted-by"}
 WEAK = {"relates"}
+# The closed set. #75 (Dave): an edge type outside it is a LOUD NAMED FAILURE, never a
+# silent store — see `check()` / code `unknown-edge-type`. Enumerating the offenders into
+# STRUCTURAL was the rejected fix: it clears the six and lets the seventh walk in tomorrow,
+# exactly as these six did (`scope-blindness-gate-vocabulary`: normalise once, fail loud on
+# unknown, never enumerate).
+RULED_TYPES = STRUCTURAL | EVIDENCE | WEAK
 ALIASES = {"extends": "refines", "gated_by": "verified-by", "governs": "bounds"}
 # targets that are legitimate endpoints without being seed nodes: guideline rules, files, methods
 RULE_ID = re.compile(r"^[a-z]{2,6}\d{0,2}[a-z]?-\d{3}$")  # icon-011, col25-011, type26-013, dv-016, ctkb-015 …
@@ -97,6 +110,29 @@ ANY_ID_RE = re.compile(r'\b(' + NODE_TOKEN + r')\b')
 # wiring this in — same class of trap as the ADR Status-prose one).
 ANCHOR_HASH_RE = re.compile(r'\{#([a-zA-Z][\w.:-]*)\}\s*$')
 EDGES_LINE_RE = re.compile(r'^\s*Edges:\s*(.+)$')
+# `Node: ADR-0015-A1` — an EXPLICIT own-id declaration immediately above an `Edges:` line.
+# The convention was already live in ADR-0015 (lines 97/154, authored #27) and the parser
+# never learned it, so both sub-rulings' edges were attributed to the last `# ADR-NNNN`
+# title in the file — which is how `amends(ADR-0015) → ADR-0015` became TWO SELF-LOOPS
+# (F4 in the #71 receipt). Honoured for both attribution and registration as of #75.
+NODE_LINE_RE = re.compile(r'^\s*Node:\s*(\S+)\s*$')
+# ⚠ SCOPE OF REGISTRATION — narrower than "every id the scan can see", deliberately.
+# ADR-0012 §1 calls guideline rules `{#id}` nodes, but §3 rules that they are NOT
+# re-authored into the decision corpus: they stay in their guideline files and
+# `_RECONCILIATION.md` is their generated register. `RULE_ID` below exists precisely
+# to make them legitimate endpoints WITHOUT being seed nodes. Registering them here
+# would have taken the rollup 83 → 196 (100 of the 113 new nodes were guideline rules)
+# and quietly redefined what LIVE/DEAD/AMENDED counts — a scope change dressed as a
+# bug fix. The defect Dave ruled on is RULINGS with no node, so registration is bound
+# to the decision-ID vocabulary only. Guideline rules remain `RULE_ID` endpoints.
+REGISTRABLE_ID_RE = re.compile(
+    r'^(?:R-D\d+(?:\.\w+)?|T-D\d+|B-D\d+|DV-D\d+|ADR-\d{4}(?:-\w+)?|CHARTER\.\w+|DEF-\d+|TYPE:[\w:.-]+)$')
+# A target that still carries a `,` or `)` after qualifier-stripping is MALFORMED — either a
+# multi-target edge the grammar cannot express (F3: `sibling(button-sheet-v7, ADR-0009)`) or a
+# whole comma-separated edge RUN swallowed into one target because the author used `, ` where
+# the grammar wants ` · ` (F5, found #75 at `_TYPE-DECISIONS.md:1059` — T-D15 lost two
+# `relates()` edges silently). Both were stored and counted as if fine.
+MALFORMED_TARGET_RE = re.compile(r'[,)]')
 ADR_TITLE_RE = re.compile(r'^#\s*(ADR-\d+)\b')
 # ADR header native-syntax fields (RULING 1, 2026-07-21 finishing pass). Captures
 # ONLY the text between the field's own bold label and the next bold label (or
@@ -181,15 +217,54 @@ def _scan_current_node(line, current):
     return current
 
 
-def _parse_ledger_file(path):
+def _register(reg, nid, path, line_no, title=""):
+    """Record an OWN-ID node declaration. ⚠ Deliberately NOT driven by
+    `_scan_current_node`: that scan is built for ATTRIBUTION and its own docstring
+    says a heading which merely *mentions* another node can reassign `current`,
+    calling that "harmless in practice" because no `Edges:` line is ever inscribed
+    in such a section. That premise licenses attribution and does NOT license
+    registration — the same scan under a second purpose would mint junk nodes out
+    of passing mentions. Registration therefore takes only unambiguous own-id
+    shapes: a `Node:` line, a `- **DV-D01 …**` bullet, an end-of-line `{#id}`
+    anchor, a `(R-D6.A)` paren tag, or an `# ADR-NNNN` title."""
+    if not nid or nid in reg or not REGISTRABLE_ID_RE.match(nid):
+        return
+    reg[nid] = {"title": title.strip()[:120], "status": "accepted",
+                "home": f"{os.path.relpath(path, ROOT)}:{line_no}"}
+
+
+def _parse_ledger_file(path, reg=None):
     edges = []
     if not os.path.isfile(path):
         return edges
     current = None
     with open(path, encoding="utf-8") as f:
-        for line in f:
+        for line_no, line in enumerate(f, 1):
             line = line.rstrip("\n")
-            current = _scan_current_node(line, current)
+            nl = NODE_LINE_RE.match(line)
+            if nl:
+                # An explicit `Node:` declaration wins over the heading walk and holds
+                # until the next heading/declaration — this is what stops a sub-ruling's
+                # edges being attributed to its parent (the F4 self-loop mechanism).
+                current = nl.group(1)
+                if reg is not None:
+                    _register(reg, current, path, line_no)
+            else:
+                prev = current
+                current = _scan_current_node(line, current)
+                if reg is not None and current and current != prev:
+                    if BULLET_ID_RE.match(line) or ANCHOR_HASH_RE.search(line) \
+                            or (line.startswith("#") and PAREN_ID_RE.search(line)):
+                        _register(reg, current, path, line_no, line.lstrip("#-* "))
+                    elif line.startswith("#"):
+                        # Heading-with-an-ID: own-id ONLY when the id opens the heading
+                        # text ("## R-D23 — Tabs…"). An id appearing later in the line is
+                        # a passing mention ("## OPEN — carried out of R-D1") and must not
+                        # mint a node, per this function's docstring.
+                        txt = line.lstrip("#").strip().lstrip("⭐★☆ ").strip()
+                        a = ANY_ID_RE.match(txt)
+                        if a and a.group(1) == current:
+                            _register(reg, current, path, line_no, txt)
             m = EDGES_LINE_RE.match(line)
             if m and current:
                 edges.extend(parse_edges_line(m.group(1), current))
@@ -234,7 +309,7 @@ def _parse_adr_header_fields(adr_id, header_text):
     return edges
 
 
-def _parse_adr_file(path):
+def _parse_adr_file(path, reg=None):
     """ADR headers carry native `Extends:`/`Relates:` relations — parsed
     per-field by `_parse_adr_header_fields` (RULING 1). Also still picks up any
     explicit inline `Edges:` line in the body (same grammar as the ledgers),
@@ -245,16 +320,28 @@ def _parse_adr_file(path):
         return edges
     with open(path, encoding="utf-8") as f:
         lines = [l.rstrip("\n") for l in f]
-    adr_id = None
+    adr_id = None      # the file's ADR, for header-field edges
+    current = None     # who an `Edges:` line belongs to — may be a sub-ruling
+    # ⚠ ONE pass, not two. The previous two-pass shape ran the title loop to completion
+    # first, so EVERY inline `Edges:` line in the file was attributed to the LAST title
+    # seen — which is why ADR-0015's two sub-rulings amended their own parent (F4).
     for idx, line in enumerate(lines):
         t = ADR_TITLE_RE.match(line)
         if t:
-            adr_id = t.group(1)
+            adr_id = current = t.group(1)
+            if reg is not None:
+                _register(reg, adr_id, path, idx + 1, line.lstrip("# ").strip())
             edges.extend(_parse_adr_header_fields(adr_id, _adr_header_text(lines, idx)))
-    for line in lines:
+            continue
+        nl = NODE_LINE_RE.match(line)
+        if nl:
+            current = nl.group(1)
+            if reg is not None:
+                _register(reg, current, path, idx + 1)
+            continue
         m = EDGES_LINE_RE.match(line)
-        if m and adr_id:
-            edges.extend(parse_edges_line(m.group(1), adr_id))
+        if m and current:
+            edges.extend(parse_edges_line(m.group(1), current))
     return edges
 
 
@@ -266,13 +353,14 @@ def parse_inline_edges():
     reads what Sonnet's inscription pass wrote, in the SAME edge shape
     `load_seed()` produces, so `--verify` can diff the two sets directly."""
     edges = []
+    reg = {}
     for path in LEDGER_FILES + EXTRA_INLINE_FILES:
-        edges.extend(_parse_ledger_file(path))
+        edges.extend(_parse_ledger_file(path, reg))
     if os.path.isdir(ADR_DIR):
         for fn in sorted(os.listdir(ADR_DIR)):
             if fn.startswith("ADR-") and fn.endswith(".md"):
-                edges.extend(_parse_adr_file(os.path.join(ADR_DIR, fn)))
-    return edges
+                edges.extend(_parse_adr_file(os.path.join(ADR_DIR, fn), reg))
+    return edges, reg
 
 
 def classify(nodes, edges):
@@ -303,6 +391,32 @@ def check(nodes, edges):
     known = set(nodes)
     for e in edges:
         t, to = e["type"], e.get("to", "")
+        # ── #75, Dave: the CLASS fix. Edge `type` was an open string while every
+        # protective mechanism below keys on closed-set membership, so an unknown type
+        # fell outside all of them and was stored, counted and displayed as if fine.
+        # Six such types (10 edges) accumulated unnoticed. Loud and NAMED, both ways.
+        if t not in RULED_TYPES:
+            findings.append(("⚠", "unknown-edge-type",
+                             f"{e['from']} —{t}→ `{to}`: `{t}` is not in ADR-0012 §2's ruled set "
+                             f"({', '.join(sorted(RULED_TYPES))}). Rewrite it with a ruled type + "
+                             f"qualifiers, or amend ADR-0012 — do not add it to STRUCTURAL."))
+        # A target still carrying `,` or `)` never parsed cleanly: a multi-target edge the
+        # grammar cannot express, or a `, `-separated edge run swallowed whole. Silent
+        # before #75 — the malformed target simply matched no node, and the type check
+        # below let it through because these edges were unruled types too.
+        if MALFORMED_TARGET_RE.search(to):
+            findings.append(("⚠", "malformed-target",
+                             f"{e['from']} —{t}→ `{to}`: target contains `,` or `)`. The grammar is "
+                             f"ONE target per call, calls separated by ` · ` — split it. "
+                             f"(A `, `-separated run silently collapses into a single target and "
+                             f"DROPS every edge after the first.)"))
+        # F4: `if src and tgt and src != tgt` is what the reference cookbook guards at
+        # assembly and we did not. Loud rather than silently dropped — a self-loop means an
+        # attribution bug upstream, and swallowing it hides the bug.
+        if e["from"] == to:
+            findings.append(("⚠", "self-loop",
+                             f"{e['from']} —{t}→ itself. Usually mis-attribution: an `Edges:` line "
+                             f"under a sub-ruling with no `Node:` declaration binds to its parent."))
         if t in STRUCTURAL and to not in known and not RULE_ID.match(to) and not FILEISH.search(to):
             # unresolvable structural target — allow named anchors ("X:Y" / "CHARTER.*") and
             # descriptive endpoints only for conflicts-with (the tension may be with a practice)
@@ -345,7 +459,20 @@ def fmt_edge(e, direction="out"):
 
 def main():
     nodes, seed_edges, errata = load_seed()
-    inline_edges = parse_inline_edges()
+    inline_edges, inline_nodes = parse_inline_edges()
+    # ⚠ NODE REGISTRY — fixed #75 (Dave: "fix it in this session"). Until now `nodes` came
+    # ONLY from the 2026-07-21 seed, while `edges` were parsed live from the ledgers. The
+    # seed's edge list was maintained; its node list was not. Result: every ruling authored
+    # after that audit had edges in the graph and NO NODE to hang them on — 14 edge sources
+    # resolved to nothing, 9 of them real rulings (R-D22…R-D25, DV-D14, DV-D15, T-D15,
+    # ADR-0013, ADR-0016). They could never appear in the LIVE/AMENDED/DEAD/OPEN rollup and
+    # could never be marked dead or amended. ★ This is why a type-only fix banked nothing:
+    # retyping `supersedes-mechanism` to `supersedes(dv-004, claim=…)` marks a node that
+    # does not exist. Seed metadata WINS on collision — it is the curated half (titles,
+    # explicit `status: proposed|superseded`); the scan only ADDS what the seed never knew.
+    for nid, meta in inline_nodes.items():
+        if nid not in nodes:
+            nodes[nid] = meta
     # Merge, not concatenate: once an edge is inscribed inline it is the SAME edge as its
     # seed entry (that is what --verify checks), not a second one. Key on (from,type,to)+
     # qualifiers so a fully-inscribed corpus doesn't silently double every edge count.
@@ -467,7 +594,7 @@ def verify():
     worker receipt (e.g. edges whose `from` has no ruled ledger-file home, or
     ADR edges left in native Extends:/Relates: syntax, not double-inscribed)."""
     seed_nodes, seed_edges, _ = load_seed()
-    inline_edges = parse_inline_edges()
+    inline_edges, _reg = parse_inline_edges()
     seed_by_key = {_edge_key(e): e for e in seed_edges}
     inline_by_key = {_edge_key(e): e for e in inline_edges}
     seed_only = sorted(set(seed_by_key) - set(inline_by_key))
