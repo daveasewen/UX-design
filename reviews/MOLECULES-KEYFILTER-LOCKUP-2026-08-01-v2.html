@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Review #66 v2 — key-filter + lockup molecules: plain prose + technical detail</title>
+<style>
+  body{font-family:system-ui,sans-serif;margin:24px;background:#f4f4f2;color:#1a1a1a;max-width:1400px}
+  h1{font-size:19px} h2{font-size:15px;margin-top:28px;border-top:2px solid #1a1a1a;padding-top:12px}
+  p,li{max-width:78ch;line-height:1.5}
+  .decision{background:#fff;border:1px solid #ccc;border-left:4px solid #484D6F;padding:12px 16px;margin:14px 0}
+  .decision h3{margin:0 0 6px;font-size:14px}
+  .plain{font-size:14.5px}
+  details{margin:10px 0;border:1px solid #ddd;background:#fafaf8;padding:8px 12px;max-width:80ch}
+  summary{cursor:pointer;font-weight:600;font-size:13px;color:#484D6F}
+  details p,details li{font-size:13px}
+  .opts label{display:block;margin:4px 0;cursor:pointer}
+  .nums{font-variant-numeric:tabular-nums;background:#e8e8e4;padding:1px 5px}
+  .spread{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px}
+  .spread .cell{flex:1 1 420px;min-width:380px}
+  .spread h4{font-size:13px;margin:0 0 4px}
+  iframe{width:100%;height:520px;border:1px solid #ccc;background:#fff}
+  .warn{border-left-color:#97482C}
+  textarea{width:100%;max-width:78ch;min-height:60px;font:inherit}
+  .foot{margin-top:32px;font-size:12px;color:#555}
+</style>
+</head>
+<body>
+<h1>Key-filter + control-lockup molecules — the #66 decision pack (v2)</h1>
+<p class="plain"><strong>In one breath:</strong> the clickable chart key that dims a series on and
+off already exists as a reusable piece — bar and donut use it. Scatter never got connected to it,
+a checking tool wrongly said scatter had no key at all, and one chart (sparkline) is carrying a
+copy of the key machinery it can never use. The chart header — title, "View as table", the
+controls — is repeated by hand in every chart and could become a reusable piece too. Four
+decisions below sort all of this. Each one: plain description first, machinery in the fold.</p>
+
+<h2>What went wrong with scatter's key (fixed tonight, one part left for you)</h2>
+<p class="plain">Scatter's key looks like the others but is only a picture — clicking does
+nothing, which is what you found. It was built before the clickable key existed and never
+upgraded. Worse, the tool whose job is to catch exactly this looked at scatter's key and reported
+"no key here", so the gap sat invisible. That tool is fixed tonight and now points at scatter
+loudly; it will keep complaining, on purpose, until you decide scatter's key's fate in D3.</p>
+<details><summary>Technical detail</summary>
+<p>Scatter carries the dead static model (<code>ul.dv-legend</code>, snippet ~line 261) — no
+<code>.dv-legrow</code> rows, no <code>data-series-toggle</code> hooks. The registry
+(<code>component-types.json</code>) subscribes scatter to <code>dv-behaviour</code> only, so the
+<code>dv-legend</code> partial is never injected. <code>_check_legend_migration.py</code> matched
+only <code>.dv-legrow</code> or the dead hook; a static <code>ul</code> matched neither and fell
+through to "no legend — nothing to migrate" (the matched-grep-≠-presence class). Fix (sub-built,
+conductor-replayed): total partition over a derived legend vocabulary
+(<code>\bdv-leg[a-z-]*\b</code>), new loud finding "static legend present but not migrated and not
+subscribed", exit 1 extended to cover it, mutation-tested in three directions. Known consequence,
+declared: <code>dv-behaviour.js:148</code>'s "Authorised by … exit 0" citation is stale until D3
+enacts.</p>
+</details>
+
+<h2>The four decisions</h2>
+
+<div class="decision">
+<h3>D1 — Make the sharing rule permanent?</h3>
+<p class="plain">There's a rule that decides which reusable pieces each chart receives: a chart
+can declare exactly what it uses, and anything with no declaration gets everything. You approved
+it provisionally in July. It has behaved well since — including refusing several kinds of mistake
+we deliberately threw at it — so the question is whether it graduates from provisional to
+permanent, and if so whether "no declaration = everything" stays, or every chart must declare
+explicitly.</p>
+<details><summary>Technical detail</summary>
+<p>ADR-0015-A2 (TENTATIVE, yours, 2026-07-28): universal-default consumes-manifest —
+<code>"consumes": [...]</code> narrows injection; absent key = all group partials.
+Since ruled: scatter's own narrow declaration enacted #27 (dv-legend's 16,271 B refused entry,
+build 72/72 exit 0); mutation control refuses in four directions (unknown name, empty list,
+declared-away markers present, declaration deleted). The unpredicted safety property, observed
+not inferred: deleting a declaration makes the member universal, which demands markers it
+doesn't carry ⇒ non-conforming — a declaration cannot be silently dropped. Flipping the default
+to fail-loud matches house style but costs an explicit declaration on every current member.</p>
+</details>
+<div class="opts">
+<label><input type="radio" name="d1"> Make permanent as-is (no declaration = everything)</label>
+<label><input type="radio" name="d1"> Make permanent, but require every chart to declare (stricter)</label>
+<label><input type="radio" name="d1"> Keep provisional</label>
+</div>
+</div>
+
+<div class="decision">
+<h3>D2 — Let sparkline drop the dead weight?</h3>
+<p class="plain">Sparkline has no key — nothing to click, nothing to filter. But because it never
+declared what it uses, the "everything" rule hands it a full copy of the key machinery anyway:
+about seventeen thousand characters of code riding along in every copy of that chart, doing
+nothing. One line of declaration sheds it.</p>
+<details><summary>Technical detail</summary>
+<p>Measured tonight: sparkline's injected dv-legend block = <span class="nums">16,661 B</span>
+(the record's "15.6KB", re-measured on the artefact). Remedy: <code>"consumes":
+["dv-behaviour"]</code> on the sparkline registry entry, then regenerate — the exact move
+ADR-0015-A2 predicted "when ruled". This is that ruling. Post-shed the build's declared-away
+marker check enforces the block's removal from the snippet.</p>
+</details>
+<div class="opts">
+<label><input type="radio" name="d2"> Yes — declare and shed</label>
+<label><input type="radio" name="d2"> No — leave as is</label>
+</div>
+</div>
+
+<div class="decision">
+<h3>D3 — Scatter's key: connect it, or remove it?</h3>
+<p class="plain">Two honest options. <strong>Connect it:</strong> rebuild scatter's key in the
+working format and subscribe it to the machinery — clicking then filters the segments, same as
+bar and donut. <strong>Remove it:</strong> argue scatter never needed a key, because every point
+already carries its segment's shape and letter (circles/A, squares/B, diamonds/C) — the key
+would be decoration. Connecting is what you asked for when you reported the fault; removal is
+listed because it's cheaper and defensible, not because I recommend it.</p>
+<details><summary>Technical detail</summary>
+<p>Migrate = markup (static <code>ul</code> → <code>.dv-legrow</code> rows) + registry
+(<code>consumes: ["dv-behaviour","dv-legend"]</code>). Budgets, measured: scatter page
+<span class="nums">13,346 + 16,661 = 30,007 B</span> vs 32,768 group cap ✓;
+<code>dv-legend.js</code> (54 B free) needs <strong>zero new bytes</strong> if init-discovery
+covers scatter's markers — they already carry <code>data-series-group</code>. That zero is a
+reading of the init loop, proven only at enact by the build gate; if it's wrong the job STOPS
+and re-prices (the ceiling is absolute). Delete = drop the <code>ul</code>, scatter joins
+sparkline as legendless-by-design; dv-011 already guarantees colour is never the only channel.</p>
+</details>
+<div class="opts">
+<label><input type="radio" name="d3"> Connect it — key-filtering works on scatter (recommended)</label>
+<label><input type="radio" name="d3"> Remove it — scatter is keyless by design</label>
+</div>
+</div>
+
+<div class="decision warn">
+<h3>D4 — Make the chart header a reusable piece?</h3>
+<p class="plain">Every chart hand-builds its own header — title, the "View as table" button,
+theme and replay controls where present — and the copies have drifted apart. The proposal:
+one reusable header piece that each chart configures (which title, which controls, how aligned),
+same discipline as the key. Tonight's question is only whether the idea is the right cut — look
+at the three headers in the spread below and judge by eye. Building it is next session's work,
+sized and priced then.</p>
+<details><summary>Technical detail</summary>
+<p>New ADR-0013 partial (working name <code>dv-lockup</code>), parameterised by data-attributes,
+registry-gated, riding the existing partial machinery (gen_component_partials.py) — no new
+architecture. Scope risk to price at build: the lockup touches every chart snippet (7 pro-formas),
+so it lands as its own wave with the ratchet, not a drive-by. Interaction with the behaviour-page
+budgets is markup-side only (partials inject markup+CSS here, not JS), but that claim gets
+measured at scoping, not assumed.</p>
+</details>
+<div class="opts">
+<label><input type="radio" name="d4"> Shape approved — scope and build next session</label>
+<label><input type="radio" name="d4"> Not yet — leave headers per-chart</label>
+</div>
+</div>
+
+<h2>The live spread — bar · donut · scatter</h2>
+<p class="plain">Click the key rows under bar and donut — the series dim and the reset appears.
+Scatter's key does nothing: that's the fault, live. Compare the three headers for D4.</p>
+<div class="spread">
+  <div class="cell"><h4>Chart-bar — working key</h4><iframe src="../knowledge/snippets/Chart-bar.reference.html"></iframe></div>
+  <div class="cell"><h4>Chart-donut — working key</h4><iframe src="../knowledge/snippets/Chart-donut.reference.html"></iframe></div>
+  <div class="cell"><h4>Chart-scatter — dead key</h4><iframe src="../knowledge/snippets/Chart-scatter.reference.html"></iframe></div>
+</div>
+
+<h2>Comments</h2>
+<textarea placeholder="Notes for the ledger…"></textarea>
+
+<p class="foot">Selections are not persisted — give rulings in chat or screenshot this page.
+Measured #66: dv-behaviour.js 13,004 B · dv-legend.js 16,330 B (54 under the 16,384 source cap) ·
+group 29,334 / 32,768 · sparkline inert block 16,661 B · scatter post-migration page 30,007 B.
+References: ADR-0015 + A2 · ADR-0013 · legend-v5 ledger · ds-015/aid-009. Supersedes v1
+(2026-08-01) — v1 kept, version-don't-overwrite.</p>
+</body>
+</html>

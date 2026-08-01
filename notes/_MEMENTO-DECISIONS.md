@@ -2372,3 +2372,9 @@ His wording, verbatim save dated deixis:
   `reviews/MOLECULES-KEYFILTER-LOCKUP-2026-08-01-v1.html`: D1 ratify A2 (3 options) ·
   D2 sparkline sheds · D3 scatter migrate-vs-delete · D4 dv-lockup partial shape.
   ⚠ RULINGS PENDING — nothing enacted past the gate fix; the review doc is the vehicle.
+- **#66-D5 (Dave, live): decision review docs default to TWO REGISTERS** — each decision leads
+  with plain prose (readable alone as the whole decision, no paths/bytes/gate names), technical
+  detail folded in `<details>` beneath, options after. Canon inscribed:
+  `knowledge/_RUNBOOK-review-doc.md`; exemplar `reviews/MOLECULES-KEYFILTER-LOCKUP-2026-08-01-v2.html`
+  (supersedes v1 for reading; v1 kept, version-don't-overwrite). Extends the ruled decision-pack
+  template (#59's "use it again"), replaces nothing.
