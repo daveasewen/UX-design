@@ -733,3 +733,9 @@ a claim that was never true is never chased.
 > *(chain-only boot HELD — `_CHAIN.md` read at open; GM/LS touched only in targeted regions during housekeeping and this wrap, never top-to-bottom. `A:U` again — the cut keeps holding.)*
 > **consult-receipts #73:** none — state questions answered by `git log`, targeted greps, and READ runbooks (capture + git-commit, both read before acting, per #72's felt-difficulty lesson); no `_memento_search.py` call was needed. Third consecutive honest negative — the trigger-index proposal (e) exists for exactly this shape.
 
+#### 2026-08-01 #74
+> **pre-flight #74:** boot unobservable (no opener stamp — harness half `ds-025`) + job 55,000 est (priced in-chat at the fix-block opener: "~45–60K real tokens for the full list including wrap", re-priced up when Dave added D2/D3 mid-block) + wrap 20,000 est = 75,000 of 200,000 — GREEN
+> **section-sizes #74 (tiktoken cl100k_base):** GM HDR:2991 LATEST:876 PRIOR:905 DOFIRST:3592 A:4375 C1:842 C2:1020 C4:5917 STRATA:3560 · LS HDR:391 LANES:872 SPIN:1794 DELTAS:2083 WEBFONT:604 LIVE:4928 LIFECYCLE:973 DEAD:432 OPEN:4361 TARGETS:577 SPINOFFS:444 · totals GM:24078 LS:17459 *(measured pre-stratum, per the #73 precedent)*
+> **section-usage #74 (observed, self-report):** GM HDR:R LATEST:R PRIOR:C DOFIRST:C A:C C1:C C2:U C4:C STRATA:U · LS HDR:U LANES:C SPIN:C DELTAS:U WEBFONT:C LIVE:C LIFECYCLE:C DEAD:C OPEN:C TARGETS:C SPINOFFS:C
+> **consult-receipts #74:** "estimated sub-agent budget tiktoken silent estimate" → gm:PRIOR · ls:DELTAS (theme surfaced; answer completed by grep of `_RUNBOOK-context-gauge.md` § Half 2) ; "sub-agent price replay harness half unreachable ds-025" → no direct hit — resolved by reading the runbook section itself. Both queries were the door into the Half-2 finding.
+

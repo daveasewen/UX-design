@@ -791,3 +791,72 @@ in `_LIVE-STATE.md` (🟡 PARKED entry) so the state machine doesn't read this a
 - **⬛ STILL OPEN:** D3 lockup rework — **Dave's detail was owed at this opener and was not given**;
   carry it to #71. Review pair for DV-D18 **deferred by Dave's explicit budget ruling** (~140K of a
   200K line; a review build landed ~205K — declared and forked, not spent silently).
+
+## ★ #75 — 2026-08-01 — DV-D19: ISOLATION AND CHECK ARE MODES, NOT A DERIVED MARKER
+
+*Opus 5 solo Cowork conductor, Dave live. Session ran the edge-type ruling first (ADR-0012
+§ Amendment #75), then returned to the legend on Dave's direction.*
+
+- **★ DV-D19 · RULED (Dave, 2026-08-01, #75) — TWO MODES, MUTUALLY EXCLUSIVE, AND THE GESTURE
+  DECIDES WHICH.** Verbatim: *"There are two modes isolation and check, as soon as the user checks
+  a swatch the whole set change to check mode. check-mode and isolation-mode never occur at the
+  same time."* And on the split: *"the legend items are simply spit in two, clicking on the label
+  is isolation-mode and clicking on the swatch is check-mode."*
+  - **Isolation mode** — filled swatch on the isolated series, empty on the rest; the isolated ROW
+    carries the emphasis container (`.is-solo` → `border-color:var(--ink)` + `ink 6%` tint).
+  - **Check mode** — filled swatch = checked, empty = unchecked; **no row carries emphasis at all.**
+  - **The emphasis container is the SIGNATURE of isolation mode.** Entering check mode removes it
+    for good — not merely while the set is larger than one.
+  - **Nothing jumps on the transition** (Dave, #75): the focus set becomes the checked set. Reverting
+    to the pre-isolation mix was put to him and refused — a check gesture must not yank back series
+    the user deliberately dropped.
+
+- **⛔ WHAT IS ACTUALLY BROKEN — the RETURN path, not the two states.** Both of Dave's reference
+  images are what canon renders TODAY: isolate C → C emphasised, A/B empty (image 1); isolate D +
+  check E → two filled swatches, no emphasis (image 2). Traced at source: `isSolo(st, id)` is
+  **re-derived every render** as `st.isolated && st.focus[id] && count(st, st.focus) === 1`. So
+  `isolate D → check E → uncheck E` returns the focus set to a singleton and **the emphasis on D
+  comes back**, while the user is plainly in check mode. That is the "both modes at once" Dave saw.
+  ★ **The predicate can become true again; a mode cannot.**
+
+- **DV-D19 REFINES DV-D18, IT DOES NOT REVERSE IT.** DV-D18 (#70) was right to stop keying the
+  marker off the SEED identity — it replaced seed identity with a set-size predicate, and a
+  predicate is re-entrant. DV-D19 replaces the predicate with **sticky mode state**: entered by a
+  label click, exited by any swatch check, never recomputed from set size. DV-D17's bite (i)
+  (`visible[]` untouched, release restores the prior mix) survives untouched.
+
+- **⚠ UNPROVEN, DECLARED — the fade request is NOT yet attributed.** Dave: *"I'd like the fade
+  behavior on this chart"* + `reviews/LEGEND-ISOLATE-TOGGLE-PROTOTYPE-2026-07-24-v5.5.html`.
+  **Static comparison found NO delta:** v5.5 and canon both define `.is-faded .24 / .is-ghost .12 /
+  .is-peek .24`, and **both select by bare `[data-series-group="…"]`** (`dv-legend.js:40`,
+  v5.5:529) — so the on-chart key letters (`text.dv-barkey`) ghost with their bars in BOTH. My
+  first hypothesis (canon fades bars but not key letters) is **DEAD**. What this leaves: a
+  RENDER-level comparison (~4 sandbox calls, `_RUNBOOK-render-verify.md`, `goto("file://…")`),
+  or Dave meaning *preserve* this fade through the mode change rather than *add* it. **Not
+  guessed, not built.** → §C, first item for #76.
+
+- **⚠ RECORD DEFECT, FOUND NOT FIXED — `DV-D18` IS USED TWICE.** `_DATAVIZ-DECISIONS.md:422`
+  *"CAP STACKED SEGMENTS AT 6"* and `:728` *"SOLO IS A SET SIZE"* are different rulings under one
+  ID. Renumbering a ruling of Dave's is not an agent's move. ⬛ **His call at the #76 opener.**
+
+- **CEILING, MEASURED not recalled:** `canon/dv-legend.js` = **17,035 B vs the 16,384 B ADR-0015
+  per-source cap — 651 B OVER, `_validate_behaviour.py` RED.** The record said "54 B free"; that
+  was true at `229cb14` (07-27, 16,330 B) and died at `2aa778f` (08-01, the DV-D18 enact wave).
+  Group page budget is fine: 29,083 B of 32,768. **Recommended and put to Dave: SPLIT along the
+  DV-D12 seam** — `sweepDonut` + `arcPath` + `pt` are ~4.1 KB and reference **zero** of the
+  interaction model (`rec`/`render`/`highlight`/`toggleSwatch`/`isolate`/`centreData`/
+  `updateCentre`/`hostOf`/`hiTarget` — all 0 hits; only INIT couples them). Lands dv-legend at
+  ~12.9 KB. Group total unchanged, so the split buys **no** headroom — which is exactly what
+  ADR-0015's amendment demands. ⬛ **Dave has not ruled it yet; nothing split.**
+
+- **⚠ THE NEW GATE BIT ON THIS VERY ENTRY, AND IT IS TELLING THE TRUTH — DECLARED, NOT SILENCED.**
+  `DV-D19 —refines→ DV-D18` raises `orphan-target`: **DV-D18 has no own-id home anywhere.** Its two
+  appearances are a blockquoted bullet inside #69's batch (`:422`) and a SESSION heading that merely
+  mentions it (`:728`, `## ★ #70 — … — DV-D18: …`), and #75's registration rule takes an id only when
+  it OPENS its own heading — correctly, or a passing mention would mint a node. ★ **Deleting the edge
+  to buy a green is the exact unearned-green pattern this session spent its morning removing.** The
+  edge stays, the warn stays visible, and the cause is the ID collision above. **Clears when Dave
+  rules the collision and DV-D18 gets a `Node:` line in its real home.**
+
+Node: DV-D19
+Edges: refines(DV-D18, claim=solo-derived-from-set-size) · relates(DV-D11) · relates(ADR-0015, scope=dv-legend-over-cap)
