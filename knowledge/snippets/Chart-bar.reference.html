@@ -975,6 +975,13 @@
   }
   function series(st, id) { return st.fig.querySelectorAll('[data-series-group="' + id + '"]'); }
   function active(st) { return st.isolated ? st.focus : st.visible; }
+  /* ★ DV-D18 (Dave, 2026-08-01, #70) — SOLO IS A SET SIZE, NOT A SEED IDENTITY.
+     DV-D17's complaint was verbatim "the isolated key item stays active when I check others on";
+     the #69 evidence (v5.5 prototype) showed the marker keyed off seed identity is what produced
+     it. Deriving solo from "the focus set is a singleton and this is its member" satisfies that
+     complaint EXACTLY while leaving DV-D11's additive focus set alive. ⚠ st.focus is null outside
+     isolate — guard it, do not call count() on null. */
+  function isSolo(st, id) { return !!st.isolated && !!st.focus && st.focus[id] && count(st, st.focus) === 1; }
   function count(st, m) { var n = 0; st.ids.forEach(function (id) { if (m[id]) { n++; } }); return n; }
   function nameOf(st, id) {
     var el = st.host.querySelector('.dv-legrow[data-series="' + id + '"] .dv-leg-name');
@@ -1047,7 +1054,7 @@
   function render(st) {
     var m = active(st);
     st.rows.forEach(function (r) {
-      var id = r.getAttribute('data-series'), solo = st.isolated === id;
+      var id = r.getAttribute('data-series'), solo = isSolo(st, id);
       var sw = r.querySelector('.dv-leg-sw'), it = r.querySelector('.dv-leg-item');
       /* in isolate the boxes show MEMBERSHIP of the focus set — blank until added (DV-D11) */
       if (sw) { sw.setAttribute('aria-checked', String(!!m[id])); }
@@ -1065,22 +1072,21 @@
      visible[] is untouched while isolated, so release restores the prior mix by construction. */
   function toggleSwatch(st, id) {
     var m = active(st);
-    /* ★ DV-D17 — a blank swatch checked while isolated ENDS isolation, so no row keeps .is-solo
-       while several series show. ⚠ Release restores visible[], NEVER all-on (that would make this
-       a second Reset); the clicked series is set visible so the click still does what it says.
-       Arc + accepted cost + the 3 bites: _DATAVIZ-DECISIONS.md § Batch 10. */
-    if (st.isolated && !m[id]) {
-      st.isolated = null; st.focus = null;
-      st.visible[id] = true;
-      announce(st, 'Isolation released — ' + nameOf(st, id) + ' shown');
-      render(st);
+    /* ★ DV-D18 (Dave, 2026-08-01, #70) — THE ADDITIVE BRANCH IS BACK, and it is ONE path for
+       both modes: while isolated `m` IS st.focus, so this grows and shrinks the focus SET;
+       visible[] stays untouched, so release restores the prior mix by construction (DV-D17's
+       bite (i) survives untouched). The stale-marker complaint DV-D17 was raised for is handled
+       in isSolo() instead — the moment the set stops being a singleton, NO row reads solo.
+       ⚠ DV-D17's release-on-add branch is DELETED, not commented: left in place it pre-empts
+       this path on the very first click. Arc: _DATAVIZ-DECISIONS.md § Batch 10 + § ★ #70. */
+    if (m[id] && count(st, m) === 1) {
+      announce(st, st.isolated ? 'At least one series must stay in the focus' : 'At least one series must stay shown');
       return;
     }
-    if (m[id] && count(st, m) === 1) { announce(st, 'At least one series must stay shown'); return; }
     m[id] = !m[id];
-    /* the isolated-mode ' added'/' removed' branch is GONE, not merely unreachable: focus is now
-       always a singleton — add releases above, remove hits the floor guard. */
-    announce(st, nameOf(st, id) + (m[id] ? ' shown' : ' dimmed'));
+    announce(st, nameOf(st, id) + (st.isolated
+      ? (m[id] ? ' added to the focus' : ' removed from the focus')
+      : (m[id] ? ' shown' : ' dimmed')));
     render(st);
   }
   function isolate(st, id) {

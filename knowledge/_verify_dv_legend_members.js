@@ -155,19 +155,34 @@ MEMBERS.forEach((member) => {
     ok('19 in isolate the other boxes render BLANK (focus-set membership)',
       sw(b).getAttribute('aria-checked') === 'false' && sw(a).getAttribute('aria-checked') === 'true');
 
-    /* ⚠ 20 AND 21 ASSERTED THE SUPERSEDED MODEL AND ARE REWRITTEN, NOT DELETED.
-       They read: "20 checking a blank swatch ADDS it at full" and "21 releasing isolate restores
-       the PRIOR mix (all shown)" — the additive-focus half of DV-D11. **DV-D17 supersedes it**:
-       the second check-on ends the mode outright. Both wordings live in _DATAVIZ-DECISIONS.md
-       § Batch 10. Keeping the old text here as a comment is deliberate — a suite that quietly
-       changes what a numbered check means is how a reversal reads as agent drift. */
+    /* ⚠ 20 AND 21 HAVE NOW BEEN REWRITTEN TWICE, AND EVERY PRIOR WORDING STAYS HERE.
+       (i) DV-D11 (2026-07-26): "20 checking a blank swatch ADDS it at full" / "21 releasing
+           isolate restores the PRIOR mix (all shown)" — the additive-focus model.
+       (ii) DV-D17 (2026-07-27): "20 checking a blank swatch RELEASES isolation entirely (no row
+           stays solo)" / "21 the release is ANNOUNCED on the add path, not a silent mode change".
+       (iii) ★ DV-D18 (Dave, 2026-08-01, #70) SUPERSEDES DV-D17's MECHANISM, NOT ITS INVARIANT.
+           Dave's DV-D17 complaint was verbatim "the isolated key item stays active when I check
+           others on" — that invariant is asserted UNCHANGED below at !soloRow(). What changed is
+           HOW it is delivered: by SET SIZE (isSolo() requires a singleton focus set) instead of by
+           tearing the mode down. The additive set returns. ⚠ The DISCRIMINATING assertion — the
+           one thing that distinguishes DV-D18 from DV-D17 and would have caught either enacted in
+           place of the other — is that series OUTSIDE the focus set STAY GHOSTED after the add.
+           Under DV-D17 the mode released, so they came back. Without that clause this check passes
+           under both rulings and proves neither.
+       All three wordings live in _DATAVIZ-DECISIONS.md § Batch 10 + § ★ #70. Keeping superseded
+       text here as comment is deliberate — a suite that quietly changes what a numbered check
+       means is how a reversal reads as agent drift. */
     const soloRow = () => leg.querySelector('.dv-legrow.is-solo');
     click(sw(b));
-    ok('20 DV-D17 — checking a blank swatch RELEASES isolation entirely (no row stays solo)',
+    const rest = others(a).filter((id) => id !== b);
+    ok('20 DV-D18 — checking a blank swatch ADDS it to the focus, and NO row stays solo (set size, not release)',
       !soloRow() && !anyGhost(a) && !anyGhost(b)
-        && sw(b).getAttribute('aria-checked') === 'true');
-    ok('21 DV-D17 — the release is ANNOUNCED on the add path, not a silent mode change',
-      /isolation released/i.test(live.textContent) && announces(b));
+        && sw(b).getAttribute('aria-checked') === 'true'
+        && (rest.length ? rest.every(ghosted) : true),
+      `rest=[${rest}] restGhosted=[${rest.map(ghosted)}] solo=${!!soloRow()}`);
+    ok('21 DV-D18 — the ADD is announced as an ADD (the mode continues), not as a release',
+      /added to the focus/i.test(live.textContent) && announces(b),
+      `live="${live.textContent.trim()}"`);
 
     /* THE RULING'S SHARPEST EDGE — release must restore visible[], NOT all-on, or DV-D17
        silently becomes Reset. Needs a series dimmed BEFORE isolating, so it has its own setup.
@@ -177,8 +192,10 @@ MEMBERS.forEach((member) => {
     const spare = L.ids.length >= 3 ? L.ids[2] : null;
     if (spare) { click(sw(spare)); }
     click(item(a));
-    click(sw(b));
-    ok(`22 DV-D17 — release restores visible[], NOT all-on${spare ? ' (the dimmed series stays dimmed)' : ' (2-series: nothing to leave dimmed)'}`,
+    click(sw(b));      /* ★ DV-D18 — additive now: focus = {a,b}; visible[] still untouched */
+    click(item(a));    /* ★ DV-D18 — RELEASE IS THE LABEL RE-CLICK (or Reset). DV-D17's bite (i)
+                          survives this ruling completely: what restores is visible[], never all-on. */
+    ok(`22 DV-D17 bite (i), UNCHANGED under DV-D18 — release restores visible[], NOT all-on${spare ? ' (the dimmed series stays dimmed)' : ' (2-series: nothing to leave dimmed)'}`,
       spare ? (ghosted(spare) && !anyGhost(a) && !anyGhost(b))
             : (!anyGhost(a) && !anyGhost(b)),
       spare ? `spare=${spare} ghosted=${ghosted(spare)}` : '');

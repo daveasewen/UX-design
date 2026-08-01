@@ -150,6 +150,16 @@
       exportText=document.getElementById('rv-export-text');
 
   function isRvNode(n){ return n && n.closest && n.closest('#rv-fab,#rv-panel,#rv-composer,#rv-markers,#rv-export'); }
+  /* ★ #70 — a decision radio/checkbox (and the <label> wrapping one) must stay operable while
+     Review mode is ON. The capture-phase handler below was preventDefault()-ing the click, so the
+     control genuinely "did nothing" and popped a composer instead. Narrow by design: only native
+     choice controls are exempt, so pinning a comment anywhere else is unaffected. */
+  function isDecisionControl(n){
+    if(!n||!n.closest) return false;
+    if(n.matches&&n.matches('input[type=radio],input[type=checkbox]')) return true;
+    var lab=n.closest('label');
+    return !!(lab&&lab.querySelector('input[type=radio],input[type=checkbox]'));
+  }
 
   // ---- element description -------------------------------------------------
   function cleanHead(s){ return (s||'').replace(/\s+/g,' ').replace(/^(\d+)(?=\D)/,'$1 ').trim(); }
@@ -307,10 +317,38 @@
   function flash(el){ var o=el.style.outline; el.style.outline='3px solid #DB0011'; setTimeout(function(){ el.style.outline=o; },700); }
 
   // ---- export --------------------------------------------------------------
+  /* ★ #70 — READ THE DECISION PICKS. The export carried comment pins ONLY; the D1…Dn radios were
+     never wired to anything, in ANY review doc — an absence, not a regression (#66's fix repaired
+     pins under a sentence that claimed to repair picks, so the recurrence at #69 was inevitable).
+     UNRULED groups are reported explicitly as "(not ruled)" rather than omitted: a silent gap is
+     how a decision goes missing, and a declared one cannot. */
+  function scanPicks(){
+    var groups={}, names=[], all=document.querySelectorAll('input[type=radio]');
+    for(var i=0;i<all.length;i++){
+      var r=all[i];
+      if(isRvNode(r)) continue;
+      var n=r.name||'(unnamed)';
+      if(names.indexOf(n)===-1) names.push(n);
+      if(r.checked){
+        var lab=r.closest('label');
+        groups[n]=((lab?lab.textContent:(r.value||''))||'').replace(/\s+/g,' ').trim();
+      }
+    }
+    return {groups:groups,names:names};
+  }
   function buildPrompt(){
-    var lines=[];
+    var lines=[], picks=scanPicks(), ruled=0;
     lines.push('# '+DOC_TITLE+' — review edits ('+comments.length+')');
     lines.push('');
+    if(picks.names.length){
+      picks.names.forEach(function(n){ if(picks.groups[n]) ruled++; });
+      lines.push('## Decision picks ('+ruled+' of '+picks.names.length+' ruled)');
+      lines.push('');
+      picks.names.forEach(function(n){
+        lines.push('- **'+n+'** — '+(picks.groups[n]?picks.groups[n]:'*(not ruled)*'));
+      });
+      lines.push('');
+    }
     lines.push('Apply the following change requests'+(DOC_FILE?(' to `'+DOC_FILE+'`'):'')+'. Each item is pinned to a component; treat the bracketed location as the target and use the selector to disambiguate. A leading [mode · theme] bracket is the viewing state the comment was pinned under.');
     lines.push('');
     comments.forEach(function(c,i){
@@ -363,6 +401,7 @@
   document.addEventListener('click',function(e){
     if(!active) return;
     if(isRvNode(e.target)) return;           // let overlay UI work normally
+    if(isDecisionControl(e.target)) return;  // ★ #70 — decision radios stay operable in review mode
     e.preventDefault(); e.stopPropagation();
     clearHover();
     openComposer(e.target, null);

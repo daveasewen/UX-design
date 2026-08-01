@@ -722,3 +722,72 @@ in `_LIVE-STATE.md` (🟡 PARKED entry) so the state machine doesn't read this a
   diffs scatter against it. ⚠ The prototype is dated 07-24, three days BEFORE DV-D17 (07-27) — if its
   swatch-during-isolate is additive, D4 is a deliberate REVISIT of DV-D17 with the prototype as
   evidence, not a memory slip. Verify which way it behaves before assuming.
+
+---
+
+## ★ #70 — 2026-08-01 — DV-D18: SOLO IS A SET SIZE, NOT A SEED IDENTITY
+
+*Opus 5 solo Cowork conductor + 2× Sonnet subs, Dave live. Dossier (arc, dead-ends, method):
+`_DECISION-HISTORY/2026-08-01-the-70-dv-d18-and-the-unwired-radios.md`.*
+
+- **★ DV-D18 · RULED (Dave, 2026-08-01) — the additive focus set RETURNS; the stale marker is
+  killed by SET SIZE instead.** `isSolo(st, id)` now requires the focus set to be a **singleton
+  containing this id**; `toggleSwatch` runs ONE additive path for both modes (while isolated,
+  `m` IS `st.focus`). **DV-D17's release-on-add branch is DELETED, not commented** — left in place
+  it pre-empts the additive path on the very first click.
+  **What DV-D18 supersedes:** DV-D17's *mechanism* (tearing the mode down on the second check-on).
+  **What survives UNCHANGED:** DV-D17's *invariant* — Dave's verbatim *"the isolated key item stays
+  active when I check others on"* — and its **bite (i)**, release restores `visible[]`, never all-on.
+  Release is now the label re-click or Reset. Enacted `knowledge/canon/dv-legend.js`; injected into
+  all five chart snippets by `gen_component_partials.py` (`--check` OK).
+
+- **WHY DV-D17 OVERREACHED — the two behaviours were separable and it conflated them.** The additive
+  focus set (DV-D11, Dave's own 2026-07-26 ruling) and the stale solo marker were independent;
+  DV-D17 fixed the marker BY DELETING the additive model. It did not have to.
+
+- **⚠ THE #69 REFERENCE COULD NOT BE ADOPTED WHOLE.** `reviews/LEGEND-ISOLATE-TOGGLE-PROTOTYPE-2026-07-24-v5.5.html`
+  — Dave: *"has all the correct behaviours"* — carries `function isSolo(id){ return isolated === id; }`,
+  i.e. **the exact defect DV-D17 was raised to kill.** DV-D18 takes its additive half and refuses its
+  marker half. ⛔ **RECORD CORRECTED: the prototype is dated 2026-07-26 (mtime 19:10; its own `<title>`
+  says so), ONE day before DV-D17, not three** — 07-24 is the series start. The #69 addendum and
+  `_CHAIN.md` both carried the wrong figure; the error framed a current ruled state as a stale artefact.
+
+- **★ D4 WAS NOT NEW — it was the #7 open item, 63 sessions later.** `_REVIEW-SIGNOFF.md:21`:
+  *"★ NEW 2026-07-27 (#7) — TWO FELT CONSEQUENCES OF DV-D17, NEITHER RULED, BOTH NEED DAVE'S EYE
+  LIVE."* Consequence (b) — the DV-D13 centre figure returning to 100% instead of growing — is
+  answered by DV-D18. **A question parked for Dave's eye does not age out; it waits.**
+
+- **⚠ a11y GATE BLINDSPOT, 43 sessions live.** `isolate()` announced *"check a blank swatch to add a
+  series"* the whole time `toggleSwatch()` released instead. Gates asserted the BEHAVIOUR; nothing
+  asserted the ANNOUNCEMENT told the truth about it. True again under DV-D18.
+
+- **★★ METHOD — AN INVARIANT THAT SURVIVES A REVERSAL CANNOT DISCRIMINATE THE REVERSAL.**
+  Mutation B (DV-D17's branch re-inserted, new `isSolo` kept) reported `restGhosted=[false]
+  solo=false`: the `!soloRow()` clause — the very invariant DV-D17 existed to protect — **passes
+  under BOTH rulings.** Check 20 only became capable of failing once it asserted what CHANGED
+  (series outside the focus set STAY GHOSTED after the add). Sharper corollary of *"a green that
+  can't fail is an assertion"*: when you rewrite a check across a reversal, **assert the delta, not
+  the invariant** — the invariant is exactly the part that cannot tell the two apart.
+  **Evidence:** 108/108 green · mutant A (seed identity) 4 red, `solo=true` · mutant B 97/108,
+  checks 20/21/22 red. Both mutants via the suite's own `DVLEGEND` override — canon never mutated.
+
+- **⛔ REVIEW-EXPORT DEFECT — ROOT-CAUSED AND FIXED. The radios were NEVER WIRED, in ANY review doc.**
+  Not a #66 regression: `_review-overlay.html`'s `buildPrompt()` built from `comments[]` only, zero
+  radio reads anywhere. #66's fix repaired comment-pin export under a `_RUNBOOK-review-doc.md`
+  sentence claiming to make *"picks + comment pins capturable"* — **two problems conflated under one
+  sentence, so the #69 recurrence was inevitable, not unlucky.** A working `picks{}` pattern had
+  existed since 2026-07-30 in `reviews/MEMENTO-DECISION-PACK-2026-07-30-v1.html`, never reused.
+  **Fixed:** `scanPicks()` reads every non-overlay radio group into the export, and **reports unruled
+  groups explicitly as "(not ruled)" rather than omitting them** — a silent gap is how a decision goes
+  missing; a declared one cannot. `isDecisionControl()` exempts native choice controls from the
+  review-mode capture-phase `preventDefault()` that was swallowing the click AND popping a composer.
+  ⚠ **UNPROVEN: Dave has not yet used it.** The fix is DOM-reasoned, not user-proven — #71's review
+  doc is its first real test, and that is deliberate.
+
+- **✅ PROBE THAT INVALIDATED ITS OWN WORRY (recorded because it did):** the snippet↔canon seam is
+  **gated** — `gen_component_partials.py --check` at `_build_all.py:91` blocks on drift. A stale
+  snippet would have gone red at the next push, not shipped silently.
+
+- **⬛ STILL OPEN:** D3 lockup rework — **Dave's detail was owed at this opener and was not given**;
+  carry it to #71. Review pair for DV-D18 **deferred by Dave's explicit budget ruling** (~140K of a
+  200K line; a review build landed ~205K — declared and forked, not spent silently).
