@@ -726,3 +726,10 @@ a claim that was never true is never chased.
 > *(chain-only boot HELD — `_CHAIN.md` read at open, GOOD-MORNING.md never opened top-to-bottom.)*
 > **consult-receipts #72:** none — retrieval ran as direct repo greps and runbook reads, not `_memento_search.py`. Declared as the honest negative; it is also the session's own finding about pull-retrieval.
 
+#### 2026-08-01 #73
+> **pre-flight #73:** ⛔ NOT CAPTURED — UNMEASURED. Priced qualitatively at the opener ("read-and-audit, cheap", later "modest job, wrap reserved first") but no token estimate was stamped and none is reconstructed after the fact. First stratum written under the legal form this same session enacted (`514f4bd`); the fix that makes this form rare is a stamped price at the #74 opener, which (g)'s self-heal now makes measurable from the first minute.
+> **section-sizes #73 (tiktoken cl100k_base):** GM HDR:2933 LATEST:905 PRIOR:2677 DOFIRST:3592 A:4375 C1:842 C2:874 C4:5917 STRATA:3560 · LS HDR:393 LANES:872 SPIN:1794 DELTAS:2399 WEBFONT:604 LIVE:4928 LIFECYCLE:973 DEAD:432 OPEN:4361 TARGETS:577 SPINOFFS:444 · totals GM:25675 LS:17777
+> **section-usage #73 (observed, self-report):** GM HDR:C LATEST:C PRIOR:C DOFIRST:U A:U C1:U C2:U C4:U STRATA:C · LS HDR:C LANES:U SPIN:U DELTAS:C WEBFONT:U LIVE:U LIFECYCLE:U DEAD:U OPEN:U TARGETS:U SPINOFFS:U
+> *(chain-only boot HELD — `_CHAIN.md` read at open; GM/LS touched only in targeted regions during housekeeping and this wrap, never top-to-bottom. `A:U` again — the cut keeps holding.)*
+> **consult-receipts #73:** none — state questions answered by `git log`, targeted greps, and READ runbooks (capture + git-commit, both read before acting, per #72's felt-difficulty lesson); no `_memento_search.py` call was needed. Third consecutive honest negative — the trigger-index proposal (e) exists for exactly this shape.
+
