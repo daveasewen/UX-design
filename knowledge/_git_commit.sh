@@ -17,10 +17,12 @@ set -u
 cd "$(dirname "$0")/.." || exit 1
 
 RECONCILED=0
+WRAP=0
 MSGFILE=""
 for a in "$@"; do
   case "$a" in
     --reconciled) RECONCILED=1 ;;
+    --wrap) WRAP=1 ;;
     *) MSGFILE="$a" ;;
   esac
 done
@@ -77,6 +79,31 @@ fi
 python3 knowledge/_gen_chain.py --check ||
   fail "_gen_chain.py --check REFUSED (exit non-zero) — its message is printed directly above and it is the authority on the cause; this script does not second-guess it. Nothing has been staged. If it named STALENESS, run: python3 knowledge/_gen_chain.py — then re-run this script. If it named a DEGRADED MEASUREMENT, regenerating will NOT help: fix tiktoken first (pip install tiktoken --break-system-packages) and re-run."
 echo "— chain fresh (_gen_chain.py --check passed)"
+
+# wrap-gate consumer — RULED #74-D1 (the WARN/--wrap split; the wiring was #73's deliberate
+# not-done because the tradeoff was Dave's). The gate was honest with no consumer: #71 and #72
+# committed through red ([[instrument-without-a-consumer]]). The commit seam is where a red wrap
+# becomes DURABLE, so it is consumed HERE — but a mid-session commit is a CORRECT state (three of
+# #73's four commits), and a gate that blocked it would make that state unreachable (the ds-022
+# lesson). The split: default = the gate runs and reports, red is a VISIBLE WARN and a DECLARED
+# not-a-wrap; --wrap = the session's final commit, red BLOCKS.
+# ⚠ DECLARED residual, scope honest: nothing at this seam can see a session that never wraps at
+# all (the #70 class) — every commit it made was legitimately mid-session. The chain title check
+# catches that NEXT session. This consumer kills only the committed-through-red class.
+# ⚠ Mutation scope: the shim tests force the gate's EXIT CODE and prove this CONSUMER both ways;
+# the gate's own verdict honesty is proven by its own selftest, not here.
+if [ "$WRAP" -eq 1 ]; then
+  python3 knowledge/_capture_gate.py --wrap ||
+    fail "wrap gate RED on a --wrap commit — this is the FINAL commit and the gate now has its consumer (#74-D1). Its findings are printed directly above and it owns the diagnosis; fix them, or declare a real gap in the legal form (⛔ NOT CAPTURED — UNMEASURED. + reason). Nothing has been staged."
+  echo "— wrap gate GREEN on the wrap commit (#74-D1 consumer)"
+else
+  if python3 knowledge/_capture_gate.py --wrap; then
+    echo "— wrap gate green (mid-session commit, DECLARED not-a-wrap)"
+  else
+    echo "⚠ wrap gate RED — visible, not blocking: this commit is DECLARED not-a-wrap (#74-D1)."
+    echo "  The session's FINAL commit must run with --wrap, where red BLOCKS."
+  fi
+fi
 
 # clear · stage · clear · commit · clear
 clear_locks
