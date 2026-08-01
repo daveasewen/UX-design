@@ -12,6 +12,37 @@ graduates OUT of here into `_LIVE-STATE` OPEN/TARGET when work starts. Refresh w
 **Entry format:** what · why it's held · what it feeds (Apollo phase/mode) · source/provenance pointer ·
 status (`idea` / `parked` / `resurrection-candidate` / `graduated→LIVE`).
 
+## ★★ Cowork gauge crack — a sub can read its parent's transcript (found #67, Dave asked "is there another way?")
+
+**What:** the Cowork harness exposes `session_info` tools. PROBED #67: (a) a session cannot list
+ITSELF — self-reading is blocked; (b) **completed sessions ARE readable** (full transcripts of
+#33–#66 confirmed listed) ⇒ post-hoc tiktoken measurement of real sessions can calibrate the
+per-beat price estimates against actuals; (c) **a spawned sub sees the parent as an ordinary
+session** ⇒ a tiny Haiku sub (`read_transcript` on the parent → tiktoken → report one number)
+would give a measured MID-WINDOW gauge, bulk paid in the sub's window. Would convert the
+standing ⛔ NOT CAPTURED — UNMEASURED Cowork gap into measurement-on-demand.
+**Declared residual before it is believed:** transcript = conversation text only — system prompt,
+tool schemas, images are not in it ⇒ it measures a FLOOR with a named gap, not the bill. And
+claim (c) is UNPROVEN — the sub's read of a RUNNING parent has not been attempted; prove it
+before pricing anything on it (a measurement mechanism gets the same discipline as any gate:
+mutation-test it — feed it a session of known size first).
+**What it feeds:** the throttle (`_RUNBOOK-context-gauge.md`); pre-flight stamps stop being
+retrospective estimates.
+**Source:** #67 chat, probe run live at Dave's question. **Status:** `idea` — probe first,
+~one Haiku sub, next session candidate. — three data-entry paths for bounded values (Dave, 2026-08-01 #67)
+
+**What:** when Apollo's edit mode surfaces the bounded parameters a user may edit, the *values*
+(the data a chart/component displays) get three entry paths: **(1) edit values** directly (inline,
+within the declared bounds) · **(2) a values generator** (synthesise plausible data to shape —
+series count, range, distribution) · **(3) CSV upload** (bring real data in).
+**Why held:** floated in the #67 D4 scoping conversation (header-cluster/legend contents vary by
+chart type + data shape; rules-as-record + inference-as-clerk agreed same beat) — edit mode itself
+is not yet in flight. Register: FLOATED, not ruled.
+**What it feeds:** Craft phase (edit mode = bounded parameters on rails); the values generator is
+the same derivation-governance grain — machine drafts, bounds constrain, user decides.
+**Source:** #67 session chat, alongside `notes/_briefs/2026-08-01-dv-lockup-scope-brief.md`.
+**Status:** `idea`.
+
 ## ★★ EXPANDABLE "OTHER" BUCKETS — the cap must not become data loss (Dave, 2026-07-27 session #6)
 **status: FLOATED — explicitly NOT ruled, not designed, not scoped.** Dave, verbatim, in the same
 breath as ruling the segment cap:

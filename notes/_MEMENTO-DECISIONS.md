@@ -2392,3 +2392,48 @@ His wording, verbatim save dated deixis:
   added: review pair mandatory · specimens tested in the review's OWN context, copied
   same-directory. The correct interaction reference stands: DV-D11 +
   `reviews/LEGEND-ISOLATE-TOGGLE-PROTOTYPE-2026-07-24-v5.5.html` (Dave's signoff).
+
+## ★ #67 — 2026-08-01 — THE WAVE LANDS IN ONE PASS, AND THE LOCKUP SPLITS IN TWO
+
+- **✅ #66-D6's D1–D3 ENACTED — one Sonnet sub, one tree, replayed and committed `75343e8`.**
+  A2 PERMANENT-STRICT live (`gen_component_partials.py` — absent `consumes` fails loud, named;
+  all six members declare) · sparkline shed its inert block (snippet 44,281 → 27,709 B; DV-J2b
+  folded per 0c) · scatter's key CONNECTS (`.dv-legrow` + dv-legend subscription, donut's DV-D11
+  model ported; `dv-behaviour.js:148` citation refreshed). Gates replayed IN-WINDOW, exit codes
+  captured directly: `_check_legend_migration` GREEN incl. scatter (was deliberately RED) ·
+  `_validate_behaviour` PASS (dv-legend 16,330/16,384 · group 29,508/32,768) · partials
+  --check/--selftest OK · showroom --check OK. Render-proof READ at 1180+760px (snippets, not
+  showroom pages — first probe aimed at the wrong artefact and showed 0; the control (donut)
+  attributed it to the probe).
+- **★ The "30,007 B" reconciliation:** the ledger's forecast was the BEHAVIOUR-PAGE accounting
+  (13,346 + 16,661), never a file size — post-enact same-unit figure is 29,508 ✓. Unit named,
+  no defect. (measure-dont-convert-units, again.)
+- **⬛ #67-D1 (Dave, live): the TWO-TIER MOLECULE SPLIT.** Final-build components exclude
+  Toggle-theme + Replay-motion — *"these are just review components, separate from the real
+  final outputs."* The product molecules screens are built from are **the legend and the
+  controls/header cluster** — separate molecules; review chrome moves to the harness layer.
+  (Dissolves the donut-Replay question — moot.)
+- **⬛ #67-D2 (Dave, live): the title is NOT a molecule — it is the ONE MANDATORY ITEM of the
+  header cluster.** Desk research concurs (dated 2026-08-01: Brad Frost ch.2, Carbon chart
+  anatomy — text-only molecules are not a pattern; chart title = chart anatomy). Title = type
+  composite atom in a mandatory slot, gate-enforceable.
+- **⬛ #67-D3 (agreed direction, Dave: "this sounds great and we are well aligned"):
+  RULES ARE THE RECORD, INFERENCE IS THE CLERK.** Header-cluster + legend contents per chart
+  type live as registry declarations (A2-strict, absent = fail loud); a derivation script reads
+  the data shape and DRAFTS declarations for Dave to ratify (unknown shape = loud refusal);
+  the same logic re-runs as a consistency checker, findings to Dave. Derivation-governance +
+  measuring-tool-must-not-guess, applied verbatim. Home: `notes/_briefs/2026-08-01-dv-lockup-scope-brief.md`.
+- **⬛ FLOATED (Dave): Apollo edit-mode's three data-entry paths** — edit values · values
+  generator · CSV upload → `_FUTURE-STATE.md` § Apollo edit mode. Not ruled, noted so it
+  survives.
+- **★ #67-F1 (finding, mine — at Dave's direct question "is there another way?"): the Cowork
+  gauge CRACK.** `session_info` probed live: a session cannot list ITSELF, but completed
+  sessions ARE readable (204 listed) ⇒ post-hoc tiktoken calibration is available NOW; and a
+  spawned sub sees the parent as an ordinary session ⇒ sub-reads-parent = a possible MEASURED
+  mid-window gauge (floor with declared residual: transcript text only — no system prompt/
+  schemas/images). **UNPROVEN on a running parent; mutation-test before believing.** Home:
+  `_FUTURE-STATE.md` § Cowork gauge crack.
+- **⚠ NEW SCOPE, not enacted:** the legend gate's own GREEN output now prescribes the cleanup
+  wave (delete dv-behaviour.js TRANSITIONAL block · promote `dv-legrow` to dv-legend's
+  universal contract · strip dead per-member CSS · page budget → ~85%). Beyond #66-D6's
+  rulings — queued for Dave, deliberately unenacted.

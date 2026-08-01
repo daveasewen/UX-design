@@ -197,3 +197,4 @@ Follow the **account-card** template. Components: **summary, tab-bar, action-bar
 | `notes/_bite-matrix-gm-move-DRAFT.md` | 2026-07-31 #63 | DRAFT, replay done — **count reconciliation owed** (4 unverdicted rows) before ratification. |
 | `notes/_bite-matrix-chain-and-index.md` | 2026-07-31 #63 | DRAFT, conductor-built, mutations quoted — awaiting ratification. |
 | `notes/_bite-matrix-capture-gate-PHASE1-DRAFT.md` | 2026-07-31 #63 | DRAFT phase 1 (no mutations by design) — phase 2 = the 30 UNCOVERED rows, queued #64. |
+| `notes/_briefs/2026-08-01-dv-lockup-scope-brief.md` | 2026-08-01 #67 | dv-lockup scope, reshaped #67-D1/D2/D3 (two product molecules · title = mandatory slot · rules+clerk). **Awaiting Dave: build go + PLAN-stamp questions** (multi-chart lockup-per-block confirm · name at ADR inscription). |
