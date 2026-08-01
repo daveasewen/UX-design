@@ -113,51 +113,35 @@ NON_CARTESIAN_DTYPES = {
 # Waivers: cartesian, genuinely non-compliant, but non-compliant BY RULING rather than by accident.
 # A waiver demotes blocking -> advisory and must carry both a reason and the condition that clears it.
 DV_FIT_WAIVED = {
-    "scatter": ("ds-020 — scatter is the only cartesian member still on the pre-DV-D07 axis/grid "
-                "idiom, FENCED by Dave's ruling (#27): adopting fit moves every gridline, so it "
-                "ships with a paired before/after control or not at all. Scatter also lacks the "
-                "data-pl/data-fx geometry hooks fit() reads (measured #28: bar 167 data-fx, "
-                "scatter 0), so this is not a one-class fix. CLEARS WHEN: ds-020 is enacted with "
-                "its control — then delete this waiver and the check goes blocking on scatter. "
-                "★ PART-DISCHARGED #69 (2026-08-01): the ds-020 axis/grid COLOUR migration is "
-                "ENACTED with its paired pre/post control (both modes, diffed as colours — "
-                "knowledge/_DS-IMPROVEMENTS.md ds-020). The waiver STAYS because this clause "
-                "named TWO conditions under one label: the check it demotes reads the data-fx "
-                "fit hooks, and scatter carries 6 vs bar's 175 (re-measured #69) — deleting now "
-                "would go blocking-red on work never scoped into ds-020. REMAINING clears-when: "
-                "scatter adopts the dv-fit geometry hooks. "
-                "⚠ #71: THE SNIPPET HALF IS NOW DONE — Chart-scatter.reference.html carries "
-                "dv-fit on both plot svgs + 57 data-fx / 27 data-x0, render-proven at 1180/600. "
-                "The waiver STILL STANDS because the clears-when is surface-blind and a SECOND "
-                "surface was never in scope: _proforma/DataViz-interactive.html's scatter is "
-                "'0 of 1' on dv-fit (measured #71 by discharging the waiver and reading which "
-                "file went blocking-red — the snippet passed, the proforma did not). Same shape "
-                "as #69's own lesson, one layer out: a clears-when that names a CONDITION but "
-                "not a SCOPE reads as met the moment any one surface meets it. "
-                "REMAINING clears-when, now scoped: the proforma scatter adopts the hooks too."),
-    # ⛔ DO NOT DISCHARGE ON THE SNIPPET ALONE — measured #71, that leaves the gate red.
+    # EMPTY — a state with a history, not an oversight.
     #
-    # Provenance for the eventual discharge, so a later session cannot mistake it for a drop:
-    #
-    # "scatter" lived here from #27 to #71 and was deleted 2026-08-01 (#71) because its own
-    # REMAINING clears-when was met, not because it became inconvenient. Provenance, so a later
-    # session cannot mistake this for a waiver that was quietly dropped:
-    #   · #27 FENCED it (Dave): adopting fit moves every gridline ⇒ ships with a paired
+    # "scatter" lived here from #27 to #72 and was deleted 2026-08-01 (#72) because its RE-SCOPED
+    # clears-when was met on BOTH surfaces this gate scans. Provenance, so a later session cannot
+    # mistake a discharge for a quiet drop:
+    #   · #27 FENCED it (Dave): adopting fit moves every gridline, so it ships with a paired
     #     before/after control or not at all.
-    #   · #69 PART-DISCHARGED it: the ds-020 axis/grid COLOUR migration landed with that control.
-    #     The waiver STAYED because one label had hidden TWO conditions — the check it demotes
-    #     reads the data-fx fit hooks, and scatter carried 6 against bar's 175.
-    #   · #71 DISCHARGED the remainder: scatter adopted the hooks. MEASURED on the artefact, not
-    #     recalled — `data-fx="` 57, `data-x0="` 27 across 27 <g class="dv-marker"> (0 missing
-    #     either), `class="dv-svg dv-fit"` on both plot svgs, and the `figure.dv-fit-on` release
-    #     rule present. Render-proven at 1180/600: viewBox tracks the container (1108/528, no
-    #     longer pinned at 580) while tick-label font-size stays 12px at both widths — DV-D02's
-    #     actual invariant, text does not scale. `knowledge/canon/` was NOT touched; the existing
-    #     fitOne() `g` branch already handled scatter's <g class="dv-marker"> shape.
+    #   · #69 PART-DISCHARGED it — the ds-020 axis/grid COLOUR migration landed with that control.
+    #     It STAYED because one label hid TWO conditions: the check also reads the data-fx hooks.
+    #   · #71 did the SNIPPET half and ATTEMPTED discharge. REVERTED — the clears-when named a
+    #     CONDITION but not a SCOPE, so it read as met the moment one surface met it while
+    #     _proforma/DataViz-interactive.html was still 0-of-1. #71 re-scoped it to name the proforma.
+    #   · #72 did the PROFORMA half and discharged for real. The 12 bare <circle>s were WRAPPED in
+    #     <g class="dv-marker" data-fx data-x0> — fitOne()/fitCharts() branch on TAG and there is no
+    #     `circle` branch, so re-classing alone would have done nothing. Render-proven at 600/1180:
+    #     viewBox 544/864, no longer pinned at 580, tick labels 12px at BOTH widths. canon/ untouched.
     #
-    # ⚠ The check is now BLOCKING on scatter, which is the point: the compliance is GATED, not
-    # merely achieved. Mutation-tested at discharge — stripping dv-fit from one plot svg turns
-    # this gate RED. A green here that cannot go red would be an assertion, not a proof.
+    # ⚠ MUTATION-TESTED AT DISCHARGE, and it DISCRIMINATES — two arms, two different failures,
+    # which is exactly what #71's invalid test lacked:
+    #     CONTROL                  viewBox 544 | 12/12 markers translated
+    #     dv-fit stripped          viewBox 580 (PINNED) | 0 translated
+    #     marker data-fx stripped  viewBox 544 (tracks) | 0 translated
+    #
+    # ⚠ SCOPE, stated because this waiver died of an unstated one: the scan is exactly two globs
+    # (_proforma/*.html carrying the signature + snippets/Chart-*.reference.html). Three other repo
+    # files hold a scatter figure and are NOT gated — snippets/_REVIEW-66-scatter-title-before.html
+    # and reviews/_specimen-chart-scatter-69.html are FROZEN before/specimen artefacts whose value
+    # is being unfixed; __tmp_moved.html at the repo root is debris. A scatter added to a gated glob
+    # without the hooks is now BLOCKING.
 }
 _unplaced = KNOWN_DTYPES - CARTESIAN_DTYPES - set(NON_CARTESIAN_DTYPES)
 if _unplaced:
@@ -619,11 +603,23 @@ def selftest():
                   'stroke="var(--page)" stroke-width="2" d="M0 0"/></svg>'
                   '<table><tr><th>A</th><td>30</td></tr></table></figure>',
                   lambda B, A: not has(B, "DV-D02-A")))
-    cases.append(("★ DV-D02-A WAIVER demotes scatter to advisory, and names ds-020",
+    # ★ REPLACED #72. This case previously asserted "the WAIVER demotes scatter to advisory, and
+    # names ds-020". That waiver was discharged at #72 (see the provenance in DV_FIT_WAIVED), so
+    # the old assertion would now be testing a mechanism that no longer exists. It is replaced by
+    # the pair below rather than deleted, because the discharge is exactly the thing a regression
+    # would undo quietly: scatter must now go BLOCKING like every other cartesian member, and must
+    # still fall silent when compliant. One case per direction — a check that only fires one way
+    # cannot tell a fix from a break.
+    cases.append(("★ scatter is BLOCKING since the #72 discharge — no waiver left to demote it",
                   '<figure class="dv" data-dv-type="scatter"><svg class="dv-svg">'
                   '<circle class="dv-series" fill="var(--data-series-1)" cx="5" cy="5" r="3"/></svg>'
                   '<table><tr><th>A</th><td>5</td></tr></table></figure>',
-                  lambda B, A: not has(B, "DV-D02-A") and has(A, "DV-D02-A") and has(A, "ds-020")))
+                  lambda B, A: has(B, "DV-D02-A") and not has(A, "DV-D02-A")))
+    cases.append(("★ scatter WITH dv-fit is silent — the green control for the discharge",
+                  '<figure class="dv" data-dv-type="scatter"><svg class="dv-svg dv-fit">'
+                  '<circle class="dv-series" fill="var(--data-series-1)" cx="5" cy="5" r="3"/></svg>'
+                  '<table><tr><th>A</th><td>5</td></tr></table></figure>',
+                  lambda B, A: not has(B, "DV-D02-A") and not has(A, "DV-D02-A")))
     cases.append(("★ h-bar is IN scope after DV-D02-A — the rot the amendment corrected",
                   '<figure class="dv" data-dv-type="bar" data-domain-min="0">'
                   '<svg class="dv-svg"><rect class="dv-series" fill="var(--data-series-1)" '

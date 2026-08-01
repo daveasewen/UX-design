@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<title>#72 · D3 — scatter responsive, both surfaces</title>
+<style>
+  :root{
+    --ink:#1a1a1a; --mute:#6b6b6b; --line:#e1e1e1; --bg:#fff; --raised:#f7f7f7;
+    --ok:#1e7a52; --warn:#B92F1E; --accent:#2f5fB9;
+    --font:"Univers Next for HSBC","Univers Next HSBC",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:var(--font); color:var(--ink); background:var(--bg); font-size:15px; line-height:1.5;}
+  .wrap{max-width:1400px; margin:0 auto; padding:32px 28px 80px;}
+  h1{font-size:22px; font-weight:500; margin:0 0 4px; letter-spacing:-.01em;}
+  .sub{color:var(--mute); font-size:14px; margin:0 0 28px;}
+  h2{font-size:16px; font-weight:500; margin:40px 0 6px; padding-top:20px; border-top:1px solid var(--line);}
+  h2 .tag{font-size:12px; font-weight:400; color:var(--mute); margin-left:10px;}
+  p.note{color:var(--mute); font-size:13.5px; margin:0 0 16px; max-width:70ch;}
+
+  /* --- the live controller: one iframe, scrub its width ------------------ */
+  .ctrl{display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+        background:var(--raised); border:1px solid var(--line); padding:12px 16px; margin:0 0 14px;}
+  .ctrl label{font-size:13px; color:var(--mute);}
+  .ctrl input[type=range]{width:340px; accent-color:var(--accent);}
+  .ctrl output{font-variant-numeric:tabular-nums; font-size:14px; font-weight:500; min-width:74px;}
+  .ctrl .chip{font-size:12px; border:1px solid var(--line); background:#fff; padding:4px 10px; cursor:pointer;}
+  .ctrl .chip:hover{border-color:var(--ink);}
+  .stage{border:1px solid var(--line); background:#fff; overflow:auto; resize:horizontal;}
+  .stage iframe{border:0; display:block; width:100%; height:720px;}
+
+  /* --- fixed three-width spread ------------------------------------------ */
+  .spread{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; align-items:start;}
+  .pane{border:1px solid var(--line); background:#fff;}
+  .pane .cap{font-size:12px; color:var(--mute); padding:7px 10px; border-bottom:1px solid var(--line); background:var(--raised);
+             display:flex; justify-content:space-between;}
+  .pane .cap b{font-weight:500; color:var(--ink); font-variant-numeric:tabular-nums;}
+  .shrink{overflow:hidden;}
+  .shrink iframe{border:0; display:block; transform-origin:0 0;}
+
+  table.m{border-collapse:collapse; font-size:13.5px; margin:10px 0 0;}
+  table.m th,table.m td{border:1px solid var(--line); padding:6px 11px; text-align:left; font-variant-numeric:tabular-nums;}
+  table.m th{background:var(--raised); font-weight:500;}
+  .ok{color:var(--ok); font-weight:500;} .no{color:var(--warn); font-weight:500;}
+  .q{background:#fffbe6; border-left:3px solid #d9a300; padding:12px 16px; margin:18px 0; font-size:14px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>#72 · D3 — “the part that is missing is the chart being fully responsive”</h1>
+  <p class="sub">Both scatter surfaces now carry the fit hooks. Scrub the width and watch two things:
+     the plot should <b>compress</b>, and the text should <b>not shrink</b>.</p>
+
+  <h2>1 · Live — drag the slider, or the pane’s bottom-right corner <span class="tag">canonical snippet</span></h2>
+  <p class="note">This is <code>knowledge/snippets/Chart-scatter.reference.html</code> — the canon artefact, live.
+     DV-D02 says responsive means compress width, never scale proportionally. If any label gets smaller as you narrow, that is a fail.</p>
+  <div class="ctrl">
+    <label for="w">width</label>
+    <input type="range" id="w" min="360" max="1180" value="1180" step="10">
+    <output id="wo">1180px</output>
+    <button class="chip" data-w="1180">1180</button>
+    <button class="chip" data-w="600">600</button>
+    <button class="chip" data-w="420">420</button>
+    <button class="chip" data-w="360">360</button>
+  </div>
+  <div class="stage" id="stage" style="width:1180px; max-width:100%;">
+    <iframe id="fr" src="../knowledge/snippets/Chart-scatter.reference.html" title="Scatter reference, live"></iframe>
+  </div>
+
+  <h2>2 · The proforma scatter — the half that was still missing <span class="tag">fixed this session</span></h2>
+  <p class="note">Until now this one was pinned at 580px whatever the container did. It is the surface that kept the
+     DV-D02-A waiver alive. Same test: compress, don’t scale.</p>
+  <div class="ctrl">
+    <label for="w2">width</label>
+    <input type="range" id="w2" min="360" max="1180" value="1180" step="10">
+    <output id="wo2">1180px</output>
+    <button class="chip" data-w2="1180">1180</button>
+    <button class="chip" data-w2="600">600</button>
+    <button class="chip" data-w2="420">420</button>
+  </div>
+  <div class="stage" id="stage2" style="width:1180px; max-width:100%;">
+    <iframe id="fr2" src="../knowledge/_proforma/DataViz-interactive.html#scatter" title="Proforma DataViz, live"></iframe>
+  </div>
+
+  <h2>3 · Three widths at once <span class="tag">the spread you asked to see again</span></h2>
+  <div class="spread">
+    <div class="pane"><div class="cap"><span>snippet</span><b>1180px</b></div>
+      <div class="shrink" data-w="1180" data-h="900"><iframe src="../knowledge/snippets/Chart-scatter.reference.html"></iframe></div></div>
+    <div class="pane"><div class="cap"><span>snippet</span><b>600px</b></div>
+      <div class="shrink" data-w="600" data-h="900"><iframe src="../knowledge/snippets/Chart-scatter.reference.html"></iframe></div></div>
+    <div class="pane"><div class="cap"><span>snippet</span><b>420px</b></div>
+      <div class="shrink" data-w="420" data-h="900"><iframe src="../knowledge/snippets/Chart-scatter.reference.html"></iframe></div></div>
+  </div>
+
+  <h2>4 · What was measured, not eyeballed</h2>
+  <p class="note">Rendered headless with the licensed HSBC cut (<code>document.fonts.check</code> true), via
+     <code>goto("file://…")</code> — never <code>set_content()</code>.</p>
+  <table class="m">
+    <tr><th>arm (proforma scatter @600 viewport)</th><th>viewBox</th><th>tick label</th><th>markers moved</th><th>reading</th></tr>
+    <tr><td>CONTROL — as it now stands</td><td>0 0 <b>544</b> 260</td><td>12px</td><td>12 / 12</td><td class="ok">tracks the container</td></tr>
+    <tr><td>MUTANT-A — <code>dv-fit</code> stripped</td><td>0 0 <b>580</b> 260</td><td>12px</td><td>0</td><td class="no">pinned — proof goes red</td></tr>
+    <tr><td>MUTANT-B — marker <code>data-fx</code> stripped</td><td>0 0 <b>544</b> 260</td><td>12px</td><td>0</td><td class="no">plot moves, points don’t</td></tr>
+  </table>
+  <p class="note">At 1180 the same figure reads viewBox <b>864</b>, tick labels still <b>12px</b> — width changes, type does not.
+     Two mutants failing in two different ways is what makes this a proof rather than an assertion.</p>
+
+  <div class="q">
+    <b>Owed from you, and deliberately not written down yet:</b><br>
+    D3 was recorded at #71 as “a reading to confirm, not a ruling”. Nothing has been entered in the ledger.
+    If, having seen the above, the lockup is right and D3 was only ever about responsiveness, say so and it gets
+    written as discharged. If something in the lockup itself still reads wrong, it stays open and this becomes the rework brief.
+  </div>
+
+</div>
+<script>
+  function bind(slider, out, stage, frame){
+    const s=document.getElementById(slider), o=document.getElementById(out), st=document.getElementById(stage);
+    function set(v){ st.style.width=v+'px'; o.textContent=v+'px'; s.value=v; }
+    s.addEventListener('input',()=>set(+s.value));
+    document.querySelectorAll('[data-'+ (slider==='w'?'w':'w2') +']').forEach(b=>{
+      if(b.tagName==='BUTTON') b.addEventListener('click',()=>set(+b.getAttribute('data-'+(slider==='w'?'w':'w2'))));
+    });
+  }
+  bind('w','wo','stage','fr');
+  bind('w2','wo2','stage2','fr2');
+
+  /* scale the fixed spread panes down to fit their column, without lying about the width */
+  function layout(){
+    document.querySelectorAll('.shrink').forEach(box=>{
+      const w=+box.dataset.w, h=+box.dataset.h, fr=box.querySelector('iframe');
+      const k=box.clientWidth/w;
+      fr.style.width=w+'px'; fr.style.height=h+'px'; fr.style.transform='scale('+k+')';
+      box.style.height=(h*k)+'px';
+    });
+  }
+  window.addEventListener('resize',layout); window.addEventListener('load',layout); layout();
+</script>
+</body>
+</html>
