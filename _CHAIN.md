@@ -7,7 +7,7 @@
 > and ★ LATEST banner, plus `_LIVE-STATE.md`'s ⏱ LATEST delta — the three things GM-D7-am names
 > (CUT #33 on Dave's ruling). **If you have read this file, you have read the chain.**
 >
-> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 23,871 tape and 85% of it is
+> ⚠ **Do NOT now open `GOOD-MORNING.md` to "check".** It is 24,011 tape and 84% of it is
 > retrieval surface you are not meant to pay for at boot. That reflex is the thing this file
 > exists to stop — five sessions called the chain CUT and every one of them paid full price.
 >
@@ -42,6 +42,7 @@
 > - **⬛ RULED #65 (ledger § ★ #65):** D1 boot rule RATIFIED + Dave's bracket clarifiers verbatim in spec+instructions · D2 the 07-23 harness-spinoff note stays IGNORED (thinking-out-loud; the spec is the record) · D3 **D6 DISCHARGED by declared assertion** (zip-from-repo distribution; VS+Copilot known running; "I'll let you know") · D4 scope cut: GM/LS filenames = the PACKAGE'S OWN convention, configurability stays debt.
 > - **★ THE #64 CLASS ×2, BOTH AT REPLAY:** audit counts (compound-verdict cells make a count INSTRUMENT-DEPENDENT — rule declared, corrected at source) · my manifest's "exactly four functions" (a grep of DIRECT calls; the sub found the transitive `GM_VOCAB`/`LS_VOCAB` dep). **A dependency list from one grep is a list of MATCHES, not SOURCES.**
 > - **⚠ UNPROVEN, DECLARED: the live Copilot conversation** — the colleague's machine is the first real test (Monday, maybe the weekend). **Queued to #66:** her verdict · one-pager voice pass · Claude-plugin flavour (her home Claude + a friend = testers) · CI full green on Dave's next push (post-`d0012fd`).
+> *(post-wrap addendum, 5b — stamped 2026-08-01 ~08:41 BST from `date` — ★ **DISTRIBUTION AMENDED, Dave live: the agency machine cannot EMAIL zips — GITHUB IS THE CHANNEL.** The v0.1 zip is now COMMITTED at `memento-package/dist/` under a scoped `.gitignore` exception (`!memento-package/dist/*.zip` — the `*.zip` ban stays global otherwise); colleague downloads the ONE file from GitHub, never the repo zip. Spec § packaging order updated at source; a stray untracked zip inside the package root moved to `_to_delete/`.)*
 >
 > **⬛ OPEN WORKLIST — PRESENCE INDEX (17 items, GENERATED). Every open item is named; NO bodies are here — `--fetch gm:DOFIRST`.**
 > `0b` ★★ ENCODE BEFORE THE WAVE · `0c` NEXT BUILD CANDIDATES (his pick, not the… · `1` ds-018 C2 follow-through · `2` dv-legend/dv-behaviour CEILING · `3` ds-012(b) gutter-relative plot area · `4` DV-D16 floating growth · `5` Instrument-fit remainder · `6` ds-016, UNRULED · `7` ds-017, UNRULED · `8` STILL OWED, unchanged, none superseded · `9` DELEGATION TOPOLOGY, UNSCOPED · `10` ✅ PER-GATE TEST PLAN · `11` THE 2c-ROLL / INDEX-VOCABULARY DEADLOCK · `12` THE #57 1b DOSSIER · `13` /tmp RUNBOOK EXPOSURE, UNFIXED · `14` ⬛ DAVE'S FOUNDING PRINCIPLE · `15` LEDGER § ★ #59
@@ -59,7 +60,7 @@
 
 ---
 
-*(Chain ends. **4,659 tape — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **4,799 tape — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
-`GOOD-MORNING.md` is 23,871 tape and stays whole for retrieval; you have paid for
+`GOOD-MORNING.md` is 24,011 tape and stays whole for retrieval; you have paid for
 20% of it, and that is the intended figure, not a shortfall.)*

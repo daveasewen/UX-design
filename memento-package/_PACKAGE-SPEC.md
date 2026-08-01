@@ -50,8 +50,11 @@ matrices ratified + mover count reconciled (43/1/1 of 45).
    `machinery/_MACHINERY-MANIFEST.md` (4 verbatim copies + the generalisation debt, in order).
 2. Ledger D4′ sequence.
 3. Copilot-in-VS-Code package — **✅ D6 DISCHARGED #65 (Dave's assertion, DECLARED not
-   measured): distribution = zip from his repo, shared directly; colleague + org installs
-   assumed unproblematic — "I'll let you know if we do." Colleague doubles as first tester
-   once built; she has Claude at home (+ a friend) ⇒ natural first testers for step 4 too.**
+   measured): colleague + org installs assumed unproblematic — "I'll let you know if we do."
+   Colleague doubles as first tester once built; she has Claude at home (+ a friend) ⇒
+   natural first testers for step 4 too.** ★ **DISTRIBUTION AMENDED #65 post-wrap (Dave: the
+   agency machine cannot email zips — GitHub IS the channel): the versioned zip is COMMITTED
+   at `dist/memento-package-v0.1.zip` under a scoped `.gitignore` exception; download that
+   ONE file from GitHub — never the repo zip, which ships Apollo.**
 4. Claude plugin.
 5. The one-pager (voice pass owed) fronts the package docs.
