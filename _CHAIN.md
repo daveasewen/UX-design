@@ -18,6 +18,11 @@
 
 ---
 
+> **YOU ARE #73. TITLE THIS CHAT →** `Apollo - #73: Dave scopes the legend work, then the D3 ruling + the trigger-index proposal (read _CHAIN.md ONLY)`
+> *(read it back in your opener — the chat half of the ritual is ungateable, which is why this line is FIRST)*
+
+---
+
 <!-- ⛔ STOP. If you are a cold session, you are in the wrong file and you pay for ALL of it.
      Read `_CHAIN.md` instead — it is GENERATED from this file's header + ★ LATEST banner and
      `_LIVE-STATE.md`'s ⏱ LATEST delta, which is the ENTIRE contract (GM-D7-am, CUT #33).
@@ -74,7 +79,7 @@
 
 ---
 
-*(Chain ends. **7,184 tape — the unit is THE WHOLE FILE**, this generated wrapper included:
+*(Chain ends. **7,256 tape — the unit is THE WHOLE FILE**, this generated wrapper included:
 the number in this sentence is the size of the file containing it, held exact by a fixed point.
 `GOOD-MORNING.md` is 26,787 tape and stays whole for retrieval; you have paid for
 27% of it, and that is the intended figure, not a shortfall.)*

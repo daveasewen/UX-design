@@ -92,6 +92,16 @@ RESERVE_FENCE = 15  # runbook § Half 0b: ring-fenced, NOT an addend
 # ★ [[unmatched-grep-is-not-an-absence]]'s THIRD FACE, live: the check MATCHED, so nothing
 # looked broken — but it matched the wrong line, and a matched pattern is not the right pattern.
 PREFLIGHT_RE = re.compile(r"^\s*>?\s*\**pre-?flight\**(\s*#\d+)?\**(\s*\([^)]*\))?\**\s*[:—-]", re.I)
+# ★ #73 — THE LEGAL REFUSAL FORM for this check (#62's remedy applied to the check that lacked
+# it; proposed #72 item (h), enacted on Dave's word #73). A session that declared no pre-flight
+# at its opener CANNOT reconstruct one honestly — every number would be invented after the fact,
+# and a gate that fails honest behaviour teaches sessions to invent numbers. The exact quoted
+# form is the ONLY legal refusal: the glyph run `⛔ NOT CAPTURED — UNMEASURED.` followed by a
+# stated reason. Scoped to the exact form so it BITES BOTH WAYS: a near-miss wording FAILS with
+# the legal form quoted, a reasonless refusal FAILS, and a line that both refuses and asserts
+# numbers FAILS as contradictory testimony. A declared gap passes (as a WARN, staying visible);
+# a silent one fails — that asymmetry is the mechanism (Dave #56).
+PREFLIGHT_UNMEASURED_RE = re.compile(r"⛔ NOT CAPTURED — UNMEASURED\.\s*\S")
 TERM_RE = {k: re.compile(r"\b%s\b\D{0,4}(\d+)" % k, re.I) for k in ("fill", "job", "wrap")}
 TOTAL_RE = re.compile(r"=\s*[~≈]?\s*(\d+)")
 BAND_WORD_RE = re.compile(r"\b(GREEN|AMBER|RED)\b", re.I)
@@ -943,6 +953,30 @@ def check_preflight(text, label="GOOD-MORNING.md"):
                  f"session was priced with (runbook § ★ Half 0b). Form (Dave #56, REAL TOKENS): "
                  f"`pre-flight: boot N (disk N measured · harness ~N est ±N) + job N est + "
                  f"wrap N est = N of {gauge.BUDGET_WORKING:,} — BAND`"], warns, notes)
+
+    # ---- #73: the legal refusal (PREFLIGHT_UNMEASURED_RE, see its header). Checked BEFORE the
+    # #56 dispatch so a refusing line is never asked for arithmetic it honestly does not have.
+    if "NOT CAPTURED" in line:
+        asserts_numbers = bool(TOTAL_RE.search(line) or ABS_TOTAL_RE.search(line)
+                               or any(rx.search(line) for rx in TERM_RE.values()))
+        if not PREFLIGHT_UNMEASURED_RE.search(line):
+            fails.append(
+                f"{label}: pre-flight refusal is NOT in the legal form. The only legal refusal "
+                f"is the exact `⛔ NOT CAPTURED — UNMEASURED.` followed by the reason — scoped "
+                f"to the quoted glyphs so it cannot be produced by accident, and a reasonless "
+                f"or reworded refusal is a silent gap wearing a declared one's clothes.")
+        elif asserts_numbers:
+            fails.append(
+                f"{label}: pre-flight line both REFUSES (`⛔ NOT CAPTURED — UNMEASURED`) and "
+                f"asserts terms or a total — contradictory testimony. Declare the numbers OR "
+                f"the refusal, never both on one line.")
+        else:
+            warns.append(
+                f"{label}: pre-flight is `⛔ NOT CAPTURED — UNMEASURED` with the reason stated "
+                f"— LEGAL since #73 (#62's remedy, proposed #72 (h)). The declared gap passes "
+                f"and stays visible; the fix that makes this form rare is pricing at the "
+                f"OPENER, not a better wrap.")
+        return fails, warns, notes
 
     # ---- #56 DISPATCH. `= N of N` is the absolute form's signature and no percentage stamp can
     # produce it, so the two paths cannot be confused. ⚠ The percentage path below is DEPRECATED
@@ -2605,6 +2639,19 @@ PREFLIGHT_FIXTURES = [
      "RESERVE SPEND — forked to Dave\n", False),
     ("ds-023: 70 beyond the marked tolerance, UNMARKED — must FAIL (>63 UNRULED)",
      "pre-flight: fill 50% + job 12% + wrap 8% = 70% RED · reserve 15% ring-fenced\n", True),
+    # ---- #73: the LEGAL REFUSAL (#62's remedy — PREFLIGHT_UNMEASURED_RE's header is the law).
+    # All four arms were run as MUTATIONS against the live check before being written down.
+    ("#73: exact legal refusal + reason — passes as a DECLARED gap (warns, no fail)",
+     "> **pre-flight #72:** ⛔ NOT CAPTURED — UNMEASURED. No pre-flight was declared at the "
+     "opener and none is reconstructed after the fact.\n", False),
+    ("#73: a refusal NOT in the legal form — FAILS (the #71 wording, graded live at #72)",
+     "> **pre-flight #71:** ⛔ NOT CAPTURED — no live pre-flight was declared this session.\n",
+     True),
+    ("#73: refusal AND numbers on one line — contradictory testimony, FAILS",
+     "> **pre-flight #72:** ⛔ NOT CAPTURED — UNMEASURED. Though fill 40% + job 12% + wrap 5% "
+     "= 57% AMBER.\n", True),
+    ("#73: the legal glyphs with NO reason after the stop — FAILS (both ways means both ways)",
+     "> **pre-flight #72:** ⛔ NOT CAPTURED — UNMEASURED.\n", True),
 ]
 
 
