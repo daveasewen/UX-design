@@ -35,13 +35,15 @@ Same contract machinery (requires.vars / declarations / $manifestBinds), same --
 sync gate, byte-exact. Snippets stay portable AFTER generation — the block travels.
 The performance contract on the SOURCE (≤16KB, banned patterns) is _validate_behaviour.py's.
 
-Consumes-manifest (ADR-0015 Amendment 2, ruled Dave 2026-07-28 — TENTATIVE, revisit open):
-a member OBJECT may declare "consumes": [<behaviour name>, ...]. ABSENT = the member consumes
-EVERY group behaviour (the universal default — today's behaviour, unchanged). PRESENT = the
-member carries ONLY the listed behaviours' AUTO-BEHAVIOUR blocks and is held only to their
-contracts. Fail-loud both ways: unknown names REFUSE · an empty list REFUSES (omit the key
-for universal) · a non-consuming member carrying the behaviour's markers REFUSES (declared-away
-payload present = a defect, not a warning).
+Consumes-manifest (ADR-0015 Amendment 2, ruled Dave 2026-07-28 — superseded #66-D6, 2026-08-01,
+PERMANENT STRICT FORM): a member OBJECT MUST declare "consumes": [<behaviour name>, ...]. There
+is no universal default any more — ABSENT = FAIL LOUD, a named error identifying the group and
+member, never a silent "consumes everything" and never a warning. PRESENT = the member carries
+ONLY the listed behaviours' AUTO-BEHAVIOUR blocks and is held only to their contracts. An empty
+list ([]) is the LEGAL form for "consumes none" — there is no form that means "everything" any
+more, so declare every behaviour you actually consume, or [] if you consume none. Fail-loud
+throughout: an absent key REFUSES · unknown names REFUSE · a non-consuming member carrying the
+behaviour's markers REFUSES (declared-away payload present is a defect, not a warning).
 
 Usage:
   python3 knowledge/gen_component_partials.py             # inject/refresh all consumers
@@ -92,15 +94,21 @@ def behaviour_inner(js, bname, group, source):
     return "<script>\n" + prov + "\n" + js.rstrip("\n") + "\n</script>"
 
 def consumes_behaviour(mconf, bname, bnames, gname, mname):
-    """ADR-0015 Amendment 2 (Dave 2026-07-28, TENTATIVE): universal-default consumes-manifest.
-    Returns (consuming, fails). Absent key = consumes everything; a declared list narrows;
-    unknown names and empty lists REFUSE (fail loud on unknown — never enumerate-and-skip)."""
+    """ADR-0015 Amendment 2, PERMANENT STRICT FORM (#66-D6, Dave 2026-08-01 — supersedes the
+    2026-07-28 TENTATIVE universal default, now CLOSED). Returns (consuming, fails). EVERY
+    member must declare "consumes" — an absent key is FAIL LOUD, never a silent "consumes
+    everything" default. Unknown names and empty lists REFUSE too (fail loud on unknown —
+    never enumerate-and-skip)."""
     cons = mconf.get("consumes")
     if cons is None:
-        return True, []
-    if not isinstance(cons, list) or not cons:
-        return False, [f'{gname}/{mname}: "consumes" must be a non-empty list of behaviour '
-                       f'names (omit the key entirely for the universal default)']
+        return False, [f'{gname}/{mname}: "consumes" is required (PERMANENT STRICT, #66-D6) — '
+                       f'no absent-key default any more. Declare the behaviour(s) this member '
+                       f'actually consumes, e.g. "consumes": {sorted(bnames)!r}, or [] if none.']
+    if not isinstance(cons, list):
+        return False, [f'{gname}/{mname}: "consumes" must be a list of behaviour names (or [] '
+                       f'to consume none)']
+    if not cons:
+        return False, []
     unknown = sorted(set(cons) - set(bnames))
     if unknown:
         return False, [f'{gname}/{mname}: consumes unknown behaviour(s) {unknown} — '
@@ -357,18 +365,18 @@ def selftest():
         fails.append("tampered behaviour source produced identical injection (no teeth)")
     if "<script>" not in binner or "</script>" not in binner or "ADR-0015" not in binner:
         fails.append("behaviour payload malformed (script element + provenance expected)")
-    # 5d. ADR-0015 Amendment 2 — consumes-manifest (universal default + individual opt-out) has teeth
-    ok, f = consumes_behaviour({}, "b", ["b", "c"], "g", "M")
-    if not ok or f:
-        fails.append("absent consumes key must read universal (member consumes everything)")
+    # 5d. ADR-0015 Amendment 2, PERMANENT STRICT FORM (#66-D6) — consumes-manifest has teeth
+    if not consumes_behaviour({}, "b", ["b", "c"], "g", "M")[1]:
+        fails.append("absent consumes key not refused (PERMANENT STRICT: every member must declare)")
     ok, f = consumes_behaviour({"consumes": ["b"]}, "b", ["b", "c"], "g", "M")
     if not ok or f:
         fails.append("declared consumer not recognised as consuming")
     ok, f = consumes_behaviour({"consumes": ["c"]}, "b", ["b", "c"], "g", "M")
     if ok or f:
         fails.append("narrow manifest failed to opt the member out")
-    if not consumes_behaviour({"consumes": []}, "b", ["b", "c"], "g", "M")[1]:
-        fails.append("empty consumes list not refused (omit-the-key is the universal spelling)")
+    ok, f = consumes_behaviour({"consumes": []}, "b", ["b", "c"], "g", "M")
+    if ok or f:
+        fails.append("empty consumes list must be legal (consumes none) and not refused")
     if not consumes_behaviour({"consumes": ["zz"]}, "b", ["b", "c"], "g", "M")[1]:
         fails.append("unknown behaviour name in consumes not refused (fail loud on unknown)")
     if not non_consumer_marker_fails(bfilled, "b", "g", "M"):

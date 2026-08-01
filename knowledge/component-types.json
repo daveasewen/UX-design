@@ -1,8 +1,8 @@
 {
-  "$description": "ADR-0013 — the component-type tier: ONE registry, both halves. (1) VALUES: this file is a token store — a path component-type/<group>/<param> resolves here, and each parameter $alias-references its semantic home (the alias hop: component var -> type-group -> semantic role -> default; $value is the gated cache, _STANDARDS.md §1 convention). (2) RULES: the $-keys carry the structural halves — $members (who consumes, with their selector map) and $partials (named rule-blocks injected from a source atom into consumers between AUTO-PARTIAL markers by gen_component_partials.py; sync gated in _build_all). Groups accrete from OBSERVED duplication only, never speculation (ADR-0013 ruling 3). Every member must carry the partial's AUTO-PARTIAL markers, the required vars, and the $manifestBinds manifest bindings — gen_component_partials.py --check fails the build otherwise.",
+  "$description": "ADR-0013 \u2014 the component-type tier: ONE registry, both halves. (1) VALUES: this file is a token store \u2014 a path component-type/<group>/<param> resolves here, and each parameter $alias-references its semantic home (the alias hop: component var -> type-group -> semantic role -> default; $value is the gated cache, _STANDARDS.md \u00a71 convention). (2) RULES: the $-keys carry the structural halves \u2014 $members (who consumes, with their selector map) and $partials (named rule-blocks injected from a source atom into consumers between AUTO-PARTIAL markers by gen_component_partials.py; sync gated in _build_all). Groups accrete from OBSERVED duplication only, never speculation (ADR-0013 ruling 3). Every member must carry the partial's AUTO-PARTIAL markers, the required vars, and the $manifestBinds manifest bindings \u2014 gen_component_partials.py --check fails the build otherwise.",
   "component-type": {
     "button-family": {
-      "$description": "Press-physics controls sharing one interaction-motion definition (ADR-0013 ruling 3 first population). B-D7 (Dave, 2026-07-22): the Icon-button SIZE-SCOPED model is the family canon — travel is PIXEL-TRUE, scale(calc(1 ± travel/--phys-size)), darken 0.94 — superseding Button's proportional 1.04/0.95 + 0.85 (rule shape survives: grow toward cursor, press recede + darken, disabled stays put, reduced-motion snaps). Motion is a THEME DIAL: Legacy + Supercharge override travel->0 darken->1 (colour-only state feedback); Mono + Console carry the movement (Console inherits, not fenced — RULED, Dave 2026-07-22: 'Console and mono can share the motion tokens for now'; divergence later = a deliberate override). --phys-size = the member's LOCAL characteristic-size number (geometry, like --h; buttons ~120 wide, icon button 44 — the Tranche-1 size-scoping). Survey ground truth at ruling time: 13/40 snippets carried a local button recipe, 7 carried the scale-press by copy, 4 pressed with translateY(1px). MULTI-CONTROL members register an :is() selector list (wave-1 convention, 2026-07-22) — a bare comma list would leave rewritten pseudo-classes bound to the last selector only; mixed sizes inside one member = a LOCAL --phys-size override on the smaller control (Drawer's .sheet .close 44 vs .dbtn 120 — geometry, not a token).",
+      "$description": "Press-physics controls sharing one interaction-motion definition (ADR-0013 ruling 3 first population). B-D7 (Dave, 2026-07-22): the Icon-button SIZE-SCOPED model is the family canon \u2014 travel is PIXEL-TRUE, scale(calc(1 \u00b1 travel/--phys-size)), darken 0.94 \u2014 superseding Button's proportional 1.04/0.95 + 0.85 (rule shape survives: grow toward cursor, press recede + darken, disabled stays put, reduced-motion snaps). Motion is a THEME DIAL: Legacy + Supercharge override travel->0 darken->1 (colour-only state feedback); Mono + Console carry the movement (Console inherits, not fenced \u2014 RULED, Dave 2026-07-22: 'Console and mono can share the motion tokens for now'; divergence later = a deliberate override). --phys-size = the member's LOCAL characteristic-size number (geometry, like --h; buttons ~120 wide, icon button 44 \u2014 the Tranche-1 size-scoping). Survey ground truth at ruling time: 13/40 snippets carried a local button recipe, 7 carried the scale-press by copy, 4 pressed with translateY(1px). MULTI-CONTROL members register an :is() selector list (wave-1 convention, 2026-07-22) \u2014 a bare comma list would leave rewritten pseudo-classes bound to the last selector only; mixed sizes inside one member = a LOCAL --phys-size override on the smaller control (Drawer's .sheet .close 44 vs .dbtn 120 \u2014 geometry, not a token).",
       "$members": {
         "Button": {
           "role": "source"
@@ -83,24 +83,24 @@
             "--press-travel": "component-type/button-family/press-travel",
             "--press-darken": "component-type/button-family/press-darken"
           },
-          "$description": "hover grow + press recede/darken + full-width and disabled guards + reduced-motion override — single-sourced from Button's PARTIAL block. requires.vars must be declared by every consumer (--phys-size is local geometry, not a token); matchValues must equal the source atom's declared value (duration/easing composites — already tokens, pinned by match until composite manifest-binding exists); declarations are substrings the consumer's CSS must contain (the control's transition must carry the spring)."
+          "$description": "hover grow + press recede/darken + full-width and disabled guards + reduced-motion override \u2014 single-sourced from Button's PARTIAL block. requires.vars must be declared by every consumer (--phys-size is local geometry, not a token); matchValues must equal the source atom's declared value (duration/easing composites \u2014 already tokens, pinned by match until composite manifest-binding exists); declarations are substrings the consumer's CSS must contain (the control's transition must carry the spring)."
         }
       },
       "press-travel": {
         "$alias": "motion/press/travel",
         "$value": 2,
         "$type": "number",
-        "$description": "type-group parameter — px of size change per interaction step (B-D7 pixel-true model). Cache of motion/press/travel; a theme may override the group without touching the semantic role, or the role to move every family at once."
+        "$description": "type-group parameter \u2014 px of size change per interaction step (B-D7 pixel-true model). Cache of motion/press/travel; a theme may override the group without touching the semantic role, or the role to move every family at once."
       },
       "press-darken": {
         "$alias": "motion/press/darken",
         "$value": 0.94,
         "$type": "number",
-        "$description": "type-group parameter — :active brightness factor. Cache of motion/press/darken."
+        "$description": "type-group parameter \u2014 :active brightness factor. Cache of motion/press/darken."
       }
     },
     "dataviz": {
-      "$description": "ADR-0015 (accepted Dave 2026-07-23) — the behaviour-partial group: retrieval reaches JS. ONE hand-authored source (knowledge/canon/dv-behaviour.js: value popover dvTip · responsive fit reflow · table-view popover panel · legend-as-filter) injected into every member between AUTO-BEHAVIOUR markers by gen_component_partials.py, --check sync-gated, byte-exact; the performance contract on the source (≤16KB raw · no setInterval/network/polling · single rAF-debounced resize · delegated events) is gated by _validate_behaviour.py. Members accrete as the chart-revisit wave lands (exemplar first: Chart-line, 2026-07-23). DELIBERATE NON-MEMBERSHIP of button-family: legend/table-toggle controls are quiet utility pressables, NOT B-D7 press physics (chart-revisit Q5, flagged to Dave, standing). $manifestBinds carry the DV-D07 two-channel chrome roles (data/axis + data/grid, colour + alpha slot) — the mint rides the same lane. Contracts fire on registration (ADR-0013 posture).",
+      "$description": "ADR-0015 (accepted Dave 2026-07-23) \u2014 the behaviour-partial group: retrieval reaches JS. ONE hand-authored source (knowledge/canon/dv-behaviour.js: value popover dvTip \u00b7 responsive fit reflow \u00b7 table-view popover panel \u00b7 legend-as-filter) injected into every member between AUTO-BEHAVIOUR markers by gen_component_partials.py, --check sync-gated, byte-exact; the performance contract on the source (\u226416KB raw \u00b7 no setInterval/network/polling \u00b7 single rAF-debounced resize \u00b7 delegated events) is gated by _validate_behaviour.py. Members accrete as the chart-revisit wave lands (exemplar first: Chart-line, 2026-07-23). DELIBERATE NON-MEMBERSHIP of button-family: legend/table-toggle controls are quiet utility pressables, NOT B-D7 press physics (chart-revisit Q5, flagged to Dave, standing). $manifestBinds carry the DV-D07 two-channel chrome roles (data/axis + data/grid, colour + alpha slot) \u2014 the mint rides the same lane. Contracts fire on registration (ADR-0013 posture).",
       "$members": {
         "Chart-line": {
           "selector": "figure.dv",
@@ -124,7 +124,11 @@
               "--data-grid": "data/grid/color",
               "--grid-alpha": "data/grid/alpha"
             }
-          }
+          },
+          "consumes": [
+            "dv-behaviour",
+            "dv-legend"
+          ]
         },
         "Chart-bar": {
           "selector": "figure.dv",
@@ -147,7 +151,11 @@
               "--data-grid": "data/grid/color",
               "--grid-alpha": "data/grid/alpha"
             }
-          }
+          },
+          "consumes": [
+            "dv-behaviour",
+            "dv-legend"
+          ]
         },
         "Chart-combo": {
           "selector": "figure.dv",
@@ -171,7 +179,11 @@
               "--data-grid": "data/grid/color",
               "--grid-alpha": "data/grid/alpha"
             }
-          }
+          },
+          "consumes": [
+            "dv-behaviour",
+            "dv-legend"
+          ]
         },
         "Chart-donut": {
           "selector": "figure.dv",
@@ -191,18 +203,30 @@
               "--data-axis": "data/axis/color",
               "--axis-alpha": "data/axis/alpha"
             }
-          }
+          },
+          "consumes": [
+            "dv-behaviour",
+            "dv-legend"
+          ]
         },
         "Chart-sparkline": {
-          "selector": "figure.dv"
+          "selector": "figure.dv",
+          "consumes": [
+            "dv-behaviour"
+          ]
         },
         "Chart-scatter": {
           "selector": "figure.dv",
-          "consumes": ["dv-behaviour"],
+          "consumes": [
+            "dv-behaviour",
+            "dv-legend"
+          ],
           "extraContract": {
             "declarations": [
               "class=\"dv-tbl-toggle",
-              "class=\"dv-tablepanel"
+              "class=\"dv-tablepanel",
+              "class=\"dv-legrow",
+              "class=\"dv-leg-sw"
             ]
           }
         }
@@ -218,7 +242,7 @@
             ]
           },
           "$manifestBinds": {},
-          "$description": "The Layer-2 interaction layer (ADR-0015). NO LONGER SINGLE-SOURCED as of 2026-07-26 — see the sibling dv-legend entry: the deferred cap question recorded at the end of this description was RULED by Dave (split the source AND re-scope the gate to a per-page sum), so this file now carries fit/tip/table/seg/csv only and the legend model lives next door. ORIGINAL NOTE FOLLOWS, kept because the deferral is part of the record: The Layer-2 interaction layer, single-sourced (ADR-0015). PER-CAPABILITY SPLIT ENACTED 2026-07-24 (conductor absorb, chart-revisit wave — the exemplar's pre-authorised 'split from observed need' trigger; the wave landed 4 more members, whose real hook/chrome sets diverge from the line exemplar's). The UNIVERSAL contract now holds only the one hook every member carries (popover data-tip=); everything capability-specific lives in each member's $members[…].extraContract {vars · declarations · manifestBinds}, merged by check_contracts. Observed capability tiers: CARTESIAN CHROME (DV-D07 two-channel axis/grid — vars + manifestBinds) = line/bar/combo carry axis+grid, donut carries axis only (radial, no gridlines), sparkline carries neither (axis-free idiom). POLYLINE FIT (data-fxs=) = line+combo only (bar/donut/sparkline fit by rect/arc/CSS). TABLE+LEGEND (dv-tbl-toggle · data-series-toggle · dv-tablepanel) = all but sparkline (sparkline is compact: popover only). NOTE: the donut SWEEP animation hook is a SEPARATE future addition that would push dv-behaviour.js past the 16KB cap (measured 17,360B) — DEFERRED to Dave: amend the cap vs modularise per family. The existing under-cap module (14,620B) injects into all members as-is; sweep stays baked-static."
+          "$description": "The Layer-2 interaction layer (ADR-0015). NO LONGER SINGLE-SOURCED as of 2026-07-26 \u2014 see the sibling dv-legend entry: the deferred cap question recorded at the end of this description was RULED by Dave (split the source AND re-scope the gate to a per-page sum), so this file now carries fit/tip/table/seg/csv only and the legend model lives next door. ORIGINAL NOTE FOLLOWS, kept because the deferral is part of the record: The Layer-2 interaction layer, single-sourced (ADR-0015). PER-CAPABILITY SPLIT ENACTED 2026-07-24 (conductor absorb, chart-revisit wave \u2014 the exemplar's pre-authorised 'split from observed need' trigger; the wave landed 4 more members, whose real hook/chrome sets diverge from the line exemplar's). The UNIVERSAL contract now holds only the one hook every member carries (popover data-tip=); everything capability-specific lives in each member's $members[\u2026].extraContract {vars \u00b7 declarations \u00b7 manifestBinds}, merged by check_contracts. Observed capability tiers: CARTESIAN CHROME (DV-D07 two-channel axis/grid \u2014 vars + manifestBinds) = line/bar/combo carry axis+grid, donut carries axis only (radial, no gridlines), sparkline carries neither (axis-free idiom). POLYLINE FIT (data-fxs=) = line+combo only (bar/donut/sparkline fit by rect/arc/CSS). TABLE+LEGEND (dv-tbl-toggle \u00b7 data-series-toggle \u00b7 dv-tablepanel) = all but sparkline (sparkline is compact: popover only). NOTE: the donut SWEEP animation hook is a SEPARATE future addition that would push dv-behaviour.js past the 16KB cap (measured 17,360B) \u2014 DEFERRED to Dave: amend the cap vs modularise per family. The existing under-cap module (14,620B) injects into all members as-is; sweep stays baked-static."
         },
         "dv-legend": {
           "source": "canon/dv-legend.js",
@@ -228,7 +252,7 @@
             "declarations": []
           },
           "$manifestBinds": {},
-          "$description": "The LEGEND INTERACTION MODEL — DV-D11 (dual gesture, two render levels, additive isolate) + DV-D12 (trapezoidal donut sweep keyed to segment spans) + DV-D13 (typed tooltip + selection-following centre). SECOND behaviour source for the group, added 2026-07-26. WHY A SECOND SOURCE, both beats: the sweep hook was DEFERRED on 2026-07-24 because it pushed dv-behaviour.js past the 16KB cap; the full v5.5 legend model made the overshoot decisive (one file would have landed at 26.0KB raw, 21.8KB even with every comment stripped). Dave ruled 2026-07-26: SPLIT the source AND re-scope the gate — _validate_behaviour.py now checks per-source 16KB (legibility) AND a per-group 32KB PAGE budget, so a future split cannot buy headroom. The single-rAF-debounced-resize check moved to group level in the same beat, for the same reason: it is a page invariant, and a second source legitimately carries zero resize listeners. UNIVERSAL contract hook = class=\"dv-legrow (the dual-gesture row); the swatch/label/reset chrome and the value-percent seg are member-specific and ride each member's extraContract. NOT a member of this contract: Chart-scatter and Chart-sparkline carry no legend. ★ MIGRATION CLOSED 2026-07-27 — and the promotion the older note instructed was TRIED, MEASURED and REVERSED the same hour; both beats are recorded here because the reversal is the more useful fact. DURING the wave it was deliberately EMPTY: no hook was carried by every member, so the legend hooks rode each MIGRATED member's extraContract and the contract tightened per member rather than failing four members for not having arrived yet. All four legend-carrying members (donut · bar · combo · line) have now moved and `_check_legend_migration.py` exits 0. Promoting class=\"dv-legrow to this universal contract FAILED THE BUILD, correctly: Chart-sparkline (and Chart-scatter) are members of the dataviz behaviour GROUP but carry no legend at all, so a hook required of every member is one two members can never satisfy. ⇒ THE UNIVERSAL CONTRACT STAYS EMPTY, for a different and permanent reason than during the wave: the GROUP IS BROADER THAN THE CAPABILITY. The older instruction ('when the last member migrates, promote it here') assumed group == legend-carrying members; it does not. The hook therefore stays on each of the four members' extraContracts, which is where a per-capability hook belongs. The real fix is the already-logged open item — a per-member behaviour OPT-IN in the registry schema (which would also stop Chart-sparkline carrying an inert legend payload); that is a schema change and Dave's call, not a lane's. What stays member-specific: class=\"dv-leg-sw and the value/percent tip hooks (chrome and seg vocabulary differ per member — bar and combo and line carry no value⇄percent seg, so they carry no typed tips). NAMING: the family is .dv-leg* (list .dv-leg, row .dv-legrow, controls .dv-leg-sw / .dv-leg-item / .dv-leg-reset). The v5.5 prototype called the list .lg, which COLLIDES with canon's .seg.lg size variant — the blast-radius gate caught it on first build. State classes .is-ghost/.is-faded/.is-peek keep their names because DV-D11 inscribes them verbatim. ★ RESOLVED 2026-07-28 (ADR-0015 Amendment 2, Dave, TENTATIVE): the per-member OPT-IN this note asked for now exists — a universal-default consumes-manifest on the member object (absent = everything, unchanged; declared = only what is listed; fail-loud both ways, gen_component_partials.py). And a correction, kept as loud as the claim: this note’s aside that Chart-scatter is a group member was DRIFT — $members never listed it and it carries 0 AUTO-BEHAVIOUR markers (measured #26); the promotion trial’s member-side failure was Chart-sparkline alone. First narrow declaration lands with DV-J2 (scatter joins consuming dv-behaviour only)."
+          "$description": "The LEGEND INTERACTION MODEL \u2014 DV-D11 (dual gesture, two render levels, additive isolate) + DV-D12 (trapezoidal donut sweep keyed to segment spans) + DV-D13 (typed tooltip + selection-following centre). SECOND behaviour source for the group, added 2026-07-26. WHY A SECOND SOURCE, both beats: the sweep hook was DEFERRED on 2026-07-24 because it pushed dv-behaviour.js past the 16KB cap; the full v5.5 legend model made the overshoot decisive (one file would have landed at 26.0KB raw, 21.8KB even with every comment stripped). Dave ruled 2026-07-26: SPLIT the source AND re-scope the gate \u2014 _validate_behaviour.py now checks per-source 16KB (legibility) AND a per-group 32KB PAGE budget, so a future split cannot buy headroom. The single-rAF-debounced-resize check moved to group level in the same beat, for the same reason: it is a page invariant, and a second source legitimately carries zero resize listeners. UNIVERSAL contract hook = class=\"dv-legrow (the dual-gesture row); the swatch/label/reset chrome and the value-percent seg are member-specific and ride each member's extraContract. NOT a member of this contract: Chart-scatter and Chart-sparkline carry no legend. \u2605 MIGRATION CLOSED 2026-07-27 \u2014 and the promotion the older note instructed was TRIED, MEASURED and REVERSED the same hour; both beats are recorded here because the reversal is the more useful fact. DURING the wave it was deliberately EMPTY: no hook was carried by every member, so the legend hooks rode each MIGRATED member's extraContract and the contract tightened per member rather than failing four members for not having arrived yet. All four legend-carrying members (donut \u00b7 bar \u00b7 combo \u00b7 line) have now moved and `_check_legend_migration.py` exits 0. Promoting class=\"dv-legrow to this universal contract FAILED THE BUILD, correctly: Chart-sparkline (and Chart-scatter) are members of the dataviz behaviour GROUP but carry no legend at all, so a hook required of every member is one two members can never satisfy. \u21d2 THE UNIVERSAL CONTRACT STAYS EMPTY, for a different and permanent reason than during the wave: the GROUP IS BROADER THAN THE CAPABILITY. The older instruction ('when the last member migrates, promote it here') assumed group == legend-carrying members; it does not. The hook therefore stays on each of the four members' extraContracts, which is where a per-capability hook belongs. The real fix is the already-logged open item \u2014 a per-member behaviour OPT-IN in the registry schema (which would also stop Chart-sparkline carrying an inert legend payload); that is a schema change and Dave's call, not a lane's. What stays member-specific: class=\"dv-leg-sw and the value/percent tip hooks (chrome and seg vocabulary differ per member \u2014 bar and combo and line carry no value\u21c4percent seg, so they carry no typed tips). NAMING: the family is .dv-leg* (list .dv-leg, row .dv-legrow, controls .dv-leg-sw / .dv-leg-item / .dv-leg-reset). The v5.5 prototype called the list .lg, which COLLIDES with canon's .seg.lg size variant \u2014 the blast-radius gate caught it on first build. State classes .is-ghost/.is-faded/.is-peek keep their names because DV-D11 inscribes them verbatim. \u2605 RESOLVED 2026-07-28 (ADR-0015 Amendment 2, Dave, TENTATIVE): the per-member OPT-IN this note asked for now exists \u2014 a universal-default consumes-manifest on the member object (absent = everything, unchanged; declared = only what is listed; fail-loud both ways, gen_component_partials.py). And a correction, kept as loud as the claim: this note\u2019s aside that Chart-scatter is a group member was DRIFT \u2014 $members never listed it and it carries 0 AUTO-BEHAVIOUR markers (measured #26); the promotion trial\u2019s member-side failure was Chart-sparkline alone. First narrow declaration lands with DV-J2 (scatter joins consuming dv-behaviour only)."
         }
       }
     }

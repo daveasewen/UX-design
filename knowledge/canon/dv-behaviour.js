@@ -142,16 +142,18 @@
     if (btn) { btn.setAttribute('aria-expanded', 'false'); btn.focus(); }   /* label static (Dave 2026-07-24) */
   });
 
-  /* ---------- LEGEND — MOVED OUT, NOT LOST (2026-07-27, wave complete).
+  /* ---------- LEGEND — MOVED OUT, NOT LOST (2026-07-27, wave complete; scatter joined 2026-08-01).
      The transitional legend model that sat here (hide-at-0%, shift-click isolate, .dv-quiet
-     highlight) was SUPERSEDED by DV-D11 and is deleted now that all four legend-carrying members
-     run `canon/dv-legend.js`. Authorised by `python3 knowledge/_check_legend_migration.py` → exit 0
-     (donut · bar · combo · line all on `.dv-legrow`; scatter and sparkline carry no legend).
+     highlight) was SUPERSEDED by DV-D11 and is deleted now that every legend-carrying member runs
+     `canon/dv-legend.js`. Authorised by #66-D6/D3 (Dave 2026-08-01, enacted) + re-confirmed by
+     `python3 knowledge/_check_legend_migration.py` → exit 0 (donut · bar · combo · line · scatter
+     all on `.dv-legrow`; sparkline carries no legend, consumes:["dv-behaviour"] only, #66-D2).
      ⚠ ANTI-FALSE-FIX: if you are here because a legend stopped working, the answer is NOT to
      restore this block — the two models are selector-disjoint, so a half-migrated member would
-     simply be served by neither. Check the member's markup carries `.dv-legrow` rows and that its
-     extraContract is not still naming the dead `data-series-toggle=" hook. The dead model's full
-     text is at git f6c7f99:knowledge/canon/dv-behaviour.js if it is ever needed as evidence. */
+     simply be served by neither. Check the member's markup carries `.dv-legrow` rows, its registry
+     `consumes` list names "dv-legend", and its extraContract is not still naming the dead
+     `data-series-toggle=" hook. The dead model's full text is at
+     git f6c7f99:knowledge/canon/dv-behaviour.js if it is ever needed as evidence. */
 
   /* VIEW TOGGLES (menu picks 6/7/9): baked-variant switching — geometry is generated, never
      computed here; behaviour only shows/hides [data-dv-view] groups (.dv-off = display:none). */
