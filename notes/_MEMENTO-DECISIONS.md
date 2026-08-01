@@ -2350,3 +2350,12 @@ His wording, verbatim save dated deixis:
   agreement-plus-version; cut from the committed tree per the #65 rule, never the repo zip.
 - Session context: CI post-push verdict parked on Dave (Chrome extension unreachable from
   this window) — DECLARED, not dropped.
+- **#66-D3 (Dave: "build now declare the risk"): the Claude-plugin flavour is BUILT** at
+  `memento-package/claude-plugin/memento/` (D1 Cowork-first · D2 skill carrier, boot rule
+  text identical to the Copilot flavour · D3 same six machinery files, byte-diffed against
+  `machinery/` at copy · D4 home + `dist/memento-plugin-v0.1.0.plugin`). ⚠ **RISK DECLARED:
+  the boot rule ships in a second flavour BEFORE its first live test — if the colleague's
+  Copilot verdict moves the rule, it is corrected in TWO carriers.** One structural
+  divergence, declared in the plugin README: scripts resolve the project as their
+  grandparent dir (`_gen_chain.py:53-54`), so the plugin's step 0 copies `machinery/` into
+  the project on first boot; after that the flavours are byte-identical at runtime.
