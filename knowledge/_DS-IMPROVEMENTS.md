@@ -1307,7 +1307,19 @@ Narrative: `_DECISION-HISTORY/2026-07-27-the-treatment-that-never-painted.md`.
 
 ## ds-020 — Chart-scatter is the only cartesian chart still drawing axis + grid the pre-DV-D07 way (2026-07-28, session #27, measured)
 
-**Status: OPEN. FENCED BY RULING, not by oversight** — Dave ruled it out of DV-J2's scatter half in
+**Status: ✅ ENACTED #69 (2026-08-01) — the axis/grid migration, with its control.** All five runbook
+steps run: roles declared both modes (light `#626262`/`#E1E1E1`, dark `#9D9D9D`/`#484848`, alphas → 1) ·
+`.dv-grid`/`line.dv-axis` + all 16 inline grid strokes, 4 axis strokes, 20 axis/label text fills rebound ·
+scatter's `extraContract` gained `vars` + `manifestBinds` (contract gate bit on the missing
+`#token-manifest` binds, then green) · pre/post control rendered FIRST, both modes, diffed as colours
+(pre: ink@.10/.16 → post: exact role values; grid/axis element counts unchanged 16/4, so only the two
+channels moved; PNGs + JSON in the #69 session outputs) · narrow-width floor: **Dave's eye still OWED**
+— `_REVIEW-SIGNOFF.md` row added #69. ⚠ **The DV-D02-A waiver STAYS, part-discharged**: its clears-when
+named TWO conditions under one label — the colour idiom (done) and the `data-fx` fit hooks (6 vs bar's
+175, re-measured #69, never scoped into ds-020). Waiver text updated by addition; remaining clears-when
+is fit-hook adoption. *(Prior status kept below for the record.)*
+
+**Status as written #27: OPEN. FENCED BY RULING, not by oversight** — Dave ruled it out of DV-J2's scatter half in
 plain language ("just the interaction"), *on the attribution argument*, so this entry exists to stop
 a deliberate deferral decaying into a forgotten one. It is a **numbered item, not a queue line**
 (the assertion-propagation class: §C·1(a)'s STEP-1 sat stale six days and cost the start of #26).
@@ -1747,3 +1759,18 @@ delegated agent chose an enforcement Dave never ruled and it stood for six sessi
 **Cheap first step regardless of the ruling:** the boot's disk-resident half is now measurable in one
 script (~15 lines, `tiktoken` + the mounted paths) and should be re-measured per session rather than
 inherited — it is *"a variable this programme shrinks"* (GM-D9), and nobody has ever watched it move.
+
+## ds-026 — dv-lockup could carry a dedicated INSIGHT slot (2026-08-01, session #69, FLOATED — Dave's)
+
+**Register: FLOATED, not ruled, not scoped.** While ruling the three #68 lockup placeholder titles,
+Dave: *"I quite like adding in the insight somewhere, lets note as a refinement for later."*
+
+Context: the house title register is already insight-led sentence case ("Housing takes two fifths of
+the month's spend"), so today the title carries the insight implicitly. The floated refinement is a
+possible *dedicated* insight slot in the dv-lockup — distinct from the title — so a chart could pair
+a neutral title with an explicit insight line (or similar; the shape is undecided).
+
+Mechanics if it ever scopes: AUTO-MARKUP already supports per-figure instance data via
+`data-lockup-*` attributes (#68), so a `data-lockup-insight` + optional markup partial is the
+natural grain — but that is an observation about the machinery, not a proposal Dave has seen.
+Promotion is Dave's, per derivation governance.

@@ -696,3 +696,29 @@ in `_LIVE-STATE.md` (🟡 PARKED entry) so the state machine doesn't read this a
 - **DV-D02 responsive** — needs an in-browser resize check by Dave (built blind; safe fallback).
 - **Two new Figma display types + 4px-grid type tokens** — land the real display scale, replace
   `--fs-display` placeholder (DV-D05).
+
+## ★ #69 — ds-020 enact + lockup rulings (2026-08-01, Dave via review screenshots — export defect noted)
+
+- **DV ds-020 ENACT — APPROVED (D1):** scatter axis/grid on DV-D07 two-channel roles, control-first
+  (pre/post both modes, colours diffed as colours). `_DS-IMPROVEMENTS.md` ds-020 status block has the
+  full receipt. DV-D02-A waiver PART-DISCHARGED — stays for the `data-fx` fit half (6 vs bar 175).
+- **Header layout — APPROVED (D2):** `.dv-head` space-between = canon; scatter's flex-end was drift.
+- **Legend lockup layout — NEEDS REWORK (D3):** the recovered 2026-07-25 ruling ("keys ranged LEFT /
+  Reset right-inline", legend v5 review-edits brief line 12 — captured then never enacted) was enacted
+  on scatter with a 520px wrap-centre placeholder; Dave rejected the built shape. Detail owed at the
+  #70 opener before rework. The 25-07 ruling itself STANDS — it is the enactment that missed.
+- **Swatch-during-isolate — UNRESOLVED COLLISION (D4):** Dave's #69 wording ("additive like a
+  checkbox") vs ★ DV-D17 (swatch ENDS isolate). DISCUSS LIVE next session; **DV-D17 stands until
+  ruled otherwise.** Do not change behaviour on the wording alone.
+- **Queue AGREED (D5):** fit-hook adoption + four-theme cascade wiring for chart canvases, incl.
+  **Mono/Console/Legacy/Supercharge switcher in review-doc controls** (asked twice #69).
+- **Titles (from #68's placeholder row):** cd2 "Housing dominates the month's spend" (enacted via
+  `data-lockup-title`); cs1 + cs2 placeholders RATIFIED as Dave's copy. ds-026 (insight slot) FLOATED.
+- ⛔ **Review-overlay export DEFECT recurred from #66** — Dave ruled by screenshots; row + diagnosis
+  owed in `_REVIEW-SIGNOFF.md`.
+- **★ POST-WRAP ADDENDUM (#69, Dave in chat):** the REFERENCE for D3 + D4 is
+  `reviews/LEGEND-ISOLATE-TOGGLE-PROTOTYPE-2026-07-24-v5.5.html` — Dave: *"has all the correct
+  behaviours for the legend interaction and how the charts should behave."* #70 surveys it FIRST and
+  diffs scatter against it. ⚠ The prototype is dated 07-24, three days BEFORE DV-D17 (07-27) — if its
+  swatch-during-isolate is additive, D4 is a deliberate REVISIT of DV-D17 with the prototype as
+  evidence, not a memory slip. Verify which way it behaves before assuming.

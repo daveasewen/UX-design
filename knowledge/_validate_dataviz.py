@@ -118,7 +118,14 @@ DV_FIT_WAIVED = {
                 "ships with a paired before/after control or not at all. Scatter also lacks the "
                 "data-pl/data-fx geometry hooks fit() reads (measured #28: bar 167 data-fx, "
                 "scatter 0), so this is not a one-class fix. CLEARS WHEN: ds-020 is enacted with "
-                "its control — then delete this waiver and the check goes blocking on scatter."),
+                "its control — then delete this waiver and the check goes blocking on scatter. "
+                "★ PART-DISCHARGED #69 (2026-08-01): the ds-020 axis/grid COLOUR migration is "
+                "ENACTED with its paired pre/post control (both modes, diffed as colours — "
+                "knowledge/_DS-IMPROVEMENTS.md ds-020). The waiver STAYS because this clause "
+                "named TWO conditions under one label: the check it demotes reads the data-fx "
+                "fit hooks, and scatter carries 6 vs bar's 175 (re-measured #69) — deleting now "
+                "would go blocking-red on work never scoped into ds-020. REMAINING clears-when: "
+                "scatter adopts the dv-fit geometry hooks."),
 }
 _unplaced = KNOWN_DTYPES - CARTESIAN_DTYPES - set(NON_CARTESIAN_DTYPES)
 if _unplaced:

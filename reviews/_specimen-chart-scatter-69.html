@@ -37,7 +37,7 @@
   step) · DEF-003 CSS-only motion · role-token radius only. Empty state consumes the Empty-state
   pattern by reference. Metas are INLINE (#token-manifest) — the kit convention.
 -->
-<link rel="stylesheet" href="../canon/type.css">
+<link rel="stylesheet" href="../knowledge/canon/type.css">
 <style>
   :root{ --font:"Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif; --ease:160ms cubic-bezier(.4,0,.2,1); }
   [data-theme="light"]{
@@ -971,5 +971,7 @@
     document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
     document.getElementById('replay').addEventListener('click', ()=>{ document.querySelectorAll('figure.dv').forEach(f=>{ f.classList.remove('dv-animate'); void f.offsetWidth; f.classList.add('dv-animate'); }); });
   </script>
-</body>
+<script>/* review-specimen shim (#69): theme via postMessage — parent page cannot reach a file:// iframe's DOM */
+window.addEventListener('message',function(e){ if(e.data&&e.data.dvTheme){ document.body.setAttribute('data-theme',e.data.dvTheme);} });
+</script></body>
 </html>
