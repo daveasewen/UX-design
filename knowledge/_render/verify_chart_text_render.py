@@ -39,9 +39,11 @@ So there are two controls, and both must hold:
 without committing one. The numbers themselves are Dave's to rule (derivation governance).
 
 Run:  python3 knowledge/_render/verify_chart_text_render.py [--bite] [--control] [--all]
+      [--bite-ancestors]  (mutation test for the two instrument fixes below —
+      ancestor transforms via getCTM(), ancestor visibility via an ancestor walk)
 Env:  see knowledge/_RUNBOOK-render-verify.md (fresh sandbox, ~4 calls before a pixel).
 """
-import sys, glob, os, pathlib
+import sys, glob, os, pathlib, base64
 
 REPO = pathlib.Path(__file__).resolve().parents[2]
 SNIPPETS = REPO / "knowledge/snippets"
@@ -49,6 +51,7 @@ SNIPPETS = REPO / "knowledge/snippets"
 BITE = "--bite" in sys.argv
 CONTROL = "--control" in sys.argv
 ALL = "--all" in sys.argv
+BITE_ANCESTORS = "--bite-ancestors" in sys.argv
 
 # The chart under the brief. --all sweeps the family to size the corpus-wide debt.
 SUBJECT = ["Chart-scatter"]
@@ -86,6 +89,78 @@ MEASURE_JS = r"""
   // ---------------------------------------------------------------------
   const cache = new Map();
   const unresolved = [];
+
+  // -------------------------------------------------------------------
+  // FIX (a) — ANCESTOR TRANSFORMS. getBBox()/getStartPositionOfChar() are
+  // element-LOCAL. Comparing them straight against the root viewBox is
+  // meaningless the moment an intervening <g transform="…"> exists — this
+  // is what produced Chart-bar's "LEFT by 3-17" and Chart-combo's
+  // "RIGHT by 21.45" in the untrusted --all sweep (78 findings, both
+  // fixes named there, neither applied until now).
+  // ⚠ getCTM() alone is NOT the fix: it maps into the nearest viewport
+  // ancestor's RENDERED PIXEL space (post viewBox->width/height scaling),
+  // not into viewBox user units — composing it directly reported a 529-unit
+  // "overrun" for a real 58-unit one on a 4x-scaled synthetic case (caught
+  // by --bite-ancestors, which is exactly why that mutation test exists).
+  // The correct composition is screen-space: invert the ROOT svg's own
+  // getScreenCTM() and multiply by the element's getScreenCTM(). That maps
+  // element-local user space straight into the root's viewBox units,
+  // independent of the svg's own width/height scaling, CSS layout, or zoom.
+  // -------------------------------------------------------------------
+  function applyMatrix(m, x, y) {
+    return { x: m.a * x + m.c * y + m.e, y: m.b * x + m.d * y + m.f };
+  }
+  function elementToRootMatrix(el, svgRoot) {
+    const rootScreen = svgRoot.getScreenCTM();
+    const elScreen = el.getScreenCTM();
+    if (!rootScreen || !elScreen) return null;
+    return rootScreen.inverse().multiply(elScreen);
+  }
+  function transformedBBox(el, bb, svgRoot) {
+    const m = elementToRootMatrix(el, svgRoot);
+    if (!m) return { x: bb.x, y: bb.y, w: bb.width, h: bb.height, scaleY: 1 };
+    const corners = [
+      applyMatrix(m, bb.x, bb.y),
+      applyMatrix(m, bb.x + bb.width, bb.y),
+      applyMatrix(m, bb.x, bb.y + bb.height),
+      applyMatrix(m, bb.x + bb.width, bb.y + bb.height),
+    ];
+    const xs = corners.map(c => c.x), ys = corners.map(c => c.y);
+    // vertical scale factor, so ink deltas (canvas-measured, LOCAL units)
+    // scale the same way the em box just did under this ancestor's transform.
+    const scaleY = Math.hypot(m.c, m.d) || 1;
+    return { x: Math.min(...xs), y: Math.min(...ys),
+             w: Math.max(...xs) - Math.min(...xs), h: Math.max(...ys) - Math.min(...ys),
+             scaleY };
+  }
+  function transformedPoint(el, x, y, svgRoot) {
+    const m = elementToRootMatrix(el, svgRoot);
+    return m ? applyMatrix(m, x, y) : { x, y };
+  }
+
+  // -------------------------------------------------------------------
+  // FIX (b) — ANCESTOR VISIBILITY. The old check read cs.visibility /
+  // cs.display / cs.opacity on the TEXT NODE ONLY. `visibility` inherits,
+  // so a hidden ancestor happened to be caught by accident there — but
+  // `display:none` does NOT inherit: a descendant's own computed display
+  // stays whatever it's set to even though the whole subtree is unrendered.
+  // Signature from the record: `'Leisure' x 'Leisure'` colliding with
+  // itself — donut's `st.visible[id]` centre-figure hidden via an
+  // ancestor <g>, reported as live text anyway. Walk every ancestor up
+  // to (and including) the owning <svg>.
+  // -------------------------------------------------------------------
+  function hiddenByAncestry(t) {
+    let node = t;
+    while (node && node.nodeType === 1) {
+      const s = getComputedStyle(node);
+      if (s.display === 'none' || s.visibility === 'hidden' ||
+          parseFloat(s.opacity || '1') === 0) return true;
+      if (node.tagName && node.tagName.toLowerCase() === 'svg') break;
+      node = node.parentElement;
+    }
+    return false;
+  }
+
   function inkVertical(font, weight, size, text) {
     const key = weight + '|' + size + '|' + font + '|' + text;
     if (cache.has(key)) return cache.get(key);
@@ -126,22 +201,28 @@ MEASURE_JS = r"""
     nodes.forEach((t, ti) => {
       const txt = (t.textContent || '').trim();
       if (!txt) return;
-      let bb = null, baseline = null;
+      let bb = null, baselineLocal = null;
       try {
         bb = t.getBBox();
-        baseline = t.getStartPositionOfChar(0).y;   // EXACT — not inferred
+        const p0 = t.getStartPositionOfChar(0);
+        baselineLocal = { x: p0.x, y: p0.y };        // EXACT — not inferred
       } catch (e) { return; }
       const cs = getComputedStyle(t);
       const size = parseFloat(cs.fontSize);
       const im = inkVertical(cs.fontFamily, cs.fontWeight, size, txt);
       if (im.empty) return;
+      // (a) compose the CTM before comparing against the root viewBox —
+      // bb/baseline above are LOCAL; tb/baseline below are ROOT-space.
+      const tb = transformedBBox(t, bb, svg);
+      const baseline = transformedPoint(t, baselineLocal.x, baselineLocal.y, svg);
       boxes.push({
         i: ti, txt: txt.slice(0, 34), cls: t.getAttribute('class') || '',
-        hidden: cs.visibility === 'hidden' || cs.display === 'none' ||
-                parseFloat(cs.opacity || '1') === 0,
-        x: bb.x, w: bb.width,                        // horizontal: laid-out truth
-        y: baseline - im.above, h: im.above + im.below,   // vertical: ink truth
-        em: {y: +bb.y.toFixed(2), h: +bb.height.toFixed(2)}, base: +baseline.toFixed(2)
+        // (b) walk ancestors, not just the node's own computed style.
+        hidden: hiddenByAncestry(t),
+        x: tb.x, w: tb.w,                             // horizontal: laid-out truth, root space
+        y: baseline.y - im.above * tb.scaleY,         // vertical: ink truth, root space
+        h: (im.above + im.below) * tb.scaleY,
+        em: {y: +bb.y.toFixed(2), h: +bb.height.toFixed(2)}, base: +baseline.y.toFixed(2)
       });
     });
     svgs.push({i: si, cls: svg.getAttribute('class') || '', viewBox: vb, boxes});
@@ -216,6 +297,135 @@ CONTROL_JS = r"""
 }
 """
 
+# ---------------------------------------------------------------------------
+# BITE for the two instrument fixes themselves (ancestor transforms /
+# ancestor visibility). Neither the family sweep nor the sentinel bite above
+# exercises these paths, so each fix gets its own mutation test: a synthetic
+# SVG, in memory, loaded by real navigation (goto a data: URL — never
+# set_content, per the standing rule), measured with BOTH the OLD
+# (pre-fix, reproduced verbatim below) and the CURRENT (fixed) logic.
+#   RED   = the OLD logic on the synthetic defect (must misreport)
+#   GREEN = the CURRENT logic on the same synthetic defect (must report right)
+# Reverting the file's fix is equivalent to running only the OLD branch, so
+# this doubles as the "revert makes it fail" proof without touching git.
+# ---------------------------------------------------------------------------
+ANCESTOR_BITE_HTML = """<!doctype html><html><head><meta charset="utf-8">
+<style>text{font: 12px sans-serif;}</style></head><body>
+<svg class="dv-svg" viewBox="0 0 100 50" width="400" height="200">
+  <g transform="translate(60,0)">
+    <text class="dv-axis" x="50" y="20">Overflow</text>
+  </g>
+</svg>
+<svg class="dv-svg-vis" viewBox="0 0 100 50" width="400" height="200">
+  <text class="dv-axis" x="10" y="20">Leisure</text>
+  <g style="display:none">
+    <text class="dv-axis" x="10" y="20">Leisure</text>
+  </g>
+</svg>
+</body></html>"""
+
+ANCESTOR_BITE_JS = r"""
+() => {
+  const out = {transform: {}, visibility: {}};
+
+  // ---- (a) ancestor transform -------------------------------------------
+  const svgT = document.querySelector('.dv-svg');
+  const t = svgT.querySelector('text');
+  const bb = t.getBBox();
+  const vb = svgT.viewBox.baseVal;
+  // OLD (pre-fix): compares the LOCAL bbox straight against the viewBox —
+  // exactly the code this instrument shipped with before the fix.
+  out.transform.old_right_overrun = (bb.x + bb.width) - (vb.x + vb.width);
+  // NEW (fixed): compose element->root via getScreenCTM(), NOT getCTM() alone.
+  // getCTM() maps into the nearest viewport ancestor's RENDERED PIXEL space
+  // (post viewBox->width/height scaling) — composing it directly overreports
+  // by the svg's own scale factor (this synthetic case is 4x: caught the
+  // first time this bite ran, before the screen-space composition landed).
+  const rootScreen = svgT.getScreenCTM();
+  const elScreen = t.getScreenCTM();
+  const m = rootScreen.inverse().multiply(elScreen);
+  const corners = [[bb.x, bb.y], [bb.x + bb.width, bb.y],
+                    [bb.x, bb.y + bb.height], [bb.x + bb.width, bb.y + bb.height]]
+    .map(([x, y]) => ({x: m.a * x + m.c * y + m.e, y: m.b * x + m.d * y + m.f}));
+  const maxX = Math.max(...corners.map(c => c.x));
+  out.transform.new_right_overrun = maxX - (vb.x + vb.width);
+
+  // ---- (b) ancestor visibility -------------------------------------------
+  const svgV = document.querySelector('.dv-svg-vis');
+  const texts = [...svgV.querySelectorAll('text')];
+  const visible = texts[0], hiddenByParent = texts[1];
+  const csHidden = getComputedStyle(hiddenByParent);
+  // OLD (pre-fix): only the node's own computed style.
+  out.visibility.old_hidden_flag = csHidden.visibility === 'hidden' ||
+    csHidden.display === 'none' || parseFloat(csHidden.opacity || '1') === 0;
+  // NEW (fixed): walk ancestors up to the owning svg.
+  function hiddenByAncestry(node) {
+    let n = node;
+    while (n && n.nodeType === 1) {
+      const s = getComputedStyle(n);
+      if (s.display === 'none' || s.visibility === 'hidden' ||
+          parseFloat(s.opacity || '1') === 0) return true;
+      if (n.tagName && n.tagName.toLowerCase() === 'svg') break;
+      n = n.parentElement;
+    }
+    return false;
+  }
+  out.visibility.new_hidden_flag = hiddenByAncestry(hiddenByParent);
+  return out;
+}
+"""
+
+
+def run_bite_ancestors():
+    from playwright.sync_api import sync_playwright
+    shell = glob.glob(os.path.expanduser(
+        "~/.cache/ms-playwright/chromium_headless_shell-*/chrome-linux/headless_shell")) or \
+        glob.glob(os.environ.get("PLAYWRIGHT_BROWSERS_PATH", "") +
+                  "/chromium_headless_shell-*/chrome-linux/headless_shell")
+    b64 = base64.b64encode(ANCESTOR_BITE_HTML.encode()).decode()
+    url = "data:text/html;base64," + b64
+    fails = []
+    with sync_playwright() as pw:
+        browser = pw.chromium.launch(
+            executable_path=shell[0] if shell else None, headless=True,
+            args=["--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu"])
+        page = browser.new_page(viewport={"width": 400, "height": 400})
+        page.goto(url)
+        page.wait_for_timeout(200)
+        r = page.evaluate(ANCESTOR_BITE_JS)
+        browser.close()
+
+    tr = r["transform"]
+    print(f"   (a) transform  OLD right-overrun={tr['old_right_overrun']:.2f}"
+          f"  NEW right-overrun={tr['new_right_overrun']:.2f}  (real clip: text local x=50 "
+          f"w~47.4 -> local max 97.4, ancestor <g transform=\"translate(60,0)\"> -> root "
+          f"max x ~157.4, viewBox width 100 -> ~57.4 units overrun)")
+    # OLD must MISS the defect (reports <= 0, i.e. "fits", since 90.x < 100); NEW must
+    # CATCH it (~57.4). Wide band because getBBox() width is font-metric-dependent.
+    if tr["old_right_overrun"] > 0.5:
+        fails.append("(a) OLD logic unexpectedly caught the overrun — synthetic case is not exercising the bug")
+    if not (50.0 < tr["new_right_overrun"] < 65.0):
+        fails.append(f"(a) NEW logic did not report ~57 units right-overrun (got {tr['new_right_overrun']:.2f})")
+
+    vis = r["visibility"]
+    print(f"   (b) visibility OLD hidden-flag={vis['old_hidden_flag']}  NEW hidden-flag={vis['new_hidden_flag']}"
+          " (text sits inside a display:none <g>)")
+    if vis["old_hidden_flag"] is not False:
+        fails.append("(b) OLD logic unexpectedly saw the ancestor-hidden node as hidden — synthetic case is not exercising the bug")
+    if vis["new_hidden_flag"] is not True:
+        fails.append("(b) NEW logic failed to mark the ancestor-hidden node as hidden")
+
+    if fails:
+        print("\n❌ BITE-ANCESTORS FAILED:")
+        for f in fails:
+            print("   X", f)
+        return 1
+    print("\n✅ BITE-ANCESTORS OK — both fixes bite: the OLD (pre-fix) logic reproducibly "
+          "misses each defect (right-overrun read as fitting; ancestor-hidden node read as "
+          "live), and the CURRENT (fixed) logic catches both. Reverting either fix in the "
+          "file reproduces the OLD column exactly, since it is the code the fix replaced.")
+    return 0
+
 
 def apply_bite(html):
     """Inject a SENTINEL defect — a label parked on an existing tick, and pushed above
@@ -254,6 +464,9 @@ def apply_control(html):
 
 
 def main():
+    if BITE_ANCESTORS:
+        return run_bite_ancestors()
+
     from playwright.sync_api import sync_playwright
     shell = glob.glob(os.path.expanduser(
         "~/.cache/ms-playwright/chromium_headless_shell-*/chrome-linux/headless_shell")) or \
