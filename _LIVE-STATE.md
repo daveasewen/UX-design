@@ -12,7 +12,6 @@ half of the state machine, Dave's ask 2026-07-18) · **`_DECISION-HISTORY/`** �
 narrative, relocated verbatim (how we got here; see its README for the rules + RESURRECT tags).*
 
 *Last refreshed: 2026-08-01 (Sat ~20:10 BST from `date` — #72 wrap, authored in-window by the conductor. Previous: #71 (retroactive catch-up for #70 and #71).)*
-*(Previous: 2026-07-29 #43 — present-but-unkeyed ruled a FILING ERROR, scoped; one key enacted `cd75caf`.)*
 *(⚠ **MOVED INTO THE HEADER ZONE, #35.** The wrap gate's `"Last refreshed" is not today` check reads only the first 40 lines — where this line did not live. It had been passing on dates inside the LANES section, so on #34 it could not have failed even with a stale stamp. Moved so the check tests what it is named after.)*
 
 ## 🛤 LANES — generated index (records: `knowledge/_lanes.json` · generator: `knowledge/_gen_lanes.py` · O1′ pilot, ruled #24)
@@ -78,14 +77,6 @@ Entry point: `notes/2026-07-26-memento-dream-pass-scope-v2.md` (three shapes: Co
 - **⬛ OWED AT THE #71 OPENER (Dave's):** D3 lockup detail (still never given) · the DV-D18 review pair (deferred by Dave's own budget ruling, ~140K of 200K spent, a review build priced to land ~205K) · the radio fix, unseen live.
 - **⚠ Blocked on humans, unchanged since #69:** colleague's Copilot verdict · CI glance at Dave's next push · radius tuner verdict · render-30 + a11y-8 triage · the three lockup placeholder titles.
 - **⚠ DECLARED GAP, in #70's own commit (`2aa778f`):** the GM/`_LIVE-STATE` 2c–2f roll did NOT run — budget cut on Dave's ruling. `_CHAIN.md` stayed FRESH but kept describing #69; #71 booted on a #69 banner. **Closed by this wrap.**
-## ⏱ PRIOR DELTA — 2026-08-01 (Sat **#69**, FABLE solo Cowork conductor, Dave live — ✅ **ds-020 ENACTED, control-first** · ✅ **A WEEK-OLD LOCKUP RULING RECOVERED + ENACTED, then RULED NEEDS-REWORK** · ⛔ **REVIEW EXPORT FAILED DAVE AGAIN (#66 defect recurred)**)
-
-- **✅ ds-020 (D1 APPROVED):** scatter axis/grid → DV-D07 two-channel roles; pre/post control both modes, colours diffed as colours, counts 16/4 unchanged; contract + manifest binds added; gates green. ⚠ **DV-D02-A waiver PART-DISCHARGED by addition** — its clears-when named TWO conditions under one label; the `data-fx` fit half remains (scatter 6 vs bar 175, re-measured).
-- **✅ Lockup fixes:** `.dv-head` → space-between (D2 APPROVED) · the LOST 2026-07-25 ruling ("keys ranged LEFT / Reset right-inline", legend v5 review-edits brief :12 — captured, never enacted anywhere) recovered + enacted on scatter w/ 520px placeholder — **D3 NEEDS REWORK, detail owed at #70's opener** · dual gesture verified live (two mis-probes withdrawn; isolate worked all along) — **D4 collision: Dave's "additive" wording vs ★ DV-D17 (swatch ENDS isolate) → DISCUSS #70, DV-D17 stands.**
-- **✅ Titles ruled** (cd2 new copy enacted; cs1/cs2 ratified) · ds-026 insight-slot FLOATED · **Memento plugin DISABLED by Dave** (test done; not in projects until stable — memory + ledger § ★ #69).
-- **⛔ Review pair built per two-register runbook (both #66 hard lessons handled in-context) and the export STILL failed Dave — he ruled by screenshots.** Defect row `knowledge/_REVIEW-SIGNOFF.md`; diagnosis owed #70. Review pair: `reviews/CHART-SCATTER-DS020-LOCKUP-2026-08-01-v1(.REVIEW).html`.
-- **Queue (D5 AGREED):** fit hooks + four-theme chart-canvas wiring incl. **Mono/Console switcher in review controls** (asked twice). Commit at wrap via `_git_commit.sh`.
-
 ## ⏱ OLDER DELTAS — rolled to `_LIVE-STATE-ARCHIVE.md` (P1, ruled 2026-07-26)
 Verbatim, newest-first, nothing deleted — exact sibling of `_GM-ARCHIVE.md`. Roll rule: this file keeps **LATEST + 2 PRIOR** deltas; the capture ritual rolls the rest (see `knowledge/_RUNBOOK-capture-ritual.md`, step 2d).
 
