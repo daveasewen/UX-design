@@ -2359,3 +2359,16 @@ His wording, verbatim save dated deixis:
   divergence, declared in the plugin README: scripts resolve the project as their
   grandparent dir (`_gen_chain.py:53-54`), so the plugin's step 0 copies `machinery/` into
   the project on first boot; after that the flavours are byte-identical at runtime.
+- **#66-D4 (Dave: "lets get it all done"): the key-filter defect chain, run to its root.**
+  Diagnosis PROVEN: scatter's legend = dead static `ul.dv-legend`; registry subscribes
+  scatter to dv-behaviour only; `_check_legend_migration.py` read the static legend as
+  "no legend" (matched-grep-≠-presence class) and certified the gap green. Gate FIXED
+  (sub, replayed): total partition + loud static-legend finding; the gate is now
+  deliberately RED on scatter until the migration is ruled+enacted — and the
+  `dv-behaviour.js:148` "Authorised by … exit 0" citation is stale until then, DECLARED.
+  Measured tonight: dv-legend.js 16,330/16,384 (54 free) · group 29,334/32,768 ·
+  sparkline inert dv-legend block 16,661 B (record's "15.6KB" re-measured) · scatter
+  post-migration page 30,007 B. Four rulings packed to Dave in
+  `reviews/MOLECULES-KEYFILTER-LOCKUP-2026-08-01-v1.html`: D1 ratify A2 (3 options) ·
+  D2 sparkline sheds · D3 scatter migrate-vs-delete · D4 dv-lockup partial shape.
+  ⚠ RULINGS PENDING — nothing enacted past the gate fix; the review doc is the vehicle.

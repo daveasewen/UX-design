@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Review #66 — key-filter + lockup molecules: four rulings, measured numbers, live spread</title>
+<style>
+  body{font-family:system-ui,sans-serif;margin:24px;background:#f4f4f2;color:#1a1a1a;max-width:1400px}
+  h1{font-size:19px} h2{font-size:15px;margin-top:28px;border-top:2px solid #1a1a1a;padding-top:12px}
+  p,li{max-width:78ch;line-height:1.5}
+  .decision{background:#fff;border:1px solid #ccc;border-left:4px solid #484D6F;padding:12px 16px;margin:14px 0}
+  .decision h3{margin:0 0 6px;font-size:14px}
+  .opts label{display:block;margin:4px 0;cursor:pointer}
+  .nums{font-variant-numeric:tabular-nums;background:#e8e8e4;padding:1px 5px}
+  .spread{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px}
+  .spread .cell{flex:1 1 420px;min-width:380px}
+  .spread h4{font-size:13px;margin:0 0 4px}
+  iframe{width:100%;height:520px;border:1px solid #ccc;background:#fff}
+  .warn{border-left-color:#97482C}
+  textarea{width:100%;max-width:78ch;min-height:60px;font:inherit}
+  .foot{margin-top:32px;font-size:12px;color:#555}
+</style>
+</head>
+<body>
+<h1>Key-filter + control-lockup molecules — the #66 decision pack</h1>
+<p><strong>Your instinct, mapped to standing machinery:</strong> the key-filter molecule already
+exists — it is the <code>dv-legend</code> behaviour partial (ADR-0015), parameterised by markup
+(<code>.dv-legrow</code> rows) and gated by the consumes-manifest (ADR-0015-A2, <em>still
+TENTATIVE</em>, ruled by you 2026-07-28). The control lockup (title + View-as-table + controls)
+is repeated markup, not yet a named partial — that one is genuinely new. Nothing below invents a
+new architecture; every ruling slots into ADR-0013/0015. All numbers measured today, on the tree.</p>
+
+<h2>Why scatter's filter never worked (proven, gate now fixed)</h2>
+<p>Scatter's legend is the dead static model (<code>ul.dv-legend</code>); the registry subscribes
+scatter to <code>dv-behaviour</code> only; and the migration gate read the static legend as
+"no legend", certifying the gap green. The gate is fixed tonight — it now says, loudly:
+<em>"static legend present but not migrated and not subscribed"</em> — and it will stay red until
+D3 below is ruled and enacted. That red is deliberate.</p>
+
+<h2>The four rulings</h2>
+
+<div class="decision">
+<h3>D1 — Ratify ADR-0015-A2 (the consumes-manifest), TENTATIVE since 07-28?</h3>
+<p>It has earned it: the narrow path is live (scatter's own declaration), refusal proven in four
+directions, and one unpredicted safety property observed — a declaration cannot be silently
+deleted without the file going non-conforming. Absent key = consumes everything (universal
+default), which is what makes sparkline's dead weight possible (D2).</p>
+<div class="opts">
+<label><input type="radio" name="d1"> RATIFY as-is (universal default stands, protected by the observed safety property)</label>
+<label><input type="radio" name="d1"> RATIFY but flip the default: absent key = FAIL LOUD, every member declares (stricter, matches the fail-loud house style; costs a declaration on every current member)</label>
+<label><input type="radio" name="d1"> Stay tentative</label>
+</div>
+</div>
+
+<div class="decision">
+<h3>D2 — Sparkline sheds its inert payload?</h3>
+<p>Sparkline has no legend and no behaviours that need one, yet carries
+<span class="nums">16,661 B</span> of injected dv-legend (universal default; the record's
+"15.6KB" remeasured today). Declaring <code>"consumes": ["dv-behaviour"]</code> sheds it — the
+exact move the ADR predicted "when ruled". This is that ruling.</p>
+<div class="opts">
+<label><input type="radio" name="d2"> Yes — declare and shed (−16,661 B)</label>
+<label><input type="radio" name="d2"> No — leave universal</label>
+</div>
+</div>
+
+<div class="decision">
+<h3>D3 — Scatter's legend: migrate, or delete?</h3>
+<p><strong>Migrate:</strong> static <code>ul</code> becomes <code>.dv-legrow</code> rows (the
+molecule's markup parameters) and scatter adds <code>dv-legend</code> to its consumes list.
+Budgets hold, measured: scatter page would carry <span class="nums">13,346 + 16,661 =
+30,007 B</span> against the 32,768 group cap; <code>dv-legend.js</code> itself needs
+<strong>zero new bytes</strong> if discovery-at-init covers scatter's markers (they already carry
+<code>data-series-group</code>) — that zero is asserted by reading the init loop, and will be
+proven by the build gate at enact, not assumed.
+<strong>Delete:</strong> call scatter legendless-by-design (segments are already
+shape+letter-keyed on the points themselves — colour is never the only channel).</p>
+<div class="opts">
+<label><input type="radio" name="d3"> Migrate — key-filtering works on scatter (recommended; it's why you raised this)</label>
+<label><input type="radio" name="d3"> Delete the static legend — scatter is legendless-by-design</label>
+</div>
+</div>
+
+<div class="decision warn">
+<h3>D4 — The control lockup becomes a named partial (the genuinely new molecule)</h3>
+<p>Title + View-as-table + (theme/contrast/replay where present) repeats across bar, donut,
+line, combo, scatter with drift between copies. Proposal: extract as an ADR-0013 partial
+(<code>dv-lockup</code>), parameterised by data-attributes (title text, which controls, alignment),
+registry-gated like every partial. This is next-session build work — tonight's ruling is only
+the SHAPE: look at the spread below, compare the three headers, and rule whether the lockup
+partial is the right cut.</p>
+<div class="opts">
+<label><input type="radio" name="d4"> Shape approved — scope and build it next session</label>
+<label><input type="radio" name="d4"> Not yet — leave headers per-chart, revisit later</label>
+</div>
+</div>
+
+<h2>The live spread — bar · donut · scatter (your exemplars + the patient)</h2>
+<p>Compare the top lockups and the legends. Bar and donut carry the migrated key-filter
+(click a key row — it dims the series); scatter's is the dead static list (clicking does nothing —
+the defect you reported, now formally on the gate's books).</p>
+<div class="spread">
+  <div class="cell"><h4>Chart-bar — migrated (.dv-legrow)</h4><iframe src="../knowledge/snippets/Chart-bar.reference.html"></iframe></div>
+  <div class="cell"><h4>Chart-donut — migrated (.dv-legrow)</h4><iframe src="../knowledge/snippets/Chart-donut.reference.html"></iframe></div>
+  <div class="cell"><h4>Chart-scatter — dead static legend</h4><iframe src="../knowledge/snippets/Chart-scatter.reference.html"></iframe></div>
+</div>
+
+<h2>Comments</h2>
+<p>Anything the radio buttons don't capture — overrides, different numbers, "actually what I
+meant was":</p>
+<textarea placeholder="Notes for the ledger…"></textarea>
+
+<p class="foot">Selections here are not persisted — tell Claude your rulings in chat (or screenshot
+this page). Measured tonight #66: dv-behaviour.js 13,004 B · dv-legend.js 16,330 B (54 under its
+16,384 source cap) · group 29,334 of 32,768 · sparkline inert block 16,661 B · scatter post-migration
+page 30,007 B. References: ADR-0015 + A2 · ADR-0013 · legend redesign v5 ledger · ds-015/aid-009.</p>
+</body>
+</html>
