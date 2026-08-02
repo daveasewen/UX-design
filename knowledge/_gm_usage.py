@@ -771,25 +771,59 @@ def selftest():
         bite("reader: ...but a line that OPENS as testimony and fails to parse still REFUSES",
              any("does not parse" in e for e in ref3))
 
-    # green control on the REAL repo — the series must read, and must still find the
-    # candidates #35 measured by hand before this code existed.
+    # --- the deferral boundary on a WHOLE-FILE corpus (#78) ---------------------------
+    # ★ RE-HOMED #78: these two intents were pinned to the REAL repo's candidate list
+    # ("LS:DEAD/SPINOFFS/TARGETS are still never-cited") — a LIVE fact, and it died
+    # honestly at #74's wrap, whose ratified testimony CITED all three
+    # (notes/_GAUGE-LOG.md, section-usage #74). Two arms red, ONE cause, and the red
+    # was the reader WORKING. The LS:LIFECYCLE note below already documented this exact
+    # class; the pin outlived its premise anyway. The intents now live on a corpus where
+    # the candidate exists BY CONSTRUCTION, with the mutation control in the same block.
+    with tempfile.TemporaryDirectory() as td4:
+        os.makedirs(os.path.join(td4, "notes"))
+        _log4 = os.path.join(td4, "notes", "_GAUGE-LOG.md")
+        _mkline = lambda n, code: GOOD_USAGE.replace("#23", "#%d" % n).replace(
+            "DEAD:R", "DEAD:" + code)
+        # seven straight sessions in which LS:DEAD is never cited and always unread
+        open(_log4, "w", encoding="utf-8").write(
+            "\n".join(_mkline(n, "U") for n in range(40, 47)) + "\n")
+        _rep4, _rows4, _refs4 = history_report(td4)
+        bite(f"fixture: a never-cited section unread 6+ IS named a candidate "
+             f"(got: {_refs4[:1]})",
+             _refs4 == [] and "LS:DEAD" in _rep4 and "CANDIDATES FOR DAVE" in _rep4)
+        bite("fixture: the report publishes the remedy as UNRULED (it must never pick one)",
+             "The remedy is UNRULED" in _rep4)
+        # mutation control — ONE citation and both greens above must be able to flip
+        open(_log4, "w", encoding="utf-8").write(
+            "\n".join(_mkline(n, "U") for n in range(40, 46))
+            + "\n" + _mkline(46, "C") + "\n")
+        _rep4c, _, _refs4c = history_report(td4)
+        bite("fixture MUTATION: one citation empties the candidate set and takes the "
+             "UNRULED line with it (the green can fail)",
+             _refs4c == [] and "The remedy is UNRULED" not in _rep4c
+             and "no section is both never-cited" in _rep4c)
+
+    # green control on the REAL repo — the series must read; candidate assertions are
+    # MONOTONIC deltas only (testimony accumulates, ever_consumed never un-flips), so
+    # these cannot age the way the #35 pin did.
+    # ⚠ LS:LIFECYCLE stays out of every set here: #35 CITED it (the de-materialise
+    # ruling rests on it), so the reader correctly dropped it — the founding precedent
+    # for the class that took the #35 pin too.
     _rep, _rows, _refs = history_report(REPO)
     bite(f"real-repo usage history reads clean (got: {_refs[:1]})", _refs == [])
     bite("real-repo history covers every session that testified", len(_rows) >= 11)
-    _real = deferral_candidates(usage_streaks(_rows))
-    # ★ UPDATED #35, and the update is the evidence the reader worked: GM:C2b/C3/C4b/C5 were
-    # this list's first four names, Dave ruled them offloaded, and they now fall out of the
-    # candidate set because they are RETIRED rather than because anything cited them. The LS
-    # four are what remains owed.
-    # ⚠ LS:LIFECYCLE is deliberately NOT in this set: #35 CITED it (it is what the
-    # de-materialise ruling rests on), so the reader correctly drops it. A candidate list that
-    # kept it after a real citation would be measuring nothing.
-    bite("real-repo names the never-cited set that is still CARRIED",
-         {k for k, _ in _real} >= {"LS:DEAD", "LS:SPINOFFS", "LS:TARGETS"})
+    _st_real = usage_streaks(_rows)
+    _real = deferral_candidates(_st_real)
+    bite("real-repo: the #35 LS candidates have since been CITED and left the set the "
+         "honest way (#74's sweep — assert the DELTA, not the dead pin)",
+         all(_st_real[k]["ever_consumed"]
+             for k in ("LS:DEAD", "LS:SPINOFFS", "LS:TARGETS"))
+         and not ({k for k, _ in _real} & {"LS:DEAD", "LS:SPINOFFS", "LS:TARGETS"}))
     bite("real-repo: the #35 offloads have LEFT the candidate set (retired, not cited)",
          not ({k for k, _ in _real} & {"GM:C2b", "GM:C3", "GM:C4b", "GM:C5"}))
-    bite("real-repo report publishes the remedy as UNRULED (it must never pick one)",
-         "The remedy is UNRULED" in _rep)
+    bite("real-repo report closes in exactly ONE of its two legal states, never a "
+         "remedy choice",
+         ("The remedy is UNRULED" in _rep) != ("no section is both never-cited" in _rep))
 
     if fails:
         print("[_gm_usage selftest] FAIL:")
