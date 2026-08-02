@@ -2628,3 +2628,13 @@ live repo state is a claim that stops being true legitimately — pin deltas, no
 **DV-D19 specimen v2 (item c, discharge of the #76 repair ruling):** `f73b9ec`, register row in
 `_REVIEW-SIGNOFF.md`; two pins put to Dave as OPEN (swatch-at-rest · fade-attribution), options
 deliberately not invented where the record cannot attribute the ask.
+
+**#78 POST-WRAP ADDENDUM (5b beat) — THE FADE PIN CLOSED (Dave, in chat, after the wrap commit
+`5430ac2`):** reviewing the v2 specimen live, *"the fade levels are good btw"*; read back as the
+live ladder (full / 24% hover / 12% ghost) and confirmed verbatim: *"— is correct."* ⇒ the #75
+fade ask meant PRESERVE, not ADD — shipped behaviour stands, nothing built. Body of the closure:
+`knowledge/_proforma/_DATAVIZ-DECISIONS.md` (the UNPROVEN-fade block, closed by addition).
+Specimen pins now ONE: swatch-at-rest. Also verified on his tooltip question, measured not
+assumed: the tips are PRESENT and FIRING in both v2 files (10 arcs, #dvTip on real mouse-move
+and focus, both panes) — nothing was scope-trimmed; posed strip + legend rows are tip-less by
+canon's design.

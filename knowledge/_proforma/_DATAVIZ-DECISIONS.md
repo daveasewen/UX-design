@@ -841,6 +841,15 @@ Node: DV-D18
   RENDER-level comparison (~4 sandbox calls, `_RUNBOOK-render-verify.md`, `goto("file://…")`),
   or Dave meaning *preserve* this fade through the mode change rather than *add* it. **Not
   guessed, not built.** → §C, first item for #76.
+  - ✅ **CLOSED #78 (2026-08-02, Dave, post-wrap; the *preserve* reading was right).** The v2
+    specimen (`reviews/DV-D19-MODE-LATCH-2026-08-02-v2.html`) demonstrated the shipped ladder
+    LIVE (computed opacities 1 / .24 / .12 read back on hover) and put the question straight,
+    options deliberately not invented. Dave, watching it run: *"the fade levels are good btw"*;
+    read back as "the live ladder (full / 24% hover / 12% ghost)" and confirmed verbatim:
+    *"— is correct."* ⇒ **The ruling: the shipped fade ladder IS the intended behaviour —
+    nothing missing, nothing to add or build; the #75 ask meant PRESERVE it through the DV-D19
+    mode change, which canon already does.** No code change; the closure is the record.
+    Ledger sibling: `notes/_MEMENTO-DECISIONS.md` § ★ #78 (post-wrap addendum).
 
 - **⚠ RECORD DEFECT, FOUND NOT FIXED — `DV-D18` IS USED TWICE.** `_DATAVIZ-DECISIONS.md:422`
   *"CAP STACKED SEGMENTS AT 6"* and `:728` *"SOLO IS A SET SIZE"* are different rulings under one
