@@ -964,6 +964,30 @@ two facts because they have different owners: the ruling is closed, the specimen
   as the user checks a swatch the whole set change to check mode"* — could also mean a swatch click
   **at rest** enters check mode with a focus set. **The narrow reading was taken deliberately**: the
   return path is what he reported, and widening it changes resting behaviour on every chart. His.
+  - ✅ **CLOSED #79 (2026-08-02, Dave, at the opener; the NARROW reading is RULED).** Put to him on
+    the v2 specimen (`reviews/DV-D19-MODE-LATCH-2026-08-02-v2.REVIEW.html` § Open decision 1), both
+    options stated in the doc's own words, neither pre-selected, the shipped one badged. **Read back
+    as SENSATION, not mechanism** — *"on a chart you haven't touched, clicking a swatch just dims
+    that series; nothing latches. The set only goes into check mode if you started by isolating
+    something with a label click"* — and ratified in his own words, unprompted by any option label:
+    ***"DV-D19 — the mode latch, shown on real canon prototype is perfect as it is."*** ⇒ **The
+    ruling: at rest a swatch click toggles `visible[]` and the mode stays `'rest'`; check mode only
+    ever begins from isolation. Shipped behaviour stands — no code change, `dv-legend.js:166` is
+    correct as written.** DV-D19 is now settled in both halves.
+  - ★ **THE PROBE THAT PRICED THE ALTERNATIVE, recorded because it would have to be re-run if
+    anyone reopens this.** The prior record priced the wide reading as *"changes resting behaviour
+    on every chart"*. **Measured #79 on the source, not recalled: it is more than a latch
+    condition.** `active()` (`dv-legend.js:51`) returns `st.visible` at rest and `st.focus` in
+    check — so under the wide reading `visible[]` **freezes at the first swatch click** and every
+    later show/hide lands in `focus`. `render()`'s Reset guard (`:147`) is
+    `count(st, st.visible) === st.ids.length && st.mode === 'rest'` — **both halves break**: the
+    mode leaves `rest` and (absent an isolate-release, `:187`) never returns, and the count reads
+    the frozen set ⇒ **Reset would sit permanently enabled on every chart after any swatch click.**
+    Blast radius: 1 canon source · 5 chart reference snippets · **14 legend-bearing surfaces**
+    (grep, `showroom/ reviews/ projects/`). ⇒ **Wide was never a one-line change; it needs
+    `visible[]`/`focus` reseated at rest and the Reset guard rebuilt.** Dave ruled narrow with that
+    cost in front of him.
+    Ledger sibling: `notes/_MEMENTO-DECISIONS.md` § ★ #79.
 
 ### ⚠ FOUND, NOT FIXED — THE INTRO-MOTION LAW IS SHARED AND ONLY THE DONUT HALF IS BUILT
 
