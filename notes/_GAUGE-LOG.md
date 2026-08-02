@@ -823,3 +823,22 @@ a claim that was never true is never chased.
 
 HOLE #85 — declared budget stop; NO wrap ran and no stratum was written (known, not inferred: the #86 handoff records the stop). The #85 record lives in `notes/_MEMENTO-DECISIONS.md` § ★ #85 (inscribed at #87, marked). — written by #87
 HOLE #86 — declared budget stop at 192,720 real (96% of 200,000, conversation half; boot half UNMEASURED, ds-025); NO wrap ran and no stratum was written (known: `_HANDOFF-87-bankruptcy.md` § BUDGET is #86's own declaration). Record: § ★ #86 (inscribed at #87, marked). — written by #87
+
+## HOLE-FREE #89 — 2026-08-02
+- boot check-ins: 67,328 → 111,746 → 161,951 real (`_checkin.py --window 200000`), conversation half, boot half UNMEASURED (ds-025 item 1).
+- stop line DECLARED ~140K at the opener; MEASURED 161,951 at the wrap decision. BLOWN by ~22K.
+- named causes: (1) opened GOOD-MORNING.md at boot to "check" the chain, ~13.8K — the reflex the chain header exists to stop; (2) ESTIMATED between check-ins (believed ~132K, was 161,951).
+- `_RUNBOOK-capture-ritual.md` measured 16,934 real and was PRICED OUT of this wrap — declared, not skipped silently.
+
+HOLE #88 — 2026-08-02. ⛔ NOT CAPTURED — UNMEASURED. Session #88 committed (`1693e17`, `a39a925`) and left no §C stratum and no post-mortem block here. Recorded by #89 as a HOLE, **not reconstructed**: a message from one run is never paired with a status from another (#87's rule). #88's own banner declares its read-chain growth as roughly +2,300 and points at `_CHAIN.md`'s footer as the one exact home.
+
+## Post-mortem #87 — rolled by #89 (ritual step 2f)
+⚠ **HAND-ROLLED, MARKED:** `_gm_move.py --op roll_2f` needs a UNIQUE line-START anchor for `cs_start`, and `> **COMMIT STATE` matches every stratum in the file — the op could not express this roll. Split done by script, VERBATIM, both halves in one motion, and declared here rather than silently. [[honest-refusal-needs-a-legal-form]]
+
+#### 2026-08-02 #87
+
+> **pre-flight #87:** boot 37536 (disk 37536 measured — the opener `_checkin.py --window 200000` conversation-half reading, which contains the boot reads · harness unobservable — ds-025 item 1) + job 90000 est ±30000 + wrap 25000 est ±5000 (it covers two owed sessions) = 152536 of 200,000 — GREEN at authoring (amber 160,000 · working 200,000 · hard 256,000, quoted from `_gauge_tokens.py`, never recalled). The first graded stamp in eight sessions; the stop line (working − priced wrap ≈ 150K) was declared in chat at the opener.
+> **post-mortem:** ⛔ **THE STOP LINE WAS BLOWN AND THE CROSSING DECLARED IN CHAT: 221,957 real at wrap start (111% of 200,000) — THROUGHPUT, cumulative, conversation half.** Estimate-vs-actual: the inscription + bankruptcy landed near their price; **what was never priced was the WRAP-SURFACE SURVEY** — GM's header, the gauge-log tail and the archive heads are multi-thousand-token LINES, and the second check-in ran only after they were read. ★ A throttle consulted after the spend is a thermometer — #84's sentence, re-earned by the session that read it. ⚠ The wrap ran anyway: it outranks deliverables (Dave, #86: *"its not your decision to not wrap!!"*). The #88 contract inherits the rebuild store, whose routing fix is what makes this read class cheap.
+> **section-usage #87 (observed, self-report):** GM HDR:C LATEST:C PRIOR:R DOFIRST:R A:U C1:U C2:U C4:U STRATA:C · LS HDR:C LANES:R SPIN:U DELTAS:C WEBFONT:U LIVE:U LIFECYCLE:U DEAD:U OPEN:U TARGETS:U SPINOFFS:U
+> **section-sizes #87 (real):** GM HDR:6933 LATEST:3628 PRIOR:3301 DOFIRST:6173 A:6957 C1:1361 C2:1603 C4:9680 STRATA:8279 · LS HDR:747 LANES:1415 SPIN:2772 DELTAS:4360 WEBFONT:939 LIVE:7476 LIFECYCLE:1576 DEAD:678 OPEN:6750 TARGETS:896 SPINOFFS:728 · totals GM:47915 LS:28337 *(⚠ **MEASURED PRE-EDIT, at the wrap's start** — the #87 banner/stratum/delta are NOT in these figures; declared, not reconciled.)*
+> **consult-receipts #87:** none — the honest negative. The session ran on `_HANDOFF-87-bankruptcy.md` (its whole contract, by Dave's order) + targeted greps; zero `_memento_search.py` queries. ⚠ **The trigger index did not fire on the ledger/knowledge edits either — worth re-testing at #88**; a session that stops querying is also what a broken door looks like.

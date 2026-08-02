@@ -80,6 +80,30 @@ python3 knowledge/_gen_chain.py --check ||
   fail "_gen_chain.py --check REFUSED (exit non-zero) — its message is printed directly above and it is the authority on the cause; this script does not second-guess it. Nothing has been staged. If it named STALENESS, run: python3 knowledge/_gen_chain.py — then re-run this script. If it named a DEGRADED MEASUREMENT, regenerating will NOT help: fix tiktoken first (pip install tiktoken --break-system-packages) and re-run."
 echo "— chain fresh (_gen_chain.py --check passed)"
 
+# session-witness consumer — BUILT #89, the honest-certification leg of the #87-D1 drill.
+# ⛔ WHY THIS CANNOT BE FOLDED INTO THE CHECK ABOVE: `_gen_chain.py --check` compares _CHAIN.md
+# against GOOD-MORNING.md. If GM is a session stale (a skipped wrap), the chain regenerates
+# CONSISTENTLY stale and --check goes GREEN — the two mechanisms agree with each other and are
+# both wrong. That is the seam that certified #84 at #86's first commit, and _gen_chain's own
+# #73 comment already said it "canNOT catch a skipped wrap". _session.py answers from a witness
+# written at BOOT (knowledge/_SESSIONS.jsonl), which is outside the set of files the corpus
+# generates about itself, so it is the only thing here that can disagree with GM.
+# WARN/--wrap split, matching #74-D1 and #78-D2: an absent --session is visible mid-session and
+# BLOCKING on the final commit, so existing mid-session call sites keep working unchanged.
+if [ -n "${SESSION_N:-}" ]; then
+  python3 knowledge/_session.py --declare "$SESSION_N" ||
+    fail "_session.py REFUSED for declared session #$SESSION_N — its named witnesses are printed directly above and it owns the diagnosis. This is the #86 defect class: the boot path and the running session disagree about who you are, and a commit made now certifies the WRONG session. Fix the cause, or re-run with SESSION_ACK=\"<real reason>\" to pass it as a DECLARED gap (declared passes, silent fails). Nothing has been staged."
+  echo "— session witness agrees (#$SESSION_N)"
+elif [ -n "${SESSION_ACK:-}" ]; then
+  python3 knowledge/_session.py --acknowledge "$SESSION_ACK" || true
+  echo "⚠ session witness gap DECLARED, not clean: $SESSION_ACK"
+elif [ "$WRAP" -eq 1 ]; then
+  fail "the FINAL commit must declare its session: SESSION_N=<n> bash knowledge/_git_commit.sh --wrap --reconciled <msgfile>. Without it the commit subject is derived from GOOD-MORNING.md's own banner, which is the artefact a skipped wrap leaves stale — that is exactly how #84 got certified at #86's first commit. Declare it, or pass SESSION_ACK=\"<real reason>\". Nothing has been staged."
+else
+  echo "⚠ no SESSION_N declared — visible, not blocking on a mid-session commit (#89)."
+  echo "  The session's FINAL commit must declare it, where absence BLOCKS."
+fi
+
 # wrap-gate consumer — RULED #74-D1 (the WARN/--wrap split; the wiring was #73's deliberate
 # not-done because the tradeoff was Dave's). The gate was honest with no consumer: #71 and #72
 # committed through red ([[instrument-without-a-consumer]]). The commit seam is where a red wrap
