@@ -18,9 +18,21 @@ the reading costs nothing it is measuring.
              file. It is printed as UNMEASURED and is NEVER defaulted to a
              constant [[feedback-measuring-tool-must-not-guess]].
 
-  UNIT       `tape`, cl100k. ⚠ D1 rules cl100k UNVERIFIED against Claude's own
-             tokenizer (p50k reads +8.6–11.1% on this corpus). Labelled on
-             every line rather than silently assumed.
+  UNIT       HEADLINE = REAL Claude tokens, via `_gauge_tokens.count()` — #83 (c)
+             wires this reader to #82's unit. ONE call on the WHOLE concatenated
+             conversation-half blob, never per-record: #82 MEASURED the per-record
+             shape at 232 API round-trips on a live transcript, blowing the 45s
+             sandbox call wall. `count()` is content-hash cached, so a re-run of an
+             UNCHANGED transcript costs nothing. The method ('real' or
+             'cl100k-estimate') travels WITH the number and prints on the headline
+             line — never 'real' for a figure that fell back.
+
+             BREAKDOWN stays `tape`, cl100k (tiktoken) — UNCHANGED from D1, kept for
+             SHAPE only (per-type proportion, not a magnitude). ⚠ D1 rules cl100k
+             UNVERIFIED against Claude's own tokenizer (p50k reads +8.6–11.1% on
+             this corpus). ⛔ It does NOT sum to the headline and is NEVER scaled or
+             converted to match it — converting a proxy into a measurement's
+             clothes is #54's defect [[measure-dont-convert-units]].
 
   KIND       THROUGHPUT, not fill. A cumulative log is not a resident-context
              reading [[measure-dont-convert-units]]. Compaction/eviction would
@@ -29,11 +41,16 @@ the reading costs nothing it is measuring.
 NO PERCENTAGE WITHOUT A NAMED DENOMINATOR — D2 (c). `DEFAULT_WINDOW = 200_000`
 was a TRUE OBSERVED FIGURE GONE STALE (`e7f8b87`, matching a harness warning),
 and 613,386 tape ran through a session against it. A ratio is printed only if
-you pass `--window` and it is captioned with the number you passed.
+you pass `--window` and it is captioned with the number you passed — computed
+against the REAL headline since #83 (c), never against the cl100k breakdown.
 
 FAILS LOUD without tiktoken. `_context_gauge.py` used to silently estimate and
 under-report by 414 tape; FIXED #74 — it now refuses by default too, with the
 chars/4 path behind an explicit `--estimate` flag that labels its output.
+
+FAILS LOUD on the headline too. `gauge.count()` raises `MeasurementRefused`
+(#79-D1) when NEITHER the API nor tiktoken is reachable, and it is PROPAGATED
+here named — never caught and quietly downgraded to an estimate.
 """
 from __future__ import annotations
 
@@ -43,6 +60,9 @@ import glob
 import json
 import os
 import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import _gauge_tokens as gauge     # noqa: E402 — #83 (c): the REAL headline, ONE call (below)
 
 CONV_TYPES = ("user", "assistant", "attachment")
 META_TYPES = ("queue-operation", "last-prompt", "mode")
@@ -74,6 +94,29 @@ def encoder():
     return tiktoken.get_encoding("cl100k_base")
 
 
+def measure_real(text: str) -> tuple[int, str]:
+    """THE HEADLINE (#83 c) — one call to `_gauge_tokens.count()` on the WHOLE
+    concatenated conversation-half blob, never per-record. #82 MEASURED the
+    per-record shape at 232 API round-trips on a live transcript, blowing the
+    45s sandbox call wall; `count()` is content-hash cached, so re-running
+    against an unchanged transcript costs nothing.
+
+    Mirrors `_capture_gate.py::measure_tokens()`'s own shape — the literal
+    `return n, "real"` below is what lets THIS FILE satisfy
+    `_produces_real_tier()`'s AST check; a registry pin is never trusted on
+    its own word [[gate-must-quote-what-it-forbids]].
+
+    ⛔ `gauge.MeasurementRefused` is deliberately NOT caught here. It
+    propagates to the caller, loud and named — catching it and returning an
+    estimate instead would be exactly the ds-025 defect this module refuses
+    to commit.
+    """
+    n, method = gauge.count(text)
+    if method == "real":
+        return n, "real"
+    return n, method
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="On-demand context check-in.")
     ap.add_argument("path", nargs="?", help="Transcript jsonl (default: newest mounted).")
@@ -88,6 +131,7 @@ def main() -> int:
     by_type: dict[str, int] = {}
     records = 0
     stamps: list[str] = []
+    parts: list[str] = []      # conversation-half payloads, concatenated for the ONE real call
     for line in open(path, encoding="utf-8"):
         line = line.strip()
         if not line:
@@ -103,9 +147,19 @@ def main() -> int:
         if kind in META_TYPES:
             continue
         payload = rec.get("message", rec)
-        by_type[kind] = by_type.get(kind, 0) + len(enc.encode(json.dumps(payload)))
+        payload_json = json.dumps(payload)
+        by_type[kind] = by_type.get(kind, 0) + len(enc.encode(payload_json))
+        parts.append(payload_json)
 
     measured = sum(by_type.values())
+
+    # ---- THE HEADLINE (#83 c). ONE gauge.count() call on the WHOLE blob, never per-record —
+    # #82 measured 232 round-trips that way; count() is content-hash cached so a re-run of an
+    # unchanged transcript is free. MeasurementRefused propagates NAMED, never swallowed.
+    try:
+        real_measured, real_method = measure_real("\n".join(parts))
+    except gauge.MeasurementRefused as e:
+        sys.exit(f"HEADLINE REAL MEASUREMENT REFUSED — real Claude tokens unmeasurable:\n{e}")
 
     # Freshness: is this file still being written? Observed, not assumed.
     lag = None
@@ -119,9 +173,13 @@ def main() -> int:
 
     if args.json:
         print(json.dumps({
+            "measured_real": real_measured, "measured_real_method": real_method,
             "measured_tape_cl100k": measured, "by_type": by_type,
             "records": records, "lag_seconds": lag,
-            "boot_half": None, "unit": "tape/cl100k (D1: UNVERIFIED proxy)",
+            "boot_half": None,
+            "unit": (f"headline: REAL Claude tokens, method={real_method} — ONE call, "
+                     "#82/#83 (c); breakdown: tape/cl100k (D1: UNVERIFIED proxy), SHAPE "
+                     "ONLY, does NOT sum to the headline, NEVER scaled to match it"),
             "kind": "throughput, cumulative — NOT a fill reading",
         }, indent=2))
         return 0
@@ -132,21 +190,28 @@ def main() -> int:
         state = "LIVE" if lag < 300 else f"STALE by {lag/60:.0f} min — treat with suspicion"
         print(f"  freshness    last record {lag:.0f}s behind now — {state}")
     print()
-    print(f"  MEASURED     {measured:>9,} tape  (conversation half, cl100k)")
+    print(f"  MEASURED     {real_measured:>9,} {real_method}  (conversation half, ONE call — the headline)")
+    print()
+    print(f"  BREAKDOWN    {measured:>9,} tape  (cl100k, SHAPE ONLY — per-type proportion, not a magnitude)")
     for k in sorted(by_type, key=lambda k: -by_type[k]):
         print(f"    {k:<10} {by_type[k]:>9,}")
+    print("               ⛔ different UNIT from the headline above — does NOT sum to it, and")
+    print("               is NEVER scaled/converted to match it (converting is #54's defect).")
     print(f"  UNMEASURED   {'boot half':>9}  system prompt + tool schemas + MEMORY.md")
     print("               ds-025 item 1 STANDS — no `system` record exists here.")
     print("               NOT defaulted to a constant.")
     print()
     if args.window:
-        print(f"  ratio        {measured / args.window:.0%} of the {args.window:,} you passed")
+        print(f"  ratio        {real_measured / args.window:.0%} of the {args.window:,} you passed  ({real_method})")
         print("               ⚠ that denominator is YOURS, not observed. The absolute")
         print("               figure above is the only honest one (D2 c).")
     else:
         print("  ratio        NONE — no denominator named. Pass --window to get one.")
     print()
-    print("  ⚠ UNIT  tape/cl100k. D1 rules this an UNVERIFIED proxy for Claude's tokenizer.")
+    print(f"  ⚠ UNIT  headline = REAL Claude tokens ({real_method}), ONE call — #82's unit,")
+    print("          wired here at #83 (c). Breakdown = tape/cl100k (tiktoken); D1 rules that")
+    print("          an UNVERIFIED proxy, kept for SHAPE only, never summed/scaled to the")
+    print("          headline above.")
     print("  ⚠ KIND  THROUGHPUT, cumulative. Not a fill reading; compaction unobservable.")
     return 0
 

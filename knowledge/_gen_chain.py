@@ -253,9 +253,17 @@ def build(repo=ROOT):
     guess, seen = slice_tk, {}
     for n in range(1, MAX_FIXED_POINT_PASSES + 1):
         text = render(guess)
-        measured = cg.measure_tokens(text)[0]
+        # ⛔ CORRECTED AT SOURCE #83 — THE METHOD NOW TRAVELS WITH THE NUMBER, as `measure_tokens`
+        # has DECLARED it should since it was written. This call site read `[0]`, discarding the
+        # method, and then hard-coded the word `tape` into every string below. Since #82-D1 that
+        # number is REAL, so this reader was publishing the RETIRED unit's name for a figure the
+        # chain's own footer publishes as `real` — the SAME 11,032, two units, two files. The
+        # docstring at :153-157 flagged the discard; nobody flagged that the LABEL was a lie.
+        # ★ Not relabelled to a hard-coded 'real' either: that would claim a tier the fallback
+        # cannot deliver. The label is now whatever was actually used. [[measure-dont-convert-units]]
+        measured, how = cg.measure_tokens(text)
         if measured == guess:
-            return text, (f"{chain_detail} · FILE {measured:,} tape = slice {slice_tk:,} + "
+            return text, (f"{chain_detail} · FILE {measured:,} {how} = slice {slice_tk:,} + "
                           f"wrapper {measured - slice_tk:,} · fixed point in {n} pass(es)")
         if measured in seen:
             # ⚠ A 2-cycle. REFUSE — do not pick the prettier end. Both ends are false: whichever
@@ -263,7 +271,7 @@ def build(repo=ROOT):
             # class wearing a plausible number, and it is worse than a blank because it looks
             # measured. The remedy is a width-stable footer, and it is a code fix, not a retry.
             return None, (f"_CHAIN.md figure does NOT converge — it oscillates between "
-                          f"{measured:,} and {guess:,} tape (pass {seen[measured]} vs {n}). The "
+                          f"{measured:,} and {guess:,} {how} (pass {seen[measured]} vs {n}). The "
                           f"footer's rendered width changes with the figure it publishes. Chain "
                           f"NOT generated: a stamp picked from one end of an oscillation is a "
                           f"confident wrong number, which is worse than no file.")
@@ -282,8 +290,8 @@ def write(repo=ROOT):
         f.write(text)
     try:
         import _capture_gate as cg
-        tk = cg.measure_tokens(text)[0]
-        print(f"  ✅ {OUT_NAME}: {tk:,} tape · {detail}")
+        tk, how = cg.measure_tokens(text)          # #83: the method travels with the number
+        print(f"  ✅ {OUT_NAME}: {tk:,} {how} · {detail}")
     except Exception:                                          # pragma: no cover
         print(f"  ✅ {OUT_NAME} written · {detail}")
     return 0

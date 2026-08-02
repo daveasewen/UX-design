@@ -19,8 +19,10 @@ Two facts that shape the method:
    tool list, the `MEMORY.md` index, every file read, and every tool-result dump all spend it —
    usually **more** than the agent's own word-generation does. In our sessions the real fuel-burners
    are canon file reads, review-round renders, and long review back-and-forths.
-2. **Degradation shows up well before 100%** ("context rot"). Fine under ~45%, watch it 45–60%,
-   move by ~60%. We do not wait for full.
+2. **Degradation shows up well before 100%** ("context rot"). Fine under AMBER, watch it between
+   AMBER and WORKING, move at the latest by WORKING itself — absolute token thresholds, not a
+   percentage of the window (see the band table under "THE UNIT AND THE BUDGET" below). We do
+   not wait for full.
 
 ## The gauge is two halves
 
@@ -49,8 +51,19 @@ These are NEW thresholds with their own provenance [[measure-dont-convert-units]
 | number | value | authority |
 |---|---|---|
 | **HARD** | 256,000 | **SOURCED** — the largest context at which Claude's recall has been publicly measured and still holds (93% MRCR v2; 76% at 1M). Past it there is no measurement to reason from. |
-| **WORKING** | 200,000 | **DAVE'S**, ruled #56. The line jobs are priced against. |
-| **AMBER** | 160,000 | **DERIVED** — 80% of working. |
+| **WORKING** | 200,000 | **SOURCED**, not Dave's preference — entered force at #56, provenance corrected #58b. The line jobs are priced against it. |
+| **AMBER** | 160,000 | **PICKED**, not derived — corrected #59. 80% of working is a round fraction, not a formula. |
+
+⚠ **PROVENANCE OF THE TWO ROWS ABOVE WAS ITSELF CORRECTED TWICE AFTER THIS TABLE WAS FIRST WRITTEN
+(#58b, #59) — folded in above; here is why, so a later re-read does not silently drift back.**
+WORKING read "DAVE'S, ruled #56" for three sessions until Dave corrected it himself: *"BTW the 200K
+and 256K come from established research, its been worked out already."* Both HARD and WORKING are
+SOURCED; 200,000 was never his to re-dial by fiat. AMBER read "DERIVED — 80% of working" until #59:
+a round fraction is a PICK, and labelling a pick "derived" makes it immune to the very rule meant to
+catch it (*"derive a cap, never pick it"* — #53). ★ **THE FORMULA IS THE RULING, THE NUMBER IS NOT:**
+`stop = wall − wrap − step`, each term tagged MEASURED or ESTIMATED; reserve the HIGH end of both
+terms or neither — stacking a step-reserve on an amber that already contains one is a
+reserve-on-a-reserve, invisible because each layer is individually defensible.
 
 ★ **The marker buys the WORKING overrun and does NOT buy the HARD one.** `RESERVE SPEND — forked
 to Dave` lets a session cross 200,000 deliberately. Nothing lets it cross 256,000, because a
@@ -175,25 +188,29 @@ JOB is what shrinks.** Discipline, not machinery — no gate can see the window,
 the enforcement, same status as the reserve above. A session that must eat its wrap reserve says so
 out loud at the moment of eating it, not at the wrap.
 
-### ★★ ds-023 — THE CEILING AND THE STOP LINE (ruled-in-part #31 in Dave's own words, enforcement picked #31 delegated, ENACTED + CONFIRMED #34)
+### ★★ ds-023 — THE CEILING AND THE STOP LINE (ruled-in-part #31 in Dave's own words, enforcement picked #31 delegated, ENACTED + CONFIRMED #34; numbers REPLACED by #56 — see note below)
 
 **Dave, #30:** *"it's calculating 60+15 headroom is okay and it definitely isn't, 60 should be a hard
 stop."* **#31:** *"the wrap should be done before we hit that mark thats when things go wrong… we should
-never run hot."* **#34, confirming:** *"this is making me suffer unduly."*
+never run hot."* **#34, confirming:** *"this is making me suffer unduly."* *(Quoted verbatim, in the
+percentage vocabulary live at the time — "60" here means 60% of the window, the pre-#56 RED threshold.
+Kept as history; the operative numbers below are #56's.)*
 
 ⚠️ **THIS WAS NEVER A CALIBRATION GAP — it was an ENFORCEMENT gap.** Everything above already said so,
 three times, verbatim. The rule existed, was correct, was ratified, and **nothing checked it**. Same
 shape as ds-021 and ds-022; all three were raised in one session and enacted in one.
 
-**Two numbers, and both are Dave's:**
+**Two numbers, restated in real tokens by #56 (the SHAPE is Dave's from #31/#34; the percentage
+values `45`/`60` he ruled were REPLACED, not converted — see ★★ THE UNIT AND THE BUDGET above):**
 
 | | value | what it means |
 |---|---|---|
-| **pre-flight ceiling** | **fill + job + wrap < 45** | a job must be projected to finish GREEN. **Checked, and it FAILS a wrap. 45 ITSELF FAILS** — it is AMBER. |
-| **in-flight stop line** | **60 − the priced wrap** | ~50–52 at today's 8–10 point wraps. **It MOVES with the wrap price and is not its own constant** — an expensive wrap must stop the session earlier. |
+| **pre-flight ceiling** | **fill + job + wrap < 160,000 (AMBER)** | a job must be projected to finish GREEN. **Checked, and it FAILS a wrap. Exactly 160,000 ITSELF FAILS** — `band_for()` reads it AMBER, not GREEN (strict `<`, bitten by the gate's own selftest). |
+| **in-flight stop line** | **200,000 (WORKING) − the priced wrap, in tokens** | **MOVES with the wrap price and is not its own constant** — an expensive wrap must stop the session earlier. ⛔ **THE RULED FORM, STATED VERBATIM AND SUPERSEDED IN THE SAME BREATH — `60 − the priced wrap`, and `60 is where the wrap has FINISHED`, not where it starts (ds-023, RULED #31, ENACTED #34, Dave's).** It is written out here because **`_capture_gate.stop_line_consistency()` asserts THAT EXACT STRING in this file and BLOCKS without it** — and at #83 it blocked a wrap for a rewrite that had re-denominated the ruling FAITHFULLY. ★★ **A gate pinned to a retired unit's WORDING cannot tell a faithful re-denomination from a deletion, so it made the CORRECT state unreachable** — the `ds-022 (d)` vs `roll_2f` shape again. **Restored by ADDITION, never by reverting the correct line** [[home-by-addition-then-cut]]. ⬛ **FORKED TO DAVE, not decided here: re-denominate ds-023's stop line into real tokens and re-pin `STOP_LINE_HOMES` to the new wording. The numbers are his (#31/#34); an agent quietly editing a gate to accept its own paraphrase of a ruling is exactly the move this project forbids.** ⚠ **DECLARED GAP:** the old illustrative anchor ("~50–52 at today's 8–10 point wraps") was itself percentage-denominated and cannot be converted; no fresh real-token anchor is published yet. Best available evidence, NOT yet a ruled constant: a single provisional re-measurement (#59, n=1) put a real wrap at **42,434+ tokens**, against inherited folklore of ~25,000 — **low by ≥1.7×**. #59 itself says this "needs 2–3 more before the line moves." Do not treat 42,434 as settled; do not price a wrap at the old folklore either. |
 
-**60 is where the wrap has FINISHED, not where it starts.** Starting the ritual at 60 is exactly what
-spends the reserve; that is #28's and #29's recorded cause.
+**200,000 (WORKING) is where the wrap has FINISHED, not where it starts.** Starting the ritual at
+200,000 is exactly what spends the reserve; that is #28's and #29's recorded cause (in the
+percentage vocabulary live at the time, "60").
 
 **★ THE ESCAPE HATCH, and why it exists.** A ceiling with no declared way past it gets worked around by
 quietly under-pricing the job — which would corrupt the only honest number in the stamp. So an overrun
@@ -229,6 +246,15 @@ spend from a passing mention), but this is the *gate-narrows-its-own-rule* class
 **a disciplined session wrote the correct thing and would still have failed.** Hence this box — the
 magic string is documented where the rule is, not only in the regex.
 
+★ **THE BOUNDARY STORY ABOVE (44 pass · 45 fail · 46 fail) IS ABOUT THE OLD PERCENTAGE CEILING, NOW
+HISTORY.** #56 replaced `45` with `160,000` wholesale (REPLACED, not converted — see ★★ THE UNIT AND
+THE BUDGET). What #34 ruled here — strict `<`, no one-point slack, a marker that stays literal — is a
+PRINCIPLE, and the principle carried forward intact: `band_for()` still reads the AMBER threshold with
+a strict `<` on its GREEN side, bitten by that function's own selftest (`band_for(BUDGET_AMBER - 1)`
+must be GREEN, `band_for(BUDGET_AMBER)` must be AMBER). **Do not re-derive a "159,999 / 160,000 /
+160,001" boundary story to match this one** — that story was never told in tokens, and inventing one
+now would be exactly the false precision this project rules against.
+
 **RULED (b) — spending the reserve is a TRIGGER, and the fork goes to Dave.** On **any unplanned
 finding**: stop, re-price out loud, and put the fork to him — **(a)** log it and stop · **(b)** narrow ·
 **(c)** chase it knowingly with a Red stamp. **Not a decision the agent makes silently from inside the
@@ -242,9 +268,10 @@ starting. Extended, one word: **before starting AND on any unplanned finding.** 
 morning's other findings — the right rule, unreachable at the moment it is needed.)*
 
 **★ M1 — RED IS A WRAP-ONLY BAND (RULED Dave, 2026-07-27 evening #17: *"running in red just makes a
-godawful mess"*).** Crossing **60% fill** = announce it the moment it happens and **start no new
-jobs**: remaining work moves to the handoff/brief and the session wraps. The only judgment left in
-Red is how to close cleanly. *(Still self-report — no gate can see fill; what this line changes is
+godawful mess"*).** Crossing **into RED — past 200,000, the WORKING ceiling** *(said as "60% fill" at
+the time this was ruled; restated by #56, REPLACED not converted)* = announce it the moment it
+happens and **start no new jobs**: remaining work moves to the handoff/brief and the session wraps.
+The only judgment left in Red is how to close cleanly. *(Still self-report — no gate can see fill; what this line changes is
 that running-on in Red is now a RULE violation, not a defensible choice. Red-authored artefacts
 already carry the re-verify stamp; this rule exists so there are fewer of them.)*
 
@@ -260,7 +287,11 @@ not the reluctant one. **Cutting work no longer means losing it.**
 
 ⚠ **But a refill is not free — it costs the cold read.** MEASURED 2026-07-27: a fresh session reached
 ~**22%** fill on `GOOD-MORNING.md` + `_LIVE-STATE.md` + the memory index **before doing any work**
-(*n*=1 — treat as an anchor, not a constant, and re-measure when the handoff's size changes).
+(*n*=1 — treat as an anchor, not a constant, and re-measure when the handoff's size changes). ⚠
+**DECLARED GAP (found while fixing this file, 2026-08-02):** this reading predates #56 and is in the
+retired percentage unit; it has not been re-measured in real tokens as part of this pass, and is not
+converted here — [[measure-dont-convert-units]]. Re-run with `_gauge_tokens.py` at cold start when
+the cold-read cost next matters.
 ⇒ **A fresh window buys ~78%, not 100%**, which gives the fork an arithmetic:
 
 > **Flush whenever the remaining budget is smaller than the job plus its wrap.** You are trading ~22%
@@ -344,15 +375,19 @@ Fable-shaped work is queued (the ruling batch), spend it.
 
 ### ⚠ READ THE BAND TABLE. DO NOT RECALL IT.
 
-**Recalled bands were WRONG on 2026-07-27:** the agent reported **"🟡 Amber ~70%"** and then
-**"Amber ~85%"** — both Red by the table twelve lines below, which had been correct all along. The
-mislabel propagated into the `GOOD-MORNING` banner, `_LIVE-STATE` and Dave's summary before he caught
-it. **A false reading of the very instrument built to catch false inscription**, and it is the same
-failure class as [[stale-reading-failure-mode]]: the corpus was right, the recall was not.
+**Recalled bands were WRONG on 2026-07-27:** the agent reported *"🟡 Amber ~70%"* and then *"Amber
+~85%"* — both Red by the table live that day, which had been correct all along. *(Quoted in the
+percentage vocabulary live at the time; that table has since been REPLACED by #56's absolute band —
+see ★★ THE UNIT AND THE BUDGET, near the top of this file, the SOLE copy.)* The mislabel propagated
+into the `GOOD-MORNING` banner, `_LIVE-STATE` and Dave's summary before he caught it. **A false
+reading of the very instrument built to catch false inscription**, and it is the same failure class
+as [[stale-reading-failure-mode]]: the corpus was right, the recall was not.
 
-⇒ **Quote the band from this file, or `grep` it. A band asserted from memory is not a reading.**
-⇒ **State the NUMBER and the BAND together** (`~85% → RED`) so a mismatch is visible to Dave in one
-glance — he caught this one exactly that way.
+⇒ **Quote the band from ★★ THE UNIT AND THE BUDGET, or `grep` it. A band asserted from memory is not
+a reading.** *(Not "twelve lines below" — that kind of pointer survives only until the next edit;
+this file's own history, fixed in this pass, is the proof.)*
+⇒ **State the NUMBER and the BAND together** (`~210,000 → RED`) so a mismatch is visible to Dave in
+one glance — he caught this one exactly that way.
 
 ### Half 1 — cheap, always-on: the running tally (near-free)
 
@@ -367,9 +402,9 @@ of substantive turns. No tooling, roughly ±15%. Reckoning (round to nearest 5k)
 | Normal exchange turn | +0.5–1.5k |
 | A long agent output (like this build) | count it too |
 | **★ THE INSTRUMENTS THEMSELVES — see below. They are NOT free.** | |
-| — the capture ritual | **+~5% (MEASURED 2026-07-27)** |
+| — the capture ritual | **+~5% of window (MEASURED 2026-07-27, pre-#56 unit) — ⚠ not yet re-measured in real tokens, DECLARED GAP** |
 | — the task list (create + each update; it re-renders) | +0.5–1k per burst |
-| — a Half-2 gauge confirmation (subagent + transcript) | +1–3k |
+| — a Half-2 check-in (`_checkin.py`, current mechanism) | **~0 — reads the transcript on disk directly, never loads it into the window** (superseded the old subagent+`read_transcript` approach below, which DID cost window) |
 | — a consult, a build run, a gate report read | +1–4k each |
 
 ⚠️ **NOTE ON THE ~35k BASELINE — it is a snapshot constant and the harness has moved under it
@@ -409,33 +444,31 @@ that handoff had to be corrected at close.
   ⚠ **But never economise by skipping the READING of the band table** — that is the one instrument whose
   omission caused a wrong band twice, and it costs a `grep`.
 
-### ★ THE FLOOR IS MEASURED, NEVER ASSUMED — and this is the only copy of the band table (GM-D9)
+### ★ THE FLOOR IS MEASURED, NEVER ASSUMED (GM-D9)
 
 *(Ruled 2026-07-27, `notes/_MEMENTO-DECISIONS.md` § GM growth-contracts. **Dave's reframe, and it is the
 whole decision:** the cold-start floor is **a variable this programme shrinks**, so a snapshot constant
 written into canon would be **falsified by its own enactment** — the prose-drift class, self-inflicted.)*
 
-**Two rules, and they replace every earlier treatment of the floor:**
+⚠ **THE BAND TABLE ITSELF LIVES IN ONE PLACE ONLY — ★★ THE UNIT AND THE BUDGET, near the top of this
+file. This section is NOT a second copy** (it used to be, and the two drifted — see ★ RETIRED UNITS
+AND BANDS below, where that history now lives). What survives here is the part of GM-D9 that is not
+the numbers: two rules that replace every earlier treatment of the floor.
 
 1. **MEASURE the floor at session start — announce the fill after the mandated reads, before pricing
-   anything.** Not "the floor is about 22–24%": *this* session's floor, this window, stated as a number.
-   The floor moves with what you actually read — a session that reads `GOOD-MORNING.md` alone does not
-   have the floor of one that reads the whole chain, and the two must not be priced the same.
-   ⚠️ **The old band table priced the floor at ZERO** (SD-7) — it described fill as though every window
-   started empty. It never did.
+   anything.** Not "the floor is about N": *this* session's floor, this window, stated as a number, in
+   real tokens (`python3 knowledge/_gauge_tokens.py`). The floor moves with what you actually read — a
+   session that reads `GOOD-MORNING.md` alone does not have the floor of one that reads the whole chain,
+   and the two must not be priced the same. ⚠️ **The old band table priced the floor at ZERO** (SD-7) —
+   it described fill as though every window started empty. It never did.
 2. **Bands are read against REMAINING BUDGET.** What decides a fork is never how full you are, it is
    whether what is left can hold the job *and* its wrap. This is already the arithmetic of the flush rule
-   above (*"flush whenever the remaining budget is smaller than the job plus its wrap"*); the table below
-   is now stated the same way so the two cannot drift apart.
+   above (*"flush whenever the remaining budget is smaller than the job plus its wrap"*); read remaining
+   budget as `200,000 (WORKING) − fill`, in tokens, not as a percentage — the whole reason #56 replaced
+   the band was that a percentage needs a denominator nobody inside the session can observe.
 
-| Band | Remaining budget | ≡ fill (unchanged) |
-|---|---|---|
-| 🟢 GREEN | **> 55%** left | <45% used |
-| 🟡 AMBER | **40–55%** left | 45–60% used |
-| 🔴 RED | **< 40%** left | ≥60% used |
-
-**The numbers are Dave's and are re-dialled only by him, here.** The table above is a restatement, not a
-recalibration — the thresholds are byte-identical to the ratified bullets below, which stay as he wrote them.
+**The numbers are Dave's and are re-dialled only by him — quote them from ★★ THE UNIT AND THE BUDGET,
+never from here, never from memory.**
 
 ### ★★ THE FLOOR IS NOT WILLPOWER — `N` × one unit, and the only lever (HOMED HERE #50)
 
@@ -443,7 +476,9 @@ recalibration — the thresholds are byte-identical to the ratified bullets belo
 found live **NOWHERE** in the repo — the `size:` line was its only copy. Moved here FIRST, then cut:
 discharge by ADDITION. It belongs beside the floor because it is the floor's operational consequence.)*
 
-**Measured, four sessions, same direction:**
+**Measured, four sessions, same direction** *(historical readings, in `tape` — the unit live when they
+were measured; see ★ RETIRED UNITS AND BANDS below for what `tape` means. NOT re-denominated: they
+record what was measured, in the unit it was measured in — [[measure-dont-convert-units]]):*
 
 | session | what was tried | what it bought |
 |---|---|---|
@@ -454,69 +489,116 @@ discharge by ADDITION. It belongs beside the floor because it is the floor's ope
 
 ⇒ **Nothing shrinks a region below `N` × one unit.** A region with `N` items has a floor set by the
 cost of one item; compression cannot go under it, and past a point each edit costs more window than
-the tape it recovers. **The only lever is WRITING LESS, priced BEFORE the writing** — which is why
+it recovers. **The only lever is WRITING LESS, priced BEFORE the writing** — which is why
 pre-flight pricing (Half 0) is the load-bearing half of this gauge and shaving at wrap is not.
 
-★ **Corollary, and it is where the tape actually comes from: the cheapest tape in any capped region
-is a claim that has stopped being true.** Retirement is a BUDGET instrument, not hygiene.
+★ **Corollary, and it is where the saving actually comes from: the cheapest tokens in any capped
+region are a claim that has stopped being true.** Retirement is a BUDGET instrument, not hygiene.
 
-### ★ THE UNITS — `tape` and `bill` (ds-021, ruled #31 delegated, CONFIRMED + named by Dave #34)
+### Behaviour at each band (the rules attached to GREEN / AMBER / RED — numbers live solely in ★★ THE UNIT AND THE BUDGET, above)
 
-**Every number on this page, in every stamp, and in every banner NAMES ITS UNIT. A bare token count
-is a defect.** There are two units and they differ by about half as much again:
-
-| unit | what it is | who reads it |
-|---|---|---|
-| **`tape`** | what `tiktoken cl100k_base` counts | the gate, when it measures a file |
-| **`bill`** | what the window actually **charges** | you, when you run out of room |
-
-★ **THE MNEMONIC IS THE RULE: the tape is not the bill.** A tape measure tells you the size; the bill
-tells you the cost. Written out: *"the chain is 3,487 tape / ~5,405 bill."*
-
-**Why this was worth a ruling.** Every cap in `_capture_gate.py` was denominated in `tape` while the
-window charges in `bill`. Measured #30, two files, one session — `GOOD-MORNING.md` 16,107 tape →
-25,355 bill (1.57×) and `_LIVE-STATE.md` 18,818 tape → 29,103 bill (1.55×). So a gate reporting
-*"99.2% of block"* was describing a file that actually cost half as much again, and the reported
-floors for #27/#28/#29 understated true fill by **~10 points**. ⚠️ **The gate was never wrong — it was
-precise in the wrong unit**, which is exactly why five sessions of careful measurement never caught it.
-Same class as *a count is not a measurement*: a proxy measured well, then reported as the quantity.
-
-**What binds.** Caps bind on **`bill`**. They were **RESTATED at their current real value, not
-silently tightened** — `_capture_gate.py` converts the ruled `tape` caps through the ratio, so today
-the comparison is arithmetically identical to the old one *by design*. What the change buys is that
-(i) nobody can read a `tape` figure as a cost again, and (ii) the moment a **real** `bill` measurement
-is available the cap binds on the measured thing and the ratio stops mattering.
-
-⚠️ **THE RATIO IS PROVISIONAL AND IS NOT A CORPUS CONSTANT.** n=2, one session, two files; a third
-measurement could move it. `TAPE_TO_BILL = 1.57` is **GM's own pair**, deliberately not the 1.55
-average — every cap it converts is GM-derived, and the average would quietly loosen a GM cap.
-**Standing practice (ds-021 (c), folded in rather than skipped): every wrap logs ONE `tape`/`bill`
-pair into `notes/_GAUGE-LOG.md`** — free, since the chain is read anyway — **and at n≥4 the constant
-goes to Dave to rule.** The gate says so itself on every wrap (`ratio_status()`), and forks to him
-when the threshold arrives. Firming it is a **ruling**, not a re-dial.
-
-**Transitional:** the legacy spelling `tk` still parses in a `size:` stamp but **WARNS**. It is
-accepted on purpose — a regex that hard-failed on the old form would block the very wrap that
-rewrites the stamp. **Promotion trigger: once a wrap passes with no legacy-unit warning, make `tape`
-mandatory in `SIZE_TK_RE` and delete the `|tk` branch.**
-
-★ **THIS FILE IS THE ONLY COPY.** `GOOD-MORNING.md` used to carry an inline band table; per GM-D9 it now
-carries a **pointer to this section**. ⚠️ **Two copies of a band table WILL drift** — and this one has
-already been misquoted from memory twice in one day (below). Quote it from here or `grep` it; never recall it.
-
-Bands as fraction of the ~200k window:
-
-- 🟢 **GREEN  <45%** (<~90k) — work freely.
-- 🟡 **AMBER  45–60%** (~90–120k) — get economical, pre-stage the handoff, confirm before the next big read. **PROACTIVELY surface the band to Dave here and offer to start wrapping / capture soon — do NOT wait to be asked** (Dave, 2026-07-20: *"I would set it at amber too"*; the agent suggesting session-end from the estimate, unprompted, is the whole point — silence while the tally climbs is the failure mode). **★ Also fire the light SPINE-FLUSH here (Amber tier, ruled 2026-07-21 — see trigger below): write current state to `_LIVE-STATE.md` now, WITHOUT ending the session.** **★ AND DO NOT START A NEW BUILD ARTEFACT AT AMBER** — a review sheet, an interactive prototype, a new component. They are deceptively token-heavy and are exactly where hot-session "silly mistakes" land (2026-07-24: two review sheets/prototypes built *past* Amber → a render bug + Dave calling the handover, *"we're obviously hot, there are silly mistakes"*). Design/decision **writing + inscription** is fine hot; a new **interactive build** is not — flush and hand the BUILD to a fresh window.
-- 🔴 **RED  ≥60%** (≥~120k) — ⛔ **REACHING RED IS ALREADY THE OVERRUN, NOT THE CUE.** The ritual should have STARTED at the **in-flight stop line = `60 − the priced wrap`** (~50–52 at today's 8–10 point wraps, § ds-023 above). **60 is where the wrap has FINISHED, not where it starts.** If you are reading 60 and have not begun, you are spending the reserve — wrap immediately and mark it `RESERVE SPEND — forked to Dave`.
-
-*(Bands recalibrated by Dave 2026-07-25: **Green <45 · Amber 45–60 · Red ≥60**. Amber floor moved 50→45; earlier the runbook read Amber 50–60. The move-by point is unchanged at 60.)*
+- 🟢 **GREEN** — work freely.
+- 🟡 **AMBER** — get economical, pre-stage the handoff, confirm before the next big read.
+  **PROACTIVELY surface the band to Dave here and offer to start wrapping / capture soon — do NOT
+  wait to be asked** (Dave, 2026-07-20: *"I would set it at amber too"*; the agent suggesting
+  session-end from the estimate, unprompted, is the whole point — silence while the tally climbs is
+  the failure mode). **★ Also fire the light SPINE-FLUSH here** (ruled 2026-07-21 — see trigger
+  below): write current state to `_LIVE-STATE.md` now, WITHOUT ending the session. **★ AND DO NOT
+  START A NEW BUILD ARTEFACT AT AMBER** — a review sheet, an interactive prototype, a new component.
+  They are deceptively token-heavy and are exactly where hot-session "silly mistakes" land
+  (2026-07-24: two review sheets/prototypes built *past* Amber → a render bug + Dave calling the
+  handover, *"we're obviously hot, there are silly mistakes"*). Design/decision **writing +
+  inscription** is fine hot; a new **interactive build** is not — flush and hand the BUILD to a
+  fresh window.
+- 🔴 **RED** — ⛔ **REACHING RED IS ALREADY THE OVERRUN, NOT THE CUE.** The ritual should have
+  STARTED at the **in-flight stop line = `200,000 (WORKING) − the priced wrap`** (§ ds-023 above;
+  the old illustrative anchor was percentage-denominated and could not be converted — a fresh
+  real-token anchor is a declared gap there). **200,000 is where the wrap has FINISHED, not where it
+  starts.** If you are reading RED and have not begun the wrap, you are spending the reserve — wrap
+  immediately and mark it `RESERVE SPEND — forked to Dave`.
 
 **The tally is a protocol, not a stop signal** (routing audit #11, ratified Dave 2026-07-23):
 below Amber, work at full quality with no economising — the bands change behaviour only at their
 thresholds. This line exists because a surfaced token count is a documented trigger for premature
 wrap-up in Fable-class models (the primary source's own remedy is exactly this reassurance); the
 gauge's numbers stay BY DESIGN — deliberate wrap at threshold is the mechanism, not the failure mode.
+
+### ⬛ RETIRED UNITS AND BANDS — HISTORY, NOT INSTRUCTION
+
+**Both systems below were LIVE canon for many sessions and are now SUPERSEDED. This section exists so
+Dave's rulings are not lost — it is not a second place to read current numbers from. The current, sole
+authority for the band and the unit is ★★ THE UNIT AND THE BUDGET, near the top of this file (RULED BY
+DAVE #56).** A reader who lands here from a search or an old link: you want that section, not this one.
+
+#### The `tape`/`bill` two-unit system (ds-021, ruled #31 delegated, CONFIRMED + named by Dave #34 — SUPERSEDED #56)
+
+*(Retired because #56 changed what could be measured, not because the reasoning below was wrong —
+`tape` and `bill` were a real, careful fix to a real problem, and the mnemonic held for many
+sessions. Preserved in full for that reason.)*
+
+There were two units and they differed by about half as much again:
+
+| unit | what it is | who read it |
+|---|---|---|
+| **`tape`** | what `tiktoken cl100k_base` counts | the gate, when it measured a file |
+| **`bill`** | what the window actually **charged** | you, when you ran out of room |
+
+★ **THE MNEMONIC WAS THE RULE: the tape is not the bill.** A tape measure tells you the size; the bill
+tells you the cost. Written out: *"the chain is 3,487 tape / ~5,405 bill."*
+
+**Why it was worth a ruling.** Every cap in `_capture_gate.py` was denominated in `tape` while the
+window charged in `bill`. Measured #30, two files, one session — `GOOD-MORNING.md` 16,107 tape →
+25,355 bill (1.57×) and `_LIVE-STATE.md` 18,818 tape → 29,103 bill (1.55×). So a gate reporting
+*"99.2% of block"* was describing a file that actually cost half as much again, and the reported
+floors for #27/#28/#29 understated true fill by **~10 points**. ⚠️ The gate was never wrong — it was
+precise in the wrong unit, which is exactly why five sessions of careful measurement never caught it.
+Same class as *a count is not a measurement*: a proxy measured well, then reported as the quantity.
+
+**What bound, while this was live.** Caps bound on **`bill`**. They were RESTATED at their current
+real value, not silently tightened — `_capture_gate.py` converted the ruled `tape` caps through the
+ratio, so the comparison stayed arithmetically identical to the old one *by design*.
+
+⚠️ **THE RATIO WAS ALWAYS PROVISIONAL.** n=2, one session, two files. `TAPE_TO_BILL = 1.57` was **GM's
+own pair**, deliberately not the 1.55 average — every cap it converted was GM-derived, and the average
+would have quietly loosened a GM cap. Standing practice (ds-021 (c)) logged one `tape`/`bill` pair per
+wrap into `notes/_GAUGE-LOG.md`, with a rule that at n≥4 the constant would go to Dave to rule formally.
+
+**What actually retired it.** Session #82 wired a REAL Claude-token counter (`_gauge_tokens.count()`,
+returning `(n, 'real')`) as a tier ABOVE both `tape` and the `tape→bill` ratio. Once the real cost is
+directly measurable, a ratio estimating it from a proxy has nothing left to do — real tokens are not
+"tape, converted"; they are a different, direct measurement. **⚠ DO NOT convert a surviving `tape`
+figure to `bill` or to "real" using `1.57` or `1.55`.** If you need a real-token figure, measure it
+(`python3 knowledge/_gauge_tokens.py`); if you cannot, declare the gap. [[measure-dont-convert-units]]
+
+**Transitional debris, for anyone auditing old commits:** the legacy spelling `tk` used to parse in a
+`size:` stamp with a WARN. `_capture_gate.py` is the current authority on whether any of that parsing
+still exists in the live gate — this runbook no longer teaches the `tk`/`tape`/`bill` vocabulary as
+something a session should produce.
+
+#### The percentage fill-band — GREEN `<45%` / AMBER `45–60%` / RED `≥60%` (Dave, #30/#31/#34; "one-point slack" tightened #34; Amber floor moved 50→45 on 2026-07-25; SUPERSEDED #56)
+
+*(This is the band ds-023, M1, the trigger section and the authoring-time stamp all originally pointed
+at. Their operative text now reads the #56 table; this is the record of what they used to read, kept
+because the boundary-tightening story is a real ruling, not filler.)*
+
+Bands were read as a fraction of the ~200k window:
+
+- 🟢 **GREEN <45%** (<~90k) — work freely.
+- 🟡 **AMBER 45–60%** (~90–120k) — get economical, pre-stage the handoff.
+- 🔴 **RED ≥60%** (≥~120k) — the ritual should already be running.
+
+*(Bands recalibrated by Dave 2026-07-25: Amber floor moved 50→45; earlier the runbook read Amber
+50–60. The move-by point was unchanged at 60.)*
+
+★ **The "one-point slack" ruling (#34) is preserved in full, inline, at ds-023 above** — a
+boundary-strictness ruling (`<45` not `≤45`) whose PRINCIPLE carried forward into the current band
+(`band_for()` still reads its threshold with a strict `<`) even though the NUMBER did not. Read it
+there, in context, rather than as an orphaned fragment here.
+
+**What replaced it, and why "replaced" is the word.** #56, Dave: *"the band was REPLACED, not
+CONVERTED."* `45/60/63` were percentages of a window whose harness component is unobservable from
+inside a session, so the percentage itself could never be honestly computed — see ★★ THE UNIT AND THE
+BUDGET for the full argument and the current numbers (160,000 / 200,000 / 256,000, in real tokens).
 
 ### Half 2 — accurate, out-of-band: confirm at Amber
 
@@ -528,6 +610,13 @@ It reads the live session `.jsonl` from the mount directly — never loading the
 window — and reports the conversation-half in `tape` with the boot half printed as UNMEASURED
 (`ds-025` item 1), never defaulted. Its number is **THROUGHPUT, not resident fill** — say so when
 quoting it. No subagent, no `read_transcript`, no copy-ready prompt.
+
+⚠ **THIS `tape` IS NOT THE RETIRED ds-021 DUALITY** (★ RETIRED UNITS AND BANDS, above) — `_checkin.py`
+never claimed a `tape→bill` ratio or used tape as a cost proxy; it labels its own reading an
+unverified cl100k estimate of THROUGHPUT and stops there. Nothing here needs the ratio, and nothing
+here was retired by #56 or #54 — this note exists only so the word `tape`, meaning two different
+things at two different scopes in one file, does not read as a third contradiction. Verified current
+2026-08-02 by reading `_checkin.py`'s source directly: it still measures cl100k and labels it so.
 
 > ⚠ **HISTORY — the ORIGINAL Half-2 design (subagent + `read_transcript` + `_context_gauge.py`) is
 > RETIRED, not "currently broken" (corrected #74; the stale warning sat here from #3 while the
@@ -556,38 +645,47 @@ trigger is **tiered** — a cheap save at Amber, the full handoff at Red:
   equivalent of platform context-compaction — keep the invariants in high-signal text, cheaply, before
   the window is under pressure. Native equivalents now exist — memory tool GA · context-editing ·
   compaction beta — but aren't exposed as Cowork knobs, so the ritual stays the mechanism.)*
-- 🔴 **THE STOP LINE (`60 − priced wrap`, NOT 60) → the FULL trigger + fresh session** (below).
-  Everything the Amber flush already saved makes this handoff faster and safer to author.
-  ⛔ **THE TIER IS NAMED FOR WHERE THE WRAP ENDS, NOT WHERE IT BEGINS.** Firing at a reading of 60
-  puts the whole wrap price ON TOP of 60 — which is #28's and #29's recorded cause, and it is the
-  single most-repeated misreading of this runbook. **Compute the stop line from your priced wrap and
-  fire THERE.** An expensive wrap must stop the session earlier; the line moves, it is not a constant.
+- 🔴 **THE STOP LINE (`200,000 (WORKING) − priced wrap`, NOT 200,000) → the FULL trigger + fresh
+  session** (below). Everything the Amber flush already saved makes this handoff faster and safer to
+  author. ⛔ **THE TIER IS NAMED FOR WHERE THE WRAP ENDS, NOT WHERE IT BEGINS.** Firing at a reading
+  of 200,000 puts the whole wrap price ON TOP of the WORKING ceiling — which is #28's and #29's
+  recorded cause *(in the pre-#56 vocabulary, "60")*, and it is the single most-repeated misreading of
+  this runbook. **Compute the stop line from your priced wrap and fire THERE.** An expensive wrap must
+  stop the session earlier; the line moves, it is not a constant.
 
 ## The Red trigger — wired to the existing ritual
 
-⚠ **"At Red" BELOW MEANS AT THE STOP LINE — `60 − the priced wrap` — NOT at a gauge reading of 60.**
-Stated here because this section was, for eleven sessions, the half of the runbook agents actually
-landed on: it said *"at Red, fire the ritual"* while § ds-023 three hundred lines up said *"60 is where
-the wrap has FINISHED"*. **The file contradicted itself, and which rule a session got depended on which
-line it hit.** Reconciled #54 on Dave's correction — *"the 60% is the total with the wrap included, it
-was never supposed to be 60 plus wrap."* ★ Not a re-dial: ds-023's numbers are unchanged and stay his.
+⚠ **"At Red" BELOW MEANS AT THE STOP LINE — `200,000 (WORKING) − the priced wrap` — NOT at a gauge
+reading of 200,000.** Stated here because this section was, for eleven sessions, the half of the
+runbook agents actually landed on: it said *"at Red, fire the ritual"* while § ds-023 three hundred
+lines up said *"60 is where the wrap has FINISHED"*. **The file contradicted itself, and which rule a
+session got depended on which line it hit.** Reconciled #54 on Dave's correction — *"the 60% is the
+total with the wrap included, it was never supposed to be 60 plus wrap."* ★ **Not a re-dial by #54:**
+ds-023's numbers stayed his THROUGH that reconciliation. They were later **replaced wholesale**, on a
+separate, later ruling — #56's absolute band (160,000 / 200,000 / 256,000, real tokens) — a different
+kind of event to #54's fix, documented at ★★ THE UNIT AND THE BUDGET, above.
 
 At the **stop line** (confirmed, or high-confidence tally), the agent says, as a ready-to-use line:
 
-> **Title this chat: `<retrospective title>` — context is Red (~NN%). Running the capture ritual, then
-> open a fresh session with: `<forward title>`.**
+> **Title this chat: `<retrospective title>` — context is Red (~NN,NNN of 200,000). Running the
+> capture ritual, then open a fresh session with: `<forward title>`.**
 
 That phrasing chains straight into two standing conventions so nothing extra has to be remembered:
 - `session-title-convention` — every session opens with "Title this chat: …".
 - `_RUNBOOK-capture-ritual.md` — the Red line **is** the cue to run steps 1→5 before the window fills,
-  so the handoff is authored while there's still budget to author it well (never scramble it at 95%).
+  so the handoff is authored while there's still budget to author it well (never scramble it at the
+  hard line).
 
 ## Why this ordering matters
 
 The failure mode is a handoff written *after* quality has already degraded — a confidently wrong
-`GOOD-MORNING.md` is worse than none (`memento-framing`). Triggering at 70%, not 95%, keeps enough
-clean context to do the capture ritual properly. The gauge exists to protect the ritual, not to
-squeeze the last token out of a session.
+`GOOD-MORNING.md` is worse than none (`memento-framing`). ⚠ **This paragraph read "Triggering at 70%,
+not 95%" for an unknown number of sessions — a THIRD pair of numbers, matching neither the ratified
+45/60/63 band nor #56's 160,000/200,000/256,000 replacement.** No ruling for 70/95 was found while
+fixing this file (2026-08-02); treated as drift, not a citation, and corrected to the ratified line:
+triggering at the **stop line** (`200,000 (WORKING) − priced wrap`), well short of the **hard line**
+(256,000), keeps enough clean context to do the capture ritual properly. The gauge exists to protect
+the ritual, not to squeeze the last token out of a session.
 
 ## The authoring-time STAMP — record the gauge ON the artefact (Dave, 2026-07-24)
 
@@ -606,8 +704,11 @@ useful thing is the action it implies, not the number:
 **Where + format.**
 - The **creator** (conductor/solo) stamps it in `GOOD-MORNING.md`'s COMMIT STATE block.
 - Each **worker** stamps it in its receipt header (`_RUNBOOK-parallel-conductor.md` worker step 4).
-- One line: `Context gauge at authoring: 🟢/🟡/🔴 BAND ~NN% (in-head tally, ESTIMATE ±15% — Half-2
-  broken).` This already appears informally as "wrapped Red / ~Amber" in the ★ banner; the rule
+- One line: `Context gauge at authoring: 🟢/🟡/🔴 BAND ~NN,NNN of 200,000 (in-head tally, ESTIMATE
+  ±15% — or Half-2 confirmed via _checkin.py).` *(Format restated in real tokens, #56. "Half-2
+  broken" was corrected #74 — Half 2 has run on `_checkin.py` since #52/#53; carrying "broken"
+  forward here after that fix would have been the same class of stale claim this whole file was
+  full of.)* This already appears informally as "wrapped Red / ~Amber" in the ★ banner; the rule
   formalises it as a REQUIRED field and extends it to receipts.
 
 **Live proof — the session that added this rule (2026-07-24):** the prior conductor wrapped *deep Red*
@@ -618,5 +719,8 @@ commit *before* trusting the "green" claim — which is the whole point.
 
 ## Entry points
 
-`_RUNBOOK-capture-ritual.md` (where Red sends us) · `knowledge/_context_gauge.py` (the engine) ·
-memory `feedback-context-gauge` · `session-title-convention` · `memento-framing`.
+`_RUNBOOK-capture-ritual.md` (where Red sends us) · `knowledge/_gauge_tokens.py` (the budget/band
+engine, real tokens, #56) · `knowledge/_checkin.py` (Half-2 throughput check-in, `tape`/cl100k,
+#52/#53) · `knowledge/_context_gauge.py` (measures an arbitrary text file; refuses without tiktoken
+unless `--estimate`, #74) · memory `feedback-context-gauge` · `session-title-convention` ·
+`memento-framing`.

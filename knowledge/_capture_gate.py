@@ -508,9 +508,16 @@ MEASURERS = {
     "_context_gauge.py": ("estimate-only",
         "REFUSES without tiktoken unless --estimate labels the output (#74). Honest about "
         "estimate-vs-nothing; still blind to cl100k-vs-real."),
-    "_checkin.py": ("estimate-only",
-        "Reports THROUGHPUT in cl100k and says so in its own footer ('⚠ UNIT tape/cl100k. D1 "
-        "rules this an UNVERIFIED proxy'). Declared, which is why it warns rather than fails."),
+    "_checkin.py": ("real",
+        "✅ #83 (c) (Dave's): the HEADLINE now runs through measure_real(), which calls "
+        "gauge.count() ONCE on the whole concatenated conversation-half blob and returns "
+        "(n, 'real') — never per-record; #82 measured the per-record shape at 232 API "
+        "round-trips, past the 45s sandbox call wall, and count() is content-hash cached so a "
+        "re-run is free. gauge.MeasurementRefused is NOT caught in this file — it propagates "
+        "named to the caller rather than being swallowed into a quieter estimate. WHAT STAYED "
+        "TAPE: the PER-TYPE BREAKDOWN is still tiktoken cl100k (encoder(), unchanged from D1), "
+        "kept for SHAPE only — it does NOT sum to the headline and is NEVER scaled to match it "
+        "(#54's defect); the footer says so explicitly on its own line."),
 }
 
 
