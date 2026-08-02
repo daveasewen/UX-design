@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Backlog bankruptcy — triage tick-list · #86 · 2026-08-02</title>
+<style>
+  :root{
+    --ink:#1A1A1A; --ink-soft:#444; --paper:#FFFFFF; --wash:#F4F5F2;
+    --blue:#1F4FA3; --green:#1E6B4F; --red:#B92F1E; --line:#D9DBD6;
+    --fold:#EDEFEA;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--wash);color:var(--ink);
+       font:400 16px/1.65 "Helvetica Neue",Helvetica,Arial,sans-serif;}
+  main{max-width:860px;margin:0 auto;padding:48px 24px 96px;}
+  header.doc h1{font-size:28px;line-height:1.25;margin:0 0 6px;letter-spacing:-.01em;}
+  header.doc .meta{color:var(--ink-soft);font-size:14px;margin-bottom:28px;}
+  .howto{background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--blue);
+         padding:16px 20px;margin:0 0 36px;border-radius:6px;}
+  .howto p{margin:6px 0;}
+  h2{font-size:21px;margin:48px 0 12px;letter-spacing:-.01em;}
+  h2 .count{color:var(--ink-soft);font-weight:400;font-size:15px;}
+  section.block{background:var(--paper);border:1px solid var(--line);border-radius:8px;
+                padding:20px 24px;margin:0 0 16px;}
+  section.block h3{font-size:16.5px;margin:0 0 8px;}
+  section.block h3 .tag{display:inline-block;font-size:12px;font-weight:600;letter-spacing:.04em;
+        padding:2px 8px;border-radius:10px;margin-right:8px;vertical-align:2px;}
+  .tag.gov{background:#E4EDFB;color:var(--blue);}
+  .tag.pile{background:#E3F0E9;color:var(--green);}
+  .tag.inert{background:#EEEEEA;color:#555;}
+  .tag.flag{background:#F7E8E5;color:var(--red);}
+  section.block p{margin:8px 0;}
+  details{background:var(--fold);border-radius:6px;padding:10px 16px;margin:12px 0;}
+  details summary{cursor:pointer;font-size:13.5px;font-weight:600;color:var(--ink-soft);}
+  details .tech{font:400 13px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--ink-soft);
+                margin:10px 0 4px;white-space:normal;}
+  details .tech code{background:#fff;padding:1px 5px;border-radius:3px;border:1px solid var(--line);}
+  fieldset{border:0;padding:0;margin:14px 0 2px;}
+  fieldset legend{font-size:13px;font-weight:600;color:var(--ink-soft);margin-bottom:6px;}
+  fieldset label{display:block;padding:8px 12px;margin:4px 0;background:var(--wash);
+                 border:1px solid var(--line);border-radius:6px;cursor:pointer;font-size:14.5px;}
+  fieldset label:hover{border-color:var(--blue);}
+  fieldset input{margin-right:9px;accent-color:var(--blue);}
+  .rec{color:var(--green);font-weight:600;font-size:12.5px;}
+  .closes{background:#F0F4EC;border-left:3px solid var(--green);padding:8px 14px;margin:10px 0;
+          border-radius:4px;font-size:14.5px;}
+  .closes b{color:var(--green);}
+  .warn{color:var(--red);font-weight:600;}
+  .inert-list{background:var(--paper);border:1px solid var(--line);border-radius:8px;
+              padding:20px 24px;font-size:14.5px;line-height:2;}
+  footer.doc{margin-top:56px;color:var(--ink-soft);font-size:13px;border-top:1px solid var(--line);
+             padding-top:16px;}
+</style>
+</head>
+<body>
+<main>
+
+<header class="doc">
+  <h1>Backlog bankruptcy — the triage tick-list</h1>
+  <div class="meta">Session #86 · Sunday 2 August 2026 · v1 · supersedes <code>_TRIAGE-TICKLIST-2026-08-02-v1.md</code> (same content, made rulable)</div>
+</header>
+
+<div class="howto">
+  <p><b>How this works.</b> You ruled yesterday that the backlog goes bankrupt: everything is archived, and items come back only when named, each with a condition that closes it. Before archiving, seventeen items need your eye — they sit over live code or design choices made provisionally, so archiving them would quietly make the provisional choice permanent.</p>
+  <p><b>For each one, pick an option.</b> When you're done, press <b>Export prompt</b> (bottom right), copy the text, and paste it back to me in chat. You can also pin a comment on any block — comments come along in the export. Nothing is saved in the page itself; the export is the save.</p>
+</div>
+
+<!-- ============ CONTEXT ============ -->
+<section class="block">
+  <h3><span class="tag flag">FINDING</span>The pile is smaller than yesterday's session said</h3>
+  <p>Yesterday's handoff claimed about 118 open decisions. That number was typed, not measured, and no measurement reproduces it. Counted properly this morning there are about forty real items: <b>sixteen that govern live things</b> (plus one I couldn't fully verify), and about two dozen open questions nobody is blocked on. The bankruptcy stands — it's just a smaller event than it was sold as.</p>
+  <details><summary>Technical detail</summary>
+    <p class="tech">Handoff claim: <code>UNRULED ×67 · FORKED ×24 · awaiting Dave ×11 · PROVISIONAL ×16</code> in GM + ledger. Probes run 2026-08-02: line counts in the two named files = 31; occurrences = 31; case-insensitive = 53; repo-wide tracked <code>*.md *.py</code> = 231 lines incl. archives (which bankruptcy doesn't touch — they're already out). Consolidation to items: code markers verified at call site; prose markers at marker line + context. The ~15 GOVERNING prediction on record in <code>_HANDOFF-86-triage.md</code> survives (16 measured); the ~85 INERT denominator does not exist. [[planning-estimate-is-not-a-measurement]] · [[premise-ages-faster-than-rule]]</p>
+  </details>
+</section>
+
+<!-- ============ GOVERNING: MACHINERY ============ -->
+<h2>Governing — gauge &amp; process machinery <span class="count">(ten)</span></h2>
+<p>These are numbers and behaviours in the session-management code that an agent picked provisionally and that run every day. Each shows the live value, then the condition that would close it. <b>Accept</b> means the close condition is right; <b>redraft</b> means pin a comment saying what to change; <b>pull out</b> means discuss in chat before anything is archived.</p>
+
+<section class="block">
+  <h3><span class="tag gov">G1</span>The worklist-index size cap</h3>
+  <p>When the unit of measurement changed, the old cap silently became one and a half times stricter than intended. I raised it to 700 as a stopgap — my pick, not yours.</p>
+  <div class="closes"><b>Closes when:</b> you ratify 700 or name your own number.</div>
+  <details><summary>Technical detail</summary>
+    <p class="tech"><code>_capture_gate.py:1403</code> — <code>DOFIRST_INDEX_TK_MAX = 700</code>, raised 420 → 700 at #82. Not a conversion: measured 531 real on the live index, 700 is a headroom pick over that. Marked AGENT-PICKED AND PROVISIONAL in source. This is one instance of the class in G9.</p>
+  </details>
+  <fieldset><legend>Your ruling</legend>
+    <label><input type="radio" name="G1 — worklist-index cap 700">Accept the close condition <span class="rec">(Recommended)</span></label>
+    <label><input type="radio" name="G1 — worklist-index cap 700">Redraft — I'll pin a comment</label>
+    <label><input type="radio" name="G1 — worklist-index cap 700">Pull out — discuss in chat first</label>
+  </fieldset>
+</section>
+
+<section class="block">
+  <h3><span class="tag gov">G2</span>The tape-to-bill conversion ratio</h3>
+  <p>A conversion factor of 1.57 sits in the gauge machinery, based on only two measured pairs. The rule already pinned says it can't be treated as firm below four pairs.</p>
+  <div class="closes"><b>Closes when:</b> four measured pairs are logged, then you rule firm-or-retire.</div>
+  <details><summary>Technical detail</summary>
+    <p class="tech"><code>_capture_gate.py:371</code> — <code>TAPE_TO_BILL = 1.57</code>, PROVISIONAL at n=2 (GM's own pair 16,107→25,355, deliberately not the 1.55 corpus average). <code>RATIO_FIRM_N = 4</code> pinned per ds-021 (c). Machinery KEPT by #81-D1; each wrap logs one pair.</p>
+  </details>
+  <fieldset><legend>Your ruling</legend>
+    <label><input type="radio" name="G2 — tape-to-bill ratio n=2">Accept the close condition <span class="rec">(Recommended)</span></label>
+    <label><input type="radio" name="G2 — tape-to-bill ratio n=2">Redraft — I'll pin a comment</label>
+    <label><input type="radio" name="G2 — tape-to-bill ratio n=2">Pull out — discuss in chat first</label>
+  </fieldset>
+</section>
+
+<section class="block">
+  <h3><span class="tag gov">G3</span>How hard the stale-wording check bites</h3>
+  <p>The check that catches retired measurement language in the docs currently warns rather than blocks. Warning-versus-blocking was my pick.</p>
+  <div class="closes"><b>Closes when:</b> you rule warn or block.</div>
+  <details><summary>Technical detail</summary>
+    <p class="tech"><code>_capture_gate.py:2078, 2098</code> — <code>retired_unit_prose_audit</code> WARN tier, "agent-picked and awaiting Dave" in the failure text itself. Note #84 found its positive control passes on the defect it was written beside — the successor instrument is opener item (a), in INERT below.</p>
+  </details>
+  <fieldset><legend>Your ruling</legend>
+    <label><input type="radio" name="G3 — stale-wording check warn vs block">Accept the close condition <span class="rec">(Recommended)</span></label>
+    <label><input type="radio" name="G3 — stale-wording check warn vs block">Redraft — I'll pin a comment</label>
+    <label><input type="radio" name="G3 — stale-wording check warn vs block">Pull out — discuss in chat first</label>
+  </fieldset>
+</section>
+
+<section class="block">
+  <h3><span class="tag gov">G4</span>The oversized section nobody has a remedy for</h3>
+  <p>One section of the morning file is over its size warning and has been for a while. The warning fires on every run. Three remedies exist — offload it, trim it, or accept the size — and picking one is yours.</p>
+  <div class="closes"><b>Closes when:</b> you pick offload, trim, or keep.</div>
+  <details><summary>Technical detail</summary>
+    <p class="tech"><code>_capture_gate.py:2864</code>, <code>_gm_usage.py:517</code> — §C measured 191 &gt; 150 warn cap (measured at #84 wrap). Remedy explicitly UNRULED in the warn text; the report is built to never pick one for you. Opener item (i).</p>
+  </details>
+  <fieldset><legend>Your ruling</legend>
+    <label><input type="radio" name="G4 — section C remedy">Accept the close condition <span class="rec">(Recommended)</span></label>
+    <label><input type="radio" name="G4 — section C remedy">Redraft — I'll pin a comment</label>
+    <label><input type="radio" name="G4 — section C remedy">Pull out — discuss in chat first</label>
+  </fieldset>
+</section>
+
+<section class="block">
+  <h3><span class="tag gov">G5</span>The advisory size caps, as a set</h3>
+  <p>Four size budgets in the machinery were derived by agents from measurements, marked advisory, and never ratified. All four are stated in the old measurement unit, so they're also all mis-calibrated until the re-measure in G9 happens.</p>
+  <div class="closes"><b>Closes when:</b> re-measured in the real unit (G9 first), then you ratify the set in one pass.</div>
+  <details><summary>Technical detail</summary>
+    <p class="tech"><code>_capture_gate.py:4843–4858</code> — <code>CORPUS_BUDGET_TK 36000</code> (born #33, from 34,094 tk measured) · chain-region pair (4917, 6417) · <code>BANNER_BUDGET_FALLBACK_TK</code> (declared fallback; live cap is <code>banner_budget_tk()</code>) · <code>SECTION_A_WARN_TK 4500</code>. All pinned "AGENT-DERIVED, ADVISORY, awaiting Dave".</p>
+  </details>
+  <fieldset><legend>Your ruling</legend>
+    <label><input type="radio" name="G5 — advisory cap set">Accept the close condition <span class="rec">(Recommended)</span></label>
+    <label><input type="radio" name="G5 — advisory cap set">Redraft — I'll pin a comment</label>
+    <label><input type="radio" name="G5 — advisory cap set">Pull out — discuss in chat first</label>
+  </fieldset>
+</section>
+
+<section class="block">
+  <h3><span class="tag gov">G6</span>The usage-history thresholds</h3>
+  <p>The tool that spots never-used sections of the morning file runs on two agent-proposed settings: how long a streak counts as "settled", and the fact that it advises rather than blocks.</p>
+  <div class="closes"><b>Closes when:</b> you rule the streak number and the per-candidate offload/trim/keep calls.</div>
+  <details><summary>Technical detail</summary>
+    <p class="tech"><code>_gm_usage.py:353</code> — <code>DEFER_STREAK = 6</code> ("one below the smallest measured never-cited streak", #35) · <code>_capture_gate.py</code> pin <code>USAGE_HISTORY_BLOCKING = False</code> ("ADVISORY until Dave rules OFFLOAD/TRIM/KEEP per candidate"). Full table publishes regardless of the threshold.</p>
+  </details>
+  <fieldset><legend>Your ruling</legend>
+    <label><input type="radio" name="G6 — usage-history thresholds">Accept the close condition <span class="rec">(Recommended)</span></label>
+    <label><input type="radio" name="G6 — usage-history thresholds">Redraft — I'll pin a comment</label>
+    <label><input type="radio" name="G6 — usage-history thresholds">Pull out — discuss in chat first</label>
+  </fieldset>
+</section>
+
+<section class="block">
+  <h3><span class="tag gov">G7</span>Which end of an archive is "newest"</h3>
+  <p>The wrap ritual stacks records at one end and the archives stack at the other, and nobody ever ruled which way round is right. The rolls run on an unruled convention every session.</p>
+  <div class="closes"><b>Closes when:</b> you name the convention — one sentence.</div>
+  <details><summary>Technical detail</summary>
+    <p class="tech"><code>_capture_gate.py:268</code>, ledger:662, 687 — strata oldest-first, archives newest-first, "which end is newest" explicitly UNRULED for <code>roll_2f</code> and the archives. Related standing tension: [[unkeyed-gate-vs-roll2f-tension]].</p>
+  </details>
+  <fieldset><legend>Your ruling</legend>
+    <label><input type="radio" name="G7 — newest-end convention">Accept the close condition <span class="rec">(Recommended)</span></label>
+    <label><input type="radio" name="G7 — newest-end convention">Redraft — I'll pin a comment</label>
+    <label><input type="radio" name="G7 — newest-end convention">Pull out — discuss in chat first</label>
+  </fieldset>
+</section>
+
+<section class="block">
+  <h3><span class="tag gov">G8</span>The dormant percentage band</h3>
+  <p>The old percentage-based warning system is still in the code, switched off but present. Deleting a system you once pinned isn't an agent's call, so it's sat as an open fork since session 58: retire it or keep it as a labelled relic.</p>
+  <div class="closes"><b>Closes when:</b> you say retire or pin.</div>
+  <details><summary>Technical detail</summary>
+    <p class="tech"><code>_capture_gate.py:135–137</code> — <code>BAND_FLOOR/HARD_STOP/MARKED_MAX = 45/60/63</code>; <code>check_preflight</code> % path DORMANT (matches on stamp form; stamps are in tokens since #57). Selftest at :2543 still pins the triple. Forked at #58, restated ledger D3 (#2147).</p>
+  </details>
+  <fieldset><legend>Your ruling</legend>
+    <label><input type="radio" name="G8 — dormant percent band">Accept the close condition <span class="rec">(Recommended)</span></label>
+    <label><input type="radio" name="G8 — dormant percent band">Redraft — I'll pin a comment</label>
+    <label><input type="radio" name="G8 — dormant percent band">Pull out — discuss in chat first</label>
+  </fieldset>
+</section>
+
+<section class="block">
+  <h3><span class="tag gov">G9</span>The re-measurement programme <span class="warn">— the big one</span></h3>
+  <p>When the measuring unit changed, every size ceiling in the repo written in the old unit became roughly one and a half times stricter than whoever set it intended. G1 was one instance; this is the whole class. Nothing is re-measured until you rule the programme.</p>
+  <div class="closes"><b>Closes when:</b> you rule the re-measure-and-restamp programme (ds-023).</div>
+  <details><summary>Technical detail</summary>
+    <p class="tech">ds-023, ledger:1764, opener item (e). #82's finding: "every ceiling in the old unit tightened ~1.55× — re-measure, never multiply." Known affected: G5's four caps, M10 chain warn, banner-region warn. Programme = re-measure each on its artefact in real, restamp with provenance, never convert.</p>
+  </details>
+  <fieldset><legend>Your ruling</legend>
+    <label><input type="radio" name="G9 — ds-023 re-measurement programme">Accept the close condition <span class="rec">(Recommended)</span></label>
+    <label><input type="radio" name="G9 — ds-023 re-measurement programme">Redraft — I'll pin a comment</label>
+    <label><input type="radio" name="G9 — ds-023 re-measurement programme">Pull out — discuss in chat first</label>
+  </fieldset>
+</section>
+
+<section class="block">
+  <h3><span class="tag gov">G10</span>A stray threshold with no parentage</h3>
+  <p>A "triggering at 70%, not 95%" rule was found in the morning file that matches neither the old warning system nor the new one, and a repo-wide search found no origin for it. It's fenced off but still standing.</p>
+  <div class="closes"><b>Closes when:</b> you rule where it came from, or strike it.</div>
+  <details><summary>Technical detail</summary>
+    <p class="tech">GM:36 — third band, matched neither retired 45/60/63 nor #56's replacement; no provenance repo-wide. Kept verbatim and FENCED rather than deleted (a worker's correct refusal to delete an unattributed rule). Opener item (f).</p>
+  </details>
+  <fieldset><legend>Your ruling</legend>
+    <label><input type="radio" name="G10 — 70/95 stray band">Accept the close condition <span class="rec">(Recommended)</span></label>
+    <label><input type="radio" name="G10 — 70/95 stray band">Redraft — I'll pin a comment</label>
+    <label><input type="radio" name="G10 — 70/95 stray band">Pull out — discuss in chat first</label>
+  </fieldset>
+</section>
+
+<!-- ============ GOVERNING: DESIGN ============ -->
+<h2>Governing — design decisions live in the product <span class="count">(seven)</span></h2>
+<p>These are places where the design system or showroom is rendering something today on a choice you never made.</p>
+
+<section class="block">
+  <h3><span class="tag gov">G11</span>The disabled-state grey</h3>
+  <p>Components render disabled states today using one of four candidate greys, and which one is canon was never ruled. The review doc with all four exists.</p>
+  <div class="closes"><b>Closes when:</b> you pick the recessive value.</div>
+  <details><summary>Technical detail</summary>
+    <p class="tech"><code>_DS-IMPROVEMENTS.md:939</code>, <code>_REVIEW-SIGNOFF.md:195</code> — DS-018: A2·B2·C2 ruled same session (#11 of that arc); the RECESSIVE VALUE itself explicitly "STILL UNRULED, MUST NOT BE INFERRED". Four candidates incl. <code>#9D9D9D</code>. Review: <code>reviews/DS-018-DISABLED-STATE-2026-07-27-v1.REVIEW.html</code>. Grey-tint rule applies: surfaced, never auto-swapped.</p>
+  </details>
+  <fieldset><legend>Your ruling</legend>
+    <label><input type="radio" name="G11 — disabled-state recessive value">Accept the close condition <span class="rec">(Recommended)</span></label>
+    <label><input type="radio" name="G11 — disabled-state recessive value">Redraft — I'll pin a comment</label>
+    <label><input type="radio" name="G11 — disabled-state recessive value">Pull out — discuss in chat first</label>
+  </fieldset>
+</section>
+
+<section class="block">
+  <h3><span class="tag gov">G12</span>The tone-of-voice temperature map</h3>
+  <p>How much wit the writing is allowed per context has run on a provisional mapping since early July. It's used at build time, so it shapes real copy.</p>
+  <div class="closes"><b>Closes when:</b> the tone review lands, or you ratify the mapping as-is.</div>
+  <details><summary>Technical detail</summary>
+    <p class="tech"><code>_FIXED-FLEX-CHARTER.md:55–71</code> §4b, PROVISIONAL 2026-07-02, "by its own text" — tov-016 REVIEW still open (<code>_DECISION-AUDIT.md:38</code>). Referenced live from <code>guidelines/tone-of-voice.md:114</code>.</p>
+  </details>
+  <fieldset><legend>Your ruling</legend>
+    <label><input type="radio" name="G12 — tone temperature map">Accept the close condition <span class="rec">(Recommended)</span></label>
+    <label><input type="radio" name="G12 — tone temperature map">Redraft — I'll pin a comment</label>
+    <label><input type="radio" name="G12 — tone temperature map">Pull out — discuss in chat first</label>
+  </fieldset>
+</section>
+
+<section class="block">
+  <h3><span class="tag gov">G13</span>The masthead icons <span class="warn">— quietly wrong since 16 July</span></h3>
+  <p>You asked for a bow-and-arrow brand mark; the masthead has shipped a crescent ever since. The combined menu-and-search glyph was likewise a "draw one for now" stand-in. Both are still live.</p>
+  <div class="closes"><b>Closes when:</b> you approve final glyphs for both.</div>
+  <details><summary>Technical detail</summary>
+    <p class="tech"><code>_ICON-GAPS.md:8–9</code> — <code>brand-apollo</code> (crescent, extreme cut: white highlight + black shadow) and <code>menu-search</code> (overlapping combined glyph), both PROVISIONAL 2026-07-16, both flagged <code>data-provenance</code> inline. Your recorded asks: bow-and-arrow; "draw one for now, overlap them".</p>
+  </details>
+  <fieldset><legend>Your ruling</legend>
+    <label><input type="radio" name="G13 — masthead icons">Pull out — discuss in chat first <span class="rec">(Recommended — the live mark contradicts your recorded ask)</span></label>
+    <label><input type="radio" name="G13 — masthead icons">Accept the close condition</label>
+    <label><input type="radio" name="G13 — masthead icons">Redraft — I'll pin a comment</label>
+  </fieldset>
+</section>
+
+<section class="block">
+  <h3><span class="tag gov">G14</span>Icon-button in dark mode</h3>
+  <p>The icon-button borrows the ordinary button's dark-mode colours wholesale, as a stand-in. The wider dark-mode question it hangs off is still waiting on you.</p>
+  <div class="closes"><b>Closes when:</b> you rule the dark-mode bindings (the standing SC-dark decision).</div>
+  <details><summary>Technical detail</summary>
+    <p class="tech"><code>icon-button.meta.json:68</code> — "PROVISIONAL — reuses Button's live on-light/on-dark bindings verbatim". Parent decision: SC dark awaits Dave (ADR-0014 theming DNA). Same deprecated-on-dark migration applies.</p>
+  </details>
+  <fieldset><legend>Your ruling</legend>
+    <label><input type="radio" name="G14 — icon-button dark bindings">Accept the close condition <span class="rec">(Recommended)</span></label>
+    <label><input type="radio" name="G14 — icon-button dark bindings">Redraft — I'll pin a comment</label>
+    <label><input type="radio" name="G14 — icon-button dark bindings">Pull out — discuss in chat first</label>
+  </fieldset>
+</section>
+
+<section class="block">
+  <h3><span class="tag gov">G15</span>The donut chart's centre figure</h3>
+  <p>What the number in the middle of the donut shows, and one wiring choice behind it, were my calls during the legend build. They render in the showroom today.</p>
+  <div class="closes"><b>Closes when:</b> your eye at sign-off — it's already on the sign-off backlog.</div>
+  <details><summary>Technical detail</summary>
+    <p class="tech">GM:440 — DV-D13 centre-figure + <code>st.visible[id]=true</code> call, both agent's, UNRULED, both listed in <code>_REVIEW-SIGNOFF.md</code>. Distinct from DV-D19 (fully signed off #79).</p>
+  </details>
+  <fieldset><legend>Your ruling</legend>
+    <label><input type="radio" name="G15 — donut centre figure">Accept the close condition <span class="rec">(Recommended)</span></label>
+    <label><input type="radio" name="G15 — donut centre figure">Redraft — I'll pin a comment</label>
+    <label><input type="radio" name="G15 — donut centre figure">Pull out — discuss in chat first</label>
+  </fieldset>
+</section>
+
+<section class="block">
+  <h3><span class="tag gov">G16</span>One chart-release setting made on your behalf</h3>
+  <p>When a chart decision was enacted, one accompanying setting was the agent's call rather than yours, and the record flags it as such.</p>
+  <div class="closes"><b>Closes when:</b> you ratify or reverse it.</div>
+  <details><summary>Technical detail</summary>
+    <p class="tech"><code>_proforma/_DATAVIZ-DECISIONS.md:567</code> — "ONE ENACTMENT CALL IS THE AGENT'S, NOT DAVE'S, AND IS UNRULED. Release also sets…" (the ledger names the setting at that line).</p>
+  </details>
+  <fieldset><legend>Your ruling</legend>
+    <label><input type="radio" name="G16 — chart release setting">Accept the close condition <span class="rec">(Recommended)</span></label>
+    <label><input type="radio" name="G16 — chart release setting">Redraft — I'll pin a comment</label>
+    <label><input type="radio" name="G16 — chart release setting">Pull out — discuss in chat first</label>
+  </fieldset>
+</section>
+
+<section class="block">
+  <h3><span class="tag gov">G17</span>The red-amber-green status treatment <span class="tag flag">unverified</span></h3>
+  <p>Three candidate treatments have waited on your pick since 19 July. Whether one of them is provisionally rendering live I could not verify this session — flagged honestly rather than guessed.</p>
+  <div class="closes"><b>Closes when:</b> your canon pick — A, A+B, or A+B+C.</div>
+  <details><summary>Technical detail</summary>
+    <p class="tech"><code>_LIVE-STATE.md:387</code> — <code>reviews/RAG-STATUS-MANIFESTATION-2026-07-19-v1</code>, awaiting canon pick. Live-render status unprobed this session (declared residual, not a claim either way).</p>
+  </details>
+  <fieldset><legend>Your ruling</legend>
+    <label><input type="radio" name="G17 — RAG manifestation pick">Accept the close condition <span class="rec">(Recommended)</span></label>
+    <label><input type="radio" name="G17 — RAG manifestation pick">Redraft — I'll pin a comment</label>
+    <label><input type="radio" name="G17 — RAG manifestation pick">Pull out — discuss in chat first</label>
+  </fieldset>
+</section>
+
+<!-- ============ THIRD PILE ============ -->
+<h2>The third pile — ruled but not yet built <span class="count">(three)</span></h2>
+<section class="block">
+  <h3><span class="tag pile">PILE 3</span>Things you already ruled that aren't finished</h3>
+  <p>These don't fit either class. Archiving them wouldn't freeze a provisional choice — it would quietly undo a ruling you already made. The molecules pack you ruled at session 66 but whose changes aren't all built; the corner-radius tuner you explicitly said not to let you forget; and the follow-up instrument to your session-84 ruling. My recommendation is they stay out of the bankruptcy entirely.</p>
+  <details><summary>Technical detail</summary>
+    <p class="tech">Molecules pack — RULED #66 (D1 A2 permanent-strict · D2 sparkline sheds · D3 scatter connect…), enacts pending (<code>_REVIEW-SIGNOFF.md</code>) · Radius/corner tuner v1+v2 — "return SOON, don't let me forget", owed tweaks + number rulings · #84-D1 successor — cross-instrument claim check, ruled direction, instrument unbuilt (also opener (a)).</p>
+  </details>
+  <fieldset><legend>Your ruling</legend>
+    <label><input type="radio" name="PILE3 — ruled-but-unenacted exemption">Keep all three out of the bankruptcy <span class="rec">(Recommended)</span></label>
+    <label><input type="radio" name="PILE3 — ruled-but-unenacted exemption">Archive them too — I'll re-open by name</label>
+    <label><input type="radio" name="PILE3 — ruled-but-unenacted exemption">Discuss in chat first</label>
+  </fieldset>
+</section>
+
+<!-- ============ INERT ============ -->
+<h2>Inert — the archive block <span class="count">(about two dozen)</span></h2>
+<section class="block">
+  <h3><span class="tag inert">INERT</span>Open questions nobody is blocked on</h3>
+  <p>Everything here is a question, not a live value. Under your bankruptcy ruling these all archive in one motion and come back only when named, each with a close condition on the way in. Read the list once — if anything jumps out, name it in a comment and it stays.</p>
+  <div class="inert-list">
+    ds-016 index blind-spot <i>(borderline — a blind index is live behaviour, but no provisional value)</i> · ds-017 floated-supersedes path · the six decision-graph edge types (open since #71) · the cross-instrument claim check <i>(already your opener item a)</i> · the pre-flight presence gate <i>(opener b)</i> · the "caps bind on bill" rot-or-record line <i>(opener d)</i> · real-tier propagation proof <i>(opener g)</i> · the tokenizer-measure script with no consumers <i>(opener h)</i> · two future-state proposals (unruled by their own text) · the improvements-doc floated item and candidate remedies · the message-file blank-line fold · grouped-column redesign <i>(waiting on your reference images)</i> · chart text clip-and-collision remedy · the type-decisions Q1 check · the D3 scatter re-look <i>(#72 — you asked to see it again)</i> · combo-line-invert R-B/R-C casing · donut and chart-bar "awaiting your eye" entries <i>(possibly already covered by the #79 sign-off — verify before archiving)</i> · three ledger question-batches (3 + 5 + 3 questions, not expanded this session — archived with a flag, not a classification)
+  </div>
+  <fieldset><legend>Your ruling</legend>
+    <label><input type="radio" name="INERT — archive block">Archive all as one block <span class="rec">(Recommended)</span></label>
+    <label><input type="radio" name="INERT — archive block">Hold back the ones I name in a comment</label>
+    <label><input type="radio" name="INERT — archive block">Discuss in chat first</label>
+  </fieldset>
+</section>
+
+<footer class="doc">
+  <p><b>Residuals, declared:</b> boot half unmeasured (ds-025 stands) · code items verified at call site, prose items at marker line + context · G17 and the two "awaiting eye" entries carry an unverified flag · ~13K real was spent reading <code>_CHAIN.md</code> before the handoff was found — the boot path routed a cold session to the stale contract first; a finding for the rebuild.</p>
+  <p>v1 · #86 · 2026-08-02 · Selections are not saved in this page — <b>Export prompt is the save</b>; rulings land in chat and the ledger. Supersedes <code>_TRIAGE-TICKLIST-2026-08-02-v1.md</code> as the rulable copy; the markdown stays as the flat record.</p>
+</footer>
+
+</main>
+</body>
+</html>
