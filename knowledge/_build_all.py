@@ -73,14 +73,17 @@ STEPS = [
     # content-hash keying, corrupt-file robustness), and degraded-measurement honesty
     # (ds-025) all get bite-tested here -- the budget constants every wrap is graded
     # against sat on an UNBITTEN instrument (periphery inventory, 2026-08-02).
-    # ⚠ ARM C IS CURRENTLY RED: count()'s crude-estimate fallback (len(text)//4 on a
-    # tiktoken ImportError) does not refuse, unlike the #74 precedent already shipped
-    # in _context_gauge.py::estimate_tokens() / _checkin.py. Fixing count() safely
-    # needs a PAIRED change in _capture_gate.py::selftest_preflight_tokens(), which
-    # calls gauge.assert_budget_clears_floor() -> measure_boot() -> count() with no
-    # try/except -- a bare raise there would crash that 39+-check gate instead of
-    # reporting one named failure (the "a crash is not a fail" class). Flagged in the
-    # #79 P5 report, not fixed here -- this wiring surfaces it rather than hiding it.
+    # ✅ ARM C WAS RED FROM #79 AND IS CLOSED AT #80 -- RULED BY DAVE (#79-D1, *"make it
+    # refuse"*, chosen over a louder estimate). count()'s crude-estimate fallback
+    # (len(text)//4 on a tiktoken ImportError) now raises MeasurementRefused, loud AND
+    # named. The change was PAIRED, as #79 said it had to be: the handler lives in
+    # _capture_gate.py at the #53 floor call, so a refusal is reported as ONE named
+    # failure instead of killing that 39+-check sweep ("a crash is not a fail").
+    # ★ The seam itself is now tested, not just the two ends: _capture_gate.py::
+    # selftest_gauge_refusal_seam() mutation-proves all three ways the pairing can rot
+    # (handler removed / handler swallows / MeasurementRefused re-parented to
+    # BaseException, which would let every `except Exception` keep compiling while
+    # silently ceasing to catch). Each mutation bites with a DISTINCT named failure.
     ("gauge-tokens selftest -- counting path + cache + degraded-measurement honesty (#79 P5)",
      "_gauge_tokens.py", ["--selftest"]),
     # #77 (ruled Dave, R1–R4 — ledger § ★ #77): the roll-state MEASURER the roll-claim check
@@ -320,16 +323,21 @@ ROUTE_ROWS = [
     ("assertion veracity selftest — verbs bite + registry well-formed (#77 periphery)", ABORT, None),
     ("capture/provenance gate — status+provenance on new notes+dossiers (Memento §4.1)", ABORT, None),
     ("capture/provenance selftest (Memento §4.1)", ABORT, None),
-    # ★ #79 CONDUCTOR DEMOTION, ABORT -> ADVISORY, and the reason is the step's OWN intent.
-    # This selftest was BORN RED: its arm C names a PRE-EXISTING, ALREADY-DOCUMENTED defect
-    # (count()'s crude-estimate fallback; the GM header has warned "the gate SILENTLY ESTIMATES
-    # without it, UNDER-reporting by 414 tape" for sessions). A new instrument's intent is to
-    # SURFACE that, not to gate the whole build on a defect nobody has ruled yet -- and the fix
-    # is a PAIRED change in _capture_gate.py that no gate can make for Dave. Same shape as the
-    # usage-history and consult-receipts tiers: born ADVISORY, and PROMOTION TO ABORT IS DAVE'S
-    # WORD (flag and pin move as a pair). ⚠ This is a demotion of KIND, never of the finding:
-    # arm C still runs, still goes red, still prints its named cause on every build.
-    ("gauge-tokens selftest -- counting path + cache + degraded-measurement honesty (#79 P5)", ADVISORY, None),
+    # ✅ #80: ADVISORY -> ABORT, PROMOTED BY DAVE. The #79 demotion was conditional on the
+    # arm being BORN RED against an unruled defect: gating the whole build on something
+    # nobody had decided would have been a gate making Dave's ruling for him. He ruled it
+    # (#79-D1, *"make it refuse"*), #80 built the paired fix, and the arm is GREEN AT REST --
+    # so promotion no longer risks a red build, and the flag and the fix move together as
+    # the demotion note said they must.
+    # ★ WHY ABORT AND NOT A LOUDER WARNING -- the same argument one level up: ADVISORY lets
+    # a build COMPLETE while the context floor is UNKNOWN, which is the exact shape of the
+    # defect #79-D1 just ruled out of count(). A gauge that cannot measure must stop the
+    # thing that depends on it, not annotate it.
+    # ⚠ THE COST, DECLARED: a machine without tiktoken now HARD-STOPS here. CI is unaffected
+    # (.github/workflows/gates.yml installs tiktoken before the gates run); a cold sandbox is
+    # NOT -- it pays one `pip install tiktoken --break-system-packages`, which is precisely
+    # the remedy the refusal prints. That friction is the ruling working, not a side effect.
+    ("gauge-tokens selftest -- counting path + cache + degraded-measurement honesty (#79 P5)", ABORT, None),
     ("roll-state measurer selftest (#77 T1)", ABORT, None),
     ("commit-seam harness — _git_commit.sh fixture-repo arms (#78-D1 P1)", ABORT, None),
     ("GM/LS mover selftest — hardened move mechanics (M5)", ABORT, None),

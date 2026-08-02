@@ -123,8 +123,30 @@ def read_key() -> str | None:
     return None
 
 
+class MeasurementRefused(RuntimeError):
+    """⛔ RAISED WHEN THE GAUGE CANNOT MEASURE. RULED #79-D1 by Dave: *"make it refuse"* —
+    chosen over a LOUDER ESTIMATE and over leaving it to the session-start self-heal.
+
+    ★ NOT `SystemExit`, and the divergence from precedent is deliberate. The two refusals
+    already shipped — `_context_gauge.py::estimate_tokens()` (#74) and `_checkin.py` — are
+    CLI ENTRY POINTS, where killing the process IS the report. `count()` is a LIBRARY
+    function reached from inside a 39+-check gate. `SystemExit` is a `BaseException`, so a
+    maintainer writing the obvious `except Exception` handler would silently reinstate the
+    crash, and a gate that dies mid-sweep reports NOTHING — strictly worse than the
+    estimate it replaced. [[a-crash-is-not-a-fail]]
+    ⚠ PAIRED: the handler in `_capture_gate.py::selftest_preflight_tokens()` is the other
+    half of this ruling. Neither half is correct alone.
+    """
+
+
 def count(text: str, allow_api: bool = True) -> tuple[int, str]:
     """Return `(tokens, method)`. `method` is 'real' or 'cl100k-estimate' — NEVER dropped.
+
+    ⛔ REFUSES (`MeasurementRefused`) when neither method is reachable. ★ Note what this
+    docstring has promised since it was written: exactly TWO methods. The code carried a
+    THIRD — `len(text)//4`, labelled 'crude-estimate' — that no spec ever claimed and no
+    ruling ever backed. #79's ARM C is what finally bit on it. This change does not add a
+    behaviour; it makes the code match a contract that was already written down.
 
     ⚠ The method travels WITH the number, as a tuple, on purpose. A function returning a bare
     int invites a caller to publish an estimate as a measurement, which is the `ds-021` defect
@@ -162,8 +184,20 @@ def count(text: str, allow_api: bool = True) -> tuple[int, str]:
     try:
         import tiktoken
         return len(tiktoken.get_encoding("cl100k_base").encode(text)), "cl100k-estimate"
-    except ImportError:
-        return len(text) // 4, "crude-estimate"
+    except ImportError as e:
+        # ⛔ #79-D1. The old line here was `return len(text) // 4, "crude-estimate"`.
+        # ★ NAME THE CAUSE AND THE REMEDY — loud is not enough, it has to be NAMED, or the
+        # caller reports "something failed" and the next session re-derives the diagnosis.
+        raise MeasurementRefused(
+            "⛔ NOT MEASURED — the gauge REFUSES to guess. tiktoken is unavailable "
+            f"({type(e).__name__}: {e}) and the token-counting API was not reachable "
+            "either (no key, or the call failed).\n"
+            "  Remedy: pip install tiktoken --break-system-packages\n"
+            "  WHY there is no --estimate escape here: the crude chars/4 path under-reported "
+            "by 414 tape with nothing saying so, and every price this project quoted inherited "
+            "it. Dave ruled #79 that the gauge must REFUSE rather than estimate more loudly. "
+            "Re-opening that is his word, not a caller's flag. [[measure-dont-convert-units]]"
+        ) from e
 
 
 def measure_boot(repo: str = REPO) -> dict:
@@ -219,7 +253,14 @@ def band_for(total: int) -> str:
 
 
 def main() -> int:
-    boot = measure_boot()
+    # ⚠ THIRD CONSUMER OF THE #79-D1 REFUSAL, and it needs its OWN handler. A CLI that dies
+    # in a traceback has technically "failed loud", but it has not failed NAMED — the reader
+    # gets a stack, not the remedy. Same ruling, different report shape at each seam.
+    try:
+        boot = measure_boot()
+    except MeasurementRefused as e:
+        print(f"{e}", file=sys.stderr)
+        return 2
     print(f"context gauge — unit: REAL Claude tokens ({MODEL})\n")
     print(f"  budget   amber {BUDGET_AMBER:,} · working {BUDGET_WORKING:,} (Dave #56) · "
           f"hard {BUDGET_HARD:,} (SOURCED — 93% MRCR v2)")

@@ -2771,7 +2771,19 @@ def selftest_preflight_tokens():
             f"MRCR v2 at 256K); AMBER is derived at 80% of working. Re-dialling WORKING is his "
             f"word — updating this pin is part of doing it.")
     # ⛔ THE #53 GUARD, asserted rather than trusted: a budget under its own floor is unobeyable.
-    failures += [f"budget floor: {x}" for x in gauge.assert_budget_clears_floor()]
+    # ⚠ PAIRED HALF OF #79-D1 (Dave: *"make it refuse"*). This reaches the gauge by
+    # assert_budget_clears_floor() -> measure_boot() -> count(), and count() now RAISES
+    # rather than returning a crude estimate. Bare, that raise would kill this 39+-check
+    # gate mid-sweep and it would report NOTHING. [[a-crash-is-not-a-fail]]
+    # ★ The refusal is recorded as a FAILURE, never waved through: an UNMEASURABLE floor is
+    # not a cleared floor. UNKNOWN is never defaulted [[feedback-measuring-tool-must-not-guess]].
+    try:
+        failures += [f"budget floor: {x}" for x in gauge.assert_budget_clears_floor()]
+    except gauge.MeasurementRefused as e:
+        failures.append(
+            f"budget floor: ⛔ UNMEASURABLE — the #53 guard could not run, because the gauge "
+            f"refused to guess. This gate is REPORTING, not crashing, and the floor is "
+            f"UNKNOWN rather than clear. Cause, as the gauge named it: {e}")
     # the U-shape note must reach every path — an instrument with no reader is ds-024's class.
     _f, _w, n_ = check_preflight(_ABS_OK, label="fixture")
     if not any("U-shaped" in x for x in n_):
@@ -2779,6 +2791,70 @@ def selftest_preflight_tokens():
                         "in the MIDDLE of a window, which is where mid-session findings sit — "
                         "that is the cheaper lever than shrinking anything, and no session will "
                         "look it up unless the gate says it.")
+    return failures
+
+
+def selftest_gauge_refusal_seam():
+    """⛔ THE PAIRED HALF OF #79-D1, TESTED AT THE SEAM — not at either end of it.
+
+    Dave ruled the gauge must REFUSE. The risk that ruling creates does not live in the gauge;
+    it lives HERE. A raise arriving inside a 39+-check sweep kills the sweep, and a gate that
+    dies reports NOTHING — strictly worse than the estimate it replaced. So the subject under
+    test is the HANDLER. [[a-crash-is-not-a-fail]] [[instrument-without-a-consumer]]
+    """
+    failures = []
+
+    # (1) ⛔ GATE THE PRESENCE, NOT THE DRIFT. The whole pairing rests on MeasurementRefused
+    # being catchable by `except Exception`. Re-parent it to BaseException — and SystemExit is
+    # the standing precedent in this repo, so that is the direction the pull comes from — and
+    # every paired handler still COMPILES while silently ceasing to catch.
+    if not issubclass(gauge.MeasurementRefused, Exception):
+        failures.append(
+            "[gauge seam] gauge.MeasurementRefused is not a subclass of Exception. Every "
+            "`except Exception` handler paired with it still compiles and silently stops "
+            "catching — reinstating the crash #79-D1 was ruled to prevent.")
+
+    # (2) THE BITE: make the floor call refuse, and prove this gate REPORTS rather than dies.
+    real = gauge.assert_budget_clears_floor
+
+    def _refuse(*_a, **_k):
+        raise gauge.MeasurementRefused("tiktoken unavailable — REFUSING TO GUESS (fixture)")
+
+    gauge.assert_budget_clears_floor = _refuse
+    try:
+        out = None
+        try:
+            out = selftest_preflight_tokens()
+        except BaseException as e:      # noqa: BLE001 — catching the crash IS the measurement
+            failures.append(
+                f"[gauge seam] selftest_preflight_tokens() CRASHED instead of reporting when "
+                f"the gauge refused: {type(e).__name__}: {e}")
+        if out is not None:
+            named = [x for x in out if "UNMEASURABLE" in x]
+            if not named:
+                failures.append(
+                    "[gauge seam] the gauge refused and this gate returned NO failure naming "
+                    "it — an UNMEASURABLE floor waved through as a CLEARED floor. UNKNOWN must "
+                    "never default to OK [[feedback-measuring-tool-must-not-guess]].")
+            elif len(named) != 1:
+                failures.append(
+                    f"[gauge seam] expected exactly ONE named failure for the refusal, got "
+                    f"{len(named)} — a gate that reports one cause N times trains its reader "
+                    f"to skim.")
+            elif "REFUSING TO GUESS (fixture)" not in named[0]:
+                failures.append(
+                    f"[gauge seam] loud but NOT NAMED — the gauge's own stated cause did not "
+                    f"survive into the report: {named[0]!r}")
+    finally:
+        gauge.assert_budget_clears_floor = real
+
+    # (3) CONTROL. Without this, arm (2) passes just as well if the handler fires
+    # unconditionally — a green that cannot distinguish the two states is an assertion.
+    if any("UNMEASURABLE" in x for x in selftest_preflight_tokens()):
+        failures.append(
+            "[gauge seam] the refusal failure fires while the gauge is HEALTHY — the handler "
+            "is reporting a state that did not occur.")
+
     return failures
 
 
@@ -4259,6 +4335,7 @@ def selftest_handoff_history():
 
 def selftest():
     failures = (selftest_preflight() + selftest_preflight_tokens()
+                + selftest_gauge_refusal_seam()          # #79-D1 paired half
                 + selftest_budgets() + selftest_strata_exempt() + selftest_units()
                 + selftest_bare_token()
                 + selftest_gauge_continuity() + selftest_unkeyed()

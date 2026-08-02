@@ -2693,3 +2693,92 @@ Specimen pins now ONE: swatch-at-rest. Also verified on his tooltip question, me
 assumed: the tips are PRESENT and FIRING in both v2 files (10 arcs, #dvTip on real mouse-move
 and focus, both panes) — nothing was scope-trimmed; posed strip + legend rows are tip-less by
 canon's design.
+
+## ★ #80 — 2026-08-02 (Sun; Opus 5 solo Cowork conductor + 2 peer subs, Dave live)
+
+**Session shape (Dave, at the opener, verbatim):** *"1. but you can delegate to peer models, watch
+out for over confidence"* ⇒ ONE window, peer-capability subs, **and the conductor REPLAYS every
+claim a sub makes.** The over-confidence warning is the operative half and it was enacted: the
+#79 dossier sub declared six claims it could not reproduce rather than smoothing them, and the
+wrap sub re-ran all four gates instead of quoting the build.
+
+**#80-D1 — P5 PROMOTED ADVISORY → ABORT (Dave's word).** The #79 demotion was of KIND only and
+promotion was reserved to him; he gave it. Enacted in `knowledge/_build_all.py` (the flag and the
+step's declared intent move as a pair). Two stale comment blocks in the same file corrected at
+source in the same pass.
+
+**#79-D1 ENACTED — *"make it refuse"*, and the deliverable is the PAIR, not the raise.**
+`knowledge/_gauge_tokens.py`: new `MeasurementRefused(RuntimeError)`; `count()`'s
+`len(text)//4` 'crude-estimate' fallback raises loud and named.
+★ **Deliberately NOT `SystemExit`, against this repo's own precedent** — `_context_gauge.py` and
+`_checkin.py` use it because they are CLI ENTRY POINTS; `count()` is a LIBRARY function reached
+from inside a 39+-check gate, and `SystemExit` is a `BaseException`, so `_arm()`'s
+`except Exception` would not have caught it and the whole selftest would have died. The precedent
+was the wrong shape for the call site, and following it would have produced [[a-crash-is-not-a-fail]].
+PAIRED half at `knowledge/_capture_gate.py:2782` — the #53 floor call, previously bare at `:2774` —
+catching the refusal and reporting ONE named failure. ⛔ **The refusal is recorded as a FAILURE,
+never waved through: an UNMEASURABLE floor is not a cleared floor.** New
+`selftest_gauge_refusal_seam()` wired into `selftest()`; mutation-tested ×3 (handler removed ⇒
+"CRASHED instead of reporting" · handler swallows ⇒ "NO failure naming it" · `MeasurementRefused`
+re-parented to `BaseException` ⇒ the structural guard fires), each a DISTINCT named failure, revert
+green.
+
+**#80-D2 — THE METHOD RULING, and it redirected the session (Dave, verbatim):**
+*"I find '5 whys' is better than patching what we have."* Said while I was answering his question
+with a fix. ⇒ standing preference: when a symptom has a plausible one-line remedy, spend the five
+whys FIRST. **The patch it displaced was "install tiktoken", which would have made the wrong number
+arrive more reliably.**
+
+**THE FINDING IT PRODUCED — the unit itself is wrong.** Full body, with the table and the five
+whys: `notes/2026-08-02-the-tokenizer-unit-five-whys.md`; narrative arc:
+`_DECISION-HISTORY/2026-08-02-the-80-dossier.md`. In one paragraph: Anthropic's tokenizer is
+ALREADY WIRED here (`_gauge_tokens.py` → `api.anthropic.com/v1/messages/count_tokens`,
+`claude-opus-5`, 0.26s from the sandbox). MEASURED #80 — `_CHAIN.md` 5,761 cl100k / **9,079 REAL**
+(×1.576) · `GOOD-MORNING.md` 27,171 cl100k / **42,435 REAL** (×1.562) ⇒ **every "tape" figure in
+this project under-reports by ~36%, and the budget (160,000 / 200,000 / 256,000) is denominated in
+REAL tokens, so the comparison every session makes is DIMENSIONALLY INVALID and in the dangerous
+direction.** Root cause is NOT that consumers drop the unit: `measurement_degraded()`
+(`_capture_gate.py:1324–1341`) exists, is wired and is pinned against drift, but `measure_tokens()`
+can return only `"tiktoken cl100k_base"` or `"bytes/N ESTIMATE"` — so it asks *"is this an
+estimate?"* and cl100k answers *no, healthy*. **The vocabulary has no word for REAL.**
+⇒ **`ds-021` was never closed:** the tuple fixed the PRODUCER, nobody widened the vocabulary, the
+defect moved one seam downstream, and it was written up in the past tense.
+[[scope-blindness-gate-vocabulary]] [[honest-refusal-needs-a-legal-form]]
+
+⛔⛔ **CORRECTED AT THE #80 WRAP, BEFORE THE COMMIT — THE MEASUREMENT ABOVE IS NOT NEW, AND THE
+UNIT IS NOT UNRULED.** Caught by the wrap sub at ritual step 3 and verified in the repo:
+**#53 (2026-07-30) already measured it** — ×1.559 over five registers with a re-runnable
+instrument, `knowledge/_measure_tokenizer.py` (this ledger, `:1716–1785`; dossier
+`_DECISION-HISTORY/2026-07-30-the-gauge-re-denomination.md`; `notes/_GAUGE-LOG.md:461`) — and
+**#54 RULED IT (Dave): *"ONE unit — real Claude tokens. `cl100k` demoted to a LABELLED free
+estimator, never a unit a cap is stated in"*, with his own "NOT ENACTED THIS WINDOW — the three
+homes are untouched."** ⇒ **#80 re-derived a settled ruling of his from scratch and came within one
+commit of filing it as a discovery.** The five-whys note carries a CORRECTION BLOCK striking its two
+false claims (*"never checked"* · *"stood five days"*) by addition.
+
+★★★ **SO THE FINDING IS A MEMENTO FINDING, AND IT IS SHARPER THAN THE RATIO: a RULED, INSCRIBED
+measurement — ledger, dossier, gauge log, memory hook, AND a re-runnable script — did not reach the
+session that needed it 27 sessions later.** ⚠ **#77's own periphery inventory had already predicted
+it:** `notes/2026-08-02-handoff-periphery-inventory.md:33` lists `_measure_tokenizer.py` as reported
+**"nowhere", 0 consumers.** **An instrument ships WITH ITS READER; a measurement nothing re-reads
+decays into a rediscovery.** [[instrument-without-a-consumer]] [[premise-ages-faster-than-rule]]
+
+★★ **WHAT IS GENUINELY NEW #80 SURVIVES, and it is the reason a ruled unit could sit unenacted for
+26 sessions while every gate read green:** the ROOT CAUSE (the blind vocabulary) is not named
+anywhere in #53's work. It also **corrects a standing `GOOD-MORNING.md` §C·4 claim at source** —
+*"what remains is the three-homes WRITE-UP, smaller than the title implies"* is **struck**: it is a
+CODE change, because the producer still emits `cl100k` and the guard cannot see it.
+
+⬛ **DAVE'S AT #81 — THE ENACTMENT SHAPE ONLY. ⚠ THE UNIT IS HIS AND IS NOT REOPENED (#54).** Four
+shapes for the `ds-021` three-homes enactment, owed since #54, standing in §C·4 and
+`knowledge/_DS-IMPROVEMENTS.md:1422`: (A) make the unit a TYPE (`Tokens(n, unit)`
+refusing cross-unit comparison) · (B) ONE measuring authority · (C) a CROSS-INSTRUMENT gate —
+cheapest, and the only candidate that catches the NEXT one of these · (D) calibrate and keep
+cl100k, **named for completeness and argued against** (a conversion where a measurement is
+available, and the ratio is not constant: ×1.79 on plain prose vs ×1.56 on this corpus).
+⚠ Not shipped, because whichever lands, the re-measurement touches the GM `size:` stamps,
+`ds-025`'s floor, and amber/working's relationship to both. That is Dave's call, not an agent's.
+
+⚠ **AND IT BIT THE SESSION THAT FOUND IT.** #80's own close reads **154,330 tape** (`_checkin.py`,
+conversation half only, boot half unmeasured) — in the unit just proved wrong. **Recorded as an
+honest UNKNOWN and NOT converted**, because converting is the defect. [[measure-dont-convert-units]]
