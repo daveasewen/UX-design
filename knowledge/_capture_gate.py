@@ -56,6 +56,9 @@ import tempfile
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import _gauge_tokens as gauge     # noqa: E402 — the UNIT and the BUDGET (Dave #56)
+import _roll_state as roll_state  # noqa: E402 — T1 (#77): the roll-residual MEASURER. Imported,
+#   never re-derived — roll_claim_check() below is T2, and "one measurer, no second slicer" is
+#   the whole point of the split (handoff-testing-regime plan § T2).
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
@@ -2011,6 +2014,156 @@ def unkeyed_testimony(repo):
     return fails, notes
 
 
+# ─────────────────────────────────────────────────────────────────────────────────────────────
+# T2 (#77) — roll_claim_check. Handoff testing regime, RULED #77 (ledger § ★ #77;
+# notes/2026-08-02-handoff-testing-regime-plan.md). ⚠ R3 CORRECTION, found at ledger read-back
+# (the plan's own top block): the commit-vs-wrap dichotomy the plan floated was FALSE — #74-D1
+# already runs `_capture_gate.py --wrap` from `_git_commit.sh` (the WARN/`--wrap` mode split).
+# Enactment shape: this check lives INSIDE `wrap_checks()` — the existing #74-D1 consumer
+# delivers it at the commit seam. No new wiring in the shell script beyond T3's headline work.
+#
+# Seam it closes: the DURABILITY seam (#73/#75/#76's forward-claim class — a banner authored
+# before the last state change, falsified by that change). T1 (`_roll_state.py`) measures the
+# actual roll state; this check grades any roll-residual line in the ★ LATEST banner against
+# that measurement.
+ROLL_CLAIM_BLOCKING = True
+
+# ---- the ONE legal home for the claim, scoped to the EXACT quoted form per
+# [[gate-must-quote-what-it-forbids]]: the GENERATED form `_roll_state.py` itself prints — the
+# canonical line this whole mechanism exists to make the banner carry instead of authored prose.
+# ⛔ #77 (2026-08-02): there used to be a SECOND arm here — an AUTHORED-form regex reading
+# `2c`/`2d`/`2f` adjacent to `NOT run|OK|rolled` anywhere in the banner. It false-fired on
+# RATIFIED #76 banner text at its very first live `--wrap` run: once on the narration word
+# "RESIDUAL" in the ★ LATEST heading ("THE CHAIN BOOTED ME ON A FALSE RESIDUAL"), once on the
+# banner QUOTING #75's claim verbatim ("the 2c/2d/2f rolls were NOT run", attributed to #75,
+# italicised, discussing a PAST session's defect). USE vs MENTION is unreachable by syntax — no
+# regex can tell a fresh claim from a quotation of an old one sitting in the SAME banner — only
+# SCOPE saves it, exactly the house precedent at `ABS_TERM_RE` above (#58: requiring the leading
+# digit fixed USE-vs-MENTION "for free" there; here the anchor is the GENERATED marker itself).
+# The fix is not a smarter regex for arm (ii); it is DELETING arm (ii). This check now has
+# exactly one legal home for the claim — the generated line — so prose is narration BY
+# DEFINITION: there is nowhere else the claim is allowed to live, so anything else is not a
+# rival claim to adjudicate, it is commentary. Widening the old vocabulary (adding exceptions
+# for "narration" or "quotation") was rejected as the #58-class fix: it enumerates escapes into
+# a gate that should instead not be looking there at all
+# ([[scope-blindness-gate-vocabulary]]).
+_ROLL_GENERATED_RE = re.compile(
+    r"residual\s*\(GENERATED\s*#(\d+)\)[:*\s]*"
+    r"2c\s+(OK|OVER)\s*\(banners\s+(\d+)/2\)\s*[·.]\s*"
+    r"2d\s+(OK|OVER)\s*\(deltas\s+(\d+)/3\)\s*[·.]\s*"
+    r"2f\s+(OK|OVER)\s*\(strata\s+(\d+),\s*log\s*#(\d+)\)", re.I)
+# The ANCHOR used to find candidate lines before full parsing — deliberately narrower than
+# `_ROLL_GENERATED_RE` itself (which requires the whole shape to match). A line can anchor here
+# and still fail to parse (a mangled paste); that is a NAMED parse failure, not a crash and not
+# a second guess at what the line meant.
+_ROLL_GENERATED_ANCHOR_RE = re.compile(r"\*\*\s*residual\s*\(GENERATED", re.I)
+_BANNER_LATEST_START_RE = re.compile(r"^\s*>?\s*#{1,6}\s*★\s*LATEST\b")
+_BANNER_PRIOR_START_RE = re.compile(r"^\s*>?\s*#{1,6}\s*★\s*PRIOR\b")
+
+
+def _latest_banner_region(gm_text):
+    """The ★ LATEST banner's own text — heading to the next ★ PRIOR heading, or EOF. Same
+    anchor family as `BANNER_SESSION_RE`/`LATEST_SESSION_RE` (blockquoted, line-start `> ## ★`
+    — the #37 lesson: match the STRUCTURE, never an unanchored substring). Returns None if no
+    ★ LATEST heading is found (a different check already fails the wrap for that; not re-raised
+    here)."""
+    lines = gm_text.splitlines()
+    start = next((i for i, ln in enumerate(lines) if _BANNER_LATEST_START_RE.match(ln)), None)
+    if start is None:
+        return None
+    end = next((i for i in range(start + 1, len(lines))
+               if _BANNER_PRIOR_START_RE.match(lines[i])), len(lines))
+    return "\n".join(lines[start:end])
+
+
+def roll_claim_check(repo):
+    """T2 (#77) — grades the ★ LATEST banner's roll-residual claim against `_roll_state.py`'s
+    live measurement. Returns (fails, warns, notes).
+
+    GENERATED-LINE-ONLY SCOPE (#77, 2026-08-02 — replaces the two-arm design that lived here
+    through its first live run). The claim's only legal home is the line `_roll_state.py`
+    prints; this check finds that line by its anchor (`**residual (GENERATED`), parses it, and
+    grades it. It scans NO other line — a heading that narrates "RESIDUAL" and a paragraph that
+    quotes a past session's claim verbatim are both prose, and prose is not scanned, because the
+    claim has exactly one legal home and that isn't it. See the `_ROLL_GENERATED_ANCHOR_RE`
+    comment above for why the old authored-form arm was deleted rather than widened: it
+    false-fired on RATIFIED #76 text (the heading word + a quoted, attributed #75 claim) at its
+    first live `--wrap` run — USE vs MENTION is unreachable by syntax, only SCOPE saves it.
+
+    Presence-gating, not just contradiction-gating: ZERO generated lines is itself a FAIL (the
+    ritual step was skipped, not merely unverifiable), and MORE THAN ONE is a FAIL (duplicate
+    homes for a claim that gets exactly one).
+    """
+    fails, warns, notes = [], [], []
+    gm_path = os.path.join(repo, "GOOD-MORNING.md")
+    if not os.path.exists(gm_path):
+        notes.append("roll-claim check: no GOOD-MORNING.md — UNMEASURED, not assumed clean.")
+        return fails, warns, notes
+    with open(gm_path, encoding="utf-8") as f:
+        gm_text = f.read()
+    region = _latest_banner_region(gm_text)
+    if region is None:
+        notes.append("roll-claim check: no ★ LATEST banner found — UNMEASURED (a different "
+                     "check already fails the wrap for this state; not re-raised here).")
+        return fails, warns, notes
+
+    candidates = [ln for ln in region.splitlines() if _ROLL_GENERATED_ANCHOR_RE.search(ln)]
+
+    if not candidates:
+        fails.append(
+            "roll-claim check: no generated residual line in ★ LATEST — run "
+            "`python3 knowledge/_roll_state.py` and paste its line into the banner (ritual "
+            "step 2; #77-D1). The claim's only legal home is that generated line; its absence "
+            "is itself the finding, not a warn.")
+        return fails, warns, notes
+
+    if len(candidates) > 1:
+        fails.append(
+            f"roll-claim check: {len(candidates)} generated residual lines in the ★ LATEST "
+            f"banner — the claim has exactly one legal home, not several (duplicate homes). "
+            f"Lines: " + " | ".join(c.strip()[:150] for c in candidates))
+        return fails, warns, notes
+
+    line = candidates[0]
+    m = _ROLL_GENERATED_RE.search(line)
+    if not m:
+        fails.append(
+            "roll-claim check: a line anchors the generated form (`**residual (GENERATED`) but "
+            "does not parse against its full shape — fail loud and named rather than guess at "
+            "what it meant. Expected: `residual (GENERATED #N): 2c OK|OVER (banners n/2) · 2d "
+            "OK|OVER (deltas n/3) · 2f OK|OVER (strata n, log #K) — _roll_state.py · date`. "
+            f"Line: {line.strip()[:200]}")
+        return fails, warns, notes
+
+    try:
+        measured = roll_state.measure(repo)
+    except roll_state.Unparseable as e:
+        fails.append(
+            f"roll-claim check: the banner carries a generated residual line but "
+            f"_roll_state.py cannot measure the tree to grade it ({e}). "
+            f"Line: {line.strip()[:200]}")
+        return fails, warns, notes
+
+    rendered = roll_state.render_line(measured)
+    claim = (int(m.group(1)), m.group(2).upper(), int(m.group(3)),
+             m.group(4).upper(), int(m.group(5)), m.group(6).upper(),
+             int(m.group(7)), int(m.group(8)))
+    actual = (measured["session_no"],
+              "OK" if measured["banners"] <= 2 else "OVER", measured["banners"],
+              "OK" if measured["deltas"] <= 3 else "OVER", measured["deltas"],
+              "OK" if measured["strata_live"] <= 1 else "OVER", measured["strata_live"],
+              measured["log_newest"])
+    if claim != actual:
+        fails.append(
+            f"roll-claim check: GENERATED-form residual contradicts the measured tree. "
+            f"Banner: {line.strip()[:200]} — Measured (re-derived via _roll_state.py, one "
+            f"measurer, no second slicer): {rendered}")
+    else:
+        notes.append(f"roll-claim check: the ★ LATEST banner's generated residual line is "
+                     f"consistent with the measured tree ({rendered}).")
+    return fails, warns, notes
+
+
 def _norm(text):
     """Strip blockquote/list chrome and collapse whitespace. Comparing NORMALISED regions rather
     than lines is what makes the receipts proxy rewrap-immune: re-flowing a paragraph moves every
@@ -2376,6 +2529,8 @@ def wrap_checks(repo, today, lane=False):
         notes.append("LANE WRAP: the #32 retrieval-index freshness check is SKIPPED — a lane "
                      "session does not write GM/LS, so it cannot stale the index. ⚠ If lanes "
                      "ever gain a write path into either file, this exemption must go with it.")
+        notes.append("LANE WRAP: the roll-claim check (T2, #77) is SKIPPED too — same reason, "
+                     "the residual it grades lives in GOOD-MORNING.md.")
     else:
         gm = os.path.join(repo, "GOOD-MORNING.md")
         if os.path.exists(gm):
@@ -2422,6 +2577,10 @@ def wrap_checks(repo, today, lane=False):
         notes += n_                              # advisory years are what let the retroactive
                                                  # key patch stand, and that patch is why the
                                                  # #53 handoff said 12 when the record said 9.
+        f_, w_, n_ = roll_claim_check(repo)      # T2 #77 — the roll-residual vs _roll_state.py
+        (fails if ROLL_CLAIM_BLOCKING else warns).extend(f_)   # cross-check, wired at the R3
+        warns += w_                              # commit seam via the existing #74-D1 consumer
+        notes += n_                              # (this call, inside wrap_checks() itself).
         notes.append(f"PRE-FLIGHT stamp: graded in REAL TOKENS (Dave #56 — amber "
                      f"{gauge.BUDGET_AMBER:,} · working {gauge.BUDGET_WORKING:,} · hard "
                      f"{gauge.BUDGET_HARD:,}); the % band's enforcement was RETIRED #74-D3 "
@@ -3869,13 +4028,243 @@ def selftest_index_freshness():
     return failures
 
 
+def _handoff_fixture(td, session_no, claim_line, log_keys=(), gm_archive_keys=(),
+                     ls_archive_keys=(), banners=2, deltas=3, heading_note=None):
+    """A minimal repo for `roll_claim_check` fixtures — a ★ LATEST banner naming `session_no`,
+    carrying `claim_line` as its bullet(s) (a single string, a list of strings, or none, if
+    `claim_line` is None), plus every surface `_roll_state.py` needs to measure cleanly (so the
+    fixture exercises the CHECK, not an UNPARSEABLE short-circuit).
+
+    `heading_note`, added #77 for the MENTION-IMMUNITY fixture: appended into the ★ LATEST
+    heading itself (after its own em-dash, mirroring the live #76 shape where the narration word
+    "RESIDUAL" sits IN THE HEADING, not in a bullet) — so a fixture can pin that the heading is
+    never scanned either, not just the bullets."""
+    os.makedirs(os.path.join(td, "notes"), exist_ok=True)
+    heading = f"> ## ★ LATEST — 2026-08-01 (Sat **#{session_no}**, fixture"
+    if heading_note:
+        heading += f" — {heading_note}"
+    heading += ")"
+    gm = ["# Good morning", "", heading]
+    claim_lines = [] if claim_line is None else (
+        list(claim_line) if isinstance(claim_line, (list, tuple)) else [claim_line])
+    for cl in claim_lines:
+        gm.append(f"> - {cl}")
+    for i in range(banners - 1):
+        gm.append(f"> ## ★ PRIOR — fixture prior {i}")
+    gm.append("### ⏱ SESSION STRATA")
+    with open(os.path.join(td, "GOOD-MORNING.md"), "w", encoding="utf-8") as f:
+        f.write("\n".join(gm) + "\n")
+    ls = [f"## ⏱ LATEST DELTA — fixture #{session_no}"]
+    for i in range(deltas - 1):
+        ls.append(f"## ⏱ PRIOR DELTA — fixture prior {i}")
+    with open(os.path.join(td, "_LIVE-STATE.md"), "w", encoding="utf-8") as f:
+        f.write("\n".join(ls) + "\n")
+    with open(os.path.join(td, "notes", "_GAUGE-LOG.md"), "w", encoding="utf-8") as f:
+        f.write(("\n".join(f"#### 2026-08-01 #{k}" for k in log_keys) + "\n") if log_keys else "\n")
+    with open(os.path.join(td, "_GM-ARCHIVE.md"), "w", encoding="utf-8") as f:
+        f.write(("\n".join(f"## Batch 2026-08-01 #{k} — fixture" for k in gm_archive_keys) + "\n")
+                if gm_archive_keys else "\n")
+    with open(os.path.join(td, "_LIVE-STATE-ARCHIVE.md"), "w", encoding="utf-8") as f:
+        f.write(("\n".join(f"## ⏱ PRIOR DELTA — 2026-08-01 (**#{k}**, fixture)"
+                           for k in ls_archive_keys) + "\n") if ls_archive_keys else "\n")
+    return td
+
+
+def selftest_handoff_history():
+    """T4 (#77) — the regression corpus. One fixture per historical re-enactment named in the
+    handoff-testing-regime plan's failure inventory (notes/2026-08-02-handoff-testing-regime-plan.md
+    § the evidence base), each MUTATION-RUN live before being written down (receipts: the build
+    session's own report). #70/#71 (skipped wrap) is a DECLARED NON-CATCH — the plan's own
+    words: "it cannot fire inside a session that never runs the wrap at all... the next
+    session's title check catches it one session late, and that stays the only net." Asserted
+    below by running THAT net's own selftest, not by faking a fixture for a class this regime
+    was never going to catch."""
+    failures = []
+
+    # ⛔ #77 SEMANTICS CHANGE (2026-08-02): the two-arm design below was replaced by GENERATED-
+    # LINE-ONLY SCOPE after arm (ii) false-fired live on RATIFIED #76 banner text (the docstring
+    # above `roll_claim_check` and the `_ROLL_GENERATED_ANCHOR_RE` comment carry the full story).
+    # The historical fixtures below still PIN each defect class — #75/#73's re-enactments now
+    # RED on ABSENCE of a generated line rather than on a graded contradiction, because that is
+    # what the new design actually does when a banner carries only authored prose: the claim's
+    # one legal home is missing, full stop. The mutation still DISCRIMINATES the #75/#73 states
+    # (a banner that never adopted T1's generated line still fails the wrap), it just names a
+    # different, more honest reason — "you never ran `_roll_state.py`" beats "your prose parsed
+    # wrong", because the prose was never the fix; the generated line always was.
+
+    # ---- #75 (semantics changed #77): banner carries ONLY the authored claim `2f NOT run`
+    # (the live #75/#76 defect's own wording) with NO generated line anywhere in ★ LATEST. Old
+    # verdict: RED on a graded contradiction (`log #74` vs the authored claim). New verdict: RED
+    # on ABSENCE — the authored line is prose now, never scanned, so the only thing left to grade
+    # is "is there a generated line at all", and there is not one. Still catches the #75 state.
+    with tempfile.TemporaryDirectory() as td:
+        _handoff_fixture(td, 75, "2f NOT run", log_keys=(74,), gm_archive_keys=(74,),
+                         ls_archive_keys=(73,))
+        f_, _w, _n = roll_claim_check(td)
+        if len(f_) != 1 or "no generated residual line in ★ LATEST" not in f_[0]:
+            failures.append(f"#75 fixture (post-#77 semantics): expected exactly one ABSENCE "
+                            f"FAIL, got {f_}")
+
+    # ---- #73 (semantics changed #77): a residual authored in free prose, outside any legal
+    # form. Old verdict: RED naming "matches NEITHER legal form". New verdict: RED on ABSENCE —
+    # this prose is not scanned at all now (it never anchors `**residual (GENERATED`), so it is
+    # invisible to the check exactly like any other banner sentence, and the check still fails
+    # the wrap because no generated line exists anywhere in the banner.
+    with tempfile.TemporaryDirectory() as td:
+        _handoff_fixture(td, 73, "the residual is mostly fine, some rolls happened",
+                         log_keys=(72,), gm_archive_keys=(72,), ls_archive_keys=(71,))
+        f_, _w, _n = roll_claim_check(td)
+        if len(f_) != 1 or "no generated residual line in ★ LATEST" not in f_[0]:
+            failures.append(f"#73 fixture (post-#77 semantics): expected exactly one ABSENCE "
+                            f"FAIL, got {f_}")
+
+    # ---- #72: UNCHANGED — a GENERATED-form residual whose numbers contradict the measured
+    # tree still FAILS on contradiction, exactly as before. `log #71` claimed, `#70` is what the
+    # fixture's own _GAUGE-LOG.md carries. (Bold markers included — `**residual (GENERATED …`
+    # is the anchor itself, per the live `_roll_state.py` output shape.)
+    with tempfile.TemporaryDirectory() as td:
+        _handoff_fixture(
+            td, 72,
+            "**residual (GENERATED #72):** 2c OK (banners 2/2) · 2d OK (deltas 3/3) · 2f OK "
+            "(strata 0, log #71) — _roll_state.py · 2026-08-01",
+            log_keys=(70,), gm_archive_keys=(71,), ls_archive_keys=(70,))
+        f_, _w, _n = roll_claim_check(td)
+        if not any("GENERATED-form residual contradicts the measured tree" in x for x in f_):
+            failures.append(f"#72 fixture: expected a GENERATED-form contradiction FAIL, got {f_}")
+
+    # ---- NEW #77: MENTION IMMUNITY — the exact live #76 false-fire, pinned so it can never
+    # return. A banner whose ★ LATEST HEADING narrates the bare word "RESIDUAL" (no anchor) AND
+    # whose bullets QUOTE a past session's claim verbatim ("the 2c/2d/2f rolls were NOT run",
+    # attributed, about #75, not this session) — PLUS a correct generated line for the CURRENT
+    # session — must be GREEN, grading only the generated line. This is the fixture that would
+    # have FAILED before Edit 1 (the two-arm design flagged both the heading and the quote).
+    with tempfile.TemporaryDirectory() as td:
+        heading_note = ("THE CHAIN BOOTED ME ON A FALSE RESIDUAL — narration only, no legal "
+                        "home here")
+        quoted = ("THE BANNER QUOTES A PAST SESSION VERBATIM. #75's banner said "
+                 '*"the 2c/2d/2f rolls were NOT run"*; a retrospective quote about #75, not a '
+                 "fresh claim about this session.")
+        _handoff_fixture(td, 76, [quoted], log_keys=(75,), gm_archive_keys=(75,),
+                         ls_archive_keys=(74,), heading_note=heading_note)
+        measured = roll_state.measure(td)
+        line = roll_state.render_line(measured, today=datetime.date(2026, 8, 2))
+        _handoff_fixture(td, 76, [quoted, line[2:]], log_keys=(75,), gm_archive_keys=(75,),
+                         ls_archive_keys=(74,), heading_note=heading_note)
+        f_, _w, n_ = roll_claim_check(td)
+        if f_:
+            failures.append(f"MENTION IMMUNITY fixture: heading narration + a quoted past "
+                            f"claim + a correct generated line should be GREEN, got fails: {f_}")
+        elif not any("consistent with the measured tree" in x for x in n_):
+            failures.append("MENTION IMMUNITY fixture: the passing case said nothing")
+        # ⚠ MUTATION RECEIPT (both old arms, re-enacted standalone — the exact regex text this
+        # session read off the file BEFORE Edit 1 deleted it; HEAD has no committed copy of the
+        # two-arm design to `git show`, since T1/T2 were built and never committed in the same
+        # session that found the live defect, so this is the only re-enactment available, and it
+        # is faithful — verbatim regex literals, not a paraphrase): classified the heading line
+        # as "unknown" (→ old code's "matches NEITHER legal form" FAIL) and the quoted-claim
+        # bullet as "authored" (→ old code grades `2c` against the tree as a live claim it never
+        # was) — both false positives, live receipt in this session's report.
+
+    # ---- NEW #77: duplicate generated lines → RED. The claim has exactly one legal home; two
+    # candidate lines means the check cannot know which one is authoritative and refuses rather
+    # than picking one silently.
+    with tempfile.TemporaryDirectory() as td:
+        _handoff_fixture(td, 79, None, log_keys=(78,), gm_archive_keys=(78,),
+                         ls_archive_keys=(77,))
+        measured = roll_state.measure(td)
+        line = roll_state.render_line(measured, today=datetime.date(2026, 8, 2))
+        _handoff_fixture(td, 79, [line[2:], line[2:]], log_keys=(78,), gm_archive_keys=(78,),
+                         ls_archive_keys=(77,))
+        f_, _w, _n = roll_claim_check(td)
+        if not any("duplicate homes" in x for x in f_):
+            failures.append(f"duplicate-generated-lines fixture: expected a duplicate-homes "
+                            f"FAIL, got {f_}")
+
+    # ---- #58 crash-shape, re-enacted on THE SURVIVING PARSER (arm (ii) is gone, so the crash
+    # class now lives entirely inside `_ROLL_GENERATED_RE`'s own digit groups): (a) a prose
+    # mention with a bare comma sitting BEFORE the real generated line must not crash and must
+    # grade the real line, the mention itself simply never anchoring and so never being looked
+    # at; (b) a line that DOES anchor (`**residual (GENERATED`) but is corrupted in the #58 bare-
+    # comma shape inside its own digit group must not crash either — it must FAIL loud and named
+    # as an unparseable generated line, never guess a value out of punctuation.
+    with tempfile.TemporaryDirectory() as td:
+        mention = ("no residual was written before the job, and that is a LAPSE — 2f NOT run, "
+                  "2c OK, state pending")
+        _handoff_fixture(td, 58, [mention], log_keys=(57,), gm_archive_keys=(57,),
+                         ls_archive_keys=(56,))
+        measured = roll_state.measure(td)
+        line = roll_state.render_line(measured, today=datetime.date(2026, 8, 2))
+        _handoff_fixture(td, 58, [mention, line[2:]], log_keys=(57,), gm_archive_keys=(57,),
+                         ls_archive_keys=(56,))
+        try:
+            f_, _w, n_ = roll_claim_check(td)
+        except Exception as e:
+            failures.append(f"#58 crash-shape (mention-then-generated): roll_claim_check "
+                            f"RAISED ({e}) — a crash is not a fail")
+        else:
+            if f_:
+                failures.append(f"#58 crash-shape (mention-then-generated): the prose mention "
+                                f"(bare comma, no anchor) should be ignored and the real "
+                                f"generated line graded clean, got fails: {f_}")
+            elif not any("consistent with the measured tree" in x for x in n_):
+                failures.append("#58 crash-shape (mention-then-generated): passing case said "
+                                "nothing")
+    with tempfile.TemporaryDirectory() as td:
+        malformed = ("**residual (GENERATED #58):** 2c OK (banners ,/2) · 2d OK (deltas 3/3) · "
+                    "2f OK (strata 0, log #57) — _roll_state.py · 2026-08-01")
+        _handoff_fixture(td, 58, [malformed], log_keys=(57,), gm_archive_keys=(57,),
+                         ls_archive_keys=(56,))
+        try:
+            f_, _w, _n = roll_claim_check(td)
+        except Exception as e:
+            failures.append(f"#58 crash-shape (anchored malformed, bare comma): roll_claim_check "
+                            f"RAISED ({e}) — a crash is not a fail")
+        else:
+            if not any("does not parse against its full shape" in x for x in f_):
+                failures.append(f"#58 crash-shape (anchored malformed, bare comma): expected a "
+                                f"named parse-failure FAIL, got {f_}")
+
+    # ---- Green control: the canonical GENERATED line, matching the measured tree exactly, and
+    # the passing path SAYS so (a silent pass cannot be told apart from a dead check).
+    with tempfile.TemporaryDirectory() as td:
+        _handoff_fixture(td, 77, None, log_keys=(76,), gm_archive_keys=(76,),
+                         ls_archive_keys=(75,))
+        measured = roll_state.measure(td)
+        line = roll_state.render_line(measured, today=datetime.date(2026, 8, 2))
+        _handoff_fixture(td, 77, line[2:], log_keys=(76,), gm_archive_keys=(76,),
+                         ls_archive_keys=(75,))
+        f_, _w, n_ = roll_claim_check(td)
+        if f_:
+            failures.append(f"green control: the canonical generated line, matching the "
+                            f"measured tree, FAILED: {f_}")
+        if not any("consistent with the measured tree" in x for x in n_):
+            failures.append("green control: the passing case said nothing")
+
+    # ---- #70/#71 (skipped wrap): DECLARED NON-CATCH, not faked here. The regime's only net for
+    # this class is `_gen_chain.py`'s stale-title bite (one session late) — assert it is still
+    # live, by running ITS OWN selftest, rather than duplicating it as a fixture in this file.
+    sys.path.insert(0, HERE)
+    try:
+        import _gen_chain
+        rc = _gen_chain.selftest()
+        if rc != 0:
+            failures.append("#70/#71 non-catch: _gen_chain.py --selftest is NOT green — the "
+                            "regime's only net for a skipped wrap (the stale-title bite, one "
+                            "session late) is broken")
+    except Exception as e:
+        failures.append(f"#70/#71 non-catch: could not run _gen_chain.py's own selftest ({e})")
+
+    return failures
+
+
 def selftest():
     failures = (selftest_preflight() + selftest_preflight_tokens()
                 + selftest_budgets() + selftest_strata_exempt() + selftest_units()
                 + selftest_bare_token()
                 + selftest_gauge_continuity() + selftest_unkeyed()
                 + selftest_growth() + selftest_usage()
-                + selftest_lanes() + selftest_receipts() + selftest_index_freshness())
+                + selftest_lanes() + selftest_receipts() + selftest_index_freshness()
+                + selftest_handoff_history())
     with tempfile.TemporaryDirectory() as td:
         os.makedirs(os.path.join(td, "notes"))
         os.makedirs(os.path.join(td, "_DECISION-HISTORY"))

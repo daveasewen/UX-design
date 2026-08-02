@@ -1,4 +1,12 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
+## ⏱ PRIOR DELTA — 2026-08-01 (Sat **#74**, FABLE solo Cowork conductor, Dave live — ✅ **THE WRAP GATE GETS ITS CONSUMER (#74-D1 WARN/`--wrap` SPLIT)** · ✅ **D2 WRAP RING-FENCED · D3 % PATH RETIRED** · ✅ **HALF-2's SUCCESSOR WAS `_checkin.py` ALL ALONG — THE RECORD WAS STALE**)
+
+- ✅ **#74-D1 (Dave: "the split is the best of both worlds"):** `_git_commit.sh` consumes the wrap gate — default red = visible WARN + declared not-a-wrap; `--wrap` red BLOCKS pre-stage. Enacted `c27d7b1`; four arms proven (green-default + red-default LIVE, both red arms shimmed on the real seam, green-`--wrap` = this wrap's commit). Declared residual: the #70 never-wrapped class is invisible at this seam — the (f) title check owns it next session.
+- ✅ **The fix list, Dave's directive:** pre-flight first-match ATTRIBUTION (older/untagged stamp under a numbered ★ LATEST now FAILS; #72-graded-on-#71 dead) · `_context_gauge.py` refuses without tiktoken (`--estimate` labels) · runbook § Half 2 corrected: `_checkin.py` (RULED #52) is the rebuilt instrument; `read_transcript` re-probed #74, still strips results. All `f8ff234`.
+- ✅ **#74-D2:** wrap term RING-FENCED at any mid-session re-price (runbook § Half 0b (a′)) — the job shrinks, never the wrap. ✅ **#74-D3:** dormant % path RETIRED IN CODE (`9cde313`, ~9.3K chars cut; history intact in ledger § #36 + runbook ds-023; %-form stamp now FAILS naming the ruling).
+- ★ Mid-window `_checkin.py` reading, units declared: conversation THROUGHPUT 160,334 tape; boot UNMEASURED (`ds-025`); not convertible to a band.
+- ⬛ **Dave's at #75 — back to Apollo:** legend scope (his words first) · D3 (SIGNOFF row added) · edge types (§C·2 standing) · radios live · trigger index (§C·2 standing, needs his eyes).
+
 ## ⏱ PRIOR DELTA — 2026-08-01 (Sat **#73**, FABLE solo Cowork conductor, Dave live — ✅ **DEGRADATION DIAGNOSED: UNRULED SEAMS, NOT DECAY** · ✅ **(g)+(h)+(f) ENACTED, MUTATION-PROVEN** · ⚠ **#72's OWN RESIDUAL WAS THE THIRD BANNER-BEFORE-SEAM INSTANCE**)
 
 - ✅ **The answer to Dave's opener, verified on artefacts:** four unruled seams (e–h) recur by construction; the "working well" period was partly the silent-estimate path (pre-#59) and FRESH chains over skipped wraps (#70/#71). Housekeeping `f70f602`: owed 2d run (#69 delta → archive), #72's false residual + size-line claims struck at source, corpus re-measured 44.7K, debris swept.

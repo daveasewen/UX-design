@@ -50,6 +50,12 @@ STEPS = [
     # gates BY RULING; wrap-time checks are `--wrap`, session-run, not wired here.
     ("capture/provenance gate — status+provenance on new notes+dossiers (Memento §4.1)", "_capture_gate.py"),
     ("capture/provenance selftest (Memento §4.1)", "_capture_gate.py", ["--selftest"]),
+    # #77 (ruled Dave, R1–R4 — ledger § ★ #77): the roll-state MEASURER the roll-claim check
+    # re-derives from at every --wrap. Its selftest proves the green control renders exactly,
+    # every corrupted surface refuses NAMED, every OVER state bites. The measurer itself runs
+    # at ritual time (its line is pasted into the banner); wired here so CI asks it — a
+    # selftest not in STEPS is a gate that does not run (periphery inventory, 2026-08-02).
+    ("roll-state measurer selftest (#77 T1)", "_roll_state.py", ["--selftest"]),
     # M5 (brief §11, built 2026-07-28 #21): the hardened GM/LS mover the wrap ritual's
     # 2c/2d/2e moves route through. Its selftest is the proof its refusals FIRE — line-start
     # anchors · §A digest assert · imported caps (warn ≠ block) · no-op loud FAIL ·

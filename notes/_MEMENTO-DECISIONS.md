@@ -2542,3 +2542,43 @@ Apollo work deferred by him, not by drift.
   section). All at `f8ff234` + this commit.
 - **Premise-corrected, no edit:** the ~35k baseline row was already reconciled honestly at
   #14 — the planned "fix" would have been growth, not repair.
+
+## ★ #77 — 2026-08-02 (Sun; Fable solo Cowork conductor, Dave live)
+
+**Context:** Dave's #76 ask, verbatim: *"can I have a rigorous testing regime planed for the
+whole handoff system plan in the next session, it keep breaking."* Plan authored #77 after
+premise verification against the call graph (banner-before-gate confirmed; no `roll_claim`
+check exists; msgfile read by nothing; `chain_parts` is the one slicer). Plan:
+`notes/2026-08-02-handoff-testing-regime-plan.md`. Dave ratified the mutation-first posture in
+chat (*"remember to test the crap out of it"*), then ruled all four via explicit option-select
+("All four ruled — build") after read-back distinguished direction-approval from rulings.
+
+- **#77-D1 (Dave) — R1: the banner's roll-residual line is GENERATED, never authored.**
+  New `_roll_state.py` measures banner/delta/stratum depths + newest `_GAUGE-LOG.md` and
+  archive keys, emits ONE canonical line; UNKNOWN never defaulted — unparseable surfaces fail
+  loud and named. WHY: "declare LAST" failed at #73 because the wrap gate changes state after
+  any declaration; a generated claim cannot lag the artefact it is generated from. Kills the
+  forward-claim class (#73/#75/#76) at source.
+- **#77-D2 (Dave) — R2: the commit-message HEADLINE is generated from the ★ LATEST banner.**
+  Body stays freehand for mechanics. WHY: makes the #72/#76 "finding lives only in the
+  msgfile" defect UNWRITABLE rather than detectable; refusal-matching freehand prose would
+  false-positive. Reversal = one script edit, declared in the plan.
+- **#77-D3 (Dave) — R3: `roll_claim_check` BLOCKING, delivered at the commit seam.**
+  ⚠ **Correction found at ledger read-back, recorded here and in the plan note:** the plan's
+  commit-vs-wrap dichotomy was FALSE — #74-D1 already runs `--wrap` from `_git_commit.sh`.
+  Enactment: the check lives INSIDE `wrap_checks()` (single home); the #74-D1 WARN/`--wrap`
+  consumer delivers it at commit. Scope per gate-must-quote-what-it-forbids: exact quoted
+  residual forms only, unknown forms fail loud.
+- **#77-D4 (Dave) — R4: growth contract — a handoff breakage may not be recorded closed
+  without its re-enactment fixture landing in the same commit.** Discipline-checked at review
+  at birth (no new gate); the house escalation path (gate it when discipline fails) is the
+  declared control. WHY: the only layer aimed at "it KEEPS breaking" rather than "it broke".
+- **T0 acceptance criterion (the whole regime's):** re-enact the five named breakages
+  (#70/#71 skipped wrap · #72 msgfile-only finding · #73 mid-wrap drift · #75 false residual
+  · #58 crash-shape) — each RED, green controls green. A layer whose re-enactment passes is
+  an assertion, not a test.
+- **Declared non-catches, ruled in with the plan:** a session that never wraps (next-session
+  title check remains the only net) · honesty of fill figures (form only) · reasons ·
+  the stale-prose class (owned by `_assertions.json`, not a sixth layer).
+- **Build delegated** (RULED #57 shape: mutation-testable, no rulings produced by the build);
+  fixture SEMANTICS ratified in-window by the conductor; T0 run in-window with receipts.

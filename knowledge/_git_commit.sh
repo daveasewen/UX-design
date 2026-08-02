@@ -105,6 +105,62 @@ else
   fi
 fi
 
+# T3 #77-D2 — single-source the commit headline from the GM ★ LATEST banner (handoff-testing-
+# regime plan, RULED #77). Kills the "found only in the commit message" class (#72/#76): the
+# banner becomes the one source and a finding that exists only in the msgfile is unwritable.
+# Body lines 2+ stay freehand. Minimal edit — does not touch the --wrap split or the chain check.
+# ⚠ #77 refinement: the FIRST cut of this block took "everything after the heading's own first
+# em-dash", which lands on the DATE-to-paren dash and so keeps the role clause ("Sun **#N**,
+# MODEL, Dave live") as noise ahead of the actual summary. Primary parse now reaches INTO the
+# parenthetical and skips past ITS OWN first " — " (the role clause's own separator from the
+# summary glyphs) to get the summary alone. Cosmetics must never block a commit, so a heading
+# shaped unusually (no " — " inside the parenthetical) is not a hard failure — it falls back to
+# the original first-em-dash reading and prints a one-line note naming the fallback. Only a
+# WHOLLY MISSING ★ LATEST heading still fails loud (nothing to derive a headline from at all).
+python3 - "$MSGFILE" <<'PYEOF' || fail "T3 headline generation failed (see traceback above) — the ★ LATEST banner in GOOD-MORNING.md could not be parsed. Nothing has been staged."
+import re, sys
+msgfile = sys.argv[1]
+with open("GOOD-MORNING.md", encoding="utf-8") as f:
+    gm = f.read()
+m = re.search(r"^\s*>?\s*#{1,6}\s*★\s*LATEST\s*—\s*(\d{4}-\d{2}-\d{2}).*?\*\*#(\d+)\*\*.*$",
+              gm, re.M)
+if not m:
+    sys.exit("T3: no `> ## ★ LATEST — <date> (... **#N** ...)` banner heading found in "
+             "GOOD-MORNING.md — cannot derive the commit headline.")
+date, n, line = m.group(1), m.group(2), m.group(0)
+
+# Primary parse: the parenthetical's content AFTER ITS OWN first " — ", skipping the role
+# clause to reach the summary glyphs. The parenthetical is the outermost "(...)" on the line —
+# first "(" to the LAST ")" at line-end — so nested parens inside the summary (e.g. "(banners
+# 2/2)") are swallowed whole, not mistaken for the close.
+after, fallback_note = None, None
+paren_m = re.search(r"\((.*)\)\s*$", line)
+if paren_m:
+    parts = paren_m.group(1).split(" — ", 1)
+    if len(parts) == 2 and parts[1].strip():
+        after = parts[1].strip()
+if after is None:
+    # FALLBACK — cosmetics must never block a commit. The primary parse found no " — " of its
+    # own inside the parenthetical (an unusual or malformed heading); fall back to the reading
+    # this block used before the #77 refinement: everything after the heading's OWN first
+    # em-dash (the LATEST—date separator). Still readable, just carries the role clause as noise.
+    after = line.split("—", 1)[1].strip()
+    fallback_note = ("— T3 NOTE: primary headline parse (role-clause skip) found no ' — ' of "
+                     "its own inside the ★ LATEST parenthetical — fell back to the first-em-dash "
+                     "reading. Heading: " + line.strip()[:200])
+
+if len(after) > 120:
+    after = after[:117] + "…"
+headline = f"#{n} {date} — {after}"
+with open(msgfile, encoding="utf-8") as f:
+    body_lines = f.read().splitlines()
+with open(msgfile, "w", encoding="utf-8") as f:
+    f.write("\n".join([headline] + body_lines[1:]) + "\n")
+if fallback_note:
+    print(fallback_note)
+print(f"— T3 headline: {headline[:100]}{'…' if len(headline) > 100 else ''}")
+PYEOF
+
 # clear · stage · clear · commit · clear
 clear_locks
 find .git -name '*.lock' | grep -q . && fail "lock survived the mv-aside — do NOT stage; investigate"
