@@ -11,7 +11,7 @@ build step, not a copy step; a half-renamed copy would be neither auditable nor 
 
 | file | source | src commit | bytes / lines | verbatim? |
 |---|---|---|---|---|
-| `_gen_chain.py` | `knowledge/_gen_chain.py` | `24ff35b` 2026-07-31 | 22,094 / 391 | yes |
+| `_gen_chain.py` | `knowledge/_gen_chain.py` | `514f4bd` 2026-08-02 | 25,616 / 445 | yes — **RE-SYNCED #79** |
 | `_memento_search.py` | `knowledge/_memento_search.py` | `59148f3` 2026-07-28 | 8,158 / 202 | yes |
 | `_search_core.py` | `knowledge/_search_core.py` | `59148f3` 2026-07-28 | 11,869 / 255 | yes |
 | `_consult-lexicon.json` | `knowledge/_consult-lexicon.json` | `dbb0ef7` 2026-07-18 | 3,361 / 93 | yes |

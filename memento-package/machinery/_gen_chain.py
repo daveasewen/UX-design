@@ -181,7 +181,39 @@ def build(repo=ROOT):
     if slice_tk is None:
         return None, chain_detail
 
+    # ---- #73: THE TITLE, FIRST (#72 (f), enacted on Dave's word; he asked to see the generator
+    # first — the change is this block and nothing else). The forward title lapsed three sessions
+    # running and #72's diagnosis was POSITION, not absence: it sat below six banner paragraphs.
+    # So the generated chain now opens with it, above the banners. The #N assertion below catches
+    # a STALE title (a wrap that forgot to mint the next one); it canNOT catch a skipped wrap —
+    # said plainly here because overselling a gate is how greens stop meaning anything.
+    # ⚠ The title also still appears inside gm_part (the header slice is VERBATIM by contract);
+    # the ~60-tape duplication is the price of position and is declared, not hidden.
+    import re
+    m_title = re.search(r"\*\*TITLE THE NEXT CHAT →\*\*\s*(`[^`\n]+`)", gm_text)
+    m_latest = re.search(r"##\s*★\s*LATEST\s*—[^\n]*?#(\d+)", gm_text)
+    title_block = ""
+    if m_title:
+        title = m_title.group(1)
+        t_n = re.search(r"#(\d+)", title)
+        l_n = int(m_latest.group(1)) if m_latest else None
+        if t_n and l_n is not None:
+            t_i = int(t_n.group(1))
+            if t_i != l_n + 1:
+                return None, (
+                    f"the NEXT-CHAT title names #{t_i} but ★ LATEST is #{l_n} — a wrap must "
+                    f"hand the next session its own title (#{l_n + 1}). This is the STALE-title "
+                    f"check (#72 (f)); it cannot see a skipped wrap. Fix the `TITLE THE NEXT "
+                    f"CHAT` line in GOOD-MORNING.md and regenerate.")
+            title_block = (
+                f"> **YOU ARE #{t_i}. TITLE THIS CHAT →** {title}\n"
+                f"> *(read it back in your opener — the chat half of the ritual is ungateable, "
+                f"which is why this line is FIRST)*\n\n---\n\n")
+        else:
+            title_block = f"> **TITLE THIS CHAT →** {title}\n\n---\n\n"
+
     body = gm_part if delta is None else gm_part + "\n\n---\n\n" + delta
+    body = title_block + body
     # ⚠ Every published figure here is MEASURED with the gate's own tokenizer, never derived from
     # line counts or character lengths. A COUNT IS NOT A MEASUREMENT — the standing lesson.
     gm_part_tk = cg.measure_tokens(gm_part)[0]
@@ -310,6 +342,9 @@ def selftest():
         bite("tells the reader NOT to open GOOD-MORNING.md to check",
              "Do NOT now open" in text)
         bite("names retrieval as the door for everything else", "_memento_search.py" in text)
+        # ---- #73 (f): the title rides ABOVE the banners, and a stale title refuses.
+        bite("TITLE BLOCK IS FIRST — above the verbatim GM slice (position was the defect)",
+             "TITLE THIS CHAT" in text and text.index("TITLE THIS CHAT") < text.index(gm_part[:40]))
 
     # determinism: two builds of an unchanged tree are byte-identical
     t2, _ = build(ROOT)
@@ -367,6 +402,25 @@ def selftest():
         bite("--check FAILS on a hand-edited file (the stale-record class)", check(tmp) == 1)
         os.remove(os.path.join(tmp, OUT_NAME))
         bite("--check FAILS when the file is missing entirely", check(tmp) == 1)
+        # ---- #73 (f): a STALE title must REFUSE, mutation-tested both arms. The live repo run
+        # at the top of this selftest is the passing arm (title #N == latest #N + 1); this arm
+        # rewrites the title to equal ★ LATEST's own number — the exact state a skipped mint
+        # leaves behind — and the build must refuse with both numbers named.
+        gm_live = open(os.path.join(ROOT, "GOOD-MORNING.md"), encoding="utf-8").read()
+        import re as _re
+        _ml = _re.search(r"##\s*★\s*LATEST\s*—[^\n]*?#(\d+)", gm_live)
+        _mt = _re.search(r"(\*\*TITLE THE NEXT CHAT →\*\*\s*`)[^`\n]*#(\d+)", gm_live)
+        if _ml and _mt:
+            stale = _re.sub(r"(\*\*TITLE THE NEXT CHAT →\*\*\s*`[^`\n]*?#)\d+",
+                            r"\g<1>" + _ml.group(1), gm_live, count=1)
+            with open(os.path.join(tmp, "GOOD-MORNING.md"), "w", encoding="utf-8") as f:
+                f.write(stale)
+            t4, r4 = build(tmp)
+            bite("REFUSES a STALE title (title #N == ★ LATEST #N, the skipped-mint state)",
+                 t4 is None and isinstance(r4, str) and "STALE-title" in r4)
+        else:
+            bite("stale-title arm UNMEASURED — live GM lacks an extractable title/#N pair", False)
+
         # refusal: no ★ LATEST banner ⇒ REFUSE, never emit a confident blank
         with open(os.path.join(tmp, "GOOD-MORNING.md"), "w", encoding="utf-8") as f:
             f.write("# nothing here\n")

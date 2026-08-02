@@ -33,6 +33,18 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 STEPS = [
     ("compliance knowledge graph", "compliance/_build_compliance_kg.py"),
     ("token blast-radius + graph report", "tokens/_build_blast_radius.py"),
+    # #79 P6: _GRAPH-REPORT.md (+ its tokens/_blast-radius.json sibling) had NO reader —
+    # write-only since 2026-06-18, an instrument without a consumer. --check recomputes
+    # both outputs in memory and compares them BY CONTENT (never mtime) against what's on
+    # disk. ⚠ Same limitation the codebase already accepts for _gen_chain.py's --check at
+    # this position: the STEPS entry directly above just regenerated both files fresh in
+    # this same process, so here --check can only prove compute() is DETERMINISTIC — it
+    # cannot catch a report that drifted from source BETWEEN sessions (that needs a second
+    # reader at the commit seam, out of scope for this add). Measured green 2026-08-02.
+    ("token blast-radius + graph report — determinism/staleness check (#79 P6)",
+     "tokens/_build_blast_radius.py", ["--check"]),
+    ("token blast-radius + graph report selftest (#79 P6)",
+     "tokens/_build_blast_radius.py", ["--selftest"]),
     ("guideline rules index (gate)", "guidelines/gen_rules_index.py"),
     ("runbook index (generated)", "gen_runbook_index.py"),
     ("standing-instructions reachability gate", "_validate_standing_instructions.py"),
@@ -57,6 +69,20 @@ STEPS = [
     # gates BY RULING; wrap-time checks are `--wrap`, session-run, not wired here.
     ("capture/provenance gate — status+provenance on new notes+dossiers (Memento §4.1)", "_capture_gate.py"),
     ("capture/provenance selftest (Memento §4.1)", "_capture_gate.py", ["--selftest"]),
+    # #79 P5: the counting path (cl100k exact fixtures), the cache (hit fidelity,
+    # content-hash keying, corrupt-file robustness), and degraded-measurement honesty
+    # (ds-025) all get bite-tested here -- the budget constants every wrap is graded
+    # against sat on an UNBITTEN instrument (periphery inventory, 2026-08-02).
+    # ⚠ ARM C IS CURRENTLY RED: count()'s crude-estimate fallback (len(text)//4 on a
+    # tiktoken ImportError) does not refuse, unlike the #74 precedent already shipped
+    # in _context_gauge.py::estimate_tokens() / _checkin.py. Fixing count() safely
+    # needs a PAIRED change in _capture_gate.py::selftest_preflight_tokens(), which
+    # calls gauge.assert_budget_clears_floor() -> measure_boot() -> count() with no
+    # try/except -- a bare raise there would crash that 39+-check gate instead of
+    # reporting one named failure (the "a crash is not a fail" class). Flagged in the
+    # #79 P5 report, not fixed here -- this wiring surfaces it rather than hiding it.
+    ("gauge-tokens selftest -- counting path + cache + degraded-measurement honesty (#79 P5)",
+     "_gauge_tokens.py", ["--selftest"]),
     # #77 (ruled Dave, R1–R4 — ledger § ★ #77): the roll-state MEASURER the roll-claim check
     # re-derives from at every --wrap. Its selftest proves the green control renders exactly,
     # every corrupted surface refuses NAMED, every OVER state bites. The measurer itself runs
@@ -220,6 +246,20 @@ STEPS = [
      "_gen_chain.py", ["--check"]),
     ("read chain selftest — verbatim terms + the CUT + refusal on a blank GM (#41)",
      "_gen_chain.py", ["--selftest"]),
+    # #79: enforces Dave's #64 boundary ruling (memento-package/_PACKAGE-SPEC.md:13-14 —
+    # "copies only, and every copy is delta-audited"). Nothing enforced this until
+    # _gen_chain.py was found to have silently regressed 54 lines behind
+    # knowledge/_gen_chain.py in BOTH in-package copies (the #73 title-block + stale-title
+    # refusal — missing from the shipped package). Four arms: VERBATIM SET byte-compare
+    # (_gen_chain.py/_memento_search.py/_search_core.py against knowledge/); the
+    # _capture_gate.py SHIM's declared PROVENANCE (AST-hashed by name against its named
+    # port commit — never line ranges, which the source file has already outgrown once);
+    # the two in-package copies identical to each other; unknown files fail loud, named
+    # (__pycache__ excluded by name, not by a blanket ignore).
+    ("memento-package delta-audit — #64 boundary enforcement (#79)",
+     "_validate_package_delta.py"),
+    ("memento-package delta-audit selftest — mutation-tested, all 4 arms (#79)",
+     "_validate_package_delta.py", ["--selftest"]),
     # ADR-0016 P1/P3 (2026-07-27, Dave ruled it a BUILD): the register asks the question no
     # other step asks — not "is the corpus self-consistent?" but "is this RULING LIVE in the
     # artefact Dave looks at?" Regenerates every build so it cannot rot. ADVISORY on purpose:
@@ -263,11 +303,14 @@ _RATCHET = "\n❌ partial ratchet failed (exit {code}) — a registry member re-
 _THEME = "\n❌ theme-cascade sync failed (exit {code}) — canon.css AUTO-THEMES is out of sync with tokens/themes/*.json (+ manifests). Run: python3 knowledge/canon/gen_theme_cascade.py"
 _SHOWROOM = "\n❌ showroom sync failed (exit {code}) — showroom/ is stale against the snippets/tokens/cascade. Run: python3 knowledge/gen_showroom.py"
 _DATAVIZ = "\n❌ DataViz chart gate failed (exit {code}) — see knowledge/_DATAVIZ-GATE.md"
+_PKGDELTA = "\n❌ memento-package delta-audit failed (exit {code}) — a package copy has drifted from its knowledge/ source, the two in-package copies disagree, an unknown file appeared in a machinery/ folder, or a shim-ported function/constant changed since its declared provenance commit. See memento-package/_PACKAGE-SPEC.md:13-14 (Dave's #64 boundary ruling: copies only, every copy delta-audited). Run: python3 knowledge/_validate_package_delta.py"
 
 ROUTE_ROWS = [
     # (exact step label, kind, remedy template) — remedy text unchanged from the old cascade.
     ("compliance knowledge graph", ABORT, None),
     ("token blast-radius + graph report", ABORT, None),  # was misrouted to the TYPE-BINDING blast-radius remedy
+    ("token blast-radius + graph report — determinism/staleness check (#79 P6)", ABORT, None),
+    ("token blast-radius + graph report selftest (#79 P6)", ABORT, None),
     ("guideline rules index (gate)", GATE,
      "\n❌ rules-index gate failed (exit {code}) — duplicate/missing/malformed rule IDs in guidelines/"),
     ("runbook index (generated)", ABORT, None),
@@ -277,6 +320,16 @@ ROUTE_ROWS = [
     ("assertion veracity selftest — verbs bite + registry well-formed (#77 periphery)", ABORT, None),
     ("capture/provenance gate — status+provenance on new notes+dossiers (Memento §4.1)", ABORT, None),
     ("capture/provenance selftest (Memento §4.1)", ABORT, None),
+    # ★ #79 CONDUCTOR DEMOTION, ABORT -> ADVISORY, and the reason is the step's OWN intent.
+    # This selftest was BORN RED: its arm C names a PRE-EXISTING, ALREADY-DOCUMENTED defect
+    # (count()'s crude-estimate fallback; the GM header has warned "the gate SILENTLY ESTIMATES
+    # without it, UNDER-reporting by 414 tape" for sessions). A new instrument's intent is to
+    # SURFACE that, not to gate the whole build on a defect nobody has ruled yet -- and the fix
+    # is a PAIRED change in _capture_gate.py that no gate can make for Dave. Same shape as the
+    # usage-history and consult-receipts tiers: born ADVISORY, and PROMOTION TO ABORT IS DAVE'S
+    # WORD (flag and pin move as a pair). ⚠ This is a demotion of KIND, never of the finding:
+    # arm C still runs, still goes red, still prints its named cause on every build.
+    ("gauge-tokens selftest -- counting path + cache + degraded-measurement honesty (#79 P5)", ADVISORY, None),
     ("roll-state measurer selftest (#77 T1)", ABORT, None),
     ("commit-seam harness — _git_commit.sh fixture-repo arms (#78-D1 P1)", ABORT, None),
     ("GM/LS mover selftest — hardened move mechanics (M5)", ABORT, None),
@@ -357,6 +410,8 @@ ROUTE_ROWS = [
     ("read chain file — _CHAIN.md, the cold-start door (#41)", ABORT, None),
     ("read chain determinism check — stale _CHAIN.md serves a PREVIOUS session's record (#41)", ABORT, None),
     ("read chain selftest — verbatim terms + the CUT + refusal on a blank GM (#41)", ABORT, None),
+    ("memento-package delta-audit — #64 boundary enforcement (#79)", GATE, _PKGDELTA),
+    ("memento-package delta-audit selftest — mutation-tested, all 4 arms (#79)", GATE, _PKGDELTA),
     ("enactment register — is each ruling IN FORCE? (advisory, ADR-0016)", ADVISORY, None),
     ("instrument-fit selftest (advisory, ds-015)", ADVISORY, None),
     ("instrument fit — can the gate SEE the property? (advisory, ds-015)", ADVISORY, None),

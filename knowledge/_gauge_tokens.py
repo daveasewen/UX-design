@@ -32,6 +32,9 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import shutil
+import sys
+import tempfile
 import urllib.error
 import urllib.request
 
@@ -234,5 +237,233 @@ def main() -> int:
     return 0
 
 
+def selftest() -> int:
+    """Bite-tests for the counting path (A), the cache (B), and degraded-measurement
+    honesty (C) -- plus (D) the budget-guard LOGIC, tested relative to whatever the live
+    constants are. This module shipped 238 lines with ZERO selftest; every wrap is graded
+    through it and it had never been proven (session #79, P5).
+
+    XX Does NOT re-pin the ruled budget triple. `(BUDGET_AMBER, BUDGET_WORKING, BUDGET_HARD)
+    == (160_000, 200_000, 256_000)` has exactly ONE authority -- `_capture_gate.py`\'s
+    `selftest_preflight_tokens()`, which asserts it by importing this module. A second
+    literal copy here would be the exact defect [[gate-must-quote-what-it-forbids]] warns
+    about. Arm D checks the GUARD\'s LOGIC (ordering + floor-clearing), never the numbers.
+
+    Runs entirely OFFLINE and touches neither the real `.token-cache.json` nor the real
+    `API-KEY.txt`: `CACHE`/`REPO` are swapped to an isolated tempdir for the duration and
+    restored -- even on exception -- before this function returns.
+    """
+    failures: list[str] = []
+    global CACHE, REPO
+    _orig_cache, _orig_repo, _orig_urlopen = CACHE, REPO, urllib.request.urlopen
+    tmpdir = tempfile.mkdtemp(prefix="gauge-selftest-")
+    CACHE = os.path.join(tmpdir, ".token-cache.json")
+    REPO = tmpdir
+
+    def _arm(name, fn):
+        try:
+            fn()
+        except Exception as e:
+            failures.append(f"[{name}] CRASHED rather than failing named: "
+                            f"{type(e).__name__}: {e}")
+
+    try:
+        # ================================================================== ARM A
+        def _arm_a():
+            fixtures = [
+                ("", 0),
+                ("hello world", 2),
+                ("The quick brown fox jumps over the lazy dog.", 10),
+                ("café résumé — token test 日本語", 12),
+                ("a" * 100, 13),
+            ]
+            try:
+                import tiktoken  # noqa: F401 -- presence probe; absence is ARM C's subject
+            except ImportError:
+                failures.append("[A counting path] tiktoken not installed in this "
+                                "environment -- cannot verify exact cl100k_base counts. "
+                                "pip install tiktoken --break-system-packages")
+                return
+            for text, want in fixtures:
+                n, method = count(text, allow_api=False)
+                if method != "cl100k-estimate":
+                    failures.append(f"[A counting path] {text!r}: expected method "
+                                    f"'cl100k-estimate', got {method!r}")
+                elif n != want:
+                    failures.append(f"[A counting path] {text!r}: expected {want} "
+                                    f"tokens, got {n} -- the cl100k_base tier drifted")
+        _arm("A counting path", _arm_a)
+
+        # ================================================================== ARM B
+        calls = [0]
+
+        class _FakeResp:
+            def __init__(self, payload):
+                self._b = json.dumps(payload).encode()
+            def __enter__(self):
+                return self
+            def __exit__(self, *a):
+                return False
+            def read(self):
+                return self._b
+
+        def _fake_urlopen(req, timeout=20):
+            calls[0] += 1
+            payload = json.loads(req.data.decode())
+            content = payload["messages"][0]["content"]
+            return _FakeResp({"input_tokens": len(content)})  # content-sensitive, not fixed
+
+        def _arm_b1():
+            with open(os.path.join(tmpdir, "API-KEY.txt"), "w", encoding="utf-8") as f:
+                f.write("sk-ant-selftest-fixture-key")
+            urllib.request.urlopen = _fake_urlopen
+            try:
+                text = "ARM B1 fixture text -- cache round-trip probe"
+                want = len(text)
+                n1, m1 = count(text, allow_api=True)
+                n2, m2 = count(text, allow_api=True)
+            finally:
+                urllib.request.urlopen = _orig_urlopen
+            if (n1, m1) != (want, "real"):
+                failures.append(f"[B1 cache] cold read: expected ({want}, 'real'), "
+                                f"got {(n1, m1)}")
+            if (n2, m2) != (n1, m1):
+                failures.append(f"[B1 cache] warm (cached) read {(n2, m2)} != "
+                                f"cold read {(n1, m1)} -- a hit must return the SAME "
+                                f"answer as the read that populated it")
+            if calls[0] != 1:
+                failures.append(f"[B1 cache] network called {calls[0]} time(s) for 2 "
+                                f"identical count() calls -- the second read did not "
+                                f"hit the cache")
+        _arm("B1 cache hit fidelity", _arm_b1)
+
+        def _arm_b2():
+            calls[0] = 0
+            urllib.request.urlopen = _fake_urlopen
+            try:
+                t_same = "ARM B2 -- identical content probe"
+                t_diff = "ARM B2 -- identical content probe, CHANGED (longer text)"
+                same_a = count(t_same, allow_api=True)
+                same_b = count(t_same, allow_api=True)
+                diff_c = count(t_diff, allow_api=True)
+            finally:
+                urllib.request.urlopen = _orig_urlopen
+            if same_a != same_b:
+                failures.append(f"[B2 cache] identical content produced different "
+                                f"answers: {same_a} vs {same_b}")
+            if calls[0] != 2:
+                failures.append(f"[B2 cache] expected exactly 2 network calls (one "
+                                f"per DISTINCT content, the repeat must be a hit), "
+                                f"got {calls[0]}")
+            if diff_c[0] != len(t_diff):
+                failures.append(f"[B2 cache] changed content returned {diff_c[0]}, "
+                                f"expected a FRESH measurement of {len(t_diff)} -- "
+                                f"the cache is not content-keyed (staleness bug: a "
+                                f"content change was served the OLD text's answer)")
+        _arm("B2 content-hash keying (not mtime)", _arm_b2)
+
+        def _arm_b3b4():
+            global CACHE
+            CACHE = os.path.join(tmpdir, "does-not-exist.json")
+            if _cache() != {}:
+                failures.append("[B3 cache] _cache() on a missing file did not "
+                                "return {} -- it must fail SOFT")
+            CACHE = os.path.join(tmpdir, "corrupt.json")
+            try:
+                with open(CACHE, "w", encoding="utf-8") as f:
+                    f.write("{not valid json,,,")
+                if _cache() != {}:
+                    failures.append("[B4 cache] _cache() on a corrupt file did not "
+                                    "return {} -- it must fail SOFT")
+                try:
+                    count("text measured while the cache file on disk is corrupt",
+                          allow_api=False)
+                except Exception as e:
+                    failures.append(f"[B4 cache] count() crashed on a corrupt cache "
+                                    f"file instead of falling through: "
+                                    f"{type(e).__name__}: {e}")
+            finally:
+                # ALWAYS restore, even if _cache()/count() raised above (a mutation
+                # that breaks B3/B4 must not leak a corrupt CACHE path into ARM C/D).
+                CACHE = os.path.join(tmpdir, ".token-cache.json")
+        _arm("B3/B4 _cache() fails soft on missing/corrupt file", _arm_b3b4)
+
+        try:
+            os.remove(os.path.join(tmpdir, "API-KEY.txt"))
+        except OSError:
+            pass
+        # From here on no key is discoverable via REPO -- arms C/D cannot reach the
+        # network branch even though urllib.request.urlopen is back to the real one.
+
+        # ================================================================== ARM C
+        def _arm_c():
+            had = "tiktoken" in sys.modules
+            prev = sys.modules.get("tiktoken")
+            sys.modules["tiktoken"] = None  # simulate ImportError, no real uninstall
+            try:
+                try:
+                    n, method = count("ARM C -- tiktoken-unavailable probe",
+                                      allow_api=False)
+                    failures.append(
+                        f"[C degraded-measurement honesty] tiktoken unavailable: "
+                        f"count() did NOT refuse -- returned ({n}, {method!r}) rather "
+                        f"than raising. ds-025: 'a measuring tool that estimates "
+                        f"silently is the defect'. Precedent already in this repo: "
+                        f"_context_gauge.py::estimate_tokens() raises SystemExit by "
+                        f"default here (#74) and _checkin.py 'FAILS LOUD without "
+                        f"tiktoken'; _gauge_tokens.py::count() has no equivalent -- "
+                        f"it falls through to len(text)//4, labelled "
+                        f"'crude-estimate', unconditionally.")
+                except BaseException as e:  # a legal refusal may be SystemExit, not Exception
+                    msg = str(e)
+                    if not msg or "tiktoken" not in msg.lower():
+                        failures.append(
+                            f"[C degraded-measurement honesty] count() raised "
+                            f"{type(e).__name__} but the message does not name the "
+                            f"cause ({msg!r}) -- fail LOUD AND NAMED, not just loud "
+                            f"[[a-crash-is-not-a-fail]]")
+            finally:
+                if had:
+                    sys.modules["tiktoken"] = prev
+                else:
+                    sys.modules.pop("tiktoken", None)
+        _arm("C degraded-measurement honesty (ds-025)", _arm_c)
+
+        # ================================================================== ARM D
+        def _arm_d():
+            fails_at_rest = assert_budget_clears_floor()
+            if fails_at_rest:
+                failures.append(f"[D budget guard] assert_budget_clears_floor() is "
+                                f"NOT clean at rest: {fails_at_rest}")
+            if band_for(BUDGET_AMBER - 1) != "GREEN":
+                failures.append("[D band_for] one token below amber must be GREEN")
+            if band_for(BUDGET_AMBER) != "AMBER":
+                failures.append("[D band_for] exactly at amber must be AMBER")
+            if band_for(BUDGET_WORKING) != "AMBER":
+                failures.append("[D band_for] exactly at working must still be "
+                                "AMBER (RED starts strictly ABOVE working)")
+            if band_for(BUDGET_WORKING + 1) != "RED":
+                failures.append("[D band_for] one token above working must be RED")
+        _arm("D budget-guard logic (band_for / assert_budget_clears_floor)", _arm_d)
+
+    finally:
+        CACHE, REPO = _orig_cache, _orig_repo
+        urllib.request.urlopen = _orig_urlopen
+        shutil.rmtree(tmpdir, ignore_errors=True)
+
+    if failures:
+        for x in failures:
+            print(f"  ERR {x}")
+        print(f"\n_gauge_tokens.py selftest FAILED -- {len(failures)} named failure(s).")
+        return 1
+    print("_gauge_tokens.py selftest OK -- counting path exact on 5 fixtures; cache "
+         "hit fidelity + content-hash keying + corrupt-file robustness all bite; "
+         "degraded-measurement honesty holds; band/floor guard logic verified "
+         "relative to the live constants.")
+    return 0
+
+
 if __name__ == "__main__":
+    if "--selftest" in sys.argv:
+        raise SystemExit(selftest())
     raise SystemExit(main())

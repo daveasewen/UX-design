@@ -623,7 +623,13 @@ def verify():
 
 
 def selftest():
-    """Bite-test: an open conflict and an orphan structural target must each fail strict."""
+    """Bite-test: an open conflict and an orphan structural target must each fail strict.
+    #79 P6: extended with three finding codes `check()` has carried since #75/F4/F5 but
+    that had ZERO selftest coverage before this -- unknown-edge-type (#75's own class
+    fix), malformed-target (F5, a comma-run silently swallowing edges), self-loop (F4, a
+    mis-attribution bug). Each new case pins the SPECIFIC finding code, not just "some
+    warning fired", so a regression that silently disables ONE check cannot hide behind a
+    DIFFERENT one firing on the same fixture."""
     nodes = {"A": {"title": "a"}, "B": {"title": "b"}}
     bad1 = [{"from": "A", "type": "conflicts-with", "to": "B"}]                    # no resolution
     bad2 = [{"from": "A", "type": "conflicts-with", "to": "B", "resolution": "open"}]
@@ -636,7 +642,22 @@ def selftest():
         fired = bool(warns)
         assert fired == want, f"selftest {name}: expected fire={want}, got {fired}"
         print(f"  selftest {name}: {'fires' if fired else 'green'} ✓")
-    print("selftest PASS — gate bites on unresolved/open/orphan; queued + diverges-from stay green")
+    # #79 P6 -- three codes `check()` implements with no prior selftest coverage.
+    bad_unknown = [{"from": "A", "type": "amends", "to": "B"}]           # #75: outside RULED_TYPES
+    bad_malformed = [{"from": "A", "type": "relates", "to": "B, C"}]     # F5: comma-run silently swallowed
+    bad_selfloop = [{"from": "A", "type": "refines", "to": "A"}]        # F4: mis-attribution self-loop
+    for name, es, want_code in (
+        ("unknown-edge-type", bad_unknown, "unknown-edge-type"),
+        ("malformed-target", bad_malformed, "malformed-target"),
+        ("self-loop", bad_selfloop, "self-loop"),
+    ):
+        codes = {f[1] for f in check(nodes, es) if f[0] == "⚠"}
+        assert want_code in codes, f"selftest {name}: expected code {want_code!r} to fire, got {codes!r}"
+        assert len(codes) == 1, f"selftest {name}: expected ONLY {want_code!r} to fire, got {codes!r}"
+        print(f"  selftest {name}: fires `{want_code}` (only) ✓")
+
+    print("selftest PASS — gate bites on unresolved/open/orphan/unknown-edge-type/"
+          "malformed-target/self-loop; queued + diverges-from stay green")
     return 0
 
 
