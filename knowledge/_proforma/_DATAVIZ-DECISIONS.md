@@ -419,11 +419,16 @@ below has been built, and nothing below has been render-verified.***
 > the answer.)*
 >
 > **DV-D16b · scope = EVERY STACKED SURFACE**, not Chart-bar alone.
-> **★ DV-D18 · CAP STACKED SEGMENTS AT 6 for now** — Dave: *"Lets cap at 6 for now."* Aligns stacks
+> **★ DV-D16c · CAP STACKED SEGMENTS AT 6 for now** *(~~DV-D18~~ RENUMBERED #76-D2, Dave — the id
+> collided with #70's SOLO IS A SET SIZE ruling. This one moved because it has ZERO code references,
+> no dossier and no graph node, while canon, `_verify_dv_legend_members.js`, DV-D19's `refines` edge
+> and #70's dossier all already MEAN the solo ruling when they say DV-D18. `16c` not `20`: this ruling
+> lives inside the DV-D16 wave, two lines under DV-D16b, and the file already uses that suffix form —
+> minting a forward number for an older ruling would make the record read as if it were later.)* — Dave: *"Lets cap at 6 for now."* Aligns stacks
 > with `dv-pie-009`'s existing donut cap; remainder buckets to **"Other"**.
 > **★★ FLOATED, Dave's, for a later window — THE "OTHER" BUCKET MUST BE EXPANDABLE.** Verbatim:
 > *"all bucketed 'other' segments should be expandable, through some mechanism we'll explore later."*
-> **Not designed, not scoped, deliberately.** ⚠ **This binds the cap:** DV-D18 is only acceptable
+> **Not designed, not scoped, deliberately.** ⚠ **This binds the cap:** DV-D16c is only acceptable
 > *because* the bucketed data stays reachable — **shipping the cap without a route to the detail
 > would be data loss dressed as legibility.** Applies to the donut's existing `dv-pie-009` cap too,
 > which today buckets with no expansion route. Filed to `_FUTURE-STATE.md`.
@@ -727,6 +732,8 @@ in `_LIVE-STATE.md` (🟡 PARKED entry) so the state machine doesn't read this a
 
 ## ★ #70 — 2026-08-01 — DV-D18: SOLO IS A SET SIZE, NOT A SEED IDENTITY
 
+Node: DV-D18
+
 *Opus 5 solo Cowork conductor + 2× Sonnet subs, Dave live. Dossier (arc, dead-ends, method):
 `_DECISION-HISTORY/2026-08-01-the-70-dv-d18-and-the-unwired-radios.md`.*
 
@@ -860,3 +867,83 @@ in `_LIVE-STATE.md` (🟡 PARKED entry) so the state machine doesn't read this a
 
 Node: DV-D19
 Edges: refines(DV-D18, claim=solo-derived-from-set-size) · relates(DV-D11) · relates(ADR-0015, scope=dv-legend-over-cap)
+
+---
+
+## ★ #76 — 2026-08-02 — THE DV-D12 SPLIT, THE DV-D18 COLLISION, AND A MOTION LAW WITH ONE HALF BUILT
+
+*Opus 5 solo Cowork conductor, Dave live. Both rulings his, taken at the opener from measured options.*
+
+Node: DV-D20
+Edges: relates(DV-D12, scope=source-split) · relates(ADR-0015, scope=page-budget) · relates(DV-D16c)
+
+- **★ #76-D1 RULED (Dave) — SPLIT `dv-legend.js` ALONG THE DV-D12 SEAM, AND SHIP THE SWEEP TO THE DONUT
+  ALONE.** `canon/dv-legend.js` measured **17,035 B against ADR-0015's 16,384 B per-source cap** and
+  `_validate_behaviour.py` was RED at build step 97. `sweepDonut` + `arcPath` + `pt` moved verbatim
+  (4,247 B) into **`canon/dv-donut-sweep.js`**, the group's THIRD registered behaviour source.
+  **Result, measured on the artefacts:** dv-legend **13,007 B** (3,377 B under cap) · dv-donut-sweep
+  **5,857 B** · page budget **30,912 of 32,768 B across 3 sources**, all gates green.
+- **WHY THIS SEAM:** the three functions hold **zero** references to the legend interaction model —
+  all nine of `rec`/`render`/`highlight`/`toggleSwatch`/`isolate`/`centreData`/`updateCentre`/
+  `hostOf`/`hiTarget` measured at 0 hits. The cut follows a boundary that already existed rather
+  than one invented to make the numbers work.
+- **WHY DONUT-ONLY, and it is a contract argument not a tidiness one.** The sweep selects
+  `path.dv-series[data-a1]`, which only a donut carries, so bar/line/combo/scatter were shipping it
+  as dead payload. Narrow scope is what lets `requires.declarations` be **honest** here —
+  `data-a1="` is a hook its one member really carries. The wider all-five scope would have forced an
+  **EMPTY** contract, repeating the `class="dv-legrow` promotion failure already recorded in the
+  dv-legend registry entry, where a hook required of every member was one two members could never
+  satisfy. **Measured after regeneration:** `sweepDonut` present in Chart-donut, **0** in the other five.
+- **⛔ THE GATE READ GREEN ON THE BROKEN STATE, AND THAT GREEN WAS THE DEFECT.** In the window between
+  writing the file and registering it, `_validate_behaviour.py` reported **PASS — 25,055 B across 2
+  sources**, down from 29,083. Content had left the gate's view: **the exact "splitting buys headroom"
+  failure the 2026-07-26 page budget exists to prevent, passing silently.** Reproduced on demand as
+  MUTATION A (un-register → 30,912 → 25,055; re-register → restored), so the delta is attributed.
+- **⚠ AND THE HOLE IT EXPOSES IS NOT CLOSED: nothing gates the PRESENCE of a registration.** The page
+  budget can only sum what is registered, so an unregistered `canon/*.js` is invisible to it and the
+  gate stays GREEN — un-registering did not turn it red, it just quietly shrank the total. A
+  `canon/*.js` with no entry in `component-types.json` should be a loud named finding.
+  **⬛ UNBUILT, Dave's — proposed, not enacted.** *(gate-the-presence-not-the-drift.)*
+- **★ MUTATION-PROVEN, both arms, by re-enacting the old behaviour:** (A) un-register the source and
+  the page budget silently drops 5,857 B — the false green, on demand · (B) rename `data-a1="` in
+  Chart-donut and `gen_component_partials.py --check` fails **loud and named**
+  (`X Chart-donut: required declaration 'data-a1=" missing`). Contract is real, not decorative.
+  Gates after: behaviour 3/3 sources · partials `--check` contracts hold · dataviz 7 surfaces ·
+  `_verify_dv_legend_members.js` **108/108**.
+- **★ #76-D2 RULED (Dave) — THE DV-D18 COLLISION IS DISCHARGED BY MOVING THE CAP RULING.**
+  `DV-D18` named two rulings: `:422` *cap stacked segments at 6* and `:728` *solo is a set size*.
+  **The cap ruling moved and is now `DV-D16c`**; `DV-D18` is the solo ruling alone. Basis, measured:
+  all **9** code references (2 in `canon/dv-legend.js`, 7 in `_verify_dv_legend_members.js`) mean the
+  solo ruling, as do DV-D19's `refines` edge and #70's dossier; the cap ruling had **zero** code
+  references, no dossier and no graph node. **`16c` not `20`** — it lives inside the DV-D16 wave two
+  lines under DV-D16b and the file already uses that suffix form; a forward number would make an
+  older ruling read as a later one. ⬛ **The form is reversible on one word from Dave.**
+- **✅ #75's `orphan-target` CLOSED BY ADDITION, not by deleting the edge.** The #70 section carried no
+  `Node:` line — live convention since #27, load-bearing since #75 — so `DV-D19 —refines→ DV-D18`
+  resolved to nothing. `Node: DV-D18` added to its real home. **The edge was never a candidate for
+  deletion; buying a green that way is the pattern #75 spent its morning removing.**
+
+### ⚠ FOUND, NOT FIXED — THE INTRO-MOTION LAW IS SHARED AND ONLY THE DONUT HALF IS BUILT
+
+**Dave, at the #76 opener, unprompted:** *"so yes the donut but the segmented bar has a similar
+animation."* He is right, and it is stronger than similar — **it is the same ruled law.**
+
+- **DV-D12 (donut, BUILT):** ease-**IN** across exactly the first segment's arc · **LINEAR** through the
+  middle · ease-**OUT** across exactly the last's · cruise `V=(S+w1+wN)/dur` so accel+cruise+decel sum
+  to `dur`. One timeline, trapezoidal angular velocity.
+- **Stacked bar (Batch 4 #4, ② wording IN FORCE, NOT BUILT):** *"they all grow at the same time, so
+  they are floating and growing, rather than growing and 'handing off' to the next"* — first (bottom)
+  `ease-in` · last (top) `ease-out` · intermediates `linear` · **per-segment curves on ONE timeline.**
+- ⇒ **Same trapezoidal profile, two geometries** — one drawn round a ring, one drawn up a column.
+- **⛔ THE BAR HALF WAS NEVER WIRED — ABSENCE, NOT REGRESSION.** Measured: `animation-timing-function`
+  appears **0 times** in `snippets/Chart-bar.reference.html`, and every `rect.dv-series` style attribute
+  carries nothing but `animation-delay` (`0/45/90/135/180/225ms`) against one shared `--grow` bezier.
+  **A fixed stagger is one of the three shapes the ② wording explicitly superseded.** Same class as the
+  review radios: ruled, then never built, and green in every gate because no gate ever asked.
+- **★ THEY SHARE A LAW AND CANNOT SHARE AN IMPLEMENTATION.** The bar half must stay CSS (DEF-003 forbids
+  JS transforms, and `_validate_behaviour.py` bans them by pattern); the donut half must stay JS (an SVG
+  arc's angular extent is not CSS-animatable — Batch 3 #7 records that choice). ⇒ **the durable artefact
+  is a NAMED LAW both geometries answer to, not shared code.**
+- ⬛ **DAVE'S, DEFERRED BY HIS OWN RULING AT #76** (*"split now, log the bar gap"*) — deliberately not
+  fixed inside the split, because one sentence naming two problems is how the last three recurrences
+  started. The fix is CSS-only and small; what it needs is his eye on the motion, live.

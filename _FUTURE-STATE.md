@@ -12,6 +12,27 @@ graduates OUT of here into `_LIVE-STATE` OPEN/TARGET when work starts. Refresh w
 **Entry format:** what · why it's held · what it feeds (Apollo phase/mode) · source/provenance pointer ·
 status (`idea` / `parked` / `resurrection-candidate` / `graduated→LIVE`).
 
+## ⚠ Proforma svg `data-pl/pr/h` are INERT — declared #72, homed #76 by the 2d EXIT CHECK
+
+**What:** the `data-pl` / `data-pr` / `data-h` attributes specced onto the proforma svg during #72's
+DV-D02-A discharge do nothing there — the proforma's inline engine reads the `DV_PL` / `DV_PR` / `DV_H`
+constants and never looks at the attributes. `canon/` is unaffected; this is a proforma-only divergence.
+
+**Why it's held:** it was declared honestly at #72 (`_LIVE-STATE.md` § #72 delta) and never contradicted,
+but it lived ONLY on a rolling delta. ⚠ **Found by the step-2d EXIT CHECK at #76 with zero standing
+home** — GM, `_FUTURE-STATE.md` and `_DS-IMPROVEMENTS.md` were all grepped and all empty. One more roll
+and the finding would have existed only in `_LIVE-STATE-ARCHIVE.md`, which is a dated home and does not
+count. This entry IS the copy-up the runbook requires before the #72 delta may move.
+
+**What it feeds:** Craft — proforma/canon parity. The open question is which way parity should run
+(teach the proforma engine to read the attributes, or strip attributes that assert a capability the
+surface does not have). **Not ruled, not guessed at.**
+
+**Source:** `_LIVE-STATE.md:83` (#72 delta, 2026-08-01) → `_LIVE-STATE-ARCHIVE.md` after #76's 2d roll ·
+runbook `_RUNBOOK-capture-ritual.md` step 2d EXIT CHECK.
+**Status:** `parked` — a declared inertness, not a regression. [born #76 · guards: proforma svg attribute
+claims · until: parity ruled either direction]
+
 ## ★★ Cowork gauge crack — a sub can read its parent's transcript (found #67, Dave asked "is there another way?")
 
 **What:** the Cowork harness exposes `session_info` tools. PROBED #67: (a) a session cannot list

@@ -679,7 +679,7 @@
    registry knowledge/component-types.json, ADR-0015). DO NOT hand-edit between the
    AUTO-BEHAVIOUR markers: edit the source and regenerate:
    python3 knowledge/gen_component_partials.py */
-/* dv-legend — the LEGEND INTERACTION MODEL (DV-D11 · DV-D12 · DV-D13), hand-authored SOURCE.
+/* dv-legend — the LEGEND INTERACTION MODEL (DV-D11 · DV-D13), hand-authored SOURCE.
    The SECOND registered behaviour source for the dataviz group: dv-behaviour.js carries
    fit/tip/table/seg/csv, this file carries the legend. Injected into registered chart snippets
    between AUTO-BEHAVIOUR dv-legend markers by gen_component_partials.py — edit HERE and
@@ -689,6 +689,11 @@
    dv-behaviour.js already sat at 15.5KB of the 16KB per-source cap. The split came WITH a
    re-scoped gate — a per-PAGE sum budget — so the cap stayed a page constraint instead of
    silently becoming a per-file one.
+
+   ⛔ DV-D12 (the donut radial sweep) LIVES NEXT DOOR in canon/dv-donut-sweep.js as of
+   2026-08-02 (#76-D1, Dave) — this file was 651 B over the ADR-0015 per-source cap. Do NOT
+   re-merge it: the seam is DV-D12's own (zero references to the interaction model), and the
+   group's 32 KB page budget means merging back buys nothing and re-breaks the per-source cap.
 
    Reference implementation: reviews/LEGEND-ISOLATE-TOGGLE-PROTOTYPE-2026-07-24-v5.5.html.
    The models are inscribed in _proforma/_DATAVIZ-DECISIONS.md — this file ENACTS them and does
@@ -914,6 +919,43 @@
     }
   });
 
+  /* ---------- INIT — discover every legend and render its resting state.
+     Wrapped: a malformed legend must never take the baked SVG down with it. */
+  try {
+    var legs = document.querySelectorAll('.dv-leg');
+    for (var i = 0; i < legs.length; i++) {
+      if (legs[i].querySelector('.dv-legrow')) { render(rec(legs[i])); }
+    }
+  } catch (e) { /* leave the baked SVG intact */ }
+}());
+</script>
+  <!-- ===== AUTO-BEHAVIOUR dv-legend END ===== -->
+  <!-- ===== AUTO-BEHAVIOUR dv-donut-sweep START (dataviz) ===== -->
+<script>
+/* INJECTED from knowledge/canon/dv-donut-sweep.js (behaviour "dv-donut-sweep", group dataviz —
+   registry knowledge/component-types.json, ADR-0015). DO NOT hand-edit between the
+   AUTO-BEHAVIOUR markers: edit the source and regenerate:
+   python3 knowledge/gen_component_partials.py */
+/* dv-donut-sweep — the DONUT RADIAL-SWEEP INTRO (DV-D12), hand-authored SOURCE.
+   THIRD behaviour source for the dataviz group; split out of dv-legend.js 2026-08-02 (#76-D1,
+   Dave) when that file hit 17,035 B against ADR-0015's 16 KB per-source cap. Cut along DV-D12's
+   own seam: these three functions hold ZERO references to the legend interaction model.
+   ⚠ The split buys NO headroom and the GATE enforces that, not this comment — the group's
+   32 KB page budget sums every registered source (the 2026-07-26 re-scoping).
+
+   ★ The motion law is SHARED WITH THE STACKED BAR and only this half is built — see
+   _proforma/_DATAVIZ-DECISIONS.md § intro-motion. They share a LAW, not an implementation:
+   the bar half must stay CSS (DEF-003), this half must stay JS (an SVG arc's angular extent
+   is not CSS-animatable — Batch 3 #7).
+
+   ADR-0015 contract: no polling/network · progressive enhancement (baked SVG renders if this
+   never runs) · reduced-motion lands on the final frame · DEF-003 — animates `d`, never a
+   transform. ZERO resize listeners is CORRECT; the single rAF-debounced one is a GROUP
+   invariant held by dv-behaviour.js. */
+(function () {
+  'use strict';
+  if (window.__dvDonutSweep) { return; } window.__dvDonutSweep = true;
+
   /* ---------- DV-D12 — the donut radial-sweep intro. Trapezoidal angular-velocity profile
      keyed to the SEGMENT SPANS, not a global bezier: ease-IN across exactly the first
      segment's arc, LINEAR through the middle, ease-OUT across exactly the last's. Cruise
@@ -985,19 +1027,15 @@
     requestAnimationFrame(frame);
   }
 
-  /* ---------- INIT — discover every legend, render its resting state, run the donut sweep.
-     Wrapped: a malformed legend must never take the baked SVG down with it. */
+  /* ---------- INIT — run the sweep on every donut figure.
+     Wrapped: a malformed figure must never take the baked SVG down with it. */
   try {
-    var legs = document.querySelectorAll('.dv-leg');
-    for (var i = 0; i < legs.length; i++) {
-      if (legs[i].querySelector('.dv-legrow')) { render(rec(legs[i])); }
-    }
     var figs = document.querySelectorAll('figure.dv');
     for (var j = 0; j < figs.length; j++) { sweepDonut(figs[j]); }
   } catch (e) { /* leave the baked SVG intact */ }
 }());
 </script>
-  <!-- ===== AUTO-BEHAVIOUR dv-legend END ===== -->
+  <!-- ===== AUTO-BEHAVIOUR dv-donut-sweep END ===== -->
   <script>
     document.getElementById('themeToggle').addEventListener('click', ()=>{ const b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')==='dark'?'light':'dark'); });
     document.getElementById('contrastToggle').addEventListener('click', function(){ const b=document.body; const hi=b.getAttribute('data-contrast')==='high'; if(hi){ b.removeAttribute('data-contrast'); } else { b.setAttribute('data-contrast','high'); } this.setAttribute('aria-pressed', String(!hi)); });

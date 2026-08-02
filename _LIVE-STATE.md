@@ -74,20 +74,6 @@ Entry point: `notes/2026-07-26-memento-dream-pass-scope-v2.md` (three shapes: Co
 - ✅ **(f)** `_CHAIN.md` opens with `YOU ARE #N. TITLE THIS CHAT →`; `build()` refuses a stale title (title ≠ LATEST+1). Catches STALE, not skipped — scope declared.
 - ⬛ **Dave's at #74:** legend scope (his words) · D3 · edge types · radios live · trigger index (needs his eyes) · NEW: wrap-gate wiring tradeoff · NEW: first-match fix · %-path fork.
 
-## ⏱ PRIOR DELTA — 2026-08-01 (Sat **#72**, OPUS 5 Cowork conductor + 1× SONNET sub, Dave live — ✅ **DV-D02-A DISCHARGED, MUTATION-PROVEN** · ⛔ **FOUR FALSE CLAIMS STRUCK FROM CANON** · ⬛ **D3 UNRULED BY DESIGN**)
-
-- ✅ **DV-D02-A waiver DELETED; the check is BLOCKING on scatter.** `ee85623`. Both gated surfaces comply. Gates: dataviz 7/0 blocking · selftest (2 new scatter cases replacing the one that tested the dead waiver) · partials `--check` · legend 108/108.
-- ⛔ **The proforma's 12 markers were bare `<circle>`, and neither `fitOne()` nor the proforma's inline `fitCharts()` has a `circle` branch.** Re-classing would have gone GREEN with the chart still pinned. Circles WRAPPED in `<g class="dv-marker" data-fx data-x0>`; 27 `data-fx` / 10 `data-fx2` / 12 `data-x0`. `canon/` untouched. y-axis labels deliberately carry NO hooks.
-- ✅ **Mutation-proven both ways** — `dv-fit` stripped → viewBox pinned 580, 0 markers moved; marker `data-fx` stripped → viewBox tracks (544) but 0 markers moved. And the **discharge itself**: same break was advisory/exit 0 before, 1 blocking/exit 1 after.
-- ⛔ **#71's revert left a provenance comment asserting four things that were false against the live dict twelve lines above it**, including a mutation test #71 itself recorded as invalid. Rewritten; 16 lines shorter. Nothing gates a comment.
-- ⚠ **Declared, not buried:** the `data-pl/pr/h` I specced onto the proforma svg are INERT there — its engine reads `DV_PL/DV_PR/DV_H` constants, never the attributes.
-- ⬛ **D3 NOT ruled** — Dave asked to see it again. `reviews/2026-08-01-72-D3-scatter-responsive-v1.html` shipped (live width scrubber, both surfaces, 1180/600/420 spread, mutation table). Ledger untouched until he rules.
-- ⛔ **#71's `NOTHING COMMITTED` struck at source** — `276de98` landed 7 min after the banner was written. **Mirror of #70's defect: the banner is authored BEFORE the seam it reports.** The proposed `★ #N` gate would not catch it; the numbers agreed, the state sentence lied.
-- ⚠ **Two Dave corrections, both mine, both unruled:** the commit runbook (I asked him what `_RUNBOOK-git-commit.md:92` answers) and *"why are you not reading it?"* ★★ **Diagnosis: felt-difficulty gates my runbook reading, and it is inversely correlated with need.** Proposed remedy: a TRIGGER INDEX in the read chain, action-first, one line per runbook.
-- ⚠ **tiktoken refusal is the seam WORKING, not a regression** (`24ff35b`, #59). The pre-#59 silent estimate flipped fresh chains to STALE. It recurs every session because pip state does not survive and nothing installs it. Proposed: self-heal in `_git_commit.sh`.
-- ⬛ **Dave: "we're not finished with the legend work."** Record says v5 wave CLOSED. His word beats the record; NOT scoped here on purpose. #73 opens by asking him.
-- ⚠ **WRAP RESIDUAL, DECLARED:** 2c/2d rolls NOT run (budget called mid-wrap) — #70's GM banner and #69's LS delta remain in-file. No 1b dossier, no step-3 memory pass. **#73 rolls first.**
-
 ## ⏱ OLDER DELTAS — rolled to `_LIVE-STATE-ARCHIVE.md` (P1, ruled 2026-07-26)
 Verbatim, newest-first, nothing deleted — exact sibling of `_GM-ARCHIVE.md`. Roll rule: this file keeps **LATEST + 2 PRIOR** deltas; the capture ritual rolls the rest (see `knowledge/_RUNBOOK-capture-ritual.md`, step 2d).
 
