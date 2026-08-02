@@ -32,6 +32,10 @@ Writes `_LIVE-STATE-CHECK.md` + prints a summary. Non-zero exit = warning count 
 _build_all.py; flip to blocking once it's been quiet for a few sessions).
 
 Run:  python3 knowledge/_build_live_state.py
+      python3 knowledge/_build_live_state.py --selftest   # bite-test the SPLICE WRITER (#78-D2):
+        the spine's only mechanical writer was ungated (#77 periphery inventory). Every arm runs
+        on COPIES inside a TemporaryDirectory — the selftest never opens the real _LIVE-STATE.md
+        for writing, and asserts the real spine's bytes are untouched when it finishes.
 """
 import os, re, sys, subprocess, datetime
 
@@ -203,18 +207,25 @@ def splice_block(md, block):
     return new_md, (new_md != md), None
 
 
-def generate_block():
+def generate_block(live_path=None, graph_path=None):
     """ADR-0007 part 2. Read the graph JSON, render the lifecycle block, splice it into
-    _LIVE-STATE.md. Idempotent. Returns a short status string for the build log."""
-    if not os.path.isfile(GRAPH_JSON):
+    _LIVE-STATE.md. Idempotent. Returns a short status string for the build log.
+
+    Validate-then-write (#78-D2): every refusal path returns BEFORE any write, and the write
+    itself is atomic (temp file + os.replace) so no failure mode half-writes the spine. The
+    path parameters exist for the selftest, which must exercise this exact function on COPIES
+    — a selftest of a lookalike would prove nothing (attribute-the-diff)."""
+    live_path = live_path if live_path is not None else LIVE
+    graph_path = graph_path if graph_path is not None else GRAPH_JSON
+    if not os.path.isfile(graph_path):
         return "lifecycle block SKIPPED — _decision-graph.json not found (run _build_decision_graph.py first)."
     try:
         import json
-        with open(GRAPH_JSON, encoding="utf-8") as f:
+        with open(graph_path, encoding="utf-8") as f:
             graph = json.load(f)
     except Exception as ex:
         return f"lifecycle block SKIPPED — could not read _decision-graph.json ({ex})."
-    md = read(LIVE)
+    md = read(live_path)
     if not md:
         return "lifecycle block SKIPPED — no _LIVE-STATE.md."
     block = render_lifecycle_block(graph)
@@ -222,9 +233,261 @@ def generate_block():
     if err:
         return err
     if changed:
-        open(LIVE, "w", encoding="utf-8").write(new_md)
+        # atomic: the old non-atomic open(...,"w") could half-write the spine if killed
+        # mid-write (the sandbox kills at the ~45s wall). Same-directory temp so os.replace
+        # never crosses a device boundary (the git-lock mv lesson, #56).
+        tmp = live_path + ".splice-tmp~"
+        with open(tmp, "w", encoding="utf-8") as f:
+            f.write(new_md)
+        os.replace(tmp, live_path)
         return "lifecycle block REGENERATED in _LIVE-STATE.md (content changed)."
     return "lifecycle block up to date (no change)."
+
+
+# ---------------------------------------------------------------------------
+# SELFTEST (#78-D2, option-select 2026-08-02) — the splice writer was the spine's one
+# UNGATED writer (#77 periphery inventory). House style: a bite list, each arm named,
+# exit 0/1, failed arms printed; every green provably able to fail (mutation controls
+# below doctor the splice OUTPUT and the fixture INPUT and assert red). All write-path
+# work happens on copies inside tempfile.TemporaryDirectory — never the real spine.
+# Consumer: _git_commit.sh (#74-D1 split — WARN mid-session, BLOCK on --wrap).
+# ---------------------------------------------------------------------------
+
+FIXTURE_GRAPH = {
+    "nodes": {"R-D1": {"title": "alpha ruling"}, "T-D2": {"title": "beta ruling"}},
+    "edges": [{"from": "T-D2", "to": "R-D1", "type": "supersedes"}],
+    "state": {"R-D1": "DEAD", "T-D2": "LIVE"},
+}
+
+FIXTURE_LIVE = (
+    "# _LIVE-STATE (selftest fixture)\n"
+    "Last refreshed: **2026-08-02**\n"
+    "\n"
+    "prefix prose — must be byte-identical after any splice\n"
+    "\n"
+    + BLOCK_START + " — seeded by hand -->\n"
+    "stale hand-seeded body, to be replaced\n"
+    + BLOCK_END + "\n"
+    "\n"
+    "suffix prose — must be byte-identical after any splice\n"
+)
+
+
+def _splice_invariants(before_md, after_md):
+    """Pure invariant checker for a splice: returns a list of violation messages (empty = hold).
+    Invariants: exactly one START and one END marker; END after START; every byte OUTSIDE the
+    marker region identical to `before_md`. The mutation arm feeds this DOCTORED output and
+    asserts it goes red — otherwise the happy-path green is an assertion, not a test."""
+    v = []
+    n_start = after_md.count(BLOCK_START)
+    n_end = after_md.count(BLOCK_END)
+    if n_start != 1:
+        v.append(f"expected exactly 1 START marker after splice, found {n_start}")
+    if n_end != 1:
+        v.append(f"expected exactly 1 END marker after splice, found {n_end}")
+    if v:
+        return v  # region indices are meaningless with duplicated/missing markers
+    b_si, b_ei = before_md.find(BLOCK_START), before_md.find(BLOCK_END) + len(BLOCK_END)
+    a_si, a_ei = after_md.find(BLOCK_START), after_md.find(BLOCK_END) + len(BLOCK_END)
+    if b_si == -1 or before_md.find(BLOCK_END) == -1:
+        v.append("fixture (before) lacks markers — invariants cannot be compared")
+        return v
+    if a_ei <= a_si:
+        v.append("END marker precedes START in the spliced result")
+    if after_md[:a_si] != before_md[:b_si]:
+        v.append("bytes BEFORE the spliced region changed — splice leaked upstream")
+    if after_md[a_ei:] != before_md[b_ei:]:
+        v.append("bytes AFTER the spliced region changed — splice ate the suffix")
+    return v
+
+
+def _write_fixture(td, live_md=FIXTURE_LIVE, graph=FIXTURE_GRAPH):
+    """Materialise a fixture spine + graph inside tempdir `td`; returns (live_path, graph_path).
+    Fails LOUD on any IO error — a fixture that silently failed to land would green every arm."""
+    import json
+    live_p = os.path.join(td, "_LIVE-STATE.md")
+    graph_p = os.path.join(td, "_decision-graph.json")
+    with open(live_p, "w", encoding="utf-8") as f:
+        f.write(live_md)
+    with open(graph_p, "w", encoding="utf-8") as f:
+        json.dump(graph, f)
+    return live_p, graph_p
+
+
+def selftest_happy_path():
+    """Arm 1 — splice lands on a fixture copy, invariants hold, outside bytes identical."""
+    import tempfile
+    fails = []
+    with tempfile.TemporaryDirectory() as td:
+        live_p, graph_p = _write_fixture(td)
+        before = read(live_p)
+        status = generate_block(live_p, graph_p)
+        after = read(live_p)
+        if "REGENERATED" not in status:
+            fails.append(f"expected REGENERATED status on a stale fixture, got: {status}")
+        if "superseded by T-D2" not in after:
+            fails.append("rendered block missing the supersession annotation — splice did not "
+                         "land real graph content")
+        if "stale hand-seeded body" in after:
+            fails.append("old block body survived the splice")
+        fails += _splice_invariants(before, after)
+    return fails
+
+
+def selftest_idempotent():
+    """Arm 2 — second run on unchanged inputs is a NO-OP: same status contract, same bytes."""
+    import tempfile
+    fails = []
+    with tempfile.TemporaryDirectory() as td:
+        live_p, graph_p = _write_fixture(td)
+        generate_block(live_p, graph_p)
+        once = read(live_p)
+        status2 = generate_block(live_p, graph_p)
+        twice = read(live_p)
+        if "no change" not in status2:
+            fails.append(f"second run did not report a no-op, got: {status2}")
+        if twice != once:
+            fails.append("second run CHANGED the file — the splice is not idempotent")
+    return fails
+
+
+def selftest_refusal_missing_markers():
+    """Arm 3 — malformed spine (no anchor markers) → refuses loud + named, file untouched."""
+    import tempfile
+    fails = []
+    no_markers = "# _LIVE-STATE (fixture)\nno lifecycle markers anywhere in this file\n"
+    with tempfile.TemporaryDirectory() as td:
+        live_p, graph_p = _write_fixture(td, live_md=no_markers)
+        status = generate_block(live_p, graph_p)
+        if "markers not found" not in status:
+            fails.append(f"expected a NAMED marker refusal, got: {status}")
+        if read(live_p) != no_markers:
+            fails.append("refusal TOUCHED the file — the marker-less spine changed on disk")
+    return fails
+
+
+def selftest_refusal_never_half_writes():
+    """Arm 4 — every refusal path leaves the target byte-identical: END-before-START ordering,
+    unparseable graph JSON, and a missing graph file. (Missing spine has no bytes to protect;
+    generate_block returns its named SKIP for that path, asserted here too.)"""
+    import tempfile
+    fails = []
+    inverted = ("# fixture\n" + BLOCK_END + "\nEND placed before START — ordering violation\n"
+                + BLOCK_START + " -->\n")
+    with tempfile.TemporaryDirectory() as td:
+        # (a) END precedes START
+        live_p, graph_p = _write_fixture(td, live_md=inverted)
+        status = generate_block(live_p, graph_p)
+        if "markers not found" not in status:
+            fails.append(f"END-before-START: expected the marker refusal, got: {status}")
+        if read(live_p) != inverted:
+            fails.append("END-before-START refusal modified the file")
+        # (b) unparseable graph JSON — refusal must name the cause, spine untouched
+        live_p2 = os.path.join(td, "b", "_LIVE-STATE.md")
+        os.makedirs(os.path.dirname(live_p2))
+        with open(live_p2, "w", encoding="utf-8") as f:
+            f.write(FIXTURE_LIVE)
+        bad_graph = os.path.join(td, "b", "_decision-graph.json")
+        with open(bad_graph, "w", encoding="utf-8") as f:
+            f.write("{not json,")
+        status = generate_block(live_p2, bad_graph)
+        if "could not read" not in status:
+            fails.append(f"bad graph JSON: expected the named read refusal, got: {status}")
+        if read(live_p2) != FIXTURE_LIVE:
+            fails.append("bad-graph refusal modified the spine fixture")
+        # (c) graph file absent
+        status = generate_block(live_p2, os.path.join(td, "b", "no-such.json"))
+        if "not found" not in status:
+            fails.append(f"missing graph: expected the named SKIP, got: {status}")
+        if read(live_p2) != FIXTURE_LIVE:
+            fails.append("missing-graph skip modified the spine fixture")
+        # (d) spine file absent — named skip, nothing created. Uses the VALID graph from (a):
+        # the graph is (rightly) read before the spine, so a bad graph here would mask this path.
+        ghost = os.path.join(td, "b", "no-spine.md")
+        status = generate_block(ghost, graph_p)
+        if "no _LIVE-STATE.md" not in status:
+            fails.append(f"missing spine: expected the named SKIP, got: {status}")
+        if os.path.exists(ghost):
+            fails.append("missing-spine path CREATED a file")
+    return fails
+
+
+def selftest_mutation_controls():
+    """Arm 5 — prove the greens above can fail. (m1) doctored splice output that ate the
+    suffix must red the invariant checker; (m2) doctored output with a duplicated END marker
+    must red it; (m3) a byte injected INSIDE the region must make the idempotency no-op
+    go red (REGENERATED, and restored to canonical form); (m4) a byte appended OUTSIDE the
+    region must red the outside-bytes invariant."""
+    import tempfile
+    fails = []
+    with tempfile.TemporaryDirectory() as td:
+        live_p, graph_p = _write_fixture(td)
+        before = read(live_p)
+        generate_block(live_p, graph_p)
+        good = read(live_p)
+        # m1 — splice that ate the suffix (truncate at END marker)
+        ate_suffix = good[:good.find(BLOCK_END) + len(BLOCK_END)]
+        if not _splice_invariants(before, ate_suffix):
+            fails.append("m1: invariant checker stayed green on output whose suffix was eaten "
+                         "— the happy-path green cannot fail")
+        # m2 — duplicated END marker
+        doubled = good + "\n" + BLOCK_END
+        if not any("END marker" in x for x in _splice_invariants(before, doubled)):
+            fails.append("m2: invariant checker stayed green on a duplicated END marker")
+        # m3 — idempotency bite: corrupt one byte INSIDE the region, rerun, expect REGENERATED
+        with open(live_p, "w", encoding="utf-8") as f:
+            f.write(good.replace("superseded by T-D2", "superseded by X-D9", 1))
+        status = generate_block(live_p, graph_p)
+        if "REGENERATED" not in status:
+            fails.append(f"m3: in-region drift did NOT trigger a regenerate (idempotency "
+                         f"no-op green cannot fail), got: {status}")
+        if read(live_p) != good:
+            fails.append("m3: regenerate did not restore the canonical block")
+        # m4 — outside-region drift must red the outside-bytes invariant
+        if not any("AFTER the spliced region" in x for x in
+                   _splice_invariants(before, good + "trailing-drift")):
+            fails.append("m4: invariant checker stayed green on bytes appended after the region")
+    return fails
+
+
+def run_selftest():
+    """Run every bite; print failed arms; exit 0 green / 1 red. Belt-and-braces: the real
+    spine's bytes are hashed before and after — if any arm ever touches it, that IS a red."""
+    import hashlib
+    spine_before = hashlib.sha256(read(LIVE).encode("utf-8")).hexdigest() if os.path.isfile(LIVE) else None
+    bites = [
+        ("happy-path: splice lands on a fixture copy, invariants hold", selftest_happy_path),
+        ("idempotency: second run is a no-op", selftest_idempotent),
+        ("refusal: marker-less spine refused loud+named, untouched", selftest_refusal_missing_markers),
+        ("refusal never half-writes: every failure path leaves the target byte-identical",
+         selftest_refusal_never_half_writes),
+        ("mutation controls: every green above provably able to fail", selftest_mutation_controls),
+    ]
+    failed = []
+    for name, fn in bites:
+        try:
+            arm_fails = fn()
+        except Exception as ex:  # a crash is not a fail — surface it LOUD and NAMED as one
+            arm_fails = [f"CRASHED: {type(ex).__name__}: {ex}"]
+        if arm_fails:
+            failed.append((name, arm_fails))
+            print(f"  ✗ {name}")
+            for msg in arm_fails:
+                print(f"      - {msg}")
+        else:
+            print(f"  ✓ {name}")
+    if spine_before is not None:
+        spine_after = hashlib.sha256(read(LIVE).encode("utf-8")).hexdigest()
+        if spine_after != spine_before:
+            failed.append(("spine-safety", ["the REAL _LIVE-STATE.md changed during the selftest"]))
+            print("  ✗ spine-safety: the REAL _LIVE-STATE.md changed during the selftest")
+        else:
+            print("  ✓ spine-safety: real _LIVE-STATE.md untouched (sha256 identical)")
+    if failed:
+        print(f"_build_live_state --selftest: {len(failed)} arm(s) RED")
+        return 1
+    print("_build_live_state --selftest: all arms green")
+    return 0
 
 
 def main():
@@ -410,6 +673,8 @@ def main():
 
 
 if __name__ == "__main__":
+    if "--selftest" in sys.argv:
+        sys.exit(run_selftest())
     warns = main()
     # Advisory by default (ADR-0005 §5: earns blocking by bite-test). `--strict` exits with the
     # warning count so it can gate once it's proven quiet. _build_all.py runs it without --strict.

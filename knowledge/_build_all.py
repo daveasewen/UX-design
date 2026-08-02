@@ -42,6 +42,13 @@ STEPS = [
     # 16 months while the fonts sat in the repo (Dave, 2026-07-18: "how do we fix this
     # permanently?"). Registry: _assertions.json.
     ("assertion veracity gate — claims that can rot", "_validate_assertions.py"),
+    # #77 periphery: this selftest ALSO runs embedded in the gate step above (its __main__
+    # runs selftest() before run() even without the flag), so it could already fail — but a
+    # red was attributed to the GATE, not the instrument. Named arm per the _roll_state
+    # precedent: a selftest not in STEPS is a gate that does not run. Measured green
+    # standalone 2026-08-02 (EXIT=0) before wiring.
+    ("assertion veracity selftest — verbs bite + registry well-formed (#77 periphery)",
+     "_validate_assertions.py", ["--selftest"]),
     # Third sibling: reachable (above), true (above) — and now PROVENANCED. New notes/
     # dossiers must say who observed what, when, and at what standing (observed/inferred/
     # ruled/floated/standing) so a cold reader can weigh them without the authoring
@@ -56,6 +63,14 @@ STEPS = [
     # at ritual time (its line is pasted into the banner); wired here so CI asks it — a
     # selftest not in STEPS is a gate that does not run (periphery inventory, 2026-08-02).
     ("roll-state measurer selftest (#77 T1)", "_roll_state.py", ["--selftest"]),
+    # #78-D1 (P1): the commit seam itself — _git_commit.sh had no test and no runner while
+    # being the seam every other check is delivered through (periphery inventory P1). The
+    # harness runs the REAL script text in throwaway /tmp fixture repos (stubbed gate/chain/
+    # spine-writer exits), pins the WARN/--wrap split, the lock dance, both T3 parse paths,
+    # the #78-D3 `after #N` mid-session prefix, and the #78-D2 spine-writer consumer both
+    # ways. Pure: never touches the real repo or .git. Measured green 2026-08-02 before wiring.
+    ("commit-seam harness — _git_commit.sh fixture-repo arms (#78-D1 P1)",
+     "_test_git_commit.py", ["--selftest"]),
     # M5 (brief §11, built 2026-07-28 #21): the hardened GM/LS mover the wrap ritual's
     # 2c/2d/2e moves route through. Its selftest is the proof its refusals FIRE — line-start
     # anchors · §A digest assert · imported caps (warn ≠ block) · no-op loud FAIL ·
@@ -81,6 +96,19 @@ STEPS = [
     # _LIVE-STATE builder below consumes it to (re)generate the decision-node lifecycle
     # block (ADR-0007 part 2 — generation, not just the staleness gate).
     ("decision-graph — typed edges + conflict gate (advisory, ADR-0012)", "_build_decision_graph.py"),
+    # #77 periphery: wired per the _roll_state precedent — the selftest existed and ran only
+    # by hand. It is PURE (in-memory fixtures, no writes; __main__ short-circuits before
+    # main()), so it sits safely between the builder above and the _LIVE-STATE consumer
+    # below. Measured green standalone 2026-08-02 (EXIT=0) before wiring.
+    ("decision-graph selftest — conflict gate bites on unresolved/open/orphan (ADR-0012, #77 periphery)",
+     "_build_decision_graph.py", ["--selftest"]),
+    # #78-D2: the spine-writer's selftest runs BEFORE the step that lets it write — splice
+    # invariants, idempotency, named refusals, no-half-writes, mutation controls. Pure
+    # (tempdir copies only; hashes the real spine before/after). Its blocking consumer
+    # lives at the commit seam (_git_commit.sh, WARN/--wrap split); this STEPS entry is
+    # so CI asks it too. Measured green 2026-08-02 before wiring.
+    ("spine-writer selftest — splice invariants + no-half-writes (#78-D2)",
+     "_build_live_state.py", ["--selftest"]),
     ("_LIVE-STATE staleness gate + lifecycle-block generation (advisory, ADR-0007)", "_build_live_state.py"),
     ("advisory signals — prose rules (advisory)", "_validate_advisory.py"),
     ("review queue", "_build_review_queue.py"),
@@ -211,103 +239,238 @@ STEPS = [
     ("integrity lint (gate)", "_build_integrity.py"),
 ]
 
-rc = 0
-for i, step in enumerate(STEPS, 1):
-    label, rel = step[0], step[1]
-    extra_args = list(step[2]) if len(step) > 2 else []
-    path = os.path.join(HERE, rel)
-    print(f"\n=== [{i}/{len(STEPS)}] {label} — {rel} ===")
-    r = subprocess.run([sys.executable, path] + extra_args)
-    if r.returncode != 0:
-        # Gating steps: integrity lint AND the contrast audits. They run to the
-        # end (so you get every report) then the build exits non-zero.
-        if rel.endswith("_build_integrity.py"):
-            print(f"\n❌ integrity gate failed (exit {r.returncode}) — see knowledge/_INTEGRITY-REPORT.md")
-            rc = rc or r.returncode
-        elif "contrast" in label:
-            print(f"\n❌ contrast gate failed (exit {r.returncode}) — see knowledge/_*-CONTRAST-AUDIT.md")
-            rc = rc or r.returncode
-        elif "snippet" in label:
-            print(f"\n❌ snippet gate failed (exit {r.returncode}) — see knowledge/_SNIPPET-AUDIT.md")
-            rc = rc or r.returncode
-        elif "projection sync" in label:
-            print(f"\n❌ token projection out of sync (exit {r.returncode}) — a store value changed without re-projection (or a manifest path is unresolvable). Run: python3 knowledge/gen_snippet_tokens.py")
-            rc = rc or r.returncode
-        elif "theme cascade" in label:
-            print(f"\n❌ theme-cascade sync failed (exit {r.returncode}) — canon.css AUTO-THEMES is out of sync with tokens/themes/*.json (+ manifests). Run: python3 knowledge/canon/gen_theme_cascade.py")
-            rc = rc or r.returncode
-        elif "component-partials" in label:
-            print(f"\n❌ component-partials gate failed (exit {r.returncode}) — an AUTO-PARTIAL block is out of sync with its source atom, or a member breaks the registry contract (vars / matchValues / manifest binds). Run: python3 knowledge/gen_component_partials.py — registry: knowledge/component-types.json (ADR-0013)")
-            rc = rc or r.returncode
-        elif "Behaviour contract" in label:
-            print(f"\n❌ behaviour-contract gate failed (exit {r.returncode}) — the dv-behaviour source breaks the ADR-0015 performance contract (size / banned pattern / resize discipline) or a member snippet carries an external script src. See knowledge/_BEHAVIOUR-GATE.md")
-            rc = rc or r.returncode
-        elif "canon components" in label:
-            print(f"\n❌ canon components step failed (exit {r.returncode}) — .cn-* blocks diverged from the snippets or the generator is non-deterministic. Run: python3 knowledge/canon/gen_canon_components.py (ADR-0013 ruling 4)")
-            rc = rc or r.returncode
-        elif "ratchet" in label:
-            print(f"\n❌ partial ratchet failed (exit {r.returncode}) — a registry member re-implements a registered partial's rule locally. Consume the partial (AUTO-PARTIAL markers), never re-type the sub-atom. See knowledge/_PARTIALS-GATE.md (ADR-0013)")
-            rc = rc or r.returncode
-        elif "radius gate" in label:
-            print(f"\n❌ radius gate failed (exit {r.returncode}) — a hardcoded border-radius literal on a strict surface. Shape is theme-flexed (ADR-0010): bind var(--border-radius-default); 50%/999px circle+pill idioms are exempt. See knowledge/_RADIUS-GATE.md")
-            rc = rc or r.returncode
-        elif "showroom" in label:
-            print(f"\n❌ showroom sync failed (exit {r.returncode}) — showroom/ is stale against the snippets/tokens/cascade. Run: python3 knowledge/gen_showroom.py")
-            rc = rc or r.returncode
-        elif "leakage" in label:
-            print(f"\n❌ Legacy-colour leakage gate failed (exit {r.returncode}) — a Mono surface resolves to a Legacy-only colour (e.g. the success teal #00847F). Rebind onto the R-D14 token (rag/*-background / -glyph); do NOT add the hex to exceptions. See knowledge/_LEGACY-LEAK-GATE.md")
-            rc = rc or r.returncode
-        elif "token-tier" in label:
-            print(f"\n❌ token-tier gate failed (exit {r.returncode}) — a component references a primitive, or a $value drifted from its $alias; see knowledge/_TOKEN-TIER-AUDIT.md")
-            rc = rc or r.returncode
-        elif "icon" in label:
-            print(f"\n❌ icon-source gate failed (exit {r.returncode}) — see knowledge/_ICON-SOURCE-AUDIT.md")
-            rc = rc or r.returncode
-        elif "a11y" in label:
-            print(f"\n❌ a11y gate failed (exit {r.returncode}) — see knowledge/_A11Y-GATE.md")
-            rc = rc or r.returncode
-        elif "coverage" in label:
-            print(f"\n❌ coverage gate failed (exit {r.returncode}) — see knowledge/_COVERAGE-GATE.md")
-            rc = rc or r.returncode
-        elif "no-hardcode" in label:
-            print("pro-forma no-hardcode styling gate failed (exit %d) — see knowledge/_NO-HARDCODE-GATE.md" % r.returncode)
-            rc = rc or r.returncode
-        elif "CSS-governed" in label:
-            print(f"\n❌ pro-forma CSS-governed motion gate failed (exit {r.returncode}) — see knowledge/_CSS-GOVERNED-GATE.md")
-            rc = rc or r.returncode
-        elif "4px-grid" in label:
-            print(f"\n❌ 4px-grid gate (DEF-005) failed (exit {r.returncode}) — off-grid layout value(s); see _validate_grid.py output")
-            rc = rc or r.returncode
-        elif "blast-radius" in label:
-            print(f"\n❌ type-binding blast-radius gate failed (exit {r.returncode}) — a global type-composite selector is unregistered or its blast radius escaped; see knowledge/_TYPE-BLAST-GATE.md")
-            rc = rc or r.returncode
-        elif "descender-clip" in label:
-            print(f"\n❌ descender-clip gate (ds-005) failed (exit {r.returncode}) — a truncating label (text-overflow:ellipsis) lacks `text-box-edge:text text`, so cap-alphabetic trim will clip its descenders (g/y/p/q). This is NOT a stray override to remove — the override IS the fix; add it. See _validate_descender_clip.py + _DS-IMPROVEMENTS.md ds-005.")
-            rc = rc or r.returncode
-        elif "pro-forma" in label:
-            print(f"\n❌ pro-forma universal gate failed (exit {r.returncode}) — see knowledge/_PROFORMA-GATE.md")
-            rc = rc or r.returncode
-        elif "DataViz" in label:
-            print(f"\n❌ DataViz chart gate failed (exit {r.returncode}) — see knowledge/_DATAVIZ-GATE.md")
-            rc = rc or r.returncode
-        elif "surface" in label:
-            print(f"\n❌ dark-surface gate failed (exit {r.returncode}) — see knowledge/_DARK-SURFACE-AUDIT.md")
-            rc = rc or r.returncode
-        elif "standing-instructions" in label:
-            print(f"\n❌ standing-instructions gate failed (exit {r.returncode}) — a standing doc is unreachable from GOOD-MORNING/_RUNBOOKS, or GOOD-MORNING has lost part of its structure. A rule nothing points to will not survive the next cold session.")
-            rc = rc or r.returncode
-        elif "rules index" in label:
-            print(f"\n❌ rules-index gate failed (exit {r.returncode}) — duplicate/missing/malformed rule IDs in guidelines/")
-            rc = rc or r.returncode
-        elif "advisory" in label.lower():
-            # advisory steps never gate/abort — they report and the build continues
-            print(f"\n⚠ advisory step '{label}' reported findings (exit {r.returncode}) — non-gating")
-        else:
-            print(f"\n❌ step '{label}' failed (exit {r.returncode}) — aborting")
-            sys.exit(r.returncode)
+# ── Failure routing: EXACT step IDs, never substrings (#77 periphery finding) ──
+# Remedies used to be routed by SUBSTRING match on the step label, and the cascade
+# guessed: "consult index — problem-domain query surface" matched "surface" so a
+# consult-index failure was reported as a dark-surface failure (wrong cause, wrong
+# remedy); "token projection sync — snippets/…" and "canon components — regenerate
+# from snippets" both matched "snippet" first, so the projection remedy written FOR
+# that step was unreachable dead code; two advisory-labelled steps ("icon contrast
+# delta", "theme-provenance") matched blocking branches and gated; the token
+# blast-radius BUILDER matched the type-binding blast-radius GATE's remedy.
+# Routing is now a table keyed on the EXACT step label. A step with no row — or a
+# stale row for no step — fails LOUD AND NAMED before step 1 runs: a measuring
+# tool must not guess; UNKNOWN is never defaulted.
+GATE = "gate"          # print the remedy, record rc, keep running (every report stays fresh)
+ADVISORY = "advisory"  # report and continue; never gates the build
+ABORT = "abort"        # print and stop the build at this step
 
-if rc == 0:
-    print("\n✅ all generators ran and the integrity + contrast gates passed.")
-else:
-    print("\n❌ build gate failed — see the reports above.")
-sys.exit(rc)
+_CONTRAST = "\n❌ contrast gate failed (exit {code}) — see knowledge/_*-CONTRAST-AUDIT.md"
+_PARTIALS = "\n❌ component-partials gate failed (exit {code}) — an AUTO-PARTIAL block is out of sync with its source atom, or a member breaks the registry contract (vars / matchValues / manifest binds). Run: python3 knowledge/gen_component_partials.py — registry: knowledge/component-types.json (ADR-0013)"
+_BEHAVIOUR = "\n❌ behaviour-contract gate failed (exit {code}) — the dv-behaviour source breaks the ADR-0015 performance contract (size / banned pattern / resize discipline) or a member snippet carries an external script src. See knowledge/_BEHAVIOUR-GATE.md"
+_CANON = "\n❌ canon components step failed (exit {code}) — .cn-* blocks diverged from the snippets or the generator is non-deterministic. Run: python3 knowledge/canon/gen_canon_components.py (ADR-0013 ruling 4)"
+_RATCHET = "\n❌ partial ratchet failed (exit {code}) — a registry member re-implements a registered partial's rule locally. Consume the partial (AUTO-PARTIAL markers), never re-type the sub-atom. See knowledge/_PARTIALS-GATE.md (ADR-0013)"
+_THEME = "\n❌ theme-cascade sync failed (exit {code}) — canon.css AUTO-THEMES is out of sync with tokens/themes/*.json (+ manifests). Run: python3 knowledge/canon/gen_theme_cascade.py"
+_SHOWROOM = "\n❌ showroom sync failed (exit {code}) — showroom/ is stale against the snippets/tokens/cascade. Run: python3 knowledge/gen_showroom.py"
+_DATAVIZ = "\n❌ DataViz chart gate failed (exit {code}) — see knowledge/_DATAVIZ-GATE.md"
+
+ROUTE_ROWS = [
+    # (exact step label, kind, remedy template) — remedy text unchanged from the old cascade.
+    ("compliance knowledge graph", ABORT, None),
+    ("token blast-radius + graph report", ABORT, None),  # was misrouted to the TYPE-BINDING blast-radius remedy
+    ("guideline rules index (gate)", GATE,
+     "\n❌ rules-index gate failed (exit {code}) — duplicate/missing/malformed rule IDs in guidelines/"),
+    ("runbook index (generated)", ABORT, None),
+    ("standing-instructions reachability gate", GATE,
+     "\n❌ standing-instructions gate failed (exit {code}) — a standing doc is unreachable from GOOD-MORNING/_RUNBOOKS, or GOOD-MORNING has lost part of its structure. A rule nothing points to will not survive the next cold session."),
+    ("assertion veracity gate — claims that can rot", ABORT, None),
+    ("assertion veracity selftest — verbs bite + registry well-formed (#77 periphery)", ABORT, None),
+    ("capture/provenance gate — status+provenance on new notes+dossiers (Memento §4.1)", ABORT, None),
+    ("capture/provenance selftest (Memento §4.1)", ABORT, None),
+    ("roll-state measurer selftest (#77 T1)", ABORT, None),
+    ("commit-seam harness — _git_commit.sh fixture-repo arms (#78-D1 P1)", ABORT, None),
+    ("GM/LS mover selftest — hardened move mechanics (M5)", ABORT, None),
+    ("section-usage instrumentation selftest (#23)", ABORT, None),
+    ("lane records — regenerate LS §🛤 view (O1′ #24)", ABORT, None),
+    ("lane records determinism check (O1′ #24)", ABORT, None),
+    ("lane records selftest — schema refusals + routing contract (O1′ #24)", ABORT, None),
+    ("cross-reference index", ABORT, None),
+    ("sutherland acceptance fixtures", ABORT, None),
+    ("states-completeness probe (advisory)", ADVISORY, None),
+    ("decision-graph — typed edges + conflict gate (advisory, ADR-0012)", ADVISORY, None),
+    ("decision-graph selftest — conflict gate bites on unresolved/open/orphan (ADR-0012, #77 periphery)", ABORT, None),
+    ("spine-writer selftest — splice invariants + no-half-writes (#78-D2)", ABORT, None),
+    ("_LIVE-STATE staleness gate + lifecycle-block generation (advisory, ADR-0007)", ADVISORY, None),
+    ("advisory signals — prose rules (advisory)", ADVISORY, None),
+    ("review queue", ABORT, None),
+    ("dark-mode coverage audit", ABORT, None),  # was misrouted to the COVERAGE-gate remedy
+    ("text/icon contrast audit", GATE, _CONTRAST),
+    ("indicator/accent contrast audit", GATE, _CONTRAST),
+    ("icon contrast delta — brand 4.5 vs 3 (advisory)", ADVISORY, None),  # was misrouted to the BLOCKING contrast branch
+    ("dark-surface flatness gate", GATE,
+     "\n❌ dark-surface gate failed (exit {code}) — see knowledge/_DARK-SURFACE-AUDIT.md"),
+    ("component-partials sync — AUTO-PARTIAL injection + contracts (ADR-0013)", GATE, _PARTIALS),
+    ("component-partials selftest (ADR-0013)", GATE, _PARTIALS),
+    ("Behaviour contract gate — dv-behaviour size + banned patterns (ADR-0015)", GATE, _BEHAVIOUR),
+    ("Behaviour contract selftest (ADR-0015)", GATE, _BEHAVIOUR),
+    ("canon components — regenerate from snippets (ADR-0013 ruling 4)", GATE, _CANON),  # was misrouted to the SNIPPET remedy ("snippets" in the label)
+    ("canon components determinism check (ADR-0013 ruling 4)", GATE, _CANON),
+    ("partial re-implementation ratchet (ADR-0013)", GATE, _RATCHET),
+    ("partial-ratchet selftest (ADR-0013)", GATE, _RATCHET),
+    ("token projection sync — snippets/tranches/canon literals (gen_snippet_tokens)", GATE,
+     "\n❌ token projection out of sync (exit {code}) — a store value changed without re-projection (or a manifest path is unresolvable). Run: python3 knowledge/gen_snippet_tokens.py"),  # this remedy was DEAD CODE — "snippet" matched first
+    ("snippet gate", GATE,
+     "\n❌ snippet gate failed (exit {code}) — see knowledge/_SNIPPET-AUDIT.md"),
+    ("theme cascade sync — [data-apollo-theme] layer (ADR-0011)", GATE, _THEME),
+    ("theme cascade selftest (ADR-0014)", GATE, _THEME),
+    ("state-snap gate — opacity states snap to the active theme's ramp (ADR-0014)", ABORT, None),
+    ("state-snap selftest (ADR-0014)", ABORT, None),
+    ("radius gate — no hardcoded border-radius; shape is a theme flex slot (ADR-0010)", GATE,
+     "\n❌ radius gate failed (exit {code}) — a hardcoded border-radius literal on a strict surface. Shape is theme-flexed (ADR-0010): bind var(--border-radius-default); 50%/999px circle+pill idioms are exempt. See knowledge/_RADIUS-GATE.md"),
+    ("showroom sync — generated component library (RULED 2026-07-21)", GATE, _SHOWROOM),
+    ("showroom URL-rebase selftest — the srcdoc base-URL trap (2026-07-27)", GATE, _SHOWROOM),
+    ("Legacy-colour leakage gate (Mono) — no Legacy-only colour in a Mono surface", GATE,
+     "\n❌ Legacy-colour leakage gate failed (exit {code}) — a Mono surface resolves to a Legacy-only colour (e.g. the success teal #00847F). Rebind onto the R-D14 token (rag/*-background / -glyph); do NOT add the hex to exceptions. See knowledge/_LEGACY-LEAK-GATE.md"),
+    ("theme-provenance gate (ADR-0011/R-D19) — no foreign-theme hex in a Mono surface (advisory)", ADVISORY, None),  # was misrouted to the BLOCKING dark-surface branch
+    ("token-tier gate (_STANDARDS.md §1)", GATE,
+     "\n❌ token-tier gate failed (exit {code}) — a component references a primitive, or a $value drifted from its $alias; see knowledge/_TOKEN-TIER-AUDIT.md"),
+    ("icon-source gate", GATE,
+     "\n❌ icon-source gate failed (exit {code}) — see knowledge/_ICON-SOURCE-AUDIT.md"),
+    ("a11y gate", GATE, "\n❌ a11y gate failed (exit {code}) — see knowledge/_A11Y-GATE.md"),
+    ("coverage gate", GATE, "\n❌ coverage gate failed (exit {code}) — see knowledge/_COVERAGE-GATE.md"),
+    ("pro-forma universal gate", GATE,
+     "\n❌ pro-forma universal gate failed (exit {code}) — see knowledge/_PROFORMA-GATE.md"),
+    ("pro-forma CSS-governed motion gate (DEF-003)", GATE,
+     "\n❌ pro-forma CSS-governed motion gate failed (exit {code}) — see knowledge/_CSS-GOVERNED-GATE.md"),
+    ("pro-forma no-hardcode styling gate (DEF-004)", GATE,
+     "pro-forma no-hardcode styling gate failed (exit {code}) — see knowledge/_NO-HARDCODE-GATE.md"),
+    ("4px-grid gate (DEF-005)", GATE,
+     "\n❌ 4px-grid gate (DEF-005) failed (exit {code}) — off-grid layout value(s); see _validate_grid.py output"),
+    ("type-binding blast-radius gate (canon/type.css)", GATE,
+     "\n❌ type-binding blast-radius gate failed (exit {code}) — a global type-composite selector is unregistered or its blast radius escaped; see knowledge/_TYPE-BLAST-GATE.md"),
+    ("descender-clip gate (ds-005) — truncating labels stay descender-safe", GATE,
+     "\n❌ descender-clip gate (ds-005) failed (exit {code}) — a truncating label (text-overflow:ellipsis) lacks `text-box-edge:text text`, so cap-alphabetic trim will clip its descenders (g/y/p/q). This is NOT a stray override to remove — the override IS the fix; add it. See _validate_descender_clip.py + _DS-IMPROVEMENTS.md ds-005."),
+    ("DataViz chart gate (semantic SVG + tokens + table spine)", GATE, _DATAVIZ),
+    ("DataViz gate selftest — bite-tests dv-004 + the dtype vocabulary (ds-014)", GATE, _DATAVIZ),
+    ("property-resolves gate C2 — silent-lookup class (advisory, ds-018)", ADVISORY, None),
+    ("property-resolves gate C2 selftest — 4 bites + a bite-the-bite", ABORT, None),
+    ("reverse-text edge-extremity check {#col26-020} (advisory)", ADVISORY, None),
+    ("compliance verification edges — applies_to vs verified_by (advisory)", ADVISORY, None),
+    ("external automatable-check refs — axe-core import (advisory)", ADVISORY, None),
+    ("consult index — problem-domain query surface", ABORT, None),  # THE #77 misroute: "surface" matched the dark-surface branch
+    ("consult tool selftest (advisory)", ADVISORY, None),
+    ("search core selftest — two-stage engine + receipt format (O2′ #25)", ABORT, None),
+    ("memento index — the Memento door's corpus (O2′ #25)", ABORT, None),
+    ("memento index determinism check (O2′ #25)", ABORT, None),
+    ("memento index selftest — contract refusals + determinism (O2′ #25)", ABORT, None),
+    ("memento search selftest — known-answer retrieval + fetch refusal (O2′ #25)", ABORT, None),
+    ("read chain file — _CHAIN.md, the cold-start door (#41)", ABORT, None),
+    ("read chain determinism check — stale _CHAIN.md serves a PREVIOUS session's record (#41)", ABORT, None),
+    ("read chain selftest — verbatim terms + the CUT + refusal on a blank GM (#41)", ABORT, None),
+    ("enactment register — is each ruling IN FORCE? (advisory, ADR-0016)", ADVISORY, None),
+    ("instrument-fit selftest (advisory, ds-015)", ADVISORY, None),
+    ("instrument fit — can the gate SEE the property? (advisory, ds-015)", ADVISORY, None),
+    ("integrity lint (gate)", GATE,
+     "\n❌ integrity gate failed (exit {code}) — see knowledge/_INTEGRITY-REPORT.md"),
+]
+
+
+def _build_routes():
+    routes = {}
+    for label, kind, remedy in ROUTE_ROWS:
+        if label in routes:
+            raise SystemExit(f"❌ ROUTING TABLE DEFECT: step ID {label!r} has more than one route row")
+        assert (remedy is not None) == (kind == GATE), \
+            f"route for {label!r}: GATE rows carry remedy text; ADVISORY/ABORT rows carry None"
+        routes[label] = (kind, remedy)
+    return routes
+
+
+ROUTES = _build_routes()
+
+
+def route(label, routes=None):
+    """Exact-ID lookup. UNKNOWN is never defaulted — fail loud and named (#77)."""
+    routes = ROUTES if routes is None else routes
+    if label not in routes:
+        raise SystemExit(
+            f"❌ UNKNOWN STEP ID: {label!r} has no route in ROUTE_ROWS (_build_all.py). "
+            "Every STEPS entry needs an exact-label row — substring guessing was removed (#77); "
+            "a measuring tool must not guess."
+        )
+    return routes[label]
+
+
+def check_routes(routes=None):
+    """Every registered step resolves to exactly one route; no stale route rows for
+    steps that no longer exist. Runs BEFORE step 1 of every build — a table gap
+    aborts the build loud and named instead of guessing at failure time."""
+    routes = ROUTES if routes is None else routes
+    labels = [s[0] for s in STEPS]
+    for label in labels:
+        route(label, routes)
+    orphans = sorted(set(routes) - set(labels))
+    if orphans:
+        raise SystemExit(f"❌ ROUTING TABLE DEFECT: route row(s) for unregistered step(s): {orphans!r}")
+    return len(set(labels))
+
+
+def selftest():
+    """--selftest short-circuits in __main__ BEFORE the build loop: no step runs,
+    nothing is regenerated or written. Arms: (a) completeness — every registered
+    step ID resolves to exactly one route; (b) an unknown ID refuses loud and
+    named; (c) mutation control — proof that (a) can go red."""
+    # (a) every registered step ID resolves to exactly one route
+    n = check_routes()
+    for label, (kind, remedy) in ROUTES.items():
+        assert kind in (GATE, ADVISORY, ABORT), f"route for {label!r}: unknown kind {kind!r}"
+        if kind == GATE:
+            assert "{code}" in remedy, f"GATE remedy for {label!r} lost its {{code}} slot"
+    print(f"  selftest (a): {n} registered step ID(s), each resolves to exactly one route ✓")
+    # (b) an unknown ID refuses, loud and named — never a silent default
+    probe = "no-such-step (#77 probe)"
+    try:
+        route(probe)
+    except SystemExit as e:
+        assert probe in str(e) and "UNKNOWN STEP ID" in str(e), f"refusal must NAME the id: {e}"
+    else:
+        raise AssertionError("selftest (b): unknown step ID was routed without refusing")
+    print("  selftest (b): unknown step ID refuses, loud and named ✓")
+    # (c) mutation control: drop one REAL route and prove arm (a) goes red
+    victim = STEPS[0][0]
+    mutant = {k: v for k, v in ROUTES.items() if k != victim}
+    try:
+        check_routes(routes=mutant)
+    except SystemExit as e:
+        assert victim in str(e), f"mutant refusal must name the missing step: {e}"
+    else:
+        raise AssertionError("selftest (c): completeness stayed green with a route removed — the check cannot fail")
+    print(f"  selftest (c): mutation control — dropping the route for {victim!r} turns (a) red ✓")
+    print(f"selftest PASS — exact-ID failure routing over {n} steps; unknown never defaulted (#77)")
+    return 0
+
+
+def main(argv=None):
+    argv = sys.argv[1:] if argv is None else argv
+    if "--selftest" in argv:
+        return selftest()          # short-circuits: the build loop below never runs
+    check_routes()                 # fail loud BEFORE step 1 if STEPS and ROUTE_ROWS disagree
+    rc = 0
+    for i, step in enumerate(STEPS, 1):
+        label, rel = step[0], step[1]
+        extra_args = list(step[2]) if len(step) > 2 else []
+        path = os.path.join(HERE, rel)
+        print(f"\n=== [{i}/{len(STEPS)}] {label} — {rel} ===")
+        r = subprocess.run([sys.executable, path] + extra_args)
+        if r.returncode != 0:
+            kind, remedy = route(label)
+            if kind == GATE:
+                # Gating steps run to the end (so you get every report) then the
+                # build exits non-zero.
+                print(remedy.format(code=r.returncode))
+                rc = rc or r.returncode
+            elif kind == ADVISORY:
+                # advisory steps never gate/abort — they report and the build continues
+                print(f"\n⚠ advisory step '{label}' reported findings (exit {r.returncode}) — non-gating")
+            else:  # ABORT
+                print(f"\n❌ step '{label}' failed (exit {r.returncode}) — aborting")
+                return r.returncode
+    if rc == 0:
+        print("\n✅ all generators ran and the integrity + contrast gates passed.")
+    else:
+        print("\n❌ build gate failed — see the reports above.")
+    return rc
+
+
+if __name__ == "__main__":
+    sys.exit(main())

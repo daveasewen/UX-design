@@ -105,6 +105,30 @@ else
   fi
 fi
 
+# spine-writer selftest consumer — RULED #78-D2 (same WARN/--wrap split as the wrap gate above,
+# #74-D1's shape). The #77 periphery inventory found `_build_live_state.py` splices _LIVE-STATE.md
+# — the spine, the token-store of truth — IN PLACE with no selftest and no gate: an ungated writer
+# on the one file every cold session trusts. The selftest now exists (5 arms: happy-path splice,
+# idempotency, named refusal on a marker-less spine, no-half-writes on every failure path, and
+# mutation controls proving each green can fail; it runs only on tempdir copies and hashes the
+# real spine before/after). The commit seam is where a broken splicer's output becomes DURABLE,
+# so it is consumed HERE — and as above, a mid-session commit is a CORRECT state, so red only
+# WARNS there and BLOCKS on --wrap.
+# ⚠ Mutation scope: mutant runs (suffix-eating splice, volatile block, refusal-bypass) proved the
+# arms red on doctored COPIES; this consumer trusts the selftest's exit code, as with the wrap gate.
+if [ "$WRAP" -eq 1 ]; then
+  python3 knowledge/_build_live_state.py --selftest ||
+    fail "spine-writer selftest RED on a --wrap commit — _build_live_state.py's splice of _LIVE-STATE.md is not trustworthy and this is the FINAL commit (#78-D2 consumer). Its failed arms are printed directly above and it owns the diagnosis; fix the writer, do not hand-patch the spine around it. Nothing has been staged."
+  echo "— spine-writer selftest GREEN on the wrap commit (#78-D2 consumer)"
+else
+  if python3 knowledge/_build_live_state.py --selftest; then
+    echo "— spine-writer selftest green (mid-session commit, DECLARED not-a-wrap)"
+  else
+    echo "⚠ spine-writer selftest RED — visible, not blocking: this commit is DECLARED not-a-wrap (#78-D2)."
+    echo "  The session's FINAL commit must run with --wrap, where red BLOCKS."
+  fi
+fi
+
 # T3 #77-D2 — single-source the commit headline from the GM ★ LATEST banner (handoff-testing-
 # regime plan, RULED #77). Kills the "found only in the commit message" class (#72/#76): the
 # banner becomes the one source and a finding that exists only in the msgfile is unwritable.
@@ -117,9 +141,10 @@ fi
 # shaped unusually (no " — " inside the parenthetical) is not a hard failure — it falls back to
 # the original first-em-dash reading and prints a one-line note naming the fallback. Only a
 # WHOLLY MISSING ★ LATEST heading still fails loud (nothing to derive a headline from at all).
-python3 - "$MSGFILE" <<'PYEOF' || fail "T3 headline generation failed (see traceback above) — the ★ LATEST banner in GOOD-MORNING.md could not be parsed. Nothing has been staged."
+python3 - "$MSGFILE" "$WRAP" <<'PYEOF' || fail "T3 headline generation failed (see traceback above) — the ★ LATEST banner in GOOD-MORNING.md could not be parsed. Nothing has been staged."
 import re, sys
 msgfile = sys.argv[1]
+wrap = sys.argv[2]  # "1" on --wrap commits, "0" otherwise (#78-D3)
 with open("GOOD-MORNING.md", encoding="utf-8") as f:
     gm = f.read()
 m = re.search(r"^\s*>?\s*#{1,6}\s*★\s*LATEST\s*—\s*(\d{4}-\d{2}-\d{2}).*?\*\*#(\d+)\*\*.*$",
@@ -149,9 +174,12 @@ if after is None:
                      "its own inside the ★ LATEST parenthetical — fell back to the first-em-dash "
                      "reading. Heading: " + line.strip()[:200])
 
-if len(after) > 120:
-    after = after[:117] + "…"
-headline = f"#{n} {date} — {after}"
+# #78-D3: a NON-wrap commit derives its headline from the PRIOR session's banner — prefix it
+# "after " so git log never attributes a mid-session commit to that session. Wrap = unprefixed.
+prefix = "" if wrap == "1" else "after "
+headline = f"{prefix}#{n} {date} — {after}"
+if len(headline) > 120:
+    headline = headline[:117] + "…"
 with open(msgfile, encoding="utf-8") as f:
     body_lines = f.read().splitlines()
 with open(msgfile, "w", encoding="utf-8") as f:
