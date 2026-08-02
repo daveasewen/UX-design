@@ -2582,3 +2582,49 @@ chat (*"remember to test the crap out of it"*), then ruled all four via explicit
   the stale-prose class (owned by `_assertions.json`, not a sixth layer).
 - **Build delegated** (RULED #57 shape: mutation-testable, no rulings produced by the build);
   fixture SEMANTICS ratified in-window by the conductor; T0 run in-window with receipts.
+
+## ★ #78 — 2026-08-02 (Sun; Fable solo Cowork conductor + 4 subs, Dave live)
+
+**#78-D1 — RULED (Dave, explicit option-select at the phase-2 decision pack): P1 + P3 + P4 build NOW; P5–P7 parked, priced, unruled.**
+- **Why (his selection of the recommended option; the pack's For case):** P1 is the seam every other
+  check is delivered through and had no test and no runner; P3 kills a wrong-cause-wrong-remedy class;
+  P4 is the "a gate that does not run cannot fail" class, mostly wiring.
+- **Enactment:** `219986b` — `knowledge/_test_git_commit.py` (18 arms, /tmp fixture repos, mutation
+  controls both directions) · `_build_all.py` exact-ID `ROUTE_ROWS` + boot-time `check_routes()`
+  (unknown NEVER defaulted) · `_validate_assertions` + `_build_decision_graph` selftests measured
+  green standalone, then wired per the `_roll_state` precedent.
+- ⚠ **The build MEASURED SEVEN misroutes where the inventory named one.** Five kind-deltas were
+  ratified mid-flight on Dave's own words — *"just stick to best practice and robustness and I'll
+  take your advice"* / *"no solutions of convenience, everything properly enacted"* — as restoring
+  each step's DECLARED intent: consult-index · token blast-radius · dark-mode audit
+  (wrong-remedy-and-continue → ABORT) · icon-contrast-delta · theme-provenance ("(advisory)" in
+  their own labels, accidentally GATING via substring order → advisory). Remedy TEXT proven
+  identical programmatically. Any single reversal is a one-line route change.
+
+**#78-D2 — RULED (Dave, option-select): the spine's ungated writer gets a selftest AND a BLOCKING
+consumer at the commit seam (#74-D1 WARN/`--wrap` shape).**
+- **Why:** `_build_live_state.py` splices `_LIVE-STATE.md` — the token-store of truth — in place,
+  previously with no selftest and no gate; the commit seam is where a broken splice becomes durable.
+- **Enactment:** `--selftest` (splice invariants · idempotency · named refusals · no-half-writes ·
+  atomic `os.replace`; runs only on tempdir copies, real spine sha256-checked before/after) wired
+  into STEPS; consumer block in `_git_commit.sh`; **the consumer's PRESENCE mutation-tested** — both
+  harness arms RED against the pre-edit script, GREEN against the wired one.
+
+**#78-D3 — RULED (Dave, option-select): T3 prefixes non-wrap commit headlines `after #N`.**
+- **Why (the finding that forced it, found by USING the seam):** the banner rolls only at wrap, so
+  T3 stamped this session's mid-session fix (`c9b74f5`) with #77's unprefixed headline —
+  message-from-one-run/status-from-another, in `git log`, for every mid-session commit ever made in
+  session N+1. The banner stays the single source; the prefix makes the register honest.
+- **Enactment + receipt:** `$WRAP` passed into the T3 heredoc; 120-cap applied AFTER prefixing
+  (pinned by its own harness arm). **First live receipt: `219986b`'s own headline** —
+  `after #77 2026-08-02 — …`. Pinned in `_test_git_commit.py` (prefix arm + no-prefix-on-wrap arm).
+
+**P0 closure (item a, not a new ruling — R4 discharge):** the step-11 red was an AGED PIN
+(#35-era fixture pinned a live never-cited set; #74's ratified testimony cited all three), fixed
+`c9b74f5` with the re-enactment fixture in the same commit; the real-repo arms now assert only
+MONOTONIC deltas. The class is [[premise-ages-faster-than-rule]] applied to a fixture: **a pin on
+live repo state is a claim that stops being true legitimately — pin deltas, not states.**
+
+**DV-D19 specimen v2 (item c, discharge of the #76 repair ruling):** `f73b9ec`, register row in
+`_REVIEW-SIGNOFF.md`; two pins put to Dave as OPEN (swatch-at-rest · fade-attribution), options
+deliberately not invented where the record cannot attribute the ask.
