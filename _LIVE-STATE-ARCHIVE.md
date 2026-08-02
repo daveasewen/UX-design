@@ -1,4 +1,12 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
+## ⏱ PRIOR DELTA — 2026-08-01 (Sat **#73**, FABLE solo Cowork conductor, Dave live — ✅ **DEGRADATION DIAGNOSED: UNRULED SEAMS, NOT DECAY** · ✅ **(g)+(h)+(f) ENACTED, MUTATION-PROVEN** · ⚠ **#72's OWN RESIDUAL WAS THE THIRD BANNER-BEFORE-SEAM INSTANCE**)
+
+- ✅ **The answer to Dave's opener, verified on artefacts:** four unruled seams (e–h) recur by construction; the "working well" period was partly the silent-estimate path (pre-#59) and FRESH chains over skipped wraps (#70/#71). Housekeeping `f70f602`: owed 2d run (#69 delta → archive), #72's false residual + size-line claims struck at source, corpus re-measured 44.7K, debris swept.
+- ✅ **(g)** `_git_commit.sh` self-heals tiktoken before the chain check (`8d176a1`, mutation-proven by its own first run). ⚠ First landed under a stub message — live script run on a dirty tree, my unverified premise; amended same minute.
+- ✅ **(h)** `check_preflight` gains the legal refusal `⛔ NOT CAPTURED — UNMEASURED.` + reason (`514f4bd`) — declared gap → visible WARN; near-miss or refusal+numbers → FAIL. Four arms mutation-run. ⚠ NEW residual declared: first-match grading (an older line is graded when the LATEST banner carries no stamp).
+- ✅ **(f)** `_CHAIN.md` opens with `YOU ARE #N. TITLE THIS CHAT →`; `build()` refuses a stale title (title ≠ LATEST+1). Catches STALE, not skipped — scope declared.
+- ⬛ **Dave's at #74:** legend scope (his words) · D3 · edge types · radios live · trigger index (needs his eyes) · NEW: wrap-gate wiring tradeoff · NEW: first-match fix · %-path fork.
+
 ## ⏱ PRIOR DELTA — 2026-08-01 (Sat **#72**, OPUS 5 Cowork conductor + 1× SONNET sub, Dave live — ✅ **DV-D02-A DISCHARGED, MUTATION-PROVEN** · ⛔ **FOUR FALSE CLAIMS STRUCK FROM CANON** · ⬛ **D3 UNRULED BY DESIGN**)
 
 - ✅ **DV-D02-A waiver DELETED; the check is BLOCKING on scatter.** `ee85623`. Both gated surfaces comply. Gates: dataviz 7/0 blocking · selftest (2 new scatter cases replacing the one that tested the dead waiver) · partials `--check` · legend 108/108.

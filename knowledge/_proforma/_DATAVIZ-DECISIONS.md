@@ -923,6 +923,39 @@ Edges: relates(DV-D12, scope=source-split) · relates(ADR-0015, scope=page-budge
   resolved to nothing. `Node: DV-D18` added to its real home. **The edge was never a candidate for
   deletion; buying a green that way is the pattern #75 spent its morning removing.**
 
+### ✅ DV-D19 ENACTED AND RATIFIED BY DAVE THE SAME SESSION
+
+**Dave, #76, on the live prototype:** *"DV-D19 is correct, but obviously it isn't styled correctly
+as this is a prototype."* ⇒ **the BEHAVIOUR is signed off; the review ARTEFACT is not.** Recorded as
+two facts because they have different owners: the ruling is closed, the specimen is defective.
+
+- **Enactment:** `st.mode` (`'rest'|'isolate'|'check'`) is LATCHED by the first swatch click and
+  cannot un-latch. `isSolo()` is now a mode read, not a set-size derivation. `active()` reads the
+  focus set in BOTH focus modes, so moving isolate → check moves no mark — *nothing jumps.*
+- **★ THE SUITE COULD NOT DISCRIMINATE THE RULING.** 108/108 passed under DV-D18 *and* DV-D19.
+  An invariant cannot discriminate a reversal, so check **24** asserts the DELTA directly:
+  `isolate → check → UNcheck` must leave no row solo. **Mutation-proven** by re-enacting DV-D18's
+  predicate — check 24 fails on all four members and **nothing else moves** (112/116,
+  `afterIsolate=true afterCheck=false afterUncheck=true`). Restored 116/116.
+- **⚠ A REGRESSION I INTRODUCED, REFUSED BY THE VERIFIER, kept because the near-miss is the useful
+  part:** gating the RELEASE test on `mode === 'isolate'` meant that after `isolate a → check b`, a
+  re-click on `a` fell to the ELSE branch and RE-ISOLATED instead of releasing — destroying DV-D17
+  bite (i). Check 22 caught it on all four members. **The release test is seed-based and stays so.**
+  DV-D19 reverses neither DV-D18 nor DV-D17.
+- **⛔ THE REVIEW ARTEFACT IS DEFECTIVE AND IT IS MY DEFECT, NOT A PROTOTYPE'S LICENCE.**
+  `reviews/DV-D19-MODE-LATCH-PROTOTYPE-2026-08-02-v1.html` **invented** an `.is-solo` treatment
+  (grey fill + inset ring, 15px swatch) instead of using canon's — which is
+  `border-color:var(--ink)` + `color-mix(in srgb, var(--ink) 6%, transparent)`, a 12px swatch and a
+  44px hit target (`canon.css:3504–3518`). ★ **A specimen that re-invents the styling cannot be
+  ruled on**, and Dave caught it on sight. **The repair is NOT a restyle of my approximation — it is
+  a rebuild against the real `canon.css` and the real snippet markup, so what he judges is the
+  product.** ⬛ **OWED AT #77.**
+- **⬛ ONE THING DV-D19 DOES NOT SETTLE, put to Dave in the prototype and not yet answered:** at
+  rest a swatch click still toggles `visible[]` and the mode stays `'rest'`. His wording — *"as soon
+  as the user checks a swatch the whole set change to check mode"* — could also mean a swatch click
+  **at rest** enters check mode with a focus set. **The narrow reading was taken deliberately**: the
+  return path is what he reported, and widening it changes resting behaviour on every chart. His.
+
 ### ⚠ FOUND, NOT FIXED — THE INTRO-MOTION LAW IS SHARED AND ONLY THE DONUT HALF IS BUILT
 
 **Dave, at the #76 opener, unprompted:** *"so yes the donut but the segmented bar has a similar

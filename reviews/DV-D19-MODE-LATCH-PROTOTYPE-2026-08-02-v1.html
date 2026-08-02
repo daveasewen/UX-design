@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DV-D19 — isolation and check as latched modes (#76 enactment review)</title>
+<style>
+  :root{
+    --page:#FBFBF9; --ink:#1B1B19; --ink2:#5C5C56; --line:#DFDFD8; --panel:#FFFFFF;
+    --s1:#2C6BB5; --s2:#1F7A6B; --s3:#C98A16; --s4:#B92F1E;
+    --ok:#1F7A6B; --bad:#B92F1E;
+    --ease:200ms cubic-bezier(.22,.61,.36,1);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;padding:32px;background:var(--page);color:var(--ink);
+    font:15px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;}
+  h1{font-size:22px;margin:0 0 4px;letter-spacing:-.01em}
+  h2{font-size:15px;margin:0 0 10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2)}
+  .sub{color:var(--ink2);margin:0 0 26px;max-width:70ch}
+  .wrap{max-width:1120px;margin:0 auto}
+  .grid{display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:start}
+  @media (max-width:900px){.grid{grid-template-columns:1fr}}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px}
+  figure{margin:0}
+  svg{display:block;width:100%;height:auto}
+  .dv-series{transition:opacity var(--ease)}
+  .is-ghost{opacity:.12}
+  .dv-leg{list-style:none;margin:18px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px 18px}
+  .dv-legrow{display:flex;align-items:center;gap:8px;border-radius:6px;padding:3px 7px;
+    transition:background var(--ease),box-shadow var(--ease)}
+  .dv-legrow.is-solo{background:#EFEFE9;box-shadow:inset 0 0 0 1.5px var(--ink)}
+  .dv-leg-sw{width:15px;height:15px;border-radius:3px;border:1.5px solid var(--ink2);
+    background:transparent;cursor:pointer;padding:0;position:relative}
+  .dv-leg-sw[aria-checked="true"]{border-color:transparent}
+  .dv-leg-item{background:none;border:0;font:inherit;cursor:pointer;padding:0;color:inherit}
+  .dv-legrow.is-solo .dv-leg-item{font-weight:650}
+  .ctl{display:flex;flex-direction:column;gap:14px}
+  .seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .seg button{flex:1;font:inherit;font-size:13px;padding:9px 8px;border:0;background:var(--panel);
+    cursor:pointer;color:var(--ink2)}
+  .seg button[aria-pressed="true"]{background:var(--ink);color:#fff;font-weight:600}
+  .step{display:flex;flex-direction:column;gap:6px}
+  .step button{font:inherit;font-size:13px;text-align:left;padding:9px 12px;border:1px solid var(--line);
+    border-radius:7px;background:var(--panel);cursor:pointer;color:var(--ink)}
+  .step button:hover{border-color:var(--ink2)}
+  .step button.done{border-color:var(--ink);background:#F4F4EE}
+  .read{font-variant-numeric:tabular-nums;font-size:13px;border:1px solid var(--line);
+    border-radius:8px;padding:12px 14px;background:#FCFCF8}
+  .read b{font-weight:650}
+  .verdict{margin-top:12px;padding:12px 14px;border-radius:8px;font-size:13.5px;font-weight:600}
+  .verdict.good{background:#E6F0ED;color:var(--ok);border:1px solid #BFD9D2}
+  .verdict.bad{background:#F7E7E4;color:var(--bad);border:1px solid #E3BDB6}
+  .verdict.idle{background:#F2F2EC;color:var(--ink2);border:1px solid var(--line)}
+  code{background:#F0F0EA;padding:1px 5px;border-radius:4px;font-size:.9em}
+  .note{font-size:13px;color:var(--ink2);margin-top:18px;max-width:70ch}
+  .q{border-left:3px solid var(--s3);padding:10px 0 10px 14px;margin-top:22px;font-size:13.5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>DV-D19 — isolation and check are latched modes</h1>
+  <p class="sub">#76 enactment review. Flip the ruling with the toggle, then run the same three
+  clicks. Under DV-D18 the emphasis on <b>A</b> comes back on the third click; under DV-D19 it
+  cannot. Both are the same code path — only <code>isSolo()</code> differs.</p>
+
+  <div class="grid">
+    <div class="panel">
+      <figure>
+        <svg viewBox="0 0 620 260" role="img" aria-label="Four-series bar chart">
+          <g id="bars"></g>
+        </svg>
+        <ul class="dv-leg" id="leg"></ul>
+      </figure>
+      <p class="note">Swatch = check mode. Label = isolation mode. The emphasis ring and the
+      bold label are the <code>.is-solo</code> treatment — the thing that was returning.</p>
+    </div>
+
+    <div class="ctl">
+      <div class="panel">
+        <h2>Ruling</h2>
+        <div class="seg" role="group" aria-label="Which ruling is live">
+          <button id="m18" aria-pressed="false">DV-D18 (derived)</button>
+          <button id="m19" aria-pressed="true">DV-D19 (latched)</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Dave's sequence</h2>
+        <div class="step">
+          <button data-step="0">1 · isolate A <span style="color:var(--ink2)">(click label)</span></button>
+          <button data-step="1">2 · check B <span style="color:var(--ink2)">(click swatch)</span></button>
+          <button data-step="2">3 · UNcheck B <span style="color:var(--ink2)">(the return path)</span></button>
+          <button data-step="9">↺ reset</button>
+        </div>
+        <div class="verdict idle" id="verdict">Run the three steps.</div>
+      </div>
+
+      <div class="panel">
+        <h2>State</h2>
+        <div class="read">
+          mode <b id="rMode">rest</b><br>
+          focus <b id="rFocus">—</b><br>
+          solo row <b id="rSolo">none</b>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <b>⬛ One thing this prototype deliberately does NOT settle, and it needs your word.</b><br>
+    At rest, a swatch click still toggles <code>visible[]</code> and the mode stays
+    <code>rest</code> — classic show/hide, DV-D11 untouched. Your wording (<i>"as soon as the user
+    checks a swatch the whole set change to check mode"</i>) could also mean a swatch click at rest
+    should enter check mode with a focus set. I took the narrow reading, because the return path is
+    what you reported and widening it would change resting behaviour on every chart. Say the word
+    and it widens.
+  </div>
+</div>
+
+<script>
+(function(){
+  var IDS=['A','B','C','D'], VALS={A:420,B:180,C:320,D:260}, COLS={A:'var(--s1)',B:'var(--s2)',C:'var(--s3)',D:'var(--s4)'};
+  var ruling='19';
+  var st={visible:{},focus:null,isolated:null,mode:'rest'};
+  IDS.forEach(function(id){st.visible[id]=true;});
+
+  var bars=document.getElementById('bars'), leg=document.getElementById('leg');
+  var max=Math.max.apply(null,IDS.map(function(i){return VALS[i];}));
+  IDS.forEach(function(id,i){
+    var h=200*VALS[id]/max, x=60+i*140, y=230-h;
+    var r=document.createElementNS('http://www.w3.org/2000/svg','rect');
+    r.setAttribute('class','dv-series'); r.setAttribute('data-series-group',id);
+    r.setAttribute('x',x); r.setAttribute('y',y); r.setAttribute('width',90); r.setAttribute('height',h);
+    r.setAttribute('fill',COLS[id]); bars.appendChild(r);
+    var li=document.createElement('li'); li.className='dv-legrow'; li.setAttribute('data-series',id);
+    li.innerHTML='<button class="dv-leg-sw" role="checkbox" aria-checked="true" style="background:'+COLS[id]+'"></button>'+
+                 '<button class="dv-leg-item">Series '+id+'</button>';
+    leg.appendChild(li);
+  });
+
+  function count(m){var n=0;IDS.forEach(function(i){if(m[i])n++;});return n;}
+  function active(){ return st.mode==='rest' ? st.visible : st.focus; }
+  /* the ONLY line that differs between the two rulings */
+  function isSolo(id){
+    if(ruling==='19'){ return st.mode==='isolate' && !!st.focus && !!st.focus[id]; }
+    return !!st.isolated && !!st.focus && st.focus[id] && count(st.focus)===1;
+  }
+  function render(){
+    var m=active(), solo=null;
+    IDS.forEach(function(id){
+      var row=leg.querySelector('.dv-legrow[data-series="'+id+'"]');
+      var s=isSolo(id); if(s) solo=id;
+      row.classList.toggle('is-solo',s);
+      var sw=row.querySelector('.dv-leg-sw');
+      sw.setAttribute('aria-checked',String(!!m[id]));
+      sw.style.background = m[id] ? COLS[id] : 'transparent';
+      bars.querySelector('[data-series-group="'+id+'"]').classList.toggle('is-ghost',!m[id]);
+    });
+    document.getElementById('rMode').textContent=st.mode;
+    document.getElementById('rFocus').textContent=st.focus?('{'+IDS.filter(function(i){return st.focus[i];}).join(', ')+'}'):'—';
+    document.getElementById('rSolo').textContent=solo||'none';
+  }
+  function toggleSwatch(id){
+    var m=active();
+    if(ruling==='19' && st.mode==='isolate'){ st.mode='check'; }
+    if(m[id] && count(m)===1){ return; }
+    m[id]=!m[id]; render();
+  }
+  function isolate(id){
+    if(st.isolated===id){ st.mode='rest'; st.isolated=null; st.focus=null; }
+    else { st.mode='isolate'; st.isolated=id; st.focus={}; st.focus[id]=true; }
+    render();
+  }
+  function reset(){ st.mode='rest'; st.isolated=null; st.focus=null; IDS.forEach(function(i){st.visible[i]=true;}); render(); }
+
+  leg.addEventListener('click',function(e){
+    var row=e.target.closest('.dv-legrow'); if(!row) return;
+    var id=row.getAttribute('data-series');
+    if(e.target.closest('.dv-leg-sw')) toggleSwatch(id); else if(e.target.closest('.dv-leg-item')) isolate(id);
+    mark(-1);
+  });
+
+  var v=document.getElementById('verdict');
+  function mark(n){
+    document.querySelectorAll('.step button').forEach(function(b){
+      var s=+b.getAttribute('data-step'); if(s<9) b.classList.toggle('done', n>=0 && s<=n);
+    });
+    if(n===2){
+      var back=!!leg.querySelector('.dv-legrow.is-solo');
+      v.className='verdict '+(back?'bad':'good');
+      v.textContent = back
+        ? "A's emphasis CAME BACK — the focus set is a singleton again, so the derived predicate reads solo. This is what you reported."
+        : "No row is solo. The mode latched on step 2 and cannot un-latch.";
+    } else if(n<0){ v.className='verdict idle'; v.textContent='Manual click — run the three steps for the verdict.'; }
+    else { v.className='verdict idle'; v.textContent='Step '+(n+1)+' done.'; }
+  }
+  document.querySelectorAll('.step button').forEach(function(b){
+    b.addEventListener('click',function(){
+      var s=+b.getAttribute('data-step');
+      if(s===9){ reset(); mark(-1); v.className='verdict idle'; v.textContent='Run the three steps.'; return; }
+      if(s===0){ reset(); isolate('A'); }
+      if(s===1){ toggleSwatch('B'); }
+      if(s===2){ toggleSwatch('B'); }
+      mark(s);
+    });
+  });
+  function setRuling(r){
+    ruling=r;
+    document.getElementById('m18').setAttribute('aria-pressed',String(r==='18'));
+    document.getElementById('m19').setAttribute('aria-pressed',String(r==='19'));
+    reset(); mark(-1); v.className='verdict idle'; v.textContent='Ruling switched — run the three steps.';
+  }
+  document.getElementById('m18').addEventListener('click',function(){setRuling('18');});
+  document.getElementById('m19').addEventListener('click',function(){setRuling('19');});
+  render();
+}());
+</script>
+</body>
+</html>
