@@ -44,6 +44,7 @@ Usage:  python3 knowledge/_capture_gate.py             # build mode (blocking)
         python3 knowledge/_capture_gate.py --wrap --lane  # lane session wrap (skips GM check)
         python3 knowledge/_capture_gate.py --selftest  # bite-test, one fixture per FAIL class
 Build mode writes _CAPTURE-GATE.md; wrap mode is stdout-only (S-D3). Exits non-zero on any FAIL."""
+import ast                              # #82: the real-tier check must read STRUCTURE, not text
 import datetime
 import glob
 import hashlib
@@ -441,6 +442,41 @@ TOKEN_COUNT_CALL_RE = re.compile(r"""get_encoding\(\s*["']cl100k_base["']\s*\)""
 # saves. A method value is something a function RETURNS; that is the only form checked.
 REAL_TIER_RE = re.compile(r"^\s*return\b.*['\"]real['\"]", re.M)
 
+
+def _produces_real_tier(src):
+    """True iff `src` contains a RETURN whose value is a TUPLE ending in the literal `'real'`.
+
+    ⛔ BORN FROM A MUTATION THAT SHOULD HAVE BITTEN AND DID NOT (#82). `REAL_TIER_RE` above is
+    scoped to a `return`, which closed the USE-vs-MENTION hole #81 correctly worried about — a
+    comment merely SAYING "real" cannot satisfy it. It does not close the two holes underneath:
+
+      1. **A CLASSIFIER IS NOT A PRODUCER.** `_tier_of()` ends `return "real"` — it SORTS method
+         strings, it never measures anything. Deleting the real tier out of `measure_tokens()`
+         left that line standing, so the regex still matched and the audit still read GREEN.
+      2. **A TEST FIXTURE IS NOT CODE.** This file contains the string literal
+         `'    return n, "real"\\n'` as a bite fixture. Scanned as text it is indistinguishable
+         from the thing it is a fixture FOR.
+
+    ★ Both holes are unreachable by any regex, because both turn on what a line IS rather than
+    what it says — and that is precisely [[gate-must-quote-what-it-forbids]]'s point pushed one
+    level further: where SCOPE is not enough, read the STRUCTURE. The AST knows a string constant
+    is not a statement and a bare return is not a tuple; text never will.
+
+    ★ The tuple requirement is not a trick — it is this project's own rule made checkable: *the
+    method travels WITH the number, as a tuple, on purpose* (`measure_tokens`' docstring). A
+    producer hands back `(n, 'real')`. Anything returning the bare word is talking ABOUT the
+    tier, not reporting one.
+
+    ⚠ `SyntaxError` PROPAGATES. A file that will not parse must not be silently regraded by a
+    weaker instrument — the caller reports it by name."""
+    for node in ast.walk(ast.parse(src)):
+        if (isinstance(node, ast.Return) and isinstance(node.value, ast.Tuple)
+                and node.value.elts):
+            last = node.value.elts[-1]
+            if isinstance(last, ast.Constant) and last.value == "real":
+                return True
+    return False
+
 # The registry. A file under `knowledge/` that counts tokens and is NOT named here FAILS — that
 # is the half which catches the NEXT instrument, and it is the whole reason Dave picked (C).
 #   'real'         — has a REAL tier; VERIFIED against source, never trusted from this table
@@ -455,13 +491,20 @@ MEASURERS = {
         "flagged by #77's periphery inventory, re-probed #81 and STILL zero. It is the "
         "reason #80 re-derived a ruling #54 had already made: an instrument ships WITH ITS "
         "READER, and a measurement nothing re-reads decays into a rediscovery."),
-    "_capture_gate.py": ("estimate-only",
-        "⛔ THE ds-021 DEFECT ITSELF, and the reason this gate exists. measure_tokens() can "
-        "return only 'tiktoken cl100k_base' or a bytes ESTIMATE — so measurement_degraded() "
-        "asks 'is this an estimate?' and cl100k answers 'no, healthy'. THE VOCABULARY HAS NO "
-        "WORD FOR REAL (#80's root cause, confirmed at source #81). Fixing it is a CODE "
-        "change and it moves the GM size stamps, ds-025's floor and the amber line — priced, "
-        "not smuggled into this window."),
+    "_capture_gate.py": ("real",
+        "✅ #82-D1 (Dave): measure_tokens() tries gauge.count() FIRST and returns (n, 'real'); "
+        "cl100k and the bytes divisor are kept UNTOUCHED beneath it as labelled fallbacks, so "
+        "an offline build still runs and #59's guards still mean what they meant. THE WORD FOR "
+        "REAL NOW EXISTS HERE — measurement_tier(). ⚠ measurement_degraded() was deliberately "
+        "NOT widened to 'not real': _gen_chain.py:196 consumes it as a HARD REFUSAL and would "
+        "have become an offline build-killer. measurement_mixed() guards the fixed point "
+        "instead. ⛔ WHAT IT WAS, kept because the entry must still carry WHY this gate exists: "
+        "from #81 this file was 'estimate-only' — THE ds-021 DEFECT ITSELF. measure_tokens() "
+        "could return only 'tiktoken cl100k_base' or a bytes ESTIMATE, so measurement_degraded() "
+        "asked 'is this an estimate?' and cl100k answered 'no, healthy'. THE VOCABULARY HAD NO "
+        "WORD FOR REAL (#80's root cause, confirmed at source #81). It was a CODE change and it "
+        "moves the GM size stamps, ds-025's floor and the amber line — which is why it was "
+        "priced and put to Dave rather than smuggled into #81's window."),
     "_context_gauge.py": ("estimate-only",
         "REFUSES without tiktoken unless --estimate labels the output (#74). Honest about "
         "estimate-vs-nothing; still blind to cl100k-vs-real."),
@@ -514,12 +557,23 @@ def unit_vocabulary_audit(repo):
                 f"'calibration' and say WHY.")
             continue
         tier, why = MEASURERS[fn]
-        if tier == "real" and not REAL_TIER_RE.search(src):
-            failures.append(
-                f"ds-021 (C): MEASURERS claims `knowledge/{fn}` has a REAL tier, but its source "
-                f"contains no `return … 'real'` — the registry is asserting a capability the "
-                f"code does not have. A table that can lie about the code is worse than no "
-                f"table: it launders an estimate into a measurement.")
+        if tier == "real":
+            try:
+                ok = _produces_real_tier(src)
+            except SyntaxError as e:
+                failures.append(
+                    f"ds-021 (C): `knowledge/{fn}` is pinned 'real' but will not PARSE "
+                    f"({e.__class__.__name__}: {e.msg} line {e.lineno}) — a file that cannot be "
+                    f"parsed must never be graded 'probably fine' by a regex that skimmed it. "
+                    f"[[measuring-tool-must-not-guess]]: observe, never infer.")
+                ok = True          # already reported; do not also report it as capability-less
+            if not ok:
+                failures.append(
+                    f"ds-021 (C): MEASURERS claims `knowledge/{fn}` has a REAL tier, but its "
+                    f"source contains no RETURN of the form `(…, 'real')` — the registry is "
+                    f"asserting a capability the code does not have. A table that can lie about "
+                    f"the code is worse than no table: it launders an estimate into a "
+                    f"measurement.")
         elif tier == "estimate-only":
             warnings.append(
                 f"ds-021 (C) DECLARED GAP — `knowledge/{fn}` counts in cl100k and cannot name a "
@@ -538,7 +592,12 @@ def unit_vocabulary_audit(repo):
 
 
 SIZE_STAMP_RE = re.compile(r"^\s*>?\s*\**size\**\s*[:—-]\s*(.+)$", re.I)
-SIZE_TK_RE = re.compile(r"\bGM\b\D{0,12}?([\d.]+)\s*K\s*(tape|tk)\b", re.I)  # K is REQUIRED:
+SIZE_TK_RE = re.compile(r"\bGM\b\D{0,12}?([\d.]+)\s*K\s*(tape|tk|real)\b", re.I)  # K is REQUIRED:
+# ⛔ #82-D1 ADDED `real`, and the omission was not cosmetic: the re-stamped header led with
+# `GM **43,370 real**`, this regex did not match it, and the search ran ON and locked onto
+# `27.2K tape` — a figure inside #81's KEPT HISTORICAL declaration. The gate then reported a
+# 16,170-token drift with total confidence. ★ A parser that keeps scanning after a miss does not
+# fail; it finds the WRONG number and grades it. [[silent-lookup-failure-class]].
 #   without it "GM 25618 tk" would parse as 25.6M and pass a drift check by accident.
 #   ds-021 (#34): `tape` is the canonical unit; bare `tk` is the LEGACY spelling and is still
 #   accepted, but it WARNS. ⚠ It is accepted deliberately — a regex that hard-failed on the old
@@ -1164,7 +1223,17 @@ LS_DELTA_RE = re.compile(r"^##\s*⏱")
 OUT_CHAIN = "_CHAIN.md"          # must match `_gen_chain.OUT_NAME` — asserted in selftest
 DOFIRST_ITEM_RE = re.compile(r"^>\s*\*\*(\d+[a-z]?)\.\s*(.+)$")
 DOFIRST_HOOK_MAX = 46            # chars per hook — a BYTE bound, deliberately
-DOFIRST_INDEX_TK_MAX = 420       # ⚠ the whole index, MEASURED — see below
+DOFIRST_INDEX_TK_MAX = 700       # ⚠ the whole index, MEASURED — see below
+# ⛔ RAISED 420 → 700 AT #82, DELIBERATELY AND WITH THE REASON, because the gate itself demands
+# exactly that rather than a silent drift. ★ NOTHING GREW. The ceiling was calibrated against a
+# `cl100k` measurement and #82-D1 changed the INSTRUMENT underneath it, so the same index that
+# measured ~340 now measures 531 and the ceiling silently tightened by ~1.55×. ⚠ 700 is NOT a
+# conversion of 420 — converting is the defect (#54, Dave). It is a headroom figure picked over
+# the MEASURED 531 in the unit now in force, AGENT-PICKED AND PROVISIONAL, awaiting Dave.
+# ⚠⚠ AND IT IS A CLASS, NOT AN INSTANCE: every ceiling in this repo stated in `tape` is now
+# being compared against REAL tokens and is ~1.55× tighter than whoever set it intended. The
+# M10 chain warn and the banner-region warn are the same effect. They need RE-MEASURING against
+# their purpose, one at a time — not a multiplier pass.
 
 
 def dofirst_index(gm_lines):
@@ -1420,10 +1489,53 @@ def _heal_tiktoken():
         return False
 
 
+# ==================================== #82-D1 — THE REAL TIER (Dave's ruling, this session) ===
+# RULED #82-D1: *wire `measure_tokens()` to the native counter, and re-stamp the LIVE budget
+# claims in the same pass.* ⚠ THE UNIT WAS NOT REOPENED — it is his, ruled #54 (ONE unit, real
+# tokens; `cl100k` a labelled estimator, *"never a unit a cap is stated in"*). #81 built the gate
+# that NAMED this defect and registered this file `estimate-only`. This is the fix it pointed at.
+#
+# ★ THE SHAPE IS ADD-ON-TOP, NEVER REPLACE, and that is the load-bearing decision. The
+# cl100k → bytes cascade below is UNTOUCHED and keeps its exact method strings, so #59's two
+# guards, M6's bites and every pinned label still mean precisely what they meant. A real reading
+# is tried FIRST; where it is unreachable this function behaves exactly as it did yesterday.
+# Replacing the cascade would have welded a UNIT change to a FALLBACK rewrite —
+# [[conflated-fix-guarantees-recurrence]]: one sentence, two problems, one fixed.
+#
+# ⛔ WHAT I DELIBERATELY DID **NOT** WIDEN — MEASURED, NOT ASSUMED. The obvious follow-through is
+# to redefine `measurement_degraded()` as "not real". DO NOT. `_gen_chain.py:156` consumes it as
+# a HARD REFUSAL (`return None, …`), so widening it makes `_CHAIN.md` UNGENERABLE on any machine
+# without a key or a network — the build dies offline, and the read chain is the one artefact a
+# cold session cannot start without. That is [[unkeyed-gate-vs-roll2f-tension]] exactly: a new
+# gate making a CORRECT state unreachable. cl100k is deterministic and self-consistent, so a
+# chain measured ENTIRELY on it converges honestly and says so. The thing that must never happen
+# is a chain measured on TWO tiers — and that is what `measurement_mixed()` below watches, which
+# is a check that can actually FAIL rather than one that forbids an honest offline build.
+#
+# ⚠ AND IT CORRECTS #81's OWN BLAST-RADIUS NOTE AT SOURCE. That note lists
+# `_validate_package_delta.py` (6 refs) as a `measurement_degraded()` consumer reaching the
+# SHIPPED package. MEASURED #82 by quoting all six: they are SYMBOL-PARITY checks —
+# `PORTED_FUNCS_A` (:86) names the function, ARM2(b) (:479) deletes it to prove the check bites.
+# **Not one reads the return value.** The package risk was real for the NAME and nil for the
+# SEMANTICS. The risk that note did NOT name is the `_gen_chain.py` refusal above.
+# [[unmatched-grep-is-not-an-absence]] — a MATCHED grep is not a presence either; quote the line.
+_REAL_TIER_ENV = "CAPTURE_GATE_NO_REAL"   # set to force the pre-#82 cascade (selftests use it)
+_TIERS_SEEN = set()                       # every tier this PROCESS has actually measured with
+
+
+def _tier_of(method):
+    """The TIER a method string belongs to: `'real'` · `'cl100k'` · `'estimate'`. ONE place,
+    because two readers of one vocabulary is the drift class this entire file argues against."""
+    if method == "real":
+        return "real"
+    return "estimate" if "ESTIMATE" in method else "cl100k"
+
+
 def measure_tokens(text):
-    """Returns (tokens, method). tiktoken when present (OBSERVED); otherwise the MEASURED byte
-    divisor, labelled ESTIMATE. Both are declared and they are never silently mixed — a number
-    whose method is unstated is the thing this gate exists to prevent.
+    """Returns (tokens, method). REAL Claude tokens when reachable (#82-D1, Dave's); otherwise
+    tiktoken when present (OBSERVED); otherwise the MEASURED byte divisor, labelled ESTIMATE.
+    All three are declared and they are never silently mixed — a number whose method is unstated
+    is the thing this gate exists to prevent.
 
     ⚠ #59 — THE ENCODE CALL IS BEHIND A GUARD NOW TOO, NOT JUST THE IMPORT. `get_encoding()`
     fetches cl100k_base's BPE ranks file over the network on a cold cache (tiktoken's own
@@ -1433,18 +1545,82 @@ def measure_tokens(text):
     and no label, which is a worse failure than the one this function's docstring already
     refuses to allow. Same failure class as the import guard just above; there is no reason the
     second half of one operation should be held to a lower standard than the first."""
+    # ---- #82-D1: the REAL tier. `gauge` is `_gauge_tokens`, imported at :58 since #56 and never
+    # once called from here — the cure was in this file's own namespace for 25 sessions.
+    # ⚠ `count()` raises MeasurementRefused (#79-D1) when it can reach NOTHING, and that is not
+    # this function's failure to report: control falls into the cascade below, which labels
+    # itself. Never to silence — there is no path here that returns an unlabelled number.
+    if not os.environ.get(_REAL_TIER_ENV):
+        try:
+            n, how = gauge.count(text)
+            if how == "real":
+                _TIERS_SEEN.add("real")
+                return n, "real"
+        except Exception:
+            pass
     try:
         tiktoken = importlib.import_module("tiktoken")
     except Exception:
         if not _heal_tiktoken():
+            _TIERS_SEEN.add("estimate")
             return (int(len(text.encode("utf-8")) / BYTES_PER_TOKEN),
                     f"bytes/{BYTES_PER_TOKEN} ESTIMATE (tiktoken absent)")
         tiktoken = importlib.import_module("tiktoken")
     try:
-        return len(tiktoken.get_encoding("cl100k_base").encode(text)), "tiktoken cl100k_base"
+        out = len(tiktoken.get_encoding("cl100k_base").encode(text)), "tiktoken cl100k_base"
     except Exception:
+        _TIERS_SEEN.add("estimate")
         return (int(len(text.encode("utf-8")) / BYTES_PER_TOKEN),
                 f"bytes/{BYTES_PER_TOKEN} ESTIMATE (tiktoken installed, encoder unloadable)")
+    _TIERS_SEEN.add("cl100k")
+    return out
+
+
+def _tier_probe():
+    """The tier a measurement taken RIGHT NOW would use — WITHOUT recording it.
+
+    ★ The snapshot/restore is the point. A health probe is not a measurement, and a probe that
+    wrote into `_TIERS_SEEN` would let `measurement_mixed()` fire on its own footprint — an
+    instrument manufacturing the very condition it reports. That is
+    [[check-after-its-own-remedy]] in miniature, and it is cheaper to forbid here than to debug
+    later from a mixed-tier warning nobody can reproduce."""
+    snapshot = set(_TIERS_SEEN)
+    try:
+        return _tier_of(measure_tokens("x")[1])
+    finally:
+        _TIERS_SEEN.clear()
+        _TIERS_SEEN.update(snapshot)
+
+
+def measurement_tier():
+    """`'real'` · `'cl100k'` · `'estimate'` — what a measurement taken now would be. ★ THIS is
+    the word the vocabulary lacked (#80's root cause, confirmed at source #81): the reason a
+    RULED unit sat unenacted for 26 sessions was that no function in this file could SAY 'real',
+    so `measurement_degraded()` asked *'is this an estimate?'* and cl100k answered *no, healthy*.
+    A stamp that names its tier can be checked; one that cannot, cannot."""
+    return _tier_probe()
+
+
+def measurement_mixed():
+    """True iff this PROCESS has measured with more than one tier.
+
+    ⚠ BORN FROM THE FIXED POINT, not from tidiness. `_gen_chain.py` iterates `_CHAIN.md` to a
+    fixed point in which the file asserts its own size; real and cl100k differ by ~1.5×, so a run
+    that reached the API on one iteration and fell back on the next would either oscillate
+    forever or bake two units into one file — and both failures look exactly like a content
+    change from the outside. This is the check #59's reasoning implies once a third tier exists:
+    #59 refused a chain built on a GUESS; this refuses one built on TWO INSTRUMENTS.
+
+    ★ It watches what actually happened, never what is reachable — [[measure-dont-convert-units]]
+    and #81's own rule that a gate checks vocabulary and history, not a live reading it might be
+    honestly unable to take."""
+    return len(_TIERS_SEEN) > 1
+
+
+def measurement_tiers_seen():
+    """The tiers this process measured with, sorted — for a caller that must NAME them in a
+    refusal. A refusal that cannot say WHICH two instruments disagreed is a shrug."""
+    return sorted(_TIERS_SEEN)
 
 
 def measurement_degraded():
@@ -1464,8 +1640,14 @@ def measurement_degraded():
 
     Call this to gate a VERDICT (stale vs. cannot-measure-reliably), never to gate a MEASUREMENT
     itself — a caller that skips measuring because this returned True would just be adding a
-    second, undeclared fallback next to the one this file already owns."""
-    return "ESTIMATE" in measure_tokens("x")[1]
+    second, undeclared fallback next to the one this file already owns.
+
+    ⛔ #82-D1 — ITS MEANING IS UNCHANGED ON PURPOSE, AND THE REASON IS WRITTEN DOWN ABOVE
+    `measure_tokens`. It still asks *"is this reading a GUESS?"*, NOT *"is this reading REAL?"*.
+    Widening it to mean 'not real' would turn `_gen_chain.py:156`'s refusal into an offline
+    build-killer. `measurement_tier()` is where the finer question now lives; `measurement_mixed()`
+    is where the fixed point is protected. Three questions, three functions, one vocabulary."""
+    return _tier_probe() == "estimate"
 
 
 # ⚠ §A HASH CONVENTION — PINNED HERE, and this is the only implementation. Recovered the hard way
@@ -3766,14 +3948,52 @@ def selftest_cross_instrument_units():
     if live_f:
         failures.append(f"ds-021 (C): the live repo FAILS its own unit audit ({live_f[0]}) — "
                         f"the registry and the code have diverged")
-    if not live_w:
-        failures.append("ds-021 (C): the live audit produced NO warnings, but "
-                        "`_capture_gate.py` itself is registered 'estimate-only' and MUST warn. "
-                        "A declared gap that stopped announcing itself is an undeclared gap")
-    if not any("_capture_gate.py" in w for w in live_w):
-        failures.append("ds-021 (C): the audit did not name `_capture_gate.py` as the "
-                        "estimate-only measurer — it is the instrument the ruling is ABOUT, and "
-                        "a gate that exempts itself is the oldest false green there is")
+    # ⛔ #82-D1 REPLACED THIS BITE RATHER THAN DELETING IT, and the distinction matters. Until
+    # this session the two checks here read: *the audit MUST warn, and it must name
+    # `_capture_gate.py` as the estimate-only measurer.* Both were correct — this file WAS the
+    # ds-021 defect. Dave's #82-D1 fixed the defect, so a check pinned to its presence would
+    # fail forever on a repo that had done the right thing. ★ THE OLD BITE IS NOT LOST: it is
+    # INVERTED. What must now be true is the stronger claim — this file is registered `real` AND
+    # the registry's word is VERIFIED against source, never trusted from the table.
+    # [[invariant-cannot-discriminate-reversal]]: assert the DELTA, then re-enact the OLD ruling
+    # to prove the new check can still bite. The re-enactment is bite 3 below.
+    _tier, _why = MEASURERS["_capture_gate.py"]
+    if _tier != "real":
+        failures.append(f"#82-D1: `_capture_gate.py` is registered {_tier!r}, not 'real' — Dave "
+                        f"ruled the native counter wired at #82; a registry that disagrees with "
+                        f"the ruling is the ds-021 defect pointing the other way")
+    _self_src = open(os.path.join(REPO, "knowledge", "_capture_gate.py"),
+                     encoding="utf-8").read()
+    if not _produces_real_tier(_self_src):
+        failures.append("#82-D1: this file is registered 'real' but its SOURCE contains no "
+                        "RETURN of the form `(…, 'real')` — the registry's word is never "
+                        "trusted, and a table claiming a tier the code cannot produce is worse "
+                        "than a declared gap")
+    # ★ THE STRUCTURE-vs-TEXT BITES. Each re-enacts a state where the OLD regex read GREEN and
+    # the code was wrong — [[invariant-cannot-discriminate-reversal]]. Without these,
+    # `_produces_real_tier` is a green that cannot fail.
+    if _produces_real_tier('def _tier_of(m):\n    return "real"\n'):
+        failures.append("#82-D1: a CLASSIFIER returning the bare word 'real' satisfied the "
+                        "real-tier check — this is the exact mutation that did NOT bite at #82 "
+                        "and let a file with its measurer removed still read as capable")
+    if _produces_real_tier('x = \'    return n, "real"\\n\'   # a bite FIXTURE, not code\n'):
+        failures.append("#82-D1: a STRING LITERAL shaped like a real return satisfied the check "
+                        "— a test fixture would then certify the thing it is a fixture for")
+    if not _produces_real_tier('def m(t):\n    return 7, "real"\n'):
+        failures.append("#82-D1: a genuine `return n, 'real'` producer did NOT satisfy the "
+                        "check — the structure rule is too tight and every real tier now reads "
+                        "as absent, which fails the repo for doing the right thing")
+    try:
+        _produces_real_tier("def broken(:\n")
+        failures.append("#82-D1: an UNPARSEABLE source did not raise — it would be graded by "
+                        "silence, and a file nothing can read is not a file that passed")
+    except SyntaxError:
+        pass
+    if any("_capture_gate.py" in w for w in live_w):
+        failures.append("#82-D1: the audit still WARNS about `_capture_gate.py` after the real "
+                        "tier landed — either the fix did not take or the audit is reading a "
+                        "stale registry, and both publish an estimate wearing a measurement's "
+                        "clothes")
 
     # ---- 2. THE UNREGISTERED-MEASURER BITE. This is the half that catches the NEXT instrument,
     # and it is the entire reason Dave chose (C) over (A), (B) or (D).
@@ -3880,7 +4100,15 @@ def selftest_growth():
     failures = []
 
     # ---- M6: the fallback must stay REACHABLE and must still describe itself as an ESTIMATE.
-    saved, os.environ["CAPTURE_GATE_NO_HEAL"] = os.environ.get("CAPTURE_GATE_NO_HEAL"), "1"
+    # ⚠ #82-D1 — `CAPTURE_GATE_NO_REAL` IS SET ALONGSIDE `CAPTURE_GATE_NO_HEAL`, and without it
+    # this arm silently stopped testing anything. The real tier sits ABOVE the whole cascade, so
+    # a machine with a key returns 'real' and never reaches the code M6 exists to bite. The arm
+    # would have gone GREEN by BYPASS — [[gate-must-quote-what-it-forbids]]: a green that cannot
+    # fail is an assertion. Hiding tiktoken is no longer sufficient to reach the fallback.
+    _envs = ("CAPTURE_GATE_NO_HEAL", "CAPTURE_GATE_NO_REAL")
+    saved = {k: os.environ.get(k) for k in _envs}
+    for k in _envs:
+        os.environ[k] = "1"
     sys.modules["tiktoken"] = None          # makes `import tiktoken` raise, as a missing module does
     try:
         n, method = measure_tokens("hello world " * 50)
@@ -3891,20 +4119,26 @@ def selftest_growth():
             failures.append("M6: fallback returned a non-positive count")
     finally:
         del sys.modules["tiktoken"]
-        if saved is None:
-            os.environ.pop("CAPTURE_GATE_NO_HEAL", None)
-        else:
-            os.environ["CAPTURE_GATE_NO_HEAL"] = saved
-    if measure_tokens("hello")[1] == "tiktoken cl100k_base":
-        pass                                 # healthy env: the OBSERVED path is the one in use
-    elif "ESTIMATE" not in measure_tokens("hello")[1]:
-        failures.append("M6: measure_tokens returned an undeclared method")
+        for k, v in saved.items():
+            os.environ.pop(k, None) if v is None else os.environ.__setitem__(k, v)
+    # ⚠ 'real' JOINS THE DECLARED SET HERE (#82-D1). Before, an unrecognised method fell to the
+    # `elif` and was reported as UNDECLARED — which is exactly what a correct real reading would
+    # have done. The set is exhaustive by construction: `_tier_of` knows three tiers and no more.
+    _m = measure_tokens("hello")[1]
+    if _m in ("real", "tiktoken cl100k_base"):
+        pass                                 # healthy env: an OBSERVED path is the one in use
+    elif "ESTIMATE" not in _m:
+        failures.append(f"M6: measure_tokens returned an undeclared method {_m!r}")
 
     # ---- #59: measurement_degraded() must track measure_tokens()'s OWN fallback exactly. It is
     # a second reader of the same fact (`_gen_chain.build()` trusts it ALONE to decide whether to
     # refuse), so if it could disagree with measure_tokens() the refusal could fire on a healthy
     # instrument or — worse — stay silent on a degraded one. Same forcing technique as M6, above.
-    saved, os.environ["CAPTURE_GATE_NO_HEAL"] = os.environ.get("CAPTURE_GATE_NO_HEAL"), "1"
+    # ⚠ #82-D1: same bypass hazard as M6 — the real tier must be suppressed too, or this arm
+    # tests a path it never reaches.
+    saved = {k: os.environ.get(k) for k in _envs}
+    for k in _envs:
+        os.environ[k] = "1"
     sys.modules["tiktoken"] = None
     try:
         if not measurement_degraded():
@@ -3912,13 +4146,60 @@ def selftest_growth():
                             "has drifted from measure_tokens()'s own fallback decision")
     finally:
         del sys.modules["tiktoken"]
-        if saved is None:
-            os.environ.pop("CAPTURE_GATE_NO_HEAL", None)
-        else:
-            os.environ["CAPTURE_GATE_NO_HEAL"] = saved
+        for k, v in saved.items():
+            os.environ.pop(k, None) if v is None else os.environ.__setitem__(k, v)
     if measurement_degraded():
         failures.append("#59: measurement_degraded() read True with a healthy tiktoken restored "
                         "— it would refuse every build() forever, not just a genuinely degraded one")
+
+    # ---- #82-D1: THE THREE NEW READERS MUST EACH BE ABLE TO FAIL, and the probe must not
+    # manufacture the condition it reports. Ordered so each bite is isolated to one claim.
+    if measurement_tier() not in ("real", "cl100k", "estimate"):
+        failures.append(f"#82-D1: measurement_tier() answered {measurement_tier()!r} — outside "
+                        f"the three-tier vocabulary, so a stamp could name a tier no gate knows")
+    if _tier_of("real") != "real" or _tier_of("tiktoken cl100k_base") != "cl100k" \
+            or _tier_of(f"bytes/{BYTES_PER_TOKEN} ESTIMATE (tiktoken absent)") != "estimate":
+        failures.append("#82-D1: _tier_of() mis-sorted one of the three LIVE method strings — "
+                        "the tier vocabulary has drifted from what measure_tokens() returns, "
+                        "which is the two-instruments-in-one-namespace defect all over again")
+    # ★ The probe-pollution bite. `_tier_probe` snapshots and restores `_TIERS_SEEN`; if that
+    # restore is ever dropped, a lone health check makes measurement_mixed() true by itself and
+    # the fixed-point guard starts refusing builds on its own footprint.
+    # ⛔ THE SET IS EMPTIED FIRST, AND THAT IS THE WHOLE BITE. Written the obvious way —
+    # snapshot, probe, compare — this check MUTATION-TESTED GREEN: by the time it runs, the
+    # process has already measured with cl100k, so a probe that records 'cl100k' adds a member
+    # the set ALREADY HAS and the comparison sees nothing. The defect was invisible precisely
+    # because the suite was healthy. [[invariant-cannot-discriminate-reversal]] — the assertion
+    # has to be made where the delta can EXIST, not merely where it is convenient to read.
+    _snap0 = set(_TIERS_SEEN)
+    _TIERS_SEEN.clear()
+    try:
+        _tier_probe()
+        if _TIERS_SEEN:
+            failures.append(f"#82-D1: _tier_probe() RECORDED {sorted(_TIERS_SEEN)} into "
+                            f"_TIERS_SEEN — a health probe that writes its own footprint lets "
+                            f"measurement_mixed() refuse a build on a condition the probe "
+                            f"itself created")
+    finally:
+        _TIERS_SEEN.clear()
+        _TIERS_SEEN.update(_snap0)
+    # ★ And mixed-tier detection must be able to say YES, not merely default to NO. Re-enacted
+    # here rather than asserted: a guard proved only in its passing state is an assertion.
+    _snap = set(_TIERS_SEEN)
+    try:
+        _TIERS_SEEN.update({"real", "cl100k"})
+        if not measurement_mixed():
+            failures.append("#82-D1: measurement_mixed() read False with TWO tiers recorded — "
+                            "the fixed point is unguarded and _CHAIN.md can bake two units")
+        if measurement_tiers_seen() != sorted(_TIERS_SEEN):
+            failures.append("#82-D1: measurement_tiers_seen() cannot NAME the tiers it saw — a "
+                            "refusal that will not say which instruments disagreed is a shrug")
+    finally:
+        _TIERS_SEEN.clear()
+        _TIERS_SEEN.update(_snap)
+    if len(_TIERS_SEEN) <= 1 and measurement_mixed():
+        failures.append("#82-D1: measurement_mixed() read True on a single-tier process — it "
+                        "would refuse every build forever, #59's failure mode in a new coat")
 
     # ---- #59: the get_encoding()/encode() half of measure_tokens must ALSO degrade to a
     # labelled ESTIMATE rather than crash uncaught — before this fix only the `import tiktoken`
@@ -4612,8 +4893,60 @@ def selftest_handoff_history():
     return failures
 
 
+def selftest_real_tier_reachable():
+    """#82-D1 — the ONE arm that lets the real tier off its leash, and it exists because
+    `selftest()` puts it ON one (see the block there).
+
+    ⚠ IT MUST NOT FAIL ON AN OFFLINE MACHINE. Reaching the API is an ENVIRONMENT fact, not a
+    correctness fact, and #79-D1 already ruled that an honest refusal is the right behaviour
+    where nothing is reachable. So this arm asserts what is true in EVERY environment: whatever
+    tier comes back is one the vocabulary knows, and the tier the registry CLAIMS is the tier the
+    source can PRODUCE. It reports the observed tier so a reader can see which path ran, because
+    a test that runs two different ways and says which is honest; one that hides it is not."""
+    failures = []
+    saved = os.environ.pop("CAPTURE_GATE_NO_REAL", None)
+    try:
+        tier = measurement_tier()
+        if tier not in ("real", "cl100k", "estimate"):
+            failures.append(f"#82-D1: with the real tier UNSUPPRESSED the measurer answered "
+                            f"{tier!r} — outside the three-tier vocabulary")
+        print(f"  ▫️  #82-D1 real tier UNSUPPRESSED for one probe: observed {tier!r} "
+              f"({'API reachable' if tier == 'real' else 'offline/absent — legal, and declared'})")
+    finally:
+        if saved is not None:
+            os.environ["CAPTURE_GATE_NO_REAL"] = saved
+    return failures
+
+
 def selftest():
-    failures = (selftest_preflight() + selftest_preflight_tokens()
+    # ⛔ #82-D1 — THE SELFTEST RUNS ON THE DETERMINISTIC TIER, AND THIS IS A DECLARED CHOICE.
+    # MEASURED this session: with the real tier live the suite made **232 API round-trips** (the
+    # content cache went 19 → 251 entries) at ~0.24s each and blew past the sandbox's 45s call
+    # wall; suppressed, the identical suite is **16.3s, EXIT=0**. The reason is structural, not
+    # incidental — a selftest measures hundreds of SYNTHETIC fixtures, every one a fresh content
+    # hash and therefore a guaranteed cache miss.
+    #
+    # ★ THE JUSTIFICATION IS NOT SPEED, IT IS WHAT THE NUMBERS ARE FOR. A fixture's token count
+    # is never published against a budget; it exists to prove a code path bites. The rule this
+    # project actually holds — ONE instrument per PUBLISHED number — is untouched: the build and
+    # wrap paths, which is where every stamp is produced, run on the real tier.
+    # ⚠ And the suppression is not silent. `selftest_real_tier_reachable()` unsuppresses for one
+    # probe and PRINTS the tier it observed, so a run always says which instrument it reached.
+    # [[instrument-without-a-consumer]] — a switch nothing reports on is a switch nobody audits.
+    _real_saved = os.environ.get("CAPTURE_GATE_NO_REAL")
+    os.environ["CAPTURE_GATE_NO_REAL"] = "1"
+    try:
+        return _selftest_body()
+    finally:
+        if _real_saved is None:
+            os.environ.pop("CAPTURE_GATE_NO_REAL", None)
+        else:
+            os.environ["CAPTURE_GATE_NO_REAL"] = _real_saved
+
+
+def _selftest_body():
+    failures = (selftest_real_tier_reachable()
+                + selftest_preflight() + selftest_preflight_tokens()
                 + selftest_gauge_refusal_seam()          # #79-D1 paired half
                 + selftest_budgets() + selftest_strata_exempt() + selftest_units()
                 + selftest_cross_instrument_units()       # ds-021 (C), RULED #81-D1

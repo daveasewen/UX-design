@@ -2850,3 +2850,73 @@ GM stamps, `_CHAIN.md`'s fixed point, `ds-025`'s floor and `_validate_package_de
 `_RUNBOOK-context-gauge.md:463–505` still teaches the retired tape/bill system · `_measure_tokenizer.py`
 still 0 consumers · **seeding the trigger index further — 8 rulings is a start, not coverage, and a
 missing entry is the exact failure it exists to prevent.**
+
+---
+
+## ★ #82 — 2026-08-02 (Sun; Opus 5 solo Cowork conductor, Dave live, one window; CRANK ruled at the opener)
+
+**#82-D1 — RULED (Dave): wire `measure_tokens()` to the native counter, AND re-stamp the LIVE
+budget claims in the SAME pass.** Offered as three shapes, each priced off a probe run before the
+question: (a) wire + re-stamp in one pass · (b) wire now, re-stamp next window · (c) leave the gap
+standing. He took (a). ⚠ **The UNIT was NOT reopened** — it is his, ruled **#54** (one unit, real
+Claude tokens; `cl100k` a labelled estimator, *"never a unit a cap is stated in"*). #81-D1 ruled the
+enactment SHAPE (C); **#82-D1 is the enactment**, 28 sessions after the unit was ruled.
+
+**Second half of the ruling, and the line it draws:** re-stamp **only** claims compared against a
+budget — the GM `size:` stamp, `_CHAIN.md`'s footer, `ds-025`'s floor. **Historical readings are NOT
+re-denominated.** `notes/_GAUGE-LOG.md` and the archived strata are correct as written: they record
+what was measured, in the unit it was measured in. Re-writing them would be a false inscription.
+
+**ENACTED the same window, verified against the artefacts and not a banner:** `measure_tokens()`
+tries `gauge.count()` first and returns `(n, 'real')`, with the cl100k → bytes cascade UNTOUCHED
+beneath it as labelled fallbacks · `MEASURERS["_capture_gate.py"]` → `real` · new
+`measurement_tier()` / `measurement_mixed()` / `measurement_tiers_seen()` · `_gen_chain.py`'s unit
+WORD is now asked of the instrument on every build instead of hard-coded `tape` · GM stamped
+**43,555 real** = measured 43,555 · `_CHAIN.md` footer **11,032 real** = measured 11,032, fixed
+point in 2 passes.
+
+⛔ **WHAT WAS DELIBERATELY NOT DONE, and it is the load-bearing half of the enactment.**
+`measurement_degraded()` was **not** widened to mean *"not real"*. `_gen_chain.py:156` consumes it
+as a **HARD REFUSAL**, so widening it makes `_CHAIN.md` ungenerable on any machine without a key —
+the build dies offline, and the read chain is the one artefact a cold session cannot start without.
+Same shape as `ds-022 (d)` vs `roll_2f`: **a new gate making a CORRECT state unreachable.** The
+finer question lives in `measurement_tier()`; the fixed point is guarded by `measurement_mixed()`.
+
+**TWO CORRECTIONS TO #81's OWN BLAST-RADIUS NOTE, at source.** (i) It lists
+`_validate_package_delta.py` (6 refs) as reaching the SHIPPED package: quoting all six, they are
+**symbol-parity** checks and **not one reads the return value** — the package risk was real for the
+NAME and nil for the SEMANTICS. (ii) The risk it did NOT name is the `_gen_chain.py` refusal above.
+
+★★ **THE FINDING, and it generalises past this ruling: a test suite's health is not evidence that
+its tests are running.** Three real bugs, all found by mutation and none by reading:
+1. **A CLASSIFIER satisfied a PRODUCER check.** Deleting the real tier left the audit GREEN, because
+   `_tier_of()` ends `return "real"` and a bite FIXTURE string in the same file also matched. Both
+   holes are unreachable by regex ⇒ `_produces_real_tier()` now walks the **AST** for a `return`
+   whose value is a **tuple ending in `'real'`** — this project's own rule (*the method travels WITH
+   the number, as a tuple*) made checkable. **This was a hole in #81's `unit_vocabulary_audit()`,
+   not only in the new bite; fixed at the class.**
+2. **A guard whose delta could not exist where it was read.** The probe-pollution check
+   mutation-tested green: by the time it ran the process already held `cl100k`, so a polluting probe
+   added a member the set already had. Fixed by emptying the set first.
+3. **Three test arms had silently stopped testing anything.** The repo-wide idiom *"hide tiktoken,
+   therefore degraded"* stops working the moment a tier sits ABOVE the cascade. M6, #59 and
+   `_gen_chain`'s degraded-instrument arm would all have gone **green by bypass**. ⇒ **Rule, now
+   written into all three sites: forcing a fallback means suppressing EVERY tier above it.**
+
+**5 mutations · 5 distinct named bites · revert green.**
+
+**DECLARED, not smuggled: the selftest runs on the deterministic tier.** MEASURED — with the real
+tier live the suite made **232 API round-trips** (cache 19 → 251) and blew the 45s call wall;
+suppressed it is **16.3s, EXIT=0**. Justified not by speed but by what the numbers are for: a
+fixture's count is never published against a budget. **One instrument per PUBLISHED number is
+untouched** — build and wrap run on the real tier — and `selftest_real_tier_reachable()` unsuppresses
+for one probe and PRINTS the tier it observed, so the switch is never silent.
+
+**Trigger index seeded:** `knowledge/_rulings.json` id **`ds-021-D1-82`** (9 rulings now). ⚠ It
+**refused** two forward-referenced evidence pointers (this ledger section and the dossier, unwritten
+at the time) and was right to — a pointer index whose pointers rot is worse than none. Both are
+promotable into `evidence` now that they exist.
+
+**Dossier:** `_DECISION-HISTORY/2026-08-02-the-real-tier.md` · **divvy for the second window:**
+`notes/2026-08-02-82-divvy-window-2.md` (Dave ruled CRANK at the opener; #60-D1 cap 3, conductor
+commits, worker does not).
