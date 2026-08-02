@@ -970,6 +970,8 @@
       host: host, fig: host.closest('figure') || document, rows: rows,
       ids: rows.map(function (r) { return r.getAttribute('data-series'); }),
       visible: {}, isolated: null, focus: null, lastHi: null, vals: null, total: 0,
+      /* ★ DV-D19 — the MODE is LATCHED, never derived. See isSolo(). */
+      mode: 'rest',
       live: document.getElementById(String(host.id).replace('-legend', '-live')),
       reset: host.querySelector('.dv-leg-reset')
     };
@@ -979,14 +981,25 @@
     return st;
   }
   function series(st, id) { return st.fig.querySelectorAll('[data-series-group="' + id + '"]'); }
-  function active(st) { return st.isolated ? st.focus : st.visible; }
-  /* ★ DV-D18 (Dave, 2026-08-01, #70) — SOLO IS A SET SIZE, NOT A SEED IDENTITY.
-     DV-D17's complaint was verbatim "the isolated key item stays active when I check others on";
-     the #69 evidence (v5.5 prototype) showed the marker keyed off seed identity is what produced
-     it. Deriving solo from "the focus set is a singleton and this is its member" satisfies that
-     complaint EXACTLY while leaving DV-D11's additive focus set alive. ⚠ st.focus is null outside
-     isolate — guard it, do not call count() on null. */
-  function isSolo(st, id) { return !!st.isolated && !!st.focus && st.focus[id] && count(st, st.focus) === 1; }
+  /* ★ DV-D19 — 'rest' reads visible[]; BOTH focus modes read the focus set, so moving from
+     isolate to check does not move a single mark. Nothing jumps: the focus set BECOMES the
+     checked set (Dave refused reverting to the pre-isolation mix). */
+  function active(st) { return st.mode === 'rest' ? st.visible : st.focus; }
+  /* ★ DV-D19 (Dave, #75; enacted #76) — ISOLATION AND CHECK ARE MODES, NEVER SIMULTANEOUS.
+     Verbatim: "as soon as the user checks a swatch the whole set change to check mode.
+     check-mode and isolation-mode never occur at the same time."
+     ⛔ WHAT WAS BROKEN WAS THE RETURN PATH, NOT THE TWO STATES. DV-D18 rightly de-seeded the
+     marker and derived it from set size — but a DERIVED predicate can become true AGAIN:
+     `isolate D -> check E -> uncheck E` put count(focus) back to 1, so D's emphasis returned
+     while the user was plainly in check mode. * A PREDICATE CAN BECOME TRUE AGAIN; A MODE CANNOT.
+     => emphasis is now a read of a LATCHED mode. DV-D19 REFINES DV-D18, it does not reverse it:
+     the additive focus set (DV-D11/DV-D18) is untouched, and DV-D17's original complaint — "the
+     isolated key item stays active when I check others on" — is still answered, now by a latch
+     that cannot un-latch rather than by a count that can.
+     ANTI-FALSE-FIX: do NOT restore `count(st, st.focus) === 1` here. It reads EQUIVALENT on the
+     first two clicks of every sequence and diverges only on the RETURN — the one path Dave
+     reported. The mutation test re-enacts exactly that. */
+  function isSolo(st, id) { return st.mode === 'isolate' && !!st.focus && !!st.focus[id]; }
   function count(st, m) { var n = 0; st.ids.forEach(function (id) { if (m[id]) { n++; } }); return n; }
   function nameOf(st, id) {
     var el = st.host.querySelector('.dv-legrow[data-series="' + id + '"] .dv-leg-name');
@@ -1067,7 +1080,7 @@
       r.classList.toggle('is-solo', solo);
     });
     st.ids.forEach(function (id) { paint(st, id, !m[id]); });
-    if (st.reset) { st.reset.disabled = (count(st, st.visible) === st.ids.length && !st.isolated); }
+    if (st.reset) { st.reset.disabled = (count(st, st.visible) === st.ids.length && st.mode === 'rest'); }
     updateCentre(st);
     clearFade(st);
   }
@@ -1084,6 +1097,9 @@
        in isSolo() instead — the moment the set stops being a singleton, NO row reads solo.
        ⚠ DV-D17's release-on-add branch is DELETED, not commented: left in place it pre-empts
        this path on the very first click. Arc: _DATAVIZ-DECISIONS.md § Batch 10 + § ★ #70. */
+    /* ★ DV-D19 — THE LATCH. A swatch click while isolated moves the WHOLE SET to check mode
+       and it never returns. The set itself is untouched, so nothing jumps. */
+    if (st.mode === 'isolate') { st.mode = 'check'; }
     if (m[id] && count(st, m) === 1) {
       announce(st, st.isolated ? 'At least one series must stay in the focus' : 'At least one series must stay shown');
       return;
@@ -1095,15 +1111,24 @@
     render(st);
   }
   function isolate(st, id) {
-    if (st.isolated === id) { st.isolated = null; st.focus = null; announce(st, 'Isolation released'); }
-    else {
-      st.isolated = id; st.focus = {}; st.focus[id] = true;
+    /* ★ DV-D19 — the gesture split, Dave's words: "clicking on the label is isolation-mode and
+       clicking on the swatch is check-mode." A label re-click releases; any other label click
+       ENTERS isolation, including out of check mode — which is how the user gets back. */
+    /* ⚠ THE RELEASE TEST IS SEED-BASED AND STAYS SO — it is NOT gated on the mode. Gating it
+       on `mode === 'isolate'` was tried at enactment and the member verifier refused it (check 22,
+       4 members): after `isolate a -> check b`, the mode is 'check', so a re-click on `a` fell to
+       the ELSE branch and RE-ISOLATED instead of releasing, destroying DV-D17 bite (i) — release
+       restores visible[], not all-on. DV-D19 refines DV-D18; it reverses neither it nor DV-D17. */
+    if (st.isolated === id) {
+      st.mode = 'rest'; st.isolated = null; st.focus = null; announce(st, 'Isolation released');
+    } else {
+      st.mode = 'isolate'; st.isolated = id; st.focus = {}; st.focus[id] = true;
       announce(st, 'Showing only ' + nameOf(st, id) + ' — check a blank swatch to add a series');
     }
     render(st);
   }
   function resetAll(st) {
-    st.isolated = null; st.focus = null;
+    st.mode = 'rest'; st.isolated = null; st.focus = null;
     st.ids.forEach(function (id) { st.visible[id] = true; });
     announce(st, 'All series shown');
     render(st);

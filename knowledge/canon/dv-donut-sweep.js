@@ -5,15 +5,9 @@
    ⚠ The split buys NO headroom and the GATE enforces that, not this comment — the group's
    32 KB page budget sums every registered source (the 2026-07-26 re-scoping).
 
-   ★ The motion law is SHARED WITH THE STACKED BAR and only this half is built — see
-   _proforma/_DATAVIZ-DECISIONS.md § intro-motion. They share a LAW, not an implementation:
-   the bar half must stay CSS (DEF-003), this half must stay JS (an SVG arc's angular extent
-   is not CSS-animatable — Batch 3 #7).
-
-   ADR-0015 contract: no polling/network · progressive enhancement (baked SVG renders if this
-   never runs) · reduced-motion lands on the final frame · DEF-003 — animates `d`, never a
-   transform. ZERO resize listeners is CORRECT; the single rAF-debounced one is a GROUP
-   invariant held by dv-behaviour.js. */
+   ★ The motion law is SHARED with the stacked bar and only this half is built; they share a
+   LAW, not an implementation. Full record: _DATAVIZ-DECISIONS.md § ★ #76 — not restated here.
+   ⚠ ZERO resize listeners is CORRECT: that is a GROUP invariant, held by dv-behaviour.js. */
 (function () {
   'use strict';
   if (window.__dvDonutSweep) { return; } window.__dvDonutSweep = true;

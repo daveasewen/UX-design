@@ -199,6 +199,32 @@ MEMBERS.forEach((member) => {
       spare ? (ghosted(spare) && !anyGhost(a) && !anyGhost(b))
             : (!anyGhost(a) && !anyGhost(b)),
       spare ? `spare=${spare} ghosted=${ghosted(spare)}` : '');
+    /* ★★ DV-D19 (Dave, #75; enacted #76) — THE RETURN PATH. This is the ONE check that
+       discriminates DV-D19 from DV-D18, and it exists because 108/108 passed under BOTH: an
+       invariant cannot discriminate a reversal, so the DELTA has to be asserted directly.
+       Dave's sequence, verbatim in effect: isolate D -> check E -> UNcheck E. Under DV-D18's
+       derived predicate, count(focus) returns to 1 and D's emphasis COMES BACK while the user
+       is plainly in check mode. Under DV-D19 the mode is LATCHED by the first swatch click and
+       cannot un-latch, so no row reads solo.
+       ⚠ MUTATION-PROVEN by re-enacting DV-D18: restore
+       `!!st.isolated && !!st.focus && st.focus[id] && count(st, st.focus) === 1`
+       in isSolo() and this check goes RED (4 members) while every other check stays green —
+       the delta is isolated, not assumed. If this check ever passes under that mutation it has
+       stopped testing DV-D19 and is an assertion, not a gate. */
+    click(reset);
+    click(item(a));                       /* isolation mode: focus = {a}, a is emphasised */
+    const soloAfterIsolate = !!soloRow();
+    click(sw(b));                         /* THE LATCH — the whole set moves to check mode */
+    const soloAfterCheck = !!soloRow();
+    click(sw(b));                         /* uncheck: focus is a singleton AGAIN */
+    ok('24 DV-D19 — isolate -> check -> UNcheck leaves NO row solo (a mode cannot become true again)',
+      soloAfterIsolate && !soloAfterCheck && !soloRow(),
+      `afterIsolate=${soloAfterIsolate} afterCheck=${soloAfterCheck} afterUncheck=${!!soloRow()} ` +
+      `focusSize=1 (the DV-D18 predicate would read SOLO here)`);
+    ok('25 DV-D19 — the label re-click still RELEASES out of check mode (DV-D17 bite (i) not reversed)',
+      (click(item(a)), !soloRow()),
+      `live="${live.textContent.trim()}"`);
+
     /* bite (ii) of the ruling. Stated as the real invariant rather than a literal expected value:
        Reset is disabled exactly when the view is NOT filtered — which holds for any N. */
     ok('23 DV-D17 — Reset does not self-disable while the view is still filtered',
