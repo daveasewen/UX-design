@@ -1005,3 +1005,12 @@ collapse — single ink #1A1A1A/#FFFFFF; de-emphasis stays weight+size. No token
 unamended."* Nothing changed in the store.
 
 Edges: supersedes(col25-011, scope=mono) · verified-by(contrast-gate)
+
+---
+
+**★ #86 (2026-08-02, triage-bankruptcy — inscribed #87): the RAG status-treatment manifestation is
+a STANDING GOVERNING RECORD (G17).** Close condition ratified by Dave via the review export
+(`reviews/TRIAGE-BANKRUPTCY-2026-08-02-v1.html`, 19/19): **closes at Dave's canon pick — A, A+B,
+or A+B+C** (`reviews/RAG-STATUS-MANIFESTATION-2026-07-19-v1`, `_LIVE-STATE.md:387`). ⚠ Whether one
+treatment is provisionally rendering live was UNVERIFIED at #86 (declared residual, not a claim).
+Register: `knowledge/_GOVERNING-RECORDS.md` G17 · ledger: `notes/_MEMENTO-DECISIONS.md` § ★ #86-D1.

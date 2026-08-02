@@ -3006,3 +3006,92 @@ at the WRAP.** It cannot make a session price itself at the opener; it can only 
 cost something the next session sees. **Dave's to rule.**
 
 **Dossier:** `_DECISION-HISTORY/2026-08-02-the-unwired-gate-reanalysed.md`.
+
+## ★ #85 — 2026-08-02 (Sun; declared budget stop, NO WRAP RAN — this block inscribed at #87)
+
+⚠ **Provenance: `_HANDOFF-87-bankruptcy.md` (via #86's handoff), inscribed two sessions late at #87.
+Not a reconstruction of #85's transcript — only what the handoff chain carries.**
+
+**#85-D1 — RULED (Dave): the Memento store is REBUILT** — structured state · generated numbers ·
+the handoff ON the boot path. *(Sequencing later superseded by #86's ruling below: #85 said "Apollo
+at #87"; #86 said Memento first.)* #85 ended on a declared budget stop; its wrap never ran; the
+chain continued to certify #85 for two sessions (see #86's measurement below).
+
+## ★ #86 — 2026-08-02 (Sun; triage-bankruptcy session; declared budget stop, NO WRAP RAN — this block inscribed at #87)
+
+⚠ **Provenance: `_HANDOFF-87-bankruptcy.md` + `reviews/TRIAGE-BANKRUPTCY-2026-08-02-v1.html`
+(+ `.REVIEW` pair) — the export came back through the review machinery, 19 of 19 ruled, zero
+comment pins. Dave's explicit confirm: "Yes, firm — record them." Inscribed one session late at #87.**
+
+### #86-D1 — RATIFIED (Dave, 19/19 via review export): the bankruptcy triage
+
+**The 16 accepted close conditions — each governing item becomes a standing record
+(register: `knowledge/_GOVERNING-RECORDS.md`, created #87):**
+
+- **G1** index cap 700 (`_capture_gate.py:1403` `DOFIRST_INDEX_TK_MAX`) → closes when Dave ratifies 700 or names his own.
+- **G2** `TAPE_TO_BILL = 1.57` at n=2 → closes at 4 logged pairs, then Dave rules firm-or-retire.
+- **G3** stale-wording gate tier (`retired_unit_prose_audit` WARN) → closes when Dave rules warn vs block.
+- **G4** GM §C 191 > 150 warn cap → closes when Dave picks OFFLOAD / TRIM / KEEP.
+- **G5** the four advisory size caps (`_capture_gate.py:4843–4858`) → closes when re-measured in real (after G9), then Dave ratifies the set in one pass.
+- **G6** `DEFER_STREAK = 6` + `USAGE_HISTORY_BLOCKING = False` → closes when Dave rules the streak + per-candidate OFFLOAD/TRIM/KEEP calls.
+- **G7** newest-end convention (strata oldest-first vs archives newest-first) → closes when Dave names it, one sentence.
+- **G8** dormant % band (45/60/63, DORMANT since #58) → closes when Dave says retire or pin.
+- **G9** ds-023 re-measurement programme (the whole ~1.55×-tightened class) → closes when Dave rules the programme.
+- **G10** the "70%/95%" stray band (GM:36, no provenance, FENCED) → closes when Dave rules provenance or strikes it.
+- **G11** DS-018 recessive value (four candidate greys, `_DS-IMPROVEMENTS.md:939`) → closes when Dave picks it.
+- **G12** Charter §4b temperature map (PROVISIONAL 2026-07-02) → closes when tov-016 lands or Dave ratifies as-is.
+- **G14** icon-button dark bindings (`icon-button.meta.json:68`, borrows Button's verbatim) → closes when Dave rules SC dark (ADR-0014).
+- **G15** DV-D13 donut centre figure + `st.visible[id]=true` wiring → closes at Dave's sign-off eye (already on the backlog).
+- **G16** the `_DATAVIZ-DECISIONS.md:567` enactment call (agent's, not Dave's) → closes when Dave ratifies or reverses.
+- **G17** RAG manifestation (*unverified live-render, declared*) → closes at Dave's canon pick (A / A+B / A+B+C).
+
+### #86-D2 — RULED (Dave, in chat, G13 resolved — SUPERSEDES the bow-and-arrow ask). His words, verbatim:
+
+> "the crescent is only a mark for apollo, we use it when we need designs to be anonymous
+> use the hsbc mark normally"
+
+⇒ **crescent = Apollo/anonymity mark — its masthead use is CORRECT, not a gap** · **HSBC mark =
+normal use.** `knowledge/_ICON-GAPS.md` `brand-apollo` row CLOSES on this ruling. **Still open:**
+`menu-search` combined glyph — joins the governing records as the +1, closes when Dave approves
+the glyph.
+
+### #86-D3 — RULED (Dave): PILE 3 stays OUT of the bankruptcy — ruled-but-unenacted is a protected class
+
+Molecules pack (#66 enacts pending) · radius/corner tuner ("return SOON, don't let me forget") ·
+#84-D1 successor instrument. Untouched by the archive motion.
+
+### #86-D4 — RULED (Dave): the INERT block archives as ONE block
+
+The ~22-item list in the review doc's INERT section, verbatim; items return only when named, each
+gets a `closes_when` on entry. Archive: `knowledge/_BANKRUPTCY-ARCHIVE.md` (created #87). Flags
+that survive the archive: donut/chart-bar "awaiting eye" **verify-before-archiving** — ⚠ verified
+at #87: NOT covered by #79 (which closed the DV-D19 specimen only; the 5-pane eyeball open-014
+stands at `_REVIEW-SIGNOFF.md:98`), so **those two stay in the sign-off queue, held out of the
+archive per Dave's own flag** · three ledger question-batches (3+5+3) archived with a
+NOT-CLASSIFIED flag.
+
+### #86's MEASUREMENT, standing: the "118 markers" inventory was not reproducible
+
+The #85 handoff's ~118 open decisions was typed, not measured; no probe reproduces it. Real
+population ~40 items → 16 governing (+1 unverified) / ~22 inert. The ~15 governing prediction
+survived; the denominator did not. [[planning-estimate-is-not-a-measurement]]
+
+### #86-D5 — RULED (Dave, closing the chat) — SEQUENCING, verbatim:
+
+> "I need memento fixed before apollo. so nail Mem and then we carry on."
+
+⇒ Memento (bankruptcy execution + rebuild store) runs to STABLE before any Apollo product work.
+**Supersedes #85's "Apollo at #87".**
+
+### ⬛ FLOATED by Dave at #86 close, NOT ruled — verbatim: *"maybe we need to test mem before moving on."*
+
+Proposed shape (agent's, put to Dave at #87): the rebuild ships with an ACCEPTANCE DRILL — cold
+boot against the new store, measuring (a) routing (right contract first time) · (b) counts
+reproduce (no typed numbers) · (c) wrap/commit certifies the session that ran. Thresholds Dave's.
+
+### Costs of record (#86): closed at 192,720 real (96% of 200,000, conversation half; boot half
+UNMEASURED, ds-025 stands) · ~13K spent on the stale `_CHAIN.md` before the handoff was found
+(routing defect) · the triage measurement · the review doc + pair. **Third stale-banner defect,
+measured:** `_git_commit.sh` silently rewrites the msgfile subject from the un-regenerated chain
+banner — #86's first commit certified #84 (caught, amended to `fd2a44c`; evidence in that commit's
+body).

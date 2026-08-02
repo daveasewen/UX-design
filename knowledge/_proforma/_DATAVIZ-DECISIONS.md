@@ -1013,3 +1013,14 @@ animation."* He is right, and it is stronger than similar — **it is the same r
 - ⬛ **DAVE'S, DEFERRED BY HIS OWN RULING AT #76** (*"split now, log the bar gap"*) — deliberately not
   fixed inside the split, because one sentence naming two problems is how the last three recurrences
   started. The fix is CSS-only and small; what it needs is his eye on the motion, live.
+
+---
+
+**★ #86 (2026-08-02, triage-bankruptcy — inscribed #87): two DataViz items are now STANDING
+GOVERNING RECORDS**, close conditions ratified by Dave via the review export
+(`reviews/TRIAGE-BANKRUPTCY-2026-08-02-v1.html`, 19/19; ledger `notes/_MEMENTO-DECISIONS.md`
+§ ★ #86-D1; register `knowledge/_GOVERNING-RECORDS.md`):
+- **G15** — the DV-D13 donut centre figure + the `st.visible[id] = true` release wiring (both
+  agent's calls, see the ⚠ ONE-ENACTMENT-CALL entry at :567 above) → **closes at Dave's sign-off
+  eye** (already on `_REVIEW-SIGNOFF.md`'s backlog).
+- **G16** — that :567 enactment call itself → **closes when Dave ratifies or reverses it.**

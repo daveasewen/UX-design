@@ -1774,3 +1774,12 @@ Mechanics if it ever scopes: AUTO-MARKUP already supports per-figure instance da
 `data-lockup-*` attributes (#68), so a `data-lockup-insight` + optional markup partial is the
 natural grain — but that is an observation about the machinery, not a proposal Dave has seen.
 Promotion is Dave's, per derivation governance.
+
+---
+
+**★ #86 (2026-08-02, triage-bankruptcy — inscribed #87): DS-018's recessive value is now a STANDING
+GOVERNING RECORD (G11).** Dave accepted the close condition via the ratified review export
+(`reviews/TRIAGE-BANKRUPTCY-2026-08-02-v1.html`, 19/19): **closes when Dave picks the recessive
+value** — four candidates incl. `#9D9D9D`, still explicitly NOT a recommendation, per the
+⛔ STILL-UNRULED block above (unchanged by this entry). Register: `knowledge/_GOVERNING-RECORDS.md`
+G11 · ledger: `notes/_MEMENTO-DECISIONS.md` § ★ #86-D1.
