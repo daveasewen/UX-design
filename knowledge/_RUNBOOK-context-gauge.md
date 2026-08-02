@@ -113,6 +113,32 @@ are spent. That is why the gauge kept failing while being technically present: i
 wrap, when the only remaining option is to stop. **A gauge that only reports is not a gauge, it is a
 postmortem.**
 
+> ⛔⛔ **AND THE PRE-FLIGHT STAMP HAS NOW BEEN MISSED FIVE SESSIONS RUNNING — #80, #81, #82, #83, #84.**
+> **INSCRIBED #84 at the 2f EXIT CHECK, because the lesson was living only in post-mortem blocks —
+> a dated home, and dated homes do not count.**
+>
+> ★ **THE DIAGNOSIS, AND IT IS NOT FORGETFULNESS.** `_capture_gate.py::check_preflight` /
+> `check_preflight_tokens` **EXIST and are WIRED** (`:3024`). They grade a stamp **when one is
+> present** — the three terms, the budget it prices against, the arithmetic closing, the band named.
+> **Nothing anywhere makes the ABSENCE of a stamp a failure.** So five sessions in a row wrote no
+> stamp, declared the absence honestly in the stratum, and passed a green wrap.
+> ⇒ **THE GATE CHECKS THE DRIFT AND NOT THE PRESENCE.** [[gate-inside-the-growth-loop]]
+> ⚠ #84 read #83's written warning that four misses is *"a mechanism that does not exist"*, surfaced
+> it to Dave as a menu option, **ranked it third, and never ran it** — the felt-difficulty inversion,
+> in the session that most needed the throttle. [[feedback-read-the-runbook]]
+>
+> ⬛ **RECOMMENDED, NOT YET RULED — Dave's call. Mirror `gauge_log_continuity`'s three-state shape,
+> which already works and invents no vocabulary:** a graded `pre-flight #N:` stamp **passes** · the
+> honest refusal `⛔ NOT CAPTURED — UNMEASURED` **plus a reason** **passes** (the #73 legal form;
+> `PREFLIGHT_UNMEASURED_RE` already recognises it) · **nothing at all FAILS.** It converts a silent
+> miss into a declared one, which is this project's founding asymmetry — **a declared gap passes, a
+> silent one fails.** [[gate-dont-patch]] — a recurring cross-session condition gets a gate, not a
+> sixth reminder.
+> ⚠ **Its declared limit: it fires at the WRAP.** A pre-flight stamp's value is spent at the OPENER,
+> so this cannot make a session price itself; it can only make skipping it cost something the next
+> session can see. The opener half is ungateable for the same reason the chat title is — no gate
+> runs there. **Honest scope, not a hedge.**
+
 **The rule: EVERY job is priced and debited — and the estimate is stated to Dave, unprompted, in the
 same breath as the plan, whenever it could move the band or reach the reserve. THREE terms plus a fence.**
 
@@ -607,16 +633,31 @@ BUDGET for the full argument and the current numbers (160,000 / 200,000 / 256,00
     python3 knowledge/_checkin.py
 
 It reads the live session `.jsonl` from the mount directly — never loading the transcript into the
-window — and reports the conversation-half in `tape` with the boot half printed as UNMEASURED
-(`ds-025` item 1), never defaulted. Its number is **THROUGHPUT, not resident fill** — say so when
-quoting it. No subagent, no `read_transcript`, no copy-ready prompt.
+window — and reports the conversation-half as a **`real` MEASURED headline** (`gauge.count()`, ONE
+call on the whole concatenated blob), with the boot half printed as UNMEASURED (`ds-025` item 1),
+never defaulted. Its number is **THROUGHPUT, not resident fill** — say so when quoting it. No
+subagent, no `read_transcript`, no copy-ready prompt.
 
-⚠ **THIS `tape` IS NOT THE RETIRED ds-021 DUALITY** (★ RETIRED UNITS AND BANDS, above) — `_checkin.py`
-never claimed a `tape→bill` ratio or used tape as a cost proxy; it labels its own reading an
-unverified cl100k estimate of THROUGHPUT and stops there. Nothing here needs the ratio, and nothing
-here was retired by #56 or #54 — this note exists only so the word `tape`, meaning two different
-things at two different scopes in one file, does not read as a third contradiction. Verified current
-2026-08-02 by reading `_checkin.py`'s source directly: it still measures cl100k and labels it so.
+⚠ **`tape` STILL APPEARS IN THIS TOOL'S OUTPUT AND IS NOT THE RETIRED ds-021 DUALITY** (★ RETIRED
+UNITS AND BANDS, above). Since #83 (c) it is a **demoted, labelled sideband**: the per-type
+`BREAKDOWN` is cl100k and is kept for **SHAPE ONLY** — it does **not** sum to the headline and is
+**never scaled toward it**, because converting is #54's defect. `_checkin.py` never claimed a
+`tape→bill` ratio or used tape as a cost proxy. Nothing here needs the ratio. This note exists only
+so the word `tape`, meaning two different things at two different scopes in one file, does not read
+as a third contradiction.
+
+⛔ **THIS PARAGRAPH CARRIED A FALSE VERIFICATION STAMP FOR ONE SESSION, AND THE STAMP IS THE PART
+WORTH REMEMBERING.** It read: *"Verified current 2026-08-02 by reading `_checkin.py`'s source
+directly: it still measures cl100k and labels it so."* — while asserting the headline was `tape`.
+**Both halves were false by the time they were committed.** ★ **The cause was not carelessness and
+re-reading the file would not have caught it:** #83 ran two subagent workers **in parallel** —
+Worker A read `_checkin.py` to document this section and reported it accurately; Worker B rewired
+`_checkin.py` in the same batch. **The stamp was TRUE WHEN WRITTEN and FALSE WHEN COMMITTED.**
+⇒ **A verification receipt is only true as of its instant, and a concurrent writer invalidates it
+silently.** [[ritual-output-is-not-evidence]] A file-based divvy does not protect a CLAIM ABOUT a
+file — **verification must run after all writes land, at the wrap.** *(Corrected #84, re-probed
+against `_checkin.py:193` `MEASURED … real … the headline` and `:195` `BREAKDOWN … tape (cl100k,
+SHAPE ONLY)`. This correction was itself made with no concurrent writer in this file.)*
 
 > ⚠ **HISTORY — the ORIGINAL Half-2 design (subagent + `read_transcript` + `_context_gauge.py`) is
 > RETIRED, not "currently broken" (corrected #74; the stale warning sat here from #3 while the
@@ -720,7 +761,8 @@ commit *before* trusting the "green" claim — which is the whole point.
 ## Entry points
 
 `_RUNBOOK-capture-ritual.md` (where Red sends us) · `knowledge/_gauge_tokens.py` (the budget/band
-engine, real tokens, #56) · `knowledge/_checkin.py` (Half-2 throughput check-in, `tape`/cl100k,
-#52/#53) · `knowledge/_context_gauge.py` (measures an arbitrary text file; refuses without tiktoken
+engine, real tokens, #56) · `knowledge/_checkin.py` (Half-2 throughput check-in — **`real` headline
+since #83 (c)**, cl100k kept only as a SHAPE-ONLY sideband, #52/#53) ·
+`knowledge/_context_gauge.py` (measures an arbitrary text file; refuses without tiktoken
 unless `--estimate`, #74) · memory `feedback-context-gauge` · `session-title-convention` ·
 `memento-framing`.

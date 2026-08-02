@@ -2920,3 +2920,89 @@ promotable into `evidence` now that they exist.
 **Dossier:** `_DECISION-HISTORY/2026-08-02-the-real-tier.md` · **divvy for the second window:**
 `notes/2026-08-02-82-divvy-window-2.md` (Dave ruled CRANK at the opener; #60-D1 cap 3, conductor
 commits, worker does not).
+
+---
+
+## ★ #84 — 2026-08-02 (Sun; OPUS 5 conductor + OPUS 5 wrap agent, Dave live, ONE window)
+
+**#84-D1 — RULED (Dave): build the `.md` arm (option 1), with TWO conditions.** Offered as three
+shapes. His words: *"Option 2 under-delivers. tape/bill is where the observed rot actually happened,
+and it's demonstrably fenceable. Leaving it ungated to avoid a half-measure is the wrong
+half-measure."* **Condition A — the gate must announce its own scope in its failure text AND its
+docstring:** *"covers tape/bill only; the percentage band is OUT OF SCOPE, blocked on Dave's ds-023
+re-denomination. A gate that doesn't say what it excludes will later be read as 'the prose is
+gated,' and that's this whole thread's founding defect eating its own tail."* **Condition B — fix
+Half 2 first:** *"it's a live false claim wearing a verification stamp."* Both conditions were MET
+in the build: the scope sentence is in the docstring and repeated inside every failure string, and
+`bite 5` exists solely to go red if a future edit deletes it from the f-string.
+
+⛔ **THE RULING STANDS AND IS NOT RETIRED HERE. What failed is the INSTRUMENT, not the item.**
+
+### ⛔⛔ #84's REANALYSIS — a premise died on the primary record of the ruling it cited
+
+`retired_unit_prose_audit()` was built, mutation-tested ×5, and then **UNWIRED the same session**,
+with two reasons written into the call site. Both were re-measured at the wrap on a cold budget.
+
+- ⛔ **DEAD: *"`tape`/`bill` is NOT a retired vocabulary — ds-021-C, RULED #81-D1 (Dave)."***
+  ★ **The quote is verbatim and the SCOPE is wrong.** #81-D1's primary record (§ ★ #81 above) keeps
+  the tape/bill **MACHINERY** — constants, `bill_of`/`fmt_units`/`ratio_status`, three selftests,
+  and the `ds-021 (c)` n≥4 fork. **Not one word about `.md` prose.** And the SAME entry, under
+  `⬛ STILL OPEN, DECLARED`, names the opposite: *"`_RUNBOOK-context-gauge.md:463–505` still teaches
+  the **retired** tape/bill system."* ⇒ **the ruling session called the PROSE retired while keeping
+  the CODE.** The dead reading was taken off the gate's own **generated report line** — a banner —
+  which this project's standing rule forbids for repo-state claims.
+  ★★ **ONE MECHANISM, TWO PURPOSES, OPPOSITE ANSWERS.** [[premise-ages-faster-than-rule]]
+  *(The second leg — `TITLE_CAP_TAPE = 120` is a live tape cap, RULED #60-D8 — is TRUE and
+  IRRELEVANT: a cap in code says nothing about prose instruction.)*
+- ⚠ **HALF-DEAD: *"TRUE POSITIVES 0/1."*** Re-run against the WHOLE pre-fix file (`git show HEAD:`),
+  the audit FIRES on `## Entry points`:723 — **one of the two regions #83 actually rotted**, and one
+  the conductor had hand-fixed in the same session before measuring only the other. **1 of 2, not
+  0 of 1.** [[gap-in-record-vs-gap-in-evidence]]
+- ⚠ **WITHDRAWN: *"FALSE POSITIVES 11/11."*** 2 are the homonym "duct tape" — a REGEX defect, not a
+  design refutation. 7 are correct. **`_DS-IMPROVEMENTS.md`:1376–1377 is arguably a TRUE positive**:
+  a present-tense `★ Status: ENACTED #34` line asserting *"Caps bind on `bill`"*, superseded by
+  #54/#56, in a region with no retirement marker — the same defect class, in a second file nobody
+  had checked. ⬛ **NOT edited: [[home-by-addition-then-cut]]. FORKED.**
+
+### ★★ THE FINDING THAT IS NEW — a positive control that is green on its own defect
+
+`selftest_retired_unit_prose()`'s POSITIVE CONTROL pins the two regions Dave named, quoting him:
+*"if it goes red on either, your exemption logic is wrong — do not fix the prose to suit the gate."*
+Sound, and faithfully built. **Mutation-tested at #84 by running the control against the ROTTED
+tree: BOTH halves GREEN.** ⇒ **the control pins the regions against a REWRITE and can never witness
+a RE-ROT.** A control that passes on the defect it was written beside is an assertion.
+[[gate-must-quote-what-it-forbids]]
+
+### ⇒ WHY IT STAYS UNWIRED, on the ONE reason that survived
+
+As BUILT it is a **word-presence** check; the commissioned defect is a **FALSE CLAIM**. `### Half 2`
+said `_checkin.py` reports in `tape` while carrying three *correct* `RETIRED`/`HISTORY` markers —
+so device (ii) EXEMPTS it. ★ **A declaration marker exempts a REGION; rot is a SENTENCE.** Not
+fixable by tuning the marker list. Re-wiring today would also block every wrap on 11 live hits.
+**PARKED, NOT DELETED** — the code, its 5 mutation tests and both measurements are the evidence.
+
+### ⬛ THE NAMED SUCCESSOR — FORKED TO DAVE, NOT BUILT
+
+**The cross-instrument CLAIM check:** `.md` prose that NAMES an instrument and STATES its unit must
+agree with `MEASURERS`. Checked at #84, not built: **it WOULD have caught the `Half 2` rot** (prose
+`tape` vs `MEASURERS['_checkin.py'] = real`), and `MEASURERS` already covers the instruments prose
+names (`_capture_gate.py` 29 mentions in `knowledge/*.md`, `_checkin.py` 12, `_context_gauge.py` and
+`_gauge_tokens.py` both present). ★ **It is a GLOB WIDENING of the shape Dave ALREADY RULED at
+#81-D1 (C, cross-instrument gate), not a new shape.** [[gate-glob-scope-rule]]
+⚠ **A design that survived a probe is not a tested instrument** — which is this session's subject,
+so it was not built at a wrap.
+
+### ⬛ THE PRE-FLIGHT MECHANISM — RECOMMENDED, and the obvious fix is already there
+
+**FIFTH consecutive miss (#80–#84).** ⛔ **`check_preflight` EXISTS and is WIRED (`:3024`) — it
+grades a stamp WHEN ONE IS PRESENT. Nothing makes ABSENCE a failure**, so five sessions wrote none,
+declared it honestly, and passed. ★ **The gate checks the DRIFT and not the PRESENCE.**
+[[gate-inside-the-growth-loop]]
+⇒ **RECOMMENDED: mirror `gauge_log_continuity`'s three-state shape.** Graded stamp = pass ·
+`⛔ NOT CAPTURED — UNMEASURED` **+ reason** = pass (the #73 legal refusal, `PREFLIGHT_UNMEASURED_RE`
+already recognises it) · **nothing at all = FAIL.** It converts a silent miss into a declared one —
+this project's founding asymmetry — and needs no new vocabulary. ⚠ **Declared limit: it still fires
+at the WRAP.** It cannot make a session price itself at the opener; it can only make skipping it
+cost something the next session sees. **Dave's to rule.**
+
+**Dossier:** `_DECISION-HISTORY/2026-08-02-the-unwired-gate-reanalysed.md`.

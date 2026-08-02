@@ -598,6 +598,176 @@ def unit_vocabulary_audit(repo):
     return failures, warnings
 
 
+# ============================================ retired-unit PROSE AUDIT — the `.md` arm
+# NEW, DELIBERATELY SEPARATE FROM `unit_vocabulary_audit` ABOVE. That function reads CODE —
+# which files in `knowledge/*.py` COUNT tokens. This one reads PROSE — which files in
+# `knowledge/*.md` TEACH the retired `tape`/`bill` duality (SUPERSEDED #56 — see
+# `_RUNBOOK-context-gauge.md` § ⬛ RETIRED UNITS AND BANDS) without saying it is retired. Same
+# family of defect — a retired thing rots unwatched wherever nothing reads it
+# ([[gate-inside-the-growth-loop]]) — different corpus, different question, so a different
+# function; entangling the two would make an edit to one risk the other silently.
+#
+# ⛔ SCOPE — Dave's condition A, LOAD-BEARING, stated here AND in every failure string below
+# (his reasoning, verbatim: a gate that doesn't say what it excludes will later be read as
+# "the prose is gated", which is this whole thread's founding defect eating its own tail).
+# THIS COVERS `tape`/`bill` ONLY. The retired PERCENTAGE band (45%/60%/63%) is explicitly OUT
+# OF SCOPE — a SEPARATE retirement with its own history section, blocked on Dave's ds-023
+# re-denomination — and this audit must never be read as covering it.
+RETIRED_PROSE_SCOPE_NOTE = (
+    "covers `tape`/`bill` only; the retired percentage band is OUT OF SCOPE, blocked on "
+    "Dave's ds-023 re-denomination")
+
+RETIRED_PROSE_WORDS_RE = re.compile(r"\b(tape|bill)\b", re.I)
+
+# ⚠ ATX HEADINGS ONLY (`#` … `######`). Surveyed all 93 `knowledge/*.md` files before writing
+# this: no Setext (`===`/`---`-underlined) headings anywhere in the corpus — this is the house
+# style, not an assumption.
+MD_HEADING_RE = re.compile(r"^(#{1,6})\s+(.+?)\s*$")
+
+# ⚠ THE STRUCTURAL FENCE (exemption device (i)). A heading whose TEXT names one of these words
+# opens a fence that runs until the next heading at EQUAL-OR-SHALLOWER depth. Pins WHERE prose
+# may live, never HOW it is worded. Live example: `### ⬛ RETIRED UNITS AND BANDS — HISTORY, NOT
+# INSTRUCTION` in `_RUNBOOK-context-gauge.md`.
+FENCE_HEADING_RE = re.compile(r"\b(RETIRED|HISTORY|SUPERSEDED)\b", re.I)
+
+# ⚠ ENUMERATE EXEMPTIONS, NEVER VIOLATIONS — Dave's brief, not a style choice made here. A list
+# of phrases that FORGIVE is safe to extend: a false negative here is a hit that still fails
+# and gets caught next run. A list of phrases that CONDEMN inverts the risk: a false negative
+# there is a SILENT PASS, read next session as "clean". Same direction
+# [[gate-must-quote-what-it-forbids]] chose, for the same reason. This is exemption device
+# (ii), the INLINE declaration: a hit's own region (nearest preceding heading -> next heading,
+# REGARDLESS of depth — this device is regional, not structural like the fence above) is
+# exempt if ANY of these appear in it. Verified against the two live sections this audit must
+# pass (`_RUNBOOK-context-gauge.md` § ★★ THE FLOOR IS NOT WILLPOWER and § Half 2) — every
+# marker below is quoted from one of those two, not invented.
+DECLARATION_MARKERS = (
+    "historical",
+    "HISTORY",
+    "RETIRED",
+    "SUPERSEDED",
+    "the unit live when",
+    "NOT re-denominated",
+    "SHAPE ONLY",
+    "sideband",
+)
+
+# ⚠ THE GATE'S OWN GENERATED OUTPUT IS NOT PROSE, AND SCANNING IT WOULD MAKE THIS AUDIT
+# PERMANENTLY, UNFIXABLY RED OVER ITS OWN SIBLING'S WORDS. `_CAPTURE-GATE.md` (== REPORT) is
+# rewritten WHOLE on every build; nobody authors it, so it can carry neither a heading fence
+# nor an inline declaration, and `unit_vocabulary_audit`'s own WARN text legitimately quotes
+# `tape` every run (`_checkin.py`'s footer, "UNIT tape/cl100k"). Same self-detection hole the
+# `.py` audit above already guards against by construction (its regex is built so it cannot
+# match its own source) — this is that same guard, shaped for a file instead of a literal.
+_GENERATED_REPORT_BASENAME = os.path.basename(REPORT)
+
+
+def _md_headings(lines):
+    """[(line_idx, depth, text), ...] for every ATX heading in `lines`."""
+    out = []
+    for i, ln in enumerate(lines):
+        m = MD_HEADING_RE.match(ln)
+        if m:
+            out.append((i, len(m.group(1)), m.group(2)))
+    return out
+
+
+def _md_fence_spans(headings, n_lines):
+    """Exemption device (i). [(start, end), ...] half-open line-index spans, one per heading
+    whose text matches `FENCE_HEADING_RE`, each running to the next heading at
+    equal-or-shallower depth (or EOF)."""
+    spans = []
+    for idx, (i, depth, text) in enumerate(headings):
+        if not FENCE_HEADING_RE.search(text):
+            continue
+        end = n_lines
+        for j, depth2, _t in headings[idx + 1:]:
+            if depth2 <= depth:
+                end = j
+                break
+        spans.append((i, end))
+    return spans
+
+
+def _md_region(headings, line_no, n_lines):
+    """Exemption device (ii)'s region for one hit at `line_no`: (start, end, heading_text) =
+    nearest preceding heading (any depth) -> next heading (any depth). Deliberately NOT
+    depth-aware — device (ii) is regional, only device (i) above is structural."""
+    start, end, heading_text = 0, n_lines, "(no heading above this line)"
+    for i, _depth, text in headings:
+        if i <= line_no:
+            start, heading_text = i, text
+        else:
+            end = i
+            break
+    return start, end, heading_text
+
+
+def retired_unit_prose_audit(repo):
+    """The `.md` arm of the retired-unit vocabulary audit. Sibling to `unit_vocabulary_audit`
+    above, deliberately not entangled with it. Returns `(failures, warnings)`.
+
+    ⛔ SCOPE: covers `tape`/`bill` ONLY; the retired percentage band is OUT OF SCOPE, blocked
+    on Dave's ds-023 re-denomination (his condition A — a gate that doesn't say what it
+    excludes will later be read as "the prose is gated", which is this whole thread's founding
+    defect eating its own tail). Every failure string below repeats this line for the same
+    reason it is repeated here: a scope statement that lives in only one place is a scope
+    statement one deletion away from silently widening.
+
+    `unit_vocabulary_audit` reads CODE: which files in `knowledge/*.py` COUNT tokens. This
+    reads PROSE: which files in `knowledge/*.md` TEACH `tape`/`bill` (SUPERSEDED #56) without
+    saying so. A hit is exempt two ways, both author-declared, never inferred:
+      (i)  the STRUCTURAL FENCE — under a heading matching `FENCE_HEADING_RE`, exempt until
+           the next heading at equal-or-shallower depth.
+      (ii) an INLINE DECLARATION — the hit's own region (nearest preceding heading -> next
+           heading) contains one of `DECLARATION_MARKERS`.
+    Everything else FAILS LOUD — [[gate-must-quote-what-it-forbids]]: enumerating exemptions
+    rather than violations means an unrecognised region can never pass by accident.
+
+    ⛔ PINS WHERE `tape`/`bill` MAY APPEAR, NEVER HOW THE SENTENCE IS PHRASED. `STOP_LINE_HOMES`
+    elsewhere in this file pins exact wording, and that bug BLOCKED a session's wrap when
+    someone faithfully re-denominated a ruling into words the pin didn't recognise. This audit
+    has no ruling-specific string anywhere — only the bare words and a small, generic marker
+    vocabulary — so a faithful rewrite that keeps (or gains) a declaration still passes."""
+    failures, warnings = [], []
+    kdir = os.path.join(repo, "knowledge")
+    if not os.path.isdir(kdir):
+        return failures, warnings
+
+    for fn in sorted(os.listdir(kdir)):
+        if not fn.endswith(".md") or fn == _GENERATED_REPORT_BASENAME:
+            continue
+        try:
+            with open(os.path.join(kdir, fn), encoding="utf-8") as fh:
+                lines = fh.read().splitlines()
+        except OSError:
+            continue
+
+        headings = _md_headings(lines)
+        fences = _md_fence_spans(headings, len(lines))
+
+        for i, ln in enumerate(lines):
+            m = RETIRED_PROSE_WORDS_RE.search(ln)
+            if not m:
+                continue
+            if any(start <= i < end for start, end in fences):
+                continue                                   # device (i): fenced, exempt
+            r_start, r_end, heading_text = _md_region(headings, i, len(lines))
+            region_text = "\n".join(lines[r_start:r_end]).lower()
+            if any(marker.lower() in region_text for marker in DECLARATION_MARKERS):
+                continue                                   # device (ii): declared, exempt
+            failures.append(
+                f"retired-unit prose ({RETIRED_PROSE_SCOPE_NOTE}): `knowledge/{fn}`:{i + 1} "
+                f"says {m.group(0)!r} in region \"{heading_text}\" (heading at line "
+                f"{r_start + 1}), with NEITHER exemption — not inside a fence headed "
+                f"RETIRED|HISTORY|SUPERSEDED, and no inline declaration in its own region "
+                f"(recognised: {', '.join(DECLARATION_MARKERS)}). Two remedies: (1) move this "
+                f"text inside a HISTORY/RETIRED/SUPERSEDED-headed fence, or (2) add one of the "
+                f"recognised markers to this region as an inline declaration — never rephrase "
+                f"the sentence itself.")
+
+    return failures, warnings
+
+
 SIZE_STAMP_RE = re.compile(r"^\s*>?\s*\**size\**\s*[:—-]\s*(.+)$", re.I)
 SIZE_TK_RE = re.compile(r"\bGM\b\D{0,12}?([\d.]+)\s*K\s*(tape|tk|real)\b", re.I)  # K is REQUIRED:
 # ⛔ #82-D1 ADDED `real`, and the omission was not cosmetic: the re-stamped header led with
@@ -2943,6 +3113,67 @@ def run(mode="build", repo=REPO, report=REPORT, today=None, lane=False):
     fails += f
     warns += w
 
+    # ---- retired-unit vocabulary audit, the `.md` arm.
+    # ⛔⛔ BUILT #84, UNWIRED #84, AND ITS UNWIRING REASON WAS RE-MEASURED AND HALF-CORRECTED
+    #     AT #84'S WRAP, ON A COLD BUDGET. DO NOT RE-WIRE, AND DO NOT DELETE, WITHOUT READING ALL
+    #     OF THIS. The first version of this comment was authored past Dave's 200,000 working line.
+    #
+    # WHAT SURVIVED RE-MEASUREMENT (re-run at the wrap, not quoted from the build):
+    #   · TRUE POSITIVES 1 of 2 — NOT the "0/1" this comment first claimed. #83 rotted TWO regions
+    #     of `_RUNBOOK-context-gauge.md`, and the first measurement scoped its re-enactment to ONE.
+    #     Re-run against the WHOLE pre-fix file (`git show HEAD:` at #84), the audit FIRES, and
+    #     correctly, on `## Entry points`:723 — "`_checkin.py` (Half-2 throughput check-in,
+    #     `tape`/cl100k)", a stale unit index with no declaration anywhere in its region.
+    #     It stays BLIND to the `### Half 2` half, and that half is the interesting one: the rot
+    #     there was a FALSE CLAIM ABOUT WHICH UNIT A TOOL REPORTS, wearing a CORRECT retirement
+    #     disclaimer. Word-presence cannot see it, and device (ii) actively EXEMPTS it — the
+    #     region says RETIRED/HISTORY three times, about a different thing.
+    #     ⇒ this arm catches STALE INDEXES. It cannot catch FALSE CLAIMS. Both are real rot.
+    #   ★★ AND THE MUTATION THAT MATTERS, run at #84: `selftest_retired_unit_prose`'s POSITIVE
+    #     CONTROL — the two named regions Dave said must never go red — is GREEN AGAINST THE
+    #     ROTTED TREE TOO. Both halves pass on the pre-fix file. A control that passes on the very
+    #     defect it was written beside is an assertion, not a test. It pins the regions against a
+    #     rewrite; it can never witness a re-rot. [[gate-must-quote-what-it-forbids]]
+    #   · FALSE POSITIVES: 11 live, but "11/11 correct prose" is NOT established and is WITHDRAWN.
+    #     2 are `_ROBUSTNESS-PORTABILITY.md`'s homonym "duct tape" — a REGEX defect in
+    #     RETIRED_PROSE_WORDS_RE, cheaply fixable, not a refutation of the design.
+    #     Of the 9 in `_DS-IMPROVEMENTS.md`, 7 are correct prose (dated historical readings, which
+    #     #82-D1 rules must NOT be re-denominated, plus live description of the ds-021(c) machinery
+    #     #81-D1 KEPT). But :1376-1377 is a present-tense `★ Status: ENACTED #34` line asserting
+    #     "Caps bind on `bill`" — superseded by #54/#56 — in a region with no retirement marker.
+    #     That is arguably a TRUE positive, i.e. the same defect class, in a second file.
+    #
+    # ⛔⛔ THE PREMISE PREVIOUSLY WRITTEN HERE IS DEAD. STRUCK #84 AT SOURCE, IN THE PLACE THAT
+    # CARRIED IT. It read: "`tape`/`bill` is NOT a retired vocabulary — ds-021-C, RULED #81-D1
+    # (Dave): 'tape/bill machinery KEPT as labelled legacy, not retired'."
+    # ★ THE QUOTE IS VERBATIM AND THE SCOPE IS WRONG. #81-D1's PRIMARY record
+    # (`notes/_MEMENTO-DECISIONS.md` § ★ #81) keeps the tape/bill **MACHINERY** — the constants,
+    # `bill_of`/`fmt_units`/`ratio_status`, the three selftests pinning them, and the `ds-021 (c)`
+    # n>=4 ratio fork that is Dave's. It says NOTHING about `.md` prose. And the SAME record, under
+    # "⬛ STILL OPEN, DECLARED", names the opposite: "`_RUNBOOK-context-gauge.md`:463-505 still
+    # teaches the RETIRED tape/bill system". ⇒ THE RULING SESSION ITSELF CALLED THE PROSE RETIRED
+    # WHILE KEEPING THE CODE. `TITLE_CAP_TAPE = 120` (~:873) is likewise a live cap in CODE and
+    # says nothing about prose either.
+    # ★★ ONE MECHANISM, TWO PURPOSES, OPPOSITE ANSWERS — and the dead reading was taken off a
+    # GENERATED REPORT LINE, which this project's standing rule forbids: repo-state claims are
+    # verified against `git log` or a real run, never a banner.
+    # [[premise-ages-faster-than-rule]] [[unmatched-grep-is-not-an-absence]]
+    #
+    # ⇒ WHERE THAT LEAVES IT. Dave RULED this arm at #84 ("option 1, both conditions") and the
+    # ruling STANDS — it is NOT chasing a vocabulary he kept. It stays UNWIRED anyway, for the one
+    # reason that survived: as BUILT it is a WORD-PRESENCE check, and the defect it was
+    # commissioned for is a FALSE CLAIM. Re-wiring today would also block every wrap on 11 live
+    # hits, at least 2 of which are a regex bug.
+    # PARKED, NOT DELETED — the code, its 5 mutation tests and BOTH measurements are the evidence.
+    # ⬛ FORKED TO DAVE WITH A NAMED SUCCESSOR: the cross-instrument CLAIM check — `.md` prose
+    # that names an instrument AND states its unit must agree with `MEASURERS`. Checked at #84:
+    # it WOULD have caught the `### Half 2` rot (prose said `tape` for `_checkin.py`; MEASURERS
+    # says `real`), and `MEASURERS` already covers the instruments prose actually names
+    # (`_checkin.py` 12 mentions in `knowledge/*.md`, `_capture_gate.py` 29). It is a GLOB
+    # WIDENING of the shape Dave already ruled at #81-D1, not a new shape. See the #84 dossier.
+    # An unwired gate cannot fail and is not an achievement; it is declared, not claimed.
+    # [[instrument-without-a-consumer]]
+
     # ---- THE TRIGGER INDEX, built #81 (Dave's open item (e)) — AND THIS IS ITS CONSUMER.
     # ⛔ The reason it is called HERE and not offered as a command: `_measure_tokenizer.py` was a
     # correct instrument with ZERO consumers for fourteen sessions, and #80 re-derived what it
@@ -4100,6 +4331,126 @@ def selftest_cross_instrument_units():
     return failures
 
 
+def selftest_retired_unit_prose():
+    """The `.md` arm's bites — `retired_unit_prose_audit()`. A separate suite from
+    `selftest_cross_instrument_units()` above, for the same reason the two audit functions are
+    separate: different corpus, different failure class, and a shared suite would make an edit
+    to one risk silently breaking a bite that tests the other.
+
+    ★ Every bite fails for a DISTINCT reason and is mutation-tested against a temp-tree fixture
+    built to trip it — a green that can't fail is an assertion, not a test."""
+    failures = []
+
+    # ---- POSITIVE CONTROL FIRST — the two live sections Dave fixed THIS session specifically
+    # so this audit could ship. His own words: "if it goes red on either, your exemption logic
+    # is wrong — do not fix the prose to suit the gate." This does NOT assert the whole
+    # `knowledge/` corpus is clean (measurably, as of this session, it is not — see the
+    # session's own report for the residual list); it asserts these two NAMED regions never
+    # regress, which is the acceptance bar Dave actually stated.
+    live_f, _live_w = retired_unit_prose_audit(REPO)
+    _gauge_md = "_RUNBOOK-context-gauge.md"
+    for _home in ("THE FLOOR IS NOT WILLPOWER", "Half 2"):
+        if any(_gauge_md in x and _home in x for x in live_f):
+            failures.append(f"retired-unit prose (.md): live `{_gauge_md}` § {_home} FAILS — "
+                            f"Dave: 'if it goes red on either, your exemption logic is wrong "
+                            f"— do not fix the prose to suit the gate'")
+
+    # ---- 1. THE UNDECLARED, UNFENCED BITE. This is the whole point of the .md arm: prose that
+    # teaches the retired duality without saying it is retired must FAIL LOUD.
+    with tempfile.TemporaryDirectory() as td:
+        k = os.path.join(td, "knowledge")
+        os.makedirs(k)
+        with open(os.path.join(k, "_fixture.md"), "w", encoding="utf-8") as fh:
+            fh.write("## Some live section\n\n"
+                      "This prose still teaches tape and bill as though nothing had "
+                      "changed, with nothing else attached nearby that could excuse it.\n")
+        f1, _w1 = retired_unit_prose_audit(td)
+        if not f1:
+            failures.append("retired-unit prose (.md): an UNDECLARED, UNFENCED `tape` "
+                            "mention did not fail — a retired unit taught as live rots "
+                            "unwatched, which is the entire reason this arm exists")
+
+    # ---- 2. THE FENCE BITE (exemption device (i)). `tape`/`bill` under a heading matching
+    # RETIRED|HISTORY|SUPERSEDED must be exempt until the next heading at equal-or-shallower
+    # depth — proving the fence actually exempts, not merely exists.
+    with tempfile.TemporaryDirectory() as td:
+        k = os.path.join(td, "knowledge")
+        os.makedirs(k)
+        with open(os.path.join(k, "_fixture.md"), "w", encoding="utf-8") as fh:
+            fh.write("### RETIRED UNITS — HISTORY, NOT INSTRUCTION\n\n"
+                      "#### Old readings\n\n"
+                      "This nested sub-section says tape and bill freely, many times: "
+                      "tape, bill, tape.\n\n"
+                      "### The next live section\n\n"
+                      "Nothing lives here that this audit would ever flag.\n")
+        f2, _w2 = retired_unit_prose_audit(td)
+        if f2:
+            failures.append(f"retired-unit prose (.md): `tape`/`bill` INSIDE a "
+                            f"RETIRED-headed fence still failed ({f2[0]}) — the fence must "
+                            f"actually exempt its own span, not just exist in the file")
+
+    # ---- 3. THE STOP_LINE_HOMES SHAPE, RE-ENACTED. `STOP_LINE_HOMES` elsewhere in this file
+    # pins EXACT WORDING, and that bug BLOCKED a session's wrap when a ruling was faithfully
+    # re-denominated into words the pin did not recognise. This audit must not repeat it: a
+    # ruling reworded in NEW language (never matching either live docstring example verbatim)
+    # must still pass as long as a declaration marker survives the rewrite.
+    with tempfile.TemporaryDirectory() as td:
+        k = os.path.join(td, "knowledge")
+        os.makedirs(k)
+        with open(os.path.join(k, "_fixture.md"), "w", encoding="utf-8") as fh:
+            fh.write("## A ruling, reworded this session\n\n"
+                      "The cap used to bind on `bill`; that duality is SUPERSEDED and the "
+                      "old word is kept only so a past reading still parses as what it "
+                      "was.\n")
+        f3, _w3 = retired_unit_prose_audit(td)
+        if f3:
+            failures.append(f"retired-unit prose (.md): a RULING REWORDED IN NEW LANGUAGE "
+                            f"still failed ({f3[0]}) — this is the STOP_LINE_HOMES shape "
+                            f"that blocked a session's wrap (a check pinned to exact "
+                            f"phrasing punishes a faithful rewrite); this audit pins WHERE "
+                            f"`tape`/`bill` may appear, never HOW the sentence is phrased, "
+                            f"and must not repeat that bug")
+
+    # ---- 4. THE PERCENTAGE-BAND EXCLUSION BITE. `45%`/`60%` outside any fence, with no
+    # tape/bill word anywhere near, must be GREEN — proving the OUT-OF-SCOPE exclusion (Dave's
+    # condition A) is a real, exercised absence of a check, not merely an unexercised claim.
+    with tempfile.TemporaryDirectory() as td:
+        k = os.path.join(td, "knowledge")
+        os.makedirs(k)
+        with open(os.path.join(k, "_fixture.md"), "w", encoding="utf-8") as fh:
+            fh.write("## Live band section, no fence, no declaration\n\n"
+                      "Bands were read as GREEN <45%, AMBER 45-60%, RED >=60%, and this "
+                      "paragraph names neither of the two words this audit watches for.\n")
+        f4, _w4 = retired_unit_prose_audit(td)
+        if f4:
+            failures.append(f"retired-unit prose (.md): a bare `45%`/`60%` mention with NO "
+                            f"tape/bill word FAILED ({f4[0]}) — the percentage band is "
+                            f"explicitly OUT OF SCOPE (condition A); this proves the "
+                            f"exclusion is a real absence of a check, not an accident of "
+                            f"the fixture never trying")
+
+    # ---- 5. CONDITION A ITSELF MUST BE ENFORCED, NOT JUST WRITTEN. Dave's condition A: the
+    # scope statement belongs in every failure string, not only the docstring. Reuse bite 1's
+    # shape and assert the scope substance is IN the returned text — an unenforced condition is
+    # a comment, and if a future edit deletes the scope clause from the f-string, THIS bite
+    # goes red.
+    with tempfile.TemporaryDirectory() as td:
+        k = os.path.join(td, "knowledge")
+        os.makedirs(k)
+        with open(os.path.join(k, "_fixture.md"), "w", encoding="utf-8") as fh:
+            fh.write("## Heading\n\nStill teaches tape with nothing declared nearby.\n")
+        f5, _w5 = retired_unit_prose_audit(td)
+        ok = (f5 and "tape" in f5[0].lower() and "bill" in f5[0].lower()
+              and "out of scope" in f5[0].lower() and "ds-023" in f5[0])
+        if not ok:
+            failures.append("retired-unit prose (.md): condition A's scope sentence "
+                            "(`tape`/`bill` ONLY, percentage band OUT OF SCOPE, blocked on "
+                            "ds-023) is NOT present in the failure text — Dave's condition "
+                            "A, and an unenforced condition is a comment, not a gate")
+
+    return failures
+
+
 def selftest_growth():
     """Bite-test M6 (tiktoken heal/fallback) · #59 (measurement_degraded() + the guarded
     get_encoding() path) · M7 (§A warn) · M8 (banner) · M10 (chain) · the pinned §A digest ·
@@ -4957,6 +5308,7 @@ def _selftest_body():
                 + selftest_gauge_refusal_seam()          # #79-D1 paired half
                 + selftest_budgets() + selftest_strata_exempt() + selftest_units()
                 + selftest_cross_instrument_units()       # ds-021 (C), RULED #81-D1
+                + selftest_retired_unit_prose()           # ds-021 (C), the `.md` arm
                 + selftest_bare_token()
                 + selftest_gauge_continuity() + selftest_unkeyed()
                 + selftest_growth() + selftest_usage()

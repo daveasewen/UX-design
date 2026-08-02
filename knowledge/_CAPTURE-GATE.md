@@ -1,14 +1,12 @@
 # Capture gate report — mode: build
-*Generated 2026-08-02 by `_capture_gate.py`. Scope: 61 file(s) at/after cutover 2026-07-26.*
+*Generated 2026-08-02 by `_capture_gate.py`. Scope: 66 file(s) at/after cutover 2026-07-26.*
 
 ## WARN
-- ds-021 (C) DECLARED GAP — `knowledge/_capture_gate.py` counts in cl100k and cannot name a REAL tier. ⛔ THE ds-021 DEFECT ITSELF, and the reason this gate exists. measure_tokens() can return only 'tiktoken cl100k_base' or a bytes ESTIMATE — so measurement_degraded() asks 'is this an estimate?' and cl100k answers 'no, healthy'. THE VOCABULARY HAS NO WORD FOR REAL (#80's root cause, confirmed at source #81). Fixing it is a CODE change and it moves the GM size stamps, ds-025's floor and the amber line — priced, not smuggled into this window.
-- ds-021 (C) DECLARED GAP — `knowledge/_checkin.py` counts in cl100k and cannot name a REAL tier. Reports THROUGHPUT in cl100k and says so in its own footer ('⚠ UNIT tape/cl100k. D1 rules this an UNVERIFIED proxy'). Declared, which is why it warns rather than fails.
 - ds-021 (C) DECLARED GAP — `knowledge/_context_gauge.py` counts in cl100k and cannot name a REAL tier. REFUSES without tiktoken unless --estimate labels the output (#74). Honest about estimate-vs-nothing; still blind to cl100k-vs-real.
 - ds-021 (C) CALIBRATION — `knowledge/_measure_tokenizer.py`. #53's instrument — prints a tape|real|ratio|drift table. ⚠ 0 Python consumers, flagged by #77's periphery inventory, re-probed #81 and STILL zero. It is the reason #80 re-derived a ruling #54 had already made: an instrument ships WITH ITS READER, and a measurement nothing re-reads decays into a rediscovery.
 
 ## NOTE
-- ⚠ RULINGS ALREADY GOVERN WHAT YOU ARE TOUCHING (files touched this session) — 6 found. READ BEFORE RE-DERIVING:
+- ⚠ RULINGS ALREADY GOVERN WHAT YOU ARE TOUCHING (files touched this session) — 7 found. READ BEFORE RE-DERIVING:
   ▸ ds-021 — RULED #54 (2026-07-30, Dave): ONE unit: REAL Claude tokens. cl100k/tiktoken is a LABELLED estimator and is 'never a unit a cap is stated in'.
       status: RULED #54, ENACTMENT SHAPE (C) ruled #81-D1, enactment IN PROGRESS #81
       ⚠ The three homes were declared UNTOUCHED at #54 and were still untouched at #80. Do not re-derive the ratio; it is measured and ruled.
@@ -36,5 +34,11 @@
       status: STANDING
       ⚠ This is why ratio_status() must SAY something at n>=4 rather than silently firming the constant.
       evidence: knowledge/_DS-IMPROVEMENTS.md
+  ▸ ds-021-D1-82 — RULED #82-D1 (2026-08-02, Dave): WIRE measure_tokens() to the native counter AND re-stamp the LIVE budget claims in the SAME pass. Historical readings are NOT re-denominated -- re-denominating history is a false inscription.
+      status: RULED #82-D1 (Dave) and ENACTED the same window. measure_tokens() returns (n,'real'); MEASURERS registers _capture_gate.py 'real'; GM size: stamp (45,869) and _CHAIN.md footer (10,830) re-stamped in real tokens and verified against the artefacts. History in notes/_GAUGE-LOG.md and the archived strata was NOT re-denominated -- that would be a false inscription.
+      evidence: notes/_MEMENTO-DECISIONS.md
+      evidence: _DECISION-HISTORY/2026-08-02-the-real-tier.md
+      evidence: notes/2026-08-02-81-cross-instrument-gate-blast-radius.md
+      evidence: knowledge/_capture_gate.py
   ⛔ These are DECIDED. Re-deriving one is the #80 defect; re-opening one is Dave's alone.
 
