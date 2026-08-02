@@ -2583,6 +2583,61 @@ chat (*"remember to test the crap out of it"*), then ruled all four via explicit
 - **Build delegated** (RULED #57 shape: mutation-testable, no rulings produced by the build);
   fixture SEMANTICS ratified in-window by the conductor; T0 run in-window with receipts.
 
+## ★ #79 — 2026-08-02 (Sun; Opus 5 solo Cowork conductor + 3 subs, Dave live)
+
+**#79-D1 — THE GAUGE MUST REFUSE (Dave, option-select at the wrap: *"Make it refuse"*).**
+`_gauge_tokens.py::count()` falls through to `len(text)//4` labelled `'crude-estimate'` when
+tiktoken is absent, instead of refusing. Two siblings already refuse (`_context_gauge.py` #74,
+`_checkin.py`) and **`ds-025` says a measuring tool that estimates silently IS the defect** — so
+this was an inconsistency inside his own rule, not a new question. Rejected alternatives, both put
+to him: a louder estimate (*leaves a guess in the pipeline*), and leaning on the commit script's
+session-start self-heal (*"rare" is not "never", and the one time it fires is the time you won't
+know*). ⇒ **#80's first build: `count()` raises loud and NAMED, PAIRED with `_capture_gate.py`
+so the gate reports one named failure rather than crashing** — `assert_budget_clears_floor() →
+measure_boot() → count()` is called at `_capture_gate.py:2774` inside a list comprehension with no
+try/except, and a bare raise there would take out a 39+-check gate ([[a-crash-is-not-a-fail]]).
+⬛ **STILL DAVE'S, deliberately not taken here: whether the P5 selftest step is PROMOTED from
+ADVISORY to ABORT once the fix lands.** Flag and pin move as a pair, the usage-history shape.
+
+**#79-D2 — P5 RE-AIMED, and the premise it was written on was dead (Dave, option-select).** The
+plan's P5 (*"pin the ruled budget triple; the constants every wrap is graded against are currently
+unbitten"*) was **already covered**: `_capture_gate.py:2756 selftest_preflight_tokens()` asserts
+`(BUDGET_AMBER, BUDGET_WORKING, BUDGET_HARD)` **by import**, so there is exactly one authority.
+Building it as written would have put one of Dave's rulings in two places that can drift apart.
+⇒ re-aimed at what was genuinely naked: the counting path, the cache, and degraded-measurement
+honesty. ★ **[[premise-ages-faster-than-rule]] — the rule was sound, its premise had aged.**
+
+**#79-D3 — P7 NEEDED NO RULING; IT NEEDED ENFORCEMENT.** Dave's steer was *"lets just fix this,
+I need this running smoothly… make it solid so it doesn't keep going weird."* The probe found the
+boundary **already ruled at #64** — *"copies only, and every copy is delta-audited"*
+(`_PACKAGE-SPEC.md:13-14`) — with nothing ever built to enforce it, and **a live violation sitting
+inside it**: `memento-package`'s `_gen_chain.py` called itself *verbatim* and was 54 lines behind,
+missing the #73 title block and the stale-title refusal ⇒ **the shipped package could not catch a
+stale chain title.** Restored in both copies; `knowledge/_validate_package_delta.py` (NEW) now
+gates the verbatim set, the cross-copy identity, unknown files (fail loud, never enumerate), and
+the shim's DECLARED PROVENANCE by AST source-segment hashing. ⚠ **A second premise died here:**
+the 320-vs-4,321-line `_capture_gate.py` is **not drift** — its own docstring declares it a
+purpose-written shim reproducing exactly four functions, so a wholesale comparison would have
+been a false positive at every wrap. **Two premises dead in one window, both caught by probing
+the source instead of trusting an inventory written five sessions earlier.**
+
+**Conductor demotion, ABORT → ADVISORY (mine, not Dave's, and reasoned):** P5's selftest was
+BORN RED against a pre-existing documented defect. A new instrument's intent is to SURFACE that,
+not to gate the whole build on something nobody has ruled. Born ADVISORY, same shape as
+usage-history and consult-receipts; **the arm still runs, still goes red, still prints its named
+cause every build.** A demotion of KIND, never of the finding. → [[instrument-without-a-consumer]].
+
+**DV-D19 closed in both halves (board item a):** swatch-at-rest RULED NARROW, Dave verbatim —
+*"DV-D19 — the mode latch, shown on real canon prototype is perfect as it is."* Read back as
+SENSATION before inscribing, per the #78 fade precedent. No code change. The probe that priced the
+wide reading is inscribed WITH the closure so a reopening cannot skip it.
+Ledger sibling: `knowledge/_proforma/_DATAVIZ-DECISIONS.md` (CLOSED #79 block) ·
+register: `knowledge/_REVIEW-SIGNOFF.md` (v2 row, FULLY SIGNED OFF).
+
+**⬛ OWED AT #80, declared not skipped:** the step-1b narrative dossier for this session. It had a
+real reasoning arc (two premises dying before they reached a build) and the honest cause of its
+absence is that the budget went on replaying three subs — named here rather than passed over.
+
 ## ★ #78 — 2026-08-02 (Sun; Fable solo Cowork conductor + 4 subs, Dave live)
 
 **#78-D1 — RULED (Dave, explicit option-select at the phase-2 decision pack): P1 + P3 + P4 build NOW; P5–P7 parked, priced, unruled.**
