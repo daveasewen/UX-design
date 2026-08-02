@@ -120,6 +120,16 @@ mistake it exists to prevent.)*
 
 - **Projects into Red?** Say so **before** starting, and offer the fork: **(a)** narrow the job to
   fit, **(b)** flush + hand the build to a fresh window, **(c)** proceed knowingly with a Red stamp.
+
+**★ VISIBILITY IS PART OF THE STAMP (added #78, on Dave's own miss).** At #78 the opener price was
+complete, legal-form, and stated unprompted — buried mid-paragraph in prose, and **Dave read past it
+and later asked *"are we still pricing jobs? didn't notice at the opener."*** A price the person
+budgeting cannot SEE has failed its purpose exactly as fully as one never made; he is dyslexic and
+time-poor by his own standing note, and the chat half of this ritual is ungateable, so FORM is the
+only enforcement it has. ⇒ **The opener price is ONE bold line, FIRST or SECOND line of the opener
+message, shaped like the stamp** (`**PRICE:** boot N + jobs N est + wrap N = N of 200,000 — BAND`),
+never woven into a paragraph. Mid-session re-prices get the same one-line form at the moment they
+happen. The stratum's legal-form stamp is unchanged — this clause governs the CHAT rendering only.
   **Dave chooses. Do not choose silently by starting.**
   ⇒ **★ Since 2026-07-27 this fork has TWO triggers, not one — see ★ Half 0b.** It used to fire only
   before starting, which is why a finding landing mid-job could never reach it.
